@@ -2,66 +2,71 @@ Return-Path: <SRS0=YYjO=CK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37C30C433E6
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Sep 2020 14:21:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B53AEC433E2
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Sep 2020 15:26:48 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ECD99206CD
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Sep 2020 14:21:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 72F6020684
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Sep 2020 15:26:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FcopEGpm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ECD99206CD
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=hisilicon.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mbLsvgYh";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="B+rmydmo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72F6020684
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=jON7svjmVMY5E4wpEPWs2zsl0BEM5sRzH6DuuXD4//k=; b=FcopEGpm80pCV7GU85T1Et4R2
-	elqyBE+ammae0VRoiPENcr8mO4trTEpg4mRVka2z1rTMfVQXEmJDxn8Wlanif9+6gtFm2M1hMfd7u
-	L9lp/GS8lP5Ph7pkXyl/rexqRMbbcBdM08zg0+s0F7hx6yUSBWPKc0Nw3U0/ybyp0QzwAJVJmLzRi
-	26ZJeQb21k0HsFoMQo0Ix0wq57OW3jUXdoyjRM03W43WQKVZJtVbCtoARwLJNuMtbBslwdshnDOWC
-	WS8RmoAwwBrvwcDb+PPi8YWJsoG7EtlD6EvpTvZLKpMalkGM9UyQkXKBQvd+AGV/iOYSVuP0B2Onu
-	t95v+Q6Tg==;
+	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=mPPWuW+hxB1aFEggIvsHLxyVwthskE/ICFYR583vYiE=; b=mbLsvgYhzAORjXU8atTJZTpOBj
+	PE0x9aSZWnt7/iFgndvR+kNi+uqKbQcJrzefFePokMBW5ZZ0LtOlQNRNo44YaUfI78q70/GSCzpCc
+	pcM4zkKYsZ3uvY7/66SFGlFn4HnZUWkoNlM21NYBhcjtHuGfTCktw/557g2uyuYAvCQBg7/xfCn+i
+	U1Rh8qQxsytYs/2Dc2gaIwY7Dt6iSRmLN0WSkQYRlxLKtGm2UZFfv9ykUNVhvkQ5E3aj53PZ2YVOm
+	iHjoA+nf+OcsOzteKwi9DUyh3ihC2+3tdJmkFatGSnZvgC0ehkodsspT5QPs9OJXXkmDRm1pV7HbN
+	1dSopTWQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kD79I-0002rR-Cj; Tue, 01 Sep 2020 14:20:36 +0000
-Received: from szxga04-in.huawei.com ([45.249.212.190] helo=huawei.com)
+	id 1kD8Ae-0000Pi-Mt; Tue, 01 Sep 2020 15:26:04 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kD79F-0002qE-A1
- for linux-mtd@lists.infradead.org; Tue, 01 Sep 2020 14:20:34 +0000
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
- by Forcepoint Email with ESMTP id 631D9A4E1218CD2D4173;
- Tue,  1 Sep 2020 22:20:27 +0800 (CST)
-Received: from [10.65.58.147] (10.65.58.147) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0;
- Tue, 1 Sep 2020 22:20:16 +0800
-Subject: Re: [PATCH 2/2] mtd: spi-nor: Disable the flash quad mode in
- spi_nor_restore()
-To: =?UTF-8?Q?Matthias_Wei=c3=9fer?= <m.weisser.m@gmail.com>, <p.yadav@ti.com>
-References: <1592312547-19239-1-git-send-email-yangyicong@hisilicon.com>
- <1592312547-19239-3-git-send-email-yangyicong@hisilicon.com>
- <CAO8h3eFLVLRmw7u+rurKsg7=Nh2q-HVq-HgVXig8gf5Dffk8MA@mail.gmail.com>
-From: Yicong Yang <yangyicong@hisilicon.com>
-Message-ID: <30ca8ffc-74a7-92b0-5563-286967d23dc9@hisilicon.com>
-Date: Tue, 1 Sep 2020 22:20:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
-MIME-Version: 1.0
-In-Reply-To: <CAO8h3eFLVLRmw7u+rurKsg7=Nh2q-HVq-HgVXig8gf5Dffk8MA@mail.gmail.com>
-X-Originating-IP: [10.65.58.147]
-X-CFilter-Loop: Reflected
+ id 1kD8AZ-0000OM-TN; Tue, 01 Sep 2020 15:26:00 +0000
+Received: from kozik-lap.mshome.net (unknown [194.230.155.106])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 904D620BED;
+ Tue,  1 Sep 2020 15:25:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1598973959;
+ bh=iZRokT/LvXKNu2UX1Yb/TKfow/L5EMf/GiV8BC/Qzd4=;
+ h=From:To:Cc:Subject:Date:From;
+ b=B+rmydmoDRrQML/RdSKE568dtNtwlYkX47MCkTwC1WwxV3RyIRMaMUYIQBmn426PA
+ fZbb36fPUQn29OkEmMkOmoYYdWCA4abcNOWWx5vkolnzIUbSv6cshrN7mL6QufCw1R
+ jSHLBjWdVwBCqvyjYreyYuG5ackDdKuVVVhLA5Cc=
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Kyungmin Park <kyungmin.park@samsung.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ Han Xu <han.xu@nxp.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 1/6] mtd: onenand: Simplify with dev_err_probe()
+Date: Tue,  1 Sep 2020 16:25:30 +0200
+Message-Id: <20200901142535.12819-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200901_102033_586304_3D09C9DC 
-X-CRM114-Status: GOOD (  24.17  )
+X-CRM114-CacheID: sfid-20200901_112600_008389_F515FFEB 
+X-CRM114-Status: GOOD (  13.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,105 +78,42 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, sergei.shtylyov@cogentembedded.com,
- tudor.ambarus@microchip.com, richard@nod.at, me@yadavpratyush.com,
- john.garry@huawei.com, linuxarm@huawei.com, linux-mtd@lists.infradead.org,
- miquel.raynal@bootlin.com, alexander.sverdlin@nokia.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Krzysztof Kozlowski <krzk@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWF0aGhpYXMgYW5kIFByYXR5dXNoLAoKSSd2ZSB0ZXN0ZWQgdGhlIGZvbGxvd2luZyBwYXRj
-aCB3aXRoIHMyNWZzMTI4czEuCkkgbGVmdCB0aGUgZmxhc2ggcXVhZCBlbmFibGVkIGJlZm9yZSBt
-YW5hZ2VkIGJ5IHNwaS1ub3IgZHJpdmVyLAphbmQgaXQnbGwgc3RheSBRRSBhZnRlciByZW1vdmVk
-LiBTbyBJIHRoaW5rIGl0J2xsIGFsc28gYWRkcmVzcyB0aGUgaXNzdWUKbWVudGlvbmVkLiBQbGVh
-c2UgaGF2ZSBhIHRlc3QuCgpSZWdhcmRzLApZaWNvbmcKCgpGcm9tIDQzYWExYWZhMTJhMTAwMzZm
-NzIyYjI3MmE5YTM5YjhjODMyMThmMzMgTW9uIFNlcCAxNyAwMDowMDowMCAyMDAxCkZyb206IFlp
-Y29uZyBZYW5nIDx5YW5neWljb25nQGhpc2lsaWNvbi5jb20+CkRhdGU6IFR1ZSwgMSBTZXAgMjAy
-MCAyMjowOTo0NiArMDgwMApTdWJqZWN0OiBbUEFUQ0hdIG10ZDogc3BpLW5vcjogZG9uJ3QgZGlz
-YWJsZSBxdWFkIG1vZGUgb2YgZmxhc2ggd2hvc2UgaXMKIG9yaWdpbmFsbHkgZW5hYmxlZAoKQ3Vy
-cmVudGx5IHdlJ2xsIGRpc2FibGUgdGhlIGZsYXNoJ3MgUXVhZCBtb2RlIHdoZW4gcmVtb3ZlL3No
-dXRkb3duIGluCnNwaV9ub3JfcmVzdG9yZSgpLCBubyBtYXR0ZXIgd2hldGhlciBpdCdzIFF1YWQg
-ZW5hYmxlZCBvciBub3QuCkZvciBmbGFzaGVzIG9yaWdpbmFsbHkgaW4gUXVhZCBtb2RlLCBpdCds
-bCBjbGVhciB0aGUgZmxhc2gncyBRRSBiaXQKYW5kIHJlc3RvcmUgYW4gaW5jb3JyZWN0IHN0YXRl
-LgoKUmVjb3JkIHRoZSBmbGFzaCdzIG9yaWdpbmFsIFFFIHN0YXRlLCBhbmQgZG9uJ3QgZGlzYWJs
-ZSB0aGUgUXVhZCBtb2RlCm9mIHRoZXNlIG9yaWdpbmFsbHkgUXVhZCBlbmFibGVkIGZsYXNoLgoK
-UmVwb3J0ZWQtYnk6IE1hdHRoaWFzIFdlaXNzZXIgPG0ud2Vpc3Nlci5tQGdtYWlsLmNvbT4KU2ln
-bmVkLW9mZi1ieTogWWljb25nIFlhbmcgPHlhbmd5aWNvbmdAaGlzaWxpY29uLmNvbT4KLS0tCiBk
-cml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYyAgfCAzMCArKysrKysrKysrKysrKysrKysrKysrKy0t
-LS0tLS0KIGluY2x1ZGUvbGludXgvbXRkL3NwaS1ub3IuaCB8ICAzICsrKwogMiBmaWxlcyBjaGFu
-Z2VkLCAyNiBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZl
-cnMvbXRkL3NwaS1ub3IvY29yZS5jIGIvZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMKaW5kZXgg
-NjVlZmY0Yy4uYjEzYjNiMyAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMK
-KysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMKQEAgLTE5MjQsOCArMTkyNCwxMSBAQCBp
-bnQgc3BpX25vcl9zcjFfYml0Nl9xdWFkX2VuYWJsZShzdHJ1Y3Qgc3BpX25vciAqbm9yLCBib29s
-IGVuYWJsZSkKICAgICBpZiAocmV0KQogICAgICAgICByZXR1cm4gcmV0OwogCi0gICAgaWYgKChl
-bmFibGUgJiYgKG5vci0+Ym91bmNlYnVmWzBdICYgU1IxX1FVQURfRU5fQklUNikpIHx8Ci0gICAg
-ICAgICghZW5hYmxlICYmICEobm9yLT5ib3VuY2VidWZbMF0gJiBTUjFfUVVBRF9FTl9CSVQ2KSkp
-CisgICAgaWYgKGVuYWJsZSAmJiAobm9yLT5ib3VuY2VidWZbMF0gJiBTUjFfUVVBRF9FTl9CSVQ2
-KSkgeworICAgICAgICBub3ItPm9yaWdfcWVfc3RhdGUgPSB0cnVlOworICAgICAgICByZXR1cm4g
-MDsKKyAgICB9CisgICAgaWYgKCFlbmFibGUgJiYgIShub3ItPmJvdW5jZWJ1ZlswXSAmIFNSMV9R
-VUFEX0VOX0JJVDYpKQogICAgICAgICByZXR1cm4gMDsKIAogICAgIGlmIChlbmFibGUpCkBAIC0x
-OTU4LDggKzE5NjEsMTIgQEAgaW50IHNwaV9ub3Jfc3IyX2JpdDFfcXVhZF9lbmFibGUoc3RydWN0
-IHNwaV9ub3IgKm5vciwgYm9vbCBlbmFibGUpCiAgICAgaWYgKHJldCkKICAgICAgICAgcmV0dXJu
-IHJldDsKIAotICAgIGlmICgoZW5hYmxlICYmIChub3ItPmJvdW5jZWJ1ZlswXSAmIFNSMl9RVUFE
-X0VOX0JJVDEpKSB8fAotICAgICAgICAoIWVuYWJsZSAmJiAhKG5vci0+Ym91bmNlYnVmWzBdICYg
-U1IyX1FVQURfRU5fQklUMSkpKQorICAgIGlmIChlbmFibGUgJiYgKG5vci0+Ym91bmNlYnVmWzBd
-ICYgU1IyX1FVQURfRU5fQklUMSkpIHsKKyAgICAgICAgbm9yLT5vcmlnX3FlX3N0YXRlID0gdHJ1
-ZTsKKyAgICAgICAgcmV0dXJuIDA7CisgICAgfQorCisgICAgaWYgKCFlbmFibGUgJiYgIShub3It
-PmJvdW5jZWJ1ZlswXSAmIFNSMl9RVUFEX0VOX0JJVDEpKQogICAgICAgICByZXR1cm4gMDsKIAog
-ICAgIGlmIChlbmFibGUpCkBAIC0xOTkzLDggKzIwMDAsMTIgQEAgaW50IHNwaV9ub3Jfc3IyX2Jp
-dDdfcXVhZF9lbmFibGUoc3RydWN0IHNwaV9ub3IgKm5vciwgYm9vbCBlbmFibGUpCiAgICAgcmV0
-ID0gc3BpX25vcl9yZWFkX3NyMihub3IsIHNyMik7CiAgICAgaWYgKHJldCkKICAgICAgICAgcmV0
-dXJuIHJldDsKLSAgICBpZiAoKGVuYWJsZSAmJiAoKnNyMiAmIFNSMl9RVUFEX0VOX0JJVDcpKSB8
-fAotICAgICAgICAoIWVuYWJsZSAmJiAhKCpzcjIgJiBTUjJfUVVBRF9FTl9CSVQ3KSkpCisgICAg
-aWYgKGVuYWJsZSAmJiAoKnNyMiAmIFNSMl9RVUFEX0VOX0JJVDcpKSB7CisgICAgICAgIG5vci0+
-b3JpZ19xZV9zdGF0ZSA9IHRydWU7CisgICAgICAgIHJldHVybiAwOworICAgIH0KKworICAgIGlm
-ICghZW5hYmxlICYmICEoKnNyMiAmIFNSMl9RVUFEX0VOX0JJVDcpKQogICAgICAgICByZXR1cm4g
-MDsKIAogICAgIC8qIFVwZGF0ZSB0aGUgUXVhZCBFbmFibGUgYml0LiAqLwpAQCAtMzAwMSw3ICsz
-MDEyLDEyIEBAIHZvaWQgc3BpX25vcl9yZXN0b3JlKHN0cnVjdCBzcGlfbm9yICpub3IpCiAgICAg
-ICAgIG5vci0+ZmxhZ3MgJiBTTk9SX0ZfQlJPS0VOX1JFU0VUKQogICAgICAgICBub3ItPnBhcmFt
-cy0+c2V0XzRieXRlX2FkZHJfbW9kZShub3IsIGZhbHNlKTsKIAotICAgIHNwaV9ub3JfcXVhZF9l
-bmFibGUobm9yLCBmYWxzZSk7CisgICAgLyoKKyAgICAgKiByZXN0b3JlIHRoZSBmbGFzaCdzIHF1
-YWQgbW9kZS4gaWYgdGhlIGZsYXNoJ3MgcXVhZCBtb2RlIGlzCisgICAgICogZW5hYmxlZCBvcmln
-aW5hbGx5LCB3ZSdsbCBub3QgZGlzYWJsZSBpdC4KKyAgICAgKi8KKyAgICBpZiAoIW5vci0+b3Jp
-Z19xZV9zdGF0ZSkKKyAgICAgICAgc3BpX25vcl9xdWFkX2VuYWJsZShub3IsIGZhbHNlKTsKIH0K
-IEVYUE9SVF9TWU1CT0xfR1BMKHNwaV9ub3JfcmVzdG9yZSk7CiAKZGlmZiAtLWdpdCBhL2luY2x1
-ZGUvbGludXgvbXRkL3NwaS1ub3IuaCBiL2luY2x1ZGUvbGludXgvbXRkL3NwaS1ub3IuaAppbmRl
-eCA2MGJhYzJjLi5mMzQzNDE2IDEwMDY0NAotLS0gYS9pbmNsdWRlL2xpbnV4L210ZC9zcGktbm9y
-LmgKKysrIGIvaW5jbHVkZS9saW51eC9tdGQvc3BpLW5vci5oCkBAIC0zNDQsNiArMzQ0LDggQEAg
-c3RydWN0IHNwaV9ub3JfZmxhc2hfcGFyYW1ldGVyOwogICogQHJlYWRfZHVtbXk6ICAgICAgICB0
-aGUgZHVtbXkgbmVlZGVkIGJ5IHRoZSByZWFkIG9wZXJhdGlvbgogICogQHByb2dyYW1fb3Bjb2Rl
-OiAgICB0aGUgcHJvZ3JhbSBvcGNvZGUKICAqIEBzc3Rfd3JpdGVfc2Vjb25kOiAgICB1c2VkIGJ5
-IHRoZSBTU1Qgd3JpdGUgb3BlcmF0aW9uCisgKiBAb3JpZ19xZV9zdGF0ZTogICAgdXNlZCB0byBp
-bmRpY2F0ZSB0aGUgZmxhc2gncyBvcmlnaW5hbCBRdWFkIG1vZGUgZW5hYmxlCisgKiAgICAgICAg
-ICAgICAgICAgICAgICBzdGF0ZS4gVHJ1ZSBmb3IgZW5hYmxlZCBhbmQgZmFsc2UgZm9yIGRpc2Fi
-bGVkLgogICogQGZsYWdzOiAgICAgICAgZmxhZyBvcHRpb25zIGZvciB0aGUgY3VycmVudCBTUEkg
-Tk9SIChTTk9SX0ZfKikKICAqIEByZWFkX3Byb3RvOiAgICAgICAgdGhlIFNQSSBwcm90b2NvbCBm
-b3IgcmVhZCBvcGVyYXRpb25zCiAgKiBAd3JpdGVfcHJvdG86ICAgIHRoZSBTUEkgcHJvdG9jb2wg
-Zm9yIHdyaXRlIG9wZXJhdGlvbnMKQEAgLTM3NSw2ICszNzcsNyBAQCBzdHJ1Y3Qgc3BpX25vciB7
-CiAgICAgZW51bSBzcGlfbm9yX3Byb3RvY29sICAgIHdyaXRlX3Byb3RvOwogICAgIGVudW0gc3Bp
-X25vcl9wcm90b2NvbCAgICByZWdfcHJvdG87CiAgICAgYm9vbCAgICAgICAgICAgIHNzdF93cml0
-ZV9zZWNvbmQ7CisgICAgYm9vbCAgICAgICAgICAgIG9yaWdfcWVfc3RhdGU7CiAgICAgdTMyICAg
-ICAgICAgICAgZmxhZ3M7CiAKICAgICBjb25zdCBzdHJ1Y3Qgc3BpX25vcl9jb250cm9sbGVyX29w
-cyAqY29udHJvbGxlcl9vcHM7Ci0tIAoyLjguMQoKCgpPbiAyMDIwLzkvMSAxNDoxNiwgTWF0dGhp
-YXMgV2Vpw59lciB3cm90ZToKPiBBbSBEaS4sIDE2LiBKdW5pIDIwMjAgdW0gMTU6MDMgVWhyIHNj
-aHJpZWIgWWljb25nIFlhbmcKPiA8eWFuZ3lpY29uZ0BoaXNpbGljb24uY29tPjoKPj4gSWYgdGhl
-IGZsYXNoJ3MgcXVhZCBtb2RlIGlzIGVuYWJsZWQsIGl0J2xsIHJlbWFpbiBpbiB0aGUgcXVhZCBt
-b2RlIHdoZW4KPj4gaXQncyByZW1vdmVkLiBJZiB3ZSBkcml2ZSB0aGUgZmxhc2ggbmV4dCB0aW1l
-IGluIFNQSS9EdWFsIG1vZGUsIHRoZW4KPj4gcHJvYmxlbSBvY2N1cnMgYXMgdGhlIGZsYXNoJ3Mg
-cXVhZCBlbmFibGUgYml0IGlzIG5vdCBjbGVhcmVkLgo+IE9uIGZsYXNoIGRldmljZXMgd2l0aCBh
-IG5vbi12b2xhdGlsZSBxdWFkIGVuYWJsZSBiaXQgKHdlIHVzZSBTMjVGTDUxMlMpCj4gdGhpcyB3
-aWxsIHdlYXIgb3V0IHRoZSBxdWFkIGVuYWJsZSBiaXQgYXMgb24gZXZlcnkgYm9vdCB0aGUgYml0
-IGlzCj4gc2V0IGFuZCByZXNldCBvbiBzaHV0ZG93bi4gT3IgZG8gSSBtaXNzIHNvbWV0aGluZyBo
-ZXJlPwo+Cj4+IERpc2FibGUgdGhlIHF1YWQgbW9kZSBpbiBzcGlfbm9yX3Jlc3RvcmUoKSwgdGhl
-IGZsYXNoIHdpbGwgbGVhdmUKPj4gcXVhZCBtb2RlIHdoZW4gcmVtb3ZlLiBUaGlzIHdpbGwgbWFr
-ZSBzdXJlIHRoZSBmbGFzaCBhbHdheXMgZW50ZXIgdGhlCj4+IGNvcnJlY3QgbW9kZSB3aGVuIGxv
-YWRlZC4KPiBXZSBoYXZlIGEgc3lzdGVtIHdoaWNoIHJlbGllcyBvbiBhbiBlbmFibGVkIHF1YWQg
-bW9kZSBvbiBib290Cj4gKGJvb3Rsb2FkZXIgdXNlcyBxdWFkIG1vZGUgd2l0aG91dCBlbmFibGlu
-ZyBpdCkgc28gdXNpbmcgdGhpcyBwYXRjaAo+IHdpbGwgcHJldmVudCBvdXIgZGV2aWNlIGZyb20g
-Ym9vdGluZy4KPgo+IFJlZ2FyZHMsCj4gTWF0dGhpYXMKPiAuCj4KCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
-b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vbGludXgtbXRkLwo=
+Common pattern of handling deferred probe can be simplified with
+dev_err_probe().  Less code and the error value gets printed.
+
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ drivers/mtd/nand/onenand/onenand_omap2.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/nand/onenand/onenand_omap2.c b/drivers/mtd/nand/onenand/onenand_omap2.c
+index aa9368bf7a0c..d8c0bd002c2b 100644
+--- a/drivers/mtd/nand/onenand/onenand_omap2.c
++++ b/drivers/mtd/nand/onenand/onenand_omap2.c
+@@ -494,11 +494,8 @@ static int omap2_onenand_probe(struct platform_device *pdev)
+ 
+ 	c->int_gpiod = devm_gpiod_get_optional(dev, "int", GPIOD_IN);
+ 	if (IS_ERR(c->int_gpiod)) {
+-		r = PTR_ERR(c->int_gpiod);
+ 		/* Just try again if this happens */
+-		if (r != -EPROBE_DEFER)
+-			dev_err(dev, "error getting gpio: %d\n", r);
+-		return r;
++		return dev_err_probe(dev, PTR_ERR(c->int_gpiod), "error getting gpio\n");
+ 	}
+ 
+ 	if (c->int_gpiod) {
+-- 
+2.17.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
