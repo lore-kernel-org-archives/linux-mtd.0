@@ -7,49 +7,49 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B53AEC433E2
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Sep 2020 15:26:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7817C433E6
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Sep 2020 15:26:57 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 72F6020684
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Sep 2020 15:26:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7FA8C2137B
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Sep 2020 15:26:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mbLsvgYh";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="B+rmydmo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72F6020684
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CuPP7qm8";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ENsm4EAu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7FA8C2137B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=mPPWuW+hxB1aFEggIvsHLxyVwthskE/ICFYR583vYiE=; b=mbLsvgYhzAORjXU8atTJZTpOBj
-	PE0x9aSZWnt7/iFgndvR+kNi+uqKbQcJrzefFePokMBW5ZZ0LtOlQNRNo44YaUfI78q70/GSCzpCc
-	pcM4zkKYsZ3uvY7/66SFGlFn4HnZUWkoNlM21NYBhcjtHuGfTCktw/557g2uyuYAvCQBg7/xfCn+i
-	U1Rh8qQxsytYs/2Dc2gaIwY7Dt6iSRmLN0WSkQYRlxLKtGm2UZFfv9ykUNVhvkQ5E3aj53PZ2YVOm
-	iHjoA+nf+OcsOzteKwi9DUyh3ihC2+3tdJmkFatGSnZvgC0ehkodsspT5QPs9OJXXkmDRm1pV7HbN
-	1dSopTWQ==;
+	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
+	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=4BnLn1EZiaM3i3WICEVFzIne2GNEYctEhpcFhroRanQ=; b=CuPP7qm8sQNGLao6cDVtJB3GBG
+	P4mXL9jmohTvBPIcOTQeJFXGFLQI7ICY+fMwMcGMAsPKX2lDCPlT/iH2pBkezR18Kb40K7OWUYdV3
+	74cUtmMI640ZZZde36XI3bQcGacKl5ybB4G17Dzf1TV2bN1tHZ/+5QGex1prGfRQgOk13D7pUQuje
+	jzMEE2jsNnQDDVZupRLvgdR0/zYgNhrRFz+mf8n9RgPIY0t01wrv3cAi6XKr4WBCtwd2LrrEvvlrm
+	1zOkwipVRVWP9hATEjDPMmIgeMIFsDhH1HLLndLt+cbWFtr7oPbotq4+JIuvdPbjTQCtgjyo+qAEr
+	DE22EZuw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kD8Ae-0000Pi-Mt; Tue, 01 Sep 2020 15:26:04 +0000
+	id 1kD8B0-0000ad-EG; Tue, 01 Sep 2020 15:26:26 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kD8AZ-0000OM-TN; Tue, 01 Sep 2020 15:26:00 +0000
+ id 1kD8Ah-0000R2-L4; Tue, 01 Sep 2020 15:26:08 +0000
 Received: from kozik-lap.mshome.net (unknown [194.230.155.106])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 904D620BED;
- Tue,  1 Sep 2020 15:25:55 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 75FA721534;
+ Tue,  1 Sep 2020 15:26:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1598973959;
- bh=iZRokT/LvXKNu2UX1Yb/TKfow/L5EMf/GiV8BC/Qzd4=;
- h=From:To:Cc:Subject:Date:From;
- b=B+rmydmoDRrQML/RdSKE568dtNtwlYkX47MCkTwC1WwxV3RyIRMaMUYIQBmn426PA
- fZbb36fPUQn29OkEmMkOmoYYdWCA4abcNOWWx5vkolnzIUbSv6cshrN7mL6QufCw1R
- jSHLBjWdVwBCqvyjYreyYuG5ackDdKuVVVhLA5Cc=
+ s=default; t=1598973967;
+ bh=ovBGAei74FK31o+QhuioieTu3Pt4iRVAUaBnNVTmqlQ=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=ENsm4EAunS7F0nL8ERbt7m49X1AAhazZmdqrJAKGLhvfbXPue8ndX2hBMLaTjLddr
+ DmNx5oAebQp59W9Zg44YMxdwAcVh5LGaBsdLueaRUhFM/hO7SEafKAf8kidMDoJVio
+ dZwoZdKnJbXdfU1g2oqZx4K/Md9MaPV0A4wVAPX8=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Kyungmin Park <kyungmin.park@samsung.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -60,13 +60,15 @@ To: Kyungmin Park <kyungmin.park@samsung.com>,
  Ludovic Desroches <ludovic.desroches@microchip.com>,
  Han Xu <han.xu@nxp.com>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 1/6] mtd: onenand: Simplify with dev_err_probe()
-Date: Tue,  1 Sep 2020 16:25:30 +0200
-Message-Id: <20200901142535.12819-1-krzk@kernel.org>
+Subject: [PATCH 3/6] mtd: rawnand: gpmi: Simplify with dev_err_probe()
+Date: Tue,  1 Sep 2020 16:25:32 +0200
+Message-Id: <20200901142535.12819-3-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200901142535.12819-1-krzk@kernel.org>
+References: <20200901142535.12819-1-krzk@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200901_112600_008389_F515FFEB 
-X-CRM114-Status: GOOD (  13.46  )
+X-CRM114-CacheID: sfid-20200901_112607_807501_3B717A8C 
+X-CRM114-Status: GOOD (  13.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,26 +92,26 @@ dev_err_probe().  Less code and the error value gets printed.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/mtd/nand/onenand/onenand_omap2.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/onenand/onenand_omap2.c b/drivers/mtd/nand/onenand/onenand_omap2.c
-index aa9368bf7a0c..d8c0bd002c2b 100644
---- a/drivers/mtd/nand/onenand/onenand_omap2.c
-+++ b/drivers/mtd/nand/onenand/onenand_omap2.c
-@@ -494,11 +494,8 @@ static int omap2_onenand_probe(struct platform_device *pdev)
- 
- 	c->int_gpiod = devm_gpiod_get_optional(dev, "int", GPIOD_IN);
- 	if (IS_ERR(c->int_gpiod)) {
--		r = PTR_ERR(c->int_gpiod);
- 		/* Just try again if this happens */
--		if (r != -EPROBE_DEFER)
--			dev_err(dev, "error getting gpio: %d\n", r);
--		return r;
-+		return dev_err_probe(dev, PTR_ERR(c->int_gpiod), "error getting gpio\n");
- 	}
- 
- 	if (c->int_gpiod) {
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index 5d4aee46cc55..3d8fe0d0721f 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -1003,10 +1003,8 @@ static int acquire_dma_channels(struct gpmi_nand_data *this)
+ 	/* request dma channel */
+ 	dma_chan = dma_request_chan(&pdev->dev, "rx-tx");
+ 	if (IS_ERR(dma_chan)) {
+-		ret = PTR_ERR(dma_chan);
+-		if (ret != -EPROBE_DEFER)
+-			dev_err(this->dev, "DMA channel request failed: %d\n",
+-				ret);
++		ret = dev_err_probe(this->dev, PTR_ERR(dma_chan),
++				    "DMA channel request failed\n");
+ 		release_dma_channels(this);
+ 	} else {
+ 		this->dma_chans[0] = dma_chan;
 -- 
 2.17.1
 
