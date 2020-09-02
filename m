@@ -2,85 +2,59 @@ Return-Path: <SRS0=vQrn=CL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 152B4C433E2
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Sep 2020 12:16:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14A79C433E2
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Sep 2020 15:13:52 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BE52420767
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Sep 2020 12:16:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CA0BB20773
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Sep 2020 15:13:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ePv37EOO";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I4hB+raa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE52420767
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BmF9JQQg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA0BB20773
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=cSo7oEs+q2s0rksiG6z2DdBUbi+p+50m8lJqoSo05K0=; b=ePv37EOO9HEAp5czCTqau8Dpe
-	W5/6Q/DuVD5HhRlM+x7/JDh30eAGB30f2k7CJgz5gBZCseRW5Z7a3myH4v2QKepozhniURxiKOd+A
-	ugskCuCXA+Y/qsl7qeSTCTSwFPHW+yI3ykDHFj2V0hzrWakO4cOK/WLSbRO5lX4NuF3uJhcpPVLX9
-	+WyqfF9T7zNw96O2hrBnEy6B7i5zd6QqvCyI7ZQeHYYT70Mi9B0/M1tvQWf3XtrpYSTVEX8rj4iph
-	p40shhyKJr7HSFyy/LklpZECjEAlrA2X5f10jqovT8wirKyHp2pjObSanwh07uNEUmr981hzwwo7Q
-	r/vP/Iw8g==;
+	 bh=D1oHCKnpYthJGk7u6NavTW0l4PDGxsnFg/NDf1bvnVk=; b=BmF9JQQg2fyFUnKIEOVQRt2Vt
+	5BTIwKSAvL2xBlXWudMnGUsMMcL/A4f3FxTHimCJ7ukEwj45WysZnwP1ucRMNDqJP8/pugrVRv2IR
+	pWSFd5lMYoxPjX7uAxMWrS9VouW5YyjLO565ck/tTLzIrioFbm6KwOl9NfO5N9S79nbKz4h/zkKnL
+	n5kOI33956NKl4l0cd1FJIxf77755Pi7UAUJL4ddFQgbamEKo8GLM+ECDdc6cXUr16DZjVdzfcblC
+	XrdOEtbz4Ydbv4alFT1N9bZOaEOdUUVTV64pMY5uWJFIo3gLH6PYOcsBeSurWZcov9hvRvfWunARX
+	/+ONaiXzw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kDRft-00015x-CJ; Wed, 02 Sep 2020 12:15:37 +0000
-Received: from mail-il1-x141.google.com ([2607:f8b0:4864:20::141])
+	id 1kDURZ-00007V-6f; Wed, 02 Sep 2020 15:13:01 +0000
+Received: from verein.lst.de ([213.95.11.211])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kDRfr-00015Z-2L
- for linux-mtd@lists.infradead.org; Wed, 02 Sep 2020 12:15:35 +0000
-Received: by mail-il1-x141.google.com with SMTP id e14so4746965ile.6
- for <linux-mtd@lists.infradead.org>; Wed, 02 Sep 2020 05:15:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=tryYBEafll/kgxjcybERxJdf+V7haRFlhCKbSc2fIiI=;
- b=I4hB+raa5Qicg5qpzsWrJo1wVXkPW7Gn/8ihNxAzhg8YhIGtcMh1BDJp4LHbqZBbv4
- iFtNL2hf3/UYJQnV/3kmlNUeK75ml0CCZoNQh9+gkEAjoX0f6avXSuhcIoeaMspIzvg2
- 0vszBdfhdP7CpLJ3xjr/d2pFeggxxRMfBcq20WC+2GSErtt3BLbwINXepvuoWQp4olo8
- dNgxgb+YzhwB+Zamy/8dgDS6ZoH+fHUyfYEZ8jKYA4wIyWVGgAH4k4sQm0RRLjBEuoAk
- EAkt6wD/z00LH/hsL4o72Tu0YCqHMI4eQB1+LjubRQsNLBOQnYPE4z6zBX6Cs1fVo0o9
- JXIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=tryYBEafll/kgxjcybERxJdf+V7haRFlhCKbSc2fIiI=;
- b=Wz+tylcSLCOap/HZK3avr4aljp/1jfiia/zXSrXrlUdlPeSNetjvPmKfhPz8NxGIzi
- kDjXyF1lm6ydfu28r8Ms5xnmcWuwICX0HaGzsZP+kR5kT0vT3nGRQuNrRa/mUSRH1COb
- luNYA4FkyCnW5sA1aYHMoHoli6YB7xGflXPwxB3+TVrWb1Jm2CTfXjHCa02sfo6UMTgF
- YH+jtkUN9HAy62ydiKlSwUsl/DCR3AMwCoDRXOve6PDbg2zEK35OngWKc6snvFJE686M
- vUEycF/xqN5Zlg7TZOOnyHoB9tvkOpyOTesTdf4pawdGShFcuEQ2SqxoYsJs56a8OKe2
- VU0g==
-X-Gm-Message-State: AOAM533ibWpYOEzwB0p1cKG0ZgGFiw3Z95Y4bROjuvEYM74wjmHFHRiS
- 3xvgkkEBkTqwOmMMH5loKeNEh1kh+90n7PHMRQ==
-X-Google-Smtp-Source: ABdhPJxasvpTtmILTvhI9urTcrHK3ormhpjkbIgeYM54YOby9yyTnSm21MA2vVPUoX0dXaEQzA99bGOekrTm2PrCHLg=
-X-Received: by 2002:a92:cccb:: with SMTP id u11mr3346582ilq.54.1599048931323; 
- Wed, 02 Sep 2020 05:15:31 -0700 (PDT)
+ id 1kDUQP-0007r6-Vr
+ for linux-mtd@lists.infradead.org; Wed, 02 Sep 2020 15:11:51 +0000
+Received: by verein.lst.de (Postfix, from userid 2407)
+ id 4285B68B05; Wed,  2 Sep 2020 17:11:44 +0200 (CEST)
+Date: Wed, 2 Sep 2020 17:11:44 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Mike Snitzer <snitzer@redhat.com>
+Subject: Re: [PATCH 06/14] block: lift setting the readahead size into the
+ block layer
+Message-ID: <20200902151144.GA1738@lst.de>
+References: <20200726150333.305527-1-hch@lst.de>
+ <20200726150333.305527-7-hch@lst.de> <20200826220737.GA25613@redhat.com>
 MIME-Version: 1.0
-References: <1592312547-19239-1-git-send-email-yangyicong@hisilicon.com>
- <1592312547-19239-3-git-send-email-yangyicong@hisilicon.com>
- <CAO8h3eFLVLRmw7u+rurKsg7=Nh2q-HVq-HgVXig8gf5Dffk8MA@mail.gmail.com>
- <30ca8ffc-74a7-92b0-5563-286967d23dc9@hisilicon.com>
-In-Reply-To: <30ca8ffc-74a7-92b0-5563-286967d23dc9@hisilicon.com>
-From: =?UTF-8?Q?Matthias_Wei=C3=9Fer?= <m.weisser.m@gmail.com>
-Date: Wed, 2 Sep 2020 14:15:19 +0200
-Message-ID: <CAO8h3eE2ZzffbAC_pk+uDwxMtmPWbkHCXnxvXz-hLujueH3jFQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mtd: spi-nor: Disable the flash quad mode in
- spi_nor_restore()
-To: Yicong Yang <yangyicong@hisilicon.com>
+Content-Disposition: inline
+In-Reply-To: <20200826220737.GA25613@redhat.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200902_081535_150353_9E4DA97A 
-X-CRM114-Status: GOOD (  10.54  )
+X-CRM114-CacheID: sfid-20200902_111150_228770_B8A6E541 
+X-CRM114-Status: GOOD (  21.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,38 +66,68 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, tudor.ambarus@microchip.com, richard@nod.at,
- me@yadavpratyush.com, john.garry@huawei.com, linuxarm@huawei.com,
- linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
- alexander.sverdlin@nokia.com, Pratyush Yadav <p.yadav@ti.com>
+Cc: Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+ martin.petersen@oracle.com, Hans de Goede <hdegoede@redhat.com>,
+ Song Liu <song@kernel.org>, Richard Weinberger <richard@nod.at>,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-raid@vger.kernel.org, Minchan Kim <minchan@kernel.org>,
+ dm-devel@redhat.com, linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+ drbd-dev@tron.linbit.com, cgroups@vger.kernel.org,
+ Christoph Hellwig <hch@lst.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Vignesh
+On Wed, Aug 26, 2020 at 06:07:38PM -0400, Mike Snitzer wrote:
+> On Sun, Jul 26 2020 at 11:03am -0400,
+> Christoph Hellwig <hch@lst.de> wrote:
+> 
+> > Drivers shouldn't really mess with the readahead size, as that is a VM
+> > concept.  Instead set it based on the optimal I/O size by lifting the
+> > algorithm from the md driver when registering the disk.  Also set
+> > bdi->io_pages there as well by applying the same scheme based on
+> > max_sectors.
+> > 
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > ---
+> >  block/blk-settings.c         |  5 ++---
+> >  block/blk-sysfs.c            |  1 -
+> >  block/genhd.c                | 13 +++++++++++--
+> >  drivers/block/aoe/aoeblk.c   |  2 --
+> >  drivers/block/drbd/drbd_nl.c | 12 +-----------
+> >  drivers/md/bcache/super.c    |  4 ----
+> >  drivers/md/dm-table.c        |  3 ---
+> >  drivers/md/raid0.c           | 16 ----------------
+> >  drivers/md/raid10.c          | 24 +-----------------------
+> >  drivers/md/raid5.c           | 13 +------------
+> >  10 files changed, 16 insertions(+), 77 deletions(-)
+> 
+> 
+> In general these changes need a solid audit relative to stacking
+> drivers.  That is, the limits stacking methods (blk_stack_limits)
+> vs lower level allocation methods (__device_add_disk).
+> 
+> You optimized for lowlevel __device_add_disk establishing the bdi's
+> ra_pages and io_pages.  That is at the beginning of disk allocation,
+> well before any build up of stacking driver's queue_io_opt() -- which
+> was previously done in disk_stack_limits or driver specific methods
+> (e.g. dm_table_set_restrictions) that are called _after_ all the limits
+> stacking occurs.
+> 
+> By inverting the setting of the bdi's ra_pages and io_pages to be done
+> so early in __device_add_disk it'll break properly setting these values
+> for at least DM afaict.
 
-Am Di., 1. Sept. 2020 um 16:20 Uhr schrieb Yicong Yang
-<yangyicong@hisilicon.com>:
-> I've tested the following patch with s25fs128s1.
-> I left the flash quad enabled before managed by spi-nor driver,
-> and it'll stay QE after removed. So I think it'll also address the issue
-> mentioned. Please have a test.
+ra_pages never got inherited by stacking drivers, check it by modifying
+it on an underlying device and then creating a trivial dm or md one.
+And I think that is a good thing - in general we shouldn't really mess
+with this thing from drivers if we can avoid it.  I've kept the legacy
+aoe and md parity raid cases, out of which the first looks pretty weird
+and the md one at least remotely sensible.
 
-Thanks for the patch. I can confirm that current 5.9-rc3 bricks my hardware
-and your patch on top of it fixes that. Therefore
-
-Tested-by: Matthias Weisser <m.weisser.m@gmail.com>
-
-But I am still concerned about wearing out nonvolatile QE bits (not in my
-case, but there may be others) which may also brick hardware after a lot of
-boots (by set and reset QE bit on every boot).
-
-So, from my limited point of view, your patch fixes my problem but overall
-I think the original approach should be thought-out a bit more.
-
-Regards,
-Matthias
+->io_pages is still inherited in disk_stack_limits, just like before
+so no change either.
 
 ______________________________________________________
 Linux MTD discussion mailing list
