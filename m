@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD351C43461
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Sep 2020 17:14:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B6CEC2BBDB
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Sep 2020 17:14:25 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8D556208B3
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Sep 2020 17:14:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3B9332098B
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Sep 2020 17:14:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iQLFgjUN";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="FAjmwI6U"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D556208B3
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kmv0F/6Q";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="aDOQeb/l"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B9332098B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,62 +26,61 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=U2woeBYnj2hsGDKml4gx4fnqZI3slhBFA4/2l9E2kec=; b=iQLFgjUNI12jLyBweEnbshaqg
-	aaXhx1Ym17FrSBUBdSzSk7D/VoUAOmrVKC3SDkCe0W4Fpnxxpjp1LdlHYtH4N7QRzl6tKXEM6a3yD
-	hkU2NnoAkTrtG98I3d3D4YyFStinwRFJphWak3wA4LuW+ZiBaEaGDVacbcG1LCc/apCBSwdycJiYu
-	wXvHyRBdWlJllwyGy5Gzz2rdxSLTGUkQxzssnCgeNNR2KsbAFZweLqwZ5TZdE/kKVLzw/WfqBcDNN
-	MPXFqSvs6Jn5cEmx84wOiwZNVtChz8v5+ARSufZYAErYX54jEy011XvVyu9T6Bi8PP/kJnLD5G7ft
-	meWhC4xJw==;
+	 bh=fkSTTxsQEXy4Ot73zKOR6JhrPVk6/YSFbLCdemImIGg=; b=kmv0F/6QV+ZWH7v79wdn2PagY
+	ZxFjfDzjdGDlQnuoT+LN9EVEzo+JwG+2+1zPBE1QzuftxTQnEpsf20FMg/2hOrJydz0mF21b+aME3
+	giD0V3Mris5cqWNJId8XwQ2GLLSEPqETF3P+AOxPvbmDmW6CdM6fNytGSeJj4drwt/dhzFJmqlBEU
+	sfKvgh2EP/C90mZBJpZyp37jVqfMCq97tpEd6QwN/n/8uxdiJKlaqNg1UumFyPBioa1HZ3iDkHBmO
+	8XGL1fjq57BGc0S0D4RZNqdUy4KBSnvXGS/0iHojYAIexNu27bm6NqL3pxsuKo+Z/alUWkK0fllon
+	vAAhVlSrQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kDso6-0006Xj-P9; Thu, 03 Sep 2020 17:13:54 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1kDsnt-0006T2-CB; Thu, 03 Sep 2020 17:13:41 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kDsnx-0006UA-NU
- for linux-mtd@lists.infradead.org; Thu, 03 Sep 2020 17:13:46 +0000
+ id 1kDsnk-0006QF-JC
+ for linux-mtd@lists.infradead.org; Thu, 03 Sep 2020 17:13:34 +0000
 Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 083HDfTX090890;
- Thu, 3 Sep 2020 12:13:41 -0500
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 083HDQs6047663;
+ Thu, 3 Sep 2020 12:13:26 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1599153221;
- bh=Fy9YRRKpazsgRxCvi2aRkApalOJ9QGNoNQ+ngXfGhRo=;
+ s=ti-com-17Q1; t=1599153206;
+ bh=efQF0K9RfmvoTr4BQHJ8KOdneST1sS12i+m+v8lmSCY=;
  h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=FAjmwI6UvLV7dD4y2eidsgQysxo/9Pdd+Z/0x8TzV8JcrurdzFnPZEHDkX4BzoXWU
- SCynn9KfR0lKYAEcKymgUbEoe7YkAJ7yJGmYJXDwPD6mD2blhjDWVCeMVNOp32M2Of
- PUZjWpi5FoYdkfAbIgyLkkpgs1vw58GpODYZtgJs=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 083HDfUo021740
+ b=aDOQeb/lN6bcmZ6IOIbI6E6LXIoO1+PmUqH0YmiedF35RVDD4vSxRTxIlA4XxmoTg
+ TB513Uor7Uy3ZToRBLTup0LdD0/WBfN3DdFQZ6WMA8MwJDJBVcgKK7v7AwbioVYjqd
+ Z7+TYP3ZZfAI32dpI40Tn96GpVv8mNoyG2nBETcI=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 083HDQbq021549
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 3 Sep 2020 12:13:41 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ Thu, 3 Sep 2020 12:13:26 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 3 Sep
- 2020 12:13:41 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ 2020 12:13:26 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 3 Sep 2020 12:13:41 -0500
+ Frontend Transport; Thu, 3 Sep 2020 12:13:26 -0500
 Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
  [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 083HDDQ3088669;
- Thu, 3 Sep 2020 12:13:38 -0500
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 083HDDPw088669;
+ Thu, 3 Sep 2020 12:13:23 -0500
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
  <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
  Raghavendra <vigneshr@ti.com>, "open list:SPI NOR SUBSYSTEM"
  <linux-mtd@lists.infradead.org>, open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH v12 08/14] mtd: spi-nor: core: enable octal DTR mode when
- possible
-Date: Thu, 3 Sep 2020 22:43:07 +0530
-Message-ID: <20200903171313.18741-9-p.yadav@ti.com>
+Subject: [PATCH v12 03/14] mtd: spi-nor: add support for DTR protocol
+Date: Thu, 3 Sep 2020 22:43:02 +0530
+Message-ID: <20200903171313.18741-4-p.yadav@ti.com>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200903171313.18741-1-p.yadav@ti.com>
 References: <20200903171313.18741-1-p.yadav@ti.com>
 MIME-Version: 1.0
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200903_131345_872824_7E5C57FA 
-X-CRM114-Status: GOOD (  16.15  )
+X-CRM114-CacheID: sfid-20200903_131332_731849_BE21A07A 
+X-CRM114-Status: GOOD (  24.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,88 +99,683 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Allow flashes to specify a hook to enable octal DTR mode. Use this hook
-whenever possible to get optimal transfer speeds.
+Double Transfer Rate (DTR) is SPI protocol in which data is transferred
+on each clock edge as opposed to on each clock cycle. Make
+framework-level changes to allow supporting flashes in DTR mode.
+
+Right now, mixed DTR modes are not supported. So, for example a mode
+like 4S-4D-4D will not work. All phases need to be either DTR or STR.
 
 Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/core.c | 35 +++++++++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/core.h |  2 ++
- 2 files changed, 37 insertions(+)
+ drivers/mtd/spi-nor/core.c  | 220 +++++++++++++++++++++++++++++-------
+ drivers/mtd/spi-nor/core.h  |   7 ++
+ drivers/mtd/spi-nor/sfdp.c  |   9 +-
+ include/linux/mtd/spi-nor.h |  51 ++++++---
+ 4 files changed, 234 insertions(+), 53 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 429151dfcddf..73388af08f03 100644
+index 4a7443e00602..c1a272f077e7 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -3052,6 +3052,35 @@ static int spi_nor_init_params(struct spi_nor *nor)
- 	return 0;
- }
+@@ -40,6 +40,76 @@
  
-+/** spi_nor_octal_dtr_enable() - enable Octal DTR I/O if needed
-+ * @nor:                 pointer to a 'struct spi_nor'
-+ * @enable:              whether to enable or disable Octal DTR
+ #define SPI_NOR_MAX_ADDR_WIDTH	4
+ 
++/**
++ * spi_nor_get_cmd_ext() - Get the command opcode extension based on the
++ *			   extension type.
++ * @nor:		pointer to a 'struct spi_nor'
++ * @op:			pointer to the 'struct spi_mem_op' whose properties
++ *			need to be initialized.
 + *
-+ * Return: 0 on success, -errno otherwise.
++ * Right now, only "repeat" and "invert" are supported.
++ *
++ * Return: The opcode extension.
 + */
-+static int spi_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
++static u8 spi_nor_get_cmd_ext(const struct spi_nor *nor,
++			      const struct spi_mem_op *op)
 +{
-+	int ret;
++	switch (nor->cmd_ext_type) {
++	case SPI_NOR_EXT_INVERT:
++		return ~op->cmd.opcode;
 +
-+	if (!nor->params->octal_dtr_enable)
++	case SPI_NOR_EXT_REPEAT:
++		return op->cmd.opcode;
++
++	default:
++		dev_err(nor->dev, "Unknown command extension type\n");
 +		return 0;
++	}
++}
 +
-+	if (!(nor->read_proto == SNOR_PROTO_8_8_8_DTR &&
-+	      nor->write_proto == SNOR_PROTO_8_8_8_DTR))
-+		return 0;
++/**
++ * spi_nor_spimem_setup_op() - Set up common properties of a spi-mem op.
++ * @nor:		pointer to a 'struct spi_nor'
++ * @op:			pointer to the 'struct spi_mem_op' whose properties
++ *			need to be initialized.
++ * @proto:		the protocol from which the properties need to be set.
++ */
++void spi_nor_spimem_setup_op(const struct spi_nor *nor,
++			     struct spi_mem_op *op,
++			     const enum spi_nor_protocol proto)
++{
++	u8 ext;
 +
-+	ret = nor->params->octal_dtr_enable(nor, enable);
-+	if (ret)
-+		return ret;
++	op->cmd.buswidth = spi_nor_get_protocol_inst_nbits(proto);
 +
-+	if (enable)
-+		nor->reg_proto = SNOR_PROTO_8_8_8_DTR;
-+	else
-+		nor->reg_proto = SNOR_PROTO_1_1_1;
++	if (op->addr.nbytes)
++		op->addr.buswidth = spi_nor_get_protocol_addr_nbits(proto);
 +
-+	return 0;
++	if (op->dummy.nbytes)
++		op->dummy.buswidth = spi_nor_get_protocol_addr_nbits(proto);
++
++	if (op->data.nbytes)
++		op->data.buswidth = spi_nor_get_protocol_data_nbits(proto);
++
++	if (spi_nor_protocol_is_dtr(proto)) {
++		/*
++		 * SPIMEM supports mixed DTR modes, but right now we can only
++		 * have all phases either DTR or STR. IOW, SPIMEM can have
++		 * something like 4S-4D-4D, but SPI NOR can't. So, set all 4
++		 * phases to either DTR or STR.
++		 */
++		op->cmd.dtr = op->addr.dtr = op->dummy.dtr
++			       = op->data.dtr = true;
++
++		/* 2 bytes per clock cycle in DTR mode. */
++		op->dummy.nbytes *= 2;
++
++		ext = spi_nor_get_cmd_ext(nor, op);
++		op->cmd.opcode = (op->cmd.opcode << 8) | ext;
++		op->cmd.nbytes = 2;
++	}
 +}
 +
  /**
-  * spi_nor_quad_enable() - enable/disable Quad I/O if needed.
-  * @nor:                pointer to a 'struct spi_nor'
-@@ -3092,6 +3121,12 @@ static int spi_nor_init(struct spi_nor *nor)
+  * spi_nor_spimem_bounce() - check if a bounce buffer is needed for the data
+  *                           transfer
+@@ -85,17 +155,26 @@ static int spi_nor_spimem_exec_op(struct spi_nor *nor, struct spi_mem_op *op)
+ static int spi_nor_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
+ 			    size_t len)
  {
- 	int err;
++	if (spi_nor_protocol_is_dtr(nor->reg_proto))
++		return -ENOTSUPP;
++
+ 	return nor->controller_ops->read_reg(nor, opcode, buf, len);
+ }
  
-+	err = spi_nor_octal_dtr_enable(nor, true);
-+	if (err) {
-+		dev_dbg(nor->dev, "octal mode not supported\n");
-+		return err;
+ static int spi_nor_write_reg(struct spi_nor *nor, u8 opcode, const u8 *buf,
+ 			     size_t len)
+ {
++	if (spi_nor_protocol_is_dtr(nor->reg_proto))
++		return -ENOTSUPP;
++
+ 	return nor->controller_ops->write_reg(nor, opcode, buf, len);
+ }
+ 
+ static int spi_nor_controller_ops_erase(struct spi_nor *nor, loff_t offs)
+ {
++	if (spi_nor_protocol_is_dtr(nor->write_proto))
++		return -ENOTSUPP;
++
+ 	return nor->controller_ops->erase(nor, offs);
+ }
+ 
+@@ -121,14 +200,12 @@ static ssize_t spi_nor_spimem_read_data(struct spi_nor *nor, loff_t from,
+ 	ssize_t nbytes;
+ 	int error;
+ 
+-	/* get transfer protocols. */
+-	op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->read_proto);
+-	op.addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->read_proto);
+-	op.dummy.buswidth = op.addr.buswidth;
+-	op.data.buswidth = spi_nor_get_protocol_data_nbits(nor->read_proto);
++	spi_nor_spimem_setup_op(nor, &op, nor->read_proto);
+ 
+ 	/* convert the dummy cycles to the number of bytes */
+ 	op.dummy.nbytes = (nor->read_dummy * op.dummy.buswidth) / 8;
++	if (spi_nor_protocol_is_dtr(nor->read_proto))
++		op.dummy.nbytes *= 2;
+ 
+ 	usebouncebuf = spi_nor_spimem_bounce(nor, &op);
+ 
+@@ -186,13 +263,11 @@ static ssize_t spi_nor_spimem_write_data(struct spi_nor *nor, loff_t to,
+ 	ssize_t nbytes;
+ 	int error;
+ 
+-	op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->write_proto);
+-	op.addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->write_proto);
+-	op.data.buswidth = spi_nor_get_protocol_data_nbits(nor->write_proto);
+-
+ 	if (nor->program_opcode == SPINOR_OP_AAI_WP && nor->sst_write_second)
+ 		op.addr.nbytes = 0;
+ 
++	spi_nor_spimem_setup_op(nor, &op, nor->write_proto);
++
+ 	if (spi_nor_spimem_bounce(nor, &op))
+ 		memcpy(nor->bouncebuf, buf, op.data.nbytes);
+ 
+@@ -244,6 +319,8 @@ int spi_nor_write_enable(struct spi_nor *nor)
+ 				   SPI_MEM_OP_NO_DUMMY,
+ 				   SPI_MEM_OP_NO_DATA);
+ 
++		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else
+ 		ret = spi_nor_write_reg(nor, SPINOR_OP_WREN, NULL, 0);
+@@ -271,6 +348,8 @@ int spi_nor_write_disable(struct spi_nor *nor)
+ 				   SPI_MEM_OP_NO_DUMMY,
+ 				   SPI_MEM_OP_NO_DATA);
+ 
++		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else
+ 		ret = spi_nor_write_reg(nor, SPINOR_OP_WRDI, NULL, 0);
+@@ -300,6 +379,8 @@ static int spi_nor_read_sr(struct spi_nor *nor, u8 *sr)
+ 				   SPI_MEM_OP_NO_DUMMY,
+ 				   SPI_MEM_OP_DATA_IN(1, sr, 1));
+ 
++		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else
+ 		ret = spi_nor_read_reg(nor, SPINOR_OP_RDSR, sr, 1);
+@@ -329,6 +410,8 @@ static int spi_nor_read_fsr(struct spi_nor *nor, u8 *fsr)
+ 				   SPI_MEM_OP_NO_DUMMY,
+ 				   SPI_MEM_OP_DATA_IN(1, fsr, 1));
+ 
++		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else
+ 		ret = spi_nor_read_reg(nor, SPINOR_OP_RDFSR, fsr, 1);
+@@ -359,6 +442,8 @@ static int spi_nor_read_cr(struct spi_nor *nor, u8 *cr)
+ 				   SPI_MEM_OP_NO_DUMMY,
+ 				   SPI_MEM_OP_DATA_IN(1, cr, 1));
+ 
++		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else
+ 		ret = spi_nor_read_reg(nor, SPINOR_OP_RDCR, cr, 1);
+@@ -391,6 +476,8 @@ int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+ 				  SPI_MEM_OP_NO_DUMMY,
+ 				  SPI_MEM_OP_NO_DATA);
+ 
++		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else
+ 		ret = spi_nor_write_reg(nor,
+@@ -426,6 +513,8 @@ static int spansion_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+ 				   SPI_MEM_OP_NO_DUMMY,
+ 				   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 1));
+ 
++		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else
+ 		ret = spi_nor_write_reg(nor, SPINOR_OP_BRWR, nor->bouncebuf, 1);
+@@ -456,6 +545,8 @@ int spi_nor_write_ear(struct spi_nor *nor, u8 ear)
+ 				   SPI_MEM_OP_NO_DUMMY,
+ 				   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 1));
+ 
++		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else
+ 		ret = spi_nor_write_reg(nor, SPINOR_OP_WREAR, nor->bouncebuf, 1);
+@@ -485,6 +576,8 @@ int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr)
+ 				   SPI_MEM_OP_NO_DUMMY,
+ 				   SPI_MEM_OP_DATA_IN(1, sr, 1));
+ 
++		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else
+ 		ret = spi_nor_read_reg(nor, SPINOR_OP_XRDSR, sr, 1);
+@@ -528,6 +621,8 @@ static void spi_nor_clear_sr(struct spi_nor *nor)
+ 				   SPI_MEM_OP_NO_DUMMY,
+ 				   SPI_MEM_OP_NO_DATA);
+ 
++		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else
+ 		ret = spi_nor_write_reg(nor, SPINOR_OP_CLSR, NULL, 0);
+@@ -590,6 +685,8 @@ static void spi_nor_clear_fsr(struct spi_nor *nor)
+ 				   SPI_MEM_OP_NO_DUMMY,
+ 				   SPI_MEM_OP_NO_DATA);
+ 
++		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else
+ 		ret = spi_nor_write_reg(nor, SPINOR_OP_CLFSR, NULL, 0);
+@@ -732,6 +829,8 @@ static int spi_nor_write_sr(struct spi_nor *nor, const u8 *sr, size_t len)
+ 				   SPI_MEM_OP_NO_DUMMY,
+ 				   SPI_MEM_OP_DATA_OUT(len, sr, 1));
+ 
++		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else
+ 		ret = spi_nor_write_reg(nor, SPINOR_OP_WRSR, sr, len);
+@@ -932,6 +1031,8 @@ static int spi_nor_write_sr2(struct spi_nor *nor, const u8 *sr2)
+ 				   SPI_MEM_OP_NO_DUMMY,
+ 				   SPI_MEM_OP_DATA_OUT(1, sr2, 1));
+ 
++		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else
+ 		ret = spi_nor_write_reg(nor, SPINOR_OP_WRSR2, sr2, 1);
+@@ -964,6 +1065,8 @@ static int spi_nor_read_sr2(struct spi_nor *nor, u8 *sr2)
+ 				   SPI_MEM_OP_NO_DUMMY,
+ 				   SPI_MEM_OP_DATA_IN(1, sr2, 1));
+ 
++		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else
+ 		ret = spi_nor_read_reg(nor, SPINOR_OP_RDSR2, sr2, 1);
+@@ -993,6 +1096,8 @@ static int spi_nor_erase_chip(struct spi_nor *nor)
+ 				   SPI_MEM_OP_NO_DUMMY,
+ 				   SPI_MEM_OP_NO_DATA);
+ 
++		spi_nor_spimem_setup_op(nor, &op, nor->write_proto);
++
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else
+ 		ret = spi_nor_write_reg(nor, SPINOR_OP_CHIP_ERASE, NULL, 0);
+@@ -1133,6 +1238,8 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
+ 				   SPI_MEM_OP_NO_DUMMY,
+ 				   SPI_MEM_OP_NO_DATA);
+ 
++		spi_nor_spimem_setup_op(nor, &op, nor->write_proto);
++
+ 		return spi_mem_exec_op(nor->spimem, &op);
+ 	} else if (nor->controller_ops->erase) {
+ 		return spi_nor_controller_ops_erase(nor, addr);
+@@ -2258,6 +2365,7 @@ int spi_nor_hwcaps_read2cmd(u32 hwcaps)
+ 		{ SNOR_HWCAPS_READ_1_8_8,	SNOR_CMD_READ_1_8_8 },
+ 		{ SNOR_HWCAPS_READ_8_8_8,	SNOR_CMD_READ_8_8_8 },
+ 		{ SNOR_HWCAPS_READ_1_8_8_DTR,	SNOR_CMD_READ_1_8_8_DTR },
++		{ SNOR_HWCAPS_READ_8_8_8_DTR,	SNOR_CMD_READ_8_8_8_DTR },
+ 	};
+ 
+ 	return spi_nor_hwcaps2cmd(hwcaps, hwcaps_read2cmd,
+@@ -2274,6 +2382,7 @@ static int spi_nor_hwcaps_pp2cmd(u32 hwcaps)
+ 		{ SNOR_HWCAPS_PP_1_1_8,		SNOR_CMD_PP_1_1_8 },
+ 		{ SNOR_HWCAPS_PP_1_8_8,		SNOR_CMD_PP_1_8_8 },
+ 		{ SNOR_HWCAPS_PP_8_8_8,		SNOR_CMD_PP_8_8_8 },
++		{ SNOR_HWCAPS_PP_8_8_8_DTR,	SNOR_CMD_PP_8_8_8_DTR },
+ 	};
+ 
+ 	return spi_nor_hwcaps2cmd(hwcaps, hwcaps_pp2cmd,
+@@ -2324,15 +2433,15 @@ static int spi_nor_spimem_check_readop(struct spi_nor *nor,
+ {
+ 	struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(read->opcode, 1),
+ 					  SPI_MEM_OP_ADDR(3, 0, 1),
+-					  SPI_MEM_OP_DUMMY(0, 1),
+-					  SPI_MEM_OP_DATA_IN(0, NULL, 1));
++					  SPI_MEM_OP_DUMMY(1, 1),
++					  SPI_MEM_OP_DATA_IN(1, NULL, 1));
+ 
+-	op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(read->proto);
+-	op.addr.buswidth = spi_nor_get_protocol_addr_nbits(read->proto);
+-	op.data.buswidth = spi_nor_get_protocol_data_nbits(read->proto);
+-	op.dummy.buswidth = op.addr.buswidth;
+-	op.dummy.nbytes = (read->num_mode_clocks + read->num_wait_states) *
+-			  op.dummy.buswidth / 8;
++	spi_nor_spimem_setup_op(nor, &op, read->proto);
++
++	/* convert the dummy cycles to the number of bytes */
++	op.dummy.nbytes = (nor->read_dummy * op.dummy.buswidth) / 8;
++	if (spi_nor_protocol_is_dtr(nor->read_proto))
++		op.dummy.nbytes *= 2;
+ 
+ 	return spi_nor_spimem_check_op(nor, &op);
+ }
+@@ -2351,11 +2460,9 @@ static int spi_nor_spimem_check_pp(struct spi_nor *nor,
+ 	struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(pp->opcode, 1),
+ 					  SPI_MEM_OP_ADDR(3, 0, 1),
+ 					  SPI_MEM_OP_NO_DUMMY,
+-					  SPI_MEM_OP_DATA_OUT(0, NULL, 1));
++					  SPI_MEM_OP_DATA_OUT(1, NULL, 1));
+ 
+-	op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(pp->proto);
+-	op.addr.buswidth = spi_nor_get_protocol_addr_nbits(pp->proto);
+-	op.data.buswidth = spi_nor_get_protocol_data_nbits(pp->proto);
++	spi_nor_spimem_setup_op(nor, &op, pp->proto);
+ 
+ 	return spi_nor_spimem_check_op(nor, &op);
+ }
+@@ -2373,12 +2480,16 @@ spi_nor_spimem_adjust_hwcaps(struct spi_nor *nor, u32 *hwcaps)
+ 	struct spi_nor_flash_parameter *params = nor->params;
+ 	unsigned int cap;
+ 
+-	/* DTR modes are not supported yet, mask them all. */
+-	*hwcaps &= ~SNOR_HWCAPS_DTR;
+-
+ 	/* X-X-X modes are not supported yet, mask them all. */
+ 	*hwcaps &= ~SNOR_HWCAPS_X_X_X;
+ 
++	/*
++	 * If the reset line is broken, we do not want to enter a stateful
++	 * mode.
++	 */
++	if (nor->flags & SNOR_F_BROKEN_RESET)
++		*hwcaps &= ~(SNOR_HWCAPS_X_X_X | SNOR_HWCAPS_X_X_X_DTR);
++
+ 	for (cap = 0; cap < sizeof(*hwcaps) * BITS_PER_BYTE; cap++) {
+ 		int rdidx, ppidx;
+ 
+@@ -2633,7 +2744,7 @@ static int spi_nor_default_setup(struct spi_nor *nor,
+ 		 * controller directly implements the spi_nor interface.
+ 		 * Yet another reason to switch to spi-mem.
+ 		 */
+-		ignored_mask = SNOR_HWCAPS_X_X_X;
++		ignored_mask = SNOR_HWCAPS_X_X_X | SNOR_HWCAPS_X_X_X_DTR;
+ 		if (shared_mask & ignored_mask) {
+ 			dev_dbg(nor->dev,
+ 				"SPI n-n-n protocols are not supported.\n");
+@@ -2779,11 +2890,28 @@ static void spi_nor_info_init_params(struct spi_nor *nor)
+ 					  SNOR_PROTO_1_1_8);
+ 	}
+ 
++	if (info->flags & SPI_NOR_OCTAL_DTR_READ) {
++		params->hwcaps.mask |= SNOR_HWCAPS_READ_8_8_8_DTR;
++		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_8_8_8_DTR],
++					  0, 20, SPINOR_OP_READ_FAST,
++					  SNOR_PROTO_8_8_8_DTR);
 +	}
 +
- 	err = spi_nor_quad_enable(nor, true);
- 	if (err) {
- 		dev_dbg(nor->dev, "quad mode not supported\n");
+ 	/* Page Program settings. */
+ 	params->hwcaps.mask |= SNOR_HWCAPS_PP;
+ 	spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP],
+ 				SPINOR_OP_PP, SNOR_PROTO_1_1_1);
+ 
++	if (info->flags & SPI_NOR_OCTAL_DTR_PP) {
++		params->hwcaps.mask |= SNOR_HWCAPS_PP_8_8_8_DTR;
++		/*
++		 * Since xSPI Page Program opcode is backward compatible with
++		 * Legacy SPI, use Legacy SPI opcode there as well.
++		 */
++		spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP_8_8_8_DTR],
++					SPINOR_OP_PP, SNOR_PROTO_8_8_8_DTR);
++	}
++
+ 	/*
+ 	 * Sector Erase settings. Sort Erase Types in ascending order, with the
+ 	 * smallest erase size starting at BIT(0).
+@@ -2891,7 +3019,8 @@ static int spi_nor_init_params(struct spi_nor *nor)
+ 
+ 	spi_nor_manufacturer_init_params(nor);
+ 
+-	if ((nor->info->flags & (SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)) &&
++	if ((nor->info->flags & (SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++				 SPI_NOR_OCTAL_READ | SPI_NOR_OCTAL_DTR_READ)) &&
+ 	    !(nor->info->flags & SPI_NOR_SKIP_SFDP))
+ 		spi_nor_sfdp_init_params(nor);
+ 
+@@ -2954,7 +3083,9 @@ static int spi_nor_init(struct spi_nor *nor)
+ 		return err;
+ 	}
+ 
+-	if (nor->addr_width == 4 && !(nor->flags & SNOR_F_4B_OPCODES)) {
++	if (nor->addr_width == 4 &&
++	    !spi_nor_protocol_is_dtr(nor->read_proto) &&
++	    !(nor->flags & SNOR_F_4B_OPCODES)) {
+ 		/*
+ 		 * If the RESET# pin isn't hooked up properly, or the system
+ 		 * otherwise doesn't perform a reset command in the boot
+@@ -3013,7 +3144,10 @@ static const struct flash_info *spi_nor_match_id(struct spi_nor *nor,
+ 
+ static int spi_nor_set_addr_width(struct spi_nor *nor)
+ {
+-	if (nor->addr_width) {
++	if (spi_nor_protocol_is_dtr(nor->read_proto)) {
++		 /* Always use 4-byte addresses in DTR mode. */
++		nor->addr_width = 4;
++	} else if (nor->addr_width) {
+ 		/* already configured from SFDP */
+ 	} else if (nor->info->addr_width) {
+ 		nor->addr_width = nor->info->addr_width;
+@@ -3252,14 +3386,19 @@ static int spi_nor_create_read_dirmap(struct spi_nor *nor)
+ 	};
+ 	struct spi_mem_op *op = &info.op_tmpl;
+ 
+-	/* get transfer protocols. */
+-	op->cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->read_proto);
+-	op->addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->read_proto);
+-	op->dummy.buswidth = op->addr.buswidth;
+-	op->data.buswidth = spi_nor_get_protocol_data_nbits(nor->read_proto);
++	spi_nor_spimem_setup_op(nor, op, nor->read_proto);
+ 
+ 	/* convert the dummy cycles to the number of bytes */
+ 	op->dummy.nbytes = (nor->read_dummy * op->dummy.buswidth) / 8;
++	if (spi_nor_protocol_is_dtr(nor->read_proto))
++		op->dummy.nbytes *= 2;
++
++	/*
++	 * Since spi_nor_spimem_setup_op() only sets buswidth when the number
++	 * of data bytes is non-zero, the data buswidth won't be set here. So,
++	 * do it explicitly.
++	 */
++	op->data.buswidth = spi_nor_get_protocol_data_nbits(nor->read_proto);
+ 
+ 	nor->dirmap.rdesc = devm_spi_mem_dirmap_create(nor->dev, nor->spimem,
+ 						       &info);
+@@ -3278,15 +3417,18 @@ static int spi_nor_create_write_dirmap(struct spi_nor *nor)
+ 	};
+ 	struct spi_mem_op *op = &info.op_tmpl;
+ 
+-	/* get transfer protocols. */
+-	op->cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->write_proto);
+-	op->addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->write_proto);
+-	op->dummy.buswidth = op->addr.buswidth;
+-	op->data.buswidth = spi_nor_get_protocol_data_nbits(nor->write_proto);
+-
+ 	if (nor->program_opcode == SPINOR_OP_AAI_WP && nor->sst_write_second)
+ 		op->addr.nbytes = 0;
+ 
++	spi_nor_spimem_setup_op(nor, op, nor->write_proto);
++
++	/*
++	 * Since spi_nor_spimem_setup_op() only sets buswidth when the number
++	 * of data bytes is non-zero, the data buswidth won't be set here. So,
++	 * do it explicitly.
++	 */
++	op->data.buswidth = spi_nor_get_protocol_data_nbits(nor->write_proto);
++
+ 	nor->dirmap.wdesc = devm_spi_mem_dirmap_create(nor->dev, nor->spimem,
+ 						       &info);
+ 	return PTR_ERR_OR_ZERO(nor->dirmap.wdesc);
 diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 27e00a9f5950..17dbbb3e4796 100644
+index 95aa32f3ceb1..125d27b0a72f 100644
 --- a/drivers/mtd/spi-nor/core.h
 +++ b/drivers/mtd/spi-nor/core.h
-@@ -203,6 +203,7 @@ struct spi_nor_locking_ops {
-  *                      higher index in the array, the higher priority.
-  * @erase_map:		the erase map parsed from the SFDP Sector Map Parameter
-  *                      Table.
-+ * @octal_dtr_enable:	enables SPI NOR octal DTR mode.
-  * @quad_enable:	enables/disables SPI NOR Quad mode.
-  * @set_4byte_addr_mode: puts the SPI NOR in 4 byte addressing mode.
-  * @convert_addr:	converts an absolute address into something the flash
-@@ -226,6 +227,7 @@ struct spi_nor_flash_parameter {
+@@ -62,6 +62,7 @@ enum spi_nor_read_command_index {
+ 	SNOR_CMD_READ_1_8_8,
+ 	SNOR_CMD_READ_8_8_8,
+ 	SNOR_CMD_READ_1_8_8_DTR,
++	SNOR_CMD_READ_8_8_8_DTR,
  
- 	struct spi_nor_erase_map        erase_map;
+ 	SNOR_CMD_READ_MAX
+ };
+@@ -78,6 +79,7 @@ enum spi_nor_pp_command_index {
+ 	SNOR_CMD_PP_1_1_8,
+ 	SNOR_CMD_PP_1_8_8,
+ 	SNOR_CMD_PP_8_8_8,
++	SNOR_CMD_PP_8_8_8_DTR,
  
-+	int (*octal_dtr_enable)(struct spi_nor *nor, bool enable);
- 	int (*quad_enable)(struct spi_nor *nor, bool enable);
- 	int (*set_4byte_addr_mode)(struct spi_nor *nor, bool enable);
- 	u32 (*convert_addr)(struct spi_nor *nor, u32 addr);
+ 	SNOR_CMD_PP_MAX
+ };
+@@ -311,6 +313,8 @@ struct flash_info {
+ 					 * BP3 is bit 6 of status register.
+ 					 * Must be used with SPI_NOR_4BIT_BP.
+ 					 */
++#define SPI_NOR_OCTAL_DTR_READ	BIT(19) /* Flash supports octal DTR Read. */
++#define SPI_NOR_OCTAL_DTR_PP	BIT(20) /* Flash supports Octal DTR Page Program */
+ 
+ 	/* Part specific fixup hooks. */
+ 	const struct spi_nor_fixups *fixups;
+@@ -399,6 +403,9 @@ extern const struct spi_nor_manufacturer spi_nor_winbond;
+ extern const struct spi_nor_manufacturer spi_nor_xilinx;
+ extern const struct spi_nor_manufacturer spi_nor_xmc;
+ 
++void spi_nor_spimem_setup_op(const struct spi_nor *nor,
++			     struct spi_mem_op *op,
++			     const enum spi_nor_protocol proto);
+ int spi_nor_write_enable(struct spi_nor *nor);
+ int spi_nor_write_disable(struct spi_nor *nor);
+ int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable);
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index e2a43d39eb5f..21fa9ab78eae 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -1047,9 +1047,16 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+ 	}
+ 
+ 	/* 4BAIT is the only SFDP table that indicates page program support. */
+-	if (pp_hwcaps & SNOR_HWCAPS_PP)
++	if (pp_hwcaps & SNOR_HWCAPS_PP) {
+ 		spi_nor_set_pp_settings(&params_pp[SNOR_CMD_PP],
+ 					SPINOR_OP_PP_4B, SNOR_PROTO_1_1_1);
++		/*
++		 * Since xSPI Page Program opcode is backward compatible with
++		 * Legacy SPI, use Legacy SPI opcode there as well.
++		 */
++		spi_nor_set_pp_settings(&params_pp[SNOR_CMD_PP_8_8_8_DTR],
++					SPINOR_OP_PP_4B, SNOR_PROTO_8_8_8_DTR);
++	}
+ 	if (pp_hwcaps & SNOR_HWCAPS_PP_1_1_4)
+ 		spi_nor_set_pp_settings(&params_pp[SNOR_CMD_PP_1_1_4],
+ 					SPINOR_OP_PP_1_1_4_4B,
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index 60bac2c0ec45..cd549042c53d 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -182,6 +182,7 @@ enum spi_nor_protocol {
+ 	SNOR_PROTO_1_2_2_DTR = SNOR_PROTO_DTR(1, 2, 2),
+ 	SNOR_PROTO_1_4_4_DTR = SNOR_PROTO_DTR(1, 4, 4),
+ 	SNOR_PROTO_1_8_8_DTR = SNOR_PROTO_DTR(1, 8, 8),
++	SNOR_PROTO_8_8_8_DTR = SNOR_PROTO_DTR(8, 8, 8),
+ };
+ 
+ static inline bool spi_nor_protocol_is_dtr(enum spi_nor_protocol proto)
+@@ -228,7 +229,7 @@ struct spi_nor_hwcaps {
+  * then Quad SPI protocols before Dual SPI protocols, Fast Read and lastly
+  * (Slow) Read.
+  */
+-#define SNOR_HWCAPS_READ_MASK		GENMASK(14, 0)
++#define SNOR_HWCAPS_READ_MASK		GENMASK(15, 0)
+ #define SNOR_HWCAPS_READ		BIT(0)
+ #define SNOR_HWCAPS_READ_FAST		BIT(1)
+ #define SNOR_HWCAPS_READ_1_1_1_DTR	BIT(2)
+@@ -245,11 +246,12 @@ struct spi_nor_hwcaps {
+ #define SNOR_HWCAPS_READ_4_4_4		BIT(9)
+ #define SNOR_HWCAPS_READ_1_4_4_DTR	BIT(10)
+ 
+-#define SNOR_HWCAPS_READ_OCTAL		GENMASK(14, 11)
++#define SNOR_HWCAPS_READ_OCTAL		GENMASK(15, 11)
+ #define SNOR_HWCAPS_READ_1_1_8		BIT(11)
+ #define SNOR_HWCAPS_READ_1_8_8		BIT(12)
+ #define SNOR_HWCAPS_READ_8_8_8		BIT(13)
+ #define SNOR_HWCAPS_READ_1_8_8_DTR	BIT(14)
++#define SNOR_HWCAPS_READ_8_8_8_DTR	BIT(15)
+ 
+ /*
+  * Page Program capabilities.
+@@ -260,18 +262,19 @@ struct spi_nor_hwcaps {
+  * JEDEC/SFDP standard to define them. Also at this moment no SPI flash memory
+  * implements such commands.
+  */
+-#define SNOR_HWCAPS_PP_MASK	GENMASK(22, 16)
+-#define SNOR_HWCAPS_PP		BIT(16)
++#define SNOR_HWCAPS_PP_MASK		GENMASK(23, 16)
++#define SNOR_HWCAPS_PP			BIT(16)
+ 
+-#define SNOR_HWCAPS_PP_QUAD	GENMASK(19, 17)
+-#define SNOR_HWCAPS_PP_1_1_4	BIT(17)
+-#define SNOR_HWCAPS_PP_1_4_4	BIT(18)
+-#define SNOR_HWCAPS_PP_4_4_4	BIT(19)
++#define SNOR_HWCAPS_PP_QUAD		GENMASK(19, 17)
++#define SNOR_HWCAPS_PP_1_1_4		BIT(17)
++#define SNOR_HWCAPS_PP_1_4_4		BIT(18)
++#define SNOR_HWCAPS_PP_4_4_4		BIT(19)
+ 
+-#define SNOR_HWCAPS_PP_OCTAL	GENMASK(22, 20)
+-#define SNOR_HWCAPS_PP_1_1_8	BIT(20)
+-#define SNOR_HWCAPS_PP_1_8_8	BIT(21)
+-#define SNOR_HWCAPS_PP_8_8_8	BIT(22)
++#define SNOR_HWCAPS_PP_OCTAL		GENMASK(23, 20)
++#define SNOR_HWCAPS_PP_1_1_8		BIT(20)
++#define SNOR_HWCAPS_PP_1_8_8		BIT(21)
++#define SNOR_HWCAPS_PP_8_8_8		BIT(22)
++#define SNOR_HWCAPS_PP_8_8_8_DTR	BIT(23)
+ 
+ #define SNOR_HWCAPS_X_X_X	(SNOR_HWCAPS_READ_2_2_2 |	\
+ 				 SNOR_HWCAPS_READ_4_4_4 |	\
+@@ -279,10 +282,14 @@ struct spi_nor_hwcaps {
+ 				 SNOR_HWCAPS_PP_4_4_4 |		\
+ 				 SNOR_HWCAPS_PP_8_8_8)
+ 
++#define SNOR_HWCAPS_X_X_X_DTR	(SNOR_HWCAPS_READ_8_8_8_DTR |	\
++				 SNOR_HWCAPS_PP_8_8_8_DTR)
++
+ #define SNOR_HWCAPS_DTR		(SNOR_HWCAPS_READ_1_1_1_DTR |	\
+ 				 SNOR_HWCAPS_READ_1_2_2_DTR |	\
+ 				 SNOR_HWCAPS_READ_1_4_4_DTR |	\
+-				 SNOR_HWCAPS_READ_1_8_8_DTR)
++				 SNOR_HWCAPS_READ_1_8_8_DTR |	\
++				 SNOR_HWCAPS_READ_8_8_8_DTR)
+ 
+ #define SNOR_HWCAPS_ALL		(SNOR_HWCAPS_READ_MASK |	\
+ 				 SNOR_HWCAPS_PP_MASK)
+@@ -318,6 +325,22 @@ struct spi_nor_controller_ops {
+ 	int (*erase)(struct spi_nor *nor, loff_t offs);
+ };
+ 
++/**
++ * enum spi_nor_cmd_ext - describes the command opcode extension in DTR mode
++ * @SPI_NOR_EXT_NONE: no extension. This is the default, and is used in Legacy
++ *		      SPI mode
++ * @SPI_NOR_EXT_REPEAT: the extension is same as the opcode
++ * @SPI_NOR_EXT_INVERT: the extension is the bitwise inverse of the opcode
++ * @SPI_NOR_EXT_HEX: the extension is any hex value. The command and opcode
++ *		     combine to form a 16-bit opcode.
++ */
++enum spi_nor_cmd_ext {
++	SPI_NOR_EXT_NONE = 0,
++	SPI_NOR_EXT_REPEAT,
++	SPI_NOR_EXT_INVERT,
++	SPI_NOR_EXT_HEX,
++};
++
+ /*
+  * Forward declarations that are used internally by the core and manufacturer
+  * drivers.
+@@ -345,6 +368,7 @@ struct spi_nor_flash_parameter;
+  * @program_opcode:	the program opcode
+  * @sst_write_second:	used by the SST write operation
+  * @flags:		flag options for the current SPI NOR (SNOR_F_*)
++ * @cmd_ext_type:	the command opcode extension type for DTR mode.
+  * @read_proto:		the SPI protocol for read operations
+  * @write_proto:	the SPI protocol for write operations
+  * @reg_proto:		the SPI protocol for read_reg/write_reg/erase operations
+@@ -376,6 +400,7 @@ struct spi_nor {
+ 	enum spi_nor_protocol	reg_proto;
+ 	bool			sst_write_second;
+ 	u32			flags;
++	enum spi_nor_cmd_ext	cmd_ext_type;
+ 
+ 	const struct spi_nor_controller_ops *controller_ops;
+ 
 -- 
 2.25.0
 
