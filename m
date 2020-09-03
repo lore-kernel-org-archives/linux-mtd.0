@@ -1,85 +1,69 @@
-Return-Path: <SRS0=vQrn=CL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=UES7=CM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3102FC433E2
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Sep 2020 23:02:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A7B2C433E2
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Sep 2020 03:04:37 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E45BC20767
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Sep 2020 23:02:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 661CE20773
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Sep 2020 03:04:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Vf8XKpQW";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ZHQCfge9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E45BC20767
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PuqmNuEq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 661CE20773
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=hisilicon.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=ns3NHOCI9BDmszPvDnRfalKl5y9/CdyB4gczvcXfOGA=; b=Vf8XKpQWAtGpruAKdet6qVUzu7
-	oKmF/PE15z/3RFk5dUdglhLpU3KZZW+/Jcd5GP0byMsnGb8xjfnsXO8g9RfffYaodz+bMINdDUN4q
-	BIClqKJfzWx9P3tvgx9P4OoahV4dH080HvvOfUXq7Thw/TvLEEvRc7ebqIsnFnnt51dAzaqejGdlZ
-	pWmchPRkqLl9mf6+ANZGIy7C34SIHlcuF/X9q3lL9LFhJ72ZKSE7KfGCiqszqiu2uxaKHi1N+PF8d
-	rP2bgaHsC3aXT8XCsnGuhgf/WHCEUPJF4GOem3KKiIU/912z2/1RPrCmjZYVry5OQyBJSgBTkB6/I
-	/GPUKUVA==;
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=UafWZdvx7wjOZ4RCkuyjL0lpGiK4/CDdjIn6a86ygPg=; b=PuqmNuEqXoCZBa3Np83rv8ZU3
+	NLq46NGM93GYfQIWDvtJjy5vstnu6u8K7ZTbYbQfb4PkIHusFTjOeiVflQklgmpeBaRILTWICSiUI
+	SnVdtCJfbBsMn2W/VB+Vrel8Uk9Z+CEv2s8iJD8HiaalvlNL/UmdWwpm6Cb0qy+1sCut+r06gSTSy
+	B/iih0CRaSgBwF8YS6y1MQpQ+eAd5ICRWQ6DflbLnr1vC/jerd7cJAM+MH6vBYbq2AJiMvgxTwgtZ
+	yVo394uZBqWj2o0kbQ/6EenvfiQQ4r99uVWXNML+IE2o395LHxQ9/gLKGtbEtf+H1bEj8TD23sTMj
+	9YvmedrCg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kDbkg-0000QE-19; Wed, 02 Sep 2020 23:01:14 +0000
-Received: from mail-pj1-x1042.google.com ([2607:f8b0:4864:20::1042])
+	id 1kDfX5-0002ml-Cl; Thu, 03 Sep 2020 03:03:27 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191] helo=huawei.com)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kDbkd-0000PG-Rk
- for linux-mtd@lists.infradead.org; Wed, 02 Sep 2020 23:01:12 +0000
-Received: by mail-pj1-x1042.google.com with SMTP id k15so515861pji.3
- for <linux-mtd@lists.infradead.org>; Wed, 02 Sep 2020 16:01:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=rckbD9u1Jvs+TO4H1QTBgAqxZmJHaw52NI12SCf1ONE=;
- b=ZHQCfge9W0rq1an4zjkDijL2d94hOEcsp54D7D1XkAj+MpNlBj3TQqpLnSitIdXXv1
- hdS7rRtTpLagXWGJvssRy511yVf2YiGxvh3k6UnOGOr72OCURZmG9PDAxHiOkc3L/FaV
- cYE+BvmQntdfWGfxc3njqOhjaxw4yxOaPLZIQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=rckbD9u1Jvs+TO4H1QTBgAqxZmJHaw52NI12SCf1ONE=;
- b=AFmCQHGfcf+bXAaEn6U2oJ7/apB/Jct8HKLdfACeSEpASTQLp8v6XU8HltWP/DlQOm
- EGE0prUJ6SXf/2y5XQ2/43AyRMSBtlsaM6gHiEeWvqxaqT9FslX+k0CRw6wxrl9kW3cZ
- 2zdbOiX/FLOIPFrttmtA2rqZqccr4Az1eKWTBD6qwPgED328NbKgIImiE0to17lKRCYS
- LgMhWkpI8NCzpK1qSmIkGDvL4AP49jNYEBWLObDa+mEikAfCCwYCEhMmpBf/AqXzyQVt
- 3JpByPYIRKN88nEvRp066Fzv49CkH1n07FCLHotgmZ4zR7PTPfUCH1iyr8us79SQ8D+U
- w3Zg==
-X-Gm-Message-State: AOAM530h3p0/IECy1NmOlybkkRnRFcw0eYRdOXSXHP8GZbMyo0enUJ6v
- /Qp2f7rVf93SmH5LESJO96kG3g==
-X-Google-Smtp-Source: ABdhPJyszZg/1OfgGHuppP5KPcJIiYoOULZVJ8PzQ7DlaVyEphP0+9pGBgoilk2OjPsVI+o7GUdnrA==
-X-Received: by 2002:a17:90b:360a:: with SMTP id
- ml10mr44063pjb.198.1599087667564; 
- Wed, 02 Sep 2020 16:01:07 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com
- ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
- by smtp.gmail.com with ESMTPSA id z1sm419825pjn.34.2020.09.02.16.01.06
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 02 Sep 2020 16:01:06 -0700 (PDT)
-From: Douglas Anderson <dianders@chromium.org>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH] mtd: spi-nor: Prefer asynchronous probe
-Date: Wed,  2 Sep 2020 16:00:40 -0700
-Message-Id: <20200902160002.1.I658d1c0db9adfeb9a59bc55e96a19e192c959e55@changeid>
-X-Mailer: git-send-email 2.28.0.402.g5ffc5be6b7-goog
+ id 1kDfX2-0002lS-4U
+ for linux-mtd@lists.infradead.org; Thu, 03 Sep 2020 03:03:25 +0000
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+ by Forcepoint Email with ESMTP id A5A2626F663645869677;
+ Thu,  3 Sep 2020 11:03:15 +0800 (CST)
+Received: from [10.65.58.147] (10.65.58.147) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0;
+ Thu, 3 Sep 2020 11:03:06 +0800
+Subject: Re: [PATCH 2/2] mtd: spi-nor: Disable the flash quad mode in
+ spi_nor_restore()
+To: =?UTF-8?Q?Matthias_Wei=c3=9fer?= <m.weisser.m@gmail.com>
+References: <1592312547-19239-1-git-send-email-yangyicong@hisilicon.com>
+ <1592312547-19239-3-git-send-email-yangyicong@hisilicon.com>
+ <CAO8h3eFLVLRmw7u+rurKsg7=Nh2q-HVq-HgVXig8gf5Dffk8MA@mail.gmail.com>
+ <30ca8ffc-74a7-92b0-5563-286967d23dc9@hisilicon.com>
+ <CAO8h3eE2ZzffbAC_pk+uDwxMtmPWbkHCXnxvXz-hLujueH3jFQ@mail.gmail.com>
+From: Yicong Yang <yangyicong@hisilicon.com>
+Message-ID: <47b73fec-7af2-98f8-776e-f9a8660bd219@hisilicon.com>
+Date: Thu, 3 Sep 2020 11:03:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
+In-Reply-To: <CAO8h3eE2ZzffbAC_pk+uDwxMtmPWbkHCXnxvXz-hLujueH3jFQ@mail.gmail.com>
+X-Originating-IP: [10.65.58.147]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200902_190111_907468_746B1728 
-X-CRM114-Status: GOOD (  16.22  )
+X-CRM114-CacheID: sfid-20200902_230324_457729_D2CC941E 
+X-CRM114-Status: GOOD (  14.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,55 +75,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- Douglas Anderson <dianders@chromium.org>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: vigneshr@ti.com, tudor.ambarus@microchip.com, richard@nod.at,
+ me@yadavpratyush.com, john.garry@huawei.com, linuxarm@huawei.com,
+ linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
+ alexander.sverdlin@nokia.com, Pratyush Yadav <p.yadav@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On my system the spi_nor_probe() took ~6 ms at bootup.  That's not a
-lot, but every little bit adds up to a slow bootup.  While we can get
-this out of the boot path by making it a module, there are times where
-it is convenient (or even required) for this to be builtin the kernel.
-Let's set that we prefer async probe so that we don't block other
-drivers from probing while we are probing.
-
-This is a tiny little change that is almost guaranteed to be safe for
-anything that is able to run as a module, which SPI_NOR is.
-Specifically modules are already probed asynchronously.  Also: since
-other things in the system may have enabled asynchronous probe the
-system may already be doing other things during our probe.
-
-There is a small possibility that some other driver that was a client
-of SPI_NOR didn't handle -EPROBE_DEFER and was relying on probe
-ordering and only worked when the SPI_NOR and the SPI bus were
-builtin.  In that case the other driver has a bug that's waiting to
-hit and the other driver should be fixed.
-
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-
- drivers/mtd/spi-nor/core.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 65eff4ce6ab1..756da93f0f16 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -3470,6 +3470,7 @@ static struct spi_mem_driver spi_nor_driver = {
- 		.driver = {
- 			.name = "spi-nor",
- 			.of_match_table = spi_nor_of_table,
-+			.probe_type = PROBE_PREFER_ASYNCHRONOUS,
- 		},
- 		.id_table = spi_nor_dev_ids,
- 	},
--- 
-2.28.0.402.g5ffc5be6b7-goog
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWF0dGhpYXMsCgoKT24gMjAyMC85LzIgMjA6MTUsIE1hdHRoaWFzIFdlacOfZXIgd3JvdGU6
+Cj4gSGkgVmlnbmVzaAo+Cj4gQW0gRGkuLCAxLiBTZXB0LiAyMDIwIHVtIDE2OjIwIFVociBzY2hy
+aWViIFlpY29uZyBZYW5nCj4gPHlhbmd5aWNvbmdAaGlzaWxpY29uLmNvbT46Cj4+IEkndmUgdGVz
+dGVkIHRoZSBmb2xsb3dpbmcgcGF0Y2ggd2l0aCBzMjVmczEyOHMxLgo+PiBJIGxlZnQgdGhlIGZs
+YXNoIHF1YWQgZW5hYmxlZCBiZWZvcmUgbWFuYWdlZCBieSBzcGktbm9yIGRyaXZlciwKPj4gYW5k
+IGl0J2xsIHN0YXkgUUUgYWZ0ZXIgcmVtb3ZlZC4gU28gSSB0aGluayBpdCdsbCBhbHNvIGFkZHJl
+c3MgdGhlIGlzc3VlCj4+IG1lbnRpb25lZC4gUGxlYXNlIGhhdmUgYSB0ZXN0Lgo+IFRoYW5rcyBm
+b3IgdGhlIHBhdGNoLiBJIGNhbiBjb25maXJtIHRoYXQgY3VycmVudCA1LjktcmMzIGJyaWNrcyBt
+eSBoYXJkd2FyZQo+IGFuZCB5b3VyIHBhdGNoIG9uIHRvcCBvZiBpdCBmaXhlcyB0aGF0LiBUaGVy
+ZWZvcmUKPgo+IFRlc3RlZC1ieTogTWF0dGhpYXMgV2Vpc3NlciA8bS53ZWlzc2VyLm1AZ21haWwu
+Y29tPgo+Cj4gQnV0IEkgYW0gc3RpbGwgY29uY2VybmVkIGFib3V0IHdlYXJpbmcgb3V0IG5vbnZv
+bGF0aWxlIFFFIGJpdHMgKG5vdCBpbiBteQo+IGNhc2UsIGJ1dCB0aGVyZSBtYXkgYmUgb3RoZXJz
+KSB3aGljaCBtYXkgYWxzbyBicmljayBoYXJkd2FyZSBhZnRlciBhIGxvdCBvZgo+IGJvb3RzIChi
+eSBzZXQgYW5kIHJlc2V0IFFFIGJpdCBvbiBldmVyeSBib290KS4KPgo+IFNvLCBmcm9tIG15IGxp
+bWl0ZWQgcG9pbnQgb2YgdmlldywgeW91ciBwYXRjaCBmaXhlcyBteSBwcm9ibGVtIGJ1dCBvdmVy
+YWxsCj4gSSB0aGluayB0aGUgb3JpZ2luYWwgYXBwcm9hY2ggc2hvdWxkIGJlIHRob3VnaHQtb3V0
+IGEgYml0IG1vcmUuCgpUaGFua3MgZm9yIHRlc3RpbmcgdGhlIHBhdGNoLgoKVGhlIGRyaXZlciB3
+aWxsIHRyeSB0byBzZXQgdGhlIFFFIGJpdCB3aGVuIDEpIGluIC0+cXVhZF9lbmFibGUoKSBpZiBR
+RSBiaXQgaXMgbm90IHNldCBhbmQKMikgcHJldmlvdXNseSB3aXRob3V0IHRoaXMgcGF0Y2ggaW4g
+c3BpX25vcl9yZXN0b3JlKCkgdG8gdHJ5IHRvIGRpc2FibGUgdGhlIGZsYXNoIHF1YWQgbW9kZS4K
+CldpdGggdGhpcyBwYXRjaCwgaWYgdGhlIFFFIGJpdCBpcyBvcmlnaW5hbGx5IHNldCB0aGUgZHJp
+dmVyIHdpbGwgb25seSByZWFkIGFuZCByZWNvcmQgaXQgYW5kCndpbGwgbm90IGRpc2FibGUgdGhl
+IHF1YWQgbW9kZSBpbiBzcGlfbm9yX3Jlc3RvcmUoKS4gV2hhdCB0aGUgZHJpdmVyIHdpbGwgZG8g
+aXMgdG8gcmVhZAp0aGUgYml0LCB3aXRob3V0IHRyeWluZyB0byBzZXQgb3IgcmVzZXQgaXQuIFNv
+IEkgdGhpbmsgaXQgd2lsbCBub3Qgd2VhciBvdXQgdGhlIHRob3NlIG5vbnZvbGF0aWxlClFFIGJp
+dHMuCgpSZWdhcmRzLApZaWNvbmcKCgo+Cj4gUmVnYXJkcywKPiBNYXR0aGlhcwo+IC4KPgoKCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51
+eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
