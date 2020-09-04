@@ -4,20 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8197BC43461
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Sep 2020 22:31:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20C94C43461
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Sep 2020 22:37:45 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D8CED2083B
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Sep 2020 22:31:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9B5BE2083B
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Sep 2020 22:37:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IqbQI2cD";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="FPfVtLk3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D8CED2083B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="1iE8iyMu";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="d42dH4d2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B5BE2083B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,52 +26,53 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
 	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=/dI+j5zT36dwKYgYlIJe4QS8Sj1RfqjOdabaqwWckTA=; b=IqbQI2cD8XQLTIQJiy4hc+vTW
-	F+dIkalf6lsUgg+LXxQacJGavhQaz42iJPyjw/YqjTHfmR3Cp02zNTa8bpdAMnQVYkwZ4+ELvS5Ty
-	Gv6yQ3Vu2FShl9SwuydCpBbEk/o27PDjR4cNK+6Qg4aF84JMrhOwTwrhkOw05WiEky8mFZ1F426Cl
-	hKaCAde8KFFn0v5I/fLZr/1QQCYdyt+HpqJ0KwIsNcovFw7HIUqPiBkzKy+uKPcKbe1Xx0gIATMab
-	SPXhqh1zAT7345eg3RvbpTaG2+LrnQFfemzc79caR6Dvo8NO5k0MsEo+1q8brBlxbmIK9TPHMI5dn
-	MAYTbfaeQ==;
+	 bh=lU8xYppulnc33NiPUHV9B/EIuRxZKce1HNpVVbG24W4=; b=1iE8iyMuYnQNS+y/aVtPa9H5z
+	7WaYoMFpRvM9Au1mLNiTm/yRuauEf45faCU+sps48ngBjXZxwLbD1Wq8+mtWXbBjPm3GyJkhuiQoK
+	8yz/f1Ro2j69phQxJQqpkE6z0Xb3vT3VTB1oYffMSgZzY46CTzBf8s0+1eqel96py2kfbcr2cy6ju
+	surSNqktoIPnN71E8vt98POQdBT8JpruYl4RDn3wsJWvjUvzMMRuVEhTtz2JwDbC8+SgXY/NCVkCH
+	iAthgCyz7D4xSxTKcg6AuMdo6sJW00OZ1gtJiGOp5hQjUobD6gwzEBKcgB3typfX7R5SnEht/w3bw
+	mEHCsSWlQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kEKDB-0002ym-2i; Fri, 04 Sep 2020 22:29:37 +0000
+	id 1kEKKG-0003mX-0T; Fri, 04 Sep 2020 22:36:56 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kEKD2-0002xY-Ep; Fri, 04 Sep 2020 22:29:29 +0000
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com
- [209.85.210.50])
+ id 1kEKKC-0003li-40; Fri, 04 Sep 2020 22:36:53 +0000
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com
+ [209.85.210.48])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 705F5208FE;
- Fri,  4 Sep 2020 22:29:26 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id B47692145D;
+ Fri,  4 Sep 2020 22:36:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1599258566;
- bh=+8dgVfOXgmURomqOzPuR2s0d+0XktF+kVIZ4JamC1Yk=;
+ s=default; t=1599259010;
+ bh=Z77smMqMlJ9InjnfOSLkOfrCVv21ZVMsWg97rhByuYA=;
  h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=FPfVtLk3VgVy9YY2bppjWvDV2nvJ00oTy/jZPGsp1pSsT+kcmQKDELrZFVKOe/MW4
- zJ45aqs0sB4ogJLfi9CwwVOS1v0zgXZFL4fluzz0xaGojKmgqLJSTmIwDbIBjLZCDs
- e36mpUibGpzlRequFLGXPuBTspvr9u7SNO8bieYo=
-Received: by mail-ot1-f50.google.com with SMTP id a65so7279372otc.8;
- Fri, 04 Sep 2020 15:29:26 -0700 (PDT)
-X-Gm-Message-State: AOAM533rsqMN8KTDO/3HClMeE9NyZCP3BWIR8riK7VpnrZMNqgqFlawJ
- ccoaJritpJQn/E0NXfVQSFk5Zzbm2wL/yAuhRg==
-X-Google-Smtp-Source: ABdhPJyg8Cu0lq2UsQBYhJV227Jo2feqOcJKLxrdCLPxr9lVLm9MUPpbfMcEDGy7OIP/8N+4iwU7/9VeNN4vhk5EUSE=
-X-Received: by 2002:a9d:7f84:: with SMTP id t4mr7261177otp.192.1599258565768; 
- Fri, 04 Sep 2020 15:29:25 -0700 (PDT)
+ b=d42dH4d2dmIZHNUOIPn2Xx9MDOlVwMecjUeWrrvxfpq6DK2RfQvJ6xLEXu/dqhvzS
+ Z/ISTc0EKYUenUlG+YNk2cGRIJ9vj92JritbM+b60QJN529orldpgXxshMN/mRXRsl
+ H5JpjCsVsztY+LzY2r0RUl6cSIkr06PafRhcGs0Y=
+Received: by mail-ot1-f48.google.com with SMTP id u25so7302534otq.6;
+ Fri, 04 Sep 2020 15:36:50 -0700 (PDT)
+X-Gm-Message-State: AOAM530i0EHGAa6PddMPkW088kES41knhF2/pYd565yG5BuZNNJXnxF+
+ dFr9ZURQuFsJGNAJ3oRFcSmPP4IfqN4VC9UWwQ==
+X-Google-Smtp-Source: ABdhPJzgDGB2PMZG85xp4jfP9Au8Rn5zzR1d3vIUH17hhCmIoFGECB1Z1dXYQV5cZkVxUXSJH9qoAFDMcWerjSrzYOA=
+X-Received: by 2002:a05:6830:1008:: with SMTP id
+ a8mr6724740otp.107.1599259010019; 
+ Fri, 04 Sep 2020 15:36:50 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200904152404.20636-1-krzk@kernel.org>
- <20200904152404.20636-14-krzk@kernel.org>
-In-Reply-To: <20200904152404.20636-14-krzk@kernel.org>
+ <20200904152404.20636-13-krzk@kernel.org>
+In-Reply-To: <20200904152404.20636-13-krzk@kernel.org>
 From: Rob Herring <robh+dt@kernel.org>
-Date: Fri, 4 Sep 2020 16:29:14 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKOkerY14qc-7e5721Xsp0k6jm9oh1U1Lr-3SZA0HFgjw@mail.gmail.com>
-Message-ID: <CAL_JsqKOkerY14qc-7e5721Xsp0k6jm9oh1U1Lr-3SZA0HFgjw@mail.gmail.com>
-Subject: Re: [PATCH v3 13/14] dt-bindings: mtd: nand-controller: Fix matching
- with size-cells==1
+Date: Fri, 4 Sep 2020 16:36:39 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+tGQhkqtQszOx7nvr1PR=YFz2p1=OnWQ8JxmSg4qNkHA@mail.gmail.com>
+Message-ID: <CAL_Jsq+tGQhkqtQszOx7nvr1PR=YFz2p1=OnWQ8JxmSg4qNkHA@mail.gmail.com>
+Subject: Re: [PATCH v3 12/14] dt-bindings: mtd: gpmi-nand: Fix matching of
+ clocks on different SoCs
 To: Krzysztof Kozlowski <krzk@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200904_182928_611300_A604CA33 
-X-CRM114-Status: GOOD (  17.97  )
+X-CRM114-CacheID: sfid-20200904_183652_514278_4A77994E 
+X-CRM114-Status: GOOD (  20.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,39 +106,148 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On Fri, Sep 4, 2020 at 9:25 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
 >
-> Most of Freescale/NXP GPMI device trees use size-cells==1 (even when
-> actually not needed except few boards).  This fixes dtbs_check warnings
-> like:
+> Driver requires different amount of clocks for different SoCs.  Describe
+> these requirements properly to fix dtbs_check warnings like:
 >
->     arch/arm64/boot/dts/freescale/imx8mm-beacon-kit.dt.yaml: nand-controller@33002000: #size-cells:0:0: 0 was expected
+>     arch/arm64/boot/dts/freescale/imx8mm-beacon-kit.dt.yaml: nand-controller@33002000: clock-names:1: 'gpmi_apb' was expected
 >
 > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+>
 > ---
->  Documentation/devicetree/bindings/mtd/nand-controller.yaml | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
 >
-> diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-> index 40fc5b0b2b8c..0879e1108837 100644
-> --- a/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-> @@ -34,7 +34,10 @@ properties:
->      const: 1
+> Changes since v1:
+> 1. Do not require order of clocks (use pattern).
+
+To the extent that you can, you should fix the order in dts files
+first. If we just adjust the schemas to match the dts files, then
+what's the point?
+
+> ---
+>  .../devicetree/bindings/mtd/gpmi-nand.yaml    | 76 +++++++++++++++----
+>  1 file changed, 61 insertions(+), 15 deletions(-)
 >
->    "#size-cells":
-> -    const: 0
-> +    description:
-> +      Depends on your controller. Put zero unless you need a mapping between CS
-> +      lines and dedicated memory regions.
-> +    enum: [0, 1]
+> diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml b/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
+> index 28ff8c581837..e08e0a50929e 100644
+> --- a/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
+> @@ -9,9 +9,6 @@ title: Freescale General-Purpose Media Interface (GPMI) binding
+>  maintainers:
+>    - Han Xu <han.xu@nxp.com>
+>
+> -allOf:
+> -  - $ref: "nand-controller.yaml"
+> -
+>  description: |
+>    The GPMI nand controller provides an interface to control the NAND
+>    flash chips. The device tree may optionally contain sub-nodes
+> @@ -58,22 +55,10 @@ properties:
+>    clocks:
+>      minItems: 1
+>      maxItems: 5
+> -    items:
+> -      - description: SoC gpmi io clock
+> -      - description: SoC gpmi apb clock
+> -      - description: SoC gpmi bch clock
+> -      - description: SoC gpmi bch apb clock
+> -      - description: SoC per1 bch clock
+>
+>    clock-names:
+>      minItems: 1
+>      maxItems: 5
+> -    items:
+> -      - const: gpmi_io
+> -      - const: gpmi_apb
+> -      - const: gpmi_bch
+> -      - const: gpmi_bch_apb
+> -      - const: per1_bch
+>
+>    fsl,use-minimum-ecc:
+>      type: boolean
+> @@ -107,6 +92,67 @@ required:
+>
+>  unevaluatedProperties: false
+>
+> +allOf:
+> +  - $ref: "nand-controller.yaml"
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - fsl,imx23-gpmi-nand
+> +              - fsl,imx28-gpmi-nand
+> +    then:
+> +      properties:
+> +        clocks:
+> +          items:
+> +            - description: SoC gpmi io clock
+> +        clock-names:
+> +          items:
+> +            - const: gpmi_io
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - fsl,imx6q-gpmi-nand
+> +              - fsl,imx6sx-gpmi-nand
+> +    then:
+> +      properties:
+> +        clocks:
+> +          items:
+> +            - description: SoC gpmi io clock
+> +            - description: SoC gpmi apb clock
+> +            - description: SoC gpmi bch clock
+> +            - description: SoC gpmi bch apb clock
+> +            - description: SoC per1 bch clock
+> +        clock-names:
+> +          items:
+> +            - pattern: "^(gpmi_(io|apb|bch|bch_apb)|per1_bch)$"
+> +            - pattern: "^(gpmi_(io|apb|bch|bch_apb)|per1_bch)$"
+> +            - pattern: "^(gpmi_(io|apb|bch|bch_apb)|per1_bch)$"
+> +            - pattern: "^(gpmi_(io|apb|bch|bch_apb)|per1_bch)$"
+> +            - pattern: "^(gpmi_(io|apb|bch|bch_apb)|per1_bch)$"
 
-Humm, seems that was to describe partitions, but the expectation of
-the nand binding is describing nand chips. It seems the nand chips are
-never described and on 1 board even has partitions. I think you should
-fix the dts to move 'partition@N' nodes under 'partitions' which is
-preferred and needed if you ever describe nand chips. And then fix
-'#size-cells' to be 0.
+BTW, you can make 'items' a schema rather than a list to apply a
+constraint to all entries:
 
-Rob
+maxItems: 5
+items:
+  pattern: "^(gpmi_(io|apb|bch|bch_apb)|per1_bch)$"
+
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: fsl,imx7d-gpmi-nand
+> +    then:
+> +      properties:
+> +        clocks:
+> +          items:
+> +            - description: SoC gpmi io clock
+> +            - description: SoC gpmi bch apb clock
+> +        clock-names:
+> +          minItems: 2
+> +          maxItems: 2
+
+You can drop these. It's the default based on the size of 'items'.
+
+> +          items:
+> +            - pattern: "^gpmi_(io|bch_apb)$"
+> +            - pattern: "^gpmi_(io|bch_apb)$"
+
+Surely here we can define the order.
+
+> +
+>  examples:
+>    - |
+>      nand-controller@8000c000 {
+> --
+> 2.17.1
+>
 
 ______________________________________________________
 Linux MTD discussion mailing list
