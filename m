@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-14.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F7EBC43461
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Sep 2020 07:37:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 560A0C433E2
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Sep 2020 07:37:11 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E11EC207C3
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Sep 2020 07:37:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 015FD208C7
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Sep 2020 07:37:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nd+kKSgV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E11EC207C3
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="vTpcoBio"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 015FD208C7
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,41 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=qJpTgBBcA7mze1jK/TLw5JhyIpeqvmF4AXU9SHPV1bI=; b=nd+kKSgVxtjwIHXiO05AzNlg+
-	+24bmq9HIV6DgKaaXHhhnCcrbguKVVc7i0fwCPpgUfhB+PVpekRhyQsqsSHuKqgCS9RMOS/rku1vg
-	tBnYnKRfTcYdr0A0IeX3Y2HJ/kx+05KBENUPcQ08bAC8hM9OFhuYQN/US8BiDE7DMo8CYKgV/mmag
-	TxNNHZ2pu0n5MRYJy5kFzVc7eaEp9MFVG9bsYI3QBsE6skp/VAP7Ge4L3U7Rl2MpuQ8p/BLxQEMmk
-	RUkicI2FLW2TH9XvpCGQVwH/bnVpm0fTrhjaMJ5erMWVYWuEttvmZOYG3PHHDRp0FxLIruxUta0AD
-	Ac9yi9weA==;
+	 bh=SW3cef6JC/y30i8/5Fjh/rMShB4szC78iU2rmXs0j2M=; b=vTpcoBioI5cUCjZkUgpFmipEc
+	AaIzmMMdCocZ64l8hx/BLYyGz/pVb5MQ9MGucZ2YyVk6CSzu4tgXVk8l+kNlZFjYqjU7o/mNCkbbH
+	BWz9Tia1c3HGXTvlTTmbfLTcc2fa2uMdubNnAnw4lZAVxqsRSZEIRNdGUvBQ0+zsAfvU6J7YlvXJv
+	6CB1aLi0XvozNWx5tJcLQTIGx8KGlyDuxkPwkaeAylouiSzjk2x0z1ZCJh0W0hCkdfb4kOmGx2LEI
+	s3gPNRBLqDtFkI/wzlcbxkRdQdDoUX24dh8bTVkzkTui9pHjQhijHWSNgBgXtTcF2J9wIAIpOH53N
+	KmFhb3Qzw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kFBh8-0001xp-9l; Mon, 07 Sep 2020 07:36:06 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1kFBha-0002HI-E4; Mon, 07 Sep 2020 07:36:34 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kFBfi-0001Cf-8U
- for linux-mtd@lists.infradead.org; Mon, 07 Sep 2020 07:34:39 +0000
+ id 1kFBfu-0001Jo-CY
+ for linux-mtd@lists.infradead.org; Mon, 07 Sep 2020 07:34:51 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 573F8240005;
- Mon,  7 Sep 2020 07:34:35 +0000 (UTC)
+ by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 4524D60014;
+ Mon,  7 Sep 2020 07:34:47 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] mtd: lpddr: Move function print_drs_error to
- lpddr_cmds.c
-Date: Mon,  7 Sep 2020 09:34:34 +0200
-Message-Id: <20200907073434.27599-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v2 1/3] mtd: lpddr: Fix bad logic in print_drs_error
+Date: Mon,  7 Sep 2020 09:34:46 +0200
+Message-Id: <20200907073446.27727-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <e0063cbd65f3b47be1db34efc494ea3047634d88.1588016644.git.gustavo@embeddedor.com>
+In-Reply-To: <3fb0e29f5b601db8be2938a01d974b00c8788501.1588016644.git.gustavo@embeddedor.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 1a64026eda1642c81425e48550fd4bd3f73d0ab5
+X-linux-mtd-patch-commit: 1c9c02bb22684f6949d2e7ddc0a3ff364fd5a6fc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200907_033438_422325_A8739191 
-X-CRM114-Status: UNSURE (   9.79  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200907_033450_562548_4AB60CC8 
+X-CRM114-Status: GOOD (  11.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,19 +77,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2020-04-27 at 19:56:08 UTC, "Gustavo A. R. Silva" wrote:
-> Function print_drs_error is only used in drivers/mtd/lpddr/lpddr_cmds.c
-> so, better to move it there.
+On Mon, 2020-04-27 at 19:50:37 UTC, "Gustavo A. R. Silva" wrote:
+> Update logic for broken test. Use a more common logging style.
 > 
-> Also, notice that there's no need for inline as the function is used
-> once.  Lastly, fix the following checkpatch warning:
+> It appears the logic in this function is broken for the
+> consecutive tests of
 > 
-> WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
-> +static void print_drs_error(unsigned dsr)
+>         if (prog_status & 0x3)
+>                 ...
+>         else if (prog_status & 0x2)
+>                 ...
+>         else (prog_status & 0x1)
+>                 ...
 > 
-> Suggested-by: Joe Perches <joe@perches.com>
+> Likely the first test should be
+> 
+>         if ((prog_status & 0x3) == 0x3)
+> 
+> Found by inspection of include files using printk.
+> 
+> Fixes: eb3db27507f7 ("[MTD] LPDDR PFOW definition")
+> Cc: stable@vger.kernel.org
+> Reported-by: Joe Perches <joe@perches.com>
 > Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
-> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
