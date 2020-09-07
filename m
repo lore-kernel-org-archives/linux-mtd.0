@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-14.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85781C43461
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Sep 2020 07:23:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49A4AC43461
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Sep 2020 07:23:44 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2AB8F20732
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Sep 2020 07:23:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D010020732
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Sep 2020 07:23:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pMY0O8zc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2AB8F20732
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EnrDgToU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D010020732
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=ViTbDIHX4SDonIeLqYg0XS4GMueiPJWtc+njCEtJXXk=; b=pMY0O8zcBl+VrNvvDILFG6ndr
-	BNkyoqqFmHNXED6tBhIjRldHcEyV525icqlNGoTGUWeOQRS+sKb8Fw0OkDiUYJb9zRFysnFe3HGbd
-	f39cDZsL5tAbWEDp08rcfnJlYCCK/WFAP6rl/ANeDZugEfOfTnzZgomvdiXA3Ai/6zyoZDEaBQ9sO
-	+Mk/2zAdakfZxpVjxvDjgcPUM8a0njCir5sPc/GO3Wq4tWIKrgK6aL7gy9BJkdB7UZg5BL3RhLLT1
-	So9Lc+BHB7Dj1SjLpmUajej5NTrNRhSrdCHgMwy943B/AlxgPPjCfFiJUDV2IJNa6wJ1wrnNqD2jz
-	AiAPZj+Rw==;
+	 bh=v+nTtbQPM8vh3QK2DpreUIfVO0MzTRQkrLmJyekcrU0=; b=EnrDgToUUJ9pI7+Iu6g3hBHBU
+	P4ekD3ShSyathSj+GmCjpPlFyjgvrtAiWkZx5i5LLysc/x/jyfcX4QkNw1g/DGVl0BTg0PrfIHk1Y
+	/SH65z4241ZTTMZ3FLQooWVb6599kml0RxHcOdNrthznlYkVQ9oVlPr09dVrjJmVDkfhDEqbGTQc6
+	eAuRHlSC9Y4Fjnl/W2a2A+asJaJOpPopXZAcyRfU1PwkhpkoWFjfjXN2ydqDPfymhp9+xKbWxpyvl
+	pmbN9bArvUX1MhCPNpeRAHnpQ8etFWBQX87XYqpuVrlb/41F/0ClqHFitnZfwQwZw4Pyt5qUNhoSh
+	25a4Lsfvw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kFBUW-0002qK-AR; Mon, 07 Sep 2020 07:23:04 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1kFBUL-0002lI-C0; Mon, 07 Sep 2020 07:22:53 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kFBUE-0002iD-IU
- for linux-mtd@lists.infradead.org; Mon, 07 Sep 2020 07:22:56 +0000
+ id 1kFBU7-0002dX-Hi
+ for linux-mtd@lists.infradead.org; Mon, 07 Sep 2020 07:22:48 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 8EE14FF804;
- Mon,  7 Sep 2020 07:22:44 +0000 (UTC)
+ by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id B025760007;
+ Mon,  7 Sep 2020 07:22:37 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>, miquel.raynal@bootlin.com,
  boris.brezillon@collabora.com
-Subject: Re: [PATCH v5 5/6] mtd: rawnand: atmel: Convert the driver to
- exec_op()
-Date: Mon,  7 Sep 2020 09:22:43 +0200
-Message-Id: <20200907072243.3886-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v5 6/6] mtd: rawnand: atmel: Get rid of the legacy
+ interface implementation
+Date: Mon,  7 Sep 2020 09:22:36 +0200
+Message-Id: <20200907072236.3820-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200720131356.1579073-6-tudor.ambarus@microchip.com>
+In-Reply-To: <20200720131356.1579073-7-tudor.ambarus@microchip.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 152fbd2c9e4c78b6c935f889753ab045e64bb5fd
+X-linux-mtd-patch-commit: 43b4cb67e7771c8064a3a5752417194ab94a8167
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200907_032246_726514_FC79F42E 
-X-CRM114-Status: UNSURE (   8.02  )
+X-CRM114-CacheID: sfid-20200907_032239_712422_B22AA0F6 
+X-CRM114-Status: UNSURE (   8.18  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -78,10 +78,11 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2020-07-20 at 13:13:55 UTC, Tudor Ambarus wrote:
+On Mon, 2020-07-20 at 13:13:56 UTC, Tudor Ambarus wrote:
 > From: Boris Brezillon <boris.brezillon@collabora.com>
 > 
-> Both SMC and HSMC are converted to exec_op().
+> Now that exec_op() is implemented, we can get rid of all the legacy
+> hooks.
 > 
 > Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
 > Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
