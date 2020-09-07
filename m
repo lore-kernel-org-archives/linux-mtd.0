@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-14.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AF46C433E2
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Sep 2020 07:26:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E51FEC433E2
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Sep 2020 07:26:24 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DBB3A20757
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Sep 2020 07:26:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 502D920757
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Sep 2020 07:26:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BIP/VLFf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DBB3A20757
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="vBftJ5ax"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 502D920757
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,41 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:To:From:
 	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=H67Xc+wkFChmGM4GgaW2+/zuJk1DWEJKcipsSxMuaPY=; b=BIP/VLFfXX2wbx8lBCbkDRyynt
-	HeIenqXq6thNa06kS7bphQMIsWabpLcn+3LPy/UZ0iIMed6x5bWSTIXH1qq43Dy35V9zqXRyTQRKY
-	ayYsJvQSKzQdOfScSISNu5gWSUX7iI1Uo6v4OZgdWXVPzxNgL6JA3MRQ0Swf1ux62QFlxjSUAfdhW
-	LETtn/W9GGB1oOwtwEbGnB2JIy8p/EtvNu+WhsKrXRMccYjpwXN7AAew+jzyXhHZa603HrQTB8myf
-	Ph1sjXCi1/BGumB7OhK+qFNozV5uPH1sbhpH8jB9UaT0I8IfTacp81KOvLI3rcZQe8/FV141/8/+h
-	WdyQcYTw==;
+	bh=yfnmUHh4IRXk0HbFdpz5wEFeTU0F/ctn8gpTLZcSlZI=; b=vBftJ5axY2hh2CwJplsU1ZKpQ8
+	cOSlQKhfjTqwdJhxfdCRuZc1mTwJWfcKofzJaQOeSPVXT648YTDHEN/GirSLOYpBMnWIT5Weo83Ga
+	KmsPO/pTOCxfJdyyg1r8xnkUMhmERP9S9tVlfujRqa8Eix3bo7tsaD55Vr2X8eyatkqQ3x+Me+4++
+	a+PCm1jt6ygrEa+sCLdnKPh6E8jZUXwYxtcUPx22QchRHGx8Zl+fMT9iKNE0CudnOy4hKFAPhzl7j
+	XBw9u1QMd3mnWs7K4NJSDAc0X6Wg6K2aZBl5TSBYLqqEt0Hn5jB0C+dwC2IxBjjrANJontQn917Ck
+	M6TSYt9Q==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kFBWO-0003zB-Tw; Mon, 07 Sep 2020 07:25:00 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1kFBXA-0004SR-Hn; Mon, 07 Sep 2020 07:25:48 +0000
+Received: from relay11.mail.gandi.net ([217.70.178.231])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kFBVU-0003Pn-0s
- for linux-mtd@lists.infradead.org; Mon, 07 Sep 2020 07:24:05 +0000
-X-Originating-IP: 91.224.148.103
+ id 1kFBVr-0003eX-1G
+ for linux-mtd@lists.infradead.org; Mon, 07 Sep 2020 07:24:28 +0000
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 33B8F240012;
- Mon,  7 Sep 2020 07:24:02 +0000 (UTC)
+ by relay11.mail.gandi.net (Postfix) with ESMTPSA id B7E46100005;
+ Mon,  7 Sep 2020 07:24:24 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v13 13/20] mtd: nand: Create helpers to set/extract the
- ECC requirements
-Date: Mon,  7 Sep 2020 09:24:01 +0200
-Message-Id: <20200907072401.4753-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v13 09/20] mtd: rawnand: Separate the ECC engine type and
+ the ECC byte placement
+Date: Mon,  7 Sep 2020 09:24:23 +0200
+Message-Id: <20200907072423.5040-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200827085208.16276-14-miquel.raynal@bootlin.com>
+In-Reply-To: <20200827085208.16276-10-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 657132e90e75695bc2714ebb89d7f25bd498cea5
+X-linux-mtd-patch-commit: d3f8ec8e979b95093e5614ef12fecb3d2aa5922e
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200907_032404_163995_E4E3AB66 
-X-CRM114-Status: UNSURE (   9.58  )
+X-CRM114-CacheID: sfid-20200907_032427_217477_5344ADDE 
+X-CRM114-Status: UNSURE (   8.55  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -77,19 +76,16 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2020-08-27 at 08:52:01 UTC, Miquel Raynal wrote:
-> Despite its current name, the eccreq field actually encodes both the
-> NAND requirements and the final ECC configuration. That works fine when
-> using on-die ECC since those 2 concepts match perfectly, but it starts
-> being a problem as soon as we use on-host ECC engines, where we're not
-> guaranteed to have a perfect match.
+On Thu, 2020-08-27 at 08:51:57 UTC, Miquel Raynal wrote:
+> The use of "syndrome" placement should not be encoded in the ECC
+> engine mode/type.
 > 
-> Let's hide the ECC requirements access behind helpers so we can later
-> split those 2 concepts. As the structures have not been clarified yet,
-> these helpers access the same internal variable as
-> nanddev_get_ecc_conf() for now.
+> Create a "placement" field in NAND chip and change all occurrences of
+> the NAND_ECC_HW_SYNDROME enumeration to be just NAND_ECC_HW and
+> possibly a placement entry like NAND_ECC_PLACEMENT_INTERLEAVED.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next.
 
