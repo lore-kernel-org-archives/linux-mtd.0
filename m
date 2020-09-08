@@ -2,90 +2,77 @@ Return-Path: <SRS0=nfXs=CR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,NICE_REPLY_A,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E203CC433E2
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Sep 2020 08:50:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84593C43461
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Sep 2020 16:52:11 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8B58C215A4
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Sep 2020 08:50:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1257B2075A
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Sep 2020 16:52:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Iz9DOwh4";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="SoxgOgDr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B58C215A4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="V6alINAR";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="FgS6w9TK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1257B2075A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=2DQsWMSTjD6zp/zr63RUtwEQoNzzX4AdDP4ODj3tuBg=; b=Iz9DOwh4BnEW7IgiDe0LEhXie
-	FKnOggsTntY8F9Ct3XmPgX5B3Phax05/QCUwmtp0c/jzlYN1901GxbwbBsq/eoTLWRXJHHi0g+bH2
-	lv1EInCue+YeHEijGD/B9F2SnR7reeg2eFZVi2r1cCZ3jYileWz68HUVu7Ew8hHAwhJB6H7JaVyke
-	YTgvdS3/SVWp7Tnf3IUhrCZfm31AYZpwPG6SgP3U77Ojzz421FsRaPUHzNA6Ho3c5dHYcfjo5Ny5m
-	01WU/v0tOghmTRlpYcCR99TvM1Z4Lueq/Ta1FdWi9+q4vADi89ilo+Z7IIY2jC1rYOvDX/QD8A6uk
-	pGfl3DWyA==;
+	 bh=hnCdLE/8F5eu58S7rMIikzO1MP5n5RT1koaIeAAKxwg=; b=V6alINARdibPVVxJBAWlm62zv
+	elZ/RQPN6pOanCk9Kj9tr3pNVEV0q9uuy6LmJeZx/NSJFAgtqrq2eypKqqymTYM0FZrtANEshfB0m
+	TaEcKc1SHoxXMaypwbT/BxrNwJAfBcwlhDf3SHo5Sgt8WBHENFtyUlPYY5xbjedX4BEGtUKkg/n7v
+	08jlCfdA4KKpRJvZzqU8+gksv1XA0cOVu6vz7j/DdjnFcZQe5MaBGrmaGvJ4k+cQBUVEhANckaMZY
+	U9gDX9efO0+zTwMQOfW18oKszLmw5rhfPm3jET6ZRHcTpFFtmIr6bLtQibWfmdvgGJT6N3NgMzX9s
+	nU+N9MkqA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kFZJU-00017K-Sj; Tue, 08 Sep 2020 08:49:16 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1kFgpu-0008E8-W3; Tue, 08 Sep 2020 16:51:15 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kFZJM-00013k-Gg
- for linux-mtd@lists.infradead.org; Tue, 08 Sep 2020 08:49:10 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0888mooZ084528;
- Tue, 8 Sep 2020 03:48:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1599554930;
- bh=gUGWPLTknhIG/cV6SLv5pqNO3E2DIgRX6hAn1d3Vdq0=;
- h=Subject:To:References:From:CC:Date:In-Reply-To;
- b=SoxgOgDrS1JGA/JSvRVQoKg1Pu/mkGYqUYMgh7targDSt5H3KwkSrVmjYZCH2Hl1a
- VrJVcBdMWaMD4b55qUFmUvj0g3fnmskCYpzyAiDyqIce3LH/q90saau2hx5vWR9ZcO
- rjW1xZp7f7U6Kw0ZC9jl0+2b/ist2+KIVpvfXSEM=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0888mowc036624;
- Tue, 8 Sep 2020 03:48:50 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 8 Sep
- 2020 03:48:50 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 8 Sep 2020 03:48:50 -0500
-Received: from [10.250.235.166] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0888mjbR032303;
- Tue, 8 Sep 2020 03:48:46 -0500
-Subject: Re: [PATCH] Platform integrity information in sysfs
-To: Daniel Gutson <daniel.gutson@eclypsium.com>, Derek Kiernan
- <derek.kiernan@xilinx.com>, Tudor Ambarus <tudor.ambarus@microchip.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Mika Westerberg <mika.westerberg@linux.intel.com>, Arnd
- Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
- <linux-kernel@vger.kernel.org>, Richard Hughes <hughsient@gmail.com>, Alex
- Bazhaniuk <alex@eclypsium.com>
-References: <20200903161804.403299-1-daniel.gutson@eclypsium.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <7885ca85-5982-a0d5-2307-d785d4dc0eea@ti.com>
-Date: Tue, 8 Sep 2020 14:18:44 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ id 1kFgpq-0008Cz-Qg; Tue, 08 Sep 2020 16:51:11 +0000
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com
+ [209.85.161.46])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id BC10121741;
+ Tue,  8 Sep 2020 16:51:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1599583868;
+ bh=pW1S8wYQ7shAS4VTkFPTvct/ClWzUHOw3xWhbsYQUNo=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=FgS6w9TKkNIumIokoiwznLHegSZ8da9H6/tyCUONyA8D6mS4MC5L9U2z22U5vpbaJ
+ F9LBw9H3U/ZQfNzWt6ceq2QpbMCME12qMJBPAnufXbEXaMdXUN5OQTdjSiBIy0r3bk
+ 7U2jnKRg1UiTm9IReOgbeVZRQG6XO2kMrq5x8Ajs=
+Received: by mail-oo1-f46.google.com with SMTP id h9so4076858ooo.10;
+ Tue, 08 Sep 2020 09:51:08 -0700 (PDT)
+X-Gm-Message-State: AOAM533IGNO1/1syUhYS2kYUely0tHOw+eC4OJt0VpwjOoRSJrHPwot/
+ oi1lALcG/24c+yHpUbrZTxgOmtXayd3+6fHk1A==
+X-Google-Smtp-Source: ABdhPJyVFdSAOgZ7160kEJoAezjYnztio3h9Ino2moi2r5NNuCCiGtHqBpSUtvivi5rsYhCBevOSckk/m/8RpCmF5Go=
+X-Received: by 2002:a4a:d306:: with SMTP id g6mr19090952oos.25.1599583867914; 
+ Tue, 08 Sep 2020 09:51:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200903161804.403299-1-daniel.gutson@eclypsium.com>
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20200904152404.20636-1-krzk@kernel.org>
+ <20200904152404.20636-13-krzk@kernel.org>
+ <CAL_Jsq+tGQhkqtQszOx7nvr1PR=YFz2p1=OnWQ8JxmSg4qNkHA@mail.gmail.com>
+ <20200907060958.GA4525@kozik-lap>
+In-Reply-To: <20200907060958.GA4525@kozik-lap>
+From: Rob Herring <robh+dt@kernel.org>
+Date: Tue, 8 Sep 2020 10:50:56 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJZ=PxDxH-=GUUg7WadZrAKjYbtE0sQ8h9YDGOGx6Ykwg@mail.gmail.com>
+Message-ID: <CAL_JsqJZ=PxDxH-=GUUg7WadZrAKjYbtE0sQ8h9YDGOGx6Ykwg@mail.gmail.com>
+Subject: Re: [PATCH v3 12/14] dt-bindings: mtd: gpmi-nand: Fix matching of
+ clocks on different SoCs
+To: Krzysztof Kozlowski <krzk@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200908_044908_702962_7BA8494F 
-X-CRM114-Status: GOOD (  39.77  )
+X-CRM114-CacheID: sfid-20200908_125110_937793_5B82F40C 
+X-CRM114-Status: GOOD (  18.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,235 +84,57 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Linux PWM List <linux-pwm@vger.kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ LINUX-WATCHDOG <linux-watchdog@vger.kernel.org>, devicetree@vger.kernel.org,
+ Stephen Boyd <sboyd@kernel.org>, Fabio Estevam <festevam@gmail.com>,
+ Michael Turquette <mturquette@baylibre.com>,
+ "open list:THERMAL" <linux-pm@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ NXP Linux Team <linux-imx@nxp.com>,
+ "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+ Guenter Roeck <linux@roeck-us.net>, Shawn Guo <shawnguo@kernel.org>,
+ linux-clk <linux-clk@vger.kernel.org>,
+ "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE"
+ <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+On Mon, Sep 7, 2020 at 12:10 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> On Fri, Sep 04, 2020 at 04:36:39PM -0600, Rob Herring wrote:
+> > On Fri, Sep 4, 2020 at 9:25 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > >
+> > > Driver requires different amount of clocks for different SoCs.  Describe
+> > > these requirements properly to fix dtbs_check warnings like:
+> > >
+> > >     arch/arm64/boot/dts/freescale/imx8mm-beacon-kit.dt.yaml: nand-controller@33002000: clock-names:1: 'gpmi_apb' was expected
+> > >
+> > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > >
+> > > ---
+> > >
+> > > Changes since v1:
+> > > 1. Do not require order of clocks (use pattern).
+> >
+> > To the extent that you can, you should fix the order in dts files
+> > first. If we just adjust the schemas to match the dts files, then
+> > what's the point?
+>
+> The DTSes do not have mixed order of clocks between each other, as fair
+> as I remember. It was fix after Sasha Hauer comment that order is not
+> necessarily good.
+>
+> We have the clock-names property, why enforcing the order?
 
-On 9/3/20 9:48 PM, Daniel Gutson wrote:
-> This patch exports information about the platform integrity
-> firmware configuration in the sysfs filesystem.
-> In this initial patch, I include some configuration attributes
-> for the system SPI chip.
-> 
+Because DT/OpenFirmware has always had a defined order for property
+values. '*-names' is just extra information.
 
-Please avoid first-person singular pronouns instead use imperative mood.
-
-> This initial version exports the BIOS Write Enable (bioswe),
-> BIOS Lock Enable (ble), and the SMM BIOS Write Protect (SMM_BWP)
-> fields of the BIOS Control register. The idea is to keep adding more
-> flags, not only from the BC but also from other registers in following
-> versions.
-> 
-> The goal is that the attributes are avilable to fwupd when SecureBoot
-> is turned on.
-> 
-
-s/avilable/available
-
-> The patch provides a new misc driver, as proposed in the previous patch,
-> that provides a registration function for HW Driver devices to register
-> class_attributes.
-> In this case, the intel SPI flash chip (intel-spi) registers three
-
-s/intel SPI/Intel SPI
-
-> class_attributes corresponding to the fields mentioned above.
-> 
-> This version of the patch provides a new API supporting regular
-> device attributes rather than custom attributes, and also avoids
-> a race condition when exporting the driver sysfs dir and the
-> attributes files inside it.
-> Also, this patch renames 'platform lockdown' by 'platform integrity'.
-
-Changes wrt to previous versions should not be part of commit message
-but instead should be below tearline (b/w "---" and diffstat below)
-
-> 
-> Signed-off-by: Daniel Gutson <daniel.gutson@eclypsium.com>
-> ---
-
-Changes wrt previous versions go here...
-
->  .../ABI/stable/sysfs-class-platform-integrity | 23 +++++
->  MAINTAINERS                                   |  7 ++
->  drivers/misc/Kconfig                          | 11 +++
->  drivers/misc/Makefile                         |  1 +
->  drivers/misc/platform-integrity.c             | 61 +++++++++++++
->  drivers/mtd/spi-nor/controllers/Kconfig       |  1 +
->  .../mtd/spi-nor/controllers/intel-spi-pci.c   | 64 ++++++++++++-
->  .../spi-nor/controllers/intel-spi-platform.c  |  2 +-
->  drivers/mtd/spi-nor/controllers/intel-spi.c   | 89 ++++++++++++++++++-
->  drivers/mtd/spi-nor/controllers/intel-spi.h   |  5 +-
->  include/linux/platform-integrity.h            | 20 +++++
->  11 files changed, 278 insertions(+), 6 deletions(-)
->  create mode 100644 Documentation/ABI/stable/sysfs-class-platform-integrity
->  create mode 100644 drivers/misc/platform-integrity.c
->  create mode 100644 include/linux/platform-integrity.h
-> 
-
-
-You forgot to cc linux-mtd lists and hence patch did not show up in my
-queue.. MTD Patches are managed via patchoworks and if linux-mtd is not
-cc'd then they will most likely be ignored. Please use
-scripts/get_maintainer.pl to get list of maintainters and mailing lists
-to cc.
-
-Also, this patch needs to be split into at least two patches: one
-introducing platform-integrity module and another adding suuport for
-intel-spi driver to use the same.
-
-Also, I see there are multiple iterations of the patch posted but are
-not versioned. Please use appropriate version number in $subject.
-
-Please read Documentation/process/submitting-patches.rst for more details.
-
-
-> diff --git a/Documentation/ABI/stable/sysfs-class-platform-integrity b/Documentation/ABI/stable/sysfs-class-platform-integrity
-> new file mode 100644
-> index 000000000000..b31ec051ca48
-> --- /dev/null
-> +++ b/Documentation/ABI/stable/sysfs-class-platform-integrity
-> @@ -0,0 +1,23 @@
-> +What:		/sys/class/platform-integrity/intel-spi/bioswe
-> +Date:		September 2020
-> +KernelVersion:	5.9.1
-
-5.9 merge window is closed. This won't make it to 5.9... Maybe 5.10
-
-> +Contact:	Daniel Gutson <daniel.gutson@eclypsium.com>
-> +Description:	If the system firmware set BIOS Write Enable.
-> +		0: writes disabled, 1: writes enabled.
-> +Users:		https://github.com/fwupd/fwupd
-> +
-> +What:		/sys/class/platform-integrity/intel-spi/ble
-
-Naming seems inconsistent... Previous entry was bioswe (BIOS write
-enable) but this one is called ble (BIOS latch enable). Maybe rename
-previous one as bwe to be consistent with other entries?
-
-> +Date:		September 2020
-> +KernelVersion:	5.9.1
-> +Contact:	Daniel Gutson <daniel.gutson@eclypsium.com>
-> +Description:	If the system firmware set BIOS Lock Enable.
-> +		0: SMM lock disabled, 1: SMM lock enabled.
-> +Users:		https://github.com/fwupd/fwupd
-> +
-> +What:		/sys/class/platform-integrity/intel-spi/smm_bwp
-> +Date:		September 2020
-> +KernelVersion:	5.9.1
-> +Contact:	Daniel Gutson <daniel.gutson@eclypsium.com>
-> +Description:	If the system firmware set SMM BIOS Write Protect.
-> +		0: writes disabled unless in SMM, 1: writes enabled.
-
-Is SMM a standard abbreviation in  Intel world? If not you may want to
-expand what it means in Description.
-
-> +Users:		https://github.com/fwupd/fwupd
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index e4647c84c987..771eaf715427 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -13744,6 +13744,13 @@ S:	Maintained
->  F:	Documentation/devicetree/bindings/iio/chemical/plantower,pms7003.yaml
->  F:	drivers/iio/chemical/pms7003.c
->  
-> +PLATFORM INTEGRITY DATA MODULE
-> +M:	Daniel Gutson <daniel.gutson@eclypsium.com>
-> +S:	Supported
-> +F:	Documentation/ABI/sysfs-class-platform-integrity
-> +F:	drivers/misc/platform-integrity.c
-> +F:	include/linux/platform-integrity.h
-> +
->  PLDMFW LIBRARY
->  M:	Jacob Keller <jacob.e.keller@intel.com>
->  S:	Maintained
-> diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-> index ce136d685d14..d5d0de5b5706 100644
-> --- a/drivers/misc/Kconfig
-> +++ b/drivers/misc/Kconfig
-> @@ -456,6 +456,17 @@ config PVPANIC
->  	  a paravirtualized device provided by QEMU; it lets a virtual machine
->  	  (guest) communicate panic events to the host.
->  
-> +config PLATFORM_INTEGRITY_ATTRS
-> +	tristate "Platform integrity information in the sysfs"
-> +	depends on SYSFS
-> +	help
-> +	  This kernel module is a helper driver to provide information about
-> +	  platform integrity settings and configuration.
-> +	  This module is used by other device drivers -such as the intel-spi-
-> +	  to publish the information in /sys/class/platform-integrity which is
-> +	  consumed by software such as fwupd which can verify the platform
-> +	  has been configured in a secure way.
-> +
-
-[...]
-
-> diff --git a/drivers/mtd/spi-nor/controllers/Kconfig b/drivers/mtd/spi-nor/controllers/Kconfig
-> index 5c0e0ec2e6d1..113e349a826b 100644
-> --- a/drivers/mtd/spi-nor/controllers/Kconfig
-> +++ b/drivers/mtd/spi-nor/controllers/Kconfig
-> @@ -29,6 +29,7 @@ config SPI_NXP_SPIFI
->  
->  config SPI_INTEL_SPI
->  	tristate
-> +	select PLATFORM_INTEGRITY_ATTRS
->  
-
-Not a good idea to use select clause on symbols that have dependencies
-as select will force a symbol to a value without visiting the
-dependencies. Instead use depends on
-
-
->  config SPI_INTEL_SPI_PCI
->  	tristate "Intel PCH/PCU SPI flash PCI driver (DANGEROUS)"
-> diff --git a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
-> index c72aa1ab71ad..e1bca8aedf7c 100644
-> --- a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
-> +++ b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
-> @@ -10,11 +10,19 @@
->  #include <linux/kernel.h>
->  #include <linux/module.h>
->  #include <linux/pci.h>
-> +#include <linux/platform-integrity.h>
->  
->  #include "intel-spi.h"
->  
->  #define BCR		0xdc
->  #define BCR_WPD		BIT(0)
-> +#define BCR_BLE		BIT(1)
-> +#define BCR_SMM_BWP	BIT(5)
-> +
-> +struct cnl_spi_attr {
-> +	struct device_attribute dev_attr;
-> +	u32 mask;
-> +};
->  
->  static const struct intel_spi_boardinfo bxt_info = {
->  	.type = INTEL_SPI_BXT,
-> @@ -24,6 +32,59 @@ static const struct intel_spi_boardinfo cnl_info = {
->  	.type = INTEL_SPI_CNL,
->  };
->  
-> +static ssize_t cnl_spi_attr_show(struct device *dev,
-> +	struct device_attribute *attr, char *buf, u32 mask)
-> +{
-
-Please be consistent with existing code and use intel_spi_ prefix for
-function names.
-
-Also Alignment should match open parenthesis..
-Please run scripts/checkpatch.pl --strict on patch and fix all issue
-reported.
-
-[...]
-
-Regards
-Vignesh
+Rob
 
 ______________________________________________________
 Linux MTD discussion mailing list
