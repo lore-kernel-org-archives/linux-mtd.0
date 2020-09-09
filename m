@@ -2,201 +2,83 @@ Return-Path: <SRS0=hzeh=CS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-14.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D17BC43461
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Sep 2020 14:12:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 079A1C43461
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Sep 2020 14:26:35 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9891C221F0
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Sep 2020 14:12:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 66BAA215A4
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Sep 2020 14:26:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="UgmAlVRN";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=micron.com header.i=@micron.com header.b="jsuU9I4S"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9891C221F0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=micron.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DZqmeaiR";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=eclypsium.com header.i=@eclypsium.com header.b="cDZ3FvJz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 66BAA215A4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=eclypsium.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:Message-ID:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=MHjjktuxZQ2Ea7MSO2kwLXsf2lMg7NWQ2qqt5mErM3s=; b=UgmAlVRNjAF7om4jNhqz0ynN6
-	JjnhbRsYeokvZlbGTxfbZfPBRmFMp33b1WcLtmQ377p2lOn9/jjwKFNZksxGae4saSs5AZO1ANV6Z
-	57o9ei/HqmpAV79m6D6gHvLj0l9dS5ciBCCl4PGdLoSaIAEwXeg9Q4rXqOsaHNMkfUv1K5RsE/E3k
-	SzvTbOsoNmF4/jSh3bhsW3rW40yKEk/BcwwhMKWQfHh8OzaCfZPobGij+cD82XdczxmnLjhOxEKv3
-	j2blviJxlV+xjevrY5xNrfnIL/Q2FdG3DVE8jk1P/Ut22PwNR41IH+QzEXmeRRQcQ/0KiEvjd9c0D
-	k5tnOUtAA==;
+	 bh=ogyvslyO266Uonv/oWCm6G4oWendX/6c7hlwIU8NHjQ=; b=DZqmeaiRJIkImXWMLC1otnL48
+	rpcR2rMIPLWp2eTEtNe8xWY7pcvM1eSieh4aXLzpvf3tUuLDPqsJO8nS4tecbEjjXcUSOlSARg0Yc
+	G9RK2or6pNYycU5n7Yh8tHD3RF42qU5cmRA1bTbYRhngDnVzYJh31XBmtKdJM/UfQwymhDxYpJHGj
+	dyhwO1AgtN659mqPZPhQDm+iIpSuAFTaSzkEEuA+lRDcyUKuE4Ehpq1KQWALOLzMGe4ojzu+kkKY9
+	ilnUMwLoxd3aYY945lmSETLvOIHAmAPL8vQpRGzyVzovOJjx8ZU8zYufd/BGG4L2ORGqvxZ0N7Pnn
+	XYAzobPFw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kG0oi-0001Nd-LP; Wed, 09 Sep 2020 14:11:20 +0000
-Received: from mail-mw2nam10on2044.outbound.protection.outlook.com
- ([40.107.94.44] helo=NAM10-MW2-obe.outbound.protection.outlook.com)
+	id 1kG12T-0003M4-50; Wed, 09 Sep 2020 14:25:33 +0000
+Received: from mail-qv1-xf41.google.com ([2607:f8b0:4864:20::f41])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kG0oa-0001Gg-Cu
- for linux-mtd@lists.infradead.org; Wed, 09 Sep 2020 14:11:17 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hRFmgqL1RlHhqZm6ZyQxj2mXTQ4pLXolCB00dcYTVMTBNIo9Qoq+/zZC1ziPtfk2MEdxn7fNN1Jej8Z11o6GsigRS6qZ/t7G/JTwpcObwVmOGp1KOEocJcm1guiEKh/0IxB84KZmcnpIp51E2TiLuS6VGjyIGKuDoqeERMLudOv0/WgURbZ9AXPxEicaNnTiv1nIIg/p9YBtuPxTqIiBY4Q8qkkFj63LNcuh+pqBbC+xbxGTVhZc1tqKGX3OUYbZh3Ygdw1GcMh2drWmOC8HWDPy51A0UtgDfH5XsYVpzU564duY2GAARP7wUlXpJbmHuBjL9Q4rgPZPhxOEo5dUvQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eJuVv5zkVb526PZF/d3E2BRZRfsHyUd4/QkageKHiWM=;
- b=f5PkLRL4oKpTDApMo2lMdoVK432bN/KQtu4Hh4rkSgoKgeBEt24ENst3cazE6eYZy2cWTTc0rGjVVcjULsDj1KxzDEWYgkO1NVJMFwYCS/cpldt7+HT4rxWJeyUxrpp046lxQPtWbVFnc0QbO0VZU5DxI2eYvYMX2ypM2GsRqi6tEXZTvc6pz3L/biheQiruMLTiGQyaotkFOFQN+liukY+VAc3c5+DVmtWyQgWwupMnllaArFl+SFBLUuvwoejiP2qUF8t2CVLjZyyjEJFp3IqLJy3pou/fLC3wFh8ul6hgLoO9iJia54OcL6ihbMlOapTrnqE3n4QN/vFyjzA/jQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=micron.com; dmarc=pass action=none header.from=micron.com;
- dkim=pass header.d=micron.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=micron.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eJuVv5zkVb526PZF/d3E2BRZRfsHyUd4/QkageKHiWM=;
- b=jsuU9I4SL87mzKgHcHNqCVsCttkbkFfRSWtiL0CzWtfPkV5uOx0cRF/B1erBgCtlsXd9SWlIDzypQciO0uzJrj7JML1JXHsxs1HoMqLXEUOMzMVORNNZ8QO7QLrW+TcVNyYch0+I1ReZuN36ZUXTCe4GW07VU6UHMPArz8PNDcY=
-Received: from MN2PR08MB6397.namprd08.prod.outlook.com (2603:10b6:208:1aa::10)
- by MN2PR08MB6400.namprd08.prod.outlook.com (2603:10b6:208:1b0::7)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.17; Wed, 9 Sep
- 2020 14:11:08 +0000
-Received: from MN2PR08MB6397.namprd08.prod.outlook.com
- ([fe80::e519:cf8c:ff65:46b8]) by MN2PR08MB6397.namprd08.prod.outlook.com
- ([fe80::e519:cf8c:ff65:46b8%8]) with mapi id 15.20.3348.019; Wed, 9 Sep 2020
- 14:11:08 +0000
-From: "Shivamurthy Shastri (sshivamurthy)" <sshivamurthy@micron.com>
-To: Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>
-Subject: RE: [EXT] [RESEND PATCH v3] mtd: spinand: micron: add support for
- MT29F2G01AAAED
-Thread-Topic: [EXT] [RESEND PATCH v3] mtd: spinand: micron: add support for
- MT29F2G01AAAED
-Thread-Index: AQHWhpnqi22BOgrP8UCIMQh4ntSW+algSK/A
-Date: Wed, 9 Sep 2020 14:11:07 +0000
-Message-ID: <MN2PR08MB6397100B7E24ED8FDA7830E2B8260@MN2PR08MB6397.namprd08.prod.outlook.com>
-References: <20200909111418.22549-1-nthirumalesha7@gmail.com>
-In-Reply-To: <20200909111418.22549-1-nthirumalesha7@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-rorf: true
-x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcc3NoaXZhbXVy?=
- =?us-ascii?Q?dGh5XGFwcGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02?=
- =?us-ascii?Q?Yjg0YmEyOWUzNWJcbXNnc1xtc2ctNGJiY2VhMTUtZjJhNi0xMWVhLWIyMDMt?=
- =?us-ascii?Q?OTgzYjhmNzQ1MjUxXGFtZS10ZXN0XDRiYmNlYTE3LWYyYTYtMTFlYS1iMjAz?=
- =?us-ascii?Q?LTk4M2I4Zjc0NTI1MWJvZHkudHh0IiBzej0iMTE2NzciIHQ9IjEzMjQ0MTM0?=
- =?us-ascii?Q?MjY0NzU3NTgyMCIgaD0iMHNab2kzSmFZNE9scHUyTHZFMytaOU9LaDVVPSIg?=
- =?us-ascii?Q?aWQ9IiIgYmw9IjAiIGJvPSIxIiBjaT0iY0FBQUFFUkhVMVJTUlVGTkNnVUFB?=
- =?us-ascii?Q?RkFLQUFBTXBSVU9zNGJXQWNkVjluMFJJNUVneDFYMmZSRWprU0FRQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUhBQUFBRGdDUUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUVCQVFBQkFBQUFCZzR6NFFBQUFBQUFBQUFBQUFBQUFKNEFBQUJ0?=
- =?us-ascii?Q?QUdrQVl3QnlBRzhBYmdCZkFHNEFZUUJ1QUdRQVh3QndBSElBYVFCdEFHRUFj?=
- =?us-ascii?Q?Z0I1QUY4QWF3QmxBSGtBZHdCdkFISUFaQUJ6QUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFHMEFhUUJqQUhJQWJ3QnVB?=
- =?us-ascii?Q?RjhBYmdCaEFHNEFaQUJmQUhNQVpRQmpBRzhBYmdCa0FHRUFjZ0I1QUY4QWF3?=
- =?us-ascii?Q?QmxBSGtBZHdCdkFISUFaQUJ6QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFB?=
- =?us-ascii?Q?QUFDQUFBQUFBQ2VBQUFBYmdCaEFHNEFaQUJmQUdjQWJBQnZBR0lBWVFCc0FB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFB?=
- =?us-ascii?Q?QnVBR0VBYmdCa0FGOEFhQUJwQUdjQWFBQmZBR01BYndCdUFHWUFhUUJrQUdV?=
- =?us-ascii?Q?QWJnQmpBR1VBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUc0QVlRQnVBR1FBWHdC?=
- =?us-ascii?Q?dEFHRUFjd0JyQUdrQWJnQm5BRjhBYkFCaEFIa0FaUUJ5QUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFB?=
- =?us-ascii?Q?QUFBQUNBQUFBQUFDZUFBQUFiZ0JoQUc0QVpBQmZBRzBBWVFCMEFHVUFjZ0Jw?=
- =?us-ascii?Q?QUdFQWJBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRB?=
- =?us-ascii?Q?QUFCdUFHRUFiZ0JrQUY4QWJRQnZBR1FBZFFCc0FHVUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBRzRBWVFCdUFHUUFY?=
- =?us-ascii?Q?d0J3QUhJQWJ3QmpBR1VBY3dCekFGOEFaUUJ4QUhVQWFRQndBRzBBWlFCdUFI?=
- =?us-ascii?Q?UUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFB?=
- =?us-ascii?Q?QUFBQUFBQ0FBQUFBQUNlQUFBQWJnQmhBRzRBWkFCZkFITUFNUUF6QURBQVh3?=
- =?us-ascii?Q?QmtBR1VBY3dCcEFHY0FiZ0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFK?=
- =?us-ascii?Q?NEFBQUJ1QUdFQWJnQmtBRjhBY3dBeEFETUFNQUJmQUhBQVlRQnlBSFFBWXdC?=
- =?us-ascii?Q?dkFHUUFaUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFHNEFZUUJ1QUdR?=
- =?us-ascii?Q?QVh3QnpBREVBTkFBd0FGOEFaQUJsQUhNQWFRQm5BRzRBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFB?=
- =?us-ascii?Q?QUFBQUFBQUFDQUFBQUFBQ2VBQUFBYmdCaEFHNEFaQUJmQUhNQU1RQTBBREFB?=
- =?us-ascii?Q?WHdCd0FHRUFjZ0IwQUdNQWJ3QmtBR1VBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFB?=
- =?us-ascii?Q?QUo0QUFBQnVBR0VBYmdCa0FGOEFjd0F4QURVQU1BQmZBR1FBWlFCekFHa0Fa?=
- =?us-ascii?Q?d0J1QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUc0QVlRQnVB?=
- =?us-ascii?Q?R1FBWHdCekFERUFOUUF3QUY4QWNBQmhBSElBZEFCakFHOEFaQUJsQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?UUFBQUFBQUFBQUNBQUFBQUFDZUFBQUFiZ0JoQUc0QVpBQmZBSE1BTVFBMkFE?=
- =?us-ascii?Q?QUFYd0JrQUdVQWN3QnBBR2NBYmdBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFB?=
- =?us-ascii?Q?QUFBSjRBQUFCdUFHRUFiZ0JrQUY4QWN3QXhBRFlBTUFCZkFIQUFZUUJ5QUhR?=
- =?us-ascii?Q?QVl3QnZBR1FBWlFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUVBQUFBQUFBQUFBZ0FBQUFBQSIvPjwvbWV0YT4?=
- =?us-ascii?Q?=3D?=
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=micron.com;
-x-originating-ip: [165.225.203.35]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 12b66136-76dc-4232-f703-08d854ca329a
-x-ms-traffictypediagnostic: MN2PR08MB6400:
-x-microsoft-antispam-prvs: <MN2PR08MB64002E113807D12A71CD0E74B8260@MN2PR08MB6400.namprd08.prod.outlook.com>
-x-ms-exchange-transport-forked: True
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6ow98UZ/IwaYsFQTc1L5SU3dTTdYusX4PVqinYXS+t4le8mbuxePCI2YbHOmHY7RxTMVKVVK3NqCjzfhslwhZFvE/40Fy59ddqofwc4oOv/uMByqacmMk0NgvU1KkndUKRroUFHnFGORpEEb70WgpkwsJ3UrjiMImJisB0FQFsrGSnMDvCdAjlJ6C6D4KtZGF0owTLlk80Ua0w4AaxvuwmKKCyU9AD8fpEwFiH0kOXrWpkT8F1SXTpnSKPbgU8S1MNSocW5poLPHa0wSlFayHy9SFbt1GOA7jEdY7fwpw65/JBG5TutulObjJxRj3M8osfBSnnWmRojUFb4pKGfAXg==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:MN2PR08MB6397.namprd08.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(136003)(396003)(376002)(346002)(39860400002)(366004)(26005)(64756008)(66476007)(83380400001)(66446008)(66556008)(76116006)(8676002)(55236004)(33656002)(186003)(86362001)(66946007)(54906003)(30864003)(55016002)(316002)(9686003)(52536014)(5660300002)(4326008)(478600001)(6916009)(6506007)(7696005)(2906002)(8936002)(71200400001);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata: rWJ27efhweDMNwjaAydKU9YsyB2PlyQgQqSJmWBCn8tBoIl+XE5JhjUrOGPOD93pL+3Y0jGtL5xivTYJ2M3YlSIArqmgbouZH1Zkm8H97JT1Bh5Musr+gb5yTpqwTjXvr29I5F5hrJDIedlOYpsJFn38khMF6y8KomcyO8vxXB9oExn3QL1N+cI/P6+t3k3c2y94j4IBWatUjCLCX26OiMmrbG8KuxSuEHdm5zKiIHN2gZrvxQWjOn4PQYBuaqNQ2cbPEYU6us0eX48Zkpxx0eiZnLwoLA9wVyeN1cuG4aU+ZYw6ldEtkUFfJ6Vuwky5oedG4IMMqhC36Dxiz/UW3vpSpFfWDvWYHMLqpOFcJZmi316GOyViOKe/7Gmjn1/ElJu2mUdzzazGVxIyyNW4oo3KFvKv9yShhExqa8pZmyyXGve0FUsPbvCdtYi7aFLEqCbLTUeq8MSVAnc0R/c+1wjoz1ByqXn2UzzPRTM2X9uwa2zO81B9Kn5AVfTXTJm7I7YLwRy6PmpAVEe7vd/TphxEktCWfNErN0JB6vfGALsq7zWpZZQ76KAuLZKYZmgxZ4YW0kbvoyHn/L4zCGMEjPhzfxtHjp2O5Fay+FW2brPWzbKvsUuCHx5s6WMTZzguzp8ErEHBPUDOWGcLKc67mg==
+ id 1kG12P-0003Kt-M0
+ for linux-mtd@lists.infradead.org; Wed, 09 Sep 2020 14:25:31 +0000
+Received: by mail-qv1-xf41.google.com with SMTP id di5so1556644qvb.13
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Sep 2020 07:25:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=eclypsium.com; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=WmOHg8qLdIxGmn6WIdyF0yDMs8Pd4/sNoCK3Ea7awWI=;
+ b=cDZ3FvJzKqd1Dvp2nRsJt8pkjCOmcNg/+psjrnaaXOym2zXYsZ4dPPqfTz/mL6YjRG
+ /E4oxQ+MNKpf0wySA5WcmlTrQT+GYlVl8GbfCIxryiHf5/fKv7hLPngVT/jM+Hn1khzE
+ JQ2J7MPSwgz2QfQKMnxl0A+zQN9/Vci/IOOTZ2LMCFVFMvm/BEZD2Z9KARixNq9HeMEy
+ fxKzCWoSYSFdoXN8TE2m4nI2bkh79ArDvlKfwjAYdswBxrP2pJFl1rNDwB9cGlJdVPCT
+ hb6DxP0Eblfoe2qyBWb53U0GrbjaTG112kGtuMyIhvMnfnfaBYs99G6fQ213h40Wv8S9
+ Igfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=WmOHg8qLdIxGmn6WIdyF0yDMs8Pd4/sNoCK3Ea7awWI=;
+ b=qQq5+JxIevB6Bg93iIaavsT3CqCjlUYjd/2Ed+H7g5GbtXu3gTNubnGA+x+AaQFrqL
+ /6WOy8HYTXB2i4VGkw4gYt26kuUgqwj9HckmGAPKzIi3D52eX3yDulnLwy0qjRHByC2Z
+ Gas2FM1f2aae9rf45r1IMDaUFLGUYfH45yXa4wLegdYjTMGYiEtPT97ozAZNP7fKEckW
+ UNiQ6YHPrdVRekU/HMrkCk0uCg/scwch4GmCPru304806zV9RQOYM+aOttmUyiKBsV2n
+ JD6HEZHB8W+0QBrbmPT0eOgT3ykfbGfg92QQhvs0v+xrxvOpwEget49mDRCEYEtCDY1I
+ Qz/Q==
+X-Gm-Message-State: AOAM5335YLOeWlPuUfkK4rBkehXh8QJ+zavMjNdmfcQsywgJGYD310vT
+ q3mU1ksmPQ0oO5akm/EZk0WZh7jJdghZJidhmXjp5Q==
+X-Google-Smtp-Source: ABdhPJwC/9RlWBKE1YZR9qf0dEG3NRmIrd1RkvV7XTm8Oz4KihQ7bdtlmdcAadGq2dZW0Q3kqAjRhLh+nfWyJ6OGkbc=
+X-Received: by 2002:a0c:b35d:: with SMTP id a29mr4114921qvf.19.1599661525454; 
+ Wed, 09 Sep 2020 07:25:25 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: micron.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR08MB6397.namprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 12b66136-76dc-4232-f703-08d854ca329a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Sep 2020 14:11:07.9918 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: f38a5ecd-2813-4862-b11b-ac1d563c806f
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +XCsrM0WlRLom4nvK0vnR3/DLhMk1iSWB11aNmvf6hEMTgr9goRSgz2ROevMSGjXpdUjbQ55Dllntr6PglYHOw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR08MB6400
+References: <20200903161804.403299-1-daniel.gutson@eclypsium.com>
+ <7885ca85-5982-a0d5-2307-d785d4dc0eea@ti.com>
+In-Reply-To: <7885ca85-5982-a0d5-2307-d785d4dc0eea@ti.com>
+From: Daniel Gutson <daniel@eclypsium.com>
+Date: Wed, 9 Sep 2020 11:25:13 -0300
+Message-ID: <CAFmMkTHXkhAdQT-1kTDYnwarshV1JTLSgnPi4X7=EMgS5iVZpA@mail.gmail.com>
+Subject: Re: [PATCH] Platform integrity information in sysfs
+To: Vignesh Raghavendra <vigneshr@ti.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200909_101112_686953_29871CF5 
-X-CRM114-Status: GOOD (  15.26  )
+X-CRM114-CacheID: sfid-20200909_102530_004297_A884A436 
+X-CRM114-Status: GOOD (  51.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -208,333 +90,275 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Boris Brezillon <boris.brezillon@collabora.com>,
+Cc: Arnd Bergmann <arnd@arndb.de>, Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+ Richard Weinberger <richard@nod.at>, Richard Hughes <hughsient@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Chuanhong Guo <gch981213@gmail.com>
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Derek Kiernan <derek.kiernan@xilinx.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Alex Bazhaniuk <alex@eclypsium.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Thirumalesha,
+On Tue, Sep 8, 2020 at 5:48 AM Vignesh Raghavendra <vigneshr@ti.com> wrote:
+>
+> Hi,
 
-I think it is better to split the patch into two:
-1. Changes for the devices which are already present
-2. For the device MT29F2G01AAAED, which you want to add
+Hi, thanks for your review.
 
-> 
-> The MT29F2G01AAAED is a single die, 2Gb Micron SPI NAND Flash with 4-bit
-> ECC
-> 
-> Signed-off-by: Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>
-> ---
->  v3: As per the review comments,
->      1. Renamed read_cache_variants as quadio_read_cache_variants,
-> write_cache_variants as
-> 	x4_write_cache_variants/x1_write_cache_variants,
-> update_cache_variants as
-> 	x4_update_cache_variants/x1_update_cache_variants,
-> read_cache_variants
-> 	as x4_read_cache_variants
->      2. Renamed micron_8_ooblayout as micron_grouped_ooblayout &
-> mt29f2g01aaaed_ooblayout as
-> 	micron_interleaved_ooblayout
->      3. Generalized page size based oob section check in
-> mt29f2g01aaaed_ooblayout_ecc function
-> 	and separate case check for two bytes BBM reserved in
-> mt29f2g01aaaed_ooblayout_free function
->      4. Removed mt29f2g01aaaed_ecc_get_status function &
-> MICRON_STATUS_ECC_1TO4_BITFLIPS
-> 
->  v2: removed SPINAND_SELECT_TARGET as per the comments & fixed typo
-> errors
-> 
->  drivers/mtd/nand/spi/micron.c | 141 ++++++++++++++++++++++++----------
->  1 file changed, 101 insertions(+), 40 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
-> index 5d370cfcdaaa..fa8c20f37611 100644
-> --- a/drivers/mtd/nand/spi/micron.c
-> +++ b/drivers/mtd/nand/spi/micron.c
-> @@ -28,7 +28,7 @@
-> 
->  #define MICRON_SELECT_DIE(x)	((x) << 6)
-> 
-> -static SPINAND_OP_VARIANTS(read_cache_variants,
-> +static SPINAND_OP_VARIANTS(quadio_read_cache_variants,
->  		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL,
-> 0),
->  		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
->  		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL,
-> 0),
-> @@ -36,14 +36,27 @@ static SPINAND_OP_VARIANTS(read_cache_variants,
->  		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
->  		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
-> 
-> -static SPINAND_OP_VARIANTS(write_cache_variants,
-> +static SPINAND_OP_VARIANTS(x4_write_cache_variants,
->  		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
->  		SPINAND_PROG_LOAD(true, 0, NULL, 0));
-> 
-> -static SPINAND_OP_VARIANTS(update_cache_variants,
-> +static SPINAND_OP_VARIANTS(x4_update_cache_variants,
->  		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
->  		SPINAND_PROG_LOAD(false, 0, NULL, 0));
-> 
-> +/* Micron  MT29F2G01AAAED Device */
-> +static SPINAND_OP_VARIANTS(x4_read_cache_variants,
-> +		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-> +		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-> +		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
-> +		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
-> +
-> +static SPINAND_OP_VARIANTS(x1_write_cache_variants,
-> +		SPINAND_PROG_LOAD(true, 0, NULL, 0));
-> +
-> +static SPINAND_OP_VARIANTS(x1_update_cache_variants,
-> +		SPINAND_PROG_LOAD(false, 0, NULL, 0));
-> +
->  static int micron_8_ooblayout_ecc(struct mtd_info *mtd, int section,
->  				  struct mtd_oob_region *region)
->  {
-> @@ -69,11 +82,49 @@ static int micron_8_ooblayout_free(struct mtd_info
-> *mtd, int section,
->  	return 0;
->  }
-> 
-> -static const struct mtd_ooblayout_ops micron_8_ooblayout = {
-> +static int mt29f2g01aaaed_ooblayout_ecc(struct mtd_info *mtd, int section,
-> +					struct mtd_oob_region *region)
-> +{
-> +	struct spinand_device *spinand = mtd_to_spinand(mtd);
-> +
-> +	if (section >= spinand->base.memorg.pagesize /
-> +			mtd->ecc_step_size)
-> +		return -ERANGE;
-> +
-> +	region->offset = (section * 16) + 8;
-> +	region->length = 8;
-> +
-> +	return 0;
-> +}
-> +
-> +static int mt29f2g01aaaed_ooblayout_free(struct mtd_info *mtd, int section,
-> +					 struct mtd_oob_region *region)
-> +{
-> +	if (section >= 4)
-> +		return -ERANGE;
+>
+> On 9/3/20 9:48 PM, Daniel Gutson wrote:
+> > This patch exports information about the platform integrity
+> > firmware configuration in the sysfs filesystem.
+> > In this initial patch, I include some configuration attributes
+> > for the system SPI chip.
+> >
+>
+> Please avoid first-person singular pronouns instead use imperative mood.
+>
+> > This initial version exports the BIOS Write Enable (bioswe),
+> > BIOS Lock Enable (ble), and the SMM BIOS Write Protect (SMM_BWP)
+> > fields of the BIOS Control register. The idea is to keep adding more
+> > flags, not only from the BC but also from other registers in following
+> > versions.
+> >
+> > The goal is that the attributes are avilable to fwupd when SecureBoot
+> > is turned on.
+> >
+>
+> s/avilable/available
+>
+> > The patch provides a new misc driver, as proposed in the previous patch,
+> > that provides a registration function for HW Driver devices to register
+> > class_attributes.
+> > In this case, the intel SPI flash chip (intel-spi) registers three
+>
+> s/intel SPI/Intel SPI
+>
+> > class_attributes corresponding to the fields mentioned above.
+> >
+> > This version of the patch provides a new API supporting regular
+> > device attributes rather than custom attributes, and also avoids
+> > a race condition when exporting the driver sysfs dir and the
+> > attributes files inside it.
+> > Also, this patch renames 'platform lockdown' by 'platform integrity'.
+>
+> Changes wrt to previous versions should not be part of commit message
+> but instead should be below tearline (b/w "---" and diffstat below)
+>
+> >
+> > Signed-off-by: Daniel Gutson <daniel.gutson@eclypsium.com>
+> > ---
+>
+> Changes wrt previous versions go here...
+>
+> >  .../ABI/stable/sysfs-class-platform-integrity | 23 +++++
+> >  MAINTAINERS                                   |  7 ++
+> >  drivers/misc/Kconfig                          | 11 +++
+> >  drivers/misc/Makefile                         |  1 +
+> >  drivers/misc/platform-integrity.c             | 61 +++++++++++++
+> >  drivers/mtd/spi-nor/controllers/Kconfig       |  1 +
+> >  .../mtd/spi-nor/controllers/intel-spi-pci.c   | 64 ++++++++++++-
+> >  .../spi-nor/controllers/intel-spi-platform.c  |  2 +-
+> >  drivers/mtd/spi-nor/controllers/intel-spi.c   | 89 ++++++++++++++++++-
+> >  drivers/mtd/spi-nor/controllers/intel-spi.h   |  5 +-
+> >  include/linux/platform-integrity.h            | 20 +++++
+> >  11 files changed, 278 insertions(+), 6 deletions(-)
+> >  create mode 100644 Documentation/ABI/stable/sysfs-class-platform-integrity
+> >  create mode 100644 drivers/misc/platform-integrity.c
+> >  create mode 100644 include/linux/platform-integrity.h
+> >
+>
+>
+> You forgot to cc linux-mtd lists and hence patch did not show up in my
+> queue.. MTD Patches are managed via patchoworks and if linux-mtd is not
+> cc'd then they will most likely be ignored. Please use
+> scripts/get_maintainer.pl to get list of maintainters and mailing lists
+> to cc.
 
-You can deduce the max section with pagesize/ecc_step_size as in the above function.
+Sorry, I don't know when I lost the list in the emails, I included it
+in previous
+patches.
 
-> +
-> +	if (section) {
-> +		region->offset = 16 * section;
-> +		region->length = 8;
-> +	} else {
-> +		/* section 0 has two bytes reserved for the BBM */
-> +		region->offset = 2;
-> +		region->length = 6;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct mtd_ooblayout_ops micron_grouped_ooblayout = {
->  	.ecc = micron_8_ooblayout_ecc,
->  	.free = micron_8_ooblayout_free,
->  };
-> 
-> +static const struct mtd_ooblayout_ops micron_interleaved_ooblayout = {
-> +	.ecc = mt29f2g01aaaed_ooblayout_ecc,
-> +	.free = mt29f2g01aaaed_ooblayout_free,
+>
+> Also, this patch needs to be split into at least two patches: one
+> introducing platform-integrity module and another adding suuport for
+> intel-spi driver to use the same.
+>
+> Also, I see there are multiple iterations of the patch posted but are
+> not versioned. Please use appropriate version number in $subject.
+>
+> Please read Documentation/process/submitting-patches.rst for more details.
+>
+>
+> > diff --git a/Documentation/ABI/stable/sysfs-class-platform-integrity b/Documentation/ABI/stable/sysfs-class-platform-integrity
+> > new file mode 100644
+> > index 000000000000..b31ec051ca48
+> > --- /dev/null
+> > +++ b/Documentation/ABI/stable/sysfs-class-platform-integrity
+> > @@ -0,0 +1,23 @@
+> > +What:                /sys/class/platform-integrity/intel-spi/bioswe
+> > +Date:                September 2020
+> > +KernelVersion:       5.9.1
+>
+> 5.9 merge window is closed. This won't make it to 5.9... Maybe 5.10
+>
+> > +Contact:     Daniel Gutson <daniel.gutson@eclypsium.com>
+> > +Description: If the system firmware set BIOS Write Enable.
+> > +             0: writes disabled, 1: writes enabled.
+> > +Users:               https://github.com/fwupd/fwupd
+> > +
+> > +What:                /sys/class/platform-integrity/intel-spi/ble
+>
+> Naming seems inconsistent... Previous entry was bioswe (BIOS write
+> enable) but this one is called ble (BIOS latch enable). Maybe rename
+> previous one as bwe to be consistent with other entries?
+>
+> > +Date:                September 2020
+> > +KernelVersion:       5.9.1
+> > +Contact:     Daniel Gutson <daniel.gutson@eclypsium.com>
+> > +Description: If the system firmware set BIOS Lock Enable.
+> > +             0: SMM lock disabled, 1: SMM lock enabled.
+> > +Users:               https://github.com/fwupd/fwupd
+> > +
+> > +What:                /sys/class/platform-integrity/intel-spi/smm_bwp
+> > +Date:                September 2020
+> > +KernelVersion:       5.9.1
+> > +Contact:     Daniel Gutson <daniel.gutson@eclypsium.com>
+> > +Description: If the system firmware set SMM BIOS Write Protect.
+> > +             0: writes disabled unless in SMM, 1: writes enabled.
+>
+> Is SMM a standard abbreviation in  Intel world? If not you may want to
+> expand what it means in Description.
+>
+> > +Users:               https://github.com/fwupd/fwupd
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index e4647c84c987..771eaf715427 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -13744,6 +13744,13 @@ S:   Maintained
+> >  F:   Documentation/devicetree/bindings/iio/chemical/plantower,pms7003.yaml
+> >  F:   drivers/iio/chemical/pms7003.c
+> >
+> > +PLATFORM INTEGRITY DATA MODULE
+> > +M:   Daniel Gutson <daniel.gutson@eclypsium.com>
+> > +S:   Supported
+> > +F:   Documentation/ABI/sysfs-class-platform-integrity
+> > +F:   drivers/misc/platform-integrity.c
+> > +F:   include/linux/platform-integrity.h
+> > +
+> >  PLDMFW LIBRARY
+> >  M:   Jacob Keller <jacob.e.keller@intel.com>
+> >  S:   Maintained
+> > diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+> > index ce136d685d14..d5d0de5b5706 100644
+> > --- a/drivers/misc/Kconfig
+> > +++ b/drivers/misc/Kconfig
+> > @@ -456,6 +456,17 @@ config PVPANIC
+> >         a paravirtualized device provided by QEMU; it lets a virtual machine
+> >         (guest) communicate panic events to the host.
+> >
+> > +config PLATFORM_INTEGRITY_ATTRS
+> > +     tristate "Platform integrity information in the sysfs"
+> > +     depends on SYSFS
+> > +     help
+> > +       This kernel module is a helper driver to provide information about
+> > +       platform integrity settings and configuration.
+> > +       This module is used by other device drivers -such as the intel-spi-
+> > +       to publish the information in /sys/class/platform-integrity which is
+> > +       consumed by software such as fwupd which can verify the platform
+> > +       has been configured in a secure way.
+> > +
+>
+> [...]
+>
+> > diff --git a/drivers/mtd/spi-nor/controllers/Kconfig b/drivers/mtd/spi-nor/controllers/Kconfig
+> > index 5c0e0ec2e6d1..113e349a826b 100644
+> > --- a/drivers/mtd/spi-nor/controllers/Kconfig
+> > +++ b/drivers/mtd/spi-nor/controllers/Kconfig
+> > @@ -29,6 +29,7 @@ config SPI_NXP_SPIFI
+> >
+> >  config SPI_INTEL_SPI
+> >       tristate
+> > +     select PLATFORM_INTEGRITY_ATTRS
+> >
+>
+> Not a good idea to use select clause on symbols that have dependencies
+> as select will force a symbol to a value without visiting the
+> dependencies. Instead use depends on
 
-I would rename mt29f2g01aaaed_ to a more common one.
+I just tried this, but when selecting the Intel SPI drivers, my new
+platform integrity driver
+was not selected, as it was with the select clause.
 
-> +};
-> +
->  static int micron_select_target(struct spinand_device *spinand,
->  				unsigned int target)
->  {
-> @@ -120,55 +171,55 @@ static const struct spinand_info
-> micron_spinand_table[] = {
-> 
-> SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x24),
->  		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 2, 1, 1),
->  		     NAND_ECCREQ(8, 512),
-> -		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-> -					      &write_cache_variants,
-> -					      &update_cache_variants),
-> +
-> SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
-> +					      &x4_write_cache_variants,
-> +					      &x4_update_cache_variants),
->  		     0,
-> -		     SPINAND_ECCINFO(&micron_8_ooblayout,
-> +		     SPINAND_ECCINFO(&micron_grouped_ooblayout,
->  				     micron_8_ecc_get_status)),
->  	/* M79A 2Gb 1.8V */
->  	SPINAND_INFO("MT29F2G01ABBGD",
-> 
-> SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x25),
->  		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 2, 1, 1),
->  		     NAND_ECCREQ(8, 512),
-> -		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-> -					      &write_cache_variants,
-> -					      &update_cache_variants),
-> +
-> SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
-> +					      &x4_write_cache_variants,
-> +					      &x4_update_cache_variants),
->  		     0,
-> -		     SPINAND_ECCINFO(&micron_8_ooblayout,
-> +		     SPINAND_ECCINFO(&micron_grouped_ooblayout,
->  				     micron_8_ecc_get_status)),
->  	/* M78A 1Gb 3.3V */
->  	SPINAND_INFO("MT29F1G01ABAFD",
-> 
-> SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x14),
->  		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
->  		     NAND_ECCREQ(8, 512),
-> -		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-> -					      &write_cache_variants,
-> -					      &update_cache_variants),
-> +
-> SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
-> +					      &x4_write_cache_variants,
-> +					      &x4_update_cache_variants),
->  		     0,
-> -		     SPINAND_ECCINFO(&micron_8_ooblayout,
-> +		     SPINAND_ECCINFO(&micron_grouped_ooblayout,
->  				     micron_8_ecc_get_status)),
->  	/* M78A 1Gb 1.8V */
->  	SPINAND_INFO("MT29F1G01ABAFD",
-> 
-> SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x15),
->  		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
->  		     NAND_ECCREQ(8, 512),
-> -		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-> -					      &write_cache_variants,
-> -					      &update_cache_variants),
-> +
-> SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
-> +					      &x4_write_cache_variants,
-> +					      &x4_update_cache_variants),
->  		     0,
-> -		     SPINAND_ECCINFO(&micron_8_ooblayout,
-> +		     SPINAND_ECCINFO(&micron_grouped_ooblayout,
->  				     micron_8_ecc_get_status)),
->  	/* M79A 4Gb 3.3V */
->  	SPINAND_INFO("MT29F4G01ADAGD",
-> 
-> SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x36),
->  		     NAND_MEMORG(1, 2048, 128, 64, 2048, 80, 2, 1, 2),
->  		     NAND_ECCREQ(8, 512),
-> -		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-> -					      &write_cache_variants,
-> -					      &update_cache_variants),
-> +
-> SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
-> +					      &x4_write_cache_variants,
-> +					      &x4_update_cache_variants),
->  		     0,
-> -		     SPINAND_ECCINFO(&micron_8_ooblayout,
-> +		     SPINAND_ECCINFO(&micron_grouped_ooblayout,
->  				     micron_8_ecc_get_status),
->  		     SPINAND_SELECT_TARGET(micron_select_target)),
->  	/* M70A 4Gb 3.3V */
-> @@ -176,33 +227,33 @@ static const struct spinand_info
-> micron_spinand_table[] = {
-> 
-> SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x34),
->  		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
->  		     NAND_ECCREQ(8, 512),
-> -		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-> -					      &write_cache_variants,
-> -					      &update_cache_variants),
-> +
-> SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
-> +					      &x4_write_cache_variants,
-> +					      &x4_update_cache_variants),
->  		     SPINAND_HAS_CR_FEAT_BIT,
-> -		     SPINAND_ECCINFO(&micron_8_ooblayout,
-> +		     SPINAND_ECCINFO(&micron_grouped_ooblayout,
->  				     micron_8_ecc_get_status)),
->  	/* M70A 4Gb 1.8V */
->  	SPINAND_INFO("MT29F4G01ABBFD",
-> 
-> SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x35),
->  		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
->  		     NAND_ECCREQ(8, 512),
-> -		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-> -					      &write_cache_variants,
-> -					      &update_cache_variants),
-> +
-> SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
-> +					      &x4_write_cache_variants,
-> +					      &x4_update_cache_variants),
->  		     SPINAND_HAS_CR_FEAT_BIT,
-> -		     SPINAND_ECCINFO(&micron_8_ooblayout,
-> +		     SPINAND_ECCINFO(&micron_grouped_ooblayout,
->  				     micron_8_ecc_get_status)),
->  	/* M70A 8Gb 3.3V */
->  	SPINAND_INFO("MT29F8G01ADAFD",
-> 
-> SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x46),
->  		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 2),
->  		     NAND_ECCREQ(8, 512),
-> -		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-> -					      &write_cache_variants,
-> -					      &update_cache_variants),
-> +
-> SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
-> +					      &x4_write_cache_variants,
-> +					      &x4_update_cache_variants),
->  		     SPINAND_HAS_CR_FEAT_BIT,
-> -		     SPINAND_ECCINFO(&micron_8_ooblayout,
-> +		     SPINAND_ECCINFO(&micron_grouped_ooblayout,
->  				     micron_8_ecc_get_status),
->  		     SPINAND_SELECT_TARGET(micron_select_target)),
->  	/* M70A 8Gb 1.8V */
-> @@ -210,13 +261,23 @@ static const struct spinand_info
-> micron_spinand_table[] = {
-> 
-> SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x47),
->  		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 2),
->  		     NAND_ECCREQ(8, 512),
-> -		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-> -					      &write_cache_variants,
-> -					      &update_cache_variants),
-> +
-> SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
-> +					      &x4_write_cache_variants,
-> +					      &x4_update_cache_variants),
->  		     SPINAND_HAS_CR_FEAT_BIT,
-> -		     SPINAND_ECCINFO(&micron_8_ooblayout,
-> +		     SPINAND_ECCINFO(&micron_grouped_ooblayout,
->  				     micron_8_ecc_get_status),
->  		     SPINAND_SELECT_TARGET(micron_select_target)),
-> +	/* M69A 2Gb 3.3V */
-> +	SPINAND_INFO("MT29F2G01AAAED",
-> +
-> SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x9F),
-> +		     NAND_MEMORG(1, 2048, 64, 64, 2048, 80, 2, 1, 1),
-> +		     NAND_ECCREQ(4, 512),
-> +		     SPINAND_INFO_OP_VARIANTS(&x4_read_cache_variants,
-> +					      &x1_write_cache_variants,
-> +					      &x1_update_cache_variants),
-> +		     0,
-> +		     SPINAND_ECCINFO(&micron_interleaved_ooblayout, NULL)),
->  };
-> 
->  static int micron_spinand_init(struct spinand_device *spinand)
-> --
-> 2.17.1
+>
+>
+> >  config SPI_INTEL_SPI_PCI
+> >       tristate "Intel PCH/PCU SPI flash PCI driver (DANGEROUS)"
+> > diff --git a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
+> > index c72aa1ab71ad..e1bca8aedf7c 100644
+> > --- a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
+> > +++ b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
+> > @@ -10,11 +10,19 @@
+> >  #include <linux/kernel.h>
+> >  #include <linux/module.h>
+> >  #include <linux/pci.h>
+> > +#include <linux/platform-integrity.h>
+> >
+> >  #include "intel-spi.h"
+> >
+> >  #define BCR          0xdc
+> >  #define BCR_WPD              BIT(0)
+> > +#define BCR_BLE              BIT(1)
+> > +#define BCR_SMM_BWP  BIT(5)
+> > +
+> > +struct cnl_spi_attr {
+> > +     struct device_attribute dev_attr;
+> > +     u32 mask;
+> > +};
+> >
+> >  static const struct intel_spi_boardinfo bxt_info = {
+> >       .type = INTEL_SPI_BXT,
+> > @@ -24,6 +32,59 @@ static const struct intel_spi_boardinfo cnl_info = {
+> >       .type = INTEL_SPI_CNL,
+> >  };
+> >
+> > +static ssize_t cnl_spi_attr_show(struct device *dev,
+> > +     struct device_attribute *attr, char *buf, u32 mask)
+> > +{
+>
+> Please be consistent with existing code and use intel_spi_ prefix for
+> function names.
+>
+> Also Alignment should match open parenthesis..
+> Please run scripts/checkpatch.pl --strict on patch and fix all issue
+> reported.
 
-Thanks,
-Shiva
+I just added the --strict flag and indeed a lot of alignment
+issues showed up. I will fix this in the next version. Thanks.
 
+>
+> [...]
+>
+> Regards
+> Vignesh
+
+
+
+-- 
+Daniel Gutson
+Argentina Site Director
+Enginieering Director
+Eclypsium
+
+Below The Surface: Get the latest threat research and insights on
+firmware and supply chain threats from the research team at Eclypsium.
+https://eclypsium.com/research/#threatreport
 
 ______________________________________________________
 Linux MTD discussion mailing list
