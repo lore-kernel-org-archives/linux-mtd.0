@@ -2,60 +2,76 @@ Return-Path: <SRS0=L51Y=CT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA6DCC43461
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Sep 2020 09:29:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5B96C07548
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Sep 2020 10:16:26 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7F8F321556
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Sep 2020 09:29:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1A2F52078E
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Sep 2020 10:16:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EYYyxC0+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7F8F321556
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GbgwazyD";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ieee.org header.i=@ieee.org header.b="bOXL4Pce"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1A2F52078E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=ieee.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=ts7RHhsW2AED1kx+GCnvkDF0atLF8XKEdG8Uow4Uy5M=; b=EYYyxC0+AO6MdXkK6VV0o0zoD
-	mTWE7tF2ZrHymt09LxCVIYKDVgF9k/7pOOF+2mJ9ehTLniQrjBnQChlhqgQTokJYyftcak7GZmL/s
-	1jcrwDtEduuuOyd2sDczsbkypn+h9JQG45PZPomaO5ml0frJUBo65g+jqJIPrW62AGhKto15MiJj6
-	ZIncmSx+6KQfa0C73GyAHCXGilqlnM0bvifwHSFNm4v81mhO30A/qQhB8JEwEort6ranluMtMfU65
-	Qhm8yxRR98c0lOb9yXmCJ8nODfh8+t4d3BUNcWM3jcNsoANnv3jVyHnOXi4Bfgl0NDSrivPnqeGEP
-	VZev8BIGQ==;
+	Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
+	:List-Id:To:Subject:Message-ID:Date:From:MIME-Version:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=ZY8YVUVTaGEfa9n05kgrMHUNYRLwxemXGHWMcwJbK5E=; b=GbgwazyDnOAjHL0wVMri+kKyMl
+	DtYdOFKrXOYGOyNYffNtG/2kjTwWOvGG77bCC4S2iaP5qbrv4CYloqqCi3Qx1juJoUO1IZ3BWtKNP
+	cwV4a+KpfIuepxis9ba22QneItBMZW8poqqQhDM/rV7VvfD9SXp9rx4pWWoiThwx9NSgInRXuSEPX
+	43NsO2+yU4gn7+isjuWKDmSjKZHgMPpIIe71z9Ympp2HOi5L6zHghMvB3b/HhgiPJ15cXWWU7wVuM
+	DAucrI2iSBO4NYm/5F4yLwbjgETeejvUyTAibV7w3eCoAyfFJEDY3r9WagXTsVJwZsZjaLQ98UZpy
+	a7J158bQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kGIsO-0007rX-Bd; Thu, 10 Sep 2020 09:28:20 +0000
-Received: from verein.lst.de ([213.95.11.211])
+	id 1kGJc1-0000UY-3W; Thu, 10 Sep 2020 10:15:29 +0000
+Received: from mail-ed1-x529.google.com ([2a00:1450:4864:20::529])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kGIsK-0007qL-Do
- for linux-mtd@lists.infradead.org; Thu, 10 Sep 2020 09:28:17 +0000
-Received: by verein.lst.de (Postfix, from userid 2407)
- id C27726736F; Thu, 10 Sep 2020 11:28:13 +0200 (CEST)
-Date: Thu, 10 Sep 2020 11:28:13 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: Mike Snitzer <snitzer@redhat.com>
-Subject: Re: [PATCH 06/14] block: lift setting the readahead size into the
- block layer
-Message-ID: <20200910092813.GA27229@lst.de>
-References: <20200726150333.305527-1-hch@lst.de>
- <20200726150333.305527-7-hch@lst.de> <20200826220737.GA25613@redhat.com>
- <20200902151144.GA1738@lst.de> <20200902162007.GB5513@redhat.com>
+ id 1kGJbz-0000U1-8j
+ for linux-mtd@lists.infradead.org; Thu, 10 Sep 2020 10:15:28 +0000
+Received: by mail-ed1-x529.google.com with SMTP id ay8so5706350edb.8
+ for <linux-mtd@lists.infradead.org>; Thu, 10 Sep 2020 03:15:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ieee.org; s=google;
+ h=mime-version:from:date:message-id:subject:to;
+ bh=IkO00cXlno6ML26ALPUqqWWgcbqKhnTBTDUipAGH060=;
+ b=bOXL4PceroD+eN3swyKjZj44cxdvHJ0z44TWqhLh5oFrF0+LVq59KU6Q/d9m9GeB0x
+ YqZ4r5d+tGoFVhJl95TYBH+ZtuJ0CUaoMxqdMw1DXkyINZjD7aU8VQ5ARK803VQH8v0I
+ 58mUfCoOn6k5cUbWT7unZ+Ht5HY1f53TXkACA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=IkO00cXlno6ML26ALPUqqWWgcbqKhnTBTDUipAGH060=;
+ b=ALdOpqkS2LpLjPWxfaYYgsc6UDBtpbrag9/h8XUXFvBH7NYmcqOS1RppZaeg00NOjX
+ +ULblkU5HGe4ZSXR3AQoeK3KmoziuRHMJprSWTmjy+kV6DyvqdujiRTFAkjlSKcPohiL
+ qN+LxlA1nTaPC3YkLtmODRUnYUEDQHyeibS2kb7jYt1GvqbUpTaFq2jehV86KvL+zFGo
+ LvH4oQYqvt3LLWZmCwsn2xVfMi8CDalrPcgxyjQXLq/uTPdjNuEbkp5PrV9Bkb2lXBxz
+ tIej9sMhyXwN+VwJIswcuUvw1IzvaBACR6JCAjp4xz1QfuLP10TmE4zPX4OQz3WguM0c
+ XETA==
+X-Gm-Message-State: AOAM532zs48Ot34g+PyHG0/vgEx1mQoZ71bsqvih1Ea4OhXOpV5Vh9r/
+ VULePNMBlZkLN63O3SwzVsPJRfd3JNxtfGbo4q+Aq4/x5d/4Rg==
+X-Google-Smtp-Source: ABdhPJzTjIQ4SmzqdztN+tBzP27pKneUnOlzgwdrmdsl8WaU1nw6VzLdcMkCotB9UnaruwJciEvuX3oZhjoHC0NFcck=
+X-Received: by 2002:a50:c019:: with SMTP id r25mr8747699edb.285.1599732925488; 
+ Thu, 10 Sep 2020 03:15:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20200902162007.GB5513@redhat.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+From: Randy Yates <yates@ieee.org>
+Date: Thu, 10 Sep 2020 06:15:14 -0400
+Message-ID: <CALJBDKhs0WWcO21rUmY5Q_DOBoDdt2Qehnrh+ZaW2NkfjvAMYg@mail.gmail.com>
+Subject: Identifying a UBI Image and locating the volume table
+To: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200910_052816_705668_A4DAEF6B 
-X-CRM114-Status: GOOD (  28.30  )
+X-CRM114-CacheID: sfid-20200910_061527_329379_D078A247 
+X-CRM114-Status: UNSURE (   7.44  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,77 +83,26 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Jens Axboe <axboe@kernel.dk>, linux-raid@vger.kernel.org,
- martin.petersen@oracle.com, Hans de Goede <hdegoede@redhat.com>,
- Richard Weinberger <richard@nod.at>, Minchan Kim <minchan@kernel.org>,
- drbd-dev@tron.linbit.com, linux-kernel@vger.kernel.org,
- linux-block@vger.kernel.org, Song Liu <song@kernel.org>, dm-devel@redhat.com,
- linux-mtd@lists.infradead.org, linux-mm@kvack.org,
- linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
- Christoph Hellwig <hch@lst.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Sep 02, 2020 at 12:20:07PM -0400, Mike Snitzer wrote:
-> On Wed, Sep 02 2020 at 11:11am -0400,
-> Christoph Hellwig <hch@lst.de> wrote:
-> 
-> > On Wed, Aug 26, 2020 at 06:07:38PM -0400, Mike Snitzer wrote:
-> > > On Sun, Jul 26 2020 at 11:03am -0400,
-> > > Christoph Hellwig <hch@lst.de> wrote:
-> > > 
-> > > > Drivers shouldn't really mess with the readahead size, as that is a VM
-> > > > concept.  Instead set it based on the optimal I/O size by lifting the
-> > > > algorithm from the md driver when registering the disk.  Also set
-> > > > bdi->io_pages there as well by applying the same scheme based on
-> > > > max_sectors.
-> > > > 
-> > > > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > > > ---
-> > > >  block/blk-settings.c         |  5 ++---
-> > > >  block/blk-sysfs.c            |  1 -
-> > > >  block/genhd.c                | 13 +++++++++++--
-> > > >  drivers/block/aoe/aoeblk.c   |  2 --
-> > > >  drivers/block/drbd/drbd_nl.c | 12 +-----------
-> > > >  drivers/md/bcache/super.c    |  4 ----
-> > > >  drivers/md/dm-table.c        |  3 ---
-> > > >  drivers/md/raid0.c           | 16 ----------------
-> > > >  drivers/md/raid10.c          | 24 +-----------------------
-> > > >  drivers/md/raid5.c           | 13 +------------
-> > > >  10 files changed, 16 insertions(+), 77 deletions(-)
-> > > 
-> > > 
-> > > In general these changes need a solid audit relative to stacking
-> > > drivers.  That is, the limits stacking methods (blk_stack_limits)
-> > > vs lower level allocation methods (__device_add_disk).
-> > > 
-> > > You optimized for lowlevel __device_add_disk establishing the bdi's
-> > > ra_pages and io_pages.  That is at the beginning of disk allocation,
-> > > well before any build up of stacking driver's queue_io_opt() -- which
-> > > was previously done in disk_stack_limits or driver specific methods
-> > > (e.g. dm_table_set_restrictions) that are called _after_ all the limits
-> > > stacking occurs.
-> > > 
-> > > By inverting the setting of the bdi's ra_pages and io_pages to be done
-> > > so early in __device_add_disk it'll break properly setting these values
-> > > for at least DM afaict.
-> > 
-> > ra_pages never got inherited by stacking drivers, check it by modifying
-> > it on an underlying device and then creating a trivial dm or md one.
-> 
-> Sure, not saying that it did.  But if the goal is to set ra_pages based
-> on io_opt then to do that correctly on stacking drivers it must be done
-> in terms of limits stacking right?  Or at least done at a location that
-> is after the limits stacking has occurred?  So should DM just open-code
-> setting ra_pages like it did for io_pages?
-> 
-> Because setting ra_pages in __device_add_disk() is way too early for DM
-> -- given it uses device_add_disk_no_queue_reg via add_disk_no_queue_reg
-> at DM device creation (before stacking all underlying devices' limits).
+I have a 256MB NAND flash with 2048-byte blocks and 64-byte ECC areas.
+I am trying to determine where the UBI image lies within this flash.
+there are large portions of the flash which do not have an ec header
+mapped, so i am trying to determine how many UBI images and their
+location in the flash. how to do?
 
-I'll move it to blk_register_queue, which should work just fine.
+I am also not finding where the volume table is supposed to be located
+in a UBI image. I see it defined in ubi-media.h, but i cannot find
+anything specific in the documentation (e.g. Memory Technology Device
+(MTD) Subsystem for Linux.) that says where it is supposed to be
+located.
+
+Any pointers would be appreciated.
+
+--Randy
 
 ______________________________________________________
 Linux MTD discussion mailing list
