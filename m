@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-14.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69EDAC2BC11
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2020 16:51:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0B16C433E2
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2020 16:51:15 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 14E63207FB
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2020 16:51:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EC3A4207FB
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2020 16:51:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="b7T+8u+T"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14E63207FB
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FCSTaUJf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC3A4207FB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,42 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=JDBjhY6v5DfOJnW98+MxZGE7wxJeXa5ydIoo4x1PSWQ=; b=b7T+8u+THiifVP7FjISHrIaFq
-	W4g8HWBT9NU2IARSUwJaAmiMmCKsItaG9jnigjQzXNGcUhhXl50Z+RcGgh5lbhTmPRu14Bo6pe5+k
-	kAb9TGR0s03ZJlJEFack7k2rX+zgkDylw4mz854LIbz/jr1Md+8Ew/pAqodXv48Dk2Fb66fsXhxWI
-	8BkJ/tEsl2SzSjnnsqPTlmZkLdz7AejTKDBrwv7KEaQkm0Ib3B3s+UYYBn2P97RTdPMSWaos6CroV
-	QWrHO/0PLwRG56lSJW5bPosdYqhXegkG6QdhNwc3VWfVuLbbvEJWLELktU/2XHX4zE2gTv9tQbpxX
-	tGlYgWSOA==;
+	 bh=8oGxjrip1RI6STnJ/HeofhTZo5i88apqPWbOF/BBS+w=; b=FCSTaUJf9NTfPuIem7IizerYA
+	t6jOsj8V4n6ti86qParefn75Q9eSimB3qBQQaNQ7F156lONymQzpcf7G4XP3DaP1+2iSkoFjcSbtJ
+	9/WkBK+UmyOwytytlhbTuODmi7n+Xl8pEnsiQI5tKHlmC6NYO7AckYNamvq8mmZ2EFq+lGegE1SRH
+	EqinCzD0f2Lql5ZqRRkIJbXjT/iGB8S36NNcIM7Q8OMvUQooFcJ0QyTE3+Qw9sCxngG1o1Ebcsw1I
+	ddMxZW1Hp67Eqs08tozS5/nkDYIC/T4Pll2oan7Xitp4dZr48MiPKo8SQH7Y4/n06aluTPmtTd/do
+	eeIlooy4g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kGmFX-0002mW-1O; Fri, 11 Sep 2020 16:50:11 +0000
-Received: from relay4-d.mail.gandi.net ([217.70.183.196])
+	id 1kGmFf-0002nO-Ez; Fri, 11 Sep 2020 16:50:19 +0000
+Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kGmFU-0002m8-MP
- for linux-mtd@lists.infradead.org; Fri, 11 Sep 2020 16:50:09 +0000
+ id 1kGmFc-0002ms-KH
+ for linux-mtd@lists.infradead.org; Fri, 11 Sep 2020 16:50:17 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 4A686E0002;
- Fri, 11 Sep 2020 16:50:06 +0000 (UTC)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 3AF331C0006;
+ Fri, 11 Sep 2020 16:50:11 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Colin King <colin.king@canonical.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: mtdconcat: map: remove redundant assignment to
- variable 'size'
-Date: Fri, 11 Sep 2020 18:50:04 +0200
-Message-Id: <20200911165004.27501-1-miquel.raynal@bootlin.com>
+To: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
+Subject: Re: [PATCH] mtd: mtdoops: Don't write panic data twice
+Date: Fri, 11 Sep 2020 18:50:10 +0200
+Message-Id: <20200911165010.27563-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200910154451.752569-1-colin.king@canonical.com>
+In-Reply-To: <20200903034217.23079-1-mark.tomlinson@alliedtelesis.co.nz>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 1840ff8d426122a06e849b805b5c5095ff4a59ee
+X-linux-mtd-patch-commit: c1cf1d57d1492235309111ea6a900940213a9166
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200911_125008_895235_0EF9C40D 
-X-CRM114-Status: UNSURE (   8.21  )
+X-CRM114-CacheID: sfid-20200911_125016_799020_C9006EB5 
+X-CRM114-Status: UNSURE (   8.32  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -73,20 +70,21 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: artem.bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2020-09-10 at 15:44:51 UTC, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Thu, 2020-09-03 at 03:42:17 UTC, Mark Tomlinson wrote:
+> If calling mtdoops_write, don't also schedule work to be done later.
 > 
-> Variable 'size' is being assigned the value zero that will never be
-> read. The assignment is redundant and can be removed.
+> Although this appears to not be causing an issue, possibly because the
+> scheduled work will never get done, it is confusing.
 > 
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Fixes: 016c1291ce70 ("mtd: mtdoops: do not use mtd->panic_write directly")
+> Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
