@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-14.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B93BC43461
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2020 16:59:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7F7DC43461
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2020 16:59:24 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D91D52074B
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2020 16:59:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 62F962074B
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2020 16:59:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QFI7zC6E"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D91D52074B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bbs7kRtW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 62F962074B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=S7+y9ZvQzoV6dMR//Zct8xRkRIePLRd6nW09ECUn8Sk=; b=QFI7zC6EKC6ehAZrmY0jr9UaG
-	IxLliIv1Gc35d2ZdYQtZzsYHlfEVbRSyTuTaIP2pAqSOEVdQ6JY1qWlySSaPIJqhuQ6HDUakN6I5P
-	DtPHdkqlZAAmWozkfLAh4CI+esRL/nIJq1ZPp3VhqUq6hCm0QjZuDXUmZ9ykMXvWIjRm81ajFcQhu
-	dmX98Dw9oU88PUrrckM1z+haCKdYBjilI6TvhYw3r5jJNLYdNjW3yXPY0VDJ/G3+G0oZdhSLlylYF
-	C0gDSG0UYg4NbajFvB5MfDQYP0piuJes1KU2Mem657QcZ0+z3rE1DitbQASB1kNuRsVcklrCCTyGs
-	mHlUkSz+w==;
+	 bh=+lv7LaHLn/6sZWJy544TZmKTYTKGScDtrFuQ/JEwyOA=; b=bbs7kRtW9r6/HoA1FCtSRr4pg
+	PlgwkiGdv+ev5xgDMa0hEcVATCtVQgVSUPMYAd3WNZCgPW1s4kaRjVBHX8YMr98eiSKzVJqYkUG7U
+	Fth1g6I6296EWLMONiu4F2p71YHfRiC1qh14mAyXyJVpL7PVT/pNThOMUvdxvdadlkqgDTX0nJDk9
+	QQZXzlvoRsILt0IpL1T3gpLBkLzNlBE2a0MdTghT1bRKMKmyc/35ReoG+oA4ZidVn5/p2rWVICmh4
+	yFgx0PM4ZhTOd3+JCn8Xj86L2GkY++uVmrVIJ34yalhhjob+IPStSnooRQeJ77TnkHIQzArztz3PW
+	7ewxkdPQQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kGmNg-00057M-2q; Fri, 11 Sep 2020 16:58:36 +0000
-Received: from relay11.mail.gandi.net ([217.70.178.231])
+	id 1kGmNT-0004xs-Px; Fri, 11 Sep 2020 16:58:23 +0000
+Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kGmLl-000429-KD
- for linux-mtd@lists.infradead.org; Fri, 11 Sep 2020 16:56:40 +0000
+ id 1kGmLg-0003zm-4u
+ for linux-mtd@lists.infradead.org; Fri, 11 Sep 2020 16:56:35 +0000
+X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay11.mail.gandi.net (Postfix) with ESMTPSA id 0FDE0100007;
- Fri, 11 Sep 2020 16:56:34 +0000 (UTC)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id AE1021C0002;
+ Fri, 11 Sep 2020 16:56:29 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Hauke Mehrtens <hauke@hauke-m.de>, miquel.raynal@bootlin.com,
  richard@nod.at
-Subject: Re: [PATCH v2 1/3] mtd: spinand: gigadevice: Only one dummy byte in
- QUADIO
-Date: Fri, 11 Sep 2020 18:56:34 +0200
-Message-Id: <20200911165634.29157-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v2 2/3] mtd: spinand: gigadevice: Add QE Bit
+Date: Fri, 11 Sep 2020 18:56:28 +0200
+Message-Id: <20200911165628.29094-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200820165121.3192-2-hauke@hauke-m.de>
+In-Reply-To: <20200820165121.3192-3-hauke@hauke-m.de>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: e910e2d6287ed075a70153bd9cbb480f3bafac98
+X-linux-mtd-patch-commit: 02de6aefd8bc3d6e20808950ee111c0b390a835a
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200911_125637_833456_79269AE7 
-X-CRM114-Status: UNSURE (   8.26  )
+X-CRM114-CacheID: sfid-20200911_125632_344622_1D38496F 
+X-CRM114-Status: UNSURE (   9.36  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -77,13 +77,15 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2020-08-20 at 16:51:19 UTC, Hauke Mehrtens wrote:
-> The datasheet only lists one dummy byte in the 0xEH operation for the
-> following chips:
+On Thu, 2020-08-20 at 16:51:20 UTC, Hauke Mehrtens wrote:
+> The following GigaDevice chips have the QE BIT in the feature flags, I
+> checked the datasheets, but did not try this.
 > * GD5F1GQ4xExxG
 > * GD5F1GQ4xFxxG
 > * GD5F1GQ4UAYIG
 > * GD5F4GQ4UAYIG
+> 
+> The Quad operations like 0xEB mention that the QE bit has to be set.
 > 
 > Fixes: c93c613214ac ("mtd: spinand: add support for GigaDevice GD5FxGQ4xA")
 > Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
