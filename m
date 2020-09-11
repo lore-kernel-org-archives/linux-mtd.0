@@ -7,63 +7,57 @@ X-Spam-Status: No, score=-14.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB692C43461
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2020 16:57:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF583C433E2
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2020 16:58:15 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8521F2074B
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2020 16:57:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5CC7F2074B
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2020 16:58:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jf5M0EQC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8521F2074B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qq3MGbYg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5CC7F2074B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
-	:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:To:From:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=lYR9PREVKrjRPcouJV+sTHboRWvY9A8ZSKdBTma68I0=; b=jf5M0EQCzXOlrloMuKbIDLjEEC
-	g9rv0RlUCHCl+ZnderZusjf83Y7D6hCO8GQX/65UhvbnWnUEFZzYHcREGOXHNebpGMLVjuDno9dZy
-	LxDo08ax1rLFUJ+9m3X8xTNY9rACIJrDW3a/6Wyb2PDHgmEcKdsGvVNB9INOk5uF/0Prns9xSVtMb
-	f6YDyf3sYooMdHBIX/r8743dzb8ajNXz3K0wj5p5TnXsrrCWx/gI9hU8/VOOwfAO9k4xQ98WUH6LL
-	GB9Wc7GDEJSYmOAwr8MG3bp1ZDK4YeNmoMmTTagQxnHQmIOHqMls+6gJ+06LCzRv1HLV1MLN69Uu2
-	hcO4uoSw==;
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=PN9haYqE3W6gboZqVQjkJaEAye1ONHN3izHRhRMX78M=; b=qq3MGbYg/ldyZLJQu9h55flLp
+	OIhbInk3pQnhOu+/ReG5lhvoXjWwDrMzHyapTZMguBSraM4DV/jaNJw7uUnc0KvgPfj/6xVLi1k0j
+	xCgZutaW1IOVB8SRsJKuDQ2fgROUoJ7uZib4FHaGImNvI3d0y36wMrUV7JX1IVUqz+mhErpLlSp0I
+	LGpVomkobfSboKtvUsieAWpY6CA8rfRyBwXdv/yNmYWRdg8ZYyBdaNtJMXCmGBT9+5KrLJkuh+6vA
+	617iMK3eV06J413qRNleLx8zsyHMvFE4JOOitcrBiwi/RLhEF8ZaCN7CHedg1buhQerQefXKfO/76
+	MM/QOPVsA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kGmM1-00047l-Hi; Fri, 11 Sep 2020 16:56:53 +0000
-Received: from relay11.mail.gandi.net ([217.70.178.231])
+	id 1kGmMi-0004T2-67; Fri, 11 Sep 2020 16:57:36 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kGmLB-0003mq-V8; Fri, 11 Sep 2020 16:56:03 +0000
+ id 1kGmLV-0003uu-I5
+ for linux-mtd@lists.infradead.org; Fri, 11 Sep 2020 16:56:22 +0000
+X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay11.mail.gandi.net (Postfix) with ESMTPSA id 52B32100007;
- Fri, 11 Sep 2020 16:55:55 +0000 (UTC)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id A51ADC0002;
+ Fri, 11 Sep 2020 16:56:17 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Krzysztof Kozlowski <krzk@kernel.org>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Han Xu <han.xu@nxp.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 3/6] mtd: rawnand: gpmi: Simplify with dev_err_probe()
-Date: Fri, 11 Sep 2020 18:55:54 +0200
-Message-Id: <20200911165554.28779-1-miquel.raynal@bootlin.com>
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
+Subject: Re: [PATCH] mtd: rawnand: marvell: Support panic_write for mtdoops
+Date: Fri, 11 Sep 2020 18:56:17 +0200
+Message-Id: <20200911165617.28970-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200901142535.12819-3-krzk@kernel.org>
+In-Reply-To: <20200828011237.22066-1-chris.packham@alliedtelesis.co.nz>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 3f4de71f59d429f8dc74cbcf3876646931f2105b
+X-linux-mtd-patch-commit: 876c08d6f20489b151c2a17fe168536c708f1dd3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200911_125602_130466_4E25091B 
-X-CRM114-Status: UNSURE (   9.26  )
+X-CRM114-CacheID: sfid-20200911_125621_759162_290AD1EB 
+X-CRM114-Status: UNSURE (   7.57  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -76,16 +70,17 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2020-09-01 at 14:25:32 UTC, Krzysztof Kozlowski wrote:
-> Common pattern of handling deferred probe can be simplified with
-> dev_err_probe().  Less code and the error value gets printed.
+On Fri, 2020-08-28 at 01:12:37 UTC, Chris Packham wrote:
+> Under a panic context we can't get an interrupt. Actively poll for the
+> RB status when performing a panic_write.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
