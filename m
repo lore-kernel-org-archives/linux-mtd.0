@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-14.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2080EC43461
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2020 16:56:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D877C433E2
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2020 16:56:45 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ADB4F2074B
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2020 16:56:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 01B202074B
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2020 16:56:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mNDhspiD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ADB4F2074B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FYU+QgMQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 01B202074B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,23 +25,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:To:From:
 	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=4ywoiPUDCYPZuayYEucThscfy80eKi6BrNbczMuTClA=; b=mNDhspiDY5LmajvoWC/AGHye/3
-	zKRRUKcgVDSMw6bMIvXeYvZSCGKbCre4y0C3CGU0KT6qtb4y1Jfl61b4JYA1I6OJ6WL0dSVFQbi3g
-	KvTapeHcRcF4CvAXq2eNntm164DwEBBXtocdok9VK66maoq0KbqWbt/ZHeX5/T+CiL0+F61aQmp7x
-	B5Uk+EzOb66TdT8jHGnX01o17EZT5zBxw+Qxc/qrbFj9m9pCbdmD3rZpyX2xi/O23ChcoUpUBPbU7
-	Z73ofvjLgkzJWeOWKnJ20mC6MKb2yA+bOMYBY2vcNSH5g90xiljUaDzoRbRR8EE1ZkHNxBhK+g+2V
-	U6gwRL2g==;
+	bh=77eyKARu67XLPgBaisJfS+9RENg6t/rNl35ysiLfqjs=; b=FYU+QgMQP68Uia7oduWWFssOop
+	BJHaqAi2jjmVa+kJZL9dJbpTXHMMn6Wkc0EjS8+kfCf69MBl38YEtr8Qzi0PWIEh5U1+a+wPADQ0u
+	z1KTwEYQ7Zlfb79h8K7IsOStoiRKCZl87Sm4KhbNUO8RlTHKYTB1CcIaAbpU5J1mHMtSPq9PzIijp
+	pb/FXXSdYWmGafkWufwLSW3P0yIYJpc3cW1AF5YRUayBCtL5ajb7Q16fOFArkwOobOJctRRdf+6Gy
+	8vDdJFRIkVuA8TQ+wdJ5c38nddK5t6QMgg232hg5BcmSkPwReqJ5lJGcsMHF0AeIlA/1h9JUeJUKT
+	LrXCsgfw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kGmL9-0003mQ-RZ; Fri, 11 Sep 2020 16:55:59 +0000
-Received: from relay5-d.mail.gandi.net ([217.70.183.197])
+	id 1kGmKw-0003j6-AO; Fri, 11 Sep 2020 16:55:46 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kGmKw-0003iy-CQ; Fri, 11 Sep 2020 16:55:47 +0000
+ id 1kGmKr-0003hi-64; Fri, 11 Sep 2020 16:55:42 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 4D11E1C000A;
- Fri, 11 Sep 2020 16:55:43 +0000 (UTC)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id B10D5C0005;
+ Fri, 11 Sep 2020 16:55:35 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Krzysztof Kozlowski <krzk@kernel.org>,
  Kyungmin Park <kyungmin.park@samsung.com>,
@@ -53,18 +53,19 @@ To: Krzysztof Kozlowski <krzk@kernel.org>,
  Ludovic Desroches <ludovic.desroches@microchip.com>,
  Han Xu <han.xu@nxp.com>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 5/6] mtd: rawnand: marvell: Fix and update kerneldoc
-Date: Fri, 11 Sep 2020 18:55:42 +0200
-Message-Id: <20200911165542.28654-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 6/6] mtd: rawnand: qcom: Simplify with dev_err_probe()
+Date: Fri, 11 Sep 2020 18:55:34 +0200
+Message-Id: <20200911165534.28578-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200901142535.12819-5-krzk@kernel.org>
+In-Reply-To: <20200901142535.12819-6-krzk@kernel.org>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: bbd8f660bedc37157df7b668f5edca35b7ceae91
+X-linux-mtd-patch-commit: d0ff80d3f6ae165a5f878c68bbebada71b73369f
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200911_125546_573114_FEFF7468 
-X-CRM114-Status: GOOD (  10.01  )
+X-CRM114-CacheID: sfid-20200911_125541_323988_8375498E 
+X-CRM114-Status: UNSURE (   9.50  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,15 +82,9 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2020-09-01 at 14:25:34 UTC, Krzysztof Kozlowski wrote:
-> Fix kerneldoc comments and add missing documentation for members to fix
-> W=1 compile warnings like:
-> 
->   drivers/mtd/nand/raw/marvell_nand.c:251: warning:
->     cannot understand function prototype: 'struct marvell_hw_ecc_layout '
-> 
->   drivers/mtd/nand/raw/marvell_nand.c:342: warning:
->     Function parameter or member 'layout' not described in 'marvell_nand_chip'
+On Tue, 2020-09-01 at 14:25:35 UTC, Krzysztof Kozlowski wrote:
+> Common pattern of handling deferred probe can be simplified with
+> dev_err_probe().  Less code and the error value gets printed.
 > 
 > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
