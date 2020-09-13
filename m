@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-14.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BEC98C2D0E1
-	for <linux-mtd@archiver.kernel.org>; Sun, 13 Sep 2020 08:39:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7666EC433E2
+	for <linux-mtd@archiver.kernel.org>; Sun, 13 Sep 2020 08:39:31 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6DEC7207C3
-	for <linux-mtd@archiver.kernel.org>; Sun, 13 Sep 2020 08:39:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 34F1D207C3
+	for <linux-mtd@archiver.kernel.org>; Sun, 13 Sep 2020 08:39:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="r/x7pSsr";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="oUtAxnwO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6DEC7207C3
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="faqdDTrY";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="zwrK+k53"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 34F1D207C3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,44 +26,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=JWq8WAnCS+FI5oiIL1nr7IJvV++ekS/aUAL+29/PEos=; b=r/x7pSsrxgQUDi38IAzXYEYCw
-	8QQj9E8FH2zFkx7CrxISXZiZeUVL8kgZ9UtZLaBcBxSXFOyTCqoqPxM5NylzMBGXIbl/dhWpOWHgy
-	WWT+1YuaNQZXE59oAbgCsWxo3HtE8Qg7EPn+YQydWVYoX9qSQ5zOBtVSNz6Qc2/bBIGuKcz2T9HYd
-	MLqpXZFS5ow8r2K81g6VW8v1xOJJe5ULLTvrW/wT/m/Cd4b0bSJkLJrEXUmn5JDiw9agcdXlOaxNT
-	FXvLlddZw1R0awi4N17eFeNTpMWgeQWKMqZAvmaPfCOP1CfvETiJ8eqooHlRqCGKyzZ0kJJ8Kw1VO
-	OCa1dCXOg==;
+	 bh=X6ARoJPrmAoPk9I8ooy2XJeN/khwbI1Xfsi/E4E/AC4=; b=faqdDTrYHHX5De2u67U8ehayD
+	1DI4dL23LAHfLtBA5z9wgsWLul+HlmcEBrghNIm2dyW8xezUGIFeXWxk1qBsMgTYiaZRaYdqrqrmR
+	tbZQEN7EGDdQuzeevFE4AONcursyerS8TK0U+EkKwJbrwTEyD0iGGPMi8TZ/evLhxWLJP+hTQ8qa9
+	Ept9Mw1TH5NwdAxrEjaJSJygdyLDkiqyBY1+5KiAypZbLnyzk73PMkWaZ8ckpK/qFh8+qwjZrDxK+
+	R6xVM3IotDTj33r8AY1U4lYL3MgIvz4JA96661S/dk+T3+2jzfITRI454XPZv44mX9lIf9JJ1nGWm
+	CXW9DSc2A==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kHNWc-00014Y-4g; Sun, 13 Sep 2020 08:38:18 +0000
+	id 1kHNWf-00015d-VV; Sun, 13 Sep 2020 08:38:22 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kHNWN-000104-13
+ id 1kHNWN-00010n-K1
  for linux-mtd@lists.infradead.org; Sun, 13 Sep 2020 08:38:06 +0000
 Received: from sol.attlocal.net
  (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 668D421D1A;
- Sun, 13 Sep 2020 08:37:59 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 47AB12177B;
+ Sun, 13 Sep 2020 08:38:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1599986279;
- bh=QcAYVOOtDATZpIRqzv/LkDypHnDI6SB1ZfPpGvjEMKo=;
+ s=default; t=1599986280;
+ bh=7wQf9Y1Ge/SR2fWtRDGBHBDQ9VcJIvgAiZJHiDlXVEw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=oUtAxnwOQeM7Dr2kgVlV4dfly4HkPpXojureiWqD3KugJJtonikaBJ/0WmS3mzwuK
- qMm4vt2DVIHEOZTV+hdqzAxhm6zjVO48B+OZgoviTP4C8OaMEwnUsQFSxeKIaiKp0X
- OfnRS1CorFgwModQHk4r5wqxh3MkMjhLTDRNgh6Y=
+ b=zwrK+k53ctQTtemSNOcktR68ukUN1sYgfusdrpKvROi2SHYNuhB0Z3cuqHWUGFP+g
+ D2zzBdN5bj+hkP9FDiiRMu1yN1xOPI6llElIUCFMZUmWhRfYKVknYCFWCbL+MExBGt
+ IiJc+P2KyMx7HAYgKeD5Zic2/IUSD9CeQNNYj2I0=
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-fscrypt@vger.kernel.org
-Subject: [PATCH v2 06/11] fscrypt: remove fscrypt_inherit_context()
-Date: Sun, 13 Sep 2020 01:36:15 -0700
-Message-Id: <20200913083620.170627-7-ebiggers@kernel.org>
+Subject: [PATCH v2 09/11] fscrypt: make "#define fscrypt_policy" user-only
+Date: Sun, 13 Sep 2020 01:36:18 -0700
+Message-Id: <20200913083620.170627-10-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200913083620.170627-1-ebiggers@kernel.org>
 References: <20200913083620.170627-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200913_043803_244245_4341E49E 
-X-CRM114-Status: GOOD (  14.25  )
+X-CRM114-CacheID: sfid-20200913_043803_806010_AC90FD97 
+X-CRM114-Status: GOOD (  14.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,91 +85,73 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Now that all filesystems have been converted to use
-fscrypt_prepare_new_inode() and fscrypt_set_context(),
-fscrypt_inherit_context() is no longer used.  Remove it.
+The fscrypt UAPI header defines fscrypt_policy to fscrypt_policy_v1,
+for source compatibility with old userspace programs.
+
+Internally, the kernel doesn't want that compatibility definition.
+Instead, fscrypt_private.h #undefs it and re-defines it to a union.
+
+That works for now.  However, in order to add
+fscrypt_operations::get_dummy_policy(), we'll need to forward declare
+'union fscrypt_policy' in include/linux/fscrypt.h.  That would cause
+build errors because "fscrypt_policy" is used in ioctl numbers.
+
+To avoid this, modify the UAPI header to make the fscrypt_policy
+compatibility definition conditional on !__KERNEL__, and make the ioctls
+use fscrypt_policy_v1 instead of fscrypt_policy.
+
+Note that this doesn't change the actual ioctl numbers.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/policy.c      | 37 -------------------------------------
- include/linux/fscrypt.h |  9 ---------
- 2 files changed, 46 deletions(-)
+ fs/crypto/fscrypt_private.h  | 1 -
+ include/uapi/linux/fscrypt.h | 6 +++---
+ 2 files changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
-index 7e96953d385ec..4ff893f7b030a 100644
---- a/fs/crypto/policy.c
-+++ b/fs/crypto/policy.c
-@@ -628,43 +628,6 @@ int fscrypt_has_permitted_context(struct inode *parent, struct inode *child)
- }
- EXPORT_SYMBOL(fscrypt_has_permitted_context);
- 
--/**
-- * fscrypt_inherit_context() - Sets a child context from its parent
-- * @parent: Parent inode from which the context is inherited.
-- * @child:  Child inode that inherits the context from @parent.
-- * @fs_data:  private data given by FS.
-- * @preload:  preload child i_crypt_info if true
-- *
-- * Return: 0 on success, -errno on failure
-- */
--int fscrypt_inherit_context(struct inode *parent, struct inode *child,
--						void *fs_data, bool preload)
--{
--	u8 nonce[FSCRYPT_FILE_NONCE_SIZE];
--	union fscrypt_context ctx;
--	int ctxsize;
--	struct fscrypt_info *ci;
--	int res;
--
--	res = fscrypt_get_encryption_info(parent);
--	if (res < 0)
--		return res;
--
--	ci = fscrypt_get_info(parent);
--	if (ci == NULL)
--		return -ENOKEY;
--
--	get_random_bytes(nonce, FSCRYPT_FILE_NONCE_SIZE);
--	ctxsize = fscrypt_new_context(&ctx, &ci->ci_policy, nonce);
--
--	BUILD_BUG_ON(sizeof(ctx) != FSCRYPT_SET_CONTEXT_MAX_SIZE);
--	res = parent->i_sb->s_cop->set_context(child, &ctx, ctxsize, fs_data);
--	if (res)
--		return res;
--	return preload ? fscrypt_get_encryption_info(child): 0;
--}
--EXPORT_SYMBOL(fscrypt_inherit_context);
--
- /**
-  * fscrypt_set_context() - Set the fscrypt context of a new inode
-  * @inode: a new inode
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 9cf7ca90f3abb..81d6ded243288 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -156,8 +156,6 @@ int fscrypt_ioctl_get_policy(struct file *filp, void __user *arg);
- int fscrypt_ioctl_get_policy_ex(struct file *filp, void __user *arg);
- int fscrypt_ioctl_get_nonce(struct file *filp, void __user *arg);
- int fscrypt_has_permitted_context(struct inode *parent, struct inode *child);
--int fscrypt_inherit_context(struct inode *parent, struct inode *child,
--			    void *fs_data, bool preload);
- int fscrypt_set_context(struct inode *inode, void *fs_data);
- 
- struct fscrypt_dummy_context {
-@@ -343,13 +341,6 @@ static inline int fscrypt_has_permitted_context(struct inode *parent,
- 	return 0;
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index 355f6d9377517..ac3352086ee44 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -97,7 +97,6 @@ static inline const u8 *fscrypt_context_nonce(const union fscrypt_context *ctx)
+ 	return NULL;
  }
  
--static inline int fscrypt_inherit_context(struct inode *parent,
--					  struct inode *child,
--					  void *fs_data, bool preload)
--{
--	return -EOPNOTSUPP;
--}
--
- static inline int fscrypt_set_context(struct inode *inode, void *fs_data)
- {
- 	return -EOPNOTSUPP;
+-#undef fscrypt_policy
+ union fscrypt_policy {
+ 	u8 version;
+ 	struct fscrypt_policy_v1 v1;
+diff --git a/include/uapi/linux/fscrypt.h b/include/uapi/linux/fscrypt.h
+index 7875709ccfebf..e5de603369381 100644
+--- a/include/uapi/linux/fscrypt.h
++++ b/include/uapi/linux/fscrypt.h
+@@ -45,7 +45,6 @@ struct fscrypt_policy_v1 {
+ 	__u8 flags;
+ 	__u8 master_key_descriptor[FSCRYPT_KEY_DESCRIPTOR_SIZE];
+ };
+-#define fscrypt_policy	fscrypt_policy_v1
+ 
+ /*
+  * Process-subscribed "logon" key description prefix and payload format.
+@@ -156,9 +155,9 @@ struct fscrypt_get_key_status_arg {
+ 	__u32 __out_reserved[13];
+ };
+ 
+-#define FS_IOC_SET_ENCRYPTION_POLICY		_IOR('f', 19, struct fscrypt_policy)
++#define FS_IOC_SET_ENCRYPTION_POLICY		_IOR('f', 19, struct fscrypt_policy_v1)
+ #define FS_IOC_GET_ENCRYPTION_PWSALT		_IOW('f', 20, __u8[16])
+-#define FS_IOC_GET_ENCRYPTION_POLICY		_IOW('f', 21, struct fscrypt_policy)
++#define FS_IOC_GET_ENCRYPTION_POLICY		_IOW('f', 21, struct fscrypt_policy_v1)
+ #define FS_IOC_GET_ENCRYPTION_POLICY_EX		_IOWR('f', 22, __u8[9]) /* size + version */
+ #define FS_IOC_ADD_ENCRYPTION_KEY		_IOWR('f', 23, struct fscrypt_add_key_arg)
+ #define FS_IOC_REMOVE_ENCRYPTION_KEY		_IOWR('f', 24, struct fscrypt_remove_key_arg)
+@@ -170,6 +169,7 @@ struct fscrypt_get_key_status_arg {
+ 
+ /* old names; don't add anything new here! */
+ #ifndef __KERNEL__
++#define fscrypt_policy			fscrypt_policy_v1
+ #define FS_KEY_DESCRIPTOR_SIZE		FSCRYPT_KEY_DESCRIPTOR_SIZE
+ #define FS_POLICY_FLAGS_PAD_4		FSCRYPT_POLICY_FLAGS_PAD_4
+ #define FS_POLICY_FLAGS_PAD_8		FSCRYPT_POLICY_FLAGS_PAD_8
 -- 
 2.28.0
 
