@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-14.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 010C3C43461
-	for <linux-mtd@archiver.kernel.org>; Sun, 13 Sep 2020 08:39:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA4B6C31E51
+	for <linux-mtd@archiver.kernel.org>; Sun, 13 Sep 2020 08:39:04 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9476A2098B
-	for <linux-mtd@archiver.kernel.org>; Sun, 13 Sep 2020 08:39:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7164021655
+	for <linux-mtd@archiver.kernel.org>; Sun, 13 Sep 2020 08:39:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="wkxJJOTy";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="veKboLnY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9476A2098B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="d7qw4YqR";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="V00kf5XL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7164021655
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,44 +26,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=hE7GvVU5Ue1PAo+rS3VraIPFEw8q1+A0Ruxs1WVYeEo=; b=wkxJJOTyuEQro8Sc/Tk+91gha
-	lQHZFp4RctvD0q4YhCuntmlqO+N99ZAK1GlDApmZrNgaBLj5rXO6Dh4WvFdH5M4vWY44OuTYVHL+M
-	8ZwwKN4lcgTJFNglp+Sa4H4bQ8HbAwo9brvE1VdYx4BhJCuJNGq++45+cpNcWgY23i54jNZWAQYkF
-	y3UnuyQAUm9bw30tGxNprvJWGJFpXJSd1qQ5IlBkBSwzv7swq4VIwM8Mi2D1Cbp0PtPKLo1PKGVzV
-	OCWlEnbcDs1rjYgpg69MnEDjWVeXJW6Vbf1gOumjabKONUc+Bz51wtahL6X7fBMSZm60/gKtpFbAy
-	1bt0rWUeg==;
+	 bh=6lJ58UbSQrqXTra4V2RxAPjEa1VFk2vsTETWB4f6laM=; b=d7qw4YqRLE9l18Wg8vX9LCm4K
+	DcO/vnlgkbT8vKnMkh6NpL5ERCLWvSTqmoMMHyMcSzDSZYIIhVnbQY1heB5FWF+dViuBUHTLJ0Knm
+	CmzHPV2pRyKX0bqYLhVZ+muCphWQsV8yTcDuld+7AWSiAX49mBBBMA5kzmR4zYsGrTTqTdpossyd6
+	Vuiil82R+Tm4M1cOiYIbFVhsAGNfRCT5KnogxvEg3QwxaWE/+UjNvtMF812dXkpYSqc5l9BQMEz+B
+	8lqOpyAE/8OdJ4/w3YXCAUxK4XAnr1yg9akzhd1cJa+o7e5CEb4t8XdWjWVDuahSulxyGius71CD7
+	Fx/lQQN7g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kHNWm-00016k-9q; Sun, 13 Sep 2020 08:38:28 +0000
+	id 1kHNWU-00012v-Gp; Sun, 13 Sep 2020 08:38:10 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kHNWN-00010o-K6
- for linux-mtd@lists.infradead.org; Sun, 13 Sep 2020 08:38:08 +0000
+ id 1kHNWL-0000yi-32
+ for linux-mtd@lists.infradead.org; Sun, 13 Sep 2020 08:38:02 +0000
 Received: from sol.attlocal.net
  (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 8F613221E8;
- Sun, 13 Sep 2020 08:38:00 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 3FAA52168B;
+ Sun, 13 Sep 2020 08:37:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1599986280;
- bh=SHrYUdtm1g7ntgYtdzixMrvNEz6L5/D07nXI8RMvuM4=;
+ s=default; t=1599986278;
+ bh=nVSMprpeSosbO3HIVvYvcbOcUNBMzSOQM0td1dFGCwI=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=veKboLnYaZiOTtz2C8eTq+4ZzLtMFia4/2LmiMxvTMRGrBr7KkSQff6AbozrpZCjI
- r7KZJPqL7OLkVIJp0K7kUKARQmFdsbBKV25xdjuZcfTY+pIznei/mrRSnKdbJUGBoU
- ODgwD4kGxAx2Jksu0dMPri89adQ4x8OCkHTNGDEE=
+ b=V00kf5XLm9lY1xt1ty/xgqrsenfsXZ6pzt+SXbnRKQ3e9fVR6We4G0EY8hjqo9Ald
+ 7n09iIpMN42vGdntBunQgRVEPLY2cfh/w6QreksAz+rvIEV8FQLnt7JmweobGQXsxw
+ p7XoXPrRGWn4KIukK34qwLiwqe0gAihlc1Aj3XQs=
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-fscrypt@vger.kernel.org
-Subject: [PATCH v2 10/11] fscrypt: move fscrypt_prepare_symlink() out-of-line
-Date: Sun, 13 Sep 2020 01:36:19 -0700
-Message-Id: <20200913083620.170627-11-ebiggers@kernel.org>
+Subject: [PATCH v2 02/11] ext4: factor out ext4_xattr_credits_for_new_inode()
+Date: Sun, 13 Sep 2020 01:36:11 -0700
+Message-Id: <20200913083620.170627-3-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200913083620.170627-1-ebiggers@kernel.org>
 References: <20200913083620.170627-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200913_043803_813994_7C3FDFDD 
-X-CRM114-Status: GOOD (  24.38  )
+X-CRM114-CacheID: sfid-20200913_043801_285288_76BA3F7E 
+X-CRM114-Status: GOOD (  21.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,171 +85,128 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-In preparation for moving the logic for "get the encryption policy
-inherited by new files in this directory" to a single place, make
-fscrypt_prepare_symlink() a regular function rather than an inline
-function that wraps __fscrypt_prepare_symlink().
+To compute a new inode's xattr credits, we need to know whether the
+inode will be encrypted or not.  When we switch to use the new helper
+function fscrypt_prepare_new_inode(), we won't find out whether the
+inode will be encrypted until slightly later than is currently the case.
+That will require moving the code block that computes the xattr credits.
 
-This way, the new function fscrypt_policy_to_inherit() won't need to be
-exported to filesystems.
+To make this easier and reduce the length of __ext4_new_inode(), move
+this code block into a new function ext4_xattr_credits_for_new_inode().
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/hooks.c       | 39 ++++++++++++++++++++++---
- include/linux/fscrypt.h | 63 ++++++++++-------------------------------
- 2 files changed, 50 insertions(+), 52 deletions(-)
+ fs/ext4/ialloc.c | 90 +++++++++++++++++++++++++++---------------------
+ 1 file changed, 51 insertions(+), 39 deletions(-)
 
-diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
-index 7748db5092409..a399c54947f28 100644
---- a/fs/crypto/hooks.c
-+++ b/fs/crypto/hooks.c
-@@ -166,12 +166,43 @@ int fscrypt_prepare_setflags(struct inode *inode,
- 	return 0;
+diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
+index df25d38d65393..0cc576005a923 100644
+--- a/fs/ext4/ialloc.c
++++ b/fs/ext4/ialloc.c
+@@ -742,6 +742,53 @@ static int find_inode_bit(struct super_block *sb, ext4_group_t group,
+ 	return 1;
  }
  
--int __fscrypt_prepare_symlink(struct inode *dir, unsigned int len,
--			      unsigned int max_len,
--			      struct fscrypt_str *disk_link)
-+/**
-+ * fscrypt_prepare_symlink() - prepare to create a possibly-encrypted symlink
-+ * @dir: directory in which the symlink is being created
-+ * @target: plaintext symlink target
-+ * @len: length of @target excluding null terminator
-+ * @max_len: space the filesystem has available to store the symlink target
-+ * @disk_link: (out) the on-disk symlink target being prepared
-+ *
-+ * This function computes the size the symlink target will require on-disk,
-+ * stores it in @disk_link->len, and validates it against @max_len.  An
-+ * encrypted symlink may be longer than the original.
-+ *
-+ * Additionally, @disk_link->name is set to @target if the symlink will be
-+ * unencrypted, but left NULL if the symlink will be encrypted.  For encrypted
-+ * symlinks, the filesystem must call fscrypt_encrypt_symlink() to create the
-+ * on-disk target later.  (The reason for the two-step process is that some
-+ * filesystems need to know the size of the symlink target before creating the
-+ * inode, e.g. to determine whether it will be a "fast" or "slow" symlink.)
-+ *
-+ * Return: 0 on success, -ENAMETOOLONG if the symlink target is too long,
-+ * -ENOKEY if the encryption key is missing, or another -errno code if a problem
-+ * occurred while setting up the encryption key.
-+ */
-+int fscrypt_prepare_symlink(struct inode *dir, const char *target,
-+			    unsigned int len, unsigned int max_len,
-+			    struct fscrypt_str *disk_link)
- {
- 	int err;
- 
-+	if (!IS_ENCRYPTED(dir) && !fscrypt_get_dummy_context(dir->i_sb)) {
-+		disk_link->name = (unsigned char *)target;
-+		disk_link->len = len + 1;
-+		if (disk_link->len > max_len)
-+			return -ENAMETOOLONG;
-+		return 0;
-+	}
++static int ext4_xattr_credits_for_new_inode(struct inode *dir, mode_t mode,
++					    bool encrypt)
++{
++	struct super_block *sb = dir->i_sb;
++	int nblocks = 0;
++#ifdef CONFIG_EXT4_FS_POSIX_ACL
++	struct posix_acl *p = get_acl(dir, ACL_TYPE_DEFAULT);
 +
- 	/*
- 	 * To calculate the size of the encrypted symlink target we need to know
- 	 * the amount of NUL padding, which is determined by the flags set in
-@@ -207,7 +238,7 @@ int __fscrypt_prepare_symlink(struct inode *dir, unsigned int len,
- 	disk_link->name = NULL;
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(__fscrypt_prepare_symlink);
-+EXPORT_SYMBOL_GPL(fscrypt_prepare_symlink);
++	if (IS_ERR(p))
++		return PTR_ERR(p);
++	if (p) {
++		int acl_size = p->a_count * sizeof(ext4_acl_entry);
++
++		nblocks += (S_ISDIR(mode) ? 2 : 1) *
++			__ext4_xattr_set_credits(sb, NULL /* inode */,
++						 NULL /* block_bh */, acl_size,
++						 true /* is_create */);
++		posix_acl_release(p);
++	}
++#endif
++
++#ifdef CONFIG_SECURITY
++	{
++		int num_security_xattrs = 1;
++
++#ifdef CONFIG_INTEGRITY
++		num_security_xattrs++;
++#endif
++		/*
++		 * We assume that security xattrs are never more than 1k.
++		 * In practice they are under 128 bytes.
++		 */
++		nblocks += num_security_xattrs *
++			__ext4_xattr_set_credits(sb, NULL /* inode */,
++						 NULL /* block_bh */, 1024,
++						 true /* is_create */);
++	}
++#endif
++	if (encrypt)
++		nblocks += __ext4_xattr_set_credits(sb,
++						    NULL /* inode */,
++						    NULL /* block_bh */,
++						    FSCRYPT_SET_CONTEXT_MAX_SIZE,
++						    true /* is_create */);
++	return nblocks;
++}
++
+ /*
+  * There are two policies for allocating an inode.  If the new inode is
+  * a directory, then a forward search is made for a block group with both
+@@ -796,45 +843,10 @@ struct inode *__ext4_new_inode(handle_t *handle, struct inode *dir,
+ 	}
  
- int __fscrypt_encrypt_symlink(struct inode *inode, const char *target,
- 			      unsigned int len, struct fscrypt_str *disk_link)
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 81d6ded243288..39e7397a3f103 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -225,9 +225,9 @@ int __fscrypt_prepare_lookup(struct inode *dir, struct dentry *dentry,
- 			     struct fscrypt_name *fname);
- int fscrypt_prepare_setflags(struct inode *inode,
- 			     unsigned int oldflags, unsigned int flags);
--int __fscrypt_prepare_symlink(struct inode *dir, unsigned int len,
--			      unsigned int max_len,
--			      struct fscrypt_str *disk_link);
-+int fscrypt_prepare_symlink(struct inode *dir, const char *target,
-+			    unsigned int len, unsigned int max_len,
-+			    struct fscrypt_str *disk_link);
- int __fscrypt_encrypt_symlink(struct inode *inode, const char *target,
- 			      unsigned int len, struct fscrypt_str *disk_link);
- const char *fscrypt_get_symlink(struct inode *inode, const void *caddr,
-@@ -520,15 +520,21 @@ static inline int fscrypt_prepare_setflags(struct inode *inode,
- 	return 0;
- }
- 
--static inline int __fscrypt_prepare_symlink(struct inode *dir,
--					    unsigned int len,
--					    unsigned int max_len,
--					    struct fscrypt_str *disk_link)
-+static inline int fscrypt_prepare_symlink(struct inode *dir,
-+					  const char *target,
-+					  unsigned int len,
-+					  unsigned int max_len,
-+					  struct fscrypt_str *disk_link)
- {
--	return -EOPNOTSUPP;
-+	if (IS_ENCRYPTED(dir))
-+		return -EOPNOTSUPP;
-+	disk_link->name = (unsigned char *)target;
-+	disk_link->len = len + 1;
-+	if (disk_link->len > max_len)
-+		return -ENAMETOOLONG;
-+	return 0;
- }
- 
+ 	if (!handle && sbi->s_journal && !(i_flags & EXT4_EA_INODE_FL)) {
+-#ifdef CONFIG_EXT4_FS_POSIX_ACL
+-		struct posix_acl *p = get_acl(dir, ACL_TYPE_DEFAULT);
 -
- static inline int __fscrypt_encrypt_symlink(struct inode *inode,
- 					    const char *target,
- 					    unsigned int len,
-@@ -793,45 +799,6 @@ static inline int fscrypt_prepare_setattr(struct dentry *dentry,
- 	return 0;
- }
+-		if (IS_ERR(p))
+-			return ERR_CAST(p);
+-		if (p) {
+-			int acl_size = p->a_count * sizeof(ext4_acl_entry);
+-
+-			nblocks += (S_ISDIR(mode) ? 2 : 1) *
+-				__ext4_xattr_set_credits(sb, NULL /* inode */,
+-					NULL /* block_bh */, acl_size,
+-					true /* is_create */);
+-			posix_acl_release(p);
+-		}
+-#endif
+-
+-#ifdef CONFIG_SECURITY
+-		{
+-			int num_security_xattrs = 1;
+-
+-#ifdef CONFIG_INTEGRITY
+-			num_security_xattrs++;
+-#endif
+-			/*
+-			 * We assume that security xattrs are never
+-			 * more than 1k.  In practice they are under
+-			 * 128 bytes.
+-			 */
+-			nblocks += num_security_xattrs *
+-				__ext4_xattr_set_credits(sb, NULL /* inode */,
+-					NULL /* block_bh */, 1024,
+-					true /* is_create */);
+-		}
+-#endif
+-		if (encrypt)
+-			nblocks += __ext4_xattr_set_credits(sb,
+-					NULL /* inode */, NULL /* block_bh */,
+-					FSCRYPT_SET_CONTEXT_MAX_SIZE,
+-					true /* is_create */);
++		ret2 = ext4_xattr_credits_for_new_inode(dir, mode, encrypt);
++		if (ret2 < 0)
++			return ERR_PTR(ret2);
++		nblocks += ret2;
+ 	}
  
--/**
-- * fscrypt_prepare_symlink() - prepare to create a possibly-encrypted symlink
-- * @dir: directory in which the symlink is being created
-- * @target: plaintext symlink target
-- * @len: length of @target excluding null terminator
-- * @max_len: space the filesystem has available to store the symlink target
-- * @disk_link: (out) the on-disk symlink target being prepared
-- *
-- * This function computes the size the symlink target will require on-disk,
-- * stores it in @disk_link->len, and validates it against @max_len.  An
-- * encrypted symlink may be longer than the original.
-- *
-- * Additionally, @disk_link->name is set to @target if the symlink will be
-- * unencrypted, but left NULL if the symlink will be encrypted.  For encrypted
-- * symlinks, the filesystem must call fscrypt_encrypt_symlink() to create the
-- * on-disk target later.  (The reason for the two-step process is that some
-- * filesystems need to know the size of the symlink target before creating the
-- * inode, e.g. to determine whether it will be a "fast" or "slow" symlink.)
-- *
-- * Return: 0 on success, -ENAMETOOLONG if the symlink target is too long,
-- * -ENOKEY if the encryption key is missing, or another -errno code if a problem
-- * occurred while setting up the encryption key.
-- */
--static inline int fscrypt_prepare_symlink(struct inode *dir,
--					  const char *target,
--					  unsigned int len,
--					  unsigned int max_len,
--					  struct fscrypt_str *disk_link)
--{
--	if (IS_ENCRYPTED(dir) || fscrypt_get_dummy_context(dir->i_sb) != NULL)
--		return __fscrypt_prepare_symlink(dir, len, max_len, disk_link);
--
--	disk_link->name = (unsigned char *)target;
--	disk_link->len = len + 1;
--	if (disk_link->len > max_len)
--		return -ENAMETOOLONG;
--	return 0;
--}
--
- /**
-  * fscrypt_encrypt_symlink() - encrypt the symlink target if needed
-  * @inode: symlink inode
+ 	ngroups = ext4_get_groups_count(sb);
 -- 
 2.28.0
 
