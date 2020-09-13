@@ -5,19 +5,19 @@ X-Spam-Level:
 X-Spam-Status: No, score=-6.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0751EC433E2
-	for <linux-mtd@archiver.kernel.org>; Sun, 13 Sep 2020 18:40:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD0C2C43461
+	for <linux-mtd@archiver.kernel.org>; Sun, 13 Sep 2020 18:43:48 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 338DD2151B
-	for <linux-mtd@archiver.kernel.org>; Sun, 13 Sep 2020 18:40:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7DCBD22206
+	for <linux-mtd@archiver.kernel.org>; Sun, 13 Sep 2020 18:43:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="aUVvzidz";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="uWpnYqMm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 338DD2151B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="115f+7YX";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XtjAXeDb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7DCBD22206
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,59 +26,58 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
 	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=F2y98ijQG4AC0EvU+d59JNuL1s7Sb295eRTOdWz0dHM=; b=aUVvzidzxOsxt2nhSFxjn/Gsl
-	Rg1iiXpQfdkQV47DfTCwhbKaeW0O744lpOZETUoCuIpepYobmwkt9hFIFeqh7YsMkJO84dI/7boWo
-	YonLaKhtgYglxOXrSY7t41t6XkmNGgXc5QeNviAdQY7MPlIeH+kJXyEAyoeb85bIubsbpbagHyahf
-	eh4sapRwgUn+3rTesEdJC618AhqOF5goCd8+xfikzyqnfIkMh9f7ON2lUaMSXrvuk8U0Zj38FJ5iU
-	CLpjZsIFlcdBYt2+dLsEW0Dn4cVG1XRH9dsVKCYvazlzx3RbaGSwlvnYCp2QgeLh6ZFU4i8UalI/h
-	t383PStCg==;
+	 bh=EGOrvjNtSvhNaEcLWf0VuG77hBr370GRZW1uWc1kYO4=; b=115f+7YXx1AvrPk3qnIhCFeze
+	3N+atlovJ9DIDsPkzGTtLPrNKBQAj8VQai6ze9qa1cJRrT527+3mwDBereSHcaeMLtbb1VxHZxym7
+	jzaCZtRRN1DIWjdZ7nVwoSWIArrVHwHwZ08U4Dw0V572kyv99E2NiL/NUyKT3dCyqNoVbD+CATq0/
+	xqmARZ2EMs9i8rmFNNVvoGWrDHuo8e25h1PmD2UKL0y+B3aqdP8jyT87ituIf8UXvqIZG3mJSyzq9
+	LyZOkW8woy2uGS0feeZDwkMuMIEhEgcbNcXGjZkc2uvcogzL6ReJpT89Akwoj6ruorwIzsh45rfxP
+	tz9/PUjYg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kHWv3-0002O5-HZ; Sun, 13 Sep 2020 18:40:09 +0000
-Received: from mail-qk1-x744.google.com ([2607:f8b0:4864:20::744])
+	id 1kHWxc-0002YW-Qi; Sun, 13 Sep 2020 18:42:48 +0000
+Received: from mail-qk1-x742.google.com ([2607:f8b0:4864:20::742])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kHWv1-0002Nc-Cl
- for linux-mtd@lists.infradead.org; Sun, 13 Sep 2020 18:40:08 +0000
-Received: by mail-qk1-x744.google.com with SMTP id d20so14910533qka.5
- for <linux-mtd@lists.infradead.org>; Sun, 13 Sep 2020 11:40:02 -0700 (PDT)
+ id 1kHWxb-0002YA-Hv
+ for linux-mtd@lists.infradead.org; Sun, 13 Sep 2020 18:42:48 +0000
+Received: by mail-qk1-x742.google.com with SMTP id q63so14106783qkf.3
+ for <linux-mtd@lists.infradead.org>; Sun, 13 Sep 2020 11:42:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=K8ubMUZDeeKR9nMv2dJn/qnSOG8J0zmmqr6tWo71S1Q=;
- b=uWpnYqMmRwbT1cbVOA3uSB9aiNhLiGNKSfR3OmWJcSe8xYfTNqrg3yQuC1EAwDbIm4
- w5fNm4PE54LRJAiukAQfvQBQrJt65BaE3Ln0IXBFDHeObOtA3VV66Mg1HIcBWPbcELgC
- j1tnmKy5qoVvw3X6G3q1fbGQy9+DYHfBDC+dR+7QTHEor8srv/dX5Wj3pb2gSgVT0VfD
- 5dVnmunz7B/UB4yuQEoZ7R/qbSWyQL4blWohA62Mg7Q/EadasHPqofXJra4txBDLyykm
- Jf+ZVM/4XFqTjdYXSVBhxmP1eKBxj4al8g2Gv0uvM/48rxHMTOLiyTOo5f+z9m51vH9A
- TU6A==
+ :cc; bh=0jHT31ssRcmY7ESE4GVbo7WflQpjnUMgGP99rhdZqTo=;
+ b=XtjAXeDbAzYnt5xUw1wrTDDaTX7HrUGx7xGdWDkl+h31ILt+RsWuoCkdHDAxu7gyoa
+ WEMo7wCOAdsaINHXzt0zddMEndq36m6vytOl9mrFiGGF8abruG73b1v2n9mz0jhALg7h
+ QuRUk5Xx+4CvQpoTrH00gd/1eFBOmJhCNdJpvHc7tEO7xRmJ1P1pv1dBiDFqj3aXZgHK
+ OwwDUfAk/XWhUU86EdZd1EVNxzgMB9TC56N1s9pMWKvjFbESAQgdzLiOtWjYlIBgihf1
+ EokXQIj8pKBBFKw36BoS3Ht2bYh6DU7WLO4t0Kalcm+D+pU0B/RAGnDeDDeZUsUOGfoi
+ 0SPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=K8ubMUZDeeKR9nMv2dJn/qnSOG8J0zmmqr6tWo71S1Q=;
- b=Oj8N72bfWdUOPtis18OQt63t1ecF5zlMmzA7YxVAraccuMxSfVGG1WgoYA5v3HdxLg
- n4ZLEPBcqSBEqEKUqVotJT3ZDLWHkWTVi0uIDlHb36cn6nvJZsyV5QqCGw5JK6AyfOf6
- RHYKiGXoqQjO9ld2+4CVC5YgMez1ikOOSUh3vDbzf9BdsnP1hJ69jAEV8KlKCkAkJgeh
- qP5DOEQVI3UQUsnjiSGUBM3pJayYb174yCbSmJfILOYyY2vnCuGclNemIKDAcrauwyYe
- XBJmHaT2QoBAOgGjrAVEO3U0TVDTKlX1fPu8JsvrB3SiqYGTGgRT5dxUUzy7boEJZ4bH
- VVHA==
-X-Gm-Message-State: AOAM531b1nddAJuvZpY0yTl3lXBDmfQJ/XC9qhEjBJttgsY6d7zhhu7+
- nSHALzIIO7D5S8f4yZp1lICytSpZInEJeZqk+Sc=
-X-Google-Smtp-Source: ABdhPJz2nR8dyQeiqPb44/9pqa7J3ZE9ait6L7YKmea4APll3PekOjSXhvIRmzdXDOVHVAjs7Px8QpYXm2d9bR8AMc4=
-X-Received: by 2002:a37:474c:: with SMTP id u73mr10364919qka.45.1600022401427; 
- Sun, 13 Sep 2020 11:40:01 -0700 (PDT)
+ bh=0jHT31ssRcmY7ESE4GVbo7WflQpjnUMgGP99rhdZqTo=;
+ b=tJ1C2LF8f+D1IHwuQ5g7H0sCFnhs+htQBvc6+Cmd+twze/xTi+piM3Mao1PhEYZuRI
+ d6t2t8iFc0Qb8dajcqfKL7YTpsNpDjfu19O5dNpnkS6+3ehZJ1yW9JIs1TUIra7Oissk
+ /Ilwv46OtC2sLBivPMK3D/PBo+1y1f3hbltuKUGPQjE68xWfu6OJx4atC8YPREX/GJBd
+ hZytFydJiy1SpqXoKY4WKKRs22xEW13dtXYkXaO7V4jDQGoERVP3XRQIAYOmy7S3WccF
+ 9iz0Y0yrOlLhOSa+EYy/6xVhVSlMNg1wFubQ7oAPF6BPQWTovWzhAE/SLxXqZNW4kZlg
+ Jfog==
+X-Gm-Message-State: AOAM531gxEge0p6P2zN+h8lMT2lbYuTYtWlkFIhasaEu6CV4sT3BU77A
+ WgD/XqDo/7fs0W1VnywGlbsIuPcMrRrhyrmvLZwD6r4w0pQ=
+X-Google-Smtp-Source: ABdhPJw/m0CM9zylJN/yWgP2jPSsGqo8GaGn2BHaGVIsRN5Vhjx+jhYGgtS7zLNLJzl9RFJNqmSPKokcBsp4ol4mn1o=
+X-Received: by 2002:a37:a189:: with SMTP id k131mr9496229qke.34.1600022565905; 
+ Sun, 13 Sep 2020 11:42:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200828033250.910168-1-chengzhihao1@huawei.com>
- <CAFLxGvwzTiDDLaN3Q5BSa2+7cwxBooeJuHSrgNPaM9=ONBLTkg@mail.gmail.com>
-In-Reply-To: <CAFLxGvwzTiDDLaN3Q5BSa2+7cwxBooeJuHSrgNPaM9=ONBLTkg@mail.gmail.com>
+References: <20200817142909.1972897-1-chengzhihao1@huawei.com>
+In-Reply-To: <20200817142909.1972897-1-chengzhihao1@huawei.com>
 From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Sun, 13 Sep 2020 20:39:50 +0200
-Message-ID: <CAFLxGvx1a7wGWJGhNvW5w3acGysEnuYbpJ_v=wOLpubB47=BKA@mail.gmail.com>
-Subject: Re: [PATCH] ubifs: setflags: Don't show error message when
- vfs_ioc_setflags_prepare() fails
+Date: Sun, 13 Sep 2020 20:42:34 +0200
+Message-ID: <CAFLxGvxOw1ZY9PoeuJNGaweFBTjoW3jAj2=TtF5wMkBm-dgh9A@mail.gmail.com>
+Subject: Re: [PATCH] ubifs: ubifs_jnl_change_xattr: Remove assertion 'nlink >
+ 0' for host inode
 To: Zhihao Cheng <chengzhihao1@huawei.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200913_144007_442480_3F19FB85 
-X-CRM114-Status: GOOD (  15.22  )
+X-CRM114-CacheID: sfid-20200913_144247_627015_B30C86D6 
+X-CRM114-Status: GOOD (  10.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,36 +96,24 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, Aug 30, 2020 at 9:23 PM Richard Weinberger
-<richard.weinberger@gmail.com> wrote:
+On Mon, Aug 17, 2020 at 4:29 PM Zhihao Cheng <chengzhihao1@huawei.com> wrote:
 >
-> On Fri, Aug 28, 2020 at 5:33 AM Zhihao Cheng <chengzhihao1@huawei.com> wrote:
-> >
-> > Following process will trigger ubifs_err:
-> >   1. useradd -m freg                                        (Under root)
-> >   2. cd /home/freg && mkdir mp                              (Under freg)
-> >   3. mount -t ubifs /dev/ubi0_0 /home/freg/mp               (Under root)
-> >   4. cd /home/freg && echo 123 > mp/a                       (Under root)
-> >   5. cd mp && chown freg a && chgrp freg a && chmod 777 a   (Under root)
-> >   6. chattr +i a                                            (Under freg)
-> >
-> > UBIFS error (ubi0:0 pid 1723): ubifs_ioctl [ubifs]: can't modify inode
-> > 65 attributes
-> > chattr: Operation not permitted while setting flags on a
-> >
-> > This is not an UBIFS problem, it was caused by task priviliage checking
-> > on file operations. Remove error message printing from kernel just like
-> > other filesystems (eg. ext4), since we already have enough information
-> > from userspace tools.
-> >
-> > Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-> > ---
-> >  fs/ubifs/ioctl.c | 1 -
-> >  1 file changed, 1 deletion(-)
+> Changing xattr of a temp file will trigger following assertion failed
+> and make ubifs turn into readonly filesystem:
+>   ubifs_assert_failed [ubifs]: UBIFS assert failed: host->i_nlink > 0,
+>   in fs/ubifs/journal.c:1801
 >
-> Makes sense, thanks for fixing!
+> Reproducer:
+>   1. fd = open(__O_TMPFILE)
+>   2. fsetxattr(fd, key, value2, XATTR_CREATE)
+>   3. fsetxattr(fd, key, value2, XATTR_REPLACE)
+>
+> Fix this by removing assertion 'nlink > 0' for host inode.
+>
+> Reported-by: Chengsong Ke <kechengsong@huawei.com>
+> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 
-Applied to fixes.
+Applied to fixes, thanks!
 
 -- 
 Thanks,
