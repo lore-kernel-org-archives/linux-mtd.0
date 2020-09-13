@@ -4,20 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-14.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77114C2D0E1
-	for <linux-mtd@archiver.kernel.org>; Sun, 13 Sep 2020 08:39:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95F6CC433E2
+	for <linux-mtd@archiver.kernel.org>; Sun, 13 Sep 2020 08:39:04 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3344D207C3
-	for <linux-mtd@archiver.kernel.org>; Sun, 13 Sep 2020 08:39:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 477C12158C
+	for <linux-mtd@archiver.kernel.org>; Sun, 13 Sep 2020 08:39:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="UTIyRYtC";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dt37vv3o"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3344D207C3
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iHLN23UX";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZaFapO37"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 477C12158C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,45 +26,45 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Kb7oiRQF4G0+LBjSnAS/NSnSFELkjwWmXOZd1lNdUFs=; b=UTIyRYtC+8DpSbpZKS27pnj2h
-	O/n3rIav+XTdBOjGkMtx6UDNrKRxzmTqWDpRyaNoejTHx5H76Kuv9Sty0rFdgsaylxYmY2SJnQukv
-	xg/JP3SN/GNM5MLr1g1471Q02v/GnYgcOyttmThitc09FFNJhKMQY9yxNwYclVokG28U61jUaT0wi
-	PLt3tFWTG9qjbzdhwIM4SAyFcJ8fzeoHX3kRF31IsGw0QX0V3S+z/NgWBqH0FLCc4Ni4bQMwzm6Vt
-	GfTtYGkGgfwwV47hdEtXh/O+Pmck4WtdPq7NHKp4yal0HkGquHJyujRnUKK6BjKw3SSXO+8Bcqo+Z
-	4HFDqq6Eg==;
+	 bh=IsXq7V06VftPr1GfpwJ7bZyP+Lz+OUq92Ky1IamOnEY=; b=iHLN23UXbNQe8mKjcKqbl7fBU
+	mUM5twu6iJPptF1l3Bi5S2IfYfOvxeGo5yJseHus/jZGYWFkl3qBer1nIcD1D130UEEJpW44MlOzc
+	71v4SqEo64/w1VRaZfOmAZOQlA5Rk+zYfgSPdCoRBYy0qJ6EuKhG4ZmzveThaTOe99S0AxTQ93/IP
+	yTmto7zpCLh4kT1ceklim4bEAZHjzt7t7Jk+w0mfIkGacCtTnU2MgjrCrngz9TYZZsVruduqHyuOt
+	qg5jDsx/gSAuvpKQWIpY0WBODbbVHJEpfg+agFzwlbKTRfQfJJynVqJbYih7PPigScGCNRfdOJWOn
+	Pq9rkN+kA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kHNWa-000146-7x; Sun, 13 Sep 2020 08:38:16 +0000
+	id 1kHNWk-00016F-2S; Sun, 13 Sep 2020 08:38:26 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kHNWM-0000zh-Ot
- for linux-mtd@lists.infradead.org; Sun, 13 Sep 2020 08:38:06 +0000
+ id 1kHNWM-0000yh-9m
+ for linux-mtd@lists.infradead.org; Sun, 13 Sep 2020 08:38:07 +0000
 Received: from sol.attlocal.net
  (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 1F82221974;
- Sun, 13 Sep 2020 08:37:59 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id E83F12158C;
+ Sun, 13 Sep 2020 08:37:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1599986279;
- bh=kONvZL9ec2SBbE4EAel9mci0YCQN1pZc7hmFt/F6qwY=;
+ s=default; t=1599986278;
+ bh=GtuuizJcLTW3bGJL00gWeJR50PJRhFYvFxYZjc4ncd8=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Dt37vv3oahYtgL3ZyctM6QKg97LdSKU34ArCqE9y/U84AQImmjJjp3IWpIeQl2boS
- KR5a1PsbxdPL8JYbUIX8BxdraDjfMGMuehFFlmoxAmRLN8Iu8UVTjj0WRil4BKsjzY
- V8lffoJKumHVSbQOwdTzejpV6lXUi6DoBaK6UQQ4=
+ b=ZaFapO37bkQppa6Mfy7/oCRTuVCkGxIItwG0O6+zThp0LVIBFMBSRlYNmPNE0hm/3
+ gpgrbhjQ36hK2NIGs7AQxe4umMm/89OcvQsbIwyCjRtz2+JfILGzoZtJHr8nJtZiII
+ TL35ICsyN32gYSXf069tqnTiexq92a0uA3QpB+vU=
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-fscrypt@vger.kernel.org
-Subject: [PATCH v2 05/11] ubifs: use fscrypt_prepare_new_inode() and
+Subject: [PATCH v2 01/11] fscrypt: add fscrypt_prepare_new_inode() and
  fscrypt_set_context()
-Date: Sun, 13 Sep 2020 01:36:14 -0700
-Message-Id: <20200913083620.170627-6-ebiggers@kernel.org>
+Date: Sun, 13 Sep 2020 01:36:10 -0700
+Message-Id: <20200913083620.170627-2-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200913083620.170627-1-ebiggers@kernel.org>
 References: <20200913083620.170627-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200913_043802_961163_12E14E43 
-X-CRM114-Status: GOOD (  15.89  )
+X-CRM114-CacheID: sfid-20200913_043802_480081_4EFFC161 
+X-CRM114-Status: GOOD (  34.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,103 +86,483 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Convert ubifs to use the new functions fscrypt_prepare_new_inode() and
-fscrypt_set_context().
+fscrypt_get_encryption_info() is intended to be GFP_NOFS-safe.  But
+actually it isn't, since it uses functions like crypto_alloc_skcipher()
+which aren't GFP_NOFS-safe, even when called under memalloc_nofs_save().
+Therefore it can deadlock when called from a context that needs
+GFP_NOFS, e.g. during an ext4 transaction or between f2fs_lock_op() and
+f2fs_unlock_op().  This happens when creating a new encrypted file.
 
-Unlike ext4 and f2fs, this doesn't appear to fix any deadlock bug.  But
-it does shorten the code slightly and get all filesystems using the same
-helper functions, so that fscrypt_inherit_context() can be removed.
+We can't fix this by just not setting up the key for new inodes right
+away, since new symlinks need their key to encrypt the symlink target.
 
-It also fixes an incorrect error code where ubifs returned EPERM instead
-of the expected ENOKEY.
+So we need to set up the new inode's key before starting the
+transaction.  But just calling fscrypt_get_encryption_info() earlier
+doesn't work, since it assumes the encryption context is already set,
+and the encryption context can't be set until the transaction.
+
+The recently proposed fscrypt support for the ceph filesystem
+(https://lkml.kernel.org/linux-fscrypt/20200821182813.52570-1-jlayton@kernel.org/T/#u)
+will have this same ordering problem too, since ceph will need to
+encrypt new symlinks before setting their encryption context.
+
+Finally, f2fs can deadlock when the filesystem is mounted with
+'-o test_dummy_encryption' and a new file is created in an existing
+unencrypted directory.  Similarly, this is caused by holding too many
+locks when calling fscrypt_get_encryption_info().
+
+To solve all these problems, add new helper functions:
+
+- fscrypt_prepare_new_inode() sets up a new inode's encryption key
+  (fscrypt_info), using the parent directory's encryption policy and a
+  new random nonce.  It neither reads nor writes the encryption context.
+
+- fscrypt_set_context() persists the encryption context of a new inode,
+  using the information from the fscrypt_info already in memory.  This
+  replaces fscrypt_inherit_context().
+
+Temporarily keep fscrypt_inherit_context() around until all filesystems
+have been converted to use fscrypt_set_context().
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/ubifs/dir.c | 38 ++++++++++++++++----------------------
- 1 file changed, 16 insertions(+), 22 deletions(-)
+ fs/crypto/fscrypt_private.h |   3 +
+ fs/crypto/keysetup.c        | 176 ++++++++++++++++++++++++++++--------
+ fs/crypto/policy.c          |  62 +++++++++++--
+ include/linux/fscrypt.h     |  17 ++++
+ 4 files changed, 209 insertions(+), 49 deletions(-)
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index a9c1f5a9c9bdd..155521e51ac57 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -81,19 +81,6 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 	struct ubifs_inode *ui;
- 	bool encrypted = false;
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index 8117a61b6f558..355f6d9377517 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -572,6 +572,9 @@ int fscrypt_set_per_file_enc_key(struct fscrypt_info *ci, const u8 *raw_key);
+ int fscrypt_derive_dirhash_key(struct fscrypt_info *ci,
+ 			       const struct fscrypt_master_key *mk);
  
--	if (IS_ENCRYPTED(dir)) {
--		err = fscrypt_get_encryption_info(dir);
--		if (err) {
--			ubifs_err(c, "fscrypt_get_encryption_info failed: %i", err);
--			return ERR_PTR(err);
--		}
--
--		if (!fscrypt_has_encryption_key(dir))
--			return ERR_PTR(-EPERM);
--
--		encrypted = true;
--	}
--
- 	inode = new_inode(c->vfs_sb);
- 	ui = ubifs_inode(inode);
- 	if (!inode)
-@@ -112,6 +99,12 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 			 current_time(inode);
- 	inode->i_mapping->nrpages = 0;
- 
-+	err = fscrypt_prepare_new_inode(dir, inode, &encrypted);
-+	if (err) {
-+		ubifs_err(c, "fscrypt_prepare_new_inode failed: %i", err);
-+		goto out_iput;
-+	}
++void fscrypt_hash_inode_number(struct fscrypt_info *ci,
++			       const struct fscrypt_master_key *mk);
 +
- 	switch (mode & S_IFMT) {
- 	case S_IFREG:
- 		inode->i_mapping->a_ops = &ubifs_file_address_operations;
-@@ -131,7 +124,6 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 	case S_IFBLK:
- 	case S_IFCHR:
- 		inode->i_op  = &ubifs_file_inode_operations;
--		encrypted = false;
- 		break;
- 	default:
- 		BUG();
-@@ -151,9 +143,8 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 		if (c->highest_inum >= INUM_WATERMARK) {
- 			spin_unlock(&c->cnt_lock);
- 			ubifs_err(c, "out of inode numbers");
--			make_bad_inode(inode);
--			iput(inode);
--			return ERR_PTR(-EINVAL);
-+			err = -EINVAL;
-+			goto out_iput;
- 		}
- 		ubifs_warn(c, "running out of inode numbers (current %lu, max %u)",
- 			   (unsigned long)c->highest_inum, INUM_WATERMARK);
-@@ -171,16 +162,19 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 	spin_unlock(&c->cnt_lock);
+ /* keysetup_v1.c */
  
- 	if (encrypted) {
--		err = fscrypt_inherit_context(dir, inode, &encrypted, true);
-+		err = fscrypt_set_context(inode, NULL);
- 		if (err) {
--			ubifs_err(c, "fscrypt_inherit_context failed: %i", err);
--			make_bad_inode(inode);
--			iput(inode);
--			return ERR_PTR(err);
-+			ubifs_err(c, "fscrypt_set_context failed: %i", err);
-+			goto out_iput;
- 		}
- 	}
+ void fscrypt_put_direct_key(struct fscrypt_direct_key *dk);
+diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
+index fea6226afc2b0..5371eee8f4b30 100644
+--- a/fs/crypto/keysetup.c
++++ b/fs/crypto/keysetup.c
+@@ -10,6 +10,7 @@
  
- 	return inode;
-+
-+out_iput:
-+	make_bad_inode(inode);
-+	iput(inode);
-+	return ERR_PTR(err);
+ #include <crypto/skcipher.h>
+ #include <linux/key.h>
++#include <linux/random.h>
+ 
+ #include "fscrypt_private.h"
+ 
+@@ -222,6 +223,16 @@ int fscrypt_derive_dirhash_key(struct fscrypt_info *ci,
+ 	return 0;
  }
  
- static int dbg_check_name(const struct ubifs_info *c,
++void fscrypt_hash_inode_number(struct fscrypt_info *ci,
++			       const struct fscrypt_master_key *mk)
++{
++	WARN_ON(ci->ci_inode->i_ino == 0);
++	WARN_ON(!mk->mk_ino_hash_key_initialized);
++
++	ci->ci_hashed_ino = (u32)siphash_1u64(ci->ci_inode->i_ino,
++					      &mk->mk_ino_hash_key);
++}
++
+ static int fscrypt_setup_iv_ino_lblk_32_key(struct fscrypt_info *ci,
+ 					    struct fscrypt_master_key *mk)
+ {
+@@ -254,8 +265,14 @@ static int fscrypt_setup_iv_ino_lblk_32_key(struct fscrypt_info *ci,
+ 			return err;
+ 	}
+ 
+-	ci->ci_hashed_ino = (u32)siphash_1u64(ci->ci_inode->i_ino,
+-					      &mk->mk_ino_hash_key);
++	/*
++	 * New inodes may not have an inode number assigned yet.
++	 * Hashing their inode number is delayed until later.
++	 */
++	if (ci->ci_inode->i_ino == 0)
++		WARN_ON(!(ci->ci_inode->i_state & I_CREATING));
++	else
++		fscrypt_hash_inode_number(ci, mk);
+ 	return 0;
+ }
+ 
+@@ -454,57 +471,27 @@ static void put_crypt_info(struct fscrypt_info *ci)
+ 	kmem_cache_free(fscrypt_info_cachep, ci);
+ }
+ 
+-int fscrypt_get_encryption_info(struct inode *inode)
++static int
++fscrypt_setup_encryption_info(struct inode *inode,
++			      const union fscrypt_policy *policy,
++			      const u8 nonce[FSCRYPT_FILE_NONCE_SIZE])
+ {
+ 	struct fscrypt_info *crypt_info;
+-	union fscrypt_context ctx;
+ 	struct fscrypt_mode *mode;
+ 	struct key *master_key = NULL;
+ 	int res;
+ 
+-	if (fscrypt_has_encryption_key(inode))
+-		return 0;
+-
+ 	res = fscrypt_initialize(inode->i_sb->s_cop->flags);
+ 	if (res)
+ 		return res;
+ 
+-	res = inode->i_sb->s_cop->get_context(inode, &ctx, sizeof(ctx));
+-	if (res < 0) {
+-		const union fscrypt_context *dummy_ctx =
+-			fscrypt_get_dummy_context(inode->i_sb);
+-
+-		if (IS_ENCRYPTED(inode) || !dummy_ctx) {
+-			fscrypt_warn(inode,
+-				     "Error %d getting encryption context",
+-				     res);
+-			return res;
+-		}
+-		/* Fake up a context for an unencrypted directory */
+-		res = fscrypt_context_size(dummy_ctx);
+-		memcpy(&ctx, dummy_ctx, res);
+-	}
+-
+ 	crypt_info = kmem_cache_zalloc(fscrypt_info_cachep, GFP_NOFS);
+ 	if (!crypt_info)
+ 		return -ENOMEM;
+ 
+ 	crypt_info->ci_inode = inode;
+-
+-	res = fscrypt_policy_from_context(&crypt_info->ci_policy, &ctx, res);
+-	if (res) {
+-		fscrypt_warn(inode,
+-			     "Unrecognized or corrupt encryption context");
+-		goto out;
+-	}
+-
+-	memcpy(crypt_info->ci_nonce, fscrypt_context_nonce(&ctx),
+-	       FSCRYPT_FILE_NONCE_SIZE);
+-
+-	if (!fscrypt_supported_policy(&crypt_info->ci_policy, inode)) {
+-		res = -EINVAL;
+-		goto out;
+-	}
++	crypt_info->ci_policy = *policy;
++	memcpy(crypt_info->ci_nonce, nonce, FSCRYPT_FILE_NONCE_SIZE);
+ 
+ 	mode = select_encryption_mode(&crypt_info->ci_policy, inode);
+ 	if (IS_ERR(mode)) {
+@@ -519,8 +506,8 @@ int fscrypt_get_encryption_info(struct inode *inode)
+ 		goto out;
+ 
+ 	/*
+-	 * Multiple tasks may race to set ->i_crypt_info, so use
+-	 * cmpxchg_release().  This pairs with the smp_load_acquire() in
++	 * For existing inodes, multiple tasks may race to set ->i_crypt_info.
++	 * So use cmpxchg_release().  This pairs with the smp_load_acquire() in
+ 	 * fscrypt_get_info().  I.e., here we publish ->i_crypt_info with a
+ 	 * RELEASE barrier so that other tasks can ACQUIRE it.
+ 	 */
+@@ -555,8 +542,117 @@ int fscrypt_get_encryption_info(struct inode *inode)
+ 	put_crypt_info(crypt_info);
+ 	return res;
+ }
++
++/**
++ * fscrypt_get_encryption_info() - set up an inode's encryption key
++ * @inode: the inode to set up the key for
++ *
++ * Set up ->i_crypt_info, if it hasn't already been done.
++ *
++ * Note: unless ->i_crypt_info is already set, this isn't %GFP_NOFS-safe.  So
++ * generally this shouldn't be called from within a filesystem transaction.
++ *
++ * Return: 0 if ->i_crypt_info was set or was already set, *or* if the
++ *	   encryption key is unavailable.  (Use fscrypt_has_encryption_key() to
++ *	   distinguish these cases.)  Also can return another -errno code.
++ */
++int fscrypt_get_encryption_info(struct inode *inode)
++{
++	int res;
++	union fscrypt_context ctx;
++	union fscrypt_policy policy;
++
++	if (fscrypt_has_encryption_key(inode))
++		return 0;
++
++	res = inode->i_sb->s_cop->get_context(inode, &ctx, sizeof(ctx));
++	if (res < 0) {
++		const union fscrypt_context *dummy_ctx =
++			fscrypt_get_dummy_context(inode->i_sb);
++
++		if (IS_ENCRYPTED(inode) || !dummy_ctx) {
++			fscrypt_warn(inode,
++				     "Error %d getting encryption context",
++				     res);
++			return res;
++		}
++		/* Fake up a context for an unencrypted directory */
++		res = fscrypt_context_size(dummy_ctx);
++		memcpy(&ctx, dummy_ctx, res);
++	}
++
++	res = fscrypt_policy_from_context(&policy, &ctx, res);
++	if (res) {
++		fscrypt_warn(inode,
++			     "Unrecognized or corrupt encryption context");
++		return res;
++	}
++
++	if (!fscrypt_supported_policy(&policy, inode))
++		return -EINVAL;
++
++	return fscrypt_setup_encryption_info(inode, &policy,
++					     fscrypt_context_nonce(&ctx));
++}
+ EXPORT_SYMBOL(fscrypt_get_encryption_info);
+ 
++/**
++ * fscrypt_prepare_new_inode() - prepare to create a new inode in a directory
++ * @dir: a possibly-encrypted directory
++ * @inode: the new inode.  ->i_mode must be set already.
++ *	   ->i_ino doesn't need to be set yet.
++ * @encrypt_ret: (output) set to %true if the new inode will be encrypted
++ *
++ * If the directory is encrypted, set up its ->i_crypt_info in preparation for
++ * encrypting the name of the new file.  Also, if the new inode will be
++ * encrypted, set up its ->i_crypt_info and set *encrypt_ret=true.
++ *
++ * This isn't %GFP_NOFS-safe, and therefore it should be called before starting
++ * any filesystem transaction to create the inode.  For this reason, ->i_ino
++ * isn't required to be set yet, as the filesystem may not have set it yet.
++ *
++ * This doesn't persist the new inode's encryption context.  That still needs to
++ * be done later by calling fscrypt_set_context().
++ *
++ * Return: 0 on success, -ENOKEY if the directory's encryption key is missing,
++ *	   or another -errno code
++ */
++int fscrypt_prepare_new_inode(struct inode *dir, struct inode *inode,
++			      bool *encrypt_ret)
++{
++	int err;
++	u8 nonce[FSCRYPT_FILE_NONCE_SIZE];
++
++	if (!IS_ENCRYPTED(dir) && fscrypt_get_dummy_context(dir->i_sb) == NULL)
++		return 0;
++
++	err = fscrypt_get_encryption_info(dir);
++	if (err)
++		return err;
++	if (!fscrypt_has_encryption_key(dir))
++		return -ENOKEY;
++
++	if (WARN_ON_ONCE(inode->i_mode == 0))
++		return -EINVAL;
++
++	/*
++	 * Only regular files, directories, and symlinks are encrypted.
++	 * Special files like device nodes and named pipes aren't.
++	 */
++	if (!S_ISREG(inode->i_mode) &&
++	    !S_ISDIR(inode->i_mode) &&
++	    !S_ISLNK(inode->i_mode))
++		return 0;
++
++	*encrypt_ret = true;
++
++	get_random_bytes(nonce, FSCRYPT_FILE_NONCE_SIZE);
++	return fscrypt_setup_encryption_info(inode,
++					     &dir->i_crypt_info->ci_policy,
++					     nonce);
++}
++EXPORT_SYMBOL_GPL(fscrypt_prepare_new_inode);
++
+ /**
+  * fscrypt_put_encryption_info() - free most of an inode's fscrypt data
+  * @inode: an inode being evicted
+diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
+index b92f345231780..7e96953d385ec 100644
+--- a/fs/crypto/policy.c
++++ b/fs/crypto/policy.c
+@@ -236,18 +236,19 @@ bool fscrypt_supported_policy(const union fscrypt_policy *policy_u,
+ }
+ 
+ /**
+- * fscrypt_new_context_from_policy() - create a new fscrypt_context from
+- *				       an fscrypt_policy
++ * fscrypt_new_context() - create a new fscrypt_context
+  * @ctx_u: output context
+  * @policy_u: input policy
++ * @nonce: nonce to use
+  *
+  * Create an fscrypt_context for an inode that is being assigned the given
+- * encryption policy.  A new nonce is randomly generated.
++ * encryption policy.  @nonce must be a new random nonce.
+  *
+  * Return: the size of the new context in bytes.
+  */
+-static int fscrypt_new_context_from_policy(union fscrypt_context *ctx_u,
+-					   const union fscrypt_policy *policy_u)
++static int fscrypt_new_context(union fscrypt_context *ctx_u,
++			       const union fscrypt_policy *policy_u,
++			       const u8 nonce[FSCRYPT_FILE_NONCE_SIZE])
+ {
+ 	memset(ctx_u, 0, sizeof(*ctx_u));
+ 
+@@ -265,7 +266,7 @@ static int fscrypt_new_context_from_policy(union fscrypt_context *ctx_u,
+ 		memcpy(ctx->master_key_descriptor,
+ 		       policy->master_key_descriptor,
+ 		       sizeof(ctx->master_key_descriptor));
+-		get_random_bytes(ctx->nonce, sizeof(ctx->nonce));
++		memcpy(ctx->nonce, nonce, FSCRYPT_FILE_NONCE_SIZE);
+ 		return sizeof(*ctx);
+ 	}
+ 	case FSCRYPT_POLICY_V2: {
+@@ -281,7 +282,7 @@ static int fscrypt_new_context_from_policy(union fscrypt_context *ctx_u,
+ 		memcpy(ctx->master_key_identifier,
+ 		       policy->master_key_identifier,
+ 		       sizeof(ctx->master_key_identifier));
+-		get_random_bytes(ctx->nonce, sizeof(ctx->nonce));
++		memcpy(ctx->nonce, nonce, FSCRYPT_FILE_NONCE_SIZE);
+ 		return sizeof(*ctx);
+ 	}
+ 	}
+@@ -377,6 +378,7 @@ static int fscrypt_get_policy(struct inode *inode, union fscrypt_policy *policy)
+ static int set_encryption_policy(struct inode *inode,
+ 				 const union fscrypt_policy *policy)
+ {
++	u8 nonce[FSCRYPT_FILE_NONCE_SIZE];
+ 	union fscrypt_context ctx;
+ 	int ctxsize;
+ 	int err;
+@@ -414,7 +416,8 @@ static int set_encryption_policy(struct inode *inode,
+ 		return -EINVAL;
+ 	}
+ 
+-	ctxsize = fscrypt_new_context_from_policy(&ctx, policy);
++	get_random_bytes(nonce, FSCRYPT_FILE_NONCE_SIZE);
++	ctxsize = fscrypt_new_context(&ctx, policy, nonce);
+ 
+ 	return inode->i_sb->s_cop->set_context(inode, &ctx, ctxsize, NULL);
+ }
+@@ -637,6 +640,7 @@ EXPORT_SYMBOL(fscrypt_has_permitted_context);
+ int fscrypt_inherit_context(struct inode *parent, struct inode *child,
+ 						void *fs_data, bool preload)
+ {
++	u8 nonce[FSCRYPT_FILE_NONCE_SIZE];
+ 	union fscrypt_context ctx;
+ 	int ctxsize;
+ 	struct fscrypt_info *ci;
+@@ -650,7 +654,8 @@ int fscrypt_inherit_context(struct inode *parent, struct inode *child,
+ 	if (ci == NULL)
+ 		return -ENOKEY;
+ 
+-	ctxsize = fscrypt_new_context_from_policy(&ctx, &ci->ci_policy);
++	get_random_bytes(nonce, FSCRYPT_FILE_NONCE_SIZE);
++	ctxsize = fscrypt_new_context(&ctx, &ci->ci_policy, nonce);
+ 
+ 	BUILD_BUG_ON(sizeof(ctx) != FSCRYPT_SET_CONTEXT_MAX_SIZE);
+ 	res = parent->i_sb->s_cop->set_context(child, &ctx, ctxsize, fs_data);
+@@ -660,6 +665,45 @@ int fscrypt_inherit_context(struct inode *parent, struct inode *child,
+ }
+ EXPORT_SYMBOL(fscrypt_inherit_context);
+ 
++/**
++ * fscrypt_set_context() - Set the fscrypt context of a new inode
++ * @inode: a new inode
++ * @fs_data: private data given by FS and passed to ->set_context()
++ *
++ * This should be called after fscrypt_prepare_new_inode(), generally during a
++ * filesystem transaction.  Everything here must be %GFP_NOFS-safe.
++ *
++ * Return: 0 on success, -errno on failure
++ */
++int fscrypt_set_context(struct inode *inode, void *fs_data)
++{
++	struct fscrypt_info *ci = inode->i_crypt_info;
++	union fscrypt_context ctx;
++	int ctxsize;
++
++	/* fscrypt_prepare_new_inode() should have set up the key already. */
++	if (WARN_ON_ONCE(!ci))
++		return -ENOKEY;
++
++	BUILD_BUG_ON(sizeof(ctx) != FSCRYPT_SET_CONTEXT_MAX_SIZE);
++	ctxsize = fscrypt_new_context(&ctx, &ci->ci_policy, ci->ci_nonce);
++
++	/*
++	 * This may be the first time the inode number is available, so do any
++	 * delayed key setup that requires the inode number.
++	 */
++	if (ci->ci_policy.version == FSCRYPT_POLICY_V2 &&
++	    (ci->ci_policy.v2.flags & FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32)) {
++		const struct fscrypt_master_key *mk =
++			ci->ci_master_key->payload.data[0];
++
++		fscrypt_hash_inode_number(ci, mk);
++	}
++
++	return inode->i_sb->s_cop->set_context(inode, &ctx, ctxsize, fs_data);
++}
++EXPORT_SYMBOL_GPL(fscrypt_set_context);
++
+ /**
+  * fscrypt_set_test_dummy_encryption() - handle '-o test_dummy_encryption'
+  * @sb: the filesystem on which test_dummy_encryption is being specified
+diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+index eaf16eb557887..9cf7ca90f3abb 100644
+--- a/include/linux/fscrypt.h
++++ b/include/linux/fscrypt.h
+@@ -158,6 +158,7 @@ int fscrypt_ioctl_get_nonce(struct file *filp, void __user *arg);
+ int fscrypt_has_permitted_context(struct inode *parent, struct inode *child);
+ int fscrypt_inherit_context(struct inode *parent, struct inode *child,
+ 			    void *fs_data, bool preload);
++int fscrypt_set_context(struct inode *inode, void *fs_data);
+ 
+ struct fscrypt_dummy_context {
+ 	const union fscrypt_context *ctx;
+@@ -184,6 +185,8 @@ int fscrypt_ioctl_get_key_status(struct file *filp, void __user *arg);
+ 
+ /* keysetup.c */
+ int fscrypt_get_encryption_info(struct inode *inode);
++int fscrypt_prepare_new_inode(struct inode *dir, struct inode *inode,
++			      bool *encrypt_ret);
+ void fscrypt_put_encryption_info(struct inode *inode);
+ void fscrypt_free_inode(struct inode *inode);
+ int fscrypt_drop_inode(struct inode *inode);
+@@ -347,6 +350,11 @@ static inline int fscrypt_inherit_context(struct inode *parent,
+ 	return -EOPNOTSUPP;
+ }
+ 
++static inline int fscrypt_set_context(struct inode *inode, void *fs_data)
++{
++	return -EOPNOTSUPP;
++}
++
+ struct fscrypt_dummy_context {
+ };
+ 
+@@ -394,6 +402,15 @@ static inline int fscrypt_get_encryption_info(struct inode *inode)
+ 	return -EOPNOTSUPP;
+ }
+ 
++static inline int fscrypt_prepare_new_inode(struct inode *dir,
++					    struct inode *inode,
++					    bool *encrypt_ret)
++{
++	if (IS_ENCRYPTED(dir))
++		return -EOPNOTSUPP;
++	return 0;
++}
++
+ static inline void fscrypt_put_encryption_info(struct inode *inode)
+ {
+ 	return;
 -- 
 2.28.0
 
