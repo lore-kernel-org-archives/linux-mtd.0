@@ -2,62 +2,69 @@ Return-Path: <SRS0=tjU8=CX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CD51C43461
-	for <linux-mtd@archiver.kernel.org>; Mon, 14 Sep 2020 14:01:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13094C43461
+	for <linux-mtd@archiver.kernel.org>; Mon, 14 Sep 2020 17:28:03 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B5344208E4
-	for <linux-mtd@archiver.kernel.org>; Mon, 14 Sep 2020 14:01:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9236621D1B
+	for <linux-mtd@archiver.kernel.org>; Mon, 14 Sep 2020 17:28:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CWUKYODK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B5344208E4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TRQZntnL";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="zWEX0pMp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9236621D1B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=sL6ZL7DUT3DQubSQNPT/SWQMJFVKRVhxDyXrWn14t4s=; b=CWUKYODKUqUGfJ3kHiFIhbzNN
-	BP7SLkfKavwkyACgZ6mTG9U0/jg4fjwk6p4EaRK85kBrnevUv6tL6FzpfN5gkjZhcw/+rTt2Rdy28
-	tbK3UY+v5j4NfuhoKr0JkCK0XJ8ZdYnHrJys02P//IULOdpQajKE2oIszQLgyfc6KZBfqHQ7nSPZA
-	EN1cHZtUtczKxetvdDOLsiGQCPt7kzhsz347LMixPkdmBRiJsFP5pOAND7yeEde08XR/GSG7GsoBy
-	+JDuqP1sAd66O4Cfw4fXCo3bqQ3/iPORO2F72EdzS7R18NDlV8FMR3615speob6yIxKGeU8ovLTo3
-	fbYWvtlMA==;
+	 bh=218I35dFgvStwyCzwF6P4p1J81tAK4jcS2ftUJwuGug=; b=TRQZntnLFEsM/d3FtJAVIHuJB
+	tVQaeG8hddLIK1qEP74rBH0JYQu52X3e6Mnn438LlGzcuHoRFs4Z8m/LXWj3SHSRnwSNqmWnE0g8d
+	ufU1tLxe5wyKPnCNWU0NmhrMgLMbZe7/XAyasaO38fGsUIhRZoHv9zoQCtkQ6Xyiz6n3EcTom81De
+	2sVrwnCStqACLKRbQYuVGV0ctKBPmHWuPuuLeCu3bzwToa/ixCXOAHLl9EiKNDAR/qKCO7IEjkmGl
+	cvBjseaP0OTIF+ruVtNHsZRL45uPIP/G8YxaxSemAxnPqIywJIP80/jZre1LJzZWUIZq0Zkeoeek8
+	ve5B7n3jg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kHp1c-000399-Vs; Mon, 14 Sep 2020 14:00:09 +0000
-Received: from szxga07-in.huawei.com ([45.249.212.35] helo=huawei.com)
+	id 1kHsFQ-0000MQ-EF; Mon, 14 Sep 2020 17:26:36 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kHp1X-00035W-EI
- for linux-mtd@lists.infradead.org; Mon, 14 Sep 2020 14:00:04 +0000
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
- by Forcepoint Email with ESMTP id 88B5FB3D0255DF42B515;
- Mon, 14 Sep 2020 21:59:48 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Mon, 14 Sep 2020
- 21:59:45 +0800
-From: Wang Hai <wanghai38@huawei.com>
-To: <richard@nod.at>
-Subject: [PATCH -next 4/4] ubifs: Fix some kernel-doc warnings in tnc.c
-Date: Mon, 14 Sep 2020 21:56:54 +0800
-Message-ID: <20200914135654.55120-5-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200914135654.55120-1-wanghai38@huawei.com>
-References: <20200914135654.55120-1-wanghai38@huawei.com>
+ id 1kHsFO-0000M0-1M
+ for linux-mtd@lists.infradead.org; Mon, 14 Sep 2020 17:26:35 +0000
+Received: from localhost (unknown [104.132.1.66])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 5A76720771;
+ Mon, 14 Sep 2020 17:26:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1600104392;
+ bh=YUeqH1XV4uJ6fcDfV4Ef0fs7JAcffDRAHHBbtRYjkUo=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=zWEX0pMpAA8elGd0n7N77i+c2xaSJEQf610j8WGNnOUtqCU83gjZvcmIbJQ4Pu0q6
+ ZOgBKc1nLgQT2h5G/a81dG6ajjukvp6peLcfOQHdlHlFQ+CSBfNAZ338ontu5yt0lu
+ XxF9EcorDt9Yjg4DyeGUumDrixK1yZQlIhTAGiWs=
+Date: Mon, 14 Sep 2020 10:26:31 -0700
+From: Jaegeuk Kim <jaegeuk@kernel.org>
+To: Eric Biggers <ebiggers@kernel.org>
+Subject: Re: [f2fs-dev] [PATCH v2 04/11] f2fs: use
+ fscrypt_prepare_new_inode() and fscrypt_set_context()
+Message-ID: <20200914172631.GA2580525@google.com>
+References: <20200913083620.170627-1-ebiggers@kernel.org>
+ <20200913083620.170627-5-ebiggers@kernel.org>
 MIME-Version: 1.0
-X-Originating-IP: [10.175.113.133]
-X-CFilter-Loop: Reflected
+Content-Disposition: inline
+In-Reply-To: <20200913083620.170627-5-ebiggers@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200914_100003_810234_03759B01 
-X-CRM114-Status: GOOD (  10.75  )
+X-CRM114-CacheID: sfid-20200914_132634_227830_FD94F7A8 
+X-CRM114-Status: GOOD (  29.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,50 +76,184 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: Daniel Rosenberg <drosen@google.com>, Jeff Layton <jlayton@kernel.org>,
+ linux-f2fs-devel@lists.sourceforge.net, linux-fscrypt@vger.kernel.org,
+ linux-mtd@lists.infradead.org, ceph-devel@vger.kernel.org,
+ linux-ext4@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Fixes the following W=1 kernel build warning(s):
+On 09/13, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Convert f2fs to use the new functions fscrypt_prepare_new_inode() and
+> fscrypt_set_context().  This avoids calling
+> fscrypt_get_encryption_info() from under f2fs_lock_op(), which can
+> deadlock because fscrypt_get_encryption_info() isn't GFP_NOFS-safe.
+> 
+> For more details about this problem, see the earlier patch
+> "fscrypt: add fscrypt_prepare_new_inode() and fscrypt_set_context()".
+> 
+> This also fixes a f2fs-specific deadlock when the filesystem is mounted
+> with '-o test_dummy_encryption' and a file is created in an unencrypted
+> directory other than the root directory:
+> 
+>     INFO: task touch:207 blocked for more than 30 seconds.
+>           Not tainted 5.9.0-rc4-00099-g729e3d0919844 #2
+>     "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+>     task:touch           state:D stack:    0 pid:  207 ppid:   167 flags:0x00000000
+>     Call Trace:
+>      [...]
+>      lock_page include/linux/pagemap.h:548 [inline]
+>      pagecache_get_page+0x25e/0x310 mm/filemap.c:1682
+>      find_or_create_page include/linux/pagemap.h:348 [inline]
+>      grab_cache_page include/linux/pagemap.h:424 [inline]
+>      f2fs_grab_cache_page fs/f2fs/f2fs.h:2395 [inline]
+>      f2fs_grab_cache_page fs/f2fs/f2fs.h:2373 [inline]
+>      __get_node_page.part.0+0x39/0x2d0 fs/f2fs/node.c:1350
+>      __get_node_page fs/f2fs/node.c:35 [inline]
+>      f2fs_get_node_page+0x2e/0x60 fs/f2fs/node.c:1399
+>      read_inline_xattr+0x88/0x140 fs/f2fs/xattr.c:288
+>      lookup_all_xattrs+0x1f9/0x2c0 fs/f2fs/xattr.c:344
+>      f2fs_getxattr+0x9b/0x160 fs/f2fs/xattr.c:532
+>      f2fs_get_context+0x1e/0x20 fs/f2fs/super.c:2460
+>      fscrypt_get_encryption_info+0x9b/0x450 fs/crypto/keysetup.c:472
+>      fscrypt_inherit_context+0x2f/0xb0 fs/crypto/policy.c:640
+>      f2fs_init_inode_metadata+0xab/0x340 fs/f2fs/dir.c:540
+>      f2fs_add_inline_entry+0x145/0x390 fs/f2fs/inline.c:621
+>      f2fs_add_dentry+0x31/0x80 fs/f2fs/dir.c:757
+>      f2fs_do_add_link+0xcd/0x130 fs/f2fs/dir.c:798
+>      f2fs_add_link fs/f2fs/f2fs.h:3234 [inline]
+>      f2fs_create+0x104/0x290 fs/f2fs/namei.c:344
+>      lookup_open.isra.0+0x2de/0x500 fs/namei.c:3103
+>      open_last_lookups+0xa9/0x340 fs/namei.c:3177
+>      path_openat+0x8f/0x1b0 fs/namei.c:3365
+>      do_filp_open+0x87/0x130 fs/namei.c:3395
+>      do_sys_openat2+0x96/0x150 fs/open.c:1168
+>      [...]
+> 
+> That happened because f2fs_add_inline_entry() locks the directory
+> inode's page in order to add the dentry, then f2fs_get_context() tries
+> to lock it recursively in order to read the encryption xattr.  This
+> problem is specific to "test_dummy_encryption" because normally the
+> directory's fscrypt_info would be set up prior to
+> f2fs_add_inline_entry() in order to encrypt the new filename.
+> 
+> Regardless, the new design fixes this test_dummy_encryption deadlock as
+> well as potential deadlocks with fs reclaim, by setting up any needed
+> fscrypt_info structs prior to taking so many locks.
+> 
+> The test_dummy_encryption deadlock was reported by Daniel Rosenberg.
+> 
+> Reported-by: Daniel Rosenberg <drosen@google.com>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-fs/ubifs/tnc.c:3479: warning: Excess function parameter 'inum' description in 'dbg_check_inode_size'
-fs/ubifs/tnc.c:366: warning: Excess function parameter 'node' description in 'lnc_free'
+Thanks.
 
-@inum in 'dbg_check_inode_size' should be @inode, fix it.
-@node in 'lnc_free' is not in use, Remove it.
+Acked-by: Jaegeuk Kim <jaegeuk@kernel.org>
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
----
- fs/ubifs/tnc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
-index f609f6cdde70..de21625804a9 100644
---- a/fs/ubifs/tnc.c
-+++ b/fs/ubifs/tnc.c
-@@ -360,7 +360,6 @@ static int lnc_add_directly(struct ubifs_info *c, struct ubifs_zbranch *zbr,
- /**
-  * lnc_free - remove a leaf node from the leaf node cache.
-  * @zbr: zbranch of leaf node
-- * @node: leaf node
-  */
- static void lnc_free(struct ubifs_zbranch *zbr)
- {
-@@ -3466,7 +3465,7 @@ int ubifs_dirty_idx_node(struct ubifs_info *c, union ubifs_key *key, int level,
- /**
-  * dbg_check_inode_size - check if inode size is correct.
-  * @c: UBIFS file-system description object
-- * @inum: inode number
-+ * @inode: inode to check
-  * @size: inode size
-  *
-  * This function makes sure that the inode size (@size) is correct and it does
--- 
-2.17.1
-
+> ---
+>  fs/f2fs/dir.c   |  2 +-
+>  fs/f2fs/f2fs.h  | 23 -----------------------
+>  fs/f2fs/namei.c |  7 ++++++-
+>  3 files changed, 7 insertions(+), 25 deletions(-)
+> 
+> diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
+> index b2530b9507bd9..414bc94fbd546 100644
+> --- a/fs/f2fs/dir.c
+> +++ b/fs/f2fs/dir.c
+> @@ -537,7 +537,7 @@ struct page *f2fs_init_inode_metadata(struct inode *inode, struct inode *dir,
+>  			goto put_error;
+>  
+>  		if (IS_ENCRYPTED(inode)) {
+> -			err = fscrypt_inherit_context(dir, inode, page, false);
+> +			err = fscrypt_set_context(inode, page);
+>  			if (err)
+>  				goto put_error;
+>  		}
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index d9e52a7f3702f..0503371f88ed4 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -1315,13 +1315,6 @@ enum fsync_mode {
+>  #define IS_IO_TRACED_PAGE(page) (0)
+>  #endif
+>  
+> -#ifdef CONFIG_FS_ENCRYPTION
+> -#define DUMMY_ENCRYPTION_ENABLED(sbi) \
+> -	(unlikely(F2FS_OPTION(sbi).dummy_enc_ctx.ctx != NULL))
+> -#else
+> -#define DUMMY_ENCRYPTION_ENABLED(sbi) (0)
+> -#endif
+> -
+>  /* For compression */
+>  enum compress_algorithm_type {
+>  	COMPRESS_LZO,
+> @@ -4022,22 +4015,6 @@ static inline bool f2fs_lfs_mode(struct f2fs_sb_info *sbi)
+>  	return F2FS_OPTION(sbi).fs_mode == FS_MODE_LFS;
+>  }
+>  
+> -static inline bool f2fs_may_encrypt(struct inode *dir, struct inode *inode)
+> -{
+> -#ifdef CONFIG_FS_ENCRYPTION
+> -	struct f2fs_sb_info *sbi = F2FS_I_SB(dir);
+> -	umode_t mode = inode->i_mode;
+> -
+> -	/*
+> -	 * If the directory encrypted or dummy encryption enabled,
+> -	 * then we should encrypt the inode.
+> -	 */
+> -	if (IS_ENCRYPTED(dir) || DUMMY_ENCRYPTION_ENABLED(sbi))
+> -		return (S_ISREG(mode) || S_ISDIR(mode) || S_ISLNK(mode));
+> -#endif
+> -	return false;
+> -}
+> -
+>  static inline bool f2fs_may_compress(struct inode *inode)
+>  {
+>  	if (IS_SWAPFILE(inode) || f2fs_is_pinned_file(inode) ||
+> diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
+> index 84e4bbc1a64de..45f324511a19e 100644
+> --- a/fs/f2fs/namei.c
+> +++ b/fs/f2fs/namei.c
+> @@ -28,6 +28,7 @@ static struct inode *f2fs_new_inode(struct inode *dir, umode_t mode)
+>  	nid_t ino;
+>  	struct inode *inode;
+>  	bool nid_free = false;
+> +	bool encrypt = false;
+>  	int xattr_size = 0;
+>  	int err;
+>  
+> @@ -69,13 +70,17 @@ static struct inode *f2fs_new_inode(struct inode *dir, umode_t mode)
+>  		F2FS_I(inode)->i_projid = make_kprojid(&init_user_ns,
+>  							F2FS_DEF_PROJID);
+>  
+> +	err = fscrypt_prepare_new_inode(dir, inode, &encrypt);
+> +	if (err)
+> +		goto fail_drop;
+> +
+>  	err = dquot_initialize(inode);
+>  	if (err)
+>  		goto fail_drop;
+>  
+>  	set_inode_flag(inode, FI_NEW_INODE);
+>  
+> -	if (f2fs_may_encrypt(dir, inode))
+> +	if (encrypt)
+>  		f2fs_set_encrypted_inode(inode);
+>  
+>  	if (f2fs_sb_has_extra_attr(sbi)) {
+> -- 
+> 2.28.0
+> 
+> 
+> 
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
 
 ______________________________________________________
 Linux MTD discussion mailing list
