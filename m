@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D2B2C43461
-	for <linux-mtd@archiver.kernel.org>; Mon, 14 Sep 2020 11:10:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 159D1C43461
+	for <linux-mtd@archiver.kernel.org>; Mon, 14 Sep 2020 11:25:35 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5EBA720731
-	for <linux-mtd@archiver.kernel.org>; Mon, 14 Sep 2020 11:10:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5AFCE20759
+	for <linux-mtd@archiver.kernel.org>; Mon, 14 Sep 2020 11:25:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="T35xSWHM";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=walle.cc header.i=@walle.cc header.b="ozlgJ5Bd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5EBA720731
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sAol7bdD";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=walle.cc header.i=@walle.cc header.b="WbXvk1B0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5AFCE20759
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,49 +26,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
 	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=OIHHVgldyufXrGOByu36RvHaALeZc37wBagzHJimzxw=; b=T35xSWHMfxT/xTGNoXSNmALMj
-	nFjCI/hxvaGyyIMxGJFNJDD3Y1DQjesUOsEaY4Il7/BWfT3ZK4H+kXAKaRP1P0XY8NKklTzGzlKEQ
-	VNwbTIwmFur+i8NvmnlKrDUUgGCDBKx2AGN0BU1biirRl+MJkssU2ktMxOZOSGCzqSN9FaM3occnM
-	z/bgpF4e+mbETX/urlTg3J+niR7CLuqBELZOFvbTWZOq/5Tp8uWMTCeGMn4BEiY7wenASzp8X6wSG
-	qm4AN4gCcHKupTNfuWoDmCeBcKuMTmG0OUTpoD0aBoUCz8GjGUnUd82JycU6074yTlm5XHhuLm/x3
-	5ucI+W3aQ==;
+	 bh=pofZmTQaeAc6/2SOSeX5uL22Yf28aU+MVwrgG89Czgw=; b=sAol7bdDbCQLSz+pP1RhpV7Zv
+	/P09VGZneaTQJ4vw1kf+IPvbfpFwpWfZ8Qt1gx5mC8Y5lvjViPXVQku7s+Fd98lq1TirRjfRbIDXd
+	iOYI0j/1/59poiOdBJvJH1v2m4leNlC1uJsuoUppy6x9g5DPWs6+GsfL0fBRZqoC1EXlLA5ms7mX+
+	JoGh87hwPi6O7sHTJFHhrA7e70saiZUFUZClpLprB1OCLdUeF+4KJMpYjDBvNjqcEysuap7hLgPye
+	ESDqQCbuhU4iVaqem58B2y2LPaN8jCJQQiv1Jkbuj/7e3SRwwSioms/0c0z9hT45A1OtjoWrcX1yk
+	j5SMVwdWw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kHmMl-0002CY-7X; Mon, 14 Sep 2020 11:09:47 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1kHmb5-00044N-Si; Mon, 14 Sep 2020 11:24:35 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kHmMi-0002Bw-Tp
- for linux-mtd@lists.infradead.org; Mon, 14 Sep 2020 11:09:46 +0000
+ id 1kHmb2-00043q-QT
+ for linux-mtd@lists.infradead.org; Mon, 14 Sep 2020 11:24:33 +0000
 Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id CC4EA22F53;
- Mon, 14 Sep 2020 13:09:33 +0200 (CEST)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id ADD1C2250C;
+ Mon, 14 Sep 2020 13:24:30 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1600081776;
+ s=mail2016061301; t=1600082671;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=yszHbgqX450NR05oYbyE31jOQW/bTnQLlOfg2qjJEo0=;
- b=ozlgJ5BdDpbabKUGdD25b0kKp+8wyFP/TZ6OkHrMwCyVFvIUAxHxHH1hTOmM0+ZAMaJAf2
- t7wa8Xq0Mc93xdcvqfKtENYJ1uVrfJb0QZOO10ufjLcmDusfLlIsvrY9oEKezzCSDGd5mP
- nrjh0WHu/aJ5vBzeiYZPhYNYyEtdtzQ=
+ bh=TSIenT/eAdfWHsMzr+7fvwJvSwJevHUBTg8/EDHXEAI=;
+ b=WbXvk1B0PQEhKBAqE5pX/daD7i4tV8zaQsMadEivSvPhV4tUoEeoBeBAtKNQ8AsDD6sq2C
+ 30H8jvQKhIO2M334SGFHZJluZ3NdqUlyV9UOnANuwI6yIoZsk/mET0hdZn6oyHDq91IhAI
+ LgQRf+K8/cAl8j8PhrNLh8JonEfb2uU=
 MIME-Version: 1.0
-Date: Mon, 14 Sep 2020 13:09:33 +0200
+Date: Mon, 14 Sep 2020 13:24:30 +0200
 From: Michael Walle <michael@walle.cc>
-To: Pratyush Yadav <me@yadavpratyush.com>
-Subject: Re: [PATCH v2 1/4] mtd: spi-nor: cleanup common code
-In-Reply-To: <20200914094046.tccoc54n7e36zzyr@yadavpratyush.com>
+To: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/4] mtd: spi-nor: OTP support
+In-Reply-To: <20200911222634.31804-1-michael@walle.cc>
 References: <20200911222634.31804-1-michael@walle.cc>
- <20200911222634.31804-2-michael@walle.cc>
- <20200914094046.tccoc54n7e36zzyr@yadavpratyush.com>
 User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <6d52e1bdbbefc9383904e28bcc1c78a7@walle.cc>
+Message-ID: <fd6562b7771c2dc18292b588ae75d17d@walle.cc>
 X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200914_070945_078721_C98AE3C0 
-X-CRM114-Status: GOOD (  12.14  )
+X-CRM114-CacheID: sfid-20200914_072432_995558_40CCB1DA 
+X-CRM114-Status: GOOD (  16.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,35 +78,60 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+Cc: Richard Weinberger <richard@nod.at>,
  Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Jungseung Lee <js07.lee@samsung.com>
+ Jungseung Lee <js07.lee@samsung.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Pratyush,
-
-Am 2020-09-14 11:40, schrieb Pratyush Yadav:
-> Hi Michael,
+Am 2020-09-12 00:26, schrieb Michael Walle:
+> This patchset implements the MTD OTP functions to allow access to the 
+> SPI
+> OTP data. Specific support is added for the Adesto, Macronix and 
+> Winbond
+> flash chips.
 > 
-> *sigh* This patch will cause a _lot_ of conflicts with my series [0]. 
-> It
-> should hopefully go in the next merge window so maybe you can rebase on
-> top of it? Dunno.
+> In the past there was already an attempt by Rahul Bedarkar to add this, 
+> but
+> there was no response. These patches are slightly based on his work.
+> 
+> https://lore.kernel.org/linux-mtd/1489754636-21461-1-git-send-email-rahul.bedarkar@imgtec.com/
+> 
 
-Could you pick up this patch in some form in your series? It looks like 
-your
-series touches most/some of the functions. The patch just removes code
-repetitions.
-TBH I don't need this patch as I just can implement my new one-byte 
-command
-using the current "if (nor->spimem) {} else {}" pattern.
+I've missed appending the changelog:
+
+changes since v1:
+  - rebased to latest tree
+  - correctly check return code of otp_ops->is_locked() in 
+spi_nor_mtd_otp_info()
+  - use correct bouncebuf for spi command in spi_nor_otp_lock_sr2()
+  - add cleanup patch to consolidate some of the "if (spimem) {} else {}" 
+patterns
+  - add otp support for macronix and similar flashes
+  - moved otp code into core.c because it is used across different 
+vendors
+  - use generic naming, eg. spi_nor_otp_lock_sr2() instead of 
+winbond_otp_lock()
 
 -michael
+
+> Michael Walle (4):
+>   mtd: spi-nor: cleanup common code
+>   mtd: spi-nor: add OTP support
+>   mtd: spi-nor: implement OTP support for Macronix and similar flashes
+>   mtd: spi-nor: implement OTP support for Winbond and similar flashes
+> 
+>  drivers/mtd/chips/Kconfig      |   2 +-
+>  drivers/mtd/spi-nor/atmel.c    |  13 +-
+>  drivers/mtd/spi-nor/core.c     | 769 ++++++++++++++++++++++++---------
+>  drivers/mtd/spi-nor/core.h     |  61 +++
+>  drivers/mtd/spi-nor/macronix.c |  13 +-
+>  drivers/mtd/spi-nor/winbond.c  |  18 +-
+>  include/linux/mtd/spi-nor.h    |  16 +
+>  7 files changed, 676 insertions(+), 216 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
