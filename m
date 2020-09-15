@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0AD6C43461
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2020 15:23:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EFAAC43461
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2020 15:26:28 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3C434206A2
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2020 15:23:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1354320809
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2020 15:26:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pnQIEdV9";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="JTvp10HX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C434206A2
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tA5KjmM1";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="QuquWALy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1354320809
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,38 +26,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=+IsJZZuxfLZlui9B+98/BdXzhmmLnrSInGI1ScNfrCE=; b=pnQIEdV93sBtO6vTPMS3pLYCG
-	Y7BkJPNtAv6eyQrqcSvjd6+cng5Vb+2f3zhQFU5cUieU1oSy0q3fGQ43F3ip4EtVsG0BI7YUuUrrR
-	Bc33GMjBrR1Xcog5LpgB8Gu5YrEvmByEDps7woE4vudl69kqH9oc9BoHPLjPBwNm3kTGorvTyT7e3
-	gfV52RkS+pkOZKq1cT54cLo916DY9WDwdrygvtpfDE/sa0I5mHEbn4t8XJ+8vo2L6+fTqlJC7jGiS
-	DcxS+TNOcO8a+cfWfXy/BuyPHawTvNwS3+C08ML4ZAmVRyAQ/wQRUUbLaCL1fs8Ldl2fvO/LFFBl/
-	KQuFkuwqQ==;
+	 bh=roqzQNuBIl5sn7/Yz3wc7qq9z/3jwB1Gtyc3Vf00QxA=; b=tA5KjmM1cGKffvuMVPymWHHDa
+	hWqFCVmykwMrP6OOBWELA/Wu4Mmzrhxpx+VjCAuMG6++mKtFuaBrLCTvB7uEHFJjVfWALKYa5j26J
+	tr2xJw14Fu1KY5Dma2q9rzLpc/B0yOYG+cpi1IVkTaosyvbHr3KZiDKNwErmcmYX/beMd4MW1URtG
+	2kIrOadXQU4f1V1Ecj6O//FDXM4/WUGn/wNZ0mJ8ITRu6TLh4I5q5uYIqf2tFRMXp86RwVK7SwiAh
+	o4hIfbh9+trm/UiDXs//6PgzkJpZzJqX4KKf41v/YQ6norFnz03MWD1f8cLDi8mPLsjNo7W1OunLo
+	kkyTTrdRw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kICnI-0007fZ-6u; Tue, 15 Sep 2020 15:22:56 +0000
+	id 1kICpj-0008Fb-Hj; Tue, 15 Sep 2020 15:25:27 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kICnG-0007f0-0Q
- for linux-mtd@merlin.infradead.org; Tue, 15 Sep 2020 15:22:54 +0000
+ id 1kICpN-00087F-77
+ for linux-mtd@merlin.infradead.org; Tue, 15 Sep 2020 15:25:05 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=bCMdefcbVNK1n/7kExQP4kHzaTJA1/jyiOiumdm05Vg=; b=JTvp10HXp5J69jy2CuzD9GhhpT
- DDjNKmn/2H6kDp88475wME6gUvl9+f3wRoFLOTLRz3S4MzOpFpW99mnsebG7jG0lF/epV73VMWLqs
- 6rlHBaaETOo2D12OSMO42xSsZAtbPpnIpfQGgYc5CZNFbZc5g0o1DD23sYsplsEAglwIWPIKCSkDV
- 9qeGpB7rTwZY6t8/erSjBJX3LtFIVUKogeW/OSS8IvTrBg/ORZHDm1hot46XBw9bDYewalYVHh9GO
- DVyg8qV8FRjz+bfG4e7Ggq7zdO8L3OQ3rEJ2SUfMaq/4+eetzjdH995hp/8iQYQ0gmf3EwHmRUTet
- kYO6k9pQ==;
+ bh=RXt5uY93CeNpmXcpasT+yQQlaTOE/frmzO1PH2TPYYU=; b=QuquWALypxtZa4d/TzijS9gtw8
+ OMQtEqN382McMdWUwtk9BdaXKEOweAqTxpAoMfsCKgdO2D3IF8kZWKRezBCdCxWR1NJGLVd6So1B5
+ c+2GsrCdpvhDiILYQFsQzdsZd1DGs1SfyEWINPa702Bo52XWkZpTSHOaD7iks/95Nz+Q0OwUuLgPL
+ 1d/IJSqFMXo2KPpp6+DUFdpzIG8J2dBWSVhYHtRGMKpnYmRj92L1S53lxQ8GZdxniuEBBJRTiaa5E
+ tlC6TO+uOWuDmbD72jwipnSiG7Snxm/YBq1HMC35CiuS8Kf0Cb3zQ+jF7viuQNxRf8WGiGZr/zvZF
+ +ulYOBJg==;
 Received: from 089144214092.atnat0023.highway.a1.net ([89.144.214.92]
  helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kICnE-0001A7-PD; Tue, 15 Sep 2020 15:22:53 +0000
+ id 1kICpL-0001JA-QH; Tue, 15 Sep 2020 15:25:04 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 01/12] fs: remove the unused SB_I_MULTIROOT flag
-Date: Tue, 15 Sep 2020 17:18:18 +0200
-Message-Id: <20200915151829.1767176-2-hch@lst.de>
+Subject: [PATCH 02/12] drbd: remove dead code in device_to_statistics
+Date: Tue, 15 Sep 2020 17:18:19 +0200
+Message-Id: <20200915151829.1767176-3-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915151829.1767176-1-hch@lst.de>
 References: <20200915151829.1767176-1-hch@lst.de>
@@ -87,43 +87,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The last user of SB_I_MULTIROOT is disappeared with commit f2aedb713c28
-("NFS: Add fs_context support.")
+Ever since the switch to blk-mq, a lower device not used for VM
+writeback will not be marked congested, so the check will never
+trigger.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/namei.c         | 4 ++--
- include/linux/fs.h | 1 -
- 2 files changed, 2 insertions(+), 3 deletions(-)
+ drivers/block/drbd/drbd_nl.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/fs/namei.c b/fs/namei.c
-index e99e2a9da0f7de..f1eb8ccd2be958 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -568,8 +568,8 @@ static bool path_connected(struct vfsmount *mnt, struct dentry *dentry)
- {
- 	struct super_block *sb = mnt->mnt_sb;
+diff --git a/drivers/block/drbd/drbd_nl.c b/drivers/block/drbd/drbd_nl.c
+index 43c8ae4d9fca81..aaff5bde391506 100644
+--- a/drivers/block/drbd/drbd_nl.c
++++ b/drivers/block/drbd/drbd_nl.c
+@@ -3370,7 +3370,6 @@ static void device_to_statistics(struct device_statistics *s,
+ 	if (get_ldev(device)) {
+ 		struct drbd_md *md = &device->ldev->md;
+ 		u64 *history_uuids = (u64 *)s->history_uuids;
+-		struct request_queue *q;
+ 		int n;
  
--	/* Bind mounts and multi-root filesystems can have disconnected paths */
--	if (!(sb->s_iflags & SB_I_MULTIROOT) && (mnt->mnt_root == sb->s_root))
-+	/* Bind mounts can have disconnected paths */
-+	if (mnt->mnt_root == sb->s_root)
- 		return true;
+ 		spin_lock_irq(&md->uuid_lock);
+@@ -3384,11 +3383,6 @@ static void device_to_statistics(struct device_statistics *s,
+ 		spin_unlock_irq(&md->uuid_lock);
  
- 	return is_subdir(dentry, mnt->mnt_root);
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 7519ae003a082c..fbd74df5ce5f34 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -1385,7 +1385,6 @@ extern int send_sigurg(struct fown_struct *fown);
- #define SB_I_CGROUPWB	0x00000001	/* cgroup-aware writeback enabled */
- #define SB_I_NOEXEC	0x00000002	/* Ignore executables on this fs */
- #define SB_I_NODEV	0x00000004	/* Ignore devices on this fs */
--#define SB_I_MULTIROOT	0x00000008	/* Multiple roots to the dentry tree */
- 
- /* sb->s_iflags to limit user namespace mounts */
- #define SB_I_USERNS_VISIBLE		0x00000010 /* fstype already mounted */
+ 		s->dev_disk_flags = md->flags;
+-		q = bdev_get_queue(device->ldev->backing_bdev);
+-		s->dev_lower_blocked =
+-			bdi_congested(q->backing_dev_info,
+-				      (1 << WB_async_congested) |
+-				      (1 << WB_sync_congested));
+ 		put_ldev(device);
+ 	}
+ 	s->dev_size = drbd_get_capacity(device->this_bdev);
 -- 
 2.28.0
 
