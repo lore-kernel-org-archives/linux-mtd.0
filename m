@@ -2,63 +2,65 @@ Return-Path: <SRS0=LGak=CY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92A00C433E2
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2020 15:21:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0AD6C43461
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2020 15:23:46 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 05B3E206A2
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2020 15:21:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3C434206A2
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2020 15:23:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jAX8NWDE";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="e+3jk+59"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 05B3E206A2
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pnQIEdV9";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="JTvp10HX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C434206A2
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=0sUxebcAnFFJQMIItXtra0NjiQqfOvC8ayYc3y/SSnc=; b=jAX8NWDE4jVllGrSk/F+1LZ192
-	8rblV99mcZtCkZ0rA6iFHC1AQNf1l/zepsT8cigFEs77dzqba+2FcLMRQ+CHvRwUwhsXeJsrsyupC
-	hsAnwfKQ90H2r9f9AyekBecujdZQ4o6yRvodXV7Urvn7n+ih18LX00GSbkZOvp/5Ej4OQ7Jl1ySgR
-	WfNjNFVPNUOaXTBK4Qg4V2oHSLFYxuCUXg5GBkAa2dpwAIQyjy6vAcpkxO4uYNJ0wmZUI+2yBuZ2W
-	l7r1wzuGej6ZhjKbztywnNq4qcLLqSF9nT593k8VMXrE5OOe5sqN25kHxz8UV+pWR1lfdGgTaJwLc
-	uNdPvNFQ==;
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=+IsJZZuxfLZlui9B+98/BdXzhmmLnrSInGI1ScNfrCE=; b=pnQIEdV93sBtO6vTPMS3pLYCG
+	Y7BkJPNtAv6eyQrqcSvjd6+cng5Vb+2f3zhQFU5cUieU1oSy0q3fGQ43F3ip4EtVsG0BI7YUuUrrR
+	Bc33GMjBrR1Xcog5LpgB8Gu5YrEvmByEDps7woE4vudl69kqH9oc9BoHPLjPBwNm3kTGorvTyT7e3
+	gfV52RkS+pkOZKq1cT54cLo916DY9WDwdrygvtpfDE/sa0I5mHEbn4t8XJ+8vo2L6+fTqlJC7jGiS
+	DcxS+TNOcO8a+cfWfXy/BuyPHawTvNwS3+C08ML4ZAmVRyAQ/wQRUUbLaCL1fs8Ldl2fvO/LFFBl/
+	KQuFkuwqQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kIClC-0007Ek-Gx; Tue, 15 Sep 2020 15:20:46 +0000
+	id 1kICnI-0007fZ-6u; Tue, 15 Sep 2020 15:22:56 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kIClA-0007EM-DE
- for linux-mtd@merlin.infradead.org; Tue, 15 Sep 2020 15:20:44 +0000
+ id 1kICnG-0007f0-0Q
+ for linux-mtd@merlin.infradead.org; Tue, 15 Sep 2020 15:22:54 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
- Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
- Content-Description:In-Reply-To:References;
- bh=WgQU+DROBiFXSU4XRLi15Ig7DnwkeQul1eu0RWtmaDw=; b=e+3jk+59mxpACTbbZjvM84YGj4
- ceZbnJEyNbo2sMobiL9SoJ/Wml/TfR7ZxGNJ2SmU+0KOtNugocfDQjsanQudzdZwG8tMW2iGt2Dbh
- 5mQmfr9qjUufz+t8XYePond1pxsq56FWF3eh/QXzn34d7rxr8btIOElj7CGNBYepyUHlm89BAuMWW
- FTRFUOsqtFqEL6dBsoD8pHkZEwTfg+xJKDiQK18DDhC6neKQnJnR54JJ1XBA0dPWp6V1bYeExdck6
- hrhjpYhRMs5GVJSKvJV5yRYrE8qRMuWvyKp0uETm2uGjmbQ8U96hYfS5T23/uXLzXtXL5lfc40b7j
- JVXhJ3JQ==;
+ References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+ Content-Type:Content-ID:Content-Description;
+ bh=bCMdefcbVNK1n/7kExQP4kHzaTJA1/jyiOiumdm05Vg=; b=JTvp10HXp5J69jy2CuzD9GhhpT
+ DDjNKmn/2H6kDp88475wME6gUvl9+f3wRoFLOTLRz3S4MzOpFpW99mnsebG7jG0lF/epV73VMWLqs
+ 6rlHBaaETOo2D12OSMO42xSsZAtbPpnIpfQGgYc5CZNFbZc5g0o1DD23sYsplsEAglwIWPIKCSkDV
+ 9qeGpB7rTwZY6t8/erSjBJX3LtFIVUKogeW/OSS8IvTrBg/ORZHDm1hot46XBw9bDYewalYVHh9GO
+ DVyg8qV8FRjz+bfG4e7Ggq7zdO8L3OQ3rEJ2SUfMaq/4+eetzjdH995hp/8iQYQ0gmf3EwHmRUTet
+ kYO6k9pQ==;
 Received: from 089144214092.atnat0023.highway.a1.net ([89.144.214.92]
  helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kICl8-0000xV-0W; Tue, 15 Sep 2020 15:20:42 +0000
+ id 1kICnE-0001A7-PD; Tue, 15 Sep 2020 15:22:53 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: bdi cleanups v5
-Date: Tue, 15 Sep 2020 17:18:17 +0200
-Message-Id: <20200915151829.1767176-1-hch@lst.de>
+Subject: [PATCH 01/12] fs: remove the unused SB_I_MULTIROOT flag
+Date: Tue, 15 Sep 2020 17:18:18 +0200
+Message-Id: <20200915151829.1767176-2-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200915151829.1767176-1-hch@lst.de>
+References: <20200915151829.1767176-1-hch@lst.de>
 MIME-Version: 1.0
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by
  casper.infradead.org. See http://www.infradead.org/rpr.html
@@ -75,7 +77,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: linux-raid@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
  Minchan Kim <minchan@kernel.org>,
- Johannes Thumshirn <Johannes.Thumshirn@wdc.com>, linux-kernel@vger.kernel.org,
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>, linux-kernel@vger.kernel.org,
  linux-block@vger.kernel.org, Song Liu <song@kernel.org>, dm-devel@redhat.com,
  linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
  linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
@@ -85,84 +87,46 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Jens,
+The last user of SB_I_MULTIROOT is disappeared with commit f2aedb713c28
+("NFS: Add fs_context support.")
 
-this series contains a bunch of different BDI cleanups.  The biggest item
-is to isolate block drivers from the BDI in preparation of changing the
-lifetime of the block device BDI in a follow up series.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+ fs/namei.c         | 4 ++--
+ include/linux/fs.h | 1 -
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-Changes since v4:
- - add a back a prematurely removed assignment in dm-table.c
- - pick up a few reviews from Johannes that got lost
+diff --git a/fs/namei.c b/fs/namei.c
+index e99e2a9da0f7de..f1eb8ccd2be958 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -568,8 +568,8 @@ static bool path_connected(struct vfsmount *mnt, struct dentry *dentry)
+ {
+ 	struct super_block *sb = mnt->mnt_sb;
+ 
+-	/* Bind mounts and multi-root filesystems can have disconnected paths */
+-	if (!(sb->s_iflags & SB_I_MULTIROOT) && (mnt->mnt_root == sb->s_root))
++	/* Bind mounts can have disconnected paths */
++	if (mnt->mnt_root == sb->s_root)
+ 		return true;
+ 
+ 	return is_subdir(dentry, mnt->mnt_root);
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 7519ae003a082c..fbd74df5ce5f34 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -1385,7 +1385,6 @@ extern int send_sigurg(struct fown_struct *fown);
+ #define SB_I_CGROUPWB	0x00000001	/* cgroup-aware writeback enabled */
+ #define SB_I_NOEXEC	0x00000002	/* Ignore executables on this fs */
+ #define SB_I_NODEV	0x00000004	/* Ignore devices on this fs */
+-#define SB_I_MULTIROOT	0x00000008	/* Multiple roots to the dentry tree */
+ 
+ /* sb->s_iflags to limit user namespace mounts */
+ #define SB_I_USERNS_VISIBLE		0x00000010 /* fstype already mounted */
+-- 
+2.28.0
 
-Changes since v3:
- - rebased on the lasted block tree, which has some of the prep
-   changes merged
- - extend the ->ra_pages changes to ->io_pages
- - move initializing ->ra_pages and ->io_pages for block devices to
-   blk_register_queue
-
-Changes since v2:
- - fix a rw_page return value check
- - fix up various changelogs
-
-Changes since v1:
- - rebased to the for-5.9/block-merge branch
- - explicitly set the readahead to 0 for ubifs, vboxsf and mtd
- - split the zram block_device operations
- - let rw_page users fall back to bios in swap_readpage
-
-
-Diffstat:
- block/blk-core.c              |    3 -
- block/blk-integrity.c         |    4 +-
- block/blk-mq-debugfs.c        |    1 
- block/blk-settings.c          |    5 +-
- block/blk-sysfs.c             |    4 +-
- block/genhd.c                 |   13 +++++--
- drivers/block/aoe/aoeblk.c    |    2 -
- drivers/block/brd.c           |    1 
- drivers/block/drbd/drbd_nl.c  |   18 ---------
- drivers/block/drbd/drbd_req.c |    4 --
- drivers/block/rbd.c           |    2 -
- drivers/block/zram/zram_drv.c |   19 +++++++---
- drivers/md/bcache/super.c     |    4 --
- drivers/md/dm-table.c         |    9 +---
- drivers/md/raid0.c            |   16 --------
- drivers/md/raid10.c           |   46 ++++++++----------------
- drivers/md/raid5.c            |   31 +++++++---------
- drivers/mmc/core/queue.c      |    3 -
- drivers/mtd/mtdcore.c         |    2 +
- drivers/nvdimm/btt.c          |    2 -
- drivers/nvdimm/pmem.c         |    1 
- drivers/nvme/host/core.c      |    3 -
- drivers/nvme/host/multipath.c |   10 +----
- drivers/scsi/iscsi_tcp.c      |    4 +-
- fs/9p/vfs_file.c              |    2 -
- fs/9p/vfs_super.c             |    6 ++-
- fs/afs/super.c                |    1 
- fs/btrfs/disk-io.c            |    2 -
- fs/fs-writeback.c             |    7 ++-
- fs/fuse/inode.c               |    4 +-
- fs/namei.c                    |    4 +-
- fs/nfs/super.c                |    9 ----
- fs/super.c                    |    2 +
- fs/ubifs/super.c              |    2 +
- fs/vboxsf/super.c             |    2 +
- include/linux/backing-dev.h   |   78 +++++++-----------------------------------
- include/linux/blkdev.h        |    3 +
- include/linux/drbd.h          |    1 
- include/linux/fs.h            |    2 -
- mm/backing-dev.c              |   13 +++----
- mm/filemap.c                  |    4 +-
- mm/memcontrol.c               |    2 -
- mm/memory-failure.c           |    2 -
- mm/migrate.c                  |    2 -
- mm/mmap.c                     |    2 -
- mm/page-writeback.c           |   18 ++++-----
- mm/page_io.c                  |   18 +++++----
- mm/swapfile.c                 |    4 +-
- 48 files changed, 144 insertions(+), 253 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
