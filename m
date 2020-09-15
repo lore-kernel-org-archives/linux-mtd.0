@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EFAAC43461
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2020 15:26:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86E0FC433E2
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2020 15:28:16 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1354320809
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2020 15:26:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E9EF820756
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2020 15:28:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tA5KjmM1";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="QuquWALy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1354320809
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OAdiuWsP";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="vkcvNvrA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E9EF820756
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,38 +26,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=roqzQNuBIl5sn7/Yz3wc7qq9z/3jwB1Gtyc3Vf00QxA=; b=tA5KjmM1cGKffvuMVPymWHHDa
-	hWqFCVmykwMrP6OOBWELA/Wu4Mmzrhxpx+VjCAuMG6++mKtFuaBrLCTvB7uEHFJjVfWALKYa5j26J
-	tr2xJw14Fu1KY5Dma2q9rzLpc/B0yOYG+cpi1IVkTaosyvbHr3KZiDKNwErmcmYX/beMd4MW1URtG
-	2kIrOadXQU4f1V1Ecj6O//FDXM4/WUGn/wNZ0mJ8ITRu6TLh4I5q5uYIqf2tFRMXp86RwVK7SwiAh
-	o4hIfbh9+trm/UiDXs//6PgzkJpZzJqX4KKf41v/YQ6norFnz03MWD1f8cLDi8mPLsjNo7W1OunLo
-	kkyTTrdRw==;
+	 bh=cmKAsAKmqQ6k4MyFigcrrGW9vpbnHfMh8W4IRdMc+Po=; b=OAdiuWsP4DCYKCktMV62j+IkB
+	zT2AsNIy0THojIbc0Zw7V4aiOc8ruTDfs+Xq4Fr51aGw7FweY8AyLloWNjEtIiog/WetfG906by7O
+	TNY/I51x98Pj/bTa7Logb0+p9wSN1Y52E1YDVgO9YQw/325UH7l3xHb+mvb3aV4GrLx/N1KxsJpVu
+	ZSyPgDdcouE+cV6c3ywEeK+6HsYCY4RNavmfeZrn7axK5RVay9q9R5Z+zXPkTJ+T6vnsxiBqsdzvt
+	DkoGvD3UVMiTVVfvhEt6t9VkWfymUY1D85KNPg0DsL++rAo8eR8nQqxIB4+fS0u4CI1/HvSmWyDkl
+	AEmcUQOZA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kICpj-0008Fb-Hj; Tue, 15 Sep 2020 15:25:27 +0000
+	id 1kICrY-0000ed-AU; Tue, 15 Sep 2020 15:27:20 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kICpN-00087F-77
- for linux-mtd@merlin.infradead.org; Tue, 15 Sep 2020 15:25:05 +0000
+ id 1kICrW-0000dz-QM
+ for linux-mtd@merlin.infradead.org; Tue, 15 Sep 2020 15:27:18 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=RXt5uY93CeNpmXcpasT+yQQlaTOE/frmzO1PH2TPYYU=; b=QuquWALypxtZa4d/TzijS9gtw8
- OMQtEqN382McMdWUwtk9BdaXKEOweAqTxpAoMfsCKgdO2D3IF8kZWKRezBCdCxWR1NJGLVd6So1B5
- c+2GsrCdpvhDiILYQFsQzdsZd1DGs1SfyEWINPa702Bo52XWkZpTSHOaD7iks/95Nz+Q0OwUuLgPL
- 1d/IJSqFMXo2KPpp6+DUFdpzIG8J2dBWSVhYHtRGMKpnYmRj92L1S53lxQ8GZdxniuEBBJRTiaa5E
- tlC6TO+uOWuDmbD72jwipnSiG7Snxm/YBq1HMC35CiuS8Kf0Cb3zQ+jF7viuQNxRf8WGiGZr/zvZF
- +ulYOBJg==;
+ bh=Y4tkWtiLArM5ZtpwjGyv2ND3RgxFSGIzR5QDPUf60TY=; b=vkcvNvrAlfkpjgC6PLHdCcE+Rt
+ rVJhEc5LvegHmwyCNl+Jp1ZvzkxadlEJeRvmlI+paiq2Xw90Vk1EKkFLuOLon9UBw7bf5O+d1APq9
+ lUfd4Ij5H9rc6mwCtjWSocnPHXmDvPMY1jXFvzyo/ohoQjxH3pNyLhn93bHHi4S8FJYokwjh7afBg
+ VdnV6ovjwCi6bz7tc9Dsp5emWgQsT/+RvvI2EIEN7ME6GaruCkOpQBu3l2bgNoLkB273IebNiu4L1
+ Eiq/0XQ/xTWB36/gDGzmAL3gAHWN+XRKtB5xAzCQGf2SajsuwNGzkL5FmdrT+wuay5vKexMNetnWk
+ l0MLo90Q==;
 Received: from 089144214092.atnat0023.highway.a1.net ([89.144.214.92]
  helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kICpL-0001JA-QH; Tue, 15 Sep 2020 15:25:04 +0000
+ id 1kICrS-0001S0-U3; Tue, 15 Sep 2020 15:27:17 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 02/12] drbd: remove dead code in device_to_statistics
-Date: Tue, 15 Sep 2020 17:18:19 +0200
-Message-Id: <20200915151829.1767176-3-hch@lst.de>
+Subject: [PATCH 03/12] drbd: remove RB_CONGESTED_REMOTE
+Date: Tue, 15 Sep 2020 17:18:20 +0200
+Message-Id: <20200915151829.1767176-4-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915151829.1767176-1-hch@lst.de>
 References: <20200915151829.1767176-1-hch@lst.de>
@@ -87,40 +87,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Ever since the switch to blk-mq, a lower device not used for VM
-writeback will not be marked congested, so the check will never
-trigger.
+This case isn't ever used.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- drivers/block/drbd/drbd_nl.c | 6 ------
- 1 file changed, 6 deletions(-)
+ drivers/block/drbd/drbd_req.c | 4 ----
+ include/linux/drbd.h          | 1 -
+ 2 files changed, 5 deletions(-)
 
-diff --git a/drivers/block/drbd/drbd_nl.c b/drivers/block/drbd/drbd_nl.c
-index 43c8ae4d9fca81..aaff5bde391506 100644
---- a/drivers/block/drbd/drbd_nl.c
-+++ b/drivers/block/drbd/drbd_nl.c
-@@ -3370,7 +3370,6 @@ static void device_to_statistics(struct device_statistics *s,
- 	if (get_ldev(device)) {
- 		struct drbd_md *md = &device->ldev->md;
- 		u64 *history_uuids = (u64 *)s->history_uuids;
--		struct request_queue *q;
- 		int n;
+diff --git a/drivers/block/drbd/drbd_req.c b/drivers/block/drbd/drbd_req.c
+index 5c975af9c15fb8..481bc34fcf386a 100644
+--- a/drivers/block/drbd/drbd_req.c
++++ b/drivers/block/drbd/drbd_req.c
+@@ -901,13 +901,9 @@ static bool drbd_may_do_local_read(struct drbd_device *device, sector_t sector,
+ static bool remote_due_to_read_balancing(struct drbd_device *device, sector_t sector,
+ 		enum drbd_read_balancing rbm)
+ {
+-	struct backing_dev_info *bdi;
+ 	int stripe_shift;
  
- 		spin_lock_irq(&md->uuid_lock);
-@@ -3384,11 +3383,6 @@ static void device_to_statistics(struct device_statistics *s,
- 		spin_unlock_irq(&md->uuid_lock);
- 
- 		s->dev_disk_flags = md->flags;
--		q = bdev_get_queue(device->ldev->backing_bdev);
--		s->dev_lower_blocked =
--			bdi_congested(q->backing_dev_info,
--				      (1 << WB_async_congested) |
--				      (1 << WB_sync_congested));
- 		put_ldev(device);
- 	}
- 	s->dev_size = drbd_get_capacity(device->this_bdev);
+ 	switch (rbm) {
+-	case RB_CONGESTED_REMOTE:
+-		bdi = device->ldev->backing_bdev->bd_disk->queue->backing_dev_info;
+-		return bdi_read_congested(bdi);
+ 	case RB_LEAST_PENDING:
+ 		return atomic_read(&device->local_cnt) >
+ 			atomic_read(&device->ap_pending_cnt) + atomic_read(&device->rs_pending_cnt);
+diff --git a/include/linux/drbd.h b/include/linux/drbd.h
+index 5755537b51b114..6a8286132751df 100644
+--- a/include/linux/drbd.h
++++ b/include/linux/drbd.h
+@@ -94,7 +94,6 @@ enum drbd_read_balancing {
+ 	RB_PREFER_REMOTE,
+ 	RB_ROUND_ROBIN,
+ 	RB_LEAST_PENDING,
+-	RB_CONGESTED_REMOTE,
+ 	RB_32K_STRIPING,
+ 	RB_64K_STRIPING,
+ 	RB_128K_STRIPING,
 -- 
 2.28.0
 
