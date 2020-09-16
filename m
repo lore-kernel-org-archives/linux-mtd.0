@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C82BC433E2
-	for <linux-mtd@archiver.kernel.org>; Wed, 16 Sep 2020 12:45:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CAE3EC43461
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Sep 2020 12:45:56 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ECBA02053B
-	for <linux-mtd@archiver.kernel.org>; Wed, 16 Sep 2020 12:45:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 70FB52053B
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Sep 2020 12:45:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="F+mjHtV2";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Jwoz1c8l"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ECBA02053B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Qn2LfklO";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Tc1yZhCB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 70FB52053B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,61 +26,62 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=hKTC0psbyWjPKVyoQPiSZlvHDvCn24VPy+KMlBh6HcE=; b=F+mjHtV20vkCZHUF23I/xL338
-	NVg+ncohKUs1Roh6FxKTJWuEocf/hvg4DmErv+tZn0+3vP37HWDt79mkcJKUNMcRoWif807LjOPJk
-	g8eF5lIJpfCo6eHPZ4tsPr5fNv9+t78HZT4emX/oRCpdT+ABiUUhM4jQmjbr+1rk0YEaqyTn8Ij1Q
-	gwXPqL9pz/BnnwoSd77/o4PTw4vKtrsiHhx3NHm+UFD3GH8u65nxyiI+6aW0q9q4ySJUUFNb0Lyrw
-	N4kfUM2nQL7bbkMXucvH4Ola2ofjiAHRF7B3hrtIYN0udI8+6MbMkUwCg3Ow3GbSPFFsvsMVbUA+U
-	cep0dJ70w==;
+	 bh=zM04+fez7FmWjC8/eG4YP5F8bxKInbm2Xvh1AuCs9yc=; b=Qn2LfklOy39+O0ZsVlPBGf67V
+	Hv0esEemhKzt1adk9737aaSyZmuDfnxYOk2FUQLlpXhnF47fqxmTTCcr5+HwRTA+vTGRMrW/FgLap
+	89eChCZezhhXJOjOJ9evbIF/gweyons3dLJRGig7PL7+EJKB6aZJ4y5h0lU6OhwtUEUM3ckJvkhCv
+	lMOWoN6UYibIL0mrn1fbS7zHXaSuzTzX7QBMD+oJrdDirElPsYjv3RNCApgjXpvGkzZZ4O4MTfGgj
+	ED1kjfr87+icyWkzzfnpRpwEG5n0Vu87DYqjuspGEwSM6nDh5SM+TS+T8iCC3XzSs2FaqJIVxuw+q
+	4jYyPyeow==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kIWnx-0006pL-9f; Wed, 16 Sep 2020 12:44:57 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1kIWoJ-00070v-VV; Wed, 16 Sep 2020 12:45:20 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kIWnk-0006lA-5j
- for linux-mtd@lists.infradead.org; Wed, 16 Sep 2020 12:44:48 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08GCiejE029151;
- Wed, 16 Sep 2020 07:44:40 -0500
+ id 1kIWnq-0006nA-Be
+ for linux-mtd@lists.infradead.org; Wed, 16 Sep 2020 12:44:51 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08GCikrT073721;
+ Wed, 16 Sep 2020 07:44:46 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1600260280;
- bh=gEyDrvzwJLdbtGthrXmK6DEEay7wSQ0T8vikD8Ijg2E=;
+ s=ti-com-17Q1; t=1600260286;
+ bh=CKHgmJWPb3bVn2eZwKmoyTawTcp8T99/wZEZ4Kh7wHk=;
  h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=Jwoz1c8l/7eoZ7hbzi4gZZVFm33FX9cdyTtNlDWfz6XauuGG9liFix5nr+QliJw5r
- BqJqL9lOXpKUlGkslRFNCnI0CZUd2rkY/lRd2kFM5j9uwCzNgJfkiWfdyUbm5jugPX
- AjPL52zUcHem0WME7AqPF9pmoDFsKAubQTNkRFQU=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08GCieRm086593
+ b=Tc1yZhCBT5SEBRa2HgeXq4d6bqxyZSkIvKm8dyG4Ofq7BMURmdQV2cVJbc6Np5JjB
+ EiiBO70VjtbKilTR5k6Po5n3d/BAX0BIx0aGJqy4mhRUs9cgvSx7UKvWNnF9EztaWR
+ m1PTVij+O4tTJ8wK/IJqBhNTmXmvOvsEsZP6jMwA=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08GCikv5070046
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 16 Sep 2020 07:44:40 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ Wed, 16 Sep 2020 07:44:46 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 16
- Sep 2020 07:44:40 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ Sep 2020 07:44:46 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 16 Sep 2020 07:44:40 -0500
+ Frontend Transport; Wed, 16 Sep 2020 07:44:46 -0500
 Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
  [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GCiIpa125391;
- Wed, 16 Sep 2020 07:44:37 -0500
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GCiIpc125391;
+ Wed, 16 Sep 2020 07:44:43 -0500
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
  <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
  Raghavendra <vigneshr@ti.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v13 06/15] mtd: spi-nor: sfdp: parse xSPI Profile 1.0 table
-Date: Wed, 16 Sep 2020 18:14:09 +0530
-Message-ID: <20200916124418.833-7-p.yadav@ti.com>
+Subject: [PATCH v13 08/15] mtd: spi-nor: core: do 2 byte reads for SR and FSR
+ in DTR mode
+Date: Wed, 16 Sep 2020 18:14:11 +0530
+Message-ID: <20200916124418.833-9-p.yadav@ti.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200916124418.833-1-p.yadav@ti.com>
 References: <20200916124418.833-1-p.yadav@ti.com>
 MIME-Version: 1.0
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200916_084444_345616_F28E0549 
-X-CRM114-Status: GOOD (  23.31  )
+X-CRM114-CacheID: sfid-20200916_084450_503384_901FC3BC 
+X-CRM114-Status: GOOD (  12.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,199 +100,62 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This table is indication that the flash is xSPI compliant and hence
-supports octal DTR mode. Extract information like the fast read opcode,
-dummy cycles, the number of dummy cycles needed for a Read Status
-Register command, and the number of address bytes needed for a Read
-Status Register command.
-
-We don't know what speed the controller is running at. Find the fast
-read dummy cycles for the fastest frequency the flash can run at to be
-sure we are never short of dummy cycles. If nothing is available,
-default to 20. Flashes that use a different value should update it in
-their fixup hooks.
-
-Since we want to set read settings, expose spi_nor_set_read_settings()
-in core.h.
+Some controllers, like the cadence qspi controller, have trouble reading
+only 1 byte in DTR mode. So, do 2 byte reads for SR and FSR commands in
+DTR mode, and then discard the second byte.
 
 Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/core.c |  2 +-
- drivers/mtd/spi-nor/core.h | 10 +++++
- drivers/mtd/spi-nor/sfdp.c | 91 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 102 insertions(+), 1 deletion(-)
+ drivers/mtd/spi-nor/core.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 7445d7122304..cbb1aab27d03 100644
+index 88c9e18067f4..87c568debf14 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -2333,7 +2333,7 @@ static int spi_nor_check(struct spi_nor *nor)
- 	return 0;
- }
- 
--static void
-+void
- spi_nor_set_read_settings(struct spi_nor_read_command *read,
- 			  u8 num_mode_clocks,
- 			  u8 num_wait_states,
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 125d27b0a72f..42ec7692d8e7 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -192,6 +192,9 @@ struct spi_nor_locking_ops {
+@@ -368,7 +368,7 @@ int spi_nor_write_disable(struct spi_nor *nor)
+  * spi_nor_read_sr() - Read the Status Register.
+  * @nor:	pointer to 'struct spi_nor'.
+  * @sr:		pointer to a DMA-able buffer where the value of the
+- *              Status Register will be written.
++ *              Status Register will be written. Should be at least 2 bytes.
   *
-  * @size:		the flash memory density in bytes.
-  * @page_size:		the page size of the SPI NOR flash memory.
-+ * @rdsr_dummy:		dummy cycles needed for Read Status Register command.
-+ * @rdsr_addr_nbytes:	dummy address bytes needed for Read Status Register
-+ *			command.
-  * @hwcaps:		describes the read and page program hardware
-  *			capabilities.
-  * @reads:		read capabilities ordered by priority: the higher index
-@@ -214,6 +217,8 @@ struct spi_nor_locking_ops {
- struct spi_nor_flash_parameter {
- 	u64				size;
- 	u32				page_size;
-+	u8				rdsr_dummy;
-+	u8				rdsr_addr_nbytes;
- 
- 	struct spi_nor_hwcaps		hwcaps;
- 	struct spi_nor_read_command	reads[SNOR_CMD_READ_MAX];
-@@ -425,6 +430,11 @@ ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
- 
- int spi_nor_hwcaps_read2cmd(u32 hwcaps);
- u8 spi_nor_convert_3to4_read(u8 opcode);
-+void spi_nor_set_read_settings(struct spi_nor_read_command *read,
-+			       u8 num_mode_clocks,
-+			       u8 num_wait_states,
-+			       u8 opcode,
-+			       enum spi_nor_protocol proto);
- void spi_nor_set_pp_settings(struct spi_nor_pp_command *pp, u8 opcode,
- 			     enum spi_nor_protocol proto);
- 
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index c77655968f80..cadb1ed27ffe 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -4,6 +4,7 @@
-  * Copyright (C) 2014, Freescale Semiconductor, Inc.
+  * Return: 0 on success, -errno otherwise.
   */
- 
-+#include <linux/bitfield.h>
- #include <linux/slab.h>
- #include <linux/sort.h>
- #include <linux/mtd/spi-nor.h>
-@@ -19,6 +20,7 @@
- #define SFDP_BFPT_ID		0xff00	/* Basic Flash Parameter Table */
- #define SFDP_SECTOR_MAP_ID	0xff81	/* Sector Map Table */
- #define SFDP_4BAIT_ID		0xff84  /* 4-byte Address Instruction Table */
-+#define SFDP_PROFILE1_ID	0xff05	/* xSPI Profile 1.0 table. */
- 
- #define SFDP_SIGNATURE		0x50444653U
- 
-@@ -1108,6 +1110,91 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
- 	return ret;
- }
- 
-+#define PROFILE1_DWORD1_RDSR_ADDR_BYTES		BIT(29)
-+#define PROFILE1_DWORD1_RDSR_DUMMY		BIT(28)
-+#define PROFILE1_DWORD1_RD_FAST_CMD		GENMASK(15, 8)
-+#define PROFILE1_DWORD4_DUMMY_200MHZ		GENMASK(11, 7)
-+#define PROFILE1_DWORD5_DUMMY_166MHZ		GENMASK(31, 27)
-+#define PROFILE1_DWORD5_DUMMY_133MHZ		GENMASK(21, 17)
-+#define PROFILE1_DWORD5_DUMMY_100MHZ		GENMASK(11, 7)
-+#define PROFILE1_DUMMY_DEFAULT			20
-+
-+/**
-+ * spi_nor_parse_profile1() - parse the xSPI Profile 1.0 table
-+ * @nor:		pointer to a 'struct spi_nor'
-+ * @profile1_header:	pointer to the 'struct sfdp_parameter_header' describing
-+ *			the 4-Byte Address Instruction Table length and version.
-+ * @params:		pointer to the 'struct spi_nor_flash_parameter' to be.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int spi_nor_parse_profile1(struct spi_nor *nor,
-+				  const struct sfdp_parameter_header *profile1_header,
-+				  struct spi_nor_flash_parameter *params)
-+{
-+	u32 *dwords, addr;
-+	size_t len;
-+	int ret;
-+	u8 dummy, opcode;
-+
-+	len = profile1_header->length * sizeof(*dwords);
-+	dwords = kmalloc(len, GFP_KERNEL);
-+	if (!dwords)
-+		return -ENOMEM;
-+
-+	addr = SFDP_PARAM_HEADER_PTP(profile1_header);
-+	ret = spi_nor_read_sfdp(nor, addr, len, dwords);
-+	if (ret)
-+		goto out;
-+
-+	le32_to_cpu_array(dwords, profile1_header->length);
-+
-+	/* Get 8D-8D-8D fast read opcode and dummy cycles. */
-+	opcode = FIELD_GET(PROFILE1_DWORD1_RD_FAST_CMD, dwords[0]);
-+
-+	 /* Set the Read Status Register dummy cycles and dummy address bytes. */
-+	if (dwords[0] & PROFILE1_DWORD1_RDSR_DUMMY)
-+		params->rdsr_dummy = 8;
-+	else
-+		params->rdsr_dummy = 4;
-+
-+	if (dwords[0] & PROFILE1_DWORD1_RDSR_ADDR_BYTES)
-+		params->rdsr_addr_nbytes = 4;
-+	else
-+		params->rdsr_addr_nbytes = 0;
-+
-+	/*
-+	 * We don't know what speed the controller is running at. Find the
-+	 * dummy cycles for the fastest frequency the flash can run at to be
-+	 * sure we are never short of dummy cycles. A value of 0 means the
-+	 * frequency is not supported.
-+	 *
-+	 * Default to PROFILE1_DUMMY_DEFAULT if we don't find anything, and let
-+	 * flashes set the correct value if needed in their fixup hooks.
-+	 */
-+	dummy = FIELD_GET(PROFILE1_DWORD4_DUMMY_200MHZ, dwords[3]);
-+	if (!dummy)
-+		dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_166MHZ, dwords[4]);
-+	if (!dummy)
-+		dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_133MHZ, dwords[4]);
-+	if (!dummy)
-+		dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_100MHZ, dwords[4]);
-+	if (!dummy)
-+		dummy = PROFILE1_DUMMY_DEFAULT;
-+
-+	/* Round up to an even value to avoid tripping controllers up. */
-+	dummy = round_up(dummy, 2);
-+
-+	/* Update the fast read settings. */
-+	spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_8_8_8_DTR],
-+				  0, dummy, opcode,
-+				  SNOR_PROTO_8_8_8_DTR);
-+
-+out:
-+	kfree(dwords);
-+	return ret;
-+}
-+
- /**
-  * spi_nor_parse_sfdp() - parse the Serial Flash Discoverable Parameters.
-  * @nor:		pointer to a 'struct spi_nor'
-@@ -1209,6 +1296,10 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
- 			err = spi_nor_parse_4bait(nor, param_header, params);
- 			break;
- 
-+		case SFDP_PROFILE1_ID:
-+			err = spi_nor_parse_profile1(nor, param_header, params);
-+			break;
-+
- 		default:
- 			break;
+@@ -386,6 +386,11 @@ static int spi_nor_read_sr(struct spi_nor *nor, u8 *sr)
+ 		if (spi_nor_protocol_is_dtr(nor->reg_proto)) {
+ 			op.addr.nbytes = nor->params->rdsr_addr_nbytes;
+ 			op.dummy.nbytes = nor->params->rdsr_dummy;
++			/*
++			 * We don't want to read only one byte in DTR mode. So,
++			 * read 2 and then discard the second byte.
++			 */
++			op.data.nbytes = 2;
  		}
+ 
+ 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+@@ -405,7 +410,8 @@ static int spi_nor_read_sr(struct spi_nor *nor, u8 *sr)
+  * spi_nor_read_fsr() - Read the Flag Status Register.
+  * @nor:	pointer to 'struct spi_nor'
+  * @fsr:	pointer to a DMA-able buffer where the value of the
+- *              Flag Status Register will be written.
++ *              Flag Status Register will be written. Should be at least 2
++ *              bytes.
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+@@ -423,6 +429,11 @@ static int spi_nor_read_fsr(struct spi_nor *nor, u8 *fsr)
+ 		if (spi_nor_protocol_is_dtr(nor->reg_proto)) {
+ 			op.addr.nbytes = nor->params->rdsr_addr_nbytes;
+ 			op.dummy.nbytes = nor->params->rdsr_dummy;
++			/*
++			 * We don't want to read only one byte in DTR mode. So,
++			 * read 2 and then discard the second byte.
++			 */
++			op.data.nbytes = 2;
+ 		}
+ 
+ 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
 -- 
 2.28.0
 
