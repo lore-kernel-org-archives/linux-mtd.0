@@ -2,86 +2,79 @@ Return-Path: <SRS0=QbZc=CZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A9FEC43461
-	for <linux-mtd@archiver.kernel.org>; Wed, 16 Sep 2020 12:46:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9C77C433E2
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Sep 2020 13:49:58 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1194220672
-	for <linux-mtd@archiver.kernel.org>; Wed, 16 Sep 2020 12:46:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 454F522288
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Sep 2020 13:49:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ET3oTPzm";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="OSRgJcRY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1194220672
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="yv866swt";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O8PKPwkW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 454F522288
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=pi+ASG4KM5vNk6jTRA9kZpk3apsKWpJS0jqjZSGn2x4=; b=ET3oTPzmYBQdTXF0Kq111p9D2
-	wltgtUJqoiEYYbCJV//nMWKpcNYoHOkw30Uh/egRXjAJx6AKFinmJrDpmNbWCiMX7JD3Ll30gAmNx
-	CFsaAbKZY2IkBl9Zf6ZtkYSfHcSKh4hwS3uHfdnNYvbOugvne4t3xpOkZOXI9UnEzP/gRdf9LoaDR
-	K6U2H70Rk+njxoFpeEMyW9YtD8CPLhKpZ56UrbNgKoKrNdu4LPrknR3LRHXuVXEyFoDp/JBXOnLPV
-	i+KvUeb91z8cuZ2s4+aaJp3R4vZC2VdlK3oEOHQkKvkq5oWenEOThL677kXnEex/4Sm2BjLZmou7s
-	QrQ/SE82w==;
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:MIME-Version:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=T1Atl2fEIQkPUc6HA1oUNQaYM3bwau8yWyZ+TlqiM8c=; b=yv866swtLkFdFZX5SzACipCo94
+	US9YWsTj1mOCx6nS9mXhVrmKhu+EVatUV8wmo2GukFQayLF0PFHDoFSZMt+aes++akWJeGsGQJhsD
+	hd1r+pV1jHGdJpJLMCYrvCKyyvx273ZhrBW2TTR5e94A2AirmeRRf8XbojlOOPbB0p0H7/a82Dk5r
+	AH0lDesi7TX+sT8dwBLQaWBXlCfgt2BBZ/0tm5hJfde4t9ea1RsE5S1Jy297BVrOPX7dAFrURkXsZ
+	H9SVyA9V5kxYLMLfmCUgCAA3ohUFYxFR4jXGaZ+W7/WdsWDez4e1sqCsTveD+CqAXEQWBpamkmlS8
+	hmFN19Tg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kIWpD-0007Xr-BE; Wed, 16 Sep 2020 12:46:15 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1kIXoH-0007WR-KF; Wed, 16 Sep 2020 13:49:21 +0000
+Received: from mail-lf1-x12d.google.com ([2a00:1450:4864:20::12d])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kIWoB-0006wd-BU
- for linux-mtd@lists.infradead.org; Wed, 16 Sep 2020 12:45:12 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08GCj89F029357;
- Wed, 16 Sep 2020 07:45:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1600260308;
- bh=fel5I5uCTsqozrBsF/NrMzV3MQM9Xh3iOpDKfZK/a6k=;
- h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=OSRgJcRYBp5hmCPxwlmsJjtY/RDXhgY9c/Augr6fLsYT7PNZxjn/MZy7bNydtabrV
- omUKv2X+2oQXTjArFG9TVU1in7YTx5udUUni6f73JKlXM9wfqW4hrqsNsplTk/0xJp
- qEyAqf44Ho5Yy2oykUEk6PhCuT4AvWBnQ0VgEKWA=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08GCj8vh103488
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 16 Sep 2020 07:45:08 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 16
- Sep 2020 07:45:07 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 16 Sep 2020 07:45:07 -0500
-Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
- [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08GCiIpj125391;
- Wed, 16 Sep 2020 07:45:05 -0500
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v13 15/15] mtd: spi-nor: micron-st: allow using MT35XU512ABA
- in Octal DTR mode
-Date: Wed, 16 Sep 2020 18:14:18 +0530
-Message-ID: <20200916124418.833-16-p.yadav@ti.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200916124418.833-1-p.yadav@ti.com>
-References: <20200916124418.833-1-p.yadav@ti.com>
+ id 1kIXoE-0007VF-8C
+ for linux-mtd@lists.infradead.org; Wed, 16 Sep 2020 13:49:19 +0000
+Received: by mail-lf1-x12d.google.com with SMTP id d15so7032805lfq.11
+ for <linux-mtd@lists.infradead.org>; Wed, 16 Sep 2020 06:49:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:from:date:message-id:subject:to:cc;
+ bh=Z8ARxDK1f17ItafB+n3B6mLLNIHFBjmywknhGh58Rcc=;
+ b=O8PKPwkWPU8sIhtbr4XeJH6XMlOmvITD5VhdKsxsAMCagrzoqWEv3JPKZRM/wL1aPB
+ nj3skVuTeU8qvu7QnMvvC6gI/OK14i6Ep4PKN8AZLm5M2mHz/49YCor7kPyeD25Lohvd
+ bsTMxWLFzmQ03DYJ6zM1M/B7xXchEShqfrT1fgpU6LIIYqKaj/kAKWNri2+KflXfShmS
+ 5tUYVK6OZhHkYJVyoyU9WlnGHFHNy0p5EM05+8FdVp8mDKsDWavIHPB688kRdOx+100J
+ CjYxKGBb/ayjgsKlBh66BZ+OQ47rXI9eC80ycQY+5LR+8hy718InyIP9umnz8itCNnFE
+ m6lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+ bh=Z8ARxDK1f17ItafB+n3B6mLLNIHFBjmywknhGh58Rcc=;
+ b=Smjihc/Lug+im2be65cRkWTTm1f/nq1CXhZqWxildqFJsBdVGU1ZrJDX2uysEPAEv/
+ x2Y2RHJimLAWzkKMoFkNU44ZqlWXwaYCw6QPcXPR5YUMaPaKixvJZYRsSsOvE9kXpQPf
+ 0l/wDbCCyz/WUypYQPy+ahYYFD8w+hl7XL91gh6rTCEdjSea9AXqTmQAzbSl/I/qLGl3
+ KiP/ksaQ2zDUd07jFaxxQ40Qxf2cllZ/DSKQr0fJtulh7qfBRB+jAEWmrxQzn1iqYNSK
+ iYQdNSqSfhHmvHy4bTzsv/j4iDV7Jx6Yzf/nO6G9YuCTcGe9E+dr50dZoAASp9vc3nUo
+ 94ZA==
+X-Gm-Message-State: AOAM531MQvqPu2DKTJmceWbXATRWPX1ZNYScmwi7mH7Lgz+F5n5hHdCc
+ UOMy8vbVM3NOI3umkY2b2RkSPxNcLgD2C7vON5Y=
+X-Google-Smtp-Source: ABdhPJxVincJYwD0HRzpTPRp+eXmrLa4YdSdkPD3RkP52p/AjAJQ0yEIkzUDiEd6t6urYiS7eu+sXCigH+EPM4ux7tc=
+X-Received: by 2002:a19:c6c8:: with SMTP id w191mr7131665lff.348.1600264154944; 
+ Wed, 16 Sep 2020 06:49:14 -0700 (PDT)
 MIME-Version: 1.0
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+From: Fabio Estevam <festevam@gmail.com>
+Date: Wed, 16 Sep 2020 10:49:03 -0300
+Message-ID: <CAOMZO5DnGGbZg_th=kjwBmNa8FznYErYCGvmD6dKgBbMV869+w@mail.gmail.com>
+Subject: imx27: Unsupported ECC algorithm
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200916_084511_511652_42AAC9BA 
-X-CRM114-Status: GOOD (  18.34  )
+X-CRM114-CacheID: sfid-20200916_094918_337304_97482653 
+X-CRM114-Status: UNSURE (   6.59  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,147 +86,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris Brezillon <boris.brezillon@collabora.com>,
- Sekhar Nori <nsekhar@ti.com>, Pratyush Yadav <p.yadav@ti.com>
+Cc: linux-mtd@lists.infradead.org, Sascha Hauer <kernel@pengutronix.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Since this flash doesn't have a Profile 1.0 table, the Octal DTR
-capabilities are enabled in the post SFDP fixup, along with the 8D-8D-8D
-fast read settings.
+Hi Miquel,
 
-Enable Octal DTR mode with 20 dummy cycles to allow running at the
-maximum supported frequency of 200Mhz.
+On a imx27-phytec-phycard-s-rdk  board running linux-next, the
+following warning is seen:
 
-The flash supports the soft reset sequence. So, add the flag in the
-flash's info.
+10:15:26.232069  ------------[ cut here ]------------
+10:15:26.232880  WARNING: CPU: 0 PID: 1 at
+drivers/mtd/nand/raw/nand_base.c:5242 nand_scan_with_ids+0x9bc/0x1008
+10:15:26.241132  Unsupported ECC algorithm!
 
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
----
- drivers/mtd/spi-nor/micron-st.c | 102 +++++++++++++++++++++++++++++++-
- 1 file changed, 101 insertions(+), 1 deletion(-)
+I believe it has been caused by 74a89d7f9ed7 ("mtd: rawnand: Use the
+ECC framework user input parsing bits")
 
-diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-index ef3695080710..cc02c1418d1d 100644
---- a/drivers/mtd/spi-nor/micron-st.c
-+++ b/drivers/mtd/spi-nor/micron-st.c
-@@ -8,10 +8,110 @@
- 
- #include "core.h"
- 
-+#define SPINOR_OP_MT_DTR_RD	0xfd	/* Fast Read opcode in DTR mode */
-+#define SPINOR_OP_MT_RD_ANY_REG	0x85	/* Read volatile register */
-+#define SPINOR_OP_MT_WR_ANY_REG	0x81	/* Write volatile register */
-+#define SPINOR_REG_MT_CFR0V	0x00	/* For setting octal DTR mode */
-+#define SPINOR_REG_MT_CFR1V	0x01	/* For setting dummy cycles */
-+#define SPINOR_MT_OCT_DTR	0xe7	/* Enable Octal DTR. */
-+#define SPINOR_MT_EXSPI		0xff	/* Enable Extended SPI (default) */
-+
-+static int spi_nor_micron_octal_dtr_enable(struct spi_nor *nor, bool enable)
-+{
-+	struct spi_mem_op op;
-+	u8 *buf = nor->bouncebuf;
-+	u8 addr_width;
-+	int ret;
-+
-+	if (enable)
-+		addr_width = 3;
-+	else
-+		addr_width = 4;
-+
-+	if (enable) {
-+		/* Use 20 dummy cycles for memory array reads. */
-+		ret = spi_nor_write_enable(nor);
-+		if (ret)
-+			return ret;
-+
-+		*buf = 20;
-+		op = (struct spi_mem_op)
-+			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_MT_WR_ANY_REG, 1),
-+				   SPI_MEM_OP_ADDR(addr_width,
-+						   SPINOR_REG_MT_CFR1V, 1),
-+				   SPI_MEM_OP_NO_DUMMY,
-+				   SPI_MEM_OP_DATA_OUT(1, buf, 1));
-+		ret = spi_mem_exec_op(nor->spimem, &op);
-+		if (ret)
-+			return ret;
-+
-+		ret = spi_nor_wait_till_ready(nor);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		return ret;
-+
-+	if (enable)
-+		*buf = SPINOR_MT_OCT_DTR;
-+	else
-+		*buf = SPINOR_MT_EXSPI;
-+	op = (struct spi_mem_op)
-+		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_MT_WR_ANY_REG, 1),
-+			   SPI_MEM_OP_ADDR(addr_width, SPINOR_REG_MT_CFR0V, 1),
-+			   SPI_MEM_OP_NO_DUMMY,
-+			   SPI_MEM_OP_DATA_OUT(1, buf, 1));
-+
-+	if (!enable)
-+		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
-+
-+	ret = spi_mem_exec_op(nor->spimem, &op);
-+	if (ret) {
-+		dev_err(nor->dev, "Failed to enable octal DTR mode\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static void mt35xu512aba_default_init(struct spi_nor *nor)
-+{
-+	nor->params->octal_dtr_enable = spi_nor_micron_octal_dtr_enable;
-+}
-+
-+static void mt35xu512aba_post_sfdp_fixup(struct spi_nor *nor)
-+{
-+	/* Set the Fast Read settings. */
-+	nor->params->hwcaps.mask |= SNOR_HWCAPS_READ_8_8_8_DTR;
-+	spi_nor_set_read_settings(&nor->params->reads[SNOR_CMD_READ_8_8_8_DTR],
-+				  0, 20, SPINOR_OP_MT_DTR_RD,
-+				  SNOR_PROTO_8_8_8_DTR);
-+
-+	nor->cmd_ext_type = SPI_NOR_EXT_REPEAT;
-+	nor->params->rdsr_dummy = 8;
-+	nor->params->rdsr_addr_nbytes = 0;
-+
-+	/*
-+	 * The BFPT quad enable field is set to a reserved value so the quad
-+	 * enable function is ignored by spi_nor_parse_bfpt(). Make sure we
-+	 * disable it.
-+	 */
-+	nor->params->quad_enable = NULL;
-+}
-+
-+static struct spi_nor_fixups mt35xu512aba_fixups = {
-+	.default_init = mt35xu512aba_default_init,
-+	.post_sfdp = mt35xu512aba_post_sfdp_fixup,
-+};
-+
- static const struct flash_info micron_parts[] = {
- 	{ "mt35xu512aba", INFO(0x2c5b1a, 0, 128 * 1024, 512,
- 			       SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
--			       SPI_NOR_4B_OPCODES) },
-+			       SPI_NOR_4B_OPCODES | SPI_NOR_OCTAL_DTR_READ |
-+			       SPI_NOR_OCTAL_DTR_PP)
-+		.fixups = &mt35xu512aba_fixups},
- 	{ "mt35xu02g", INFO(0x2c5b1c, 0, 128 * 1024, 2048,
- 			    SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
- 			    SPI_NOR_4B_OPCODES) },
--- 
-2.28.0
+Its dts uses nand-ecc-mode = "hw" :
 
+&nfc {
+pinctrl-names = "default";
+pinctrl-0 = <&pinctrl_nfc>;
+nand-bus-width = <8>;
+nand-ecc-mode = "hw";
+nand-on-flash-bbt;
+status = "okay";
+};
+
+I don't have access to this hardware, but I saw the report by the
+Pengutronix lab in kernelci:
+https://storage.kernelci.org/next/master/next-20200916/arm/imx_v4_v5_defconfig/gcc-8/lab-pengutronix/baseline-imx27-phytec-phycard-s-rdk.html
+
+Any ideas?
+
+Thanks,
+
+Fabio Estevam
 
 ______________________________________________________
 Linux MTD discussion mailing list
