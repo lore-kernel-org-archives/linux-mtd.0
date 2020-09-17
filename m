@@ -2,70 +2,76 @@ Return-Path: <SRS0=eAl4=C2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4F5EC433E2
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 12:33:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51FF2C43461
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 13:06:47 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5CD152087D
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 12:33:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E2C3D21974
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 13:06:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TpiEP5bu";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="QBsfQLFv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5CD152087D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="2DSzARmI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E2C3D21974
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Date:To:From:
-	Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=g7DTRHOsLW+wGcFylUM484myHiL10P5kiMcOBmLx0es=; b=TpiEP5buDQWI7Ss5l3sCGF99y
-	5byoMQ8xJTNhEKE6gmF79FqwRN7W9GmZpzAVkrYYAES3vswFw92YIbQkHz1yYu4ZrjIMbfSH8xhqj
-	E1cT2t1yPRn2FZNj9U+5Q94WICSqGHOPNeBKLZXiYy3UZp3LtIlViv856onqrIFvotdxJUOySRp/d
-	HlawETtpAdh0kKZ91YYkYcrRmX7coA1hTe0PN6dfm+xjWV7Q3+A3mn09ESZBgBLOauQaGH9iToVjC
-	lZeOmowl4EWoXEa4q1vai7kclD5dnh+uMagktJ8TWNK32DEVih7Fbe5Q4EeYJgTIDihVKk18cOsMk
-	0xN52FUGg==;
+	 bh=fDuDs0NJEzN1Jz16iiNC2mtOUqO52l9eqzQ0jdSIZqY=; b=2DSzARmImZTZYcnfDJxbnhLUY
+	Yz/J+sWNCJZ4IBaQ9Uj3X9RXwMwN4Z0hVJ1n2AnGImtvKMsX+HnX8jukFt+TFeCQRqju3v2CkVVS6
+	KXuRbhxyj2PA08w717xEkOw3zDRp1/3wTeyqnELwKBC55cjCaJ8dR+DQjS2zEq4DqfoqeOueLntXI
+	1VDGImnScS0e01lQwtHyfliQHErFTMoRQZeFd7P74eO5BfDoio8zYZdMfVviTAw1U+BUWaTBeXXic
+	DB3a4a0XqgRDIlHo4GutAOUDtxUSoYE3ECL65M3VcL2RLhLJRoZbSdW/82Ly8nJGfB79bFO3OSy/M
+	aiy1vTc9Q==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kIt5h-0004Uy-AR; Thu, 17 Sep 2020 12:32:45 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1kItbZ-0008J2-JG; Thu, 17 Sep 2020 13:05:41 +0000
+Received: from mga18.intel.com ([134.134.136.126])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kIt5e-0004UX-N1
- for linux-mtd@lists.infradead.org; Thu, 17 Sep 2020 12:32:43 +0000
-Received: from tleilax.poochiereds.net
- (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id E03D02087D;
- Thu, 17 Sep 2020 12:32:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600345961;
- bh=olPA59AHeALmdazeYKWfpYsBo4J0J6ZWIIQE72g2Yac=;
- h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
- b=QBsfQLFvyNNo7AazxeBdsvgrBNu/5E0ANikO/MgA+2DaZ8Hy+kVN+DnzTkA331w9R
- F99L+XLGUhz5QfB0i3mLuEVhal68EbIHv3IyFk1bRT/k04PDMksWsrW9xN8pUPc555
- 8JmVCKQIahp87c2ulFoeqvulKpTDYSeXTHOvjuQc=
-Message-ID: <41ad3cd50f4d213455bef4e7c42143c289690222.camel@kernel.org>
-Subject: Re: [PATCH v3 13/13] fscrypt: make
- fscrypt_set_test_dummy_encryption() take a 'const char *'
-From: Jeff Layton <jlayton@kernel.org>
-To: Eric Biggers <ebiggers@kernel.org>, linux-fscrypt@vger.kernel.org
-Date: Thu, 17 Sep 2020 08:32:39 -0400
-In-Reply-To: <20200917041136.178600-14-ebiggers@kernel.org>
-References: <20200917041136.178600-1-ebiggers@kernel.org>
- <20200917041136.178600-14-ebiggers@kernel.org>
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+ id 1kItbX-0008Hz-EU
+ for linux-mtd@lists.infradead.org; Thu, 17 Sep 2020 13:05:40 +0000
+IronPort-SDR: Co1Dntg4DWdmwZxEquxUzD5CEh9HYb15rv8bXerxBoSMkgdCHsySRHcruawA62yQI+l3tuVyo8
+ TC2b9m/npmiw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="147437331"
+X-IronPort-AV: E=Sophos;i="5.76,437,1592895600"; d="scan'208";a="147437331"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Sep 2020 06:05:31 -0700
+IronPort-SDR: EYFvTNo2NH3yfO4zyr/tVVhYq3VMufkGzPYoelI/DIlCq3Yufk1BgOtUWKD2P9IMupk8rEdCLe
+ ObCTRim+6d8Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,437,1592895600"; d="scan'208";a="336413914"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+ by orsmga008.jf.intel.com with ESMTP; 17 Sep 2020 06:05:27 -0700
+Received: from andy by smile with local (Exim 4.94)
+ (envelope-from <andriy.shevchenko@intel.com>)
+ id 1kItbH-00HKOZ-1S; Thu, 17 Sep 2020 16:05:23 +0300
+Date: Thu, 17 Sep 2020 16:05:23 +0300
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: "Ramuthevar,
+ Vadivel MuruganX" <vadivel.muruganx.ramuthevar@linux.intel.com>
+Subject: Re: [PATCH v13 2/2] mtd: rawnand: Add NAND controller support on
+ Intel LGM SoC
+Message-ID: <20200917130523.GM3956970@smile.fi.intel.com>
+References: <20200917003308.57038-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20200917003308.57038-3-vadivel.muruganx.ramuthevar@linux.intel.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20200917003308.57038-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200917_083242_897473_EC4A4EA3 
-X-CRM114-Status: GOOD (  27.33  )
+X-CRM114-CacheID: sfid-20200917_090539_623925_16C26726 
+X-CRM114-Status: GOOD (  21.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,157 +83,234 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-mtd@lists.infradead.org, Daniel Rosenberg <drosen@google.com>,
- linux-f2fs-devel@lists.sourceforge.net
+Cc: cheol.yong.kim@intel.com, devicetree@vger.kernel.org,
+ christophe.kerello@st.com, vigneshr@ti.com, arnd@arndb.de,
+ hauke.mehrtens@intel.com, richard@nod.at, brendanhiggins@google.com,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org, linux-mips@vger.kernel.org,
+ boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
+ miquel.raynal@bootlin.com, tglx@linutronix.de, qi-ming.wu@intel.com,
+ robert.jarzmik@free.fr, piotrs@cadence.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2020-09-16 at 21:11 -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Thu, Sep 17, 2020 at 08:33:08AM +0800, Ramuthevar,Vadivel MuruganX wrote:
+> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 > 
-> fscrypt_set_test_dummy_encryption() requires that the optional argument
-> to the test_dummy_encryption mount option be specified as a substring_t.
-> That doesn't work well with filesystems that use the new mount API,
-> since the new way of parsing mount options doesn't use substring_t.
+> This patch adds the new IP of Nand Flash Controller(NFC) support
+> on Intel's Lightning Mountain(LGM) SoC.
 > 
-> Make it take the argument as a 'const char *' instead.
+> DMA is used for burst data transfer operation, also DMA HW supports
+> aligned 32bit memory address and aligned data access by default.
+> DMA burst of 8 supported. Data register used to support the read/write
+> operation from/to device.
 > 
-> Instead of moving the match_strdup() into the callers in ext4 and f2fs,
-> make them just use arg->from directly.  Since the pattern is
-> "test_dummy_encryption=%s", the argument will be null-terminated.
-> 
+> NAND controller driver implements ->exec_op() to replace legacy hooks,
+> these specific call-back method to execute NAND operations.
 
-Are you sure about that? I thought the point of substring_t was to give
-you a token from the string without null terminating it.
+...
 
-ISTM that when you just pass in ->from, you might end up with trailing
-arguments in your string like this. e.g.:
+> +#include <linux/clk.h>
+> +#include <linux/completion.h>
+> +#include <linux/dmaengine.h>
+> +#include <linux/dma-direction.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/err.h>
+> +#include <linux/init.h>
 
-    "v2,foo,bar,baz"
+> +#include <linux/io.h>
+> +#include <linux/iopoll.h>
 
-...and then that might fail to match properly
-in fscrypt_set_test_dummy_encryption.
+io.h is guaranteed to be included by iopoll.h.
 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->  fs/crypto/policy.c      | 20 ++++++--------------
->  fs/ext4/super.c         |  2 +-
->  fs/f2fs/super.c         |  2 +-
->  include/linux/fscrypt.h |  5 +----
->  4 files changed, 9 insertions(+), 20 deletions(-)
-> 
-> diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
-> index 97cf07543651f..4441d9944b9ef 100644
-> --- a/fs/crypto/policy.c
-> +++ b/fs/crypto/policy.c
-> @@ -697,8 +697,7 @@ EXPORT_SYMBOL_GPL(fscrypt_set_context);
->  /**
->   * fscrypt_set_test_dummy_encryption() - handle '-o test_dummy_encryption'
->   * @sb: the filesystem on which test_dummy_encryption is being specified
-> - * @arg: the argument to the test_dummy_encryption option.
-> - *	 If no argument was specified, then @arg->from == NULL.
-> + * @arg: the argument to the test_dummy_encryption option.  May be NULL.
->   * @dummy_policy: the filesystem's current dummy policy (input/output, see
->   *		  below)
->   *
-> @@ -712,29 +711,23 @@ EXPORT_SYMBOL_GPL(fscrypt_set_context);
->   *         -EEXIST if a different dummy policy is already set;
->   *         or another -errno value.
->   */
-> -int fscrypt_set_test_dummy_encryption(struct super_block *sb,
-> -				      const substring_t *arg,
-> +int fscrypt_set_test_dummy_encryption(struct super_block *sb, const char *arg,
->  				      struct fscrypt_dummy_policy *dummy_policy)
->  {
-> -	const char *argstr = "v2";
-> -	const char *argstr_to_free = NULL;
->  	struct fscrypt_key_specifier key_spec = { 0 };
->  	int version;
->  	union fscrypt_policy *policy = NULL;
->  	int err;
->  
-> -	if (arg->from) {
-> -		argstr = argstr_to_free = match_strdup(arg);
-> -		if (!argstr)
-> -			return -ENOMEM;
-> -	}
-> +	if (!arg)
-> +		arg = "v2";
->  
-> -	if (!strcmp(argstr, "v1")) {
-> +	if (!strcmp(arg, "v1")) {
->  		version = FSCRYPT_POLICY_V1;
->  		key_spec.type = FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR;
->  		memset(key_spec.u.descriptor, 0x42,
->  		       FSCRYPT_KEY_DESCRIPTOR_SIZE);
-> -	} else if (!strcmp(argstr, "v2")) {
-> +	} else if (!strcmp(arg, "v2")) {
->  		version = FSCRYPT_POLICY_V2;
->  		key_spec.type = FSCRYPT_KEY_SPEC_TYPE_IDENTIFIER;
->  		/* key_spec.u.identifier gets filled in when adding the key */
-> @@ -785,7 +778,6 @@ int fscrypt_set_test_dummy_encryption(struct super_block *sb,
->  	err = 0;
->  out:
->  	kfree(policy);
-> -	kfree(argstr_to_free);
->  	return err;
->  }
->  EXPORT_SYMBOL_GPL(fscrypt_set_test_dummy_encryption);
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 7e77722406e2f..ed5624285a475 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -1893,7 +1893,7 @@ static int ext4_set_test_dummy_encryption(struct super_block *sb,
->  			 "Can't set test_dummy_encryption on remount");
->  		return -1;
->  	}
-> -	err = fscrypt_set_test_dummy_encryption(sb, arg,
-> +	err = fscrypt_set_test_dummy_encryption(sb, arg->from,
->  						&sbi->s_dummy_enc_policy);
->  	if (err) {
->  		if (err == -EEXIST)
-> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> index f2b3d1a279fb7..c72d22c0c52e7 100644
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@ -438,7 +438,7 @@ static int f2fs_set_test_dummy_encryption(struct super_block *sb,
->  		return -EINVAL;
->  	}
->  	err = fscrypt_set_test_dummy_encryption(
-> -		sb, arg, &F2FS_OPTION(sbi).dummy_enc_policy);
-> +		sb, arg->from, &F2FS_OPTION(sbi).dummy_enc_policy);
->  	if (err) {
->  		if (err == -EEXIST)
->  			f2fs_warn(sbi,
-> diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-> index b3b0c5675c6b1..fc67c4cbaa968 100644
-> --- a/include/linux/fscrypt.h
-> +++ b/include/linux/fscrypt.h
-> @@ -15,7 +15,6 @@
->  
->  #include <linux/fs.h>
->  #include <linux/mm.h>
-> -#include <linux/parser.h>
->  #include <linux/slab.h>
->  #include <uapi/linux/fscrypt.h>
->  
-> @@ -153,9 +152,7 @@ struct fscrypt_dummy_policy {
->  	const union fscrypt_policy *policy;
->  };
->  
-> -int fscrypt_set_test_dummy_encryption(
-> -				struct super_block *sb,
-> -				const substring_t *arg,
-> +int fscrypt_set_test_dummy_encryption(struct super_block *sb, const char *arg,
->  				struct fscrypt_dummy_policy *dummy_policy);
->  void fscrypt_show_test_dummy_encryption(struct seq_file *seq, char sep,
->  					struct super_block *sb);
+> +#include <linux/kernel.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/module.h>
+
+> +#include <linux/mtd/mtd.h>
+> +#include <linux/mtd/rawnand.h>
+> +#include <linux/mtd/nand_ecc.h>
+> +#include <linux/mtd/nand.h>
+
+Since mtd is a hosting framework for this driver, I would move this group of headers after more generic ones with a blank line in between.
+
+
+> +#include <linux/resource.h>
+
+And this I think is guaranteed to be included by io.h.
+
+> +#include <linux/sched.h>
+> +#include <linux/slab.h>
+> +#include <linux/types.h>
+
+> +#include <linux/platform_device.h>
+
+Dup? It's exactly the reason how alphabetical order can help.
+
+...
+
+> +#define EBU_ADDR_SEL(n)		(0x20 + (n) * 4)
+
+I think 0x20 is an offset here, and better to have it as 0x020 to be consistent
+with all other offsets.
+
+...
+
+> +#define EBU_BUSCON(n)		(0x60 + (n) * 4)
+
+Ditto.
+
+...
+
+> +static void ebu_nand_setup_timing(struct ebu_nand_controller *ctrl,
+> +				  const struct nand_sdr_timings *timings)
+> +{
+> +	unsigned int rate = clk_get_rate(ctrl->clk) / 1000000;
+
+HZ_PER_MHZ?
+
+> +	unsigned int period = DIV_ROUND_UP(1000000, rate);
+
+USEC_PER_SEC?
+
+> +	u32 trecov, thold, twrwait, trdwait;
+> +	u32 reg = 0;
+> +
+> +	trecov = DIV_ROUND_UP(max(timings->tREA_max, timings->tREH_min),
+> +			      period);
+> +	reg |= EBU_BUSCON_RECOVC(trecov);
+> +
+> +	thold = DIV_ROUND_UP(max(timings->tDH_min, timings->tDS_min), period);
+> +	reg |= EBU_BUSCON_HOLDC(thold);
+> +
+> +	trdwait = DIV_ROUND_UP(max(timings->tRC_min, timings->tREH_min),
+> +			       period);
+> +	reg |= EBU_BUSCON_WAITRDC(trdwait);
+> +
+> +	twrwait = DIV_ROUND_UP(max(timings->tWC_min, timings->tWH_min), period);
+> +	reg |= EBU_BUSCON_WAITWRC(twrwait);
+> +
+> +	reg |= EBU_BUSCON_CMULT_V4 | EBU_BUSCON_BCGEN_CS | EBU_BUSCON_ALEC |
+> +		EBU_BUSCON_SETUP_EN;
+> +
+> +	writel(reg, ctrl->ebu + EBU_BUSCON(ctrl->cs_num));
+> +}
+
+...
+
+> +	if (oob_required) {
+> +		reg = (chip->oob_poi[3] << 24) | (chip->oob_poi[2] << 16) |
+> +			(chip->oob_poi[1] << 8) | chip->oob_poi[0];
+
+get_unligned_le32()?
+
+...
+
+> +		reg = (chip->oob_poi[7] << 24) | (chip->oob_poi[6] << 16) |
+> +			(chip->oob_poi[5] << 8) | chip->oob_poi[4];
+
+Ditto.
+
+...
+
+> +	ret = readl_poll_timeout_atomic(int_sta, val,
+> +					!(val & HSNAND_INT_STA_WR_C), 10, 1000);
+
+Slightly better (logically split between lines):
+
+	ret = readl_poll_timeout_atomic(int_sta, val, !(val & HSNAND_INT_STA_WR_C),
+					10, 1000);
+
+
+> +	if (ret)
+> +		return ret;
+
+...
+
+> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ebunand");
+> +	ebu_host->ebu = devm_ioremap_resource(&pdev->dev, res);
+
+Why not to use
+
+	ebu_host->ebu = devm_platform_ioremap_resource_byname(&pdev->dev, "ebunand");
+
+?
+
+> +	if (IS_ERR(ebu_host->ebu))
+> +		return PTR_ERR(ebu_host->ebu);
+> +
+> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "hsnand");
+> +	ebu_host->hsnand = devm_ioremap_resource(&pdev->dev, res);
+
+Ditto.
+
+> +	if (IS_ERR(ebu_host->hsnand))
+> +		return PTR_ERR(ebu_host->hsnand);
+
+...
+
+
+> +	for (i = 0; i < MAX_CS; i++) {
+> +		resname = devm_kasprintf(dev, GFP_KERNEL, "nand_cs%d", i);
+> +		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+> +						   resname);
+
+> +		if (!res)
+> +			return -EINVAL;
+
+Redundant check.
+
+> +		ebu_host->cs[i].chipaddr = devm_ioremap_resource(dev, res);
+
+Ditto (see above).
+
+> +		ebu_host->cs[i].nand_pa = res->start;
+> +		if (IS_ERR(ebu_host->cs[i].chipaddr))
+> +			return PTR_ERR(ebu_host->cs[i].chipaddr);
+> +	}
+
+...
+
+> +	ebu_host->clk = devm_clk_get(dev, NULL);
+> +	if (IS_ERR(ebu_host->clk)) {
+
+> +		ret = PTR_ERR(ebu_host->clk);
+> +		dev_err(dev, "failed to get clock: %d\n", ret);
+> +		return ret;
+
+	return dev_err_probe() ?
+
+> +	}
+
+...
+
+> +	ebu_host->dma_tx = dma_request_chan(dev, "tx");
+> +	if (IS_ERR(ebu_host->dma_tx)) {
+
+> +		ret = PTR_ERR(ebu_host->dma_tx);
+> +		dev_err(dev, "DMA tx channel request fail!.\n");
+> +		goto err_cleanup_dma;
+
+Ditto. On top why !. ???
+
+> +	}
+> +
+> +	ebu_host->dma_rx = dma_request_chan(dev, "rx");
+> +	if (IS_ERR(ebu_host->dma_rx)) {
+
+> +		ret = PTR_ERR(ebu_host->dma_rx);
+> +		dev_err(dev, "DMA rx channel request fail!.\n");
+> +		goto err_cleanup_dma;
+
+Ditto.
+
+> +	}
 
 -- 
-Jeff Layton <jlayton@kernel.org>
+With Best Regards,
+Andy Shevchenko
+
 
 
 ______________________________________________________
