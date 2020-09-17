@@ -2,81 +2,64 @@ Return-Path: <SRS0=eAl4=C2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83734C43464
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 21:02:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8686C43463
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 22:04:02 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0797C208C3
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 21:02:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 022E320872
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 22:04:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HtJ1P+jc";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qrS6RlXv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0797C208C3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="21olIhda";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ICDUnkL7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 022E320872
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=OJWS/M6RNqLIF3wblAE+cL84va1USAc1v6fb3JcMYRE=; b=HtJ1P+jclfV18IpYPYE3XE8Cw
-	8svJ8r0Hi8xMK3llQnd/XAQzco6fNLivv9EnsWqshEcr7yahpfBQPPcOEx7ivF1VHtCotG35tOqsN
-	biusCFUr+pHojy/olltYSJkzywK+Yh0BwT+ehzA59VCOTsEyeu/P0nkehN/MrWZFAsNvgFGixwELm
-	FAShl5XAuH1RexxinBb8k9K2KWkT9AxuAPFXzH6ejdDTPHvaa5YOWpI4CQtoGoSQd3PG4T234xmVJ
-	l7c/mVIsmamM40OcKAf9wI4ryPn/wG2DM8niL3cRYLxst3Ym8TqTAnc7V1cYMEdnfRwXvaML2nnvK
-	eegKm9rZA==;
+	 bh=MPMn9vArCS183V0/ENUsTpaflKvxFpZjtTDPMEAyi84=; b=21olIhdaZ1BmBRnG7/gpJ4Xi2
+	5deIhhmIGN3UcmC4ATBQ+BgkNWPwiJGhRTHCwIUHFmI1u+gko4aMeZhomaTOIm235KfrufiosRU5p
+	nUluZ8Og2gL8jj6/NfTXUICk2ipdOTljEEsbwY3Ubpq8u52DWearVnvOs3psZFhM5qgJNT+XWau0A
+	+515oPlXRgJPULWbPdbLW4krOd0waI3y203zM9RwROpm/kj9awW979hJylTOe0EHgsEDNOAPCSSkQ
+	ZzcyGdqjW7eaGVpPoKmZdCXk86c/Z0M37m+hDfWgEylh0uh1LyomeXeQhn+R9kscISKh2ARXcgACv
+	k2BFYWtYw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kJ12K-0006mq-5x; Thu, 17 Sep 2020 21:01:48 +0000
-Received: from mail-qt1-x844.google.com ([2607:f8b0:4864:20::844])
+	id 1kJ1zk-0001vB-18; Thu, 17 Sep 2020 22:03:12 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kJ12I-0006mN-5T
- for linux-mtd@lists.infradead.org; Thu, 17 Sep 2020 21:01:46 +0000
-Received: by mail-qt1-x844.google.com with SMTP id z2so3093932qtv.12
- for <linux-mtd@lists.infradead.org>; Thu, 17 Sep 2020 14:01:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=71NkNHP0R01eMpLBKZ+eul66Yg6+u+oK86rQqAUsTRI=;
- b=qrS6RlXv0SSH5MY2IRAA4hFZaIZEZ8sCa9b3drzGXkH7msyVVJl2CY7qPJuO488s4w
- z6dkkcEeRdPBeVeMx0KhHrt7Wqx3oQlMotQZacO1c5oLQp/2ba7N8JteLENPKMxCJqV0
- 4xNpEFhMAwYT01QiYvrvFzMmh+absFaOkjqk9LbmigCXSZm/2xtAOQ8mrttiYbfbTpYE
- KmQcc/z8dSjq0q6KShUaGmhAizehyes1y5TZKAy5cB0Q163MXr2OE+5NISyrM5YWr5B9
- oSFTu7iekalP1aodD3z2IW8uXatSz2ZCn7exRBt4aizZllPHMgqdqtO7VzOeEmP36XaN
- 4fyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=71NkNHP0R01eMpLBKZ+eul66Yg6+u+oK86rQqAUsTRI=;
- b=VX6ZBtfb07mYNnumnDj/pRnbwBZ8fHd1GXX+TASVuCUwzQf3mwgpRRn1KdDgyzNnZk
- pElT1XaOI4W9RNbCw0h9pApYyPUAqUYGokWcCqgK0GJ3aaWX+1Mz9GJMVRQuRDK7HLXh
- xhNvr3USaVuxop9fJ666PU3FHtyv27ZI0FDWbBSQM2pbmlYUq2wIMjIPN4xM7uVLCSYh
- aFLRV7Apb37MKbVNgQw172Y8a+eX4YRxrQqsUoHH98i8v8awA2NhxNlWxMLUrYGmdOBc
- SVupEQsLrnSp1Nc2qsRH91WSFWACjnmzqL+gPwdnz9LoJL0/UaAsRUekqy/wFuJ8q9f0
- LM5Q==
-X-Gm-Message-State: AOAM5326UScnme8xFBzVhw0+gEDpHXKk8QGKVUjokuCRipmMuHnURgiC
- 3LHELJC2NwFkUEi91BZRYPeJCgGdypFd3vRhLyE=
-X-Google-Smtp-Source: ABdhPJycV7BNmRRthSEHTlFtoTdelAi0Gj6AVCUBCe66kU0oQcmdd67QHHwJ6m3H/8GtiHO3kmy+tUfk8HU5vfFg7p4=
-X-Received: by 2002:ac8:76d0:: with SMTP id q16mr17885308qtr.164.1600376504666; 
- Thu, 17 Sep 2020 14:01:44 -0700 (PDT)
+ id 1kJ1zh-0001uf-NR; Thu, 17 Sep 2020 22:03:09 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+ References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description;
+ bh=ubJtVk08jzU3J8YPE2lJLRaYSsnYYHZKYdrpjiW6yU4=; b=ICDUnkL72CW96WATA+3jxM5vWb
+ 6oYT1enLOn3O4Ag28G+e5sc4FqNNUy2Ikgxnpx/LhvjaiBKvrZWAbYzkaYIkc/NjzWtAUaMsW8kTk
+ Yue6qkZhlQb9iYXfoXv9v9sKs+He0hXzIgOzvhGW01abuVdlCsLu5ep5X71lnTxbrbq9ljbXhS2jN
+ fZS2WZ9OlwwNROzSqPlT2fhEu7ifLnDLSIWkeEha9ouk+MkogWQ6Zy5o5FAh5nDVbZ7+o9C1tZcrW
+ sIbCrABL5nerc0GAMK3sNquTExIDELUO/f3nddMDsbHnosACnqilx6WvwEtmQbtPzdCn8oS1kPCcM
+ eCOrz5Qw==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red
+ Hat Linux)) id 1kJ1zf-0003eq-8d; Thu, 17 Sep 2020 22:03:07 +0000
+Date: Thu, 17 Sep 2020 23:03:07 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 01/13] mm: Add AOP_UPDATED_PAGE return value
+Message-ID: <20200917220307.GX5449@casper.infradead.org>
+References: <20200917151050.5363-1-willy@infradead.org>
+ <20200917151050.5363-2-willy@infradead.org>
 MIME-Version: 1.0
-References: <20200914135654.55120-1-wanghai38@huawei.com>
-In-Reply-To: <20200914135654.55120-1-wanghai38@huawei.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Thu, 17 Sep 2020 23:01:33 +0200
-Message-ID: <CAFLxGvwpspyEQ2PUORZt+aKmcXBrQ2i8q30WwCAq3j6FGd6p4g@mail.gmail.com>
-Subject: Re: [PATCH -next 0/4] ubifs: Fix some kernel-doc warnings for ubifs
-To: Wang Hai <wanghai38@huawei.com>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200917_170146_237341_2F8018A7 
-X-CRM114-Status: GOOD (  10.43  )
+Content-Disposition: inline
+In-Reply-To: <20200917151050.5363-2-willy@infradead.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,29 +71,80 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- LKML <linux-kernel@vger.kernel.org>
+Cc: linux-cifs@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ ecryptfs@vger.kernel.org, linux-um@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ linux-mtd@lists.infradead.org, v9fs-developer@lists.sourceforge.net,
+ ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Sep 14, 2020 at 4:06 PM Wang Hai <wanghai38@huawei.com> wrote:
->
-> In the ubifs module, there are some kernel-doc warnings,
-> this series of patches can fix these warnings.
->
-> Wang Hai (4):
->   ubifs: Fix 'hash' kernel-doc warning in auth.c
->   ubifs: Fix some kernel-doc warnings in gc.c
->   ubifs: Fix some kernel-doc warnings in replay.c
->   ubifs: Fix some kernel-doc warnings in tnc.c
+On Thu, Sep 17, 2020 at 04:10:38PM +0100, Matthew Wilcox (Oracle) wrote:
+> +++ b/mm/filemap.c
+> @@ -2254,8 +2254,10 @@ ssize_t generic_file_buffered_read(struct kiocb *iocb,
+>  		 * PG_error will be set again if readpage fails.
+>  		 */
+>  		ClearPageError(page);
+> -		/* Start the actual read. The read will unlock the page. */
+> +		/* Start the actual read. The read may unlock the page. */
+>  		error = mapping->a_ops->readpage(filp, page);
+> +		if (error == AOP_UPDATED_PAGE)
+> +			goto page_ok;
+>  
+>  		if (unlikely(error)) {
+>  			if (error == AOP_TRUNCATED_PAGE) {
 
-Applied to next, thanks!
+If anybody wants to actually test this, this hunk is wrong.
 
--- 
-Thanks,
-//richard
++++ b/mm/filemap.c
+@@ -2256,8 +2256,11 @@ ssize_t generic_file_buffered_read(struct kiocb *iocb,
+                ClearPageError(page);
+                /* Start the actual read. The read may unlock the page. */
+                error = mapping->a_ops->readpage(filp, page);
+-               if (error == AOP_UPDATED_PAGE)
++               if (error == AOP_UPDATED_PAGE) {
++                       unlock_page(page);
++                       error = 0;
+                        goto page_ok;
++               }
+ 
+                if (unlikely(error)) {
+                        if (error == AOP_TRUNCATED_PAGE) {
+
+> @@ -2619,7 +2621,7 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+>  	 */
+>  	if (unlikely(!PageUptodate(page)))
+>  		goto page_not_uptodate;
+> -
+> +page_ok:
+>  	/*
+>  	 * We've made it this far and we had to drop our mmap_lock, now is the
+>  	 * time to return to the upper layer and have it re-find the vma and
+> @@ -2654,6 +2656,8 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+>  	ClearPageError(page);
+>  	fpin = maybe_unlock_mmap_for_io(vmf, fpin);
+>  	error = mapping->a_ops->readpage(file, page);
+> +	if (error == AOP_UPDATED_PAGE)
+> +		goto page_ok;
+>  	if (!error) {
+>  		wait_on_page_locked(page);
+>  		if (!PageUptodate(page))
+> @@ -2867,6 +2871,10 @@ static struct page *do_read_cache_page(struct address_space *mapping,
+>  			err = filler(data, page);
+>  		else
+>  			err = mapping->a_ops->readpage(data, page);
+> +		if (err == AOP_UPDATED_PAGE) {
+> +			unlock_page(page);
+> +			goto out;
+> +		}
+>  
+>  		if (err < 0) {
+>  			put_page(page);
+> -- 
+> 2.28.0
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
