@@ -2,69 +2,83 @@ Return-Path: <SRS0=eAl4=C2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48B33C2BBD1
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 16:50:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC4E6C433E2
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 17:13:15 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DD3BA206CA
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 16:50:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 78925221E7
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 17:13:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="UNFjS3YP";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="y+iGlgpC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DD3BA206CA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZNCmbglz";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UP4JN3wP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 78925221E7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Date:To:From:
-	Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=mpOg9lM0kjVegSPHx2kKv4jI43v9lEOs/cmKWwprLxE=; b=UNFjS3YPpmL/wtwyWSLTtjNgQ
-	BlHyh8amNbMR7ynh4Bcs8Zse/feonSgeTIvk2vB1YCT0POg3ozCv2f33HjxYfRZP0swhDO4BPAmbF
-	86pgiD03RRLqZXXgaUKDnSQtBPN2ueh3xBfI6p7PHRgXHTsgBEhLKz0avZT0SAQCYlrs5f83cJsIR
-	dkK3CD4FxrCv1Y0y8hdS8ndmvkO7I/nO2beUs0/x1zW5hR4NS61nhEX8bBjpN6ZJN68wqP3POgadP
-	dG0Q/twLx35cL6pTSYbEZQ2j3aOogKUKvNT2WT6nDKOFNmYhOGRbLJuOhHAPHhXzA4ey9D7ZvrlXj
-	Q9gZPq47A==;
+	 bh=IDUMGwAo/BGvWAQgl9xEUaB9tyIkmpeYdlg/w2o1L3k=; b=ZNCmbglzIw0DHG8r2ek0eMXy4
+	EhO011T8Qaq+0c6WDPhvKdokgNtna5doQ1v9a9aF6zyz8FPAW1GiUO6eHjnYXvgBhTqyCcd47ligf
+	PVzRkOcdbNekfZehwJFnjouH2tJ9E3VOu8jOwlxVkSPrz64xW9qrrGriScoQb4mYZr37KqX1nSbUo
+	zv5H8TwN7319qVE0dQA7RiGLFaiG7YjnMC59LgAMf5+ekX0j4yk8wwTh1q0QIcUCq1ejefas3rhrA
+	Cxj3xZFwX1JGswxrXp9w6DQDujsZFUf8idbexpHUVuLGAxoQ3F7GTRrgyAbxQEHQXXDBVwsHQnUFe
+	sx0xbO8qA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kIx6P-0006JA-Dv; Thu, 17 Sep 2020 16:49:45 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1kIxSf-0004bp-Gc; Thu, 17 Sep 2020 17:12:45 +0000
+Received: from mail-lj1-x232.google.com ([2a00:1450:4864:20::232])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kIx6N-0006HY-AD; Thu, 17 Sep 2020 16:49:43 +0000
-Received: from tleilax.poochiereds.net
- (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 650562220E;
- Thu, 17 Sep 2020 16:49:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600361382;
- bh=sF5GNWOZkQ3nf3+Th5gnQt2xcpsdwKBCS7zrVGfmbVw=;
- h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
- b=y+iGlgpCeM9xb9d27IMJV7+wkEMiK0mQoV9W7l5UCg8sFTmZkgM99uNvIc2+GWqlH
- 0ZPlY/toTe9JazTgGCZZDIpYPmlLHd2V1m/PsaZcDqBuvctHhOeuwFRx8Pao5bfxG/
- 9CS6yNA1rBp1Aud48qlKW00CelvRgOeuZ6WNzkHg=
-Message-ID: <57d35fdb5ea646f96b70fd8b8a29434761c3f1d3.camel@kernel.org>
-Subject: Re: [PATCH 04/13] ceph: Tell the VFS that readpage was synchronous
-From: Jeff Layton <jlayton@kernel.org>
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
- linux-fsdevel@vger.kernel.org
-Date: Thu, 17 Sep 2020 12:49:40 -0400
-In-Reply-To: <20200917151050.5363-5-willy@infradead.org>
-References: <20200917151050.5363-1-willy@infradead.org>
- <20200917151050.5363-5-willy@infradead.org>
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+ id 1kIxSZ-0004Yq-Af
+ for linux-mtd@lists.infradead.org; Thu, 17 Sep 2020 17:12:43 +0000
+Received: by mail-lj1-x232.google.com with SMTP id b19so2672988lji.11
+ for <linux-mtd@lists.infradead.org>; Thu, 17 Sep 2020 10:12:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=YzTfAmwcB+l5AdylYKbvOmaAbr7BrnwSMUUoy0/i7Wc=;
+ b=UP4JN3wPEoxRi4R440x26QIhowGXs1WkEQOTtjontnf4UY4uSmFketDQM5YChDaWOM
+ BI46MtPXSSkJHUTL3/4utBk3T7rlnnvTv8p8z9inNjeXiB1XbxIZSakEeCEXAGykTmJ9
+ QbHFwAkkriqSwGkRZ3MRC3EAv9JUm0kKJ4McehsLcr8ClY5zKIpiCE/ie4gCrVz8Q9Wp
+ 9DK5sjj5UiQWNFYzu3HZi4j79+uezqPUy5RMU77mZkcTlg5X5F3LzVKv7y4SARoxLiN9
+ pGvT3Kx6S2VauTAsCzIeNMiMbVeyZzAzx9ts5Nm2lh1foHcjBuo4Fhb3Qs2yGUeh+FoC
+ On7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=YzTfAmwcB+l5AdylYKbvOmaAbr7BrnwSMUUoy0/i7Wc=;
+ b=XTooBOD9SRZiQ6zsunFYoJqgfHgIhA+sJrKaheNZIWRyT0E5yDr+F1EUpdITwSX5jd
+ p3FqSbEaadVls8cxycMuw/UW84yJpoU4ixdC8YY70S3K0x4NSvnZ381K+CupvVZ7hG3d
+ SlCRsfco0flmWZ7MT1HBEhOIeANuWvz2Ph9szNrYtdSMv9lf9X8jX2ERrrVvrnQf5vCg
+ fqwzOAPT8+cFDHfb8TkCNZON5R0TEriqS0QY3WpDAUZY6IkrUeMgTm1635Gw7y8WD7M4
+ 7aRjr54VpMRYtyHMUTttn7uW2Mt+2CNaLcfkpdyE3uD+bHnBnQdUn1Qpp0t/LcrBNZ0l
+ 7fdw==
+X-Gm-Message-State: AOAM533EIQ9n+Ejg+91HMqJ86vaWn4k+2U3v8Mit9vLfkCMSWY68Dha5
+ oy5Lw5ZZxikytGHnPSdtM21uRVhfT7nVHJnLBeM=
+X-Google-Smtp-Source: ABdhPJyzjCQvlj2z797BJj0PRwOSPIGScJBWsOii948+/wxNy1cw9VcPtOJvL3uwqHiPlx+0LGL0wDeyxQNGcTTKVQM=
+X-Received: by 2002:a2e:9743:: with SMTP id f3mr11482089ljj.310.1600362756640; 
+ Thu, 17 Sep 2020 10:12:36 -0700 (PDT)
 MIME-Version: 1.0
+References: <CAOMZO5DnGGbZg_th=kjwBmNa8FznYErYCGvmD6dKgBbMV869+w@mail.gmail.com>
+ <20200917181318.3fd9965d@xps13> <20200917184524.44500d51@xps13>
+In-Reply-To: <20200917184524.44500d51@xps13>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Thu, 17 Sep 2020 14:12:25 -0300
+Message-ID: <CAOMZO5ANsDsR==jjej1=Ukj_pSvT1y84q5ECjrMer=odP3716A@mail.gmail.com>
+Subject: Re: imx27: Unsupported ECC algorithm
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200917_124943_421770_59D5BC4F 
-X-CRM114-Status: GOOD (  16.04  )
+X-CRM114-CacheID: sfid-20200917_131239_494368_75A0EE6F 
+X-CRM114-Status: UNSURE (   9.34  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,51 +90,25 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-cifs@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- ecryptfs@vger.kernel.org, linux-um@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- linux-mtd@lists.infradead.org, v9fs-developer@lists.sourceforge.net,
- ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, Sascha Hauer <kernel@pengutronix.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2020-09-17 at 16:10 +0100, Matthew Wilcox (Oracle) wrote:
-> The ceph readpage implementation was already synchronous, so use
-> AOP_UPDATED_PAGE to avoid cycling the page lock.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  fs/ceph/addr.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-> index 6ea761c84494..b2bf8bf7a312 100644
-> --- a/fs/ceph/addr.c
-> +++ b/fs/ceph/addr.c
-> @@ -291,10 +291,11 @@ static int ceph_do_readpage(struct file *filp, struct page *page)
->  static int ceph_readpage(struct file *filp, struct page *page)
->  {
->  	int r = ceph_do_readpage(filp, page);
-> -	if (r != -EINPROGRESS)
-> -		unlock_page(page);
-> -	else
-> -		r = 0;
-> +	if (r == -EINPROGRESS)
-> +		return 0;
-> +	if (r == 0)
-> +		return AOP_UPDATED_PAGE;
-> +	unlock_page(page);
->  	return r;
->  }
->  
+Hi Miquel,
 
-Looks good to me. I assume you'll merge all of these as a set since the
-early ones are a prerequisite?
+On Thu, Sep 17, 2020 at 1:45 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
+> Perhaps Tudor's series is related to your issue, would you mind testing
+> it?
+>
+> https://patchwork.ozlabs.org/project/linux-mtd/list/?series=202344
 
+I don't have access to the imx27 hardware, just noticed the problem in
+kernelci, but I can't test it myself.
+
+Thanks
 
 ______________________________________________________
 Linux MTD discussion mailing list
