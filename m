@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A51BC43464
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 20:48:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83734C43464
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 21:02:46 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2475620838
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 20:48:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0797C208C3
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 21:02:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="G9UwhbFt";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BMvJaOE0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2475620838
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HtJ1P+jc";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qrS6RlXv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0797C208C3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,60 +26,56 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
 	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=sX6rEwLHn9cWzDFNpkVoHTFXSaifn0PiuWZy1NWnwe4=; b=G9UwhbFtkbLMThQ03QZRbjvlp
-	GRHSvRX6mTW/Ji1EgDEHduXvPHHCeUU7/R6e8+RLwdNa9d1a3qD2M6BmXtZpOYEzZ0GVzkQtv1FZv
-	uv6eclRev9885SsFjwKE2vVKKBm+Moq3VHMSBsXeG+RTs6tm6qTQ9K26q5k+xVrBGsdzw6iY4KcYV
-	9GfetyxGfktkVWgYkXUyd9XXASZjV1mN1NGuj2+Tzs6OlwQXkzznOFZCSkhsewhZ541MDmt+YCZCL
-	foIJXgwOyo4qs/7eGo+DymUpo2PhNsnE1m6cw0tlvBbru8JKYRFHiVnaHUf5XmEwC0eki4iOaOdJH
-	KZI0j5Ziw==;
+	 bh=OJWS/M6RNqLIF3wblAE+cL84va1USAc1v6fb3JcMYRE=; b=HtJ1P+jclfV18IpYPYE3XE8Cw
+	8svJ8r0Hi8xMK3llQnd/XAQzco6fNLivv9EnsWqshEcr7yahpfBQPPcOEx7ivF1VHtCotG35tOqsN
+	biusCFUr+pHojy/olltYSJkzywK+Yh0BwT+ehzA59VCOTsEyeu/P0nkehN/MrWZFAsNvgFGixwELm
+	FAShl5XAuH1RexxinBb8k9K2KWkT9AxuAPFXzH6ejdDTPHvaa5YOWpI4CQtoGoSQd3PG4T234xmVJ
+	l7c/mVIsmamM40OcKAf9wI4ryPn/wG2DM8niL3cRYLxst3Ym8TqTAnc7V1cYMEdnfRwXvaML2nnvK
+	eegKm9rZA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kJ0p0-0005mP-15; Thu, 17 Sep 2020 20:48:02 +0000
-Received: from mail-qk1-x744.google.com ([2607:f8b0:4864:20::744])
+	id 1kJ12K-0006mq-5x; Thu, 17 Sep 2020 21:01:48 +0000
+Received: from mail-qt1-x844.google.com ([2607:f8b0:4864:20::844])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kJ0oy-0005lL-6I
- for linux-mtd@lists.infradead.org; Thu, 17 Sep 2020 20:48:00 +0000
-Received: by mail-qk1-x744.google.com with SMTP id w16so3762016qkj.7
- for <linux-mtd@lists.infradead.org>; Thu, 17 Sep 2020 13:47:59 -0700 (PDT)
+ id 1kJ12I-0006mN-5T
+ for linux-mtd@lists.infradead.org; Thu, 17 Sep 2020 21:01:46 +0000
+Received: by mail-qt1-x844.google.com with SMTP id z2so3093932qtv.12
+ for <linux-mtd@lists.infradead.org>; Thu, 17 Sep 2020 14:01:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=lCEuifrXNBJR2RXDLzYRqd6rWThqodFNE/B/8/e6FCo=;
- b=BMvJaOE08sKp4cbKESDzN+KbtJLb332vgYme/GXpRWM9fJ8lUZOfV5N2S34Aq/0QgH
- J91ZnVOZutDuH79jmUBOzo4u6GxuYMx3wMXqGbXquddg6njn6ccgVMGgmhtwTVywQBEs
- 6X0l7NiuZEsY1CMb6AksOE5RIlF2hD8cstBg5RW/jEMujVAmqR/SZCMqyEO77C4SEzNF
- sBvMLty/k+Vpi0fqKANyu8vsRbHDmZCETNFneJp5e6Txs0KodavGWxQVumx4nHpumfkF
- FXN4QXE9hjXEL32Ag9mf2TtlvA6T0WQm19g8d2ZlSFurFehskaJeb6teX9oDi7xnn+cB
- kpkg==
+ :cc; bh=71NkNHP0R01eMpLBKZ+eul66Yg6+u+oK86rQqAUsTRI=;
+ b=qrS6RlXv0SSH5MY2IRAA4hFZaIZEZ8sCa9b3drzGXkH7msyVVJl2CY7qPJuO488s4w
+ z6dkkcEeRdPBeVeMx0KhHrt7Wqx3oQlMotQZacO1c5oLQp/2ba7N8JteLENPKMxCJqV0
+ 4xNpEFhMAwYT01QiYvrvFzMmh+absFaOkjqk9LbmigCXSZm/2xtAOQ8mrttiYbfbTpYE
+ KmQcc/z8dSjq0q6KShUaGmhAizehyes1y5TZKAy5cB0Q163MXr2OE+5NISyrM5YWr5B9
+ oSFTu7iekalP1aodD3z2IW8uXatSz2ZCn7exRBt4aizZllPHMgqdqtO7VzOeEmP36XaN
+ 4fyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=lCEuifrXNBJR2RXDLzYRqd6rWThqodFNE/B/8/e6FCo=;
- b=PZVIZ0BYBSkLXWyXVcGNOD82s0V0+1pCArVUA0kxMt0r97/mlmEcLSY6mElnchg61k
- MTdGrrSXARsDGtia1Nc0hFq2zWsUVv3B1HAJK5l/7SZv71ASw59ZeMtvb9KlY6lb1SVH
- BVjNYJXlPBvpmhWEL5F2q+JT74YGO7bMEfFxj60X56uAMYsnOEcoTD+3NIXgnGLjhAVh
- dS9Ih2mj2bydSsLQBUs7WWzAKKXXghND+yeZ4MHODr0Zqr8B1I12/OI87PVNrDcksJHb
- TpfGhVs6VWH9OYaSBSHq71E1kTM66HsjNHjD1XxmcEqMgvIKRUzmehSmFrbe4DN5uqj4
- WByA==
-X-Gm-Message-State: AOAM532ApoioiXq5Zbe2nE/MzYj/J9c52iUyVaq0HnaCzXzPcXNScL/v
- OMPqExRN2SK4ixTZay5dLuVaKKkjBjP1ZCqVjTo=
-X-Google-Smtp-Source: ABdhPJyPa/1PhZFqqEdeyHeSrDNSBkFT9T8g9ywxA6fcNWSTba8ZEtigVY3KkbI52SDeiZMdFsaJE+YwXTglAj6k9Qw=
-X-Received: by 2002:ae9:eb42:: with SMTP id b63mr29547439qkg.106.1600375678460; 
- Thu, 17 Sep 2020 13:47:58 -0700 (PDT)
+ :message-id:subject:to:cc;
+ bh=71NkNHP0R01eMpLBKZ+eul66Yg6+u+oK86rQqAUsTRI=;
+ b=VX6ZBtfb07mYNnumnDj/pRnbwBZ8fHd1GXX+TASVuCUwzQf3mwgpRRn1KdDgyzNnZk
+ pElT1XaOI4W9RNbCw0h9pApYyPUAqUYGokWcCqgK0GJ3aaWX+1Mz9GJMVRQuRDK7HLXh
+ xhNvr3USaVuxop9fJ666PU3FHtyv27ZI0FDWbBSQM2pbmlYUq2wIMjIPN4xM7uVLCSYh
+ aFLRV7Apb37MKbVNgQw172Y8a+eX4YRxrQqsUoHH98i8v8awA2NhxNlWxMLUrYGmdOBc
+ SVupEQsLrnSp1Nc2qsRH91WSFWACjnmzqL+gPwdnz9LoJL0/UaAsRUekqy/wFuJ8q9f0
+ LM5Q==
+X-Gm-Message-State: AOAM5326UScnme8xFBzVhw0+gEDpHXKk8QGKVUjokuCRipmMuHnURgiC
+ 3LHELJC2NwFkUEi91BZRYPeJCgGdypFd3vRhLyE=
+X-Google-Smtp-Source: ABdhPJycV7BNmRRthSEHTlFtoTdelAi0Gj6AVCUBCe66kU0oQcmdd67QHHwJ6m3H/8GtiHO3kmy+tUfk8HU5vfFg7p4=
+X-Received: by 2002:ac8:76d0:: with SMTP id q16mr17885308qtr.164.1600376504666; 
+ Thu, 17 Sep 2020 14:01:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200601091037.3794172-1-chengzhihao1@huawei.com>
- <CAFLxGvxA9pw8D6Q8GbBD0SUP+EHhOsZmRMSPxrW4sq0gYi9N9Q@mail.gmail.com>
- <b82cd435-437d-e384-c95e-a7e031559c7e@huawei.com>
-In-Reply-To: <b82cd435-437d-e384-c95e-a7e031559c7e@huawei.com>
+References: <20200914135654.55120-1-wanghai38@huawei.com>
+In-Reply-To: <20200914135654.55120-1-wanghai38@huawei.com>
 From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Thu, 17 Sep 2020 22:47:46 +0200
-Message-ID: <CAFLxGvxXE_jb7nGMn9XOzaFb6SELspQ2Dvdc7zs5i5G8XK3UfQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] ubifs: xattr: Fix some potential memory leaks while
- iterating entries
-To: Zhihao Cheng <chengzhihao1@huawei.com>
+Date: Thu, 17 Sep 2020 23:01:33 +0200
+Message-ID: <CAFLxGvwpspyEQ2PUORZt+aKmcXBrQ2i8q30WwCAq3j6FGd6p4g@mail.gmail.com>
+Subject: Re: [PATCH -next 0/4] ubifs: Fix some kernel-doc warnings for ubifs
+To: Wang Hai <wanghai38@huawei.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200917_164800_236720_94A2FA01 
+X-CRM114-CacheID: sfid-20200917_170146_237341_2F8018A7 
 X-CRM114-Status: GOOD (  10.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -93,21 +89,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- LKML <linux-kernel@vger.kernel.org>, "zhangyi \(F\)" <yi.zhang@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gTW9uLCBTZXAgMTQsIDIwMjAgYXQgNToyNSBBTSBaaGloYW8gQ2hlbmcgPGNoZW5nemhpaGFv
-MUBodWF3ZWkuY29tPiB3cm90ZToKPiDlnKggMjAyMC85LzE0IDM6MDgsIFJpY2hhcmQgV2VpbmJl
-cmdlciDlhpnpgZM6Cj4gPiBPbiBNb24sIEp1biAxLCAyMDIwIGF0IDExOjExIEFNIFpoaWhhbyBD
-aGVuZyA8Y2hlbmd6aGloYW8xQGh1YXdlaS5jb20+IHdyb3RlOgo+IFRoZSBraWxsX3hhdHRycyBw
-cm9jZXNzIGlzIG1vcmUgaW50dWl0aXZlIHdpdGhvdXQgdGhlIHB4ZW50LiBIb3dldmVyLAo+IHRo
-ZSByZWxlYXNlIHByb2Nlc3MgZm9yIHRoZSBtZW1vcnkgKHN0b3JlcyB4ZW50LT5uYW1lKSBpcyBz
-aW1pbGFyIHRvCj4gJ3B4ZW50Jy4gSWYgeW91IHRoaW5rIGl0J3MgYmV0dGVyIHRoYW4gdjEsIEkg
-d2lsbCBzZW5kIHYyLgoKWW91IGFyZSByaWdodC4gV2UgZG9uJ3QgZ2FpbiBtdWNoLiBTbyBJJ2xs
-IHRha2UgdjEuClRoYW5rcyBhIGxvdCBmb3IgZml4aW5nIQoKLS0gClRoYW5rcywKLy9yaWNoYXJk
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Mon, Sep 14, 2020 at 4:06 PM Wang Hai <wanghai38@huawei.com> wrote:
+>
+> In the ubifs module, there are some kernel-doc warnings,
+> this series of patches can fix these warnings.
+>
+> Wang Hai (4):
+>   ubifs: Fix 'hash' kernel-doc warning in auth.c
+>   ubifs: Fix some kernel-doc warnings in gc.c
+>   ubifs: Fix some kernel-doc warnings in replay.c
+>   ubifs: Fix some kernel-doc warnings in tnc.c
+
+Applied to next, thanks!
+
+-- 
+Thanks,
+//richard
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
