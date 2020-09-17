@@ -2,82 +2,63 @@ Return-Path: <SRS0=eAl4=C2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16057C43461
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 14:49:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 924F3C43461
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 15:11:41 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8E22321974
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 14:49:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3F3FD21D41
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 15:11:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Yb9ApEmA";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SPW6aIve"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8E22321974
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KAelfvXe";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ffihf+5N"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F3FD21D41
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=6me2aV97wfit6jR22srNFmlppeBeMLeixQgR0IJ/26I=; b=Yb9ApEmANb9+/Gz82ziIGc3QP
-	OW1LX7OAOiFr0mLFyTR5jsp8bp/wYI5351FwNjjmD34MrWzEzKfoGjU3PsMolEBUef5lCrcgIax46
-	tAxK8VJ/lvG65S/nf5f2szoD9QEDTzF7ZmlwR5CRTBZ/8pSMAUMyYa6nVKK1/2o755PZTcpOvtB7r
-	AGf6PXCIij/cNf0MansFfOhQbc0y0vgDgOR5kqSscknXusibom+I785c5DWY4oJH+v4XDxFtXbE0R
-	Gk2ZygOhkW9z6Pe6E2uShRkaqoQPOcfoU/VBKFCNRPCr36BdyhWoBsVhUvHpUW/ViJzXbFF3eTRXN
-	zkWQDNFNg==;
+	 bh=Q2OQRpvF3Rt+lzJdPn3ZPOljRgKWp1AO9BAbiPNNUzQ=; b=KAelfvXeffWIcwHJHFLsTKO5F
+	/CCvA+tc6ASjCJjuZu1EecrFhx7LtBAYfww5SowKS2zLBlumAZ4eZ751cyPw72WVFuhILDX9Uwg0s
+	zB8PhEhDvGIAJXrdGKiu7qE4G6SBD8UzS9GrbB1fierXgHxz9LZkgjTNaR8rak1th3kPBg2VSig5t
+	dKnV8Qe83qDQi5ua5djmbXaiXSBI3WLVaAGUvUZ23mlfr4TjCr7iFZdZJoMKE8vy6KLaiLehWahCv
+	mataOwzLVIY0C7yg2LE61dVvH1ivYPiVHeol/NIn+xHv5d+/laDTB2bbQl0nkw/AQePb+EHx4FfA2
+	ZaifohP3Q==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kIvCw-00061n-Mg; Thu, 17 Sep 2020 14:48:22 +0000
-Received: from mail-ua1-x941.google.com ([2607:f8b0:4864:20::941])
+	id 1kIvYn-000059-Td; Thu, 17 Sep 2020 15:10:57 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kIvCu-00061J-CX
- for linux-mtd@lists.infradead.org; Thu, 17 Sep 2020 14:48:21 +0000
-Received: by mail-ua1-x941.google.com with SMTP id 77so774502uaj.2
- for <linux-mtd@lists.infradead.org>; Thu, 17 Sep 2020 07:48:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=6c3fatYvjjopsp2TORMhemWLXEbb7EeUUQ7S0mllMzU=;
- b=SPW6aIvehPppSGjSsRep9pd9JR+MUYM7gdN6oDNlxQCzJsBOzcYtCHsUeoglDgn4j2
- L0HyFpq+u1PUQOGOUQZ+g69CH4eNchPmFlKFotZAjuYEH+Q7mQL7kMFR/AaPjP2EkJjV
- o8MiYjR0/GctX4C9U7i/cqziHO5Lth58XPm4xf38+LPArN2/cp8rQlXUuxhHYIgvewGn
- BFye4Ld+z4qrI7tgW6LHmkTvPDtKiqADRZoBbG0Nipfti8vhXavcpF0L8/Fw0eaG2E6/
- exRqud6q279rWu0GSAt+A4Ga6xe/NEecggZKGT+PRRV8MzOnc9FuQSBNLnFGkJYmht7E
- /h4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=6c3fatYvjjopsp2TORMhemWLXEbb7EeUUQ7S0mllMzU=;
- b=BYup0A4IIK64/b9RPM8UVQRlmdAdDo/LUFXoaItfp2Xe62L5wvGAWBzjC08lMg2Ww6
- h2uf0mQS3oVQrB5M7rcjtisNi9IaI9Hv3KqcUaYDLQGTLJ170nzxkS3lk8aoEJi0nFID
- QaOA/RB8ExX7VRnRqSvz01YdBVohK1QBuoNaWHHVZ5TAwkvwjfdSwMR4gKmDXLwabhjb
- 7Nj/4ToSSyCz1Qo/kwdLDzv+vJTjb6k82foYr2cPt1p0RFFqcYO2fmii5Fgatkoq+q0w
- sne4vugMrAyqlh9V3gkMS19cD4nWB7JggZMsE4yrHleIw5LDw47BL+Pv29TuFVNDg29X
- gc3Q==
-X-Gm-Message-State: AOAM531TiK7lG9us8LMUZDN7Z7pY12534sn2TR1E609cliMtptoN430K
- WGz+lMLG0EgAiPLs3TGbVA4DEpR5JjowwkVSh6g=
-X-Google-Smtp-Source: ABdhPJwBAyOm+IvB/syihYq58L6PGafkO5u516Clb6wSMjKEn0IvtOQTCIXjQFsAnrmlntRdjtAnazy9bKx2qc4mrws=
-X-Received: by 2002:ab0:702a:: with SMTP id u10mr15738466ual.59.1600354096824; 
- Thu, 17 Sep 2020 07:48:16 -0700 (PDT)
+ id 1kIvYj-0008UU-TX; Thu, 17 Sep 2020 15:10:53 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+ References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+ Content-Type:Content-ID:Content-Description;
+ bh=zXmx2Q9ib8LaEq/cmNv7DtrHg7rQIIRhLXukJQtl2ug=; b=ffihf+5NKGdlu+XW5it3GHqzVB
+ wV8ybsOqFAy9WktF9PdPXd2BwOQSZANCWWHyXH/mEtngJKZf3xOEoD9JCKHw4+g0OfYJhOc7AVHQt
+ 0gVu68YvUMnq1NxaLz4/tNIjq6X8ua6zUp61z7DR7po/TtyHZqAGyOz8Qmm34stw6FLTlWzyQU6q8
+ zXEfP6psDDzJxwpQ37M6Vy63mhmgRcc+ySyhcVXVUyv2+3LUWSotVTI55QattpfbF6nlaRo1GDL2O
+ qMZwLGHUezabQa6mru/yTdiLJl/oC5Uym3hl6B7ZdxB6DB89vrx3fYbLzg2Qq8u59Wa6KAzr+PRZQ
+ 57dfGvYQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red
+ Hat Linux)) id 1kIvYi-0001PJ-AR; Thu, 17 Sep 2020 15:10:52 +0000
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To: linux-fsdevel@vger.kernel.org
+Subject: [PATCH 01/13] mm: Add AOP_UPDATED_PAGE return value
+Date: Thu, 17 Sep 2020 16:10:38 +0100
+Message-Id: <20200917151050.5363-2-willy@infradead.org>
+X-Mailer: git-send-email 2.21.3
+In-Reply-To: <20200917151050.5363-1-willy@infradead.org>
+References: <20200917151050.5363-1-willy@infradead.org>
 MIME-Version: 1.0
-References: <CADBnMviQd-9TbkJFUCWE8THCYF9oq-iZfu6Cjxcy9GvTfe=KUg@mail.gmail.com>
- <CAFLxGvw9TMHz5Mf=RYytB3N6uMuK5md+WxF=atzvaXcuibmNsg@mail.gmail.com>
-In-Reply-To: <CAFLxGvw9TMHz5Mf=RYytB3N6uMuK5md+WxF=atzvaXcuibmNsg@mail.gmail.com>
-From: Kristof Havasi <havasiefr@gmail.com>
-Date: Thu, 17 Sep 2020 16:48:42 +0200
-Message-ID: <CADBnMvjuS4F8CLwbGRTAt3bVyA7DAwEFwMmNqRdNJyZCRpXCXw@mail.gmail.com>
-Subject: Re: UBIFS-AUTH panic after reboot
-To: Richard Weinberger <richard.weinberger@gmail.com>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200917_104820_440825_868A6AAE 
-X-CRM114-Status: GOOD (  21.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,166 +70,163 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org
+Cc: linux-cifs@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ ecryptfs@vger.kernel.org, linux-um@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ "Matthew Wilcox \(Oracle\)" <willy@infradead.org>, linux-mm@kvack.org,
+ linux-mtd@lists.infradead.org, v9fs-developer@lists.sourceforge.net,
+ ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In the meantime we could create a simple "clean trigger", independent from our
-business logic! It is done by creating random files and then deleting them.
-BUT *the size* of the files and *the number* of them do have an influence.
-As well as whether we delete them or not.
-We could reproduce this behaviour on multiple devices.
+Allow synchronous ->readpage implementations to execute more
+efficiently by skipping the re-locking of the page.
 
-A stripped down version of the trigger-script (without echos and such):
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ Documentation/filesystems/locking.rst |  7 ++++---
+ Documentation/filesystems/vfs.rst     | 21 ++++++++++++++-------
+ include/linux/fs.h                    |  5 +++++
+ mm/filemap.c                          | 12 ++++++++++--
+ 4 files changed, 33 insertions(+), 12 deletions(-)
 
-```
-#!/bin/bash
-DEST_DIR=/root/panictest
-FILE_CNT=15
-FILE_SIZE="10M"
-DO_CLEANUP='y'
-POST_SYNC_SLEEP=1
+diff --git a/Documentation/filesystems/locking.rst b/Documentation/filesystems/locking.rst
+index 64f94a18d97e..06a7a8bf2362 100644
+--- a/Documentation/filesystems/locking.rst
++++ b/Documentation/filesystems/locking.rst
+@@ -269,7 +269,7 @@ locking rules:
+ ops			PageLocked(page)	 i_rwsem
+ ======================	======================== =========
+ writepage:		yes, unlocks (see below)
+-readpage:		yes, unlocks
++readpage:		yes, may unlock
+ writepages:
+ set_page_dirty		no
+ readahead:		yes, unlocks
+@@ -294,8 +294,9 @@ swap_deactivate:	no
+ ->write_begin(), ->write_end() and ->readpage() may be called from
+ the request handler (/dev/loop).
+ 
+-->readpage() unlocks the page, either synchronously or via I/O
+-completion.
++->readpage() may return AOP_UPDATED_PAGE if the page is now Uptodate
++or 0 if the page will be unlocked asynchronously by I/O completion.
++If it returns -errno, it should unlock the page.
+ 
+ ->readahead() unlocks the pages that I/O is attempted on like ->readpage().
+ 
+diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesystems/vfs.rst
+index ca52c82e5bb5..16248c299aaa 100644
+--- a/Documentation/filesystems/vfs.rst
++++ b/Documentation/filesystems/vfs.rst
+@@ -643,7 +643,7 @@ set_page_dirty to write data into the address_space, and writepage and
+ writepages to writeback data to storage.
+ 
+ Adding and removing pages to/from an address_space is protected by the
+-inode's i_mutex.
++inode's i_rwsem held exclusively.
+ 
+ When data is written to a page, the PG_Dirty flag should be set.  It
+ typically remains set until writepage asks for it to be written.  This
+@@ -757,12 +757,19 @@ cache in your filesystem.  The following members are defined:
+ 
+ ``readpage``
+ 	called by the VM to read a page from backing store.  The page
+-	will be Locked when readpage is called, and should be unlocked
+-	and marked uptodate once the read completes.  If ->readpage
+-	discovers that it needs to unlock the page for some reason, it
+-	can do so, and then return AOP_TRUNCATED_PAGE.  In this case,
+-	the page will be relocated, relocked and if that all succeeds,
+-	->readpage will be called again.
++	will be Locked and !Uptodate when readpage is called.  Ideally,
++	the filesystem will bring the page Uptodate and return
++	AOP_UPDATED_PAGE.  If the filesystem encounters an error, it
++	should unlock the page and return a negative errno without marking
++	the page Uptodate.  It does not need to mark the page as Error.
++	If the filesystem returns 0, this means the page will be unlocked
++	asynchronously by I/O completion.  The VFS will wait for the
++	page to be unlocked, so there is no advantage to executing this
++	operation asynchronously.
++
++	The filesystem can also return AOP_TRUNCATED_PAGE to indicate
++	that it had to unlock the page to avoid a deadlock.  The caller
++	will re-check the page cache and call ->readpage again.
+ 
+ ``writepages``
+ 	called by the VM to write out pages associated with the
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index e019ea2f1347..6fc650050d20 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -273,6 +273,10 @@ struct iattr {
+  *  			reference, it should drop it before retrying.  Returned
+  *  			by readpage().
+  *
++ * @AOP_UPDATED_PAGE: The readpage method has brought the page Uptodate
++ * without releasing the page lock.  This is suitable for synchronous
++ * implementations of readpage.
++ *
+  * address_space_operation functions return these large constants to indicate
+  * special semantics to the caller.  These are much larger than the bytes in a
+  * page to allow for functions that return the number of bytes operated on in a
+@@ -282,6 +286,7 @@ struct iattr {
+ enum positive_aop_returns {
+ 	AOP_WRITEPAGE_ACTIVATE	= 0x80000,
+ 	AOP_TRUNCATED_PAGE	= 0x80001,
++	AOP_UPDATED_PAGE	= 0x80002,
+ };
+ 
+ #define AOP_FLAG_CONT_EXPAND		0x0001 /* called from cont_expand */
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 1aaea26556cc..131a2aaa1537 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2254,8 +2254,10 @@ ssize_t generic_file_buffered_read(struct kiocb *iocb,
+ 		 * PG_error will be set again if readpage fails.
+ 		 */
+ 		ClearPageError(page);
+-		/* Start the actual read. The read will unlock the page. */
++		/* Start the actual read. The read may unlock the page. */
+ 		error = mapping->a_ops->readpage(filp, page);
++		if (error == AOP_UPDATED_PAGE)
++			goto page_ok;
+ 
+ 		if (unlikely(error)) {
+ 			if (error == AOP_TRUNCATED_PAGE) {
+@@ -2619,7 +2621,7 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+ 	 */
+ 	if (unlikely(!PageUptodate(page)))
+ 		goto page_not_uptodate;
+-
++page_ok:
+ 	/*
+ 	 * We've made it this far and we had to drop our mmap_lock, now is the
+ 	 * time to return to the upper layer and have it re-find the vma and
+@@ -2654,6 +2656,8 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+ 	ClearPageError(page);
+ 	fpin = maybe_unlock_mmap_for_io(vmf, fpin);
+ 	error = mapping->a_ops->readpage(file, page);
++	if (error == AOP_UPDATED_PAGE)
++		goto page_ok;
+ 	if (!error) {
+ 		wait_on_page_locked(page);
+ 		if (!PageUptodate(page))
+@@ -2867,6 +2871,10 @@ static struct page *do_read_cache_page(struct address_space *mapping,
+ 			err = filler(data, page);
+ 		else
+ 			err = mapping->a_ops->readpage(data, page);
++		if (err == AOP_UPDATED_PAGE) {
++			unlock_page(page);
++			goto out;
++		}
+ 
+ 		if (err < 0) {
+ 			put_page(page);
+-- 
+2.28.0
 
-[ -d "$DEST_DIR" ] && rm -rf "$DEST_DIR"
-
-mkdir -p "$DEST_DIR"
-
-for i in `seq 1 $FILE_CNT` ; do
-    OUT_FILE="$DEST_DIR/file$i"
-    if ! dd if=/dev/urandom of=$OUT_FILE bs=$FILE_SIZE count=1 > /dev/null; then
-        break
-    fi
-done
-
-sync
-sleep $POST_SYNC_SLEEP
-df -h
-
-if [[ "$DO_CLEANUP" == 'y' ]]; then
-    rm -rf $DEST_DIR
-    sync
-    sleep $POST_SYNC_SLEEP
-fi
-
-reboot
-```
-
-Without "chk_lprops" the panic is only visible after the restart, but if it was
-enabled the following assertion was triggering an immediate panic:
-(Should I "reformat" long log lines in the future or leave them verbatim?)
-
-UBIFS error (ubi0:4 pid 649): ubifs_assert_failed: UBIFS assert
-failed: (val >> nrbits) == 0 || nrbits == 32, in fs/ubifs/lpt.c:231
-UBIFS warning (ubi0:4 pid 649): ubifs_ro_mode.part.1: switched to
-read-only mode, error -22
-CPU: 0 PID: 649 Comm: ubifs_bgt0_4 Not tainted 5.4.64-00030-gbcb07cf6f1bb #35
-Hardware name: Atmel SAMA5
-[<c010bb5c>] (unwind_backtrace) from [<c010a7c8>] (show_stack+0x10/0x14)
-[<c010a7c8>] (show_stack) from [<c0260c40>] (pack_bits+0x1ac/0x1d0)
-[<c0260c40>] (pack_bits) from [<c0261854>] (ubifs_pack_pnode+0xa4/0x144)
-[<c0261854>] (ubifs_pack_pnode) from [<c02631c4>]
-(ubifs_lpt_calc_hash+0x134/0x220)
-[<c02631c4>] (ubifs_lpt_calc_hash) from [<c026acdc>]
-(ubifs_lpt_start_commit+0x754/0xe54)
-[<c026acdc>] (ubifs_lpt_start_commit) from [<c02599c8>] (do_commit+0x1d0/0x484)
-[<c02599c8>] (do_commit) from [<c0259dbc>] (ubifs_bg_thread+0x140/0x154)
-[<c0259dbc>] (ubifs_bg_thread) from [<c012fef8>] (kthread+0x114/0x144)
-[<c012fef8>] (kthread) from [<c01010e8>] (ret_from_fork+0x14/0x2c)
-Exception stack(0xc71fffb0 to 0xc71ffff8)
-ffa0:                                     00000000 00000000 00000000 00000000
-ffc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-ffe0: 00000000 00000000 00000000 00000000 00000013 00000000
-UBIFS error (ubi0:4 pid 649): ubifs_assert_failed: UBIFS assert
-failed: (val >> nrbits) == 0 || nrbits == 32, in fs/ubifs/lpt.c:231
-UBIFS error (ubi0:4 pid 649): ubifs_assert_failed: UBIFS assert
-failed: (val >> nrbits) == 0 || nrbits == 32, in fs/ubifs/lpt.c:231
-
-
-Regarding the variable space (fsize-fcount-docleanup), these were our first
-rudimental findings:
-
-fsize | fcount | ~used% | docleanup | panic? |
------ | ------ | ------ | --------- | ------ |
- 10M  |  10    |  ~10%  |    yes    |   no   |
- 10M  |  15    |  ~15%  |    yes    |   yes  |
- 10M  |  NA    |  ~25%  |    yes    |   yes  |
- 10M  |  NA    |  ~50%  |    yes    |   yes  |
- 10M  |  NA    | ~100%  |    yes    |   yes  |
- 10M  |  NA    | ~100%  |    no     |   no   |
-  1M  |  NA    | ~100%  |    yes    |   no   |
-
-So if we write >100M worth of 10M files and delete them we can
-"ropustly" trigger
-the panic. But if we do not delete them, the panic does not occour.
-
-But if we fill the flash with 1M files and delete them, we didn't see the panic.
-
-
-On Thu, 17 Sep 2020 at 15:24, Richard Weinberger
-<richard.weinberger@gmail.com> wrote:
->
-> On Tue, Sep 15, 2020 at 4:51 PM Kristof Havasi <havasiefr@gmail.com> wrote:
-> > What I have tried:
-> > =================
-> > Based on the panic log [1], I can see that the panic happens here:
-> >     ubifs_lpt_calc_hash
-> >         `->ubifs_get_pnode
-> > inside the iteration over the LPT pnodes with hashing
->
-> Hmm.
->
-> > Questions:
-> > =========
-> > Q1: Are the chk_* knobs authentication aware? Or do they report so loudly
-> >     because I enabled the authentication and they cannot handle it yet?
->
-> They should. If not they need fixing. :-)
-
-They do seem to be OK, because with chk_lprops enabled, and the clean trigger
-script the panic (UBI assertion) was cought immediately, not only
-after a restart.
-
->
-> > Q2: Could I use `integr_chk` with authentication and so that the UBI volume is
-> >     my root filesystem?
->
-> What is "integr_chk"? Do you mean the integ test from mtd-utils?
-
-Sorry, I didn't write the correct name: I meant "integck" from mtd-utlis.
-
-> > UBIFS (ubi0:4): Mounting in authenticated mode
-> > UBIFS (ubi0:4): background thread "ubifs_bgt0_4" started, PID 632
-> > UBIFS error (ubi0:4 pid 1): ubifs_get_pnode.part.6: error -22 reading
->
-> So, it returns -EINVAL. Is this with chk_* enabled?
-
-In both cases: with and without enabled chk_* knobs.
-
->
-> > pnode at 7:37186
-> > (pid 1) dumping pnode:
-> >         address c7138c80 parent c7138e80 cnext 0
-> >         flags 0 iip 3 level 0 num 0
-> >         0: free 0 dirty 255408 flags 1 lnum 0
-> >         1: free 0 dirty 190192 flags 1 lnum 0
-> >         2: free 0 dirty 255360 flags 1 lnum 0
-> >         3: free 0 dirty 248896 flags 1 lnum 0
->
-> Sascha, does this ring a bell?
-
-FYI: here sometimes I see some node(s) with non-zero value for "free".
-
->
-> --
-> Thanks,
-> //richard
-
-Just let me know if I can provide any other useful information.
-
-Thank you,
-    Kristof
 
 ______________________________________________________
 Linux MTD discussion mailing list
