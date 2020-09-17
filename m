@@ -5,18 +5,18 @@ X-Spam-Level:
 X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2436DC433E2
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 09:37:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1655C43461
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 09:42:06 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C20822076D
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 09:37:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 51C552076D
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 09:42:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="UVK6HfQl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C20822076D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="n/3+RIS3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51C552076D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=McDNXc4qc0yCsgCnPqKppmb3bozv0KnYm1SWqbCXN3s=; b=UVK6HfQlyvjewv0iYIFMrQty+
-	8uRWxqkgMBHi9YJXmIfUDMsAr1ilHkNoNQP4CNFVP/9JbGjc+rEz8ZPvASWtdkxD9PCaz3C03Bq04
-	sp+HIhOz1OnG1/Da3WW917XF7d7XpscLS28rZdhR0ArwwONHMAl4rOTeX2wIjg1D32SdyPhY1a2rp
-	bEtDaSN0M+U6E9OC3vttHRJH24xx3AJYlU6TNSAQtSE3NF+O9hTq9VGAqnvW06iKU7Eh7u9TkPmZH
-	HP18WlLeXS6WNAstFinL0Ck5kkBnL+k6DDj56oAPuF9Ggn5GbEOqc8y2Iq48y5v7dJ0P1FDrJviye
-	MuWHT33zw==;
+	 bh=N/lqSv2OKdJ4verYN/8p82agcfg1lDFoPlz4XBzoVFI=; b=n/3+RIS3J9E1FyK9bO0m469t3
+	ruxAsEqb8O6aWniVio/pVcSgC6KMH9AHWmmnEl0wNCXt0ISs7sv8i4weXzTuq17wpQN66oPmJPJVV
+	HnQVKDc9JkqqSqguCgZxJZX4TT6PUujMH9AlBq0g3MpNuDH7T4LRaed2EtT5gSIYQ73eChRHTEIk/
+	K5NwRnH+J0rLrmKMBGu4doG+TYoyMmMNV7x4FI3cQ6wuPMjmEPErtCaENjNxCvQHBmdU5f67GysGS
+	AgG8+sgwUU/YFlNNvKxBOr9ymWSxLNg7gm1syvbZw4BrE5amfIoVDY8Duibgcti1TUH+UzoVBCzGK
+	Wex/XmCOA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kIqLc-0002mQ-3b; Thu, 17 Sep 2020 09:37:00 +0000
+	id 1kIqPl-0004Cb-RT; Thu, 17 Sep 2020 09:41:17 +0000
 Received: from mx2.suse.de ([195.135.220.15])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kIqLY-0002kc-Pz
- for linux-mtd@lists.infradead.org; Thu, 17 Sep 2020 09:36:58 +0000
+ id 1kIqPj-0004Aq-4G
+ for linux-mtd@lists.infradead.org; Thu, 17 Sep 2020 09:41:16 +0000
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 87C08AC61;
- Thu, 17 Sep 2020 09:37:29 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id B6C92AFE5;
+ Thu, 17 Sep 2020 09:41:47 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
- id 554E71E12E1; Thu, 17 Sep 2020 11:36:55 +0200 (CEST)
-Date: Thu, 17 Sep 2020 11:36:55 +0200
+ id B26A41E12E1; Thu, 17 Sep 2020 11:41:13 +0200 (CEST)
+Date: Thu, 17 Sep 2020 11:41:13 +0200
 From: Jan Kara <jack@suse.cz>
 To: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 07/12] bdi: remove BDI_CAP_CGROUP_WRITEBACK
-Message-ID: <20200917093655.GG7347@quack2.suse.cz>
+Subject: Re: [PATCH 01/12] fs: remove the unused SB_I_MULTIROOT flag
+Message-ID: <20200917094113.GH7347@quack2.suse.cz>
 References: <20200910144833.742260-1-hch@lst.de>
- <20200910144833.742260-8-hch@lst.de>
+ <20200910144833.742260-2-hch@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20200910144833.742260-8-hch@lst.de>
+In-Reply-To: <20200910144833.742260-2-hch@lst.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200917_053657_117342_3F9189D5 
-X-CRM114-Status: GOOD (  24.86  )
+X-CRM114-CacheID: sfid-20200917_054115_307072_D4794042 
+X-CRM114-Status: GOOD (  21.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,84 +81,50 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu 10-09-20 16:48:27, Christoph Hellwig wrote:
-> Just checking SB_I_CGROUPWB for cgroup writeback support is enough.
-> Either the file system allocates its own bdi (e.g. btrfs), in which case
-> it is known to support cgroup writeback, or the bdi comes from the block
-> layer, which always supports cgroup writeback.
+On Thu 10-09-20 16:48:21, Christoph Hellwig wrote:
+> The last user of SB_I_MULTIROOT is disappeared with commit f2aedb713c28
+> ("NFS: Add fs_context support.")
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-Makes sense. You can add:
+Nice. You can add:
 
 Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
-
 > ---
->  block/blk-core.c            | 1 -
->  fs/btrfs/disk-io.c          | 1 -
->  include/linux/backing-dev.h | 8 +++-----
->  3 files changed, 3 insertions(+), 7 deletions(-)
+>  fs/namei.c         | 4 ++--
+>  include/linux/fs.h | 1 -
+>  2 files changed, 2 insertions(+), 3 deletions(-)
 > 
-> diff --git a/block/blk-core.c b/block/blk-core.c
-> index 18c092f8d69175..d81ee511ec8b01 100644
-> --- a/block/blk-core.c
-> +++ b/block/blk-core.c
-> @@ -538,7 +538,6 @@ struct request_queue *blk_alloc_queue(int node_id)
->  	if (!q->stats)
->  		goto fail_stats;
+> diff --git a/fs/namei.c b/fs/namei.c
+> index e99e2a9da0f7de..f1eb8ccd2be958 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -568,8 +568,8 @@ static bool path_connected(struct vfsmount *mnt, struct dentry *dentry)
+>  {
+>  	struct super_block *sb = mnt->mnt_sb;
 >  
-> -	q->backing_dev_info->capabilities = BDI_CAP_CGROUP_WRITEBACK;
->  	q->node = node_id;
+> -	/* Bind mounts and multi-root filesystems can have disconnected paths */
+> -	if (!(sb->s_iflags & SB_I_MULTIROOT) && (mnt->mnt_root == sb->s_root))
+> +	/* Bind mounts can have disconnected paths */
+> +	if (mnt->mnt_root == sb->s_root)
+>  		return true;
 >  
->  	atomic_set(&q->nr_active_requests_shared_sbitmap, 0);
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 047934cea25efa..e24927bddd5829 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -3091,7 +3091,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
->  		goto fail_sb_buffer;
->  	}
+>  	return is_subdir(dentry, mnt->mnt_root);
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 7519ae003a082c..fbd74df5ce5f34 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -1385,7 +1385,6 @@ extern int send_sigurg(struct fown_struct *fown);
+>  #define SB_I_CGROUPWB	0x00000001	/* cgroup-aware writeback enabled */
+>  #define SB_I_NOEXEC	0x00000002	/* Ignore executables on this fs */
+>  #define SB_I_NODEV	0x00000004	/* Ignore devices on this fs */
+> -#define SB_I_MULTIROOT	0x00000008	/* Multiple roots to the dentry tree */
 >  
-> -	sb->s_bdi->capabilities |= BDI_CAP_CGROUP_WRITEBACK;
->  	sb->s_bdi->ra_pages *= btrfs_super_num_devices(disk_super);
->  	sb->s_bdi->ra_pages = max(sb->s_bdi->ra_pages, SZ_4M / PAGE_SIZE);
->  
-> diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
-> index 0b06b2d26c9aa3..52583b6f2ea05d 100644
-> --- a/include/linux/backing-dev.h
-> +++ b/include/linux/backing-dev.h
-> @@ -123,7 +123,6 @@ int bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned int max_ratio);
->   * BDI_CAP_NO_ACCT_WB:     Don't automatically account writeback pages
->   * BDI_CAP_STRICTLIMIT:    Keep number of dirty pages below bdi threshold.
->   *
-> - * BDI_CAP_CGROUP_WRITEBACK: Supports cgroup-aware writeback.
->   * BDI_CAP_SYNCHRONOUS_IO: Device is so fast that asynchronous IO would be
->   *			   inefficient.
->   */
-> @@ -233,9 +232,9 @@ int inode_congested(struct inode *inode, int cong_bits);
->   * inode_cgwb_enabled - test whether cgroup writeback is enabled on an inode
->   * @inode: inode of interest
->   *
-> - * cgroup writeback requires support from both the bdi and filesystem.
-> - * Also, both memcg and iocg have to be on the default hierarchy.  Test
-> - * whether all conditions are met.
-> + * Cgroup writeback requires support from the filesystem.  Also, both memcg and
-> + * iocg have to be on the default hierarchy.  Test whether all conditions are
-> + * met.
->   *
->   * Note that the test result may change dynamically on the same inode
->   * depending on how memcg and iocg are configured.
-> @@ -247,7 +246,6 @@ static inline bool inode_cgwb_enabled(struct inode *inode)
->  	return cgroup_subsys_on_dfl(memory_cgrp_subsys) &&
->  		cgroup_subsys_on_dfl(io_cgrp_subsys) &&
->  		bdi_cap_account_dirty(bdi) &&
-> -		(bdi->capabilities & BDI_CAP_CGROUP_WRITEBACK) &&
->  		(inode->i_sb->s_iflags & SB_I_CGROUPWB);
->  }
->  
+>  /* sb->s_iflags to limit user namespace mounts */
+>  #define SB_I_USERNS_VISIBLE		0x00000010 /* fstype already mounted */
 > -- 
 > 2.28.0
 > 
