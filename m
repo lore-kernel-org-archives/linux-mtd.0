@@ -2,81 +2,84 @@ Return-Path: <SRS0=eAl4=C2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 230E0C433E2
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 07:49:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40A19C2BBD1
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 07:53:14 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BE82821973
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 07:49:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D7ED721D43
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 07:53:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Jvw2ap5m";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="WfO9b84a"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE82821973
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RCu4GjbO";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="Qg83LLQi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7ED721D43
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=iCWqmaQLIcNyzdcld4rWfCvCLuKus9NbJt2PyZs1Lo4=; b=Jvw2ap5mP2wPIUUNIGYbTpG/D
-	okJvOA40AeA6vAIN0BrdbM2e/TD+JaIxfE3+VXNdbAIZete5dDFP5OMrl/36dyQ9a4YTa8xskJkRa
-	Zz2uEdfVjEEcFGvvZ58CJiuSybi0crVBU5OBeWBEfDCe4DCRBfTX720gYKFPPZCGOoEUkHzIeVfwd
-	gEOhvUVLFakWg6ESamR9CO5bCr8McAgwU6q4v+3JHdD1q4/3EXHqLtn0pKy4yFtdHjBzqtJpTiZ+e
-	QFtk+lg2+dLG5xKyzhENo1xcFBTHLiWJBM15hEMlPcz3U1xQnZciojov3RTKxzYtroiC67sD58/q8
-	fDPeXWlNg==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=jCqwmvZpFSzUz8nsP1cNNoiZnhMDPcbUgrZOXHd6lW4=; b=RCu4GjbO0+T0S4nPB+d7MEPTKC
+	17PlzCwpbEfsqL4z9p9P4hlyr4qOVrpAqHYijDKKXD/s8VYLCOstBBF5c/KSMV7fjgntQxDPLVWrG
+	oKRmj9/+NzVPu/bVO7x7vREIJBMEJQNZfHrD64Yd5RXsOKRi1JUvAW81GuoaZzY8uVyhChY6sCn4L
+	T/BRCJkdJAyn+BN+q4R8dqasJxYV1vsGPcJGn9JF6+sFEhh/VpH6MFCy1afeaSWJU216l69y2rn0E
+	3AiXaLvHAytOsHatBT2j3g3lu+g9xBbHnk/6b9Di6ng+EUncENRDoEzFs+4GvgjiKQYCoKSiuNZZ3
+	JC31NfzA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kIoew-0000gJ-MX; Thu, 17 Sep 2020 07:48:50 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1kIoib-0002Li-HK; Thu, 17 Sep 2020 07:52:37 +0000
+Received: from esa5.microchip.iphmx.com ([216.71.150.166])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kIoed-0000ZE-S5
- for linux-mtd@lists.infradead.org; Thu, 17 Sep 2020 07:48:33 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08H7mRGD124425;
- Thu, 17 Sep 2020 02:48:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1600328907;
- bh=B649ih1ZgoNc/QhvwLRUtA7XYmEjlZKwZVP3xeo7/Cg=;
- h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=WfO9b84aTVKL/yYtG5aJYtxInPc4+tsq2YeSIYOBSWgEAmkb9/L/H2IsLcTjMsQen
- pWg5kzC7G2dVOTI0ZzNTb8AnkGdyVflrLm3rhxs0dAjv2zKpCPsbn4/gcS70Zv11Wi
- GYh1EJrdSxdtAwBlC3YG6CBOrad8lqrxydaxkbYM=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08H7mR7R085472
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 17 Sep 2020 02:48:27 -0500
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 17
- Sep 2020 02:48:27 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 17 Sep 2020 02:48:26 -0500
-Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08H7mEdv100359;
- Thu, 17 Sep 2020 02:48:24 -0500
-From: Vignesh Raghavendra <vigneshr@ti.com>
-To: Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH 4/4] mtd: hyperbus: hbmc-am654: Add DMA support for reads
-Date: Thu, 17 Sep 2020 13:17:49 +0530
-Message-ID: <20200917074749.8957-5-vigneshr@ti.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200917074749.8957-1-vigneshr@ti.com>
-References: <20200917074749.8957-1-vigneshr@ti.com>
+ id 1kIoiX-0002JT-UA
+ for linux-mtd@lists.infradead.org; Thu, 17 Sep 2020 07:52:35 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1600329155; x=1631865155;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=soGW+pknjaksN08RJ7LPk0ndAYp4pwodv9WM2rL7awQ=;
+ b=Qg83LLQi1YsZu7GecJAjrXCLIcmYoSqmV75s9g7kd1tjMUNyG0mHNPpT
+ Ff7Kwk4Jz20csQH4LGrUaOnT3bUGZXgrahbPEyxAHNBRb5TpGLz9hy6l4
+ p2swA7IulawZgIMQhX8oTZOd1UfibDuq4yk7Tk8dbHgotl+ww//9EZBAA
+ IPM0JHIz9R/mXTgBxA9MUxMYEh6kCVYmcdE8rjqOn0UXNnehoMJILpD8M
+ BZ9EZSAEAk9A6qltLoB91bHPRt6kTFwVtxEjYyJ9gT/bcd+gmZlh3SEui
+ KJMhWdR9EeZISQxql5Xptwc1Lm1ADnrpI5eUcB2ZTZoMEOGMXG+78XJ4o A==;
+IronPort-SDR: aQjr5gh0DdIuLQSBqrioZhf/IlVjfM2bc7tzY7wh5eIXW/WLU3XtGnxxUedOv4W8W8AR6/Lycm
+ v4dbgfEldFXsybFqTNPSRj/XZC1Ie2LRirq3d1Dc5f1O5NQoSaLyXVrLddLeXHNDVSmZ0vZ6WO
+ uyOkaGqkGCl0/9eteH/aw6VT111LLcO4d6hCMGIOwuZIBbzzjc7tovBfIOUBSTt9jpCrTOralY
+ Ytn/4KdEFMwWkXhMOkgx7/XmFCHC73hs7SxqTXk4O1QK117/ZZ3PCb0EFYcqd0jBgqk1NEG8da
+ wFc=
+X-IronPort-AV: E=Sophos;i="5.76,436,1592895600"; d="scan'208";a="91346697"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 17 Sep 2020 00:52:33 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 17 Sep 2020 00:51:56 -0700
+Received: from atudor-ThinkPad-T470p.local (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Thu, 17 Sep 2020 00:51:54 -0700
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+ <boris.brezillon@collabora.com>
+Subject: [PATCH 0/3] mtd: rawnand: Fix HW ECC handling
+Date: Thu, 17 Sep 2020 10:52:10 +0300
+Message-ID: <20200917075213.532161-1-tudor.ambarus@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200917_034832_034360_6E2013AE 
-X-CRM114-Status: GOOD (  20.35  )
+X-CRM114-CacheID: sfid-20200917_035234_209782_6A4DB5B4 
+X-CRM114-Status: UNSURE (   8.88  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,218 +91,76 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>,
- Sergei Shtylyov <sergei.shtylyov@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Tudor
+ Ambarus <tudor.ambarus@microchip.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-AM654 HyperBus controller provides MMIO interface to read data from
-flash. So add DMA memcpy support for reading data over MMIO interface.
-This provides 5x improvement in throughput and reduces CPU usage as
-well.
+Fix a wrongful fallthrough NAND_ECC_SOFT when a valid HW ECC is
+available. Follow with two patches to make the code more readable.
 
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
----
- drivers/mtd/hyperbus/hbmc-am654.c | 130 +++++++++++++++++++++++++++++-
- 1 file changed, 129 insertions(+), 1 deletion(-)
+Following error was seen in case of a valid HW ECC:
+nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
+nand: Micron MT29F2G08ABAEAWP
+nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 1 at drivers/mtd/nand/raw/nand_base.c:5148 nand_scan_with_ids+0x12b8/0x1674
+Modules linked in:
+CPU: 0 PID: 1 Comm: swapper Not tainted 5.9.0-rc5-next-20200914 #2
+Hardware name: Atmel SAMA5
+[<c010c1e0>] (unwind_backtrace) from [<c0109aac>] (show_stack+0x10/0x14)
+[<c0109aac>] (show_stack) from [<c07e9380>] (__warn+0xb8/0xd0)
+[<c07e9380>] (__warn) from [<c07e93f8>] (warn_slowpath_fmt+0x60/0xbc)
+[<c07e93f8>] (warn_slowpath_fmt) from [<c04cbc84>] (nand_scan_with_ids+0x12b8/0x1674)
+[<c04cbc84>] (nand_scan_with_ids) from [<c04d32e0>] (atmel_nand_controller_add_nand+0x54/0x100)
+[<c04d32e0>] (atmel_nand_controller_add_nand) from [<c04d36a8>] (atmel_nand_controller_add_nands+0x31c/0x60c)
+[<c04d36a8>] (atmel_nand_controller_add_nands) from [<c04d55c0>] (atmel_hsmc_nand_controller_probe+0x188/0x284)
+[<c04d55c0>] (atmel_hsmc_nand_controller_probe) from [<c04d40ec>] (atmel_nand_controller_probe+0x54/0x134)
+[<c04d40ec>] (atmel_nand_controller_probe) from [<c047ef2c>] (platform_drv_probe+0x48/0x98)
+[<c047ef2c>] (platform_drv_probe) from [<c047cfd0>] (really_probe+0x1e0/0x3b8)
+[<c047cfd0>] (really_probe) from [<c047d310>] (driver_probe_device+0x5c/0xb4)
+[<c047d310>] (driver_probe_device) from [<c047b3c0>] (bus_for_each_drv+0x80/0xc4)
+[<c047b3c0>] (bus_for_each_drv) from [<c047cd7c>] (__device_attach+0xe0/0x14c)
+[<c047cd7c>] (__device_attach) from [<c047c064>] (bus_probe_device+0x84/0x8c)
+[<c047c064>] (bus_probe_device) from [<c04790bc>] (device_add+0x408/0x774)
+[<c04790bc>] (device_add) from [<c05d742c>] (of_platform_device_create_pdata+0x98/0xd4)
+[<c05d742c>] (of_platform_device_create_pdata) from [<c05d7604>] (of_platform_bus_create+0x190/0x220)
+[<c05d7604>] (of_platform_bus_create) from [<c05d77c8>] (of_platform_populate+0x60/0xc0)
+[<c05d77c8>] (of_platform_populate) from [<c05dd6e4>] (atmel_ebi_probe+0x358/0x530)
+[<c05dd6e4>] (atmel_ebi_probe) from [<c047ef2c>] (platform_drv_probe+0x48/0x98)
+[<c047ef2c>] (platform_drv_probe) from [<c047cfd0>] (really_probe+0x1e0/0x3b8)
+[<c047cfd0>] (really_probe) from [<c047d310>] (driver_probe_device+0x5c/0xb4)
+[<c047d310>] (driver_probe_device) from [<c047d508>] (device_driver_attach+0x58/0x60)
+[<c047d508>] (device_driver_attach) from [<c047d568>] (__driver_attach+0x58/0xcc)
+[<c047d568>] (__driver_attach) from [<c047b2ec>] (bus_for_each_dev+0x74/0xb4)
+[<c047b2ec>] (bus_for_each_dev) from [<c047c258>] (bus_add_driver+0xf4/0x1d8)
+[<c047c258>] (bus_add_driver) from [<c047dd88>] (driver_register+0x74/0x108)
+[<c047dd88>] (driver_register) from [<c047f33c>] (__platform_driver_probe+0x68/0xc8)
+[<c047f33c>] (__platform_driver_probe) from [<c01016d0>] (do_one_initcall+0x7c/0x1cc)
+[<c01016d0>] (do_one_initcall) from [<c0b00f78>] (kernel_init_freeable+0x15c/0x1c0)
+[<c0b00f78>] (kernel_init_freeable) from [<c07f23a4>] (kernel_init+0x8/0x114)
+[<c07f23a4>] (kernel_init) from [<c0100148>] (ret_from_fork+0x14/0x2c)
+Exception stack(0xcf427fb0 to 0xcf427ff8)
+7fa0:                                     00000000 00000000 00000000 00000000
+7fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+7fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+---[ end trace 7fad321bf58a54e1 ]---
+atmel-nand-controller 10000000.ebi:nand-controller: NAND scan failed: -22
+atmel-nand-controller: probe of 10000000.ebi:nand-controller failed with error -22
 
-diff --git a/drivers/mtd/hyperbus/hbmc-am654.c b/drivers/mtd/hyperbus/hbmc-am654.c
-index b6a2400fcaa9..b6ab55560089 100644
---- a/drivers/mtd/hyperbus/hbmc-am654.c
-+++ b/drivers/mtd/hyperbus/hbmc-am654.c
-@@ -3,6 +3,10 @@
- // Copyright (C) 2019 Texas Instruments Incorporated - https://www.ti.com/
- // Author: Vignesh Raghavendra <vigneshr@ti.com>
- 
-+#include <linux/completion.h>
-+#include <linux/dma-direction.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/dmaengine.h>
- #include <linux/err.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-@@ -13,10 +17,18 @@
- #include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/platform_device.h>
-+#include <linux/sched/task_stack.h>
- #include <linux/types.h>
- 
- #define AM654_HBMC_CALIB_COUNT 25
- 
-+struct am654_hbmc_device_priv {
-+	struct completion rx_dma_complete;
-+	phys_addr_t device_base;
-+	struct hyperbus_ctlr *ctlr;
-+	struct dma_chan *rx_chan;
-+};
-+
- struct am654_hbmc_priv {
- 	struct hyperbus_ctlr ctlr;
- 	struct hyperbus_device hbdev;
-@@ -51,13 +63,107 @@ static int am654_hbmc_calibrate(struct hyperbus_device *hbdev)
- 	return ret;
- }
- 
-+static void am654_hbmc_dma_callback(void *param)
-+{
-+	struct am654_hbmc_device_priv *priv = param;
-+
-+	complete(&priv->rx_dma_complete);
-+}
-+
-+static int am654_hbmc_dma_read(struct am654_hbmc_device_priv *priv, void *to,
-+			       unsigned long from, ssize_t len)
-+
-+{
-+	enum dma_ctrl_flags flags = DMA_CTRL_ACK | DMA_PREP_INTERRUPT;
-+	struct dma_chan *rx_chan = priv->rx_chan;
-+	struct dma_async_tx_descriptor *tx;
-+	dma_addr_t dma_dst, dma_src;
-+	dma_cookie_t cookie;
-+	int ret;
-+
-+	if (!priv->rx_chan || !virt_addr_valid(to) || object_is_on_stack(to))
-+		return -EINVAL;
-+
-+	dma_dst = dma_map_single(rx_chan->device->dev, to, len, DMA_FROM_DEVICE);
-+	if (dma_mapping_error(rx_chan->device->dev, dma_dst)) {
-+		dev_dbg(priv->ctlr->dev, "DMA mapping failed\n");
-+		return -EIO;
-+	}
-+
-+	dma_src = priv->device_base + from;
-+	tx = dmaengine_prep_dma_memcpy(rx_chan, dma_dst, dma_src, len, flags);
-+	if (!tx) {
-+		dev_err(priv->ctlr->dev, "device_prep_dma_memcpy error\n");
-+		ret = -EIO;
-+		goto unmap_dma;
-+	}
-+
-+	reinit_completion(&priv->rx_dma_complete);
-+	tx->callback = am654_hbmc_dma_callback;
-+	tx->callback_param = priv;
-+	cookie = tx->tx_submit(tx);
-+
-+	ret = dma_submit_error(cookie);
-+	if (ret) {
-+		dev_err(priv->ctlr->dev, "dma_submit_error %d\n", cookie);
-+		ret = -EIO;
-+		goto unmap_dma;
-+	}
-+
-+	dma_async_issue_pending(rx_chan);
-+	ret = wait_for_completion_timeout(&priv->rx_dma_complete,
-+					  msecs_to_jiffies(len + 1000));
-+	if (ret <= 0) {
-+		dmaengine_terminate_sync(rx_chan);
-+		dev_err(priv->ctlr->dev, "DMA wait_for_completion_timeout\n");
-+		ret = -ETIMEDOUT;
-+		goto unmap_dma;
-+	}
-+	ret = 0;
-+
-+unmap_dma:
-+	dma_unmap_single(rx_chan->device->dev, dma_dst, len, DMA_FROM_DEVICE);
-+	return ret;
-+}
-+
-+static void am654_hbmc_read(struct hyperbus_device *hbdev, void *to,
-+			    unsigned long from, ssize_t len)
-+{
-+	struct am654_hbmc_device_priv *priv = hbdev->priv;
-+
-+	if (len < SZ_1K || am654_hbmc_dma_read(priv, to, from, len))
-+		memcpy_fromio(to, hbdev->map.virt + from, len);
-+}
-+
- static const struct hyperbus_ops am654_hbmc_ops = {
- 	.calibrate = am654_hbmc_calibrate,
-+	.copy_from = am654_hbmc_read,
- };
- 
-+static int am654_hbmc_request_mmap_dma(struct am654_hbmc_device_priv *priv)
-+{
-+	struct dma_chan *rx_chan;
-+	dma_cap_mask_t mask;
-+
-+	dma_cap_zero(mask);
-+	dma_cap_set(DMA_MEMCPY, mask);
-+
-+	rx_chan = dma_request_chan_by_mask(&mask);
-+	if (IS_ERR(rx_chan)) {
-+		if (PTR_ERR(rx_chan) == -EPROBE_DEFER)
-+			return -EPROBE_DEFER;
-+		return 0;
-+	}
-+	priv->rx_chan = rx_chan;
-+	init_completion(&priv->rx_dma_complete);
-+
-+	return 0;
-+}
-+
- static int am654_hbmc_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
-+	struct am654_hbmc_device_priv *dev_priv;
- 	struct device *dev = &pdev->dev;
- 	struct am654_hbmc_priv *priv;
- 	struct resource res;
-@@ -96,13 +202,31 @@ static int am654_hbmc_probe(struct platform_device *pdev)
- 	priv->ctlr.dev = dev;
- 	priv->ctlr.ops = &am654_hbmc_ops;
- 	priv->hbdev.ctlr = &priv->ctlr;
-+
-+	dev_priv = devm_kzalloc(dev, sizeof(*dev_priv), GFP_KERNEL);
-+	if (!dev_priv) {
-+		ret = -ENOMEM;
-+		goto disable_mux;
-+	}
-+
-+	priv->hbdev.priv = dev_priv;
-+	dev_priv->device_base = res.start;
-+	dev_priv->ctlr = &priv->ctlr;
-+
-+	ret = am654_hbmc_request_mmap_dma(dev_priv);
-+	if (ret == -EPROBE_DEFER)
-+		goto disable_mux;
-+
- 	ret = hyperbus_register_device(&priv->hbdev);
- 	if (ret) {
- 		dev_err(dev, "failed to register controller\n");
--		goto disable_mux;
-+		goto release_dma;
- 	}
- 
- 	return 0;
-+release_dma:
-+	if (dev_priv->rx_chan)
-+		dma_release_channel(dev_priv->rx_chan);
- disable_mux:
- 	if (priv->mux_ctrl)
- 		mux_control_deselect(priv->mux_ctrl);
-@@ -112,12 +236,16 @@ static int am654_hbmc_probe(struct platform_device *pdev)
- static int am654_hbmc_remove(struct platform_device *pdev)
- {
- 	struct am654_hbmc_priv *priv = platform_get_drvdata(pdev);
-+	struct am654_hbmc_device_priv *dev_priv = priv->hbdev.priv;
- 	int ret;
- 
- 	ret = hyperbus_unregister_device(&priv->hbdev);
- 	if (priv->mux_ctrl)
- 		mux_control_deselect(priv->mux_ctrl);
- 
-+	if (dev_priv->rx_chan)
-+		dma_release_channel(dev_priv->rx_chan);
-+
- 	return ret;
- }
- 
+Tudor Ambarus (3):
+  mtd: rawnand: Fix wrongful fallthrough NAND_ECC_SOFT
+  mtd: rawnand: Introduce nand_set_ecc_on_host_ops()
+  mtd: rawnand: Don't overwrite the error code from
+    nand_set_ecc_soft_ops()
+
+ drivers/mtd/nand/raw/nand_base.c | 134 ++++++++++++++++---------------
+ 1 file changed, 70 insertions(+), 64 deletions(-)
+
 -- 
-2.28.0
+2.25.1
 
 
 ______________________________________________________
