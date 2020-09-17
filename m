@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A60BC43461
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80A36C35257
 	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 15:13:03 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 16FB02220E
+	by mail.kernel.org (Postfix) with ESMTPS id 185912220F
 	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 15:13:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ROFJ4b50";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="JpgNMgAM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 16FB02220E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="1V8yh/qy";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="V0mCKcOW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 185912220F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,35 +26,35 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=PpoSCZn6SIoPmnfahwygUpmKtKoY+3XGJ9CwAZhg+aM=; b=ROFJ4b50IF/ohMR3wAkHSJXTB
-	2glU7EWAqfzjc1/MmibJHNOImJNVIFVWQTcoFMKmQzO+3ETR+b/mQ5jPsgwjZiuVzYy6xhAzuEgG+
-	a75njILqWGJUvvTkecwt7fl7NywfgV40t/a22rmnaYp6EO8zWJ1cWhOvJa6FEh93TNowNMshY6YgU
-	ZQu7T84AEqrv1jnZesqAY30MJMP4x7pfrV6R+f9foFc2dZeScHwCuT//89dXJ4jGGpxmYqM9WA7Cd
-	4HsFHqsgpxf43URhd2fS1P+8BdARVwE1k2q4AiA06t1KeD8PFdN/F16J4iGHMGlqb90z74nO4EBYk
-	RRlffkz4Q==;
+	 bh=sN0qctUeAru0kYWXFgX/rtI16D+Q0F9vLEPesnxlpt4=; b=1V8yh/qyXV/R/Tn/3B8Z4PRzI
+	Kje9r1kAhz+BzRqlH5WWcc1/dNbu6G3262Ms/Ym6Qf4tbRkMRyvnvwrzTBE7yKvq93oureOTRHkAj
+	xs8MYg8K7ohROxUAK36g3M9mw8QOv9t6ZJD+xH8YO7ArX301nuBCQn1Sht2xJzqfq0aHS0MHcIAL3
+	pGjxgHKLF8ru3zqvPyu4nKCfkfN1hyENGLtQBreQf06goX/qBoaj6cAYm8xdQVUjICs/rHVQINQKM
+	O7VNxKn4Fmby9KDur+yyuQq+xwtIq3OZzyOBribDKz5xKY/kkeohprAq35uaUGGzt5ZS+KVImuToh
+	kM75naVkQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kIvaL-00013E-0c; Thu, 17 Sep 2020 15:12:33 +0000
+	id 1kIvZj-0000ep-H6; Thu, 17 Sep 2020 15:11:55 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kIvYt-00007L-0m; Thu, 17 Sep 2020 15:11:03 +0000
+ id 1kIvYm-0008Vq-F4; Thu, 17 Sep 2020 15:10:56 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=On43e4GnGO79fh9MGOiH3t2swuO0c44z7mV7G3PjPdg=; b=JpgNMgAMtP37e2z1ODJoACSlyK
- ZQFRFUMyW6V2MeLhpTmyJAeub1VQHVFoEFbrpdAuEICFyc0AHXjewrnjzRXfMEuzWL7E+dyYGabyd
- A1RS7Tonh20I00pQtRnWsnK+nfLGfgwVuwmiwJCERV56YcrH+xTkJxvoSXyxbudjVRNVQZQPsJGDw
- /GSHYP46vWHoYPnjADmCSGZO9olC+ksUnB6Jcrds+VDufa4bFLZCIQpaFfLSIplfPdvT9nrFF6G4U
- PHAGD4QvI88MFyYVX2M35YIWXErf0ffDTV1XoWhrPUUGdig34Sj0jR3s2VZV69Z9EMEt8hjqRRV1T
- zvgKjiwA==;
+ bh=VYle+Dy78vGTLJwXqjetxI7H6ckJt5lDFPp8DD2uNGg=; b=V0mCKcOWAD8LZwIpL8pYZJAODz
+ ks+ksIQuf2jXnakiEJa2r+1ydB3o4OV0U8IbKATo2l/9ikpsHf1fkR+V3rxyB66/wQOUhBaLbMdLj
+ 6ndjrHb5ife/voKvoE6tbqaARAJh8rBEPWbqNhl4pM+DcKaPCG+C1d+1eawTVjva18TxCLbTbPxvN
+ VlX+BF7sHG36BMaf3mqJvTuHegLCTJaT1VK/d0j1mqUuF6P2GH1tGCTjYNgYtaAh9FTNOwnYoIozA
+ P+PcpgZmeJGFJRA/lFJknTpeXa2yh/EVHrCtzQ9dV1oP9s1Oc75pRO5fPsB43W7ntB/iyA0nyqwco
+ DGNIOLZA==;
 Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red
- Hat Linux)) id 1kIvYi-0001PW-ND; Thu, 17 Sep 2020 15:10:52 +0000
+ Hat Linux)) id 1kIvYl-0001Qk-4V; Thu, 17 Sep 2020 15:10:55 +0000
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To: linux-fsdevel@vger.kernel.org
-Subject: [PATCH 03/13] afs: Tell the VFS that readpage was synchronous
-Date: Thu, 17 Sep 2020 16:10:40 +0100
-Message-Id: <20200917151050.5363-4-willy@infradead.org>
+Subject: [PATCH 12/13] udf: Tell the VFS that readpage was synchronous
+Date: Thu, 17 Sep 2020 16:10:49 +0100
+Message-Id: <20200917151050.5363-13-willy@infradead.org>
 X-Mailer: git-send-email 2.21.3
 In-Reply-To: <20200917151050.5363-1-willy@infradead.org>
 References: <20200917151050.5363-1-willy@infradead.org>
@@ -81,28 +81,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The afs readpage implementation was already synchronous, so use
-AOP_UPDATED_PAGE to avoid cycling the page lock.
+The udf inline data readpage implementation was already synchronous,
+so use AOP_UPDATED_PAGE to avoid cycling the page lock.
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- fs/afs/file.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/udf/file.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/fs/afs/file.c b/fs/afs/file.c
-index 6f6ed1605cfe..8f15305b6574 100644
---- a/fs/afs/file.c
-+++ b/fs/afs/file.c
-@@ -367,7 +367,8 @@ int afs_page_filler(void *data, struct page *page)
- 			BUG_ON(PageFsCache(page));
- 		}
- #endif
--		unlock_page(page);
-+		_leave(" = AOP_UPDATED_PAGE");
-+		return AOP_UPDATED_PAGE;
- 	}
+diff --git a/fs/udf/file.c b/fs/udf/file.c
+index 628941a6b79a..52bbe92d7c43 100644
+--- a/fs/udf/file.c
++++ b/fs/udf/file.c
+@@ -61,9 +61,8 @@ static int udf_adinicb_readpage(struct file *file, struct page *page)
+ {
+ 	BUG_ON(!PageLocked(page));
+ 	__udf_adinicb_readpage(page);
+-	unlock_page(page);
  
- 	_leave(" = 0");
+-	return 0;
++	return AOP_UPDATED_PAGE;
+ }
+ 
+ static int udf_adinicb_writepage(struct page *page,
 -- 
 2.28.0
 
