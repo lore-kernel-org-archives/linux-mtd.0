@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14930C433E2
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 09:46:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3FC6C43461
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 09:55:44 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9AAF120838
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 09:46:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7ADBB206B5
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2020 09:55:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fWIdLKZw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9AAF120838
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qtv5rM6B"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7ADBB206B5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=PYGEhmTGp1KQr1KQHkwYERzfSgcDCN6JTwae3qTCwpk=; b=fWIdLKZwR/KDshMv0pHAXnSe6
-	W4/eQP0hJDBO7g3hJ2RUtOOyYOAtTOXg/XnmHqu9PiVAywWkE0I/S9vMukHVTnHkRSbiLv1ezXfwH
-	Da2iTWuHzKBk9VmJm01/gE/tVpPjMwiTw3PxXVJvTQwO4VmGg7wEJxMTypjFQwhAotUjFwKJ8utQY
-	E50fZwFFUN22xB2hKYDSyh8hhE388dto+nn7zm5wTT2IyPvgWufFIu1Dz6XyWFRANbb45ULTi1Wu/
-	qRvZYVki7xtt+4i/MINgRRe7OSERbEiM5tlF0Brq6D7uF7qwd4pHzuR0aLS67uryI+yrBw5CRcSvH
-	bn1Fy40/g==;
+	 bh=6GJYUW5hGsgeBq8UR8CGRtPfZxYPL+CY+8Y/C/6ioSc=; b=qtv5rM6Beqj+cwfkEoYMLdWNM
+	qKDyx3n/0JdFCrfB049DO5rHQIDyvDJz2htXLKH0kLpS1nd8GOh0tWqftoWbwA9e2v1xuyUKbw/4l
+	HsiWkttlk6Dr+0SShifhsvyhf+twPGp3HSkJ5iFS4qlyjBwMrvRezfFn9gJSLXUYXnDXQTNo2jS5K
+	EgQx9+4Npcuv5DC0J46YdRrq3UtidA6+7MhPkJ5JwOwvBS0eeTBUjlY8MhSi6DWyjrW+sj4ai512x
+	2FsN6dU/LsuAJxjMw1bQaY9ibfbOHuWBoK5yFbr1suQxKp40b3QtxuHjanXQVPznGcn3L4Ue/cVSi
+	8kyY7V7Jg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kIqUd-00058k-Uu; Thu, 17 Sep 2020 09:46:20 +0000
+	id 1kIqdD-0006dj-EZ; Thu, 17 Sep 2020 09:55:11 +0000
 Received: from mx2.suse.de ([195.135.220.15])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kIqUa-00057U-Q0
- for linux-mtd@lists.infradead.org; Thu, 17 Sep 2020 09:46:17 +0000
+ id 1kIqdA-0006cf-Iu
+ for linux-mtd@lists.infradead.org; Thu, 17 Sep 2020 09:55:09 +0000
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 6D705AFE5;
- Thu, 17 Sep 2020 09:46:49 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id 40398AEC8;
+ Thu, 17 Sep 2020 09:55:41 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
- id 5E80E1E12E1; Thu, 17 Sep 2020 11:46:15 +0200 (CEST)
-Date: Thu, 17 Sep 2020 11:46:15 +0200
+ id 0A4781E12E1; Thu, 17 Sep 2020 11:55:07 +0200 (CEST)
+Date: Thu, 17 Sep 2020 11:55:07 +0200
 From: Jan Kara <jack@suse.cz>
 To: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 02/12] drbd: remove dead code in device_to_statistics
-Message-ID: <20200917094615.GI7347@quack2.suse.cz>
+Subject: Re: [PATCH 03/12] drbd: remove RB_CONGESTED_REMOTE
+Message-ID: <20200917095507.GJ7347@quack2.suse.cz>
 References: <20200910144833.742260-1-hch@lst.de>
- <20200910144833.742260-3-hch@lst.de>
+ <20200910144833.742260-4-hch@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20200910144833.742260-3-hch@lst.de>
+In-Reply-To: <20200910144833.742260-4-hch@lst.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200917_054616_973358_98A53B29 
-X-CRM114-Status: GOOD (  19.47  )
+X-CRM114-CacheID: sfid-20200917_055508_743142_ADFE2B56 
+X-CRM114-Status: GOOD (  19.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,54 +73,62 @@ Cc: Jens Axboe <axboe@kernel.dk>, linux-raid@vger.kernel.org,
  Hans de Goede <hdegoede@redhat.com>, Minchan Kim <minchan@kernel.org>,
  Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
  linux-block@vger.kernel.org, Song Liu <song@kernel.org>, dm-devel@redhat.com,
- linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-mm@kvack.org, drbd-dev@lists.linbit.com
+ linux-mtd@lists.infradead.org, Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+ linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+ drbd-dev@lists.linbit.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu 10-09-20 16:48:22, Christoph Hellwig wrote:
-> Ever since the switch to blk-mq, a lower device not used for VM
-> writeback will not be marked congested, so the check will never
-> trigger.
+On Thu 10-09-20 16:48:23, Christoph Hellwig wrote:
+> This case isn't ever used.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-Looks good to me. You can add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
+Are you sure it's never used? As far as I'm reading drdb code the contents
+of the disk_conf structure seems to be received through netlink (that code
+is really a macro hell) and so read_balancing attribute passed to
+remote_due_to_read_balancing() can have any value userspace passed to it.
 
 								Honza
 
 > ---
->  drivers/block/drbd/drbd_nl.c | 6 ------
->  1 file changed, 6 deletions(-)
+>  drivers/block/drbd/drbd_req.c | 4 ----
+>  include/linux/drbd.h          | 1 -
+>  2 files changed, 5 deletions(-)
 > 
-> diff --git a/drivers/block/drbd/drbd_nl.c b/drivers/block/drbd/drbd_nl.c
-> index 43c8ae4d9fca81..aaff5bde391506 100644
-> --- a/drivers/block/drbd/drbd_nl.c
-> +++ b/drivers/block/drbd/drbd_nl.c
-> @@ -3370,7 +3370,6 @@ static void device_to_statistics(struct device_statistics *s,
->  	if (get_ldev(device)) {
->  		struct drbd_md *md = &device->ldev->md;
->  		u64 *history_uuids = (u64 *)s->history_uuids;
-> -		struct request_queue *q;
->  		int n;
+> diff --git a/drivers/block/drbd/drbd_req.c b/drivers/block/drbd/drbd_req.c
+> index 5c975af9c15fb8..481bc34fcf386a 100644
+> --- a/drivers/block/drbd/drbd_req.c
+> +++ b/drivers/block/drbd/drbd_req.c
+> @@ -901,13 +901,9 @@ static bool drbd_may_do_local_read(struct drbd_device *device, sector_t sector,
+>  static bool remote_due_to_read_balancing(struct drbd_device *device, sector_t sector,
+>  		enum drbd_read_balancing rbm)
+>  {
+> -	struct backing_dev_info *bdi;
+>  	int stripe_shift;
 >  
->  		spin_lock_irq(&md->uuid_lock);
-> @@ -3384,11 +3383,6 @@ static void device_to_statistics(struct device_statistics *s,
->  		spin_unlock_irq(&md->uuid_lock);
->  
->  		s->dev_disk_flags = md->flags;
-> -		q = bdev_get_queue(device->ldev->backing_bdev);
-> -		s->dev_lower_blocked =
-> -			bdi_congested(q->backing_dev_info,
-> -				      (1 << WB_async_congested) |
-> -				      (1 << WB_sync_congested));
->  		put_ldev(device);
->  	}
->  	s->dev_size = drbd_get_capacity(device->this_bdev);
+>  	switch (rbm) {
+> -	case RB_CONGESTED_REMOTE:
+> -		bdi = device->ldev->backing_bdev->bd_disk->queue->backing_dev_info;
+> -		return bdi_read_congested(bdi);
+>  	case RB_LEAST_PENDING:
+>  		return atomic_read(&device->local_cnt) >
+>  			atomic_read(&device->ap_pending_cnt) + atomic_read(&device->rs_pending_cnt);
+> diff --git a/include/linux/drbd.h b/include/linux/drbd.h
+> index 5755537b51b114..6a8286132751df 100644
+> --- a/include/linux/drbd.h
+> +++ b/include/linux/drbd.h
+> @@ -94,7 +94,6 @@ enum drbd_read_balancing {
+>  	RB_PREFER_REMOTE,
+>  	RB_ROUND_ROBIN,
+>  	RB_LEAST_PENDING,
+> -	RB_CONGESTED_REMOTE,
+>  	RB_32K_STRIPING,
+>  	RB_64K_STRIPING,
+>  	RB_128K_STRIPING,
 > -- 
 > 2.28.0
 > 
