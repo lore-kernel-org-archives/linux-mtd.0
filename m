@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EDB1AC43463
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 08:33:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40BC1C43463
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 08:34:11 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7C89C20789
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 08:33:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B3BCC2084C
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 08:34:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jRkCVfdN";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="gIWNzXXI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7C89C20789
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dRsHfw2A";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="RLCsRbGE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B3BCC2084C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,65 +26,65 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Nbfx7w+Z8mAURRCWf9QkJ0Qj0g/tTKuwLnIlZllEv+4=; b=jRkCVfdNrRqC4UdrxGxYMuSn1
-	NqNYD3cK+BkPYG9xpGkT1HdiXh5vN3WyxJ2lSnHWwRQPlh9utKsnln/hLgNcIvUTS8ymPpXEVc9dL
-	Jj86QJDFxRaC5nWlD58+AN0gvQGgEF5svpbVlJUau0y8w2NdDonkzyDN4yg3ikASanpqaXNwQF2N9
-	9+eLc2ZVKVgbj6kQu0Oyd/BXIZCbwR/d7PkaecLe0kw/BdqFtSR+J4OtmlPJ+xpDPRAgHtqDjK+t+
-	FDscWodcIY5/PCwjAxorultQv+awD0i/qY2WPuaAd91G5Cfp4pY0/DSujm/bKcrsn+I7jTf/li5SN
-	FrdmVLkXA==;
+	 bh=0YVT68m5M2d+0skZtQgARtWdtYvi10AE3IZlVieoLzA=; b=dRsHfw2AadjHbU2dCIjVK0B5s
+	G43uZatABbC19O+zhBU7eIDbZ1Q/yb74QDZnLsBZ6zCTR2sQdyPEwubuB78F5cHQXw9vhdca+QX7f
+	IYnk+g0QjxwiTUVP8JUan+4R7p0bvxYpk2aSsiJxflw22/69dv1i8wXFelLBiOrZ0P79pBQdZXpsp
+	ze9WFE3aEeCnvW5OzRV8Hwqwlm5k+Cvl2SXJz6OX3fNqm3goPNnagGIrM/Ee35SE6T4PIG6T+SHyv
+	BSZcjBfupiw9ba+Pl9I1Czo5XwPAEIl3w0bi/nvvECKkl2wcHIRUzOa24SqioauMk4OhlfpZdLq8m
+	nD+bhMBdw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kJBp2-0000Cz-1n; Fri, 18 Sep 2020 08:32:48 +0000
-Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
+	id 1kJBpL-0000Ru-AL; Fri, 18 Sep 2020 08:33:07 +0000
+Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kJBnu-0008DL-G5
- for linux-mtd@lists.infradead.org; Fri, 18 Sep 2020 08:31:41 +0000
-Received: by mail-pg1-x544.google.com with SMTP id 7so3032539pgm.11
- for <linux-mtd@lists.infradead.org>; Fri, 18 Sep 2020 01:31:37 -0700 (PDT)
+ id 1kJBnz-0008GT-16
+ for linux-mtd@lists.infradead.org; Fri, 18 Sep 2020 08:31:49 +0000
+Received: by mail-pl1-x641.google.com with SMTP id x18so2620334pll.6
+ for <linux-mtd@lists.infradead.org>; Fri, 18 Sep 2020 01:31:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=PtgT8oGdi7tJWYrZylWP5X+Qu5mtWrTjssOMjWBLBio=;
- b=gIWNzXXI/65W9lRuW4rM4ZuoKImgBcadG9k1ZTZdlozcVR0w6y7VHSw5ovnfxV+y4s
- me4YUC5KA0N/CovI2zxVtNEXpQ8aXA1C+c8tsuTUo/mPKvhbcVunwTsO8sq35KVqV2wP
- tRlaD2cHR/DshX6cxwuMkOhzPkx4cdjcbJxpY=
+ bh=V6QA5rlwQIgAumyCtY/vC8OZHPGW9fkvmobEZ61e3iw=;
+ b=RLCsRbGEIvBCMUuhsoukaG9neeZlgVgZbHJD1ivveD5GumnlluwtLd2WdZ/jIC/XVi
+ OVDwap9KXfLe1ucenLJ2xRDya+7cBCILx/fCyOEwcmdCfmTxCKCmDmCrU93XhmBaJmfn
+ QGkSidPS6H6/ySwK04ULnFvBcvusmSA0Vbsog=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=PtgT8oGdi7tJWYrZylWP5X+Qu5mtWrTjssOMjWBLBio=;
- b=eYvwhroOkGkjI8JiMkJTe4iJ70fuVqOiJ7gUKi9ybxZgtyyOvHqzGD74qIKHmlTcLD
- LXLbsLQ5iKJWQeTgr5oWYz5wi2Kpf1rdG4j6Gxx12s1Qabk8/iP2HyuXG4O/4eFDcCsB
- JqzwbD+9RVmuMA02egHsCODikosf9GfPt9cn6Gb4qrrpSTMZm8Fr4r0TJelq0+weOo/W
- AXQ4Za58tsxiLF/HSqvo05dHnXIWhmUGwjS9m+zQBZzuAe+jOjb00uz+YtWQis1wKQIh
- MDylsyqt3MwIGGctT+ggyTNWtuhX8IyGBaqfqGqaWnmtlfLDmg8k/308DgDgAb3/mUEQ
- V+dA==
-X-Gm-Message-State: AOAM533P3qlMVIvGMPG9c3vJ4nUygvBlH59fH9Eb3U2Au+Z+lA1Z5Z4F
- KGgF/d7hqSCqUuyb8J0/yT6WKt+VSmiueAGJ
-X-Google-Smtp-Source: ABdhPJylLeVr7aTAeXl/TquJqTgllezEHHoyI6zJ5/+F2fB1EMgD/15lCBC8Kt+Lo/SC0WxayecFLQ==
-X-Received: by 2002:aa7:934e:0:b029:13f:d056:593 with SMTP id
- 14-20020aa7934e0000b029013fd0560593mr25187131pfn.15.1600417896081; 
- Fri, 18 Sep 2020 01:31:36 -0700 (PDT)
+ bh=V6QA5rlwQIgAumyCtY/vC8OZHPGW9fkvmobEZ61e3iw=;
+ b=DdWf/vRuir/NqR3QRzRUf6bDqr9HvOLJlCVdEMYv2eML8OOTUdbEbxuoNsi2YWAxAB
+ gjDPLuCERwDOp/bMjdcHud+Fgb6HAnkmibt4s37dgwWa08GgoCTF1a8rkkPjbEDTeYSw
+ 5tRe0zmbvjZ/ZL9qcF6VefbQ9mdVjmbJgt5lwBTFN59UAeap77ieO/chVeJOtF51q7U7
+ w97fFU/ezMaMLNieAfcTDabyAJwXVY/TjIdFZTUHVEHq1jV/5ufvP6WSJN/iLyd1RWwS
+ ozOhjdje563mGlCUdsVs5q3XguNUIq4ueKSFIIAuzw6G2tuT3sawBhnpBQn2k3uqisCf
+ 0Hmg==
+X-Gm-Message-State: AOAM530vbzhp9YA8ua4IvatTvGHaeb9Y0A4fMKmIhzkR92i/xpSsxDMC
+ nj9hK9/SPTNmnf1w35BAYQWYag==
+X-Google-Smtp-Source: ABdhPJygqgBey434xgCtbPNom+Nm5OBIq9zcYixgGAlrzs7AOfK44AeJ1z3uv1szI1z/iQNJZqhoBQ==
+X-Received: by 2002:a17:90b:1642:: with SMTP id
+ il2mr11671416pjb.93.1600417900741; 
+ Fri, 18 Sep 2020 01:31:40 -0700 (PDT)
 Received: from ikjn-p920.tpe.corp.google.com
  ([2401:fa00:1:10:f693:9fff:fef4:a8fc])
- by smtp.gmail.com with ESMTPSA id g206sm2193172pfb.178.2020.09.18.01.31.34
+ by smtp.gmail.com with ESMTPSA id g206sm2193172pfb.178.2020.09.18.01.31.38
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 18 Sep 2020 01:31:35 -0700 (PDT)
+ Fri, 18 Sep 2020 01:31:40 -0700 (PDT)
 From: Ikjoon Jang <ikjn@chromium.org>
 To: Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
  devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
  linux-mtd@lists.infradead.org
-Subject: [PATCH v2 2/5] spi: spi-mtk-nor: fix mishandled logics in checking
- SPI memory operation
-Date: Fri, 18 Sep 2020 16:31:20 +0800
-Message-Id: <20200918162834.v2.2.I3de2918f09b817cc2ae6d324f1ece62779ecc7cf@changeid>
+Subject: [PATCH v2 4/5] spi: spi-mtk-nor: support 36bit dma addressing to
+ mediatek
+Date: Fri, 18 Sep 2020 16:31:22 +0800
+Message-Id: <20200918162834.v2.4.Id1cb208392928afc7ceed4de06924243c7858cd0@changeid>
 X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
 In-Reply-To: <20200918083124.3921207-1-ikjn@chromium.org>
 References: <20200918083124.3921207-1-ikjn@chromium.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200918_043138_727231_34BC7D2D 
-X-CRM114-Status: GOOD (  16.61  )
+X-CRM114-CacheID: sfid-20200918_043143_159766_247B1D20 
+X-CRM114-Status: GOOD (  16.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,126 +104,82 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Fix a simple bug which can limits its transfer size,
-and add a simple helper function for code cleanups.
+This patch enables 36bit dma address support to spi-mtk-nor.
+Currently 36bit dma addressing is enabled only for mt8192-nor.
 
-Fixes: a59b2c7c56bf ("spi: spi-mtk-nor: support standard spi properties")
 Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
-
 ---
 
 (no changes since v1)
 
- drivers/spi/spi-mtk-nor.c | 62 ++++++++++++++++++++++++---------------
- 1 file changed, 38 insertions(+), 24 deletions(-)
+ drivers/spi/spi-mtk-nor.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/spi/spi-mtk-nor.c b/drivers/spi/spi-mtk-nor.c
-index 6e6ca2b8e6c8..54b2c0fde95b 100644
+index e14798a6e7d0..99dd5dca744e 100644
 --- a/drivers/spi/spi-mtk-nor.c
 +++ b/drivers/spi/spi-mtk-nor.c
-@@ -167,52 +167,63 @@ static bool mtk_nor_match_read(const struct spi_mem_op *op)
- 	return false;
- }
+@@ -78,6 +78,8 @@
+ #define MTK_NOR_REG_DMA_FADR		0x71c
+ #define MTK_NOR_REG_DMA_DADR		0x720
+ #define MTK_NOR_REG_DMA_END_DADR	0x724
++#define MTK_NOR_REG_DMA_DADR_HB		0x738
++#define MTK_NOR_REG_DMA_END_DADR_HB	0x73c
  
--static int mtk_nor_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
-+static bool need_bounce(void *cpu_addr, unsigned long len)
- {
--	size_t len;
-+	return !!(((uintptr_t)cpu_addr) & MTK_NOR_DMA_ALIGN_MASK);
-+}
+ #define MTK_NOR_PRG_MAX_SIZE		6
+ // Reading DMA src/dst addresses have to be 16-byte aligned
+@@ -102,6 +104,7 @@ struct mtk_nor {
+ 	unsigned int spi_freq;
+ 	bool wbuf_en;
+ 	bool has_irq;
++	bool high_dma;
+ 	struct completion op_done;
+ };
  
-+static int mtk_nor_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
-+{
- 	if (!op->data.nbytes)
- 		return 0;
+@@ -291,6 +294,11 @@ static int read_dma(struct mtk_nor *sp, u32 from, unsigned int length,
+ 	writel(dma_addr, sp->base + MTK_NOR_REG_DMA_DADR);
+ 	writel(dma_addr + length, sp->base + MTK_NOR_REG_DMA_END_DADR);
  
- 	if ((op->addr.nbytes == 3) || (op->addr.nbytes == 4)) {
--		if ((op->data.dir == SPI_MEM_DATA_IN) &&
--		    mtk_nor_match_read(op)) {
-+		switch (op->data.dir) {
-+		case SPI_MEM_DATA_IN:
-+			if (!mtk_nor_match_read(op))
-+				return -EINVAL;
-+			/* check if it's DMAable */
- 			if ((op->addr.val & MTK_NOR_DMA_ALIGN_MASK) ||
--			    (op->data.nbytes < MTK_NOR_DMA_ALIGN))
-+			    (op->data.nbytes < MTK_NOR_DMA_ALIGN)) {
- 				op->data.nbytes = 1;
--			else if (!((ulong)(op->data.buf.in) &
--				   MTK_NOR_DMA_ALIGN_MASK))
-+			} else {
-+				if (need_bounce(op->data.buf.in, op->data.nbytes) &&
-+				    (op->data.nbytes > MTK_NOR_BOUNCE_BUF_SIZE))
-+					op->data.nbytes = MTK_NOR_BOUNCE_BUF_SIZE;
- 				op->data.nbytes &= ~MTK_NOR_DMA_ALIGN_MASK;
--			else if (op->data.nbytes > MTK_NOR_BOUNCE_BUF_SIZE)
--				op->data.nbytes = MTK_NOR_BOUNCE_BUF_SIZE;
--			return 0;
--		} else if (op->data.dir == SPI_MEM_DATA_OUT) {
-+			}
-+			break;
-+		case SPI_MEM_DATA_OUT:
- 			if (op->data.nbytes >= MTK_NOR_PP_SIZE)
- 				op->data.nbytes = MTK_NOR_PP_SIZE;
- 			else
- 				op->data.nbytes = 1;
--			return 0;
-+			break;
-+		default:
-+			break;
- 		}
-+	} else {
-+		u8 len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
++	if (sp->high_dma) {
++		writel(dma_addr >> 32, sp->base + MTK_NOR_REG_DMA_DADR_HB);
++		writel((dma_addr + length) >> 32, sp->base + MTK_NOR_REG_DMA_END_DADR_HB);
++	}
 +
-+		if (len > MTK_NOR_PRG_MAX_SIZE)
-+			return -EINVAL;
-+		if (op->data.nbytes && !(MTK_NOR_PRG_MAX_SIZE - len))
-+			return -EINVAL;
-+		if (op->data.nbytes > (MTK_NOR_PRG_MAX_SIZE - len))
-+			op->data.nbytes = MTK_NOR_PRG_MAX_SIZE - len;
- 	}
+ 	if (sp->has_irq) {
+ 		reinit_completion(&sp->op_done);
+ 		mtk_nor_rmw(sp, MTK_NOR_REG_IRQ_EN, MTK_NOR_IRQ_DMA, 0);
+@@ -594,7 +602,8 @@ static const struct spi_controller_mem_ops mtk_nor_mem_ops = {
+ };
  
--	len = MTK_NOR_PRG_MAX_SIZE - op->cmd.nbytes - op->addr.nbytes -
--	      op->dummy.nbytes;
--	if (op->data.nbytes > len)
--		op->data.nbytes = len;
--
- 	return 0;
- }
+ static const struct of_device_id mtk_nor_match[] = {
+-	{ .compatible = "mediatek,mt8173-nor" },
++	{ .compatible = "mediatek,mt8192-nor", .data = (void *)36 },
++	{ .compatible = "mediatek,mt8173-nor", .data = (void *)32 },
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, mtk_nor_match);
+@@ -607,6 +616,7 @@ static int mtk_nor_probe(struct platform_device *pdev)
+ 	u8 *buffer;
+ 	struct clk *spi_clk, *ctlr_clk;
+ 	int ret, irq;
++	unsigned long dma_bits;
  
- static bool mtk_nor_supports_op(struct spi_mem *mem,
- 				const struct spi_mem_op *op)
- {
--	size_t len;
--
- 	if (op->cmd.buswidth != 1)
- 		return false;
- 
- 	if ((op->addr.nbytes == 3) || (op->addr.nbytes == 4)) {
--		switch(op->data.dir) {
-+		switch (op->data.dir) {
- 		case SPI_MEM_DATA_IN:
- 			if (!mtk_nor_match_read(op))
- 				return false;
-@@ -226,11 +237,14 @@ static bool mtk_nor_supports_op(struct spi_mem *mem,
- 		default:
- 			break;
- 		}
-+	} else {
-+		u8 len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
+ 	base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(base))
+@@ -623,6 +633,13 @@ static int mtk_nor_probe(struct platform_device *pdev)
+ 	buffer = devm_kmalloc(&pdev->dev,
+ 			      MTK_NOR_BOUNCE_BUF_SIZE + MTK_NOR_DMA_ALIGN,
+ 			      GFP_KERNEL);
 +
-+		if (len > MTK_NOR_PRG_MAX_SIZE)
-+			return false;
-+		if (op->data.nbytes && !(MTK_NOR_PRG_MAX_SIZE - len))
-+			return false;
- 	}
--	len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
--	if ((len > MTK_NOR_PRG_MAX_SIZE) ||
--	    ((op->data.nbytes) && (len == MTK_NOR_PRG_MAX_SIZE)))
--		return false;
++	dma_bits = (unsigned long)of_device_get_match_data(&pdev->dev);
++	if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(dma_bits))) {
++		dev_err(&pdev->dev, "failed to set dma mask(%lu)\n", dma_bits);
++		return -EINVAL;
++	}
++
+ 	if (!buffer)
+ 		return -ENOMEM;
  
- 	return spi_mem_default_supports_op(mem, op);
- }
 -- 
 2.28.0.681.g6f77f65b4e-goog
 
