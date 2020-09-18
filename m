@@ -2,81 +2,66 @@ Return-Path: <SRS0=UcWI=C3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96876C43464
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 10:44:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A99B5C43465
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 11:20:24 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 26F1D21534
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 10:44:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 54C4B21D42
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 11:20:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uWRss/Xq";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="A+0o6fZr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26F1D21534
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="axUcwSX5";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="OhWnaBzr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 54C4B21D42
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:From:To:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=1eZKHViJ1xQAn0IB8wK/g+zLtQZoYEExGVQfPFjwoaM=; b=uWRss/XqIhSHYnyAUbAakXNKeY
-	QeZzhezbfQxG4vgVmAEHRQZ0GAO+p2HU/Ff0LkwYqvR5hIpolT7eun0fvltyGkcmm3Q02qTkOKFqM
-	HVgM59vP/ICYo8IUSG1brfblSXE8FlwdupFUnP6QGKf4R4HjDw9tUjDuY/WQXgt2tn5+IHK4lKMMN
-	xCcWdgL4y2M/a3N4T+PDWKhENmPF3D27Wk4PA5ZqWW5khecs1s+sRRVT0y7fpvTqu+AmqRvKY6ANI
-	HUVBhASdBkp36dCcU3owEg1nc8Znz1aeut4h6d398cyaL+L6JH8vQZowx4gJhU6pWTSrlLc5LW2io
-	Uma/8Xrw==;
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=CJOAoSzr2GC6lQSCAlYMsmzBbTZdEEwPNeWQ9Baw5q8=; b=axUcwSX5ls5p+y9ElFLxFvm4l
+	x3lg7+pU+8p3//Flc6csLG/YPiqizwGmOV49V7up/yWs9LvXBYPh28Btkx78QUNGv7UQIZUXWwRJ5
+	yd257eZnjZigyHJCEac3hRoqqSpgQAZnialz/vT+8/yZYu2adN/agOIqc8+wvLVMqS62QeRo59H0S
+	HyEsV3k/Ub5TQVLArvSHAYaiNFDVnM0WE7MiO62cFIqlI9XFOMFb68ht2PWzA9ELFzZZVynpI+ZYx
+	JTT9JN0F6pF7rIPOwH/E3df3bGgMJJUVHRypmEahCMvNX8CkNF/gZXHNERjrZbv2qbRvPi4qnp5VP
+	b/zZLGBXQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kJDs1-0004bS-PB; Fri, 18 Sep 2020 10:44:01 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1kJEQD-0001VN-T5; Fri, 18 Sep 2020 11:19:21 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kJDrz-0004aI-0h
- for linux-mtd@lists.infradead.org; Fri, 18 Sep 2020 10:43:59 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08IAhqeX062485;
- Fri, 18 Sep 2020 05:43:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1600425832;
- bh=11/iz4CVyn0YKQ9XqTyV3nLKzBsbouQ7wrl140Vpllk=;
- h=To:CC:From:Subject:Date;
- b=A+0o6fZrC3kWN783xQn2+Yug/sVinB8tOQJkVmYrcOWEuQoUkOctky+iaIAjJ7AO3
- 6lOKfJeUWWQbFoCDfzr0pBx4RxDX9YXJYZHIQS/4oJ11B0JtuZsaNApxQcLFL4kZv5
- ZGUTZdk8O8fusoONpVfRcPPIBZSn0oHUTZlO0Uso=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08IAhqff111077
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 18 Sep 2020 05:43:52 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 18
- Sep 2020 05:43:51 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 18 Sep 2020 05:43:51 -0500
-Received: from [10.250.235.166] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08IAhmht012358;
- Fri, 18 Sep 2020 05:43:49 -0500
-To: torvalds <torvalds@linux-foundation.org>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [GIT PULL] mtd: Fixes for v5.9-rc6
-Message-ID: <c6965ad6-7d32-7dd9-21f8-346cfa634147@ti.com>
-Date: Fri, 18 Sep 2020 16:13:47 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ id 1kJEQB-0001Uo-9o; Fri, 18 Sep 2020 11:19:19 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+ References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description;
+ bh=D2ju8jMz6rNG3JDmyLzknrnz9KKFGg0PYq+DeMuVZKY=; b=OhWnaBzrqkDRbzOwxxDZrAitsW
+ uGCQAikASHjYa/PMPuiPlUOcliemRBZlSc/1RLXgVWxgpXKT26jnRaH2hmTM72gxSVdhOPqu6kQPd
+ h+y2nYjcOI/MK6CMWwhrlZi9ICHnkGIztdyZsb1kUMTfkP470jFOrvRJfyuy8uYVb1UtlcOcYJKpU
+ E5Rm9//Op9Yh9xVsMJdzShSN0jO9N6AGwLLD/O1r3P9sdUd2Ic22Cm/qIxyYzHn5gT/lwgN84usJW
+ ACafXKejemQbxTWMfkPL3z3ucBuijE/zG8VKPfz4WQt3m2mP+hkouoscs89VtGRxh2HUUy/mInKXY
+ PZ8Gd81Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red
+ Hat Linux)) id 1kJEQ9-0002ra-1H; Fri, 18 Sep 2020 11:19:17 +0000
+Date: Fri, 18 Sep 2020 12:19:16 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Dominique Martinet <asmadeus@codewreck.org>
+Subject: Re: [V9fs-developer] [PATCH 02/13] 9p: Tell the VFS that readpage
+ was synchronous
+Message-ID: <20200918111916.GA32101@casper.infradead.org>
+References: <20200917151050.5363-1-willy@infradead.org>
+ <20200917151050.5363-3-willy@infradead.org>
+ <20200918055919.GA30929@nautica>
 MIME-Version: 1.0
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200918_064359_188249_7C3F0AFF 
-X-CRM114-Status: GOOD (  12.39  )
+Content-Disposition: inline
+In-Reply-To: <20200918055919.GA30929@nautica>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,57 +73,59 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: linux-cifs@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ ecryptfs@vger.kernel.org, linux-um@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+ v9fs-developer@lists.sourceforge.net, ceph-devel@vger.kernel.org,
+ linux-afs@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Linus,
+On Fri, Sep 18, 2020 at 07:59:19AM +0200, Dominique Martinet wrote:
+> Matthew Wilcox (Oracle) wrote on Thu, Sep 17, 2020:
+> > diff --git a/fs/9p/vfs_addr.c b/fs/9p/vfs_addr.c
+> > index cce9ace651a2..506ca0ba2ec7 100644
+> > --- a/fs/9p/vfs_addr.c
+> > +++ b/fs/9p/vfs_addr.c
+> > @@ -280,6 +280,10 @@ static int v9fs_write_begin(struct file *filp, struct address_space *mapping,
+> >  		goto out;
+> >  
+> >  	retval = v9fs_fid_readpage(v9inode->writeback_fid, page);
+> > +	if (retval == AOP_UPDATED_PAGE) {
+> > +		retval = 0;
+> > +		goto out;
+> > +	}
+> 
+> FWIW this is a change of behaviour; for some reason the code used to
+> loop back to grab_cache_page_write_begin() and bail out on
+> PageUptodate() I suppose; some sort of race check?
+> The whole pattern is a bit weird to me and 9p has no guarantee on
+> concurrent writes to a file with cache enabled (except that it will
+> corrupt something), so this part is fine with me.
+> 
+> What I'm curious about is the page used to be both unlocked and put, but
+> now isn't either and the return value hasn't changed for the caller to
+> make a difference on write_begin / I don't see any code change in the
+> vfs  to handle that.
+> What did I miss?
 
-Please pull the MTD changes for v5.9-rc6.
+The page cache is kind of subtle.  The grab_cache_page_write_begin()
+will return a Locked page with an increased refcount.  If it's Uptodate,
+that's exactly what we want, and we return it.  If we have to read the
+page, readpage used to unlock the page before returning, and rather than
+re-lock it, we would drop the reference to the page and look it up again.
+It's possible that after dropping the lock on that page that the page
+was replaced in the page cache and so we'd get a different page.
 
-I am sending this on behalf of MTD maintainers group this time around.
-
-Miquel/Richard, 
-
-Could you please ACK the PR?
-
-Regards
-Vignesh
-
-The following changes since commit 856deb866d16e29bd65952e0289066f6078af773:
-
-  Linux 5.9-rc5 (2020-09-13 16:06:00 -0700)
-
-are available in the Git repository at:
-
-  git@gitolite.kernel.org:pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/fixes-for-5.9-rc6
-
-for you to fetch changes up to 1afc0c89f6a155c54c76d65ffcf72cd1232daf3a:
-
-  Revert "mtd: spi-nor: Add capability to disable flash quad mode" (2020-09-14 20:58:27 +0530)
-
-----------------------------------------------------------------
-MTD/SPI NOR fixes:
-
-Revert patches that caused non volatile Quad Enable bit to be cleared
-for certain SPI NOR flashes during module remove or during shutdown, thus
-breaking backward compatibility.
-
-----------------------------------------------------------------
-Yicong Yang (2):
-      Revert "mtd: spi-nor: Disable the flash quad mode in spi_nor_restore()"
-      Revert "mtd: spi-nor: Add capability to disable flash quad mode"
-
- drivers/mtd/spi-nor/core.c | 57 ++++------
- drivers/mtd/spi-nor/core.h | 10 +-
- 2 files changed, 24 insertions(+), 43 deletions(-)
+Anyway, now (unless fscache is involved), v9fs_fid_readpage will return
+the page without unlocking it.  So we don't need to do the dance of
+dropping the lock, putting the refcount and looking the page back up
+again.  We can just return the page.  The VFS doesn't need a special
+return code because nothing has changed from the VFS's point of view --
+it asked you to get a page and you got the page.
 
 ______________________________________________________
 Linux MTD discussion mailing list
