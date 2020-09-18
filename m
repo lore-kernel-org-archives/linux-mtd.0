@@ -2,87 +2,88 @@ Return-Path: <SRS0=UcWI=C3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 791E9C43464
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 08:32:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83151C43464
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 08:33:39 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E672920789
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 08:32:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1E12F20789
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 08:33:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="f8nE7vmn";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="J3Jq/M3K"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E672920789
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DEDQcCUS";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ho/WCQgs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E12F20789
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=t1sMfDPDGbT1V80PRpxAv4UDmoa6lEWsj05YNseoteM=; b=f8nE7vmnAqOj/xiuirf31mbsfG
-	gYfGN16uy/w04trB2dfgcywCuHHll6m84/EeRBdFjifdmwbEhggze/Vdb60T1IzVCet5L6UCXqzeM
-	tm+VU5s7ttoXVGhK0zKPV5ZxaO1jKBZzGDfC9RvILnJgcL1oxS/jKGf3OnJ9UzQTDsF4uxi5heoae
-	WchKaO9m9cyPrZf87opkMOku3ArDswYNxtWTzIinzT7YYlytZ+UATMi9ugVJW1c8Yzslq/cYVpe7l
-	mjNf1mxSca70VDy4flBcNed0H5fBXGxlEOVZXNjQBUeV4XXurS09I51czBTMJxKpMxwF+McgrsYDY
-	+pngyjtg==;
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=JNWypaK2rNnHF3h+chSGZMs0uznRX4Cv27xiq4hqFxc=; b=DEDQcCUSWYGnHxc/70eKIIOkT
+	r2Cbe0vKoA954bUa6lJXeFiySf1VxZka4HUZXm1tll3CgngJyAirjXXrpphss3mAfxkuVw4rGw2vE
+	DrbUV+4R38jiQu+/hnyAil91SyGAPEjPYYXowZvpXuvQsfMw93yxl4bMzFH3XUwIED/z4ZSMP5pj0
+	RW+ObnOCEpJ7DOSxFhtmDMPZ6XIi0GO5nNdamQr9bN9wvRdLjVAGfc1MfBOPbPm+SOPwTXkPYEj1A
+	+v6Oc/uCpsPOuUiRY99b4+v7YOLVkfK3fdzmftkAp7APCbg2vHb7m3QKSiK9oCoXCn+2Ll8pyvfNk
+	DC2jJc8JQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kJBny-0008DD-Cb; Fri, 18 Sep 2020 08:31:42 +0000
-Received: from mail-pf1-x42c.google.com ([2607:f8b0:4864:20::42c])
+	id 1kJBoa-0008TF-In; Fri, 18 Sep 2020 08:32:20 +0000
+Received: from mail-pl1-x632.google.com ([2607:f8b0:4864:20::632])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kJBno-00089x-3e
- for linux-mtd@lists.infradead.org; Fri, 18 Sep 2020 08:31:33 +0000
-Received: by mail-pf1-x42c.google.com with SMTP id d6so2979202pfn.9
- for <linux-mtd@lists.infradead.org>; Fri, 18 Sep 2020 01:31:30 -0700 (PDT)
+ id 1kJBnr-0008Bo-QT
+ for linux-mtd@lists.infradead.org; Fri, 18 Sep 2020 08:31:38 +0000
+Received: by mail-pl1-x632.google.com with SMTP id j7so2605259plk.11
+ for <linux-mtd@lists.infradead.org>; Fri, 18 Sep 2020 01:31:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=7g3/3HRNTSbPMO+XtztpkLjskFShJd05xhi/n73t2b4=;
- b=J3Jq/M3KnJTcWXxQ/OmDCmtw9TKMVom83ObJCwfMadXSAPRuA4l/Jm2QB0eR4ojdNs
- fPQo5XjYTFreg2ms90MvHm4DvWmPFmn67LMERc9pHP3vJ0cCl4LLTglj56jPBMAbtfpq
- rB5yxrY/2z7aI/sV6h7qHpU7ZHO+WQxXuMtTM=
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=CvN8pxwgE7chvCn8eA4GpYEwznUZIJ/VvKJ2b3Qxwd4=;
+ b=ho/WCQgsyP2T8AA27LL0ARkfh0DQbo2WgLWH5gjFVNaznwRwo+t+ptG595Pu6YLKGw
+ qhehK+iBJs4G/tcDQjcXcOnFdqIanY7E/JPg24pUtibT4vfys6d71/FmGjVFn0E0Mzgh
+ hpmCCmwd6/MU0P3i5PsfOmM00Dv5mJszaEVeg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=7g3/3HRNTSbPMO+XtztpkLjskFShJd05xhi/n73t2b4=;
- b=mK/vwa+eyRNHPIlFACfSLx0laVzrK7wiOxAAqZ8OoxUSaaOPVOo76axAhj60GitomZ
- YCWi0hU535uuK39KkZUCCvyZ6EGzT1rbo/Y69GPbfdQiWO1Z/cod8RWJU8W3Z3QekqnW
- 28ye/OO7R6fFjWw+RWCG3IM7Z0DxQm7BKqNr9U/OE+07OteBuZGPmIhQSnhzOSSCEI53
- /O6EnEf2684hBs27xR+dE9JS3izq3yvEjLf9RxXeijrSLJUAb5quAfxJ0PvdMI5K03+L
- 8CL6ARoa1sDkLp1cITmR9/xgCehmHPP+sv8pOrqszR8CHZBGD03vBWvoqAPeGE+S+jaB
- AejQ==
-X-Gm-Message-State: AOAM532XnlIuyrNqFfh7sf0ww3GTVxV4HW3C4Q9Mbn2nH2no0MHzz9LQ
- BmIeg6+0OC0tZGKLJ4/nQg/iWw==
-X-Google-Smtp-Source: ABdhPJyo5ajOR3Sys6kLV1edGsPyxX+u0k7ZFoM2H/iELQtDmH1lb8MEP86ne6oEPQdxsCBI364jDQ==
-X-Received: by 2002:a62:3585:0:b029:142:2501:3985 with SMTP id
- c127-20020a6235850000b029014225013985mr15239835pfa.74.1600417889074; 
- Fri, 18 Sep 2020 01:31:29 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=CvN8pxwgE7chvCn8eA4GpYEwznUZIJ/VvKJ2b3Qxwd4=;
+ b=M43C/x7GuEO1QEuAq42DR2Cnb9DMVLgzGgWFkixTSj7EovQIdbKAhS6vSlLMqBp+PW
+ iStwWzB5/tEpJvilzifVJx2tviq96kknFCwj1RJi1Vjp0F+/qQ6P/wPMIY5g9rP03lM1
+ Q8B5l6+3u1hvDeEb7K8YkW3u/EpPg/VBY6koNVecGTS3smoSmav/7yvqPgwhoc9sccup
+ SgZuWDJW1NXEDopxx4DBrdak0dhTa5Vz2tjOonbFYHVnzwTJJsVX18ezg6U+R5IUJu5R
+ lAJh3gw7EeGEgMcyefunGQlPtOyBdumy7waf19yTgjbJCU7v0PRcAOa7X4OH/5p+mi6/
+ THFA==
+X-Gm-Message-State: AOAM532JtuGrw/9wh6t0nxBYZjJqP/CBqXilq/+faoQK8O+NbYYGiEz8
+ Wt8qFY5NcKWhT0Doip/8czOM/Q==
+X-Google-Smtp-Source: ABdhPJyawkWvCG6/EAZZzyOFtimPgIC4x1PEVJj+jcavaFIrRX3LyKeVJ3w44lldJhWt/SyimTAQ2w==
+X-Received: by 2002:a17:90a:764d:: with SMTP id
+ s13mr12124753pjl.58.1600417893754; 
+ Fri, 18 Sep 2020 01:31:33 -0700 (PDT)
 Received: from ikjn-p920.tpe.corp.google.com
  ([2401:fa00:1:10:f693:9fff:fef4:a8fc])
- by smtp.gmail.com with ESMTPSA id g206sm2193172pfb.178.2020.09.18.01.31.26
+ by smtp.gmail.com with ESMTPSA id g206sm2193172pfb.178.2020.09.18.01.31.31
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 18 Sep 2020 01:31:28 -0700 (PDT)
+ Fri, 18 Sep 2020 01:31:33 -0700 (PDT)
 From: Ikjoon Jang <ikjn@chromium.org>
 To: Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
  devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
  linux-mtd@lists.infradead.org
-Subject: [PATCH v2 0/5] spi: spi-mtk-nor: Add mt8192 support.
-Date: Fri, 18 Sep 2020 16:31:18 +0800
-Message-Id: <20200918083124.3921207-1-ikjn@chromium.org>
+Subject: [PATCH v2 1/5] dt-bindings: spi: add mt8192-nor compatible string
+Date: Fri, 18 Sep 2020 16:31:19 +0800
+Message-Id: <20200918162834.v2.1.I4cd089ef1fe576535c6b6e4f1778eaab1c4441cf@changeid>
 X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
+In-Reply-To: <20200918083124.3921207-1-ikjn@chromium.org>
+References: <20200918083124.3921207-1-ikjn@chromium.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200918_043132_240480_A702F253 
-X-CRM114-Status: UNSURE (   9.71  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200918_043135_958731_7B4A91F8 
+X-CRM114-Status: GOOD (  10.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,27 +104,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This patchset adds 36bit dma address and power management
-supports for mt8192-nor.
+Add compatible string for mt8192 SoC.
 
-Changes in v2:
-- Add power management support
-- Fix bugs in checking spi memory operation.
-- use dma_alloc_coherent for allocating bounce buffer
-- code cleanups
+Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+---
 
-Ikjoon Jang (5):
-  dt-bindings: spi: add mt8192-nor compatible string
-  spi: spi-mtk-nor: fix mishandled logics in checking SPI memory
-    operation
-  spi: spi-mtk-nor: use dma_alloc_coherent() for bounce buffer
-  spi: spi-mtk-nor: support 36bit dma addressing to mediatek
-  spi: spi-mtk-nor: Add power management support
+(no changes since v1)
 
- .../bindings/spi/mediatek,spi-mtk-nor.yaml    |   1 +
- drivers/spi/spi-mtk-nor.c                     | 242 ++++++++++++------
- 2 files changed, 170 insertions(+), 73 deletions(-)
+ Documentation/devicetree/bindings/spi/mediatek,spi-mtk-nor.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/Documentation/devicetree/bindings/spi/mediatek,spi-mtk-nor.yaml b/Documentation/devicetree/bindings/spi/mediatek,spi-mtk-nor.yaml
+index 42c9205ac991..55c239446a5b 100644
+--- a/Documentation/devicetree/bindings/spi/mediatek,spi-mtk-nor.yaml
++++ b/Documentation/devicetree/bindings/spi/mediatek,spi-mtk-nor.yaml
+@@ -30,6 +30,7 @@ properties:
+               - mediatek,mt7622-nor
+               - mediatek,mt7623-nor
+               - mediatek,mt7629-nor
++              - mediatek,mt8192-nor
+           - enum:
+               - mediatek,mt8173-nor
+       - items:
 -- 
 2.28.0.681.g6f77f65b4e-goog
 
