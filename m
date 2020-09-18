@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-6.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB3B4C43464
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 18:10:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C24E3C43466
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 18:32:24 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5343020872
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 18:10:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5338F206D9
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 18:32:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="zUGw8U75";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lW1Ctf+6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5343020872
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="g0itoawi";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fTNJQYUP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5338F206D9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,54 +26,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:In-Reply-To:
 	References:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Ea/0ZvxsBY9bUS8pprx4xTcjRzTTNAFoet1lTuOUhaY=; b=zUGw8U75qS985dm6LwGvAc85k
-	hXfbO+JWY9ogNbTOXj6cijrA25CZqb68NN3whAzX7AfODUjrzLc+XKvpJ6RVbfLTRzyWa/8PCc+Us
-	ws3uVr+1h+VqynzWZcAJP7Nm6SZ82vzeHuBGz5G6EamOZl02s1BOzJMOeDhkfQlDhMNxLOL3vr/VZ
-	TMBW4aGAjU3flSfeNhmrMtdJ0P9KJYpt9ZRpyFjnsnOfXzfjLJhZO+eCzSLrnG6Rhr5gv8mKmHkH1
-	shGxSq8+e0eSNYopRmt+9XVXL2UM0RKN8NbUiLDV3Cd6suxLHXmCAW9u1y//hnw8yUqluNBw3vUaQ
-	peXvBJg7g==;
+	 bh=5fWU+6RwDeure1bMB7KOQJNFtq++lwss4eE7XpSXLMw=; b=g0itoawihYKTWT5jeS1JTzGHt
+	Pns4BCBd1bOultRvNtSm+bQIJPmlfiJJjiGx6SQeoyw8pBE/N1AtxHVNdblUjiIWAxQYvQXFawyrw
+	KKjqpVPmep/sFUgMSUeBV0ySobOXFACINpOwe2hIRSDBQIvYzo+gr78e7ydx9vGyeGkBNI3rpQBrp
+	gpH3SxnZ/KY5brzMNmQ94dwwIHlD6ybti2KvCaipOjCip1SLAKqc++UpId2+iLPJvDgpAKVDbLMpC
+	vRmCT0QKSugJrcZM1srVx+hTNzJ7lHL20TubK+ty/kTNutO0t4f4unvD6HTDkw7jGrNF2pvRRmmWc
+	5mb2o+qQw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kJKoi-0003Ym-VD; Fri, 18 Sep 2020 18:09:05 +0000
-Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
+	id 1kJLAN-0005Xv-LD; Fri, 18 Sep 2020 18:31:27 +0000
+Received: from mail-wm1-x343.google.com ([2a00:1450:4864:20::343])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kJKof-0003Xn-LM; Fri, 18 Sep 2020 18:09:02 +0000
-Received: by mail-wr1-x441.google.com with SMTP id z4so6513286wrr.4;
- Fri, 18 Sep 2020 11:09:01 -0700 (PDT)
+ id 1kJLAJ-0005Ws-EO; Fri, 18 Sep 2020 18:31:24 +0000
+Received: by mail-wm1-x343.google.com with SMTP id x23so6185866wmi.3;
+ Fri, 18 Sep 2020 11:31:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:references:in-reply-to:subject:date:message-id
  :mime-version:content-transfer-encoding:thread-index
  :content-language;
- bh=V7TYn/alxMmRQm9PDXJHaR4ciP91a3Wj/zuAejX1JHE=;
- b=lW1Ctf+6Zej2YzB4z4tRElKnEwvo5EJamrq3WGSeVLT6ftRjxdKk1Zrmy6wY/fOyUy
- wVEUb7eRA6dSNDxbSkEzuc/QhA1T/zI9tyelDqluu+4/ITx9gRsMtDDpxjBROJyy2ka8
- pccjObn1Q9H1MBCQmiG0AnvhV3IM1SSwGO922KkdWRL06FkfWGc9aejb+0mfGxJVpaq2
- fPHoEvpdazaPD/cFWojd+eIIUsw9n9MQWuW8vJn+0JxisWJwz6Vwoi2tD+mQbWCERgAn
- oOauTZEkZafbPmy4ml2QhNglV7Xm+Pvs0aUOnNpqvf3v5rSk5f0nxNWnkjGAI0j/tMP5
- EhuA==
+ bh=aq4S41RXE1vAQKwL/QYWeFUP5HTyFU3O/6rS50qdZsE=;
+ b=fTNJQYUPRjCv2jqehMXxCqoGu4qw4qcHntIzB6h/UkQq6e+wiXyKftBV4EgCPvHw53
+ LJzF6I7V2XJNSiiyZIQiTDyTuX+oey6c9gME8nBPQ3jpc3A+DsjTWkq16BC7SMYywtEd
+ 7HroLi6axJlnSoWmbbkU+JHcZOwpWdfnSyagXLieeDNXPKJYgpI2xgEshv/URf4HCyc8
+ nI1WCxEBuxh7sfUEKHeng/28wAEP5EzruotnCQ5XFbizYjfuwfPyjCguXwQLaFDsWOPi
+ Um2/1v0Sip/meE/W1PMmB6KHrCrQ4HlvDihF362x19MMyR26WSLNJNA1kCySf4dH60+N
+ QmSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:references:in-reply-to:subject:date
  :message-id:mime-version:content-transfer-encoding:thread-index
  :content-language;
- bh=V7TYn/alxMmRQm9PDXJHaR4ciP91a3Wj/zuAejX1JHE=;
- b=JJ/Q5X3D6n/7C4sh6Ib/j11fK0oMkQM+Z0CiYkAreVp2zgxHROtVHG7RVUUGz4HvRj
- OGdubaAInRpLFos+D3atm8NrSnTgb87lR2qnOACdKJDETkh1IpOdvKT1cksewL2YbAYQ
- DlKVtA3HJcHUrc4sN8cT2e+FfhEdVMjS7rTEQW3UXPupJ2VkZ3eGNyvziaFDs9MnRO2K
- 9MJw3jAUjVE2vrdw5iIJNcMRsMaCpoSesPbh83UNoSAmq3myBOn3YawpqU+YyM2mpZWE
- 2Ge96D4y/LQn2mvlz84wz6dQsYG0OJU81/Z4W7xg9IVX0wHAwWMpug+unqJzCLqfR3Gj
- wS/A==
-X-Gm-Message-State: AOAM532t3EG+AbSttYXNs+814ZL9If1LurLeP9+ySQNc3naqeVOjVOrW
- h9guWEod31MKlo4QX9hqAd/GULT9OeE=
-X-Google-Smtp-Source: ABdhPJz6xIijTdoGDOaGOtsRHj23XUIM8Dl2BFmzbpi6A43qDBLuSRluS8Vjuej5WASj7gRAQ+sSnA==
-X-Received: by 2002:a05:6000:1184:: with SMTP id
- g4mr38640530wrx.20.1600452540424; 
- Fri, 18 Sep 2020 11:09:00 -0700 (PDT)
-Received: from AnsuelXPS (host-95-248-206-89.retail.telecomitalia.it.
- [95.248.206.89])
- by smtp.gmail.com with ESMTPSA id c14sm6380766wrv.12.2020.09.18.11.08.56
+ bh=aq4S41RXE1vAQKwL/QYWeFUP5HTyFU3O/6rS50qdZsE=;
+ b=OSyiJlRHLJNezlhQFgcXNed5H/rdgQM8fS2EiHBf5T1KVMpukeld48OKdMX4AZn0ff
+ HDcx5CKwP0E2qcb2sj2y07+m8AZcu5FYSxBeI9LZHeIJ07hAefJA5AaPr/ZSex7bNzkj
+ DRnuM3n2Bk++10n9bRQqNfoyey5fgwhnD8ch78hfw46vuNJSbodLOIZTinUAAW0UbgZu
+ WiRz9DEOPfv0QOPPlWgRW82NcYJh5uMpOXAM7htZmrr9Os5b+KaN4KIzoxKun7JtYIJC
+ PpixjPIxIy1m8CbLNnzpy1/eq6zFhLyLoL14r/Nx49K/fBrDDN4uO7pad3iO7aM2b3w1
+ p78A==
+X-Gm-Message-State: AOAM532lGPo/tzCfwmuELP9AS6fD5lbGcURzkSz5hkUzEUNo6jewgk6o
+ Ybut63gXNDrV6+2dAGkVdobOkaseYKE=
+X-Google-Smtp-Source: ABdhPJy3Ubjg/Kg+A3AeGariVlXaUlhZ7Hiy38mgi+9UBFB8tesMKZR+49HLkc2mbq7LGh/ZOWVzwA==
+X-Received: by 2002:a7b:c3c8:: with SMTP id t8mr16894073wmj.101.1600453881837; 
+ Fri, 18 Sep 2020 11:31:21 -0700 (PDT)
+Received: from AnsuelXPS (93-39-149-95.ip76.fastwebnet.it. [93.39.149.95])
+ by smtp.gmail.com with ESMTPSA id d9sm61650wmb.30.2020.09.18.11.31.20
  (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 18 Sep 2020 11:08:58 -0700 (PDT)
+ Fri, 18 Sep 2020 11:31:20 -0700 (PDT)
 From: <ansuelsmth@gmail.com>
 To: "'Christian Lamparter'" <chunkeey@gmail.com>,
  "'Kalle Valo'" <kvalo@codeaurora.org>
@@ -83,15 +81,15 @@ References: <20200918162928.14335-1-ansuelsmth@gmail.com>
 In-Reply-To: <8f886e3d-e2ee-cbf8-a676-28ebed4977aa@gmail.com>
 Subject: R: [PATCH 2/2] dt: bindings: ath10k: Document qcom,
  ath10k-pre-calibration-data-mtd
-Date: Fri, 18 Sep 2020 20:08:55 +0200
-Message-ID: <018e01d68de6$c72edce0$558c96a0$@gmail.com>
+Date: Fri, 18 Sep 2020 20:31:18 +0200
+Message-ID: <000001d68de9$e7916450$b6b42cf0$@gmail.com>
 MIME-Version: 1.0
 X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQJEWVdigiv7VEZfce04PgG7d9c+lQHuGaaaAYeoZCCod2yTQA==
+Thread-Index: AQJEWVdigiv7VEZfce04PgG7d9c+lQHuGaaaAYeoZCCod3HyIA==
 Content-Language: it
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200918_140901_742786_1A157909 
-X-CRM114-Status: GOOD (  11.46  )
+X-CRM114-CacheID: sfid-20200918_143123_528653_E9C77110 
+X-CRM114-Status: GOOD (  12.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -135,8 +133,12 @@ aWwuY29tPgo+IAo+IFE6IERvZXNuJ3QgbXRkIG5vdyBjb21lIHdpdGggbnZtZW0gc3VwcG9ydCBm
 cm9tIHRoZSBnZXQgZ28/IFNvCj4gdGhlIE1BQy1BZGRyZXNzZXMgYW5kIHByZS1jYWxkYXRhIGNv
 dWxkIGJlIHNwZWNpZmllZCBhcyBhCj4gbnZtZW0tbm9kZSBpbiB0aGUgZGV2aWNldHJlZT8gSSBy
 ZW1lbWJlciBzZWVpbmcgdGhhdCB0aGlzIHdhcwo+IHdvcmtlZCBvbiBvciB3YXMgdGhpcyBtdGQt
-Pm52bWVtIGRyb3BwZWQ/Cj4gCj4gQ2hlZXJzLAo+IENocmlzdGlhbgoKQ2FuIHlvdSBnaXZlIG1l
-IHNvbWUgZXhhbXBsZSB3aGVyZSB0aGlzIGlzIHVzZWQ/IEkgY2FuJ3QgZmluZCBhbnkgcmVmZXJl
-bmNlLgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Pm52bWVtIGRyb3BwZWQ/Cj4gCj4gQ2hlZXJzLAo+IENocmlzdGlhbgoKU29ycnkgYSBsb3QgZm9y
+IHRoZSBkb3VibGUgZW1haWwuLi4gSSB0aGluayBJIGZvdW5kIHdoYXQgeW91IGFyZSB0YWxraW5n
+IGFib3V0LgpJdCBsb29rcyBsaWtlIHRoZSBjb2RlIHdhcyBtZXJnZWQgYnV0IG5vdCB0aGUgZG9j
+dW1lbnRhdGlvbi4KV2lsbCBkbyBzb21lIHRlc3QgYW5kIGNoZWNrIGlmIHRoaXMgd29ya3MuCgpU
+aGlzIHNob3VsZCBiZSB0aGUgcmVsYXRlZCBwYXRjaC4KaHR0cHM6Ly9wYXRjaHdvcmsub3psYWJz
+Lm9yZy9wcm9qZWN0L2xpbnV4LW10ZC9wYXRjaC8xNTIxOTMzODk5LTM2Mi00LWdpdC1zZW5kLWVt
+YWlsLWFsYmV1QGZyZWUuZnIvCgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0
+cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
