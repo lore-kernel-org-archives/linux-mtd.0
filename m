@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01457C43463
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 02:39:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66C9BC43466
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 02:39:35 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AF3BD23772
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 02:39:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0530523770
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 02:39:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IY85q7en";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="L3gLSi6g"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AF3BD23772
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JEcAUu1X";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="lOOr4LTu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0530523770
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,39 +26,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=hersBEt24x/sp1Dk01HFRIohKaUjZtUWOTk4GBQKIfs=; b=IY85q7en5MxusodAdewFAhkWv
-	uVzWIG0aj6QPttfB1pnzpBDq5H1j6l1eeu88+Q+ehJ1XCkG7j0xjZ9rcx4U827BQmofFmGR4DAkcu
-	ZpcEO+ki3Th3uklEiQ2MPMGuV9xSnXFcbR8YiTkgBYeLTUZdTgNhpezPZPQFpBGjCHYrg1QfXNcxk
-	ZbE8J/Luqdmx/LKOB1aLKhrF4RCjza2N6TKWUtT9W0Bgh+oI99aM9UOfW22p6ZUd4sF6vRvyBRJfP
-	AW2c9xvKLe7eVj48XKYcA+tkcKwGXYpZt4M/torXCvXENsVZMsiekIpQYOZbc2naa4DE9C9PcB4AK
-	Sc7+2JbpQ==;
+	 bh=1vK4LEz9DcrR/XjPs6D9D0LyX8coLONknsMPPNpqSlo=; b=JEcAUu1X41iWV2PECWnbXHGYY
+	uCNX1ygDmTD3SGC68OMHUi/OQ5sHkZ0IBAp3/okiyjznco5X/mfTQWwMctaAdpnv4K1TbIZ6Dq7P2
+	d+vQzNSDOtaZboJvtQYrYFOLdUTaCBZMmn5/2JuZM7IUC3uacEOroG8I2kB609Noc4x+ZvnngzXN7
+	4xrIDy2OsClMnnKHaRb52ohzORQnX6Q6+Wz1tCIylUz/UXOYmlcItJLZ1n7heDyNyDWaWeTtr6bW8
+	8aOD07rjmJaURkhlfWfmblvcZohWb9UAkjbhzOlWh2O1pB8/93eaqv61gwk3wQSEl9kN48e4OD+nD
+	ImNuR00xQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kJ6I0-00043j-8Z; Fri, 18 Sep 2020 02:38:20 +0000
+	id 1kJ6IA-00048q-AJ; Fri, 18 Sep 2020 02:38:30 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kJ5xF-0001Gp-Bj
- for linux-mtd@lists.infradead.org; Fri, 18 Sep 2020 02:17:07 +0000
+ id 1kJ5xr-0001al-IB
+ for linux-mtd@lists.infradead.org; Fri, 18 Sep 2020 02:17:43 +0000
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 8A17B239D0;
- Fri, 18 Sep 2020 02:16:51 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id E74032396F;
+ Fri, 18 Sep 2020 02:17:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600395412;
- bh=TQVJNt/bVD6oxbkrcWUlYDbOjx04blkfjvwyasnhIXg=;
+ s=default; t=1600395450;
+ bh=nV2hnbKtkB2BlDOC4qeSSeGMkvJWmVGMRnEvR21pAkU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=L3gLSi6gk+/5G+c5LhMb7qKDkLfU4pBdXd7aDPbK2Mmjf9Mc3wweQquJsswthm3HC
- cM1Xof7r9duuwo07u4WET/i7qy7tZ414GNf9dG5C51upgOx05z7e45xVsctjU4vd4H
- Vt9Nh5wpDK6ZUAupg/VP7S76XcpRlgxanUlzJNng=
+ b=lOOr4LTuMquWCRq//sZqeGeD3aXOrOd8tfZzzIUfcJOEdz3Q3Z0BzjyRVqkneVD4W
+ Hay4uScr+5H6QfuMHl4tI2P8WdCsbODt7yp0xFJ5xEo5OUwdLcBUVLTG9IB5mD9sQa
+ MbnhjIu+GgYODIiR805DKf6l1mjUOJTEL2r/lJzw=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 07/64] mtd: cfi_cmdset_0002: don't free cfi->cfiq
- in error path of cfi_amdstd_setup()
-Date: Thu, 17 Sep 2020 22:15:46 -0400
-Message-Id: <20200918021643.2067895-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 38/64] ubifs: Fix out-of-bounds memory access
+ caused by abnormal value of node_len
+Date: Thu, 17 Sep 2020 22:16:17 -0400
+Message-Id: <20200918021643.2067895-38-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918021643.2067895-1-sashal@kernel.org>
 References: <20200918021643.2067895-1-sashal@kernel.org>
@@ -66,8 +66,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200917_221654_229103_FE0A3CBD 
-X-CRM114-Status: GOOD (  12.22  )
+X-CRM114-CacheID: sfid-20200917_221731_726327_1A277618 
+X-CRM114-Status: GOOD (  16.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,45 +80,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Sasha Levin <sashal@kernel.org>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, Vignesh Raghavendra <vigneshr@ti.com>,
- Hou Tao <houtao1@huawei.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+ linux-mtd@lists.infradead.org, Liu Song <liu.song11@zte.com.cn>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Hou Tao <houtao1@huawei.com>
-
-[ Upstream commit 03976af89e3bd9489d542582a325892e6a8cacc0 ]
-
-Else there may be a double-free problem, because cfi->cfiq will
-be freed by mtd_do_chip_probe() if both the two invocations of
-check_cmd_set() return failure.
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
-Reviewed-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/mtd/chips/cfi_cmdset_0002.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 972935f1b2f7e..3a3da0eeef1fb 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -724,7 +724,6 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_info *mtd)
- 	kfree(mtd->eraseregions);
- 	kfree(mtd);
- 	kfree(cfi->cmdset_priv);
--	kfree(cfi->cfiq);
- 	return NULL;
- }
- 
--- 
-2.25.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RnJvbTogTGl1IFNvbmcgPGxpdS5zb25nMTFAenRlLmNvbS5jbj4KClsgVXBzdHJlYW0gY29tbWl0
+IGFjYzVhZjNlZmEzMDNkNWYzNmNjOGMwZjYxNzE2MTYxZjZjYTEzODQgXQoKSW4g4oCcdWJpZnNf
+Y2hlY2tfbm9kZeKAnSwgd2hlbiB0aGUgdmFsdWUgb2YgIm5vZGVfbGVuIiBpcyBhYm5vcm1hbCwK
+dGhlIGNvZGUgd2lsbCBnb3RvIGxhYmVsIG9mICJvdXRfbGVuIiBmb3IgZXhlY3V0aW9uLiBUaGVu
+LCBpbiB0aGUKZm9sbG93aW5nICJ1Ymlmc19kdW1wX25vZGUiLCBpZiBpbm9kZSB0eXBlIGlzICJV
+QklGU19EQVRBX05PREUiLAppbiAicHJpbnRfaGV4X2R1bXAiLCBhbiBvdXQtb2YtYm91bmRzIGFj
+Y2VzcyBtYXkgb2NjdXIgZHVlIHRvIHRoZQp3cm9uZyAiY2gtPmxlbiIuCgpUaGVyZWZvcmUsIHdo
+ZW4gdGhlIHZhbHVlIG9mICJub2RlX2xlbiIgaXMgYWJub3JtYWwsIGRhdGEgbGVuZ3RoCnNob3Vs
+ZCB0byBiZSBhZGp1c3RlZCB0byBhIHJlYXNvbmFibGUgc2FmZSByYW5nZS4gQXQgdGhpcyB0aW1l
+LApzdHJ1Y3R1cmVkIGRhdGEgaXMgbm90IGNyZWRpYmxlLCBzbyBkdW1wIHRoZSBjb3JydXB0ZWQg
+ZGF0YSBkaXJlY3RseQpmb3IgYW5hbHlzaXMuCgpTaWduZWQtb2ZmLWJ5OiBMaXUgU29uZyA8bGl1
+LnNvbmcxMUB6dGUuY29tLmNuPgpTaWduZWQtb2ZmLWJ5OiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJp
+Y2hhcmRAbm9kLmF0PgpTaWduZWQtb2ZmLWJ5OiBTYXNoYSBMZXZpbiA8c2FzaGFsQGtlcm5lbC5v
+cmc+Ci0tLQogZnMvdWJpZnMvaW8uYyB8IDE2ICsrKysrKysrKysrKysrLS0KIDEgZmlsZSBjaGFu
+Z2VkLCAxNCBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2ZzL3Vi
+aWZzL2lvLmMgYi9mcy91Ymlmcy9pby5jCmluZGV4IDk3YmU0MTIxNTMzMjguLjkyMTNhOWUwNDZh
+ZTAgMTAwNjQ0Ci0tLSBhL2ZzL3ViaWZzL2lvLmMKKysrIGIvZnMvdWJpZnMvaW8uYwpAQCAtMjM3
+LDcgKzIzNyw3IEBAIGludCB1Ymlmc19pc19tYXBwZWQoY29uc3Qgc3RydWN0IHViaWZzX2luZm8g
+KmMsIGludCBsbnVtKQogaW50IHViaWZzX2NoZWNrX25vZGUoY29uc3Qgc3RydWN0IHViaWZzX2lu
+Zm8gKmMsIGNvbnN0IHZvaWQgKmJ1ZiwgaW50IGxudW0sCiAJCSAgICAgaW50IG9mZnMsIGludCBx
+dWlldCwgaW50IG11c3RfY2hrX2NyYykKIHsKLQlpbnQgZXJyID0gLUVJTlZBTCwgdHlwZSwgbm9k
+ZV9sZW47CisJaW50IGVyciA9IC1FSU5WQUwsIHR5cGUsIG5vZGVfbGVuLCBkdW1wX25vZGUgPSAx
+OwogCXVpbnQzMl90IGNyYywgbm9kZV9jcmMsIG1hZ2ljOwogCWNvbnN0IHN0cnVjdCB1Ymlmc19j
+aCAqY2ggPSBidWY7CiAKQEAgLTI5MCwxMCArMjkwLDIyIEBAIGludCB1Ymlmc19jaGVja19ub2Rl
+KGNvbnN0IHN0cnVjdCB1Ymlmc19pbmZvICpjLCBjb25zdCB2b2lkICpidWYsIGludCBsbnVtLAog
+b3V0X2xlbjoKIAlpZiAoIXF1aWV0KQogCQl1Ymlmc19lcnIoYywgImJhZCBub2RlIGxlbmd0aCAl
+ZCIsIG5vZGVfbGVuKTsKKwlpZiAodHlwZSA9PSBVQklGU19EQVRBX05PREUgJiYgbm9kZV9sZW4g
+PiBVQklGU19EQVRBX05PREVfU1opCisJCWR1bXBfbm9kZSA9IDA7CiBvdXQ6CiAJaWYgKCFxdWll
+dCkgewogCQl1Ymlmc19lcnIoYywgImJhZCBub2RlIGF0IExFQiAlZDolZCIsIGxudW0sIG9mZnMp
+OwotCQl1Ymlmc19kdW1wX25vZGUoYywgYnVmKTsKKwkJaWYgKGR1bXBfbm9kZSkgeworCQkJdWJp
+ZnNfZHVtcF9ub2RlKGMsIGJ1Zik7CisJCX0gZWxzZSB7CisJCQlpbnQgc2FmZV9sZW4gPSBtaW4z
+KG5vZGVfbGVuLCBjLT5sZWJfc2l6ZSAtIG9mZnMsCisJCQkJKGludClVQklGU19NQVhfREFUQV9O
+T0RFX1NaKTsKKwkJCXByX2VycigiXHRwcmV2ZW50IG91dC1vZi1ib3VuZHMgbWVtb3J5IGFjY2Vz
+c1xuIik7CisJCQlwcl9lcnIoIlx0dHJ1bmNhdGVkIGRhdGEgbm9kZSBsZW5ndGggICAgICAlZFxu
+Iiwgc2FmZV9sZW4pOworCQkJcHJfZXJyKCJcdGNvcnJ1cHRlZCBkYXRhIG5vZGU6XG4iKTsKKwkJ
+CXByaW50X2hleF9kdW1wKEtFUk5fRVJSLCAiXHQiLCBEVU1QX1BSRUZJWF9PRkZTRVQsIDMyLCAx
+LAorCQkJCQlidWYsIHNhZmVfbGVuLCAwKTsKKwkJfQogCQlkdW1wX3N0YWNrKCk7CiAJfQogCXJl
+dHVybiBlcnI7Ci0tIAoyLjI1LjEKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0
+dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
