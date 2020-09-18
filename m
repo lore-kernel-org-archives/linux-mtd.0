@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 565ACC43466
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 02:19:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2770DC43463
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 02:21:49 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 08BF023600
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 02:19:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6BEEC23119
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 02:21:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="1QUd80BS";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ijg3GOKN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 08BF023600
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NqcYuJMK";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="JVSvC46s"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6BEEC23119
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,48 +26,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=/eNhazUj6U/ktR8gUl04ip8F3dveKF5HhlfNLF2b92I=; b=1QUd80BSXTSre7WlDXd8XHlb6
-	x166eLoiUKjNdWpUlKgXqgKSabkMICnYQOkQe0NqrQPeHevZUU2XIA+p+sdaxTWt3bs92FP9aFTvS
-	h+5I8vKexPQk8qn9GLKsR/+L1NiPTe+LW7eHcM9WGP8IudpVsere+5vOJKAuZEsErQ0aHwY+hAuy1
-	9IYCsD/AdLo+gKL9rEFPwN+00/mrLIv7dPsvatu8X/bc4TdBfFwmWZRKpzFbNbKGtDj9u94X2JYIC
-	VtMDvs0blj2jDPCZHvkK2MX1F2B2qO2IgoWWPrAQm8XaUPlTw7RF+F5qBJOt9KpgBeLYO0WMbPz2I
-	QMqQoqUHA==;
+	 bh=uBPQfN0CE4demd6c5m35BWDJqQVDvhw+GLEKnLzTriQ=; b=NqcYuJMK2UtSaE6lNNsxxh/hm
+	DYe6lp36vRnBKLkZimDazsyyaIZoRT/ToY4VuKJdnO0XWsA/Qq1BnSALev4LUVnOpSkd+hXvzaV0n
+	gC7QDfakuoo0/KbiiHXI3/5ajxbmkiDvNbxyVfhmoB9lgbYgHeS8MzpedZlxWI3DeTonFX0f/vc+d
+	Qv8tUd/Wn5RIAdup8MF4H8DK6awotL0/BzsCy6CILWLTej13jyOBVwPiO0mt1Y9VmVrlQO9ckZTnu
+	7cV/uMCzaBGrLlfG/RGnqG1sWfdx2i4btRd2u5AqA9kwYWgfsh6AN/hqfvkXx+24hz6ATwpq2HuOF
+	IO2OuEX5g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kJ5zR-0002Np-EF; Fri, 18 Sep 2020 02:19:09 +0000
+	id 1kJ60t-00037d-4H; Fri, 18 Sep 2020 02:20:39 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kJ5oX-000554-FE
- for linux-mtd@lists.infradead.org; Fri, 18 Sep 2020 02:07:54 +0000
+ id 1kJ5p7-0005Op-72
+ for linux-mtd@lists.infradead.org; Fri, 18 Sep 2020 02:08:33 +0000
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id EBBD4239A1;
- Fri, 18 Sep 2020 02:07:50 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 7E568238A1;
+ Fri, 18 Sep 2020 02:08:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600394871;
- bh=+O8ocp5By/WmYy8EcFwnY9hB1yiYzE6Ub4ilQkH/beU=;
+ s=default; t=1600394907;
+ bh=kXiBFLPXfbltYOYkIjUF8bZhx7YJNIxV8jyvFjFZf5k=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ijg3GOKNnLO40pLfDY2ffmncxeRne1QtXDl/H4HqmR4NYJmfSZhxb6IunFJsueAS8
- T6hXj57J3ySfspjv8Gw0oxU6KxZokyiZHTgFAE6G8+JF79uycL2QKcIakcHJc6Foz8
- Mb99qL1DhvqiTuYwOYBTyu4/4ZtsFkk/3VI/HjRQ=
+ b=JVSvC46snZFNMKjdlg24oC92e8HkHMATBkAb1Qlsnd+9Re5YmvzvdH6ped6iatIxq
+ eHluxor07XTZN8Mk1JzmYFI9IoWzlnNGyC8S+XQjTI/E8zPiqON8hSw4APh5U/jT4j
+ Aoxqo2OTdl1ylHqxyR4Ln5al4bCbOkNkqr4C9AHg=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 323/330] ubi: fastmap: Free unused fastmap anchor
- peb during detach
-Date: Thu, 17 Sep 2020 22:01:03 -0400
-Message-Id: <20200918020110.2063155-323-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 020/206] mtd: cfi_cmdset_0002: don't free
+ cfi->cfiq in error path of cfi_amdstd_setup()
+Date: Thu, 17 Sep 2020 22:04:56 -0400
+Message-Id: <20200918020802.2065198-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
-References: <20200918020110.2063155-1-sashal@kernel.org>
+In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
+References: <20200918020802.2065198-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200917_220753_637432_EC49FAA2 
-X-CRM114-Status: GOOD (  14.46  )
+X-CRM114-CacheID: sfid-20200917_220829_608101_F5E36696 
+X-CRM114-Status: GOOD (  12.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,9 +80,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Sasha Levin <sashal@kernel.org>, Richard Weinberger <richard@nod.at>,
- Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org,
- Hou Tao <houtao1@huawei.com>,
- syzbot+f317896aae32eb281a58@syzkaller.appspotmail.com
+ linux-mtd@lists.infradead.org, Vignesh Raghavendra <vigneshr@ti.com>,
+ Hou Tao <houtao1@huawei.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
@@ -90,65 +89,32 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Hou Tao <houtao1@huawei.com>
 
-[ Upstream commit c16f39d14a7e0ec59881fbdb22ae494907534384 ]
+[ Upstream commit 03976af89e3bd9489d542582a325892e6a8cacc0 ]
 
-When CONFIG_MTD_UBI_FASTMAP is enabled, fm_anchor will be assigned
-a free PEB during ubi_wl_init() or ubi_update_fastmap(). However
-if fastmap is not used or disabled on the MTD device, ubi_wl_entry
-related with the PEB will not be freed during detach.
+Else there may be a double-free problem, because cfi->cfiq will
+be freed by mtd_do_chip_probe() if both the two invocations of
+check_cmd_set() return failure.
 
-So Fix it by freeing the unused fastmap anchor during detach.
-
-Fixes: f9c34bb52997 ("ubi: Fix producing anchor PEBs")
-Reported-by: syzbot+f317896aae32eb281a58@syzkaller.appspotmail.com
-Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
 Signed-off-by: Hou Tao <houtao1@huawei.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Reviewed-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/ubi/fastmap-wl.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ drivers/mtd/chips/cfi_cmdset_0002.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
-index 426820ab9afe1..b486250923c5a 100644
---- a/drivers/mtd/ubi/fastmap-wl.c
-+++ b/drivers/mtd/ubi/fastmap-wl.c
-@@ -39,6 +39,13 @@ static struct ubi_wl_entry *find_anchor_wl_entry(struct rb_root *root)
- 	return victim;
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 1dbc9554a0786..3ab75d3e2ce32 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -727,7 +727,6 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_info *mtd)
+ 	kfree(mtd->eraseregions);
+ 	kfree(mtd);
+ 	kfree(cfi->cmdset_priv);
+-	kfree(cfi->cfiq);
+ 	return NULL;
  }
  
-+static inline void return_unused_peb(struct ubi_device *ubi,
-+				     struct ubi_wl_entry *e)
-+{
-+	wl_tree_add(e, &ubi->free);
-+	ubi->free_count++;
-+}
-+
- /**
-  * return_unused_pool_pebs - returns unused PEB to the free tree.
-  * @ubi: UBI device description object
-@@ -52,8 +59,7 @@ static void return_unused_pool_pebs(struct ubi_device *ubi,
- 
- 	for (i = pool->used; i < pool->size; i++) {
- 		e = ubi->lookuptbl[pool->pebs[i]];
--		wl_tree_add(e, &ubi->free);
--		ubi->free_count++;
-+		return_unused_peb(ubi, e);
- 	}
- }
- 
-@@ -361,6 +367,11 @@ static void ubi_fastmap_close(struct ubi_device *ubi)
- 	return_unused_pool_pebs(ubi, &ubi->fm_pool);
- 	return_unused_pool_pebs(ubi, &ubi->fm_wl_pool);
- 
-+	if (ubi->fm_anchor) {
-+		return_unused_peb(ubi, ubi->fm_anchor);
-+		ubi->fm_anchor = NULL;
-+	}
-+
- 	if (ubi->fm) {
- 		for (i = 0; i < ubi->fm->used_blocks; i++)
- 			kfree(ubi->fm->e[i]);
 -- 
 2.25.1
 
