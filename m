@@ -2,66 +2,61 @@ Return-Path: <SRS0=UcWI=C3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A99B5C43465
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 11:20:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A21BC43463
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 11:59:40 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 54C4B21D42
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 11:20:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 96A112100A
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 11:59:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="axUcwSX5";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="OhWnaBzr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 54C4B21D42
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Hkdqd2Po"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 96A112100A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=CJOAoSzr2GC6lQSCAlYMsmzBbTZdEEwPNeWQ9Baw5q8=; b=axUcwSX5ls5p+y9ElFLxFvm4l
-	x3lg7+pU+8p3//Flc6csLG/YPiqizwGmOV49V7up/yWs9LvXBYPh28Btkx78QUNGv7UQIZUXWwRJ5
-	yd257eZnjZigyHJCEac3hRoqqSpgQAZnialz/vT+8/yZYu2adN/agOIqc8+wvLVMqS62QeRo59H0S
-	HyEsV3k/Ub5TQVLArvSHAYaiNFDVnM0WE7MiO62cFIqlI9XFOMFb68ht2PWzA9ELFzZZVynpI+ZYx
-	JTT9JN0F6pF7rIPOwH/E3df3bGgMJJUVHRypmEahCMvNX8CkNF/gZXHNERjrZbv2qbRvPi4qnp5VP
-	b/zZLGBXQ==;
+	 bh=9qt+oTsLIzEpQuOaVgfaf8F0SG73RtG9AGhkIRCYLcM=; b=Hkdqd2Poq4K5BxKbu2uIBgGTT
+	idnxRHs5ex2PDIZimdShk4QAN2MTPUY+rqI4/coO/pRvAz0l1f+LAZB9ZW19j48cfPcaTIWWmTRb+
+	gukFBGaPrC7NinIQydyQ4c4l/xc1lNbICr6IZukkGk0AO1+tBlMQxC2wcHktxIpu7YjPrC0wZ1Hvo
+	joJW5wcKc1zoVvI4zC93IBQ7RPx6ZRqG1xlV3koskcEUhUrh38++XGFhlJ0gYLF1VwJzL32qZn3jZ
+	1o5s6eCUbsF4VfA1iM33784rAnbw8zwEosMMC6NxNWMNjFJoAV/7IcAIUTUl4pmiX7uWSTwEZoH+r
+	Tno9o4hPg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kJEQD-0001VN-T5; Fri, 18 Sep 2020 11:19:21 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1kJF1r-0007L0-N9; Fri, 18 Sep 2020 11:58:15 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kJEQB-0001Uo-9o; Fri, 18 Sep 2020 11:19:19 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
- References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=D2ju8jMz6rNG3JDmyLzknrnz9KKFGg0PYq+DeMuVZKY=; b=OhWnaBzrqkDRbzOwxxDZrAitsW
- uGCQAikASHjYa/PMPuiPlUOcliemRBZlSc/1RLXgVWxgpXKT26jnRaH2hmTM72gxSVdhOPqu6kQPd
- h+y2nYjcOI/MK6CMWwhrlZi9ICHnkGIztdyZsb1kUMTfkP470jFOrvRJfyuy8uYVb1UtlcOcYJKpU
- E5Rm9//Op9Yh9xVsMJdzShSN0jO9N6AGwLLD/O1r3P9sdUd2Ic22Cm/qIxyYzHn5gT/lwgN84usJW
- ACafXKejemQbxTWMfkPL3z3ucBuijE/zG8VKPfz4WQt3m2mP+hkouoscs89VtGRxh2HUUy/mInKXY
- PZ8Gd81Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red
- Hat Linux)) id 1kJEQ9-0002ra-1H; Fri, 18 Sep 2020 11:19:17 +0000
-Date: Fri, 18 Sep 2020 12:19:16 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: Dominique Martinet <asmadeus@codewreck.org>
-Subject: Re: [V9fs-developer] [PATCH 02/13] 9p: Tell the VFS that readpage
- was synchronous
-Message-ID: <20200918111916.GA32101@casper.infradead.org>
-References: <20200917151050.5363-1-willy@infradead.org>
- <20200917151050.5363-3-willy@infradead.org>
- <20200918055919.GA30929@nautica>
+ id 1kJF1o-0007K8-HH
+ for linux-mtd@lists.infradead.org; Fri, 18 Sep 2020 11:58:13 +0000
+X-Originating-IP: 91.224.148.103
+Received: from xps13 (unknown [91.224.148.103])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id D787660072;
+ Fri, 18 Sep 2020 11:58:08 +0000 (UTC)
+Date: Fri, 18 Sep 2020 13:58:06 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [GIT PULL] mtd: Fixes for v5.9-rc6
+Message-ID: <20200918135806.00b76de3@xps13>
+In-Reply-To: <c6965ad6-7d32-7dd9-21f8-346cfa634147@ti.com>
+References: <c6965ad6-7d32-7dd9-21f8-346cfa634147@ti.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20200918055919.GA30929@nautica>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20200918_075812_680331_E783096C 
+X-CRM114-Status: UNSURE (   9.91  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,60 +68,22 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-cifs@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- ecryptfs@vger.kernel.org, linux-um@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- v9fs-developer@lists.sourceforge.net, ceph-devel@vger.kernel.org,
- linux-afs@lists.infradead.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ torvalds <torvalds@linux-foundation.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ Richard Weinberger <richard@nod.at>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Sep 18, 2020 at 07:59:19AM +0200, Dominique Martinet wrote:
-> Matthew Wilcox (Oracle) wrote on Thu, Sep 17, 2020:
-> > diff --git a/fs/9p/vfs_addr.c b/fs/9p/vfs_addr.c
-> > index cce9ace651a2..506ca0ba2ec7 100644
-> > --- a/fs/9p/vfs_addr.c
-> > +++ b/fs/9p/vfs_addr.c
-> > @@ -280,6 +280,10 @@ static int v9fs_write_begin(struct file *filp, struct address_space *mapping,
-> >  		goto out;
-> >  
-> >  	retval = v9fs_fid_readpage(v9inode->writeback_fid, page);
-> > +	if (retval == AOP_UPDATED_PAGE) {
-> > +		retval = 0;
-> > +		goto out;
-> > +	}
-> 
-> FWIW this is a change of behaviour; for some reason the code used to
-> loop back to grab_cache_page_write_begin() and bail out on
-> PageUptodate() I suppose; some sort of race check?
-> The whole pattern is a bit weird to me and 9p has no guarantee on
-> concurrent writes to a file with cache enabled (except that it will
-> corrupt something), so this part is fine with me.
-> 
-> What I'm curious about is the page used to be both unlocked and put, but
-> now isn't either and the return value hasn't changed for the caller to
-> make a difference on write_begin / I don't see any code change in the
-> vfs  to handle that.
-> What did I miss?
-
-The page cache is kind of subtle.  The grab_cache_page_write_begin()
-will return a Locked page with an increased refcount.  If it's Uptodate,
-that's exactly what we want, and we return it.  If we have to read the
-page, readpage used to unlock the page before returning, and rather than
-re-lock it, we would drop the reference to the page and look it up again.
-It's possible that after dropping the lock on that page that the page
-was replaced in the page cache and so we'd get a different page.
-
-Anyway, now (unless fscache is involved), v9fs_fid_readpage will return
-the page without unlocking it.  So we don't need to do the dance of
-dropping the lock, putting the refcount and looking the page back up
-again.  We can just return the page.  The VFS doesn't need a special
-return code because nothing has changed from the VFS's point of view --
-it asked you to get a page and you got the page.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTGludXMsCgpWaWduZXNoIFJhZ2hhdmVuZHJhIDx2aWduZXNockB0aS5jb20+IHdyb3RlIG9u
+IEZyaSwgMTggU2VwIDIwMjAKMTY6MTM6NDcgKzA1MzA6Cgo+IEhlbGxvIExpbnVzLAo+IAo+IFBs
+ZWFzZSBwdWxsIHRoZSBNVEQgY2hhbmdlcyBmb3IgdjUuOS1yYzYuCj4gCj4gSSBhbSBzZW5kaW5n
+IHRoaXMgb24gYmVoYWxmIG9mIE1URCBtYWludGFpbmVycyBncm91cCB0aGlzIHRpbWUgYXJvdW5k
+Lgo+IAo+IE1pcXVlbC9SaWNoYXJkLCAKPiAKPiBDb3VsZCB5b3UgcGxlYXNlIEFDSyB0aGUgUFI/
+CgpJIGNvbmZpcm0gVmlnbmVzaCBpcyBhbGxvd2VkIHRvIHNlbmQgTVREIFBScy4KClRoYW5rcywK
+TWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
