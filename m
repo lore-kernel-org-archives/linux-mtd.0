@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A072C43466
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 02:22:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82160C43465
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 02:28:01 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C569723119
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 02:22:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 30DCA23600
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 02:28:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WgyYt5bf";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="EKboQFso"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C569723119
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eya/xpRM";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="H9mBgoBQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 30DCA23600
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,38 +26,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Q2bD/fvu/YsiAp/6PtArfetG95JrsStBt/r+k/L8uAk=; b=WgyYt5bf73MB+sXLzZRmgOO+5
-	5AMi1LGI6ZclZQfMnC0VfX1FBXy8vDEjcHu9zGMtUrO7zyjA6fPBa9hYC+xV/EoniObBWrkEMCDU4
-	xFMauFFBL4TjIEBl0e/odBf1Ejv00rbz838uIDr64X8zSp5hBfXJ4ovwKZg1pkcTmoqf7ERUzJfaP
-	QlQ0IbQ0+p4OCKUAjMF5fMetNTJUJes9iKguQzZ1n+buHXAFOCThar/gJ5E7869iVT3VA6DiRLi09
-	GCEFALm+qBGtnhTMr4T5vz4ahkaKwb7r8m1Y9O9z1zUy5e+qLrbExG0aeENTD0u/TaaliH2Pby3t9
-	JZrjO7e+g==;
+	 bh=PTo7DSt6kgQMGJCN50BwbH81JVEZr1x5H6jE89mdnkw=; b=eya/xpRMgqWiX8yl1v+BvAnFm
+	RWkLQKr7TKb24ysu6sVPkJywBkBS4HUDoSETj/YFpY0BU9HLGEaNeKMh49+V9Qw5WAzc/hIyxdiQ3
+	xBJcGarxfjcamE0BzzGcR4bbTGObW+F4B0ndf6i3xzDM/evmUE9iY0k6PXRm1VTLH7ytru/jna9sw
+	E8jNNJsshnAE5luMRgcbVTkcdJL/T44B+QqLj3PSlFO9to540y3yCWCQ4SEp/LRZgxS6HGv7xWL08
+	Pny7mAG5KTtaI1RLJsBdIVn9uzMO9zG9YvfwT8v2/+1ax8giwq6bjYzKiBGuSJ7BFjxt9vQzHxDuZ
+	74FRPbljQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kJ61d-0003XN-Ny; Fri, 18 Sep 2020 02:21:25 +0000
+	id 1kJ66Z-00062p-63; Fri, 18 Sep 2020 02:26:31 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kJ5pK-0005XL-HN
- for linux-mtd@lists.infradead.org; Fri, 18 Sep 2020 02:08:45 +0000
+ id 1kJ5rJ-0006Yu-SP
+ for linux-mtd@lists.infradead.org; Fri, 18 Sep 2020 02:10:47 +0000
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C7A3123770;
- Fri, 18 Sep 2020 02:08:40 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 1A50121582;
+ Fri, 18 Sep 2020 02:10:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600394921;
- bh=96g2gQvYCQ7N+F/W7kbIkBrVEDMbwRt19XM5k1Ibeew=;
+ s=default; t=1600395043;
+ bh=wuwivKWk78F0qidLjLDtmuZIOTQvoh4rYToGzZ/ON+A=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=EKboQFso78phzJCGNGyFfFw/ZVNsOO+CCEHF6fv2/BQ8+8d70vMgBfeF9soNjhQaG
- 0BpwMtaWaJ/aTE98R/VkLlJlyidD6RYD/y2nGcDAVNeAhpP+IFmcSR18UCS3vqYLvi
- hdIy9rMuqnWIvC6OdsXjdCrPaiQycOomxFMzFKUA=
+ b=H9mBgoBQpl5CUxWz6h4KKiKiUNmrxJmx/yzSLWvU51vzfOOvI+i7oo0VZYbKR3k81
+ RiqbcmpKapNYVZCfddTjAynfx5p+RJFQsrGSt8IIrjTrRcV4GwnYLt+iq/zbw9/51j
+ uv9yKI4TFJkjDVg7k6q6nPyZ0rZr3iYRbCEs9KZk=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 033/206] ubi: Fix producing anchor PEBs
-Date: Thu, 17 Sep 2020 22:05:09 -0400
-Message-Id: <20200918020802.2065198-33-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 133/206] ubifs: Fix out-of-bounds memory access
+ caused by abnormal value of node_len
+Date: Thu, 17 Sep 2020 22:06:49 -0400
+Message-Id: <20200918020802.2065198-133-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
 References: <20200918020802.2065198-1-sashal@kernel.org>
@@ -65,8 +66,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200917_220842_762091_FC9ED485 
-X-CRM114-Status: GOOD (  29.56  )
+X-CRM114-CacheID: sfid-20200917_221046_235924_DAFAF481 
+X-CRM114-Status: GOOD (  16.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,282 +80,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Sasha Levin <sashal@kernel.org>, Richard Weinberger <richard@nod.at>,
- Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+ linux-mtd@lists.infradead.org, Liu Song <liu.song11@zte.com.cn>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Sascha Hauer <s.hauer@pengutronix.de>
-
-[ Upstream commit f9c34bb529975fe9f85b870a80c53a83a3c5a182 ]
-
-When a new fastmap is about to be written UBI must make sure it has a
-free block for a fastmap anchor available. For this ubi_update_fastmap()
-calls ubi_ensure_anchor_pebs(). This stopped working with 2e8f08deabbc
-("ubi: Fix races around ubi_refill_pools()"), with this commit the wear
-leveling code is blocked and can no longer produce free PEBs. UBI then
-more often than not falls back to write the new fastmap anchor to the
-same block it was already on which means the same erase block gets
-erased during each fastmap write and wears out quite fast.
-
-As the locking prevents us from producing the anchor PEB when we
-actually need it, this patch changes the strategy for creating the
-anchor PEB. We no longer create it on demand right before we want to
-write a fastmap, but instead we create an anchor PEB right after we have
-written a fastmap. This gives us enough time to produce a new anchor PEB
-before it is needed. To make sure we have an anchor PEB for the very
-first fastmap write we call ubi_ensure_anchor_pebs() during
-initialisation as well.
-
-Fixes: 2e8f08deabbc ("ubi: Fix races around ubi_refill_pools()")
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/mtd/ubi/fastmap-wl.c | 31 ++++++++++++++++++-------------
- drivers/mtd/ubi/fastmap.c    | 14 +++++---------
- drivers/mtd/ubi/ubi.h        |  6 ++++--
- drivers/mtd/ubi/wl.c         | 32 ++++++++++++++------------------
- drivers/mtd/ubi/wl.h         |  1 -
- 5 files changed, 41 insertions(+), 43 deletions(-)
-
-diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
-index 98f7d6be8d1fc..13efebb400225 100644
---- a/drivers/mtd/ubi/fastmap-wl.c
-+++ b/drivers/mtd/ubi/fastmap-wl.c
-@@ -66,18 +66,6 @@ static void return_unused_pool_pebs(struct ubi_device *ubi,
- 	}
- }
- 
--static int anchor_pebs_available(struct rb_root *root)
--{
--	struct rb_node *p;
--	struct ubi_wl_entry *e;
--
--	ubi_rb_for_each_entry(p, e, root, u.rb)
--		if (e->pnum < UBI_FM_MAX_START)
--			return 1;
--
--	return 0;
--}
--
- /**
-  * ubi_wl_get_fm_peb - find a physical erase block with a given maximal number.
-  * @ubi: UBI device description object
-@@ -286,8 +274,26 @@ static struct ubi_wl_entry *get_peb_for_wl(struct ubi_device *ubi)
- int ubi_ensure_anchor_pebs(struct ubi_device *ubi)
- {
- 	struct ubi_work *wrk;
-+	struct ubi_wl_entry *anchor;
- 
- 	spin_lock(&ubi->wl_lock);
-+
-+	/* Do we already have an anchor? */
-+	if (ubi->fm_anchor) {
-+		spin_unlock(&ubi->wl_lock);
-+		return 0;
-+	}
-+
-+	/* See if we can find an anchor PEB on the list of free PEBs */
-+	anchor = ubi_wl_get_fm_peb(ubi, 1);
-+	if (anchor) {
-+		ubi->fm_anchor = anchor;
-+		spin_unlock(&ubi->wl_lock);
-+		return 0;
-+	}
-+
-+	/* No luck, trigger wear leveling to produce a new anchor PEB */
-+	ubi->fm_do_produce_anchor = 1;
- 	if (ubi->wl_scheduled) {
- 		spin_unlock(&ubi->wl_lock);
- 		return 0;
-@@ -303,7 +309,6 @@ int ubi_ensure_anchor_pebs(struct ubi_device *ubi)
- 		return -ENOMEM;
- 	}
- 
--	wrk->anchor = 1;
- 	wrk->func = &wear_leveling_worker;
- 	__schedule_ubi_work(ubi, wrk);
- 	return 0;
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 8e292992f84c7..b88ef875236cc 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -1552,14 +1552,6 @@ int ubi_update_fastmap(struct ubi_device *ubi)
- 		return 0;
- 	}
- 
--	ret = ubi_ensure_anchor_pebs(ubi);
--	if (ret) {
--		up_write(&ubi->fm_eba_sem);
--		up_write(&ubi->work_sem);
--		up_write(&ubi->fm_protect);
--		return ret;
--	}
--
- 	new_fm = kzalloc(sizeof(*new_fm), GFP_KERNEL);
- 	if (!new_fm) {
- 		up_write(&ubi->fm_eba_sem);
-@@ -1630,7 +1622,8 @@ int ubi_update_fastmap(struct ubi_device *ubi)
- 	}
- 
- 	spin_lock(&ubi->wl_lock);
--	tmp_e = ubi_wl_get_fm_peb(ubi, 1);
-+	tmp_e = ubi->fm_anchor;
-+	ubi->fm_anchor = NULL;
- 	spin_unlock(&ubi->wl_lock);
- 
- 	if (old_fm) {
-@@ -1682,6 +1675,9 @@ out_unlock:
- 	up_write(&ubi->work_sem);
- 	up_write(&ubi->fm_protect);
- 	kfree(old_fm);
-+
-+	ubi_ensure_anchor_pebs(ubi);
-+
- 	return ret;
- 
- err:
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index d47b9e436e673..d248ec371cc17 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -504,6 +504,8 @@ struct ubi_debug_info {
-  * @fm_work: fastmap work queue
-  * @fm_work_scheduled: non-zero if fastmap work was scheduled
-  * @fast_attach: non-zero if UBI was attached by fastmap
-+ * @fm_anchor: The next anchor PEB to use for fastmap
-+ * @fm_do_produce_anchor: If true produce an anchor PEB in wl
-  *
-  * @used: RB-tree of used physical eraseblocks
-  * @erroneous: RB-tree of erroneous used physical eraseblocks
-@@ -612,6 +614,8 @@ struct ubi_device {
- 	struct work_struct fm_work;
- 	int fm_work_scheduled;
- 	int fast_attach;
-+	struct ubi_wl_entry *fm_anchor;
-+	int fm_do_produce_anchor;
- 
- 	/* Wear-leveling sub-system's stuff */
- 	struct rb_root used;
-@@ -802,7 +806,6 @@ struct ubi_attach_info {
-  * @vol_id: the volume ID on which this erasure is being performed
-  * @lnum: the logical eraseblock number
-  * @torture: if the physical eraseblock has to be tortured
-- * @anchor: produce a anchor PEB to by used by fastmap
-  *
-  * The @func pointer points to the worker function. If the @shutdown argument is
-  * not zero, the worker has to free the resources and exit immediately as the
-@@ -818,7 +821,6 @@ struct ubi_work {
- 	int vol_id;
- 	int lnum;
- 	int torture;
--	int anchor;
- };
- 
- #include "debug.h"
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 6f2ac865ff05e..80d64d7e7a8be 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -331,13 +331,6 @@ static struct ubi_wl_entry *find_wl_entry(struct ubi_device *ubi,
- 		}
- 	}
- 
--	/* If no fastmap has been written and this WL entry can be used
--	 * as anchor PEB, hold it back and return the second best WL entry
--	 * such that fastmap can use the anchor PEB later. */
--	if (prev_e && !ubi->fm_disabled &&
--	    !ubi->fm && e->pnum < UBI_FM_MAX_START)
--		return prev_e;
--
- 	return e;
- }
- 
-@@ -648,9 +641,6 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
- {
- 	int err, scrubbing = 0, torture = 0, protect = 0, erroneous = 0;
- 	int erase = 0, keep = 0, vol_id = -1, lnum = -1;
--#ifdef CONFIG_MTD_UBI_FASTMAP
--	int anchor = wrk->anchor;
--#endif
- 	struct ubi_wl_entry *e1, *e2;
- 	struct ubi_vid_io_buf *vidb;
- 	struct ubi_vid_hdr *vid_hdr;
-@@ -690,11 +680,7 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
- 	}
- 
- #ifdef CONFIG_MTD_UBI_FASTMAP
--	/* Check whether we need to produce an anchor PEB */
--	if (!anchor)
--		anchor = !anchor_pebs_available(&ubi->free);
--
--	if (anchor) {
-+	if (ubi->fm_do_produce_anchor) {
- 		e1 = find_anchor_wl_entry(&ubi->used);
- 		if (!e1)
- 			goto out_cancel;
-@@ -705,6 +691,7 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
- 		self_check_in_wl_tree(ubi, e1, &ubi->used);
- 		rb_erase(&e1->u.rb, &ubi->used);
- 		dbg_wl("anchor-move PEB %d to PEB %d", e1->pnum, e2->pnum);
-+		ubi->fm_do_produce_anchor = 0;
- 	} else if (!ubi->scrub.rb_node) {
- #else
- 	if (!ubi->scrub.rb_node) {
-@@ -1037,7 +1024,6 @@ static int ensure_wear_leveling(struct ubi_device *ubi, int nested)
- 		goto out_cancel;
- 	}
- 
--	wrk->anchor = 0;
- 	wrk->func = &wear_leveling_worker;
- 	if (nested)
- 		__schedule_ubi_work(ubi, wrk);
-@@ -1079,8 +1065,15 @@ static int __erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk)
- 	err = sync_erase(ubi, e, wl_wrk->torture);
- 	if (!err) {
- 		spin_lock(&ubi->wl_lock);
--		wl_tree_add(e, &ubi->free);
--		ubi->free_count++;
-+
-+		if (!ubi->fm_anchor && e->pnum < UBI_FM_MAX_START) {
-+			ubi->fm_anchor = e;
-+			ubi->fm_do_produce_anchor = 0;
-+		} else {
-+			wl_tree_add(e, &ubi->free);
-+			ubi->free_count++;
-+		}
-+
- 		spin_unlock(&ubi->wl_lock);
- 
- 		/*
-@@ -1724,6 +1717,9 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 	if (err)
- 		goto out_free;
- 
-+#ifdef CONFIG_MTD_UBI_FASTMAP
-+	ubi_ensure_anchor_pebs(ubi);
-+#endif
- 	return 0;
- 
- out_free:
-diff --git a/drivers/mtd/ubi/wl.h b/drivers/mtd/ubi/wl.h
-index a9e2d669acd81..c93a532937863 100644
---- a/drivers/mtd/ubi/wl.h
-+++ b/drivers/mtd/ubi/wl.h
-@@ -2,7 +2,6 @@
- #ifndef UBI_WL_H
- #define UBI_WL_H
- #ifdef CONFIG_MTD_UBI_FASTMAP
--static int anchor_pebs_available(struct rb_root *root);
- static void update_fastmap_work_fn(struct work_struct *wrk);
- static struct ubi_wl_entry *find_anchor_wl_entry(struct rb_root *root);
- static struct ubi_wl_entry *get_peb_for_wl(struct ubi_device *ubi);
--- 
-2.25.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RnJvbTogTGl1IFNvbmcgPGxpdS5zb25nMTFAenRlLmNvbS5jbj4KClsgVXBzdHJlYW0gY29tbWl0
+IGFjYzVhZjNlZmEzMDNkNWYzNmNjOGMwZjYxNzE2MTYxZjZjYTEzODQgXQoKSW4g4oCcdWJpZnNf
+Y2hlY2tfbm9kZeKAnSwgd2hlbiB0aGUgdmFsdWUgb2YgIm5vZGVfbGVuIiBpcyBhYm5vcm1hbCwK
+dGhlIGNvZGUgd2lsbCBnb3RvIGxhYmVsIG9mICJvdXRfbGVuIiBmb3IgZXhlY3V0aW9uLiBUaGVu
+LCBpbiB0aGUKZm9sbG93aW5nICJ1Ymlmc19kdW1wX25vZGUiLCBpZiBpbm9kZSB0eXBlIGlzICJV
+QklGU19EQVRBX05PREUiLAppbiAicHJpbnRfaGV4X2R1bXAiLCBhbiBvdXQtb2YtYm91bmRzIGFj
+Y2VzcyBtYXkgb2NjdXIgZHVlIHRvIHRoZQp3cm9uZyAiY2gtPmxlbiIuCgpUaGVyZWZvcmUsIHdo
+ZW4gdGhlIHZhbHVlIG9mICJub2RlX2xlbiIgaXMgYWJub3JtYWwsIGRhdGEgbGVuZ3RoCnNob3Vs
+ZCB0byBiZSBhZGp1c3RlZCB0byBhIHJlYXNvbmFibGUgc2FmZSByYW5nZS4gQXQgdGhpcyB0aW1l
+LApzdHJ1Y3R1cmVkIGRhdGEgaXMgbm90IGNyZWRpYmxlLCBzbyBkdW1wIHRoZSBjb3JydXB0ZWQg
+ZGF0YSBkaXJlY3RseQpmb3IgYW5hbHlzaXMuCgpTaWduZWQtb2ZmLWJ5OiBMaXUgU29uZyA8bGl1
+LnNvbmcxMUB6dGUuY29tLmNuPgpTaWduZWQtb2ZmLWJ5OiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJp
+Y2hhcmRAbm9kLmF0PgpTaWduZWQtb2ZmLWJ5OiBTYXNoYSBMZXZpbiA8c2FzaGFsQGtlcm5lbC5v
+cmc+Ci0tLQogZnMvdWJpZnMvaW8uYyB8IDE2ICsrKysrKysrKysrKysrLS0KIDEgZmlsZSBjaGFu
+Z2VkLCAxNCBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2ZzL3Vi
+aWZzL2lvLmMgYi9mcy91Ymlmcy9pby5jCmluZGV4IDA5OWJlYzk0YjgyMDcuLmZhYjI5Zjg5OWY5
+MTMgMTAwNjQ0Ci0tLSBhL2ZzL3ViaWZzL2lvLmMKKysrIGIvZnMvdWJpZnMvaW8uYwpAQCAtMjM3
+LDcgKzIzNyw3IEBAIGludCB1Ymlmc19pc19tYXBwZWQoY29uc3Qgc3RydWN0IHViaWZzX2luZm8g
+KmMsIGludCBsbnVtKQogaW50IHViaWZzX2NoZWNrX25vZGUoY29uc3Qgc3RydWN0IHViaWZzX2lu
+Zm8gKmMsIGNvbnN0IHZvaWQgKmJ1ZiwgaW50IGxudW0sCiAJCSAgICAgaW50IG9mZnMsIGludCBx
+dWlldCwgaW50IG11c3RfY2hrX2NyYykKIHsKLQlpbnQgZXJyID0gLUVJTlZBTCwgdHlwZSwgbm9k
+ZV9sZW47CisJaW50IGVyciA9IC1FSU5WQUwsIHR5cGUsIG5vZGVfbGVuLCBkdW1wX25vZGUgPSAx
+OwogCXVpbnQzMl90IGNyYywgbm9kZV9jcmMsIG1hZ2ljOwogCWNvbnN0IHN0cnVjdCB1Ymlmc19j
+aCAqY2ggPSBidWY7CiAKQEAgLTI5MCwxMCArMjkwLDIyIEBAIGludCB1Ymlmc19jaGVja19ub2Rl
+KGNvbnN0IHN0cnVjdCB1Ymlmc19pbmZvICpjLCBjb25zdCB2b2lkICpidWYsIGludCBsbnVtLAog
+b3V0X2xlbjoKIAlpZiAoIXF1aWV0KQogCQl1Ymlmc19lcnIoYywgImJhZCBub2RlIGxlbmd0aCAl
+ZCIsIG5vZGVfbGVuKTsKKwlpZiAodHlwZSA9PSBVQklGU19EQVRBX05PREUgJiYgbm9kZV9sZW4g
+PiBVQklGU19EQVRBX05PREVfU1opCisJCWR1bXBfbm9kZSA9IDA7CiBvdXQ6CiAJaWYgKCFxdWll
+dCkgewogCQl1Ymlmc19lcnIoYywgImJhZCBub2RlIGF0IExFQiAlZDolZCIsIGxudW0sIG9mZnMp
+OwotCQl1Ymlmc19kdW1wX25vZGUoYywgYnVmKTsKKwkJaWYgKGR1bXBfbm9kZSkgeworCQkJdWJp
+ZnNfZHVtcF9ub2RlKGMsIGJ1Zik7CisJCX0gZWxzZSB7CisJCQlpbnQgc2FmZV9sZW4gPSBtaW4z
+KG5vZGVfbGVuLCBjLT5sZWJfc2l6ZSAtIG9mZnMsCisJCQkJKGludClVQklGU19NQVhfREFUQV9O
+T0RFX1NaKTsKKwkJCXByX2VycigiXHRwcmV2ZW50IG91dC1vZi1ib3VuZHMgbWVtb3J5IGFjY2Vz
+c1xuIik7CisJCQlwcl9lcnIoIlx0dHJ1bmNhdGVkIGRhdGEgbm9kZSBsZW5ndGggICAgICAlZFxu
+Iiwgc2FmZV9sZW4pOworCQkJcHJfZXJyKCJcdGNvcnJ1cHRlZCBkYXRhIG5vZGU6XG4iKTsKKwkJ
+CXByaW50X2hleF9kdW1wKEtFUk5fRVJSLCAiXHQiLCBEVU1QX1BSRUZJWF9PRkZTRVQsIDMyLCAx
+LAorCQkJCQlidWYsIHNhZmVfbGVuLCAwKTsKKwkJfQogCQlkdW1wX3N0YWNrKCk7CiAJfQogCXJl
+dHVybiBlcnI7Ci0tIAoyLjI1LjEKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0
+dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
