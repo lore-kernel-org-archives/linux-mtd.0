@@ -2,74 +2,81 @@ Return-Path: <SRS0=UcWI=C3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18BBDC43464
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 09:35:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96876C43464
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 10:44:44 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8FDB621582
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 09:35:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 26F1D21534
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2020 10:44:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="2KqQOlSE";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="VSrQQHgH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8FDB621582
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=ispras.ru
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uWRss/Xq";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="A+0o6fZr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26F1D21534
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-Id:Date:MIME-Version:Subject:References:
-	In-Reply-To:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=AS59q/dcVsfMrtS2i1WiKmNQRC+c34sWggcXdpu99mk=; b=2KqQOlSECsJQPfl6CiWRf8gNr
-	0tyqhy3O2VEAQkN6gF2giYgZBb2i4AQwfuH5pYRvBADHg9nFcz0Tf64Z/QnJIMML3FKpAEDKEyRkT
-	bZiySX/BL9JR7D8fY3FTAqJIZhAzAVLiB7H/i0u17927768tPnTWvWiTHl8a15GwgJ15Xl3LUOVNl
-	NChpSntNPDI7EJL1rXaQCYKtFAMnzR5tQiEAdDPAe/ebn/dmqbdtxwWYntbw1gXSz/Ugb1CgBsaHl
-	KhZMWIe3Dm7sn/vKCdeL7FqULDNQmtRNvjHofeosgke/NFF+VdJygsiybua52jxIwPJVIyDMqyysB
-	IdwdilNuA==;
+	List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:From:To:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=1eZKHViJ1xQAn0IB8wK/g+zLtQZoYEExGVQfPFjwoaM=; b=uWRss/XqIhSHYnyAUbAakXNKeY
+	QeZzhezbfQxG4vgVmAEHRQZ0GAO+p2HU/Ff0LkwYqvR5hIpolT7eun0fvltyGkcmm3Q02qTkOKFqM
+	HVgM59vP/ICYo8IUSG1brfblSXE8FlwdupFUnP6QGKf4R4HjDw9tUjDuY/WQXgt2tn5+IHK4lKMMN
+	xCcWdgL4y2M/a3N4T+PDWKhENmPF3D27Wk4PA5ZqWW5khecs1s+sRRVT0y7fpvTqu+AmqRvKY6ANI
+	HUVBhASdBkp36dCcU3owEg1nc8Znz1aeut4h6d398cyaL+L6JH8vQZowx4gJhU6pWTSrlLc5LW2io
+	Uma/8Xrw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kJCmQ-0003ni-0u; Fri, 18 Sep 2020 09:34:10 +0000
-Received: from forward500j.mail.yandex.net ([2a02:6b8:0:801:2::110])
+	id 1kJDs1-0004bS-PB; Fri, 18 Sep 2020 10:44:01 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kJCmJ-0003ls-PC; Fri, 18 Sep 2020 09:34:05 +0000
-Received: from mxback11q.mail.yandex.net (mxback11q.mail.yandex.net
- [IPv6:2a02:6b8:c0e:1b4:0:640:1f0c:10f2])
- by forward500j.mail.yandex.net (Yandex) with ESMTP id 0FA6C11C130F;
- Fri, 18 Sep 2020 12:33:59 +0300 (MSK)
-Received: from localhost (localhost [::1])
- by mxback11q.mail.yandex.net (mxback/Yandex) with ESMTP id eq3W2v4oRz-XureGBcn;
- Fri, 18 Sep 2020 12:33:58 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
- t=1600421638; bh=1O20/U9VvPoOlpk22ZaZ/Nmtp1IaGtgIjUSsYzBxYTg=;
- h=Message-Id:Cc:Subject:In-Reply-To:Date:References:To:From;
- b=VSrQQHgHIr7Yv24kgxMCGQ0vFrcEJGfeSbegC93TSfMj9GmfRXmXj4kM30SCRSXov
- ftL/791HXWa0l4Z/QpkrIEMYawn/OLl9SN3phfPr3BtdhwwirMhaY/om+vSV23OFgL
- bLz4eBu4h0npK7M/FagbAhFTWXeNtNKv/i2GUKDc=
-Authentication-Results: mxback11q.mail.yandex.net;
- dkim=pass header.i=@yandex.ru
-Received: by vla5-dcf36e533bf7.qloud-c.yandex.net with HTTP;
- Fri, 18 Sep 2020 12:33:56 +0300
-From: Evgeny Novikov <novikov@ispras.ru>
-Envelope-From: eugenenovikov@yandex.ru
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-In-Reply-To: <20200917183001.393245e8@xps13>
-References: <20200916194045.6378-1-novikov@ispras.ru>
- <20200917183001.393245e8@xps13>
-Subject: Re: [PATCH] mtd: rawnand: mtk: avoid underflow in
- mtk_nfc_nand_chip_init()
+ id 1kJDrz-0004aI-0h
+ for linux-mtd@lists.infradead.org; Fri, 18 Sep 2020 10:43:59 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08IAhqeX062485;
+ Fri, 18 Sep 2020 05:43:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1600425832;
+ bh=11/iz4CVyn0YKQ9XqTyV3nLKzBsbouQ7wrl140Vpllk=;
+ h=To:CC:From:Subject:Date;
+ b=A+0o6fZrC3kWN783xQn2+Yug/sVinB8tOQJkVmYrcOWEuQoUkOctky+iaIAjJ7AO3
+ 6lOKfJeUWWQbFoCDfzr0pBx4RxDX9YXJYZHIQS/4oJ11B0JtuZsaNApxQcLFL4kZv5
+ ZGUTZdk8O8fusoONpVfRcPPIBZSn0oHUTZlO0Uso=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08IAhqff111077
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Fri, 18 Sep 2020 05:43:52 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 18
+ Sep 2020 05:43:51 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 18 Sep 2020 05:43:51 -0500
+Received: from [10.250.235.166] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08IAhmht012358;
+ Fri, 18 Sep 2020 05:43:49 -0500
+To: torvalds <torvalds@linux-foundation.org>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [GIT PULL] mtd: Fixes for v5.9-rc6
+Message-ID: <c6965ad6-7d32-7dd9-21f8-346cfa634147@ti.com>
+Date: Fri, 18 Sep 2020 16:13:47 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Mailer: Yamail [ http://yandex.ru ] 5.0
-Date: Fri, 18 Sep 2020 12:33:56 +0300
-Message-Id: <14021600420595@mail.yandex.ru>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200918_053404_253332_5F93651B 
-X-CRM114-Status: GOOD (  16.56  )
+X-CRM114-CacheID: sfid-20200918_064359_188249_7C3F0AFF 
+X-CRM114-Status: GOOD (  12.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,57 +88,58 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "ldv-project@linuxtesting.org" <ldv-project@linuxtesting.org>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  Richard Weinberger <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Stephen Boyd <swboyd@chromium.org>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWlxdWVsLAoKMTcuMDkuMjAyMCwgMTk6MzAsICJNaXF1ZWwgUmF5bmFsIiA8bWlxdWVsLnJh
-eW5hbEBib290bGluLmNvbT46Cj4gSGkgRXZnZW55LAo+Cj4gRXZnZW55IE5vdmlrb3YgPG5vdmlr
-b3ZAaXNwcmFzLnJ1PiB3cm90ZSBvbiBXZWQsIDE2IFNlcCAyMDIwIDIyOjQwOjQ1Cj4gKzAzMDA6
-Cj4KPj4gwqBJZiBvZl9nZXRfcHJvcGVydHkoKSB3aWxsIHNldCBuc2VscyB0byBuZWdhdGl2ZSB2
-YWx1ZXMgdGhlIGRyaXZlciBtYXkKPgo+IElzIHRoaXMgcmVhbGx5IGEgcG9zc2libGUgY2FzZT8K
-Pgo+IExvb2tpbmcgYXQgdGhlIE9GIGNvZGUsIEkgZG9uJ3QgdGhpbmsgaXQgY2FuIGV2ZXIgaGFw
-cGVuLi4uCgpJIGRvIG5vdCBrbm93IHdoZXRoZXIgdGhpcyBpcyBwb3NzaWJsZSBub3cgb3IgaXQg
-d2lsbCBiZSBwb3NzaWJsZSBvbmUgZGF5CmluIHRoZSBmdXR1cmUuCgpPdXIgdG9vbCBhc3N1bWVk
-IHRoYXQgdGhpcyBjYW4gaGFwcGVuIGFjY29yZGluZyB0byB0aGUgdHlwZSAoaW50KS4KCkFsc28s
-IEkgY2FuIG5vdCBmaW5kIGFueSBkcml2ZXIgdGhhdCBtYXkgc3VmZmVyIGZyb20gdGhpcy4gVHdv
-IGV4YW1wbGVzCndoZXJlIG5lZ2F0aXZlIGNhc2VzIGFyZSBmb3JiaWRkZW4gaW50ZW50aW9uYWxs
-eSBvciB1bmludGVudGlvbmFsbHk6Ci0gZHJpdmVycy9zYnVzL2NoYXIvb3BlbnByb20uYwotIGRy
-aXZlcnMvdmlkZW8vZmJkZXYvb21hcDIvb21hcGZiL2Rzcy9kc2kuYwoKQmVzdCByZWdhcmRzLApF
-dmdlbnkKCj4+IMKgYWxsb2NhdGUgaW5zdWZmaWNpZW50IG1lbW9yeSBmb3IgY2hpcC4gTW9yZW92
-ZXIsIHRoZXJlIG1heSBiZSB1bmRlcmZsb3cKPj4gwqBmb3IgZGV2bV9remFsbG9jKCkuIFRoaXMg
-Y2FuIHJlc3VsdCBpbiB2YXJpb3VzIGJhZCBjb25zZXF1ZW5jZXMgbGF0ZXIuCj4+IMKgVGhlIHBh
-dGNoIGNhdXNlcyBtdGtfbmZjX25hbmRfY2hpcF9pbml0KCkgdG8gZmFpbCBmb3IgbmVnYXRpdmUg
-dmFsdWVzIG9mCj4+IMKgbnNlbHMuCj4+Cj4+IMKgRm91bmQgYnkgTGludXggRHJpdmVyIFZlcmlm
-aWNhdGlvbiBwcm9qZWN0IChsaW51eHRlc3Rpbmcub3JnKS4KPj4KPj4gwqBTaWduZWQtb2ZmLWJ5
-OiBFdmdlbnkgTm92aWtvdiA8bm92aWtvdkBpc3ByYXMucnU+Cj4+IMKgLS0tCj4+IMKgwqBkcml2
-ZXJzL210ZC9uYW5kL3Jhdy9tdGtfbmFuZC5jIHwgMiArLQo+PiDCoMKgMSBmaWxlIGNoYW5nZWQs
-IDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCj4+Cj4+IMKgZGlmZiAtLWdpdCBhL2RyaXZl
-cnMvbXRkL25hbmQvcmF3L210a19uYW5kLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9tdGtfbmFu
-ZC5jCj4+IMKgaW5kZXggYWQxYjU1ZGFiMjExLi5kZjk4YTJlZWMyNDAgMTAwNjQ0Cj4+IMKgLS0t
-IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbXRrX25hbmQuYwo+PiDCoCsrKyBiL2RyaXZlcnMvbXRk
-L25hbmQvcmF3L210a19uYW5kLmMKPj4gwqBAQCAtMTM3Niw3ICsxMzc2LDcgQEAgc3RhdGljIGlu
-dCBtdGtfbmZjX25hbmRfY2hpcF9pbml0KHN0cnVjdCBkZXZpY2UgKmRldiwgc3RydWN0IG10a19u
-ZmMgKm5mYywKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIC1F
-Tk9ERVY7Cj4+Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgbnNlbHMgLz0gc2l6ZW9mKHUzMik7Cj4+
-IMKgLSBpZiAoIW5zZWxzIHx8IG5zZWxzID4gTVRLX05BTkRfTUFYX05TRUxTKSB7Cj4+IMKgKyBp
-ZiAobnNlbHMgPD0gMCB8fCBuc2VscyA+IE1US19OQU5EX01BWF9OU0VMUykgewo+PiDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBkZXZfZXJyKGRldiwgImludmFsaWQgcmVnIHBy
-b3BlcnR5IHNpemUgJWRcbiIsIG5zZWxzKTsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgcmV0dXJuIC1FSU5WQUw7Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgfQo+Cj4gVGhh
-bmtzLAo+IE1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Hello Linus,
+
+Please pull the MTD changes for v5.9-rc6.
+
+I am sending this on behalf of MTD maintainers group this time around.
+
+Miquel/Richard, 
+
+Could you please ACK the PR?
+
+Regards
+Vignesh
+
+The following changes since commit 856deb866d16e29bd65952e0289066f6078af773:
+
+  Linux 5.9-rc5 (2020-09-13 16:06:00 -0700)
+
+are available in the Git repository at:
+
+  git@gitolite.kernel.org:pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/fixes-for-5.9-rc6
+
+for you to fetch changes up to 1afc0c89f6a155c54c76d65ffcf72cd1232daf3a:
+
+  Revert "mtd: spi-nor: Add capability to disable flash quad mode" (2020-09-14 20:58:27 +0530)
+
+----------------------------------------------------------------
+MTD/SPI NOR fixes:
+
+Revert patches that caused non volatile Quad Enable bit to be cleared
+for certain SPI NOR flashes during module remove or during shutdown, thus
+breaking backward compatibility.
+
+----------------------------------------------------------------
+Yicong Yang (2):
+      Revert "mtd: spi-nor: Disable the flash quad mode in spi_nor_restore()"
+      Revert "mtd: spi-nor: Add capability to disable flash quad mode"
+
+ drivers/mtd/spi-nor/core.c | 57 ++++------
+ drivers/mtd/spi-nor/core.h | 10 +-
+ 2 files changed, 24 insertions(+), 43 deletions(-)
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
