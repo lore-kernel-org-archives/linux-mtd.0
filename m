@@ -6,19 +6,19 @@ X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
 	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
 	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44E85C43463
-	for <linux-mtd@archiver.kernel.org>; Sat, 19 Sep 2020 21:50:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC200C433DB
+	for <linux-mtd@archiver.kernel.org>; Sat, 19 Sep 2020 21:51:04 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B56FC20795
-	for <linux-mtd@archiver.kernel.org>; Sat, 19 Sep 2020 21:50:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6184322211
+	for <linux-mtd@archiver.kernel.org>; Sat, 19 Sep 2020 21:51:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XXumbvgX";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fy3PsG2b"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B56FC20795
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mQw7zqzi";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a1U4iKqh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6184322211
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,65 +27,64 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=OocQAtEJsxvWGTC6kd85Cr1Gk6j8sF2EUstj+DSYEC4=; b=XXumbvgXx47yMkFqkCA9Wo9g+
-	G+f6JRtL2KX4jqdf9/KqcdMELKkepzO3sUqLz4g8G18b5vOYl2qMf3RW1Offh+dEaY7GgwRPMA3jE
-	R6Gk2a8FgJJGsMvibMCiFA3g84sewLcOK2aeh4pJlhZSrCF9AvRJe3InDLKYQJcHgYQsbrFKboEbi
-	uKLKozLySXUdYiZiJ9t+AlyCKc66eMVvB5+D2fgemgeD1hu9rX7H4JrKPytd5HjVTlAzygUZBVGg2
-	NgM4wdON7zsT/3HAAlNi0jIOEb7hAgBz66N9fGgICbu4/CErzWNM1O1Ca9Ks62Zof3DaZfDpOL5fx
-	FE3GT2Gvg==;
+	 bh=LDaVBP/aqGK5Zs8ksYniIL5nmiiqmQKNqm6Uo+Q7CX4=; b=mQw7zqzieR7v6kzFx3VqB0VPq
+	HYLomUi2QbSBxUj4dzG8bMWDwRrfh9wr+S67ZH5riVlRS8FtHrjQg+qWlp7F95CdxOz10KtOmxXNu
+	QyeJMK0Mn2Jw25yq/AtY08b2Q5MKZJ7V2i+zNsV6qZn0wL8dpK2kaOZyGj6ugLdSxI6IFYICII9/w
+	w6FL2LSyCxymPY3N1XbLk2MfzTCNpvje1frK4nUsk+lOZ5meV/Oe1KRs/M96VaWYwLtODzOkjwANh
+	wWdjxJYWNPPHldG9lmRf++gtQzoqQQUsbKSMVfkXAaKSaAPK/stlA77bPwKE9MIlVJME8DYtYTtsY
+	QLcd3y2QQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kJkkO-00019F-K9; Sat, 19 Sep 2020 21:50:20 +0000
-Received: from mail-qt1-x841.google.com ([2607:f8b0:4864:20::841])
+	id 1kJkka-0001Cj-3g; Sat, 19 Sep 2020 21:50:32 +0000
+Received: from mail-qt1-x82c.google.com ([2607:f8b0:4864:20::82c])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kJkkM-00017x-0g
- for linux-mtd@lists.infradead.org; Sat, 19 Sep 2020 21:50:18 +0000
-Received: by mail-qt1-x841.google.com with SMTP id g3so8743540qtq.10
- for <linux-mtd@lists.infradead.org>; Sat, 19 Sep 2020 14:50:16 -0700 (PDT)
+ id 1kJkkX-0001BZ-HE
+ for linux-mtd@lists.infradead.org; Sat, 19 Sep 2020 21:50:30 +0000
+Received: by mail-qt1-x82c.google.com with SMTP id c18so8773684qtw.5
+ for <linux-mtd@lists.infradead.org>; Sat, 19 Sep 2020 14:50:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=64xYu3WDX6vWiceRdxZMl2E+VlBih2IULY9GL5lmn0U=;
- b=fy3PsG2bT7uohMvad4KwkkOj8iV/lS4dBm65Agal/vyFJipHQfJyxHAOYdpYC/5dnF
- RJ5lvHF1Vdq/k67RmOI7ddD3lM2Blo9bRdqEFXd3SaKqlcMRlaVKf/g7N+qByN3KuIws
- zaMZvd8JkeZRa2o23W62yla6fAqqeIcdYmbrYNq5E847448d24bVe3VnJkudo1nyUlOr
- gbRZEJEFYqgmetLHxXt1JmvmThSdG8sPpXaLPaHjq20DSvNrpFr1rlSM9TSJkP6ZgdBg
- nk2/BoyyxGu+v2gkw7qa+YihGgyZWZ2gQCZdptV1dgJCtFTBuFdoQiVB2xkaRK+kHwLV
- FOzQ==
+ bh=FuUvgB8iMkHgcxvxhIPaKesqPeUDTnfXOpNMPbDpmVY=;
+ b=a1U4iKqhfo4da2k6ZMM0pR3UEwpnjniDmb2MM9Ml7eYFtKSG4Ku8nDDx02mS0ysf2A
+ zF/Qo8LRemksaeTJtLkCO/1e4oaYQkSd/Mq96dFWTLkuHfeZomuha1g9UvL00j+KtoiC
+ 4+1mLqqxrZQ0iIHLNOek3O/spp6usolVcdXfQiiF7AgnDINl43oRQkvU0zOn+qfLV26v
+ Cy1O5i5hjsOxWwUU3B2y4YyWmkwtnpmBZLCj2p4XMorJOR+FLW87mes8h6mmchPMvkRW
+ y20p00TJNqCjG6hF0BEoTGUnoAC67gPkqPQ7qavyHjQGWvTp40Vf3WIl9VE2L1aeFCGg
+ KRdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=64xYu3WDX6vWiceRdxZMl2E+VlBih2IULY9GL5lmn0U=;
- b=XDAdB9yKZwO5WTYmlbg6K2uz6xPgFPrMAvzRNDpO/SS86epPBhxKzRyha1cuFtJmRS
- PwhmefhN3XkHI7W1sUSOWu+hjTZPXcv2wy6iUNIDWlK2hSuvZvD8I7nyjJQxO40wo15I
- jGNdx8HXFDnFnDOwOzcjRuchFexBsYNYtP4SOjYwvy7mlH6PxpC1azTsH/PSAvgaGSnU
- AGt+Y7fv0ugALLQ2GU8mGP3k82OIaToSeA+W27ZA8YouJJtb3qEM9gpVnDT8NQG3XBHo
- 1b06Sn3frM6yHY5DEt5Y36elmR0CwX9ati2ghFemdTSwDkbkiAXTHRWWqZFpSjtlNutf
- mBZg==
-X-Gm-Message-State: AOAM530OeYGEGr0XSNnxz8PVBBOWxziEondQNRWHPApLTo26l2ZRwsPL
- QFLd5s56q7M2bVXJu3qwuMs=
-X-Google-Smtp-Source: ABdhPJwgPfl2zBW0ecdIfpAx8GltCRo8+hWIFLCjALXeEBPL0tomHMI3q6S9Nt1+Xjv61eWvu5/sxA==
-X-Received: by 2002:ac8:1b92:: with SMTP id z18mr38396682qtj.265.1600552215409; 
- Sat, 19 Sep 2020 14:50:15 -0700 (PDT)
+ bh=FuUvgB8iMkHgcxvxhIPaKesqPeUDTnfXOpNMPbDpmVY=;
+ b=pM0/f1mUn0ot/T4FAjJ5gAhIAbnEBb0LEBwOURgUz+z3DjDzYEW2tTom7XQc2rNhMC
+ JuwPplUvGWdFh86UlyPGKdzT26xDFM0NcNnE818dx4LnN0YKdmM6Q1atkER7nY7CGJnn
+ 1fpLwyppKDkU0TR/9KPPZukDCeuImcsVnZ09sL3Y4qXFmfObXEg4XC1yUUv0Aa0wG00n
+ eAny8Rq58m89TWPcSTmr/RW49vq9U+zH+CO33ZB3VHw6FAdk2gv/Z3C8ZfEiUO4cX5+Z
+ 8jcZZInYMTRfYX9rNtLshxGNsXzeVmmOccIeamXSrzkXJUh1/Ax5QKJr0UMQDFABwLDA
+ RBlQ==
+X-Gm-Message-State: AOAM530FHUvUx+ICMK24PPh1OWoB+l8jwaSIN9Gz3ndsTH76D3QPK+XJ
+ VepOsOv0Jzeqew5K5sMSPMc=
+X-Google-Smtp-Source: ABdhPJzma4TX4Rjz79pVVDKKfg+gBUBcVH8tV+LWgy9AVIm0GMUcqLSOQvPA8LlC72BFBXfESKGGTg==
+X-Received: by 2002:ac8:409e:: with SMTP id p30mr37958612qtl.208.1600552227678; 
+ Sat, 19 Sep 2020 14:50:27 -0700 (PDT)
 Received: from Ansuel-XPS.localdomain (93-39-149-95.ip76.fastwebnet.it.
  [93.39.149.95])
- by smtp.googlemail.com with ESMTPSA id y30sm5617173qth.7.2020.09.19.14.50.12
+ by smtp.googlemail.com with ESMTPSA id y30sm5617173qth.7.2020.09.19.14.50.24
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 19 Sep 2020 14:50:14 -0700 (PDT)
+ Sat, 19 Sep 2020 14:50:27 -0700 (PDT)
 From: Ansuel Smith <ansuelsmth@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 2/4] dt-bindings: mtd: partition: Document use of
- nvmem-provider
-Date: Sat, 19 Sep 2020 23:49:36 +0200
-Message-Id: <20200919214941.8038-3-ansuelsmth@gmail.com>
+Subject: [PATCH 4/4] dt-bindings: net: Document use of mac-address-increment
+Date: Sat, 19 Sep 2020 23:49:38 +0200
+Message-Id: <20200919214941.8038-5-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200919214941.8038-1-ansuelsmth@gmail.com>
 References: <20200919214941.8038-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200919_175018_085701_27DD6C80 
-X-CRM114-Status: GOOD (  16.79  )
+X-CRM114-CacheID: sfid-20200919_175029_659414_103C66EC 
+X-CRM114-Status: GOOD (  17.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,94 +109,51 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Document the use of this 2 new bindings, nvmem-provider and nvmem-cell,
-used to describe the nvmem cell that the subpartition provide to the
-nvmem api and the system. Nvmem cell are direct subnode of the
-subpartition and are skipped by the 'fixed-partitions' parser if they
-contain the 'nvmem-cell' tag. The subpartition must have the
-'nvmem-provider' tag or the subpartition will not register the cell to
-the nvmem api.
+Two new bindings are now supported by the of_net driver to increase (or
+decrease) a mac-address. This can be very useful in case where the
+system extract the mac-address for the device from a dedicated partition
+and have a generic mac-address that needs to be incremented based on the
+device number.
+- mac-address-increment-byte is used to tell what byte must be
+  incremented (if not set the last byte is increased)
+- mac-address-increment is used to tell how much to increment of the
+  extracted mac-address decided byte.
 
 Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
 ---
- .../devicetree/bindings/mtd/partition.txt     | 59 +++++++++++++++++++
- 1 file changed, 59 insertions(+)
+ .../bindings/net/ethernet-controller.yaml     | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
-index 4a39698221a2..66d3a3f0a021 100644
---- a/Documentation/devicetree/bindings/mtd/partition.txt
-+++ b/Documentation/devicetree/bindings/mtd/partition.txt
-@@ -64,6 +64,16 @@ Optional properties:
- - slc-mode: This parameter, if present, allows one to emulate SLC mode on a
-   partition attached to an MLC NAND thus making this partition immune to
-   paired-pages corruptions
-+- nvmem-provider : Optionally a subpartition can be set as a nvmem-provider. This can
-+  be very useful if some data like the mac-address is stored in a special partition
-+  at a specific offset. Subpartition that describe nvmem-cell must have set the
-+  'nvmem-cell' of they will be treated as a subpartition and not skipped and registred
-+  as nvmem cells. In this specific case '#address-cells' and '#size-cells' must be
-+  provided.
-+- nvmem-cell : A direct subnode of a subpartition can be described as a nvmem-cell and
-+  skipped by the fixed-partition parser and registred as a nvmem-cell of the registred
-+  nvmem subpartition IF it does contain the 'nvmem-provider tag. If the subpartition
-+  lacks of such tag the subnode will be skipped and the nvmem api won't register them.
+diff --git a/Documentation/devicetree/bindings/net/ethernet-controller.yaml b/Documentation/devicetree/bindings/net/ethernet-controller.yaml
+index fa2baca8c726..43f2f21faf41 100644
+--- a/Documentation/devicetree/bindings/net/ethernet-controller.yaml
++++ b/Documentation/devicetree/bindings/net/ethernet-controller.yaml
+@@ -32,6 +32,25 @@ properties:
+       - minItems: 6
+         maxItems: 6
  
- Examples:
- 
-@@ -158,3 +168,52 @@ flash@3 {
- 		};
- 	};
- };
++  mac-address-increment:
++    description:
++      The MAC address can optionally be increased (or decreased using
++      negative values) from the original value readed (from a nvmem cell
++      for example). This can be used if the mac is readed from a dedicated
++      partition and must be increased based on the number of device
++      present in the system.
++    minimum: -255
++    maximum: 255
 +
-+flash@0 {
-+	partitions {
-+		compatible = "fixed-partitions";
-+		#address-cells = <1>;
-+		#size-cells = <1>;
++  mac-address-increment-byte:
++    description:
++      If 'mac-address-increment' is defined, this will tell what byte of
++      the mac-address will be increased. If 'mac-address-increment' is
++      not defined, this option will do nothing.
++    default: 5
++    minimum: 0
++    maximum: 5
 +
-+		partition@0 {
-+			label = "u-boot";
-+			reg = <0x0000000 0x100000>;
-+			read-only;
-+		};
-+
-+		art: art@1200000 {
-+			label = "art";
-+			reg = <0x1200000 0x0140000>;
-+			read-only;
-+			nvmem-provider;
-+
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			macaddr_gmac1: macaddr_gmac1@0 {
-+				nvmem-cell;
-+				reg = <0x0 0x6>;
-+			};
-+
-+			macaddr_gmac2: macaddr_gmac2@6 {
-+				nvmem-cell;
-+				reg = <0x6 0x6>;
-+			};
-+
-+			macaddr_wifi: macaddr_wifi@6 {
-+				nvmem-cell;
-+				reg = <0x6 0x6>;
-+			};
-+
-+			pre_cal_24g: pre_cal_24g@1000 {
-+				nvmem-cell;
-+				reg = <0x1000 0x2f20>;
-+			};
-+
-+			pre_cal_5g: pre_cal_5g@5000{
-+				nvmem-cell;
-+				reg = <0x5000 0x2f20>;
-+			};
-+		};
-+	};
-+};
-\ No newline at end of file
+   max-frame-size:
+     $ref: /schemas/types.yaml#definitions/uint32
+     description:
 -- 
 2.27.0
 
