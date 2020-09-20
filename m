@@ -2,90 +2,61 @@ Return-Path: <SRS0=3Hr+=C5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CDFBC43466
-	for <linux-mtd@archiver.kernel.org>; Sun, 20 Sep 2020 09:59:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4D91C43469
+	for <linux-mtd@archiver.kernel.org>; Sun, 20 Sep 2020 11:23:52 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8D34920866
-	for <linux-mtd@archiver.kernel.org>; Sun, 20 Sep 2020 09:59:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E231720EDD
+	for <linux-mtd@archiver.kernel.org>; Sun, 20 Sep 2020 11:23:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="zhC3WwaF";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PvksojqI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D34920866
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="zedWSVmq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E231720EDD
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baikalelectronics.ru
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=7G5Y77UnoMk7fvQOakXRyhHYfErD+U+Vx5HQVBTNuq8=; b=zhC3WwaFzjiqGRRUoxt6K1X9c
-	18jAHl0OvBe/nA4oyQO0b/ssoMamWtdrlV0usgNwTq5UeoIZ3Dw+s8qIk13cauK+2gJF6ae+hTEzd
-	f5tzwqB0uufo3DcZBHJ+ZRZlvY6n/tQ0yY3bfnS22qsmi7BnowHLRnBcMD1BaIzC0kIJUOOitdfl2
-	oqQFZQ1ktNNnIYMTCSzUbcLYMu15+XKF1OFBKXmHp4sfFc+WuLZ7QcKAgEuVbVs9fTrIAInXfrY4L
-	R0JZ2pkwiqSF6AK/oWKnvZjXghpm4MxOj9kC/eBOVYRwVzACJao1R5LR/WFFcM8f+RQe/+wmW6GZ+
-	AG0ljVr3g==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=Ei9sZKgG3trprmC4C9CbijA9Gr+hs5abQgYu0YsValw=; b=zedWSVmq5hvP2LG5FxCf7Knd8T
+	1kK+pranlBv6EfU88NHJ7QYSt8ve8tkmn851lOzxFt5VbLAm8E6C4vfsRcZ3NSgiGAgDqBywYjMCy
+	t54wxeWkb7Q32Esr53UFJlfCqrYacq/2gG6SqhIEyHpBewqQGyiP/OCZriwIeNxRfIGpZhz4htdbv
+	RoYBW6cwI6KbFpWxsQ9uavu61u3JobZyLQEVrEEWjIrw9gVCEjKyaxCR+liI6WCJHxpc19rcAJufE
+	8yNltNVlMN/fJ4Md//xAiDtxoFhljiyoVGyGzraeEOMM+B5aTuw+PN78sU60S3MCHuBwNUGkLy4kq
+	PwX40GZA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kJw6e-0006sd-2F; Sun, 20 Sep 2020 09:58:04 +0000
-Received: from mail-qk1-x741.google.com ([2607:f8b0:4864:20::741])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kJw6b-0006rS-FG
- for linux-mtd@lists.infradead.org; Sun, 20 Sep 2020 09:58:02 +0000
-Received: by mail-qk1-x741.google.com with SMTP id f142so11852453qke.13
- for <linux-mtd@lists.infradead.org>; Sun, 20 Sep 2020 02:58:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=7qdhkRouPUBlhhUeuoTWCcVW3x0+uiY3ffJ1oCMZQUk=;
- b=PvksojqItdBGtMhfwgKVJlnT43Rh3sUoLBTo2Iu8ZudwahRjKwVfIa2w3ob8pTa587
- MwqTSxoHQGn17cO0HvQau/Az/czSlT8qzP/HdiabGHVsR89on1ljbFc3xxliPEtfJNlm
- iCIJG4gGaUnNLLBSXAJ7jeklc6N4f8m6Nf4LVoj0ikbId4Ul32cFhOBAsmdc/lTwP/JM
- g+tMG4TklMRz/m8LSzok7C3UksAmaq8Vca/WrOzJe703DgdPFeI4+6sO+732rk8SWvLD
- qHOVsyi1aPzt08ZPEZPCh2g4hK9mDxUmvXG3NF/jNoDFB3Th6PUwfHog9Ija68/O1iQO
- 1S7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=7qdhkRouPUBlhhUeuoTWCcVW3x0+uiY3ffJ1oCMZQUk=;
- b=A9R2Cn1PBvFdFjCMeHtObh8vyl8QMhAYTfxKdMWWxtb4uhHH/YNY6ASyo1pyq84ani
- ES39gk9riRTHJAVp5rGRAss9UlsA2pYF5pMD449AxHrkJ/Ar62UrP2GMIxBwzTJerJdI
- 3l/PlwqdNqeinx/Noer6QEXhPiybCeJqRk5AIlO2gQFZzYK7CFMy4jwi1MvaPTPYcx+P
- 19nE3nRkTitKP5sQ3Pwbt8cURxxTlmU9J2sCcmKtbZJ24RoUkKM+ZtwnUU+Yx90/hbBn
- Qzjoc+nXNB86Hz3sF65otrHiOFx5ne6y+H0Xv5gni3AzIKj+bIOiqCKiYonMUa+Lpcin
- /Naw==
-X-Gm-Message-State: AOAM533tfV/Sai5o7JZ80IVxaSjLY0RojOC44rQYWYow7iD/4Mq8QQsS
- jEtmamQ/l2ZY3BtNG7H0I2U=
-X-Google-Smtp-Source: ABdhPJw4fjyrkxIC+QZRszgyocPb227aTwysjA6Y6+BSsjmYj3MtfEQbRiHUZN+EhaJlycSon3FALA==
-X-Received: by 2002:ae9:ebcf:: with SMTP id
- b198mr40726993qkg.488.1600595879999; 
- Sun, 20 Sep 2020 02:57:59 -0700 (PDT)
-Received: from Ansuel-XPS.localdomain (93-39-149-95.ip76.fastwebnet.it.
- [93.39.149.95])
- by smtp.googlemail.com with ESMTPSA id w6sm6968323qti.63.2020.09.20.02.57.56
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 20 Sep 2020 02:57:59 -0700 (PDT)
-From: Ansuel Smith <ansuelsmth@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v3 4/4] dt-bindings: net: Document use of mac-address-increment
-Date: Sun, 20 Sep 2020 11:57:22 +0200
-Message-Id: <20200920095724.8251-5-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200920095724.8251-1-ansuelsmth@gmail.com>
-References: <20200920095724.8251-1-ansuelsmth@gmail.com>
+	id 1kJxQI-0003JL-Ds; Sun, 20 Sep 2020 11:22:26 +0000
+Received: from mail.baikalelectronics.com ([87.245.175.226]
+ helo=mail.baikalelectronics.ru)
+ by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kJxQD-0003Ik-Ov
+ for linux-mtd@lists.infradead.org; Sun, 20 Sep 2020 11:22:23 +0000
+Received: from localhost (unknown [127.0.0.1])
+ by mail.baikalelectronics.ru (Postfix) with ESMTP id C6DF2803073F;
+ Sun, 20 Sep 2020 11:15:16 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+ by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 8uDbgm43KziS; Sun, 20 Sep 2020 14:15:15 +0300 (MSK)
+From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH v3] mtd: physmap: Add Baikal-T1 physically mapped ROM support
+Date: Sun, 20 Sep 2020 14:14:44 +0300
+Message-ID: <20200920111445.21816-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200920_055801_543240_50A3F7DE 
-X-CRM114-Status: GOOD (  17.30  )
+X-CRM114-CacheID: sfid-20200920_072222_111658_C7A89CE6 
+X-CRM114-Status: GOOD (  25.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,66 +68,274 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Andrew Lunn <andrew@lunn.ch>, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
- Russell King <linux@armlinux.org.uk>, Ansuel Smith <ansuelsmth@gmail.com>,
- devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
- Jakub Kicinski <kuba@kernel.org>, Frank Rowand <frowand.list@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, linux-kernel@vger.kernel.org,
- Heiner Kallweit <hkallweit1@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+ Serge Semin <fancer.lancer@gmail.com>,
+ Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+ Serge Semin <Sergey.Semin@baikalelectronics.ru>, linux-mtd@lists.infradead.org,
+ Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+ Lee Jones <lee.jones@linaro.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Two new bindings are now supported by the of_net driver to increase (or
-decrease) a mac-address. This can be very useful in case where the
-system extract the mac-address for the device from a dedicated partition
-and have a generic mac-address that needs to be incremented based on the
-device number.
-- mac-address-increment-byte is used to tell what byte must be
-  incremented (if not set the last byte is increased)
-- mac-address-increment is used to tell how much to increment of the
-  extracted mac-address decided byte.
+Baikal-T1 Boot Controller provides an access to a RO storages, which are
+physically mapped into the SoC MMIO space. In particularly there are
+Internal ROM embedded into the SoC with a pre-installed firmware,
+externally attached SPI flash (also accessed in the read-only mode) and a
+memory region, which mirrors one of them in accordance with the currently
+enabled system boot mode (also called Boot ROM).
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+This commit adds the Internal ROM support to the physmap driver of the MTD
+kernel subsystem. The driver will create the Internal ROM MTD as long as
+it is defined in the system dts file. The physically mapped SPI flash
+region will be used to implement the SPI-mem interface. The mirroring
+memory region won't be accessible directly since it's redundant due to
+both bootable regions being exposed anyway.
+
+Note we had to create a dedicated code for the ROMs since read from the
+corresponding memory regions must be done via the dword-aligned addresses.
+
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+Cc: Lee Jones <lee.jones@linaro.org>
+Cc: linux-mips@vger.kernel.org
+
 ---
- .../bindings/net/ethernet-controller.yaml     | 21 +++++++++++++++++++
- 1 file changed, 21 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/ethernet-controller.yaml b/Documentation/devicetree/bindings/net/ethernet-controller.yaml
-index fa2baca8c726..8174f64e79bd 100644
---- a/Documentation/devicetree/bindings/net/ethernet-controller.yaml
-+++ b/Documentation/devicetree/bindings/net/ethernet-controller.yaml
-@@ -32,6 +32,27 @@ properties:
-       - minItems: 6
-         maxItems: 6
+Link: https://lore.kernel.org/linux-mtd/20200508100905.5854-1-Sergey.Semin@baikalelectronics.ru/
+Changelog v2:
+- Resend.
+
+Link: https://lore.kernel.org/linux-mtd/20200526225849.20985-1-Sergey.Semin@baikalelectronics.ru
+Changelog v3:
+- Alphabetically order the include statements.
+- Discard dummy IOs.
+- Discard Baikal-T1 Boot ROM support. The directly mapped SPI flash
+  memory will be used in the DW APB SSI driver instead.
+---
+ drivers/mtd/maps/Kconfig           |  11 +++
+ drivers/mtd/maps/Makefile          |   1 +
+ drivers/mtd/maps/physmap-bt1-rom.c | 126 +++++++++++++++++++++++++++++
+ drivers/mtd/maps/physmap-bt1-rom.h |  17 ++++
+ drivers/mtd/maps/physmap-core.c    |   5 ++
+ 5 files changed, 160 insertions(+)
+ create mode 100644 drivers/mtd/maps/physmap-bt1-rom.c
+ create mode 100644 drivers/mtd/maps/physmap-bt1-rom.h
+
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index fd37553f1b07..6650acbc961e 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -75,6 +75,17 @@ config MTD_PHYSMAP_OF
+ 	  physically into the CPU's memory. The mapping description here is
+ 	  taken from OF device tree.
  
-+  mac-address-increment:
-+    description:
-+      The MAC address can optionally be increased (or decreased using
-+      negative values) from the original value read (from a nvmem cell
-+      for example). This can be used if the mac is read from a dedicated
-+      partition and must be increased based on the number of device
-+      present in the system. The increment will not overflow/underflow to
-+      the other bytes if it's over 255 or 0.
-+      (example 00:01:02:03:04:ff + 1 == 00:01:02:03:04:00)
-+    minimum: -255
-+    maximum: 255
++config MTD_PHYSMAP_BT1_ROM
++	bool "Baikal-T1 Boot ROMs OF-based physical memory map handling"
++	depends on MTD_PHYSMAP_OF
++	depends on MIPS_BAIKAL_T1 || COMPILE_TEST
++	select MTD_COMPLEX_MAPPINGS
++	select MULTIPLEXER
++	select MUX_MMIO
++	help
++	  This provides some extra DT physmap parsing for the Baikal-T1
++	  platforms, some detection and setting up ROMs-specific accessors.
 +
-+  mac-address-increment-byte:
-+    description:
-+      If 'mac-address-increment' is defined, this will tell what byte of
-+      the mac-address will be increased. If 'mac-address-increment' is
-+      not defined, this option will do nothing.
-+    default: 5
-+    minimum: 3
-+    maximum: 5
+ config MTD_PHYSMAP_VERSATILE
+ 	bool "ARM Versatile OF-based physical memory map handling"
+ 	depends on MTD_PHYSMAP_OF
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index c0da86a5d26f..79f018cf412f 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -18,6 +18,7 @@ obj-$(CONFIG_MTD_CK804XROM)	+= ck804xrom.o
+ obj-$(CONFIG_MTD_TSUNAMI)	+= tsunami_flash.o
+ obj-$(CONFIG_MTD_PXA2XX)	+= pxa2xx-flash.o
+ physmap-objs-y			+= physmap-core.o
++physmap-objs-$(CONFIG_MTD_PHYSMAP_BT1_ROM) += physmap-bt1-rom.o
+ physmap-objs-$(CONFIG_MTD_PHYSMAP_VERSATILE) += physmap-versatile.o
+ physmap-objs-$(CONFIG_MTD_PHYSMAP_GEMINI) += physmap-gemini.o
+ physmap-objs-$(CONFIG_MTD_PHYSMAP_IXP4XX) += physmap-ixp4xx.o
+diff --git a/drivers/mtd/maps/physmap-bt1-rom.c b/drivers/mtd/maps/physmap-bt1-rom.c
+new file mode 100644
+index 000000000000..27cfe1c63a2e
+--- /dev/null
++++ b/drivers/mtd/maps/physmap-bt1-rom.c
+@@ -0,0 +1,126 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (C) 2020 BAIKAL ELECTRONICS, JSC
++ *
++ * Authors:
++ *   Serge Semin <Sergey.Semin@baikalelectronics.ru>
++ *
++ * Baikal-T1 Physically Mapped Internal ROM driver
++ */
++#include <linux/bits.h>
++#include <linux/device.h>
++#include <linux/kernel.h>
++#include <linux/mtd/map.h>
++#include <linux/mtd/xip.h>
++#include <linux/mux/consumer.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
++#include <linux/platform_device.h>
++#include <linux/string.h>
++#include <linux/types.h>
 +
-   max-frame-size:
-     $ref: /schemas/types.yaml#definitions/uint32
-     description:
++#include "physmap-bt1-rom.h"
++
++/*
++ * Baikal-T1 SoC ROMs are only accessible by the dword-aligned instructions.
++ * We have to take this into account when implementing the data read-methods.
++ * Note there is no need in bothering with endianness, since both Baikal-T1
++ * CPU and MMIO are LE.
++ */
++static map_word __xipram bt1_rom_map_read(struct map_info *map,
++					  unsigned long ofs)
++{
++	void __iomem *src = map->virt + ofs;
++	unsigned long shift;
++	map_word ret;
++	u32 data;
++
++	/* Read data within offset dword. */
++	shift = (unsigned long)src & 0x3;
++	data = readl_relaxed(src - shift);
++	if (!shift) {
++		ret.x[0] = data;
++		return ret;
++	}
++	ret.x[0] = data >> (shift * BITS_PER_BYTE);
++
++	/* Read data from the next dword. */
++	shift = 4 - shift;
++	if (ofs + shift >= map->size)
++		return ret;
++
++	data = readl_relaxed(src + shift);
++	ret.x[0] |= data << (shift * BITS_PER_BYTE);
++
++	return ret;
++}
++
++static void __xipram bt1_rom_map_copy_from(struct map_info *map,
++					   void *to, unsigned long from,
++					   ssize_t len)
++{
++	void __iomem *src = map->virt + from;
++	ssize_t shift, chunk;
++	u32 data;
++
++	if (len <= 0 || from >= map->size)
++		return;
++
++	/* Make sure we don't go over the map limit. */
++	len = min_t(ssize_t, map->size - from, len);
++
++	/*
++	 * Since requested data size can be pretty big we have to implement
++	 * the copy procedure as optimal as possible. That's why it's split
++	 * up into the next three stages: unaligned head, aligned body,
++	 * unaligned tail.
++	 */
++	shift = (ssize_t)src & 0x3;
++	if (shift) {
++		chunk = min_t(ssize_t, 4 - shift, len);
++		data = readl_relaxed(src - shift);
++		memcpy(to, &data + shift, chunk);
++		src += chunk;
++		to += chunk;
++		len -= chunk;
++	}
++
++	while (len >= 4) {
++		data = readl_relaxed(src);
++		memcpy(to, &data, 4);
++		src += 4;
++		to += 4;
++		len -= 4;
++	}
++
++	if (len) {
++		data = readl_relaxed(src);
++		memcpy(to, &data, len);
++	}
++}
++
++int of_flash_probe_bt1_rom(struct platform_device *pdev,
++			   struct device_node *np,
++			   struct map_info *map)
++{
++	struct device *dev = &pdev->dev;
++
++	/* It's supposed to be read-only MTD. */
++	if (!of_device_is_compatible(np, "mtd-rom")) {
++		dev_info(dev, "No mtd-rom compatible string\n");
++		return 0;
++	}
++
++	/* Multiplatform guard. */
++	if (!of_device_is_compatible(np, "baikal,bt1-int-rom"))
++		return 0;
++
++	/* Sanity check the device parameters retrieved from DTB. */
++	if (map->bankwidth != 4)
++		dev_warn(dev, "Bank width is supposed to be 32 bits wide\n");
++
++	map->read = bt1_rom_map_read;
++	map->copy_from = bt1_rom_map_copy_from;
++
++	return 0;
++}
+diff --git a/drivers/mtd/maps/physmap-bt1-rom.h b/drivers/mtd/maps/physmap-bt1-rom.h
+new file mode 100644
+index 000000000000..6782899598a4
+--- /dev/null
++++ b/drivers/mtd/maps/physmap-bt1-rom.h
+@@ -0,0 +1,17 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++#include <linux/mtd/map.h>
++#include <linux/of.h>
++
++#ifdef CONFIG_MTD_PHYSMAP_BT1_ROM
++int of_flash_probe_bt1_rom(struct platform_device *pdev,
++			   struct device_node *np,
++			   struct map_info *map);
++#else
++static inline
++int of_flash_probe_bt1_rom(struct platform_device *pdev,
++			   struct device_node *np,
++			   struct map_info *map)
++{
++	return 0;
++}
++#endif
+diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
+index 8f7f966fa9a7..8843e780f5c8 100644
+--- a/drivers/mtd/maps/physmap-core.c
++++ b/drivers/mtd/maps/physmap-core.c
+@@ -41,6 +41,7 @@
+ #include <linux/pm_runtime.h>
+ #include <linux/gpio/consumer.h>
+ 
++#include "physmap-bt1-rom.h"
+ #include "physmap-gemini.h"
+ #include "physmap-ixp4xx.h"
+ #include "physmap-versatile.h"
+@@ -371,6 +372,10 @@ static int physmap_flash_of_init(struct platform_device *dev)
+ 		info->maps[i].bankwidth = bankwidth;
+ 		info->maps[i].device_node = dp;
+ 
++		err = of_flash_probe_bt1_rom(dev, dp, &info->maps[i]);
++		if (err)
++			return err;
++
+ 		err = of_flash_probe_gemini(dev, dp, &info->maps[i]);
+ 		if (err)
+ 			return err;
 -- 
 2.27.0
 
