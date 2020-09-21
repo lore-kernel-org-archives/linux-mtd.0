@@ -2,67 +2,85 @@ Return-Path: <SRS0=HVA7=C6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 718CBC43464
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 08:10:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79189C43464
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 09:23:55 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 130622085B
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 08:10:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1E60820BED
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 09:23:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hyk4qb4O";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="oxgdaZkE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 130622085B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lEP+X4aJ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KjDwSU0T"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E60820BED
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=gVyij15EZKOn8lpgzR0E8/wgBQdOokozepDUTznL49k=; b=hyk4qb4OdMhOwEvhY0LzZUFS8
-	nuvQT5IypHQ4VBWOQy1C1wR0xejzvplt5wb9LuqK8da73yRPEKDHkKjDZ2AQ9E89kBY6SFJI8q1AA
-	1V4gZORBs7Ml8+qD+tf5FyCSOPP9R63GxwqfuVQMuKCE+fd8NBX5RU0E7wEzzPbTlNyPFb1OzVyg7
-	2Wf9B0HZq+vX2BbGaogFPMm8cNbOXt7s2xRnjjFKZqUS9JJSyqzBORXmTDof3jcntjUrDFHOczohI
-	qrSXFeBcHr4+G8kamIWoXgOMcj8jn0Zsa3VYymsEsVtpB4YluMrcDUZTMyM3mxYbwrwTRJI2ryxIP
-	Btnr2CTFw==;
+	 bh=AKuRzkrnNJiu58esa3lFqFlN1VX2Mq/O5j741BP8RTQ=; b=lEP+X4aJd27GwHnlRdGwQxPj2
+	mvqZlis18YknSRt64ZDJMFVv0TWzkY5Fwu2DIMZyKHrej/nPd0NRoNPw2VDbdIK2S5OoAycjY2a26
+	1UUxUDEkA8KBfEs0FQFneyjD3N2jg0H92CapjJYAfJIxIvqlmFgO+c0cfAQDFRhpgJrzWI4G2MXBO
+	czOB1r/x24Z+4cBIUX1gqN3jW3Z/PWp1GFSnUdoW4T/pforBODmy1gdlov3cLkyfXFSRCsYeAxBBv
+	f51b0i30QEIFuE/9r4BpnD0E6HuRKCkQ5Wl5KwTcjxRy7AjFGC6XKJL6l1J2lWD1TPTU45yuy+YYP
+	wsWML9Dfg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kKGtI-0005BJ-Tw; Mon, 21 Sep 2020 08:09:40 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1kKI24-0007W7-0B; Mon, 21 Sep 2020 09:22:48 +0000
+Received: from mail-vs1-xe43.google.com ([2607:f8b0:4864:20::e43])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kKGrX-0004G5-Fk
- for linux-mtd@merlin.infradead.org; Mon, 21 Sep 2020 08:07:51 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
- References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
- Content-Type:Content-ID:Content-Description;
- bh=XopQpzpw3KoIwQKF1nuIAvoWKkMjHrthqtRC/LQIsIM=; b=oxgdaZkE3vPwWoHdsZB5QbIkU9
- dL790/gcWo6Rnc9CEMtjIP8jLgJWfdPIqnIy4Phpn7NiEoP0QlzqARJVd+06/78JyNR44cXsbj0gn
- KcumUL855ONLqYrlrHrZ3J4izrnKmwjOC46x3Z4vWCvJUwWoW6d0h3BSZ+Cr2UebzwDjkM90paJDN
- 361y9eDen7Dc1xnQk4Ncz+9HHbcA6BiwjQGH5qUcTEUWHEkmc+1OHhIdDt1HgFZahvWk6pWRyuJp3
- PplYqA7/ILui1zsuTbHmvb++kDVfdzW00tb9ASHypK4eAVE9x77amyMRmEHpk0DLQMl8OIicKkPY1
- uYd7TsnQ==;
-Received: from p4fdb0c34.dip0.t-ipconnect.de ([79.219.12.52] helo=localhost)
- by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kKGrW-0006YR-0N; Mon, 21 Sep 2020 08:07:50 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 12/13] bdi: invert BDI_CAP_NO_ACCT_WB
-Date: Mon, 21 Sep 2020 10:07:33 +0200
-Message-Id: <20200921080734.452759-13-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921080734.452759-1-hch@lst.de>
-References: <20200921080734.452759-1-hch@lst.de>
+ id 1kKI21-0007VU-0R
+ for linux-mtd@lists.infradead.org; Mon, 21 Sep 2020 09:22:45 +0000
+Received: by mail-vs1-xe43.google.com with SMTP id y190so7707635vsy.1
+ for <linux-mtd@lists.infradead.org>; Mon, 21 Sep 2020 02:22:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=u05Wpr6th3gZZuc/V20qeaHoZS50SymbELxflFMO990=;
+ b=KjDwSU0Tf5V4c/INdNqjvjsLyIBQ193QAxcl1MJ+xS8p5vsOZ0SnNgzZRm1+O0im4+
+ qk4vQPxGC13M/wfpkYEPYN6emBEKJg4f0lv9A2FbWWBDVzeUcX5Tuqo2Uukx2kRRe7NG
+ 2ZI3YrOuL5ViJOYb+0VvaAPnzLhhGHvUef/0V8J4b0yrh9jE6igoDBlCqJQIHWiernni
+ 7f5SxDhQoqEm0rroih8bG4xd0eONMdMANgqMCXpFFXmai4cGVSuktQJRxjqKMw5kNjtO
+ X2RbQ+gXUiiWB/PDqpCq+8tyJ1WwcxkWqc0GmnZbs6ZeCPyXpJgKZovjEK2Gm3Lv5UDX
+ kKng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=u05Wpr6th3gZZuc/V20qeaHoZS50SymbELxflFMO990=;
+ b=Zr66tQYGiS/niGGuNnDT22e/ZzK1hyfiMcSyCk5Hx5haxuZ0LFIkL6CMFz5FhCjRQj
+ 50B3Xzqb0ttazD6mD83dzPLDQnXw61DhC3TIG9hVhiesTD5e89ObDjuKoXkmjQZ1YxZc
+ 8eprHPG3yM/07qI99OYkdJHYTBXnZDRb4wS0pZyXpA4Ncos5Ynne0+QfZHh9d3oBYT/1
+ 6h0hQJD/qbPmFVBuz4k0XMMOvOVZydEtmqBcxV9Ir4a6AB4wrmOs/rEH6m7foSmGpeHl
+ 51J/seMxeuqVZsQjZ2ejcADVUk4cLvViPaWC2olFATR8xQ6Lgn5ABNj7dAC4d1fwmv0A
+ //mA==
+X-Gm-Message-State: AOAM532iOjCNHhXNZAMpP/+BSmJc94COiESsZRtbTW0pRRieB6lXrspt
+ Z8l/I2s2sWthBs+jMQ4jyzXeUX1CBhazR5PFqiE=
+X-Google-Smtp-Source: ABdhPJzUWckquMgh8fcOKZ48Ed2m+xd2Ifw1dPUf8l36Q3uxUObIbBt85EXRRYt0NG6BO/wwbytwHa0Va72GqAaYj0Q=
+X-Received: by 2002:a67:e150:: with SMTP id o16mr15814357vsl.57.1600680163197; 
+ Mon, 21 Sep 2020 02:22:43 -0700 (PDT)
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by
- casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <CADBnMviQd-9TbkJFUCWE8THCYF9oq-iZfu6Cjxcy9GvTfe=KUg@mail.gmail.com>
+ <CAFLxGvw9TMHz5Mf=RYytB3N6uMuK5md+WxF=atzvaXcuibmNsg@mail.gmail.com>
+ <CADBnMvjuS4F8CLwbGRTAt3bVyA7DAwEFwMmNqRdNJyZCRpXCXw@mail.gmail.com>
+ <CAFLxGvxF_mK573Xhc0w2njjf4qRPSTiMf9B_GRBnJo1kj1MbkQ@mail.gmail.com>
+ <CAFLxGvyHWFmLTYmyqmJo9Rfm87D_ZafBWyQSMvdYKLFTUM9p+Q@mail.gmail.com>
+In-Reply-To: <CAFLxGvyHWFmLTYmyqmJo9Rfm87D_ZafBWyQSMvdYKLFTUM9p+Q@mail.gmail.com>
+From: Kristof Havasi <havasiefr@gmail.com>
+Date: Mon, 21 Sep 2020 11:23:11 +0200
+Message-ID: <CADBnMvhcowEVqUYwg3vVK-F-=N+mRNQAsaihXuUorW-iWnWcxg@mail.gmail.com>
+Subject: Re: UBIFS-AUTH panic after reboot
+To: Richard Weinberger <richard.weinberger@gmail.com>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20200921_052245_058026_32434B06 
+X-CRM114-Status: GOOD (  19.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,124 +92,147 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-raid@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
- Justin Sanders <justin@coraid.com>, Jan Kara <jack@suse.cz>,
- Minchan Kim <minchan@kernel.org>,
- Johannes Thumshirn <johannes.thumshirn@wdc.com>, linux-bcache@vger.kernel.org,
- Coly Li <colyli@suse.de>, linux-block@vger.kernel.org,
- Song Liu <song@kernel.org>, dm-devel@redhat.com, linux-mtd@lists.infradead.org,
- Richard Weinberger <richard@nod.at>, linux-fsdevel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- drbd-dev@lists.linbit.com
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Replace BDI_CAP_NO_ACCT_WB with a positive BDI_CAP_WRITEBACK_ACCT to
-make the checks more obvious.  Also remove the pointless
-bdi_cap_account_writeback wrapper that just obsfucates the check.
+On Sat, 19 Sep 2020 at 22:54, Richard Weinberger
+<richard.weinberger@gmail.com> wrote:
+>
+> On Sat, Sep 19, 2020 at 10:02 PM Richard Weinberger
+> <richard.weinberger@gmail.com> wrote:
+> >
+> > On Thu, Sep 17, 2020 at 4:48 PM Kristof Havasi <havasiefr@gmail.com> wrote:
+> > > Without "chk_lprops" the panic is only visible after the restart, but if it was
+> > > enabled the following assertion was triggering an immediate panic:
+> > > (Should I "reformat" long log lines in the future or leave them verbatim?)
+> > >
+> > > UBIFS error (ubi0:4 pid 649): ubifs_assert_failed: UBIFS assert
+> > > failed: (val >> nrbits) == 0 || nrbits == 32, in fs/ubifs/lpt.c:231
+> > > UBIFS warning (ubi0:4 pid 649): ubifs_ro_mode.part.1: switched to
+> >
+> > Hm, the number of bits we ask to pack is smaller than val.
+> > Maybe we have some subtle bug where a node length is not correctly
+> > calculated.
+> >
+> > From your other mail:
+> > > >         0: free 0 dirty 255408 flags 1 lnum 0
+> >
+> > Dirty is larger than LEB size (253952). Must not happen.
+> >
+> > > >         1: free 0 dirty 190192 flags 1 lnum 0
+> > > >         2: free 0 dirty 255360 flags 1 lnum 0
+> >
+> > Same.
+> >
+> > > >         3: free 0 dirty 248896 flags 1 lnum 0
+> >
+> > Does the problem also trigger with encryption disabled? So just with
+> > authentication?
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/fuse/inode.c             |  3 ++-
- include/linux/backing-dev.h | 13 +++----------
- mm/backing-dev.c            |  1 +
- mm/page-writeback.c         |  4 ++--
- 4 files changed, 8 insertions(+), 13 deletions(-)
+I couldn't trigger the same error with encryption disabled and authentication
+enabled. Even if I enabled all the chk_* knobs under kernel/debug/ubifs/, no
+failed assertion or error/warning log could be observed.
 
-diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index 17b00670fb539e..581329203d6860 100644
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -1050,7 +1050,8 @@ static int fuse_bdi_init(struct fuse_conn *fc, struct super_block *sb)
- 		return err;
- 
- 	/* fuse does it's own writeback accounting */
--	sb->s_bdi->capabilities = BDI_CAP_NO_ACCT_WB | BDI_CAP_STRICTLIMIT;
-+	sb->s_bdi->capabilities &= ~BDI_CAP_WRITEBACK_ACCT;
-+	sb->s_bdi->capabilities |= BDI_CAP_STRICTLIMIT;
- 
- 	/*
- 	 * For a single fuse filesystem use max 1% of dirty +
-diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
-index 5da4ea3dd0cc5c..b217344a2c63be 100644
---- a/include/linux/backing-dev.h
-+++ b/include/linux/backing-dev.h
-@@ -120,17 +120,17 @@ int bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned int max_ratio);
-  *
-  * BDI_CAP_NO_ACCT_DIRTY:  Dirty pages shouldn't contribute to accounting
-  * BDI_CAP_NO_WRITEBACK:   Don't write pages back
-- * BDI_CAP_NO_ACCT_WB:     Don't automatically account writeback pages
-+ * BDI_CAP_WRITEBACK_ACCT: Automatically account writeback pages
-  * BDI_CAP_STRICTLIMIT:    Keep number of dirty pages below bdi threshold.
-  */
- #define BDI_CAP_NO_ACCT_DIRTY	0x00000001
- #define BDI_CAP_NO_WRITEBACK	0x00000002
--#define BDI_CAP_NO_ACCT_WB	0x00000004
-+#define BDI_CAP_WRITEBACK_ACCT	0x00000004
- #define BDI_CAP_STRICTLIMIT	0x00000010
- #define BDI_CAP_CGROUP_WRITEBACK 0x00000020
- 
- #define BDI_CAP_NO_ACCT_AND_WRITEBACK \
--	(BDI_CAP_NO_WRITEBACK | BDI_CAP_NO_ACCT_DIRTY | BDI_CAP_NO_ACCT_WB)
-+	(BDI_CAP_NO_WRITEBACK | BDI_CAP_NO_ACCT_DIRTY)
- 
- extern struct backing_dev_info noop_backing_dev_info;
- 
-@@ -179,13 +179,6 @@ static inline bool bdi_cap_account_dirty(struct backing_dev_info *bdi)
- 	return !(bdi->capabilities & BDI_CAP_NO_ACCT_DIRTY);
- }
- 
--static inline bool bdi_cap_account_writeback(struct backing_dev_info *bdi)
--{
--	/* Paranoia: BDI_CAP_NO_WRITEBACK implies BDI_CAP_NO_ACCT_WB */
--	return !(bdi->capabilities & (BDI_CAP_NO_ACCT_WB |
--				      BDI_CAP_NO_WRITEBACK));
--}
--
- static inline bool mapping_cap_writeback_dirty(struct address_space *mapping)
- {
- 	return bdi_cap_writeback_dirty(inode_to_bdi(mapping->host));
-diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-index 8e3802bf03a968..df18f0088dd3f5 100644
---- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -745,6 +745,7 @@ struct backing_dev_info *bdi_alloc(int node_id)
- 		kfree(bdi);
- 		return NULL;
- 	}
-+	bdi->capabilities = BDI_CAP_WRITEBACK_ACCT;
- 	bdi->ra_pages = VM_READAHEAD_PAGES;
- 	bdi->io_pages = VM_READAHEAD_PAGES;
- 	return bdi;
-diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index e9c36521461aaa..0139f9622a92da 100644
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@ -2738,7 +2738,7 @@ int test_clear_page_writeback(struct page *page)
- 		if (ret) {
- 			__xa_clear_mark(&mapping->i_pages, page_index(page),
- 						PAGECACHE_TAG_WRITEBACK);
--			if (bdi_cap_account_writeback(bdi)) {
-+			if (bdi->capabilities & BDI_CAP_WRITEBACK_ACCT) {
- 				struct bdi_writeback *wb = inode_to_wb(inode);
- 
- 				dec_wb_stat(wb, WB_WRITEBACK);
-@@ -2791,7 +2791,7 @@ int __test_set_page_writeback(struct page *page, bool keep_write)
- 						   PAGECACHE_TAG_WRITEBACK);
- 
- 			xas_set_mark(&xas, PAGECACHE_TAG_WRITEBACK);
--			if (bdi_cap_account_writeback(bdi))
-+			if (bdi->capabilities & BDI_CAP_WRITEBACK_ACCT)
- 				inc_wb_stat(inode_to_wb(inode), WB_WRITEBACK);
- 
- 			/*
--- 
-2.28.0
+ubi0: attached mtd1 (name "ubivols", size 1023 MiB)
+ubi0: PEB size: 262144 bytes (256 KiB), LEB size: 253952 bytes
+ubi0: min./max. I/O unit sizes: 4096/4096, sub-page size 4096
+ubi0: VID header offset: 4096 (aligned 4096), data offset: 8192
+ubi0: good PEBs: 4063, bad PEBs: 32, corrupted PEBs: 0
+ubi0: user volume: 5, internal volumes: 1, max. volumes count: 128
+ubi0: max/mean erase counter: 2/1, WL threshold: 4096, image sequence
+number: 460709978
+ubi0: available PEBs: 0, total reserved PEBs: 4063, PEBs reserved for
+bad PEB handling: 48
+ubi0: background thread "ubi_bgt0d" started, PID 638
+rtc-rv8803 1-0032: setting system clock to 2020-09-21T09:11:23 UTC (1600679483)
+UBIFS (ubi0:4): Mounting in authenticated mode
+UBIFS (ubi0:4): background thread "ubifs_bgt0_4" started, PID 642
+UBIFS (ubi0:4): UBIFS: mounted UBI device 0, volume 4, name "rootfs"
+UBIFS (ubi0:4): LEB size: 253952 bytes (248 KiB), min./max. I/O unit
+sizes: 4096 bytes/4096 bytes
+UBIFS (ubi0:4): FS size: 1004888064 bytes (958 MiB, 3957 LEBs),
+journal size 9404416 bytes (8 MiB, 38 LEBs)
+UBIFS (ubi0:4): reserved for root: 0 bytes (0 KiB)
+UBIFS (ubi0:4): media format: w4/r0 (latest is w5/r0), UUID
+7BFF4409-EE99-4BAB-9091-16FFDEBBD78A, small LPT model
+VFS: Mounted root (ubifs filesystem) on device 0:13.
 
+>
+> One more question, when you mount ubifs successuflly, you see a line like:
+> UBIFS (ubi0:0): media format: w5/r0 (latest is w5/r0), UUID
+> 942AA41D-81B8-4F57-9CE6-0548D0D0DCB0, big LPT model
+>
+> Does it print big LPT or small LPT model?
+
+small LPT model.
+
+UBIFS (ubi0:4): Mounting in authenticated mode
+UBIFS (ubi0:4): Successfully verified super block signature
+UBIFS (ubi0:4): background thread "ubifs_bgt0_4" started, PID 634
+UBIFS (ubi0:4): UBIFS: mounted UBI device 0, volume 4, name "rootfs"
+UBIFS (ubi0:4): LEB size: 253952 bytes (248 KiB), min./max. I/O unit
+sizes: 4096 bytes/4096 bytes
+UBIFS (ubi0:4): FS size: 1004888064 bytes (958 MiB, 3957 LEBs),
+journal size 9404416 bytes (8 MiB, 38 LEBs)
+UBIFS (ubi0:4): reserved for root: 0 bytes (0 KiB)
+UBIFS (ubi0:4): media format: w5/r0 (latest is w5/r0), UUID
+3F835B56-9D63-49F9-A3A8-4EFDF2800462, small LPT model
+VFS: Mounted root (ubifs filesystem) on device 0:13.
+fscrypt: AES-256-CTS-CBC using implementation "cts(atmel-cbc-aes)"
+devtmpfs: mounted
+Freeing unused kernel memory: 1024K
+fscrypt: AES-256-XTS using implementation "xts(atmel-ecb-aes)"
+
+Thank you,
+        Kristof
+
+
+On Sat, 19 Sep 2020 at 22:54, Richard Weinberger
+<richard.weinberger@gmail.com> wrote:
+>
+> On Sat, Sep 19, 2020 at 10:02 PM Richard Weinberger
+> <richard.weinberger@gmail.com> wrote:
+> >
+> > On Thu, Sep 17, 2020 at 4:48 PM Kristof Havasi <havasiefr@gmail.com> wrote:
+> > > Without "chk_lprops" the panic is only visible after the restart, but if it was
+> > > enabled the following assertion was triggering an immediate panic:
+> > > (Should I "reformat" long log lines in the future or leave them verbatim?)
+> > >
+> > > UBIFS error (ubi0:4 pid 649): ubifs_assert_failed: UBIFS assert
+> > > failed: (val >> nrbits) == 0 || nrbits == 32, in fs/ubifs/lpt.c:231
+> > > UBIFS warning (ubi0:4 pid 649): ubifs_ro_mode.part.1: switched to
+> >
+> > Hm, the number of bits we ask to pack is smaller than val.
+> > Maybe we have some subtle bug where a node length is not correctly
+> > calculated.
+> >
+> > From your other mail:
+> > > >         0: free 0 dirty 255408 flags 1 lnum 0
+> >
+> > Dirty is larger than LEB size (253952). Must not happen.
+> >
+> > > >         1: free 0 dirty 190192 flags 1 lnum 0
+> > > >         2: free 0 dirty 255360 flags 1 lnum 0
+> >
+> > Same.
+> >
+> > > >         3: free 0 dirty 248896 flags 1 lnum 0
+> >
+> > Does the problem also trigger with encryption disabled? So just with
+> > authentication?
+>
+> One more question, when you mount ubifs successuflly, you see a line like:
+> UBIFS (ubi0:0): media format: w5/r0 (latest is w5/r0), UUID
+> 942AA41D-81B8-4F57-9CE6-0548D0D0DCB0, big LPT model
+>
+> Does it print big LPT or small LPT model?
+>
+> --
+> Thanks,
+> //richard
 
 ______________________________________________________
 Linux MTD discussion mailing list
