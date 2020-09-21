@@ -7,62 +7,101 @@ X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3EC6C43466
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 14:52:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A51D6C43466
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 15:11:13 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6521E20735
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 14:52:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4FE7D2075E
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 15:11:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Pva5EODi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6521E20735
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arm.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uLY8wX15"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4FE7D2075E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:Subject:
+	From:References:To:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=KjUZ6FUk3Da9lo4SyyZGVtIYBrBgJK7aqB5wHEhj2ck=; b=Pva5EODipUbFiiwXAhy+T6eFI
-	tK/FIniGprNHpaPTv1HUv4TiBvrtdZfzrVu50qwsKh7c35ttkCsI3RXDvB5xGtWB3J6tqo8qcpUTs
-	MHk3eU+kvrZQMmpBtSQRROHwod/aR6HO9JIHoOFOgJlO5Cv/D7hxW5MJl7YfFJPhdy8UPulxjTFZR
-	8khuFifQg2QbtWuMzSfhuVKtgFG8w7NKgxaGkN3xZk9L6Gywb6CTScHoYIVq82ZKn9LhEcNLV2i7j
-	EZ5xy992XQm2wqIC79W1MgVdlPggJl5sMMuF7YusrIgWx/ZX+X1aGhIIwBNPOTIoIqdhAwIZtaa5n
-	UQBGu8AwA==;
+	 bh=ZreeOepGeDucKtcLSBwL6CsEm4PMdaIpc8UefFOpdB4=; b=uLY8wX15V1KzPJcwpKG3WxpPs
+	sc24Mn2zaYvFTirO3fzdWeJ2BrJp+DWSP8zXeJDR5IzCJ/rsfQCeuJ1vWeXHYW7B9fl+dF+P1T99K
+	g594Ay/n8DvDY2v4fOV2DiXw3ETr5KaSuVMbgVhMlHGJyKkHcskn+dVOlrCg4wsp+A9/hKZQ89NGb
+	2O3VjYdr/94DYG05Q2jsAm+P4DId3jjPAw5HzfPiP/bvGqCTV1RZgHXxuvchTdxDHNQz94Qk/MVrV
+	eA1iBCXTW1++iK+bAKsOotmAYJ6mXzaEn7dZ3/E+VpLXau5eqYVdfO6B5mVrNRixe++61pSgvJVs0
+	juwvVv4Zg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kKNAB-00025S-JW; Mon, 21 Sep 2020 14:51:31 +0000
-Received: from foss.arm.com ([217.140.110.172])
- by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kKNA8-00024f-VZ
- for linux-mtd@lists.infradead.org; Mon, 21 Sep 2020 14:51:30 +0000
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B432D1476;
- Mon, 21 Sep 2020 07:51:27 -0700 (PDT)
-Received: from [10.57.43.251] (unknown [10.57.43.251])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 73BA33F718;
- Mon, 21 Sep 2020 07:51:24 -0700 (PDT)
-Subject: Re: arm-smmu 5000000.iommu: Cannot accommodate DMA offset for IOMMU
- page tables
-To: Naresh Kamboju <naresh.kamboju@linaro.org>,
- linux-mtd@lists.infradead.org, open list <linux-kernel@vger.kernel.org>,
- Linux-Next Mailing List <linux-next@vger.kernel.org>,
- lkft-triage@lists.linaro.org,
- "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>
-References: <CA+G9fYvuq58q+GsWnzni0sKSHbubuQz-UaK3TASX26V_a7yBVw@mail.gmail.com>
-From: Robin Murphy <robin.murphy@arm.com>
-Message-ID: <c799eecf-8f47-8b57-5a9d-3c2a28cfde9a@arm.com>
-Date: Mon, 21 Sep 2020 15:51:24 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+	id 1kKNS7-0005nX-UF; Mon, 21 Sep 2020 15:10:04 +0000
+Received: from mx2.suse.de ([195.135.220.15])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kKNS4-0005lg-Gh
+ for linux-mtd@lists.infradead.org; Mon, 21 Sep 2020 15:10:01 +0000
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 427FAB31C;
+ Mon, 21 Sep 2020 15:10:34 +0000 (UTC)
+To: Christoph Hellwig <hch@lst.de>
+References: <20200921080734.452759-1-hch@lst.de>
+ <20200921080734.452759-4-hch@lst.de>
+ <b547a1b6-ab03-0520-012d-86d112c83d92@suse.de>
+ <20200921140010.GA14672@lst.de>
+From: Coly Li <colyli@suse.de>
+Autocrypt: addr=colyli@suse.de; keydata=
+ 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
+Subject: Re: [PATCH 03/13] bcache: inherit the optimal I/O size
+Message-ID: <5bcc52dc-ca8f-bbdd-69ef-4b6312e7994a@suse.de>
+Date: Mon, 21 Sep 2020 23:09:48 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <CA+G9fYvuq58q+GsWnzni0sKSHbubuQz-UaK3TASX26V_a7yBVw@mail.gmail.com>
-Content-Language: en-GB
+In-Reply-To: <20200921140010.GA14672@lst.de>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200921_105129_111289_0B89B677 
-X-CRM114-Status: GOOD (  16.31  )
+X-CRM114-CacheID: sfid-20200921_111000_791437_2554C1CB 
+X-CRM114-Status: GOOD (  19.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,101 +113,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Poonam Aggrwal <poonam.aggrwal@nxp.com>, robh@kernel.org,
- Joerg Roedel <jroedel@suse.de>, Arnd Bergmann <arnd@arndb.de>,
- Richard Weinberger <richard@nod.at>, Zhiqiang.Hou@nxp.com,
- Miquel Raynal <miquel.raynal@bootlin.com>, Suram Suram <suram@nxp.com>,
- masonccyang@mxic.com.tw
+Cc: Jens Axboe <axboe@kernel.dk>, linux-raid@vger.kernel.org,
+ Hans de Goede <hdegoede@redhat.com>, Justin Sanders <justin@coraid.com>,
+ Minchan Kim <minchan@kernel.org>,
+ Johannes Thumshirn <Johannes.Thumshirn@wdc.com>, linux-bcache@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+ Song Liu <song@kernel.org>, dm-devel@redhat.com, linux-mtd@lists.infradead.org,
+ Richard Weinberger <richard@nod.at>, linux-fsdevel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-mm@kvack.org, drbd-dev@lists.linbit.com
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 2020-09-21 14:20, Naresh Kamboju wrote:
-[...]
-> [    2.256403] e1000e 0000:01:00.0: Adding to iommu group 0
-> [    2.261733] arm-smmu 5000000.iommu: Cannot accommodate DMA offset
-> for IOMMU page tables
-
-Ah, I know what's going on there - the dma_range_map stuff has 
-overlooked a subtlety, but it's easily fixed.
-
-> [    2.269752] Unable to handle kernel NULL pointer dereference at
-> virtual address 0000000000000000
-
-...although either way that's really not how we should subsequently 
-handle failing to allocate a pagetable. I guess I'll take a look into 
-what the deal is there as well :(
-
-Robin.
-
-> [    2.278544] Mem abort info:
-> [    2.281334]   ESR = 0x96000004
-> [    2.284389]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [    2.289705]   SET = 0, FnV = 0
-> [    2.292759]   EA = 0, S1PTW = 0
-> [    2.295900] Data abort info:
-> [    2.298781]   ISV = 0, ISS = 0x00000004
-> [    2.302618]   CM = 0, WnR = 0
-> [    2.305581] [0000000000000000] user address but active_mm is swapper
-> [    2.311941] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-> [    2.317512] Modules linked in:
-> [    2.320566] CPU: 1 PID: 1 Comm: swapper/0 Tainted: G        W
->    5.9.0-rc5-next-20200921 #1
-> [    2.329352] Hardware name: Freescale Layerscape 2088A RDB Board (DT)
-> [    2.335705] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
-> [    2.341715] pc : arm_smmu_flush_iotlb_all+0x28/0x90
-> [    2.346590] lr : iommu_create_device_direct_mappings.isra.0+0x1f0/0x218
-> [    2.353203] sp : ffff80001005b9b0
-> [    2.356511] x29: ffff80001005b9b0 x28: 0000000000000000
-> [    2.361822] x27: ffffdc3792e904e0 x26: ffff80001005ba48
-> [    2.367134] x25: ffff0082ee6b0000 x24: ffff0082ed88e0a8
-> [    2.372445] x23: 00000000fffffff4 x22: 0000000000001000
-> [    2.377755] x21: ffff80001005ba48 x20: 0000000000000000
-> [    2.383066] x19: ffff0082cceeeb58 x18: 0000000000000010
-> [    2.388377] x17: 0000000000000000 x16: 00000000833b5ff2
-> [    2.393688] x15: ffff0082ee6b0480 x14: 203a756d6d6f692e
-> [    2.398999] x13: 3030303030303520 x12: 61646f6d6d6f6363
-> [    2.404311] x11: 6120746f6e6e6143 x10: 6f66207465736666
-> [    2.409622] x9 : ffffdc3791d31078 x8 : ffff0082ed8ffd00
-> [    2.414933] x7 : 0000000000000000 x6 : 000000000000003f
-> [    2.420244] x5 : 0000000000000040 x4 : ffff80001005b970
-> [    2.425554] x3 : 0000000000000000 x2 : 0000000000000000
-> [    2.430865] x1 : ffffdc37927dd2f0 x0 : ffff0082cceeeb58
-> [    2.436176] Call trace:
-> [    2.438618]  arm_smmu_flush_iotlb_all+0x28/0x90
-> [    2.443144]  iommu_create_device_direct_mappings.isra.0+0x1f0/0x218
-> [    2.449409]  iommu_probe_device+0x6c/0x120
-> [    2.453501]  of_iommu_configure+0x134/0x218
-> [    2.457683]  of_dma_configure_id+0x110/0x2e8
-> [    2.461950]  pci_dma_configure+0x4c/0xd8
-> [    2.465870]  really_probe+0xac/0x4d8
-> [    2.469441]  driver_probe_device+0xfc/0x168
-> [    2.473620]  device_driver_attach+0x7c/0x88
-> [    2.477799]  __driver_attach+0xac/0x178
-> [    2.481631]  bus_for_each_dev+0x78/0xc8
-> [    2.485463]  driver_attach+0x2c/0x38
-> [    2.489033]  bus_add_driver+0x14c/0x230
-> [    2.492865]  driver_register+0x6c/0x128
-> [    2.496696]  __pci_register_driver+0x4c/0x58
-> [    2.500964]  e1000_init_module+0x44/0x50
-> [    2.504882]  do_one_initcall+0x4c/0x2d0
-> [    2.508714]  kernel_init_freeable+0x214/0x280
-> [    2.513068]  kernel_init+0x1c/0x120
-> [    2.516552]  ret_from_fork+0x10/0x30
-> [    2.520124] Code: 910003fd a90153f3 aa0003f3 f85a8014 (f9400280)
-> [    2.526224] ---[ end trace d051012f465b08ec ]---
-> [    2.530848] Kernel panic - not syncing: Attempted to kill init!
-> exitcode=0x0000000b
-> [    2.538506] SMP: stopping secondary CPUs
-> [    2.542431] Kernel Offset: 0x5c3781480000 from 0xffff800010000000
-> [    2.548521] PHYS_OFFSET: 0xffffdb6ac0000000
-> [    2.552700] CPU features: 0x0240022,21806008
-> [    2.556965] Memory Limit: none
+On 2020/9/21 22:00, Christoph Hellwig wrote:
+> On Mon, Sep 21, 2020 at 05:54:59PM +0800, Coly Li wrote:
+>> I am not sure whether virtual bcache device's optimal request size can
+>> be simply set like this.
+>>
+>> Most of time inherit backing device's optimal request size is fine, but
+>> there are two exceptions,
+>> - Read request hits on cache device
+>> - User sets sequential_cuttoff as 0, all writing may go into cache
+>> device firstly.
+>> For the above two conditions, all I/Os goes into cache device, using
+>> optimal request size of backing device might be improper.
+>>
+>> Just a guess, is it OK to set the optimal request size of the virtual
+>> bcache device as the least common multiple of cache device's and backing
+>> device's optimal request sizes ?
 > 
-> full test log,
-> https://lavalab.nxp.com/scheduler/job/86650#L849
+> Well, if the optimal I/O size is wrong, the read ahead size also is
+> wrong.  Can we just drop the setting?
 > 
+
+I feel this is something should be fixed. Indeed I overlooked it until
+you point out the issue now.
+
+The optimal request size and read ahead pages hint are necessary, but
+current initialization is simple. A better way might be dynamically
+setting them depends on the cache mode and some special configuration.
+
+By your inspiration, I want to ACK your original patch although it
+doesn't work fine for all condition. Then we may know these two settings
+(ra_pages and queue_io_opt) should be improved for more situations. At
+lease for most part of the situations they provide proper hints.
+
+How do you think of the above idea ?
+
+Coly Li
 
 ______________________________________________________
 Linux MTD discussion mailing list
