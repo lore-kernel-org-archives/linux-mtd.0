@@ -2,104 +2,74 @@ Return-Path: <SRS0=HVA7=C6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 889EBC43464
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 09:56:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 23126C43463
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 10:03:06 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2881F20735
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 09:56:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C432821D7A
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 10:03:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PFHyV0tb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2881F20735
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IfKDXMcO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C432821D7A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:Subject:
-	From:References:To:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=rXuAYPv4f8DD8EinrtlgHpDxTw3J6lMaOCLgcGSaD10=; b=PFHyV0tblaad3bb4mtL8brvlG
-	W1nd8ooln5Tvw6WD77jcl0gCsYA2YhV2ximGoZD7azelIU34av5Y4XsEJ0st2zEKMnTrGYGsR5we5
-	hbJ4XLjcXvMYl0qWZo47PzyEkWwtCnvzzsIKJSr889Hy2Wnt12Ng9tRvVD7Y3n3cxm/e25l9rBT+z
-	a1u4PdVa5QunZprmfCG5dserL+NW9VzL3AwOApJpQodgFXyCuNiAr8soOeHZVTxaC93K2gUuXeE2d
-	ZeTlwZnikbexi0OHimH+k/3mzndRnROr7PWXn7naGHXRnoT7NSZmwDKQcg1XzFJnfh0RzqKxqm+1U
-	MapRi9tDA==;
+	Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
+	:List-Id:To:From:Subject:Message-ID:Date:MIME-Version:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=M+jY/aaXv9gmfwPFibyj4g2iHTjLQDKferJ2Z+nMWpQ=; b=IfKDXMcO8xc3qoY89Va+s+BD2L
+	E7XPIKFq67lbK283PT6eYwygDSSG3fkGOELDcB9YXRcvGL+2OSCXtFY5+qIXY9o5f19Q5XZuy4HNk
+	bokOo37TJozoPw4IAdZ8WFV4NndFiBXT6rf2YLN6bSP+DJ0epaaapJqMnGBivX9RDX31kn/YC7foe
+	rPGxOpP32Ymn11vS03IyvU6IxoYeLQYKOVBQtZI/k529Q/Dt9Gnjbp+Yy9mSMV+EMHg+K5Q++D2T+
+	7XeBXTxtGtZl+Awp0ol3nUNNk02hT9HxOXHjsBzrVa8CNXRCP2VspyC1JflRgMB2SYPejlSMMHiUw
+	g32vgBVQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kKIXQ-0003S3-AD; Mon, 21 Sep 2020 09:55:12 +0000
-Received: from mx2.suse.de ([195.135.220.15])
+	id 1kKIeV-0004Y1-5E; Mon, 21 Sep 2020 10:02:31 +0000
+Received: from mail-il1-f208.google.com ([209.85.166.208])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kKIXN-0003Qn-Ce
- for linux-mtd@lists.infradead.org; Mon, 21 Sep 2020 09:55:10 +0000
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 2A091AF0B;
- Mon, 21 Sep 2020 09:55:43 +0000 (UTC)
-To: Christoph Hellwig <hch@lst.de>
-References: <20200921080734.452759-1-hch@lst.de>
- <20200921080734.452759-4-hch@lst.de>
-From: Coly Li <colyli@suse.de>
-Autocrypt: addr=colyli@suse.de; keydata=
- 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
-Subject: Re: [PATCH 03/13] bcache: inherit the optimal I/O size
-Message-ID: <b547a1b6-ab03-0520-012d-86d112c83d92@suse.de>
-Date: Mon, 21 Sep 2020 17:54:59 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+ id 1kKIeN-0004Wv-Hx
+ for linux-mtd@lists.infradead.org; Mon, 21 Sep 2020 10:02:24 +0000
+Received: by mail-il1-f208.google.com with SMTP id v5so186352ilj.20
+ for <linux-mtd@lists.infradead.org>; Mon, 21 Sep 2020 03:02:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+ bh=878X+MokR+ZbeqJGJQNq7QDLXnpG5EMYsQ8wF9gEG6g=;
+ b=A1LvJKROr1hZK8ff8rvQdc+GLhodSyzpn9CzIIL2IJCsN7AdKCVuDSICge+Aa8PXoC
+ zKkoFmqOzw8EFSD/l1o7aMNFMj1n0pu5wV3lrrFnA0iKMwb9F8YW1XTQCsg3cp5fO2Nq
+ KQvZr8Kdzf1Tag//0RWxsCawyme7sDMkDez4jYcYZD06ZttFNg3UePZuDf9wrYge6kVU
+ piNQVjVBT3CQZBuUPmLMyWhEy9J3wE6caaqpALP7nNgYd+GgcPYneIWMqMZzw6/Z6fAR
+ X1ZO177apczOxZDvSaxCspy0pKrpiPnX0gkWvHdAdcJtnj1XcgmmHWMt/E6Ok9ETz77W
+ ++7A==
+X-Gm-Message-State: AOAM533aR+xoZain1OVLOSzUCAehGmApe70qmoQ9vKXP3NC1L0ow0OHF
+ QrPsvvYWNpQxyvFJ8MERyzOh3mUd+pVT0UsAcJ9KwDfUPQPs
+X-Google-Smtp-Source: ABdhPJy77SpanDAhaUD564y+kfir5vkWynL2iO3uzcCnBbobRoCMtMVM2wLANCqpTZo8HnFv9DEsyoW2UKTNcmOMcsiqIT+5iXiI
 MIME-Version: 1.0
-In-Reply-To: <20200921080734.452759-4-hch@lst.de>
-Content-Language: en-US
+X-Received: by 2002:a6b:3e84:: with SMTP id
+ l126mr35372373ioa.118.1600682541024; 
+ Mon, 21 Sep 2020 03:02:21 -0700 (PDT)
+Date: Mon, 21 Sep 2020 03:02:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000418c7705afcff2e1@google.com>
+Subject: general protection fault in jffs2_parse_param
+From: syzbot <syzbot+9765367bb86a19d38732@syzkaller.appspotmail.com>
+To: dhowells@redhat.com, dwmw2@infradead.org, linux-kernel@vger.kernel.org, 
+ linux-mtd@lists.infradead.org, richard@nod.at, sandeen@sandeen.net, 
+ syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200921_055509_659042_F8ED7097 
-X-CRM114-Status: GOOD (  21.91  )
+X-CRM114-CacheID: sfid-20200921_060223_596238_C75F4F8B 
+X-CRM114-Status: UNSURE (   7.81  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,64 +81,91 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Jens Axboe <axboe@kernel.dk>, linux-raid@vger.kernel.org,
- Hans de Goede <hdegoede@redhat.com>, Justin Sanders <justin@coraid.com>,
- Minchan Kim <minchan@kernel.org>,
- Johannes Thumshirn <Johannes.Thumshirn@wdc.com>, linux-bcache@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
- Song Liu <song@kernel.org>, dm-devel@redhat.com, linux-mtd@lists.infradead.org,
- Richard Weinberger <richard@nod.at>, linux-fsdevel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-mm@kvack.org, drbd-dev@lists.linbit.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 2020/9/21 16:07, Christoph Hellwig wrote:
-> Inherit the optimal I/O size setting just like the readahead window,
-> as any reason to do larger I/O does not apply to just readahead.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  drivers/md/bcache/super.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-> index 1bbdc410ee3c51..48113005ed86ad 100644
-> --- a/drivers/md/bcache/super.c
-> +++ b/drivers/md/bcache/super.c
-> @@ -1430,6 +1430,8 @@ static int cached_dev_init(struct cached_dev *dc, unsigned int block_size)
->  	dc->disk.disk->queue->backing_dev_info->ra_pages =
->  		max(dc->disk.disk->queue->backing_dev_info->ra_pages,
->  		    q->backing_dev_info->ra_pages);
-> +	blk_queue_io_opt(dc->disk.disk->queue,
-> +		max(queue_io_opt(dc->disk.disk->queue), queue_io_opt(q)));
->  
+Hello,
 
-Hi Christoph,
+syzbot found the following issue on:
 
-I am not sure whether virtual bcache device's optimal request size can
-be simply set like this.
+HEAD commit:    325d0eab Merge branch 'akpm' (patches from Andrew)
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12acb307900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b12e84189082991c
+dashboard link: https://syzkaller.appspot.com/bug?extid=9765367bb86a19d38732
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=175909d9900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=179b3cc3900000
 
-Most of time inherit backing device's optimal request size is fine, but
-there are two exceptions,
-- Read request hits on cache device
-- User sets sequential_cuttoff as 0, all writing may go into cache
-device firstly.
-For the above two conditions, all I/Os goes into cache device, using
-optimal request size of backing device might be improper.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9765367bb86a19d38732@syzkaller.appspotmail.com
 
-Just a guess, is it OK to set the optimal request size of the virtual
-bcache device as the least common multiple of cache device's and backing
-device's optimal request sizes ?
+general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
+CPU: 1 PID: 6866 Comm: syz-executor202 Not tainted 5.9.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:jffs2_parse_param+0x141/0x330 fs/jffs2/super.c:206
+Code: 48 c1 ea 03 4d 63 fc 80 3c 02 00 0f 85 de 01 00 00 48 b8 00 00 00 00 00 fc ff df 4d 8b 75 00 49 8d 7e 08 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 c8 01 00 00 4d 8b 76 08 4c 89 ff 4c 89 f6 e8 d6
+RSP: 0018:ffffc90001087b78 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: ffff8880932c9c00 RCX: ffffffff82882084
+RDX: 0000000000000001 RSI: ffffffff82882096 RDI: 0000000000000008
+RBP: 1ffff92000210f6f R08: 0000000000000001 R09: 0000000000000003
+R10: 00000000003fffff R11: 0000000000000000 R12: 0000000000000000
+R13: ffff88808de2a000 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000002198880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000043e830 CR3: 00000000a11a3000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ vfs_parse_fs_param fs/fs_context.c:117 [inline]
+ vfs_parse_fs_param+0x203/0x550 fs/fs_context.c:98
+ vfs_parse_fs_string+0xe6/0x150 fs/fs_context.c:161
+ generic_parse_monolithic+0x16f/0x1f0 fs/fs_context.c:201
+ do_new_mount fs/namespace.c:2871 [inline]
+ path_mount+0x133f/0x20a0 fs/namespace.c:3192
+ do_mount fs/namespace.c:3205 [inline]
+ __do_sys_mount fs/namespace.c:3413 [inline]
+ __se_sys_mount fs/namespace.c:3390 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3390
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x44699a
+Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 7d ae fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 5a ae fb ff c3 66 0f 1f 84 00 00 00 00 00
+RSP: 002b:00007ffc381bf788 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffc381bf7d0 RCX: 000000000044699a
+RDX: 0000000020001300 RSI: 0000000020001340 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 00007ffc381bf7d0 R09: 0000000000000014
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401c80
+R13: 0000000000401d10 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+---[ end trace 9cf0f624124bffcb ]---
+RIP: 0010:jffs2_parse_param+0x141/0x330 fs/jffs2/super.c:206
+Code: 48 c1 ea 03 4d 63 fc 80 3c 02 00 0f 85 de 01 00 00 48 b8 00 00 00 00 00 fc ff df 4d 8b 75 00 49 8d 7e 08 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 c8 01 00 00 4d 8b 76 08 4c 89 ff 4c 89 f6 e8 d6
+RSP: 0018:ffffc90001087b78 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: ffff8880932c9c00 RCX: ffffffff82882084
+RDX: 0000000000000001 RSI: ffffffff82882096 RDI: 0000000000000008
+RBP: 1ffff92000210f6f R08: 0000000000000001 R09: 0000000000000003
+R10: 00000000003fffff R11: 0000000000000000 R12: 0000000000000000
+R13: ffff88808de2a000 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000002198880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000043e830 CR3: 00000000a11a3000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
-[snipped]
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Thanks.
-
-Coly Li
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
 
 ______________________________________________________
 Linux MTD discussion mailing list
