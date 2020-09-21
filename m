@@ -2,62 +2,64 @@ Return-Path: <SRS0=HVA7=C6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4ADB6C43465
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 08:09:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 812ECC43463
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 08:09:07 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 03FEA20874
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 08:09:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 37DF320874
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 08:09:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Ynx+Gw3M";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="t0/fR3sl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 03FEA20874
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ztfh3ol2";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="EQwu/cR2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 37DF320874
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=QvGEXqYfEjgCrUuCsfewB+oX2fjCVNW6BuISfxBFnvk=; b=Ynx+Gw3M9d/Gqjdy0p5u0h9WH2
-	faSLjwUACWEJIKVftPOtCmmIzFaEpvq/OviNCpKBhjDkVtzS6+g/cK8dbMIWsQz/JEj2qaNx2bg5B
-	sH3b2cDRnfpRlji4M3t/OOzr5SDewlDpEWzjmOUgx9BIyZxL3aLz1JQiOTVfsnitfH3Nfy4SWw+HM
-	zAt/FbpTIWHLRriZirXcFKRQCoYSVjjKAFtCYn515GH3T0+DwOnH57rNEEvMxIDv5m/keqWpQWA/J
-	KIpFBMSCm86MZukR+6eLfvXrm4wXkUCK7YMmNgOXEEhkusHUDPFE6iQkIUYtKGarq5feR1qjeNuCJ
-	l6T9pIEg==;
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=XfoX/cnw2wHGABXuLwEMGtLarE5HcchlXhLKt14WfPw=; b=ztfh3ol2TaH7df8JPCJE5GdTa
+	wMeURjUxs3S5/taVu4cw7VwKngFWddk657H/JtpNu8kZFTAr3ViInoETtTZ85bWuFLVxTnxxQ7zgx
+	7sxw7IoqOInEA/PfJvJS4kvmIbZuvEMir2wayKbivPpN1nSubsKh1Kx27vggiuaPmiHxVq/LhW+Va
+	XwyZzHvbkP7xB3lm2VYEqmoD9tQ1boZkcXaLZ+k3YW3BSeg2jJAi11JyddRAhazc54GoQO3fEKKtu
+	UE5dnp5+517cU+AtH9pYvqdWcAZvRgKmfsxhc2V2WJ51C0OBHIdZSmYExZ5k25y2WqAK+vQsudHaA
+	y67xhE2+g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kKGrU-0004EG-LQ; Mon, 21 Sep 2020 08:07:48 +0000
+	id 1kKGrZ-0004Gn-FR; Mon, 21 Sep 2020 08:07:53 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kKGrN-0004Cx-KG
+ id 1kKGrN-0004D0-KC
  for linux-mtd@merlin.infradead.org; Mon, 21 Sep 2020 08:07:41 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
- Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
- Content-Description:In-Reply-To:References;
- bh=VM2ZDhyOxyQ2Y1dDHiBEPye1qG1o//V0l6TNm5Sr/FU=; b=t0/fR3slvRiXSRxi1ANdVCAPYJ
- cTpjX/9/46DAos1ZZSmSu9iT0bOAPH4s2IIQBYnzF5i80UAkswyyGMaX0ZSmgY9fkoz8dCCpQ3+7h
- Adb3hpLeikh8u7CgrIF0WEBhX1fEIUEBxABgoXVNxCW1d5j5AJgOmtKyCBBj6KDhXKtSvy1xIZBCc
- IWeakTABDNWW43uVABcmb9AXarhhnZYbB4WsyHg0bVqgcTwp9gTxUmvPRwOHYCv4yoky6MCSu5YHs
- 0Dz4Pd9AlW7rqDQtJJ5kr4i2Iv7QuEQOFdXgfTL2W5GuhU2d2n8/lsi8Wix4SdH3T6pdRU7OWXlMJ
- GBC1k5xQ==;
+ References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+ Content-Type:Content-ID:Content-Description;
+ bh=1Wl4CR3g3QHDQhZ33f8Oe6qI9aP7fMZeE5hKlObwJ0M=; b=EQwu/cR2LodCQaFHG05hYNpozm
+ U++iiQM/OeP2AkVo1WTUpU+dI2Dxy9PU9SMGZkQIchixHl5Jx7a0QZk5QjsM3mKR+reWMYdC5dYVn
+ 1/RyKrVkK9YLy3fmeQEtMZdYZZY5sO+JS6B15u1VfcYsZYeIJhvelBd9tWQF1KMWdpSxOaOX7AQ3C
+ wizDdm3VvY8FkkLVnDPzz1aL3YJazDYKgNWRltE/h20ULbz8zDeUg/9HS2R2SkDzVSLHKIMcr5zcW
+ Ycx/mTaN0ejniWyn1jkIqStX3tT5JOPuH+P5WFBTHwcT/t8jMI83iRyfSIeaANZdLu8MwdwI6fNNq
+ LsuftJjQ==;
 Received: from p4fdb0c34.dip0.t-ipconnect.de ([79.219.12.52] helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kKGr6-0006Vp-FM; Mon, 21 Sep 2020 08:07:25 +0000
+ id 1kKGrD-0006WA-MD; Mon, 21 Sep 2020 08:07:32 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: bdi cleanups v6
-Date: Mon, 21 Sep 2020 10:07:21 +0200
-Message-Id: <20200921080734.452759-1-hch@lst.de>
+Subject: [PATCH 03/13] bcache: inherit the optimal I/O size
+Date: Mon, 21 Sep 2020 10:07:24 +0200
+Message-Id: <20200921080734.452759-4-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200921080734.452759-1-hch@lst.de>
+References: <20200921080734.452759-1-hch@lst.de>
 MIME-Version: 1.0
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by
  casper.infradead.org. See http://www.infradead.org/rpr.html
@@ -85,45 +87,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Jens,
+Inherit the optimal I/O size setting just like the readahead window,
+as any reason to do larger I/O does not apply to just readahead.
 
-this series contains a bunch of different BDI cleanups.  The biggest item
-is to isolate block drivers from the BDI in preparation of changing the
-lifetime of the block device BDI in a follow up series.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ drivers/md/bcache/super.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Changes since v5:
- - improve a commit message
- - improve the stable_writes deprecation printk
- - drop "drbd: remove RB_CONGESTED_REMOTE"
- - drop a few hunks that add a local variable in a otherwise unchanged
-   file due to changes in the previous revisions
- - keep updating ->io_pages in queue_max_sectors_store
- - set an optimal I/O size in aoe
- - inherit the optimal I/O size in bcache
+diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+index 1bbdc410ee3c51..48113005ed86ad 100644
+--- a/drivers/md/bcache/super.c
++++ b/drivers/md/bcache/super.c
+@@ -1430,6 +1430,8 @@ static int cached_dev_init(struct cached_dev *dc, unsigned int block_size)
+ 	dc->disk.disk->queue->backing_dev_info->ra_pages =
+ 		max(dc->disk.disk->queue->backing_dev_info->ra_pages,
+ 		    q->backing_dev_info->ra_pages);
++	blk_queue_io_opt(dc->disk.disk->queue,
++		max(queue_io_opt(dc->disk.disk->queue), queue_io_opt(q)));
+ 
+ 	atomic_set(&dc->io_errors, 0);
+ 	dc->io_disable = false;
+-- 
+2.28.0
 
-Changes since v4:
- - add a back a prematurely removed assignment in dm-table.c
- - pick up a few reviews from Johannes that got lost
-
-Changes since v3:
- - rebased on the lasted block tree, which has some of the prep
-   changes merged
- - extend the ->ra_pages changes to ->io_pages
- - move initializing ->ra_pages and ->io_pages for block devices to
-   blk_register_queue
-
-Changes since v2:
- - fix a rw_page return value check
- - fix up various changelogs
-
-Changes since v1:
- - rebased to the for-5.9/block-merge branch
- - explicitly set the readahead to 0 for ubifs, vboxsf and mtd
- - split the zram block_device operations
- - let rw_page users fall back to bios in swap_readpage
-
-
-Diffstat:
 
 ______________________________________________________
 Linux MTD discussion mailing list
