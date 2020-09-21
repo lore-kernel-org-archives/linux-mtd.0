@@ -2,64 +2,62 @@ Return-Path: <SRS0=HVA7=C6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 689FFC4346A
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 08:08:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4ADB6C43465
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 08:09:05 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E7B2920874
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 08:08:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 03FEA20874
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 08:09:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tTKP/54x";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Qsz7fDdZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E7B2920874
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Ynx+Gw3M";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="t0/fR3sl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 03FEA20874
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=nE9mzesuIvcwsXwD77PKeXji57Ao6QOKof3ZlC34nPU=; b=tTKP/54xlIoLspOdkcbrC4XON
-	pDRwQtNik+nj5vAZs8O2riNy+sJ9LG1Msw/nMZ3c6tpr5GgINFZvX5/uQcEI9UYtAQcPyR2WNtP17
-	ZB0eV7HuJQhYSSCZZtsXo3F80tf9PxLiZnqxYQNDrC2DjUzcZIVFUVLG6tsS8RD+0S7OaIbbkzund
-	8enWjSQ2nCYXs5bnICjiakJbBmU5LHQ3Kxjk/aSxk0Xk/St9JDa9/Fnnuf7YH97RzjJSbqN6pxtYe
-	5BLQ40ujc+6djXVH6UdryC+61RONUrv2Fn2knpGG7sAS4I6i0SRiH0a1FI9kju+sneVoegOY+4gMj
-	QlOZwaTXw==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=QvGEXqYfEjgCrUuCsfewB+oX2fjCVNW6BuISfxBFnvk=; b=Ynx+Gw3M9d/Gqjdy0p5u0h9WH2
+	faSLjwUACWEJIKVftPOtCmmIzFaEpvq/OviNCpKBhjDkVtzS6+g/cK8dbMIWsQz/JEj2qaNx2bg5B
+	sH3b2cDRnfpRlji4M3t/OOzr5SDewlDpEWzjmOUgx9BIyZxL3aLz1JQiOTVfsnitfH3Nfy4SWw+HM
+	zAt/FbpTIWHLRriZirXcFKRQCoYSVjjKAFtCYn515GH3T0+DwOnH57rNEEvMxIDv5m/keqWpQWA/J
+	KIpFBMSCm86MZukR+6eLfvXrm4wXkUCK7YMmNgOXEEhkusHUDPFE6iQkIUYtKGarq5feR1qjeNuCJ
+	l6T9pIEg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kKGre-0004Hc-Ca; Mon, 21 Sep 2020 08:07:58 +0000
+	id 1kKGrU-0004EG-LQ; Mon, 21 Sep 2020 08:07:48 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kKGrN-0004Cz-KF
+ id 1kKGrN-0004Cx-KG
  for linux-mtd@merlin.infradead.org; Mon, 21 Sep 2020 08:07:41 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
- References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
- Content-Type:Content-ID:Content-Description;
- bh=eYXlp772S5NwgfYwqpisbRltSHIHkEperICR+k7yOF8=; b=Qsz7fDdZj16Ylfx0LNjysSRJbJ
- fAi9ANPDKXInAqOa9M3xkjOiVe2qYYbG09ikhI5e0k/gm+tO+xm6ng9EW+5Pn0QJ7xsQtGU1H4w3u
- 9IZlKAO0AYH2dGQNe1vfOwjecRUAtddftwMGeibUq4QkqjCEgq+mhS0U53zk7y5Wwwiy1AVJFipZn
- 5lUdnZ0Pqu6IdH0kSH9XQ6so8hoe9hByXTsnu3qgunSiaaawVhRt6nyXp4FP34e+os17Su6epEqz7
- oZ+x0Wfq0sYJNx7Qs9FvBrnqZPb+RHqy4ElL0cqcyDDrtuNUmkW7b+NLEFnFw7JWUCfiZqYZCbNpN
- 6i18MBYg==;
+ Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+ Content-Description:In-Reply-To:References;
+ bh=VM2ZDhyOxyQ2Y1dDHiBEPye1qG1o//V0l6TNm5Sr/FU=; b=t0/fR3slvRiXSRxi1ANdVCAPYJ
+ cTpjX/9/46DAos1ZZSmSu9iT0bOAPH4s2IIQBYnzF5i80UAkswyyGMaX0ZSmgY9fkoz8dCCpQ3+7h
+ Adb3hpLeikh8u7CgrIF0WEBhX1fEIUEBxABgoXVNxCW1d5j5AJgOmtKyCBBj6KDhXKtSvy1xIZBCc
+ IWeakTABDNWW43uVABcmb9AXarhhnZYbB4WsyHg0bVqgcTwp9gTxUmvPRwOHYCv4yoky6MCSu5YHs
+ 0Dz4Pd9AlW7rqDQtJJ5kr4i2Iv7QuEQOFdXgfTL2W5GuhU2d2n8/lsi8Wix4SdH3T6pdRU7OWXlMJ
+ GBC1k5xQ==;
 Received: from p4fdb0c34.dip0.t-ipconnect.de ([79.219.12.52] helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kKGrB-0006W2-02; Mon, 21 Sep 2020 08:07:30 +0000
+ id 1kKGr6-0006Vp-FM; Mon, 21 Sep 2020 08:07:25 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 02/13] drbd: remove dead code in device_to_statistics
-Date: Mon, 21 Sep 2020 10:07:23 +0200
-Message-Id: <20200921080734.452759-3-hch@lst.de>
+Subject: bdi cleanups v6
+Date: Mon, 21 Sep 2020 10:07:21 +0200
+Message-Id: <20200921080734.452759-1-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921080734.452759-1-hch@lst.de>
-References: <20200921080734.452759-1-hch@lst.de>
 MIME-Version: 1.0
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by
  casper.infradead.org. See http://www.infradead.org/rpr.html
@@ -75,9 +73,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: linux-raid@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
- Justin Sanders <justin@coraid.com>, Jan Kara <jack@suse.cz>,
- Minchan Kim <minchan@kernel.org>,
- Johannes Thumshirn <johannes.thumshirn@wdc.com>, linux-bcache@vger.kernel.org,
+ Justin Sanders <justin@coraid.com>, Minchan Kim <minchan@kernel.org>,
+ Johannes Thumshirn <Johannes.Thumshirn@wdc.com>, linux-bcache@vger.kernel.org,
  Coly Li <colyli@suse.de>, linux-block@vger.kernel.org,
  Song Liu <song@kernel.org>, dm-devel@redhat.com, linux-mtd@lists.infradead.org,
  Richard Weinberger <richard@nod.at>, linux-fsdevel@vger.kernel.org,
@@ -88,44 +85,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Ever since the switch to blk-mq, a lower device not used for VM
-writeback will not be marked congested, so the check will never
-trigger.
+Hi Jens,
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- drivers/block/drbd/drbd_nl.c | 6 ------
- 1 file changed, 6 deletions(-)
+this series contains a bunch of different BDI cleanups.  The biggest item
+is to isolate block drivers from the BDI in preparation of changing the
+lifetime of the block device BDI in a follow up series.
 
-diff --git a/drivers/block/drbd/drbd_nl.c b/drivers/block/drbd/drbd_nl.c
-index 43c8ae4d9fca81..aaff5bde391506 100644
---- a/drivers/block/drbd/drbd_nl.c
-+++ b/drivers/block/drbd/drbd_nl.c
-@@ -3370,7 +3370,6 @@ static void device_to_statistics(struct device_statistics *s,
- 	if (get_ldev(device)) {
- 		struct drbd_md *md = &device->ldev->md;
- 		u64 *history_uuids = (u64 *)s->history_uuids;
--		struct request_queue *q;
- 		int n;
- 
- 		spin_lock_irq(&md->uuid_lock);
-@@ -3384,11 +3383,6 @@ static void device_to_statistics(struct device_statistics *s,
- 		spin_unlock_irq(&md->uuid_lock);
- 
- 		s->dev_disk_flags = md->flags;
--		q = bdev_get_queue(device->ldev->backing_bdev);
--		s->dev_lower_blocked =
--			bdi_congested(q->backing_dev_info,
--				      (1 << WB_async_congested) |
--				      (1 << WB_sync_congested));
- 		put_ldev(device);
- 	}
- 	s->dev_size = drbd_get_capacity(device->this_bdev);
--- 
-2.28.0
+Changes since v5:
+ - improve a commit message
+ - improve the stable_writes deprecation printk
+ - drop "drbd: remove RB_CONGESTED_REMOTE"
+ - drop a few hunks that add a local variable in a otherwise unchanged
+   file due to changes in the previous revisions
+ - keep updating ->io_pages in queue_max_sectors_store
+ - set an optimal I/O size in aoe
+ - inherit the optimal I/O size in bcache
 
+Changes since v4:
+ - add a back a prematurely removed assignment in dm-table.c
+ - pick up a few reviews from Johannes that got lost
+
+Changes since v3:
+ - rebased on the lasted block tree, which has some of the prep
+   changes merged
+ - extend the ->ra_pages changes to ->io_pages
+ - move initializing ->ra_pages and ->io_pages for block devices to
+   blk_register_queue
+
+Changes since v2:
+ - fix a rw_page return value check
+ - fix up various changelogs
+
+Changes since v1:
+ - rebased to the for-5.9/block-merge branch
+ - explicitly set the readahead to 0 for ubifs, vboxsf and mtd
+ - split the zram block_device operations
+ - let rw_page users fall back to bios in swap_readpage
+
+
+Diffstat:
 
 ______________________________________________________
 Linux MTD discussion mailing list
