@@ -2,82 +2,59 @@ Return-Path: <SRS0=HVA7=C6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F50FC43463
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 13:22:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64502C43465
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 14:00:51 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 962E22076E
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 13:22:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F2CE920756
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 14:00:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="w050NvoS";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fZOBPJFG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 962E22076E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ndMUtf+b"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F2CE920756
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:MIME-Version:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=hWTHftnDsThtrXdMu+rRDUg6MvZSR8KkjPJ/SWSGglU=; b=w050NvoSM3TMX/kIB7dAcBbKN+
-	nF6q4jr6rCwB2m6DP5Av51gwICaCYDBqTg8bDBkoJ9ywNCeG6ybrtESf93tTdNSKsSe9er1szJBVM
-	/Xc/DhHVLHdOo1H9TTN6txPEd3G0B0EbwwzziHFDX98lbGERup8jY2e4rueU/vY5iU/4/6GhoQuOS
-	cE3DM2gXvFs3+OuTKcFZz6NRPprljuof/xqt/0HWelcenKv7NKwIV3dZbOU77/GW/7/Gx3OGlDLJ/
-	7gmm9sgUi5N55sQio09/DJC+56qgRE/DmY5gn/b22kDFiao0vpgUCeymKQKFghvJbNUEg750PO3xZ
-	81dLnL9Q==;
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=UHJdQt2FolD0XaFQFBhbbALcDMoGxIuakPZnFpagmdM=; b=ndMUtf+bON3zPKRVCYXZVPmmO
+	BdVCuHpqbxF+vHEWiYZSBtuD4rpjlskaDdgRoLClY56L2I74Dk343XoaBNkF+0oWvEqBroQTvv2RT
+	7nBBtGvoaQUUiu4UX82zygwicnR4IMcrNvtLhEiSb6pJKkBRTO2glcz4Wor4k+1tjyvBUdUvwyvfV
+	p7PpyQTrvAta9ZY2NuSN2/ItQf2aRCUBUUfSHDjAgZCkQ/Ix78BJnKwAL4/Q9VBWZVQzHKfrpMteK
+	tUbnu2uLj9espKlWP/ZAih/nhLM9DfktgBpa6HGK5V4oTS0oessKSpCI8nQH+BqjBoG64RWTSHDoS
+	1axEcGq3g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kKLkY-0007JL-LJ; Mon, 21 Sep 2020 13:20:58 +0000
-Received: from mail-ua1-x941.google.com ([2607:f8b0:4864:20::941])
+	id 1kKMMe-0006ig-EB; Mon, 21 Sep 2020 14:00:20 +0000
+Received: from verein.lst.de ([213.95.11.211])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kKLkW-0007Ik-Bo
- for linux-mtd@lists.infradead.org; Mon, 21 Sep 2020 13:20:57 +0000
-Received: by mail-ua1-x941.google.com with SMTP id j12so4305344ual.7
- for <linux-mtd@lists.infradead.org>; Mon, 21 Sep 2020 06:20:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=mime-version:from:date:message-id:subject:to:cc;
- bh=loKQZgFga7UZqbSbnj4ovLLilrOYK2w/uOEdhWo0QRM=;
- b=fZOBPJFGZDQ87HnVlMCfZuU42PyfoXYYhy/YH28hMXXDbyB9AFgj4nZOQan8qZsDPo
- sOtTW2VV3XXwCWlvHa3UoV6Kqs3466q2oHMuek93tq1hZeb1Ka/dgNOzYTFx37WGTqkv
- sheMW6c7QFDPTPeBwRAIN2AODYs+qMztO6kj/OKqsmyXINatr5YnTvIrPlKBOqkLiSbB
- tsRPsOj6rPFphj4sanhbhcpVcG4FlfcDfOIelGxik8adyyEi2FIL7IvGeax4ywWq0/q7
- d/OoEQmIkjDmHmJeK5o6P83jaUCEdgknRoI353Gp7L/dsj2lkGUvkHkiByIJfuSs28k2
- omKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
- bh=loKQZgFga7UZqbSbnj4ovLLilrOYK2w/uOEdhWo0QRM=;
- b=oVJ4npzrhuweVUh1j5dkupAzn6K2i8Jvzs+qMPwmiYdeP2VdYpKHh7Y9RZ9OQgGVc1
- YKxY8/CT1qn2HiFpRTQWz042kB9NN8/JPoH8NBoKMEywFk0Sity9iHrrutlbIMLkYpU9
- V19WIQ99XItCpkUC3PmocwkWQwX1rkXE0HhSA2LrR/S55jEPu5xGv/zeDJJD/zjrDQFA
- 7nZIJa3pcFc1txj4KikOjbOGpBVUptSm2a3ejh3KowCcHTSVlmLjL9zvvsf8TubkxQy0
- 84bcHw9qX+XGJttK40kfEIGW+Luurg+3VRafenLTqk6pKnhnDsIzSC5dtTTXdNAIGTBA
- KEzA==
-X-Gm-Message-State: AOAM530HGqSjs6vO2NxxxeLOnTrHpH4u2bpiEJtgYxKJSsoAU3TiSa88
- 50cjCYvOmUcX4gnSr0Xvn3SM9Y7s53RgoWQ30uavChU7eqx9/AE/
-X-Google-Smtp-Source: ABdhPJxlUx5DCg2D991fKfj9KERXXc7eyIev4G7HPK7E/F/PYaSBCgo3aCh8ZI58Ivy9YqG4WKa/MRBt88vNEv29zuw=
-X-Received: by 2002:a9f:29c5:: with SMTP id s63mr5102469uas.34.1600694451848; 
- Mon, 21 Sep 2020 06:20:51 -0700 (PDT)
+ id 1kKMMZ-0006h5-NJ
+ for linux-mtd@lists.infradead.org; Mon, 21 Sep 2020 14:00:17 +0000
+Received: by verein.lst.de (Postfix, from userid 2407)
+ id A75DA68AFE; Mon, 21 Sep 2020 16:00:11 +0200 (CEST)
+Date: Mon, 21 Sep 2020 16:00:10 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Coly Li <colyli@suse.de>
+Subject: Re: [PATCH 03/13] bcache: inherit the optimal I/O size
+Message-ID: <20200921140010.GA14672@lst.de>
+References: <20200921080734.452759-1-hch@lst.de>
+ <20200921080734.452759-4-hch@lst.de>
+ <b547a1b6-ab03-0520-012d-86d112c83d92@suse.de>
 MIME-Version: 1.0
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Mon, 21 Sep 2020 18:50:40 +0530
-Message-ID: <CA+G9fYvuq58q+GsWnzni0sKSHbubuQz-UaK3TASX26V_a7yBVw@mail.gmail.com>
-Subject: arm-smmu 5000000.iommu: Cannot accommodate DMA offset for IOMMU page
- tables
-To: linux-mtd@lists.infradead.org, open list <linux-kernel@vger.kernel.org>, 
- Linux-Next Mailing List <linux-next@vger.kernel.org>,
- lkft-triage@lists.linaro.org, 
- "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>
+Content-Disposition: inline
+In-Reply-To: <b547a1b6-ab03-0520-012d-86d112c83d92@suse.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200921_092056_413797_18FEECFB 
-X-CRM114-Status: GOOD (  10.83  )
+X-CRM114-CacheID: sfid-20200921_100015_927724_ABA45661 
+X-CRM114-Status: GOOD (  14.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,209 +66,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Poonam Aggrwal <poonam.aggrwal@nxp.com>, robh@kernel.org,
- Joerg Roedel <jroedel@suse.de>, Arnd Bergmann <arnd@arndb.de>,
- Richard Weinberger <richard@nod.at>, Joerg Roedel <joro@8bytes.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Suram Suram <suram@nxp.com>,
- masonccyang@mxic.com.tw, Zhiqiang.Hou@nxp.com
+Cc: Jens Axboe <axboe@kernel.dk>, linux-raid@vger.kernel.org,
+ Hans de Goede <hdegoede@redhat.com>, Justin Sanders <justin@coraid.com>,
+ Minchan Kim <minchan@kernel.org>, Richard Weinberger <richard@nod.at>,
+ linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-block@vger.kernel.org, Song Liu <song@kernel.org>, dm-devel@redhat.com,
+ linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+ Johannes Thumshirn <Johannes.Thumshirn@wdc.com>, linux-fsdevel@vger.kernel.org,
+ cgroups@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+ drbd-dev@lists.linbit.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-arm64  Freescale Layerscape 2088A RDB Board boot failed with linux-next
-5.9.0-rc5-next-20200921 kernel tag version. The kernel warning and then
-kernel panic happened.
+On Mon, Sep 21, 2020 at 05:54:59PM +0800, Coly Li wrote:
+> I am not sure whether virtual bcache device's optimal request size can
+> be simply set like this.
+> 
+> Most of time inherit backing device's optimal request size is fine, but
+> there are two exceptions,
+> - Read request hits on cache device
+> - User sets sequential_cuttoff as 0, all writing may go into cache
+> device firstly.
+> For the above two conditions, all I/Os goes into cache device, using
+> optimal request size of backing device might be improper.
+> 
+> Just a guess, is it OK to set the optimal request size of the virtual
+> bcache device as the least common multiple of cache device's and backing
+> device's optimal request sizes ?
 
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-
-metadata:
-  git branch: master
-  git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-  git commit: b10b8ad862118bf42c28a98b0f067619aadcfb23
-  git describe: next-20200921
-  make_kernelversion: 5.9.0-rc5
-  kernel-config:
-https://builds.tuxbuild.com/GxPuM0SSznSoSYYG8deYpQ/kernel.config
-
-
-crash log,
-
-[    1.811830] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0x48
-[    1.818202] nand: Micron MT29F16G08ABACAWP
-[    1.822314] nand: 2048 MiB, SLC, erase size: 512 KiB, page size:
-4096, OOB size: 224
-[    1.830078] ------------[ cut here ]------------
-[    1.834703] Driver must set ecc.strength when using hardware ECC
-[    1.840739] WARNING: CPU: 1 PID: 1 at
-drivers/mtd/nand/raw/nand_base.c:5671 nand_scan_with_ids+0x110c/0x1498
-[    1.850568] Modules linked in:
-[    1.853621] CPU: 1 PID: 1 Comm: swapper/0 Not tainted
-5.9.0-rc5-next-20200921 #1
-[    1.861015] Hardware name: Freescale Layerscape 2088A RDB Board (DT)
-[    1.867368] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
-[    1.873373] pc : nand_scan_with_ids+0x110c/0x1498
-[    1.878073] lr : nand_scan_with_ids+0x110c/0x1498
-[    1.882774] sp : ffff80001005ba50
-[    1.886083] x29: ffff80001005ba50 x28: 0000000000000000
-[    1.891395] x27: ffff0082edf98638 x26: 0000000000000048
-[    1.896706] x25: 000000000000002c x24: ffff0082edf98578
-[    1.902018] x23: 0000000000000001 x22: ffff0082ee6b0000
-[    1.907329] x21: ffff0082edf98840 x20: 0000000000000000
-[    1.912640] x19: ffff0082edf98080 x18: 0000000000000010
-[    1.917951] x17: 0000000000000010 x16: 00000000833b5ff2
-[    1.923262] x15: ffff0082ee6b0480 x14: ffffffffffffffff
-[    1.928572] x13: ffff80009005b737 x12: ffff80001005b73f
-[    1.933883] x11: ffff80001005ba50 x10: ffff80001005ba50
-[    1.939194] x9 : ffffdc379157bfbc x8 : 657274732e636365
-[    1.944504] x7 : 2074657320747375 x6 : ffffdc37937ba000
-[    1.949815] x5 : ffffdc37937baa58 x4 : ffff80001005b840
-[    1.955125] x3 : 0000000000000000 x2 : ffff0082ee6b0000
-[    1.960436] x1 : 4732f0d38a403700 x0 : 0000000000000000
-[    1.965748] Call trace:
-[    1.968189]  nand_scan_with_ids+0x110c/0x1498
-[    1.972542]  fsl_ifc_nand_probe+0x474/0x6e0
-[    1.976723]  platform_drv_probe+0x5c/0xb0
-[    1.980729]  really_probe+0xf0/0x4d8
-[    1.984300]  driver_probe_device+0xfc/0x168
-[    1.988480]  device_driver_attach+0x7c/0x88
-[    1.992659]  __driver_attach+0xac/0x178
-[    1.996490]  bus_for_each_dev+0x78/0xc8
-[    2.000321]  driver_attach+0x2c/0x38
-[    2.003893]  bus_add_driver+0x14c/0x230
-[    2.007724]  driver_register+0x6c/0x128
-[    2.011555]  __platform_driver_register+0x50/0x60
-[    2.016258]  fsl_ifc_nand_driver_init+0x24/0x30
-[    2.020786]  do_one_initcall+0x4c/0x2d0
-[    2.024560] ata1: SATA link down (SStatus 0 SControl 300)
-[    2.024618]  kernel_init_freeable+0x214/0x280
-[    2.024624]  kernel_init+0x1c/0x120
-[    2.037849]  ret_from_fork+0x10/0x30
-[    2.041420] CPU: 1 PID: 1 Comm: swapper/0 Not tainted
-5.9.0-rc5-next-20200921 #1
-[    2.048815] Hardware name: Freescale Layerscape 2088A RDB Board (DT)
-[    2.055166] Call trace:
-[    2.057606]  dump_backtrace+0x0/0x1e0
-[    2.061263]  show_stack+0x20/0x30
-[    2.064574]  dump_stack+0xf8/0x168
-[    2.067972]  __warn+0xfc/0x178
-[    2.071023]  report_bug+0xfc/0x170
-[    2.074419]  bug_handler+0x28/0x70
-[    2.077816]  call_break_hook+0x70/0x88
-[    2.080559] ata2: SATA link down (SStatus 0 SControl 300)
-[    2.081560]  brk_handler+0x24/0x68
-[    2.081566]  do_debug_exception+0xb8/0x130
-[    2.094442]  el1_sync_handler+0xd8/0x120
-[    2.098360]  el1_sync+0x80/0x100
-[    2.101583]  nand_scan_with_ids+0x110c/0x1498
-[    2.105935]  fsl_ifc_nand_probe+0x474/0x6e0
-[    2.110115]  platform_drv_probe+0x5c/0xb0
-[    2.114120]  really_probe+0xf0/0x4d8
-[    2.117691]  driver_probe_device+0xfc/0x168
-[    2.121871]  device_driver_attach+0x7c/0x88
-[    2.126050]  __driver_attach+0xac/0x178
-[    2.129882]  bus_for_each_dev+0x78/0xc8
-[    2.133714]  driver_attach+0x2c/0x38
-[    2.137284]  bus_add_driver+0x14c/0x230
-[    2.141116]  driver_register+0x6c/0x128
-[    2.144946]  __platform_driver_register+0x50/0x60
-[    2.149647]  fsl_ifc_nand_driver_init+0x24/0x30
-[    2.154173]  do_one_initcall+0x4c/0x2d0
-[    2.158004]  kernel_init_freeable+0x214/0x280
-[    2.162358]  kernel_init+0x1c/0x120
-[    2.165841]  ret_from_fork+0x10/0x30
-[    2.169415] ---[ end trace d051012f465b08eb ]---
-[    2.174073] fsl,ifc-nand: probe of 530000000.nand failed with error -22
-[    2.181882] spi-nor spi0.0: unrecognized JEDEC id bytes: 1c 38 78 e1 e3 c7
-[    2.189409] spi-nor spi1.0: unrecognized JEDEC id bytes: 00 00 00 00 00 00
-[    2.196301] spi-nor: probe of spi1.0 failed with error -2
-[    2.203202] libphy: Fixed MDIO Bus: probed
-[    2.208607] thunder_xcv, ver 1.0
-[    2.211860] thunder_bgx, ver 1.0
-[    2.215114] nicpf, ver 1.0
-[    2.218785] hclge is initializing
-[    2.222141] hns3: Hisilicon Ethernet Network Driver for Hip08
-Family - version
-[    2.229371] hns3: Copyright (c) 2017 Huawei Corporation.
-[    2.234716] e1000: Intel(R) PRO/1000 Network Driver
-[    2.239598] e1000: Copyright (c) 1999-2006 Intel Corporation.
-[    2.245370] e1000e: Intel(R) PRO/1000 Network Driver
-[    2.250338] e1000e: Copyright(c) 1999 - 2015 Intel Corporation.
-[    2.256403] e1000e 0000:01:00.0: Adding to iommu group 0
-[    2.261733] arm-smmu 5000000.iommu: Cannot accommodate DMA offset
-for IOMMU page tables
-[    2.269752] Unable to handle kernel NULL pointer dereference at
-virtual address 0000000000000000
-[    2.278544] Mem abort info:
-[    2.281334]   ESR = 0x96000004
-[    2.284389]   EC = 0x25: DABT (current EL), IL = 32 bits
-[    2.289705]   SET = 0, FnV = 0
-[    2.292759]   EA = 0, S1PTW = 0
-[    2.295900] Data abort info:
-[    2.298781]   ISV = 0, ISS = 0x00000004
-[    2.302618]   CM = 0, WnR = 0
-[    2.305581] [0000000000000000] user address but active_mm is swapper
-[    2.311941] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-[    2.317512] Modules linked in:
-[    2.320566] CPU: 1 PID: 1 Comm: swapper/0 Tainted: G        W
-  5.9.0-rc5-next-20200921 #1
-[    2.329352] Hardware name: Freescale Layerscape 2088A RDB Board (DT)
-[    2.335705] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
-[    2.341715] pc : arm_smmu_flush_iotlb_all+0x28/0x90
-[    2.346590] lr : iommu_create_device_direct_mappings.isra.0+0x1f0/0x218
-[    2.353203] sp : ffff80001005b9b0
-[    2.356511] x29: ffff80001005b9b0 x28: 0000000000000000
-[    2.361822] x27: ffffdc3792e904e0 x26: ffff80001005ba48
-[    2.367134] x25: ffff0082ee6b0000 x24: ffff0082ed88e0a8
-[    2.372445] x23: 00000000fffffff4 x22: 0000000000001000
-[    2.377755] x21: ffff80001005ba48 x20: 0000000000000000
-[    2.383066] x19: ffff0082cceeeb58 x18: 0000000000000010
-[    2.388377] x17: 0000000000000000 x16: 00000000833b5ff2
-[    2.393688] x15: ffff0082ee6b0480 x14: 203a756d6d6f692e
-[    2.398999] x13: 3030303030303520 x12: 61646f6d6d6f6363
-[    2.404311] x11: 6120746f6e6e6143 x10: 6f66207465736666
-[    2.409622] x9 : ffffdc3791d31078 x8 : ffff0082ed8ffd00
-[    2.414933] x7 : 0000000000000000 x6 : 000000000000003f
-[    2.420244] x5 : 0000000000000040 x4 : ffff80001005b970
-[    2.425554] x3 : 0000000000000000 x2 : 0000000000000000
-[    2.430865] x1 : ffffdc37927dd2f0 x0 : ffff0082cceeeb58
-[    2.436176] Call trace:
-[    2.438618]  arm_smmu_flush_iotlb_all+0x28/0x90
-[    2.443144]  iommu_create_device_direct_mappings.isra.0+0x1f0/0x218
-[    2.449409]  iommu_probe_device+0x6c/0x120
-[    2.453501]  of_iommu_configure+0x134/0x218
-[    2.457683]  of_dma_configure_id+0x110/0x2e8
-[    2.461950]  pci_dma_configure+0x4c/0xd8
-[    2.465870]  really_probe+0xac/0x4d8
-[    2.469441]  driver_probe_device+0xfc/0x168
-[    2.473620]  device_driver_attach+0x7c/0x88
-[    2.477799]  __driver_attach+0xac/0x178
-[    2.481631]  bus_for_each_dev+0x78/0xc8
-[    2.485463]  driver_attach+0x2c/0x38
-[    2.489033]  bus_add_driver+0x14c/0x230
-[    2.492865]  driver_register+0x6c/0x128
-[    2.496696]  __pci_register_driver+0x4c/0x58
-[    2.500964]  e1000_init_module+0x44/0x50
-[    2.504882]  do_one_initcall+0x4c/0x2d0
-[    2.508714]  kernel_init_freeable+0x214/0x280
-[    2.513068]  kernel_init+0x1c/0x120
-[    2.516552]  ret_from_fork+0x10/0x30
-[    2.520124] Code: 910003fd a90153f3 aa0003f3 f85a8014 (f9400280)
-[    2.526224] ---[ end trace d051012f465b08ec ]---
-[    2.530848] Kernel panic - not syncing: Attempted to kill init!
-exitcode=0x0000000b
-[    2.538506] SMP: stopping secondary CPUs
-[    2.542431] Kernel Offset: 0x5c3781480000 from 0xffff800010000000
-[    2.548521] PHYS_OFFSET: 0xffffdb6ac0000000
-[    2.552700] CPU features: 0x0240022,21806008
-[    2.556965] Memory Limit: none
-
-full test log,
-https://lavalab.nxp.com/scheduler/job/86650#L849
-
--- 
-Linaro LKFT
-https://lkft.linaro.org
+Well, if the optimal I/O size is wrong, the read ahead size also is
+wrong.  Can we just drop the setting?
 
 ______________________________________________________
 Linux MTD discussion mailing list
