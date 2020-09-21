@@ -2,74 +2,88 @@ Return-Path: <SRS0=HVA7=C6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23126C43463
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 10:03:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6C09C43463
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 10:41:19 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C432821D7A
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 10:03:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5F1E320684
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 10:41:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IfKDXMcO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C432821D7A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sHLdJM6v";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M60B9UnS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F1E320684
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
-	:List-Id:To:From:Subject:Message-ID:Date:MIME-Version:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=M+jY/aaXv9gmfwPFibyj4g2iHTjLQDKferJ2Z+nMWpQ=; b=IfKDXMcO8xc3qoY89Va+s+BD2L
-	E7XPIKFq67lbK283PT6eYwygDSSG3fkGOELDcB9YXRcvGL+2OSCXtFY5+qIXY9o5f19Q5XZuy4HNk
-	bokOo37TJozoPw4IAdZ8WFV4NndFiBXT6rf2YLN6bSP+DJ0epaaapJqMnGBivX9RDX31kn/YC7foe
-	rPGxOpP32Ymn11vS03IyvU6IxoYeLQYKOVBQtZI/k529Q/Dt9Gnjbp+Yy9mSMV+EMHg+K5Q++D2T+
-	7XeBXTxtGtZl+Awp0ol3nUNNk02hT9HxOXHjsBzrVa8CNXRCP2VspyC1JflRgMB2SYPejlSMMHiUw
-	g32vgBVQ==;
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=Q0yh/O+DsLbIIZOz+0se7qPMLK5mVhP+qRY1hlkspiI=; b=sHLdJM6vZPhqP3apPH7B39qtb
+	TbJ1GWJn8lHKGFLHJ8HQXPm9YSCp9Y4gjy7QduvIGwSCr5P6Msg0sVGTuxEPsi/AIwYUuilihUjTe
+	cYbB3WwipRnjNpyG+4SUbBSOFhbrb5afr4TfKEqlbsuIG9YyrtNPY2XnRm9K1RFyRUKupfQb8290k
+	e4NkBiD0Z8NdLTQSgTryu2ZuiMdGU1uMB14RQQis/e0Wg8/sFy/mPamJ83mG9Kt/yeOGh23EwRVLk
+	P0sz53qASg/VLLqKxdrxRZpM+ARCQShkwTsvhJkhbOv3qbnlPhHgJnA3Gdhy6wjkD7sHBpldvDCQR
+	QRXV7dxcw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kKIeV-0004Y1-5E; Mon, 21 Sep 2020 10:02:31 +0000
-Received: from mail-il1-f208.google.com ([209.85.166.208])
+	id 1kKJFT-00059x-Ju; Mon, 21 Sep 2020 10:40:43 +0000
+Received: from mail-ua1-x943.google.com ([2607:f8b0:4864:20::943])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kKIeN-0004Wv-Hx
- for linux-mtd@lists.infradead.org; Mon, 21 Sep 2020 10:02:24 +0000
-Received: by mail-il1-f208.google.com with SMTP id v5so186352ilj.20
- for <linux-mtd@lists.infradead.org>; Mon, 21 Sep 2020 03:02:21 -0700 (PDT)
+ id 1kKJFR-00059c-Qa
+ for linux-mtd@lists.infradead.org; Mon, 21 Sep 2020 10:40:42 +0000
+Received: by mail-ua1-x943.google.com with SMTP id w23so4141558uam.9
+ for <linux-mtd@lists.infradead.org>; Mon, 21 Sep 2020 03:40:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=RbZ0xHSk6i1h6fcwtmCKRJZvsUgQuosTWmAcYFZAQPM=;
+ b=M60B9UnS2ILS1L93iOM87/Vzyqg2iDzGKk9DD4PiF1AemYHzbd/9OJhhXMbPaKxLh/
+ t557a5fPnYCB5lMuDVvgeLKxWqjd7DY+VxjY7cLWvNloiC74B9cQ69uWGUVSfvTZlEGI
+ qkacaWpgcjgn7v1d/T7hhlJCiC+2Q6nsm9dWwhk5Ol21ykd4gusp6SCgLVEjCkMVLe5A
+ M1T9y98fJLYMEskniNebPtGz2mHXtZ2DPMT9oUG/JXvFASziqddYf9t4NH+aQITBFvwL
+ ZYC8Qu6xFR4tITNAMXMkIaBce1d8obDsphRXDl+GnE/D7TMzSSKWtySEWEClN1p8jvX5
+ 8ukA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
- bh=878X+MokR+ZbeqJGJQNq7QDLXnpG5EMYsQ8wF9gEG6g=;
- b=A1LvJKROr1hZK8ff8rvQdc+GLhodSyzpn9CzIIL2IJCsN7AdKCVuDSICge+Aa8PXoC
- zKkoFmqOzw8EFSD/l1o7aMNFMj1n0pu5wV3lrrFnA0iKMwb9F8YW1XTQCsg3cp5fO2Nq
- KQvZr8Kdzf1Tag//0RWxsCawyme7sDMkDez4jYcYZD06ZttFNg3UePZuDf9wrYge6kVU
- piNQVjVBT3CQZBuUPmLMyWhEy9J3wE6caaqpALP7nNgYd+GgcPYneIWMqMZzw6/Z6fAR
- X1ZO177apczOxZDvSaxCspy0pKrpiPnX0gkWvHdAdcJtnj1XcgmmHWMt/E6Ok9ETz77W
- ++7A==
-X-Gm-Message-State: AOAM533aR+xoZain1OVLOSzUCAehGmApe70qmoQ9vKXP3NC1L0ow0OHF
- QrPsvvYWNpQxyvFJ8MERyzOh3mUd+pVT0UsAcJ9KwDfUPQPs
-X-Google-Smtp-Source: ABdhPJy77SpanDAhaUD564y+kfir5vkWynL2iO3uzcCnBbobRoCMtMVM2wLANCqpTZo8HnFv9DEsyoW2UKTNcmOMcsiqIT+5iXiI
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=RbZ0xHSk6i1h6fcwtmCKRJZvsUgQuosTWmAcYFZAQPM=;
+ b=oPSwIT1CjOl/xDw9WvQ7+9IZv+RlN2WRmwUMer25dtVc8dxEbMQw1G9vC+PHMjI8+8
+ e5ZcBBthNXmbdRrop4L370iw7vNdllCxy99hkYtlvQB0XNxpjnweiCl1D1UUi/jEblwv
+ X++HbfE637VgIMdVO8cstmX96Z3Jz8ZIfgAZBkEkBdShLDIzd1LacMs23s4FW3o6gnGJ
+ 9S3Uk1H6GJ0kH8XrGnaiPInxf0YJQE3OaeXpKqcLTmVTb0n/xtPfhpGWoraLTPjnDlNO
+ WubHYPBHonDjrLcdgUe33ZgZWT5rz5gDpAjcqUMKIdmeLxgVGYxDu/Usi65JdtusNn+G
+ kPtQ==
+X-Gm-Message-State: AOAM530uvOFkY6NvGkcAafxSAiuxezpYmYDvfBNZJKKinQETogkUX27U
+ GcaA2gcOVamxT9W6pLnUWirqIKcFVsF9D8O6HvUFnu9Kfpc=
+X-Google-Smtp-Source: ABdhPJzo3yZcUyFNyEg3+PwlhwZ+igUIKpSccZIEH5FVM2vsq+FhhmMsXL83LE479mF+bqTmCyst2jqZ3GcLxFcLps4=
+X-Received: by 2002:ab0:627:: with SMTP id f36mr22697836uaf.76.1600684839862; 
+ Mon, 21 Sep 2020 03:40:39 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a6b:3e84:: with SMTP id
- l126mr35372373ioa.118.1600682541024; 
- Mon, 21 Sep 2020 03:02:21 -0700 (PDT)
-Date: Mon, 21 Sep 2020 03:02:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000418c7705afcff2e1@google.com>
-Subject: general protection fault in jffs2_parse_param
-From: syzbot <syzbot+9765367bb86a19d38732@syzkaller.appspotmail.com>
-To: dhowells@redhat.com, dwmw2@infradead.org, linux-kernel@vger.kernel.org, 
- linux-mtd@lists.infradead.org, richard@nod.at, sandeen@sandeen.net, 
- syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+References: <CADBnMviQd-9TbkJFUCWE8THCYF9oq-iZfu6Cjxcy9GvTfe=KUg@mail.gmail.com>
+ <CAFLxGvw9TMHz5Mf=RYytB3N6uMuK5md+WxF=atzvaXcuibmNsg@mail.gmail.com>
+ <CADBnMvjuS4F8CLwbGRTAt3bVyA7DAwEFwMmNqRdNJyZCRpXCXw@mail.gmail.com>
+ <CAFLxGvxF_mK573Xhc0w2njjf4qRPSTiMf9B_GRBnJo1kj1MbkQ@mail.gmail.com>
+ <CAFLxGvyHWFmLTYmyqmJo9Rfm87D_ZafBWyQSMvdYKLFTUM9p+Q@mail.gmail.com>
+ <CADBnMvhcowEVqUYwg3vVK-F-=N+mRNQAsaihXuUorW-iWnWcxg@mail.gmail.com>
+ <1929983185.113286.1600681896280.JavaMail.zimbra@nod.at>
+In-Reply-To: <1929983185.113286.1600681896280.JavaMail.zimbra@nod.at>
+From: Kristof Havasi <havasiefr@gmail.com>
+Date: Mon, 21 Sep 2020 12:41:07 +0200
+Message-ID: <CADBnMvhKxZSjyzhYxu3FUjZ0KtSDUdfiyEWBnNYP8ireCpkX8Q@mail.gmail.com>
+Subject: Re: UBIFS-AUTH panic after reboot
+To: Richard Weinberger <richard@nod.at>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200921_060223_596238_C75F4F8B 
-X-CRM114-Status: UNSURE (   7.81  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200921_064041_885986_90F371F2 
+X-CRM114-Status: GOOD (  16.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,92 +95,34 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Sascha Hauer <s.hauer@pengutronix.de>,
+ linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    325d0eab Merge branch 'akpm' (patches from Andrew)
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12acb307900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b12e84189082991c
-dashboard link: https://syzkaller.appspot.com/bug?extid=9765367bb86a19d38732
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=175909d9900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=179b3cc3900000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9765367bb86a19d38732@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
-CPU: 1 PID: 6866 Comm: syz-executor202 Not tainted 5.9.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:jffs2_parse_param+0x141/0x330 fs/jffs2/super.c:206
-Code: 48 c1 ea 03 4d 63 fc 80 3c 02 00 0f 85 de 01 00 00 48 b8 00 00 00 00 00 fc ff df 4d 8b 75 00 49 8d 7e 08 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 c8 01 00 00 4d 8b 76 08 4c 89 ff 4c 89 f6 e8 d6
-RSP: 0018:ffffc90001087b78 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: ffff8880932c9c00 RCX: ffffffff82882084
-RDX: 0000000000000001 RSI: ffffffff82882096 RDI: 0000000000000008
-RBP: 1ffff92000210f6f R08: 0000000000000001 R09: 0000000000000003
-R10: 00000000003fffff R11: 0000000000000000 R12: 0000000000000000
-R13: ffff88808de2a000 R14: 0000000000000000 R15: 0000000000000000
-FS:  0000000002198880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000043e830 CR3: 00000000a11a3000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- vfs_parse_fs_param fs/fs_context.c:117 [inline]
- vfs_parse_fs_param+0x203/0x550 fs/fs_context.c:98
- vfs_parse_fs_string+0xe6/0x150 fs/fs_context.c:161
- generic_parse_monolithic+0x16f/0x1f0 fs/fs_context.c:201
- do_new_mount fs/namespace.c:2871 [inline]
- path_mount+0x133f/0x20a0 fs/namespace.c:3192
- do_mount fs/namespace.c:3205 [inline]
- __do_sys_mount fs/namespace.c:3413 [inline]
- __se_sys_mount fs/namespace.c:3390 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3390
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x44699a
-Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 7d ae fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 5a ae fb ff c3 66 0f 1f 84 00 00 00 00 00
-RSP: 002b:00007ffc381bf788 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007ffc381bf7d0 RCX: 000000000044699a
-RDX: 0000000020001300 RSI: 0000000020001340 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 00007ffc381bf7d0 R09: 0000000000000014
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401c80
-R13: 0000000000401d10 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
----[ end trace 9cf0f624124bffcb ]---
-RIP: 0010:jffs2_parse_param+0x141/0x330 fs/jffs2/super.c:206
-Code: 48 c1 ea 03 4d 63 fc 80 3c 02 00 0f 85 de 01 00 00 48 b8 00 00 00 00 00 fc ff df 4d 8b 75 00 49 8d 7e 08 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 c8 01 00 00 4d 8b 76 08 4c 89 ff 4c 89 f6 e8 d6
-RSP: 0018:ffffc90001087b78 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: ffff8880932c9c00 RCX: ffffffff82882084
-RDX: 0000000000000001 RSI: ffffffff82882096 RDI: 0000000000000008
-RBP: 1ffff92000210f6f R08: 0000000000000001 R09: 0000000000000003
-R10: 00000000003fffff R11: 0000000000000000 R12: 0000000000000000
-R13: ffff88808de2a000 R14: 0000000000000000 R15: 0000000000000000
-FS:  0000000002198880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000043e830 CR3: 00000000a11a3000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gTW9uLCAyMSBTZXAgMjAyMCBhdCAxMTo1MSwgUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJk
+QG5vZC5hdD4gd3JvdGU6Cj4KPiAtLS0tLSBVcnNwcsO8bmdsaWNoZSBNYWlsIC0tLS0tCj4gPj4g
+PiBEb2VzIHRoZSBwcm9ibGVtIGFsc28gdHJpZ2dlciB3aXRoIGVuY3J5cHRpb24gZGlzYWJsZWQ/
+IFNvIGp1c3Qgd2l0aAo+ID4+ID4gYXV0aGVudGljYXRpb24/Cj4gPiBJIGNvdWxkbid0IHRyaWdn
+ZXIgdGhlIHNhbWUgZXJyb3Igd2l0aCBlbmNyeXB0aW9uIGRpc2FibGVkIGFuZCBhdXRoZW50aWNh
+dGlvbgo+ID4gZW5hYmxlZC4gRXZlbiBpZiBJIGVuYWJsZWQgYWxsIHRoZSBjaGtfKiBrbm9icyB1
+bmRlciBrZXJuZWwvZGVidWcvdWJpZnMvLCBubwo+ID4gZmFpbGVkIGFzc2VydGlvbiBvciBlcnJv
+ci93YXJuaW5nIGxvZyBjb3VsZCBiZSBvYnNlcnZlZC4KPgo+IFNvLCB3aXRoIGVpdGhlciBlbmNy
+eXB0aW9uIG9yIGF1dGhlbnRpY2F0aW9uIGVuYWJsZWQgZXZlcnl0aGluZyBpcyBmaW5lCj4gYnV0
+IHdoZW4gYm90aCBhcmUgZW5hYmxlZCB5b3UgaGl0IHRoZSBwcm9ibGVtPwo+IEludGVyZXN0aW5n
+LgoKVGhhdCBpcyBleGFjdGx5IHdoYXQgSSBjYW4gb2JzZXJ2ZS4KCj4KPiA+PiBEb2VzIGl0IHBy
+aW50IGJpZyBMUFQgb3Igc21hbGwgTFBUIG1vZGVsPwo+ID4KPiA+IHNtYWxsIExQVCBtb2RlbC4K
+Pgo+IEknbGwgdHJ5IHRvIHJlcHJvZHVjZSBub3cgb24gYSBzaW1pbGFyIHNpemVkIE5BTkQuIDot
+KQoKSSBtZW50aW9uZWQgdGhhdCBJIHVzZSB0aGUgYnVpbGRyb290J3MgbWtmcy51YmlmcyB3aXRo
+IGN1c3RvbWl6YXRpb24sCmJ1dCBoZXJlIGFyZSB0aGUgcGFyYW1ldGVyczoKKENvbmZpZ3VyZWQg
+dmlhIEtjb25maWcpCgotLW1heC1sZWItY250PTM5NjgKLS1taW4taW8tc2l6ZT0weDEwMDAKLS1s
+ZWItc2l6ZT0weDNFMDAwCi0ta2V5IC9wYXRoL3RvL2tleQotLWtleS1kZXNjcmlwdG9yIGRlYWQx
+MjM0NTY3OGJlZWYKLS1jaXBoZXIgQUVTLTI1Ni1YVFMKLS1oYXNoLWFsZ28gc2hhMjU2Ci0tYXV0
+aC1rZXk9InBrY3MxMTp0b2tlbj0uLi4iCgpUaGUgZmxhc2ggaXMgYSBNaWNyb24gTVQyOUY4RzA4
+QUJBQ0FXUC1JVDpDIHdoaWNoIGhhcyAyMjQgYnl0ZXMgT09CLAp3aGljaCBpcyBub3QKaW5jbHVk
+ZWQgaW4gdGhlIC0tbWluLWlvLXNpemUuIFRoYXQgaXMgb2ssIGlzbid0PwoKVGhhbmsgeW91LAog
+ICAgICAgIEtyaXN0b2YKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
