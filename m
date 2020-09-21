@@ -5,19 +5,19 @@ X-Spam-Level:
 X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10280C43468
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 08:09:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6ED18C43465
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 08:09:40 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AED4E20874
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 08:09:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F0BA920874
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2020 08:09:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RB7N94gT";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="n3T38Jnn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AED4E20874
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kmx567zC";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Sk2hPYgw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F0BA920874
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,37 +26,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=MUg7772CnsxUCq0o5I3cNvTOpRAynIQiqUi0cReV4Ug=; b=RB7N94gTlFgH8lyc453jN4egn
-	3dKCK8YTZM7IpzyYzwVaahJ3prgOPH2St3swo6uAIdNH1EGRvzcfJzIsrMzjgkGW/X0sbf9ZkAHTe
-	d/SMRu/BmELj6AxicYvGL/u2fSYMygWN1+BmXzHhMitA485YprxIdszV8J/NgMtKGonj5Pc4Q8AY1
-	LZm7Yb78v0d1F4E21IGWPhda6esnTEPFZ8Z/rVdt7pWoxrTRPD64YQ16quonaBMfPpzungfzEFjLd
-	I4YSJWeAx9ZKqkl+Yd5K8ExCq/ZycXd70rDKnLjFvkSJB5eg2t7DN8rpxASZ1gYLuzQ84kSU2+d5l
-	/LYjAbPdA==;
+	 bh=yOPlSQoiNRIeHIZ14m68mBjNXpZfQnfrxMJs84xfSrI=; b=kmx567zCqPlh+8aUJb0rcqBfw
+	qebEPW03Jpv63IMGFviqMbGIO4lAFvX604OayTasbhLc7TGux1xoMDZg8Kav6dVw/Q2WdRq7dEFBr
+	luUoUt0B5yKpv09hzZEj5VtEvSp+7wskSVvKf7/hd8jtktAysav5inxtm3PEW6sBndFuM85+AoqpR
+	F0YtS2CuYOTuJUEZI10DkZwa4+NEYxPD+yBNwLLUgAGfTvaG8rCFzr+cu7sPd+/WOzj/eEzrA+JUK
+	in9fjwM3BGnUKDSspkgEW7k/tz1GU0MRyPwCtx0j21Z/Aib3wFDMUxR786Rvr1JbWDp/BZqYh+9f6
+	ek16UyOFg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kKGsO-0004eE-R1; Mon, 21 Sep 2020 08:08:44 +0000
+	id 1kKGsl-0004sR-6z; Mon, 21 Sep 2020 08:09:07 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kKGrN-0004D1-KD
- for linux-mtd@merlin.infradead.org; Mon, 21 Sep 2020 08:07:41 +0000
+ id 1kKGrQ-0004EP-WD
+ for linux-mtd@merlin.infradead.org; Mon, 21 Sep 2020 08:07:45 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=ZzPx71qgJF0jC0ikEBgBKShPtgyqvHrdfndjbCu7C3c=; b=n3T38Jnns58og0olaG188os3c6
- Lqj80wazOFLuBqb6DzzvWszbXA3+Y15Uoi5riSG12LmSHnndvS7DaBM4xo1E5BBmnAcRUioV80H7i
- ubGonqQbO7YqgiSd26ZSWF6leHSlOm7o8Rv4r2ifY88yPIwirX3JDzu5Fmf3oz+Uvo8cF94Mgf/1K
- cdFMnud/GADnfbAT+/WPp8SvrxpdL9BIrrG+BHlakN27jgHbJVoT1L4RghwZ97/jlT3SfoAvy7zb1
- IikTWnCDbjKELovIrEKqR41ryOwAAP0TTY1wN4/C7kLMRUqhd2nwEKQd1mi56LJqFv5s7vUVwt+HB
- CeVbO78g==;
+ bh=II635vFBb1VUrIhyKQTtXi4VWoh2O6zcRcSXRwzfbpE=; b=Sk2hPYgwgcgokdAsqo1nu9HhXB
+ OsjHKn5+BJvFWY4Sefcpyh5ujRWi0Z4oD5MmZWRj9xnAWRVDX+T5B4Oa2aZeBLOxRQQi5QrofHqYp
+ y4CtQBUtWJFkbK6afdiIHfkP4HgvN6TJqbTyUG4eI0cppvd44LZfg29PkHvEAcGtKxOq9XyLihzxt
+ bMincOmR8eLZ0JmE8/+bXBo2ogEsw3QcS2HVEtTwmAvK3QSdmYXS5EmE1XbL1I99HXL5lS6vkBKqy
+ ZXc7+N80HDK/k2lUP9oVOk1HmVfHjn1Zh/A0GSN/Jjl/hR2fMjBdV3ele27qaYfTBCjhuRzynt+4B
+ UvT6a2cw==;
 Received: from p4fdb0c34.dip0.t-ipconnect.de ([79.219.12.52] helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kKGr8-0006Vv-SC; Mon, 21 Sep 2020 08:07:27 +0000
+ id 1kKGrP-0006Xc-DD; Mon, 21 Sep 2020 08:07:43 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 01/13] fs: remove the unused SB_I_MULTIROOT flag
-Date: Mon, 21 Sep 2020 10:07:22 +0200
-Message-Id: <20200921080734.452759-2-hch@lst.de>
+Subject: [PATCH 08/13] bdi: remove BDI_CAP_CGROUP_WRITEBACK
+Date: Mon, 21 Sep 2020 10:07:29 +0200
+Message-Id: <20200921080734.452759-9-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921080734.452759-1-hch@lst.de>
 References: <20200921080734.452759-1-hch@lst.de>
@@ -88,44 +88,77 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The last user of SB_I_MULTIROOT is disappeared with commit f2aedb713c28
-("NFS: Add fs_context support.")
+Just checking SB_I_CGROUPWB for cgroup writeback support is enough.
+Either the file system allocates its own bdi (e.g. btrfs), in which case
+it is known to support cgroup writeback, or the bdi comes from the block
+layer, which always supports cgroup writeback.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Jan Kara <jack@suse.cz>
 Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/namei.c         | 4 ++--
- include/linux/fs.h | 1 -
- 2 files changed, 2 insertions(+), 3 deletions(-)
+ block/blk-core.c            | 1 -
+ fs/btrfs/disk-io.c          | 1 -
+ include/linux/backing-dev.h | 8 +++-----
+ 3 files changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/fs/namei.c b/fs/namei.c
-index e99e2a9da0f7de..f1eb8ccd2be958 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -568,8 +568,8 @@ static bool path_connected(struct vfsmount *mnt, struct dentry *dentry)
- {
- 	struct super_block *sb = mnt->mnt_sb;
+diff --git a/block/blk-core.c b/block/blk-core.c
+index 865d39e5be2b28..1cc4fa6bc7fe1f 100644
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -538,7 +538,6 @@ struct request_queue *blk_alloc_queue(int node_id)
+ 	if (!q->stats)
+ 		goto fail_stats;
  
--	/* Bind mounts and multi-root filesystems can have disconnected paths */
--	if (!(sb->s_iflags & SB_I_MULTIROOT) && (mnt->mnt_root == sb->s_root))
-+	/* Bind mounts can have disconnected paths */
-+	if (mnt->mnt_root == sb->s_root)
- 		return true;
+-	q->backing_dev_info->capabilities = BDI_CAP_CGROUP_WRITEBACK;
+ 	q->node = node_id;
  
- 	return is_subdir(dentry, mnt->mnt_root);
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 7519ae003a082c..fbd74df5ce5f34 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -1385,7 +1385,6 @@ extern int send_sigurg(struct fown_struct *fown);
- #define SB_I_CGROUPWB	0x00000001	/* cgroup-aware writeback enabled */
- #define SB_I_NOEXEC	0x00000002	/* Ignore executables on this fs */
- #define SB_I_NODEV	0x00000004	/* Ignore devices on this fs */
--#define SB_I_MULTIROOT	0x00000008	/* Multiple roots to the dentry tree */
+ 	atomic_set(&q->nr_active_requests_shared_sbitmap, 0);
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 047934cea25efa..e24927bddd5829 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3091,7 +3091,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 		goto fail_sb_buffer;
+ 	}
  
- /* sb->s_iflags to limit user namespace mounts */
- #define SB_I_USERNS_VISIBLE		0x00000010 /* fstype already mounted */
+-	sb->s_bdi->capabilities |= BDI_CAP_CGROUP_WRITEBACK;
+ 	sb->s_bdi->ra_pages *= btrfs_super_num_devices(disk_super);
+ 	sb->s_bdi->ra_pages = max(sb->s_bdi->ra_pages, SZ_4M / PAGE_SIZE);
+ 
+diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
+index 0b06b2d26c9aa3..52583b6f2ea05d 100644
+--- a/include/linux/backing-dev.h
++++ b/include/linux/backing-dev.h
+@@ -123,7 +123,6 @@ int bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned int max_ratio);
+  * BDI_CAP_NO_ACCT_WB:     Don't automatically account writeback pages
+  * BDI_CAP_STRICTLIMIT:    Keep number of dirty pages below bdi threshold.
+  *
+- * BDI_CAP_CGROUP_WRITEBACK: Supports cgroup-aware writeback.
+  * BDI_CAP_SYNCHRONOUS_IO: Device is so fast that asynchronous IO would be
+  *			   inefficient.
+  */
+@@ -233,9 +232,9 @@ int inode_congested(struct inode *inode, int cong_bits);
+  * inode_cgwb_enabled - test whether cgroup writeback is enabled on an inode
+  * @inode: inode of interest
+  *
+- * cgroup writeback requires support from both the bdi and filesystem.
+- * Also, both memcg and iocg have to be on the default hierarchy.  Test
+- * whether all conditions are met.
++ * Cgroup writeback requires support from the filesystem.  Also, both memcg and
++ * iocg have to be on the default hierarchy.  Test whether all conditions are
++ * met.
+  *
+  * Note that the test result may change dynamically on the same inode
+  * depending on how memcg and iocg are configured.
+@@ -247,7 +246,6 @@ static inline bool inode_cgwb_enabled(struct inode *inode)
+ 	return cgroup_subsys_on_dfl(memory_cgrp_subsys) &&
+ 		cgroup_subsys_on_dfl(io_cgrp_subsys) &&
+ 		bdi_cap_account_dirty(bdi) &&
+-		(bdi->capabilities & BDI_CAP_CGROUP_WRITEBACK) &&
+ 		(inode->i_sb->s_iflags & SB_I_CGROUPWB);
+ }
+ 
 -- 
 2.28.0
 
