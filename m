@@ -2,67 +2,89 @@ Return-Path: <SRS0=loyI=C7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FDA9C4363D
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Sep 2020 16:02:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 670EEC2D0E2
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Sep 2020 21:16:01 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ADF23208A9
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Sep 2020 16:02:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D358B20715
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Sep 2020 21:16:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IOD50pWy";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="UIYsmBEG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ADF23208A9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Xk2hit5B";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fishpost-de.20150623.gappssmtp.com header.i=@fishpost-de.20150623.gappssmtp.com header.b="KF7i1o4E"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D358B20715
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=fishpost.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=hSLXZxqidJvs69+m7leplkwu35m5si1niKq2AfSOsOM=; b=IOD50pWyv3F0xYkp8Dse42NeJ
-	mrlZUiOMa2XSHGuRXOyDMp3Y7xcGjxnrcAive0TStFd+teFY9DgAfCyIBDbnXvLfPN5ml6g2iHYOW
-	Awmf+5w+lBk/DMGkHaWiHfszFgrUndrbvC/2O3xtKqjtopI35Xb1VqHPVzYHxTLoZjwV93wgnkPEc
-	9ksfdzeskUPWJXGsyrIzspax5Cjm5Q4UHxq4N7EEow/Cjcl8oJwuYHZ3CpEIZBOauJy5fCPqjjxpB
-	UUkySvo1dRiq+uh3pTLrf1alshpNANs7b5iF8qGZI6+KEE23WnwS2UcWVu7Zoj0qgiBbGYLPy/aeE
-	jR/sCpoiw==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=23phWda3Q4qtb4YIaLui6FJ+85R28x3lumRKTa8BH9g=; b=Xk2hit5BFdefTRgyhcJtXtRq4Y
+	dMqSjs9yxl9kMSmkZEaty0xOFgIkVvj3SOquKu6qsHGEqTS0Bk/9Joi37oS9ZBqR1fidUq7pUHGMh
+	59jgXRCMUNVtLQsr3cVDW9lUk5ELD2K3yuawSmzkYM7gIwzg88PNnJOk8JjXNzvRQ3QtYL0HbQw1+
+	D/EK3XXNQ7pWoqg7HThL83BpOP4ndse4DxEz/NSsw0icMJ3FrN3dHn/Xb/3QmnFsqZF+5Boh1xOzW
+	NuH5u6INwery63+fxVmU+3OkvX5H0b9DWA/toJlwrAVrIGq21HE2KyFncUuIOd2fIhvf/kSaPfsdV
+	KbMbb+fg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kKkjg-0008JW-Iz; Tue, 22 Sep 2020 16:01:44 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1kKpck-0002Cz-8G; Tue, 22 Sep 2020 21:14:54 +0000
+Received: from mail-ej1-x641.google.com ([2a00:1450:4864:20::641])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kKkjd-0008I9-M9
- for linux-mtd@lists.infradead.org; Tue, 22 Sep 2020 16:01:42 +0000
-Received: from localhost (unknown [104.132.1.66])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id B00672399A;
- Tue, 22 Sep 2020 16:01:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1600790499;
- bh=+JbPuKTQwLYiRtLrv7dRgf3ndqTICplWlXGxANCBloY=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=UIYsmBEGgBG28a67cc36efeTmr+VyZEYubJkA1CnDNucRlSPGUUMf82astmsgTQ1B
- oNOuT+s12Ov2S/HKXGJWAeiuAaMlIRPqbOrYPRIKP1mi3oYwgjJ2ObNlSgaMEDeXVp
- P6br8rNFA/3F7DPqLISqW6RMXWF8Emrl79vwMOdQ=
-Date: Tue, 22 Sep 2020 09:01:39 -0700
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-To: Eric Biggers <ebiggers@kernel.org>
-Subject: Re: [PATCH 0/5] Add support for Encryption and Casefolding in F2FS
-Message-ID: <20200922160139.GA3718581@google.com>
-References: <20200922104807.912914-1-drosen@android.com>
- <20200922135940.GB5599@sol.localdomain>
+ id 1kKpcg-0002C5-VK
+ for linux-mtd@lists.infradead.org; Tue, 22 Sep 2020 21:14:52 +0000
+Received: by mail-ej1-x641.google.com with SMTP id e23so24867487eja.3
+ for <linux-mtd@lists.infradead.org>; Tue, 22 Sep 2020 14:14:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fishpost-de.20150623.gappssmtp.com; s=20150623;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=K8aILP0mckDUMoEiR1RpS/yOBUzdAZhoou96h2/GkBY=;
+ b=KF7i1o4EH/SfUYSRFQ7QoNmQKmdOb1m6CQZBnv8XmjXSKSYFuk8AktXSIgexQdc2L8
+ Jg3DKTotJgt1yiJsWcxwY515KuwQ5Wib7xnUHGHtjmACRuvE0mbD7t98AG4GSKg2dcee
+ bQ/+/HzMFvS00uZpdLEa3pH4ELo9IejTdxHxqQmPhbcbBqxhXZmh45l2MkbK55k4OSlI
+ 7DjoeurKvMjuMrV60c3x6xIZaRED/pjeD1TJmyghITF5l93n5mZ0tgV1VNFZca8iRzG+
+ 24aqoWnr/DEDBl33E8aFGbSrJrejRA6LKyuneBAJgXS+N+hv6e3ZBAwzpUI50fzTCKEa
+ zdIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=K8aILP0mckDUMoEiR1RpS/yOBUzdAZhoou96h2/GkBY=;
+ b=Gcn6xz9rXqkJhhvJs2EUBxRZ47/XEhiy3WFhhbblnOcThS+znJnaOUSQ4ARuaOV0yO
+ rXzGOCKqy/5QDPGtLjRNY5ZW3QBlf3yWOGNdMywGUG/mt1ZaEe+d90RtsCgutfwb+M9i
+ LMp+XfdmnBKhOU898s6kRpbqr8L/JhyGL7Z4nxcUxZducTHsTCDnRW+/eklhB5+KEFJg
+ 7+5PLUaFyQQHVttR7Z5Ip7F/lPIJBI7OEVWiU5yEgi37Ah0xP96KYwMKqZM2hT/QM3j7
+ qZ9+QBmVudS4PZwXUcFr2nnSR2f16xloHGSru/zQnIn/M2WInferposs3nIvJ0pFhOKv
+ uFvQ==
+X-Gm-Message-State: AOAM532/FZ1kohFY+AFQekwne6NAE1lRRx8RXbIX5eMNSKhouM30L+It
+ RL2/VKy2H1qbv1uNagtcoJMcXDEp6g66BROT
+X-Google-Smtp-Source: ABdhPJygC8ldsmhJsy3tjJ2AVn9qGzd0CjHCfSSwqgzqhP7MMTK+Djn/kIEgnQZsUtoZSKZTeM6R2Q==
+X-Received: by 2002:a17:906:a101:: with SMTP id
+ t1mr6848830ejy.203.1600809286659; 
+ Tue, 22 Sep 2020 14:14:46 -0700 (PDT)
+Received: from thinkbage.fritz.box
+ (p200300d06f42a300a5a855abe04a2b61.dip0.t-ipconnect.de.
+ [2003:d0:6f42:a300:a5a8:55ab:e04a:2b61])
+ by smtp.gmail.com with ESMTPSA id r9sm11646489ejc.102.2020.09.22.14.14.45
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 22 Sep 2020 14:14:46 -0700 (PDT)
+From: Bastian Germann <bastiangermann@fishpost.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mkfs.ubifs: Fix build with SELinux
+Date: Tue, 22 Sep 2020 23:14:37 +0200
+Message-Id: <20200922211437.14699-1-bastiangermann@fishpost.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20200922135940.GB5599@sol.localdomain>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200922_120141_872493_E6CA4D56 
-X-CRM114-Status: GOOD (  21.60  )
+X-CRM114-CacheID: sfid-20200922_171451_176889_912FC030 
+X-CRM114-Status: GOOD (  12.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,53 +96,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: kernel-team@android.com, "Theodore Y . Ts'o" <tytso@mit.edu>,
- Richard Weinberger <richard@nod.at>, Chao Yu <chao@kernel.org>,
- linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-fscrypt@vger.kernel.org, Andreas Dilger <adilger.kernel@dilger.ca>,
- Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-ext4@vger.kernel.org,
- Gabriel Krisman Bertazi <krisman@collabora.com>,
- Daniel Rosenberg <drosen@android.com>
+Cc: Bastian Germann <bastiangermann@fishpost.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 09/22, Eric Biggers wrote:
-> On Tue, Sep 22, 2020 at 03:48:02AM -0700, Daniel Rosenberg wrote:
-> > These patches are on top of the f2fs dev branch
-> > 
-> > F2FS currently supports casefolding and encryption, but not at
-> > the same time. These patches aim to rectify that. In a later follow up,
-> > this will be added for Ext4 as well. I've included one ext4 patch from
-> > the previous set since it isn't in the f2fs branch, but is needed for the
-> > fscrypt changes.
-> > 
-> > The f2fs-tools changes have already been applied.
-> > 
-> > Since both fscrypt and casefolding require their own dentry operations,
-> > I've moved the responsibility of setting the dentry operations from fscrypt
-> > to the filesystems and provided helper functions that should work for most
-> > cases.
-> > 
-> > These are a follow-up to the previously sent patch set
-> > "[PATCH v12 0/4] Prepare for upcoming Casefolding/Encryption patches"
-> > 
-> > Daniel Rosenberg (5):
-> >   ext4: Use generic casefolding support
-> >   fscrypt: Export fscrypt_d_revalidate
-> >   libfs: Add generic function for setting dentry_ops
-> >   fscrypt: Have filesystems handle their d_ops
-> >   f2fs: Handle casefolding with Encryption
-> 
-> I only received the cover letter, not the actual patches.  Same for the lore
-> archives; they only have the cover letter.
+In v2.1.0, SELinux support was introduced. It never compiled with ubifs
+because it uses the old add_xattr signature that also changed in v2.1.0
+with a1bd316e23("mkfs.ubifs: Implement fscrypto context store as xattr").
 
-Me too. :)
+Add the ubifs_ino_node and name to the call and remove the nm that is
+contructed in the new function version.
 
-> 
-> - Eric
+Signed-off-by: Bastian Germann <bastiangermann@fishpost.de>
+---
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 10 +---------
+ 1 file changed, 1 insertion(+), 9 deletions(-)
+
+diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+index cd66d93..8211ada 100644
+--- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
++++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+@@ -1411,7 +1411,6 @@ static int inode_add_selinux_xattr(struct ubifs_ino_node *host_ino,
+ 	int ret;
+ 	char *sepath = NULL;
+ 	char *name;
+-	struct qstr nm;
+ 	unsigned int con_size;
+ 
+ 	if (!context || !sehnd) {
+@@ -1442,14 +1441,7 @@ static int inode_add_selinux_xattr(struct ubifs_ino_node *host_ino,
+ 	con_size = strlen(secontext) + 1;
+ 	name = strdup(XATTR_NAME_SELINUX);
+ 
+-	nm.name = name;
+-	nm.len = strlen(name);
+-	host_ino->xattr_cnt++;
+-	host_ino->xattr_size += CALC_DENT_SIZE(nm.len);
+-	host_ino->xattr_size += CALC_XATTR_BYTES(con_size);
+-	host_ino->xattr_names += nm.len;
+-
+-	ret = add_xattr(st, inum, secontext, con_size, &nm);
++	ret = add_xattr(host_ino, st, inum, name, secontext, con_size);
+ 	if (ret < 0)
+ 		dbg_msg(2, "add_xattr failed %d\n", ret);
+ 	return ret;
+-- 
+2.28.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
