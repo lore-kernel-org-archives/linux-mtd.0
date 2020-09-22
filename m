@@ -2,106 +2,93 @@ Return-Path: <SRS0=loyI=C7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1DD4C2D0E2
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Sep 2020 09:52:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7ADA9C2D0E2
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Sep 2020 10:49:44 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 469C62388B
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Sep 2020 09:52:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E3F5F2396D
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Sep 2020 10:49:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="K1Ptr3CZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 469C62388B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="wX3zF5TS";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=android.com header.i=@android.com header.b="cjBL0njH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E3F5F2396D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=android.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Pc4VNW/BlkMlFidGQxTTGAH7ZkzLxtc7akZbkDkohiw=; b=K1Ptr3CZKtD/x/d+WqzDBQapI
-	krpVVgxndpqjoB4KJPFxxc8sQrM7oGRajaOjJhIQgdTvoFwcfXofTpwTSxhwWfSRPu1+Vx/rHy7Ag
-	DR6bYrTuEPtdteFkI9NVmmZqA0FR/XlVraLHyQJuf1ghsdKE9NyVg2Q2aXxtgf+YrXBrwTa3tQ2Et
-	8UKL/3qNmr7NxcQqOMmFILbbiGLHlBmvFCfDzKfRWxDxGLnsHB1iq5/JuwTmuJgqYEpyllQz6LSPZ
-	otgU8NO4HtsrB2FGH5IFEYCLHSI4DgyK8HiWhUJ/rKSTd1mHhq+kkKt5O45YhJzLwhTQK5SlsiGc3
-	PQ8OaqfJw==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=3zj8G+psnT/YSDfECC5iVZcbr8+nMBR8iAsi6F430cE=; b=wX3zF5TSh8uGdZzgjMvR8Ybr5i
+	fsCfhQwOB5DB6al6jYCzWXzGxQBsegwitbDyXYy+YymzMDubgdd809bNzl/RwRTLf0jajuxsx+S94
+	kWV7G2kjEw2LA6kdxbSFYRv5OURRsygIbOkZFdlm9xHx71fOqNitCBZsMSk/fyQqnqa4XmQyOxz6O
+	PKUBA0MyId8AA0yAHP7eQtmv/DODsCQ5h6/iMLhW3zeVvC0ELXG0zJRukfx3x+dMKgK0p6Rj+ONgs
+	NQ1eIUpExbnhKkM08Bm+Q5KFR4Tw3CBPYvUGM9/GcmKzALvH9TEpnQW4n5Vlp/TdqZXsuz7A2hAcX
+	dgeN2H6Q==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kKexw-00047o-A2; Tue, 22 Sep 2020 09:52:04 +0000
-Received: from mx2.suse.de ([195.135.220.15])
+	id 1kKfqb-0006VJ-4z; Tue, 22 Sep 2020 10:48:33 +0000
+Received: from mail-pj1-x1043.google.com ([2607:f8b0:4864:20::1043])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kKexh-00045N-Nh
- for linux-mtd@lists.infradead.org; Tue, 22 Sep 2020 09:51:51 +0000
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 3226EADCD;
- Tue, 22 Sep 2020 09:52:25 +0000 (UTC)
-Subject: Re: [PATCH 07/13] block: lift setting the readahead size into the
- block layer
-To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-References: <20200921080734.452759-1-hch@lst.de>
- <20200921080734.452759-8-hch@lst.de>
-From: Coly Li <colyli@suse.de>
-Autocrypt: addr=colyli@suse.de; keydata=
- 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
-Message-ID: <c6bb4a65-33f5-8e96-fe61-c8b91372d76a@suse.de>
-Date: Tue, 22 Sep 2020 17:51:40 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+ id 1kKfqR-0006U7-0k
+ for linux-mtd@lists.infradead.org; Tue, 22 Sep 2020 10:48:23 +0000
+Received: by mail-pj1-x1043.google.com with SMTP id q4so1282276pjh.5
+ for <linux-mtd@lists.infradead.org>; Tue, 22 Sep 2020 03:48:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=android.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=gd9BXK6Qogm8GWzcEx/RRuoN03o4stNhU2BMPs3db+g=;
+ b=cjBL0njHm+8zUypttYPB1lyQmH9E2S3jK9rf/cmZXEh6EGhIdRL9gIUk/vQojZYKYn
+ IihVstLnA999VhtdeYb2+OGsEINb8d80uZmj0iYuYKmjzqdzEUI76X8MpUdm0QgCwDJk
+ oPFPSJ3Z+Ng/XKbFdKJfbc2uQyDB1AM3XB46PycPUVTODJj7MfvUhH1c9SOBH6hy3fN7
+ +MmI5yEbIvmoO31Bcs6jUoukXNaA5DDoZecxGw2h+gJmXdQsHQE99QS9XqsD892baliJ
+ wjhdtIqH6uXDr1VRf4Cpg35fClhascX89HcZ86PTKJaI3hQP1+2H5OmowlFkWHmQUA8X
+ 0uXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=gd9BXK6Qogm8GWzcEx/RRuoN03o4stNhU2BMPs3db+g=;
+ b=bTqHuEZVuzOtzD41UpEj1Y1keBlPd8tcXtFZretOv4aj5V9QSNh/7/qefTY/zLU8pW
+ FG6k2GbXUtshq41vV/hLMR67Ao9/8V/vhWeaUFDTA23WiybcYSGsFrUptxcjtbr3rVEo
+ +5fi0XCZT2E8/OQA3UaWJoE6t7h+e71LbQK3AAzS0a/+jvODRmPsQISSbsJIPHZFrttV
+ eudfb7frmWO03FpwvreLu1g0E75Cpgszo33edl753ne/InEP71lm2ZykPrCRr99LbdFm
+ /k3Q5G7dMhvK7g1GPjnZkT0d91SzTa3UC84J1K4fNTVBG7CUwnJDkI6kr6aQRV390eAV
+ RUIQ==
+X-Gm-Message-State: AOAM530lPi6Ki/fVU9OhLnJc7jjVL520Zg87EsHyuIb8qggF9KEk+SQr
+ m5lCmmoQNefpXjYch+wmG0gQxQ==
+X-Google-Smtp-Source: ABdhPJxmaXOIQxSeBKkx6n6E73BxPgRUl72SH7IqG1Psmqep24Gl/+025pnEfhuIqXdYNK3DnALwOg==
+X-Received: by 2002:a17:90a:e10:: with SMTP id
+ v16mr3235865pje.84.1600771699965; 
+ Tue, 22 Sep 2020 03:48:19 -0700 (PDT)
+Received: from localhost.localdomain (c-73-231-5-90.hsd1.ca.comcast.net.
+ [73.231.5.90])
+ by smtp.gmail.com with ESMTPSA id kk17sm1958427pjb.31.2020.09.22.03.48.18
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 22 Sep 2020 03:48:19 -0700 (PDT)
+From: Daniel Rosenberg <drosen@android.com>
+To: "Theodore Y . Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
+ Eric Biggers <ebiggers@kernel.org>,
+ Andreas Dilger <adilger.kernel@dilger.ca>, Chao Yu <chao@kernel.org>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Richard Weinberger <richard@nod.at>, linux-fscrypt@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
+Subject: [PATCH 0/5] Add support for Encryption and Casefolding in F2FS
+Date: Tue, 22 Sep 2020 03:48:02 -0700
+Message-Id: <20200922104807.912914-1-drosen@android.com>
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
 MIME-Version: 1.0
-In-Reply-To: <20200921080734.452759-8-hch@lst.de>
-Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200922_055150_134450_39C3B64C 
-X-CRM114-Status: GOOD (  31.64  )
+X-CRM114-CacheID: sfid-20200922_064823_113137_22BEB623 
+X-CRM114-Status: GOOD (  13.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,245 +100,61 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-raid@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
- Justin Sanders <justin@coraid.com>, Minchan Kim <minchan@kernel.org>,
- Johannes Thumshirn <Johannes.Thumshirn@wdc.com>, linux-bcache@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
- Song Liu <song@kernel.org>, dm-devel@redhat.com, linux-mtd@lists.infradead.org,
- Richard Weinberger <richard@nod.at>, linux-fsdevel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-mm@kvack.org, drbd-dev@lists.linbit.com
+Cc: kernel-team@android.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+ Gabriel Krisman Bertazi <krisman@collabora.com>,
+ Daniel Rosenberg <drosen@android.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 2020/9/21 16:07, Christoph Hellwig wrote:
-> Drivers shouldn't really mess with the readahead size, as that is a VM
-> concept.  Instead set it based on the optimal I/O size by lifting the
-> algorithm from the md driver when registering the disk.  Also set
-> bdi->io_pages there as well by applying the same scheme based on
-> max_sectors.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+These patches are on top of the f2fs dev branch
 
-For the bcache part,
+F2FS currently supports casefolding and encryption, but not at
+the same time. These patches aim to rectify that. In a later follow up,
+this will be added for Ext4 as well. I've included one ext4 patch from
+the previous set since it isn't in the f2fs branch, but is needed for the
+fscrypt changes.
 
-Acked-by: Coly Li <colyli@suse.de>
+The f2fs-tools changes have already been applied.
 
+Since both fscrypt and casefolding require their own dentry operations,
+I've moved the responsibility of setting the dentry operations from fscrypt
+to the filesystems and provided helper functions that should work for most
+cases.
 
-Thanks.
+These are a follow-up to the previously sent patch set
+"[PATCH v12 0/4] Prepare for upcoming Casefolding/Encryption patches"
 
-Coly Li
+Daniel Rosenberg (5):
+  ext4: Use generic casefolding support
+  fscrypt: Export fscrypt_d_revalidate
+  libfs: Add generic function for setting dentry_ops
+  fscrypt: Have filesystems handle their d_ops
+  f2fs: Handle casefolding with Encryption
 
+ fs/crypto/fname.c       |  7 ++---
+ fs/crypto/hooks.c       |  1 -
+ fs/ext4/dir.c           | 67 -----------------------------------------
+ fs/ext4/ext4.h          | 16 ----------
+ fs/ext4/hash.c          |  2 +-
+ fs/ext4/namei.c         | 21 ++++++-------
+ fs/ext4/super.c         | 15 +++------
+ fs/f2fs/dir.c           | 64 ++++++++++++++++++++++++++++++---------
+ fs/f2fs/f2fs.h          | 11 +++----
+ fs/f2fs/hash.c          | 11 ++++++-
+ fs/f2fs/namei.c         |  1 +
+ fs/f2fs/recovery.c      | 12 +++++++-
+ fs/f2fs/super.c         |  7 -----
+ fs/libfs.c              | 49 ++++++++++++++++++++++++++++++
+ fs/ubifs/dir.c          |  1 +
+ include/linux/fs.h      |  1 +
+ include/linux/fscrypt.h |  6 ++--
+ 17 files changed, 148 insertions(+), 144 deletions(-)
 
-> ---
->  block/blk-settings.c         |  5 ++---
->  block/blk-sysfs.c            |  9 +++++++++
->  drivers/block/aoe/aoeblk.c   |  1 -
->  drivers/block/drbd/drbd_nl.c | 12 +-----------
->  drivers/md/bcache/super.c    |  3 ---
->  drivers/md/raid0.c           | 16 ----------------
->  drivers/md/raid10.c          | 24 +-----------------------
->  drivers/md/raid5.c           | 13 +------------
->  8 files changed, 14 insertions(+), 69 deletions(-)
-> 
-> diff --git a/block/blk-settings.c b/block/blk-settings.c
-> index 76a7e03bcd6cac..01049e9b998f1d 100644
-> --- a/block/blk-settings.c
-> +++ b/block/blk-settings.c
-> @@ -452,6 +452,8 @@ EXPORT_SYMBOL(blk_limits_io_opt);
->  void blk_queue_io_opt(struct request_queue *q, unsigned int opt)
->  {
->  	blk_limits_io_opt(&q->limits, opt);
-> +	q->backing_dev_info->ra_pages =
-> +		max(queue_io_opt(q) * 2 / PAGE_SIZE, VM_READAHEAD_PAGES);
->  }
->  EXPORT_SYMBOL(blk_queue_io_opt);
->  
-> @@ -628,9 +630,6 @@ void disk_stack_limits(struct gendisk *disk, struct block_device *bdev,
->  		printk(KERN_NOTICE "%s: Warning: Device %s is misaligned\n",
->  		       top, bottom);
->  	}
-> -
-> -	t->backing_dev_info->io_pages =
-> -		t->limits.max_sectors >> (PAGE_SHIFT - 9);
->  }
->  EXPORT_SYMBOL(disk_stack_limits);
->  
-> diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
-> index 81722cdcf0cb21..83915b4a1fc3ad 100644
-> --- a/block/blk-sysfs.c
-> +++ b/block/blk-sysfs.c
-> @@ -854,6 +854,15 @@ int blk_register_queue(struct gendisk *disk)
->  		percpu_ref_switch_to_percpu(&q->q_usage_counter);
->  	}
->  
-> +	/*
-> +	 * For read-ahead of large files to be effective, we need to read ahead
-> +	 * at least twice the optimal I/O size.
-> +	 */
-> +	q->backing_dev_info->ra_pages =
-> +		max(queue_io_opt(q) * 2 / PAGE_SIZE, VM_READAHEAD_PAGES);
-> +	q->backing_dev_info->io_pages =
-> +		queue_max_sectors(q) >> (PAGE_SHIFT - 9);
-> +
->  	ret = blk_trace_init_sysfs(dev);
->  	if (ret)
->  		return ret;
-> diff --git a/drivers/block/aoe/aoeblk.c b/drivers/block/aoe/aoeblk.c
-> index d8cfc233e64b93..c34e71b0c4a98c 100644
-> --- a/drivers/block/aoe/aoeblk.c
-> +++ b/drivers/block/aoe/aoeblk.c
-> @@ -406,7 +406,6 @@ aoeblk_gdalloc(void *vp)
->  	WARN_ON(d->gd);
->  	WARN_ON(d->flags & DEVFL_UP);
->  	blk_queue_max_hw_sectors(q, BLK_DEF_MAX_SECTORS);
-> -	q->backing_dev_info->ra_pages = SZ_2M / PAGE_SIZE;
->  	blk_queue_io_opt(q, SZ_2M);
->  	d->bufpool = mp;
->  	d->blkq = gd->queue = q;
-> diff --git a/drivers/block/drbd/drbd_nl.c b/drivers/block/drbd/drbd_nl.c
-> index aaff5bde391506..f8fb1c9b1bb6c1 100644
-> --- a/drivers/block/drbd/drbd_nl.c
-> +++ b/drivers/block/drbd/drbd_nl.c
-> @@ -1360,18 +1360,8 @@ static void drbd_setup_queue_param(struct drbd_device *device, struct drbd_backi
->  	decide_on_discard_support(device, q, b, discard_zeroes_if_aligned);
->  	decide_on_write_same_support(device, q, b, o, disable_write_same);
->  
-> -	if (b) {
-> +	if (b)
->  		blk_stack_limits(&q->limits, &b->limits, 0);
-> -
-> -		if (q->backing_dev_info->ra_pages !=
-> -		    b->backing_dev_info->ra_pages) {
-> -			drbd_info(device, "Adjusting my ra_pages to backing device's (%lu -> %lu)\n",
-> -				 q->backing_dev_info->ra_pages,
-> -				 b->backing_dev_info->ra_pages);
-> -			q->backing_dev_info->ra_pages =
-> -						b->backing_dev_info->ra_pages;
-> -		}
-> -	}
->  	fixup_discard_if_not_supported(q);
->  	fixup_write_zeroes(device, q);
->  }
-> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-> index 48113005ed86ad..6bfa771673623e 100644
-> --- a/drivers/md/bcache/super.c
-> +++ b/drivers/md/bcache/super.c
-> @@ -1427,9 +1427,6 @@ static int cached_dev_init(struct cached_dev *dc, unsigned int block_size)
->  	if (ret)
->  		return ret;
->  
-> -	dc->disk.disk->queue->backing_dev_info->ra_pages =
-> -		max(dc->disk.disk->queue->backing_dev_info->ra_pages,
-> -		    q->backing_dev_info->ra_pages);
->  	blk_queue_io_opt(dc->disk.disk->queue,
->  		max(queue_io_opt(dc->disk.disk->queue), queue_io_opt(q)));
->  
-> diff --git a/drivers/md/raid0.c b/drivers/md/raid0.c
-> index f54a449f97aa79..aa2d7279176880 100644
-> --- a/drivers/md/raid0.c
-> +++ b/drivers/md/raid0.c
-> @@ -410,22 +410,6 @@ static int raid0_run(struct mddev *mddev)
->  		 mdname(mddev),
->  		 (unsigned long long)mddev->array_sectors);
->  
-> -	if (mddev->queue) {
-> -		/* calculate the max read-ahead size.
-> -		 * For read-ahead of large files to be effective, we need to
-> -		 * readahead at least twice a whole stripe. i.e. number of devices
-> -		 * multiplied by chunk size times 2.
-> -		 * If an individual device has an ra_pages greater than the
-> -		 * chunk size, then we will not drive that device as hard as it
-> -		 * wants.  We consider this a configuration error: a larger
-> -		 * chunksize should be used in that case.
-> -		 */
-> -		int stripe = mddev->raid_disks *
-> -			(mddev->chunk_sectors << 9) / PAGE_SIZE;
-> -		if (mddev->queue->backing_dev_info->ra_pages < 2* stripe)
-> -			mddev->queue->backing_dev_info->ra_pages = 2* stripe;
-> -	}
-> -
->  	dump_zones(mddev);
->  
->  	ret = md_integrity_register(mddev);
-> diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
-> index 9956a04ac13bd6..5d1bdee313ec33 100644
-> --- a/drivers/md/raid10.c
-> +++ b/drivers/md/raid10.c
-> @@ -3873,19 +3873,6 @@ static int raid10_run(struct mddev *mddev)
->  	mddev->resync_max_sectors = size;
->  	set_bit(MD_FAILFAST_SUPPORTED, &mddev->flags);
->  
-> -	if (mddev->queue) {
-> -		int stripe = conf->geo.raid_disks *
-> -			((mddev->chunk_sectors << 9) / PAGE_SIZE);
-> -
-> -		/* Calculate max read-ahead size.
-> -		 * We need to readahead at least twice a whole stripe....
-> -		 * maybe...
-> -		 */
-> -		stripe /= conf->geo.near_copies;
-> -		if (mddev->queue->backing_dev_info->ra_pages < 2 * stripe)
-> -			mddev->queue->backing_dev_info->ra_pages = 2 * stripe;
-> -	}
-> -
->  	if (md_integrity_register(mddev))
->  		goto out_free_conf;
->  
-> @@ -4723,17 +4710,8 @@ static void end_reshape(struct r10conf *conf)
->  	conf->reshape_safe = MaxSector;
->  	spin_unlock_irq(&conf->device_lock);
->  
-> -	/* read-ahead size must cover two whole stripes, which is
-> -	 * 2 * (datadisks) * chunksize where 'n' is the number of raid devices
-> -	 */
-> -	if (conf->mddev->queue) {
-> -		int stripe = conf->geo.raid_disks *
-> -			((conf->mddev->chunk_sectors << 9) / PAGE_SIZE);
-> -		stripe /= conf->geo.near_copies;
-> -		if (conf->mddev->queue->backing_dev_info->ra_pages < 2 * stripe)
-> -			conf->mddev->queue->backing_dev_info->ra_pages = 2 * stripe;
-> +	if (conf->mddev->queue)
->  		raid10_set_io_opt(conf);
-> -	}
->  	conf->fullsync = 0;
->  }
->  
-> diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-> index 9a7d1250894ef1..7ace1f76b14736 100644
-> --- a/drivers/md/raid5.c
-> +++ b/drivers/md/raid5.c
-> @@ -7522,8 +7522,6 @@ static int raid5_run(struct mddev *mddev)
->  		int data_disks = conf->previous_raid_disks - conf->max_degraded;
->  		int stripe = data_disks *
->  			((mddev->chunk_sectors << 9) / PAGE_SIZE);
-> -		if (mddev->queue->backing_dev_info->ra_pages < 2 * stripe)
-> -			mddev->queue->backing_dev_info->ra_pages = 2 * stripe;
->  
->  		chunk_size = mddev->chunk_sectors << 9;
->  		blk_queue_io_min(mddev->queue, chunk_size);
-> @@ -8111,17 +8109,8 @@ static void end_reshape(struct r5conf *conf)
->  		spin_unlock_irq(&conf->device_lock);
->  		wake_up(&conf->wait_for_overlap);
->  
-> -		/* read-ahead size must cover two whole stripes, which is
-> -		 * 2 * (datadisks) * chunksize where 'n' is the number of raid devices
-> -		 */
-> -		if (conf->mddev->queue) {
-> -			int data_disks = conf->raid_disks - conf->max_degraded;
-> -			int stripe = data_disks * ((conf->chunk_sectors << 9)
-> -						   / PAGE_SIZE);
-> -			if (conf->mddev->queue->backing_dev_info->ra_pages < 2 * stripe)
-> -				conf->mddev->queue->backing_dev_info->ra_pages = 2 * stripe;
-> +		if (conf->mddev->queue)
->  			raid5_set_io_opt(conf);
-> -		}
->  	}
->  }
->  
-> 
+-- 
+2.28.0.681.g6f77f65b4e-goog
 
 
 ______________________________________________________
