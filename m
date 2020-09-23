@@ -2,90 +2,77 @@ Return-Path: <SRS0=UdE+=DA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.0 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72EF4C2D0A8
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Sep 2020 11:53:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ADDBEC4363D
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Sep 2020 14:10:22 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0EE1B21D41
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Sep 2020 11:53:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 561482220D
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Sep 2020 14:10:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AtSjrkQj";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ODmaWdLB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0EE1B21D41
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="T3asyUIG";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="SCPL5h7I"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 561482220D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:Cc:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=7eyBe/WGsguIvi7yNMssg3i6wYZGOuD8ahFTGRBvskE=; b=AtSjrkQjcDcGBvDKy9U8MqTit
-	9GCS4dcoGSvJodLIRk4QcyPx/MtGiAoPcH72SE97ONVdl30V/f+3VbeD+Rgb5GSo/ZHnB5ThpcnJ2
-	HnZwkeGbJrTeyufogNx+LKxMayYmKGRVdefSn1G1ouYZZScoxtgfgWmVS4xmTvRh60ReexnhDzU/q
-	SKULJVtlvBxGjWZPW4bX+4QdBKs1nPsFsVDSunTone6AyMlq8kIydpRBciT4w3Or2IPSSpT7VIeY5
-	lTzoLNpLyYCvZhqJ0EwYqky/4e0IHbmPoNLcF2hHyHEiW9wbSbtbbD9zQcYD46zP80s4sUssRJpXk
-	3HhzXXu+g==;
+	 bh=tKA7Xm9f/JgwKLyrn0UcpBfyROh8xjBwmlV0CWjxJVI=; b=T3asyUIG7vbSceTsHyFHL2TS+
+	Xxid/bd5m41d0R2GrKL9AVOXzRyXs7CXoTkUGiXFyCOZscDH8sZ7aB2QzP6S4NQaOaWqM3AQiyPNZ
+	8wXBiSsT0GRMP7jPWyhwL13USEt4VvpQoKWyZ6jejpqAWZ8z/IamApQf2+mcZrqbHiYVuv/lL1y7g
+	oYw1hxDfvbj1RysTQQaNRsHczKxvVWAVyZ6PEWl2N+bHSq0ZMsDjqphIr+17HfuVnBi/IvmLRN9Wl
+	KaFKBdf87YvPCth64OWnJ9GcFNDBk1tN75Pc01iimpRuD99MnUoasOVYgcOII8DhA2Df3ulcuHqb8
+	33JTgy7Nw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kL3Jn-0007lP-1F; Wed, 23 Sep 2020 11:52:15 +0000
-Received: from mail-wm1-x341.google.com ([2a00:1450:4864:20::341])
+	id 1kL5SM-0004rc-8x; Wed, 23 Sep 2020 14:09:14 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kL3Je-0007k3-0N; Wed, 23 Sep 2020 11:52:07 +0000
-Received: by mail-wm1-x341.google.com with SMTP id e17so6860926wme.0;
- Wed, 23 Sep 2020 04:52:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=62leXxkn6lfQBk0pj9IGOMm88gpEkBUQrcCqhx44WHI=;
- b=ODmaWdLBKOeSP1ZafWzo21vjJrHlk3UG4jvO8+g6WMM1BFtTLmzx1IjbGjRouQUa+7
- nAMc2SENwtPelG8pH3qifpRoFvyXIyHkkSpyttxOBSllpGFUWNDTbc7RWWZwDXiubVzz
- DId3At1uwFhl8QdtjFs9TEb9pLJUGmoMWNZljWBiFG6YHY/D5eEaVWfYRHdsGOT1LmMl
- WPXOjkI7LdOyCKmm8KnbDvvqWylTGVG9rccvd2qnBAegNKT8R9zR8wUu35rVANaWTR32
- pzLd85pgC4hOTjPoqQYRZACHbmH3e+lrH/elvTuoGpBsCqkzId/E+uobn2wcVgIWij43
- kdgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=62leXxkn6lfQBk0pj9IGOMm88gpEkBUQrcCqhx44WHI=;
- b=XH5L+RIQclcuxD8UqYZwhl899pycabfgXDIcrlcWoqoU9EX35uFF1IqNQnz8VAgpZ1
- at5phw+QsTnLcruGL9c80jaeQn5BC0ErbsyoeaiPhmfZ38KmMDBotWH+iQ48rPSHKkC6
- EomG1RcZSpnvKwY2Q9m6+07CZzlc+CCJ6zLIe/AWWanQl2aVixrJwmq9mmHDgzqWp845
- Z+M74vOEL9wVGOksWETqJdhAGD666754Qcxl63rZ4J7EUARAgnChQtCDKiJ/bnmuJYWv
- fkeNo2AAx0xEjDB6Xjrx+JtbLsxZEaMmXrjv+ksCfyx6MPJMYqmvz7FzQjpfGmVquZb2
- FSbg==
-X-Gm-Message-State: AOAM5330o9z73Jpvta15K8g9mKK1JROlbQfh0Lu5p0fLl2kSj1I34PNz
- M9PjkzO+hfpTWHmMW1xmNxU=
-X-Google-Smtp-Source: ABdhPJwuky5Ub23hg9gD1yy7ZPW4fTKq0bW7//cbGIq+DmdbAGJe7JBSRBqC41QuYp6pi5kgGRRJBA==
-X-Received: by 2002:a05:600c:2159:: with SMTP id
- v25mr5266287wml.180.1600861924874; 
- Wed, 23 Sep 2020 04:52:04 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
- by smtp.gmail.com with ESMTPSA id a20sm7785703wmm.40.2020.09.23.04.52.02
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 23 Sep 2020 04:52:03 -0700 (PDT)
-Date: Wed, 23 Sep 2020 13:52:01 +0200
-From: Thierry Reding <thierry.reding@gmail.com>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH v3 06/19] dt-bindings: pwm: imx-pwm: Add i.MX 8M
- compatibles
-Message-ID: <20200923115201.GD1846003@ulmo>
+ id 1kL5SF-0004pu-HB; Wed, 23 Sep 2020 14:09:08 +0000
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com
+ [209.85.208.47])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 748CF235FD;
+ Wed, 23 Sep 2020 14:09:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1600870146;
+ bh=YdIBSxeNAvE6gQ5FC6DdEL/c8aPmX6JYu110Tn4pYb4=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=SCPL5h7I8Q2+Rqrmk3vTX4xl+c46yq9MI4bSDw5GroNsoIBP8ozU4ghJbq24G/Nng
+ /4D6o/4C0E/pvBIOoaUpT6s7ClcusUZcUS+qb1d/YMD3S9mHHBbZwG6YL/Fe91/goa
+ Q20KNMBVEbzDOzwVGsQxOdShPRPImq/OnuRUcRFk=
+Received: by mail-ed1-f47.google.com with SMTP id e22so20023863edq.6;
+ Wed, 23 Sep 2020 07:09:06 -0700 (PDT)
+X-Gm-Message-State: AOAM531nzy6D1LLwv1V+R1px0tbNBhnudiGHDfxF3bLU9DoLj7mDQ51C
+ iH0pX3mHYMr+/TdLWocmycy6kA44Ofar5FK72tw=
+X-Google-Smtp-Source: ABdhPJwV6yPAy5gbNdaNXncZ2t260JTMWE7HddlqhxYJPw/t/7iwqoqe4AsHLWgMB6HEHZQn26BjmuJV5+rszBRI9Wk=
+X-Received: by 2002:a05:6402:ca7:: with SMTP id
+ cn7mr9622063edb.143.1600870144956; 
+ Wed, 23 Sep 2020 07:09:04 -0700 (PDT)
+MIME-Version: 1.0
 References: <20200825193536.7332-1-krzk@kernel.org>
  <20200825193536.7332-7-krzk@kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <20200825193536.7332-7-krzk@kernel.org>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+ <20200923115201.GD1846003@ulmo>
+In-Reply-To: <20200923115201.GD1846003@ulmo>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Date: Wed, 23 Sep 2020 16:08:53 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPcZuonCBK1Fc9r=rHzOL02MArrsE=R4x1tWGqov2nP0fA@mail.gmail.com>
+Message-ID: <CAJKOXPcZuonCBK1Fc9r=rHzOL02MArrsE=R4x1tWGqov2nP0fA@mail.gmail.com>
+Subject: Re: [PATCH v3 06/19] dt-bindings: pwm: imx-pwm: Add i.MX 8M
+ compatibles
+To: Thierry Reding <thierry.reding@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200923_075206_085182_6708274C 
-X-CRM114-Status: GOOD (  15.48  )
+X-CRM114-CacheID: sfid-20200923_100907_632333_6BC1264D 
+X-CRM114-Status: GOOD (  18.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,83 +96,43 @@ Cc: Mark Rutland <mark.rutland@arm.com>, Ulf Hansson <ulf.hansson@linaro.org>,
  linux-gpio@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
  Han Xu <han.xu@nxp.com>, linux-arm-kernel@lists.infradead.org,
  Fugang Duan <fugang.duan@nxp.com>, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Li Yang <leoyang.li@nxp.com>, Pengutronix Kernel Team <kernel@pengutronix.de>,
  Shawn Guo <shawnguo@kernel.org>
-Content-Type: multipart/mixed; boundary="===============4482257361867411873=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Wed, 23 Sep 2020 at 13:52, Thierry Reding <thierry.reding@gmail.com> wrote:
+>
+> On Tue, Aug 25, 2020 at 09:35:23PM +0200, Krzysztof Kozlowski wrote:
+> > DTSes with new i.MX 8M SoCs introduce their own compatibles so add them
+> > to fix dtbs_check warnings like:
+> >
+> >   arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: pwm@30660000:
+> >     compatible:0: 'fsl,imx8mm-pwm' is not one of ['fsl,imx1-pwm', 'fsl,imx27-pwm']
+> >     From schema: Documentation/devicetree/bindings/pwm/imx-pwm.yaml
+> >
+> >   arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: pwm@30660000:
+> >     compatible: ['fsl,imx8mm-pwm', 'fsl,imx27-pwm'] is too long
+> >
+> >   arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: pwm@30660000:
+> >     compatible: Additional items are not allowed ('fsl,imx27-pwm' was unexpected)
+> >
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > Reviewed-by: Rob Herring <robh@kernel.org>
+> > ---
+> >  Documentation/devicetree/bindings/pwm/imx-pwm.yaml | 14 +++++++++++---
+> >  1 file changed, 11 insertions(+), 3 deletions(-)
+>
+> Applied, thanks.
 
---===============4482257361867411873==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="/unnNtmY43mpUSKx"
-Content-Disposition: inline
+Thanks Thierry, but this was already picked up by Rob into DT tree.
 
-
---/unnNtmY43mpUSKx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Aug 25, 2020 at 09:35:23PM +0200, Krzysztof Kozlowski wrote:
-> DTSes with new i.MX 8M SoCs introduce their own compatibles so add them
-> to fix dtbs_check warnings like:
->=20
->   arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: pwm@30660000:
->     compatible:0: 'fsl,imx8mm-pwm' is not one of ['fsl,imx1-pwm', 'fsl,im=
-x27-pwm']
->     From schema: Documentation/devicetree/bindings/pwm/imx-pwm.yaml
->=20
->   arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: pwm@30660000:
->     compatible: ['fsl,imx8mm-pwm', 'fsl,imx27-pwm'] is too long
->=20
->   arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: pwm@30660000:
->     compatible: Additional items are not allowed ('fsl,imx27-pwm' was une=
-xpected)
->=20
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> ---
->  Documentation/devicetree/bindings/pwm/imx-pwm.yaml | 14 +++++++++++---
->  1 file changed, 11 insertions(+), 3 deletions(-)
-
-Applied, thanks.
-
-Thierry
-
---/unnNtmY43mpUSKx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9rNuEACgkQ3SOs138+
-s6GvDg/+Nro4jTSFhaaEb45wLg7Wg5AT70Vw7JpMwqEfIe5L3+HCzsAZX08eoriW
-TwsrzDYwi1mA2E8LXgnab5e3AAgrQJO5HprXoQ0736DAqPzLovczCCUfBnS72FTM
-gtWR/H60vrI/6jPUT+YqqvgtH1SQZIDSC0Sr936omELFXZ7N7kgTW1gTMR9jeMGj
-eoEUbgMKztiNGZpCm/kRLffCONoKpyz/3luja+KXkB07rPVluMjwhaFBNYxr6oB2
-K48rLlPN3B/3u+qD03bB4fBdycLNO0IjVepdM21pBsGyKAT4uYfl0wG86/ww99EB
-1v9/vWoSmwnxVBuPDDj4ecj7iD3VExSDZ7x2vvID5NmhK3ndjisf8C979I48hvMo
-maBVSISDlvaIs2KbzJt9JoqHYaBNJ4LUdTwnFfcVo0vT9EY0H9KvLbfw93I/0VjU
-r9WMPCRYtEOiS5riua25jp9pSxcnQE92v5NyNEMg+sdJ9uyLPYo0NBFbhTskEjnC
-7evLkq5xpYJywh6bQvhVOhnbCoVGAOdqOIJ25xSC2wF5vaCWWRhjDtsS7d/EbXql
-tRX3gA2RlNUKlF1MlGp7TUtnWkl/EWtaWI26qm0/zuvyAnxGKBY5Eo4HUMGNtVWH
-BgQsfOviGCcDALYVPWC6foLtzrsz8BMYVVi+7u2hD0FMOa29oas=
-=09l4
------END PGP SIGNATURE-----
-
---/unnNtmY43mpUSKx--
-
-
---===============4482257361867411873==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Best regards,
+Krzysztof
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============4482257361867411873==--
-
