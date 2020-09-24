@@ -2,80 +2,66 @@ Return-Path: <SRS0=HQC9=DB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B91D2C4346E
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2020 08:13:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF265C4346E
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2020 08:36:09 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3934D212CC
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2020 08:13:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2FB092137B
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2020 08:36:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eBLlBFG/";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="UrMVGSdG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3934D212CC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nyZiEnT9";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=emcraft.com header.i=@emcraft.com header.b="sboRO7cs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2FB092137B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=emcraft.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=OYeJM+vPm/tmFKzxn6EV0gG+MEtZKzJQ+MewY6cY2B4=; b=eBLlBFG/qzJybNdLFUVRzmq5f
-	xeKaLE7DOZ7lWbaT1K1j9SYQWA+eN0lOgbvVy28skGWKeO62Oe7MjIlFPZqdnQxewOz3btOMY9GrG
-	Ot4v9yFyIC0Exq28diWIk9WEMKPRnSPWP9vF6lNsHoe/g8c1IXAjOYuxjXp1+b5yu9V6pnmYetVn1
-	EcNmkiYf21jjrY9WSxTTzz8FBsk9xPHVmBOAMcJpCECTK4O5tJOc+CpL5e10ALaR0aRGPN3BMbD7G
-	1SQMfB7mlsyn2LYSWLefSTnnf95WKO+3iHieMl57TcmKKldbLHJGswnUaRNmGsz0ZvLY/LC7KZpzP
-	Mavs/4nkg==;
+	Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
+	:List-Id:MIME-Version:Message-ID:Subject:To:From:Date:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=d6dDCVZKPa6rhz80iv02owCgeaCMS64kWS8DO1hLKks=; b=nyZiEnT9haD59wBpc3qvCg7b7P
+	Jyzx0ZMKjLNAl+cFHfXMfwCPii0f7Fl8B/dBn2T4cfpHmPWPTHGpTCe0oJNglscl5iGui/MztHO1i
+	g8sSHf+gsNgXuJJN+ge+jjf5SSvh8kiPp4xmoPMv+zIRBUsipiqKeRayBZTCZ3cLvOGqU3AeX6QpH
+	Pk8dvGek9e61MgGHAdfr798pgfVbACx9/77K43UetI2DLZi6fHcpBDN3dYmf8VKXBiBrPaX35JQKN
+	9iadF+FfNGboflQj9ZVnMRZx/HU7BnkEbU1vR+kcFIhx9RTrfg8wnuAx1AiraLRuse+dGQ1R4SyLa
+	qTtupJpA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kLMMn-00018J-6A; Thu, 24 Sep 2020 08:12:37 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1kLMiy-00059n-On; Thu, 24 Sep 2020 08:35:32 +0000
+Received: from mail.emcraft.com ([142.93.143.113])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kLMMg-00016k-9F
- for linux-mtd@lists.infradead.org; Thu, 24 Sep 2020 08:12:31 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08O8CSPq072518;
- Thu, 24 Sep 2020 03:12:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1600935148;
- bh=IRolLNDMcU0upv/ueUSj45mxeHTZL6OBj6VSoFhHIvQ=;
- h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=UrMVGSdGLjM06O3YW3UAa67lMUsBG5em7qCTc9n31QUmK1mOqU9UT1DgHgOzH318u
- 8ry/EVHCgT5Lv1RCLwxSOUpuM+nirx7cYVB13QUyUOFdhyVzanGx2slzkusNb/bkL4
- Jl213zaK3SOzYwXRFt95G5/9ULIfn4DyKBiCAAvE=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08O8CSh6030304;
- Thu, 24 Sep 2020 03:12:28 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 24
- Sep 2020 03:12:28 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 24 Sep 2020 03:12:28 -0500
-Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08O8CFFL002000;
- Thu, 24 Sep 2020 03:12:26 -0500
-From: Vignesh Raghavendra <vigneshr@ti.com>
-To: Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH v2 4/4] mtd: hyperbus: hbmc-am654: Add DMA support for reads
-Date: Thu, 24 Sep 2020 13:42:14 +0530
-Message-ID: <20200924081214.16934-5-vigneshr@ti.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200924081214.16934-1-vigneshr@ti.com>
-References: <20200924081214.16934-1-vigneshr@ti.com>
+ id 1kLMiv-000596-Di
+ for linux-mtd@lists.infradead.org; Thu, 24 Sep 2020 08:35:30 +0000
+Received: from sergmir (unknown [95.165.7.197])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.emcraft.com (Postfix) with ESMTPSA id 1A2093F01C;
+ Thu, 24 Sep 2020 08:35:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=emcraft.com;
+ s=default; t=1600936520;
+ bh=AD3uILEppyqwx+zwehwJiegf+l8Qi9x8B56HRc9oIzQ=;
+ h=Date:From:To:Subject:From;
+ b=sboRO7csXZGh5bRM4DdLytQYlOq/tZZYKYB5YBGWlQMor134dyBB1S2y5FQpP9weM
+ ehBeq+hpOjL3z9qg8HDTswoeOnOi01GXVWVIi5WNEr1Yzlm+f+2r5liVXdwf0sS2AO
+ 6lnvk/mXlbxvYejttP8Lp5ic8TADiPHyfp9dyXhs=
+Date: Thu, 24 Sep 2020 11:35:18 +0300
+From: Sergei Poselenov <sposelenov@emcraft.com>
+To: linux-mtd@lists.infradead.org
+Subject: Help with UBI failure analysis
+Message-ID: <20200924113518.7c6dda33@sergmir>
+Organization: Emcraft Systems
+X-Mailer: Claws Mail 3.15.1-dirty (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200924_041230_425146_E11A5295 
-X-CRM114-Status: GOOD (  20.56  )
+X-CRM114-CacheID: sfid-20200924_043529_768899_94A9D159 
+X-CRM114-Status: GOOD (  14.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,216 +73,82 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-AM654 HyperBus controller provides MMIO interface to read data from
-flash. So add DMA memcpy support for reading data over MMIO interface.
-This provides 5x improvement in throughput and reduces CPU usage as
-well.
+Hello,
 
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-Reviewed-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- drivers/mtd/hyperbus/hbmc-am654.c | 126 +++++++++++++++++++++++++++++-
- 1 file changed, 125 insertions(+), 1 deletion(-)
+i.MX SoloX ARM SoC, running Linux 4.5 with the root filesystem on UBI on 512MB NAND chip. A customer is complaining on the following UBI error (excerpts from the boot log below):
+...
+nand: device found, Manufacturer ID: 0x01, Chip ID: 0xdc
+nand: AMD/Spansion S34ML04G1
+nand: 512 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+gpmi-nand 1806000.gpmi-nand: mode:4 ,failed in set feature.
+Bad block table found at page 262080, version 0x01
+Bad block table found at page 262016, version 0x01
+nand_read_bbt: bad block at 0x00001d0a0000
+6 ofpart partitions found on MTD device gpmi-nand
+Creating 6 MTD partitions on "gpmi-nand":
+0x000000000000-0x000000400000 : "nand_uboot_env"
+0x000000400000-0x000000e00000 : "nand_splash_image"
+0x000000e00000-0x000000e20000 : "nand_dtb_image"
+0x000000e20000-0x000001a20000 : "nand_linux_image"
+0x000001a20000-0x00000ba20000 : "nand_rootfs_image"
+0x00000ba20000-0x000040000000 : "nand_ubifs"
+mtd: partition "nand_ubifs" extends beyond the end of device "gpmi-nand" -- size truncated to 0x145e0000
+...
+ubi0: default fastmap pool size: 60
+ubi0: default fastmap WL pool size: 30
+ubi0: attaching mtd4
+ubi0: attached by fastmap
+ubi0: fastmap pool size: 60
+ubi0: fastmap WL pool size: 30
+ubi0: attached mtd4 (name "nand_rootfs_image", size 160 MiB)
+ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+ubi0: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+ubi0: VID header offset: 2048 (aligned 2048), data offset: 4096
+ubi0: good PEBs: 1280, bad PEBs: 0, corrupted PEBs: 0
+ubi0: user volume: 1, internal volumes: 1, max. volumes count: 128
+ubi0: max/mean erase counter: 3/0, WL threshold: 4096, image sequence number: 244395915
+ubi0: available PEBs: 0, total reserved PEBs: 1280, PEBs reserved for bad PEB handling: 80
+ubi0: background thread "ubi_bgt0d" started, PID 140
+input: gpio-keys as /devices/soc0/gpio-keys/input/input2
+hctosys: unable to open rtc device (rtc0)
+ALSA device list:
+  No soundcards found.
+UBIFS (ubi0:0): background thread "ubifs_bgt0_0" started, PID 141
+UBIFS (ubi0:0): recovery needed
+UBIFS (ubi0:0): recovery completed
+UBIFS (ubi0:0): UBIFS: mounted UBI device 0, volume 0, name "rootfs"
+UBIFS (ubi0:0): LEB size: 126976 bytes (124 KiB), min./max. I/O unit sizes: 2048 bytes/2048 bytes
+UBIFS (ubi0:0): FS size: 74788864 bytes (71 MiB, 589 LEBs), journal size 9023488 bytes (8 MiB, 72 LEBs)
+UBIFS (ubi0:0): reserved for root: 0 bytes (0 KiB)
+UBIFS (ubi0:0): media format: w4/r0 (latest is w4/r0), UUID 09F04725-4F95-492E-B899-800AFEC97FB9, small LPT model
+VFS: Mounted root (ubifs filesystem) on device 0:13.
+devtmpfs: mounted
+Freeing unused kernel memory: 280K (80898000 - 808de000)
+UBIFS error (ubi0:0 pid 1): ubifs_read_node: bad node type (0 but expected 9)
+UBIFS error (ubi0:0 pid 1): ubifs_read_node: bad node at LEB 12:100352, LEB mapping status 1
+Not a node, first 24 bytes:
+00000000: 55 42 49 23 01 00 00 00 00 00 00 00 00 00 00 02 00 00 08 00 00 00 10 00                          UBI#....................
+CPU: 0 PID: 1 Comm: swapper/0 Not tainted 4.5.0 #4
+Hardware name: Freescale i.MX6 SoloX (Device Tree)
+[<800160f4>] (unwind_backtrace) from [<80013400>] (show_stack+0x10/0x14)
+[<80013400>] (show_stack) from [<8029c6ec>] (dump_stack+0x88/0x9c)
+...
+UBIFS error (ubi0:0 pid 142): ubifs_iget: failed to read inode 438, error -22
+UBIFS error (ubi0:0 pid 142): ubifs_lookup: dead directory entry 'etc', error -22
+can't run '/etc/init.d/rcS': Invalid argument
+...
 
-diff --git a/drivers/mtd/hyperbus/hbmc-am654.c b/drivers/mtd/hyperbus/hbmc-am654.c
-index b6a2400fcaa9..a3439b791eeb 100644
---- a/drivers/mtd/hyperbus/hbmc-am654.c
-+++ b/drivers/mtd/hyperbus/hbmc-am654.c
-@@ -3,6 +3,10 @@
- // Copyright (C) 2019 Texas Instruments Incorporated - https://www.ti.com/
- // Author: Vignesh Raghavendra <vigneshr@ti.com>
- 
-+#include <linux/completion.h>
-+#include <linux/dma-direction.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/dmaengine.h>
- #include <linux/err.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-@@ -13,10 +17,18 @@
- #include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/platform_device.h>
-+#include <linux/sched/task_stack.h>
- #include <linux/types.h>
- 
- #define AM654_HBMC_CALIB_COUNT 25
- 
-+struct am654_hbmc_device_priv {
-+	struct completion rx_dma_complete;
-+	phys_addr_t device_base;
-+	struct hyperbus_ctlr *ctlr;
-+	struct dma_chan *rx_chan;
-+};
-+
- struct am654_hbmc_priv {
- 	struct hyperbus_ctlr ctlr;
- 	struct hyperbus_device hbdev;
-@@ -51,13 +63,103 @@ static int am654_hbmc_calibrate(struct hyperbus_device *hbdev)
- 	return ret;
- }
- 
-+static void am654_hbmc_dma_callback(void *param)
-+{
-+	struct am654_hbmc_device_priv *priv = param;
-+
-+	complete(&priv->rx_dma_complete);
-+}
-+
-+static int am654_hbmc_dma_read(struct am654_hbmc_device_priv *priv, void *to,
-+			       unsigned long from, ssize_t len)
-+
-+{
-+	enum dma_ctrl_flags flags = DMA_CTRL_ACK | DMA_PREP_INTERRUPT;
-+	struct dma_chan *rx_chan = priv->rx_chan;
-+	struct dma_async_tx_descriptor *tx;
-+	dma_addr_t dma_dst, dma_src;
-+	dma_cookie_t cookie;
-+	int ret;
-+
-+	if (!priv->rx_chan || !virt_addr_valid(to) || object_is_on_stack(to))
-+		return -EINVAL;
-+
-+	dma_dst = dma_map_single(rx_chan->device->dev, to, len, DMA_FROM_DEVICE);
-+	if (dma_mapping_error(rx_chan->device->dev, dma_dst)) {
-+		dev_dbg(priv->ctlr->dev, "DMA mapping failed\n");
-+		return -EIO;
-+	}
-+
-+	dma_src = priv->device_base + from;
-+	tx = dmaengine_prep_dma_memcpy(rx_chan, dma_dst, dma_src, len, flags);
-+	if (!tx) {
-+		dev_err(priv->ctlr->dev, "device_prep_dma_memcpy error\n");
-+		ret = -EIO;
-+		goto unmap_dma;
-+	}
-+
-+	reinit_completion(&priv->rx_dma_complete);
-+	tx->callback = am654_hbmc_dma_callback;
-+	tx->callback_param = priv;
-+	cookie = dmaengine_submit(tx);
-+
-+	ret = dma_submit_error(cookie);
-+	if (ret) {
-+		dev_err(priv->ctlr->dev, "dma_submit_error %d\n", cookie);
-+		goto unmap_dma;
-+	}
-+
-+	dma_async_issue_pending(rx_chan);
-+	if (!wait_for_completion_timeout(&priv->rx_dma_complete,  msecs_to_jiffies(len + 1000))) {
-+		dmaengine_terminate_sync(rx_chan);
-+		dev_err(priv->ctlr->dev, "DMA wait_for_completion_timeout\n");
-+		ret = -ETIMEDOUT;
-+	}
-+
-+unmap_dma:
-+	dma_unmap_single(rx_chan->device->dev, dma_dst, len, DMA_FROM_DEVICE);
-+	return ret;
-+}
-+
-+static void am654_hbmc_read(struct hyperbus_device *hbdev, void *to,
-+			    unsigned long from, ssize_t len)
-+{
-+	struct am654_hbmc_device_priv *priv = hbdev->priv;
-+
-+	if (len < SZ_1K || am654_hbmc_dma_read(priv, to, from, len))
-+		memcpy_fromio(to, hbdev->map.virt + from, len);
-+}
-+
- static const struct hyperbus_ops am654_hbmc_ops = {
- 	.calibrate = am654_hbmc_calibrate,
-+	.copy_from = am654_hbmc_read,
- };
- 
-+static int am654_hbmc_request_mmap_dma(struct am654_hbmc_device_priv *priv)
-+{
-+	struct dma_chan *rx_chan;
-+	dma_cap_mask_t mask;
-+
-+	dma_cap_zero(mask);
-+	dma_cap_set(DMA_MEMCPY, mask);
-+
-+	rx_chan = dma_request_chan_by_mask(&mask);
-+	if (IS_ERR(rx_chan)) {
-+		if (PTR_ERR(rx_chan) == -EPROBE_DEFER)
-+			return -EPROBE_DEFER;
-+		dev_dbg(priv->ctlr->dev, "No DMA channel available\n");
-+		return 0;
-+	}
-+	priv->rx_chan = rx_chan;
-+	init_completion(&priv->rx_dma_complete);
-+
-+	return 0;
-+}
-+
- static int am654_hbmc_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
-+	struct am654_hbmc_device_priv *dev_priv;
- 	struct device *dev = &pdev->dev;
- 	struct am654_hbmc_priv *priv;
- 	struct resource res;
-@@ -96,13 +198,31 @@ static int am654_hbmc_probe(struct platform_device *pdev)
- 	priv->ctlr.dev = dev;
- 	priv->ctlr.ops = &am654_hbmc_ops;
- 	priv->hbdev.ctlr = &priv->ctlr;
-+
-+	dev_priv = devm_kzalloc(dev, sizeof(*dev_priv), GFP_KERNEL);
-+	if (!dev_priv) {
-+		ret = -ENOMEM;
-+		goto disable_mux;
-+	}
-+
-+	priv->hbdev.priv = dev_priv;
-+	dev_priv->device_base = res.start;
-+	dev_priv->ctlr = &priv->ctlr;
-+
-+	ret = am654_hbmc_request_mmap_dma(dev_priv);
-+	if (ret)
-+		goto disable_mux;
-+
- 	ret = hyperbus_register_device(&priv->hbdev);
- 	if (ret) {
- 		dev_err(dev, "failed to register controller\n");
--		goto disable_mux;
-+		goto release_dma;
- 	}
- 
- 	return 0;
-+release_dma:
-+	if (dev_priv->rx_chan)
-+		dma_release_channel(dev_priv->rx_chan);
- disable_mux:
- 	if (priv->mux_ctrl)
- 		mux_control_deselect(priv->mux_ctrl);
-@@ -112,12 +232,16 @@ static int am654_hbmc_probe(struct platform_device *pdev)
- static int am654_hbmc_remove(struct platform_device *pdev)
- {
- 	struct am654_hbmc_priv *priv = platform_get_drvdata(pdev);
-+	struct am654_hbmc_device_priv *dev_priv = priv->hbdev.priv;
- 	int ret;
- 
- 	ret = hyperbus_unregister_device(&priv->hbdev);
- 	if (priv->mux_ctrl)
- 		mux_control_deselect(priv->mux_ctrl);
- 
-+	if (dev_priv->rx_chan)
-+		dma_release_channel(dev_priv->rx_chan);
-+
- 	return ret;
- }
- 
--- 
-2.28.0
+I see that NAND has a badblock at 0x00001d0a0000, but it's not on the "rootfs" partition.
 
+What could cause such error? Any thoughts will be much appreciated.
+
+Regards,
+Sergei
 
 ______________________________________________________
 Linux MTD discussion mailing list
