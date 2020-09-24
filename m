@@ -2,63 +2,61 @@ Return-Path: <SRS0=HQC9=DB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+	DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70CB6C4363D
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2020 12:27:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77C48C4363D
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2020 13:46:26 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D1950206A5
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2020 12:27:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0D8D6206B2
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2020 13:46:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ybv8ZI5Q"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D1950206A5
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=hisilicon.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Y2Ybi/US"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D8D6206B2
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=JLO+x3nCErD2PdN0euFCE9aXfhKp6Ba/NV0FUMzRy6w=; b=ybv8ZI5QNpg0yqiFmfYmFzVJr
-	XYarjJeXY+Cutqff++LVkH7CtArbcbbVo/jT1oaLyU81AQqVQAM717DlCVbO6YOxSN9tX7YJqBhBL
-	1KKdzYuJXp6kwSt+qVH0BD74YqYsiiSyHAbDAGnrLLIzrx+nBjJjoDroD5dFOKTIhilkYOOYOmRnH
-	OH03BgR/FFPBMxuy3vVUwEeEIBPwdXBYGZ2F3ueoOSTTZjAnVS6oU/laT20nk6A2oMZfundroOchg
-	6izxN4IeIxPifX7FsbPlkO9yN9QQV5+7Pkv6hFoKEvHhjFsDsQZ08AGbZG7eea1usFCHqbZk/Pf/5
-	4X8Pt7j1g==;
+	 bh=HR3YYwuIwNrA+n8pSo8yqf38jzTcgDWRI7PICfq7zSI=; b=Y2Ybi/US8kqitH48gzZMMRZhS
+	g1rqUGjJBC70HT85vTHkEl1kUZUfjY3s1Gr6uFhLTHLDS1LizHL7884iaGtUBoT43STki6AZ6MLmV
+	MGBW6EGJXNuAKVQQIL7rcWjOxWqQXznkAcctbhazMycXa4JHS/CdK4nRRbM2b9wtbscnesiEfa26D
+	K7vXCRP9JxjtyqBKQN5soTClfKudtrzbCNyvFh+PlLq9Ukozw7y8dgp/vllTTPnN53IufJWrgLlUB
+	vK+cOyoDLNIR36vAOb89iPH9CEGtglfvP/1uhYAp/DwLswz1iZPrchqJcU/BcjuYP3+Sk2++2hFtm
+	5s6FFFW7g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kLQKD-0007So-ER; Thu, 24 Sep 2020 12:26:13 +0000
-Received: from szxga04-in.huawei.com ([45.249.212.190] helo=huawei.com)
+	id 1kLRZD-0007lI-Fj; Thu, 24 Sep 2020 13:45:47 +0000
+Received: from mx2.suse.de ([195.135.220.15])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kLQK3-0007Or-HY
- for linux-mtd@lists.infradead.org; Thu, 24 Sep 2020 12:26:04 +0000
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
- by Forcepoint Email with ESMTP id 6CA398AAA78F95E889DD;
- Thu, 24 Sep 2020 20:25:53 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 24 Sep 2020 20:25:46 +0800
-From: Yicong Yang <yangyicong@hisilicon.com>
-To: <john.garry@huawei.com>, <broonie@kernel.org>
-Subject: [PATCH 2/4] spi: hisi-sfc-v3xx: factor out bus config and transfer
- functions
-Date: Thu, 24 Sep 2020 20:24:28 +0800
-Message-ID: <1600950270-52536-3-git-send-email-yangyicong@hisilicon.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1600950270-52536-1-git-send-email-yangyicong@hisilicon.com>
-References: <1600950270-52536-1-git-send-email-yangyicong@hisilicon.com>
+ id 1kLRZ7-0007iy-6c; Thu, 24 Sep 2020 13:45:44 +0000
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 856DEACF5;
+ Thu, 24 Sep 2020 13:45:38 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+ id EEFC11E12F7; Thu, 24 Sep 2020 11:00:21 +0200 (CEST)
+Date: Thu, 24 Sep 2020 11:00:21 +0200
+From: Jan Kara <jack@suse.cz>
+To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: Re: [PATCH 12/13] udf: Tell the VFS that readpage was synchronous
+Message-ID: <20200924090021.GE27019@quack2.suse.cz>
+References: <20200917151050.5363-1-willy@infradead.org>
+ <20200917151050.5363-13-willy@infradead.org>
 MIME-Version: 1.0
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Disposition: inline
+In-Reply-To: <20200917151050.5363-13-willy@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200924_082604_346200_B0E1D1A5 
-X-CRM114-Status: GOOD (  11.28  )
+X-CRM114-CacheID: sfid-20200924_094541_358685_A6A36F3C 
+X-CRM114-Status: GOOD (  18.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,93 +68,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
- yangyicong@hisilicon.com, tudor.ambarus@microchip.com
+Cc: linux-cifs@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ ecryptfs@vger.kernel.org, linux-um@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+ v9fs-developer@lists.sourceforge.net, ceph-devel@vger.kernel.org,
+ linux-afs@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In hisi_sfc_v3xx_generic_exec_op(), we will write the data to the buffer,
-configure and start the transfer, read the data to the buffer and check
-whether occurs an error. Factor out the config and transfer start codes
-as individual functions, to make the process a bit clearer.
+On Thu 17-09-20 16:10:49, Matthew Wilcox (Oracle) wrote:
+> The udf inline data readpage implementation was already synchronous,
+> so use AOP_UPDATED_PAGE to avoid cycling the page lock.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Acked-by: John Garry <john.garry@huawei.com>
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
----
- drivers/spi/spi-hisi-sfc-v3xx.c | 33 ++++++++++++++++++++++++---------
- 1 file changed, 24 insertions(+), 9 deletions(-)
+Looks good. You can add:
 
-diff --git a/drivers/spi/spi-hisi-sfc-v3xx.c b/drivers/spi/spi-hisi-sfc-v3xx.c
-index 69f5a7b..62d4ed8 100644
---- a/drivers/spi/spi-hisi-sfc-v3xx.c
-+++ b/drivers/spi/spi-hisi-sfc-v3xx.c
-@@ -198,12 +198,12 @@ static void hisi_sfc_v3xx_write_databuf(struct hisi_sfc_v3xx_host *host,
- 	}
- }
- 
--static int hisi_sfc_v3xx_generic_exec_op(struct hisi_sfc_v3xx_host *host,
--					 const struct spi_mem_op *op,
--					 u8 chip_select)
-+static int hisi_sfc_v3xx_start_bus(struct hisi_sfc_v3xx_host *host,
-+				   const struct spi_mem_op *op,
-+				   u8 chip_select)
- {
--	int ret = 0, len = op->data.nbytes, buswidth_mode;
--	u32 int_stat, config = 0;
-+	int len = op->data.nbytes, buswidth_mode;
-+	u32 config = 0;
- 
- 	if (op->addr.nbytes)
- 		config |= HISI_SFC_V3XX_CMD_CFG_ADDR_EN_MSK;
-@@ -227,9 +227,7 @@ static int hisi_sfc_v3xx_generic_exec_op(struct hisi_sfc_v3xx_host *host,
- 		config |= HISI_SFC_V3XX_CMD_CFG_DATA_EN_MSK;
- 	}
- 
--	if (op->data.dir == SPI_MEM_DATA_OUT)
--		hisi_sfc_v3xx_write_databuf(host, op->data.buf.out, len);
--	else if (op->data.dir == SPI_MEM_DATA_IN)
-+	if (op->data.dir == SPI_MEM_DATA_IN)
- 		config |= HISI_SFC_V3XX_CMD_CFG_RW_MSK;
- 
- 	config |= op->dummy.nbytes << HISI_SFC_V3XX_CMD_CFG_DUMMY_CNT_OFF |
-@@ -241,6 +239,23 @@ static int hisi_sfc_v3xx_generic_exec_op(struct hisi_sfc_v3xx_host *host,
- 
- 	writel(config, host->regbase + HISI_SFC_V3XX_CMD_CFG);
- 
-+	return 0;
-+}
-+
-+static int hisi_sfc_v3xx_generic_exec_op(struct hisi_sfc_v3xx_host *host,
-+					 const struct spi_mem_op *op,
-+					 u8 chip_select)
-+{
-+	u32 int_stat;
-+	int ret;
-+
-+	if (op->data.dir == SPI_MEM_DATA_OUT)
-+		hisi_sfc_v3xx_write_databuf(host, op->data.buf.out, op->data.nbytes);
-+
-+	ret = hisi_sfc_v3xx_start_bus(host, op, chip_select);
-+	if (ret)
-+		return ret;
-+
- 	ret = hisi_sfc_v3xx_wait_cmd_idle(host);
- 	if (ret)
- 		return ret;
-@@ -265,7 +280,7 @@ static int hisi_sfc_v3xx_generic_exec_op(struct hisi_sfc_v3xx_host *host,
- 	}
- 
- 	if (op->data.dir == SPI_MEM_DATA_IN)
--		hisi_sfc_v3xx_read_databuf(host, op->data.buf.in, len);
-+		hisi_sfc_v3xx_read_databuf(host, op->data.buf.in, op->data.nbytes);
- 
- 	return 0;
- }
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+> ---
+>  fs/udf/file.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/fs/udf/file.c b/fs/udf/file.c
+> index 628941a6b79a..52bbe92d7c43 100644
+> --- a/fs/udf/file.c
+> +++ b/fs/udf/file.c
+> @@ -61,9 +61,8 @@ static int udf_adinicb_readpage(struct file *file, struct page *page)
+>  {
+>  	BUG_ON(!PageLocked(page));
+>  	__udf_adinicb_readpage(page);
+> -	unlock_page(page);
+>  
+> -	return 0;
+> +	return AOP_UPDATED_PAGE;
+>  }
+>  
+>  static int udf_adinicb_writepage(struct page *page,
+> -- 
+> 2.28.0
+> 
 -- 
-2.8.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 ______________________________________________________
 Linux MTD discussion mailing list
