@@ -2,60 +2,66 @@ Return-Path: <SRS0=HQC9=DB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50E38C4346E
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2020 09:26:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10F10C4363D
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2020 09:38:04 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DFAFF2376F
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2020 09:26:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6A776206C9
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2020 09:38:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lKFF3k0A"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFAFF2376F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=8bytes.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cUub8s0b"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A776206C9
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arm.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=hyJjpyw4wVVvLNLG6DQC+SLz9xXb2TwZeF71pC5uY38=; b=lKFF3k0A2uy3HYWn1NWUZbpUc
-	wvsjl2S1HIrbaX7cWFE6ml5Fwo7B5XEMo3oz5NolXgroHUfU9RNOwO8SchhwFcSxJ58FwLxunLsWD
-	n/hA/yAdYgNcx9oTDjzsNf2CH2zdAePFyi7xyIrOxFZY2csfPZ8tLtnRKJObcWx2OhgFnqBqtF7Er
-	XRZT699myTdoB5kA1ImdObZGcuC8pSZLI7toNLzaBR22gP/vvmCgXTkbn8nrS73y//Km/sMpDw1Ip
-	8aiUy1iWEN3cWVkUxbdoVhyVPicJEMwf432GBXdPPOb3t9h8yqMXhSUPBKSSkbx/K8NAFDeXulGYZ
-	gd8SEng5g==;
+	 bh=oQpDMFrPTKD2BxzSg0cbMENht5vfxJnbMMN7nkrE4wA=; b=cUub8s0btbJwWxF5Xtu4MmPFb
+	oKydqTTdSkGP1W+EV9IUAvjmCpBlAaQc2NkLliKl4HkuKKpQ0D9k44h81aW9R94q4Admym+wtOIqZ
+	bsfp7ZzhyISvU3JpzssYHQDknlbxrRgzV22zt1zVrm571tuK8Kn5BWjWphAmF+wH+mCWZA11w7scF
+	5fe7LRrObUDNOjwRFUSYcLnOCgBNPvCTwykdpPKmGy79IR7IRSmZgfmDrF/Mor7rqPfqQpTvT9MZS
+	W1GAwueD+nU1D2QZISJXfQzsSeNUKanpCrbdIlokibr2JgTVYgU/h26L+weTw0FQvY3sj+Ee2QVQn
+	O24hOo7Gw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kLNVf-0004sQ-I6; Thu, 24 Sep 2020 09:25:51 +0000
-Received: from 8bytes.org ([81.169.241.247] helo=theia.8bytes.org)
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kLNVd-0004rW-8r
- for linux-mtd@lists.infradead.org; Thu, 24 Sep 2020 09:25:50 +0000
-Received: by theia.8bytes.org (Postfix, from userid 1000)
- id 075A33D1; Thu, 24 Sep 2020 11:25:47 +0200 (CEST)
-Date: Thu, 24 Sep 2020 11:25:46 +0200
-From: Joerg Roedel <joro@8bytes.org>
-To: Robin Murphy <robin.murphy@arm.com>
+	id 1kLNgO-0007Lm-K1; Thu, 24 Sep 2020 09:36:56 +0000
+Received: from foss.arm.com ([217.140.110.172])
+ by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kLNgL-0007Ku-Un
+ for linux-mtd@lists.infradead.org; Thu, 24 Sep 2020 09:36:54 +0000
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9AFC911D4;
+ Thu, 24 Sep 2020 02:36:51 -0700 (PDT)
+Received: from [10.57.48.76] (unknown [10.57.48.76])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0343E3F73B;
+ Thu, 24 Sep 2020 02:36:48 -0700 (PDT)
 Subject: Re: arm-smmu 5000000.iommu: Cannot accommodate DMA offset for IOMMU
  page tables
-Message-ID: <20200924092546.GJ27174@8bytes.org>
+To: Joerg Roedel <joro@8bytes.org>
 References: <CA+G9fYvuq58q+GsWnzni0sKSHbubuQz-UaK3TASX26V_a7yBVw@mail.gmail.com>
  <20200924090349.GF27174@8bytes.org>
  <ecf71b34-a104-d42a-bfcd-9570e73520a7@arm.com>
+ <20200924092546.GJ27174@8bytes.org>
+From: Robin Murphy <robin.murphy@arm.com>
+Message-ID: <e2186418-d4d6-e1f4-5eb4-3bfafb5cebb2@arm.com>
+Date: Thu, 24 Sep 2020 10:36:47 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <ecf71b34-a104-d42a-bfcd-9570e73520a7@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200924092546.GJ27174@8bytes.org>
+Content-Language: en-GB
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200924_052549_418940_BD291AEF 
-X-CRM114-Status: GOOD (  13.46  )
+X-CRM114-CacheID: sfid-20200924_053654_070676_03F8C111 
+X-CRM114-Status: GOOD (  16.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,23 +83,26 @@ Cc: Poonam Aggrwal <poonam.aggrwal@nxp.com>, robh@kernel.org,
  linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
  Suram Suram <suram@nxp.com>, masonccyang@mxic.com.tw,
  Will Deacon <will@kernel.org>, Zhiqiang.Hou@nxp.com
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Robin,
+On 2020-09-24 10:25, Joerg Roedel wrote:
+> Hi Robin,
+> 
+> On Thu, Sep 24, 2020 at 10:08:46AM +0100, Robin Murphy wrote:
+>> This should be fixed by https://lore.kernel.org/linux-iommu/daedc9364a19dc07487e4d07b8768b1e5934abd4.1600700881.git.robin.murphy@arm.com/T/#u
+>> (already in linux-next).
+> 
+> Thanks! The question remains why this goes through the dma-mapping tree,
+> was it caused by a patch there?
 
-On Thu, Sep 24, 2020 at 10:08:46AM +0100, Robin Murphy wrote:
-> This should be fixed by https://lore.kernel.org/linux-iommu/daedc9364a19dc07487e4d07b8768b1e5934abd4.1600700881.git.robin.murphy@arm.com/T/#u
-> (already in linux-next).
+Yes, the issue was introduced by one of the changes in "dma-mapping: 
+introduce DMA range map, supplanting dma_pfn_offset", so it only existed 
+in the dma-mapping/for-next branch anyway.
 
-Thanks! The question remains why this goes through the dma-mapping tree,
-was it caused by a patch there?
-
-Regards,
-
-	Joerg
+Robin.
 
 ______________________________________________________
 Linux MTD discussion mailing list
