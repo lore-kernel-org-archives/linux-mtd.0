@@ -2,24 +2,23 @@ Return-Path: <SRS0=HQC9=DB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DEE2C4363D
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2020 16:42:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CB6DC4363D
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2020 19:46:27 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 28F3D2395C
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2020 16:42:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 08A442220C
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2020 19:46:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="F4w+pDha";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="OgFjPH3k";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="rVwv+TmW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 28F3D2395C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linutronix.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tuvB/GL/";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel-dk.20150623.gappssmtp.com header.i=@kernel-dk.20150623.gappssmtp.com header.b="L2Wx7FlL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 08A442220C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
@@ -27,53 +26,68 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
 	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=fp5ZOCPaeBCA8Weo99VRexAda94tQBlLhzQbevBjJEw=; b=F4w+pDhat7xjDOBSxiOcitj/E
-	z/nolomKMELITfn6Lx4P1U1734WkEb3YRgt2kFhi1RKm/vws6yXxrG6+6a8UuCQi5KwvFKfPrGbu6
-	g5Fy6c3UKp75ijpfzT8IcPIUJDydr+CyCfdLLcYMRlpsjxXZq11uhh977bt85Ajjk3GZefMMCSSoC
-	u+pUok+fXxeSnXQSa6wAourvrExfVVJyNgvcbHRmMwRpxxfI/LbzhPPBb6KXzRAY7pXRi6BHrZ0T+
-	Efz0oY/BqDludSsLqpcrUPVfDy9Lr3ZeGbeZeGVupVF5QG41Z6FfW86JMsQikVNnYhgPzoRm3VUOm
-	ODkG5wsOQ==;
+	 bh=sutpsQgaCjenRsImuo8TOGbBZbtCahYYlqdrV56Vaxo=; b=tuvB/GL/4LdsyGlwdCRV464jU
+	wiR8A/4G09xQ71tokNG05X7uoSNdw7CBQFsdMVx6a76B7YZtNVT9psddkWIprmqTxxnhlCx1UxWh1
+	1/cChhsq9/l2GHifNK6+6N6TyGAWRnRSDjMPtCj4FFuZF+a+5/zh/RWfSU6rMx++TLlLu2FzNwBSt
+	6j3pLMTjPnzT0s1dGDHT7xptvuxInJGjQ/fTSg5c8v0juu3ViYd6cd06OqZJEqJAGMnLNj5W8ylbo
+	BUnXYzNIWelixDWQL/5kS+mCKfy3jL/lzumXM4zN6OFm0+BvsS/+LCGIml4GhgRlT5WWJTRKevfgp
+	63ZXg02CA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kLUIp-0005fX-Vw; Thu, 24 Sep 2020 16:41:04 +0000
-Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
+	id 1kLXAu-0005Ss-Ji; Thu, 24 Sep 2020 19:45:04 +0000
+Received: from mail-pg1-x530.google.com ([2607:f8b0:4864:20::530])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kLUIm-0005eu-QH
- for linux-mtd@lists.infradead.org; Thu, 24 Sep 2020 16:41:01 +0000
-Subject: Re: [PATCH] mkfs.ubifs: remove OPENSSL_no_config()
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
- s=2020; t=1600965657;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Gqu72gyzWrG2K3lEd9VHbZKVTmY4/Wyv9fk9wC8KZJo=;
- b=OgFjPH3kvAnn4IlRH7IROlJ8j4bn06+iD6aR1pTHGLnR+VgiktAdWj0M+hJx5X3QxJxWmr
- 9xywCgZbPFKdBEWssYlgdIRliWz1Mm7na/vJKmVK08UWrVy1rQmoY19qgsGrteay/9VNkI
- kwlhThJgEyHfVQh0HMBdS7pK5yXy4p2e5svHF/X1IdUftQs5k7+7aCb4BX4s37PluN7aLm
- pvdWLs3Xdf1FQhCeYRKkvhq+6EYVqr2avtTrw54os9b4/pQPZu/4z+z/R6n+CvVHsuQ64m
- QHturg2Q7yMR0/Q5+SmSbTQxhGtUy8TQO7KcczqSDBLJaVydgWd+CqFa668BGw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
- s=2020e; t=1600965657;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Gqu72gyzWrG2K3lEd9VHbZKVTmY4/Wyv9fk9wC8KZJo=;
- b=rVwv+TmWzEiwNzi6YAXaLIstz+6p17k6ffWVlCv2MPPxCaDwr814Rm6YQp4DJlLM0R1OAQ
- JvqAhELu6xj2L5AA==
-To: Richard Weinberger <richard.weinberger@gmail.com>
-References: <20200724074705.6376-1-bage@linutronix.de>
- <CAFLxGvxwB3Lq6mnTBFyZ4aR+LPS5hwGPCwG+QqLssuT7FRBy_g@mail.gmail.com>
-From: Bastian Germann <bage@linutronix.de>
-Message-ID: <64f36cbd-9ab5-1b37-c4b3-c33b5daf6df8@linutronix.de>
-Date: Thu, 24 Sep 2020 18:40:56 +0200
+ id 1kLXAs-0005R0-03
+ for linux-mtd@lists.infradead.org; Thu, 24 Sep 2020 19:45:03 +0000
+Received: by mail-pg1-x530.google.com with SMTP id f2so334908pgd.3
+ for <linux-mtd@lists.infradead.org>; Thu, 24 Sep 2020 12:44:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=ADwlTn9rnJzlHv/xfLefERCgTh/zOY3+dj+IP5LMhIo=;
+ b=L2Wx7FlLw8QHVp62Ne3mt4GV7+MUCO/WLUazgDqXAmYbUX1Et5GwKUZRbOhKWcg1pJ
+ h3F8YG2QH8T53HlhbxkOnKDq7rYr7VYQSpBZ/SrGKbAAN0q9gjlZztvIvkLYWYD2H5p5
+ D5jWhUDJxNaNV9x10hDsgdYsv3+GqUJuih92RXGRYnyEyog4jlWpFA8o+B+sqtqEeysu
+ zXsVFR5QGsEI7lJZ39JHqx1JjZyubGP7QEwNsybW+JHQWulohPcvjDgNlPxNi7sQOhp+
+ YLXR3ph4QhgGStegDp9ue2849D7tWES5wOYPeY73GujeWcYMaP3DsMTgcgakPfQ8C4Iw
+ pmzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=ADwlTn9rnJzlHv/xfLefERCgTh/zOY3+dj+IP5LMhIo=;
+ b=oCsfFq309LljFU5V7R8MLecQnGM0QmGHzqTCjDctpT+MK97XK7HfOEJ/l2KCKzZ2Xh
+ I3Kx4A94kiL0D7OJ/t6AJPMO1K4+XicPDIwtDepz4vdat6bkrviE5xwZw2cn7dWym7n7
+ e5cyFkL9k4ByoXCWo1z91eXDv66zZb+uEmp32Qv2EIeYsEcDZX9iQdHxWjIdcxrszWR+
+ G8YcqZdY6CVROTkQ8r+RfRwmEMRflmD0iWHlhihTWEuheWfPRjBi2GlLW1YSa2reNtIo
+ qtPDvH6AcRZXDu3PtQ+DOQyLXv0EfJwj3EWiilKvHNm9dEAY0bjVA+Zg/BmZ/6g0Ksca
+ adkg==
+X-Gm-Message-State: AOAM530NTLKjEdp1mOBpGa7ZbsMNRKaNPzQBBhiguxbXpD82+ytay6x7
+ LdaRJ+Q6Q9jnz2+ZEndM6OAVDQ==
+X-Google-Smtp-Source: ABdhPJyn7jUbiC3AGiO/dBfKmKGpcA3VV/JE4LzjEmCUjGJIbrcL8/kmgANM72e+JonEfnG9EJ77rg==
+X-Received: by 2002:a17:902:854b:b029:d1:cbf4:bb43 with SMTP id
+ d11-20020a170902854bb02900d1cbf4bb43mr778274plo.13.1600976697336; 
+ Thu, 24 Sep 2020 12:44:57 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c085:21d6::1911? ([2620:10d:c090:400::5:d63d])
+ by smtp.gmail.com with ESMTPSA id u10sm267612pfn.122.2020.09.24.12.44.55
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 24 Sep 2020 12:44:56 -0700 (PDT)
+Subject: Re: bdi cleanups v7
+To: Christoph Hellwig <hch@lst.de>
+References: <20200924065140.726436-1-hch@lst.de>
+From: Jens Axboe <axboe@kernel.dk>
+Message-ID: <a9235ba9-95a0-4251-ee7d-e4012775346e@kernel.dk>
+Date: Thu, 24 Sep 2020 13:44:54 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvxwB3Lq6mnTBFyZ4aR+LPS5hwGPCwG+QqLssuT7FRBy_g@mail.gmail.com>
-Content-Language: de-DE-frami
+In-Reply-To: <20200924065140.726436-1-hch@lst.de>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200924_124100_947909_834D8703 
-X-CRM114-Status: GOOD (  10.71  )
+X-CRM114-CacheID: sfid-20200924_154502_096898_D5B5F01E 
+X-CRM114-Status: GOOD (  14.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,33 +99,31 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org,
- David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Cc: linux-raid@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+ Justin Sanders <justin@coraid.com>, Minchan Kim <minchan@kernel.org>,
+ Johannes Thumshirn <Johannes.Thumshirn@wdc.com>, linux-bcache@vger.kernel.org,
+ Coly Li <colyli@suse.de>, linux-block@vger.kernel.org,
+ Song Liu <song@kernel.org>, dm-devel@redhat.com, linux-mtd@lists.infradead.org,
+ Richard Weinberger <richard@nod.at>, linux-fsdevel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ drbd-dev@lists.linbit.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 25.07.20 um 10:24 schrieb Richard Weinberger:
-> On Fri, Jul 24, 2020 at 10:00 AM <bage@linutronix.de> wrote:
->>
->> From: Torben Hohn <torben.hohn@linutronix.de>
->>
->> Especially for the pkcs11 engine, a configuration is required
->> because the provider has to be configured.
->>
->> Its not clear why OPENSSL_no_config() is called.
+On 9/24/20 12:51 AM, Christoph Hellwig wrote:
+> Hi Jens,
 > 
-> My best guess is because on old openssl versions it used to work.
-> 
->> Remove OPENSSL_no_config() and call OPENSSL_config(NULL)
->> instead.
-> 
-> David, can you please check whether this change works with all openssl versions
-> we want to support?
-> 
+> this series contains a bunch of different BDI cleanups.  The biggest item
+> is to isolate block drivers from the BDI in preparation of changing the
+> lifetime of the block device BDI in a follow up series.
 
-Are there any news on this?
+Applied, thanks.
+
+-- 
+Jens Axboe
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
