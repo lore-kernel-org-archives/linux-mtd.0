@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B966C2D0E2
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2020 06:52:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68683C47428
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2020 06:53:02 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A348B23772
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2020 06:52:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EBDAD23772
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2020 06:53:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ufoIQ+qa";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XUFcuzWy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A348B23772
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="diZTnIzz";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="L6rYs9Sg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EBDAD23772
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,37 +26,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=MUg7772CnsxUCq0o5I3cNvTOpRAynIQiqUi0cReV4Ug=; b=ufoIQ+qatdheo5IgAGLhLJKjg
-	WSxTZ8xInRRgLzKMm8ldvmU9f/BDwflFTPpuM/Ov4m0G+G51KKy14ixxnU3BGKoLdSawZMZI7EwUe
-	m+Nx8ZR7Wqu2c/RouxKuRZNvtxi1jQei0EhGj3U1p1adZD+w/8mbHXggAoeualaVklw77cwgYRgJb
-	QvboHj0w3NBdyJjYDi4PJhcbA14PZVDRvYsnqFWY3S0snF6+v3p1txMlZcnqR+mixmEpoAD/G8ros
-	5I8JLShExec4ScafNi/8bQXPHzpHnfWYe8pLY7rd4xHQdc67/Zwg3s/Js707eL0XOIFPTT8bEIpK3
-	x7m/q+oeA==;
+	 bh=ms/qTvE8bKvhD7KKLDUR9/DqPnLvBpD0E/6BO6dFJqc=; b=diZTnIzzVNDTvE9a9kTKlQDpR
+	O8tH4OqtqBwDCbg1/58YfMQwgnBhejDHXgYOc7WLU4dpfdGrdPUqdqZRpsqUen2RlaAImBlDz09SM
+	Abaaax4RTSKWjS5QC3uUwo9TveGRA3QGHz/gVGCD2Snm3/2CdsgnJxy46c7Xi8OFz3QJ0q+Oc5VQl
+	ln9cmpMvTWBkM9vGVXtD+K4Vhm678oVxX8bsKj0noDtmc3rsHU0ncDKnOIxrlgUh1KjLv0fI/cwZa
+	qMyA1mdg74SmkDlQan7pG4wxjzkqHm78gi4QYgCSh/bXgNkK52/8Np7FRwMnKOfzyDBl6F55yV0sP
+	2UJNP79Ww==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kLL6Z-0004lL-Dn; Thu, 24 Sep 2020 06:51:47 +0000
+	id 1kLL6n-0004pa-W3; Thu, 24 Sep 2020 06:52:02 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kLL6W-0004kK-6e
- for linux-mtd@merlin.infradead.org; Thu, 24 Sep 2020 06:51:44 +0000
+ id 1kLL6a-0004le-SX
+ for linux-mtd@merlin.infradead.org; Thu, 24 Sep 2020 06:51:48 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=ZzPx71qgJF0jC0ikEBgBKShPtgyqvHrdfndjbCu7C3c=; b=XUFcuzWy60D3s8pxvmU8mmt6xP
- a5KtiaRQVXJifB651UMtAjWRxMib0YObi/FPgk2O8+1Br4UYxRrvOMiR/Y/1SB5fPjZ2pxQBNfgzb
- 4OXHKYc+ovmJJwNys7gjgm9A9vk0V+0ta6/+ECBHyxrlilHmxjzSkmnm+EQ4n/X7f1ir//eTIwmZD
- AVApt4a76FZYddf361u9kKYhGkmUfg26eH1hS0Z8/FZt6MNh8B4s4kiZo3TsVgN0rYbCpo/4cbVMn
- dY+2XXF2/Gfct2itXYVT6aKOVcRef77ztCUnX9W9i8Bwm1fLgEAeOgO74vo7lOEK99PoqR/6gA1z9
- gU9HJDCQ==;
+ bh=g9xVnmRLNXPehcB4PdT7j+hjYku/j4udzyGtMh1GMwg=; b=L6rYs9SgfbS93bAxFavESPGoy0
+ /v4w1xHKzUlgbK7M4J4CfEklqmTuP2Z/b95hBWtxRTKXZM2PVUt7f4/gSSAFoLGN2git2oF5dLDwh
+ TSLtJUhfBUrAXO9zkv+5p3NWTXtFLm3D8EMaWzzFlgrsHn61ZVCByA0wmc8fkLa3okgAXVOozzmiS
+ 4rdy3q4Io0SIE7nJ6FE9igOCKmRGmE5Lv5ZKxomzwPp1dYsWWeKuiPxEpUh/iDHCQAft+lM3+BSxP
+ MCvW3VsvvRaDMI9viLfFCmAnA8bzSX6j3m2/KNgIrWab8PfiT3CagUBPdUVzdoZvWuLIrBAc0ghF8
+ EWnVjA0w==;
 Received: from p4fdb0c34.dip0.t-ipconnect.de ([79.219.12.52] helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kLL6U-00019N-Al; Thu, 24 Sep 2020 06:51:42 +0000
+ id 1kLL6X-00019u-Ek; Thu, 24 Sep 2020 06:51:47 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 01/13] fs: remove the unused SB_I_MULTIROOT flag
-Date: Thu, 24 Sep 2020 08:51:28 +0200
-Message-Id: <20200924065140.726436-2-hch@lst.de>
+Subject: [PATCH 04/13] aoe: set an optimal I/O size
+Date: Thu, 24 Sep 2020 08:51:31 +0200
+Message-Id: <20200924065140.726436-5-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200924065140.726436-1-hch@lst.de>
 References: <20200924065140.726436-1-hch@lst.de>
@@ -77,7 +77,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Cc: linux-raid@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
  Justin Sanders <justin@coraid.com>, Jan Kara <jack@suse.cz>,
  Minchan Kim <minchan@kernel.org>,
- Johannes Thumshirn <johannes.thumshirn@wdc.com>, linux-bcache@vger.kernel.org,
+ Johannes Thumshirn <Johannes.Thumshirn@wdc.com>, linux-bcache@vger.kernel.org,
  Coly Li <colyli@suse.de>, linux-block@vger.kernel.org,
  Song Liu <song@kernel.org>, dm-devel@redhat.com, linux-mtd@lists.infradead.org,
  Richard Weinberger <richard@nod.at>, linux-fsdevel@vger.kernel.org,
@@ -88,44 +88,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The last user of SB_I_MULTIROOT is disappeared with commit f2aedb713c28
-("NFS: Add fs_context support.")
+aoe forces a larger readahead size, but any reason to do larger I/O
+is not limited to readahead.  Also set the optimal I/O size, and
+remove the local constants in favor of just using SZ_2G.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/namei.c         | 4 ++--
- include/linux/fs.h | 1 -
- 2 files changed, 2 insertions(+), 3 deletions(-)
+ drivers/block/aoe/aoeblk.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/namei.c b/fs/namei.c
-index e99e2a9da0f7de..f1eb8ccd2be958 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -568,8 +568,8 @@ static bool path_connected(struct vfsmount *mnt, struct dentry *dentry)
- {
- 	struct super_block *sb = mnt->mnt_sb;
- 
--	/* Bind mounts and multi-root filesystems can have disconnected paths */
--	if (!(sb->s_iflags & SB_I_MULTIROOT) && (mnt->mnt_root == sb->s_root))
-+	/* Bind mounts can have disconnected paths */
-+	if (mnt->mnt_root == sb->s_root)
- 		return true;
- 
- 	return is_subdir(dentry, mnt->mnt_root);
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 7519ae003a082c..fbd74df5ce5f34 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -1385,7 +1385,6 @@ extern int send_sigurg(struct fown_struct *fown);
- #define SB_I_CGROUPWB	0x00000001	/* cgroup-aware writeback enabled */
- #define SB_I_NOEXEC	0x00000002	/* Ignore executables on this fs */
- #define SB_I_NODEV	0x00000004	/* Ignore devices on this fs */
--#define SB_I_MULTIROOT	0x00000008	/* Multiple roots to the dentry tree */
- 
- /* sb->s_iflags to limit user namespace mounts */
- #define SB_I_USERNS_VISIBLE		0x00000010 /* fstype already mounted */
+diff --git a/drivers/block/aoe/aoeblk.c b/drivers/block/aoe/aoeblk.c
+index 5ca7216e9e01f3..d8cfc233e64b93 100644
+--- a/drivers/block/aoe/aoeblk.c
++++ b/drivers/block/aoe/aoeblk.c
+@@ -347,7 +347,6 @@ aoeblk_gdalloc(void *vp)
+ 	mempool_t *mp;
+ 	struct request_queue *q;
+ 	struct blk_mq_tag_set *set;
+-	enum { KB = 1024, MB = KB * KB, READ_AHEAD = 2 * MB, };
+ 	ulong flags;
+ 	int late = 0;
+ 	int err;
+@@ -407,7 +406,8 @@ aoeblk_gdalloc(void *vp)
+ 	WARN_ON(d->gd);
+ 	WARN_ON(d->flags & DEVFL_UP);
+ 	blk_queue_max_hw_sectors(q, BLK_DEF_MAX_SECTORS);
+-	q->backing_dev_info->ra_pages = READ_AHEAD / PAGE_SIZE;
++	q->backing_dev_info->ra_pages = SZ_2M / PAGE_SIZE;
++	blk_queue_io_opt(q, SZ_2M);
+ 	d->bufpool = mp;
+ 	d->blkq = gd->queue = q;
+ 	q->queuedata = d;
 -- 
 2.28.0
 
