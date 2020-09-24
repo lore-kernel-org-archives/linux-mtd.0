@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D20DC4346E
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2020 08:44:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6595C4346E
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2020 08:49:47 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DDC0D23600
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2020 08:44:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4E54123772
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2020 08:49:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="t3lEJZWt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DDC0D23600
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="k/F7tDvi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4E54123772
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,47 +25,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=5dw61feFv/4H9fr7Ekx89UG2ymxZNpS2L00sY7ABFfA=; b=t3lEJZWto4RoTUEO6XhtlMtUUW
-	xWhQzjB09h5mce8G5c9OOph2GEOAOf1ti+znmgQhao84m1Dd9Ok0V6w+70Ry4/piweQJGAPdUNcDC
-	Ujp57Jeaa1w06yStr0rhfbrNt9J+kWEhZBglJPmZFwb0lN9rdneozWTExzTOt2jzXrwfZdYovWGbO
-	XrnvldSsunAJ9ulenOWnMmL5Z6aTEhpNpKours3Gx4wSZJUZYREvoqesV7tMemXx/AT9E1vHA3LJT
-	qnOUgW69Z+Ui2jVn5dFEyHpbjOJvJGURbwWcV1ijJMD6NxvX5ykKgDRMhiDCdQvADkpFpMpuHcC+W
-	o4BKnMnA==;
+	bh=5dw61feFv/4H9fr7Ekx89UG2ymxZNpS2L00sY7ABFfA=; b=k/F7tDviji/dxQkP/iG5KWN5bT
+	iNylmTdi3Q9IUp3yQ7Gz4M9ypTm5s6TYm2br5y6IO2SVlrKOXyt0QT8dI+WM1U8507x6Wu/lOTPRv
+	lO5AL1zeXy8/9dCtoGjzMcng8+0Y+v6IQAZ2qplLZqQ55M2QQWrsD38oOdd1fyT1A5lwt1AlSjlZk
+	oq0xhm82lU+Jtyz4oZk0avG45iTARBWCSyvhIbXZbxYjHyb/GjNIRxn/l6YsGBoP40NDcqPTXvU7X
+	MLm0D99Flds95VB7LmhpljM3lAHIkjuqnDVozBKonOu3+yIm33GnQR8Eoy3fn+NSEzG1AWaUYSQUb
+	mS+bhGLg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kLMq7-0005ht-PZ; Thu, 24 Sep 2020 08:42:55 +0000
-Received: from mga04.intel.com ([192.55.52.120])
+	id 1kLMwD-0006WF-Kj; Thu, 24 Sep 2020 08:49:13 +0000
+Received: from mga18.intel.com ([134.134.136.126])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kLMq5-0005hL-HR
- for linux-mtd@lists.infradead.org; Thu, 24 Sep 2020 08:42:54 +0000
-IronPort-SDR: HeSuMZluz1wlos1NTo18nWzaiTcxTlDC6KFPkH3v61sPPXRHcOJwsjGjOr9syNRSIGZ2ICoJ3L
- L3h7nCTQbxew==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="158520035"
-X-IronPort-AV: E=Sophos;i="5.77,296,1596524400"; d="scan'208";a="158520035"
+ id 1kLMw1-0006Sp-FT
+ for linux-mtd@lists.infradead.org; Thu, 24 Sep 2020 08:49:07 +0000
+IronPort-SDR: NpAWHIvwajIdvOfQhtzLm0fcltT7bT3gs+n5I4bi3FyKDQ+iJ8v/kb7i4+uzt/w3oJPIayXYph
+ wbwEN0/UeDlA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="148892193"
+X-IronPort-AV: E=Sophos;i="5.77,296,1596524400"; d="scan'208";a="148892193"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Sep 2020 01:42:49 -0700
-IronPort-SDR: qXDgAHAlDVk6Ca8de2d7KfuuXzUfaHdwFD1IUSNZZ5H+zDnxhmrXZdE0I0I1e/ohRZlAceul7b
- sThfyBVDKcdA==
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Sep 2020 01:48:59 -0700
+IronPort-SDR: VjOQdLAmdVj7IMmfyclWeu8gG9OcGNIyb63qnS6K2U/9Amz3FNWfAR9oK9iDCSEjf6WJVq7zJu
+ xvKBOrejT+Gg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,296,1596524400"; d="scan'208";a="291100358"
+X-IronPort-AV: E=Sophos;i="5.77,296,1596524400"; d="scan'208";a="291102305"
 Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
- by fmsmga007.fm.intel.com with ESMTP; 24 Sep 2020 01:42:45 -0700
+ by fmsmga007.fm.intel.com with ESMTP; 24 Sep 2020 01:48:55 -0700
 From: "Ramuthevar,
  Vadivel MuruganX" <vadivel.muruganx.ramuthevar@linux.intel.com>
 To: miquel.raynal@bootlin.com,
 	linux-kernel@vger.kernel.org
 Subject: [PATCH v14 2/2] mtd: rawnand: Add NAND controller support on Intel
  LGM SoC
-Date: Thu, 24 Sep 2020 16:42:32 +0800
-Message-Id: <20200924084232.41631-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+Date: Thu, 24 Sep 2020 16:48:42 +0800
+Message-Id: <20200924084842.41741-3-vadivel.muruganx.ramuthevar@linux.intel.com>
 X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200924084232.41631-1-vadivel.muruganx.ramuthevar@linux.intel.com>
-References: <20200924084232.41631-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+In-Reply-To: <20200924084842.41741-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+References: <20200924084842.41741-1-vadivel.muruganx.ramuthevar@linux.intel.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200924_044253_811360_6227C8AA 
+X-CRM114-CacheID: sfid-20200924_044901_822212_AB510031 
 X-CRM114-Status: GOOD (  27.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
