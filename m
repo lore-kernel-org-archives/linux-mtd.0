@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E88D5C4363D
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Sep 2020 06:57:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01B65C4363D
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Sep 2020 06:57:20 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9956821D91
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Sep 2020 06:57:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9D07221D91
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Sep 2020 06:57:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YWgv87zq";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="igrI5lat"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9956821D91
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="UpnyHVsT";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="XJK4yI89"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D07221D91
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,64 +26,64 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=acmz9ylaDfyRUiO3UREMa46P0VqmJnDxn4t8jwJFUnk=; b=YWgv87zqdXVNNEBj/fmAz1X8i
-	5xTfJJblgPnrAh6vJSxS8a/tM5XHQ/o/e8nlRI8VOQFmJ4Y2cdXJRh1EfvuZngdAWDpvKDHxSR8B3
-	UEGg5nJ1I7yMsuM8dNNARmxDCkKjU8FsoC8gyv8qbqOXGGXzbcP2EL8X6X3VRxaMZ80uN0ncQdFmy
-	WyMI+eDkLglbreuyxyY97l7inwALWTtdxW24mEspLI6WAoZCa/FYmiAlMjWGlNM+TBD/QKNE5YDyj
-	n4HFH3HcYLLQ5WfEimao5oxKT0u37GfviMxhDTb4bH1qPOgYewM5m5P/YSYLq8rTql99lVEJYE8RS
-	Zmiv3aThA==;
+	 bh=wzAkVopUVEg7oRZcZWTzj8VnbOAUjPlEjR6U2OXyc9E=; b=UpnyHVsTGV45lPwd71pMMdbwt
+	NdfXDos8u4DE29/bDwLLnmc8dqlnzkcc5bdNuKk1oxXSAJYKvIMDpWW8p26kMpIBVfAbRnMaoOzTD
+	ijTSWiU+1CdPoTdghPJyuTv0LMWb1mi3A1TiU7uHPSWEefo3Zsy5TvdeEDISs/wZovERo0wtsPd2J
+	Wm/Wk0VKCjuqXrl8Lu3ykebcjsZ2zrz6x9SONiCzFTJRKP1mB8a7o7HZts0OLdBZv5+dLYB2XGAU8
+	Ku+WUfTPog0hKOAtThVzWyIRvrajUMFfr0hquMs9OXUeUI/1pC0bFJwEZ+RQTVsy4MPJsEeQlinEz
+	3H69RJeHQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kLheM-00046v-PR; Fri, 25 Sep 2020 06:56:10 +0000
-Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
+	id 1kLheV-0004Cx-TL; Fri, 25 Sep 2020 06:56:19 +0000
+Received: from mail-pj1-x1043.google.com ([2607:f8b0:4864:20::1043])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kLhcw-0003TV-Gq
- for linux-mtd@lists.infradead.org; Fri, 25 Sep 2020 06:54:50 +0000
-Received: by mail-pg1-x544.google.com with SMTP id 5so1733097pgf.5
- for <linux-mtd@lists.infradead.org>; Thu, 24 Sep 2020 23:54:41 -0700 (PDT)
+ id 1kLhcz-0003Uz-1F
+ for linux-mtd@lists.infradead.org; Fri, 25 Sep 2020 06:54:52 +0000
+Received: by mail-pj1-x1043.google.com with SMTP id mn7so1263988pjb.5
+ for <linux-mtd@lists.infradead.org>; Thu, 24 Sep 2020 23:54:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=Q1sjz1AOP3RHN+D2U3Yr0dC8Mgj3MJeltuBOhjJoHBE=;
- b=igrI5latvdPt4aE/Cq47rXBxO6po1rbw5Kx731skmFqpAxoNONI26r8BshXxGn08b5
- 7rhWAUjAPpJpJmmlqioxbRerj0BO3MtHFX0r04U6ReyaNPpzPYR3EqTGYCkeWawahwEI
- y1+Eg2bUCBNsM2idfI5XtUqmHvNJFgM3c4qZA=
+ bh=CboFKNwfQHjhb2QqB27UjvOOEHxVAcEUNOkbldAZfwI=;
+ b=XJK4yI89glmJ9fKvhrxq2YtfRKCPxksQhw7CNQzxtdpw9/v6aLqMzkoY4nbJ3cfT6f
+ Tqv15pHhdxxOeWkYM3Pi3uMwqXQg1PsFubX0dT84Cmd9gEA4ALrRmanw545PMVAbU2N1
+ KDJBVkvNdLcWlxvah4DZ5ULinhsFnBMJPBUnk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=Q1sjz1AOP3RHN+D2U3Yr0dC8Mgj3MJeltuBOhjJoHBE=;
- b=BzUer37JcCkd4deQUUGzOoNi6TM9wLq41vZO4T8PF3Cmiomzv90jZZtq5xiMl2dZBW
- JjOgoorOvwK2gRI5SqRArAT51n2Cwc/wOnaYAsSpA8Z0yP9f57NK1vDjjpbJcPtVgiLh
- JrGF3rGWVX93hLU+Axdnd6CwvBtZnRqXQe3WOCL0HMG1CD61o9hQJOTfUIl6DInghjy4
- FpL3/sUod8e7M5CGgqXQ3c46f4y/wP+iiSpMgi0pscQS3BfahhVlR2WWZsQd3V3U17nt
- FKoMwzr+Yj9YiIFfGWxd/XFzQtKx5wQ0Z5qdJhoEgCB94u2Gua03SWZiXRFvHeZEWaD7
- MVgw==
-X-Gm-Message-State: AOAM533mnxGGO8KZpSMFY5GVfyVdnNIOecJhcuOUsoRShnoo26scz8hV
- ijdpuPWdtqWGFxY7DQIjlkgsmQ==
-X-Google-Smtp-Source: ABdhPJwyB6XORjYiFS8uQ2wfeOioKyeLL0KFpbwVKrof6R1wEMQaX91jqXNpsA2X3ljJjbI6sOtfhg==
-X-Received: by 2002:a62:fc06:0:b029:142:2501:397d with SMTP id
- e6-20020a62fc060000b02901422501397dmr2805467pfh.66.1601016880071; 
- Thu, 24 Sep 2020 23:54:40 -0700 (PDT)
+ bh=CboFKNwfQHjhb2QqB27UjvOOEHxVAcEUNOkbldAZfwI=;
+ b=V64Jus+h/0bhrXy2Actnbe3D03NB/1ZHWC0AwNkXllQYYlIR1FoXh04VMzB0lH0AaV
+ lHARdp3ELFqkRvOuDTbMBTX8AA81JW5H2xyAUYbxXWsGWCNDv4wEg26Cd4gWWOYg78uP
+ c2b2lD0lXE9NogNWAK4vSEKw6TGfwKtTrs1HU6FvJB1o+wZaHpYnztnTrg2vR2WMeXIn
+ 3Mjv6wM3ho7gdy3on5HUhh1pJAEZOncowfjldtqf5wy+0bQ1n/fvQZ5tcH9eDG0ovhzt
+ tMuEJ9KdcsGJmBEZbN5piquDG/7ejbe+xO1rVhuiay6Q0Y7wnHqXwot+5DpOnr6QXNg+
+ cesQ==
+X-Gm-Message-State: AOAM532xVCWq+OZLXjG9YKv7HiH08CCQKGj1J6mFKrVEAmcpvsF84uJ2
+ DCq4tr9z0cxf8HLGewSl/D2tCA==
+X-Google-Smtp-Source: ABdhPJwIBJ1Mku0abGIDFapejo9O2GhaKmy5wuc7DpI6Wy767K/AMgPKvt0opUUPLWIcoXhqf3bg4A==
+X-Received: by 2002:a17:90a:ea0c:: with SMTP id
+ w12mr1329650pjy.65.1601016882432; 
+ Thu, 24 Sep 2020 23:54:42 -0700 (PDT)
 Received: from ikjn-p920.tpe.corp.google.com
  ([2401:fa00:1:10:f693:9fff:fef4:a8fc])
- by smtp.gmail.com with ESMTPSA id x27sm1549612pfp.128.2020.09.24.23.54.38
+ by smtp.gmail.com with ESMTPSA id x27sm1549612pfp.128.2020.09.24.23.54.40
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 24 Sep 2020 23:54:39 -0700 (PDT)
+ Thu, 24 Sep 2020 23:54:42 -0700 (PDT)
 From: Ikjoon Jang <ikjn@chromium.org>
 To: Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
  devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
  linux-mtd@lists.infradead.org
-Subject: [PATCH v3 5/6] spi: spi-mtk-nor: support 36bit dma addressing
-Date: Fri, 25 Sep 2020 14:54:16 +0800
-Message-Id: <20200925145255.v3.5.Id1cb208392928afc7ceed4de06924243c7858cd0@changeid>
+Subject: [PATCH v3 6/6] spi: spi-mtk-nor: Add power management support
+Date: Fri, 25 Sep 2020 14:54:17 +0800
+Message-Id: <20200925145255.v3.6.I68983b582d949a91866163bab588ff3c2a0d0275@changeid>
 X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
 In-Reply-To: <20200925065418.1077472-1-ikjn@chromium.org>
 References: <20200925065418.1077472-1-ikjn@chromium.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200925_025442_667056_5BAFA00C 
-X-CRM114-Status: GOOD (  18.49  )
+X-CRM114-CacheID: sfid-20200925_025445_164951_88AC480D 
+X-CRM114-Status: GOOD (  21.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,81 +103,194 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This patch enables 36bit dma address support to spi-mtk-nor.
-Currently this is enabled only for mt8192-nor.
+This patch adds dev_pm_ops to mtk-nor to support suspend/resume,
+auto suspend delay is set to -1 by default.
+
+Accessing registers are only permitted after its clock is enabled
+to deal with unknown state of operating clk at probe time,
 
 Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
 ---
 
-(no changes since v1)
+Changes in v3:
+- Fix a bugfix of v2 in checking spi memory operation.
+- split read_dma function into two (normal/bounce)
+- Support 7bytes generic spi xfer
 
- drivers/spi/spi-mtk-nor.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+Changes in v2:
+- Add power management support
+- Fix bugs in checking spi memory operation.
+- use dma_alloc_coherent for allocating bounce buffer
+- code cleanups
+
+ drivers/spi/spi-mtk-nor.c | 98 ++++++++++++++++++++++++++++++---------
+ 1 file changed, 76 insertions(+), 22 deletions(-)
 
 diff --git a/drivers/spi/spi-mtk-nor.c b/drivers/spi/spi-mtk-nor.c
-index 8dbafee7f431..35205635ed42 100644
+index 35205635ed42..bde4c846ce65 100644
 --- a/drivers/spi/spi-mtk-nor.c
 +++ b/drivers/spi/spi-mtk-nor.c
-@@ -78,6 +78,8 @@
- #define MTK_NOR_REG_DMA_FADR		0x71c
- #define MTK_NOR_REG_DMA_DADR		0x720
- #define MTK_NOR_REG_DMA_END_DADR	0x724
-+#define MTK_NOR_REG_DMA_DADR_HB		0x738
-+#define MTK_NOR_REG_DMA_END_DADR_HB	0x73c
+@@ -14,6 +14,7 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/of_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/spi/spi.h>
+ #include <linux/spi/spi-mem.h>
+ #include <linux/string.h>
+@@ -592,22 +593,15 @@ static int mtk_nor_enable_clk(struct mtk_nor *sp)
+ 	return 0;
+ }
  
- /* maximum bytes of TX in PRG mode */
- #define MTK_NOR_PRG_MAX_SIZE		6
-@@ -106,6 +108,7 @@ struct mtk_nor {
- 	unsigned int spi_freq;
- 	bool wbuf_en;
- 	bool has_irq;
-+	bool high_dma;
- 	struct completion op_done;
- };
+-static int mtk_nor_init(struct mtk_nor *sp)
++static void mtk_nor_init(struct mtk_nor *sp)
+ {
+-	int ret;
+-
+-	ret = mtk_nor_enable_clk(sp);
+-	if (ret)
+-		return ret;
+-
+-	sp->spi_freq = clk_get_rate(sp->spi_clk);
++	writel(0, sp->base + MTK_NOR_REG_IRQ_EN);
++	writel(MTK_NOR_IRQ_MASK, sp->base + MTK_NOR_REG_IRQ_STAT);
  
-@@ -305,6 +308,11 @@ static int mtk_nor_dma_exec(struct mtk_nor *sp, u32 from, unsigned int length,
- 	writel(dma_addr, sp->base + MTK_NOR_REG_DMA_DADR);
- 	writel(dma_addr + length, sp->base + MTK_NOR_REG_DMA_END_DADR);
+ 	writel(MTK_NOR_ENABLE_SF_CMD, sp->base + MTK_NOR_REG_WP);
+ 	mtk_nor_rmw(sp, MTK_NOR_REG_CFG2, MTK_NOR_WR_CUSTOM_OP_EN, 0);
+ 	mtk_nor_rmw(sp, MTK_NOR_REG_CFG3,
+ 		    MTK_NOR_DISABLE_WREN | MTK_NOR_DISABLE_SR_POLL, 0);
+-
+-	return ret;
+ }
  
-+	if (sp->high_dma) {
-+		writel(dma_addr >> 32, sp->base + MTK_NOR_REG_DMA_DADR_HB);
-+		writel((dma_addr + length) >> 32, sp->base + MTK_NOR_REG_DMA_END_DADR_HB);
-+	}
+ static irqreturn_t mtk_nor_irq_handler(int irq, void *data)
+@@ -690,6 +684,7 @@ static int mtk_nor_probe(struct platform_device *pdev)
+ 	ctlr->num_chipselect = 1;
+ 	ctlr->setup = mtk_nor_setup;
+ 	ctlr->transfer_one_message = mtk_nor_transfer_one_message;
++	ctlr->auto_runtime_pm = true;
+ 
+ 	dev_set_drvdata(&pdev->dev, ctlr);
+ 
+@@ -712,12 +707,19 @@ static int mtk_nor_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 	}
+ 
++	ret = mtk_nor_enable_clk(sp);
++	if (ret < 0)
++		return ret;
 +
- 	if (sp->has_irq) {
- 		reinit_completion(&sp->op_done);
- 		mtk_nor_rmw(sp, MTK_NOR_REG_IRQ_EN, MTK_NOR_IRQ_DMA, 0);
-@@ -635,7 +643,8 @@ static const struct spi_controller_mem_ops mtk_nor_mem_ops = {
- };
- 
- static const struct of_device_id mtk_nor_match[] = {
--	{ .compatible = "mediatek,mt8173-nor" },
-+	{ .compatible = "mediatek,mt8192-nor", .data = (void *)36 },
-+	{ .compatible = "mediatek,mt8173-nor", .data = (void *)32 },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, mtk_nor_match);
-@@ -647,6 +656,7 @@ static int mtk_nor_probe(struct platform_device *pdev)
- 	void __iomem *base;
- 	struct clk *spi_clk, *ctlr_clk;
- 	int ret, irq;
-+	unsigned long dma_bits;
- 
- 	base = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(base))
-@@ -660,6 +670,12 @@ static int mtk_nor_probe(struct platform_device *pdev)
- 	if (IS_ERR(ctlr_clk))
- 		return PTR_ERR(ctlr_clk);
- 
-+	dma_bits = (unsigned long)of_device_get_match_data(&pdev->dev);
-+	if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(dma_bits))) {
-+		dev_err(&pdev->dev, "failed to set dma mask(%lu)\n", dma_bits);
-+		return -EINVAL;
-+	}
++	sp->spi_freq = clk_get_rate(sp->spi_clk);
 +
- 	ctlr = spi_alloc_master(&pdev->dev, sizeof(*sp));
- 	if (!ctlr) {
- 		dev_err(&pdev->dev, "failed to allocate spi controller\n");
++	mtk_nor_init(sp);
++
+ 	irq = platform_get_irq_optional(pdev, 0);
++
+ 	if (irq < 0) {
+ 		dev_warn(sp->dev, "IRQ not available.");
+ 	} else {
+-		writel(MTK_NOR_IRQ_MASK, base + MTK_NOR_REG_IRQ_STAT);
+-		writel(0, base + MTK_NOR_REG_IRQ_EN);
+ 		ret = devm_request_irq(sp->dev, irq, mtk_nor_irq_handler, 0,
+ 				       pdev->name, sp);
+ 		if (ret < 0) {
+@@ -728,34 +730,86 @@ static int mtk_nor_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	ret = mtk_nor_init(sp);
+-	if (ret < 0) {
+-		kfree(ctlr);
+-		return ret;
+-	}
++	pm_runtime_set_autosuspend_delay(&pdev->dev, -1);
++	pm_runtime_use_autosuspend(&pdev->dev);
++	pm_runtime_set_active(&pdev->dev);
++	pm_runtime_enable(&pdev->dev);
++	pm_runtime_get_noresume(&pdev->dev);
++
++	ret = devm_spi_register_controller(&pdev->dev, ctlr);
++	if (ret < 0)
++		goto err_probe;
++
++	pm_runtime_mark_last_busy(&pdev->dev);
++	pm_runtime_put_autosuspend(&pdev->dev);
+ 
+ 	dev_info(&pdev->dev, "spi frequency: %d Hz\n", sp->spi_freq);
+ 
+-	return devm_spi_register_controller(&pdev->dev, ctlr);
++	return 0;
++
++err_probe:
++	pm_runtime_disable(&pdev->dev);
++	pm_runtime_set_suspended(&pdev->dev);
++	pm_runtime_dont_use_autosuspend(&pdev->dev);
++
++	mtk_nor_disable_clk(sp);
++
++	return ret;
+ }
+ 
+ static int mtk_nor_remove(struct platform_device *pdev)
+ {
+-	struct spi_controller *ctlr;
+-	struct mtk_nor *sp;
++	struct spi_controller *ctlr = dev_get_drvdata(&pdev->dev);
++	struct mtk_nor *sp = spi_controller_get_devdata(ctlr);
+ 
+-	ctlr = dev_get_drvdata(&pdev->dev);
+-	sp = spi_controller_get_devdata(ctlr);
++	pm_runtime_disable(&pdev->dev);
++	pm_runtime_set_suspended(&pdev->dev);
++	pm_runtime_dont_use_autosuspend(&pdev->dev);
++
++	mtk_nor_disable_clk(sp);
++
++	return 0;
++}
++
++static int __maybe_unused mtk_nor_runtime_suspend(struct device *dev)
++{
++	struct spi_controller *ctlr = dev_get_drvdata(dev);
++	struct mtk_nor *sp = spi_controller_get_devdata(ctlr);
+ 
+ 	mtk_nor_disable_clk(sp);
+ 
+ 	return 0;
+ }
+ 
++static int __maybe_unused mtk_nor_runtime_resume(struct device *dev)
++{
++	struct spi_controller *ctlr = dev_get_drvdata(dev);
++	struct mtk_nor *sp = spi_controller_get_devdata(ctlr);
++
++	return mtk_nor_enable_clk(sp);
++}
++
++static int __maybe_unused mtk_nor_suspend(struct device *dev)
++{
++	return pm_runtime_force_suspend(dev);
++}
++
++static int __maybe_unused mtk_nor_resume(struct device *dev)
++{
++	return pm_runtime_force_resume(dev);
++}
++
++static const struct dev_pm_ops mtk_nor_pm_ops = {
++	SET_RUNTIME_PM_OPS(mtk_nor_runtime_suspend,
++			   mtk_nor_runtime_resume, NULL)
++	SET_SYSTEM_SLEEP_PM_OPS(mtk_nor_suspend, mtk_nor_resume)
++};
++
+ static struct platform_driver mtk_nor_driver = {
+ 	.driver = {
+ 		.name = DRIVER_NAME,
+ 		.of_match_table = mtk_nor_match,
++		.pm = &mtk_nor_pm_ops,
+ 	},
+ 	.probe = mtk_nor_probe,
+ 	.remove = mtk_nor_remove,
 -- 
 2.28.0.681.g6f77f65b4e-goog
 
