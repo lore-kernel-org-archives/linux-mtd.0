@@ -2,22 +2,23 @@ Return-Path: <SRS0=nuHD=DC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EB27C4363D
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Sep 2020 08:22:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1ACEC4363D
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Sep 2020 08:27:47 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3C405207C4
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Sep 2020 08:22:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 54FC920888
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Sep 2020 08:27:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gM/kIrMq";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c6UN+CI1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C405207C4
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="zn0SmRHw";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T0fhmfBT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 54FC920888
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,59 +27,57 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
 	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=S5WPUExwrmLXaTFv2kd1YSTqrUr4R1TXHLmMWi8do5Q=; b=gM/kIrMqPe+NFtcq2Tl9HjbWy
-	AP6D8OnUqpPx4Ec2vVXO2L2Hg5F+MjRQdlq7zbYdTBC9AE6kA39QWxrfN9vtnyKVdFjWiQl5jLres
-	INEDMNsyoMpxJfywYRUkY85DjohvTSqrAZQ+Ewoy9HrA8KywcjwbL1/vCm2TEYM30qXf7WDFA5T8W
-	1kd0aQAEni9/iHvk2DjKhYUfDwXSUcIQoDCeHFFDdyUaQrcmdDi/UMxB2/K86XcSAQDhHyuxZNeJA
-	Yq5Eqw1Cg0xkgD94zgCmSEEqOYMx+7hf0wo+iRA2tQgXFnBK0hE7RBDcFXhiSMRqHnyTnb0Tas+U2
-	9KpK0Q5HA==;
+	 bh=7/eBuSV3kdbsxjrbZ50qKgMW9g56L/+9AVObxKdkN+M=; b=zn0SmRHwawYqbArEFzxLp/Um0
+	B3bifEZkAADE4Y+2YjRvQVqbT+u/ZwAyd1pwfyFZHE0AuuwnNzzVwtB0wFyAkPzHiGsPejgHYnvwb
+	sZSM1D+CffX2x8gkjllC8+OxFM9K5YvJB7hPJiXc+Gl0uKOC7P+lTCY+7ebcrgBBDkWFoiJKHbPxq
+	bC7lGgBwt/uyZcOdEraxUSYVMrXVG/lU/d6P0Iwt1/XSW/R+ZW03p2rKcPDJhLy0Omirn9Ur6gUEf
+	or/SzNfOesJuIJHvvDagrb9XSmZR64uxVErS/MOmeeesNkpp5Lx9R2EqdjQLK83t/yB9U0TtY29jh
+	V3NSaJgzA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kLizP-0002NK-NY; Fri, 25 Sep 2020 08:21:59 +0000
-Received: from mail-il1-x142.google.com ([2607:f8b0:4864:20::142])
+	id 1kLj4W-0003at-IT; Fri, 25 Sep 2020 08:27:16 +0000
+Received: from mail-il1-x143.google.com ([2607:f8b0:4864:20::143])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kLizM-0002Lt-Kc; Fri, 25 Sep 2020 08:21:57 +0000
-Received: by mail-il1-x142.google.com with SMTP id x18so1554163ila.7;
- Fri, 25 Sep 2020 01:21:56 -0700 (PDT)
+ id 1kLj4S-0003ZZ-IQ; Fri, 25 Sep 2020 08:27:13 +0000
+Received: by mail-il1-x143.google.com with SMTP id x18so1565800ila.7;
+ Fri, 25 Sep 2020 01:27:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=LJvK1S1wM77CEwiTWGHH4blwT2BpBAlEo89Zgh09KOA=;
- b=c6UN+CI1Fp4uk5RW2Kl5hegia7PgWhtLlM7r1U47nBCKQW72a7A4XRQcXs33oeaDor
- +Pekks1fUk4lcSdjBfDpJNj8Lb+IWNmLhQGoYiWisLkv3D41VUsroEnfczSCvn93iMA0
- PdgoNS1YbL/b4ZMuMJFX/1ZXSLFAggeEoX2ktDD9FO+0pwsANqptIRMKFiFYN4KX7qqC
- WDDJstdvvqNx8NXIKmPnfS63q2GhbEEE1YnuLTkynqPYmELrM+FlCF2ozTVc/6yewcjv
- uyqAXpyf+XMSyM3oKmVb8hOYgFUVTQTL4LQrVbqn3Y8e3BtJGlXTQ5GVgKq2oCwFpg+W
- 1DAQ==
+ :cc; bh=SrY0n+Lxp4Ps0vKWrqg8qzPispapVC5K8BCl7226S1Y=;
+ b=T0fhmfBTGttasq8Kei96OjnUWqoXnD1EhQm31QUfLpIDhsjWLMFk9PV2pa+s0Hdg4A
+ fjPpdwt7ABi70fGaUKKmKv2bZFl1TX1+6zeJIsfMkkdroMBVgloDbus7BReFk/VnR6SK
+ U3/FeQaNf+VwOjhpb7jEHXM9O0kdlPRDgdL57bNQPOItMru8HlJjVYwQ+N+2344BnMPn
+ VLAi5RiU3HyfXVpuXxk7zerjlavpgg2bAlP3+3cJTt25Ft9WDn+uxWyPYbRLNm7Ai0Pc
+ vXXXfPvNhZtFZkSVRsZBYd2w5ycRNts4T71gXQtVVij69COOyaOfL2kzw9iAAtRqdG7F
+ mAAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=LJvK1S1wM77CEwiTWGHH4blwT2BpBAlEo89Zgh09KOA=;
- b=oBHZdUYOn7jyHGp96kUWnFb8LRKPvZTSMkI6bjoNMV25B50jAPiWv+jcbCW4aaOKrS
- pfBHR6i045WJhJ7fgv90Rt8jz+RjooUzcmOy7eyGAg912iW5hDH+MV9ClCAHDj6WlN6x
- WFB6cKDok2tRDKXGB9Q/dkjHN3WrtgG6coF5RsX94KLSMQ4c6wjYLx2tB7U0LptMylt8
- 0vKrVVatbkfEEng7GEUz9VSAPl5PuXHgjHyXLiYeb9ib3wkw3ZpqtT4BMx2uklLhda0s
- Qi49u+6vSyotUxP97rmCKw4Bk6U9vWbMZrz4hYWoLFQ0Q0fISlo1vnWYicNItxa4CDwU
- WDbw==
-X-Gm-Message-State: AOAM5311bSNrsFwCpFaZcCialPtgKXlUlL9C8Hrg7HTC3lD01qpupke1
- VTIUIY0LgTcw9FG/20vYXlcpKonN+/TqMxR7YDiiWbIqHI0iIQ==
-X-Google-Smtp-Source: ABdhPJxbkPFY03hpX61qBi/nCU+CsJEoNVRZmepsG6KM0Jr4eQ/tgOQDlyETWRPRhaB53PSTYIq/19x3diRibukeHKw=
-X-Received: by 2002:a92:cbcf:: with SMTP id s15mr2378625ilq.39.1601022114691; 
- Fri, 25 Sep 2020 01:21:54 -0700 (PDT)
+ bh=SrY0n+Lxp4Ps0vKWrqg8qzPispapVC5K8BCl7226S1Y=;
+ b=qwgdvrMzmtp9wPNGvDEdh89nrSZ+/paGHTa1sIO+rRzV0xKOtmAX1rdOerl7SzOIVr
+ kK/+s4a/sUh05rd2Gpx++/Dwg9HpvcRTM8DAXWysG/dPe63GWWE2Gt1/q0jbDuPUfpT4
+ y5L0OCJU/Ma6PBvVn55VMYLmiFA+3x6yHENAXdPB4TmgRAIi4jwN63plcCyURAyH7320
+ F0hgTmJZajDC8HYJUj4OvxVUoXcEmqJ95hMXqf25XTfI7OJgeHMuAdajDUqjLX2isM2P
+ TpBkwiYruUnsMnLN3RpjtmUHkTxa1YJcvWHJE+Q8yIqf7phAYMd+BX/6YyyA2tRH1Ey9
+ wBmQ==
+X-Gm-Message-State: AOAM530jBwnzpxw0c6hg8doBFWWorOcsGJ/bxAfEIWuHIDLrhaj+z2Qg
+ Uhq75n4UwPEAcwnjFN3hINdwP6eW8Ww1IbegM9Dt3MnFz8O7bg==
+X-Google-Smtp-Source: ABdhPJzfUq4g2hUm0yylW2BZjBYzZffhnMg9JFRt8eQ2YfVzP7n3YGn8DdvLynY3V96ZCJFM7lK9ybFe7wDfCGFFvXY=
+X-Received: by 2002:a92:910:: with SMTP id y16mr2375456ilg.22.1601022430617;
+ Fri, 25 Sep 2020 01:27:10 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200925065418.1077472-1-ikjn@chromium.org>
- <20200925145255.v3.4.I06cb65401ab5ad63ea30c4788d26633928d80f38@changeid>
-In-Reply-To: <20200925145255.v3.4.I06cb65401ab5ad63ea30c4788d26633928d80f38@changeid>
+ <20200925145255.v3.5.Id1cb208392928afc7ceed4de06924243c7858cd0@changeid>
+In-Reply-To: <20200925145255.v3.5.Id1cb208392928afc7ceed4de06924243c7858cd0@changeid>
 From: Chuanhong Guo <gch981213@gmail.com>
-Date: Fri, 25 Sep 2020 16:21:43 +0800
-Message-ID: <CAJsYDVLaw_ViJECoX8VxtrhCDg7m-fOZ0XmF1+n9Y13oVgd4oQ@mail.gmail.com>
-Subject: Re: [PATCH v3 4/6] spi: spi-mtk-nor: use dma_alloc_coherent() for
- bounce buffer
+Date: Fri, 25 Sep 2020 16:26:59 +0800
+Message-ID: <CAJsYDV+EifAeMKEGwi0oH6A5EvPN8tMZQ+oqY5JGe=+kqzjMLw@mail.gmail.com>
+Subject: Re: [PATCH v3 5/6] spi: spi-mtk-nor: support 36bit dma addressing
 To: Ikjoon Jang <ikjn@chromium.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200925_042156_752455_6EA06508 
-X-CRM114-Status: UNSURE (   9.98  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200925_042712_613208_5BA6A1F9 
+X-CRM114-Status: GOOD (  18.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,22 +106,52 @@ Hi!
 
 On Fri, Sep 25, 2020 at 2:56 PM Ikjoon Jang <ikjn@chromium.org> wrote:
 >
-> Use dma_alloc_coherent() for bounce buffer instead of kmalloc() to
-> make sure the bounce buffer to be allocated within its DMAable range.
-
-I think the introduction of need_bounce can be in its own commit or
-at least mentioned here.
-
+> This patch enables 36bit dma address support to spi-mtk-nor.
+> Currently this is enabled only for mt8192-nor.
 >
 > Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
->
 > ---
 >
 > (no changes since v1)
+>
+>  drivers/spi/spi-mtk-nor.c | 18 +++++++++++++++++-
+>  1 file changed, 17 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/spi/spi-mtk-nor.c b/drivers/spi/spi-mtk-nor.c
+> index 8dbafee7f431..35205635ed42 100644
+> --- a/drivers/spi/spi-mtk-nor.c
+> +++ b/drivers/spi/spi-mtk-nor.c
+> @@ -78,6 +78,8 @@
+>  #define MTK_NOR_REG_DMA_FADR           0x71c
+>  #define MTK_NOR_REG_DMA_DADR           0x720
+>  #define MTK_NOR_REG_DMA_END_DADR       0x724
+> +#define MTK_NOR_REG_DMA_DADR_HB                0x738
+> +#define MTK_NOR_REG_DMA_END_DADR_HB    0x73c
+>
+>  /* maximum bytes of TX in PRG mode */
+>  #define MTK_NOR_PRG_MAX_SIZE           6
+> @@ -106,6 +108,7 @@ struct mtk_nor {
+>         unsigned int spi_freq;
+>         bool wbuf_en;
+>         bool has_irq;
+> +       bool high_dma;
+>         struct completion op_done;
+>  };
+>
+> @@ -305,6 +308,11 @@ static int mtk_nor_dma_exec(struct mtk_nor *sp, u32 from, unsigned int length,
+>         writel(dma_addr, sp->base + MTK_NOR_REG_DMA_DADR);
+>         writel(dma_addr + length, sp->base + MTK_NOR_REG_DMA_END_DADR);
+>
+> +       if (sp->high_dma) {
+> +               writel(dma_addr >> 32, sp->base + MTK_NOR_REG_DMA_DADR_HB);
+> +               writel((dma_addr + length) >> 32, sp->base + MTK_NOR_REG_DMA_END_DADR_HB);
+> +       }
 
- There have been a lot of changes since v2 :)
+I remembered kbuild test robot reported a warning on this on 32-bit platforms
+in your v1. [0]
+I don't know what's the fix for this though :(
 
-Reviewed-by: Chuanhong Guo <gch981213@gmail.com>
+[0] https://marc.info/?l=linux-spi&m=159982425706940&w=2
 -- 
 Regards,
 Chuanhong Guo
