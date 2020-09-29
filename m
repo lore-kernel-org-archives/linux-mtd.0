@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-13.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34536C4727C
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2020 23:03:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BBC5BC4727C
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2020 23:03:12 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B48E420897
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2020 23:03:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5044020897
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2020 23:03:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="xQLL3hrf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B48E420897
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tApYxzhh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5044020897
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=z8IVtS+3BP036EO2UFxIbaIEjssXTaxu7mvDhaX3jzo=; b=xQLL3hrfBWbSIIwdVWHpDg0bN
-	FpSLzuSD+dRpdA7AHByOIsKGLOUcpLMEpN+RujbPlYTJmlTjqe+mpWclzsR3en/5kpekmsPA8oIKz
-	GH2wuz7ZonDseRPByPeObGuJZ74Xd8fdVQvvNraPFRiwMwL+CKI/sdH0Mze2enAlB/6iVDC8L30WI
-	ZHH6la91CVBbWrzwe4cbAT/2WzgbHwFlOrE7fSGJHXoz0tlXqsgprfUIEkkVWnkZYNJ4qZi0tLVGk
-	j/2nqQDlynpFfubX8m9qaRz57mlO5Ow+0E0O3tL+c5wRznmA1kAjvMtNxOlJFFVzv0ThB6CEvAVs4
-	gqKxf3PUQ==;
+	 bh=qeeL1FNtMFbVxFvrDa2ddW785OqmUPlfJEjNXrPtFlw=; b=tApYxzhhRkfNdO1GrdqA01JRw
+	7coG9J6nPzV75y6GlN9JAvi3cAIomV2u1diwtO7TL+CtOqSzBGgYHpuuY31jpKTeGxfXu96AYu8M+
+	Si+o1q/O9zNF9CjCaACp/akBBAeKHWKofqBJWvIJfavn9sYdgLjvjhNA43Tiek747W4g1/jUDNCGG
+	+s4sbjsA0rJTCUr2x2CAC8eLS7Zp3IDnf6GdLE/9uBz7BZvlV2uEk3Z1VIFjuXlYrph0sfbkVze0N
+	CSE+2kdaAA8Rvq3D10lKv6R4Jm0zJL2bp2xtD0pTUS8GoK3MwBBRAGbVfG15SbKW9vOEYIB3Cjv0X
+	3HDfcCk6Q==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kNOdf-0001Uc-7z; Tue, 29 Sep 2020 23:02:27 +0000
+	id 1kNOdI-0001L2-Mb; Tue, 29 Sep 2020 23:02:04 +0000
 Received: from relay12.mail.gandi.net ([217.70.178.232])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kNOcv-0001EG-UU
- for linux-mtd@lists.infradead.org; Tue, 29 Sep 2020 23:01:45 +0000
+ id 1kNOcq-0001CX-TW
+ for linux-mtd@lists.infradead.org; Tue, 29 Sep 2020 23:01:39 +0000
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id 14FF1200012;
- Tue, 29 Sep 2020 23:01:39 +0000 (UTC)
+ by relay12.mail.gandi.net (Postfix) with ESMTPSA id 2ABD020000F;
+ Tue, 29 Sep 2020 23:01:35 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH 11/20] mtd: nand: ecc-hamming: Move Hamming code to the
- generic NAND layer
-Date: Wed, 30 Sep 2020 01:01:15 +0200
-Message-Id: <20200929230124.31491-12-miquel.raynal@bootlin.com>
+Subject: [PATCH 07/20] mtd: nand: ecc-bch: Update the prototypes to be more
+ generic
+Date: Wed, 30 Sep 2020 01:01:11 +0200
+Message-Id: <20200929230124.31491-8-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200929230124.31491-1-miquel.raynal@bootlin.com>
 References: <20200929230124.31491-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200929_190142_188639_449763C0 
-X-CRM114-Status: GOOD (  15.60  )
+X-CRM114-CacheID: sfid-20200929_190137_245749_257A9ADA 
+X-CRM114-Status: GOOD (  22.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,531 +76,392 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hamming ECC code might be later re-used by the SPI NAND layer.
+These functions must be usable by the main NAND core, so their names
+must be technology-agnostic as well as the parameters. Hence, we pass
+a generic nand_device instead of a raw nand_chip structure.
+
+As it seems that changing the raw NAND functions to always pass a
+generic NAND device is a lost of time, we prefer to create dedicated
+raw NAND wrappers that will be useful in the near future to do the
+translation.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- arch/arm/mach-s3c24xx/common-smdk.c                   |  2 +-
- arch/arm/mach-s3c24xx/mach-anubis.c                   |  2 +-
- arch/arm/mach-s3c24xx/mach-at2440evb.c                |  2 +-
- arch/arm/mach-s3c24xx/mach-bast.c                     |  2 +-
- arch/arm/mach-s3c24xx/mach-gta02.c                    |  2 +-
- arch/arm/mach-s3c24xx/mach-jive.c                     |  2 +-
- arch/arm/mach-s3c24xx/mach-mini2440.c                 |  2 +-
- arch/arm/mach-s3c24xx/mach-osiris.c                   |  2 +-
- arch/arm/mach-s3c24xx/mach-qt2410.c                   |  2 +-
- arch/arm/mach-s3c24xx/mach-rx3715.c                   |  2 +-
- arch/arm/mach-s3c24xx/mach-vstms.c                    |  2 +-
- drivers/mtd/nand/Kconfig                              | 11 +++++++++++
- drivers/mtd/nand/Makefile                             |  1 +
- drivers/mtd/nand/{raw/nand_ecc.c => ecc-sw-hamming.c} |  2 +-
- drivers/mtd/nand/raw/Kconfig                          | 11 -----------
- drivers/mtd/nand/raw/Makefile                         |  1 -
- drivers/mtd/nand/raw/cs553x_nand.c                    |  2 +-
- drivers/mtd/nand/raw/fsl_elbc_nand.c                  |  2 +-
- drivers/mtd/nand/raw/fsl_ifc_nand.c                   |  2 +-
- drivers/mtd/nand/raw/fsl_upm.c                        |  2 +-
- drivers/mtd/nand/raw/fsmc_nand.c                      |  2 +-
- drivers/mtd/nand/raw/lpc32xx_mlc.c                    |  2 +-
- drivers/mtd/nand/raw/lpc32xx_slc.c                    |  2 +-
- drivers/mtd/nand/raw/mxic_nand.c                      |  2 +-
- drivers/mtd/nand/raw/nand_base.c                      |  2 +-
- drivers/mtd/nand/raw/ndfc.c                           |  2 +-
- drivers/mtd/nand/raw/pasemi_nand.c                    |  2 +-
- drivers/mtd/nand/raw/s3c2410.c                        |  2 +-
- drivers/mtd/nand/raw/sharpsl.c                        |  2 +-
- drivers/mtd/nand/raw/tmio_nand.c                      |  2 +-
- drivers/mtd/nand/raw/txx9ndfmc.c                      |  2 +-
- drivers/mtd/sm_ftl.c                                  |  2 +-
- drivers/mtd/tests/mtd_nandecctest.c                   |  2 +-
- .../linux/mtd/{nand_ecc.h => nand-ecc-sw-hamming.h}   |  6 +++---
- include/linux/mtd/sharpsl.h                           |  2 +-
- 35 files changed, 45 insertions(+), 45 deletions(-)
- rename drivers/mtd/nand/{raw/nand_ecc.c => ecc-sw-hamming.c} (99%)
- rename include/linux/mtd/{nand_ecc.h => nand-ecc-sw-hamming.h} (88%)
+ drivers/mtd/nand/ecc-sw-bch.c       | 47 +++++++++++++++++------------
+ drivers/mtd/nand/raw/nand_base.c    | 44 ++++++++++++++++++++++++---
+ drivers/mtd/nand/raw/omap2.c        | 23 ++++++--------
+ include/linux/mtd/nand-ecc-sw-bch.h | 45 ++++++++++-----------------
+ include/linux/mtd/rawnand.h         |  5 +++
+ 5 files changed, 97 insertions(+), 67 deletions(-)
 
-diff --git a/arch/arm/mach-s3c24xx/common-smdk.c b/arch/arm/mach-s3c24xx/common-smdk.c
-index 121646ad1bb1..72e9b87acbc6 100644
---- a/arch/arm/mach-s3c24xx/common-smdk.c
-+++ b/arch/arm/mach-s3c24xx/common-smdk.c
-@@ -20,7 +20,7 @@
- 
+diff --git a/drivers/mtd/nand/ecc-sw-bch.c b/drivers/mtd/nand/ecc-sw-bch.c
+index 97221ec3876e..b9bdfcf46c6d 100644
+--- a/drivers/mtd/nand/ecc-sw-bch.c
++++ b/drivers/mtd/nand/ecc-sw-bch.c
+@@ -13,6 +13,7 @@
+ #include <linux/bitops.h>
  #include <linux/mtd/mtd.h>
  #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- #include <linux/io.h>
++#include <linux/mtd/nand.h>
+ #include <linux/mtd/nand-ecc-sw-bch.h>
+ #include <linux/bch.h>
  
-diff --git a/arch/arm/mach-s3c24xx/mach-anubis.c b/arch/arm/mach-s3c24xx/mach-anubis.c
-index 28326241e360..190f22574cff 100644
---- a/arch/arm/mach-s3c24xx/mach-anubis.c
-+++ b/arch/arm/mach-s3c24xx/mach-anubis.c
-@@ -36,7 +36,7 @@
+@@ -29,14 +30,15 @@ struct nand_bch_control {
+ };
  
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
+ /**
+- * nand_bch_calcuate_ecc - Calculate the ECC corresponding to a data block
+- * @chip: NAND chip object
++ * nand_ecc_sw_bch_calculate - Calculate the ECC corresponding to a data block
++ * @nand: NAND device
+  * @buf: Input buffer with raw data
+  * @code: Output buffer with ECC
+  */
+-int nand_bch_calculate_ecc(struct nand_chip *chip, const unsigned char *buf,
+-			   unsigned char *code)
++int nand_ecc_sw_bch_calculate(struct nand_device *nand,
++			      const unsigned char *buf, unsigned char *code)
+ {
++	struct nand_chip *chip = mtd_to_nand(nanddev_to_mtd(nand));
+ 	struct nand_bch_control *nbc = chip->ecc.priv;
+ 	unsigned int i;
  
- #include <net/ax88796.h>
-diff --git a/arch/arm/mach-s3c24xx/mach-at2440evb.c b/arch/arm/mach-s3c24xx/mach-at2440evb.c
-index 04dedebdb57c..87257c54140d 100644
---- a/arch/arm/mach-s3c24xx/mach-at2440evb.c
-+++ b/arch/arm/mach-s3c24xx/mach-at2440evb.c
-@@ -37,7 +37,7 @@
+@@ -49,20 +51,21 @@ int nand_bch_calculate_ecc(struct nand_chip *chip, const unsigned char *buf,
  
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
+ 	return 0;
+ }
+-EXPORT_SYMBOL(nand_bch_calculate_ecc);
++EXPORT_SYMBOL(nand_ecc_sw_bch_calculate);
  
- #include <plat/devs.h>
-diff --git a/arch/arm/mach-s3c24xx/mach-bast.c b/arch/arm/mach-s3c24xx/mach-bast.c
-index 6465eab0ab3a..fa947bf881fe 100644
---- a/arch/arm/mach-s3c24xx/mach-bast.c
-+++ b/arch/arm/mach-s3c24xx/mach-bast.c
-@@ -24,7 +24,7 @@
+ /**
+- * nand_bch_correct_data - Detect, correct and report bit error(s)
+- * @chip: NAND chip object
++ * nand_ecc_sw_bch_correct - Detect, correct and report bit error(s)
++ * @nand: NAND device
+  * @buf: Raw data read from the chip
+  * @read_ecc: ECC bytes from the chip
+  * @calc_ecc: ECC calculated from the raw data
+  *
+  * Detect and correct bit errors for a data block.
+  */
+-int nand_bch_correct_data(struct nand_chip *chip, unsigned char *buf,
+-			  unsigned char *read_ecc, unsigned char *calc_ecc)
++int nand_ecc_sw_bch_correct(struct nand_device *nand, unsigned char *buf,
++			    unsigned char *read_ecc, unsigned char *calc_ecc)
+ {
++	struct nand_chip *chip = mtd_to_nand(nanddev_to_mtd(nand));
+ 	struct nand_bch_control *nbc = chip->ecc.priv;
+ 	unsigned int *errloc = nbc->errloc;
+ 	int i, count;
+@@ -86,11 +89,11 @@ int nand_bch_correct_data(struct nand_chip *chip, unsigned char *buf,
  
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
+ 	return count;
+ }
+-EXPORT_SYMBOL(nand_bch_correct_data);
++EXPORT_SYMBOL(nand_ecc_sw_bch_correct);
  
- #include <linux/platform_data/asoc-s3c24xx_simtec.h>
-diff --git a/arch/arm/mach-s3c24xx/mach-gta02.c b/arch/arm/mach-s3c24xx/mach-gta02.c
-index db1b64f6e0a5..ef23402fdef5 100644
---- a/arch/arm/mach-s3c24xx/mach-gta02.c
-+++ b/arch/arm/mach-s3c24xx/mach-gta02.c
-@@ -36,7 +36,7 @@
+ /**
+- * nand_bch_init - Initialize software BCH ECC engine
+- * @chip: NAND chip object
++ * nand_ecc_sw_bch_init - Initialize software BCH ECC engine
++ * @nand: NAND device
+  *
+  * Returns: a pointer to a new NAND BCH control structure, or NULL upon failure
+  *
+@@ -105,9 +108,10 @@ EXPORT_SYMBOL(nand_bch_correct_data);
+  * @eccsize = 512 (thus, m = 13 is the smallest integer such that 2^m - 1 > 512 * 8)
+  * @eccbytes = 7 (7 bytes are required to store m * t = 13 * 4 = 52 bits)
+  */
+-int nand_bch_init(struct nand_chip *chip)
++int nand_ecc_sw_bch_init(struct nand_device *nand)
+ {
+-	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct mtd_info *mtd = nanddev_to_mtd(nand);
++	struct nand_chip *chip = mtd_to_nand(mtd);
+ 	unsigned int m, t, eccsteps, i;
+ 	struct nand_bch_control *nbc = NULL;
+ 	unsigned char *erased_page;
+@@ -197,18 +201,21 @@ int nand_bch_init(struct nand_chip *chip)
+ 		chip->ecc.strength = (eccbytes * 8) / fls(8 * eccsize);
  
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
- 
-diff --git a/arch/arm/mach-s3c24xx/mach-jive.c b/arch/arm/mach-s3c24xx/mach-jive.c
-index 8233dcff19e7..49c3ea18b88f 100644
---- a/arch/arm/mach-s3c24xx/mach-jive.c
-+++ b/arch/arm/mach-s3c24xx/mach-jive.c
-@@ -40,7 +40,7 @@
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- 
- #include <plat/gpio-cfg.h>
-diff --git a/arch/arm/mach-s3c24xx/mach-mini2440.c b/arch/arm/mach-s3c24xx/mach-mini2440.c
-index 057dcbaf1b22..0d18fea49004 100644
---- a/arch/arm/mach-s3c24xx/mach-mini2440.c
-+++ b/arch/arm/mach-s3c24xx/mach-mini2440.c
-@@ -46,7 +46,7 @@
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- 
- #include <plat/gpio-cfg.h>
-diff --git a/arch/arm/mach-s3c24xx/mach-osiris.c b/arch/arm/mach-s3c24xx/mach-osiris.c
-index 157448827f61..592fc67b9ffe 100644
---- a/arch/arm/mach-s3c24xx/mach-osiris.c
-+++ b/arch/arm/mach-s3c24xx/mach-osiris.c
-@@ -33,7 +33,7 @@
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- 
- #include <plat/cpu.h>
-diff --git a/arch/arm/mach-s3c24xx/mach-qt2410.c b/arch/arm/mach-s3c24xx/mach-qt2410.c
-index f3131d94e90b..d75d03cf6623 100644
---- a/arch/arm/mach-s3c24xx/mach-qt2410.c
-+++ b/arch/arm/mach-s3c24xx/mach-qt2410.c
-@@ -21,7 +21,7 @@
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- 
- #include <asm/mach/arch.h>
-diff --git a/arch/arm/mach-s3c24xx/mach-rx3715.c b/arch/arm/mach-s3c24xx/mach-rx3715.c
-index 017010d67e01..9daf78d963ee 100644
---- a/arch/arm/mach-s3c24xx/mach-rx3715.c
-+++ b/arch/arm/mach-s3c24xx/mach-rx3715.c
-@@ -22,7 +22,7 @@
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- 
- #include <asm/mach/arch.h>
-diff --git a/arch/arm/mach-s3c24xx/mach-vstms.c b/arch/arm/mach-s3c24xx/mach-vstms.c
-index c5fa215a527e..df30ebc02b38 100644
---- a/arch/arm/mach-s3c24xx/mach-vstms.c
-+++ b/arch/arm/mach-s3c24xx/mach-vstms.c
-@@ -16,7 +16,7 @@
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- #include <linux/memblock.h>
- 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 55c17fb0dee1..306c33ca3448 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -15,6 +15,17 @@ config MTD_NAND_ECC
-        bool
-        depends on MTD_NAND_CORE
- 
-+config MTD_NAND_ECC_SW_HAMMING
-+	bool
+ 	return 0;
 +
-+config MTD_NAND_ECC_SW_HAMMING_SMC
-+	bool "NAND ECC Smart Media byte order"
-+	depends on MTD_NAND_ECC_SW_HAMMING
-+	default n
-+	help
-+	  Software ECC according to the Smart Media Specification.
-+	  The original Linux implementation had byte 0 and 1 swapped.
+ fail:
+-	nand_bch_free(chip);
++	nand_ecc_sw_bch_cleanup(nand);
 +
- config MTD_NAND_ECC_SW_BCH
- 	bool "Software BCH ECC engine"
- 	select BCH
-diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index c7179ff23753..1c0b46960eb1 100644
---- a/drivers/mtd/nand/Makefile
-+++ b/drivers/mtd/nand/Makefile
-@@ -8,4 +8,5 @@ obj-y	+= raw/
- obj-y	+= spi/
+ 	return -EINVAL;
+ }
+-EXPORT_SYMBOL(nand_bch_init);
++EXPORT_SYMBOL(nand_ecc_sw_bch_init);
  
- nandcore-$(CONFIG_MTD_NAND_ECC) += ecc.o
-+nandcore-$(CONFIG_MTD_NAND_ECC_SW_HAMMING) += ecc-sw-hamming.o
- nandcore-$(CONFIG_MTD_NAND_ECC_SW_BCH) += ecc-sw-bch.o
-diff --git a/drivers/mtd/nand/raw/nand_ecc.c b/drivers/mtd/nand/ecc-sw-hamming.c
-similarity index 99%
-rename from drivers/mtd/nand/raw/nand_ecc.c
-rename to drivers/mtd/nand/ecc-sw-hamming.c
-index b6a46b1b7781..76966f5ff13f 100644
---- a/drivers/mtd/nand/raw/nand_ecc.c
-+++ b/drivers/mtd/nand/ecc-sw-hamming.c
-@@ -19,7 +19,7 @@
- #include <linux/module.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <asm/byteorder.h>
+ /**
+- * nand_bch_free - Release NAND BCH ECC resources
+- * @nbc: NAND BCH control structure
++ * nand_ecc_sw_bch_cleanup - Cleanup software BCH ECC resources
++ * @nand: NAND device
+  */
+-void nand_bch_free(struct nand_chip *chip)
++void nand_ecc_sw_bch_cleanup(struct nand_device *nand)
+ {
++	struct nand_chip *chip = mtd_to_nand(nanddev_to_mtd(nand));
+ 	struct nand_bch_control *nbc = chip->ecc.priv;
  
- /*
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index b73860aa77c6..6149096e32cb 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -1,15 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
--config MTD_NAND_ECC_SW_HAMMING
--	tristate
--
--config MTD_NAND_ECC_SW_HAMMING_SMC
--	bool "NAND ECC Smart Media byte order"
--	depends on MTD_NAND_ECC_SW_HAMMING
--	default n
--	help
--	  Software ECC according to the Smart Media Specification.
--	  The original Linux implementation had byte 0 and 1 swapped.
--
- menuconfig MTD_RAW_NAND
- 	tristate "Raw/Parallel NAND Device Support"
- 	select MTD_NAND_CORE
-diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
-index 76904305d091..dc38c087c693 100644
---- a/drivers/mtd/nand/raw/Makefile
-+++ b/drivers/mtd/nand/raw/Makefile
-@@ -1,7 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
+ 	if (nbc) {
+@@ -218,7 +225,7 @@ void nand_bch_free(struct nand_chip *chip)
+ 		kfree(nbc);
+ 	}
+ }
+-EXPORT_SYMBOL(nand_bch_free);
++EXPORT_SYMBOL(nand_ecc_sw_bch_cleanup);
  
- obj-$(CONFIG_MTD_RAW_NAND)		+= nand.o
--obj-$(CONFIG_MTD_NAND_ECC_SW_HAMMING)	+= nand_ecc.o
- obj-$(CONFIG_MTD_SM_COMMON) 		+= sm_common.o
- 
- obj-$(CONFIG_MTD_NAND_CAFE)		+= cafe_nand.o
-diff --git a/drivers/mtd/nand/raw/cs553x_nand.c b/drivers/mtd/nand/raw/cs553x_nand.c
-index b7f3f6347761..7c492096426b 100644
---- a/drivers/mtd/nand/raw/cs553x_nand.c
-+++ b/drivers/mtd/nand/raw/cs553x_nand.c
-@@ -19,7 +19,7 @@
- #include <linux/delay.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- #include <linux/iopoll.h>
- 
-diff --git a/drivers/mtd/nand/raw/fsl_elbc_nand.c b/drivers/mtd/nand/raw/fsl_elbc_nand.c
-index b2af7f81fdf8..eb255cf83e32 100644
---- a/drivers/mtd/nand/raw/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/raw/fsl_elbc_nand.c
-@@ -22,7 +22,7 @@
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- 
- #include <asm/io.h>
-diff --git a/drivers/mtd/nand/raw/fsl_ifc_nand.c b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-index 0e7a9b64301e..e3e3b2abb6cd 100644
---- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-@@ -15,7 +15,7 @@
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/fsl_ifc.h>
- #include <linux/iopoll.h>
- 
-diff --git a/drivers/mtd/nand/raw/fsl_upm.c b/drivers/mtd/nand/raw/fsl_upm.c
-index d5813b9abc8e..3824361928a1 100644
---- a/drivers/mtd/nand/raw/fsl_upm.c
-+++ b/drivers/mtd/nand/raw/fsl_upm.c
-@@ -11,7 +11,7 @@
- #include <linux/module.h>
- #include <linux/delay.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/mtd.h>
- #include <linux/of_platform.h>
-diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
-index 1bc2462efeab..cb41d527bee0 100644
---- a/drivers/mtd/nand/raw/fsmc_nand.c
-+++ b/drivers/mtd/nand/raw/fsmc_nand.c
-@@ -26,7 +26,7 @@
- #include <linux/types.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/platform_device.h>
- #include <linux/of.h>
- #include <linux/mtd/partitions.h>
-diff --git a/drivers/mtd/nand/raw/lpc32xx_mlc.c b/drivers/mtd/nand/raw/lpc32xx_mlc.c
-index 4940bb2e3c07..b9ccf6f2f9c6 100644
---- a/drivers/mtd/nand/raw/lpc32xx_mlc.c
-+++ b/drivers/mtd/nand/raw/lpc32xx_mlc.c
-@@ -31,7 +31,7 @@
- #include <linux/mm.h>
- #include <linux/dma-mapping.h>
- #include <linux/dmaengine.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- 
- #define DRV_NAME "lpc32xx_mlc"
- 
-diff --git a/drivers/mtd/nand/raw/lpc32xx_slc.c b/drivers/mtd/nand/raw/lpc32xx_slc.c
-index 6db9d2ed6881..0f395cc7f101 100644
---- a/drivers/mtd/nand/raw/lpc32xx_slc.c
-+++ b/drivers/mtd/nand/raw/lpc32xx_slc.c
-@@ -23,7 +23,7 @@
- #include <linux/mm.h>
- #include <linux/dma-mapping.h>
- #include <linux/dmaengine.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/gpio.h>
- #include <linux/of.h>
- #include <linux/of_gpio.h>
-diff --git a/drivers/mtd/nand/raw/mxic_nand.c b/drivers/mtd/nand/raw/mxic_nand.c
-index d66b5b0971fa..da1070993994 100644
---- a/drivers/mtd/nand/raw/mxic_nand.c
-+++ b/drivers/mtd/nand/raw/mxic_nand.c
-@@ -12,8 +12,8 @@
- #include <linux/interrupt.h>
- #include <linux/module.h>
- #include <linux/mtd/mtd.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
- #include <linux/platform_device.h>
- 
- #include "internals.h"
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Ivan Djelic <ivan.djelic@parrot.com>");
 diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index f68802bf555a..a8aaedd940cd 100644
+index a6b6ab26a22a..69bdbb1c3b60 100644
 --- a/drivers/mtd/nand/raw/nand_base.c
 +++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -35,7 +35,7 @@
- #include <linux/types.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/nand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/nand-ecc-sw-bch.h>
- #include <linux/interrupt.h>
- #include <linux/bitops.h>
-diff --git a/drivers/mtd/nand/raw/ndfc.c b/drivers/mtd/nand/raw/ndfc.c
-index 0fb4ba93c41e..8cda6633280b 100644
---- a/drivers/mtd/nand/raw/ndfc.c
-+++ b/drivers/mtd/nand/raw/ndfc.c
-@@ -18,7 +18,7 @@
-  */
- #include <linux/module.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/ndfc.h>
- #include <linux/slab.h>
-diff --git a/drivers/mtd/nand/raw/pasemi_nand.c b/drivers/mtd/nand/raw/pasemi_nand.c
-index 2b8f155cc0c5..108e3817737a 100644
---- a/drivers/mtd/nand/raw/pasemi_nand.c
-+++ b/drivers/mtd/nand/raw/pasemi_nand.c
-@@ -14,7 +14,7 @@
- #include <linux/module.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
- #include <linux/of_platform.h>
-diff --git a/drivers/mtd/nand/raw/s3c2410.c b/drivers/mtd/nand/raw/s3c2410.c
-index fbd0fa48e063..f7eb3b5fa792 100644
---- a/drivers/mtd/nand/raw/s3c2410.c
-+++ b/drivers/mtd/nand/raw/s3c2410.c
-@@ -30,7 +30,7 @@
+@@ -5144,6 +5144,42 @@ static void nand_scan_ident_cleanup(struct nand_chip *chip)
+ 	kfree(chip->parameters.onfi);
+ }
  
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
++int rawnand_sw_bch_init(struct nand_chip *chip)
++{
++	struct nand_device *base = &chip->base;
++
++	return nand_ecc_sw_bch_init(base);
++}
++EXPORT_SYMBOL(rawnand_sw_bch_init);
++
++static int rawnand_sw_bch_calculate(struct nand_chip *chip,
++				    const unsigned char *buf,
++				    unsigned char *code)
++{
++	struct nand_device *base = &chip->base;
++
++	return nand_ecc_sw_bch_calculate(base, buf, code);
++}
++
++int rawnand_sw_bch_correct(struct nand_chip *chip, unsigned char *buf,
++			   unsigned char *read_ecc, unsigned char *calc_ecc)
++{
++	struct nand_device *base = &chip->base;
++
++	return nand_ecc_sw_bch_correct(base, buf, read_ecc, calc_ecc);
++}
++EXPORT_SYMBOL(rawnand_sw_bch_correct);
++
++void rawnand_sw_bch_cleanup(struct nand_chip *chip)
++{
++	struct nand_device *base = &chip->base;
++
++	nand_ecc_sw_bch_cleanup(base);
++
++	chip->ecc.priv = NULL;
++}
++EXPORT_SYMBOL(rawnand_sw_bch_cleanup);
++
+ static int nand_set_ecc_on_host_ops(struct nand_chip *chip)
+ {
+ 	struct nand_ecc_ctrl *ecc = &chip->ecc;
+@@ -5240,8 +5276,8 @@ static int nand_set_ecc_soft_ops(struct nand_chip *chip)
+ 			WARN(1, "CONFIG_MTD_NAND_ECC_SW_BCH not enabled\n");
+ 			return -EINVAL;
+ 		}
+-		ecc->calculate = nand_bch_calculate_ecc;
+-		ecc->correct = nand_bch_correct_data;
++		ecc->calculate = rawnand_sw_bch_calculate;
++		ecc->correct = rawnand_sw_bch_correct;
+ 		ecc->read_page = nand_read_page_swecc;
+ 		ecc->read_subpage = nand_read_subpage;
+ 		ecc->write_page = nand_write_page_swecc;
+@@ -5297,7 +5333,7 @@ static int nand_set_ecc_soft_ops(struct nand_chip *chip)
  
- #include <linux/platform_data/mtd-nand-s3c2410.h>
-diff --git a/drivers/mtd/nand/raw/sharpsl.c b/drivers/mtd/nand/raw/sharpsl.c
-index 1327bfb3d5d3..553ffb61b7e1 100644
---- a/drivers/mtd/nand/raw/sharpsl.c
-+++ b/drivers/mtd/nand/raw/sharpsl.c
-@@ -12,7 +12,7 @@
- #include <linux/delay.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/sharpsl.h>
- #include <linux/interrupt.h>
-diff --git a/drivers/mtd/nand/raw/tmio_nand.c b/drivers/mtd/nand/raw/tmio_nand.c
-index 235a2f7b1bad..cd3733c3ae04 100644
---- a/drivers/mtd/nand/raw/tmio_nand.c
-+++ b/drivers/mtd/nand/raw/tmio_nand.c
-@@ -35,7 +35,7 @@
- #include <linux/ioport.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- #include <linux/slab.h>
+ 		/* See the software BCH ECC initialization for details */
+ 		ecc->bytes = 0;
+-		ret = nand_bch_init(chip);
++		ret = rawnand_sw_bch_init(chip);
+ 		if (ret) {
+ 			WARN(1, "BCH ECC initialization failed!\n");
+ 			return ret;
+@@ -5962,7 +5998,7 @@ void nand_cleanup(struct nand_chip *chip)
+ {
+ 	if (chip->ecc.engine_type == NAND_ECC_ENGINE_TYPE_SOFT &&
+ 	    chip->ecc.algo == NAND_ECC_ALGO_BCH)
+-		nand_bch_free(chip);
++		rawnand_sw_bch_cleanup(chip);
  
-diff --git a/drivers/mtd/nand/raw/txx9ndfmc.c b/drivers/mtd/nand/raw/txx9ndfmc.c
-index ef81dce6b5c4..ade0bfd2648d 100644
---- a/drivers/mtd/nand/raw/txx9ndfmc.c
-+++ b/drivers/mtd/nand/raw/txx9ndfmc.c
-@@ -14,7 +14,7 @@
- #include <linux/delay.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- #include <linux/io.h>
- #include <linux/platform_data/txx9/ndfmc.h>
-diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
-index b9f272408c4d..db430ae6a1a2 100644
---- a/drivers/mtd/sm_ftl.c
-+++ b/drivers/mtd/sm_ftl.c
-@@ -13,7 +13,7 @@
- #include <linux/sysfs.h>
- #include <linux/bitops.h>
- #include <linux/slab.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include "nand/raw/sm_common.h"
- #include "sm_ftl.h"
+ 	nanddev_cleanup(&chip->base);
  
-diff --git a/drivers/mtd/tests/mtd_nandecctest.c b/drivers/mtd/tests/mtd_nandecctest.c
-index 13bca9ea0cae..e92e3fb287b6 100644
---- a/drivers/mtd/tests/mtd_nandecctest.c
-+++ b/drivers/mtd/tests/mtd_nandecctest.c
-@@ -8,7 +8,7 @@
- #include <linux/string.h>
- #include <linux/bitops.h>
- #include <linux/slab.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
+diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
+index 6aab57336690..4cc47ab7f01a 100644
+--- a/drivers/mtd/nand/raw/omap2.c
++++ b/drivers/mtd/nand/raw/omap2.c
+@@ -23,7 +23,6 @@
+ #include <linux/of.h>
+ #include <linux/of_device.h>
  
- #include "mtd_test.h"
+-#include <linux/mtd/nand-ecc-sw-bch.h>
+ #include <linux/platform_data/elm.h>
  
-diff --git a/include/linux/mtd/nand_ecc.h b/include/linux/mtd/nand-ecc-sw-hamming.h
-similarity index 88%
-rename from include/linux/mtd/nand_ecc.h
-rename to include/linux/mtd/nand-ecc-sw-hamming.h
-index d423916b94f0..30a0cfa50eed 100644
---- a/include/linux/mtd/nand_ecc.h
-+++ b/include/linux/mtd/nand-ecc-sw-hamming.h
-@@ -7,8 +7,8 @@
-  * This file is the header for the ECC algorithm.
-  */
+ #include <linux/omap-gpmc.h>
+@@ -2041,13 +2040,13 @@ static int omap_nand_attach_chip(struct nand_chip *chip)
+ 		chip->ecc.bytes		= 7;
+ 		chip->ecc.strength	= 4;
+ 		chip->ecc.hwctl		= omap_enable_hwecc_bch;
+-		chip->ecc.correct	= nand_bch_correct_data;
++		chip->ecc.correct	= rawnand_sw_bch_correct;
+ 		chip->ecc.calculate	= omap_calculate_ecc_bch_sw;
+ 		mtd_set_ooblayout(mtd, &omap_sw_ooblayout_ops);
+ 		/* Reserve one byte for the OMAP marker */
+ 		oobbytes_per_step	= chip->ecc.bytes + 1;
+ 		/* Software BCH library is used for locating errors */
+-		err = nand_bch_init(chip);
++		err = rawnand_sw_bch_init(chip);
+ 		if (err) {
+ 			dev_err(dev, "Unable to use BCH library\n");
+ 			return err;
+@@ -2083,13 +2082,13 @@ static int omap_nand_attach_chip(struct nand_chip *chip)
+ 		chip->ecc.bytes		= 13;
+ 		chip->ecc.strength	= 8;
+ 		chip->ecc.hwctl		= omap_enable_hwecc_bch;
+-		chip->ecc.correct	= nand_bch_correct_data;
++		chip->ecc.correct	= rawnand_sw_bch_correct;
+ 		chip->ecc.calculate	= omap_calculate_ecc_bch_sw;
+ 		mtd_set_ooblayout(mtd, &omap_sw_ooblayout_ops);
+ 		/* Reserve one byte for the OMAP marker */
+ 		oobbytes_per_step	= chip->ecc.bytes + 1;
+ 		/* Software BCH library is used for locating errors */
+-		err = nand_bch_init(chip);
++		err = rawnand_sw_bch_init(chip);
+ 		if (err) {
+ 			dev_err(dev, "unable to use BCH library\n");
+ 			return err;
+@@ -2195,7 +2194,6 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 	nand_chip		= &info->nand;
+ 	mtd			= nand_to_mtd(nand_chip);
+ 	mtd->dev.parent		= &pdev->dev;
+-	nand_chip->ecc.priv	= NULL;
+ 	nand_set_flash_node(nand_chip, dev->of_node);
  
--#ifndef __MTD_NAND_ECC_H__
--#define __MTD_NAND_ECC_H__
-+#ifndef __MTD_NAND_ECC_SW_HAMMING_H__
-+#define __MTD_NAND_ECC_SW_HAMMING_H__
+ 	if (!mtd->name) {
+@@ -2271,10 +2269,9 @@ static int omap_nand_probe(struct platform_device *pdev)
+ return_error:
+ 	if (!IS_ERR_OR_NULL(info->dma))
+ 		dma_release_channel(info->dma);
+-	if (nand_chip->ecc.priv) {
+-		nand_bch_free(nand_chip);
+-		nand_chip->ecc.priv = NULL;
+-	}
++
++	rawnand_sw_bch_cleanup(nand_chip);
++
+ 	return err;
+ }
  
- struct nand_chip;
+@@ -2285,10 +2282,8 @@ static int omap_nand_remove(struct platform_device *pdev)
+ 	struct omap_nand_info *info = mtd_to_omap(mtd);
+ 	int ret;
  
-@@ -36,4 +36,4 @@ int __nand_correct_data(u_char *dat, u_char *read_ecc, u_char *calc_ecc,
- int nand_correct_data(struct nand_chip *chip, u_char *dat, u_char *read_ecc,
- 		      u_char *calc_ecc);
+-	if (nand_chip->ecc.priv) {
+-		nand_bch_free(nand_chip);
+-		nand_chip->ecc.priv = NULL;
+-	}
++	rawnand_sw_bch_cleanup(nand_chip);
++
+ 	if (info->dma)
+ 		dma_release_channel(info->dma);
+ 	ret = mtd_device_unregister(mtd);
+diff --git a/include/linux/mtd/nand-ecc-sw-bch.h b/include/linux/mtd/nand-ecc-sw-bch.h
+index 7b62996d9e01..f0caee3b03d0 100644
+--- a/include/linux/mtd/nand-ecc-sw-bch.h
++++ b/include/linux/mtd/nand-ecc-sw-bch.h
+@@ -8,53 +8,40 @@
+ #ifndef __MTD_NAND_ECC_SW_BCH_H__
+ #define __MTD_NAND_ECC_SW_BCH_H__
  
--#endif /* __MTD_NAND_ECC_H__ */
-+#endif /* __MTD_NAND_ECC_SW_HAMMING_H__ */
-diff --git a/include/linux/mtd/sharpsl.h b/include/linux/mtd/sharpsl.h
-index d2c3cf29e0d1..3762a90077d6 100644
---- a/include/linux/mtd/sharpsl.h
-+++ b/include/linux/mtd/sharpsl.h
-@@ -9,7 +9,7 @@
- #define _MTD_SHARPSL_H
+-struct mtd_info;
+-struct nand_chip;
++#include <linux/mtd/nand.h>
  
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
+ #if IS_ENABLED(CONFIG_MTD_NAND_ECC_SW_BCH)
  
- struct sharpsl_nand_platform_data {
+-/*
+- * Calculate BCH ecc code
+- */
+-int nand_bch_calculate_ecc(struct nand_chip *chip, const u_char *dat,
+-			   u_char *ecc_code);
+-
+-/*
+- * Detect and correct bit errors
+- */
+-int nand_bch_correct_data(struct nand_chip *chip, u_char *dat,
+-			  u_char *read_ecc, u_char *calc_ecc);
+-/*
+- * Initialize BCH encoder/decoder
+- */
+-int nand_bch_init(struct nand_chip *chip);
+-/*
+- * Release BCH encoder/decoder resources
+- */
+-void nand_bch_free(struct nand_chip *chip);
++int nand_ecc_sw_bch_calculate(struct nand_device *nand,
++			      const unsigned char *buf, unsigned char *code);
++int nand_ecc_sw_bch_correct(struct nand_device *nand, unsigned char *buf,
++			    unsigned char *read_ecc, unsigned char *calc_ecc);
++int nand_ecc_sw_bch_init(struct nand_device *nand);
++void nand_ecc_sw_bch_cleanup(struct nand_device *nand);
+ 
+ #else /* !CONFIG_MTD_NAND_ECC_SW_BCH */
+ 
+-static inline int
+-nand_bch_calculate_ecc(struct nand_chip *chip, const u_char *dat,
+-		       u_char *ecc_code)
++static inline int nand_ecc_sw_bch_calculate(struct nand_device *nand,
++					    const unsigned char *buf,
++					    unsigned char *code)
+ {
+ 	return -ENOTSUPP;
+ }
+ 
+-static inline int
+-nand_bch_correct_data(struct nand_chip *chip, unsigned char *buf,
+-		      unsigned char *read_ecc, unsigned char *calc_ecc)
++static inline int nand_ecc_sw_bch_correct(struct nand_device *nand,
++					  unsigned char *buf,
++					  unsigned char *read_ecc,
++					  unsigned char *calc_ecc)
+ {
+ 	return -ENOTSUPP;
+ }
+ 
+-static inline int nand_bch_init(struct nand_chip *chip)
++static inline int nand_ecc_sw_bch_init(struct nand_device *nand)
+ {
+ 	return -ENOTSUPP;
+ }
+ 
+-static inline void nand_bch_free(struct nand_chip *chip) {}
++static inline void nand_ecc_sw_bch_cleanup(struct nand_device *nand) {}
+ 
+ #endif /* CONFIG_MTD_NAND_ECC_SW_BCH */
+ 
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index aac07940de09..23623beaad1d 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1303,6 +1303,11 @@ static inline int nand_opcode_8bits(unsigned int command)
+ 	return 0;
+ }
+ 
++int rawnand_sw_bch_init(struct nand_chip *chip);
++int rawnand_sw_bch_correct(struct nand_chip *chip, unsigned char *buf,
++			   unsigned char *read_ecc, unsigned char *calc_ecc);
++void rawnand_sw_bch_cleanup(struct nand_chip *chip);
++
+ int nand_check_erased_ecc_chunk(void *data, int datalen,
+ 				void *ecc, int ecclen,
+ 				void *extraoob, int extraooblen,
 -- 
 2.20.1
 
