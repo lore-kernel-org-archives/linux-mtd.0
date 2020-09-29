@@ -2,91 +2,73 @@ Return-Path: <SRS0=p2FF=DG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E897CC4346E
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2020 08:47:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA07FC4727C
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2020 09:10:02 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 69B2D2067D
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2020 08:47:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7D1362076A
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2020 09:10:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uyN8LNAl";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GH0vwQJv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 69B2D2067D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="z+dhJf2H"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D1362076A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rock-chips.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=xIrQAL4AdsdJEAo7RP6RsRVAn48Doz/U2BfCaGG7GG8=; b=uyN8LNAl63OQrcrA+mX9VUPt8
-	PRrNtgfQanF3gjBnVVsGVL6RCoFRWIpYUagK+JVn8nMI+icQ+NCzirQE3pnMBvKpiNr4Np294O6kf
-	jWJWgtfJDXtmpJcBa7jmrtwPiUo+Y14MOG2dn/YAV1/Ss+6czJrACDhw3h863u6PaSdQLj3B5mYYr
-	Ro8oK4p0+hcfLVqmqYgX6YAP+D6OzdxoflteIkvZbu+NdV6wiar+R2O7+Y/Y3SPdr2Ef0QS5pYR9q
-	COvG2/ax8D7PJUJAihEEi4oO2T/5UFRCPxK7wS1IxNmS+q5VdHZ2SRIcyEUdi3aeLxtVy65c3LaGT
-	IziashR5g==;
+	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=/L3zhifbbf3dh0Oc/a38Ls/ylXTFNL9csedzEwq9wus=; b=z+dhJf2HNtW7tD3nhPQ0cCTJ2e
+	za6m74yWimjviqmJZ7FPtsz2sCUXw5kqAHXwE9vJxiONxtBttRVvaWEbjjNilETzviZcb8K0IO0Ki
+	ztzTZzcBEOqWq8Ark0c8vJQQmSAs8fFpDB80lXB750QekmIbHOHvj/YPh+24neB/uEKNylfevomiD
+	1/cD7RbZJ03Bf8ODQGrT+FK110wYXmMRfgJeyLstMq+w6SbTDoUTJgtuylxeTmYnRQth5iuRl0kkU
+	nBv0nK+ceqyicr09PDNFzpfJIvn4CUC4bRqTUGC+kQTofeHsWeULfy+/0XIWh0uHo8TM/JAnAJkeM
+	+AuNHrLw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kNBGx-0001MV-IL; Tue, 29 Sep 2020 08:46:07 +0000
-Received: from mail-qk1-x731.google.com ([2607:f8b0:4864:20::731])
+	id 1kNBd9-0007XL-FV; Tue, 29 Sep 2020 09:09:03 +0000
+Received: from lucky1.263xmail.com ([211.157.147.132])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kNBGu-0001Ka-Kt
- for linux-mtd@lists.infradead.org; Tue, 29 Sep 2020 08:46:05 +0000
-Received: by mail-qk1-x731.google.com with SMTP id o5so3554114qke.12
- for <linux-mtd@lists.infradead.org>; Tue, 29 Sep 2020 01:46:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=ENayg0b03aN8oh6NtAzZAKoo2a0ju8QsO8GHbXFhZXs=;
- b=GH0vwQJvj0abMudCkVRJwZTIa8zBonKfg1gGQqDdzdFCUPuynDV6FaBsfSsWRtJobK
- 952K0xjR0PF1b/jIze9/0+qd793hCT4EEGkrZf6vgvuZHHwx39/xycmPbqi43az5v8yK
- QmKvKFBvtj/YyqqykM4IbzUXJnFZ1VHOGM0Ms9rTDYR7u+ViPC12FCRNfas8ePj1t4Fr
- dCBV5WRZuXduZZb2oYNjrpC9YkDh4DNadUgoWJYqzVUhoU9jpsVerz4L+enmtZ0DrGYA
- PbZMYftyiEtrTptZejO7fRWjJ2YajW5sVyvJu56vwV8Ox51d93qseropt3B6Iuq6VMth
- bqOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=ENayg0b03aN8oh6NtAzZAKoo2a0ju8QsO8GHbXFhZXs=;
- b=nut9VwqMnsC4qb5tKHDGUb8ZqVFzUu0yFce+DwErvbnUlfsELayrGNi0K3gglKpm8D
- JvU+iO9pIsC31MPQno3wyvg1KYrqy12kFz7hmxqn63SuMQ1vKrkM2dICQzRkOSJhsXdU
- RXgQSSMqtEYrhPMudhADfjh3KWr5ROEkSVRDDp91t9WMyX4sSpvoP6MUm6+vMycEWM/s
- pqABh5T8417lXe7jQjAbh/Cf4pZo9Ad2Q0dOGddV1iBjgq1J1NrkBQ7f/1sxphw9dY1y
- HjN8s0Km/19to0uh2g+vknedTOweCKG50u5MKbZqQIZYnp/ble0ImZlM1sd3lTILqDiV
- QT2Q==
-X-Gm-Message-State: AOAM532cttH3CSccHQBMRdXHmTRNRIOk38M9c64EOugHXkF4V3ouQI+g
- 30N9HZpt0tB3JzGft4dygr+ogDvBboGhaDKCUwjNEpPl
-X-Google-Smtp-Source: ABdhPJw+v84u/6cEmOgt+a3nOzu96iRRmiu6XRMetsjn2FGDW3a/Lgi7bAJ/rn4MN7mARPKu20vm8BzPOep6RQTP93A=
-X-Received: by 2002:a37:a189:: with SMTP id k131mr3242514qke.34.1601369160995; 
- Tue, 29 Sep 2020 01:46:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <CADBnMviQd-9TbkJFUCWE8THCYF9oq-iZfu6Cjxcy9GvTfe=KUg@mail.gmail.com>
- <CAFLxGvw9TMHz5Mf=RYytB3N6uMuK5md+WxF=atzvaXcuibmNsg@mail.gmail.com>
- <CADBnMvjuS4F8CLwbGRTAt3bVyA7DAwEFwMmNqRdNJyZCRpXCXw@mail.gmail.com>
- <CAFLxGvxF_mK573Xhc0w2njjf4qRPSTiMf9B_GRBnJo1kj1MbkQ@mail.gmail.com>
- <CAFLxGvyHWFmLTYmyqmJo9Rfm87D_ZafBWyQSMvdYKLFTUM9p+Q@mail.gmail.com>
- <CADBnMvhcowEVqUYwg3vVK-F-=N+mRNQAsaihXuUorW-iWnWcxg@mail.gmail.com>
- <1929983185.113286.1600681896280.JavaMail.zimbra@nod.at>
- <CADBnMvhKxZSjyzhYxu3FUjZ0KtSDUdfiyEWBnNYP8ireCpkX8Q@mail.gmail.com>
- <CAFLxGvwSUx_JBbvbJjoeyVaH31mMoyTLGm8oGRi75agG0sG30Q@mail.gmail.com>
- <CADBnMvgH_coPG6pE-b9rn_XTVxLNFc5q_FAvEx_2kxmJ-PJAMg@mail.gmail.com>
- <CADBnMvhxXdvjrA80z65zjzGffpT59+KcVq7bhqyQ7oBUpc=5=w@mail.gmail.com>
-In-Reply-To: <CADBnMvhxXdvjrA80z65zjzGffpT59+KcVq7bhqyQ7oBUpc=5=w@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Tue, 29 Sep 2020 10:45:49 +0200
-Message-ID: <CAFLxGvzwR88a0d5QpR_RLNbOBoZ_-oXwENiqPck0YuFUfPfAmw@mail.gmail.com>
-Subject: Re: UBIFS-AUTH panic after reboot
-To: Kristof Havasi <havasiefr@gmail.com>
+ id 1kNBcY-0007N0-3P; Tue, 29 Sep 2020 09:08:29 +0000
+Received: from localhost (unknown [192.168.167.13])
+ by lucky1.263xmail.com (Postfix) with ESMTP id BA9B2EF2FC;
+ Tue, 29 Sep 2020 17:08:15 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+ by smtp.263.net (postfix) whith ESMTP id
+ P1665T140084565235456S1601370489886989_; 
+ Tue, 29 Sep 2020 17:08:16 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <d72ec480e2be19e14e1e747756b417d9>
+X-RL-SENDER: yifeng.zhao@rock-chips.com
+X-SENDER: zyf@rock-chips.com
+X-LOGIN-NAME: yifeng.zhao@rock-chips.com
+X-FST-TO: miquel.raynal@bootlin.com
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+From: Yifeng Zhao <yifeng.zhao@rock-chips.com>
+To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ robh+dt@kernel.org
+Subject: [PATCH v9 0/8] Add Rockchip NFC drivers for RK3308 and others
+Date: Tue, 29 Sep 2020 17:08:03 +0800
+Message-Id: <20200929090807.21511-1-yifeng.zhao@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200929_044604_736308_ABB39E17 
-X-CRM114-Status: GOOD (  10.45  )
+X-CRM114-CacheID: sfid-20200929_050826_689286_95DA8650 
+X-CRM114-Status: GOOD (  16.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,28 +80,103 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>, Sascha Hauer <s.hauer@pengutronix.de>,
- linux-mtd <linux-mtd@lists.infradead.org>
+Cc: devicetree@vger.kernel.org, heiko@sntech.de,
+ Yifeng Zhao <yifeng.zhao@rock-chips.com>, linux-kernel@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Sep 29, 2020 at 10:29 AM Kristof Havasi <havasiefr@gmail.com> wrote:
->
-> Dear Richard,
->
-> after a day of stress test, we still didn't see any emerging panics, so we can confirm that your patch fixes the problem!
 
-Nice.
+Rockchp's NFC(Nand Flash Controller) has four versions: V600, V622, V800 and
+V900.This series patch can support all four versions.
 
-> Thanks for my colleague, Karthik Chintamani Uppund for the extensive testing.
 
-Thanks for reporting and testing!
+Changes in v9:
+- The nfc->buffer will realloc while the page size of the second mtd
+  is large than the first one
+- Fix coding style.
+- Remove struct rk_nfc_clk.
+- Prepend some function with rk_nfc_.
+- Replace function readl_poll_timeout_atomic with readl_relaxed_poll_timeout.
+- Remove function rk_nfc_read_byte and rk_nfc_write_byte.
+- Don't select the die if 'check_only == true' in function rk_nfc_exec_op.
+- Modify function rk_nfc_write_page and rk_nfc_write_page_raw.
+
+Changes in v8:
+- Fix make dt_binding_check error
+
+Changes in v7:
+- Fix some wrong define
+- Rebase to linux-next.
+- Fix coding style.
+- Reserved 4 bytes at the beginning of the oob area.
+- Page raw read and write included ecc data.
+
+Changes in v6:
+- Fix some wrong define
+- Modified the definition of compatible
+- The mtd->name set by NAND label property.
+- Add some comments.
+- Fix compile error.
+
+Changes in v5:
+- Fix some wrong define.
+- Add boot-medium define.
+- Remove some compatible define.
+- Add boot blocks support  with different ECC for bootROM.
+- Rename rockchip-nand.c to rockchip-nand-controller.c.
+- Unification of other variable names.
+- Remove some compatible define.
+
+Changes in v4:
+- The compatible define with rkxx_nfc.
+- Add assigned-clocks.
+- Fix some wrong defineChanges in.
+- Define platform data structure for the register offsets.
+- The compatible define with rkxx_nfc.
+- Use SET_SYSTEM_SLEEP_PM_OPS to define PM_OPS.
+- Use exec_op instead of legacy hooks.
+
+Changes in v3:
+- Change the title for the dt-bindings.
+
+Changes in v2:
+- Fix compile error.
+- Include header files sorted by file name.
+
+Yifeng Zhao (8):
+  dt-bindings: mtd: Describe Rockchip RK3xxx NAND flash controller
+  mtd: rawnand: rockchip: NFC drivers for RK3308, RK2928 and others
+  MAINTAINERS: add maintainers to ROCKCHIP NFC
+  arm64: dts: rockchip: Add NFC node for RK3308 SoC
+  arm64: dts: rockchip: Add NFC node for PX30 SoC
+  arm: dts: rockchip: Add NFC node for RV1108 SoC
+  arm: dts: rockchip: Add NFC node for RK2928 and other SoCs
+  arm: dts: rockchip: Add NFC node for RK3036 SoC
+
+ .../mtd/rockchip,nand-controller.yaml         |  162 ++
+ MAINTAINERS                                   |    4 +-
+ arch/arm/boot/dts/rk3036.dtsi                 |   52 +
+ arch/arm/boot/dts/rk3xxx.dtsi                 |    9 +
+ arch/arm/boot/dts/rv1108.dtsi                 |   11 +
+ arch/arm64/boot/dts/rockchip/px30.dtsi        |   15 +
+ arch/arm64/boot/dts/rockchip/rk3308.dtsi      |   15 +
+ drivers/mtd/nand/raw/Kconfig                  |   12 +
+ drivers/mtd/nand/raw/Makefile                 |    1 +
+ .../mtd/nand/raw/rockchip-nand-controller.c   | 1454 +++++++++++++++++
+ 10 files changed, 1733 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
+ create mode 100644 drivers/mtd/nand/raw/rockchip-nand-controller.c
 
 -- 
-Thanks,
-//richard
+2.17.1
+
+
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
