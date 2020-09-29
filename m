@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-6.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05763C4741F
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2020 12:20:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BBE9C4727F
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2020 12:21:00 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 509DF20759
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2020 12:20:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 050072075A
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2020 12:20:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sbLdi9jP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 509DF20759
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="SjuzrEd+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 050072075A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sigma-star.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,31 +25,31 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:
 	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=kibbSIsSgPObItdlpy8jqXmZtVVFwm7rw1BTDuSRFVI=; b=sbLdi9jPDIo2ehOCBtD5fxRplI
-	k3ivqNdR5dYGMGgDq3TVA2p9DSEFMShS7jPbChMSiFbmx60pZEJcZcvjXTaJUW99vS2jNyqEyvMpT
-	VyU6qAnm1OztCOD+Xb3tMcsi8FY1+T8JCQDjp1u7AcaNop7+B0R1V8EIEIqfbPbnelqpf2v+nOjq9
-	R+KwpsvHvRxoY0otzHpZkP44CoMsd0/Zn3rdT3NHHhiHkYPVNDgF0og5RCtET/71V/qXn3siEOvHO
-	dPATO8uC+OYRuEHO6Pg5/2kd6oJZEcKkXNUHfsFFQpLj6f7xHn7d2hCJ5uoG1vzT59o9dmtvlH3jT
-	kv3nfoCQ==;
+	bh=kibbSIsSgPObItdlpy8jqXmZtVVFwm7rw1BTDuSRFVI=; b=SjuzrEd+w21bMDb8cH6qSTm1dL
+	RVVb3LbEC7ezQRFhYE7EKotLZpoiC8u+B184UOdTJK7EsAl1SCf2DXUr7GN3ofszp0LSy1Kes/XLL
+	bW32cjhbZN897k6Hx9q39enWu06c8NOg2x36MHRo/NtjoXDl+b0xDFaQAGIlrksPdCodnM1DR0xVH
+	3DnjSgvCgm8fyoNKpWycGWey2pVdpxNHn1j1RuQwTa0f+U/8Haf7MBKlUtsKYpmNRIZvw6igoGxwp
+	L+NuDLhncZUKDvNxFXQJISO4JxH9Drgi4fY3YMS7M0tMMg3Ri06zNLJg7Vy9wdWNeGYidJdSu/bgr
+	qyR3P8cQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kNEbz-0002Rv-78; Tue, 29 Sep 2020 12:20:03 +0000
+	id 1kNEc5-0002Sp-89; Tue, 29 Sep 2020 12:20:09 +0000
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kNEbw-0002Qx-7I
- for linux-mtd@lists.infradead.org; Tue, 29 Sep 2020 12:20:01 +0000
+ id 1kNEc2-0002SM-Gr
+ for linux-mtd@lists.infradead.org; Tue, 29 Sep 2020 12:20:07 +0000
 Received: from localhost (localhost [127.0.0.1])
- by lilium.sigma-star.at (Postfix) with ESMTP id 791BF1816C700;
- Tue, 29 Sep 2020 14:19:57 +0200 (CEST)
+ by lilium.sigma-star.at (Postfix) with ESMTP id 7ED7B1816FACD;
+ Tue, 29 Sep 2020 14:20:05 +0200 (CEST)
 Received: from lilium.sigma-star.at ([127.0.0.1])
  by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id Os0VFKrclBQP; Tue, 29 Sep 2020 14:19:57 +0200 (CEST)
+ with ESMTP id Dx4rNTPw7VLs; Tue, 29 Sep 2020 14:20:05 +0200 (CEST)
 Received: from lilium.sigma-star.at ([127.0.0.1])
  by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id OJ7NXT4lGUwQ; Tue, 29 Sep 2020 14:19:57 +0200 (CEST)
-Subject: Re: [PATCH] mkfs.ubifs: Fix build with SELinux
+ with ESMTP id wU-mpQ7kbTFw; Tue, 29 Sep 2020 14:20:04 +0200 (CEST)
+Subject: Re: [PATCH] misc-utils: Add fectest to build system
 To: Bastian Germann <bastiangermann@fishpost.de>, linux-mtd@lists.infradead.org
-References: <20200922211437.14699-1-bastiangermann@fishpost.de>
+References: <20200926211854.482-1-bastiangermann@fishpost.de>
 From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 Autocrypt: addr=david.oberhollenzer@sigma-star.at; prefer-encrypt=mutual;
  keydata=
@@ -77,16 +77,16 @@ Autocrypt: addr=david.oberhollenzer@sigma-star.at; prefer-encrypt=mutual;
  7In6ift5SNySojCOfAV0iKZb8QUXWktLleY8kQ8jltOsSRTuO4PDfzvtCQDixUw4tQ7WLwDT
  qyUpot0oG03vtSG4LIRCdxI=
 Organization: sigma star gmbh
-Message-ID: <e4706112-0cc0-54e5-52d0-ea242f7ea47d@sigma-star.at>
-Date: Tue, 29 Sep 2020 14:19:56 +0200
+Message-ID: <8f977c37-b502-cacd-0e35-58559a796519@sigma-star.at>
+Date: Tue, 29 Sep 2020 14:20:04 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200922211437.14699-1-bastiangermann@fishpost.de>
+In-Reply-To: <20200926211854.482-1-bastiangermann@fishpost.de>
 Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200929_082000_376754_EC531939 
-X-CRM114-Status: UNSURE (   6.75  )
+X-CRM114-CacheID: sfid-20200929_082006_672488_81E74C5B 
+X-CRM114-Status: UNSURE (   7.11  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
