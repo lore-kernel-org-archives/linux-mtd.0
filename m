@@ -2,75 +2,91 @@ Return-Path: <SRS0=p2FF=DG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F965C4741F
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2020 08:46:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E897CC4346E
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2020 08:47:05 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0E4182067D
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2020 08:46:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 69B2D2067D
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2020 08:47:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="wIttIkPr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E4182067D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uyN8LNAl";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GH0vwQJv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 69B2D2067D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Subject:References:In-Reply-To:
-	Message-ID:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=1UkJt/+Ftf+UEzw0AStBGrSSS9yCZ7QFkEX5ugt/P6k=; b=wIttIkPrG8Qd7UoDauhOPIJKq
-	rlcCDMdydxDAAURaRyhDZWUmqqE9nklEGjiOK7qgpyDoZsGjQHXt51xmQn98EQGIwoMhuZM9hSPZ9
-	Kzx5jDRQieEYBfJ1RH61O8y0gNRqm4oDdNdlRUCjfT693FK/zCK29IphHKqBgXivMmnIRlqB+riQY
-	wJAYZJsFt4WbexuNv6QjDrx8nv/1peF3IDjOp/5D7eleQ0+KTMFo10lDyEGeqw/r1EuKdbu3RZoTd
-	6aLEvbf2r7y7kNfbTEOIjO7NSBth7JAjAteBptpB3G5okbqH14XLt2VjWXOVvmNmv5KN+nBmpLGRd
-	wJ1GDx3tA==;
+	 bh=xIrQAL4AdsdJEAo7RP6RsRVAn48Doz/U2BfCaGG7GG8=; b=uyN8LNAl63OQrcrA+mX9VUPt8
+	PRrNtgfQanF3gjBnVVsGVL6RCoFRWIpYUagK+JVn8nMI+icQ+NCzirQE3pnMBvKpiNr4Np294O6kf
+	jWJWgtfJDXtmpJcBa7jmrtwPiUo+Y14MOG2dn/YAV1/Ss+6czJrACDhw3h863u6PaSdQLj3B5mYYr
+	Ro8oK4p0+hcfLVqmqYgX6YAP+D6OzdxoflteIkvZbu+NdV6wiar+R2O7+Y/Y3SPdr2Ef0QS5pYR9q
+	COvG2/ax8D7PJUJAihEEi4oO2T/5UFRCPxK7wS1IxNmS+q5VdHZ2SRIcyEUdi3aeLxtVy65c3LaGT
+	IziashR5g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kNBFY-0000xH-Rz; Tue, 29 Sep 2020 08:44:40 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1kNBGx-0001MV-IL; Tue, 29 Sep 2020 08:46:07 +0000
+Received: from mail-qk1-x731.google.com ([2607:f8b0:4864:20::731])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kNBFV-0000up-Dk
- for linux-mtd@lists.infradead.org; Tue, 29 Sep 2020 08:44:39 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id C19246125F2D;
- Tue, 29 Sep 2020 10:44:33 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id HHW3Qf_pwNH7; Tue, 29 Sep 2020 10:44:33 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 5F79061BD1BE;
- Tue, 29 Sep 2020 10:44:33 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id 7b1UWPjEyI4Q; Tue, 29 Sep 2020 10:44:33 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
- by lithops.sigma-star.at (Postfix) with ESMTP id 3767B6125F2D;
- Tue, 29 Sep 2020 10:44:33 +0200 (CEST)
-Date: Tue, 29 Sep 2020 10:44:33 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Message-ID: <1641873979.143790.1601369073151.JavaMail.zimbra@nod.at>
-In-Reply-To: <20200929083232.GA11648@pengutronix.de>
-References: <20200928190612.12074-1-richard@nod.at>
- <20200929083232.GA11648@pengutronix.de>
-Subject: Re: [PATCH] ubifs: journal: Make sure to not dirty twice for auth
- nodes
+ id 1kNBGu-0001Ka-Kt
+ for linux-mtd@lists.infradead.org; Tue, 29 Sep 2020 08:46:05 +0000
+Received: by mail-qk1-x731.google.com with SMTP id o5so3554114qke.12
+ for <linux-mtd@lists.infradead.org>; Tue, 29 Sep 2020 01:46:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=ENayg0b03aN8oh6NtAzZAKoo2a0ju8QsO8GHbXFhZXs=;
+ b=GH0vwQJvj0abMudCkVRJwZTIa8zBonKfg1gGQqDdzdFCUPuynDV6FaBsfSsWRtJobK
+ 952K0xjR0PF1b/jIze9/0+qd793hCT4EEGkrZf6vgvuZHHwx39/xycmPbqi43az5v8yK
+ QmKvKFBvtj/YyqqykM4IbzUXJnFZ1VHOGM0Ms9rTDYR7u+ViPC12FCRNfas8ePj1t4Fr
+ dCBV5WRZuXduZZb2oYNjrpC9YkDh4DNadUgoWJYqzVUhoU9jpsVerz4L+enmtZ0DrGYA
+ PbZMYftyiEtrTptZejO7fRWjJ2YajW5sVyvJu56vwV8Ox51d93qseropt3B6Iuq6VMth
+ bqOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=ENayg0b03aN8oh6NtAzZAKoo2a0ju8QsO8GHbXFhZXs=;
+ b=nut9VwqMnsC4qb5tKHDGUb8ZqVFzUu0yFce+DwErvbnUlfsELayrGNi0K3gglKpm8D
+ JvU+iO9pIsC31MPQno3wyvg1KYrqy12kFz7hmxqn63SuMQ1vKrkM2dICQzRkOSJhsXdU
+ RXgQSSMqtEYrhPMudhADfjh3KWr5ROEkSVRDDp91t9WMyX4sSpvoP6MUm6+vMycEWM/s
+ pqABh5T8417lXe7jQjAbh/Cf4pZo9Ad2Q0dOGddV1iBjgq1J1NrkBQ7f/1sxphw9dY1y
+ HjN8s0Km/19to0uh2g+vknedTOweCKG50u5MKbZqQIZYnp/ble0ImZlM1sd3lTILqDiV
+ QT2Q==
+X-Gm-Message-State: AOAM532cttH3CSccHQBMRdXHmTRNRIOk38M9c64EOugHXkF4V3ouQI+g
+ 30N9HZpt0tB3JzGft4dygr+ogDvBboGhaDKCUwjNEpPl
+X-Google-Smtp-Source: ABdhPJw+v84u/6cEmOgt+a3nOzu96iRRmiu6XRMetsjn2FGDW3a/Lgi7bAJ/rn4MN7mARPKu20vm8BzPOep6RQTP93A=
+X-Received: by 2002:a37:a189:: with SMTP id k131mr3242514qke.34.1601369160995; 
+ Tue, 29 Sep 2020 01:46:00 -0700 (PDT)
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Topic: ubifs: journal: Make sure to not dirty twice for auth nodes
-Thread-Index: jAQnWmKtuwm37EzhDVXBPQ9JkDWXQw==
+References: <CADBnMviQd-9TbkJFUCWE8THCYF9oq-iZfu6Cjxcy9GvTfe=KUg@mail.gmail.com>
+ <CAFLxGvw9TMHz5Mf=RYytB3N6uMuK5md+WxF=atzvaXcuibmNsg@mail.gmail.com>
+ <CADBnMvjuS4F8CLwbGRTAt3bVyA7DAwEFwMmNqRdNJyZCRpXCXw@mail.gmail.com>
+ <CAFLxGvxF_mK573Xhc0w2njjf4qRPSTiMf9B_GRBnJo1kj1MbkQ@mail.gmail.com>
+ <CAFLxGvyHWFmLTYmyqmJo9Rfm87D_ZafBWyQSMvdYKLFTUM9p+Q@mail.gmail.com>
+ <CADBnMvhcowEVqUYwg3vVK-F-=N+mRNQAsaihXuUorW-iWnWcxg@mail.gmail.com>
+ <1929983185.113286.1600681896280.JavaMail.zimbra@nod.at>
+ <CADBnMvhKxZSjyzhYxu3FUjZ0KtSDUdfiyEWBnNYP8ireCpkX8Q@mail.gmail.com>
+ <CAFLxGvwSUx_JBbvbJjoeyVaH31mMoyTLGm8oGRi75agG0sG30Q@mail.gmail.com>
+ <CADBnMvgH_coPG6pE-b9rn_XTVxLNFc5q_FAvEx_2kxmJ-PJAMg@mail.gmail.com>
+ <CADBnMvhxXdvjrA80z65zjzGffpT59+KcVq7bhqyQ7oBUpc=5=w@mail.gmail.com>
+In-Reply-To: <CADBnMvhxXdvjrA80z65zjzGffpT59+KcVq7bhqyQ7oBUpc=5=w@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Tue, 29 Sep 2020 10:45:49 +0200
+Message-ID: <CAFLxGvzwR88a0d5QpR_RLNbOBoZ_-oXwENiqPck0YuFUfPfAmw@mail.gmail.com>
+Subject: Re: UBIFS-AUTH panic after reboot
+To: Kristof Havasi <havasiefr@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200929_044437_651513_A6F2A1A4 
-X-CRM114-Status: UNSURE (   9.80  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20200929_044604_736308_ABB39E17 
+X-CRM114-Status: GOOD (  10.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,34 +98,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Kristof Havasi <havasiefr@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- linux-kernel <linux-kernel@vger.kernel.org>, stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Richard Weinberger <richard@nod.at>, Sascha Hauer <s.hauer@pengutronix.de>,
+ linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIlNhc2NoYSBIYXVlciIgPHMu
-aGF1ZXJAcGVuZ3V0cm9uaXguZGU+Cj4gQW46ICJyaWNoYXJkIiA8cmljaGFyZEBub2QuYXQ+Cj4g
-Q0M6ICJsaW51eC1tdGQiIDxsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZz4sICJsaW51eC1r
-ZXJuZWwiIDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnPiwgInN0YWJsZSIKPiA8c3RhYmxl
-QHZnZXIua2VybmVsLm9yZz4sICJLcmlzdG9mIEhhdmFzaSIgPGhhdmFzaWVmckBnbWFpbC5jb20+
-Cj4gR2VzZW5kZXQ6IERpZW5zdGFnLCAyOS4gU2VwdGVtYmVyIDIwMjAgMTA6MzI6MzIKPiBCZXRy
-ZWZmOiBSZTogW1BBVENIXSB1Ymlmczogam91cm5hbDogTWFrZSBzdXJlIHRvIG5vdCBkaXJ0eSB0
-d2ljZSBmb3IgYXV0aCBub2RlcwoKPiBPbiBNb24sIFNlcCAyOCwgMjAyMCBhdCAwOTowNjoxMlBN
-ICswMjAwLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3JvdGU6Cj4+IFdoZW4gcmVtb3ZpbmcgdGhlIGxh
-c3QgcmVmZXJlbmNlIG9mIGFuIGlub2RlIHRoZSBzaXplIG9mIGFuIGF1dGggbm9kZQo+PiBpcyBh
-bHJlYWR5IHBhcnQgb2Ygd3JpdGVfbGVuLiBTbyB3ZSBtdXN0IG5vdCBjYWxsIHViaWZzX2FkZF9h
-dXRoX2RpcnQoKS4KPj4gQ2FsbCBpdCBvbmx5IHdoZW4gbmVlZGVkLgo+PiAKPj4gQ2M6IDxzdGFi
-bGVAdmdlci5rZXJuZWwub3JnPgo+PiBDYzogU2FzY2hhIEhhdWVyIDxzLmhhdWVyQHBlbmd1dHJv
-bml4LmRlPgo+PiBDYzogS3Jpc3RvZiBIYXZhc2kgPGhhdmFzaWVmckBnbWFpbC5jb20+Cj4+IEZp
-eGVzOiA2YTk4YmM0NjE0ZGUgKCJ1YmlmczogQWRkIGF1dGhlbnRpY2F0aW9uIG5vZGVzIHRvIGpv
-dXJuYWwiKQo+PiBSZXBvcnRlZC1ieTogS3Jpc3RvZiBIYXZhc2kgPGhhdmFzaWVmckBnbWFpbC5j
-b20+Cj4+IFNpZ25lZC1vZmYtYnk6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+
-Cj4gCj4gTG9va2VkIGF0IHRoZSBjb2RlIHVudGlsIEkgdW5kZXJzdG9vZCB3aGF0IHRoZSBwcm9i
-bGVtIGlzIGFuZCBob3cgaXQgaXMKPiBmaXhlZCwgc286Cj4gCj4gUmV2aWV3ZWQtYnk6IFNhc2No
-YSBIYXVlciA8cy5oYXVlckBwZW5ndXRyb25peC5kZT4KCkFwcGxpZWQgdG8gZml4ZXMgYnJhbmNo
-IQoKVGhhbmtzLAovL3JpY2hhcmQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Tue, Sep 29, 2020 at 10:29 AM Kristof Havasi <havasiefr@gmail.com> wrote:
+>
+> Dear Richard,
+>
+> after a day of stress test, we still didn't see any emerging panics, so we can confirm that your patch fixes the problem!
+
+Nice.
+
+> Thanks for my colleague, Karthik Chintamani Uppund for the extensive testing.
+
+Thanks for reporting and testing!
+
+-- 
+Thanks,
+//richard
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
