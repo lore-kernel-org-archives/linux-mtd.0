@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-13.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33054C4727C
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2020 23:02:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AB0BC47420
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2020 23:02:29 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9825220897
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2020 23:02:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8EF9C20897
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2020 23:02:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="2KS2M7Je"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9825220897
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PO1Otz/b"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8EF9C20897
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,37 +25,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=XGCDWsk/XnwfvJEh434p/Xkvt78x8kY9esN7FVx39Yo=; b=2KS2M7JeDu25DqB+GZc+UJpRa
-	lS2kVJUyJjgJ2W452GKNe0FHdBND3DdbIK3CKh/whL/g+oAaxX3YusYORG9ZgCUlV23B/7428MYZ7
-	P6tvNbe5y/x5lWSZY64nNUmMTGiB9UZshSo+p5ROTA6l/4t2bftTGO0ldnoYQOS6uzuBosZyJEjoN
-	CLNyeLYG/0K+j7V1x4OZRyRX4oWhq5Z27puUe4v+sc4s+nBR/WGGHIn6d1egXbojUgIp70p3q31oe
-	9jfUZ+rRdCXjPXVepVJIKC4QXK0Pc/1QHjkrfd0aI1Jy60neRg799pBhmSOn3W6vU4hkx/Pzskude
-	/BilFnPJw==;
+	 bh=wH6bE/LceobDzgam4K8da9mVXfqc/9yDDHSrJ49ZBrU=; b=PO1Otz/bMFbnaVE7oF3FZfhoT
+	rr7Ho7vfat2XucIzSuR2xRLk7W21U/YDMP///4iH5mDfNGn16XpCMCWusS4+GKyYOWj7YbNo54nbe
+	fyXiPFl1zuBOMOxUR4KUE8VVOo69hyVhKbhBOYBRka0/41pL1uHv+QmBVku9S4LFeFZaCHr5VbGdz
+	aBrld05q01HvckT9iK2ACnTUCi/4ffW6VQiry0774zjw9c120HguC9NWvUr27SAvvaiaN0V98JTuO
+	wf3fifvz1i+72iB47AmO6nLbKHTC286ef7D8m2iWJBC+zF6q2Wsf9w1vrlYBnwXZTmOjBrHwaW0sH
+	XIJsGAE7g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kNOcv-0001EO-NM; Tue, 29 Sep 2020 23:01:41 +0000
+	id 1kNOcy-0001FT-Jt; Tue, 29 Sep 2020 23:01:44 +0000
 Received: from relay12.mail.gandi.net ([217.70.178.232])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kNOcm-0001AM-Jj
+ id 1kNOcm-0001AS-Se
  for linux-mtd@lists.infradead.org; Tue, 29 Sep 2020 23:01:35 +0000
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id F0067200008;
- Tue, 29 Sep 2020 23:01:28 +0000 (UTC)
+ by relay12.mail.gandi.net (Postfix) with ESMTPSA id D7C4B20000A;
+ Tue, 29 Sep 2020 23:01:30 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH 01/20] mtd: nand: ecc: Add an I/O request tweaking mechanism
-Date: Wed, 30 Sep 2020 01:01:05 +0200
-Message-Id: <20200929230124.31491-2-miquel.raynal@bootlin.com>
+Subject: [PATCH 03/20] mtd: nand: ecc-bch: Cleanup and style fixes
+Date: Wed, 30 Sep 2020 01:01:07 +0200
+Message-Id: <20200929230124.31491-4-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200929230124.31491-1-miquel.raynal@bootlin.com>
 References: <20200929230124.31491-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200929_190132_871515_E45DE2F4 
-X-CRM114-Status: GOOD (  18.17  )
+X-CRM114-CacheID: sfid-20200929_190133_124540_1984094E 
+X-CRM114-Status: GOOD (  20.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,185 +75,128 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Currently, BCH and Hamming engine are sharing the same
-tweaking/restoring I/O mechanism: they need the I/O request to fully
-cover the main/OOB area. Let's make this code generic as sharing the
-code between two drivers is already a win. Maybe other ECC engine
-drivers will need it too.
+Fix function headers, capitals and reword a little bit the comments
+to make this driver more readable.
+
+There is not functional change.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/ecc.c   | 106 +++++++++++++++++++++++++++++++++++++++
- include/linux/mtd/nand.h |  32 ++++++++++++
- 2 files changed, 138 insertions(+)
+ drivers/mtd/nand/ecc-sw-bch.c | 55 ++++++++++++++++++-----------------
+ 1 file changed, 29 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/mtd/nand/ecc.c b/drivers/mtd/nand/ecc.c
-index 4a56e6c0da67..86bbc4ecc58a 100644
---- a/drivers/mtd/nand/ecc.c
-+++ b/drivers/mtd/nand/ecc.c
-@@ -95,6 +95,7 @@
- 
- #include <linux/module.h>
- #include <linux/mtd/nand.h>
-+#include <linux/slab.h>
+diff --git a/drivers/mtd/nand/ecc-sw-bch.c b/drivers/mtd/nand/ecc-sw-bch.c
+index d0dc84cfdbdc..fe080a0837d8 100644
+--- a/drivers/mtd/nand/ecc-sw-bch.c
++++ b/drivers/mtd/nand/ecc-sw-bch.c
+@@ -29,10 +29,10 @@ struct nand_bch_control {
+ };
  
  /**
-  * nand_ecc_init_ctx - Init the ECC engine context
-@@ -479,6 +480,111 @@ bool nand_ecc_is_strong_enough(struct nand_device *nand)
+- * nand_bch_calculate_ecc - [NAND Interface] Calculate ECC for data block
+- * @chip:	NAND chip object
+- * @buf:	input buffer with raw data
+- * @code:	output buffer with ECC
++ * nand_bch_calcuate_ecc - Calculate the ECC corresponding to a data block
++ * @chip: NAND chip object
++ * @buf: Input buffer with raw data
++ * @code: Output buffer with ECC
+  */
+ int nand_bch_calculate_ecc(struct nand_chip *chip, const unsigned char *buf,
+ 			   unsigned char *code)
+@@ -52,13 +52,13 @@ int nand_bch_calculate_ecc(struct nand_chip *chip, const unsigned char *buf,
+ EXPORT_SYMBOL(nand_bch_calculate_ecc);
+ 
+ /**
+- * nand_bch_correct_data - [NAND Interface] Detect and correct bit error(s)
+- * @chip:	NAND chip object
+- * @buf:	raw data read from the chip
+- * @read_ecc:	ECC from the chip
+- * @calc_ecc:	the ECC calculated from raw data
++ * nand_bch_correct_data - Detect, correct and report bit error(s)
++ * @chip: NAND chip object
++ * @buf: Raw data read from the chip
++ * @read_ecc: ECC bytes from the chip
++ * @calc_ecc: ECC calculated from the raw data
+  *
+- * Detect and correct bit errors for a data byte block
++ * Detect and correct bit errors for a data block.
+  */
+ int nand_bch_correct_data(struct nand_chip *chip, unsigned char *buf,
+ 			  unsigned char *read_ecc, unsigned char *calc_ecc)
+@@ -71,37 +71,39 @@ int nand_bch_correct_data(struct nand_chip *chip, unsigned char *buf,
+ 			   NULL, errloc);
+ 	if (count > 0) {
+ 		for (i = 0; i < count; i++) {
+-			if (errloc[i] < (chip->ecc.size*8))
+-				/* error is located in data, correct it */
++			if (errloc[i] < (chip->ecc.size * 8))
++				/* The error is in the data area: correct it */
+ 				buf[errloc[i] >> 3] ^= (1 << (errloc[i] & 7));
+-			/* else error in ecc, no action needed */
+ 
++			/* Otherwise the error is in the ECC area: nothing to do */
+ 			pr_debug("%s: corrected bitflip %u\n", __func__,
+-					errloc[i]);
++				 errloc[i]);
+ 		}
+ 	} else if (count < 0) {
+-		pr_err("ecc unrecoverable error\n");
++		pr_err("ECC unrecoverable error\n");
+ 		count = -EBADMSG;
+ 	}
++
+ 	return count;
  }
- EXPORT_SYMBOL(nand_ecc_is_strong_enough);
+ EXPORT_SYMBOL(nand_bch_correct_data);
  
-+/* ECC engine driver internal helpers */
-+int nand_ecc_init_req_tweaking(struct nand_ecc_req_tweak_ctx *ctx,
-+			       struct nand_device *nand)
-+{
-+	unsigned int total_buffer_size;
-+
-+	ctx->nand = nand;
-+
-+	/* Let the user decide the exact length of each buffer */
-+	if (!ctx->page_buffer_size)
-+		ctx->page_buffer_size = nanddev_page_size(nand);
-+	if (!ctx->oob_buffer_size)
-+		ctx->oob_buffer_size = nanddev_per_page_oobsize(nand);
-+
-+	total_buffer_size = ctx->page_buffer_size + ctx->oob_buffer_size;
-+
-+	ctx->spare_databuf = kzalloc(total_buffer_size, GFP_KERNEL);
-+	if (!ctx->spare_databuf)
-+		return -ENOMEM;
-+
-+	ctx->spare_oobbuf = ctx->spare_databuf + ctx->page_buffer_size;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(nand_ecc_init_req_tweaking);
-+
-+void nand_ecc_cleanup_req_tweaking(struct nand_ecc_req_tweak_ctx *ctx)
-+{
-+	kfree(ctx->spare_databuf);
-+}
-+EXPORT_SYMBOL_GPL(nand_ecc_cleanup_req_tweaking);
-+
-+/*
-+ * Ensure data and OOB area is fully read/written otherwise the correction might
-+ * not work as expected.
-+ */
-+void nand_ecc_tweak_req(struct nand_ecc_req_tweak_ctx *ctx,
-+			struct nand_page_io_req *req)
-+{
-+	struct nand_device *nand = ctx->nand;
-+	struct nand_page_io_req *orig, *tweak;
-+
-+	/* Save the original request */
-+	ctx->orig_req = *req;
-+	ctx->bounce_data = false;
-+	ctx->bounce_oob = false;
-+	orig = &ctx->orig_req;
-+	tweak = req;
-+
-+	/* Ensure the request covers the entire page */
-+	if (true) {//todo (orig->datalen < nanddev_page_size(nand)) {
-+		ctx->bounce_data = true;
-+		tweak->dataoffs = 0;
-+		tweak->datalen = nanddev_page_size(nand);
-+		tweak->databuf.in = ctx->spare_databuf;
-+		memset(tweak->databuf.in, 0xFF, ctx->page_buffer_size);
-+	}
-+
-+	if (true) {//todo (orig->ooblen < nanddev_per_page_oobsize(nand)) {
-+		ctx->bounce_oob = true;
-+		tweak->ooboffs = 0;
-+		tweak->ooblen = nanddev_per_page_oobsize(nand);
-+		tweak->oobbuf.in = ctx->spare_oobbuf;
-+		memset(tweak->oobbuf.in, 0xFF, ctx->oob_buffer_size);
-+	}
-+
-+	/* Copy the data that must be writen in the bounce buffers, if needed */
-+	if (orig->type == NAND_PAGE_WRITE) {
-+		if (ctx->bounce_data)
-+			memcpy((void *)tweak->databuf.out + orig->dataoffs,
-+			       orig->databuf.out, orig->datalen);
-+
-+		if (ctx->bounce_oob)
-+			memcpy((void *)tweak->oobbuf.out + orig->ooboffs,
-+			       orig->oobbuf.out, orig->ooblen);
-+	}
-+}
-+EXPORT_SYMBOL_GPL(nand_ecc_tweak_req);
-+
-+void nand_ecc_restore_req(struct nand_ecc_req_tweak_ctx *ctx,
-+			  struct nand_page_io_req *req)
-+{
-+	struct nand_page_io_req *orig, *tweak;
-+
-+	orig = &ctx->orig_req;
-+	tweak = req;
-+
-+	/* Restore the data read from the bounce buffers, if needed */
-+	if (orig->type == NAND_PAGE_READ) {
-+		if (ctx->bounce_data)
-+			memcpy(orig->databuf.in,
-+			       tweak->databuf.in + orig->dataoffs,
-+			       orig->datalen);
-+
-+		if (ctx->bounce_oob)
-+			memcpy(orig->oobbuf.in,
-+			       tweak->oobbuf.in + orig->ooboffs,
-+			       orig->ooblen);
-+	}
-+
-+	/* Ensure the original request is restored */
-+	*req = *orig;
-+}
-+EXPORT_SYMBOL_GPL(nand_ecc_restore_req);
-+
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Miquel Raynal <miquel.raynal@bootlin.com>");
- MODULE_DESCRIPTION("Generic ECC engine");
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 697ea2474a7c..36e4fe08d0ea 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -278,6 +278,38 @@ int nand_ecc_finish_io_req(struct nand_device *nand,
- 			   struct nand_page_io_req *req);
- bool nand_ecc_is_strong_enough(struct nand_device *nand);
- 
-+/**
-+ * struct nand_ecc_req_tweak_ctx - Help for automatically tweaking requests
-+ * @orig_req: Pointer to the original IO request
-+ * @nand: Related NAND device, to have access to its memory organization
-+ * @page_buffer_size: Real size of the page buffer to use (can be set by the
-+ *                    user before the tweaking mechanism initialization)
-+ * @oob_buffer_size: Real size of the OOB buffer to use (can be set by the
-+ *                   user before the tweaking mechanism initialization)
-+ * @spare_databuf: Data bounce buffer
-+ * @spare_oobbuf: OOB bounce buffer
-+ * @bounce_data: Flag indicating a data bounce buffer is used
-+ * @bounce_oob: Flag indicating an OOB bounce buffer is used
-+ */
-+struct nand_ecc_req_tweak_ctx {
-+	struct nand_page_io_req orig_req;
-+	struct nand_device *nand;
-+	unsigned int page_buffer_size;
-+	unsigned int oob_buffer_size;
-+	void *spare_databuf;
-+	void *spare_oobbuf;
-+	bool bounce_data;
-+	bool bounce_oob;
-+};
-+
-+int nand_ecc_init_req_tweaking(struct nand_ecc_req_tweak_ctx *ctx,
-+			       struct nand_device *nand);
-+void nand_ecc_cleanup_req_tweaking(struct nand_ecc_req_tweak_ctx *ctx);
-+void nand_ecc_tweak_req(struct nand_ecc_req_tweak_ctx *ctx,
-+			struct nand_page_io_req *req);
-+void nand_ecc_restore_req(struct nand_ecc_req_tweak_ctx *ctx,
-+			  struct nand_page_io_req *req);
-+
  /**
-  * struct nand_ecc - Information relative to the ECC
-  * @defaults: Default values, depend on the underlying subsystem
+- * nand_bch_init - [NAND Interface] Initialize NAND BCH error correction
+- * @mtd:	MTD block structure
++ * nand_bch_init - Initialize software BCH ECC engine
++ * @mtd: MTD device
+  *
+- * Returns:
+- *  a pointer to a new NAND BCH control structure, or NULL upon failure
++ * Returns: a pointer to a new NAND BCH control structure, or NULL upon failure
+  *
+  * Initialize NAND BCH error correction. Parameters @eccsize and @eccbytes
+- * are used to compute BCH parameters m (Galois field order) and t (error
+- * correction capability). @eccbytes should be equal to the number of bytes
+- * required to store m*t bits, where m is such that 2^m-1 > @eccsize*8.
++ * are used to compute the following BCH parameters:
++ *     m, the Galois field order
++ *     t, the error correction capability
++ * @eccbytes should be equal to the number of bytes required to store m * t
++ * bits, where m is such that 2^m - 1 > step_size * 8.
+  *
+  * Example: to configure 4 bit correction per 512 bytes, you should pass
+- * @eccsize = 512  (thus, m=13 is the smallest integer such that 2^m-1 > 512*8)
+- * @eccbytes = 7   (7 bytes are required to store m*t = 13*4 = 52 bits)
++ * @eccsize = 512 (thus, m = 13 is the smallest integer such that 2^m - 1 > 512 * 8)
++ * @eccbytes = 7 (7 bytes are required to store m * t = 13 * 4 = 52 bits)
+  */
+ struct nand_bch_control *nand_bch_init(struct mtd_info *mtd)
+ {
+@@ -174,6 +176,7 @@ struct nand_bch_control *nand_bch_init(struct mtd_info *mtd)
+ 	nbc->errloc = kmalloc_array(t, sizeof(*nbc->errloc), GFP_KERNEL);
+ 	if (!nbc->eccmask || !nbc->errloc)
+ 		goto fail;
++
+ 	/*
+ 	 * compute and store the inverted ecc of an erased ecc block
+ 	 */
+@@ -199,8 +202,8 @@ struct nand_bch_control *nand_bch_init(struct mtd_info *mtd)
+ EXPORT_SYMBOL(nand_bch_init);
+ 
+ /**
+- * nand_bch_free - [NAND Interface] Release NAND BCH ECC resources
+- * @nbc:	NAND BCH control structure
++ * nand_bch_free - Release NAND BCH ECC resources
++ * @nbc: NAND BCH control structure
+  */
+ void nand_bch_free(struct nand_bch_control *nbc)
+ {
 -- 
 2.20.1
 
