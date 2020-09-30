@@ -2,22 +2,22 @@ Return-Path: <SRS0=o/Ze=DH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63583C4363D
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 22:40:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16879C4363D
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 22:53:10 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C69042071E
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 22:40:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7540220719
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 22:53:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rsAu8lXl";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=walle.cc header.i=@walle.cc header.b="EhcLYYzr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C69042071E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TFdHVG5D";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=walle.cc header.i=@walle.cc header.b="MAY7Kkf6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7540220719
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,48 +26,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
 	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=tw0oRbL20LCJcrqSOx8w4wEii+MEzgxShrTeq+qS7sI=; b=rsAu8lXlUrDoyQFSU4CepwJUr
-	gxJhPz1xEQbLfHBZFcsGTjXkNKsMSLltx9QjKYSQ6ROPCWCLRw0OkzJWhiSDYTyl/YzMwkaSM7zLu
-	DbI8TuVUIsBoS8pDe6YtoNNp//4neY08q/1GuIW5GsYR39e4JZBRsRZjji/W7+y/l4XFOezugOmhz
-	zc88mBeyYvTp/Lh1ZeLJyUcqPB1H6tERmzhLezAubXNicrJ52zhQObnUGScPLt4tWyqVSaL6CadmX
-	Yll+5dIlQ7tf6rMw8g6h7+HNd4xVlP90xdy6V4obIsKaM0ye/powjP7aLw1Z/j72HzYVztAu4/po8
-	ILAvFvwdA==;
+	 bh=zKJY7hXKkXuveRfgsJh9+G5zEvg41y67XH4abkQVGVA=; b=TFdHVG5DZHl0BZSsX1p107h/M
+	7ednpfcJKLJDHyOVCNFb2UmX0mLKA9Xh2q7CcX2cwMwW10HxI8lz7JXITkCi+HFGrYcF6t3ImNQak
+	YiTiLaYe9esS8FWJOWGp7mj3JOpkpwZFxZgMjNne2EggW25+VwYp9+m75wpmwGLP11Nui5wxq87qH
+	6TiJ+nqWkM2pRBEEnPsHG7p8mlm8A23H9MlqobKuCDPUP2oikAqekIpigmBC+bDv3Y9LTLinqu84S
+	FSQ6I4yMwl6elwWDwvBOEaA8TUEKtcHxXUyKzhH2maDrhHSD7TTyGfZ79BvR94ijZ12SUNQ3lC84t
+	CU5q3QwkA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kNkkU-00019N-4S; Wed, 30 Sep 2020 22:38:58 +0000
+	id 1kNkwp-0003GF-9I; Wed, 30 Sep 2020 22:51:43 +0000
 Received: from ssl.serverraum.org ([176.9.125.105])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kNkkQ-000185-5I
- for linux-mtd@lists.infradead.org; Wed, 30 Sep 2020 22:38:55 +0000
+ id 1kNkwn-0003Fi-CE
+ for linux-mtd@lists.infradead.org; Wed, 30 Sep 2020 22:51:42 +0000
 Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id BD51822EDE;
- Thu,  1 Oct 2020 00:38:42 +0200 (CEST)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 1E4A022EDE;
+ Thu,  1 Oct 2020 00:51:39 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1601505523;
+ s=mail2016061301; t=1601506300;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=dERL4nV7dCj7Ak1q24nlDbwHf/+PRBhMetovVhnlCeY=;
- b=EhcLYYzrnTQbMj0KF43owUjRi6qmpUTlAvIqeWWYBHLjXtsWIwZujZ/wqu+gGZmCn9rot3
- tzsJRMupyHdOCDUC2+a0oA+oyQxUX6LDllDOVpiPb6lOJqINHw1qebFkcG6KHw6ziT2W23
- ZkNDH5u/d0QLRSveHfvCiAhz6ibpvUw=
+ bh=0yBPgimlAnB9qjnYhtR1UnHNO8xcwVbFDrDVCIQ51JU=;
+ b=MAY7Kkf68Sql2fBLQ6/Lvko6HSUWAvwe/B5CgSYoWPkGYLvwVAHJBDBMJXxqRohGAP47l+
+ lPmpi1vWpo9AKiRyDghQImyvmtnm8uepVcNJBnIO0Q7U/QjCKM5/t7u82KxSlm5loB0ywn
+ igk0rUL33G1BHdeicVH8DvZsL6ilroc=
 MIME-Version: 1.0
-Date: Thu, 01 Oct 2020 00:38:42 +0200
+Date: Thu, 01 Oct 2020 00:51:39 +0200
 From: Michael Walle <michael@walle.cc>
-To: Tudor.Ambarus@microchip.com
+To: Vignesh Raghavendra <vigneshr@ti.com>
 Subject: Re: [PATCH v3] mtd: spi-nor: keep lock bits if they are non-volatile
-In-Reply-To: <e56c5f60-2f59-f913-6eea-3bf8dd4c0774@microchip.com>
+In-Reply-To: <523c3645-e37d-5d86-ba91-5c1be9e3881e@ti.com>
 References: <20200327155939.13153-1-michael@walle.cc>
- <e56c5f60-2f59-f913-6eea-3bf8dd4c0774@microchip.com>
+ <523c3645-e37d-5d86-ba91-5c1be9e3881e@ti.com>
 User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <a82d1ce203383af149ed77c5fd6c8985@walle.cc>
+Message-ID: <fb33aa707744ad6c25a4d332e7d73c58@walle.cc>
 X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200930_183854_313042_8E18D707 
-X-CRM114-Status: GOOD (  22.33  )
+X-CRM114-CacheID: sfid-20200930_185141_618619_C0BB4385 
+X-CRM114-Status: GOOD (  27.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,106 +79,143 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, richard@nod.at, linux-kernel@vger.kernel.org,
- boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
- miquel.raynal@bootlin.com
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@collabora.com>, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Tudor,
-
->> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
->> index cc68ea84318e..fd1c36d70a13 100644
->> --- a/drivers/mtd/spi-nor/core.c
->> +++ b/drivers/mtd/spi-nor/core.c
->> @@ -2916,20 +2916,38 @@ static int spi_nor_quad_enable(struct spi_nor 
->> *nor)
->>  }
+Am 2020-09-30 12:35, schrieb Vignesh Raghavendra:
+[..]
+>> Signed-off-by: Michael Walle <michael@walle.cc>
+>> ---
+>> changes since v2:
+>>  - add Kconfig option to be able to retain legacy behaviour
+>>  - rebased the patch due to the spi-nor rewrite
+>>  - dropped the Fixes: tag, it doens't make sense after the spi-nor 
+>> rewrite
+>>  - mention commit 3e0930f109e76 which further modified the unlock
+>>    behaviour.
 >> 
->>  /**
->> - * spi_nor_unlock_all() - Unlocks the entire flash memory array.
->> + * spi_nor_global_unprotect() - Perform a global unprotect of the 
->> memory area.
->>   * @nor:	pointer to a 'struct spi_nor'.
->>   *
->>   * Some SPI NOR flashes are write protected by default after a 
->> power-on reset
->>   * cycle, in order to avoid inadvertent writes during power-up. 
->> Backward
->>   * compatibility imposes to unlock the entire flash memory array at 
->> power-up
->> - * by default.
->> + * by default. Do it only for flashes where the block protection bits
->> + * are volatile, this is indicated by SNOR_F_NEED_UNPROTECT.
->> + *
->> + * We cannot use spi_nor_unlock(nor->params.size) here because there 
->> are
->> + * legacy devices (eg. AT25DF041A) which need a "global unprotect" 
->> command.
->> + * This is done by writing 0b0x0000xx to the status register. This 
->> will also
->> + * work for all other flashes which have these bits mapped to BP0 to 
->> BP3.
->> + * The top most bit is ususally some kind of lock bit for the block
->> + * protection bits.
->>   */
->> -static int spi_nor_unlock_all(struct spi_nor *nor)
->> +static int spi_nor_global_unprotect(struct spi_nor *nor)
->>  {
->> -	if (nor->flags & SNOR_F_HAS_LOCK)
->> -		return spi_nor_unlock(&nor->mtd, 0, nor->params->size);
->> +	int ret;
+>> changes since v1:
+>>  - completely rewrote patch, the first version used a device tree flag
 >> 
->> -	return 0;
->> +	dev_dbg(nor->dev, "unprotecting entire flash\n");
->> +	ret = spi_nor_read_sr(nor, nor->bouncebuf);
->> +	if (ret)
->> +		return ret;
->> +
->> +	nor->bouncebuf[0] &= ~SR_GLOBAL_UNPROTECT_MASK;
->> +
->> +	/*
->> +	 * Don't use spi_nor_write_sr1_and_check() because writing the 
->> status
->> +	 * register might fail if the flash is hardware write protected.
->> +	 */
->> +	return spi_nor_write_sr(nor, nor->bouncebuf, 1);
->>  }
+>>  drivers/mtd/spi-nor/Kconfig | 35 +++++++++++++++++++++++++++++
+>>  drivers/mtd/spi-nor/atmel.c | 24 +++++++++++++-------
+>>  drivers/mtd/spi-nor/core.c  | 44 
+>> ++++++++++++++++++++++++++++---------
+>>  drivers/mtd/spi-nor/core.h  |  6 +++++
+>>  drivers/mtd/spi-nor/esmt.c  |  6 ++---
+>>  drivers/mtd/spi-nor/intel.c |  6 ++---
+>>  drivers/mtd/spi-nor/sst.c   | 21 +++++++++---------
+>>  include/linux/mtd/spi-nor.h |  6 +++++
+>>  8 files changed, 114 insertions(+), 34 deletions(-)
+>> 
+>> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+>> index 6e816eafb312..647de17c81e2 100644
+>> --- a/drivers/mtd/spi-nor/Kconfig
+>> +++ b/drivers/mtd/spi-nor/Kconfig
+>> @@ -24,6 +24,41 @@ config MTD_SPI_NOR_USE_4K_SECTORS
+>>  	  Please note that some tools/drivers/filesystems may not work with
+>>  	  4096 B erase size (e.g. UBIFS requires 15 KiB as a minimum).
+>> 
+>> +choice
+>> +	prompt "Write protection at boot"
+>> +	default MTD_SPI_NOR_WP_DISABLE
 > 
-> This won't work for all the flashes. You use a GENMASK(5, 2) to clear
-> the Status Register even for BP0-2 flashes and you end up clearing 
-> BIT(5)
-> which can lead to side effects.
+> These choice control how BP0-X bits are manipulated on boot. Hence, to
+> be consistent should use Block Protection (BP) terminology throughout.
 > 
-> We should instead introduce a nor->params->locking_ops->global_unlock() 
-> hook
-> for the flashes that have special opcodes that unlock all the flash 
-> blocks,
-> or for the flashes that deviate from the "clear just your BP bits" 
-> rule.
+> This would also be inline with most flash datasheets which also use 
+> term BP
 
-Wouldn't it make more sense to just set params->locking_ops for these 
-flashes
-to different functions? or even provide a spi_nor_global_unprotect_ops 
-in
-core.c and these flashes will just set them. there is no individual 
-sector
-range lock for these chips. just a lock all or nothing.
+Where should I mention the BP bits? In the choice or in the help text.
+I tried to keep the choice prompt as easy to understand as possible, so 
+an
+user who doesn't know anything about how the write protection actually 
+works
+can still make that choice (without first reading a datasheet). Also 
+keep in
+mind, that there is also the per sector locking. Wouldn't this option 
+also
+apply to that?
 
-If it is more common and not just one vendor it might also make sense to 
-add
-a seperate flag which will then set the locking ops to
-spi_nor_global_unprotect_ops, also it seems that there have to be two 
-writes
-to the status register, one to clear SPRL and then one to clear the BP 
-bits.
-See for example [1] Table 9-2. I'll have to go through the datasheets 
-again
-to see what flashes just have a global (un)protect.
+Therefore, I'd mention in the help text, that (currently) the BP bits 
+are
+affected.
 
-[1] https://www.adestotech.com/wp-content/uploads/doc3668.pdf
+>> +
+>> +config MTD_SPI_NOR_WP_DISABLE
+>> +	bool "Disable WP on any flashes (legacy behaviour)"
+>> +	help
+>> +	  This option disables the write protection on any SPI flashes at
+>> +	  boot-up.
+>> +
+>> +	  Don't use this if you intent to use the write protection of your
+>> +	  SPI flash. This is only to keep backwards compatibility.
+>> +
+>> +config MTD_SPI_NOR_WP_DISABLE_ON_VOLATILE
+>> +	bool "Disable WP on flashes w/ volatile protection bits"
+>> +	help
+>> +	  Some SPI flashes have volatile block protection bits, ie. after a
+>> +	  power-up or a reset the flash is write protected by default.
+>> +
+>> +	  This option disables the write protection for these kind of 
+>> flashes
+>> +	  while keeping it enabled for any other SPI flashes which have
+>> +	  non-volatile block protection bits.
+>> +
+>> +	  If you are unsure, select this option.
+>> +
+>> +config MTD_SPI_NOR_WP_KEEP
+>> +	bool "Keep write protection as is"
+>> +	help
+>> +	  If you select this option the write protection of any SPI flashes
+>> +	  will not be changed. If your flash is write protected or will be
+>> +	  automatically write protected after power-up you have to manually
+>> +	  unlock it before you are able to write to it.
+>> +
+>> +endchoice
+>> +
+>>  source "drivers/mtd/spi-nor/controllers/Kconfig"
+>> 
+>>  endif # MTD_SPI_NOR
+> 
+> [...]
+> 
+>> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+>> index 6f2f6b27173f..9a33c023717f 100644
+>> --- a/drivers/mtd/spi-nor/core.h
+>> +++ b/drivers/mtd/spi-nor/core.h
+>> @@ -26,6 +26,7 @@ enum spi_nor_option_flags {
+>>  	SNOR_F_HAS_SR_TB_BIT6	= BIT(11),
+>>  	SNOR_F_HAS_4BIT_BP      = BIT(12),
+>>  	SNOR_F_HAS_SR_BP3_BIT6  = BIT(13),
+>> +	SNOR_F_NEED_UNPROTECT	= BIT(14),
+>>  };
+>> 
+>>  struct spi_nor_read_command {
+>> @@ -311,6 +312,11 @@ struct flash_info {
+>>  					 * BP3 is bit 6 of status register.
+>>  					 * Must be used with SPI_NOR_4BIT_BP.
+>>  					 */
+>> +#define SPI_NOR_UNPROTECT	BIT(19)	/*
+>> +					 * Flash is write-protected after
+>> +					 * power-up and needs a global
+>> +					 * unprotect.
+>> +					 */
+>> 
+> 
+> It would be better to name the flag to indicate BP bits are volatile or
+> powers up locked instead of SPI_NOR_UNPROTECT. This makes it easier to
+> understand what this flag means wrt flash HW feature. Maybe:
+> 
+> SPI_NOR_LOCKED_ON_POWER_UP or SPI_NOR_BP_IS_VOLATILE
+
+SPI_NOR_BP_IS_VOLATILE sounds good to me.
 
 -michael
 
