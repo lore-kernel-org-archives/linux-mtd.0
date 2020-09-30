@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-13.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24D2EC4727C
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 19:03:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DBCF2C4727C
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 19:04:35 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9E22D2084C
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 19:03:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7BDED2084C
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 19:04:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iAa71L50";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="lolPSXAo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E22D2084C
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="wk5F0ZWl";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="zSmFO/gS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7BDED2084C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,61 +26,62 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=5BtEP8pxfnbeUCgyY3YLNrEM5aZa1iqvuV5G+1PPHGY=; b=iAa71L50reuDVUS/yWsaV28EJ
-	xLjMOye3WHFo1bRCcyIP6/EdupNfntZ1QXQIzF9202Uytr5A9LlMr0JcGUlegZmDNb0wi9Ylw7/gG
-	iFnSrsTxV+GK1Am0mxR6ZVsXteknAQmnZYX130pXGJhBFc0aRmrpKtyJ5OEeYysH6Xid9EykFweY7
-	fJqxqam92POeLxEtlRs1u8PHm9PRj0g1IWMbM8c6293VOcev5/Rm4vglyomI5BXHyZFvkCzVINMgc
-	RxQ4ZPsunmaRFBaYufpD2l7Jyo9kis1aYON1+U200om1q7CKXzHuw44I7jGvwbaYl46qNUG1AKlDJ
-	bK5DeFhBw==;
+	 bh=SLM8RHQiXM3pPLvpkx27WiZghOogDj07MOP5X6ffjIk=; b=wk5F0ZWlr7crC1PdFfswevtkb
+	W9y5HttZ5NG9+AItipA4zAY0fch8c8tQbWfle/3WR8QMjNxpdYXiCi+rc+zvZoDm99zlD9fmjD39x
+	C+Nog512m6JKyFW1qQj9QBk754/ie05C/4qY7REbZdT2s+sgJHkrc3dJa11V5WNWqKMUm/b4t8CLa
+	k/cz3HfWiyfjHj0zyXpXgxpkB80hpYWk+70qbwuBB3AUA7anWxTIAOBes3s06TC+Juyj1gdezZOIv
+	AR6NOIrCA6h//oGpoW0TuqxtLW15V5rVdAVsRoqziQhSnngtBm1oEcshSdlJd6KawmPCA5jGy+8Y3
+	89K7cSDPw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kNhM6-0001lu-7i; Wed, 30 Sep 2020 19:01:34 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1kNhNn-0002ZC-TF; Wed, 30 Sep 2020 19:03:20 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kNhIw-0000Em-Rk
- for linux-mtd@lists.infradead.org; Wed, 30 Sep 2020 18:58:21 +0000
+ id 1kNhJ1-0000HR-Kc
+ for linux-mtd@lists.infradead.org; Wed, 30 Sep 2020 18:58:24 +0000
 Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08UIwDlm022485;
- Wed, 30 Sep 2020 13:58:13 -0500
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08UIwJEP118553;
+ Wed, 30 Sep 2020 13:58:19 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1601492293;
- bh=yb2f4zhwSPbZ+G7pDn3MRF5srho0p8p/uLer1fxEBxc=;
+ s=ti-com-17Q1; t=1601492299;
+ bh=ggkX9njyu+sMM5j73ijT4N1kdfn4EFGMyxo0PBQqmks=;
  h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=lolPSXAoJjv+04QNCc7gTx5RHcbM81RR/k+saq/12aKZ1SxbECcCMuwbUE6BUBVWa
- DtTSGviY0GXPgNuTpHWYIbRfqJGYB4f78Rhu/BwhO7ldid6aQPJ1EdUdt9/TLAgKTv
- ek8J2lmDOzglkDDPY1A8R2yZZKF6T2DL+zos2jKc=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08UIwDfE081674
+ b=zSmFO/gS7p/ibd8pleQNFY5UCCHq6Vd9Os3+Ub8fyIgjP6zm18dZU6uelZ4nlQmHa
+ Qdovz1i24oG3a5D7Y3lg+QObbgEEOpy36CtRLs7D8FAVSmlGKVbKE8emCvp1wL81ZG
+ SZtPZHdMkoEUkIdlix+Kzue3iU7k3PuYbWr7sgug=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08UIwJ05081944
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 30 Sep 2020 13:58:13 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ Wed, 30 Sep 2020 13:58:19 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
- Sep 2020 13:58:13 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ Sep 2020 13:58:19 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 30 Sep 2020 13:58:13 -0500
+ Frontend Transport; Wed, 30 Sep 2020 13:58:19 -0500
 Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
  [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08UIvX3L007008;
- Wed, 30 Sep 2020 13:58:10 -0500
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08UIvX3N007008;
+ Wed, 30 Sep 2020 13:58:16 -0500
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
  <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
  Raghavendra <vigneshr@ti.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v14 12/15] mtd: spi-nor: core: perform a Soft Reset on shutdown
-Date: Thu, 1 Oct 2020 00:27:29 +0530
-Message-ID: <20200930185732.6201-13-p.yadav@ti.com>
+Subject: [PATCH v14 14/15] mtd: spi-nor: spansion: add support for Cypress
+ Semper flash
+Date: Thu, 1 Oct 2020 00:27:31 +0530
+Message-ID: <20200930185732.6201-15-p.yadav@ti.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200930185732.6201-1-p.yadav@ti.com>
 References: <20200930185732.6201-1-p.yadav@ti.com>
 MIME-Version: 1.0
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200930_145819_046055_1FDF1503 
-X-CRM114-Status: GOOD (  16.09  )
+X-CRM114-CacheID: sfid-20200930_145823_922288_CD48622C 
+X-CRM114-Status: GOOD (  28.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,101 +100,203 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Perform a Soft Reset on shutdown on flashes that support it so that the
-flash can be reset to its initial state and any configurations made by
-spi-nor (given that they're only done in volatile registers) will be
-reset. This will hand back the flash in pristine state for any further
-operations on it.
+The Cypress Semper flash is an xSPI compliant octal DTR flash. Add
+support for using it in octal DTR mode.
+
+The flash by default boots in a hybrid sector mode. But the sector map
+table on the part I had was programmed incorrectly and the SMPT values
+on the flash don't match the public datasheet. Specifically, in some
+places erase type 3 was used instead of 4. In addition, the region sizes
+were incorrect in some places. So, for testing I set CFR3N[3] to enable
+uniform sector sizes. Since the uniform sector mode bit is a
+non-volatile bit, this series does not change it to avoid making any
+permanent changes to the flash configuration. The correct data to
+implement a fixup is not available right now and will be done in a
+follow-up patch if needed.
 
 Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/core.c  | 45 +++++++++++++++++++++++++++++++++++++
- include/linux/mtd/spi-nor.h |  2 ++
- 2 files changed, 47 insertions(+)
+ drivers/mtd/spi-nor/spansion.c | 160 +++++++++++++++++++++++++++++++++
+ 1 file changed, 160 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index b42d59ab2724..9de811b33125 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -40,6 +40,9 @@
+diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+index 8429b4af999a..dc6b14aba405 100644
+--- a/drivers/mtd/spi-nor/spansion.c
++++ b/drivers/mtd/spi-nor/spansion.c
+@@ -8,6 +8,161 @@
  
- #define SPI_NOR_MAX_ADDR_WIDTH	4
+ #include "core.h"
  
-+#define SPI_NOR_SRST_SLEEP_MIN 200
-+#define SPI_NOR_SRST_SLEEP_MAX 400
++#define SPINOR_OP_RD_ANY_REG			0x65	/* Read any register */
++#define SPINOR_OP_WR_ANY_REG			0x71	/* Write any register */
++#define SPINOR_REG_CYPRESS_CFR2V		0x00800003
++#define SPINOR_REG_CYPRESS_CFR2V_MEMLAT_11_24	0xb
++#define SPINOR_REG_CYPRESS_CFR3V		0x00800004
++#define SPINOR_REG_CYPRESS_CFR3V_PGSZ		BIT(4) /* Page size. */
++#define SPINOR_REG_CYPRESS_CFR5V		0x00800006
++#define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN	0x3
++#define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS	0
++#define SPINOR_OP_CYPRESS_RD_FAST		0xee
 +
- /**
-  * spi_nor_get_cmd_ext() - Get the command opcode extension based on the
-  *			   extension type.
-@@ -3175,6 +3178,45 @@ static int spi_nor_init(struct spi_nor *nor)
- 	return 0;
- }
- 
-+static void spi_nor_soft_reset(struct spi_nor *nor)
++/**
++ * spi_nor_cypress_octal_dtr_enable() - Enable octal DTR on Cypress flashes.
++ * @nor:		pointer to a 'struct spi_nor'
++ * @enable:              whether to enable or disable Octal DTR
++ *
++ * This also sets the memory access latency cycles to 24 to allow the flash to
++ * run at up to 200MHz.
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++static int spi_nor_cypress_octal_dtr_enable(struct spi_nor *nor, bool enable)
 +{
 +	struct spi_mem_op op;
++	u8 *buf = nor->bouncebuf;
 +	int ret;
 +
-+	op = (struct spi_mem_op)SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_SRSTEN, 0),
-+			SPI_MEM_OP_NO_DUMMY,
-+			SPI_MEM_OP_NO_ADDR,
-+			SPI_MEM_OP_NO_DATA);
++	if (enable) {
++		/* Use 24 dummy cycles for memory array reads. */
++		ret = spi_nor_write_enable(nor);
++		if (ret)
++			return ret;
 +
-+	spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++		*buf = SPINOR_REG_CYPRESS_CFR2V_MEMLAT_11_24;
++		op = (struct spi_mem_op)
++			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 1),
++				   SPI_MEM_OP_ADDR(3, SPINOR_REG_CYPRESS_CFR2V,
++						   1),
++				   SPI_MEM_OP_NO_DUMMY,
++				   SPI_MEM_OP_DATA_OUT(1, buf, 1));
 +
-+	ret = spi_mem_exec_op(nor->spimem, &op);
-+	if (ret) {
-+		dev_warn(nor->dev, "Software reset failed: %d\n", ret);
-+		return;
++		ret = spi_mem_exec_op(nor->spimem, &op);
++		if (ret) {
++			dev_dbg(nor->dev,
++				"failed to set default memory latency value: %d\n",
++				 ret);
++			return ret;
++		}
++
++		ret = spi_nor_wait_till_ready(nor);
++		if (ret)
++			return ret;
++
++		nor->read_dummy = 24;
 +	}
 +
-+	op = (struct spi_mem_op)SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_SRST, 0),
-+			SPI_MEM_OP_NO_DUMMY,
-+			SPI_MEM_OP_NO_ADDR,
-+			SPI_MEM_OP_NO_DATA);
++	/* Set/unset the octal and DTR enable bits. */
++	ret = spi_nor_write_enable(nor);
++	if (ret)
++		return ret;
 +
-+	spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++	if (enable)
++		*buf = SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN;
++	else
++		*buf = SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS;
++
++	op = (struct spi_mem_op)
++		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 1),
++			   SPI_MEM_OP_ADDR(enable ? 3 : 4,
++					   SPINOR_REG_CYPRESS_CFR5V,
++					   1),
++			   SPI_MEM_OP_NO_DUMMY,
++			   SPI_MEM_OP_DATA_OUT(1, buf, 1));
++
++	if (!enable)
++		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
 +
 +	ret = spi_mem_exec_op(nor->spimem, &op);
-+	if (ret) {
-+		dev_warn(nor->dev, "Software reset failed: %d\n", ret);
-+		return;
-+	}
++	if (ret)
++		return ret;
 +
-+	/*
-+	 * Software Reset is not instant, and the delay varies from flash to
-+	 * flash. Looking at a few flashes, most range somewhere below 100
-+	 * microseconds. So, sleep for a range of 200-400 us.
-+	 */
-+	usleep_range(SPI_NOR_SRST_SLEEP_MIN, SPI_NOR_SRST_SLEEP_MAX);
++	/* Give some time for the mode change to take place. */
++	usleep_range(400, 600);
++
++	return 0;
 +}
 +
- /* mtd resume handler */
- static void spi_nor_resume(struct mtd_info *mtd)
- {
-@@ -3194,6 +3236,9 @@ void spi_nor_restore(struct spi_nor *nor)
- 	if (nor->addr_width == 4 && !(nor->flags & SNOR_F_4B_OPCODES) &&
- 	    nor->flags & SNOR_F_BROKEN_RESET)
- 		nor->params->set_4byte_addr_mode(nor, false);
++static void s28hs512t_default_init(struct spi_nor *nor)
++{
++	nor->params->octal_dtr_enable = spi_nor_cypress_octal_dtr_enable;
++}
 +
-+	if (nor->flags & SNOR_F_SOFT_RESET)
-+		spi_nor_soft_reset(nor);
- }
- EXPORT_SYMBOL_GPL(spi_nor_restore);
++static void s28hs512t_post_sfdp_fixup(struct spi_nor *nor)
++{
++	/*
++	 * On older versions of the flash the xSPI Profile 1.0 table has the
++	 * 8D-8D-8D Fast Read opcode as 0x00. But it actually should be 0xEE.
++	 */
++	if (nor->params->reads[SNOR_CMD_READ_8_8_8_DTR].opcode == 0)
++		nor->params->reads[SNOR_CMD_READ_8_8_8_DTR].opcode =
++			SPINOR_OP_CYPRESS_RD_FAST;
++
++	/* This flash is also missing the 4-byte Page Program opcode bit. */
++	spi_nor_set_pp_settings(&nor->params->page_programs[SNOR_CMD_PP],
++				SPINOR_OP_PP_4B, SNOR_PROTO_1_1_1);
++	/*
++	 * Since xSPI Page Program opcode is backward compatible with
++	 * Legacy SPI, use Legacy SPI opcode there as well.
++	 */
++	spi_nor_set_pp_settings(&nor->params->page_programs[SNOR_CMD_PP_8_8_8_DTR],
++				SPINOR_OP_PP_4B, SNOR_PROTO_8_8_8_DTR);
++
++	/*
++	 * The xSPI Profile 1.0 table advertises the number of additional
++	 * address bytes needed for Read Status Register command as 0 but the
++	 * actual value for that is 4.
++	 */
++	nor->params->rdsr_addr_nbytes = 4;
++}
++
++static int s28hs512t_post_bfpt_fixup(struct spi_nor *nor,
++				     const struct sfdp_parameter_header *bfpt_header,
++				     const struct sfdp_bfpt *bfpt,
++				     struct spi_nor_flash_parameter *params)
++{
++	/*
++	 * The BFPT table advertises a 512B page size but the page size is
++	 * actually configurable (with the default being 256B). Read from
++	 * CFR3V[4] and set the correct size.
++	 */
++	struct spi_mem_op op =
++		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RD_ANY_REG, 1),
++			   SPI_MEM_OP_ADDR(3, SPINOR_REG_CYPRESS_CFR3V, 1),
++			   SPI_MEM_OP_NO_DUMMY,
++			   SPI_MEM_OP_DATA_IN(1, nor->bouncebuf, 1));
++	int ret;
++
++	ret = spi_mem_exec_op(nor->spimem, &op);
++	if (ret)
++		return ret;
++
++	if (nor->bouncebuf[0] & SPINOR_REG_CYPRESS_CFR3V_PGSZ)
++		params->page_size = 512;
++	else
++		params->page_size = 256;
++
++	return 0;
++}
++
++static struct spi_nor_fixups s28hs512t_fixups = {
++	.default_init = s28hs512t_default_init,
++	.post_sfdp = s28hs512t_post_sfdp_fixup,
++	.post_bfpt = s28hs512t_post_bfpt_fixup,
++};
++
+ static int
+ s25fs_s_post_bfpt_fixups(struct spi_nor *nor,
+ 			 const struct sfdp_parameter_header *bfpt_header,
+@@ -104,6 +259,11 @@ static const struct flash_info spansion_parts[] = {
+ 			     SPI_NOR_4B_OPCODES) },
+ 	{ "cy15x104q",  INFO6(0x042cc2, 0x7f7f7f, 512 * 1024, 1,
+ 			      SPI_NOR_NO_ERASE) },
++	{ "s28hs512t",   INFO(0x345b1a,      0, 256 * 1024, 256,
++			     SECT_4K | SPI_NOR_OCTAL_DTR_READ |
++			      SPI_NOR_OCTAL_DTR_PP)
++	  .fixups = &s28hs512t_fixups,
++	},
+ };
  
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index cd549042c53d..299685d15dc2 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -51,6 +51,8 @@
- #define SPINOR_OP_CLFSR		0x50	/* Clear flag status register */
- #define SPINOR_OP_RDEAR		0xc8	/* Read Extended Address Register */
- #define SPINOR_OP_WREAR		0xc5	/* Write Extended Address Register */
-+#define SPINOR_OP_SRSTEN	0x66	/* Software Reset Enable */
-+#define SPINOR_OP_SRST		0x99	/* Software Reset */
- 
- /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
- #define SPINOR_OP_READ_4B	0x13	/* Read data bytes (low frequency) */
+ static void spansion_post_sfdp_fixups(struct spi_nor *nor)
 -- 
 2.28.0
 
