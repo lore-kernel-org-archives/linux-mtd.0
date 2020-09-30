@@ -2,77 +2,86 @@ Return-Path: <SRS0=o/Ze=DH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D70A8C4727E
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 09:36:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55D61C4727E
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 09:37:23 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7B4D62074A
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 09:36:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C4D382074A
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 09:37:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fmAosxhB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B4D62074A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DYInxTqM";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="KQ+ZYMwV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C4D382074A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:Reply-To:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bAuUBGm0VmPGUqcMedJQURGMAudYbY3doDE2jnChmWE=; b=fmAosxhBk1XN7o
-	cM9aB07MSXwQR2wExHBrqq7JNB+IIrbDjDGWwZ2wXIXMBRukS0nzcF/iKl2hYERTzxJ6nIDbZoUs3
-	LADkvMRItN/lVbD6WVwT+NS+cJh5MQiaw9KPouim3a/xTt3Jcb4O1WRxpcdsr1zQ0Ul16rXkdK9TX
-	PzV6Mr2td3zVkPkrQA09GAvz1SzA/YQSOtHCEoSl8q7BpgPvtP/V1Ej+Jz3PmOAfZQ7WkYfmPDS13
-	voTihrRKOYp9/QE8O0j1/+0auiV40F4u7Wdic4O6+ywcoZ1nZIuyJshGGMe1b7Q4UAGduuYPwB0Qo
-	TWDCC42gkKbufjMc6oiQ==;
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=aozqFh+MaayP/fuTF73GI8pG2LsK3tARkJ/RtiClta4=; b=DYInxTqM4WCHRXBLILeOhL3/p
+	k07PCqfxrHKyEALE4fi4JCUXr5uERHqUmK8qhDL/y4nvq46zcaUgvBPBno6Cz0/FaX4YD6JycYBbe
+	5czt+jL0S9eFXFxd3vU8Xq1ZVNib/d287bjZGHZ/OFXtYFy4D3nLxeiU3fuYLGDlIiNz8ac9PPtD/
+	cxyCni8J1ZM7dbELDKIu9a6Op4qsoBb+/wGzOjW3YQajuh8Eu4hCNZyiZbF6FVb3KPDtmVG3N5Ysi
+	A3rMaxi2FiWUAN+0zpfSytqfVCSVmEWTx7QyVBAeOy6z7btWS4Tc702w+W6Chf3CNfdXLGkxALzLP
+	ydWrXi0Hw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kNYWC-0006Us-4V; Wed, 30 Sep 2020 09:35:24 +0000
-Received: from mga18.intel.com ([134.134.136.126])
+	id 1kNYXg-00073S-C3; Wed, 30 Sep 2020 09:36:56 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kNYW8-0006TD-Te
- for linux-mtd@lists.infradead.org; Wed, 30 Sep 2020 09:35:22 +0000
-IronPort-SDR: KHh0N8sr0C8yRm3ii0+Yt8ABccHuPclVPKaRkSxviEVAi+rhcuT4RfaQoleLHlW6SHmRvff81q
- BB2OMxUjK7LA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="150185720"
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; d="scan'208";a="150185720"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Sep 2020 02:35:14 -0700
-IronPort-SDR: CvxftynzD8Grt40D+c09NMwSaYEOd8YaU4fAMki1iGRHXJSju2rfvoKJ/WBc9oHv3mDgTOH5lM
- 5GX1cFQhsJ5Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; d="scan'208";a="515010272"
-Received: from linux.intel.com ([10.54.29.200])
- by fmsmga005.fm.intel.com with ESMTP; 30 Sep 2020 02:35:13 -0700
-Received: from [10.226.38.24] (unknown [10.226.38.24])
- by linux.intel.com (Postfix) with ESMTP id 87E115807A3;
- Wed, 30 Sep 2020 02:35:09 -0700 (PDT)
-Subject: Re: [PATCH v14 0/2] mtd: rawnand: Add NAND controller support on
- Intel LGM SoC
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-References: <20200924084842.41741-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200928162550.30bbce71@xps13>
-From: "Ramuthevar, Vadivel MuruganX"
- <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <ef7ba9ba-b6c1-7a94-8320-b8023f721be2@linux.intel.com>
-Date: Wed, 30 Sep 2020 17:35:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ id 1kNYXd-00072b-O1
+ for linux-mtd@lists.infradead.org; Wed, 30 Sep 2020 09:36:54 +0000
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08U9aoRt042843;
+ Wed, 30 Sep 2020 04:36:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1601458610;
+ bh=sFPkPqeYpg9a/lBkzRRN9aDvogNT35tbuNNhoeQ3PUU=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=KQ+ZYMwV6+HJ1lCuvzMY5WXUE/oXOqZquFSNDODvW5SOpcJgRScxuCiuOoKEhsnv+
+ Q8q/1DK/36wA+mbjnYkLzytOld13HuRcCPvlGQW3GpdvNJ/xQN5u5SIkj5s8lDUOU+
+ TSi3fPvxS9WvihLdmihwR/SrmsXFnlMyvu4jbih4=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08U9aoHg026202;
+ Wed, 30 Sep 2020 04:36:50 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
+ Sep 2020 04:36:49 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 30 Sep 2020 04:36:49 -0500
+Received: from [10.250.235.166] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08U9akFP083973;
+ Wed, 30 Sep 2020 04:36:47 -0500
+Subject: Re: [RESEND PATCH 1/2] mtd: spi-nor: do not touch TB bit without
+ SPI_NOR_HAS_TB
+To: Ivan Mikhaylov <i.mikhaylov@yadro.com>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>
+References: <20200921112450.4824-1-i.mikhaylov@yadro.com>
+ <20200921112450.4824-2-i.mikhaylov@yadro.com>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <9bfb10df-64d8-4a5e-b0ad-a8b5f4efc56f@ti.com>
+Date: Wed, 30 Sep 2020 15:06:46 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200928162550.30bbce71@xps13>
+In-Reply-To: <20200921112450.4824-2-i.mikhaylov@yadro.com>
 Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200930_053521_104846_C127FF24 
-X-CRM114-Status: GOOD (  21.55  )
+X-CRM114-CacheID: sfid-20200930_053653_881331_A05D2BBE 
+X-CRM114-Status: GOOD (  19.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,57 +93,62 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
-Cc: cheol.yong.kim@intel.com, devicetree@vger.kernel.org,
- andriy.shevchenko@intel.com, christophe.kerello@st.com, vigneshr@ti.com,
- arnd@arndb.de, hauke.mehrtens@intel.com, richard@nod.at,
- brendanhiggins@google.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org,
- linux-mips@vger.kernel.org, boris.brezillon@collabora.com,
- linux-mtd@lists.infradead.org, tglx@linutronix.de, qi-ming.wu@intel.com,
- robert.jarzmik@free.fr, piotrs@cadence.com
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWlxdWVsLAoKT24gMjgvOS8yMDIwIDEwOjI1IHBtLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+
-IEhlbGxvLAo+IAo+ICJSYW11dGhldmFyLFZhZGl2ZWwgTXVydWdhblgiCj4gPHZhZGl2ZWwubXVy
-dWdhbngucmFtdXRoZXZhckBsaW51eC5pbnRlbC5jb20+IHdyb3RlIG9uIFRodSwgMjQgU2VwIDIw
-MjAKPiAxNjo0ODo0MCArMDgwMDoKPiAKPj4gVGhpcyBwYXRjaCBhZGRzIHRoZSBuZXcgSVAgb2Yg
-TmFuZCBGbGFzaCBDb250cm9sbGVyKE5GQykgc3VwcG9ydAo+PiBvbiBJbnRlbCdzIExpZ2h0bmlu
-ZyBNb3VudGFpbihMR00pIFNvQy4KPj4KPj4gRE1BIGlzIHVzZWQgZm9yIGJ1cnN0IGRhdGEgdHJh
-bnNmZXIgb3BlcmF0aW9uLCBhbHNvIERNQSBIVyBzdXBwb3J0cwo+PiBhbGlnbmVkIDMyYml0IG1l
-bW9yeSBhZGRyZXNzIGFuZCBhbGlnbmVkIGRhdGEgYWNjZXNzIGJ5IGRlZmF1bHQuCj4+IERNQSBi
-dXJzdCBvZiA4IHN1cHBvcnRlZC4gRGF0YSByZWdpc3RlciB1c2VkIHRvIHN1cHBvcnQgdGhlIHJl
-YWQvd3JpdGUKPj4gb3BlcmF0aW9uIGZyb20vdG8gZGV2aWNlLgo+Pgo+PiBOQU5EIGNvbnRyb2xs
-ZXIgYWxzbyBzdXBwb3J0cyBpbi1idWlsdCBIVyBFQ0MgZW5naW5lLgo+Pgo+PiBOQU5EIGNvbnRy
-b2xsZXIgZHJpdmVyIGltcGxlbWVudHMgLT5leGVjX29wKCkgdG8gcmVwbGFjZSBsZWdhY3kgaG9v
-a3MsCj4+IHRoZXNlIHNwZWNpZmljIGNhbGwtYmFjayBtZXRob2QgdG8gZXhlY3V0ZSBOQU5EIG9w
-ZXJhdGlvbnMuCj4+Cj4+IFRoYW5rcyBNaXF1ZWwsIEJvcmlzLCBBbmR5LCBBcm5kIGFuZCBSb2Ig
-Zm9yIHRoZSByZXZpZXcgY29tbWVudHMgYW5kIHN1Z2dlc3Rpb25zLgo+PiAtLS0KPj4gdjE0Ogo+
-PiAgICAtIEFkZHJlc3MgQW5keSdzIHJldmlldyBjb21tZW50cwo+PiAgICAtIGFsaWduIHRoZSBo
-ZWFkZXJzIGFuZCByZXZvbWUgRHVwbGljYXRlcwo+PiAgICAtIHJlcGxjYWNlIG51bWVyaWNhbCBj
-b25zdCB2YWx1ZXMgYnkgSFpfUEVSX01IWiBhbmQgVVNFQ19QRVJfU0VDCj4+ICAgICAgZGVmaW5l
-ZCBtYWNyb3MKPj4gICAgLSBhZGQgZGV2X2Vycl9wcm9iZSgpIGFwaSBpbnN0ZWFkIG9mIGxlZ2Fj
-eSBlcnIgY2hlY2sKPj4gICAgLSBhZGQgZ2V0X3VuYWxpZ25lZF9sZTMyKCkgYXBpIGluc3RlYWQg
-b2YgbWFudWFsIGVuZGluZXNzCj4+ICAgIC0gcmVtb3ZlIHJlZHVkZW50IGNoZWNrCj4+ICAgIC0g
-c3BsaXQgdGhlIGxpbmVzIGxvZ2ljYWxseSBpbiBiZXR3ZWVuIGFuZCBhZGQgcmVxdWlyZSBzcGFj
-ZXMKPj4gdjEzOgo+PiAgICAtIEFkZHJlc3MgTWlxdWVsIFJheW5hbCByZXZpZXcgY29tbWVudHMK
-Pj4gICAgLSB1cGRhdGUgdGhlIHJldHVybiB0eXBlIHdpdGggdmFyaWFibGUgJ3JldCcKPj4gICAg
-LSBoYW5kbGUgZXJyIGNoZWNrIHN0YXRlbWVudCBwcm9wZXJseQo+PiAgICAtIGNoYW5nZSB0aGUg
-bmFtaW5nIGNvbnZlbnRpb24gYWxpZ25lZCB3aXRoIHJlY2VudGx5IGNoYW5nZWQgdGhlIG5hbWlu
-Zwo+PiAgICAgIGFyb3VuZCB0aGUgZGF0YSBpbnRlcmZhY2UKPj4gICAgICBkYXRhIHN0cnVjdHVy
-ZSBhbmQgZnVuY3Rpb24gbmFtZXMKPj4gICAgLSByZXBsYWNlIGJ5IGRpdiA4IGluc3RlYWQgb2Yg
-PDw0IGluIGVjYyBjYWxjdWxhdGlvbiBiZXR0ZXIgY29kZSByZWFkYWJpbGl0eQo+PiAgICAtIGhh
-bmRsZSBjaGVja19vbmx5IHByb3Blcmx5IGxpa2UgZXhpc3RpbmcgZHJpdmVycwo+IAo+IEkgYW0g
-c29ycnkgYnV0IHRoZXJlIGFyZSB0d28gdG8gdGhyZWUgY29tbWVudHMgd2hpY2ggeW91IGRpZCBu
-b3QKPiBhZGRyZXNzIG9yIGFkZHJlc3NlZCBwYXJ0aWFsbHkgd2hpbGUgbm90IHNvIGltcGFjdGlu
-ZyBvbiB0aGUgbG9naWMsCj4gY2FuIHlvdSBwbGVhc2UgcmV2aWV3IGFuZCBhZGRyZXNzIHRoZW0g
-YWxsPyAocGxlYXNlIG5vdGUgdGhhdCBJIGNoZWNrZWQKPiB0aGUgcGF0Y2ggYWRkaW5nIHRoZSBk
-cml2ZXIgYmVmb3JlIHRlbGxpbmcgeW91IHRoYXQpLgoKVGhhbmsgeW91IGZvciB5b3VyIGNvbW1l
-bnRzLi4uIQoKU3VyZSwgSSB3aWxsIHJldmlldyBvbmNlIGFnYWluIGFsbCB5b3VyIGNvbW1lbnRz
-IGluIHRoZSBwcmV2aW91cyBwYXRjaCAKc2VudCBpZiBhbnl0aGluZyBpcyBtaXNzZWQgdGhlbiB3
-aWxsIGFkZCBpdCBhbmQgc2VuZCB0aGUgdXBkYXRlZCBwYXRjaC4KClJlZ2FyZHMKVmFkaXZlbAo+
-IAo+IFRoYW5rcywKPiBNaXF1w6hsCj4gCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+
+
+On 9/21/20 4:54 PM, Ivan Mikhaylov wrote:
+> Some chips like macronix don't have TB(Top/Bottom protection)
+> bit in the status register. Do not write tb_mask inside status
+> register, unless SPI_NOR_HAS_TB is present for the chip.
+> 
+
+Not entirely accurate.. Macronix chips have TB bit in config register
+and is OTP and hence should not be touched ideally...
+
+You still need to "read" that bit to determine actual scheme (Top vs
+Bottom). This is needs to be done before 2/2 enables SPI_NOR_HAS_LOCK
+flag for macronix flashes.
+
+> Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
+> ---
+>  drivers/mtd/spi-nor/core.c | 22 ++++++++++++++++------
+>  1 file changed, 16 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index 0369d98b2d12..f9853dd566dc 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -1735,13 +1735,18 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>  			return -EINVAL;
+>  	}
+>  
+> -	status_new = (status_old & ~mask & ~tb_mask) | val;
+> +	if (nor->flags & SNOR_F_HAS_SR_TB)
+> +		status_new = (status_old & ~mask & ~tb_mask) | val;
+> +	else
+> +		status_new = (status_old & ~mask) | val;
+>  
+>  	/* Disallow further writes if WP pin is asserted */
+>  	status_new |= SR_SRWD;
+>  
+
+I guess macronix does not support SR_SRWD right? This needs special
+treatment as well.
+
+So either, macronix.c should implements its own locking ops or convert
+this function in to more generic library so that its suitable to be
+called from macronix.c file while hiding vendor specific stuff in that
+driver,
+
+Regards
+Vignesh
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
