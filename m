@@ -7,146 +7,80 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91B5EC4727F
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 09:13:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AC82C4727F
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 09:25:27 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 093A02071E
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 09:13:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D622520754
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 09:25:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="u9MFcuc9";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="UKnkj+xV";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="RqNuxeXL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 093A02071E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LmOSp2rj";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Ym157Fcq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D622520754
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:References:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=7x6daRONOOrHVEQZL4pmKvMSzk5YXrEIZpVi8dn044M=; b=u9MFcuc9eB7beViynONdrWy87
-	TlYeddXK4BAm70fMyhVZZ1rq6yJR2Bps4sINUTvigLOvYZ6gNEwbUMaFJ5joGGXL+iePzJ65JsD+E
-	uuSn8vboiIJ5Wkd71UQUwlZ+4rEHFdALo3GkiS+NVuIJxJ1dMxTcsJOV3YP0QPR9o89GKxb6DvHih
-	33YiDoMDAHxllnXf8/RBoqldeLFyxeEbXKAlq7hwKlP2IXou6HcRowEIYv8KAUF3scPkP2sZiglJE
-	/nKNstixWYyQCSSK9GUGlN28mmqhEF3uIk7SqXRuaFYWh0Ap8JHWBdmQVLCenBbBWYjXD3qTxxdw4
-	pHpsTYsCA==;
+	 bh=W4Pkhi5pFMNSIpMrcATBSO4hj2KczpgDxomdLPzki0A=; b=LmOSp2rjjKQIbCzuELO2ymaVf
+	83eb4ArH/4YmAOtKgIhUCj4ndozu7gOJ8Ae0zIl0UIqggO/boWnuqACHkP0Y+IAJ7NSTB+mqo//Rq
+	l9Nqa0M+V8TXX8ho7JXrI7B6E9/hXTujDLR17xJe4mpyO33tc6rRa7peOhV6luNG/QrT+APFjdVdt
+	Kha5aHw/SOowDB0OobV+ZGGvQflofS53VXZtjxwzvisJdOSMuWMt719Q0zziiVEIWuu0CC0oanTUH
+	S8JwOoiwHYrCRJCmEb6Q00NlUpMJxVGGGvUsxxrU1ZPrjqfe/YdOcY6EggPtd9iN7+t+5+Ai6h0hE
+	+1iNg6D4g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kNY9w-00074e-Ok; Wed, 30 Sep 2020 09:12:24 +0000
-Received: from esa6.microchip.iphmx.com ([216.71.154.253])
+	id 1kNYL6-00033T-NZ; Wed, 30 Sep 2020 09:23:57 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kNY9u-00073t-1p
- for linux-mtd@lists.infradead.org; Wed, 30 Sep 2020 09:12:22 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1601457141; x=1632993141;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=oV8lFBButuiS0JMIb6X/7vRp9AyRntZh6d0dE+Umksc=;
- b=UKnkj+xVBImQTXp/YxKJqUON8/WX9hA7OvigYs1+0JEuWSZ+/nd29QzI
- d+z/EYONXbx8j3KtppNAf1GT17SIxBiWv+FDI5GDG0fSKZC+OmSl2lReW
- wxKotTvSgmetRp3Sfb5FTbPGafWcbhR/sG4VWE5ql3+TVjAM6RNhRls1t
- EnO0qFpsGPjr08l//gTwk4u0UmqELA7dycqXWyW9dKWrL3DG1M/xDntc2
- RjT67PE35lsvywodHSRQVOG5m4Ce/LyLsrlTfTPXrekwEWo5phgTtV2me
- 5vIMlhNXFdb0yhiW9ofDAIusQe63A3vSyl4EL/nfIJizYqfs82fEbKcWQ A==;
-IronPort-SDR: gjgi/kExCIy/bncSlln1+aAVO/UsSBC/veJ/BQdDS44AzZJ4W8ZGmOsfRUWXQPgyvRuoctnBXM
- 1jF59/6RdGona7//q6r6vdBCxTOXvga7AWgzBz7CB9glelIyr5mvhYZArSqIrrfhhUL6dJiQlo
- vNZ7gKZwvD3KESI+4+x5bDG8mkEdJ8S4ZA7aC2PeNzAiEzGxH3AAdgpENe93HuKE4Ako7BWWWK
- O0TzPWe6rUZ/NI/QQNm/49XMkPjDIiq6C3Za4pja8Ld9BtM24YRjY8v2dsqgl4GxugtENZJOlW
- Ydc=
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; d="scan'208";a="28201720"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 30 Sep 2020 02:12:20 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 30 Sep 2020 02:12:19 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, 
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
- Transport; Wed, 30 Sep 2020 02:12:03 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X46+/M5pCypNSR2wPADHcLG836ypkLsV21bBAOt+rvfrMu7+A731xkpEG2VISdgInZBR75M3jklXKKbj2NnG8bEUyWpebLbmJM/g5EjmPDDInOh3czHbtFWwhcY2nwsEKpPpaxweq4iBKR/X2Q33IdwK+rMDGzbahZlAISDMshk7gCmhifxWU0v5YqPQEDUBIwf2k2GxogtKNAOGPXKXQ9sXkOjnF3sSRI+ptpISj6DdRElQf98q142Q8ICk3dNy0bPTPzLqVwCBnt6gsyrcuKlO07+1ntgTZuWDaKN7ZvuQYvsyAvEraWLvO0GslYHWgv3Pl4IKy8HOOhj0XWdQWA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oV8lFBButuiS0JMIb6X/7vRp9AyRntZh6d0dE+Umksc=;
- b=B1Zbjd/ukKSMOJbKDOz4R9VMH8IBONTB6RSgXqrqqaM1DbZPpSK6YjHrzjhMwbCtiz5g67A0QZn4/vzIvmUNQGvaFnqLjMbRSKiD26r/Xw2Hiu14WkxgjjoQlHyLIxyabdS+4vFZIUgBrXuJ3f2Em4lbIk+51GzargWFKtheuQiknbzw1/Rrk8b7PDP9Cs5fV1fmFSrDiQ3YPsOGKo2oPUHubddgg/j3LUjmsB/pelviHxF4UERnHLtibdV9khJyb5S7DRA3z5GKTDApQNECyLmvaBP846Nd3dKgxB47HXFd5t7r8kL4zZOE5NcfHtceHOMMAw3s4hBd4fQ6JvInQw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oV8lFBButuiS0JMIb6X/7vRp9AyRntZh6d0dE+Umksc=;
- b=RqNuxeXLoj7J+eVKBJ0Ej1X+/A0nehgMc0aS4H4PXUhm3VjfGWG8Uq9MCPpPyrNy3PBxq4r4OjEjz6dVoi3wr6T3SGOvtbNboDrPf12Uva4a505ncgcFViLQ7mR+LE0Wt8pi3BYqfTiTKSHMfuJcyedKbHui7JkUaZ85WR+f2bs=
-Received: from DM5PR11MB1914.namprd11.prod.outlook.com (10.175.91.12) by
- DM5PR11MB1338.namprd11.prod.outlook.com (10.168.103.151) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3412.23; Wed, 30 Sep 2020 09:12:17 +0000
-Received: from DM5PR11MB1914.namprd11.prod.outlook.com
- ([fe80::f44a:f58e:c13b:947a]) by DM5PR11MB1914.namprd11.prod.outlook.com
- ([fe80::f44a:f58e:c13b:947a%4]) with mapi id 15.20.3433.032; Wed, 30 Sep 2020
- 09:12:17 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <p.yadav@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
- <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v13 15/15] mtd: spi-nor: micron-st: allow using
- MT35XU512ABA in Octal DTR mode
-Thread-Topic: [PATCH v13 15/15] mtd: spi-nor: micron-st: allow using
- MT35XU512ABA in Octal DTR mode
-Thread-Index: AQHWlwnK3bG2I0cC4UaUmPIuOZHDFg==
-Date: Wed, 30 Sep 2020 09:12:17 +0000
-Message-ID: <62ad761a-3fcf-07c2-0b3d-0a27d877dcde@microchip.com>
-References: <20200916124418.833-1-p.yadav@ti.com>
- <20200916124418.833-16-p.yadav@ti.com>
-In-Reply-To: <20200916124418.833-16-p.yadav@ti.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ id 1kNYHZ-0001YY-JM
+ for linux-mtd@lists.infradead.org; Wed, 30 Sep 2020 09:20:25 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08U9KFQZ036969;
+ Wed, 30 Sep 2020 04:20:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1601457615;
+ bh=KjQI0q/X3CQA+SID/iPdGho7blBrhggLc2qPiTDB8OU=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=Ym157FcqdT15Etyk5rUOoI/muQYSVb0m3AfN4/AYSk45yzDIdUHKMA9pU6cdehxNa
+ Yd8ZguXLZeStj9eRdmNB4671W5dFYumSedMMQ695ZuM67DL2uddyziV6g8tfeFQZqY
+ 4RJm/UAf/EORjJBdH0T4e/xM2ema1MWJV+6s4srY=
+Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08U9KFkW108162
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Wed, 30 Sep 2020 04:20:15 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
+ Sep 2020 04:20:15 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 30 Sep 2020 04:20:15 -0500
+Received: from [10.250.235.166] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08U9KDVl053420;
+ Wed, 30 Sep 2020 04:20:14 -0500
+Subject: Re: [PATCH v2] mtd: spi-nor: Do not proceed with spi_nor_sr_unlock if
+ WP
+To: Matija Glavinic Pecotic <matija.glavinic-pecotic.ext@nokia.com>,
+ <linux-mtd@lists.infradead.org>, <tudor.ambarus@microchip.com>
+References: <25c209e2-f48e-f4aa-4043-1f259e26a7f1@nokia.com>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <182366fd-dc09-7433-c38c-8ff5bbf31c35@ti.com>
+Date: Wed, 30 Sep 2020 14:50:12 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
-authentication-results: ti.com; dkim=none (message not signed)
- header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [5.13.1.187]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5a160f19-fff7-49a5-66ed-08d86520edbf
-x-ms-traffictypediagnostic: DM5PR11MB1338:
-x-microsoft-antispam-prvs: <DM5PR11MB13382C2B35D580F0738E5085F0330@DM5PR11MB1338.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: daiT/GFinROE4ocFW4c2UKwLJYTDA1TcKfSTECd3cRhLiOyzaxP2rLA7hmIHIWm6v5/xqLf9ljPOsfwegdv0qLdhaBPd8u0GwolFBwrIBCY5XtugZ+hGHc+2Ws0RQd9FvIeM0YPJTzJZMUiSu0at/d4/Mhwjc4NcbhJhYmUJTtvxCKNpqZEuH8M2nWintIVE+MOco6cZhjDV1C3YGPj9EFwfMXaDDnZFhhi5ai/9qjOITc6a0FzXgvPval2iDLphlH7PsAL5YBcz5Eu7kyyvdJwY/deMJUEjjvJVl7y4ZWf6B7oQUY/2uhje9QNLxxXDvcUeozFIHTG0m9jev9W6sviFi/na0zn2L6PyEnSAmME85FzpwhFSHaEr91IpdeDv85ZRTzI/ASO7QXMXWisYc0ZzkZfpaBUrDot3NgrJJHVMJmf42tSKp1s6Q1huA1gS
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:DM5PR11MB1914.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(396003)(39860400002)(136003)(366004)(376002)(346002)(36756003)(6512007)(8676002)(8936002)(86362001)(76116006)(91956017)(478600001)(71200400001)(66946007)(31696002)(110136005)(5660300002)(26005)(54906003)(316002)(186003)(4326008)(6486002)(83380400001)(66446008)(2616005)(66476007)(6506007)(53546011)(64756008)(31686004)(66556008)(2906002)(43740500002);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata: x60I7AAZBoIbJ52COQfyWwT/YfqmfuzLg5bXucY3ZoR6qWCIN+orM3zJnehqPeHDtL4dLabwxsj0pwGkGHm+58wYKtEGefBMm4fiJrBdojcBI7aLu67erfPUJG1zcj1SC9S6Nn7amjfETcJgYhFnOeqJijMkqxsPjnfeQiQgu8wqw5LpV5Syqc+L+nBF5EM273u+koEh3IAB9NafAApuq0XnmlSbwLl6d3LoI981+IbElGw1tgqzMd2ru4CU/gUXSLjtND6+Sdqg3c4Oj/t/+PNkEEu7Lu25p755aui0OlAlVa9rNeweETVT5TGruZogjOakigzcpIX6S3PRbwdtosluKN9zLCmqcOukN6pSx19sYhVplv9ROg+60PJazJ1gKG1pSI5lluvAUNut7ZDMYgIbhaPsyTfKxjFvOLtYaJNiK9rUnhF7or5jWsh4a6Qv9h0IR++UOaZvojjZUXk8dP3Qz0D96/9HzjkOJVbm6R5I0OhoXbdQ43c0/tqE+Cpo+pD20bo/rJdrcLeDJEy2rEC1Xmp/0EXgClUecoFOs8wXPmcpPHO8L4Dx94rpGPCX1tFUs2H3wMaFToMjS9ji8e1uFarMIlhHuAgmyQrUzIvWfh2dTpH7B71en9UZtqu40oQIB6r9c1AJ0AwaZXJhog==
-x-ms-exchange-transport-forked: True
-Content-ID: <4C4F3D63CA72B143BBB373C771C5D66B@namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR11MB1914.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5a160f19-fff7-49a5-66ed-08d86520edbf
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Sep 2020 09:12:17.4438 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mLKbgviNMZpFnG+gw8mVvHjSrTUjcdggK2BCr21n38ZfP9pnfUCbG+tZbNSKSN5KmQ8y4VMjGJfvz46O+M0QOCaGBnRQkpfRRP8R+3bQbhg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1338
+In-Reply-To: <25c209e2-f48e-f4aa-4043-1f259e26a7f1@nokia.com>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200930_051222_226359_5F89C149 
-X-CRM114-Status: GOOD (  17.13  )
+X-CRM114-CacheID: sfid-20200930_052018_026596_39DB939B 
+X-CRM114-Status: GOOD (  22.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -158,41 +92,81 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: boris.brezillon@collabora.com, nsekhar@ti.com
+Cc: "Sverdlin, Alexander \(Nokia - DE/Ulm\)" <alexander.sverdlin@nokia.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 9/16/20 3:44 PM, Pratyush Yadav wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+
+
+On 9/17/20 1:01 PM, Matija Glavinic Pecotic wrote:
+> In case Status register 1:SR_SRWD was set (either by software or write
+> protect pin), sr_unlock fails on spi_nor_write_sr_and_check in 8-bit
+> mode due to fact that written value will not match read value.
 > 
-> Since this flash doesn't have a Profile 1.0 table, the Octal DTR
-> capabilities are enabled in the post SFDP fixup, along with the 8D-8D-8D
-> fast read settings.
+> Problem was observed with n25q128a11 device having protection enabled
+> by W# pin. Failures lead to device probe failure.
 > 
-> Enable Octal DTR mode with 20 dummy cycles to allow running at the
-> maximum supported frequency of 200Mhz.
+> Problem was uncovered by 82de6a6fb67e16 ("mtd: spi-nor: Fix the writing
+> of the Status Register on micron flashes"). Commit selected 8-bit mode
+> for micron devices. In 16-bit mode, CR content is verified, while in
+> 8-bit SR is checked for sanity.
 > 
-> The flash supports the soft reset sequence. So, add the flag in the
-> flash's info.
-> 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> Signed-off-by: Matija Glavinic Pecotic <matija.glavinic-pecotic.ext@nokia.com>
 > ---
->  drivers/mtd/spi-nor/micron-st.c | 102 +++++++++++++++++++++++++++++++-
->  1 file changed, 101 insertions(+), 1 deletion(-)
+> v2: Fix whitespaces added by mail client
 > 
-> diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-> index ef3695080710..cc02c1418d1d 100644
-> --- a/drivers/mtd/spi-nor/micron-st.c
-> +++ b/drivers/mtd/spi-nor/micron-st.c
-> @@ -8,10 +8,110 @@
+>  drivers/mtd/spi-nor/core.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index 65eff4c..4c3acc0 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -1777,6 +1777,10 @@ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>  
+>  	status_old = nor->bouncebuf[0];
+>  
+> +	/* If SR is write protected, we cannot unlock */
+> +	if (status_old & SR_SRWD)
+> +		return 0;
+> +
 
-similar comments to those in 14/15 apply here as well.
-Looks good. I couldn't find datasheets for neither of flashes though.
+With this, MEMUNLOCK ioctl would succeed with no errors but would fail
+to modify lock bits when  SR_SRWD is set. This would give user a wrong
+impression that region has been unlocked as there is no error code
+that's being returned (thus breaks ABI).
 
-Cheers,
-ta
+Also, how would one unlock the flash once SR_SRWD is set? For example:
+
+(1) hardware WP# is deasserted
+(2) program flash
+(3) Set block protection bits and SR_SRWD
+(4) hardware WP# is asserted
+(5) flash protection range can no longer be changed, until WP# is
+    deasserted
+
+Now to make flash writeable again:
+
+(1) hardware WP# is deasserted
+(2) Unlock the protection flash bits and SR_SRWD
+
+But (2) would always fail due to above check, right?
+
+
+Alternatively, spi_nor_init() can be modified to be non fatal when
+spi_nor_unlock_all() returns non zero value (but retain the dev_dbg()).
+Also add a comment inline.
+
+>  	/* If nothing in our range is locked, we don't need to do anything */
+>  	if (spi_nor_is_unlocked_sr(nor, ofs, len, status_old))
+>  		return 0;
+> 
+
+Regards
+Vignesh
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
