@@ -2,85 +2,71 @@ Return-Path: <SRS0=o/Ze=DH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E563C4727C
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 20:02:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 523D9C4363D
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 21:05:11 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B08BE20709
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 20:02:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 89C2320759
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 21:05:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mtcVuEwL";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="L/El2gvQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B08BE20709
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ARWpmg4v";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="kB0qqgz2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 89C2320759
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=G4d7Xl8Arrd2q4QFj6JlGLPLQkmPPh+R3VwDdTg7NB0=; b=mtcVuEwL7gO4BfYjyyjVrdOf0
-	y1A8g1u1wPw8kAYDLYESqYjtNeNhyJlIL3TlxIBxp34UszF1b9ywYh78kt5ALfCUXXuBDfNl6ZnTz
-	p+00pIAJIh4NGIta7jMos7p3EejSkmoA0A+zwOefT4S44SMnCXx1mt7SHCuGSeG2yzGrJBPyEWE4I
-	0vMpU9KiUHsdw4SzTm/UyW+JU6ESZQJbgIWrrlNmsw9fTQiggNEJgX6vsfia55OXrNDZWXvNSa950
-	lRUS3qMZ0tU8jW+EtcdKi2kcWpfJIWEc9oM9fiCKf0Yt8pkyUwmAHCsBIPUmGYQnfl0AAVswa2Cyc
-	BqAJLYUeQ==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From:Date:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=6RSVB2g18OZKJ2G3AHPE0/JVXfOYaR0B1Uy/gbtfWqU=; b=ARWpmg4vxqSxwsJ6ciEZKThjYf
+	+13Mf/MwKS8BXQSdymE9G9TjjHdutvPFsDBjaB7j3UwVu7srN4aQ6grZOUhvvFqaKBjH7YFfrJTzk
+	Xo8lRMJR0jZCM53RcKLZx49DqWEd7/ji5dGI5rS8KrkcoOC5HLGlr+Y3DH0WVH/9zHF0FsoloNFaE
+	YUzDji5Yv9hWX3kGSXXf8b9WrPZ5lfJrUZKktBvys7dixX5utFy5Uz53whGJenWg4SwDxHfPxAUQW
+	2Euj1OLWnfqtUxn/rndw9lF15jMiKFP/bv0qIjAQGdK2epCa66KW+/oFXbL9sloDDWVtAFsSNaDs5
+	NyfPvYvQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kNiHh-00061M-KB; Wed, 30 Sep 2020 20:01:05 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1kNjFP-0006oB-Ib; Wed, 30 Sep 2020 21:02:47 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kNhIZ-0008Tw-L0
- for linux-mtd@lists.infradead.org; Wed, 30 Sep 2020 18:57:57 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08UIvqtW022148;
- Wed, 30 Sep 2020 13:57:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1601492272;
- bh=fw8GsthntBelNAH4dJk23bM5IKKwNmZk9gSKZ5x0JKw=;
- h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=L/El2gvQo+8kGz+8MDlw6u5Lbllg+Vg/j+CJTlN3NEj8zNjoadLMmVNpKVTiNlArS
- 0oijDG5eepMc7wGZrBAjTndP8FiYD6EQnYeKQ7j+9HwYMdDopHu6NeKvFQjT5gxwAM
- NIU1jIfenbp5QKInKVu8SwGP3t5nrVxWE3d/D34M=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08UIvqqu065102
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 30 Sep 2020 13:57:52 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
- Sep 2020 13:57:52 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 30 Sep 2020 13:57:51 -0500
-Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
- [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08UIvX3E007008;
- Wed, 30 Sep 2020 13:57:49 -0500
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v14 05/15] mtd: spi-nor: sfdp: parse xSPI Profile 1.0 table
-Date: Thu, 1 Oct 2020 00:27:22 +0530
-Message-ID: <20200930185732.6201-6-p.yadav@ti.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200930185732.6201-1-p.yadav@ti.com>
-References: <20200930185732.6201-1-p.yadav@ti.com>
+ id 1kNjFM-0006nB-OG
+ for linux-mtd@lists.infradead.org; Wed, 30 Sep 2020 21:02:45 +0000
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 6A2162071E;
+ Wed, 30 Sep 2020 21:02:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1601499761;
+ bh=hEW2lfnz94TX8YvGzA25neEhx4sqLqPCJj+osYv0f84=;
+ h=Date:From:To:Cc:Subject:From;
+ b=kB0qqgz2Qg5kqmagsLjOnmi5VS9A0KdFC8OuKPMCmSb2lPxu2++Ex4nxbEuKwSUnM
+ wIn6zAXZkNhnq6dfT7ziW+s9r4bjatfxBsm+TUVSRjvk0De9MdnqQkidBm6zy/HFp1
+ QH7/bokmJ01Sqi/yNifloTTQduQJ4nzPjOkHBiIg=
+Date: Wed, 30 Sep 2020 16:08:24 -0500
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To: Stefan Agner <stefan@agner.ch>, Lucas Stach <dev@lynxeye.de>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>
+Subject: [PATCH][next] mtd: rawnand: Replace one-element array with
+ flexible-array member
+Message-ID: <20200930210824.GA12277@embeddedor>
 MIME-Version: 1.0
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200930_145755_856039_DA80C437 
-X-CRM114-Status: GOOD (  23.52  )
+X-CRM114-CacheID: sfid-20200930_170244_943053_78534D4B 
+X-CRM114-Status: GOOD (  17.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,210 +78,58 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris Brezillon <boris.brezillon@collabora.com>,
- Sekhar Nori <nsekhar@ti.com>, Pratyush Yadav <p.yadav@ti.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: linux-tegra@vger.kernel.org, linux-hardening@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This table is indication that the flash is xSPI compliant and hence
-supports octal DTR mode. Extract information like the fast read opcode,
-dummy cycles, the number of dummy cycles needed for a Read Status
-Register command, and the number of address bytes needed for a Read
-Status Register command.
-
-We don't know what speed the controller is running at. Find the fast
-read dummy cycles for the fastest frequency the flash can run at to be
-sure we are never short of dummy cycles. If nothing is available,
-default to 20. Flashes that use a different value should update it in
-their fixup hooks.
-
-Since we want to set read settings, expose spi_nor_set_read_settings()
-in core.h.
-
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
----
- drivers/mtd/spi-nor/core.c |  2 +-
- drivers/mtd/spi-nor/core.h | 10 +++++
- drivers/mtd/spi-nor/sfdp.c | 91 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 102 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index beb17639dc92..97e82a4821f6 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2332,7 +2332,7 @@ static int spi_nor_check(struct spi_nor *nor)
- 	return 0;
- }
- 
--static void
-+void
- spi_nor_set_read_settings(struct spi_nor_read_command *read,
- 			  u8 num_mode_clocks,
- 			  u8 num_wait_states,
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 5d95b4183a33..9a33c8d07335 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -192,6 +192,9 @@ struct spi_nor_locking_ops {
-  *
-  * @size:		the flash memory density in bytes.
-  * @page_size:		the page size of the SPI NOR flash memory.
-+ * @rdsr_dummy:		dummy cycles needed for Read Status Register command.
-+ * @rdsr_addr_nbytes:	dummy address bytes needed for Read Status Register
-+ *			command.
-  * @hwcaps:		describes the read and page program hardware
-  *			capabilities.
-  * @reads:		read capabilities ordered by priority: the higher index
-@@ -214,6 +217,8 @@ struct spi_nor_locking_ops {
- struct spi_nor_flash_parameter {
- 	u64				size;
- 	u32				page_size;
-+	u8				rdsr_dummy;
-+	u8				rdsr_addr_nbytes;
- 
- 	struct spi_nor_hwcaps		hwcaps;
- 	struct spi_nor_read_command	reads[SNOR_CMD_READ_MAX];
-@@ -425,6 +430,11 @@ ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
- 
- int spi_nor_hwcaps_read2cmd(u32 hwcaps);
- u8 spi_nor_convert_3to4_read(u8 opcode);
-+void spi_nor_set_read_settings(struct spi_nor_read_command *read,
-+			       u8 num_mode_clocks,
-+			       u8 num_wait_states,
-+			       u8 opcode,
-+			       enum spi_nor_protocol proto);
- void spi_nor_set_pp_settings(struct spi_nor_pp_command *pp, u8 opcode,
- 			     enum spi_nor_protocol proto);
- 
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index c77655968f80..ebc1188f7533 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -4,6 +4,7 @@
-  * Copyright (C) 2014, Freescale Semiconductor, Inc.
-  */
- 
-+#include <linux/bitfield.h>
- #include <linux/slab.h>
- #include <linux/sort.h>
- #include <linux/mtd/spi-nor.h>
-@@ -19,6 +20,7 @@
- #define SFDP_BFPT_ID		0xff00	/* Basic Flash Parameter Table */
- #define SFDP_SECTOR_MAP_ID	0xff81	/* Sector Map Table */
- #define SFDP_4BAIT_ID		0xff84  /* 4-byte Address Instruction Table */
-+#define SFDP_PROFILE1_ID	0xff05	/* xSPI Profile 1.0 table. */
- 
- #define SFDP_SIGNATURE		0x50444653U
- 
-@@ -1108,6 +1110,91 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
- 	return ret;
- }
- 
-+#define PROFILE1_DWORD1_RDSR_ADDR_BYTES		BIT(29)
-+#define PROFILE1_DWORD1_RDSR_DUMMY		BIT(28)
-+#define PROFILE1_DWORD1_RD_FAST_CMD		GENMASK(15, 8)
-+#define PROFILE1_DWORD4_DUMMY_200MHZ		GENMASK(11, 7)
-+#define PROFILE1_DWORD5_DUMMY_166MHZ		GENMASK(31, 27)
-+#define PROFILE1_DWORD5_DUMMY_133MHZ		GENMASK(21, 17)
-+#define PROFILE1_DWORD5_DUMMY_100MHZ		GENMASK(11, 7)
-+
-+/**
-+ * spi_nor_parse_profile1() - parse the xSPI Profile 1.0 table
-+ * @nor:		pointer to a 'struct spi_nor'
-+ * @profile1_header:	pointer to the 'struct sfdp_parameter_header' describing
-+ *			the Profile 1.0 Table length and version.
-+ * @params:		pointer to the 'struct spi_nor_flash_parameter' to be.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int spi_nor_parse_profile1(struct spi_nor *nor,
-+				  const struct sfdp_parameter_header *profile1_header,
-+				  struct spi_nor_flash_parameter *params)
-+{
-+	u32 *dwords, addr;
-+	size_t len;
-+	int ret;
-+	u8 dummy = 0, opcode;
-+
-+	len = profile1_header->length * sizeof(*dwords);
-+	dwords = kmalloc(len, GFP_KERNEL);
-+	if (!dwords)
-+		return -ENOMEM;
-+
-+	addr = SFDP_PARAM_HEADER_PTP(profile1_header);
-+	ret = spi_nor_read_sfdp(nor, addr, len, dwords);
-+	if (ret)
-+		goto out;
-+
-+	le32_to_cpu_array(dwords, profile1_header->length);
-+
-+	/* Get 8D-8D-8D fast read opcode and dummy cycles. */
-+	opcode = FIELD_GET(PROFILE1_DWORD1_RD_FAST_CMD, dwords[0]);
-+
-+	 /* Set the Read Status Register dummy cycles and dummy address bytes. */
-+	if (dwords[0] & PROFILE1_DWORD1_RDSR_DUMMY)
-+		params->rdsr_dummy = 8;
-+	else
-+		params->rdsr_dummy = 4;
-+
-+	if (dwords[0] & PROFILE1_DWORD1_RDSR_ADDR_BYTES)
-+		params->rdsr_addr_nbytes = 4;
-+	else
-+		params->rdsr_addr_nbytes = 0;
-+
-+	/*
-+	 * We don't know what speed the controller is running at. Find the
-+	 * dummy cycles for the fastest frequency the flash can run at to be
-+	 * sure we are never short of dummy cycles. A value of 0 means the
-+	 * frequency is not supported.
-+	 *
-+	 * Default to PROFILE1_DUMMY_DEFAULT if we don't find anything, and let
-+	 * flashes set the correct value if needed in their fixup hooks.
-+	 */
-+	dummy = FIELD_GET(PROFILE1_DWORD4_DUMMY_200MHZ, dwords[3]);
-+	if (!dummy)
-+		dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_166MHZ, dwords[4]);
-+	if (!dummy)
-+		dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_133MHZ, dwords[4]);
-+	if (!dummy)
-+		dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_100MHZ, dwords[4]);
-+	if (!dummy)
-+		dev_dbg(nor->dev,
-+			"Can't find dummy cycles from Profile 1.0 table\n");
-+
-+	/* Round up to an even value to avoid tripping controllers up. */
-+	dummy = round_up(dummy, 2);
-+
-+	/* Update the fast read settings. */
-+	spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_8_8_8_DTR],
-+				  0, dummy, opcode,
-+				  SNOR_PROTO_8_8_8_DTR);
-+
-+out:
-+	kfree(dwords);
-+	return ret;
-+}
-+
- /**
-  * spi_nor_parse_sfdp() - parse the Serial Flash Discoverable Parameters.
-  * @nor:		pointer to a 'struct spi_nor'
-@@ -1209,6 +1296,10 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
- 			err = spi_nor_parse_4bait(nor, param_header, params);
- 			break;
- 
-+		case SFDP_PROFILE1_ID:
-+			err = spi_nor_parse_profile1(nor, param_header, params);
-+			break;
-+
- 		default:
- 			break;
- 		}
--- 
-2.28.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhlcmUgaXMgYSByZWd1bGFyIG5lZWQgaW4gdGhlIGtlcm5lbCB0byBwcm92aWRlIGEgd2F5IHRv
+IGRlY2xhcmUgaGF2aW5nCmEgZHluYW1pY2FsbHkgc2l6ZWQgc2V0IG9mIHRyYWlsaW5nIGVsZW1l
+bnRzIGluIGEgc3RydWN0dXJlLiBLZXJuZWwgY29kZQpzaG91bGQgYWx3YXlzIHVzZSDigJxmbGV4
+aWJsZSBhcnJheSBtZW1iZXJz4oCdWzFdIGZvciB0aGVzZSBjYXNlcy4gVGhlIG9sZGVyCnN0eWxl
+IG9mIG9uZS1lbGVtZW50IG9yIHplcm8tbGVuZ3RoIGFycmF5cyBzaG91bGQgbm8gbG9uZ2VyIGJl
+IHVzZWRbMl0uCgpSZWZhY3RvciB0aGUgY29kZSBhY2NvcmRpbmcgdG8gdGhlIHVzZSBvZiBhIGZs
+ZXhpYmxlLWFycmF5IG1lbWJlcgppbnN0ZWFkIG9mIGEgb25lLWVsZW1lbnQgYXJyYXkuIEFsc28s
+IG1ha2UgdXNlIG9mIHRoZSBzdHJ1Y3Rfc2l6ZSgpCmhlbHBlciB0byBjYWxjdWxhdGUgdGhlIHNp
+emUgb2YgdGhlIGFsbG9jYXRpb24gZm9yIF9uYW5kXy4gSW4gb3JkZXIKdG8ga2VlcCB0aGUgY29k
+ZSBhcyBtYWludGFpbmFibGUgYXMgcG9zc2libGUgYW5kIHRvIGtlZXAgX2NzXyBhcyBhbgphcnJh
+eSwgYWRkIGEgbmV3IG1hY3JvIENTX04gdG8gYWlkIGluIHRoZSBhbGxvY2F0aW9uIHNpemUgY2Fs
+Y3VsYXRpb24sCmluIGNhc2UgdGhlcmUgaXMgYSBuZWVkIGZvciBtb3JlIENoaXAgU2VsZWN0IElE
+cyBpbiB0aGUgZnV0dXJlLiBJbiB0aGUKbWVhbnRpbWUsIHRoZSBtYWNybyBpcyBzZXQgdG8gMS4g
+VGhpcyBhbHNvIGF2b2lkcyBoYXZpbmcgdG8gdXNlIGEgbWFnaWMKbnVtYmVyICcxJyBhcyB0aGUg
+bGFzdCBhcmd1bWVudCBmb3Igc3RydWN0X3NpemUoKS4KClsxXSBodHRwczovL2VuLndpa2lwZWRp
+YS5vcmcvd2lraS9GbGV4aWJsZV9hcnJheV9tZW1iZXIKWzJdIGh0dHBzOi8vd3d3Lmtlcm5lbC5v
+cmcvZG9jL2h0bWwvdjUuOS1yYzEvcHJvY2Vzcy9kZXByZWNhdGVkLmh0bWwjemVyby1sZW5ndGgt
+YW5kLW9uZS1lbGVtZW50LWFycmF5cwoKQnVpbGQtdGVzdGVkLWJ5OiBrZXJuZWwgdGVzdCByb2Jv
+dCA8bGtwQGludGVsLmNvbT4KTGluazogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGttbC81Zjc0
+NzNjMC5WdjRoNnl6WFNnYTkwUDA0JTI1bGtwQGludGVsLmNvbS8KU2lnbmVkLW9mZi1ieTogR3Vz
+dGF2byBBLiBSLiBTaWx2YSA8Z3VzdGF2b2Fyc0BrZXJuZWwub3JnPgotLS0KIGRyaXZlcnMvbXRk
+L25hbmQvcmF3L3RlZ3JhX25hbmQuYyB8IDkgKysrKysrLS0tCiAxIGZpbGUgY2hhbmdlZCwgNiBp
+bnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25h
+bmQvcmF3L3RlZ3JhX25hbmQuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L3RlZ3JhX25hbmQuYwpp
+bmRleCBmYmY2NzcyMmEwNDkuLjQzYjgzNTlkY2Q4NSAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQv
+bmFuZC9yYXcvdGVncmFfbmFuZC5jCisrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L3RlZ3JhX25h
+bmQuYwpAQCAtMTYzLDYgKzE2Myw5IEBACiAJCQkJSFdTVEFUVVNfUkJTWV9NQVNLKE5BTkRfU1RB
+VFVTX1JFQURZKSB8IFwKIAkJCQlIV1NUQVRVU19SQlNZX1ZBTFVFKE5BTkRfU1RBVFVTX1JFQURZ
+KSkKIAorLyogTnVtYmVyIG9mIENoaXAgU2VsZWN0cy4gQ3VycmVudGx5LCBvbmx5IG9uZS4gKi8K
+KyNkZWZpbmUgQ1NfTgkJCTEKKwogc3RydWN0IHRlZ3JhX25hbmRfY29udHJvbGxlciB7CiAJc3Ry
+dWN0IG5hbmRfY29udHJvbGxlciBjb250cm9sbGVyOwogCXN0cnVjdCBkZXZpY2UgKmRldjsKQEAg
+LTE4Myw3ICsxODYsNyBAQCBzdHJ1Y3QgdGVncmFfbmFuZF9jaGlwIHsKIAl1MzIgY29uZmlnOwog
+CXUzMiBjb25maWdfZWNjOwogCXUzMiBiY2hfY29uZmlnOwotCWludCBjc1sxXTsKKwlpbnQgY3Nb
+XTsKIH07CiAKIHN0YXRpYyBpbmxpbmUgc3RydWN0IHRlZ3JhX25hbmRfY29udHJvbGxlciAqCkBA
+IC0xMDg2LDE0ICsxMDg5LDE0IEBAIHN0YXRpYyBpbnQgdGVncmFfbmFuZF9jaGlwc19pbml0KHN0
+cnVjdCBkZXZpY2UgKmRldiwKIAkJcmV0dXJuIC1FSU5WQUw7CiAJfQogCi0JLyogUmV0cmlldmUg
+Q1MgaWQsIGN1cnJlbnRseSBvbmx5IHNpbmdsZSBkaWUgTkFORCBzdXBwb3J0ZWQgKi8KKwkvKiBS
+ZXRyaWV2ZSBDUyBpZCwgY3VycmVudGx5IG9ubHkgc2luZ2xlLWRpZSBOQU5EIHN1cHBvcnRlZCAq
+LwogCXJldCA9IG9mX3Byb3BlcnR5X3JlYWRfdTMyKG5wX25hbmQsICJyZWciLCAmY3MpOwogCWlm
+IChyZXQpIHsKIAkJZGV2X2VycihkZXYsICJjb3VsZCBub3QgcmV0cmlldmUgcmVnIHByb3BlcnR5
+OiAlZFxuIiwgcmV0KTsKIAkJcmV0dXJuIHJldDsKIAl9CiAKLQluYW5kID0gZGV2bV9remFsbG9j
+KGRldiwgc2l6ZW9mKCpuYW5kKSwgR0ZQX0tFUk5FTCk7CisJbmFuZCA9IGRldm1fa3phbGxvYyhk
+ZXYsIHN0cnVjdF9zaXplKG5hbmQsIGNzLCBDU19OKSwgR0ZQX0tFUk5FTCk7CiAJaWYgKCFuYW5k
+KQogCQlyZXR1cm4gLUVOT01FTTsKIAotLSAKMi4yNy4wCgoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
+aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
+bnV4LW10ZC8K
