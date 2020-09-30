@@ -2,88 +2,147 @@ Return-Path: <SRS0=o/Ze=DH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF876C47420
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 09:41:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77519C4727E
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 09:57:51 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7FC1720789
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 09:41:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E297D2075F
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 09:57:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Z245nJIu";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="kGM8wh9M"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7FC1720789
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Cm6J1pSn";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="BuhtvMlS";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="XOGACClK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E297D2075F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=0qhmgZBw/A1Iy0DJxKscvoFbMaJ57jb2BCOWVjYZLuc=; b=Z245nJIuVMLplGHA9IAX3XE7B
-	JDZBTmKDTl1d+XlqLhXagKHou428yy7r6N05cYz8PgJcqHoKFspUbJUqFZvAHPrdP940QgoAt5rrq
-	F7iJsGG+OPGg36UjLBefiiF1vsEDkyOYgASRc0wna1owA4i50bKAiTcU1qCRne1EpJhEeNNg+sfE5
-	1xDnYA579wFz7MpzvsP7RP6MW8O4a2t5igJ9s8u39RZSrhMSXPNlaAv3UAQ8ZEcyaxuW47RXMy9C0
-	hreEk6yQyAkqJgtH6TUfE4vbjiHa5WmqiMT0/xd+ICSCqOBSC4meQzd9Us747BKSPeMpHNCHjnaJn
-	euyIxMK4A==;
+	 bh=QKDP/KV5av/Y5c1wu6kvFI7WZ+ok8AYju4uO/XCsYqo=; b=Cm6J1pSnKfgl/feIX+JbhS3G6
+	o3kcI1CqqKxDi/CowjRp0kp7VfEyIjzG2rF3GhtsIkgLfGt8XGXHmcc9SRTjlm7uzJkQwlSBD9PzD
+	J46yLDg97gYFDfTVGYqpA0fQvskXEB/ACaGx/9KB5PuSfCSy3h4lpBJ4kD+rkiZaHd9xeRRLqCXiN
+	YtChiSqrbDf6uwRBSzhnoGLPdf7oSW6csxhTuqA/UScAFv8Bpr/LLhZLwSKZoMZvj2PCQ9r+BaWhq
+	oWS4bRlrkEhfK9Jns2a9Rcjh5hdlz3dQF5kaQVKifHDXVXsF8b4w6q/vMU21UwlqqAYy5ZeaHYzvs
+	6RQxNQVfw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kNYb4-00088u-Pd; Wed, 30 Sep 2020 09:40:26 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1kNYrK-0002Ki-6d; Wed, 30 Sep 2020 09:57:14 +0000
+Received: from esa2.microchip.iphmx.com ([68.232.149.84])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kNYan-0007wm-Gk
- for linux-mtd@lists.infradead.org; Wed, 30 Sep 2020 09:40:22 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08U9e6OX043951;
- Wed, 30 Sep 2020 04:40:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1601458806;
- bh=KCmXt6m7Rv8hOJZq8QJiUqI+hcs587SPq0k6bMwb4+M=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=kGM8wh9MdSDS0BicpexwEIinc8VH6nmnZ3VbE4WdCLYsHE+z4Ig4a0GQGTwHSo1tj
- G/zLeeJcmLzNjNcyTRcYjglRTmeAPylHJNvb2wDu5yMw+wiXD9j8G5TqE2hJVsKPHy
- rwFct1UMYEYRse55WPh1hD3qTpOsPz9d+F6IYSqo=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08U9e6w5088130
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 30 Sep 2020 04:40:06 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
- Sep 2020 04:40:06 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 30 Sep 2020 04:40:05 -0500
-Received: from [10.250.235.166] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08U9e3Jq089623;
- Wed, 30 Sep 2020 04:40:04 -0500
-Subject: Re: [RESEND PATCH 2/2] mtd: spi-nor: enable lock interface for
- macronix chips
-To: Ivan Mikhaylov <i.mikhaylov@yadro.com>, Tudor Ambarus
- <tudor.ambarus@microchip.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>
-References: <20200921112450.4824-1-i.mikhaylov@yadro.com>
- <20200921112450.4824-3-i.mikhaylov@yadro.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <cb47d79f-ecbb-f0ec-388e-b56ba740045e@ti.com>
-Date: Wed, 30 Sep 2020 15:10:02 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200921112450.4824-3-i.mikhaylov@yadro.com>
+ id 1kNYrH-0002Jw-Mq
+ for linux-mtd@lists.infradead.org; Wed, 30 Sep 2020 09:57:12 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1601459831; x=1632995831;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=oy+zjxaLiiUd0sbpo1fg3iDBOFpEZaUXO3vi2U33xiI=;
+ b=BuhtvMlS8bgNZRISXIK0JyUDFvIlH3fw4OktQpT34ieEWvDFy0EkykJG
+ eYySASZaCD54TndYo6epk2HSmuWn3ocmBUHFqnOtizXieNAQBAQZRQ4Ap
+ CHvAWg7EmlJCUlGREwE6+2kRbY2/+Na+ePY/Wdmk55IqwRaRBJwximF+U
+ CLZBu/5fBvSz8R+khpOgzaPF8+CvST5s52htPp0O7IKHrdjYTI7qcEH9h
+ 5HhjWkx3PQoOZGJ71cHwXM1u/t+rWch7bI7ZjQtsWO4zYhTumCj6byh1s
+ G06B8lgjXQmQRzLujQ4nXH6b822u30mHu1ENopEsPfaLUqq0Ym0H0gq38 g==;
+IronPort-SDR: CqgIw+gmdD1T38n9iylH8rkCWjm8uyACW/bITQBmlNYmcPj3VozrTdyzvmbhODiHAl0bAuKcxf
+ B07SV6fl3YhyN7nlXiYm78r7lYegiHSW1SwM4+YLb/LqdhHYNYjpxtvPJjS6wbx3ZHF68RwD1T
+ kN9Jn7OdscPUgTyJ2rljD+VRITDbie558s7Gp07M8NpuGiwSJ00Ma9u62Cy7aHYQIVz3h+Agj5
+ UBbLMv3T26hivpUuZBPRz0nSCX7ghB3DirLUj1UD0/kN+SDDWf8IfnZt4HGVJie4AMkYd8gsfo
+ FVA=
+X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; d="scan'208";a="90923872"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 30 Sep 2020 02:57:09 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 30 Sep 2020 02:57:10 -0700
+Received: from NAM04-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Wed, 30 Sep 2020 02:57:09 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZiAckfMacbIhe+TsUn9Su8gmGAuLlAMbmPNFoJ9MCesMKMLuCCGO+L5CXQUy7Ei2UenFFK1HftVBKQDPHeE1i3Qf8vCchsSLNTApj/ZjT+FrdFOcb8t/P+tGaLAAu4/WBNl/mE/CR156Horo+tuto/Qs1ZadlcD1Ta6snvHW3AAJNa0A4BKkseY9mUReDajwe24f9yXgZ8xa2GuKDyeLo+1xlYMSqcBN8XmiAobOSDGcV04gk8Tw3Bw8dshrg9bsE22YZFuDNVmJvGhoBJURGv8mZHPT3aziVEu7DidTOhBu1l0PI5kQx2FT8SVs/1r2+dKJ6dqazvo5XWgKI3cyKw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oy+zjxaLiiUd0sbpo1fg3iDBOFpEZaUXO3vi2U33xiI=;
+ b=JOZKBapDz2kyBJxWpds9jm4DHdfFF29zzqm/9tnDnOqtgXPHBbI1YTJZ9WOHd8t+YiwIFZ1WE5bqBpt8eoTRMTAqUdSaS+1LRj+vpvEnHs/kGdU4phaXi6fSruOIHy0xV2ZJQON5LOeUU9e/6xzyDx74q/VOHpxaR3JAImtuoR3j/mEPzDSi1JS2NunW6+GeYN073jqQRN4LrZ8xsBQkKZcEzv/kZKM70/1GFb2YlwMYXP7NQGTyJ8afCq9o4g6hktVe3qTyW7PjkSgUFmZIjnY7Qz4XHVadOzKpw2jJ0y7lQEnoJeC7fzwoAsTS+zbZwythL2Ekqhp2Rb0STrRRfA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oy+zjxaLiiUd0sbpo1fg3iDBOFpEZaUXO3vi2U33xiI=;
+ b=XOGACClKFX1XhDXHcPMZblIYfTPPWO48rTJ6Sfa5WBpyU2yZffvda9SFoxQs3G+Tk77nqhKRLhERRGPVmOrkGlK7EvGDJa4khy768OHMt0mZ/ZbWIEdIH5RL/RJ1dQnnXpWdlWAKKBiLY7K0+mviYrRlWmxROwU0KRwITPKsd1c=
+Received: from DM5PR11MB1914.namprd11.prod.outlook.com (10.175.91.12) by
+ DM6PR11MB3242.namprd11.prod.outlook.com (20.176.120.206) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3412.29; Wed, 30 Sep 2020 09:57:06 +0000
+Received: from DM5PR11MB1914.namprd11.prod.outlook.com
+ ([fe80::f44a:f58e:c13b:947a]) by DM5PR11MB1914.namprd11.prod.outlook.com
+ ([fe80::f44a:f58e:c13b:947a%4]) with mapi id 15.20.3433.032; Wed, 30 Sep 2020
+ 09:57:06 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <p.yadav@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+ <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v13 00/15] mtd: spi-nor: add xSPI Octal DTR support
+Thread-Topic: [PATCH v13 00/15] mtd: spi-nor: add xSPI Octal DTR support
+Thread-Index: AQHWlxANNWms9uU8o0WS4BnhtiydLg==
+Date: Wed, 30 Sep 2020 09:57:06 +0000
+Message-ID: <1cd1b952-9126-516f-d8a7-91149a815ff0@microchip.com>
+References: <20200916124418.833-1-p.yadav@ti.com>
+In-Reply-To: <20200916124418.833-1-p.yadav@ti.com>
+Accept-Language: en-US
 Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: ti.com; dkim=none (message not signed)
+ header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [5.13.1.187]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5b04dd2d-5461-414b-8ae2-08d8652730ac
+x-ms-traffictypediagnostic: DM6PR11MB3242:
+x-microsoft-antispam-prvs: <DM6PR11MB32420444CC3B9C552A71134AF0330@DM6PR11MB3242.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 8VPBSChpM96R0HZkqDHBfopu+q3XI9qDN381+BODrGW0YwhBHGuMUwwn9WpAMpjUic4TFl4qOLFAs+Xcmeoixi1I8uoJZXmK+sXd20cOWWltCIzYy5FjqcIzwaC+qRigwfU3w8+VoDh8uXMwYO8J0nWNTm2pLicKnefihzhRWbVa/v+eBY/LQ/rNoKz3xDpJx39gcBMxbLDsZaCvHdFN23ub3JLcEdqJ+nYmnES8E0TvAT1nk6bk66hxwha2QldAz2UCArxjr4714/A2mvMcemAlrZgzWXRl0Z0o+zmdajRXHBWN0ZBLqQ9cIuRXY8QpuB3puylJlZEPLtB/7BhSa2cllu4ptYHFJd1OZHv49X3eBTX5SncVP+DDgcDglLmNmhi+4owOoCCpFX5+9EVzK6j6BvtSGVsreAuleSDMIucqAHIZpAjncNlOHLO5E5rB
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:DM5PR11MB1914.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(376002)(39860400002)(396003)(366004)(346002)(136003)(6506007)(53546011)(31686004)(478600001)(66446008)(83380400001)(64756008)(66556008)(66476007)(8936002)(5660300002)(36756003)(6512007)(4326008)(86362001)(2906002)(26005)(2616005)(71200400001)(91956017)(66946007)(76116006)(31696002)(6486002)(8676002)(54906003)(316002)(110136005)(186003)(43740500002);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata: Zy5BxJ1RF0teLLFjyf9XQ4szclIEN0E5VC6KmTsLxalKQSiYVn0swk8Kit4smfjade7JqPdWYkLufwGTa4xCaa2RHAXMM760Ddz4YUuuKLja/QasFxcVFLOrwTFc/3hjV6k1ry0xVqkSvNSn5QZenC8DcaeDQ0S0qLW9WE5QY1KqZ/qUCzvLE49DVLP5yhUooB4SIsj5xiXkxPfAlQn44MqMqmm7ph3bLFz8Zcnlh+PyZa6ijqcxcbiiytDH69o0PqrA0w7tHwbkKqXz6MT/paJOf8fDTIa6GnNkbDqD7pY1ubCbEW4ykGV4IEf2I+yLG6n5wqBD7tP/WEhSKtNWsUe9RLKPxJwKcRnvY4wWOVC1SPoqvNFkdq53ZTRZ1beAFuE3li8U2/nCD7ul0h+0/uLswhwfRGBfOWKlfIZtXpLIMH9o2KDRJ+ppE3vC2wzQVNqOYbxPqOh0kCLkWTXIaq/iNV0xM5UkC5OdAXZvljYTk3kxNKWkydvTxWfQWBBpUJVApGP85deIaareq0UQIUj9rA6pHvAcrg7iZihLLB4kEuMQOWKwXuSdgb9xK0LoabuMYAQyczcOQRO/7/mU00idMNYhBoZDn9LboDBI3QHEtudd+w0x6l4Jhd7BDnp4C0CaWqOFGb2AjjVvsVfyxw==
+x-ms-exchange-transport-forked: True
+Content-ID: <8F6EA078592F744697B7D7EB5018B968@namprd11.prod.outlook.com>
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR11MB1914.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5b04dd2d-5461-414b-8ae2-08d8652730ac
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Sep 2020 09:57:06.6289 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Zi++KMPqHLCS2tVDsAxjuOZuKbQvEJRFlrfwMK+pI4CPEqGt3lDbnxLlmGtayH9BSgiYXom34yvJESpZfpRGwRLKFJHAEqpJUCsBYrqc6/8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3242
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200930_054009_685543_D8CBEE68 
-X-CRM114-Status: GOOD (  18.89  )
+X-CRM114-CacheID: sfid-20200930_055711_979062_5C537562 
+X-CRM114-Status: GOOD (  20.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,142 +154,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: boris.brezillon@collabora.com, nsekhar@ti.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+On 9/16/20 3:44 PM, Pratyush Yadav wrote:
+> Hi,
 
-On 9/21/20 4:54 PM, Ivan Mikhaylov wrote:
-> Add locks for whole macronix chip series with BP0-2 and BP0-3 bits.
-> 
-> Tested with mx25l51245g(BP0-3).
-
-Since you have only tested on flash that have 4bit BP, please don't
-modify flashes that have 3bit BP. Lets be conservative and enable only
-things that have been tested else we may end up with broken feature from
-day 1.
-
-Regards
-Vignesh
+Hello,
 
 > 
-> Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
-> ---
->  drivers/mtd/spi-nor/macronix.c | 75 ++++++++++++++++++++++------------
->  1 file changed, 50 insertions(+), 25 deletions(-)
+> This series adds support for Octal DTR flashes in the SPI NOR framework,
+> and then adds hooks for the Cypress Semper and Micron Xcella flashes to
+> allow running them in Octal DTR mode. This series assumes that the flash
+> is handed to the kernel in Legacy SPI mode.
 > 
-> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-> index 96735d83c77c..80de43eb05d6 100644
-> --- a/drivers/mtd/spi-nor/macronix.c
-> +++ b/drivers/mtd/spi-nor/macronix.c
-> @@ -37,53 +37,78 @@ static const struct flash_info macronix_parts[] = {
->  	/* Macronix */
->  	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
->  	{ "mx25l2005a",  INFO(0xc22012, 0, 64 * 1024,   4, SECT_4K) },
-> -	{ "mx25l4005a",  INFO(0xc22013, 0, 64 * 1024,   8, SECT_4K) },
-> -	{ "mx25l8005",   INFO(0xc22014, 0, 64 * 1024,  16, 0) },
-> -	{ "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,  32, SECT_4K) },
-> -	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K) },
-> -	{ "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64, SECT_4K) },
-> -	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, SECT_4K) },
-> -	{ "mx25u2033e",  INFO(0xc22532, 0, 64 * 1024,   4, SECT_4K) },
-> +	{ "mx25l4005a",  INFO(0xc22013, 0, 64 * 1024,   8,
-> +			      SECT_4K | SPI_NOR_HAS_LOCK) },
-> +	{ "mx25l8005",   INFO(0xc22014, 0, 64 * 1024,  16,
-> +			      SPI_NOR_HAS_LOCK) },
-> +	{ "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,  32,
-> +			      SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
-> +	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64,
-> +			      SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
-> +	{ "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64,
-> +			      SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
-> +	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128,
-> +			      SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
-> +	{ "mx25u2033e",  INFO(0xc22532, 0, 64 * 1024,   4,
-> +			      SECT_4K | SPI_NOR_HAS_LOCK) },
->  	{ "mx25u3235f",	 INFO(0xc22536, 0, 64 * 1024,  64,
->  			      SECT_4K | SPI_NOR_DUAL_READ |
-> -			      SPI_NOR_QUAD_READ) },
-> -	{ "mx25u4035",   INFO(0xc22533, 0, 64 * 1024,   8, SECT_4K) },
-> -	{ "mx25u8035",   INFO(0xc22534, 0, 64 * 1024,  16, SECT_4K) },
-> -	{ "mx25u6435f",  INFO(0xc22537, 0, 64 * 1024, 128, SECT_4K) },
-> -	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
-> -	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
-> +			      SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK |
-> +			      SPI_NOR_4BIT_BP) },
-> +	{ "mx25u4035",   INFO(0xc22533, 0, 64 * 1024,   8,
-> +			      SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
-> +	{ "mx25u8035",   INFO(0xc22534, 0, 64 * 1024,  16,
-> +			      SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
-> +	{ "mx25u6435f",  INFO(0xc22537, 0, 64 * 1024, 128,
-> +			      SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
-> +	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256,
-> +			      SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
-> +	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256,
-> +			      SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
->  	{ "mx25r3235f",  INFO(0xc22816, 0, 64 * 1024,  64,
->  			      SECT_4K | SPI_NOR_DUAL_READ |
-> -			      SPI_NOR_QUAD_READ) },
-> +			      SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK |
-> +			      SPI_NOR_4BIT_BP) },
->  	{ "mx25u12835f", INFO(0xc22538, 0, 64 * 1024, 256,
->  			      SECT_4K | SPI_NOR_DUAL_READ |
-> -			      SPI_NOR_QUAD_READ) },
-> +			      SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK |
-> +			      SPI_NOR_4BIT_BP) },
->  	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512,
-> -			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-> +			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-> +			      SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP)
->  		.fixups = &mx25l25635_fixups },
->  	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512,
-> -			      SECT_4K | SPI_NOR_4B_OPCODES) },
-> +			      SECT_4K | SPI_NOR_4B_OPCODES | SPI_NOR_HAS_LOCK |
-> +			      SPI_NOR_4BIT_BP) },
->  	{ "mx25u51245g", INFO(0xc2253a, 0, 64 * 1024, 1024,
->  			      SECT_4K | SPI_NOR_DUAL_READ |
-> -			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-> +			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES |
-> +			      SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
->  	{ "mx25v8035f",  INFO(0xc22314, 0, 64 * 1024,  16,
->  			      SECT_4K | SPI_NOR_DUAL_READ |
-> -			      SPI_NOR_QUAD_READ) },
-> -	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
-> +			      SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK |
-> +			      SPI_NOR_4BIT_BP) },
-> +	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512,
-> +			      SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
->  	{ "mx25l51245g", INFO(0xc2201a, 0, 64 * 1024, 1024,
->  			      SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-> -			      SPI_NOR_4B_OPCODES) },
-> +			      SPI_NOR_4B_OPCODES | SPI_NOR_HAS_LOCK |
-> +			      SPI_NOR_4BIT_BP) },
->  	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024,
->  			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-> -			      SPI_NOR_4B_OPCODES) },
-> +			      SPI_NOR_4B_OPCODES | SPI_NOR_HAS_LOCK |
-> +			      SPI_NOR_4BIT_BP) },
->  	{ "mx66u51235f", INFO(0xc2253a, 0, 64 * 1024, 1024,
->  			      SECT_4K | SPI_NOR_DUAL_READ |
-> -			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-> +			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES |
-> +			      SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
->  	{ "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048,
->  			      SECT_4K | SPI_NOR_DUAL_READ |
-> -			      SPI_NOR_QUAD_READ) },
-> +			      SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK |
-> +			      SPI_NOR_4BIT_BP) },
->  	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048,
-> -			      SPI_NOR_QUAD_READ) },
-> +			      SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK |
-> +			      SPI_NOR_4BIT_BP) },
->  };
->  
->  static void macronix_default_init(struct spi_nor *nor)
-> 
+
+I like this series. There are some comments that can be addressed, no big
+deal though.
+
+I think that we shouldn't let the door open for users with flashes that
+enter in a X-X-X mode in a non-volatile way. Think of two flashes that have
+the same X-X-X mode enable sequence, but in which only the EN bit differs:
+for one the EN bit is volatile and for the other it is non-volatile. Users
+of the later flash that try to enable the X-X-X mode (using our code) will
+end up with the flash in a mode from which they can't recover. Thus my advice
+is to consider by default all the flashes, as X-X-X mode non-volatile flashes,
+and to not let them use the X-X-X mode enable methods. Flashes that can enter
+X-X-X modes in a volatile way, should discover this capability by parsing the
+optional SFDP SCCR Map. Those that don't define this table, should pass this
+capability as a flash_info flag when declaring the flash. With these, users
+should be conscious about the V or NV modes, and the risk to end up with
+flashes for which there is no software to recover is diminished. This is what
+I tried in RFC 1/3 and RFC 3/3. I think those 2 patches should be part of
+this series. 14/15 and 15/15 should be updated accordingly. RFC 2/3 has room
+for discussions because it provides access system-wise, while ideally would be
+to do it at flash granularity. I'll wait for your feedback on those.
+
+> Tested on TI J721E EVM with 1-bit ECC on the Cypress flash.
+
+As a tip, when introducing some big changes to the core, would be nice to be
+assured that things that worked previously are still working now.
+An erase-write-read-back test in Quad SPI would suffice. Probably you have
+already did that, but I haven't seen it mentioned.
+
+Cheers,
+ta
 
 ______________________________________________________
 Linux MTD discussion mailing list
