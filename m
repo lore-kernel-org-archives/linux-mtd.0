@@ -2,86 +2,72 @@ Return-Path: <SRS0=o/Ze=DH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C46A7C4363D
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 22:34:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63583C4363D
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 22:40:02 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5EF8C2071E
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 22:34:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C69042071E
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 22:40:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Fi6TXwmb";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="dhje9PS0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5EF8C2071E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rsAu8lXl";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=walle.cc header.i=@walle.cc header.b="EhcLYYzr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C69042071E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
+	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=qx+ODpszazjj12lGh5wC0p5mTm/bt2m1FbNVjGaa89g=; b=Fi6TXwmbnyz2HFq4K8gevrrFl
-	/c2kY9RieqtnoO/bygSdsuTzWrHRYAE1vFWRV8dBQel26t+6HbnOnD5akwN4LrL4F5/4msCsYxhLC
-	RStpwZHdT4ee99BQPtgNnkiC+AQ7vCL2Vb/mSSkuo3iHoXFLE5tyujekpNqo4qB0KmkFAmiz7goz0
-	F0Ju9gL9ruNLBigmTKdc802EPjHEWnv22MrQzKBuuah5qDnIqyKtffInLFMXRzDRcA983d8eyOa0F
-	AsB9Rl2ofH1uLCoqMC0usex6echWTQHHeMHwNQ60V+wDLmVQXxwii2QJYrP9VPFipOVcyu/KH3iqh
-	d/wYigJiw==;
+	 bh=tw0oRbL20LCJcrqSOx8w4wEii+MEzgxShrTeq+qS7sI=; b=rsAu8lXlUrDoyQFSU4CepwJUr
+	gxJhPz1xEQbLfHBZFcsGTjXkNKsMSLltx9QjKYSQ6ROPCWCLRw0OkzJWhiSDYTyl/YzMwkaSM7zLu
+	DbI8TuVUIsBoS8pDe6YtoNNp//4neY08q/1GuIW5GsYR39e4JZBRsRZjji/W7+y/l4XFOezugOmhz
+	zc88mBeyYvTp/Lh1ZeLJyUcqPB1H6tERmzhLezAubXNicrJ52zhQObnUGScPLt4tWyqVSaL6CadmX
+	Yll+5dIlQ7tf6rMw8g6h7+HNd4xVlP90xdy6V4obIsKaM0ye/powjP7aLw1Z/j72HzYVztAu4/po8
+	ILAvFvwdA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kNkec-0000LD-MN; Wed, 30 Sep 2020 22:32:54 +0000
-Received: from mail-ej1-x642.google.com ([2a00:1450:4864:20::642])
+	id 1kNkkU-00019N-4S; Wed, 30 Sep 2020 22:38:58 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kNkea-0000Jv-Pm
- for linux-mtd@lists.infradead.org; Wed, 30 Sep 2020 22:32:53 +0000
-Received: by mail-ej1-x642.google.com with SMTP id dd13so5152071ejb.5
- for <linux-mtd@lists.infradead.org>; Wed, 30 Sep 2020 15:32:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=e6O73OjsDxvOW+WlmK+Heyu52Yeg2Jcu5CCnSK4DBT0=;
- b=dhje9PS0dPsa5SE9icH+VbXOR2J377+pA6AR6uz7LR2jewZZUPNCxEx6w+qeI+oGkb
- pgU/Vb4RuH9x1o/7GsN/aY+anl8p5kSPJtUaM9a0o94wriLqJ2cGZs+wE5676T0ulPf8
- BXwGd6kMl1uNGRSkEODujQFaabYaR/jyu8XLHnpac3gWWKX1su6fID3NwUeJ94ZoqRVv
- 1ucqZJMZRb6Oj2TB/uYmuKSarxmrBRQcFAT7o55E1FLn+lf28LlGLiTYQjqrHlvaDdBx
- eImGrKIKL1bPXTyJB7fx4FhTJ14CiYHzHY+NRMHqOzFuH8/U8OBCntm0+2fpTUpt9kIU
- gr2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=e6O73OjsDxvOW+WlmK+Heyu52Yeg2Jcu5CCnSK4DBT0=;
- b=SQ+ZooNI0MiDgSvr4pyYimb0Tg1LYJDD9Gj4cfftTUPEQ1HtWSTpxd1jSbweVd7Dy3
- AWHRCxbKOyeBHZOVeM3DsHW4c90m1J5b5It5mVcSC2eO4h/CJ8B0Z4C7devIyxBn6F1r
- wCxL/MuAJ8SFeBmFwh17GmehJDRM283FxJFytSn7Qx8JhqWdoYSDQKcJOc7wnWCeUChC
- ++6MqYuMMN67q3bz4X0E5+xXgYQ5NKxd9r89bZgDaBy+AXEN5K3VhNdahYan81mXcT0B
- e9iHNMOavl4mXeIulNyVY2It1BgVqOtAKpHys21yEBharPRfq8aq5AnCpFITM1tK/+Ew
- 74cw==
-X-Gm-Message-State: AOAM533cra2eF3zkUNgcmItNi+5MuOK/JJgavo7L4+yq8TFJH8JNUK/N
- j0OPKcv/eTL08K6+xr25lQcsE0WUJ3uGVkc9yghYDw==
-X-Google-Smtp-Source: ABdhPJwuv3/9oLHPCAAThwJbncDoDe0+vEaaHx0SqrZ12nS/jDEjdx91TQe9PImrenr/WKrUFEJBbbgzZucV8QwN8uw=
-X-Received: by 2002:a17:907:94cf:: with SMTP id
- dn15mr5256195ejc.114.1601505170533; 
- Wed, 30 Sep 2020 15:32:50 -0700 (PDT)
+ id 1kNkkQ-000185-5I
+ for linux-mtd@lists.infradead.org; Wed, 30 Sep 2020 22:38:55 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id BD51822EDE;
+ Thu,  1 Oct 2020 00:38:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1601505523;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=dERL4nV7dCj7Ak1q24nlDbwHf/+PRBhMetovVhnlCeY=;
+ b=EhcLYYzrnTQbMj0KF43owUjRi6qmpUTlAvIqeWWYBHLjXtsWIwZujZ/wqu+gGZmCn9rot3
+ tzsJRMupyHdOCDUC2+a0oA+oyQxUX6LDllDOVpiPb6lOJqINHw1qebFkcG6KHw6ziT2W23
+ ZkNDH5u/d0QLRSveHfvCiAhz6ibpvUw=
 MIME-Version: 1.0
-References: <20200930210824.GA12277@embeddedor>
- <CAG48ez3X3aZwfde3_2Sc+gdtUGRHfzan6oNFiffAvNzFDSsFDw@mail.gmail.com>
- <20200930213634.GA12855@embeddedor>
-In-Reply-To: <20200930213634.GA12855@embeddedor>
-From: Jann Horn <jannh@google.com>
-Date: Thu, 1 Oct 2020 00:32:24 +0200
-Message-ID: <CAG48ez3XqE0m2UmRh+OtmYJRhyCBYY=sdJKaWBXtJZKCRpLMYQ@mail.gmail.com>
-Subject: Re: [PATCH][next] mtd: rawnand: Replace one-element array with
- flexible-array member
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Date: Thu, 01 Oct 2020 00:38:42 +0200
+From: Michael Walle <michael@walle.cc>
+To: Tudor.Ambarus@microchip.com
+Subject: Re: [PATCH v3] mtd: spi-nor: keep lock bits if they are non-volatile
+In-Reply-To: <e56c5f60-2f59-f913-6eea-3bf8dd4c0774@microchip.com>
+References: <20200327155939.13153-1-michael@walle.cc>
+ <e56c5f60-2f59-f913-6eea-3bf8dd4c0774@microchip.com>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <a82d1ce203383af149ed77c5fd6c8985@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200930_183252_869120_FDEF74C0 
-X-CRM114-Status: GOOD (  18.77  )
+X-CRM114-CacheID: sfid-20200930_183854_313042_8E18D707 
+X-CRM114-Status: GOOD (  22.33  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,40 +79,109 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Lucas Stach <dev@lynxeye.de>, Vignesh Raghavendra <vigneshr@ti.com>,
- Richard Weinberger <richard@nod.at>,
- kernel list <linux-kernel@vger.kernel.org>, Stefan Agner <stefan@agner.ch>,
- Jonathan Hunter <jonathanh@nvidia.com>,
- Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
- linux-hardening@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-tegra@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: vigneshr@ti.com, richard@nod.at, linux-kernel@vger.kernel.org,
+ boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
+ miquel.raynal@bootlin.com
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkLCBTZXAgMzAsIDIwMjAgYXQgMTE6MzAgUE0gR3VzdGF2byBBLiBSLiBTaWx2YQo8Z3Vz
-dGF2b2Fyc0BrZXJuZWwub3JnPiB3cm90ZToKPiBPbiBXZWQsIFNlcCAzMCwgMjAyMCBhdCAxMTox
-MDo0M1BNICswMjAwLCBKYW5uIEhvcm4gd3JvdGU6Cj4gPiBPbiBXZWQsIFNlcCAzMCwgMjAyMCBh
-dCAxMTowMiBQTSBHdXN0YXZvIEEuIFIuIFNpbHZhCj4gPiA8Z3VzdGF2b2Fyc0BrZXJuZWwub3Jn
-PiB3cm90ZToKPiA+ID4gVGhlcmUgaXMgYSByZWd1bGFyIG5lZWQgaW4gdGhlIGtlcm5lbCB0byBw
-cm92aWRlIGEgd2F5IHRvIGRlY2xhcmUgaGF2aW5nCj4gPiA+IGEgZHluYW1pY2FsbHkgc2l6ZWQg
-c2V0IG9mIHRyYWlsaW5nIGVsZW1lbnRzIGluIGEgc3RydWN0dXJlLiBLZXJuZWwgY29kZQo+ID4g
-PiBzaG91bGQgYWx3YXlzIHVzZSDigJxmbGV4aWJsZSBhcnJheSBtZW1iZXJz4oCdWzFdIGZvciB0
-aGVzZSBjYXNlcy4gVGhlIG9sZGVyCj4gPiA+IHN0eWxlIG9mIG9uZS1lbGVtZW50IG9yIHplcm8t
-bGVuZ3RoIGFycmF5cyBzaG91bGQgbm8gbG9uZ2VyIGJlIHVzZWRbMl0uCj4gPgo+ID4gQnV0IHRo
-aXMgaXMgbm90IHN1Y2ggYSBjYXNlLCByaWdodD8gSXNuJ3QgdGhpcyBhIHRydWUgZml4ZWQtc2l6
-ZQo+ID4gYXJyYXk/IEl0IHNvdW5kcyBsaWtlIHlvdSdyZSBqdXN0IGNoYW5naW5nIGl0IGJlY2F1
-c2UgaXQKPiA+IHBhdHRlcm4tbWF0Y2hlZCBvbiAiYXJyYXkgb2YgbGVuZ3RoIDEgYXQgdGhlIGVu
-ZCBvZiBhIHN0cnVjdCIuCj4KPiBZZWFoOyBJIHNob3VsZCBoYXZlIGNoYW5nZWQgdGhhdCAnZHlu
-YW1pY2FsbHknIHBhcnQgb2YgdGhlIHRleHQgYWJvdmUKPiBhIGJpdC4gSG93ZXZlciwgYXMgSSBj
-b21tZW50ZWQgaW4gdGhlIHRleHQgYmVsb3csIGluIHRoZSBjYXNlIHRoYXQgbW9yZQo+IENTIElE
-cyBhcmUgbmVlZGVkIChsZXQncyB3YWl0IGZvciB0aGUgbWFpbnRhaW5lcnMgdG8gY29tbWVudCBv
-biB0aGlzLi4uKQo+IGluIHRoZSBmdXR1cmUsIHRoaXMgY2hhbmdlIG1ha2VzIHRoZSBjb2RlIG1v
-cmUgbWFpbnRhaW5hYmxlLCBhcyBmb3IKPiB0aGUgYWxsb2NhdGlvbiBwYXJ0LCB0aGUgZGV2ZWxv
-cGVyIHdvdWxkIG9ubHkgaGF2ZSB0byB1cGRhdGUgdGhlIENTX04KPiBtYWNybyB0byB0aGUgbnVt
-YmVyIG9mIENTIElEcyB0aGF0IGFyZSBuZWVkZWQuCgpCdXQgaW4gdGhhdCBjYXNlLCBzaG91bGRu
-J3QgeW91IGNoYW5nZSBpdCB0byAiaW50IGNzW0NTX05dIiBhbmQgZ2V0CnJpZCBvZiB0aGUgc3Ry
-dWN0X3NpemUoKSBzdHVmZj8KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Hi Tudor,
+
+>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+>> index cc68ea84318e..fd1c36d70a13 100644
+>> --- a/drivers/mtd/spi-nor/core.c
+>> +++ b/drivers/mtd/spi-nor/core.c
+>> @@ -2916,20 +2916,38 @@ static int spi_nor_quad_enable(struct spi_nor 
+>> *nor)
+>>  }
+>> 
+>>  /**
+>> - * spi_nor_unlock_all() - Unlocks the entire flash memory array.
+>> + * spi_nor_global_unprotect() - Perform a global unprotect of the 
+>> memory area.
+>>   * @nor:	pointer to a 'struct spi_nor'.
+>>   *
+>>   * Some SPI NOR flashes are write protected by default after a 
+>> power-on reset
+>>   * cycle, in order to avoid inadvertent writes during power-up. 
+>> Backward
+>>   * compatibility imposes to unlock the entire flash memory array at 
+>> power-up
+>> - * by default.
+>> + * by default. Do it only for flashes where the block protection bits
+>> + * are volatile, this is indicated by SNOR_F_NEED_UNPROTECT.
+>> + *
+>> + * We cannot use spi_nor_unlock(nor->params.size) here because there 
+>> are
+>> + * legacy devices (eg. AT25DF041A) which need a "global unprotect" 
+>> command.
+>> + * This is done by writing 0b0x0000xx to the status register. This 
+>> will also
+>> + * work for all other flashes which have these bits mapped to BP0 to 
+>> BP3.
+>> + * The top most bit is ususally some kind of lock bit for the block
+>> + * protection bits.
+>>   */
+>> -static int spi_nor_unlock_all(struct spi_nor *nor)
+>> +static int spi_nor_global_unprotect(struct spi_nor *nor)
+>>  {
+>> -	if (nor->flags & SNOR_F_HAS_LOCK)
+>> -		return spi_nor_unlock(&nor->mtd, 0, nor->params->size);
+>> +	int ret;
+>> 
+>> -	return 0;
+>> +	dev_dbg(nor->dev, "unprotecting entire flash\n");
+>> +	ret = spi_nor_read_sr(nor, nor->bouncebuf);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	nor->bouncebuf[0] &= ~SR_GLOBAL_UNPROTECT_MASK;
+>> +
+>> +	/*
+>> +	 * Don't use spi_nor_write_sr1_and_check() because writing the 
+>> status
+>> +	 * register might fail if the flash is hardware write protected.
+>> +	 */
+>> +	return spi_nor_write_sr(nor, nor->bouncebuf, 1);
+>>  }
+> 
+> This won't work for all the flashes. You use a GENMASK(5, 2) to clear
+> the Status Register even for BP0-2 flashes and you end up clearing 
+> BIT(5)
+> which can lead to side effects.
+> 
+> We should instead introduce a nor->params->locking_ops->global_unlock() 
+> hook
+> for the flashes that have special opcodes that unlock all the flash 
+> blocks,
+> or for the flashes that deviate from the "clear just your BP bits" 
+> rule.
+
+Wouldn't it make more sense to just set params->locking_ops for these 
+flashes
+to different functions? or even provide a spi_nor_global_unprotect_ops 
+in
+core.c and these flashes will just set them. there is no individual 
+sector
+range lock for these chips. just a lock all or nothing.
+
+If it is more common and not just one vendor it might also make sense to 
+add
+a seperate flag which will then set the locking ops to
+spi_nor_global_unprotect_ops, also it seems that there have to be two 
+writes
+to the status register, one to clear SPRL and then one to clear the BP 
+bits.
+See for example [1] Table 9-2. I'll have to go through the datasheets 
+again
+to see what flashes just have a global (un)protect.
+
+[1] https://www.adestotech.com/wp-content/uploads/doc3668.pdf
+
+-michael
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
