@@ -5,19 +5,19 @@ X-Spam-Level:
 X-Spam-Status: No, score=-13.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75AE3C4727C
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 19:02:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C510C4727C
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 19:03:13 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BC1E42084C
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 19:02:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 339DD2084C
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Sep 2020 19:03:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oEeVJXjY";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="BGp8yDIN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC1E42084C
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="0DNSPt89";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="oJBTPE8P"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 339DD2084C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,62 +26,60 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=JYy1h3jfw5FSbt5id8R1UGw86+ikNvL7Ii3iaBWmOkY=; b=oEeVJXjYcl81ksEmra2dSiO1G
-	4Wwk5bKSwgb4UIoEWZ/AlOLj6qSsx6GmdYiAsPhqBDHO1F34dSq/A/z3yhKB+PfVcH4cn+DVU0/Tm
-	z5/vm8ZPzixmVixEz+lunCxP9tLfyJj4AE3p31qIxbT4l8/sNYIzHTjL4jMyVsUBYTFHSpzjk60b1
-	nwPdXaR+X987i0SW9X//4ku8tCkAVHEODewv3z/JzARRDu2vklAMuhxj9xx9k6ALj/hpWK787ccJq
-	m3hjxlYwOVnIiPmCBd9IkFWAh0UWXtidEOAWE2Fp40/MIS9xzp+eqT6chBCBPYPWCHXUWcWdgpUKN
-	AUOTnjzRg==;
+	 bh=eGgR/mBhqJxeceYG1W73BSKcGD+PjWev/AKJJcESwJk=; b=0DNSPt89oJoKO3VtbQYDdsv5k
+	FkDerVhsS2NlsHKdQW/r/FOMVxUdx1JQ00Sbabtf0aBfnXHqk7IEmYXWFtmEpU5uU5WkVqT1ohD6X
+	R5A2kJZpptj6GsHJuLqUGsHdBMInx8mmP2zWZsQa3OrYYY7Okfpuj2PedCI+E6U/OHXFKPBO3aaVe
+	ELpGtCpIsg6C1XOvU1cqA06wu0GQUkj7A5lv8zEGUyvj32PSOhb5/rOqFZqJYkzYZF4b/FFMsadxC
+	qW+v8K+xZrklOT/ttLbWc1joGwmcKpxMfu2qDHGC1+TCo8UToLlSJ2ng73ElrGyi+I4bYTVDQuXt3
+	ZT3xNoijQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kNhLw-0001ho-Uv; Wed, 30 Sep 2020 19:01:25 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1kNhLq-0001du-22; Wed, 30 Sep 2020 19:01:18 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kNhIt-0000Cc-1Q
- for linux-mtd@lists.infradead.org; Wed, 30 Sep 2020 18:58:18 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08UIwBrh022475;
- Wed, 30 Sep 2020 13:58:11 -0500
+ id 1kNhIp-0000Ad-HV
+ for linux-mtd@lists.infradead.org; Wed, 30 Sep 2020 18:58:12 +0000
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08UIw7KU118484;
+ Wed, 30 Sep 2020 13:58:07 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1601492291;
- bh=0kCUjiciqZ9XvbSWmPeNtQGPAfKKza3RjZS1Gie7/mk=;
+ s=ti-com-17Q1; t=1601492287;
+ bh=r6h/O2PjxfEWS94nIe+nlsfr+zbArpU8w66AAlts2ZE=;
  h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=BGp8yDINtknSVoJ/HS3zO2OEvSjQ3UeGjjoMay2TF7wc19oTk4hBsD6bbrGFNQ4JP
- o57IIiDiMAioxuk9GRPe6u5FafIJg591f2ersbAF6pc7r8PybgDTDuQQ/xVOE/umXa
- T9ffY3RlB6rxfA1IUnvjIAmW+vVZokd3vGbc6YdY=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08UIwAUT081601
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 30 Sep 2020 13:58:10 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ b=oJBTPE8Ps/buGatSMCqHxZC08NSqDgAibx0fS1iyNis7TLVuIIkFA6lFzxYDf/PMT
+ g+yr4ub+m6qq69qA/hE8g3XyjTP8XXxdflywU302BxmGSSC9/Ew0zuu5cTn0ldWLWJ
+ 6IEKaIR9FLJCvX9DlS40yBkLe2rZcOvuVg2tsTAY=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08UIw7dJ065693;
+ Wed, 30 Sep 2020 13:58:07 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
- Sep 2020 13:58:10 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ Sep 2020 13:58:07 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 30 Sep 2020 13:58:10 -0500
+ Frontend Transport; Wed, 30 Sep 2020 13:58:07 -0500
 Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
  [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08UIvX3K007008;
- Wed, 30 Sep 2020 13:58:07 -0500
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08UIvX3J007008;
+ Wed, 30 Sep 2020 13:58:04 -0500
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
  <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
  Raghavendra <vigneshr@ti.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v14 11/15] mtd: spi-nor: sfdp: detect Soft Reset sequence
- support from BFPT
-Date: Thu, 1 Oct 2020 00:27:28 +0530
-Message-ID: <20200930185732.6201-12-p.yadav@ti.com>
+Subject: [PATCH v14 10/15] mtd: spi-nor: Parse SFDP SCCR Map
+Date: Thu, 1 Oct 2020 00:27:27 +0530
+Message-ID: <20200930185732.6201-11-p.yadav@ti.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200930185732.6201-1-p.yadav@ti.com>
 References: <20200930185732.6201-1-p.yadav@ti.com>
 MIME-Version: 1.0
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20200930_145815_211112_F5310465 
-X-CRM114-Status: GOOD (  14.72  )
+X-CRM114-CacheID: sfid-20200930_145811_698322_FD6EB7EB 
+X-CRM114-Status: GOOD (  15.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,57 +98,100 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-A Soft Reset sequence will return the flash to Power-on-Reset (POR)
-state. It consists of two commands: Soft Reset Enable and Soft Reset.
-Find out if the sequence is supported from BFPT DWORD 16.
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
 
+Parse just the 22nd dword and look for the 'DTR Octal Mode Enable
+Volatile bit'.
+
+SPI_NOR_IO_MODE_EN_VOLATILE should be set just for the flashes
+that don't define the optional SFDP SCCR Map. For the others,
+let the SFDP do its job and fill the SNOR_F_IO_MODE_EN_VOLATILE
+flag. We avoid this way polluting the flash flags when declaring
+one.
+
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/core.h | 1 +
- drivers/mtd/spi-nor/sfdp.c | 4 ++++
- drivers/mtd/spi-nor/sfdp.h | 2 ++
- 3 files changed, 7 insertions(+)
+ drivers/mtd/spi-nor/sfdp.c | 52 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 52 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 105a4ddeb309..0a775a7b5606 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -27,6 +27,7 @@ enum spi_nor_option_flags {
- 	SNOR_F_HAS_4BIT_BP      = BIT(12),
- 	SNOR_F_HAS_SR_BP3_BIT6  = BIT(13),
- 	SNOR_F_IO_MODE_EN_VOLATILE = BIT(14),
-+	SNOR_F_SOFT_RESET	= BIT(15),
- };
- 
- struct spi_nor_read_command {
 diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index 0b5b9ea44cfc..f6d77004fd4e 100644
+index ebc1188f7533..0b5b9ea44cfc 100644
 --- a/drivers/mtd/spi-nor/sfdp.c
 +++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -608,6 +608,10 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 		break;
- 	}
+@@ -21,6 +21,10 @@
+ #define SFDP_SECTOR_MAP_ID	0xff81	/* Sector Map Table */
+ #define SFDP_4BAIT_ID		0xff84  /* 4-byte Address Instruction Table */
+ #define SFDP_PROFILE1_ID	0xff05	/* xSPI Profile 1.0 table. */
++#define SFDP_SCCR_MAP_ID	0xff87	/*
++					 * Status, Control and Configuration
++					 * Register Map.
++					 */
  
-+	/* Soft Reset support. */
-+	if (bfpt.dwords[BFPT_DWORD(16)] & BFPT_DWORD16_SWRST_EN_RST)
-+		nor->flags |= SNOR_F_SOFT_RESET;
-+
- 	/* Stop here if not JESD216 rev C or later. */
- 	if (bfpt_header->length == BFPT_DWORD_MAX_JESD216B)
- 		return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt,
-diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
-index 6d7243067252..89152ae1cf3e 100644
---- a/drivers/mtd/spi-nor/sfdp.h
-+++ b/drivers/mtd/spi-nor/sfdp.h
-@@ -90,6 +90,8 @@ struct sfdp_bfpt {
- #define BFPT_DWORD15_QER_SR2_BIT1_NO_RD		(0x4UL << 20)
- #define BFPT_DWORD15_QER_SR2_BIT1		(0x5UL << 20) /* Spansion */
+ #define SFDP_SIGNATURE		0x50444653U
  
-+#define BFPT_DWORD16_SWRST_EN_RST		BIT(12)
+@@ -1195,6 +1199,50 @@ static int spi_nor_parse_profile1(struct spi_nor *nor,
+ 	return ret;
+ }
+ 
++#define SCCR_DWORD22_OCTAL_DTR_EN_VOLATILE		BIT(31)
 +
- #define BFPT_DWORD18_CMD_EXT_MASK		GENMASK(30, 29)
- #define BFPT_DWORD18_CMD_EXT_REP		(0x0UL << 29) /* Repeat */
- #define BFPT_DWORD18_CMD_EXT_INV		(0x1UL << 29) /* Invert */
++/**
++ * spi_nor_parse_sccr() - Parse the Status, Control and Configuration Register
++ *                        Map.
++ * @nor:		pointer to a 'struct spi_nor'
++ * @sccr_header:	pointer to the 'struct sfdp_parameter_header' describing
++ *			the SCCR Map table length and version.
++ * @params:		pointer to the 'struct spi_nor_flash_parameter' to be.
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++static int spi_nor_parse_sccr(struct spi_nor *nor,
++			      const struct sfdp_parameter_header *sccr_header,
++			      struct spi_nor_flash_parameter *params)
++{
++	u32 *dwords, addr;
++	size_t len;
++	int ret;
++	u8 io_mode_en_volatile;
++
++	len = sccr_header->length * sizeof(*dwords);
++	dwords = kmalloc(len, GFP_KERNEL);
++	if (!dwords)
++		return -ENOMEM;
++
++	addr = SFDP_PARAM_HEADER_PTP(sccr_header);
++	ret = spi_nor_read_sfdp(nor, addr, len, dwords);
++	if (ret)
++		goto out;
++
++	le32_to_cpu_array(dwords, sccr_header->length);
++
++	io_mode_en_volatile = FIELD_GET(SCCR_DWORD22_OCTAL_DTR_EN_VOLATILE,
++					dwords[22]);
++
++	if (io_mode_en_volatile)
++		nor->flags |= SNOR_F_IO_MODE_EN_VOLATILE;
++
++out:
++	kfree(dwords);
++	return ret;
++}
++
+ /**
+  * spi_nor_parse_sfdp() - parse the Serial Flash Discoverable Parameters.
+  * @nor:		pointer to a 'struct spi_nor'
+@@ -1300,6 +1348,10 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
+ 			err = spi_nor_parse_profile1(nor, param_header, params);
+ 			break;
+ 
++		case SFDP_SCCR_MAP_ID:
++			err = spi_nor_parse_sccr(nor, param_header, params);
++			break;
++
+ 		default:
+ 			break;
+ 		}
 -- 
 2.28.0
 
