@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FE6DC4741F
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Oct 2020 20:23:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64CEDC4727E
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Oct 2020 20:23:26 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 02EB42074B
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Oct 2020 20:23:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 107762074B
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Oct 2020 20:23:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="SnARZ04B";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="CrXx/QkV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 02EB42074B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XyqWuY9H";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="iyUwcYHM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 107762074B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,62 +26,62 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=EthFo7MwCPeJm6iw4KYCt1viJqHDepYOLCrQkqQYY1E=; b=SnARZ04BHUA8mZuS7PN+miUST
-	2fy7cIHdOa4x5su7Dui1n9yuCRBwIXtYDzj/CuD8ITm/VfzNOHVs66u6ywAzNnZWEMP3xedrgQM5K
-	hkQjWiHYwNwzWeUUo6ItMYJ369l/BCfJRWyukYjF8u5vBR/nTwRJ6Z6dToECVH7yFvofVC/DQ8FOQ
-	YH1zWaSuR6ACjR8Y5iRi1oDjwgSffL/NbNHR8z7sSNzhmswJUH943wrfoTJVqLmKsby3Cr5RRQ/Li
-	j34Ym/N+sf26kj5zs93suS7sDjpWnLhspTqucZSZm+eqic0CWK3YTvTdBwB/Do/+RH73Um4cdsUiA
-	3FzWaH5AA==;
+	 bh=JDWkdx0VpLMpw39cAdMotCOfl7v6QKNW25ixyud66yY=; b=XyqWuY9HeUeo2l7FewZYc+FM+
+	GMiG0Bkr0u43gkXfbLG6AAaDgG5Ce3K5+zwWqzRwa2x4klv8ZmmANgXqPQURMDNGi1LxnqpRw0r4X
+	aexhqBWZz5WCo0sPM2s286u0CJmX+kOB2VIOHcqB98KIHJc+1rPWPDHJVlQHru1CQ+VyhELo4lkpm
+	rRKK/zwUr2a4WFiTiBrQSJds8zEWa2JJENU9Yw//3RzMtEyWGXzBeWuSqOJTqt67tnMWswHd8RUB3
+	1v5sLgjjsHHOswxNvP792KWFRWtcHetZ9ZxXaMoXaP59cEdyQoQtFg7hBYcidW73u5WJXanXBbPeC
+	FmtgKH67Q==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kO55m-0000a0-TY; Thu, 01 Oct 2020 20:22:18 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1kO56M-0000ws-0c; Thu, 01 Oct 2020 20:22:54 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kO54u-000079-V3
- for linux-mtd@lists.infradead.org; Thu, 01 Oct 2020 20:21:30 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 091KLKdJ029508;
- Thu, 1 Oct 2020 15:21:20 -0500
+ id 1kO559-0000E2-58
+ for linux-mtd@lists.infradead.org; Thu, 01 Oct 2020 20:21:43 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 091KLZs9064491;
+ Thu, 1 Oct 2020 15:21:35 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1601583680;
- bh=ekguoiaEgJ8AR0JMZyX9q1yYoDUF7XXFh0TfRzFSGvc=;
+ s=ti-com-17Q1; t=1601583695;
+ bh=fFQ9ROMnaIqAXlNf8BOhwpNKU6AFYMeWsBKsRgGu328=;
  h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=CrXx/QkVn/W8fJEYNdLKXNX+KGW11BTST8g879A0EZIfPaGtwSW+4fTbYVCQ2mEHP
- wk9IhgpmyyJ9g82dP5uXT0JSpaSZmFvD5zitVQwYsBhtRjvbreOCeZ9S2aAzyEDrl1
- eY0cFGJ95Z9DuJiM2uodw9SEoHXPqDkR6SWw2BLA=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 091KLKgQ071538
+ b=iyUwcYHMzTUmWGuAxBoAg+O9Q2R82LUpOrJehU+AR6pdW1fXq4I7LS9BinDleFOPj
+ WqeS/alMAxeGFZlC1Y33q6v4ItdKjVrkqCTew3MaKPJVRE4WA+lyeHFvP6ididUsav
+ vo9aA0Eko0G0KNxtZgRcCiUj/Fe8HLvESr43PVwY=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 091KLZBB127070
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 1 Oct 2020 15:21:20 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ Thu, 1 Oct 2020 15:21:35 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 1 Oct
- 2020 15:21:20 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ 2020 15:21:35 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 1 Oct 2020 15:21:20 -0500
+ Frontend Transport; Thu, 1 Oct 2020 15:21:35 -0500
 Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
  [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 091KKkcP123930;
- Thu, 1 Oct 2020 15:21:17 -0500
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 091KKkcU123930;
+ Thu, 1 Oct 2020 15:21:32 -0500
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
  <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
  Raghavendra <vigneshr@ti.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v15 10/15] mtd: spi-nor: core: enable octal DTR mode when
- possible
-Date: Fri, 2 Oct 2020 01:50:40 +0530
-Message-ID: <20201001202045.21499-11-p.yadav@ti.com>
+Subject: [PATCH v15 15/15] mtd: spi-nor: micron-st: allow using MT35XU512ABA
+ in Octal DTR mode
+Date: Fri, 2 Oct 2020 01:50:45 +0530
+Message-ID: <20201001202045.21499-16-p.yadav@ti.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201001202045.21499-1-p.yadav@ti.com>
 References: <20201001202045.21499-1-p.yadav@ti.com>
 MIME-Version: 1.0
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201001_162125_709708_0DAE01A2 
-X-CRM114-Status: GOOD (  17.21  )
+X-CRM114-CacheID: sfid-20201001_162139_580060_CF5E13FE 
+X-CRM114-Status: GOOD (  19.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,91 +100,135 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Allow flashes to specify a hook to enable octal DTR mode. Use this hook
-whenever possible to get optimal transfer speeds.
+Since this flash doesn't have a Profile 1.0 table, the Octal DTR
+capabilities are enabled in the post SFDP fixup, along with the 8D-8D-8D
+fast read settings.
+
+Enable Octal DTR mode with 20 dummy cycles to allow running at the
+maximum supported frequency of 200Mhz.
+
+The flash supports the soft reset sequence. So, add the flag in the
+flash's info.
 
 Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/core.c | 38 ++++++++++++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/core.h |  2 ++
- 2 files changed, 40 insertions(+)
+ drivers/mtd/spi-nor/micron-st.c | 100 +++++++++++++++++++++++++++++++-
+ 1 file changed, 99 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index e91ddb409699..cf6ada7c8a7b 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -3068,6 +3068,38 @@ static int spi_nor_init_params(struct spi_nor *nor)
- 	return 0;
- }
+diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+index ef3695080710..bf3c5110742c 100644
+--- a/drivers/mtd/spi-nor/micron-st.c
++++ b/drivers/mtd/spi-nor/micron-st.c
+@@ -8,10 +8,108 @@
  
-+/** spi_nor_octal_dtr_enable() - enable Octal DTR I/O if needed
-+ * @nor:                 pointer to a 'struct spi_nor'
-+ * @enable:              whether to enable or disable Octal DTR
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int spi_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
+ #include "core.h"
+ 
++#define SPINOR_OP_MT_DTR_RD	0xfd	/* Fast Read opcode in DTR mode */
++#define SPINOR_OP_MT_RD_ANY_REG	0x85	/* Read volatile register */
++#define SPINOR_OP_MT_WR_ANY_REG	0x81	/* Write volatile register */
++#define SPINOR_REG_MT_CFR0V	0x00	/* For setting octal DTR mode */
++#define SPINOR_REG_MT_CFR1V	0x01	/* For setting dummy cycles */
++#define SPINOR_MT_OCT_DTR	0xe7	/* Enable Octal DTR. */
++#define SPINOR_MT_EXSPI		0xff	/* Enable Extended SPI (default) */
++
++static int spi_nor_micron_octal_dtr_enable(struct spi_nor *nor, bool enable)
 +{
++	struct spi_mem_op op;
++	u8 *buf = nor->bouncebuf;
 +	int ret;
 +
-+	if (!nor->params->octal_dtr_enable)
-+		return 0;
++	if (enable) {
++		/* Use 20 dummy cycles for memory array reads. */
++		ret = spi_nor_write_enable(nor);
++		if (ret)
++			return ret;
 +
-+	if (!(nor->read_proto == SNOR_PROTO_8_8_8_DTR &&
-+	      nor->write_proto == SNOR_PROTO_8_8_8_DTR))
-+		return 0;
++		*buf = 20;
++		op = (struct spi_mem_op)
++			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_MT_WR_ANY_REG, 1),
++				   SPI_MEM_OP_ADDR(3, SPINOR_REG_MT_CFR1V, 1),
++				   SPI_MEM_OP_NO_DUMMY,
++				   SPI_MEM_OP_DATA_OUT(1, buf, 1));
 +
-+	if (!(nor->flags & SNOR_F_IO_MODE_EN_VOLATILE))
-+		return 0;
++		ret = spi_mem_exec_op(nor->spimem, &op);
++		if (ret)
++			return ret;
 +
-+	ret = nor->params->octal_dtr_enable(nor, enable);
++		ret = spi_nor_wait_till_ready(nor);
++		if (ret)
++			return ret;
++	}
++
++	ret = spi_nor_write_enable(nor);
 +	if (ret)
 +		return ret;
 +
 +	if (enable)
-+		nor->reg_proto = SNOR_PROTO_8_8_8_DTR;
++		*buf = SPINOR_MT_OCT_DTR;
 +	else
-+		nor->reg_proto = SNOR_PROTO_1_1_1;
++		*buf = SPINOR_MT_EXSPI;
++
++	op = (struct spi_mem_op)
++		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_MT_WR_ANY_REG, 1),
++			   SPI_MEM_OP_ADDR(enable ? 3 : 4,
++					   SPINOR_REG_MT_CFR0V, 1),
++			   SPI_MEM_OP_NO_DUMMY,
++			   SPI_MEM_OP_DATA_OUT(1, buf, 1));
++
++	if (!enable)
++		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
++
++	ret = spi_mem_exec_op(nor->spimem, &op);
++	if (ret)
++		return ret;
++
++	/* Give some time for the mode change to take place. */
++	usleep_range(1000, 1500);
 +
 +	return 0;
 +}
 +
- /**
-  * spi_nor_quad_enable() - enable Quad I/O if needed.
-  * @nor:                pointer to a 'struct spi_nor'
-@@ -3107,6 +3139,12 @@ static int spi_nor_init(struct spi_nor *nor)
- {
- 	int err;
- 
-+	err = spi_nor_octal_dtr_enable(nor, true);
-+	if (err) {
-+		dev_dbg(nor->dev, "octal mode not supported\n");
-+		return err;
-+	}
++static void mt35xu512aba_default_init(struct spi_nor *nor)
++{
++	nor->params->octal_dtr_enable = spi_nor_micron_octal_dtr_enable;
++}
 +
- 	err = spi_nor_quad_enable(nor);
- 	if (err) {
- 		dev_dbg(nor->dev, "quad mode not supported\n");
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index eaece1123c0b..105a4ddeb309 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -204,6 +204,7 @@ struct spi_nor_locking_ops {
-  *                      higher index in the array, the higher priority.
-  * @erase_map:		the erase map parsed from the SFDP Sector Map Parameter
-  *                      Table.
-+ * @octal_dtr_enable:	enables SPI NOR octal DTR mode.
-  * @quad_enable:	enables SPI NOR quad mode.
-  * @set_4byte_addr_mode: puts the SPI NOR in 4 byte addressing mode.
-  * @convert_addr:	converts an absolute address into something the flash
-@@ -227,6 +228,7 @@ struct spi_nor_flash_parameter {
- 
- 	struct spi_nor_erase_map        erase_map;
- 
-+	int (*octal_dtr_enable)(struct spi_nor *nor, bool enable);
- 	int (*quad_enable)(struct spi_nor *nor);
- 	int (*set_4byte_addr_mode)(struct spi_nor *nor, bool enable);
- 	u32 (*convert_addr)(struct spi_nor *nor, u32 addr);
++static void mt35xu512aba_post_sfdp_fixup(struct spi_nor *nor)
++{
++	/* Set the Fast Read settings. */
++	nor->params->hwcaps.mask |= SNOR_HWCAPS_READ_8_8_8_DTR;
++	spi_nor_set_read_settings(&nor->params->reads[SNOR_CMD_READ_8_8_8_DTR],
++				  0, 20, SPINOR_OP_MT_DTR_RD,
++				  SNOR_PROTO_8_8_8_DTR);
++
++	nor->cmd_ext_type = SPI_NOR_EXT_REPEAT;
++	nor->params->rdsr_dummy = 8;
++	nor->params->rdsr_addr_nbytes = 0;
++
++	/*
++	 * The BFPT quad enable field is set to a reserved value so the quad
++	 * enable function is ignored by spi_nor_parse_bfpt(). Make sure we
++	 * disable it.
++	 */
++	nor->params->quad_enable = NULL;
++}
++
++static struct spi_nor_fixups mt35xu512aba_fixups = {
++	.default_init = mt35xu512aba_default_init,
++	.post_sfdp = mt35xu512aba_post_sfdp_fixup,
++};
++
+ static const struct flash_info micron_parts[] = {
+ 	{ "mt35xu512aba", INFO(0x2c5b1a, 0, 128 * 1024, 512,
+ 			       SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
+-			       SPI_NOR_4B_OPCODES) },
++			       SPI_NOR_4B_OPCODES | SPI_NOR_OCTAL_DTR_READ |
++			       SPI_NOR_OCTAL_DTR_PP |
++			       SPI_NOR_IO_MODE_EN_VOLATILE)
++	  .fixups = &mt35xu512aba_fixups},
+ 	{ "mt35xu02g", INFO(0x2c5b1c, 0, 128 * 1024, 2048,
+ 			    SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
+ 			    SPI_NOR_4B_OPCODES) },
 -- 
 2.28.0
 
