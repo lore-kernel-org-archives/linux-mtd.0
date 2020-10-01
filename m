@@ -2,152 +2,69 @@ Return-Path: <SRS0=+4Px=DI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43F67C4727C
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Oct 2020 07:53:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ADAD5C4727C
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Oct 2020 08:07:03 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C83DF2145D
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Oct 2020 07:53:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 55EDE208B8
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Oct 2020 08:07:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Bi3yjBEL";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="1zPUsH6v";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="M7tf39Qf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C83DF2145D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EqZBjRty"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 55EDE208B8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:References:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=szwwi/h6D6ZOy8yLyAsZmSePT0pxHxpJwgKdWYHL+lA=; b=Bi3yjBELl2qWTiH5t6cRiITWu
-	ajc7C4G/+2jFfaSGVFqxVL/4slcab0ACqf3ORDiIyb5e2KZ4LiyX2wK6rq7HVE34bHMuKl4PlY9Ri
-	PlrwkBTH5oKfJ8xcjpyvllWhb4j2rE7wEnMopiUasQ0udbVJ4V8QklvGyUuH990CV9PLEJZdA5Q7t
-	bxfUJEB002LnC7Vo+uml3jSTnZBpRK4+2VnxdJULojp8DhAtIc4VxrWO2KRyCcHgK4yC9t/LA02Gz
-	rh1s+a3SOMBYGf7uLkncnnYx5aT1XKK2LUDBpz6Tp+thPlh9S/L34dInJxoB89vJZBGvuLwbr5ZWE
-	UGMu27Fyg==;
+	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=FLA31oGinUm9bvjWpIp5OG6leCyuTfmXOfnai5cF6Ds=; b=EqZBjRtyksSKrrKNtFZzgN1wwY
+	+RgEDOptof24fy4k8mRpdY0980EuJGXSUZ/J/d5kXAzJe8iERtH/FhHuUME9Fv4WcpRF4MpRHMAMQ
+	KddIMOXPYZrskYIkoQIgKzd5sVHQcbG7AGfH7JoaI5aCF3APwMCABeRTIYEJL05KmOLXasB71libH
+	SGILs5q7Ja4nIPJ2SvYTxmErvOs9q+EB5rIfx2HsMenlKroGqQFDEijUCCSWNVjhYGvXEtQtsmH6A
+	lUifUwdXdOfpyRJaBJh/CIiWhnaF51o1/GsKoVc8ijbSHycRzeb9t1/Go7irOtmewN+kILM/51ayb
+	pr5asx3w==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kNtOS-0003v7-MU; Thu, 01 Oct 2020 07:52:48 +0000
-Received: from esa2.microchip.iphmx.com ([68.232.149.84])
+	id 1kNtbh-0006vA-SV; Thu, 01 Oct 2020 08:06:29 +0000
+Received: from mga06.intel.com ([134.134.136.31])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kNtOQ-0003tl-8M
- for linux-mtd@lists.infradead.org; Thu, 01 Oct 2020 07:52:47 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1601538765; x=1633074765;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=Oef8e5K54IIqocrvLaxrkxdCUAeslKALdDeaPoF4hG4=;
- b=1zPUsH6vA+j58DFpsrT6rvkNuYW15h1LLQmWPGGfHs2vDl3KxQtvANlF
- gEzHsc05GLnKlt5HL2DjiZwu+xSnFIuNAToEX949trQ3sA+bh5BGctrhG
- 7RmRt4G4cZYoirBSZZJec8z381NEoqs6tXMsXQBclm939tLCdpp0jtwDD
- YKtCjpQSrctHbsVYyQMhwxlfktoKQhSZOpgLx4f6HMuP2yDWm4S5aHx22
- exdAqhw+d3tGai/F/oyPHBKIglmMrcPwAkVdrJ+omVxu7HUhZ50O5iM1C
- u8iNwfLCiXD9JdsojF6FWuMdMZwcg4ZnslotObK7E2gUmk8Vo36+SO2TA g==;
-IronPort-SDR: BX4P5xS8ngr3T2tgv/+AeH0Y1nkYAjzJm9+fDpim4PwJbUSwoaAEPJUP9bEv0ghlrMsl1FOxXw
- OczFYfZDscEnUuClepXQuFo/3T8NFrB/VHh3v3pwT/8B2YpYIr3en8uJeUlegKmlPvG3rdYH/k
- 0HPlla3Ja76as2ez4YCUp5y6LLVblFYGm4FFHlHpkdFjb0K64y46lhUuGKjxSyKAEXAIIEgb4z
- ybnYpxaXUmyKSFQF5kdy0VJ7p3TaJxCIYKRB50xjGBbspVx4RCLAoBSmW9iMzznxVDk+2YXXtT
- 8jU=
-X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; d="scan'208";a="91051294"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 01 Oct 2020 00:52:43 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 1 Oct 2020 00:52:13 -0700
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, 
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
- Transport; Thu, 1 Oct 2020 00:52:13 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JzTe1WxyDcn29Yesj1K9pA3tOWnpKQw8FOwI5LZN26tgZBgDZYogroIvErXuMPJoPw9VnQbNA8B4uXsqmDPRSyFyUiaxulIkvZKg70AjtQNPeq1GxKVNNJ0Kp5ydxd2r0cNQYwrmWbHGvttlhJY1Y6GA50dCVFUXg84pV+uA6XQ9EViA2vl2PT1UmdFfe9NVX/egLQh5A9/oT0c7oD3/huIA9FaOHLasmbooSLejdic4XGC/CqbxvnkIU1IJ8PdUBFoFzlTqrMgMlw3ZEpgNVTXYtnah4u0xweByrBePjOrvKUSiptKaDIQexwvbEfrdhUEQ3fVcsIgjJPxMCSNnVg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Oef8e5K54IIqocrvLaxrkxdCUAeslKALdDeaPoF4hG4=;
- b=faNUNJee0CYNYpjJmJGNqpG7Wsb/LEUmtp1IvYWvP7zroNCsIm66lVxRg72KtwFh1pJw34hlH9LauQxlTzM85qQaPHj/LhjRYTI6YIifdQrRhucwfjkaLbs/lTmA8hj1936tTZz4AQr+KvmWKViPm241sVXBJkhu1+P3qiSuyA7pK3tHav+qW/wQWgyIwl81YSQFsuSo1zdl3SCg3lrsvpQgMBaC01kIiCNb0KYU+q6Mn2sdJVVqjPnAH7miNI9+b7Sp7A7+GBeF82GgiNSo1mlGahLmZCTFzBou8CY05lRdyRz3GzF5mSAKPcALoWEW+7NKql7URJl7Ba+vAeIyww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Oef8e5K54IIqocrvLaxrkxdCUAeslKALdDeaPoF4hG4=;
- b=M7tf39Qf9XljqUXroNmuD9drg/IH4WP7ldihorqJSnZ1AYb16yENFIvQ5eIV8NE4NNqTlGTDx/Grvgug2RnRbUKVPkKeIqGCa4nXyOeuTl9l4npa8+Z+boccBLshwQbPlaD2yeFFPaligEX5oXjfcdaT52MtTzgteqMQxsikvbU=
-Received: from DM5PR11MB1914.namprd11.prod.outlook.com (2603:10b6:3:112::12)
- by DM6PR11MB4691.namprd11.prod.outlook.com (2603:10b6:5:2a6::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.24; Thu, 1 Oct
- 2020 07:52:36 +0000
-Received: from DM5PR11MB1914.namprd11.prod.outlook.com
- ([fe80::f44a:f58e:c13b:947a]) by DM5PR11MB1914.namprd11.prod.outlook.com
- ([fe80::f44a:f58e:c13b:947a%4]) with mapi id 15.20.3433.032; Thu, 1 Oct 2020
- 07:52:36 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <p.yadav@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
- <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v14 07/15] mtd: spi-nor: core: do 2 byte reads for SR and
- FSR in DTR mode
-Thread-Topic: [PATCH v14 07/15] mtd: spi-nor: core: do 2 byte reads for SR and
- FSR in DTR mode
-Thread-Index: AQHWl8fTc0NzaLTqvk2yuALqCAPR9w==
-Date: Thu, 1 Oct 2020 07:52:36 +0000
-Message-ID: <07af5100-55b5-4f51-ef5b-1e7a69b3607b@microchip.com>
-References: <20200930185732.6201-1-p.yadav@ti.com>
- <20200930185732.6201-8-p.yadav@ti.com>
-In-Reply-To: <20200930185732.6201-8-p.yadav@ti.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-authentication-results: ti.com; dkim=none (message not signed)
- header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [5.13.51.157]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 66e10c92-429b-42ce-65d2-08d865def680
-x-ms-traffictypediagnostic: DM6PR11MB4691:
-x-microsoft-antispam-prvs: <DM6PR11MB4691F60879AD96F5415F0FD7F0300@DM6PR11MB4691.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: OyPI/BhCnp6/TokErNz2A0AGy7PEW3nB6ojtAw/BE6+qMPlkoA0RFbDqeZ1DDMwxMZjoaGLm4CNMSiXylvzIFl9E6XBzRQ1+yOug/4tqFGkR4NWiufG+hnZ5OD3o+0IXUVeNs6g7U8YPfpgHucqvP9nOF9wcYYlsaAlMgDAfk5SU3kwyDNo8l4S3w3raQ1V7Dtle/mB/wr1qZtB8wqPWlbgd0J7qcWSzhvH0nrha/3FiFbL+6e3wgzK7fpPSqON7jppPQ5nZi1QuB51kaqsN99LbDl+r0+hglYR6nLJpEhM2CpEG16NFb4/YMD9jybPrINLhonyaNUdCgI/pFX/JwnSQxU/V9/g57aXueY+BNDYloyBFyouV2P6kc947YQ2A9EbH7heH3tWevAOAqmB2SiLSV+m9cKfA9ERFMb8ezMH1aiyNLpFxkUUmyFMeFlYs
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:DM5PR11MB1914.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(376002)(136003)(346002)(366004)(396003)(39860400002)(2906002)(316002)(91956017)(8676002)(186003)(110136005)(54906003)(66946007)(2616005)(53546011)(6512007)(26005)(6506007)(31686004)(83380400001)(8936002)(31696002)(36756003)(64756008)(6486002)(4326008)(71200400001)(66476007)(86362001)(5660300002)(66556008)(66446008)(478600001)(76116006)(43740500002);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata: 8h0lHOVROtCSrLwhLTvNesKtMk4ssTtBx2EM38kKukMJdRv0XS3OR7AoOfcgqIfbmvD1Eax9zomyI4gUE+BlohCbKYPblKt5rJA/aEe+Gwu6y6hflz3QJ3Z9ABjfjcsxw/vldE16+pDJzb9Am7GyhfCWxrUVAEFiNmxzn6m+J5Rcdsdl2p2enbh2BXOHvEc/FSyR65F2h67aJ89cb4Xl7d4DnXts6pyJldzGPRt6gM41Vk74MF/qcXXloDaAwHrN4iS7A+l9V62wljHg6FfRD6XFrvTs+FYIQr24LboTrkDYuVIV/+rPiaw4jFr8Mip0rnu9X6sOh0u//osPbnPFec6ffMGxIzrrlafg1JLnHJviron61MdqnCEaQxe8Lyjlh7h4bjSG7+PFSHGKg5neiqpovUHOWWLkqUmsXTMlnalybqo+e2jVGwAHpvbebZVJX1bn6TdY5gK7/O/bYQ1ti8P5peG2UC6CublOzDw2bOyBPLwD3jatYkYYHSLxySr9o3/UCBerkK9pFVzc3EFBdyg7nQbfOUndZt9zHtmeT/1+H1+qdMPbfWB5WuyFbVMwVI7Jbk6LyvAPISUPoXE32o3NP5k/En2SGFbkTcIEiTe4t8HPCkniJqyLe1CMfLCvOm3tj6QTLGNf9CY6UqAqbQ==
-x-ms-exchange-transport-forked: True
-Content-ID: <239D18AA5719D14CAE0A8CDAE78413D4@namprd11.prod.outlook.com>
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR11MB1914.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 66e10c92-429b-42ce-65d2-08d865def680
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Oct 2020 07:52:36.4620 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: LnbPPGibMA66zleC9jgZG5uFAfAybHL3lV8nWOGX3NT2CKQGhiLaw7qtbvy+3sEpPa/ZOD1rl6h+DtV7F53qX3x6FvxPMyG6jKdKz+rbuUQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4691
+ id 1kNtbf-0006uJ-Ic
+ for linux-mtd@lists.infradead.org; Thu, 01 Oct 2020 08:06:28 +0000
+IronPort-SDR: Fg0lEGfsvOvV7XTbPO6MqlIMwFENRhQMBV/OLgA6nASleOvOuITJx/v0ZMB8nfvVfbmRK7nHrE
+ qCSl40gu+Y+w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="224271304"
+X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; d="scan'208";a="224271304"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Oct 2020 01:06:24 -0700
+IronPort-SDR: 6H8+i0K3P4/xvUect3IabH1RRHiUCE5ESqWYukRiKT03IqhcbxI/lr/uja/B9lJFQtAFamjxa4
+ coq/jysOt8PA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; d="scan'208";a="351019127"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+ by FMSMGA003.fm.intel.com with ESMTP; 01 Oct 2020 01:06:20 -0700
+From: "Ramuthevar,
+ Vadivel MuruganX" <vadivel.muruganx.ramuthevar@linux.intel.com>
+To: miquel.raynal@bootlin.com,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v15 0/2] mtd: rawnand: Add NAND controller support on Intel
+ LGM SoC
+Date: Thu,  1 Oct 2020 16:06:16 +0800
+Message-Id: <20201001080618.50994-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201001_035246_406497_97EE37F7 
-X-CRM114-Status: GOOD (  19.93  )
+X-CRM114-CacheID: sfid-20201001_040627_763500_76420760 
+X-CRM114-Status: GOOD (  23.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -159,77 +76,183 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: boris.brezillon@collabora.com, nsekhar@ti.com
+Cc: cheol.yong.kim@intel.com, devicetree@vger.kernel.org,
+ andriy.shevchenko@intel.com, christophe.kerello@st.com, vigneshr@ti.com,
+ arnd@arndb.de, hauke.mehrtens@intel.com, richard@nod.at,
+ brendanhiggins@google.com, linux-mips@vger.kernel.org, robh+dt@kernel.org,
+ "Ramuthevar, Vadivel MuruganX" <vadivel.muruganx.ramuthevar@linux.intel.com>,
+ boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
+ tglx@linutronix.de, qi-ming.wu@intel.com, robert.jarzmik@free.fr,
+ piotrs@cadence.com
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 9/30/20 9:57 PM, Pratyush Yadav wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> 
-> Some controllers, like the cadence qspi controller, have trouble reading
-> only 1 byte in DTR mode. So, do 2 byte reads for SR and FSR commands in
-> DTR mode, and then discard the second byte.
-> 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+This patch adds the new IP of Nand Flash Controller(NFC) support
+on Intel's Lightning Mountain(LGM) SoC.
 
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+DMA is used for burst data transfer operation, also DMA HW supports
+aligned 32bit memory address and aligned data access by default.
+DMA burst of 8 supported. Data register used to support the read/write
+operation from/to device.
 
-> ---
->  drivers/mtd/spi-nor/core.c | 15 +++++++++++++--
->  1 file changed, 13 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 1465cf80f978..73a26e7e32c2 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -370,7 +370,7 @@ int spi_nor_write_disable(struct spi_nor *nor)
->   * spi_nor_read_sr() - Read the Status Register.
->   * @nor:       pointer to 'struct spi_nor'.
->   * @sr:                pointer to a DMA-able buffer where the value of the
-> - *              Status Register will be written.
-> + *              Status Register will be written. Should be at least 2 bytes.
->   *
->   * Return: 0 on success, -errno otherwise.
->   */
-> @@ -388,6 +388,11 @@ static int spi_nor_read_sr(struct spi_nor *nor, u8 *sr)
->                 if (nor->reg_proto == SNOR_PROTO_8_8_8_DTR) {
->                         op.addr.nbytes = nor->params->rdsr_addr_nbytes;
->                         op.dummy.nbytes = nor->params->rdsr_dummy;
-> +                       /*
-> +                        * We don't want to read only one byte in DTR mode. So,
-> +                        * read 2 and then discard the second byte.
-> +                        */
-> +                       op.data.nbytes = 2;
->                 }
-> 
->                 spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
-> @@ -408,7 +413,8 @@ static int spi_nor_read_sr(struct spi_nor *nor, u8 *sr)
->   * spi_nor_read_fsr() - Read the Flag Status Register.
->   * @nor:       pointer to 'struct spi_nor'
->   * @fsr:       pointer to a DMA-able buffer where the value of the
-> - *              Flag Status Register will be written.
-> + *              Flag Status Register will be written. Should be at least 2
-> + *              bytes.
->   *
->   * Return: 0 on success, -errno otherwise.
->   */
-> @@ -426,6 +432,11 @@ static int spi_nor_read_fsr(struct spi_nor *nor, u8 *fsr)
->                 if (nor->reg_proto == SNOR_PROTO_8_8_8_DTR) {
->                         op.addr.nbytes = nor->params->rdsr_addr_nbytes;
->                         op.dummy.nbytes = nor->params->rdsr_dummy;
-> +                       /*
-> +                        * We don't want to read only one byte in DTR mode. So,
-> +                        * read 2 and then discard the second byte.
-> +                        */
-> +                       op.data.nbytes = 2;
->                 }
-> 
->                 spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
-> --
-> 2.28.0
-> 
+NAND controller also supports in-built HW ECC engine.
+
+NAND controller driver implements ->exec_op() to replace legacy hooks,
+these specific call-back method to execute NAND operations.
+
+Thanks Miquel, Boris, Andy, Arnd and Rob for the review comments and suggestions.
+---
+v15:
+  - Address Miquel review comments update
+  - add common helper function for status check for
+    ebu_nand_waitrdy()
+v14:
+  - Address Andy's review comments
+  - align the headers and revome Duplicates
+  - replcace numerical const values by HZ_PER_MHZ and USEC_PER_SEC
+    defined macros
+  - add dev_err_probe() api instead of legacy err check
+  - add get_unaligned_le32() api instead of manual endiness
+  - remove redudent check
+  - split the lines logically in between and add require spaces
+v13:
+  - Address Miquel Raynal review comments
+  - update the return type with variable 'ret'
+  - handle err check statement properly
+  - change the naming convention aligned with recently changed the naming
+    around the data interface
+    data structure and function names
+  - replace by div 8 instead of <<4 in ecc calculation better code readability
+  - handle check_only properly like existing drivers
+v12-resend:
+  - No Change
+v12:
+  - address Miquel Raynal review comments update
+  - add/modify the comments for better understanding
+  - handle the check_only variable
+  - update the ecc function based on the existing drivers
+  - add newline
+  - verify that mtd->name is set after nand_set_flash_node()
+  - add the check WARN_ON(ret);
+v11-resend:
+  - Rebase to v5.8-rc1
+v11:
+  - No Change
+v10:
+  - No Change
+v9:
+  - No change
+v8:
+  - fix the kbuild bot warnings
+  - correct the typo's
+v7:
+  - indentation issue is fixed
+  - add error check for retrieve the resource from dt
+v6:
+  - update EBU_ADDR_SELx register base value build it from DT
+  - Add tabs in in Kconfig
+v5:
+  - replace by 'HSNAND_CLE_OFFS | HSNAND_CS_OFFS' to NAND_WRITE_CMD and NAND_WRITE_ADDR
+  - remove the unused macros
+  - update EBU_ADDR_MASK(x) macro
+  - update the EBU_ADDR_SELx register values to be written
+v4:
+  - add ebu_nand_cs structure for multiple-CS support
+  - mask/offset encoding for 0x51 value
+  - update macro HSNAND_CTL_ENABLE_ECC
+  - drop the op argument and un-used macros.
+  - updated the datatype and macros
+  - add function disable nand module
+  - remove ebu_host->dma_rx = NULL;
+  - rename MMIO address range variables to ebu and hsnand
+  - implement ->setup_data_interface()
+  - update label err_cleanup_nand and err_cleanup_dma
+  - add return value check in the nand_remove function
+  - add/remove tabs and spaces as per coding standard
+  - encoded CS ids by reg property
+v3:
+  - Add depends on MACRO in Kconfig
+  - file name update in Makefile
+  - file name update to intel-nand-controller
+  - modification of MACRO divided like EBU, HSNAND and NAND
+  - add NAND_ALE_OFFS, NAND_CLE_OFFS and NAND_CS_OFFS
+  - rename lgm_ to ebu_ and _va suffix is removed in the whole file
+  - rename structure and varaibles as per review comments.
+  - remove lgm_read_byte(), lgm_dev_ready() and cmd_ctrl() un-used function
+  - update in exec_op() as per review comments
+  - rename function lgm_dma_exit() by lgm_dma_cleanup()
+  - hardcoded magic value  for base and offset replaced by MACRO defined
+  - mtd_device_unregister() + nand_cleanup() instead of nand_release()
+v2:
+  - implement the ->exec_op() to replaces the legacy hook-up.
+  - update the commit message
+  - add MIPS maintainers and xway_nand driver author in CC
+v1:
+ - initial version
+
+
+dt-bindings: mtd: Add Nand Flash Controller support for Intel LGM SoC
+---
+v15:
+  - No change
+v14:
+  - No change
+v13:
+  - No change
+v12-Resend:
+  - No Change
+v12:
+  - No change
+v11-resend:
+  - No change
+v11:
+  - Fixed the compatible issue with example
+10:
+  - fix bot errors
+v9:
+  - Rob's review comments address
+  - dual licensed
+  - compatible change
+  - add reg-names
+  - drop clock-names and clock-cells
+  - correct typo's
+v8:
+  No change
+v7:
+  - Rob's review comments addressed
+  - dt-schema build issue fixed with upgraded dt-schema
+v6:
+  - Rob's review comments addressed in YAML file
+  - add addr_sel0 and addr_sel1 reg-names in YAML example
+v5:
+  - add the example in YAML file
+v4:
+  - No change
+v3:
+  - No change
+v2:
+  YAML compatible string update to intel, lgm-nand-controller
+v1:
+  - initial version
+
+Ramuthevar Vadivel Murugan (2):
+  dt-bindings: mtd: Add Nand Flash Controller support for Intel LGM SoC
+  mtd: rawnand: Add NAND controller support on Intel LGM SoC
+
+ .../devicetree/bindings/mtd/intel,lgm-nand.yaml    |  99 +++
+ drivers/mtd/nand/raw/Kconfig                       |   8 +
+ drivers/mtd/nand/raw/Makefile                      |   1 +
+ drivers/mtd/nand/raw/intel-nand-controller.c       | 737 +++++++++++++++++++++
+ 4 files changed, 845 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+ create mode 100644 drivers/mtd/nand/raw/intel-nand-controller.c
+
+-- 
+2.11.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
