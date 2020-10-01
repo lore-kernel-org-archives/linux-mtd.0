@@ -2,74 +2,60 @@ Return-Path: <SRS0=+4Px=DI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4704EC47420
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Oct 2020 09:23:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61C92C4727C
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Oct 2020 10:21:07 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 804D020B1F
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Oct 2020 09:23:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1362420848
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Oct 2020 10:21:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gpBF+Y2v";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=agner.ch header.i=@agner.ch header.b="hroJCYAi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 804D020B1F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=agner.ch
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="wkSDw7Up"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1362420848
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
-	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=7YakTLsGCfeuSEmspFC5NWfuWHD7qzoNKJkv4hb18i8=; b=gpBF+Y2v4jp9mKb6xcSMstHhp
-	fuoJuJFi4TtHNVG/BLME3EtJbKKQiYtJARbzG5hhsKXVQgLLA4ZsLWeJa2azE5tsMWH7KO82iauRm
-	6INHu5NrurNT913NdqwY7dMGMnxxnrj09F4OK4dDfjeTCNdJZJnKZRzUxw1cPKKmqlwDl/Jj4vy+Z
-	5mij0Jg9X9+fu6oMWsTVsGzMVfM+0f71MJmOkPrkmz38Y3jW7GdN3UB79Xq9OdkTNLu6tLBgZ/m1W
-	H8unToU5NS4Ez/+BptlgtJyyWQjinruF833CvszKLeatdnLH+qJY4bEPDzBMk1b5/EzUL2hFOlAjN
-	Pkzv8YXPA==;
+	 bh=UIf6tS1PKYXLRnu5uuODYFMgmz4mP562PMH3km87JqI=; b=wkSDw7UpUDAaPwPk3XJXJivpQ
+	dA3iHidD668sflWZUrOJ+YPT0JVR6rkjPSA3udSOVE0B7+Ru+jIgd7ZDID8Rc6rIwiIfLFzYIjoQp
+	og0tLuJQ+i7jQqzjP8UEBdUL6rpAzZ0n8L1LlPrOS0WJe7cLaXpoxnD+ttWeWSA7d9IK4RTChY0xo
+	S2OQ5/WCGj7rQL90rl5zmcDit0zCnOn0gnxxRw0GymnzCnpcv+FNnnQkSL/EUkiOYIDFgRChx8kHG
+	UXrJiFnB7SKfHeQwgEoWSSJOnW0LSto99NS8BOyuMXBicWrPlzlFvEWHjBGqHLfZ0f5pIC/jtLRX4
+	PUvCvAkFA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kNun1-0002VT-Sk; Thu, 01 Oct 2020 09:22:15 +0000
-Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+	id 1kNvhS-0002i8-EC; Thu, 01 Oct 2020 10:20:34 +0000
+Received: from relay10.mail.gandi.net ([217.70.178.230])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kNumG-0001vH-37
- for linux-mtd@lists.infradead.org; Thu, 01 Oct 2020 09:21:29 +0000
-Received: from webmail.kmu-office.ch (unknown [IPv6:2a02:418:6a02::a3])
- by mail.kmu-office.ch (Postfix) with ESMTPSA id DEF2E5C02DF;
- Thu,  1 Oct 2020 11:21:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
- t=1601544082;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=cJK2/g5MDYjG3Sxi9BcFtEIq5rC8/bqmlZd0eKbR634=;
- b=hroJCYAiStf8dHR+l235HZ4Q/wXFIt0RGC0QrXUjZM6vMQtcSlNWvSatOm5CqbWHVcLPoz
- sH1xFsuRN5uEi9y63ljnone2N3VCyU4jkQPNXCZi1jc8KbD9y4vMkSNaJeXum7vJWBhwlv
- xqJ3IorFVg1q/EFjnE8eC2J2ylTrBrk=
+ id 1kNvhI-0002ev-F0
+ for linux-mtd@lists.infradead.org; Thu, 01 Oct 2020 10:20:26 +0000
+Received: from localhost.localdomain (unknown [91.224.148.103])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay10.mail.gandi.net (Postfix) with ESMTPSA id 5FD4D24001C;
+ Thu,  1 Oct 2020 10:20:22 +0000 (UTC)
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ <linux-mtd@lists.infradead.org>
+Subject: [PATCH 4/6] mtd: spinand: Allow the case where there is no ECC engine
+Date: Thu,  1 Oct 2020 12:20:12 +0200
+Message-Id: <20201001102014.20100-5-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201001102014.20100-1-miquel.raynal@bootlin.com>
+References: <20201001102014.20100-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
-Date: Thu, 01 Oct 2020 11:21:22 +0200
-From: Stefan Agner <stefan@agner.ch>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH][next] mtd: rawnand: Replace one-element array with
- flexible-array member
-In-Reply-To: <20201001101206.6e4beea7@xps13>
-References: <20200930210824.GA12277@embeddedor>
- <CAG48ez3X3aZwfde3_2Sc+gdtUGRHfzan6oNFiffAvNzFDSsFDw@mail.gmail.com>
- <20200930213634.GA12855@embeddedor>
- <CAG48ez3XqE0m2UmRh+OtmYJRhyCBYY=sdJKaWBXtJZKCRpLMYQ@mail.gmail.com>
- <20201001101206.6e4beea7@xps13>
-User-Agent: Roundcube Webmail/1.4.1
-Message-ID: <22e3b020f4c7e7a8cd0c1f474ba07cad@agner.ch>
-X-Sender: stefan@agner.ch
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201001_052128_355675_1FAE21DE 
-X-CRM114-Status: GOOD (  25.23  )
+X-CRM114-CacheID: sfid-20201001_062024_589956_7B86CA8A 
+X-CRM114-Status: GOOD (  14.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,50 +67,90 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Lucas Stach <dev@lynxeye.de>, Vignesh Raghavendra <vigneshr@ti.com>,
- Jann Horn <jannh@google.com>, Richard Weinberger <richard@nod.at>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Jonathan Hunter <jonathanh@nvidia.com>,
- Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
- linux-hardening@vger.kernel.org, linux-tegra@vger.kernel.org,
- kernel list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Julien Su <juliensu@mxic.com.tw>, ycllin@mxic.com.tw,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMjAyMC0xMC0wMSAxMDoxMiwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiBIaSBKYW5uLAo+IAo+
-IEphbm4gSG9ybiA8amFubmhAZ29vZ2xlLmNvbT4gd3JvdGUgb24gVGh1LCAxIE9jdCAyMDIwIDAw
-OjMyOjI0ICswMjAwOgo+IAo+PiBPbiBXZWQsIFNlcCAzMCwgMjAyMCBhdCAxMTozMCBQTSBHdXN0
-YXZvIEEuIFIuIFNpbHZhCj4+IDxndXN0YXZvYXJzQGtlcm5lbC5vcmc+IHdyb3RlOgo+PiA+IE9u
-IFdlZCwgU2VwIDMwLCAyMDIwIGF0IDExOjEwOjQzUE0gKzAyMDAsIEphbm4gSG9ybiB3cm90ZToK
-Pj4gPiA+IE9uIFdlZCwgU2VwIDMwLCAyMDIwIGF0IDExOjAyIFBNIEd1c3Rhdm8gQS4gUi4gU2ls
-dmEKPj4gPiA+IDxndXN0YXZvYXJzQGtlcm5lbC5vcmc+IHdyb3RlOgo+PiA+ID4gPiBUaGVyZSBp
-cyBhIHJlZ3VsYXIgbmVlZCBpbiB0aGUga2VybmVsIHRvIHByb3ZpZGUgYSB3YXkgdG8gZGVjbGFy
-ZSBoYXZpbmcKPj4gPiA+ID4gYSBkeW5hbWljYWxseSBzaXplZCBzZXQgb2YgdHJhaWxpbmcgZWxl
-bWVudHMgaW4gYSBzdHJ1Y3R1cmUuIEtlcm5lbCBjb2RlCj4+ID4gPiA+IHNob3VsZCBhbHdheXMg
-dXNlIOKAnGZsZXhpYmxlIGFycmF5IG1lbWJlcnPigJ1bMV0gZm9yIHRoZXNlIGNhc2VzLiBUaGUg
-b2xkZXIKPj4gPiA+ID4gc3R5bGUgb2Ygb25lLWVsZW1lbnQgb3IgemVyby1sZW5ndGggYXJyYXlz
-IHNob3VsZCBubyBsb25nZXIgYmUgdXNlZFsyXS4KPj4gPiA+Cj4+ID4gPiBCdXQgdGhpcyBpcyBu
-b3Qgc3VjaCBhIGNhc2UsIHJpZ2h0PyBJc24ndCB0aGlzIGEgdHJ1ZSBmaXhlZC1zaXplCj4+ID4g
-PiBhcnJheT8gSXQgc291bmRzIGxpa2UgeW91J3JlIGp1c3QgY2hhbmdpbmcgaXQgYmVjYXVzZSBp
-dAo+PiA+ID4gcGF0dGVybi1tYXRjaGVkIG9uICJhcnJheSBvZiBsZW5ndGggMSBhdCB0aGUgZW5k
-IG9mIGEgc3RydWN0Ii4KPj4gPgo+PiA+IFllYWg7IEkgc2hvdWxkIGhhdmUgY2hhbmdlZCB0aGF0
-ICdkeW5hbWljYWxseScgcGFydCBvZiB0aGUgdGV4dCBhYm92ZQo+PiA+IGEgYml0LiBIb3dldmVy
-LCBhcyBJIGNvbW1lbnRlZCBpbiB0aGUgdGV4dCBiZWxvdywgaW4gdGhlIGNhc2UgdGhhdCBtb3Jl
-Cj4+ID4gQ1MgSURzIGFyZSBuZWVkZWQgKGxldCdzIHdhaXQgZm9yIHRoZSBtYWludGFpbmVycyB0
-byBjb21tZW50IG9uIHRoaXMuLi4pCj4+ID4gaW4gdGhlIGZ1dHVyZSwgdGhpcyBjaGFuZ2UgbWFr
-ZXMgdGhlIGNvZGUgbW9yZSBtYWludGFpbmFibGUsIGFzIGZvcgo+PiA+IHRoZSBhbGxvY2F0aW9u
-IHBhcnQsIHRoZSBkZXZlbG9wZXIgd291bGQgb25seSBoYXZlIHRvIHVwZGF0ZSB0aGUgQ1NfTgo+
-PiA+IG1hY3JvIHRvIHRoZSBudW1iZXIgb2YgQ1MgSURzIHRoYXQgYXJlIG5lZWRlZC4KPj4KPj4g
-QnV0IGluIHRoYXQgY2FzZSwgc2hvdWxkbid0IHlvdSBjaGFuZ2UgaXQgdG8gImludCBjc1tDU19O
-XSIgYW5kIGdldAo+PiByaWQgb2YgdGhlIHN0cnVjdF9zaXplKCkgc3R1ZmY/Cj4gCj4gSSBkbyBh
-Z3JlZSB3aXRoIEphbm4sIEkgdGhpbmsgaXQncyBiZXN0IHRvIGNvbnNpZGVyIHRoaXMgYSBmaXhl
-ZC1zaXplCj4gYXJyYXkgZm9yIG5vdy4gSWYgd2UgZXZlciB3YW50IHRvIGV4dGVuZCB0aGUgbnVt
-YmVyIG9mIHN1cHBvcnRlZCBDUywKPiB0aGVyZSBpcyBtdWNoIG1vcmUgcmV3b3JrIGludm9sdmVk
-IGFueXdheS4KCkkgYWdyZWUsIHRvbywganVzdCBhc3N1bWUgdGhpcyBpcyBhIGZpeGVkLXNpemUg
-YXJyYXkgb2YgMSBlbGVtZW50LgoKSW4gZmFjdCwgSSBhbSBub3QgYXdhcmUgb2YgYSBkZXNpZ24g
-d2hpY2ggbmVlZHMgbXVsdGlwbGUgY2hpcCBzZWxlY3RzLgoKLS0KU3RlZmFuCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRp
-c2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vbGludXgtbXRkLwo=
+Even if this is not supposed to happen, there is no reason to fail the
+probe if it was explicitly requested to use no ECC engine at all (for
+instance, during development). This condition is met by just
+commenting out the error on the OOB free bytes count after the
+assignation of an ECC engine if none was provided (any other situation
+would error out much earlier anyway).
+
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/mtd/nand/ecc.c      | 8 ++++----
+ drivers/mtd/nand/spi/core.c | 8 +++++---
+ 2 files changed, 9 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/mtd/nand/ecc.c b/drivers/mtd/nand/ecc.c
+index 9afdde70824a..6c43dfda01d4 100644
+--- a/drivers/mtd/nand/ecc.c
++++ b/drivers/mtd/nand/ecc.c
+@@ -105,7 +105,7 @@
+  */
+ int nand_ecc_init_ctx(struct nand_device *nand)
+ {
+-	if (!nand->ecc.engine->ops->init_ctx)
++	if (!nand->ecc.engine || !nand->ecc.engine->ops->init_ctx)
+ 		return 0;
+ 
+ 	return nand->ecc.engine->ops->init_ctx(nand);
+@@ -118,7 +118,7 @@ EXPORT_SYMBOL(nand_ecc_init_ctx);
+  */
+ void nand_ecc_cleanup_ctx(struct nand_device *nand)
+ {
+-	if (nand->ecc.engine->ops->cleanup_ctx)
++	if (nand->ecc.engine && nand->ecc.engine->ops->cleanup_ctx)
+ 		nand->ecc.engine->ops->cleanup_ctx(nand);
+ }
+ EXPORT_SYMBOL(nand_ecc_cleanup_ctx);
+@@ -131,7 +131,7 @@ EXPORT_SYMBOL(nand_ecc_cleanup_ctx);
+ int nand_ecc_prepare_io_req(struct nand_device *nand,
+ 			    struct nand_page_io_req *req)
+ {
+-	if (!nand->ecc.engine->ops->prepare_io_req)
++	if (!nand->ecc.engine || !nand->ecc.engine->ops->prepare_io_req)
+ 		return 0;
+ 
+ 	return nand->ecc.engine->ops->prepare_io_req(nand, req);
+@@ -146,7 +146,7 @@ EXPORT_SYMBOL(nand_ecc_prepare_io_req);
+ int nand_ecc_finish_io_req(struct nand_device *nand,
+ 			   struct nand_page_io_req *req)
+ {
+-	if (!nand->ecc.engine->ops->finish_io_req)
++	if (!nand->ecc.engine || !nand->ecc.engine->ops->finish_io_req)
+ 		return 0;
+ 
+ 	return nand->ecc.engine->ops->finish_io_req(nand, req);
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 8a4d20e30edb..4a4c86d8eeb6 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -1160,9 +1160,11 @@ static int spinand_init(struct spinand_device *spinand)
+ 	mtd->_erase = spinand_mtd_erase;
+ 	mtd->_max_bad_blocks = nanddev_mtd_max_bad_blocks;
+ 
+-	ret = mtd_ooblayout_count_freebytes(mtd);
+-	if (ret < 0)
+-		goto err_cleanup_ecc_engine;
++	if (nand->ecc.engine) {
++		ret = mtd_ooblayout_count_freebytes(mtd);
++		if (ret < 0)
++			goto err_cleanup_ecc_engine;
++	}
+ 
+ 	mtd->oobavail = ret;
+ 
+-- 
+2.20.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
