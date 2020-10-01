@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21A94C4727C
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Oct 2020 08:41:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0465AC4727C
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Oct 2020 08:43:04 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BE1A9208B6
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Oct 2020 08:41:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A37DF20B1F
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Oct 2020 08:43:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rbf2Xcl8";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="oGhoyQCI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE1A9208B6
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="26C+iaEa";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="WmMhcXxC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A37DF20B1F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,60 +26,61 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=D7IFCNPxjN7/6aTA7fRl+5yUld+cPLXW/t3zgfGjiT0=; b=rbf2Xcl8WWhhB8Ye84YV5ljRk
-	ydANvHT3m3UI/WEtUYPiYYMyFeuHKCKC7+rr1x8CNI1z/eBzR/8jLCWhRVWEbEHgiDgom21Jo5Pfr
-	5ylKfiH8IEwYcnI5sYzWcSuPXwaK8n9rpsdXWApGteLru49Spxa6gaEPXQ07pknrXwjznR3WAOJww
-	iryTEJWU9RhdFsR0eYjzkkKiQh/QQs1fOGD4CNXiJgunuMUcmk4OFdX6AU1P+b7rf5w3Ui2MjuYPN
-	P5iqLaO3BZUpOvftkH5lAk1w8gsNOabIE3VrpXfV0jA9owqjB79iBQyLfLg+BMXJYlZl1+Lr6Lefd
-	brNNO+NPw==;
+	 bh=akpleDdAmqQ8G1R954wM9CoEb9bBW3A/iyn35eLb5R4=; b=26C+iaEau7lvPB5fd382PVWBH
+	/dpdQ7oDOOD0MSyGovlltrNHKUZm1QKlLx07SZtS+CAFK+KLgtuIpITFo9tcTR9Msh9EVSttPyUN3
+	2Zhr5ikg6bo+7vdBZ8kIq9eNn15RpgxDXeb7+Fj2sZdA+hKvAyELuWYX6GNBnWyN+ASbOE5UpXFiE
+	fLqPqI2JO2a2hAT72CIxhTDim37VZpda63bpTWwn2qitTKoyh1hbMZ/fwhbYU+IIWf6BS2DyloHKF
+	4gqsKnCI3O+EzyHxuyInOJzKk9rOo9VHYg28Yi2fI3Fye7HDjpL6swKqXmUfsGeCk8mxs3xfHBlUu
+	opaQbPLfQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kNu8W-0004ep-RV; Thu, 01 Oct 2020 08:40:24 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1kNuAM-00057a-W3; Thu, 01 Oct 2020 08:42:19 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kNu8T-0004dw-Jx
- for linux-mtd@lists.infradead.org; Thu, 01 Oct 2020 08:40:22 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0918eGbw054980;
- Thu, 1 Oct 2020 03:40:16 -0500
+ id 1kNuAJ-00056d-Nc
+ for linux-mtd@lists.infradead.org; Thu, 01 Oct 2020 08:42:16 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0918gAlJ021630;
+ Thu, 1 Oct 2020 03:42:10 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1601541616;
- bh=frk6Lhc3oP5D7E8gBZ7NBofC/QdfSriomB2pUt4hw6c=;
+ s=ti-com-17Q1; t=1601541730;
+ bh=l9E4iTEIYD2L6+jDXJU9JrWEdUYoAxixqNC6l8k2lmI=;
  h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=oGhoyQCI9bWlELh+WtgszYg467uGze4nsmH/N5fiED1iEYKlogAkwtlHZe2N6mS3o
- 4UHfJYRmKTui7hLfkCPu4hAOXNhKcla7BjF516ZlmiDoiGxrXSXOf45vQ7PDA3Nxhn
- +ElOAWbPXIsMp9Fy+J7exhhAm1EampHNJEix7Y+4=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0918eG9g092231;
- Thu, 1 Oct 2020 03:40:16 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ b=WmMhcXxCmTEMe5l5Y5vbnXG91qSCEZoHf/sYK4N5bZ/GFvj1uGosuUGy2ELeZInqu
+ I0ARLMn5TsLf7yuZLCYxFUqahPy/mu2t6nQLydA/cmTJqe03N8e3t3Xc3G5TVjkx03
+ N4b+mDMUqLALzHZYN75IKuf7di29Bci6x74Z8nT0=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0918gALN005822
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Thu, 1 Oct 2020 03:42:10 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 1 Oct
- 2020 03:40:16 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ 2020 03:42:10 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 1 Oct 2020 03:40:16 -0500
+ Frontend Transport; Thu, 1 Oct 2020 03:42:10 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0918eFnU027625;
- Thu, 1 Oct 2020 03:40:16 -0500
-Date: Thu, 1 Oct 2020 14:10:15 +0530
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0918g9sl030651;
+ Thu, 1 Oct 2020 03:42:09 -0500
+Date: Thu, 1 Oct 2020 14:12:08 +0530
 From: Pratyush Yadav <p.yadav@ti.com>
 To: <Tudor.Ambarus@microchip.com>
-Subject: Re: [PATCH v14 14/15] mtd: spi-nor: spansion: add support for
- Cypress Semper flash
-Message-ID: <20201001084012.wumsndtwe4qeuklt@ti.com>
+Subject: Re: [PATCH v14 08/15] mtd: spi-nor: core: enable octal DTR mode when
+ possible
+Message-ID: <20201001084206.ma4beblucowmtwgq@ti.com>
 References: <20200930185732.6201-1-p.yadav@ti.com>
- <20200930185732.6201-15-p.yadav@ti.com>
- <b5663e72-b67c-cb2c-e46c-62262a65cd44@microchip.com>
+ <20200930185732.6201-9-p.yadav@ti.com>
+ <3e162719-80c7-03dc-dc2a-29a46bc4cb2c@microchip.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <b5663e72-b67c-cb2c-e46c-62262a65cd44@microchip.com>
+In-Reply-To: <3e162719-80c7-03dc-dc2a-29a46bc4cb2c@microchip.com>
 User-Agent: NeoMutt/20171215
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201001_044021_791271_B1F6CCD2 
-X-CRM114-Status: GOOD (  42.35  )
+X-CRM114-CacheID: sfid-20201001_044215_881543_2854D4E3 
+X-CRM114-Status: GOOD (  23.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,225 +100,98 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 01/10/20 08:35AM, Tudor.Ambarus@microchip.com wrote:
+On 01/10/20 08:09AM, Tudor.Ambarus@microchip.com wrote:
 > On 9/30/20 9:57 PM, Pratyush Yadav wrote:
 > > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 > > 
-> > The Cypress Semper flash is an xSPI compliant octal DTR flash. Add
-> > support for using it in octal DTR mode.
-> > 
-> > The flash by default boots in a hybrid sector mode. But the sector map
-> > table on the part I had was programmed incorrectly and the SMPT values
-> > on the flash don't match the public datasheet. Specifically, in some
-> > places erase type 3 was used instead of 4. In addition, the region sizes
-> > were incorrect in some places. So, for testing I set CFR3N[3] to enable
-> > uniform sector sizes. Since the uniform sector mode bit is a
-> > non-volatile bit, this series does not change it to avoid making any
-> > permanent changes to the flash configuration. The correct data to
-> > implement a fixup is not available right now and will be done in a
-> > follow-up patch if needed.
+> > Allow flashes to specify a hook to enable octal DTR mode. Use this hook
+> > whenever possible to get optimal transfer speeds.
 > > 
 > > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 > > ---
-> >  drivers/mtd/spi-nor/spansion.c | 160 +++++++++++++++++++++++++++++++++
-> >  1 file changed, 160 insertions(+)
+> >  drivers/mtd/spi-nor/core.c | 35 +++++++++++++++++++++++++++++++++++
+> >  drivers/mtd/spi-nor/core.h |  2 ++
+> >  2 files changed, 37 insertions(+)
 > > 
-> > diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-> > index 8429b4af999a..dc6b14aba405 100644
-> > --- a/drivers/mtd/spi-nor/spansion.c
-> > +++ b/drivers/mtd/spi-nor/spansion.c
-> > @@ -8,6 +8,161 @@
+> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> > index 73a26e7e32c2..6b54a923002a 100644
+> > --- a/drivers/mtd/spi-nor/core.c
+> > +++ b/drivers/mtd/spi-nor/core.c
+> > @@ -3068,6 +3068,35 @@ static int spi_nor_init_params(struct spi_nor *nor)
+> >         return 0;
+> >  }
 > > 
-> >  #include "core.h"
-> > 
-> > +#define SPINOR_OP_RD_ANY_REG                   0x65    /* Read any register */
-> > +#define SPINOR_OP_WR_ANY_REG                   0x71    /* Write any register */
-> > +#define SPINOR_REG_CYPRESS_CFR2V               0x00800003
-> > +#define SPINOR_REG_CYPRESS_CFR2V_MEMLAT_11_24  0xb
-> > +#define SPINOR_REG_CYPRESS_CFR3V               0x00800004
-> > +#define SPINOR_REG_CYPRESS_CFR3V_PGSZ          BIT(4) /* Page size. */
-> > +#define SPINOR_REG_CYPRESS_CFR5V               0x00800006
-> > +#define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN    0x3
-> > +#define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS    0
-> > +#define SPINOR_OP_CYPRESS_RD_FAST              0xee
-> > +
-> > +/**
-> > + * spi_nor_cypress_octal_dtr_enable() - Enable octal DTR on Cypress flashes.
-> > + * @nor:               pointer to a 'struct spi_nor'
+> > +/** spi_nor_octal_dtr_enable() - enable Octal DTR I/O if needed
+> > + * @nor:                 pointer to a 'struct spi_nor'
 > > + * @enable:              whether to enable or disable Octal DTR
-> > + *
-> > + * This also sets the memory access latency cycles to 24 to allow the flash to
-> > + * run at up to 200MHz.
 > > + *
 > > + * Return: 0 on success, -errno otherwise.
 > > + */
-> > +static int spi_nor_cypress_octal_dtr_enable(struct spi_nor *nor, bool enable)
+> > +static int spi_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
 > > +{
-> > +       struct spi_mem_op op;
-> > +       u8 *buf = nor->bouncebuf;
 > > +       int ret;
 > > +
-> > +       if (enable) {
-> > +               /* Use 24 dummy cycles for memory array reads. */
-> > +               ret = spi_nor_write_enable(nor);
-> > +               if (ret)
-> > +                       return ret;
+> > +       if (!nor->params->octal_dtr_enable)
+> > +               return 0;
 > > +
-> > +               *buf = SPINOR_REG_CYPRESS_CFR2V_MEMLAT_11_24;
-> > +               op = (struct spi_mem_op)
-> > +                       SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 1),
-> > +                                  SPI_MEM_OP_ADDR(3, SPINOR_REG_CYPRESS_CFR2V,
-> > +                                                  1),
-> > +                                  SPI_MEM_OP_NO_DUMMY,
-> > +                                  SPI_MEM_OP_DATA_OUT(1, buf, 1));
+> > +       if (!(nor->read_proto == SNOR_PROTO_8_8_8_DTR &&
+> > +             nor->write_proto == SNOR_PROTO_8_8_8_DTR))
+> > +               return 0;
 > > +
-> > +               ret = spi_mem_exec_op(nor->spimem, &op);
-> > +               if (ret) {
-> > +                       dev_dbg(nor->dev,
-> > +                               "failed to set default memory latency value: %d\n",
-> > +                                ret);
+> > +       ret = nor->params->octal_dtr_enable(nor, enable);
 > 
-> Why do you consider the message important? I'm asking for consistency
-> reasons, below on the next exec_op call there's no dev_dbg message.
-> I would get rid of the dev_dbg entirely, the error code should be enough,
-> but I agree that this might be just a personal preference. So, do as you
-> prefer, but try to be consistent across the code.
+> Ideally patch 9/15 and 10/15 should have been before 8/15. We should deny
+> the access to octal dtr enable for NV flashes since moment 0.
 
-Yes it is mostly personal preference, but I don't mind either way. I'll 
-drop the dev_dbg().
+Ok. I'll re-order them.
  
-> > +                       return ret;
-> > +               }
-> > +
-> > +               ret = spi_nor_wait_till_ready(nor);
-> > +               if (ret)
-> > +                       return ret;
-> > +
-> > +               nor->read_dummy = 24;
-> > +       }
-> > +
-> > +       /* Set/unset the octal and DTR enable bits. */
-> > +       ret = spi_nor_write_enable(nor);
 > > +       if (ret)
 > > +               return ret;
 > > +
 > > +       if (enable)
-> > +               *buf = SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN;
+> > +               nor->reg_proto = SNOR_PROTO_8_8_8_DTR;
 > > +       else
-> > +               *buf = SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS;
-> > +
-> > +       op = (struct spi_mem_op)
-> > +               SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 1),
-> > +                          SPI_MEM_OP_ADDR(enable ? 3 : 4,
-> > +                                          SPINOR_REG_CYPRESS_CFR5V,
-> > +                                          1),
-> > +                          SPI_MEM_OP_NO_DUMMY,
-> > +                          SPI_MEM_OP_DATA_OUT(1, buf, 1));
-> > +
-> > +       if (!enable)
-> > +               spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
-> > +
-> > +       ret = spi_mem_exec_op(nor->spimem, &op);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       /* Give some time for the mode change to take place. */
-> > +       usleep_range(400, 600);
+> > +               nor->reg_proto = SNOR_PROTO_1_1_1;
 > > +
 > > +       return 0;
 > > +}
 > > +
-> > +static void s28hs512t_default_init(struct spi_nor *nor)
-> > +{
-> > +       nor->params->octal_dtr_enable = spi_nor_cypress_octal_dtr_enable;
-> > +}
-> > +
-> > +static void s28hs512t_post_sfdp_fixup(struct spi_nor *nor)
-> > +{
-> > +       /*
-> > +        * On older versions of the flash the xSPI Profile 1.0 table has the
-> > +        * 8D-8D-8D Fast Read opcode as 0x00. But it actually should be 0xEE.
-> > +        */
-> > +       if (nor->params->reads[SNOR_CMD_READ_8_8_8_DTR].opcode == 0)
-> > +               nor->params->reads[SNOR_CMD_READ_8_8_8_DTR].opcode =
-> > +                       SPINOR_OP_CYPRESS_RD_FAST;
-> > +
-> > +       /* This flash is also missing the 4-byte Page Program opcode bit. */
-> > +       spi_nor_set_pp_settings(&nor->params->page_programs[SNOR_CMD_PP],
-> > +                               SPINOR_OP_PP_4B, SNOR_PROTO_1_1_1);
-> > +       /*
-> > +        * Since xSPI Page Program opcode is backward compatible with
-> > +        * Legacy SPI, use Legacy SPI opcode there as well.
-> > +        */
-> > +       spi_nor_set_pp_settings(&nor->params->page_programs[SNOR_CMD_PP_8_8_8_DTR],
-> > +                               SPINOR_OP_PP_4B, SNOR_PROTO_8_8_8_DTR);
-> > +
-> > +       /*
-> > +        * The xSPI Profile 1.0 table advertises the number of additional
-> > +        * address bytes needed for Read Status Register command as 0 but the
-> > +        * actual value for that is 4.
-> > +        */
-> > +       nor->params->rdsr_addr_nbytes = 4;
-> > +}
-> > +
-> > +static int s28hs512t_post_bfpt_fixup(struct spi_nor *nor,
-> > +                                    const struct sfdp_parameter_header *bfpt_header,
-> > +                                    const struct sfdp_bfpt *bfpt,
-> > +                                    struct spi_nor_flash_parameter *params)
-> > +{
-> > +       /*
-> > +        * The BFPT table advertises a 512B page size but the page size is
-> > +        * actually configurable (with the default being 256B). Read from
-> > +        * CFR3V[4] and set the correct size.
-> > +        */
-> > +       struct spi_mem_op op =
-> > +               SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RD_ANY_REG, 1),
-> > +                          SPI_MEM_OP_ADDR(3, SPINOR_REG_CYPRESS_CFR3V, 1),
-> > +                          SPI_MEM_OP_NO_DUMMY,
-> > +                          SPI_MEM_OP_DATA_IN(1, nor->bouncebuf, 1));
-> > +       int ret;
-> > +
-> > +       ret = spi_mem_exec_op(nor->spimem, &op);
-> > +       if (ret)
-> > +               return ret;
-> 
-> no need to wait after CFR3V?
-
-It is a read operation. We don't need to wait after reads.
- 
-> Cheers,
-> ta
-> 
-> > +
-> > +       if (nor->bouncebuf[0] & SPINOR_REG_CYPRESS_CFR3V_PGSZ)
-> > +               params->page_size = 512;
-> > +       else
-> > +               params->page_size = 256;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static struct spi_nor_fixups s28hs512t_fixups = {
-> > +       .default_init = s28hs512t_default_init,
-> > +       .post_sfdp = s28hs512t_post_sfdp_fixup,
-> > +       .post_bfpt = s28hs512t_post_bfpt_fixup,
-> > +};
-> > +
-> >  static int
-> >  s25fs_s_post_bfpt_fixups(struct spi_nor *nor,
-> >                          const struct sfdp_parameter_header *bfpt_header,
-> > @@ -104,6 +259,11 @@ static const struct flash_info spansion_parts[] = {
-> >                              SPI_NOR_4B_OPCODES) },
-> >         { "cy15x104q",  INFO6(0x042cc2, 0x7f7f7f, 512 * 1024, 1,
-> >                               SPI_NOR_NO_ERASE) },
-> > +       { "s28hs512t",   INFO(0x345b1a,      0, 256 * 1024, 256,
-> > +                            SECT_4K | SPI_NOR_OCTAL_DTR_READ |
-> > +                             SPI_NOR_OCTAL_DTR_PP)
-> > +         .fixups = &s28hs512t_fixups,
-> > +       },
-> >  };
+> >  /**
+> >   * spi_nor_quad_enable() - enable Quad I/O if needed.
+> >   * @nor:                pointer to a 'struct spi_nor'
+> > @@ -3107,6 +3136,12 @@ static int spi_nor_init(struct spi_nor *nor)
+> >  {
+> >         int err;
 > > 
-> >  static void spansion_post_sfdp_fixups(struct spi_nor *nor)
+> > +       err = spi_nor_octal_dtr_enable(nor, true);
+> > +       if (err) {
+> > +               dev_dbg(nor->dev, "octal mode not supported\n");
+> > +               return err;
+> > +       }
+> > +
+> >         err = spi_nor_quad_enable(nor);
+> >         if (err) {
+> >                 dev_dbg(nor->dev, "quad mode not supported\n");
+> > diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> > index 9a33c8d07335..5cfe2db9ee13 100644
+> > --- a/drivers/mtd/spi-nor/core.h
+> > +++ b/drivers/mtd/spi-nor/core.h
+> > @@ -203,6 +203,7 @@ struct spi_nor_locking_ops {
+> >   *                      higher index in the array, the higher priority.
+> >   * @erase_map:         the erase map parsed from the SFDP Sector Map Parameter
+> >   *                      Table.
+> > + * @octal_dtr_enable:  enables SPI NOR octal DTR mode.
+> >   * @quad_enable:       enables SPI NOR quad mode.
+> >   * @set_4byte_addr_mode: puts the SPI NOR in 4 byte addressing mode.
+> >   * @convert_addr:      converts an absolute address into something the flash
+> > @@ -226,6 +227,7 @@ struct spi_nor_flash_parameter {
+> > 
+> >         struct spi_nor_erase_map        erase_map;
+> > 
+> > +       int (*octal_dtr_enable)(struct spi_nor *nor, bool enable);
+> >         int (*quad_enable)(struct spi_nor *nor);
+> >         int (*set_4byte_addr_mode)(struct spi_nor *nor, bool enable);
+> >         u32 (*convert_addr)(struct spi_nor *nor, u32 addr);
 > > --
 > > 2.28.0
 > > 
