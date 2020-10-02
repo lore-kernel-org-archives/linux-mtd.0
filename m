@@ -2,65 +2,77 @@ Return-Path: <SRS0=/HUW=DJ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3ADCC4363D
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Oct 2020 07:16:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4899AC4363D
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Oct 2020 07:51:37 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6B1A0206B2
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Oct 2020 07:16:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C652120672
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Oct 2020 07:51:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XRc/bQud"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B1A0206B2
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="E3S+mbw7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C652120672
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=ACULAB.COM
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:Message-ID:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=7339LNRwD2BWjybvN3xM+0P1MNlK1QLpsJKk+6bSlCY=; b=XRc/bQud7JtYTRmHeBjebuhl+
-	XYyQVKy2JdC+Mus4rcPINCYxqWr3O9GzNZplUmsX3ezj5IaxjWcxv1HdHY/lLLbLDUB5kfNDqpgoq
-	8VMux/dmMetMqp75ptVJH/vROSh5yGvWdNjiHn/wX/2pk9RuypUOigB3+AoVZqvAJMwBAGesFGBfv
-	E2/IGdNKH5/JObGZyFMRL8CBVaB0f6z/lkIekms8YHL63oXfaGq83nRT85gBGHcn16hTSNpH9BJoa
-	QSDlSYxPINzW2fGGFXDJQKSkFnA3gCDNPpuQZ2q3cxJXr4UoboZGX8CcnNm0BjbMQpSbDhUyqvL3v
-	z0UwFx62g==;
+	 bh=ZUV64C/bZQ5zbOtqZvgnOmIPkJN/Jt092k24Uj0Djlg=; b=E3S+mbw7Lb7CeHzoyXG+3WXD0
+	aSrFTBXPTP+zFtkK325kl/69KTdIxhU+/gwlfkEOpFoJATDVfs29WGcV2BF8zlcWKzKyQJGDq5oSa
+	KFt7a9bwPD/j1g6h/u7E1AoYj8SjJ9uv2PPzSB6geFphFaVfeBXxZMD0NF/953TUWWhMR+MaCv6wi
+	3teCDpzXCVAPkZC8doUq8+g3zoxlWTus85JiByOtooo2toaNuyYUnnhcRYWXksVqXy8qTyk4udBNH
+	GfFKUeFPpkZYWlk0qn6j9n0q3MamlmY5uYIi/AyeXQhaIIDsUEy3tGqkF3Rgx63RkNijuw5FySnyO
+	ifBTnb+VA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kOFIH-0006cw-PB; Fri, 02 Oct 2020 07:15:53 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1kOFq6-0002KU-9x; Fri, 02 Oct 2020 07:50:50 +0000
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kOFIF-0006bZ-Mz
- for linux-mtd@lists.infradead.org; Fri, 02 Oct 2020 07:15:52 +0000
-X-Originating-IP: 91.224.148.103
-Received: from localhost.localdomain (unknown [91.224.148.103])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 4068420012;
- Fri,  2 Oct 2020 07:15:48 +0000 (UTC)
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Liu Shixin <liushixin2@huawei.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH -next] mtd: vmu-flash: simplify the return expression of
- probe_maple_vmu
-Date: Fri,  2 Oct 2020 09:15:48 +0200
-Message-Id: <20201002071548.26539-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200919100854.1639267-1-liushixin2@huawei.com>
-References: 
+ id 1kOFq0-0002Jf-Kg
+ for linux-mtd@lists.infradead.org; Fri, 02 Oct 2020 07:50:45 +0000
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-196-pOL8PmeXMMqWU5oHvROPRw-1; Fri, 02 Oct 2020 08:50:39 +0100
+X-MC-Unique: pOL8PmeXMMqWU5oHvROPRw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 2 Oct 2020 08:50:39 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000; 
+ Fri, 2 Oct 2020 08:50:39 +0100
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Bert Vermeulen' <bert@biot.com>, Pratyush Yadav <p.yadav@ti.com>
+Subject: RE: [PATCH] mtd: spi-nor: Fix 3-or-4 address byte mode logic
+Thread-Topic: [PATCH] mtd: spi-nor: Fix 3-or-4 address byte mode logic
+Thread-Index: AQHWmEFme608aECbAkSNwPF3PIHq6KmD73Iw
+Date: Fri, 2 Oct 2020 07:50:38 +0000
+Message-ID: <1c4ee46115854ce28b17935504f2fc78@AcuMS.aculab.com>
+References: <20200930235611.6355-1-bert@biot.com>
+ <20201001063421.qcjdikj2tje3jn6k@ti.com>
+ <801445c9-4f59-5300-3a03-b48a3d631efe@biot.com>
+In-Reply-To: <801445c9-4f59-5300-3a03-b48a3d631efe@biot.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 6aec345ed83a834ea796220741e5d8ca94299d6e
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201002_031551_861740_B9484E78 
-X-CRM114-Status: UNSURE (   6.97  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20201002_035044_863556_42595AAD 
+X-CRM114-Status: GOOD (  17.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,21 +84,51 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: "vigneshr@ti.com" <vigneshr@ti.com>,
+ "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
+ "richard@nod.at" <richard@nod.at>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, 2020-09-19 at 10:08:54 UTC, Liu Shixin wrote:
-> Simplify the return expression.
+From: Bert Vermeulen
+> Sent: 01 October 2020 23:23
 > 
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+> On 10/1/20 8:34 AM, Pratyush Yadav wrote:
+> > So using an address width of 4 here is not necessarily the right thing
+> > to do. This change would break SMPT parsing for all flashes that use
+> > 3-byte addressing by default because SMPT parsing can involve register
+> > reads/writes. One such device is the Cypress S28HS flash. In fact, this
+> > was what prompted me to write the patch [0].
+> >
+> > Before that patch, how did MX25L25635F decide to use 4-byte addressing?
+> 
+> The SoCs I'm dealing with have an SPI_ADDR_SEL pin, indicating whether it
+> should be in 3 or 4-byte mode. The vendor's hacked-up U-Boot sets the mode
+> accordingly, as does their BSP. It seems to me like a misfeature, and I want
+> to just ignore it and do reasonable JEDEC things, but I have the problem
+> that the flash chip can be in 4-byte mode by the time it gets to my spi-nor
+> driver.
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
+If these are the devices I think they are, can't you read the
+non-volatile config word (bit 0) to find out whether the device
+expects a 3 or 4 byte address and how many 'idle' clocks there
+are before the read data?
 
-Miquel
+A device that requires 3 bytes of address can be set to a read
+delay of 12 cycles (rather than the usual 10) so that 'hardware'
+reads (typically from address 0) can transparently support
+devices that require 3 or 4 bytes addresses.
 
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
