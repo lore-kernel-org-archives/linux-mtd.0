@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C7D9C47095
-	for <linux-mtd@archiver.kernel.org>; Sat,  3 Oct 2020 15:33:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 765B6C41604
+	for <linux-mtd@archiver.kernel.org>; Sat,  3 Oct 2020 15:33:45 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BFE60206DD
-	for <linux-mtd@archiver.kernel.org>; Sat,  3 Oct 2020 15:33:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 15F10206DD
+	for <linux-mtd@archiver.kernel.org>; Sat,  3 Oct 2020 15:33:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Ym1E0n9/";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=walle.cc header.i=@walle.cc header.b="ATCCvt88"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BFE60206DD
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Ow3KKft/";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=walle.cc header.i=@walle.cc header.b="QbfNb2bB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 15F10206DD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,49 +26,49 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=3c9qtPKok9Lhy0Wrr2dp2Rr9TOPh6+ALWNdW0VqqMsw=; b=Ym1E0n9/vj/+cSJpbSIQSHulN
-	QCmnnhvteWGsyEon8gzsoupZ4U5P8nfTPCdKQdBpzGZiYtpk9ma2FCe4UzOTko/W+ACPuIHROjyCi
-	L54jiwrCRle7JwuTVdXgndwg4zNWJuiCvDR10mN02X5olSx5ipwn+kKzCD6gZd94eu8GLwLpbULzS
-	/ogWm5iS5IlXdCgye2O5m7QNY0tla9gA933EbylSx4Pc7hO4Er4tGXS0lybn+U+7OdXQAaZ9X8nQt
-	JuCMjwTgZiSjJSp/JvubabRLXCRbtbn80LZB6d23kVmHFSeGUBBEoPNWRg/DsgErZHXLPwmi2dQXH
-	QZhYLOcpQ==;
+	 bh=5lP7jUSVp+0xsiA66HmFrBEtyLgYtLYFW5oIPsDBiEQ=; b=Ow3KKft/yjkEjTIOv9mnaVPFr
+	fV7D+BWk/EEvf/uS8Kyz4tr7bayAtF3Pl5h0M5v69e1k+v/KoJQY5fkUGRLMysgQFnGtjXBT1NDS3
+	JemVfv+zx/167k3OGrOqT+KWTt5LkiPwAgLdyLdVWmkCzbFH689+q32kAJyWcvrEIiDmr1Ulg1Mpw
+	qNBtbiuIjsjS4Tr00c6z0/458EqBOm/ZxlG6lQrUCbc9mNVlIe2f/UfkHy6yP/5LxYwamVjv2aoKI
+	BOAvOu7zTM675j3XZshGPGKgkNuxQXGozbFfpC1/rkIS45P8g0wvbDjlcn5L6NC2FRlBNeB6CrNhE
+	4/g/W5FqQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kOjWl-0002X7-Nn; Sat, 03 Oct 2020 15:32:51 +0000
+	id 1kOjWn-0002XQ-3y; Sat, 03 Oct 2020 15:32:53 +0000
 Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kOjWi-0002Vk-9O
+ id 1kOjWi-0002W3-Nr
  for linux-mtd@lists.infradead.org; Sat, 03 Oct 2020 15:32:49 +0000
 Received: from apollo.fritz.box (unknown
  [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id BC24A23E41;
- Sat,  3 Oct 2020 17:32:46 +0200 (CEST)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 8ECC523E42;
+ Sat,  3 Oct 2020 17:32:47 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
  s=mail2016061301; t=1601739167;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=EIvDrrRH1suPpE+vHtNYD0FbuY3q3B6HPqeqz5Lkkb0=;
- b=ATCCvt88GFtJEgqJ/wWWSBesAuNRj6ruO4RJXLuN8wRSfYRv77W4KdZJft2/8/xvdKRYxi
- nNPppu+3OfUxLz6XMaDlaRgvW4bLIBKVRJyidPLQVOh7OAAVuaFU/WgA8jGUHcAgUqqmJY
- j4Z0oKMFJNCk9yCSPodH4jwMpH2+Fp0=
+ bh=FtL8drumj9G7ci48lWZKKULMzQeN2QWUjcbcVxdlfcs=;
+ b=QbfNb2bB5Ia1Iysbf8NTu3X682S4lV2om5gvgXH0q2VbRmYaUT/es2qpuljw0TrKn80yGZ
+ 5/w80ogRHXxbH1eme4CLXyKB7EhRwmx7WXR7MxPIYCipwwF0XkHyc0iu3hjg/2DDkUg1NM
+ bSg+4TL8tqA5OO3q9d1K8F8H5dd+uWI=
 From: Michael Walle <michael@walle.cc>
 To: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 1/3] mtd: spi-nor: atmel: remove global protection flag
-Date: Sat,  3 Oct 2020 17:32:33 +0200
-Message-Id: <20201003153235.29762-2-michael@walle.cc>
+Subject: [PATCH v5 2/3] mtd: spi-nor: sst: remove global protection flag
+Date: Sat,  3 Oct 2020 17:32:34 +0200
+Message-Id: <20201003153235.29762-3-michael@walle.cc>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201003153235.29762-1-michael@walle.cc>
 References: <20201003153235.29762-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201003_113248_556951_AA8207AC 
-X-CRM114-Status: GOOD (  16.10  )
+X-CRM114-CacheID: sfid-20201003_113248_909754_FAB4DDAD 
+X-CRM114-Status: GOOD (  16.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,7 +92,7 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 This is considered bad for the following reasons:
  (1) We only support the block protection with BPn bits for write
-     protection. Not all Atmel parts support this.
+     protection. Not all SST parts support this.
  (2) Newly added flash chip will automatically inherit the "has
      locking" support and thus needs to explicitly tested. Better
      be opt-in instead of opt-out.
@@ -101,25 +101,12 @@ This is considered bad for the following reasons:
      before adding that chip; which enforces my previous argument
      that locking support should be an opt-in.
 
-Remove the global flag and add individual flags to all flashes which
-supports BP locking. In particular the following flashes don't support
-the BP scheme:
- - AT26F004
- - AT25SL321
- - AT45DB081D
-
-Please note, that some flashes which are marked as SPI_NOR_HAS_LOCK just
-support Global Protection, i.e. not our supported block protection
-locking scheme. This is to keep backwards compatibility with the
-current "unlock all at boot" mechanism. In particular the following
-flashes doesn't have BP bits:
- - AT25DF041A
- - AT25DF321
- - AT25DF321A
- - AT25DF641
- - AT26DF081A
- - AT26DF161A
- - AT26DF321
+Remove the global flag and add individual flags to all flashes
+which supports BP locking. In particular the following flashes
+don't support the BP scheme:
+ - SST26VF016B
+ - SST26WF016B
+ - SST26VF064B
 
 Signed-off-by: Michael Walle <michael@walle.cc>
 ---
@@ -131,63 +118,74 @@ changes since v3/v2/v1:
    patch
 
 changes since RFC:
- - mention the flashes which just support the "Global Unprotect" in the
-   commit message
+ - none
 
- drivers/mtd/spi-nor/atmel.c | 28 +++++++++-------------------
- 1 file changed, 9 insertions(+), 19 deletions(-)
+ drivers/mtd/spi-nor/sst.c | 30 ++++++++++++------------------
+ 1 file changed, 12 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
-index 3f5f21a473a6..49d392c6c8bc 100644
---- a/drivers/mtd/spi-nor/atmel.c
-+++ b/drivers/mtd/spi-nor/atmel.c
-@@ -10,37 +10,27 @@
+diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
+index e0af6d25d573..8b169fa4102a 100644
+--- a/drivers/mtd/spi-nor/sst.c
++++ b/drivers/mtd/spi-nor/sst.c
+@@ -11,26 +11,26 @@
+ static const struct flash_info sst_parts[] = {
+ 	/* SST -- large erase sizes are "overlays", "sectors" are 4K */
+ 	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024,  8,
+-			      SECT_4K | SST_WRITE) },
++			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK) },
+ 	{ "sst25vf080b", INFO(0xbf258e, 0, 64 * 1024, 16,
+-			      SECT_4K | SST_WRITE) },
++			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK) },
+ 	{ "sst25vf016b", INFO(0xbf2541, 0, 64 * 1024, 32,
+-			      SECT_4K | SST_WRITE) },
++			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK) },
+ 	{ "sst25vf032b", INFO(0xbf254a, 0, 64 * 1024, 64,
+-			      SECT_4K | SST_WRITE) },
+-	{ "sst25vf064c", INFO(0xbf254b, 0, 64 * 1024, 128, SECT_4K) },
++			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK) },
++	{ "sst25vf064c", INFO(0xbf254b, 0, 64 * 1024, 128, SECT_4K | SPI_NOR_HAS_LOCK) },
+ 	{ "sst25wf512",  INFO(0xbf2501, 0, 64 * 1024,  1,
+-			      SECT_4K | SST_WRITE) },
++			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK) },
+ 	{ "sst25wf010",  INFO(0xbf2502, 0, 64 * 1024,  2,
+-			      SECT_4K | SST_WRITE) },
++			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK) },
+ 	{ "sst25wf020",  INFO(0xbf2503, 0, 64 * 1024,  4,
+-			      SECT_4K | SST_WRITE) },
+-	{ "sst25wf020a", INFO(0x621612, 0, 64 * 1024,  4, SECT_4K) },
+-	{ "sst25wf040b", INFO(0x621613, 0, 64 * 1024,  8, SECT_4K) },
++			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK) },
++	{ "sst25wf020a", INFO(0x621612, 0, 64 * 1024,  4, SECT_4K | SPI_NOR_HAS_LOCK) },
++	{ "sst25wf040b", INFO(0x621613, 0, 64 * 1024,  8, SECT_4K | SPI_NOR_HAS_LOCK) },
+ 	{ "sst25wf040",  INFO(0xbf2504, 0, 64 * 1024,  8,
+-			      SECT_4K | SST_WRITE) },
++			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK) },
+ 	{ "sst25wf080",  INFO(0xbf2505, 0, 64 * 1024, 16,
+-			      SECT_4K | SST_WRITE) },
++			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK) },
+ 	{ "sst26wf016b", INFO(0xbf2651, 0, 64 * 1024, 32,
+ 			      SECT_4K | SPI_NOR_DUAL_READ |
+ 			      SPI_NOR_QUAD_READ) },
+@@ -127,11 +127,6 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	return ret;
+ }
  
- static const struct flash_info atmel_parts[] = {
- 	/* Atmel -- some are (confusingly) marketed as "DataFlash" */
--	{ "at25fs010",  INFO(0x1f6601, 0, 32 * 1024,   4, SECT_4K) },
--	{ "at25fs040",  INFO(0x1f6604, 0, 64 * 1024,   8, SECT_4K) },
-+	{ "at25fs010",  INFO(0x1f6601, 0, 32 * 1024,   4, SECT_4K | SPI_NOR_HAS_LOCK) },
-+	{ "at25fs040",  INFO(0x1f6604, 0, 64 * 1024,   8, SECT_4K | SPI_NOR_HAS_LOCK) },
- 
--	{ "at25df041a", INFO(0x1f4401, 0, 64 * 1024,   8, SECT_4K) },
--	{ "at25df321",  INFO(0x1f4700, 0, 64 * 1024,  64, SECT_4K) },
--	{ "at25df321a", INFO(0x1f4701, 0, 64 * 1024,  64, SECT_4K) },
--	{ "at25df641",  INFO(0x1f4800, 0, 64 * 1024, 128, SECT_4K) },
-+	{ "at25df041a", INFO(0x1f4401, 0, 64 * 1024,   8, SECT_4K | SPI_NOR_HAS_LOCK) },
-+	{ "at25df321",  INFO(0x1f4700, 0, 64 * 1024,  64, SECT_4K | SPI_NOR_HAS_LOCK) },
-+	{ "at25df321a", INFO(0x1f4701, 0, 64 * 1024,  64, SECT_4K | SPI_NOR_HAS_LOCK) },
-+	{ "at25df641",  INFO(0x1f4800, 0, 64 * 1024, 128, SECT_4K | SPI_NOR_HAS_LOCK) },
- 
- 	{ "at25sl321",	INFO(0x1f4216, 0, 64 * 1024, 64,
- 			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 
- 	{ "at26f004",   INFO(0x1f0400, 0, 64 * 1024,  8, SECT_4K) },
--	{ "at26df081a", INFO(0x1f4501, 0, 64 * 1024, 16, SECT_4K) },
--	{ "at26df161a", INFO(0x1f4601, 0, 64 * 1024, 32, SECT_4K) },
--	{ "at26df321",  INFO(0x1f4700, 0, 64 * 1024, 64, SECT_4K) },
-+	{ "at26df081a", INFO(0x1f4501, 0, 64 * 1024, 16, SECT_4K | SPI_NOR_HAS_LOCK) },
-+	{ "at26df161a", INFO(0x1f4601, 0, 64 * 1024, 32, SECT_4K | SPI_NOR_HAS_LOCK) },
-+	{ "at26df321",  INFO(0x1f4700, 0, 64 * 1024, 64, SECT_4K | SPI_NOR_HAS_LOCK) },
- 
- 	{ "at45db081d", INFO(0x1f2500, 0, 64 * 1024, 16, SECT_4K) },
- };
- 
--static void atmel_default_init(struct spi_nor *nor)
+-static void sst_default_init(struct spi_nor *nor)
 -{
 -	nor->flags |= SNOR_F_HAS_LOCK;
 -}
 -
--static const struct spi_nor_fixups atmel_fixups = {
--	.default_init = atmel_default_init,
--};
--
- const struct spi_nor_manufacturer spi_nor_atmel = {
- 	.name = "atmel",
- 	.parts = atmel_parts,
- 	.nparts = ARRAY_SIZE(atmel_parts),
--	.fixups = &atmel_fixups,
+ static void sst_post_sfdp_fixups(struct spi_nor *nor)
+ {
+ 	if (nor->info->flags & SST_WRITE)
+@@ -139,7 +134,6 @@ static void sst_post_sfdp_fixups(struct spi_nor *nor)
+ }
+ 
+ static const struct spi_nor_fixups sst_fixups = {
+-	.default_init = sst_default_init,
+ 	.post_sfdp = sst_post_sfdp_fixups,
  };
+ 
 -- 
 2.20.1
 
