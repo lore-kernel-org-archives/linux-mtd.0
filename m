@@ -2,22 +2,22 @@ Return-Path: <SRS0=Xvxm=DK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80D91C41604
-	for <linux-mtd@archiver.kernel.org>; Sat,  3 Oct 2020 14:19:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6DEFC41604
+	for <linux-mtd@archiver.kernel.org>; Sat,  3 Oct 2020 15:22:39 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2556E206B6
-	for <linux-mtd@archiver.kernel.org>; Sat,  3 Oct 2020 14:19:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 529CE206DD
+	for <linux-mtd@archiver.kernel.org>; Sat,  3 Oct 2020 15:22:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="K86yhY+M";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=walle.cc header.i=@walle.cc header.b="t70NZI/1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2556E206B6
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sWP32G87";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=walle.cc header.i=@walle.cc header.b="vP0oN7Jz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 529CE206DD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,49 +26,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=TECces4zdxp159tWt6jnFePsj+zyqRpttpUeFsOsA1s=; b=K86yhY+MMJG4ya/wyyjLzXYtx
-	QTHg3Uup/xcInTuWyHiASkcsC7VtzHN2G3OVWhKbf/8feeFPJwZngDFNx+Z+5CW5KdhStmFxL3YYu
-	OEBp8NzGioY+08BZl9i7Ojzbk+QzLRtePzm2kgdq4oHJqWK3KzGPvGloOPWzWnTyTz5RGt17akcFG
-	hAmon0ZwYkr4SwGX4JqSMkty4isZ4dcsxrf/PrO+cISL28Ay7y3Xs9Tt8n1Kq/gHA9b6OntmQDulX
-	TvmTe/ADEmnlj9FndnXlqcxQBzRAvxKywYaKv6cymP+p/jrdNgE5H4vX1e/YjuaNA3cIg11l6h0tt
-	7sVUqL9WA==;
+	 bh=5bOBXwDTIXB9gsTwyVzPv9p+LdGBQKZQ4/dqLj2GEyY=; b=sWP32G87DAiTsPAX6H7P8PrOF
+	hmN4nyqADalDWYMwxccwd7Zelkn3APAASlzn9ZNgRSj7vAgCUl3+3ieUjEDDkxVl7ITMb/YpMmsDy
+	B5W6Y/gl+NcAK1Uv8GJXi/E3bMYv3IaQpAc42WWnwunNARYUhNDdp/rpGd0gGctLULpXBmXhyKc+1
+	MWT8YmM+Api4etvuD2kvAvp9hazcgSkT0lr6EyqedEzuKKSIi5Ee1kZfE/jT5Sy7pF5iOtBtEj3FZ
+	vXAzKfy9HI/34MJAyHj4PgxGwf5LV2ZWM5hb4xJm4RmLrYefVrW4eqjpvby+0Bt6Il4Nua7VHNIJZ
+	QcazjcX0Q==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kOiMP-0002GK-E4; Sat, 03 Oct 2020 14:18:05 +0000
+	id 1kOjMK-0001cg-Mz; Sat, 03 Oct 2020 15:22:04 +0000
 Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kOiMH-0002Dn-Mr
- for linux-mtd@lists.infradead.org; Sat, 03 Oct 2020 14:18:01 +0000
+ id 1kOjMI-0001bd-AP
+ for linux-mtd@lists.infradead.org; Sat, 03 Oct 2020 15:22:03 +0000
 Received: from apollo.fritz.box (unknown
  [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 9F00723E44;
- Sat,  3 Oct 2020 16:17:50 +0200 (CEST)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 00E0322F9C;
+ Sat,  3 Oct 2020 17:21:57 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1601734670;
+ s=mail2016061301; t=1601738518;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=IAqZGqwp+z7ivP7McHQ2CFjduKyD47p9zur56jk/rME=;
- b=t70NZI/1uJBjhW+WciXOgF9K6hvB1wam61D0z6Z5AZEuMThseMIFVqPnqELblv0tnuSfcd
- 2qINUUbXPGbqGvwoc+/ZrKSeloXgIjWLh8lEAhneAtMLXfRyxIfCLWVpAnk74NiXNWv8Fw
- /pWBHfAah8KgJZB9U1JQl4Ew++WBUZM=
+ bh=3OMVzLzF22otUV7jRiX3BFoLqyQQ2OlLO8XH+BnajFk=;
+ b=vP0oN7Jz6aMb80wRaolDqQfEhwqCLS+3zUQfcEVa5k9UcyfyjNl7Lm50VldLdmCS/H4s+H
+ kHmC+5QF+FBIYPLlh6e/EIkreXjZIm54IkiCUYBOQ5KxS2RrHOVDn14VEXOhKMaY3+s2IA
+ iKpRR/BgNcaMxsFdQACWwwPegRAmTp8=
 From: Michael Walle <michael@walle.cc>
-To: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4 3/3] mtd: spi-nor: keep lock bits if they are non-volatile
-Date: Sat,  3 Oct 2020 16:17:38 +0200
-Message-Id: <20201003141738.8144-4-michael@walle.cc>
+To: dianders@chromium.org
+Subject: Re: [PATCH] mtd: spi-nor: Prefer asynchronous probe
+Date: Sat,  3 Oct 2020 17:06:33 +0200
+Message-Id: <20201003150633.23416-1-michael@walle.cc>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201003141738.8144-1-michael@walle.cc>
-References: <20201003141738.8144-1-michael@walle.cc>
+In-Reply-To: <20200902160002.1.I658d1c0db9adfeb9a59bc55e96a19e192c959e55@changeid>
+References: <20200902160002.1.I658d1c0db9adfeb9a59bc55e96a19e192c959e55@changeid>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201003_101757_991526_1122D586 
-X-CRM114-Status: GOOD (  41.14  )
+X-CRM114-CacheID: sfid-20201003_112202_592814_66EFD978 
+X-CRM114-Status: GOOD (  19.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,488 +79,105 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, Michael Walle <michael@walle.cc>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: vigneshr@ti.com, tudor.ambarus@microchip.com, richard@nod.at,
+ linux-kernel@vger.kernel.org, Michael Walle <michael@walle.cc>,
+ linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Traditionally, linux unlocks the whole flash because there are legacy
-devices which has the write protections bits set by default at startup.
-If you actually want to use the flash protection bits, eg. because there
-is a read-only part for a bootloader, this automatic unlocking is
-harmful. If there is no hardware write protection in place (usually
-called WP#), a startup of the kernel just discards this protection.
+Hi Douglas,
 
-I've gone through the datasheets of all the flashes (except the Intel
-ones where I could not find any datasheet nor reference) which supports
-the unlocking feature and looked how the sector protection was
-implemented. The currently supported flashes can be divided into the
-following two categories:
- (1) block protection bits are non-volatile. Thus they keep their values
-     at reset and power-cycle
- (2) flashes where these bits are volatile. After reset or power-cycle,
-     the whole memory array is protected.
-     (a) some devices needs a special "Global Unprotect" command, eg.
-         the Atmel AT25DF041A.
-     (b) some devices require to clear the BPn bits in the status
-         register.
+> On my system the spi_nor_probe() took ~6 ms at bootup.  That's not a
+> lot, but every little bit adds up to a slow bootup.  While we can get
+> this out of the boot path by making it a module, there are times where
+> it is convenient (or even required) for this to be builtin the kernel.
+> Let's set that we prefer async probe so that we don't block other
+> drivers from probing while we are probing.
+> 
+> This is a tiny little change that is almost guaranteed to be safe for
+> anything that is able to run as a module, which SPI_NOR is.
+> Specifically modules are already probed asynchronously.  Also: since
+> other things in the system may have enabled asynchronous probe the
+> system may already be doing other things during our probe.
+> 
+> There is a small possibility that some other driver that was a client
+> of SPI_NOR didn't handle -EPROBE_DEFER and was relying on probe
+> ordering and only worked when the SPI_NOR and the SPI bus were
+> builtin.  In that case the other driver has a bug that's waiting to
+> hit and the other driver should be fixed.
 
-Due to the reasons above, we do not want to clear the bits for flashes
-which belong to category (1). Fortunately for us, only Atmel flashes
-fall into category (2a). Implement the "Global Protect" and "Global
-Unprotect" commands for these. For (2b) we can use normal block
-protection locking scheme.
+linux-next now triggers the following warning in kernel/kmod.c:136 on my
+board. I've bisected this to this patch.
 
-This patch adds a new flag to indicate the case (2). Only if we have
-such a flash we unlock the whole flash array. To be backwards compatible
-it also introduces a kernel configuration option which restores the
-complete legacy behavior ("Disable write protection on any flashes").
-Hopefully, this will clean up "unlock the entire flash for legacy
-devices" once and for all.
+kmod.c:
+        /*
+         * We don't allow synchronous module loading from async.  Module
+         * init may invoke async_synchronize_full() which will end up
+         * waiting for this task which already is waiting for the module
+         * loading to complete, leading to a deadlock.
+         */
+        WARN_ON_ONCE(wait && current_is_async());
 
-For reference here are the actually commits which introduced the legacy
-behaviour (and extended the behaviour to other chip manufacturers):
+[    1.849801] ------------[ cut here ]------------
+[    1.854271] mscc_felix 0000:00:00.5: device is disabled, skipping
+[    1.858753] WARNING: CPU: 1 PID: 7 at kernel/kmod.c:136 __request_module+0x3a4/0x568
+[    1.858755] Modules linked in:
+[    1.865028] fsl_enetc 0000:00:00.0: Adding to iommu group 1
+[    1.872640] CPU: 1 PID: 7 Comm: kworker/u4:0 Not tainted 5.9.0-rc6-00001-g03edda0e1eda #113
+[    1.872642] Hardware name: Kontron SMARC-sAL28 (Single PHY) on SMARC Eval 2.0 carrier (DT)
+[    1.872647] Workqueue: events_unbound async_run_entry_fn
+[    1.876013] spi-nor spi0.0: w25q32dw (4096 Kbytes)
+[    1.881294] pstate: 00000005 (nzcv daif -PAN -UAO BTYPE=--)
+[    1.881297] pc : __request_module+0x3a4/0x568
+[    1.881299] lr : __request_module+0x39c/0x568
+[    1.881302] sp : ffff8000113a3920
+[    1.925739] x29: ffff8000113a3920 x28: ffff800010c7b000 
+[    1.931068] x27: ffff00207ae05648 x26: ffff800010a41a88 
+[    1.936397] x25: 0000000000000000 x24: 0000000000000000 
+[    1.941727] x23: ffff800010c35140 x22: 0000000000000001 
+[    1.947055] x21: ffff800011149948 x20: ffff800010615bdc 
+[    1.952383] x19: 00000000ffffffff x18: 0000000000000000 
+[    1.957447] fsl_enetc 0000:00:00.0: enabling device (0400 -> 0402)
+[    1.957711] x17: ffff800010a3e618 x16: ffff800010a3e5f8 
+[    1.964175] libphy: Freescale ENETC MDIO Bus: probed
+[    1.969238] x15: ffffffffffffffff x14: ffff800011149948 
+[    1.969241] x13: ffff8000113a3918 x12: 0000000000000018 
+[    1.969245] x11: 0000000000000005 x10: 0101010101010101 
+[    1.975241] 10 fixed-partitions partitions found on MTD device 20c0000.spi
+[    1.979550] x9 : ffff80001005f6a4 x8 : 0000000000000000 
+[    1.979553] x7 : 606f2c6364776865 x6 : 05041c090d431511 
+[    1.979556] x5 : 1115430d091c0405 x4 : 0000000000000000 
+[    1.979558] x3 : 6dac8d8d2dccae00 x2 : ffff800010c956e8 
+[    1.979561] x1 : ffff80001005fa58 x0 : 0000000000000001 
+[    1.979564] Call trace:
+[    1.979571]  __request_module+0x3a4/0x568
+[    1.984914] Creating 10 MTD partitions on "20c0000.spi":
+[    1.990227]  parse_mtd_partitions+0x2ec/0x3c0
+[    1.990232]  mtd_device_parse_register+0xdc/0x1c8
+[    1.997133] 0x000000000000-0x000000010000 : "rcw"
+[    2.002454]  spi_nor_probe+0x29c/0x2f0
+[    2.002458]  spi_mem_probe+0x74/0xb0
+[    2.017759] 0x000000010000-0x000000100000 : "failsafe bootloader"
+[    2.018433]  spi_drv_probe+0x88/0xe8
+[    2.018439]  really_probe+0xec/0x3c0
+[    2.033744] 0x000000100000-0x000000140000 : "failsafe DP firmware"
+[    2.035555]  driver_probe_device+0x60/0xc0
+[    2.035559]  __device_attach_driver+0x8c/0xd0
+[    2.040455] 0x000000140000-0x0000001e0000 : "failsafe trusted firmware"
+[    2.044642]  bus_for_each_drv+0x84/0xd8
+[    2.044645]  __device_attach_async_helper+0xc4/0xe8
+[    2.044648]  async_run_entry_fn+0x4c/0x150
+[    2.044653]  process_one_work+0x1f4/0x4b8
+[    2.057751] 0x0000001e0000-0x000000200000 : "reserved"
+[    2.062814]  worker_thread+0x50/0x480
+[    2.062817]  kthread+0x160/0x168
+[    2.062821]  ret_from_fork+0x10/0x34
+[    2.073748] 0x000000200000-0x000000210000 : "configuration store"
+[    2.076185] ---[ end trace 44224cc02e4e53d2 ]---
 
-commit f80e521c916cb ("mtd: m25p80: add support for the Intel/Numonyx {16,32,64}0S33B SPI flash chips")
-commit ea60658a08f8f ("mtd: m25p80: disable SST software protection bits by default")
-commit 7228982442365 ("[MTD] m25p80: fix bug - ATmel spi flash fails to be copied to")
-
-Actually, this might also fix handling of the Atmel AT25DF flashes,
-because the original commit 7228982442365 ("[MTD] m25p80: fix bug -
-ATmel spi flash fails to be copied to") was writing a 0 to the status
-register, which is a "Global Unprotect". This might not be the case in
-the current code which only handles the block protection bits BP2, BP1
-and BP0. Thus, it depends on the current contents of the status register
-if this unlock actually corresponds to a "Global Unprotect" command. In
-the worst case, the current code might leave the AT25DF flashes in a
-write protected state.
-
-The commit 191f5c2ed4b6f ("mtd: spi-nor: use 16-bit WRR command when QE
-is set on spansion flashes") changed that behaviour by just clearing BP2
-to BP0 instead of writing a 0 to the status register.
-
-Further, the commit 3e0930f109e76 ("mtd: spi-nor: Rework the disabling
-of block write protection") expanded the unlock_all() feature to ANY
-flash which supports locking.
-
-Signed-off-by: Michael Walle <michael@walle.cc>
----
-changes since v3:
- - now defaulting to MTD_SPI_NOR_WP_DISABLE_ON_VOLATILE, suggested by Vignesh
- - restored the original spi_nor_unlock_all(), instead add individual
-   locking ops for the "Global Protect" scheme in atmel.c. This was tested
-   partly with the AT25SL321 (for the test I added the fixups to this
-   flash).
- - renamed SPI_NOR_UNPROTECT to SPI_NOR_WP_IS_VOLATILE. Suggested by
-   Vingesh, although I've renamed it to a more general "WP_IS_VOLATILE"
-   because either the BP bits or the individual sector locks might be
-   volatile.
- - add mention of both block protection bits and "Global Unprotect" command
-   in the Kconfig help text.
-
-changes since v2:
- - add Kconfig option to be able to retain legacy behaviour
- - rebased the patch due to the spi-nor rewrite
- - dropped the Fixes: tag, it doens't make sense after the spi-nor rewrite
- - mention commit 3e0930f109e76 which further modified the unlock
-   behaviour.
-
-changes since v1:
- - completely rewrote patch, the first version used a device tree flag
-
- drivers/mtd/spi-nor/Kconfig |  42 ++++++++++++++
- drivers/mtd/spi-nor/atmel.c | 111 +++++++++++++++++++++++++++++++++---
- drivers/mtd/spi-nor/core.c  |  36 ++++++++----
- drivers/mtd/spi-nor/core.h  |   8 +++
- drivers/mtd/spi-nor/esmt.c  |   8 ++-
- drivers/mtd/spi-nor/intel.c |   6 +-
- drivers/mtd/spi-nor/sst.c   |  21 +++----
- 7 files changed, 199 insertions(+), 33 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-index ffc4b380f2b1..11e6658ee85d 100644
---- a/drivers/mtd/spi-nor/Kconfig
-+++ b/drivers/mtd/spi-nor/Kconfig
-@@ -24,6 +24,48 @@ config MTD_SPI_NOR_USE_4K_SECTORS
- 	  Please note that some tools/drivers/filesystems may not work with
- 	  4096 B erase size (e.g. UBIFS requires 15 KiB as a minimum).
- 
-+choice
-+	prompt "Write protection at boot"
-+	default MTD_SPI_NOR_WP_DISABLE_ON_VOLATILE
-+
-+config MTD_SPI_NOR_WP_DISABLE
-+	bool "Disable WP on any flashes (legacy behaviour)"
-+	help
-+	  This option disables the write protection on any SPI flashes at
-+	  boot-up.
-+
-+	  Depending on the flash chip this either clears the block protection
-+	  bits or does a "Global Unprotect" command.
-+
-+	  Don't use this if you intent to use the write protection of your
-+	  SPI flash. This is only to keep backwards compatibility.
-+
-+config MTD_SPI_NOR_WP_DISABLE_ON_VOLATILE
-+	bool "Disable WP on flashes w/ volatile protection bits"
-+	help
-+	  Some SPI flashes have volatile block protection bits, ie. after a
-+	  power-up or a reset the flash is write protected by default.
-+
-+	  This option disables the write protection for these kind of flashes
-+	  while keeping it enabled for any other SPI flashes which have
-+	  non-volatile write protection bits.
-+
-+	  If the write protection will be disabled depending on the flash
-+	  either the block protection bits are cleared or a "Global Unprotect"
-+	  command is issued.
-+
-+	  If you are unsure, select this option.
-+
-+config MTD_SPI_NOR_WP_KEEP
-+	bool "Keep write protection as is"
-+	help
-+	  If you select this option the write protection of any SPI flashes
-+	  will not be changed. If your flash is write protected or will be
-+	  automatically write protected after power-up you have to manually
-+	  unlock it before you are able to write to it.
-+
-+endchoice
-+
- source "drivers/mtd/spi-nor/controllers/Kconfig"
- 
- endif # MTD_SPI_NOR
-diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
-index 49d392c6c8bc..9c3bd391cb32 100644
---- a/drivers/mtd/spi-nor/atmel.c
-+++ b/drivers/mtd/spi-nor/atmel.c
-@@ -8,23 +8,120 @@
- 
- #include "core.h"
- 
-+#define ATMEL_SR_GLOBAL_PROTECT_MASK GENMASK(5, 2)
-+
-+/**
-+ * atmel_set_global_protection - Do a Global Protect or Unprotect command
-+ * @nor:	pointer to 'struct spi_nor'
-+ * @ofs:	offset in bytes
-+ * @len:	len in bytes
-+ * @is_protect:	if true do a Global Protect otherwise it is a Global Unprotect
-+ *
-+ * Return: 0 on success, -error otherwise.
-+ */
-+static int atmel_set_global_protection(struct spi_nor *nor, loff_t ofs,
-+				       uint64_t len, bool is_protect)
-+{
-+	int ret;
-+	u8 sr;
-+
-+	/* We only support locking the whole flash array */
-+	if (ofs || len != nor->params->size)
-+		return -EINVAL;
-+
-+	ret = spi_nor_read_sr(nor, nor->bouncebuf);
-+	if (ret)
-+		return ret;
-+	sr = nor->bouncebuf[0];
-+
-+	/* SRWD bit needs to be cleared, otherwise the protection doesn't change */
-+	if (sr & SR_SRWD) {
-+		sr &= ~SR_SRWD;
-+		ret = spi_nor_write_sr_and_check(nor, sr);
-+		if (ret) {
-+			dev_err(nor->dev, "unable to clear SRWD bit, WP# asserted?\n");
-+			return ret;
-+		}
-+	}
-+
-+	if (is_protect)
-+		sr |= ATMEL_SR_GLOBAL_PROTECT_MASK;
-+	else
-+		sr &= ~ATMEL_SR_GLOBAL_PROTECT_MASK;
-+
-+	return spi_nor_write_sr_and_check(nor, sr);
-+}
-+
-+static int atmel_global_protect(struct spi_nor *nor, loff_t ofs, uint64_t len)
-+{
-+	return atmel_set_global_protection(nor, ofs, len, true);
-+}
-+
-+static int atmel_global_unprotect(struct spi_nor *nor, loff_t ofs, uint64_t len)
-+{
-+	return atmel_set_global_protection(nor, ofs, len, false);
-+}
-+
-+static int atmel_is_global_protected(struct spi_nor *nor, loff_t ofs, uint64_t len)
-+{
-+	int ret;
-+
-+	if (ofs >= nor->params->size || (ofs + len) > nor->params->size)
-+		return -EINVAL;
-+
-+	ret = spi_nor_read_sr(nor, nor->bouncebuf);
-+	if (ret)
-+		return ret;
-+
-+	return ((nor->bouncebuf[0] & ATMEL_SR_GLOBAL_PROTECT_MASK) == ATMEL_SR_GLOBAL_PROTECT_MASK);
-+}
-+
-+static const struct spi_nor_locking_ops atmel_global_protection_ops = {
-+	.lock = atmel_global_protect,
-+	.unlock = atmel_global_unprotect,
-+	.is_locked = atmel_is_global_protected,
-+};
-+
-+void atmel_global_protection_default_init(struct spi_nor *nor)
-+{
-+	nor->params->locking_ops = &atmel_global_protection_ops;
-+}
-+
-+static const struct spi_nor_fixups atmel_global_protection_fixups = {
-+	.default_init = atmel_global_protection_default_init,
-+};
-+
- static const struct flash_info atmel_parts[] = {
- 	/* Atmel -- some are (confusingly) marketed as "DataFlash" */
- 	{ "at25fs010",  INFO(0x1f6601, 0, 32 * 1024,   4, SECT_4K | SPI_NOR_HAS_LOCK) },
- 	{ "at25fs040",  INFO(0x1f6604, 0, 64 * 1024,   8, SECT_4K | SPI_NOR_HAS_LOCK) },
- 
--	{ "at25df041a", INFO(0x1f4401, 0, 64 * 1024,   8, SECT_4K | SPI_NOR_HAS_LOCK) },
--	{ "at25df321",  INFO(0x1f4700, 0, 64 * 1024,  64, SECT_4K | SPI_NOR_HAS_LOCK) },
--	{ "at25df321a", INFO(0x1f4701, 0, 64 * 1024,  64, SECT_4K | SPI_NOR_HAS_LOCK) },
--	{ "at25df641",  INFO(0x1f4800, 0, 64 * 1024, 128, SECT_4K | SPI_NOR_HAS_LOCK) },
-+	{ "at25df041a", INFO(0x1f4401, 0, 64 * 1024,   8,
-+			     SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_WP_IS_VOLATILE)
-+			.fixups = &atmel_global_protection_fixups },
-+	{ "at25df321",  INFO(0x1f4700, 0, 64 * 1024,  64,
-+			     SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_WP_IS_VOLATILE)
-+			.fixups = &atmel_global_protection_fixups },
-+	{ "at25df321a", INFO(0x1f4701, 0, 64 * 1024,  64,
-+			     SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_WP_IS_VOLATILE)
-+			.fixups = &atmel_global_protection_fixups },
-+	{ "at25df641",  INFO(0x1f4800, 0, 64 * 1024, 128,
-+			     SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_WP_IS_VOLATILE)
-+			.fixups = &atmel_global_protection_fixups },
- 
- 	{ "at25sl321",	INFO(0x1f4216, 0, 64 * 1024, 64,
- 			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 
- 	{ "at26f004",   INFO(0x1f0400, 0, 64 * 1024,  8, SECT_4K) },
--	{ "at26df081a", INFO(0x1f4501, 0, 64 * 1024, 16, SECT_4K | SPI_NOR_HAS_LOCK) },
--	{ "at26df161a", INFO(0x1f4601, 0, 64 * 1024, 32, SECT_4K | SPI_NOR_HAS_LOCK) },
--	{ "at26df321",  INFO(0x1f4700, 0, 64 * 1024, 64, SECT_4K | SPI_NOR_HAS_LOCK) },
-+	{ "at26df081a", INFO(0x1f4501, 0, 64 * 1024, 16,
-+			     SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_WP_IS_VOLATILE)
-+			.fixups = &atmel_global_protection_fixups },
-+	{ "at26df161a", INFO(0x1f4601, 0, 64 * 1024, 32,
-+			     SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_WP_IS_VOLATILE)
-+			.fixups = &atmel_global_protection_fixups },
-+	{ "at26df321",  INFO(0x1f4700, 0, 64 * 1024, 64,
-+			     SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_WP_IS_VOLATILE)
-+			.fixups = &atmel_global_protection_fixups },
- 
- 	{ "at45db081d", INFO(0x1f2500, 0, 64 * 1024, 16, SECT_4K) },
- };
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 2add4a01fce2..c40a7c1490d7 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -276,7 +276,7 @@ int spi_nor_write_disable(struct spi_nor *nor)
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
--static int spi_nor_read_sr(struct spi_nor *nor, u8 *sr)
-+int spi_nor_read_sr(struct spi_nor *nor, u8 *sr)
- {
- 	int ret;
- 
-@@ -906,7 +906,7 @@ static int spi_nor_write_16bit_cr_and_check(struct spi_nor *nor, u8 cr)
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
--static int spi_nor_write_sr_and_check(struct spi_nor *nor, u8 sr1)
-+int spi_nor_write_sr_and_check(struct spi_nor *nor, u8 sr1)
- {
- 	if (nor->flags & SNOR_F_HAS_16BIT_SR)
- 		return spi_nor_write_16bit_sr_and_check(nor, sr1);
-@@ -2919,15 +2919,14 @@ static int spi_nor_quad_enable(struct spi_nor *nor)
-  * spi_nor_unlock_all() - Unlocks the entire flash memory array.
-  * @nor:	pointer to a 'struct spi_nor'.
-  *
-- * Some SPI NOR flashes are write protected by default after a power-on reset
-- * cycle, in order to avoid inadvertent writes during power-up. Backward
-- * compatibility imposes to unlock the entire flash memory array at power-up
-- * by default.
-+ * Return: 0 on success, -errno otherwise.
-  */
- static int spi_nor_unlock_all(struct spi_nor *nor)
- {
--	if (nor->flags & SNOR_F_HAS_LOCK)
-+	if (nor->flags & SNOR_F_HAS_LOCK) {
-+		dev_dbg(nor->dev, "unprotecting entire flash\n");
- 		return spi_nor_unlock(&nor->mtd, 0, nor->params->size);
-+	}
- 
- 	return 0;
- }
-@@ -2942,10 +2941,23 @@ static int spi_nor_init(struct spi_nor *nor)
- 		return err;
- 	}
- 
--	err = spi_nor_unlock_all(nor);
--	if (err) {
--		dev_dbg(nor->dev, "Failed to unlock the entire flash memory array\n");
--		return err;
-+	/*
-+	 * Some SPI NOR flashes are write protected by default after a power-on
-+	 * reset cycle, in order to avoid inadvertent writes during power-up.
-+	 * Backward compatibility imposes to unlock the entire flash memory
-+	 * array at power-up by default. Depending on the kernel configuration
-+	 * (1) we do nothing, (2) we unlock the entire flash in any case or (3)
-+	 * just do it actually powers up write-protected. The latter is
-+	 * indicated by SNOR_F_WP_IS_VOLATILE.
-+	 */
-+	if (IS_ENABLED(CONFIG_MTD_SPI_NOR_WP_DISABLE) ||
-+	    (IS_ENABLED(CONFIG_MTD_SPI_NOR_WP_DISABLE_ON_VOLATILE) &&
-+	     nor->flags & SNOR_F_WP_IS_VOLATILE)) {
-+		err = spi_nor_unlock_all(nor);
-+		if (err) {
-+			dev_err(nor->dev, "Failed to unlock the entire flash memory array\n");
-+			return err;
-+		}
- 	}
- 
- 	if (nor->addr_width == 4 && !(nor->flags & SNOR_F_4B_OPCODES)) {
-@@ -3170,6 +3182,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
- 	if (info->flags & USE_CLSR)
- 		nor->flags |= SNOR_F_USE_CLSR;
-+	if (info->flags & SPI_NOR_WP_IS_VOLATILE)
-+		nor->flags |= SNOR_F_WP_IS_VOLATILE;
- 
- 	if (info->flags & SPI_NOR_4BIT_BP) {
- 		nor->flags |= SNOR_F_HAS_4BIT_BP;
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 6f2f6b27173f..99dd2e14142a 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -26,6 +26,7 @@ enum spi_nor_option_flags {
- 	SNOR_F_HAS_SR_TB_BIT6	= BIT(11),
- 	SNOR_F_HAS_4BIT_BP      = BIT(12),
- 	SNOR_F_HAS_SR_BP3_BIT6  = BIT(13),
-+	SNOR_F_WP_IS_VOLATILE	= BIT(14),
- };
- 
- struct spi_nor_read_command {
-@@ -311,6 +312,11 @@ struct flash_info {
- 					 * BP3 is bit 6 of status register.
- 					 * Must be used with SPI_NOR_4BIT_BP.
- 					 */
-+#define SPI_NOR_WP_IS_VOLATILE	BIT(19)	/*
-+					 * Flash has volatile write protection
-+					 * bits. Usually these will power-up in
-+					 * a write-protected state.
-+					 */
- 
- 	/* Part specific fixup hooks. */
- 	const struct spi_nor_fixups *fixups;
-@@ -409,6 +415,8 @@ void spi_nor_unlock_and_unprep(struct spi_nor *nor);
- int spi_nor_sr1_bit6_quad_enable(struct spi_nor *nor);
- int spi_nor_sr2_bit1_quad_enable(struct spi_nor *nor);
- int spi_nor_sr2_bit7_quad_enable(struct spi_nor *nor);
-+int spi_nor_write_sr_and_check(struct spi_nor *nor, u8 sr1);
-+int spi_nor_read_sr(struct spi_nor *nor, u8 *sr);
- 
- int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr);
- ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t len,
-diff --git a/drivers/mtd/spi-nor/esmt.c b/drivers/mtd/spi-nor/esmt.c
-index c93170008118..c2ebf29d95f2 100644
---- a/drivers/mtd/spi-nor/esmt.c
-+++ b/drivers/mtd/spi-nor/esmt.c
-@@ -11,9 +11,13 @@
- static const struct flash_info esmt_parts[] = {
- 	/* ESMT */
- 	{ "f25l32pa", INFO(0x8c2016, 0, 64 * 1024, 64,
--			   SECT_4K | SPI_NOR_HAS_LOCK) },
-+			   SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_WP_IS_VOLATILE) },
- 	{ "f25l32qa", INFO(0x8c4116, 0, 64 * 1024, 64,
--			   SECT_4K | SPI_NOR_HAS_LOCK) },
-+			   SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_WP_IS_VOLATILE) },
-+	/*
-+	 * According to the datasheet the BPn bits are non-volatile, whereas
-+	 * they are volatile for the smaller f25l32qa.
-+	 */
- 	{ "f25l64qa", INFO(0x8c4117, 0, 64 * 1024, 128,
- 			   SECT_4K | SPI_NOR_HAS_LOCK) },
- };
-diff --git a/drivers/mtd/spi-nor/intel.c b/drivers/mtd/spi-nor/intel.c
-index d8196f101368..c45ea0ad01f0 100644
---- a/drivers/mtd/spi-nor/intel.c
-+++ b/drivers/mtd/spi-nor/intel.c
-@@ -10,9 +10,9 @@
- 
- static const struct flash_info intel_parts[] = {
- 	/* Intel/Numonyx -- xxxs33b */
--	{ "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, 0) },
--	{ "320s33b",  INFO(0x898912, 0, 64 * 1024,  64, 0) },
--	{ "640s33b",  INFO(0x898913, 0, 64 * 1024, 128, 0) },
-+	{ "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, SPI_NOR_WP_IS_VOLATILE) },
-+	{ "320s33b",  INFO(0x898912, 0, 64 * 1024,  64, SPI_NOR_WP_IS_VOLATILE) },
-+	{ "640s33b",  INFO(0x898913, 0, 64 * 1024, 128, SPI_NOR_WP_IS_VOLATILE) },
- };
- 
- static void intel_default_init(struct spi_nor *nor)
-diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
-index 8b169fa4102a..5e4450877d66 100644
---- a/drivers/mtd/spi-nor/sst.c
-+++ b/drivers/mtd/spi-nor/sst.c
-@@ -11,26 +11,27 @@
- static const struct flash_info sst_parts[] = {
- 	/* SST -- large erase sizes are "overlays", "sectors" are 4K */
- 	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024,  8,
--			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK) },
-+			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK | SPI_NOR_WP_IS_VOLATILE) },
- 	{ "sst25vf080b", INFO(0xbf258e, 0, 64 * 1024, 16,
--			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK) },
-+			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK | SPI_NOR_WP_IS_VOLATILE) },
- 	{ "sst25vf016b", INFO(0xbf2541, 0, 64 * 1024, 32,
--			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK) },
-+			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK | SPI_NOR_WP_IS_VOLATILE) },
- 	{ "sst25vf032b", INFO(0xbf254a, 0, 64 * 1024, 64,
--			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK) },
--	{ "sst25vf064c", INFO(0xbf254b, 0, 64 * 1024, 128, SECT_4K | SPI_NOR_HAS_LOCK) },
-+			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK | SPI_NOR_WP_IS_VOLATILE) },
-+	{ "sst25vf064c", INFO(0xbf254b, 0, 64 * 1024, 128,
-+			      SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_WP_IS_VOLATILE) },
- 	{ "sst25wf512",  INFO(0xbf2501, 0, 64 * 1024,  1,
--			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK) },
-+			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK | SPI_NOR_WP_IS_VOLATILE) },
- 	{ "sst25wf010",  INFO(0xbf2502, 0, 64 * 1024,  2,
--			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK) },
-+			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK | SPI_NOR_WP_IS_VOLATILE) },
- 	{ "sst25wf020",  INFO(0xbf2503, 0, 64 * 1024,  4,
--			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK) },
-+			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK | SPI_NOR_WP_IS_VOLATILE) },
- 	{ "sst25wf020a", INFO(0x621612, 0, 64 * 1024,  4, SECT_4K | SPI_NOR_HAS_LOCK) },
- 	{ "sst25wf040b", INFO(0x621613, 0, 64 * 1024,  8, SECT_4K | SPI_NOR_HAS_LOCK) },
- 	{ "sst25wf040",  INFO(0xbf2504, 0, 64 * 1024,  8,
--			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK) },
-+			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK | SPI_NOR_WP_IS_VOLATILE) },
- 	{ "sst25wf080",  INFO(0xbf2505, 0, 64 * 1024, 16,
--			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK) },
-+			      SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK | SPI_NOR_WP_IS_VOLATILE) },
- 	{ "sst26wf016b", INFO(0xbf2651, 0, 64 * 1024, 32,
- 			      SECT_4K | SPI_NOR_DUAL_READ |
- 			      SPI_NOR_QUAD_READ) },
--- 
-2.20.1
-
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
