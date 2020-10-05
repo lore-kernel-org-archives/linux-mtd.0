@@ -2,86 +2,83 @@ Return-Path: <SRS0=tKtu=DM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5BCCC46466
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A72F4C4727D
 	for <linux-mtd@archiver.kernel.org>; Mon,  5 Oct 2020 15:32:33 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4B6E32085B
+	by mail.kernel.org (Postfix) with ESMTPS id 3B6E820B80
 	for <linux-mtd@archiver.kernel.org>; Mon,  5 Oct 2020 15:32:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CNtQbzRG";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="C6yeSu9g"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B6E32085B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="W+kHy1l1";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="NIxNPXhx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B6E820B80
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=3SgZwkEf9WAmGlxH5KogDYRBMQ3nB3AHNii9lsri2hQ=; b=CNtQbzRGsm6CVStyxeEiTziZ1
-	ScEIg1MHEH6xOkc+CbTy08SViRSh6jPA9L/LVyy5nWJxpaHH+A9HqSA6FLz/0bHPXB1mX62fwnjDU
-	e4Sba5Gymf9sqCZAlZtwMtJBsjJJPDpTNFRuB1bMBYDx+q0vvZcfXXUJ49quuU00BSOXCzTzX4yCk
-	/5isJWgRhdHq89U+xY81kp5vKHxc5vQZ9IifkS/XdVYTBbX57PhWI8ui7UeVIRrmWpt2irIXiK+Ch
-	g2lazX2BbVkCd+wzR/E90FhjT3RO69Q7ScO2IFSEvpadirQtxpx9ngj1jnrjvI1rpAg66FwbuVoKm
-	92kRlHyag==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=eDTuTfbMpaUsBx1QGVBkOB+fA6mmfv3Oo3dZeAgD8Mw=; b=W+kHy1l1jdiV1/ae9eNt1GoH1k
+	p24+dP2VH8f8sg+k5lza76kwzJDF1IsEYkDkQd0j/vXi0oN9lwMADrovTluyqPzMASOjEDbaaWphh
+	GK25VWKAWvuilQNPjdYibkgYXSsUjonxFS7rkT7APwInJEsltf6bOuawhxLApstYi38ufygvY30Xf
+	Zaz/Q0DzwdQ38Y4YEpNUAjIquDjXv1JnOqPcy1C+RgjfWVHE0Vah6Pk83nE1JL4e0Dx3n08NQ2Kn5
+	S6a0+9bbVaGGeDxr+JhG6q64BV7rUT7orQsROT4YJpJneMcFDW8jnx1hJLYUbgsm7wxc07Sm9711n
+	4ZFp1LFA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kPSSz-0004zW-M9; Mon, 05 Oct 2020 15:31:57 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1kPSSu-0004yE-IV; Mon, 05 Oct 2020 15:31:52 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kPSSw-0004yN-BQ
- for linux-mtd@lists.infradead.org; Mon, 05 Oct 2020 15:31:55 +0000
+ id 1kPSSr-0004wt-IN
+ for linux-mtd@lists.infradead.org; Mon, 05 Oct 2020 15:31:50 +0000
 Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 095FVn40129086;
- Mon, 5 Oct 2020 10:31:49 -0500
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 095FVh7Z088644;
+ Mon, 5 Oct 2020 10:31:43 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1601911909;
- bh=Td3Y0lgClZqA+Zrig0Fp3EALnlOS4uPIOQE6gB1VwEA=;
- h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=C6yeSu9g53jljrpU++gHLNJ2ScszuJfDnvE0uA/xMFeznn4veJ8/PP/f288dCTnuB
- +lSEIRZKkyWmSJ9yo4aegYcZmj+AetTZBhMHGfbq8IzvsvRdROQK301Og6dDplWIWZ
- tklya0ooNe4Xu3vPDHxgncAY1u9ciK02+nd30Oq0=
+ s=ti-com-17Q1; t=1601911903;
+ bh=Eg45UDtNzM+FCBde3IFWY0aBvvOIY9gIrtDE/9/oUME=;
+ h=From:To:CC:Subject:Date;
+ b=NIxNPXhxV2+kHsImiEIqOV4nFkxhEbhJm0NCN6VR79/SQJWx5SJkdJM8BrNmzSqYx
+ YBw6izjUeey109D8VK3sBeIg9o9o9Nwd7sYTM7I3gTJwlN0Joa9mPcCOtJ+6cAR8Aa
+ y7+HXtkcg48QSjC02AFxQu8pjfOpJQbmiKJf77SQ=
 Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 095FVnWI055048
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 095FVhe7054937
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 5 Oct 2020 10:31:49 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE115.ent.ti.com
+ Mon, 5 Oct 2020 10:31:43 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE115.ent.ti.com
  (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 5 Oct
- 2020 10:31:48 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ 2020 10:31:42 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 5 Oct 2020 10:31:48 -0500
+ Frontend Transport; Mon, 5 Oct 2020 10:31:42 -0500
 Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
  [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 095FVdli052390;
- Mon, 5 Oct 2020 10:31:46 -0500
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 095FVdlg052390;
+ Mon, 5 Oct 2020 10:31:40 -0500
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
  <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
  Raghavendra <vigneshr@ti.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v16 02/15] mtd: spi-nor: add spi_nor_controller_ops_{read_reg,
- write_reg, erase}()
-Date: Mon, 5 Oct 2020 21:01:25 +0530
-Message-ID: <20201005153138.6437-3-p.yadav@ti.com>
+Subject: [PATCH v16 00/15] mtd: spi-nor: add xSPI Octal DTR support
+Date: Mon, 5 Oct 2020 21:01:23 +0530
+Message-ID: <20201005153138.6437-1-p.yadav@ti.com>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005153138.6437-1-p.yadav@ti.com>
-References: <20201005153138.6437-1-p.yadav@ti.com>
 MIME-Version: 1.0
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201005_113154_501773_93B6CE28 
-X-CRM114-Status: GOOD (  14.12  )
+X-CRM114-CacheID: sfid-20201005_113149_704289_55180D2E 
+X-CRM114-Status: GOOD (  40.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,236 +97,356 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-They are thin wrappers around
-nor->controller_ops->{read_reg,write_reg,erase}(). In a future commit
-DTR support will be added. These ops can not be supported by the
-controller_ops hooks and these helpers will make it easier to reject
-those calls.
+Hi,
 
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
----
- drivers/mtd/spi-nor/core.c | 87 +++++++++++++++++++++++---------------
- 1 file changed, 53 insertions(+), 34 deletions(-)
+This series adds support for Octal DTR flashes in the SPI NOR framework,
+and then adds hooks for the Cypress Semper and Micron Xcella flashes to
+allow running them in Octal DTR mode. This series assumes that the flash
+is handed to the kernel in Legacy SPI mode.
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 4d0f8d165544..7a3bf460a2fa 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -82,6 +82,23 @@ static int spi_nor_spimem_exec_op(struct spi_nor *nor, struct spi_mem_op *op)
- 	return spi_mem_exec_op(nor->spimem, op);
- }
- 
-+static int spi_nor_controller_ops_read_reg(struct spi_nor *nor, u8 opcode,
-+					   u8 *buf, size_t len)
-+{
-+	return nor->controller_ops->read_reg(nor, opcode, buf, len);
-+}
-+
-+static int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
-+					    const u8 *buf, size_t len)
-+{
-+	return nor->controller_ops->write_reg(nor, opcode, buf, len);
-+}
-+
-+static int spi_nor_controller_ops_erase(struct spi_nor *nor, loff_t offs)
-+{
-+	return nor->controller_ops->erase(nor, offs);
-+}
-+
- /**
-  * spi_nor_spimem_read_data() - read data from flash's memory region via
-  *                              spi-mem
-@@ -229,8 +246,8 @@ int spi_nor_write_enable(struct spi_nor *nor)
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
- 	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WREN,
--						     NULL, 0);
-+		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_WREN,
-+						       NULL, 0);
- 	}
- 
- 	if (ret)
-@@ -258,8 +275,8 @@ int spi_nor_write_disable(struct spi_nor *nor)
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
- 	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WRDI,
--						     NULL, 0);
-+		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_WRDI,
-+						       NULL, 0);
- 	}
- 
- 	if (ret)
-@@ -289,8 +306,8 @@ static int spi_nor_read_sr(struct spi_nor *nor, u8 *sr)
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
- 	} else {
--		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDSR,
--						    sr, 1);
-+		ret = spi_nor_controller_ops_read_reg(nor, SPINOR_OP_RDSR, sr,
-+						      1);
- 	}
- 
- 	if (ret)
-@@ -320,8 +337,8 @@ static int spi_nor_read_fsr(struct spi_nor *nor, u8 *fsr)
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
- 	} else {
--		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDFSR,
--						    fsr, 1);
-+		ret = spi_nor_controller_ops_read_reg(nor, SPINOR_OP_RDFSR, fsr,
-+						      1);
- 	}
- 
- 	if (ret)
-@@ -352,7 +369,8 @@ static int spi_nor_read_cr(struct spi_nor *nor, u8 *cr)
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
- 	} else {
--		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDCR, cr, 1);
-+		ret = spi_nor_controller_ops_read_reg(nor, SPINOR_OP_RDCR, cr,
-+						      1);
- 	}
- 
- 	if (ret)
-@@ -385,10 +403,10 @@ int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
- 	} else {
--		ret = nor->controller_ops->write_reg(nor,
--						     enable ? SPINOR_OP_EN4B :
--							      SPINOR_OP_EX4B,
--						     NULL, 0);
-+		ret = spi_nor_controller_ops_write_reg(nor,
-+						       enable ? SPINOR_OP_EN4B :
-+								SPINOR_OP_EX4B,
-+						       NULL, 0);
- 	}
- 
- 	if (ret)
-@@ -421,8 +439,8 @@ static int spansion_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
- 	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_BRWR,
--						     nor->bouncebuf, 1);
-+		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_BRWR,
-+						       nor->bouncebuf, 1);
- 	}
- 
- 	if (ret)
-@@ -453,8 +471,8 @@ int spi_nor_write_ear(struct spi_nor *nor, u8 ear)
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
- 	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WREAR,
--						     nor->bouncebuf, 1);
-+		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_WREAR,
-+						       nor->bouncebuf, 1);
- 	}
- 
- 	if (ret)
-@@ -484,8 +502,8 @@ int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr)
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
- 	} else {
--		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_XRDSR,
--						    sr, 1);
-+		ret = spi_nor_controller_ops_read_reg(nor, SPINOR_OP_XRDSR, sr,
-+						      1);
- 	}
- 
- 	if (ret)
-@@ -529,8 +547,8 @@ static void spi_nor_clear_sr(struct spi_nor *nor)
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
- 	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_CLSR,
--						     NULL, 0);
-+		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_CLSR,
-+						       NULL, 0);
- 	}
- 
- 	if (ret)
-@@ -593,8 +611,8 @@ static void spi_nor_clear_fsr(struct spi_nor *nor)
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
- 	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_CLFSR,
--						     NULL, 0);
-+		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_CLFSR,
-+						       NULL, 0);
- 	}
- 
- 	if (ret)
-@@ -737,8 +755,8 @@ static int spi_nor_write_sr(struct spi_nor *nor, const u8 *sr, size_t len)
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
- 	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WRSR,
--						     sr, len);
-+		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_WRSR, sr,
-+						       len);
- 	}
- 
- 	if (ret) {
-@@ -939,8 +957,8 @@ static int spi_nor_write_sr2(struct spi_nor *nor, const u8 *sr2)
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
- 	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WRSR2,
--						     sr2, 1);
-+		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_WRSR2,
-+						       sr2, 1);
- 	}
- 
- 	if (ret) {
-@@ -973,8 +991,8 @@ static int spi_nor_read_sr2(struct spi_nor *nor, u8 *sr2)
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
- 	} else {
--		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDSR2,
--						    sr2, 1);
-+		ret = spi_nor_controller_ops_read_reg(nor, SPINOR_OP_RDSR2, sr2,
-+						      1);
- 	}
- 
- 	if (ret)
-@@ -1004,8 +1022,9 @@ static int spi_nor_erase_chip(struct spi_nor *nor)
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
- 	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_CHIP_ERASE,
--						     NULL, 0);
-+		ret = spi_nor_controller_ops_write_reg(nor,
-+						       SPINOR_OP_CHIP_ERASE,
-+						       NULL, 0);
- 	}
- 
- 	if (ret)
-@@ -1146,7 +1165,7 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
- 
- 		return spi_mem_exec_op(nor->spimem, &op);
- 	} else if (nor->controller_ops->erase) {
--		return nor->controller_ops->erase(nor, addr);
-+		return spi_nor_controller_ops_erase(nor, addr);
- 	}
- 
- 	/*
-@@ -1158,8 +1177,8 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
- 		addr >>= 8;
- 	}
- 
--	return nor->controller_ops->write_reg(nor, nor->erase_opcode,
--					      nor->bouncebuf, nor->addr_width);
-+	return spi_nor_controller_ops_write_reg(nor, nor->erase_opcode,
-+						nor->bouncebuf, nor->addr_width);
- }
- 
- /**
--- 
+Tested on Micron MT35X and S28HS flashes for Octal DTR. Tested on Micron
+MT25Q, and Cypress S25FL for regressions. All flashes were tested by
+running a read/write stress test on top of UBIFS. On the Cypress S28HS
+flash 1-bit ECC had to be used to allow UBIFS to work since partial page
+writes don't work with 2-bit ECC.
+
+Changes in v16:
+- Do not wait for Micron flash to switch to 8D mode. The switch is
+  instant according to the datasheet.
+
+- Read flash ID in both Micron and Cypress Octal enable hooks as a
+  confirmation that the switch to 8D mode was successful. This way we
+  can catch any errors early rather than later commands failing.
+
+- Add Tudor's Reviewed-by on patch 10/15.
+
+Changes in v15:
+- Give precedence to addr_width found via SFDP over forcing it to 4 for
+  8D. The standard knows better.
+
+- Sleep for a range of 1000 to 1500 us instead of 400 to 600. The 400 to
+  600 range was too close to the actual time it took to change to 8D
+  mode (discovered by polling SR right after and observing that it
+  freezed the controller sometimes). Bump it to 1000 - 1500 to be safe.
+
+- Do not initialize dummy to 0 in Profile 1.0 parsing.
+
+- Drop the variable io_mode_en_volatile in spi_nor_parse_sccr(). Use the
+  FIELD_GET expression in the if statement directly.
+
+- Drop the debug message when setting dummy cycle configuration failed
+  for S28HS flash.
+
+- Move the patches that introduce SNOR_F_IO_MODE_EN_VOLATILE to before
+  the one that introduces spi_nor_octal_dtr_enable(). This way we can
+  reject flashes with non-volatile configuration from day 0.
+
+Changes in v14:
+- Rename spi_nor_{read,write}_reg() to
+  spi_nor_controller_ops_{read,write}_reg().
+
+- When spi_nor_spimem_setup_op() will be called after a spi_mem_op is
+  initialized, set buswidth of all phases to 0. This will make the
+  reader question where the buswidth is actually set and avoid any
+  confusions.
+
+- Only use address and dummy bytes from Profile 1.0 table for 8D-8D-8D
+  Read SR/FSR instead of all DTR ones.
+
+- Do not make spi_nor_default_setup_op() public. It is not used anymore
+  in latest iterations so this is not needed.
+
+- Only enable Octal DTR mode when the configuration to enable it is
+  volatile.
+
+- Do not prevent modes other than 8D-8D-8D from enabling 4-byte
+  addressing. All other modes don't automatically imply 4-byte
+  addressing.
+
+- Add some blank lines in spi_nor_soft_reset().
+
+- Drop the local variable 'dev' in spi_nor_suspend().
+
+- Do not force 4-byte addressing on all DTR modes. Only force it for
+  Octal DTR because only in that case 3-byte addresses are not allowed.
+
+- Drop variable addr_width from spi_nor_micron_octal_dtr_enable() and
+  spi_nor_cypress_octal_dtr_enable().
+
+- Remove print from spi_nor_micron_octal_dtr_enable() and
+  spi_nor_cypress_octal_dtr_enable() when enabling/disabling Octal DTR
+  fails.
+
+- Wait some time after enabling Octal DTR mode in
+  spi_nor_micron_octal_dtr_enable() and
+  spi_nor_cypress_octal_dtr_enable(). This makes sure the mode is
+  enabled and flash is usuable.
+
+- Fix alignment of .fixups in micron_parts and spansion_parts.
+
+- s/BFPT_DWORD16_SOFT_RST/BFPT_DWORD16_SWRST_EN_RST
+
+- Fix copy-paste leftover in spi_nor_parse_profile1() documentation.
+
+- Do not assume a default dummy cycle value if none is found in Profile
+  1.0 parsing. Leave it to 0 and let flashes fix it up via fixup hooks.
+
+- Parse the SCCR table to discover if the Octal DTR enable bit is
+  volatile or not.
+
+- Drop variable addr_width in s28hs512t_post_bfpt_fixup() and move op
+  initialization to the declaration to avoid a cast and use
+  nor->bouncebuf directly instead of declaring a local variable.
+
+Changes in v13:
+- Do not use multiple assignments in spi_nor_spimem_setup_op().
+
+- Use EOPNOTSUPP instead of ENOTSUPP.
+
+- Fix unbalanced braces around else statements.
+
+- Fix whitespace alignment for spi_nor_set_read_settings() prototype.
+
+Changes in v12:
+- Rebase on latest master.
+
+- Set dummy and data nbytes to 1 in spi_nor_spimem_check_readop() before
+  calling spi_nor_spimem_check_op() to make sure the buswidth for them
+  is properly set up. Similarly, set data nbytes to 1 for
+  spi_nor_spimem_check_pp(). This makes sure we don't send the wrong
+  dummy and data buswidth to the controller's supports_op().
+
+- Enable DQS for Micron MT35XU512ABA. No reason not to.
+
+- Update doc comment for spi_nor_parse_profile1() and
+  spi_nor_cypress_octal_dtr_enable() to add missing fields.
+
+Changes in v11:
+- Add helpers spi_nor_{read,write}_reg() to make it easier to reject DTR
+  ops for them.
+
+- Add helper for spi_nor_controller_ops_erase() to make it easier to
+  reject DTR ops.
+
+- s/spi-mem/SPIMEM/ and s/spi-nor/SPI NOR/
+
+- Avoid enabling 4-byte addressing mode for all DTR ops instead of just
+  Octal DTR ops. This is based on the assumption that DTR ops can only
+  use 4-byte addressing.
+
+- Use round_up() instead of defining ROUND_UP_TO().
+
+- Rename 'table' to 'dwords' in xSPI Profile 1.0 parsing.
+
+- Re-order Profile 1.0 related defines by DWORD order.
+
+- Move rdsr parameter parsing to where opcode is parsed because it is
+  from the same DWORD.
+
+- Drop local variables addr_width and dummy in spi_nor_read_sr()
+  spi_nor_read_fsr().
+
+- Allow soft reset for all protocols, not just 8D-8D-8D.
+
+- Do not set address value to 0 is spi_nor_read_sr() and
+  spi_nor_read_fsr(). It is 0 by default when we create the op.
+
+- Do not make having command opcode extension as a reserved field fatal.
+
+- Introduce the flag SPI_NOR_OCTAL_DTR_PP to indicate 8D page program
+  support since it can't be detected from SFDP.
+
+- Move the call to spi_nor_spimem_setup_op() in spi_nor_read_sr() to the
+  commit which introduces it.
+
+- Convert a comment in Profile 1.0 parsing from multi-line to one line.
+
+Changes in v10:
+- Rebase on latest linux-next/master. Drop a couple patches that made it
+  in the  previous release.
+
+- Move the code that sets 20 dummy cycles for MT35XU512ABA to its octal
+  enable function. This way, if the controller doesn't support 8D mode
+  20 dummy cycles won't be used.
+
+Changes in v9:
+- Do not use '& 0xff' to get the opcode LSB in spi-mxic and
+  spi-zynq-qspi. The cast to u8 will do that anyway.
+
+- Do not use if (opcode) as a check for whether the command phase exists
+  in spi-zynq-qspi because the opcode 0 can be valid. Use the new
+  cmd.nbytes instead.
+
+Changes in v8:
+- Move controller changes in spi-mxic to the commit which introduces
+  2-byte opcodes to avoid problems when bisecting.
+
+- Replace usage of sizeof(op->cmd.opcode) with op->cmd.nbytes.
+
+- Extract opcode in spi-zynq-qspi instead of using &op->cmd.opcode.
+
+Changes in v7:
+- Reject ops with more than 1 command byte in
+  spi_mem_default_supports_op().
+
+- Reject ops with more than 1 command byte in atmel and mtk controllers.
+
+- Reject ops with 0 command bytes in spi_mem_check_op().
+
+- Set cmd.nbytes to 1 when using SPI_MEM_OP_CMD().
+
+- Avoid endianness problems in spi-mxic.
+
+Changes in v6:
+- Instead of hard-coding 8D-8D-8D Fast Read dummy cycles to 20, find
+  them out from the Profile 1.0 table.
+
+Changes in v5:
+- Do not enable stateful X-X-X modes if the reset line is broken.
+
+- Instead of setting SNOR_READ_HWCAPS_8_8_8_DTR from Profile 1.0 table
+  parsing, do it in spi_nor_info_init_params() instead based on the
+  SPI_NOR_OCTAL_DTR_READ flag instead.
+
+- Set SNOR_HWCAPS_PP_8_8_8_DTR in s28hs post_sfdp hook since this
+  capability is no longer set in Profile 1.0 parsing.
+
+- Instead of just checking for spi_nor_get_protocol_width() in
+  spi_nor_octal_dtr_enable(), make sure the protocol is
+  SNOR_PROTO_8_8_8_DTR since get_protocol_width() only cares about data
+  width.
+
+- Drop flag SPI_NOR_SOFT_RESET. Instead, discover soft reset capability
+  via BFPT.
+
+- Do not make an invalid Quad Enable BFPT field a fatal error. Silently
+  ignore it by assuming no quad enable bit is present.
+
+- Set dummy cycles for Cypress Semper flash to 24 instead of 20. This
+  allows for 200MHz operation in 8D mode compared to the 166MHz with 20.
+
+- Rename spi_nor_cypress_octal_enable() to
+  spi_nor_cypress_octal_dtr_enable().
+
+- Update spi-mtk-nor.c to reject DTR ops since it doesn't call
+  spi_mem_default_supports_op().
+
+Changes in v4:
+- Refactor the series to use the new spi-nor framework with the
+  manufacturer-specific bits separated from the core.
+
+- Add support for Micron MT35XU512ABA.
+
+- Use cmd.nbytes as the criteria of whether the data phase exists or not
+  instead of cmd.buf.in || cmd.buf.out in spi_nor_spimem_setup_op().
+
+- Update Read FSR to use the same dummy cycles and address width as Read
+  SR.
+
+- Fix BFPT parsing stopping too early for JESD216 rev B flashes.
+
+- Use 2 byte reads for Read SR and FSR commands in DTR mode.
+
+Changes in v3:
+- Drop the DT properties "spi-rx-dtr" and "spi-tx-dtr". Instead, if
+  later a need is felt to disable DTR in case someone has a board with
+  Octal DTR capable flash but does not support DTR transactions for some
+  reason, a property like "spi-no-dtr" can be added.
+
+- Remove mode bits SPI_RX_DTR and SPI_TX_DTR.
+
+- Remove the Cadence Quadspi controller patch to un-block this series. I
+  will submit it as a separate patch.
+
+- Rebase on latest 'master' and fix merge conflicts.
+
+- Update read and write dirmap templates to use DTR.
+
+- Rename 'is_dtr' to 'dtr'.
+
+- Make 'dtr' a bitfield.
+
+- Reject DTR ops in spi_mem_default_supports_op().
+
+- Update atmel-quadspi to reject DTR ops. All other controller drivers
+  call spi_mem_default_supports_op() so they will automatically reject
+  DTR ops.
+
+- Add support for both enabling and disabling DTR modes.
+
+- Perform a Software Reset on flashes that support it when shutting
+  down.
+
+- Disable Octal DTR mode on suspend, and re-enable it on resume.
+
+- Drop enum 'spi_mem_cmd_ext' and make command opcode u16 instead.
+  Update spi-nor to use the 2-byte command instead of the command
+  extension. Since we still need a "extension type", mode that enum to
+  spi-nor and name it 'spi_nor_cmd_ext'.
+
+- Default variable address width to 3 to fix SMPT parsing.
+
+- Drop non-volatile change to uniform sector mode and rely on parsing
+  SMPT.
+
+Changes in v2:
+- Add DT properties "spi-rx-dtr" and "spi-tx-dtr" to allow expressing
+  DTR capabilities.
+
+- Set the mode bits SPI_RX_DTR and SPI_TX_DTR when we discover the DT
+  properties "spi-rx-dtr" and spi-tx-dtr".
+
+- spi_nor_cypress_octal_enable() was updating nor->params.read[] with
+  the intention of setting the correct number of dummy cycles. But this
+  function is called _after_ selecting the read so setting
+  nor->params.read[] will have no effect. So, update nor->read_dummy
+  directly.
+
+- Fix spi_nor_spimem_check_readop() and spi_nor_spimem_check_pp()
+  passing nor->read_proto and nor->write_proto to
+  spi_nor_spimem_setup_op() instead of read->proto and pp->proto
+  respectively.
+
+- Move the call to cqspi_setup_opcode_ext() inside cqspi_enable_dtr().
+  This avoids repeating the 'if (f_pdata->is_dtr)
+  cqspi_setup_opcode_ext()...` snippet multiple times.
+
+- Call the default 'supports_op()' from cqspi_supports_mem_op(). This
+  makes sure the buswidth requirements are also enforced along with the
+  DTR requirements.
+
+- Drop the 'is_dtr' argument from spi_check_dtr_req(). We only call it
+  when a phase is DTR so it is redundant.
+
+Pratyush Yadav (13):
+  mtd: spi-nor: core: use EOPNOTSUPP instead of ENOTSUPP
+  mtd: spi-nor: add spi_nor_controller_ops_{read_reg,write_reg,erase}()
+  mtd: spi-nor: add support for DTR protocol
+  mtd: spi-nor: sfdp: get command opcode extension type from BFPT
+  mtd: spi-nor: sfdp: parse xSPI Profile 1.0 table
+  mtd: spi-nor: core: use dummy cycle and address width info from SFDP
+  mtd: spi-nor: core: do 2 byte reads for SR and FSR in DTR mode
+  mtd: spi-nor: core: enable octal DTR mode when possible
+  mtd: spi-nor: sfdp: detect Soft Reset sequence support from BFPT
+  mtd: spi-nor: core: perform a Soft Reset on shutdown
+  mtd: spi-nor: core: disable Octal DTR mode on suspend.
+  mtd: spi-nor: spansion: add support for Cypress Semper flash
+  mtd: spi-nor: micron-st: allow using MT35XU512ABA in Octal DTR mode
+
+Tudor Ambarus (2):
+  mtd: spi-nor: Introduce SNOR_F_IO_MODE_EN_VOLATILE
+  mtd: spi-nor: Parse SFDP SCCR Map
+
+ drivers/mtd/spi-nor/core.c      | 544 ++++++++++++++++++++++++--------
+ drivers/mtd/spi-nor/core.h      |  26 ++
+ drivers/mtd/spi-nor/micron-st.c | 115 ++++++-
+ drivers/mtd/spi-nor/sfdp.c      | 170 +++++++++-
+ drivers/mtd/spi-nor/sfdp.h      |   8 +
+ drivers/mtd/spi-nor/spansion.c  | 174 ++++++++++
+ include/linux/mtd/spi-nor.h     |  53 +++-
+ 7 files changed, 951 insertions(+), 139 deletions(-)
+
+--
 2.28.0
 
 
