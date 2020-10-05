@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-13.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 55A4EC4727D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 559F8C46466
 	for <linux-mtd@archiver.kernel.org>; Mon,  5 Oct 2020 15:33:02 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EF0DE2085B
+	by mail.kernel.org (Postfix) with ESMTPS id 03DF720637
 	for <linux-mtd@archiver.kernel.org>; Mon,  5 Oct 2020 15:33:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="D9VTRYTc";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="DqwHrtUl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF0DE2085B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="F2MC3qL8";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="R+Dh4nw4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 03DF720637
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,62 +26,61 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=/682Hk1Kek9HCGY4yb0L8W5FUoLeui8c86rVVt1lfgc=; b=D9VTRYTcryTVB+T6euaW4RmPa
-	3/crBNJcUAUStM3ibjK2jT15GybqPSnS9w2D3sIDgLmEDjHQM3lesY2rMjzHJ8arnTiG2ny1UKBe3
-	r0NRiFbSdKKd84G2f55cAEs1qaKD6JZQmDPj/Pz4+py339hcsiKn9J/zYzU7q9U/AJsaglb1DINSJ
-	T/LGG8d79P9EG/xHNiMiz+UTqSUGnwnJ6aiwyTSlhqBtwtxq5jHRsAy/0JZSWVUbCCedJsz2zkkzL
-	uB5C1ixXhN3KnO9A2IsrmOP9NgAbW0T3raNen5IJYUMj/Wc8uJrPh40ykYV+deVnGtmVTD31MZrQM
-	8t5nRahww==;
+	 bh=UXHEhOHMuXPItMwgTv6lpBXia9G4auiA8Y1zAipGLwk=; b=F2MC3qL8E4HAQAJztPpxPUHTE
+	gyv3JVajCOSsDkZ5Jm4B46j5R8TXgBAr1DCxPudnuIQa0xpS6OGppM4lfWTD5L0imBmpn1AdM/IRH
+	gdcKydC896N6I3LauWDu5VQw+sdvJpUALdrWqR1LZC3jTrVbbNkcesQRhk5+qOd1OghF2FC1Pr2PU
+	KLvixrj78yntL3NwVoSrDv2hDx9LfxHU2OYCxJw2VcjEAb1oDxNf7e1AQQXsKowlJDWjC+0x1Q/tH
+	gYMkG6kZsZIQH0S9pKxyC1ADwxQINlKe5+VLpyTrj5Rs7VPe++V46e/tlvD0pykuGi2sVUyIfuoJA
+	Q+7+Ons8g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kPSSv-0004yR-Tz; Mon, 05 Oct 2020 15:31:53 +0000
+	id 1kPSTR-0005DK-DI; Mon, 05 Oct 2020 15:32:25 +0000
 Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kPSSs-0004xb-Cr
- for linux-mtd@lists.infradead.org; Mon, 05 Oct 2020 15:31:51 +0000
+ id 1kPSTD-00055l-DE
+ for linux-mtd@lists.infradead.org; Mon, 05 Oct 2020 15:32:12 +0000
 Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 095FVkal088655;
- Mon, 5 Oct 2020 10:31:46 -0500
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 095FW7W0088799;
+ Mon, 5 Oct 2020 10:32:07 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1601911906;
- bh=dgLCDmGqqsDBbyMIliBwVzUNzePc3HpV7xTby1yCRi8=;
+ s=ti-com-17Q1; t=1601911927;
+ bh=tUwUim5rK6udc+lt9hQRjeZ++xksG2XibfI+Xf2FY0s=;
  h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=DqwHrtUle3ehrtRuOTLNxtaiusyOQjQXdezu8mFJqFKCfoS/A0U6801GDxF0g264h
- HPLDscXm3n2bz1q6PUW3HCmEp3Kd2heC0K2B/ST8AkcB9meQN8pOPtSe5IzUSAwiBJ
- Ooh79LTA+ZexqzaCv/XPUBdJBjUS6C/QXOPaE2oU=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 095FVkRx038808
+ b=R+Dh4nw4l7aSxOBel1gmUK3rG78qCXkkJxbnRIk1UVPs/J1g/UNARXwFH9283QPTg
+ tTe1rw/MBwcXPaLKmfdJvlG0XMhgJwKmCSyWAUf33uhAKBr2lguPjN2Kp5Ht+X3uYM
+ cTRMlN0qQzEMSGureRvph0cqGq11LKqSyp9ucQLY=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 095FW7pu039536
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 5 Oct 2020 10:31:46 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ Mon, 5 Oct 2020 10:32:07 -0500
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 5 Oct
- 2020 10:31:45 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ 2020 10:32:07 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 5 Oct 2020 10:31:45 -0500
+ Frontend Transport; Mon, 5 Oct 2020 10:32:07 -0500
 Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
  [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 095FVdlh052390;
- Mon, 5 Oct 2020 10:31:43 -0500
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 095FVdlo052390;
+ Mon, 5 Oct 2020 10:32:04 -0500
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
  <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
  Raghavendra <vigneshr@ti.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v16 01/15] mtd: spi-nor: core: use EOPNOTSUPP instead of
- ENOTSUPP
-Date: Mon, 5 Oct 2020 21:01:24 +0530
-Message-ID: <20201005153138.6437-2-p.yadav@ti.com>
+Subject: [PATCH v16 08/15] mtd: spi-nor: Introduce SNOR_F_IO_MODE_EN_VOLATILE
+Date: Mon, 5 Oct 2020 21:01:31 +0530
+Message-ID: <20201005153138.6437-9-p.yadav@ti.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201005153138.6437-1-p.yadav@ti.com>
 References: <20201005153138.6437-1-p.yadav@ti.com>
 MIME-Version: 1.0
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201005_113150_522822_87433764 
-X-CRM114-Status: GOOD (  14.24  )
+X-CRM114-CacheID: sfid-20201005_113211_567984_BEE29B22 
+X-CRM114-Status: GOOD (  15.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,61 +99,64 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-ENOTSUPP is not a SUSV4 error code. Using EOPNOTSUPP is preferred
-in its stead.
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
 
+We don't want to enter a stateful mode, where a X-X-X I/O mode
+is entered by setting a non-volatile bit, because in case of a
+reset or a crash, once in the non-volatile mode, we may not be able
+to recover in bootloaders and we may break the SPI NOR boot.
+
+Forbid by default the I/O modes that are set via a non-volatile bit.
+
+SPI_NOR_IO_MODE_EN_VOLATILE should be set just for the flashes that
+don't define the optional SFDP SCCR Map, so that we don't pollute the
+flash info flags.
+
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
- drivers/mtd/spi-nor/core.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/mtd/spi-nor/core.c | 3 +++
+ drivers/mtd/spi-nor/core.h | 6 ++++++
+ 2 files changed, 9 insertions(+)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 0369d98b2d12..4d0f8d165544 100644
+index b83bf5ed2b2d..e91ddb409699 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -2281,7 +2281,7 @@ static int spi_nor_hwcaps_pp2cmd(u32 hwcaps)
-  *@nor:        pointer to a 'struct spi_nor'
-  *@op:         pointer to op template to be checked
-  *
-- * Returns 0 if operation is supported, -ENOTSUPP otherwise.
-+ * Returns 0 if operation is supported, -EOPNOTSUPP otherwise.
-  */
- static int spi_nor_spimem_check_op(struct spi_nor *nor,
- 				   struct spi_mem_op *op)
-@@ -2295,12 +2295,12 @@ static int spi_nor_spimem_check_op(struct spi_nor *nor,
- 	op->addr.nbytes = 4;
- 	if (!spi_mem_supports_op(nor->spimem, op)) {
- 		if (nor->mtd.size > SZ_16M)
--			return -ENOTSUPP;
-+			return -EOPNOTSUPP;
+@@ -3387,6 +3387,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 	if (info->flags & SPI_NOR_4B_OPCODES)
+ 		nor->flags |= SNOR_F_4B_OPCODES;
  
- 		/* If flash size <= 16MB, 3 address bytes are sufficient */
- 		op->addr.nbytes = 3;
- 		if (!spi_mem_supports_op(nor->spimem, op))
--			return -ENOTSUPP;
-+			return -EOPNOTSUPP;
- 	}
++	if (info->flags & SPI_NOR_IO_MODE_EN_VOLATILE)
++		nor->flags |= SNOR_F_IO_MODE_EN_VOLATILE;
++
+ 	ret = spi_nor_set_addr_width(nor);
+ 	if (ret)
+ 		return ret;
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 9a33c8d07335..eaece1123c0b 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -26,6 +26,7 @@ enum spi_nor_option_flags {
+ 	SNOR_F_HAS_SR_TB_BIT6	= BIT(11),
+ 	SNOR_F_HAS_4BIT_BP      = BIT(12),
+ 	SNOR_F_HAS_SR_BP3_BIT6  = BIT(13),
++	SNOR_F_IO_MODE_EN_VOLATILE = BIT(14),
+ };
  
- 	return 0;
-@@ -2312,7 +2312,7 @@ static int spi_nor_spimem_check_op(struct spi_nor *nor,
-  *@nor:         pointer to a 'struct spi_nor'
-  *@read:        pointer to op template to be checked
-  *
-- * Returns 0 if operation is supported, -ENOTSUPP otherwise.
-+ * Returns 0 if operation is supported, -EOPNOTSUPP otherwise.
-  */
- static int spi_nor_spimem_check_readop(struct spi_nor *nor,
- 				       const struct spi_nor_read_command *read)
-@@ -2338,7 +2338,7 @@ static int spi_nor_spimem_check_readop(struct spi_nor *nor,
-  *@nor:         pointer to a 'struct spi_nor'
-  *@pp:          pointer to op template to be checked
-  *
-- * Returns 0 if operation is supported, -ENOTSUPP otherwise.
-+ * Returns 0 if operation is supported, -EOPNOTSUPP otherwise.
-  */
- static int spi_nor_spimem_check_pp(struct spi_nor *nor,
- 				   const struct spi_nor_pp_command *pp)
+ struct spi_nor_read_command {
+@@ -320,6 +321,11 @@ struct flash_info {
+ 					 */
+ #define SPI_NOR_OCTAL_DTR_READ	BIT(19) /* Flash supports octal DTR Read. */
+ #define SPI_NOR_OCTAL_DTR_PP	BIT(20) /* Flash supports Octal DTR Page Program */
++#define SPI_NOR_IO_MODE_EN_VOLATILE	BIT(21) /*
++						 * Flash enables the best
++						 * available I/O mode via a
++						 * volatile bit.
++						 */
+ 
+ 	/* Part specific fixup hooks. */
+ 	const struct spi_nor_fixups *fixups;
 -- 
 2.28.0
 
