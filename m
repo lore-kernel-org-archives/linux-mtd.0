@@ -1,79 +1,120 @@
-Return-Path: <SRS0=8K5C=DL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=tKtu=DM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EB1BC4363C
-	for <linux-mtd@archiver.kernel.org>; Sun,  4 Oct 2020 21:36:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F380C4363A
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Oct 2020 08:48:56 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0360D206DD
-	for <linux-mtd@archiver.kernel.org>; Sun,  4 Oct 2020 21:36:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DEB1F2064C
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Oct 2020 08:48:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rTqqd4i1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0360D206DD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=ACULAB.COM
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="G0ptcQeG";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nokia.onmicrosoft.com header.i=@nokia.onmicrosoft.com header.b="A3+qUa6c"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DEB1F2064C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nokia.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:Message-ID:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=zeZPBkJ+s4wj3sagix5dyHCT1KVbnxdeByaMdGwSCEQ=; b=rTqqd4i1fUcHSktKc1yXNzUPa
-	Ek3Zz7VsvsciFoy8RUcmDQl9sfynHVF+8sXdJ0BxaSeQ2yaBxAx7AcRBueflRBaNcy4dNNv6QDv37
-	goAMvrSgjhE+eosXAE6k9c+nimVMbdxdymfHLOWGwST8vSSO4hvrgFb/BnSfu6v+PzvreKyLHaQU4
-	l/Y8kpJmxoLzFIw/J73Kp8o0vObVq7dq9mSkvGS+4/eOXubL2tcukGkyRlBrOJ9I30ERNZsGSC1hI
-	xy37hzuOCNCl9jKCQq6AQA05Za2d2fm4S+nwWqJeQKCpQjkUCDo0Z+1CnsqfJEDKW0Dc5GBYHnWyd
-	DytAtJxwA==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=qSCOPcESkUKbbK8il3EN8YFolcIUFY8g6cgvYI0aulg=; b=G0ptcQeGxVSFcAbbyZBpmIeNLS
+	dYCDvAxj+ixElGO0cfBH+MLXH7ShE7r3tNDuud4FGeGRGs5HYfWxk4iaIDAqvH5Lu6B/vl7c4Lu5q
+	rTrXvPBdg84ir9ee5XvQNUbSKxT8LNpq3T4dtQhUujBUaJDPyn0IY7TP5V9eMx00qSLyOMPjCA7HH
+	veTdrRz8rIyycEnwuXzPnJKbwAj1Ti8+DxN2Y27w8bzReVDStzgMnYpeK6jJUe4LdnKWQLFEQzQI8
+	Wfu9SWRbfx3sAaZxf9PvO462Ai4UHoha2HQr7hPFjKceWV6RR3iaIO572rWnu4CESxlJpCeJxbF8v
+	phSrUfgQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kPBgE-0002NF-GX; Sun, 04 Oct 2020 21:36:30 +0000
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151])
+	id 1kPMAI-0003vM-GZ; Mon, 05 Oct 2020 08:48:14 +0000
+Received: from mail-db8eur05on2104.outbound.protection.outlook.com
+ ([40.107.20.104] helo=EUR05-DB8-obe.outbound.protection.outlook.com)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kPBgA-0002Lw-TB
- for linux-mtd@lists.infradead.org; Sun, 04 Oct 2020 21:36:27 +0000
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-22-miBv3_8TPze0sLNho43zTg-1; Sun, 04 Oct 2020 22:36:21 +0100
-X-MC-Unique: miBv3_8TPze0sLNho43zTg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Sun, 4 Oct 2020 22:36:20 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000; 
- Sun, 4 Oct 2020 22:36:20 +0100
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Bert Vermeulen' <bert@biot.com>, Pratyush Yadav <p.yadav@ti.com>
-Subject: RE: [PATCH] mtd: spi-nor: Fix 3-or-4 address byte mode logic
-Thread-Topic: [PATCH] mtd: spi-nor: Fix 3-or-4 address byte mode logic
-Thread-Index: AQHWmEFme608aECbAkSNwPF3PIHq6KmD73IwgAP1ZgCAABS1AA==
-Date: Sun, 4 Oct 2020 21:36:20 +0000
-Message-ID: <e41bb2d9ad144736b858b186acf2a47b@AcuMS.aculab.com>
-References: <20200930235611.6355-1-bert@biot.com>
- <20201001063421.qcjdikj2tje3jn6k@ti.com>
- <801445c9-4f59-5300-3a03-b48a3d631efe@biot.com>
- <1c4ee46115854ce28b17935504f2fc78@AcuMS.aculab.com>
- <2c7b03eb-58fa-73af-93d7-669bad2e57ef@biot.com>
-In-Reply-To: <2c7b03eb-58fa-73af-93d7-669bad2e57ef@biot.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+ id 1kPMAG-0003ug-Bw
+ for linux-mtd@lists.infradead.org; Mon, 05 Oct 2020 08:48:13 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=e6FjCNYup6bP/WvkbSoV8HEI0ZPxZECpROFUV1fKYIw+IQLDasJ08UeITFvGtdvwjGUL3RAdE9ErJn6T3s4aFMASyl/VqeXVBxv+uG0RC0kVHumc1QA6cEm+rtKbC8LMTgc/V4STfqVjGJmBmnvvzea9xSI7iOVWqP1LGY93rTxg21RyMOMk23RWROJWAnEWxWwtfFPTSCR3CO3o7wLasKfjyKXqzDJY6Uo67YrEo7GtJ/8C8xmRXXQbTh4/GMng43IUqF+E2lvu1tOM/I8XXpGcqBnLji0bVrGB8jpGig6A95fBC0JiIEL5Iimry84p62ldtxueajHhQe8lUr8K4Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CL34VxT1N4wjz/MGEmKojL1eFi3c95IK2kEnwLiDIgY=;
+ b=SYyT7o45ALwJG1iY4cLrp/UhCFENDci3OE8qUotMaWlBrdnYCU4YFlAl5/hm1k/95jHNlCNIqfZm72pRdg48Iak8vXFvDNdAuiiBpCOytxYIIFM+2d9OHFwFy97+/RQGrzuZx4kSI8wILJvaJEbrnOxaLhg9smGOYRJ/RvxFT3trKQbYqwMUq4hkrJXph77Rk/m2LL514SFIbWSfXblRVjPM3PWgyRcOgKX8gvC9Zn0yK1WC4Gt/SOK4QDmY/cdsM6MXp6QSsJ4WsdQ6lB1OaJZXsDiZ/kuQHp5Fw1cjRKoRenhdOOPx4Sqy+IqQ05gairPjXG8wK5iyH5Af4nj6RA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 131.228.2.8) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nokia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nokia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com; 
+ s=selector1-nokia-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CL34VxT1N4wjz/MGEmKojL1eFi3c95IK2kEnwLiDIgY=;
+ b=A3+qUa6cWlYxXqq3JcnBHUbnR/eGcSGJ4+OVOilm2j9GaZJ97T5LUvLzb8gNSKC3OuEUHNmN2T4bOpa3jNITr6+vbMlST8MgD+CMn4QMOK812yXyyGe7v3fAWpS7JS5JY0iSLEqVcA6hrMuZEcV2/+9YLw7IJY3/S3jou17jurc=
+Received: from AM6P193CA0126.EURP193.PROD.OUTLOOK.COM (2603:10a6:209:85::31)
+ by VI1PR0701MB2847.eurprd07.prod.outlook.com (2603:10a6:800:83::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.13; Mon, 5 Oct
+ 2020 08:48:08 +0000
+Received: from AM5EUR03FT062.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:209:85:cafe::e) by AM6P193CA0126.outlook.office365.com
+ (2603:10a6:209:85::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.34 via Frontend
+ Transport; Mon, 5 Oct 2020 08:48:08 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 131.228.2.8)
+ smtp.mailfrom=nokia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nokia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nokia.com designates
+ 131.228.2.8 as permitted sender) receiver=protection.outlook.com;
+ client-ip=131.228.2.8; helo=fihe3nok0734.emea.nsn-net.net;
+Received: from fihe3nok0734.emea.nsn-net.net (131.228.2.8) by
+ AM5EUR03FT062.mail.protection.outlook.com (10.152.17.120) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3433.34 via Frontend Transport; Mon, 5 Oct 2020 08:48:08 +0000
+Received: from ulegcparamis.emea.nsn-net.net (ulegcparamis.emea.nsn-net.net
+ [10.151.74.146])
+ by fihe3nok0734.emea.nsn-net.net (GMO) with ESMTP id 0958m5tE029518;
+ Mon, 5 Oct 2020 08:48:05 GMT
+From: Alexander A Sverdlin <alexander.sverdlin@nokia.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: spi-nor: Don't copy self-pointing struct around
+Date: Mon,  5 Oct 2020 10:48:03 +0200
+Message-Id: <20201005084803.23460-1-alexander.sverdlin@nokia.com>
+X-Mailer: git-send-email 2.10.2
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
+X-MS-Office365-Filtering-Correlation-Id: 998e2e48-7fb2-46e9-0a9f-08d8690b61e8
+X-MS-TrafficTypeDiagnostic: VI1PR0701MB2847:
+X-Microsoft-Antispam-PRVS: <VI1PR0701MB284799650678BB8084729C52880C0@VI1PR0701MB2847.eurprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nqsUy1WybPbw2bcmIWtq3XOkwrUGbUs4iTvInDR9H0tFugDzQdB/KuMXTGS+UtFELG6tBJi3QO9ambRZq4rhwRE3GhYxIManBNEPGrxnC6Rj355IUNuiLfA6vrZmdhuEeef7pAXuRyMNeWCHtSi80Hrpr4rSrtJJLYrljoiecGqY8qi52nH+GIdZPzHRuzDddd09hJ+s3I+8CdYz+A4mqhW/m4IaoRP6Y5+YBC2NAXfsRGUjdH+apYUQ4PGhWyJmcog2rEHZtm365j+ZAPoQ3MGtv/SRnhh6XY4SmgMMlpShK2a99EDP9ING6KGIwSlCGo697nbO35iWZs0/GVpI7cspKGuiwXFcxvOiFf+YRdh7Hjn4IQW+EGb/vsqMbVxpSL9Ptpfi0Qh/wWgMK4Cf0w==
+X-Forefront-Antispam-Report: CIP:131.228.2.8; CTRY:FI; LANG:en; SCL:1; SRV:;
+ IPV:CAL; SFV:NSPM; H:fihe3nok0734.emea.nsn-net.net; PTR:InfoDomainNonexistent;
+ CAT:NONE;
+ SFS:(4636009)(46966005)(336012)(83380400001)(8676002)(4326008)(8936002)(86362001)(2906002)(186003)(54906003)(2616005)(498600001)(26005)(70206006)(36756003)(70586007)(5660300002)(82310400003)(1076003)(81166007)(47076004)(356005)(107886003);
+ DIR:OUT; SFP:1102; 
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2020 08:48:08.0479 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 998e2e48-7fb2-46e9-0a9f-08d8690b61e8
+X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5d471751-9675-428d-917b-70f44f9630b0; Ip=[131.228.2.8];
+ Helo=[fihe3nok0734.emea.nsn-net.net]
+X-MS-Exchange-CrossTenant-AuthSource: AM5EUR03FT062.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0701MB2847
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201004_173627_116110_BC7E6D40 
-X-CRM114-Status: GOOD (  18.44  )
+X-CRM114-CacheID: sfid-20201005_044812_509803_2002C5C4 
+X-CRM114-Status: GOOD (  12.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,60 +126,89 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "vigneshr@ti.com" <vigneshr@ti.com>,
- "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
- "richard@nod.at" <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+ Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Matija Glavinic Pecotic <matija.glavinic-pecotic.ext@nokia.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Bert Vermeulen
-> Sent: 04 October 2020 22:12
-> 
-> On 10/2/20 9:50 AM, David Laight wrote:
-> > From: Bert Vermeulen
-> >> The SoCs I'm dealing with have an SPI_ADDR_SEL pin, indicating whether it
-> >> should be in 3 or 4-byte mode. The vendor's hacked-up U-Boot sets the mode
-> >> accordingly, as does their BSP. It seems to me like a misfeature, and I want
-> >> to just ignore it and do reasonable JEDEC things, but I have the problem
-> >> that the flash chip can be in 4-byte mode by the time it gets to my spi-nor
-> >> driver.
-> >
-> > If these are the devices I think they are, can't you read the
-> > non-volatile config word (bit 0) to find out whether the device
-> > expects a 3 or 4 byte address and how many 'idle' clocks there
-> > are before the read data?
-> 
-> I'm working with Realtek RTL838x/RTL839x SoCs. Reading it out is a
-> pretty convoluted procedure involving different I/O registers depending
-> on the SoC model.
+From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 
-How do they manage to let you do read/write without 'read control'.
-Actually I can imagine...
+spi_nor_parse_sfdp() modifies the passed structure so that it points to
+itself (params.erase_map.regions to params.erase_map.uniform_region). This
+makes it impossible to copy the local struct anywhere else.
 
-The problem we had was getting the IO pins to link up to user
-logic on an Altera Cyclone-V fpga.
-Then it was just a 'SMOP' to get reads and write converted to
-nibble 'bit-bang' with the chipselect and output enable (IIRC)
-controlled by the register address.
-I doubt any 'standard' interface is as efficient.
+Therefore only use memcpy() in backup-restore scenario. The bug may show up
+like below:
 
-I think I found a hardware bug in the chips we are using.
-There seemed to be a timing window in which the 'read status'
-command (after a write/erase) was completely ignored by
-the device.
-Everything looked write on a scope - but the data line
-wasn't driven.
+BUG: unable to handle page fault for address: ffffc90000b377f8
+Oops: 0000 [#1] PREEMPT SMP NOPTI
+CPU: 4 PID: 3500 Comm: flashcp Tainted: G           O      5.4.53-... #1
+...
+RIP: 0010:spi_nor_erase+0x8e/0x5c0
+Code: 64 24 18 89 db 4d 8b b5 d0 04 00 00 4c 89 64 24 18 4c 89 64 24 20 eb 12 a8 10 0f 85 59 02 00 00 49 83 c6 10 0f 84 4f 02 00 00 <49> 8b 06 48 89 c2 48 83 e2 c0 48 89 d1 49 03 4e 08 48 39 cb 73 d8
+RSP: 0018:ffffc9000217fc48 EFLAGS: 00010206
+RAX: 0000000000740000 RBX: 0000000000000000 RCX: 0000000000740000
+RDX: ffff8884550c9980 RSI: ffff88844f9c0bc0 RDI: ffff88844ede7bb8
+RBP: 0000000000740000 R08: ffffffff815bfbe0 R09: ffff88844f9c0bc0
+R10: 0000000000000000 R11: 0000000000000000 R12: ffffc9000217fc60
+R13: ffff88844ede7818 R14: ffffc90000b377f8 R15: 0000000000000000
+FS:  00007f4699780500(0000) GS:ffff88846ff00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffc90000b377f8 CR3: 00000004538ee000 CR4: 0000000000340fe0
+Call Trace:
+ part_erase+0x27/0x50
+ mtdchar_ioctl+0x831/0xba0
+ ? filemap_map_pages+0x186/0x3d0
+ ? do_filp_open+0xad/0x110
+ ? _copy_to_user+0x22/0x30
+ ? cp_new_stat+0x150/0x180
+ mtdchar_unlocked_ioctl+0x2a/0x40
+ do_vfs_ioctl+0xa0/0x630
+ ? __do_sys_newfstat+0x3c/0x60
+ ksys_ioctl+0x70/0x80
+ __x64_sys_ioctl+0x16/0x20
+ do_syscall_64+0x6a/0x200
+ ? prepare_exit_to_usermode+0x50/0xd0
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f46996b6817
 
-	David
+Fixes: 1c1d8d98e1c7 ("mtd: spi-nor: Split spi_nor_init_params()")
+Cc: stable@vger.kernel.org
+Tested-by: Baurzhan Ismagulov <ibr@radix50.net>
+Co-developed-by: Matija Glavinic Pecotic <matija.glavinic-pecotic.ext@nokia.com>
+Signed-off-by: Matija Glavinic Pecotic <matija.glavinic-pecotic.ext@nokia.com>
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+---
+ drivers/mtd/spi-nor/core.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 2add4a0..cce0670 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2701,11 +2701,10 @@ static void spi_nor_sfdp_init_params(struct spi_nor *nor)
+ 
+ 	memcpy(&sfdp_params, nor->params, sizeof(sfdp_params));
+ 
+-	if (spi_nor_parse_sfdp(nor, &sfdp_params)) {
++	if (spi_nor_parse_sfdp(nor, nor->params)) {
++		memcpy(nor->params, &sfdp_params, sizeof(*nor->params));
+ 		nor->addr_width = 0;
+ 		nor->flags &= ~SNOR_F_4B_OPCODES;
+-	} else {
+-		memcpy(nor->params, &sfdp_params, sizeof(*nor->params));
+ 	}
+ }
+ 
+-- 
+2.10.2
+
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
