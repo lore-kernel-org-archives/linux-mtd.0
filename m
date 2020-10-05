@@ -2,78 +2,67 @@ Return-Path: <SRS0=tKtu=DM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 49B6AC46466
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Oct 2020 18:39:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7172EC47420
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Oct 2020 20:03:41 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E337220853
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Oct 2020 18:39:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 05D6921481
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Oct 2020 20:03:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="1lZISztD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E337220853
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EhZ5DAar";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="DbgBQYYN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 05D6921481
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:Cc:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=K22esA/GTO7sW8lZgvpVwoxwHi7puY5VRpDRF4ZxyIk=; b=1lZISztDtg36YfRrtcSgQZah2
-	2BoFWyluFjth5vPR8qjVKU9JfEAJTF5k07cQelXPx0mRtdd2m7nBrRmC41c5Br/j0Vf85H1wmO1/d
-	RGDtefinZU8N9pfZH1NuKp5Y31IbNK0hy1QWPR/YauyNV2GlabbpoSyhUf0bs5dn7QhotgzYK9iRZ
-	M/2BWWgPaldQmHu2WCQoMI3YzteDWNx7G6TVb69fazuvfACvWYGio7xlJfH4zybwr3/DOdrYim4bc
-	UqYpTGoZ9Os/mk/zzF4r063cKNp1Zyn3fmYwIuDT8q5pZH2qkUOFt1/48+Nu64TKa53STH4BpwmQy
-	LFszadLuw==;
+	 bh=2fmIw0F8IxF1ROgSluWJahZbOFeO8q0UafsWy9Og6B0=; b=EhZ5DAarB64ndPOeZ7P86qbou
+	Eisv8yfKDQCffetJHn67rKBFc8Doc47avbU+/lUBI0SA3p73lJjQ7yNbo+f46z986xQOpR/lGNeut
+	bNvhFfZTEnmpk0R2HkbdS/HIY6QQ+xQ5h6z6PsG2V/G37GGzIQYEW/SByxwAavjqjTsSUDbWgIoa6
+	9P1FlypADeXX2j+sJQCJU6t8X5BU1SoHJtbpqD5gui8Qty0aqwiNd1m5RHiTThJ0LJN8ACmYi9Dw3
+	OM3bJWXgiD8NC3d9QmSC1Gzdf85iJHksubpGF41Jn6YKnAswhK/mBOc6eE93zqtV++uys4G8YFj8h
+	9LvI98DlQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kPVOF-0001jp-35; Mon, 05 Oct 2020 18:39:15 +0000
-Received: from mail-ot1-f65.google.com ([209.85.210.65])
+	id 1kPWhN-000224-UL; Mon, 05 Oct 2020 20:03:05 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kPVNo-0001YA-Qy; Mon, 05 Oct 2020 18:39:02 +0000
-Received: by mail-ot1-f65.google.com with SMTP id d28so3356854ote.1;
- Mon, 05 Oct 2020 11:38:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=vgIboSIrR39t+QJyhTBbSOMhd+0sUioLqfZlbg+GUS0=;
- b=d5DYx/iuN9HG08Rpz7NFV4TerQuNcnjrHn5TTm7mvJKgBlOOVObzjIzYFp9BE69DbH
- doNLnf3xL0F+2qL/tDSzBeOhKF4XJDHIG6v2VNK4v2tGuOlL0nmA5etdUnZ9umuSwl+y
- ny6cNQRUPVlpYGBVH2T2Kaodu5L6XQS45Ly8pMIF1rOZsy89nMsw2f81qCYM8tSmycpn
- KzgTlQP7UJ1Ys0waWVvIjmhHlxEqi57yTAeMMq/CJhnE3FvziFgDhPowj4cm2T9WJSzN
- 1bXGvByLfa2gnN9zKtuhEJtuwnvdyYKdPaOCdaQR1o2CY00vlVEUkgEonBc63FC9I0Ca
- pGgQ==
-X-Gm-Message-State: AOAM533ZE1/9ZGmGgIYXh1vQQo12i78VbM/2Q5AThOT+s+bVTjmtOsK9
- hFqU3PRcBuwZYOp5fu8qOA==
-X-Google-Smtp-Source: ABdhPJw6QSielwUqXJZqbCEA4Wfl/YUQk7mG1FkpPVihjPwW4tg04G5AMwdknglk3TxeRBnOMI5A2A==
-X-Received: by 2002:a9d:3bb5:: with SMTP id k50mr467625otc.39.1601923127419;
- Mon, 05 Oct 2020 11:38:47 -0700 (PDT)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.googlemail.com with ESMTPSA id z25sm143140otq.31.2020.10.05.11.38.43
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 05 Oct 2020 11:38:46 -0700 (PDT)
-From: Rob Herring <robh@kernel.org>
-To: devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 3/4] dt-bindings: Explicitly allow additional properties in
- board/SoC schemas
-Date: Mon,  5 Oct 2020 13:38:29 -0500
-Message-Id: <20201005183830.486085-4-robh@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201005183830.486085-1-robh@kernel.org>
+ id 1kPWhL-000211-8g; Mon, 05 Oct 2020 20:03:04 +0000
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 4F4C920848;
+ Mon,  5 Oct 2020 20:03:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1601928181;
+ bh=LDBMzSKRgXu0amszn1omwesfIy1frb2RvkSUHKCGJBk=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=DbgBQYYNY8Z0bctQfKlo46vuzwcO7cAJTUA6WI13L1pEYpu6vA8L99qk3PZzFWPH2
+ fgJHuHFAkVTZdQ53sCs+i/L1PeWZsSHlt6UaHeg3IMRhnUNJ4vPDlRp6puBpdniGsC
+ UK6eoAqXgECVDuSR5AsDUKOCMwvFsyrqkopv5GUw=
+Date: Mon, 5 Oct 2020 21:01:58 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 1/4] dt-bindings: Add missing 'unevaluatedProperties'
+Message-ID: <20201005200158.GG5139@sirena.org.uk>
 References: <20201005183830.486085-1-robh@kernel.org>
+ <20201005183830.486085-2-robh@kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <20201005183830.486085-2-robh@kernel.org>
+X-Cookie: Most of your faults are not your fault.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201005_143848_954581_EAE7A41D 
-X-CRM114-Status: GOOD (  15.53  )
+X-CRM114-CacheID: sfid-20201005_160303_491754_A3E24FDD 
+X-CRM114-Status: GOOD (  16.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,26 +79,26 @@ Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
  Sam Ravnborg <sam@ravnborg.org>, linux-pwm@vger.kernel.org,
  linux-iio@vger.kernel.org, Viresh Kumar <vireshk@kernel.org>,
  Linus Walleij <linus.walleij@linaro.org>, linux-pci@vger.kernel.org,
- dri-devel@lists.freedesktop.org, Sebastian Reichel <sre@kernel.org>,
+ dri-devel@lists.freedesktop.org, Liam Girdwood <lgirdwood@gmail.com>,
  linux-ide@vger.kernel.org, Thierry Reding <thierry.reding@gmail.com>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
  Pavel Machek <pavel@ucw.cz>, Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-riscv@lists.infradead.org, Lee Jones <lee.jones@linaro.org>,
- linux-clk@vger.kernel.org, linux-leds@vger.kernel.org,
- Vignesh Raghavendra <vigneshr@ti.com>, linux-rtc@vger.kernel.org,
- Lars-Peter Clausen <lars@metafoo.de>, Marc Zyngier <maz@kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
+ linux-riscv@lists.infradead.org, linux-hwmon@vger.kernel.org,
+ Lee Jones <lee.jones@linaro.org>, linux-clk@vger.kernel.org,
+ linux-leds@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-rtc@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+ Marc Zyngier <maz@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>,
  Krzysztof Kozlowski <krzk@kernel.org>, Chanwoo Choi <cw00.choi@samsung.com>,
  MyungJoo Ham <myungjoo.ham@samsung.com>, linux-serial@vger.kernel.org,
  linux-input@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
  Zhang Rui <rui.zhang@intel.com>, linux-mips@vger.kernel.org,
  Vivien Didelot <vivien.didelot@gmail.com>,
  Wolfgang Grandegger <wg@grandegger.com>, linux-media@vger.kernel.org,
- linux-hwmon@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
+ devicetree@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
  Jason Cooper <jason@lakedaemon.net>, linux-pm@vger.kernel.org,
  linux-can@vger.kernel.org, linux-gpio@vger.kernel.org,
- Mark Brown <broonie@kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>,
+ Marc Kleine-Budde <mkl@pengutronix.de>, Sebastian Reichel <sre@kernel.org>,
  Paul Walmsley <paul.walmsley@sifive.com>, Bjorn Helgaas <bhelgaas@google.com>,
  Thomas Gleixner <tglx@linutronix.de>,
  Mauro Carvalho Chehab <mchehab@kernel.org>,
@@ -119,758 +108,61 @@ Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
  Mathieu Poirier <mathieu.poirier@linaro.org>, Stephen Boyd <sboyd@kernel.org>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-mmc@vger.kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>, linux-spi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
  linux-i2c@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
  Palmer Dabbelt <palmer@dabbelt.com>, Wim Van Sebroeck <wim@linux-watchdog.org>,
  Richard Weinberger <richard@nod.at>, dmaengine@vger.kernel.org,
  linux-mtd@lists.infradead.org, "David S. Miller" <davem@davemloft.net>,
  Jonathan Cameron <jic23@kernel.org>, Heiner Kallweit <hkallweit1@gmail.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8174828509050322172=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In order to add meta-schema checks for additional/unevaluatedProperties
-being present, all schema need to make this explicit. As the top-level
-board/SoC schemas always have additional properties, add
-'additionalProperties: true'.
 
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- Documentation/devicetree/bindings/arm/actions.yaml             | 2 ++
- Documentation/devicetree/bindings/arm/altera.yaml              | 3 +++
- Documentation/devicetree/bindings/arm/amazon,al.yaml           | 2 ++
- Documentation/devicetree/bindings/arm/amlogic.yaml             | 3 +++
- Documentation/devicetree/bindings/arm/arm,integrator.yaml      | 2 ++
- Documentation/devicetree/bindings/arm/arm,realview.yaml        | 2 ++
- Documentation/devicetree/bindings/arm/arm,versatile.yaml       | 2 ++
- Documentation/devicetree/bindings/arm/arm,vexpress-juno.yaml   | 2 ++
- Documentation/devicetree/bindings/arm/atmel-at91.yaml          | 2 ++
- Documentation/devicetree/bindings/arm/axxia.yaml               | 2 ++
- Documentation/devicetree/bindings/arm/bcm/bcm2835.yaml         | 2 ++
- Documentation/devicetree/bindings/arm/bcm/brcm,bcm11351.yaml   | 2 ++
- Documentation/devicetree/bindings/arm/bcm/brcm,bcm21664.yaml   | 2 ++
- Documentation/devicetree/bindings/arm/bcm/brcm,bcm23550.yaml   | 2 ++
- Documentation/devicetree/bindings/arm/bcm/brcm,bcm4708.yaml    | 3 +++
- Documentation/devicetree/bindings/arm/bcm/brcm,cygnus.yaml     | 2 ++
- Documentation/devicetree/bindings/arm/bcm/brcm,hr2.yaml        | 2 ++
- Documentation/devicetree/bindings/arm/bcm/brcm,ns2.yaml        | 2 ++
- Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml        | 2 ++
- Documentation/devicetree/bindings/arm/bcm/brcm,stingray.yaml   | 2 ++
- Documentation/devicetree/bindings/arm/bcm/brcm,vulcan-soc.yaml | 2 ++
- Documentation/devicetree/bindings/arm/bitmain.yaml             | 3 +++
- Documentation/devicetree/bindings/arm/calxeda.yaml             | 2 ++
- Documentation/devicetree/bindings/arm/digicolor.yaml           | 2 ++
- Documentation/devicetree/bindings/arm/fsl.yaml                 | 2 ++
- Documentation/devicetree/bindings/arm/hisilicon/hisilicon.yaml | 3 +++
- Documentation/devicetree/bindings/arm/intel,keembay.yaml       | 3 +++
- Documentation/devicetree/bindings/arm/intel-ixp4xx.yaml        | 2 ++
- .../devicetree/bindings/arm/keystone/ti,k3-sci-common.yaml     | 2 ++
- .../devicetree/bindings/arm/marvell/armada-7k-8k.yaml          | 2 ++
- Documentation/devicetree/bindings/arm/mediatek.yaml            | 3 +++
- Documentation/devicetree/bindings/arm/microchip,sparx5.yaml    | 2 ++
- Documentation/devicetree/bindings/arm/moxart.yaml              | 1 +
- Documentation/devicetree/bindings/arm/mrvl/mrvl.yaml           | 3 +++
- Documentation/devicetree/bindings/arm/mstar/mstar.yaml         | 2 ++
- Documentation/devicetree/bindings/arm/nxp/lpc32xx.yaml         | 2 ++
- Documentation/devicetree/bindings/arm/qcom.yaml                | 2 ++
- Documentation/devicetree/bindings/arm/rda.yaml                 | 2 ++
- Documentation/devicetree/bindings/arm/realtek.yaml             | 3 +++
- Documentation/devicetree/bindings/arm/renesas.yaml             | 2 ++
- Documentation/devicetree/bindings/arm/rockchip.yaml            | 3 +++
- .../devicetree/bindings/arm/samsung/samsung-boards.yaml        | 2 ++
- Documentation/devicetree/bindings/arm/sirf.yaml                | 3 +++
- Documentation/devicetree/bindings/arm/socionext/milbeaut.yaml  | 3 +++
- Documentation/devicetree/bindings/arm/socionext/uniphier.yaml  | 2 ++
- Documentation/devicetree/bindings/arm/spear.yaml               | 3 +++
- Documentation/devicetree/bindings/arm/sprd/sprd.yaml           | 2 ++
- Documentation/devicetree/bindings/arm/sti.yaml                 | 3 +++
- Documentation/devicetree/bindings/arm/stm32/stm32.yaml         | 3 +++
- Documentation/devicetree/bindings/arm/sunxi.yaml               | 2 ++
- Documentation/devicetree/bindings/arm/tegra.yaml               | 2 ++
- Documentation/devicetree/bindings/arm/ti/nspire.yaml           | 3 +++
- Documentation/devicetree/bindings/arm/ti/ti,davinci.yaml       | 3 +++
- Documentation/devicetree/bindings/arm/ux500.yaml               | 2 ++
- Documentation/devicetree/bindings/arm/vt8500.yaml              | 3 +++
- Documentation/devicetree/bindings/arm/xilinx.yaml              | 2 ++
- Documentation/devicetree/bindings/arm/zte.yaml                 | 2 ++
- Documentation/devicetree/bindings/mips/ingenic/devices.yaml    | 3 +++
- Documentation/devicetree/bindings/mips/loongson/devices.yaml   | 3 +++
- Documentation/devicetree/bindings/riscv/sifive.yaml            | 3 +++
- 60 files changed, 140 insertions(+)
+--===============8174828509050322172==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="E69HUUNAyIJqGpVn"
+Content-Disposition: inline
 
-diff --git a/Documentation/devicetree/bindings/arm/actions.yaml b/Documentation/devicetree/bindings/arm/actions.yaml
-index 14023f0a8552..9d12984691e4 100644
---- a/Documentation/devicetree/bindings/arm/actions.yaml
-+++ b/Documentation/devicetree/bindings/arm/actions.yaml
-@@ -38,3 +38,5 @@ properties:
-           - enum:
-               - ucrobotics,bubblegum-96 # uCRobotics Bubblegum-96
-           - const: actions,s900
-+
-+additionalProperties: true
-diff --git a/Documentation/devicetree/bindings/arm/altera.yaml b/Documentation/devicetree/bindings/arm/altera.yaml
-index 0bc5020b7539..c15c92fdf2ed 100644
---- a/Documentation/devicetree/bindings/arm/altera.yaml
-+++ b/Documentation/devicetree/bindings/arm/altera.yaml
-@@ -19,4 +19,7 @@ properties:
-           - altr,socfpga-arria5
-           - altr,socfpga-arria10
-       - const: altr,socfpga
-+
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/amazon,al.yaml b/Documentation/devicetree/bindings/arm/amazon,al.yaml
-index a3a4d710bd02..0f03135d91b6 100644
---- a/Documentation/devicetree/bindings/arm/amazon,al.yaml
-+++ b/Documentation/devicetree/bindings/arm/amazon,al.yaml
-@@ -30,4 +30,6 @@ properties:
-               - amazon,al-alpine-v3-evp
-           - const: amazon,al-alpine-v3
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/amlogic.yaml b/Documentation/devicetree/bindings/arm/amlogic.yaml
-index 5eba9f48823e..51dea8844569 100644
---- a/Documentation/devicetree/bindings/arm/amlogic.yaml
-+++ b/Documentation/devicetree/bindings/arm/amlogic.yaml
-@@ -171,4 +171,7 @@ properties:
-           - enum:
-               - amlogic,ad401
-           - const: amlogic,a1
-+
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/arm,integrator.yaml b/Documentation/devicetree/bindings/arm/arm,integrator.yaml
-index f0daf990e077..528eee64290a 100644
---- a/Documentation/devicetree/bindings/arm/arm,integrator.yaml
-+++ b/Documentation/devicetree/bindings/arm/arm,integrator.yaml
-@@ -83,4 +83,6 @@ required:
-   - compatible
-   - core-module@10000000
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/arm,realview.yaml b/Documentation/devicetree/bindings/arm/arm,realview.yaml
-index 1d0b4e2bc7d2..4f9b21f49e84 100644
---- a/Documentation/devicetree/bindings/arm/arm,realview.yaml
-+++ b/Documentation/devicetree/bindings/arm/arm,realview.yaml
-@@ -120,4 +120,6 @@ required:
-   - compatible
-   - soc
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/arm,versatile.yaml b/Documentation/devicetree/bindings/arm/arm,versatile.yaml
-index 06efd2a075c9..34b437c72751 100644
---- a/Documentation/devicetree/bindings/arm/arm,versatile.yaml
-+++ b/Documentation/devicetree/bindings/arm/arm,versatile.yaml
-@@ -68,4 +68,6 @@ required:
-   - compatible
-   - core-module@10000000
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/arm,vexpress-juno.yaml b/Documentation/devicetree/bindings/arm/arm,vexpress-juno.yaml
-index 26829a803fda..55ef656d1192 100644
---- a/Documentation/devicetree/bindings/arm/arm,vexpress-juno.yaml
-+++ b/Documentation/devicetree/bindings/arm/arm,vexpress-juno.yaml
-@@ -216,4 +216,6 @@ allOf:
-       required:
-         - arm,hbi
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/atmel-at91.yaml b/Documentation/devicetree/bindings/arm/atmel-at91.yaml
-index 31b0c54fa2cf..df95d1068030 100644
---- a/Documentation/devicetree/bindings/arm/atmel-at91.yaml
-+++ b/Documentation/devicetree/bindings/arm/atmel-at91.yaml
-@@ -183,4 +183,6 @@ properties:
-           - const: atmel,samv71
-           - const: atmel,samv7
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/axxia.yaml b/Documentation/devicetree/bindings/arm/axxia.yaml
-index 3ea5f2fdcd96..e0d2bb71cf50 100644
---- a/Documentation/devicetree/bindings/arm/axxia.yaml
-+++ b/Documentation/devicetree/bindings/arm/axxia.yaml
-@@ -18,4 +18,6 @@ properties:
-       - const: lsi,axm5516-amarillo
-       - const: lsi,axm5516
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/bcm/bcm2835.yaml b/Documentation/devicetree/bindings/arm/bcm/bcm2835.yaml
-index dd52e29b0642..812ae8cc5959 100644
---- a/Documentation/devicetree/bindings/arm/bcm/bcm2835.yaml
-+++ b/Documentation/devicetree/bindings/arm/bcm/bcm2835.yaml
-@@ -51,4 +51,6 @@ properties:
-               - raspberrypi,3-compute-module-lite
-           - const: brcm,bcm2837
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/bcm/brcm,bcm11351.yaml b/Documentation/devicetree/bindings/arm/bcm/brcm,bcm11351.yaml
-index 497600a2ffb9..c60324357435 100644
---- a/Documentation/devicetree/bindings/arm/bcm/brcm,bcm11351.yaml
-+++ b/Documentation/devicetree/bindings/arm/bcm/brcm,bcm11351.yaml
-@@ -18,4 +18,6 @@ properties:
-           - brcm,bcm28155-ap
-       - const: brcm,bcm11351
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/bcm/brcm,bcm21664.yaml b/Documentation/devicetree/bindings/arm/bcm/brcm,bcm21664.yaml
-index e0ee931723dc..b3020757380f 100644
---- a/Documentation/devicetree/bindings/arm/bcm/brcm,bcm21664.yaml
-+++ b/Documentation/devicetree/bindings/arm/bcm/brcm,bcm21664.yaml
-@@ -18,4 +18,6 @@ properties:
-           - brcm,bcm21664-garnet
-       - const: brcm,bcm21664
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/bcm/brcm,bcm23550.yaml b/Documentation/devicetree/bindings/arm/bcm/brcm,bcm23550.yaml
-index 40d12ea56e54..37f3a6fcde76 100644
---- a/Documentation/devicetree/bindings/arm/bcm/brcm,bcm23550.yaml
-+++ b/Documentation/devicetree/bindings/arm/bcm/brcm,bcm23550.yaml
-@@ -18,4 +18,6 @@ properties:
-           - brcm,bcm23550-sparrow
-       - const: brcm,bcm23550
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/bcm/brcm,bcm4708.yaml b/Documentation/devicetree/bindings/arm/bcm/brcm,bcm4708.yaml
-index d48313c7ae45..86a1fe885387 100644
---- a/Documentation/devicetree/bindings/arm/bcm/brcm,bcm4708.yaml
-+++ b/Documentation/devicetree/bindings/arm/bcm/brcm,bcm4708.yaml
-@@ -85,4 +85,7 @@ properties:
-               - brcm,bcm953012k
-           - const: brcm,brcm53012
-           - const: brcm,bcm4708
-+
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/bcm/brcm,cygnus.yaml b/Documentation/devicetree/bindings/arm/bcm/brcm,cygnus.yaml
-index 9ba7b16e1fc4..432ccf990f9e 100644
---- a/Documentation/devicetree/bindings/arm/bcm/brcm,cygnus.yaml
-+++ b/Documentation/devicetree/bindings/arm/bcm/brcm,cygnus.yaml
-@@ -26,4 +26,6 @@ properties:
-           - brcm,bcm58305
-       - const: brcm,cygnus
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/bcm/brcm,hr2.yaml b/Documentation/devicetree/bindings/arm/bcm/brcm,hr2.yaml
-index ae614b6722c2..294948399f82 100644
---- a/Documentation/devicetree/bindings/arm/bcm/brcm,hr2.yaml
-+++ b/Documentation/devicetree/bindings/arm/bcm/brcm,hr2.yaml
-@@ -25,4 +25,6 @@ properties:
-       - const: brcm,bcm53342
-       - const: brcm,hr2
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/bcm/brcm,ns2.yaml b/Documentation/devicetree/bindings/arm/bcm/brcm,ns2.yaml
-index 0749adf94c28..c4847abbecd8 100644
---- a/Documentation/devicetree/bindings/arm/bcm/brcm,ns2.yaml
-+++ b/Documentation/devicetree/bindings/arm/bcm/brcm,ns2.yaml
-@@ -20,4 +20,6 @@ properties:
-           - brcm,ns2-xmc
-       - const: brcm,ns2
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml b/Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml
-index 8c2cacb2bb4f..476bc23a7f75 100644
---- a/Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml
-+++ b/Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml
-@@ -33,4 +33,6 @@ properties:
-           - brcm,bcm88312
-       - const: brcm,nsp
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/bcm/brcm,stingray.yaml b/Documentation/devicetree/bindings/arm/bcm/brcm,stingray.yaml
-index c13cb96545a2..c638e04ebae0 100644
---- a/Documentation/devicetree/bindings/arm/bcm/brcm,stingray.yaml
-+++ b/Documentation/devicetree/bindings/arm/bcm/brcm,stingray.yaml
-@@ -21,4 +21,6 @@ properties:
-           - brcm,bcm958802a802x
-       - const: brcm,stingray
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/bcm/brcm,vulcan-soc.yaml b/Documentation/devicetree/bindings/arm/bcm/brcm,vulcan-soc.yaml
-index ccdf9f99cb2b..4eba182abd53 100644
---- a/Documentation/devicetree/bindings/arm/bcm/brcm,vulcan-soc.yaml
-+++ b/Documentation/devicetree/bindings/arm/bcm/brcm,vulcan-soc.yaml
-@@ -19,4 +19,6 @@ properties:
-           - cavium,thunderx2-cn9900
-       - const: brcm,vulcan-soc
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/bitmain.yaml b/Documentation/devicetree/bindings/arm/bitmain.yaml
-index 5880083ab8d0..90ba02be48ce 100644
---- a/Documentation/devicetree/bindings/arm/bitmain.yaml
-+++ b/Documentation/devicetree/bindings/arm/bitmain.yaml
-@@ -17,4 +17,7 @@ properties:
-       - enum:
-           - bitmain,sophon-edge
-       - const: bitmain,bm1880
-+
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/calxeda.yaml b/Documentation/devicetree/bindings/arm/calxeda.yaml
-index aa5571d23c39..46f78addebb0 100644
---- a/Documentation/devicetree/bindings/arm/calxeda.yaml
-+++ b/Documentation/devicetree/bindings/arm/calxeda.yaml
-@@ -20,3 +20,5 @@ properties:
-       - enum:
-           - calxeda,highbank
-           - calxeda,ecx-2000
-+
-+additionalProperties: true
-diff --git a/Documentation/devicetree/bindings/arm/digicolor.yaml b/Documentation/devicetree/bindings/arm/digicolor.yaml
-index 849e20518339..a35de3c9e284 100644
---- a/Documentation/devicetree/bindings/arm/digicolor.yaml
-+++ b/Documentation/devicetree/bindings/arm/digicolor.yaml
-@@ -15,4 +15,6 @@ properties:
-   compatible:
-     const: cnxt,cx92755
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-index 6da9d734cdb7..43adf7241d79 100644
---- a/Documentation/devicetree/bindings/arm/fsl.yaml
-+++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-@@ -526,4 +526,6 @@ properties:
-               - fsl,s32v234-evb           # S32V234-EVB2 Customer Evaluation Board
-           - const: fsl,s32v234
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.yaml b/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.yaml
-index 43b8ce2227aa..b38458022946 100644
---- a/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.yaml
-+++ b/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.yaml
-@@ -64,4 +64,7 @@ properties:
-         items:
-           - const: H836ASDJ
-           - const: hisilicon,sd5203
-+
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/intel,keembay.yaml b/Documentation/devicetree/bindings/arm/intel,keembay.yaml
-index 06a7b05f435f..69cd30872928 100644
---- a/Documentation/devicetree/bindings/arm/intel,keembay.yaml
-+++ b/Documentation/devicetree/bindings/arm/intel,keembay.yaml
-@@ -16,4 +16,7 @@ properties:
-       - enum:
-           - intel,keembay-evm
-       - const: intel,keembay
-+
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/intel-ixp4xx.yaml b/Documentation/devicetree/bindings/arm/intel-ixp4xx.yaml
-index f18302efb90e..d72e92bdf7c1 100644
---- a/Documentation/devicetree/bindings/arm/intel-ixp4xx.yaml
-+++ b/Documentation/devicetree/bindings/arm/intel-ixp4xx.yaml
-@@ -22,3 +22,5 @@ properties:
-           - enum:
-               - gateworks,gw2358
-           - const: intel,ixp43x
-+
-+additionalProperties: true
-diff --git a/Documentation/devicetree/bindings/arm/keystone/ti,k3-sci-common.yaml b/Documentation/devicetree/bindings/arm/keystone/ti,k3-sci-common.yaml
-index 7597bc93a55f..5cbcacaeb441 100644
---- a/Documentation/devicetree/bindings/arm/keystone/ti,k3-sci-common.yaml
-+++ b/Documentation/devicetree/bindings/arm/keystone/ti,k3-sci-common.yaml
-@@ -42,3 +42,5 @@ properties:
-       - description: TI-SCI processor id for the remote processor device
-       - description: TI-SCI host id to which processor control ownership
-                      should be transferred to
-+
-+additionalProperties: true
-diff --git a/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml b/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
-index a9828c50c0fb..e9bf3054529f 100644
---- a/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
-+++ b/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
-@@ -59,3 +59,5 @@ properties:
-           - const: marvell,cn9130
-           - const: marvell,armada-ap807-quad
-           - const: marvell,armada-ap807
-+
-+additionalProperties: true
-diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
-index 30908963ae26..f736e8c859fa 100644
---- a/Documentation/devicetree/bindings/arm/mediatek.yaml
-+++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
-@@ -119,4 +119,7 @@ properties:
-           - const: google,krane-sku176
-           - const: google,krane
-           - const: mediatek,mt8183
-+
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/microchip,sparx5.yaml b/Documentation/devicetree/bindings/arm/microchip,sparx5.yaml
-index ecf6fa12e6ad..6193388c6318 100644
---- a/Documentation/devicetree/bindings/arm/microchip,sparx5.yaml
-+++ b/Documentation/devicetree/bindings/arm/microchip,sparx5.yaml
-@@ -62,4 +62,6 @@ required:
-   - compatible
-   - axi@600000000
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/moxart.yaml b/Documentation/devicetree/bindings/arm/moxart.yaml
-index c068df59fad2..670d24ce8ec5 100644
---- a/Documentation/devicetree/bindings/arm/moxart.yaml
-+++ b/Documentation/devicetree/bindings/arm/moxart.yaml
-@@ -16,4 +16,5 @@ properties:
-       - const: moxa,moxart-uc-7112-lx
-       - const: moxa,moxart
- 
-+additionalProperties: true
- ...
-diff --git a/Documentation/devicetree/bindings/arm/mrvl/mrvl.yaml b/Documentation/devicetree/bindings/arm/mrvl/mrvl.yaml
-index 3235ec9e9bad..d58116136154 100644
---- a/Documentation/devicetree/bindings/arm/mrvl/mrvl.yaml
-+++ b/Documentation/devicetree/bindings/arm/mrvl/mrvl.yaml
-@@ -35,4 +35,7 @@ properties:
-           - enum:
-               - dell,wyse-ariel
-           - const: marvell,mmp3
-+
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/mstar/mstar.yaml b/Documentation/devicetree/bindings/arm/mstar/mstar.yaml
-index c2f980b00b06..7c787405bb2f 100644
---- a/Documentation/devicetree/bindings/arm/mstar/mstar.yaml
-+++ b/Documentation/devicetree/bindings/arm/mstar/mstar.yaml
-@@ -31,3 +31,5 @@ properties:
-           - enum:
-               - 70mai,midrived08 # 70mai midrive d08
-           - const: mstar,mercury5
-+
-+additionalProperties: true
-diff --git a/Documentation/devicetree/bindings/arm/nxp/lpc32xx.yaml b/Documentation/devicetree/bindings/arm/nxp/lpc32xx.yaml
-index f7f024910e71..214c97bc3063 100644
---- a/Documentation/devicetree/bindings/arm/nxp/lpc32xx.yaml
-+++ b/Documentation/devicetree/bindings/arm/nxp/lpc32xx.yaml
-@@ -21,4 +21,6 @@ properties:
-               - ea,ea3250
-               - phytec,phy3250
-           - const: nxp,lpc3250
-+
-+additionalProperties: true
- ...
-diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
-index ae6284be9fef..8604f1f9266b 100644
---- a/Documentation/devicetree/bindings/arm/qcom.yaml
-+++ b/Documentation/devicetree/bindings/arm/qcom.yaml
-@@ -167,4 +167,6 @@ properties:
-               - qcom,ipq6018-cp01-c1
-           - const: qcom,ipq6018
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/rda.yaml b/Documentation/devicetree/bindings/arm/rda.yaml
-index 9672aa0c760d..a5c0444aa2b4 100644
---- a/Documentation/devicetree/bindings/arm/rda.yaml
-+++ b/Documentation/devicetree/bindings/arm/rda.yaml
-@@ -19,4 +19,6 @@ properties:
-           - xunlong,orangepi-i96        # Orange Pi i96
-       - const: rda,8810pl
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/realtek.yaml b/Documentation/devicetree/bindings/arm/realtek.yaml
-index 845f9c76d6f7..9fb0297fe1ce 100644
---- a/Documentation/devicetree/bindings/arm/realtek.yaml
-+++ b/Documentation/devicetree/bindings/arm/realtek.yaml
-@@ -54,4 +54,7 @@ properties:
-           - enum:
-               - realtek,mjolnir # Realtek Mjolnir EVB
-           - const: realtek,rtd1619
-+
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/renesas.yaml b/Documentation/devicetree/bindings/arm/renesas.yaml
-index 0d4dabb4a164..dfb31ad0061e 100644
---- a/Documentation/devicetree/bindings/arm/renesas.yaml
-+++ b/Documentation/devicetree/bindings/arm/renesas.yaml
-@@ -287,4 +287,6 @@ properties:
-               - renesas,rzn1d400-db # RZN1D-DB (RZ/N1D Demo Board for the RZ/N1D 400 pins package)
-           - const: renesas,r9a06g032
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
-index db2e35796795..8d5933a1cb16 100644
---- a/Documentation/devicetree/bindings/arm/rockchip.yaml
-+++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
-@@ -555,4 +555,7 @@ properties:
-         items:
-           - const: tronsmart,orion-r68-meta
-           - const: rockchip,rk3368
-+
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/samsung/samsung-boards.yaml b/Documentation/devicetree/bindings/arm/samsung/samsung-boards.yaml
-index eb92f9eefaba..272508010b02 100644
---- a/Documentation/devicetree/bindings/arm/samsung/samsung-boards.yaml
-+++ b/Documentation/devicetree/bindings/arm/samsung/samsung-boards.yaml
-@@ -180,3 +180,5 @@ properties:
- 
- required:
-   - compatible
-+
-+additionalProperties: true
-diff --git a/Documentation/devicetree/bindings/arm/sirf.yaml b/Documentation/devicetree/bindings/arm/sirf.yaml
-index 0b597032c923..b25eb35d1b66 100644
---- a/Documentation/devicetree/bindings/arm/sirf.yaml
-+++ b/Documentation/devicetree/bindings/arm/sirf.yaml
-@@ -24,4 +24,7 @@ properties:
-       - items:
-           - const: sirf,prima2-cb
-           - const: sirf,prima2
-+
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/socionext/milbeaut.yaml b/Documentation/devicetree/bindings/arm/socionext/milbeaut.yaml
-index 2bd519d2e855..aa1d4afbc510 100644
---- a/Documentation/devicetree/bindings/arm/socionext/milbeaut.yaml
-+++ b/Documentation/devicetree/bindings/arm/socionext/milbeaut.yaml
-@@ -19,4 +19,7 @@ properties:
-           - enum:
-               - socionext,milbeaut-m10v-evb
-           - const: socionext,sc2000a
-+
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/socionext/uniphier.yaml b/Documentation/devicetree/bindings/arm/socionext/uniphier.yaml
-index 6caf1f9be390..8c0e91658474 100644
---- a/Documentation/devicetree/bindings/arm/socionext/uniphier.yaml
-+++ b/Documentation/devicetree/bindings/arm/socionext/uniphier.yaml
-@@ -60,3 +60,5 @@ properties:
-           - enum:
-               - socionext,uniphier-pxs3-ref
-           - const: socionext,uniphier-pxs3
-+
-+additionalProperties: true
-diff --git a/Documentation/devicetree/bindings/arm/spear.yaml b/Documentation/devicetree/bindings/arm/spear.yaml
-index f6ec731c9531..605ad3f882ef 100644
---- a/Documentation/devicetree/bindings/arm/spear.yaml
-+++ b/Documentation/devicetree/bindings/arm/spear.yaml
-@@ -22,4 +22,7 @@ properties:
-           - st,spear320
-           - st,spear1310
-           - st,spear1340
-+
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/sprd/sprd.yaml b/Documentation/devicetree/bindings/arm/sprd/sprd.yaml
-index 0258a96bfbde..7b6ae3070396 100644
---- a/Documentation/devicetree/bindings/arm/sprd/sprd.yaml
-+++ b/Documentation/devicetree/bindings/arm/sprd/sprd.yaml
-@@ -30,4 +30,6 @@ properties:
-               - sprd,sp9863a-1h10
-           - const: sprd,sc9863a
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/sti.yaml b/Documentation/devicetree/bindings/arm/sti.yaml
-index 47f9b8eebaa0..b1f28d16d3fb 100644
---- a/Documentation/devicetree/bindings/arm/sti.yaml
-+++ b/Documentation/devicetree/bindings/arm/sti.yaml
-@@ -20,4 +20,7 @@ properties:
-           - st,stih407
-           - st,stih410
-           - st,stih418
-+
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
-index 696a0101ebcc..6c3e7a9587a2 100644
---- a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
-+++ b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
-@@ -52,4 +52,7 @@ properties:
-           - const: st,stm32mp157c-ev1
-           - const: st,stm32mp157c-ed1
-           - const: st,stm32mp157
-+
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/sunxi.yaml b/Documentation/devicetree/bindings/arm/sunxi.yaml
-index efc9118233b4..e1f21a051ded 100644
---- a/Documentation/devicetree/bindings/arm/sunxi.yaml
-+++ b/Documentation/devicetree/bindings/arm/sunxi.yaml
-@@ -883,3 +883,5 @@ properties:
-         items:
-           - const: xunlong,orangepi-zero-plus2-h3
-           - const: allwinner,sun8i-h3
-+
-+additionalProperties: true
-diff --git a/Documentation/devicetree/bindings/arm/tegra.yaml b/Documentation/devicetree/bindings/arm/tegra.yaml
-index b4d53290c5f0..0340d3f956a1 100644
---- a/Documentation/devicetree/bindings/arm/tegra.yaml
-+++ b/Documentation/devicetree/bindings/arm/tegra.yaml
-@@ -121,3 +121,5 @@ properties:
-         items:
-           - const: nvidia,p3509-0000+p3668-0000
-           - const: nvidia,tegra194
-+
-+additionalProperties: true
-diff --git a/Documentation/devicetree/bindings/arm/ti/nspire.yaml b/Documentation/devicetree/bindings/arm/ti/nspire.yaml
-index e372b43da62f..cc2023bb7fa6 100644
---- a/Documentation/devicetree/bindings/arm/ti/nspire.yaml
-+++ b/Documentation/devicetree/bindings/arm/ti/nspire.yaml
-@@ -21,4 +21,7 @@ properties:
-           - ti,nspire-tp
-           # Clickpad models
-           - ti,nspire-clp
-+
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/ti/ti,davinci.yaml b/Documentation/devicetree/bindings/arm/ti/ti,davinci.yaml
-index a8765ba29476..c022d325fc08 100644
---- a/Documentation/devicetree/bindings/arm/ti/ti,davinci.yaml
-+++ b/Documentation/devicetree/bindings/arm/ti/ti,davinci.yaml
-@@ -23,4 +23,7 @@ properties:
-           - enbw,cmc        # EnBW AM1808 based CMC board
-           - lego,ev3        # LEGO MINDSTORMS EV3 (AM1808 based)
-       - const: ti,da850
-+
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/ux500.yaml b/Documentation/devicetree/bindings/arm/ux500.yaml
-index accaee906050..5db7cfba81a4 100644
---- a/Documentation/devicetree/bindings/arm/ux500.yaml
-+++ b/Documentation/devicetree/bindings/arm/ux500.yaml
-@@ -34,3 +34,5 @@ properties:
-         items:
-           - const: samsung,golden
-           - const: st-ericsson,u8500
-+
-+additionalProperties: true
-diff --git a/Documentation/devicetree/bindings/arm/vt8500.yaml b/Documentation/devicetree/bindings/arm/vt8500.yaml
-index 7b25b6fa34e9..29ff399551ca 100644
---- a/Documentation/devicetree/bindings/arm/vt8500.yaml
-+++ b/Documentation/devicetree/bindings/arm/vt8500.yaml
-@@ -21,3 +21,6 @@ properties:
-           - wm,wm8650
-           - wm,wm8750
-           - wm,wm8850
-+          
-+additionalProperties: true
-+
-diff --git a/Documentation/devicetree/bindings/arm/xilinx.yaml b/Documentation/devicetree/bindings/arm/xilinx.yaml
-index c73b1f5c7f49..e0c6787f6e94 100644
---- a/Documentation/devicetree/bindings/arm/xilinx.yaml
-+++ b/Documentation/devicetree/bindings/arm/xilinx.yaml
-@@ -111,4 +111,6 @@ properties:
-           - const: xlnx,zynqmp-zcu111
-           - const: xlnx,zynqmp
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/arm/zte.yaml b/Documentation/devicetree/bindings/arm/zte.yaml
-index 2d3fefdccdff..672f8129cd31 100644
---- a/Documentation/devicetree/bindings/arm/zte.yaml
-+++ b/Documentation/devicetree/bindings/arm/zte.yaml
-@@ -23,4 +23,6 @@ properties:
-               - zte,zx296718-evb
-           - const: zte,zx296718
- 
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/mips/ingenic/devices.yaml b/Documentation/devicetree/bindings/mips/ingenic/devices.yaml
-index 83c86cbe4716..bd5fbc973cca 100644
---- a/Documentation/devicetree/bindings/mips/ingenic/devices.yaml
-+++ b/Documentation/devicetree/bindings/mips/ingenic/devices.yaml
-@@ -47,4 +47,7 @@ properties:
-         items:
-           - const: yna,cu1830-neo
-           - const: ingenic,x1830
-+
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/mips/loongson/devices.yaml b/Documentation/devicetree/bindings/mips/loongson/devices.yaml
-index d25e80aa8b2a..9fee6708e6f5 100644
---- a/Documentation/devicetree/bindings/mips/loongson/devices.yaml
-+++ b/Documentation/devicetree/bindings/mips/loongson/devices.yaml
-@@ -36,4 +36,7 @@ properties:
-       - description: Virtual Loongson64 Quad Core + VirtIO
-         items:
-           - const: loongson,loongson64v-4core-virtio
-+
-+additionalProperties: true
-+
- ...
-diff --git a/Documentation/devicetree/bindings/riscv/sifive.yaml b/Documentation/devicetree/bindings/riscv/sifive.yaml
-index 3ab532713dc1..3a8647d1da4c 100644
---- a/Documentation/devicetree/bindings/riscv/sifive.yaml
-+++ b/Documentation/devicetree/bindings/riscv/sifive.yaml
-@@ -22,4 +22,7 @@ properties:
-           - sifive,hifive-unleashed-a00
-       - const: sifive,fu540-c000
-       - const: sifive,fu540
-+
-+additionalProperties: true
-+
- ...
--- 
-2.25.1
 
+--E69HUUNAyIJqGpVn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Oct 05, 2020 at 01:38:27PM -0500, Rob Herring wrote:
+> This doesn't yet do anything in the tools, but make it explicit so we can
+> check either 'unevaluatedProperties' or 'additionalProperties' is present
+> in schemas.
+
+Acked-by: Mark Brown <broonie@kernel.org>
+
+--E69HUUNAyIJqGpVn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl97e7UACgkQJNaLcl1U
+h9Cm0Af/WUxMT7VSA2xsxQr5K/rX2H6z1aD4Hr9f+lQLJCFBiUYhNvb9mQnNDvLq
+GQeaW1Z1gDtmjIiEOvan3CP1ZUF3VENvyt8orPUmES76eFXx7xEyryHHut1YFimr
+3LEvyKzDAcn3KGj/wv37knBc5sifrmqjF+Y1eYYZD6yKKVPbgpA7kKZ0EAqOLxiv
+/FbGoxWGWbB7Vfyaboo2dDw/SyuwkZ9+0pr+IhFWbCjIjgkeUq0v857luuRCJMxH
+GyPjPkM7+KaeIBbXlY1hRHLTKKbBL7G+dXQ16uS4Ny/DYIf8LXyitPDAfosxQisG
+FhLawubQBH3MNzD5RRYvcLznUaJJJA==
+=+I0x
+-----END PGP SIGNATURE-----
+
+--E69HUUNAyIJqGpVn--
+
+
+--===============8174828509050322172==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============8174828509050322172==--
+
