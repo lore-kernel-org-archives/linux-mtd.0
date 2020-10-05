@@ -5,19 +5,19 @@ X-Spam-Level:
 X-Spam-Status: No, score=-13.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 559F8C46466
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Oct 2020 15:33:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C7DCC4363D
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Oct 2020 15:33:11 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 03DF720637
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Oct 2020 15:33:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A97902074F
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Oct 2020 15:33:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="F2MC3qL8";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="R+Dh4nw4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 03DF720637
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="3i8akn1i";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="qL3uHzSY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A97902074F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,61 +26,61 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=UXHEhOHMuXPItMwgTv6lpBXia9G4auiA8Y1zAipGLwk=; b=F2MC3qL8E4HAQAJztPpxPUHTE
-	gyv3JVajCOSsDkZ5Jm4B46j5R8TXgBAr1DCxPudnuIQa0xpS6OGppM4lfWTD5L0imBmpn1AdM/IRH
-	gdcKydC896N6I3LauWDu5VQw+sdvJpUALdrWqR1LZC3jTrVbbNkcesQRhk5+qOd1OghF2FC1Pr2PU
-	KLvixrj78yntL3NwVoSrDv2hDx9LfxHU2OYCxJw2VcjEAb1oDxNf7e1AQQXsKowlJDWjC+0x1Q/tH
-	gYMkG6kZsZIQH0S9pKxyC1ADwxQINlKe5+VLpyTrj5Rs7VPe++V46e/tlvD0pykuGi2sVUyIfuoJA
-	Q+7+Ons8g==;
+	 bh=yi6dpSD4d27JXziHLDccitDVQmlbwjumJSlFYdoSq0g=; b=3i8akn1igNVzWlkG0po2Fd5W7
+	kur3Dei4LwBlLDX5T3eSAmvThEOEr6POLdFWHnt2/MSnqO9K/uOQU898tPLBZt4HO3k5c10cKQv0U
+	kDhIe4W/UY+d5K6dYmYwt2vXr9bXr7eo2/VF0Sbb8kACxVAVdVvWxAiEiFZu0LLmB4wlMnHfwNI2n
+	JDx/3xUsZ9ljnrKO0shfmAyBdQ+YpNB21NCvCHAmEbcvy+3L3CTjyrxydr0tzZJ0YFV7+dlKk6UZf
+	TcAje8kyZholmNBmlubRKd3tHEx2znlhMkgv/38BfXGULAbOQvNJ4E1HZNbmZTOVU7bMnC6oxj/lj
+	JRK2tkxjw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kPSTR-0005DK-DI; Mon, 05 Oct 2020 15:32:25 +0000
+	id 1kPSTE-00056E-B2; Mon, 05 Oct 2020 15:32:12 +0000
 Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kPSTD-00055l-DE
- for linux-mtd@lists.infradead.org; Mon, 05 Oct 2020 15:32:12 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 095FW7W0088799;
- Mon, 5 Oct 2020 10:32:07 -0500
+ id 1kPST3-000510-NW
+ for linux-mtd@lists.infradead.org; Mon, 05 Oct 2020 15:32:03 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 095FVwSv088713;
+ Mon, 5 Oct 2020 10:31:58 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1601911927;
- bh=tUwUim5rK6udc+lt9hQRjeZ++xksG2XibfI+Xf2FY0s=;
+ s=ti-com-17Q1; t=1601911918;
+ bh=kZwk2Jt3uSSk/ACjhqTpLzxrRO/RncZxQ2bAZzQ45GY=;
  h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=R+Dh4nw4l7aSxOBel1gmUK3rG78qCXkkJxbnRIk1UVPs/J1g/UNARXwFH9283QPTg
- tTe1rw/MBwcXPaLKmfdJvlG0XMhgJwKmCSyWAUf33uhAKBr2lguPjN2Kp5Ht+X3uYM
- cTRMlN0qQzEMSGureRvph0cqGq11LKqSyp9ucQLY=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 095FW7pu039536
+ b=qL3uHzSYqy7FF570HfvBsS/oZxeXb1qJVh2m0ya2b24UPLwLO2SOB0diRA+AiS2tV
+ rdg9dU9d0tUMhQR6lG7f3gjfkkxgaeVbJogpml0mmn27HZWzSz03E2NDl7CJEkLG/x
+ X41zVZ06gR9sQ/att9hPNKkm+aPj5NkElyWKDWKk=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 095FVwqZ055168
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 5 Oct 2020 10:32:07 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ Mon, 5 Oct 2020 10:31:58 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 5 Oct
- 2020 10:32:07 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ 2020 10:31:58 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 5 Oct 2020 10:32:07 -0500
+ Frontend Transport; Mon, 5 Oct 2020 10:31:57 -0500
 Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
  [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 095FVdlo052390;
- Mon, 5 Oct 2020 10:32:04 -0500
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 095FVdll052390;
+ Mon, 5 Oct 2020 10:31:55 -0500
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
  <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
  Raghavendra <vigneshr@ti.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v16 08/15] mtd: spi-nor: Introduce SNOR_F_IO_MODE_EN_VOLATILE
-Date: Mon, 5 Oct 2020 21:01:31 +0530
-Message-ID: <20201005153138.6437-9-p.yadav@ti.com>
+Subject: [PATCH v16 05/15] mtd: spi-nor: sfdp: parse xSPI Profile 1.0 table
+Date: Mon, 5 Oct 2020 21:01:28 +0530
+Message-ID: <20201005153138.6437-6-p.yadav@ti.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201005153138.6437-1-p.yadav@ti.com>
 References: <20201005153138.6437-1-p.yadav@ti.com>
 MIME-Version: 1.0
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201005_113211_567984_BEE29B22 
-X-CRM114-Status: GOOD (  15.48  )
+X-CRM114-CacheID: sfid-20201005_113201_887937_5160C454 
+X-CRM114-Status: GOOD (  23.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,64 +99,200 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
+This table is indication that the flash is xSPI compliant and hence
+supports octal DTR mode. Extract information like the fast read opcode,
+dummy cycles, the number of dummy cycles needed for a Read Status
+Register command, and the number of address bytes needed for a Read
+Status Register command.
 
-We don't want to enter a stateful mode, where a X-X-X I/O mode
-is entered by setting a non-volatile bit, because in case of a
-reset or a crash, once in the non-volatile mode, we may not be able
-to recover in bootloaders and we may break the SPI NOR boot.
+We don't know what speed the controller is running at. Find the fast
+read dummy cycles for the fastest frequency the flash can run at to be
+sure we are never short of dummy cycles. If nothing is available,
+default to 20. Flashes that use a different value should update it in
+their fixup hooks.
 
-Forbid by default the I/O modes that are set via a non-volatile bit.
+Since we want to set read settings, expose spi_nor_set_read_settings()
+in core.h.
 
-SPI_NOR_IO_MODE_EN_VOLATILE should be set just for the flashes that
-don't define the optional SFDP SCCR Map, so that we don't pollute the
-flash info flags.
-
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
- drivers/mtd/spi-nor/core.c | 3 +++
- drivers/mtd/spi-nor/core.h | 6 ++++++
- 2 files changed, 9 insertions(+)
+ drivers/mtd/spi-nor/core.c |  2 +-
+ drivers/mtd/spi-nor/core.h | 10 +++++
+ drivers/mtd/spi-nor/sfdp.c | 91 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 102 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index b83bf5ed2b2d..e91ddb409699 100644
+index 779e64974fea..ad280874a2e8 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -3387,6 +3387,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 	if (info->flags & SPI_NOR_4B_OPCODES)
- 		nor->flags |= SNOR_F_4B_OPCODES;
+@@ -2332,7 +2332,7 @@ static int spi_nor_check(struct spi_nor *nor)
+ 	return 0;
+ }
  
-+	if (info->flags & SPI_NOR_IO_MODE_EN_VOLATILE)
-+		nor->flags |= SNOR_F_IO_MODE_EN_VOLATILE;
-+
- 	ret = spi_nor_set_addr_width(nor);
- 	if (ret)
- 		return ret;
+-static void
++void
+ spi_nor_set_read_settings(struct spi_nor_read_command *read,
+ 			  u8 num_mode_clocks,
+ 			  u8 num_wait_states,
 diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 9a33c8d07335..eaece1123c0b 100644
+index 5d95b4183a33..9a33c8d07335 100644
 --- a/drivers/mtd/spi-nor/core.h
 +++ b/drivers/mtd/spi-nor/core.h
-@@ -26,6 +26,7 @@ enum spi_nor_option_flags {
- 	SNOR_F_HAS_SR_TB_BIT6	= BIT(11),
- 	SNOR_F_HAS_4BIT_BP      = BIT(12),
- 	SNOR_F_HAS_SR_BP3_BIT6  = BIT(13),
-+	SNOR_F_IO_MODE_EN_VOLATILE = BIT(14),
- };
+@@ -192,6 +192,9 @@ struct spi_nor_locking_ops {
+  *
+  * @size:		the flash memory density in bytes.
+  * @page_size:		the page size of the SPI NOR flash memory.
++ * @rdsr_dummy:		dummy cycles needed for Read Status Register command.
++ * @rdsr_addr_nbytes:	dummy address bytes needed for Read Status Register
++ *			command.
+  * @hwcaps:		describes the read and page program hardware
+  *			capabilities.
+  * @reads:		read capabilities ordered by priority: the higher index
+@@ -214,6 +217,8 @@ struct spi_nor_locking_ops {
+ struct spi_nor_flash_parameter {
+ 	u64				size;
+ 	u32				page_size;
++	u8				rdsr_dummy;
++	u8				rdsr_addr_nbytes;
  
- struct spi_nor_read_command {
-@@ -320,6 +321,11 @@ struct flash_info {
- 					 */
- #define SPI_NOR_OCTAL_DTR_READ	BIT(19) /* Flash supports octal DTR Read. */
- #define SPI_NOR_OCTAL_DTR_PP	BIT(20) /* Flash supports Octal DTR Page Program */
-+#define SPI_NOR_IO_MODE_EN_VOLATILE	BIT(21) /*
-+						 * Flash enables the best
-+						 * available I/O mode via a
-+						 * volatile bit.
-+						 */
+ 	struct spi_nor_hwcaps		hwcaps;
+ 	struct spi_nor_read_command	reads[SNOR_CMD_READ_MAX];
+@@ -425,6 +430,11 @@ ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
  
- 	/* Part specific fixup hooks. */
- 	const struct spi_nor_fixups *fixups;
+ int spi_nor_hwcaps_read2cmd(u32 hwcaps);
+ u8 spi_nor_convert_3to4_read(u8 opcode);
++void spi_nor_set_read_settings(struct spi_nor_read_command *read,
++			       u8 num_mode_clocks,
++			       u8 num_wait_states,
++			       u8 opcode,
++			       enum spi_nor_protocol proto);
+ void spi_nor_set_pp_settings(struct spi_nor_pp_command *pp, u8 opcode,
+ 			     enum spi_nor_protocol proto);
+ 
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index c77655968f80..b2d097b44a55 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -4,6 +4,7 @@
+  * Copyright (C) 2014, Freescale Semiconductor, Inc.
+  */
+ 
++#include <linux/bitfield.h>
+ #include <linux/slab.h>
+ #include <linux/sort.h>
+ #include <linux/mtd/spi-nor.h>
+@@ -19,6 +20,7 @@
+ #define SFDP_BFPT_ID		0xff00	/* Basic Flash Parameter Table */
+ #define SFDP_SECTOR_MAP_ID	0xff81	/* Sector Map Table */
+ #define SFDP_4BAIT_ID		0xff84  /* 4-byte Address Instruction Table */
++#define SFDP_PROFILE1_ID	0xff05	/* xSPI Profile 1.0 table. */
+ 
+ #define SFDP_SIGNATURE		0x50444653U
+ 
+@@ -1108,6 +1110,91 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+ 	return ret;
+ }
+ 
++#define PROFILE1_DWORD1_RDSR_ADDR_BYTES		BIT(29)
++#define PROFILE1_DWORD1_RDSR_DUMMY		BIT(28)
++#define PROFILE1_DWORD1_RD_FAST_CMD		GENMASK(15, 8)
++#define PROFILE1_DWORD4_DUMMY_200MHZ		GENMASK(11, 7)
++#define PROFILE1_DWORD5_DUMMY_166MHZ		GENMASK(31, 27)
++#define PROFILE1_DWORD5_DUMMY_133MHZ		GENMASK(21, 17)
++#define PROFILE1_DWORD5_DUMMY_100MHZ		GENMASK(11, 7)
++
++/**
++ * spi_nor_parse_profile1() - parse the xSPI Profile 1.0 table
++ * @nor:		pointer to a 'struct spi_nor'
++ * @profile1_header:	pointer to the 'struct sfdp_parameter_header' describing
++ *			the Profile 1.0 Table length and version.
++ * @params:		pointer to the 'struct spi_nor_flash_parameter' to be.
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++static int spi_nor_parse_profile1(struct spi_nor *nor,
++				  const struct sfdp_parameter_header *profile1_header,
++				  struct spi_nor_flash_parameter *params)
++{
++	u32 *dwords, addr;
++	size_t len;
++	int ret;
++	u8 dummy, opcode;
++
++	len = profile1_header->length * sizeof(*dwords);
++	dwords = kmalloc(len, GFP_KERNEL);
++	if (!dwords)
++		return -ENOMEM;
++
++	addr = SFDP_PARAM_HEADER_PTP(profile1_header);
++	ret = spi_nor_read_sfdp(nor, addr, len, dwords);
++	if (ret)
++		goto out;
++
++	le32_to_cpu_array(dwords, profile1_header->length);
++
++	/* Get 8D-8D-8D fast read opcode and dummy cycles. */
++	opcode = FIELD_GET(PROFILE1_DWORD1_RD_FAST_CMD, dwords[0]);
++
++	 /* Set the Read Status Register dummy cycles and dummy address bytes. */
++	if (dwords[0] & PROFILE1_DWORD1_RDSR_DUMMY)
++		params->rdsr_dummy = 8;
++	else
++		params->rdsr_dummy = 4;
++
++	if (dwords[0] & PROFILE1_DWORD1_RDSR_ADDR_BYTES)
++		params->rdsr_addr_nbytes = 4;
++	else
++		params->rdsr_addr_nbytes = 0;
++
++	/*
++	 * We don't know what speed the controller is running at. Find the
++	 * dummy cycles for the fastest frequency the flash can run at to be
++	 * sure we are never short of dummy cycles. A value of 0 means the
++	 * frequency is not supported.
++	 *
++	 * Default to PROFILE1_DUMMY_DEFAULT if we don't find anything, and let
++	 * flashes set the correct value if needed in their fixup hooks.
++	 */
++	dummy = FIELD_GET(PROFILE1_DWORD4_DUMMY_200MHZ, dwords[3]);
++	if (!dummy)
++		dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_166MHZ, dwords[4]);
++	if (!dummy)
++		dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_133MHZ, dwords[4]);
++	if (!dummy)
++		dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_100MHZ, dwords[4]);
++	if (!dummy)
++		dev_dbg(nor->dev,
++			"Can't find dummy cycles from Profile 1.0 table\n");
++
++	/* Round up to an even value to avoid tripping controllers up. */
++	dummy = round_up(dummy, 2);
++
++	/* Update the fast read settings. */
++	spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_8_8_8_DTR],
++				  0, dummy, opcode,
++				  SNOR_PROTO_8_8_8_DTR);
++
++out:
++	kfree(dwords);
++	return ret;
++}
++
+ /**
+  * spi_nor_parse_sfdp() - parse the Serial Flash Discoverable Parameters.
+  * @nor:		pointer to a 'struct spi_nor'
+@@ -1209,6 +1296,10 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
+ 			err = spi_nor_parse_4bait(nor, param_header, params);
+ 			break;
+ 
++		case SFDP_PROFILE1_ID:
++			err = spi_nor_parse_profile1(nor, param_header, params);
++			break;
++
+ 		default:
+ 			break;
+ 		}
 -- 
 2.28.0
 
