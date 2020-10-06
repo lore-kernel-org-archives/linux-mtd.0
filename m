@@ -2,90 +2,72 @@ Return-Path: <SRS0=jvb0=DN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0006C41604
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2020 06:59:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5750AC41604
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2020 07:38:47 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7285620760
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2020 06:59:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C4E0920760
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2020 07:38:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GZSTO5Jl";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JxVBGe9v"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7285620760
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Qe8FzDY3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C4E0920760
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=RN7+cecI6WZqzaiAeCNe+bYcd+0zlx8kmlp9GiNKUZc=; b=GZSTO5Jl+Q+jvDCtbbH81tdWV
-	HJWbNLeYWJtepG3mNXWQrrEYruym25kStPvEqgW71HeoQcpnJUwfxW+Ff0cp6O8TCLemta8MJyISw
-	aJPv7e58C8e4Geb3mjIvFtosHRnaS+qBDqiTVv4Bpq6qLxpYqwzvqMvA4t6jYuwZ/nmahgijKbcYp
-	i2HUvrbRXU6gAD6H9S29paeyYm2BryGMQ7I5OcqREWUentvyQYOvTOWZxZ0qWNzK906+5AE9BcqRC
-	0ckkSxV6TqWxrSUC5dEY54CUVPPsdOf58lnCM18OpPfqCB59g8TPZYh1Mg5k1ZJ1VgKVTYpZ6B3by
-	rHN4WUcxA==;
+	 bh=cQeoFNzmvErIWGTkv8dAjNrgWh5jqM+QQyt5sFhsn6A=; b=Qe8FzDY3mpM/gVnbYi+U1LphM
+	Nwhgt2FDRZIwfqMERetxqxSRuQDyKvg7lrQMS9FbVrO7axj9EyRQAQituo+KHMudOLeP4Vj6GG8sV
+	WnrUcs48Qhqe0/qS0/ZaJY78nZ/RtpJBDIj0If6RhVNVgBIkbthzSPz2DERzPoMeMC99N+RvUy7td
+	5ErZowDqRR0B3k7wh1yKuug/99i/IB/jek1SzAVQpXjw0ZZZaEfGisDux+XxKr+2+AGJE9TDEu9x+
+	KxrVWf5wqQZ6EpSpqIYMmr+Ewoj6cSKBOu82L8MM8a/78zymgVZWkifrAAWsVTwhiYgxBLqWhI957
+	0U4632K3g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kPgwX-0003Kn-NZ; Tue, 06 Oct 2020 06:59:25 +0000
-Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
+	id 1kPhXz-0000Za-OM; Tue, 06 Oct 2020 07:38:07 +0000
+Received: from mail-ot1-f67.google.com ([209.85.210.67])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kPgwV-0003JK-4T
- for linux-mtd@lists.infradead.org; Tue, 06 Oct 2020 06:59:24 +0000
-Received: by mail-wr1-x444.google.com with SMTP id o5so12131881wrn.13
- for <linux-mtd@lists.infradead.org>; Mon, 05 Oct 2020 23:59:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:content-transfer-encoding:in-reply-to;
- bh=CJt8sMvkLfzd8pVfQzeKwrD9wQt2ezco6HzjCXU2Seg=;
- b=JxVBGe9v20fI1rWZ+LblFSymah+5lDcEzko2dpzuxH2sV76ZNSZuJMvGzdxBOU4EEE
- 016bYoBGw9BoWO2uYbYpJh2Spqfe+txcbLLwj0dDMlR/N5yVsSaJVMqeu9en2rycu/TT
- n1jnC4KuJCiEYEIdFvD/egT0iBvuzR0aC8sGAuxTCPbkVANitwk76rko2yla+Dj7q7e8
- sZCK0Cx3psrp4tVRMioIbzifJSWNfJENU2wQrZHVs830d0ZwDclsCeY3DZLdaTt0c5D8
- BR0YmsLI9C2kzSZ+GpT1D4lBMiJpvLvJ21dr2n2+YN+vRiNGtA+lOfa8qajAa2TyKNwy
- 4j1w==
+ id 1kPhXu-0000Ve-LO; Tue, 06 Oct 2020 07:38:03 +0000
+Received: by mail-ot1-f67.google.com with SMTP id q21so11386817ota.8;
+ Tue, 06 Oct 2020 00:37:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to;
- bh=CJt8sMvkLfzd8pVfQzeKwrD9wQt2ezco6HzjCXU2Seg=;
- b=ROSuV/DkprKGbW+h1Wp/gXkWfp0u1XSa7XApDG4GoB0ccrRsM1qMiikk0JXCeOFOcA
- x9I2dgFyfVL//vh+5GIwfkssPTKIO/xSFLHCswA73YmSVYvkQSid0W9sohpJbeWqknhV
- SXl3p3507p+LdAL8EyDwRij8/6QJHUa5m/oCXKHWXykVgwJ4n/JIEu5xfuLqDrHFJiMA
- nbdZr9SXylVExnC+G0RIFwq6+HYBOyOjUZLB7IPpu9K4mKj5qHfKaL0dBf//AS8J9XVD
- Ltb7SminnKPXVMsMKmHd5wtbgTc58atZ8VH7ZrwJ8to9Dn0s93IK4SNKVWAKcKUMrLDD
- EFfA==
-X-Gm-Message-State: AOAM533wpA3L9LYCMIiGC4MPQp6B+7mFdIJqBsT08L71qqQ51jGdl1Cr
- sTmr4VlBPdAQyg2oUjCDft9uMA==
-X-Google-Smtp-Source: ABdhPJw9aVlQCFJI6s9KKSTQz6LD1w2/gTI0uxeBSfs6H68t2v5l2G/j/zLB0TtAX8AL+VsxEknjwQ==
-X-Received: by 2002:adf:eac6:: with SMTP id o6mr3347103wrn.117.1601967562086; 
- Mon, 05 Oct 2020 23:59:22 -0700 (PDT)
-Received: from dell ([91.110.221.236])
- by smtp.gmail.com with ESMTPSA id m3sm2805162wrs.83.2020.10.05.23.59.19
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 05 Oct 2020 23:59:21 -0700 (PDT)
-Date: Tue, 6 Oct 2020 07:59:18 +0100
-From: Lee Jones <lee.jones@linaro.org>
-To: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 2/4] dt-bindings: Use 'additionalProperties' instead of
- 'unevaluatedProperties'
-Message-ID: <20201006065918.GZ6148@dell>
-References: <20201005183830.486085-1-robh@kernel.org>
- <20201005183830.486085-3-robh@kernel.org>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=8+YGZEZXCDlVSYcoSNcJ9v6pHT8JdkLtCN5s+E2ToaQ=;
+ b=GGq+16cqqp8FqQKvbo3EhWcyu+OguPr4vScHewKxHKBX3JW/R9xOcgAczgphDYbxpP
+ Y3mKlZQC/UerRULk9Yqs7g/FZEmEmjnRW8XxAt48PJQfocxy93v799zXBN7FeehfdHKU
+ GbHs6PSnhGO5TBxPp37wQH/ysuXivHSIbtGU7CFKJZdwibvyJbGRkJl1px3icVjW4Mnb
+ Yq5PV92qpt9QCK5A/J2TaT6SnuFRP+LlBS8sKg1h8LFtjdT3M0Sgk3g1EGvFNkOoy/xr
+ K+xSeL/lj3OEHYzrznFZOF1Sjcgb5ljQjldohvKiAVjI7NIBNtHVBwMj7GSPYBRn0uM5
+ lJqg==
+X-Gm-Message-State: AOAM531VWOX4xRLw83BlWEVLVfbJl1Q7EeCJ2nrveDiMjqWewVlcKRoU
+ SZ/CBgrZNFcZqvnjCTfXBD58zgiVtopN7wOHrO4=
+X-Google-Smtp-Source: ABdhPJz2bCZlgB6we6A9AWlaXsOI2O+CwxUcnmKhPrIVPza5tGmo+mK6C98Ugzjy2W9HQnh3L0gpSmpM+xs5ujOFQMY=
+X-Received: by 2002:a05:6830:210a:: with SMTP id
+ i10mr2082078otc.145.1601969875043; 
+ Tue, 06 Oct 2020 00:37:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20201005183830.486085-3-robh@kernel.org>
+References: <20201005183830.486085-1-robh@kernel.org>
+ <20201005183830.486085-2-robh@kernel.org>
+In-Reply-To: <20201005183830.486085-2-robh@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 6 Oct 2020 09:37:43 +0200
+Message-ID: <CAMuHMdXjBSzbs4yAPJ-XUTBRZWKN61hO8vQ1-nGN5nAo7JnV-w@mail.gmail.com>
+Subject: Re: [PATCH 1/4] dt-bindings: Add missing 'unevaluatedProperties'
+To: Rob Herring <robh@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201006_025923_232656_1BCE8491 
-X-CRM114-Status: GOOD (  15.43  )
+X-CRM114-CacheID: sfid-20201006_033802_775995_85881D14 
+X-CRM114-Status: GOOD (  22.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,62 +80,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
- linux-usb@vger.kernel.org, Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
- linux-pwm@vger.kernel.org, linux-iio@vger.kernel.org,
- Viresh Kumar <vireshk@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
- linux-pci@vger.kernel.org, dri-devel@lists.freedesktop.org,
- Liam Girdwood <lgirdwood@gmail.com>, linux-ide@vger.kernel.org,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Sam Ravnborg <sam@ravnborg.org>,
+ Linux PWM List <linux-pwm@vger.kernel.org>, linux-iio@vger.kernel.org,
+ linux-pci <linux-pci@vger.kernel.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ DRI Development <dri-devel@lists.freedesktop.org>,
+ Sebastian Reichel <sre@kernel.org>, linux-ide@vger.kernel.org,
  Thierry Reding <thierry.reding@gmail.com>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
  Pavel Machek <pavel@ucw.cz>, Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-riscv@lists.infradead.org, linux-hwmon@vger.kernel.org,
- Sam Ravnborg <sam@ravnborg.org>, linux-clk@vger.kernel.org,
+ linux-riscv <linux-riscv@lists.infradead.org>,
+ Lee Jones <lee.jones@linaro.org>, linux-clk <linux-clk@vger.kernel.org>,
  linux-leds@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
  linux-rtc@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
- Marc Zyngier <maz@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Viresh Kumar <vireshk@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>,
  Krzysztof Kozlowski <krzk@kernel.org>, Chanwoo Choi <cw00.choi@samsung.com>,
- MyungJoo Ham <myungjoo.ham@samsung.com>, linux-serial@vger.kernel.org,
+ MyungJoo Ham <myungjoo.ham@samsung.com>,
+ "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
  linux-input@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
- Zhang Rui <rui.zhang@intel.com>, linux-mips@vger.kernel.org,
- Vivien Didelot <vivien.didelot@gmail.com>,
- Wolfgang Grandegger <wg@grandegger.com>, linux-media@vger.kernel.org,
- devicetree@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
- Jason Cooper <jason@lakedaemon.net>, linux-pm@vger.kernel.org,
- linux-can@vger.kernel.org, linux-gpio@vger.kernel.org,
+ Zhang Rui <rui.zhang@intel.com>,
+ "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+ Jens Axboe <axboe@kernel.dk>, Vivien Didelot <vivien.didelot@gmail.com>,
+ Wolfgang Grandegger <wg@grandegger.com>,
+ Linux Media Mailing List <linux-media@vger.kernel.org>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, Albert Ou <aou@eecs.berkeley.edu>,
+ Jason Cooper <jason@lakedaemon.net>, Linux PM list <linux-pm@vger.kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-can@vger.kernel.org,
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
  Mark Brown <broonie@kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>,
- Sebastian Reichel <sre@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>,
- Bjorn Helgaas <bhelgaas@google.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Bjorn Helgaas <bhelgaas@google.com>,
+ Thomas Gleixner <tglx@linutronix.de>,
  Mauro Carvalho Chehab <mchehab@kernel.org>,
- linux-arm-kernel@lists.infradead.org, Jens Axboe <axboe@kernel.dk>,
- Alessandro Zummo <a.zummo@towertech.it>, linux-watchdog@vger.kernel.org,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-hwmon@vger.kernel.org,
+ Alessandro Zummo <a.zummo@towertech.it>,
+ Linux Watchdog Mailing List <linux-watchdog@vger.kernel.org>,
  Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Richard Weinberger <richard@nod.at>,
  Mathieu Poirier <mathieu.poirier@linaro.org>, Stephen Boyd <sboyd@kernel.org>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-i2c@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+ USB list <linux-usb@vger.kernel.org>,
+ Linux MMC List <linux-mmc@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>, Vinod Koul <vkoul@kernel.org>,
  Palmer Dabbelt <palmer@dabbelt.com>, Wim Van Sebroeck <wim@linux-watchdog.org>,
- Richard Weinberger <richard@nod.at>, dmaengine@vger.kernel.org,
- linux-mtd@lists.infradead.org, "David S. Miller" <davem@davemloft.net>,
- Jonathan Cameron <jic23@kernel.org>, Heiner Kallweit <hkallweit1@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ Marc Zyngier <maz@kernel.org>, dmaengine <dmaengine@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Heiner Kallweit <hkallweit1@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Jonathan Cameron <jic23@kernel.org>,
+ Linux I2C <linux-i2c@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gTW9uLCAwNSBPY3QgMjAyMCwgUm9iIEhlcnJpbmcgd3JvdGU6Cgo+IEluIGNhc2VzIHdoZXJl
-IHdlIGRvbid0IHJlZmVyZW5jZSBhbm90aGVyIHNjaGVtYSwgJ2FkZGl0aW9uYWxQcm9wZXJ0aWVz
-Jwo+IGNhbiBiZSB1c2VkIGluc3RlYWQuIFRoaXMgaXMgcHJlZmVycmVkIGZvciBub3cgYXMgJ3Vu
-ZXZhbHVhdGVkUHJvcGVydGllcycKPiBzdXBwb3J0IGlzbid0IGltcGxlbWVudGVkIHlldC4KPiAK
-PiBJbiBhIGZldyBjYXNlcywgdGhpcyBtZWFucyBhZGRpbmcgc29tZSBtaXNzaW5nIHByb3BlcnR5
-IGRlZmluaXRpb25zIG9mCj4gd2hpY2ggbW9zdCBhcmUgZm9yIFNQSSBidXMgcHJvcGVydGllcy4g
-J3VuZXZhbHVhdGVkUHJvcGVydGllcycgaXMgbm90IGdvaW5nCj4gdG8gd29yayBmb3IgdGhlIFNQ
-SSBidXMgcHJvcGVydGllcyBhbnl3YXlzIGFzIHRoZXkgYXJlIGV2YWx1YXRlZCBmcm9tIHRoZQo+
-IHBhcmVudCBub2RlLCBub3QgdGhlIFNQSSBjaGlsZCBub2RlLgoKQWNrZWQtYnk6IExlZSBKb25l
-cyA8bGVlLmpvbmVzQGxpbmFyby5vcmc+CgotLSAKTGVlIEpvbmVzIFvmnY7nkLzmlq9dClNlbmlv
-ciBUZWNobmljYWwgTGVhZCAtIERldmVsb3BlciBTZXJ2aWNlcwpMaW5hcm8ub3JnIOKUgiBPcGVu
-IHNvdXJjZSBzb2Z0d2FyZSBmb3IgQXJtIFNvQ3MKRm9sbG93IExpbmFybzogRmFjZWJvb2sgfCBU
-d2l0dGVyIHwgQmxvZwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlz
-dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hi Rob,
+
+On Mon, Oct 5, 2020 at 8:39 PM Rob Herring <robh@kernel.org> wrote:
+> This doesn't yet do anything in the tools, but make it explicit so we can
+> check either 'unevaluatedProperties' or 'additionalProperties' is present
+> in schemas.
+>
+> 'unevaluatedProperties' is appropriate when including another schema (via
+> '$ref') and all possible properties and/or child nodes are not
+> explicitly listed in the schema with the '$ref'.
+>
+> This is in preparation to add a meta-schema to check for missing
+> 'unevaluatedProperties' or 'additionalProperties'. This has been a
+> constant source of review issues.
+>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+
+Thanks for your patch!
+
+>  Documentation/devicetree/bindings/bus/renesas,bsc.yaml       | 2 ++
+>  .../bindings/memory-controllers/renesas,rpc-if.yaml          | 2 ++
+>  Documentation/devicetree/bindings/net/renesas,ether.yaml     | 2 ++
+>  Documentation/devicetree/bindings/serial/renesas,hscif.yaml  | 2 ++
+>  Documentation/devicetree/bindings/serial/renesas,sci.yaml    | 2 ++
+>  Documentation/devicetree/bindings/serial/renesas,scif.yaml   | 2 ++
+>  Documentation/devicetree/bindings/serial/renesas,scifa.yaml  | 2 ++
+>  Documentation/devicetree/bindings/serial/renesas,scifb.yaml  | 2 ++
+>  Documentation/devicetree/bindings/spi/renesas,hspi.yaml      | 2 ++
+>  Documentation/devicetree/bindings/spi/renesas,rspi.yaml      | 2 ++
+>  Documentation/devicetree/bindings/spi/renesas,sh-msiof.yaml  | 2 ++
+
+Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+> --- a/Documentation/devicetree/bindings/net/renesas,ether.yaml
+> +++ b/Documentation/devicetree/bindings/net/renesas,ether.yaml
+> @@ -85,6 +85,8 @@ required:
+>    - clocks
+>    - pinctrl-0
+>
+> +unevaluatedProperties: false
+
+This one has received an "additionalProperties: false" in commit
+41506bff84f1563e ("dt-bindings: net: renesas, ether: Improve schema validation")
+in net-next, which you probably want to remove.
+
+> +
+>  examples:
+>    # Lager board
+>    - |
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
