@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98B05C41604
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2020 15:23:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 754CAC41604
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2020 15:23:54 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3EFB3206D4
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2020 15:23:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0574C206D4
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2020 15:23:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="D2cx0id/";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="xKBEQODk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3EFB3206D4
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="UBoVzrYi";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="RLS3rz5B"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0574C206D4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,43 +25,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Subject:References:
 	In-Reply-To:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Di72K17zAGmBm3h/ZBc5oJND8Fi3Q3bkXYOr47AZ0wE=; b=D2cx0id/7bCF55f7EAI7MASl6
-	DXa8flhqT6L2ZSpi34bZAr5ufw9b9u3w2dLpKHPYmQtuupDYK420NMDtYay1ZSYDh9Opn0bkyS8tM
-	nDOG2qmt0hHXFZfHhyR6lb9mlS6F+p8RRf0Iym91kMPC8/wXtmWmAPXcAbU00vdWw/1YeTp1J6hCI
-	jnYD7/sYLOFxUQykGXZjEs7ZqKUO2KGVZNynjAQSBEECBaZfYwKq220JdfRwdzfLY7MfuGTnrnSIN
-	/SkkNt32sRt4mAkZiiZcoMBwvs8rNgXyq3+4v1ONIq1hdIF85z2IG1g9clyhJ2QqWK0jGsX3NS+SQ
-	MzENRBilw==;
+	 bh=FBJfVr9g7Hp2W9Yffkm2qinrp8DD7iM424VjfhuYv/g=; b=UBoVzrYi4QmaWoHeREoAw2pS3
+	bYkohh6VJlPs8hIRYW4OCmdaGyWpkcaIXYYGHx4c6tp9JvUdOHlm8/d7HRpWVYaLpyWIfnVe3NYHP
+	IShafr7BzmcPjdJIlW8Tf1MhFfrNKpf7tPvcX9mkyR6XGc7Gj0EYGvIeY+eR/FAsULX9ZxER09W70
+	5QOKw2huY/lViPfnh81NUWj4kAKSsq0oNp0cSGu/ytAsFxeiMeG3T6FnHHAv+UhxPbGI5AoQwlUa/
+	SKhTQkeKGpFm3CVQvmPsx+51xUNvOa+2ekhya5IqehpgCNTHpzxSbPmG4/cJQH098dX9KJVYGG1UC
+	Lj/Q8/o+Q==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kPonQ-0006Pz-4J; Tue, 06 Oct 2020 15:22:32 +0000
+	id 1kPonG-0006MY-JK; Tue, 06 Oct 2020 15:22:22 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kPonF-0006Lx-2p; Tue, 06 Oct 2020 15:22:22 +0000
+ id 1kPonA-0006Ko-K2; Tue, 06 Oct 2020 15:22:17 +0000
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id ADA46206F7;
- Tue,  6 Oct 2020 15:22:19 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 7B39B206DD;
+ Tue,  6 Oct 2020 15:22:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1601997740;
- bh=S1iVkiUFy6uy3VDJOO4K1ZuOsQXL4YSszYSoi/VRUN4=;
+ s=default; t=1601997735;
+ bh=gGFFKOYWD32Z85Ha3gjhDPcj1DnSsoFGs28UJqXpmQ0=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=xKBEQODkIy3GsU6oVTT7DQ2AzitYekNw2M5EEtKJaCo53c8gNEQWYThOxvwpcdSno
- KrMDSx943hssEKWWEJrcyCjdUSKWD7rU0AG1+wKo2AxK67ekf/4jHUqs7SF/sz5ChH
- uAPwuKS+o/JOymYjFEh9BR+xshZFU+ajcBCsHZBE=
-Date: Tue, 06 Oct 2020 16:21:17 +0100
+ b=RLS3rz5B2f71cZWm2lEXIpUpc6lKf9iNNkpgGnCG1jHrncUcd1dgp8zfTBWJVSr8q
+ CwAsab3KqgIvsZgyrbwTVL8AxRt5oph/S6A4IddXsuPUfJ3LqFd+cWaMdIHrz0pkcj
+ IDHQhu3lOVfACpNAGXNJqSds+dXXg+Vg7+8qWXqU=
+Date: Tue, 06 Oct 2020 16:21:12 +0100
 From: Mark Brown <broonie@kernel.org>
 To: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  Ikjoon Jang <ikjn@chromium.org>, linux-spi@vger.kernel.org,
  Rob Herring <robh+dt@kernel.org>
-In-Reply-To: <20201006075405.11658-1-ikjn@chromium.org>
-References: <20201006075405.11658-1-ikjn@chromium.org>
-Subject: Re: [PATCH v5 0/4] spi: spi-mtk-nor: Add mt8192 support.
-Message-Id: <160199767222.51670.3734614928082505881.b4-ty@kernel.org>
+In-Reply-To: <20200929073755.3741416-1-ikjn@chromium.org>
+References: <20200929073755.3741416-1-ikjn@chromium.org>
+Subject: Re: [PATCH v4 0/4] spi: spi-mtk-nor: Add mt8192 support.
+Message-Id: <160199767221.51670.15465712925313409583.b4-ty@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201006_112221_257800_7324FB34 
-X-CRM114-Status: GOOD (  14.11  )
+X-CRM114-CacheID: sfid-20201006_112216_716645_7E8551E8 
+X-CRM114-Status: GOOD (  15.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,24 +73,25 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-kernel@vger.kernel.org, Bayi Cheng <bayi.cheng@mediatek.com>,
- linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>,
- Chuanhong Guo <gch981213@gmail.com>, linux-arm-kernel@lists.infradead.org
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, linux-mediatek@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 6 Oct 2020 15:54:01 +0800, Ikjoon Jang wrote:
+On Tue, 29 Sep 2020 15:37:51 +0800, Ikjoon Jang wrote:
 > This patchset adds 36bit dma address and power management
-> supports for mt8192-nor.
-> 
-> Changes in v5:
-> - Rebase from merge conflict
+> supports for mt8192-nor. Additionally, use dma_alloc_coherent()
+> instead of kmalloc() for internal bounce buffer for platforms
+> of only supporting 32bit addresses.
 > 
 > Changes in v4:
-> - Drop two patches from a list, addressed by an another series
+> - Drop two patches from a list which already addressed by
+>   an another series and not directly related with mt8192 support
 > - Fix 0-day ci 'shift-count-overflow' warning
+> - Fix missing 'high_dma' initialization for 36bit address
 > 
 > [...]
 
