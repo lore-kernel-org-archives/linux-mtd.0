@@ -2,82 +2,66 @@ Return-Path: <SRS0=jvb0=DN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4AF2C41604
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2020 05:24:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5479BC41604
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2020 05:30:26 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 89B5620870
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2020 05:24:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A1A9120B80
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2020 05:30:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bZIJ7O8g";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="c2sRdplL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 89B5620870
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Jk0Oq2Wl";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="XJYtCNTy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A1A9120B80
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=DSKoZrRuG7+ESvq/2dQbiclG1luA5JTbC2LzmQ5R09g=; b=bZIJ7O8g84uAfjd8h0F2B+rHQ
-	Loly3YWwpfBC8J2xZF2l9GQvrZxqL+KvClsrrJLy0rTVQ3J8OCgVMy1dZq2VDDoan7piCmuHfJMkf
-	osToRzrVDt9dvqHaQn0W8q8deE5DHmVZpoKsTMm3f13rVR34jJ75PDFMXgOVSBCydcSutci9seMDF
-	hdf4VDBG7wHLHUy5nfB6EaCa8gNsrEY8apNICCkrJjgcHtsMIvulejUsPBuGZhkc79Ymzi6mgQW7X
-	mFaMdb3dj6v6nS6BMll9bZaa9GBY+CtHUSozrocDcvBwCnDUwVdPllAxL57FDVjV7I+znxpRUb3iU
-	HAZoSMmOQ==;
+	 bh=SDs+5U7HQpeKQ0qrjmMO54fkH3HsjyGJTD0NUsk59s8=; b=Jk0Oq2WlG00QBFpHlVNlBLUra
+	o3r04EXkvWUiL+ya8M83o09Ag0GuMlvshvVdTMndV9w/tPXSZTiC9FJlmJlyS3bellRg9Wzi9Vgmn
+	OsLXlLPSJOReJJOsIdSVLyL1Ch0DUPSvB5b+FtypMrrRb02mGrG6yLNz1otzNLBStz8OwJJg0q5VT
+	3M8kBVTt5LUelzq9Jr7HbBZ2H+XcMTgMsTQnfdLEEWSfYc5tu/YIpNdViyny90lPjuRGbz3+vQMUU
+	KhNhAPZSn1zXLrS5FQCCEhHMawb9vEuFuwwz053YbNXDpsP49i7WDOUZgZuoGc8ssmiy4ZonJ4QzQ
+	Ncy8FsmUw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kPfRa-0002SQ-St; Tue, 06 Oct 2020 05:23:22 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1kPfXs-0002th-7G; Tue, 06 Oct 2020 05:29:52 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kPfRX-0002S7-EP
- for linux-mtd@lists.infradead.org; Tue, 06 Oct 2020 05:23:20 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0965NI46032902;
- Tue, 6 Oct 2020 00:23:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1601961798;
- bh=5Feol3WKm5zX0b3OB4XP9b2vuJwJd91pvKimsOUKvh8=;
- h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=c2sRdplLX7OCb71sIS2RGIsBkaCCckZvojwAdRLr60GkzsrsfpUTAyTJlxiYNIW8e
- FZk/fteDhnGUlLw6JfG56IZcXEGpOnfzbQaJf8DEoGbujm772xoItNUMhi5z0ZVZxk
- ar6767SkJeTcpWt9BEzcDKOb8Ma4t0iA0LOvdCrg=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0965NIcD049792
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 6 Oct 2020 00:23:18 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 6 Oct
- 2020 00:23:17 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 6 Oct 2020 00:23:18 -0500
-Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0965NFS9062469;
- Tue, 6 Oct 2020 00:23:15 -0500
-From: Vignesh Raghavendra <vigneshr@ti.com>
-To: Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH] Revert "mtd: spi-nor: Prefer asynchronous probe"
-Date: Tue, 6 Oct 2020 10:53:13 +0530
-Message-ID: <160196166120.11915.2526794978202188721.b4-ty@ti.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005090321.8724-1-vigneshr@ti.com>
-References: <20201005090321.8724-1-vigneshr@ti.com>
+ id 1kPfXn-0002sJ-RB; Tue, 06 Oct 2020 05:29:49 +0000
+Received: from localhost (unknown [122.167.144.92])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 1C34120870;
+ Tue,  6 Oct 2020 05:29:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1601962185;
+ bh=IqVDArZkdO/B6tbx3G9IqtpqMW94z4IPv/01HlGFHyY=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=XJYtCNTyvx3ozaL1aRMYZGV+bTbvDa3P+1vHmIpIZkmMpy/W3RdFSo1VlEtqd2ZwS
+ VXm0e3hsDFIgJyUblJEaSpP3cJaPtrtrYpgunMrPuk68lEyTmKEkfZetm3/aycx6/+
+ f5jbT6MC2Pw1++qOdAXkqzyJva8aLdhWHo97xSwA=
+Date: Tue, 6 Oct 2020 10:59:40 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 1/4] dt-bindings: Add missing 'unevaluatedProperties'
+Message-ID: <20201006052940.GO2968@vkoul-mobl>
+References: <20201005183830.486085-1-robh@kernel.org>
+ <20201005183830.486085-2-robh@kernel.org>
 MIME-Version: 1.0
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Disposition: inline
+In-Reply-To: <20201005183830.486085-2-robh@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201006_012319_606345_DFF862F0 
-X-CRM114-Status: UNSURE (   7.81  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20201006_012948_131596_30A08C2F 
+X-CRM114-Status: GOOD (  17.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,32 +73,68 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Michael Walle <michael@walle.cc>,
- Tudor Ambarus <tudor.ambarus@microchip.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Doug Anderson <dianders@chromium.org>
+Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
+ linux-usb@vger.kernel.org, Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+ Sam Ravnborg <sam@ravnborg.org>, linux-pwm@vger.kernel.org,
+ linux-iio@vger.kernel.org, Viresh Kumar <vireshk@kernel.org>,
+ Linus Walleij <linus.walleij@linaro.org>, linux-pci@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-ide@vger.kernel.org, Thierry Reding <thierry.reding@gmail.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Pavel Machek <pavel@ucw.cz>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-riscv@lists.infradead.org, linux-hwmon@vger.kernel.org,
+ Lee Jones <lee.jones@linaro.org>, linux-clk@vger.kernel.org,
+ linux-leds@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-rtc@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+ Marc Zyngier <maz@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Krzysztof Kozlowski <krzk@kernel.org>, Chanwoo Choi <cw00.choi@samsung.com>,
+ MyungJoo Ham <myungjoo.ham@samsung.com>, linux-serial@vger.kernel.org,
+ linux-input@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+ Zhang Rui <rui.zhang@intel.com>, linux-mips@vger.kernel.org,
+ Vivien Didelot <vivien.didelot@gmail.com>,
+ Wolfgang Grandegger <wg@grandegger.com>, linux-media@vger.kernel.org,
+ devicetree@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
+ Jason Cooper <jason@lakedaemon.net>, linux-pm@vger.kernel.org,
+ linux-can@vger.kernel.org, linux-gpio@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>,
+ Sebastian Reichel <sre@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>,
+ Bjorn Helgaas <bhelgaas@google.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, Jens Axboe <axboe@kernel.dk>,
+ Alessandro Zummo <a.zummo@towertech.it>, linux-watchdog@vger.kernel.org,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>, Stephen Boyd <sboyd@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-i2c@vger.kernel.org, Palmer Dabbelt <palmer@dabbelt.com>,
+ Wim Van Sebroeck <wim@linux-watchdog.org>, Richard Weinberger <richard@nod.at>,
+ dmaengine@vger.kernel.org, linux-mtd@lists.infradead.org,
+ "David S. Miller" <davem@davemloft.net>, Jonathan Cameron <jic23@kernel.org>,
+ Heiner Kallweit <hkallweit1@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 5 Oct 2020 14:33:21 +0530, Vignesh Raghavendra wrote:
-> This reverts commit 03edda0e1edaa3c2e99239c66e3c14d749318fd6.
+On 05-10-20, 13:38, Rob Herring wrote:
+> This doesn't yet do anything in the tools, but make it explicit so we can
+> check either 'unevaluatedProperties' or 'additionalProperties' is present
+> in schemas.
 > 
-> This leads to warn dump like [1] on some platforms and reorders MTD
-> devices thus may break user space expectations. So revert the change.
+> 'unevaluatedProperties' is appropriate when including another schema (via
+> '$ref') and all possible properties and/or child nodes are not
+> explicitly listed in the schema with the '$ref'.
 > 
-> [1]:
-> 
-> [...]
+> This is in preparation to add a meta-schema to check for missing
+> 'unevaluatedProperties' or 'additionalProperties'. This has been a
+> constant source of review issues.
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git spi-nor/next, thanks!
-[1/1] Revert "mtd: spi-nor: Prefer asynchronous probe"
-      https://git.kernel.org/mtd/c/9a3422a110
+Acked-By: Vinod Koul <vkoul@kernel.org>
 
---
-Regards
-Vignesh
-
+-- 
+~Vinod
 
 ______________________________________________________
 Linux MTD discussion mailing list
