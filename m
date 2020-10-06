@@ -2,93 +2,82 @@ Return-Path: <SRS0=jvb0=DN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BD06C41604
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2020 08:25:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33E8AC41604
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2020 09:14:26 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B21F12078E
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2020 08:25:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B7B4920866
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2020 09:14:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="p3LFJk9Y";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qHporHfA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B21F12078E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oHLavwAX";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mMV78gRf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B7B4920866
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=rBBvQM0Jdbe/DzvkHw11pTE4+Vc0P2eFOfHBUuXxL1s=; b=p3LFJk9Y5L+eYOJKaszc66h8a
-	EK/UxYZ9fcSts/gaodZQZdomDejVubR1womgqlW4sRmzx7nabk8+HdaUPldc/aGfz7j0Cp1KBqEru
-	p3SgNQIPCzvA4wgIvu5i0NUXDDx9KTzrdN2krEoqgOvOsgIwzVvCprFxLaNxT78wBYzS0sN5WSImk
-	7vCcmMzCEtNdWyBAxF13ofw4aQA3AYJszM8RAg2Etn0Z6PCqt8nDuZJv3CroH5yLdv/G5QCf5NTLU
-	VtUbG944c/HTFJWPovt8uwRdAYvqFAEUmm8DbTXobLjHVsIid8p3qAN7Mfm8jm/HjkncYmzQKDt5f
-	6ygZzTZug==;
+	 bh=yklKxNxyjI3cvr9ztMQ/ieX+agpLxNB9407OpsDZTVU=; b=oHLavwAXppC/xXbauJkCeJBz6
+	PRwHglqSj83TcdMzjB7vt6qdWZkSyiYuQOE6++isfpSKBSe9pcDp8U1XgGvK0hML2T+C9sMqSZ2UA
+	3Jy2Zu0twwx5XGaQrtQMXRJTBNnULNOl9ALZuOlkJBrP8bEjij4dL71BadbALmItTqGICdbo9/zEH
+	g00yNOIXiDvjoKAILmh87iGrdzUDJo30IVMvPFdbQVPLgbVpBVyzRBezpYAYJi3yzWjgc2QAs7mOr
+	uQaXt6ENxC8bcOYoLeR/7w7ZFYeJY9Ir4CC3T5alXt+eu2Hkq0VMMPvHyLjPma1TXnRJOt5s8Fe8Q
+	cmwRZxOGA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kPiHa-0007dU-J9; Tue, 06 Oct 2020 08:25:14 +0000
-Received: from mail-wr1-x443.google.com ([2a00:1450:4864:20::443])
+	id 1kPj2D-0004Hu-Eq; Tue, 06 Oct 2020 09:13:25 +0000
+Received: from mail-ua1-x944.google.com ([2607:f8b0:4864:20::944])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kPiHX-0007c6-73
- for linux-mtd@lists.infradead.org; Tue, 06 Oct 2020 08:25:12 +0000
-Received: by mail-wr1-x443.google.com with SMTP id o5so12403750wrn.13
- for <linux-mtd@lists.infradead.org>; Tue, 06 Oct 2020 01:25:11 -0700 (PDT)
+ id 1kPj27-0004FK-8m
+ for linux-mtd@lists.infradead.org; Tue, 06 Oct 2020 09:13:22 +0000
+Received: by mail-ua1-x944.google.com with SMTP id j21so1646022uak.5
+ for <linux-mtd@lists.infradead.org>; Tue, 06 Oct 2020 02:13:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=YdhpNKlTW8M5AEVFobND3IcWnRcYsnTU1ylxUOoxLOQ=;
- b=qHporHfANLglN4o1QtjGAQRWNnN7asjRL3cjazvXjsHh09RfWeLWPhNLVvwSLhWTRD
- dq9W25RBebcUYOBXWtFq8Xg4Jpr5iwt1eXNmqsekvon7Xl48K0UpprSPFSz88KD7f3X5
- mVcgrKZ1Q+07rFYOZ6TaIw9SiDE9zLlxqZ10OzeIv3M1P2sRohlLAogcHVmvgwhtbxWh
- aDv0+4vxSuOdMGAP1BZwP0BlcnNmUE37U3q6XBhiOW2IywzQSNU0oPIf35dwBbDiZGem
- YyfEcoZuw1vq+eSTNb3BPCippk6TyfUXDjeg7Imo0qPxxzlaz4AKfZHvUV+rJldsOuzH
- 6yMA==
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=8dDgYnCSpFzq6wD68V8dBs1dGtEohkus4tfFLo0MV6k=;
+ b=mMV78gRfUiTX0Fhq7sbtPeAZE51FANqXe2ffb+yEjr5QoeawgMMwQ8XSrhilmLvHtx
+ sEQF9fUq5Cmu8qOzxjbqa7RQXLkqpoqkoe++HcWkcaLYHbckkwjq/ue7xT3XAD7Uwx43
+ V06RGxgjHInxMdw3DBkk+/9rjGYrV+FnbFAksujQ3/k0njBC0ztFm62WAFNts1zyT9yx
+ oCohLIW+tNgNLvhP4H4CyiMr4WGBCs1Zex5WjzDVN9v47A0drQeaNuCYVRG5QCA6OMto
+ TQSAPGix4TPbAEDvrfDxLrnk+h7EjMNps8LmL2KLypfVwnIUdvEC6slFmF9jTy6w85lq
+ wAsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=YdhpNKlTW8M5AEVFobND3IcWnRcYsnTU1ylxUOoxLOQ=;
- b=Q7J5gxfyKvGHKHLqx3OUx9cv96LH3AyUysc0FHOzlc8oDLwB+Y3wQNqdjKbgzYYOuV
- 4gLU8oCRFQHgo2Qxk27RSoMjnZXjRM8fdSWm7U7jhhDLEv31Am8bE3pRVwEVeRwxaW6I
- FuBIJPoQbzXwnCW7Oz2vhWs/NTiFk5fzrSTTUVuFG2vE6p0razb/WZxzvxR6jgiGZOaQ
- uHZC0MAQAo7Mo2rF9MA2IusQvbD8Qs7ZKssION3/FLQIde9g1+YVjPWr3ncqLaswbXs/
- du1Hd4MNp1IrHCZkbUYuP9CNUtyDfPfxkdwrSCAkH2l2C1DAyMp3mS75kMBlUojzNUgY
- VP8w==
-X-Gm-Message-State: AOAM531u4B9htuz51UougzcjK+UvLzR/Cd1kORAJnMYzovCMxchmgv5a
- bBBjgEgCvXqPO9Rj+ULJbBhFsg==
-X-Google-Smtp-Source: ABdhPJxsjuEumsaEtaU67N9vbg2cBftfsc/wZW21wnFzsv2BjeMFHC1JmQFLaFRJtrvHxARri2Z8Zg==
-X-Received: by 2002:a5d:6409:: with SMTP id z9mr120080wru.391.1601972710164;
- Tue, 06 Oct 2020 01:25:10 -0700 (PDT)
-Received: from [192.168.86.34]
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.googlemail.com with ESMTPSA id y11sm3353486wrs.16.2020.10.06.01.25.07
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 06 Oct 2020 01:25:09 -0700 (PDT)
-Subject: Re: [PATCH 0/4] dt-bindings: additional/unevaluatedProperties
- clean-ups
-To: Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20201005183830.486085-1-robh@kernel.org>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <d04c47dd-6e37-a7ac-f3c4-d6e6c308dbcd@linaro.org>
-Date: Tue, 6 Oct 2020 09:25:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=8dDgYnCSpFzq6wD68V8dBs1dGtEohkus4tfFLo0MV6k=;
+ b=ViQA0z7uJ6NbGtfQoFh0Pjn14rCnj1PmrK/WkOOG/jrUzyoiZeJSL+RMveL4AJOZte
+ dyrpi9ncWDpA8NMUs9ZpZ34Jr+7QdZ8fcRSh8HeXSP4mW3o/ptwEdzLDb9N05681Ual+
+ 8Xo+ca4KRwhHKtcT2UWRBNHSvNKwNy+hXCanYGE58mqS2jjvCTj3kz+nngDzvKVhMjW/
+ Wqsdz7Ym2S72l5N5r3ZYEmkNgaMaqhv6foYuxGWxWGlrbNNyEnwLYLze/d2V6K0yfjOS
+ yE2R65qrlKd3gIOfen77bsigwMnM0tITJqPn5Rc2/vXh235HCByEbZGEGDXJMUzYMTwX
+ 8CKA==
+X-Gm-Message-State: AOAM530chqWsLOAT9pxHTZN+XfylBuMF7ODUrGRq5RYq6S9d8LUOVvCt
+ Eq7htSixYRvFLaeVE1sfGTvZGVZo3fc1igbVUf+csA==
+X-Google-Smtp-Source: ABdhPJyShwqC7yW6UgNo8q98koC+vDiOR29TMFNqADEMu067y863m4dqGu1r37N7vNMGC6BIcV2u4BNvWr4WQc/Y4R4=
+X-Received: by 2002:ab0:130a:: with SMTP id g10mr2309765uae.100.1601975596602; 
+ Tue, 06 Oct 2020 02:13:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201005183830.486085-1-robh@kernel.org>
-Content-Language: en-US
+References: <20201005183830.486085-1-robh@kernel.org>
+ <20201005183830.486085-2-robh@kernel.org>
+In-Reply-To: <20201005183830.486085-2-robh@kernel.org>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Tue, 6 Oct 2020 11:12:39 +0200
+Message-ID: <CAPDyKFqMic9_3OBvSWrdrXonDjeC+8kjDobTunijxvL6gYDPjQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] dt-bindings: Add missing 'unevaluatedProperties'
+To: Rob Herring <robh@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201006_042511_366845_2845E686 
-X-CRM114-Status: GOOD (  19.43  )
+X-CRM114-CacheID: sfid-20201006_051319_389291_EF312BF6 
+X-CRM114-Status: GOOD (  19.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,75 +89,92 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
- linux-usb@vger.kernel.org, Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
- Sam Ravnborg <sam@ravnborg.org>, linux-pwm@vger.kernel.org,
- linux-iio@vger.kernel.org, Viresh Kumar <vireshk@kernel.org>,
- Linus Walleij <linus.walleij@linaro.org>, linux-pci@vger.kernel.org,
- dri-devel@lists.freedesktop.org, Sebastian Reichel <sre@kernel.org>,
- linux-ide@vger.kernel.org, Thierry Reding <thierry.reding@gmail.com>,
- linux-mtd@lists.infradead.org,
+Cc: Andrew Lunn <andrew@lunn.ch>, Linux USB List <linux-usb@vger.kernel.org>,
+ Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Sam Ravnborg <sam@ravnborg.org>,
+ linux-pwm@vger.kernel.org, linux-iio@vger.kernel.org,
+ Viresh Kumar <vireshk@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
+ Linux PCI <linux-pci@vger.kernel.org>,
+ dri-devel <dri-devel@lists.freedesktop.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-ide@vger.kernel.org,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
  Pavel Machek <pavel@ucw.cz>, Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-riscv@lists.infradead.org, Lee Jones <lee.jones@linaro.org>,
- linux-clk@vger.kernel.org, linux-leds@vger.kernel.org,
- Vignesh Raghavendra <vigneshr@ti.com>, linux-rtc@vger.kernel.org,
- Lars-Peter Clausen <lars@metafoo.de>, Marc Zyngier <maz@kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
+ linux-riscv@lists.infradead.org, linux-hwmon@vger.kernel.org,
+ Lee Jones <lee.jones@linaro.org>, linux-clk <linux-clk@vger.kernel.org>,
+ linux-leds@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-rtc@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+ Marc Zyngier <maz@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>,
  Krzysztof Kozlowski <krzk@kernel.org>, Chanwoo Choi <cw00.choi@samsung.com>,
  MyungJoo Ham <myungjoo.ham@samsung.com>, linux-serial@vger.kernel.org,
  linux-input@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
  Zhang Rui <rui.zhang@intel.com>, linux-mips@vger.kernel.org,
  Vivien Didelot <vivien.didelot@gmail.com>,
- Wolfgang Grandegger <wg@grandegger.com>, linux-media@vger.kernel.org,
- linux-hwmon@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
- Jason Cooper <jason@lakedaemon.net>, linux-pm@vger.kernel.org,
- linux-can@vger.kernel.org, linux-gpio@vger.kernel.org,
+ Wolfgang Grandegger <wg@grandegger.com>,
+ Linux Media Mailing List <linux-media@vger.kernel.org>,
+ DTML <devicetree@vger.kernel.org>, Albert Ou <aou@eecs.berkeley.edu>,
+ Jason Cooper <jason@lakedaemon.net>, Linux PM <linux-pm@vger.kernel.org>,
+ linux-can@vger.kernel.org,
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
  Mark Brown <broonie@kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>,
- Paul Walmsley <paul.walmsley@sifive.com>, Bjorn Helgaas <bhelgaas@google.com>,
- Thomas Gleixner <tglx@linutronix.de>,
+ Sebastian Reichel <sre@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>,
+ Bjorn Helgaas <bhelgaas@google.com>, Thomas Gleixner <tglx@linutronix.de>,
  Mauro Carvalho Chehab <mchehab@kernel.org>,
- linux-arm-kernel@lists.infradead.org, Jens Axboe <axboe@kernel.dk>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>, Jens Axboe <axboe@kernel.dk>,
  Alessandro Zummo <a.zummo@towertech.it>, linux-watchdog@vger.kernel.org,
  Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
  Mathieu Poirier <mathieu.poirier@linaro.org>, Stephen Boyd <sboyd@kernel.org>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-mmc@vger.kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>, linux-spi@vger.kernel.org,
- linux-i2c@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
- Palmer Dabbelt <palmer@dabbelt.com>, Wim Van Sebroeck <wim@linux-watchdog.org>,
- Richard Weinberger <richard@nod.at>, dmaengine@vger.kernel.org,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-spi@vger.kernel.org, linux-i2c@vger.kernel.org,
+ Vinod Koul <vkoul@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Wim Van Sebroeck <wim@linux-watchdog.org>, Richard Weinberger <richard@nod.at>,
+ dmaengine@vger.kernel.org, linux-mtd@lists.infradead.org,
  "David S. Miller" <davem@davemloft.net>, Jonathan Cameron <jic23@kernel.org>,
  Heiner Kallweit <hkallweit1@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Mon, 5 Oct 2020 at 20:38, Rob Herring <robh@kernel.org> wrote:
+>
+> This doesn't yet do anything in the tools, but make it explicit so we can
+> check either 'unevaluatedProperties' or 'additionalProperties' is present
+> in schemas.
+>
+> 'unevaluatedProperties' is appropriate when including another schema (via
+> '$ref') and all possible properties and/or child nodes are not
+> explicitly listed in the schema with the '$ref'.
+>
+> This is in preparation to add a meta-schema to check for missing
+> 'unevaluatedProperties' or 'additionalProperties'. This has been a
+> constant source of review issues.
+>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
 
+[...]
 
-On 05/10/2020 19:38, Rob Herring wrote:
-> The default behavior for json-schema is any unknown property is allowed.
-> T
-> 
-> hat is generally not the behavior we want for DT. In order to disallow
-> extra properties, schemas need to define 'additionalProperties: false'
-> typically. Ideally, we'd just add that automatically with the tools, but
-> there are some exceptions so only making things explicit everywhere
-> really works. Missing 'additionalProperties' or 'unevaluatedProperties'
-> has been a constant source of review comments, so a meta-schema check is
-> really needed here.
-> 
->   Documentation/devicetree/bindings/nvmem/nvmem.yaml     |  2 ++
->   .../devicetree/bindings/nvmem/qcom,qfprom.yaml         |  2 ++
+>  .../devicetree/bindings/mmc/amlogic,meson-mx-sdhc.yaml       | 2 ++
+>  Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml        | 2 ++
+>  Documentation/devicetree/bindings/mmc/ingenic,mmc.yaml       | 2 ++
+>  Documentation/devicetree/bindings/mmc/owl-mmc.yaml           | 2 ++
+>  Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml  | 2 ++
+>  Documentation/devicetree/bindings/mmc/sdhci-pxa.yaml         | 2 ++
+>  .../devicetree/bindings/mmc/socionext,uniphier-sd.yaml       | 2 ++
+>  Documentation/devicetree/bindings/mmc/synopsys-dw-mshc.yaml  | 2 ++
 
-for nvmem parts,
+For mmc:
 
-Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
 
+[...]
 
-thanks,
---srini
+Kind regards
+Uffe
 
 ______________________________________________________
 Linux MTD discussion mailing list
