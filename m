@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-4.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88D08C46466
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2020 06:59:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D0006C41604
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2020 06:59:55 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 23E4020796
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2020 06:59:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7285620760
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2020 06:59:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uJn2C0KC";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jn2dIC4K"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 23E4020796
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GZSTO5Jl";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JxVBGe9v"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7285620760
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,66 +26,66 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Z+hssd62x1geMx6E0+EA8VCoaJ/WLd8NEDWGerzwVaE=; b=uJn2C0KCTTv4Fg6uAOpzUdpF1
-	LK8V9m17vCGuxAieW+C5sbIXrFqIITYKZ4l2sjNbRSexRzv8YJQlz16kmsU5KgwHwpxlWds0e9aGZ
-	SXy6iYacadoG492xASp2oF2FPPGWZ2eDT/saufwE1rRRZV2urU3PRqpBYKsvB2ZzevtTJ5I4uqa7l
-	E2gK7IhHtIISpJGTeCh7cxlMkHdLBhWgKpzJ2h+yVBAPDnitOlv0nQcOPoAo11TcMVmvVV4rl1Czi
-	n6DMfk2VbuHPOhe3T2Rpy9uDgrxAXnpTLpf8RsnU0/euCgPVx5G/0AbSM+zem1wG40kdWKQh1Zgdl
-	lQ/ChKQOA==;
+	 bh=RN7+cecI6WZqzaiAeCNe+bYcd+0zlx8kmlp9GiNKUZc=; b=GZSTO5Jl+Q+jvDCtbbH81tdWV
+	HJWbNLeYWJtepG3mNXWQrrEYruym25kStPvEqgW71HeoQcpnJUwfxW+Ff0cp6O8TCLemta8MJyISw
+	aJPv7e58C8e4Geb3mjIvFtosHRnaS+qBDqiTVv4Bpq6qLxpYqwzvqMvA4t6jYuwZ/nmahgijKbcYp
+	i2HUvrbRXU6gAD6H9S29paeyYm2BryGMQ7I5OcqREWUentvyQYOvTOWZxZ0qWNzK906+5AE9BcqRC
+	0ckkSxV6TqWxrSUC5dEY54CUVPPsdOf58lnCM18OpPfqCB59g8TPZYh1Mg5k1ZJ1VgKVTYpZ6B3by
+	rHN4WUcxA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kPgvf-0003Af-As; Tue, 06 Oct 2020 06:58:31 +0000
-Received: from mail-wm1-x342.google.com ([2a00:1450:4864:20::342])
+	id 1kPgwX-0003Kn-NZ; Tue, 06 Oct 2020 06:59:25 +0000
+Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kPgvc-00039e-6q
- for linux-mtd@lists.infradead.org; Tue, 06 Oct 2020 06:58:29 +0000
-Received: by mail-wm1-x342.google.com with SMTP id 13so1764628wmf.0
- for <linux-mtd@lists.infradead.org>; Mon, 05 Oct 2020 23:58:27 -0700 (PDT)
+ id 1kPgwV-0003JK-4T
+ for linux-mtd@lists.infradead.org; Tue, 06 Oct 2020 06:59:24 +0000
+Received: by mail-wr1-x444.google.com with SMTP id o5so12131881wrn.13
+ for <linux-mtd@lists.infradead.org>; Mon, 05 Oct 2020 23:59:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=date:from:to:cc:subject:message-id:references:mime-version
  :content-disposition:content-transfer-encoding:in-reply-to;
- bh=hye8oZPllXv0LLz+UWG2B82nJ6IN2QnHfKrsEX8XCOU=;
- b=jn2dIC4KneJcMCE5DY3o93rmWgdTmK7NJWwKNWGocC7HbxwqveIdxS9nVru8ryq+P9
- s4//ef94qJ6Y8ujWnpglPZlIlD6sJ33blfTKKcaCdwJolql9IFEUfzJMHCTe1JnaG8Iw
- b+YeHxV9DI6DSD3tgOAF3IaWem5VxRfAN0ODuGo/qw2A8ReI6qDWtdlFFibEvRuFiEoQ
- dhilbFbgvuG8V67ydtdAffL1xmKMRbv76Ctys34uqkoMVb3gFX2RETn3H/bHFtSxghuV
- ji7JhUukKOJOEajfS3LrzYX2Rf2L6FpU2JZ9jHfMZk5oQaZMZKMZfy/k1RR5/u729NJu
- K0HA==
+ bh=CJt8sMvkLfzd8pVfQzeKwrD9wQt2ezco6HzjCXU2Seg=;
+ b=JxVBGe9v20fI1rWZ+LblFSymah+5lDcEzko2dpzuxH2sV76ZNSZuJMvGzdxBOU4EEE
+ 016bYoBGw9BoWO2uYbYpJh2Spqfe+txcbLLwj0dDMlR/N5yVsSaJVMqeu9en2rycu/TT
+ n1jnC4KuJCiEYEIdFvD/egT0iBvuzR0aC8sGAuxTCPbkVANitwk76rko2yla+Dj7q7e8
+ sZCK0Cx3psrp4tVRMioIbzifJSWNfJENU2wQrZHVs830d0ZwDclsCeY3DZLdaTt0c5D8
+ BR0YmsLI9C2kzSZ+GpT1D4lBMiJpvLvJ21dr2n2+YN+vRiNGtA+lOfa8qajAa2TyKNwy
+ 4j1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:content-transfer-encoding
  :in-reply-to;
- bh=hye8oZPllXv0LLz+UWG2B82nJ6IN2QnHfKrsEX8XCOU=;
- b=Ao3d/tmH3u1Tb9lElq1PYF4wVSxcki7ukipQ5OnEcvG5B2Rmw4AUyZHxjwBZgDhZaq
- Zb3nRjEOqxpsZDCE05U/I92+pRb+zhavKUOJgwGJ7oBq0r4dal1YZNtvr8QRmZYaSzF0
- t2BpOJpKWRBK8Xze3/ij4G6ewUKe+NZXG5Ez0zDzleskr8eVRaAOEmDpoc7U6IdS0wT2
- tOMbS9p80ZQ+LTYVhdqiHwU5hDLCV9hM8Naw1QSsxs8XEsWPzXgPId4zIiibs7lyWzEK
- wdCXBbUsj2lPFaUP4EWra4zDm4gUk9sRSYlfDyNOjQeE7XNJYkOyPu4pdpUK41EZqlm6
- SFeQ==
-X-Gm-Message-State: AOAM530KT2WGWdV2jzrWzaATcDLfGeO4ES+NTy2g612zeNTLB9k/A+Xi
- t7VfKlhlv5CQe16RqQXLIiTLww==
-X-Google-Smtp-Source: ABdhPJxsvKtzCqkv4fxGZg3y/AIgf4rU1S8D4EatsKLRXGnqjE4r6Ftdz8iBdl2gfcmAi+GG7YDezw==
-X-Received: by 2002:a1c:2cc2:: with SMTP id s185mr3211564wms.77.1601967506851; 
- Mon, 05 Oct 2020 23:58:26 -0700 (PDT)
+ bh=CJt8sMvkLfzd8pVfQzeKwrD9wQt2ezco6HzjCXU2Seg=;
+ b=ROSuV/DkprKGbW+h1Wp/gXkWfp0u1XSa7XApDG4GoB0ccrRsM1qMiikk0JXCeOFOcA
+ x9I2dgFyfVL//vh+5GIwfkssPTKIO/xSFLHCswA73YmSVYvkQSid0W9sohpJbeWqknhV
+ SXl3p3507p+LdAL8EyDwRij8/6QJHUa5m/oCXKHWXykVgwJ4n/JIEu5xfuLqDrHFJiMA
+ nbdZr9SXylVExnC+G0RIFwq6+HYBOyOjUZLB7IPpu9K4mKj5qHfKaL0dBf//AS8J9XVD
+ Ltb7SminnKPXVMsMKmHd5wtbgTc58atZ8VH7ZrwJ8to9Dn0s93IK4SNKVWAKcKUMrLDD
+ EFfA==
+X-Gm-Message-State: AOAM533wpA3L9LYCMIiGC4MPQp6B+7mFdIJqBsT08L71qqQ51jGdl1Cr
+ sTmr4VlBPdAQyg2oUjCDft9uMA==
+X-Google-Smtp-Source: ABdhPJw9aVlQCFJI6s9KKSTQz6LD1w2/gTI0uxeBSfs6H68t2v5l2G/j/zLB0TtAX8AL+VsxEknjwQ==
+X-Received: by 2002:adf:eac6:: with SMTP id o6mr3347103wrn.117.1601967562086; 
+ Mon, 05 Oct 2020 23:59:22 -0700 (PDT)
 Received: from dell ([91.110.221.236])
- by smtp.gmail.com with ESMTPSA id u12sm3158245wrt.81.2020.10.05.23.58.23
+ by smtp.gmail.com with ESMTPSA id m3sm2805162wrs.83.2020.10.05.23.59.19
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 05 Oct 2020 23:58:26 -0700 (PDT)
-Date: Tue, 6 Oct 2020 07:58:20 +0100
+ Mon, 05 Oct 2020 23:59:21 -0700 (PDT)
+Date: Tue, 6 Oct 2020 07:59:18 +0100
 From: Lee Jones <lee.jones@linaro.org>
 To: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 4/4] dt-bindings: Explicitly allow additional properties
- in common schemas
-Message-ID: <20201006065820.GY6148@dell>
+Subject: Re: [PATCH 2/4] dt-bindings: Use 'additionalProperties' instead of
+ 'unevaluatedProperties'
+Message-ID: <20201006065918.GZ6148@dell>
 References: <20201005183830.486085-1-robh@kernel.org>
- <20201005183830.486085-5-robh@kernel.org>
+ <20201005183830.486085-3-robh@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20201005183830.486085-5-robh@kernel.org>
+In-Reply-To: <20201005183830.486085-3-robh@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201006_025828_302813_7445A46B 
-X-CRM114-Status: GOOD (  13.90  )
+X-CRM114-CacheID: sfid-20201006_025923_232656_1BCE8491 
+X-CRM114-Status: GOOD (  15.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -142,15 +142,18 @@ Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gTW9uLCAwNSBPY3QgMjAyMCwgUm9iIEhlcnJpbmcgd3JvdGU6Cgo+IEluIG9yZGVyIHRvIGFk
-ZCBtZXRhLXNjaGVtYSBjaGVja3MgZm9yIGFkZGl0aW9uYWwvdW5ldmFsdWF0ZWRQcm9wZXJ0aWVz
-Cj4gYmVpbmcgcHJlc2VudCwgYWxsIHNjaGVtYSBuZWVkIHRvIG1ha2UgdGhpcyBleHBsaWNpdC4g
-QXMgY29tbW9uL3NoYXJlZAo+IHNjaGVtYSBhcmUgaW5jbHVkZWQgYnkgb3RoZXIgc2NoZW1hcywg
-dGhleSBzaG91bGQgYWx3YXlzIGFsbG93IGZvcgo+IGFkZGl0aW9uYWxQcm9wZXJ0aWVzLgoKQWNr
-ZWQtYnk6IExlZSBKb25lcyA8bGVlLmpvbmVzQGxpbmFyby5vcmc+CgotLSAKTGVlIEpvbmVzIFvm
-nY7nkLzmlq9dClNlbmlvciBUZWNobmljYWwgTGVhZCAtIERldmVsb3BlciBTZXJ2aWNlcwpMaW5h
-cm8ub3JnIOKUgiBPcGVuIHNvdXJjZSBzb2Z0d2FyZSBmb3IgQXJtIFNvQ3MKRm9sbG93IExpbmFy
-bzogRmFjZWJvb2sgfCBUd2l0dGVyIHwgQmxvZwoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcg
-bGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10
-ZC8K
+T24gTW9uLCAwNSBPY3QgMjAyMCwgUm9iIEhlcnJpbmcgd3JvdGU6Cgo+IEluIGNhc2VzIHdoZXJl
+IHdlIGRvbid0IHJlZmVyZW5jZSBhbm90aGVyIHNjaGVtYSwgJ2FkZGl0aW9uYWxQcm9wZXJ0aWVz
+Jwo+IGNhbiBiZSB1c2VkIGluc3RlYWQuIFRoaXMgaXMgcHJlZmVycmVkIGZvciBub3cgYXMgJ3Vu
+ZXZhbHVhdGVkUHJvcGVydGllcycKPiBzdXBwb3J0IGlzbid0IGltcGxlbWVudGVkIHlldC4KPiAK
+PiBJbiBhIGZldyBjYXNlcywgdGhpcyBtZWFucyBhZGRpbmcgc29tZSBtaXNzaW5nIHByb3BlcnR5
+IGRlZmluaXRpb25zIG9mCj4gd2hpY2ggbW9zdCBhcmUgZm9yIFNQSSBidXMgcHJvcGVydGllcy4g
+J3VuZXZhbHVhdGVkUHJvcGVydGllcycgaXMgbm90IGdvaW5nCj4gdG8gd29yayBmb3IgdGhlIFNQ
+SSBidXMgcHJvcGVydGllcyBhbnl3YXlzIGFzIHRoZXkgYXJlIGV2YWx1YXRlZCBmcm9tIHRoZQo+
+IHBhcmVudCBub2RlLCBub3QgdGhlIFNQSSBjaGlsZCBub2RlLgoKQWNrZWQtYnk6IExlZSBKb25l
+cyA8bGVlLmpvbmVzQGxpbmFyby5vcmc+CgotLSAKTGVlIEpvbmVzIFvmnY7nkLzmlq9dClNlbmlv
+ciBUZWNobmljYWwgTGVhZCAtIERldmVsb3BlciBTZXJ2aWNlcwpMaW5hcm8ub3JnIOKUgiBPcGVu
+IHNvdXJjZSBzb2Z0d2FyZSBmb3IgQXJtIFNvQ3MKRm9sbG93IExpbmFybzogRmFjZWJvb2sgfCBU
+d2l0dGVyIHwgQmxvZwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlz
+dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
