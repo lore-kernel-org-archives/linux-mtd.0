@@ -2,58 +2,147 @@ Return-Path: <SRS0=AJHc=DO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05CA1C4363C
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Oct 2020 08:38:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78327C4363C
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Oct 2020 08:50:05 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 14AC620797
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Oct 2020 08:38:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B87D521D7A
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Oct 2020 08:50:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ujY4GrB9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14AC620797
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eP+UbnVh";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="Itj+GQ7f";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="odOU4Q7A"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B87D521D7A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=CLiafw08DwCaa/dq2Nz5W8yzXv+VBfxD6a0Vp51NByQ=; b=ujY4GrB9xpbCk1Y0ZCxG+jyAW
-	tVozP8xEI/COe/+wzsQHOPYGxSVkYkf96AvmM6hsso/iMFlakAXdCp7JLzEm5b4ADSAKWq30d8bca
-	wQx4YCsE6DRzGI2wTBGtQZ1nb4FLW0WQRvEnLCzzGKoGCcHVjD3FGoK1MeeotcqXEreP5xNAzAMRa
-	KeFPFop8TgssJZpIhC5FKERD++hb7WxldZKKZP/k6qj4G3KEnePruOC464od0nN745INPl1iVbUgW
-	iMyVtBoe8MzGpMOqhwB5QdtnhiPP3PDZKeI+G9KT6qvb1/u7ENjMk6WiY/8F38VjHqnqVwsvPCk4W
-	gqz7Fo2SQ==;
+	 bh=SZQckxUMOfhrmCoSwwNIJV3N1I87TJqMAem5EaJi+Ho=; b=eP+UbnVhGANbde8FlZX8cf3BK
+	zzDxzH1Q0tnjryVL5cwylrrq2Qs+w4YPDPQtboAccnxHjJXJkAdjFz5nbCw3Z91SXkICujB0m0+90
+	7QhijQAsNlW8z2MT3vS9ggo1hG+fsk+SwePpVEGqG0mzfr76q4iVdt9et6hxSBBgDuv5MNz/fyoNT
+	mrmP074KdU8DI3kZUfbzkGAmWQYzrFCJWbdrU1+r7xHb50uM/D34kj7ct65AkMojGHtV7nEbTlMYb
+	N9IqycstZVTacwvb6xIxo3j/0+XtgZfVrwAsQlSDxj3UdmQ/dNRzeojDvKAXZErMEOe5lvx118Sgs
+	60Id0pq0g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kQ4ww-0004J9-RL; Wed, 07 Oct 2020 08:37:26 +0000
-Received: from verein.lst.de ([213.95.11.211])
+	id 1kQ58E-0007mI-Ay; Wed, 07 Oct 2020 08:49:06 +0000
+Received: from esa1.microchip.iphmx.com ([68.232.147.91])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kQ4wr-0004HH-Kz
- for linux-mtd@lists.infradead.org; Wed, 07 Oct 2020 08:37:24 +0000
-Received: by verein.lst.de (Postfix, from userid 2407)
- id 364336736F; Wed,  7 Oct 2020 10:37:16 +0200 (CEST)
-Date: Wed, 7 Oct 2020 10:37:15 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: Kees Cook <keescook@chromium.org>
-Subject: Re: use case for register_pstore_blk?
-Message-ID: <20201007083715.GA15695@lst.de>
-References: <20201006155220.GA11668@lst.de> <202010070007.8FF59EC42@keescook>
- <20201007075537.GA12531@lst.de>
+ id 1kQ58B-0007kb-DM
+ for linux-mtd@lists.infradead.org; Wed, 07 Oct 2020 08:49:04 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1602060543; x=1633596543;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=DhE+3rR02b6KzfMf2ZTiSgLoY/6hg+L+vnMGM8B1A5Y=;
+ b=Itj+GQ7f8To6aQUmntF67h4Xf7BodeLP2UM4pHoEGdIYgOUXReqPslKN
+ O1un5gcKvSVJU+PXgUnxP/DSutbI6hkcpmvzB0BUm5zhd0+b23SwyYxcw
+ PvAa5RxXSjKpRVjzP/lwHV2S+cFYa9CV9lIknTkhCrzs6cVudMdS4EQns
+ kZdp/lS1Ga7ljKWknHCGxt39srNDT/fsZOkGv8pmFLM8LJ8/RPjtwmt/P
+ G9m1QqOo0kWQnG/RVQd4nCuibK3lTVtYvRjOxbFWPyaLfXucaiTiV6wmt
+ eq7jf0T4GPSoTLFgBMeRS/WA2kVhmlFCjjU/L2tXMcEMpiLR+RytXrV/z g==;
+IronPort-SDR: d7aWoCLj+oj021gI54dTZp/YmK/i8FPa/aPTxEThpkNQfLQ2n8WWXCYhcLx3rMY54UmAlyytdp
+ Kb1D/NHPjSlu0q/fc8x1TyzDo3IM3ssX3dPYuTecN3qeXbctT4TAJxhfJXsJco04sZp8sGVeN8
+ SmAeij8ad9g9YAsFEzh5o5dO8diJv5EALR5UYJVfEK8mj4sgQ3+7Mv/aHJOOjvCRm/r/CJsm0R
+ XIE5eM8zXZD/xd9Bwg1Ey4BLefs+2bRrL59IP58zCofIY2LtBkwv2QIrCzx1SyS1pXrVIGguwj
+ OWs=
+X-IronPort-AV: E=Sophos;i="5.77,346,1596524400"; d="scan'208";a="98581730"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 07 Oct 2020 01:48:46 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 7 Oct 2020 01:48:29 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.71) with Microsoft SMTP Server
+ (version=TLS1_2, 
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
+ Transport; Wed, 7 Oct 2020 01:48:29 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XiXYD+lQbsaC/5j3XY7MsA8jo2ta/FE89RSj1qPMNMKUeg7DdAIq0TKvj1pcWYzonUsRt7RqKlj8nbNNZA0pCrPaLYbz7ZGDWUIPVDAZdzMSDvI0vShv98nWfzWO4CefDC/WP4aIU/XiE5iKgxRmFn5LVd5xyZDqeE3Gi2YMMMxosrvxl1JY2H/r3l5QGf3vV76EPPV+kY/sgt5sZvlrN/FowQueAKckwUnLtw8+mOE03V2277S+u5+XrhlN9PWwhnVHMyi/g9rMXdo32LtVh6UEMfd1Z+QyDLyjunFzLdnp2o+OYjHiMBzZtVv3BO5nX713h9YWU+TFcMWI36LweA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DhE+3rR02b6KzfMf2ZTiSgLoY/6hg+L+vnMGM8B1A5Y=;
+ b=Unj5GP/db6zG99fOchCKNSQHBwnfuAKZD9d6x4yFWavuTMnCMbNYXWCqLh1cKzBnY7nNX2hxzH5b6aZG2EJXlS6gUw4XDXJ60S2FCGpdITMXUePsll429sFzkeQdgPyxdSexnA6hV2wNUkjNgXRkdPvLJer9qIvpkvVKDCmj12YImRaTonuszP15soBIzPmt9wLOpg4rxOU4CtB146rD9iRWCfJnj+FpktEIUMXJJAEOZGEKSd0t/L5LwMHi/K8g+sD/WcLQlnfsovo5ydmq9/HZgFkSS1mohUeyusq8yE81FQeMp58mibpQ8J9mpyyKMMCibBO2fx/Itrgmf44UPw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DhE+3rR02b6KzfMf2ZTiSgLoY/6hg+L+vnMGM8B1A5Y=;
+ b=odOU4Q7AYA+tFGw1PTWg4bDF+8DwSMXYl20D5hyHApj2IIzIqFn8m/rDcagY6MRSe7n66roUNYkkcEoISp/D9o8TRViZKQudrExdRXsnim0WvPyJUMnUkKzHwybnQeeUu6uG070QBZ6LqcVwq9LaDWiXYtCAnB493RT3bieW0Bo=
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
+ by SN6PR11MB2574.namprd11.prod.outlook.com (2603:10b6:805:59::14)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21; Wed, 7 Oct
+ 2020 08:48:45 +0000
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::7c1b:6212:7f1e:5c6f]) by SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::7c1b:6212:7f1e:5c6f%3]) with mapi id 15.20.3455.021; Wed, 7 Oct 2020
+ 08:48:44 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <alexander.sverdlin@nokia.com>, <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] mtd: spi-nor: Don't copy self-pointing struct around
+Thread-Topic: [PATCH] mtd: spi-nor: Don't copy self-pointing struct around
+Thread-Index: AQHWnIapYR7N4KU+CU6dtI266TT3Dg==
+Date: Wed, 7 Oct 2020 08:48:44 +0000
+Message-ID: <f815c4e5-eabe-af3d-efb6-87000f5ba411@microchip.com>
+References: <20201005084803.23460-1-alexander.sverdlin@nokia.com>
+In-Reply-To: <20201005084803.23460-1-alexander.sverdlin@nokia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: nokia.com; dkim=none (message not signed)
+ header.d=none;nokia.com; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [79.115.63.137]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f1282a35-fec6-4ba2-4c13-08d86a9dcca6
+x-ms-traffictypediagnostic: SN6PR11MB2574:
+x-microsoft-antispam-prvs: <SN6PR11MB25749541B84536123DC54115F00A0@SN6PR11MB2574.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:3173;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: X/lm+uyEOnwvcKfSFmJMwLjCJq331PEtNiNa3dHmeJteQMJCH0hLApyAOXcultLDIwzKpvk/ov/qrMarfDj2tEILmOe3JWhBTBBdaxdnbfj63hrgVvsScM6xJlQI7rVOciCLCHoUzIFEPMltz9CcasyxH98+5TNKcO4Jp0PE0yx1H6+iFNPYnQF2og1CeGvBOEeT6ACjg3D+rjuCMQyEj146dJ37/k0qFOTkhX3ppmKheO00r3aUqNkSCcUCNYC4Qwmcedb0xMb2SLtpIzucTaR88sCSuSKf8reWWPuJlrKknoLgtekPgV9A02Kb4NYgDmoChJg+fvzXynZ1wX4tgAYej+VUVhwPTFmXTu7rCPOSxTIv1qfAMHMB2Q/hLxsC
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:SA2PR11MB4874.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(136003)(396003)(346002)(39860400002)(366004)(376002)(478600001)(8676002)(31686004)(2616005)(26005)(71200400001)(2906002)(31696002)(36756003)(6486002)(86362001)(6512007)(76116006)(110136005)(66446008)(6506007)(8936002)(4326008)(186003)(83380400001)(296002)(316002)(66556008)(66476007)(66946007)(53546011)(5660300002)(64756008)(54906003)(43740500002);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata: TAH9ClBN6iNAljqm44iXtpgoXT9DkIeiKGYdLXA0MIsZDoFLb036BQyLvCAR44BtPxmeQ1a0K5e77jXrzRMP7gQNIzLGUHy79o2PQVLuA/cT3/FeqB3i2XU5uEBRkgUm9Zc6UhKZqA4lCbYSfC04RTP8iqCongDWXuITrAtlzLZsvHmnhdPBf6Upc4fP2RHL3uVeI+KDPQZOWAuddelYjxk6m8PPK5Xby2SRxoj9eOgyE1kUW8SWOODITk6oZq+HxmolxndTXOHALx+/bzVvOG8i/5AMFkE0H3adPoJcKMn1S0TwopCkATYWUy48pukRfKTwMKR18iaWeHOyXvdqlDuJNMNKeis+9zo+FyV+YrTqVPCB7t98ButFoUc2akjlylunhDJLDAIAB9no+TVbmw8iyOR7DjNgaKSQRnnSbAE3AoOdkQma78GjSTmzIVGvNBr2KUV0akJulVmBRS+OkO5XyNnnPfJTBWTwpneHgd6NM1L1Sh+8YTc3axug9QReiqA1J+TzwTIOMNo11Y/UAUJY0lvvZiL3dQ+hebUSUnjpdV0TN6KtdkA3vsFEvtsYnP8mNtz6ScR35/VfNJI9djyun0T+hx/xHEseOfhPCNE2l97BY0AB7beFyom4kjXc6ho+xjpCJRlYOK9bUzvqGQ==
+x-ms-exchange-transport-forked: True
+Content-ID: <8A46B7CC5A4696459646E5C20AF17174@namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20201007075537.GA12531@lst.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f1282a35-fec6-4ba2-4c13-08d86a9dcca6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Oct 2020 08:48:44.5460 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 5JmrlP90QFEWylxhfVlmzZMkzzyjui8eHOvrdKl9F92rNgMFg6uIRMVM3WvYnR9WG8rJkNBkKgntzs/xOlt7rnxPViQoW+Puz4KOSjxKjMU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB2574
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201007_043722_028198_DB1777B0 
-X-CRM114-Status: GOOD (  32.98  )
+X-CRM114-CacheID: sfid-20201007_044903_796291_27F0420E 
+X-CRM114-Status: GOOD (  20.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -65,1417 +154,98 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Christoph Hellwig <hch@lst.de>,
- WeiXiong Liao <gmpy.liaowx@gmail.com>
+Cc: vigneshr@ti.com, richard@nod.at, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, matija.glavinic-pecotic.ext@nokia.com,
+ miquel.raynal@bootlin.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Looking at this more:  in addition to the block code being totally
-broken, there is really no point in mtdpstore even using this code.
-It does nothing but minimal parameter validation to just pass it
-on to the pstore zone interface.  IMHO writing the mtd code directly
-to the zone interface makes a whole lot more sense even if we grow
-a non-broken block backend at some point.  Something like this:
+On 10/5/20 11:48 AM, Alexander A Sverdlin wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> 
+> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+> 
+> spi_nor_parse_sfdp() modifies the passed structure so that it points to
+> itself (params.erase_map.regions to params.erase_map.uniform_region). This
+> makes it impossible to copy the local struct anywhere else.
+> 
+> Therefore only use memcpy() in backup-restore scenario. The bug may show up
+> like below:
+> 
+> BUG: unable to handle page fault for address: ffffc90000b377f8
+> Oops: 0000 [#1] PREEMPT SMP NOPTI
+> CPU: 4 PID: 3500 Comm: flashcp Tainted: G           O      5.4.53-... #1
+> ...
+> RIP: 0010:spi_nor_erase+0x8e/0x5c0
+> Code: 64 24 18 89 db 4d 8b b5 d0 04 00 00 4c 89 64 24 18 4c 89 64 24 20 eb 12 a8 10 0f 85 59 02 00 00 49 83 c6 10 0f 84 4f 02 00 00 <49> 8b 06 48 89 c2 48 83 e2 c0 48 89 d1 49 03 4e 08 48 39 cb 73 d8
+> RSP: 0018:ffffc9000217fc48 EFLAGS: 00010206
+> RAX: 0000000000740000 RBX: 0000000000000000 RCX: 0000000000740000
+> RDX: ffff8884550c9980 RSI: ffff88844f9c0bc0 RDI: ffff88844ede7bb8
+> RBP: 0000000000740000 R08: ffffffff815bfbe0 R09: ffff88844f9c0bc0
+> R10: 0000000000000000 R11: 0000000000000000 R12: ffffc9000217fc60
+> R13: ffff88844ede7818 R14: ffffc90000b377f8 R15: 0000000000000000
+> FS:  00007f4699780500(0000) GS:ffff88846ff00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: ffffc90000b377f8 CR3: 00000004538ee000 CR4: 0000000000340fe0
+> Call Trace:
+>  part_erase+0x27/0x50
+>  mtdchar_ioctl+0x831/0xba0
+>  ? filemap_map_pages+0x186/0x3d0
+>  ? do_filp_open+0xad/0x110
+>  ? _copy_to_user+0x22/0x30
+>  ? cp_new_stat+0x150/0x180
+>  mtdchar_unlocked_ioctl+0x2a/0x40
+>  do_vfs_ioctl+0xa0/0x630
+>  ? __do_sys_newfstat+0x3c/0x60
+>  ksys_ioctl+0x70/0x80
+>  __x64_sys_ioctl+0x16/0x20
+>  do_syscall_64+0x6a/0x200
+>  ? prepare_exit_to_usermode+0x50/0xd0
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x7f46996b6817
+> 
+> Fixes: 1c1d8d98e1c7 ("mtd: spi-nor: Split spi_nor_init_params()")
 
-diff --git a/Documentation/admin-guide/pstore-blk.rst b/Documentation/admin-guide/pstore-blk.rst
-deleted file mode 100644
-index 296d5027787ac2..00000000000000
---- a/Documentation/admin-guide/pstore-blk.rst
-+++ /dev/null
-@@ -1,243 +0,0 @@
--.. SPDX-License-Identifier: GPL-2.0
--
--pstore block oops/panic logger
--==============================
--
--Introduction
--------------
--
--pstore block (pstore/blk) is an oops/panic logger that writes its logs to a
--block device and non-block device before the system crashes. You can get
--these log files by mounting pstore filesystem like::
--
--    mount -t pstore pstore /sys/fs/pstore
--
--
--pstore block concepts
-----------------------
--
--pstore/blk provides efficient configuration method for pstore/blk, which
--divides all configurations into two parts, configurations for user and
--configurations for driver.
--
--Configurations for user determine how pstore/blk works, such as pmsg_size,
--kmsg_size and so on. All of them support both Kconfig and module parameters,
--but module parameters have priority over Kconfig.
--
--Configurations for driver are all about block device and non-block device,
--such as total_size of block device and read/write operations.
--
--Configurations for user
-------------------------
--
--All of these configurations support both Kconfig and module parameters, but
--module parameters have priority over Kconfig.
--
--Here is an example for module parameters::
--
--        pstore_blk.blkdev=179:7 pstore_blk.kmsg_size=64
--
--The detail of each configurations may be of interest to you.
--
--blkdev
--~~~~~~
--
--The block device to use. Most of the time, it is a partition of block device.
--It's required for pstore/blk. It is also used for MTD device.
--
--It accepts the following variants for block device:
--
--1. <hex_major><hex_minor> device number in hexadecimal represents itself; no
--   leading 0x, for example b302.
--#. /dev/<disk_name> represents the device number of disk
--#. /dev/<disk_name><decimal> represents the device number of partition - device
--   number of disk plus the partition number
--#. /dev/<disk_name>p<decimal> - same as the above; this form is used when disk
--   name of partitioned disk ends with a digit.
--#. PARTUUID=00112233-4455-6677-8899-AABBCCDDEEFF represents the unique id of
--   a partition if the partition table provides it. The UUID may be either an
--   EFI/GPT UUID, or refer to an MSDOS partition using the format SSSSSSSS-PP,
--   where SSSSSSSS is a zero-filled hex representation of the 32-bit
--   "NT disk signature", and PP is a zero-filled hex representation of the
--   1-based partition number.
--#. PARTUUID=<UUID>/PARTNROFF=<int> to select a partition in relation to a
--   partition with a known unique id.
--#. <major>:<minor> major and minor number of the device separated by a colon.
--
--It accepts the following variants for MTD device:
--
--1. <device name> MTD device name. "pstore" is recommended.
--#. <device number> MTD device number.
--
--kmsg_size
--~~~~~~~~~
--
--The chunk size in KB for oops/panic front-end. It **MUST** be a multiple of 4.
--It's optional if you do not care oops/panic log.
--
--There are multiple chunks for oops/panic front-end depending on the remaining
--space except other pstore front-ends.
--
--pstore/blk will log to oops/panic chunks one by one, and always overwrite the
--oldest chunk if there is no more free chunk.
--
--pmsg_size
--~~~~~~~~~
--
--The chunk size in KB for pmsg front-end. It **MUST** be a multiple of 4.
--It's optional if you do not care pmsg log.
--
--Unlike oops/panic front-end, there is only one chunk for pmsg front-end.
--
--Pmsg is a user space accessible pstore object. Writes to */dev/pmsg0* are
--appended to the chunk. On reboot the contents are available in
--*/sys/fs/pstore/pmsg-pstore-blk-0*.
--
--console_size
--~~~~~~~~~~~~
--
--The chunk size in KB for console front-end.  It **MUST** be a multiple of 4.
--It's optional if you do not care console log.
--
--Similar to pmsg front-end, there is only one chunk for console front-end.
--
--All log of console will be appended to the chunk. On reboot the contents are
--available in */sys/fs/pstore/console-pstore-blk-0*.
--
--ftrace_size
--~~~~~~~~~~~
--
--The chunk size in KB for ftrace front-end. It **MUST** be a multiple of 4.
--It's optional if you do not care console log.
--
--Similar to oops front-end, there are multiple chunks for ftrace front-end
--depending on the count of cpu processors. Each chunk size is equal to
--ftrace_size / processors_count.
--
--All log of ftrace will be appended to the chunk. On reboot the contents are
--combined and available in */sys/fs/pstore/ftrace-pstore-blk-0*.
--
--Persistent function tracing might be useful for debugging software or hardware
--related hangs. Here is an example of usage::
--
-- # mount -t pstore pstore /sys/fs/pstore
-- # mount -t debugfs debugfs /sys/kernel/debug/
-- # echo 1 > /sys/kernel/debug/pstore/record_ftrace
-- # reboot -f
-- [...]
-- # mount -t pstore pstore /sys/fs/pstore
-- # tail /sys/fs/pstore/ftrace-pstore-blk-0
-- CPU:0 ts:5914676 c0063828  c0063b94  call_cpuidle <- cpu_startup_entry+0x1b8/0x1e0
-- CPU:0 ts:5914678 c039ecdc  c006385c  cpuidle_enter_state <- call_cpuidle+0x44/0x48
-- CPU:0 ts:5914680 c039e9a0  c039ecf0  cpuidle_enter_freeze <- cpuidle_enter_state+0x304/0x314
-- CPU:0 ts:5914681 c0063870  c039ea30  sched_idle_set_state <- cpuidle_enter_state+0x44/0x314
-- CPU:1 ts:5916720 c0160f59  c015ee04  kernfs_unmap_bin_file <- __kernfs_remove+0x140/0x204
-- CPU:1 ts:5916721 c05ca625  c015ee0c  __mutex_lock_slowpath <- __kernfs_remove+0x148/0x204
-- CPU:1 ts:5916723 c05c813d  c05ca630  yield_to <- __mutex_lock_slowpath+0x314/0x358
-- CPU:1 ts:5916724 c05ca2d1  c05ca638  __ww_mutex_lock <- __mutex_lock_slowpath+0x31c/0x358
--
--max_reason
--~~~~~~~~~~
--
--Limiting which kinds of kmsg dumps are stored can be controlled via
--the ``max_reason`` value, as defined in include/linux/kmsg_dump.h's
--``enum kmsg_dump_reason``. For example, to store both Oopses and Panics,
--``max_reason`` should be set to 2 (KMSG_DUMP_OOPS), to store only Panics
--``max_reason`` should be set to 1 (KMSG_DUMP_PANIC). Setting this to 0
--(KMSG_DUMP_UNDEF), means the reason filtering will be controlled by the
--``printk.always_kmsg_dump`` boot param: if unset, it'll be KMSG_DUMP_OOPS,
--otherwise KMSG_DUMP_MAX.
--
--Configurations for driver
---------------------------
--
--Only a block device driver cares about these configurations. A block device
--driver uses ``register_pstore_blk`` to register to pstore/blk.
--
--.. kernel-doc:: fs/pstore/blk.c
--   :identifiers: register_pstore_blk
--
--A non-block device driver uses ``register_pstore_device`` with
--``struct pstore_device_info`` to register to pstore/blk.
--
--.. kernel-doc:: fs/pstore/blk.c
--   :identifiers: register_pstore_device
--
--.. kernel-doc:: include/linux/pstore_blk.h
--   :identifiers: pstore_device_info
--
--Compression and header
------------------------
--
--Block device is large enough for uncompressed oops data. Actually we do not
--recommend data compression because pstore/blk will insert some information into
--the first line of oops/panic data. For example::
--
--        Panic: Total 16 times
--
--It means that it's OOPS|Panic for the 16th time since the first booting.
--Sometimes the number of occurrences of oops|panic since the first booting is
--important to judge whether the system is stable.
--
--The following line is inserted by pstore filesystem. For example::
--
--        Oops#2 Part1
--
--It means that it's OOPS for the 2nd time on the last boot.
--
--Reading the data
------------------
--
--The dump data can be read from the pstore filesystem. The format for these
--files is ``dmesg-pstore-blk-[N]`` for oops/panic front-end,
--``pmsg-pstore-blk-0`` for pmsg front-end and so on.  The timestamp of the
--dump file records the trigger time. To delete a stored record from block
--device, simply unlink the respective pstore file.
--
--Attentions in panic read/write APIs
-------------------------------------
--
--If on panic, the kernel is not going to run for much longer, the tasks will not
--be scheduled and most kernel resources will be out of service. It
--looks like a single-threaded program running on a single-core computer.
--
--The following points require special attention for panic read/write APIs:
--
--1. Can **NOT** allocate any memory.
--   If you need memory, just allocate while the block driver is initializing
--   rather than waiting until the panic.
--#. Must be polled, **NOT** interrupt driven.
--   No task schedule any more. The block driver should delay to ensure the write
--   succeeds, but NOT sleep.
--#. Can **NOT** take any lock.
--   There is no other task, nor any shared resource; you are safe to break all
--   locks.
--#. Just use CPU to transfer.
--   Do not use DMA to transfer unless you are sure that DMA will not keep lock.
--#. Control registers directly.
--   Please control registers directly rather than use Linux kernel resources.
--   Do I/O map while initializing rather than wait until a panic occurs.
--#. Reset your block device and controller if necessary.
--   If you are not sure of the state of your block device and controller when
--   a panic occurs, you are safe to stop and reset them.
--
--pstore/blk supports psblk_blkdev_info(), which is defined in
--*linux/pstore_blk.h*, to get information of using block device, such as the
--device number, sector count and start sector of the whole disk.
--
--pstore block internals
------------------------
--
--For developer reference, here are all the important structures and APIs:
--
--.. kernel-doc:: fs/pstore/zone.c
--   :internal:
--
--.. kernel-doc:: include/linux/pstore_zone.h
--   :internal:
--
--.. kernel-doc:: fs/pstore/blk.c
--   :export:
--
--.. kernel-doc:: include/linux/pstore_blk.h
--   :internal:
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9a54806ebf0209..fa656d8ba1a6a0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14037,7 +14037,6 @@ M:	Tony Luck <tony.luck@intel.com>
- S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/pstore
- F:	Documentation/admin-guide/ramoops.rst
--F:	Documentation/admin-guide/pstore-blk.rst
- F:	Documentation/devicetree/bindings/reserved-memory/ramoops.txt
- F:	drivers/acpi/apei/erst.c
- F:	drivers/firmware/efi/efi-pstore.c
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index 6ddab796216db9..edce458f0c5ac1 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -172,7 +172,7 @@ config MTD_OOPS
- 
- config MTD_PSTORE
- 	tristate "Log panic/oops to an MTD buffer based on pstore"
--	depends on PSTORE_BLK
-+	select PSTORE_ZONE
- 	help
- 	  This enables panic and oops messages to be logged to a circular
- 	  buffer in a flash partition where it can be read back as files after
-@@ -180,6 +180,39 @@ config MTD_PSTORE
- 
- 	  If unsure, say N.
- 
-+config MTD_PSTORE_DEVICE
-+	string "device identifier"
-+	depends on MTD_PSTORE
-+	default ""
-+	help
-+	  Which mtd device should be used for pstore/mtd.
-+
-+	  NOTE that, both Kconfig and module parameters can configure
-+	  pstore/mtd, but module parameters have priority over Kconfig.
-+
-+config MTD_PSTORE_KMSG_SIZE
-+	int "Size in Kbytes of kmsg dump log to store"
-+	depends on MTD_PSTORE
-+	default 64
-+	help
-+	  This just sets size of kmsg dump (oops, panic, etc) log for
-+	  pstore/mtd. The size is in KB and must be a multiple of 4.
-+
-+	  NOTE that, both Kconfig and module parameters can configure
-+	  pstore/mtd, but module parameters have priority over Kconfig.
-+
-+config MTD_PSTORE_MAX_REASON
-+	int "Maximum kmsg dump reason to store"
-+	depends on MTD_PSTORE
-+	default 2
-+	help
-+	  The maximum reason for kmsg dumps to store. The default is
-+	  2 (KMSG_DUMP_OOPS), see include/linux/kmsg_dump.h's
-+	  enum kmsg_dump_reason for more details.
-+
-+	  NOTE that, both Kconfig and module parameters can configure
-+	  pstore/mtd, but module parameters have priority over Kconfig.
-+
- config MTD_SWAP
- 	tristate "Swap on MTD device support"
- 	depends on MTD && SWAP
-diff --git a/drivers/mtd/mtdpstore.c b/drivers/mtd/mtdpstore.c
-index a3ae8778f6a9b9..bc51985f3ec137 100644
---- a/drivers/mtd/mtdpstore.c
-+++ b/drivers/mtd/mtdpstore.c
-@@ -3,16 +3,19 @@
- #define dev_fmt(fmt) "mtdoops-pstore: " fmt
- 
- #include <linux/kernel.h>
-+#include <linux/kconfig.h>
- #include <linux/module.h>
--#include <linux/pstore_blk.h>
-+#include <linux/pstore.h>
-+#include <linux/pstore_zone.h>
- #include <linux/mtd/mtd.h>
- #include <linux/bitops.h>
- #include <linux/slab.h>
- 
- static struct mtdpstore_context {
- 	int index;
--	struct pstore_blk_config info;
--	struct pstore_device_info dev;
-+	char device[80];
-+	enum kmsg_dump_reason max_reason;
-+	unsigned long kmsg_size;
- 	struct mtd_info *mtd;
- 	unsigned long *rmmap;		/* removed bit map */
- 	unsigned long *usedmap;		/* used bit map */
-@@ -24,6 +27,32 @@ static struct mtdpstore_context {
- 	unsigned long *badmap;		/* bad block bit map */
- } oops_cxt;
- 
-+static long kmsg_size = CONFIG_MTD_PSTORE_KMSG_SIZE;
-+module_param(kmsg_size, long, 0400);
-+MODULE_PARM_DESC(kmsg_size, "kmsg dump record size in kbytes");
-+
-+static int max_reason = CONFIG_MTD_PSTORE_MAX_REASON;
-+module_param(max_reason, int, 0400);
-+MODULE_PARM_DESC(max_reason,
-+		 "maximum reason for kmsg dump (default 2: Oops and Panic)");
-+
-+static char device[80] = CONFIG_MTD_PSTORE_DEVICE;
-+module_param_string(device, device, 80, 0400);
-+MODULE_PARM_DESC(device, "block device for pstore storage");
-+
-+static struct pstore_zone_info *pstore_zone_info;
-+
-+#define check_size(name, alignsize) ({				\
-+	long _##name_ = (name);					\
-+	_##name_ = _##name_ <= 0 ? 0 : (_##name_ * 1024);	\
-+	if (_##name_ & ((alignsize) - 1)) {			\
-+		pr_info(#name " must align to %d\n",		\
-+				(alignsize));			\
-+		_##name_ = ALIGN(name, (alignsize));		\
-+	}							\
-+	_##name_;						\
-+})
-+
- static int mtdpstore_block_isbad(struct mtdpstore_context *cxt, loff_t off)
- {
- 	int ret;
-@@ -61,7 +90,7 @@ static inline void mtdpstore_mark_used(struct mtdpstore_context *cxt,
- 		loff_t off)
- {
- 	struct mtd_info *mtd = cxt->mtd;
--	u64 zonenum = div_u64(off, cxt->info.kmsg_size);
-+	u64 zonenum = div_u64(off, cxt->kmsg_size);
- 
- 	dev_dbg(&mtd->dev, "mark zone %llu used\n", zonenum);
- 	set_bit(zonenum, cxt->usedmap);
-@@ -71,7 +100,7 @@ static inline void mtdpstore_mark_unused(struct mtdpstore_context *cxt,
- 		loff_t off)
- {
- 	struct mtd_info *mtd = cxt->mtd;
--	u64 zonenum = div_u64(off, cxt->info.kmsg_size);
-+	u64 zonenum = div_u64(off, cxt->kmsg_size);
- 
- 	dev_dbg(&mtd->dev, "mark zone %llu unused\n", zonenum);
- 	clear_bit(zonenum, cxt->usedmap);
-@@ -81,11 +110,11 @@ static inline void mtdpstore_block_mark_unused(struct mtdpstore_context *cxt,
- 		loff_t off)
- {
- 	struct mtd_info *mtd = cxt->mtd;
--	u32 zonecnt = mtd->erasesize / cxt->info.kmsg_size;
-+	u32 zonecnt = mtd->erasesize / cxt->kmsg_size;
- 	u64 zonenum;
- 
- 	off = ALIGN_DOWN(off, mtd->erasesize);
--	zonenum = div_u64(off, cxt->info.kmsg_size);
-+	zonenum = div_u64(off, cxt->kmsg_size);
- 	while (zonecnt > 0) {
- 		dev_dbg(&mtd->dev, "mark zone %llu unused\n", zonenum);
- 		clear_bit(zonenum, cxt->usedmap);
-@@ -96,7 +125,7 @@ static inline void mtdpstore_block_mark_unused(struct mtdpstore_context *cxt,
- 
- static inline int mtdpstore_is_used(struct mtdpstore_context *cxt, loff_t off)
- {
--	u64 zonenum = div_u64(off, cxt->info.kmsg_size);
-+	u64 zonenum = div_u64(off, cxt->kmsg_size);
- 	u64 blknum = div_u64(off, cxt->mtd->erasesize);
- 
- 	if (test_bit(blknum, cxt->badmap))
-@@ -108,11 +137,11 @@ static int mtdpstore_block_is_used(struct mtdpstore_context *cxt,
- 		loff_t off)
- {
- 	struct mtd_info *mtd = cxt->mtd;
--	u32 zonecnt = mtd->erasesize / cxt->info.kmsg_size;
-+	u32 zonecnt = mtd->erasesize / cxt->kmsg_size;
- 	u64 zonenum;
- 
- 	off = ALIGN_DOWN(off, mtd->erasesize);
--	zonenum = div_u64(off, cxt->info.kmsg_size);
-+	zonenum = div_u64(off, cxt->kmsg_size);
- 	while (zonecnt > 0) {
- 		if (test_bit(zonenum, cxt->usedmap))
- 			return true;
-@@ -140,7 +169,7 @@ static int mtdpstore_is_empty(struct mtdpstore_context *cxt, char *buf,
- static void mtdpstore_mark_removed(struct mtdpstore_context *cxt, loff_t off)
- {
- 	struct mtd_info *mtd = cxt->mtd;
--	u64 zonenum = div_u64(off, cxt->info.kmsg_size);
-+	u64 zonenum = div_u64(off, cxt->kmsg_size);
- 
- 	dev_dbg(&mtd->dev, "mark zone %llu removed\n", zonenum);
- 	set_bit(zonenum, cxt->rmmap);
-@@ -150,11 +179,11 @@ static void mtdpstore_block_clear_removed(struct mtdpstore_context *cxt,
- 		loff_t off)
- {
- 	struct mtd_info *mtd = cxt->mtd;
--	u32 zonecnt = mtd->erasesize / cxt->info.kmsg_size;
-+	u32 zonecnt = mtd->erasesize / cxt->kmsg_size;
- 	u64 zonenum;
- 
- 	off = ALIGN_DOWN(off, mtd->erasesize);
--	zonenum = div_u64(off, cxt->info.kmsg_size);
-+	zonenum = div_u64(off, cxt->kmsg_size);
- 	while (zonecnt > 0) {
- 		clear_bit(zonenum, cxt->rmmap);
- 		zonenum++;
-@@ -166,11 +195,11 @@ static int mtdpstore_block_is_removed(struct mtdpstore_context *cxt,
- 		loff_t off)
- {
- 	struct mtd_info *mtd = cxt->mtd;
--	u32 zonecnt = mtd->erasesize / cxt->info.kmsg_size;
-+	u32 zonecnt = mtd->erasesize / cxt->kmsg_size;
- 	u64 zonenum;
- 
- 	off = ALIGN_DOWN(off, mtd->erasesize);
--	zonenum = div_u64(off, cxt->info.kmsg_size);
-+	zonenum = div_u64(off, cxt->kmsg_size);
- 	while (zonecnt > 0) {
- 		if (test_bit(zonenum, cxt->rmmap))
- 			return true;
-@@ -196,7 +225,7 @@ static int mtdpstore_erase_do(struct mtdpstore_context *cxt, loff_t off)
- 	else
- 		dev_err(&mtd->dev, "erase of region [0x%llx, 0x%llx] on \"%s\" failed\n",
- 		       (unsigned long long)erase.addr,
--		       (unsigned long long)erase.len, cxt->info.device);
-+		       (unsigned long long)erase.len, cxt->device);
- 	return ret;
- }
- 
-@@ -238,8 +267,8 @@ static int mtdpstore_security(struct mtdpstore_context *cxt, loff_t off)
- {
- 	int ret = 0, i;
- 	struct mtd_info *mtd = cxt->mtd;
--	u32 zonenum = (u32)div_u64(off, cxt->info.kmsg_size);
--	u32 zonecnt = (u32)div_u64(cxt->mtd->size, cxt->info.kmsg_size);
-+	u32 zonenum = (u32)div_u64(off, cxt->kmsg_size);
-+	u32 zonecnt = (u32)div_u64(cxt->mtd->size, cxt->kmsg_size);
- 	u32 blkcnt = (u32)div_u64(cxt->mtd->size, cxt->mtd->erasesize);
- 	u32 erasesize = cxt->mtd->erasesize;
- 
-@@ -382,10 +411,9 @@ static void mtdpstore_notify_add(struct mtd_info *mtd)
- {
- 	int ret;
- 	struct mtdpstore_context *cxt = &oops_cxt;
--	struct pstore_blk_config *info = &cxt->info;
- 	unsigned long longcnt;
- 
--	if (!strcmp(mtd->name, info->device))
-+	if (!strcmp(mtd->name, cxt->device))
- 		cxt->index = mtd->index;
- 
- 	if (mtd->index != cxt->index || cxt->index < 0)
-@@ -393,7 +421,7 @@ static void mtdpstore_notify_add(struct mtd_info *mtd)
- 
- 	dev_dbg(&mtd->dev, "found matching MTD device %s\n", mtd->name);
- 
--	if (mtd->size < info->kmsg_size * 2) {
-+	if (mtd->size < cxt->kmsg_size * 2) {
- 		dev_err(&mtd->dev, "MTD partition %d not big enough\n",
- 				mtd->index);
- 		return;
-@@ -404,39 +432,51 @@ static void mtdpstore_notify_add(struct mtd_info *mtd)
- 	 * is larger than erasesize, some errors will occur since mtdpsotre
- 	 * is designed on it.
- 	 */
--	if (mtd->erasesize < info->kmsg_size) {
-+	if (mtd->erasesize < cxt->kmsg_size) {
- 		dev_err(&mtd->dev, "eraseblock size of MTD partition %d too small\n",
- 				mtd->index);
- 		return;
- 	}
--	if (unlikely(info->kmsg_size % mtd->writesize)) {
-+	if (unlikely(cxt->kmsg_size % mtd->writesize)) {
- 		dev_err(&mtd->dev, "record size %lu KB must align to write size %d KB\n",
--				info->kmsg_size / 1024,
-+				cxt->kmsg_size / 1024,
- 				mtd->writesize / 1024);
- 		return;
- 	}
- 
--	longcnt = BITS_TO_LONGS(div_u64(mtd->size, info->kmsg_size));
-+	longcnt = BITS_TO_LONGS(div_u64(mtd->size, cxt->kmsg_size));
- 	cxt->rmmap = kcalloc(longcnt, sizeof(long), GFP_KERNEL);
- 	cxt->usedmap = kcalloc(longcnt, sizeof(long), GFP_KERNEL);
- 
- 	longcnt = BITS_TO_LONGS(div_u64(mtd->size, mtd->erasesize));
- 	cxt->badmap = kcalloc(longcnt, sizeof(long), GFP_KERNEL);
- 
--	cxt->dev.total_size = mtd->size;
--	/* just support dmesg right now */
--	cxt->dev.flags = PSTORE_FLAGS_DMESG;
--	cxt->dev.read = mtdpstore_read;
--	cxt->dev.write = mtdpstore_write;
--	cxt->dev.erase = mtdpstore_erase;
--	cxt->dev.panic_write = mtdpstore_panic_write;
-+	if (!mtd->size)
-+		return;
- 
--	ret = register_pstore_device(&cxt->dev);
--	if (ret) {
--		dev_err(&mtd->dev, "mtd%d register to psblk failed\n",
--				mtd->index);
-+	if (pstore_zone_info)
-+		return;
-+	pstore_zone_info = kzalloc(sizeof(struct pstore_zone_info), GFP_KERNEL);
-+	if (!pstore_zone_info)
- 		return;
-+
-+	/* just support dmesg right now */
-+	pstore_zone_info->kmsg_size = cxt->kmsg_size / 1024;
-+	pstore_zone_info->total_size = mtd->size;
-+	pstore_zone_info->max_reason = max_reason;
-+	pstore_zone_info->read = mtdpstore_read;
-+	pstore_zone_info->write = mtdpstore_write;
-+	pstore_zone_info->erase = mtdpstore_erase;
-+	pstore_zone_info->panic_write = mtdpstore_panic_write;
-+	pstore_zone_info->name = KBUILD_MODNAME;
-+	pstore_zone_info->owner = THIS_MODULE;
-+
-+	ret = register_pstore_zone(pstore_zone_info);
-+	if (ret) {
-+		kfree(pstore_zone_info);
-+		pstore_zone_info = NULL;
- 	}
-+
- 	cxt->mtd = mtd;
- 	dev_info(&mtd->dev, "Attached to MTD device %d\n", mtd->index);
- }
-@@ -468,7 +508,7 @@ static int mtdpstore_flush_removed_do(struct mtdpstore_context *cxt,
- 
- 	/* 3rd. write back */
- 	while (size) {
--		unsigned int zonesize = cxt->info.kmsg_size;
-+		unsigned int zonesize = cxt->kmsg_size;
- 
- 		/* there is valid data on block, write back */
- 		if (mtdpstore_is_used(cxt, off)) {
-@@ -526,7 +566,12 @@ static void mtdpstore_notify_remove(struct mtd_info *mtd)
- 
- 	mtdpstore_flush_removed(cxt);
- 
--	unregister_pstore_device(&cxt->dev);
-+	if (pstore_zone_info) {
-+		unregister_pstore_zone(pstore_zone_info);
-+		kfree(pstore_zone_info);
-+		pstore_zone_info = NULL;
-+	}
-+
- 	kfree(cxt->badmap);
- 	kfree(cxt->usedmap);
- 	kfree(cxt->rmmap);
-@@ -543,23 +588,22 @@ static int __init mtdpstore_init(void)
- {
- 	int ret;
- 	struct mtdpstore_context *cxt = &oops_cxt;
--	struct pstore_blk_config *info = &cxt->info;
--
--	ret = pstore_blk_get_config(info);
--	if (unlikely(ret))
--		return ret;
- 
--	if (strlen(info->device) == 0) {
-+	strncpy(cxt->device, device, 80);
-+	if (strlen(cxt->device) == 0) {
- 		pr_err("mtd device must be supplied (device name is empty)\n");
- 		return -EINVAL;
- 	}
--	if (!info->kmsg_size) {
-+
-+	cxt->max_reason = max_reason;
-+	cxt->kmsg_size = check_size(kmsg_size, 4096);
-+	if (!cxt->kmsg_size) {
- 		pr_err("no backend enabled (kmsg_size is 0)\n");
- 		return -EINVAL;
- 	}
- 
- 	/* Setup the MTD device to use */
--	ret = kstrtoint((char *)info->device, 0, &cxt->index);
-+	ret = kstrtoint((char *)cxt->device, 0, &cxt->index);
- 	if (ret)
- 		cxt->index = -1;
- 
-diff --git a/fs/pstore/Kconfig b/fs/pstore/Kconfig
-index e16a49ebfe546d..98d2457bdd9f0a 100644
---- a/fs/pstore/Kconfig
-+++ b/fs/pstore/Kconfig
-@@ -160,105 +160,3 @@ config PSTORE_ZONE
- 	help
- 	  The common layer for pstore/blk (and pstore/ram in the future)
- 	  to manage storage in zones.
--
--config PSTORE_BLK
--	tristate "Log panic/oops to a block device"
--	depends on PSTORE
--	depends on BLOCK
--	select PSTORE_ZONE
--	default n
--	help
--	  This enables panic and oops message to be logged to a block dev
--	  where it can be read back at some later point.
--
--	  For more information, see Documentation/admin-guide/pstore-blk.rst
--
--	  If unsure, say N.
--
--config PSTORE_BLK_BLKDEV
--	string "block device identifier"
--	depends on PSTORE_BLK
--	default ""
--	help
--	  Which block device should be used for pstore/blk.
--
--	  It accepts the following variants:
--	  1) <hex_major><hex_minor> device number in hexadecimal representation,
--	     with no leading 0x, for example b302.
--	  2) /dev/<disk_name> represents the device name of disk
--	  3) /dev/<disk_name><decimal> represents the device name and number
--	     of partition - device number of disk plus the partition number
--	  4) /dev/<disk_name>p<decimal> - same as the above, this form is
--	     used when disk name of partitioned disk ends with a digit.
--	  5) PARTUUID=00112233-4455-6677-8899-AABBCCDDEEFF representing the
--	     unique id of a partition if the partition table provides it.
--	     The UUID may be either an EFI/GPT UUID, or refer to an MSDOS
--	     partition using the format SSSSSSSS-PP, where SSSSSSSS is a zero-
--	     filled hex representation of the 32-bit "NT disk signature", and PP
--	     is a zero-filled hex representation of the 1-based partition number.
--	  6) PARTUUID=<UUID>/PARTNROFF=<int> to select a partition in relation
--	     to a partition with a known unique id.
--	  7) <major>:<minor> major and minor number of the device separated by
--	     a colon.
--
--	  NOTE that, both Kconfig and module parameters can configure
--	  pstore/blk, but module parameters have priority over Kconfig.
--
--config PSTORE_BLK_KMSG_SIZE
--	int "Size in Kbytes of kmsg dump log to store"
--	depends on PSTORE_BLK
--	default 64
--	help
--	  This just sets size of kmsg dump (oops, panic, etc) log for
--	  pstore/blk. The size is in KB and must be a multiple of 4.
--
--	  NOTE that, both Kconfig and module parameters can configure
--	  pstore/blk, but module parameters have priority over Kconfig.
--
--config PSTORE_BLK_MAX_REASON
--	int "Maximum kmsg dump reason to store"
--	depends on PSTORE_BLK
--	default 2
--	help
--	  The maximum reason for kmsg dumps to store. The default is
--	  2 (KMSG_DUMP_OOPS), see include/linux/kmsg_dump.h's
--	  enum kmsg_dump_reason for more details.
--
--	  NOTE that, both Kconfig and module parameters can configure
--	  pstore/blk, but module parameters have priority over Kconfig.
--
--config PSTORE_BLK_PMSG_SIZE
--	int "Size in Kbytes of pmsg to store"
--	depends on PSTORE_BLK
--	depends on PSTORE_PMSG
--	default 64
--	help
--	  This just sets size of pmsg (pmsg_size) for pstore/blk. The size is
--	  in KB and must be a multiple of 4.
--
--	  NOTE that, both Kconfig and module parameters can configure
--	  pstore/blk, but module parameters have priority over Kconfig.
--
--config PSTORE_BLK_CONSOLE_SIZE
--	int "Size in Kbytes of console log to store"
--	depends on PSTORE_BLK
--	depends on PSTORE_CONSOLE
--	default 64
--	help
--	  This just sets size of console log (console_size) to store via
--	  pstore/blk. The size is in KB and must be a multiple of 4.
--
--	  NOTE that, both Kconfig and module parameters can configure
--	  pstore/blk, but module parameters have priority over Kconfig.
--
--config PSTORE_BLK_FTRACE_SIZE
--	int "Size in Kbytes of ftrace log to store"
--	depends on PSTORE_BLK
--	depends on PSTORE_FTRACE
--	default 64
--	help
--	  This just sets size of ftrace log (ftrace_size) for pstore/blk. The
--	  size is in KB and must be a multiple of 4.
--
--	  NOTE that, both Kconfig and module parameters can configure
--	  pstore/blk, but module parameters have priority over Kconfig.
-diff --git a/fs/pstore/Makefile b/fs/pstore/Makefile
-index c270467aeecea7..58a967cbe4af71 100644
---- a/fs/pstore/Makefile
-+++ b/fs/pstore/Makefile
-@@ -15,6 +15,3 @@ obj-$(CONFIG_PSTORE_RAM)	+= ramoops.o
- 
- pstore_zone-objs += zone.o
- obj-$(CONFIG_PSTORE_ZONE)	+= pstore_zone.o
--
--pstore_blk-objs += blk.o
--obj-$(CONFIG_PSTORE_BLK)	+= pstore_blk.o
-diff --git a/fs/pstore/blk.c b/fs/pstore/blk.c
-deleted file mode 100644
-index fcd5563dde063c..00000000000000
---- a/fs/pstore/blk.c
-+++ /dev/null
-@@ -1,517 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * Implements pstore backend driver that write to block (or non-block) storage
-- * devices, using the pstore/zone API.
-- */
--
--#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
--
--#include <linux/kernel.h>
--#include <linux/module.h>
--#include "../../block/blk.h"
--#include <linux/blkdev.h>
--#include <linux/string.h>
--#include <linux/of.h>
--#include <linux/of_address.h>
--#include <linux/platform_device.h>
--#include <linux/pstore_blk.h>
--#include <linux/mount.h>
--#include <linux/uio.h>
--
--static long kmsg_size = CONFIG_PSTORE_BLK_KMSG_SIZE;
--module_param(kmsg_size, long, 0400);
--MODULE_PARM_DESC(kmsg_size, "kmsg dump record size in kbytes");
--
--static int max_reason = CONFIG_PSTORE_BLK_MAX_REASON;
--module_param(max_reason, int, 0400);
--MODULE_PARM_DESC(max_reason,
--		 "maximum reason for kmsg dump (default 2: Oops and Panic)");
--
--#if IS_ENABLED(CONFIG_PSTORE_PMSG)
--static long pmsg_size = CONFIG_PSTORE_BLK_PMSG_SIZE;
--#else
--static long pmsg_size = -1;
--#endif
--module_param(pmsg_size, long, 0400);
--MODULE_PARM_DESC(pmsg_size, "pmsg size in kbytes");
--
--#if IS_ENABLED(CONFIG_PSTORE_CONSOLE)
--static long console_size = CONFIG_PSTORE_BLK_CONSOLE_SIZE;
--#else
--static long console_size = -1;
--#endif
--module_param(console_size, long, 0400);
--MODULE_PARM_DESC(console_size, "console size in kbytes");
--
--#if IS_ENABLED(CONFIG_PSTORE_FTRACE)
--static long ftrace_size = CONFIG_PSTORE_BLK_FTRACE_SIZE;
--#else
--static long ftrace_size = -1;
--#endif
--module_param(ftrace_size, long, 0400);
--MODULE_PARM_DESC(ftrace_size, "ftrace size in kbytes");
--
--static bool best_effort;
--module_param(best_effort, bool, 0400);
--MODULE_PARM_DESC(best_effort, "use best effort to write (i.e. do not require storage driver pstore support, default: off)");
--
--/*
-- * blkdev - the block device to use for pstore storage
-- *
-- * Usually, this will be a partition of a block device.
-- *
-- * blkdev accepts the following variants:
-- * 1) <hex_major><hex_minor> device number in hexadecimal representation,
-- *    with no leading 0x, for example b302.
-- * 2) /dev/<disk_name> represents the device number of disk
-- * 3) /dev/<disk_name><decimal> represents the device number
-- *    of partition - device number of disk plus the partition number
-- * 4) /dev/<disk_name>p<decimal> - same as the above, that form is
-- *    used when disk name of partitioned disk ends on a digit.
-- * 5) PARTUUID=00112233-4455-6677-8899-AABBCCDDEEFF representing the
-- *    unique id of a partition if the partition table provides it.
-- *    The UUID may be either an EFI/GPT UUID, or refer to an MSDOS
-- *    partition using the format SSSSSSSS-PP, where SSSSSSSS is a zero-
-- *    filled hex representation of the 32-bit "NT disk signature", and PP
-- *    is a zero-filled hex representation of the 1-based partition number.
-- * 6) PARTUUID=<UUID>/PARTNROFF=<int> to select a partition in relation to
-- *    a partition with a known unique id.
-- * 7) <major>:<minor> major and minor number of the device separated by
-- *    a colon.
-- */
--static char blkdev[80] = CONFIG_PSTORE_BLK_BLKDEV;
--module_param_string(blkdev, blkdev, 80, 0400);
--MODULE_PARM_DESC(blkdev, "block device for pstore storage");
--
--/*
-- * All globals must only be accessed under the pstore_blk_lock
-- * during the register/unregister functions.
-- */
--static DEFINE_MUTEX(pstore_blk_lock);
--static struct block_device *psblk_bdev;
--static struct pstore_zone_info *pstore_zone_info;
--static pstore_blk_panic_write_op blkdev_panic_write;
--
--struct bdev_info {
--	dev_t devt;
--	sector_t nr_sects;
--	sector_t start_sect;
--};
--
--#define check_size(name, alignsize) ({				\
--	long _##name_ = (name);					\
--	_##name_ = _##name_ <= 0 ? 0 : (_##name_ * 1024);	\
--	if (_##name_ & ((alignsize) - 1)) {			\
--		pr_info(#name " must align to %d\n",		\
--				(alignsize));			\
--		_##name_ = ALIGN(name, (alignsize));		\
--	}							\
--	_##name_;						\
--})
--
--static int __register_pstore_device(struct pstore_device_info *dev)
--{
--	int ret;
--
--	lockdep_assert_held(&pstore_blk_lock);
--
--	if (!dev || !dev->total_size || !dev->read || !dev->write)
--		return -EINVAL;
--
--	/* someone already registered before */
--	if (pstore_zone_info)
--		return -EBUSY;
--
--	pstore_zone_info = kzalloc(sizeof(struct pstore_zone_info), GFP_KERNEL);
--	if (!pstore_zone_info)
--		return -ENOMEM;
--
--	/* zero means not limit on which backends to attempt to store. */
--	if (!dev->flags)
--		dev->flags = UINT_MAX;
--
--#define verify_size(name, alignsize, enabled) {				\
--		long _##name_;						\
--		if (enabled)						\
--			_##name_ = check_size(name, alignsize);		\
--		else							\
--			_##name_ = 0;					\
--		name = _##name_ / 1024;					\
--		pstore_zone_info->name = _##name_;			\
--	}
--
--	verify_size(kmsg_size, 4096, dev->flags & PSTORE_FLAGS_DMESG);
--	verify_size(pmsg_size, 4096, dev->flags & PSTORE_FLAGS_PMSG);
--	verify_size(console_size, 4096, dev->flags & PSTORE_FLAGS_CONSOLE);
--	verify_size(ftrace_size, 4096, dev->flags & PSTORE_FLAGS_FTRACE);
--#undef verify_size
--
--	pstore_zone_info->total_size = dev->total_size;
--	pstore_zone_info->max_reason = max_reason;
--	pstore_zone_info->read = dev->read;
--	pstore_zone_info->write = dev->write;
--	pstore_zone_info->erase = dev->erase;
--	pstore_zone_info->panic_write = dev->panic_write;
--	pstore_zone_info->name = KBUILD_MODNAME;
--	pstore_zone_info->owner = THIS_MODULE;
--
--	ret = register_pstore_zone(pstore_zone_info);
--	if (ret) {
--		kfree(pstore_zone_info);
--		pstore_zone_info = NULL;
--	}
--	return ret;
--}
--/**
-- * register_pstore_device() - register non-block device to pstore/blk
-- *
-- * @dev: non-block device information
-- *
-- * Return:
-- * * 0		- OK
-- * * Others	- something error.
-- */
--int register_pstore_device(struct pstore_device_info *dev)
--{
--	int ret;
--
--	mutex_lock(&pstore_blk_lock);
--	ret = __register_pstore_device(dev);
--	mutex_unlock(&pstore_blk_lock);
--
--	return ret;
--}
--EXPORT_SYMBOL_GPL(register_pstore_device);
--
--static void __unregister_pstore_device(struct pstore_device_info *dev)
--{
--	lockdep_assert_held(&pstore_blk_lock);
--	if (pstore_zone_info && pstore_zone_info->read == dev->read) {
--		unregister_pstore_zone(pstore_zone_info);
--		kfree(pstore_zone_info);
--		pstore_zone_info = NULL;
--	}
--}
--
--/**
-- * unregister_pstore_device() - unregister non-block device from pstore/blk
-- *
-- * @dev: non-block device information
-- */
--void unregister_pstore_device(struct pstore_device_info *dev)
--{
--	mutex_lock(&pstore_blk_lock);
--	__unregister_pstore_device(dev);
--	mutex_unlock(&pstore_blk_lock);
--}
--EXPORT_SYMBOL_GPL(unregister_pstore_device);
--
--/**
-- * psblk_get_bdev() - open block device
-- *
-- * @holder:	Exclusive holder identifier
-- * @info:	Information about bdev to fill in
-- *
-- * Return: pointer to block device on success and others on error.
-- *
-- * On success, the returned block_device has reference count of one.
-- */
--static struct block_device *psblk_get_bdev(void *holder,
--					   struct bdev_info *info)
--{
--	struct block_device *bdev = ERR_PTR(-ENODEV);
--	fmode_t mode = FMODE_READ | FMODE_WRITE;
--	sector_t nr_sects;
--
--	lockdep_assert_held(&pstore_blk_lock);
--
--	if (pstore_zone_info)
--		return ERR_PTR(-EBUSY);
--
--	if (!blkdev[0])
--		return ERR_PTR(-ENODEV);
--
--	if (holder)
--		mode |= FMODE_EXCL;
--	bdev = blkdev_get_by_path(blkdev, mode, holder);
--	if (IS_ERR(bdev)) {
--		dev_t devt;
--
--		devt = name_to_dev_t(blkdev);
--		if (devt == 0)
--			return ERR_PTR(-ENODEV);
--		bdev = blkdev_get_by_dev(devt, mode, holder);
--		if (IS_ERR(bdev))
--			return bdev;
--	}
--
--	nr_sects = part_nr_sects_read(bdev->bd_part);
--	if (!nr_sects) {
--		pr_err("not enough space for '%s'\n", blkdev);
--		blkdev_put(bdev, mode);
--		return ERR_PTR(-ENOSPC);
--	}
--
--	if (info) {
--		info->devt = bdev->bd_dev;
--		info->nr_sects = nr_sects;
--		info->start_sect = get_start_sect(bdev);
--	}
--
--	return bdev;
--}
--
--static void psblk_put_bdev(struct block_device *bdev, void *holder)
--{
--	fmode_t mode = FMODE_READ | FMODE_WRITE;
--
--	lockdep_assert_held(&pstore_blk_lock);
--
--	if (!bdev)
--		return;
--
--	if (holder)
--		mode |= FMODE_EXCL;
--	blkdev_put(bdev, mode);
--}
--
--static ssize_t psblk_generic_blk_read(char *buf, size_t bytes, loff_t pos)
--{
--	struct block_device *bdev = psblk_bdev;
--	struct file file;
--	struct kiocb kiocb;
--	struct iov_iter iter;
--	struct kvec iov = {.iov_base = buf, .iov_len = bytes};
--
--	if (!bdev)
--		return -ENODEV;
--
--	memset(&file, 0, sizeof(struct file));
--	file.f_mapping = bdev->bd_inode->i_mapping;
--	file.f_flags = O_DSYNC | __O_SYNC | O_NOATIME;
--	file.f_inode = bdev->bd_inode;
--	file_ra_state_init(&file.f_ra, file.f_mapping);
--
--	init_sync_kiocb(&kiocb, &file);
--	kiocb.ki_pos = pos;
--	iov_iter_kvec(&iter, READ, &iov, 1, bytes);
--
--	return generic_file_read_iter(&kiocb, &iter);
--}
--
--static ssize_t psblk_generic_blk_write(const char *buf, size_t bytes,
--		loff_t pos)
--{
--	struct block_device *bdev = psblk_bdev;
--	struct iov_iter iter;
--	struct kiocb kiocb;
--	struct file file;
--	ssize_t ret;
--	struct kvec iov = {.iov_base = (void *)buf, .iov_len = bytes};
--
--	if (!bdev)
--		return -ENODEV;
--
--	/* Console/Ftrace backend may handle buffer until flush dirty zones */
--	if (in_interrupt() || irqs_disabled())
--		return -EBUSY;
--
--	memset(&file, 0, sizeof(struct file));
--	file.f_mapping = bdev->bd_inode->i_mapping;
--	file.f_flags = O_DSYNC | __O_SYNC | O_NOATIME;
--	file.f_inode = bdev->bd_inode;
--
--	init_sync_kiocb(&kiocb, &file);
--	kiocb.ki_pos = pos;
--	iov_iter_kvec(&iter, WRITE, &iov, 1, bytes);
--
--	inode_lock(bdev->bd_inode);
--	ret = generic_write_checks(&kiocb, &iter);
--	if (ret > 0)
--		ret = generic_perform_write(&file, &iter, pos);
--	inode_unlock(bdev->bd_inode);
--
--	if (likely(ret > 0)) {
--		const struct file_operations f_op = {.fsync = blkdev_fsync};
--
--		file.f_op = &f_op;
--		kiocb.ki_pos += ret;
--		ret = generic_write_sync(&kiocb, ret);
--	}
--	return ret;
--}
--
--static ssize_t psblk_blk_panic_write(const char *buf, size_t size,
--		loff_t off)
--{
--	int ret;
--
--	if (!blkdev_panic_write)
--		return -EOPNOTSUPP;
--
--	/* size and off must align to SECTOR_SIZE for block device */
--	ret = blkdev_panic_write(buf, off >> SECTOR_SHIFT,
--			size >> SECTOR_SHIFT);
--	/* try next zone */
--	if (ret == -ENOMSG)
--		return ret;
--	return ret ? -EIO : size;
--}
--
--static int __register_pstore_blk(struct pstore_blk_info *info)
--{
--	char bdev_name[BDEVNAME_SIZE];
--	struct block_device *bdev;
--	struct pstore_device_info dev;
--	struct bdev_info binfo;
--	void *holder = blkdev;
--	int ret = -ENODEV;
--
--	lockdep_assert_held(&pstore_blk_lock);
--
--	/* hold bdev exclusively */
--	memset(&binfo, 0, sizeof(binfo));
--	bdev = psblk_get_bdev(holder, &binfo);
--	if (IS_ERR(bdev)) {
--		pr_err("failed to open '%s'!\n", blkdev);
--		return PTR_ERR(bdev);
--	}
--
--	/* only allow driver matching the @blkdev */
--	if (!binfo.devt || (!best_effort &&
--			    MAJOR(binfo.devt) != info->major)) {
--		pr_debug("invalid major %u (expect %u)\n",
--				info->major, MAJOR(binfo.devt));
--		ret = -ENODEV;
--		goto err_put_bdev;
--	}
--
--	/* psblk_bdev must be assigned before register to pstore/blk */
--	psblk_bdev = bdev;
--	blkdev_panic_write = info->panic_write;
--
--	/* Copy back block device details. */
--	info->devt = binfo.devt;
--	info->nr_sects = binfo.nr_sects;
--	info->start_sect = binfo.start_sect;
--
--	memset(&dev, 0, sizeof(dev));
--	dev.total_size = info->nr_sects << SECTOR_SHIFT;
--	dev.flags = info->flags;
--	dev.read = psblk_generic_blk_read;
--	dev.write = psblk_generic_blk_write;
--	dev.erase = NULL;
--	dev.panic_write = info->panic_write ? psblk_blk_panic_write : NULL;
--
--	ret = __register_pstore_device(&dev);
--	if (ret)
--		goto err_put_bdev;
--
--	bdevname(bdev, bdev_name);
--	pr_info("attached %s%s\n", bdev_name,
--		info->panic_write ? "" : " (no dedicated panic_write!)");
--	return 0;
--
--err_put_bdev:
--	psblk_bdev = NULL;
--	blkdev_panic_write = NULL;
--	psblk_put_bdev(bdev, holder);
--	return ret;
--}
--
--/**
-- * register_pstore_blk() - register block device to pstore/blk
-- *
-- * @info: details on the desired block device interface
-- *
-- * Return:
-- * * 0		- OK
-- * * Others	- something error.
-- */
--int register_pstore_blk(struct pstore_blk_info *info)
--{
--	int ret;
--
--	mutex_lock(&pstore_blk_lock);
--	ret = __register_pstore_blk(info);
--	mutex_unlock(&pstore_blk_lock);
--
--	return ret;
--}
--EXPORT_SYMBOL_GPL(register_pstore_blk);
--
--static void __unregister_pstore_blk(unsigned int major)
--{
--	struct pstore_device_info dev = { .read = psblk_generic_blk_read };
--	void *holder = blkdev;
--
--	lockdep_assert_held(&pstore_blk_lock);
--	if (psblk_bdev && MAJOR(psblk_bdev->bd_dev) == major) {
--		__unregister_pstore_device(&dev);
--		psblk_put_bdev(psblk_bdev, holder);
--		blkdev_panic_write = NULL;
--		psblk_bdev = NULL;
--	}
--}
--
--/**
-- * unregister_pstore_blk() - unregister block device from pstore/blk
-- *
-- * @major: the major device number of device
-- */
--void unregister_pstore_blk(unsigned int major)
--{
--	mutex_lock(&pstore_blk_lock);
--	__unregister_pstore_blk(major);
--	mutex_unlock(&pstore_blk_lock);
--}
--EXPORT_SYMBOL_GPL(unregister_pstore_blk);
--
--/* get information of pstore/blk */
--int pstore_blk_get_config(struct pstore_blk_config *info)
--{
--	strncpy(info->device, blkdev, 80);
--	info->max_reason = max_reason;
--	info->kmsg_size = check_size(kmsg_size, 4096);
--	info->pmsg_size = check_size(pmsg_size, 4096);
--	info->ftrace_size = check_size(ftrace_size, 4096);
--	info->console_size = check_size(console_size, 4096);
--
--	return 0;
--}
--EXPORT_SYMBOL_GPL(pstore_blk_get_config);
--
--static int __init pstore_blk_init(void)
--{
--	struct pstore_blk_info info = { };
--	int ret = 0;
--
--	mutex_lock(&pstore_blk_lock);
--	if (!pstore_zone_info && best_effort && blkdev[0])
--		ret = __register_pstore_blk(&info);
--	mutex_unlock(&pstore_blk_lock);
--
--	return ret;
--}
--late_initcall(pstore_blk_init);
--
--static void __exit pstore_blk_exit(void)
--{
--	mutex_lock(&pstore_blk_lock);
--	if (psblk_bdev)
--		__unregister_pstore_blk(MAJOR(psblk_bdev->bd_dev));
--	else {
--		struct pstore_device_info dev = { };
--
--		if (pstore_zone_info)
--			dev.read = pstore_zone_info->read;
--		__unregister_pstore_device(&dev);
--	}
--	mutex_unlock(&pstore_blk_lock);
--}
--module_exit(pstore_blk_exit);
--
--MODULE_LICENSE("GPL");
--MODULE_AUTHOR("WeiXiong Liao <liaoweixiong@allwinnertech.com>");
--MODULE_AUTHOR("Kees Cook <keescook@chromium.org>");
--MODULE_DESCRIPTION("pstore backend for block devices");
-diff --git a/include/linux/pstore_blk.h b/include/linux/pstore_blk.h
-deleted file mode 100644
-index 61e914522b0193..00000000000000
---- a/include/linux/pstore_blk.h
-+++ /dev/null
-@@ -1,118 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--
--#ifndef __PSTORE_BLK_H_
--#define __PSTORE_BLK_H_
--
--#include <linux/types.h>
--#include <linux/pstore.h>
--#include <linux/pstore_zone.h>
--
--/**
-- * typedef pstore_blk_panic_write_op - panic write operation to block device
-- *
-- * @buf: the data to write
-- * @start_sect: start sector to block device
-- * @sects: sectors count on buf
-- *
-- * Return: On success, zero should be returned. Others excluding -ENOMSG
-- * mean error. -ENOMSG means to try next zone.
-- *
-- * Panic write to block device must be aligned to SECTOR_SIZE.
-- */
--typedef int (*pstore_blk_panic_write_op)(const char *buf, sector_t start_sect,
--		sector_t sects);
--
--/**
-- * struct pstore_blk_info - pstore/blk registration details
-- *
-- * @major:	Which major device number to support with pstore/blk
-- * @flags:	The supported PSTORE_FLAGS_* from linux/pstore.h.
-- * @panic_write:The write operation only used for the panic case.
-- *		This can be NULL, but is recommended to avoid losing
-- *		crash data if the kernel's IO path or work queues are
-- *		broken during a panic.
-- * @devt:	The dev_t that pstore/blk has attached to.
-- * @nr_sects:	Number of sectors on @devt.
-- * @start_sect:	Starting sector on @devt.
-- */
--struct pstore_blk_info {
--	unsigned int major;
--	unsigned int flags;
--	pstore_blk_panic_write_op panic_write;
--
--	/* Filled in by pstore/blk after registration. */
--	dev_t devt;
--	sector_t nr_sects;
--	sector_t start_sect;
--};
--
--int  register_pstore_blk(struct pstore_blk_info *info);
--void unregister_pstore_blk(unsigned int major);
--
--/**
-- * struct pstore_device_info - back-end pstore/blk driver structure.
-- *
-- * @total_size: The total size in bytes pstore/blk can use. It must be greater
-- *		than 4096 and be multiple of 4096.
-- * @flags:	Refer to macro starting with PSTORE_FLAGS defined in
-- *		linux/pstore.h. It means what front-ends this device support.
-- *		Zero means all backends for compatible.
-- * @read:	The general read operation. Both of the function parameters
-- *		@size and @offset are relative value to bock device (not the
-- *		whole disk).
-- *		On success, the number of bytes should be returned, others
-- *		means error.
-- * @write:	The same as @read, but the following error number:
-- *		-EBUSY means try to write again later.
-- *		-ENOMSG means to try next zone.
-- * @erase:	The general erase operation for device with special removing
-- *		job. Both of the function parameters @size and @offset are
-- *		relative value to storage.
-- *		Return 0 on success and others on failure.
-- * @panic_write:The write operation only used for panic case. It's optional
-- *		if you do not care panic log. The parameters are relative
-- *		value to storage.
-- *		On success, the number of bytes should be returned, others
-- *		excluding -ENOMSG mean error. -ENOMSG means to try next zone.
-- */
--struct pstore_device_info {
--	unsigned long total_size;
--	unsigned int flags;
--	pstore_zone_read_op read;
--	pstore_zone_write_op write;
--	pstore_zone_erase_op erase;
--	pstore_zone_write_op panic_write;
--};
--
--int  register_pstore_device(struct pstore_device_info *dev);
--void unregister_pstore_device(struct pstore_device_info *dev);
--
--/**
-- * struct pstore_blk_config - the pstore_blk backend configuration
-- *
-- * @device:		Name of the desired block device
-- * @max_reason:		Maximum kmsg dump reason to store to block device
-- * @kmsg_size:		Total size of for kmsg dumps
-- * @pmsg_size:		Total size of the pmsg storage area
-- * @console_size:	Total size of the console storage area
-- * @ftrace_size:	Total size for ftrace logging data (for all CPUs)
-- */
--struct pstore_blk_config {
--	char device[80];
--	enum kmsg_dump_reason max_reason;
--	unsigned long kmsg_size;
--	unsigned long pmsg_size;
--	unsigned long console_size;
--	unsigned long ftrace_size;
--};
--
--/**
-- * pstore_blk_get_config - get a copy of the pstore_blk backend configuration
-- *
-- * @info:	The sturct pstore_blk_config to be filled in
-- *
-- * Failure returns negative error code, and success returns 0.
-- */
--int pstore_blk_get_config(struct pstore_blk_config *info);
--
--#endif
+I think the correct Fixes tag is:
+Fixes: c46872170a54 ("mtd: spi-nor: Move erase_map to 'struct spi_nor_flash_parameter'")
+
+> Cc: stable@vger.kernel.org
+> Tested-by: Baurzhan Ismagulov <ibr@radix50.net>
+> Co-developed-by: Matija Glavinic Pecotic <matija.glavinic-pecotic.ext@nokia.com>
+> Signed-off-by: Matija Glavinic Pecotic <matija.glavinic-pecotic.ext@nokia.com>
+> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+> ---
+>  drivers/mtd/spi-nor/core.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index 2add4a0..cce0670 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -2701,11 +2701,10 @@ static void spi_nor_sfdp_init_params(struct spi_nor *nor)
+> 
+>         memcpy(&sfdp_params, nor->params, sizeof(sfdp_params));
+> 
+> -       if (spi_nor_parse_sfdp(nor, &sfdp_params)) {
+> +       if (spi_nor_parse_sfdp(nor, nor->params)) {
+> +               memcpy(nor->params, &sfdp_params, sizeof(*nor->params));
+>                 nor->addr_width = 0;
+>                 nor->flags &= ~SNOR_F_4B_OPCODES;
+> -       } else {
+> -               memcpy(nor->params, &sfdp_params, sizeof(*nor->params));
+
+neat!
+With the Fixes tag fixed, one can add:
+Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+
+>         }
+>  }
+> 
+> --
+> 2.10.2
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
