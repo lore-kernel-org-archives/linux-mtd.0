@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-6.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ECC33C4363D
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Oct 2020 01:04:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 020E9C4363D
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Oct 2020 01:05:56 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9544B206F7
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Oct 2020 01:04:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A8B4C206F7
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Oct 2020 01:05:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Tk1cepct";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rJLKmtpw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9544B206F7
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Z14gYtcc";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="o3Pwy5wY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A8B4C206F7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,64 +26,65 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=zb2DKbV8U3pcdD2k269UigObN2lNJ8a24u8IE1BkvXI=; b=Tk1cepctn4WXsGaaTvsSXvaG6
-	lXSBAu3B+yAdYbTk+0HO+0mU1dupuQmAQApJ57A4e0QVFW7VkrEP47mOnpfpdtoKVbg4F1s+C0g4C
-	mRTwpAIUuH+o271t3bdUQGWqhD1/309BAkTB73GhOhfSNGalZ5E1VhWvTSir850d3F6aYRZkvCvMi
-	JpJJz/6fAL1JcV2tnbrNiFpVuWIiS8dNqFhW7hAo3vXeZ/5uboKZ/IHKBywVx5oEgBIVvw4f/r0xd
-	E9WMoQ0ayXuV8mfbQ9pWYMQE89yceNdr0lD3mwSl17wTLhlHng8JV4vmxoxDl5xHhq5CGpREdccTM
-	IHPTo/N2w==;
+	 bh=B36QR5o5+jsvFdrNz7SpL+1kQop/PHttMGuuw7TbaPA=; b=Z14gYtccOSby/HErc97zPwn/S
+	O+aX1lDhTEVsDv9gG/NbbOC4NVeqLn0p7+ZURJnL3IIDZ48twt6Cfk2faTVV+D8uK7JU6BQSH+kfg
+	Zd95x8gDepm+FMRLg+hVmLM6qup34bHC9qdvFoa0RW1ElE34s7FCNk+KgvhKYr2L5dt87w9gSGyJ/
+	/cTXiKItRdpVche4UZdsM4nwVSxfa5kOdqWTak8yAbHqF3k861c3kpI8Rp2vyOeZM4HphWWsc5CVR
+	2Fh+DRzNzPftp0LXmwK2ZHKpkNn+IRGmymmPWl3UZ9gP/1WCjPOuXBIpUoueDm1loqO35oumvZN3L
+	8vVBWocxA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kPxrW-00053I-5L; Wed, 07 Oct 2020 01:03:22 +0000
-Received: from mail-pl1-x642.google.com ([2607:f8b0:4864:20::642])
+	id 1kPxt7-0005Gv-DK; Wed, 07 Oct 2020 01:05:01 +0000
+Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kPxrS-00051n-RW; Wed, 07 Oct 2020 01:03:19 +0000
-Received: by mail-pl1-x642.google.com with SMTP id c6so141750plr.9;
- Tue, 06 Oct 2020 18:03:16 -0700 (PDT)
+ id 1kPxt4-0005Fm-S8; Wed, 07 Oct 2020 01:04:59 +0000
+Received: by mail-pg1-x542.google.com with SMTP id j33so329240pgj.5;
+ Tue, 06 Oct 2020 18:04:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=date:from:to:cc:subject:message-id:references:mime-version
  :content-disposition:in-reply-to;
- bh=FbVt6UIsanorUvecNc8pgO4I7nA5/YzrR4KBsZs3/tw=;
- b=rJLKmtpwxzsaHKtX12nq3eP9neu2dOXEPi6LomqB2knE6KHEDjpS2vUrKJtGSZmd01
- 7ezWLLISEJuqEQ8aBgOjVvVwuIROWJaVvqWMDhdkIrMnEJj3xWoT+mLh9Gs8gEuP17Q2
- UgfknJPVfYtwgcFCoBnLf1OmUFSxA0fdjd+qay5y6bkYLt8ainoMJawHK24rtd7lPeI2
- jVsq0CkG7qufIYkkx+FdQj1K8q292mstggL5gEg1P6qasdKVPWKLR/DK34HZkI0mADY7
- HUlcFEZ59O0+agAIIrpY+D6Sh+41M2ydy4oYO2vKHgH/8RKm2d5YK6721Lon3s9UNXTV
- sAgw==
+ bh=0/bWrGoCkUT1XKG15S3LcPCeuj/9H6SulVmeatRXh2o=;
+ b=o3Pwy5wYAD2KjHFxqx8zJn29Vs5mbvXSBjNxI6P7OabTpsU/U0SGpYd4FsvkK/Ndjy
+ o6haFaQLhrlga1BZAonVWdmnYb32RwDlKDv1iNZSfD0mkYhL6AlLSFycnS+oYFh7ZUp1
+ TkX5mqfIN4mnxWvwmM0DfqKMDy+og8IZ+jNqBte63Si7LyqSrYcSS5VQLfQgB80bmtjl
+ SLVjNURG8b+QRtDeh3cy+5wKhP+/ucXDk7OVxpSlq1MvLPkb9wEBt0slTTHRiZnkT43r
+ 0Da6jEuUUaW5qy0DOhRMGh0Fme25JQoAZtM8rFDZY+jZY5w1aTzbtncjcS61sVCE0zAC
+ N0gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to;
- bh=FbVt6UIsanorUvecNc8pgO4I7nA5/YzrR4KBsZs3/tw=;
- b=hENsV5yOwW3gpt2TzNEf9FlOjwhU1Vn6HbxGGt/tzGG5d8awMZBkvt2iYNPSrY6zOL
- JMi/HXwx5MphC3hQ74BXVArM6ZqkCudftF7CRmbExeCIjHd64ApcVmS9qEFQeZ0huuhh
- Yy4IYhoRt5U8UN9fD/Q0t/xZ/1jMZtzpABpgRdWZVejxyg/+WuYBdUJkU7jO23CCY5fR
- 3/Uo5sThPYRGSD3KgJKOGMCrwzlL9WJZYj3wEwnPDyvH5MGFC36X/UwLkktr6ofV6QrV
- E0pbIRk3RQm1jAq7TG2kwondwSCtbJirpGfkvgcoHXWApA2JQQFlpqioFIAkBbA4S/0j
- JCIQ==
-X-Gm-Message-State: AOAM531dKL4f1XymBOwLyuGdiqA7I4wttUqk5OaOanjXJkS6cGi8dnFH
- IUxDtwOu4XKdFhIRZmK8FY4=
-X-Google-Smtp-Source: ABdhPJzVLf6DlrNk5/q9fRno4e12My/InOM1G44QmO8+GKR2G8WgtPD5wnjL1TK4h+y4iW9ZX7bL0Q==
-X-Received: by 2002:a17:90b:692:: with SMTP id
- m18mr667588pjz.182.1602032595239; 
- Tue, 06 Oct 2020 18:03:15 -0700 (PDT)
+ bh=0/bWrGoCkUT1XKG15S3LcPCeuj/9H6SulVmeatRXh2o=;
+ b=WWMCJic8BbfaGPBBFcl75PoVmSH+jffvNWuInRQJ2zwFi7YI3VwFDkJZhAU0b+mjGM
+ jVCwrcnIgklqLvDSonzmzO+f3Ry9r+OYOjef+WL3l2+eRifJgfFpdYCECyCTBKIB9uKg
+ disvuCdEOxlVt5X6XMhaUUVCM2zGYsLo4JcIKU7P3EYzeRLK2f1fAD+M7GJsEVXmnkIe
+ icMl2OLkxgOMvtWOLGIIjuzzmaAS+a91gS+X43+/5zZhaha6cre6HaQwqdOM9Sw/4yxf
+ DK9FynIAp1/k3CMymR20qDk1mgNGZmmdF65MMPEgiMhmjAVuqly4fCnYdOc+KEIpcJuD
+ i8Sg==
+X-Gm-Message-State: AOAM532qxrl4IIvGQvdHJ/Jp4TYI36vYUMTFshaHl/TXb1RNaCQdLQrD
+ F77fZPg4eRKQ+DhXna91bGw=
+X-Google-Smtp-Source: ABdhPJwHBE/6svDofq3JI1Nvl9AaFlg1oX0F7Zhinc7Yx4XbSqxrhmfr8wUc0v2ZFV5xqE5jZ9MdIA==
+X-Received: by 2002:aa7:9e4a:0:b029:152:54d1:bffa with SMTP id
+ z10-20020aa79e4a0000b029015254d1bffamr663621pfq.6.1602032696538; 
+ Tue, 06 Oct 2020 18:04:56 -0700 (PDT)
 Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
- by smtp.gmail.com with ESMTPSA id fa2sm213768pjb.51.2020.10.06.18.03.10
+ by smtp.gmail.com with ESMTPSA id o62sm458923pfb.172.2020.10.06.18.04.51
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 06 Oct 2020 18:03:14 -0700 (PDT)
-Date: Tue, 6 Oct 2020 18:03:08 -0700
+ Tue, 06 Oct 2020 18:04:55 -0700 (PDT)
+Date: Tue, 6 Oct 2020 18:04:49 -0700
 From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 To: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 1/4] dt-bindings: Add missing 'unevaluatedProperties'
-Message-ID: <20201007010308.GP1009802@dtor-ws>
+Subject: Re: [PATCH 4/4] dt-bindings: Explicitly allow additional properties
+ in common schemas
+Message-ID: <20201007010449.GQ1009802@dtor-ws>
 References: <20201005183830.486085-1-robh@kernel.org>
- <20201005183830.486085-2-robh@kernel.org>
+ <20201005183830.486085-5-robh@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20201005183830.486085-2-robh@kernel.org>
+In-Reply-To: <20201005183830.486085-5-robh@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201006_210318_919525_E228BD0A 
-X-CRM114-Status: GOOD (  18.63  )
+X-CRM114-CacheID: sfid-20201006_210458_931414_8C48A790 
+X-CRM114-Status: GOOD (  14.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -140,18 +141,11 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Oct 05, 2020 at 01:38:27PM -0500, Rob Herring wrote:
-> This doesn't yet do anything in the tools, but make it explicit so we can
-> check either 'unevaluatedProperties' or 'additionalProperties' is present
-> in schemas.
-> 
-> 'unevaluatedProperties' is appropriate when including another schema (via
-> '$ref') and all possible properties and/or child nodes are not
-> explicitly listed in the schema with the '$ref'.
-> 
-> This is in preparation to add a meta-schema to check for missing
-> 'unevaluatedProperties' or 'additionalProperties'. This has been a
-> constant source of review issues.
+On Mon, Oct 05, 2020 at 01:38:30PM -0500, Rob Herring wrote:
+> In order to add meta-schema checks for additional/unevaluatedProperties
+> being present, all schema need to make this explicit. As common/shared
+> schema are included by other schemas, they should always allow for
+> additionalProperties.
 > 
 > Signed-off-by: Rob Herring <robh@kernel.org>
 
