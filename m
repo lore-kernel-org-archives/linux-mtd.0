@@ -2,65 +2,90 @@ Return-Path: <SRS0=AJHc=DO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC0F1C4363D
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Oct 2020 13:46:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9A76C4363D
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Oct 2020 14:22:18 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 599DD206DD
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Oct 2020 13:46:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AFDAF2076C
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Oct 2020 14:22:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="k5yNGRc5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 599DD206DD
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DS9YI7LU";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=robart.cc header.i=@robart.cc header.b="bPVuqOML"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AFDAF2076C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=robart.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=skIncjdGHNCC/SoCQm+kaInlx783ZAyudXngTnpiBCY=; b=k5yNGRc5JnMir8+4v0QE66hUrt
-	qlOAlTqGkubN/BiEjWqHqtbJ+bVTm3p+7xlXdA+5ehAkBwxLwQ3ElpTFVBp6inWsLMabosbFV2brl
-	OfOpLUfNH70BEs/ISC0aYHr8ZrGiGwnluijm72+CgcUzHGNsm4ZUAKjdlu3jICzN73cfZBV2uy6zT
-	vC1JoLGTcJ4GsiukKLCB6qdD3WIp8vcIUTULZG7ha1QwtPW4wpCsExZU/F7y2UFpuVxTC+vC4MYEm
-	tujFaEJY/CiIbwTpL6wm2a7UkHDDavu0vBlloWScsFPpZHH34TvEMzP0g1L3f+B/UxkCauRunIWLN
-	L9Gly8Uw==;
+	List-Unsubscribe:List-Id:MIME-Version:Subject:References:In-Reply-To:
+	Message-ID:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=c2z5TtQZnG1J32d1JgnXmVSSGYW+1zyxbs/v4jbZKNY=; b=DS9YI7LUo4hsQQ2qOFEz7Aiog
+	cbJJyLMrxaTKBqyjf4p4/07op3cL7tr03k3SU/0pMBStoWvSNoqGKxG97WQZE9k1K40U9nb2b+Qwd
+	JMA6XxsRXJQH1H1ih4vX/HcD3ImkbwZxQW5ocWsDbA51YOgv5JspTWGiJn9xHBx08SA9D4GT9/S5Q
+	FBwfy/ahdkG74uLm6Gs0UNDerF2aPktiJOhl0bpTuxTHpwGebnALEiKyDZIJyJDQBuZ5pm6Zs77aE
+	HyFDAHx7x+EuEObSs6R2NRcaV1mHV0REB8cD6LZ7aLQRTwc0e2sC7TGQe0uluZEk2jWoNyEOCyVd0
+	qQXVo+7Uw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kQ9lc-0006bM-Fi; Wed, 07 Oct 2020 13:46:04 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1kQAJi-0003HT-L1; Wed, 07 Oct 2020 14:21:18 +0000
+Received: from srv-mta-01.robart.cc ([80.123.245.229])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kQ9lZ-0006ab-Mv
- for linux-mtd@lists.infradead.org; Wed, 07 Oct 2020 13:46:02 +0000
-Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <mfe@pengutronix.de>)
- id 1kQ9lW-0006QA-2C; Wed, 07 Oct 2020 15:45:58 +0200
-Received: from mfe by dude02.hi.pengutronix.de with local (Exim 4.92)
- (envelope-from <mfe@pengutronix.de>)
- id 1kQ9lU-0008IA-IO; Wed, 07 Oct 2020 15:45:56 +0200
-From: Marco Felsch <m.felsch@pengutronix.de>
-To: han.xu@nxp.com, miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
-Subject: [PATCH] mtd: rawnand: gpmi: cleanup makefile
-Date: Wed,  7 Oct 2020 15:45:33 +0200
-Message-Id: <20201007134533.31390-1-m.felsch@pengutronix.de>
-X-Mailer: git-send-email 2.20.1
+ id 1kQAJf-0003Gg-Ea
+ for linux-mtd@lists.infradead.org; Wed, 07 Oct 2020 14:21:16 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by srv-mta-01.robart.cc (Postfix) with ESMTP id AFDF11C0DE1;
+ Wed,  7 Oct 2020 16:21:12 +0200 (CEST)
+Received: from srv-mta-01.robart.cc ([127.0.0.1])
+ by localhost (srv-mta-01.robart.cc [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id 6Fb8rWMe4g9I; Wed,  7 Oct 2020 16:21:12 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by srv-mta-01.robart.cc (Postfix) with ESMTP id 7FCF11C0DDE;
+ Wed,  7 Oct 2020 16:21:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 srv-mta-01.robart.cc 7FCF11C0DDE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=robart.cc;
+ s=B016B336-104E-11EA-8E2D-E36DD02BB770; t=1602080472;
+ bh=mRHwhnGOWYgwCBjKMr/qcMVI2ErVNkZ5+hglzzjkwhk=;
+ h=Date:From:To:Message-ID:MIME-Version;
+ b=bPVuqOMLD4+Piy/9MrhBlAopvuG2YoU3kJZ5EtdUsW72LOXZxKqNpmTV2IxGIkTnk
+ cFI+P2ZMQ54EYch+rntZVz1yBpLbnC9UCtDFBq6MjFQ1k+LPzCVVxclss8vAKRZlcS
+ EKokfs/AehsqjWQItZfzVoo4PKsu1s6+6DlUHg6mpZMLZanYJ9IVSBNbPRW/vy2nGm
+ m5/3NafysPGwxhSPvMBrFNlIIp/SXGsiydl3G1jJH22/e9ro8+oWcsiO6fTC/b9HG3
+ Qm4uwOSpzARplFkiNq7ZSJ8qV342VppyyCu1Xjei2Sot/ODSbjMiWO03AXt2rGO1df
+ iWnDgThAlAFrg==
+X-Virus-Scanned: amavisd-new at srv-mta-01.robart.cc
+Received: from srv-mta-01.robart.cc ([127.0.0.1])
+ by localhost (srv-mta-01.robart.cc [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id oiOe4kGyCOWB; Wed,  7 Oct 2020 16:21:12 +0200 (CEST)
+Received: from srv-mda-01.robart.cc (srv-mda-01.robart.cc [10.0.10.21])
+ by srv-mta-01.robart.cc (Postfix) with ESMTP id 51DD31C0DE1;
+ Wed,  7 Oct 2020 16:21:12 +0200 (CEST)
+Date: Wed, 7 Oct 2020 16:21:11 +0200 (CEST)
+From: Manuel Dipolt <mdipolt@robart.cc>
+To: Boris Brezillon <boris.brezillon@collabora.com>
+Message-ID: <362437696.773271.1602080471860.JavaMail.zimbra@robart.cc>
+In-Reply-To: <20201007150258.00baf8c7@collabora.com>
+References: <1203329103.515411.1601900419875.JavaMail.zimbra@robart.cc>
+ <20201005150912.65619ca2@collabora.com>
+ <1690133500.668948.1602004808077.JavaMail.zimbra@robart.cc>
+ <20201007150258.00baf8c7@collabora.com>
+Subject: Re: [PATCH v3] mtd: sunxi-nand: add dma support for allwinner h3 -
+ review changes
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::28
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+X-Originating-IP: [10.0.20.40]
+X-Mailer: Zimbra 8.8.15_GA_3959 (ZimbraWebClient - FF78 (Linux)/8.8.15_GA_3953)
+Thread-Topic: sunxi-nand: add dma support for allwinner h3 - review changes
+Thread-Index: FXmkaB5aOM21V9kVcuCtWWs/+qKARA==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201007_094601_761085_636507DC 
-X-CRM114-Status: GOOD (  11.66  )
+X-CRM114-CacheID: sfid-20201007_102115_909963_5109287A 
+X-CRM114-Status: UNSURE (   8.45  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,33 +97,34 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de
+Cc: Roland Ruckerbauer <rruckerbauer@robart.cc>,
+ bbrezillon <bbrezillon@kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>,
+ maxime <maxime@cerno.tech>, miquel raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The extra gpmi_nand.o object is not needed anymore since
-commit 3045f8e36963 ("mtd: rawnand: gpmi: move all driver
-code into single file").
+Will post it again as V4 where V1-V3 are together
 
-Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
----
- drivers/mtd/nand/raw/gpmi-nand/Makefile | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+----- Original Message -----
+From: "Boris Brezillon" <boris.brezillon@collabora.com>
+To: "Manuel Dipolt" <mdipolt@robart.cc>
+Cc: "linux-mtd" <linux-mtd@lists.infradead.org>, "Roland Ruckerbauer" <rruckerbauer@robart.cc>, "miquel raynal" <miquel.raynal@bootlin.com>, "maxime" <maxime@cerno.tech>, "bbrezillon" <bbrezillon@kernel.org>
+Sent: Wednesday, October 7, 2020 3:02:58 PM
+Subject: Re: [PATCH v3] mtd: sunxi-nand: add dma support for allwinner h3 - review changes
 
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/Makefile b/drivers/mtd/nand/raw/gpmi-nand/Makefile
-index 9bd81a31e02e..247cbfceaa19 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/Makefile
-+++ b/drivers/mtd/nand/raw/gpmi-nand/Makefile
-@@ -1,3 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--obj-$(CONFIG_MTD_NAND_GPMI_NAND) += gpmi_nand.o
--gpmi_nand-objs += gpmi-nand.o
-+obj-$(CONFIG_MTD_NAND_GPMI_NAND) += gpmi-nand.o
--- 
-2.20.1
+On Tue, 6 Oct 2020 19:20:08 +0200 (CEST)
+Manuel Dipolt <mdipolt@robart.cc> wrote:
 
+> hi Boris,
+> 
+> thanks for the fast review,
+> applied the suggested changes and answered your question,
+> please take a look if its okay
+
+Please submit a new patch with a proper commit message instead of
+replying to the existing thread and pasting the new version at the end.
 
 ______________________________________________________
 Linux MTD discussion mailing list
