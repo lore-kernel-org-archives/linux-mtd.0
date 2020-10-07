@@ -1,81 +1,89 @@
-Return-Path: <SRS0=jvb0=DN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=AJHc=DO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DBCDC4363D
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2020 23:20:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ECC33C4363D
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Oct 2020 01:04:27 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B5866208C7
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2020 23:20:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9544B206F7
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Oct 2020 01:04:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OgrogE2u";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=jms.id.au header.i=@jms.id.au header.b="RhcyxEe1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B5866208C7
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=jms.id.au
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Tk1cepct";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rJLKmtpw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9544B206F7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=v+cfEdPdUTZ7I2y52l9RYEW8EJzMdaA/9eGpl8MBoJc=; b=OgrogE2u5F7d5b962A9nymHWA
-	gqLSyVK2mIIEeV0cdq+nHPxrSOVM2n+6cpqZ7e6DeTqfQumEFRpgXWj1AcU5FR6K5TqiveTlhqZla
-	DP+exVv//Gdeynl0HPSxBjPgzb4cK3qhjjs02o+C6fuQEAW3UD3fEh5wqY5qwz6A0GBw51RbBnQY5
-	oqiU+P6ZGNo3TjuMCbH7JW+eRASg8F/FcnfhywmemNYBX7HrfdHyKrzgLNfL44u4g8C8mfB1flY1/
-	BSns2ggap0YcMj5C8BNy1/KUil57PRNuXsCD36N6hQMv7DPJFpNjrZ9kqwMCTahnI4ePsETNUNG+Y
-	2tI3j/9JQ==;
+	 bh=zb2DKbV8U3pcdD2k269UigObN2lNJ8a24u8IE1BkvXI=; b=Tk1cepctn4WXsGaaTvsSXvaG6
+	lXSBAu3B+yAdYbTk+0HO+0mU1dupuQmAQApJ57A4e0QVFW7VkrEP47mOnpfpdtoKVbg4F1s+C0g4C
+	mRTwpAIUuH+o271t3bdUQGWqhD1/309BAkTB73GhOhfSNGalZ5E1VhWvTSir850d3F6aYRZkvCvMi
+	JpJJz/6fAL1JcV2tnbrNiFpVuWIiS8dNqFhW7hAo3vXeZ/5uboKZ/IHKBywVx5oEgBIVvw4f/r0xd
+	E9WMoQ0ayXuV8mfbQ9pWYMQE89yceNdr0lD3mwSl17wTLhlHng8JV4vmxoxDl5xHhq5CGpREdccTM
+	IHPTo/N2w==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kPwFc-0004xJ-Bb; Tue, 06 Oct 2020 23:20:08 +0000
-Received: from mail-qk1-x743.google.com ([2607:f8b0:4864:20::743])
+	id 1kPxrW-00053I-5L; Wed, 07 Oct 2020 01:03:22 +0000
+Received: from mail-pl1-x642.google.com ([2607:f8b0:4864:20::642])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kPwFZ-0004wJ-Dm
- for linux-mtd@lists.infradead.org; Tue, 06 Oct 2020 23:20:06 +0000
-Received: by mail-qk1-x743.google.com with SMTP id q5so577030qkc.2
- for <linux-mtd@lists.infradead.org>; Tue, 06 Oct 2020 16:20:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jms.id.au; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=IWB1ebee9pteOb/1MXVwCCrbMEWDB3ppGDM3SA6pBOI=;
- b=RhcyxEe1FSxdVyWWjik5L8oP0dlBRmNhl8eHTKZPcwOmfonQ13IokUdXJRuKCJ6SPh
- dHxp7bXBRxe79JznPcgush7ktPkgNsiGgO2fACJlaqwsTwroLQAgYh28Qv7Xk9Iqr4NM
- y4NzZw/l+Zf7ndDdCnCkPHptsNmLIhBOzvef0=
+ id 1kPxrS-00051n-RW; Wed, 07 Oct 2020 01:03:19 +0000
+Received: by mail-pl1-x642.google.com with SMTP id c6so141750plr.9;
+ Tue, 06 Oct 2020 18:03:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=FbVt6UIsanorUvecNc8pgO4I7nA5/YzrR4KBsZs3/tw=;
+ b=rJLKmtpwxzsaHKtX12nq3eP9neu2dOXEPi6LomqB2knE6KHEDjpS2vUrKJtGSZmd01
+ 7ezWLLISEJuqEQ8aBgOjVvVwuIROWJaVvqWMDhdkIrMnEJj3xWoT+mLh9Gs8gEuP17Q2
+ UgfknJPVfYtwgcFCoBnLf1OmUFSxA0fdjd+qay5y6bkYLt8ainoMJawHK24rtd7lPeI2
+ jVsq0CkG7qufIYkkx+FdQj1K8q292mstggL5gEg1P6qasdKVPWKLR/DK34HZkI0mADY7
+ HUlcFEZ59O0+agAIIrpY+D6Sh+41M2ydy4oYO2vKHgH/8RKm2d5YK6721Lon3s9UNXTV
+ sAgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=IWB1ebee9pteOb/1MXVwCCrbMEWDB3ppGDM3SA6pBOI=;
- b=s7RsAWb+ssvdLR0AmHviiuuN0jJldWO11DwymFQKpZb6EKzBYrjE1whLi+tSIPyyKg
- bUcEcIfi7PunWlMQWYZ8XUkAvrTP53XbKREJscyKx0UzgTPCX5u5tBp98yjEgygP99JZ
- mRz1Vyqtb1af1X0Y4XouYVoE5gAcxGkY9xNIbaLiik/ZZmkCUXMb93uwLtwd4EK8djx1
- 4x4XMoT62diS4E/DC80Sp2Y0qGGjFG84jVklBxqTY8Jf8t3S+RG+SgRdQUOqEaRHSx7h
- gL2KvVOZOsuAY/F0CPaBtF+pjZ5xWyIb2bomjv05LOvFJBHXrqja/G8pXtJAcRyFP0Cb
- +Jug==
-X-Gm-Message-State: AOAM533G4Rf2eLoVDXWqDT/Zvnkro2W4aj2kVLNKOVkq5+eUHk4gs+CW
- y8yNq5dGd14DbFmn4P/0WPCL+gkNXjFLtpaB+Wo=
-X-Google-Smtp-Source: ABdhPJwr2Fnlr684SJmgZQPRnrOuC932FRlVujDc1a96wpgQ80hGE45C/QVYuxFsMyeJJ11qvjuGrYXtSqY1Td3/YtE=
-X-Received: by 2002:a37:48cc:: with SMTP id v195mr242091qka.66.1602026401689; 
- Tue, 06 Oct 2020 16:20:01 -0700 (PDT)
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=FbVt6UIsanorUvecNc8pgO4I7nA5/YzrR4KBsZs3/tw=;
+ b=hENsV5yOwW3gpt2TzNEf9FlOjwhU1Vn6HbxGGt/tzGG5d8awMZBkvt2iYNPSrY6zOL
+ JMi/HXwx5MphC3hQ74BXVArM6ZqkCudftF7CRmbExeCIjHd64ApcVmS9qEFQeZ0huuhh
+ Yy4IYhoRt5U8UN9fD/Q0t/xZ/1jMZtzpABpgRdWZVejxyg/+WuYBdUJkU7jO23CCY5fR
+ 3/Uo5sThPYRGSD3KgJKOGMCrwzlL9WJZYj3wEwnPDyvH5MGFC36X/UwLkktr6ofV6QrV
+ E0pbIRk3RQm1jAq7TG2kwondwSCtbJirpGfkvgcoHXWApA2JQQFlpqioFIAkBbA4S/0j
+ JCIQ==
+X-Gm-Message-State: AOAM531dKL4f1XymBOwLyuGdiqA7I4wttUqk5OaOanjXJkS6cGi8dnFH
+ IUxDtwOu4XKdFhIRZmK8FY4=
+X-Google-Smtp-Source: ABdhPJzVLf6DlrNk5/q9fRno4e12My/InOM1G44QmO8+GKR2G8WgtPD5wnjL1TK4h+y4iW9ZX7bL0Q==
+X-Received: by 2002:a17:90b:692:: with SMTP id
+ m18mr667588pjz.182.1602032595239; 
+ Tue, 06 Oct 2020 18:03:15 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+ by smtp.gmail.com with ESMTPSA id fa2sm213768pjb.51.2020.10.06.18.03.10
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 06 Oct 2020 18:03:14 -0700 (PDT)
+Date: Tue, 6 Oct 2020 18:03:08 -0700
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 1/4] dt-bindings: Add missing 'unevaluatedProperties'
+Message-ID: <20201007010308.GP1009802@dtor-ws>
+References: <20201005183830.486085-1-robh@kernel.org>
+ <20201005183830.486085-2-robh@kernel.org>
 MIME-Version: 1.0
-References: <20200930235611.6355-1-bert@biot.com>
- <20201001063421.qcjdikj2tje3jn6k@ti.com>
- <801445c9-4f59-5300-3a03-b48a3d631efe@biot.com>
-In-Reply-To: <801445c9-4f59-5300-3a03-b48a3d631efe@biot.com>
-From: Joel Stanley <joel@jms.id.au>
-Date: Tue, 6 Oct 2020 23:19:49 +0000
-Message-ID: <CACPK8XfBqLA0e+tx6WN16G-v8+PY6UFH4jvP_YmOjiK8EhZ8Cg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: Fix 3-or-4 address byte mode logic
-To: Bert Vermeulen <bert@biot.com>
+Content-Disposition: inline
+In-Reply-To: <20201005183830.486085-2-robh@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201006_192005_941363_B5BE3759 
-X-CRM114-Status: GOOD (  34.68  )
+X-CRM114-CacheID: sfid-20201006_210318_919525_E228BD0A 
+X-CRM114-Status: GOOD (  18.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,97 +95,72 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Pratyush Yadav <p.yadav@ti.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Sam Ravnborg <sam@ravnborg.org>,
+ linux-pwm@vger.kernel.org, linux-iio@vger.kernel.org,
+ Viresh Kumar <vireshk@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
+ linux-pci@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-ide@vger.kernel.org,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Pavel Machek <pavel@ucw.cz>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-riscv@lists.infradead.org, linux-hwmon@vger.kernel.org,
+ Lee Jones <lee.jones@linaro.org>, linux-clk@vger.kernel.org,
+ linux-leds@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-rtc@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+ Marc Zyngier <maz@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Krzysztof Kozlowski <krzk@kernel.org>, Chanwoo Choi <cw00.choi@samsung.com>,
+ MyungJoo Ham <myungjoo.ham@samsung.com>, linux-serial@vger.kernel.org,
+ linux-input@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+ Zhang Rui <rui.zhang@intel.com>, linux-mips@vger.kernel.org,
+ Vivien Didelot <vivien.didelot@gmail.com>,
+ Wolfgang Grandegger <wg@grandegger.com>, linux-media@vger.kernel.org,
+ devicetree@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
+ Jason Cooper <jason@lakedaemon.net>, linux-pm@vger.kernel.org,
+ linux-can@vger.kernel.org, linux-gpio@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>,
+ Sebastian Reichel <sre@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>,
+ Bjorn Helgaas <bhelgaas@google.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, Jens Axboe <axboe@kernel.dk>,
+ Alessandro Zummo <a.zummo@towertech.it>, linux-watchdog@vger.kernel.org,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>, Stephen Boyd <sboyd@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
+ linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-i2c@vger.kernel.org,
+ Vinod Koul <vkoul@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Wim Van Sebroeck <wim@linux-watchdog.org>, Richard Weinberger <richard@nod.at>,
+ dmaengine@vger.kernel.org, linux-mtd@lists.infradead.org,
+ "David S. Miller" <davem@davemloft.net>, Jonathan Cameron <jic23@kernel.org>,
+ Heiner Kallweit <hkallweit1@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 1 Oct 2020 at 22:23, Bert Vermeulen <bert@biot.com> wrote:
->
-> On 10/1/20 8:34 AM, Pratyush Yadav wrote:
-> > So using an address width of 4 here is not necessarily the right thing
-> > to do. This change would break SMPT parsing for all flashes that use
-> > 3-byte addressing by default because SMPT parsing can involve register
-> > reads/writes. One such device is the Cypress S28HS flash. In fact, this
-> > was what prompted me to write the patch [0].
-> >
-> > Before that patch, how did MX25L25635F decide to use 4-byte addressing?
->
-> The SoCs I'm dealing with have an SPI_ADDR_SEL pin, indicating whether it
-> should be in 3 or 4-byte mode. The vendor's hacked-up U-Boot sets the mode
-> accordingly, as does their BSP. It seems to me like a misfeature, and I want
-> to just ignore it and do reasonable JEDEC things, but I have the problem
-> that the flash chip can be in 4-byte mode by the time it gets to my spi-nor
-> driver.
->
-> > Coming out of BFPT parsing addr_width would still be 0. My guess is that
-> > it would go into spi_nor_set_addr_width() with addr_width still 0 and
-> > then the check for (nor->mtd.size > 0x1000000) would set it to 4. Do I
-> > guess correctly?
->
-> No, it comes out of that with addr_width=3 because the chip publishes 3_OR_4
-> and hence gets 3, even if that's nonsensical for a 32MB chip to publish.
->
-> Certainly that's the problem, I just want to solve it in a more general case
-> than just a fixup for this chip.
->
-> > In that case maybe we can do a better job of deciding what gets priority
-> > in the if-else chain. For example, giving addr_width from nor->info
-> > precedence over the one configured by SFDP can solve this problem. Then
-> > all you have to do is set the addr_width in the info struct, which is
-> > certainly easier than adding a fixup hook. There may be a more elegant
-> > solution to this but I haven't given it much thought.
+On Mon, Oct 05, 2020 at 01:38:27PM -0500, Rob Herring wrote:
+> This doesn't yet do anything in the tools, but make it explicit so we can
+> check either 'unevaluatedProperties' or 'additionalProperties' is present
+> in schemas.
+> 
+> 'unevaluatedProperties' is appropriate when including another schema (via
+> '$ref') and all possible properties and/or child nodes are not
+> explicitly listed in the schema with the '$ref'.
+> 
+> This is in preparation to add a meta-schema to check for missing
+> 'unevaluatedProperties' or 'additionalProperties'. This has been a
+> constant source of review issues.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-Thanks for starting this conversation Bert. I had intended on
-mentioning this broke our systems but didn't get to it. It broke a few
-different Aspeed platforms where the flashes are >= 32MB.
+For input:
 
-We are running with a revert of the 3_OR_4 patch in OpenBMC kernels:
+Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
- https://github.com/openbmc/linux/commit/ee41b2b489259f01585e49327377f62b76a24748
-
->
-> Since Tudor doesn't want the order of sfdp->info changed, how about
-> something like this instead?
->
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -3028,13 +3028,15 @@ static int spi_nor_set_addr_width(struct spi_nor *nor)
->          /* already configured from SFDP */
->      } else if (nor->info->addr_width) {
->          nor->addr_width = nor->info->addr_width;
-> -   } else if (nor->mtd.size > 0x1000000) {
-> -       /* enable 4-byte addressing if the device exceeds 16MiB */
-> -       nor->addr_width = 4;
->      } else {
->          nor->addr_width = 3;
->      }
->
-> +   if (nor->addr_width == 3 && nor->mtd.size > 0x1000000) {
-> +       /* enable 4-byte addressing if the device exceeds 16MiB */
-> +       nor->addr_width = 4;
-> +   }
-> +
->
-> Still fixes the general case, but I'm not sure what the SMPT parsing problem
-> is -- would this still trigger it?
-
-I tested this change you proposed and it fixed the issue for me.
-
-Cheers,
-
-Joel
-
->
->
-> --
-> Bert Vermeulen
-> bert@biot.com
+-- 
+Dmitry
 
 ______________________________________________________
 Linux MTD discussion mailing list
