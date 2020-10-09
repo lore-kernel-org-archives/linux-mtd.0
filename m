@@ -5,18 +5,18 @@ X-Spam-Level:
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAC99C4363A
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 20:06:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BCB54C433E7
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 20:06:46 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 55B9220732
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 20:06:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4A3FD20732
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 20:06:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CKsR3a9B"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 55B9220732
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Aq8xJZht"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A3FD20732
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,48 +25,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=DTyswpG2Dh0kY3dLNuFWVINZv1ni0YIy0NU5HmQcldQ=; b=CKsR3a9BNgQwFLF3PCU0kIR9M
-	E11kzxHRV7nFb3mKAG1yVPzzPu4labvSr8TLwFZPsrJV8k4C998rUqMho+zElPukMk2832zVNEEu9
-	6YiVY6J/DBpdJDm0wtKdT0GXQ29ItZ+e8QvDuiUpsVLOLXkw2cYkWRJwZSirjc6qVZK6GZEa8dqDc
-	Oh7X7KzDwMK2wLoXT+ax1J9LDp2VjvdV/yRG9da9zTS8E+ABvXpMHyU6mQKHBHswuwbsDLDts3rYU
-	ewu8j9ZnsrG5M4hj73xbXIzq1kYMHq4QNjSReoGZk8NMTcbSu1flyWt3P4in5MWMMye0f6r3/ijsh
-	jQThiQMJQ==;
+	 bh=oOfFb2J5mKn/Xsr2VTGp3BcgDRyb6BqMXWa0mbjvxxA=; b=Aq8xJZhtVS+9/Tilokcwg1eHC
+	1C3zV8iaWPo7fl2iqtLUz6JJv2n9Ky55F31K4Vb8nC5sKmTdQ+pnj6dhgdaORpcEhwcVVNrKgnppV
+	PIdjJLKaUUZgQUZRYe+2CmhAA//luQSzLbEFgwVUT73FbCbEIIbN4iNVWInFKZWawZ3lFDukybA3Q
+	CG0nXMXnSAyMMebJjiA8i9R6GP7MPPCEUJrtrgFYpY4WRHBneWu67Y40ZyL4w64ZdBLVfJ5J93ERD
+	mDG74K9WoSkRrxDXJa77m5DawQzQb6eNDEIppM4uga44ujcee84/Q4GqTT5ayjiUSvsca3mC5wUhi
+	H6lYhi6bA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kQydj-0008WE-9X; Fri, 09 Oct 2020 20:05:19 +0000
+	id 1kQye1-0000EB-Aw; Fri, 09 Oct 2020 20:05:37 +0000
 Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kQyUS-0002xz-FN; Fri, 09 Oct 2020 19:55:45 +0000
-IronPort-SDR: L6Yhz40QzVq9f0uwEcx7auVhDNwc8UtsHEPs/nmW4fEQ351QdCAp77MTs65f+xhbZgua6uFXlk
- Ye5aLj5M8Szw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9769"; a="152451022"
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; d="scan'208";a="152451022"
+ id 1kQyUT-0002zl-HT; Fri, 09 Oct 2020 19:55:46 +0000
+IronPort-SDR: fMflsroj4V/DB/WeocLDdihrnqw6KMHA4xzyIjEtxh8MSmd2Zrq+bwF91UqqrOctXx+uwgcjxJ
+ cSR6NmhLB2kg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9769"; a="152451164"
+X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; d="scan'208";a="152451164"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Oct 2020 12:52:44 -0700
-IronPort-SDR: A7QVfEYpWd+zukvvJSzSDlmpc6UtcI1VTl49mnWle7o9+shZWHPb4ayBrZUheEhKcyM4kHv/QX
- ai2WmfcpOoFA==
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; d="scan'208";a="389237190"
+ 09 Oct 2020 12:53:35 -0700
+IronPort-SDR: 1BDjhBWRiZHjmax0H5jHPL9Ee2R7VPzFxt4XNyUZ5d5LafdvLgy40B0wtQFVU3AX2TCQgDyRso
+ HhmDRI33qIDA==
+X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; d="scan'208";a="345148602"
 Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
- by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Oct 2020 12:52:43 -0700
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Oct 2020 12:53:34 -0700
 From: ira.weiny@intel.com
 To: Andrew Morton <akpm@linux-foundation.org>,
  Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
  Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>,
  Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH RFC PKS/PMEM 32/58] fs/hostfs: Utilize new kmap_thread()
-Date: Fri,  9 Oct 2020 12:50:07 -0700
-Message-Id: <20201009195033.3208459-33-ira.weiny@intel.com>
+Subject: [PATCH RFC PKS/PMEM 47/58] drivers/mtd: Utilize new kmap_thread()
+Date: Fri,  9 Oct 2020 12:50:22 -0700
+Message-Id: <20201009195033.3208459-48-ira.weiny@intel.com>
 X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
 In-Reply-To: <20201009195033.3208459-1-ira.weiny@intel.com>
 References: <20201009195033.3208459-1-ira.weiny@intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201009_155544_795479_1178F02D 
-X-CRM114-Status: GOOD (  16.83  )
+X-CRM114-CacheID: sfid-20201009_155545_721762_1CF5FA4A 
+X-CRM114-Status: GOOD (  14.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,23 +78,23 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org,
+Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org,
+ Vignesh Raghavendra <vigneshr@ti.com>, kvm@vger.kernel.org,
  linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org,
  Dave Hansen <dave.hansen@linux.intel.com>, dri-devel@lists.freedesktop.org,
  linux-mm@kvack.org, target-devel@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-kselftest@vger.kernel.org,
- samba-technical@lists.samba.org, Ira Weiny <ira.weiny@intel.com>,
- ceph-devel@vger.kernel.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
- linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org,
- Richard Weinberger <richard@nod.at>, x86@kernel.org,
- amd-gfx@lists.freedesktop.org, linux-afs@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>, samba-technical@lists.samba.org,
+ Ira Weiny <ira.weiny@intel.com>, ceph-devel@vger.kernel.org,
+ drbd-dev@lists.linbit.com, devel@driverdev.osuosl.org,
+ linux-cifs@vger.kernel.org, linux-nilfs@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-nvdimm@lists.01.org,
+ linux-rdma@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ x86@kernel.org, amd-gfx@lists.freedesktop.org, linux-afs@lists.infradead.org,
  cluster-devel@redhat.com, linux-cachefs@redhat.com,
  intel-wired-lan@lists.osuosl.org, xen-devel@lists.xenproject.org,
- linux-ext4@vger.kernel.org, drbd-dev@lists.linbit.com,
- intel-gfx@lists.freedesktop.org, Fenghua Yu <fenghua.yu@intel.com>,
- linux-um@lists.infradead.org, Jeff Dike <jdike@addtoit.com>,
+ linux-ext4@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
+ linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org,
  ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
  reiserfs-devel@vger.kernel.org, linux-block@vger.kernel.org,
  linux-bcache@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
@@ -111,69 +111,57 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Ira Weiny <ira.weiny@intel.com>
 
-The kmap() calls in this FS are localized to a single thread.  To avoid
-the over head of global PKRS updates use the new kmap_thread() call.
+These kmap() calls are localized to a single thread.  To avoid the over
+head of global PKRS updates use the new kmap_thread() call.
 
-Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
 Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 ---
- fs/hostfs/hostfs_kern.c | 12 ++++++------
+ drivers/mtd/mtd_blkdevs.c | 12 ++++++------
  1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index c070c0d8e3e9..608efd0f83cb 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -409,7 +409,7 @@ static int hostfs_writepage(struct page *page, struct writeback_control *wbc)
- 	if (page->index >= end_index)
- 		count = inode->i_size & (PAGE_SIZE-1);
+diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+index 0c05f77f9b21..4b18998273fa 100644
+--- a/drivers/mtd/mtd_blkdevs.c
++++ b/drivers/mtd/mtd_blkdevs.c
+@@ -88,14 +88,14 @@ static blk_status_t do_blktrans_request(struct mtd_blktrans_ops *tr,
+ 			return BLK_STS_IOERR;
+ 		return BLK_STS_OK;
+ 	case REQ_OP_READ:
+-		buf = kmap(bio_page(req->bio)) + bio_offset(req->bio);
++		buf = kmap_thread(bio_page(req->bio)) + bio_offset(req->bio);
+ 		for (; nsect > 0; nsect--, block++, buf += tr->blksize) {
+ 			if (tr->readsect(dev, block, buf)) {
+-				kunmap(bio_page(req->bio));
++				kunmap_thread(bio_page(req->bio));
+ 				return BLK_STS_IOERR;
+ 			}
+ 		}
+-		kunmap(bio_page(req->bio));
++		kunmap_thread(bio_page(req->bio));
+ 		rq_flush_dcache_pages(req);
+ 		return BLK_STS_OK;
+ 	case REQ_OP_WRITE:
+@@ -103,14 +103,14 @@ static blk_status_t do_blktrans_request(struct mtd_blktrans_ops *tr,
+ 			return BLK_STS_IOERR;
  
--	buffer = kmap(page);
-+	buffer = kmap_thread(page);
- 
- 	err = write_file(HOSTFS_I(inode)->fd, &base, buffer, count);
- 	if (err != count) {
-@@ -425,7 +425,7 @@ static int hostfs_writepage(struct page *page, struct writeback_control *wbc)
- 	err = 0;
- 
-  out:
--	kunmap(page);
-+	kunmap_thread(page);
- 
- 	unlock_page(page);
- 	return err;
-@@ -437,7 +437,7 @@ static int hostfs_readpage(struct file *file, struct page *page)
- 	loff_t start = page_offset(page);
- 	int bytes_read, ret = 0;
- 
--	buffer = kmap(page);
-+	buffer = kmap_thread(page);
- 	bytes_read = read_file(FILE_HOSTFS_I(file)->fd, &start, buffer,
- 			PAGE_SIZE);
- 	if (bytes_read < 0) {
-@@ -454,7 +454,7 @@ static int hostfs_readpage(struct file *file, struct page *page)
- 
-  out:
- 	flush_dcache_page(page);
--	kunmap(page);
-+	kunmap_thread(page);
- 	unlock_page(page);
- 	return ret;
- }
-@@ -480,9 +480,9 @@ static int hostfs_write_end(struct file *file, struct address_space *mapping,
- 	unsigned from = pos & (PAGE_SIZE - 1);
- 	int err;
- 
--	buffer = kmap(page);
-+	buffer = kmap_thread(page);
- 	err = write_file(FILE_HOSTFS_I(file)->fd, &pos, buffer + from, copied);
--	kunmap(page);
-+	kunmap_thread(page);
- 
- 	if (!PageUptodate(page) && err == PAGE_SIZE)
- 		SetPageUptodate(page);
+ 		rq_flush_dcache_pages(req);
+-		buf = kmap(bio_page(req->bio)) + bio_offset(req->bio);
++		buf = kmap_thread(bio_page(req->bio)) + bio_offset(req->bio);
+ 		for (; nsect > 0; nsect--, block++, buf += tr->blksize) {
+ 			if (tr->writesect(dev, block, buf)) {
+-				kunmap(bio_page(req->bio));
++				kunmap_thread(bio_page(req->bio));
+ 				return BLK_STS_IOERR;
+ 			}
+ 		}
+-		kunmap(bio_page(req->bio));
++		kunmap_thread(bio_page(req->bio));
+ 		return BLK_STS_OK;
+ 	default:
+ 		return BLK_STS_IOERR;
 -- 
 2.28.0.rc0.12.gb6a658bd00c9
 
