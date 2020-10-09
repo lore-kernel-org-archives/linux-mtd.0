@@ -5,18 +5,18 @@ X-Spam-Level:
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 098A1C83020
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 20:00:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 629F9C9DC9D
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 20:01:30 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 67A7A225A9
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 20:00:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9AA8D22403
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 20:01:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VhIN0ZjV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 67A7A225A9
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dSeC55l1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9AA8D22403
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,48 +25,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=W4chj8PD3U7oEdm9jL1mbqYW44qHNiV3BJWBxRwWfCg=; b=VhIN0ZjVXzhFy/S46lbm6h3kV
-	whLzndPQLwaNY3jjIXVqKntV8SpHD4tA7xNQstq3HbzF4nx8zck2PlVCl+DoTZC/TUaJe0SBA8jkY
-	Y7HcZkO1x1v+mXWzfZncfa306iSRsG8YmT6FnTXqpgqT8EA14LQO/B6MFrfpELbUeCmzEIBJZqv5Z
-	eFWeuChJubhzRPHWBR2Pq7MDRC8Ay34HhfcMWfjfmNe6CEbUg59yp+A9eSK584X/BFXRtyCEY+nCz
-	tf6HGGdxO8kppUBGK26UdXP8ga47Lw7CcoVMpLZnZkfqY3Om1Tru0lWQcgVbvAOAJfU1UAyBpluT4
-	9o2Gu6XfQ==;
+	 bh=hY5ah+OU2NBCZ4+o2YO/uOYHwzvQaIttjRnApK+sqxU=; b=dSeC55l1mXJ9PgkSme9MlmDjD
+	PsQ7OV/tnkqQvrD1R3OkLvGTE60ia/kTqgSNG061szkK8/9En3S7rmnILiph3aLNY/pr8Kt393q9i
+	BNym3RQLD6xSH7IiSVt0ygk7oBi8aFqcod3mucccjN8v1IzQLTE11DIKldZiEtbAy/CyssgmWx0dW
+	5fJFuhoD2yXSQSoEPqSV4/15loMfBCceFBYJQhGSeJY7cnYP2QHI6SgtOc/0PxXQV2FIkuyiB5Rjj
+	LOIHcDTXqZa2pt+c1QJ3xljTJqtuqHJwQ1KdBgfHGkUtHuU5Yg1tWW87oEB0WNH4if5hTpE9tnRQW
+	vCU3V9qSQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kQyYm-0005Rh-9p; Fri, 09 Oct 2020 20:00:12 +0000
-Received: from mga11.intel.com ([192.55.52.93])
+	id 1kQyZ9-0005hH-UX; Fri, 09 Oct 2020 20:00:36 +0000
+Received: from mga14.intel.com ([192.55.52.115])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kQyTJ-0002Ga-S5; Fri, 09 Oct 2020 19:54:40 +0000
-IronPort-SDR: 5cOpnCjIV8KF8QHEFuZZIN2Jr4xLS26J+8IoTg06cWrodKSnVOIZhV0coYPSJVwk3m1LFMTf+I
- OxnXQv55nxFw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9769"; a="162068172"
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; d="scan'208";a="162068172"
+ id 1kQyTe-0002XP-AC; Fri, 09 Oct 2020 19:55:01 +0000
+IronPort-SDR: 4Dnn/w50s3V02Th4SCvqqG/8SHiwq9sQH1w35lY36OTkqYzoVRnJoqy/VaO+ecfFSIxu5ukJnF
+ 2kY3wV4AM/LA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9769"; a="164744136"
+X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; d="scan'208";a="164744136"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Oct 2020 12:53:44 -0700
-IronPort-SDR: Uit4axCqwtogby85Iv/hBLI1Moj4COtsBpPB5jXSVWpuENwpihzSQwSQg3nZnBMabzVvybSK2I
- 1kQ4taZ9oZgQ==
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; d="scan'208";a="298531484"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Oct 2020 12:53:51 -0700
+IronPort-SDR: V1KD7wTraPak1zxWaGCn8NDyAgfcS4zsKsBv4Z0vY7HUn25qjJm9u99gQjtiJGVT+R+oXmWyM0
+ H2mADCd5/x5Q==
+X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; d="scan'208";a="462301148"
 Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
- by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Oct 2020 12:53:43 -0700
+ by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Oct 2020 12:53:50 -0700
 From: ira.weiny@intel.com
 To: Andrew Morton <akpm@linux-foundation.org>,
  Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
  Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>,
  Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH RFC PKS/PMEM 50/58] drivers/android: Utilize new kmap_thread()
-Date: Fri,  9 Oct 2020 12:50:25 -0700
-Message-Id: <20201009195033.3208459-51-ira.weiny@intel.com>
+Subject: [PATCH RFC PKS/PMEM 52/58] mm: Utilize new kmap_thread()
+Date: Fri,  9 Oct 2020 12:50:27 -0700
+Message-Id: <20201009195033.3208459-53-ira.weiny@intel.com>
 X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
 In-Reply-To: <20201009195033.3208459-1-ira.weiny@intel.com>
 References: <20201009195033.3208459-1-ira.weiny@intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201009_155434_078528_10DFD71C 
-X-CRM114-Status: GOOD (  15.59  )
+X-CRM114-CacheID: sfid-20201009_155454_545672_135D1EE4 
+X-CRM114-Status: GOOD (  16.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,11 +97,11 @@ Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org,
  reiserfs-devel@vger.kernel.org, linux-block@vger.kernel.org,
  linux-bcache@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
  io-uring@vger.kernel.org, linux-nfs@vger.kernel.org,
- linux-ntfs-dev@lists.sourceforge.net,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, kexec@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- netdev@vger.kernel.org, linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
+ linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org,
+ kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
+ bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
@@ -112,28 +112,92 @@ From: Ira Weiny <ira.weiny@intel.com>
 These kmap() calls are localized to a single thread.  To avoid the over
 head of global PKRS updates use the new kmap_thread() call.
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 ---
- drivers/android/binder_alloc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ mm/memory.c      | 8 ++++----
+ mm/swapfile.c    | 4 ++--
+ mm/userfaultfd.c | 4 ++--
+ 3 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
-index 69609696a843..5f50856caad7 100644
---- a/drivers/android/binder_alloc.c
-+++ b/drivers/android/binder_alloc.c
-@@ -1118,9 +1118,9 @@ binder_alloc_copy_user_to_buffer(struct binder_alloc *alloc,
- 		page = binder_alloc_get_page(alloc, buffer,
- 					     buffer_offset, &pgoff);
- 		size = min_t(size_t, bytes, PAGE_SIZE - pgoff);
--		kptr = kmap(page) + pgoff;
-+		kptr = kmap_thread(page) + pgoff;
- 		ret = copy_from_user(kptr, from, size);
+diff --git a/mm/memory.c b/mm/memory.c
+index fcfc4ca36eba..75a054882d7a 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4945,7 +4945,7 @@ int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
+ 			if (bytes > PAGE_SIZE-offset)
+ 				bytes = PAGE_SIZE-offset;
+ 
+-			maddr = kmap(page);
++			maddr = kmap_thread(page);
+ 			if (write) {
+ 				copy_to_user_page(vma, page, addr,
+ 						  maddr + offset, buf, bytes);
+@@ -4954,7 +4954,7 @@ int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
+ 				copy_from_user_page(vma, page, addr,
+ 						    buf, maddr + offset, bytes);
+ 			}
+-			kunmap(page);
++			kunmap_thread(page);
+ 			put_page(page);
+ 		}
+ 		len -= bytes;
+@@ -5216,14 +5216,14 @@ long copy_huge_page_from_user(struct page *dst_page,
+ 
+ 	for (i = 0; i < pages_per_huge_page; i++) {
+ 		if (allow_pagefault)
+-			page_kaddr = kmap(dst_page + i);
++			page_kaddr = kmap_thread(dst_page + i);
+ 		else
+ 			page_kaddr = kmap_atomic(dst_page + i);
+ 		rc = copy_from_user(page_kaddr,
+ 				(const void __user *)(src + i * PAGE_SIZE),
+ 				PAGE_SIZE);
+ 		if (allow_pagefault)
+-			kunmap(dst_page + i);
++			kunmap_thread(dst_page + i);
+ 		else
+ 			kunmap_atomic(page_kaddr);
+ 
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index debc94155f74..e3296ff95648 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -3219,7 +3219,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+ 		error = PTR_ERR(page);
+ 		goto bad_swap_unlock_inode;
+ 	}
+-	swap_header = kmap(page);
++	swap_header = kmap_thread(page);
+ 
+ 	maxpages = read_swap_header(p, swap_header, inode);
+ 	if (unlikely(!maxpages)) {
+@@ -3395,7 +3395,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+ 		filp_close(swap_file, NULL);
+ out:
+ 	if (page && !IS_ERR(page)) {
 -		kunmap(page);
 +		kunmap_thread(page);
- 		if (ret)
- 			return bytes - size + ret;
- 		bytes -= size;
+ 		put_page(page);
+ 	}
+ 	if (name)
+diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+index 9a3d451402d7..4d38c881bb2d 100644
+--- a/mm/userfaultfd.c
++++ b/mm/userfaultfd.c
+@@ -586,11 +586,11 @@ static __always_inline ssize_t __mcopy_atomic(struct mm_struct *dst_mm,
+ 			mmap_read_unlock(dst_mm);
+ 			BUG_ON(!page);
+ 
+-			page_kaddr = kmap(page);
++			page_kaddr = kmap_thread(page);
+ 			err = copy_from_user(page_kaddr,
+ 					     (const void __user *) src_addr,
+ 					     PAGE_SIZE);
+-			kunmap(page);
++			kunmap_thread(page);
+ 			if (unlikely(err)) {
+ 				err = -EFAULT;
+ 				goto out;
 -- 
 2.28.0.rc0.12.gb6a658bd00c9
 
