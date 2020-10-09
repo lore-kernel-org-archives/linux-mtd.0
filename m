@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50543C433DF
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 11:44:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 012EBC433DF
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 12:23:52 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E1F2122268
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 11:44:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 900E922284
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 12:23:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Uq4oZ6JK";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="MN1KsAKE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E1F2122268
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Qb4xymRx";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="pVtQGxSo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 900E922284
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,58 +26,58 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:To:Subject:From:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=97Qai03hBDAaMZY5lYgrbWX2plnml3L/ePXvlRLp8nE=; b=Uq4oZ6JKCU/JVqJUllzEYr1Xyh
-	y/s48CIMyo9RaJOfrpIIoPSREiTxTjw1oXv/nC+AmPGpsNCbcNuBi9/lOyBAmtJyUlnGOBNi7XvNs
-	DxAZku5s+WHeQzew2szRMMdptYP7CET4GnWY+vsKvdE6MWw4K/PbldGayZA4RZeyu/y5qGgAp7BOe
-	+2//rjPAgeLg5LEGV3+eZZArDhebMuCVGfcOpzdUUfDf11JkMhnGeto+Cp9rT1q7CKXvIf04pkkF3
-	ntvYTc2BmBvsNqahnUvVhcMb/Y2n0Jn1Ak+wgoL8KTLuwvzdtL7y6FD32KM9nNQ9kE3QpOWONmFJy
-	RXE7QdOQ==;
+	bh=36IwXPtST2xFrGEOxzo79mJlcsey7F+Gd6Xn6PwplgE=; b=Qb4xymRxdgr/v8XtRmPcKBXAW2
+	uEj8TrmRuTyVw28PpvUP3iGyXS9mRKpJXy+UNVvl2tPcnqb2YLp9qV9yb3beO+endKEYedyqrcngA
+	UJrlklvlIcc8c0iv6DkN9ev4MpJG7gSSHg4L6vGe8s9PFoOHh+zbwAttdYKiIsOexGc1oduGg32eF
+	5+3q5z9cTrN9gPP/IVfmkmXxbihg3ERHpFKeZgFGcb8d72+EuJNUzAyetyHA04Ah2y5v5pbJHA0W1
+	QbzbM8TKHEGKZmqtLQpP4XYDYlAsJGsZGJiy9e+5N2vFkT3EgYm0EWxijt5lwcZ/e0RL2kLsokfie
+	nSPykmpQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kQqoO-0003G1-0E; Fri, 09 Oct 2020 11:43:48 +0000
+	id 1kQrQM-0007oF-Ot; Fri, 09 Oct 2020 12:23:02 +0000
 Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kQqoL-0003FC-Ck
- for linux-mtd@lists.infradead.org; Fri, 09 Oct 2020 11:43:46 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 099BhddW112227;
- Fri, 9 Oct 2020 06:43:39 -0500
+ id 1kQrQJ-0007nb-4x
+ for linux-mtd@lists.infradead.org; Fri, 09 Oct 2020 12:23:00 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 099CMuhT125787;
+ Fri, 9 Oct 2020 07:22:56 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1602243819;
- bh=kbmzpSBnjsoZnqZ/qE6YiojSx7UE6gm6NgaocJymKOo=;
+ s=ti-com-17Q1; t=1602246176;
+ bh=SBimvmacFTcGqlasAygx09rqk0xtvaO4kxa1H7vBKvY=;
  h=From:Subject:To:CC:Date;
- b=MN1KsAKEFRINzOlo04qh9Jvv0NwrDTF1mqSKsoewgtqfSt2dwe7UZelc32do3MGG1
- 4uRYecftDbiG3QF532lh93mzomjWIHNwZUFyCA2MYthELcX18I48QBgN8MGYveB8hJ
- hKWNxXH9+E3/iqjpOoHzguKiCdeLhStehqdyi4vY=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 099BhdUU063784
+ b=pVtQGxSoB67/RyoJ1RtQ+Jw9GLF9o3ilamiV7zKIBEb0/QVqMi8rUNZX0jvW2Kn9c
+ HCTziiEYXuJHR3g4hf1FTYcE3bq4Khf+QfLkUfxaDav2sv7aSKssvhit+8fcytc9jS
+ hW5Rg54mPDYnLUTER3n6gGTeYxeeob8J2tFc39tw=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 099CMtwk086287
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 9 Oct 2020 06:43:39 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ Fri, 9 Oct 2020 07:22:55 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 9 Oct
- 2020 06:43:39 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ 2020 07:22:55 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 9 Oct 2020 06:43:39 -0500
+ Frontend Transport; Fri, 9 Oct 2020 07:22:55 -0500
 Received: from [10.250.235.166] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 099Bhbpd058344;
- Fri, 9 Oct 2020 06:43:38 -0500
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 099CMrfw110770;
+ Fri, 9 Oct 2020 07:22:54 -0500
 From: Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [GIT PULL] CFI and HyperFlash changes for v5.10-rc1
+Subject: [GIT PULL] mtd: spi-nor: Changes for 5.10
 To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>
-Message-ID: <6755a43e-1fec-4a5f-760d-44ac834787aa@ti.com>
-Date: Fri, 9 Oct 2020 17:13:36 +0530
+ <richard@nod.at>, Tudor Ambarus <Tudor.Ambarus@microchip.com>
+Message-ID: <f91ae16f-7995-aa27-c2ff-4e519929417e@ti.com>
+Date: Fri, 9 Oct 2020 17:52:53 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
 Content-Language: en-US
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201009_074345_526883_C9498015 
-X-CRM114-Status: GOOD (  12.24  )
+X-CRM114-CacheID: sfid-20201009_082259_703500_B6D942BC 
+X-CRM114-Status: GOOD (  12.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,19 +89,19 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi  Miquel, Richard,
+Hi Miquel, Richard
 
-Here is the CFI and HyperFlash related PR for v5.10-rc1. Thanks!
+Please pull SPI NOR changes for 5.10-rc1.
 
 Regards
 Vignesh
+
 
 The following changes since commit ba4f184e126b751d1bffad5897f263108befc780:
 
@@ -109,35 +109,41 @@ The following changes since commit ba4f184e126b751d1bffad5897f263108befc780:
 
 are available in the Git repository at:
 
-  git@gitolite.kernel.org:pub/scm/linux/kernel/git/mtd/linux.git tags/cfi/for-5.10
+  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/spi-nor/for-5.10
 
-for you to fetch changes up to 5de15b610f785f0e188fefb707f0b19de156968a:
+for you to fetch changes up to 9a3422a110c868e511387a81df25a315eaa3a7b8:
 
-  mtd: hyperbus: add Renesas RPC-IF driver (2020-10-06 12:36:21 +0530)
-
-----------------------------------------------------------------
-HyperBus changes
-
-* DMA support for TI's AM654 HyperBus controller driver.
-* HyperBus frontend driver for Renesas RPC-IF driver.
+  Revert "mtd: spi-nor: Prefer asynchronous probe" (2020-10-06 10:46:07 +0530)
 
 ----------------------------------------------------------------
-Sergei Shtylyov (1):
-      mtd: hyperbus: add Renesas RPC-IF driver
+SPI NOR core changes:
+- Support for Winbond w25q64jwm flash
+- Enable 4K sector support for mx25l12805d
 
-Vignesh Raghavendra (4):
-      mtd: hyperbus: Provide per device private pointer
-      mtd: hyperbus: hbmc-am654: Fix direct mapping setup flash access
-      mtd: hyperbus: hbmc-am654: Drop pm_runtime* calls from probe
-      mtd: hyperbus: hbmc-am654: Add DMA support for reads
+SPI NOR controller drivers changes:
+- intel-spi:
+   - Add Alder Lake-S PCI ID
 
- drivers/mtd/hyperbus/Kconfig      |   7 +
- drivers/mtd/hyperbus/Makefile     |   1 +
- drivers/mtd/hyperbus/hbmc-am654.c | 144 +++++++-
- drivers/mtd/hyperbus/rpc-if.c     | 170 ++++++++++
- include/linux/mtd/hyperbus.h      |  13 +
- 5 files changed, 319 insertions(+), 16 deletions(-)
- create mode 100644 drivers/mtd/hyperbus/rpc-if.c
+----------------------------------------------------------------
+Douglas Anderson (1):
+      mtd: spi-nor: Prefer asynchronous probe
+
+Ikjoon Jang (1):
+      mtd: spi-nor: winbond: Add support for w25q64jwm
+
+Mika Westerberg (1):
+      mtd: spi-nor: intel-spi: Add support for Intel Alder Lake-S SPI serial flash
+
+Robert Marko (1):
+      mtd: spi-nor: macronix: Add SECT_4K to mx25l12805d
+
+Vignesh Raghavendra (1):
+      Revert "mtd: spi-nor: Prefer asynchronous probe"
+
+ drivers/mtd/spi-nor/controllers/intel-spi-pci.c | 1 +
+ drivers/mtd/spi-nor/macronix.c                  | 2 +-
+ drivers/mtd/spi-nor/winbond.c                   | 9 +++++++++
+ 3 files changed, 11 insertions(+), 1 deletion(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
