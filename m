@@ -2,82 +2,88 @@ Return-Path: <SRS0=ARza=DQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 012EBC433DF
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 12:23:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 987A2C433E7
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 13:56:27 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 900E922284
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 12:23:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 32A5B222B9
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 13:56:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Qb4xymRx";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="pVtQGxSo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 900E922284
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Ol87f/aC";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hX9UyplG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 32A5B222B9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:To:Subject:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=36IwXPtST2xFrGEOxzo79mJlcsey7F+Gd6Xn6PwplgE=; b=Qb4xymRxdgr/v8XtRmPcKBXAW2
-	uEj8TrmRuTyVw28PpvUP3iGyXS9mRKpJXy+UNVvl2tPcnqb2YLp9qV9yb3beO+endKEYedyqrcngA
-	UJrlklvlIcc8c0iv6DkN9ev4MpJG7gSSHg4L6vGe8s9PFoOHh+zbwAttdYKiIsOexGc1oduGg32eF
-	5+3q5z9cTrN9gPP/IVfmkmXxbihg3ERHpFKeZgFGcb8d72+EuJNUzAyetyHA04Ah2y5v5pbJHA0W1
-	QbzbM8TKHEGKZmqtLQpP4XYDYlAsJGsZGJiy9e+5N2vFkT3EgYm0EWxijt5lwcZ/e0RL2kLsokfie
-	nSPykmpQ==;
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=cRtDWcDcC8Wr3rg6VpzPEqLVmYhVhHq0j8lKQVApr8E=; b=Ol87f/aCD9F7oWTJUL/FmIo0T
+	DU3MuC44U4BKq6KfJkCWqk/gUQguJKanebBFX/8SoY1cZt+bTLZSc3INYkzmFiLaKt4KRM0LuOVYI
+	9M+yfcDV/PQHcGs0YuTqDC7CQc8/1OBkZetXG5sJo0jK9+IC0SvsCuLvftscmbMoYtxB6uh234R0b
+	MudyVfj5obSvktZt5bY/2pSfkI1zE0Vf1BZxjrLV5YD6s+hbfiP3uRDbFjP5W9S5MBmxkQOcaqMK1
+	YJSEhDxTo0nYKMy5ZLgVbZXUaJ2lrMcPIgjIXZ7m/qay+NLy8TL8/rF1qldeJzb+2Jo6GW4821FlR
+	zzMM6zYnQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kQrQM-0007oF-Ot; Fri, 09 Oct 2020 12:23:02 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1kQsrZ-00069E-Aj; Fri, 09 Oct 2020 13:55:13 +0000
+Received: from mail-il1-x12f.google.com ([2607:f8b0:4864:20::12f])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kQrQJ-0007nb-4x
- for linux-mtd@lists.infradead.org; Fri, 09 Oct 2020 12:23:00 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 099CMuhT125787;
- Fri, 9 Oct 2020 07:22:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1602246176;
- bh=SBimvmacFTcGqlasAygx09rqk0xtvaO4kxa1H7vBKvY=;
- h=From:Subject:To:CC:Date;
- b=pVtQGxSoB67/RyoJ1RtQ+Jw9GLF9o3ilamiV7zKIBEb0/QVqMi8rUNZX0jvW2Kn9c
- HCTziiEYXuJHR3g4hf1FTYcE3bq4Khf+QfLkUfxaDav2sv7aSKssvhit+8fcytc9jS
- hW5Rg54mPDYnLUTER3n6gGTeYxeeob8J2tFc39tw=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 099CMtwk086287
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 9 Oct 2020 07:22:55 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 9 Oct
- 2020 07:22:55 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 9 Oct 2020 07:22:55 -0500
-Received: from [10.250.235.166] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 099CMrfw110770;
- Fri, 9 Oct 2020 07:22:54 -0500
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [GIT PULL] mtd: spi-nor: Changes for 5.10
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Message-ID: <f91ae16f-7995-aa27-c2ff-4e519929417e@ti.com>
-Date: Fri, 9 Oct 2020 17:52:53 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ id 1kQsrX-00067y-10
+ for linux-mtd@lists.infradead.org; Fri, 09 Oct 2020 13:55:11 +0000
+Received: by mail-il1-x12f.google.com with SMTP id j13so5307392ilc.4
+ for <linux-mtd@lists.infradead.org>; Fri, 09 Oct 2020 06:55:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=2S3D9iYx51A87Z/QbgZ/692gZHGuP26oR+0wJ2UbLg8=;
+ b=hX9UyplGhpPB5uZa13A2uK91raJ+XXjUWlWCULGthc4S0OtZCfMyA1Sc9MTHzTbgC4
+ msSG67tcHwpsaaHcIcBIxD//0F918iRlSssC5PR4njAqbOOYLyKqyC5a8bmRJ+42fVIX
+ m5szy0Q1jAgH4+eL9obnuOTNuNffxCrmelyiwXC67CEvoRL3Yl5tuCyUnJ8SRVUT/wwd
+ h1sLQ8miFedqdQqlUJXnL3yQoAhnGJv523s7udQLzJJ8AiSS3EpjHJGGcxtnuYqvMEPB
+ GokfmAsUWyD3jFdgVaVDlBKgdFPczycyRd6zaGtUR6Beyb3OEx622w4pKxPRyQvqURMf
+ 1iJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=2S3D9iYx51A87Z/QbgZ/692gZHGuP26oR+0wJ2UbLg8=;
+ b=U0U+xTmb7kUzxcJOUyhW+WasQ22gHKPeTX4Q7epsor8lwvSOD3icxpI4MS/RarcHLA
+ gIAwzGZFCLM5MPY0aVHmKKRQegWIpaVCqCBRXKYjnAKYl+qF72v7ghvRW6AekPaQYIiM
+ i050n95e0IuQVD4GkCjPTQn2+j5R3Eo73GGNeM8Hz6XFvZX1/oNmzgoj75DdlKt+3il4
+ 6iz0zFNfG4o6jxBQ/6ISf2xZM7fyhm4fvtb2jCkoRuy8hy4S+VdMgF9CmgWdLsCRrYuk
+ KMdS1ZcHB0bkJmMYGazUR9xjtjalh5BP5QFVWQRhIcgzQRAAj80+g9rD66SiwsbbdOzE
+ cZhA==
+X-Gm-Message-State: AOAM533xRk1Pcq62pzUBJlJa6Y9Rtq7TX28D5FBEvrV6WywG7BmCuws2
+ /dRLhJ8YijtavyJvi88iGSkmoqT2wnMisxERG1tdQA==
+X-Google-Smtp-Source: ABdhPJwJSrz7eUwTvUf7DlETg6YMldEBYzcCV0k+8KYceSzIWftZL4GSM73AlaH1smsxWJNOo4qH2nJDd79/yrPumYg=
+X-Received: by 2002:a05:6e02:664:: with SMTP id
+ l4mr11028746ilt.81.1602251705277; 
+ Fri, 09 Oct 2020 06:55:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <CA+G9fYvuq58q+GsWnzni0sKSHbubuQz-UaK3TASX26V_a7yBVw@mail.gmail.com>
+ <20200924090349.GF27174@8bytes.org>
+ <ecf71b34-a104-d42a-bfcd-9570e73520a7@arm.com>
+ <20200924092546.GJ27174@8bytes.org>
+ <e2186418-d4d6-e1f4-5eb4-3bfafb5cebb2@arm.com>
+ <20200924095629.GL27174@8bytes.org>
+In-Reply-To: <20200924095629.GL27174@8bytes.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Fri, 9 Oct 2020 19:24:54 +0530
+Message-ID: <CA+G9fYu42j_B+Rg2nq+KKBiKLqxVEqabQ15CujyJ+o6jqRj2uQ@mail.gmail.com>
+Subject: Re: arm-smmu 5000000.iommu: Cannot accommodate DMA offset for IOMMU
+ page tables
+To: Joerg Roedel <joro@8bytes.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201009_082259_703500_B6D942BC 
-X-CRM114-Status: GOOD (  12.15  )
+X-CRM114-CacheID: sfid-20201009_095511_098409_27461C3E 
+X-CRM114-Status: GOOD (  11.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,61 +95,33 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: Poonam Aggrwal <poonam.aggrwal@nxp.com>, Rob Herring <robh@kernel.org>,
+ Joerg Roedel <jroedel@suse.de>, Arnd Bergmann <arnd@arndb.de>,
+ Richard Weinberger <richard@nod.at>, "Z.Q. Hou" <Zhiqiang.Hou@nxp.com>,
+ Will Deacon <will@kernel.org>, open list <linux-kernel@vger.kernel.org>,
+ lkft-triage@lists.linaro.org,
+ "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+ Linux-Next Mailing List <linux-next@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Suram Suram <suram@nxp.com>, masonccyang@mxic.com.tw,
+ Robin Murphy <robin.murphy@arm.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel, Richard
+On Thu, 24 Sep 2020 at 15:26, Joerg Roedel <joro@8bytes.org> wrote:
+>
+> On Thu, Sep 24, 2020 at 10:36:47AM +0100, Robin Murphy wrote:
+> > Yes, the issue was introduced by one of the changes in "dma-mapping:
+> > introduce DMA range map, supplanting dma_pfn_offset", so it only existed in
+> > the dma-mapping/for-next branch anyway.
 
-Please pull SPI NOR changes for 5.10-rc1.
-
-Regards
-Vignesh
-
-
-The following changes since commit ba4f184e126b751d1bffad5897f263108befc780:
-
-  Linux 5.9-rc6 (2020-09-20 16:33:55 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/spi-nor/for-5.10
-
-for you to fetch changes up to 9a3422a110c868e511387a81df25a315eaa3a7b8:
-
-  Revert "mtd: spi-nor: Prefer asynchronous probe" (2020-10-06 10:46:07 +0530)
-
-----------------------------------------------------------------
-SPI NOR core changes:
-- Support for Winbond w25q64jwm flash
-- Enable 4K sector support for mx25l12805d
-
-SPI NOR controller drivers changes:
-- intel-spi:
-   - Add Alder Lake-S PCI ID
-
-----------------------------------------------------------------
-Douglas Anderson (1):
-      mtd: spi-nor: Prefer asynchronous probe
-
-Ikjoon Jang (1):
-      mtd: spi-nor: winbond: Add support for w25q64jwm
-
-Mika Westerberg (1):
-      mtd: spi-nor: intel-spi: Add support for Intel Alder Lake-S SPI serial flash
-
-Robert Marko (1):
-      mtd: spi-nor: macronix: Add SECT_4K to mx25l12805d
-
-Vignesh Raghavendra (1):
-      Revert "mtd: spi-nor: Prefer asynchronous probe"
-
- drivers/mtd/spi-nor/controllers/intel-spi-pci.c | 1 +
- drivers/mtd/spi-nor/macronix.c                  | 2 +-
- drivers/mtd/spi-nor/winbond.c                   | 9 +++++++++
- 3 files changed, 11 insertions(+), 1 deletion(-)
+FYI,
+The reported problem still exists
+>
+> Okay, alright then.
+>
 
 ______________________________________________________
 Linux MTD discussion mailing list
