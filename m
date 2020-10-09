@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AA5BC433DF
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 14:33:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2B46C433DF
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 14:33:22 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 07B052226B
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 14:33:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4C55D2226B
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 14:33:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="g5XiCjMF";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="VsE23OLO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 07B052226B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Lnteg2jl";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="e53+Uy/z"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C55D2226B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,35 +26,35 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Vo4bd1Kjv3Ozp4WX3v1T1uXFJjyR3kDbruk6dt3Dcc0=; b=g5XiCjMFxay2SfkVzvYI9v0sT
-	VNss9HdA0TgV5c+AXqCEKiVOz4waKVGv37sPyBq9OLA+Dlw59B5GU6Kn3izp/e1BQk8/1JHLC3mVf
-	6RzL4GxQB7DKYdCjePBo1N9jvVG+XFKmXg6/Cy4A8wf+6lngRT1BxA5gkWptFNQGpzPWSFflnk7Z8
-	k8whZUlqboy0tzEso8IPTUZEJnqChXaV342RbkRaaMgWTiEzqEzQ0GMAAy0l7EOWJFXXf7P7rd10v
-	/Ze6BIc3XEfV1qKs094oAhh7cFQc3dpepM1lT8B8CDX9CHlu8EC3Hxwe4xOVc/3g5bEdawRw3oy0T
-	xc7CyWgoQ==;
+	 bh=DM93cGaoor1dICiIe5eg0i1fEDgm830Le3EBapdIoAg=; b=Lnteg2jlQDxpVSHTA17oj0UQE
+	X9NScLttErnX9GvBmqxn8qaeGDKRsHrDycS+18lBIMXrHnSh2mtTE1kdG/38buSaF7nChPhp5unBb
+	+9TJwur273H3kuiqME/I00l7tTgq8lRm5Y5Sl4z9beqaNIU/FVts+IR8HLVoWN7diSBnGwkgDTjw2
+	F/HiMtCMc8AgQ8PauJjFZMJOhNluL4D1VpIfcLss7hgHGMxCjLiHsb1jhqAdfVAtK5nT2Q8Tj8bo1
+	EgNmbNDMkPhgv7i0Fi1iJg+RabSpUrPjgPZdjpr0PEwodzkmuj+TsZf2hJd1u2pGk74ofkSMlX1sb
+	9P5bt+52Q==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kQtRr-0004BO-Gs; Fri, 09 Oct 2020 14:32:43 +0000
+	id 1kQtRR-0003vh-UD; Fri, 09 Oct 2020 14:32:18 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kQtQN-0003Mi-6p; Fri, 09 Oct 2020 14:31:11 +0000
+ id 1kQtQM-0003MM-Gu; Fri, 09 Oct 2020 14:31:10 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=RIb1gQ+A64FbhPeJkfhHPdkd0Jjt6Z+sspMIve+fcDU=; b=VsE23OLOrUsnE7PhGHwfx4AvQD
- ZxkA8063qfbOb72uym0CvuEdjOdRn7oO/of7SRBBhcxjg9XTVL1ic5NG9xyRTX+fd2YtHU6noe+tR
- uEp06xjPiOqssHfOpiCZbZjqG05aMT4oOo9biqN01offaQ9iApy0o0e4MMkooCZAHQAeyjeBIDN8e
- KJorn95GK3/JkF8UaucM0gBtV/Vb6J3DVeBdt7Q6Dy7Pz7UU0qxP6J4lpYi/+bz+kDQ9hjZSAe76U
- jlZ6/O0bb9U/qtqCLSWlYuFcsp/+4PYyUSBphJDs2Y1Tzrf2WkgaY0Ow7NhEPSzbvdY53XI8klRju
- ymkLE0qQ==;
+ bh=8Z59nl1ynYz7T8ZQQZFooEYzqOOLn6C4o6AlvTemzR0=; b=e53+Uy/zWo55QNMz59Vn6a9Qfc
+ 3KNiqJ/4fxfkgBjsQQ4r2mpc73+bcP9cg17+hspZn9ShexhM2dovyqmcBMu5GaB8hA2To0wbbvBMJ
+ /nlk4qgT+2ebDto7HC57yP5fJnXuCZUAXxxzEE4vVEPafRXpzNr/tQHoWRdIL4c4xof573b+opNyD
+ hSsx/CG+200mJ/A6A9gJfZS+yIIsP9SVUfQbvdMxgqzXAy1DNre7fetC5eIsQUsYE4Vb2r9NUVgeu
+ KUwbxXsDpGEnc6dlpYDLdcVdnQa9DE6RbCg8tEQLI01IkTcUFhfy4/FZVquDvGlMZ35Qj3kd8hE+6
+ d1ybNPjg==;
 Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red
- Hat Linux)) id 1kQtQL-0005vk-SX; Fri, 09 Oct 2020 14:31:09 +0000
+ Hat Linux)) id 1kQtQK-0005vJ-Ib; Fri, 09 Oct 2020 14:31:09 +0000
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To: linux-fsdevel@vger.kernel.org
-Subject: [PATCH v2 11/16] jffs2: Tell the VFS that readpage was synchronous
-Date: Fri,  9 Oct 2020 15:30:59 +0100
-Message-Id: <20201009143104.22673-12-willy@infradead.org>
+Subject: [PATCH v2 09/16] fuse: Tell the VFS that readpage was synchronous
+Date: Fri,  9 Oct 2020 15:30:57 +0100
+Message-Id: <20201009143104.22673-10-willy@infradead.org>
 X-Mailer: git-send-email 2.21.3
 In-Reply-To: <20201009143104.22673-1-willy@infradead.org>
 References: <20201009143104.22673-1-willy@infradead.org>
@@ -82,39 +82,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The jffs2 readpage implementation was already synchronous, so use
+The fuse readpage implementation was already synchronous, so use
 AOP_UPDATED_PAGE to avoid cycling the page lock.
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Acked-by: Richard Weinberger <richard@nod.at>
 ---
- fs/jffs2/file.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ fs/fuse/file.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
-index f8fb89b10227..959a74027041 100644
---- a/fs/jffs2/file.c
-+++ b/fs/jffs2/file.c
-@@ -116,15 +116,17 @@ int jffs2_do_readpage_unlock(void *data, struct page *pg)
- 	return ret;
- }
+diff --git a/fs/fuse/file.c b/fs/fuse/file.c
+index 6611ef3269a8..7aa5626bc582 100644
+--- a/fs/fuse/file.c
++++ b/fs/fuse/file.c
+@@ -850,6 +850,8 @@ static int fuse_readpage(struct file *file, struct page *page)
  
--
- static int jffs2_readpage (struct file *filp, struct page *pg)
- {
- 	struct jffs2_inode_info *f = JFFS2_INODE_INFO(pg->mapping->host);
- 	int ret;
- 
- 	mutex_lock(&f->sem);
--	ret = jffs2_do_readpage_unlock(pg->mapping->host, pg);
-+	ret = jffs2_do_readpage_nolock(pg->mapping->host, pg);
- 	mutex_unlock(&f->sem);
-+	if (!ret)
+ 	err = fuse_do_readpage(file, page);
+ 	fuse_invalidate_atime(inode);
++	if (!err)
 +		return AOP_UPDATED_PAGE;
-+	unlock_page(pg);
- 	return ret;
- }
- 
+  out:
+ 	unlock_page(page);
+ 	return err;
 -- 
 2.28.0
 
