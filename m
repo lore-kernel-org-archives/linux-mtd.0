@@ -5,19 +5,19 @@ X-Spam-Level:
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38171C433DF
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 14:34:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7022FC433DF
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 14:34:51 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C16392226B
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 14:34:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 888BF2226B
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 14:34:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="L5XJEJrO";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="RXSD4Y3y"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C16392226B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LMOdtFXJ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="BiC282mR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 888BF2226B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,36 +26,35 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=T7PnVgL2vJ1HOlfVZZOyhFvC2WrV1Lnj2TP+odwieHM=; b=L5XJEJrOs3yzJ4S3jqcLuf8pc
-	zOK0WWid1MMn0uHjTZT2SiCeeaeyDGKEGohXT0EEUzF3wbtVqrzlZuuktQXVSoHRe4mdOCQ5mLXZi
-	jO6xJZVg9ABRJFodMOxxZ4pTbSkrsxTb23yYqU6bO6/QJrfUdcqH4eU4rF12+ni6eGH2p6/x5R08N
-	LV+oSays+mq3PR1cW18//rjBhWJZ1nNU9YLlBNYwfWKJuPhTnC6d+DsbyAezs6TZ5a6jh6aLsQBAh
-	5BVt/9Uf0nv4hSv2M5JL8V0X0nDP4JuFWRlKCDVXuuIWWaYo8YWssb8mZwH9LOi4K25xvcXStZmn0
-	WP9py46Rw==;
+	 bh=iW5IcIhYj5lsohUKQhzIiI0/nTYtdm8J9ild0XX12Tg=; b=LMOdtFXJ1DRLhyO0WNWFtUsCi
+	N9z8K09rlZLkxHGnWTt3WydqazPtqFXQcwCj0h9/vxwgmp7rkBwzTzv523owAHwBvFpSzzXFzrmtk
+	7sHkSblLjH+PBmgyNmyRCelDsL5D6U5odkWC+Q5k0immZZEruHqonTmdNkydjdDlZnp6Li9YeVh/y
+	gG4Uwl28YRKmwhCjfMfFAbGgAMqOIkfJG3L0un3I6bi/csLm80kEINNBXScB7IqW7UjuDdvlO5cNU
+	mEXE+XC3t3pD9uN50jfg3eNguCnuLx+Afd6jlzuPeDQe69DEJQ9iSNME8cKQK3XoXg/wiT4u6MB0h
+	yIjv5ke3w==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kQtTE-00050m-BT; Fri, 09 Oct 2020 14:34:08 +0000
+	id 1kQtTL-00055S-Hj; Fri, 09 Oct 2020 14:34:15 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kQtQP-0003Nx-3u; Fri, 09 Oct 2020 14:31:13 +0000
+ id 1kQtQQ-0003OG-0T; Fri, 09 Oct 2020 14:31:14 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=nImj1bKEnn8BNhzAOdfSeoUsHCGKAl8C4xu8gKbAVdY=; b=RXSD4Y3y1VdFBy17Ol83ILo5j4
- PTO9WjHf1kj+i3LgA1mNy4EbjzfgjS0N6FQecje43EctVoSoenXTtkxEw+pdNlWwCm8BR6ADWrCIA
- mnFVDJIxU2XLT8heg/WUg+nqj4WmoscRl4jCU97HaGgie7XSB2RUPeAoMPImN/8SdJJjnzOhT4QNS
- xglIypw9zIWbJZ4mgZcnuJZtNl9fnUqLIwebZVq5ZINFMI2qXAUDw31r8pl1UhnILmhEGt/4+kham
- 9g1ILW71SDudRyFDHNiDTnj4sun2z0xnV5Wfab1g/k50SJfjbhpHe0FCP3IIQ7UUYwtFbVv1fWRdK
- CNdeSAOA==;
+ bh=ck7tjnyWrUbu2fgU3wEmHKO8ECkKRvYNOzxLe93kaKs=; b=BiC282mRNnUukNWWTqgtbnhsqu
+ 2W6Gbvyh9SISCymJu5kFXw5QdqjGbdQzamuQbRf1rL8tiIeP0p40GR7yl2ar7Eb+6xSyY8upJelEN
+ ntmagHzfaNWfBwLcJVs3aeWLtV3tJpfcnnVa/yp99qw7rtgUWxNDXTTwII/m5GhJ7TlS+CpNQSQhq
+ wA1CvIYl0LWqu3b5YY0VMcEG1BR4mSICeWJ+Ox/QHS1wPbDG6jm7ZN6TzE2IVH0Yu8DWdd5pc6FLh
+ yslfa5C0Y3/JNM4OSc4GK5KFNVIm0ZICpAtFs9Hxnm8fI9rz5cJBc/h+X0blwHudPVU8k6vDV6Cvz
+ t42dWX/g==;
 Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red
- Hat Linux)) id 1kQtQN-0005wL-DD; Fri, 09 Oct 2020 14:31:11 +0000
+ Hat Linux)) id 1kQtQI-0005uT-Hr; Fri, 09 Oct 2020 14:31:06 +0000
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To: linux-fsdevel@vger.kernel.org
-Subject: [PATCH v2 15/16] iomap: Inline iomap_iop_set_range_uptodate into its
- one caller
-Date: Fri,  9 Oct 2020 15:31:03 +0100
-Message-Id: <20201009143104.22673-16-willy@infradead.org>
+Subject: [PATCH v2 01/16] mm: Add AOP_UPDATED_PAGE return value
+Date: Fri,  9 Oct 2020 15:30:49 +0100
+Message-Id: <20201009143104.22673-2-willy@infradead.org>
 X-Mailer: git-send-email 2.21.3
 In-Reply-To: <20201009143104.22673-1-willy@infradead.org>
 References: <20201009143104.22673-1-willy@infradead.org>
@@ -83,64 +82,152 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-iomap_set_range_uptodate() is the only caller of
-iomap_iop_set_range_uptodate() and it makes future patches easier to
-have it inline.
+Allow synchronous ->readpage implementations to execute more
+efficiently by skipping the re-locking of the page.
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- fs/iomap/buffered-io.c | 24 ++++++++++--------------
- 1 file changed, 10 insertions(+), 14 deletions(-)
+ Documentation/filesystems/locking.rst |  7 ++++---
+ Documentation/filesystems/vfs.rst     | 21 ++++++++++++++-------
+ include/linux/fs.h                    |  5 +++++
+ mm/filemap.c                          | 15 +++++++++++++--
+ 4 files changed, 36 insertions(+), 12 deletions(-)
 
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 8180061b9e16..e60f572e1590 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -141,8 +141,8 @@ iomap_adjust_read_range(struct inode *inode, struct iomap_page *iop,
- 	*lenp = plen;
- }
+diff --git a/Documentation/filesystems/locking.rst b/Documentation/filesystems/locking.rst
+index 64f94a18d97e..06a7a8bf2362 100644
+--- a/Documentation/filesystems/locking.rst
++++ b/Documentation/filesystems/locking.rst
+@@ -269,7 +269,7 @@ locking rules:
+ ops			PageLocked(page)	 i_rwsem
+ ======================	======================== =========
+ writepage:		yes, unlocks (see below)
+-readpage:		yes, unlocks
++readpage:		yes, may unlock
+ writepages:
+ set_page_dirty		no
+ readahead:		yes, unlocks
+@@ -294,8 +294,9 @@ swap_deactivate:	no
+ ->write_begin(), ->write_end() and ->readpage() may be called from
+ the request handler (/dev/loop).
  
--static void
--iomap_iop_set_range_uptodate(struct page *page, unsigned off, unsigned len)
-+static void iomap_set_range_uptodate(struct page *page, unsigned off,
-+		unsigned len)
- {
- 	struct iomap_page *iop = to_iomap_page(page);
- 	struct inode *inode = page->mapping->host;
-@@ -150,6 +150,14 @@ iomap_iop_set_range_uptodate(struct page *page, unsigned off, unsigned len)
- 	unsigned last = (off + len - 1) >> inode->i_blkbits;
- 	unsigned long flags;
+-->readpage() unlocks the page, either synchronously or via I/O
+-completion.
++->readpage() may return AOP_UPDATED_PAGE if the page is now Uptodate
++or 0 if the page will be unlocked asynchronously by I/O completion.
++If it returns -errno, it should unlock the page.
  
-+	if (PageError(page))
-+		return;
+ ->readahead() unlocks the pages that I/O is attempted on like ->readpage().
+ 
+diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesystems/vfs.rst
+index ca52c82e5bb5..16248c299aaa 100644
+--- a/Documentation/filesystems/vfs.rst
++++ b/Documentation/filesystems/vfs.rst
+@@ -643,7 +643,7 @@ set_page_dirty to write data into the address_space, and writepage and
+ writepages to writeback data to storage.
+ 
+ Adding and removing pages to/from an address_space is protected by the
+-inode's i_mutex.
++inode's i_rwsem held exclusively.
+ 
+ When data is written to a page, the PG_Dirty flag should be set.  It
+ typically remains set until writepage asks for it to be written.  This
+@@ -757,12 +757,19 @@ cache in your filesystem.  The following members are defined:
+ 
+ ``readpage``
+ 	called by the VM to read a page from backing store.  The page
+-	will be Locked when readpage is called, and should be unlocked
+-	and marked uptodate once the read completes.  If ->readpage
+-	discovers that it needs to unlock the page for some reason, it
+-	can do so, and then return AOP_TRUNCATED_PAGE.  In this case,
+-	the page will be relocated, relocked and if that all succeeds,
+-	->readpage will be called again.
++	will be Locked and !Uptodate when readpage is called.  Ideally,
++	the filesystem will bring the page Uptodate and return
++	AOP_UPDATED_PAGE.  If the filesystem encounters an error, it
++	should unlock the page and return a negative errno without marking
++	the page Uptodate.  It does not need to mark the page as Error.
++	If the filesystem returns 0, this means the page will be unlocked
++	asynchronously by I/O completion.  The VFS will wait for the
++	page to be unlocked, so there is no advantage to executing this
++	operation asynchronously.
 +
-+	if (!iop) {
-+		SetPageUptodate(page);
-+		return;
-+	}
-+
- 	spin_lock_irqsave(&iop->uptodate_lock, flags);
- 	bitmap_set(iop->uptodate, first, last - first + 1);
- 	if (bitmap_full(iop->uptodate, i_blocks_per_page(inode, page)))
-@@ -157,18 +165,6 @@ iomap_iop_set_range_uptodate(struct page *page, unsigned off, unsigned len)
- 	spin_unlock_irqrestore(&iop->uptodate_lock, flags);
- }
++	The filesystem can also return AOP_TRUNCATED_PAGE to indicate
++	that it had to unlock the page to avoid a deadlock.  The caller
++	will re-check the page cache and call ->readpage again.
  
--static void
--iomap_set_range_uptodate(struct page *page, unsigned off, unsigned len)
--{
--	if (PageError(page))
--		return;
+ ``writepages``
+ 	called by the VM to write out pages associated with the
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 7519ae003a08..badf80e133fd 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -273,6 +273,10 @@ struct iattr {
+  *  			reference, it should drop it before retrying.  Returned
+  *  			by readpage().
+  *
++ * @AOP_UPDATED_PAGE: The readpage method has brought the page Uptodate
++ * without releasing the page lock.  This is suitable for synchronous
++ * implementations of readpage.
++ *
+  * address_space_operation functions return these large constants to indicate
+  * special semantics to the caller.  These are much larger than the bytes in a
+  * page to allow for functions that return the number of bytes operated on in a
+@@ -282,6 +286,7 @@ struct iattr {
+ enum positive_aop_returns {
+ 	AOP_WRITEPAGE_ACTIVATE	= 0x80000,
+ 	AOP_TRUNCATED_PAGE	= 0x80001,
++	AOP_UPDATED_PAGE	= 0x80002,
+ };
+ 
+ #define AOP_FLAG_CONT_EXPAND		0x0001 /* called from cont_expand */
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 1aaea26556cc..95b68ec1f22c 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2254,8 +2254,13 @@ ssize_t generic_file_buffered_read(struct kiocb *iocb,
+ 		 * PG_error will be set again if readpage fails.
+ 		 */
+ 		ClearPageError(page);
+-		/* Start the actual read. The read will unlock the page. */
++		/* Start the actual read. The read may unlock the page. */
+ 		error = mapping->a_ops->readpage(filp, page);
++		if (error == AOP_UPDATED_PAGE) {
++			unlock_page(page);
++			error = 0;
++			goto page_ok;
++		}
+ 
+ 		if (unlikely(error)) {
+ 			if (error == AOP_TRUNCATED_PAGE) {
+@@ -2619,7 +2624,7 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+ 	 */
+ 	if (unlikely(!PageUptodate(page)))
+ 		goto page_not_uptodate;
 -
--	if (page_has_private(page))
--		iomap_iop_set_range_uptodate(page, off, len);
--	else
--		SetPageUptodate(page);
--}
--
- static void
- iomap_read_page_end_io(struct bio_vec *bvec, int error)
- {
++page_ok:
+ 	/*
+ 	 * We've made it this far and we had to drop our mmap_lock, now is the
+ 	 * time to return to the upper layer and have it re-find the vma and
+@@ -2654,6 +2659,8 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+ 	ClearPageError(page);
+ 	fpin = maybe_unlock_mmap_for_io(vmf, fpin);
+ 	error = mapping->a_ops->readpage(file, page);
++	if (error == AOP_UPDATED_PAGE)
++		goto page_ok;
+ 	if (!error) {
+ 		wait_on_page_locked(page);
+ 		if (!PageUptodate(page))
+@@ -2867,6 +2874,10 @@ static struct page *do_read_cache_page(struct address_space *mapping,
+ 			err = filler(data, page);
+ 		else
+ 			err = mapping->a_ops->readpage(data, page);
++		if (err == AOP_UPDATED_PAGE) {
++			unlock_page(page);
++			goto out;
++		}
+ 
+ 		if (err < 0) {
+ 			put_page(page);
 -- 
 2.28.0
 
