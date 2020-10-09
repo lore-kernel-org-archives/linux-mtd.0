@@ -7,18 +7,17 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7022FC433DF
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 14:34:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1E1AC83B9B
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 19:52:01 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 888BF2226B
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 14:34:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2524922456
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 19:52:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LMOdtFXJ";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="BiC282mR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 888BF2226B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="vcSMuHGH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2524922456
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
@@ -26,39 +25,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=iW5IcIhYj5lsohUKQhzIiI0/nTYtdm8J9ild0XX12Tg=; b=LMOdtFXJ1DRLhyO0WNWFtUsCi
-	N9z8K09rlZLkxHGnWTt3WydqazPtqFXQcwCj0h9/vxwgmp7rkBwzTzv523owAHwBvFpSzzXFzrmtk
-	7sHkSblLjH+PBmgyNmyRCelDsL5D6U5odkWC+Q5k0immZZEruHqonTmdNkydjdDlZnp6Li9YeVh/y
-	gG4Uwl28YRKmwhCjfMfFAbGgAMqOIkfJG3L0un3I6bi/csLm80kEINNBXScB7IqW7UjuDdvlO5cNU
-	mEXE+XC3t3pD9uN50jfg3eNguCnuLx+Afd6jlzuPeDQe69DEJQ9iSNME8cKQK3XoXg/wiT4u6MB0h
-	yIjv5ke3w==;
+	 bh=1BK2piRAvpaepy54jguOXBO2uxVEeoJvwUwJKghAaYk=; b=vcSMuHGHfvEgGaoounvdL6JWC
+	dRetqI3XRnwOP/qgxGj8QqO8PxpC901VSX4AhWjNMGQkdaFvK3EE6qQv9LE1PqT+eJm2NMHc1WOp5
+	NtHfLrOSsny70PZzc5TsUb30a2Pv2HEQnDOsP4ciIvLs1a2i6zqhKLHUbj2pArSOCBsrRzvLI1UQU
+	93h+TPOy97/n8FHnDBrg+KoCZAo5sMb/e11sKKW9y3i6uWOXVHyrd5ap+qCYcE9sMJhu4Cw4bUgId
+	93nT94w8LkRIgtMJqpBQJsOAZQL8dWY+3UifJ399HMY+PiCZbA7A2yH/P9m0wG2YYgEO27HzdquRl
+	I/5cKPDJA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kQtTL-00055S-Hj; Fri, 09 Oct 2020 14:34:15 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1kQyQ3-0000Q8-Dm; Fri, 09 Oct 2020 19:51:12 +0000
+Received: from mga12.intel.com ([192.55.52.136])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kQtQQ-0003OG-0T; Fri, 09 Oct 2020 14:31:14 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
- References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
- Content-Type:Content-ID:Content-Description;
- bh=ck7tjnyWrUbu2fgU3wEmHKO8ECkKRvYNOzxLe93kaKs=; b=BiC282mRNnUukNWWTqgtbnhsqu
- 2W6Gbvyh9SISCymJu5kFXw5QdqjGbdQzamuQbRf1rL8tiIeP0p40GR7yl2ar7Eb+6xSyY8upJelEN
- ntmagHzfaNWfBwLcJVs3aeWLtV3tJpfcnnVa/yp99qw7rtgUWxNDXTTwII/m5GhJ7TlS+CpNQSQhq
- wA1CvIYl0LWqu3b5YY0VMcEG1BR4mSICeWJ+Ox/QHS1wPbDG6jm7ZN6TzE2IVH0Yu8DWdd5pc6FLh
- yslfa5C0Y3/JNM4OSc4GK5KFNVIm0ZICpAtFs9Hxnm8fI9rz5cJBc/h+X0blwHudPVU8k6vDV6Cvz
- t42dWX/g==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red
- Hat Linux)) id 1kQtQI-0005uT-Hr; Fri, 09 Oct 2020 14:31:06 +0000
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To: linux-fsdevel@vger.kernel.org
-Subject: [PATCH v2 01/16] mm: Add AOP_UPDATED_PAGE return value
-Date: Fri,  9 Oct 2020 15:30:49 +0100
-Message-Id: <20201009143104.22673-2-willy@infradead.org>
-X-Mailer: git-send-email 2.21.3
-In-Reply-To: <20201009143104.22673-1-willy@infradead.org>
-References: <20201009143104.22673-1-willy@infradead.org>
+ id 1kQyPm-0000Hj-CE; Fri, 09 Oct 2020 19:51:08 +0000
+IronPort-SDR: k7Id/8GmS87PkzgmtYnXLXFKMCgC3At5YmDD9DWLaG33yoTsq3Yj0KqJCNlrPYFdrflWSwrrVQ
+ yNSsfcj10IQg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9769"; a="144850590"
+X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; d="scan'208";a="144850590"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Oct 2020 12:50:51 -0700
+IronPort-SDR: r9rFWs4LxSt/DLhc0vk8qSUxzY/hR2W3QZLi44jmj/rGXS9Mfwq/Fn231GdfrO+iUZYF22umi/
+ 70MWS29lQZXg==
+X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; d="scan'208";a="529052813"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+ by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Oct 2020 12:50:50 -0700
+From: ira.weiny@intel.com
+To: Andrew Morton <akpm@linux-foundation.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH RFC PKS/PMEM 02/58] x86/pks/test: Add testing for global option
+Date: Fri,  9 Oct 2020 12:49:37 -0700
+Message-Id: <20201009195033.3208459-3-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
+In-Reply-To: <20201009195033.3208459-1-ira.weiny@intel.com>
+References: <20201009195033.3208459-1-ira.weiny@intel.com>
 MIME-Version: 1.0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20201009_155054_621757_CFC776E5 
+X-CRM114-Status: GOOD (  21.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,166 +78,238 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-cifs@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- ecryptfs@vger.kernel.org, linux-um@lists.infradead.org,
- linux-kernel@vger.kernel.org,
- "Matthew Wilcox \(Oracle\)" <willy@infradead.org>, linux-xfs@vger.kernel.org,
- linux-mm@kvack.org, linux-mtd@lists.infradead.org,
- v9fs-developer@lists.sourceforge.net, ceph-devel@vger.kernel.org,
- linux-afs@lists.infradead.org
+Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org,
+ Dave Hansen <dave.hansen@linux.intel.com>, dri-devel@lists.freedesktop.org,
+ linux-mm@kvack.org, target-devel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-kselftest@vger.kernel.org,
+ samba-technical@lists.samba.org, Ira Weiny <ira.weiny@intel.com>,
+ ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com,
+ devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
+ linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org, x86@kernel.org,
+ amd-gfx@lists.freedesktop.org, linux-afs@lists.infradead.org,
+ cluster-devel@redhat.com, linux-cachefs@redhat.com,
+ intel-wired-lan@lists.osuosl.org, xen-devel@lists.xenproject.org,
+ linux-ext4@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
+ linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org,
+ ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+ reiserfs-devel@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-bcache@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
+ io-uring@vger.kernel.org, linux-nfs@vger.kernel.org,
+ linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org,
+ kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
+ bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Allow synchronous ->readpage implementations to execute more
-efficiently by skipping the re-locking of the page.
+From: Ira Weiny <ira.weiny@intel.com>
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Now that PKS can be enabled globaly (for all threads) add a test which
+spawns a thread and tests the same PKS functionality.
+
+The test enables/disables PKS in 1 thread while attempting to access the
+page in another thread.  We use the same test array as in the 'local'
+PKS testing.
+
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 ---
- Documentation/filesystems/locking.rst |  7 ++++---
- Documentation/filesystems/vfs.rst     | 21 ++++++++++++++-------
- include/linux/fs.h                    |  5 +++++
- mm/filemap.c                          | 15 +++++++++++++--
- 4 files changed, 36 insertions(+), 12 deletions(-)
+ arch/x86/mm/fault.c |   4 ++
+ lib/pks/pks_test.c  | 128 +++++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 124 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/filesystems/locking.rst b/Documentation/filesystems/locking.rst
-index 64f94a18d97e..06a7a8bf2362 100644
---- a/Documentation/filesystems/locking.rst
-+++ b/Documentation/filesystems/locking.rst
-@@ -269,7 +269,7 @@ locking rules:
- ops			PageLocked(page)	 i_rwsem
- ======================	======================== =========
- writepage:		yes, unlocks (see below)
--readpage:		yes, unlocks
-+readpage:		yes, may unlock
- writepages:
- set_page_dirty		no
- readahead:		yes, unlocks
-@@ -294,8 +294,9 @@ swap_deactivate:	no
- ->write_begin(), ->write_end() and ->readpage() may be called from
- the request handler (/dev/loop).
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index 4b4ff9efa298..4c74f52fbc23 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -1108,6 +1108,10 @@ static int spurious_kernel_fault_check(unsigned long error_code, pte_t *pte,
+ 		if (global_pkey_is_enabled(pte, is_write, irq_state))
+ 			return 1;
  
--->readpage() unlocks the page, either synchronously or via I/O
--completion.
-+->readpage() may return AOP_UPDATED_PAGE if the page is now Uptodate
-+or 0 if the page will be unlocked asynchronously by I/O completion.
-+If it returns -errno, it should unlock the page.
++		/*
++		 * NOTE: This must be after the global_pkey_is_enabled() call
++		 * to allow the fixup code to be tested.
++		 */
+ 		if (handle_pks_testing(error_code, irq_state))
+ 			return 1;
  
- ->readahead() unlocks the pages that I/O is attempted on like ->readpage().
+diff --git a/lib/pks/pks_test.c b/lib/pks/pks_test.c
+index 286c8b8457da..dfddccbe4cb6 100644
+--- a/lib/pks/pks_test.c
++++ b/lib/pks/pks_test.c
+@@ -154,7 +154,8 @@ static void check_exception(irqentry_state_t *irq_state)
+ 	}
  
-diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesystems/vfs.rst
-index ca52c82e5bb5..16248c299aaa 100644
---- a/Documentation/filesystems/vfs.rst
-+++ b/Documentation/filesystems/vfs.rst
-@@ -643,7 +643,7 @@ set_page_dirty to write data into the address_space, and writepage and
- writepages to writeback data to storage.
+ 	/* Check the exception state */
+-	if (!check_pkrs(test_armed_key, PKEY_DISABLE_ACCESS)) {
++	if (!check_pkrs(test_armed_key,
++			PKEY_DISABLE_ACCESS | PKEY_DISABLE_WRITE)) {
+ 		pr_err("     FAIL: PKRS cache and MSR\n");
+ 		test_exception_ctx->pass = false;
+ 	}
+@@ -308,24 +309,29 @@ static int test_it(struct pks_test_ctx *ctx, struct pks_access_test *test, void
+ 	return ret;
+ }
  
- Adding and removing pages to/from an address_space is protected by the
--inode's i_mutex.
-+inode's i_rwsem held exclusively.
- 
- When data is written to a page, the PG_Dirty flag should be set.  It
- typically remains set until writepage asks for it to be written.  This
-@@ -757,12 +757,19 @@ cache in your filesystem.  The following members are defined:
- 
- ``readpage``
- 	called by the VM to read a page from backing store.  The page
--	will be Locked when readpage is called, and should be unlocked
--	and marked uptodate once the read completes.  If ->readpage
--	discovers that it needs to unlock the page for some reason, it
--	can do so, and then return AOP_TRUNCATED_PAGE.  In this case,
--	the page will be relocated, relocked and if that all succeeds,
--	->readpage will be called again.
-+	will be Locked and !Uptodate when readpage is called.  Ideally,
-+	the filesystem will bring the page Uptodate and return
-+	AOP_UPDATED_PAGE.  If the filesystem encounters an error, it
-+	should unlock the page and return a negative errno without marking
-+	the page Uptodate.  It does not need to mark the page as Error.
-+	If the filesystem returns 0, this means the page will be unlocked
-+	asynchronously by I/O completion.  The VFS will wait for the
-+	page to be unlocked, so there is no advantage to executing this
-+	operation asynchronously.
+-static int run_access_test(struct pks_test_ctx *ctx,
+-			   struct pks_access_test *test,
+-			   void *ptr)
++static void set_protection(int pkey, enum pks_access_mode mode, bool global)
+ {
+-	switch (test->mode) {
++	switch (mode) {
+ 		case PKS_TEST_NO_ACCESS:
+-			pks_mknoaccess(ctx->pkey, false);
++			pks_mknoaccess(pkey, global);
+ 			break;
+ 		case PKS_TEST_RDWR:
+-			pks_mkrdwr(ctx->pkey, false);
++			pks_mkrdwr(pkey, global);
+ 			break;
+ 		case PKS_TEST_RDONLY:
+-			pks_mkread(ctx->pkey, false);
++			pks_mkread(pkey, global);
+ 			break;
+ 		default:
+ 			pr_err("BUG in test invalid mode\n");
+ 			break;
+ 	}
++}
 +
-+	The filesystem can also return AOP_TRUNCATED_PAGE to indicate
-+	that it had to unlock the page to avoid a deadlock.  The caller
-+	will re-check the page cache and call ->readpage again.
++static int run_access_test(struct pks_test_ctx *ctx,
++			   struct pks_access_test *test,
++			   void *ptr)
++{
++	set_protection(ctx->pkey, test->mode, false);
  
- ``writepages``
- 	called by the VM to write out pages associated with the
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 7519ae003a08..badf80e133fd 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -273,6 +273,10 @@ struct iattr {
-  *  			reference, it should drop it before retrying.  Returned
-  *  			by readpage().
-  *
-+ * @AOP_UPDATED_PAGE: The readpage method has brought the page Uptodate
-+ * without releasing the page lock.  This is suitable for synchronous
-+ * implementations of readpage.
-+ *
-  * address_space_operation functions return these large constants to indicate
-  * special semantics to the caller.  These are much larger than the bytes in a
-  * page to allow for functions that return the number of bytes operated on in a
-@@ -282,6 +286,7 @@ struct iattr {
- enum positive_aop_returns {
- 	AOP_WRITEPAGE_ACTIVATE	= 0x80000,
- 	AOP_TRUNCATED_PAGE	= 0x80001,
-+	AOP_UPDATED_PAGE	= 0x80002,
- };
+ 	return test_it(ctx, test, ptr);
+ }
+@@ -516,6 +522,110 @@ static void run_exception_test(void)
+ 		 pass ? "PASS" : "FAIL");
+ }
  
- #define AOP_FLAG_CONT_EXPAND		0x0001 /* called from cont_expand */
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 1aaea26556cc..95b68ec1f22c 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -2254,8 +2254,13 @@ ssize_t generic_file_buffered_read(struct kiocb *iocb,
- 		 * PG_error will be set again if readpage fails.
- 		 */
- 		ClearPageError(page);
--		/* Start the actual read. The read will unlock the page. */
-+		/* Start the actual read. The read may unlock the page. */
- 		error = mapping->a_ops->readpage(filp, page);
-+		if (error == AOP_UPDATED_PAGE) {
-+			unlock_page(page);
-+			error = 0;
-+			goto page_ok;
++struct shared_data {
++	struct mutex lock;
++	struct pks_test_ctx *ctx;
++	void *kmap_addr;
++	struct pks_access_test *test;
++};
++
++static int thread_main(void *d)
++{
++	struct shared_data *data = d;
++	struct pks_test_ctx *ctx = data->ctx;
++
++	while (!kthread_should_stop()) {
++		mutex_lock(&data->lock);
++		/*
++		 * wait for the main thread to hand us the page
++		 * We should be spinning so hopefully we will not have gotten
++		 * the global value from a schedule in.
++		 */
++		if (data->kmap_addr) {
++			if (test_it(ctx, data->test, data->kmap_addr))
++				ctx->pass = false;
++			data->kmap_addr = NULL;
 +		}
++		mutex_unlock(&data->lock);
++	}
++
++	return 0;
++}
++
++static void run_thread_access_test(struct shared_data *data,
++				   struct pks_test_ctx *ctx,
++				   struct pks_access_test *test,
++				   void *ptr)
++{
++	set_protection(ctx->pkey, test->mode, true);
++
++	pr_info("checking...  mode %s; write %s\n",
++			get_mode_str(test->mode), test->write ? "TRUE" : "FALSE");
++
++	mutex_lock(&data->lock);
++	data->test = test;
++	data->kmap_addr = ptr;
++	mutex_unlock(&data->lock);
++
++	while (data->kmap_addr) {
++		msleep(10);
++	}
++}
++
++static void run_global_test(void)
++{
++	struct task_struct *other_task;
++	struct pks_test_ctx *ctx;
++	struct shared_data data;
++	bool pass = true;
++	void *ptr;
++	int i;
++
++	pr_info("     ***** BEGIN: global pkey checking\n");
++
++	/* Set up context, data pgae, and thread */
++	ctx = alloc_ctx("global pkey test");
++	if (IS_ERR(ctx)) {
++		pr_err("     FAIL: no context\n");
++		pass = false;
++		goto result;
++	}
++	ptr = alloc_test_page(ctx->pkey);
++	if (!ptr) {
++		pr_err("     FAIL: no vmalloc page\n");
++		pass = false;
++		goto free_context;
++	}
++	other_task = kthread_run(thread_main, &data, "PKRS global test");
++	if (IS_ERR(other_task)) {
++		pr_err("     FAIL: Failed to start thread\n");
++		pass = false;
++		goto free_page;
++	}
++
++	memset(&data, 0, sizeof(data));
++	mutex_init(&data.lock);
++	data.ctx = ctx;
++
++	/* Start testing */
++	ctx->pass = true;
++
++	for (i = 0; i < ARRAY_SIZE(pkey_test_ary); i++) {
++		run_thread_access_test(&data, ctx, &pkey_test_ary[i], ptr);
++	}
++
++	kthread_stop(other_task);
++	pass = ctx->pass;
++
++free_page:
++	vfree(ptr);
++free_context:
++	free_ctx(ctx);
++result:
++	pr_info("     ***** END: global pkey checking : %s\n",
++		 pass ? "PASS" : "FAIL");
++}
++
+ static void run_all(void)
+ {
+ 	struct pks_test_ctx *ctx[PKS_NUM_KEYS];
+@@ -538,6 +648,8 @@ static void run_all(void)
+ 	}
  
- 		if (unlikely(error)) {
- 			if (error == AOP_TRUNCATED_PAGE) {
-@@ -2619,7 +2624,7 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
- 	 */
- 	if (unlikely(!PageUptodate(page)))
- 		goto page_not_uptodate;
--
-+page_ok:
- 	/*
- 	 * We've made it this far and we had to drop our mmap_lock, now is the
- 	 * time to return to the upper layer and have it re-find the vma and
-@@ -2654,6 +2659,8 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
- 	ClearPageError(page);
- 	fpin = maybe_unlock_mmap_for_io(vmf, fpin);
- 	error = mapping->a_ops->readpage(file, page);
-+	if (error == AOP_UPDATED_PAGE)
-+		goto page_ok;
- 	if (!error) {
- 		wait_on_page_locked(page);
- 		if (!PageUptodate(page))
-@@ -2867,6 +2874,10 @@ static struct page *do_read_cache_page(struct address_space *mapping,
- 			err = filler(data, page);
- 		else
- 			err = mapping->a_ops->readpage(data, page);
-+		if (err == AOP_UPDATED_PAGE) {
-+			unlock_page(page);
-+			goto out;
-+		}
+ 	run_exception_test();
++
++	run_global_test();
+ }
  
- 		if (err < 0) {
- 			put_page(page);
+ static void crash_it(void)
 -- 
-2.28.0
+2.28.0.rc0.12.gb6a658bd00c9
 
 
 ______________________________________________________
