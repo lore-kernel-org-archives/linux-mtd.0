@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A926C433DF
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 14:32:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E75FDC433DF
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 14:33:00 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C78D52226B
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 14:32:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9D430222B9
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 14:33:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="v4b54oIk";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="TBsddo3U"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C78D52226B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IGx3DP1/";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XNzZbSwQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D430222B9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,35 +26,35 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=HwqTMoAwxTXzyyNqf/F0qJgHSfU6PjMtPJG+KHVsjFQ=; b=v4b54oIkD9Sfh0JLGWvB4EovX
-	hWktmJ2Ex0J51A31gkamcSUJ2t5q+iVE+UuAVWjPUQ/hVb6EvynSbNNsyaKHM3NIK+hcOpx1lGA0h
-	bAVkMNCRp9Ng2T4mNdBRHt6Ehu2oAcwKoKCZZKfFHYI3HbSqzpIo0sIXCHG5GEqpXqLuA223AatDk
-	/tb2J8Xwn4vUXjZ+loXTBr2uhMTWWOvsNJDzDqW9Ggi7RvM31lJNdSd1Jz+o87eAI691mZ1h8/DCF
-	pqKfG/7vBJMIEffFChMalvVkZ2aXiE/j1n9vmxJW9SNXASMG+EYGC8IKwuXzrWHmdA+4Mjs2wljec
-	AF6XUqZGw==;
+	 bh=MBzZeh5iB9hH5thU0a9dcpiN/J0wIBudBVVSvEZc8SU=; b=IGx3DP1/fc5JXI35DZUCFGv1B
+	HDpwAV63sPZ7raRsbcVk8/O574AG7fWVSdDlZtJ0vDMp7cMIfhsbnn10ZMEsfpX+74n4tcJAJJ6xB
+	+0sZqot6ruqKux+EFsvPsXOIRlmLQmyxzWbIoZBynI4c8AKeFH2zq9mrtLjRJsEpD99l7Nb2QHr2p
+	D0xLapFD0X9ld7Cha4hfffB905SKKfSE28Ru8dBuX9ERW1S6Qcka0FfnbOwdE0fyTY0eI4LkT32P8
+	79A1GNzqEVExnjJXyYP8gXT/P71QfSPC58bUWgfnxoCwX4qfUj6eAt6Xx9L2fVxBlgbgR+m8PWyLL
+	qRLlQv7NQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kQtR8-0003ij-Eq; Fri, 09 Oct 2020 14:31:58 +0000
+	id 1kQtRC-0003kp-BW; Fri, 09 Oct 2020 14:32:02 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kQtQL-0003M6-W3; Fri, 09 Oct 2020 14:31:10 +0000
+ id 1kQtQM-0003MA-54; Fri, 09 Oct 2020 14:31:10 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=U62SUaGW7wvOzK2xtP2u7DsjwRF7PHeB8dtYgkbpx0Q=; b=TBsddo3UB2Q94wLdBp5Hs/3UKX
- 764D6RJrVYMgAN8PhPRJOS0IFE3JV6hxkUA7hcj4HiKwOEdBT9fb80bNP5m7ekTqxeS5SxKW/3P2t
- EMnSoFsvky2Gp+uGTdymrU4Aw06pwIAJd2ar0blI1uWm7RcTcGboNnFsoWMszUZeGt1HOnmOLp6Tl
- LptcspG9vOt9WedEDXwRBoqe55+ot4qv1gcRZlaRwxQqHRZiV80zUd8KJCWXniAIWjKjbe7GkYcot
- dnXOFvET5LW65DcB48VKnKvAt3GRFL39s6e+2wDhI6ADfD69M/LoD1o7c1YKqiy1k2GI133VcfUR1
- EjlngNuQ==;
+ bh=jmv1iA6ONHdhBCtewTigT8o0CWZcxoZXOX5KqmVgnTU=; b=XNzZbSwQBr1O0Cq9RqMvPhd6Th
+ 3/cZhq8AKMqNDl+YLfIMFJ16Mi8FFxIl13HW+TS4wCj+ArkMasaZPuF0/mGpLKUUXuYxafLrMqSHb
+ GoxSJfWliAqjmPOnj3b0ZKft/67A6g9Fr10aR4luuXWMrQ2NR4t8PS/XdVIMXeE1ZS0NxTBE7GnuS
+ 4nljrczeHw39ur1ALlok+R9tqGltRa9YMBoWceemPmxeu73aaHuzxMnScDcSq5wwPvWPo6mBaRDyp
+ AcmBkgLjznHCcnIMJfCL6gB8B1l7faHSRU3ubSlA+JJl2CHNImoG5KSRQJ7ZwGlHs3l9m11pvBhVq
+ Bu8cManA==;
 Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red
- Hat Linux)) id 1kQtQK-0005v5-0v; Fri, 09 Oct 2020 14:31:08 +0000
+ Hat Linux)) id 1kQtQK-0005vD-9J; Fri, 09 Oct 2020 14:31:08 +0000
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To: linux-fsdevel@vger.kernel.org
-Subject: [PATCH v2 07/16] cramfs: Tell the VFS that readpage was synchronous
-Date: Fri,  9 Oct 2020 15:30:55 +0100
-Message-Id: <20201009143104.22673-8-willy@infradead.org>
+Subject: [PATCH v2 08/16] ecryptfs: Tell the VFS that readpage was synchronous
+Date: Fri,  9 Oct 2020 15:30:56 +0100
+Message-Id: <20201009143104.22673-9-willy@infradead.org>
 X-Mailer: git-send-email 2.21.3
 In-Reply-To: <20201009143104.22673-1-willy@infradead.org>
 References: <20201009143104.22673-1-willy@infradead.org>
@@ -82,36 +82,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The cramfs readpage implementation was already synchronous, so use
+The ecryptfs readpage implementation was already synchronous, so use
 AOP_UPDATED_PAGE to avoid cycling the page lock.
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- fs/cramfs/inode.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ fs/ecryptfs/mmap.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/fs/cramfs/inode.c b/fs/cramfs/inode.c
-index 912308600d39..7a642146c074 100644
---- a/fs/cramfs/inode.c
-+++ b/fs/cramfs/inode.c
-@@ -916,15 +916,14 @@ static int cramfs_readpage(struct file *file, struct page *page)
- 	flush_dcache_page(page);
- 	kunmap(page);
- 	SetPageUptodate(page);
--	unlock_page(page);
--	return 0;
-+	return AOP_UPDATED_PAGE;
- 
- err:
- 	kunmap(page);
- 	ClearPageUptodate(page);
- 	SetPageError(page);
+diff --git a/fs/ecryptfs/mmap.c b/fs/ecryptfs/mmap.c
+index 019572c6b39a..dee35181d789 100644
+--- a/fs/ecryptfs/mmap.c
++++ b/fs/ecryptfs/mmap.c
+@@ -219,12 +219,13 @@ static int ecryptfs_readpage(struct file *file, struct page *page)
+ 		}
+ 	}
+ out:
+-	if (rc)
+-		ClearPageUptodate(page);
+-	else
+-		SetPageUptodate(page);
+-	ecryptfs_printk(KERN_DEBUG, "Unlocking page with index = [0x%.16lx]\n",
++	ecryptfs_printk(KERN_DEBUG, "Returning page with index = [0x%.16lx]\n",
+ 			page->index);
++	if (!rc) {
++		SetPageUptodate(page);
++		return AOP_UPDATED_PAGE;
++	}
++	ClearPageUptodate(page);
  	unlock_page(page);
--	return 0;
-+	return -EIO;
+ 	return rc;
  }
- 
- static const struct address_space_operations cramfs_aops = {
 -- 
 2.28.0
 
