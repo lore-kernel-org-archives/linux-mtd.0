@@ -2,22 +2,21 @@ Return-Path: <SRS0=ARza=DQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B687C83BB2
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 19:56:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7CA2C8301A
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 19:56:45 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3DAE4225A9
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 19:56:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 74A13225A9
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 19:56:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kXm+YXjA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3DAE4225A9
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fmRMcH4t"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 74A13225A9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,48 +25,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=k6RRfSalpel7K6ApXhMTGxlAfdq1p9XCeznnpn9O0XM=; b=kXm+YXjA0eE0xXewWa93Ko0sU
-	WuebzdaH3rBYRhvXDStS7elzis1qV5R6EJuw9iD03XVhD6nkEG/9I+kpB9t7B6r7D0PnVN+fyFaeY
-	EGHRf5M/6PCmbZ85X9LbAZQjtbs+KxFbVRd0wlRG6NCW1qVx+QqMGMHlxpk0CmB0p3SJeXJwbeIi8
-	342jeJeRsY/h7BT+bxHrUFqg/A13+VvVTpA0njrNAcEg2AnJu3Ku+l1am+EppwRv37lVvxo/VAiCh
-	L2FLE9BBU1BgJg7nASouIxdTytPy4QwEesrFyljCmfdbQyvrt4T14ZOr3E4z4sJpXJYXa6M/cy4im
-	OSuFSMteA==;
+	 bh=kZdI/9jzjuKMjMnyDv353v+3UbSHyxLvAitbDV+JGyU=; b=fmRMcH4trDJegER7OWSst/RAG
+	jzqKEjd99Yhv17b6t2nTA4Ji64HFod+SFSC4oOIvUcVJuXEJccQmKXO41fvfrX5esmjMM4kGj+jBm
+	A/oE9tIgCfIi9bgwpm9NBl5UwVySPzue9eJfscQ8bBCJNBDhzPZi9gi3agkCWIGmRIKudY0c5slwR
+	G+hpzRxY1Rm4FKfdkkcfvuY8kFqKGQNzLGKJS3n6ORkJAEb8dyKvCB766hLeJ0PfNOi48AJtjDhbj
+	NS++zwlXugaW03KGPH1vRt2bQZ2B5uTHKCRzwlzRXXwK0sPL5X6ZmpDIepr81IYEGJrSpvVzMVlpO
+	705zFMkcQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kQyUj-00038D-8A; Fri, 09 Oct 2020 19:56:01 +0000
-Received: from mga17.intel.com ([192.55.52.151])
+	id 1kQyUq-0003EX-8B; Fri, 09 Oct 2020 19:56:08 +0000
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kQyRx-0001UV-5k; Fri, 09 Oct 2020 19:53:19 +0000
-IronPort-SDR: ZflWJ+6Upac5CJs2XbuKKypf5XxJtgrXA41YaF+4Q51IhSb7b78fKU5wt4hppkv0S4jl1tRV6m
- Ygt7Q5RRUCGA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9769"; a="145397509"
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; d="scan'208";a="145397509"
+ id 1kQyRz-0001Wb-EQ; Fri, 09 Oct 2020 19:53:23 +0000
+IronPort-SDR: vNwg7HtDT5rc2+qnqPEU9GBNTMjKpU2wE58PGMOOuQ0gTnLML4+jYj4QGvEIAMBVn5IFAC0dxd
+ aNo57MLgj4Aw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9769"; a="165643247"
+X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; d="scan'208";a="165643247"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Oct 2020 12:52:50 -0700
-IronPort-SDR: 0rzHuL4N+KM4WVW+vmL+eEj1y192PC4ThPKt2jdycOAoxaq6uEUOpoOJAuFDFbsfnCMTEcEeiF
- lMErav9d18Iw==
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; d="scan'208";a="419537108"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Oct 2020 12:53:09 -0700
+IronPort-SDR: FciD93oXa6TN5PQF74JzeuCyRYkWBlT2lC/7ncntBELjkiuqMo1u2JSAhMViBtfJLu9YdFEYCB
+ Wo/5PMHidIaw==
+X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; d="scan'208";a="317147397"
 Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
- by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Oct 2020 12:52:47 -0700
+ by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Oct 2020 12:53:08 -0700
 From: ira.weiny@intel.com
 To: Andrew Morton <akpm@linux-foundation.org>,
  Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
  Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>,
  Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH RFC PKS/PMEM 33/58] fs/cramfs: Utilize new kmap_thread()
-Date: Fri,  9 Oct 2020 12:50:08 -0700
-Message-Id: <20201009195033.3208459-34-ira.weiny@intel.com>
+Subject: [PATCH RFC PKS/PMEM 39/58] fs/jffs2: Utilize new kmap_thread()
+Date: Fri,  9 Oct 2020 12:50:14 -0700
+Message-Id: <20201009195033.3208459-40-ira.weiny@intel.com>
 X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
 In-Reply-To: <20201009195033.3208459-1-ira.weiny@intel.com>
 References: <20201009195033.3208459-1-ira.weiny@intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201009_155309_390171_DE6674EC 
-X-CRM114-Status: GOOD (  16.22  )
+X-CRM114-CacheID: sfid-20201009_155311_636807_40B2A292 
+X-CRM114-Status: GOOD (  15.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,11 +97,11 @@ Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org,
  reiserfs-devel@vger.kernel.org, linux-block@vger.kernel.org,
  linux-bcache@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
  io-uring@vger.kernel.org, linux-nfs@vger.kernel.org,
- Nicolas Pitre <nico@fluxnic.net>, linux-ntfs-dev@lists.sourceforge.net,
- netdev@vger.kernel.org, kexec@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
+ linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org,
+ kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
+ bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
@@ -110,55 +109,34 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Ira Weiny <ira.weiny@intel.com>
 
-The kmap() calls in this FS are localized to a single thread.  To avoid
-the over head of global PKRS updates use the new kmap_thread() call.
+These kmap() calls are localized to a single thread.  To avoid the over head of
+global PKRS updates use the new kmap_thread() call.
 
-Cc: Nicolas Pitre <nico@fluxnic.net>
 Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 ---
- fs/cramfs/inode.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ fs/jffs2/file.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/cramfs/inode.c b/fs/cramfs/inode.c
-index 912308600d39..003c014a42ed 100644
---- a/fs/cramfs/inode.c
-+++ b/fs/cramfs/inode.c
-@@ -247,8 +247,8 @@ static void *cramfs_blkdev_read(struct super_block *sb, unsigned int offset,
- 		struct page *page = pages[i];
+diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
+index 3e6d54f9b011..14dd2b18cc16 100644
+--- a/fs/jffs2/file.c
++++ b/fs/jffs2/file.c
+@@ -287,13 +287,13 @@ static int jffs2_write_end(struct file *filp, struct address_space *mapping,
  
- 		if (page) {
--			memcpy(data, kmap(page), PAGE_SIZE);
--			kunmap(page);
-+			memcpy(data, kmap_thread(page), PAGE_SIZE);
-+			kunmap_thread(page);
- 			put_page(page);
- 		} else
- 			memset(data, 0, PAGE_SIZE);
-@@ -826,7 +826,7 @@ static int cramfs_readpage(struct file *file, struct page *page)
+ 	/* In 2.4, it was already kmapped by generic_file_write(). Doesn't
+ 	   hurt to do it again. The alternative is ifdefs, which are ugly. */
+-	kmap(pg);
++	kmap_thread(pg);
  
- 	maxblock = (inode->i_size + PAGE_SIZE - 1) >> PAGE_SHIFT;
- 	bytes_filled = 0;
--	pgdata = kmap(page);
-+	pgdata = kmap_thread(page);
+ 	ret = jffs2_write_inode_range(c, f, ri, page_address(pg) + aligned_start,
+ 				      (pg->index << PAGE_SHIFT) + aligned_start,
+ 				      end - aligned_start, &writtenlen);
  
- 	if (page->index < maxblock) {
- 		struct super_block *sb = inode->i_sb;
-@@ -914,13 +914,13 @@ static int cramfs_readpage(struct file *file, struct page *page)
+-	kunmap(pg);
++	kunmap_thread(pg);
  
- 	memset(pgdata + bytes_filled, 0, PAGE_SIZE - bytes_filled);
- 	flush_dcache_page(page);
--	kunmap(page);
-+	kunmap_thread(page);
- 	SetPageUptodate(page);
- 	unlock_page(page);
- 	return 0;
- 
- err:
--	kunmap(page);
-+	kunmap_thread(page);
- 	ClearPageUptodate(page);
- 	SetPageError(page);
- 	unlock_page(page);
+ 	if (ret) {
+ 		/* There was an error writing. */
 -- 
 2.28.0.rc0.12.gb6a658bd00c9
 
