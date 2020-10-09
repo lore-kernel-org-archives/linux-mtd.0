@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04808C433E7
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 20:14:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8EE7C433DF
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 20:15:33 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9AF53215A4
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 20:14:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CBE9C215A4
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Oct 2020 20:15:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gQf4fswd";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="td7q16PU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9AF53215A4
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="3a7uAtkD";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="FuqjZVyE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CBE9C215A4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,61 +26,61 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=dPqqD/1I18nPu/muILZwnL5Fy6vGNWyjlE2o7R5wQa0=; b=gQf4fswdf759eisDXDA87PXz/
-	1PyS2zn68BlF1EKpZGrTnTwjuzBazArQeLbYz4eX6HOPrYRRKT0653Jon7V2526NtENBdbERjeYUE
-	KdcMYSSVJ2aP4ayWemadT4dzuqmAxy/xd5/JENzo7bPzfwQPkQ0Ms0xOB4K/SM+NADwSDzyGIkcSJ
-	tpGeaaJO8/z6sBrUrKBUTrJCFk9PEy+5S5bGQgyi6TqvzxfFLCTwacuqzda95pgokTj1jTYfIdNds
-	iJYOATcYOjsPFMB324QuW4fi/hUxa99Vj3BqQ1ZmaQ3xaFor14Qd7Nzlgg5jPTwhiPGhBquDS807X
-	Q8zwSokYA==;
+	 bh=K+9Mz9ZabuPA/bjf7FmQytcKMI3//MhMdRmP+ULXJoE=; b=3a7uAtkDlvCG45dUBDuqw7C+A
+	QANaZz5Cd6jx9zY7ZFxGm9U3mRZDYcU2Zmrzt6jXofSJBqHU240/XAT8DfEIOgnbFZEHxq44wZ1MY
+	S8R9Ee9JLMsYbixve3eqCsSb+C7QWfDGhapJtIXyBCubYcw6oHt1k6VpesMrvxF/RsxQgvr5ezkcE
+	OEodjWeyuBVRUOVhJSHQ1SyNwSsFmAvhGMAKEcB2UnIA/vLqmp7LiFoWdaUY06JLkjDufV2971Yn0
+	HkEfsOvGRfqItzu3IxjDPA5eO1QEExxckBEnDxYkhUm45aFWQv2XbbdrUAy6AWNU6YB9LFecBq4Jn
+	yNVlAQQmg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kQymJ-0005so-JL; Fri, 09 Oct 2020 20:14:11 +0000
+	id 1kQymY-00060P-Gm; Fri, 09 Oct 2020 20:14:26 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kQyhJ-0000bU-AP; Fri, 09 Oct 2020 20:09:01 +0000
+ id 1kQyhK-00014k-By; Fri, 09 Oct 2020 20:09:02 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=eUuABcxv+7w9+L2ZwYu5Qu9RgVPhdOF7MAss70eezoo=; b=td7q16PUZjh5x9qhaoEN4P//cN
- YZlyxs6hFtdmntahd9PDNsJaprBlXH/Mpqi3h5IW097wiaNf4NrTdIysN61CEZAXpswjLN5tpkJDr
- WDgFTso+DyqMfsH93KO6JeuDqcwImZ+nL8tFifrI8c9jGxkHdk60LdDlyUo0GafyfsJvWs8OABXOq
- 7ElARu2Wg0tVt07/Vtsuliy8rgW26yIy8HenM8LJc9goUFgPfrTfmuLevlX19CaEReuxtyZ8lvP90
- bT8hJuO2BHF5h44e+fkGXseANLdZJ2Lpt5uVQyHkQpgoLbO/fHJS8GjNBsiVs2ZlqtQmA9r7Qh0E8
- MeLoqUJw==;
-Received: from mga09.intel.com ([134.134.136.24])
+ bh=naGntlrkUmv5AdlKUvWy5o9YZRAur0JDRShpBbWV1Ww=; b=FuqjZVyEEuf+Vn14BN4WGOCCKW
+ oKESjx5NMD6bEZdCuY5LTATASA4M6u2VdYHvceCK1qcuCRw6+uBDDUUnC5IZBPFC07I0oF/15H+C7
+ +oeEh2K5WrXxa7Ucx2el7PSZEduNsBQH1sUDBZ3CRD2MXYcPKC/zjgBIoDJV3oXrF3zoortGLaLzZ
+ 7VLSLBMhf6ir5ae1XOs6QoKqOcmNe3TWVp06ZBqHGw4KT84tOYkwJ7Ce9yJx/dUUNS8HVCkj5OBPG
+ RjN3z8r/Jzhmz5rdxXdX5/VBKLaziWB1jYqa+SLo5r1VPqeE47Jc1sQfQSfQFSC+EKepB1HleKgAT
+ O9rlL/Bg==;
+Received: from mga04.intel.com ([192.55.52.120])
  by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kQyQk-0001T0-To; Fri, 09 Oct 2020 19:52:33 +0000
-IronPort-SDR: BOnyDGAi0SQ4r4t1pDnKBrVJWlMdBrZhENWgG7+sMZvwJhsDGY+O8OKiKcypQ3S9vmgaLaWqqz
- 5Ps0kKuU0YtQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9769"; a="165642975"
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; d="scan'208";a="165642975"
+ id 1kQyQa-0001PO-5Y; Fri, 09 Oct 2020 19:52:26 +0000
+IronPort-SDR: GrdjDlgUSfLOFc/40xY8wj+NcKphvLDGpPQKWTjk/jISbA1zmBpXSCetYRltCgoGrGNMVHHEhN
+ JaoWE+XDvTEg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9769"; a="162893311"
+X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; d="scan'208";a="162893311"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Oct 2020 12:51:51 -0700
-IronPort-SDR: OASmflq+Rx+yTtbdwfMJ0o3fYX/22afbp7t4aASuh19KdC4DJdh+fKQIdVVFr7y3ZwUlZzPFTz
- pRsXSfU26jow==
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; d="scan'208";a="529053257"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Oct 2020 12:51:39 -0700
+IronPort-SDR: 6nDyG/rNIU8VCp7PRxt8N7VM6Ts7FaR6Cq3BMAOPdzxAbIieQhQY1hWISzmf8TSYIGXE2cP/wS
+ 1DDas2UbMNkw==
+X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; d="scan'208";a="345147432"
 Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
- by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Oct 2020 12:51:50 -0700
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Oct 2020 12:51:37 -0700
 From: ira.weiny@intel.com
 To: Andrew Morton <akpm@linux-foundation.org>,
  Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
  Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>,
  Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH RFC PKS/PMEM 18/58] fs/hfs: Utilize new kmap_thread()
-Date: Fri,  9 Oct 2020 12:49:53 -0700
-Message-Id: <20201009195033.3208459-19-ira.weiny@intel.com>
+Subject: [PATCH RFC PKS/PMEM 14/58] fs/cifs: Utilize new kmap_thread()
+Date: Fri,  9 Oct 2020 12:49:49 -0700
+Message-Id: <20201009195033.3208459-15-ira.weiny@intel.com>
 X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
 In-Reply-To: <20201009195033.3208459-1-ira.weiny@intel.com>
 References: <20201009195033.3208459-1-ira.weiny@intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201009_205156_283595_63EEF9A5 
-X-CRM114-Status: GOOD (  13.52  )
+X-CRM114-CacheID: sfid-20201009_205145_805108_C49DD1A3 
+X-CRM114-Status: GOOD (  16.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,9 +113,9 @@ Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org,
  io-uring@vger.kernel.org, linux-nfs@vger.kernel.org,
  linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org,
  kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
- bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-btrfs@vger.kernel.org
+ linux-f2fs-devel@lists.sourceforge.net, Steve French <sfrench@samba.org>,
+ linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
@@ -126,137 +126,125 @@ From: Ira Weiny <ira.weiny@intel.com>
 The kmap() calls in this FS are localized to a single thread.  To avoid
 the over head of global PKRS updates use the new kmap_thread() call.
 
+Cc: Steve French <sfrench@samba.org>
 Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 ---
- fs/hfs/bnode.c | 14 +++++++-------
- fs/hfs/btree.c | 20 ++++++++++----------
- 2 files changed, 17 insertions(+), 17 deletions(-)
+ fs/cifs/cifsencrypt.c |  6 +++---
+ fs/cifs/file.c        | 16 ++++++++--------
+ fs/cifs/smb2ops.c     |  8 ++++----
+ 3 files changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/fs/hfs/bnode.c b/fs/hfs/bnode.c
-index b63a4df7327b..8b4d02576405 100644
---- a/fs/hfs/bnode.c
-+++ b/fs/hfs/bnode.c
-@@ -23,8 +23,8 @@ void hfs_bnode_read(struct hfs_bnode *node, void *buf,
- 	off += node->page_offset;
- 	page = node->page[0];
+diff --git a/fs/cifs/cifsencrypt.c b/fs/cifs/cifsencrypt.c
+index 9daa256f69d4..2f8232d01a56 100644
+--- a/fs/cifs/cifsencrypt.c
++++ b/fs/cifs/cifsencrypt.c
+@@ -82,17 +82,17 @@ int __cifs_calc_signature(struct smb_rqst *rqst,
  
--	memcpy(buf, kmap(page) + off, len);
--	kunmap(page);
-+	memcpy(buf, kmap_thread(page) + off, len);
-+	kunmap_thread(page);
- }
+ 		rqst_page_get_length(rqst, i, &len, &offset);
  
- u16 hfs_bnode_read_u16(struct hfs_bnode *node, int off)
-@@ -108,9 +108,9 @@ void hfs_bnode_copy(struct hfs_bnode *dst_node, int dst,
- 	src_page = src_node->page[0];
- 	dst_page = dst_node->page[0];
+-		kaddr = (char *) kmap(rqst->rq_pages[i]) + offset;
++		kaddr = (char *) kmap_thread(rqst->rq_pages[i]) + offset;
  
--	memcpy(kmap(dst_page) + dst, kmap(src_page) + src, len);
--	kunmap(src_page);
--	kunmap(dst_page);
-+	memcpy(kmap_thread(dst_page) + dst, kmap_thread(src_page) + src, len);
-+	kunmap_thread(src_page);
-+	kunmap_thread(dst_page);
- 	set_page_dirty(dst_page);
- }
- 
-@@ -125,9 +125,9 @@ void hfs_bnode_move(struct hfs_bnode *node, int dst, int src, int len)
- 	src += node->page_offset;
- 	dst += node->page_offset;
- 	page = node->page[0];
--	ptr = kmap(page);
-+	ptr = kmap_thread(page);
- 	memmove(ptr + dst, ptr + src, len);
--	kunmap(page);
-+	kunmap_thread(page);
- 	set_page_dirty(page);
- }
- 
-diff --git a/fs/hfs/btree.c b/fs/hfs/btree.c
-index 19017d296173..bd4a6d35e361 100644
---- a/fs/hfs/btree.c
-+++ b/fs/hfs/btree.c
-@@ -80,7 +80,7 @@ struct hfs_btree *hfs_btree_open(struct super_block *sb, u32 id, btree_keycmp ke
- 		goto free_inode;
- 
- 	/* Load the header */
--	head = (struct hfs_btree_header_rec *)(kmap(page) + sizeof(struct hfs_bnode_desc));
-+	head = (struct hfs_btree_header_rec *)(kmap_thread(page) + sizeof(struct hfs_bnode_desc));
- 	tree->root = be32_to_cpu(head->root);
- 	tree->leaf_count = be32_to_cpu(head->leaf_count);
- 	tree->leaf_head = be32_to_cpu(head->leaf_head);
-@@ -119,7 +119,7 @@ struct hfs_btree *hfs_btree_open(struct super_block *sb, u32 id, btree_keycmp ke
- 	tree->node_size_shift = ffs(size) - 1;
- 	tree->pages_per_bnode = (tree->node_size + PAGE_SIZE - 1) >> PAGE_SHIFT;
- 
--	kunmap(page);
-+	kunmap_thread(page);
- 	put_page(page);
- 	return tree;
- 
-@@ -268,7 +268,7 @@ struct hfs_bnode *hfs_bmap_alloc(struct hfs_btree *tree)
- 
- 	off += node->page_offset;
- 	pagep = node->page + (off >> PAGE_SHIFT);
--	data = kmap(*pagep);
-+	data = kmap_thread(*pagep);
- 	off &= ~PAGE_MASK;
- 	idx = 0;
- 
-@@ -281,7 +281,7 @@ struct hfs_bnode *hfs_bmap_alloc(struct hfs_btree *tree)
- 						idx += i;
- 						data[off] |= m;
- 						set_page_dirty(*pagep);
--						kunmap(*pagep);
-+						kunmap_thread(*pagep);
- 						tree->free_nodes--;
- 						mark_inode_dirty(tree->inode);
- 						hfs_bnode_put(node);
-@@ -290,14 +290,14 @@ struct hfs_bnode *hfs_bmap_alloc(struct hfs_btree *tree)
- 				}
- 			}
- 			if (++off >= PAGE_SIZE) {
--				kunmap(*pagep);
--				data = kmap(*++pagep);
-+				kunmap_thread(*pagep);
-+				data = kmap_thread(*++pagep);
- 				off = 0;
- 			}
- 			idx += 8;
- 			len--;
+ 		rc = crypto_shash_update(shash, kaddr, len);
+ 		if (rc) {
+ 			cifs_dbg(VFS, "%s: Could not update with payload\n",
+ 				 __func__);
+-			kunmap(rqst->rq_pages[i]);
++			kunmap_thread(rqst->rq_pages[i]);
+ 			return rc;
  		}
--		kunmap(*pagep);
-+		kunmap_thread(*pagep);
- 		nidx = node->next;
- 		if (!nidx) {
- 			printk(KERN_DEBUG "create new bmap node...\n");
-@@ -313,7 +313,7 @@ struct hfs_bnode *hfs_bmap_alloc(struct hfs_btree *tree)
- 		off = off16;
- 		off += node->page_offset;
- 		pagep = node->page + (off >> PAGE_SHIFT);
--		data = kmap(*pagep);
-+		data = kmap_thread(*pagep);
- 		off &= ~PAGE_MASK;
+ 
+-		kunmap(rqst->rq_pages[i]);
++		kunmap_thread(rqst->rq_pages[i]);
  	}
- }
-@@ -360,7 +360,7 @@ void hfs_bmap_free(struct hfs_bnode *node)
+ 
+ 	rc = crypto_shash_final(shash, signature);
+diff --git a/fs/cifs/file.c b/fs/cifs/file.c
+index be46fab4c96d..6db2caab8852 100644
+--- a/fs/cifs/file.c
++++ b/fs/cifs/file.c
+@@ -2145,17 +2145,17 @@ static int cifs_partialpagewrite(struct page *page, unsigned from, unsigned to)
+ 	inode = page->mapping->host;
+ 
+ 	offset += (loff_t)from;
+-	write_data = kmap(page);
++	write_data = kmap_thread(page);
+ 	write_data += from;
+ 
+ 	if ((to > PAGE_SIZE) || (from > to)) {
+-		kunmap(page);
++		kunmap_thread(page);
+ 		return -EIO;
  	}
- 	off += node->page_offset + nidx / 8;
- 	page = node->page[off >> PAGE_SHIFT];
--	data = kmap(page);
-+	data = kmap_thread(page);
- 	off &= ~PAGE_MASK;
- 	m = 1 << (~nidx & 7);
- 	byte = data[off];
-@@ -373,7 +373,7 @@ void hfs_bmap_free(struct hfs_bnode *node)
+ 
+ 	/* racing with truncate? */
+ 	if (offset > mapping->host->i_size) {
+-		kunmap(page);
++		kunmap_thread(page);
+ 		return 0; /* don't care */
  	}
- 	data[off] = byte & ~m;
- 	set_page_dirty(page);
+ 
+@@ -2183,7 +2183,7 @@ static int cifs_partialpagewrite(struct page *page, unsigned from, unsigned to)
+ 			rc = -EIO;
+ 	}
+ 
 -	kunmap(page);
 +	kunmap_thread(page);
- 	hfs_bnode_put(node);
- 	tree->free_nodes++;
- 	mark_inode_dirty(tree->inode);
+ 	return rc;
+ }
+ 
+@@ -2559,10 +2559,10 @@ static int cifs_write_end(struct file *file, struct address_space *mapping,
+ 		   known which we might as well	leverage */
+ 		/* BB check if anything else missing out of ppw
+ 		   such as updating last write time */
+-		page_data = kmap(page);
++		page_data = kmap_thread(page);
+ 		rc = cifs_write(cfile, pid, page_data + offset, copied, &pos);
+ 		/* if (rc < 0) should we set writebehind rc? */
+-		kunmap(page);
++		kunmap_thread(page);
+ 
+ 		free_xid(xid);
+ 	} else {
+@@ -4511,7 +4511,7 @@ static int cifs_readpage_worker(struct file *file, struct page *page,
+ 	if (rc == 0)
+ 		goto read_complete;
+ 
+-	read_data = kmap(page);
++	read_data = kmap_thread(page);
+ 	/* for reads over a certain size could initiate async read ahead */
+ 
+ 	rc = cifs_read(file, read_data, PAGE_SIZE, poffset);
+@@ -4540,7 +4540,7 @@ static int cifs_readpage_worker(struct file *file, struct page *page,
+ 	rc = 0;
+ 
+ io_error:
+-	kunmap(page);
++	kunmap_thread(page);
+ 	unlock_page(page);
+ 
+ read_complete:
+diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
+index 32f90dc82c84..a3e7ebab38b6 100644
+--- a/fs/cifs/smb2ops.c
++++ b/fs/cifs/smb2ops.c
+@@ -4068,12 +4068,12 @@ smb3_init_transform_rq(struct TCP_Server_Info *server, int num_rqst,
+ 
+ 			rqst_page_get_length(&new_rq[i], j, &len, &offset);
+ 
+-			dst = (char *) kmap(new_rq[i].rq_pages[j]) + offset;
+-			src = (char *) kmap(old_rq[i - 1].rq_pages[j]) + offset;
++			dst = (char *) kmap_thread(new_rq[i].rq_pages[j]) + offset;
++			src = (char *) kmap_thread(old_rq[i - 1].rq_pages[j]) + offset;
+ 
+ 			memcpy(dst, src, len);
+-			kunmap(new_rq[i].rq_pages[j]);
+-			kunmap(old_rq[i - 1].rq_pages[j]);
++			kunmap_thread(new_rq[i].rq_pages[j]);
++			kunmap_thread(old_rq[i - 1].rq_pages[j]);
+ 		}
+ 	}
+ 
 -- 
 2.28.0.rc0.12.gb6a658bd00c9
 
