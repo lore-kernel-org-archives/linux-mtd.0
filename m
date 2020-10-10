@@ -2,107 +2,78 @@ Return-Path: <SRS0=cnOS=DR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A4DAC433DF
-	for <linux-mtd@archiver.kernel.org>; Sat, 10 Oct 2020 11:38:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D856C433DF
+	for <linux-mtd@archiver.kernel.org>; Sat, 10 Oct 2020 18:55:22 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 518DF206CA
-	for <linux-mtd@archiver.kernel.org>; Sat, 10 Oct 2020 11:38:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D1F91222EC
+	for <linux-mtd@archiver.kernel.org>; Sat, 10 Oct 2020 18:55:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="b6isctxl";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="fFl+sWZ6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 518DF206CA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=zurich.ibm.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="zSTA0LIb";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="gJURoGia"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D1F91222EC
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=canb.auug.org.au
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-Id:References:MIME-Version:Date:To:From:
-	Subject:In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:Cc:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	MIME-Version:References:In-Reply-To:Message-ID:Subject:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=7ErltiXnlKJ9l13aSjepJAQoluVOiBHCy6ID+EvpBC0=; b=b6isctxlMxHRZIRGDfvsLGZ5k
-	qIe0eCz8kSGJTcfelAHPq/Lkr2Su0ocOSQIExed2qi60DZkpDK1E0Nbr3LdkdCN9GWN4Hqa6H2DXx
-	YL35jU8uKh9zIt3TTM966JR/v77/1jR7FHnAnGtS7pEGqASnIclf1dIkJtguncBRxyr/ETs8LSZmK
-	BAmAQpwQmI/JMsL/egxI+sWP3NlJFyK44IGf5meyus314dLKyLtrK6mFEQ/jBvTKW+X06hYoZkMB1
-	m23MEzBCMf/sIVY/BATsRLRzMupeLA+q0qLzU2h4t52VOoEGSSnqB4KycweJs4owSz4tloGDxSCpg
-	NLSCJJzxg==;
+	 bh=mD1kdb0kfbYwPMblUX2Tg0vVCAD/HoCFhBHLLN/A7Sc=; b=zSTA0LIbBdCKhnnmHjfPXB3Zq
+	AwbTXIHfi9cNEUI/8a4/ltlANVcO/j24iXZiP2nb0ZIrM/IXzHqhOT/l4UFKB4/A+sINHMtnaNTkJ
+	zT/CfFGpiy2ydej8Htt2eA+4frJ0GhYJERsRfDh3AnFu3a5urhQ1mlHxEB/EvXmRoLmM6G95ZKhyu
+	Fb1u8JbeyIM0xk55YkFbHwXLt9ol2n/3HbjYWs0hgAiFLmyExvLvRngEuOhPRj+xuov5iBxjOKgvP
+	RlP/2S+h55Wd8m1R/AetFd7o5M9W7WUBIQFq9GSZENDwmiFnuAl7Vr2x9EJFws1fsHh/EoTAK9LMg
+	eVs1MDgTg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kRDBW-0007Wn-D0; Sat, 10 Oct 2020 11:37:10 +0000
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]
- helo=mx0a-001b2d01.pphosted.com)
+	id 1kRK0E-0001Kz-6T; Sat, 10 Oct 2020 18:53:58 +0000
+Received: from ozlabs.org ([2401:3900:2:1::2])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kRDBL-0007TB-Jo
- for linux-mtd@lists.infradead.org; Sat, 10 Oct 2020 11:37:03 +0000
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
- by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- 09ABX5Xw132051
- for <linux-mtd@lists.infradead.org>; Sat, 10 Oct 2020 07:36:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=in-reply-to : subject :
- from : to : cc : date : mime-version : references :
- content-transfer-encoding : content-type : message-id; s=pp1;
- bh=NiDLo4pOxkTOHNh379y2lMt59tGJeK9BGhibE+AHe30=;
- b=fFl+sWZ60CJNW5vj7Uw0QdIFBZaJLDIK+TmFY7+uXdPQEExbAUVKU05YhKg5dS5u6J9M
- gRTcbWK1ehAiHgiW0QiEErv4vh+5MOV1iJMmz3AgZqVrCWi+Nh1nNGlGLl5qNxYu9TT3
- rsErWvzJTnT/TvD/yGmIkQ5cIJnW2dxyfP5KEerqQF50430xLTdRCdzrzGOBj/IVBjpb
- ZIGntFQpbgC01amsKXwfy1cB65UwCiqnbdgLT6Z6Qd+CSe7yV4n3BXy+qSd8xdiYdQTK
- an7SA2yY6csjDSnstIEkYdPhg6mYvKJGwGGY1NoLkcuzdqKyvDxx/5UGYpv3tzPn6Oq9 ZA== 
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com
- [192.155.248.91])
- by mx0b-001b2d01.pphosted.com with ESMTP id 343c36r51g-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <linux-mtd@lists.infradead.org>; Sat, 10 Oct 2020 07:36:56 -0400
-Received: from localhost
- by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
- for <linux-mtd@lists.infradead.org> from <BMT@zurich.ibm.com>;
- Sat, 10 Oct 2020 11:36:55 -0000
-Received: from us1a3-smtp05.a3.dal06.isc4sb.com (10.146.71.159)
- by smtp.notes.na.collabserv.com (10.106.227.143) with
- smtp.notes.na.collabserv.com ESMTP; Sat, 10 Oct 2020 11:36:50 -0000
-Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
- by us1a3-smtp05.a3.dal06.isc4sb.com
- with ESMTP id 2020101011364991-175970 ;
- Sat, 10 Oct 2020 11:36:49 +0000 
-In-Reply-To: <20201009195033.3208459-11-ira.weiny@intel.com>
-Subject: Re: [PATCH RFC PKS/PMEM 10/58] drivers/rdma: Utilize new kmap_thread()
-From: "Bernard Metzler" <BMT@zurich.ibm.com>
-To: ira.weiny@intel.com
-Date: Sat, 10 Oct 2020 11:36:49 +0000
+ id 1kRK06-0001HF-0Q
+ for linux-mtd@lists.infradead.org; Sat, 10 Oct 2020 18:53:52 +0000
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest
+ SHA256) (No client certificate requested)
+ by mail.ozlabs.org (Postfix) with ESMTPSA id 4C7vGp3lzbz9sTD;
+ Sun, 11 Oct 2020 05:53:38 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+ s=201702; t=1602356021;
+ bh=0ZiYU2BgRkjQ0tmAd8YQC8T8NNHc+p4p/Aymc9T60Os=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=gJURoGiaEEpoAj7KajOh3gSfnJdnFAGufWHRQkiRM08NwdjUv1T6jIIYHpxMgEUWW
+ fxaedqF1KKOOjJ1cpaxKU3inFqol0AIprW9OKDjljBJYtobNRZn3w8DwvxqfBX0IGY
+ y03M7FsSXyKSfF19dSvxB5mbc/ITchmxvQLKsugELUQn6NYX8V9SjPTpCEjx0c1SVR
+ IS0+dtJ4bg1r23LFNZY0H8J5fwLBUgfh8YNZNH+55b2taEG2LZkq7ohXyIyFQunlRj
+ 9XDWi0eDRXgLH2XCtS8l50huLM8IreRqCrcIfsBMXx0H7M/Y2VHu82E4CN0ChvEEdZ
+ b/lpIu13sApRg==
+Date: Sun, 11 Oct 2020 05:53:37 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Naresh Kamboju <naresh.kamboju@linaro.org>
+Subject: Re: arm-smmu 5000000.iommu: Cannot accommodate DMA offset for IOMMU
+ page tables
+Message-ID: <20201011055258.22337d66@canb.auug.org.au>
+In-Reply-To: <CA+G9fYtG6Ro-NdrP89ipDyUqVVT2=_8pTvjTSeFcWr795bp8AA@mail.gmail.com>
+References: <CA+G9fYvuq58q+GsWnzni0sKSHbubuQz-UaK3TASX26V_a7yBVw@mail.gmail.com>
+ <20200924090349.GF27174@8bytes.org>
+ <ecf71b34-a104-d42a-bfcd-9570e73520a7@arm.com>
+ <20200924092546.GJ27174@8bytes.org>
+ <e2186418-d4d6-e1f4-5eb4-3bfafb5cebb2@arm.com>
+ <20200924095629.GL27174@8bytes.org>
+ <CA+G9fYu42j_B+Rg2nq+KKBiKLqxVEqabQ15CujyJ+o6jqRj2uQ@mail.gmail.com>
+ <CA+G9fYtG6Ro-NdrP89ipDyUqVVT2=_8pTvjTSeFcWr795bp8AA@mail.gmail.com>
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20201009195033.3208459-11-ira.weiny@intel.com>,
- <20201009195033.3208459-1-ira.weiny@intel.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
- SCN1812108_20180501T0841_FP65 April 15, 2020 at 09:48
-X-LLNOutbound: False
-X-Disclaimed: 59823
-X-TNEFEvaluated: 1
-x-cbid: 20101011-2475-0000-0000-0000044A0339
-X-IBM-SpamModules-Scores: BY=0.233045; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.421684; ST=0; TS=0; UL=0; ISC=; MB=0.000000
-X-IBM-SpamModules-Versions: BY=3.00013982; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000295; SDB=6.01447073; UDB=6.00777937; IPR=6.01229775; 
- MB=3.00034472; MTD=3.00000008; XFM=3.00000015; UTC=2020-10-10 11:36:54
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2020-10-10 06:57:40 - 6.00011937
-x-cbparentid: 20101011-2476-0000-0000-0000DAA5035B
-Message-Id: <OF849D92D8.F4735ECA-ON002585FD.003F5F27-002585FD.003FCBD6@notes.na.collabserv.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235, 18.0.687
- definitions=2020-10-10_07:2020-10-09,
- 2020-10-10 signatures=0
-X-Proofpoint-Spam-Reason: orgsafe
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201010_073659_746971_8D048A33 
-X-CRM114-Status: GOOD (  22.56  )
+X-CRM114-CacheID: sfid-20201010_145350_648688_E0E534B8 
+X-CRM114-Status: GOOD (  17.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,249 +85,105 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org,
- linux-doc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
- linux-mmc@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
- dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
- target-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org,
- Thomas Gleixner <tglx@linutronix.de>, devel@driverdev.osuosl.org,
- linux-cifs@vger.kernel.org, linux-nilfs@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-nvdimm@lists.01.org,
- linux-rdma@vger.kernel.org, x86@kernel.org, ceph-devel@vger.kernel.org,
- io-uring@vger.kernel.org, cluster-devel@redhat.com, Jason
- Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
- Ingo Molnar <mingo@redhat.com>, intel-wired-lan@lists.osuosl.org,
- xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org,
- Fenghua Yu <fenghua.yu@intel.com>, linux-afs@lists.infradead.org,
- Faisal Latif <faisal.latif@intel.com>, linux-um@lists.infradead.org,
- intel-gfx@lists.freedesktop.org, ecryptfs@vger.kernel.org,
- linux-erofs@lists.ozlabs.org, linux-nfs@vger.kernel.org,
- reiserfs-devel@vger.kernel.org, linux-block@vger.kernel.org,
- linux-bcache@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
- Andy Lutomirski <luto@kernel.org>, drbd-dev@tron.linbit.com,
- amd-gfx@lists.freed.esktop.org, Dan Williams <dan.j.williams@intel.com>,
- Shiraz
- Saleem <shiraz.saleem@intel.com>, bpf@vger.kernel.org, linux-cachefs@redhat.com,
- Mike Marciniszyn <mike.marciniszyn@intel.com>,
- linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org,
- Dennis Dalessandro <dennis.dalessandro@intel.com>, kexec@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Poonam Aggrwal <poonam.aggrwal@nxp.com>, Rob Herring <robh@kernel.org>,
+ Joerg Roedel <jroedel@suse.de>, Arnd Bergmann <arnd@arndb.de>,
+ Richard Weinberger <richard@nod.at>, Joerg Roedel <joro@8bytes.org>,
+ open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
+ Christoph Hellwig <hch@lst.de>, Will Deacon <will@kernel.org>,
+ Linux-Next Mailing List <linux-next@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, Jim Quinlan <james.quinlan@broadcom.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Suram Suram <suram@nxp.com>,
+ masonccyang@mxic.com.tw, Robin Murphy <robin.murphy@arm.com>,
+ "Z.Q. Hou" <Zhiqiang.Hou@nxp.com>
+Content-Type: multipart/mixed; boundary="===============4023777689752174228=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
------ira.weiny@intel.com wrote: -----
+--===============4023777689752174228==
+Content-Type: multipart/signed; boundary="Sig_/VDFBoy40HHV45rBGLSbjbCi";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
->To: "Andrew Morton" <akpm@linux-foundation.org>, "Thomas Gleixner"
-><tglx@linutronix.de>, "Ingo Molnar" <mingo@redhat.com>, "Borislav
->Petkov" <bp@alien8.de>, "Andy Lutomirski" <luto@kernel.org>, "Peter
->Zijlstra" <peterz@infradead.org>
->From: ira.weiny@intel.com
->Date: 10/09/2020 09:52PM
->Cc: "Ira Weiny" <ira.weiny@intel.com>, "Mike Marciniszyn"
-><mike.marciniszyn@intel.com>, "Dennis Dalessandro"
-><dennis.dalessandro@intel.com>, "Doug Ledford" <dledford@redhat.com>,
->"Jason Gunthorpe" <jgg@ziepe.ca>, "Faisal Latif"
-><faisal.latif@intel.com>, "Shiraz Saleem" <shiraz.saleem@intel.com>,
->"Bernard Metzler" <bmt@zurich.ibm.com>, x86@kernel.org, "Dave Hansen"
-><dave.hansen@linux.intel.com>, "Dan Williams"
-><dan.j.williams@intel.com>, "Fenghua Yu" <fenghua.yu@intel.com>,
->linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
->linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
->linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
->linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org,
->netdev@vger.kernel.org, bpf@vger.kernel.org,
->kexec@lists.infradead.org, linux-bcache@vger.kernel.org,
->linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org,
->linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org,
->linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
->linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
->linux-ext4@vger.kernel.org, linux-aio@kvack.org,
->io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
->linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
->reiserfs-devel@vger.kernel.org,
->linux-f2fs-devel@lists.sourceforge.net, linux-nilfs@vger.kernel.org,
->cluster-devel@redhat.com, ecryptfs@vger.kernel.org,
->linux-cifs@vger.kernel.org, linux-btrfs@vger.kernel.org,
->linux-afs@lists.infradead.org, linux-rdma@vger.kernel.org,
->amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
->intel-gfx@lists.freedesktop.org, drbd-dev@tron.linbit.com,
->linux-block@vger.kernel.org, xen-devel@lists.xenproject.org,
->linux-cachefs@redhat.com, samba-technical@lists.samba.org,
->intel-wired-lan@lists.osuosl.org
->Subject: [EXTERNAL] [PATCH RFC PKS/PMEM 10/58] drivers/rdma: Utilize
->new kmap_thread()
->
->From: Ira Weiny <ira.weiny@intel.com>
->
->The kmap() calls in these drivers are localized to a single thread.
->To
->avoid the over head of global PKRS updates use the new kmap_thread()
->call.
->
->Cc: Mike Marciniszyn <mike.marciniszyn@intel.com>
->Cc: Dennis Dalessandro <dennis.dalessandro@intel.com>
->Cc: Doug Ledford <dledford@redhat.com>
->Cc: Jason Gunthorpe <jgg@ziepe.ca>
->Cc: Faisal Latif <faisal.latif@intel.com>
->Cc: Shiraz Saleem <shiraz.saleem@intel.com>
->Cc: Bernard Metzler <bmt@zurich.ibm.com>
->Signed-off-by: Ira Weiny <ira.weiny@intel.com>
->---
-> drivers/infiniband/hw/hfi1/sdma.c      |  4 ++--
-> drivers/infiniband/hw/i40iw/i40iw_cm.c | 10 +++++-----
-> drivers/infiniband/sw/siw/siw_qp_tx.c  | 14 +++++++-------
-> 3 files changed, 14 insertions(+), 14 deletions(-)
->
->diff --git a/drivers/infiniband/hw/hfi1/sdma.c
->b/drivers/infiniband/hw/hfi1/sdma.c
->index 04575c9afd61..09d206e3229a 100644
->--- a/drivers/infiniband/hw/hfi1/sdma.c
->+++ b/drivers/infiniband/hw/hfi1/sdma.c
->@@ -3130,7 +3130,7 @@ int ext_coal_sdma_tx_descs(struct hfi1_devdata
->*dd, struct sdma_txreq *tx,
-> 		}
-> 
-> 		if (type == SDMA_MAP_PAGE) {
->-			kvaddr = kmap(page);
->+			kvaddr = kmap_thread(page);
-> 			kvaddr += offset;
-> 		} else if (WARN_ON(!kvaddr)) {
-> 			__sdma_txclean(dd, tx);
->@@ -3140,7 +3140,7 @@ int ext_coal_sdma_tx_descs(struct hfi1_devdata
->*dd, struct sdma_txreq *tx,
-> 		memcpy(tx->coalesce_buf + tx->coalesce_idx, kvaddr, len);
-> 		tx->coalesce_idx += len;
-> 		if (type == SDMA_MAP_PAGE)
->-			kunmap(page);
->+			kunmap_thread(page);
-> 
-> 		/* If there is more data, return */
-> 		if (tx->tlen - tx->coalesce_idx)
->diff --git a/drivers/infiniband/hw/i40iw/i40iw_cm.c
->b/drivers/infiniband/hw/i40iw/i40iw_cm.c
->index a3b95805c154..122d7a5642a1 100644
->--- a/drivers/infiniband/hw/i40iw/i40iw_cm.c
->+++ b/drivers/infiniband/hw/i40iw/i40iw_cm.c
->@@ -3721,7 +3721,7 @@ int i40iw_accept(struct iw_cm_id *cm_id, struct
->iw_cm_conn_param *conn_param)
-> 		ibmr->device = iwpd->ibpd.device;
-> 		iwqp->lsmm_mr = ibmr;
-> 		if (iwqp->page)
->-			iwqp->sc_qp.qp_uk.sq_base = kmap(iwqp->page);
->+			iwqp->sc_qp.qp_uk.sq_base = kmap_thread(iwqp->page);
-> 		dev->iw_priv_qp_ops->qp_send_lsmm(&iwqp->sc_qp,
-> 							iwqp->ietf_mem.va,
-> 							(accept.size + conn_param->private_data_len),
->@@ -3729,12 +3729,12 @@ int i40iw_accept(struct iw_cm_id *cm_id,
->struct iw_cm_conn_param *conn_param)
-> 
-> 	} else {
-> 		if (iwqp->page)
->-			iwqp->sc_qp.qp_uk.sq_base = kmap(iwqp->page);
->+			iwqp->sc_qp.qp_uk.sq_base = kmap_thread(iwqp->page);
-> 		dev->iw_priv_qp_ops->qp_send_lsmm(&iwqp->sc_qp, NULL, 0, 0);
-> 	}
-> 
-> 	if (iwqp->page)
->-		kunmap(iwqp->page);
->+		kunmap_thread(iwqp->page);
-> 
-> 	iwqp->cm_id = cm_id;
-> 	cm_node->cm_id = cm_id;
->@@ -4102,10 +4102,10 @@ static void i40iw_cm_event_connected(struct
->i40iw_cm_event *event)
-> 	i40iw_cm_init_tsa_conn(iwqp, cm_node);
-> 	read0 = (cm_node->send_rdma0_op == SEND_RDMA_READ_ZERO);
-> 	if (iwqp->page)
->-		iwqp->sc_qp.qp_uk.sq_base = kmap(iwqp->page);
->+		iwqp->sc_qp.qp_uk.sq_base = kmap_thread(iwqp->page);
-> 	dev->iw_priv_qp_ops->qp_send_rtt(&iwqp->sc_qp, read0);
-> 	if (iwqp->page)
->-		kunmap(iwqp->page);
->+		kunmap_thread(iwqp->page);
-> 
-> 	memset(&attr, 0, sizeof(attr));
-> 	attr.qp_state = IB_QPS_RTS;
->diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c
->b/drivers/infiniband/sw/siw/siw_qp_tx.c
->index d19d8325588b..4ed37c328d02 100644
->--- a/drivers/infiniband/sw/siw/siw_qp_tx.c
->+++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
->@@ -76,7 +76,7 @@ static int siw_try_1seg(struct siw_iwarp_tx *c_tx,
->void *paddr)
-> 			if (unlikely(!p))
-> 				return -EFAULT;
-> 
->-			buffer = kmap(p);
->+			buffer = kmap_thread(p);
-> 
-> 			if (likely(PAGE_SIZE - off >= bytes)) {
-> 				memcpy(paddr, buffer + off, bytes);
->@@ -84,7 +84,7 @@ static int siw_try_1seg(struct siw_iwarp_tx *c_tx,
->void *paddr)
-> 				unsigned long part = bytes - (PAGE_SIZE - off);
-> 
-> 				memcpy(paddr, buffer + off, part);
->-				kunmap(p);
->+				kunmap_thread(p);
-> 
-> 				if (!mem->is_pbl)
-> 					p = siw_get_upage(mem->umem,
->@@ -96,10 +96,10 @@ static int siw_try_1seg(struct siw_iwarp_tx
->*c_tx, void *paddr)
-> 				if (unlikely(!p))
-> 					return -EFAULT;
-> 
->-				buffer = kmap(p);
->+				buffer = kmap_thread(p);
-> 				memcpy(paddr + part, buffer, bytes - part);
-> 			}
->-			kunmap(p);
->+			kunmap_thread(p);
-> 		}
-> 	}
-> 	return (int)bytes;
->@@ -505,7 +505,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
->struct socket *s)
-> 				page_array[seg] = p;
-> 
-> 				if (!c_tx->use_sendpage) {
->-					iov[seg].iov_base = kmap(p) + fp_off;
->+					iov[seg].iov_base = kmap_thread(p) + fp_off;
+--Sig_/VDFBoy40HHV45rBGLSbjbCi
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This misses a corresponding kunmap_thread() in siw_unmap_pages()
-(pls change line 403 in siw_qp_tx.c as well)
+Hi Naresh,
 
-Thanks,
-Bernard.
+Just adding Christoph and Jim to cc]
 
-> 					iov[seg].iov_len = plen;
-> 
-> 					/* Remember for later kunmap() */
->@@ -518,9 +518,9 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
->struct socket *s)
-> 							plen);
-> 				} else if (do_crc) {
-> 					crypto_shash_update(c_tx->mpa_crc_hd,
->-							    kmap(p) + fp_off,
->+							    kmap_thread(p) + fp_off,
-> 							    plen);
->-					kunmap(p);
->+					kunmap_thread(p);
-> 				}
-> 			} else {
-> 				u64 va = sge->laddr + sge_off;
->-- 
->2.28.0.rc0.12.gb6a658bd00c9
+On Fri, 9 Oct 2020 19:26:24 +0530 Naresh Kamboju <naresh.kamboju@linaro.org=
+> wrote:
 >
->
+> On Fri, 9 Oct 2020 at 19:24, Naresh Kamboju <naresh.kamboju@linaro.org> w=
+rote:
+> >
+> >
+> >
+> > On Thu, 24 Sep 2020 at 15:26, Joerg Roedel <joro@8bytes.org> wrote: =20
+> > >
+> > > On Thu, Sep 24, 2020 at 10:36:47AM +0100, Robin Murphy wrote: =20
+> > > > Yes, the issue was introduced by one of the changes in "dma-mapping:
+> > > > introduce DMA range map, supplanting dma_pfn_offset", so it only ex=
+isted in
+> > > > the dma-mapping/for-next branch anyway. =20
+> > =20
+>=20
+> FYI,
+> The reported problem still exists on 5.9.0-rc8-next-20201009.
+>=20
+> [    1.843814] Driver must set ecc.strength when using hardware ECC
+> [    1.849847] WARNING: CPU: 4 PID: 1 at
+> drivers/mtd/nand/raw/nand_base.c:5687 nand_scan_with_ids+0x1450/0x1470
+> [    1.859676] Modules linked in:
+> [    1.862730] CPU: 4 PID: 1 Comm: swapper/0 Not tainted
+> 5.9.0-rc8-next-20201009 #1
+> [    1.870125] Hardware name: Freescale Layerscape 2088A RDB Board (DT)
+> [    1.876478] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=3D--)
+> [    1.882483] pc : nand_scan_with_ids+0x1450/0x1470
+> [    1.887183] lr : nand_scan_with_ids+0x1450/0x1470
+>=20
+> full test log,
+> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20201009/=
+testrun/3284876/suite/linux-log-parser/test/check-kernel-warning-92014/log
+>=20
+> > >
+> > > Okay, alright then.
+> > > =20
+>=20
+> - Naresh
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/VDFBoy40HHV45rBGLSbjbCi
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+CAzEACgkQAVBC80lX
+0Gyv1gf+OhvuoKZ7Dmo9fQYJq9511FjSgaqsakQ81Jh2iL8ekt5hPSz0Hss0+Crs
+kG4GTzQg9CiRbNN/JbDmIC2SPF59L6ht6kVddSJ8A6qb7o0b/+aBOCsKen4AxFER
+YfGofzrnHpWORu2/JyYdoOPbyaJL0ohW5oFW58icU8AyRNMGOq8GhDsrPXl3Ebf6
+4tNKIcz4PGXJO9HiuQUuKJSD4b/krtHkh2m0Xz3NC7zY6aRAxBWS8/OieouK0EiR
+E59fS4A/AaJQUheKpfcEkBiZXsLBx7bZ/ki4EQ1NlQakjpF4KMVhZKrlsB/kBimF
+41tdxnpjq4DzVLXrV9nAg2OBIS6TMw==
+=vHqX
+-----END PGP SIGNATURE-----
+
+--Sig_/VDFBoy40HHV45rBGLSbjbCi--
+
+
+--===============4023777689752174228==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============4023777689752174228==--
+
