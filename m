@@ -5,18 +5,18 @@ X-Spam-Level:
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1C9AC433DF
-	for <linux-mtd@archiver.kernel.org>; Sat, 10 Oct 2020 05:33:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4637C433E7
+	for <linux-mtd@archiver.kernel.org>; Sat, 10 Oct 2020 05:33:07 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E7AC207FB
-	for <linux-mtd@archiver.kernel.org>; Sat, 10 Oct 2020 05:33:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5C27C207FB
+	for <linux-mtd@archiver.kernel.org>; Sat, 10 Oct 2020 05:33:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MtKZ9B7M"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E7AC207FB
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JaZPZXiH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5C27C207FB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,44 +25,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=iSEJ4Q7FC16UAe7JOcUapyyswIZ4jpA5NwFD7p6bcUw=; b=MtKZ9B7MhkQ9Xz1/VZvh6u/u6i
-	8bOCU60rsn/Q6W8DIwlk1uSWXZJriU7VOH3vMhnk3Ig+Ge5Uha4rxC66l1m2pcw3n8EhFIyrNkcT0
-	vbQxCbIRtGvYntaaydNfA8Bix7fDvcpAYRqmF7q4G+RyYMNJ3IPW3mDVSdDf5amBhWOr4pNgsqKuR
-	kyufm0jIRq1JsmtfVSsGQhWehfR3GPwCNZQB4tvElXlPqLaTp7vLRxm7HmAy2Hp7grxwFpDL68Zvy
-	21DMa5MGtt4CLrCu87DPTbCl+QeqFyJrb0klZQfhYn2VCYNxKFIpGqe8tG1LrSLt5EIMq+fkHsjqO
-	c85D4MHg==;
+	bh=I0jMGXWelAHSq2U5rt8wPFIhocjRYJBlzqL90IMebv4=; b=JaZPZXiHkI9bzYKB0AZM0AAltD
+	YpdGrtEqoTkCXLrA50Fw+nK7/rQyxhLEQW0lCEOW53afMqZSoWnQrOs8yLe/2Zj2Sg+CoD9DxIceV
+	6XjYQVfeAnbyp2SPQy21Ijr5+dayjIIyh4+3tRqC22aqLB1vQORxsnmeQ1usasYpFwMP+C+ERD8+C
+	mI43ljgqiMl1meWMBVBe2Crg81B/DG0MorobOQFMuyMiV+P8VNS92wcI3mkJkbKvRBB4V3srpc/zF
+	imxp7tvccSS0b/3aMI8Cj9X3pts+zTsR0mbVGMU73j5bJM0PmHwzXnw7I5bZXtlSTYvInx10apqBV
+	bYO2xdeA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kR7UO-0003dy-50; Sat, 10 Oct 2020 05:32:16 +0000
+	id 1kR7UU-0003fY-JU; Sat, 10 Oct 2020 05:32:22 +0000
 Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kR7UI-0003c2-VP
- for linux-mtd@lists.infradead.org; Sat, 10 Oct 2020 05:32:12 +0000
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
- by alexa-out.qualcomm.com with ESMTP; 09 Oct 2020 22:32:08 -0700
+ id 1kR7UK-0003c1-QG
+ for linux-mtd@lists.infradead.org; Sat, 10 Oct 2020 05:32:14 +0000
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+ by alexa-out.qualcomm.com with ESMTP; 09 Oct 2020 22:32:10 -0700
 X-QCInternal: smtphost
 Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
- by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA;
- 09 Oct 2020 22:32:07 -0700
+ by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA;
+ 09 Oct 2020 22:32:09 -0700
 X-QCInternal: smtphost
 Received: from mdalam-linux.qualcomm.com ([10.201.2.71])
- by ironmsg02-blr.qualcomm.com with ESMTP; 10 Oct 2020 11:01:44 +0530
+ by ironmsg02-blr.qualcomm.com with ESMTP; 10 Oct 2020 11:01:45 +0530
 Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
- id ED6B221AD8; Sat, 10 Oct 2020 11:01:42 +0530 (IST)
+ id 5B2CF21ADE; Sat, 10 Oct 2020 11:01:43 +0530 (IST)
 From: Md Sadre Alam <mdalam@codeaurora.org>
 To: agross@kernel.org, bjorn.andersson@linaro.org, miquel.raynal@bootlin.com,
  richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org,
  linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/5] mtd: rawnand: qcom: Add initial support for qspi nand
-Date: Sat, 10 Oct 2020 11:01:39 +0530
-Message-Id: <1602307902-16761-3-git-send-email-mdalam@codeaurora.org>
+Subject: [PATCH 5/5] mtd: rawnand: qcom: Add support for serial training.
+Date: Sat, 10 Oct 2020 11:01:42 +0530
+Message-Id: <1602307902-16761-6-git-send-email-mdalam@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1602307902-16761-1-git-send-email-mdalam@codeaurora.org>
 References: <1602307902-16761-1-git-send-email-mdalam@codeaurora.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201010_013211_131947_12342395 
-X-CRM114-Status: GOOD (  21.88  )
+X-CRM114-CacheID: sfid-20201010_013212_989758_5345E27E 
+X-CRM114-Status: GOOD (  26.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,388 +81,319 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This change will add initial support for qspi (serial nand).
+This change will add support for serial training for
+QSPI nand in QPIC.
 
-QPIC Version v.2.0 onwards supports serial nand as well so this
-change will initialize all required register to enable qspi (serial
-nand).
+Due to different PNR and PCB delays, serial read data
+can come with different delays to QPIC. At high frequency
+operations Rx clock should be adjusted according to delays
+so that Rx Data can be captured correctly.CLK_CNTR_INIT_VAL_VEC
+in NAND_FLASH_SPI_CFG register is a 12-bit vector which is divided
+in 4 parts of 3 bits each representing delay of 4 serial input data
+lines. Bit [2:0] corresponds to qspi_miso[0], bit [5:3] corresponds
+to qspi_miso[1], bit [8:6] corresponds to qspi_miso[2] and bit [11:9]
+corresponds to qspi_miso[3]. Delay of each qspi_miso line can be set
+from 0 to 7.
 
-This change is supporting very basic functionality of qspi nand flash.
+For serial training the following rule should be followd.
 
-1. Reset device (Reset QSPI NAND device).
-
-2. Device detection (Read id QSPI NAND device).
+1. SW should write a page with any known pattern in flash at lower
+   frequency.
+2. Set the CLK_CNTR_INIT_VAL_VEC for qspi_miso[0] line.
+3. Read that page repetitively in high frequency mode until it
+   gets data accurately.
+4. Repeat above steps for other qspi_miso lines.
 
 Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
 ---
- drivers/mtd/nand/raw/nand_ids.c   |  13 +++
- drivers/mtd/nand/raw/qcom_nandc.c | 168 +++++++++++++++++++++++++++++++++++---
- 2 files changed, 171 insertions(+), 10 deletions(-)
+ drivers/mtd/nand/raw/qcom_nandc.c | 219 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 217 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/nand_ids.c b/drivers/mtd/nand/raw/nand_ids.c
-index b994579..32bc419 100644
---- a/drivers/mtd/nand/raw/nand_ids.c
-+++ b/drivers/mtd/nand/raw/nand_ids.c
-@@ -55,6 +55,19 @@ struct nand_flash_dev nand_flash_ids[] = {
- 		{ .id = {0x98, 0xdc, 0x91, 0x15, 0x76} },
- 		  SZ_2K, SZ_512, SZ_128K, 0, 5, 128, NAND_ECC_INFO(8, SZ_512) },
- 
-+	{"GD5F1GQ4RE9IG SPI NAND 1G 1.8V 4-bit",
-+		{ .id = {0xc8, 0xc1} },
-+		  SZ_2K, SZ_128, SZ_128K, 0, 2, 128, NAND_ECC_INFO(8, SZ_512) },
-+	{"GD5F1GQ4RE9IH SPI NAND 1G 1.8V 4-bit",
-+		{ .id = {0xc8, 0xc9} },
-+		SZ_2K, SZ_128, SZ_128K, 0, 2, 64, NAND_ECC_INFO(4, SZ_512) },
-+	{"GD5F2GQ5REYIH SPI NAND 2G 4-bit",
-+		{ .id = {0xc8, 0x22} },
-+		SZ_2K, SZ_256, SZ_128K, 0, 2, 64, NAND_ECC_INFO(4, SZ_512) },
-+	{"MT29F1G01ABBFDWB-IT SPI NAND 1G 1.8V 4-bit",
-+		{ .id = {0x2c, 0x15} },
-+		SZ_2K, SZ_128, SZ_128K, 0, 2, 128, NAND_ECC_INFO(8, SZ_512) },
-+
- 	LEGACY_ID_NAND("NAND 4MiB 5V 8-bit",   0x6B, 4, SZ_8K, SP_OPTIONS),
- 	LEGACY_ID_NAND("NAND 4MiB 3,3V 8-bit", 0xE3, 4, SZ_8K, SP_OPTIONS),
- 	LEGACY_ID_NAND("NAND 4MiB 3,3V 8-bit", 0xE5, 4, SZ_8K, SP_OPTIONS),
 diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index bd7a725..f5064ab 100644
+index 4e8e1dc..fc5e32c 100644
 --- a/drivers/mtd/nand/raw/qcom_nandc.c
 +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -36,18 +36,33 @@
- #define	NAND_DEV_CMD1			0xa4
- #define	NAND_DEV_CMD2			0xa8
- #define	NAND_DEV_CMD_VLD		0xac
-+#define NAND_DEV_CMD7			0xb0
-+#define NAND_DEV_CMD8			0xb4
-+#define NAND_DEV_CMD9			0xb8
-+#define NAND_FLASH_SPI_CFG		0xc0
-+#define NAND_SPI_NUM_ADDR_CYCLES	0xc4
-+#define NAND_SPI_BUSY_CHECK_WAIT_CNT	0xc8
-+#define NAND_DEV_CMD3			0xd0
-+#define NAND_DEV_CMD4			0xd4
-+#define NAND_DEV_CMD5			0xd8
-+#define NAND_DEV_CMD6			0xdc
- #define	SFLASHC_BURST_CFG		0xe0
- #define	NAND_ERASED_CW_DETECT_CFG	0xe8
- #define	NAND_ERASED_CW_DETECT_STATUS	0xec
- #define	NAND_EBI2_ECC_BUF_CFG		0xf0
- #define	FLASH_BUF_ACC			0x100
--
- #define	NAND_CTRL			0xf00
- #define	NAND_VERSION			0xf08
- #define	NAND_READ_LOCATION_0		0xf20
- #define	NAND_READ_LOCATION_1		0xf24
- #define	NAND_READ_LOCATION_2		0xf28
- #define	NAND_READ_LOCATION_3		0xf2c
-+#define NAND_READ_LOCATION_LAST_CW_0	0xf40
-+#define NAND_READ_LOCATION_LAST_CW_1	0xf44
-+#define NAND_READ_LOCATION_LAST_CW_2	0xf48
-+#define NAND_READ_LOCATION_LAST_CW_3	0xf4c
-+#define NAND_QSPI_MSTR_CONFIG		0xf60
-+
+@@ -217,6 +217,10 @@
+ #define SPI_TRANSFER_MODE_x1	(1 << 29)
+ #define SPI_TRANSFER_MODE_x4	(3 << 29)
+ #define QPIC_v2_0	0x2
++#define FEEDBACK_CLK_EN	(1 << 4)
++#define MAX_TRAINING_BLK	8
++#define TRAINING_OFFSET	0x0
++#define TOTAL_NUM_PHASE	7
  
- /* dummy register offsets, used by write_reg_dma */
- #define	NAND_DEV_CMD1_RESTORE		0xdead
-@@ -180,6 +195,28 @@
- #define	ECC_BCH_4BIT	BIT(2)
- #define	ECC_BCH_8BIT	BIT(3)
- 
-+/* QSPI NAND config reg bits */
-+#define LOAD_CLK_CNTR_INIT_EN	(1 << 28)
-+#define CLK_CNTR_INIT_VAL_VEC	0x924
-+#define FEA_STATUS_DEV_ADDR	0xc0
-+#define SPI_CFG	(1 << 0)
-+
-+/* CMD register value for qspi nand */
-+#define CMD0_VAL	0x1080D8D8
-+#define CMD1_VAL	0xF00F3000
-+#define CMD2_VAL	0xF0FF709F
-+#define CMD3_VAL	0x3F310015
-+#define CMD7_VAL	0x04061F0F
-+#define CMD_VLD_VAL	0xd
-+#define SPI_NUM_ADDR	0xDA4DB
-+#define WAIT_CNT	0x10
-+
-+/* QSPI NAND CMD reg bits value */
-+#define SPI_WP		(1 << 28)
-+#define SPI_HOLD	(1 << 27)
-+#define SPI_TRANSFER_MODE_x1	(1 << 29)
-+#define SPI_TRANSFER_MODE_x4	(3 << 29)
-+
  #define nandc_set_read_loc(nandc, reg, offset, size, is_last)	\
  nandc_set_reg(nandc, NAND_READ_LOCATION_##reg,			\
- 	      ((offset) << READ_LOCATION_OFFSET) |		\
-@@ -315,6 +352,9 @@ struct nandc_regs {
- 	__le32 read_location1;
- 	__le32 read_location2;
- 	__le32 read_location3;
-+	__le32 spi_cfg;
-+	__le32 num_addr_cycle;
-+	__le32 busy_wait_cnt;
+@@ -267,6 +271,16 @@ nandc_set_reg(nandc, NAND_READ_LOCATION_LAST_CW_##reg,			\
+ #define NAND_ERASED_CW_SET		BIT(4)
+ 
+ /*
++ * An array holding the fixed pattern
++ */
++static const u32 qspi_training_block_64[] = {
++	0x0F0F0F0F, 0x0F0F0F0F, 0x0F0F0F0F, 0x0F0F0F0F,
++	0x0F0F0F0F, 0x0F0F0F0F, 0x0F0F0F0F, 0x0F0F0F0F,
++	0x0F0F0F0F, 0x0F0F0F0F, 0x0F0F0F0F, 0x0F0F0F0F,
++	0x0F0F0F0F, 0x0F0F0F0F, 0x0F0F0F0F, 0x0F0F0F0F,
++};
++
++/*
+  * This data type corresponds to the BAM transaction which will be used for all
+  * NAND transfers.
+  * @bam_ce - the array of BAM command elements
+@@ -366,6 +380,7 @@ struct nandc_regs {
+ 	__le32 spi_cfg;
+ 	__le32 num_addr_cycle;
+ 	__le32 busy_wait_cnt;
++	__le32 mstr_cfg;
  
  	__le32 erased_cw_detect_cfg_clr;
  	__le32 erased_cw_detect_cfg_set;
-@@ -368,6 +408,7 @@ struct qcom_nand_controller {
- 
- 	struct clk *core_clk;
- 	struct clk *aon_clk;
-+	struct clk *iomacro_clk;
- 
- 	union {
- 		/* will be used only by QPIC for BAM DMA */
-@@ -461,12 +502,14 @@ struct qcom_nand_host {
-  * @is_bam - whether NAND controller is using BAM
-  * @is_qpic - whether NAND CTRL is part of qpic IP
-  * @dev_cmd_reg_start - NAND_DEV_CMD_* registers starting offset
-+ * @is_serial_nand - QSPI nand flag, whether QPIC support serial nand or not
-  */
- struct qcom_nandc_props {
- 	u32 ecc_modes;
- 	bool is_bam;
- 	bool is_qpic;
- 	u32 dev_cmd_reg_start;
-+	bool is_serial_nand;
- };
- 
- /* Frees the BAM transaction memory */
-@@ -641,6 +684,12 @@ static __le32 *offset_to_nandc_reg(struct nandc_regs *regs, int offset)
- 		return &regs->read_location2;
- 	case NAND_READ_LOCATION_3:
- 		return &regs->read_location3;
-+	case NAND_FLASH_SPI_CFG:
-+		return &regs->spi_cfg;
-+	case NAND_SPI_NUM_ADDR_CYCLES:
-+		return &regs->num_addr_cycle;
-+	case NAND_SPI_BUSY_CHECK_WAIT_CNT:
-+		return &regs->busy_wait_cnt;
+@@ -710,6 +725,8 @@ static __le32 *offset_to_nandc_reg(struct nandc_regs *regs, int offset)
+ 		return &regs->num_addr_cycle;
+ 	case NAND_SPI_BUSY_CHECK_WAIT_CNT:
+ 		return &regs->busy_wait_cnt;
++	case NAND_QSPI_MSTR_CONFIG:
++		return &regs->mstr_cfg;
  	default:
  		return NULL;
  	}
-@@ -1245,11 +1294,23 @@ static int read_id(struct qcom_nand_host *host, int column)
+@@ -2978,14 +2995,13 @@ static void qspi_write_reg_bam(struct qcom_nand_controller *nandc,
+ 		unsigned int val, unsigned int reg)
  {
- 	struct nand_chip *chip = &host->chip;
- 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-+	u32 cmd = OP_FETCH_ID;
+ 	int ret;
+-
+ 	clear_bam_transaction(nandc);
+ 	nandc_set_reg(nandc, reg, val);
+ 	write_reg_dma(nandc, reg, 1, NAND_BAM_NEXT_SGL);
  
- 	if (column == -1)
- 		return 0;
- 
--	nandc_set_reg(nandc, NAND_FLASH_CMD, OP_FETCH_ID);
-+	if (nandc->props->is_serial_nand) {
-+		cmd |= (SPI_WP | SPI_HOLD | SPI_TRANSFER_MODE_x1);
-+		/* For spi nand read 2-bytes id only
-+		 * else if nandc->buf_count == 4; then the id value
-+		 * will repeat and the SLC device will be detect as MLC.
-+		 * by nand base layer
-+		 * so overwrite the nandc->buf_count == 2;
-+		 */
-+		nandc->buf_count = 2;
-+	}
-+
-+	nandc_set_reg(nandc, NAND_FLASH_CMD, cmd);
- 	nandc_set_reg(nandc, NAND_ADDR0, column);
- 	nandc_set_reg(nandc, NAND_ADDR1, 0);
- 	nandc_set_reg(nandc, NAND_FLASH_CHIP_SELECT,
-@@ -1269,8 +1330,13 @@ static int reset(struct qcom_nand_host *host)
- {
- 	struct nand_chip *chip = &host->chip;
- 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-+	int cmd_rst;
-+
-+	cmd_rst = OP_RESET_DEVICE;
-+	if (nandc->props->is_serial_nand)
-+		cmd_rst |= (SPI_WP | SPI_HOLD | SPI_TRANSFER_MODE_x1);
- 
--	nandc_set_reg(nandc, NAND_FLASH_CMD, OP_RESET_DEVICE);
-+	nandc_set_reg(nandc, NAND_FLASH_CMD, cmd_rst);
- 	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
- 
- 	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
-@@ -2470,6 +2536,8 @@ static int qcom_nand_attach_chip(struct nand_chip *chip)
- 	int cwperpage, bad_block_byte, ret;
- 	bool wide_bus;
- 	int ecc_mode = 1;
-+	int num_addr_cycle = 5, dsbl_sts_aftr_write = 0;
-+	int wr_rd_bsy_gap = 2, recovery_cycle = 7;
- 
- 	/* controller only supports 512 bytes data steps */
- 	ecc->size = NANDC_STEP_SIZE;
-@@ -2571,33 +2639,43 @@ static int qcom_nand_attach_chip(struct nand_chip *chip)
- 	host->cw_size = host->cw_data + ecc->bytes;
- 	bad_block_byte = mtd->writesize - host->cw_size * (cwperpage - 1) + 1;
- 
-+	/* For QSPI serial nand QPIC config register value got changed
-+	 * so configure the new value for qspi serial nand
-+	 */
-+	if (nandc->props->is_serial_nand) {
-+		num_addr_cycle = 3;
-+		dsbl_sts_aftr_write = 1;
-+		wr_rd_bsy_gap = 20;
-+		recovery_cycle = 0;
-+	}
-+
- 	host->cfg0 = (cwperpage - 1) << CW_PER_PAGE
- 				| host->cw_data << UD_SIZE_BYTES
--				| 0 << DISABLE_STATUS_AFTER_WRITE
--				| 5 << NUM_ADDR_CYCLES
-+				| dsbl_sts_aftr_write << DISABLE_STATUS_AFTER_WRITE
-+				| num_addr_cycle << NUM_ADDR_CYCLES
- 				| host->ecc_bytes_hw << ECC_PARITY_SIZE_BYTES_RS
- 				| 0 << STATUS_BFR_READ
- 				| 1 << SET_RD_MODE_AFTER_STATUS
- 				| host->spare_bytes << SPARE_SIZE_BYTES;
- 
--	host->cfg1 = 7 << NAND_RECOVERY_CYCLES
-+	host->cfg1 = recovery_cycle << NAND_RECOVERY_CYCLES
- 				| 0 <<  CS_ACTIVE_BSY
- 				| bad_block_byte << BAD_BLOCK_BYTE_NUM
- 				| 0 << BAD_BLOCK_IN_SPARE_AREA
--				| 2 << WR_RD_BSY_GAP
-+				| wr_rd_bsy_gap << WR_RD_BSY_GAP
- 				| wide_bus << WIDE_FLASH
- 				| host->bch_enabled << ENABLE_BCH_ECC;
- 
- 	host->cfg0_raw = (cwperpage - 1) << CW_PER_PAGE
- 				| host->cw_size << UD_SIZE_BYTES
--				| 5 << NUM_ADDR_CYCLES
-+				| num_addr_cycle << NUM_ADDR_CYCLES
- 				| 0 << SPARE_SIZE_BYTES;
- 
--	host->cfg1_raw = 7 << NAND_RECOVERY_CYCLES
-+	host->cfg1_raw = recovery_cycle << NAND_RECOVERY_CYCLES
- 				| 0 << CS_ACTIVE_BSY
- 				| 17 << BAD_BLOCK_BYTE_NUM
- 				| 1 << BAD_BLOCK_IN_SPARE_AREA
--				| 2 << WR_RD_BSY_GAP
-+				| wr_rd_bsy_gap << WR_RD_BSY_GAP
- 				| wide_bus << WIDE_FLASH
- 				| 1 << DEV0_CFG1_ECC_DISABLE;
- 
-@@ -2805,6 +2883,47 @@ static int qcom_nandc_setup(struct qcom_nand_controller *nandc)
- 	return 0;
+ 	ret = submit_descs(nandc);
+ 	if (ret)
+-		dev_err(nandc->dev, "Error in submitting descriptor to write config reg\n");
++		dev_err(nandc->dev, "Error in submitting descriptor to write reg %x\n", reg);
+ 	free_descs(nandc);
  }
  
-+static void qspi_write_reg_bam(struct qcom_nand_controller *nandc,
-+		unsigned int val, unsigned int reg)
+@@ -3015,6 +3031,192 @@ static void qspi_nand_init(struct qcom_nand_controller *nandc)
+ 	qspi_write_reg_bam(nandc, WAIT_CNT, NAND_SPI_BUSY_CHECK_WAIT_CNT);
+ }
+ 
++static void qspi_set_phase(struct qcom_nand_controller *nandc, int phase)
 +{
-+	int ret;
++	u32 qspi_cfg_val = 0x0;
++	int reg = dev_cmd_reg_addr(nandc, NAND_FLASH_SPI_CFG);
 +
-+	clear_bam_transaction(nandc);
-+	nandc_set_reg(nandc, reg, val);
-+	write_reg_dma(nandc, reg, 1, NAND_BAM_NEXT_SGL);
++	qspi_cfg_val = nandc_read(nandc, reg);
++	qspi_cfg_val |= LOAD_CLK_CNTR_INIT_EN;
 +
-+	ret = submit_descs(nandc);
-+	if (ret)
-+		dev_err(nandc->dev, "Error in submitting descriptor to write config reg\n");
-+	free_descs(nandc);
++	qspi_write_reg_bam(nandc, qspi_cfg_val, NAND_FLASH_SPI_CFG);
++	qspi_cfg_val &= 0xf000ffff;
++
++	/* Write phase value for all the lines */
++	qspi_cfg_val |= ((phase << 16) | (phase << 19) | (phase << 22)
++			| (phase << 25));
++	qspi_write_reg_bam(nandc, qspi_cfg_val, NAND_FLASH_SPI_CFG);
++
++	/* Clear LOAD_CLK_CNTR_INIT_EN bit to load phase value */
++	qspi_cfg_val &= ~LOAD_CLK_CNTR_INIT_EN;
++	qspi_write_reg_bam(nandc, qspi_cfg_val, NAND_FLASH_SPI_CFG);
 +}
 +
-+static void qspi_nand_init(struct qcom_nand_controller *nandc)
++static int qspi_get_appropriate_phase(struct qcom_nand_controller *nandc, u8 *phase_table,
++		int phase_count)
 +{
-+	u32 spi_cfg_val = 0x0;
-+	u32 reg = 0x0;
++	int i, cnt = 0, phase = 0x0;
++	u8 phase_ranges[TOTAL_NUM_PHASE] = {'\0'};
 +
-+	spi_cfg_val |= (LOAD_CLK_CNTR_INIT_EN | CLK_CNTR_INIT_VAL_VEC
-+			| FEA_STATUS_DEV_ADDR | SPI_CFG);
++	for (i = 0; i < phase_count; i++) {
++		if ((phase_table[i] + 1 == phase_table[i + 1]) &&
++		(phase_table[i + 1] + 1 == phase_table[i + 2]))
++			phase_ranges[cnt++] = phase_table[i + 1];
++	}
 +
-+	qspi_write_reg_bam(nandc, 0x0, NAND_FLASH_SPI_CFG);
-+	qspi_write_reg_bam(nandc, spi_cfg_val, NAND_FLASH_SPI_CFG);
-+	spi_cfg_val &= ~LOAD_CLK_CNTR_INIT_EN;
-+	qspi_write_reg_bam(nandc, spi_cfg_val, NAND_FLASH_SPI_CFG);
++	/* Filter out middle phase */
++	if (!(cnt & 1))
++		phase = phase_ranges[cnt/2 - 1];
++	else
++		phase = phase_ranges[cnt/2];
 +
-+	reg = dev_cmd_reg_addr(nandc, NAND_DEV_CMD0);
-+	nandc_write(nandc, reg, CMD0_VAL);
-+	nandc_write(nandc, reg + 4, CMD1_VAL);
-+	nandc_write(nandc, reg + 8, CMD2_VAL);
-+	nandc_write(nandc, reg + 12, CMD_VLD_VAL);
-+	nandc_write(nandc, reg + 16, CMD7_VAL);
-+	reg = dev_cmd_reg_addr(nandc, NAND_DEV_CMD3);
-+	nandc_write(nandc, reg, CMD3_VAL);
++	return phase;
++}
 +
-+	qspi_write_reg_bam(nandc, SPI_NUM_ADDR, NAND_SPI_NUM_ADDR_CYCLES);
-+	qspi_write_reg_bam(nandc, WAIT_CNT, NAND_SPI_BUSY_CHECK_WAIT_CNT);
++static int qspi_execute_training(struct qcom_nand_controller *nandc,
++		struct qcom_nand_host *host, struct mtd_info *mtd)
++{
++	u32 pages_per_block = 0, page = 0;
++	int ret = 0, bb_cnt = 0, i, phase_failed = 0;
++	int phase_cnt, phase;
++	u32 training_offset = TRAINING_OFFSET;
++	u8 *training_data = NULL, trained_phase[TOTAL_NUM_PHASE] = {'\0'};
++	struct nand_chip *chip = &host->chip;
++
++	pages_per_block = 1 << (chip->phys_erase_shift - chip->page_shift);
++	page = (training_offset >> chip->page_shift) & chip->pagemask;
++
++	/* Set feedback clk enable bit to do auto adjustment of phase
++	 * at lower frequency
++	 */
++	qspi_write_reg_bam(nandc, (nandc_read(nandc,
++			NAND_QSPI_MSTR_CONFIG) | FEEDBACK_CLK_EN),
++			NAND_QSPI_MSTR_CONFIG);
++
++	/* check for bad block in allocated training blocks
++	 * The training blocks should be continuous good block or
++	 * continuous bad block, it should be not like good,bad,good etc.
++	 * avoid to use this type of block for serial training
++	 */
++	while (qcom_nandc_block_bad(chip, training_offset)) {
++		training_offset += mtd->erasesize;
++		page += pages_per_block;
++		bb_cnt++;
++	}
++
++	if (bb_cnt == MAX_TRAINING_BLK) {
++		dev_dbg(nandc->dev, "All training blocks are bad, skipping serial training");
++		dev_dbg(nandc->dev, "Operatig at lower frequency");
++		ret = -EINVAL;
++		goto trng_err;
++	}
++
++	qcom_nandc_command(chip, NAND_CMD_ERASE1, 0, page);
++
++	/* Allocate memory to hold one NAND page */
++	training_data = kzalloc(mtd->writesize, GFP_KERNEL);
++	if (!training_data) {
++		ret = -ENOMEM;
++		goto trng_err;
++	}
++	memset(training_data, '\0', mtd->writesize);
++
++	for (i = 0; i < mtd->writesize; i += sizeof(qspi_training_block_64))
++		memcpy(training_data + i, qspi_training_block_64,
++			sizeof(qspi_training_block_64));
++
++	/* Write qspi training data to flash */
++	ret = qcom_nandc_write_page(chip, training_data, 0, page);
++	if (ret) {
++		dev_err(nandc->dev, "Error in writing training data");
++		ret = -EINVAL;
++		goto mem_err;
++	}
++
++	/* Read qspi training data @ low freq */
++	memset(training_data, 0xff, mtd->writesize);
++	ret = qcom_nandc_read_page(chip, training_data, 0, page);
++	if (ret) {
++		dev_err(nandc->dev, "Error in reading training data @ low freq");
++		ret = -EINVAL;
++		goto mem_err;
++	}
++
++	/* compare read training data with known pattern */
++	for (i = 0; i <  mtd->writesize; i += sizeof(qspi_training_block_64)) {
++		if (memcmp(training_data + i, qspi_training_block_64,
++				sizeof(qspi_training_block_64))) {
++			dev_err(nandc->dev, "Training data mismatch @ low freq");
++			ret = -EINVAL;
++			goto mem_err;
++		}
++	}
++
++	/* clear feedback clock bit and start training here */
++	qspi_write_reg_bam(nandc, (nandc_read(nandc,
++			NAND_QSPI_MSTR_CONFIG) & ~FEEDBACK_CLK_EN),
++			NAND_QSPI_MSTR_CONFIG);
++	phase = 1;
++	phase_cnt = 0;
++
++	/* set higest clock frequecy for io_macro i.e 320MHz so
++	 * on bus it will be 320/4 = 80MHz.
++	 */
++
++	ret =  clk_set_rate(nandc->iomacro_clk, 320000000);
++	if (ret) {
++		dev_err(nandc->dev, "Setting clk rate to 320000000 MHz failed");
++		goto mem_err;
++	}
++
++	do {
++		qspi_set_phase(nandc, phase);
++
++		/* Prepare clean buffer to read */
++		memset(training_data, 0xff, mtd->writesize);
++		ret = qcom_nandc_read_page(chip, training_data, 0, page);
++		if (ret) {
++			dev_err(nandc->dev, "Error in reading training data @ high freq");
++			ret = -EINVAL;
++			goto mem_err;
++		}
++		/* compare read training data with known pattern */
++		for (i = 0; i <  mtd->writesize; i += sizeof(qspi_training_block_64)) {
++			if (memcmp(training_data + i, qspi_training_block_64,
++					sizeof(qspi_training_block_64))) {
++				phase_failed++;
++				break;
++			}
++		}
++
++		if (i == mtd->writesize)
++			trained_phase[phase_cnt++] = phase;
++
++	} while (phase++ < TOTAL_NUM_PHASE);
++
++	if (phase_cnt) {
++		phase = qspi_get_appropriate_phase(nandc, trained_phase, phase_cnt);
++		qspi_set_phase(nandc, phase);
++	} else {
++		dev_err(nandc->dev, "Serial training failed");
++		dev_err(nandc->dev, "Running @ low freq 50MHz");
++		/* Run @ lower frequency 50Mhz with feedback clk bit enabled  */
++		qspi_write_reg_bam(nandc, (nandc_read(nandc,
++			NAND_QSPI_MSTR_CONFIG) | FEEDBACK_CLK_EN),
++			NAND_QSPI_MSTR_CONFIG);
++		ret =  clk_set_rate(nandc->iomacro_clk, 200000000);
++		if (ret) {
++			dev_err(nandc->dev, "Setting clk rate to 50000000 MHz failed");
++			goto mem_err;
++		}
++	}
++
++mem_err:
++	kfree(training_data);
++trng_err:
++	return ret;
 +}
 +
  static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
  					    struct qcom_nand_host *host,
  					    struct device_node *dn)
-@@ -2854,6 +2973,9 @@ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
- 	/* set up initial status value */
- 	host->status = NAND_STATUS_READY | NAND_STATUS_WP;
+@@ -3081,6 +3283,15 @@ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
+ 		}
+ 	}
  
++	/* QSPI serial training is required if io_macro clk frequency
++	 * is more than 50MHz. This is due to different PNR and PCB delays,
++	 * serial read data can come with different delays to QPIC. So
++	 * Rx clock should be adjusted according to delays so that Rx Data
++	 * can be captured correctly.
++	 */
 +	if (nandc->props->is_serial_nand)
-+		qspi_nand_init(nandc);
++		qspi_execute_training(nandc, host, mtd);
 +
- 	ret = nand_scan(chip, 1);
+ 	ret = mtd_device_register(mtd, NULL, 0);
  	if (ret)
- 		return ret;
-@@ -2961,6 +3083,12 @@ static int qcom_nandc_probe(struct platform_device *pdev)
- 	if (IS_ERR(nandc->aon_clk))
- 		return PTR_ERR(nandc->aon_clk);
- 
-+	if (nandc->props->is_serial_nand) {
-+		nandc->iomacro_clk = devm_clk_get(dev, "io_macro");
-+		if (IS_ERR(nandc->iomacro_clk))
-+			return PTR_ERR(nandc->iomacro_clk);
-+	}
+ 		nand_cleanup(chip);
+@@ -3178,6 +3389,10 @@ static int qcom_nandc_probe(struct platform_device *pdev)
+ 		nandc->iomacro_clk = devm_clk_get(dev, "io_macro");
+ 		if (IS_ERR(nandc->iomacro_clk))
+ 			return PTR_ERR(nandc->iomacro_clk);
 +
- 	ret = qcom_nandc_parse_dt(pdev);
- 	if (ret)
- 		return ret;
-@@ -2989,6 +3117,12 @@ static int qcom_nandc_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_aon_clk;
- 
-+	if (nandc->props->is_serial_nand) {
-+		ret = clk_prepare_enable(nandc->iomacro_clk);
++		ret =  clk_set_rate(nandc->iomacro_clk, 200000000);
 +		if (ret)
-+			goto err_setup;
-+	}
-+
- 	ret = qcom_nandc_setup(nandc);
- 	if (ret)
- 		goto err_setup;
-@@ -3042,6 +3176,7 @@ static const struct qcom_nandc_props ipq806x_nandc_props = {
- 	.ecc_modes = (ECC_RS_4BIT | ECC_BCH_8BIT),
- 	.is_bam = false,
- 	.dev_cmd_reg_start = 0x0,
-+	.is_serial_nand = false,
- };
++			return ret;
+ 	}
  
- static const struct qcom_nandc_props ipq4019_nandc_props = {
-@@ -3049,6 +3184,7 @@ static const struct qcom_nandc_props ipq4019_nandc_props = {
- 	.is_bam = true,
- 	.is_qpic = true,
- 	.dev_cmd_reg_start = 0x0,
-+	.is_serial_nand = false,
- };
- 
- static const struct qcom_nandc_props ipq8074_nandc_props = {
-@@ -3056,6 +3192,14 @@ static const struct qcom_nandc_props ipq8074_nandc_props = {
- 	.is_bam = true,
- 	.is_qpic = true,
- 	.dev_cmd_reg_start = 0x7000,
-+	.is_serial_nand = false,
-+};
-+
-+static const struct qcom_nandc_props ipq5018_nandc_props = {
-+	.ecc_modes = (ECC_BCH_4BIT | ECC_BCH_8BIT),
-+	.is_bam = true,
-+	.dev_cmd_reg_start = 0x7000,
-+	.is_serial_nand = true,
- };
- 
- /*
-@@ -3075,6 +3219,10 @@ static const struct of_device_id qcom_nandc_of_match[] = {
- 		.compatible = "qcom,ipq8074-nand",
- 		.data = &ipq8074_nandc_props,
- 	},
-+	{
-+		.compatible = "qcom,ipq5018-nand",
-+		.data = &ipq5018_nandc_props,
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, qcom_nandc_of_match);
+ 	ret = qcom_nandc_parse_dt(pdev);
 -- 
 2.7.4
 
