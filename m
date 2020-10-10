@@ -2,73 +2,67 @@ Return-Path: <SRS0=cnOS=DR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82D65C433DF
-	for <linux-mtd@archiver.kernel.org>; Sat, 10 Oct 2020 03:44:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3033FC43457
+	for <linux-mtd@archiver.kernel.org>; Sat, 10 Oct 2020 05:33:03 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E39332184D
-	for <linux-mtd@archiver.kernel.org>; Sat, 10 Oct 2020 03:44:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D37C4207FB
+	for <linux-mtd@archiver.kernel.org>; Sat, 10 Oct 2020 05:33:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kO89XNOS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E39332184D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=xmission.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="K5T3/QC2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D37C4207FB
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Subject:MIME-Version:Message-ID:In-Reply-To:Date:
-	References:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=HszsVLOx+7gTtxr6vNRLWVVpdb+mpH+1nxzaqdJUNkY=; b=kO89XNOSR4g1JAgQTN85ES8jV
-	RmmxlXHGeFSm5lkMipxXWPaGek6X3OxMSV5cItjTXcQEQx2mnMjxlksA2wT+jXjzjarqfsAmaDngt
-	CrJ8f97zZIsYEXAZc9afbJ4bML8gbZxpguyIrnzAcKSnHulpL/5JY586f6vwwCh9L2I5ojYPxbTyG
-	MBOK70n338/A1CxFgIPNtO3Y3G7VniILwvZcHCi4sE16/OH0iwoUT+4x2e7Dra+7NM0ZADrKj1l2r
-	MqaIUKc3N+uyiK28DRMGBOpgdbN7hFwh1PiXOYL6U3Do2DIZHhw0xOSMUU00bS9vTU3N2it/NV55P
-	K93Lh3/dg==;
+	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
+	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=4QWxwL5rjj8oURhd/1huarI2kKD46d/9cGKMkEUr9v0=; b=K5T3/QC23iUjKOglV/6jPZ7Zd7
+	qNI1P5cxcEgwSmNaOTRxxFpKuu3OvBUPfd8WO4zjc+Jq8lnsmhMbFzCYF3NZYCJg0z2wjMkYEC1+D
+	wrcA0KDVqMydG7ydaJvgMF0xAB4RrRwDOSTBbviUhn+rv0P5PI/OYVNe9RQaRzNyHqQg3cUekf09N
+	zdljqZl2bOIBhEffchUEdFm2BFcnfOxo3MhcglsFGyoOnkszZbFRxX2GP3aojiTdOv7ZiisP9r/Gm
+	6B+wElN5dB1zJt5GXx7cDZ1Qu5QKyYyhTIW0eR8E139MwJIhSmEnxdv/dr3hzeH3QjE4j0BKCaqYV
+	+cdX2wDA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kR5n9-0000em-1H; Sat, 10 Oct 2020 03:43:31 +0000
-Received: from out01.mta.xmission.com ([166.70.13.231])
+	id 1kR7UT-0003f0-Ce; Sat, 10 Oct 2020 05:32:21 +0000
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kR5n6-0000cQ-8v; Sat, 10 Oct 2020 03:43:29 +0000
-Received: from in02.mta.xmission.com ([166.70.13.52])
- by out01.mta.xmission.com with esmtps (TLS1.2) tls
- TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.93)
- (envelope-from <ebiederm@xmission.com>)
- id 1kR5ma-003qSe-1R; Fri, 09 Oct 2020 21:42:56 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]
- helo=x220.xmission.com) by in02.mta.xmission.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.87)
- (envelope-from <ebiederm@xmission.com>)
- id 1kR5mZ-0002tO-03; Fri, 09 Oct 2020 21:42:55 -0600
-From: ebiederm@xmission.com (Eric W. Biederman)
-To: ira.weiny@intel.com
-References: <20201009195033.3208459-1-ira.weiny@intel.com>
- <20201009195033.3208459-52-ira.weiny@intel.com>
-Date: Fri, 09 Oct 2020 22:43:15 -0500
-In-Reply-To: <20201009195033.3208459-52-ira.weiny@intel.com> (ira weiny's
- message of "Fri, 9 Oct 2020 12:50:26 -0700")
-Message-ID: <87k0vysq3w.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-MIME-Version: 1.0
-X-XM-SPF: eid=1kR5mZ-0002tO-03; ; ; mid=<87k0vysq3w.fsf@x220.int.ebiederm.org>;
- ; ; hst=in02.mta.xmission.com; ; ; ip=68.227.160.95; ; ;
- frm=ebiederm@xmission.com; ; ; spf=neutral
-X-XM-AID: U2FsdGVkX1+M6Nwc1eevosTTnX6IxBw6BnHTGm05YjI=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-Subject: Re: [PATCH RFC PKS/PMEM 51/58] kernel: Utilize new kmap_thread()
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+ id 1kR7UK-0003c2-CO
+ for linux-mtd@lists.infradead.org; Sat, 10 Oct 2020 05:32:13 +0000
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+ by alexa-out.qualcomm.com with ESMTP; 09 Oct 2020 22:32:10 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+ by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA;
+ 09 Oct 2020 22:32:08 -0700
+X-QCInternal: smtphost
+Received: from mdalam-linux.qualcomm.com ([10.201.2.71])
+ by ironmsg02-blr.qualcomm.com with ESMTP; 10 Oct 2020 11:01:44 +0530
+Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
+ id 19D3421ADC; Sat, 10 Oct 2020 11:01:43 +0530 (IST)
+From: Md Sadre Alam <mdalam@codeaurora.org>
+To: agross@kernel.org, bjorn.andersson@linaro.org, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 3/5] mtd: rawnand: qcom: Read QPIC version
+Date: Sat, 10 Oct 2020 11:01:40 +0530
+Message-Id: <1602307902-16761-4-git-send-email-mdalam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1602307902-16761-1-git-send-email-mdalam@codeaurora.org>
+References: <1602307902-16761-1-git-send-email-mdalam@codeaurora.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201009_234328_315263_EA1FEC36 
-X-CRM114-Status: GOOD (  17.03  )
+X-CRM114-CacheID: sfid-20201010_013212_534867_C689CB90 
+X-CRM114-Status: GOOD (  12.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,93 +74,73 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org,
- linux-doc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
- linux-mmc@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
- dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
- target-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org,
- Thomas Gleixner <tglx@linutronix.de>, drbd-dev@lists.linbit.com,
- devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
- linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org, x86@kernel.org,
- ceph-devel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
- io-uring@vger.kernel.org, cluster-devel@redhat.com,
- Ingo Molnar <mingo@redhat.com>, intel-wired-lan@lists.osuosl.org,
- xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org,
- Fenghua Yu <fenghua.yu@intel.com>, linux-afs@lists.infradead.org,
- linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org,
- ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
- reiserfs-devel@vger.kernel.org, linux-block@vger.kernel.org,
- linux-bcache@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
- Andy Lutomirski <luto@kernel.org>, Dan Williams <dan.j.williams@intel.com>,
- Andrew Morton <akpm@linux-foundation.org>, linux-cachefs@redhat.com,
- linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
- netdev@vger.kernel.org, kexec@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
+Cc: mdalam@codeaurora.org, sricharan@codeaurora.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-ira.weiny@intel.com writes:
+This change will add support to read QPIC version.
+QPIC version V2.0 onwards some new register introduced
+in QPIC. So based on hw_version we will update those
+register.
 
-> From: Ira Weiny <ira.weiny@intel.com>
->
-> This kmap() call is localized to a single thread.  To avoid the over
-> head of global PKRS updates use the new kmap_thread() call.
+Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+---
+ drivers/mtd/nand/raw/qcom_nandc.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index f5064ab..eabb803 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -443,6 +443,7 @@ struct qcom_nand_controller {
+ 
+ 	u32 cmd1, vld;
+ 	const struct qcom_nandc_props *props;
++	u32 hw_version;
+ };
+ 
+ /*
+@@ -2538,6 +2539,7 @@ static int qcom_nand_attach_chip(struct nand_chip *chip)
+ 	int ecc_mode = 1;
+ 	int num_addr_cycle = 5, dsbl_sts_aftr_write = 0;
+ 	int wr_rd_bsy_gap = 2, recovery_cycle = 7;
++	u32 version_reg;
+ 
+ 	/* controller only supports 512 bytes data steps */
+ 	ecc->size = NANDC_STEP_SIZE;
+@@ -2545,6 +2547,26 @@ static int qcom_nand_attach_chip(struct nand_chip *chip)
+ 	cwperpage = mtd->writesize / NANDC_STEP_SIZE;
+ 
+ 	/*
++	 * Read the required ecc strength from NAND device and overwrite the
++	 * device tree ecc strength
++	 */
++	if (chip->base.eccreq.strength >= 8)
++		ecc->strength = 8;
++
++	/* Read QPIC version register */
++	if (nandc->props->is_serial_nand)
++		version_reg = (NAND_VERSION + 0x4000);
++	else
++		version_reg = NAND_VERSION;
++	nandc->hw_version = nandc_read(nandc, version_reg);
++	pr_debug("QPIC controller hw version Major:%d, Minor:%d\n",
++		((nandc->hw_version & NAND_VERSION_MAJOR_MASK)
++		 >> NAND_VERSION_MAJOR_SHIFT),
++		((nandc->hw_version & NAND_VERSION_MINOR_MASK)
++		 >> NAND_VERSION_MINOR_SHIFT));
++	nandc->hw_version = ((nandc->hw_version & NAND_VERSION_MAJOR_MASK)
++			>> NAND_VERSION_MAJOR_SHIFT);
++	/*
+ 	 * Each CW has 4 available OOB bytes which will be protected with ECC
+ 	 * so remaining bytes can be used for ECC.
+ 	 */
+-- 
+2.7.4
 
->
-> Cc: Eric Biederman <ebiederm@xmission.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> ---
->  kernel/kexec_core.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
-> index c19c0dad1ebe..272a9920c0d6 100644
-> --- a/kernel/kexec_core.c
-> +++ b/kernel/kexec_core.c
-> @@ -815,7 +815,7 @@ static int kimage_load_normal_segment(struct kimage *image,
->  		if (result < 0)
->  			goto out;
->  
-> -		ptr = kmap(page);
-> +		ptr = kmap_thread(page);
->  		/* Start with a clear page */
->  		clear_page(ptr);
->  		ptr += maddr & ~PAGE_MASK;
-> @@ -828,7 +828,7 @@ static int kimage_load_normal_segment(struct kimage *image,
->  			memcpy(ptr, kbuf, uchunk);
->  		else
->  			result = copy_from_user(ptr, buf, uchunk);
-> -		kunmap(page);
-> +		kunmap_thread(page);
->  		if (result) {
->  			result = -EFAULT;
->  			goto out;
-> @@ -879,7 +879,7 @@ static int kimage_load_crash_segment(struct kimage *image,
->  			goto out;
->  		}
->  		arch_kexec_post_alloc_pages(page_address(page), 1, 0);
-> -		ptr = kmap(page);
-> +		ptr = kmap_thread(page);
->  		ptr += maddr & ~PAGE_MASK;
->  		mchunk = min_t(size_t, mbytes,
->  				PAGE_SIZE - (maddr & ~PAGE_MASK));
-> @@ -895,7 +895,7 @@ static int kimage_load_crash_segment(struct kimage *image,
->  		else
->  			result = copy_from_user(ptr, buf, uchunk);
->  		kexec_flush_icache_page(page);
-> -		kunmap(page);
-> +		kunmap_thread(page);
->  		arch_kexec_pre_free_pages(page_address(page), 1);
->  		if (result) {
->  			result = -EFAULT;
 
 ______________________________________________________
 Linux MTD discussion mailing list
