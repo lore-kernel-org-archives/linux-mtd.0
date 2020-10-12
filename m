@@ -2,21 +2,21 @@ Return-Path: <SRS0=FSZL=DT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B8FBC433DF
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Oct 2020 05:29:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8ED59C433DF
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Oct 2020 05:53:32 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 585EA2076E
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Oct 2020 05:29:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 19DF520714
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Oct 2020 05:53:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AUK0LJWU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 585EA2076E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NgaG14lC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 19DF520714
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,48 +25,49 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=4drnMDQ+/OGg+5nW8YZJq/F7O2hZBvFnBg5n8Or1OL8=; b=AUK0LJWUsyuHngFFP1Upr34oI
-	nESZPYCq4nNZKLsDCx9VmeVt0cb6hqlNBqTpiNzioTVX9ZKkqUY+FeSF2OTYOpmilYtau/HTvvWHM
-	YhJKtwS/fU4LvS9Op4KoAXIMeBqOD0ltgS3NM4H/5RtqeWp4N9AxVaUx2udmctw/ERn2i8HY5io5U
-	vak+b8fvT3/lkAIl0TpQptgH4wHp8AhkSATKoE+nPl6u3AKxOU7i44lj2SWnX4MVC/GD7OkUUbGH/
-	qM/KkAvManvAqBjJbijJsvVNAfpUmz6aCWc0SbJ5XPAUW85UK3cioCkx9gXCkYVtbE/naZNUs5jN+
-	inUgTvvcA==;
+	 bh=E3fkedhSOB8pn7/qzNg3ymq0mR5uON848gyIC0uHSSk=; b=NgaG14lCmD6pYnxZtJvruev8N
+	JoJvNAVBX2ZYLtd6CNEt6SHeF3hsoTJdkdgDmq0I3yhjEyz32wI7qTCYSKwnSSQyVX/cNai72IeIe
+	LGJ8gwgtO2ZA5uh+ien+3donazldeDAa3HG7kP27UxtoNHJ9uO5A+qe4bR8Be6oO06SgyhYFIlDBG
+	2LCHN2Lf6O3r8LEdrw55hxMEbkjWimCbps9bLmgbNvXOCJuQR2FohxIluOEYoeKrrCOiuCW+M+XTr
+	surCDHO2XvRV5+ks7zt7fd0ERPtzaARQQ6BTy+b6txnlBU/W0eLl49lhoiJgo+VeZLim7geIAjZTm
+	SX4Uw6PXA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kRqNx-0008C6-9b; Mon, 12 Oct 2020 05:28:37 +0000
-Received: from mga17.intel.com ([192.55.52.151])
+	id 1kRql2-0001VF-6g; Mon, 12 Oct 2020 05:52:28 +0000
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kRqNu-0008A0-5f; Mon, 12 Oct 2020 05:28:35 +0000
-IronPort-SDR: kb6Rl8UAO5Sz/uC4efoTasXhuwL90sldZS/IILGD25IvZq69ra25LZzcM7U8gXkmnS/k3p/usT
- V0bAUjAABCVg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="145556284"
-X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; d="scan'208";a="145556284"
+ id 1kRqky-0001SH-3B; Mon, 12 Oct 2020 05:52:25 +0000
+IronPort-SDR: c0IZ9Sp1bny8CHn4XP+GPUox0ICERcAAfnoO1R7XfKOeWa2uLDIwvUfuPH/37TiSPmPe9TEAfc
+ BdFAIeZJHtVg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="165805943"
+X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; d="scan'208";a="165805943"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Oct 2020 22:28:23 -0700
-IronPort-SDR: Awdi9Evv+UAQx0jH4ny/s7+Nxcmli85F+a73BOsSCHQvCG+q13xwJ2JLwUM5pKItlqpgm8qi5b
- o2XGvRLHUUbw==
-X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; d="scan'208";a="529816997"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Oct 2020 22:52:20 -0700
+IronPort-SDR: Ya9EDAn3SOMd08SCKVKBtueoni+yyq9EF8H8N9tr+YE/IrdFHweYy6SREcwPgxnde0DbbLRvxa
+ rOKYCbITG9ew==
+X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; d="scan'208";a="520573207"
 Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
- by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Oct 2020 22:28:22 -0700
-Date: Sun, 11 Oct 2020 22:28:18 -0700
+ by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Oct 2020 22:52:19 -0700
+Date: Sun, 11 Oct 2020 22:52:19 -0700
 From: Ira Weiny <ira.weiny@intel.com>
-To: Coly Li <colyli@suse.de>
-Subject: Re: [PATCH RFC PKS/PMEM 48/58] drivers/md: Utilize new kmap_thread()
-Message-ID: <20201012052817.GZ2046448@iweiny-DESK2.sc.intel.com>
+To: John Hubbard <jhubbard@nvidia.com>
+Subject: Re: [PATCH RFC PKS/PMEM 57/58] nvdimm/pmem: Stray access protection
+ for pmem->virt_addr
+Message-ID: <20201012055218.GA2046448@iweiny-DESK2.sc.intel.com>
 References: <20201009195033.3208459-1-ira.weiny@intel.com>
- <20201009195033.3208459-49-ira.weiny@intel.com>
- <c802fbf4-f67a-b205-536d-9c71b440f9c8@suse.de>
+ <20201009195033.3208459-58-ira.weiny@intel.com>
+ <bd3f5ece-0e7b-4c15-abbc-1b3b943334dc@nvidia.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <c802fbf4-f67a-b205-536d-9c71b440f9c8@suse.de>
+In-Reply-To: <bd3f5ece-0e7b-4c15-abbc-1b3b943334dc@nvidia.com>
 User-Agent: Mutt/1.11.1 (2018-12-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201012_012834_392731_B1E3F29A 
-X-CRM114-Status: GOOD (  21.15  )
+X-CRM114-CacheID: sfid-20201012_015224_249584_AF7DDD63 
+X-CRM114-Status: GOOD (  23.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,13 +93,12 @@ Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org,
  io-uring@vger.kernel.org, cluster-devel@redhat.com,
  Ingo Molnar <mingo@redhat.com>, intel-wired-lan@lists.osuosl.org,
  xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org,
- Kent Overstreet <kent.overstreet@gmail.com>, Fenghua Yu <fenghua.yu@intel.com>,
- linux-afs@lists.infradead.org, linux-um@lists.infradead.org,
- intel-gfx@lists.freedesktop.org, ecryptfs@vger.kernel.org,
- linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org,
- linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
- Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>,
- Dan Williams <dan.j.williams@intel.com>,
+ Fenghua Yu <fenghua.yu@intel.com>, linux-afs@lists.infradead.org,
+ linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org,
+ ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+ reiserfs-devel@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-bcache@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+ Andy Lutomirski <luto@kernel.org>, Dan Williams <dan.j.williams@intel.com>,
  Andrew Morton <akpm@linux-foundation.org>, linux-cachefs@redhat.com,
  linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
  netdev@vger.kernel.org, kexec@lists.infradead.org,
@@ -110,49 +110,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Oct 10, 2020 at 10:20:34AM +0800, Coly Li wrote:
-> On 2020/10/10 03:50, ira.weiny@intel.com wrote:
+On Fri, Oct 09, 2020 at 07:53:07PM -0700, John Hubbard wrote:
+> On 10/9/20 12:50 PM, ira.weiny@intel.com wrote:
 > > From: Ira Weiny <ira.weiny@intel.com>
 > > 
-> > These kmap() calls are localized to a single thread.  To avoid the over
-> > head of global PKRS updates use the new kmap_thread() call.
+> > The pmem driver uses a cached virtual address to access its memory
+> > directly.  Because the nvdimm driver is well aware of the special
+> > protections it has mapped memory with, we call dev_access_[en|dis]able()
+> > around the direct pmem->virt_addr (pmem_addr) usage instead of the
+> > unnecessary overhead of trying to get a page to kmap.
 > > 
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > ---
+> >   drivers/nvdimm/pmem.c | 4 ++++
+> >   1 file changed, 4 insertions(+)
+> > 
+> > diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
+> > index fab29b514372..e4dc1ae990fc 100644
+> > --- a/drivers/nvdimm/pmem.c
+> > +++ b/drivers/nvdimm/pmem.c
+> > @@ -148,7 +148,9 @@ static blk_status_t pmem_do_read(struct pmem_device *pmem,
+> >   	if (unlikely(is_bad_pmem(&pmem->bb, sector, len)))
+> >   		return BLK_STS_IOERR;
+> > +	dev_access_enable(false);
+> >   	rc = read_pmem(page, page_off, pmem_addr, len);
+> > +	dev_access_disable(false);
 > 
-> Hi Ira,
+> Hi Ira!
 > 
-> There were a number of options considered.
-> 
-> 1) Attempt to change all the thread local kmap() calls to kmap_atomic()
-> 2) Introduce a flags parameter to kmap() to indicate if the mapping
-> should be global or not
-> 3) Change ~20-30 call sites to 'kmap_global()' to indicate that they
-> require a global mapping of the pages
-> 4) Change ~209 call sites to 'kmap_thread()' to indicate that the
-> mapping is to be used within that thread of execution only
-> 
-> 
-> I copied the above information from patch 00/58 to this message. The
-> idea behind kmap_thread() is fine to me, but as you said the new api is
-> very easy to be missed in new code (even for me). I would like to be
-> supportive to option 2) introduce a flag to kmap(), then we won't forget
-> the new thread-localized kmap method, and people won't ask why a
-> _thread() function is called but no kthread created.
+> The APIs should be tweaked to use a symbol (GLOBAL, PER_THREAD), instead of
+> true/false. Try reading the above and you'll see that it sounds like it's
+> doing the opposite of what it is ("enable_this(false)" sounds like a clumsy
+> API design to *disable*, right?). And there is no hint about the scope.
 
-Thanks for the feedback.
+Sounds reasonable.
 
-I'm going to hold off making any changes until others weigh in.  FWIW, I kind
-of like option 2 as well.  But there is already kmap_atomic() so it seemed like
-kmap_XXXX() was more in line with the current API.
+> 
+> And it *could* be so much more readable like this:
+> 
+>     dev_access_enable(DEV_ACCESS_THIS_THREAD);
 
-Thanks,
+I'll think about the flag name.  I'm not liking 'this thread'.
+
+Maybe DEV_ACCESS_[GLOBAL|THREAD]
+
 Ira
 
-> 
-> Thanks.
-> 
-> 
-> Coly Li
-> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
