@@ -2,92 +2,62 @@ Return-Path: <SRS0=FSZL=DT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34BDCC433DF
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Oct 2020 13:25:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7490AC433E7
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Oct 2020 13:36:08 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A9FA32076E
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Oct 2020 13:25:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E78332076E
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Oct 2020 13:36:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uxK4EbpA";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UPZ+CXo1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A9FA32076E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RTYDxQdU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E78332076E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Hj/3p3p+JOMJ/vLu3eCU1ZXMzRAotlbEHeIOcLydYMg=; b=uxK4EbpAZvGkuWM7C4kgOoQYb
-	sLs7HOA2LmWHu6IT4cx+p3cIzfdi79SnF/CZh6IW3lnRfOc6B26amZodPoRIXHDY0FruCEap6myS5
-	N3wwkGqr4Anis6UG4txM1AMtbIsyPj50eccBsfWLYfxwNSG/d/jarLyVR4ey7838Ke2Q5+WA1n1kY
-	UFQrTmNrLoz5kDcPEyKtwHWuvQcnEQD/Qhz0d1/5Y7VCeU3dx1HxQ48MhDtqjXUZhVGhvBsUg22xw
-	zCyZQcY4oBOJUIYetObIR7SIXXhnTl9PFYbAS1Wypjtm0YI5uuZosYe2cAg+NlW1ZRKeoVE64vn8R
-	05aMO3xQw==;
+	 bh=Qml0HlWOb9ECyqJm09TxkOz+hgXEjwBfayNz9EFttAo=; b=RTYDxQdUKCA0jDgG8W4g2KCLY
+	jFxEv3BUX1RiLLrYfoZEoKEuUiq2O9srZ/mqNn1rK+V7bMga8eDNtlRoYd3Jwnok2X1gXmFoWIdmb
+	HhiiaGG9EPMXZbYhWi1Bxf7DqiaQ1V5lx8lQBcSU647xbJOxlq+VRKNkfu3wpN/diLOi1lxF/0l0g
+	Uw7ZOB4b1CexBX+DGaEPk21TwBK+UvIiHGZegu8CbhIxrU+gEcrIaBYcfOUAoNN/a3ZcqPH+M87xk
+	Gl95TFaJ5LTjxN6uNyLZT/r5T/8YovyJHssML0NWZ767SByax8AmGWHeIx957nQXT9bZKzqr6JyDs
+	uQk+c7wKQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kRxoT-0007E7-2p; Mon, 12 Oct 2020 13:24:29 +0000
-Received: from mail-ot1-x342.google.com ([2607:f8b0:4864:20::342])
+	id 1kRxzD-0000p8-OJ; Mon, 12 Oct 2020 13:35:35 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kRxoI-00079R-Ff
- for linux-mtd@lists.infradead.org; Mon, 12 Oct 2020 13:24:24 +0000
-Received: by mail-ot1-x342.google.com with SMTP id e20so15357888otj.11
- for <linux-mtd@lists.infradead.org>; Mon, 12 Oct 2020 06:24:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=sender:date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=mC7xtiAV5MQw6msfzLlDYJwQehhrCEkuAMgCJCdFGcc=;
- b=UPZ+CXo1UV5jOGxJY7P+xbNAFkLhkVGYY1xnlSuZ2ChviI45NV8sb21mTxMuRgbLpB
- ZM02/KS3bX/yPLL3ql7ZQOF/PwJEqLuVbm9bojoWzDOVBBwIz4AwoqJZ7XBnN0880OZT
- IKYT72xbIrgQLGp1UPGULvPX06+wfl/Qi7isHHGJwYsglIzVBVu+9bwQdOlhFlKKgICG
- E1x2cE6wXLw6iJkRmt4Sb2ssxSFucElcyAg8tNyY9GELHk+KZyDpp9GNZ6VjY9dEW+u/
- Apz6hKqETjM6IefYaHtw2giItRk193NON9R/yY+tNP0rBFNxoQgxkaplTqUK6qPkQ6e7
- PXHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
- :references:mime-version:content-disposition:in-reply-to:user-agent;
- bh=mC7xtiAV5MQw6msfzLlDYJwQehhrCEkuAMgCJCdFGcc=;
- b=uXUVVuTXRvH2PidHX92FFTR82/3zfaNwAHjZsiUnak+b8ioeg+AliYF1VzxIMsvTWG
- k2+XmRqkNueUdUlgJc4LAGKhyVBGR6onF+pyV5P3pEWSvR5LL6ui1bUcFediQ7X73Rlp
- lA1lDAVBlCGnXUiziS4wHLtyzHoRGhgcpluQVrNmMG0rFJxhQ/ZTb7fmDG4+aiimhINI
- LimB/Lv9iIZDDwJ93X9uM4f41p91IyxWMnwVzlXAUzvpWSWOCEJOaWYl3rjCYzqct2Gd
- 5L0GixwE8xGlyenXrN3dOeqfw6n6UETh5BK+3u2R+OyTmbR6GMWkz+w0NHTFtMTLaZPy
- gChg==
-X-Gm-Message-State: AOAM5301B7odzQ05s0PKlhHwjGerhJGnAK/2MsIzdSxp0600G4zH8umd
- e2whe+DyqJOp1K4ywU+OWeg=
-X-Google-Smtp-Source: ABdhPJympHYSIcwrRgVlC4dzn9r0ckdyy8oL+eOYjn08DRUgdHICzJxfdKIA24xGebtYK3RtFReRMg==
-X-Received: by 2002:a05:6830:4d:: with SMTP id
- d13mr18526530otp.67.1602509055933; 
- Mon, 12 Oct 2020 06:24:15 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
- by smtp.gmail.com with ESMTPSA id 81sm8681701oti.79.2020.10.12.06.24.14
- (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
- Mon, 12 Oct 2020 06:24:15 -0700 (PDT)
-Date: Mon, 12 Oct 2020 06:24:14 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH] mtd: parsers: bcm63xx: Do not make it modular
-Message-ID: <20201012132414.GB6394@roeck-us.net>
-References: <20200928161617.2a1b2244@xps13>
- <20200929172726.30469-1-f.fainelli@gmail.com>
- <20201011141447.GA9215@roeck-us.net>
- <20201012090420.6a07599c@xps13>
+ id 1kRxzB-0000od-H4
+ for linux-mtd@lists.infradead.org; Mon, 12 Oct 2020 13:35:34 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2E10C1F44A08;
+ Mon, 12 Oct 2020 14:35:31 +0100 (BST)
+Date: Mon, 12 Oct 2020 15:35:26 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Manuel Dipolt <mdipolt@robart.cc>
+Subject: Re: [PATCH v6] mtd: rawnand: sunxi: enable NAND MDMA (Master DMA)
+ support for allwinner a23,a33,h3
+Message-ID: <20201012153526.4d19314b@collabora.com>
+In-Reply-To: <1302710164.236549.1602496878099.JavaMail.zimbra@robart.cc>
+References: <1302710164.236549.1602496878099.JavaMail.zimbra@robart.cc>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20201012090420.6a07599c@xps13>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201012_092418_596466_1B9BE2B8 
-X-CRM114-Status: GOOD (  23.50  )
+X-CRM114-CacheID: sfid-20201012_093533_653517_07E3097B 
+X-CRM114-Status: GOOD (  13.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,59 +69,56 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Florian Fainelli <f.fainelli@gmail.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- open list <linux-kernel@vger.kernel.org>,
- =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>,
- linux-mtd@lists.infradead.org, Jonas Gorski <jonas.gorski@gmail.com>
+Cc: Roland Ruckerbauer <rruckerbauer@robart.cc>,
+ linux-mtd <linux-mtd@lists.infradead.org>, maxime <maxime@cerno.tech>,
+ miquel raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Oct 12, 2020 at 09:04:20AM +0200, Miquel Raynal wrote:
-> Hi Guenter,
+Subject should be something like:
+
+"mtd: rawnand: sunxi: Add MDMA support"
+
+The commit message is here to give more details.
+
+On Mon, 12 Oct 2020 12:01:18 +0200 (CEST)
+Manuel Dipolt <mdipolt@robart.cc> wrote:
+
+> This patch enables NAND MDMA (Master DMA) mode for the Allwinner socs A23/A33/H3. 
+
+I was wrong, MDMA stand for MBUS DMA, not Master DMA.
+		
 > 
-> Guenter Roeck <linux@roeck-us.net> wrote on Sun, 11 Oct 2020 07:14:47
-> -0700:
+> Till now dma transfer was via ahb to and from the internal sram where the nfc io is mapped. 
+
+It still goes through the internal SRAM IIRC, and then the DMA copies
+from/to this SRAM, but we probably don't care about that. This
+important thing to mention is how it differs from the normal DMA and
+why we should prefer it when both are available (NAND perfs + more
+bandwidth for other users of the shared DMA engine).
+
+> Now mbus dma mode gets set for the sun8i-a23-nand-controller as default. 
+
+s/mbus/MBUS/
+s/dma/DMA/
+
+> Mbus dma requires less configuration like defining a dedicated dma channel in the device tree.
+
+Same here, and please wrap the commit message lines to ~72 chars.
+ 
 > 
-> > On Tue, Sep 29, 2020 at 10:27:21AM -0700, Florian Fainelli wrote:
-> > > With commit 91e81150d388 ("mtd: parsers: bcm63xx: simplify CFE
-> > > detection"), we generate a reference to fw_arg3 which is the fourth
-> > > firmware/command line argument on MIPS platforms. That symbol is not
-> > > exported and would cause a linking failure.
-> > > 
-> > > The parser is typically necessary to boot a BCM63xx-based system anyway
-> > > so having it be part of the kernel image makes sense, therefore make it
-> > > 'bool' instead of 'tristate'.
-> > > 
-> > > Fixes: 91e81150d388 ("mtd: parsers: bcm63xx: simplify CFE detection")
-> > > Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>  
-> > 
-> > What happened with this patch ? The build failure is still seen in mainline
-> > and in next-20201009.
-> 
-> It has been applied on mtd/next:
-> https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/log/?h=mtd/next
-> (I don't remember when though)
+> yours,
+> Manuel
 
-Hmm, lets see ...
+Please drop that.
 
-Ah, I see: mips:allmodconfig now fails to build in -next for a different
-reason.
+The rest of the patch looks good. Once you've address those issues you
+can add
 
-Error log:
-In file included from <command-line>:
-arch/mips/mm/init.c: In function 'mem_init':
-include/linux/compiler_types.h:319:38: error: call to '__compiletime_assert_331'
-	declared with attribute error: BUILD_BUG_ON failed: IS_ENABLED(CONFIG_32BIT) && (_PFN_SHIFT > PAGE_SHIFT)
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 
-I'll send a separate report on that (if it wasn't reported before).
-
-Anyway, any reason for not applying this fix to mainline, ie why the
-mips:allmodconfig build failure was not fixed in v5.9 ?
-
-Guenter
 
 ______________________________________________________
 Linux MTD discussion mailing list
