@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EFFC5C433E7
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Oct 2020 04:48:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B8FBC433DF
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Oct 2020 05:29:13 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A7C5F2074D
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Oct 2020 04:48:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 585EA2076E
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Oct 2020 05:29:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="aL0w0t0T"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7C5F2074D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AUK0LJWU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 585EA2076E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,48 +25,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=X9GkzejanEoSiWG4BObkek360+5MQKOZyqibIstNr5g=; b=aL0w0t0TUc337OvCnm/wVDLsO
-	bIcwMOvBvnjkINYufZ062SeUGqDxU2dBb7mWwMsEzNzzkmPNv7tFjeK2gSSEGO3NrU//UkIx2aSut
-	3mdqqdgG4vzIJMEu7GELKYGGftZT2sqGLTqhIjPfzsJYwVO7H/Dv86atz/1ARCYU5EquSWgcaPbTP
-	RaIwJg5TMIXTxP0L8eNM4VKbFN9S/ghupgz5EAyqeQjtKY+aZnnnnlWuqVJH6H6BrbpVj6HjbvwVU
-	KP/9SVKG2CvnN99mDyldREcMCItUF/eKUmE2MtYrkJmjrm/lqDGeD6rlCfmWnMbwwiv+0KegahI1H
-	lXMCBGqAQ==;
+	 bh=4drnMDQ+/OGg+5nW8YZJq/F7O2hZBvFnBg5n8Or1OL8=; b=AUK0LJWUsyuHngFFP1Upr34oI
+	nESZPYCq4nNZKLsDCx9VmeVt0cb6hqlNBqTpiNzioTVX9ZKkqUY+FeSF2OTYOpmilYtau/HTvvWHM
+	YhJKtwS/fU4LvS9Op4KoAXIMeBqOD0ltgS3NM4H/5RtqeWp4N9AxVaUx2udmctw/ERn2i8HY5io5U
+	vak+b8fvT3/lkAIl0TpQptgH4wHp8AhkSATKoE+nPl6u3AKxOU7i44lj2SWnX4MVC/GD7OkUUbGH/
+	qM/KkAvManvAqBjJbijJsvVNAfpUmz6aCWc0SbJ5XPAUW85UK3cioCkx9gXCkYVtbE/naZNUs5jN+
+	inUgTvvcA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kRpkn-00069L-JD; Mon, 12 Oct 2020 04:48:09 +0000
-Received: from mga11.intel.com ([192.55.52.93])
+	id 1kRqNx-0008C6-9b; Mon, 12 Oct 2020 05:28:37 +0000
+Received: from mga17.intel.com ([192.55.52.151])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kRpkj-00066L-3m; Mon, 12 Oct 2020 04:48:06 +0000
-IronPort-SDR: j6U7rIYUwxUMReyCDB317Y50ZDms3oL4PKxD5p7tcai7xFAQ9KyOYq60UfyMj7cWhGONg3ER7L
- Get0i58+E2ZQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="162223402"
-X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; d="scan'208";a="162223402"
+ id 1kRqNu-0008A0-5f; Mon, 12 Oct 2020 05:28:35 +0000
+IronPort-SDR: kb6Rl8UAO5Sz/uC4efoTasXhuwL90sldZS/IILGD25IvZq69ra25LZzcM7U8gXkmnS/k3p/usT
+ V0bAUjAABCVg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="145556284"
+X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; d="scan'208";a="145556284"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Oct 2020 21:47:58 -0700
-IronPort-SDR: OeJlrvjJIthwDW5ZiLkp+F246Fw9BWID0JMdXYyjjISLX5UipnPYleFarWgQdoLnt1ZOhIB0kv
- QrFucSf/AAcw==
-X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; d="scan'208";a="529805779"
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Oct 2020 22:28:23 -0700
+IronPort-SDR: Awdi9Evv+UAQx0jH4ny/s7+Nxcmli85F+a73BOsSCHQvCG+q13xwJ2JLwUM5pKItlqpgm8qi5b
+ o2XGvRLHUUbw==
+X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; d="scan'208";a="529816997"
 Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Oct 2020 21:47:57 -0700
-Date: Sun, 11 Oct 2020 21:47:56 -0700
+ 11 Oct 2020 22:28:22 -0700
+Date: Sun, 11 Oct 2020 22:28:18 -0700
 From: Ira Weiny <ira.weiny@intel.com>
-To: Bernard Metzler <BMT@zurich.ibm.com>
-Subject: Re: [PATCH RFC PKS/PMEM 10/58] drivers/rdma: Utilize new kmap_thread()
-Message-ID: <20201012044756.GY2046448@iweiny-DESK2.sc.intel.com>
-References: <20201009195033.3208459-11-ira.weiny@intel.com>
- <20201009195033.3208459-1-ira.weiny@intel.com>
- <OF849D92D8.F4735ECA-ON002585FD.003F5F27-002585FD.003FCBD6@notes.na.collabserv.com>
+To: Coly Li <colyli@suse.de>
+Subject: Re: [PATCH RFC PKS/PMEM 48/58] drivers/md: Utilize new kmap_thread()
+Message-ID: <20201012052817.GZ2046448@iweiny-DESK2.sc.intel.com>
+References: <20201009195033.3208459-1-ira.weiny@intel.com>
+ <20201009195033.3208459-49-ira.weiny@intel.com>
+ <c802fbf4-f67a-b205-536d-9c71b440f9c8@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <OF849D92D8.F4735ECA-ON002585FD.003F5F27-002585FD.003FCBD6@notes.na.collabserv.com>
+In-Reply-To: <c802fbf4-f67a-b205-536d-9c71b440f9c8@suse.de>
 User-Agent: Mutt/1.11.1 (2018-12-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201012_004805_317483_AA1EAE7A 
-X-CRM114-Status: GOOD (  13.55  )
+X-CRM114-CacheID: sfid-20201012_012834_392731_B1E3F29A 
+X-CRM114-Status: GOOD (  21.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,60 +84,74 @@ Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org,
  dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
  target-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org,
- Thomas Gleixner <tglx@linutronix.de>, devel@driverdev.osuosl.org,
- linux-cifs@vger.kernel.org, linux-nilfs@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-nvdimm@lists.01.org,
- linux-rdma@vger.kernel.org, x86@kernel.org, ceph-devel@vger.kernel.org,
+ Thomas Gleixner <tglx@linutronix.de>, drbd-dev@lists.linbit.com,
+ devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
+ linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org, x86@kernel.org,
+ ceph-devel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
  io-uring@vger.kernel.org, cluster-devel@redhat.com,
- Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
  Ingo Molnar <mingo@redhat.com>, intel-wired-lan@lists.osuosl.org,
  xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org,
- Fenghua Yu <fenghua.yu@intel.com>, linux-afs@lists.infradead.org,
- Faisal Latif <faisal.latif@intel.com>, linux-um@lists.infradead.org,
+ Kent Overstreet <kent.overstreet@gmail.com>, Fenghua Yu <fenghua.yu@intel.com>,
+ linux-afs@lists.infradead.org, linux-um@lists.infradead.org,
  intel-gfx@lists.freedesktop.org, ecryptfs@vger.kernel.org,
- linux-erofs@lists.ozlabs.org, linux-nfs@vger.kernel.org,
- reiserfs-devel@vger.kernel.org, linux-block@vger.kernel.org,
- linux-bcache@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
- Andy Lutomirski <luto@kernel.org>, drbd-dev@tron.linbit.com,
- amd-gfx@lists.freed.esktop.org, Dan Williams <dan.j.williams@intel.com>,
- Shiraz Saleem <shiraz.saleem@intel.com>, bpf@vger.kernel.org,
- linux-cachefs@redhat.com, Mike Marciniszyn <mike.marciniszyn@intel.com>,
- linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org,
- Dennis Dalessandro <dennis.dalessandro@intel.com>, kexec@lists.infradead.org,
+ linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
+ Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-cachefs@redhat.com,
+ linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+ netdev@vger.kernel.org, kexec@lists.infradead.org,
  linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
  linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Oct 10, 2020 at 11:36:49AM +0000, Bernard Metzler wrote:
-> -----ira.weiny@intel.com wrote: -----
-> 
-
-[snip]
-
-> >@@ -505,7 +505,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
-> >struct socket *s)
-> > 				page_array[seg] = p;
+On Sat, Oct 10, 2020 at 10:20:34AM +0800, Coly Li wrote:
+> On 2020/10/10 03:50, ira.weiny@intel.com wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
 > > 
-> > 				if (!c_tx->use_sendpage) {
-> >-					iov[seg].iov_base = kmap(p) + fp_off;
-> >+					iov[seg].iov_base = kmap_thread(p) + fp_off;
+> > These kmap() calls are localized to a single thread.  To avoid the over
+> > head of global PKRS updates use the new kmap_thread() call.
+> > 
 > 
-> This misses a corresponding kunmap_thread() in siw_unmap_pages()
-> (pls change line 403 in siw_qp_tx.c as well)
+> Hi Ira,
+> 
+> There were a number of options considered.
+> 
+> 1) Attempt to change all the thread local kmap() calls to kmap_atomic()
+> 2) Introduce a flags parameter to kmap() to indicate if the mapping
+> should be global or not
+> 3) Change ~20-30 call sites to 'kmap_global()' to indicate that they
+> require a global mapping of the pages
+> 4) Change ~209 call sites to 'kmap_thread()' to indicate that the
+> mapping is to be used within that thread of execution only
+> 
+> 
+> I copied the above information from patch 00/58 to this message. The
+> idea behind kmap_thread() is fine to me, but as you said the new api is
+> very easy to be missed in new code (even for me). I would like to be
+> supportive to option 2) introduce a flag to kmap(), then we won't forget
+> the new thread-localized kmap method, and people won't ask why a
+> _thread() function is called but no kthread created.
 
-Thanks I missed that.
+Thanks for the feedback.
 
-Done.
+I'm going to hold off making any changes until others weigh in.  FWIW, I kind
+of like option 2 as well.  But there is already kmap_atomic() so it seemed like
+kmap_XXXX() was more in line with the current API.
 
+Thanks,
 Ira
 
 > 
-> Thanks,
-> Bernard.
+> Thanks.
+> 
+> 
+> Coly Li
 > 
 
 ______________________________________________________
