@@ -1,106 +1,138 @@
-Return-Path: <SRS0=teGx=DS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=FSZL=DT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.0 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7512BC433DF
-	for <linux-mtd@archiver.kernel.org>; Sun, 11 Oct 2020 22:00:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CFA8C433E7
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Oct 2020 02:31:46 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B53E7206E9
-	for <linux-mtd@archiver.kernel.org>; Sun, 11 Oct 2020 22:00:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9E13E2078E
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Oct 2020 02:31:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KAX0zyY0";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eGZTXqEJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B53E7206E9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cDJZjlPQ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="ULWUuoil";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="bu3NZ6nE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E13E2078E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=wdc.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:Subject:
-	From:References:To:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Ff8DOUaeSg0ypnM1WNdPnYGKLRUOFknAIl09wH3bW7s=; b=KAX0zyY0GLPoHUIGmZkzlwqxU
-	OGRX1mIrCbA92uoRJ1AeUo1cGnvCEIqCkPDqGtUHZ7oXRQ5PNgozkEvvZfUQsIWeFnun2/8C1j/8n
-	1H8P2ese3uLZkVvnNQhozC/d96rVDneI5Ym5NhsuqEJV7BW17zzNJAUmfKRK76J74PVJlW8L4Xp/P
-	XPNv+E1RuJRA/oBuwvA/WUpKaRLX4FpRjdeU9xFPP/0/6w+ZlJlrrT5QETkBCPY75onhLu/tVyHuJ
-	eIAmNiATyiUblSbUBWI1TXcwpYBPFjauR+fw/r4a/eH4q/I1ZCQCkK0d3DG/W0W+3N25fQy79msGB
-	QtJlfkA2w==;
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:References:Message-ID:Date:Subject:To:
+	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:List-Owner;
+	 bh=seUqlfaMZ7S+9uFapC56cffH6GGqka8tAPa6t8tCWz8=; b=cDJZjlPQh2PNNgXIbxQrM4+w7
+	5MkptpamA4wRRWhugE1ktooYuts2GZOahuexQY4GRSH75DxvJILi4YYIvR95pcK75vXVoYAPopeHv
+	HFhMVGlOZgWeRWHuhOwyqgpvOCLxGPgr1ZDp/l+V9lNazASFyKuR1jkFsp/1IdG2Up9e0ljTtBkEq
+	gT+muzZkkc+NKXvSBdizbVXgp1SjYpsG2LVWfWah7x/O3fj+178jhzVpfHAIKoBlvDWzJHpheBuQp
+	RaEIqXNVcej3svKfceyzpIjBUg4nabZKss3Cn5ab2G8tifKOHSn8ta6tzFOhiPcBtjvCY7TEM4igV
+	QuhGxEVlg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kRjN3-0004TF-Cl; Sun, 11 Oct 2020 21:59:13 +0000
-Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
+	id 1kRnbc-0002Ae-Ja; Mon, 12 Oct 2020 02:30:32 +0000
+Received: from esa6.hgst.iphmx.com ([216.71.154.45])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kRjN1-0004Sl-BD
- for linux-mtd@lists.infradead.org; Sun, 11 Oct 2020 21:59:12 +0000
-Received: by mail-pl1-x643.google.com with SMTP id 1so1606276ple.2
- for <linux-mtd@lists.infradead.org>; Sun, 11 Oct 2020 14:59:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=to:cc:references:from:subject:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=9e6PE672g+KN/RueGHdjxF/dIhOA0t5UklRi8kBXIYo=;
- b=eGZTXqEJPHVQ6ExQM7Q4fX+YX9UywNaaTdrhxNyhFq/x/ONPOaRsJX9Ja5k1UcZXD9
- ZB+iBqfiyu8OAzY3LJavM7fqkMdhO+IPw8QuQZV5B54j3NTkKulvSgaZ1aXLL3m1zzOU
- tsPp7+UyR3dcp2WugGmzBiqrrLUWZCdAbgSHC4rTI9Rva4wIwFnhFT6v6T8s6TxLBdxf
- T1f2euYnQCi4WdYmGHwcwOQ4n2p4q0mfQ3vfD9CsPY2g7VrtHxM6LqrwbHXzd7dPtxHu
- jtdRAt8Vt/MzxNTRJDJh/Mt8GGnOnUFqHCUcqEyafKCN103ST1QSj2yc5OM9Y+3DOdsE
- 66eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:to:cc:references:from:subject:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=9e6PE672g+KN/RueGHdjxF/dIhOA0t5UklRi8kBXIYo=;
- b=BxBweSiMLNXvUf47O4zKCP/NybuA4ioYKz2SVtykjcEfPWIdML+vd7/e143s7lA64A
- iEqxb8t5Rbw0g0MhSxu5GDlDb8vJHJxSdFh5RSxSkDQAAjNScAvfYVyePYnAhektqZZ8
- sjEbfyvI+efLiTojdeXq1LFvqizAytGtn5vebJd0SwyeURY7Xkn2PXXURiZ7lOdrCO2W
- 6h9Aoh2XfVXKJ+KenIvrHpaxMOQhf9HBvX682Odmr4Bjqpma8Yp8PcyQ/nrrHOVD/DdA
- hgNvgQTLXfGkZXUl2laGR3lGWfUrSLXMV1aw1+WYfF4bzLXSiheJEIH+/1SLw60GPCAi
- QjdQ==
-X-Gm-Message-State: AOAM533MtWDEODVVaBnxvuC9wxiEKpBWhjfjVuFiGuc24KMsmII9btpM
- +n0h0IHOhQbb0p6a1jSrTKI=
-X-Google-Smtp-Source: ABdhPJw9w8wG0tU/Hja1vCXKXZXyjMFMCjOovpXFIPxKynORAT5MAY46GzyM3OLhJvvH95vQJ+Z4jg==
-X-Received: by 2002:a17:902:7d97:b029:d2:8046:f593 with SMTP id
- a23-20020a1709027d97b02900d28046f593mr20862497plm.43.1602453547585; 
- Sun, 11 Oct 2020 14:59:07 -0700 (PDT)
-Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
- by smtp.gmail.com with ESMTPSA id
- e13sm17090832pfi.70.2020.10.11.14.59.03
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sun, 11 Oct 2020 14:59:06 -0700 (PDT)
-To: Jim Quinlan <james.quinlan@broadcom.com>,
- Stephen Rothwell <sfr@canb.auug.org.au>, abhimanyu.saini@nxp.com,
- Ioana Ciornei <ioana.ciornei@nxp.com>, Fabio Estevam <festevam@gmail.com>
-References: <CA+G9fYvuq58q+GsWnzni0sKSHbubuQz-UaK3TASX26V_a7yBVw@mail.gmail.com>
- <20200924090349.GF27174@8bytes.org>
- <ecf71b34-a104-d42a-bfcd-9570e73520a7@arm.com>
- <20200924092546.GJ27174@8bytes.org>
- <e2186418-d4d6-e1f4-5eb4-3bfafb5cebb2@arm.com>
- <20200924095629.GL27174@8bytes.org>
- <CA+G9fYu42j_B+Rg2nq+KKBiKLqxVEqabQ15CujyJ+o6jqRj2uQ@mail.gmail.com>
- <CA+G9fYtG6Ro-NdrP89ipDyUqVVT2=_8pTvjTSeFcWr795bp8AA@mail.gmail.com>
- <20201011055258.22337d66@canb.auug.org.au>
- <CA+-6iNwpFeJaa7CisS-DD2q45uaV8Jz6YU0kPucqpZAAK3ojuQ@mail.gmail.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: arm-smmu 5000000.iommu: Cannot accommodate DMA offset for IOMMU
- page tables
-Message-ID: <c7e7b9ab-95a8-625f-7988-7f7397a0749f@gmail.com>
-Date: Sun, 11 Oct 2020 14:59:02 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.3.2
-MIME-Version: 1.0
-In-Reply-To: <CA+-6iNwpFeJaa7CisS-DD2q45uaV8Jz6YU0kPucqpZAAK3ojuQ@mail.gmail.com>
+ id 1kRnbX-00027b-Oa; Mon, 12 Oct 2020 02:30:29 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+ t=1602469828; x=1634005828;
+ h=from:to:cc:subject:date:message-id:references:
+ content-transfer-encoding:mime-version;
+ bh=B2H/dL/4Tk6ifO229+CDbwJhsi61Ae0kMhbusFZSfYA=;
+ b=ULWUuoilewArjteqsattO/YaNUw/BFXyMSjrJSqliSyxib4irZTZazIz
+ LEtA90x+vhxR/dytMmUsAPWoFNPQ2xdRBk3ukNoPCH3NKPqpQK3QpjtTT
+ 2e4NHaJmBgwmEQgVftpAahKHPcy0/8GCW6IosaKYL13iekmyrjhqEwWbk
+ BpQiENbO7LJU5Eex724TxRRPyl3MIe0yDzePXryhe8RhH8wm8SRQHjDkj
+ AMFEwybU78Wr6aV5ehkKdxOj3MQHAfugoM41FGF8CUkXJdoTmjWoJh+Y8
+ gMcenS4wPiE8vSwTD406XE7baJQoAVjMOPatntaPpyWBqypueWyJQlqCD A==;
+IronPort-SDR: otNXfCl468GV2kaRfPMurNEzzb+5DTvHbKamj2s+8BDLocQWr4zuQ3M3i+IKAljLE0jNxd9VpM
+ cO+rQZXBC3hCB4USGfnGA9ogfGdhVarakItuizW2Gy++p8Z+M6RlhT6/ZGAyh4Bb4soyndVApS
+ t1CbgZ/xItk8xcO9aKd2ojIIDU+T0Z2LVw84K7kBp34/4Smmy1km93xm3x16vuxVWJ3+pskOv3
+ siKun/r5wc2+puveLQmD3LIou+hiTE8AMRzhJ76wz/XN32b0xaH0DxtBNrPj7bQ2z+DqpFhCU+
+ uec=
+X-IronPort-AV: E=Sophos;i="5.77,365,1596470400"; d="scan'208";a="150813289"
+Received: from mail-bn8nam12lp2169.outbound.protection.outlook.com (HELO
+ NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.169])
+ by ob1.hgst.iphmx.com with ESMTP; 12 Oct 2020 10:30:21 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gx/LTHF9rvHW8Oe8ILITCqr1oekN0sSJJn9RkpcHF8rIin2//JVyW6AgAlQAeO/v1EowEo57pZXHLTZIAy/oh4sgxpcSGZDKN5oz0Qe5qPK5ALqfSLuBJmsV9AjLyCrQw4LfNvVHA5X/BDt9kKApbyWTlvE/mChWEAeK2jwUV+avUBnk6VOQeR5wnt5ri1PntjTXlIuGOC1C+wB/9l2juXZbCJp4Pz4p8f7Fz7xkvRrQ4+eJwlbmv6boTHlg5Kw8lXE/1AjnM4ZgS0AFsifxbxuSIjOVAxEndjwMb+y3JcGsuVp5FkLwRs65TutRE74FFvIf22sxhDPzR40XvIfT3g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nSbIdboq5PT4g9q0YvKJz3kaJMX2RtABGp66gEoNwmc=;
+ b=Kok+1aaGCiSZfqW1wmfB+kHe79JMm2f0m4TbxYf9iF9O5G/ZXp38pxI6FEhdVvJczC1oxUEx0BiWJ/jH1cJTKJ7qsq1BJbVSGcJTsAorroGNrYmYM+t+8l7Wbh5IWvJ0VGXdwladeVfJOpcoqinFt4xiAnbhaH0uGewPXN4kRMuNmUGT0t/etLda3IPoUpK7rFgAL7ObgaolOSF9YiV1tKcRYfXVoLRA9X+eXZQtAEs4qBuZHPYEZf91PR0dFaLSXlnkDhV3/6JNvTP1YcC6arSVI+ByCj2IBl8Uhj9qBZ+KZZJ487Embj0mtjbFITcETuHh+wrsFcIy0nDYldJobg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nSbIdboq5PT4g9q0YvKJz3kaJMX2RtABGp66gEoNwmc=;
+ b=bu3NZ6nEIRGWvcX7BdK5F82a2Su5/ALOZX5mADuG3ixHeWl8vkyQlIEiI35HkhS1z2iLz2dIGt5v/ks6P0iyAim2GKOXOJDRdbUJuqpyR6LOJWHd5LzT+oOasYNyetl+MyoT9N0v8T1iC7HL9CruXmyPts3iLmme8nvBuhJdvlI=
+Received: from BL0PR04MB6514.namprd04.prod.outlook.com (2603:10b6:208:1ca::23)
+ by MN2PR04MB6928.namprd04.prod.outlook.com (2603:10b6:208:1e3::8)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.24; Mon, 12 Oct
+ 2020 02:30:19 +0000
+Received: from BL0PR04MB6514.namprd04.prod.outlook.com
+ ([fe80::4c3e:2b29:1dc5:1a85]) by BL0PR04MB6514.namprd04.prod.outlook.com
+ ([fe80::4c3e:2b29:1dc5:1a85%6]) with mapi id 15.20.3455.029; Mon, 12 Oct 2020
+ 02:30:19 +0000
+From: Damien Le Moal <Damien.LeMoal@wdc.com>
+To: "ira.weiny@intel.com" <ira.weiny@intel.com>, Andrew Morton
+ <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo
+ Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski
+ <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH RFC PKS/PMEM 26/58] fs/zonefs: Utilize new kmap_thread()
+Thread-Topic: [PATCH RFC PKS/PMEM 26/58] fs/zonefs: Utilize new kmap_thread()
+Thread-Index: AQHWnnW5LYLzak05pEGSI1gzotA84w==
+Date: Mon, 12 Oct 2020 02:30:18 +0000
+Message-ID: <BL0PR04MB65146627753E6A8125C30044E7070@BL0PR04MB6514.namprd04.prod.outlook.com>
+References: <20201009195033.3208459-1-ira.weiny@intel.com>
+ <20201009195033.3208459-27-ira.weiny@intel.com>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2400:2411:43c0:6000:dbd:ddb3:86a4:b7da]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 2d8e38c9-c661-47b4-955c-08d86e56c300
+x-ms-traffictypediagnostic: MN2PR04MB6928:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR04MB69281462D64954D72F6383A1E7070@MN2PR04MB6928.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:2089;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: nb7ZZkrOcnI45uzu82g63ZPDCw/m4UEa+T14BlRir04UDAmgqTKjBKFQ/1tq3q95aFreC/myPH7bQVuOZygHUtANTgMCUzT/Pyur4q2rkZgxQjgu2tK2/9wVp2h2SQ2PIehISfjlFkUmEohfWX26Cg+7Fw+ncYVUGCA3GBq/iNQrWxbeF5GIkE4ciKI2Ta+JMFg530FWmVV/3MNOdO5PIr93+nS5dgdzR8tDl4fNZNcda6K0U+RBmBhAF6G4PiHCwu4dLKAqHtEtpN1w+lsxrk7joY78vLDxPGvR8dOWqU93TlxExhLGaLZNWnYKeI3pA3QpzCWmAeR04Ul6/pWdYg==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:BL0PR04MB6514.namprd04.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(396003)(39860400002)(346002)(136003)(376002)(366004)(8936002)(71200400001)(86362001)(186003)(91956017)(4326008)(66446008)(64756008)(66556008)(76116006)(7366002)(52536014)(8676002)(4744005)(5660300002)(33656002)(6506007)(7406005)(7416002)(478600001)(66946007)(66476007)(9686003)(53546011)(55016002)(7696005)(316002)(110136005)(54906003)(2906002)(83380400001);
+ DIR:OUT; SFP:1102; 
+x-ms-exchange-antispam-messagedata: jjLBIa8rzP8PSUzUPRNNjZPO+F9m4B6rNx2BP5Hxn4hovZp8mG8VwNQRMnSFbWOz3vIBGGbrlwmZ2h/rrQ3LAnV478QA8TsJeEWgnROLCLR26e3M2EbbogZuJfrd8ZHepR6teHHrbin/rSSMJcyuivIccqO+Io91CjJtVLKGT+IxxyJeBxmaC3EM+JLu8Rm3Kx8m967TzWpRyeGTzqzgeKyG0yThTif6ugu1X+cS2L5ObX1F/fl2leT5khZ92kjaRHmV42QjfDSDQBRJ5T2sWkjLqL6qZdGMf2A7TG8LiEhWaSnE+PmptdxY4alKupBmftgWegPnh18eZ3klScKVzKqPJWtLa3seT93Q56fQAqIthA5+kX5qt7UatZBhg0gKm0KkBt+EXNCPEi6hfwJXTcKfMhrLXdmO4xo5z+sSfQStIvDc5rcmkS1pZ7oYknbDJlJtS3SQSqbBQQUJPafcSH0MKoCCaLHQYYEZElvKn9S/oXh/zKwEQ9/zN4tqic4ypaC6xgod9dW89WUn6IRtPbzsXwH70beu1D6sABibklUQzTXk4zAezxU4pLpXOEpjFmzQIZ8wo7n5pOvKphLu99Aqpkh/XR9us5YFAynE0SXyaG0lSyNOUkHX4czg41/a9jardublYq7n+2PgYlLtR3YEH/hKmOGAbSLFeveqJxrdOEFzmYAfv7w/UdGZFRYD9O0jto4jXaOrMeEBD/8QJw==
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR04MB6514.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d8e38c9-c661-47b4-955c-08d86e56c300
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Oct 2020 02:30:18.8981 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: FtNVgLbLUqLnCuOwFgwFyh+Wo2k/+4LOuBCyiRJEYABushz8+FxnNx4RRBUxLG0y9/lhxKLevLpPI63mq8apww==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR04MB6928
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201011_175911_390333_30C99396 
-X-CRM114-Status: GOOD (  20.89  )
+X-CRM114-CacheID: sfid-20201011_223028_099255_81FE5F19 
+X-CRM114-Status: GOOD (  17.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,86 +144,103 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Poonam Aggrwal <poonam.aggrwal@nxp.com>, Rob Herring <robh@kernel.org>,
- Joerg Roedel <jroedel@suse.de>, Arnd Bergmann <arnd@arndb.de>,
- Richard Weinberger <richard@nod.at>,
- Naresh Kamboju <naresh.kamboju@linaro.org>, "Z.Q. Hou" <Zhiqiang.Hou@nxp.com>,
- open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
- Christoph Hellwig <hch@lst.de>, Will Deacon <will@kernel.org>,
- Linux-Next Mailing List <linux-next@vger.kernel.org>,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Suram Suram <suram@nxp.com>, masonccyang@mxic.com.tw,
- Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>
+Cc: "linux-aio@kvack.org" <linux-aio@kvack.org>,
+ "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
+ "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ "linux-mm@kvack.org" <linux-mm@kvack.org>,
+ "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+ "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
+ "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
+ "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
+ Naohiro Aota <Naohiro.Aota@wdc.com>,
+ "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+ "linux-nilfs@vger.kernel.org" <linux-nilfs@vger.kernel.org>,
+ "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+ "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+ "x86@kernel.org" <x86@kernel.org>,
+ "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+ "linux-afs@lists.infradead.org" <linux-afs@lists.infradead.org>,
+ "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
+ "linux-cachefs@redhat.com" <linux-cachefs@redhat.com>,
+ "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+ "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+ "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+ Fenghua Yu <fenghua.yu@intel.com>,
+ "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
+ "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
+ "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+ "ecryptfs@vger.kernel.org" <ecryptfs@vger.kernel.org>,
+ "linux-erofs@lists.ozlabs.org" <linux-erofs@lists.ozlabs.org>,
+ "reiserfs-devel@vger.kernel.org" <reiserfs-devel@vger.kernel.org>,
+ "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+ "linux-bcache@vger.kernel.org" <linux-bcache@vger.kernel.org>,
+ Dan Williams <dan.j.williams@intel.com>,
+ "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+ "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+ "linux-ntfs-dev@lists.sourceforge.net" <linux-ntfs-dev@lists.sourceforge.net>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-f2fs-devel@lists.sourceforge.net"
+ <linux-f2fs-devel@lists.sourceforge.net>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-+Abhimanyu, Ioana, Fabio
-
-On 10/11/2020 1:36 PM, Jim Quinlan wrote:
-> On Sat, Oct 10, 2020 at 2:53 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->>
->> Hi Naresh,
->>
->> Just adding Christoph and Jim to cc]
->>
->> On Fri, 9 Oct 2020 19:26:24 +0530 Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->>>
->>> On Fri, 9 Oct 2020 at 19:24, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->>>>
->>>>
->>>>
->>>> On Thu, 24 Sep 2020 at 15:26, Joerg Roedel <joro@8bytes.org> wrote:
->>>>>
->>>>> On Thu, Sep 24, 2020 at 10:36:47AM +0100, Robin Murphy wrote:
->>>>>> Yes, the issue was introduced by one of the changes in "dma-mapping:
->>>>>> introduce DMA range map, supplanting dma_pfn_offset", so it only existed in
->>>>>> the dma-mapping/for-next branch anyway.
->>>>
->>>
->>> FYI,
->>> The reported problem still exists on 5.9.0-rc8-next-20201009.
->>>
->>> [    1.843814] Driver must set ecc.strength when using hardware ECC
->>> [    1.849847] WARNING: CPU: 4 PID: 1 at
->>> drivers/mtd/nand/raw/nand_base.c:5687 nand_scan_with_ids+0x1450/0x1470
->>> [    1.859676] Modules linked in:
->>> [    1.862730] CPU: 4 PID: 1 Comm: swapper/0 Not tainted
->>> 5.9.0-rc8-next-20201009 #1
->>> [    1.870125] Hardware name: Freescale Layerscape 2088A RDB Board (DT)
->>> [    1.876478] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
->>> [    1.882483] pc : nand_scan_with_ids+0x1450/0x1470
->>> [    1.887183] lr : nand_scan_with_ids+0x1450/0x1470
+On 2020/10/10 4:52, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
 > 
-> Hi,
+> The kmap() calls in this FS are localized to a single thread.  To avoid
+> the over head of global PKRS updates use the new kmap_thread() call.
 > 
-> I'm having a hard time coming up with a theory regarding  how a commit
-> concerning DMA offsets can affect the operation of a NAND driver that
-> appears not to use DMA or the dma-ranges property.  Does anyone else
-> have some ideas, or is there perhaps someone familiar with this test
-> configuration that I can correspond with to get to the bottom of the
-> warning?
+> Cc: Damien Le Moal <damien.lemoal@wdc.com>
+> Cc: Naohiro Aota <naohiro.aota@wdc.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> ---
+>  fs/zonefs/super.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
+> index 8ec7c8f109d7..2fd6c86beee1 100644
+> --- a/fs/zonefs/super.c
+> +++ b/fs/zonefs/super.c
+> @@ -1297,7 +1297,7 @@ static int zonefs_read_super(struct super_block *sb)
+>  	if (ret)
+>  		goto free_page;
+>  
+> -	super = kmap(page);
+> +	super = kmap_thread(page);
+>  
+>  	ret = -EINVAL;
+>  	if (le32_to_cpu(super->s_magic) != ZONEFS_MAGIC)
+> @@ -1349,7 +1349,7 @@ static int zonefs_read_super(struct super_block *sb)
+>  	ret = 0;
+>  
+>  unmap:
+> -	kunmap(page);
+> +	kunmap_thread(page);
+>  free_page:
+>  	__free_page(page);
+>  
+> 
 
-I believe you are given only a partial warning and just a glimpse of the 
-thread here which is why understanding the connection to the dma ranges 
-parsing is not clear. The start of the thread can be found here:
+acked-by: Damien Le Moal <damien.lemoal@wdc.com>
 
-https://lore.kernel.org/lkml/CA+G9fYvuq58q+GsWnzni0sKSHbubuQz-UaK3TASX26V_a7yBVw@mail.gmail.com/
-
-Robin indicated that the IOMMU probe failure was fixed with:
-
-https://lore.kernel.org/linux-iommu/daedc9364a19dc07487e4d07b8768b1e5934abd4.1600700881.git.robin.murphy@arm.com/T/#u
-
-which is confirmed with the new log from Naresh:
-
-https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20201009/testrun/3284876/suite/linux-log-parser/test/check-kernel-warning-92014/log
-
-however the NAND warning still remains. Someone else familiar with these 
-NXP development boards should fix the DTS so as to provide the require 
-ECC strength property.
 -- 
-Florian
+Damien Le Moal
+Western Digital Research
 
 ______________________________________________________
 Linux MTD discussion mailing list
