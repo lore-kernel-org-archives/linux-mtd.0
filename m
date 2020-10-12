@@ -2,73 +2,77 @@ Return-Path: <SRS0=FSZL=DT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87A1CC433E7
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Oct 2020 19:18:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18ECCC433E7
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Oct 2020 19:55:24 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1E0A52074A
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Oct 2020 19:18:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6FCBA20878
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Oct 2020 19:55:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lp7ae0dV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E0A52074A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="E1Ttnmwb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6FCBA20878
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Subject:References:In-Reply-To:
-	Message-ID:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=rWABxtBMRL7fEaUc+5xWAd8ycTU6lHcxJ50q8EBkOM0=; b=lp7ae0dVkMg35kO+Blpy2Y8PX
-	GPtLf/67RIT0l5hqx6fn53HRoBNHr2pQtzOhn3cjAKDoDRzRXjxocx90BP78Dt8KkBMfatTrdosBv
-	j9RmsSXZfQ5/Qrl/TjCLxh30T/AptN5Z+LuSG/CzCGw/tl/EaqiDthnpql6vB75U9Jp00FlPNhH1k
-	E1aLhjbmmb3WVNPa9UXCCK4OU5yorGS0gsFuBzPzYZ3gN/9d6tzy+QQ8H0/kRgUkvUw2iyg8yb1nV
-	Kfu/F6+NGkSNES2JvcbZAvlOiWrteENX7cyTdmH7Dyo9P6ahldAYFRp/5+ODcvA1X8EjvFMdLgxZI
-	kKidDPJbw==;
+	 bh=h/Qb5Pd6R7xai94VUEq81aM2FhKdO91TbjVm8el7fZI=; b=E1TtnmwbtnMbtr3P1cX8hUi0B
+	o1/DBUcDWWGgYtmfTOBVppWseCuI+/vl4I0cbRjM+Orn2+r8Fgk+QUUgYfQ1MwR4BxxQXzTcZbrd3
+	B7jqaE64hVdWCQVVEfGF9c6MXyUhUoDq/cmKf7DbYSnRp3ijEFpWi4Sk5GeN+F6iznQfA6CuMaWtE
+	51BT0yPF2kxagbhvn/Z2TPozPwgPXO+zkzKl+tG29DlNyphAURYhD1NOEvNGuZbsjY/rKECJRuvmp
+	185KOfF0vx780n695oUZMvBan7GOgGvbzFE0uwQFPA8qnjFWCJUgmTUGIn09pe/oqUp8bcrCDOOW3
+	zTmpMGwng==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kS3K2-0002cq-M7; Mon, 12 Oct 2020 19:17:26 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1kS3tZ-0005uL-IQ; Mon, 12 Oct 2020 19:54:09 +0000
+Received: from mga12.intel.com ([192.55.52.136])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kS3K0-0002bp-1E
- for linux-mtd@lists.infradead.org; Mon, 12 Oct 2020 19:17:25 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id A63AF6125F33;
- Mon, 12 Oct 2020 21:17:21 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id 0sY4GwlcOtH7; Mon, 12 Oct 2020 21:17:20 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 1558A61D8A8D;
- Mon, 12 Oct 2020 21:17:20 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id VOYcOp75qzIk; Mon, 12 Oct 2020 21:17:19 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
- by lithops.sigma-star.at (Postfix) with ESMTP id DEBF16125F33;
- Mon, 12 Oct 2020 21:17:19 +0200 (CEST)
-Date: Mon, 12 Oct 2020 21:17:19 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <2029402034.189005.1602530239737.JavaMail.zimbra@nod.at>
-In-Reply-To: <20201012070958.11083-1-vigneshr@ti.com>
-References: <20201012070958.11083-1-vigneshr@ti.com>
-Subject: Re: [PATCH] mtd: hyperbus: Fix build failure when only
- RPCIF_HYPERBUS is enabled
+ id 1kS3tV-0005rL-05; Mon, 12 Oct 2020 19:54:06 +0000
+IronPort-SDR: 3CXqFNXMdywyiAUiBM7zNfm1lR3UvseDA0q+EGcUq4tJn20uDjG5opk5qOLZw2VLtMh4OQ8oAs
+ meuUdLpyDqbQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="145114390"
+X-IronPort-AV: E=Sophos;i="5.77,367,1596524400"; d="scan'208";a="145114390"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Oct 2020 12:53:56 -0700
+IronPort-SDR: fkO3cV1AstS50IlWJFeIR7IMIWTUvxOVu0RxBH9tBAb2aFjzmjvlioAsa4gAQcEu3X0zxNtHVX
+ KqidbmrXoAPg==
+X-IronPort-AV: E=Sophos;i="5.77,367,1596524400"; d="scan'208";a="530096227"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+ by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Oct 2020 12:53:54 -0700
+Date: Mon, 12 Oct 2020 12:53:54 -0700
+From: Ira Weiny <ira.weiny@intel.com>
+To: Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH RFC PKS/PMEM 22/58] fs/f2fs: Utilize new kmap_thread()
+Message-ID: <20201012195354.GC2046448@iweiny-DESK2.sc.intel.com>
+References: <20201009195033.3208459-1-ira.weiny@intel.com>
+ <20201009195033.3208459-23-ira.weiny@intel.com>
+ <20201009213434.GA839@sol.localdomain>
+ <20201010003954.GW20115@casper.infradead.org>
+ <20201010013036.GD1122@sol.localdomain>
+ <20201012065635.GB2046448@iweiny-DESK2.sc.intel.com>
+ <20201012161946.GA858@sol.localdomain>
+ <5d621db9-23d4-e140-45eb-d7fca2093d2b@intel.com>
+ <20201012164438.GA20115@casper.infradead.org>
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Topic: hyperbus: Fix build failure when only RPCIF_HYPERBUS is enabled
-Thread-Index: Uh0XQbUp09aZK/SHpd4OdKcrRr0PTg==
+Content-Disposition: inline
+In-Reply-To: <20201012164438.GA20115@casper.infradead.org>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201012_151724_225432_33A55A78 
-X-CRM114-Status: GOOD (  10.49  )
+X-CRM114-CacheID: sfid-20201012_155405_329470_AD40E5F4 
+X-CRM114-Status: GOOD (  17.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,41 +84,74 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Sergei Shtylyov <sergei.shtylyov@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org,
+ linux-doc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+ linux-mmc@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
+ dri-devel@lists.freedesktop.org, Dave Hansen <dave.hansen@intel.com>,
+ target-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kselftest@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ Thomas Gleixner <tglx@linutronix.de>, drbd-dev@lists.linbit.com,
+ devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
+ linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org, x86@kernel.org,
+ amd-gfx@lists.freedesktop.org, linux-afs@lists.infradead.org,
+ Eric Biggers <ebiggers@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ intel-wired-lan@lists.osuosl.org, kexec@lists.infradead.org,
+ xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org,
+ bpf@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
+ Fenghua Yu <fenghua.yu@intel.com>, intel-gfx@lists.freedesktop.org,
+ ecryptfs@vger.kernel.org, linux-um@lists.infradead.org,
+ reiserfs-devel@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-bcache@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+ Andy Lutomirski <luto@kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>,
+ ceph-devel@vger.kernel.org, io-uring@vger.kernel.org, linux-cachefs@redhat.com,
+ linux-nfs@vger.kernel.org, linux-mm@kvack.org,
+ linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, samba-technical@lists.samba.org,
+ linux-kernel@vger.kernel.org, cluster-devel@redhat.com,
+ linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIlZpZ25lc2ggUmFnaGF2ZW5k
-cmEiIDx2aWduZXNockB0aS5jb20+Cj4gQW46ICJWaWduZXNoIFJhZ2hhdmVuZHJhIiA8dmlnbmVz
-aHJAdGkuY29tPiwgIk1pcXVlbCBSYXluYWwiIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPiwg
-InJpY2hhcmQiIDxyaWNoYXJkQG5vZC5hdD4KPiBDQzogIlNlcmdlaSBTaHR5bHlvdiIgPHNlcmdl
-aS5zaHR5bHlvdkBnbWFpbC5jb20+LCAibGludXgtbXRkIiA8bGludXgtbXRkQGxpc3RzLmluZnJh
-ZGVhZC5vcmc+LCAibGludXgta2VybmVsIgo+IDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3Jn
-Pgo+IEdlc2VuZGV0OiBNb250YWcsIDEyLiBPa3RvYmVyIDIwMjAgMDk6MDk6NTgKPiBCZXRyZWZm
-OiBbUEFUQ0hdIG10ZDogaHlwZXJidXM6IEZpeCBidWlsZCBmYWlsdXJlIHdoZW4gb25seSBSUENJ
-Rl9IWVBFUkJVUyBpcyBlbmFibGVkCgo+IGNvbW1pdCA1ZGUxNWI2MTBmNzggKCJtdGQ6IGh5cGVy
-YnVzOiBhZGQgUmVuZXNhcyBSUEMtSUYgZHJpdmVyIikgbGVhZHMKPiB0byBidWlsZCBmYWlsdXJl
-WzFdIHdpdGggQ09NUElMRV9URVNUIGFuZCBSUENJRl9IWVBFUkJVUyBlbmFibGVkLiBUaGlzCj4g
-aXMgYmVjYXVzZSBkcml2ZXIgbmVlZHMgZnVuY3Rpb25zIFJFTkVTQVNfUlBDSUYgd2hpY2ggaXMg
-b25seSBidWlsZGFibGUKPiBmb3IgQ09ORklHX0FSQ0hfUkVORVNBUy4KPiAKPiBGaXggdGhpcyBi
-eSBkcm9wcGluZyBDT01QSUxFX1RFU1QgZnJvbSBSUENJRl9IWVBFUkJVUyBLY29uZmlnIGVudHJ5
-Lgo+IFRoaXMgZW5zdXJlcyBkcml2ZXIgY2FuIGJlIGJ1aWx0IG9ubHkgd2hlbiBSRU5FU0FTX1JQ
-Q0lGIGlzIGFsc28KPiBzZWxlY3RlZC4KPiAKPiBbMV06Cj4gcnBjLWlmLmM6KC50ZXh0KzB4MjAp
-OiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBycGNpZl9kaXNhYmxlX3JwbScgbGQ6Cj4gZHJpdmVy
-cy9tdGQvaHlwZXJidXMvcnBjLWlmLm86IGluIGZ1bmN0aW9uIGBycGNpZl9oYl9wcmVwYXJlX3Jl
-YWQnOgo+IHJwYy1pZi5jOigudGV4dCsweGQ2KTogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgcnBj
-aWZfcHJlcGFyZScgbGQ6Cj4gZHJpdmVycy9tdGQvaHlwZXJidXMvcnBjLWlmLm86IGluIGZ1bmN0
-aW9uIGBycGNpZl9oYl9yZWFkMTYnOgo+IFsuLi5dCj4gCj4gRml4ZXM6IDVkZTE1YjYxMGY3OCAo
-Im10ZDogaHlwZXJidXM6IGFkZCBSZW5lc2FzIFJQQy1JRiBkcml2ZXIiKSBsZWFkcwo+IFJlcG9y
-dGVkLWJ5OiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0Pgo+IFNpZ25lZC1vZmYt
-Ynk6IFZpZ25lc2ggUmFnaGF2ZW5kcmEgPHZpZ25lc2hyQHRpLmNvbT4KPiAtLS0KPiAKPiBCYXNl
-ZCBvbiBtdGQvbmV4dAo+IAo+IFJpY2hhcmQsCj4gCj4gQ291bGQgeW91IHBsZWFzZSBwdWxsIHRo
-aXMgaW50byBtdGQvbmV4dD8KCkFwcGxpZWQhIDotKQoKVGhhbmtzLAovL3JpY2hhcmQKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBN
-VEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Mon, Oct 12, 2020 at 05:44:38PM +0100, Matthew Wilcox wrote:
+> On Mon, Oct 12, 2020 at 09:28:29AM -0700, Dave Hansen wrote:
+> > kmap_atomic() is always preferred over kmap()/kmap_thread().
+> > kmap_atomic() is _much_ more lightweight since its TLB invalidation is
+> > always CPU-local and never broadcast.
+> > 
+> > So, basically, unless you *must* sleep while the mapping is in place,
+> > kmap_atomic() is preferred.
+> 
+> But kmap_atomic() disables preemption, so the _ideal_ interface would map
+> it only locally, then on preemption make it global.  I don't even know
+> if that _can_ be done.  But this email makes it seem like kmap_atomic()
+> has no downsides.
+
+And that is IIUC what Thomas was trying to solve.
+
+Also, Linus brought up that kmap_atomic() has quirks in nesting.[1]
+
+From what I can see all of these discussions support the need to have something
+between kmap() and kmap_atomic().
+
+However, the reason behind converting call sites to kmap_thread() are different
+between Thomas' patch set and mine.  Both require more kmap granularity.
+However, they do so with different reasons and underlying implementations but
+with the _same_ resulting semantics; a thread local mapping which is
+preemptable.[2]  Therefore they each focus on changing different call sites.
+
+While this patch set is huge I think it serves a valuable purpose to identify a
+large number of call sites which are candidates for this new semantic.
+
+Ira
+
+[1] https://lore.kernel.org/lkml/CAHk-=wgbmwsTOKs23Z=71EBTrULoeaH2U3TNqT2atHEWvkBKdw@mail.gmail.com/
+[2] It is important to note these implementations are not incompatible with
+each other.  So I don't see yet another 'kmap_something()' being required.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
