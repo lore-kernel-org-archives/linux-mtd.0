@@ -2,21 +2,21 @@ Return-Path: <SRS0=Emx/=DU=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1633C433E7
-	for <linux-mtd@archiver.kernel.org>; Tue, 13 Oct 2020 20:47:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 593EDC433DF
+	for <linux-mtd@archiver.kernel.org>; Tue, 13 Oct 2020 20:51:16 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 45E1A20878
-	for <linux-mtd@archiver.kernel.org>; Tue, 13 Oct 2020 20:47:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BF7AD20878
+	for <linux-mtd@archiver.kernel.org>; Tue, 13 Oct 2020 20:51:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HcEiG4UJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 45E1A20878
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="1R23sB91"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BF7AD20878
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,49 +25,50 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=gujtkFwRz7WT2KjUF5uPe54rs+ybsVHB7fw3tiLqmm8=; b=HcEiG4UJ3ZFKtCFrR2PC1+3QR
-	pxth1lMUHEsuNRJnmKsr7xe54AbK2utCpTTkZ5GII256u2D7fTpHxUD1kq8pvh8oqSJluupTFV7P1
-	dxiqfnPK4AJFkSRcrZ9PdkyapXIIvila60C1Pqr5/pDgmIpsekyOSuen3l2OseR+P3gPy627NmsOs
-	r3TrMT+whYW0w58iUjSNXSNab2MGJ7J9sWSL4u5s8uGUdgH2aB2fx6o4nxtjrdNapiZmtiwZgnesm
-	ThZeucKrRhn8BK2gbSmvm2MnAPdkorWunSLaO3LDZviDdypuYsMeP7yZdGSfcrJGdicMrwPX1aEND
-	VFYz0f8oQ==;
+	 bh=YuMLfGx1CwKvNDt7R91wj9rouSNkKAD7qh8/HVxAJy8=; b=1R23sB914qSHko2jS8mcPDMaG
+	bq2YklBctgVhWs3UFmjl27761aZLO0u1Xa+DrSS6mJoXHLdgBDLmLLM6NyUt0l0b8Gwgeh4mIDUVt
+	2HcM8u0ut9ofl9RvDXRcJQycjQDqqDNpE81VXaqXfzJ3KUhHOo280izqG2NacN0vnnKdrFt+oZCn5
+	wp37qXpmhzhKmvR4QZrypzpyjLch9ndNIHhV0CmO3wnsdE6UyIz8TUM+HukCviLFP/mlMYxohIFC9
+	CBEfqnmybghj1akvNrih2SxqAVedcEOeQ5vdOT8AS4D3/aPC/sIsiFo9wFm7Mrm3px21gCwD4q9H6
+	rTh5TNIzw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kSRB8-0004s4-Ur; Tue, 13 Oct 2020 20:45:51 +0000
-Received: from mga09.intel.com ([134.134.136.24])
+	id 1kSRFV-0005Kc-N9; Tue, 13 Oct 2020 20:50:21 +0000
+Received: from mga06.intel.com ([134.134.136.31])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kSRB2-0004nL-UT; Tue, 13 Oct 2020 20:45:46 +0000
-IronPort-SDR: hkE+5oi8VDIQ4dAbVjqV98San+ekqtrEUIQbam0thBL5QyTCsMnYEyZEB8zh5MoLaY0nhIxFMS
- duCDV1FpQUsw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="166097605"
-X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; d="scan'208";a="166097605"
+ id 1kSRFR-0005DI-A6; Tue, 13 Oct 2020 20:50:19 +0000
+IronPort-SDR: ozQty67OqbXx1TGQe15YTRjHjqocwOW+Eknd71XCaqvUxymsp7+AkZOfz7fBSywml2ZMZqtr7T
+ aIUJtKtt2Wuw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="227624237"
+X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; d="scan'208";a="227624237"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Oct 2020 13:45:39 -0700
-IronPort-SDR: 9cNNwyFW01V43IRpBEA5F+eU6gGnvdaUqvIfWWDJoXczsQwSY988pJwnA1f05GwG/v1vkNjadd
- aJS/wzoBibsg==
-X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; d="scan'208";a="530558193"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Oct 2020 13:50:14 -0700
+IronPort-SDR: tBU8Od+WgzKnoE84+DWDWPkln+je7r0O2Nptsn2TVKPsgnriflj5gQkH1GYPWlpzBZ1iqAqtCk
+ /srhQcj0pjbQ==
+X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; d="scan'208";a="318439699"
 Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
- by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Oct 2020 13:45:37 -0700
-Date: Tue, 13 Oct 2020 13:45:37 -0700
+ by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Oct 2020 13:50:12 -0700
+Date: Tue, 13 Oct 2020 13:50:12 -0700
 From: Ira Weiny <ira.weiny@intel.com>
-To: Matthew Wilcox <willy@infradead.org>
+To: Al Viro <viro@zeniv.linux.org.uk>
 Subject: Re: [PATCH RFC PKS/PMEM 33/58] fs/cramfs: Utilize new kmap_thread()
-Message-ID: <20201013204537.GH2046448@iweiny-DESK2.sc.intel.com>
+Message-ID: <20201013205012.GI2046448@iweiny-DESK2.sc.intel.com>
 References: <20201009195033.3208459-1-ira.weiny@intel.com>
  <20201009195033.3208459-34-ira.weiny@intel.com>
  <CAPcyv4gL3jfw4d+SJGPqAD3Dp4F_K=X3domuN4ndAA1FQDGcPg@mail.gmail.com>
  <20201013193643.GK20115@casper.infradead.org>
+ <20201013200149.GI3576660@ZenIV.linux.org.uk>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20201013193643.GK20115@casper.infradead.org>
+In-Reply-To: <20201013200149.GI3576660@ZenIV.linux.org.uk>
 User-Agent: Mutt/1.11.1 (2018-12-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201013_164545_164832_2B7A7F06 
-X-CRM114-Status: GOOD (  26.44  )
+X-CRM114-CacheID: sfid-20201013_165017_515103_8FA76E55 
+X-CRM114-Status: GOOD (  17.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,14 +87,14 @@ Cc: linux-aio@kvack.org, linux-efi <linux-efi@vger.kernel.org>,
  Dave Hansen <dave.hansen@linux.intel.com>,
  Maling list - DRI developers <dri-devel@lists.freedesktop.org>,
  Linux MM <linux-mm@kvack.org>, target-devel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-kselftest@vger.kernel.org,
- samba-technical@lists.samba.org, Thomas Gleixner <tglx@linutronix.de>,
- drbd-dev@lists.linbit.com, devel@driverdev.osuosl.org,
- linux-cifs@vger.kernel.org, linux-nilfs@vger.kernel.org,
- linux-scsi <linux-scsi@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, amd-gfx list <amd-gfx@lists.freedesktop.org>,
+ linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org,
+ Thomas Gleixner <tglx@linutronix.de>, drbd-dev@lists.linbit.com,
+ devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
+ linux-nilfs@vger.kernel.org, linux-scsi <linux-scsi@vger.kernel.org>,
  linux-nvdimm <linux-nvdimm@lists.01.org>,
  linux-rdma <linux-rdma@vger.kernel.org>, X86 ML <x86@kernel.org>,
- ceph-devel@vger.kernel.org, amd-gfx list <amd-gfx@lists.freedesktop.org>,
+ ceph-devel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
  io-uring@vger.kernel.org, cluster-devel@redhat.com,
  Ingo Molnar <mingo@redhat.com>, intel-wired-lan@lists.osuosl.org,
  xen-devel <xen-devel@lists.xenproject.org>,
@@ -119,53 +120,53 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Oct 13, 2020 at 08:36:43PM +0100, Matthew Wilcox wrote:
-> On Tue, Oct 13, 2020 at 11:44:29AM -0700, Dan Williams wrote:
-> > On Fri, Oct 9, 2020 at 12:52 PM <ira.weiny@intel.com> wrote:
-> > >
-> > > From: Ira Weiny <ira.weiny@intel.com>
-> > >
-> > > The kmap() calls in this FS are localized to a single thread.  To avoid
-> > > the over head of global PKRS updates use the new kmap_thread() call.
-> > >
-> > > Cc: Nicolas Pitre <nico@fluxnic.net>
-> > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > > ---
-> > >  fs/cramfs/inode.c | 10 +++++-----
-> > >  1 file changed, 5 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/fs/cramfs/inode.c b/fs/cramfs/inode.c
-> > > index 912308600d39..003c014a42ed 100644
-> > > --- a/fs/cramfs/inode.c
-> > > +++ b/fs/cramfs/inode.c
-> > > @@ -247,8 +247,8 @@ static void *cramfs_blkdev_read(struct super_block *sb, unsigned int offset,
-> > >                 struct page *page = pages[i];
-> > >
-> > >                 if (page) {
-> > > -                       memcpy(data, kmap(page), PAGE_SIZE);
-> > > -                       kunmap(page);
-> > > +                       memcpy(data, kmap_thread(page), PAGE_SIZE);
-> > > +                       kunmap_thread(page);
+On Tue, Oct 13, 2020 at 09:01:49PM +0100, Al Viro wrote:
+> On Tue, Oct 13, 2020 at 08:36:43PM +0100, Matthew Wilcox wrote:
+> 
+> > static inline void copy_to_highpage(struct page *to, void *vfrom, unsigned int size)
+> > {
+> > 	char *vto = kmap_atomic(to);
 > > 
-> > Why does this need a sleepable kmap? This looks like a textbook
-> > kmap_atomic() use case.
+> > 	memcpy(vto, vfrom, size);
+> > 	kunmap_atomic(vto);
+> > }
+> > 
+> > in linux/highmem.h ?
 > 
-> There's a lot of code of this form.  Could we perhaps have:
-> 
-> static inline void copy_to_highpage(struct page *to, void *vfrom, unsigned int size)
+> You mean, like
+> static void memcpy_from_page(char *to, struct page *page, size_t offset, size_t len)
 > {
-> 	char *vto = kmap_atomic(to);
-> 
-> 	memcpy(vto, vfrom, size);
-> 	kunmap_atomic(vto);
+>         char *from = kmap_atomic(page);
+>         memcpy(to, from + offset, len);
+>         kunmap_atomic(from);
 > }
 > 
-> in linux/highmem.h ?
+> static void memcpy_to_page(struct page *page, size_t offset, const char *from, size_t len)
+> {
+>         char *to = kmap_atomic(page);
+>         memcpy(to + offset, from, len);
+>         kunmap_atomic(to);
+> }
+> 
+> static void memzero_page(struct page *page, size_t offset, size_t len)
+> {
+>         char *addr = kmap_atomic(page);
+>         memset(addr + offset, 0, len);
+>         kunmap_atomic(addr);
+> }
+> 
+> in lib/iov_iter.c?  FWIW, I don't like that "highpage" in the name and
+> highmem.h as location - these make perfect sense regardless of highmem;
+> they are normal memory operations with page + offset used instead of
+> a pointer...
 
-Christoph had the same idea.  I'll work on it.
+I was thinking along those lines as well especially because of the direction
+this patch set takes kmap().
+
+Thanks for pointing these out to me.  How about I lift them to a common header?
+But if not highmem.h where?
 
 Ira
-
 
 ______________________________________________________
 Linux MTD discussion mailing list
