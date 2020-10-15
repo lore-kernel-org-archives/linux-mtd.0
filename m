@@ -2,85 +2,65 @@ Return-Path: <SRS0=04ME=DW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB742C433E7
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Oct 2020 03:11:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D57FCC433E7
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Oct 2020 07:26:23 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D260922226
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Oct 2020 03:11:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 207E722249
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Oct 2020 07:26:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cGBP1yL8";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AM8zWH5/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D260922226
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HRQaYqAW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 207E722249
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=5dwY4PgKVZ0+lrxZFPuYLhlCKSY7nchxhUPGX7TFQuQ=; b=cGBP1yL8ektPtBJNEwmWtZ9xF
-	CUd9QOszJ+N3udnbbg5/xVrlOYV1x9SALjkN2w6PmKvdqoIuwpDOzGw/WPeNyd+9F5pVxBxJ1Wdr0
-	BuhC5+MTxNMDYr26QiAbUwzKJEyZ7j5/jooY0qZr6juJa6mzObqc11Oz8MqVauSrawYAFVE5UJ5fP
-	Si3dOGx7HSK3h15xrnaGywFfGrw2V1xTpuRqflmEnfscQuPUmRf2zcK86TGpsgnQOgceSinJB54SP
-	NNYaaIx8aWX/GawwHJxnVCGzWyIoopgMjfqLttgcRRWFKhIfxFXiDaHmtcdR6sbpOkh1lXv4XnzxC
-	Lx40rSXJg==;
+	 bh=8KVjqA7JXGvwiO1E0Hzc2r5G1jOZoJxxs35RB4yDVLQ=; b=HRQaYqAWJlAaa522GgAUq71aX
+	sM5363ipC4u3B0CqirNdkGClpr8TKulNJ7Dd5eF/Yfwt+bNEqnW1GVKOAzDH2a2g0y1MyWVpYUMOf
+	xbCP9OqmPu8fiw1PvOpn3MAtiI1k+3J6CFQoSutKRlTFIEs9qdCo/FCGDlWcI2+IFeegYoLeXpDV4
+	cfFDbBeFIkNkgApPcJ0DTPiWDoQNe/spR5lwD0VyhK4Vtlo17vFu2t3y46/BxiI+d34nkcL4CO9m5
+	R4+ofO2G2mUwhm1/D56DXs2ZaavcU66LHgi97J7ZYwQ6ZjNzhXNkw9O52VGF3DvE1vBHDf5Uam1p5
+	1ZK28JeFw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kSted-0003mC-Ux; Thu, 15 Oct 2020 03:10:12 +0000
-Received: from mail-il1-x142.google.com ([2607:f8b0:4864:20::142])
+	id 1kSxdS-0007Cb-Dk; Thu, 15 Oct 2020 07:25:14 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kStea-0003lZ-OW
- for linux-mtd@lists.infradead.org; Thu, 15 Oct 2020 03:10:09 +0000
-Received: by mail-il1-x142.google.com with SMTP id p16so2464586ilq.5
- for <linux-mtd@lists.infradead.org>; Wed, 14 Oct 2020 20:10:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=SsS3nWQ51IpbkZ8mRi2mgXFdyKvxDI+zok3aVtScdRA=;
- b=AM8zWH5/BgihJ+4bURksK9UIaS0k3ZsHtPYScOFZI7qtPvagLUH2ThnSMnaxYxkqNT
- BSqEFKop3umM3Pui38YC8QQuD8omG5Jlluyr+orJXlojAfrJm1nZt1LbT0WlSC60JBNX
- Q6fXy9aGYY5asKrCXS/KUvbJuZGpQeibK6kYO8KV+6vdlFGVJoD1BAlAHHMf5agGi0Vd
- 2jAKXwK9SfMbUA2tQ/9Rs2OddrSdZKL6qCh1llnEGraBBu7el36UjP05QBSRl382sWEe
- p1Dv0NlRTsGPOdocfFi8aXHBNK/pQkNUuyESkTAgaPPl0QrZek7AzaoEqEqw9Bzg3Ys0
- 1VqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=SsS3nWQ51IpbkZ8mRi2mgXFdyKvxDI+zok3aVtScdRA=;
- b=DIxanbskpN7BuI9MC0n/FFu0/NNOe8bgO6m7yqrcfTZNJgIvsbWgmaiOrHjOIVr5/6
- s66USYMkNSt+DND0A3RHKAHMJ8RgVfCRAAfznG/t7bhQPTuFrrWWNDxyMdDk6n/JtoOY
- vY42gJ32V5Nf4rD8TFoGMhPs4USXBs4qwKO7b6+ZaliafLUCA6EFRTozMWjlWzTy2/1h
- okKduBbC3Hv2M83MjdSyoDZh5z5mc/WWRG+QYiU6bPS+boOy2SLCZsONWfFIZ69W4cku
- TBekmevhJpHJCCmniapEk+LkzBruQ/0FPR70eDJC12iuCJNHKaFyePa247Zhek4c9W3K
- gP0Q==
-X-Gm-Message-State: AOAM530RE/p51881/vioXKGVfl0UmtLl1dxNK9syD3zYrsCYejvC01uL
- JsG8PMVryoChW6JrCQtn+jKhupCSVfT375/MciU=
-X-Google-Smtp-Source: ABdhPJwgteSkytIPr01UY8VKG7Dfj/a2lMXamEVL/CkCHmLZYjDXD0dcNtEMODx3W93t5V83X1I9gBAnHBCRMuQO8ik=
-X-Received: by 2002:a92:950d:: with SMTP id y13mr1715877ilh.42.1602731406841; 
- Wed, 14 Oct 2020 20:10:06 -0700 (PDT)
-MIME-Version: 1.0
+ id 1kSxdO-0007BY-Nt
+ for linux-mtd@lists.infradead.org; Thu, 15 Oct 2020 07:25:12 +0000
+X-Originating-IP: 91.224.148.103
+Received: from xps13 (unknown [91.224.148.103])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 9E93C60002;
+ Thu, 15 Oct 2020 07:25:03 +0000 (UTC)
+Date: Thu, 15 Oct 2020 09:25:02 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Han Xu <xhnjupt@gmail.com>
+Subject: Re: [PATCH v13 09/20] mtd: rawnand: Separate the ECC engine type
+ and the ECC byte placement
+Message-ID: <20201015092502.2ea2a7fc@xps13>
+In-Reply-To: <CA+EcR22BaKLMU7V9uDfgQctQm-ttfno9VKWqFpp4D-mPYR405g@mail.gmail.com>
 References: <20200827085208.16276-1-miquel.raynal@bootlin.com>
  <20200827085208.16276-10-miquel.raynal@bootlin.com>
  <CA+EcR21PQRrKMLiRYH+2mAkGhTPmxqKUO6hxwvAHQCZ4g3Jhvg@mail.gmail.com>
  <CAOMZO5AVU2RMPP55abXvueHMC=FE1rXjfPVn1+Xv4GqumD18vg@mail.gmail.com>
-In-Reply-To: <CAOMZO5AVU2RMPP55abXvueHMC=FE1rXjfPVn1+Xv4GqumD18vg@mail.gmail.com>
-From: Han Xu <xhnjupt@gmail.com>
-Date: Wed, 14 Oct 2020 22:09:56 -0500
-Message-ID: <CA+EcR22BaKLMU7V9uDfgQctQm-ttfno9VKWqFpp4D-mPYR405g@mail.gmail.com>
-Subject: Re: [PATCH v13 09/20] mtd: rawnand: Separate the ECC engine type and
- the ECC byte placement
-To: Fabio Estevam <festevam@gmail.com>
+ <CA+EcR22BaKLMU7V9uDfgQctQm-ttfno9VKWqFpp4D-mPYR405g@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201014_231008_835625_1B0E8254 
-X-CRM114-Status: GOOD (  14.26  )
+X-CRM114-CacheID: sfid-20201015_032510_874564_BB50497B 
+X-CRM114-Status: GOOD (  18.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,51 +72,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
+Cc: Richard Weinberger <richard@nod.at>, Fabio Estevam <festevam@gmail.com>,
  Vignesh Raghavendra <vigneshr@ti.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Oct 14, 2020 at 8:35 PM Fabio Estevam <festevam@gmail.com> wrote:
->
-> Hi Han Xu,
->
-> On Wed, Oct 14, 2020 at 6:38 PM Han Xu <xhnjupt@gmail.com> wrote:
->
-> > Hi Miquel, the changes to the nested switch statement make the logic
-> > of this break wrong.
->
-> Care to send a fix, please?
->
-> We have seen ECC NAND regressions on mx27 and LS2088 platforms.
->
-> In which platform did you noticed the ECC issue?
->
-> Thanks
-
-Hi Fabio,
-
-CI test reported all LS platforms have the ECC regression. The error
-is "Driver must set ecc.strength when using hardware ECC"
-
-I haven't worked on any LS platforms so I tested on i.MX platforms
-with gpmi NAND controller,
-the code ran into NAND_ECC_ENGINE_TYPE_SOFT due to this issue. So
-these are two different issues, I can send a patch to fix the nested
-switch statement problem but won't fix the LS platform issue.
-
-
-
--- 
-Sincerely,
-
-Han XU
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgSGFuLAoKSGFuIFh1IDx4aG5qdXB0QGdtYWlsLmNvbT4gd3JvdGUgb24gV2VkLCAxNCBPY3Qg
+MjAyMCAyMjowOTo1NiAtMDUwMDoKCj4gT24gV2VkLCBPY3QgMTQsIDIwMjAgYXQgODozNSBQTSBG
+YWJpbyBFc3RldmFtIDxmZXN0ZXZhbUBnbWFpbC5jb20+IHdyb3RlOgo+ID4KPiA+IEhpIEhhbiBY
+dSwKPiA+Cj4gPiBPbiBXZWQsIE9jdCAxNCwgMjAyMCBhdCA2OjM4IFBNIEhhbiBYdSA8eGhuanVw
+dEBnbWFpbC5jb20+IHdyb3RlOgo+ID4gIAo+ID4gPiBIaSBNaXF1ZWwsIHRoZSBjaGFuZ2VzIHRv
+IHRoZSBuZXN0ZWQgc3dpdGNoIHN0YXRlbWVudCBtYWtlIHRoZSBsb2dpYwo+ID4gPiBvZiB0aGlz
+IGJyZWFrIHdyb25nLiAgCj4gPgo+ID4gQ2FyZSB0byBzZW5kIGEgZml4LCBwbGVhc2U/Cj4gPgo+
+ID4gV2UgaGF2ZSBzZWVuIEVDQyBOQU5EIHJlZ3Jlc3Npb25zIG9uIG14MjcgYW5kIExTMjA4OCBw
+bGF0Zm9ybXMuCj4gPgo+ID4gSW4gd2hpY2ggcGxhdGZvcm0gZGlkIHlvdSBub3RpY2VkIHRoZSBF
+Q0MgaXNzdWU/Cj4gPgo+ID4gVGhhbmtzICAKPiAKPiBIaSBGYWJpbywKPiAKPiBDSSB0ZXN0IHJl
+cG9ydGVkIGFsbCBMUyBwbGF0Zm9ybXMgaGF2ZSB0aGUgRUNDIHJlZ3Jlc3Npb24uIFRoZSBlcnJv
+cgo+IGlzICJEcml2ZXIgbXVzdCBzZXQgZWNjLnN0cmVuZ3RoIHdoZW4gdXNpbmcgaGFyZHdhcmUg
+RUNDIgo+IAo+IEkgaGF2ZW4ndCB3b3JrZWQgb24gYW55IExTIHBsYXRmb3JtcyBzbyBJIHRlc3Rl
+ZCBvbiBpLk1YIHBsYXRmb3Jtcwo+IHdpdGggZ3BtaSBOQU5EIGNvbnRyb2xsZXIsCj4gdGhlIGNv
+ZGUgcmFuIGludG8gTkFORF9FQ0NfRU5HSU5FX1RZUEVfU09GVCBkdWUgdG8gdGhpcyBpc3N1ZS4g
+U28KPiB0aGVzZSBhcmUgdHdvIGRpZmZlcmVudCBpc3N1ZXMsIEkgY2FuIHNlbmQgYSBwYXRjaCB0
+byBmaXggdGhlIG5lc3RlZAo+IHN3aXRjaCBzdGF0ZW1lbnQgcHJvYmxlbSBidXQgd29uJ3QgZml4
+IHRoZSBMUyBwbGF0Zm9ybSBpc3N1ZS4KCgpJIHRoaW5rIHRoZSBmYWN0IHRoYXQgdGhlIGV4ZWN1
+dGlvbiByYW4gaW50byBOQU5EX0VDQ19FTkdJTkVfVFlQRV9TT0ZUCmhhcyBiZWVuIGZpeGVkLiBI
+b3dldmVyIHRoZXJlIGlzIHN0aWxsIHRoZSBvdGhlciBpc3N1ZSB0aGF0IEkgYW0gdW5hYmxlCnRv
+IGZpbmQganVzdCBieSByZWFkaW5nIHRoZSBjb2RlIDovCgoKVGhhbmtzLApNaXF1w6hsCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
+TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
