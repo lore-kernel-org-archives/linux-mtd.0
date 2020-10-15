@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF315C433DF
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Oct 2020 09:08:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17ABFC433E7
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Oct 2020 09:09:17 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 839972222E
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Oct 2020 09:08:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6411D2222E
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Oct 2020 09:09:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="3jK/OruK";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="GFIEVHdO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 839972222E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="A+my5E1D";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="YDzw0FIa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6411D2222E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,40 +26,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=m6LyfGRemM0WKRkhNK+aqnTsun2gddSIJelReRKKdjk=; b=3jK/OruKfCpcqX3IlHa4Awpwu
-	3Iajgs4L12yze+SRw3HnwHMmhiGQybGJYrq9FMLqy/vIiFaHrNG/DUSplf8I8wsVVjGVV3U59V5Q4
-	+ayKl3spOYydf+hpQIyxhIuHTufIhvqdlUXUpUdl3XkONDtjRtgnlwLDhaKQL7hQi8CQrAAGR/okF
-	CKFFxDJMI8iDZqJ25F17dupDA6O7xjk09nF1TalKE156Lq0dz0S3zJ+ZVjJ2j+7+HLgBKirIz/DEJ
-	gK8C7nFTUoo3IeMRxzMln4vBkGucmA4HVwMvQTioI17QygHkeHF0GNaLIZU5dnjcvsJeF7MRC7+qF
-	SyWaYqHHQ==;
+	 bh=m6LyfGRemM0WKRkhNK+aqnTsun2gddSIJelReRKKdjk=; b=A+my5E1DVNEqLlR8Q1Jz5Jj2i
+	X7k7Qn08+nWKm7mIa/njawM9aHOlItaoS5loqkt9lIT+wlmMWBcxeNbDtZAGOQfhrLwTcHYBSSIN9
+	Y/bGeqFe8JjFjAosXYBsYexqaNWNDhUNinv043j18bbATIitmqpW/QYJEpJ3J6hJbqOY0G3lSTs5q
+	Yzh7YXWNBbm+NBTKwMq80xFIEZnIgqL0OVlPvPDvnuGmVMffjWnB7eTwm8lxbOxjGpFFAHzUBfEny
+	bgcztXCzLbfpGFxXvFDp9AODSXHKoAidWfZdAj/l6ve3lihPmDKL+qoExXMsiqjA7WZD8g5AVe7xY
+	3HJ/YIE+w==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kSzF3-0003fT-3X; Thu, 15 Oct 2020 09:08:09 +0000
+	id 1kSzFh-0003op-QI; Thu, 15 Oct 2020 09:08:49 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kSzF0-0003eU-6H; Thu, 15 Oct 2020 09:08:06 +0000
+ id 1kSzFe-0003nf-Rb; Thu, 15 Oct 2020 09:08:46 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
  References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
  Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=l2WBiCb5duYJRA9nKpihqrJOH1Qjg6utSrFiu8qAdtc=; b=GFIEVHdOMD66VOVof8VYQKRi/A
- YQkzqzfua4wQ4ZYDgz3JYeWtp4TcQSfj7wALFrPdsIt/RJlc4UzZtVyj+QWZ4LjbMVbj47EOfGJbe
- L3vkBKrUnauO+nFZzESRjAqW9kFaXhIN9Rju/WO9UX1sGCDhNPzLn8hJtKX8zKQ7js0SYw3aZsvb5
- B3s/OgsPo0rHbqEEogcKmXtlgPwOOwZRbPad+aziIAT79SRkPX6ORO3z/y9epOqMzBNBw6AP5rZEk
- /6iqpvjID+7babk6CECJBLFp1YHxinnbwDRWa3bcBaYpO1YRidNoHRVmxPz5MRHsKDkZlVAsZQcAL
- em8hOyhg==;
+ bh=l2WBiCb5duYJRA9nKpihqrJOH1Qjg6utSrFiu8qAdtc=; b=YDzw0FIaN7/YFvR16XfiWofJuH
+ nBmfIWvm4JMJjj7K9G5HeNS1Z/YDuhO0g0YvmnniYO+A5pRgJH0EQ00QRifWQ7/wFuOK66kQ+CHbl
+ VmHNK4vhJ2UeayscpW4LECX05RTGJY5IkFz+pz9nwSFIXfkyRPCrxcfeeKjpEbU9zcegEqPcECjRP
+ HqUXdlzRteT43Md67LRNqe+y+f4ibfLBMdmYo4nA2bw2pBrFMiIY+xhWHorLEVmlUHpngejo++Dr8
+ NFbDLjJ1gIQ7zhvChfWzoMnUsQjy8srPiPNP/XClAfLq47c8PtZaWykDYnT5T0gMHL7PfYb7kzf6Y
+ qzk2bIBA==;
 Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat
- Linux)) id 1kSzEy-0003q4-VB; Thu, 15 Oct 2020 09:08:05 +0000
-Date: Thu, 15 Oct 2020 10:08:04 +0100
+ Linux)) id 1kSzFd-0003sL-RM; Thu, 15 Oct 2020 09:08:45 +0000
+Date: Thu, 15 Oct 2020 10:08:45 +0100
 From: Christoph Hellwig <hch@infradead.org>
 To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: Re: [PATCH v2 02/16] mm: Inline wait_on_page_read into its one caller
-Message-ID: <20201015090804.GC12879@infradead.org>
+Subject: Re: [PATCH v2 15/16] iomap: Inline iomap_iop_set_range_uptodate into
+ its one caller
+Message-ID: <20201015090845.GD12879@infradead.org>
 References: <20201009143104.22673-1-willy@infradead.org>
- <20201009143104.22673-3-willy@infradead.org>
+ <20201009143104.22673-16-willy@infradead.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20201009143104.22673-3-willy@infradead.org>
+In-Reply-To: <20201009143104.22673-16-willy@infradead.org>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by
  casper.infradead.org. See http://www.infradead.org/rpr.html
 X-BeenThere: linux-mtd@lists.infradead.org
