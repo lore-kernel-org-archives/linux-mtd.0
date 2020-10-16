@@ -2,84 +2,85 @@ Return-Path: <SRS0=K4do=DX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9737DC433DF
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Oct 2020 19:19:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0E0FC433E7
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Oct 2020 19:28:06 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EDD90207DE
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Oct 2020 19:19:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0035A20829
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Oct 2020 19:28:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VzDfXXuL";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OvKavVvF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EDD90207DE
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="1Gj3V9WZ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dnI/CNRI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0035A20829
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=oVq1Yz/FU7/l56MPATRZ2kVre/old5/ToN4ON7cpOXo=; b=VzDfXXuLL2PJPeM0nZ8OJwmX4
-	KYzQlwsnQFgiurdTpI8YTI0wF0wLLzHlgL6SR/Zwy2DCY6Ew82pVBujq7Z7GCrn6nBHcenonPGJXz
-	PlthxfuJJ5HK5WccKpeZrzjSPZzleVndCue78Z11M1AL/8mAC8VCw/U2gWnPKqEprKKDQ5dFD/uJE
-	W8QYPxkpfEplvF1oTRVHihhvIf2o3iQm3mJyc1y9+Ep6GVk39uphyN0x6sCbNspiwt74XtAr9gGNh
-	vtePx6+XFRzAYx+1XqRcvLTZ4gd9j67ba+Tm2B/CtwdSktTDYzvqlyqC6T44L7j9jixMyErcW7RbQ
-	lp2EMJkYg==;
+	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=uoSzSjSTmk+0dJ3gvFDmIe8tTnU7CpvliM/dhL5fMOc=; b=1Gj3V9WZ8BFG/YrNv4Se+/MXa5
+	bI56tjN+iLKZ6Zm3yX26nyP/rVQdBbfFJTqle95yQLw7e9VMP2PQr+igsaQCVBchaWn4tzaCFEBhy
+	07hCRb6N/ITy7lTWPaF4tP3gWx2qcXnZCfbQt85IbExvmcC35l4CT/qrTbk7/PSJNTgQrI898SWfP
+	coW7l/5NuaAs5tMhjkP98g+zyMHr2mBS4UXGIFj8LvPMx0FMLJptLL9zc3MbAt/MnPQxT92TJJynS
+	gNpbQh6VFaWIf6J+j8sfNaXAFjk9DDQD5PxSDgz7/6TdARB58cTuZ4b2y0A/kRQT4MmMNW6zlvoSa
+	dTbf2Jsw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kTVFH-0005He-4u; Fri, 16 Oct 2020 19:18:31 +0000
-Received: from mail-lj1-x242.google.com ([2a00:1450:4864:20::242])
+	id 1kTVNJ-0005zQ-Oj; Fri, 16 Oct 2020 19:26:49 +0000
+Received: from mail-qv1-xf42.google.com ([2607:f8b0:4864:20::f42])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kTVFE-0005Ew-RD
- for linux-mtd@lists.infradead.org; Fri, 16 Oct 2020 19:18:29 +0000
-Received: by mail-lj1-x242.google.com with SMTP id m16so3663353ljo.6
- for <linux-mtd@lists.infradead.org>; Fri, 16 Oct 2020 12:18:28 -0700 (PDT)
+ id 1kTVNH-0005yv-PF
+ for linux-mtd@lists.infradead.org; Fri, 16 Oct 2020 19:26:48 +0000
+Received: by mail-qv1-xf42.google.com with SMTP id ev17so1560322qvb.3
+ for <linux-mtd@lists.infradead.org>; Fri, 16 Oct 2020 12:26:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=cLZG8uh8rNwsSaom/TBIgS7ChAFQu+p/fRXJwO606AM=;
- b=OvKavVvFM/wmuoON0bDgPm/2FMWMUSJ5AASkRItx0FysXis12CE4dDB4gmxzF6WCdl
- nJuX1/RzPYB2jNACEHsUUCThJVRNGV+cnlWDoJhBrQSrN4/Pf/O3wtuKwyhiqIqlvHwT
- z3+qaViDHhQjZ6evg9NrMQL3FfySViWX4gClVrONd4PdgkXKL2uo8JBGE55+n6mL8YPZ
- X4+cJmJRL2tb/K4yO92gI7OymUkk0tpZAGNz7/wiTcuPkMBOCn8j0AWyhM/W8rHhxf7B
- aqJzz1uF2ef8ORke8LmSppUKwYJ5t4vzs0p25hkKuiejK9WUchgxcUSWBAUbRxsjBqj/
- LC1g==
+ h=from:to:cc:subject:date:message-id;
+ bh=nLLyTlksowsCeA8TefeeTX1o+o2maxW4p1VgfLLjR9I=;
+ b=dnI/CNRImFXKD68JrPyWUtJb73yAW0lOHNvii2GSoldIuY5kir3aoQNmXeFXJR2KWV
+ vW/xmBToV2n+4wS2mqwYzjnbBxAiCjnzYw4lEYMXkpIaZpYwCz8FR6EqkmAUVBNXSl24
+ vg4gDBJRefNrcTjweWgat3TTk7eTWb2xQxu4L5yn8iBAC+xEic863K+90e77wal+/qyT
+ sq5l4KTd+kdfajPHav/v1ZFDe6sHkavRLpb5SqTmu/YdZoTAyzNkaaZyF+JLTBPl+yFt
+ Pxog0N2A7Aro6R15i91OwAUCovigmyyPCMHyvsRxZx7i6DC7htX92fDWqBf17WifDQ1P
+ qhbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=cLZG8uh8rNwsSaom/TBIgS7ChAFQu+p/fRXJwO606AM=;
- b=dE2TfdrIB6zrTp/+XxHjeWt5pnGg9L6MBTMP8rUF5tJNTBrmVR+uusBVN1+YVwsdsL
- 7/yj5NFCMYsBOv/3ustQi6cUnhERbkkWlV1SDp1rp7WsjYTrgwuAoNAWaJMfZsc5WA2t
- /X2FbsQiJ9OhbSEdKDIt9MuK60YyAsO2tOXvGvGBIM+/Bo/7MEyVxz5z2tu0t22n36vm
- fNH3CpFaexc45+V4JjPTY3SoyIhCRy9MyNpOoMBR9WGWVCGOmr7nBxQp39E0S2HjQ+RQ
- JqIFVv48g/8d3hV5ZuMm/iwx7uawIKBn4XZ95Ma6jPP1Bw6NSAN/F/zve+9W1BzAxj2S
- v4Cw==
-X-Gm-Message-State: AOAM530WMawy2AExrKsbNi+Z+tmInJxTU41wFAhLsoPS/xdJzvphDJI0
- BfuYYYCnA3aJPpuEdJ3CbRLwRacD+RsHAkb+lSQ3Ef3U91GqQQ==
-X-Google-Smtp-Source: ABdhPJxbmqe96MSLCEufBQ8DP8I1gqX5HthmXpIZhVO0sPEBIzgTiCSoa2gTnpNxbRwOWa0+RNv0VI1MUiKHdSTPAqU=
-X-Received: by 2002:a2e:99ca:: with SMTP id l10mr2073815ljj.218.1602875907081; 
- Fri, 16 Oct 2020 12:18:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201016074942.29650-1-miquel.raynal@bootlin.com>
- <20201016135351.GL13710@pengutronix.de> <20201016190149.55a3d62f@xps13>
-In-Reply-To: <20201016190149.55a3d62f@xps13>
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=nLLyTlksowsCeA8TefeeTX1o+o2maxW4p1VgfLLjR9I=;
+ b=b3OSrc52I4Jb/HxXTcNZJjF4krzbaHh6nJV/GLk3vP/axaSn1NsR33J+VK7HacuGcu
+ MwmKXiEl0HgN1JPm36Jo8WQALRkeX/p83GjjXMhrijC09ifi87MnVSbvR/gPpOaBzgSV
+ CgMKd5NT0r2ddeP+5GBeUuRKfPkjf/iyfNmb+1Bl/aM2XAx/L9c4WkPRYpIEwGxcp2pm
+ FZzRbU1/ptaKxcba9savIPqiMXeObP1pMkn0KRNtODApnHd+QbHX+Evxj/ectF3U+2P/
+ lwdXIGMQPTc8fYUSy+bPTTLnw0qYvY881z5Qfxg7tEeOCrCUrCJButA0dNzzApsHrm/V
+ VLTg==
+X-Gm-Message-State: AOAM533O9M861WjfkKdCvwAhCvox61D+ypj5mHXBdbJJM0kJAtyifN+D
+ twCGMeG9ucScTpU82ff/5b4=
+X-Google-Smtp-Source: ABdhPJwq85QV0GsgFB/eVh9ASF3v/64Ua+6YEL0xj+XZ7eVGbi8Tq3rM/ldnkI9Q09JdAfCRo9ga/g==
+X-Received: by 2002:a0c:c985:: with SMTP id b5mr5797071qvk.10.1602876404236;
+ Fri, 16 Oct 2020 12:26:44 -0700 (PDT)
+Received: from localhost.localdomain ([2804:14c:482:997:843a:71ae:df40:2826])
+ by smtp.gmail.com with ESMTPSA id
+ t140sm1266838qke.100.2020.10.16.12.26.40
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 16 Oct 2020 12:26:43 -0700 (PDT)
 From: Fabio Estevam <festevam@gmail.com>
-Date: Fri, 16 Oct 2020 16:18:15 -0300
-Message-ID: <CAOMZO5B4kC5ooE2Pmp4XaHq2xD51JSH35nF7_Ge8-xzp4piqKg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: rawnand: mxc: Move the ECC engine initialization to
+To: miquel.raynal@bootlin.com
+Subject: [PATCH v2] mtd: rawnand: mxc: Move the ECC engine initialization to
  the right place
-To: Miquel Raynal <miquel.raynal@bootlin.com>
+Date: Fri, 16 Oct 2020 16:26:20 -0300
+Message-Id: <20201016192620.19067-1-festevam@gmail.com>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201016_151828_927901_462697D5 
-X-CRM114-Status: UNSURE (   8.56  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20201016_152647_821801_F481C7D6 
+X-CRM114-Status: GOOD (  15.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,31 +92,92 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Han Xu <xhnjupt@gmail.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, Sascha Hauer <s.hauer@pengutronix.de>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Lucas Stach <l.stach@pengutronix.de>
+Cc: vigneshr@ti.com, richard@nod.at, boris.brezillon@collabora.com,
+ linux-mtd@lists.infradead.org, kernel@pengutronix.de, han.xu@nxp.com,
+ Fabio Estevam <festevam@gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
+No ECC initialization should happen during the host controller probe.
 
-On Fri, Oct 16, 2020 at 2:01 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+In fact, we need the probe function to call nand_scan() in order to:
+- identify the device, its capabilities and constraints (nand_scan_ident())
+- configure the ECC engine accordingly (->attach_chip())
+- scan its content and prepare the core (nand_scan_tail())
 
-> Software ECC is used, is it expected?
+Moving these lines to mxcnd_attach_chip() fixes a regression caused by
+a previous commit supposed to clarify these steps.
 
-I noticed the issue with your patch: host->pdata.hw_ecc cannot be
-called within attach() because pdata is not initialized at this point.
+When moving the ECC initialization from probe() to attach(), it is
+no longer possible to access pdata since it is not initialized.
 
-Instead of using pdata, we can retrieve the "nand-ecc-mode" string
-from the device tree.
+Retrieve the "nand-ecc-mode" information from devicetree to decide
+the engine type.
 
-I will submit the correct fix.
+Reported-by: Fabio Estevam <festevam@gmail.com>
+Co-developed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+---
+Change since v1:
 
-Thanks
+- Do not access pdata in attach(), since it is not initialized.
+
+ drivers/mtd/nand/raw/mxc_nand.c | 27 +++++++++++++++------------
+ 1 file changed, 15 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
+index d4200eb2ad32..b9e4de5ec8f8 100644
+--- a/drivers/mtd/nand/raw/mxc_nand.c
++++ b/drivers/mtd/nand/raw/mxc_nand.c
+@@ -1680,6 +1680,21 @@ static int mxcnd_attach_chip(struct nand_chip *chip)
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct mxc_nand_host *host = nand_get_controller_data(chip);
+ 	struct device *dev = mtd->dev.parent;
++	struct device_node *np = dev->of_node;
++	const char *ecc_mode;
++
++	chip->ecc.bytes = host->devtype_data->eccbytes;
++	host->eccsize = host->devtype_data->eccsize;
++	chip->ecc.size = 512;
++	mtd_set_ooblayout(mtd, host->devtype_data->ooblayout);
++
++	of_property_read_string(np, "nand-ecc-mode", &ecc_mode);
++	if (!strcasecmp(ecc_mode, "hw")) {
++		chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
++	} else {
++		chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
++		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
++	}
+ 
+ 	switch (chip->ecc.engine_type) {
+ 	case NAND_ECC_ENGINE_TYPE_ON_HOST:
+@@ -1836,19 +1851,7 @@ static int mxcnd_probe(struct platform_device *pdev)
+ 	if (host->devtype_data->axi_offset)
+ 		host->regs_axi = host->base + host->devtype_data->axi_offset;
+ 
+-	this->ecc.bytes = host->devtype_data->eccbytes;
+-	host->eccsize = host->devtype_data->eccsize;
+-
+ 	this->legacy.select_chip = host->devtype_data->select_chip;
+-	this->ecc.size = 512;
+-	mtd_set_ooblayout(mtd, host->devtype_data->ooblayout);
+-
+-	if (host->pdata.hw_ecc) {
+-		this->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
+-	} else {
+-		this->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
+-		this->ecc.algo = NAND_ECC_ALGO_HAMMING;
+-	}
+ 
+ 	/* NAND bus width determines access functions used by upper layer */
+ 	if (host->pdata.width == 2)
+-- 
+2.17.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
