@@ -2,70 +2,76 @@ Return-Path: <SRS0=K4do=DX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1BC5C433DF
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Oct 2020 13:43:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 884C6C433E7
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Oct 2020 13:54:35 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 519CA20848
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Oct 2020 13:43:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 828D420848
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Oct 2020 13:54:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DC+z5BgB";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="eM5+C5kR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 519CA20848
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="m412bSA9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 828D420848
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=bUHHdCBxOiFgpQYWfB9/k4YXaeBWGa2PVBOUDN93C70=; b=DC+z5BgBegKpYXmlu7Oepo/N7
-	y30ZqbqYde9AK5/k2SvBqayH81uzVkFsWjxn9MgeheCKEKTzas0JXqaHyxnJ1ZaNEyNF8XW9Nu0bn
-	BEiT6L5hNepczQYZViZ9ILhXkDHoDUW+nooWbzWDnWAimuZaNH/sPvNFgFyGcb8gWc7IsdAEEqJ2L
-	4kiXwC8OKzRi0dKKHhxAa/2FUVpS7D9XfZiTDvwt1hAFSFMTNeCxALl0VPHjj8eng0MHhHRznsNbi
-	nJMLGlnK58FrPeVHj45bTLZS3d2Dr3UDHlcEZAE2l7zdiFVbvlHwwiSUA8iPU14AUicd8OiyUY/7k
-	BUxTM/GoQ==;
+	 bh=RCF1vMIbBIfK3oOkgwyOrrNsPUAPy7KJvKWFadeZwCQ=; b=m412bSA9g8yLWgYangBYKljbR
+	U49ABaIotkqkq2vcRuKlourdbimCNw07Q5dMxdO5tp0/hzM37bsgiI7yN7iMEDa59ip2E6X4HMJxK
+	VAfBIdbKlPERoAnvC7rVZu7Y+sjE6XOKNyZGtrAzNAiGHi8otbHZrmZmeNgU5hPNXGzSWZJ56+D6z
+	/vCI0CnXkpXPjTRFSEUTX4bjEH8dLGlhp7TwZmczfOc4xEehKWO5uIcHnn+w/hjkr+P9u5pfWCwFc
+	ISYCWT6CGkoGYIqKfOhZJppWkYltXmTDHHkIdt0tYt0F1nxTR9AxtffL8Rg8l9Vyq6Ou6V/UNyQ2m
+	kf9rvji9g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kTQ0N-0002TW-RT; Fri, 16 Oct 2020 13:42:47 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1kTQBH-0003TG-Bi; Fri, 16 Oct 2020 13:54:03 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kTQ0M-0002Sz-6W
- for linux-mtd@merlin.infradead.org; Fri, 16 Oct 2020 13:42:46 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
- References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
- Content-Type:Content-ID:Content-Description;
- bh=dVC+oPNA4c4mlsDL++B4TVjVYz10iLER5z4ZQesiGIY=; b=eM5+C5kRXJ1pfqMo0qB9WLz0z5
- 8dh75k//TeG5yIjspl6X93BYUz5CLSa9qfBJWZ3ma7NQJPp+xNm67JpmdMICr4sJ6iiQzyl9GD2Hq
- e9iJznKdcEopyPWYwulpYQ5WkxmVm3R/mgbAKqDLvHEMN7M0Tz+jUk3eKNPpUr8PhMekss2oyHOaK
- KAjfTQZDKnfCfoLFl8yLovCOABYZTdEJ7qqK1tXtSdhFMORb0foC6ryu9BS0AeQJSLDwVrGwxStHD
- afpFddoHmlo0aB5QiQWcNjlw3WU6ysnliFXf8taqpAuAXnH62oaEvU21X1FLCncYOZF69wjnPuGuD
- 2W5996iA==;
-Received: from 213-225-9-134.nat.highway.a1.net ([213.225.9.134]
- helo=localhost)
- by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kTQ0K-00042I-JW; Fri, 16 Oct 2020 13:42:44 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: Kees Cook <keescook@chromium.org>, Anton Vorontsov <anton@enomsg.org>,
- Colin Cross <ccross@android.com>, Tony Luck <tony.luck@intel.com>,
- WeiXiong Liao <liaoweixiong@allwinnertech.com>
-Subject: [PATCH 9/9] pstore/blk: don't depend on CONFIG_BLOCK
-Date: Fri, 16 Oct 2020 15:20:47 +0200
-Message-Id: <20201016132047.3068029-10-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201016132047.3068029-1-hch@lst.de>
-References: <20201016132047.3068029-1-hch@lst.de>
+ id 1kTQBF-0003Ss-Hy
+ for linux-mtd@lists.infradead.org; Fri, 16 Oct 2020 13:54:02 +0000
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1kTQB7-0007fe-1K; Fri, 16 Oct 2020 15:53:53 +0200
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1kTQB5-00019N-OX; Fri, 16 Oct 2020 15:53:51 +0200
+Date: Fri, 16 Oct 2020 15:53:51 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH] mtd: rawnand: mxc: Move the ECC engine initialization to
+ the right place
+Message-ID: <20201016135351.GL13710@pengutronix.de>
+References: <20201016074942.29650-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by
- casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Disposition: inline
+In-Reply-To: <20201016074942.29650-1-miquel.raynal@bootlin.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-IRC: #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 15:49:26 up 239 days, 21:19, 147 users,  load average: 0.01, 0.08,
+ 0.13
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20201016_095401_599720_5D99AFF8 
+X-CRM114-Status: GOOD (  18.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,64 +83,119 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: Han Xu <xhnjupt@gmail.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Fabio Estevam <festevam@gmail.com>, Lucas Stach <l.stach@pengutronix.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-pstore-blk contains of two different layers:
+Hi Miquel,
 
- a) a tiny layer of sugar coating ontop of pstore-zone.  This part has
-    no dependencies on the block layer, and can be used e.g. by mtd
- b) an implementation of a default fallback pstore zone backend for
-    block devices
+On Fri, Oct 16, 2020 at 09:49:42AM +0200, Miquel Raynal wrote:
+> No ECC initialization should happen during the host controller probe.
+> 
+> Indeed, we need the probe to call nand_scan() in order to:
+> - identify the device, its capabilities and constraints (nand_scan_ident())
+> - configure the ECC engine accordingly (->attach_chip())
+> - scan its content and prepare the core (nand_scan_tail())
+> 
+> Moving these lines to mxcnd_attach_chip() fixes a regression caused by
+> a previous commit supposed to clarify these steps.
+> 
+> Fixes: TODO
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+> 
+> Hi Han,
+> 
+> Could you please give this patch a shot? It is supposed to fix
+> the LS1043A issue we have seen in robots reports the last weeks.
 
-Add an ifdef for the latter so that pstore-blk itself does not have to
-depend on CONFIG_BLOCK.
+With this there's no longer a division by zero in the kernel, but NAND
+now fails with the following. Also I can confirm that "mtd: rawnand:
+Use the ECC framework user input parsing bits" in next breaks it, without
+this patch the driver runs well.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/pstore/Kconfig | 2 +-
- fs/pstore/blk.c   | 2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
+Sascha
 
-diff --git a/fs/pstore/Kconfig b/fs/pstore/Kconfig
-index e16a49ebfe546d..6eadb538316e52 100644
---- a/fs/pstore/Kconfig
-+++ b/fs/pstore/Kconfig
-@@ -164,7 +164,7 @@ config PSTORE_ZONE
- config PSTORE_BLK
- 	tristate "Log panic/oops to a block device"
- 	depends on PSTORE
--	depends on BLOCK
-+	depends on BLOCK || !BLOCK
- 	select PSTORE_ZONE
- 	default n
- 	help
-diff --git a/fs/pstore/blk.c b/fs/pstore/blk.c
-index bd4eadfc9bd795..d3d25edb943cdd 100644
---- a/fs/pstore/blk.c
-+++ b/fs/pstore/blk.c
-@@ -182,6 +182,7 @@ void unregister_pstore_device(const struct pstore_zone_ops *ops)
- }
- EXPORT_SYMBOL_GPL(unregister_pstore_device);
- 
-+#ifdef CONFIG_BLOCK
- static struct file *psblk_file;
- 
- static ssize_t psblk_generic_blk_read(char *buf, size_t bytes, loff_t pos)
-@@ -269,6 +270,7 @@ void __init pstore_blk_early_init(void)
- 	__pstore_blk_init(devname);
- }
- #endif /* MODULE */
-+#endif /* CONFIG_BLOCK */
- 
- /* get information of pstore/blk */
- int pstore_blk_get_config(struct pstore_blk_config *info)
+nand: device found, Manufacturer ID: 0x20, Chip ID: 0xa1
+nand: ST Micro NAND01GR3B2CZA6
+nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 1 at drivers/mtd/nand/raw/mxc_nand.c:1390 mxc_nand_command+0xc4/0x26c
+Unimplemented command (cmd=0)
+Modules linked in:
+CPU: 0 PID: 1 Comm: swapper Not tainted 5.9.0-rc2-00020-g2e00450a5852 #20
+Hardware name: Freescale i.MX27 (Device Tree Support)
+[<c00106a4>] (unwind_backtrace) from [<c000dd08>] (show_stack+0x10/0x18)
+[<c000dd08>] (show_stack) from [<c037950c>] (dump_stack+0x20/0x2c)
+[<c037950c>] (dump_stack) from [<c001c68c>] (__warn+0xb8/0xec)
+[<c001c68c>] (__warn) from [<c001ca54>] (warn_slowpath_fmt+0x90/0xbc)
+[<c001ca54>] (warn_slowpath_fmt) from [<c0494cb8>] (mxc_nand_command+0xc4/0x26c)
+[<c0494cb8>] (mxc_nand_command) from [<c0489f50>] (nand_read_page_op+0x28c/0x300)
+[<c0489f50>] (nand_read_page_op) from [<c048a0d4>] (nand_read_page_raw+0x2c/0x6c)
+[<c048a0d4>] (nand_read_page_raw) from [<c0486b68>] (nand_read_page_swecc+0x38/0x11c)
+[<c0486b68>] (nand_read_page_swecc) from [<c0487f5c>] (nand_read_oob+0x238/0x730)
+[<c0487f5c>] (nand_read_oob) from [<c047650c>] (mtd_read_oob+0x84/0x14c)
+[<c047650c>] (mtd_read_oob) from [<c048eb7c>] (scan_read+0xd0/0x138)
+[<c048eb7c>] (scan_read) from [<c048fe18>] (search_bbt+0x254/0x2cc)
+[<c048fe18>] (search_bbt) from [<c0490068>] (nand_create_bbt+0x1d8/0x6ec)
+[<c0490068>] (nand_create_bbt) from [<c048d20c>] (nand_scan_with_ids+0x10fc/0x164c)
+[<c048d20c>] (nand_scan_with_ids) from [<c0495dd8>] (mxcnd_probe+0x2bc/0x3b4)
+[<c0495dd8>] (mxcnd_probe) from [<c041c2b4>] (platform_drv_probe+0x4c/0xa0)
+[<c041c2b4>] (platform_drv_probe) from [<c0419e18>] (really_probe+0x1e8/0x3d0)
+[<c0419e18>] (really_probe) from [<c041a170>] (driver_probe_device+0x54/0xb0)
+[<c041a170>] (driver_probe_device) from [<c041a384>] (device_driver_attach+0x5c/0x64)
+[<c041a384>] (device_driver_attach) from [<c041a3e8>] (__driver_attach+0x5c/0xcc)
+[<c041a3e8>] (__driver_attach) from [<c0417f30>] (bus_for_each_dev+0x78/0xc4)
+[<c0417f30>] (bus_for_each_dev) from [<c0419734>] (driver_attach+0x18/0x24)
+[<c0419734>] (driver_attach) from [<c04191b4>] (bus_add_driver+0x178/0x1d8)
+[<c04191b4>] (bus_add_driver) from [<c041af74>] (driver_register+0x74/0x114)
+[<c041af74>] (driver_register) from [<c041c20c>] (__platform_driver_register+0x30/0x48)
+[<c041c20c>] (__platform_driver_register) from [<c090ecb8>] (mxcnd_driver_init+0x10/0x1c)
+[<c090ecb8>] (mxcnd_driver_init) from [<c000a1dc>] (do_one_initcall+0x50/0x278)
+[<c000a1dc>] (do_one_initcall) from [<c08ebffc>] (kernel_init_freeable+0x13c/0x1c0)
+[<c08ebffc>] (kernel_init_freeable) from [<c070e150>] (kernel_init+0x8/0xf8)
+[<c070e150>] (kernel_init) from [<c0008560>] (ret_from_fork+0x14/0x34)
+Exception stack(0xc783dfb0 to 0xc783dff8)
+dfa0:                                     00000000 00000000 00000000 00000000
+dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
+---[ end trace 0f9701f8ecf348de ]---
+__nand_correct_data: uncorrectable ECC error
+__nand_correct_data: uncorrectable ECC error
+__nand_correct_data: uncorrectable ECC error
+__nand_correct_data: uncorrectable ECC error
+__nand_correct_data: uncorrectable ECC error
+__nand_correct_data: uncorrectable ECC error
+__nand_correct_data: uncorrectable ECC error
+__nand_correct_data: uncorrectable ECC error
+__nand_correct_data: uncorrectable ECC error
+__nand_correct_data: uncorrectable ECC error
+__nand_correct_data: uncorrectable ECC error
+__nand_correct_data: uncorrectable ECC error
+Bad block table not found for chip 0
+__nand_correct_data: uncorrectable ECC error
+__nand_correct_data: uncorrectable ECC error
+__nand_correct_data: uncorrectable ECC error
+__nand_correct_data: uncorrectable ECC error
+__nand_correct_data: uncorrectable ECC error
+__nand_correct_data: uncorrectable ECC error
+__nand_correct_data: uncorrectable ECC error
+__nand_correct_data: uncorrectable ECC error
+__nand_correct_data: uncorrectable ECC error
+__nand_correct_data: uncorrectable ECC error
+__nand_correct_data: uncorrectable ECC error
+__nand_correct_data: uncorrectable ECC error
+
 -- 
-2.28.0
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
 ______________________________________________________
 Linux MTD discussion mailing list
