@@ -2,70 +2,85 @@ Return-Path: <SRS0=K4do=DX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7E1DC433DF
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Oct 2020 12:15:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF04EC433DF
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Oct 2020 12:19:10 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CBEFA2083B
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Oct 2020 12:15:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4343B20708
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Oct 2020 12:19:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WUzqJo1Z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CBEFA2083B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Kk4n7kK+";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hxl5l9kx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4343B20708
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Subject:Message-ID:To:From:Date:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=3roItflj8XCj8J8ihzFOVef8e6ksG4Aw8HdbO3p6tjI=; b=WUzqJo1ZbtnJlhemMvGs99Fn/S
-	HtzLodVD7pPWU4xFfZNJbw/xY9WFjQb0PVYsqPU+i8tvJgrW93+W5PGV89kCKaqQ4oD8qkUrBrDo7
-	OYrw25qs2PouRreo84F3Z9CnspmS7+zAK1PgU6MWC3Q33WaIhGIe2H0C0AwUfZrYkw18E/zELfcVF
-	UXrZRVOwMxTccjMiSd+A9kQHKRUG0xskqLEAvriH2e2Qr/yurraogFzbVXhrQL0faTsgFeQ/cEdyx
-	YmzMANL0rIKK97cZLGynX0hLMr68cTVzF8JIMkbkeUFGV/vJT0cUpQb5mcDXOF0TVxWtp27A8iPVF
-	lV2qZ1Ew==;
+	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=SIkKSNGwoQKjpNqaT7sMSZKR7OUnZrzIeO4q8gpm7ZI=; b=Kk4n7kK+myHCzD5fji3akb9btf
+	AHNyIxFYaKxUERlDfLiPcbzTeRoGNIZfeb+N7mpadgjH8HPE4p7Ao0l2nriwF0Dfy99iyw9lxvMpm
+	/+bwsbFA4OC/vmoCzM98Asq8ht2ISvibY8ShhhyaF/xa03SAS1ckaF4JaOuCblJ7kg1BWcE8RcDJh
+	d5A/rKQbHs9+8Kzk05RHN9aiCBS0GzVOEvdmi+x8VbEtciXosW6IQwOzGJr8besuB4qISIJrJdgax
+	fWiAjnL+gwVNK+8nwXlsKGONNEaQ6ETBXqQnM47d98Y/UmIea82llnJLRIwgSIRN9SgjQHJIalHFh
+	4WMV/MUQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kTOcz-0000NC-UT; Fri, 16 Oct 2020 12:14:33 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1kTOga-0000qm-8W; Fri, 16 Oct 2020 12:18:16 +0000
+Received: from mail-qv1-xf43.google.com ([2607:f8b0:4864:20::f43])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kTOcx-0000LA-2E
- for linux-mtd@lists.infradead.org; Fri, 16 Oct 2020 12:14:32 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 7537B612629A;
- Fri, 16 Oct 2020 14:14:20 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id bQpUCCC_fYMN; Fri, 16 Oct 2020 14:14:19 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 72250612626A;
- Fri, 16 Oct 2020 14:14:19 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id phGf1ozZg_lv; Fri, 16 Oct 2020 14:14:19 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
- by lithops.sigma-star.at (Postfix) with ESMTP id 3E5AF612629A;
- Fri, 16 Oct 2020 14:14:19 +0200 (CEST)
-Date: Fri, 16 Oct 2020 14:14:19 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: torvalds <torvalds@linux-foundation.org>
-Message-ID: <1673234208.201792.1602850459001.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] MTD updates for 5.10
-MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Index: Wcgm6Jd4l/QG/7a3Rn2yOo/+IszppQ==
-Thread-Topic: MTD updates for 5.10
+ id 1kTOgX-0000pZ-Ap
+ for linux-mtd@lists.infradead.org; Fri, 16 Oct 2020 12:18:14 +0000
+Received: by mail-qv1-xf43.google.com with SMTP id s17so966258qvr.11
+ for <linux-mtd@lists.infradead.org>; Fri, 16 Oct 2020 05:18:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id;
+ bh=38YezOKnfAyyHNe8LQKo/d/tCqj7P6oDvPTrWE4/Kcc=;
+ b=hxl5l9kxVXLglVDkU3e6oz3TEWolUnMTECKB+ctpuxDG28LFtkk5rd4rHnHV26zBdQ
+ m8+E6hX/a2hlFi4oHamZOKzPFBcy4xhgIitvn0ntdIBHPQrTpNkrZE6kBpv6gpCArU/m
+ SCRz3HrOot0KP9EWeKC7rUn1/vR1A6ZYNIYrv6mwDBL15YYY4qlHkl7b//WTKVxz+Snw
+ 1eorOLGoCjAJpEQ6XUGWS+RtSKc2sLLNQzVDJX53PMk48gq85c5QX9n7X8UxEifMcTOR
+ fEoIGbqX97/M3Vln4Vp6PKIfCJYvkLCif8+83aBuNKm9I6UlQEXXXX+/1kmvERkBWJMG
+ U0TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=38YezOKnfAyyHNe8LQKo/d/tCqj7P6oDvPTrWE4/Kcc=;
+ b=Qo2Iuh/Vt9Q+c2wfRcIj4Gtl55tys4cN1k9FUuO+e0NAW1uB14T1tWpAzFGCipOX0G
+ HwrOyzMBuFcx4c2p1X1onhAaPBn78myTyFVEsMdPFQ+dt3WjIurdxvRa/ef3DqkNPG8i
+ FEAAPe8EsdjA8GjlOb9RXX1Tc5A+uXaPpS+QiE96jyFZ8I2FdzEiSbU3qe2HU0SFdUju
+ snCnbd+7eSvnh+2aL/KdJGqnIfpC/qDDEJKYRk/1ZDEdZDWabbVl4+7js94was7W4ACe
+ RvhaG2yimOqO9uDk2pTBguQ2rxJF2v2RqcgauTDQ53Mnj6fFaPvElugau6HyOsLSuqu+
+ QdLw==
+X-Gm-Message-State: AOAM5305wBdhShSqLkXNogNk4+Cior3nBQNs8XsYLc9vqg/GBDgw7+lC
+ TJAy+r8oXjF7S+zksGXIsus=
+X-Google-Smtp-Source: ABdhPJwvvAPULIRNclsA8f8xNot8++Df/ygLhPsN7kCrYHaJTqqIzpdQlr0mMmWJnFIpw/3H6mksvg==
+X-Received: by 2002:a0c:ea4e:: with SMTP id u14mr3610382qvp.42.1602850691325; 
+ Fri, 16 Oct 2020 05:18:11 -0700 (PDT)
+Received: from localhost.localdomain ([2804:14c:482:997:843a:71ae:df40:2826])
+ by smtp.gmail.com with ESMTPSA id
+ o14sm915681qto.16.2020.10.16.05.18.08
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 16 Oct 2020 05:18:10 -0700 (PDT)
+From: Fabio Estevam <festevam@gmail.com>
+To: miquel.raynal@bootlin.com
+Subject: [PATCH] mtd: rawnand: ifc: Move the ECC engine initialization to the
+ right place
+Date: Fri, 16 Oct 2020 09:17:52 -0300
+Message-Id: <20201016121752.28525-1-festevam@gmail.com>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201016_081431_337658_18AEA17C 
-X-CRM114-Status: GOOD (  16.37  )
+X-CRM114-CacheID: sfid-20201016_081813_406839_6391258C 
+X-CRM114-Status: GOOD (  16.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,354 +92,114 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: vigneshr@ti.com, richard@nod.at, boris.brezillon@collabora.com,
+ linux-mtd@lists.infradead.org, kernel@pengutronix.de, han.xu@nxp.com,
+ Fabio Estevam <festevam@gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Linus,
+No ECC initialization should happen during the host controller probe.
 
-The following changes since commit ba4f184e126b751d1bffad5897f263108befc780:
+Indeed, we need the probe to call nand_scan() in order to:
+- identify the device, its capabilities and constraints (nand_scan_ident())
+- configure the ECC engine accordingly (->attach_chip())
+- scan its content and prepare the core (nand_scan_tail())
 
-  Linux 5.9-rc6 (2020-09-20 16:33:55 -0700)
+Moving these lines to fsl_ifc_attach_chip() fixes a regression caused by
+a previous commit supposed to clarify these steps.
 
-are available in the Git repository at:
+Based on a fix done at the mxc_nand driver by Miquel Raynal.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-5.10
+Reported-by: Han Xu <xhnjupt@gmail.com>
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+---
+Hi Han Xu,
 
-for you to fetch changes up to 6402f4ce95811db7df72244ca84860332e4c2518:
+Does this fix the ECC regression on Layerscape?
 
-  mtd: hyperbus: Fix build failure when only RPCIF_HYPERBUS is enabled (2020-10-12 21:12:08 +0200)
+Hi Miquel,
 
-----------------------------------------------------------------
-NAND Core changes:
-* Drop useless 'depends on' in Kconfig
-* Add an extra level in the Kconfig hierarchy
-* Trivial spellings
-* Dynamic allocation of the interface configurations
-* Dropping the default ONFI timing mode
-* Various cleanup (types, structures, naming, comments)
-* Hide the chip->data_interface indirection
-* Add the generic rb-gpios property
-* Add the ->choose_interface_config() hook
-* Introduce nand_choose_best_sdr_timings()
-* Use default values for tPROG_max and tBERS_max
-* Avoid redefining tR_max and tCCS_min
-* Add a helper to find the closest ONFI mode
-* bcm63xx MTD parsers: simplify CFE detection
+If Han can confirm this fixes the problem, then I will audit the other
+drivers and submit the fixes too.
 
-Raw NAND controller drivers changes:
-* fsl-upm: Deprecation of specific DT properties
-* fsl_upm: Driver rework and cleanup in favor of ->exec_op()
-* Ingenic: Cleanup ARRAY_SIZE() vs sizeof() use
-* brcmnand: ECC error handling on EDU transfers
-* brcmnand: Don't default to EDU transfers
-* qcom: Set BAM mode only if not set already
-* qcom: Avoid write to unavailable register
-* gpio: Driver rework in favor of ->exec_op()
-* tango: ->exec_op() conversion
-* mtk: ->exec_op() conversion
+ drivers/mtd/nand/raw/fsl_ifc_nand.c | 44 ++++++++++++++++-------------
+ 1 file changed, 24 insertions(+), 20 deletions(-)
 
-Raw NAND chip drivers changes:
-* toshiba: Implement ->choose_interface_config() for TH58NVG2S3HBAI4
-* toshiba: Implement ->choose_interface_config() for TC58NVG0S3E
-* toshiba: Implement ->choose_interface_config() for TC58TEG5DCLTA00
-* hynix: Implement ->choose_interface_config() for H27UCG8T2ATR-BC
+diff --git a/drivers/mtd/nand/raw/fsl_ifc_nand.c b/drivers/mtd/nand/raw/fsl_ifc_nand.c
+index 0e7a9b64301e..113048a1c423 100644
+--- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
+@@ -707,6 +707,30 @@ static int fsl_ifc_attach_chip(struct nand_chip *chip)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct fsl_ifc_mtd *priv = nand_get_controller_data(chip);
++	struct fsl_ifc_ctrl *ctrl = priv->ctrl;
++	struct fsl_ifc_global __iomem *ifc_global = ctrl->gregs;
++	u32 csor;
++
++	csor = ifc_in32(&ifc_global->csor_cs[priv->bank].csor);
++
++	/* Must also set CSOR_NAND_ECC_ENC_EN if DEC_EN set */
++	if (csor & CSOR_NAND_ECC_DEC_EN) {
++		chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
++		mtd_set_ooblayout(mtd, &fsl_ifc_ooblayout_ops);
++
++		/* Hardware generates ECC per 512 Bytes */
++		chip->ecc.size = 512;
++		if ((csor & CSOR_NAND_ECC_MODE_MASK) == CSOR_NAND_ECC_MODE_4) {
++			chip->ecc.bytes = 8;
++			chip->ecc.strength = 4;
++		} else {
++			chip->ecc.bytes = 16;
++			chip->ecc.strength = 8;
++		}
++	} else {
++		chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
++		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
++	}
+ 
+ 	dev_dbg(priv->dev, "%s: nand->numchips = %d\n", __func__,
+ 		nanddev_ntargets(&chip->base));
+@@ -742,7 +766,6 @@ static int fsl_ifc_attach_chip(struct nand_chip *chip)
+ 							mtd->writesize);
+ 	dev_dbg(priv->dev, "%s: mtd->oobsize = %d\n", __func__,
+ 							mtd->oobsize);
+-
+ 	return 0;
+ }
+ 
+@@ -910,25 +933,6 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
+ 		return -ENODEV;
+ 	}
+ 
+-	/* Must also set CSOR_NAND_ECC_ENC_EN if DEC_EN set */
+-	if (csor & CSOR_NAND_ECC_DEC_EN) {
+-		chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
+-		mtd_set_ooblayout(mtd, &fsl_ifc_ooblayout_ops);
+-
+-		/* Hardware generates ECC per 512 Bytes */
+-		chip->ecc.size = 512;
+-		if ((csor & CSOR_NAND_ECC_MODE_MASK) == CSOR_NAND_ECC_MODE_4) {
+-			chip->ecc.bytes = 8;
+-			chip->ecc.strength = 4;
+-		} else {
+-			chip->ecc.bytes = 16;
+-			chip->ecc.strength = 8;
+-		}
+-	} else {
+-		chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
+-		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
+-	}
+-
+ 	ret = fsl_ifc_sram_init(priv);
+ 	if (ret)
+ 		return ret;
+-- 
+2.17.1
 
-HyperBus changes:
-* DMA support for TI's AM654 HyperBus controller driver.
-* HyperBus frontend driver for Renesas RPC-IF driver.
-
-SPI NOR core changes:
-* Support for Winbond w25q64jwm flash
-* Enable 4K sector support for mx25l12805d
-
-SPI NOR controller drivers changes:
-* intel-spi Add Alder Lake-S PCI ID
-
-MTD Core changes:
-* mtdoops: Don't run panic write twice
-* mtdconcat: Correctly handle panic write
-* Use DEFINE_SHOW_ATTRIBUTE
-
-----------------------------------------------------------------
-Alex Dewar (1):
-      mtd: rawnand: atmel: Check return values for nand_read_data_op
-
-Arnd Bergmann (1):
-      mtd: lpddr: fix excessive stack usage with clang
-
-Bernard Zhao (1):
-      mtd: maps: vmu-flash: fix typos for struct memcard
-
-Boris Brezillon (6):
-      mtd: rawnand: atmel: Enable the NFC controller at probe time
-      mtd: rawnand: atmel: Drop redundant nand_read_page_op()
-      mtd: rawnand: atmel: Use nand_{write,read}_data_op()
-      mtd: rawnand: atmel: Use nand_prog_page_end_op()
-      mtd: rawnand: atmel: Convert the driver to exec_op()
-      mtd: rawnand: atmel: Get rid of the legacy interface implementation
-
-Chris Packham (2):
-      mtd: maps: physmap: Retain mtd-name property from dts
-      mtd: rawnand: marvell: Support panic_write for mtdoops
-
-Christophe Kerello (1):
-      mtd: rawnand: stm32_fmc2: fix a buffer overflow
-
-Colin Ian King (1):
-      mtd: mtdconcat: map: remove redundant assignment to variable 'size'
-
-Douglas Anderson (1):
-      mtd: spi-nor: Prefer asynchronous probe
-
-Evgeny Novikov (1):
-      mtd: rawnand: vf610: disable clk on error handling path in probe
-
-Florian Fainelli (1):
-      mtd: parsers: bcm63xx: Do not make it modular
-
-Gustavo A. R. Silva (3):
-      mtd: lpddr: Fix bad logic in print_drs_error
-      mtd: lpddr: Replace printk with pr_notice
-      mtd: lpddr: Move function print_drs_error to lpddr_cmds.c
-
-Hauke Mehrtens (3):
-      mtd: spinand: gigadevice: Only one dummy byte in QUADIO
-      mtd: spinand: gigadevice: Add QE Bit
-      mtd: spinand: gigadevice: Add support for GD5F4GQ4xC
-
-Ikjoon Jang (1):
-      mtd: spi-nor: winbond: Add support for w25q64jwm
-
-Janusz Krzysztofik (1):
-      mtd: rawnand: ams-delta: Fix non-OF build warning
-
-Joe Perches (1):
-      mtd: Avoid comma separated statements
-
-Krzysztof Kozlowski (6):
-      mtd: onenand: Simplify with dev_err_probe()
-      mtd: rawnand: atmel: Simplify with dev_err_probe()
-      mtd: rawnand: gpmi: Simplify with dev_err_probe()
-      mtd: rawnand: marvell: Simplify with dev_err_probe()
-      mtd: rawnand: marvell: Fix and update kerneldoc
-      mtd: rawnand: qcom: Simplify with dev_err_probe()
-
-Liu Shixin (3):
-      mtd: rawnand: cadence: remove a redundant dev_err call
-      mtd: onenand: simplify the return expression of onenand_transfer_auto_oob
-      mtd: maps: vmu-flash: simplify the return expression of probe_maple_vmu
-
-Mark Tomlinson (1):
-      mtd: mtdoops: Don't write panic data twice
-
-Matt Weber (1):
-      mtd: mtdconcat: map through panic write handler
-
-Mika Westerberg (1):
-      mtd: spi-nor: intel-spi: Add support for Intel Alder Lake-S SPI serial flash
-
-Miquel Raynal (21):
-      mtd: rawnand: Add a kernel doc to the ECC algorithm enumeration
-      mtd: rawnand: Rename the ECC algorithm enumeration items
-      mtd: rawnand: Move the nand_ecc_algo enum to the generic NAND layer
-      mtd: nand: Add a NAND page I/O request type
-      dt-bindings: mtd: Document nand-ecc-placement
-      dt-bindings: mtd: Document nand-ecc-engine
-      dt-bindings: mtd: Document boolean NAND ECC properties
-      mtd: nand: Introduce the ECC engine framework
-      mtd: rawnand: Separate the ECC engine type and the ECC byte placement
-      mtd: rawnand: Use the new ECC engine type enumeration
-      mtd: nand: Create a helper to extract the ECC configuration
-      mtd: spinand: Use nanddev_get_ecc_conf() when relevant
-      mtd: nand: Create helpers to set/extract the ECC requirements
-      mtd: rawnand: Use nanddev_get/set_ecc_requirements() when relevant
-      mtd: nand: Use the new generic ECC object
-      mtd: rawnand: Make use of the ECC framework
-      mtd: rawnand: Use the ECC framework OOB layouts
-      mtd: rawnand: Use the ECC framework nand_ecc_is_strong_enough() helper
-      mtd: rawnand: Use the ECC framework user input parsing bits
-      mtd: rawnand: Use the NAND framework user_conf object for ECC flags
-      mtd: spear_smi: Enable compile testing
-
-Pavel Machek (1):
-      mtd: rawnand: oxnas: cleanup/simplify code
-
-Qinglang Miao (1):
-      mtd: spear_smi: use for_each_child_of_node() macro
-
-Richard Weinberger (3):
-      Merge tag 'nand/for-5.10' of git://git.kernel.org/.../mtd/linux into mtd/next
-      Merge tag 'spi-nor/for-5.10' of git://git.kernel.org/.../mtd/linux into mtd/next
-      Merge tag 'cfi/for-5.10' of gitolite.kernel.org:pub/scm/linux/kernel/git/mtd/linux into mtd/next
-
-Robert Marko (1):
-      mtd: spi-nor: macronix: Add SECT_4K to mx25l12805d
-
-Serge Semin (1):
-      mtd: physmap: Add Baikal-T1 physically mapped ROM support
-
-Sergei Shtylyov (1):
-      mtd: hyperbus: add Renesas RPC-IF driver
-
-Tudor Ambarus (2):
-      mtd: rawnand: Introduce nand_set_ecc_on_host_ops()
-      mtd: rawnand: Don't overwrite the error code from nand_set_ecc_soft_ops()
-
-Vignesh Raghavendra (6):
-      mtd: hyperbus: Provide per device private pointer
-      mtd: hyperbus: hbmc-am654: Fix direct mapping setup flash access
-      mtd: hyperbus: hbmc-am654: Drop pm_runtime* calls from probe
-      mtd: hyperbus: hbmc-am654: Add DMA support for reads
-      Revert "mtd: spi-nor: Prefer asynchronous probe"
-      mtd: hyperbus: Fix build failure when only RPCIF_HYPERBUS is enabled
-
-Wei Yongjun (1):
-      mtd: rawnand: pasemi: Make pasemi_device_ready() static
-
-Yongqiang Liu (1):
-      mtd: mtdcore: Convert to DEFINE_SHOW_ATTRIBUTE
-
-YouChing Lin (2):
-      mtd: spinand: macronix: Add support for MX31LF1GE4BC
-      mtd: spinand: macronix: Add support for MX31UF1GE4BC
-
-YueHaibing (1):
-      mtd: rawnand: vf610: Remove unused function vf610_nfc_transfer_size()
-
- .../devicetree/bindings/mtd/nand-controller.yaml   |  31 ++
- arch/arm/mach-davinci/board-da830-evm.c            |   2 +-
- arch/arm/mach-davinci/board-da850-evm.c            |   2 +-
- arch/arm/mach-davinci/board-dm355-evm.c            |   2 +-
- arch/arm/mach-davinci/board-dm355-leopard.c        |   3 +-
- arch/arm/mach-davinci/board-dm365-evm.c            |   2 +-
- arch/arm/mach-davinci/board-dm644x-evm.c           |   2 +-
- arch/arm/mach-davinci/board-dm646x-evm.c           |   2 +-
- arch/arm/mach-davinci/board-mityomapl138.c         |   2 +-
- arch/arm/mach-davinci/board-neuros-osd2.c          |   2 +-
- arch/arm/mach-davinci/board-omapl138-hawk.c        |   2 +-
- arch/arm/mach-s3c24xx/common-smdk.c                |   2 +-
- arch/arm/mach-s3c24xx/mach-anubis.c                |   2 +-
- arch/arm/mach-s3c24xx/mach-at2440evb.c             |   2 +-
- arch/arm/mach-s3c24xx/mach-bast.c                  |   2 +-
- arch/arm/mach-s3c24xx/mach-gta02.c                 |   2 +-
- arch/arm/mach-s3c24xx/mach-jive.c                  |   2 +-
- arch/arm/mach-s3c24xx/mach-mini2440.c              |   2 +-
- arch/arm/mach-s3c24xx/mach-osiris.c                |   2 +-
- arch/arm/mach-s3c24xx/mach-qt2410.c                |   2 +-
- arch/arm/mach-s3c24xx/mach-rx1950.c                |   2 +-
- arch/arm/mach-s3c24xx/mach-rx3715.c                |   2 +-
- arch/arm/mach-s3c24xx/mach-vstms.c                 |   2 +-
- arch/arm/mach-s3c64xx/mach-hmt.c                   |   2 +-
- arch/arm/mach-s3c64xx/mach-mini6410.c              |   2 +-
- arch/arm/mach-s3c64xx/mach-real6410.c              |   2 +-
- drivers/mtd/devices/Kconfig                        |   2 +-
- drivers/mtd/devices/lart.c                         |  10 +-
- drivers/mtd/devices/spear_smi.c                    |   4 +-
- drivers/mtd/hyperbus/Kconfig                       |   7 +
- drivers/mtd/hyperbus/Makefile                      |   1 +
- drivers/mtd/hyperbus/hbmc-am654.c                  | 144 +++++-
- drivers/mtd/hyperbus/rpc-if.c                      | 170 +++++++
- drivers/mtd/lpddr/lpddr2_nvm.c                     |  35 +-
- drivers/mtd/lpddr/lpddr_cmds.c                     |  28 ++
- drivers/mtd/maps/Kconfig                           |  11 +
- drivers/mtd/maps/Makefile                          |   1 +
- drivers/mtd/maps/physmap-bt1-rom.c                 | 126 +++++
- drivers/mtd/maps/physmap-bt1-rom.h                 |  17 +
- drivers/mtd/maps/physmap-core.c                    |   8 +-
- drivers/mtd/maps/vmu-flash.c                       |  11 +-
- drivers/mtd/mtdconcat.c                            |  43 ++
- drivers/mtd/mtdcore.c                              |  28 +-
- drivers/mtd/mtdoops.c                              |  11 +-
- drivers/mtd/nand/Kconfig                           |   8 +
- drivers/mtd/nand/Makefile                          |   2 +
- drivers/mtd/nand/ecc.c                             | 484 ++++++++++++++++++
- drivers/mtd/nand/onenand/onenand_base.c            |   9 +-
- drivers/mtd/nand/onenand/onenand_omap2.c           |   5 +-
- drivers/mtd/nand/raw/Kconfig                       |   1 +
- drivers/mtd/nand/raw/ams-delta.c                   |   6 +-
- drivers/mtd/nand/raw/arasan-nand-controller.c      |  16 +-
- drivers/mtd/nand/raw/atmel/nand-controller.c       | 457 +++++++++--------
- drivers/mtd/nand/raw/au1550nd.c                    |   4 +-
- drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c   |   3 +-
- drivers/mtd/nand/raw/brcmnand/brcmnand.c           |  28 +-
- drivers/mtd/nand/raw/cadence-nand-controller.c     |  12 +-
- drivers/mtd/nand/raw/cafe_nand.c                   |   3 +-
- drivers/mtd/nand/raw/cs553x_nand.c                 |   2 +-
- drivers/mtd/nand/raw/davinci_nand.c                |  38 +-
- drivers/mtd/nand/raw/denali.c                      |   3 +-
- drivers/mtd/nand/raw/denali_pci.c                  |   2 +-
- drivers/mtd/nand/raw/diskonchip.c                  |   3 +-
- drivers/mtd/nand/raw/fsl_elbc_nand.c               |  20 +-
- drivers/mtd/nand/raw/fsl_ifc_nand.c                |  12 +-
- drivers/mtd/nand/raw/fsl_upm.c                     |   4 +-
- drivers/mtd/nand/raw/fsmc_nand.c                   |  14 +-
- drivers/mtd/nand/raw/gpio.c                        |   4 +-
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c         |  21 +-
- drivers/mtd/nand/raw/hisi504_nand.c                |   6 +-
- drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c    |  20 +-
- drivers/mtd/nand/raw/lpc32xx_mlc.c                 |   2 +-
- drivers/mtd/nand/raw/lpc32xx_slc.c                 |   3 +-
- drivers/mtd/nand/raw/marvell_nand.c                | 101 ++--
- drivers/mtd/nand/raw/meson_nand.c                  |   2 +-
- drivers/mtd/nand/raw/mpc5121_nfc.c                 |   4 +-
- drivers/mtd/nand/raw/mtk_nand.c                    |  12 +-
- drivers/mtd/nand/raw/mxc_nand.c                    |  25 +-
- drivers/mtd/nand/raw/nand_base.c                   | 554 ++++++++-------------
- drivers/mtd/nand/raw/nand_bch.c                    |   1 +
- drivers/mtd/nand/raw/nand_esmt.c                   |  15 +-
- drivers/mtd/nand/raw/nand_hynix.c                  |  44 +-
- drivers/mtd/nand/raw/nand_jedec.c                  |   9 +-
- drivers/mtd/nand/raw/nand_micron.c                 |  23 +-
- drivers/mtd/nand/raw/nand_onfi.c                   |  17 +-
- drivers/mtd/nand/raw/nand_samsung.c                |  22 +-
- drivers/mtd/nand/raw/nand_toshiba.c                |  19 +-
- drivers/mtd/nand/raw/nandsim.c                     |   8 +-
- drivers/mtd/nand/raw/ndfc.c                        |   2 +-
- drivers/mtd/nand/raw/omap2.c                       |  22 +-
- drivers/mtd/nand/raw/orion_nand.c                  |   4 +-
- drivers/mtd/nand/raw/oxnas_nand.c                  |   3 +-
- drivers/mtd/nand/raw/pasemi_nand.c                 |   6 +-
- drivers/mtd/nand/raw/plat_nand.c                   |   4 +-
- drivers/mtd/nand/raw/qcom_nandc.c                  |  26 +-
- drivers/mtd/nand/raw/r852.c                        |   3 +-
- drivers/mtd/nand/raw/s3c2410.c                     |  20 +-
- drivers/mtd/nand/raw/sh_flctl.c                    |   6 +-
- drivers/mtd/nand/raw/sharpsl.c                     |   2 +-
- drivers/mtd/nand/raw/socrates_nand.c               |   5 +-
- drivers/mtd/nand/raw/stm32_fmc2_nand.c             |  11 +-
- drivers/mtd/nand/raw/sunxi_nand.c                  |  27 +-
- drivers/mtd/nand/raw/tango_nand.c                  |   4 +-
- drivers/mtd/nand/raw/tegra_nand.c                  |  37 +-
- drivers/mtd/nand/raw/tmio_nand.c                   |   2 +-
- drivers/mtd/nand/raw/txx9ndfmc.c                   |   2 +-
- drivers/mtd/nand/raw/vf610_nfc.c                   |  17 +-
- drivers/mtd/nand/raw/xway_nand.c                   |   4 +-
- drivers/mtd/nand/spi/core.c                        |  12 +-
- drivers/mtd/nand/spi/gigadevice.c                  |  63 ++-
- drivers/mtd/nand/spi/macronix.c                    |  27 +-
- drivers/mtd/nand/spi/toshiba.c                     |   6 +-
- drivers/mtd/parsers/Kconfig                        |   2 +-
- drivers/mtd/spi-nor/controllers/intel-spi-pci.c    |   1 +
- drivers/mtd/spi-nor/macronix.c                     |   2 +-
- drivers/mtd/spi-nor/winbond.c                      |   9 +
- include/linux/mtd/hyperbus.h                       |  13 +
- include/linux/mtd/nand.h                           | 188 ++++++-
- include/linux/mtd/pfow.h                           |  33 --
- include/linux/mtd/rawnand.h                        |  34 +-
- include/linux/platform_data/mtd-davinci.h          |   9 +-
- include/linux/platform_data/mtd-nand-s3c2410.h     |   2 +-
- 122 files changed, 2317 insertions(+), 1078 deletions(-)
- create mode 100644 drivers/mtd/hyperbus/rpc-if.c
- create mode 100644 drivers/mtd/maps/physmap-bt1-rom.c
- create mode 100644 drivers/mtd/maps/physmap-bt1-rom.h
- create mode 100644 drivers/mtd/nand/ecc.c
 
 ______________________________________________________
 Linux MTD discussion mailing list
