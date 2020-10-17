@@ -2,23 +2,23 @@ Return-Path: <SRS0=9jYX=DY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 904B1C433DF
-	for <linux-mtd@archiver.kernel.org>; Sat, 17 Oct 2020 21:02:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CBDAC433DF
+	for <linux-mtd@archiver.kernel.org>; Sat, 17 Oct 2020 21:27:57 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3A9F0207BB
-	for <linux-mtd@archiver.kernel.org>; Sat, 17 Oct 2020 21:02:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A5706207BB
+	for <linux-mtd@archiver.kernel.org>; Sat, 17 Oct 2020 21:27:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LygkWlug";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel-com.20150623.gappssmtp.com header.i=@intel-com.20150623.gappssmtp.com header.b="ntIAxdfj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A9F0207BB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BYzVqU3c";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PZmuaj6k"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A5706207BB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
@@ -26,59 +26,59 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
 	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=vhYXa9qx8tehMPI21zEWiPZPTd3pHi7Q/lsd1Jv3izg=; b=LygkWluguRt3T8quWecMmYEEf
-	PMPQM5jtJ5f1/t38vMygJ2OAQW+oUMmt+g3RhKpOGIPeEJixz8YvPyN9bWOjOdoas8ICM6KrKeLhK
-	7GAHsY44s3OoRHUssTypCK9v/yaNv5x0xkf6GtdUZ6gIMv6aoH/B1JbMqwzGoaDj0bBM2Ps05+Xsv
-	rweEEC1TI5lKXlUi/YPdhxgqiGFXeunDLFRVHaZA2W64NFPeraW9vlIZxNQliS+2bjCqEC4PB569b
-	47GFda7UsnSBRMvnk0C8Q6KDh68aa845e3ykoTLJZ1aXqFCPeTEL9/BA8GCV70cpwXx+IXQTIvelr
-	xUMMQok7w==;
+	 bh=BZjmG4ZdULa6GHg9DDHqIc0Dcerm8lEELIALrDxTQMM=; b=BYzVqU3cEGp33bVEHzFpa8Lgh
+	OZj+VB9N6k7d7si4fzDhegOgRJHGN+tL2d9aeGO/pdqiPmU4+x091rGpTjj784WdHeFN9NVciKzTB
+	aCFkHhZ2oaJt+FHwmXVKkze14mBQ061HX+my7eRmUgaMlniRGheUNN8A0ouZ/TT9lIHUWEq6T6d7D
+	sW7JVdzNcu8B63iCANsi06Bz2JCTlShCjwZIK/Yfg5fg4xFkleG62cDY0/88KbPt9LZeQzM5LCK3W
+	OohSikmMRtWssIJ8qXfq4f6XIGjeNbfc6auAyZs6+S3soR5HnmAsRm5P741/QpOz+H0CC0YW+Tr2F
+	cVMed7POA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kTtKh-0002Fc-Sw; Sat, 17 Oct 2020 21:01:43 +0000
-Received: from mail-ej1-x642.google.com ([2a00:1450:4864:20::642])
+	id 1kTtjH-00040m-5u; Sat, 17 Oct 2020 21:27:07 +0000
+Received: from mail-qv1-xf43.google.com ([2607:f8b0:4864:20::f43])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kTtKb-0002C2-5S
- for linux-mtd@lists.infradead.org; Sat, 17 Oct 2020 21:01:39 +0000
-Received: by mail-ej1-x642.google.com with SMTP id h24so8465027ejg.9
- for <linux-mtd@lists.infradead.org>; Sat, 17 Oct 2020 14:01:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=intel-com.20150623.gappssmtp.com; s=20150623;
+ id 1kTtjC-0003zx-Sj
+ for linux-mtd@lists.infradead.org; Sat, 17 Oct 2020 21:27:04 +0000
+Received: by mail-qv1-xf43.google.com with SMTP id cv1so2671721qvb.2
+ for <linux-mtd@lists.infradead.org>; Sat, 17 Oct 2020 14:26:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=QU5tUnKrk3cCgEOM6DUuSpHohPcIoidzngrqxPrVqlg=;
- b=ntIAxdfj5B3UZZJPAO3W3zqpuYJdxZe6wmMN+Cg5+tfh5QjsxLbXR5o2amfdJQ2J48
- +r9G2vZiMs4S/e6t6kNU+/1RisTXP2Yspklt8lksB4PhSQjsUISEYusYJeN2p0XCHoqr
- 5tX/QI+fZe3GQZJaviemAIYQlGxoIFC7s6aX8R5MJQLi2SOYJ/keQbrc62HNUeJ8pCOI
- 7WYztP0OE4axPIRoGDfVK4aq4k9dPY6fZ69Y4fL3/a70qb0GrKtNhloBSbp9yIhwtpgg
- UECkhdkcAFyI2jUc3qFZfU7NKoc+E1dZJHZxhONiRQFFV//aVnbaYjp+hfJUaNjfh3TU
- ik3w==
+ :cc; bh=RgqP4vHnc4YDiTlhc+DyGim3+aRVm74aNzyLcpYY0fw=;
+ b=PZmuaj6kYiBeitep5A8CWeHOTvYXeyFJAyRaHVdMV6bMV1LzBS3KK2jii9zU5COWH+
+ 8cwF7adReOhXYx0Bxl9H4v0itgBHLPXt4q7reYVavQs4IRM9nOX9723LdDHJzev+TmOP
+ vN+0YJaSNCoCUksvcqkDQ42wt43VAScBFy17g/L4BP0s0/GMT4FOCWtDgUExuFOk+XHX
+ cgA0MFCyn+MRxd+KsBNe0yf+Jy5kR/dfqIjq4kpIM77W9+rduK7cJlkoSJwaCKZOBijH
+ au4D6VH8qgWzTdrA3xdrEsl+WmUJgqn8XTNYFvGQFiffDbOf+/RnjvLTLcJUmfQ3Nerh
+ 8rDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=QU5tUnKrk3cCgEOM6DUuSpHohPcIoidzngrqxPrVqlg=;
- b=bLPBxGJ4Zg/Hwmp/lonPfNbR1vVorN5gpkbNKEaXnyNDI8tvoJdtp4VZSYAUibyMOi
- rmBK6Ht4NZnicflD3a7UmAfrdYtQAnEBsKszmVRyNV2NS+8erqASLELn1hU+9iE3l5b1
- 3eOIqiU41vPBdvuxw8CVZukTD7TK0nwsWI66Pm2LpvpjTdXhyx94Ex93TrQU2EUSRw4v
- FFgXGA8Fb6LlirZ9y5cHCZSDoU4BSjsGFTb9aVc84Sw0qaEdGZjTMdd+/bZ7lH9cXiNN
- tKDRUniVzPN/lRkkX5OLli8EiCGN8PKeRjMFXepkNAs1rbXYoSaMHocnk1JHvFxDcPU4
- 1APA==
-X-Gm-Message-State: AOAM532edwVn/pc+23txZm8LucJQvvWEdvyNpu75JYjGluNUNCMVxWZQ
- c3EdO5Q6ZhJL6pfEZwwoteQq21Eh0TrMf0OZ3nFOcA==
-X-Google-Smtp-Source: ABdhPJzde2s6j/g/ekBLPPrgSH2EJqfd3KSDRuhe3Mnzr9w98lVRa6HniOngGCyhNuV4q/eDk1HFvyy/v8IqyEanGTA=
-X-Received: by 2002:a17:906:1a19:: with SMTP id
- i25mr9957370ejf.323.1602968492144; 
- Sat, 17 Oct 2020 14:01:32 -0700 (PDT)
+ bh=RgqP4vHnc4YDiTlhc+DyGim3+aRVm74aNzyLcpYY0fw=;
+ b=jjPwjY2pkuHa0mw1ymSusW6Sz4447WPT/K0IGJr1+r49nSgg3e0sZeFNdBmmo+WPqf
+ /LyAYUFTRhcG7iB3ASuDw5AMt6tdQRg2YY0pFmifA6NXRfQioZTF1WDzq7ickafUBgi6
+ /U1eJbk6Vf0TixNe/ApmZuvrNzeVMvC3ME1j95CNICcu2Bwp00xKS0fS69rA4kkjOFr/
+ p/l8wJ0oN+h8cDhbWHBFHlWlug9SxpahHPJHWvKk0rONK9Bj9WKA2XH0RxF1g0GbtBJg
+ 5+USm5cpUJvAYMm1j+jLs6uJVdsEyzF7wx6GWd1VMWhF6dTjhs3c5vRepMkix3Yf7PG9
+ xbzw==
+X-Gm-Message-State: AOAM532ubg4/x5ga9vciv8Yx2+KurWqreLkkqttRBHr8FS2cdvpwYJ/G
+ hODPf1ajJ5Sp+3XLOeM4EdHoy/BGu4ORHCP3/ok=
+X-Google-Smtp-Source: ABdhPJzHMIlaE7BBQEDZ0mFISjyYxthNy4f6eo3fsalZEZoMEKWY+bdZrehWAQ36IvGeOLV3Ot51vto2zJ2e6FBQFyM=
+X-Received: by 2002:a0c:8064:: with SMTP id 91mr10454087qva.34.1602970011343; 
+ Sat, 17 Oct 2020 14:26:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201017160928.12698-1-trix@redhat.com>
-In-Reply-To: <20201017160928.12698-1-trix@redhat.com>
-From: Dan Williams <dan.j.williams@intel.com>
-Date: Sat, 17 Oct 2020 14:01:22 -0700
-Message-ID: <CAPcyv4jkSFxMXgMABX7sDbwmq8zJO=rLX2ww3Y9Tc0VAANY8xQ@mail.gmail.com>
-Subject: Re: [RFC] treewide: cleanup unreachable breaks
-To: trix@redhat.com
+References: <20200805024935.12331-1-rdunlap@infradead.org>
+ <62f3156d-a720-437e-d859-3b1c203a0653@infradead.org>
+In-Reply-To: <62f3156d-a720-437e-d859-3b1c203a0653@infradead.org>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Sat, 17 Oct 2020 23:26:40 +0200
+Message-ID: <CAFLxGvzwka1SBSXiEeDXP+awab+4e4heOczsRPh713scCvQwyQ@mail.gmail.com>
+Subject: Re: [PATCH] ubifs: delete duplicated words + other fixes
+To: Randy Dunlap <rdunlap@infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201017_170137_247821_B237A182 
-X-CRM114-Status: GOOD (  21.48  )
+X-CRM114-CacheID: sfid-20201017_172703_122562_FEF0EF30 
+X-CRM114-Status: UNSURE (   9.73  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,117 +90,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org,
- clang-built-linux <clang-built-linux@googlegroups.com>,
- linux-iio@vger.kernel.org, nouveau@lists.freedesktop.org,
- storagedev@microchip.com,
- Maling list - DRI developers <dri-devel@lists.freedesktop.org>,
- virtualization@lists.linux-foundation.org,
- "open list:KEYS-TRUSTED" <keyrings@vger.kernel.org>,
- linux-mtd@lists.infradead.org, ath10k@lists.infradead.org,
- linux-stm32@st-md-mailman.stormreply.com, usb-storage@lists.one-eyed-alien.net,
- linux-watchdog@vger.kernel.org, devel@driverdev.osuosl.org,
- linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
- linux-scsi <linux-scsi@vger.kernel.org>,
- linux-nvdimm <linux-nvdimm@lists.01.org>,
- amd-gfx list <amd-gfx@lists.freedesktop.org>,
- Linux ACPI <linux-acpi@vger.kernel.org>, intel-wired-lan@lists.osuosl.org,
- industrypack-devel@lists.sourceforge.net,
- Linux PCI <linux-pci@vger.kernel.org>, spice-devel@lists.freedesktop.org,
- MPT-FusionLinux.pdl@broadcom.com,
- "Linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
- linux-serial@vger.kernel.org, linux-nfc@lists.01.org,
- Linux-pm mailing list <linux-pm@vger.kernel.org>, linux-can@vger.kernel.org,
- linux-block@vger.kernel.org, linux-gpio@vger.kernel.org,
- xen-devel <xen-devel@lists.xenproject.org>, linux-amlogic@lists.infradead.org,
- openipmi-developer@lists.sourceforge.net, platform-driver-x86@vger.kernel.org,
- linux-integrity@vger.kernel.org,
- Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-edac@vger.kernel.org,
- Netdev <netdev@vger.kernel.org>, USB list <linux-usb@vger.kernel.org>,
- Linux Wireless List <linux-wireless@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-security-module@vger.kernel.org,
- linux-crypto <linux-crypto@vger.kernel.org>, patches@opensource.cirrus.com,
- bpf@vger.kernel.org, ocfs2-devel@oss.oracle.com, linux-power@fi.rohmeurope.com
+Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Oct 17, 2020 at 9:10 AM <trix@redhat.com> wrote:
+On Wed, Oct 14, 2020 at 7:27 AM Randy Dunlap <rdunlap@infradead.org> wrote:
 >
-> From: Tom Rix <trix@redhat.com>
+> ping.
 >
-> This is a upcoming change to clean up a new warning treewide.
-> I am wondering if the change could be one mega patch (see below) or
-> normal patch per file about 100 patches or somewhere half way by collecting
-> early acks.
->
-> clang has a number of useful, new warnings see
-> https://clang.llvm.org/docs/DiagnosticsReference.html
->
-> This change cleans up -Wunreachable-code-break
-> https://clang.llvm.org/docs/DiagnosticsReference.html#wunreachable-code-break
-> for 266 of 485 warnings in this week's linux-next, allyesconfig on x86_64.
->
-> The method of fixing was to look for warnings where the preceding statement
-> was a simple statement and by inspection made the subsequent break unneeded.
-> In order of frequency these look like
->
-> return and break
->
->         switch (c->x86_vendor) {
->         case X86_VENDOR_INTEL:
->                 intel_p5_mcheck_init(c);
->                 return 1;
-> -               break;
->
-> goto and break
->
->         default:
->                 operation = 0; /* make gcc happy */
->                 goto fail_response;
-> -               break;
->
-> break and break
->                 case COLOR_SPACE_SRGB:
->                         /* by pass */
->                         REG_SET(OUTPUT_CSC_CONTROL, 0,
->                                 OUTPUT_CSC_GRPH_MODE, 0);
->                         break;
-> -                       break;
->
-> The exception to the simple statement, is a switch case with a block
-> and the end of block is a return
->
->                         struct obj_buffer *buff = r->ptr;
->                         return scnprintf(str, PRIV_STR_SIZE,
->                                         "size=%u\naddr=0x%X\n", buff->size,
->                                         buff->addr);
->                 }
-> -               break;
->
-> Not considered obvious and excluded, breaks after
-> multi level switches
-> complicated if-else if-else blocks
-> panic() or similar calls
->
-> And there is an odd addition of a 'fallthrough' in drivers/tty/nozomi.c
-[..]
-> diff --git a/drivers/nvdimm/claim.c b/drivers/nvdimm/claim.c
-> index 5a7c80053c62..2f250874b1a4 100644
-> --- a/drivers/nvdimm/claim.c
-> +++ b/drivers/nvdimm/claim.c
-> @@ -200,11 +200,10 @@ ssize_t nd_namespace_store(struct device *dev,
->                 }
->                 break;
->         default:
->                 len = -EBUSY;
->                 goto out_attach;
-> -               break;
->         }
+> On 8/4/20 7:49 PM, Randy Dunlap wrote:
+> > Delete repeated words in fs/ubifs/.
+> > {negative, is, of, and, one, it}
+> > where "it it" was changed to "if it".
 
-Acked-by: Dan Williams <dan.j.williams@intel.com>
+Applied to 5.11 queue. Thanks for fixing!
+
+-- 
+Thanks,
+//richard
 
 ______________________________________________________
 Linux MTD discussion mailing list
