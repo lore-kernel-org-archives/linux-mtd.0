@@ -7,60 +7,80 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43AD3C433DF
-	for <linux-mtd@archiver.kernel.org>; Sun, 18 Oct 2020 19:17:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B48AC43457
+	for <linux-mtd@archiver.kernel.org>; Sun, 18 Oct 2020 19:19:07 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DFD5922274
-	for <linux-mtd@archiver.kernel.org>; Sun, 18 Oct 2020 19:17:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B9FFD22314
+	for <linux-mtd@archiver.kernel.org>; Sun, 18 Oct 2020 19:19:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iuYKQ7Sr";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="iJ9Ua4Sb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFD5922274
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cbP0Hmbh";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="WcP5INjn";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="WcP5INjn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B9FFD22314
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=HansenPartnership.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Date:To:From:
+	Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=aM4mqBElOtvkhv4p8SMB9F+NeuSt87fyZYxJyUwlsYk=; b=iuYKQ7SrRrSg4i6hEy86Te7+V
-	f/D+XXr5mUunMb+WAQW6VtiBoWeNJ9RQksd8l7Iox87OAOw6YfgswZJWA+HIs/1RKVVdKXEIc3hbo
-	+OO+s9ZGEfWlTIUzAD5eUKa3wOU9Su9SXQYJt2LtBdfd1uQusByWlCB3kZAq/4376bsOX+FdujkGy
-	5bEm2UpD2daHg4oT7SkucbJz5FvJaR5kw03igdd7BeTbPO0F0yo7SXxWThkxuTnDGB2+awSAAYwmD
-	Z/GNWSQLwg4jJ4v2d/NJPVw2Dzr8MVrqtyUcEZa1B7CsXv9NZJmlFVOrml9m8jAutObcQrc3N62ia
-	rc5FuiH/A==;
+	 bh=Z63OmCcjZEdt7y9CKxRoinSmUgqRpEqBqzF830NmE9A=; b=cbP0HmbhjU3bKf59el1au9wDH
+	DDZAWqpfnhg1I7pK1UmgWeEJVxapkyACxYVHdEMWBMJnz/aNWz6RDPjiNrZ61e7/iHBkfLSblC6Cd
+	lza51g3yUTuE+ZMYRgn4Cc+hSwLbVk+YznImU0zAd6c4h0ytNhUdaoivZVtE7/tT8AEAB0fRLaqmy
+	8mFDBWdVAE/5plxeIWtsncSIZvFmzhByy5vXJT9GFbzpq0jGs1nnPEtC/H3OlZfTSl8MhnPUjfnum
+	+ET0pK1ibTIC4BIFHli7mnj7yNXBtl6VkAy5Qjg1+jFrCv217TjEfOQJ0Fuwg+kfkvKHN8qMROgDg
+	Rb8Gjny9g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kUEAJ-0005C1-RP; Sun, 18 Oct 2020 19:16:23 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1kUEC1-0005Yu-SK; Sun, 18 Oct 2020 19:18:09 +0000
+Received: from bedivere.hansenpartnership.com ([2607:fcd0:100:8a00::2])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kUEAI-0005Bh-56; Sun, 18 Oct 2020 19:16:22 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
- References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=jSZ48E7Pk5au6oJE5B/SpoPyGzHAu2LHc5e92XLrkbA=; b=iJ9Ua4Sb+7c2gBb5X093C2g3JF
- uPXvpy94QM9OfF4QdLHnbdoyPK+foTfLSCfptUIJX1L1QmBGwqRRLC+FO4yttdeacV1S+hl8hKo0C
- WTqtwQkEZQTbeO+X3m7Juje7eQPdNT7ZY2bxJ15gxf5bGTukHh/PFeI2Wotfd6qSzqn3KwhwiSJ8q
- nHMmLI1n6mOTyu1OQHnDgD5bqj+pk9E7DasCqQG55sL9hd/rW8umvQBQI/4FGFQAjFO02dSWITtwv
- yXkpHo9Iys1nXXFCivdyuKxTY6HM4UcykOYUxv1R/rziPsZPtETfWCfkBycLom8Snu0zA9/3jwQkF
- l4f6J+YQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red
- Hat Linux)) id 1kUEAE-0008Qi-Sy; Sun, 18 Oct 2020 19:16:19 +0000
-Date: Sun, 18 Oct 2020 20:16:18 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
+ id 1kUEBw-0005WP-Ir; Sun, 18 Oct 2020 19:18:05 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by bedivere.hansenpartnership.com (Postfix) with ESMTP id 7A1D5128046A;
+ Sun, 18 Oct 2020 12:18:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+ s=20151216; t=1603048682;
+ bh=aTHhEGSm6DrUFNt/hKuOWL0f+WzaMvx/rc4IP5RJYRs=;
+ h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+ b=WcP5INjnqihCMCJ+2ZkHdzEWBsqi3wavZOcf0NGlcoun37UNiQ4GoZk+2AoMrr8hd
+ 1s2t7Y8IzQcDUGm581+QcIuy/enpzpZm6HswhyX4zoKl9l3S5fk96frr/LU4I9kVw8
+ r8s7AtR/5wOGbwEsua/QdQrVgo3j6VSqYIXYukhg=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new,
+ port 10024)
+ with ESMTP id ywWMwLsGscQI; Sun, 18 Oct 2020 12:18:02 -0700 (PDT)
+Received: from jarvis.int.hansenpartnership.com (unknown
+ [IPv6:2601:600:8280:66d1::c447])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 340C31280456;
+ Sun, 18 Oct 2020 12:18:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+ s=20151216; t=1603048682;
+ bh=aTHhEGSm6DrUFNt/hKuOWL0f+WzaMvx/rc4IP5RJYRs=;
+ h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+ b=WcP5INjnqihCMCJ+2ZkHdzEWBsqi3wavZOcf0NGlcoun37UNiQ4GoZk+2AoMrr8hd
+ 1s2t7Y8IzQcDUGm581+QcIuy/enpzpZm6HswhyX4zoKl9l3S5fk96frr/LU4I9kVw8
+ r8s7AtR/5wOGbwEsua/QdQrVgo3j6VSqYIXYukhg=
+Message-ID: <0a739bcd421a3154c2521b49779b287e6c0d08a2.camel@HansenPartnership.com>
 Subject: Re: [Ocfs2-devel] [RFC] treewide: cleanup unreachable breaks
-Message-ID: <20201018191618.GO20115@casper.infradead.org>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Matthew Wilcox <willy@infradead.org>
+Date: Sun, 18 Oct 2020 12:17:59 -0700
+In-Reply-To: <20201018191618.GO20115@casper.infradead.org>
 References: <20201017160928.12698-1-trix@redhat.com>
  <20201018185943.GM20115@casper.infradead.org>
  <45efa7780c79972eae9ca9bdeb9f7edbab4f3643.camel@HansenPartnership.com>
+ <20201018191618.GO20115@casper.infradead.org>
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <45efa7780c79972eae9ca9bdeb9f7edbab4f3643.camel@HansenPartnership.com>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20201018_151804_859926_C4A4E160 
+X-CRM114-Status: GOOD (  22.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,30 +121,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, Oct 18, 2020 at 12:13:35PM -0700, James Bottomley wrote:
-> On Sun, 2020-10-18 at 19:59 +0100, Matthew Wilcox wrote:
-> > On Sat, Oct 17, 2020 at 09:09:28AM -0700, trix@redhat.com wrote:
-> > > clang has a number of useful, new warnings see
-> > > https://urldefense.com/v3/__https://clang.llvm.org/docs/DiagnosticsReference.html__;!!GqivPVa7Brio!Krxz78O3RKcB9JBMVo_F98FupVhj_jxX60ddN6tKGEbv_cnooXc1nnBmchm-e_O9ieGnyQ$ 
+On Sun, 2020-10-18 at 20:16 +0100, Matthew Wilcox wrote:
+> On Sun, Oct 18, 2020 at 12:13:35PM -0700, James Bottomley wrote:
+> > On Sun, 2020-10-18 at 19:59 +0100, Matthew Wilcox wrote:
+> > > On Sat, Oct 17, 2020 at 09:09:28AM -0700, trix@redhat.com wrote:
+> > > > clang has a number of useful, new warnings see
+> > > > https://urldefense.com/v3/__https://clang.llvm.org/docs/DiagnosticsReference.html__;!!GqivPVa7Brio!Krxz78O3RKcB9JBMVo_F98FupVhj_jxX60ddN6tKGEbv_cnooXc1nnBmchm-e_O9ieGnyQ$ 
+> > > 
+> > > Please get your IT department to remove that stupidity.  If you
+> > > can't, please send email from a non-Red Hat email address.
 > > 
-> > Please get your IT department to remove that stupidity.  If you
-> > can't, please send email from a non-Red Hat email address.
+> > Actually, the problem is at Oracle's end somewhere in the ocfs2
+> > list ... if you could fix it, that would be great.  The usual real
+> > mailing lists didn't get this transformation
+> > 
+> > https://lore.kernel.org/bpf/20201017160928.12698-1-trix@redhat.com/
+> > 
+> > but the ocfs2 list archive did:
+> > 
+> > https://oss.oracle.com/pipermail/ocfs2-devel/2020-October/015330.html
+> > 
+> > I bet Oracle IT has put some spam filter on the list that mangles
+> > URLs this way.
 > 
-> Actually, the problem is at Oracle's end somewhere in the ocfs2 list
-> ... if you could fix it, that would be great.  The usual real mailing
-> lists didn't get this transformation
-> 
-> https://lore.kernel.org/bpf/20201017160928.12698-1-trix@redhat.com/
-> 
-> but the ocfs2 list archive did:
-> 
-> https://oss.oracle.com/pipermail/ocfs2-devel/2020-October/015330.html
-> 
-> I bet Oracle IT has put some spam filter on the list that mangles URLs
-> this way.
+> *sigh*.  I'm sure there's a way.  I've raised it with someone who
+> should be able to fix it.
 
-*sigh*.  I'm sure there's a way.  I've raised it with someone who should
-be able to fix it.
+As someone who works for IBM I can only say I feel your pain ...
+
+James
+
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
