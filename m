@@ -2,82 +2,79 @@ Return-Path: <SRS0=sICc=D2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA30DC433DF
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Oct 2020 19:43:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 929C0C433DF
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Oct 2020 19:59:45 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3A15D222EA
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Oct 2020 19:43:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 01825222B8
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Oct 2020 19:59:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tYDm2r9K";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="vqIoQqfP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A15D222EA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="vek442fh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 01825222B8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=pV4Sk06A63KGqo8rbhgCxbZGNYHgq6ocGBoJH3UxSKo=; b=tYDm2r9KU0u8CXxekhdbk87+B
-	KLF2jJUfbrMdnkc8iP7ul1F2GhJK1vr4+bVmwQb/CGi542Hap/pLm4CNCwHKZ2lCW2mAvAqpIedvW
-	yh5cGR4/HUpGBSldFt2vNr8Jwb9rXUR4DtmA3ERhMbtutWkSqlCMFt8HQyKFigdN7sU14aQo2SItv
-	5o3+LcBM/a4IQ9sq8g0xMTen3HBa3S9STpnA7F8VQSgHR2GihstuON3d5tUHWNPsBPbuK3dzcYKur
-	Sl8g8iCTiPjl9ocfaGb/4Fpja+Kl9Ti9jLSGR0K5nXJjSHEB+Z4nRAupCw72tQZmbYcEA8tWl3462
-	z32q62DMQ==;
+	 bh=s3sZwLDzS9sOrta/1TikTW/pWkhAtNb8r29+OIwuIVo=; b=vek442fhVS+XZkxntJvQicjt2
+	QqVeCpbGaYktLOyEEIzANPKV4OxIL1Yzj1WqahKvq4nfb/bOj4g5I5BM2qFYT4R58Tin6YRk4bxWQ
+	vPkMa3ee/ukjZHxAq/aQG+eyohL1Z7UrpQdD+qVdJ4hEShl8FfD9n3SlzUfoJ0y8TtutJPaeOLhNQ
+	oCBFfbf0QXQ0sioBY846h+zFrgkmX+XI+SHTJcX7ZZ6kmF+Ze9Nq4orOdc3x5a+w1KMMKGbSe3Vxd
+	D55oZXJ0kW2XeGble6WGRJfO4lYX1KtHUAKHXz/j9Q8bW5f3EVR4miAQwmeo6gEcugnoCp3dsTGiB
+	V6UXI8qFg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kUb3D-00086z-Or; Mon, 19 Oct 2020 19:42:36 +0000
-Received: from mail-pl1-x642.google.com ([2607:f8b0:4864:20::642])
+	id 1kUbIo-0001D5-VB; Mon, 19 Oct 2020 19:58:43 +0000
+Received: from mail-oi1-f196.google.com ([209.85.167.196])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kUb37-00085Q-8R
- for linux-mtd@lists.infradead.org; Mon, 19 Oct 2020 19:42:31 +0000
-Received: by mail-pl1-x642.google.com with SMTP id r10so332233plx.3
- for <linux-mtd@lists.infradead.org>; Mon, 19 Oct 2020 12:42:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=no6WOfZDuAXhTDfVia9Vunkz4L7BthY0F8m0jo4//vs=;
- b=vqIoQqfPtCUD7ceHGEmbvFqqUZd/9dE0IpLQQ4p4nyONBXQMSFxBG5OzgCaJfT8eu8
- Ez0DMwUntzcU9c2WJzs/WqMvxG3bzlj0mstlcz+E4fW0gt02sZNjrL1HdU6SHVwmCE5R
- WFeHYzJRJuPZspqj8YJ2wlUmUN4Mc8MNrI6kLekCJ8yejCepkvkgEUeb7TbpDze1NnEh
- TP2SjhqdakZDUedR00qYjd62k5W2m7FgfHIpcuS/rhjqMGxVL3Apppn+UDRO/ftdIfoh
- duvoKavmXDacw9mysFV+xdp1Tg4QxCPiDxNSeCeZyO+34Y2S1kYSdX61NJzSKhmGsX5T
- HLpA==
+ id 1kUbIl-0001Bv-MY; Mon, 19 Oct 2020 19:58:40 +0000
+Received: by mail-oi1-f196.google.com with SMTP id x62so1276264oix.11;
+ Mon, 19 Oct 2020 12:58:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=no6WOfZDuAXhTDfVia9Vunkz4L7BthY0F8m0jo4//vs=;
- b=fBEGYqgYY7hvvC7Itjivvx4ExMo6ASXztRk+Wwf8+OsEEaQFdn+mGDqPTDwniSB6iP
- 2GTFROSP45BTiQh/rESP2WH+hf05VKMEvTj3hWmmH8ss4n0LhZJpLPRB+pdMEOvsjEba
- 5X5IyUmulr8oD/ZXhxi+jHyiaGEEqSkwMLE+eBfm0CdLkGzkkZSi+xvpji9dq7LlSthp
- gJXuzMbl8KjhOv6xh5+ORnZHj2492velhs1DQlVPh1C3mCfDB+AhLDjoKXOQWFCRpWxI
- Zfv5Oos8lk4iy8AMvoqlF2nx/MzbumPl5NNMKAGXd3swvSrPQaXS5hrXAnqoLi7nYnvx
- l0nA==
-X-Gm-Message-State: AOAM531AmMLrLmrx46gamnATOy+tclyVPoacA/TObQzLoYsFgkg4RoZz
- nYIh+VBGvke2iLkproUn2oBqB6r2wbALZ7lWD+pfWQ==
-X-Google-Smtp-Source: ABdhPJxy4K+2uRaBuhFTeTSlHPetqrP1uAAP7dKvm6UBZz10SCa23PJUxb54E5JJmlle9J/y892Qp+TTrKvO4GeNXIk=
-X-Received: by 2002:a17:90a:ee87:: with SMTP id i7mr921476pjz.25.1603136546933; 
- Mon, 19 Oct 2020 12:42:26 -0700 (PDT)
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=iMcpjCjjlBEs+GFINxvVleDr5N6Oj32gn5NcfucJpXI=;
+ b=Wuwn74TighhPQAUlnwZQbuk9VlQZjlDeWBdWmy9kogoRY6Cu6Amh48V9tYKiWviAVW
+ PjLf5abehv5DRtp/h+108c5sMWtqhUzQM4R5Mfqg29jJoLIzoCUdsfkB/LlFLOGxialG
+ ovwGubHifJ7x6wjUpuz2sAZzbd8jp2kU4Kx6uNmCyNUGq73PpiiSP63o5eFFd+4XVfAC
+ 5ewYxQTL+Cj0l8nCgqQw81aMM9enDlOVMv7umBro0qYy/RCvjggYDr2d6ra4yaCaA7UH
+ HlPEeVfIdCfBuvfsfUhDTNpF+4SuwkQACvx8Cemmwaqt/Eu0bYsjq/2jPtNFuyrkhouJ
+ CQNg==
+X-Gm-Message-State: AOAM533ZsgIURrKptEFAu+gf+KQfzumsQ0TULis8I0aBkBVG+1XXQ5X+
+ mzppUmyeV6JhVC+6wZ106cO0d19JDg==
+X-Google-Smtp-Source: ABdhPJxVetBxNF3wbgnA9NSr9IsdFHypWN7ATmupsq8ibMJqkLHVvEhvBI/C96CZZePXbzF7ok4YRw==
+X-Received: by 2002:aca:b256:: with SMTP id b83mr700269oif.116.1603137518838; 
+ Mon, 19 Oct 2020 12:58:38 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+ by smtp.gmail.com with ESMTPSA id y194sm208402oie.22.2020.10.19.12.58.37
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 19 Oct 2020 12:58:38 -0700 (PDT)
+Received: (nullmailer pid 3509370 invoked by uid 1000);
+ Mon, 19 Oct 2020 19:58:37 -0000
+Date: Mon, 19 Oct 2020 14:58:37 -0500
+From: Rob Herring <robh@kernel.org>
+To: Yifeng Zhao <yifeng.zhao@rock-chips.com>
+Subject: Re: [PATCH v11 1/8] dt-bindings: mtd: Describe Rockchip RK3xxx NAND
+ flash controller
+Message-ID: <20201019195837.GA3508930@bogus>
+References: <20201019083358.32621-1-yifeng.zhao@rock-chips.com>
+ <20201019083358.32621-2-yifeng.zhao@rock-chips.com>
 MIME-Version: 1.0
-References: <20201017160928.12698-1-trix@redhat.com>
- <20201018054332.GB593954@kroah.com>
-In-Reply-To: <20201018054332.GB593954@kroah.com>
-From: Nick Desaulniers <ndesaulniers@google.com>
-Date: Mon, 19 Oct 2020 12:42:15 -0700
-Message-ID: <CAKwvOdkR_Ttfo7_JKUiZFVqr=Uh=4b05KCPCSuzwk=zaWtA2_Q@mail.gmail.com>
-Subject: Re: [RFC] treewide: cleanup unreachable breaks
-To: Tom Rix <trix@redhat.com>
+Content-Disposition: inline
+In-Reply-To: <20201019083358.32621-2-yifeng.zhao@rock-chips.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201019_154229_366622_02266893 
-X-CRM114-Status: GOOD (  16.35  )
+X-CRM114-CacheID: sfid-20201019_155839_761245_2C0A6E44 
+X-CRM114-Status: GOOD (  15.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,86 +86,67 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org,
- clang-built-linux <clang-built-linux@googlegroups.com>,
- Greg KH <gregkh@linuxfoundation.org>, linux-iio@vger.kernel.org,
- nouveau@lists.freedesktop.org, storagedev@microchip.com,
- dri-devel <dri-devel@lists.freedesktop.org>,
- virtualization@lists.linux-foundation.org, keyrings@vger.kernel.org,
- linux-mtd@lists.infradead.org, ath10k@lists.infradead.org,
- linux-stm32@st-md-mailman.stormreply.com, usb-storage@lists.one-eyed-alien.net,
- linux-watchdog@vger.kernel.org, devel@driverdev.osuosl.org,
- linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-nvdimm <linux-nvdimm@lists.01.org>,
- amd-gfx list <amd-gfx@lists.freedesktop.org>, linux-acpi@vger.kernel.org,
- intel-wired-lan@lists.osuosl.org, industrypack-devel@lists.sourceforge.net,
- linux-pci@vger.kernel.org, spice-devel@lists.freedesktop.org,
- MPT-FusionLinux.pdl@broadcom.com, linux-media@vger.kernel.org,
- linux-serial@vger.kernel.org, linux-nfc@lists.01.org, linux-pm@vger.kernel.org,
- linux-can@vger.kernel.org, linux-block@vger.kernel.org,
- linux-gpio@vger.kernel.org, xen-devel@lists.xenproject.org,
- linux-amlogic@lists.infradead.org, openipmi-developer@lists.sourceforge.net,
- platform-driver-x86@vger.kernel.org, linux-integrity@vger.kernel.org,
- Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-edac@vger.kernel.org,
- George Burgess <gbiv@google.com>, Network Development <netdev@vger.kernel.org>,
- linux-usb@vger.kernel.org, linux-wireless <linux-wireless@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>, linux-security-module@vger.kernel.org,
- "open list:HARDWARE RANDOM NUMBER GENERATOR CORE"
- <linux-crypto@vger.kernel.org>, patches@opensource.cirrus.com,
- bpf <bpf@vger.kernel.org>, ocfs2-devel@oss.oracle.com,
- linux-power@fi.rohmeurope.com
+Cc: devicetree@vger.kernel.org, heiko@sntech.de, richard@nod.at,
+ linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+ robh+dt@kernel.org, linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
+ linux-arm-kernel@lists.infradead.org, vigneshr@ti.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Oct 17, 2020 at 10:43 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Sat, Oct 17, 2020 at 09:09:28AM -0700, trix@redhat.com wrote:
-> > From: Tom Rix <trix@redhat.com>
-> >
-> > This is a upcoming change to clean up a new warning treewide.
-> > I am wondering if the change could be one mega patch (see below) or
-> > normal patch per file about 100 patches or somewhere half way by collecting
-> > early acks.
->
-> Please break it up into one-patch-per-subsystem, like normal, and get it
-> merged that way.
->
-> Sending us a patch, without even a diffstat to review, isn't going to
-> get you very far...
+On Mon, 19 Oct 2020 16:33:55 +0800, Yifeng Zhao wrote:
+> Documentation support for Rockchip RK3xxx NAND flash controllers
+> 
+> Signed-off-by: Yifeng Zhao <yifeng.zhao@rock-chips.com>
+> ---
+> 
+> (no changes since v8)
+> 
+> Changes in v8:
+> - Fix make dt_binding_check error
+> 
+> Changes in v7:
+> - Fix some wrong define
+> 
+> Changes in v6:
+> - Fix some wrong define
+> - Modified the definition of compatible
+> 
+> Changes in v5:
+> - Fix some wrong define.
+> - Add boot-medium define.
+> - Remove some compatible define.
+> 
+> Changes in v4:
+> - The compatible define with rkxx_nfc.
+> - Add assigned-clocks.
+> - Fix some wrong defineChanges in.
+> 
+> Changes in v3:
+> - Change the title for the dt-bindings.
+> 
+>  .../mtd/rockchip,nand-controller.yaml         | 162 ++++++++++++++++++
+>  1 file changed, 162 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
+> 
 
-Tom,
-If you're able to automate this cleanup, I suggest checking in a
-script that can be run on a directory.  Then for each subsystem you
-can say in your commit "I ran scripts/fix_whatever.py on this subdir."
- Then others can help you drive the tree wide cleanup.  Then we can
-enable -Wunreachable-code-break either by default, or W=2 right now
-might be a good idea.
 
-Ah, George (gbiv@, cc'ed), did an analysis recently of
-`-Wunreachable-code-loop-increment`, `-Wunreachable-code-break`, and
-`-Wunreachable-code-return` for Android userspace.  From the review:
-```
-Spoilers: of these, it seems useful to turn on
--Wunreachable-code-loop-increment and -Wunreachable-code-return by
-default for Android
-...
-While these conventions about always having break arguably became
-obsolete when we enabled -Wfallthrough, my sample turned up zero
-potential bugs caught by this warning, and we'd need to put a lot of
-effort into getting a clean tree. So this warning doesn't seem to be
-worth it.
-```
-Looks like there's an order of magnitude of `-Wunreachable-code-break`
-than the other two.
+My bot found errors running 'make dt_binding_check' on your patch:
 
-We probably should add all 3 to W=2 builds (wrapped in cc-option).
-I've filed https://github.com/ClangBuiltLinux/linux/issues/1180 to
-follow up on.
--- 
-Thanks,
-~Nick Desaulniers
+./Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml:92:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+./Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml:101:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+
+
+See https://patchwork.ozlabs.org/patch/1384067
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
+
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
