@@ -2,93 +2,115 @@ Return-Path: <SRS0=sICc=D2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58A51C433DF
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Oct 2020 16:54:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62291C433DF
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Oct 2020 17:16:28 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BA0D122269
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Oct 2020 16:54:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CDDF622282
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Oct 2020 17:16:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="xGQaUC+T";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rXwWLbQb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA0D122269
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="brHqntCl";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="PLBOfPLB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CDDF622282
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:Message-ID:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Bk0UlJWqWyfuDBgBMzHp60mSR6KqJCb6Ip+ETKZLebI=; b=xGQaUC+TspNEyifF0iKzaZaUp
-	IfMM0OzBV/8pJVTHJgCCQl1QdzXoGrHPjnVos1drpTAxZ9980THB3Esb0szeen4L3kToUD9c9PMK+
-	QthkXHQT4u/3QeK5M52X0//lkqwqXY+xEDXA2zq8UcUxF5gjmtqx3QkbXhTTPahGcbGVzn7Hlh6lE
-	iDv6fjDGIytWYeVSlY/cdHb3Bo2qe0iHdBbQ+8o23G7rT9uD87m1UuwzVH/O75AB0K3L7LTdlh2bq
-	ncxTPGpSwIarwRDyf1iaIReVcvjJuTXHPKUXQtB84dxqVKU4qyIehqhG7dHnCLs188tvkwourZ32c
-	F8cCTbBLQ==;
+	 bh=SFNBvstTLW187B+hdGA221pNhF25Qo1Va7pBb3Aa77o=; b=brHqntClNlzZDu7vwGN2/uz/v
+	oUg3JQ+UFs0x5UaEQ7yX9QT128FlQplWRBTCowduDD33z46hvURRKQw9h3tyxYDym8W/B0gDN065v
+	Zw1SI9D+lGyW/yvvHcwZWT/h7L9YUapGgRpl5vl6CSQDtCB7tIpX1WzSjAYrAJjaXcBN9dGPyfA6M
+	WV1L5//S1GUBk/pAFPNEAC1EY/Vi3JxyVNsPXk9WhMH+77Y9op1FOek1vJj94+fzmf0czET05lrAW
+	zVxSjGq1gcQbLMFIlZvpiePRweVPcE6mN8h8jFI+7Ty/4qVIt9jFJv1NHWU/H/u+Q61qFBXMyGUjp
+	6UR7ueFOw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kUYP0-0005ZL-CL; Mon, 19 Oct 2020 16:52:54 +0000
-Received: from mail-lf1-x144.google.com ([2a00:1450:4864:20::144])
+	id 1kUYl0-0000Yg-K2; Mon, 19 Oct 2020 17:15:38 +0000
+Received: from mail-eopbgr80045.outbound.protection.outlook.com ([40.107.8.45]
+ helo=EUR04-VI1-obe.outbound.protection.outlook.com)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kUYOy-0005YU-37
- for linux-mtd@lists.infradead.org; Mon, 19 Oct 2020 16:52:52 +0000
-Received: by mail-lf1-x144.google.com with SMTP id b1so257308lfp.11
- for <linux-mtd@lists.infradead.org>; Mon, 19 Oct 2020 09:52:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=oeJENKnL6RlCYQZtisLig2cGUNPLYtt9SwyXyIaymzM=;
- b=rXwWLbQbBk2NyYYguSuq25QKMGtSZKMU0fyTndh4wPOhpV5ogUf3Y07OVJkqyV5NrL
- Buxa7hdWABZGSgogb/UGctWRqYqmtS4rvLu6jmXpSKh/AbhTRIXsg20kjiJuB5mszPpe
- Evq92MJL3xVI38nMOPQ1KwYvQiM+vaJH1E9L9c9M9jjvXGkeevrrhpU+0ZR3JmLrSFOj
- 8peAKbWmqSXAhP8a30ZsyIwqT8C3s3kr+7Y4yZelPehNb4hz2t5qJOz6P1q/DOXmpeB8
- 1ysZE5gBpoeP2fQNocG/WQtupnAMumg4NIh6tv32N1KkHnJAS8skysVr89LUU4Qo1ANF
- 9ScQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=oeJENKnL6RlCYQZtisLig2cGUNPLYtt9SwyXyIaymzM=;
- b=LYuEMDIcuHbQbhXdDs+V2mEgER6iHBh11iP492fDUYINEUjJ/WtvPrspX2oz+m2bZG
- znG8WmR5zJX//+HY6a0nSZJIe180/a0YeqY0ZXmWeaOn9rdhW+tBdDXz9/wg4hh8z5Y6
- MtjJee8nAB9QORbKCjzE3lk0qwi7FWKQSYHMDh3c7TtVxixdEufs/RaU0SSVw0orlDDX
- DALd3+6xoBffdVMvKhxT1HvVk6zSpXSZgI/6C+qQPjOJ48Z/ItJZK2oQZP8v5rpLCfkg
- VhjeHjyBcVw/qEI0OvrKCftGQ93zllcFOe19bD7usEQLZxZrj/9mSQ/c7sjkEmerFqTB
- iazw==
-X-Gm-Message-State: AOAM532Lu9idMac0Hsl7ni0mfXTbLe+UjUHzsaDttE+xYv/Oqrm4bv28
- LGPyu9geo1ytUn7Cf9BP+MYM2CxV/s85NUAIk1U=
-X-Google-Smtp-Source: ABdhPJwZV7t/tBBnirO2PeyRVBBRGKujDuPcEaITy2zgrFpxYknCfjcyqJ2qDu29KgSF7tPda5dYW2/wwGN3LsH+5Bs=
-X-Received: by 2002:a19:3f06:: with SMTP id m6mr188268lfa.25.1603126370318;
- Mon, 19 Oct 2020 09:52:50 -0700 (PDT)
+ id 1kUYkq-0000X4-NO
+ for linux-mtd@lists.infradead.org; Mon, 19 Oct 2020 17:15:32 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XiAVIjiDvA0k0tUGg4zibEW28D0T9juqG8KWy+wbpuG+24lG/QjoTY2IqiJeKsrxQOdShUfcZfAr5OTFrrXwjTB9/DA0KKoSI3hfVWwux+FU1oLh3dj8man7dze0i53ygJNAWY0BWIyjcLm5CNZZJmQKz3tMhK8pP9WXn7wvl8pmZK1YCExEpjUm4QUoR5HB8QZJ8T/8P9ysXeCpWje7rcxer0Q/ho6R+HWWQghSlSp76JhIwWrOeQK18wpvINa8hHwOmpHcOFkGIOeYCwdV8crUcxFGpIHPoQdbV9MtI0o+6o1fAYqC4kfzu4GA451NFQvvGT0/pPfOg5KjPvX4MA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=U7aOzgSdMuHyJHW89SITAFxrSRIrHvtSN2yayscefY8=;
+ b=hw74sA7CmCkBoaj/kkHbo2mOplamMefpMVjq1uSKHIYeaqi5QF5RKpqoUtGEAX8dUrDpl7JY2+/txjcFQ/CLi6iWvxegVqZuNxh1imWaI1lCLJxKrOaa3f0nQuwCg6cXjVGwTzdGY3fcU0oSdx5psyLbEoqP0ORSRdUNr2IRmkV7rrLJcT5xyDOTY02bNlnDO/BxIvgxRF7SRpyPekSK5L7PEbI6FYa8eSY/XzN4OwzLEovxFMCFkgK45StN1sE/fzw6+3FJr7pe1I7FkJ5t0gOzl35BEVPPiYJdao8y9T7jnnBkiRGRFsf8pCKdwvPKvsuF4XrMkOF2CueVH/G/XQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=U7aOzgSdMuHyJHW89SITAFxrSRIrHvtSN2yayscefY8=;
+ b=PLBOfPLB1W13Sy4M2H4bva9frTlwkKatuakFO5x1NR6rUseKuQq0OtzCDBziKRADsas3j9p2IdzMttd6PM/mCTD8e11qLSrrkwG+aq7aEU6trk3knxt0MNtw90Q4z9cH/JoFYIKqaviykxJoluXFOgtseadpTmeUMoF4HMivM7w=
+Received: from AM6PR0402MB3701.eurprd04.prod.outlook.com
+ (2603:10a6:209:1a::16) by AM6PR04MB4104.eurprd04.prod.outlook.com
+ (2603:10a6:209:4e::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Mon, 19 Oct
+ 2020 17:15:20 +0000
+Received: from AM6PR0402MB3701.eurprd04.prod.outlook.com
+ ([fe80::98a3:6f4e:b00c:98ed]) by AM6PR0402MB3701.eurprd04.prod.outlook.com
+ ([fe80::98a3:6f4e:b00c:98ed%3]) with mapi id 15.20.3477.025; Mon, 19 Oct 2020
+ 17:15:20 +0000
+From: Han Xu <han.xu@nxp.com>
+To: Fabio Estevam <festevam@gmail.com>, "miquel.raynal@bootlin.com"
+ <miquel.raynal@bootlin.com>
+Subject: RE: [EXT] [PATCH v2] mtd: rawnand: ifc: Move the ECC engine
+ initialization to the right place
+Thread-Topic: [EXT] [PATCH v2] mtd: rawnand: ifc: Move the ECC engine
+ initialization to the right place
+Thread-Index: AQHWo7/+2dIz5N4fiUayWcr8hrRsLamfLv7w
+Date: Mon, 19 Oct 2020 17:15:20 +0000
+Message-ID: <AM6PR0402MB3701A1F9C6EB510D08819B60971E0@AM6PR0402MB3701.eurprd04.prod.outlook.com>
+References: <20201016132626.30112-1-festevam@gmail.com>
+In-Reply-To: <20201016132626.30112-1-festevam@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [70.112.23.252]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 08d92935-6d0c-4e02-33ca-08d874528ecb
+x-ms-traffictypediagnostic: AM6PR04MB4104:
+x-microsoft-antispam-prvs: <AM6PR04MB4104B2E3D33EE8138E8B529B971E0@AM6PR04MB4104.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:305;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: n4gFPHSBrgSb7+Jsk/TkszP0bf+YvF3e3anHZSEPH593TG8b7tXgncqmEZGj1YI8uxQY+u9QmfMShPpCXYasrsL0yyZkcHzYRtsime+6ZdWiDRFsN2gD2zEPHY+U//74qgPEPCvHJhYmfbK+dIpTpSbYuGb4d3duzcvYpAfEycAOBsLUZQ6lSANvJHZOcU8hZSdnSIEOhaaMISvdB96MJQ31Dkw17FQZdDtmcatFtzQPFCl+4yRiMuBoHvCQHoH9qx7tDOAiwGy0xz6ByxfkGP8xd+a7wZh1nouLlNQW0UETn391l2+n94dbRxE26PH4m+WPvvJmHTYvA+hRlmINQg==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:AM6PR0402MB3701.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(376002)(346002)(39860400002)(396003)(136003)(366004)(55016002)(33656002)(53546011)(8936002)(6506007)(8676002)(83380400001)(478600001)(5660300002)(186003)(76116006)(71200400001)(2906002)(4326008)(9686003)(66476007)(66446008)(44832011)(316002)(110136005)(66946007)(66556008)(64756008)(52536014)(7696005)(86362001)(26005)(54906003);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata: NM9lgflmPs3a5c9ogExL2NVYwEcL5ZRUtHrge24wT68iSTjJZpMWTRp7HdJlaQSpe5kUn+XdVV9IgYt/zoD8OnhMIKrrCN1JAv2NShsax92/9s5kGXpE0n2sLWHibrioDkDKNg3S9MQV/c3c6tiqEtpVtHr4d8wNXchuFwrZzpeOwh/vJFTP9XHKe0p+nPcCf2IPE3AtH5g6RbLXDSs1bindorID9CGm3a3K+Gw7EGCoyMPj3Pe9C9eSFJorWJMg2rubz/2O2MZyS+hLyADzuN6PGwrszCZomW7x++4grxMnYddDbmaxJNrKfC+mgTZBuJ5opXFAxs4uD8BY3IbevTYsx8OqNUlj8481clmZbbWmowjfb3pDncPgELov+KHDjfR1430iKaTNWjP3UTeKSEJX7gOKX8VHh3VWNc1BUOh8bsbo6s0g1n9D87FH7M3wKjFNX918cnnw8hjnVA+pzWZeTpgsgsQYCURB/q45uGQaAKo5rsM57pgAPce/hsQCZwQhj6ZNPzWVvn9YHpMFDK6vdHfcfTyC80gTpBVj+jvFXg3TmUYLP88lNrft9AjJybMp38PMjmfl9cdNMwESLIUl96sjZAyiJG1o0c2pPteokjRDQyCA1Y3g2+7yjHEKhp4orEH49oe8QayoRLrAaQ==
+x-ms-exchange-transport-forked: True
 MIME-Version: 1.0
-References: <20200827085208.16276-1-miquel.raynal@bootlin.com>
- <20200827085208.16276-10-miquel.raynal@bootlin.com>
- <CA+EcR21PQRrKMLiRYH+2mAkGhTPmxqKUO6hxwvAHQCZ4g3Jhvg@mail.gmail.com>
- <CAOMZO5AVU2RMPP55abXvueHMC=FE1rXjfPVn1+Xv4GqumD18vg@mail.gmail.com>
- <CA+EcR22BaKLMU7V9uDfgQctQm-ttfno9VKWqFpp4D-mPYR405g@mail.gmail.com>
- <20201015092502.2ea2a7fc@xps13>
- <CA+EcR23vtjOBzt+7v=s1i0YqCW-A1v_h2ZtHcToBzvSrPaZkpA@mail.gmail.com>
- <20201016191424.2a41b632@xps13>
- <CA+EcR20Lm2m-bkECKWC5RvB8wb1C_s7uH2PENzLK0iD14oAGUg@mail.gmail.com>
- <CAOMZO5DXJ=V0xvyEFWkwCEzwsiv6Gt4Gb+4BjmHfTTOBkDdvsA@mail.gmail.com>
- <CA+EcR21w_0jYhovUs7siqWQdq6+kPiv9mxgLBWE6JHoraYiR2g@mail.gmail.com>
-In-Reply-To: <CA+EcR21w_0jYhovUs7siqWQdq6+kPiv9mxgLBWE6JHoraYiR2g@mail.gmail.com>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Mon, 19 Oct 2020 13:52:38 -0300
-Message-ID: <CAOMZO5BeoXpZGf-_6sC9kN=WE2-vKnKo8Z0pEkijJyW22RYRfQ@mail.gmail.com>
-Subject: Re: [PATCH v13 09/20] mtd: rawnand: Separate the ECC engine type and
- the ECC byte placement
-To: Han Xu <xhnjupt@gmail.com>
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR0402MB3701.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 08d92935-6d0c-4e02-33ca-08d874528ecb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Oct 2020 17:15:20.3078 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 3wzObBenNMc+t2xXFtEFuCf7purpKSk9kpnLWgLiK7ZnI2g2+Tv98xSFBXFZAMhE
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB4104
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201019_125252_148396_9091DE1D 
-X-CRM114-Status: UNSURE (   8.27  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20201019_131528_883159_7F7DF13B 
+X-CRM114-Status: GOOD (  23.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,25 +122,120 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: "richard@nod.at" <richard@nod.at>,
+ "boris.brezillon@collabora.com" <boris.brezillon@collabora.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "vigneshr@ti.com" <vigneshr@ti.com>,
+ "kernel@pengutronix.de" <kernel@pengutronix.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Han Xu,
 
-On Mon, Oct 19, 2020 at 12:51 PM Han Xu <xhnjupt@gmail.com> wrote:
 
-> Tested on ls1043ardb board, the issue can be fixed. Thanks.
+> -----Original Message-----
+> From: Fabio Estevam <festevam@gmail.com>
+> Sent: Friday, October 16, 2020 8:26 AM
+> To: miquel.raynal@bootlin.com
+> Cc: richard@nod.at; vigneshr@ti.com; boris.brezillon@collabora.com; linux-
+> mtd@lists.infradead.org; Han Xu <han.xu@nxp.com>; kernel@pengutronix.de;
+> Fabio Estevam <festevam@gmail.com>
+> Subject: [EXT] [PATCH v2] mtd: rawnand: ifc: Move the ECC engine initialization
+> to the right place
+> 
+> Caution: EXT Email
+> 
+> No ECC initialization should happen during the host controller probe.
+> 
+> In fact, we need the probe function to call nand_scan() in order to:
+> - identify the device, its capabilities and constraints (nand_scan_ident())
+> - configure the ECC engine accordingly (->attach_chip())
+> - scan its content and prepare the core (nand_scan_tail())
+> 
+> Moving these lines to fsl_ifc_attach_chip() fixes a regression caused by a
+> previous commit supposed to clarify these steps.
+> 
+> Based on a fix done for the mxc_nand driver by Miquel Raynal.
+> 
+> Reported-by: Han Xu <xhnjupt@gmail.com>
+> Signed-off-by: Fabio Estevam <festevam@gmail.com>
 
-Thanks for testing.
+Tested-by: Han Xu <xhnjupt@gmail.com>
 
-Please reply with your Tested-by in the original patch.
+> ---
+> Changes since v1:
+> - Do not remove a blank line
+> 
+>  drivers/mtd/nand/raw/fsl_ifc_nand.c | 43 ++++++++++++++++-------------
+>  1 file changed, 24 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/fsl_ifc_nand.c
+> b/drivers/mtd/nand/raw/fsl_ifc_nand.c
+> index 0e7a9b64301e..e345f9d9f8e8 100644
+> --- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
+> +++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
+> @@ -707,6 +707,30 @@ static int fsl_ifc_attach_chip(struct nand_chip *chip)  {
+>         struct mtd_info *mtd = nand_to_mtd(chip);
+>         struct fsl_ifc_mtd *priv = nand_get_controller_data(chip);
+> +       struct fsl_ifc_ctrl *ctrl = priv->ctrl;
+> +       struct fsl_ifc_global __iomem *ifc_global = ctrl->gregs;
+> +       u32 csor;
+> +
+> +       csor = ifc_in32(&ifc_global->csor_cs[priv->bank].csor);
+> +
+> +       /* Must also set CSOR_NAND_ECC_ENC_EN if DEC_EN set */
+> +       if (csor & CSOR_NAND_ECC_DEC_EN) {
+> +               chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
+> +               mtd_set_ooblayout(mtd, &fsl_ifc_ooblayout_ops);
+> +
+> +               /* Hardware generates ECC per 512 Bytes */
+> +               chip->ecc.size = 512;
+> +               if ((csor & CSOR_NAND_ECC_MODE_MASK) ==
+> CSOR_NAND_ECC_MODE_4) {
+> +                       chip->ecc.bytes = 8;
+> +                       chip->ecc.strength = 4;
+> +               } else {
+> +                       chip->ecc.bytes = 16;
+> +                       chip->ecc.strength = 8;
+> +               }
+> +       } else {
+> +               chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
+> +               chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
+> +       }
+> 
+>         dev_dbg(priv->dev, "%s: nand->numchips = %d\n", __func__,
+>                 nanddev_ntargets(&chip->base)); @@ -910,25 +934,6 @@ static int
+> fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
+>                 return -ENODEV;
+>         }
+> 
+> -       /* Must also set CSOR_NAND_ECC_ENC_EN if DEC_EN set */
+> -       if (csor & CSOR_NAND_ECC_DEC_EN) {
+> -               chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
+> -               mtd_set_ooblayout(mtd, &fsl_ifc_ooblayout_ops);
+> -
+> -               /* Hardware generates ECC per 512 Bytes */
+> -               chip->ecc.size = 512;
+> -               if ((csor & CSOR_NAND_ECC_MODE_MASK) ==
+> CSOR_NAND_ECC_MODE_4) {
+> -                       chip->ecc.bytes = 8;
+> -                       chip->ecc.strength = 4;
+> -               } else {
+> -                       chip->ecc.bytes = 16;
+> -                       chip->ecc.strength = 8;
+> -               }
+> -       } else {
+> -               chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
+> -               chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
+> -       }
+> -
+>         ret = fsl_ifc_sram_init(priv);
+>         if (ret)
+>                 return ret;
+> --
+> 2.17.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
