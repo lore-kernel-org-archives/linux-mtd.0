@@ -2,72 +2,66 @@ Return-Path: <SRS0=Iiny=D6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA2CBC55178
-	for <linux-mtd@archiver.kernel.org>; Fri, 23 Oct 2020 20:03:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EEB2C388F9
+	for <linux-mtd@archiver.kernel.org>; Fri, 23 Oct 2020 20:49:08 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5623820882
-	for <linux-mtd@archiver.kernel.org>; Fri, 23 Oct 2020 20:03:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A42032087D
+	for <linux-mtd@archiver.kernel.org>; Fri, 23 Oct 2020 20:49:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pYC3cGLs";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="FwezQFVQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5623820882
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Y8j06reu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A42032087D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:Cc:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=uOl0jqmW8AN605OxctHGe9cXtdX3XhFxh5Lt6RWK5v8=; b=pYC3cGLsAaEJpTAMHTihv1Jfe
-	KcVe0O4+ibJ4LHQAevsZXSNdln8BbevzJL88i0C6dEsMWvBE0TZT6ZP2DoEEZI/Abx+yZ0mcy01Cj
-	9MARIwIQhFP9s9Yq/EcEGz0OFB10Gket0rS93la+J6TuNGKbOBDq381U/H7rDtPQGIh43slvqScYI
-	mUFSjuMFubKEYj9xV/EgI2nS1/YZ/yE/8fgh0Ap6zkaRwPSHdkJXd9e/XdLGavUj3FF9e9Bhwhfl/
-	EFNLVSwuj6vuTmWzzEzmMS1SV+mv5Uwe1VjMDEhRdmJpKFj1K55CjKQe0RpFQ+xrhtefF1AcKiSki
-	bu3HvXDsw==;
+	 bh=eLXNA3jN9nWl8LXGRrB+zLGxVElww5C8/xHK8Xmb2tM=; b=Y8j06reuIkxgLI5wZpxJkbeOH
+	oefWIS9o0LvWWOZXd1VPd/cgKcdRCVsfym/Jz4mImx3W/YJiZT6QwcHpDFPMnxFApryucmI0neBxy
+	jTWuc8atvQyVmEloOq9dhyZBhJ7XlA+Jrgn+X9DKZ0tTsjLEFZroqQyvdLf2owbRWNskT1makDBuL
+	dAY56bvGZV6VDOHfd/FpV/i54p2tCnCsBpO+nLgKbiflP9nf5mYc3WR4gfJhJL8rGZI8jSqHqNpD1
+	n5/iAcjoZMFCsfBIqGV6Cwri4BhIdr3L7aOv9AWGj4sEnIMV10u/RL2S+0v3lM0fy22oNSu6HI6Jm
+	sv4nmjpWA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kW3HS-00010Q-UM; Fri, 23 Oct 2020 20:03:18 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1kW3yX-0000Zb-NO; Fri, 23 Oct 2020 20:47:50 +0000
+Received: from asavdk3.altibox.net ([109.247.116.14])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kW3Gr-0000er-1Y; Fri, 23 Oct 2020 20:02:42 +0000
-Received: from localhost (p5b35db11.dip0.t-ipconnect.de [91.53.219.17])
+ id 1kW3yS-0000YK-MR; Fri, 23 Oct 2020 20:47:45 +0000
+Received: from ravnborg.org (unknown [188.228.123.71])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 5C6F920FC3;
- Fri, 23 Oct 2020 20:02:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1603483359;
- bh=hDOEzAxi95sem2PmS9KZVDmchKA6xtzm/88DXdUooiw=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=FwezQFVQVyDr5A2On7/Xianed48bAS8BClnsEKjQEF5rFTdB9bUDAX6dKigGf5+nf
- O1HXQYVc63Ei0vCbEEJLiEdAjto/zryJzDpjbX3j/y/gi9DjHDpww6Ffgd4jFETEaq
- WlepcR46MPw5EswUs8/ag1N8myRCHuScU/nqODuM=
-Date: Fri, 23 Oct 2020 22:02:35 +0200
-From: Wolfram Sang <wsa@kernel.org>
+ by asavdk3.altibox.net (Postfix) with ESMTPS id BB09020037;
+ Fri, 23 Oct 2020 22:47:35 +0200 (CEST)
+Date: Fri, 23 Oct 2020 22:47:33 +0200
+From: Sam Ravnborg <sam@ravnborg.org>
 To: Rob Herring <robh@kernel.org>
 Subject: Re: [PATCH] dt-bindings: More whitespace clean-ups in schema files
-Message-ID: <20201023200235.GA4473@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
- Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- dri-devel@lists.freedesktop.org, linux-gpio@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-pm@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-serial@vger.kernel.org, linux-usb@vger.kernel.org
+Message-ID: <20201023204733.GA72065@ravnborg.org>
 References: <20201023192258.3126047-1-robh@kernel.org>
 MIME-Version: 1.0
+Content-Disposition: inline
 In-Reply-To: <20201023192258.3126047-1-robh@kernel.org>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=S433PrkP c=1 sm=1 tr=0
+ a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+ a=kj9zAlcOel0A:10 a=JfrnYn6hAAAA:8 a=e5mUnYsNAAAA:8 a=VwQbUJbxAAAA:8
+ a=foHCeV_ZAAAA:8 a=7gkXJVJtAAAA:8 a=ruYZUhiEchJcPueZ5-MA:9
+ a=CjuIK1q_8ugA:10 a=1CNFftbPRP8L7MoqJWF3:22 a=Vxmtnl_E_bksehYqCbjh:22
+ a=AjGcO6oz07-iQ99wixmX:22 a=h8a9FgHX5U4dIE3jaWyr:22
+ a=E9Po1WZjFZOl8hwRPBS3:22
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201023_160241_408706_11C8C9AD 
-X-CRM114-Status: GOOD (  12.33  )
+X-CRM114-CacheID: sfid-20201023_164744_855906_A8D8F2AB 
+X-CRM114-Status: GOOD (  11.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,29 +79,18 @@ Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  dri-devel@lists.freedesktop.org, linux-gpio@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
  linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Content-Type: multipart/mixed; boundary="===============8721591569899474005=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
-
-
---===============8721591569899474005==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="3V7upXqbjpZ4EhLz"
-Content-Disposition: inline
-
-
---3V7upXqbjpZ4EhLz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
 On Fri, Oct 23, 2020 at 02:22:58PM -0500, Rob Herring wrote:
 > Clean-up incorrect indentation, extra spaces, and missing EOF newline in
 > schema files. Most of the clean-ups are for list indentation which
 > should always be 2 spaces more than the preceding keyword.
->=20
+> 
 > Found with yamllint (now integrated into the checks).
->=20
+> 
 > Cc: linux-arm-kernel@lists.infradead.org
 > Cc: dri-devel@lists.freedesktop.org
 > Cc: linux-gpio@vger.kernel.org
@@ -120,42 +103,8 @@ On Fri, Oct 23, 2020 at 02:22:58PM -0500, Rob Herring wrote:
 > Cc: linux-serial@vger.kernel.org
 > Cc: linux-usb@vger.kernel.org
 > Signed-off-by: Rob Herring <robh@kernel.org>
-
-Acked-by: Wolfram Sang <wsa@kernel.org> # for I2C
-
-
---3V7upXqbjpZ4EhLz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl+TNtcACgkQFA3kzBSg
-KbZOdBAAkqpJEFfYvRRb1SGSzO/gUrubqUMa8fIlI3uJkjT7IeUC5fnw0hLY1MxJ
-Cbfd4NNRvkk6E9yKwFo8kApquTQGdGpwcO9r0CiBa7hkbQgUbDKVvtBmjGSslFWs
-0j0Vo+YnXMNHy5/Wm1f9ZJLUUiE+VZgFJcq4A4Vu4caF03uI0DUINEIYkllpitlB
-2df2t4pMA5Hzy9BXd2LvhDIDp1CkyWqQ8gXiQ39xE3IzqU6PHe5g9nb0d2HH41Jf
-qdI7CqNt+W1d20gSUA6xr2LesbmR0ZxdJ2Vhl99IiUR3VLXWvq4nuF3Y+12pYZoW
-DJNroSrxWH8330Lhgqz/KWtZ/6XThDblaU0vXoP5svYMsCfaobu+g6mgRFCzVBRB
-YFhUS0I8Vl5IxMWXjodFn2QtX8Ojc4Ip3DchF4Q2fYqkU8JGm1viFZb7OyCzMCok
-1eBcR34Ba2ssrW98znmk7am1PSWWp8/X4odPTQBGamLSeq3iYKSZCCUPnTvR4RJu
-4C19OWsUy3ILh65y/6CquGIbEVQP+HtACQlEU3JWsBSPfT+wfdazF8sZkTo1keoZ
-tQxJw0DPlBMo5id9L9vahqoV8J7pncnzOonWyFr0AgHQ3V9DJV1ggVC/qD0rXEyx
-jrzs0Ye/zKGIorZ8jxV6ggh/XpRNjEgM1g/5l+LT1mb7cY593Ao=
-=P6je
------END PGP SIGNATURE-----
-
---3V7upXqbjpZ4EhLz--
-
-
---===============8721591569899474005==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Acked-by: Sam Ravnborg <sam@ravnborg.org> # for display
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============8721591569899474005==--
-
