@@ -2,83 +2,75 @@ Return-Path: <SRS0=0HiW=ED=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF177C4363A
-	for <linux-mtd@archiver.kernel.org>; Wed, 28 Oct 2020 09:50:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37CBEC4363A
+	for <linux-mtd@archiver.kernel.org>; Wed, 28 Oct 2020 09:54:42 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 279972469F
-	for <linux-mtd@archiver.kernel.org>; Wed, 28 Oct 2020 09:50:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9E95C246A4
+	for <linux-mtd@archiver.kernel.org>; Wed, 28 Oct 2020 09:54:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TY9z9vE+";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VJsa0z5k"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 279972469F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pMCHEcsY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E95C246A4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rock-chips.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=AooJwTYzheB8XXTCGw5rIUSWGyzbI/CPNmUJZIAF//s=; b=TY9z9vE+z7GIQObmrauAyuzgrJ
-	dAXZhZQBf5z2QE89UkiUYubccQxqiwg0T19BY8nom0ZdR8lYwQoLLS5khdqt6m3xDVLorA9xzUaBq
-	oG5bCeNScofhA0gIz46YC9uGDzl2vuT0gRJSqmQiOXJBCoDZODhAJjeIcwqFupjDMWvnOPU6deHRS
-	bQgNKPiVkgTJqynnvDY0LIhFTyLRIQdTyHwPa2Ju7fXa/bD7/YYN29D41Wnhz2ZU+nz4PoFsjZ2in
-	KNnHFwrXL9MOirG1vod75+Grf7gdAi93Fg9/MOD7dYF94/T5zXM70ZSdDX0b5wUlLIB7ab7ii0G5p
-	zpSGZZ9A==;
+	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
+	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=fMQo8oDNtP4trHEGZDFfCwPH16cHYbDI8TFHlLiFvnA=; b=pMCHEcsY1L9pEXCWzTbXXCzRCe
+	tOVxKAto2Mq7gxGmK1HqMUg9a5qbGxE1nnFpJ9OZsx7A3UgGE0esXILuY8BvZbe6NOg0W8JQjbYY2
+	cmG6dPSC1LelsOn3REkBS7gNWL5ch3+DXFFz2+wi+LHXv7howO9jr+LDxslwStMxgTrzq3VrxEkyF
+	k7/3SVNHynGuiSYpsiVYN0JgMZPXd825o+SmVYdTxGku6ijvUs15zn7TQBpWcYvT6YuJd+OV7w22Z
+	u2fMt0oWqqRRUm/PSIQwo0m8ZTP4u5MOsj55rKWY54cMmmGKNTDSRkkghwp9YFgfHXvYoJr7L1Vfs
+	Z54LfLCg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kXi5h-0006M0-9M; Wed, 28 Oct 2020 09:50:01 +0000
-Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
+	id 1kXi9c-0007Rn-3i; Wed, 28 Oct 2020 09:54:04 +0000
+Received: from lucky1.263xmail.com ([211.157.147.133])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kXi5e-0006Ko-MP
- for linux-mtd@lists.infradead.org; Wed, 28 Oct 2020 09:49:59 +0000
-Received: by mail-lj1-x244.google.com with SMTP id d24so5325180ljg.10
- for <linux-mtd@lists.infradead.org>; Wed, 28 Oct 2020 02:49:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id;
- bh=ORjAmXFNbA8sjUlFAeqJzueYsTW6Da7gRCx6HUe+og8=;
- b=VJsa0z5kZ+s01cwlxvNqzmYyQKdorOOUaToPYYDqKANbp2Ri31yfVXz1lSNlTEB25+
- Lfu0KDVqFhw3PBM5wOzPwKGx2Lnl1uev1VI+Wzheo5AJ1lzVDIwlOOSAyAg21FjPsRA+
- rsP1WWd0nS6Hevk9XBV4V5YBgWEY75gFW6GXJF9JfD+7pIFu8cIYWSWIFLda86oZeTzW
- YexUGUFp7V5dLeolFplLq9AngpcethHLu7iqiCN0g9f2ibrd2PVtP4TjyypBMHy2PmS5
- xVXXrLjd+Vfy/Lk9z4aub0YE80RmkqCaHoz1ZpAn9ikGHcNICroUP+k6N79gVVRU5KWr
- bYmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=ORjAmXFNbA8sjUlFAeqJzueYsTW6Da7gRCx6HUe+og8=;
- b=YyJiwd1qKmn0JbbTSEoUZqXW0LMqQEzbZq37aZOu63vpv1e/YmIs0qoEAnOOqg67MV
- bmt4pRVOytnZ19zlMCRtOSLIjbAth1unOKKQjbdjKS/ErmW3WFzRBRMXrItwa802AgKr
- rtre/j4XhzY+cdVCu84d1z/etDpE5ImwqV9gKGV0AmjCC6vuvppUDfIQeFKXjM2cq2AR
- AZ1DbEllJ9kJ0ulJRcVMbVJC+B4mFjTCc8PQNZ/0g58sZiKiL84exBPa+I7SmrqgTTAf
- MM735So4ngCP5tA5HMYMRx5DwpC2x1vXjPaYv1Qe8OyU4GWi0TTZRQinc5j0uCNZxJDj
- cGWQ==
-X-Gm-Message-State: AOAM531W6AmJlGV2fDRoGQNGPZsj7kHquNtmjH7NCi0g7JImw/xMd8yc
- lvH9FINdhU4RA7CIT4SN9vZenXcuhLCtGaJb
-X-Google-Smtp-Source: ABdhPJyhw7s1iIfdFLvwmXcYfeuO6SSJjXm13OAy+LQQDIyT9jZ2znoVS3kTBa+YjxSVN6rZtzqSAQ==
-X-Received: by 2002:a2e:8709:: with SMTP id m9mr2696904lji.290.1603878596744; 
- Wed, 28 Oct 2020 02:49:56 -0700 (PDT)
-Received: from saproj-LIN.yandex.net ([2a02:6b8:0:408:3648:edff:fe3b:1baa])
- by smtp.gmail.com with ESMTPSA id y15sm33091lfl.83.2020.10.28.02.49.55
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 28 Oct 2020 02:49:56 -0700 (PDT)
-From: Sergei Antonov <saproj@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: meson: fix meson_nfc_dma_buffer_release() arguments
-Date: Wed, 28 Oct 2020 12:49:40 +0300
-Message-Id: <20201028094940.11765-1-saproj@gmail.com>
+ id 1kXi9W-0007PS-09; Wed, 28 Oct 2020 09:53:59 +0000
+Received: from localhost (unknown [192.168.167.13])
+ by lucky1.263xmail.com (Postfix) with ESMTP id BEEAECA4BB;
+ Wed, 28 Oct 2020 17:53:52 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+ by smtp.263.net (postfix) whith ESMTP id
+ P9243T140659033757440S1603878810079875_; 
+ Wed, 28 Oct 2020 17:53:52 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <d8fe397009b99f86f599358911547af3>
+X-RL-SENDER: yifeng.zhao@rock-chips.com
+X-SENDER: zyf@rock-chips.com
+X-LOGIN-NAME: yifeng.zhao@rock-chips.com
+X-FST-TO: miquel.raynal@bootlin.com
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+From: Yifeng Zhao <yifeng.zhao@rock-chips.com>
+To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ robh+dt@kernel.org
+Subject: [PATCH v13 4/8] arm64: dts: rockchip: Add NFC node for RK3308 SoC
+Date: Wed, 28 Oct 2020 17:53:26 +0800
+Message-Id: <20201028095326.15562-5-yifeng.zhao@rock-chips.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201028095326.15562-1-yifeng.zhao@rock-chips.com>
+References: <20201028095326.15562-1-yifeng.zhao@rock-chips.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201028_054958_761935_FA70CB16 
-X-CRM114-Status: GOOD (  13.23  )
+X-CRM114-CacheID: sfid-20201028_055358_385554_1F483200 
+X-CRM114-Status: GOOD (  10.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,38 +82,70 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: liang.yang@amlogic.com, stable@vger.kernel.org, jianxin.pan@amlogic.com,
- miquel.raynal@bootlin.com
+Cc: devicetree@vger.kernel.org, heiko@sntech.de,
+ Yifeng Zhao <yifeng.zhao@rock-chips.com>, linux-kernel@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, Yifeng Zhao <zyf@rock-chips.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Arguments 'infolen' and 'datalen' to meson_nfc_dma_buffer_release() were mixed up.
+From: Yifeng Zhao <zyf@rock-chips.com>
 
-Fixes: 8fae856c53500 ("mtd: rawnand: meson: add support for Amlogic NAND flash controller")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sergei Antonov <saproj@gmail.com>
+Add NAND FLASH Controller(NFC) node for RK3308 SoC.
+
+Signed-off-by: Yifeng Zhao <zyf@rock-chips.com>
+Signed-off-by: Yifeng Zhao <yifeng.zhao@rock-chips.com>
 ---
- drivers/mtd/nand/raw/meson_nand.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
-index 48e6dac96be6..a76afea6ea77 100644
---- a/drivers/mtd/nand/raw/meson_nand.c
-+++ b/drivers/mtd/nand/raw/meson_nand.c
-@@ -510,7 +510,7 @@ static int meson_nfc_dma_buffer_setup(struct nand_chip *nand, void *databuf,
- }
+Changes in v13: None
+Changes in v12: None
+Changes in v11: None
+Changes in v10: None
+Changes in v9: None
+Changes in v8: None
+Changes in v7: None
+Changes in v6: None
+Changes in v5: None
+Changes in v4: None
+Changes in v3: None
+Changes in v2: None
+
+ arch/arm64/boot/dts/rockchip/rk3308.dtsi | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3308.dtsi b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
+index b3118cabd0f6..f6b4d47089b5 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3308.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
+@@ -629,6 +629,21 @@
+ 		status = "disabled";
+ 	};
  
- static void meson_nfc_dma_buffer_release(struct nand_chip *nand,
--					 int infolen, int datalen,
-+					 int datalen, int infolen,
- 					 enum dma_data_direction dir)
- {
- 	struct meson_nfc *nfc = nand_get_controller_data(nand);
++	nfc: nand-controller@ff4b0000 {
++		compatible = "rockchip,rk3308-nfc",
++			     "rockchip,rv1108-nfc";
++		reg = <0x0 0xff4b0000 0x0 0x4000>;
++		interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&cru HCLK_NANDC>, <&cru SCLK_NANDC>;
++		clock-names = "ahb", "nfc";
++		assigned-clocks = <&cru SCLK_NANDC>;
++		assigned-clock-rates = <150000000>;
++		pinctrl-0 = <&flash_ale &flash_bus8 &flash_cle &flash_csn0
++			     &flash_rdn &flash_rdy &flash_wrn>;
++		pinctrl-names = "default";
++		status = "disabled";
++	};
++
+ 	cru: clock-controller@ff500000 {
+ 		compatible = "rockchip,rk3308-cru";
+ 		reg = <0x0 0xff500000 0x0 0x1000>;
 -- 
 2.17.1
+
+
 
 
 ______________________________________________________
