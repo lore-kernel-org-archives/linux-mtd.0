@@ -2,81 +2,67 @@ Return-Path: <SRS0=x3fM=EE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF131C2D0A3
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Oct 2020 10:36:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A511C2D0A3
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Oct 2020 10:39:02 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2B6A420791
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Oct 2020 10:36:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5E1BF20782
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Oct 2020 10:39:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="s30Ow7hM";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jz5cBibT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B6A420791
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="0C842CF4";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=syscom.ch header.i=@syscom.ch header.b="mebqBCvk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E1BF20782
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=syscom.ch
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=cO+XOkKnGPN59sH7AZYp8GHy6/3UH7pcumGgppFBMwg=; b=s30Ow7hM5rstU0tVUpH75nyiW
-	MYm8pFs4IBhmZJ94QR4TF2KqknbxI7y1MkQpQGCbDrvskmkZLzFnND/D1xUw0oSEwh4QDZsBo5Idy
-	LHyGwoiBp74VyCeYFCkHUUir+bq5+v3D20LasFJ0eCoADA9ewMspdw3lfRJhdJ+kBav1gLr2tH1J7
-	mjq1fdLUHKdtsiyWGbs7ZN8NTWYdqQpew7ggzwpt97pLrcppN+0UZLrWCOTpnoVifdIrE1kNeXK6J
-	TVdh1fRtIh7999Jgw9Niham9OchPjbNw8DyFq8Dgioejd1gMNF3ikn68qaTC5fl955DUSlN1ik/nt
-	/pUgY5faQ==;
+	Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
+	:List-Id:MIME-Version:Message-ID:Subject:To:From:Date:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=RBPZrw2PPouFZm69D95pQLqxdD/f400PIODQiBugWak=; b=0C842CF42/SLoDEjnc5RkZzfwm
+	FBCciqiKmlPQyR6KXk9vqAqR9oWkBuAN7/56lyyNG7A55k+tW722gGR8AOxdVg8vYOulKG57iRtEZ
+	eOCf+suj5UzelorYbZFn7O6jomlkv5KKJUvKQxuf1WD4qstpxUpG43BiANR/wxJvSNgwE2UJ5ExoB
+	6OFfZuPf7+yRGHWYJFGho07SNbV1J6mMN2XI2EtFI2TpKN70U4h1mOU8jRlCGilapH30s+k0R4pGa
+	pG6gXUZxFNOm9GbQ5JaB1Q8rDMwwlD6lM6Rn8IZ9/Nlr2hZYx1m3BtAaSPZl1M7K6nlfK6/29TLvi
+	OWGyjRWQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kY5I2-0002bQ-4N; Thu, 29 Oct 2020 10:36:18 +0000
-Received: from mail-io1-xd34.google.com ([2607:f8b0:4864:20::d34])
+	id 1kY5K6-0002rW-0p; Thu, 29 Oct 2020 10:38:26 +0000
+Received: from smtp-42ab.mail.infomaniak.ch ([84.16.66.171])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kY5Hz-0002at-W5
- for linux-mtd@lists.infradead.org; Thu, 29 Oct 2020 10:36:17 +0000
-Received: by mail-io1-xd34.google.com with SMTP id z17so2749551iog.11
- for <linux-mtd@lists.infradead.org>; Thu, 29 Oct 2020 03:36:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=iktHb3UP/LMrEYtEZ+Ez8BpekM8KQ4nl59qYILRgRyk=;
- b=jz5cBibTRn46TZ5dCypuAkqXwWUHPFV78hZL7G5acofdTxZoicNKDf5gL8JAppWVoE
- YeV6r5msDD2xoQckKBNELOZKzuqChA5bvNoDpTP3ZpLTLiaOetnpYSGTS+2l56dNV8Ov
- M27XGQJL5htcRE7GTZDEKlOcViMPUWWeaKyQa5qgkHryNZM1XXlW3ykMx33QXy1LaOSB
- /MUcWeXfrsKxC7W81uXPM6dgXVhMcA4BLCHkaFfdbrUgpgMV+uiPePT1AJU9E8fNoGjl
- 6lNqBqi7100bUNcZhzBNh75fgRs0FGzelKnnHU2eQ6z6MLMsyMGBHl5FGkDtW02ywqjE
- 1ntg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=iktHb3UP/LMrEYtEZ+Ez8BpekM8KQ4nl59qYILRgRyk=;
- b=EQCXA5r1GWm5CEyQJ2VBoXsJ2ICZLQDaq6PdlUFLj+6wGjHkpRJSiRsJmf6ESueurp
- FkXRWd32h+/Tw1aBEXvnXdT40ZqmM3SiMKqZwMKNl0vOBQCx9+kOm8RYnMz3z2mIDbn8
- GVgRFMSZkBBy23IaSph6EihkSrnau9ds7toUEhLfwEPIrY9nCTJH2lRie7PwnqyfMb6Z
- D2aMWL6MaDshmrFL2zj1+m6FEClbGneTAXqelwPHnDSWy2CWbo6/XIaOix4REuA/1HzF
- 7z5M0h3eyty1w75/1oyNhXgvv3sudUPc5GgGgKtcEswcosCoAF0oQ02cfuY2RAjL6n2Y
- 8hyg==
-X-Gm-Message-State: AOAM532XqDfveE+yLrFkKcH4vMu7rcdvMchJdCq5SeGjezuTGIYNOzXc
- gYie0GYRQr27osrfNTjyJRXwaflDKM7qGKVNhTt/fV1loTbIbg==
-X-Google-Smtp-Source: ABdhPJy+YsIfeoO8aOibiCpZdtCszaT10HhdPErsPxac+mmbzE2ZaHfzG3vdDn+UCcDzfP60hwkQD2TopLX2v4IV+9s=
-X-Received: by 2002:a02:cb0c:: with SMTP id j12mr2907247jap.54.1603967774434; 
- Thu, 29 Oct 2020 03:36:14 -0700 (PDT)
+ id 1kY5K2-0002qV-A9
+ for linux-mtd@lists.infradead.org; Thu, 29 Oct 2020 10:38:23 +0000
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+ by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4CMMNV406vzljNfM
+ for <linux-mtd@lists.infradead.org>; Thu, 29 Oct 2020 11:38:18 +0100 (CET)
+Received: from s-rd-8.syscom.lan (unknown [212.83.163.210])
+ by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4CMMNV1z5gzlh8TQ
+ for <linux-mtd@lists.infradead.org>; Thu, 29 Oct 2020 11:38:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=syscom.ch;
+ s=20191113; t=1603967898;
+ bh=cKs4HZK0zNN0x3e4XVfyDFXVoflpkfj6VN68Pyop0b0=;
+ h=Date:From:To:Subject:From;
+ b=mebqBCvk8Db42xUxXLSfY6OwAAj9e/depghDIyXBIET9CrFjh6/MV8JILqQlinz2s
+ v53D05elfwiOw4nGJeFHymyJu+OW5heqPtWVBwCDB7aKqGC8Z1HSp3yXvYde95YFGJ
+ dfIsgQAI79LVBcfs/5w0a8s6RLYzrNeeixd22FzQ=
+Date: Thu, 29 Oct 2020 11:38:17 +0100
+From: Viallard Anthony <viallard@syscom.ch>
+To: linux-mtd@lists.infradead.org
+Subject: mtd: spinand: Add support for IS37SML01G1 (ISSI)
+Message-ID: <20201029113817.125a4d77@s-rd-8.syscom.lan>
+Organization: Syscom Instruments SA
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <a60546366eb049698c7a0b5426361833@adva.com>
-In-Reply-To: <a60546366eb049698c7a0b5426361833@adva.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Thu, 29 Oct 2020 11:36:02 +0100
-Message-ID: <CAFLxGvyZUBgXyNkj0EO5pWntjfn7jObqU7XKZXxvjsQ=RN9WKw@mail.gmail.com>
-Subject: Re: UBIFS corruption in empty space during mount
-To: Barak Adam <BAdam@adva.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201029_063616_053797_1090D8EA 
-X-CRM114-Status: GOOD (  10.21  )
+X-CRM114-CacheID: sfid-20201029_063822_585218_BC171EA7 
+X-CRM114-Status: GOOD (  15.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,28 +74,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Barak,
+Hello folks,
 
-On Thu, Oct 29, 2020 at 5:54 AM Barak Adam <BAdam@adva.com> wrote:
-> ubi_leb_read calls lower layer nand driver functions but finally returns with -EBADMSG error code indicating that the MTD driver has detected a data integrity problem (unrecoverable ECC checksum mismatch in case of NAND).
+I am working since few days to add the support for the IS37SML01G1 (a serial NAND 104MHZ SPI from ISSI manufacturer) in the linux kernel (v5.4).
 
-So, your driver is facing ECC errors while reading empty space?
-This is something UBIFS does not expect.
+I have followed the datasheet of this flash (http://www.issi.com/WW/pdf/37-38SML01G1.pdf) and wrote some lines of code in mtd/nand/spi/.
 
-If this is really the case, please double check, you can try to
-backport the patches you've listed.
-Or change the driver. In any case UBIFS does not want to see ECC
-errors when reading eased pages.
+I am facing 2 problems:
+ - I have to write the definition of this flash into mtd/nand/spi/gigadevice.c. Actually, the manufacturer code is the same as gigadevice (0xC8) (cf. Figure 6.13 in the datasheet). I think it will be nice to put the code in a new file (mtd/nand/spi/issi.c) but it needs to modify a little bit the behavior of gigadevice_spinand_detect() function to return 0 even if spinand_match_and_init() does not match the device code instead of a negative code. Do you think it is an acceptable modification ? Or is it better to let the ISSI support in gigadevice.c ?
+ - The bad block logic implemented in mtd/nand/spi/core.c does not work with this flash. In spinand_isbad() function, the code checks the first two bytes in the OOB area of the first page to know whether the block is bad. But with this ISSI flash, the bad block marker is only on the first byte and right after this byte, there is an ECC on three bytes. Therefore, as soon as I write the first page of a block, this latest is likely to be detected bad. I think it needs to add new entries in the struct spinand_info to describe how the manufacturer has implemented the marking of defective blocks. What do you think about it ?
 
--- 
-Thanks,
-//richard
+Best regards,
+Anthony V.
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
