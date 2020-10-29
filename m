@@ -2,85 +2,71 @@ Return-Path: <SRS0=x3fM=EE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82CF2C2D0A3
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Oct 2020 15:40:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85174C4363A
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Oct 2020 16:21:38 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F26EC20759
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Oct 2020 15:40:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0B09D2076D
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Oct 2020 16:21:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="2uPTd9xY";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=eclypsium.com header.i=@eclypsium.com header.b="MvRibrIY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F26EC20759
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=eclypsium.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="n6x8P4Du";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="RFnfg7Io"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B09D2076D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=3bHdlLnqS5SiRlF4bmCxqIHTt2DWeo6a4N3IrwmNg2E=; b=2uPTd9xYGWQot0YrQhFP59P8H
-	jpFT4ttaBGsArjMt7eFI4vPzoh7AR9iR8j5ULkNurj+GSXuMZ2noWooDRvLxv3Hx4+HMA9qWJdj4g
-	Dcfp6Ipd9m7YEWRAEiyalcALGuvzNryPb6QH3b76pQpDVaT4u1I27JzbCv6x2YMJral1yt6vHUuV4
-	XhyVQFH80N+yFpqIXqeNknI4fYo1w5hio0dyUNSjLH47DxXOApUarki+JyCZRSNIPKhDnT89p1IJV
-	iRh6wsBjpkCl+uEjNJC/p7asKfJN2+qj1vQc/yoHjjlLPBx1WXdtgrGA8xJq4sZXazypSPB2mtDnL
-	GNzSeLxKQ==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=j9GxrTjjnKkKG+bpzPKjO/uCtvfnEmzjLAzifHt91CI=; b=n6x8P4DuB0NPPyM1/GA47/tLYU
+	EBLQ2Cgjtcm17DTrHyHXZ4lCUZ/Dhals9NyTX06JnWUjqgjrOPqMu7BQLIkphZXlNh+CJPllLsaDB
+	rzJKgsdJp+cCMvFTWzM31BMZm4j2HrU/gXUdvmSnjH940GCpi07l1ukQqC6ypMk7AnJ7zIw7Mf8xy
+	1VvsOGHeQIAssOf/n17zMjwZ3KqVHlXb+BjL6/hkjVLNO3ypK1YW9D0O/GrHrcEOkFMFbm93xmDti
+	Q+Y5QGxt2BUN+O/ItisB/ZEk8EETzfJK4HUtkGELlM73442uq0zzqwWYLCiPUP0y+1eXwy5R940Ns
+	dKWGessQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kYA1M-0003N4-W8; Thu, 29 Oct 2020 15:39:25 +0000
-Received: from mail-qk1-x744.google.com ([2607:f8b0:4864:20::744])
+	id 1kYAff-0002se-7c; Thu, 29 Oct 2020 16:21:03 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kYA1J-0003LG-Bl
- for linux-mtd@lists.infradead.org; Thu, 29 Oct 2020 15:39:22 +0000
-Received: by mail-qk1-x744.google.com with SMTP id k9so2292965qki.6
- for <linux-mtd@lists.infradead.org>; Thu, 29 Oct 2020 08:39:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=eclypsium.com; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=YpMSMpdWnDI27qe4/zeIevbA7qnkbhvCd6XQnOrBtHo=;
- b=MvRibrIYNg0MeSZyYa9mK5H+6bXdx7o39FoBXfKv+n6NGem2zAA0tqMOm8vfI0leJw
- JWUs+IYXRbzpZG/oSIkGnv3ljCxoH8nNAmgGvssJ3ksWnMzN3H4TNwpgxITeXMig0MtN
- 4QXYfhEN73/wbEvIUXrddTw6VFRtlhh83ch7JtCfG9cwA26Sr4WcUXShte+yisZaJxo6
- uUPkWv0YbHYf8wqbK1Kpw9dc9uuTSBKA0e+ROsPul5RDQCZINks6lQK7FgrD7VOnor2H
- CawPfyaw26oqXCdBXFBVMVYMYrzoevbsBdn0HyA0wYwYFE9emYIWAwnLVkQRFS+WmqVR
- U1jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=YpMSMpdWnDI27qe4/zeIevbA7qnkbhvCd6XQnOrBtHo=;
- b=TrzEDEgky7tIhlnkvIvo8/q30eo9Ftb70lbjR19f/g2i5um2/xEDKTS8TovVMxaSpx
- EPWR3oOkwwCfexwuKNA0eWJZ/jwlW6gR4t675sjzO9VSC7a1VImIR+tvoXmTD+ncnWwf
- NUVvGE/aCWVkUgrobrBqRguDvTjPRRFAxwuLH5d7WSf1i3XO8mxHVpeL1hd/DCFyV8Ek
- v/BHo5GPeV3f1MS/sjQN1Lx7MzQUmkohsMd1v5ydVXMd62bG/wtmb6sBeHREnqJkZAfw
- 1ejHwqE25ny1k8BdttO1SXDjVNCv86m4eI7yY0ErckrqXcf41RNJNggJu2aGh3xBAdR2
- U1Ng==
-X-Gm-Message-State: AOAM532jXD6B6xRcp0YGhEx6iTRoPjaq+QxTMDhu7eTOuEXpW8UqXr8T
- KRFweFC0XxYu79poLm456m0XGY+ydg6jsvM4jyfuiJcRuS98Ow==
-X-Google-Smtp-Source: ABdhPJxpVMOLJjj0KrRm94hDKYZszMjxYwzxQp5Z8jS/NgD+6SKT0KDkCCiO2OEDnCgVxhaQMDvEsxTan1bMOUlIxJY=
-X-Received: by 2002:a05:620a:21d1:: with SMTP id
- h17mr4460360qka.368.1603985959134; 
- Thu, 29 Oct 2020 08:39:19 -0700 (PDT)
+ id 1kYAf6-0002en-Kw
+ for linux-mtd@lists.infradead.org; Thu, 29 Oct 2020 16:20:33 +0000
+Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch
+ [84.226.167.205])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 37AFF2076D;
+ Thu, 29 Oct 2020 16:20:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1603988427;
+ bh=3qAjnhHz1kcAriq2G1giteB+HNPzOLqsVeeCAC7VxDA=;
+ h=From:To:Cc:Subject:Date:From;
+ b=RFnfg7Iow8R1ZrzmX0c9C4MoxZBa5/xOtn/SaXjH8mu7prmUQwnPrjLb6XIdfxdX6
+ rnxNtUIBO3fBDzyCpaSRP5+12k3IAz1BuXmg0oQJoOqxgltltMlv9Vq0wBirElIaaf
+ XkrJbcjOJ8ouAITA0mvpKa+I5VP9Ly5yaeURnkWE=
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh+dt@kernel.org>, Han Xu <han.xu@nxp.com>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH v4] dt-bindings: mtd: gpmi-nand: Fix matching of clocks on
+ different SoCs
+Date: Thu, 29 Oct 2020 17:20:21 +0100
+Message-Id: <20201029162021.80839-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20201028214359.384918-1-daniel.gutson@eclypsium.com>
- <20201029054110.GA3039992@kroah.com>
-In-Reply-To: <20201029054110.GA3039992@kroah.com>
-From: Daniel Gutson <daniel@eclypsium.com>
-Date: Thu, 29 Oct 2020 12:39:08 -0300
-Message-ID: <CAFmMkTHBXjNc0DeL0bOZfdJkZjPAHnRU1THHdk0tZcBr1yykTQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: intel-spi: Split intel-spi reading from
- writing
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201029_113921_739214_75AB7C22 
-X-CRM114-Status: GOOD (  33.29  )
+X-CRM114-CacheID: sfid-20201029_122028_932808_1274269F 
+X-CRM114-Status: GOOD (  13.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,143 +78,138 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, Arnd Bergmann <arnd@arndb.de>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
- Richard Weinberger <richard@nod.at>, Richard Hughes <hughsient@gmail.com>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Derek Kiernan <derek.kiernan@xilinx.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Alex Bazhaniuk <alex@eclypsium.com>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Oct 29, 2020 at 2:40 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Oct 28, 2020 at 06:43:59PM -0300, Daniel Gutson wrote:
-> > This patch separates the writing part of the intel-spi drivers
-> > so the 'dangerous' part can be set/unset independently.
-> > This way, the kernel can be configured to include the reading
-> > parts of the driver which can be used without
-> > the dangerous write operations that can turn the system
-> > unbootable.
-> >
-> > Signed-off-by: Daniel Gutson <daniel.gutson@eclypsium.com>
-> > ---
-> >  drivers/mtd/spi-nor/controllers/Kconfig     | 39 ++++++++++++---------
-> >  drivers/mtd/spi-nor/controllers/intel-spi.c | 12 +++++--
-> >  2 files changed, 33 insertions(+), 18 deletions(-)
-> >
-> > diff --git a/drivers/mtd/spi-nor/controllers/Kconfig b/drivers/mtd/spi-nor/controllers/Kconfig
-> > index 5c0e0ec2e6d1..491c755fea49 100644
-> > --- a/drivers/mtd/spi-nor/controllers/Kconfig
-> > +++ b/drivers/mtd/spi-nor/controllers/Kconfig
-> > @@ -31,34 +31,41 @@ config SPI_INTEL_SPI
-> >       tristate
-> >
-> >  config SPI_INTEL_SPI_PCI
-> > -     tristate "Intel PCH/PCU SPI flash PCI driver (DANGEROUS)"
-> > +     tristate "Intel PCH/PCU SPI flash PCI driver"
-> >       depends on X86 && PCI
-> >       select SPI_INTEL_SPI
-> >       help
-> > -       This enables PCI support for the Intel PCH/PCU SPI controller in
-> > -       master mode. This controller is present in modern Intel hardware
-> > -       and is used to hold BIOS and other persistent settings. Using
-> > -       this driver it is possible to upgrade BIOS directly from Linux.
-> > -
-> > -       Say N here unless you know what you are doing. Overwriting the
-> > -       SPI flash may render the system unbootable.
-> > +       This enables read only PCI support for the Intel PCH/PCU SPI
-> > +       controller in master mode. This controller is present in modern
-> > +       Intel hardware and is used to hold BIOS and other persistent settings.
-> > +       Using this driver it is possible to read the SPI chip directly
-> > +       from Linux.
-> >
-> >         To compile this driver as a module, choose M here: the module
-> >         will be called intel-spi-pci.
-> >
-> >  config SPI_INTEL_SPI_PLATFORM
-> > -     tristate "Intel PCH/PCU SPI flash platform driver (DANGEROUS)"
-> > +     tristate "Intel PCH/PCU SPI flash platform driver"
-> >       depends on X86
-> >       select SPI_INTEL_SPI
-> >       help
-> > -       This enables platform support for the Intel PCH/PCU SPI
-> > +       This enables read only platform support for the Intel PCH/PCU SPI
-> >         controller in master mode. This controller is present in modern
-> > -       Intel hardware and is used to hold BIOS and other persistent
-> > -       settings. Using this driver it is possible to upgrade BIOS
-> > -       directly from Linux.
-> > +       Intel hardware and is used to hold BIOS and other persistent settings.
-> > +       Using this driver it is possible to read the SPI chip directly
-> > +       from Linux.
-> > +
-> > +       To compile this driver as a module, choose M here: the module
-> > +       will be called intel-spi-pci.
-> > +
-> > +config SPI_INTEL_SPI_WRITE
-> > +     bool "Intel PCH/PCU SPI flash drivers write operations (DANGEROUS)"
-> > +     depends on SPI_INTEL_SPI_PCI || SPI_INTEL_SPI_PLATFORM
-> > +     help
-> > +       This enables full read/write support for the Intel PCH/PCU SPI
-> > +       controller.
-> > +       Using this option it may be possible to upgrade BIOS directly
-> > +       from Linux.
-> >
-> >         Say N here unless you know what you are doing. Overwriting the
-> >         SPI flash may render the system unbootable.
-> > -
-> > -       To compile this driver as a module, choose M here: the module
-> > -       will be called intel-spi-platform.
-> > diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
-> > index b54a56a68100..8d8053395c3d 100644
-> > --- a/drivers/mtd/spi-nor/controllers/intel-spi.c
-> > +++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
-> > @@ -266,6 +266,7 @@ static int intel_spi_read_block(struct intel_spi *ispi, void *buf, size_t size)
-> >       return 0;
-> >  }
-> >
-> > +#ifdef CONFIG_SPI_INTEL_SPI_WRITE
->
-> <snip>
->
-> Please do not add #ifdef to .c files, that's not the proper kernel
-> coding style at all, and just makes maintaining this file much much
-> harder over time.
->
-> Split things out into two different files if you really need to do this.
+Driver requires different amount of clocks for different SoCs.  Describe
+these requirements properly to fix dtbs_check warnings like:
 
-What about the static functions that I'll need to turn non-static and
-in a header file?
-I mean, the functions that the functions in the new file will have to call.
-Should I do that, turn static functions into non-static and declared
-in a header file?
+    arch/arm64/boot/dts/freescale/imx8mm-beacon-kit.dt.yaml: nand-controller@33002000: clock-names:1: 'gpmi_apb' was expected
 
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
->
-> thanks,
->
-> greg k-h
+---
 
+Changes since v3:
+1. Go back to fixed order of clocks, after explanation from Rob.
 
+Changes since v1:
+1. Do not require order of clocks (use pattern).
+---
+ .../devicetree/bindings/mtd/gpmi-nand.yaml    | 76 +++++++++++++++----
+ 1 file changed, 61 insertions(+), 15 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml b/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
+index 28ff8c581837..9d764e654e1d 100644
+--- a/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
++++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
+@@ -9,9 +9,6 @@ title: Freescale General-Purpose Media Interface (GPMI) binding
+ maintainers:
+   - Han Xu <han.xu@nxp.com>
+ 
+-allOf:
+-  - $ref: "nand-controller.yaml"
+-
+ description: |
+   The GPMI nand controller provides an interface to control the NAND
+   flash chips. The device tree may optionally contain sub-nodes
+@@ -58,22 +55,10 @@ properties:
+   clocks:
+     minItems: 1
+     maxItems: 5
+-    items:
+-      - description: SoC gpmi io clock
+-      - description: SoC gpmi apb clock
+-      - description: SoC gpmi bch clock
+-      - description: SoC gpmi bch apb clock
+-      - description: SoC per1 bch clock
+ 
+   clock-names:
+     minItems: 1
+     maxItems: 5
+-    items:
+-      - const: gpmi_io
+-      - const: gpmi_apb
+-      - const: gpmi_bch
+-      - const: gpmi_bch_apb
+-      - const: per1_bch
+ 
+   fsl,use-minimum-ecc:
+     type: boolean
+@@ -107,6 +92,67 @@ required:
+ 
+ unevaluatedProperties: false
+ 
++allOf:
++  - $ref: "nand-controller.yaml"
++
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - fsl,imx23-gpmi-nand
++              - fsl,imx28-gpmi-nand
++    then:
++      properties:
++        clocks:
++          items:
++            - description: SoC gpmi io clock
++        clock-names:
++          items:
++            - const: gpmi_io
++
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - fsl,imx6q-gpmi-nand
++              - fsl,imx6sx-gpmi-nand
++    then:
++      properties:
++        clocks:
++          items:
++            - description: SoC gpmi io clock
++            - description: SoC gpmi apb clock
++            - description: SoC gpmi bch clock
++            - description: SoC gpmi bch apb clock
++            - description: SoC per1 bch clock
++        clock-names:
++          items:
++            - const: gpmi_io
++            - const: gpmi_apb
++            - const: gpmi_bch
++            - const: gpmi_bch_apb
++            - const: per1_bch
++
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: fsl,imx7d-gpmi-nand
++    then:
++      properties:
++        clocks:
++          items:
++            - description: SoC gpmi io clock
++            - description: SoC gpmi bch apb clock
++        clock-names:
++          minItems: 2
++          maxItems: 2
++          items:
++            - const: gpmi_io
++            - const: gpmi_bch_apb
++
+ examples:
+   - |
+     nand-controller@8000c000 {
 -- 
+2.25.1
 
-
-Daniel Gutson
-Engineering Director
-Eclypsium, Inc.
-
-
-Below The Surface: Get the latest threat research and insights on
-firmware and supply chain threats from the research team at Eclypsium.
-https://eclypsium.com/research/#threatreport
 
 ______________________________________________________
 Linux MTD discussion mailing list
