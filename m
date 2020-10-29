@@ -2,85 +2,91 @@ Return-Path: <SRS0=x3fM=EE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EAF50C4363A
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Oct 2020 04:48:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29083C4363A
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Oct 2020 04:49:48 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1AD2D20739
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Oct 2020 04:48:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 81F3720739
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Oct 2020 04:49:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="K8pQ88AV";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="zInayPCx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1AD2D20739
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="H2YdaJgK";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=adva.com header.i=@adva.com header.b="b30jntpP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 81F3720739
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=adva.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=eQ7diJFsHsC9htHlraaF3OzdPuKgAmn9V+CTqKGhnEE=; b=K8pQ88AVdwBDvTs3s7CoxFHjB
-	+NBxLNGTsEoBC4yf0x6MQAjeY1P1u0d7NPChceRVDi8qudjd8PNzQGrTFZCyFOwwK45KVDoGZo+5I
-	z63bZrX+Y3q06/OjB1EHkDdA6hKpD2oUwAwfetfrT9EX3W/2LtsKpE80vEW8W+dPom79ryfNOGzX7
-	q8jNfYSqxoe9UXB1zDss9CvZmUKyv/AvUCb13xoMi4H4LnPWra6HEUSJTlaxCotVJ8y73ONbTQKIQ
-	Fj9AHJjw0KLvhl3VBhjO+jER2BC/pFH6a86haM82XS+ECzCNyMnhmo6k8NkzMbyosWTevQKaO4vMK
-	niw6HOU5A==;
+	Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
+	:List-Id:MIME-Version:Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=z37jrLvXDuIds82YgB/eSkij0BwL7wn6yweWLlqQf6w=; b=H2YdaJgKZDDd7Wr1FWS/vvsIZg
+	sBYWmTEkVj3SAJCfYyJwXkudMlBj7BrwDIMNrkhtfx/aWao5j0oy6EMizZ1O+mnGzvNTWKISlBzyH
+	qI/iwXlb53noXko3m6Z/idfm5PDIQrJFSF+0epav6Lo5rWcIdGN9TKKuUbNT4E48DD5fGdDBnnscH
+	83jdPAJe3HuBaTeSFlzCbEc9MK2absUJ3yLYZtZTTaejXg6W5TDD+OLd0lJx3uK/MkT6BMw9Hbs43
+	ostCf78VNnhez2NyySQyKrxH2Ksz1TeWECGiBTrPxlD/zPHYjVpS+xvX8kQgnRh87jts12DRZwK05
+	BnVAJh/A==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kXzpa-0004h4-S2; Thu, 29 Oct 2020 04:46:34 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1kXzrk-0004yt-2p; Thu, 29 Oct 2020 04:48:48 +0000
+Received: from mail01.advaoptical.com ([91.217.199.20])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kXzpY-0004gc-6T
- for linux-mtd@lists.infradead.org; Thu, 29 Oct 2020 04:46:32 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09T4kP4H108091;
- Wed, 28 Oct 2020 23:46:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1603946785;
- bh=ZHzDgXy5n/TKfBP+owyaj3kVbyqfBFp5+LAX2bZzh6o=;
- h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=zInayPCxMbBtlmPL9Xjmm0gP626sZOqh+wwGHW4mu+pp/q/FIV4M4eAycN77CkImM
- CsuzgdqmKNhkk8eXyJ8ZiSK3SEPVVufqjuNdHxp7Mtg9c65x6Lt5dr6QURooHKTQ3e
- Lm+o63YMTM9yWKPNVsi2Hl8aD1QBLw7bV7pywGvg=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09T4kPLS107855
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 28 Oct 2020 23:46:25 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 28
- Oct 2020 23:46:25 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 28 Oct 2020 23:46:25 -0500
-Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09T4kMH0095353;
- Wed, 28 Oct 2020 23:46:23 -0500
-From: Vignesh Raghavendra <vigneshr@ti.com>
-To: <miquel.raynal@bootlin.com>, <linux-mtd@lists.infradead.org>,
- <richard@nod.at>, <linux-kernel@vger.kernel.org>,
- <tudor.ambarus@microchip.com>, Bert Vermeulen <bert@biot.com>
-Subject: Re: [RESEND PATCH v2] mtd: spi-nor: Fix address width on flash chips
- > 16MB
-Date: Thu, 29 Oct 2020 10:16:02 +0530
-Message-ID: <160390597173.12290.7971814843989994724.b4-ty@ti.com>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20201006132346.12652-1-bert@biot.com>
-References: <20201006132346.12652-1-bert@biot.com>
+ id 1kXzrg-0004xz-UE
+ for linux-mtd@lists.infradead.org; Thu, 29 Oct 2020 04:48:46 +0000
+Received: from pps.filterd (muc-vs-mailppa1.advaoptical.com [127.0.0.1])
+ by muc-vs-mailppa1.advaoptical.com (8.16.0.42/8.16.0.42) with SMTP id
+ 09T4kPhF007680
+ for <linux-mtd@lists.infradead.org>; Thu, 29 Oct 2020 05:48:40 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=adva.com;
+ h=from : to : subject :
+ date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=dkad20200122;
+ bh=i+NWLhoqhXKLtqULSAgD8BzzvpJqVAD0hRoKrayeSGw=;
+ b=b30jntpP/GkC4sQeQHcqOZ7NyB85Vr0yQb9pSR0JNYqMat3n1wOWhoZd7jbCa0/1LkvH
+ lC4QhmMmjEugSY+VkLMnKc1tZMwDWCnoBOsPCpV49RS4Kk+SQmLhUg4xFCJPXTFIT/jm
+ byumetY1CuknFb3Ais9OwjnOvQ8mUQbRM9BM435pAOkcihHk0WL4wso1/67gPhD0GY1J
+ +fjMRz22XCbJ8Obptyx3yXVDgopfh/RXZ6SJnn0tKBfUyKVE/iiEMZGKGlAOa+8eacG6
+ NqlxZP8Ygqye1Z5WtLwZ6v4I86fPPTTwdj1T+9e3zdATJdpSA95mrFP8IqdIhnQB9eYd RQ== 
+Received: from muc-s-ex16d.advaoptical.com ([172.20.1.28])
+ by muc-vs-mailppa1.advaoptical.com with ESMTP id 34cabcy1ca-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL)
+ for <linux-mtd@lists.infradead.org>; Thu, 29 Oct 2020 05:48:40 +0100
+Received: from MGN-S-EX19B.advaoptical.com (172.25.1.194) by
+ MUC-S-EX16D.advaoptical.com (172.20.1.28) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 29 Oct 2020 05:48:39 +0100
+Received: from MGN-S-EX19A.advaoptical.com (172.25.1.193) by
+ MGN-S-EX19B.advaoptical.com (172.25.1.194) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2; 
+ Thu, 29 Oct 2020 05:48:39 +0100
+Received: from MGN-S-EX19A.advaoptical.com ([fe80::303d:9391:e615:ea37]) by
+ MGN-S-EX19A.advaoptical.com ([fe80::303d:9391:e615:ea37%7]) with mapi id
+ 15.02.0721.002; Thu, 29 Oct 2020 05:48:39 +0100
+From: Barak Adam <BAdam@adva.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: UBIFS corruption in empty space during mount
+Thread-Topic: UBIFS corruption in empty space during mount
+Thread-Index: AdatrnVGUyizTmJwTt+/2sPCJIuVRg==
+Date: Thu, 29 Oct 2020 04:48:39 +0000
+Message-ID: <a60546366eb049698c7a0b5426361833@adva.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.20.1.232]
 MIME-Version: 1.0
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312, 18.0.737
+ definitions=2020-10-29_01:2020-10-28,
+ 2020-10-29 signatures=0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201029_004632_329396_A830E18E 
-X-CRM114-Status: UNSURE (   8.81  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20201029_004845_284880_D89E8BFD 
+X-CRM114-Status: GOOD (  19.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,27 +98,116 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 6 Oct 2020 15:23:46 +0200, Bert Vermeulen wrote:
-> If a flash chip has more than 16MB capacity but its BFPT reports
-> BFPT_DWORD1_ADDRESS_BYTES_3_OR_4, the spi-nor framework defaults to 3.
-> 
-> The check in spi_nor_set_addr_width() doesn't catch it because addr_width
-> did get set. This fixes that check.
+Hi all,
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks!
-[1/1] mtd: spi-nor: Fix address width on flash chips > 16MB
-      https://git.kernel.org/mtd/c/324f78dfb4
+We are facing a kernel panic in our legacy switches, similar to one in the following post:
 
---
-Regards
-Vignesh
+https://patchwork.ozlabs.org/project/linux-mtd/patch/loom.20120319T102527-948@post.gmane.org/
 
+
+This corruption happens upon root FS mount and thus triggers a kernel panic upon system init.
+
+System description:
+=================
+
+Our system is legacy, using Marvell Cetus SOC with a raw 1Gbit NAND of Micron, NAND ECC is 8 bit.
+
+We are using UBIFS, Linux-3.10.70.
+
+NAND driver is "armada-nand" by Marvell (mtd/nand/mvebu_nfc/nand_nfc.c),  based on the PXA drivers/mtd/nand/pxa3xx_nand.c.
+
+Using a script of endless loop of power cycling, we get this panic:
+========================================================
+
+UBIFS error (pid 1): ubifs_scan: corrupt empty space at LEB 3:7571
+
+UBIFS error (pid 1): ubifs_scanned_corruption: corruption at LEB 3:7571
+
+UBIFS error (pid 1): ubifs_scanned_corruption: first 8192 bytes from LEB 3:7571
+
+UBIFS error (pid 1): ubifs_scan: LEB 3 scanning failed
+
+VFS: Cannot open root device "ubi0:root" or unknown-block(0,0): error -117
+
+Please append a correct "root=" boot option; here are the available partitions:
+
+Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0)
+
+============================================================
+
+
+I did read some of the posts about corruption of empty space for UBIFS.
+
+Most of them recommend applying a fix on the lower layers, mtd or nand drivers.
+
+
+
+In the past we had similar issues, it was happening during recovery of master node and I applied the following commits:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=730a43fbc135e593cc3de3b1b895e49c05c8e2dc
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=40cbe6eee97b706f27bcc4c6aa1018bbe4f1e577
+
+But now I think it is happening during mount, while UBIFS replaying the journal and it is a different scenario.
+
+
+As far as I understand, this is the call stack now that leading to the panic:
+
+ [<c0015050>] (unwind_backtrace+0x0/0xf8) from [<c00115f4>] (show_stack+0x10/0x18)
+
+[<c00115f4>] (show_stack+0x10/0x18) from [<c0196634>] (ubifs_scan+0x29c/0x378)
+
+[<c0196634>] (ubifs_scan+0x29c/0x378) from [<c0196aa4>] (ubifs_replay_journal+0x104/0x1380)
+
+[<c0196aa4>] (ubifs_replay_journal+0x104/0x1380) from [<c018caf8>] (ubifs_mount+0xe88/0x15c8)
+
+[<c018caf8>] (ubifs_mount+0xe88/0x15c8) from [<c00a0830>] (mount_fs+0x14/0xc8)
+
+[<c00a0830>] (mount_fs+0x14/0xc8) from [<c00b7620>] (vfs_kern_mount+0x4c/0xc4)
+
+[<c00b7620>] (vfs_kern_mount+0x4c/0xc4) from [<c00b992c>] (do_mount+0x1ac/0x8e8)
+
+[<c00b992c>] (do_mount+0x1ac/0x8e8) from [<c00ba0ec>] (SyS_mount+0x84/0xbc)
+
+[<c00ba0ec>] (SyS_mount+0x84/0xbc) from [<c0674ee0>] (mount_block_root+0x104/0x22c)
+
+[<c0674ee0>] (mount_block_root+0x104/0x22c) from [<c06751a4>] (prepare_namespace+0x90/0x194)
+
+[<c06751a4>] (prepare_namespace+0x90/0x194) from [<c0674bf0>] (kernel_init_freeable+0x180/0x1c8)
+
+[<c0674bf0>] (kernel_init_freeable+0x180/0x1c8) from [<c04de5e8>] (kernel_init+0x8/0x154)
+
+[<c04de5e8>] (kernel_init+0x8/0x154) from [<c000dfd8>] (ret_from_fork+0x14/0x3c)
+
+
+ubifs_scan (fs/ubifs) is called to scan the lebs.
+
+It detects the corrupted empty space, dump the corruption messages as shown above, and return the -EUCLEAN error code that makes the kernel panic.
+
+ ubifs_scan:
+
+--> calls ubifs_start_scan (fs/ubifs)
+
+--> which calls ubifs_leb_read (fs/ubifs)
+
+--> which calls ubi_read (mtd/ubi.h)
+
+--> which calls ubi_leb_read (mtd/ubi)
+
+ubi_leb_read calls lower layer nand driver functions but finally returns with -EBADMSG error code indicating that the MTD driver has detected a data integrity problem (unrecoverable ECC checksum mismatch in case of NAND).
+
+ I am still debugging, looking for any solution / workaround.
+
+
+Thanks !
+Barak
+
+Please see our privacy statement at https://www.adva.com/en/about-us/legal/privacy-statement for details of how ADVA processes personal information.
 
 ______________________________________________________
 Linux MTD discussion mailing list
