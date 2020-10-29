@@ -2,87 +2,62 @@ Return-Path: <SRS0=x3fM=EE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE78FC4363A
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Oct 2020 06:26:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95C63C55179
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Oct 2020 07:54:40 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E061721655
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Oct 2020 06:26:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EC83C218AC
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Oct 2020 07:54:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LUJRIZ0F";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="aIR24+4m"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E061721655
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DxFO+OGL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC83C218AC
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:References:
-	To:Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=qDrFVOfpiA+mcML5Eu05VggSL7Vm2dDMpTD34QnvrnI=; b=LUJRIZ0FwCmQ534+CY/Jcnczb
-	yQlFzCxHyX1hCZRwXJS1oNsxFSZzY9XlX8n2kzWgtY2XOL8JNMhcafQwenjVEm59qlYWB5fFHyf96
-	rhGXUzqeFmaGjULh8p/Pv/UgfRKDFs21YOxivfzUfO4L7CtiFG27AVe7GwDFJ5o7OafD97Ve423B4
-	QZwOtYdgrjsHfbSQQkjkczpob81LgveYYiYUptiQ8rMN6O+kr2SavzmAtrfmdn26gLV2bhLj46MBE
-	mP4zERexfRpI1Oa/zKIArZPpV7A+JPL7hxTR3VFs1Cls6Ab9UyjBB1QjImJHFlUQOhpfmdLt/rwJN
-	CZiz7ywUQ==;
+	 bh=r5gatx44fDKNceQXPoUNrrGFyF3Mek2unIS+/YKc7k4=; b=DxFO+OGL7bJWaE+4/UoN3ShoX
+	7rAXBk4liR9FJPt+rAvmtA3azSHLKBy7Vthj6FivBIcDqwgYZPCzEnDWOycPu9MTYeJ8kXNgfZd2u
+	OPlJtrQdF615eUG5Dk6uBypFarIiEVnUp18cNlY3XIG2Yj7UAWkoKDeVzDz17g89G7Lq/KWkrShXt
+	iBApOFHt+ByzJpMEtLJlsx8Cn3iJBUBjo7LoiR0T9g4KZurbtNlM8CR1HuBaLDICLF0ElFt5h0sW4
+	e/VtGo/tBxpPWn1gUqeWVy+N9ImUwXx76RrFBA2VPLJpi42dGWif0ZS0qte5SuabeoIp+VgV/fS3G
+	Qh64mnbBw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kY1O4-0001AN-7e; Thu, 29 Oct 2020 06:26:16 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1kY2kv-0002QE-Bc; Thu, 29 Oct 2020 07:53:57 +0000
+Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kY1O1-00019x-7p
- for linux-mtd@lists.infradead.org; Thu, 29 Oct 2020 06:26:14 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09T6Q5x0017737;
- Thu, 29 Oct 2020 01:26:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1603952765;
- bh=CdQ+oU4HVKo45/dvLJIgcfgX/8sXcvjXvY6BZKA2ODw=;
- h=From:Subject:To:CC:References:Date:In-Reply-To;
- b=aIR24+4m66gqNqdxfq9RpZ7rb+/UfY11nKTnmDb3OKFi9KtKNlLrv0AtKkNlZtmTx
- fOEloGc3GRmGIQQxHd80drwH+937FEZPpS923DzWGrHa+0VqrjpdixYnyRxgXmP6Ts
- dHhAbib1Nn8KQ2WozqQUTQRqCCyJVKAweHhdewIw=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09T6Q5so116259
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 29 Oct 2020 01:26:05 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 29
- Oct 2020 01:26:05 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 29 Oct 2020 01:26:05 -0500
-Received: from [10.250.233.179] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09T6Q2KF067937;
- Thu, 29 Oct 2020 01:26:02 -0500
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH v16 00/15] mtd: spi-nor: add xSPI Octal DTR support
-To: "Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>, "Yadav,
- Pratyush" <p.yadav@ti.com>
-References: <20201005153138.6437-1-p.yadav@ti.com>
- <d0d702c1-761b-1480-c74d-135193b33c26@microchip.com>
- <20201028124920.pot77v4phkqiswhr@ti.com>
- <d9d96eda-4cb6-fe68-7469-e73dc7ba2fda@microchip.com>
-Message-ID: <b7a18f2a-edd6-25e1-2f30-1a4427e67018@ti.com>
-Date: Thu, 29 Oct 2020 11:56:01 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ id 1kY2ks-0002OC-1y
+ for linux-mtd@lists.infradead.org; Thu, 29 Oct 2020 07:53:55 +0000
+X-Originating-IP: 91.224.148.103
+Received: from xps13 (unknown [91.224.148.103])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 1E0AC240002;
+ Thu, 29 Oct 2020 07:53:45 +0000 (UTC)
+Date: Thu, 29 Oct 2020 08:53:44 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: mdalam@codeaurora.org
+Subject: Re: [PATCH 0/5] mtd: rawnand: qcom: Add support for QSPI nand
+Message-ID: <20201029085344.5b2a4b51@xps13>
+In-Reply-To: <10db598eed716d7759bc0125b6977cf1@codeaurora.org>
+References: <1602307902-16761-1-git-send-email-mdalam@codeaurora.org>
+ <20201028104835.3dc31745@xps13>
+ <10db598eed716d7759bc0125b6977cf1@codeaurora.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <d9d96eda-4cb6-fe68-7469-e73dc7ba2fda@microchip.com>
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201029_022613_424547_C659279E 
-X-CRM114-Status: GOOD (  25.77  )
+X-CRM114-CacheID: sfid-20201029_035354_243143_2F9FFDD7 
+X-CRM114-Status: GOOD (  21.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,94 +69,64 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "richard@nod.at" <richard@nod.at>, "Nori, Sekhar" <nsekhar@ti.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "boris.brezillon@collabora.com" <boris.brezillon@collabora.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, vigneshr@ti.com, richard@nod.at,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org, bjorn.andersson@linaro.org,
+ agross@kernel.org, linux-mtd@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, sricharan@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 10/28/20 8:51 PM, Tudor.Ambarus@microchip.com wrote:
-> On 10/28/20 2:49 PM, Pratyush Yadav wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> Hi Tudor,
->>
->> On 28/10/20 07:53AM, Tudor.Ambarus@microchip.com wrote:
->>> Hi, Pratyush,
->>>
->>> On 10/5/20 6:31 PM, Pratyush Yadav wrote:
->>>> Tested on Micron MT35X and S28HS flashes for Octal DTR.
->>>
->>> Do these flashes define the "Command Sequences to Change to
->>> Octal DDR (8D-8D-8D) mode" table? Can't we use that table
->>> instead of defining our own octal dtr enable functions?
->>
->> The Micron flash does not have this table. The Cypress flash does. The
->> problem is that one of the samples of the Cypress flash I tested on had
->> incorrect data in that table which meant the sequence would fail. The
->> newer samples of the flash have the correct data.
-> 
-> Can we differentiate the Cypress flashes? Do you remember what
-> was the incorrect data?
-> 
->>
->> I don't know how many of those faulty flashes are out there in the wild.
->> IMO, to be on the safe side spi_nor_cypress_octal_dtr_enable() needs to
->> be implemented. So from the point of view of this series there is no
->> need to parse the Octal DDR enable table.
-> 
-> Meh, we cover manufacturer's mistakes. On the long run, our aim should be
-> to follow the SFDP standard and if a flash implements it wrong, to either
-> fix it via a fixup hook (if the fix is minimal), or to skip the faulty
-> table.
-> 
-> Regarding "Command Sequences to Change to Octal DDR (8D-8D-8D) mode"
-> table. Have you looked over
-> https://patchwork.ozlabs.org/project/linux-mtd/patch/1590737775-4798-4-git-send-email-masonccyang@mxic.com.tw/
-> ?
-> Is there a standard way to determine the offsets of opcode, addr and
-> data in the cmd seq?
-> 
-
-There is no standard way of doing this and I recommend against it.
-Each cmd seq has 0 to 7 Bytes. So the sequence maybe:
-1 cmd byte-3 addr bytes- 3 data bytes 
-or 
-1 cmd byte-0 address bytes-6 data bytes 
-
-We could just assume first byte to be command and rest to be data bytes always,
-but one problem maybe that controller may not support data length to be so long
-when address phase is absent. Eg.: Cadence OSPI controller supports only upto 8 bytes
-length transfers in absence of address phase but other controllers may
-limit the length further?
-
-One more drawback of using "Command Sequences to Change to Octal DDR (8D-8D-8D) 
-mode" table is that it not only switches flash to 8D mode 
-but also configures flash to be in:
-
-- 50 ohm I/O driver strength (Driver Type 0, mandatory for xSPI devices) 
-
-- 20 dummy cycles for Read Fast commands
-
-- Operation at 100MHz (or higher, if supported)
-
-Note that 20 dummy cycles may not be enough for flashes to 
-operate at 166/200MHz or higher and thus requiring flash specific fixups.
-
-So, I am beginning to doubt if parsing "Command Sequences to Change to Octal DDR (8D-8D-8D) mode"
-table is worth it. Not to mention we still need flash specific code to "verify" 
-that mode switch is indeed successful.
-
-
-Regards
-Vignesh
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgptZGFsYW1AY29kZWF1cm9yYS5vcmcgd3JvdGUgb24gV2VkLCAyOCBPY3QgMjAyMCAy
+Mzo1NDoyMyArMDUzMDoKCj4gT24gMjAyMC0xMC0yOCAxNToxOCwgTWlxdWVsIFJheW5hbCB3cm90
+ZToKPiA+IEhlbGxvLAo+ID4gCj4gPiBNZCBTYWRyZSBBbGFtIDxtZGFsYW1AY29kZWF1cm9yYS5v
+cmc+IHdyb3RlIG9uIFNhdCwgMTAgT2N0IDIwMjAKPiA+IDExOjAxOjM3ICswNTMwOgo+ID4gICAK
+PiA+PiBRUElDIDIuMCBzdXBwb3J0cyBTZXJpYWwgTkFORCBzdXBwb3J0IGluIGFkZGl0aW9uIHRv
+IGFsbCBmZWF0dXJlcyBhbmQKPiA+PiBjb21tYW5kcyBpbiBRUElDIDEuMCBmb3IgcGFyYWxsZWwg
+TkFORC4gUGFyYWxsZWwgYW5kIFNlcmlhbCBOQU5EID4+IGNhbm5vdAo+ID4+IG9wZXJhdGUgc2lt
+dWx0YW5lb3VzbHkuIFFTUEkgbmFuZCBkZXZpY2VzIHdpbGwgY29ubmVjdCB0byBRUElDID4+IElP
+X01BQ1JPCj4gPj4gYmxvY2sgb2YgUVBJQyBjb250cm9sbGVyLiBUaGVyZSBpcyBhIHNlcGFyYXRl
+IElPX01BQ1JPIGNsb2NrIGZvciA+PiBJT19NQUNSTwo+ID4+IGJsb2NrLiBEZWZhdWx0IElPX01B
+Q1JPIGJsb2NrIGRpdmlkZSB0aGUgaW5wdXQgY2xvY2sgYnkgNC4gc28gaWYgPj4gSU9fTUFDUk8K
+PiA+PiBpbnB1dCBjbG9jayBpcyAzMjBNSHogdGhlbiBvbiBidXMgaXQgd2lsbCBiZSA4ME1Ieiwg
+c28gUVNQSSBuYW5kID4+IGRldmljZQo+ID4+IHNob3VsZCBhbHNvIHN1cHBvcnQgdGhpcyBmcmVx
+dWVuY3kuICAKPiA+PiA+PiBRUElDIHByb3ZpZGVzIDQgZGF0YSBwaW5zIHRvIFFTUEkgbmFuZC4g
+SW4gc3RhbmRhcmQgU1BJIG1vZGUgKHgxIG1vZGUpID4+IGRhdGEgIAo+ID4+IHRyYW5zZmVyIHdp
+bGwgb2NjdXIgb24gb25seSAyIHBpbnMgb25lIHBpbiBmb3IgU2VyaWFsIGRhdGEgaW4gYW5kIG9u
+ZSA+PiBmb3IKPiA+PiBzZXJpYWwgZGF0YSBvdXQuIEluIFFVQUQgU1BJIG1vZGUgKHg0IG1vZGUp
+IGRhdGEgdHJhbnNmZXIgd2lsbCBvY2N1ciA+PiBhdCBhbGwKPiA+PiB0aGUgZm91ciBkYXRhIGxp
+bmVzLiBRUElDIGNvbnRyb2xsZXIgc3VwcG9ydHMgY29tbWFuZCBmb3IgeDEgbW9kZSBhbmQgPj4g
+eDQgbW9kZS4gIAo+ID4+ID4+IE1kIFNhZHJlIEFsYW0gKDUpOiAgCj4gPj4gICBkdC1iaW5kaW5n
+czogcWNvbV9uYW5kYzogSVBRNTAxOCBRUElDIE5BTkQgZG9jdW1lbnRhdGlvbgo+ID4+ICAgbXRk
+OiByYXduYW5kOiBxY29tOiBBZGQgaW5pdGlhbCBzdXBwb3J0IGZvciBxc3BpIG5hbmQKPiA+PiAg
+IG10ZDogcmF3bmFuZDogcWNvbTogUmVhZCBRUElDIHZlcnNpb24KPiA+PiAgIG10ZDogcmF3bmFu
+ZDogcWNvbTogRW5hYmxlIHN1cHBvcnQgZm9yIGVyYXNlLHJlYWQgJiB3cml0ZSBmb3Igc2VyaWFs
+Cj4gPj4gICAgIG5hbmQuCj4gPj4gICBtdGQ6IHJhd25hbmQ6IHFjb206IEFkZCBzdXBwb3J0IGZv
+ciBzZXJpYWwgdHJhaW5pbmcuICAKPiA+PiA+PiAgLi4uL2RldmljZXRyZWUvYmluZGluZ3MvbXRk
+L3Fjb21fbmFuZGMudHh0ICAgICAgICAgfCAgIDMgKyAgCj4gPj4gIGRyaXZlcnMvbXRkL25hbmQv
+cmF3L25hbmRfaWRzLmMgICAgICAgICAgICAgICAgICAgIHwgIDEzICsKPiA+PiAgZHJpdmVycy9t
+dGQvbmFuZC9yYXcvcWNvbV9uYW5kYy5jICAgICAgICAgICAgICAgICAgfCA1MDIgPj4gKysrKysr
+KysrKysrKysrKysrKystCj4gPj4gIDMgZmlsZXMgY2hhbmdlZCwgNDk0IGluc2VydGlvbnMoKyks
+IDI0IGRlbGV0aW9ucygtKSAgCj4gPj4gPiA+IEknbSBzb3JyeSBidXQgdGhpcyBzZXJpZXMgY2xl
+YXJseSBicmVha3MgdGhlIGN1cnJlbnQgbGF5ZXJpbmcuIEkgY2Fubm90ICAKPiA+IGF1dGhvcml6
+ZSBTUEktTkFORCBjb2RlIHRvIGZhbGwgaW50byB0aGUgcmF3IE5BTkQgc3Vic3lzdGVtLgo+ID4g
+ICAKPiAKPiBJIGFtIGFncmVlIHdpdGggeW91LCB3ZSBzaG91bGQgbm90IGFkZCBTUEktTkFORCBj
+aGFuZ2VzIGluc2lkZQo+IHJhdyBOQU5EIHN1YnN5c3RlbS4KPiAKPiA+IEFzIGJvdGggdHlwb2xv
+Z2llcyBjYW5ub3QgYmUgdXNlZCBhdCB0aGUgc2FtZSB0aW1lLCBJIGd1ZXNzIHlvdSBzaG91bGQK
+PiA+IGhhdmUgYW5vdGhlciBkcml2ZXIgaGFuZGxpbmcgdGhpcyBmZWF0dXJlIHVuZGVyIHRoZSBz
+cGkvIHN1YnN5c3RlbSArCj4gPiBhIGZldyBkZWNsYXJhdGlvbnMgaW4gdGhlIFNQSS1OQU5EIGRl
+dmljZXMgbGlzdC4KPiA+ICAgCj4gCj4gSW5pdGlhbGx5IEkgd2FzIHN0YXJ0ZWQgd3JpdGluZyBz
+ZXBhcmF0ZSBkcml2ZXIgdW5kZXIgU1BJLU5BTkQgc3Vic3lzdGVtIHRoZW4gSQo+IHJlYWxpemVk
+IHRoYXQgbW9yZSB0aGFuIDg1JSBvZiByYXcvcWNvbV9uYW5kLmMgY29kZSBnZXR0aW5nIGR1cGxp
+Y2F0ZWQuCj4gCj4gVGhhdCdzIHdoeSBJIGhhdmUgYWRkZWQgdGhpcyBTUEktTkFORCBjaGFuZ2Ug
+aW4gcmF3L3Fjb21fbmFuZC5jIHNpbmNlCj4gbW9yZSB0aGFuIDg1JSBvZiBjb2RlIHdpbGwgYmUg
+cmV1c2VkLgo+IAo+IElmIEkgd2lsbCBhZGQgdGhpcyBjaGFuZ2UgaW5zaWRlIFNQSS1OQU5EIHN1
+YnN5c3RlbSB0aGVuIG11Y2ggb2YKPiByYXcvcWNvbV9uYW5kLmMgY29kZSB3aWxsIGdldCBkdXBs
+aWNhdGVkLiBXb3VsZCBpdCBiZSBvayA/CgpXaGF0IGFib3V0IG1vdmluZyB0aGUgZ2VuZXJpYyBj
+b2RlIHRvIGRyaXZlcnMvbXRkL25hbmQvY29tbW9uLyBhbmQKcmVmZXJyaW5nIHRvIGl0IGZyb20g
+ZHJpdmVycy9tdGQvbmFuZC9yYXcvcWNvbV9uYW5kLmMgYW5kCmRyaXZlcnMvc3BpL3NwaS1xY29t
+LmMgKG9yIHN1Y2gpPwoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
+ZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
+bXRkLwo=
