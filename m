@@ -2,81 +2,100 @@ Return-Path: <SRS0=x3fM=EE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 157A9C2D0A3
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Oct 2020 10:24:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CAA67C2D0A3
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Oct 2020 10:28:32 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8B15020790
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Oct 2020 10:24:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3216220782
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Oct 2020 10:28:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="SbYRXliW";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RNX/nO0T"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B15020790
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jSwQTrZX";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="LNadpuhd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3216220782
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=7cPWRcmwnjrPMRJexUkqlrmxLKVIOVeiJcWYQIw/gDU=; b=SbYRXliWf3UQ537cT7VjS+WqY
-	54goG/4TbG8HOk4+Zf/iR/r9o2b6GD+rnwFnX5G9jiHmR8TZgukDmuW/q5i9MHSQ3YRCvax5pWBBv
-	MkW6eI39V2quUYjc25/iKIxroZoLkU2CQ2maYaVALAomD1NpJYODyuDGtd9c3YeJeFnt2YrAJs27m
-	CzqA3Y9Z3nvnlEdEnZEWigf6fA8IokdlA0YBjjtEYwEwiWQxypH6q6gSfvynnje8ANrsBOsdT+h5t
-	KM+iD5RPwkGvdO5WT8YemN3F5773LeSte11JPcm5f9LD8mGZMBSPfHg4CEI0lknFcDTycNvLHI4k8
-	sdRt9reew==;
+	 bh=zv+IuFkZvlW7858MprT1BtWse0AIqytZc8VO0xDe1Pk=; b=jSwQTrZXICuTvvEKNGWEF/b6G
+	j7GXX/xCC1ZDYkTbXttlSMvka/HTpjtbjqZeDET0NUA2a39bVbyhmvyfxV/yZCE7HzUAlSH0sLlit
+	5+4XRWszwXv0W12Sxgk6lP5vQQwMkBI176DfWl49WScGL8NrLRbrn6U4wZX+IKHSlpq1KMed41+FY
+	/4yW82tPV2BwcpbIj7eMBjuIhdaey5p605uUaLC+ivjGOKokg59ewT/NGsqiK3sEKO1jzQpGDinQo
+	jKc4/tYVL2P1HPRY7guCV+t4F8HgCbHixuqsqaRorzlz/uw8Ahcm5JghrsTSsaPDv7x6ECAWfFV1u
+	LjP/lhx1w==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kY55V-0000js-3q; Thu, 29 Oct 2020 10:23:21 +0000
-Received: from mail-qt1-x82a.google.com ([2607:f8b0:4864:20::82a])
+	id 1kY59W-0001PU-5Q; Thu, 29 Oct 2020 10:27:30 +0000
+Received: from aserp2120.oracle.com ([141.146.126.78])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kY55P-0000j0-Fb
- for linux-mtd@lists.infradead.org; Thu, 29 Oct 2020 10:23:16 +0000
-Received: by mail-qt1-x82a.google.com with SMTP id f93so1464475qtb.10
- for <linux-mtd@lists.infradead.org>; Thu, 29 Oct 2020 03:23:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=X9QXi0yh9GzSDp+3St7dMtekRdzNhqoIUIfHCmOXXoA=;
- b=RNX/nO0TC0C11NqaoqN00hqIBb7rl8JlmK/3NPpmebYqeHmcTW5qHZ2tx3R27LfTKu
- t2ggNVnu001+RLCQPdESsuM9C0vDqsmbER3A7JKAn1ZTla1BrW5mgMrpw0dkvdHhBSTM
- 4+bL8nth6mntrcNYpHZpFhj5tquFB3DjEjmtIH5L5CimjVTWTPmzJtUeGufsM74lfcGc
- 1Bi+BM5qC4mawNOoWNEunBdfrEwhEoNcMmnZwjFfZ9HgGfh7vi8frAobddYADZa6kykm
- s8LEV0uirpTMnaJMBV8xE/Ajw4DTQ1PD/Cxtevzw/LPjyHzzt3XfMoVXsgZs20UknR+R
- iWnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=X9QXi0yh9GzSDp+3St7dMtekRdzNhqoIUIfHCmOXXoA=;
- b=Nn8r0a5G+p9+R2qOmrC9bX+OFmwmcEN17BYvujIY0FVfYW5s1q+ijYA4qAjs1gN9UB
- Rnsta/Z5n65nq79GKb9rmrr4bCNyabGnnzCR765y8sJq2tCjjAno2yaWIG30h1tBylfv
- mIryR8PbBqUGRUyg08dIgEgzf5JzAtQqXpLagqACzNGrJ3XkJ94y10L9sIqQtl40tA/I
- IYbSMPhdrq7o9thf2Em/Gimw2cZBe3fJvW0O7ZQt6KmmbN+CpDuPLwXoRgYnQoL5fwHe
- yertom9M2jqLD2Y0gqn2s2h6F3kTzGcfyWdaC9TnES2UXDENqhZdBlAoj7at+D5H3z8P
- FUhg==
-X-Gm-Message-State: AOAM533gKhPrZal4rTx6/tTc9kH1Nc2WUnf20SoM8UDxT8oXUBKNUBaI
- yK7P9UzlA6PG39kRB3X7P9M0UO6WQJC7YU+xPXDEmMC1cyoz5Q==
-X-Google-Smtp-Source: ABdhPJx4hCfk6douRg7vSM3VDjgCf3HcAds24dSP5Cn6pnqqpMPuyZGi2hvQKoXCvEiEaYSdpkWkJhojftSafkJFHRI=
-X-Received: by 2002:ac8:5903:: with SMTP id 3mr2908716qty.166.1603966992572;
- Thu, 29 Oct 2020 03:23:12 -0700 (PDT)
+ id 1kY59T-0001OZ-3x
+ for linux-mtd@lists.infradead.org; Thu, 29 Oct 2020 10:27:28 +0000
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+ by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09TAP8Qc050909;
+ Thu, 29 Oct 2020 10:27:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=Z1RnQs5AS1k/4IU0PDUoJ10hVum68KtlJR+3BjGbDbU=;
+ b=LNadpuhdggdCxvL3LIz6redN2lULWMuK0SqSSgmcoMgDn2a/RDCK6BuzGw+gHe57OSy/
+ 23fCbHueri58FLZZfd32OAcVb/yz/o8/qd/IgAXB1Xqz9X4f1Joj3nyN6avdYXCzlV5L
+ FKC1Pj/AVZcPcFGdBXuvhfLyc7MmEYxfCZV3XqU/oPCmQepIhaArYTZUpWYYwmRwxUYa
+ 347s3VfC+lKrlw61K6Is12pmRvcRhkKcUhFexic574fCYKbWPMQYJTqPiPYrPG2C2g+J
+ MTSjhQ+WTlxUWO0MyAQQDMtOtCN0Kx1rLzILJ8A6zcrWiSPpJZfH1NDJrw8eVOh4dSad 0A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+ by aserp2120.oracle.com with ESMTP id 34cc7m41nu-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Thu, 29 Oct 2020 10:27:17 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+ by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09TAQARU157091;
+ Thu, 29 Oct 2020 10:27:17 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+ by aserp3020.oracle.com with ESMTP id 34cx60bs6y-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Thu, 29 Oct 2020 10:27:16 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+ by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09TARDgg004536;
+ Thu, 29 Oct 2020 10:27:14 GMT
+Received: from kadam (/41.57.98.10) by default (Oracle Beehive Gateway v4.0)
+ with ESMTP ; Thu, 29 Oct 2020 03:27:13 -0700
+Date: Thu, 29 Oct 2020 13:27:05 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH] mtd: nand: ecc-hamming: Clarify the logic around rp17
+Message-ID: <20201029102705.GR18329@kadam>
+References: <20201029083847.21128-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
-References: <CACxOKoK+JjjbKg9XAEQgyatq=hOjY6ugc+iyQ3trNipzD7snDQ@mail.gmail.com>
-In-Reply-To: <CACxOKoK+JjjbKg9XAEQgyatq=hOjY6ugc+iyQ3trNipzD7snDQ@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Thu, 29 Oct 2020 11:23:01 +0100
-Message-ID: <CAFLxGvxTkELuzgszLkV6LA7D_qL10i=cP6mxj3sTwCEYJcmLMg@mail.gmail.com>
-Subject: Re: UBIRENAME failure modes
-To: Maurice Smulders <maurice.smulders@genevatech.net>
+Content-Disposition: inline
+In-Reply-To: <20201029083847.21128-1-miquel.raynal@bootlin.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9788
+ signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0
+ mlxscore=0 mlxlogscore=999
+ suspectscore=0 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010290076
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9788
+ signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ lowpriorityscore=0 adultscore=0
+ malwarescore=0 spamscore=0 clxscore=1011 mlxscore=0 suspectscore=0
+ priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010290076
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201029_062315_554557_E981A306 
-X-CRM114-Status: GOOD (  16.35  )
+X-CRM114-CacheID: sfid-20201029_062727_247789_B27B6ED0 
+X-CRM114-Status: GOOD (  23.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,50 +107,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org
+Cc: Richard Weinberger <richard@nod.at>, kernel test robot <lkp@intel.com>,
+ linux-mtd@lists.infradead.org, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Maurice,
+On Thu, Oct 29, 2020 at 09:38:47AM +0100, Miquel Raynal wrote:
+> This code has been written in 2008 and is fine, but in order to keep
+> robots happy, I think it's time to change a little bit this code just
+> to clarify the different possible values of eccsize_mult. Indeed, this
+> variable may only take the value 1 or 2 because step_size, in the case
+> of the software Hamming ECC engine may only be 256 or 512. Depending
+> on the value of eccsize_mult, an extra rp17 variable is set, or not
+> and triggers the following warning:
+> 
+>      smatch warnings:
+>      ecc_sw_hamming_calculate() error: uninitialized symbol 'rp17'.
+> 
+> As highlighted by Dan Carpenter, if the only possible values for
+> eccsize_mult are 1 and 2, then the code is fine, but "it's hard to
+> tell just from looking".
+> 
+> So instead of shifting step_size, let's use a ternary condition to
+> assign to eccsize_mult the only two possible values and clarify the
+> driver's logic.
+> 
+> Now that the situation is clarified for humans, set rp17 to 0 in an
+> else block to keep robots silent as well.
 
-On Tue, Oct 27, 2020 at 10:59 PM Maurice Smulders
-<maurice.smulders@genevatech.net> wrote:
->
-> I know that UBI is built for resilience, but I have a simple question.
-> This is inside an unserviceable device once deployed, so we have to be
-> 99.99999% sure that it is recoverable in a SHTF case..
->
-> volume layout:
-> - rootfs_0 and 1 : UBIFS
-> - linux_0 and 1 (raw uboot loadable linux kernel - NO filesystem
->
-> when loading a firmware update, the script creates a rootfs_new and
-> linux_new, and once complete and the code is verified to be correct an
-> ubirename is executed. The rootfs installation is done in the
-> alternate volume, so actual running code is not affected.
->
-> + time ubirename /dev/ubi0 linux_1 linux_old_1 rootfs_1 rootfs_old_1
-> linux_new linux_1 rootfs_new rootfs_1
-> real    0m 2.32s
-> user    0m 0.00s
-> sys     0m 0.69s
->
-> How big is the critical window of this rename? 0.69s or (way) less? If
-> power is lost during this very short 0.69s, what could happen? Is
-> there any chance of an undefined state, or would either the old or new
-> config be active?
+Smatch will parse it correctly with just the ternary change but there
+might be other checkers which want the the else statement.  I'm not
+sure.  GCC doesn't seem to warn about uninitialized variables these
+days.
 
-Volume rename is an atomic operation, either all volumes got renamed or none.
-UBI makes use of the atomic LEB change feature. It alters the volume table and
-atomically exchanges it with a newer version.
+regards,
+dan carpenter
 
-So there should be no critical window, if so, you've found a bug. :-)
-
--- 
-Thanks,
-//richard
 
 ______________________________________________________
 Linux MTD discussion mailing list
