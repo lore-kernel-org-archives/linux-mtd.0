@@ -2,64 +2,60 @@ Return-Path: <SRS0=OfxJ=EF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AEE1C55179
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Oct 2020 17:37:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17F18C4741F
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Oct 2020 17:49:33 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0C5BC206ED
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Oct 2020 17:37:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8CF8020A8B
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Oct 2020 17:49:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Dw15AThW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C5BC206ED
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dEOnQ3qu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8CF8020A8B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=qwh9pe1z+MeI8Q8XyXsh5GGuPlh001gow7vsS7eSYvM=; b=Dw15AThWSM3XweORVyHfD4wAo
-	cBsJ4jHbf8c9jXro80g8WoLJe5rPaZ4/gV9NOI4OdNOGzMVuAjMzP4xdsqpHz1rGNHBjrN9RkmP+c
-	iU6z5Q9PwaaXEBTWf0X5f++6AXcExmHmtDVL79VKQREMdVAaMzQEaSpembjVZNcaqgiAnowMVtZla
-	y9ZoyMQp+69XzVN9z858Z/Vp5StMrCGc6dqwl4W9uYfwRp756Ua3P8Fvds2XZpWz1OM8Vy0x5Nk+o
-	HxbeFBWbcr1fjx6eT3on/aNLaLgR4uHzoLXmX7xFgNQlDMrOnciuWhNQ3Tgeml/54F9CiPctCBNkQ
-	yPVGhIw4w==;
+	 bh=wmixE777wKlb9yTDJeAhCqazQl1xmQLdZkId75R0Zok=; b=dEOnQ3quh47W4kcVjnbTADLAA
+	avEZkJsnuMGYNPlETviWiHxhwSNRAp1+xQnAVKTyDAt62L19BMmEWFbeJHRswLVKf5J1KjGTFCok/
+	fCU095pU51aqfl9BzwLPn1R2cd+P49MOUcSVaEGtH3W857mFduOpDq/Z0TWHI5ZH34Zs+2JI8P195
+	SRPJzRgcL5LfSWPKX4nngiQ26NSpW2+MGuCGA2IlNhgeptf9iCywW7q8PkBK1Cz3oN4BALkrSezny
+	vjMHP/WUkcz8RaJZ68oyYkQKhcpII0JZUnk5CW6lRDlFclaJkft+I9jtsDx1MOx7QdlWK0pTn18A/
+	AfMwvNW9A==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kYYKA-0000FX-CK; Fri, 30 Oct 2020 17:36:26 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1kYYV5-0002SQ-1B; Fri, 30 Oct 2020 17:47:43 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kYYDy-00067X-Cy
- for linux-mtd@lists.infradead.org; Fri, 30 Oct 2020 17:30:08 +0000
+ id 1kYYV2-0002RK-90
+ for linux-mtd@lists.infradead.org; Fri, 30 Oct 2020 17:47:41 +0000
 X-Originating-IP: 91.224.148.103
-Received: from localhost.localdomain (unknown [91.224.148.103])
+Received: from xps13 (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id A8E50FF802;
- Fri, 30 Oct 2020 17:29:59 +0000 (UTC)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id B88B1C000A;
+ Fri, 30 Oct 2020 17:47:37 +0000 (UTC)
+Date: Fri, 30 Oct 2020 18:47:36 +0100
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 05/20] mtd: nand: ecc-bch: Return only valid error codes
-Date: Fri, 30 Oct 2020 18:29:58 +0100
-Message-Id: <20201030172958.30893-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200929230124.31491-6-miquel.raynal@bootlin.com>
-References: 
+To: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+Subject: Re: [PATCH] mtd: cfi_cmdset_0002: Use status register where possible
+Message-ID: <20201030184736.4ec434f5@xps13>
+In-Reply-To: <20201022154506.17639-1-joakim.tjernlund@infinera.com>
+References: <20201022154506.17639-1-joakim.tjernlund@infinera.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: aca171cbc0276ebaa042e17c02aec9cecd2ec1c6
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201030_133003_486028_DEEB4320 
-X-CRM114-Status: UNSURE (   6.42  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20201030_134740_433156_9339442E 
+X-CRM114-Status: GOOD (  18.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,23 +67,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Julien Su <juliensu@mxic.com.tw>, ycllin@mxic.com.tw,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
+ stable@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2020-09-29 at 23:01:09 UTC, Miquel Raynal wrote:
-> When a function is not available, returning -ENOTSUPP makes much more
-> sense than returning -1.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next.
-
-Miquel
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgSm9ha2ltLAoKUGxlYXNlIENjIHRoZSBNVEQgbWFpbnRhaW5lcnMsIG5vdCBvbmx5IHRoZSBs
+aXN0IChnZXRfbWFpbnRhaW5lcnMucGwpLgoKSm9ha2ltIFRqZXJubHVuZCA8am9ha2ltLnRqZXJu
+bHVuZEBpbmZpbmVyYS5jb20+IHdyb3RlIG9uIFRodSwgMjIgT2N0CjIwMjAgMTc6NDU6MDYgKzAy
+MDA6Cgo+IENvbW1pdCAibXRkOiBjZmlfY21kc2V0XzAwMDI6IEFkZCBzdXBwb3J0IGZvciBwb2xs
+aW5nIHN0YXR1cyByZWdpc3RlciIKPiBhZGRlZCBzdXBwb3J0IGZvciBwb2xsaW5nIHRoZSBzdGF0
+dXMgcmF0aGVyIHRoYW4gdXNpbmcgRFEgcG9sbGluZy4KPiBIb3dldmVyLCBzdGF0dXMgcmVnaXN0
+ZXIgaXMgdXNlZCBvbmx5IHdoZW4gRFEgcG9sbGluZyBpcyBtaXNzaW5nLgo+IExldHMgdXNlIHN0
+YXR1cyByZWdpc3RlciB3aGVuIGF2YWlsYWJsZSBhcyBpdCBpcyBzdXBlcmlvciB0byBEUSBwb2xs
+aW5nLgo+IAoKSSB3aWxsIGxldCB2aWduZXNoIGNvbW1lbnQgYWJvdXQgdGhlIGNvbnRlbnQgKGxv
+b2tzIGZpbmUgYnkgbWUpIGJ1dCB5b3Ugd2lsbApuZWVkIGEgRml4ZXMgdGFnIGhlcmUuCgo+IFNp
+Z25lZC1vZmYtYnk6IEpvYWtpbSBUamVybmx1bmQgPGpvYWtpbS50amVybmx1bmRAaW5maW5lcmEu
+Y29tPgo+IENjOiBzdGFibGVAdmdlci5rZXJuZWwub3JnCj4gLS0tCj4gIGRyaXZlcnMvbXRkL2No
+aXBzL2NmaV9jbWRzZXRfMDAwMi5jIHwgMiArLQo+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRp
+b24oKyksIDEgZGVsZXRpb24oLSkKPiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvY2hpcHMv
+Y2ZpX2NtZHNldF8wMDAyLmMgYi9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIuYwo+
+IGluZGV4IGExZjNlMTAzMWMzZC4uZWU5YjMyMmU2M2JiIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMv
+bXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jCj4gKysrIGIvZHJpdmVycy9tdGQvY2hpcHMvY2Zp
+X2NtZHNldF8wMDAyLmMKPiBAQCAtMTE3LDcgKzExNyw3IEBAIHN0YXRpYyBzdHJ1Y3QgbXRkX2No
+aXBfZHJpdmVyIGNmaV9hbWRzdGRfY2hpcGRydiA9IHsKPiAgc3RhdGljIGludCBjZmlfdXNlX3N0
+YXR1c19yZWcoc3RydWN0IGNmaV9wcml2YXRlICpjZmkpCj4gIHsKPiAgCXN0cnVjdCBjZmlfcHJp
+X2FtZHN0ZCAqZXh0cCA9IGNmaS0+Y21kc2V0X3ByaXY7Cj4gLQl1OCBwb2xsX21hc2sgPSBDRklf
+UE9MTF9TVEFUVVNfUkVHIHwgQ0ZJX1BPTExfRFE7Cj4gKwl1OCBwb2xsX21hc2sgPSBDRklfUE9M
+TF9TVEFUVVNfUkVHOwo+ICAKPiAgCXJldHVybiBleHRwLT5NaW5vclZlcnNpb24gPj0gJzUnICYm
+Cj4gIAkJKGV4dHAtPlNvZnR3YXJlRmVhdHVyZXMgJiBwb2xsX21hc2spID09IENGSV9QT0xMX1NU
+QVRVU19SRUc7CgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
+c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
+Cg==
