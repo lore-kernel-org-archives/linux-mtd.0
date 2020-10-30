@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-14.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88865C55178
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AEE1C55179
 	for <linux-mtd@archiver.kernel.org>; Fri, 30 Oct 2020 17:37:27 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0E215206F4
+	by mail.kernel.org (Postfix) with ESMTPS id 0C5BC206ED
 	for <linux-mtd@archiver.kernel.org>; Fri, 30 Oct 2020 17:37:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZYPIYusK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E215206F4
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Dw15AThW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C5BC206ED
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=TtgFl3yzrPU/ExefG+vB7bIV4dyU1p/H/E7bdFW4kQc=; b=ZYPIYusKeBwgQRkSzqu4YVLda
-	bH2hNLjYzcFw2zJOSwGGsSoipZyN3xNyNqKK8M3mffOtnZQCdy7z2PfnXraK9IgjmuW4W41N3D92R
-	oOG6+z7n77d0k6CUym9XjnLSg1eslwtTQDOIRrl3bI2kDOIYmcoB3Ka1niklJSNVBr+WTlVJ8K13c
-	LdSzVufyo7zYlf8sOQkAUeMPHF/NlOavZrvLaVFW+2CK70SWhUr7OL/iJd0/3jk8mNG6cZQiMCSE5
-	HZfoTGPNPyV0vxobH4uMmLMOQGYOhUz8q6pU0JqACOPtcJ8evRYkxT+uFP9pbmLzDobzKfdywmrd2
-	1dDEv0Krg==;
+	 bh=qwh9pe1z+MeI8Q8XyXsh5GGuPlh001gow7vsS7eSYvM=; b=Dw15AThWSM3XweORVyHfD4wAo
+	cBsJ4jHbf8c9jXro80g8WoLJe5rPaZ4/gV9NOI4OdNOGzMVuAjMzP4xdsqpHz1rGNHBjrN9RkmP+c
+	iU6z5Q9PwaaXEBTWf0X5f++6AXcExmHmtDVL79VKQREMdVAaMzQEaSpembjVZNcaqgiAnowMVtZla
+	y9ZoyMQp+69XzVN9z858Z/Vp5StMrCGc6dqwl4W9uYfwRp756Ua3P8Fvds2XZpWz1OM8Vy0x5Nk+o
+	HxbeFBWbcr1fjx6eT3on/aNLaLgR4uHzoLXmX7xFgNQlDMrOnciuWhNQ3Tgeml/54F9CiPctCBNkQ
+	yPVGhIw4w==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kYYKD-0000L1-CU; Fri, 30 Oct 2020 17:36:29 +0000
-Received: from relay12.mail.gandi.net ([217.70.178.232])
+	id 1kYYKA-0000FX-CK; Fri, 30 Oct 2020 17:36:26 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kYYE3-0006B1-On
- for linux-mtd@lists.infradead.org; Fri, 30 Oct 2020 17:30:09 +0000
+ id 1kYYDy-00067X-Cy
+ for linux-mtd@lists.infradead.org; Fri, 30 Oct 2020 17:30:08 +0000
+X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id CE329200004;
- Fri, 30 Oct 2020 17:30:04 +0000 (UTC)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id A8E50FF802;
+ Fri, 30 Oct 2020 17:29:59 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 03/20] mtd: nand: ecc-bch: Cleanup and style fixes
-Date: Fri, 30 Oct 2020 18:30:03 +0100
-Message-Id: <20201030173003.30962-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 05/20] mtd: nand: ecc-bch: Return only valid error codes
+Date: Fri, 30 Oct 2020 18:29:58 +0100
+Message-Id: <20201030172958.30893-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200929230124.31491-4-miquel.raynal@bootlin.com>
+In-Reply-To: <20200929230124.31491-6-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: efb88d1f4878ab64570caaf222920f013ca4ca7c
+X-linux-mtd-patch-commit: aca171cbc0276ebaa042e17c02aec9cecd2ec1c6
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201030_133008_036865_B2B8FD7A 
-X-CRM114-Status: UNSURE (   8.69  )
+X-CRM114-CacheID: sfid-20201030_133003_486028_DEEB4320 
+X-CRM114-Status: UNSURE (   6.42  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -77,11 +78,9 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2020-09-29 at 23:01:07 UTC, Miquel Raynal wrote:
-> Fix function headers, capitals and reword a little bit the comments
-> to make this driver more readable.
-> 
-> There is not functional change.
+On Tue, 2020-09-29 at 23:01:09 UTC, Miquel Raynal wrote:
+> When a function is not available, returning -ENOTSUPP makes much more
+> sense than returning -1.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
