@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-14.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D95BC4741F
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Oct 2020 17:26:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3AC5C5517A
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Oct 2020 17:27:53 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 73ACC2083B
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Oct 2020 17:26:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 73CB920756
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Oct 2020 17:27:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="agFlgufb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73ACC2083B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QRQZEpyH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73CB920756
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=k93VjDNM/XHXX0S6IgR3e9l8YkKNMw4JoP2wNakIlYo=; b=agFlgufbCwrHaAnr1+BUCefZG
-	Oao8/1wnixiBsFsp3yBtihEGqwUBldsHowdelR5yjk7Yx8jWqYjD9AzIa+DPUSZlqN2CszT63EGbA
-	iv8shBrngsdCUe4etcqnhq9hkehXnt+o6f+hqWPsPkJYqhphxG99O65yGjl0YcmU8UpXzknvlJaKi
-	tmko9s3r5NvLt6ybjdcZUkCxJPvkkRG9y9CF156+nMxpx+x8MCghywqJJmI9vinRbIq5D1DRPI6U+
-	WBi/c/qJRVHfAM/ty2kHuoAIpQRe7OaIH9Gi0g1/FDI4pb12MmiDricr9xXmKmxqnTpzHJBPM7iTK
-	Xxs0vVSiQ==;
+	 bh=7q+BvbkbLhadNCSiDYcEyuFEJBOr0pJ3C+FWi/JktBI=; b=QRQZEpyH4JQmq7FSaJt7vkLe3
+	g31OgHf9PVjznQRSagNxChErZvY6dV9yBrt0xcOeOiZUUtxeRboVln3dUfu0CngK+X/YmQNRMu6JD
+	9htMVNfmCdrq1OBf43JiqnHtvnRxjXCnCsYeDb1b51JhkGE3R+6p85gXHKaln2u/sIZI/E4r44/5j
+	Pu0zf9nFXnZviiY557Gs5UBnUJ/sXb+3wneLr/HR3/NW/7n3luA6Z9cAUiv26mvH7zwG5mCJUauIS
+	Dh3hXXT1AewPicLTOtRNRFa3rdcU9QXmvD6zCEcwxnavbBpl1mnJrrwOqlC4kce+asaqkpSaL0geT
+	yj+AKqZBw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kYYA9-0004Yx-Ma; Fri, 30 Oct 2020 17:26:05 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1kYYBO-0004qv-5U; Fri, 30 Oct 2020 17:27:22 +0000
+Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kYYA7-0004YP-Kl
- for linux-mtd@lists.infradead.org; Fri, 30 Oct 2020 17:26:04 +0000
+ id 1kYYBL-0004pn-7k
+ for linux-mtd@lists.infradead.org; Fri, 30 Oct 2020 17:27:20 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 80C97FF807;
- Fri, 30 Oct 2020 17:26:01 +0000 (UTC)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 0E27C1C0003;
+ Fri, 30 Oct 2020 17:27:15 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Christophe Kerello <christophe.kerello@st.com>, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com
-Subject: Re: [PATCH v2] mtd: rawnand: stm32_fmc2: fix broken ECC
-Date: Fri, 30 Oct 2020 18:26:00 +0100
-Message-Id: <20201030172600.28845-1-miquel.raynal@bootlin.com>
+To: Sergei Antonov <saproj@gmail.com>,
+	linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: meson: fix meson_nfc_dma_buffer_release() arguments
+Date: Fri, 30 Oct 2020 18:27:14 +0100
+Message-Id: <20201030172714.29036-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1604064819-26861-1-git-send-email-christophe.kerello@st.com>
+In-Reply-To: <20201028094940.11765-1-saproj@gmail.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 9efac6ce7f621c405d49a091e3e367be4250a27a
+X-linux-mtd-patch-commit: db37c76e767a0d2de190959948099504c16b3e61
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201030_132603_802451_EB6A55DB 
-X-CRM114-Status: UNSURE (   9.93  )
+X-CRM114-CacheID: sfid-20201030_132719_396507_B2CF7F87 
+X-CRM114-Status: UNSURE (   6.82  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -70,24 +70,21 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com
+Cc: liang.yang@amlogic.com, jianxin.pan@amlogic.com, stable@vger.kernel.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2020-10-30 at 13:33:39 UTC, Christophe Kerello wrote:
-> Since commit d7157ff49a5b ("mtd: rawnand: Use the ECC framework user
-> input parsing bits"), ECC are broken in FMC2 driver in case of
-> nand-ecc-step-size and nand-ecc-strength are not set in the device tree.
-> To avoid this issue, the default settings are now set in
-> stm32_fmc2_nfc_attach_chip function.
+On Wed, 2020-10-28 at 09:49:40 UTC, Sergei Antonov wrote:
+> Arguments 'infolen' and 'datalen' to meson_nfc_dma_buffer_release() were mixed up.
 > 
-> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
-> Fixes: d7157ff49a5b ("mtd: rawnand: Use the ECC framework user input parsing bits")
+> Fixes: 8fae856c53500 ("mtd: rawnand: meson: add support for Amlogic NAND flash controller")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Sergei Antonov <saproj@gmail.com>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
 Miquel
 
