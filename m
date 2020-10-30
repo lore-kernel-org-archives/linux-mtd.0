@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-14.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F7A0C55178
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E245C00A89
 	for <linux-mtd@archiver.kernel.org>; Fri, 30 Oct 2020 17:28:25 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 20E382075E
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Oct 2020 17:28:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8560420756
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Oct 2020 17:28:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GPrNtwx1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 20E382075E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nLWsmbX3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8560420756
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=tKfUJ5ts1WBNGm+bLt2w0zqQ64x7mxmJIx+z2wy0Kv8=; b=GPrNtwx1r6J+6FNyy9FuzzidP
-	l/PAuFa/o01k8efsMD9nzqtKe1cZn/h/anxmIo+MnyCzXS52fum1wF1J2bfQJy5lAqGUcHwQ7yDOO
-	JG9W0Rf3USuY4InJoCIa0Db8B86FaRzTXgtiWSk9KqocE+gykWPzjyNouOurdvLQ10JseFPNL9NnM
-	m11InmwkW0gyUQr6CWwqy+e6HMoFpPohkliAfuUVTDylvbvhDZ+uWFLIsC6Tg32rHzvaDnsoDfYEf
-	N+4fx2V7jD4M3OPAttc5bo9g0JU+HJVCRXKJHJWtcdYDaQtiLfX8LLaDol5zQx6iim8VXvDQcv7r+
-	BCzJPbWcw==;
+	 bh=GQTaOKqYo5RNIQsA7wwf+hRqNREYb10jjeN1kZa5oMY=; b=nLWsmbX3mFqEEIwzj2T4i0XKN
+	RU5J4rJZd2DiftABzCQJGFMsxGd5mkYEKk2r6XHHk1Suos6ShQxu42nd3+8+7MxITPbal1aglygJP
+	MYzChArPePLiWPIJJiNrTpXzK3YvsPEnKiOBAZ0VI6OMGFlkNJ1tRLtndlV+mJEzngyzapPxssEIv
+	u9IhvlhZ8/BwMjAhV/P7eoOAfTV1BxDXi5AVFVOMXhhCFnSBPI2tXEQNS2mVJQxTds9GekWL6UTmQ
+	cKSK29OGFcOZZH3YeQeJHIcqT1yWBKjQ0FbSySY4iMFJdNFXdYT06gajH5XmMmP0gUD27EkzvtxTk
+	OAaV9NeGw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kYYBr-00051n-G2; Fri, 30 Oct 2020 17:27:51 +0000
+	id 1kYYBT-0004sr-GI; Fri, 30 Oct 2020 17:27:27 +0000
 Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kYYBn-00050H-7q
- for linux-mtd@lists.infradead.org; Fri, 30 Oct 2020 17:27:48 +0000
+ id 1kYYBP-0004rN-AL
+ for linux-mtd@lists.infradead.org; Fri, 30 Oct 2020 17:27:24 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 6AF3EFF805;
- Fri, 30 Oct 2020 17:27:45 +0000 (UTC)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 2CE7DFF80A;
+ Fri, 30 Oct 2020 17:27:20 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Marco Felsch <m.felsch@pengutronix.de>, han.xu@nxp.com,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
-Subject: Re: [PATCH] mtd: rawnand: gpmi: cleanup makefile
-Date: Fri, 30 Oct 2020 18:27:44 +0100
-Message-Id: <20201030172744.29354-1-miquel.raynal@bootlin.com>
+To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+ Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v3 17/56] mtd: rawnand: fix a kernel-doc markup
+Date: Fri, 30 Oct 2020 18:27:20 +0100
+Message-Id: <20201030172720.29104-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201007134533.31390-1-m.felsch@pengutronix.de>
+In-Reply-To: <9ed47a57d12c40e73a9b01612ee119d39baa6236.1603469755.git.mchehab+huawei@kernel.org>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 548c5b5bc3348e6dd6025bec1430fd6307c0b518
+X-linux-mtd-patch-commit: e79e6dcbbdced15323708d5bcbba163d5cc540ad
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201030_132747_505185_3DB5DEA2 
-X-CRM114-Status: UNSURE (   6.63  )
+X-CRM114-CacheID: sfid-20201030_132723_549400_878D12AF 
+X-CRM114-Status: UNSURE (   7.86  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -70,18 +70,20 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Jonathan Corbet <corbet@lwn.net>,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2020-10-07 at 13:45:33 UTC, Marco Felsch wrote:
-> The extra gpmi_nand.o object is not needed anymore since
-> commit 3045f8e36963 ("mtd: rawnand: gpmi: move all driver
-> code into single file").
+On Fri, 2020-10-23 at 16:33:04 UTC, Mauro Carvalho Chehab wrote:
+> Some identifiers have different names between their prototypes
+> and the kernel-doc markup.
 > 
-> Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
