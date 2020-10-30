@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-14.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8DC4C4741F
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Oct 2020 17:31:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 173F2C55178
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Oct 2020 17:31:59 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4719520756
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Oct 2020 17:31:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 69CD520756
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Oct 2020 17:31:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DN0ZHOWu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4719520756
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oGw18q7a"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 69CD520756
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,41 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=qpFj8OuzVbdbQ3lhoGXyyVz2ARqup79we5rx358I7KI=; b=DN0ZHOWuSka4a8/J1xGKrmyoG
-	YBQTPqL5OUrv7pPlocWPXHppQoUO5dWpdYEV3H/U/lF4Oytpsbz/vzDTMiF1Dz4k34052dyD1XVr/
-	29PBpdP+VN/poQ6bD6zDAXQa62GB50DNtEIJOyCVdPvn8f2CeKpR9jcsdCx75cROX6/Jve5idSvO9
-	OIsXwAaXTLE/n2dD8KHowLiGZ+cWqFyjVmpio1UOe9OY8gNPiNBHnP08sNUHZiShSf7xkygmZsV6i
-	kmRBGekrMvwJtGouaI9Gapk6Vxh5dFK9/ALSyaQmhtHYQqMkLIVR2MXh8ix0fCrjA3RVuc7sjTVQN
-	pNmduN1KA==;
+	 bh=lDd+qExi3NpiShyu1SHn2LsTbduPnDCW+GCXAFFi0Wc=; b=oGw18q7aBB8Vy9ErU94SOwfXk
+	DfMTFQyniUb3kyhDI7pAfcDa4bnOiTLJdjJeNoij8tBq2Dg7uIKqpTUGaRtrHI+MgPpyS0qTopL9Q
+	zgdJnae8pHIVrdBc3+NutSjhZfXJWhAs69YhDjqHpZiuuO9fWjkRSK0SoJaUM+dDqOcpYpFRU3d+A
+	cTTkhvf6838dlYHcf8f35p60nmNkDKJ95yoOzvfqe4VcAWo5NGC8eQtgfxWUqsvsAbysf/B0hxOxs
+	9HZ7oYbK/MSdlXdxf0IrxjG9SLlZEGsFB6/kmef4WnZNrZK9cqkNw+mOQi1yxj9CFlN98PZAw0wc9
+	VvcCQCwyA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kYYF2-0006hh-Ew; Fri, 30 Oct 2020 17:31:08 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1kYYEh-0006Xc-Eq; Fri, 30 Oct 2020 17:30:47 +0000
+Received: from relay12.mail.gandi.net ([217.70.178.232])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kYYD1-0005dC-Kk
- for linux-mtd@lists.infradead.org; Fri, 30 Oct 2020 17:29:04 +0000
-X-Originating-IP: 91.224.148.103
+ id 1kYYCv-0005Zg-S8
+ for linux-mtd@lists.infradead.org; Fri, 30 Oct 2020 17:28:59 +0000
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id BF66F1BF20E;
- Fri, 30 Oct 2020 17:29:00 +0000 (UTC)
+ by relay12.mail.gandi.net (Postfix) with ESMTPSA id 0E60D20000A;
+ Fri, 30 Oct 2020 17:28:54 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 19/20] mtd: nand: ecc-hamming: Create the software Hamming
- engine
-Date: Fri, 30 Oct 2020 18:28:59 +0100
-Message-Id: <20201030172859.30191-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 20/20] mtd: nand: Let software ECC engines be retrieved
+ from the NAND core
+Date: Fri, 30 Oct 2020 18:28:54 +0100
+Message-Id: <20201030172854.30129-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200929230124.31491-20-miquel.raynal@bootlin.com>
+In-Reply-To: <20200929230124.31491-21-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 9a0e8eaae7ada12f66495b48ad0eed8d54d3a2d2
+X-linux-mtd-patch-commit: 04c85e085d78af01a996d4d5db6ce05d20c07617
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201030_132903_812389_40DA3606 
-X-CRM114-Status: UNSURE (   6.92  )
+X-CRM114-CacheID: sfid-20201030_132858_075303_98A02D3E 
+X-CRM114-Status: UNSURE (   7.28  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -79,10 +78,10 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2020-09-29 at 23:01:23 UTC, Miquel Raynal wrote:
-> Let's continue introducing the generic ECC engine abstraction in the
-> NAND subsystem by instantiating a second ECC engine: software
-> Hamming.
+On Tue, 2020-09-29 at 23:01:24 UTC, Miquel Raynal wrote:
+> Before making use of the ECC engines, we must retrieve them. Add the
+> boilerplate for the ones already available: software engines (Hamming
+> and BCH).
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
