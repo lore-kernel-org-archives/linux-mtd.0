@@ -5,19 +5,19 @@ X-Spam-Level:
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B183C388F7
-	for <linux-mtd@archiver.kernel.org>; Sat, 31 Oct 2020 09:22:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E7C2C388F7
+	for <linux-mtd@archiver.kernel.org>; Sat, 31 Oct 2020 09:25:16 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CE30920756
-	for <linux-mtd@archiver.kernel.org>; Sat, 31 Oct 2020 09:22:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9C23020756
+	for <linux-mtd@archiver.kernel.org>; Sat, 31 Oct 2020 09:25:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sP3gx5Gb";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="SbajBFLZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE30920756
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DKOKvGiG";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ejwKMqL3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C23020756
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,38 +26,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=mqJpHcNFsvcdI3tHRbssiuL/0jTG3kF01IixNc7VeoY=; b=sP3gx5GbaaqtpqlcWmdpjBNFo
-	7DhDCY7U+JvV5EuVTq7I9qirY+c7Q5TSDu8k8VEs8paVj6Ft7prQvvjE/+OUXLM1DO8ETo8Mjjkwh
-	m2oLFuwON79Yn0yB+Sk8L1skzltpn7kzZu+EXFsd9Dfj3GaiEcqrGvD7NkPNDO/efMsuZir/kxrVb
-	39R8+QVQ0whuPzPY3flgQBoeIdQVgaWNg4PvWcenFslO3m2f2dkff+2iq30xE5sH/7QjyWRJcvDYi
-	WnkaWiY01JJqNzHwqEdg0atnC2LPzU/zGeeEv2AC2O2s9TT/b/Lo15UND7wCXLbYlkBkg/wEPTj/l
-	Keg2bQdmA==;
+	 bh=C77fzIMU/to2XwBY85Mp799pc8uRKQiKk0SR7V7CO6U=; b=DKOKvGiGjxpdNXhJXudT+5x2U
+	tetOZNm2ReMXGjD+jjHhMUjycN5mJj8UehAKunstJ/L7eteadvUMVKkMLT9NTYf0kOasmSkbSXfGW
+	d06To2YE3A33p/1WqvXsF1aM38hYfkd7wJh2haKwQuJx2gXhad4V/hAJy6J8yePoJJKmn5RIg2DAA
+	D84DdGjQJlBIg5JjA1wlSKEA+4MkK3R9Xi5FeUZ8NiqqFArT6ZqyvOAf1skjyjE4A/S67r6rhkDWr
+	Hy14vYzSgzQKbi6PKM1Lhk7p5zOoOp3drKoqsMmJ6MpK/5CbaKpa2hMsgb6FuSLJxNZzv8mT3lb1L
+	rzQq3AzsQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kYn5X-0005pB-PN; Sat, 31 Oct 2020 09:22:19 +0000
+	id 1kYn7f-00065x-7L; Sat, 31 Oct 2020 09:24:31 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kYn5W-0005ou-G3
- for linux-mtd@merlin.infradead.org; Sat, 31 Oct 2020 09:22:18 +0000
+ id 1kYn7d-00065l-BD
+ for linux-mtd@merlin.infradead.org; Sat, 31 Oct 2020 09:24:29 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=3MSvK9iNSy+DFtMSDiSadE/QmhEKeo+2u5OIDmRr7vM=; b=SbajBFLZzxSbqHTnfyUDYuOs9Q
- AlPTPMQiJMVpCj4HUo+9SAYnxuk256+8XFZq6L3QIAbl55avttLUr1mYwtiSc3wyQJbjJxqOe4XVN
- DarPmrRVAn0nxozPoBogGFe891rSl6V7IyXzu8wp1f/YteqWLA00iRfmtsyzrQ6zfEytVMBZvoYyY
- SafyPEGeBDFIK+daVu/yiKf3LyaiWMcHPfAh0aBzuxHv55ltSEk0/A1E9/g8wnFmNqsS1AWyGGIDA
- 7KYCHxbB3ra4Gz9MWNDrjYa8H/Yp4R+3rt1Dic5t+ctBW18UOx7BCpdNMBr8f6fdlWfTwm/dsO/Nl
- UQRskgqA==;
+ bh=8AaWlBE9Yvo2R2/ZXbUOXEpeEH/l5Fj4MrbBNz6ii3Y=; b=ejwKMqL3QOgZCEUKj4qV1LRUPK
+ rktDXkc/gSxoTFCy0Q7bS1a9u+nVEFV56gHTt8wUJAVNhlI5wTw0wDQpjaLq/qEIbpHgyzPe38xjw
+ LH26CdyI2RdbrgAWg6zZaSVvjBSRE01Zx5TIWkfK3KaQLLBAhWaZnc3UQEexs78AL9OnEc3AdvBbN
+ FbCbdweDhce3m7W+x/EiqeDbZt7KQGtOy89xeYzueWilgia9C2Sl34AvcFRuXkz9CEzo95IHzWQ5p
+ ejQkNX4KFpYHzSu6llF+pdlVVpd2a7cLkIk/GVyoc34vUHM9nE8dEIDcA2iTznHMqokGMjeOPw5cd
+ bHjIw4NA==;
 Received: from 089144193201.atnat0002.highway.a1.net ([89.144.193.201]
  helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kYn5U-0008II-Mm; Sat, 31 Oct 2020 09:22:17 +0000
+ id 1kYn7b-0008NP-PD; Sat, 31 Oct 2020 09:24:28 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 10/11] block: remove set_device_ro
-Date: Sat, 31 Oct 2020 09:58:09 +0100
-Message-Id: <20201031085810.450489-11-hch@lst.de>
+Subject: [PATCH 11/11] block: remove __blkdev_driver_ioctl
+Date: Sat, 31 Oct 2020 09:58:10 +0100
+Message-Id: <20201031085810.450489-12-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201031085810.450489-1-hch@lst.de>
 References: <20201031085810.450489-1-hch@lst.de>
@@ -87,58 +87,124 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Fold set_device_ro into its only remaining caller.
+Just open code it in the few callers.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- block/genhd.c         | 7 -------
- block/ioctl.c         | 2 +-
- include/linux/genhd.h | 1 -
- 3 files changed, 1 insertion(+), 9 deletions(-)
+ block/ioctl.c               | 25 +++++--------------------
+ drivers/block/pktcdvd.c     |  6 ++++--
+ drivers/md/bcache/request.c |  5 +++--
+ drivers/md/dm.c             |  5 ++++-
+ include/linux/blkdev.h      |  2 --
+ 5 files changed, 16 insertions(+), 27 deletions(-)
 
-diff --git a/block/genhd.c b/block/genhd.c
-index 0a273211fec283..a487590b365e89 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -1843,13 +1843,6 @@ static void set_disk_ro_uevent(struct gendisk *gd, int ro)
- 	kobject_uevent_env(&disk_to_dev(gd)->kobj, KOBJ_CHANGE, envp);
- }
- 
--void set_device_ro(struct block_device *bdev, int flag)
--{
--	bdev->bd_part->policy = flag;
--}
--
--EXPORT_SYMBOL(set_device_ro);
--
- void set_disk_ro(struct gendisk *disk, int flag)
- {
- 	struct disk_part_iter piter;
 diff --git a/block/ioctl.c b/block/ioctl.c
-index 96cb4544736468..04255dc5f3bff3 100644
+index 04255dc5f3bff3..6b785181344fe1 100644
 --- a/block/ioctl.c
 +++ b/block/ioctl.c
-@@ -371,7 +371,7 @@ static int blkdev_roset(struct block_device *bdev, fmode_t mode,
- 		if (ret)
- 			return ret;
+@@ -219,23 +219,6 @@ static int compat_put_ulong(compat_ulong_t __user *argp, compat_ulong_t val)
+ }
+ #endif
+ 
+-int __blkdev_driver_ioctl(struct block_device *bdev, fmode_t mode,
+-			unsigned cmd, unsigned long arg)
+-{
+-	struct gendisk *disk = bdev->bd_disk;
+-
+-	if (disk->fops->ioctl)
+-		return disk->fops->ioctl(bdev, mode, cmd, arg);
+-
+-	return -ENOTTY;
+-}
+-/*
+- * For the record: _GPL here is only because somebody decided to slap it
+- * on the previous export.  Sheer idiocy, since it wasn't copyrightable
+- * at all and could be open-coded without any exports by anybody who cares.
+- */
+-EXPORT_SYMBOL_GPL(__blkdev_driver_ioctl);
+-
+ #ifdef CONFIG_COMPAT
+ /*
+  * This is the equivalent of compat_ptr_ioctl(), to be used by block
+@@ -594,10 +577,12 @@ int blkdev_ioctl(struct block_device *bdev, fmode_t mode, unsigned cmd,
  	}
--	set_device_ro(bdev, n);
-+	bdev->bd_part->policy = n;
- 	return 0;
+ 
+ 	ret = blkdev_common_ioctl(bdev, mode, cmd, arg, argp);
+-	if (ret == -ENOIOCTLCMD)
+-		return __blkdev_driver_ioctl(bdev, mode, cmd, arg);
++	if (ret != -ENOIOCTLCMD)
++		return ret;
+ 
+-	return ret;
++	if (!bdev->bd_disk->fops->ioctl)
++		return -ENOTTY;
++	return bdev->bd_disk->fops->ioctl(bdev, mode, cmd, arg);
+ }
+ EXPORT_SYMBOL_GPL(blkdev_ioctl); /* for /dev/raw */
+ 
+diff --git a/drivers/block/pktcdvd.c b/drivers/block/pktcdvd.c
+index 467dbd06b7cdb1..ef1c1f094ea4fc 100644
+--- a/drivers/block/pktcdvd.c
++++ b/drivers/block/pktcdvd.c
+@@ -2584,9 +2584,11 @@ static int pkt_ioctl(struct block_device *bdev, fmode_t mode, unsigned int cmd,
+ 	case CDROM_LAST_WRITTEN:
+ 	case CDROM_SEND_PACKET:
+ 	case SCSI_IOCTL_SEND_COMMAND:
+-		ret = __blkdev_driver_ioctl(pd->bdev, mode, cmd, arg);
++		if (!bdev->bd_disk->fops->ioctl)
++			ret = -ENOTTY;
++		else
++			ret = bdev->bd_disk->fops->ioctl(bdev, mode, cmd, arg);
+ 		break;
+-
+ 	default:
+ 		pkt_dbg(2, pd, "Unknown ioctl (%x)\n", cmd);
+ 		ret = -ENOTTY;
+diff --git a/drivers/md/bcache/request.c b/drivers/md/bcache/request.c
+index 21432638314562..afac8d07c1bd00 100644
+--- a/drivers/md/bcache/request.c
++++ b/drivers/md/bcache/request.c
+@@ -1230,8 +1230,9 @@ static int cached_dev_ioctl(struct bcache_device *d, fmode_t mode,
+ 
+ 	if (dc->io_disable)
+ 		return -EIO;
+-
+-	return __blkdev_driver_ioctl(dc->bdev, mode, cmd, arg);
++	if (!dc->bdev->bd_disk->fops->ioctl)
++		return -ENOTTY;
++	return dc->bdev->bd_disk->fops->ioctl(dc->bdev, mode, cmd, arg);
  }
  
-diff --git a/include/linux/genhd.h b/include/linux/genhd.h
-index 38f23d75701379..f232f26d7c777b 100644
---- a/include/linux/genhd.h
-+++ b/include/linux/genhd.h
-@@ -304,7 +304,6 @@ extern void del_gendisk(struct gendisk *gp);
- extern struct gendisk *get_gendisk(dev_t dev, int *partno);
- extern struct block_device *bdget_disk(struct gendisk *disk, int partno);
+ void bch_cached_dev_request_init(struct cached_dev *dc)
+diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+index c18fc25485186d..6db395c3d28be8 100644
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -570,7 +570,10 @@ static int dm_blk_ioctl(struct block_device *bdev, fmode_t mode,
+ 		}
+ 	}
  
--extern void set_device_ro(struct block_device *bdev, int flag);
- extern void set_disk_ro(struct gendisk *disk, int flag);
+-	r =  __blkdev_driver_ioctl(bdev, mode, cmd, arg);
++	if (!bdev->bd_disk->fops->ioctl)
++		r = -ENOTTY;
++	else
++		r = bdev->bd_disk->fops->ioctl(bdev, mode, cmd, arg);
+ out:
+ 	dm_unprepare_ioctl(md, srcu_idx);
+ 	return r;
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 5c1ba8a8d2bc7e..05b346a68c2eee 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -1867,8 +1867,6 @@ extern int blkdev_compat_ptr_ioctl(struct block_device *, fmode_t,
+ #define blkdev_compat_ptr_ioctl NULL
+ #endif
  
- static inline int get_disk_ro(struct gendisk *disk)
+-extern int __blkdev_driver_ioctl(struct block_device *, fmode_t, unsigned int,
+-				 unsigned long);
+ extern int bdev_read_page(struct block_device *, sector_t, struct page *);
+ extern int bdev_write_page(struct block_device *, sector_t, struct page *,
+ 						struct writeback_control *);
 -- 
 2.28.0
 
