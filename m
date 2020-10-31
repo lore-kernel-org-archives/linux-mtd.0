@@ -5,19 +5,19 @@ X-Spam-Level:
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A146AC388F7
-	for <linux-mtd@archiver.kernel.org>; Sat, 31 Oct 2020 09:16:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F399C388F7
+	for <linux-mtd@archiver.kernel.org>; Sat, 31 Oct 2020 09:18:49 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2D1C520756
-	for <linux-mtd@archiver.kernel.org>; Sat, 31 Oct 2020 09:16:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8412D20739
+	for <linux-mtd@archiver.kernel.org>; Sat, 31 Oct 2020 09:18:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DU4v0yv4";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="hU/6PlVt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D1C520756
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gHJcAdNh";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="gsAsqe/H"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8412D20739
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,39 +26,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=FoSlXyZL+Mz2WkiFUPUFdb6GS91HRtMJ9Rpz97nvEMA=; b=DU4v0yv4sqkklhThaLwq3hj5e
-	5qupUHxpeObcciN+uVr7qX58/tGs1VNa5LQQJcRrLHIs1yIt3jt92XjcB8F++3dzmJrEKteQKDT7q
-	8+g1Mpz1AolrJLwMekVkTXT69Z5shanAWnYKcelOH7E0zFqsFeVTZZAcPnhHa1nj2+To9fN8TPcFq
-	3zPnSY/DVVuJT2kEypZHwjrsTQ9kFVvl0Ol0I2u4MjZE8s7jdRNJfJd5gkQrgogfxbNXEu0GSg276
-	Im0KKix22ighIVtCc/UD/11hVS1x++bs6b1eyvFZH2j7UzcDeBRgsKg3/jhT+PHsiR80dbT+eduJU
-	1GC1ZwG9g==;
+	 bh=jgZ582KpY5v9bVJoQJlSIbZe/R4G2GtwwW/g2WyCiro=; b=gHJcAdNh0l/bawb5lE4gkk25T
+	CYYi3g6a/2zC91myzD26NRzLS/ESjjMn4pFO0ixyLOBCm45YEiTailvjLEqoI5RWg1JAvYqxYcIsI
+	upVIBYkbRM6Y8SAwpy9fYUbo9u8t+LRFT9iaYaz+q2oWwMcPSMES5ggSbHVoG8Ouctx8wPcaRMGDe
+	IUNqys9OxCXQi0tQNhNHcl9N4LfysVa5mR6FyYmyOOax2ItZDj30xV6GiOoy5mvFZdfbU+5d0w6W4
+	kJaK202I45Wsmn8zVRpZwSKp0VCtwCyOgcOQs3lDMWNMUbkLR7v3AyWssmUurbOCRAPChJTLzl4pq
+	30NSXeWdw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kYmzD-0004qt-3E; Sat, 31 Oct 2020 09:15:47 +0000
+	id 1kYn1K-00057t-Gu; Sat, 31 Oct 2020 09:17:58 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kYmzB-0004qd-0t
- for linux-mtd@merlin.infradead.org; Sat, 31 Oct 2020 09:15:45 +0000
+ id 1kYn1I-00057c-6m
+ for linux-mtd@merlin.infradead.org; Sat, 31 Oct 2020 09:17:56 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=Varo6jriPIgUuzbDsXbdYpkIn84a9RY13C55YdYZcpg=; b=hU/6PlVtHDu0bc6LjVRh/YPJZV
- UAeoEt1wg2PmA8HVcqX7SO21uFlwlySHaURvfs34FtbCFuaF0PP8Xzy9ahakZYm6aKg4YVwsraGJj
- f3EhuP+iEXG+RiFiQR3SKMGilTU++hMISyBJ69KNbfCrk75iiIzsT4dRQun2UvIZquXQXFW5db4Ax
- 2K4vfXkHstczwZaO6TU+rNSsUKsHftKBuSWQ5Del6cMLxotOABz5EQ7Oc/WupY6y1CienMWHaQfie
- l6Lb6Z8Q7cnfOKikc/qOW1I1L8rTm7UI4Jws/6JPUIv7Jrcs3+t0mC+lVJfTIruRCUU7g2K2JO98Z
- 3A9m4u9Q==;
+ bh=QiPy3Lgic6nDpUFxJOfw2mawJ5uhHq47Zrqs9uu41iQ=; b=gsAsqe/HGXmFvNBDIcqnTyqeSv
+ /+fW7OH+gdIj4TucEQO+LoO2ozVQ+EVh7iYOD7kLiyplBB1e430DA3owtMUjzhWEGI0GX2oArMOP/
+ AdvpDzoM3UZUYfwicg85oLsBgjfn7bGXJrWHXfCjHSAfIVOQvReCvVgL/Afwn5SZdqoKHn+ZMpL8n
+ 8tgIxQFnMCFvDXOLSz/5Wtye7yWjLtbi+RHFWWSX2Utw9cxWuQfgZf+T08/ZxUXdTOIu8gj5kuVbn
+ hq+cIJdBMTO7KHleVianKloWF7X6KmM8BnNOFU+GWyYLaWHYkLjmIulGD9G3dZPNMDPOw5c/deflw
+ T80Bh1wg==;
 Received: from 089144193201.atnat0002.highway.a1.net ([89.144.193.201]
  helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kYmz9-0007u2-I0; Sat, 31 Oct 2020 09:15:43 +0000
+ id 1kYn1G-00080G-Kq; Sat, 31 Oct 2020 09:17:55 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 07/11] dasd: implement ->set_read_only to hook into BLKROSET
- processing
-Date: Sat, 31 Oct 2020 09:58:06 +0100
-Message-Id: <20201031085810.450489-8-hch@lst.de>
+Subject: [PATCH 08/11] block: don't call into the driver for BLKROSET
+Date: Sat, 31 Oct 2020 09:58:07 +0100
+Message-Id: <20201031085810.450489-9-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201031085810.450489-1-hch@lst.de>
 References: <20201031085810.450489-1-hch@lst.de>
@@ -88,94 +87,55 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Implement the ->set_read_only method instead of parsing the actual
-ioctl command.
+Now that all drivers that want to hook into setting or clearing the
+read-only flag use the set_read_only method this code can be removed.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/s390/block/dasd.c       |  1 +
- drivers/s390/block/dasd_int.h   |  3 ++-
- drivers/s390/block/dasd_ioctl.c | 27 +++++++++------------------
- 3 files changed, 12 insertions(+), 19 deletions(-)
+ block/ioctl.c | 23 -----------------------
+ 1 file changed, 23 deletions(-)
 
-diff --git a/drivers/s390/block/dasd.c b/drivers/s390/block/dasd.c
-index eb17fea8075c6f..db24e04ee9781e 100644
---- a/drivers/s390/block/dasd.c
-+++ b/drivers/s390/block/dasd.c
-@@ -3394,6 +3394,7 @@ dasd_device_operations = {
- 	.ioctl		= dasd_ioctl,
- 	.compat_ioctl	= dasd_ioctl,
- 	.getgeo		= dasd_getgeo,
-+	.set_read_only	= dasd_set_read_only,
- };
- 
- /*******************************************************************************
-diff --git a/drivers/s390/block/dasd_int.h b/drivers/s390/block/dasd_int.h
-index fa552f9f166671..c59a0d63b506e6 100644
---- a/drivers/s390/block/dasd_int.h
-+++ b/drivers/s390/block/dasd_int.h
-@@ -844,7 +844,8 @@ int dasd_scan_partitions(struct dasd_block *);
- void dasd_destroy_partitions(struct dasd_block *);
- 
- /* externals in dasd_ioctl.c */
--int  dasd_ioctl(struct block_device *, fmode_t, unsigned int, unsigned long);
-+int dasd_ioctl(struct block_device *, fmode_t, unsigned int, unsigned long);
-+int dasd_set_read_only(struct block_device *bdev, bool ro);
- 
- /* externals in dasd_proc.c */
- int dasd_proc_init(void);
-diff --git a/drivers/s390/block/dasd_ioctl.c b/drivers/s390/block/dasd_ioctl.c
-index cb6427fb9f3d16..3359559517bfcf 100644
---- a/drivers/s390/block/dasd_ioctl.c
-+++ b/drivers/s390/block/dasd_ioctl.c
-@@ -532,28 +532,22 @@ static int dasd_ioctl_information(struct dasd_block *block, void __user *argp,
- /*
-  * Set read only
-  */
--static int
--dasd_ioctl_set_ro(struct block_device *bdev, void __user *argp)
-+int dasd_set_read_only(struct block_device *bdev, bool ro)
- {
- 	struct dasd_device *base;
--	int intval, rc;
-+	int rc;
- 
--	if (!capable(CAP_SYS_ADMIN))
--		return -EACCES;
-+	/* do not manipulate hardware state for partitions */
- 	if (bdev_is_partition(bdev))
--		// ro setting is not allowed for partitions
--		return -EINVAL;
--	if (get_user(intval, (int __user *)argp))
--		return -EFAULT;
-+		return 0;
-+
- 	base = dasd_device_from_gendisk(bdev->bd_disk);
- 	if (!base)
- 		return -ENODEV;
--	if (!intval && test_bit(DASD_FLAG_DEVICE_RO, &base->flags)) {
--		dasd_put_device(base);
--		return -EROFS;
--	}
--	set_disk_ro(bdev->bd_disk, intval);
--	rc = dasd_set_feature(base->cdev, DASD_FEATURE_READONLY, intval);
-+	if (!ro && test_bit(DASD_FLAG_DEVICE_RO, &base->flags))
-+		rc = -EROFS;
-+	else
-+		rc = dasd_set_feature(base->cdev, DASD_FEATURE_READONLY, ro);
- 	dasd_put_device(base);
- 	return rc;
+diff --git a/block/ioctl.c b/block/ioctl.c
+index a6fa16b9770593..96cb4544736468 100644
+--- a/block/ioctl.c
++++ b/block/ioctl.c
+@@ -346,26 +346,6 @@ static int blkdev_pr_clear(struct block_device *bdev,
+ 	return ops->pr_clear(bdev, c.key);
  }
-@@ -633,9 +627,6 @@ int dasd_ioctl(struct block_device *bdev, fmode_t mode,
- 	case BIODASDPRRST:
- 		rc = dasd_ioctl_reset_profile(block);
- 		break;
--	case BLKROSET:
--		rc = dasd_ioctl_set_ro(bdev, argp);
--		break;
- 	case DASDAPIVER:
- 		rc = dasd_ioctl_api_version(argp);
- 		break;
+ 
+-/*
+- * Is it an unrecognized ioctl? The correct returns are either
+- * ENOTTY (final) or ENOIOCTLCMD ("I don't know this one, try a
+- * fallback"). ENOIOCTLCMD gets turned into ENOTTY by the ioctl
+- * code before returning.
+- *
+- * Confused drivers sometimes return EINVAL, which is wrong. It
+- * means "I understood the ioctl command, but the parameters to
+- * it were wrong".
+- *
+- * We should aim to just fix the broken drivers, the EINVAL case
+- * should go away.
+- */
+-static inline int is_unrecognized_ioctl(int ret)
+-{
+-	return	ret == -EINVAL ||
+-		ret == -ENOTTY ||
+-		ret == -ENOIOCTLCMD;
+-}
+-
+ static int blkdev_flushbuf(struct block_device *bdev, fmode_t mode,
+ 		unsigned cmd, unsigned long arg)
+ {
+@@ -384,9 +364,6 @@ static int blkdev_roset(struct block_device *bdev, fmode_t mode,
+ 	if (!capable(CAP_SYS_ADMIN))
+ 		return -EACCES;
+ 
+-	ret = __blkdev_driver_ioctl(bdev, mode, cmd, arg);
+-	if (!is_unrecognized_ioctl(ret))
+-		return ret;
+ 	if (get_user(n, (int __user *)arg))
+ 		return -EFAULT;
+ 	if (bdev->bd_disk->fops->set_read_only) {
 -- 
 2.28.0
 
