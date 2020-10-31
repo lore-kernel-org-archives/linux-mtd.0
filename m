@@ -2,65 +2,69 @@ Return-Path: <SRS0=Ys1R=EG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DFD4AC388F7
-	for <linux-mtd@archiver.kernel.org>; Sat, 31 Oct 2020 22:10:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CBA1BC388F9
+	for <linux-mtd@archiver.kernel.org>; Sat, 31 Oct 2020 22:10:56 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5336A20731
-	for <linux-mtd@archiver.kernel.org>; Sat, 31 Oct 2020 22:10:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5800C2072C
+	for <linux-mtd@archiver.kernel.org>; Sat, 31 Oct 2020 22:10:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nADxNOmb";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="a8mMgEQt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5336A20731
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JGucXBgt";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="tHNjyLqY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5800C2072C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=8C/IDyNc+Ua/hU1gCf2bzHcKVevTKeVechtdd8EiCxA=; b=nADxNOmbmi0ZNBRKCbPw7j308n
-	cnm00U8vbH6ljm75bX7exAZSV6aXV5P3xjn+zjN5HfJdHdzV+/6sBn7skvzjUt0Rmw5tddeK9GF2h
-	Y0cG8Tme3XPhFz8mzJ2V47YKeohEaNXN0+fJnmCU+8X2Fs9Qy2hWQwccWp4XiEr33XiRjpTPEAe4+
-	9YH/0YuhvdQ1Nz8NEkFmq4Eowim1rNTKNLlLHnlB3KwId1Ihhb4MrIaKhZlluOdfVWH64ORhOSDUO
-	EkfD+6qYJdsnn2ka05SAfsC0EGZCvD0ufYg5x83917FggpKAqT1EYtOVfp1n5LCWi9iolAn8IK0Ph
-	6KGbSbKQ==;
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=acmKS3Ze0aIdObSEjlzVqmeTnrBr9wyX/UN0huq3C/Y=; b=JGucXBgtEdeQ86geE2jieU7f/
+	2OOS0nbyQpoef9AaiWI+2Pscu7e/Om94eVKdhpRZAHfI6XprN+Z/5cONOX/rNESc5s5gvGG7ARgm+
+	JiK17JmigblaxBcHZYz1Z3wMf6p3bPFmz7tOStbkOVxKJNniJg1JlBCCbpjmg2L3pzPFhYZkf7zUx
+	tNsrInQNd5t03IhEHDfdpxkDgRuIU1w6ySzXSkKYtQ9+5qUmeP5nHtcTmJv593B7OXnR/dpu62HMo
+	HK2U+4X/mlaeysg6qIIFV91wTGDhfaMYXqEffUMf7lQC4cuE+8OqpigqoapOTl42okBaRixvsMTDz
+	uJM9NNX4g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kYz4Q-0007MV-AQ; Sat, 31 Oct 2020 22:09:58 +0000
+	id 1kYz4T-0007NB-4h; Sat, 31 Oct 2020 22:10:01 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kYz4M-0007KX-Hg
- for linux-mtd@lists.infradead.org; Sat, 31 Oct 2020 22:09:55 +0000
+ id 1kYz4M-0007Ka-Hi
+ for linux-mtd@lists.infradead.org; Sat, 31 Oct 2020 22:09:56 +0000
 Received: from sol.attlocal.net
  (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 96A282072C;
- Sat, 31 Oct 2020 22:09:52 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 7479D2076D;
+ Sat, 31 Oct 2020 22:09:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1604182192;
- bh=S03k1YGXaJQvf3NAsk0rAuPNkYHGojNJSpqWlOKkY6Y=;
- h=From:To:Cc:Subject:Date:From;
- b=a8mMgEQtpZ3jNyytBfAA07mZtl+9vbm6YLLv+FzNDnWsLRWKesdnQyD8DGDQ9NlKo
- NBZjY049c5RkEWrHQHTQiUYaXvEuh5HHjNvlFxn20MOKcGS2hg5wFkYa2cWehnnO0k
- uwKX3GPe/Eyo28ZG698zXqwWlaIL66HoIPdZkgxU=
+ s=default; t=1604182193;
+ bh=mU4u4OeBiyB0ajGFtgXeUtVhy39lvr5DXQg14RZoQVM=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=tHNjyLqYTwSXhVsJ1eW6WsK8fMTy/PMcW0EWoU2wlHm20ApQrIeE84yGxvMeExIb+
+ FADZJdS5CtvF9EgYkt00zoFxOTLxR3ArG0krL6ujh73zsq+v3Xtt3tyiR95YD21kib
+ WMQIkNpEBHW8ustesBzYUh5Q0PIpHx9WW669HT/0=
 From: Eric Biggers <ebiggers@kernel.org>
 To: stable@vger.kernel.org
-Subject: [PATCH 4.19 0/5] backport some more fscrypt fixes to 4.19
-Date: Sat, 31 Oct 2020 15:05:48 -0700
-Message-Id: <20201031220553.1085782-1-ebiggers@kernel.org>
+Subject: [PATCH 4.19 3/5] fs,
+ fscrypt: clear DCACHE_ENCRYPTED_NAME when unaliasing directory
+Date: Sat, 31 Oct 2020 15:05:51 -0700
+Message-Id: <20201031220553.1085782-4-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.29.1
+In-Reply-To: <20201031220553.1085782-1-ebiggers@kernel.org>
+References: <20201031220553.1085782-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201031_180954_692930_03D85D6C 
-X-CRM114-Status: GOOD (  11.39  )
+X-CRM114-CacheID: sfid-20201031_180954_856925_5DD0D494 
+X-CRM114-Status: GOOD (  13.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,49 +76,71 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-f2fs-devel@lists.sourceforge.net
+Cc: Theodore Ts'o <tytso@mit.edu>, linux-f2fs-devel@lists.sourceforge.net,
+ linux-fscrypt@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Sarthak Kukreti <sarthakkukreti@chromium.org>, linux-ext4@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Backport some fscrypt fixes from upstream 5.2 to 4.19-stable.
+From: Eric Biggers <ebiggers@google.com>
 
-This is needed to get 'kvm-xfstests -c ext4,f2fs,ubifs -g encrypt' to
-fully pass on 4.19-stable.  Before, generic/397 and generic/429 failed
-on UBIFS due to missing "fscrypt: fix race where ->lookup() marks
-plaintext dentry as ciphertext".
+commit 0bf3d5c1604ecbbd4e49e9f5b3c79152b87adb0d upstream.
 
-This also fixes some bugs that aren't yet covered by the xfstests.
-E.g., "fs, fscrypt: clear DCACHE_ENCRYPTED_NAME when unaliasing
-directory" fixes a bug that caused real-world problems on Chrome OS.
+Make __d_move() clear DCACHE_ENCRYPTED_NAME on the source dentry.  This
+is needed for when d_splice_alias() moves a directory's encrypted alias
+to its decrypted alias as a result of the encryption key being added.
 
-Some relatively straightforward adjustments were needed to the patches,
-mainly due to the refactoring of fscrypt.h that was done in 5.1.
+Otherwise, the decrypted alias will incorrectly be invalidated on the
+next lookup, causing problems such as unmounting a mount the user just
+mount()ed there.
 
-Eric Biggers (5):
-  fscrypt: clean up and improve dentry revalidation
-  fscrypt: fix race allowing rename() and link() of ciphertext dentries
-  fs, fscrypt: clear DCACHE_ENCRYPTED_NAME when unaliasing directory
-  fscrypt: only set dentry_operations on ciphertext dentries
-  fscrypt: fix race where ->lookup() marks plaintext dentry as
-    ciphertext
+Note that we don't have to support arbitrary moves of this flag because
+fscrypt doesn't allow dentries with DCACHE_ENCRYPTED_NAME to be the
+source or target of a rename().
 
- fs/crypto/crypto.c              | 58 +++++++++++++------------
- fs/crypto/fname.c               |  1 +
- fs/crypto/hooks.c               | 28 ++++++++----
- fs/dcache.c                     | 15 +++++++
- fs/ext4/ext4.h                  | 62 ++++++++++++++++++++-------
- fs/ext4/namei.c                 | 76 ++++++++++++++++++++++-----------
- fs/f2fs/namei.c                 | 17 +++++---
- fs/ubifs/dir.c                  |  8 ++--
- include/linux/dcache.h          |  2 +-
- include/linux/fscrypt.h         | 30 +++++++------
- include/linux/fscrypt_notsupp.h |  9 ++--
- include/linux/fscrypt_supp.h    |  6 ++-
- 12 files changed, 205 insertions(+), 107 deletions(-)
+Fixes: 28b4c263961c ("ext4 crypto: revalidate dentry after adding or removing the key")
+Reported-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ fs/dcache.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
+diff --git a/fs/dcache.c b/fs/dcache.c
+index 20370a0997bf9..1897833a46685 100644
+--- a/fs/dcache.c
++++ b/fs/dcache.c
+@@ -2712,6 +2712,20 @@ static void copy_name(struct dentry *dentry, struct dentry *target)
+ 		call_rcu(&old_name->u.head, __d_free_external_name);
+ }
+ 
++/*
++ * When d_splice_alias() moves a directory's encrypted alias to its decrypted
++ * alias as a result of the encryption key being added, DCACHE_ENCRYPTED_NAME
++ * must be cleared.  Note that we don't have to support arbitrary moves of this
++ * flag because fscrypt doesn't allow encrypted aliases to be the source or
++ * target of a rename().
++ */
++static inline void fscrypt_handle_d_move(struct dentry *dentry)
++{
++#if IS_ENABLED(CONFIG_FS_ENCRYPTION)
++	dentry->d_flags &= ~DCACHE_ENCRYPTED_NAME;
++#endif
++}
++
+ /*
+  * __d_move - move a dentry
+  * @dentry: entry to move
+@@ -2787,6 +2801,7 @@ static void __d_move(struct dentry *dentry, struct dentry *target,
+ 	list_move(&dentry->d_child, &dentry->d_parent->d_subdirs);
+ 	__d_rehash(dentry);
+ 	fsnotify_update_flags(dentry);
++	fscrypt_handle_d_move(dentry);
+ 
+ 	write_seqcount_end(&target->d_seq);
+ 	write_seqcount_end(&dentry->d_seq);
 -- 
 2.29.1
 
