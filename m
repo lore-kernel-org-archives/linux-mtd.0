@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 150CBC388F7
-	for <linux-mtd@archiver.kernel.org>; Sat, 31 Oct 2020 09:05:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0736C388F7
+	for <linux-mtd@archiver.kernel.org>; Sat, 31 Oct 2020 09:07:27 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B036C20756
-	for <linux-mtd@archiver.kernel.org>; Sat, 31 Oct 2020 09:05:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2847F206CA
+	for <linux-mtd@archiver.kernel.org>; Sat, 31 Oct 2020 09:07:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="diXxtv1a";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Ym5ZpzHK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B036C20756
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kguL8baz";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="seI3CiJ3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2847F206CA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,38 +26,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=YvK21/bSfxF9SCTpCnygwb1P6xAuVHaU0rD5cccI58s=; b=diXxtv1aFxFnicZbA7upYxz3d
-	iF9HeTSRTcaqiGA9cWp4Y4Tr6dxQohQip3hKk0imX7tz8hEbHUF+abSap5wsLmPLHzli9Cfj+Lrqv
-	dYhGiEoK0qgNe2LRiH6FiVvMHTxf/VbSuszskTZc3JrWYc84hSA0XIW6rJ3FTIt64oiTcpBK3ephd
-	htcQ7Yl4i+a2ZPAZFB8055y8igVBlYawH/YLfpSS5SRlrOixtlLwtTaLNzSAhiSd5qLlxxBMuL15A
-	r4nuz/N8dlHlmiXJF7rSZJmVeqMMEEI5OssorEb3Yl8zx1fA3+1v2T7/hqpyio1VzRq6VEg0t15Rj
-	hz7Q8soVg==;
+	 bh=rqcLLQJLl9ID7qRMBDntLuPDNwOiV8KqRhifnB+BLH8=; b=kguL8bazDQ1iTQEabu2KwHhv2
+	2g/O6H2B0kOOTOlQaoioyrdpziPNO6Fi8VH4ESO8p0+tvggD+X+d0bwRM39HRY/jkY/ebWOtSvuP4
+	oCnsSw9Mt3bnvvgDIxMDjdTRimWj7LvADc6Su3jTuoJ2Io7GC5s2/4SAEoxfxVlTpfFenrXFf9s/G
+	pS0Q3JszzUzi5SAm7D4+/gX3e4GR4XbwrRVPEuAUHfEMOAVB7A9mdeVz+kguSG7rojIKsaPxvSrjN
+	sjhGcADUL7dGut5nxTqM3QvikUNswk8aYLG816WhGiTJ7CW6CaG9lysmiZMY39E0NUeghBmvnro19
+	ewJEVMA+Q==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kYmob-0003CY-77; Sat, 31 Oct 2020 09:04:49 +0000
+	id 1kYmqi-0003Y2-CX; Sat, 31 Oct 2020 09:07:00 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kYmoZ-0003CM-Nq
- for linux-mtd@merlin.infradead.org; Sat, 31 Oct 2020 09:04:47 +0000
+ id 1kYmqg-0003Xo-UP
+ for linux-mtd@merlin.infradead.org; Sat, 31 Oct 2020 09:06:58 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=ccFP0prAIqmawhHUijWCb+7+0K8IzQR5e/dvexyFO7w=; b=Ym5ZpzHKJJlJDCRVypUAPGA7II
- 66cevz7I1EwaypqqFcVa4mhtzXPSi14G+BSzgrfzXjomstRfmzNHCsxM5hd29idZSqhKB1/O4HyWG
- cI6qz9Lwu++xOvn9i+X8tPtN8trZ9oJtLj76lZSWkXb3ZLGYjohpW/C91ZUiGJDWAilob25tuOxU8
- wWmbGMxU1XT1LIZmT1gjKko1SC7eCo8YP6MVaFj8XbUPgjJpMHk0q7JXRlJcdwutx3Bh5cFR0nxhS
- jV54N+PYZt0wvKMUO99H8jx8u1/OuX1wJitqfVVZIpjpCZ/SAnQ8ifL/aOAbUP72QXrCbKu6iqTeH
- +dYElAMg==;
+ bh=i7wqZZpXCL5ORZNGUa3zoAoYso4IoJJ/DeaKvkfVUtI=; b=seI3CiJ37CFqQ0MPjj1WJETe3w
+ OkdVzkFn+IC3T9UEq72RyY3T3xEeriFWZnBtWJv7grnje4N8Qtml6DBrgoMSlCTd8RXVAqDI7nelq
+ nExmfzLlOV/zbB4Rj/UqrxG+rz/+YT9brzJfV+Z+7HBDZlwCzMJ+eJBKni1syWyMSUo/ZjcicBIM5
+ OlPKDA5yWhcdJ7DF+HyMdr+E4R4ZAH230RSzfOfjnMlJMXu0mN6cm3LxL6tHXNR6OOHgkbrDHyUyn
+ rXV+KfjBMm19K6Neb1knHRFJXCsue6NB6EyoO8iq4nqVUyOre0tyFcwfuDIMyzr9lI51Py9d9v0Xs
+ tb8M+HBA==;
 Received: from 089144193201.atnat0002.highway.a1.net ([89.144.193.201]
  helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kYmoY-00076g-4q; Sat, 31 Oct 2020 09:04:46 +0000
+ id 1kYmqf-0007GT-57; Sat, 31 Oct 2020 09:06:57 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 02/11] mtip32xx: return -ENOTTY for all unhanled ioctls
-Date: Sat, 31 Oct 2020 09:58:01 +0100
-Message-Id: <20201031085810.450489-3-hch@lst.de>
+Subject: [PATCH 03/11] block: don't call into the driver for BLKFLSBUF
+Date: Sat, 31 Oct 2020 09:58:02 +0100
+Message-Id: <20201031085810.450489-4-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201031085810.450489-1-hch@lst.de>
 References: <20201031085810.450489-1-hch@lst.de>
@@ -87,50 +87,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
--ENOTTY is the convention for "driver does not support this ioctl".
-Use it properly in mtip32xx instead of the bogys -EINVAL.
+BLKFLSBUF is entirely contained in the block core, and there is no
+good reason to give the driver a hook into processing it.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/block/mtip32xx/mtip32xx.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+ block/ioctl.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
-diff --git a/drivers/block/mtip32xx/mtip32xx.c b/drivers/block/mtip32xx/mtip32xx.c
-index 153e2cdecb4d40..893be95eceb34e 100644
---- a/drivers/block/mtip32xx/mtip32xx.c
-+++ b/drivers/block/mtip32xx/mtip32xx.c
-@@ -2029,7 +2029,7 @@ static int mtip_hw_ioctl(struct driver_data *dd, unsigned int cmd,
- 	}
- 
- 	default:
--		return -EINVAL;
-+		return -ENOTTY;
- 	}
+diff --git a/block/ioctl.c b/block/ioctl.c
+index 3fbc382eb926d4..c6d8863f040945 100644
+--- a/block/ioctl.c
++++ b/block/ioctl.c
+@@ -369,15 +369,8 @@ static inline int is_unrecognized_ioctl(int ret)
+ static int blkdev_flushbuf(struct block_device *bdev, fmode_t mode,
+ 		unsigned cmd, unsigned long arg)
+ {
+-	int ret;
+-
+ 	if (!capable(CAP_SYS_ADMIN))
+ 		return -EACCES;
+-
+-	ret = __blkdev_driver_ioctl(bdev, mode, cmd, arg);
+-	if (!is_unrecognized_ioctl(ret))
+-		return ret;
+-
+ 	fsync_bdev(bdev);
+ 	invalidate_bdev(bdev);
  	return 0;
- }
-@@ -3215,12 +3215,7 @@ static int mtip_block_ioctl(struct block_device *dev,
- 	if (unlikely(test_bit(MTIP_DDF_REMOVE_PENDING_BIT, &dd->dd_flag)))
- 		return -ENOTTY;
- 
--	switch (cmd) {
--	case BLKFLSBUF:
--		return -ENOTTY;
--	default:
--		return mtip_hw_ioctl(dd, cmd, arg);
--	}
-+	return mtip_hw_ioctl(dd, cmd, arg);
- }
- 
- #ifdef CONFIG_COMPAT
-@@ -3254,8 +3249,6 @@ static int mtip_block_compat_ioctl(struct block_device *dev,
- 		return -ENOTTY;
- 
- 	switch (cmd) {
--	case BLKFLSBUF:
--		return -ENOTTY;
- 	case HDIO_DRIVE_TASKFILE: {
- 		struct mtip_compat_ide_task_request_s __user *compat_req_task;
- 		ide_task_request_t req_task;
 -- 
 2.28.0
 
