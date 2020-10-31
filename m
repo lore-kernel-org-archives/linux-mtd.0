@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F399C388F7
-	for <linux-mtd@archiver.kernel.org>; Sat, 31 Oct 2020 09:18:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40002C388F7
+	for <linux-mtd@archiver.kernel.org>; Sat, 31 Oct 2020 09:21:07 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8412D20739
-	for <linux-mtd@archiver.kernel.org>; Sat, 31 Oct 2020 09:18:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D7E9C20739
+	for <linux-mtd@archiver.kernel.org>; Sat, 31 Oct 2020 09:21:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gHJcAdNh";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="gsAsqe/H"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8412D20739
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Z+SMAyeK";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="qv684+6g"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7E9C20739
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,38 +26,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=jgZ582KpY5v9bVJoQJlSIbZe/R4G2GtwwW/g2WyCiro=; b=gHJcAdNh0l/bawb5lE4gkk25T
-	CYYi3g6a/2zC91myzD26NRzLS/ESjjMn4pFO0ixyLOBCm45YEiTailvjLEqoI5RWg1JAvYqxYcIsI
-	upVIBYkbRM6Y8SAwpy9fYUbo9u8t+LRFT9iaYaz+q2oWwMcPSMES5ggSbHVoG8Ouctx8wPcaRMGDe
-	IUNqys9OxCXQi0tQNhNHcl9N4LfysVa5mR6FyYmyOOax2ItZDj30xV6GiOoy5mvFZdfbU+5d0w6W4
-	kJaK202I45Wsmn8zVRpZwSKp0VCtwCyOgcOQs3lDMWNMUbkLR7v3AyWssmUurbOCRAPChJTLzl4pq
-	30NSXeWdw==;
+	 bh=/OfrUn/95IFiUPZZMmGxdLimzCVnoJky7OJDEKdgoc4=; b=Z+SMAyeKLJLZaYwAvBlVcrctP
+	RmMt5Rb9RSofQBgejCoz3DhK8brVAxpBKM/KYHj1dqwQKPw7bdRmZLUH3/2tFj3C/azqgbXm2D6zR
+	PuxzQD2MFqRLgR8ic5r1qhoCbFoEXx8NM/Y6Na/GFZWAGtS6VUeQXsvOeJiiuiinWbgpJ1+wDF/VM
+	G9U0/l+oQgjIETd78aMnOxwi3kX/hdi1bEcSuKoOkobNwusTOjgmewthjqQkZYb0yZ28B+OjuFYJW
+	bQVeL7ljMZhhZUaDMcll0brsTsKFoSVfy1LKmnCanFvlb4qTOWEBtYSS/MDY+MIbOJKp/TXJPFxks
+	J0/vaea7A==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kYn1K-00057t-Gu; Sat, 31 Oct 2020 09:17:58 +0000
+	id 1kYn3R-0005X6-Ua; Sat, 31 Oct 2020 09:20:09 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kYn1I-00057c-6m
- for linux-mtd@merlin.infradead.org; Sat, 31 Oct 2020 09:17:56 +0000
+ id 1kYn3P-0005Wf-Dv
+ for linux-mtd@merlin.infradead.org; Sat, 31 Oct 2020 09:20:07 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=QiPy3Lgic6nDpUFxJOfw2mawJ5uhHq47Zrqs9uu41iQ=; b=gsAsqe/HGXmFvNBDIcqnTyqeSv
- /+fW7OH+gdIj4TucEQO+LoO2ozVQ+EVh7iYOD7kLiyplBB1e430DA3owtMUjzhWEGI0GX2oArMOP/
- AdvpDzoM3UZUYfwicg85oLsBgjfn7bGXJrWHXfCjHSAfIVOQvReCvVgL/Afwn5SZdqoKHn+ZMpL8n
- 8tgIxQFnMCFvDXOLSz/5Wtye7yWjLtbi+RHFWWSX2Utw9cxWuQfgZf+T08/ZxUXdTOIu8gj5kuVbn
- hq+cIJdBMTO7KHleVianKloWF7X6KmM8BnNOFU+GWyYLaWHYkLjmIulGD9G3dZPNMDPOw5c/deflw
- T80Bh1wg==;
+ bh=LHct6feTU7L0nCAl+LeQycCuOcwMhUL/YjRE2qUcCWU=; b=qv684+6ggZCUIA8CvQEvm3wqd4
+ /nUe37TLCHgkyzuReGe4r0lN3xtMA+d2sCMm50mbjquqHDLUwugVvXas7kN++3CtVY4wRGU0TB2x6
+ xJHUWIo9wf5CH06uC5io24V48CMBu07dLhIUB4lwWxDyMk5UAQUVBsPrCTiI+Ya2lkvwzSFn9f9+d
+ rZKussDqoPPkRLz3Jbkxp8E0B+0DgDb0fCp3K8B1gcsmLCo4Ssk0ySks8TSwWEARq6tEYpV+lZD7J
+ aWWe1EuHTE6GIjCw6udCywlzHC+FBW7f8IQXqJvLSZqDSu4Z42l/V2wUKbNueEaAOJano82pgtFY+
+ rwSpDtfA==;
 Received: from 089144193201.atnat0002.highway.a1.net ([89.144.193.201]
  helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kYn1G-00080G-Kq; Sat, 31 Oct 2020 09:17:55 +0000
+ id 1kYn3N-0008A8-P0; Sat, 31 Oct 2020 09:20:06 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 08/11] block: don't call into the driver for BLKROSET
-Date: Sat, 31 Oct 2020 09:58:07 +0100
-Message-Id: <20201031085810.450489-9-hch@lst.de>
+Subject: [PATCH 09/11] loop: use set_disk_ro
+Date: Sat, 31 Oct 2020 09:58:08 +0100
+Message-Id: <20201031085810.450489-10-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201031085810.450489-1-hch@lst.de>
 References: <20201031085810.450489-1-hch@lst.de>
@@ -87,55 +87,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Now that all drivers that want to hook into setting or clearing the
-read-only flag use the set_read_only method this code can be removed.
+Use set_disk_ro instead of set_device_ro to match all other block
+drivers and to ensure all partitions mirror the read-only flag.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- block/ioctl.c | 23 -----------------------
- 1 file changed, 23 deletions(-)
+ drivers/block/loop.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/block/ioctl.c b/block/ioctl.c
-index a6fa16b9770593..96cb4544736468 100644
---- a/block/ioctl.c
-+++ b/block/ioctl.c
-@@ -346,26 +346,6 @@ static int blkdev_pr_clear(struct block_device *bdev,
- 	return ops->pr_clear(bdev, c.key);
- }
+diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+index cb1191d6e945f2..3e1ea45bb315d8 100644
+--- a/drivers/block/loop.c
++++ b/drivers/block/loop.c
+@@ -1137,7 +1137,7 @@ static int loop_configure(struct loop_device *lo, fmode_t mode,
+ 	if (error)
+ 		goto out_unlock;
  
--/*
-- * Is it an unrecognized ioctl? The correct returns are either
-- * ENOTTY (final) or ENOIOCTLCMD ("I don't know this one, try a
-- * fallback"). ENOIOCTLCMD gets turned into ENOTTY by the ioctl
-- * code before returning.
-- *
-- * Confused drivers sometimes return EINVAL, which is wrong. It
-- * means "I understood the ioctl command, but the parameters to
-- * it were wrong".
-- *
-- * We should aim to just fix the broken drivers, the EINVAL case
-- * should go away.
-- */
--static inline int is_unrecognized_ioctl(int ret)
--{
--	return	ret == -EINVAL ||
--		ret == -ENOTTY ||
--		ret == -ENOIOCTLCMD;
--}
--
- static int blkdev_flushbuf(struct block_device *bdev, fmode_t mode,
- 		unsigned cmd, unsigned long arg)
- {
-@@ -384,9 +364,6 @@ static int blkdev_roset(struct block_device *bdev, fmode_t mode,
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EACCES;
+-	set_device_ro(bdev, (lo->lo_flags & LO_FLAGS_READ_ONLY) != 0);
++	set_disk_ro(lo->lo_disk, (lo->lo_flags & LO_FLAGS_READ_ONLY) != 0);
  
--	ret = __blkdev_driver_ioctl(bdev, mode, cmd, arg);
--	if (!is_unrecognized_ioctl(ret))
--		return ret;
- 	if (get_user(n, (int __user *)arg))
- 		return -EFAULT;
- 	if (bdev->bd_disk->fops->set_read_only) {
+ 	lo->use_dio = lo->lo_flags & LO_FLAGS_DIRECT_IO;
+ 	lo->lo_device = bdev;
 -- 
 2.28.0
 
