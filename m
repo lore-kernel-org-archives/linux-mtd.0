@@ -1,64 +1,60 @@
-Return-Path: <SRS0=Ys1R=EG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=Psr0=EH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D932C388F9
-	for <linux-mtd@archiver.kernel.org>; Sat, 31 Oct 2020 23:12:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D6FCC2D0A3
+	for <linux-mtd@archiver.kernel.org>; Sun,  1 Nov 2020 10:30:09 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B4FB82087E
-	for <linux-mtd@archiver.kernel.org>; Sat, 31 Oct 2020 23:12:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0265A20709
+	for <linux-mtd@archiver.kernel.org>; Sun,  1 Nov 2020 10:30:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tXeYUju3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B4FB82087E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=youngman.org.uk
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HWdJ+b7X"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0265A20709
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=PX5LMAXiIkyIpuqPBG+SF04sSKE2lW1vq3+L1MlgxNI=; b=tXeYUju3CrEopV5CZQdHoe4nn
-	Yj3592rCz9s7FubrnoSXcGhnX37UtxiwcXVxe8x0J/ASMaoM5/Ye6nAo7ZEOM5Bg1nEEgSG0SN6a5
-	Cg36qjn2PAufZPNfr4A42cBUy+vQ4YcfhNKfJEkFEU2QHHiF9E8Lzx0KIWSHrJb0+Xnk7zYCLdY7S
-	0Y86RgjFjChVg4FKbACvtPhaPU2BHU+D2HD/8yHwMreCNrrJGSWqC0kvJ6cFZObAX8wQP9ZEDOli8
-	RvEp4lrywYqoXam4i+RPi79Dfsd5pnDIEqWyn01jSUuEDDYU6PvcwbQY040Jhajh1PxRI2MgnkT2B
-	GwFimn1Ig==;
+	 bh=+oCPLGTU9nR6jczankhqeZGs+Muidel6gFQ6Ptpu5ck=; b=HWdJ+b7XWD+okFgJ+/vPyFu7r
+	4PIUiG+4LDFd7U/cX0b+w0DKKtjXZVaTF1EdJDC6XjrmSTBogLysj/zxd49stMf6qPidAR3nTrV8F
+	/Uv7t7WCbRBPceQNNQ7u+oX9y6GlN92C+BNl+Cdnz2toiEMtWxEIf+Z5zi2+Qb28bWQNfzpptvX2D
+	sNOLnjyli3KuMnqUJoUNR7Vj8JG0GZF/gUXoGpKy425K2cJ9jed8pxCFeUkXMVi5VsKpEdOwYauot
+	ByED/cFU/HpTKyDLPjUiar/SKk0VRedH9Q7tEaxIwAYbyBBSUK4CRoYvG6nTuXMA2UW6gwtKun20f
+	OLHSikkrQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kZ01t-0002Kw-LT; Sat, 31 Oct 2020 23:11:25 +0000
-Received: from smtp.hosts.co.uk ([85.233.160.19])
+	id 1kZAaU-0002eh-NT; Sun, 01 Nov 2020 10:27:50 +0000
+Received: from verein.lst.de ([213.95.11.211])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kZ01r-0002KX-E3
- for linux-mtd@lists.infradead.org; Sat, 31 Oct 2020 23:11:24 +0000
-Received: from host86-155-135-88.range86-155.btcentralplus.com
- ([86.155.135.88] helo=[192.168.1.65])
- by smtp.hosts.co.uk with esmtpa (Exim)
- (envelope-from <antlists@youngman.org.uk>)
- id 1kZ01k-000CBn-3t; Sat, 31 Oct 2020 23:11:16 +0000
-Subject: Re: [PATCH 01/11] mtd_blkdevs: don't override BLKFLSBUF
-To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+ id 1kZAaN-0002e5-P7
+ for linux-mtd@lists.infradead.org; Sun, 01 Nov 2020 10:27:49 +0000
+Received: by verein.lst.de (Postfix, from userid 2407)
+ id 56FF56736F; Sun,  1 Nov 2020 11:27:36 +0100 (CET)
+Date: Sun, 1 Nov 2020 11:27:35 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH 02/11] mtip32xx: return -ENOTTY for all unhanled ioctls
+Message-ID: <20201101102735.GA26447@lst.de>
 References: <20201031085810.450489-1-hch@lst.de>
- <20201031085810.450489-2-hch@lst.de>
-From: antlists <antlists@youngman.org.uk>
-Message-ID: <5170a536-09c1-28a7-c2fb-5381598194db@youngman.org.uk>
-Date: Sat, 31 Oct 2020 23:11:14 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+ <20201031085810.450489-3-hch@lst.de>
+ <f128e8bb-7ce4-b8f4-80cb-1afab503887c@kernel.dk>
 MIME-Version: 1.0
-In-Reply-To: <20201031085810.450489-2-hch@lst.de>
-Content-Language: en-GB
+Content-Disposition: inline
+In-Reply-To: <f128e8bb-7ce4-b8f4-80cb-1afab503887c@kernel.dk>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201031_191123_512553_25EFE9AE 
-X-CRM114-Status: UNSURE (   9.53  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20201101_052743_947131_10E5690B 
+X-CRM114-Status: GOOD (  10.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,28 +68,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: linux-raid@vger.kernel.org, Jan Hoeppner <hoeppner@linux.ibm.com>,
  Vignesh Raghavendra <vigneshr@ti.com>, linux-s390@vger.kernel.org,
- Richard Weinberger <richard@nod.at>, linux-block@vger.kernel.org,
- Song Liu <song@kernel.org>, linux-bcache@vger.kernel.org,
- linux-mtd@lists.infradead.org, Stefan Haberland <sth@linux.ibm.com>,
+ Richard Weinberger <richard@nod.at>, ceph-devel@vger.kernel.org,
+ linux-block@vger.kernel.org, Song Liu <song@kernel.org>,
+ linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Stefan Haberland <sth@linux.ibm.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>, Ilya Dryomov <idryomov@gmail.com>,
- ceph-devel@vger.kernel.org
+ Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 31/10/2020 08:58, Christoph Hellwig wrote:
-> BLKFLSBUF does not actually send a flush command to the device, but
-> teard down buffer cache structures.  Remove the mtd_blkdevs
-   ^^^^^  ?tears?
-
-> implementation and just use the default semantics instead.
+On Sat, Oct 31, 2020 at 08:58:52AM -0600, Jens Axboe wrote:
+> On 10/31/20 2:58 AM, Christoph Hellwig wrote:
+> > -ENOTTY is the convention for "driver does not support this ioctl".
+> > Use it properly in mtip32xx instead of the bogys -EINVAL.
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
+> While that's certainly true, there is a risk in making a change like this
+> years after the fact. Not that I expect there are any mtip32xx users
+> left at this point, but...
 
-Cheers,
-Wol
+-ENOTTY is what most drivers return.  That being said we can keep the
+old behavior, so if you prepfer that I can respin to do that.
 
 ______________________________________________________
 Linux MTD discussion mailing list
