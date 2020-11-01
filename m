@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B97BC2D0A3
-	for <linux-mtd@archiver.kernel.org>; Sun,  1 Nov 2020 10:39:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DEC3C2D0A3
+	for <linux-mtd@archiver.kernel.org>; Sun,  1 Nov 2020 10:39:31 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ED91B2071A
-	for <linux-mtd@archiver.kernel.org>; Sun,  1 Nov 2020 10:39:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2BD352071A
+	for <linux-mtd@archiver.kernel.org>; Sun,  1 Nov 2020 10:39:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cU5wtiQD";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="kPR8/IsR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ED91B2071A
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="leifB6GS";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="b0vw96aB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2BD352071A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,46 +26,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:Date:From:To:
 	Subject:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:List-Owner;
-	 bh=kPq2v2nW/Z37ylRU95J0vOmZByuD+N1yVqYdCEZpDA4=; b=cU5wtiQDOCHT6mt/K495o7ibO
-	/1SJeSNuoP8vXPn0SstqND7t1DHlMJzQ79pCOnoCJOm3noPeVAYSy824MM8pJU2f6XXElLfzMeeA4
-	Kt45a4QOI9J/EujE/JHAzVWQGp+t9a2DA92mIczRt2sm4U8YzEh0Ak9ka+Y1C+GrzjvMdfjzNW59W
-	dL6UXDtli8oVDMR8iBjiKOEFTTEJgQ6EPH+aleF5I7WHu4SMbM+S9S+tQhsyX3XOMQ6k8lUeN/+XD
-	+xU3VCtsWk/TiekQR1iAdmYfYQ8gF99YYPDra8UhwgR/Nuj/G5g9IH79ItkGuG4dlQTCkG02+gECV
-	J6kHJYQXA==;
+	 bh=BQA/duuPI/lFj8yYVNONDicNlxpTk4z8Wf9ps9oK9HY=; b=leifB6GSCXF+qQ71oE/mt+oiL
+	VP8p9EymkdHIItN6oqjc4l4UjldrvzmZ9bq7etmkNope9NK4LP7B+P/lzcZBKcvltH6MjSt1Bfb7C
+	GwX7HxgHWp+JNE9JSYmDBTxbX1WWi7xwi54VAwL9QozzhXCIt/BJcs4+EmLIHbDAVwekEpkydvGW6
+	jJ8L3wkJJwLogPBE3u+AXPYizK7bNVJid6BALuOGLJA6VddqnD0EpvnkWCInPTenv74E49Wh41sry
+	ZwGrcXz6awLGhJPW8RvLD8x7qfVr1ImHwq0eroAUEZGbXES1m8bDZ2Z7AvRRj/wLK998rCgFZT1Z8
+	/RpqsGyAQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kZAkk-0003LW-A3; Sun, 01 Nov 2020 10:38:26 +0000
+	id 1kZAkn-0003MV-Sh; Sun, 01 Nov 2020 10:38:29 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kZAkh-0003Kb-9R
- for linux-mtd@lists.infradead.org; Sun, 01 Nov 2020 10:38:25 +0000
+ id 1kZAkk-0003LS-03
+ for linux-mtd@lists.infradead.org; Sun, 01 Nov 2020 10:38:27 +0000
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 2A0342072C;
- Sun,  1 Nov 2020 10:38:21 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id D5AA520731;
+ Sun,  1 Nov 2020 10:38:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1604227102;
- bh=S2B1OU5saTu5WgIQoA1aP/CQTnc+dvCPHLM2+ciLpcQ=;
+ s=default; t=1604227105;
+ bh=eaB443rEm8dR9x1CWeKO5RamcSe+2dBaJZ1p9MEoMeA=;
  h=Subject:To:Cc:From:Date:In-Reply-To:From;
- b=kPR8/IsRJt/u2NJehNzs5zseRCIxGlHSq7mAfH5mN+kQPqxJV1Ge+VjgkDWQjIwL4
- H2xJ4jM44u9iznH3L4UtwSpKrx9eBUDpftHMUoqZX44CiY+UezpvkxSlv01RnLqSIk
- ga7EXFd0ByzH+EaXTSGAas7ZC7OhcCc5xxzG7EoA=
-Subject: Patch "fscrypt: clean up and improve dentry revalidation" has been
- added to the 4.19-stable tree
+ b=b0vw96aBbwgYOmYkk4MaVWq8NqWCaEjxpuSGuJPtLa+ApI+gC4lMN+2z7iPMdyZEW
+ tUMURgvo3jfkX7OEWDANRX+5LXI+T1maiwV3MMuxiHdIN2jmoMe3DK/hu7+EyPzHn/
+ hfjymMyeTP4Me9diFHrM0NWNbQw5vZmXrPECU5jo=
+Subject: Patch "fscrypt: fix race allowing rename() and link() of ciphertext
+ dentries" has been added to the 4.19-stable tree
 To: ebiggers@google.com, ebiggers@kernel.org, gregkh@linuxfoundation.org,
  linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
  tytso@mit.edu
 From: <gregkh@linuxfoundation.org>
 Date: Sun, 01 Nov 2020 11:39:02 +0100
-In-Reply-To: <20201031220553.1085782-2-ebiggers@kernel.org>
-Message-ID: <1604227142207110@kroah.com>
+In-Reply-To: <20201031220553.1085782-3-ebiggers@kernel.org>
+Message-ID: <160422714210845@kroah.com>
 MIME-Version: 1.0
 X-stable: commit
 X-Patchwork-Hint: ignore 
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201101_053823_520870_F7750F27 
-X-CRM114-Status: GOOD (  29.24  )
+X-CRM114-CacheID: sfid-20201101_053826_251313_4F820713 
+X-CRM114-Status: GOOD (  17.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,13 +86,13 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 This is a note to let you know that I've just added the patch titled
 
-    fscrypt: clean up and improve dentry revalidation
+    fscrypt: fix race allowing rename() and link() of ciphertext dentries
 
 to the 4.19-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     fscrypt-clean-up-and-improve-dentry-revalidation.patch
+     fscrypt-fix-race-allowing-rename-and-link-of-ciphertext-dentries.patch
 and it can be found in the queue-4.19 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
@@ -101,160 +101,107 @@ please let <stable@vger.kernel.org> know about it.
 
 From foo@baz Sun Nov  1 11:35:18 AM CET 2020
 From: Eric Biggers <ebiggers@kernel.org>
-Date: Sat, 31 Oct 2020 15:05:49 -0700
-Subject: fscrypt: clean up and improve dentry revalidation
+Date: Sat, 31 Oct 2020 15:05:50 -0700
+Subject: fscrypt: fix race allowing rename() and link() of ciphertext dentries
 To: stable@vger.kernel.org
 Cc: linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org, Theodore Ts'o <tytso@mit.edu>
-Message-ID: <20201031220553.1085782-2-ebiggers@kernel.org>
+Message-ID: <20201031220553.1085782-3-ebiggers@kernel.org>
 
 From: Eric Biggers <ebiggers@google.com>
 
-commit 6cc248684d3d23bbd073ae2fa73d3416c0558909 upstream.
+commit 968dd6d0c6d6b6a989c6ddb9e2584a031b83e7b5 upstream.
 
-Make various improvements to fscrypt dentry revalidation:
+Close some race conditions where fscrypt allowed rename() and link() on
+ciphertext dentries that had been looked up just prior to the key being
+concurrently added.  It's better to return -ENOKEY in this case.
 
-- Don't try to handle the case where the per-directory key is removed,
-  as this can't happen without the inode (and dentries) being evicted.
-
-- Flag ciphertext dentries rather than plaintext dentries, since it's
-  ciphertext dentries that need the special handling.
-
-- Avoid doing unnecessary work for non-ciphertext dentries.
-
-- When revalidating ciphertext dentries, try to set up the directory's
-  i_crypt_info to make sure the key is really still absent, rather than
-  invalidating all negative dentries as the previous code did.  An old
-  comment suggested we can't do this for locking reasons, but AFAICT
-  this comment was outdated and it actually works fine.
+This avoids doing the nonsensical thing of encrypting the names a second
+time when searching for the actual on-disk dir entries.  It also
+guarantees that DCACHE_ENCRYPTED_NAME dentries are never rename()d, so
+the dcache won't have support all possible combinations of moving
+DCACHE_ENCRYPTED_NAME around during __d_move().
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/crypto/crypto.c      |   58 ++++++++++++++++++++++++------------------------
- fs/crypto/hooks.c       |    4 +--
- include/linux/dcache.h  |    2 -
- include/linux/fscrypt.h |    6 +---
- 4 files changed, 35 insertions(+), 35 deletions(-)
+ fs/crypto/hooks.c               |   12 +++++++++++-
+ include/linux/fscrypt.h         |    2 +-
+ include/linux/fscrypt_notsupp.h |    4 ++--
+ include/linux/fscrypt_supp.h    |    3 ++-
+ 4 files changed, 16 insertions(+), 5 deletions(-)
 
---- a/fs/crypto/crypto.c
-+++ b/fs/crypto/crypto.c
-@@ -314,45 +314,47 @@ int fscrypt_decrypt_page(const struct in
- EXPORT_SYMBOL(fscrypt_decrypt_page);
- 
- /*
-- * Validate dentries for encrypted directories to make sure we aren't
-- * potentially caching stale data after a key has been added or
-- * removed.
-+ * Validate dentries in encrypted directories to make sure we aren't potentially
-+ * caching stale dentries after a key has been added.
-  */
- static int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags)
- {
- 	struct dentry *dir;
--	int dir_has_key, cached_with_key;
-+	int err;
-+	int valid;
-+
-+	/*
-+	 * Plaintext names are always valid, since fscrypt doesn't support
-+	 * reverting to ciphertext names without evicting the directory's inode
-+	 * -- which implies eviction of the dentries in the directory.
-+	 */
-+	if (!(dentry->d_flags & DCACHE_ENCRYPTED_NAME))
-+		return 1;
-+
-+	/*
-+	 * Ciphertext name; valid if the directory's key is still unavailable.
-+	 *
-+	 * Although fscrypt forbids rename() on ciphertext names, we still must
-+	 * use dget_parent() here rather than use ->d_parent directly.  That's
-+	 * because a corrupted fs image may contain directory hard links, which
-+	 * the VFS handles by moving the directory's dentry tree in the dcache
-+	 * each time ->lookup() finds the directory and it already has a dentry
-+	 * elsewhere.  Thus ->d_parent can be changing, and we must safely grab
-+	 * a reference to some ->d_parent to prevent it from being freed.
-+	 */
- 
- 	if (flags & LOOKUP_RCU)
- 		return -ECHILD;
- 
- 	dir = dget_parent(dentry);
--	if (!IS_ENCRYPTED(d_inode(dir))) {
--		dput(dir);
--		return 0;
--	}
--
--	spin_lock(&dentry->d_lock);
--	cached_with_key = dentry->d_flags & DCACHE_ENCRYPTED_WITH_KEY;
--	spin_unlock(&dentry->d_lock);
--	dir_has_key = (d_inode(dir)->i_crypt_info != NULL);
-+	err = fscrypt_get_encryption_info(d_inode(dir));
-+	valid = !fscrypt_has_encryption_key(d_inode(dir));
- 	dput(dir);
- 
--	/*
--	 * If the dentry was cached without the key, and it is a
--	 * negative dentry, it might be a valid name.  We can't check
--	 * if the key has since been made available due to locking
--	 * reasons, so we fail the validation so ext4_lookup() can do
--	 * this check.
--	 *
--	 * We also fail the validation if the dentry was created with
--	 * the key present, but we no longer have the key, or vice versa.
--	 */
--	if ((!cached_with_key && d_is_negative(dentry)) ||
--			(!cached_with_key && dir_has_key) ||
--			(cached_with_key && !dir_has_key))
--		return 0;
--	return 1;
-+	if (err < 0)
-+		return err;
-+
-+	return valid;
- }
- 
- const struct dentry_operations fscrypt_d_ops = {
 --- a/fs/crypto/hooks.c
 +++ b/fs/crypto/hooks.c
-@@ -101,9 +101,9 @@ int __fscrypt_prepare_lookup(struct inod
+@@ -49,7 +49,8 @@ int fscrypt_file_open(struct inode *inod
+ }
+ EXPORT_SYMBOL_GPL(fscrypt_file_open);
+ 
+-int __fscrypt_prepare_link(struct inode *inode, struct inode *dir)
++int __fscrypt_prepare_link(struct inode *inode, struct inode *dir,
++			   struct dentry *dentry)
+ {
+ 	int err;
+ 
+@@ -57,6 +58,10 @@ int __fscrypt_prepare_link(struct inode
  	if (err)
  		return err;
  
--	if (fscrypt_has_encryption_key(dir)) {
-+	if (!fscrypt_has_encryption_key(dir)) {
- 		spin_lock(&dentry->d_lock);
--		dentry->d_flags |= DCACHE_ENCRYPTED_WITH_KEY;
-+		dentry->d_flags |= DCACHE_ENCRYPTED_NAME;
- 		spin_unlock(&dentry->d_lock);
- 	}
++	/* ... in case we looked up ciphertext name before key was added */
++	if (dentry->d_flags & DCACHE_ENCRYPTED_NAME)
++		return -ENOKEY;
++
+ 	if (!fscrypt_has_permitted_context(dir, inode))
+ 		return -EXDEV;
  
---- a/include/linux/dcache.h
-+++ b/include/linux/dcache.h
-@@ -210,7 +210,7 @@ struct dentry_operations {
+@@ -78,6 +83,11 @@ int __fscrypt_prepare_rename(struct inod
+ 	if (err)
+ 		return err;
  
- #define DCACHE_MAY_FREE			0x00800000
- #define DCACHE_FALLTHRU			0x01000000 /* Fall through to lower layer */
--#define DCACHE_ENCRYPTED_WITH_KEY	0x02000000 /* dir is encrypted with a valid key */
-+#define DCACHE_ENCRYPTED_NAME		0x02000000 /* Encrypted name (dir key was unavailable) */
- #define DCACHE_OP_REAL			0x04000000
- 
- #define DCACHE_PAR_LOOKUP		0x10000000 /* being looked up (with parent locked shared) */
++	/* ... in case we looked up ciphertext name(s) before key was added */
++	if ((old_dentry->d_flags | new_dentry->d_flags) &
++	    DCACHE_ENCRYPTED_NAME)
++		return -ENOKEY;
++
+ 	if (old_dir != new_dir) {
+ 		if (IS_ENCRYPTED(new_dir) &&
+ 		    !fscrypt_has_permitted_context(new_dir,
 --- a/include/linux/fscrypt.h
 +++ b/include/linux/fscrypt.h
-@@ -145,10 +145,8 @@ static inline int fscrypt_prepare_rename
-  * filenames are presented in encrypted form.  Therefore, we'll try to set up
-  * the directory's encryption key, but even without it the lookup can continue.
-  *
-- * To allow invalidating stale dentries if the directory's encryption key is
-- * added later, we also install a custom ->d_revalidate() method and use the
-- * DCACHE_ENCRYPTED_WITH_KEY flag to indicate whether a given dentry is a
-- * plaintext name (flag set) or a ciphertext name (flag cleared).
-+ * This also installs a custom ->d_revalidate() method which will invalidate the
-+ * dentry if it was created without the key and the key is later added.
-  *
-  * Return: 0 on success, -errno if a problem occurred while setting up the
-  * encryption key
+@@ -97,7 +97,7 @@ static inline int fscrypt_prepare_link(s
+ 				       struct dentry *dentry)
+ {
+ 	if (IS_ENCRYPTED(dir))
+-		return __fscrypt_prepare_link(d_inode(old_dentry), dir);
++		return __fscrypt_prepare_link(d_inode(old_dentry), dir, dentry);
+ 	return 0;
+ }
+ 
+--- a/include/linux/fscrypt_notsupp.h
++++ b/include/linux/fscrypt_notsupp.h
+@@ -183,8 +183,8 @@ static inline int fscrypt_file_open(stru
+ 	return 0;
+ }
+ 
+-static inline int __fscrypt_prepare_link(struct inode *inode,
+-					 struct inode *dir)
++static inline int __fscrypt_prepare_link(struct inode *inode, struct inode *dir,
++					 struct dentry *dentry)
+ {
+ 	return -EOPNOTSUPP;
+ }
+--- a/include/linux/fscrypt_supp.h
++++ b/include/linux/fscrypt_supp.h
+@@ -184,7 +184,8 @@ extern int fscrypt_zeroout_range(const s
+ 
+ /* hooks.c */
+ extern int fscrypt_file_open(struct inode *inode, struct file *filp);
+-extern int __fscrypt_prepare_link(struct inode *inode, struct inode *dir);
++extern int __fscrypt_prepare_link(struct inode *inode, struct inode *dir,
++				  struct dentry *dentry);
+ extern int __fscrypt_prepare_rename(struct inode *old_dir,
+ 				    struct dentry *old_dentry,
+ 				    struct inode *new_dir,
 
 
 Patches currently in stable-queue which might be from ebiggers@kernel.org are
