@@ -2,84 +2,88 @@ Return-Path: <SRS0=MFHV=EI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 935BCC2D0A3
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Nov 2020 11:31:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1C01C388F2
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Nov 2020 11:55:12 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E865D22275
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Nov 2020 11:31:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 66407223AC
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Nov 2020 11:55:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VyUZudRX";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jLuIKgWr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E865D22275
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dUnMdflD";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pAZZi3Ut"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 66407223AC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=31bYdzXGjhTX8z3IAlMFZ5D12hcbbNm4a2BhiEPSCYk=; b=VyUZudRXQ/rzvq/3GtsiTBGBR
-	NvAmBvCeOScU0wbcYp466PF1DYtiFWF/Uw3WFBjkGFaledxBE7UNFIyzMkQtw7/KsWXJB40K7WFAo
-	YOZF0URwyzYALyX9eqWls24P+R8puWhvDP6kIpO1Kw+bBmlzzUqBSLzUAe9eZPFFWGIbaszXpEh2o
-	9Hl0Ix4ofekJA+JNAIKiZ1Yjnzor1MVfHbg9S6E1ps5eU1JDtT9RASzgeluSlnd4EcAN9k9Qq+wOQ
-	2Qx7gENCoebGzhvbE6jCbtAe5PGlSCxgYWLARu7m4Q48l/xe4BwlS4uTlFimubQDTaN9uIHrC3arN
-	6wB3/B+Lg==;
+	 bh=S5TqW60HrxSUA2zXluHY8E1gHaq+/UShAFvOrCsdgpo=; b=dUnMdflDqzlnT2CCXNPmlTsG7
+	093ZNo+YOfEmhsDFBFEPC0dOxaj28mvhBNiefYWkL2x6mukn6KCscKnriklCB3wlgKFhOScksDSv8
+	r/4mfdEgdJIygbil5uqYXtKIvC4k6n3+tdBwqqizdPkveKMugOGVt0TqVt1AOYvMm6yDsYAVC6YHQ
+	b2yMEq7bFcgvYFpx1L0j2YQcQfh1olOF52xga3ftSR02lVNfJnPFU5DydF+Mpd5RseUBard304BDi
+	ZNQsTe0tHsuQA5AmA/pSuMWe8sK4qL1/g1eTMP9xLchXVp6BSeEUkDp/V6KN5NxghGAR3REpyAnm1
+	6M7HL29Gg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kZY2S-0003oK-Pi; Mon, 02 Nov 2020 11:30:16 +0000
-Received: from mail-il1-x144.google.com ([2607:f8b0:4864:20::144])
+	id 1kZYPo-0001vA-KN; Mon, 02 Nov 2020 11:54:24 +0000
+Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kZY2N-0003mH-BH
- for linux-mtd@lists.infradead.org; Mon, 02 Nov 2020 11:30:12 +0000
-Received: by mail-il1-x144.google.com with SMTP id c11so12613501iln.9
- for <linux-mtd@lists.infradead.org>; Mon, 02 Nov 2020 03:30:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=8sUFnRhpnLvg7Edccau1zP+dWkQRjNO5vrDkvqn3/Yo=;
- b=jLuIKgWriDRxMgI2AiuOdNFIgDsPVBJsLKxgfRIXXGVbdL6r8kSn+BSLm1lQXISCG6
- O0LNHKmTmYC4zDJpDa7M0SFjOEdxTEN8Ax9ezfwA3XBzKd1zzem9OtH+dftOfFllmBXZ
- QwpP7IMjL36MyfBKKfh22hQngXmxc8QrsFWOV6t8YrOKk0sqncnBsZiT7KfibIb9G+OU
- fldtoNWCAlh70Nm5A5VE/gR3iE7lmDy7OBbtAvBBLXmhFhwveqbLvH7ugaEHEaqsKE2U
- D7sIK9/xTPLckHko6qUcyq4805xHKFZfIYVyFl/yg+WcDgCxOQkzsYQdtRIMwmvPNZkB
- H7XQ==
+ id 1kZYPe-0001qs-6r
+ for linux-mtd@lists.infradead.org; Mon, 02 Nov 2020 11:54:16 +0000
+Received: by mail-wr1-x444.google.com with SMTP id g12so14219902wrp.10
+ for <linux-mtd@lists.infradead.org>; Mon, 02 Nov 2020 03:54:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=PVJkW4LmyroUVjovOSWNFjSdGZNlIx0pxp8qFDF0ggw=;
+ b=pAZZi3Uta7aFzWrgyCL6bbcYbkm9xVJ+7qQhl47RDvzTK3qvcR//TqO3RF2QKTYUSh
+ MLCd7sso9gBkagrfQyXpGcm+Eqs8Z0lCu6OuIi3EDB1NDgNWpW1lrumQKcEkYMoe2+ls
+ 81xA9AWIFf7KAqxJ/VDxMWEkTHh+2uZkt6ktOBiDyk/DqqU1I2V0cE3WvQLt1WxzCH7d
+ AT8XOYQD6Vs1uaJED/RTgZPT/7D3gDzYxhMiz1ewaFIn7F14f8bas1ODWRfDzByUoyCJ
+ LM08lMsIGEQYS2tfvkiShP+jspynsO43xg8EjnF1XCHHPm5aIkIUt2y999UgRCsIlIgq
+ 3yZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=8sUFnRhpnLvg7Edccau1zP+dWkQRjNO5vrDkvqn3/Yo=;
- b=kSFh9IDPCCetHBVuw0dr0f3F8gp2bGmX26DTEoO551AVN3L55X1Y4EU1HYroCJHAr8
- BAzgaG+ncgUUAysMIOjRGyHh/LYxqB+jZI6WuKNMScTPE12nE3b+5TCpI06Qjo0/Ndz0
- R6YEmL0IBrwK1iXJ4qI2oOzt15+oXAHvuedjLqyQla4PJPiVxCE6DZsm9VCXbMhR6aUH
- kUgjS2fRvjHu/kezXKaEx3GdlyVpL5OfqSF0gkxQNDNFWQTCj8nMXnDkrARpvbQBWEIt
- jBaTJQpbtvpuT3WTvSfOfaCptekHeIdxLfnI81kx3PdrTucPUUkDLbbGai9oML8QEZa7
- Nudw==
-X-Gm-Message-State: AOAM533IxlphN93Na/kfEOKOwdHqE2IGUjE7OsdKkeygBuThHxB2f5gN
- LAjtGS5mBttWEA9yAiKcp4oPbrZk0YdihnwsJ9PjWDbpTa485w==
-X-Google-Smtp-Source: ABdhPJzpyGmJV5pG8ZiDqRv2txjmaZQGWb7h3zlA7GiMfetk64KQGYmh/FJhJNPZ6zDF33Q1fRfyCjNzxRjhwa73XGA=
-X-Received: by 2002:a92:1f43:: with SMTP id i64mr9932879ile.281.1604316605261; 
- Mon, 02 Nov 2020 03:30:05 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=PVJkW4LmyroUVjovOSWNFjSdGZNlIx0pxp8qFDF0ggw=;
+ b=SPhfR1EtTScOSjqmX721qxCJRsDBZJw+9BD+M6bixFxrmlWhrIKpXLwL1fjcHLvfVG
+ 4Xd2x8b6sc7hHBLdqx8YjQ4uR0urfjg5mofJ9eSS9Sriv/cQTg4BOYGx0RWdGLx/OWiE
+ WYbV2RpTvSyB9zuedXk7lfj1PmojoqLzRApOzyIL+hm6/2G/l1PTgaYmoUBp75rIEmzM
+ YOPNhGM/3yIrB7cXronfcnAmVX21nAVTgPQjEH7wLcfaNCvUaF3GE1HKKtED25PczsNH
+ TBZ9xHbDIsXXrZiBvjqcL7egUQawWIUWhOdGTu0JjbO5vvGoAFywzhQU4KyMsz+NYOkD
+ GPUA==
+X-Gm-Message-State: AOAM530fp1PLUy5Gq7SRH5P7peAmX7fSVlQpxIFsWRhUc9nRgXqHtvzq
+ UGKsdNliyWU4QyGO3Ba2GV9CZg==
+X-Google-Smtp-Source: ABdhPJxfFP8oliMR6cPqZdYxfpBor8n3wV4rDuQzSLtZBeYIk6dWnLH46B9Z8j1GarQB0Wh806pqiQ==
+X-Received: by 2002:a5d:4d0a:: with SMTP id z10mr14004647wrt.244.1604318053338; 
+ Mon, 02 Nov 2020 03:54:13 -0800 (PST)
+Received: from dell.default ([91.110.221.242])
+ by smtp.gmail.com with ESMTPSA id t23sm14284010wmn.13.2020.11.02.03.54.11
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 02 Nov 2020 03:54:12 -0800 (PST)
+From: Lee Jones <lee.jones@linaro.org>
+To: vigneshr@ti.com
+Subject: [PATCH 02/23] mtd: devices: phram: File headers are not good
+ candidates for kernel-doc
+Date: Mon,  2 Nov 2020 11:53:45 +0000
+Message-Id: <20201102115406.1074327-3-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201102115406.1074327-1-lee.jones@linaro.org>
+References: <20201102115406.1074327-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-References: <20201031085810.450489-1-hch@lst.de>
- <20201031085810.450489-6-hch@lst.de>
-In-Reply-To: <20201031085810.450489-6-hch@lst.de>
-From: Ilya Dryomov <idryomov@gmail.com>
-Date: Mon, 2 Nov 2020 12:30:05 +0100
-Message-ID: <CAOi1vP_-GydZpwuR2DWpNmz2N2Wf7MHDbXudLB=t5xuEEq3Y=w@mail.gmail.com>
-Subject: Re: [PATCH 05/11] rbd: implement ->set_read_only to hook into
- BLKROSET processing
-To: Christoph Hellwig <hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201102_063011_584724_F5E90569 
-X-CRM114-Status: GOOD (  21.76  )
+X-CRM114-CacheID: sfid-20201102_065414_459419_9061648A 
+X-CRM114-Status: GOOD (  14.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,113 +95,31 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Jens Axboe <axboe@kernel.dk>, linux-raid@vger.kernel.org,
- Jan Hoeppner <hoeppner@linux.ibm.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-s390@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- linux-block <linux-block@vger.kernel.org>, Song Liu <song@kernel.org>,
- linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
- Stefan Haberland <sth@linux.ibm.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Ceph Development <ceph-devel@vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Richard Weinberger <richard@nod.at>, Joern Engel <joern@lazybastard.org>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Lee Jones <lee.jones@linaro.org>,
+ =?UTF-8?q?Jochen=20Sch=C3=A4uble?= <psionic@psionic.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Oct 31, 2020 at 10:11 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> Implement the ->set_read_only method instead of parsing the actual
-> ioctl command.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  drivers/block/rbd.c | 41 ++++-------------------------------------
->  1 file changed, 4 insertions(+), 37 deletions(-)
->
-> diff --git a/drivers/block/rbd.c b/drivers/block/rbd.c
-> index f84128abade319..37f8fc28004acb 100644
-> --- a/drivers/block/rbd.c
-> +++ b/drivers/block/rbd.c
-> @@ -692,12 +692,9 @@ static void rbd_release(struct gendisk *disk, fmode_t mode)
->         put_device(&rbd_dev->dev);
->  }
->
-> -static int rbd_ioctl_set_ro(struct rbd_device *rbd_dev, unsigned long arg)
-> +static int rbd_set_read_only(struct block_device *bdev, bool ro)
->  {
-> -       int ro;
-> -
-> -       if (get_user(ro, (int __user *)arg))
-> -               return -EFAULT;
-> +       struct rbd_device *rbd_dev = bdev->bd_disk->private_data;
->
->         /*
->          * Both images mapped read-only and snapshots can't be marked
-> @@ -706,47 +703,17 @@ static int rbd_ioctl_set_ro(struct rbd_device *rbd_dev, unsigned long arg)
->         if (!ro) {
->                 if (rbd_is_ro(rbd_dev))
->                         return -EROFS;
-> -
->                 rbd_assert(!rbd_is_snap(rbd_dev));
-
-If you repost, please leave this empty line.
-
->         }
->
-> -       /* Let blkdev_roset() handle it */
-> -       return -ENOTTY;
-> -}
-> -
-> -static int rbd_ioctl(struct block_device *bdev, fmode_t mode,
-> -                       unsigned int cmd, unsigned long arg)
-> -{
-> -       struct rbd_device *rbd_dev = bdev->bd_disk->private_data;
-> -       int ret;
-> -
-> -       switch (cmd) {
-> -       case BLKROSET:
-> -               ret = rbd_ioctl_set_ro(rbd_dev, arg);
-> -               break;
-> -       default:
-> -               ret = -ENOTTY;
-> -       }
-> -
-> -       return ret;
-> -}
-> -
-> -#ifdef CONFIG_COMPAT
-> -static int rbd_compat_ioctl(struct block_device *bdev, fmode_t mode,
-> -                               unsigned int cmd, unsigned long arg)
-> -{
-> -       return rbd_ioctl(bdev, mode, cmd, arg);
-> +       return 0;
->  }
-> -#endif /* CONFIG_COMPAT */
->
->  static const struct block_device_operations rbd_bd_ops = {
->         .owner                  = THIS_MODULE,
->         .open                   = rbd_open,
->         .release                = rbd_release,
-> -       .ioctl                  = rbd_ioctl,
-> -#ifdef CONFIG_COMPAT
-> -       .compat_ioctl           = rbd_compat_ioctl,
-> -#endif
-> +       .set_read_only          = rbd_set_read_only,
->  };
->
->  /*
-> --
-> 2.28.0
->
-
-With that nit,
-
-Acked-by: Ilya Dryomov <idryomov@gmail.com>
-
-Thanks,
-
-                Ilya
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Rml4ZXMgdGhlIGZvbGxvd2luZyBXPTEga2VybmVsIGJ1aWxkIHdhcm5pbmcocyk6CgogZHJpdmVy
+cy9tdGQvZGV2aWNlcy9waHJhbS5jOjE5OiB3YXJuaW5nOiBGdW5jdGlvbiBwYXJhbWV0ZXIgb3Ig
+bWVtYmVyICdmbXQnIG5vdCBkZXNjcmliZWQgaW4gJ3ByX2ZtdCcKCkNjOiBKb2VybiBFbmdlbCA8
+am9lcm5AbGF6eWJhc3RhcmQub3JnPgpDYzogTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBi
+b290bGluLmNvbT4KQ2M6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+CkNjOiBW
+aWduZXNoIFJhZ2hhdmVuZHJhIDx2aWduZXNockB0aS5jb20+CkNjOiAiSm9jaGVuIFNjaMOkdWJs
+ZSIgPHBzaW9uaWNAcHNpb25pYy5kZT4KQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3Jn
+ClNpZ25lZC1vZmYtYnk6IExlZSBKb25lcyA8bGVlLmpvbmVzQGxpbmFyby5vcmc+Ci0tLQogZHJp
+dmVycy9tdGQvZGV2aWNlcy9waHJhbS5jIHwgMiArLQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0
+aW9uKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvZGV2aWNlcy9w
+aHJhbS5jIGIvZHJpdmVycy9tdGQvZGV2aWNlcy9waHJhbS5jCmluZGV4IDA4N2I1ZTg2ZDFiZmIu
+LjllNGQ2MGJkNDI3ZmIgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL2RldmljZXMvcGhyYW0uYwor
+KysgYi9kcml2ZXJzL210ZC9kZXZpY2VzL3BocmFtLmMKQEAgLTEsNSArMSw1IEBACiAvLyBTUERY
+LUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMC1vbmx5Ci0vKioKKy8qCiAgKiBDb3B5cmlnaHQg
+KGMpID8/Pz8JCUpvY2hlbiBTY2jDpHVibGUgPHBzaW9uaWNAcHNpb25pYy5kZT4KICAqIENvcHly
+aWdodCAoYykgMjAwMy0yMDA0CUpvZXJuIEVuZ2VsIDxqb2VybkB3aC5maC13ZWRlbC5kZT4KICAq
+Ci0tIAoyLjI1LjEKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
