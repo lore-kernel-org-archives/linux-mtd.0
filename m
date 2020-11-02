@@ -2,102 +2,120 @@ Return-Path: <SRS0=MFHV=EI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,NICE_REPLY_A,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33442C388F2
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Nov 2020 12:13:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EDE36C00A89
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Nov 2020 12:30:36 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AFEA1206DD
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Nov 2020 12:13:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 135B62242F
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Nov 2020 12:30:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CEKH/IV6";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="osHcwZSv";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aNe1UOeI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AFEA1206DD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AADIVjIZ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mysnt.onmicrosoft.com header.i=@mysnt.onmicrosoft.com header.b="WDSbdGUH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 135B62242F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kontron.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=RlXXchyRQEZZcaZqSiooFaDc8K98hvNj5TPVnE7Pr3g=; b=CEKH/IV64hQfbC4Pa3AN18AUe
-	9WGOUTCpZWLRNsVJmDO3JhNe1yok8YQ/AYCRPdrVAlkzxjHz92XuAAckZZ00oWiwff57FQisfhLnq
-	R3MVAPbd9KTLUw0bjijbn51Jio+gLrEXiQg/wkkybadS+voisZ/x6Na/NRF965Qv4bBJo0zW4khOF
-	jrFGx607bhLq/YloKTsQ1PNU2JkmmBgAia6igGQpAcP/mPzYelw4Lk1a9/e+iASbPYwhdv8iC49XZ
-	rip6GfjzZmlbn+blM6ZvCOOKdrPSmXsIZUrMJd75+IxXJ12E3B+BXEes5+qMFQJCq0eUK8gdw7Ylc
-	nBtZbxcAw==;
+	 bh=Ucp3TdR/8OFhTCN4w1gfx8A/HhSRNk+A4BVknAU4A/Q=; b=AADIVjIZvcz8hOQ2UZ3ioC10f
+	F6aRoSkQT8EvteLm1apyzNPxrJMn7iJ1wlOKOsW/13kH5q0mKz3sMOajDg7zcCjS4sEB487W2qGGM
+	HB0Q7En55yApiB+hhTSL79uVoYTFKXcs6kdcl8ZYAXZMBKhwP9FVNbaD1IcdVfGmLXLaVw5zEH/fx
+	SGozvAdOaqjkNR5Xq++beL4/AVG+I5OTeq5K6+Xg53qxYf3ii8UW2m0B8FPekRVu89vt/Yc8ewNA2
+	rwAZedEZdOywCghWE7yshGc+bJo2oRKSQVNAJL6V5T1jCFp9yGSXPsg8huVVRhpMdGrXT58m1O4CM
+	U86+BVSrQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kZYhN-00049B-Fm; Mon, 02 Nov 2020 12:12:33 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1kZYy0-0007Dw-4h; Mon, 02 Nov 2020 12:29:44 +0000
+Received: from mail-am6eur05on2124.outbound.protection.outlook.com
+ ([40.107.22.124] helo=EUR05-AM6-obe.outbound.protection.outlook.com)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kZYgv-0003p2-Jo
- for linux-mtd@merlin.infradead.org; Mon, 02 Nov 2020 12:12:05 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
- References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
- Content-Type:Content-ID:Content-Description;
- bh=nWKR6uPZUpsHw9fLiQN+tCUhIOQtuUG869jNO4i86ZY=; b=osHcwZSvg8yRLGXW/8UfelNlr1
- o0vo4u5GchCJ2LYrz0hpHf6Q0koLv7VRWIragcS0C4YiYkaqYBq65cXZXcrrHHRGBca/1V51JzEsC
- K6UJJDxMxRajKAMuRoK6GUoj8N9rmV7USWn+phx8QfVXWirFj7gV6LYGlh7Z9xmrvyyLT2IwFCH5C
- yoZCFuPpdR8LUA+NynnvtHqMDtIkDbGlvMo7alHS+5q7QP+EUSpKdKR8gaaQBGgB2ZnzAE28vzfXd
- qMCl2C5oSy5Ump+xQnRnLFXpkan8In3eUMUJ8blm9mI/cuP9FS1L5XAi4qvqLphOCaW3M928YQBJW
- qL3mmozg==;
-Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
- by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kZYPu-0004rR-QI
- for linux-mtd@lists.infradead.org; Mon, 02 Nov 2020 11:54:36 +0000
-Received: by mail-wr1-x441.google.com with SMTP id x7so14269315wrl.3
- for <linux-mtd@lists.infradead.org>; Mon, 02 Nov 2020 03:54:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=nWKR6uPZUpsHw9fLiQN+tCUhIOQtuUG869jNO4i86ZY=;
- b=aNe1UOeICRZDUj51juIkYs9Lwny2RtCmIIYHfF7raPNXvUp+MR9f7l1orsbrnuxaBn
- dFgMO6Uhc31U97A4YcGg71hc16dSHtix2szsIu89S7KBiTHxbVGfwYZU9Ko6YZpfSFCJ
- p7CvZnBrY2uG+sttDlSxDClusnDUONxk97e/DOyn7SZnyks47+/lM5MDpnZKE3GxWQ0V
- Kud4XlPlwvuIrit0mxlFUmdtsg0i6TgJyECZ+C80K4aODQlYd8thsKFe9EnFstB3dY8z
- iKZY6uZHL2i5NmVfxneEW/j5oW9Oh2P31BgXBk0w/ily0GnbYDhw9NWIUgCg+y2EYBA4
- NamQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=nWKR6uPZUpsHw9fLiQN+tCUhIOQtuUG869jNO4i86ZY=;
- b=RP6wNbXuchEtZbEPHmMezdcPJKE/CjE5DCtrxR8yLegDL8TcLBWjbP7cL/qaCF7yMC
- 4DT9gt7wUbTTMVCn5YIruryLt5lzFbVhD5BOkpOmqB2/JTgp2XoIEFnHOeQ8uDE9cq+9
- dyPo7zxExlFNVYjl38tfay34GyzTH5/BJi531amkv9tfIbF8XevEYU3eAsiU4fo/p0mA
- fD9Y1ISC6Oc2OA0qu9OBV3VtPWITiE3zSJoWpgw2+60szf8Jvcfaig8cET08MbznWu8R
- kn3y7W1QNOraSwcH/cL9F8PPu2VyZG7JGOJQna8nxikg9HCUmI3DUIVZSlIuGEdlrvE9
- GwRg==
-X-Gm-Message-State: AOAM530+8YqYnHJISgYSYfGORvQrDuFVx4o4DeqwCYULtSLlp4vvDfVb
- nd2WhwjsYsGf/jY6ID4LjX0F6Q==
-X-Google-Smtp-Source: ABdhPJzz2I+xtA7lYt3DrHliYeba2hil/cvbDSwq7Fj3zS9Q6D0jbmdPE6XMMJ5sSnyzxxfkbrFOLA==
-X-Received: by 2002:adf:ec47:: with SMTP id w7mr19909593wrn.253.1604318067409; 
- Mon, 02 Nov 2020 03:54:27 -0800 (PST)
-Received: from dell.default ([91.110.221.242])
- by smtp.gmail.com with ESMTPSA id t23sm14284010wmn.13.2020.11.02.03.54.26
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 02 Nov 2020 03:54:26 -0800 (PST)
-From: Lee Jones <lee.jones@linaro.org>
-To: vigneshr@ti.com
-Subject: [PATCH 11/23] mtd: ubi: eba: Fix a couple of misdocumentation issues
-Date: Mon,  2 Nov 2020 11:53:54 +0000
-Message-Id: <20201102115406.1074327-12-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201102115406.1074327-1-lee.jones@linaro.org>
+ id 1kZYxx-0007D0-6K
+ for linux-mtd@lists.infradead.org; Mon, 02 Nov 2020 12:29:42 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZAeMUMJELGVt/m0puaa0PwHN0w+eKg4lUqGnVAxB5Lax19POKXoiAUoUKFHxVtajqXtr1KXcPRnzgN0XFGJ/E0/t90KWLcYJlzGBvs1Wkt14COcETgZ5K6CRIUDbpztKqUKQSyTRQ43rrTyF4z7zxiUC91wZRxQma9Qk4IcMr06MAfaxelKTOoInSeaIyWzPJOz8Tj+sEGFg+4Vy26n9MPcmVT+WZ4gCFRjMFD7uAxpYKrrVFi4GJZphWmAtvEvOUwIkg1K+MIEJ45tv/y5HJsTgYDXtUwCwUnKNIjWOKDNOX5K/c+4Pex/IhAjsRurYZJmZkEeBGM4aK26hfNBuiA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SqPuy6Ubtif3GEpFO1TXkX2zETx0hXOSrwv0uiFg0Kw=;
+ b=FcEzplw4FWLmO3EZ3lvjF0TPS3LZcOy715ZxNDNpDhDs9+Y1WWQh+ySHvNJNCGT8i6hs0MyL4wgrXcOERV1nOQ+nL/GRafBoyOktu+mHSRKa8Kd6Cve85zt/9Di0Hldw8rK9lvx97yO6RpTBgB4ULL5vuAB9t3J94uWCvbya1vlBLLKLlrwL7yTh+HVbliAxx+yX1ACnmIlwohEjg2zhXvrsT0G1L+hT55JwwH3vKgtSqQ0JLI10wOX0Ta/FKzd7j02sc+tFPs7GOse8XQXCxIYtaOw1TBDb3o+r8GS6zxngeny6psjlTubjiDg+Icjr0k6XH7qSNrqMkDsDjruXPg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com; 
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SqPuy6Ubtif3GEpFO1TXkX2zETx0hXOSrwv0uiFg0Kw=;
+ b=WDSbdGUHdEe38qUmysCPXuz2zRJ+B5UCXhidSFVWy0QkA6nqsOxouNGGZgFhj1awRXgkee3xnBYFy9E7Clqf67ecuskMNKiv1Hnf7ZshLfY+2IFK2pnVPp7tpXS7pUEAs9SuvH9PngXk8dqXTgspefMfIUeVCE7wZuNreOYqNm4=
+Authentication-Results: lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=none action=none
+ header.from=kontron.de;
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:157::14)
+ by AM0PR10MB2115.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:4f::19)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Mon, 2 Nov
+ 2020 12:29:35 +0000
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::a0df:b996:7029:318a]) by AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::a0df:b996:7029:318a%7]) with mapi id 15.20.3499.030; Mon, 2 Nov 2020
+ 12:29:35 +0000
+Subject: Re: [PATCH 09/23] mtd: nand: spi: toshiba: Demote non-conformant
+ kernel-doc header
+To: Lee Jones <lee.jones@linaro.org>, vigneshr@ti.com
 References: <20201102115406.1074327-1-lee.jones@linaro.org>
+ <20201102115406.1074327-10-lee.jones@linaro.org>
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
+Message-ID: <62865037-1f64-2515-2457-06767c232677@kontron.de>
+Date: Mon, 2 Nov 2020 13:29:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20201102115406.1074327-10-lee.jones@linaro.org>
+Content-Language: en-US
+X-Originating-IP: [89.247.37.117]
+X-ClientProxiedBy: AM6PR10CA0022.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:209:89::35) To AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:157::14)
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.10.17] (89.247.37.117) by
+ AM6PR10CA0022.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:209:89::35) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3499.18 via Frontend Transport; Mon, 2 Nov 2020 12:29:34 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: aec41ebf-50d8-47ff-e7ec-08d87f2af524
+X-MS-TrafficTypeDiagnostic: AM0PR10MB2115:
+X-Microsoft-Antispam-PRVS: <AM0PR10MB2115FE1B2D7F25FEB418513DE9100@AM0PR10MB2115.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 93TPab/ksaotilPiseJ2OPw8ti7e67G2VdTyIa48QAZl1CZtm2M9T47anLkz7IAKRsMsJt6wpRPknEm9bGHVTvcyo7UzYhScWoapoftUsDEVXODQNDq+DJGYQvx4f2dVvEASVWhoO4FElptKPieqPpgzldxLgdIqiY6u5QwBuj6ANVMJDMKiPogpdXIDxhE7Kdzf0eUlGpRj3px2vwKWL7KXS5FcqI2wkefx8kr7CKRUGUs+1ymQv+7D9v5ioUMn26aEfSLapN9LzwMtpu1ntZeMqrl1syig3bnx9MbwFpq3nV2i4gAxJ4XesLyBI8ORFO6De+lnmASgT9yr4G/2qssQJL42dRocBjlKNu+hLz7tIuBOcTXw7N2dbgGy4o2c
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM; PTR:; CAT:NONE;
+ SFS:(4636009)(39860400002)(136003)(366004)(346002)(396003)(376002)(4326008)(26005)(44832011)(66556008)(66476007)(66946007)(16576012)(86362001)(6486002)(31696002)(8936002)(83380400001)(36756003)(8676002)(54906003)(956004)(478600001)(186003)(31686004)(316002)(53546011)(2616005)(5660300002)(16526019)(2906002)(52116002)(43740500002);
+ DIR:OUT; SFP:1102; 
+X-MS-Exchange-AntiSpam-MessageData: W2VUd6NMYfPJfbHEwxMm7wEmnfRBY780mhsWWBVIeu31YpbcksKgym5q/PGrvlvPyfj9W+79Bkrj4Y1urdYp2DAUIp77SE32Gb4YABItX+v9O+WctA76Txn7UmtK7MxbcoKmKsJAWVJENz5Gvk8H51jWWq1Qd45s/nOOybRunwcUNnAC4sVzBVKvqgatI0geHQ4vKHYW7EsiHjQHfyyRVwi5SUZR2aAFs+1C3aUcXwCNYyCy5+VaEnApLbxuCGo4MmPGQuCJQcS7u4jixLP6YCAkJbS5Ld80DumXGZHFkZ64yzoFPNw8cUwy5ctG497Q8YUv/12m68qM1PIRUuFYYEPDVc6/RGRACWv3J7ghqvi+yfojbD9Agtew+Rmr4izRzxvgA0h/d0oE5YpnAflCQURxLB8BZRsr1DPjmWARx2fCpV76AeAJzf6/M2p2MfHPuDPPuMHJ28MXyIkYhDyliw64r7Z7VP3PHiCoZtsniNIGAUoq9rugmDxy/J3GmS1EP2f/c5qFqdbXBQfi3YAqtf9rUnQWNBIB1MBZ6xuPeNuvnpxAA07w3gfWNHP2QYEc/w8N6mIMqTTTNz8bYzGlOZHKHxyYa9fnMFumW8uLcK57bYpQQ1Inze9lkN3CUbmqfv5HlGrw1dQ86bcKgB68fg==
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: aec41ebf-50d8-47ff-e7ec-08d87f2af524
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2020 12:29:35.2494 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: iG1qALq8lcoh+VX4bvQHYwNN6/RLWFkTOv7y9FaJ+AdoI7C6R563voTFeQQBa2xn8UYQn0V/WsdM4mnRZK0vk50Xpj4Z59Gg7x5xPaVo//Q=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB2115
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201102_115432_051631_D2C72467 
-X-CRM114-Status: GOOD (  14.88  )
+X-CRM114-CacheID: sfid-20201102_072941_261949_C60568F1 
+X-CRM114-Status: GOOD (  16.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,53 +127,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>, Lee Jones <lee.jones@linaro.org>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="us-ascii"
+Cc: Richard Weinberger <richard@nod.at>,
+ Yoshio Furuyama <ytc-mb-yfuruyama7@kioxia.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Fixes the following W=1 kernel build warning(s):
+On 02.11.20 12:53, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>   drivers/mtd/nand/spi/toshiba.c:36: warning: Function parameter or member 'write_cache_variants' not described in 'SPINAND_OP_VARIANTS'
+>   drivers/mtd/nand/spi/toshiba.c:36: warning: Function parameter or member '0' not described in 'SPINAND_OP_VARIANTS'
+> 
+> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Vignesh Raghavendra <vigneshr@ti.com>
+> Cc: Yoshio Furuyama <ytc-mb-yfuruyama7@kioxia.com>
+> Cc: Frieder Schrempf <frieder.schrempf@kontron.de>
+> Cc: linux-mtd@lists.infradead.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
- drivers/mtd/ubi/eba.c:1304: warning: Function parameter or member 'vidb' not described in 'ubi_eba_copy_leb'
- drivers/mtd/ubi/eba.c:1304: warning: Excess function parameter 'vid_hdr' description in 'ubi_eba_copy_leb'
- drivers/mtd/ubi/eba.c:1483: warning: Function parameter or member 'ai' not described in 'print_rsvd_warning'
+Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/mtd/ubi/eba.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index 0edecfdbd01f3..892494c8cb7c7 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -1290,7 +1290,7 @@ static int is_error_sane(int err)
-  * @ubi: UBI device description object
-  * @from: physical eraseblock number from where to copy
-  * @to: physical eraseblock number where to copy
-- * @vid_hdr: VID header of the @from physical eraseblock
-+ * @vidb: data structure from where the VID header is derived
-  *
-  * This function copies logical eraseblock from physical eraseblock @from to
-  * physical eraseblock @to. The @vid_hdr buffer may be changed by this
-@@ -1463,6 +1463,7 @@ int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
- /**
-  * print_rsvd_warning - warn about not having enough reserved PEBs.
-  * @ubi: UBI device description object
-+ * @ai: UBI attach info object
-  *
-  * This is a helper function for 'ubi_eba_init()' which is called when UBI
-  * cannot reserve enough PEBs for bad block handling. This function makes a
--- 
-2.25.1
-
+> ---
+>   drivers/mtd/nand/spi/toshiba.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/spi/toshiba.c b/drivers/mtd/nand/spi/toshiba.c
+> index 21fde28756742..7380b1ebaccd5 100644
+> --- a/drivers/mtd/nand/spi/toshiba.c
+> +++ b/drivers/mtd/nand/spi/toshiba.c
+> @@ -28,7 +28,7 @@ static SPINAND_OP_VARIANTS(update_cache_x4_variants,
+>   		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
+>   		SPINAND_PROG_LOAD(false, 0, NULL, 0));
+>   
+> -/**
+> +/*
+>    * Backward compatibility for 1st generation Serial NAND devices
+>    * which don't support Quad Program Load operation.
+>    */
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
