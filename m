@@ -5,20 +5,20 @@ X-Spam-Level:
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C45DC388F2
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Nov 2020 12:13:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CC7CC4742C
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Nov 2020 12:13:22 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8B58D223B0
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Nov 2020 12:13:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B2283206DD
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Nov 2020 12:13:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oLRPD90v";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="gynwMwCL";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="opBwhrxL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B58D223B0
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hnvTNJkp";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="sC18CI5/";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Iii8iIXF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B2283206DD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,77 +27,78 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=xMq+x52hv0S47USEc6kSR00N4utMwKTqtcqsBq7W4RA=; b=oLRPD90vYuyBVaJPjyxCD70FF
-	j/6flY2ciNVE/4w/X8/uhmTepwW2c0ikQv61f9Gzb6cuuEH8/w0pLVhpn1SlaFJ22GkMth2cbQnx9
-	N6e//M2ZN/fmUCLFsEKfCV1BtYyopZZQ8cWQpwbE9gWCoeKOXQbBpHSC1elBg61nGyS5iLumomdFb
-	NOAkztxNzDFjAG1eHQvXylrzy6xVY4jiSH3tbpFNGEnQqDoOGlzZ6y3mbNq42jg5kyh0OeRYtF/7z
-	ga94h/ByE63ag+auWknO+Sdhm+kb6iVZA0mxE/B4AbZLom8HGfFMRtzVod3fB1NGVO2h3sEHwt2MD
-	rnqVAAobg==;
+	 bh=FdHUdYbOjTj9uNdmj/OrxQq7qSpek3Reln56G24h7GQ=; b=hnvTNJkpkSqWJ7UV3DQIQI+8H
+	SarGa70zmvB6BF93ZvsKZppiLJGMJF66JwJnf6Xd25LUHG1nrEPeJ4wuxhdmxboRcL5wg023R2nsT
+	7RN4u33gpkn9vYHBje1mNIRfWxpDlb0jkWG1vLfzAGS2onDTo7tSz9/qSF+SZ8tltG2YstpVjvttj
+	QQ0R3nwZoHgGldF68BSueq1SSPeaQamhaVCwmDq3rwGUF6yK/IBLG7WBVpIMbR7OGTAhmx/hx/dkn
+	sOb+CAXjep93V0KH8BjgpqNVtksAmkwHSjW2ZP6EBvVr6if6D1fZaWe3pNvI392U4v3cubC+6bXDp
+	ZjzX1dZRA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kZYhE-000452-Df; Mon, 02 Nov 2020 12:12:24 +0000
+	id 1kZYgo-0003wm-La; Mon, 02 Nov 2020 12:11:58 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kZYgu-0003p2-Bj
- for linux-mtd@merlin.infradead.org; Mon, 02 Nov 2020 12:12:04 +0000
+ id 1kZYgm-0003p2-T4
+ for linux-mtd@merlin.infradead.org; Mon, 02 Nov 2020 12:11:57 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=93EjZ3Q1Gw8Ho51hZkZvcyMJpfj7h+RPmd54ZDyuP+E=; b=gynwMwCLc0+LXPkf4XzfbHJztq
- BOUmYo6cy6lRj/JIM0RNECi1DmKfAZpUKWVPfICbNVsT7jWftIJOJvOfwOsnn0dGAObn7HxhkcTQX
- mz8QcgNkI+P3daV0rtzSBizxgcEZHMVf7DplTIQ2VwNkbVDmAFCpWGY3W3webpFZthwzlEqExaRLS
- IfaM+5BzBUsD9HU+Y2gSRgpYEnp32ur13s9HUoMhxERzbEpx/yw83Qp3kD0sI2EUnJ8OiVuivSk5k
- YbPC8MkWigra3Cj2LJkHuXeT5W9Osvp6Y3BbHabcKmajds9f7wM0N+2HIqIkh/UHptfP+4eZ3N02Q
- 0ZfoqJVg==;
+ bh=TuX3K0j4y5py35J7qAVJzMeaaIIyoaLFFbYRmFexlrI=; b=sC18CI5/IHTJ9+fbHkMP98HXpn
+ 28Slc55PLl9/L9fs6FNbLwdN4ZQDKdK0/K3sRpQD0VQVk2o1pW/IyzJuHIXcEHO2k+a55g9T/PMOQ
+ vzfZ6WC3+GGFgOacDMt1yp7B2V8fWtpcp0K++mbskMDHdaiLy7eyPKRELTXqiDaACJCUCpQ4leydZ
+ O9rvRkW0GMwOSQQPFeX5LckxkxFAZ977euSlPRF3ShB2zp7L6jNWmTl2I0yrN5D6cPoqBMblA6Ulj
+ pBvVLi/hSHNABEFV/jZDoTRbvHMTtm3DF3GcQv4N1ZnB8QXpKIQM75RZQSe0Tp2OmrLrt/27mlpmG
+ rhPR5ipg==;
 Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
  by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kZYPu-0004ri-U9
- for linux-mtd@lists.infradead.org; Mon, 02 Nov 2020 11:54:38 +0000
-Received: by mail-wr1-x441.google.com with SMTP id i16so8834675wrv.1
- for <linux-mtd@lists.infradead.org>; Mon, 02 Nov 2020 03:54:29 -0800 (PST)
+ id 1kZYQ2-0004uS-JX
+ for linux-mtd@lists.infradead.org; Mon, 02 Nov 2020 11:54:50 +0000
+Received: by mail-wr1-x441.google.com with SMTP id k10so12906946wrw.13
+ for <linux-mtd@lists.infradead.org>; Mon, 02 Nov 2020 03:54:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=93EjZ3Q1Gw8Ho51hZkZvcyMJpfj7h+RPmd54ZDyuP+E=;
- b=opBwhrxLDDOijB/+6w0qKgtlnTAnSYM4uhprrPkJ9C3OtHPXIDM2Rf5IU/mmjdS3AV
- PhSjyKbvUb1D1DhP3/69ICZJTZNjyxqoO5bagSZy3o6ovSKW57KJryFUjgQY15PSLMG+
- a5HnXkkhUOuhw5aMJwRRXrKFqqDX3oYAcL6z2tSkcVapWDlr9iRxSeMI0NARDRsWWMxa
- YX71OJpG0fGny9J4O/WWj2F/kiO7SC9kRW+nF1PGUECszF08zIAJrtAfIUsUZ7ZgGpMG
- eQDt909GDycd9buJqg8nBRhIOsrykhLgf268VB7fCmuqoiYiuXDFGX00vcPVtTTwHK2U
- q58Q==
+ bh=TuX3K0j4y5py35J7qAVJzMeaaIIyoaLFFbYRmFexlrI=;
+ b=Iii8iIXFz3DaP8nBi80kVmkd0bNqhbz3hOwZ0JAgeSDj+ym7hsWQII9Jw99dOraG5X
+ tmxMuDtVnQVfF/PgryImz3XyitN1xI+MWhG4G+QhCqazJ3M8NqVRYPKllLpURJQC7IIk
+ /Qh8H948PpmTgd3wGCxyeMi2vptbnlJbf9qwudoND2ktnCrdyLw8x4+WPlOR92qfff6t
+ MGEhk8463TPQkH84ONyGrS69oSglz3jJYZA2cRNSNV27dtyYwTifKXiNSySDjPBeKLkR
+ ws9R3MpPV98EczJnIgIctrHj5l1A0fB06BS2qJKK/i4yF87MIxXSq1fci/XAsUrCkObp
+ etSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=93EjZ3Q1Gw8Ho51hZkZvcyMJpfj7h+RPmd54ZDyuP+E=;
- b=W7BiHNRDk5tCb0N9OFCvl1ENVKt9SHcN6CkAezyL6LX4hZW0VzEw/QEBzU63mjCE3O
- 1UJJYEcABxNhfqmMkYni5yqVW2fMqzXaQtcpqHtAh1HzSFPV5x0xNWfYahPZYi2iQv0q
- CwKMoQSk1CJhDGZeJIE8r6byNRtlAT4MPHWm/g5bv3rSZvG9MniDvzcl6mlCEhoS9Wu1
- uJ0mKjXBuexihEQjWsLG4kmAQ9uwGtr1OX2IO5/ut30CXiXCbExhkKuRlMBmEbs0yCPq
- x65hyoerUsxStA0bFzR2pVDUvv7xmcN4WEUk2M0CxBdeHcfkLTNHwUOHZ25Cyu9EGdhe
- 1Zhg==
-X-Gm-Message-State: AOAM533Q8f0SHz+DBtFlx9ZojD8AXqqBG4Mn6vqNN44x/hukKvHksMIk
- FGPg3MLyEZ3DwCquw4U1igwm2g==
-X-Google-Smtp-Source: ABdhPJwxzsFyIA+Yg1CglN1R6rmmAXo9pfMhFKXJu0Gimkd0jsZ691A7wWzZjoNud7hrDZ5CNQ9FHg==
-X-Received: by 2002:a5d:4083:: with SMTP id o3mr18475908wrp.44.1604318068665; 
- Mon, 02 Nov 2020 03:54:28 -0800 (PST)
+ bh=TuX3K0j4y5py35J7qAVJzMeaaIIyoaLFFbYRmFexlrI=;
+ b=FM7Q+NActHrjqCn3YA+/SobZRKvfJ5DDG+95iQrQfIQuWGly4OwQAh+lP5v7C8ylt8
+ 3O2WHYLs2hSboA4s1jJTGLmW24h14BZlPN5wsNhFQDh9wG+YFoE/CLDI0iWwFPDrlSpE
+ CoqpsQpjtpC/2+AGvgZO4/nxzqB/R8xLlOXZ0sUmnThLeZed/jM2BkzqTCHvMmKOlKZe
+ 0BHK4UMcpPUQibLOFQVyPwTIY1s0z0QsOTqYeoN25EuuprKW/bGPE0TfFYTNjv78AE0t
+ KWuYWoqKEXDY8cgx+wa9NFP97ZYuKp18tcmpC8k3F424TuBjG+04BcvunGhGwzFg/Dse
+ JQBg==
+X-Gm-Message-State: AOAM5322+N9HpwRWIsopSVxZWkMsOyJjJpRq7C09zJpkaYmXqgbJdV38
+ YDMk9jLAZyQSrp8YUIIAhnK2Z0TmrvC6Bw==
+X-Google-Smtp-Source: ABdhPJwkwSPh4YydZUXKyXcEwuNF+QhoKqd2AVHhHg0i6w8Z0Q1QNhwf3X5qfyoPDuxKJ7tzrYvE7w==
+X-Received: by 2002:a5d:4207:: with SMTP id n7mr19616409wrq.76.1604318077273; 
+ Mon, 02 Nov 2020 03:54:37 -0800 (PST)
 Received: from dell.default ([91.110.221.242])
- by smtp.gmail.com with ESMTPSA id t23sm14284010wmn.13.2020.11.02.03.54.27
+ by smtp.gmail.com with ESMTPSA id t23sm14284010wmn.13.2020.11.02.03.54.36
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 02 Nov 2020 03:54:28 -0800 (PST)
+ Mon, 02 Nov 2020 03:54:36 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: vigneshr@ti.com
-Subject: [PATCH 12/23] mtd: ubi: wl: Fix a couple of kernel-doc issues
-Date: Mon,  2 Nov 2020 11:53:55 +0000
-Message-Id: <20201102115406.1074327-13-lee.jones@linaro.org>
+Subject: [PATCH 19/23] mtd: nand: raw: omap2: Fix a bunch of kernel-doc
+ misdemeanours
+Date: Mon,  2 Nov 2020 11:54:02 +0000
+Message-Id: <20201102115406.1074327-20-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201102115406.1074327-1-lee.jones@linaro.org>
 References: <20201102115406.1074327-1-lee.jones@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201102_115431_846177_FBD9DA8B 
-X-CRM114-Status: GOOD (  14.77  )
+X-CRM114-CacheID: sfid-20201102_115440_629209_6957A3B3 
+X-CRM114-Status: GOOD (  16.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,9 +110,9 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>, Lee Jones <lee.jones@linaro.org>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Jian Zhang <jzhang@ti.com>, Lee Jones <lee.jones@linaro.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
@@ -119,39 +120,120 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/mtd/ubi/wl.c:584: warning: Function parameter or member 'nested' not described in 'schedule_erase'
- drivers/mtd/ubi/wl.c:1075: warning: Excess function parameter 'shutdown' description in '__erase_worker'
+ drivers/mtd/nand/raw/omap2.c:191: warning: Function parameter or member 'info' not described in 'omap_prefetch_enable'
+ drivers/mtd/nand/raw/omap2.c:221: warning: Function parameter or member 'cs' not described in 'omap_prefetch_reset'
+ drivers/mtd/nand/raw/omap2.c:221: warning: Function parameter or member 'info' not described in 'omap_prefetch_reset'
+ drivers/mtd/nand/raw/omap2.c:946: warning: Function parameter or member 'chip' not described in 'omap_enable_hwecc'
+ drivers/mtd/nand/raw/omap2.c:946: warning: Excess function parameter 'mtd' description in 'omap_enable_hwecc'
+ drivers/mtd/nand/raw/omap2.c:1017: warning: Function parameter or member 'chip' not described in 'omap_dev_ready'
+ drivers/mtd/nand/raw/omap2.c:1017: warning: Excess function parameter 'mtd' description in 'omap_dev_ready'
+ drivers/mtd/nand/raw/omap2.c:1036: warning: Function parameter or member 'chip' not described in 'omap_enable_hwecc_bch'
+ drivers/mtd/nand/raw/omap2.c:1036: warning: Excess function parameter 'mtd' description in 'omap_enable_hwecc_bch'
+ drivers/mtd/nand/raw/omap2.c:1142: warning: Function parameter or member 'ecc_calc' not described in '_omap_calculate_ecc_bch'
+ drivers/mtd/nand/raw/omap2.c:1142: warning: Excess function parameter 'ecc_code' description in '_omap_calculate_ecc_bch'
+ drivers/mtd/nand/raw/omap2.c:1270: warning: Function parameter or member 'ecc_calc' not described in 'omap_calculate_ecc_bch_sw'
+ drivers/mtd/nand/raw/omap2.c:1270: warning: Excess function parameter 'ecc_code' description in 'omap_calculate_ecc_bch_sw'
+ drivers/mtd/nand/raw/omap2.c:1284: warning: Function parameter or member 'ecc_calc' not described in 'omap_calculate_ecc_bch_multi'
+ drivers/mtd/nand/raw/omap2.c:1284: warning: Excess function parameter 'ecc_code' description in 'omap_calculate_ecc_bch_multi'
+ drivers/mtd/nand/raw/omap2.c:1681: warning: Function parameter or member 'info' not described in 'is_elm_present'
+ drivers/mtd/nand/raw/omap2.c:1681: warning: Function parameter or member 'elm_node' not described in 'is_elm_present'
+ drivers/mtd/nand/raw/omap2.c:1681: warning: Excess function parameter 'omap_nand_info' description in 'is_elm_present'
 
-Cc: Richard Weinberger <richard@nod.at>
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Jian Zhang <jzhang@ti.com>
 Cc: linux-mtd@lists.infradead.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/ubi/wl.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/mtd/nand/raw/omap2.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 7847de75a74ca..8455f1d47f3c9 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -575,6 +575,7 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
-  * @vol_id: the volume ID that last used this PEB
-  * @lnum: the last used logical eraseblock number for the PEB
-  * @torture: if the physical eraseblock has to be tortured
-+ * @nested: denotes whether the work_sem is already held in read mode
+diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
+index 4cc47ab7f01ad..b5a2d8971bfdd 100644
+--- a/drivers/mtd/nand/raw/omap2.c
++++ b/drivers/mtd/nand/raw/omap2.c
+@@ -184,6 +184,7 @@ static inline struct omap_nand_info *mtd_to_omap(struct mtd_info *mtd)
+  * @dma_mode: dma mode enable (1) or disable (0)
+  * @u32_count: number of bytes to be transferred
+  * @is_write: prefetch read(0) or write post(1) mode
++ * @info: NAND device structure containing platform data
+  */
+ static int omap_prefetch_enable(int cs, int fifo_th, int dma_mode,
+ 	unsigned int u32_count, int is_write, struct omap_nand_info *info)
+@@ -213,7 +214,7 @@ static int omap_prefetch_enable(int cs, int fifo_th, int dma_mode,
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * omap_prefetch_reset - disables and stops the prefetch engine
+  */
+ static int omap_prefetch_reset(int cs, struct omap_nand_info *info)
+@@ -938,7 +939,7 @@ static int omap_calculate_ecc(struct nand_chip *chip, const u_char *dat,
+ 
+ /**
+  * omap_enable_hwecc - This function enables the hardware ecc functionality
+- * @mtd: MTD device structure
++ * @chip: NAND chip object
+  * @mode: Read/Write mode
+  */
+ static void omap_enable_hwecc(struct nand_chip *chip, int mode)
+@@ -1008,7 +1009,7 @@ static int omap_wait(struct nand_chip *this)
+ 
+ /**
+  * omap_dev_ready - checks the NAND Ready GPIO line
+- * @mtd: MTD device structure
++ * @chip: NAND chip object
   *
-  * This function returns zero in case of success and a %-ENOMEM in case of
-  * failure.
-@@ -1063,8 +1064,6 @@ static int ensure_wear_leveling(struct ubi_device *ubi, int nested)
-  * __erase_worker - physical eraseblock erase worker function.
-  * @ubi: UBI device description object
-  * @wl_wrk: the work object
-- * @shutdown: non-zero if the worker has to free memory and exit
-- * because the WL sub-system is shutting down
+  * Returns true if ready and false if busy.
+  */
+@@ -1021,7 +1022,7 @@ static int omap_dev_ready(struct nand_chip *chip)
+ 
+ /**
+  * omap_enable_hwecc_bch - Program GPMC to perform BCH ECC calculation
+- * @mtd: MTD device structure
++ * @chip: NAND chip object
+  * @mode: Read/Write mode
   *
-  * This function erases a physical eraseblock and perform torture testing if
-  * needed. It also takes care about marking the physical eraseblock bad if
+  * When using BCH with SW correction (i.e. no ELM), sector size is set
+@@ -1130,7 +1131,7 @@ static u8  bch8_polynomial[] = {0xef, 0x51, 0x2e, 0x09, 0xed, 0x93, 0x9a, 0xc2,
+  * _omap_calculate_ecc_bch - Generate ECC bytes for one sector
+  * @mtd:	MTD device structure
+  * @dat:	The pointer to data on which ecc is computed
+- * @ecc_code:	The ecc_code buffer
++ * @ecc_calc:	The ecc_code buffer
+  * @i:		The sector number (for a multi sector page)
+  *
+  * Support calculating of BCH4/8/16 ECC vectors for one sector
+@@ -1258,7 +1259,7 @@ static int _omap_calculate_ecc_bch(struct mtd_info *mtd,
+  * omap_calculate_ecc_bch_sw - ECC generator for sector for SW based correction
+  * @chip:	NAND chip object
+  * @dat:	The pointer to data on which ecc is computed
+- * @ecc_code:	The ecc_code buffer
++ * @ecc_calc:	The ecc_code buffer
+  *
+  * Support calculating of BCH4/8/16 ECC vectors for one sector. This is used
+  * when SW based correction is required as ECC is required for one sector
+@@ -1274,7 +1275,7 @@ static int omap_calculate_ecc_bch_sw(struct nand_chip *chip,
+  * omap_calculate_ecc_bch_multi - Generate ECC for multiple sectors
+  * @mtd:	MTD device structure
+  * @dat:	The pointer to data on which ecc is computed
+- * @ecc_code:	The ecc_code buffer
++ * @ecc_calc:	The ecc_code buffer
+  *
+  * Support calculating of BCH4/8/16 ecc vectors for the entire page in one go.
+  */
+@@ -1673,7 +1674,8 @@ static int omap_read_page_bch(struct nand_chip *chip, uint8_t *buf,
+ 
+ /**
+  * is_elm_present - checks for presence of ELM module by scanning DT nodes
+- * @omap_nand_info: NAND device structure containing platform data
++ * @info: NAND device structure containing platform data
++ * @elm_node: ELM's DT node
+  */
+ static bool is_elm_present(struct omap_nand_info *info,
+ 			   struct device_node *elm_node)
 -- 
 2.25.1
 
