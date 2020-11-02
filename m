@@ -1,92 +1,79 @@
-Return-Path: <SRS0=Psr0=EH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=MFHV=EI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CDBFC2D0A3
-	for <linux-mtd@archiver.kernel.org>; Sun,  1 Nov 2020 16:48:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B441C2D0A3
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Nov 2020 01:03:53 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A7D6322265
-	for <linux-mtd@archiver.kernel.org>; Sun,  1 Nov 2020 16:48:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BAA9321D91
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Nov 2020 01:03:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TfcmsogN";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel-dk.20150623.gappssmtp.com header.i=@kernel-dk.20150623.gappssmtp.com header.b="1fh8hw1b"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7D6322265
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="xJ5YC/ld";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J1p2vaFi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BAA9321D91
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=yYY4WJxV/OZf5toD4shn4j1BtGKZlxUrW2ChFdpq8Ro=; b=TfcmsogN/n++d+STCtNKogHX2
-	nbWUhPgPN/QnTAiW9NDf2vcmbOJcdJ7wdq2E4VRhpWImBUNeGc0b8+dlu+5dwm/EH4wQfPkhTM90J
-	nxBxovYRBNSK9zhaH5kuyCpJcn6SwShUHhobFpJBo7TxIwoy9EcHOkdpjjF70WeBE5wfU7GwycYtA
-	MDe4YiPt3ByJEMJtNSDDAH3YYyozCMdk8y8GrvsrYg9XgWPc0Js8qzDOPFvOPx9zsjj0tUiJWRz0f
-	755RxGv5DBxEEqq5zS/YFTSfr7QKvYasKHVIbChDKd2I3/ElLcLHaKvhrB2KaJ+WFy0KakoQtXASO
-	O1XAa51vQ==;
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:MIME-Version:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=BnPkfGpXGpw0sL4a7eXGfrkJqGueAqBowzJKRHc+fpQ=; b=xJ5YC/ld4aChaF5bz2MNYApojO
+	fpLMZJxpNuXJjIrDP9nKmii9Zp6hQFiqP/B5e7kfR8CVSTRvjRL62k6Ww6n4FrmQftGBg53DiZoSW
+	MtdWO3/4wi+8mno7s2EqUoTAuhh/9UnT+q6Vc2Ulr79BpPzkgyb3+DOOG7E55TIwN7DYQFQrHi84V
+	/0ZuGwKE6vdoFugsLgdxVnfOwLKKfE3R1TQW+IIBn/83r/ctjLmnhypG3HRtPL/OW1sdAmIDtQxlu
+	WLVckGR9+pvrHHTW2+jiA5jDjsQvXgHBRwzHCvalp2IOqxFrGcQ1kJ7lr3LaB/xNtw5CFY6Uxd4wT
+	UpMsaOZg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kZGVs-0000S8-3A; Sun, 01 Nov 2020 16:47:28 +0000
-Received: from mail-pf1-f174.google.com ([209.85.210.174])
+	id 1kZOFI-0007eL-17; Mon, 02 Nov 2020 01:02:52 +0000
+Received: from mail-yb1-xb33.google.com ([2607:f8b0:4864:20::b33])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kZGVp-0000Rd-Bk
- for linux-mtd@lists.infradead.org; Sun, 01 Nov 2020 16:47:26 +0000
-Received: by mail-pf1-f174.google.com with SMTP id 13so8961122pfy.4
- for <linux-mtd@lists.infradead.org>; Sun, 01 Nov 2020 08:47:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=kernel-dk.20150623.gappssmtp.com; s=20150623;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=ZnX97cZi6Tq1d5eR74IXiOWMCb5Il9NZ1Se/Vo5HW5E=;
- b=1fh8hw1b4PtM43PjPjUPsgwnC03eOzq1D/OIFg9Z2RLVbDo9D2nclogiTHPlZ9q9gq
- rrmC+XRj9jIExjEAIOBmizVgp08ZK+1BOrKNPSsqt6PXuv87piwipBy0tmkGDLci20YZ
- JR2v8tDBzCXLzUsRIF3SNeDwpgOyDiUoBmGT/dKyCVInbDNsH3XW6LdeawRrzdGSBvi3
- mi2Zd1b281L8/5BerY1o0iDfhGaz4v1tgb6OR3HUy1joR3/yNIFriK7SN7QateperW5W
- 2nQPknP0sHnoa1Z7dhknzTXPvkZP1QGclC+Qpgjo7CRH5NKu46KBXTrYpjYhzZx1X2si
- M+Bg==
+ id 1kZOFF-0007dg-4z
+ for linux-mtd@lists.infradead.org; Mon, 02 Nov 2020 01:02:50 +0000
+Received: by mail-yb1-xb33.google.com with SMTP id m188so10349488ybf.2
+ for <linux-mtd@lists.infradead.org>; Sun, 01 Nov 2020 17:02:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:from:date:message-id:subject:to:cc;
+ bh=5YaHZ9JlMK9LbuIMTIg56f7ZSBuY2tM5VRHI57pJnFo=;
+ b=J1p2vaFiOeTbJSi9abdPAMkEIQqVW0Tq+4xyKbBfe5veOS1i0YuJrI0wpJTt/44c4j
+ FTSz9i5OQgpr4EnIAJ6gU1kgw9xWeRHkwad3oZDoVhCMtQhOuh6XmFNNr/AKUELgp6Ry
+ DdfvmjdqdoRAUDY4C45Ei3CYJLtziQi0zcXXMFYZdZiQifdlTi8NptZlwFswYq5Il11q
+ kb3kOVuWF+yse29X4tAZi0nDK3KTk2+XDcPRDV26XFKNb3Af4XEFZ6T/zatLW+l5fZRP
+ 9NUi+sAUlNA2AAZh41F7DHaVA0rI8l8F7oaY5TLBh1e7Wh+xnUhwaZpE/7FF1SIPUTHL
+ kgiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=ZnX97cZi6Tq1d5eR74IXiOWMCb5Il9NZ1Se/Vo5HW5E=;
- b=prU/Kg63zwnG894OSd33WMkNihavrCkcgLvgsHf8CQi/TcDdSNrcjCrP7+o2Xgak+p
- s1ASldLPPa9cJEWlrMsd3rvsx7QKqRcRAbeh0uhzadQitKAz7AR7+8YKGYxpF69c0b0o
- g7721nkYTC+L4tKNpCXb92kAXyb+jiDvSlhRxgpE19Q9ZMz5jsY20oV6fcde0SH9Uelr
- oh/al2EfS23t0K1mQqUzvGfD92WbOV8ixhTeSVUtyvGMxKEXTA5QjBv4ki9NdW26yJDz
- B0MTJCJXzWNrLREK9WAe8GbqXi84BjFV5LAvKyvECoRsaGYx7d0lc46lbtKdo1Vi6RYF
- +w9g==
-X-Gm-Message-State: AOAM532wJt+WzFgw/g5pS6sqGsq5qWusM1z4LXeuIR8hPk6PJ5zMTMWs
- /NeiT60kJiZ9joDrRYM+Q49/Rw==
-X-Google-Smtp-Source: ABdhPJxTQE4+lDH2ha7od50bGb6ipTN3YldzqLbuO9m9iCrZbUFUOoR3Y6ocz+rikoLtjR5mdUiVNw==
-X-Received: by 2002:a63:d74b:: with SMTP id w11mr10225608pgi.147.1604249183766; 
- Sun, 01 Nov 2020 08:46:23 -0800 (PST)
-Received: from [192.168.1.134] ([66.219.217.173])
- by smtp.gmail.com with ESMTPSA id t74sm1926656pfc.47.2020.11.01.08.46.22
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sun, 01 Nov 2020 08:46:23 -0800 (PST)
-Subject: Re: block ioctl cleanups
-To: Christoph Hellwig <hch@lst.de>
-References: <20201031085810.450489-1-hch@lst.de>
-From: Jens Axboe <axboe@kernel.dk>
-Message-ID: <877901e6-6cdb-42e9-3b32-cb8b93bfff4e@kernel.dk>
-Date: Sun, 1 Nov 2020 09:46:21 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+ bh=5YaHZ9JlMK9LbuIMTIg56f7ZSBuY2tM5VRHI57pJnFo=;
+ b=qt37GfPEukGUwtzLInnckmWWLITqoxxpct+GVFxiUJpdjj763W/d8wFsFomfJrrxCd
+ QZ8yAcN7F+kdoYPUzUcURJuRnBqDgyuSArMf1ZeHNw4QAfcbBn9bvfq6URiXTWNcobLB
+ NC7d6DUEn6hRlc3GuWpQmXtpPkyO2uv9PSJr+9JjuzVc8f8g9kDcGyzfpMxXFruW5cC7
+ vvphbYLrVEIYW1DnoYOJr4JBPhw8SJKtkx/+KFaozYJk+1z08Rgjka6HOellMZj2QD6t
+ fRfPWwYdGA7fojJxwa0DDZYMhHoEDROtc9GAh6jTEXYDKQDdnlCxzzA7YR3G/lN1KrtA
+ X3Hg==
+X-Gm-Message-State: AOAM532IKGxTWIqAIZCXlrHREaWcAC3C6Uz8572xKhLTxtcGYm4Dp9jK
+ Dob6ih5v8eSH5yAOivAoCfxHM7Ck8OK6R+CtrFUEW4XYc9Y=
+X-Google-Smtp-Source: ABdhPJyH5NVjH/m/CCLCTlAberOMyLOfrF3S16jJeMN7zZdBImHu9Z7aQBearyUUddDqmxdBkYzfnz6ldE2LFCtdVwk=
+X-Received: by 2002:a25:5089:: with SMTP id e131mr19125973ybb.74.1604278965569; 
+ Sun, 01 Nov 2020 17:02:45 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201031085810.450489-1-hch@lst.de>
-Content-Language: en-US
+From: Jupiter <jupiter.hce@gmail.com>
+Date: Mon, 2 Nov 2020 12:02:09 +1100
+Message-ID: <CAA=hcWQnJ1yRTwPF+9kubSt6FQPxwCRYFwXcYR8RnVLs4LMb7A@mail.gmail.com>
+Subject: Install Yocto image and backup
+To: linux-mtd <linux-mtd@lists.infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201101_114725_419767_3EC038B1 
-X-CRM114-Status: GOOD (  16.36  )
+X-CRM114-CacheID: sfid-20201101_200249_257356_027ADA88 
+X-CRM114-Status: GOOD (  10.33  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,48 +85,31 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-raid@vger.kernel.org, Jan Hoeppner <hoeppner@linux.ibm.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, linux-s390@vger.kernel.org,
- Richard Weinberger <richard@nod.at>, linux-block@vger.kernel.org,
- Song Liu <song@kernel.org>, linux-bcache@vger.kernel.org,
- linux-mtd@lists.infradead.org, Stefan Haberland <sth@linux.ibm.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Ilya Dryomov <idryomov@gmail.com>,
- ceph-devel@vger.kernel.org
+Cc: Yocto discussion list <yocto@yoctoproject.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 10/31/20 2:57 AM, Christoph Hellwig wrote:
-> Hi Jens,
-> 
-> this series has a bunch of cleanups for the block layer ioctl code.
-> 
-> Diffstat:
->  block/genhd.c                     |    7 ----
->  block/ioctl.c                     |   62 ++++++--------------------------------
->  drivers/block/loop.c              |    2 -
->  drivers/block/mtip32xx/mtip32xx.c |   11 +-----
->  drivers/block/pktcdvd.c           |    6 ++-
->  drivers/block/rbd.c               |   41 ++-----------------------
->  drivers/md/bcache/request.c       |    5 +--
->  drivers/md/dm.c                   |    5 ++-
->  drivers/md/md.c                   |   62 +++++++++++++++++++-------------------
->  drivers/mtd/mtd_blkdevs.c         |   28 -----------------
->  drivers/s390/block/dasd.c         |    1 
->  drivers/s390/block/dasd_int.h     |    3 +
->  drivers/s390/block/dasd_ioctl.c   |   27 +++++-----------
->  include/linux/blkdev.h            |    3 -
->  include/linux/genhd.h             |    1 
->  15 files changed, 73 insertions(+), 191 deletions(-)
+Apology if it is an off topic, I could not find proper mailing lists
+to ask questions.
 
-Series looks good to me, apart from the mentioned mtip32xx change. If you
-repost this, can you look through commit messages and titles for typos,
-I spotted quite a few. If not I'll do it when applying.
+I built Yocto Linux kernel and installed Yocto image to MTD NAND
+storage in an iMAX6 device, because we designed RO for the kernel and
+root file system, RW for applications, we can update applications OTA
+but we cannot update kernel and root file system OTA. My supervisor
+asked if we need to have a dual NAND storage to backup the kernel and
+root file image, if the NAND bad sector occurred in the primary image,
+it can be booted from the secondary backup image. I understand where
+the concerns come from, but I am not clear if it is necessary or if it
+is a common practice to perform NAND backup storage, appreciate your
+insight advice.
 
--- 
-Jens Axboe
+Thank you very much.
 
+Kind regards,
+
+- jupiter
 
 ______________________________________________________
 Linux MTD discussion mailing list
