@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78E59C2D0A3
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 Nov 2020 10:07:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EAB4FC2D0A3
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 Nov 2020 10:09:45 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F2A8021D91
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 Nov 2020 10:07:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4951F21D91
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 Nov 2020 10:09:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="B2kFDCQ/";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="tCS6bAGl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F2A8021D91
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kBl/aJlB";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="YtwceN9K"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4951F21D91
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,38 +26,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=rqcLLQJLl9ID7qRMBDntLuPDNwOiV8KqRhifnB+BLH8=; b=B2kFDCQ/GvInXTpUDnbxxNJkR
-	RtjiNGjCfUc+GzSEkz4DSyT0P4O486ChZKUh6xxezHBZyWbiQzj+Kyi6yMiPvAw6214DWeV6B+HJO
-	ANGm1tHp9XzAwEW97SXFHDMaK8rT9rN1OGo7igWAX2uq2uyC5R3Uymg9F023Kh7QQbkwl6lLsldVn
-	fGP3zBZm1ZM13Y6B6ZMjzzuHfcpjUVjuCzbQGk81djXHUOgf+yIylaRUic+K8EicZMRxYpNBOZBoQ
-	4eL0hEl8SgzaFXV/kaMHjUMxsEQk7/NgHM9hMmkTWXiWT2hY8HDW4cED4/MIKVeaX9v2t/rwnQvnT
-	tnLRRowiw==;
+	 bh=MplOwqFQ14vVa4YcE27svmD3VldxbD+MiIrJdP4NB/E=; b=kBl/aJlBs2C/SOZcMMn1BJ1UZ
+	CUidfVfYU5GGFWI0ViwxN/4S4qxGTq0t7NzO6nh3evIwXEGNWBiUjjYWf/UJiMl9eR2uWzK2XDva9
+	d1e2Xi334ci5D1gkGd5vwg1TNsYs3ZnKiETHj1ImtkHwHEF+5DZzQRWow8zyeeJwtWj/xyX1o8Ke6
+	yhjHmz1lS8LR5DYyCw4Ie7Cl9rYJSr1Ry7pOYewIq0WnwQBxoQPDw5OzlC/8v1I3U32SGcSye11Lg
+	wymLUlFwlb4rSbNJ46gUnrrEISnF7X9MAP7yH3zIjqUl8ewK0Zn313HGY6NXz8GHZsAiCzMIaMZJY
+	99gmvLtCw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kZtDO-00049R-C7; Tue, 03 Nov 2020 10:06:58 +0000
+	id 1kZtFT-0004W6-RI; Tue, 03 Nov 2020 10:09:07 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kZtDK-000490-F7
- for linux-mtd@merlin.infradead.org; Tue, 03 Nov 2020 10:06:56 +0000
+ id 1kZtFR-0004Vh-K4
+ for linux-mtd@merlin.infradead.org; Tue, 03 Nov 2020 10:09:05 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=i7wqZZpXCL5ORZNGUa3zoAoYso4IoJJ/DeaKvkfVUtI=; b=tCS6bAGllZPJdXICZFJzRDE8P7
- S/mHuEnABdA65SmkJblCu1ugMqDXnOf2cfEIQWnp0W82NZdkZHxR9qQSs0kPgyepufB0elGqTMHO7
- 6Cw7sMajjx6y2dyD6+gfflMK7HncupbkudXO9WZU0J9Gu3cgWexvBZ8ZGpzV9b64ZPObhmsxfqcNc
- 8mEryycCUva/FkZUuIxD/5JChl7o3KyngNa1Tr/Dmxk53TyHgs6nFUpen7n8Ztsizq7W7qbb7n2v+
- 0IXGVLSzDkGk+LEbHyPtQ6HU9AsSRDn2VWyZwJXc7A+o1WxPHSRNh3BAkqXBAePujgWblAFKoTzzO
- KwQjGucA==;
+ bh=yzIIgNLRQ5hr/U49/fJ5RhQ164CeG1Fa9VOyUyyQ2Qs=; b=YtwceN9KWOpRvAJeKjna0uxhT2
+ zfi8ePgFdz+0CvmDDLFAtUfqeXGnuuptfybwd77cZbevtGtbawiPzfsYjp0VmcEleoTbgnB8XlJPK
+ ejcLMADyNbVObDAMaQgR+M+c09vTxx6MglQITc5+0GJLUlmc1Qv8dgZjOwaO7L4jRpIq77c38UYu0
+ L5FLNa5OnXCzhiqIn94rFEwacKSUfDRAqc/pGEBq48eZ8/DQKTpCPwqiBj/Z301fXucoQ5ej24FFw
+ oJel3TuxyafBDpL03ZNO2F7MUoHj9Tk122Rud8EUxzrzRfIM5+b4/lPO8onCuI+UDom4KNpyx+iSH
+ v4eW4rvg==;
 Received: from 089144208145.atnat0017.highway.a1.net ([89.144.208.145]
  helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kZtDJ-0000Ms-0z; Tue, 03 Nov 2020 10:06:53 +0000
+ id 1kZtFQ-0000Sw-01; Tue, 03 Nov 2020 10:09:04 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 02/10] block: don't call into the driver for BLKFLSBUF
-Date: Tue,  3 Nov 2020 11:00:10 +0100
-Message-Id: <20201103100018.683694-3-hch@lst.de>
+Subject: [PATCH 03/10] block: add a new set_read_only method
+Date: Tue,  3 Nov 2020 11:00:11 +0100
+Message-Id: <20201103100018.683694-4-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201103100018.683694-1-hch@lst.de>
 References: <20201103100018.683694-1-hch@lst.de>
@@ -87,34 +87,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-BLKFLSBUF is entirely contained in the block core, and there is no
-good reason to give the driver a hook into processing it.
+Add a new method to allow for driver-specific processing when setting or
+clearing the block device read-only state.  This allows to replace the
+cumbersome and error-prone override of the whole ioctl implementation.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- block/ioctl.c | 7 -------
- 1 file changed, 7 deletions(-)
+ block/ioctl.c          | 5 +++++
+ include/linux/blkdev.h | 1 +
+ 2 files changed, 6 insertions(+)
 
 diff --git a/block/ioctl.c b/block/ioctl.c
-index 3fbc382eb926d4..c6d8863f040945 100644
+index c6d8863f040945..a6fa16b9770593 100644
 --- a/block/ioctl.c
 +++ b/block/ioctl.c
-@@ -369,15 +369,8 @@ static inline int is_unrecognized_ioctl(int ret)
- static int blkdev_flushbuf(struct block_device *bdev, fmode_t mode,
- 		unsigned cmd, unsigned long arg)
- {
--	int ret;
--
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EACCES;
--
--	ret = __blkdev_driver_ioctl(bdev, mode, cmd, arg);
--	if (!is_unrecognized_ioctl(ret))
--		return ret;
--
- 	fsync_bdev(bdev);
- 	invalidate_bdev(bdev);
+@@ -389,6 +389,11 @@ static int blkdev_roset(struct block_device *bdev, fmode_t mode,
+ 		return ret;
+ 	if (get_user(n, (int __user *)arg))
+ 		return -EFAULT;
++	if (bdev->bd_disk->fops->set_read_only) {
++		ret = bdev->bd_disk->fops->set_read_only(bdev, n);
++		if (ret)
++			return ret;
++	}
+ 	set_device_ro(bdev, n);
  	return 0;
+ }
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 639cae2c158b59..5c1ba8a8d2bc7e 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -1850,6 +1850,7 @@ struct block_device_operations {
+ 	void (*unlock_native_capacity) (struct gendisk *);
+ 	int (*revalidate_disk) (struct gendisk *);
+ 	int (*getgeo)(struct block_device *, struct hd_geometry *);
++	int (*set_read_only)(struct block_device *bdev, bool ro);
+ 	/* this callback is with swap_lock and sometimes page table lock held */
+ 	void (*swap_slot_free_notify) (struct block_device *, unsigned long);
+ 	int (*report_zones)(struct gendisk *, sector_t sector,
 -- 
 2.28.0
 
