@@ -2,66 +2,66 @@ Return-Path: <SRS0=zrsi=EJ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61FBDC00A89
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 Nov 2020 00:20:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77DBEC00A89
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 Nov 2020 02:05:44 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 086E722268
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 Nov 2020 00:20:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 04D9322243
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 Nov 2020 02:05:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OabIdmnU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 086E722268
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RKgMndEy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 04D9322243
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:Date:References:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=3IH6Dlh0JmQnUKAwaGAxqW74z7JoSzYb6nCnOSBrRks=; b=OabIdmnUzuE2R8f68CfTBEDGg
-	0iu5TNT183L5ukTSikD1YwqT/z8SoF3L0qcR+xfQ//DGcR9kQ8fM18T/hTI9YBWaMh4n4NTMvQsLW
-	0T6prlxKwZKnQ8QVzcUlbTxUNTD+x3cCfXwJCvI+DUxlQaSO1eCcXuUfRJum6kHk/YjowejOAvs2G
-	s7wXYL343iBZ9oPZAU48lZMAMD/gxHdUsVGxdA41m2uAh/l0ZMetbNMr7cG2l16tz8w5eKMYfwtNn
-	wbV/HeVc54dE5Yg3absAP8Mnu8aCNAzoymGLNsxVd7+GdZcY1r3dddUy/fvHPIuu1B1FkWcEpvVxj
-	HJdTnUteQ==;
+	 bh=K2xT8KgAl+CclnKykUeuSYWlO0L5ec4NrGV+mOJww7U=; b=RKgMndEyK3rq1J+ymkXyX0Ac8
+	cZ0KQEgjcLDIUJAIQ6cAbz3sva/6qHlM5WQRdtNdDpjoH8HczAAElvkz6TqaDtKgwpTufq5dsus0W
+	P5l3grEsm4ekRtCo19JDtavCZJLpPSuMU/d5Y5/SFiIisIIHMJeW5JzW89SmLsrJInPThXcvipEr/
+	fhagYc6PwGXS7ha9OYZPMIZrh9wM0SDpdNQYxTBU5KWmvut11MXivv6Hqu8h3mGuwhDMLaKU/aMA6
+	Gx2fTXbnmeXh8K8FNLvItGw/a0mHNMEONigALOWXh195qOo8PFxXCBr7eGNo9yEgYYlhW60yOnmFW
+	jGnQ7hhDg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kZk3E-00007B-Gn; Tue, 03 Nov 2020 00:19:52 +0000
-Received: from youngberry.canonical.com ([91.189.89.112])
+	id 1kZlgf-00011s-Be; Tue, 03 Nov 2020 02:04:41 +0000
+Received: from szxga06-in.huawei.com ([45.249.212.32])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kZk3A-00006H-Nm
- for linux-mtd@lists.infradead.org; Tue, 03 Nov 2020 00:19:49 +0000
-Received: from 1.is.james.uk.vpn ([10.172.254.24] helo=malefic)
- by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <james.troup@canonical.com>)
- id 1kZk2y-0003dl-1M; Tue, 03 Nov 2020 00:19:36 +0000
-Received: from james by malefic with local (Exim 4.94 #2 (Debian))
- id 1kZk2w-000Zd6-Vj; Tue, 03 Nov 2020 00:19:34 +0000
-From: James Troup <james.troup@canonical.com>
-To: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 06/11] md: implement ->set_read_only to hook into BLKROSET
- processing
-References: <20201031085810.450489-1-hch@lst.de>
- <20201031085810.450489-7-hch@lst.de>
-Mail-Copies-To: never
-Date: Tue, 03 Nov 2020 00:19:34 +0000
-In-Reply-To: <20201031085810.450489-7-hch@lst.de> (Christoph Hellwig's message
- of "Sat, 31 Oct 2020 09:58:05 +0100")
-Message-ID: <87y2jjpa09.fsf@canonical.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+ id 1kZlgc-00010e-1f
+ for linux-mtd@lists.infradead.org; Tue, 03 Nov 2020 02:04:39 +0000
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+ by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CQClG6Dkgzhg3W;
+ Tue,  3 Nov 2020 10:04:26 +0800 (CST)
+Received: from [10.174.177.167] (10.174.177.167) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 3 Nov 2020 10:04:20 +0800
+Subject: Re: [PATCH 0/3] fixes for ubifs xattr operations
+To: Richard Weinberger <richard.weinberger@gmail.com>
+References: <20200630130438.141649-1-houtao1@huawei.com>
+ <e2a0ddaa-402f-a4e0-ed0a-74ce7d620722@huawei.com>
+ <CAFLxGvxHiFuHpwUOWxbf7djG0__-Z9qB5eG1oBYwGzY3FKSDGA@mail.gmail.com>
+From: Hou Tao <houtao1@huawei.com>
+Message-ID: <b3b82f88-c87e-6077-7189-f2f84a2739c2@huawei.com>
+Date: Tue, 3 Nov 2020 10:04:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <CAFLxGvxHiFuHpwUOWxbf7djG0__-Z9qB5eG1oBYwGzY3FKSDGA@mail.gmail.com>
+Content-Language: en-US
+X-Originating-IP: [10.174.177.167]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201102_191948_902003_249FC11B 
-X-CRM114-Status: UNSURE (   9.65  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20201102_210438_330808_0B6132C2 
+X-CRM114-Status: GOOD (  13.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,33 +73,33 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Jens Axboe <axboe@kernel.dk>, linux-raid@vger.kernel.org,
- Jan Hoeppner <hoeppner@linux.ibm.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-s390@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- linux-block@vger.kernel.org, Song Liu <song@kernel.org>,
- linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
- Stefan Haberland <sth@linux.ibm.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Ilya Dryomov <idryomov@gmail.com>,
- ceph-devel@vger.kernel.org
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Christoph Hellwig <hch@lst.de> writes:
+Hi,
 
-> @@ -7809,6 +7778,36 @@ static int md_compat_ioctl(struct block_device *bdev, fmode_t mode,
+On 2020/11/1 5:10, Richard Weinberger wrote:
+> Tao,
+> 
+> On Fri, Oct 23, 2020 at 9:25 AM Hou Tao <houtao1@huawei.com> wrote:
+>>
+>> Hi Richard,
+>>
+>> I have written two xfstest cases [1] for these fixes three months ago, could you please
+>> check whether the proposed solution is OK ?
+> 
+> Thanks for your time and reminding me about this issue!
+> I agree that this is a problem but I'm not sure whether the lockless
+> solution is the right path to go.
+> DId you try the locking approach?
+> 
+Yes. Adding an extra lock for xattr ops also works. I will post a V2 soon.
 
-[...]
-
-> +	 * Transitioning to readauto need only happen for arrays that call
-> +	 * md_write_start and which are not ready for writes yet.
-
-I realise you're just moving the comment around but perhaps you could
-s/readauto/readonly/ while you're doing so?
-
--- 
-James
+Regards,
+Tao
 
 ______________________________________________________
 Linux MTD discussion mailing list
