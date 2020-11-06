@@ -2,67 +2,88 @@ Return-Path: <SRS0=gQDT=EM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1251CC2D0A3
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Nov 2020 21:14:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90994C55179
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Nov 2020 21:37:57 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9D7D5208C7
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Nov 2020 21:14:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 328DF2087E
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Nov 2020 21:37:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="imzftO0k";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="aNOQok4y"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D7D5208C7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iWwp4Ywb";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fZaGgVTC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 328DF2087E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Date:Message-Id:References:In-Reply-To:From:
-	Subject:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=E4R7psMbHkMHiPI5a0RA3fgb9njRcgkUUDJtkuuJCi4=; b=imzftO0kA7i1uy7nlYvGsuoI97
-	fI7sercH8ny1g7rH97BvUIYlhMqwAnwGE+v0EGLaNeZjx+KclVY8ec5qfCm1x64z4ZOaFsLySfym0
-	mhZ1QJWc3hfBN9CLPgWnJsNmEZsmF8P+G9Xnb/QXZAmCkNm01jJm5DOwSkFky7xx8HaRCBjK3+7r7
-	msnYqOY7GHiCma2H3EwYYOkKcigJ21Hvvh/4Qd6BIU2pi7Qs+FF6rmqbvDfC0wvnJGHxxipXJwRhO
-	lAqKZrN2/IU4ArVm8hmh91zAz8Sns4vdZg0dlOmGkriVxTapeGOnPjxRNNJxNAG1MQi7Tr8IM6mY3
-	rjcnqi+g==;
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=0JPJh5x9sYDiBUOX8A/85x0XQf3tuSTQnmrCnkWyeQU=; b=iWwp4YwbEv9Bv3rK7bgzNHkHl
+	KJr4T58PDAOqc4cOnUUCNUoWBcAidUWTSYwV6DLzCAZq9fklC02wsDViF+imIODLkSwX2fQiw9Tw7
+	Cc9LBVuASWghSOpVi6XsR0k0mGG5MAWV+yBC+YsoQTN1EUqKtAG1s0d+Y/E7JiPk6GwzsFcS2mlPO
+	R8YpoU47Nws78yqAgiOhkapUmQjk/i/bc7mCuWEQYYcOQdjf6H8A9AldQWgsGLMZWvhdRr7qLvdn9
+	uUNxpdV7MzsFW5d87m2khcc7y0rz01Op+QHhBpwqzRJ9Ivw1tCUnhg0unYf/UbbNB/xXGXDkP+/XH
+	4Usbajf3g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kb934-0001Bm-Lu; Fri, 06 Nov 2020 21:13:30 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1kb9Q7-0002dF-G5; Fri, 06 Nov 2020 21:37:19 +0000
+Received: from mail-wm1-x343.google.com ([2a00:1450:4864:20::343])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kb930-0001A3-CH
- for linux-mtd@lists.infradead.org; Fri, 06 Nov 2020 21:13:27 +0000
-Subject: Re: [GIT PULL] mtd: Fixes for v5.10-rc3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1604697205;
- bh=6rTfXAWYJ/Hs2fMZx90YmU6JMdq+gtUrfFaoXv5b3t0=;
- h=From:In-Reply-To:References:Date:To:Cc:From;
- b=aNOQok4y+MCTcnAVGkaRYaOPWo2V0qispJoiG7bLIH8HPLdrU72bHvnPeIVIsnlT2
- cndmmY5yiIyfA8xbR5bhIX7uffj3RaZ0rdJpt/J5/v/VSF0u06xRobXBnQDsPEgQ2F
- p84c3G2tsj5fNz6pLTC2WnJWWZk83EIQx0Ja3Qfw=
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20201106204311.795d6016@xps13>
-References: <20201106204311.795d6016@xps13>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201106204311.795d6016@xps13>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes
-X-PR-Tracked-Commit-Id: 9efac6ce7f621c405d49a091e3e367be4250a27a
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: bf3e76289cd28b87f679cd53e26d67fd708d718a
-Message-Id: <160469720569.14190.4096312430575254303.pr-tracker-bot@kernel.org>
-Date: Fri, 06 Nov 2020 21:13:25 +0000
-To: Miquel Raynal <miquel.raynal@bootlin.com>
+ id 1kb9Pu-0002XF-9B
+ for linux-mtd@lists.infradead.org; Fri, 06 Nov 2020 21:37:09 +0000
+Received: by mail-wm1-x343.google.com with SMTP id d142so2813585wmd.4
+ for <linux-mtd@lists.infradead.org>; Fri, 06 Nov 2020 13:37:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=kN+nLzLc6b7cOpaWz6eZ4gZDLXqa51d6pByGdFZOfqY=;
+ b=fZaGgVTCmG4C5q/nm2wPolvW4omaf6In8+148k3bUqfG0b9+xbgmdoGQJe4JfWa7IG
+ kEBE/0YRyWKYZkljpvwdYarXXq7SJHorTHqEXuwVWUnjaWnneUOa+9y/1YfAwHVJ7/ok
+ EuiPoxYzoADNR9L2YnGO8Ie4AKlWTVSwWlS23k5ZkE8Sfh8SE2PIN2LdZwCeH1X+Fj/Q
+ 6GImujez0wtGZdyFlKNSM4xXo0H2tx8UpHVPlp5//LCLmlxqpX93pSd92nv0Ca/MxK6H
+ 7lsrMjA+ITkI7Z32zXit2my2/GRfjnt/PUdxlsZ8S0dU0I6NhXr6yh8LtUgGfSlkiwha
+ QX5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=kN+nLzLc6b7cOpaWz6eZ4gZDLXqa51d6pByGdFZOfqY=;
+ b=QSlkgPss43+ngvwNpMBGR8HEi6+UNlPMOD3Cer8yHtkpKy8/viaVebAeAwqMoWkj3X
+ EIgsvAz4CNL4fD5fCVem1/ZwvXJ1Z4vukCMT8tP8OePyBqOC/j+SUQrhFdd7xBIjSgQf
+ YtpojXJTGfnXp6RPu1N7Nt9BEic7e1m3Q5XAdl3yQsbwSxEdZwMg8Y+D14+kJlqjZjGS
+ KAglwHBkrnUIaiioH0yboMf5TuR/q8+m+Fs5+4C7raOtjsWKGe3kaYAfjO4uGIv2l6DR
+ NmErXYcxo/fm0ModIvKTDZwRmQlKoDMDUFUlLY5Tnl5DPmfDShi3epbkLltYsUHRDxoS
+ +nww==
+X-Gm-Message-State: AOAM532Sv5f8/SKHn04VgjFkm7hgZ/bKi+dEzdLgitNAycaPGagLAEpk
+ ys4mP5IUXjCECNHEV+6ONzzEOw==
+X-Google-Smtp-Source: ABdhPJxpFXiTiFTvGKQFl417MX1y8IQ9Khsilv+A/5dxWcIJdtyZhGm+p5Q/SQLoqDlSdBt7I92WLQ==
+X-Received: by 2002:a1c:6284:: with SMTP id w126mr1597664wmb.145.1604698625105; 
+ Fri, 06 Nov 2020 13:37:05 -0800 (PST)
+Received: from dell.default ([91.110.221.236])
+ by smtp.gmail.com with ESMTPSA id d16sm3984942wrw.17.2020.11.06.13.37.04
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 06 Nov 2020 13:37:04 -0800 (PST)
+From: Lee Jones <lee.jones@linaro.org>
+To: lee.jones@linaro.org
+Subject: [PATCH v2 04/23] mtd: devices: docg3: Fix kernel-doc 'bad line' and
+ 'excessive doc' issues
+Date: Fri,  6 Nov 2020 21:36:36 +0000
+Message-Id: <20201106213655.1838861-5-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201106213655.1838861-1-lee.jones@linaro.org>
+References: <20201106213655.1838861-1-lee.jones@linaro.org>
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201106_161326_514358_846E8FA8 
-X-CRM114-Status: UNSURE (   4.02  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20201106_163706_357753_E53C967D 
+X-CRM114-Status: GOOD (  15.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,29 +95,60 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- Frieder Schrempf <frieder.schrempf@kontron.de>, linux-mtd@lists.infradead.org,
- Linus Torvalds <torvalds@linux-foundation.org>
-MIME-Version: 1.0
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The pull request you sent on Fri, 6 Nov 2020 20:43:11 +0100:
+This patch also places the descriptions in the correct order.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes
+Fixes the following W=1 kernel build warning(s):
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/bf3e76289cd28b87f679cd53e26d67fd708d718a
+ drivers/mtd/devices/docg3.c:819: warning: bad line:
+ drivers/mtd/devices/docg3.c:1799: warning: Excess function parameter 'base' description in 'doc_probe_device'
 
-Thank you!
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/mtd/devices/docg3.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
+index a030792115bc2..5b0ae5ddad745 100644
+--- a/drivers/mtd/devices/docg3.c
++++ b/drivers/mtd/devices/docg3.c
+@@ -816,7 +816,7 @@ static void doc_read_page_finish(struct docg3 *docg3)
+ 
+ /**
+  * calc_block_sector - Calculate blocks, pages and ofs.
+-
++ *
+  * @from: offset in flash
+  * @block0: first plane block index calculated
+  * @block1: second plane block index calculated
+@@ -1783,10 +1783,9 @@ static int __init doc_set_driver_info(int chip_id, struct mtd_info *mtd)
+ 
+ /**
+  * doc_probe_device - Check if a device is available
+- * @base: the io space where the device is probed
++ * @cascade: the cascade of chips this devices will belong to
+  * @floor: the floor of the probed device
+  * @dev: the device
+- * @cascade: the cascade of chips this devices will belong to
+  *
+  * Checks whether a device at the specified IO range, and floor is available.
+  *
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.25.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
