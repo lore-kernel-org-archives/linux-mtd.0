@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A544C2D0A3
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Nov 2020 21:39:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8A8FC2D0A3
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Nov 2020 21:40:04 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B7967208C7
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Nov 2020 21:39:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 639992087E
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Nov 2020 21:40:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="f2rpVO6O";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YuusY46l"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B7967208C7
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="colvsjSo";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wwgnNdAO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 639992087E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,64 +26,64 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=n/DTXePThcgrH6HMtQaU/usSvTmxDbR/cIp+unxHlng=; b=f2rpVO6Orfg6S4g0xIEjxpTMF
-	YK9GSvT5jKoCu/ZKU00CXmo45PWOR7dOqSVudaofQCtlBuDToolwsBLnoakbPZ24CxObq6BWIwgpC
-	sIHph3/nb2nqv73KWv+E7jPwvyGuOTCXr0DAgkgIzIyoVtwqB8yP4DxykAwwgG6z8pRWzepNR8Jwu
-	gdbP2YnC9FpbtXfO1QR5XApcKfO81QdAYe9H/NM4SlKB6QJK2aYRjnyfoahvAuVCRhn94oQT1K7ye
-	z5jsDWWuI5pJrcIfB+ObwCYcpGFA2yi92CCuI6bDzJeNxVZQxyXOTaBaqWKYcMo7Nhr+SZKVH+lmd
-	AAsvLdJZg==;
+	 bh=VPmFi9keU8XXLwJ1mHvrMWnqQc9Fy1yV2x++bxjPY7Q=; b=colvsjSoFsX38m+n/d5pr2JCy
+	6vlRPoDtmbLVfsPpjo7Sg0Zl7Mt1kMdmpbTvTQIFaA1vnOdNGqXl9CKcP1NZow26o03/PJT6h732j
+	lvOwTi70W1OcPAbxj3uYP3qW8ydtONYqP72OGu4l+DHxVaKb/kugFXSfCJwmiClXC7eYGQKm5KZSZ
+	r62rujfmtGSKe4dF9AIA5OHc8KJHHqT/mkKU9TCEx1wKZU9i43GLwFdaOk5Pkur7rOkR8IGoDKdJj
+	mv3W4+NEkfM6SJsr6TXMBwfDcuP5mnY5wksfNAU5+p/3ReZjXO3lffkGS/kQM5SsKX9XmA+Qy3uJe
+	0IxL9i59A==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kb9Rr-0003Zh-39; Fri, 06 Nov 2020 21:39:07 +0000
-Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
+	id 1kb9SB-0003mj-LX; Fri, 06 Nov 2020 21:39:27 +0000
+Received: from mail-wm1-x344.google.com ([2a00:1450:4864:20::344])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kb9Q8-0002eE-KW
- for linux-mtd@lists.infradead.org; Fri, 06 Nov 2020 21:37:24 +0000
-Received: by mail-wr1-x444.google.com with SMTP id n15so2765925wrq.2
- for <linux-mtd@lists.infradead.org>; Fri, 06 Nov 2020 13:37:20 -0800 (PST)
+ id 1kb9QA-0002fg-Pq
+ for linux-mtd@lists.infradead.org; Fri, 06 Nov 2020 21:37:28 +0000
+Received: by mail-wm1-x344.google.com with SMTP id v5so2819214wmh.1
+ for <linux-mtd@lists.infradead.org>; Fri, 06 Nov 2020 13:37:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=zU6AEe7QJ86BUUdNT9vgeNl78+UInfUWOmxhJubmBR0=;
- b=YuusY46lidvYZNZcyIlP029LugBzFM5/o75ceo7IvkH//GmrbJTHOAsMyoRKekOXtQ
- TMitq0JQgNzh3BTtq1WMw7iHMlVscy6Pm0oe+l3nNt7n3n58MDHtM1EgF5zfaxwvzpej
- TrplfRFEutXmar5oP3bwEM/W2dm2yvMrpuTx2ZmGIUVIQ1qysS9V7ChRifCaiMV2VLli
- Z6eIumohXtw/X03cudUHrEE4fE8PNkpyvpHPyHsyDCwlxgc1xtzbCYB6P2eQTjFfiaDI
- PkJJ9KI6WIdnWirDj9iQCXiQ8OV6wQLGf1xhikpyTW4Lge5bH3lIbJzAe3MfnGOBtvBX
- gCyw==
+ bh=tkJ226wW4T/WFBWAXYAYxSOD3N/A9uUc453pKIqhWNc=;
+ b=wwgnNdAOe+PD9Q3GFnTFboZRLNCbOK5iVRKNDH4UXAYgMLHljsAHyjvrv6vbTyOCZe
+ dg/K1CprVU+/O4DDaVm1Q+Yl4MJCTCuT34V0Jt4cxix4CQacddo5nu1MYPQTNDC0iMYm
+ AlHrtess6Cen09LCHigFMCj5/t/4j7v/Av4gBeejtdmnwI4q0Ebxs1Q4VHxWTZlcW4e7
+ 7NeObc0e0V9f7epYzSlrUje8JSJM/4bE/QQXHBdt2qQVEUZWORq5pWExrJPw9MpiTo2Y
+ 4Cnd3lzwwtYjdxZ9ZtI4OLosLvd7QDLk27k8xoQ9yHG8uWrozz7XOhHG7f2vEZo37d3L
+ HCxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=zU6AEe7QJ86BUUdNT9vgeNl78+UInfUWOmxhJubmBR0=;
- b=nZTk+i1mCPgH8TZ9FRKYIP7fsglyA13/7nrHeRiF6o5pElnyIQ+kxiBWrAKtso+FDt
- Y7IibMDcDDNuUiopnINlPWwdMOrEaROpNCrVUiusIYJdPam9Ku6gvCsSNLv+Ecl5Z+Qm
- 0kTjvis8foeStro5IW12zz+fMG5mnzxtPobkRzb0NqoVAAZGGd1NfMT3QhuSDLGi5gA6
- eEW9GIijxabCRIq6QW1/MGqitmAuzaOWZStoh+Fh6cbXjKue1hoW7IHGKmKxaIU31DiV
- 9ayoUV5SaOmvY7mIaZcn4uK1gl7ds89TOI+Ktmnn8ntqsv5U2Af8RhHoEUrJ+kWh/0Hb
- IB6Q==
-X-Gm-Message-State: AOAM531SkC5fKIHGak4Qu4O2MwPShQP5GWr3rvnaMIwcwnbqZHP2jNeQ
- 0352BDuiWS0rEiw1wYj9cqgndw==
-X-Google-Smtp-Source: ABdhPJy0Ln9YOb1EajhIy7Mo7bt888ijqJbJAEpFYJf3GJYPpvuee8zVbgMhCF7sJ2CcQerM5hcZHQ==
-X-Received: by 2002:adf:fd06:: with SMTP id e6mr4794908wrr.206.1604698639476; 
- Fri, 06 Nov 2020 13:37:19 -0800 (PST)
+ bh=tkJ226wW4T/WFBWAXYAYxSOD3N/A9uUc453pKIqhWNc=;
+ b=HGUlg5LLOTzX0OP++hXaV0pJqR90zyBzmnzGlrdooljan1z1FTjBrmW2Bc3GcpGCVE
+ 36ge1Jfze/IstIQeMHKSTF2q0ubslNqmI4DmL08ZsZCwa5BdivHIYuqHVG6CtvQVq17J
+ WTiQdP72RHFBVUCU0xzGEcqgj6VR2Fk9HtT1QhDedGXnVCzjR+BQY26XNP4qbZt3/EOB
+ 0eJf0IgbyypPPDLZTT+COF5G2dH+2jkhN29wifZILr1xu9H5VHP9cTXudOwKYc0lCnfE
+ ks3u07Gb55/tsjKzjK6JErxY8qvs2d5TvZsbObA4o/Mbml6ZxDMKnvKNT6ByFM2YlPOS
+ MzLw==
+X-Gm-Message-State: AOAM530A6TNbIYR5d6KJ8p0Irl22UlUOHJpemsQ/6SWVHa8RUz0PQ6di
+ Tpbdygbu6mwZQM8CPADDOafp7w==
+X-Google-Smtp-Source: ABdhPJywbY9m/AfB8+o1a2jvP+ApAocKvACDEgH2J3sDHJEx/A+oIVBnlqIrqIacyAvInCsMahP8pA==
+X-Received: by 2002:a1c:750b:: with SMTP id o11mr1687461wmc.32.1604698641856; 
+ Fri, 06 Nov 2020 13:37:21 -0800 (PST)
 Received: from dell.default ([91.110.221.236])
- by smtp.gmail.com with ESMTPSA id d16sm3984942wrw.17.2020.11.06.13.37.18
+ by smtp.gmail.com with ESMTPSA id d16sm3984942wrw.17.2020.11.06.13.37.20
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 06 Nov 2020 13:37:18 -0800 (PST)
+ Fri, 06 Nov 2020 13:37:21 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: lee.jones@linaro.org
-Subject: [PATCH v2 15/23] mtd: nand: raw: diskonchip: Marking unused variables
- as __always_unused
-Date: Fri,  6 Nov 2020 21:36:47 +0000
-Message-Id: <20201106213655.1838861-16-lee.jones@linaro.org>
+Subject: [PATCH v2 17/23] mtd: nand: raw: s3c2410: Add documentation for 2
+ missing struct members
+Date: Fri,  6 Nov 2020 21:36:49 +0000
+Message-Id: <20201106213655.1838861-18-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201106213655.1838861-1-lee.jones@linaro.org>
 References: <20201106213655.1838861-1-lee.jones@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201106_163720_805141_186B04CE 
-X-CRM114-Status: GOOD (  19.82  )
+X-CRM114-CacheID: sfid-20201106_163722_972333_8C8B43E1 
+X-CRM114-Status: GOOD (  15.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,50 +95,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Dan Brown <dan_brown@ieee.org>, Vignesh Raghavendra <vigneshr@ti.com>,
+Cc: linux-samsung-soc@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
  Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- Boris Brezillon <boris.brezillon@collabora.com>, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ Krzysztof Kozlowski <krzk@kernel.org>, Ben Dooks <ben@simtec.co.uk>,
+ Kukjin Kim <kgene@kernel.org>, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-J2R1bW15JyBpcyBuZXZlciBjaGVja2VkIChhcyBwZXIgdGhlIG5vbWVuY2xhdHVyZSkgYW5kIHRo
-ZSB1c2Ugb2YKJ2VtdHB5bWF0Y2gnIGlzIGN1cnJlbnRseSAjaWYgMCdlZCBvdXQuICBXZSBjb3Vs
-ZCBhbHNvICNpZiAwIHRoZQpkZWNsYXJhdGlvbiwgYnV0ICNpZmVyeSBpcyBwcmV0dHkgdWdseSwg
-c28gSSBsaWtlIHRvIGtlZXAgaXQgdG8gYQptaW5pbXVtLgoKRml4ZXMgdGhlIGZvbGxvd2luZyBX
-PTEga2VybmVsIGJ1aWxkIHdhcm5pbmcocyk6CgogZHJpdmVycy9tdGQvbmFuZC9yYXcvZGlza29u
-Y2hpcC5jOiBJbiBmdW5jdGlvbiDigJhEb0NfRGVsYXnigJk6CiBkcml2ZXJzL210ZC9uYW5kL3Jh
-dy9kaXNrb25jaGlwLmM6MjE5OjE2OiB3YXJuaW5nOiB2YXJpYWJsZSDigJhkdW1teeKAmSBzZXQg
-YnV0IG5vdCB1c2VkIFstV3VudXNlZC1idXQtc2V0LXZhcmlhYmxlXQogZHJpdmVycy9tdGQvbmFu
-ZC9yYXcvZGlza29uY2hpcC5jOiBJbiBmdW5jdGlvbiDigJhkb2MyMDB4X2NhbGN1bGF0ZV9lY2Pi
-gJk6CiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9kaXNrb25jaGlwLmM6NzA2OjY6IHdhcm5pbmc6IHZh
-cmlhYmxlIOKAmGVtcHR5bWF0Y2jigJkgc2V0IGJ1dCBub3QgdXNlZCBbLVd1bnVzZWQtYnV0LXNl
-dC12YXJpYWJsZV0KCkNjOiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29t
-PgpDYzogUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD4KQ2M6IFZpZ25lc2ggUmFn
-aGF2ZW5kcmEgPHZpZ25lc2hyQHRpLmNvbT4KQ2M6IEJvcmlzIEJyZXppbGxvbiA8Ym9yaXMuYnJl
-emlsbG9uQGNvbGxhYm9yYS5jb20+CkNjOiBEYW4gQnJvd24gPGRhbl9icm93bkBpZWVlLm9yZz4K
-Q2M6IERhdmlkIFdvb2Rob3VzZSA8ZHdtdzJAaW5mcmFkZWFkLm9yZz4KQ2M6IFRob21hcyBHbGVp
-eG5lciA8dGdseEBsaW51dHJvbml4LmRlPgpDYzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5v
-cmcKU2lnbmVkLW9mZi1ieTogTGVlIEpvbmVzIDxsZWUuam9uZXNAbGluYXJvLm9yZz4KLS0tCiBk
-cml2ZXJzL210ZC9uYW5kL3Jhdy9kaXNrb25jaGlwLmMgfCA0ICsrLS0KIDEgZmlsZSBjaGFuZ2Vk
-LCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9t
-dGQvbmFuZC9yYXcvZGlza29uY2hpcC5jIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvZGlza29uY2hp
-cC5jCmluZGV4IDk0NDMyYTQ1M2U1ZWUuLmQ1MDUwZTMyY2M0MjEgMTAwNjQ0Ci0tLSBhL2RyaXZl
-cnMvbXRkL25hbmQvcmF3L2Rpc2tvbmNoaXAuYworKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9k
-aXNrb25jaGlwLmMKQEAgLTIxNiw3ICsyMTYsNyBAQCBzdGF0aWMgaW50IGRvY19lY2NfZGVjb2Rl
-KHN0cnVjdCByc19jb250cm9sICpycywgdWludDhfdCAqZGF0YSwgdWludDhfdCAqZWNjKQogCiBz
-dGF0aWMgdm9pZCBEb0NfRGVsYXkoc3RydWN0IGRvY19wcml2ICpkb2MsIHVuc2lnbmVkIHNob3J0
-IGN5Y2xlcykKIHsKLQl2b2xhdGlsZSBjaGFyIGR1bW15OworCXZvbGF0aWxlIGNoYXIgX19hbHdh
-eXNfdW51c2VkIGR1bW15OwogCWludCBpOwogCiAJZm9yIChpID0gMDsgaSA8IGN5Y2xlczsgaSsr
-KSB7CkBAIC03MDMsNyArNzAzLDcgQEAgc3RhdGljIGludCBkb2MyMDB4X2NhbGN1bGF0ZV9lY2Mo
-c3RydWN0IG5hbmRfY2hpcCAqdGhpcywgY29uc3QgdV9jaGFyICpkYXQsCiAJc3RydWN0IGRvY19w
-cml2ICpkb2MgPSBuYW5kX2dldF9jb250cm9sbGVyX2RhdGEodGhpcyk7CiAJdm9pZCBfX2lvbWVt
-ICpkb2NwdHIgPSBkb2MtPnZpcnRhZHI7CiAJaW50IGk7Ci0JaW50IGVtcHR5bWF0Y2ggPSAxOwor
-CWludCBfX2Fsd2F5c191bnVzZWQgZW1wdHltYXRjaCA9IDE7CiAKIAkvKiBmbHVzaCB0aGUgcGlw
-ZWxpbmUgKi8KIAlpZiAoRG9DX2lzXzIwMDAoZG9jKSkgewotLSAKMi4yNS4xCgoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBk
-aXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Correct 'controller' typo while we're at it.
+
+Fixes the following W=1 kernel build warning(s):
+
+ drivers/mtd/nand/raw/s3c2410.c:172: warning: Function parameter or member 'controller' not described in 's3c2410_nand_info'
+ drivers/mtd/nand/raw/s3c2410.c:172: warning: Function parameter or member 'freq_transition' not described in 's3c2410_nand_info'
+
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Kukjin Kim <kgene@kernel.org>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Ben Dooks <ben@simtec.co.uk>
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-samsung-soc@vger.kernel.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ drivers/mtd/nand/raw/s3c2410.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/raw/s3c2410.c b/drivers/mtd/nand/raw/s3c2410.c
+index cb2d1b4e278cb..f0a4535c812aa 100644
+--- a/drivers/mtd/nand/raw/s3c2410.c
++++ b/drivers/mtd/nand/raw/s3c2410.c
+@@ -133,7 +133,8 @@ enum s3c_nand_clk_state {
+ 
+ /**
+  * struct s3c2410_nand_info - NAND controller state.
+- * @mtds: An array of MTD instances on this controoler.
++ * @controller: Base controller structure.
++ * @mtds: An array of MTD instances on this controller.
+  * @platform: The platform data for this board.
+  * @device: The platform device we bound to.
+  * @clk: The clock resource for this controller.
+@@ -145,6 +146,7 @@ enum s3c_nand_clk_state {
+  * @clk_rate: The clock rate from @clk.
+  * @clk_state: The current clock state.
+  * @cpu_type: The exact type of this controller.
++ * @freq_transition: CPUFreq notifier block
+  */
+ struct s3c2410_nand_info {
+ 	/* mtd info */
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
