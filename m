@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BC52C2D0A3
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Nov 2020 21:40:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 183E8C2D0A3
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Nov 2020 21:40:31 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D09842087E
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Nov 2020 21:40:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 87F7920B80
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Nov 2020 21:40:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IGY7IuJj";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="j4KGRdPE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D09842087E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iTnMK007";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ee6qc24y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 87F7920B80
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,64 +26,64 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=/yoUgR3Mj1LU7MFNvezDlP9oaQHyS8yiRUPU5faGu54=; b=IGY7IuJjtNn49VB1w4w/l0cPk
-	KOeyUhxSE2qLSV2KuH5vfSoXdLcnfOsmEE/MGIhN68uk0d/sytI9mdoT+QQSSoaDJ9nnQBFQ7z4W8
-	XohoQELY2fJSXGIQFIQWyc4wj0wDYWAUJ/f9pJ/VQkbSdCAOaGjk9aSasUmRxLznnltkJ8WqYwqY3
-	SOEhSJoja4Um6+sNfHNNbQM+SMHXCt0yFtFQ9B+djCwneBGa/2VBNsfwzNJECo4McjaKeg0aYFoDq
-	1ENPoi5ueFABQGccNdgLjYgBaSVQVdVx/U0YeFWJpPfhc1s67gOuFirwXc/K7NHbyM0jK00V5YulY
-	CUaP8NAkw==;
+	 bh=XXLzIcYnIocXXUDU3Os3Vt08t3M2frGdDIDcbT63o6A=; b=iTnMK007aLHlupFLh+aKi1DWc
+	0qx1/YPUfYH7lEdZ51W+2+YPsUNYVep8mjbiQhB28oO3dhdvyX3VKECeoLWQaKiL6VcknJQWJjc9j
+	UzsSWqLCuOr74T94XNp3KTqsm1+tc1udJQi2ITlvKf1saOlUk8Oz92oSK3AKEkKgKFeW0ezTbmsCa
+	wifqrnEX20Slbg7neQsez7hf/mA3rRRXobUEHAv9Q8z9qtZi4/+9NZd9IclMv9cRyCI7kZAMHhI36
+	DL9NvVWyS1XPeQ9LKAv1GxPfQWD4kxU4rZJzmQmqHhG1y9sBnTPjWQTKpre5WsrrDPMB+kTmQ0ol2
+	c/yOlBTjg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kb9SI-0003qo-Ju; Fri, 06 Nov 2020 21:39:34 +0000
-Received: from mail-wm1-x343.google.com ([2a00:1450:4864:20::343])
+	id 1kb9SM-0003td-OH; Fri, 06 Nov 2020 21:39:38 +0000
+Received: from mail-wr1-x443.google.com ([2a00:1450:4864:20::443])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kb9QB-0002gA-VQ
- for linux-mtd@lists.infradead.org; Fri, 06 Nov 2020 21:37:28 +0000
-Received: by mail-wm1-x343.google.com with SMTP id w24so138678wmi.0
- for <linux-mtd@lists.infradead.org>; Fri, 06 Nov 2020 13:37:23 -0800 (PST)
+ id 1kb9QE-0002hG-Uz
+ for linux-mtd@lists.infradead.org; Fri, 06 Nov 2020 21:37:29 +0000
+Received: by mail-wr1-x443.google.com with SMTP id g12so2747444wrp.10
+ for <linux-mtd@lists.infradead.org>; Fri, 06 Nov 2020 13:37:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=jc+oP6vugsB/NFox5ee2E+FED0ZhjBIzS6GFVD2ExkM=;
- b=j4KGRdPEohicZL6AoYC4Hdrh+N2e2xqMn+HVwrhX4+LirOMr4k8k4c3gBDb4TBe/Ej
- CCNbwys4IwnHNxIlOHzM44fECTrBZyrnvu6wGNldLEOX5C0IV51hvmGa3DZ64QTdSztT
- JMzNSCxsfs0jj9G5p/P9vly6Pl7fBkTElXddglJPv+rP98dwOOJ+IKCbT6CLyPFC5vEd
- +DidaTOsKuw1WVQmAHdmZUkK9FguedLqNF8z6FX/NFi4lSNfjfxlyuEJXGUWmR59gTh7
- krSCjn5tLcgzi7iQT8YV/v3z5ktHaKNGMpbPN0tWJSjZZwC9CHdE650upzC28RW1L9jJ
- y1WQ==
+ bh=A4FI0nTKy9xJSbbEI5xWFSlWi+PCjFwRWpkkSRoALdw=;
+ b=ee6qc24y2pZj9YDGDyPb8gjcUxoCDS7QqwPqzOGliCMPjVE4hgUQnxfc/cQbX6pLMi
+ jG7ZqRhHvXFutGqqB7qlZ1utF3tXCnfzjnNmXVGS7K5rmrZnunhCXCeVP4EJb3tkXBT5
+ IMcjiFXPx6FVS4GwzziYMnIm5VAX5PGlS4vKGgeCfExaU8VkhpNVy48HXGeWq+R2l7Ip
+ UTJGoQppPVyfPXOwpWOXXkzIwWofB9xZkAKvglS22VfyKaviEajKSzjHlQFD8fvxUDSC
+ Io3a2xSTn5Oz/BPqRo++gn/Vn95v7JiToXxq2feqYe8fVU7IseAJ35+s/dZm4yY/bDL7
+ wjzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=jc+oP6vugsB/NFox5ee2E+FED0ZhjBIzS6GFVD2ExkM=;
- b=J3iT2unL9GTXkdAH5qEhUxcQ+KTTVBjP4a/DbDwGRL+Fs6zx9CmqXtaE+iRf5KygCN
- vQTPkYX14m9ZodytpBFArfohDBTHmqhcwVkngL1i2/2GEMsvt+yzfNC7q17qJ3kYT92Z
- n2/for/1i/gd9He0pT4/LD5T10daCs7f72iNG60hx72Rk0GwwMusBCifjRQlK34W+ED2
- iHK+ToLxV5CzV/9vzMzMq1tV0FqDJeiXQN2Wowhg+FjwZP9PsRmuCFtrd8er/n0oAkum
- MhQvYUqF2hsB46hjuWBS5mc1MiKv3OkAywEyfGaX2IuXkOCj0iePCiIyLNyW/X/Synvs
- P2fA==
-X-Gm-Message-State: AOAM5331wxad1l6ZSo98FFp6eC5UXP3TV5iau+DQbjg/gxPt/k9XURYG
- VG5zAJeC6IeM34sjWxoaPbkJ4CcxtLfvpyW7
-X-Google-Smtp-Source: ABdhPJx+Gg7TbjUnEsKHvVRaccOTl2/Z21JqzqTfeRd2E5eRubD7f2fqYKN+VHTN1B56U5EWIUyz0w==
-X-Received: by 2002:a7b:cf31:: with SMTP id m17mr1571554wmg.62.1604698642984; 
- Fri, 06 Nov 2020 13:37:22 -0800 (PST)
+ bh=A4FI0nTKy9xJSbbEI5xWFSlWi+PCjFwRWpkkSRoALdw=;
+ b=H7itf8WOKbYNXn+QlH6z4IvPL4miXcPvFXSkGyu5x9E16zltajmS7vd1GbnhDkRDK/
+ WWjNKAZMynj2BVvmrk7tDak9S+smsjH/D1wzE/D67aR5zVFb87xwxY81aHyX48xvRaNm
+ ZXPIGfAZVDbQDhWfr4gPQJ73/f+auO0U58b6nd3sZ5nCil68WosO9fYjvoPpttaRYCzt
+ hI8l/MtITWPGjUtYRwv/M6e7g7OQoSgR5RdJFJWmREkqFm/o87TJ+cf1BDQxjUuedzjy
+ lZPH2DZxclNk8wQgPTAZ19L1I6J6YbDGgodqB3Q1QQEmcdaTmReCgI0xIAALcnurnU0X
+ 8Tpg==
+X-Gm-Message-State: AOAM530fZv9FGWTFi1g1eAKVWW4nq9HHN3yPzNtQdeiN0x/IlOm2mj4W
+ 6otcG8xi3mJYWcl30PbkgNSW6Q==
+X-Google-Smtp-Source: ABdhPJyVxA3gZ7tVm2WMN26zWZSqXfJm4SZWp1+Daeu4mASzQFbu+ZGYKkEI0v5B8IJEINqyH8FT7A==
+X-Received: by 2002:adf:fb12:: with SMTP id c18mr4481368wrr.99.1604698645863; 
+ Fri, 06 Nov 2020 13:37:25 -0800 (PST)
 Received: from dell.default ([91.110.221.236])
- by smtp.gmail.com with ESMTPSA id d16sm3984942wrw.17.2020.11.06.13.37.21
+ by smtp.gmail.com with ESMTPSA id d16sm3984942wrw.17.2020.11.06.13.37.24
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 06 Nov 2020 13:37:22 -0800 (PST)
+ Fri, 06 Nov 2020 13:37:25 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: lee.jones@linaro.org
-Subject: [PATCH v2 18/23] mtd: nand: raw: omap_elm: Finish half populated
- function header, demote empty ones
-Date: Fri,  6 Nov 2020 21:36:50 +0000
-Message-Id: <20201106213655.1838861-19-lee.jones@linaro.org>
+Subject: [PATCH v2 20/23] mtd: nand: raw: sunxi_nand: Document 'sunxi_nfc's
+ 'caps' member
+Date: Fri,  6 Nov 2020 21:36:52 +0000
+Message-Id: <20201106213655.1838861-21-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201106213655.1838861-1-lee.jones@linaro.org>
 References: <20201106213655.1838861-1-lee.jones@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201106_163724_098838_80517995 
-X-CRM114-Status: GOOD (  14.47  )
+X-CRM114-CacheID: sfid-20201106_163727_057148_E845C5DB 
+X-CRM114-Status: GOOD (  14.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,8 +95,12 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+Cc: Boris BREZILLON <b.brezillon.dev@gmail.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ Sergey Lapin <slapin@ossfans.org>, Dmitriy B <rzk333@gmail.com>,
+ linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+ Chen-Yu Tsai <wens@csie.org>, linux-mtd@lists.infradead.org,
+ Qiang Yu <yuq825@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>,
  Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -105,53 +109,36 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/mtd/nand/raw/omap_elm.c:102: warning: Function parameter or member 'ecc_steps' not described in 'elm_config'
- drivers/mtd/nand/raw/omap_elm.c:102: warning: Function parameter or member 'ecc_step_size' not described in 'elm_config'
- drivers/mtd/nand/raw/omap_elm.c:102: warning: Function parameter or member 'ecc_syndrome_size' not described in 'elm_config'
- drivers/mtd/nand/raw/omap_elm.c:440: warning: Function parameter or member 'info' not described in 'elm_context_save'
- drivers/mtd/nand/raw/omap_elm.c:488: warning: Function parameter or member 'info' not described in 'elm_context_restore'
+ drivers/mtd/nand/raw/sunxi_nand.c:250: warning: Function parameter or member 'caps' not described in 'sunxi_nfc'
 
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Chen-Yu Tsai <wens@csie.org>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Boris BREZILLON <b.brezillon.dev@gmail.com>
+Cc: Qiang Yu <yuq825@gmail.com>
+Cc: Dmitriy B <rzk333@gmail.com>
+Cc: Sergey Lapin <slapin@ossfans.org>
 Cc: linux-mtd@lists.infradead.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/raw/omap_elm.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/raw/sunxi_nand.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/nand/raw/omap_elm.c b/drivers/mtd/nand/raw/omap_elm.c
-index 4b799521a427a..550695a4c1ab0 100644
---- a/drivers/mtd/nand/raw/omap_elm.c
-+++ b/drivers/mtd/nand/raw/omap_elm.c
-@@ -96,6 +96,9 @@ static u32 elm_read_reg(struct elm_info *info, int offset)
-  * elm_config - Configure ELM module
-  * @dev:	ELM device
-  * @bch_type:	Type of BCH ecc
-+ * @ecc_steps:	ECC steps to assign to config
-+ * @ecc_step_size:	ECC step size to assign to config
-+ * @ecc_syndrome_size:	ECC syndrome size to assign to config
+diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
+index 1ec672bbd459d..923a9e236fcf6 100644
+--- a/drivers/mtd/nand/raw/sunxi_nand.c
++++ b/drivers/mtd/nand/raw/sunxi_nand.c
+@@ -236,6 +236,7 @@ struct sunxi_nfc_caps {
+  *	   controller
+  * @complete: a completion object used to wait for NAND controller events
+  * @dmac: the DMA channel attached to the NAND controller
++ * @caps: NAND Controller capabilities
   */
- int elm_config(struct device *dev, enum bch_ecc bch_type,
- 	int ecc_steps, int ecc_step_size, int ecc_syndrome_size)
-@@ -432,7 +435,7 @@ static int elm_remove(struct platform_device *pdev)
- }
- 
- #ifdef CONFIG_PM_SLEEP
--/**
-+/*
-  * elm_context_save
-  * saves ELM configurations to preserve them across Hardware powered-down
-  */
-@@ -480,7 +483,7 @@ static int elm_context_save(struct elm_info *info)
- 	return 0;
- }
- 
--/**
-+/*
-  * elm_context_restore
-  * writes configurations saved duing power-down back into ELM registers
-  */
+ struct sunxi_nfc {
+ 	struct nand_controller controller;
 -- 
 2.25.1
 
