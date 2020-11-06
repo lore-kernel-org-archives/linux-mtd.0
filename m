@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61F9EC55178
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Nov 2020 21:38:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63C78C55179
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Nov 2020 21:38:33 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D8B062087E
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Nov 2020 21:38:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C33272087E
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Nov 2020 21:38:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="aIXbjtTP";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zN3HMYCq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D8B062087E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="xwDL1lSK";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aNVC/iF5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C33272087E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,64 +26,64 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=e+U3sS6H8bUecG4vRjwiNkWV128hPbbxApvqgzX5PHU=; b=aIXbjtTP1qSQ8EU4CF/tBS5OM
-	WMfdRPCaw0oAtMOalWFBx1iqnGbQw7zhi18owKODNAHfSbuLXJMEYdQhtJ2qTRTCSokxGeJBmBNzm
-	EAJV9JPxkmRUYowB5OQEfgX0nyVi+D/aP2Fnmbq3gPOjy9qiW8Uh5EyB/+p5RGMGq5v0KfRPuvEu3
-	sm49GFAi3Zg9Z02M9jKqImCuUb9+ZEzPrH4ftYSXeFETXVokmbnwu25s48NPWl7cWmtq6v4bp2lYc
-	MpdlyfHZ7M3lZC6/s9EeSJ1oZIPgJ6tw5hV60CPgNjhl2ad6JFwXRWj55tIfXE2VjNX5ErbGq9KMK
-	1CWyeXn5A==;
+	 bh=7exq9FZcK91QKadC7LkoAj/07LRwSH4wl7Rr5Ki/KgE=; b=xwDL1lSKRerVD07/FHAs6rpbs
+	ZI3AVe3NaYZmP8EhDzuVbxyS4oNiU4iP21wogEhy/6Rxc4sArIxLsXXScg0Qd6n8iWmmAI8EsNmD8
+	Y0l5F6oEWYbJRy7ndGL8oF+BRtASVLV8f8j2X2dpFyw3BCE6lxU1Ym9hwNNTemmMJj6YRbP63CLQZ
+	FATaXR1T5KhmBb/skcZ1tVQCZA6sc/O5BYIq+rpJyH5KREQ0xGwCiMaBEgoCf3tjQiB3SC5lnb2cM
+	hngc2s7Sz1UuBpiZFcs3ZzIlmP/LFfPepZiFlR/4Gv4vzkK/uH97GS1mOKDWfT/YlPKmpHx5cLFiq
+	0oRhpv6Cg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kb9Q1-0002aY-6U; Fri, 06 Nov 2020 21:37:13 +0000
-Received: from mail-wr1-x442.google.com ([2a00:1450:4864:20::442])
+	id 1kb9Qf-0002s2-HK; Fri, 06 Nov 2020 21:37:53 +0000
+Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kb9Pr-0002WF-G8
- for linux-mtd@lists.infradead.org; Fri, 06 Nov 2020 21:37:09 +0000
-Received: by mail-wr1-x442.google.com with SMTP id y12so2770920wrp.6
- for <linux-mtd@lists.infradead.org>; Fri, 06 Nov 2020 13:37:03 -0800 (PST)
+ id 1kb9Q2-0002b7-C8
+ for linux-mtd@lists.infradead.org; Fri, 06 Nov 2020 21:37:20 +0000
+Received: by mail-wr1-x441.google.com with SMTP id d12so1243140wrr.13
+ for <linux-mtd@lists.infradead.org>; Fri, 06 Nov 2020 13:37:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=S8hCxezfBEukY2Vv+vLD9fRtFnmoWP6TcMu+uvwdTys=;
- b=zN3HMYCqikaYDuFdN2FyT7u1VRBPEI1jhuTxeWKaEIUEJEKqczXhiXmdNxeF6BmXsf
- xW9j8LJ7SzpuZcqhnLLyfNyoIW3rdRprihAgL0oTBi0RnS2fkAFBNYUSTGrj88V70rLT
- 0MV45KU6Qa96eMsyRzSVrCgdDVY6iHGNGWgKOWMcPME6nSjytk/o1eP6y+ligHh3cIiA
- ryg/AXa0ihDFKoEXvUeOkxw2wGY0RyCYut+/y33995zEnQ6MiLrd1IPWtY99+no3nP08
- F4Y34O0g62eVXcCb4JnpX+dBzbAfsNVK2uSnuRCjxVglxPBkgPW1LFnuS9LMkG4JwOId
- f5OQ==
+ bh=DaSgExpL1nCtBP1Xc6kSLtHGXCrLErSmtz6Y4QPAfFg=;
+ b=aNVC/iF54xkzO7atep0e+rHrJs5H8vdttLCxQgziSDzLUa32WiOQ8huCGi8lAShbNF
+ 1Yaw85GeA4HE3QUJerIxjFqiTZ/wNriR/RNO0dDgOnn7EL+k2V709I6RbVXVdTtqMN6Z
+ HSo1v992TIEiQanj21vvgS7yw0LleNcyKWUy2ohMzI9Y6v7sQ2n7pH1ER96gq83QlE5q
+ 6gqd8A0tamr6kPYlM5QTjQVxtP5sIkbNTcqutvabpV87c0eefSkyHSAGkqhPVW8J+1tJ
+ 0SLAgkYeAhj7OxE84gc/yYK4e+VN3KR39yx2SETPxrxjOlBr4nVDJyVh9oFHQM99N1WK
+ l8Iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=S8hCxezfBEukY2Vv+vLD9fRtFnmoWP6TcMu+uvwdTys=;
- b=GGsYqtwrfBZqy8Fu73chGqJ/FdEr7nLpgN8FiN9a8/XjzTam4js9/85H7Fqud0E1Gy
- 44/5y7X9N7OmSYtuDBnnNp0eWGZbalPLfk5ndvg71n/sAq5NtY8FsaAkHW+h55YjTPOT
- YuGQpAHWk7RE5XmaDNf57pI3qMcM1+QEM4A7y3lCssM77FRdw8sp+wtJAbXf+LN1NewN
- 93X51By/ahtcdwW3WhuodHZWnrbowvy6zj5h6rlwypYSovscwxpy49Vwy4vNWOn2UG7J
- KdaFAtaqyw9/iE0Oh2/wpOkQYBWFkOVQs7r42MCPz2MaJ+Nj6s9fVr4YC3aggIK90KBL
- h5/A==
-X-Gm-Message-State: AOAM5325YwwS+FLeLoge9bas2/3Q8ZXhaXE+Zfd27F6GdtslSYGJxK1Z
- Li7J+lnfwaIwkb4rqAk+TXQLJg==
-X-Google-Smtp-Source: ABdhPJwnOfmE+grSUy3IUuxC8O/dxfml4JKVdl13CBjGOKdbiK0k4DZK2tnynZ8Gmo76dXrd+t6Thw==
-X-Received: by 2002:adf:ce12:: with SMTP id p18mr4707669wrn.52.1604698622355; 
- Fri, 06 Nov 2020 13:37:02 -0800 (PST)
+ bh=DaSgExpL1nCtBP1Xc6kSLtHGXCrLErSmtz6Y4QPAfFg=;
+ b=X2CRvHrn0EU8VD6CUptA3Et7PJQB9ZQZX6F4Xuq4JDuT+siOMSLBoGucD8DuNZYb5C
+ 4S/ZK8INgESJ1MzzpbUy8PSH2G6sOJURBXvU/TvwcbZkdE+mhv53837+bCxAIm02pYzX
+ R3uOgbpSpMMTvnSnYPwA7WWwagZIVprji6WPOCdOMmfCUT2RIYBW+guvahbl/udRa6m4
+ jvoKSUeRbnikjEV/BiXm5Mj+Ow/fUnmxII7Gv+TDyvVNzCWWOmbCQczMe+IfJkFoBydT
+ bqLt85zMglzP/7x8e5mA5mI6CWQ3nJKnV3/2w+cmjjBMPk/hABAabQNUhsaFl8S3F41Q
+ /TXg==
+X-Gm-Message-State: AOAM530ixfcUf7Pij4+EPpKZxK7lqsTGTfYYjHGArWkcx2ufi7+yWqjN
+ 415aSK9jonXseZJ8w3+y7787rwMDSkhIqfnQ
+X-Google-Smtp-Source: ABdhPJxuW6c6hva5Qax31KQzZv2lyQK5NzLtARwyRUuo7ykdcZ3ZVGCORJ5BMc7Be37NKczsp3Ea0Q==
+X-Received: by 2002:adf:ce8a:: with SMTP id r10mr4999613wrn.188.1604698633540; 
+ Fri, 06 Nov 2020 13:37:13 -0800 (PST)
 Received: from dell.default ([91.110.221.236])
- by smtp.gmail.com with ESMTPSA id d16sm3984942wrw.17.2020.11.06.13.37.01
+ by smtp.gmail.com with ESMTPSA id d16sm3984942wrw.17.2020.11.06.13.37.12
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 06 Nov 2020 13:37:01 -0800 (PST)
+ Fri, 06 Nov 2020 13:37:12 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: lee.jones@linaro.org
-Subject: [PATCH v2 02/23] mtd: devices: phram: File headers are not good
- candidates for kernel-doc
-Date: Fri,  6 Nov 2020 21:36:34 +0000
-Message-Id: <20201106213655.1838861-3-lee.jones@linaro.org>
+Subject: [PATCH v2 10/23] mtd: ubi: kapi: Correct documentation for
+ 'ubi_leb_read_sg's 'sgl' parameter
+Date: Fri,  6 Nov 2020 21:36:42 +0000
+Message-Id: <20201106213655.1838861-11-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201106213655.1838861-1-lee.jones@linaro.org>
 References: <20201106213655.1838861-1-lee.jones@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201106_163703_561729_B9790B42 
-X-CRM114-Status: GOOD (  14.25  )
+X-CRM114-CacheID: sfid-20201106_163714_522133_A410EE3C 
+X-CRM114-Status: GOOD (  15.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,30 +96,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- =?UTF-8?q?Jochen=20Sch=C3=A4uble?= <psionic@psionic.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Rml4ZXMgdGhlIGZvbGxvd2luZyBXPTEga2VybmVsIGJ1aWxkIHdhcm5pbmcocyk6CgogZHJpdmVy
-cy9tdGQvZGV2aWNlcy9waHJhbS5jOjE5OiB3YXJuaW5nOiBGdW5jdGlvbiBwYXJhbWV0ZXIgb3Ig
-bWVtYmVyICdmbXQnIG5vdCBkZXNjcmliZWQgaW4gJ3ByX2ZtdCcKCkNjOiBNaXF1ZWwgUmF5bmFs
-IDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPgpDYzogUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNo
-YXJkQG5vZC5hdD4KQ2M6IFZpZ25lc2ggUmFnaGF2ZW5kcmEgPHZpZ25lc2hyQHRpLmNvbT4KQ2M6
-ICJKb2NoZW4gU2Now6R1YmxlIiA8cHNpb25pY0Bwc2lvbmljLmRlPgpDYzogbGludXgtbXRkQGxp
-c3RzLmluZnJhZGVhZC5vcmcKU2lnbmVkLW9mZi1ieTogTGVlIEpvbmVzIDxsZWUuam9uZXNAbGlu
-YXJvLm9yZz4KLS0tCiBkcml2ZXJzL210ZC9kZXZpY2VzL3BocmFtLmMgfCAyICstCiAxIGZpbGUg
-Y2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS9kcml2
-ZXJzL210ZC9kZXZpY2VzL3BocmFtLmMgYi9kcml2ZXJzL210ZC9kZXZpY2VzL3BocmFtLmMKaW5k
-ZXggMDg3YjVlODZkMWJmYi4uOWU0ZDYwYmQ0MjdmYiAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQv
-ZGV2aWNlcy9waHJhbS5jCisrKyBiL2RyaXZlcnMvbXRkL2RldmljZXMvcGhyYW0uYwpAQCAtMSw1
-ICsxLDUgQEAKIC8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9ubHkKLS8qKgor
-LyoKICAqIENvcHlyaWdodCAoYykgPz8/PwkJSm9jaGVuIFNjaMOkdWJsZSA8cHNpb25pY0Bwc2lv
-bmljLmRlPgogICogQ29weXJpZ2h0IChjKSAyMDAzLTIwMDQJSm9lcm4gRW5nZWwgPGpvZXJuQHdo
-LmZoLXdlZGVsLmRlPgogICoKLS0gCjIuMjUuMQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
-IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
-dGQvCg==
+Fixes the following W=1 kernel build warning(s):
+
+ drivers/mtd/ubi/kapi.c:464: warning: Function parameter or member 'sgl' not described in 'ubi_leb_read_sg'
+ drivers/mtd/ubi/kapi.c:464: warning: Excess function parameter 'buf' description in 'ubi_leb_read_sg'
+
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/mtd/ubi/kapi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
+index 9718f5aaaf694..0fce99ff29b58 100644
+--- a/drivers/mtd/ubi/kapi.c
++++ b/drivers/mtd/ubi/kapi.c
+@@ -450,7 +450,7 @@ EXPORT_SYMBOL_GPL(ubi_leb_read);
+  * ubi_leb_read_sg - read data into a scatter gather list.
+  * @desc: volume descriptor
+  * @lnum: logical eraseblock number to read from
+- * @buf: buffer where to store the read data
++ * @sgl: UBI scatter gather list to store the read data
+  * @offset: offset within the logical eraseblock to read from
+  * @len: how many bytes to read
+  * @check: whether UBI has to check the read data's CRC or not.
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
