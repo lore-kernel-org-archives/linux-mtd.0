@@ -5,19 +5,19 @@ X-Spam-Level:
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B67EC2D0A3
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Nov 2020 21:40:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77FEEC2D0A3
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Nov 2020 21:41:09 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A8EC0208C7
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Nov 2020 21:40:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E11982087E
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Nov 2020 21:41:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="m4VZmmsc";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gIJqWuun"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A8EC0208C7
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="3ZSCt0Qm";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="poQNLklB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E11982087E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,64 +26,64 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=qkYE1Tk9hAOiJP1UnW5g7zE9R+5aItbEdl+ZdhI2/XI=; b=m4VZmmscFnWws0WTBZMup+7re
-	RUVq4yFBI+ogoD5ekm5dlCupQAiJGvYp5qHZd/phdtGFtD8PsrZbFYVtbrvMbw3F3kmCnpM1sbALN
-	m/8K4Jpx3bjIZTISsJeY7uuO4gkrxazANkvK215K1ezJwUJguRYPHceHntywReXdrulJvVtwmGeyC
-	+1R29N2uPBNc5e+RPHVdSsdFDIQzcGkLhUlriWD0HFjJYI0F4vmVDEqEfr81EgPqYvGeaYTyMEC46
-	WOgNVoIy1qVl443UoHRz0UN2za9gMijP8xD1hU2ZTT6SonOXwxx7LKQqmd0mnLILkaeCvEvsGcTMb
-	PeblwuwQg==;
+	 bh=m0U7AHkcmqgMB9xyxvG+4Lp065Be46xfb7GFTvPis/s=; b=3ZSCt0QmRVvTA7tfzs1MPjPP0
+	QqcW4auZFtiWizp7sUBeTMTpjx2Nfy5T7Aobs2BJlAgSx/+ihcEkdTrSlMOOuQ4Ko/S1yGNGTqW3d
+	fS9KrjD/5Sr7OiptPqnqQ/eoxHPjLcIxh0vMfzhOcz0sOCoDXXBUBmklJHOHL1mNNl5liSqGoTGbP
+	f5OvpKxF4bkV+FxfqeAAPpBzIK3XwjI3yHM/4J+IgJIDFvNtMCx9IiBOUUaRusJx4ft0aBPr3tNrm
+	d8p8ReAmcPKQTJwFrEKBIsT4X+8XQrqmYDUN39oR7cAXCotjsizra8UBMp8+/pYvxTcMUXB6AU0ug
+	7G8kIcqWw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kb9Se-000436-LJ; Fri, 06 Nov 2020 21:39:56 +0000
-Received: from mail-wm1-x344.google.com ([2a00:1450:4864:20::344])
+	id 1kb9T4-0004FS-Bt; Fri, 06 Nov 2020 21:40:22 +0000
+Received: from mail-wm1-x341.google.com ([2a00:1450:4864:20::341])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kb9QG-0002hd-1P
- for linux-mtd@lists.infradead.org; Fri, 06 Nov 2020 21:37:30 +0000
-Received: by mail-wm1-x344.google.com with SMTP id k18so2621443wmj.5
- for <linux-mtd@lists.infradead.org>; Fri, 06 Nov 2020 13:37:27 -0800 (PST)
+ id 1kb9QH-0002i8-7g
+ for linux-mtd@lists.infradead.org; Fri, 06 Nov 2020 21:37:31 +0000
+Received: by mail-wm1-x341.google.com with SMTP id s13so2634359wmh.4
+ for <linux-mtd@lists.infradead.org>; Fri, 06 Nov 2020 13:37:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=y2abslax4xTZx4NcG965UPlBWLqxdXR2VSBh/TqhIys=;
- b=gIJqWuunPNOfDIFyO4uN9GnnqnFhpSWormMo1MbZZ4YUm684CRnXVVQt8r/MdXa7Xi
- IB35shvh5tfNlmlZOFtSppdMmrhkvS0lGRr4gKBUlXdY2goKLftXZNeNVvKP1+Ezw1Yx
- Qd0BCrhobs7VNkpRRRdTzMLDEKMzOC87O34JwG2mcdjhNxrlr8NVDwLt1gJFU5D75LuA
- qyryLpZ7R/jliLQo2p8Sftdl1lmmed+DlUdTUJHWzFx0YxIV98isN1G1Ia+B0DS6lhzQ
- HUaduOlivmQktAcns7VZIBaZJEIDX6EiRGmlL5GMYBPOdWx4kG3+ztsKRmGzUlYu60Sw
- CHFg==
+ bh=q+vNLwe5F16Z2TBJiX30i47rVXn5mHmSvb3WUTRtIMc=;
+ b=poQNLklBG9VD9bSVaMR0DgY21arQJh/uXxtA5ESu290rHjoLjWQvik3zagjsugIcia
+ y+rQ7NiGLycGR6M9urqKqqjrOUXi1ZcdAqjZmZtXLKE9AhkCEGuKpBQKeFleKfLIZWZh
+ v4sQcGgigqePRkissvsYtfZSTo8gnZWKR0wS8lNW6fskFNY7LKqqHb8WneUfDiaRagAs
+ nIUUzgiAv3o/kUSs0CZTqszcp6FA636Jc+EHaVaYJ1+6kp/8oUKWsXjluFTJ8dDesyMS
+ okp6PYaJL6x2kntDZ/DKITbXf/euKZFSkRxHUzOy20MgxIAPFY4rbfBzNlVQB70zfLO+
+ 2JtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=y2abslax4xTZx4NcG965UPlBWLqxdXR2VSBh/TqhIys=;
- b=OLSiI3g3VdFw9Aydg8Sstd7aa1H0bL/JCmjo0cJwET+/DX0zmqaO932FGlmuNLoUVd
- xxDCzyYUpUBN6s6TIgIUvhw47xF1m2WYeGHM75VqLfYPRkZWtEdBblhtngy2rzAVTDLI
- Y8lkejftcGCKjzC0HZUetFDj6GZn6iY32kNT445rKsKRbE0do45xbVGu8Q6AlIOgHZih
- 9UsTV9cyCMnWxuhFh9yTMCcYObv5gUkH2gaqk+T+ZYWXG6Awz8AjUlwXh/LGajn9KRyG
- /gtFxiewTCIYVRM1yj9tAsqwxLXaU1OAbTNWomfSfrZ2NfTcUO06ei2EleuzEBHdEyvd
- ovbw==
-X-Gm-Message-State: AOAM533ZdsiMhUKs1oAPUszXnL8/K1iJlwwVyE5UGyMT2LnuKIAcxTeO
- Ee+fdRcv9CebX/Blm+IrYs5Hvg==
-X-Google-Smtp-Source: ABdhPJwAlwMoxAsuA8YuxFAr4KHnUer28QzUz53pEnK1bLDZ7fl61sKitns5pbZhZEbzXMKzUB8TIQ==
-X-Received: by 2002:a7b:c08e:: with SMTP id r14mr1606399wmh.165.1604698647102; 
- Fri, 06 Nov 2020 13:37:27 -0800 (PST)
+ bh=q+vNLwe5F16Z2TBJiX30i47rVXn5mHmSvb3WUTRtIMc=;
+ b=nNxwGBeA9v3VZrYXqeoVzNrTrw6EGHuwNLwe3g96nCXGxXr4beiYw4J1duBKH7AKi2
+ 6gR9brVCHim3PFON8AnK6thzBvq60QA1pU0x0Dl1zsvYQEWeIsS9Lo2K3iZqzlUTI3xJ
+ oZYqkSEdSy224UhgjU4rBmsWz5xjPNJknLjaAVOhNbO+Hgr0DT6re/6OfAQOsHdoDzRi
+ n9SgPvJ7W/ACMWyZAYmr6fiGlXasHblcf2ElEz9soaFFjdeHXF+S/YTRDpa0FOxWbhdY
+ XKDb56YFut6tcPLgYwCjzDZGMTYjWa+Xfk+ld/Y+C2sE3mZxqUr0oYgO7b9V9ZRoLFvq
+ 8rsw==
+X-Gm-Message-State: AOAM530eQ8HMwbq7TJq7IypmarF2tNkD0tkjtEUtNFdtEZxefq8sS/Q9
+ abm3OrJQKDzVnHyzqJDWqwad7w==
+X-Google-Smtp-Source: ABdhPJzlOvd/XW52LVgoP4OcqNYXEssl0kYVKjG2dstSVS64StrtfhI/JLYvA4U9oVL24l2KdyF5gA==
+X-Received: by 2002:a1c:9d94:: with SMTP id g142mr1667080wme.66.1604698648278; 
+ Fri, 06 Nov 2020 13:37:28 -0800 (PST)
 Received: from dell.default ([91.110.221.236])
- by smtp.gmail.com with ESMTPSA id d16sm3984942wrw.17.2020.11.06.13.37.25
+ by smtp.gmail.com with ESMTPSA id d16sm3984942wrw.17.2020.11.06.13.37.27
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 06 Nov 2020 13:37:26 -0800 (PST)
+ Fri, 06 Nov 2020 13:37:27 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: lee.jones@linaro.org
-Subject: [PATCH v2 21/23] mtd: nand: raw: arasan-nand-controller: Document
- 'anfc_op's 'buf' member
-Date: Fri,  6 Nov 2020 21:36:53 +0000
-Message-Id: <20201106213655.1838861-22-lee.jones@linaro.org>
+Subject: [PATCH v2 22/23] mtd: nand: onenand: onenand_base: Fix some
+ kernel-doc misdemeanours
+Date: Fri,  6 Nov 2020 21:36:54 +0000
+Message-Id: <20201106213655.1838861-23-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201106213655.1838861-1-lee.jones@linaro.org>
 References: <20201106213655.1838861-1-lee.jones@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201106_163728_205403_DB25B38A 
-X-CRM114-Status: GOOD (  13.43  )
+X-CRM114-CacheID: sfid-20201106_163729_392757_5F13E757 
+X-CRM114-Status: GOOD (  18.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,9 +96,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- linux-kernel@vger.kernel.org, Naga Sureshkumar Relli <nagasure@xilinx.com>,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Choudary Kalluri <punnaia@xilinx.com>
+ linux-kernel@vger.kernel.org, Kyungmin Park <kyungmin.park@samsung.com>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
@@ -106,31 +105,143 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/mtd/nand/raw/arasan-nand-controller.c:133: warning: Function parameter or member 'buf' not described in 'anfc_op'
+ drivers/mtd/nand/onenand/onenand_base.c:140: warning: Function parameter or member 'mtd' not described in 'onenand_ooblayout_32_64_ecc'
+ drivers/mtd/nand/onenand/onenand_base.c:140: warning: Function parameter or member 'section' not described in 'onenand_ooblayout_32_64_ecc'
+ drivers/mtd/nand/onenand/onenand_base.c:140: warning: Function parameter or member 'oobregion' not described in 'onenand_ooblayout_32_64_ecc'
+ drivers/mtd/nand/onenand/onenand_base.c:1436: warning: bad line:
+ drivers/mtd/nand/onenand/onenand_base.c:1971: warning: Function parameter or member 'ops' not described in 'onenand_write_oob_nolock'
+ drivers/mtd/nand/onenand/onenand_base.c:1971: warning: Excess function parameter 'len' description in 'onenand_write_oob_nolock'
+ drivers/mtd/nand/onenand/onenand_base.c:1971: warning: Excess function parameter 'retlen' description in 'onenand_write_oob_nolock'
+ drivers/mtd/nand/onenand/onenand_base.c:1971: warning: Excess function parameter 'buf' description in 'onenand_write_oob_nolock'
+ drivers/mtd/nand/onenand/onenand_base.c:1971: warning: Excess function parameter 'mode' description in 'onenand_write_oob_nolock'
+ drivers/mtd/nand/onenand/onenand_base.c:2156: warning: Function parameter or member 'block_size' not described in 'onenand_multiblock_erase'
+ drivers/mtd/nand/onenand/onenand_base.c:2156: warning: Excess function parameter 'region' description in 'onenand_multiblock_erase'
+ drivers/mtd/nand/onenand/onenand_base.c:2771: warning: Function parameter or member 'ops' not described in 'onenand_otp_write_oob_nolock'
+ drivers/mtd/nand/onenand/onenand_base.c:2771: warning: Excess function parameter 'len' description in 'onenand_otp_write_oob_nolock'
+ drivers/mtd/nand/onenand/onenand_base.c:2771: warning: Excess function parameter 'retlen' description in 'onenand_otp_write_oob_nolock'
+ drivers/mtd/nand/onenand/onenand_base.c:2771: warning: Excess function parameter 'buf' description in 'onenand_otp_write_oob_nolock'
+ drivers/mtd/nand/onenand/onenand_base.c:3387: warning: Function parameter or member 'mtd' not described in 'flexonenand_get_boundary'
+ drivers/mtd/nand/onenand/onenand_base.c:3387: warning: Excess function parameter 'onenand_info' description in 'flexonenand_get_boundary'
+ drivers/mtd/nand/onenand/onenand_base.c:3509: warning: Function parameter or member 'mtd' not described in 'flexonenand_check_blocks_erased'
+ drivers/mtd/nand/onenand/onenand_base.c:3509: warning: Excess function parameter 'mtd_info' description in 'flexonenand_check_blocks_erased'
+ drivers/mtd/nand/onenand/onenand_base.c:3557: warning: Function parameter or member 'die' not described in 'flexonenand_set_boundary'
+ drivers/mtd/nand/onenand/onenand_base.c:3557: warning: Function parameter or member 'boundary' not described in 'flexonenand_set_boundary'
+ drivers/mtd/nand/onenand/onenand_base.c:3557: warning: Function parameter or member 'lock' not described in 'flexonenand_set_boundary'
 
-Cc: Naga Sureshkumar Relli <nagasure@xilinx.com>
+Cc: Kyungmin Park <kyungmin.park@samsung.com>
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Choudary Kalluri <punnaia@xilinx.com>
 Cc: linux-mtd@lists.infradead.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/raw/arasan-nand-controller.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/nand/onenand/onenand_base.c | 36 +++++++++++--------------
+ 1 file changed, 15 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/arasan-nand-controller.c b/drivers/mtd/nand/raw/arasan-nand-controller.c
-index fbb4ea751be8e..549aac00228eb 100644
---- a/drivers/mtd/nand/raw/arasan-nand-controller.c
-+++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
-@@ -118,6 +118,7 @@
-  * @rdy_timeout_ms: Timeout for waits on Ready/Busy pin
-  * @len: Data transfer length
-  * @read: Data transfer direction from the controller point of view
-+ * @buf: Data buffer
+diff --git a/drivers/mtd/nand/onenand/onenand_base.c b/drivers/mtd/nand/onenand/onenand_base.c
+index 9fca3988ee236..a9fdea26ea464 100644
+--- a/drivers/mtd/nand/onenand/onenand_base.c
++++ b/drivers/mtd/nand/onenand/onenand_base.c
+@@ -132,7 +132,7 @@ static const struct mtd_ooblayout_ops onenand_oob_128_ooblayout_ops = {
+ 	.free = onenand_ooblayout_128_free,
+ };
+ 
+-/**
++/*
+  * onenand_oob_32_64 - oob info for large (2KB) page
   */
- struct anfc_op {
- 	u32 pkt_reg;
+ static int onenand_ooblayout_32_64_ecc(struct mtd_info *mtd, int section,
+@@ -271,7 +271,7 @@ static int onenand_page_address(int page, int sector)
+  * @dataram1:	DataRAM index
+  * @sectors:	the sector address
+  * @count:		the number of sectors
+- * @return		the start buffer value
++ * Return:		the start buffer value
+  *
+  * Setup Start Buffer Register (F200h)
+  */
+@@ -1433,7 +1433,7 @@ static int onenand_read_oob_nolock(struct mtd_info *mtd, loff_t from,
+  * @mtd:		MTD device structure
+  * @from:		offset to read from
+  * @ops:		oob operation description structure
+-
++ *
+  * Read main and/or out-of-band
+  */
+ static int onenand_read_oob(struct mtd_info *mtd, loff_t from,
+@@ -1958,11 +1958,8 @@ static int onenand_write_ops_nolock(struct mtd_info *mtd, loff_t to,
+ /**
+  * onenand_write_oob_nolock - [INTERN] OneNAND write out-of-band
+  * @mtd:		MTD device structure
+- * @to:		offset to write to
+- * @len:		number of bytes to write
+- * @retlen:	pointer to variable to store the number of written bytes
+- * @buf:		the data to write
+- * @mode:		operation mode
++ * @to:			offset to write to
++ * @ops:                oob operation description structure
+  *
+  * OneNAND write out-of-band
+  */
+@@ -2146,7 +2143,7 @@ static int onenand_multiblock_erase_verify(struct mtd_info *mtd,
+  * onenand_multiblock_erase - [INTERN] erase block(s) using multiblock erase
+  * @mtd:		MTD device structure
+  * @instr:		erase instruction
+- * @region:	erase region
++ * @block_size:		block size
+  *
+  * Erase one or more blocks up to 64 block at a time
+  */
+@@ -2759,10 +2756,8 @@ static int onenand_otp_command(struct mtd_info *mtd, int cmd, loff_t addr,
+ /**
+  * onenand_otp_write_oob_nolock - [INTERN] OneNAND write out-of-band, specific to OTP
+  * @mtd:		MTD device structure
+- * @to:		offset to write to
+- * @len:		number of bytes to write
+- * @retlen:	pointer to variable to store the number of written bytes
+- * @buf:		the data to write
++ * @to:			offset to write to
++ * @ops:                oob operation description structure
+  *
+  * OneNAND write out-of-band only for OTP
+  */
+@@ -3380,9 +3375,9 @@ static int onenand_check_maf(int manuf)
+ }
+ 
+ /**
+-* flexonenand_get_boundary	- Reads the SLC boundary
+-* @onenand_info:		- onenand info structure
+-**/
++ * flexonenand_get_boundary	- Reads the SLC boundary
++ * @mtd:		MTD data structure
++ */
+ static int flexonenand_get_boundary(struct mtd_info *mtd)
+ {
+ 	struct onenand_chip *this = mtd->priv;
+@@ -3493,9 +3488,9 @@ static void flexonenand_get_size(struct mtd_info *mtd)
+ 
+ /**
+  * flexonenand_check_blocks_erased - Check if blocks are erased
+- * @mtd_info:	- mtd info structure
+- * @start:		- first erase block to check
+- * @end:		- last erase block to check
++ * @mtd:	mtd info structure
++ * @start:	first erase block to check
++ * @end:	last erase block to check
+  *
+  * Converting an unerased block from MLC to SLC
+  * causes byte values to change. Since both data and its ECC
+@@ -3548,9 +3543,8 @@ static int flexonenand_check_blocks_erased(struct mtd_info *mtd, int start, int
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * flexonenand_set_boundary	- Writes the SLC boundary
+- * @mtd:			- mtd info structure
+  */
+ static int flexonenand_set_boundary(struct mtd_info *mtd, int die,
+ 				    int boundary, int lock)
 -- 
 2.25.1
 
