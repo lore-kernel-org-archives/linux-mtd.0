@@ -1,89 +1,104 @@
-Return-Path: <SRS0=gQDT=EM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=mw3I=EN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 347BBC2D0A3
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Nov 2020 21:41:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F25CC388F9
+	for <linux-mtd@archiver.kernel.org>; Sat,  7 Nov 2020 07:29:57 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 34582206D4
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Nov 2020 21:41:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 26D9020704
+	for <linux-mtd@archiver.kernel.org>; Sat,  7 Nov 2020 07:29:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JNCmjWYV";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sJW30ndV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 34582206D4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="vLRohcmX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26D9020704
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=3B7m4NJNbRKnLTKL2bBWyG0pIubeldGVkoj/R2Dl0BM=; b=JNCmjWYVlFT11fdDntGTBuxD7
-	UFc22b+vfJ7YKxIhqY3ckCPweqq0YRRpjasU4EHc+HoK6abJAjGrGkZxOxjX9wGaWqz7DMkZs0zHP
-	pOf29QUPgqyBiBUFpMpFkxiN5s85sDznOujPCqdnAEJhBIxEG+k1TlBgB/1ZMBc+JNnIK+pvNfzgY
-	+E0moNYQrbu5eCSW3yXk++R54DnHHcU4bUiyt0XSPfz8XCX5sjpjKpBi3O5DW8tbfdHLvchL7XGmq
-	OVW0x9+sDM2QTHRE+lMmLoCUhNkm8vZ4PhuO2VCbvNFZVFFpck2I9l4M++vXU406gDdPcQYmrlFXt
-	ZXANTpinA==;
+	 bh=efNdnuPlC+WiL63U2uG2sjrlGk2A6FkNsTesWzHBmtA=; b=vLRohcmXaqlXo0hbTgHXv7qRK
+	Zm9v8EDCiMzDY72tR4Ot8lPfihbFKjdYDJ8XF/Q5j9uUeIK5exQc1JP38Z8GeBPFbmRJHXcEQtz3S
+	7bGshwerF7uEzCRYorsVuJi614pooqGHS96phIiWqojOdtgWgiv2hTTIip1+0LwPYGmmXf8X2jFg7
+	Q0MEpOtuM0OHIIVn+Xrfi8/Ti57TnTl2ChLyh4zfwOdgNW57KVZSuJ2Vn6mtqAHoIS9m5YSBYRnk8
+	300h08uzH+tDsCK8STZGQ9xM/zjsj3mYUVCujKED0e39LYx9IfFL9V7XfKDqQ5uGciSsPVNcbhRVD
+	wlfoWy/Fg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kb9TJ-0004Qp-VG; Fri, 06 Nov 2020 21:40:38 +0000
-Received: from mail-wm1-x341.google.com ([2a00:1450:4864:20::341])
+	id 1kbIeJ-00062O-3R; Sat, 07 Nov 2020 07:28:35 +0000
+Received: from mx2.suse.de ([195.135.220.15])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kb9QI-0002ik-Ir
- for linux-mtd@lists.infradead.org; Fri, 06 Nov 2020 21:37:32 +0000
-Received: by mail-wm1-x341.google.com with SMTP id h2so2825286wmm.0
- for <linux-mtd@lists.infradead.org>; Fri, 06 Nov 2020 13:37:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=ynyF2LluxBEO2JLmlcMvxixiCa/MBQSn7HUEDQ95Ad8=;
- b=sJW30ndVh1qGXkUaw3pZaZEjF2ef9gfmBHcrLUN8CKyAoBZToeJQQGOgveJ9pOnH9G
- iLnj25fAUb5CHE4pzNXFTP4bhMNeVU9zyQDF1cWEHGd11k8kQJFQMEHxT3Dl1zjar9i1
- fLeGKBfoVm5SSIuvPhaI1FnA013nnfZJ8yjEL9YynAZGNTKmaaPzx1Z8entolXVdwDXF
- CpfAG963D1ALbbrNpXiYanN/0p8rW8kbDmkOIfYRs2zp7QT0lXC2BhMYgEqAXpdrHyfE
- U/pK0fH1kVdmS6ynQhtxJ6E8bO3EBpBdOD+PU9rYMIdej1Dw7doRpC+V18xrgEa4Q7rq
- 2Adg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=ynyF2LluxBEO2JLmlcMvxixiCa/MBQSn7HUEDQ95Ad8=;
- b=ZBkUKhLeNywQO2PJmQidBV7942ZdHRu44BCjEbuGUOJpQs5PsuBECDdaDN+lyNkVqI
- JltbYrKDOWchXS5YCJqBnFSZ0Us+Hk1M2da62sWRRgg6LzNeF+GHLuYhYsZcc8QDAm0t
- FGhx+p4W9H/UH/2sPl85Fk2lvyFIvdZK5HcOzZgwGiE4xqeevwx2OCvtgN4ldx2ioLV3
- blqeVsbgVGSlBIT2ShnHUp6k39qybvd/qLY8781M7kEcB8seJQ9PYDLFp+GrOfAyAaf/
- 1b5otE2Xz2Bftl52WskwvZCJJ1xjmvcoAwiNL98C/xisD2UYt/eYu3tt7mBOsvXkNBUR
- /bTg==
-X-Gm-Message-State: AOAM531qzwPWGgRyQJZFUIlkuXjfmzhfqZn1w1nKOQVL3ocUkWYW7UV5
- tJ8Fr/bJhpY+/mbiEqGvN5NqWQ==
-X-Google-Smtp-Source: ABdhPJxG+LiIYfVShEQWJVAJMZtLl+cVPcfShbpulxjLFaLqCc0rq0BMZWwZRXF2wVzCbzIu7Bfcjg==
-X-Received: by 2002:a1c:3803:: with SMTP id f3mr1574214wma.14.1604698649574;
- Fri, 06 Nov 2020 13:37:29 -0800 (PST)
-Received: from dell.default ([91.110.221.236])
- by smtp.gmail.com with ESMTPSA id d16sm3984942wrw.17.2020.11.06.13.37.28
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 06 Nov 2020 13:37:28 -0800 (PST)
-From: Lee Jones <lee.jones@linaro.org>
-To: lee.jones@linaro.org
-Subject: [PATCH v2 23/23] mtd: devices: powernv_flash: Add function names to
- headers and fix 'dev'
-Date: Fri,  6 Nov 2020 21:36:55 +0000
-Message-Id: <20201106213655.1838861-24-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201106213655.1838861-1-lee.jones@linaro.org>
-References: <20201106213655.1838861-1-lee.jones@linaro.org>
+ id 1kbIeF-00061s-2H
+ for linux-mtd@lists.infradead.org; Sat, 07 Nov 2020 07:28:32 +0000
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 240D3ABA2;
+ Sat,  7 Nov 2020 07:28:24 +0000 (UTC)
+Subject: Re: [PATCH, RFC 11/10] block: propagate BLKROSET to all partitions
+To: Christoph Hellwig <hch@lst.de>
+References: <20201106140817.GA23557@lst.de>
+From: Coly Li <colyli@suse.de>
+Autocrypt: addr=colyli@suse.de; keydata=
+ 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
+Message-ID: <a2add52e-715b-f82a-d6a0-b285f0f5acde@suse.de>
+Date: Sat, 7 Nov 2020 15:28:15 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.1
 MIME-Version: 1.0
+In-Reply-To: <20201106140817.GA23557@lst.de>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201106_163730_730873_835C6947 
-X-CRM114-Status: GOOD (  16.30  )
+X-CRM114-CacheID: sfid-20201107_022831_361465_9A63DBC8 
+X-CRM114-Status: GOOD (  19.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,75 +110,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-kernel@vger.kernel.org,
- Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>,
- linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
+Cc: Jens Axboe <axboe@kernel.dk>, linux-raid@vger.kernel.org,
+ Jan Hoeppner <hoeppner@linux.ibm.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+ martin.petersen@oracle.com, linux-s390@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>, linux-block@vger.kernel.org,
+ Song Liu <song@kernel.org>, linux-bcache@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Stefan Haberland <sth@linux.ibm.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Ilya Dryomov <idryomov@gmail.com>,
+ ceph-devel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Fixes the following W=1 kernel build warning(s):
+On 2020/11/6 22:08, Christoph Hellwig wrote:
+> 
+> When setting the whole device read-only (or clearing the read-only
+> state), also update the policy for all partitions.  The s390 dasd
+> driver has awlways been doing this and it makes a lot of sense.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
- drivers/mtd/devices/powernv_flash.c:129: warning: Cannot understand  * @mtd: the device
- drivers/mtd/devices/powernv_flash.c:145: warning: Cannot understand  * @mtd: the device
- drivers/mtd/devices/powernv_flash.c:161: warning: Cannot understand  * @mtd: the device
- drivers/mtd/devices/powernv_flash.c:184: warning: Function parameter or member 'dev' not described in 'powernv_flash_set_driver_info'
+Acked-by: Coly Li <colyli@suse.de>
 
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: linux-mtd@lists.infradead.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/mtd/devices/powernv_flash.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Thanks.
 
-diff --git a/drivers/mtd/devices/powernv_flash.c b/drivers/mtd/devices/powernv_flash.c
-index 0b757d9ba2f6b..6950a87648151 100644
---- a/drivers/mtd/devices/powernv_flash.c
-+++ b/drivers/mtd/devices/powernv_flash.c
-@@ -126,6 +126,7 @@ static int powernv_flash_async_op(struct mtd_info *mtd, enum flash_op op,
- }
- 
- /**
-+ * powernv_flash_read
-  * @mtd: the device
-  * @from: the offset to read from
-  * @len: the number of bytes to read
-@@ -142,6 +143,7 @@ static int powernv_flash_read(struct mtd_info *mtd, loff_t from, size_t len,
- }
- 
- /**
-+ * powernv_flash_write
-  * @mtd: the device
-  * @to: the offset to write to
-  * @len: the number of bytes to write
-@@ -158,6 +160,7 @@ static int powernv_flash_write(struct mtd_info *mtd, loff_t to, size_t len,
- }
- 
- /**
-+ * powernv_flash_erase
-  * @mtd: the device
-  * @erase: the erase info
-  * Returns 0 if erase successful or -ERRNO if an error occurred
-@@ -176,7 +179,7 @@ static int powernv_flash_erase(struct mtd_info *mtd, struct erase_info *erase)
- 
- /**
-  * powernv_flash_set_driver_info - Fill the mtd_info structure and docg3
-- * structure @pdev: The platform device
-+ * @dev: The device structure
-  * @mtd: The structure to fill
-  */
- static int powernv_flash_set_driver_info(struct device *dev,
--- 
-2.25.1
+
+Coly Li
+
+> ---
+>  block/ioctl.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/block/ioctl.c b/block/ioctl.c
+> index 6b785181344fe1..22f394d118c302 100644
+> --- a/block/ioctl.c
+> +++ b/block/ioctl.c
+> @@ -354,7 +354,10 @@ static int blkdev_roset(struct block_device *bdev, fmode_t mode,
+>  		if (ret)
+>  			return ret;
+>  	}
+> -	bdev->bd_part->policy = n;
+> +	if (bdev_is_partition(bdev))
+> +		bdev->bd_part->policy = n;
+> +	else
+> +		set_disk_ro(bdev->bd_disk, n);
+>  	return 0;
+>  }
+>  
+> 
 
 
 ______________________________________________________
