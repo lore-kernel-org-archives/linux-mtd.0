@@ -2,76 +2,77 @@ Return-Path: <SRS0=+6Wf=EO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DE48C388F9
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6A8AC55ABD
 	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2020 11:38:41 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DFCF8206ED
-	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2020 11:38:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 62A5C206ED
+	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2020 11:38:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="3Ep+i7L2";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CaoihXbx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFCF8206ED
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="v3brjMu2";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QvCLndGP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 62A5C206ED
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=8uARKN3iMyF9xM1kVE+T7YqiMEOv4hnTmNDD/Aowqm8=; b=3Ep+i7L2LMOKYwCvCCIT9uRx4N
-	v1lWCJr4zNGOgsiWB1XnwHYWRA7gYWthw3Cqc+wUV/331SeM/Qho4uTwZAOB95Lw0EN2by/N+TRFS
-	YUoNU7cPNbCaBBGHCGdDsSTWsGNlMnA5lJYCM6jpg+N3wDXotGVztGxHra75XSPpwQOvv9qSUwJXD
-	AISDVXDwGMWNbgihTeRnVNSjUWDu0bQ3OOi0dSXt43HKue9ZfOewCf/A2kOzVZ2lZWRtfwcDm+dCI
-	CHIP0R/Ro4r9z+lI8bwyC6ERgcBUNXNkmTxss7kyKKTDT4fM5OnMZ+QFAyyT321BRuvGXN9l9az5p
-	FLDKNwUQ==;
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=tT/dug7dJHuF8tZTuQtzd7SXbDausvrDk8qYJKPlg7M=; b=v3brjMu2wcatXPa+ddo4txkDd
+	ou8f6dDxv1faiNZ4XTs4dxFrP7fw7dyP/2mFYAB2Gj2sTKGWVSansn8abXvzL6Jg37JQfmqDP/kY3
+	lAwBq/jkqvgwtr+r+Z2T6snqo6EjfDEzzgVAV4jqibeap4YzDBoAuuHPYiQvl1XQmCtly5wwWomaA
+	OHkeABtvgAPBuoQxbbO6iI3VEKotE6njJxlGoX+5g6Y+P/MVgvQIsFhxnebsrNP88qB+CnXAW8oaa
+	hzSoa6/iyCWMFslYwty+sG2sfw+AyeZExvz2qde2XVTASvYFfr98MzAcQbE1r+MhLjku8r9F877qE
+	gvpNheF6g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kbj13-0001E2-B2; Sun, 08 Nov 2020 11:37:49 +0000
-Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
+	id 1kbj14-0001EP-JR; Sun, 08 Nov 2020 11:37:50 +0000
+Received: from mail-pj1-x1044.google.com ([2607:f8b0:4864:20::1044])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kbj10-0001Cy-Rl
- for linux-mtd@lists.infradead.org; Sun, 08 Nov 2020 11:37:47 +0000
-Received: by mail-pg1-x543.google.com with SMTP id m26so1028605pgd.9
- for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2020 03:37:44 -0800 (PST)
+ id 1kbj12-0001DK-90
+ for linux-mtd@lists.infradead.org; Sun, 08 Nov 2020 11:37:49 +0000
+Received: by mail-pj1-x1044.google.com with SMTP id w20so1780726pjh.1
+ for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2020 03:37:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=WZtQivcQ+AZubSIg46b9m4DEOzL0fiKWbinL/KFoggA=;
- b=CaoihXbx23aeFZpxtNy7GTt3o+aBGBdyZlNtc35S0IPP0zW4umWFCe6d3/3HWqgRTx
- Nup857PQXsKuNwQ/WxQCEngwlATThEUyPZRiSNueccU2gnnrIBG9NlIwIJkZhAsJVTHY
- H4ShPEqR4II9BqZGn2d+2p9MPhv4t0URYbkWYqV+RisPhX/tuOB/iw7svZo+T8JheyQp
- mCGcJnh7bDSxYhAVQ+spkz2qSHb/zR5HVvWhi368ldiew1KIxzLsVJfn1PFXTysvMm2Y
- XNkwu5AhfAq37hwN7CAbOZqlYPDvFhEeo5Y3l538lQyQR3NTkHIOhIuPaTPBmKkBZlHY
- BToA==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=aB4WwGKR70yONlWJx+YO2+K1cBRtMLw1WCeTBhf6I0Y=;
+ b=QvCLndGPBskmluRDXVJVH/4aVlyTBBXO2Cb8OC9H5LJtz93CAepMfhZ9A2tf+LYy00
+ XshJRhVtCQj3SjC1PtafbSsHqVTxVdsnGn/2vmMhcUSjMyWXRsQG2ROaX2CY67E1/egD
+ hPw1Tg8h2o1kSqTAvo062LuVC6z7fBtnqBrGEd2CQ9wfeXIKH6fK4gNyUGlSUCx4Mih2
+ l1WbRK2s6lnl5ESpJrvc3UPMMRjGAmMMg7VOi/wXAi34z5zofM1z5/N+Ye0/QK2zKrGq
+ 0cpP8YgO9YQGOcUlYEehWpvsCD/1CEtOf0DvhR/1b0jdfEWrXUdIuIlHeu4KFANQz3X0
+ gcxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=WZtQivcQ+AZubSIg46b9m4DEOzL0fiKWbinL/KFoggA=;
- b=DCK8TacYNp37gn/Ume2+WS0IryMepNxm4oqQ26JNa0hOL1n07Wq4fOL9QJNxkrHTa4
- c53ni8XO6EXiJ1eNcMx3az4qsdtZpxQHTBQfFJ2gxv1deZstuEhRsX3T/7AZ1EUzvF2G
- HF5uv5yrzd/Xg6b9fVvwJoCdCh3kP15bjrQN4hWSqZquI2eYQ79PKS0zmKx+p2OkvpI1
- M698s8oktKoz5nFFGJBlbVztXERFN1YCgKLsIiRpnW6j7vVOX7gO4Q7WSGBlg3KYR2Yb
- 1Uao+ohj324dvqdCE7bmKxJ9Eb1AvXhU1OeKhEBykq6HopBk11TjhWm+HyNwrl23Ebl8
- GM2A==
-X-Gm-Message-State: AOAM5332P5LRx/mrhbzlYJBS/PgJWjsKio66Ge3ZY6vfj5Ai2CnQWT1l
- 9ShvWnw/RlZhptzSjUAHzVE=
-X-Google-Smtp-Source: ABdhPJywGga5A++IlHOh+wzruJpPJXt/uQ8cIH1WYVoYxBgFTHkaCuSe8xncy4byXhIzP63Dq87VZQ==
-X-Received: by 2002:a05:6a00:2292:b029:156:8913:e424 with SMTP id
- f18-20020a056a002292b02901568913e424mr9626833pfe.56.1604835463114; 
- Sun, 08 Nov 2020 03:37:43 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=aB4WwGKR70yONlWJx+YO2+K1cBRtMLw1WCeTBhf6I0Y=;
+ b=bUWSy4VYfA4ZJhvd5ODdjiLyNNVSbgowCoD/zfspVRJHnl7r+cdHaLEBMRMd/ltmG9
+ BOCfnyH1k64y544fD7BnK/xVJV2GHmcjgF8jwj+Bx+zxoeaIPBAf/nLDsn4LTh6g+rSl
+ of8OU0WeIPV8TQBMZYVFPpf18dnsmjUGvU6mpPapG2fXDeaUwQxYtz+zCpfTMYdf6rAd
+ VPN85fuuYqIK7bZ9xxEoy2qDu68m3tiW/2UwW1CmGOSodJEvDM3FJKFByC4ZeHntdJXf
+ +R1QH6yKZRxAlgxHgIP4z8+y6wF1ow+GIpf+cNf+d5wtIqxM5vpViZq8dMvhiuD1eJEI
+ s26g==
+X-Gm-Message-State: AOAM531x9FYETND06fLbHqlCwCK4jBPL3dcqmPlNmSQfHQ14yvksXElV
+ 24OGvyHtvao2CW/CtlUcHQQ=
+X-Google-Smtp-Source: ABdhPJzbM4MA4FD2yAry7JUysEifKKcn5JtRKbXjn3IBP/9Qc0MMYfROsn94OmltghFJVjf1q0nL/A==
+X-Received: by 2002:a17:902:728f:b029:d6:fcbe:99c5 with SMTP id
+ d15-20020a170902728fb02900d6fcbe99c5mr8682167pll.20.1604835466003; 
+ Sun, 08 Nov 2020 03:37:46 -0800 (PST)
 Received: from IGL6397W.cw01.contiwan.com ([27.104.143.83])
- by smtp.gmail.com with ESMTPSA id t85sm7230263pgb.29.2020.11.08.03.37.40
+ by smtp.gmail.com with ESMTPSA id t85sm7230263pgb.29.2020.11.08.03.37.43
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 08 Nov 2020 03:37:42 -0800 (PST)
+ Sun, 08 Nov 2020 03:37:45 -0800 (PST)
 From: Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -79,15 +80,16 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Boris Brezillon <boris.brezillon@collabora.com>,
  Chuanhong Guo <gch981213@gmail.com>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v7 0/2] Add support for micron SPI NAND MT29F2G01AAAED
-Date: Sun,  8 Nov 2020 19:37:33 +0800
-Message-Id: <20201108113735.2533-1-nthirumalesha7@gmail.com>
+Subject: [PATCH v7 1/2] mtd: spinand: micron: Generalize the structure names
+Date: Sun,  8 Nov 2020 19:37:34 +0800
+Message-Id: <20201108113735.2533-2-nthirumalesha7@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201108113735.2533-1-nthirumalesha7@gmail.com>
+References: <20201108113735.2533-1-nthirumalesha7@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201108_063746_923868_F6B7BE2A 
-X-CRM114-Status: UNSURE (   9.75  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20201108_063748_325199_42E0056A 
+X-CRM114-Status: GOOD (  11.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,52 +107,157 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Adding support for Micron SPI NAND MT29F2G01AAAED device and generalised
-the structure names as per the review comments
+Rename the read/write/update of SPINAND_OP_VARIANTS() to a generic names
 
-v7: Reverted to the v4 except ECC structure related changes
+Signed-off-by: Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>
+---
+ drivers/mtd/nand/spi/micron.c | 60 +++++++++++++++++------------------
+ 1 file changed, 30 insertions(+), 30 deletions(-)
 
-v6: Reverted the SPINAND_OP_VARIANTS() as they were in v4 for
-MT29F2G01AAAED device
-
-v5: As per the review comments, the changes were reverted to the v2,
-except the MT29F2G01AAAED device related (including the review comments)
-
-v4: Split patch into two parts,
-    1. Generalise the oob structure name & function names as show in v3
-    2. Add support for MT29F2G01AAAED device
-       a. Add oob section check in micron_ooblayout_free function
-       b. Rename mt29f2g01aaaed_* to generic name micron_4_*
-
-v3: As per the review comments,
-     1. Renamed read_cache_variants as quadio_read_cache_variants,
-write_cache_variants as
-      x4_write_cache_variants/x1_write_cache_variants,
-update_cache_variants as
-      x4_update_cache_variants/x1_update_cache_variants,
-read_cache_variants as x4_read_cache_variants
-     2. Renamed micron_8_ooblayout as micron_grouped_ooblayout &
-mt29f2g01aaaed_ooblayout as
-      micron_interleaved_ooblayout
-     3. Generalized page size based oob section check in
-mt29f2g01aaaed_ooblayout_ecc function
-      and separate case check for two bytes BBM reserved in
-mt29f2g01aaaed_ooblayout_free function
-     4. Removed mt29f2g01aaaed_ecc_get_status function &
-MICRON_STATUS_ECC_1TO4_BITFLIPS
-
-v2: Removed SPINAND_SELECT_TARGET as per the comments & fixed typo
-errors
-
-v1: Add support for Micron SPI Nand device MT29F2G01AAAED
-
-Thirumalesha Narasimhappa (2):
-  mtd: spinand: micron: Generalize the structure names
-  mtd: spinand: micron: Add support for MT29F2G01AAAED
-
- drivers/mtd/nand/spi/micron.c | 124 ++++++++++++++++++++++++++--------
- 1 file changed, 94 insertions(+), 30 deletions(-)
-
+diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
+index 5d370cfcdaaa..afe3ba37dcfb 100644
+--- a/drivers/mtd/nand/spi/micron.c
++++ b/drivers/mtd/nand/spi/micron.c
+@@ -28,7 +28,7 @@
+ 
+ #define MICRON_SELECT_DIE(x)	((x) << 6)
+ 
+-static SPINAND_OP_VARIANTS(read_cache_variants,
++static SPINAND_OP_VARIANTS(quadio_read_cache_variants,
+ 		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
+ 		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
+ 		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
+@@ -36,11 +36,11 @@ static SPINAND_OP_VARIANTS(read_cache_variants,
+ 		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
+ 		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
+ 
+-static SPINAND_OP_VARIANTS(write_cache_variants,
++static SPINAND_OP_VARIANTS(x4_write_cache_variants,
+ 		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
+ 		SPINAND_PROG_LOAD(true, 0, NULL, 0));
+ 
+-static SPINAND_OP_VARIANTS(update_cache_variants,
++static SPINAND_OP_VARIANTS(x4_update_cache_variants,
+ 		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
+ 		SPINAND_PROG_LOAD(false, 0, NULL, 0));
+ 
+@@ -120,9 +120,9 @@ static const struct spinand_info micron_spinand_table[] = {
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x24),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 2, 1, 1),
+ 		     NAND_ECCREQ(8, 512),
+-		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+-					      &write_cache_variants,
+-					      &update_cache_variants),
++		     SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
++					      &x4_write_cache_variants,
++					      &x4_update_cache_variants),
+ 		     0,
+ 		     SPINAND_ECCINFO(&micron_8_ooblayout,
+ 				     micron_8_ecc_get_status)),
+@@ -131,9 +131,9 @@ static const struct spinand_info micron_spinand_table[] = {
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x25),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 2, 1, 1),
+ 		     NAND_ECCREQ(8, 512),
+-		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+-					      &write_cache_variants,
+-					      &update_cache_variants),
++		     SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
++					      &x4_write_cache_variants,
++					      &x4_update_cache_variants),
+ 		     0,
+ 		     SPINAND_ECCINFO(&micron_8_ooblayout,
+ 				     micron_8_ecc_get_status)),
+@@ -142,9 +142,9 @@ static const struct spinand_info micron_spinand_table[] = {
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x14),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
+ 		     NAND_ECCREQ(8, 512),
+-		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+-					      &write_cache_variants,
+-					      &update_cache_variants),
++		     SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
++					      &x4_write_cache_variants,
++					      &x4_update_cache_variants),
+ 		     0,
+ 		     SPINAND_ECCINFO(&micron_8_ooblayout,
+ 				     micron_8_ecc_get_status)),
+@@ -153,9 +153,9 @@ static const struct spinand_info micron_spinand_table[] = {
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x15),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
+ 		     NAND_ECCREQ(8, 512),
+-		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+-					      &write_cache_variants,
+-					      &update_cache_variants),
++		     SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
++					      &x4_write_cache_variants,
++					      &x4_update_cache_variants),
+ 		     0,
+ 		     SPINAND_ECCINFO(&micron_8_ooblayout,
+ 				     micron_8_ecc_get_status)),
+@@ -164,9 +164,9 @@ static const struct spinand_info micron_spinand_table[] = {
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x36),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 80, 2, 1, 2),
+ 		     NAND_ECCREQ(8, 512),
+-		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+-					      &write_cache_variants,
+-					      &update_cache_variants),
++		     SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
++					      &x4_write_cache_variants,
++					      &x4_update_cache_variants),
+ 		     0,
+ 		     SPINAND_ECCINFO(&micron_8_ooblayout,
+ 				     micron_8_ecc_get_status),
+@@ -176,9 +176,9 @@ static const struct spinand_info micron_spinand_table[] = {
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x34),
+ 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
+ 		     NAND_ECCREQ(8, 512),
+-		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+-					      &write_cache_variants,
+-					      &update_cache_variants),
++		     SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
++					      &x4_write_cache_variants,
++					      &x4_update_cache_variants),
+ 		     SPINAND_HAS_CR_FEAT_BIT,
+ 		     SPINAND_ECCINFO(&micron_8_ooblayout,
+ 				     micron_8_ecc_get_status)),
+@@ -187,9 +187,9 @@ static const struct spinand_info micron_spinand_table[] = {
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x35),
+ 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
+ 		     NAND_ECCREQ(8, 512),
+-		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+-					      &write_cache_variants,
+-					      &update_cache_variants),
++		     SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
++					      &x4_write_cache_variants,
++					      &x4_update_cache_variants),
+ 		     SPINAND_HAS_CR_FEAT_BIT,
+ 		     SPINAND_ECCINFO(&micron_8_ooblayout,
+ 				     micron_8_ecc_get_status)),
+@@ -198,9 +198,9 @@ static const struct spinand_info micron_spinand_table[] = {
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x46),
+ 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 2),
+ 		     NAND_ECCREQ(8, 512),
+-		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+-					      &write_cache_variants,
+-					      &update_cache_variants),
++		     SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
++					      &x4_write_cache_variants,
++					      &x4_update_cache_variants),
+ 		     SPINAND_HAS_CR_FEAT_BIT,
+ 		     SPINAND_ECCINFO(&micron_8_ooblayout,
+ 				     micron_8_ecc_get_status),
+@@ -210,9 +210,9 @@ static const struct spinand_info micron_spinand_table[] = {
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x47),
+ 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 2),
+ 		     NAND_ECCREQ(8, 512),
+-		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+-					      &write_cache_variants,
+-					      &update_cache_variants),
++		     SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
++					      &x4_write_cache_variants,
++					      &x4_update_cache_variants),
+ 		     SPINAND_HAS_CR_FEAT_BIT,
+ 		     SPINAND_ECCINFO(&micron_8_ooblayout,
+ 				     micron_8_ecc_get_status),
 -- 
 2.25.1
 
