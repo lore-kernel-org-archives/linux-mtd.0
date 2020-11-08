@@ -1,25 +1,24 @@
-Return-Path: <SRS0=mw3I=EN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=+6Wf=EO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC932C388F7
-	for <linux-mtd@archiver.kernel.org>; Sat,  7 Nov 2020 13:44:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DE48C388F9
+	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2020 11:38:41 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 841FA206ED
-	for <linux-mtd@archiver.kernel.org>; Sat,  7 Nov 2020 13:44:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DFCF8206ED
+	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2020 11:38:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EdqpB1eT";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="QJxGKw74"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 841FA206ED
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmx.net
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="3Ep+i7L2";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CaoihXbx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFCF8206ED
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
@@ -27,58 +26,68 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=J3PoeBUMtKxdMcrRr/h4WscGrTjIYGvYzFuejRUkZkA=; b=EdqpB1eT2S8jT2vYnA/zcAGsfy
-	KjX+ToTxaI/JKar65wScgttRQx5aRckPmyGtz9rBeCgyFxYo/XZgMn4eBvEhdiD97UDawQbq3LCgY
-	ALOQh6eIoTrXHB7bWwwKk/OSry+eRf+wGaLs4zW6gLNHHPXcLBihxu4VeWnJmfUgPo36X5tJxXunx
-	bb+RcYO+zaVtXg/gHbdDe52ATUPtjIk3hNDSq/tFaHfpXk3bgoGhystmLthPyUcv6ezJXMhFr6ta6
-	6YLWKd3+vteA5qN0jY8d01PQ1OY/eTyonFlRn0ZeexZRJFluGonZ/eDu/0xHgusdJPHAn+E/Yd+iy
-	L94PGG8A==;
+	bh=8uARKN3iMyF9xM1kVE+T7YqiMEOv4hnTmNDD/Aowqm8=; b=3Ep+i7L2LMOKYwCvCCIT9uRx4N
+	v1lWCJr4zNGOgsiWB1XnwHYWRA7gYWthw3Cqc+wUV/331SeM/Qho4uTwZAOB95Lw0EN2by/N+TRFS
+	YUoNU7cPNbCaBBGHCGdDsSTWsGNlMnA5lJYCM6jpg+N3wDXotGVztGxHra75XSPpwQOvv9qSUwJXD
+	AISDVXDwGMWNbgihTeRnVNSjUWDu0bQ3OOi0dSXt43HKue9ZfOewCf/A2kOzVZ2lZWRtfwcDm+dCI
+	CHIP0R/Ro4r9z+lI8bwyC6ERgcBUNXNkmTxss7kyKKTDT4fM5OnMZ+QFAyyT321BRuvGXN9l9az5p
+	FLDKNwUQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kbOUE-0004Y3-70; Sat, 07 Nov 2020 13:42:34 +0000
-Received: from mout.gmx.net ([212.227.17.22])
+	id 1kbj13-0001E2-B2; Sun, 08 Nov 2020 11:37:49 +0000
+Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kbOU7-0004XP-Iy
- for linux-mtd@lists.infradead.org; Sat, 07 Nov 2020 13:42:28 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
- s=badeba3b8450; t=1604756527;
- bh=5HgqEvvJiH/bZLPEWmKV16KDFdLKNOtgtdg08AcddNE=;
- h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
- b=QJxGKw74yjzwZcA5YC0NcK+scU/tWV8IOqHh9438zcIfHg+G0VOOR+ZBEg5zUoGL9
- ZU72vVfHzJiNN1T2HAhaCMtQuLmnq1tJXFA0KXBewLCd1ry5fysv6FLrQAsVGiG3QG
- ncayklwWJ+/U3AcCDgKfLC2WUPaX7JZRTq60AflE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.214.162]) by mail.gmx.com (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M2f5T-1kcE5Z46s3-004AbJ; Sat, 07
- Nov 2020 14:42:07 +0100
-From: =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: spi-nor: Fix multiple typos
-Date: Sat,  7 Nov 2020 14:41:51 +0100
-Message-Id: <20201107134151.1071327-1-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.28.0
+ id 1kbj10-0001Cy-Rl
+ for linux-mtd@lists.infradead.org; Sun, 08 Nov 2020 11:37:47 +0000
+Received: by mail-pg1-x543.google.com with SMTP id m26so1028605pgd.9
+ for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2020 03:37:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=WZtQivcQ+AZubSIg46b9m4DEOzL0fiKWbinL/KFoggA=;
+ b=CaoihXbx23aeFZpxtNy7GTt3o+aBGBdyZlNtc35S0IPP0zW4umWFCe6d3/3HWqgRTx
+ Nup857PQXsKuNwQ/WxQCEngwlATThEUyPZRiSNueccU2gnnrIBG9NlIwIJkZhAsJVTHY
+ H4ShPEqR4II9BqZGn2d+2p9MPhv4t0URYbkWYqV+RisPhX/tuOB/iw7svZo+T8JheyQp
+ mCGcJnh7bDSxYhAVQ+spkz2qSHb/zR5HVvWhi368ldiew1KIxzLsVJfn1PFXTysvMm2Y
+ XNkwu5AhfAq37hwN7CAbOZqlYPDvFhEeo5Y3l538lQyQR3NTkHIOhIuPaTPBmKkBZlHY
+ BToA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=WZtQivcQ+AZubSIg46b9m4DEOzL0fiKWbinL/KFoggA=;
+ b=DCK8TacYNp37gn/Ume2+WS0IryMepNxm4oqQ26JNa0hOL1n07Wq4fOL9QJNxkrHTa4
+ c53ni8XO6EXiJ1eNcMx3az4qsdtZpxQHTBQfFJ2gxv1deZstuEhRsX3T/7AZ1EUzvF2G
+ HF5uv5yrzd/Xg6b9fVvwJoCdCh3kP15bjrQN4hWSqZquI2eYQ79PKS0zmKx+p2OkvpI1
+ M698s8oktKoz5nFFGJBlbVztXERFN1YCgKLsIiRpnW6j7vVOX7gO4Q7WSGBlg3KYR2Yb
+ 1Uao+ohj324dvqdCE7bmKxJ9Eb1AvXhU1OeKhEBykq6HopBk11TjhWm+HyNwrl23Ebl8
+ GM2A==
+X-Gm-Message-State: AOAM5332P5LRx/mrhbzlYJBS/PgJWjsKio66Ge3ZY6vfj5Ai2CnQWT1l
+ 9ShvWnw/RlZhptzSjUAHzVE=
+X-Google-Smtp-Source: ABdhPJywGga5A++IlHOh+wzruJpPJXt/uQ8cIH1WYVoYxBgFTHkaCuSe8xncy4byXhIzP63Dq87VZQ==
+X-Received: by 2002:a05:6a00:2292:b029:156:8913:e424 with SMTP id
+ f18-20020a056a002292b02901568913e424mr9626833pfe.56.1604835463114; 
+ Sun, 08 Nov 2020 03:37:43 -0800 (PST)
+Received: from IGL6397W.cw01.contiwan.com ([27.104.143.83])
+ by smtp.gmail.com with ESMTPSA id t85sm7230263pgb.29.2020.11.08.03.37.40
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 08 Nov 2020 03:37:42 -0800 (PST)
+From: Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Shivamurthy Shastri <sshivamurthy@micron.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Chuanhong Guo <gch981213@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH v7 0/2] Add support for micron SPI NAND MT29F2G01AAAED
+Date: Sun,  8 Nov 2020 19:37:33 +0800
+Message-Id: <20201108113735.2533-1-nthirumalesha7@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Provags-ID: V03:K1:DTS66gvIc0DDkzLq0yp1rJp3/B+3nK0vtp69pRD/TyKz+mGY/4F
- 6lbLmwaM4tBVAdunsrFOzHtQNscFFZm7b5BbV9HFiJecgABDqgLliI2mWhpcs0bmwhu/cYZ
- nCZyR9GJSDoUAmegDe2xxyHcHhoFcSDp2hmSnMc3OBZeK7l2lu5dSk4velEnHhwprFzaHi+
- 59RRmDx8jiHxAGccMX0Dg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:/WkoJTRTv4U=:cb1BQr7r5je6Dfh2jjoiLf
- SyeP/1KeP8gMwE2d7CQiNIRfK+8ohnNTcbOjS3NdiASteZj621LnPohHVxY17qLtRUIR3TJX5
- dFp2/eBZlPjlskrLZjGNPjkejD52Pz/nhgxF8XHNFN8PWgu7yDS3NJr2+CWm68P7XXrtiLJmu
- fVMrnOtmvy93HAONgz7HOfUdmyKVPJrHwZaKboXECKSENTeU2kbpmhqR5XKnZtxAvZb53vWQU
- k2DaZolu1Hk7hqX78BT8C2jpE1WBTXWCsF51L1SVSrui2rOAo1BdhRDLEOepzoI5Mw9VHB9D8
- jrDz3hn/0CrSBRdMw/U+o0nTQAe2GLMtHLstvSDBUFs0ZbcnEYkrDCJjA2cW3vTVZ33hlUFpF
- 4pjxyBCVPK1CWDfB/7T1wK4Po2ImCsH0buvklwtvqVQ4QWyT1rDzAHUBVICcOELlfPw5ru14/
- GuI2IqFLndQwchevYRbizt+3n8qQnL8XgzQC5YXyJf4EAASSsOXZQjg7JQFWskCsFDAO8C+FS
- fdzpwAdxwMIC5CL7bb/AP88hywT4BuyUGyoSVvRFWHzlogLnTkkAQcCjjkdq0BSyeAc2F9gaW
- XUECpVzF9lmTRIJCdMzjtYQ8aKYO8wrk5ojvcrigfPl21z1VGTGprnJ30FcHrvyMOUgxiBY1y
- P45e1q8Dg48a+mVuvrxmREgPAPjsIbseimwybaBlFYAn1rhhCl6HCWz2Yd7R/kP66p/dfYjnT
- wC7Bb6WtvLJp/b4E4dypJkh+baWAEBAm28N6oMsYDHa7W8vaXfPcZ8Z9l/eD/D/WNma/CFBj3
- yQGs3ED7wWzM88x8ZQKeWq55kurko1xzlfILFpkoTMrbdKS15pqG9oDNHZBSZFQDXbSa82kLe
- V+fN2ZQvU3qW2g/YF19hZ0UWrR5OvrtFLjg6zYwxk=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201107_084227_832098_F1FA90BB 
-X-CRM114-Status: GOOD (  14.69  )
+X-CRM114-CacheID: sfid-20201108_063746_923868_F6B7BE2A 
+X-CRM114-Status: UNSURE (   9.75  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,56 +99,62 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>,
- =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
- linux-kernel@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-U2lnbmVkLW9mZi1ieTogSm9uYXRoYW4gTmV1c2Now6RmZXIgPGoubmV1c2NoYWVmZXJAZ214Lm5l
-dD4KLS0tCiBkcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYyAgfCA0ICsrLS0KIGRyaXZlcnMvbXRk
-L3NwaS1ub3Ivc2ZkcC5jICB8IDIgKy0KIGluY2x1ZGUvbGludXgvbXRkL3NwaS1ub3IuaCB8IDIg
-Ky0KIDMgZmlsZXMgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQoKZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5jIGIvZHJpdmVycy9tdGQvc3BpLW5v
-ci9jb3JlLmMKaW5kZXggMDM2OWQ5OGIyZDEyZS4uODVjMDcwNDk0NTI1OSAxMDA2NDQKLS0tIGEv
-ZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMKKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9jb3Jl
-LmMKQEAgLTE0NDcsNyArMTQ0Nyw3IEBAIHN0YXRpYyBpbnQgc3BpX25vcl9lcmFzZV9tdWx0aV9z
-ZWN0b3JzKHN0cnVjdCBzcGlfbm9yICpub3IsIHU2NCBhZGRyLCB1MzIgbGVuKQoKIC8qCiAgKiBF
-cmFzZSBhbiBhZGRyZXNzIHJhbmdlIG9uIHRoZSBub3IgY2hpcC4gIFRoZSBhZGRyZXNzIHJhbmdl
-IG1heSBleHRlbmQKLSAqIG9uZSBvciBtb3JlIGVyYXNlIHNlY3RvcnMuICBSZXR1cm4gYW4gZXJy
-b3IgaXMgdGhlcmUgaXMgYSBwcm9ibGVtIGVyYXNpbmcuCisgKiBvbmUgb3IgbW9yZSBlcmFzZSBz
-ZWN0b3JzLiAgUmV0dXJuIGFuIGVycm9yIGlmIHRoZXJlIGlzIGEgcHJvYmxlbSBlcmFzaW5nLgog
-ICovCiBzdGF0aWMgaW50IHNwaV9ub3JfZXJhc2Uoc3RydWN0IG10ZF9pbmZvICptdGQsIHN0cnVj
-dCBlcmFzZV9pbmZvICppbnN0cikKIHsKQEAgLTI1MzcsNyArMjUzNyw3IEBAIHNwaV9ub3Jfc2Vs
-ZWN0X3VuaWZvcm1fZXJhc2Uoc3RydWN0IHNwaV9ub3JfZXJhc2VfbWFwICptYXAsCiAJCX0KCiAJ
-CS8qCi0JCSAqIE90aGVyd2lzZSwgdGhlIGN1cnJlbnQgZXJhc2Ugc2l6ZSBpcyBzdGlsbCBhIHZh
-bGlkIGNhbmRpdGF0ZS4KKwkJICogT3RoZXJ3aXNlLCB0aGUgY3VycmVudCBlcmFzZSBzaXplIGlz
-IHN0aWxsIGEgdmFsaWQgY2FuZGlkYXRlLgogCQkgKiBTZWxlY3QgdGhlIGJpZ2dlc3QgdmFsaWQg
-Y2FuZGlkYXRlLgogCQkgKi8KIAkJaWYgKCFlcmFzZSAmJiB0ZXN0ZWRfZXJhc2UtPnNpemUpCmRp
-ZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL3NmZHAuYyBiL2RyaXZlcnMvbXRkL3NwaS1u
-b3Ivc2ZkcC5jCmluZGV4IGUyYTQzZDM5ZWI1ZjQuLjA1YjIyYzY1NzY4MzIgMTAwNjQ0Ci0tLSBh
-L2RyaXZlcnMvbXRkL3NwaS1ub3Ivc2ZkcC5jCisrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc2Zk
-cC5jCkBAIC01OSw3ICs1OSw3IEBAIHN0cnVjdCBzZmRwX2JmcHRfcmVhZCB7Cgogc3RydWN0IHNm
-ZHBfYmZwdF9lcmFzZSB7CiAJLyoKLQkgKiBUaGUgaGFsZi13b3JkIGF0IG9mZnNldCA8c2hpZnQ+
-IGluIERXT1JEIDxkd29hcmQ+IGVuY29kZXMgdGhlCisJICogVGhlIGhhbGYtd29yZCBhdCBvZmZz
-ZXQgPHNoaWZ0PiBpbiBEV09SRCA8ZHdvcmQ+IGVuY29kZXMgdGhlCiAJICogb3AgY29kZSBhbmQg
-ZXJhc2Ugc2VjdG9yIHNpemUgdG8gYmUgdXNlZCBieSBTZWN0b3IgRXJhc2UgY29tbWFuZHMuCiAJ
-ICovCiAJdTMyCQkJZHdvcmQ7CmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L210ZC9zcGktbm9y
-LmggYi9pbmNsdWRlL2xpbnV4L210ZC9zcGktbm9yLmgKaW5kZXggNjBiYWMyYzBlYzQ1Ni4uNTgy
-ZWUwNGVlZWEyMCAxMDA2NDQKLS0tIGEvaW5jbHVkZS9saW51eC9tdGQvc3BpLW5vci5oCisrKyBi
-L2luY2x1ZGUvbGludXgvbXRkL3NwaS1ub3IuaApAQCAtNDA2LDcgKzQwNiw3IEBAIHN0YXRpYyBp
-bmxpbmUgc3RydWN0IGRldmljZV9ub2RlICpzcGlfbm9yX2dldF9mbGFzaF9ub2RlKHN0cnVjdCBz
-cGlfbm9yICpub3IpCiAgKiBAbmFtZToJdGhlIGNoaXAgdHlwZSBuYW1lCiAgKiBAaHdjYXBzOgl0
-aGUgaGFyZHdhcmUgY2FwYWJpbGl0aWVzIHN1cHBvcnRlZCBieSB0aGUgY29udHJvbGxlciBkcml2
-ZXIKICAqCi0gKiBUaGUgZHJpdmVycyBjYW4gdXNlIHRoaXMgZnVjdGlvbiB0byBzY2FuIHRoZSBT
-UEkgTk9SLgorICogVGhlIGRyaXZlcnMgY2FuIHVzZSB0aGlzIGZ1bmN0aW9uIHRvIHNjYW4gdGhl
-IFNQSSBOT1IuCiAgKiBJbiB0aGUgc2Nhbm5pbmcsIGl0IHdpbGwgdHJ5IHRvIGdldCBhbGwgdGhl
-IG5lY2Vzc2FyeSBpbmZvcm1hdGlvbiB0bwogICogZmlsbCB0aGUgbXRkX2luZm97fSBhbmQgdGhl
-IHNwaV9ub3J7fS4KICAqCi0tCjIuMjguMAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
-c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
-Cg==
+Adding support for Micron SPI NAND MT29F2G01AAAED device and generalised
+the structure names as per the review comments
+
+v7: Reverted to the v4 except ECC structure related changes
+
+v6: Reverted the SPINAND_OP_VARIANTS() as they were in v4 for
+MT29F2G01AAAED device
+
+v5: As per the review comments, the changes were reverted to the v2,
+except the MT29F2G01AAAED device related (including the review comments)
+
+v4: Split patch into two parts,
+    1. Generalise the oob structure name & function names as show in v3
+    2. Add support for MT29F2G01AAAED device
+       a. Add oob section check in micron_ooblayout_free function
+       b. Rename mt29f2g01aaaed_* to generic name micron_4_*
+
+v3: As per the review comments,
+     1. Renamed read_cache_variants as quadio_read_cache_variants,
+write_cache_variants as
+      x4_write_cache_variants/x1_write_cache_variants,
+update_cache_variants as
+      x4_update_cache_variants/x1_update_cache_variants,
+read_cache_variants as x4_read_cache_variants
+     2. Renamed micron_8_ooblayout as micron_grouped_ooblayout &
+mt29f2g01aaaed_ooblayout as
+      micron_interleaved_ooblayout
+     3. Generalized page size based oob section check in
+mt29f2g01aaaed_ooblayout_ecc function
+      and separate case check for two bytes BBM reserved in
+mt29f2g01aaaed_ooblayout_free function
+     4. Removed mt29f2g01aaaed_ecc_get_status function &
+MICRON_STATUS_ECC_1TO4_BITFLIPS
+
+v2: Removed SPINAND_SELECT_TARGET as per the comments & fixed typo
+errors
+
+v1: Add support for Micron SPI Nand device MT29F2G01AAAED
+
+Thirumalesha Narasimhappa (2):
+  mtd: spinand: micron: Generalize the structure names
+  mtd: spinand: micron: Add support for MT29F2G01AAAED
+
+ drivers/mtd/nand/spi/micron.c | 124 ++++++++++++++++++++++++++--------
+ 1 file changed, 94 insertions(+), 30 deletions(-)
+
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
