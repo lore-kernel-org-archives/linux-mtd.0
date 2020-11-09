@@ -2,85 +2,88 @@ Return-Path: <SRS0=FcEh=EP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 84AB1C5517A
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2020 18:23:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE3EEC388F7
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2020 18:24:01 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CB173206C0
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2020 18:23:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2F56C206C0
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2020 18:24:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="y5DbN2Sv";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Pxyzv6hb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB173206C0
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lftAkp2J";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dZ2x+RSR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F56C206C0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=X9TArvLUAOI/fnF5YNyBENEHLhvoEUC0tT9RNuJkdSA=; b=y5DbN2SvwEg4/Za/pOUsWEspPf
-	MYkL+O956b8xEtI73IquqVVI2PLO/D45imLMC1kqz/dZsFyDTzluOm2gtr4s0d0nAMbil5IX8F1Lo
-	R/EVCDQpemFRlmNwg2tuhTcXSrHQjWlTSszN4UkeLGt45pzCJ30IrD8YnQUQ1AtXO7IJWs2iMmZDF
-	vqocdhcFRPxHdyOXbzS2f/92nBH02wX46FNcwOspDNGNo9XCJNDurUDTq0oxpWgkwWMTT5q5b+FZe
-	TyiayEyNnr1GWANXYdEebZLAGW2IC/Y+U2TUHymmgTWpT7Rz/x5zC3NyWIbEPRUzl9q1LTQiBvWG/
-	z+NpM0BA==;
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=I5Qzq+0ubxkGUiovHLDg+IHJkbUZyxVJAcJrGADOVF4=; b=lftAkp2JmPeHBwztE4uaB9gLp
+	sAAE1XEhDv+92kW97qJwgUjzYOhJDeVOpQkedvxW0j9plnh6b+xG7fxRTwL6vYeCs98gEvLh+CDpw
+	S/mntsYYCR1Y6E+z+BJpQX99sxy8BNB3jie+EDSBlV6INggrhfSksnjBQuA4AAYVV2CF63J8PQn8/
+	bpYvlMQ/LJcXWNUgrZRNg2o+ADe/I/X71lHCBcPugpf3UMPy/KHkzWk4AsX6ZLZD+TOo6nNb4Z47I
+	n+Ubo8qogqtuyDiqQyvCJJM2gyk/eZiGhHiVOUjKMW2dKezCRHJSH4jUYjXEwmpdGgE7BhdLSr5sy
+	z9T0maOvA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kcBo3-0000nA-6i; Mon, 09 Nov 2020 18:22:19 +0000
-Received: from mail-wr1-x42b.google.com ([2a00:1450:4864:20::42b])
+	id 1kcBoO-0000vQ-8P; Mon, 09 Nov 2020 18:22:40 +0000
+Received: from mail-wr1-x443.google.com ([2a00:1450:4864:20::443])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kcBo0-0000mC-I0
- for linux-mtd@lists.infradead.org; Mon, 09 Nov 2020 18:22:18 +0000
-Received: by mail-wr1-x42b.google.com with SMTP id b8so9810516wrn.0
- for <linux-mtd@lists.infradead.org>; Mon, 09 Nov 2020 10:22:14 -0800 (PST)
+ id 1kcBo6-0000oM-W2
+ for linux-mtd@lists.infradead.org; Mon, 09 Nov 2020 18:22:30 +0000
+Received: by mail-wr1-x443.google.com with SMTP id 33so9798017wrl.7
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Nov 2020 10:22:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=4P2xmgevp6DARNoI93TPQjmwkxCbh1dSMEz+Iq7USWQ=;
- b=Pxyzv6hbcgjcrX05VpRCx6Ets2223lXot8ZTbClQRJLprCn0ly07zluqvcckUwBv2G
- NIq6z87PB5x9f1wUlv638Irwanc+OCehWWNhnOFFti+l0O7APSHjCjOl9+k8Py5fD6m9
- eUpg7v2rXyNZtFFFL5AWVl1eAmjGjlADa7/4FvXsH5K8UheAwCD+/fH3EMyvjWDiOJnR
- o/SHANbbNGirUUevHyRC0LQBOS2jxr2hOW4gi0YMIrz48DvJrVIRIgs8jWlx4/g9EeoX
- e4kt601ZYAkpa0jtbL1BheC/y7YKMhB1t8j8y3TcDYijFThVu98lbFsKHZPh0lS2XuxR
- q3kQ==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=9CIbThDh8w4ecoFBEiHRVWIUMSh9NKlwBvM35bRIyLc=;
+ b=dZ2x+RSR1DX2DCUtP5JgL1iq06bCkfejTmHpqwxX1MNXX9Z0giEGUDT+kkoOKr8GUp
+ CBOc18Q5VJanvgyyv68e/EVtFijfORDWUgLWavD7CfdH/Mz+wHdYfMSFzJkZjJANQVGY
+ udQauqYQmikmdt8/1Iq5YU1DanleVXtNd7oW9FyddliBQnQVvSOIpMAkwZ+LkvfxhRdj
+ hGlwZoIQ7t8kJMQ01SyLrnaOMjWPkUuOUtIYWB+MBLCJ5i3LviiFcwYpHb5T2JMe4Nq2
+ W+OwgGjMSRO/hO9vkgxSBk5edk4GknqrZIu4cCOkezd6qbeAc6uu/AQqhuFTFiiDaN3w
+ Y3Ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=4P2xmgevp6DARNoI93TPQjmwkxCbh1dSMEz+Iq7USWQ=;
- b=RJ7aFT+gqer2rwdBDW/T6V9KGl/4z/aq2IKgEUhYOxiVDwjxLFebkCLs7PYPKB+t2f
- LyhrocFSRhZZ5kzNAB9mhVCI+fSTvPfTclWAi6k0fZKGTIttU5f5E+38JeBDFQzXNbMa
- Sq2CORQIj1dK0tHt3hRgIwzCzplI+Np4rLOqZS06NCsVW78LuwbgrtNMNWPg/v5zrOGY
- B7z/9jC57o5uz9LljdzmTm7DjgEFXaV2IzwgvOUfYy6b2DhDKWqH7AOtl9wmbz2MiuRd
- ivvkP+pmuEngjXM6f2+MjvC5IU/g+HdPPKZ7IirIwQKDfpzvMUVJzdBlE+HWNnOdCRCt
- aETw==
-X-Gm-Message-State: AOAM5317biKzG1kw8BupgiLsDEyNEybg8HgorRlloxYaBw9ZIBcPWI9v
- ALcOt2aFK8tCnWGNjzS66hE1ww==
-X-Google-Smtp-Source: ABdhPJxhRwyrEVueE23+RLeJQ/TbrawEL5WZ/GkvIUQxW/l/GeVywuz/qg1kBRs7igqCfZa2ZMZnvw==
-X-Received: by 2002:adf:de85:: with SMTP id w5mr4447254wrl.90.1604946133526;
- Mon, 09 Nov 2020 10:22:13 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=9CIbThDh8w4ecoFBEiHRVWIUMSh9NKlwBvM35bRIyLc=;
+ b=n+N+OEuIss4l5saHb7BJf7pr2V9v6QmRXgLzjU0/aHRuxUcM/thMKqspj4yCArIXHC
+ tXqcgRQUsLzFkBYDKlDNzeCrscCi6/av+wk9dKTIdqd1/GM0vjW3cWYKbu8cPTW1zaAs
+ ZzAXOgpvdLmss6rciYOEylzn4fiq87mPTxIF/MNoEWC9BTvT8eOMcih1vAff7Fmgki+U
+ ne88pCUdnocEaw6m8T7Mqv6zoXg74Kv0nSuiguOixj7MgjUakY8ZVgS5Kw6hQznrCNGY
+ QU2Q9OZbHhqDYvL36ifYAFFy0DWu9iFcZ/XkAOsGMo2TMByeuoc1g1F09NzeJd5CA14I
+ 011Q==
+X-Gm-Message-State: AOAM530XN3PG8dUJyNK4gvGUmKFEZUs6P6qIcEvo8MAcW5oe/BS50c7y
+ xkv5JRC/MJBEb5nzr+I+1Z3H9A==
+X-Google-Smtp-Source: ABdhPJzVOMqsyuMiFPQwEChq3eBoQWPBsKOm4UqKxvsffeGBXlN2wudXZN9qN17ACi4i4VEYNRHghw==
+X-Received: by 2002:a5d:4bc7:: with SMTP id l7mr6487234wrt.105.1604946141761; 
+ Mon, 09 Nov 2020 10:22:21 -0800 (PST)
 Received: from dell.default ([91.110.221.180])
- by smtp.gmail.com with ESMTPSA id g186sm735365wma.1.2020.11.09.10.22.09
+ by smtp.gmail.com with ESMTPSA id g186sm735365wma.1.2020.11.09.10.22.20
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 09 Nov 2020 10:22:12 -0800 (PST)
+ Mon, 09 Nov 2020 10:22:21 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: lee.jones@linaro.org
-Subject: [PATCH v3 00/23] Rid W=1 warnings in MTD
-Date: Mon,  9 Nov 2020 18:21:43 +0000
-Message-Id: <20201109182206.3037326-1-lee.jones@linaro.org>
+Subject: [PATCH v3 03/23] mtd: onenand: onenand_base: Fix expected kernel-doc
+ formatting
+Date: Mon,  9 Nov 2020 18:21:46 +0000
+Message-Id: <20201109182206.3037326-4-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201109182206.3037326-1-lee.jones@linaro.org>
+References: <20201109182206.3037326-1-lee.jones@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201109_132216_900500_90B9A1CF 
-X-CRM114-Status: GOOD (  17.86  )
+X-CRM114-CacheID: sfid-20201109_132223_112044_3A75B9DB 
+X-CRM114-Status: GOOD (  22.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,124 +95,1040 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris BREZILLON <b.brezillon.dev@gmail.com>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- Sergey Lapin <slapin@ossfans.org>, dri-devel@lists.freedesktop.org,
- linux-mtd@lists.infradead.org, Frieder Schrempf <frieder.schrempf@kontron.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Choudary Kalluri <punnaia@xilinx.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
- Sumit Semwal <sumit.semwal@linaro.org>, Paul Mackerras <paulus@samba.org>,
- Dan Brown <dan_brown@ieee.org>, linux-samsung-soc@vger.kernel.org,
- Adrian Hunter <ext-adrian.hunter@nokia.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
- Michael Ellerman <mpe@ellerman.id.au>, Krzysztof Kozlowski <krzk@kernel.org>,
- Thomas Gleixner <gleixner@linutronix.de>, Chen-Yu Tsai <wens@csie.org>,
- Kukjin Kim <kgene@kernel.org>, bcm-kernel-feedback-list@broadcom.com,
- linux-media@vger.kernel.org, Tudor Ambarus <tudor.ambarus@microchip.com>,
- Maxime Ripard <mripard@kernel.org>, linaro-mm-sig@lists.linaro.org,
- Dmitriy B <rzk333@gmail.com>, Thomas Gleixner <tglx@linutronix.de>,
- =?UTF-8?q?Jochen=20Sch=C3=A4uble?= <psionic@psionic.de>,
- Naga Sureshkumar Relli <nagasure@xilinx.com>,
- Yoshio Furuyama <ytc-mb-yfuruyama7@kioxia.com>,
- Nicolas Pitre <nico@fluxnic.net>, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, Ben Dooks <ben@simtec.co.uk>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Boris Brezillon <boris.brezillon@collabora.com>, Qiang Yu <yuq825@gmail.com>,
- Philipp Zabel <p.zabel@pengutronix.de>, Richard Weinberger <richard@nod.at>,
- Jian Zhang <jzhang@ti.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, Kyungmin Park <kyungmin.park@samsung.com>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Adrian Hunter <ext-adrian.hunter@nokia.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-VGhpcyBzZXQgaXMgcGFydCBvZiBhIGxhcmdlciBlZmZvcnQgYXR0ZW1wdGluZyB0byBjbGVhbi11
-cCBXPTEKa2VybmVsIGJ1aWxkcywgd2hpY2ggYXJlIGN1cnJlbnRseSBvdmVyd2hlbG1pbmdseSBy
-aWRkbGVkIHdpdGgKbmlnZ2x5IGxpdHRsZSB3YXJuaW5ncy4KCnYyID0+IHYzOgogIC0gUmV3b3Jk
-ZWQgc3ViamVjdCBsaW5lcwoKdjEgPT4gdjI6CiAgLSBBZGRlZCB0YWdzCiAgLSBTYXRpc2ZpZWQg
-TWlxdWVsJ3MgcmV2aWV3IGNvbW1lbnRzCiAgCkxlZSBKb25lcyAoMjMpOgogIG10ZDogbXRkcGFy
-dDogRml4IG1pc2RvY3VtZW50ZWQgZnVuY3Rpb24gcGFyYW1ldGVyICdtdGQnCiAgbXRkOiBkZXZp
-Y2VzOiBwaHJhbTogRmlsZSBoZWFkZXJzIGFyZSBub3QgZ29vZCBjYW5kaWRhdGVzIGZvcgogICAg
-a2VybmVsLWRvYwogIG10ZDogb25lbmFuZDogb25lbmFuZF9iYXNlOiBGaXggZXhwZWN0ZWQga2Vy
-bmVsLWRvYyBmb3JtYXR0aW5nCiAgbXRkOiBkZXZpY2VzOiBkb2NnMzogRml4IGtlcm5lbC1kb2Mg
-J2JhZCBsaW5lJyBhbmQgJ2V4Y2Vzc2l2ZSBkb2MnCiAgICBpc3N1ZXMKICBtdGQ6IEZpeCBtaXNz
-cGVsbGVkIGZ1bmN0aW9uIHBhcmFtZXRlciAnc2VjdGlvbicKICBtdGQ6IG9uZW5hbmQ6IG9uZW5h
-bmRfYmJ0OiBGaXggZXhwZWN0ZWQga2VybmVsLWRvYyBmb3JtYXR0aW5nCiAgbXRkOiBzcGktbm9y
-OiBoaXNpLXNmYzogRGVtb3RlIG5vbi1jb25mb3JtYW50IGtlcm5lbC1kb2MKICBtdGQ6IHViaTog
-YnVpbGQ6IERvY3VtZW50ICd1YmlfbnVtJyBpbiBzdHJ1Y3QgbXRkX2Rldl9wYXJhbQogIG10ZDog
-c3BpbmFuZDogdG9zaGliYTogRGVtb3RlIG5vbi1jb25mb3JtYW50IGtlcm5lbC1kb2MgaGVhZGVy
-CiAgbXRkOiB1Ymk6IGthcGk6IENvcnJlY3QgZG9jdW1lbnRhdGlvbiBmb3IgJ3ViaV9sZWJfcmVh
-ZF9zZydzICdzZ2wnCiAgICBwYXJhbWV0ZXIKICBtdGQ6IHViaTogZWJhOiBGaXggYSBjb3VwbGUg
-b2YgbWlzZG9jdW1lbnRhdGlvbiBpc3N1ZXMKICBtdGQ6IHViaTogd2w6IEZpeCBhIGNvdXBsZSBv
-ZiBrZXJuZWwtZG9jIGlzc3VlcwogIG10ZDogcmF3bmFuZDogYnJjbW5hbmQ6IERlbW90ZSBub24t
-Y29uZm9ybWFudCBrZXJuZWwtZG9jIGhlYWRlcnMKICBtdGQ6IHViaTogZ2x1ZWJpOiBGaXggbWlz
-bmFtZWQgZnVuY3Rpb24gcGFyYW1ldGVyIGRvY3VtZW50YXRpb24KICBtdGQ6IHJhd25hbmQ6IGRp
-c2tvbmNoaXA6IE1hcmtpbmcgdW51c2VkIHZhcmlhYmxlcyBhcyBfX2Fsd2F5c191bnVzZWQKICBt
-dGQ6IHJhd25hbmQ6IGNhZmVfbmFuZDogUmVtb3ZlIHN1cGVyZmx1b3VzIHBhcmFtIGRvYyBhbmQg
-YWRkIGFub3RoZXIKICBtdGQ6IHJhd25hbmQ6IHMzYzI0MTA6IEFkZCBkb2N1bWVudGF0aW9uIGZv
-ciAyIG1pc3Npbmcgc3RydWN0IG1lbWJlcnMKICBtdGQ6IHJhd25hbmQ6IG9tYXBfZWxtOiBGaW5p
-c2ggaGFsZiBwb3B1bGF0ZWQgZnVuY3Rpb24gaGVhZGVyLCBkZW1vdGUKICAgIGVtcHR5IG9uZXMK
-ICBtdGQ6IHJhd25hbmQ6IG9tYXAyOiBGaXggYSBidW5jaCBvZiBrZXJuZWwtZG9jIG1pc2RlbWVh
-bm91cnMKICBtdGQ6IHJhd25hbmQ6IHN1bnhpOiBEb2N1bWVudCAnc3VueGlfbmZjJ3MgJ2NhcHMn
-IG1lbWJlcgogIG10ZDogcmF3bmFuZDogYXJhc2FuOiBEb2N1bWVudCAnYW5mY19vcCdzICdidWYn
-IG1lbWJlcgogIG10ZDogb25lbmFuZDogRml4IHNvbWUga2VybmVsLWRvYyBtaXNkZW1lYW5vdXJz
-CiAgbXRkOiBkZXZpY2VzOiBwb3dlcm52X2ZsYXNoOiBBZGQgZnVuY3Rpb24gbmFtZXMgdG8gaGVh
-ZGVycyBhbmQgZml4CiAgICAnZGV2JwoKIGRyaXZlcnMvbXRkL2RldmljZXMvZG9jZzMuYyAgICAg
-ICAgICAgICAgICAgICB8ICAgNSArLQogZHJpdmVycy9tdGQvZGV2aWNlcy9waHJhbS5jICAgICAg
-ICAgICAgICAgICAgIHwgICAyICstCiBkcml2ZXJzL210ZC9kZXZpY2VzL3Bvd2VybnZfZmxhc2gu
-YyAgICAgICAgICAgfCAgIDUgKy0KIGRyaXZlcnMvbXRkL210ZGNvcmUuYyAgICAgICAgICAgICAg
-ICAgICAgICAgICB8ICAgMiArLQogZHJpdmVycy9tdGQvbXRkcGFydC5jICAgICAgICAgICAgICAg
-ICAgICAgICAgIHwgICAyICstCiBkcml2ZXJzL210ZC9uYW5kL29uZW5hbmQvb25lbmFuZF9iYXNl
-LmMgICAgICAgfCA0NDQgKysrKysrKysrLS0tLS0tLS0tCiBkcml2ZXJzL210ZC9uYW5kL29uZW5h
-bmQvb25lbmFuZF9iYnQuYyAgICAgICAgfCAgMzIgKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L2Fy
-YXNhbi1uYW5kLWNvbnRyb2xsZXIuYyB8ICAgMSArCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9icmNt
-bmFuZC9icmNtbmFuZC5jICAgICAgfCAgIDYgKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L2NhZmVf
-bmFuZC5jICAgICAgICAgICAgICB8ICAgMiArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvZGlza29u
-Y2hpcC5jICAgICAgICAgICAgIHwgICA0ICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9vbWFwMi5j
-ICAgICAgICAgICAgICAgICAgfCAgMTggKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L29tYXBfZWxt
-LmMgICAgICAgICAgICAgICB8ICAgNyArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvczNjMjQxMC5j
-ICAgICAgICAgICAgICAgIHwgICA0ICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9zdW54aV9uYW5k
-LmMgICAgICAgICAgICAgfCAgIDEgKwogZHJpdmVycy9tdGQvbmFuZC9zcGkvdG9zaGliYS5jICAg
-ICAgICAgICAgICAgIHwgICAyICstCiBkcml2ZXJzL210ZC9zcGktbm9yL2NvbnRyb2xsZXJzL2hp
-c2ktc2ZjLmMgICAgfCAgIDIgKy0KIGRyaXZlcnMvbXRkL3ViaS9idWlsZC5jICAgICAgICAgICAg
-ICAgICAgICAgICB8ICAgMSArCiBkcml2ZXJzL210ZC91YmkvZWJhLmMgICAgICAgICAgICAgICAg
-ICAgICAgICAgfCAgIDMgKy0KIGRyaXZlcnMvbXRkL3ViaS9nbHVlYmkuYyAgICAgICAgICAgICAg
-ICAgICAgICB8ICAgMiArLQogZHJpdmVycy9tdGQvdWJpL2thcGkuYyAgICAgICAgICAgICAgICAg
-ICAgICAgIHwgICAyICstCiBkcml2ZXJzL210ZC91Ymkvd2wuYyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgfCAgIDMgKy0KIDIyIGZpbGVzIGNoYW5nZWQsIDI3OCBpbnNlcnRpb25zKCspLCAyNzIg
-ZGVsZXRpb25zKC0pCgpDYzogQWRyaWFuIEh1bnRlciA8ZXh0LWFkcmlhbi5odW50ZXJAbm9raWEu
-Y29tPgpDYzogYmNtLWtlcm5lbC1mZWVkYmFjay1saXN0QGJyb2FkY29tLmNvbQpDYzogQmVuIERv
-b2tzIDxiZW5Ac2ltdGVjLmNvLnVrPgpDYzogQmVuamFtaW4gSGVycmVuc2NobWlkdCA8YmVuaEBr
-ZXJuZWwuY3Jhc2hpbmcub3JnPgpDYzogQm9yaXMgQlJFWklMTE9OIDxiLmJyZXppbGxvbi5kZXZA
-Z21haWwuY29tPgpDYzogQm9yaXMgQnJlemlsbG9uIDxib3Jpcy5icmV6aWxsb25AY29sbGFib3Jh
-LmNvbT4KQ2M6IEJyaWFuIE5vcnJpcyA8Y29tcHV0ZXJzZm9ycGVhY2VAZ21haWwuY29tPgpDYzog
-Q2hlbi1ZdSBUc2FpIDx3ZW5zQGNzaWUub3JnPgpDYzogQ2hvdWRhcnkgS2FsbHVyaSA8cHVubmFp
-YUB4aWxpbnguY29tPgpDYzogIkNocmlzdGlhbiBLw7ZuaWciIDxjaHJpc3RpYW4ua29lbmlnQGFt
-ZC5jb20+CkNjOiBEYW4gQnJvd24gPGRhbl9icm93bkBpZWVlLm9yZz4KQ2M6IERhdmlkIFdvb2Ro
-b3VzZSA8ZHdtdzJAaW5mcmFkZWFkLm9yZz4KQ2M6IERtaXRyaXkgQiA8cnprMzMzQGdtYWlsLmNv
-bT4KQ2M6IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKQ2M6IEZyaWVkZXIgU2NocmVt
-cGYgPGZyaWVkZXIuc2NocmVtcGZAa29udHJvbi5kZT4KQ2M6IEppYW4gWmhhbmcgPGp6aGFuZ0B0
-aS5jb20+CkNjOiAiSm9jaGVuIFNjaMOkdWJsZSIgPHBzaW9uaWNAcHNpb25pYy5kZT4KQ2M6IEth
-bWFsIERhc3UgPGtkYXN1LmtkZXZAZ21haWwuY29tPgpDYzogS3J6eXN6dG9mIEtvemxvd3NraSA8
-a3J6a0BrZXJuZWwub3JnPgpDYzogS3VramluIEtpbSA8a2dlbmVAa2VybmVsLm9yZz4KQ2M6IEt5
-dW5nbWluIFBhcmsgPGt5dW5nbWluLnBhcmtAc2Ftc3VuZy5jb20+CkNjOiBsaW5hcm8tbW0tc2ln
-QGxpc3RzLmxpbmFyby5vcmcKQ2M6IGxpbnV4LW1lZGlhQHZnZXIua2VybmVsLm9yZwpDYzogbGlu
-dXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcKQ2M6IGxpbnV4cHBjLWRldkBsaXN0cy5vemxhYnMu
-b3JnCkNjOiBsaW51eC1zYW1zdW5nLXNvY0B2Z2VyLmtlcm5lbC5vcmcKQ2M6IE1heGltZSBSaXBh
-cmQgPG1yaXBhcmRAa2VybmVsLm9yZz4KQ2M6IE1pY2hhZWwgRWxsZXJtYW4gPG1wZUBlbGxlcm1h
-bi5pZC5hdT4KQ2M6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+CkNj
-OiBOYWdhIFN1cmVzaGt1bWFyIFJlbGxpIDxuYWdhc3VyZUB4aWxpbnguY29tPgpDYzogTmljb2xh
-cyBQaXRyZSA8bmljb0BmbHV4bmljLm5ldD4KQ2M6IFBhdWwgTWFja2VycmFzIDxwYXVsdXNAc2Ft
-YmEub3JnPgpDYzogUGhpbGlwcCBaYWJlbCA8cC56YWJlbEBwZW5ndXRyb25peC5kZT4KQ2M6IFFp
-YW5nIFl1IDx5dXE4MjVAZ21haWwuY29tPgpDYzogUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJk
-QG5vZC5hdD4KQ2M6IFJvYmVydCBKYXJ6bWlrIDxyb2JlcnQuamFyem1pa0BmcmVlLmZyPgpDYzog
-U2VyZ2V5IExhcGluIDxzbGFwaW5Ab3NzZmFucy5vcmc+CkNjOiBTdW1pdCBTZW13YWwgPHN1bWl0
-LnNlbXdhbEBsaW5hcm8ub3JnPgpDYzogVGhvbWFzIEdsZWl4bmVyIDxnbGVpeG5lckBsaW51dHJv
-bml4LmRlPgpDYzogVGhvbWFzIEdsZWl4bmVyIDx0Z2x4QGxpbnV0cm9uaXguZGU+CkNjOiBUdWRv
-ciBBbWJhcnVzIDx0dWRvci5hbWJhcnVzQG1pY3JvY2hpcC5jb20+CkNjOiBWaWduZXNoIFJhZ2hh
-dmVuZHJhIDx2aWduZXNockB0aS5jb20+CkNjOiBZb3NoaW8gRnVydXlhbWEgPHl0Yy1tYi15ZnVy
-dXlhbWE3QGtpb3hpYS5jb20+Ci0tIAoyLjI1LjEKCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
-ZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
-bXRkLwo=
+Fixes the following W=1 kernel build warning(s):
+
+ drivers/mtd/nand/onenand/onenand_base.c:140: warning: Function parameter or member 'mtd' not described in 'onenand_ooblayout_32_64_ecc'
+ drivers/mtd/nand/onenand/onenand_base.c:140: warning: Function parameter or member 'section' not described in 'onenand_ooblayout_32_64_ecc'
+ drivers/mtd/nand/onenand/onenand_base.c:140: warning: Function parameter or member 'oobregion' not described in 'onenand_ooblayout_32_64_ecc'
+ drivers/mtd/nand/onenand/onenand_base.c:200: warning: Function parameter or member 'addr' not described in 'onenand_readw'
+ drivers/mtd/nand/onenand/onenand_base.c:212: warning: Function parameter or member 'value' not described in 'onenand_writew'
+ drivers/mtd/nand/onenand/onenand_base.c:212: warning: Function parameter or member 'addr' not described in 'onenand_writew'
+ drivers/mtd/nand/onenand/onenand_base.c:225: warning: Function parameter or member 'this' not described in 'onenand_block_address'
+ drivers/mtd/nand/onenand/onenand_base.c:225: warning: Function parameter or member 'block' not described in 'onenand_block_address'
+ drivers/mtd/nand/onenand/onenand_base.c:242: warning: Function parameter or member 'this' not described in 'onenand_bufferram_address'
+ drivers/mtd/nand/onenand/onenand_base.c:242: warning: Function parameter or member 'block' not described in 'onenand_bufferram_address'
+
+ NB: Snipped 200 lines for brevity.
+
+Cc: Kyungmin Park <kyungmin.park@samsung.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Adrian Hunter <ext-adrian.hunter@nokia.com>
+Cc: linux-mtd@lists.infradead.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/mtd/nand/onenand/onenand_base.c | 438 ++++++++++++------------
+ 1 file changed, 219 insertions(+), 219 deletions(-)
+
+diff --git a/drivers/mtd/nand/onenand/onenand_base.c b/drivers/mtd/nand/onenand/onenand_base.c
+index 188b8061e1f79..9fca3988ee236 100644
+--- a/drivers/mtd/nand/onenand/onenand_base.c
++++ b/drivers/mtd/nand/onenand/onenand_base.c
+@@ -192,7 +192,7 @@ static const unsigned char ffchars[] = {
+ 
+ /**
+  * onenand_readw - [OneNAND Interface] Read OneNAND register
+- * @param addr		address to read
++ * @addr:		address to read
+  *
+  * Read OneNAND register
+  */
+@@ -203,8 +203,8 @@ static unsigned short onenand_readw(void __iomem *addr)
+ 
+ /**
+  * onenand_writew - [OneNAND Interface] Write OneNAND register with value
+- * @param value		value to write
+- * @param addr		address to write
++ * @value:		value to write
++ * @addr:		address to write
+  *
+  * Write OneNAND register with value
+  */
+@@ -215,8 +215,8 @@ static void onenand_writew(unsigned short value, void __iomem *addr)
+ 
+ /**
+  * onenand_block_address - [DEFAULT] Get block address
+- * @param this		onenand chip data structure
+- * @param block		the block
++ * @this:		onenand chip data structure
++ * @block:		the block
+  * @return		translated block address if DDP, otherwise same
+  *
+  * Setup Start Address 1 Register (F100h)
+@@ -232,8 +232,8 @@ static int onenand_block_address(struct onenand_chip *this, int block)
+ 
+ /**
+  * onenand_bufferram_address - [DEFAULT] Get bufferram address
+- * @param this		onenand chip data structure
+- * @param block		the block
++ * @this:		onenand chip data structure
++ * @block:		the block
+  * @return		set DBS value if DDP, otherwise 0
+  *
+  * Setup Start Address 2 Register (F101h) for DDP
+@@ -249,8 +249,8 @@ static int onenand_bufferram_address(struct onenand_chip *this, int block)
+ 
+ /**
+  * onenand_page_address - [DEFAULT] Get page address
+- * @param page		the page address
+- * @param sector	the sector address
++ * @page:		the page address
++ * @sector:	the sector address
+  * @return		combined page and sector address
+  *
+  * Setup Start Address 8 Register (F107h)
+@@ -268,9 +268,9 @@ static int onenand_page_address(int page, int sector)
+ 
+ /**
+  * onenand_buffer_address - [DEFAULT] Get buffer address
+- * @param dataram1	DataRAM index
+- * @param sectors	the sector address
+- * @param count		the number of sectors
++ * @dataram1:	DataRAM index
++ * @sectors:	the sector address
++ * @count:		the number of sectors
+  * @return		the start buffer value
+  *
+  * Setup Start Buffer Register (F200h)
+@@ -295,8 +295,8 @@ static int onenand_buffer_address(int dataram1, int sectors, int count)
+ 
+ /**
+  * flexonenand_block- For given address return block number
+- * @param this         - OneNAND device structure
+- * @param addr		- Address for which block number is needed
++ * @this:         - OneNAND device structure
++ * @addr:		- Address for which block number is needed
+  */
+ static unsigned flexonenand_block(struct onenand_chip *this, loff_t addr)
+ {
+@@ -359,7 +359,7 @@ EXPORT_SYMBOL(onenand_addr);
+ 
+ /**
+  * onenand_get_density - [DEFAULT] Get OneNAND density
+- * @param dev_id	OneNAND device ID
++ * @dev_id:	OneNAND device ID
+  *
+  * Get OneNAND density from device ID
+  */
+@@ -371,8 +371,8 @@ static inline int onenand_get_density(int dev_id)
+ 
+ /**
+  * flexonenand_region - [Flex-OneNAND] Return erase region of addr
+- * @param mtd		MTD device structure
+- * @param addr		address whose erase region needs to be identified
++ * @mtd:		MTD device structure
++ * @addr:		address whose erase region needs to be identified
+  */
+ int flexonenand_region(struct mtd_info *mtd, loff_t addr)
+ {
+@@ -387,10 +387,10 @@ EXPORT_SYMBOL(flexonenand_region);
+ 
+ /**
+  * onenand_command - [DEFAULT] Send command to OneNAND device
+- * @param mtd		MTD device structure
+- * @param cmd		the command to be sent
+- * @param addr		offset to read from or write to
+- * @param len		number of bytes to read or write
++ * @mtd:		MTD device structure
++ * @cmd:		the command to be sent
++ * @addr:		offset to read from or write to
++ * @len:		number of bytes to read or write
+  *
+  * Send command to OneNAND device. This function is used for middle/large page
+  * devices (1KB/2KB Bytes per page)
+@@ -519,7 +519,7 @@ static int onenand_command(struct mtd_info *mtd, int cmd, loff_t addr, size_t le
+ 
+ /**
+  * onenand_read_ecc - return ecc status
+- * @param this		onenand chip structure
++ * @this:		onenand chip structure
+  */
+ static inline int onenand_read_ecc(struct onenand_chip *this)
+ {
+@@ -543,8 +543,8 @@ static inline int onenand_read_ecc(struct onenand_chip *this)
+ 
+ /**
+  * onenand_wait - [DEFAULT] wait until the command is done
+- * @param mtd		MTD device structure
+- * @param state		state to select the max. timeout value
++ * @mtd:		MTD device structure
++ * @state:		state to select the max. timeout value
+  *
+  * Wait for command done. This applies to all OneNAND command
+  * Read can take up to 30us, erase up to 2ms and program up to 350us
+@@ -625,8 +625,8 @@ static int onenand_wait(struct mtd_info *mtd, int state)
+ 
+ /*
+  * onenand_interrupt - [DEFAULT] onenand interrupt handler
+- * @param irq		onenand interrupt number
+- * @param dev_id	interrupt data
++ * @irq:		onenand interrupt number
++ * @dev_id:	interrupt data
+  *
+  * complete the work
+  */
+@@ -643,8 +643,8 @@ static irqreturn_t onenand_interrupt(int irq, void *data)
+ 
+ /*
+  * onenand_interrupt_wait - [DEFAULT] wait until the command is done
+- * @param mtd		MTD device structure
+- * @param state		state to select the max. timeout value
++ * @mtd:		MTD device structure
++ * @state:		state to select the max. timeout value
+  *
+  * Wait for command done.
+  */
+@@ -659,8 +659,8 @@ static int onenand_interrupt_wait(struct mtd_info *mtd, int state)
+ 
+ /*
+  * onenand_try_interrupt_wait - [DEFAULT] try interrupt wait
+- * @param mtd		MTD device structure
+- * @param state		state to select the max. timeout value
++ * @mtd:		MTD device structure
++ * @state:		state to select the max. timeout value
+  *
+  * Try interrupt based wait (It is used one-time)
+  */
+@@ -689,7 +689,7 @@ static int onenand_try_interrupt_wait(struct mtd_info *mtd, int state)
+ 
+ /*
+  * onenand_setup_wait - [OneNAND Interface] setup onenand wait method
+- * @param mtd		MTD device structure
++ * @mtd:		MTD device structure
+  *
+  * There's two method to wait onenand work
+  * 1. polling - read interrupt status register
+@@ -724,8 +724,8 @@ static void onenand_setup_wait(struct mtd_info *mtd)
+ 
+ /**
+  * onenand_bufferram_offset - [DEFAULT] BufferRAM offset
+- * @param mtd		MTD data structure
+- * @param area		BufferRAM area
++ * @mtd:		MTD data structure
++ * @area:		BufferRAM area
+  * @return		offset given area
+  *
+  * Return BufferRAM offset given area
+@@ -747,11 +747,11 @@ static inline int onenand_bufferram_offset(struct mtd_info *mtd, int area)
+ 
+ /**
+  * onenand_read_bufferram - [OneNAND Interface] Read the bufferram area
+- * @param mtd		MTD data structure
+- * @param area		BufferRAM area
+- * @param buffer	the databuffer to put/get data
+- * @param offset	offset to read from or write to
+- * @param count		number of bytes to read/write
++ * @mtd:		MTD data structure
++ * @area:		BufferRAM area
++ * @buffer:	the databuffer to put/get data
++ * @offset:	offset to read from or write to
++ * @count:		number of bytes to read/write
+  *
+  * Read the BufferRAM area
+  */
+@@ -783,11 +783,11 @@ static int onenand_read_bufferram(struct mtd_info *mtd, int area,
+ 
+ /**
+  * onenand_sync_read_bufferram - [OneNAND Interface] Read the bufferram area with Sync. Burst mode
+- * @param mtd		MTD data structure
+- * @param area		BufferRAM area
+- * @param buffer	the databuffer to put/get data
+- * @param offset	offset to read from or write to
+- * @param count		number of bytes to read/write
++ * @mtd:		MTD data structure
++ * @area:		BufferRAM area
++ * @buffer:	the databuffer to put/get data
++ * @offset:	offset to read from or write to
++ * @count:		number of bytes to read/write
+  *
+  * Read the BufferRAM area with Sync. Burst Mode
+  */
+@@ -823,11 +823,11 @@ static int onenand_sync_read_bufferram(struct mtd_info *mtd, int area,
+ 
+ /**
+  * onenand_write_bufferram - [OneNAND Interface] Write the bufferram area
+- * @param mtd		MTD data structure
+- * @param area		BufferRAM area
+- * @param buffer	the databuffer to put/get data
+- * @param offset	offset to read from or write to
+- * @param count		number of bytes to read/write
++ * @mtd:		MTD data structure
++ * @area:		BufferRAM area
++ * @buffer:	the databuffer to put/get data
++ * @offset:	offset to read from or write to
++ * @count:		number of bytes to read/write
+  *
+  * Write the BufferRAM area
+  */
+@@ -864,8 +864,8 @@ static int onenand_write_bufferram(struct mtd_info *mtd, int area,
+ 
+ /**
+  * onenand_get_2x_blockpage - [GENERIC] Get blockpage at 2x program mode
+- * @param mtd		MTD data structure
+- * @param addr		address to check
++ * @mtd:		MTD data structure
++ * @addr:		address to check
+  * @return		blockpage address
+  *
+  * Get blockpage address at 2x program mode
+@@ -888,8 +888,8 @@ static int onenand_get_2x_blockpage(struct mtd_info *mtd, loff_t addr)
+ 
+ /**
+  * onenand_check_bufferram - [GENERIC] Check BufferRAM information
+- * @param mtd		MTD data structure
+- * @param addr		address to check
++ * @mtd:		MTD data structure
++ * @addr:		address to check
+  * @return		1 if there are valid data, otherwise 0
+  *
+  * Check bufferram if there is data we required
+@@ -930,9 +930,9 @@ static int onenand_check_bufferram(struct mtd_info *mtd, loff_t addr)
+ 
+ /**
+  * onenand_update_bufferram - [GENERIC] Update BufferRAM information
+- * @param mtd		MTD data structure
+- * @param addr		address to update
+- * @param valid		valid flag
++ * @mtd:		MTD data structure
++ * @addr:		address to update
++ * @valid:		valid flag
+  *
+  * Update BufferRAM information
+  */
+@@ -963,9 +963,9 @@ static void onenand_update_bufferram(struct mtd_info *mtd, loff_t addr,
+ 
+ /**
+  * onenand_invalidate_bufferram - [GENERIC] Invalidate BufferRAM information
+- * @param mtd		MTD data structure
+- * @param addr		start address to invalidate
+- * @param len		length to invalidate
++ * @mtd:		MTD data structure
++ * @addr:		start address to invalidate
++ * @len:		length to invalidate
+  *
+  * Invalidate BufferRAM information
+  */
+@@ -986,8 +986,8 @@ static void onenand_invalidate_bufferram(struct mtd_info *mtd, loff_t addr,
+ 
+ /**
+  * onenand_get_device - [GENERIC] Get chip for selected access
+- * @param mtd		MTD device structure
+- * @param new_state	the state which is requested
++ * @mtd:		MTD device structure
++ * @new_state:	the state which is requested
+  *
+  * Get the device and lock it for exclusive access
+  */
+@@ -1024,7 +1024,7 @@ static int onenand_get_device(struct mtd_info *mtd, int new_state)
+ 
+ /**
+  * onenand_release_device - [GENERIC] release chip
+- * @param mtd		MTD device structure
++ * @mtd:		MTD device structure
+  *
+  * Deselect, release chip lock and wake up anyone waiting on the device
+  */
+@@ -1043,10 +1043,10 @@ static void onenand_release_device(struct mtd_info *mtd)
+ 
+ /**
+  * onenand_transfer_auto_oob - [INTERN] oob auto-placement transfer
+- * @param mtd		MTD device structure
+- * @param buf		destination address
+- * @param column	oob offset to read from
+- * @param thislen	oob length to read
++ * @mtd:		MTD device structure
++ * @buf:		destination address
++ * @column:	oob offset to read from
++ * @thislen:	oob length to read
+  */
+ static int onenand_transfer_auto_oob(struct mtd_info *mtd, uint8_t *buf, int column,
+ 				int thislen)
+@@ -1061,9 +1061,9 @@ static int onenand_transfer_auto_oob(struct mtd_info *mtd, uint8_t *buf, int col
+ 
+ /**
+  * onenand_recover_lsb - [Flex-OneNAND] Recover LSB page data
+- * @param mtd		MTD device structure
+- * @param addr		address to recover
+- * @param status	return value from onenand_wait / onenand_bbt_wait
++ * @mtd:		MTD device structure
++ * @addr:		address to recover
++ * @status:	return value from onenand_wait / onenand_bbt_wait
+  *
+  * MLC NAND Flash cell has paired pages - LSB page and MSB page. LSB page has
+  * lower page address and MSB page has higher page address in paired pages.
+@@ -1104,9 +1104,9 @@ static int onenand_recover_lsb(struct mtd_info *mtd, loff_t addr, int status)
+ 
+ /**
+  * onenand_mlc_read_ops_nolock - MLC OneNAND read main and/or out-of-band
+- * @param mtd		MTD device structure
+- * @param from		offset to read from
+- * @param ops:		oob operation description structure
++ * @mtd:		MTD device structure
++ * @from:		offset to read from
++ * @ops:		oob operation description structure
+  *
+  * MLC OneNAND / Flex-OneNAND has 4KB page size and 4KB dataram.
+  * So, read-while-load is not present.
+@@ -1206,9 +1206,9 @@ static int onenand_mlc_read_ops_nolock(struct mtd_info *mtd, loff_t from,
+ 
+ /**
+  * onenand_read_ops_nolock - [OneNAND Interface] OneNAND read main and/or out-of-band
+- * @param mtd		MTD device structure
+- * @param from		offset to read from
+- * @param ops:		oob operation description structure
++ * @mtd:		MTD device structure
++ * @from:		offset to read from
++ * @ops:		oob operation description structure
+  *
+  * OneNAND read main and/or out-of-band data
+  */
+@@ -1335,9 +1335,9 @@ static int onenand_read_ops_nolock(struct mtd_info *mtd, loff_t from,
+ 
+ /**
+  * onenand_read_oob_nolock - [MTD Interface] OneNAND read out-of-band
+- * @param mtd		MTD device structure
+- * @param from		offset to read from
+- * @param ops:		oob operation description structure
++ * @mtd:		MTD device structure
++ * @from:		offset to read from
++ * @ops:		oob operation description structure
+  *
+  * OneNAND read out-of-band data from the spare area
+  */
+@@ -1430,9 +1430,9 @@ static int onenand_read_oob_nolock(struct mtd_info *mtd, loff_t from,
+ 
+ /**
+  * onenand_read_oob - [MTD Interface] Read main and/or out-of-band
+- * @param mtd:		MTD device structure
+- * @param from:		offset to read from
+- * @param ops:		oob operation description structure
++ * @mtd:		MTD device structure
++ * @from:		offset to read from
++ * @ops:		oob operation description structure
+ 
+  * Read main and/or out-of-band
+  */
+@@ -1466,8 +1466,8 @@ static int onenand_read_oob(struct mtd_info *mtd, loff_t from,
+ 
+ /**
+  * onenand_bbt_wait - [DEFAULT] wait until the command is done
+- * @param mtd		MTD device structure
+- * @param state		state to select the max. timeout value
++ * @mtd:		MTD device structure
++ * @state:		state to select the max. timeout value
+  *
+  * Wait for command done.
+  */
+@@ -1517,9 +1517,9 @@ static int onenand_bbt_wait(struct mtd_info *mtd, int state)
+ 
+ /**
+  * onenand_bbt_read_oob - [MTD Interface] OneNAND read out-of-band for bbt scan
+- * @param mtd		MTD device structure
+- * @param from		offset to read from
+- * @param ops		oob operation description structure
++ * @mtd:		MTD device structure
++ * @from:		offset to read from
++ * @ops:		oob operation description structure
+  *
+  * OneNAND read out-of-band data from the spare area for bbt scan
+  */
+@@ -1594,9 +1594,9 @@ int onenand_bbt_read_oob(struct mtd_info *mtd, loff_t from,
+ #ifdef CONFIG_MTD_ONENAND_VERIFY_WRITE
+ /**
+  * onenand_verify_oob - [GENERIC] verify the oob contents after a write
+- * @param mtd		MTD device structure
+- * @param buf		the databuffer to verify
+- * @param to		offset to read from
++ * @mtd:		MTD device structure
++ * @buf:		the databuffer to verify
++ * @to:		offset to read from
+  */
+ static int onenand_verify_oob(struct mtd_info *mtd, const u_char *buf, loff_t to)
+ {
+@@ -1622,10 +1622,10 @@ static int onenand_verify_oob(struct mtd_info *mtd, const u_char *buf, loff_t to
+ 
+ /**
+  * onenand_verify - [GENERIC] verify the chip contents after a write
+- * @param mtd          MTD device structure
+- * @param buf          the databuffer to verify
+- * @param addr         offset to read from
+- * @param len          number of bytes to read and compare
++ * @mtd:          MTD device structure
++ * @buf:          the databuffer to verify
++ * @addr:         offset to read from
++ * @len:          number of bytes to read and compare
+  */
+ static int onenand_verify(struct mtd_info *mtd, const u_char *buf, loff_t addr, size_t len)
+ {
+@@ -1684,11 +1684,11 @@ static void onenand_panic_wait(struct mtd_info *mtd)
+ 
+ /**
+  * onenand_panic_write - [MTD Interface] write buffer to FLASH in a panic context
+- * @param mtd		MTD device structure
+- * @param to		offset to write to
+- * @param len		number of bytes to write
+- * @param retlen	pointer to variable to store the number of written bytes
+- * @param buf		the data to write
++ * @mtd:		MTD device structure
++ * @to:		offset to write to
++ * @len:		number of bytes to write
++ * @retlen:	pointer to variable to store the number of written bytes
++ * @buf:		the data to write
+  *
+  * Write with ECC
+  */
+@@ -1762,11 +1762,11 @@ static int onenand_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 
+ /**
+  * onenand_fill_auto_oob - [INTERN] oob auto-placement transfer
+- * @param mtd		MTD device structure
+- * @param oob_buf	oob buffer
+- * @param buf		source address
+- * @param column	oob offset to write to
+- * @param thislen	oob length to write
++ * @mtd:		MTD device structure
++ * @oob_buf:	oob buffer
++ * @buf:		source address
++ * @column:	oob offset to write to
++ * @thislen:	oob length to write
+  */
+ static int onenand_fill_auto_oob(struct mtd_info *mtd, u_char *oob_buf,
+ 				  const u_char *buf, int column, int thislen)
+@@ -1776,9 +1776,9 @@ static int onenand_fill_auto_oob(struct mtd_info *mtd, u_char *oob_buf,
+ 
+ /**
+  * onenand_write_ops_nolock - [OneNAND Interface] write main and/or out-of-band
+- * @param mtd		MTD device structure
+- * @param to		offset to write to
+- * @param ops		oob operation description structure
++ * @mtd:		MTD device structure
++ * @to:		offset to write to
++ * @ops:		oob operation description structure
+  *
+  * Write main and/or oob with ECC
+  */
+@@ -1957,12 +1957,12 @@ static int onenand_write_ops_nolock(struct mtd_info *mtd, loff_t to,
+ 
+ /**
+  * onenand_write_oob_nolock - [INTERN] OneNAND write out-of-band
+- * @param mtd		MTD device structure
+- * @param to		offset to write to
+- * @param len		number of bytes to write
+- * @param retlen	pointer to variable to store the number of written bytes
+- * @param buf		the data to write
+- * @param mode		operation mode
++ * @mtd:		MTD device structure
++ * @to:		offset to write to
++ * @len:		number of bytes to write
++ * @retlen:	pointer to variable to store the number of written bytes
++ * @buf:		the data to write
++ * @mode:		operation mode
+  *
+  * OneNAND write out-of-band
+  */
+@@ -2070,9 +2070,9 @@ static int onenand_write_oob_nolock(struct mtd_info *mtd, loff_t to,
+ 
+ /**
+  * onenand_write_oob - [MTD Interface] NAND write data and/or out-of-band
+- * @param mtd:		MTD device structure
+- * @param to:		offset to write
+- * @param ops:		oob operation description structure
++ * @mtd:		MTD device structure
++ * @to:			offset to write
++ * @ops:		oob operation description structure
+  */
+ static int onenand_write_oob(struct mtd_info *mtd, loff_t to,
+ 			     struct mtd_oob_ops *ops)
+@@ -2101,9 +2101,9 @@ static int onenand_write_oob(struct mtd_info *mtd, loff_t to,
+ 
+ /**
+  * onenand_block_isbad_nolock - [GENERIC] Check if a block is marked bad
+- * @param mtd		MTD device structure
+- * @param ofs		offset from device start
+- * @param allowbbt	1, if its allowed to access the bbt area
++ * @mtd:		MTD device structure
++ * @ofs:		offset from device start
++ * @allowbbt:	1, if its allowed to access the bbt area
+  *
+  * Check, if the block is bad. Either by reading the bad block table or
+  * calling of the scan function.
+@@ -2144,9 +2144,9 @@ static int onenand_multiblock_erase_verify(struct mtd_info *mtd,
+ 
+ /**
+  * onenand_multiblock_erase - [INTERN] erase block(s) using multiblock erase
+- * @param mtd		MTD device structure
+- * @param instr		erase instruction
+- * @param region	erase region
++ * @mtd:		MTD device structure
++ * @instr:		erase instruction
++ * @region:	erase region
+  *
+  * Erase one or more blocks up to 64 block at a time
+  */
+@@ -2254,10 +2254,10 @@ static int onenand_multiblock_erase(struct mtd_info *mtd,
+ 
+ /**
+  * onenand_block_by_block_erase - [INTERN] erase block(s) using regular erase
+- * @param mtd		MTD device structure
+- * @param instr		erase instruction
+- * @param region	erase region
+- * @param block_size	erase block size
++ * @mtd:		MTD device structure
++ * @instr:		erase instruction
++ * @region:	erase region
++ * @block_size:	erase block size
+  *
+  * Erase one or more blocks one block at a time
+  */
+@@ -2326,8 +2326,8 @@ static int onenand_block_by_block_erase(struct mtd_info *mtd,
+ 
+ /**
+  * onenand_erase - [MTD Interface] erase block(s)
+- * @param mtd		MTD device structure
+- * @param instr		erase instruction
++ * @mtd:		MTD device structure
++ * @instr:		erase instruction
+  *
+  * Erase one or more blocks
+  */
+@@ -2391,7 +2391,7 @@ static int onenand_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 
+ /**
+  * onenand_sync - [MTD Interface] sync
+- * @param mtd		MTD device structure
++ * @mtd:		MTD device structure
+  *
+  * Sync is actually a wait for chip ready function
+  */
+@@ -2408,8 +2408,8 @@ static void onenand_sync(struct mtd_info *mtd)
+ 
+ /**
+  * onenand_block_isbad - [MTD Interface] Check whether the block at the given offset is bad
+- * @param mtd		MTD device structure
+- * @param ofs		offset relative to mtd start
++ * @mtd:		MTD device structure
++ * @ofs:		offset relative to mtd start
+  *
+  * Check whether the block is bad
+  */
+@@ -2425,8 +2425,8 @@ static int onenand_block_isbad(struct mtd_info *mtd, loff_t ofs)
+ 
+ /**
+  * onenand_default_block_markbad - [DEFAULT] mark a block bad
+- * @param mtd		MTD device structure
+- * @param ofs		offset from device start
++ * @mtd:		MTD device structure
++ * @ofs:		offset from device start
+  *
+  * This is the default implementation, which can be overridden by
+  * a hardware specific driver.
+@@ -2460,8 +2460,8 @@ static int onenand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 
+ /**
+  * onenand_block_markbad - [MTD Interface] Mark the block at the given offset as bad
+- * @param mtd		MTD device structure
+- * @param ofs		offset relative to mtd start
++ * @mtd:		MTD device structure
++ * @ofs:		offset relative to mtd start
+  *
+  * Mark the block as bad
+  */
+@@ -2486,10 +2486,10 @@ static int onenand_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 
+ /**
+  * onenand_do_lock_cmd - [OneNAND Interface] Lock or unlock block(s)
+- * @param mtd		MTD device structure
+- * @param ofs		offset relative to mtd start
+- * @param len		number of bytes to lock or unlock
+- * @param cmd		lock or unlock command
++ * @mtd:		MTD device structure
++ * @ofs:		offset relative to mtd start
++ * @len:		number of bytes to lock or unlock
++ * @cmd:		lock or unlock command
+  *
+  * Lock or unlock one or more blocks
+  */
+@@ -2566,9 +2566,9 @@ static int onenand_do_lock_cmd(struct mtd_info *mtd, loff_t ofs, size_t len, int
+ 
+ /**
+  * onenand_lock - [MTD Interface] Lock block(s)
+- * @param mtd		MTD device structure
+- * @param ofs		offset relative to mtd start
+- * @param len		number of bytes to unlock
++ * @mtd:		MTD device structure
++ * @ofs:		offset relative to mtd start
++ * @len:		number of bytes to unlock
+  *
+  * Lock one or more blocks
+  */
+@@ -2584,9 +2584,9 @@ static int onenand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 
+ /**
+  * onenand_unlock - [MTD Interface] Unlock block(s)
+- * @param mtd		MTD device structure
+- * @param ofs		offset relative to mtd start
+- * @param len		number of bytes to unlock
++ * @mtd:		MTD device structure
++ * @ofs:		offset relative to mtd start
++ * @len:		number of bytes to unlock
+  *
+  * Unlock one or more blocks
+  */
+@@ -2602,7 +2602,7 @@ static int onenand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 
+ /**
+  * onenand_check_lock_status - [OneNAND Interface] Check lock status
+- * @param this		onenand chip data structure
++ * @this:		onenand chip data structure
+  *
+  * Check lock status
+  */
+@@ -2636,7 +2636,7 @@ static int onenand_check_lock_status(struct onenand_chip *this)
+ 
+ /**
+  * onenand_unlock_all - [OneNAND Interface] unlock all blocks
+- * @param mtd		MTD device structure
++ * @mtd:		MTD device structure
+  *
+  * Unlock all blocks
+  */
+@@ -2683,10 +2683,10 @@ static void onenand_unlock_all(struct mtd_info *mtd)
+ 
+ /**
+  * onenand_otp_command - Send OTP specific command to OneNAND device
+- * @param mtd	 MTD device structure
+- * @param cmd	 the command to be sent
+- * @param addr	 offset to read from or write to
+- * @param len	 number of bytes to read or write
++ * @mtd:	 MTD device structure
++ * @cmd:	 the command to be sent
++ * @addr:	 offset to read from or write to
++ * @len:	 number of bytes to read or write
+  */
+ static int onenand_otp_command(struct mtd_info *mtd, int cmd, loff_t addr,
+ 				size_t len)
+@@ -2758,11 +2758,11 @@ static int onenand_otp_command(struct mtd_info *mtd, int cmd, loff_t addr,
+ 
+ /**
+  * onenand_otp_write_oob_nolock - [INTERN] OneNAND write out-of-band, specific to OTP
+- * @param mtd		MTD device structure
+- * @param to		offset to write to
+- * @param len		number of bytes to write
+- * @param retlen	pointer to variable to store the number of written bytes
+- * @param buf		the data to write
++ * @mtd:		MTD device structure
++ * @to:		offset to write to
++ * @len:		number of bytes to write
++ * @retlen:	pointer to variable to store the number of written bytes
++ * @buf:		the data to write
+  *
+  * OneNAND write out-of-band only for OTP
+  */
+@@ -2889,11 +2889,11 @@ typedef int (*otp_op_t)(struct mtd_info *mtd, loff_t form, size_t len,
+ 
+ /**
+  * do_otp_read - [DEFAULT] Read OTP block area
+- * @param mtd		MTD device structure
+- * @param from		The offset to read
+- * @param len		number of bytes to read
+- * @param retlen	pointer to variable to store the number of readbytes
+- * @param buf		the databuffer to put/get data
++ * @mtd:		MTD device structure
++ * @from:		The offset to read
++ * @len:		number of bytes to read
++ * @retlen:	pointer to variable to store the number of readbytes
++ * @buf:		the databuffer to put/get data
+  *
+  * Read OTP block area.
+  */
+@@ -2926,11 +2926,11 @@ static int do_otp_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 
+ /**
+  * do_otp_write - [DEFAULT] Write OTP block area
+- * @param mtd		MTD device structure
+- * @param to		The offset to write
+- * @param len		number of bytes to write
+- * @param retlen	pointer to variable to store the number of write bytes
+- * @param buf		the databuffer to put/get data
++ * @mtd:		MTD device structure
++ * @to:		The offset to write
++ * @len:		number of bytes to write
++ * @retlen:	pointer to variable to store the number of write bytes
++ * @buf:		the databuffer to put/get data
+  *
+  * Write OTP block area.
+  */
+@@ -2970,11 +2970,11 @@ static int do_otp_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 
+ /**
+  * do_otp_lock - [DEFAULT] Lock OTP block area
+- * @param mtd		MTD device structure
+- * @param from		The offset to lock
+- * @param len		number of bytes to lock
+- * @param retlen	pointer to variable to store the number of lock bytes
+- * @param buf		the databuffer to put/get data
++ * @mtd:		MTD device structure
++ * @from:		The offset to lock
++ * @len:		number of bytes to lock
++ * @retlen:	pointer to variable to store the number of lock bytes
++ * @buf:		the databuffer to put/get data
+  *
+  * Lock OTP block area.
+  */
+@@ -3018,13 +3018,13 @@ static int do_otp_lock(struct mtd_info *mtd, loff_t from, size_t len,
+ 
+ /**
+  * onenand_otp_walk - [DEFAULT] Handle OTP operation
+- * @param mtd		MTD device structure
+- * @param from		The offset to read/write
+- * @param len		number of bytes to read/write
+- * @param retlen	pointer to variable to store the number of read bytes
+- * @param buf		the databuffer to put/get data
+- * @param action	do given action
+- * @param mode		specify user and factory
++ * @mtd:		MTD device structure
++ * @from:		The offset to read/write
++ * @len:		number of bytes to read/write
++ * @retlen:	pointer to variable to store the number of read bytes
++ * @buf:		the databuffer to put/get data
++ * @action:	do given action
++ * @mode:		specify user and factory
+  *
+  * Handle OTP operation.
+  */
+@@ -3099,10 +3099,10 @@ static int onenand_otp_walk(struct mtd_info *mtd, loff_t from, size_t len,
+ 
+ /**
+  * onenand_get_fact_prot_info - [MTD Interface] Read factory OTP info
+- * @param mtd		MTD device structure
+- * @param len		number of bytes to read
+- * @param retlen	pointer to variable to store the number of read bytes
+- * @param buf		the databuffer to put/get data
++ * @mtd:		MTD device structure
++ * @len:		number of bytes to read
++ * @retlen:	pointer to variable to store the number of read bytes
++ * @buf:		the databuffer to put/get data
+  *
+  * Read factory OTP info.
+  */
+@@ -3115,11 +3115,11 @@ static int onenand_get_fact_prot_info(struct mtd_info *mtd, size_t len,
+ 
+ /**
+  * onenand_read_fact_prot_reg - [MTD Interface] Read factory OTP area
+- * @param mtd		MTD device structure
+- * @param from		The offset to read
+- * @param len		number of bytes to read
+- * @param retlen	pointer to variable to store the number of read bytes
+- * @param buf		the databuffer to put/get data
++ * @mtd:		MTD device structure
++ * @from:		The offset to read
++ * @len:		number of bytes to read
++ * @retlen:	pointer to variable to store the number of read bytes
++ * @buf:		the databuffer to put/get data
+  *
+  * Read factory OTP area.
+  */
+@@ -3131,10 +3131,10 @@ static int onenand_read_fact_prot_reg(struct mtd_info *mtd, loff_t from,
+ 
+ /**
+  * onenand_get_user_prot_info - [MTD Interface] Read user OTP info
+- * @param mtd		MTD device structure
+- * @param retlen	pointer to variable to store the number of read bytes
+- * @param len		number of bytes to read
+- * @param buf		the databuffer to put/get data
++ * @mtd:		MTD device structure
++ * @retlen:	pointer to variable to store the number of read bytes
++ * @len:		number of bytes to read
++ * @buf:		the databuffer to put/get data
+  *
+  * Read user OTP info.
+  */
+@@ -3147,11 +3147,11 @@ static int onenand_get_user_prot_info(struct mtd_info *mtd, size_t len,
+ 
+ /**
+  * onenand_read_user_prot_reg - [MTD Interface] Read user OTP area
+- * @param mtd		MTD device structure
+- * @param from		The offset to read
+- * @param len		number of bytes to read
+- * @param retlen	pointer to variable to store the number of read bytes
+- * @param buf		the databuffer to put/get data
++ * @mtd:		MTD device structure
++ * @from:		The offset to read
++ * @len:		number of bytes to read
++ * @retlen:	pointer to variable to store the number of read bytes
++ * @buf:		the databuffer to put/get data
+  *
+  * Read user OTP area.
+  */
+@@ -3163,11 +3163,11 @@ static int onenand_read_user_prot_reg(struct mtd_info *mtd, loff_t from,
+ 
+ /**
+  * onenand_write_user_prot_reg - [MTD Interface] Write user OTP area
+- * @param mtd		MTD device structure
+- * @param from		The offset to write
+- * @param len		number of bytes to write
+- * @param retlen	pointer to variable to store the number of write bytes
+- * @param buf		the databuffer to put/get data
++ * @mtd:		MTD device structure
++ * @from:		The offset to write
++ * @len:		number of bytes to write
++ * @retlen:	pointer to variable to store the number of write bytes
++ * @buf:		the databuffer to put/get data
+  *
+  * Write user OTP area.
+  */
+@@ -3179,9 +3179,9 @@ static int onenand_write_user_prot_reg(struct mtd_info *mtd, loff_t from,
+ 
+ /**
+  * onenand_lock_user_prot_reg - [MTD Interface] Lock user OTP area
+- * @param mtd		MTD device structure
+- * @param from		The offset to lock
+- * @param len		number of bytes to unlock
++ * @mtd:		MTD device structure
++ * @from:		The offset to lock
++ * @len:		number of bytes to unlock
+  *
+  * Write lock mark on spare area in page 0 in OTP block
+  */
+@@ -3234,7 +3234,7 @@ static int onenand_lock_user_prot_reg(struct mtd_info *mtd, loff_t from,
+ 
+ /**
+  * onenand_check_features - Check and set OneNAND features
+- * @param mtd		MTD data structure
++ * @mtd:		MTD data structure
+  *
+  * Check and set OneNAND features
+  * - lock scheme
+@@ -3324,8 +3324,8 @@ static void onenand_check_features(struct mtd_info *mtd)
+ 
+ /**
+  * onenand_print_device_info - Print device & version ID
+- * @param device        device ID
+- * @param version	version ID
++ * @device:        device ID
++ * @version:	version ID
+  *
+  * Print device & version ID
+  */
+@@ -3355,7 +3355,7 @@ static const struct onenand_manufacturers onenand_manuf_ids[] = {
+ 
+ /**
+  * onenand_check_maf - Check manufacturer ID
+- * @param manuf         manufacturer ID
++ * @manuf:         manufacturer ID
+  *
+  * Check manufacturer ID
+  */
+@@ -3381,7 +3381,7 @@ static int onenand_check_maf(int manuf)
+ 
+ /**
+ * flexonenand_get_boundary	- Reads the SLC boundary
+-* @param onenand_info		- onenand info structure
++* @onenand_info:		- onenand info structure
+ **/
+ static int flexonenand_get_boundary(struct mtd_info *mtd)
+ {
+@@ -3422,7 +3422,7 @@ static int flexonenand_get_boundary(struct mtd_info *mtd)
+ /**
+  * flexonenand_get_size - Fill up fields in onenand_chip and mtd_info
+  * 			  boundary[], diesize[], mtd->size, mtd->erasesize
+- * @param mtd		- MTD device structure
++ * @mtd:		- MTD device structure
+  */
+ static void flexonenand_get_size(struct mtd_info *mtd)
+ {
+@@ -3493,9 +3493,9 @@ static void flexonenand_get_size(struct mtd_info *mtd)
+ 
+ /**
+  * flexonenand_check_blocks_erased - Check if blocks are erased
+- * @param mtd_info	- mtd info structure
+- * @param start		- first erase block to check
+- * @param end		- last erase block to check
++ * @mtd_info:	- mtd info structure
++ * @start:		- first erase block to check
++ * @end:		- last erase block to check
+  *
+  * Converting an unerased block from MLC to SLC
+  * causes byte values to change. Since both data and its ECC
+@@ -3550,7 +3550,7 @@ static int flexonenand_check_blocks_erased(struct mtd_info *mtd, int start, int
+ 
+ /**
+  * flexonenand_set_boundary	- Writes the SLC boundary
+- * @param mtd			- mtd info structure
++ * @mtd:			- mtd info structure
+  */
+ static int flexonenand_set_boundary(struct mtd_info *mtd, int die,
+ 				    int boundary, int lock)
+@@ -3640,7 +3640,7 @@ static int flexonenand_set_boundary(struct mtd_info *mtd, int die,
+ 
+ /**
+  * onenand_chip_probe - [OneNAND Interface] The generic chip probe
+- * @param mtd		MTD device structure
++ * @mtd:		MTD device structure
+  *
+  * OneNAND detection method:
+  *   Compare the values from command with ones from register
+@@ -3688,7 +3688,7 @@ static int onenand_chip_probe(struct mtd_info *mtd)
+ 
+ /**
+  * onenand_probe - [OneNAND Interface] Probe the OneNAND device
+- * @param mtd		MTD device structure
++ * @mtd:		MTD device structure
+  */
+ static int onenand_probe(struct mtd_info *mtd)
+ {
+@@ -3783,7 +3783,7 @@ static int onenand_probe(struct mtd_info *mtd)
+ 
+ /**
+  * onenand_suspend - [MTD Interface] Suspend the OneNAND flash
+- * @param mtd		MTD device structure
++ * @mtd:		MTD device structure
+  */
+ static int onenand_suspend(struct mtd_info *mtd)
+ {
+@@ -3792,7 +3792,7 @@ static int onenand_suspend(struct mtd_info *mtd)
+ 
+ /**
+  * onenand_resume - [MTD Interface] Resume the OneNAND flash
+- * @param mtd		MTD device structure
++ * @mtd:		MTD device structure
+  */
+ static void onenand_resume(struct mtd_info *mtd)
+ {
+@@ -3807,8 +3807,8 @@ static void onenand_resume(struct mtd_info *mtd)
+ 
+ /**
+  * onenand_scan - [OneNAND Interface] Scan for the OneNAND device
+- * @param mtd		MTD device structure
+- * @param maxchips	Number of chips to scan for
++ * @mtd:		MTD device structure
++ * @maxchips:	Number of chips to scan for
+  *
+  * This fills out all the not initialized function pointers
+  * with the defaults.
+@@ -3985,7 +3985,7 @@ int onenand_scan(struct mtd_info *mtd, int maxchips)
+ 
+ /**
+  * onenand_release - [OneNAND Interface] Free resources held by the OneNAND device
+- * @param mtd		MTD device structure
++ * @mtd:		MTD device structure
+  */
+ void onenand_release(struct mtd_info *mtd)
+ {
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
