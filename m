@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F961C2D0A3
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2020 18:25:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EDE9C2D0A3
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2020 18:25:21 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AE79F206C0
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2020 18:25:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F3A0E206C0
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2020 18:25:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="aWUgWmIc";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ToJRou/G"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE79F206C0
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="a6XIxkF1";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FGiuz2Cs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F3A0E206C0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,64 +26,63 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=7exq9FZcK91QKadC7LkoAj/07LRwSH4wl7Rr5Ki/KgE=; b=aWUgWmIcM/74eGPkVqAZZHQFN
-	n5gZ+0aHVfLpR88zMPrKLLFbEkzM+KBq7THrTv9EkBHBN+4HOHyqEMqOsvX4HGTq1RZYwN2MTKcii
-	ej5EbS2h3nUndlsV5s5reIUFc0fjh2ubQvDiV/MnpUd45bNfdVyvLSrfWntIdkS9VIlHIOE0pVx8Y
-	S76Yj+fOdKeK6P+yderEoRslSll4Q/jaeTMwDw0CVk3NfHGBczFnGnpg07pb9Yc2DA6tmU9buog9G
-	EfVNXN2duoLGDV8+YVZV+KGccclhzA6ZqRC175tUyYo0IBMFboCV5PGtDbkOl7daCNHIbdJylVeqD
-	Kgj79D7rw==;
+	 bh=xMq+x52hv0S47USEc6kSR00N4utMwKTqtcqsBq7W4RA=; b=a6XIxkF1ahP0cYPCxqWdnFrw7
+	00i7Yt1f8iF6J8BjK6spMK3912o8Ek6Fl9ZCuDsrdkDj//vYqEZTDQO6s2EWWYIMNqu/FGO7d70z7
+	h1yes7ECOMBLBDJXMMxpPvrurlHGygIbumupxPOgm1qzmfd/eh80AKnqLXXkxBDpFqiT0NvArxSts
+	AOAt/GGe0PA89q1PFezLLoYxsfK+meGpILMYTCIm/MPL8urszRrCPs5nTvx36GEOoRBAqlpGYrULr
+	6R9WmichwF+caMrXlawl77PIYwvZO7xOIlOIynG7Y5j2tfGfK1smY48wIKadnKtVMdK9xwsKhLLLX
+	KONiX8lKA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kcBq1-0001fs-TE; Mon, 09 Nov 2020 18:24:21 +0000
-Received: from mail-wm1-x343.google.com ([2a00:1450:4864:20::343])
+	id 1kcBqS-0001ss-K5; Mon, 09 Nov 2020 18:24:48 +0000
+Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kcBoJ-0000sx-Dw
- for linux-mtd@lists.infradead.org; Mon, 09 Nov 2020 18:22:41 +0000
-Received: by mail-wm1-x343.google.com with SMTP id v5so404365wmh.1
- for <linux-mtd@lists.infradead.org>; Mon, 09 Nov 2020 10:22:35 -0800 (PST)
+ id 1kcBoM-0000uH-9F
+ for linux-mtd@lists.infradead.org; Mon, 09 Nov 2020 18:22:48 +0000
+Received: by mail-wr1-x441.google.com with SMTP id 23so9806283wrc.8
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Nov 2020 10:22:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=DaSgExpL1nCtBP1Xc6kSLtHGXCrLErSmtz6Y4QPAfFg=;
- b=ToJRou/GY83l76OBzOA3w6EcozYKqJ27Q2TR7tt6LGIQ6blHcsNnvL9ilkDPN1mDhk
- WR1lD8Ai2jcj2p5Zvq8/hoCtpifwJ0crOUSBwh27ZDta9uWV5Hi0d4gd5adiZ/EYvU0A
- lgogovwxBFq+GVsnNpmooRxslu9IMrsVrBx6Bd4YkcTz2WgfvPXRORsaCAb+nTrvOTEE
- EkDX3ucAfnIDqt12fWwV6RSbF9WiAichHRikKcLs97F/dujnuJEqNTWyoTgb4IMJ/5le
- CjQRMDSSQVbSliV3EUvkdbw+1pM6wy4jkGWSgDACPpJ5nmMDWZvLwW3fA+KVMbvI6zCL
- 2z1A==
+ bh=93EjZ3Q1Gw8Ho51hZkZvcyMJpfj7h+RPmd54ZDyuP+E=;
+ b=FGiuz2Cst7W8YGzjuH7oR/80riR1y3ryV13ErPsnJPIku+MH0/ysQZFcPAyi6Rak30
+ A7uyeT+Pv0IY9nd1ybvTN4TTOIXRxo6WyAarJc69qAIgAVWwItf9dE2Xipuv1iDs6PrZ
+ 8VTA94w7a0qq8YfA8iPwN69GCrDDKsiXEpnuvGsK2Q8x1fo6N5raOMUGb46Kdp8/akPj
+ M7cPQ0B3xEAWcsbudiOqaKsqamxeMJEKo93pm8ktcyX3KUUcKcdtzEqbVbAJ6pVplMfw
+ SGiLPCC+vSwii8OmWho/PSnPB70IwNmqiRCgM2kfdWrmSgxw2nTZHbNsJgNpO2ILGkXn
+ Wqew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=DaSgExpL1nCtBP1Xc6kSLtHGXCrLErSmtz6Y4QPAfFg=;
- b=n6atK8IDJuZBpghdh8/USEQV7TtA0GAF5u0QwspjNU/GkitG7V2XFJV/TgBT+MzF/0
- iXx1da8sS+Ifhqpsg4moEboQmLC8Qa1v0wKAIyfNzur0eCSQeulbs7iU/yrsxpltykxk
- c3hb8n0ggtc7z5nPo22mrQaEZuUA1UeInIF1pqiHD8rJFztdjnKXbrwGEvnm/ads1S6j
- t/GRX/zPTg4ZN/FiJ/m+0/HQxQKYxcduU1dY5Frkn4mHgE/y2o5Yu9IOas9b41sUu43f
- oCyLP1sM9vU8kKlviwLY3rQX8c+OmP3fx8qY3Mbd+B+y458dzNNONBU1B2XH3pJ0YSfC
- yvQQ==
-X-Gm-Message-State: AOAM531ugcBY+izjMN/vFdB0V5uNd9pGlZ0JZntRIyQcAtpQfU/iEDfD
- nZ4D8cbgougrdh119fYdBKWDpw==
-X-Google-Smtp-Source: ABdhPJwpufBZ2yW4s3uXsteza0ZdpSIpxc+C+KW+uYuuZbu541OjO8nozJyEoKXm5P2A2knRB+Jwag==
-X-Received: by 2002:a1c:a445:: with SMTP id n66mr465425wme.51.1604946154476;
- Mon, 09 Nov 2020 10:22:34 -0800 (PST)
+ bh=93EjZ3Q1Gw8Ho51hZkZvcyMJpfj7h+RPmd54ZDyuP+E=;
+ b=iVT1p9EGGsdEnCsVdBqtst8HPx1+s5AiM5hgdIuIG/asbGhrsx5VEaNfCtoar6V6pN
+ cKBSa/frQbieN8FozrEIFFrzw0HC7AnNBIom8m8ydlE7L3QzYDRY5G6m1pG9s4YErJE8
+ JT75rCricRlL6/fcqj3i9ALOw5OuIIRuO6yJuVrBitmjUuuBRuCCB9QoeD3Qtbfag8AI
+ x6rOzzJPfPtRrRJR9eDNtKOMyRw8p5Bx3nBG2JAx/F3EP/Jp6QzJxXGFCWYpzYLD3ina
+ gIlDQigGUhTcKnIcyuba069Mj9HA9UhMLwQnuNUokXKjfjYNXrkL2nY5x737tQS2dSFZ
+ L50g==
+X-Gm-Message-State: AOAM530piEcvcA+ryVEyBk8eh6ZTfyV0g35Ot9eJtvtnX8ifZjKtfFNA
+ uLneJjMmkpFG1VgzOj/vPZxEwQ==
+X-Google-Smtp-Source: ABdhPJzjA29ReDKoS8meuG3AwVUifiDdGOjuNnliZQ8OcrzScX2JdL+j0w6/+uklVrrqt8pkwQWMfw==
+X-Received: by 2002:a5d:670f:: with SMTP id o15mr2175982wru.204.1604946157299; 
+ Mon, 09 Nov 2020 10:22:37 -0800 (PST)
 Received: from dell.default ([91.110.221.180])
- by smtp.gmail.com with ESMTPSA id g186sm735365wma.1.2020.11.09.10.22.33
+ by smtp.gmail.com with ESMTPSA id g186sm735365wma.1.2020.11.09.10.22.36
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 09 Nov 2020 10:22:33 -0800 (PST)
+ Mon, 09 Nov 2020 10:22:36 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: lee.jones@linaro.org
-Subject: [PATCH v3 10/23] mtd: ubi: kapi: Correct documentation for
- 'ubi_leb_read_sg's 'sgl' parameter
-Date: Mon,  9 Nov 2020 18:21:53 +0000
-Message-Id: <20201109182206.3037326-11-lee.jones@linaro.org>
+Subject: [PATCH v3 12/23] mtd: ubi: wl: Fix a couple of kernel-doc issues
+Date: Mon,  9 Nov 2020 18:21:55 +0000
+Message-Id: <20201109182206.3037326-13-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201109182206.3037326-1-lee.jones@linaro.org>
 References: <20201109182206.3037326-1-lee.jones@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201109_132235_539139_2CAFC067 
-X-CRM114-Status: GOOD (  15.38  )
+X-CRM114-CacheID: sfid-20201109_132238_418330_C41F414C 
+X-CRM114-Status: GOOD (  16.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,8 +104,8 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/mtd/ubi/kapi.c:464: warning: Function parameter or member 'sgl' not described in 'ubi_leb_read_sg'
- drivers/mtd/ubi/kapi.c:464: warning: Excess function parameter 'buf' description in 'ubi_leb_read_sg'
+ drivers/mtd/ubi/wl.c:584: warning: Function parameter or member 'nested' not described in 'schedule_erase'
+ drivers/mtd/ubi/wl.c:1075: warning: Excess function parameter 'shutdown' description in '__erase_worker'
 
 Cc: Richard Weinberger <richard@nod.at>
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>
@@ -114,22 +113,30 @@ Cc: Vignesh Raghavendra <vigneshr@ti.com>
 Cc: linux-mtd@lists.infradead.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/ubi/kapi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/ubi/wl.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
-index 9718f5aaaf694..0fce99ff29b58 100644
---- a/drivers/mtd/ubi/kapi.c
-+++ b/drivers/mtd/ubi/kapi.c
-@@ -450,7 +450,7 @@ EXPORT_SYMBOL_GPL(ubi_leb_read);
-  * ubi_leb_read_sg - read data into a scatter gather list.
-  * @desc: volume descriptor
-  * @lnum: logical eraseblock number to read from
-- * @buf: buffer where to store the read data
-+ * @sgl: UBI scatter gather list to store the read data
-  * @offset: offset within the logical eraseblock to read from
-  * @len: how many bytes to read
-  * @check: whether UBI has to check the read data's CRC or not.
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 7847de75a74ca..8455f1d47f3c9 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -575,6 +575,7 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
+  * @vol_id: the volume ID that last used this PEB
+  * @lnum: the last used logical eraseblock number for the PEB
+  * @torture: if the physical eraseblock has to be tortured
++ * @nested: denotes whether the work_sem is already held in read mode
+  *
+  * This function returns zero in case of success and a %-ENOMEM in case of
+  * failure.
+@@ -1063,8 +1064,6 @@ static int ensure_wear_leveling(struct ubi_device *ubi, int nested)
+  * __erase_worker - physical eraseblock erase worker function.
+  * @ubi: UBI device description object
+  * @wl_wrk: the work object
+- * @shutdown: non-zero if the worker has to free memory and exit
+- * because the WL sub-system is shutting down
+  *
+  * This function erases a physical eraseblock and perform torture testing if
+  * needed. It also takes care about marking the physical eraseblock bad if
 -- 
 2.25.1
 
