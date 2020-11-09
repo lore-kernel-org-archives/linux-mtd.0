@@ -2,85 +2,84 @@ Return-Path: <SRS0=FcEh=EP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92BF5C2D0A3
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2020 15:02:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACAE4C2D0A3
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2020 17:27:26 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ECFE82083B
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2020 15:02:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2C2342083B
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2020 17:27:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CC2M8ssl";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="xUf+oeyd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ECFE82083B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="3MQiwShj";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="vWdI2/oH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C2342083B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=QI8R0nEVNKev4EPqF0ajSOVnW98qbVtOf2DH7TEilz8=; b=CC2M8sslAywQzEpiAYIe6H+FR
-	an1QOmskrT7+/Ps6vsMVEElnkgjaZyzSaBI4ez5QKGF/WSwIulG0cPZVce7xR5Ud39aKkseH7ZZEB
-	ub/4HXU2Y4OdnQRGgeJkYfZOTuNBVxRJPWZ6NV+eevFlVgZs9oVPLoahXcfjzOVncg934EVNw0QNS
-	6r5vlLaIA6LMeFw9zYTtBz/ou/rtSy2eKNQhXtrkL/5raKvzQx19b96GtKc0Y8BFpH26IMaEvWOuA
-	pn+9R4LYfzhQCX9M93Iq8Ky1Ed9CXtPnocLfSMhg/609GCez1rwwyz7jtvoCaxVrboGb7mWXBHgyS
-	9A1/QHB3g==;
+	 bh=j2RvahOxeSemAsanOMVaMYF+OYr+2FqY44RAgczvmnc=; b=3MQiwShj8g78vkvpKMV6naHnE
+	sNFDi3Iiv43OQQWdVRc6SEzbuH7FzoBu1qGcAV1UJoZVP68Gq4/AllQ5w2QXxWbddQWsnHMA9QGm/
+	ouWLNXxKlyhBf6DS7JTyQAygjPHNYB2o8gVFZRrWyvNpNnmkAok9r0tTdI0wD5G7HdUymQ9xmJ/t5
+	5hAcBXouVrH/cDXIVZWKulD9wXlUxn3OFmBBL//b9Ux0Hnixu9gXSX8bvqRFfgQNIERzHYmYECoi4
+	wLrB9UaRfi//Vn8nylIUVEbSY57WSAJs3R/bPiYj0EWEu2WKwgdnIQstKK59PKu7toRDridGMXZdA
+	iWyrZ95BA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kc8gR-0000aH-Up; Mon, 09 Nov 2020 15:02:15 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1kcAvm-0003YH-W0; Mon, 09 Nov 2020 17:26:15 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kc8gO-0000Yk-No
- for linux-mtd@lists.infradead.org; Mon, 09 Nov 2020 15:02:13 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A9F1ket058199;
- Mon, 9 Nov 2020 09:01:46 -0600
+ id 1kcAvk-0003Wt-53
+ for linux-mtd@lists.infradead.org; Mon, 09 Nov 2020 17:26:13 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A9HQ6oo010288;
+ Mon, 9 Nov 2020 11:26:06 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1604934106;
- bh=R/MyJRO0FsAP6ABvU4Z5CteFalwpfUz81HkhvOHleB8=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=xUf+oeydismZTHHqoZI1UQALQQxI4trtqqiRemZxzc3UZbjtxRhWiMtERgAP3qIm4
- 7UB276OCEFipwq5emDeW9emCsAzg7eFT6IW73R6zHeaQZ2dz+cLciHXf9MiymR5I/g
- M3C5K7SnBxF6l0ouFg7OT3NP0frWJMIPedJcYCCE=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A9F1kmX124739
+ s=ti-com-17Q1; t=1604942767;
+ bh=eKRlGEeVdSpzyOS3CbMbMx61s3L73kVGKe+o4x55G0s=;
+ h=From:To:CC:Subject:Date:In-Reply-To:References;
+ b=vWdI2/oHkvCy16HluTWuU73GQuOjQ7R0Nk4GFVvy/SHM8v2ci12FVsb/EyEI9+RW2
+ zctfwl8OnYwREa5EgzvVT8y1+BfFT5Pvd3vPp2dP3oCED1/zIe7ct+dOv7wtsXmtlW
+ JcoXprmr20wqdNhRUv+Z0Q2San3HGAPw3lVC/iZU=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A9HQ6ug059918
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 9 Nov 2020 09:01:46 -0600
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ Mon, 9 Nov 2020 11:26:06 -0600
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 9 Nov
- 2020 09:01:45 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ 2020 11:26:06 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 9 Nov 2020 09:01:46 -0600
-Received: from [10.250.233.179] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A9F1hew056077;
- Mon, 9 Nov 2020 09:01:44 -0600
-Subject: Re: [PATCH v3] mtd: spi-nor: Add support for Cypress cy15x104q
-To: Tim Harvey <tharvey@gateworks.com>, <Tudor.Ambarus@microchip.com>
-References: <20200424065626.8196-1-s.hauer@pengutronix.de>
- <13199742.Uhtxi0mpr9@192.168.0.120>
- <CAJ+vNU2SmCkUuq6K6MQ06G0tHi5ZxnM4G+yVRADMjLC3yQ2N4A@mail.gmail.com>
+ Frontend Transport; Mon, 9 Nov 2020 11:26:06 -0600
+Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A9HQ3UY046797;
+ Mon, 9 Nov 2020 11:26:03 -0600
 From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <eee149e2-385a-271b-0ebb-39f1e10e2b8d@ti.com>
-Date: Mon, 9 Nov 2020 20:31:42 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+To: <linux-kernel@vger.kernel.org>, Pratyush Yadav <p.yadav@ti.com>, Tudor
+ Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, <linux-mtd@lists.infradead.org>, Richard
+ Weinberger <richard@nod.at>
+Subject: Re: [PATCH v16 00/15] mtd: spi-nor: add xSPI Octal DTR support
+Date: Mon, 9 Nov 2020 22:55:49 +0530
+Message-ID: <160494271262.25072.15509428200904851771.b4-ty@ti.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201005153138.6437-1-p.yadav@ti.com>
+References: <20201005153138.6437-1-p.yadav@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJ+vNU2SmCkUuq6K6MQ06G0tHi5ZxnM4G+yVRADMjLC3yQ2N4A@mail.gmail.com>
-Content-Language: en-US
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201109_100212_896722_625D908A 
-X-CRM114-Status: GOOD (  26.32  )
+X-CRM114-CacheID: sfid-20201109_122612_331562_0FB1188D 
+X-CRM114-Status: GOOD (  13.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,106 +91,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>, Sascha Hauer <s.hauer@pengutronix.de>,
- linux-mtd@lists.infradead.org, Sascha Hauer <kernel@pengutronix.de>,
- miquel.raynal@bootlin.com
+Cc: Boris Brezillon <boris.brezillon@collabora.com>,
+ Sekhar Nori <nsekhar@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-On 11/6/20 12:24 AM, Tim Harvey wrote:
-> On Thu, May 28, 2020 at 1:13 AM <Tudor.Ambarus@microchip.com> wrote:
->>
->> On Friday, April 24, 2020 9:56:26 AM EEST Sascha Hauer wrote:
->>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the
->>> content is safe
->>>
->>> The Cypress cy15b104q and cy15v104q are 4Mbit serial SPI F-RAM devices.
->>> Add support for them to the spi-nor driver.
->>>
->>> The actual Device ID of this chip is 7f 7f 7f 7f 7f 7f c2 2c 04. That is
->>> six times the continuation code 7f followed by c2 for Ramtron.
->>> Unfortunately the chip sends the Device ID in reversed order, so the
->>> continuation code is not at the beginning, but instead at the end. Even
->>> more unfortunate is that when reading further the chip sends more 7f
->>> codes which means we are not even able to count the continuation codes.
->>> We can only hope that this reversed Device ID will never match any other
->>> devices ID.
->>>
->>> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
->>
->> Collisions are improbable as of now, the solution from above is good
->> enough. In case of future collisions one can introduce an INFO9 macro,
->> with the downsize that struct flash_info would grow and we have lots of
->> flashes. A more elegant solution would be to introduce dedicated
->> flash ID tables for each bank in JESP106BA.
->>
->> Amended commit description with the above text and applied. Thanks.
->>
+On Mon, 5 Oct 2020 21:01:23 +0530, Pratyush Yadav wrote:
+> This series adds support for Octal DTR flashes in the SPI NOR framework,
+> and then adds hooks for the Cypress Semper and Micron Xcella flashes to
+> allow running them in Octal DTR mode. This series assumes that the flash
+> is handed to the kernel in Legacy SPI mode.
 > 
-> Greetings,
+> Tested on Micron MT35X and S28HS flashes for Octal DTR. Tested on Micron
+> MT25Q, and Cypress S25FL for regressions. All flashes were tested by
+> running a read/write stress test on top of UBIFS. On the Cypress S28HS
+> flash 1-bit ECC had to be used to allow UBIFS to work since partial page
+> writes don't work with 2-bit ECC.
 > 
-> I've got a board with a  CY15B104Q-LHXI on it and I found that it's id
-> reads as  7f 7f 7f 7f 7f 7f c2 26 08 so it fails the match added above
-> in a2644d5f36: mtd: spi-nor: Add support for Cypress cy15x104q
-> 
-> I also found a reference in
-> https://community.cypress.com/docs/DOC-14647 that states "that newer
-> 1.8 V devices have the 9 device ID bytes coming out in the other order
-> which requires a minor change in the ID entry" which would explain the
-> situation you encountered.
-> 
+> [...]
 
-So, Cypress seems to have fixed ID table to follow JEP106BA standard.
+With comments on 14/15 addressed:
 
-> Adding '{ "cy15x104q",  INFO(0x7f7f7f, 0, 512 * 1024, 1,
-> SPI_NOR_NO_ERASE) },' works for the part I have.
-> 
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git spi-nor/next, thanks!
+[01/15] mtd: spi-nor: core: use EOPNOTSUPP instead of ENOTSUPP
+        https://git.kernel.org/mtd/c/39bdfb789b
+[02/15] mtd: spi-nor: add spi_nor_controller_ops_{read_reg, write_reg, erase}()
+        https://git.kernel.org/mtd/c/6e1bf55d72
+[03/15] mtd: spi-nor: add support for DTR protocol
+        https://git.kernel.org/mtd/c/0e30f47232
+[04/15] mtd: spi-nor: sfdp: get command opcode extension type from BFPT
+        https://git.kernel.org/mtd/c/0e1b2fc4e5
+[05/15] mtd: spi-nor: sfdp: parse xSPI Profile 1.0 table
+        https://git.kernel.org/mtd/c/fb27f19897
+[06/15] mtd: spi-nor: core: use dummy cycle and address width info from SFDP
+        https://git.kernel.org/mtd/c/6c6a2b2b8e
+[07/15] mtd: spi-nor: core: do 2 byte reads for SR and FSR in DTR mode
+        https://git.kernel.org/mtd/c/354b412967
+[08/15] mtd: spi-nor: Introduce SNOR_F_IO_MODE_EN_VOLATILE
+        https://git.kernel.org/mtd/c/c6908077b1
+[09/15] mtd: spi-nor: Parse SFDP SCCR Map
+        https://git.kernel.org/mtd/c/981a8d60e0
+[10/15] mtd: spi-nor: core: enable octal DTR mode when possible
+        https://git.kernel.org/mtd/c/a33c89db4c
+[11/15] mtd: spi-nor: sfdp: detect Soft Reset sequence support from BFPT
+        https://git.kernel.org/mtd/c/1131324aa5
+[12/15] mtd: spi-nor: core: perform a Soft Reset on shutdown
+        https://git.kernel.org/mtd/c/d73ee7534c
+[13/15] mtd: spi-nor: core: disable Octal DTR mode on suspend.
+        https://git.kernel.org/mtd/c/1b65c43f70
+[14/15] mtd: spi-nor: spansion: add support for Cypress Semper flash
+        https://git.kernel.org/mtd/c/c3266af101
+[15/15] mtd: spi-nor: micron-st: allow using MT35XU512ABA in Octal DTR mode
+        https://git.kernel.org/mtd/c/ad624dfd7b
 
-NACK, 0x7F is continuation code and not actual flash ID code. See JEDEC
-standard JEP106BA for more details. In short, driver should just keep
-looking at next byte in the sequence for manf ID when it reads a value
-of 0x7F.
-
-You will have to extend spi_nor_read_id() function to
-take care of continuation code and read more bytes in order to get the
-actual Manuf/device ID. And then walk through
-spi_nor_manufacturer->parts table looking for the corresponding entry.
-
-Would need to store bank number (implied by number of continuation
-codes) as part of flash_info struct for cross reference during lookup
-
-
-> Would it be wrong to add additional parts with the same name and
-> different id's? It seems to me duplicate names would break
-> spi_nor_scan when passed a name but work fine for scanning by id. 
-
-
-Ideally yes, but in case of cy15x104q there are two revisions of flash,
-one with correct ID code and other with ID code reversed and
-unfortunately, would need to make an exception here.
-
-> I also think that '{ "cy15x104q",  INFO6(0x042cc2, 0x7f7f7f, 512 * 1024,
-> 1, SPI_NOR_NO_ERASE) },' is way too specific for 'cy15x104q' because
-> it is won't match any of the other identified parts:
-> 
-> CY15B104Q-PZXI     7F7F7F7F7F7FC22C03 51-85075 8-pin PDIP Industrial
-> CY15B104QN-50SXA   7F7F7F7F7F7FC22C40 001-85261 8-pin SOIC (EIAJ) Automotive
-> CY15V104QN-50SXI   7F7F7F7F7F7FC22C04 002-18131 8-pin GQFN Industrial
-> CY15B104QN-20LPXC  7F7F7F7F7F7FC22CA1 002-18131 8-pin GQFN Commercial
-> CY15B104QN-20LPXI  7F7F7F7F7F7FC22C01 002-18131 8-pin GQFN Industrial
-> CY15V104QN-20LPXC  7F7F7F7F7F7FC22CA5 002-18131 8-pin GQFN Commercial
-> CY15V104QN-20LPXI  7F7F7F7F7F7FC22C05 002-18131 8-pin GQFN Industrial
-> CY15B104QN-50LPXI  7F7F7F7F7F7FC22C00 002-18131 8-pin GQFN Industrial
-> 
-
-Indeed.. A patch fixing the same would be very much appreciated. Thanks!
-
+--
 Regards
 Vignesh
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
