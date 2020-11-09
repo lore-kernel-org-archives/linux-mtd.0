@@ -5,19 +5,19 @@ X-Spam-Level:
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 270E5C2D0A3
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2020 18:26:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F68EC5517A
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2020 18:26:54 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8AFEE20663
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2020 18:26:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AB8B420663
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2020 18:26:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jReZYR43";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Fowc4nWI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8AFEE20663
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fKzNrkNy";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hnIv3xHQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AB8B420663
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,64 +26,64 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=qYFXGHJ+seoQipdoVZO+eC0JavciE+RxMUNfbt8cpEk=; b=jReZYR43j2VIx2yIC+0hw5+Md
-	po9nvhpu667XUMJyOlc1f5Dwto1v01n03SIvmVQeeM923ujl2/NewnVSSfIR65kCbrbXWvzaMgKzX
-	rfAbS3KOPRvstTM3pJe7pKvOa0jYg1bIr3nObOtrMkv6iRnSXtuPOmNEBGASiU0627txAfCwWdmmS
-	BqSFSzGST0pul9nvdFbzxD0F3XnorLgpXbmOeHJYztrUw862QDOT7kRnOKA9chN4aRR1dfPLPiwtI
-	c15/E1ZGjmthFUi0jB1DD6/K/DEpHQsuocmFdSaKcZ/pFqJ6X9MmuWtwBGbsp8kqiR/55g5RnNhbz
-	70iS//zlg==;
+	 bh=VPmFi9keU8XXLwJ1mHvrMWnqQc9Fy1yV2x++bxjPY7Q=; b=fKzNrkNyv4ec5bqXBnqhcZh4r
+	rnlg0OGHKe5pFp6/vFe4hPIoVSHZtKxSxjdtcrGlwbr31PiSA4eZ3VggqPK+ulZk3sFmFPCGTJolL
+	KYt0lvUR5SCCWr1NsF3+9ZcDjsea06HHeqErw0yAU1BJKMjPkthF9WqimMbJV5L78iPngzMjJH2gS
+	FQvk2E1VSMz7c1zJcYMKbj73QEJ06l6v15u8W+2aGoSOCsuPoboW6uV/rOYgMihZM3ucrM8sziqmj
+	TFJOXLr+77pvCvKeqHEK2LZ1gaKeguy/YVB+vkvw9soCkB9Zq1534PDHk8XYm4y9rThvT3ar1+XTK
+	L3mjXB8Rw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kcBri-0002kJ-2B; Mon, 09 Nov 2020 18:26:06 +0000
-Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
+	id 1kcBrF-0002XC-4C; Mon, 09 Nov 2020 18:25:37 +0000
+Received: from mail-wr1-x443.google.com ([2a00:1450:4864:20::443])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kcBoW-00014B-S8
- for linux-mtd@lists.infradead.org; Mon, 09 Nov 2020 18:23:01 +0000
-Received: by mail-wr1-x441.google.com with SMTP id r17so5895445wrw.1
- for <linux-mtd@lists.infradead.org>; Mon, 09 Nov 2020 10:22:48 -0800 (PST)
+ id 1kcBoU-0000ya-Kx
+ for linux-mtd@lists.infradead.org; Mon, 09 Nov 2020 18:22:58 +0000
+Received: by mail-wr1-x443.google.com with SMTP id w1so9828614wrm.4
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Nov 2020 10:22:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=L9e594iGsPQazHtR8mr0tF4GNyBoavTbOlvYUU648dY=;
- b=Fowc4nWIl5UjfkRn1KnlXrVSIhCsQvwnyUJUB8dRFS033HoYYZsVbJCQp2FL/nW24N
- 5ftinzvGbPsxHO6fOkiDCp5ivHx2mvHosErMhnQHv/Wuq2/GYBgs80xokPb+20OlfEzr
- +FHNhNcL3RNUiKUw4Hz5q9iSekIBsMvDX6H6U8K2WZpIdrKoIKYBO2lzPa6CNIQ2mO/S
- ZNO+Fi6NhxmPWJqrNrlMJnhL5uiADzl56VGSrPt6EembETnexf2swYXdO6DgSyboAa4a
- OmKwsq8Jq/7P4qczzbb/g7ogknbNqLtoTo/wq1gvzxyFgAWtm6skrKgqnqk0jNMXFjit
- LHvw==
+ bh=tkJ226wW4T/WFBWAXYAYxSOD3N/A9uUc453pKIqhWNc=;
+ b=hnIv3xHQzK4vGHqLPgeKIlXEoxGlX40FuncVJiGSRcaWOMt6IjHpgKwD0EH4POESnm
+ 6mZYdUgIB4Krx0LuV3VIHbnNSdX5+/gJ5wBJc8HvoZyix/37Nusji2mRqtPKGmx/rjX6
+ E7M1WhQJT0Ei+AXyGJNPeI8WDJo8itEjTgi3KFI7vl8zNWYxwwREaS7T+Dqz209xE4yk
+ oualc01T7JcNNjacXTYXNZkakn8qfoZfdRkbLFOBrr1S5tx8sI3hnHVjxCnIvSVMNaSJ
+ yAIrr8SLVSIbBnLA6mhM5UPNkBEyz+/E9zS8ei+kHp0IHvHIdRh0SItSjLN17df7FUMG
+ J2Zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=L9e594iGsPQazHtR8mr0tF4GNyBoavTbOlvYUU648dY=;
- b=iWbrWspVbwYA9zESjSlmYTeib41MPHgBF0c6HRJhbSynesoK2kEGJ66fLFMLMOwzfC
- Vi8soE/4Lqy4NXau+sX88I8pcKxFR6dWkhxzv0+rSdsGeBUYfovdiaWEIMStNniNS6Xk
- HoJV/OwBlkORJwy56EAiMYlWNKnSk9mjPFFuIjyKHADkt9ZGLoevZ/Q0/g2I8gEMcASf
- BAHI6GUeanh+Q6/7Qb7Tk6upJLWPJRpDADtDIuOmE9+YQAR51aAiEaIHrkIUbEq+G7oi
- pfvv0subaOdLjt0+toKVz+k6jsd7gwt0UfYAeYWRwAwr+xjC/7dwscuwrtmfjLGvpETm
- yJDw==
-X-Gm-Message-State: AOAM533VNJzFLc22dQ0BJ7/plqwPymRgxFito2GkCxN6wq1CpItNJVIz
- 9TJnZFHrxuG2q4Foyyq1MGCl1A==
-X-Google-Smtp-Source: ABdhPJxmIJ9Ax6XRUDE0G/dCChXRGe/fAYbAJyqkQ7mX0pIyla0LsBqdxXqXoQObZe3CXyXscaCGkQ==
-X-Received: by 2002:adf:eb4c:: with SMTP id u12mr20471487wrn.73.1604946167786; 
- Mon, 09 Nov 2020 10:22:47 -0800 (PST)
+ bh=tkJ226wW4T/WFBWAXYAYxSOD3N/A9uUc453pKIqhWNc=;
+ b=uXqUQ88JJs8sUKWjvvVKDVMRq5OTjz+FUSMOeGwQQQnb9moYTqJcx1kM5mipdx+QFJ
+ cBw81L8sTi6U/0rIPBu3BxU1/dFVlRr8lHQY0qkL1SvDgYBtknsshnpmWxUKXFKj9IZR
+ rNVv6BATYn4ol/KZRU6lVfRgWLSVd+hYRCjq3wDzOT/ELDdg9BkpZGqfjuNWPBrc4IL6
+ +sbdy7TXI2G6CGO132yduhyZqDihrQye0ieZwrL27ZfanjOZ6WQK4pWNDydVxE6/++w6
+ WdaTlb/4dT2AzpV4vTCJkfqVo8v7a3SALHqpAfgSiWG7A/8FhGV+Tp0VQlqGeg62f3el
+ V5rA==
+X-Gm-Message-State: AOAM530oBOdF5Rcinoq8F4I22GjsHKPlurV8/xHGm/8IiNkkg8BPYsu9
+ Sfe4FIpgWYASShVoZyo06ChX4g==
+X-Google-Smtp-Source: ABdhPJyeWbF4IXe3J+rChMedpclviC8/eufVt3JW57d/2S+UA46Kq8Z4Wfo6mzD+v6wBNgAyYwk7sg==
+X-Received: by 2002:a5d:56c7:: with SMTP id m7mr20826857wrw.201.1604946165213; 
+ Mon, 09 Nov 2020 10:22:45 -0800 (PST)
 Received: from dell.default ([91.110.221.180])
- by smtp.gmail.com with ESMTPSA id g186sm735365wma.1.2020.11.09.10.22.46
+ by smtp.gmail.com with ESMTPSA id g186sm735365wma.1.2020.11.09.10.22.44
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 09 Nov 2020 10:22:47 -0800 (PST)
+ Mon, 09 Nov 2020 10:22:44 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: lee.jones@linaro.org
-Subject: [PATCH v3 19/23] mtd: rawnand: omap2: Fix a bunch of kernel-doc
- misdemeanours
-Date: Mon,  9 Nov 2020 18:22:02 +0000
-Message-Id: <20201109182206.3037326-20-lee.jones@linaro.org>
+Subject: [PATCH v3 17/23] mtd: rawnand: s3c2410: Add documentation for 2
+ missing struct members
+Date: Mon,  9 Nov 2020 18:22:00 +0000
+Message-Id: <20201109182206.3037326-18-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201109182206.3037326-1-lee.jones@linaro.org>
 References: <20201109182206.3037326-1-lee.jones@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201109_132249_070227_D04AB407 
-X-CRM114-Status: GOOD (  17.53  )
+X-CRM114-CacheID: sfid-20201109_132246_836794_7541D1C3 
+X-CRM114-Status: GOOD (  15.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,130 +95,59 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>, Jian Zhang <jzhang@ti.com>
+Cc: linux-samsung-soc@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ Krzysztof Kozlowski <krzk@kernel.org>, Ben Dooks <ben@simtec.co.uk>,
+ Kukjin Kim <kgene@kernel.org>, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Correct 'controller' typo while we're at it.
+
 Fixes the following W=1 kernel build warning(s):
 
- drivers/mtd/nand/raw/omap2.c:191: warning: Function parameter or member 'info' not described in 'omap_prefetch_enable'
- drivers/mtd/nand/raw/omap2.c:221: warning: Function parameter or member 'cs' not described in 'omap_prefetch_reset'
- drivers/mtd/nand/raw/omap2.c:221: warning: Function parameter or member 'info' not described in 'omap_prefetch_reset'
- drivers/mtd/nand/raw/omap2.c:946: warning: Function parameter or member 'chip' not described in 'omap_enable_hwecc'
- drivers/mtd/nand/raw/omap2.c:946: warning: Excess function parameter 'mtd' description in 'omap_enable_hwecc'
- drivers/mtd/nand/raw/omap2.c:1017: warning: Function parameter or member 'chip' not described in 'omap_dev_ready'
- drivers/mtd/nand/raw/omap2.c:1017: warning: Excess function parameter 'mtd' description in 'omap_dev_ready'
- drivers/mtd/nand/raw/omap2.c:1036: warning: Function parameter or member 'chip' not described in 'omap_enable_hwecc_bch'
- drivers/mtd/nand/raw/omap2.c:1036: warning: Excess function parameter 'mtd' description in 'omap_enable_hwecc_bch'
- drivers/mtd/nand/raw/omap2.c:1142: warning: Function parameter or member 'ecc_calc' not described in '_omap_calculate_ecc_bch'
- drivers/mtd/nand/raw/omap2.c:1142: warning: Excess function parameter 'ecc_code' description in '_omap_calculate_ecc_bch'
- drivers/mtd/nand/raw/omap2.c:1270: warning: Function parameter or member 'ecc_calc' not described in 'omap_calculate_ecc_bch_sw'
- drivers/mtd/nand/raw/omap2.c:1270: warning: Excess function parameter 'ecc_code' description in 'omap_calculate_ecc_bch_sw'
- drivers/mtd/nand/raw/omap2.c:1284: warning: Function parameter or member 'ecc_calc' not described in 'omap_calculate_ecc_bch_multi'
- drivers/mtd/nand/raw/omap2.c:1284: warning: Excess function parameter 'ecc_code' description in 'omap_calculate_ecc_bch_multi'
- drivers/mtd/nand/raw/omap2.c:1681: warning: Function parameter or member 'info' not described in 'is_elm_present'
- drivers/mtd/nand/raw/omap2.c:1681: warning: Function parameter or member 'elm_node' not described in 'is_elm_present'
- drivers/mtd/nand/raw/omap2.c:1681: warning: Excess function parameter 'omap_nand_info' description in 'is_elm_present'
+ drivers/mtd/nand/raw/s3c2410.c:172: warning: Function parameter or member 'controller' not described in 's3c2410_nand_info'
+ drivers/mtd/nand/raw/s3c2410.c:172: warning: Function parameter or member 'freq_transition' not described in 's3c2410_nand_info'
 
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Jian Zhang <jzhang@ti.com>
+Cc: Kukjin Kim <kgene@kernel.org>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Ben Dooks <ben@simtec.co.uk>
 Cc: linux-mtd@lists.infradead.org
+Cc: linux-samsung-soc@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/mtd/nand/raw/omap2.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ drivers/mtd/nand/raw/s3c2410.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
-index 4cc47ab7f01ad..fbb9955f24671 100644
---- a/drivers/mtd/nand/raw/omap2.c
-+++ b/drivers/mtd/nand/raw/omap2.c
-@@ -184,6 +184,7 @@ static inline struct omap_nand_info *mtd_to_omap(struct mtd_info *mtd)
-  * @dma_mode: dma mode enable (1) or disable (0)
-  * @u32_count: number of bytes to be transferred
-  * @is_write: prefetch read(0) or write post(1) mode
-+ * @info: NAND device structure containing platform data
-  */
- static int omap_prefetch_enable(int cs, int fifo_th, int dma_mode,
- 	unsigned int u32_count, int is_write, struct omap_nand_info *info)
-@@ -213,7 +214,7 @@ static int omap_prefetch_enable(int cs, int fifo_th, int dma_mode,
- 	return 0;
- }
- 
--/**
-+/*
-  * omap_prefetch_reset - disables and stops the prefetch engine
-  */
- static int omap_prefetch_reset(int cs, struct omap_nand_info *info)
-@@ -938,7 +939,7 @@ static int omap_calculate_ecc(struct nand_chip *chip, const u_char *dat,
+diff --git a/drivers/mtd/nand/raw/s3c2410.c b/drivers/mtd/nand/raw/s3c2410.c
+index cb2d1b4e278cb..f0a4535c812aa 100644
+--- a/drivers/mtd/nand/raw/s3c2410.c
++++ b/drivers/mtd/nand/raw/s3c2410.c
+@@ -133,7 +133,8 @@ enum s3c_nand_clk_state {
  
  /**
-  * omap_enable_hwecc - This function enables the hardware ecc functionality
-- * @mtd: MTD device structure
-+ * @chip: NAND chip object
-  * @mode: Read/Write mode
+  * struct s3c2410_nand_info - NAND controller state.
+- * @mtds: An array of MTD instances on this controoler.
++ * @controller: Base controller structure.
++ * @mtds: An array of MTD instances on this controller.
+  * @platform: The platform data for this board.
+  * @device: The platform device we bound to.
+  * @clk: The clock resource for this controller.
+@@ -145,6 +146,7 @@ enum s3c_nand_clk_state {
+  * @clk_rate: The clock rate from @clk.
+  * @clk_state: The current clock state.
+  * @cpu_type: The exact type of this controller.
++ * @freq_transition: CPUFreq notifier block
   */
- static void omap_enable_hwecc(struct nand_chip *chip, int mode)
-@@ -1008,7 +1009,7 @@ static int omap_wait(struct nand_chip *this)
- 
- /**
-  * omap_dev_ready - checks the NAND Ready GPIO line
-- * @mtd: MTD device structure
-+ * @chip: NAND chip object
-  *
-  * Returns true if ready and false if busy.
-  */
-@@ -1021,7 +1022,7 @@ static int omap_dev_ready(struct nand_chip *chip)
- 
- /**
-  * omap_enable_hwecc_bch - Program GPMC to perform BCH ECC calculation
-- * @mtd: MTD device structure
-+ * @chip: NAND chip object
-  * @mode: Read/Write mode
-  *
-  * When using BCH with SW correction (i.e. no ELM), sector size is set
-@@ -1130,7 +1131,7 @@ static u8  bch8_polynomial[] = {0xef, 0x51, 0x2e, 0x09, 0xed, 0x93, 0x9a, 0xc2,
-  * _omap_calculate_ecc_bch - Generate ECC bytes for one sector
-  * @mtd:	MTD device structure
-  * @dat:	The pointer to data on which ecc is computed
-- * @ecc_code:	The ecc_code buffer
-+ * @ecc_calc:	The ecc_code buffer
-  * @i:		The sector number (for a multi sector page)
-  *
-  * Support calculating of BCH4/8/16 ECC vectors for one sector
-@@ -1258,7 +1259,7 @@ static int _omap_calculate_ecc_bch(struct mtd_info *mtd,
-  * omap_calculate_ecc_bch_sw - ECC generator for sector for SW based correction
-  * @chip:	NAND chip object
-  * @dat:	The pointer to data on which ecc is computed
-- * @ecc_code:	The ecc_code buffer
-+ * @ecc_calc:	Buffer storing the calculated ECC bytes
-  *
-  * Support calculating of BCH4/8/16 ECC vectors for one sector. This is used
-  * when SW based correction is required as ECC is required for one sector
-@@ -1274,7 +1275,7 @@ static int omap_calculate_ecc_bch_sw(struct nand_chip *chip,
-  * omap_calculate_ecc_bch_multi - Generate ECC for multiple sectors
-  * @mtd:	MTD device structure
-  * @dat:	The pointer to data on which ecc is computed
-- * @ecc_code:	The ecc_code buffer
-+ * @ecc_calc:	Buffer storing the calculated ECC bytes
-  *
-  * Support calculating of BCH4/8/16 ecc vectors for the entire page in one go.
-  */
-@@ -1673,7 +1674,8 @@ static int omap_read_page_bch(struct nand_chip *chip, uint8_t *buf,
- 
- /**
-  * is_elm_present - checks for presence of ELM module by scanning DT nodes
-- * @omap_nand_info: NAND device structure containing platform data
-+ * @info: NAND device structure containing platform data
-+ * @elm_node: ELM's DT node
-  */
- static bool is_elm_present(struct omap_nand_info *info,
- 			   struct device_node *elm_node)
+ struct s3c2410_nand_info {
+ 	/* mtd info */
 -- 
 2.25.1
 
