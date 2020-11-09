@@ -5,19 +5,19 @@ X-Spam-Level:
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB03AC388F7
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2020 18:24:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C21BDC388F7
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2020 18:25:03 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3542E206A1
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2020 18:24:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 492E9206A1
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2020 18:25:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="3ZPckYRI";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="E5ipTHd3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3542E206A1
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rEcvr9Fq";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ooFGARyL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 492E9206A1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,64 +26,65 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=U2qQDQ1GZNoYh5+3bCaHAfsFV+3oZIgi7dGkGWvNuZc=; b=3ZPckYRIHXH3XV5YzEfuprriI
-	u/r58OHxDY2Yi1SVJwhrJkF/4LMJ+Eabh+514Hu0gTIiYRe7H8lEA01aLv/SHKQDYYPBtYQn6GJ6U
-	vH1bwzs7vO5CkoaEedgK7If/XD3LJvwlhXEFFmOAJI7Zqm9WLVfJb7L4iqEbaOiC2sifwrz2oU0W5
-	5WHfSOJ/DLKCP+PWKUrfCtX1Y713ajCYKjNorc84+qXl/05Rq2vTD+xp1esiBHcZBIHjawqGVbUIb
-	5kJdDMdvBGzl5+Mqikc0BKE6xU4sR8BSdzY0igJclbtyTbRiY6l1a4OVjaDKSQlAsN5mIp/iw5sHQ
-	YVGqd1T5Q==;
+	 bh=BKjX9nDZ7angBmjuBCOly57WrtoT9qKEAnrd/m7nGAw=; b=rEcvr9FqyZ7H1WUcNRhhCqZjT
+	uSqCCH4XrPjWtYW0fsXCQ2CaLF9hCAe9lIS+Q0z/2zLZIVneP//aum+92lgR58ajoi1+L6tdlF0Z1
+	Oe7uG4kzXzS6OcEQ47ayKVmcNiTjtbX513DqxhbbT94KOa2Nl+M/S7Ra2buAWCt9QGFEWqxtCWhED
+	D/jrn2w8Sgka8M3X0RusFawZoS9/xNU1IxL4fODbTMoHd+kCGOiLqVfCu+bUrxm3x9ukx8GxO9bqA
+	w7tIeEiltbj0z8aBm8eFGiEvJvX0GdIrpVsgdLHafb28NnilOAgMo7Za1oogMT9vNmE5s8Lt8HVVm
+	vGFPPYDQw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kcBpD-0001Kr-Oh; Mon, 09 Nov 2020 18:23:31 +0000
-Received: from mail-wm1-x343.google.com ([2a00:1450:4864:20::343])
+	id 1kcBpQ-0001OR-E7; Mon, 09 Nov 2020 18:23:45 +0000
+Received: from mail-wm1-x341.google.com ([2a00:1450:4864:20::341])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kcBoF-0000rT-Ff
- for linux-mtd@lists.infradead.org; Mon, 09 Nov 2020 18:22:36 +0000
-Received: by mail-wm1-x343.google.com with SMTP id v5so404155wmh.1
- for <linux-mtd@lists.infradead.org>; Mon, 09 Nov 2020 10:22:31 -0800 (PST)
+ id 1kcBoG-0000rv-Rt
+ for linux-mtd@lists.infradead.org; Mon, 09 Nov 2020 18:22:39 +0000
+Received: by mail-wm1-x341.google.com with SMTP id t67so367827wmt.5
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Nov 2020 10:22:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=LEqBSYfgnwhk/ZNzzzB95lzeseOVAaohNofEs1LOZBI=;
- b=E5ipTHd3WeDI78ksj0wsN8ta6sheG/AQB8BQ8iXDHY5Vcd5UP94Rmeb7qV39CI/m/s
- b/TNUumxNIHspIcHhdFCsiyjqRYTDi6pnvzjl7SpwuZ+Oxt03xpdAj/3MRJXnqIcQqWJ
- 2CWq8IcW42vMXfoIzw9qhqEQzXFH2P7lqowbg2tr3Hh8NbC7AA/znooc5voi/95YHJWY
- oayfshr76vF8oeDXsIWE4y755y3n4vV4To8KDCOWY1QgtknHx0PM6y01BzoWa4VjGVS3
- lm90zOwPqown5kRN4b1GJ0vNIkHGg1TCABjsQk3PkyG7Wq5ZPMW7LC2B3OmnIXnbkm9I
- pOkA==
+ bh=zmRHhQEVdc7j5b8GRJ+bwBPDfCwyz1df7aW7vS1l850=;
+ b=ooFGARyLJowx89bv4c+IWUlkxGlUcbdgBeYj9e3XDQ4tCbbK29cBwDi/2apoE7Ezen
+ aA4ZXA9omb1aR9rI7SUOtGlFYdS/pk/N36+XDCt+tV9I0JroBpZHWrSayKdbuWE9kVjW
+ VU61NyViDdUZ0VJQrkaUGClVY7E5PnoS+BEztEliNmV77vSeoAClw1knzcI37pw/FNDL
+ g2S8pSaJHPjwmTkB9M7CPrQ+y/1ALLDt0+xYjrjaoDuBZSIps7MbG3cRRL0/mPwhpGb/
+ bdATGXrtQ2CwCcMzRVH2Lp9U5RI2lDhOCMuKnDQH0XRLHfKPyzKW7/5JwpKDcj29yVIi
+ Fq9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=LEqBSYfgnwhk/ZNzzzB95lzeseOVAaohNofEs1LOZBI=;
- b=kZn9zul1FU3WC4uSfM+CTSNVMlpOXXYbVHpd7MqljKajaoVsGwqQV5FWsFj1VcOoZi
- 87e7ZEdhxTPkgJfkxWCxy0bA2eDxf2Gwn5hmpWnKEqbHqhjwyAf5zsG2eVz85DGL/ZNA
- x/2OJ7eAsVnSeclsKp7gCclmSjbu2KX5l0OWK8cGKQc9uNQcOxlLobzd5RvootZi4qVk
- Hci+vs32N6fFL052bSe0lWenZdcEyCpT5LyCxDBmVZMjQU8wovBfJo1xKj47Wc/AekCx
- biOzJpw6oA9gQIYKhQf1ZcRCa5QBx3+zuAAz5QYEbxv+plKH5QeNis0AhnH9bt6BIdos
- /J9g==
-X-Gm-Message-State: AOAM532mmIdFvjXPrU2qTee9iVGtT8dfpbG9dURsu8i1pA67HICpAsEl
- Rhkw/nc/Ol1h8jI/fji3aM/2iw==
-X-Google-Smtp-Source: ABdhPJyaVPP3HEd2IjowyvIOVawlg8jsDXag6dU6Ag6aKnnQvcujBiDSl7HF2Rx1NPFQXIBYU4qlLg==
-X-Received: by 2002:a1c:a98c:: with SMTP id s134mr443690wme.159.1604946150581; 
- Mon, 09 Nov 2020 10:22:30 -0800 (PST)
+ bh=zmRHhQEVdc7j5b8GRJ+bwBPDfCwyz1df7aW7vS1l850=;
+ b=C0Sv7UI7cVkIfiDgWyDy8eNJFSLekkUcQNC6wTK4YiRNEtCmiGNfqY722mLwdPHuS3
+ gGwi6aYiyexl6ObwaMY7bD60odZm5O8eDjm3quDS8axOPiVz7rUa46c48ji1dj/0kt9q
+ pmhukaw48xT3V8SVMwcuupKFRkHnvZ3InsfZViTyiVeuo73ZX839Cusg2P8jh/rMeTI8
+ Kw4JWUPk2rIktoXOg7ugZwDCVJAy3YJBvqUSAo+I3mNPtEyopIgNaeVqkaXOU1mR12AJ
+ HxezUlxEB3k0hGAekSsuopsNleWo/6k4fzGNIF6oEwdZlAjzLTupg1GWvHGovh+x3wbO
+ DG3Q==
+X-Gm-Message-State: AOAM532DoQZeEgM/QCVZO/9gYN8ZW+C2AJ6ErlYVvA9BrrNHuz6KJ4lj
+ gk3nAIbrJwofNPyIXvxmtoqr6w==
+X-Google-Smtp-Source: ABdhPJyvQ6sbfXil1attHlSR9OI+jyrXy9dt1ZTBNHy8j8ojMjNnLhHazzRckJ2Ea46k0MGWOIBXFg==
+X-Received: by 2002:a05:600c:2048:: with SMTP id
+ p8mr433818wmg.165.1604946151927; 
+ Mon, 09 Nov 2020 10:22:31 -0800 (PST)
 Received: from dell.default ([91.110.221.180])
- by smtp.gmail.com with ESMTPSA id g186sm735365wma.1.2020.11.09.10.22.28
+ by smtp.gmail.com with ESMTPSA id g186sm735365wma.1.2020.11.09.10.22.30
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 09 Nov 2020 10:22:29 -0800 (PST)
+ Mon, 09 Nov 2020 10:22:31 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: lee.jones@linaro.org
-Subject: [PATCH v3 07/23] mtd: spi-nor: hisi-sfc: Demote non-conformant
- kernel-doc
-Date: Mon,  9 Nov 2020 18:21:50 +0000
-Message-Id: <20201109182206.3037326-8-lee.jones@linaro.org>
+Subject: [PATCH v3 08/23] mtd: ubi: build: Document 'ubi_num' in struct
+ mtd_dev_param
+Date: Mon,  9 Nov 2020 18:21:51 +0000
+Message-Id: <20201109182206.3037326-9-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201109182206.3037326-1-lee.jones@linaro.org>
 References: <20201109182206.3037326-1-lee.jones@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201109_132231_570996_A62490B3 
-X-CRM114-Status: GOOD (  15.37  )
+X-CRM114-CacheID: sfid-20201109_132232_992552_BF7135EB 
+X-CRM114-Status: GOOD (  13.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,44 +96,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org,
- =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
- linaro-mm-sig@lists.linaro.org, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Sumit Semwal <sumit.semwal@linaro.org>, linux-media@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Rml4ZXMgdGhlIGZvbGxvd2luZyBXPTEga2VybmVsIGJ1aWxkIHdhcm5pbmcocyk6CgogZHJpdmVy
-cy9tdGQvc3BpLW5vci9jb250cm9sbGVycy9oaXNpLXNmYy5jOjMyODogd2FybmluZzogRnVuY3Rp
-b24gcGFyYW1ldGVyIG9yIG1lbWJlciAnbnAnIG5vdCBkZXNjcmliZWQgaW4gJ2hpc2lfc3BpX25v
-cl9yZWdpc3RlcicKIGRyaXZlcnMvbXRkL3NwaS1ub3IvY29udHJvbGxlcnMvaGlzaS1zZmMuYzoz
-Mjg6IHdhcm5pbmc6IEZ1bmN0aW9uIHBhcmFtZXRlciBvciBtZW1iZXIgJ2hvc3QnIG5vdCBkZXNj
-cmliZWQgaW4gJ2hpc2lfc3BpX25vcl9yZWdpc3RlcicKCkNjOiBUdWRvciBBbWJhcnVzIDx0dWRv
-ci5hbWJhcnVzQG1pY3JvY2hpcC5jb20+CkNjOiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFs
-QGJvb3RsaW4uY29tPgpDYzogUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD4KQ2M6
-IFZpZ25lc2ggUmFnaGF2ZW5kcmEgPHZpZ25lc2hyQHRpLmNvbT4KQ2M6IFN1bWl0IFNlbXdhbCA8
-c3VtaXQuc2Vtd2FsQGxpbmFyby5vcmc+CkNjOiAiQ2hyaXN0aWFuIEvDtm5pZyIgPGNocmlzdGlh
-bi5rb2VuaWdAYW1kLmNvbT4KQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnCkNjOiBs
-aW51eC1tZWRpYUB2Z2VyLmtlcm5lbC5vcmcKQ2M6IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3Rv
-cC5vcmcKQ2M6IGxpbmFyby1tbS1zaWdAbGlzdHMubGluYXJvLm9yZwpTaWduZWQtb2ZmLWJ5OiBM
-ZWUgSm9uZXMgPGxlZS5qb25lc0BsaW5hcm8ub3JnPgpSZXZpZXdlZC1ieTogVmlnbmVzaCBSYWdo
-YXZlbmRyYSA8dmlnbmVzaHJAdGkuY29tPgotLS0KIGRyaXZlcnMvbXRkL3NwaS1ub3IvY29udHJv
-bGxlcnMvaGlzaS1zZmMuYyB8IDIgKy0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwg
-MSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3IvY29udHJvbGxl
-cnMvaGlzaS1zZmMuYyBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvY29udHJvbGxlcnMvaGlzaS1zZmMu
-YwppbmRleCA5NWM1MDIxNzNjYmRhLi43YzI2ZjhmNTY1Y2JhIDEwMDY0NAotLS0gYS9kcml2ZXJz
-L210ZC9zcGktbm9yL2NvbnRyb2xsZXJzL2hpc2ktc2ZjLmMKKysrIGIvZHJpdmVycy9tdGQvc3Bp
-LW5vci9jb250cm9sbGVycy9oaXNpLXNmYy5jCkBAIC0zMjAsNyArMzIwLDcgQEAgc3RhdGljIGNv
-bnN0IHN0cnVjdCBzcGlfbm9yX2NvbnRyb2xsZXJfb3BzIGhpc2lfY29udHJvbGxlcl9vcHMgPSB7
-CiAJLndyaXRlID0gaGlzaV9zcGlfbm9yX3dyaXRlLAogfTsKIAotLyoqCisvKgogICogR2V0IHNw
-aSBmbGFzaCBkZXZpY2UgaW5mb3JtYXRpb24gYW5kIHJlZ2lzdGVyIGl0IGFzIGEgbXRkIGRldmlj
-ZS4KICAqLwogc3RhdGljIGludCBoaXNpX3NwaV9ub3JfcmVnaXN0ZXIoc3RydWN0IGRldmljZV9u
-b2RlICpucCwKLS0gCjIuMjUuMQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Fixes the following W=1 kernel build warning(s):
+
+ drivers/mtd/ubi/build.c:61: warning: Function parameter or member 'ubi_num' not described in 'mtd_dev_param'
+
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/mtd/ubi/build.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index e85b04e9716b2..40fa994ad6a8f 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -50,6 +50,7 @@
+  * struct mtd_dev_param - MTD device parameter description data structure.
+  * @name: MTD character device node path, MTD device name, or MTD device number
+  *        string
++ * @ubi_num: UBI number
+  * @vid_hdr_offs: VID header offset
+  * @max_beb_per1024: maximum expected number of bad PEBs per 1024 PEBs
+  */
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
