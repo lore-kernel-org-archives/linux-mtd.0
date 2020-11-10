@@ -2,54 +2,76 @@ Return-Path: <SRS0=eCmO=EQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F810C388F7
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Nov 2020 08:39:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 510F1C388F7
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Nov 2020 08:49:34 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ECB3B20731
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Nov 2020 08:39:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D385620731
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Nov 2020 08:49:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TaD1gul5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ECB3B20731
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ksUngS36";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="iuo8f+7v";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="y7osrUd/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D385620731
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:To:
-	Subject:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References:In-Reply-To:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=EwBzOJQ0AJ6iGkLJxz5ozIwDVs2WVOlG2Yc+ZtFSJ+Y=; b=TaD1gul5g6uC302CojtBwPX3/
-	g8OnEP2nv8GypiTEkiRZ7iBrn7ClDeXRdsLUAO6MzZQJI+iiXflQ0clSbqBnHhAItT97lHPwYgPgL
-	IbZvd7E/bGst0+IZSfkjLjhbDqSIhsGKo7mJAtEnK84u+2Gf3dDwB57fpGwM1BruxKB+/uzHtyKdY
-	ZUa65T9FnUpzYewayXLuCjIadkgUCS+YiRE19vt7oFjzXUeqW+5OxVCvHqsp4edDptWG1k027wZ9Q
-	P5S7WOnX4JuQpkPP6Y6PRjIksLOcypZN8YEL+QhZvlSrHiTIL2Yhn457IUwT/LJQPFlPZlR1zsWv0
-	jb2HYgfuw==;
+	 bh=IQuFk6AhBJX2yoGQNWy/PLekVn2vhIdLFM7EppHUex4=; b=ksUngS36gUJX08covU//PYzxh
+	w7g9unQa3oLfVEUcBQnh45JM3ADpRsDLLhGEX79fGv8f2bPVILKaJt2Sm64n6UXbwo94bblSOu17u
+	o3nxwtmGbWotdKsJ6czQ/mzwxuakd9wzga1NwF3doGITpoUOVbruVOuLsQfvKz9x0+azouaLZSeEJ
+	8AITjAGXahv9bDsZDVDFnUHAihskVksmHuwzGY23Xb5Czn/obD0YLuSntztu5yM6Ajkl2VeaSPzo3
+	Xq5TJ9lMtql70Y5oqixVH9aCbkWtks6pJwKxIuXQb8Iz2F41/OKWZqF7aDYtk+AOytcmTnHlLk1nT
+	hpfQi/2Sw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kcPAq-0006Rc-Fq; Tue, 10 Nov 2020 08:38:44 +0000
-Received: from aposti.net ([89.234.176.197])
+	id 1kcPKO-0007Qb-AA; Tue, 10 Nov 2020 08:48:36 +0000
+Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kcPAn-0006Qz-Fx
- for linux-mtd@lists.infradead.org; Tue, 10 Nov 2020 08:38:42 +0000
-Date: Tue, 10 Nov 2020 08:38:24 +0000
-From: Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH] mtd: rawnand: ingenic: remove redundant get_device() in
- ingenic_ecc_get()
-To: Yu Kuai <yukuai3@huawei.com>
-Message-Id: <00OKJQ.IYM95XDRFCZI3@crapouillou.net>
-In-Reply-To: <20201031105439.2304211-1-yukuai3@huawei.com>
-References: <20201031105439.2304211-1-yukuai3@huawei.com>
+ id 1kcPKL-0007PK-3D; Tue, 10 Nov 2020 08:48:34 +0000
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+ s=2020; t=1604998111;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+lFM+Dy1hrzRRrrrA3qnbGkxEtyVqIh0g4peYrriLeU=;
+ b=iuo8f+7vFglLggVRQElkiZ2WEkqCMbTG8xoMGtVyBk3DBfZOlzK9bn4iYE9n5TJlXEeyiw
+ mK2AsUoeE727uJ+eyVgbEeyt2qz1CsngbkfMTC30zg6BSGbxrFxVJV/nTlcmtj9NHSMsJn
+ sU38ljGJ30NJ8ooIZ53QTax6dO6NfnLLpRxklxBphTMVejdacYZZqkmCK8e4gkxhfN2Hq9
+ zuGNw+h8VUH3NFZO14JlYgbkNPH833xVYFQ2lmqEAC35a4/baTqfi6uG7ey36+HQyygrEi
+ Jy4I41umlX4stejJrRBLu7awPrfWhbLcelHNMzqQQSqRZrKTpO34TDntXU+02A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+ s=2020e; t=1604998111;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+lFM+Dy1hrzRRrrrA3qnbGkxEtyVqIh0g4peYrriLeU=;
+ b=y7osrUd/437dzM5/Hc5G9cQ/HuZ2jh7vgX8EDHSswmJuPLkHyLG6iEX8rrCl2sg3XohELe
+ 1aQhUu8PTNjq+DAw==
+To: Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [PATCH RFC PKS/PMEM 05/58] kmap: Introduce k[un]map_thread
+In-Reply-To: <20201110045954.GL3976735@iweiny-DESK2.sc.intel.com>
+References: <20201009195033.3208459-1-ira.weiny@intel.com>
+ <20201009195033.3208459-6-ira.weiny@intel.com>
+ <87h7pyhv3f.fsf@nanos.tec.linutronix.de>
+ <20201110045954.GL3976735@iweiny-DESK2.sc.intel.com>
+Date: Tue, 10 Nov 2020 09:48:31 +0100
+Message-ID: <87eel1iom8.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201110_033841_895733_ED8F92FA 
-X-CRM114-Status: GOOD (  11.17  )
+X-CRM114-CacheID: sfid-20201110_034833_313583_F7DF2542 
+X-CRM114-Status: GOOD (  10.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -61,61 +83,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, yi.zhang@huawei.com, linux-kernel@vger.kernel.org,
- harveyhuntnexus@gmail.com, linux-mtd@lists.infradead.org,
- miquel.raynal@bootlin.com
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
+Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org,
+ linux-doc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+ linux-mmc@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
+ dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
+ target-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org,
+ ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com,
+ devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
+ linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org, x86@kernel.org,
+ amd-gfx@lists.freedesktop.org, io-uring@vger.kernel.org,
+ cluster-devel@redhat.com, Ingo Molnar <mingo@redhat.com>,
+ intel-wired-lan@lists.osuosl.org, xen-devel@lists.xenproject.org,
+ linux-ext4@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
+ linux-afs@lists.infradead.org, linux-um@lists.infradead.org,
+ intel-gfx@lists.freedesktop.org, ecryptfs@vger.kernel.org,
+ linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
+ Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-cachefs@redhat.com,
+ linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+ netdev@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+ kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
+ bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+On Mon, Nov 09 2020 at 20:59, Ira Weiny wrote:
+> On Tue, Nov 10, 2020 at 02:13:56AM +0100, Thomas Gleixner wrote:
+> Also, we can convert the new memcpy_*_page() calls to kmap_local() as well.
+> [For now my patch just uses kmap_atomic().]
+>
+> I've not looked at all of the patches in your latest version.  Have you
+> included converting any of the kmap() call sites?  I thought you were more
+> focused on converting the kmap_atomic() to kmap_local()?
 
-Le sam. 31 oct. 2020 =E0 18:54, Yu Kuai <yukuai3@huawei.com> a =E9crit :
-> of_find_device_by_node() already takes a reference to the device, and
-> ingenic_ecc_release() will drop the reference. So, the get_device() in
-> ingenic_ecc_get() is redundand.
-> =
-
-> Fixes: 15de8c6efd0e("mtd: rawnand: ingenic: Separate top-level and =
-
-> SoC specific code")
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-
-Acked-by: Paul Cercueil <paul@crapouillou.net>
+I did not touch any of those yet, but it's a logical consequence to
+convert all kmap() instances which are _not_ creating a global mapping
+over to it.
 
 Thanks,
--Paul
 
-> ---
->  drivers/mtd/nand/raw/ingenic/ingenic_ecc.c | 2 --
->  1 file changed, 2 deletions(-)
-> =
-
-> diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c =
-
-> b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
-> index 8e22cd6ec71f..efe0ffe4f1ab 100644
-> --- a/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
-> +++ b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
-> @@ -71,8 +71,6 @@ static struct ingenic_ecc *ingenic_ecc_get(struct =
-
-> device_node *np)
->  	if (!pdev || !platform_get_drvdata(pdev))
->  		return ERR_PTR(-EPROBE_DEFER);
-> =
-
-> -	get_device(&pdev->dev);
-> -
->  	ecc =3D platform_get_drvdata(pdev);
->  	clk_prepare_enable(ecc->clk);
-> =
-
-> --
-> 2.25.4
-> =
-
-
+        tglx
 
 
 ______________________________________________________
