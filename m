@@ -2,76 +2,70 @@ Return-Path: <SRS0=eCmO=EQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2634C2D0A3
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Nov 2020 01:14:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 474A8C2D0A3
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Nov 2020 01:24:14 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6F404206D8
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Nov 2020 01:14:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D8DA32078D
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Nov 2020 01:24:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="0JNDXrDB";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="DRjXCHfa";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="acv/dHWH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F404206D8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linutronix.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AnoUSnQJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D8DA32078D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References:In-Reply-To:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=w1slfrdVvMecLxAjwLgm2eY+PeVx+rkbF2VFgnNZS5Q=; b=0JNDXrDBUzoaMN6agHh+NsM+V
-	HpuMs8x/849QETnwpAuayT7Dk35ctmJRyTObrPX/5RqATyiBcMa+XFjnlzbk2HyGTJc+UumYeCY+j
-	8uqDJuMNyyvYWujlGJ7zS+pxgv1kSvotQUMXnerqW3UL++MVqzVYQNHXiHru65MkvKemUe2bhkcQs
-	Bv1cIwqCdxbvok5nOnRDe9Uj7M6X0k5lSr7ZCulMMSlob2romj+lsrpB5MaKwUlVoVnoBBfku73/R
-	L/FLooNUmth+ydp9o9IcjS5bGnJoe4DwSCpOyfr/GzAlnZ4FHmwYb0fkr7UG1Snmr7/ztdkyYtHpW
-	Dvgx6mwuw==;
+	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=srVViAhuRO3F+Y1GryajrtrqL8M846zdoyYWY/oGbCU=; b=AnoUSnQJKKkEQgpEWk6+RLT5kv
+	bMxVfHri0VXCSx7nnIuOMuz101w4JJAZSAqAYafcCvNYn7yuf1LV23sQWkIagVFuzMaXzkXNFJ+AB
+	4+6Qa74uG0D4HLUf3I4q77WTAGChulGiKZ9pCI2WCmC9rKLpuxeAiskJerQRfm33xds2OEoumdsL4
+	FIIdR+yCLYdqNYa0BGmXCoaIyOHx1sZ47TJLaiAzsPzosT2yFjq++B8ypfusou5ekTft2FwIhp9wJ
+	7gTRd8xT3fdWYePIWblgwweqIJW25tdn1bD9Tdb0ghwbXA85+KXJ5YWZWwZeUz6NKusf8VCDGwYJe
+	iqi617fA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kcIEW-0006ua-5n; Tue, 10 Nov 2020 01:14:04 +0000
-Received: from galois.linutronix.de ([193.142.43.55])
+	id 1kcINq-0007lf-K0; Tue, 10 Nov 2020 01:23:42 +0000
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kcIES-0006rl-0P; Tue, 10 Nov 2020 01:14:01 +0000
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
- s=2020; t=1604970836;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=UkwosGD4CNwpr5O4mn7FToWEjHCGounmVIqa5vjwzhQ=;
- b=DRjXCHfaWTV+37wSriT1BjBgrVPE6jdQ5QSgYOIapfxJkFIwaFOAyxB9axkmnF7jwFoYyj
- IwVALzvZ0PuA7RxNph9leDCS6B9rTa4rL3nKcIBy/Am24PTMh01e/A2SQWp6LTkOQfBaj6
- TPNYDFf29DCqNiv3sgD8nE6enYeIlsYkCGyKDzwB1FGN01/Y3vKoJQtpchwkYWrvNb9W70
- 4PCnBA8S0oYM/XwkwwZotKzR9vmT9oC6FdGvh5lMI1bLUaS0qdB+ZPTGprUeJSBjnvH0Xv
- xyRk7zOTS6b0OUuDBNt+X1xYcMB1KSB7gGowiPoSA5hPR5omsqQ5g20Kt4+uKg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
- s=2020e; t=1604970836;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=UkwosGD4CNwpr5O4mn7FToWEjHCGounmVIqa5vjwzhQ=;
- b=acv/dHWHYYmtT1/z0brDNSAmBtlvEk8c07ItXmS/RUDap25yEm8biO9jTMWItRsTlNRTeF
- x/KI3sqvslL8SkDg==
-To: ira.weiny@intel.com, Andrew Morton <akpm@linux-foundation.org>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH RFC PKS/PMEM 05/58] kmap: Introduce k[un]map_thread
-In-Reply-To: <20201009195033.3208459-6-ira.weiny@intel.com>
-References: <20201009195033.3208459-1-ira.weiny@intel.com>
- <20201009195033.3208459-6-ira.weiny@intel.com>
-Date: Tue, 10 Nov 2020 02:13:56 +0100
-Message-ID: <87h7pyhv3f.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
+ id 1kcINo-0007l7-GU
+ for linux-mtd@lists.infradead.org; Tue, 10 Nov 2020 01:23:41 +0000
+IronPort-SDR: 3ZKth5B+rM5bJI6ioKkuA/yiLMZYnaA52253QmZFrgU6SooCQupfiV9ZOkWdlpnWmlL+RC32GV
+ 90kU3Dl7xVkA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="187856345"
+X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; d="scan'208";a="187856345"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Nov 2020 17:23:38 -0800
+IronPort-SDR: o1oatd2oCJc0tRVXSOSiOVsVeaBju0giz5lHaTB/EtgHFVxZ1NcqHSCInDYUgLvSTjUvXW5LlR
+ 0EQuCypDCjMA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; d="scan'208";a="307852832"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+ by fmsmga008.fm.intel.com with ESMTP; 09 Nov 2020 17:23:35 -0800
+From: "Ramuthevar,
+ Vadivel MuruganX" <vadivel.muruganx.ramuthevar@linux.intel.com>
+To: miquel.raynal@bootlin.com, vigneshr@ti.com, tudor.ambarus@microchip.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ robh+dt@kernel.org
+Subject: [PATCH v17 0/2] mtd: rawnand: Add NAND controller support on Intel
+ LGM SoC
+Date: Tue, 10 Nov 2020 09:23:31 +0800
+Message-Id: <20201110012333.18647-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201109_201400_297039_09038627 
-X-CRM114-Status: GOOD (  17.20  )
+X-CRM114-CacheID: sfid-20201109_202340_710834_6C2F7E07 
+X-CRM114-Status: GOOD (  24.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,106 +77,197 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org,
- Dave Hansen <dave.hansen@linux.intel.com>, dri-devel@lists.freedesktop.org,
- linux-mm@kvack.org, target-devel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-kselftest@vger.kernel.org,
- samba-technical@lists.samba.org, Ira Weiny <ira.weiny@intel.com>,
- ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com,
- devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
- linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org, x86@kernel.org,
- amd-gfx@lists.freedesktop.org, linux-afs@lists.infradead.org,
- cluster-devel@redhat.com, linux-cachefs@redhat.com,
- intel-wired-lan@lists.osuosl.org, xen-devel@lists.xenproject.org,
- linux-ext4@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
- linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org,
- ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
- reiserfs-devel@vger.kernel.org, linux-block@vger.kernel.org,
- linux-bcache@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
- io-uring@vger.kernel.org, linux-nfs@vger.kernel.org,
- linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org,
- Randy Dunlap <rdunlap@infradead.org>, kexec@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
+Cc: cheol.yong.kim@intel.com, devicetree@vger.kernel.org, "Ramuthevar,
+ Vadivel MuruganX" <vadivel.muruganx.ramuthevar@linux.intel.com>,
+ richard@nod.at, simon.k.r.goldschmidt@gmail.com, dinguyen@kernel.org,
+ qi-ming.wu@intel.com
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Ira,
+This patch adds the new IP of Nand Flash Controller(NFC) support
+on Intel's Lightning Mountain(LGM) SoC.
 
-On Fri, Oct 09 2020 at 12:49, ira weiny wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
->
-> To correctly support the semantics of kmap() with Kernel protection keys
-> (PKS), kmap() may be required to set the protections on multiple
-> processors (globally).  Enabling PKS globally can be very expensive
-> depending on the requested operation.  Furthermore, enabling a domain
-> globally reduces the protection afforded by PKS.
->
-> Most kmap() (Aprox 209 of 229) callers use the map within a single thread and
-> have no need for the protection domain to be enabled globally.  However, the
-> remaining callers do not follow this pattern and, as best I can tell, expect
-> the mapping to be 'global' and available to any thread who may access the
-> mapping.[1]
->
-> We don't anticipate global mappings to pmem, however in general there is a
-> danger in changing the semantics of kmap().  Effectively, this would cause an
-> unresolved page fault with little to no information about why the failure
-> occurred.
->
-> To resolve this a number of options were considered.
->
-> 1) Attempt to change all the thread local kmap() calls to kmap_atomic()[2]
-> 2) Introduce a flags parameter to kmap() to indicate if the mapping should be
->    global or not
-> 3) Change ~20 call sites to 'kmap_global()' to indicate that they require a
->    global enablement of the pages.
-> 4) Change ~209 call sites to 'kmap_thread()' to indicate that the mapping is to
->    be used within that thread of execution only
->
-> Option 1 is simply not feasible.  Option 2 would require all of the call sites
-> of kmap() to change.  Option 3 seems like a good minimal change but there is a
-> danger that new code may miss the semantic change of kmap() and not get the
-> behavior the developer intended.  Therefore, #4 was chosen.
+DMA is used for burst data transfer operation, also DMA HW supports
+aligned 32bit memory address and aligned data access by default.
+DMA burst of 8 supported. Data register used to support the read/write
+operation from/to device.
 
-There is Option #5:
+NAND controller also supports in-built HW ECC engine.
 
-Convert the thread local kmap() invocations to the proposed kmap_local()
-interface which is coming along [1].
+NAND controller driver implements ->exec_op() to replace legacy hooks,
+these specific call-back method to execute NAND operations.
 
-That solves a couple of issues:
+Thanks Miquel, Boris, Andy, Arnd and Rob for the review comments and suggestions.
+---
+v17:
+  - No Change
+v16:
+  - address Miquel Raynal review comments update
+  - modify the commit message
+  - add unit for timeout_ms variable
+  - insert nand_sdr_timings directly in the function instead
+    of adding helper function.
+  - modify the code to handle single CS in probe
+  - replace 'reg' property instead of 'nand,cs'
+  - add 2 compatible strings generic one followed by intel,lgm-ebunand
+Resend-v15:
+  - Rebased to mtd/for-5.10
+v15:
+  - Address Miquel review comments update
+  - add common helper function for status check for
+    ebu_nand_waitrdy()
+v14:
+  - Address Andy's review comments
+  - align the headers and revome Duplicates
+  - replcace numerical const values by HZ_PER_MHZ and USEC_PER_SEC
+    defined macros
+  - add dev_err_probe() api instead of legacy err check
+  - add get_unaligned_le32() api instead of manual endiness
+  - remove redudent check
+  - split the lines logically in between and add require spaces
+v13:
+  - Address Miquel Raynal review comments
+  - update the return type with variable 'ret'
+  - handle err check statement properly
+  - change the naming convention aligned with recently changed the naming
+    around the data interface
+    data structure and function names
+  - replace by div 8 instead of <<4 in ecc calculation better code readability
+  - handle check_only properly like existing drivers
+v12-resend:
+  - No Change
+v12:
+  - address Miquel Raynal review comments update
+  - add/modify the comments for better understanding
+  - handle the check_only variable
+  - update the ecc function based on the existing drivers
+  - add newline
+  - verify that mtd->name is set after nand_set_flash_node()
+  - add the check WARN_ON(ret);
+v11-resend:
+  - Rebase to v5.8-rc1
+v11:
+  - No Change
+v10:
+  - No Change
+v9:
+  - No change
+v8:
+  - fix the kbuild bot warnings
+  - correct the typo's
+v7:
+  - indentation issue is fixed
+  - add error check for retrieve the resource from dt
+v6:
+  - update EBU_ADDR_SELx register base value build it from DT
+  - Add tabs in in Kconfig
+v5:
+  - replace by 'HSNAND_CLE_OFFS | HSNAND_CS_OFFS' to NAND_WRITE_CMD and NAND_WRITE_ADDR
+  - remove the unused macros
+  - update EBU_ADDR_MASK(x) macro
+  - update the EBU_ADDR_SELx register values to be written
+v4:
+  - add ebu_nand_cs structure for multiple-CS support
+  - mask/offset encoding for 0x51 value
+  - update macro HSNAND_CTL_ENABLE_ECC
+  - drop the op argument and un-used macros.
+  - updated the datatype and macros
+  - add function disable nand module
+  - remove ebu_host->dma_rx = NULL;
+  - rename MMIO address range variables to ebu and hsnand
+  - implement ->setup_data_interface()
+  - update label err_cleanup_nand and err_cleanup_dma
+  - add return value check in the nand_remove function
+  - add/remove tabs and spaces as per coding standard
+  - encoded CS ids by reg property
+v3:
+  - Add depends on MACRO in Kconfig
+  - file name update in Makefile
+  - file name update to intel-nand-controller
+  - modification of MACRO divided like EBU, HSNAND and NAND
+  - add NAND_ALE_OFFS, NAND_CLE_OFFS and NAND_CS_OFFS
+  - rename lgm_ to ebu_ and _va suffix is removed in the whole file
+  - rename structure and varaibles as per review comments.
+  - remove lgm_read_byte(), lgm_dev_ready() and cmd_ctrl() un-used function
+  - update in exec_op() as per review comments
+  - rename function lgm_dma_exit() by lgm_dma_cleanup()
+  - hardcoded magic value  for base and offset replaced by MACRO defined
+  - mtd_device_unregister() + nand_cleanup() instead of nand_release()
+v2:
+  - implement the ->exec_op() to replaces the legacy hook-up.
+  - update the commit message
+  - add MIPS maintainers and xway_nand driver author in CC
+v1:
+ - initial version
+dt-bindings: mtd: Add Nand Flash Controller support for Intel LGM SoC
+---
+v17:
+  Rob's build bot errors resolved
+v16:
+  - No change
+resend-v15:
+  - No change
+v15:
+  - No change
+v14:
+  - No change
+v13:
+  - No change
+v12-Resend:
+  - No Change
+v12:
+  - No change
+v11-resend:
+  - No change
+v11:
+  - Fixed the compatible issue with example
+10:
+  - fix bot errors
+v9:
+  - Rob's review comments address
+  - dual licensed
+  - compatible change
+  - add reg-names
+  - drop clock-names and clock-cells
+  - correct typo's
+v8:
+  No change
+v7:
+  - Rob's review comments addressed
+  - dt-schema build issue fixed with upgraded dt-schema
+v6:
+  - Rob's review comments addressed in YAML file
+  - add addr_sel0 and addr_sel1 reg-names in YAML example
+v5:
+  - add the example in YAML file
+v4:
+  - No change
+v3:
+  - No change
+v2:
+  YAML compatible string update to intel, lgm-nand-controller
+v1:
+  - initial version
 
- 1) It relieves the current kmap_atomic() usage sites from the implict
-    pagefault/preempt disable semantics which apply even when
-    CONFIG_HIGHMEM is disabled. kmap_local() still can be invoked from
-    atomic context.
 
- 2) Due to #1 it allows to replace the conditional usage of kmap() and
-    kmap_atomic() for purely thread local mappings.
 
- 3) It puts the burden on the HIGHMEM inflicted systems
+Ramuthevar Vadivel Murugan (2):
+  dt-bindings: mtd: Add Nand Flash Controller support for Intel LGM SoC
+  mtd: rawnand: Add NAND controller support on Intel LGM SoC
 
- 4) It is actually more efficient for most of the pure thread local use
-    cases on HIGHMEM inflicted systems because it avoids the overhead of
-    the global lock and the potential kmap slot exhaustion. A potential
-    preemption will be more expensive, but that's not really the case we
-    want to optimize for.
+ .../devicetree/bindings/mtd/intel,lgm-nand.yaml    |  99 +++
+ drivers/mtd/nand/raw/Kconfig                       |   8 +
+ drivers/mtd/nand/raw/Makefile                      |   1 +
+ drivers/mtd/nand/raw/intel-nand-controller.c       | 722 +++++++++++++++++++++
+ 4 files changed, 830 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+ create mode 100644 drivers/mtd/nand/raw/intel-nand-controller.c
 
- 5) It solves the RT issue vs. kmap_atomic()
-
-So instead of creating yet another variety of kmap() which is just
-scratching the particular PKRS itch, can we please consolidate all of
-that on the wider reaching kmap_local() approach?
-
-Thanks,
-
-        tglx
-     
-[1] https://lore.kernel.org/lkml/20201103092712.714480842@linutronix.de/
+-- 
+2.11.0
 
 
 ______________________________________________________
