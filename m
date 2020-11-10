@@ -2,64 +2,84 @@ Return-Path: <SRS0=eCmO=EQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 433AEC388F7
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Nov 2020 11:39:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD626C4742C
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Nov 2020 12:20:10 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A258B20659
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Nov 2020 11:39:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5D92420665
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Nov 2020 12:20:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BC4HSmLP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A258B20659
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baikalelectronics.ru
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CyK/Apbd";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VBB04OMu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D92420665
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Nf1IJY6iPnbhWudzdZblzNzTY9tc2l7ObjzYoXglVJc=; b=BC4HSmLP7a8kH8pukr/px8dEb
-	Yg6mrPCUOT4XBTpCQh4CpKhhAoNMHhbc2l6FRi32aTDn6IgiomkPZmxGuonzdKhbvybwrZSTVzXY6
-	ckWaGKj8zO4WlJJrow9Wv2tfDWqXLVaWm5VJ2R8X6w5m7CrwUnJuratMn2zE9y4cls0QGdy61k8Ld
-	7sHrVhxjxUIZ87zU2l9tf48GaPudH34nQTKbobvceq5/p9vvm0TEssxCdVDdOXDtAXTeSlqma9yFK
-	vx8XFxhhZoEbPlY5cVOKuVxVSgP8GLUTR4qGt+JgMJ+gafGG0aaAXxcuCtMtkfTV8JSZoVIsMGyGM
-	fsu/nwVTA==;
+	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=MRlKz9MscXI4tzp1mqqU3FaWKm8NDXlg3fcs0wmALjs=; b=CyK/ApbdN1p5q1N/GPxId7AwQZ
+	vcSK/P0/Og0oWFUuuKc8Z515qgMbOmmNEQknauU0nJP8Vml5JcpaAJjzA2ErI6KgE2oaVhbrCLwg2
+	w4/bP6wF2b4iJ03l662yITgWQb4dVbKYW0YOw8+P/Fkh+H7gcw449hhk6I/bFpA137PYr2Ub+TjTF
+	Afe9HSgYVuhAiOGElozOD9Bu1gT7D1N7iuQA71NYeB42sVWlqDhFRGWkK5PYs4TXTRq6F8hAG3Mv7
+	B68zGkjtIqeneOWdRP1rDeUym5Imsz13jvDebZmuBPgiEC5HiuNMG5x/lwm1SbhLOt27d028fkfyF
+	+k4YFXzw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kcRz0-0007Mp-2F; Tue, 10 Nov 2020 11:38:42 +0000
-Received: from mail.baikalelectronics.com ([87.245.175.226]
- helo=mail.baikalelectronics.ru)
- by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kcRyv-0007LV-DM
- for linux-mtd@lists.infradead.org; Tue, 10 Nov 2020 11:38:38 +0000
-Received: from localhost (unknown [127.0.0.1])
- by mail.baikalelectronics.ru (Postfix) with ESMTP id 7553D803071A;
- Tue, 10 Nov 2020 11:38:30 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
- by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id yNvMC4C0WzIc; Tue, 10 Nov 2020 14:38:29 +0300 (MSK)
-Date: Tue, 10 Nov 2020 14:38:27 +0300
-From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: drivers/mtd/maps/physmap-bt1-rom.c:78:18: sparse: sparse: cast
- removes address space '__iomem' of expression
-Message-ID: <20201110113827.hl5i27cpl6exo3md@mobilestation>
-References: <202011021254.XC70BaQT-lkp@intel.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <202011021254.XC70BaQT-lkp@intel.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+	id 1kcScM-0003gI-1E; Tue, 10 Nov 2020 12:19:22 +0000
+Received: from mail-qt1-x844.google.com ([2607:f8b0:4864:20::844])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kcScK-0003fc-3Z
+ for linux-mtd@lists.infradead.org; Tue, 10 Nov 2020 12:19:20 +0000
+Received: by mail-qt1-x844.google.com with SMTP id f93so8333244qtb.10
+ for <linux-mtd@lists.infradead.org>; Tue, 10 Nov 2020 04:19:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id;
+ bh=XOJ+mur9iTZeZ5ir3g0myAcq7z4gLGUg9hIMFPJYzGE=;
+ b=VBB04OMugMRUXB381gSkO++NMX5HwlXDIUSuaAphLboAkAJI6RP9lUGb3rKdK6VcDX
+ cPKAobBFJaH4DO/ckyyUPj+wgubXQ5IXPlREK94Lw9F55404IsSeNTlPnjBDQ37xy/jw
+ c8Sx/dlBjvS+DCyJ9BwpWJCa/D4Ys8fOuXaRULsej/oXd7TEgHt+2gAc0ylkUtCgNFpp
+ FFdAMYgPuqjBQWs7k18M5YC42q+B/V4PIbRtGpAXb2BoLuStioyvBnYU5blIGtSzeiLf
+ rec4EvuSmGmeImuyqokB/frNpsJvCTJJs+icqsSRduXOnJijhtwJv2Y/IAdOXNLvDBgx
+ bQSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=XOJ+mur9iTZeZ5ir3g0myAcq7z4gLGUg9hIMFPJYzGE=;
+ b=PYU0PjOFEb/6hD3kahQf1S6yY/OjI2bXMVfEKQCAxs0bvco1shueTkFToYXieVE2nF
+ wpPG8vImL/Teuxe5Q335VB1oP3rxFwa8Jqr9+58n29anp0mB+KfiNgdlCp+A1eEsLnj/
+ Hx2JW+t/JsHCNKZj6lzRNWe/02hBgTySMGxVep8ghatJaNs4QHTMN6FvlRf3Dk/U1eJY
+ ruMUcjw2C9L1+ffGblcsjdRz5JXfWIzTTHo/ds3ucRyoK4AbhbF0LYskp8ZX854NydvD
+ 9hCkH+/TjcDop+BVza2jOMi4QXnJu/VTCcntIBud7j2qlVWTKjR9i60mlF+rLLQBEId6
+ eScw==
+X-Gm-Message-State: AOAM532vWRefC5/hgbQZEJfHE+oDEgLFfp/Toz40L8m6j/bLnrKaXY02
+ jIXsqcdwBLuBSqsxrVSs21USYTDOEPF87w==
+X-Google-Smtp-Source: ABdhPJyR3RVC5CJOUxqae+B1cYFa5BXuE0ha6DxULW7JM20B/GlZ9ZVkITiyUolaM8q6K+vTa98COA==
+X-Received: by 2002:ac8:64d:: with SMTP id e13mr18375570qth.23.1605010757775; 
+ Tue, 10 Nov 2020 04:19:17 -0800 (PST)
+Received: from localhost.localdomain ([2804:14c:482:997:3137:56b2:3b4e:d740])
+ by smtp.gmail.com with ESMTPSA id
+ u5sm7521640qtg.57.2020.11.10.04.19.15
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 10 Nov 2020 04:19:17 -0800 (PST)
+From: Fabio Estevam <festevam@gmail.com>
+To: miquel.raynal@bootlin.com
+Subject: [PATCH v2] mtd: rawnand: mxc: Remove platform data support
+Date: Tue, 10 Nov 2020 09:19:08 -0300
+Message-Id: <20201110121908.19400-1-festevam@gmail.com>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201110_063837_812840_010E5417 
-X-CRM114-Status: GOOD (  14.34  )
+X-CRM114-CacheID: sfid-20201110_071920_173802_E1DBBCBF 
+X-CRM114-Status: GOOD (  26.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,100 +91,212 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, kbuild-all@lists.01.org,
- kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org
+Cc: Fabio Estevam <festevam@gmail.com>, linux-mtd@lists.infradead.org,
+ kernel@pengutronix.de
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Miquel,
+i.MX is a devicetree-only platform now and the existing platform data
+support in this driver was only useful for old non-devicetree platforms.
 
-A situation noted by the warning below won't cause any problem because
-the casting is done to a non-dereferenced variable. It is utilized
-as a pointer bias later in that function. Shall we just ignore the
-warning or still fix it somehow?
+Get rid of the platform data support since it is no longer used.
 
--Sergey
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+---
+Changes since v1:
+- Remove more unused structures and inline mxcnd_probe_dt() - Sascha
 
-On Mon, Nov 02, 2020 at 12:42:57PM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   3cea11cd5e3b00d91caf0b4730194039b45c5891
-> commit: b3e79e7682e075326df8041b826b03453acacd0a mtd: physmap: Add Baikal-T1 physically mapped ROM support
-> date:   4 weeks ago
-> config: sparc64-randconfig-s032-20201031 (attached as .config)
-> compiler: sparc64-linux-gcc (GCC) 9.3.0
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # apt-get install sparse
->         # sparse version: v0.6.3-76-gf680124b-dirty
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b3e79e7682e075326df8041b826b03453acacd0a
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout b3e79e7682e075326df8041b826b03453acacd0a
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=sparc64 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> 
-> "sparse warnings: (new ones prefixed by >>)"
-> >> drivers/mtd/maps/physmap-bt1-rom.c:78:18: sparse: sparse: cast removes address space '__iomem' of expression
-> 
-> vim +/__iomem +78 drivers/mtd/maps/physmap-bt1-rom.c
-> 
->     57	
->     58	static void __xipram bt1_rom_map_copy_from(struct map_info *map,
->     59						   void *to, unsigned long from,
->     60						   ssize_t len)
->     61	{
->     62		void __iomem *src = map->virt + from;
->     63		ssize_t shift, chunk;
->     64		u32 data;
->     65	
->     66		if (len <= 0 || from >= map->size)
->     67			return;
->     68	
->     69		/* Make sure we don't go over the map limit. */
->     70		len = min_t(ssize_t, map->size - from, len);
->     71	
->     72		/*
->     73		 * Since requested data size can be pretty big we have to implement
->     74		 * the copy procedure as optimal as possible. That's why it's split
->     75		 * up into the next three stages: unaligned head, aligned body,
->     76		 * unaligned tail.
->     77		 */
->   > 78		shift = (ssize_t)src & 0x3;
->     79		if (shift) {
->     80			chunk = min_t(ssize_t, 4 - shift, len);
->     81			data = readl_relaxed(src - shift);
->     82			memcpy(to, &data + shift, chunk);
->     83			src += chunk;
->     84			to += chunk;
->     85			len -= chunk;
->     86		}
->     87	
->     88		while (len >= 4) {
->     89			data = readl_relaxed(src);
->     90			memcpy(to, &data, 4);
->     91			src += 4;
->     92			to += 4;
->     93			len -= 4;
->     94		}
->     95	
->     96		if (len) {
->     97			data = readl_relaxed(src);
->     98			memcpy(to, &data, len);
->     99		}
->    100	}
->    101	
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/mtd/nand/raw/Kconfig               |  2 +-
+ drivers/mtd/nand/raw/mxc_nand.c            | 75 ++--------------------
+ include/linux/platform_data/mtd-mxc_nand.h | 19 ------
+ 3 files changed, 5 insertions(+), 91 deletions(-)
+ delete mode 100644 include/linux/platform_data/mtd-mxc_nand.h
 
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index cc86d6e4e042..b93e6cd23259 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -292,7 +292,7 @@ config MTD_NAND_VF610_NFC
+ config MTD_NAND_MXC
+ 	tristate "Freescale MXC NAND controller"
+ 	depends on ARCH_MXC || COMPILE_TEST
+-	depends on HAS_IOMEM
++	depends on HAS_IOMEM && OF
+ 	help
+ 	  This enables the driver for the NAND flash controller on the
+ 	  MXC processors.
+diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
+index 684c51e5e60d..f896364968d8 100644
+--- a/drivers/mtd/nand/raw/mxc_nand.c
++++ b/drivers/mtd/nand/raw/mxc_nand.c
+@@ -21,7 +21,6 @@
+ #include <linux/completion.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+-#include <linux/platform_data/mtd-mxc_nand.h>
+ 
+ #define DRIVER_NAME "mxc_nand"
+ 
+@@ -184,7 +183,6 @@ struct mxc_nand_host {
+ 	unsigned int		buf_start;
+ 
+ 	const struct mxc_nand_devtype_data *devtype_data;
+-	struct mxc_nand_platform_data pdata;
+ };
+ 
+ static const char * const part_probes[] = {
+@@ -1611,29 +1609,6 @@ static inline int is_imx53_nfc(struct mxc_nand_host *host)
+ 	return host->devtype_data == &imx53_nand_devtype_data;
+ }
+ 
+-static const struct platform_device_id mxcnd_devtype[] = {
+-	{
+-		.name = "imx21-nand",
+-		.driver_data = (kernel_ulong_t) &imx21_nand_devtype_data,
+-	}, {
+-		.name = "imx27-nand",
+-		.driver_data = (kernel_ulong_t) &imx27_nand_devtype_data,
+-	}, {
+-		.name = "imx25-nand",
+-		.driver_data = (kernel_ulong_t) &imx25_nand_devtype_data,
+-	}, {
+-		.name = "imx51-nand",
+-		.driver_data = (kernel_ulong_t) &imx51_nand_devtype_data,
+-	}, {
+-		.name = "imx53-nand",
+-		.driver_data = (kernel_ulong_t) &imx53_nand_devtype_data,
+-	}, {
+-		/* sentinel */
+-	}
+-};
+-MODULE_DEVICE_TABLE(platform, mxcnd_devtype);
+-
+-#ifdef CONFIG_OF
+ static const struct of_device_id mxcnd_dt_ids[] = {
+ 	{
+ 		.compatible = "fsl,imx21-nand",
+@@ -1655,26 +1630,6 @@ static const struct of_device_id mxcnd_dt_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(of, mxcnd_dt_ids);
+ 
+-static int mxcnd_probe_dt(struct mxc_nand_host *host)
+-{
+-	struct device_node *np = host->dev->of_node;
+-	const struct of_device_id *of_id =
+-		of_match_device(mxcnd_dt_ids, host->dev);
+-
+-	if (!np)
+-		return 1;
+-
+-	host->devtype_data = of_id->data;
+-
+-	return 0;
+-}
+-#else
+-static int mxcnd_probe_dt(struct mxc_nand_host *host)
+-{
+-	return 1;
+-}
+-#endif
+-
+ static int mxcnd_attach_chip(struct nand_chip *chip)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+@@ -1759,6 +1714,7 @@ static const struct nand_controller_ops mxcnd_controller_ops = {
+ 
+ static int mxcnd_probe(struct platform_device *pdev)
+ {
++	const struct of_device_id *of_id;
+ 	struct nand_chip *this;
+ 	struct mtd_info *mtd;
+ 	struct mxc_nand_host *host;
+@@ -1800,20 +1756,8 @@ static int mxcnd_probe(struct platform_device *pdev)
+ 	if (IS_ERR(host->clk))
+ 		return PTR_ERR(host->clk);
+ 
+-	err = mxcnd_probe_dt(host);
+-	if (err > 0) {
+-		struct mxc_nand_platform_data *pdata =
+-					dev_get_platdata(&pdev->dev);
+-		if (pdata) {
+-			host->pdata = *pdata;
+-			host->devtype_data = (struct mxc_nand_devtype_data *)
+-						pdev->id_entry->driver_data;
+-		} else {
+-			err = -ENODEV;
+-		}
+-	}
+-	if (err < 0)
+-		return err;
++	of_id = of_match_device(mxcnd_dt_ids, host->dev);
++	host->devtype_data = of_id->data;
+ 
+ 	if (!host->devtype_data->setup_interface)
+ 		this->options |= NAND_KEEP_TIMINGS;
+@@ -1843,14 +1787,6 @@ static int mxcnd_probe(struct platform_device *pdev)
+ 
+ 	this->legacy.select_chip = host->devtype_data->select_chip;
+ 
+-	/* NAND bus width determines access functions used by upper layer */
+-	if (host->pdata.width == 2)
+-		this->options |= NAND_BUSWIDTH_16;
+-
+-	/* update flash based bbt */
+-	if (host->pdata.flash_bbt)
+-		this->bbt_options |= NAND_BBT_USE_FLASH;
+-
+ 	init_completion(&host->op_completion);
+ 
+ 	host->irq = platform_get_irq(pdev, 0);
+@@ -1891,9 +1827,7 @@ static int mxcnd_probe(struct platform_device *pdev)
+ 		goto escan;
+ 
+ 	/* Register the partitions */
+-	err = mtd_device_parse_register(mtd, part_probes, NULL,
+-					host->pdata.parts,
+-					host->pdata.nr_parts);
++	err = mtd_device_parse_register(mtd, part_probes, NULL, NULL, 0);
+ 	if (err)
+ 		goto cleanup_nand;
+ 
+@@ -1930,7 +1864,6 @@ static struct platform_driver mxcnd_driver = {
+ 		   .name = DRIVER_NAME,
+ 		   .of_match_table = of_match_ptr(mxcnd_dt_ids),
+ 	},
+-	.id_table = mxcnd_devtype,
+ 	.probe = mxcnd_probe,
+ 	.remove = mxcnd_remove,
+ };
+diff --git a/include/linux/platform_data/mtd-mxc_nand.h b/include/linux/platform_data/mtd-mxc_nand.h
+deleted file mode 100644
+index d1230030c6db..000000000000
+--- a/include/linux/platform_data/mtd-mxc_nand.h
++++ /dev/null
+@@ -1,19 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-or-later */
+-/*
+- * Copyright 2004-2007 Freescale Semiconductor, Inc. All Rights Reserved.
+- * Copyright 2008 Sascha Hauer, kernel@pengutronix.de
+- */
+-
+-#ifndef __ASM_ARCH_NAND_H
+-#define __ASM_ARCH_NAND_H
+-
+-#include <linux/mtd/partitions.h>
+-
+-struct mxc_nand_platform_data {
+-	unsigned int width;	/* data bus width in bytes */
+-	unsigned int hw_ecc:1;	/* 0 if suppress hardware ECC */
+-	unsigned int flash_bbt:1; /* set to 1 to use a flash based bbt */
+-	struct mtd_partition *parts;	/* partition table */
+-	int nr_parts;			/* size of parts */
+-};
+-#endif /* __ASM_ARCH_NAND_H */
+-- 
+2.17.1
 
 
 ______________________________________________________
