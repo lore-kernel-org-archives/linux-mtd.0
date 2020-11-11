@@ -4,100 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 829CAC388F9
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Nov 2020 16:53:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D00DFC388F9
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Nov 2020 19:23:47 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0C861206FB
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Nov 2020 16:53:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 088BF20829
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Nov 2020 19:23:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HMGkCcJr";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="exGX3C0q"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C861206FB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="D5v5dQmr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 088BF20829
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baikalelectronics.ru
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:Date:References:Message-ID:
-	From:Subject:To:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=UAcd8pTki/JgwSmDIzcgSCUyQTdP/Q4/Ze9cskler8g=; b=HMGkCcJrmFxEfa5FyGUt1+Gmy
-	yvRhmU3oVySyF1VTWeh+REDX4YJFZ5z5MQE96BCX/zbDqw1Z76+okUwdlQRAKZCbArGpZzlNmgdlB
-	7Slw22vC0cZ4Ct2XBsdKTV1ur8R0Wqjb7HTEmdzzCzB/1o9ge4mwWVTYqYScgIsEuFUbgmeR/AZHr
-	F9eAF9TeZzXkReyJCeKtNj4zHQ/bAmCC3d6nyJadM3SR53cUeQoT5z7/uPhv7U4Wr5dmP1FTiRh3y
-	FJXQFweng9H5tPwB7Fav4fHIF+5TEUkshe8SiUfIq69q7fUlEaaKuC5/DWPzV2i3e/M0DVU3DJtwO
-	+UEj7MJUQ==;
+	 bh=oBZoqxhZ1GbVIde9FF7hLvqxXCKIQc72u9ohJeDxRqU=; b=D5v5dQmrS8J5R9z5j0BrIV8V8
+	1fxokCRKe6AF3r8a78wORqbg/EIDXIBcni0ddRspwVEB5802yyh5Bp4WDl/bypotF8NriHFc8Cqe6
+	MRvIgvbeUJ/IBQBukn/GJaQc1oH3Oe1rr8Du4jmx/6LtswW5mgO9ReHEKZSyOnrh6qYChdRNMEFPl
+	b4E8uafrbwxmW9zEn1yisGt2TeXCb8gzVid7Pa3PXWTBdDXXK2PavY1Q9svczwKvpjdvNZKk8fTw+
+	arolACCvFKiuQtTZVgUs5MajsdCjPePG/lXmeedynu+LKtLHf/mhXPYKTWqITiE3GVwk8pqlaxLXd
+	bSQMxYIcQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kctN8-0001OO-E2; Wed, 11 Nov 2020 16:53:26 +0000
-Received: from userp2120.oracle.com ([156.151.31.85])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kctN5-0001NH-4n
- for linux-mtd@lists.infradead.org; Wed, 11 Nov 2020 16:53:24 +0000
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
- by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ABGjcP7055598;
- Wed, 11 Nov 2020 16:53:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=rtr9ZwfifFQUB6Xm7rE6zrQB75duW4A6ZUujJWOIcy0=;
- b=exGX3C0qT4hc/xlWa/AIm9ktJgo3Z//a0o4mVgKdeKGmGA/eaFYoQbi800neiStHpB4e
- tFsrnOWmxAuossvNG8Pw+BxUWop8xMBSCqnr7z/BRW8uJVoZbgurNkL3ZGrwGHzwfuA4
- Gs7RSMJIhJKB1v4bnboh+uSU+6W4DiMcXMh1h5xVZ0dpa9hpH3Rl5ykPpFR0of3rZSoX
- +jIlTtURtYo1Dq5KH+0vEOfFvvvdWfCnug14v78NOiYUPi1u0vBpnSjlcACdYBGweMr2
- 1yEDh9l2TA2MZkJqrSGrANe41/rwZrW/lu4+bGwkBt467AYodHuM5qVxksGh9ZXr0qZt /A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
- by userp2120.oracle.com with ESMTP id 34p72er0e1-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 11 Nov 2020 16:53:11 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
- by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ABGitBl102834;
- Wed, 11 Nov 2020 16:53:11 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
- by aserp3020.oracle.com with ESMTP id 34p5g1x6bh-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 11 Nov 2020 16:53:11 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
- by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0ABGr6tR015124;
- Wed, 11 Nov 2020 16:53:07 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
- by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Wed, 11 Nov 2020 08:53:05 -0800
-To: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH, RFC 11/10] block: propagate BLKROSET to all partitions
-From: "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1o8k3dei6.fsf@ca-mkp.ca.oracle.com>
-References: <20201106140817.GA23557@lst.de>
- <yq1imacecwz.fsf@ca-mkp.ca.oracle.com> <20201111080334.GA23062@lst.de>
-Date: Wed, 11 Nov 2020 11:53:02 -0500
-In-Reply-To: <20201111080334.GA23062@lst.de> (Christoph Hellwig's message of
- "Wed, 11 Nov 2020 09:03:34 +0100")
+	id 1kcvhy-0006or-7M; Wed, 11 Nov 2020 19:23:06 +0000
+Received: from mail.baikalelectronics.com ([87.245.175.226]
+ helo=mail.baikalelectronics.ru)
+ by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kcvhw-0006nt-0x
+ for linux-mtd@lists.infradead.org; Wed, 11 Nov 2020 19:23:05 +0000
+Received: from localhost (unknown [127.0.0.1])
+ by mail.baikalelectronics.ru (Postfix) with ESMTP id 75377803071C;
+ Wed, 11 Nov 2020 19:23:01 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+ by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 79_EhWoZh6MA; Wed, 11 Nov 2020 22:23:01 +0300 (MSK)
+Date: Wed, 11 Nov 2020 22:22:59 +0300
+From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: drivers/mtd/maps/physmap-bt1-rom.c:78:18: sparse: sparse: cast
+ removes address space '__iomem' of expression
+Message-ID: <20201111192259.ovdyjcuue7fx2bqa@mobilestation>
+References: <202011021254.XC70BaQT-lkp@intel.com>
+ <20201110113827.hl5i27cpl6exo3md@mobilestation>
+ <20201110163556.3e3423f6@xps13>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9802
- signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0
- spamscore=0 malwarescore=0
- adultscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=1
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011110099
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9802
- signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0
- mlxlogscore=999 mlxscore=0
- malwarescore=0 suspectscore=1 lowpriorityscore=0 adultscore=0 phishscore=0
- priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011110099
+Content-Disposition: inline
+In-Reply-To: <20201110163556.3e3423f6@xps13>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201111_115323_337241_301722FA 
-X-CRM114-Status: GOOD (  19.47  )
+X-CRM114-CacheID: sfid-20201111_142304_216249_974E8E69 
+X-CRM114-Status: GOOD (  11.33  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,34 +73,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Jens Axboe <axboe@kernel.dk>, linux-raid@vger.kernel.org,
- Jan Hoeppner <hoeppner@linux.ibm.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>, linux-s390@vger.kernel.org,
- Richard Weinberger <richard@nod.at>, linux-block@vger.kernel.org,
- Song Liu <song@kernel.org>, linux-bcache@vger.kernel.org,
- linux-mtd@lists.infradead.org, Stefan Haberland <sth@linux.ibm.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Ilya Dryomov <idryomov@gmail.com>,
- ceph-devel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, kbuild-all@lists.01.org,
+ kernel test robot <lkp@intel.com>, Serge Semin <fancer.lancer@gmail.com>,
+ linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Tue, Nov 10, 2020 at 04:35:56PM +0100, Miquel Raynal wrote:
+> Hi Serge,
+> =
 
-Christoph,
+> Serge Semin <Sergey.Semin@baikalelectronics.ru> wrote on Tue, 10 Nov
+> 2020 14:38:27 +0300:
+> =
 
-> I actually think your patch that goes further is the right thing to
-> do, and I was going to look into something similar for a problem with
-> hardware read-only namespaces in NVMe.  I think I'll take your patch
-> as a starting point and will work from there.
+> > Hello Miquel,
+> > =
 
-Sounds good!
+> > A situation noted by the warning below won't cause any problem because
+> > the casting is done to a non-dereferenced variable. It is utilized
+> > as a pointer bias later in that function. Shall we just ignore the
+> > warning or still fix it somehow?
+> =
 
-I still have the blktests in a branch. Will adjust and resubmit once you
-post your rework.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+> Do you think the cast to a !__iomem value is mandatory here?
+
+It's not mandatory to have the casting with no __iomem, but wouldn't
+doing like this:
++ 	shift =3D (ssize_t __iomem)src & 0x3;
+be looking weird? Really, is there a good way to somehow extract the first
+two bits of a __iomem pointer without getting the sparse warning?
+
+-Sergey
+
+> =
+
+> Perhaps if you find an elegant wait to avoid the warning it would be
+> nice, otherwise I guess we'll let it aside as a false positive.
+> =
+
+> Cheers,
+> Miqu=E8l
 
 ______________________________________________________
 Linux MTD discussion mailing list
