@@ -2,84 +2,89 @@ Return-Path: <SRS0=xwS+=ES=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.0
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F18DC2D0A3
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Nov 2020 11:53:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A558C5519F
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Nov 2020 15:02:15 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9BAAD221FE
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Nov 2020 11:53:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B9C492078D
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Nov 2020 15:02:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="p4WUJ77P"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9BAAD221FE
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=csie.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MHjKXkZR";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="blBCd5cC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B9C492078D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=/XhI9FgRnMOTKnA1I5VIqB/XLFXHwuyWBX7R+wPclyU=; b=p4WUJ77PcpaVtpH8VRyk7kK1C
-	KFwNMnoMZuFcIeBb8nxQkK7qM6oOh8A1D7RQE+RV5I3V0nk/HCCyLXtGwjmAc4XEw+Ej2a6amNyfu
-	iufmgOMTG22OaX68Dbwv5piYoebzvB2WBVGhUcEuiQ+iTjURamGlx0xoscJN3ntdEfWs0Lu/Rb6Vn
-	xzB2C3vXdozC4KpNxZTzelWPZfWi15xa5wqOjF+U1LVegDdf2qjLQrB95Ibd9A6uAmzMkG/aLWl4o
-	L470i7snfHKFaNefIJCo6gidjhczyV+3/nNn9wbNCfYpNsbSyhhEG3kyiNVB+CY0E3GICV2Cx87JQ
-	fxbjIzQ3Q==;
+	 bh=rmmfQ/SFWJ68866wQG40fFKc7DIYUAfpG+SDFbk/qV8=; b=MHjKXkZRYCqZtIWgVNmRmq+l/
+	/MJ4rnR1CElN1XtoYKeGydnVEU2tLWzbo7R6py9RlO9qfbIqZfLaHo3GVNNLBsLvV4uOFsWWEC5SJ
+	tZ+94hkU+/JDR9diWF6Nqe+20h/1vJjpU/usMj19Gkx1SeI74BhKEVfBrobH/g+/i3paXx4OzmJCx
+	13x3oXYDvuip2kreTj2jwrRbbUJ/0nWJneHJCdgEtgHfsHHhOuiZ4uNfasyiAeXL8LAXPPBbVHXtK
+	3chT6GX7hQ11g2bUkhhrmcu3nVuGg0l9q47X5il100MZRFlaOLQIIz6azY9sb7KCcMOhm10+SEcwF
+	BC01b31sQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kdB9a-0007Mn-Up; Thu, 12 Nov 2020 11:52:41 +0000
-Received: from mail-lj1-f195.google.com ([209.85.208.195])
+	id 1kdE63-00005R-Qp; Thu, 12 Nov 2020 15:01:11 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kdB9W-0007JB-6D
- for linux-mtd@lists.infradead.org; Thu, 12 Nov 2020 11:52:35 +0000
-Received: by mail-lj1-f195.google.com with SMTP id i17so4703348ljd.3
- for <linux-mtd@lists.infradead.org>; Thu, 12 Nov 2020 03:52:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=xeIxKSXAFIucEStiMPJy2kOgKe0FiyFd2v0/6ZVQ1QU=;
- b=Ni58TTdWJm8+Qlxy4Tz3NR9Hz0vNM6SfPTSdaU1/XtC12PeCJ5VE02/NspZgxgwi4a
- jQe2j7r3IlQDxSN4+ADeD4E5OI4nRKctfTjn8Dm8/movO+mA9h9QwpRUqItjkt8V69v9
- MSc76LNNs86GOkeUd6OQxjV/5yH6HKVi3o5MBds7qa7sGs1+9RjoZevl6XGW9IGsaKLR
- H8vDVLIzsSYdoJ8K2NYpjL/Ylk1fQi/O0OQDMLdFHj6EJ8DzxKrLrU7lCvHwX0UWuVp+
- RmHobAhWcPkhxxkHHtt/wIcmc7lh7vTpv2tziBrZ7IVP5aivz70kCP8roWvAM01NApQJ
- f0UQ==
-X-Gm-Message-State: AOAM533cKQfJbVG9FJRXZbGDMez9cQ9T8bsOH7HudQG5RtpsFSHtZCi+
- AVnw6MyRatabcBsRESIfg5g1xSnTlYnYrg==
-X-Google-Smtp-Source: ABdhPJz2JrCsYh2oYZpgmxe5yf0TnTF0/l60brzVjYjvvDxZUoKB37vY8n3kEL+bL26GZpFZUqRrFA==
-X-Received: by 2002:a2e:9797:: with SMTP id y23mr11454876lji.208.1605181947890; 
- Thu, 12 Nov 2020 03:52:27 -0800 (PST)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com.
- [209.85.167.47])
- by smtp.gmail.com with ESMTPSA id a30sm518292ljd.91.2020.11.12.03.52.27
- for <linux-mtd@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 12 Nov 2020 03:52:27 -0800 (PST)
-Received: by mail-lf1-f47.google.com with SMTP id u19so1714768lfr.7
- for <linux-mtd@lists.infradead.org>; Thu, 12 Nov 2020 03:52:27 -0800 (PST)
-X-Received: by 2002:a19:e04:: with SMTP id 4mr2783488lfo.193.1605181947272;
- Thu, 12 Nov 2020 03:52:27 -0800 (PST)
+ id 1kdE61-0008UN-65
+ for linux-mtd@lists.infradead.org; Thu, 12 Nov 2020 15:01:11 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ACF0jmv116692;
+ Thu, 12 Nov 2020 09:00:45 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1605193245;
+ bh=+tTVYURRzxOUGW+xP6M4A5fIquJPbhAwZ7hMh22bcRU=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=blBCd5cCC/9YhzHjQIaiE+jMy19WaNeFk2+g75XroXjK+yAzo8RUSyueHGjBD/yo4
+ PDVwYai+e4lrEs2v7W1LmNM4aVl3fgoB0uIkXVL3aFHdUQY1YvpwZWUX0xFISLFBoh
+ kTBkQyPMXEt2eroird2DtBKjiSAx/W6EvXpnfvfI=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ACF0jWv130951
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Thu, 12 Nov 2020 09:00:45 -0600
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 12
+ Nov 2020 09:00:45 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 12 Nov 2020 09:00:45 -0600
+Received: from [10.250.233.179] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ACF0gmG023890;
+ Thu, 12 Nov 2020 09:00:43 -0600
+Subject: Re: drivers/mtd/maps/physmap-bt1-rom.c:78:18: sparse: sparse: cast
+ removes address space '__iomem' of expression
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Serge Semin
+ <Sergey.Semin@baikalelectronics.ru>
+References: <202011021254.XC70BaQT-lkp@intel.com>
+ <20201110113827.hl5i27cpl6exo3md@mobilestation>
+ <20201110163556.3e3423f6@xps13>
+ <20201111192259.ovdyjcuue7fx2bqa@mobilestation>
+ <20201112092715.7e466405@xps13>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <8cdc6166-7183-c8a9-5c27-93a511e6471a@ti.com>
+Date: Thu, 12 Nov 2020 20:30:42 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201106213655.1838861-1-lee.jones@linaro.org>
- <20201106213655.1838861-21-lee.jones@linaro.org>
-In-Reply-To: <20201106213655.1838861-21-lee.jones@linaro.org>
-From: Chen-Yu Tsai <wens@csie.org>
-Date: Thu, 12 Nov 2020 19:52:14 +0800
-X-Gmail-Original-Message-ID: <CAGb2v66qjLmQEAQdNqpx6HZ2A6O=BqygAn2uepFXUYM0ArZV8A@mail.gmail.com>
-Message-ID: <CAGb2v66qjLmQEAQdNqpx6HZ2A6O=BqygAn2uepFXUYM0ArZV8A@mail.gmail.com>
-Subject: Re: [PATCH v2 20/23] mtd: nand: raw: sunxi_nand: Document
- 'sunxi_nfc's 'caps' member
-To: Lee Jones <lee.jones@linaro.org>
+In-Reply-To: <20201112092715.7e466405@xps13>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201112_065234_437181_8EDDAA05 
-X-CRM114-Status: GOOD (  11.00  )
+X-CRM114-CacheID: sfid-20201112_100109_426727_6E74F3E3 
+X-CRM114-Status: GOOD (  15.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,41 +96,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris BREZILLON <b.brezillon.dev@gmail.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- Sergey Lapin <slapin@ossfans.org>, Dmitriy B <rzk333@gmail.com>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Maxime Ripard <mripard@kernel.org>, linux-mtd@lists.infradead.org,
- Qiang Yu <yuq825@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: kbuild-all@lists.01.org, linux-mtd@lists.infradead.org,
+ kernel test robot <lkp@intel.com>, Serge Semin <fancer.lancer@gmail.com>,
+ linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Nov 7, 2020 at 5:37 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=1 kernel build warning(s):
->
->  drivers/mtd/nand/raw/sunxi_nand.c:250: warning: Function parameter or member 'caps' not described in 'sunxi_nfc'
->
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Vignesh Raghavendra <vigneshr@ti.com>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Chen-Yu Tsai <wens@csie.org>
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> Cc: Boris BREZILLON <b.brezillon.dev@gmail.com>
-> Cc: Qiang Yu <yuq825@gmail.com>
-> Cc: Dmitriy B <rzk333@gmail.com>
-> Cc: Sergey Lapin <slapin@ossfans.org>
-> Cc: linux-mtd@lists.infradead.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-
-FWIW,
-
-Acked-by: Chen-Yu Tsai <wens@csie.org>
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+CgpPbiAxMS8xMi8yMCAxOjU3IFBNLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+IEhpIFNlcmdleSwK
+PiAKPiBTZXJnZSBTZW1pbiA8U2VyZ2V5LlNlbWluQGJhaWthbGVsZWN0cm9uaWNzLnJ1PiB3cm90
+ZSBvbiBXZWQsIDExIE5vdgo+IDIwMjAgMjI6MjI6NTkgKzAzMDA6Cj4gCj4+IE9uIFR1ZSwgTm92
+IDEwLCAyMDIwIGF0IDA0OjM1OjU2UE0gKzAxMDAsIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4+PiBI
+aSBTZXJnZSwKPj4+Cj4+PiBTZXJnZSBTZW1pbiA8U2VyZ2V5LlNlbWluQGJhaWthbGVsZWN0cm9u
+aWNzLnJ1PiB3cm90ZSBvbiBUdWUsIDEwIE5vdgo+Pj4gMjAyMCAxNDozODoyNyArMDMwMDoKPj4+
+ICAgCj4+Pj4gSGVsbG8gTWlxdWVsLAo+Pj4+Cj4+Pj4gQSBzaXR1YXRpb24gbm90ZWQgYnkgdGhl
+IHdhcm5pbmcgYmVsb3cgd29uJ3QgY2F1c2UgYW55IHByb2JsZW0gYmVjYXVzZQo+Pj4+IHRoZSBj
+YXN0aW5nIGlzIGRvbmUgdG8gYSBub24tZGVyZWZlcmVuY2VkIHZhcmlhYmxlLiBJdCBpcyB1dGls
+aXplZAo+Pj4+IGFzIGEgcG9pbnRlciBiaWFzIGxhdGVyIGluIHRoYXQgZnVuY3Rpb24uIFNoYWxs
+IHdlIGp1c3QgaWdub3JlIHRoZQo+Pj4+IHdhcm5pbmcgb3Igc3RpbGwgZml4IGl0IHNvbWVob3c/
+ICAKPj4+ICAgCj4+Cj4+PiBEbyB5b3UgdGhpbmsgdGhlIGNhc3QgdG8gYSAhX19pb21lbSB2YWx1
+ZSBpcyBtYW5kYXRvcnkgaGVyZT8gIAo+Pgo+PiBJdCdzIG5vdCBtYW5kYXRvcnkgdG8gaGF2ZSB0
+aGUgY2FzdGluZyB3aXRoIG5vIF9faW9tZW0sIGJ1dCB3b3VsZG4ndAo+PiBkb2luZyBsaWtlIHRo
+aXM6Cj4+ICsgCXNoaWZ0ID0gKHNzaXplX3QgX19pb21lbSlzcmMgJiAweDM7Cj4+IGJlIGxvb2tp
+bmcgd2VpcmQ/IFJlYWxseSwgaXMgdGhlcmUgYSBnb29kIHdheSB0byBzb21laG93IGV4dHJhY3Qg
+dGhlIGZpcnN0Cj4+IHR3byBiaXRzIG9mIGEgX19pb21lbSBwb2ludGVyIHdpdGhvdXQgZ2V0dGlu
+ZyB0aGUgc3BhcnNlIHdhcm5pbmc/Cj4gCj4gSSBhc2tlZCBhcm91bmQgbWUsIHdoYXQgYWJvdXQg
+dHJ5aW5nIHVpbnRwdHJfdD8KPiAKCk9uZSBtb3JlIHdheSBpcyB0byB1c2UgX19mb3JjZSB0byB0
+ZWxsIHNwYXJzZSB0aGF0IHRoaXMgY2FzdGluZyBpcwppbnRlbnRpb25hbDoKCiAgICAgICBzaGlm
+dCA9IChfX2ZvcmNlIHNzaXplX3Qpc3JjICYgMHgzOwoKCj4gVGhhbmtzLAo+IE1pcXXDqGwKPiAK
+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+PiBMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKPiBodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8KPiAKCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lv
+biBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9saW51eC1tdGQvCg==
