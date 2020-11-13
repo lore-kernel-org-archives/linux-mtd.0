@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E169BC388F7
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:42:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1A22C4742C
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:42:23 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 63FD62078D
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:42:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4425D2078D
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:42:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jlvR/sam"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 63FD62078D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PR/g8oi7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4425D2078D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,36 +25,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=ossyq+r2jagruRl907VSdMBX8V2QA2lAL9Jnb90Kc9k=; b=jlvR/sammjuoLFeDjQw8uVNoPV
-	8/zkHCnxJTXys2dnO7WL+gJQKPRzqJ+NZkC6E0qsQ8V2ye53i04k3gB09bGWA5GTMavYZQ/cmciz1
-	+wuQS/44KSryf9tnpOurfQGSsPDcZrboL8fBqoiyCPe8iFq675yp3G3L5lHIqnjx7/WD27SUgYHXH
-	w4XxoHT1kg3rDhBxW6ALF6umtQ7Poz9GM7+5kCnYwpi5GJFCLX17frYJVQ7CACRifg9YCJBKzUCB1
-	4mM9+U3rYdqnYkLHK7DEK1LtfoVGlqLS6U0jhcVubluED+Vj9n4gvly8s/XSQMSBMqPggaxq5gkzF
-	NNmGjCmw==;
+	bh=+3EZD9NZ2usF6LKSWhO1CDWLNhobJlEUy1eRozTxghk=; b=PR/g8oi7AFHTjLJ08QgcBFGRZQ
+	EgOu0MMUGbuPDNnqE7gWBuXsAHKuMdEGbqqokcA+vVdqmarOxKcT62VR7R6Py3Aezq1pdOnT+PehJ
+	8UbIZRtyqSoholb5sXzhHRI8w1kDd6rdZ5ehaVGwo3b4OpnahvgFZBvv4ZNc522D5Yd7N1WtewKiz
+	rdKQAsNgrNDnoyaiitoXNKwkV4T/iwNVm6eSEjXxsRXEFaakSM6snXsG8NQnwe6HApNx3995AplR+
+	xGAJcc9nJgt1JFiAJWCqMfh+B71edMEwhrWPccS/JYNjqwFF+vxi9TxOXf65iiRU6aQTUpirPqxJH
+	IWpT1ZlQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kdYOS-0002ob-Jo; Fri, 13 Nov 2020 12:41:33 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1kdYOj-0002x0-IB; Fri, 13 Nov 2020 12:41:49 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kdYO6-0002Zx-1n
- for linux-mtd@lists.infradead.org; Fri, 13 Nov 2020 12:41:11 +0000
+ id 1kdYOG-0002gE-DS
+ for linux-mtd@lists.infradead.org; Fri, 13 Nov 2020 12:41:24 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 5B8841BF20A;
- Fri, 13 Nov 2020 12:41:07 +0000 (UTC)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 01274FF80A;
+ Fri, 13 Nov 2020 12:41:15 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: rawnand: tmio: Allow compile testing
-Date: Fri, 13 Nov 2020 13:41:06 +0100
-Message-Id: <20201113124106.392-1-miquel.raynal@bootlin.com>
+Subject: [PATCH] mtd: rawnand: marvell: Drop useless line
+Date: Fri, 13 Nov 2020 13:41:14 +0100
+Message-Id: <20201113124114.449-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201113_074110_327417_872745AB 
-X-CRM114-Status: GOOD (  11.36  )
+X-CRM114-CacheID: sfid-20201113_074120_663161_9DF79C34 
+X-CRM114-Status: GOOD (  10.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,27 +72,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There is nothing preventing compile testing in this driver so enable
-it.
+The raw NAND core now declares the on host ECC engine being the
+default if none is provided in the DT. Drop this line doing exactly
+the same from the Marvell driver.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/raw/marvell_nand.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index e5c6c2c58122..4ee050b1823e 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -201,7 +201,7 @@ config MTD_NAND_PASEMI
+diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+index f5ca2002d08e..42d4881d598d 100644
+--- a/drivers/mtd/nand/raw/marvell_nand.c
++++ b/drivers/mtd/nand/raw/marvell_nand.c
+@@ -2678,12 +2678,6 @@ static int marvell_nand_chip_init(struct device *dev, struct marvell_nfc *nfc,
+ 	mtd = nand_to_mtd(chip);
+ 	mtd->dev.parent = dev;
  
- config MTD_NAND_TMIO
- 	tristate "Toshiba Mobile IO NAND controller"
--	depends on MFD_TMIO
-+	depends on MFD_TMIO || COMPILE_TEST
- 	help
- 	  Support for NAND flash connected to a Toshiba Mobile IO
- 	  Controller in some PDAs, including the Sharp SL6000x.
+-	/*
+-	 * Default to HW ECC engine mode. If the nand-ecc-mode property is given
+-	 * in the DT node, this entry will be overwritten in nand_scan_ident().
+-	 */
+-	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
+-
+ 	/*
+ 	 * Save a reference value for timing registers before
+ 	 * ->setup_interface() is called.
 -- 
 2.20.1
 
