@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA19EC4742C
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:36:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A6BEC56202
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:36:06 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6DAE720797
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:36:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3168020797
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:36:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="v3NPy65i"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6DAE720797
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="UlM7eXVP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3168020797
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=NSxSQBx+NSVkSeYnKAh6HxLFuRARbIu9OhW003rXk+8=; b=v3NPy65iTGPM6UMdDzQ/8KWf+
-	TjH6HDE3YSP2tqRgPVJiCKer2ipTdSoGJF60RWauP5hb/6LlIIE2TVwE3gQTLEE4rEUH5GC3UUfXY
-	ts1Xp6FkPwgKIf0pnaiN2O7zN6qPL1mUXTzyTTMFev/o4Prf9mE60bT+G+DF7q9SxBRMddN288nQ7
-	RtqTQ/pox5nllnckaB//Yf52Ls+nABX9DcciiWDKk/KG0CcgegayYmNd2f7zHwzpd8N6Jdt/BHqOp
-	R1qeGgLrENT4tBJ3xp3q5wGFEueC4yFIrB04vxCCEUjKFE1eDCrJx4No66jNDvlwtQLADYc4wCWoU
-	ElGzmlvRg==;
+	 bh=jdF6ECB7HflMkganI4qWdELSzZX8NSdiGdi5OMzxSSE=; b=UlM7eXVPS0m0vuHXG39MegrWa
+	i2zTh5GzCOZnnte7Y4qn3cWZENk5OGhRbtrITO56Gl1lbfbbWKg96MFjDKcF0fi5nLeZmPBgbqWPe
+	uNosVsJQWpGMZFb1kIC+7rI0dXali6qv8+qJVBy/pqaOr3bBtDMaQb4qujmCc3AKkApzuZsrqhBEO
+	qYVp2B1LNUYrud7WaKF4rBBWwPvf/44NjMOqpsuTNZI4E9QW1f6n5CSchIr+dwUQi1D72xFqjqDDs
+	UERfjayf1TxVqM9IXefiEd2LXHMgkXT276UunZMYQzEVTBMpJ1YVLNg+V3P4SWG01nviT/SwVZWMn
+	0zt6O47ew==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kdYIb-0008MQ-14; Fri, 13 Nov 2020 12:35:29 +0000
+	id 1kdYIg-0008Qj-8j; Fri, 13 Nov 2020 12:35:34 +0000
 Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kdYHl-00082Q-8L
- for linux-mtd@lists.infradead.org; Fri, 13 Nov 2020 12:34:38 +0000
+ id 1kdYHl-00082u-Td
+ for linux-mtd@lists.infradead.org; Fri, 13 Nov 2020 12:34:39 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id BDB57C0012;
- Fri, 13 Nov 2020 12:34:35 +0000 (UTC)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 78A5DC0003;
+ Fri, 13 Nov 2020 12:34:36 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH 13/19] mtd: rawnand: txx9ndfmc: Move the ECC initialization to
+Subject: [PATCH 14/19] mtd: rawnand: tmio: Move the ECC initialization to
  ->attach_chip()
-Date: Fri, 13 Nov 2020 13:34:18 +0100
-Message-Id: <20201113123424.32233-14-miquel.raynal@bootlin.com>
+Date: Fri, 13 Nov 2020 13:34:19 +0100
+Message-Id: <20201113123424.32233-15-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201113123424.32233-1-miquel.raynal@bootlin.com>
 References: <20201113123424.32233-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201113_073437_504508_1C4D79B0 
-X-CRM114-Status: GOOD (  13.75  )
+X-CRM114-CacheID: sfid-20201113_073438_163630_9AE6E9CA 
+X-CRM114-Status: GOOD (  15.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,47 +87,73 @@ this by moving these lines to ->attach_chip().
 Fixes: d7157ff49a5b ("mtd: rawnand: Use the ECC framework user input parsing bits")
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/txx9ndfmc.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/raw/tmio_nand.c | 33 +++++++++++++++++++++++---------
+ 1 file changed, 24 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/txx9ndfmc.c b/drivers/mtd/nand/raw/txx9ndfmc.c
-index 5f3dbff60d47..1a9449e53bf9 100644
---- a/drivers/mtd/nand/raw/txx9ndfmc.c
-+++ b/drivers/mtd/nand/raw/txx9ndfmc.c
-@@ -252,6 +252,11 @@ static int txx9ndfmc_attach_chip(struct nand_chip *chip)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
+diff --git a/drivers/mtd/nand/raw/tmio_nand.c b/drivers/mtd/nand/raw/tmio_nand.c
+index 31e5e50e77e2..de8e919d0ebe 100644
+--- a/drivers/mtd/nand/raw/tmio_nand.c
++++ b/drivers/mtd/nand/raw/tmio_nand.c
+@@ -102,6 +102,7 @@
+ /*--------------------------------------------------------------------------*/
  
+ struct tmio_nand {
++	struct nand_controller controller;
+ 	struct nand_chip chip;
+ 	struct completion comp;
+ 
+@@ -354,6 +355,25 @@ static void tmio_hw_stop(struct platform_device *dev, struct tmio_nand *tmio)
+ 		cell->disable(dev);
+ }
+ 
++static int tmio_attach_chip(struct nand_chip *chip)
++{
 +	if (chip->ecc.engine_type != NAND_ECC_ENGINE_TYPE_ON_HOST)
 +		return 0;
 +
-+	chip->ecc.strength = 1;
++	chip->ecc.size = 512;
++	chip->ecc.bytes = 6;
++	chip->ecc.strength = 2;
++	chip->ecc.hwctl = tmio_nand_enable_hwecc;
++	chip->ecc.calculate = tmio_nand_calculate_ecc;
++	chip->ecc.correct = tmio_nand_correct_data;
 +
- 	if (mtd->writesize >= 512) {
- 		chip->ecc.size = 512;
- 		chip->ecc.bytes = 6;
-@@ -260,6 +265,10 @@ static int txx9ndfmc_attach_chip(struct nand_chip *chip)
- 		chip->ecc.bytes = 3;
- 	}
- 
-+	chip->ecc.calculate = txx9ndfmc_calculate_ecc;
-+	chip->ecc.correct = txx9ndfmc_correct_data;
-+	chip->ecc.hwctl = txx9ndfmc_enable_hwecc;
++	return 0;
++}
 +
- 	return 0;
- }
++static const struct nand_controller_ops tmio_ops = {
++	.attach_chip = tmio_attach_chip,
++};
++
+ static int tmio_probe(struct platform_device *dev)
+ {
+ 	struct tmio_nand_data *data = dev_get_platdata(&dev->dev);
+@@ -384,6 +404,10 @@ static int tmio_probe(struct platform_device *dev)
+ 	mtd->name = "tmio-nand";
+ 	mtd->dev.parent = &dev->dev;
  
-@@ -325,11 +334,6 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
- 		chip->legacy.write_buf = txx9ndfmc_write_buf;
- 		chip->legacy.cmd_ctrl = txx9ndfmc_cmd_ctrl;
- 		chip->legacy.dev_ready = txx9ndfmc_dev_ready;
--		chip->ecc.calculate = txx9ndfmc_calculate_ecc;
--		chip->ecc.correct = txx9ndfmc_correct_data;
--		chip->ecc.hwctl = txx9ndfmc_enable_hwecc;
--		chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
--		chip->ecc.strength = 1;
- 		chip->legacy.chip_delay = 100;
- 		chip->controller = &drvdata->controller;
++	nand_controller_init(&tmio->controller);
++	tmio->controller.ops = &tmio_ops;
++	nand_chip->controller = &tmio->controller;
++
+ 	tmio->ccr = devm_ioremap(&dev->dev, ccr->start, resource_size(ccr));
+ 	if (!tmio->ccr)
+ 		return -EIO;
+@@ -408,15 +432,6 @@ static int tmio_probe(struct platform_device *dev)
+ 	nand_chip->legacy.write_buf = tmio_nand_write_buf;
+ 	nand_chip->legacy.read_buf = tmio_nand_read_buf;
+ 
+-	/* set eccmode using hardware ECC */
+-	nand_chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
+-	nand_chip->ecc.size = 512;
+-	nand_chip->ecc.bytes = 6;
+-	nand_chip->ecc.strength = 2;
+-	nand_chip->ecc.hwctl = tmio_nand_enable_hwecc;
+-	nand_chip->ecc.calculate = tmio_nand_calculate_ecc;
+-	nand_chip->ecc.correct = tmio_nand_correct_data;
+-
+ 	if (data)
+ 		nand_chip->badblock_pattern = data->badblock_pattern;
  
 -- 
 2.20.1
