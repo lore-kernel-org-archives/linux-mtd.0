@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95DCDC388F7
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:35:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 423B0C4742C
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:35:50 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2DC7520797
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:35:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7AFF420797
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:35:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MlxzyR9A"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DC7520797
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="s6KoXtbc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7AFF420797
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=0jg8Nqepc/C4vqb2+SWNIP9eOROXMvhfPILtQzjULZ4=; b=MlxzyR9ANvRR61KjGf6v8EjrC
-	FflM9rHxWuqJu4JOp/xjL0jvl3IRhjXLFuO2L0aJyylR5HMF4xMTpKz3VjW3F6N0W3tiIRofLGfML
-	x0wykvfIwOeeVzALiJnshRD8v0UwE0rVrmkV1BEyFBPIdnUgDlXw2f5znDzvaQkreKGh/3FK/kC/K
-	OMeOpfkvL6mwTp+kfabxANUTsi1h7TaxFmtJXbE1HhiwkewKgJgl+HflOZ+3adibMsZSzBz/k51eN
-	EwfEJKZc84vKZMliJGWNdt7MKbj5R4WhOUz68nl/KoRSdoQfnP5If+v8bW9O9/H/Oesik8hD2WiL8
-	qqaYoKGig==;
+	 bh=tLDwuzAa0Yj+gKd8Spy9H4888Xmxhx6A2SOpvHofbJA=; b=s6KoXtbc/ItDVIq577n1GW+Sj
+	rey9BeIXUzV+FFipJT3A5mtm8fMLNcUiLZddhJ/g/bFJHQZaE49zKL4Pr4hUrJGODLpZUKVYhn9An
+	9URurMxOWPNMELUwS9DX5uIX1vXQ6LhCozLHaptEfhZnEzDKyoayz7oY7b+1d6f8zrTNlm9OFAZFm
+	bMT8qZ205BmNorXo/HqY/r/vqNJuICquIRZMFSzK3JVNqIGGZrritWFmFUgvmVLuveQ11tDxtsQVV
+	IJl0LRDm1YDWrolniZs4KxYMpM/6mMOynutKt6DlnSPfDzso5d8S6r21VAqOOoXnMMA0g2cW4D4pV
+	ILbewTZ4w==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kdYHv-00086v-CQ; Fri, 13 Nov 2020 12:34:47 +0000
+	id 1kdYI8-00089b-AG; Fri, 13 Nov 2020 12:35:00 +0000
 Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kdYHe-0007y8-Ld
- for linux-mtd@lists.infradead.org; Fri, 13 Nov 2020 12:34:32 +0000
+ id 1kdYHg-000801-Jz
+ for linux-mtd@lists.infradead.org; Fri, 13 Nov 2020 12:34:34 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 4F9E8C0011;
- Fri, 13 Nov 2020 12:34:28 +0000 (UTC)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 3190CC000C;
+ Fri, 13 Nov 2020 12:34:31 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH 03/19] mtd: rawnand: ams-delta: Move the ECC initialization to
- ->attach_chip()
-Date: Fri, 13 Nov 2020 13:34:08 +0100
-Message-Id: <20201113123424.32233-4-miquel.raynal@bootlin.com>
+Subject: [PATCH 07/19] mtd: rawnand: diskonchip: Move the ECC initialization
+ to ->attach_chip()
+Date: Fri, 13 Nov 2020 13:34:12 +0100
+Message-Id: <20201113123424.32233-8-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201113123424.32233-1-miquel.raynal@bootlin.com>
 References: <20201113123424.32233-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201113_073430_812100_C4557B80 
-X-CRM114-Status: GOOD (  12.83  )
+X-CRM114-CacheID: sfid-20201113_073432_859170_6683B4B3 
+X-CRM114-Status: GOOD (  14.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,41 +87,62 @@ this by moving these lines to ->attach_chip().
 Fixes: d7157ff49a5b ("mtd: rawnand: Use the ECC framework user input parsing bits")
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/ams-delta.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/raw/diskonchip.c | 29 +++++++++++++++++++----------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
-index d3c5cc513c8f..0c352b39ad4b 100644
---- a/drivers/mtd/nand/raw/ams-delta.c
-+++ b/drivers/mtd/nand/raw/ams-delta.c
-@@ -215,8 +215,17 @@ static int gpio_nand_setup_interface(struct nand_chip *this, int csline,
- 	return 0;
+diff --git a/drivers/mtd/nand/raw/diskonchip.c b/drivers/mtd/nand/raw/diskonchip.c
+index 94432a453e5e..26b265e4384a 100644
+--- a/drivers/mtd/nand/raw/diskonchip.c
++++ b/drivers/mtd/nand/raw/diskonchip.c
+@@ -1269,12 +1269,31 @@ static inline int __init doc2001plus_init(struct mtd_info *mtd)
+ 	return 1;
  }
  
-+static int gpio_nand_attach_chip(struct nand_chip *chip)
++static int doc200x_attach_chip(struct nand_chip *chip)
 +{
-+	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
-+	chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
++	if (chip->ecc.engine_type != NAND_ECC_ENGINE_TYPE_ON_HOST)
++		return 0;
++
++	chip->ecc.placement = NAND_ECC_PLACEMENT_INTERLEAVED;
++	chip->ecc.size = 512;
++	chip->ecc.bytes = 6;
++	chip->ecc.strength = 2;
++	chip->ecc.options = NAND_ECC_GENERIC_ERASED_CHECK;
++	chip->ecc.hwctl = doc200x_enable_hwecc;
++	chip->ecc.calculate = doc200x_calculate_ecc;
++	chip->ecc.correct = doc200x_correct_data;
 +
 +	return 0;
 +}
 +
- static const struct nand_controller_ops gpio_nand_ops = {
- 	.exec_op = gpio_nand_exec_op,
-+	.attach_chip = gpio_nand_attach_chip,
- 	.setup_interface = gpio_nand_setup_interface,
+ static const struct nand_controller_ops doc200x_ops = {
+ 	.exec_op = doc200x_exec_op,
++	.attach_chip = doc200x_attach_chip,
  };
  
-@@ -260,9 +269,6 @@ static int gpio_nand_probe(struct platform_device *pdev)
- 		return err;
- 	}
+ static const struct nand_controller_ops doc2001plus_ops = {
+ 	.exec_op = doc2001plus_exec_op,
++	.attach_chip = doc200x_attach_chip,
+ };
  
--	this->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
--	this->ecc.algo = NAND_ECC_ALGO_HAMMING;
+ static int __init doc_probe(unsigned long physadr)
+@@ -1452,16 +1471,6 @@ static int __init doc_probe(unsigned long physadr)
+ 
+ 	nand->controller	= &doc->base;
+ 	nand_set_controller_data(nand, doc);
+-	nand->ecc.hwctl		= doc200x_enable_hwecc;
+-	nand->ecc.calculate	= doc200x_calculate_ecc;
+-	nand->ecc.correct	= doc200x_correct_data;
 -
- 	platform_set_drvdata(pdev, priv);
- 
- 	/* Set chip enabled but write protected */
+-	nand->ecc.engine_type	= NAND_ECC_ENGINE_TYPE_ON_HOST;
+-	nand->ecc.placement	= NAND_ECC_PLACEMENT_INTERLEAVED;
+-	nand->ecc.size		= 512;
+-	nand->ecc.bytes		= 6;
+-	nand->ecc.strength	= 2;
+-	nand->ecc.options	= NAND_ECC_GENERIC_ERASED_CHECK;
+ 	nand->bbt_options	= NAND_BBT_USE_FLASH;
+ 	/* Skip the automatic BBT scan so we can run it manually */
+ 	nand->options		|= NAND_SKIP_BBTSCAN | NAND_NO_BBM_QUIRK;
 -- 
 2.20.1
 
