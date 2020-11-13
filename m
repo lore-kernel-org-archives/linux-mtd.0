@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 423B0C4742C
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:35:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F15EC388F7
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:35:52 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7AFF420797
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:35:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1FA3E20797
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:35:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="s6KoXtbc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7AFF420797
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Nh1/A0nY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1FA3E20797
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=tLDwuzAa0Yj+gKd8Spy9H4888Xmxhx6A2SOpvHofbJA=; b=s6KoXtbc/ItDVIq577n1GW+Sj
-	rey9BeIXUzV+FFipJT3A5mtm8fMLNcUiLZddhJ/g/bFJHQZaE49zKL4Pr4hUrJGODLpZUKVYhn9An
-	9URurMxOWPNMELUwS9DX5uIX1vXQ6LhCozLHaptEfhZnEzDKyoayz7oY7b+1d6f8zrTNlm9OFAZFm
-	bMT8qZ205BmNorXo/HqY/r/vqNJuICquIRZMFSzK3JVNqIGGZrritWFmFUgvmVLuveQ11tDxtsQVV
-	IJl0LRDm1YDWrolniZs4KxYMpM/6mMOynutKt6DlnSPfDzso5d8S6r21VAqOOoXnMMA0g2cW4D4pV
-	ILbewTZ4w==;
+	 bh=RhsNJcPz/wkuNRqoRqSoRI6VYKC20QdV2OaEiTl7kjI=; b=Nh1/A0nY5bQYvbtfAmbfXoi8Y
+	fZidO3WNK72C8IzYPv/engIdhs343fnYuRvjHpWrdKnqwEGac5vW7MumPGuUFACCZpGMt58IS18hX
+	Zu9ELGU94sXwjo1RWRiSNaxdE4FkPk/uIJo8AuP3uNM2BwONTdcUJ3/+go/L9ikbPLEiSEq0YmiyB
+	wjssFF4z3Yd0yV77aH1/9x7IA1Dbw61CX31nbjQ1zBaHJWVP6ajNUmrC8fZT83Bfv6CvxWT51Q1tp
+	/k42mf6LC3Ha5YOy+4CzjhcEW205nrRJO3g1/yIV2KBZQlhjhMdcx+6RmyOc+Ga214j2q8i4HMvek
+	kQXasu3ag==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kdYI8-00089b-AG; Fri, 13 Nov 2020 12:35:00 +0000
+	id 1kdYHx-00087K-OL; Fri, 13 Nov 2020 12:34:49 +0000
 Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kdYHg-000801-Jz
- for linux-mtd@lists.infradead.org; Fri, 13 Nov 2020 12:34:34 +0000
+ id 1kdYHf-0007yr-4y
+ for linux-mtd@lists.infradead.org; Fri, 13 Nov 2020 12:34:32 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 3190CC000C;
- Fri, 13 Nov 2020 12:34:31 +0000 (UTC)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id A8F79C0005;
+ Fri, 13 Nov 2020 12:34:29 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH 07/19] mtd: rawnand: diskonchip: Move the ECC initialization
- to ->attach_chip()
-Date: Fri, 13 Nov 2020 13:34:12 +0100
-Message-Id: <20201113123424.32233-8-miquel.raynal@bootlin.com>
+Subject: [PATCH 05/19] mtd: rawnand: cs553x: Move the ECC initialization to
+ ->attach_chip()
+Date: Fri, 13 Nov 2020 13:34:10 +0100
+Message-Id: <20201113123424.32233-6-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201113123424.32233-1-miquel.raynal@bootlin.com>
 References: <20201113123424.32233-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201113_073432_859170_6683B4B3 
-X-CRM114-Status: GOOD (  14.01  )
+X-CRM114-CacheID: sfid-20201113_073431_346136_039CA3B9 
+X-CRM114-Status: GOOD (  15.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,62 +87,53 @@ this by moving these lines to ->attach_chip().
 Fixes: d7157ff49a5b ("mtd: rawnand: Use the ECC framework user input parsing bits")
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/diskonchip.c | 29 +++++++++++++++++++----------
- 1 file changed, 19 insertions(+), 10 deletions(-)
+ drivers/mtd/nand/raw/cs553x_nand.c | 24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/diskonchip.c b/drivers/mtd/nand/raw/diskonchip.c
-index 94432a453e5e..26b265e4384a 100644
---- a/drivers/mtd/nand/raw/diskonchip.c
-+++ b/drivers/mtd/nand/raw/diskonchip.c
-@@ -1269,12 +1269,31 @@ static inline int __init doc2001plus_init(struct mtd_info *mtd)
- 	return 1;
- }
+diff --git a/drivers/mtd/nand/raw/cs553x_nand.c b/drivers/mtd/nand/raw/cs553x_nand.c
+index b066dcae31ab..6edf78c16fc8 100644
+--- a/drivers/mtd/nand/raw/cs553x_nand.c
++++ b/drivers/mtd/nand/raw/cs553x_nand.c
+@@ -242,8 +242,24 @@ static int cs_calculate_ecc(struct nand_chip *this, const u_char *dat,
  
-+static int doc200x_attach_chip(struct nand_chip *chip)
+ static struct cs553x_nand_controller *controllers[4];
+ 
++static int cs553x_attach_chip(struct nand_chip *chip)
 +{
 +	if (chip->ecc.engine_type != NAND_ECC_ENGINE_TYPE_ON_HOST)
 +		return 0;
 +
-+	chip->ecc.placement = NAND_ECC_PLACEMENT_INTERLEAVED;
-+	chip->ecc.size = 512;
-+	chip->ecc.bytes = 6;
-+	chip->ecc.strength = 2;
-+	chip->ecc.options = NAND_ECC_GENERIC_ERASED_CHECK;
-+	chip->ecc.hwctl = doc200x_enable_hwecc;
-+	chip->ecc.calculate = doc200x_calculate_ecc;
-+	chip->ecc.correct = doc200x_correct_data;
++	chip->ecc.size = 256;
++	chip->ecc.bytes = 3;
++	chip->ecc.hwctl  = cs_enable_hwecc;
++	chip->ecc.calculate = cs_calculate_ecc;
++	chip->ecc.correct  = rawnand_sw_hamming_correct;
++	chip->ecc.strength = 1;
 +
 +	return 0;
 +}
 +
- static const struct nand_controller_ops doc200x_ops = {
- 	.exec_op = doc200x_exec_op,
-+	.attach_chip = doc200x_attach_chip,
+ static const struct nand_controller_ops cs553x_nand_controller_ops = {
+ 	.exec_op = cs553x_exec_op,
++	.attach_chip = cs553x_attach_chip,
  };
  
- static const struct nand_controller_ops doc2001plus_ops = {
- 	.exec_op = doc2001plus_exec_op,
-+	.attach_chip = doc200x_attach_chip,
- };
+ static int __init cs553x_init_one(int cs, int mmio, unsigned long adr)
+@@ -285,14 +301,6 @@ static int __init cs553x_init_one(int cs, int mmio, unsigned long adr)
+ 		goto out_mtd;
+ 	}
  
- static int __init doc_probe(unsigned long physadr)
-@@ -1452,16 +1471,6 @@ static int __init doc_probe(unsigned long physadr)
- 
- 	nand->controller	= &doc->base;
- 	nand_set_controller_data(nand, doc);
--	nand->ecc.hwctl		= doc200x_enable_hwecc;
--	nand->ecc.calculate	= doc200x_calculate_ecc;
--	nand->ecc.correct	= doc200x_correct_data;
+-	this->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
+-	this->ecc.size = 256;
+-	this->ecc.bytes = 3;
+-	this->ecc.hwctl  = cs_enable_hwecc;
+-	this->ecc.calculate = cs_calculate_ecc;
+-	this->ecc.correct  = rawnand_sw_hamming_correct;
+-	this->ecc.strength = 1;
 -
--	nand->ecc.engine_type	= NAND_ECC_ENGINE_TYPE_ON_HOST;
--	nand->ecc.placement	= NAND_ECC_PLACEMENT_INTERLEAVED;
--	nand->ecc.size		= 512;
--	nand->ecc.bytes		= 6;
--	nand->ecc.strength	= 2;
--	nand->ecc.options	= NAND_ECC_GENERIC_ERASED_CHECK;
- 	nand->bbt_options	= NAND_BBT_USE_FLASH;
- 	/* Skip the automatic BBT scan so we can run it manually */
- 	nand->options		|= NAND_SKIP_BBTSCAN | NAND_NO_BBM_QUIRK;
+ 	/* Enable the following for a flash based bad block table */
+ 	this->bbt_options = NAND_BBT_USE_FLASH;
+ 
 -- 
 2.20.1
 
