@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B72FC4742C
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:41:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E169BC388F7
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:42:06 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B38A22078D
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:41:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 63FD62078D
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:42:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="xnUCTtxj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B38A22078D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jlvR/sam"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 63FD62078D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,36 +25,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=VUQAT/eJq59AE6d5mYxsfRO8rDg96PC01ARfqjCNViY=; b=xnUCTtxjkA8TsM1ak6sW6mjnsJ
-	Q9zFJnMrvdJH1Vtfqzvc/0O3hL/AOeILjF+2tCYSxkm+En7TxWTbWyp4MIodXeaubx4NWaScDi69L
-	5ZRPx6satNiWWGDqO090dRdTT2DHC5o397dm/bi6sczyzaKHyg2gPcJwIbr244EYAFDmweSrIm0f1
-	feXrCbYP7WRfJuagLBwaZGN4ow0v1wLm73pj+wH+cDmBa3l1G7SxgRCNDUg4HuwqVHfBX3O7kbDAJ
-	1mdoBd3oEHY5Tf6a0NG14Br26cGJtMlNJA1YTu2n7vG6IgqpR09d5nQ2CjFOKnIw8Ejw/GLtoojhk
-	ZALXoliA==;
+	bh=ossyq+r2jagruRl907VSdMBX8V2QA2lAL9Jnb90Kc9k=; b=jlvR/sammjuoLFeDjQw8uVNoPV
+	8/zkHCnxJTXys2dnO7WL+gJQKPRzqJ+NZkC6E0qsQ8V2ye53i04k3gB09bGWA5GTMavYZQ/cmciz1
+	+wuQS/44KSryf9tnpOurfQGSsPDcZrboL8fBqoiyCPe8iFq675yp3G3L5lHIqnjx7/WD27SUgYHXH
+	w4XxoHT1kg3rDhBxW6ALF6umtQ7Poz9GM7+5kCnYwpi5GJFCLX17frYJVQ7CACRifg9YCJBKzUCB1
+	4mM9+U3rYdqnYkLHK7DEK1LtfoVGlqLS6U0jhcVubluED+Vj9n4gvly8s/XSQMSBMqPggaxq5gkzF
+	NNmGjCmw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kdYOG-0002fk-BC; Fri, 13 Nov 2020 12:41:20 +0000
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+	id 1kdYOS-0002ob-Jo; Fri, 13 Nov 2020 12:41:33 +0000
+Received: from relay8-d.mail.gandi.net ([217.70.183.201])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kdYNz-0002Wi-0u
- for linux-mtd@lists.infradead.org; Fri, 13 Nov 2020 12:41:05 +0000
+ id 1kdYO6-0002Zx-1n
+ for linux-mtd@lists.infradead.org; Fri, 13 Nov 2020 12:41:11 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id C3BF8C0011;
- Fri, 13 Nov 2020 12:40:59 +0000 (UTC)
+ by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 5B8841BF20A;
+ Fri, 13 Nov 2020 12:41:07 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: rawnand: orion: Allow compile testing
-Date: Fri, 13 Nov 2020 13:40:58 +0100
-Message-Id: <20201113124058.333-1-miquel.raynal@bootlin.com>
+Subject: [PATCH] mtd: rawnand: tmio: Allow compile testing
+Date: Fri, 13 Nov 2020 13:41:06 +0100
+Message-Id: <20201113124106.392-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201113_074103_344434_443E1A97 
-X-CRM114-Status: GOOD (  10.96  )
+X-CRM114-CacheID: sfid-20201113_074110_327417_872745AB 
+X-CRM114-Status: GOOD (  11.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,18 +81,18 @@ Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index cc86d6e4e042..e5c6c2c58122 100644
+index e5c6c2c58122..4ee050b1823e 100644
 --- a/drivers/mtd/nand/raw/Kconfig
 +++ b/drivers/mtd/nand/raw/Kconfig
-@@ -149,7 +149,7 @@ config MTD_NAND_ATMEL
+@@ -201,7 +201,7 @@ config MTD_NAND_PASEMI
  
- config MTD_NAND_ORION
- 	tristate "Marvell Orion NAND controller"
--	depends on PLAT_ORION
-+	depends on PLAT_ORION || COMPILE_TEST
+ config MTD_NAND_TMIO
+ 	tristate "Toshiba Mobile IO NAND controller"
+-	depends on MFD_TMIO
++	depends on MFD_TMIO || COMPILE_TEST
  	help
- 	  This enables the NAND flash controller on Orion machines.
- 
+ 	  Support for NAND flash connected to a Toshiba Mobile IO
+ 	  Controller in some PDAs, including the Sharp SL6000x.
 -- 
 2.20.1
 
