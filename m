@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22DD1C4742C
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:36:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29B13C388F7
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:36:54 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A9E892076B
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:36:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A3C2F20797
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:36:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Q1NPQTLx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A9E892076B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="3ajfDHqZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A3C2F20797
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=IKBNmLzkWQoIGaU/idADiewkeMBgVOtRHnm6Qowrfnw=; b=Q1NPQTLx6qLtfJF5BR+GMnYnV
-	UuLjl3M24ayC9krx08JcGvSsR+w+a3/Azq9MgrOfMmgUnWsJYF6B4OI0FfUdpvPGXzKvYgXFKX7+a
-	+N3sbMPHprvD5Zfflv3CUmJDXaj1IERfCgZhkckw0l3cdoKn0WemuI0R7ABh+tvrcYOmgVBf59roO
-	qybX/83LzKTSaYFZF8GQWgSu6CM2k2dbWySS+wF9RkxlJMVd2kJmQi5BxER8hZ5jhRojP/FDY59ZE
-	xw/KeARftke1h7HJIPDlTLhgfxsAv25zvKskpZE/tE3U6GBlPZa7i5EQ8pMwpCGICp9XOMWZtGa3r
-	9ytXHo0Qg==;
+	 bh=tqoKsscW+4FOo7+O4RMPTjzixfbi5lJA9YOzn3eLUIE=; b=3ajfDHqZtMiOkgJfWWQOvLRPR
+	BgmawbX7JnBsAoyQAAYKeiB3U8BpGgTpHxAE0oeI47x23oiLoSp8teH4y34dLUl5D2IOAewmoGTb+
+	19ERLoCCOTrP4nHK38DI1gGG8O6yLTxXHkJMV+tsj57LAFGgUE0fkXZ6FSaUMGvF2+5zG06agc/a0
+	NMjvW7Hs1jJ/pDG0cKjHMsReIWIwRtW6GwKs975dfbSOclG+EcLrOiF9IxwyeLQgPB/xKQE3wf8lt
+	nLFu+ziAoo6ZjLd3+trcO9aM96WXMiJ396TQV0sPaATxEKmP2nDzk6Yid/imBsUHW3HyOBrDt7JMG
+	KDo3/5cPA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kdYIS-0008Hd-16; Fri, 13 Nov 2020 12:35:20 +0000
+	id 1kdYJ3-0000D4-Rh; Fri, 13 Nov 2020 12:35:57 +0000
 Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kdYHj-00081g-P9
- for linux-mtd@lists.infradead.org; Fri, 13 Nov 2020 12:34:36 +0000
+ id 1kdYHn-00083f-A4
+ for linux-mtd@lists.infradead.org; Fri, 13 Nov 2020 12:34:40 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 54CC0C0015;
- Fri, 13 Nov 2020 12:34:34 +0000 (UTC)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id D4A27C000D;
+ Fri, 13 Nov 2020 12:34:37 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH 11/19] mtd: rawnand: mpc5121: Move the ECC initialization to
+Subject: [PATCH 16/19] mtd: rawnand: plat_nand: Move the ECC initialization to
  ->attach_chip()
-Date: Fri, 13 Nov 2020 13:34:16 +0100
-Message-Id: <20201113123424.32233-12-miquel.raynal@bootlin.com>
+Date: Fri, 13 Nov 2020 13:34:21 +0100
+Message-Id: <20201113123424.32233-17-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201113123424.32233-1-miquel.raynal@bootlin.com>
 References: <20201113123424.32233-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201113_073435_967120_44064257 
-X-CRM114-Status: GOOD (  14.96  )
+X-CRM114-CacheID: sfid-20201113_073439_543105_5040467D 
+X-CRM114-Status: GOOD (  15.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,26 +87,23 @@ this by moving these lines to ->attach_chip().
 Fixes: d7157ff49a5b ("mtd: rawnand: Use the ECC framework user input parsing bits")
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/mpc5121_nfc.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/raw/plat_nand.c | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/mpc5121_nfc.c b/drivers/mtd/nand/raw/mpc5121_nfc.c
-index dfd0d3ed5ed0..fb4c0b11689f 100644
---- a/drivers/mtd/nand/raw/mpc5121_nfc.c
-+++ b/drivers/mtd/nand/raw/mpc5121_nfc.c
-@@ -104,6 +104,7 @@
- #define NFC_TIMEOUT		(HZ / 10)	/* 1/10 s */
+diff --git a/drivers/mtd/nand/raw/plat_nand.c b/drivers/mtd/nand/raw/plat_nand.c
+index b98c0d5c413f..93d9f1694dc1 100644
+--- a/drivers/mtd/nand/raw/plat_nand.c
++++ b/drivers/mtd/nand/raw/plat_nand.c
+@@ -14,10 +14,23 @@
+ #include <linux/mtd/platnand.h>
  
- struct mpc5121_nfc_prv {
+ struct plat_nand_data {
 +	struct nand_controller	controller;
  	struct nand_chip	chip;
- 	int			irq;
- 	void __iomem		*regs;
-@@ -602,6 +603,18 @@ static void mpc5121_nfc_free(struct device *dev, struct mtd_info *mtd)
- 		iounmap(prv->csreg);
- }
+ 	void __iomem		*io_base;
+ };
  
-+static int mpc5121_nfc_attach_chip(struct nand_chip *chip)
++static int plat_nand_attach_chip(struct nand_chip *chip)
 +{
 +	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
 +	chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
@@ -114,33 +111,34 @@ index dfd0d3ed5ed0..fb4c0b11689f 100644
 +	return 0;
 +}
 +
-+static const struct nand_controller_ops mpc5121_nfc_ops = {
-+	.attach_chip = mpc5121_nfc_attach_chip,
++static const struct nand_controller_ops plat_nand_ops = {
++	.attach_chip = plat_nand_attach_chip,
 +};
 +
- static int mpc5121_nfc_probe(struct platform_device *op)
- {
- 	struct device_node *dn = op->dev.of_node;
-@@ -634,6 +647,10 @@ static int mpc5121_nfc_probe(struct platform_device *op)
- 	chip = &prv->chip;
- 	mtd = nand_to_mtd(chip);
+ /*
+  * Probe for the NAND device.
+  */
+@@ -46,6 +59,10 @@ static int plat_nand_probe(struct platform_device *pdev)
+ 	if (!data)
+ 		return -ENOMEM;
  
-+	nand_controller_init(&prv->controller);
-+	prv->controller.ops = &mpc5121_nfc_ops;
-+	chip->controller = &prv->controller;
++	data->controller.ops = &plat_nand_ops;
++	nand_controller_init(&data->controller);
++	data->chip.controller = &data->controller;
 +
- 	mtd->dev.parent = dev;
- 	nand_set_controller_data(chip, prv);
- 	nand_set_flash_node(chip, dn);
-@@ -688,8 +705,6 @@ static int mpc5121_nfc_probe(struct platform_device *op)
- 	chip->legacy.set_features = nand_get_set_features_notsupp;
- 	chip->legacy.get_features = nand_get_set_features_notsupp;
- 	chip->bbt_options = NAND_BBT_USE_FLASH;
--	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
--	chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	data->io_base = devm_ioremap_resource(&pdev->dev, res);
+ 	if (IS_ERR(data->io_base))
+@@ -66,9 +83,6 @@ static int plat_nand_probe(struct platform_device *pdev)
+ 	data->chip.options |= pdata->chip.options;
+ 	data->chip.bbt_options |= pdata->chip.bbt_options;
  
- 	/* Support external chip-select logic on ADS5121 board */
- 	if (of_machine_is_compatible("fsl,mpc5121ads")) {
+-	data->chip.ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
+-	data->chip.ecc.algo = NAND_ECC_ALGO_HAMMING;
+-
+ 	platform_set_drvdata(pdev, data);
+ 
+ 	/* Handle any platform specific setup */
 -- 
 2.20.1
 
