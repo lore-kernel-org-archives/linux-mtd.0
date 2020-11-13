@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C7B8C4742C
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 13:51:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1770C63697
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 13:51:57 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4853F20639
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 13:51:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8F79E2223F
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 13:51:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pqX3z9Vv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4853F20639
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ohaU8eyR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F79E2223F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=LuAeuV//YzYzqrsHQI++R1uYScuqpWEZASZRtONyBxA=; b=pqX3z9Vvj/OK2LSguBaRgYt6S
-	JxGJ1S41v/W3/Nuha+S5ifANswD/lbpme7XcKzq8niuJP74HA61O84GhcIGIzRm5tziIu3ZJW3BO8
-	JrDqnglsQwdtooEGLLD7RG79YgFc6RsLP7HK3y0FNRSYCdHpIlqT4zkV9ZFg0ZYISTa7EiUBz5hMG
-	+pplog8Mm2UtFcmVFOPEUV5VbNNqtEMs2ilDgUTKztcXwIdXjgKP9FEYh35K1jnWaQmlv6KtBMDRV
-	W6zo1zepP5ak9yal6ODV8XSinG+HXp9pdjtFx6s6HV5xH5xVhp6ezKiLMP/RcOvMBVEBCJd1sUI39
-	C2yTHdIoQ==;
+	 bh=tb/ARm8IQbcCkgb3IiDn6mvaFi10B5NsKn3HmsQAthI=; b=ohaU8eyR72xRb2a97SsieT/QY
+	OPMdK6Yj5Lvofe24FyVaApAP1xdcrg8YPMThmTd17IUpk2RN+DtXT6/qBqFBHWeJsDvvztuWapAvd
+	+QNj1NrGdadqXkoAtHCUGuaWnQ/jfjukbwE2X4vzk4Or0qciIu+5GBwVJX8JEpTTXLsmfruFYhy7y
+	SVfzugdMTrZnXLh1D8fdEd++Rv8gCbXFX53iqql0d8myqa2OehmF9aXX2aFIOQvsuZyORaJsEm7Qf
+	mFSQOWdnvGgNY6KZJ6fLUJvr1okwEjMeahdzQ8t3zj2ffDT6OUP7VDOIJnXhqEka9r0xl5uI5LfqC
+	pKMcoWq+g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kdZU3-0007qv-EC; Fri, 13 Nov 2020 13:51:23 +0000
+	id 1kdZU0-0007p9-CQ; Fri, 13 Nov 2020 13:51:20 +0000
 Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kdYHo-00084L-T2
- for linux-mtd@lists.infradead.org; Fri, 13 Nov 2020 12:34:43 +0000
+ id 1kdYHo-000842-5k
+ for linux-mtd@lists.infradead.org; Fri, 13 Nov 2020 12:34:42 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 556AFC000C;
- Fri, 13 Nov 2020 12:34:39 +0000 (UTC)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 83EACC000E;
+ Fri, 13 Nov 2020 12:34:38 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH 18/19] mtd: rawnand: sharpsl: Move the ECC initialization to
+Subject: [PATCH 17/19] mtd: rawnand: r852: Move the ECC initialization to
  ->attach_chip()
-Date: Fri, 13 Nov 2020 13:34:23 +0100
-Message-Id: <20201113123424.32233-19-miquel.raynal@bootlin.com>
+Date: Fri, 13 Nov 2020 13:34:22 +0100
+Message-Id: <20201113123424.32233-18-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201113123424.32233-1-miquel.raynal@bootlin.com>
 References: <20201113123424.32233-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201113_073441_142987_0DC2D372 
-X-CRM114-Status: GOOD (  16.25  )
+X-CRM114-CacheID: sfid-20201113_073440_494192_F1054729 
+X-CRM114-Status: GOOD (  17.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,7 +69,8 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Maxim Levitsky <maximlevitsky@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
@@ -86,75 +87,89 @@ this by moving these lines to ->attach_chip().
 
 Fixes: d7157ff49a5b ("mtd: rawnand: Use the ECC framework user input parsing bits")
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Maxim Levitsky <maximlevitsky@gmail.com>
 ---
- drivers/mtd/nand/raw/sharpsl.c | 32 ++++++++++++++++++++++++--------
- 1 file changed, 24 insertions(+), 8 deletions(-)
+ drivers/mtd/nand/raw/r852.c | 40 +++++++++++++++++++++++++------------
+ drivers/mtd/nand/raw/r852.h |  1 +
+ 2 files changed, 28 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/sharpsl.c b/drivers/mtd/nand/raw/sharpsl.c
-index 6ceb961d2c9f..5612ee628425 100644
---- a/drivers/mtd/nand/raw/sharpsl.c
-+++ b/drivers/mtd/nand/raw/sharpsl.c
-@@ -19,6 +19,7 @@
- #include <linux/io.h>
- 
- struct sharpsl_nand {
-+	struct nand_controller	controller;
- 	struct nand_chip	chip;
- 
- 	void __iomem		*io;
-@@ -95,6 +96,25 @@ static int sharpsl_nand_calculate_ecc(struct nand_chip *chip,
- 	return readb(sharpsl->io + ECCCNTR) != 0;
+diff --git a/drivers/mtd/nand/raw/r852.c b/drivers/mtd/nand/raw/r852.c
+index 6b7addd2c420..620708135d3d 100644
+--- a/drivers/mtd/nand/raw/r852.c
++++ b/drivers/mtd/nand/raw/r852.c
+@@ -817,6 +817,29 @@ static irqreturn_t r852_irq(int irq, void *data)
+ 	return ret;
  }
  
-+static int sharpsl_attach_chip(struct nand_chip *chip)
++static int r852_attach_chip(struct nand_chip *chip)
 +{
 +	if (chip->ecc.engine_type != NAND_ECC_ENGINE_TYPE_ON_HOST)
 +		return 0;
 +
-+	chip->ecc.size = 256;
-+	chip->ecc.bytes = 3;
-+	chip->ecc.strength = 1;
-+	chip->ecc.hwctl = sharpsl_nand_enable_hwecc;
-+	chip->ecc.calculate = sharpsl_nand_calculate_ecc;
-+	chip->ecc.correct = rawnand_sw_hamming_correct;
++	chip->ecc.placement = NAND_ECC_PLACEMENT_INTERLEAVED;
++	chip->ecc.size = R852_DMA_LEN;
++	chip->ecc.bytes = SM_OOB_SIZE;
++	chip->ecc.strength = 2;
++	chip->ecc.hwctl = r852_ecc_hwctl;
++	chip->ecc.calculate = r852_ecc_calculate;
++	chip->ecc.correct = r852_ecc_correct;
++
++	/* TODO: hack */
++	chip->ecc.read_oob = r852_read_oob;
 +
 +	return 0;
 +}
 +
-+static const struct nand_controller_ops sharpsl_ops = {
-+	.attach_chip = sharpsl_attach_chip,
++static const struct nand_controller_ops r852_ops = {
++	.attach_chip = r852_attach_chip,
 +};
 +
- /*
-  * Main initialization routine
-  */
-@@ -135,6 +155,10 @@ static int sharpsl_nand_probe(struct platform_device *pdev)
- 	/* Get pointer to private data */
- 	this = (struct nand_chip *)(&sharpsl->chip);
+ static int  r852_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
+ {
+ 	int error;
+@@ -848,6 +871,10 @@ static int  r852_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
+ 	if (!chip)
+ 		goto error4;
  
-+	nand_controller_init(&sharpsl->controller);
-+	sharpsl->controller.ops = &sharpsl_ops;
-+	this->controller = &sharpsl->controller;
++	nand_controller_init(&dev->controller);
++	dev->controller.ops = &r852_ops;
++	chip->controller = &dev->controller;
 +
- 	/* Link the private data with the MTD structure */
- 	mtd = nand_to_mtd(this);
- 	mtd->dev.parent = &pdev->dev;
-@@ -155,15 +179,7 @@ static int sharpsl_nand_probe(struct platform_device *pdev)
- 	this->legacy.dev_ready = sharpsl_nand_dev_ready;
- 	/* 15 us command delay time */
- 	this->legacy.chip_delay = 15;
--	/* set eccmode using hardware ECC */
--	this->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
--	this->ecc.size = 256;
--	this->ecc.bytes = 3;
--	this->ecc.strength = 1;
- 	this->badblock_pattern = data->badblock_pattern;
--	this->ecc.hwctl = sharpsl_nand_enable_hwecc;
--	this->ecc.calculate = sharpsl_nand_calculate_ecc;
--	this->ecc.correct = rawnand_sw_hamming_correct;
+ 	/* commands */
+ 	chip->legacy.cmd_ctrl = r852_cmdctl;
+ 	chip->legacy.waitfunc = r852_wait;
+@@ -858,19 +885,6 @@ static int  r852_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
+ 	chip->legacy.read_buf = r852_read_buf;
+ 	chip->legacy.write_buf = r852_write_buf;
  
- 	/* Scan to find existence of the device */
- 	err = nand_scan(this, 1);
+-	/* ecc */
+-	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
+-	chip->ecc.placement = NAND_ECC_PLACEMENT_INTERLEAVED;
+-	chip->ecc.size = R852_DMA_LEN;
+-	chip->ecc.bytes = SM_OOB_SIZE;
+-	chip->ecc.strength = 2;
+-	chip->ecc.hwctl = r852_ecc_hwctl;
+-	chip->ecc.calculate = r852_ecc_calculate;
+-	chip->ecc.correct = r852_ecc_correct;
+-
+-	/* TODO: hack */
+-	chip->ecc.read_oob = r852_read_oob;
+-
+ 	/* init our device structure */
+ 	dev = kzalloc(sizeof(struct r852_device), GFP_KERNEL);
+ 
+diff --git a/drivers/mtd/nand/raw/r852.h b/drivers/mtd/nand/raw/r852.h
+index e9ce299c499d..96fe301d15da 100644
+--- a/drivers/mtd/nand/raw/r852.h
++++ b/drivers/mtd/nand/raw/r852.h
+@@ -104,6 +104,7 @@
+ #define DMA_MEMORY	1
+ 
+ struct r852_device {
++	struct nand_controller		controller;
+ 	void __iomem *mmio;		/* mmio */
+ 	struct nand_chip *chip;		/* nand chip backpointer */
+ 	struct pci_dev *pci_dev;	/* pci backpointer */
 -- 
 2.20.1
 
