@@ -2,59 +2,62 @@ Return-Path: <SRS0=uMxP=ET=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76722C388F7
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:35:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DDD3C388F7
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:35:30 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1BC032224B
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:35:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 229EA20797
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:35:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kbH67Gca"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1BC032224B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="b0te0mbP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 229EA20797
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=puu23kj3n4SwlKHoT41r39AX+PtwcjUXn9tvA3oe0rQ=; b=kbH67GcayY0wY4Jn+N3nGz09C1
-	vR9RbcjlctojWDqRTKcR2KLXfYM3MtIL7p7gcK9YS5/xNMVADAfd6aNdmkWtR4LO+sxzwUAKjyqfq
-	qGleVTS0p/S2jm4DzcUYmTfvpCWGziD/cvGG6e6kjZI7eVamrSZjMAnTS1dGqrqFDCxdOLxK2iRmM
-	C0xOYRLXYu8iJHUAANnicm/FSXEm/w9204Pb4V1ZResXUjiTwnqDC6iuDnzO+xfacDNCol4DgmaC7
-	u17Gfj+2KR7SxqW8uxC87tjei7h4QkBOcKJNxI0em7ksimZK+3L3vzHn7xc11sNHbXjE0o3TkFazZ
-	cDWskv6Q==;
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=CUmgMeBfBHrC04Lxe4Cxwy6G5Sr8UzD5a6g4NYmcysc=; b=b0te0mbPIhTYMdFf+IeSrD6My
+	i/NKBYvq4IUFfCx+GHYeG82kgJwOs2Fb9GIsNAKG2i/2jBRBxyM/Yv+VnL9QohprisdBR/SKQ5sw5
+	FUDjuRemwuK6Tenpa+JMCXiAiTIUIHIUV7C2S0QqDYyl4hZkVvHYtJ03Fy+AYVpWT0RlxA9WGZ5Yw
+	TcYyLf7esI8mjAE8cUuaZ27z5tWEucW80c1wMFYciqbIPmfjxRk1ZnP3GuKHLLxh8HnAVCpa0UeTH
+	mpQnhlfSR0aGgGw1c4oJ2FvsMSWlv+LcYbfxlYGhZc2D6EKEe1D1RwicI6QFxZFfArcZDBFWxZQ0o
+	uin1TtY1w==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kdYHm-00083C-1j; Fri, 13 Nov 2020 12:34:38 +0000
+	id 1kdYI1-00087w-BX; Fri, 13 Nov 2020 12:34:53 +0000
 Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kdYHd-0007xj-U5
- for linux-mtd@lists.infradead.org; Fri, 13 Nov 2020 12:34:31 +0000
+ id 1kdYHe-0007xy-Sv
+ for linux-mtd@lists.infradead.org; Fri, 13 Nov 2020 12:34:32 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 545DCC000E;
- Fri, 13 Nov 2020 12:34:25 +0000 (UTC)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id D6D4AC000D;
+ Fri, 13 Nov 2020 12:34:26 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH 00/19] Ensure good ECC settings
-Date: Fri, 13 Nov 2020 13:34:05 +0100
-Message-Id: <20201113123424.32233-1-miquel.raynal@bootlin.com>
+Subject: [PATCH 01/19] mtd: rawnand: gpio: Move the ECC initialization to
+ ->attach_chip()
+Date: Fri, 13 Nov 2020 13:34:06 +0100
+Message-Id: <20201113123424.32233-2-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201113123424.32233-1-miquel.raynal@bootlin.com>
+References: <20201113123424.32233-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201113_073430_195103_80436D06 
-X-CRM114-Status: GOOD (  15.18  )
+X-CRM114-CacheID: sfid-20201113_073431_088678_2ABD368B 
+X-CRM114-Status: GOOD (  13.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,82 +69,66 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpBcyBwYXJ0IG9mIGEgcHJldmlvdXMgd29yayAofjcwIHBhdGNoZXMpLCB0aGUgRFQg
-cGFyc2luZyBvcGVyYXRpb24gaGFzCmJlZW4gbW92ZWQgaW4gdGhlIGNvcmUgaW4gb3JkZXIgdG8g
-YmUgZ2VuZXJpYyB0byBhbGwgTkFORCBkZXZpY2VzIHdoZW4KYXBwbGljYWJsZS4gRGVwZW5kaW5n
-IG9uIHRoZSBvcmdhbml6YXRpb24gb2YgdGhlIGRyaXZlciwgdGhpcyBjb3VsZApoYXZlIGFuIGlt
-cGFjdCwgb3Igbm90LgoKVGhlIHByb2JsZW0gaGVyZSBpcyAobWFpbmx5KSB0aGUgd2F5IHRoZSBF
-Q0MgcHJvdmlkZXIgaXMKc2VsZWN0ZWQuIE1hbnkgaG9zdCBjb250cm9sbGVyIGRyaXZlcnMgc2lt
-cGx5IHNldCBhIGRlZmF1bHQsIG90aGVycwpvbmx5IHN1cHBvcnQgYSBzcGVjaWZpYyB2YWx1ZS4g
-Qm90aCB1c2VkIHRoZSBzYW1lIGNvZGUgZm9yIHRoZXNlIHR3bwpwdXJwb3Nlcy4KClRoaXMgc2Vy
-aWVzIHNob3VsZCBoYXZlIGJlZW4gbWVyZ2VkIGJlZm9yZSB0aGUgcHJldmlvdXNseSBtZW50aW9u
-ZWQKc2VyaWVzLCBidXQgSSBzaW1wbHkgb3Zlcmxvb2tlZCB0aGF0IGFzcGVjdCBhbmQgbm93IEkg
-Z2V0IHZhcmlvdXMgYnVnCnJlcG9ydHMsIGFsbCByZWxhdGVkLiBTbyBJIHBsYW4gdG8gbWVyZ2Ug
-dGhpcyBzZXJpZXMgYXMgcGFydCBvZiBhCmZpeGVzIFBSIHRvIGJlIHN1cmUgdGhleSBnZXQgbWVy
-Z2VkIGZvciB2NS4xMC4KClRoZSBpZGVhIGluIGFsbCB0aGUgZm9sbG93aW5nIHBhdGNoZXMgaXMg
-dG8gbW92ZSB0aGUgRUNDCmluaXRpYWxpemF0aW9uIGluIHRoZSAtPmF0dGFjaF9jaGlwKCkgaG9v
-aywgd2hpY2ggZ2V0cyBjYWxsZWQgZHVyaW5nCm5hbmRfc2NhbigpLCBhZnRlciBOQU5EIGRpc2Nv
-dmVyeS4gQXMgdGhpcyBzdGFnZSwgd2Uga25vdyB0aGUgTkFORApjaGlwIG1lbW9yeSBsYXlvdXQs
-IGZlYXR1cmVzIGFuZCBjb25zdHJhaW50cy4gSXQgaXMgdGhlIG1vbWVudCB3aGVuCnRoZSBjb3Jl
-IHJlcXVlc3RzIHRoZSBOQU5EIGNvbnRyb2xsZXIgZHJpdmVyIHRvIGZpbmFsaXplIGl0cwppbml0
-aWFsaXphdGlvbiAoaWUuIHRoZSBFQ0MgYml0cykuCgpXaGVuIHRoZSBjb250cm9sbGVyIGRvZXMg
-bm90IGVtYmVkIGEgaGFyZHdhcmUgRUNDIGVuZ2luZSwgc29mdHdhcmUKZW5naW5lcyBhcmUgdXNl
-ZCwgd2UgdXN1YWxseSBkb24ndCBoYXZlIHRoZSBjaG9pY2UsIHNvIHdlIGtlZXAKZW5mb3JjaW5n
-IHRoZSBvbmx5IHZhbHVlcyBzdXBwb3J0ZWQgYnkgdGhlIGNvbnRyb2xsZXIuIE90aGVyd2lzZSwg
-d2UKbWFrZSBhIGRpc3RpbmN0aW9uIGJldHdlZW4gdGhlIGNob2ljZSBvZiB0aGUgaGFyZHdhcmUg
-RUNDIGVuZ2luZSBvcgphbnkgb3RoZXIgZW5naW5lLgoKUmVnYXJkcywKTWlxdcOobAoKCk1pcXVl
-bCBSYXluYWwgKDE5KToKICBtdGQ6IHJhd25hbmQ6IGdwaW86IE1vdmUgdGhlIEVDQyBpbml0aWFs
-aXphdGlvbiB0byAtPmF0dGFjaF9jaGlwKCkKICBtdGQ6IHJhd25hbmQ6IHh3YXk6IE1vdmUgdGhl
-IEVDQyBpbml0aWFsaXphdGlvbiB0byAtPmF0dGFjaF9jaGlwKCkKICBtdGQ6IHJhd25hbmQ6IGFt
-cy1kZWx0YTogTW92ZSB0aGUgRUNDIGluaXRpYWxpemF0aW9uIHRvCiAgICAtPmF0dGFjaF9jaGlw
-KCkKICBtdGQ6IHJhd25hbmQ6IGF1MTU1MDogTW92ZSB0aGUgRUNDIGluaXRpYWxpemF0aW9uIHRv
-IC0+YXR0YWNoX2NoaXAoKQogIG10ZDogcmF3bmFuZDogY3M1NTN4OiBNb3ZlIHRoZSBFQ0MgaW5p
-dGlhbGl6YXRpb24gdG8gLT5hdHRhY2hfY2hpcCgpCiAgbXRkOiByYXduYW5kOiBkYXZpbmNpOiBN
-b3ZlIHRoZSBFQ0MgaW5pdGlhbGl6YXRpb24gdG8gLT5hdHRhY2hfY2hpcCgpCiAgbXRkOiByYXdu
-YW5kOiBkaXNrb25jaGlwOiBNb3ZlIHRoZSBFQ0MgaW5pdGlhbGl6YXRpb24gdG8KICAgIC0+YXR0
-YWNoX2NoaXAoKQogIG10ZDogcmF3bmFuZDogZnNtYzogTW92ZSB0aGUgRUNDIGluaXRpYWxpemF0
-aW9uIHRvIC0+YXR0YWNoX2NoaXAoKQogIG10ZDogcmF3bmFuZDogbHBjMzJ4eF9tbGM6IE1vdmUg
-dGhlIEVDQyBpbml0aWFsaXphdGlvbiB0bwogICAgLT5hdHRhY2hfY2hpcCgpCiAgbXRkOiByYXdu
-YW5kOiBscGMzMnh4X3NsYzogTW92ZSB0aGUgRUNDIGluaXRpYWxpemF0aW9uIHRvCiAgICAtPmF0
-dGFjaF9jaGlwKCkKICBtdGQ6IHJhd25hbmQ6IG1wYzUxMjE6IE1vdmUgdGhlIEVDQyBpbml0aWFs
-aXphdGlvbiB0byAtPmF0dGFjaF9jaGlwKCkKICBtdGQ6IHJhd25hbmQ6IG9yaW9uOiBNb3ZlIHRo
-ZSBFQ0MgaW5pdGlhbGl6YXRpb24gdG8gLT5hdHRhY2hfY2hpcCgpCiAgbXRkOiByYXduYW5kOiB0
-eHg5bmRmbWM6IE1vdmUgdGhlIEVDQyBpbml0aWFsaXphdGlvbiB0bwogICAgLT5hdHRhY2hfY2hp
-cCgpCiAgbXRkOiByYXduYW5kOiB0bWlvOiBNb3ZlIHRoZSBFQ0MgaW5pdGlhbGl6YXRpb24gdG8g
-LT5hdHRhY2hfY2hpcCgpCiAgbXRkOiByYXduYW5kOiBwYXNlbWk6IE1vdmUgdGhlIEVDQyBpbml0
-aWFsaXphdGlvbiB0byAtPmF0dGFjaF9jaGlwKCkKICBtdGQ6IHJhd25hbmQ6IHBsYXRfbmFuZDog
-TW92ZSB0aGUgRUNDIGluaXRpYWxpemF0aW9uIHRvCiAgICAtPmF0dGFjaF9jaGlwKCkKICBtdGQ6
-IHJhd25hbmQ6IHI4NTI6IE1vdmUgdGhlIEVDQyBpbml0aWFsaXphdGlvbiB0byAtPmF0dGFjaF9j
-aGlwKCkKICBtdGQ6IHJhd25hbmQ6IHNoYXJwc2w6IE1vdmUgdGhlIEVDQyBpbml0aWFsaXphdGlv
-biB0byAtPmF0dGFjaF9jaGlwKCkKICBtdGQ6IHJhd25hbmQ6IHNvY3JhdGVzOiBNb3ZlIHRoZSBF
-Q0MgaW5pdGlhbGl6YXRpb24gdG8gLT5hdHRhY2hfY2hpcCgpCgogZHJpdmVycy9tdGQvbmFuZC9y
-YXcvYW1zLWRlbHRhLmMgICAgIHwgMTIgKysrKysrLS0tCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9h
-dTE1NTBuZC5jICAgICAgfCAxMSArKysrKystLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvY3M1NTN4
-X25hbmQuYyAgIHwgMjQgKysrKysrKysrKystLS0tLS0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L2Rh
-dmluY2lfbmFuZC5jICB8ICA4ICsrKy0tLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvZGlza29uY2hp
-cC5jICAgIHwgMjkgKysrKysrKysrKysrKy0tLS0tLS0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L2Zz
-bWNfbmFuZC5jICAgICB8IDMwICsrKysrKysrKystLS0tLS0tLS0tLQogZHJpdmVycy9tdGQvbmFu
-ZC9yYXcvZ3Bpby5jICAgICAgICAgIHwgMTEgKysrKysrLS0KIGRyaXZlcnMvbXRkL25hbmQvcmF3
-L2xwYzMyeHhfbWxjLmMgICB8IDIzICsrKysrKysrKy0tLS0tLS0KIGRyaXZlcnMvbXRkL25hbmQv
-cmF3L2xwYzMyeHhfc2xjLmMgICB8IDI2ICsrKysrKysrKy0tLS0tLS0tLQogZHJpdmVycy9tdGQv
-bmFuZC9yYXcvbXBjNTEyMV9uZmMuYyAgIHwgMTkgKysrKysrKysrKystLQogZHJpdmVycy9tdGQv
-bmFuZC9yYXcvb3Jpb25fbmFuZC5jICAgIHwgMTkgKysrKysrKysrKystLQogZHJpdmVycy9tdGQv
-bmFuZC9yYXcvcGFzZW1pX25hbmQuYyAgIHwgMTkgKysrKysrKysrKystLQogZHJpdmVycy9tdGQv
-bmFuZC9yYXcvcGxhdF9uYW5kLmMgICAgIHwgMjAgKysrKysrKysrKystLS0KIGRyaXZlcnMvbXRk
-L25hbmQvcmF3L3I4NTIuYyAgICAgICAgICB8IDQwICsrKysrKysrKysrKysrKysrKystLS0tLS0t
-LS0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L3I4NTIuaCAgICAgICAgICB8ICAxICsKIGRyaXZlcnMv
-bXRkL25hbmQvcmF3L3NoYXJwc2wuYyAgICAgICB8IDMyICsrKysrKysrKysrKysrKystLS0tLS0K
-IGRyaXZlcnMvbXRkL25hbmQvcmF3L3NvY3JhdGVzX25hbmQuYyB8IDIxICsrKysrKysrKysrKy0t
-LQogZHJpdmVycy9tdGQvbmFuZC9yYXcvdG1pb19uYW5kLmMgICAgIHwgMzMgKysrKysrKysrKysr
-KysrKy0tLS0tLS0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L3R4eDluZGZtYy5jICAgICB8IDE0ICsr
-KysrKy0tLS0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L3h3YXlfbmFuZC5jICAgICB8IDE4ICsrKysr
-KysrKysrLS0KIDIwIGZpbGVzIGNoYW5nZWQsIDI5NCBpbnNlcnRpb25zKCspLCAxMTYgZGVsZXRp
-b25zKC0pCgotLSAKMi4yMC4xCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRw
-Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+The probe function is only supposed to initialize the controller
+hardware but not the ECC engine. Indeed, we don't know anything about
+the NAND chip(s) at this stage. Let's move the logic initializing the
+ECC engine, even pretty simple, to the ->attach_chip() hook which gets
+called during nand_scan() routine, after the NAND chip discovery. As
+the previously mentioned logic is supposed to parse the DT for us, it
+is likely that the chip->ecc.* entries be overwritten. So let's avoid
+this by moving these lines to ->attach_chip(), a NAND controller
+hook.
+
+Fixes: d7157ff49a5b ("mtd: rawnand: Use the ECC framework user input parsing bits")
+Reported-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Tested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ drivers/mtd/nand/raw/gpio.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/gpio.c b/drivers/mtd/nand/raw/gpio.c
+index 4ec0a1e10867..eb03b8cea1cb 100644
+--- a/drivers/mtd/nand/raw/gpio.c
++++ b/drivers/mtd/nand/raw/gpio.c
+@@ -161,8 +161,17 @@ static int gpio_nand_exec_op(struct nand_chip *chip,
+ 	return ret;
+ }
+ 
++static int gpio_nand_attach_chip(struct nand_chip *chip)
++{
++	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
++	chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
++
++	return 0;
++}
++
+ static const struct nand_controller_ops gpio_nand_ops = {
+ 	.exec_op = gpio_nand_exec_op,
++	.attach_chip = gpio_nand_attach_chip,
+ };
+ 
+ #ifdef CONFIG_OF
+@@ -342,8 +351,6 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 	gpiomtd->base.ops = &gpio_nand_ops;
+ 
+ 	nand_set_flash_node(chip, pdev->dev.of_node);
+-	chip->ecc.engine_type	= NAND_ECC_ENGINE_TYPE_SOFT;
+-	chip->ecc.algo		= NAND_ECC_ALGO_HAMMING;
+ 	chip->options		= gpiomtd->plat.options;
+ 	chip->controller	= &gpiomtd->base;
+ 
+-- 
+2.20.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
