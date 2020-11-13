@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80DB0C4742C
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:35:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F558C56202
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:35:39 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1279E2224B
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:35:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 931202224B
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2020 12:35:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VTFE8+BM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1279E2224B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="p3ZsxlOZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 931202224B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=j38dkAkCqtrCTq/18YuPdcFBj5Q7zy5WJAFt4T4+gZY=; b=VTFE8+BMVZY+LRr+O/Nc7KsK9
-	5iBmyA0GKoGfEyUQf8/h36oZQLe3mvdmsDvPHZ0+WtTPdlMfL2zQy5vVNIkElPMLgF30qC0uDUQDZ
-	7A0TrMedTxvy1tnRsVHkErWpWvsW4DxFvmpb5pbbJKcz1ADS6uxEiNvNLQaLqT0DkZNgyA5EUFKEH
-	YPpbsrGlezdEQrXfBpQBrVyIAl2yCIFOL9KH7ePohM4MVQYl7eewxotZCpmSPnSdhssiSBqR6TlKN
-	dx/+GfMvPJqcdLD5LpbKwKGjtq1/e5vdOcKChF9kI9f55JPQFWTXPgdKkXoGNoycN0aury9Nsb4vj
-	uuNCKE4pA==;
+	 bh=h1dMLP3WOiHrOAiBfuiIxLkHmE8Cna0k9d9RbeOY1/Q=; b=p3ZsxlOZZw+j7viR8qRL1VORL
+	dUTonAoDnpKfqeer1JjJ6IJ74ZaOooyRvKy2Nw31aQY92XHmtoEulCkEooeTa93/+HqR6iQOZNdKX
+	lvZnTbqv5Axq6UIGHFAxRrWlOzG/YHgEQv9YSPRd9ufRYaCyYhFwsK4vgmmk+cNkN/CsfKlUtfeiC
+	rq1tqdGRC0bAQm8VceuFSRxswm6b2Fx4fO4DDCqj5QAWyxzbnDB1M9A+0uKMKa7Wr9xRKyYB8aCki
+	Wonjc2SL7CAjqkPsLdmGp9DJK/5MjZAuU4SXucdxC1o+03RUtoKpLlSCNWmTnBz8y7z0Kw2qhCUJ3
+	syRpEAN+A==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kdYI4-00088g-JZ; Fri, 13 Nov 2020 12:34:56 +0000
+	id 1kdYIG-0008Ck-Rj; Fri, 13 Nov 2020 12:35:08 +0000
 Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kdYHf-0007zh-UX
- for linux-mtd@lists.infradead.org; Fri, 13 Nov 2020 12:34:33 +0000
+ id 1kdYHh-00080I-Ay
+ for linux-mtd@lists.infradead.org; Fri, 13 Nov 2020 12:34:34 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 62884C000F;
- Fri, 13 Nov 2020 12:34:30 +0000 (UTC)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id DB9C0C0013;
+ Fri, 13 Nov 2020 12:34:31 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH 06/19] mtd: rawnand: davinci: Move the ECC initialization to
+Subject: [PATCH 08/19] mtd: rawnand: fsmc: Move the ECC initialization to
  ->attach_chip()
-Date: Fri, 13 Nov 2020 13:34:11 +0100
-Message-Id: <20201113123424.32233-7-miquel.raynal@bootlin.com>
+Date: Fri, 13 Nov 2020 13:34:13 +0100
+Message-Id: <20201113123424.32233-9-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201113123424.32233-1-miquel.raynal@bootlin.com>
 References: <20201113123424.32233-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201113_073432_099837_E84F7508 
-X-CRM114-Status: GOOD (  12.49  )
+X-CRM114-CacheID: sfid-20201113_073433_564237_6A63D35B 
+X-CRM114-Status: GOOD (  14.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,8 +69,7 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
@@ -87,37 +86,72 @@ this by moving these lines to ->attach_chip().
 
 Fixes: d7157ff49a5b ("mtd: rawnand: Use the ECC framework user input parsing bits")
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- drivers/mtd/nand/raw/davinci_nand.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/raw/fsmc_nand.c | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
-index 427f320fb79b..f8c36d19ab47 100644
---- a/drivers/mtd/nand/raw/davinci_nand.c
-+++ b/drivers/mtd/nand/raw/davinci_nand.c
-@@ -585,6 +585,10 @@ static int davinci_nand_attach_chip(struct nand_chip *chip)
- 	if (IS_ERR(pdata))
- 		return PTR_ERR(pdata);
+diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
+index d0855d4f5627..0101c0fab50a 100644
+--- a/drivers/mtd/nand/raw/fsmc_nand.c
++++ b/drivers/mtd/nand/raw/fsmc_nand.c
+@@ -879,6 +879,20 @@ static int fsmc_nand_attach_chip(struct nand_chip *nand)
+ 	struct mtd_info *mtd = nand_to_mtd(nand);
+ 	struct fsmc_nand_data *host = nand_to_fsmc(nand);
  
-+	/* Use board-specific ECC config */
-+	info->chip.ecc.engine_type = pdata->engine_type;
-+	info->chip.ecc.placement = pdata->ecc_placement;
++	if (nand->ecc.engine_type == NAND_ECC_ENGINE_TYPE_INVALID)
++		nand->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
 +
- 	switch (info->chip.ecc.engine_type) {
- 	case NAND_ECC_ENGINE_TYPE_NONE:
- 		pdata->ecc_bits = 0;
-@@ -850,10 +854,6 @@ static int nand_davinci_probe(struct platform_device *pdev)
- 	info->mask_ale		= pdata->mask_ale ? : MASK_ALE;
- 	info->mask_cle		= pdata->mask_cle ? : MASK_CLE;
++	if (!nand->ecc.size)
++		nand->ecc.size = 512;
++
++	if (AMBA_REV_BITS(host->pid) >= 8) {
++		nand->ecc.read_page = fsmc_read_page_hwecc;
++		nand->ecc.calculate = fsmc_read_hwecc_ecc4;
++		nand->ecc.correct = fsmc_bch8_correct_data;
++		nand->ecc.bytes = 13;
++		nand->ecc.strength = 8;
++	}
++
+ 	if (AMBA_REV_BITS(host->pid) >= 8) {
+ 		switch (mtd->oobsize) {
+ 		case 16:
+@@ -904,6 +918,7 @@ static int fsmc_nand_attach_chip(struct nand_chip *nand)
+ 		dev_info(host->dev, "Using 1-bit HW ECC scheme\n");
+ 		nand->ecc.calculate = fsmc_read_hwecc_ecc1;
+ 		nand->ecc.correct = rawnand_sw_hamming_correct;
++		nand->ecc.hwctl = fsmc_enable_hwecc;
+ 		nand->ecc.bytes = 3;
+ 		nand->ecc.strength = 1;
+ 		nand->ecc.options |= NAND_ECC_SOFT_HAMMING_SM_ORDER;
+@@ -1054,13 +1069,6 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
  
--	/* Use board-specific ECC config */
--	info->chip.ecc.engine_type = pdata->engine_type;
--	info->chip.ecc.placement = pdata->ecc_placement;
+ 	mtd->dev.parent = &pdev->dev;
+ 
+-	/*
+-	 * Setup default ECC mode. nand_dt_init() called from nand_scan_ident()
+-	 * can overwrite this value if the DT provides a different value.
+-	 */
+-	nand->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
+-	nand->ecc.hwctl = fsmc_enable_hwecc;
+-	nand->ecc.size = 512;
+ 	nand->badblockbits = 7;
+ 
+ 	if (host->mode == USE_DMA_ACCESS) {
+@@ -1083,14 +1091,6 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 		nand->options |= NAND_KEEP_TIMINGS;
+ 	}
+ 
+-	if (AMBA_REV_BITS(host->pid) >= 8) {
+-		nand->ecc.read_page = fsmc_read_page_hwecc;
+-		nand->ecc.calculate = fsmc_read_hwecc_ecc4;
+-		nand->ecc.correct = fsmc_bch8_correct_data;
+-		nand->ecc.bytes = 13;
+-		nand->ecc.strength = 8;
+-	}
 -
- 	spin_lock_irq(&davinci_nand_lock);
- 
- 	/* put CSxNAND into NAND mode */
+ 	nand_controller_init(&host->base);
+ 	host->base.ops = &fsmc_nand_controller_ops;
+ 	nand->controller = &host->base;
 -- 
 2.20.1
 
