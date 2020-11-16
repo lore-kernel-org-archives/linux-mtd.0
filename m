@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B2CA6C56202
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Nov 2020 03:11:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 518A7C63697
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Nov 2020 03:11:49 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4AA75204EA
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Nov 2020 03:11:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 04E1A204EA
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Nov 2020 03:11:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fk7oBz2D"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4AA75204EA
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Rss60P4w"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 04E1A204EA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,46 +25,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=lfSe8gS+GU5LM7Fd7lxHQHVDe6KubYZc3MBswOWhj/8=; b=fk7oBz2Df3Nyhbu6rliJ0nJDh5
-	g3hiaqmSTRFPxpwdYmMsqVuxvLnqKFifI93CgPc0ewPeFoQ7rLScJOmsZYXD4z5KM9cLkUuOmNlV8
-	4d+Emelxij7kqG548al5CjV3eCOD9T3HG8TamXFbrS+wTiay/VkJGQNf+QGgsZB4Y2xuBGiVnqKdp
-	2pax3DlXXUtmAWl6xXia+slqTosJCFxf2f5X+g2w0ogKQAba+cC88vRrU2dbYOPfK8XEpeBml2Von
-	4BClVYPWd+K37dAGmJKfwc7/dcgcOaRAE7Itgt8zSyklxzrHQKVDtmCPhExGgWUhZ6akul6ESWE9s
-	06U1jrqQ==;
+	bh=KaI0j6LcazzNkaD/p+o2fhy5CsIlzUYJFtV01pvKJHs=; b=Rss60P4wNamZZ/6oAYhs2NILrC
+	ctQ0t+myWtZtoVI6q1c2/owXwLYAZr58eITQr9kRdaWQIEWBX16ETbZ9IWlfRi+ChtLEfjdMMDiQW
+	7PbO3EK1B275AanxeYu3WPxD0wx9YvOBu24apV9lGaI5iUiavLa+8ASBzyGVXMhAsnfeEmXuXBSkd
+	Q4OzdijetljFOh736fOD0sCSIsg3036hXBJIwdwitRAbvvQpOAwdMySf9tYin4RZY9IAanqID5nfe
+	L8+M4gyk7BSY4C6tHxgMGw/GWuIA+SvGhBzW28t39HamIOA24vnACVui8TZA719UgGztVCwY7fZVc
+	iv2K4wbw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1keUub-0007AN-4E; Mon, 16 Nov 2020 03:10:37 +0000
-Received: from mga14.intel.com ([192.55.52.115])
+	id 1keUuT-00078f-Gg; Mon, 16 Nov 2020 03:10:29 +0000
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1keUuY-00079a-UX
- for linux-mtd@lists.infradead.org; Mon, 16 Nov 2020 03:10:35 +0000
-IronPort-SDR: LAzHgLSp/Ga9FLcLVmj7Xxdq0QpMHEpHsAQ7o2RlpGtW/jbNZeyWEZHbl11wYE4/JSqsTtTWgm
- 8qhaNAjE1DEw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="169912155"
-X-IronPort-AV: E=Sophos;i="5.77,481,1596524400"; d="scan'208";a="169912155"
+ id 1keUuL-00076q-Ut
+ for linux-mtd@lists.infradead.org; Mon, 16 Nov 2020 03:10:23 +0000
+IronPort-SDR: ewIsKMQGOkxHec1Jf256dC/wMrTAay1bQCv9wyan6RjlCtJlKcsNs3t228tap0WHjwv7yT3wIC
+ 6XZWmHfNmIIg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="170866011"
+X-IronPort-AV: E=Sophos;i="5.77,481,1596524400"; d="scan'208";a="170866011"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Nov 2020 19:10:33 -0800
-IronPort-SDR: FTjr4P5bHtawXFjm8fN4m/LyhPeOY/k2sNAmXDMnW/0JLsiYk7gXLislUX6zycdXMhvgkIiyw/
- tB90oVGR7UmQ==
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Nov 2020 19:10:19 -0800
+IronPort-SDR: XjlFrYuek8CPT3sKSeMQSvkP+AyYVBaYAhdydWM89PcP+gzuohVlXsYuPtsgzb2KtmEeZYi3ol
+ KMpLfHu8ldiA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,481,1596524400"; d="scan'208";a="430056992"
+X-IronPort-AV: E=Sophos;i="5.77,481,1596524400"; d="scan'208";a="400338036"
 Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
- by fmsmga001.fm.intel.com with ESMTP; 15 Nov 2020 19:10:30 -0800
+ by orsmga001.jf.intel.com with ESMTP; 15 Nov 2020 19:10:16 -0800
 From: "Ramuthevar,
  Vadivel MuruganX" <vadivel.muruganx.ramuthevar@linux.intel.com>
 To: broonie@kernel.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: [PATCH v7 6/6] dt-bindings: spi: Add compatible for Intel LGM SoC
-Date: Mon, 16 Nov 2020 11:10:03 +0800
-Message-Id: <20201116031003.19062-7-vadivel.muruganx.ramuthevar@linux.intel.com>
+Subject: [PATCH v7 2/6] spi: cadence-quadspi: Disable the DAC for Intel LGM SoC
+Date: Mon, 16 Nov 2020 11:09:59 +0800
+Message-Id: <20201116031003.19062-3-vadivel.muruganx.ramuthevar@linux.intel.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20201116031003.19062-1-vadivel.muruganx.ramuthevar@linux.intel.com>
 References: <20201116031003.19062-1-vadivel.muruganx.ramuthevar@linux.intel.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201115_221035_147020_C0264EB1 
-X-CRM114-Status: GOOD (  12.41  )
+X-CRM114-CacheID: sfid-20201115_221022_206608_2D2E1E19 
+X-CRM114-Status: GOOD (  17.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,25 +88,59 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 
-Add compatible for Intel LGM SoC.
+On Intel Lightning Mountain(LGM) SoCs QSPI controller do not use
+Direct Access Controller(DAC).
+
+This patch adds a quirk to disable the Direct Access Controller
+for data transfer instead it uses indirect data transfe
+
+DAC bit resets to 1 so there is no need to explicitly set it.
 
 Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 ---
- Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/spi/spi-cadence-quadspi.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
-index 5fc54182ed74..1f7c6b471ec1 100644
---- a/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
-+++ b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
-@@ -19,6 +19,7 @@ properties:
-           - cdns,qspi-nor
-           - ti,k2g-qspi
-           - ti,am654-ospi
-+          - intel,lgm-qspi
+diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+index d7b10c46fa70..d12b765e87be 100644
+--- a/drivers/spi/spi-cadence-quadspi.c
++++ b/drivers/spi/spi-cadence-quadspi.c
+@@ -1101,10 +1101,12 @@ static void cqspi_controller_init(struct cqspi_st *cqspi)
+ 	writel(cqspi->fifo_depth * cqspi->fifo_width / 8,
+ 	       cqspi->iobase + CQSPI_REG_INDIRECTWRWATERMARK);
  
-   reg:
-     items:
+-	/* Enable Direct Access Controller */
+-	reg = readl(cqspi->iobase + CQSPI_REG_CONFIG);
+-	reg |= CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
+-	writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
++	/* Disable direct access controller */
++	if (!cqspi->use_direct_mode) {
++		reg = readl(cqspi->iobase + CQSPI_REG_CONFIG);
++		reg &= ~CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
++		writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
++	}
+ 
+ 	cqspi_controller_enable(cqspi, 1);
+ }
+@@ -1388,6 +1390,10 @@ static const struct cqspi_driver_platdata am654_ospi = {
+ 	.quirks = CQSPI_NEEDS_WR_DELAY,
+ };
+ 
++static const struct cqspi_driver_platdata intel_lgm_qspi = {
++	.quirks = CQSPI_DISABLE_DAC_MODE,
++};
++
+ static const struct of_device_id cqspi_dt_ids[] = {
+ 	{
+ 		.compatible = "cdns,qspi-nor",
+@@ -1403,6 +1409,7 @@ static const struct of_device_id cqspi_dt_ids[] = {
+ 	},
+ 	{
+ 		.compatible = "intel,lgm-qspi",
++		.data = &intel_lgm_qspi,
+ 	},
+ 	{ /* end of table */ }
+ };
 -- 
 2.11.0
 
