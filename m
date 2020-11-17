@@ -2,22 +2,21 @@ Return-Path: <SRS0=l5Rv=EX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D78D6C64E7C
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2020 18:51:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D188C5519F
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2020 18:54:08 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6538E238E6
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2020 18:51:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BB78E24181
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2020 18:54:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VMdcIb7k";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="VmVR2pAk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6538E238E6
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Zu+wWbS2";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="A/lhA7Nh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB78E24181
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,45 +25,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=aNQdWVM8y06CdUZsPFjgsIK9P3GoaSPfXYrRhz5ifKg=; b=VMdcIb7kNcJqhYhstO+IUYmac
-	9Q6coLGX+32fgSQXyawOdAgtlL7whJ7VKA+5ZQiFvIf5O9uUAlEqPqIPePpJIJaDczZ/qC1FM5sio
-	0cOyedFLZhjBfonwWE/Nak16hGxPUHurZymPylMqmLzXA2wX5fjLBLCJmBlRepnJMr+Wmced7AFfH
-	rPgBduxUDigolEnoU6gZdZAydXMrFaRzAnkJ7AI4caSsJ5x43KmR0gNvdpSd/BXSggjondUoA9326
-	4VWq88OSv820PXKsmOtTA1MCHQ7WHkprFp2mpFlazIjkJYAfA0zR7bObUziKmioGZapoQIW/7z6V9
-	VsF8LmvfA==;
+	 bh=Ag8nnvvU2DXPEgb7yvarLU9f73xBK4n2+1bA9Tv6K7Y=; b=Zu+wWbS2rlu88eqRT0dwOOucQ
+	M47SDpp5OTLiG78t+klLoVDiJuAcRbKGO9H+zCbdeS+zsoKtOnoknBb4rQGvcsvOr76MYZcrFVBSi
+	lmC8RqoJ3RzY4CDUEufTEkCDr5idy7ZAcTzqwBeQafBrXJPMQCION/d1V+M20KT7R3U6LL88+dLgl
+	i1LGgKFGdBNxqVhaO1hdO+lJOHK8W1u/ij01eZwjXPweLtTRxle7yrLcqOENLUEdskE06nKTp/RiP
+	cgatSnAPPIlEON7/hz1Xu1gVz/WyOq73P0X4VdprkhUxLGyJG2Cmd1cDIK2qey22eqFGEcKNuyd9J
+	nbm0uqQbg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kf63Q-0004Zf-Ed; Tue, 17 Nov 2020 18:50:12 +0000
+	id 1kf66V-000558-KH; Tue, 17 Nov 2020 18:53:23 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kf63O-0004ZJ-C6
- for linux-mtd@lists.infradead.org; Tue, 17 Nov 2020 18:50:11 +0000
+ id 1kf66T-00054T-7C
+ for linux-mtd@lists.infradead.org; Tue, 17 Nov 2020 18:53:22 +0000
 Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net
  [172.10.235.113])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A480F24180;
- Tue, 17 Nov 2020 18:50:08 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id ACCC924199;
+ Tue, 17 Nov 2020 18:53:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1605639009;
- bh=ptz9XT3UpBck0+d8VvUIsolwmj+r8a3+u1aG77tQJmI=;
+ s=default; t=1605639200;
+ bh=oOfml8XNbcpuAFTYEYouX3wjSebLzC0EbBcqdMG0evQ=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=VmVR2pAkTlpMKVjjgmbkim6ODtn1XHcuCvpY+dS/cItfgY5lVJnQyb+QKecfKG9cH
- bB2akSGX5XKm0Y290MyY1d6qvi6oF9ARKg0xqZ0rWF7bfyngwmZbo5JBR5qyfqscDa
- opfxCyeGR/g5xyvZBhCdhIHAorzvoK1oBOibSCcE=
-Date: Tue, 17 Nov 2020 10:50:07 -0800
+ b=A/lhA7NhkxdXRpkr9r4LzAXwXv5c8gii8rE5PpYq7CcAPe5OzkV6aNvC+Hw/NHJYK
+ aoaoWzXqxUykv/E4wx6bzZ0QOHyWYoOMSn5ZwXKX3poseARTLGZTA7BEu8zOZ0dNLv
+ 8ePryzPsKPyW6e7s8YJ2JZhusbFugsu1L36m5IHs=
+Date: Tue, 17 Nov 2020 10:53:18 -0800
 From: Eric Biggers <ebiggers@kernel.org>
 To: Daniel Rosenberg <drosen@google.com>
-Subject: Re: [PATCH v2 3/3] f2fs: Handle casefolding with Encryption
-Message-ID: <X7QbX9Q4xzhg+5UU@sol.localdomain>
+Subject: Re: [PATCH v2 0/3] Add support for Encryption and Casefolding in F2FS
+Message-ID: <X7QcHmarXZOgfjzz@sol.localdomain>
 References: <20201117040315.28548-1-drosen@google.com>
- <20201117040315.28548-4-drosen@google.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20201117040315.28548-4-drosen@google.com>
+In-Reply-To: <20201117040315.28548-1-drosen@google.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201117_135010_608829_DA619740 
-X-CRM114-Status: GOOD (  28.15  )
+X-CRM114-CacheID: sfid-20201117_135321_335457_FBDE7FE2 
+X-CRM114-Status: GOOD (  12.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,113 +86,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Nov 17, 2020 at 04:03:15AM +0000, Daniel Rosenberg wrote:
-> Expand f2fs's casefolding support to include encrypted directories.  To
-> index casefolded+encrypted directories, we use the SipHash of the
-> casefolded name, keyed by a key derived from the directory's fscrypt
-> master key.  This ensures that the dirhash doesn't leak information
-> about the plaintext filenames.
-> 
-> Encryption keys are unavailable during roll-forward recovery, so we
-> can't compute the dirhash when recovering a new dentry in an encrypted +
-> casefolded directory.  To avoid having to force a checkpoint when a new
-> file is fsync'ed, store the dirhash on-disk appended to i_name.
-> 
-> This patch incorporates work by Eric Biggers <ebiggers@google.com>
-> and Jaegeuk Kim <jaegeuk@kernel.org>.
-> 
-> Co-developed-by: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Daniel Rosenberg <drosen@google.com>
-> ---
->  fs/f2fs/dir.c      | 89 +++++++++++++++++++++++++++++++++++++---------
->  fs/f2fs/f2fs.h     |  8 +++--
->  fs/f2fs/hash.c     | 11 +++++-
->  fs/f2fs/inline.c   |  4 +++
->  fs/f2fs/recovery.c | 12 ++++++-
->  fs/f2fs/super.c    |  6 ----
->  6 files changed, 103 insertions(+), 27 deletions(-)
-> 
-> diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-> index 71fdf5076461..0adc6bcfb5c0 100644
-> --- a/fs/f2fs/dir.c
-> +++ b/fs/f2fs/dir.c
-> @@ -5,6 +5,7 @@
->   * Copyright (c) 2012 Samsung Electronics Co., Ltd.
->   *             http://www.samsung.com/
->   */
-> +#include <asm/unaligned.h>
->  #include <linux/fs.h>
->  #include <linux/f2fs_fs.h>
->  #include <linux/sched/signal.h>
-> @@ -195,26 +196,53 @@ static struct f2fs_dir_entry *find_in_block(struct inode *dir,
->  {
->  	struct f2fs_dentry_block *dentry_blk;
->  	struct f2fs_dentry_ptr d;
-> +	struct f2fs_dir_entry *res;
->  
->  	dentry_blk = (struct f2fs_dentry_block *)page_address(dentry_page);
->  
->  	make_dentry_ptr_block(dir, &d, dentry_blk);
-> -	return f2fs_find_target_dentry(&d, fname, max_slots);
-> +	res = f2fs_find_target_dentry(&d, fname, max_slots);
-> +	if (IS_ERR(res)) {
-> +		dentry_page = ERR_CAST(res);
-> +		res = NULL;
-> +	}
-> +	return res;
->  }
+On Tue, Nov 17, 2020 at 04:03:12AM +0000, Daniel Rosenberg wrote:
+> I've included one ext4 patch from the previous set since it isn't in the f2fs
+> branch, but is needed for the fscrypt changes.
 
-What is the assignment to dentry_page supposed to be accomplishing?  It looks
-like it's meant to pass up errors from f2fs_find_target_dentry(), but it doesn't
-do that.
-
-> @@ -222,14 +250,20 @@ static bool f2fs_match_ci_name(const struct inode *dir, const struct qstr *name,
->  		 * fall back to treating them as opaque byte sequences.
->  		 */
->  		if (sb_has_strict_encoding(sb) || name->len != entry.len)
-> -			return false;
-> -		return !memcmp(name->name, entry.name, name->len);
-> +			res = 0;
-> +		else
-> +			res = memcmp(name->name, entry.name, name->len) == 0;
-> +	} else {
-> +		/* utf8_strncasecmp_folded returns 0 on match */
-> +		res = (res == 0);
->  	}
-
-The following might be easier to understand:
-
-	/*
-	 * In strict mode, ignore invalid names.  In non-strict mode, fall back
-	 * to treating them as opaque byte sequences.
-	 */
-	if (res < 0 && !sb_has_strict_encoding(sb)) {
-		res = name->len == entry.len &&
-		      memcmp(name->name, entry.name, name->len) == 0;
-	} else {
-		/* utf8_strncasecmp_folded returns 0 on match */
-		res = (res == 0);
-	}
-
-> @@ -273,10 +308,14 @@ struct f2fs_dir_entry *f2fs_find_target_dentry(const struct f2fs_dentry_ptr *d,
->  			continue;
->  		}
->  
-> -		if (de->hash_code == fname->hash &&
-> -		    f2fs_match_name(d->inode, fname, d->filename[bit_pos],
-> -				    le16_to_cpu(de->name_len)))
-> -			goto found;
-> +		if (de->hash_code == fname->hash) {
-> +			res = f2fs_match_name(d->inode, fname, d->filename[bit_pos],
-> +				    le16_to_cpu(de->name_len));
-> +			if (res < 0)
-> +				return ERR_PTR(res);
-> +			else if (res)
-> +				goto found;
-> +		}
-
-Overly long line here.  Also 'else if' is unnecessary, just use 'if'.
+Note that this is no longer the case, as this ext4 patch was merged in 5.10
+(commit f8f4acb6cded: "ext4: use generic casefolding support").
 
 - Eric
 
