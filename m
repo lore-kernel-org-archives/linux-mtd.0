@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52B85C2D0E4
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2020 17:40:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4CD7C2D0E4
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2020 17:41:09 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C0B6124654
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2020 17:40:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4B9F5246A6
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2020 17:41:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="3NtotmS8";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="r2l/3gDm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C0B6124654
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="C2ufzJ0j";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iMhheqEE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B9F5246A6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,62 +26,64 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=CkF2v/dgvVgwxcdljHkdzy+a5LOvXUP/aOz8PPRkrjw=; b=3NtotmS8hzcpMvnfaqFTiNnaXo
-	f3T9YXtv4/W8e7HYw6a88Rr9zAzbnktcpLx1plhUxyvuHQhAcDV4fHtQGjCFvMHXl7xzFAxA254qi
-	1rfmJ2IZdajdwmnP+5pk8VhrVQTQDmz2hBEb7+/Il3If7sOiUPCYHx6z+BSs+hxQoQ3NmSaV/zXIi
-	EsDa1BYo/6lDFR5ytG5fkS4tWhowbQqrM1S5xneEalo7ew2hLK8qQqUULEhhfMIkKH0rNQ7hlYiFI
-	ICIwnVSMEWkEr/XYMNxSdiazmHGHMhlLHFRlHk8aWLrDtb9JGQRVRaYTBD6CQ5Bp+UcZHkVk+m0qx
-	tz2TX2dg==;
+	bh=tmMFh1kV7OKbsb0MCbTeNJ/zwh7BUZDMOozqoLYmcK4=; b=C2ufzJ0jnvqQcx3+xFIIdIYFSS
+	UD2sGuJGUMFU3UnKEl1sB00M1rVw+C5ZlBese7lqbePaXHG35jlIspdwI9Wh80EQcZAqUDqTOUCze
+	jN2hlaUv699+5gO2Jt6EHRlz9v8TlYdnm7WZMBxCr1A4Fg72i7M96iK/u7aZVB5GcVXSUp19YUyKx
+	4ghgD3nAaYn899aDq1k3B8cT9CAgvZC2yeN2V18DfxgVxTYBnyt3aIe4aAsPiRpjoB2eib57NX6cs
+	Z0j32ovMo7VCapCgXRI+BwvkUcjB+ldz0WXKIu8BS4zokWHS+act2U0B/mCN/abOdZ08npp/Ibmi+
+	sZpiMq8A==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kf4xI-0004zh-Qc; Tue, 17 Nov 2020 17:39:48 +0000
-Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
+	id 1kf4x9-0004wJ-RF; Tue, 17 Nov 2020 17:39:39 +0000
+Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kf4xD-0004x7-EF
- for linux-mtd@lists.infradead.org; Tue, 17 Nov 2020 17:39:44 +0000
-Received: by mail-pl1-x644.google.com with SMTP id t18so10632173plo.0
- for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2020 09:39:43 -0800 (PST)
+ id 1kf4x6-0004uj-Or
+ for linux-mtd@lists.infradead.org; Tue, 17 Nov 2020 17:39:38 +0000
+Received: by mail-pg1-x543.google.com with SMTP id w4so16473195pgg.13
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2020 09:39:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=268k75iGgPwajGOaY5d0Of03PhQtD6bYvRMlc9HmW4g=;
- b=r2l/3gDmAVgeNBGWi099+PAX/sTSeFVw6c+bxA2Hxkv4fjT5HS9mpa2z7tazOtK9x3
- jDkxryWC58TOfLH4ocEeaFgAfHPtAIFdcvcfe1duzLHaTyC3uHatHSyu3Eqp9RVn+f8o
- NUFXuaelDV5NiF9kKij/jaDrloV5V2WiuFbAQ8F8Zqj+CETA2T5S0KecXLdjtBLls4XX
- +Rp5iovP8vGlci+NNz2Uhbp7NbFb19y/F+kt/KP0U+pl+JEaXUA8ApWLHow0W7gnkwnX
- +vHpA+9vRpzvfyfrxKFJpTzVtQSOaCRKba/fCYg+iBMNyrUNmj5n1FjGYzWSNbVR0EJz
- t3iw==
+ bh=Z7z9ZRILC9uN9iHlx1xbJ9BYeKh/BzimXNJ9muC2tZE=;
+ b=iMhheqEEtzlcTH3JWm7eKlSWO6dx+/gAWszscdzjMx9IT9JSPVzPdUu7Xlocg3dVp4
+ RS5+e1e1hjcLCK4A+Xpo4IIlMmbkHzIIbD2VtAQsYELArr5qAx+uagVGYh1eFhhw1IeX
+ mHCxvRlro8+iZzHxTuB5nBNU9tQ3IigTM/1s0rYId0eGZI3F8iOZRRHbpqUW1jtrZpmx
+ JjLzFAODDzSPZMWTuznEM3H8wb1zgbLgEqQPXiR6p5/xCR8fdLQYDI9JgtN6T/0q+0tI
+ 1IKamxmeuoflCVM4GPjY7GWDfebj3peqcn6JdlCYn1E2pW8mSoz6M6WDcQsI1WCDXFrX
+ uqNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references;
- bh=268k75iGgPwajGOaY5d0Of03PhQtD6bYvRMlc9HmW4g=;
- b=bYAqU6ARAVz3OKtIRvVyjWcw2fyD+v3aoXJjntssU0+LoDz0Jdygy62ydLpHCp0Fgu
- /ZYvPBPuvyCoymiZ0FY2CtHreLFmS9+cdaFKgd4vv6Cb6yl6Kyvba05IkKzio7NT6iL6
- NX5tR6ygbhgi7RezPyoDrXyUP6QKYlNjywnOPwQzy8GKAOTfDkkl4Td3OrNMLhtKK4/h
- EylPZfNPaSK2kwW9ACD4+tarKFjOo7vyr6f/MpRnT68xKZCrxZhuTarMJAvV8lGczda1
- AU7Q3e+kgPQ2lxlDEtQrgpH19rZIIBH3aoMt4zSv3xxFfKZ698rHUSen8R2Nh8hrzw3Y
- 7CiQ==
-X-Gm-Message-State: AOAM531tP4A7s/cDl/sy8BLpfg+jvVi34ESYRHmsgtMYkOBikrxebbsa
- xk3rUPsfB72WXDW0yAPaqHGK
-X-Google-Smtp-Source: ABdhPJytZ53nOUmuWQePziE64A8vrYNi9roIBdKD3NZkAV3H7LGnxbo3XuNI+LOsKrUygy0Fgeberw==
-X-Received: by 2002:a17:90a:7647:: with SMTP id s7mr169690pjl.23.1605634781695; 
- Tue, 17 Nov 2020 09:39:41 -0800 (PST)
+ bh=Z7z9ZRILC9uN9iHlx1xbJ9BYeKh/BzimXNJ9muC2tZE=;
+ b=T1+7AaQUBD33VPokZHDm+3usT2VunKdsKzdeqN1eU77tw2eockIRDckGtwYSuP98Ph
+ /7E7ROHlWBUcKcnTCvpjO/6pcR8IW7EDvOTIodiWWYlXPop33NUZ7s1f/+pkK2atPvNg
+ mNzch/uW2+9nha94eZKdCPt6DiCxMqG0tMJkbZ5fsgadrDeMszEgu3s6mYggPXXGmZGr
+ O+RzSq4s4A5DfeGDvf3SQLYWNFVTlf0ZRkCYub2jXjq4uQd+g8fw8ip/8jENSJ/4Bzji
+ C4Z2CHRCNDJF8NzfvHzOs+bj1KSa4uUGlQx4mKPJybbNrHJpZvB924m1M3GBkSEQOUuZ
+ tnCQ==
+X-Gm-Message-State: AOAM531x/CzxyFbKpdWe2DpUm8jRV4ladyiIBE+nuY3bsKaWe3UEIuxo
+ wmFwTjci1Kg1UN9S7uM4U1Eu
+X-Google-Smtp-Source: ABdhPJyiyMmrvmPp7kwm8dB7Il6lF8A+hmI+MKoQZ7IM7qdwm41PZpdxi/RlvI+65FSOqv9cdsE5pA==
+X-Received: by 2002:aa7:86c9:0:b029:18b:b0c:53e5 with SMTP id
+ h9-20020aa786c90000b029018b0b0c53e5mr381547pfo.57.1605634774347; 
+ Tue, 17 Nov 2020 09:39:34 -0800 (PST)
 Received: from localhost.localdomain ([103.59.133.81])
- by smtp.googlemail.com with ESMTPSA id a21sm1751330pjq.37.2020.11.17.09.39.38
+ by smtp.googlemail.com with ESMTPSA id a21sm1751330pjq.37.2020.11.17.09.39.31
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 17 Nov 2020 09:39:40 -0800 (PST)
+ Tue, 17 Nov 2020 09:39:33 -0800 (PST)
 From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
  robh+dt@kernel.org
-Subject: [PATCH 3/4] mtd: rawnand: qcom: Add support for Qcom SMEM parser
-Date: Tue, 17 Nov 2020 23:09:08 +0530
-Message-Id: <20201117173909.23585-4-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 1/4] dt-bindings: mtd: partitions: Add binding for Qcom SMEM
+ parser
+Date: Tue, 17 Nov 2020 23:09:06 +0530
+Message-Id: <20201117173909.23585-2-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201117173909.23585-1-manivannan.sadhasivam@linaro.org>
 References: <20201117173909.23585-1-manivannan.sadhasivam@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201117_123943_541533_5F0C3139 
-X-CRM114-Status: GOOD (  13.99  )
+X-CRM114-CacheID: sfid-20201117_123936_882926_B4F30423 
+X-CRM114-Status: GOOD (  14.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,36 +105,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for using Qualcomm SMEM based flash partition parser in
-Qualcomm NAND controller.
+Add YAML binding for Qualcomm Shared Memory (SMEM) Flash partition
+parser.
 
 Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- drivers/mtd/nand/raw/qcom_nandc.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ .../mtd/partitions/qcom,smem-part.yaml        | 31 +++++++++++++++++++
+ 1 file changed, 31 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
 
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 777fb0de0680..1b031aeac18b 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -2797,6 +2797,8 @@ static int qcom_nandc_setup(struct qcom_nand_controller *nandc)
- 	return 0;
- }
- 
-+static const char * const probes[] = { "qcomsmem", NULL };
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml b/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
+new file mode 100644
+index 000000000000..0682aef2d54f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
+@@ -0,0 +1,31 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/partitions/qcom,smem-part.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
- 					    struct qcom_nand_host *host,
- 					    struct device_node *dn)
-@@ -2860,7 +2862,7 @@ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
- 		}
- 	}
- 
--	ret = mtd_device_register(mtd, NULL, 0);
-+	ret = mtd_device_parse_register(mtd, probes, NULL, NULL, 0);
- 	if (ret)
- 		nand_cleanup(chip);
- 
++title: Qualcomm SMEM NAND flash partition parser binding
++
++maintainers:
++  - Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
++
++description: |
++  The Qualcomm SoCs supporting the NAND controller interface features a Shared
++  Memory (SMEM) based partition table scheme. The maximum partitions supported
++  varies between partition table revisions. V3 supports maximum 16 partitions
++  and V4 supports 48 partitions.
++
++properties:
++  compatible:
++    const: qcom,smem-part
++
++required:
++  - compatible
++
++examples:
++  - |
++    flash@0 {
++        partitions {
++            compatible = "qcom,smem-part";
++        };
++    };
 -- 
 2.17.1
 
