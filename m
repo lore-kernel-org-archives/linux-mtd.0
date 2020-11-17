@@ -2,85 +2,88 @@ Return-Path: <SRS0=l5Rv=EX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 157B7C2D0E4
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2020 17:49:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86D3CC2D0E4
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2020 17:50:16 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A05612468D
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2020 17:49:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 10AD221734
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2020 17:50:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VBv9/i17";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="I+O7Yo6C"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A05612468D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="z6sy3nCN";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jfOa4AiS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 10AD221734
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=8cLylNwToazHtrP/UubFAOoEIFC5Z/YleN24yA//GKs=; b=VBv9/i17Z106nE6pAncasJL0sw
-	g8hJQdG0NhQZhQBUhMBg9tqo3nV/PC1oAwYb70qlvr+oJPU3wJNYdLN2g5L4qUB789slnZHS3F6Mv
-	LVqpoBUButgljwADzl9inVkHJkKsJjsRBJWMytDal1vFMW6XYT08WxpfITgHA7lkjIfcJb2n5ZBqw
-	ZTy8xFw5Rq1ZJp+gn0ZsxJNR8SlzVt3vjJyIEv98xOB8YT3k24CAkY0INzMlrVKNfYcb9SAeSmTvC
-	3wU+obSrDuM12rjKZrDHoxVeYanLxRzpttv188TNcsJ82FPuRl/aO7ddqoHNRRMsJ1lUXVHT61qiN
-	bI3CwOVA==;
+	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
+	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=CkF2v/dgvVgwxcdljHkdzy+a5LOvXUP/aOz8PPRkrjw=; b=z6sy3nCNY3cbd3KXaQes5h4Av5
+	k3eIyxq+95WpQ+VNIL6yP/sd0SXHaLncNEZF4AkcY2nvhajoIGds0fRqEw4BkErY9doDMxUrkNywg
+	Qu2E62i0jcyNdbeFGz7qen0JRMeck4y8Iy1ObuDz517TvvmP7BKB0dRBlL3OXr17ab0jv4DGBDnCu
+	W9Am3+KO8Rimb1cPTKSYG/E1BWYhsorVaJ9u6wkJos3xmKrHk6nPsXpz6K+6FZsA3R9ZtUXrqrLN0
+	WKr+raMYu6YBlPl0sHKqzdLikLw0mRyhPdUngIF/aZSgim7Xncflrye/6lxb5A1e2NW392cGPGR23
+	d26lgzKw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kf56C-00076o-Hv; Tue, 17 Nov 2020 17:49:00 +0000
-Received: from mail-pj1-x1044.google.com ([2607:f8b0:4864:20::1044])
+	id 1kf56V-0007DO-1T; Tue, 17 Nov 2020 17:49:19 +0000
+Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kf56A-00075k-D4
- for linux-mtd@lists.infradead.org; Tue, 17 Nov 2020 17:48:59 +0000
-Received: by mail-pj1-x1044.google.com with SMTP id r6so858641pjd.1
- for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2020 09:48:58 -0800 (PST)
+ id 1kf56L-00079F-Px
+ for linux-mtd@lists.infradead.org; Tue, 17 Nov 2020 17:49:10 +0000
+Received: by mail-pf1-x441.google.com with SMTP id g7so17781950pfc.2
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2020 09:49:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id;
- bh=O0PA9nf7G4M2udGN4+q47WXE4Qy7KA5bu5YIoNe2LFg=;
- b=I+O7Yo6COQWNxmqewYTuql/S/oMpEKVhTAdBS6QxYTq7LJQp4PLzTmXAmd3z88YZZn
- bey0pn5KrqwJScrlAVY602fvKUOwSj746GPwgI1tSNZWPf5HhRj3glWj4MhaPYfoPFiL
- QnP0psRV9rvO4Ia34yAeIb4djJdEGNbxJLNIrQrQ8zDaJjmrWbV5dXFY6TQIo/joVePx
- qEdw8bi0fQOnKnd0tGSPb2MPvWtgCwQHeEB28KbOR+YkQgzv5hGtLHa2JbYQ+3VmXboa
- E3cy5W6SYtwwug1WKODqHKlJF83ehh/G2e1DA2XoXj0ZY2/ghOrfbvcSHrJl7fJDcjF2
- wmfA==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references;
+ bh=268k75iGgPwajGOaY5d0Of03PhQtD6bYvRMlc9HmW4g=;
+ b=jfOa4AiS/tPxjopccSsFwVuEPAIEFOQvgNIDZfxXpCqZM2rBRAbMSPUGrRZCUxk9RM
+ M1lSMnYTKmkr2XwSjmUTy27z01sP+vWfmEPHgxDNEejk9lIudy+tadMlhWcbHgGXGsAR
+ m9Hv77MP41Mel1ZJKkB6HvxyP0sB62RPYQoM944E6Eo6+T24PBAzzub48v8+buJCMMRL
+ vwM2SOKLaPLTVb64Py+CQN2TERL4pdJLcKZ9w49oof+AXLuSDSzabeXmjYwy5mLyGPi9
+ ZyZVBHp4DECrukNla6p+KiGhOD3Jum1NWBvyRl7F4SiAeuW+7CxLg0w5K2zA2Rn7Xhls
+ 0ySw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=O0PA9nf7G4M2udGN4+q47WXE4Qy7KA5bu5YIoNe2LFg=;
- b=G53dx+sR64f0yY9vYdzoIA1/y8o+1jyPYZmwNuf8U6/tPgOfg2tfSL9ex55txX1Kvm
- QDFyXv2hRHdnhlv6VYd2T19yPuiK3gCNlpSYq0PINZ03RlKVyb8gdlj8BQZ6DmbxOS5X
- tHqFZGFPbTlPp7xrcaI1iDMdcirCpLMQL6Rbt2l3rPlJKA4kNKTofNJtTmBqGoYIHYnW
- 0d7LZi0SVW0knxT9NaujJ4/1sXcfW2vjI1Eg/aEqKVQLv2yMLBK/aXE87jtqdBuCzN5U
- l9xAb1oyKJsrVXJj/n/R+swq2DXWiZ6sAV3AyLiv3PDA4tt0nTDHSfBKlpbQKUY/CHOm
- 5gMg==
-X-Gm-Message-State: AOAM531qcy58AqWdoam6fCJAHLjfkBj5PA5SRik7DAxJAwLTFi+KCGfj
- xBkWwqmQzRgA8WJHLPd71BGXA5NzIdII
-X-Google-Smtp-Source: ABdhPJwXUv3E3rnopnWn4cwu/xUeTSKe0sisjYQxjooarhF/w/Rb+XZEE47uu2Zdb/NCgRQcv8krHw==
-X-Received: by 2002:a17:90b:345:: with SMTP id
- fh5mr226340pjb.198.1605635336430; 
- Tue, 17 Nov 2020 09:48:56 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references;
+ bh=268k75iGgPwajGOaY5d0Of03PhQtD6bYvRMlc9HmW4g=;
+ b=Vwi/0L5LvKkwY/gx7YBZLzv5C54yIL3PEY3VkLFA/lvknKNkn6EchmLYGz1xxhHXsp
+ i3kiezlYTfZLNr4d9LdAwHQy+jY1DjvYhxjyoHSPEjoyg1Hb9dWEckl4MhTzSSKD/075
+ 3tmzKthSu5ZzE1OKGEW8hwaNKlPPwwCPBsmgXhYu5Wys+8lVr8LxxPYUiZz3YIWHyI2e
+ TAUnGUy2U/fyMk4yIoOv3Plz1VZyCLT/lkM3JTDpzhgIiB8ctA0/8lMrhwLwsCLXyKsT
+ CiN3aCp+9y4vPRMIn6tO+EOhw5DsChblKwIOub8QsnmSxOWHwrV9Y5X3gmHAsaC8GqLb
+ XOsg==
+X-Gm-Message-State: AOAM533g9GrZs5Tks145EHB9LXOy9Mqm99ITdB7ncC8zRBoG6K5GRCXn
+ P6W6x9VMT6ASsA7DRRQpKfvApIkm2Q8D
+X-Google-Smtp-Source: ABdhPJxY8KGN1ZSec/mXAFeuvkUuavubQH+z6KaVaM8f1siege4JnI9ulfj0qykscLac6PxVdm8hQg==
+X-Received: by 2002:a62:e40c:0:b029:18b:ad5:18a8 with SMTP id
+ r12-20020a62e40c0000b029018b0ad518a8mr707392pfh.16.1605635347218; 
+ Tue, 17 Nov 2020 09:49:07 -0800 (PST)
 Received: from localhost.localdomain ([103.59.133.81])
  by smtp.googlemail.com with ESMTPSA id
- 192sm22222810pfz.200.2020.11.17.09.48.52
+ 192sm22222810pfz.200.2020.11.17.09.49.04
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 17 Nov 2020 09:48:55 -0800 (PST)
+ Tue, 17 Nov 2020 09:49:06 -0800 (PST)
 From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
  robh+dt@kernel.org
-Subject: [PATCH v2 0/4] Add support for Qcom SMEM based NAND parser
-Date: Tue, 17 Nov 2020 23:18:41 +0530
-Message-Id: <20201117174845.28684-1-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v2 3/4] mtd: rawnand: qcom: Add support for Qcom SMEM parser
+Date: Tue, 17 Nov 2020 23:18:44 +0530
+Message-Id: <20201117174845.28684-4-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201117174845.28684-1-manivannan.sadhasivam@linaro.org>
+References: <20201117174845.28684-1-manivannan.sadhasivam@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201117_124858_508239_157EE2F5 
-X-CRM114-Status: GOOD (  13.66  )
+X-CRM114-CacheID: sfid-20201117_124909_890621_CF8C931D 
+X-CRM114-Status: GOOD (  14.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,38 +105,36 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello,
+Add support for using Qualcomm SMEM based flash partition parser in
+Qualcomm NAND controller.
 
-This series adds support for parsing the partitions defined in Shared
-Memory (SMEM) of the Qualcomm platforms supporting NAND interface.
-Current parser only supports V3 and V4 of the partition tables.
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ drivers/mtd/nand/raw/qcom_nandc.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-This series has been tested on SDX55 MTP board which has an onboard NAND
-device.
-
-Thanks,
-Mani
-
-Changes in v2:
-
-* Added additionalProperties: false and removed unit address in binding
-
-Manivannan Sadhasivam (4):
-  dt-bindings: mtd: partitions: Add binding for Qcom SMEM parser
-  mtd: parsers: Add Qcom SMEM parser
-  mtd: rawnand: qcom: Add support for Qcom SMEM parser
-  mtd: parsers: afs: Fix freeing the part name memory in failure
-
- .../mtd/partitions/qcom,smem-part.yaml        |  33 ++++
- drivers/mtd/nand/raw/qcom_nandc.c             |   4 +-
- drivers/mtd/parsers/Kconfig                   |   8 +
- drivers/mtd/parsers/Makefile                  |   1 +
- drivers/mtd/parsers/afs.c                     |   4 +-
- drivers/mtd/parsers/qcomsmempart.c            | 169 ++++++++++++++++++
- 6 files changed, 215 insertions(+), 4 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
- create mode 100644 drivers/mtd/parsers/qcomsmempart.c
-
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index 777fb0de0680..1b031aeac18b 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -2797,6 +2797,8 @@ static int qcom_nandc_setup(struct qcom_nand_controller *nandc)
+ 	return 0;
+ }
+ 
++static const char * const probes[] = { "qcomsmem", NULL };
++
+ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
+ 					    struct qcom_nand_host *host,
+ 					    struct device_node *dn)
+@@ -2860,7 +2862,7 @@ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
+ 		}
+ 	}
+ 
+-	ret = mtd_device_register(mtd, NULL, 0);
++	ret = mtd_device_parse_register(mtd, probes, NULL, NULL, 0);
+ 	if (ret)
+ 		nand_cleanup(chip);
+ 
 -- 
 2.17.1
 
