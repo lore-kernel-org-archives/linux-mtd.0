@@ -2,89 +2,83 @@ Return-Path: <SRS0=T29d=EY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE6F8C5519F
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 04:21:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58935C5519F
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 06:23:50 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3924C238E6
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 04:21:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C85D024655
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 06:23:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VgTZrGfx";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="W76esqTs"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3924C238E6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IhWKqBBi";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="s/0gcm/n"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C85D024655
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=TO89nNh+O3+eHz3KcrqJ4W/WeV+/OYnc298VFPHTcdk=; b=VgTZrGfxQ6LfkbKGALbIr0Tad
-	ETYI4iL/HMe0788EDsunx5IssAe3FbkBmN597M5sHXyeNyC+IXL3WwVmltx/Awr3uxwt0DF2GModk
-	4L/Qy5yrQVjCzkFlw+xeU1c9oeH5PNASJsooGLfxUodI1Ean9J5NqG9vQzjLBtXPhdKExMfrPeAyH
-	I5ky3XaKbV5ZG5ADPOVAAquD8ZamkZOJyVIGvQhovB+m8HbK4b4XisVpexix703xBg7PpT2wbm12I
-	V5om9mI4LFAJHVLaokLhicnkVk235p9iGU6LJVO2jeROdctY/e5kkVsDuIAh+Sp+rKFyD6o0DGstf
-	abBUg4esg==;
+	 bh=+iYPFcxASB0CxUAAS65n4F15x4+wJH4nPG58g8eERc4=; b=IhWKqBBivLwMzcPhNiW0mmjgx
+	FTXCKmVI/em4pjOOkJsxug6rMoZPRkfqEgMa9PY8sIj0cP/ELORCknjkqRhyyRYWKRQg6HFnea5uo
+	fcP0KGP8igfoZB2Rxdu4hq+IpnpxTQOwMR5cyaRTmyTl0waXZ7muYxhY//XYvl/04yU/PFkI3WaXL
+	htbLZy+JxOS3WlWN6ilG0fAYFr9TPfvB2ycR8Z55PcctlLDkbzaUPeIykIkaNKWd7TMGpRGSl+ro0
+	bb0+PmlXhblxFVzKBVtrhNoT+zu2oimX3TlXtud9uFqF5hh669PduYlvXEV25nUglsXixeZJigomM
+	9aJrX9AwQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kfExW-0003Cu-AP; Wed, 18 Nov 2020 04:20:42 +0000
-Received: from mail-ot1-x344.google.com ([2607:f8b0:4864:20::344])
+	id 1kfGrc-0000So-Ug; Wed, 18 Nov 2020 06:22:44 +0000
+Received: from mail-ot1-x343.google.com ([2607:f8b0:4864:20::343])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kfExT-0003CU-Oz
- for linux-mtd@lists.infradead.org; Wed, 18 Nov 2020 04:20:40 +0000
-Received: by mail-ot1-x344.google.com with SMTP id n89so518188otn.3
- for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2020 20:20:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=6Wvxu8t2+2ioygEU2T4ArcOLVAxHUsdhIF9PdXDAJM4=;
- b=W76esqTsZ86EDM1lwch0e8uC4aT1RtvVouxGvKObeDHmB3bZMoC5oHjC2nJz9cteck
- 8koiNfwuE4Z3/i5L4VnIDUfcdNiXZbW+Fr9jjzKkS1Kx+5LYisyTaMeOs3gfmR83xPBt
- mGiuQpNmNtzFg2Rm+4dtyxgp3aEI2suOJTus+WjaZ1z4n4XNxPlWrXY6pj4Yf/lK64jx
- 4z8KLPyY/MdVNqTLwUaJLg4hTzTdzNuano/+1SdaiLuv+rcSyQQ5ozNgfgE/iJkGQSrM
- Si2u1p24qNr3vp49zz4qq7CydjH5Si4OSL49NNKvlLZ8lzlcUAy+tvHSdps+7yL+hhV6
- e50Q==
+ id 1kfGra-0000S4-EJ
+ for linux-mtd@lists.infradead.org; Wed, 18 Nov 2020 06:22:43 +0000
+Received: by mail-ot1-x343.google.com with SMTP id h16so705060otq.9
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2020 22:22:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=YtbFnHLC0F4iSC34KfXMYG3W+T/7MuJJbJ93crg4rYY=;
+ b=s/0gcm/nu0ykiimxR8WdTqn9/oRW/XbyL4w3MNEAnCfzuYkMI3OFhwyBJe63/t0URk
+ MF/eQSENFOP4uuanpMx/bVQmSBCMt9205j/XRDkg2inxeNJhKoi7iACS4a6LKhzYyyPq
+ qa4dNN1q0jLGZrs5Lrn7jSqxzCJiOKKH3hQaT5DpJF7rkZje9PEQmxHX/SUM+QIQdrko
+ eTsEfmyf6ZOcB2cirE8P2cFHN4xZybxLcNtsGeHE28KzS3mQ7JEffWMaUWI2FOczvsSz
+ zEPr9p1knwW2aa2cMoNyVRYTr6BAKJgMrSjOb12HfcwQQj2g7+qML5P4PBXcJLFoIouH
+ gSng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=6Wvxu8t2+2ioygEU2T4ArcOLVAxHUsdhIF9PdXDAJM4=;
- b=YfK06fGDiX3XlpmA8nRhCl2/mNfJ3RQGS2VZ+LVccXjJqsfhxD6mFio0nhgNA3035H
- n/TK9GYwOpRBID2kf4M8/HPy0iDw82W55Qzt2YFtPzsoJlrY5jMFPEnRS8jYxu457kWE
- m/F+pVls6DuVEvSdaZHgXuO83kS1XaPiYJfgMM8INrowRvzS2pPJtsxd/kgEJ0z+WyZL
- MR3XuEK036qm8zhOZlOHf2uToiZZ2aXAYrOhafHEKlOd7hdoRg4Uy1qo7gfh6RgeOuU4
- 94jXrb33gdDSMnWee0FUbfd8IMJSwx4SVJQBnFY0yL1a6tSadrO1CcITUXKOZbJlRQy1
- bShw==
-X-Gm-Message-State: AOAM533mj3M+ediB1KqRuztvDgu3SgCejCORzm/bPH5NSHwbCXEMYi8+
- HJ+gnK8tu+gL93VNFNnrG1rWKg==
-X-Google-Smtp-Source: ABdhPJwqlVmYvFehmr/fzkq8uhhNTcWyQ3lNwNUQ3Bom+EBGXSfkQub4UHEpAO+oVi/uB5L0kvpjtg==
-X-Received: by 2002:a9d:6847:: with SMTP id c7mr5260354oto.134.1605673236210; 
- Tue, 17 Nov 2020 20:20:36 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net.
- [104.57.184.186])
- by smtp.gmail.com with ESMTPSA id a4sm6459055otj.29.2020.11.17.20.20.35
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 17 Nov 2020 20:20:35 -0800 (PST)
-Date: Tue, 17 Nov 2020 22:20:33 -0600
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: Re: [PATCH v2 2/4] mtd: parsers: Add Qcom SMEM parser
-Message-ID: <20201118042033.GH8532@builder.lan>
-References: <20201117174845.28684-1-manivannan.sadhasivam@linaro.org>
- <20201117174845.28684-3-manivannan.sadhasivam@linaro.org>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=YtbFnHLC0F4iSC34KfXMYG3W+T/7MuJJbJ93crg4rYY=;
+ b=KY/O+bB4YDUH+h+RzWWAEOsvznDOAeCaXVmY+vFck3xOp+Cz8mW8YgFgjNW0WexF/f
+ WWYD/ylGaUlxSq+9DUjJlo7GAhbX8BF/oAeiK7+2bbkHH5MDvAJtGcPsERS/3R04oRFo
+ KydkIPYvs5yDQku1lJumz40g8FnN+M/5wsgwiad7zaFXT9PgaoFe2+WBb+87WTWb6tyO
+ kQF6WdJx5javL3iN0a/U+Btxla8ybnTyOPyczJ2W/y9R+E6gfa9lDdf+5DDmR3NYK5Fx
+ Zr3cC+wml2xIzEPL2uuUTnlabSdaVCtX6AwgFZfctkjM5DbpDf4aSOLWCM3lj+P5Cnsr
+ IxIw==
+X-Gm-Message-State: AOAM533PR5zpsM0Ykmwvo0y5PnEumsckNss5kAeS5xDeT3N+cfiQUsWj
+ WAO8zga15yUnHdf0GbWuNNsT2bKI84uJMT2ZBxlDMA==
+X-Google-Smtp-Source: ABdhPJwWgllZCVW/lRnluvAChVjMF1TDf/msIQVY0NfyaYFdNqL1Ed/ZnJAgja+VBlqEUAJ7Jx61VEi4QbR1tg0v1Z0=
+X-Received: by 2002:a9d:8ee:: with SMTP id 101mr5606894otf.93.1605680559385;
+ Tue, 17 Nov 2020 22:22:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20201117174845.28684-3-manivannan.sadhasivam@linaro.org>
+References: <20201117040315.28548-1-drosen@google.com>
+ <20201117040315.28548-4-drosen@google.com>
+ <X7QbX9Q4xzhg+5UU@sol.localdomain>
+In-Reply-To: <X7QbX9Q4xzhg+5UU@sol.localdomain>
+From: Daniel Rosenberg <drosen@google.com>
+Date: Tue, 17 Nov 2020 22:22:28 -0800
+Message-ID: <CA+PiJmRQGJP5uHf-yXs=efo++JE+SUmjRizwzH-RGG92RdAxyw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] f2fs: Handle casefolding with Encryption
+To: Eric Biggers <ebiggers@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201117_232039_841575_90F36B9F 
-X-CRM114-Status: GOOD (  32.83  )
+X-CRM114-CacheID: sfid-20201118_012242_515346_7C77083E 
+X-CRM114-Status: GOOD (  20.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,245 +90,80 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, vigneshr@ti.com, richard@nod.at,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- robh+dt@kernel.org, linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com
+Cc: kernel-team@android.com, "Theodore Y . Ts'o" <tytso@mit.edu>,
+ Richard Weinberger <richard@nod.at>, Chao Yu <chao@kernel.org>,
+ linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-fscrypt@vger.kernel.org, Andreas Dilger <adilger.kernel@dilger.ca>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+ linux-ext4@vger.kernel.org, Gabriel Krisman Bertazi <krisman@collabora.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue 17 Nov 11:48 CST 2020, Manivannan Sadhasivam wrote:
+On Tue, Nov 17, 2020 at 10:50 AM Eric Biggers <ebiggers@kernel.org> wrote:
+>
+>
+> What is the assignment to dentry_page supposed to be accomplishing?  It looks
+> like it's meant to pass up errors from f2fs_find_target_dentry(), but it doesn't
+> do that.
 
-> NAND based Qualcomm platforms have the partition table populated in the
-> Shared Memory (SMEM). Hence, add a parser for parsing the partitions
-> from it.
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  drivers/mtd/parsers/Kconfig        |   8 ++
->  drivers/mtd/parsers/Makefile       |   1 +
->  drivers/mtd/parsers/qcomsmempart.c | 169 +++++++++++++++++++++++++++++
->  3 files changed, 178 insertions(+)
->  create mode 100644 drivers/mtd/parsers/qcomsmempart.c
-> 
-> diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
-> index e72354322f62..d90c30229052 100644
-> --- a/drivers/mtd/parsers/Kconfig
-> +++ b/drivers/mtd/parsers/Kconfig
-> @@ -160,3 +160,11 @@ config MTD_REDBOOT_PARTS_READONLY
->  	  'FIS directory' images, enable this option.
->  
->  endif # MTD_REDBOOT_PARTS
-> +
-> +config MTD_QCOMSMEM_PARTS
-> +	tristate "Qualcomm SMEM NAND flash partition parser"
-> +	depends on MTD_NAND_QCOM || COMPILE_TEST
-> +	depends on QCOM_SMEM
-> +	help
-> +	  This provides support for parsing partitions from Shared Memory (SMEM)
-> +	  for NAND flash on Qualcomm platforms.
-> diff --git a/drivers/mtd/parsers/Makefile b/drivers/mtd/parsers/Makefile
-> index b0c5f62f9e85..50eb0b0a2210 100644
-> --- a/drivers/mtd/parsers/Makefile
-> +++ b/drivers/mtd/parsers/Makefile
-> @@ -9,3 +9,4 @@ obj-$(CONFIG_MTD_AFS_PARTS)		+= afs.o
->  obj-$(CONFIG_MTD_PARSER_TRX)		+= parser_trx.o
->  obj-$(CONFIG_MTD_SHARPSL_PARTS)		+= sharpslpart.o
->  obj-$(CONFIG_MTD_REDBOOT_PARTS)		+= redboot.o
-> +obj-$(CONFIG_MTD_QCOMSMEM_PARTS)	+= qcomsmempart.o
-> diff --git a/drivers/mtd/parsers/qcomsmempart.c b/drivers/mtd/parsers/qcomsmempart.c
-> new file mode 100644
-> index 000000000000..d8c2a3fa4dfe
-> --- /dev/null
-> +++ b/drivers/mtd/parsers/qcomsmempart.c
-> @@ -0,0 +1,169 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Qualcomm SMEM NAND flash partition parser
-> + *
-> + * Copyright (C) 2020, Linaro Ltd.
-> + */
-> +
-> +#include <linux/ctype.h>
-> +#include <linux/module.h>
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/mtd/partitions.h>
-> +#include <linux/slab.h>
-> +#include <linux/soc/qcom/smem.h>
-> +
-> +#define SMEM_AARM_PARTITION_TABLE	9
-> +#define SMEM_APPS			0
-> +
-> +#define SMEM_FLASH_PART_MAGIC1		0x55ee73aa
-> +#define SMEM_FLASH_PART_MAGIC2		0xe35ebddb
-> +#define SMEM_FLASH_PTABLE_V3		3
-> +#define SMEM_FLASH_PTABLE_V4		4
-> +#define SMEM_FLASH_PTABLE_MAX_PARTS_V3	16
-> +#define SMEM_FLASH_PTABLE_MAX_PARTS_V4	48
-> +#define SMEM_FLASH_PTABLE_HDR_LEN	(4 * sizeof(u32))
-> +#define SMEM_FLASH_PTABLE_NAME_SIZE	16
-> +
-> +/**
-> + * struct smem_flash_pentry - SMEM Flash partition entry
-> + * @name: Name of the partition
-> + * @offset: Offset in blocks
-> + * @length: Length of the partition in blocks
-> + * @attr: Flags for this partition
-> + */
-> +struct smem_flash_pentry {
-> +	char name[SMEM_FLASH_PTABLE_NAME_SIZE];
-> +	u32 offset;
+Woops. Fixed that for the next version.
 
-It would be nice if you noted that these are little endian (using
-__le32) and used le32_to_cpu() below.
+>
+> > @@ -222,14 +250,20 @@ static bool f2fs_match_ci_name(const struct inode *dir, const struct qstr *name,
+> >                * fall back to treating them as opaque byte sequences.
+> >                */
+> >               if (sb_has_strict_encoding(sb) || name->len != entry.len)
+> > -                     return false;
+> > -             return !memcmp(name->name, entry.name, name->len);
+> > +                     res = 0;
+> > +             else
+> > +                     res = memcmp(name->name, entry.name, name->len) == 0;
+> > +     } else {
+> > +             /* utf8_strncasecmp_folded returns 0 on match */
+> > +             res = (res == 0);
+> >       }
+>
+> The following might be easier to understand:
+>
+>         /*
+>          * In strict mode, ignore invalid names.  In non-strict mode, fall back
+>          * to treating them as opaque byte sequences.
+>          */
+>         if (res < 0 && !sb_has_strict_encoding(sb)) {
+>                 res = name->len == entry.len &&
+>                       memcmp(name->name, entry.name, name->len) == 0;
+>         } else {
+>                 /* utf8_strncasecmp_folded returns 0 on match */
+>                 res = (res == 0);
+>         }
+>
+Thanks, that is a fair bit nicer.
 
-
-Apart from that I think this looks really good.
-
-> +	u32 length;
-> +	u8 attr;
-> +} __packed __aligned(4);
-> +
-> +/**
-> + * struct smem_flash_ptable - SMEM Flash partition table
-> + * @magic1: Partition table Magic 1
-> + * @magic2: Partition table Magic 2
-> + * @version: Partition table version
-> + * @numparts: Number of partitions in this ptable
-> + * @pentry: Flash partition entries belonging to this ptable
-> + */
-> +struct smem_flash_ptable {
-> +	u32 magic1;
-> +	u32 magic2;
-> +	u32 version;
-> +	u32 numparts;
-> +	struct smem_flash_pentry pentry[SMEM_FLASH_PTABLE_MAX_PARTS_V4];
-> +} __packed __aligned(4);
-> +
-> +static int parse_qcomsmem_part(struct mtd_info *mtd,
-> +			       const struct mtd_partition **pparts,
-> +			       struct mtd_part_parser_data *data)
-> +{
-> +	struct smem_flash_pentry *pentry;
-> +	struct smem_flash_ptable *ptable;
-> +	size_t len = SMEM_FLASH_PTABLE_HDR_LEN;
-> +	struct mtd_partition *parts;
-> +	char *name, *c;
-> +	int ret, i;
-> +
-> +	pr_debug("Parsing partition table info from SMEM\n");
-> +	ptable = qcom_smem_get(SMEM_APPS, SMEM_AARM_PARTITION_TABLE, &len);
-> +	if (IS_ERR(ptable)) {
-> +		pr_err("Error reading partition table header\n");
-> +		return PTR_ERR(ptable);
-> +	}
-> +
-> +	/* Verify ptable magic */
-> +	if (ptable->magic1 != SMEM_FLASH_PART_MAGIC1 ||
-> +	    ptable->magic2 != SMEM_FLASH_PART_MAGIC2) {
-> +		pr_err("Partition table magic verification failed\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* Ensure that # of partitions is less than the max we have allocated */
-> +	if (ptable->numparts > SMEM_FLASH_PTABLE_MAX_PARTS_V4) {
-> +		pr_err("Partition numbers exceed the max limit\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* Find out length of partition data based on table version */
-> +	if (ptable->version <= SMEM_FLASH_PTABLE_V3) {
-> +		len = SMEM_FLASH_PTABLE_HDR_LEN + SMEM_FLASH_PTABLE_MAX_PARTS_V3 *
-> +			sizeof(struct smem_flash_pentry);
-> +	} else if (ptable->version == SMEM_FLASH_PTABLE_V4) {
-> +		len = SMEM_FLASH_PTABLE_HDR_LEN + SMEM_FLASH_PTABLE_MAX_PARTS_V4 *
-> +			sizeof(struct smem_flash_pentry);
-> +	} else {
-> +		pr_err("Unknown ptable version (%d)", ptable->version);
-> +		return -EINVAL;
-> +	}
-> +
-> +	/*
-> +	 * Now that the partition table header has been parsed, verified
-> +	 * and the length of the partition table calculated, read the
-> +	 * complete partition table
-> +	 */
-> +	ptable = qcom_smem_get(SMEM_APPS, SMEM_AARM_PARTITION_TABLE, &len);
-> +	if (IS_ERR_OR_NULL(ptable)) {
-> +		pr_err("Error reading partition table\n");
-> +		return PTR_ERR(ptable);
-> +	}
-> +
-> +	parts = kcalloc(ptable->numparts, sizeof(*parts), GFP_KERNEL);
-> +	if (!parts)
-> +		return -ENOMEM;
-> +
-> +	for (i = 0; i < ptable->numparts; i++) {
-> +		pentry = &ptable->pentry[i];
-> +		if (pentry->name[0] == '\0')
-> +			continue;
-> +
-> +		name = kstrdup(pentry->name, GFP_KERNEL);
-> +		if (!name) {
-> +			ret = -ENOMEM;
-> +			goto out_free_parts;
-> +		}
-> +
-> +		/* Convert name to lower case */
-> +		for (c = name; *c != '\0'; c++)
-> +			*c = tolower(*c);
-> +
-> +		parts[i].name = name;
-> +		parts[i].offset = pentry->offset * mtd->erasesize;
-> +		parts[i].mask_flags = pentry->attr;
-> +		parts[i].size = pentry->length * mtd->erasesize;
-> +		pr_debug("%d: %s offs=0x%08x size=0x%08x attr:0x%08x\n",
-> +			 i, pentry->name, pentry->offset, pentry->length,
-> +			 pentry->attr);
-> +	}
-> +
-> +	pr_debug("SMEM partition table found: ver: %d len: %d\n",
-> +		 ptable->version, ptable->numparts);
-> +	*pparts = parts;
-> +
-> +	return i;
-
-Had to check a few times, but afaict this is just ptable->numparts in
-disguise... So how about just writing that instead?
-
-Regards,
-Bjorn
-
-> +
-> +out_free_parts:
-> +	while (--i >= 0)
-> +		kfree(parts[i].name);
-> +	kfree(parts);
-> +	*pparts = NULL;
-> +
-> +	return ret;
-> +}
-> +
-> +static const struct of_device_id qcomsmem_of_match_table[] = {
-> +	{ .compatible = "qcom,smem-part" },
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, qcomsmem_of_match_table);
-> +
-> +static struct mtd_part_parser mtd_parser_qcomsmem = {
-> +	.parse_fn = parse_qcomsmem_part,
-> +	.name = "qcomsmem",
-> +	.of_match_table = qcomsmem_of_match_table,
-> +};
-> +module_mtd_part_parser(mtd_parser_qcomsmem);
-> +
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_AUTHOR("Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>");
-> +MODULE_DESCRIPTION("Qualcomm SMEM NAND flash partition parser");
-> -- 
-> 2.17.1
-> 
+> > @@ -273,10 +308,14 @@ struct f2fs_dir_entry *f2fs_find_target_dentry(const struct f2fs_dentry_ptr *d,
+> >                       continue;
+> >               }
+> >
+> > -             if (de->hash_code == fname->hash &&
+> > -                 f2fs_match_name(d->inode, fname, d->filename[bit_pos],
+> > -                                 le16_to_cpu(de->name_len)))
+> > -                     goto found;
+> > +             if (de->hash_code == fname->hash) {
+> > +                     res = f2fs_match_name(d->inode, fname, d->filename[bit_pos],
+> > +                                 le16_to_cpu(de->name_len));
+> > +                     if (res < 0)
+> > +                             return ERR_PTR(res);
+> > +                     else if (res)
+> > +                             goto found;
+> > +             }
+>
+> Overly long line here.  Also 'else if' is unnecessary, just use 'if'.
+>
+> - Eric
+The 0 case is important, since that reflects that the name was not found.
+-Daniel
 
 ______________________________________________________
 Linux MTD discussion mailing list
