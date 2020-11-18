@@ -5,18 +5,19 @@ X-Spam-Level:
 X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
 	DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 369ADC63798
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 21:35:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47160C5519F
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 21:35:29 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BFF92246CA
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 21:35:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7F6C720715
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 21:35:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GGPbzyDP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BFF92246CA
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="zA2GH9AA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7F6C720715
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +26,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Rd31a0EtA0gFbmiZpeKpYaTOByTv6TGrLDi4563S2/I=; b=GGPbzyDP2AGJDGW0wHWLyfA+o
-	tPtmM8srW/eACjSKOoDipofJEWH98JtN9GgBrkcdQ2GsI27HGKXnau2Ec774hZfoW/418ah/XMavT
-	MmyYfcUa8nG3oeSgD3wKtgN+9szXFvxpu0CENfjfgPGlb3Yeaw9dLvWOY+QvxbgmM0mQWWY4a0QK5
-	j8qxyNq7suDdjCoNguYKqVxE8bNm8FaNNM0/JwfvwkWovU4+lcK6om2RwYc7lK8U0BtpfhnJrY72h
-	JftCeYiCY/lbs8Wwnfzm8SLznpPDfCoaPFMw5MmvaQSBlqTScttxW7BzfOYzKcwX+v0I2qiFUFm6f
-	Ttp8uCXhQ==;
+	 bh=x9sOe/HkG3gLZK0gTd7tyuv8XMalM/1fgI7Y0o7/ijQ=; b=zA2GH9AAqGz+jJPFzIrk8BLUa
+	3c6t86eS3cyjOtR0V72HdM5VMG5A0NLFGC96XV+zUfpoVBbwIUUlumPfgEMgdUz1ScmJP9dZkemlm
+	uoJ2yes9Su0mBxdTCq/uP0I2IHHQ93s2TTEn7jkLmtmy+FesUQiRjDY3PQM72uIDKaJsulItUgyGp
+	ear4QjWkpqjJ8OuP8IzSITwQaAoXOqtQlGMpCWrstcX8GboQ7klH8eHMlK0ZcKyJS6znF7yXf9WLJ
+	Wm2utQetBglTSWrMFroTFoWEo8PepaxvFYoWDrddV5/Fsp5DLNFjEh5kegGl+Diw/rDj05REgvylM
+	UZqQ1WZsw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kfV6B-0003H8-9a; Wed, 18 Nov 2020 21:34:43 +0000
+	id 1kfV6S-0003NB-Hc; Wed, 18 Nov 2020 21:35:00 +0000
 Received: from mx2.suse.de ([195.135.220.15])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kfV5u-00039K-HW
- for linux-mtd@lists.infradead.org; Wed, 18 Nov 2020 21:34:30 +0000
+ id 1kfV5w-0003B1-Si
+ for linux-mtd@lists.infradead.org; Wed, 18 Nov 2020 21:34:34 +0000
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 01321B000;
- Wed, 18 Nov 2020 21:34:23 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id 53C3FB019;
+ Wed, 18 Nov 2020 21:34:24 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
- id BCB4E1E1330; Wed, 18 Nov 2020 15:46:40 +0100 (CET)
-Date: Wed, 18 Nov 2020 15:46:40 +0100
+ id 716231E1328; Wed, 18 Nov 2020 15:41:05 +0100 (CET)
+Date: Wed, 18 Nov 2020 15:41:05 +0100
 From: Jan Kara <jack@suse.cz>
 To: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 10/20] block: refactor __blkdev_put
-Message-ID: <20201118144640.GO1981@quack2.suse.cz>
+Subject: Re: [PATCH 08/20] init: refactor devt_from_partuuid
+Message-ID: <20201118144105.GM1981@quack2.suse.cz>
 References: <20201118084800.2339180-1-hch@lst.de>
- <20201118084800.2339180-11-hch@lst.de>
+ <20201118084800.2339180-9-hch@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20201118084800.2339180-11-hch@lst.de>
+In-Reply-To: <20201118084800.2339180-9-hch@lst.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201118_163426_973628_58D4D68E 
-X-CRM114-Status: GOOD (  19.71  )
+X-CRM114-CacheID: sfid-20201118_163429_311869_C88BB6CC 
+X-CRM114-Status: GOOD (  27.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,56 +83,124 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed 18-11-20 09:47:50, Christoph Hellwig wrote:
-> Reorder the code to have one big section for the last close, and to use
-> bdev_is_partition.
+On Wed 18-11-20 09:47:48, Christoph Hellwig wrote:
+> The code in devt_from_partuuid is very convoluted.  Refactor a bit by
+> sanitizing the goto and variable name usage.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Looks good. You can add:
+The patch looks good to me. You can add:
 
 Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
 
 > ---
->  fs/block_dev.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
+>  init/do_mounts.c | 68 ++++++++++++++++++++++--------------------------
+>  1 file changed, 31 insertions(+), 37 deletions(-)
 > 
-> diff --git a/fs/block_dev.c b/fs/block_dev.c
-> index 29db12c3bb501c..4c4d6c30382c06 100644
-> --- a/fs/block_dev.c
-> +++ b/fs/block_dev.c
-> @@ -1745,22 +1745,22 @@ static void __blkdev_put(struct block_device *bdev, fmode_t mode, int for_part)
->  		WARN_ON_ONCE(bdev->bd_holders);
->  		sync_blockdev(bdev);
->  		kill_bdev(bdev);
-> -
->  		bdev_write_inode(bdev);
-> -	}
-> -	if (bdev->bd_contains == bdev) {
-> -		if (disk->fops->release)
-> +
-> +		if (!bdev_is_partition(bdev) && disk->fops->release)
->  			disk->fops->release(disk, mode);
-> -	}
-> -	if (!bdev->bd_openers) {
-> +
->  		disk_put_part(bdev->bd_part);
->  		bdev->bd_part = NULL;
->  		bdev->bd_disk = NULL;
-> -		if (bdev != bdev->bd_contains)
-> +		if (bdev_is_partition(bdev))
->  			victim = bdev->bd_contains;
->  		bdev->bd_contains = NULL;
+> diff --git a/init/do_mounts.c b/init/do_mounts.c
+> index aef2f24461c7f1..afa26a4028d25e 100644
+> --- a/init/do_mounts.c
+> +++ b/init/do_mounts.c
+> @@ -105,13 +105,10 @@ static int match_dev_by_uuid(struct device *dev, const void *data)
+>   */
+>  static dev_t devt_from_partuuid(const char *uuid_str)
+>  {
+> -	dev_t res = 0;
+>  	struct uuidcmp cmp;
+>  	struct device *dev = NULL;
+> -	struct gendisk *disk;
+> -	struct hd_struct *part;
+> +	dev_t devt = 0;
+>  	int offset = 0;
+> -	bool clear_root_wait = false;
+>  	char *slash;
 >  
->  		put_disk_and_module(disk);
-> +	} else {
-> +		if (!bdev_is_partition(bdev) && disk->fops->release)
-> +			disk->fops->release(disk, mode);
+>  	cmp.uuid = uuid_str;
+> @@ -120,52 +117,49 @@ static dev_t devt_from_partuuid(const char *uuid_str)
+>  	/* Check for optional partition number offset attributes. */
+>  	if (slash) {
+>  		char c = 0;
+> +
+>  		/* Explicitly fail on poor PARTUUID syntax. */
+> -		if (sscanf(slash + 1,
+> -			   "PARTNROFF=%d%c", &offset, &c) != 1) {
+> -			clear_root_wait = true;
+> -			goto done;
+> -		}
+> +		if (sscanf(slash + 1, "PARTNROFF=%d%c", &offset, &c) != 1)
+> +			goto clear_root_wait;
+>  		cmp.len = slash - uuid_str;
+>  	} else {
+>  		cmp.len = strlen(uuid_str);
 >  	}
->  	mutex_unlock(&bdev->bd_mutex);
->  	bdput(bdev);
+>  
+> -	if (!cmp.len) {
+> -		clear_root_wait = true;
+> -		goto done;
+> -	}
+> +	if (!cmp.len)
+> +		goto clear_root_wait;
+>  
+> -	dev = class_find_device(&block_class, NULL, &cmp,
+> -				&match_dev_by_uuid);
+> +	dev = class_find_device(&block_class, NULL, &cmp, &match_dev_by_uuid);
+>  	if (!dev)
+> -		goto done;
+> -
+> -	res = dev->devt;
+> +		return 0;
+>  
+> -	/* Attempt to find the partition by offset. */
+> -	if (!offset)
+> -		goto no_offset;
+> +	if (offset) {
+> +		/*
+> +		 * Attempt to find the requested partition by adding an offset
+> +		 * to the partition number found by UUID.
+> +		 */
+> +		struct hd_struct *part;
+>  
+> -	res = 0;
+> -	disk = part_to_disk(dev_to_part(dev));
+> -	part = disk_get_part(disk, dev_to_part(dev)->partno + offset);
+> -	if (part) {
+> -		res = part_devt(part);
+> -		put_device(part_to_dev(part));
+> +		part = disk_get_part(dev_to_disk(dev),
+> +				     dev_to_part(dev)->partno + offset);
+> +		if (part) {
+> +			devt = part_devt(part);
+> +			put_device(part_to_dev(part));
+> +		}
+> +	} else {
+> +		devt = dev->devt;
+>  	}
+>  
+> -no_offset:
+>  	put_device(dev);
+> -done:
+> -	if (clear_root_wait) {
+> -		pr_err("VFS: PARTUUID= is invalid.\n"
+> -		       "Expected PARTUUID=<valid-uuid-id>[/PARTNROFF=%%d]\n");
+> -		if (root_wait)
+> -			pr_err("Disabling rootwait; root= is invalid.\n");
+> -		root_wait = 0;
+> -	}
+> -	return res;
+> +	return devt;
+> +
+> +clear_root_wait:
+> +	pr_err("VFS: PARTUUID= is invalid.\n"
+> +	       "Expected PARTUUID=<valid-uuid-id>[/PARTNROFF=%%d]\n");
+> +	if (root_wait)
+> +		pr_err("Disabling rootwait; root= is invalid.\n");
+> +	root_wait = 0;
+> +	return 0;
+>  }
+>  
+>  /**
 > -- 
 > 2.29.2
 > 
