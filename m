@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 20DB7C63697
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 21:35:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B441AC5519F
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 21:35:25 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A7A92246C1
+	by mail.kernel.org (Postfix) with ESMTPS id 40C7520780
 	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 21:35:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="m5DrXNs3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7A92246C1
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oF4U8U/n"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 40C7520780
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=wSEH1Fum14gcxz8Ea+IeYiUJDhCIimJzPZ8avEkNVRg=; b=m5DrXNs3O8Yztq6qZyCsZj8nw
-	8VMAuWqEv2ggJzNQ+dOy738uqcPfjF6pRmCJy/GOJwBy1yoab0k50qMbsfpbLhvXx0F4NCPCZjcV4
-	T13nonthWWU60Zlr8oY6lcnBqwsv8SV8CFoLt9PxyaoZpxiLS2fzoM/kg2mbsldnYybAiL9FHQWBW
-	27gFWlBWbNl7MV3Jl7DND10x4WqtpX4PyDjFc+qtGZ9Pq/e+I9Ku4K9W5G6KNrroJSdKs9OkNLSXM
-	TNEqFMD8mbIg7YLWRnVXMmeCD9qQaPeqAIZ85mfq1a0F/NtcnBZ4FwzUAuxO/l9wMmLLPidnCBDco
-	o1dF5nwRA==;
+	 bh=MaajrdYVJ3s1rTAQ00CRsYuUv2it6SZx9cE0PR7Tl4c=; b=oF4U8U/nfDS4QJPR7HJV4rPaw
+	9Ep8xaHXe2pEaC5zBYfjfNSX+3ezq8JCaiJkWtxGSHqfEiRkwaRf/kIY5IBiD7R9NeKOwyuJEfguw
+	/B2uG6GrmsFOt4d4g4cqQWnEeYihmCObF9p3lXAb2Zu4aRa/6Xo7gC/mdanoGTnhpAIMCP87HnGjB
+	U/mqAdnJi/qbMSNBKcxGO+4Ga5MwSVXLmw+gYX5P0fqtACRT4t8bYT2KzNoTDudF3g0hGcFy9drhI
+	nWU9EAVsEZs+tgKR90lIzIV+bvyiDD4Lm3DxJvAA7Y40mFhg2JG63X5TPGTmBnQc6dtk8RTbN+i04
+	BPCR+6Tgw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kfV62-0003DU-RC; Wed, 18 Nov 2020 21:34:34 +0000
+	id 1kfV6F-0003Ih-6j; Wed, 18 Nov 2020 21:34:47 +0000
 Received: from mx2.suse.de ([195.135.220.15])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kfV5u-00039G-HX
- for linux-mtd@lists.infradead.org; Wed, 18 Nov 2020 21:34:27 +0000
+ id 1kfV5w-0003Ay-PP
+ for linux-mtd@lists.infradead.org; Wed, 18 Nov 2020 21:34:30 +0000
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 35A12B011;
+ by mx2.suse.de (Postfix) with ESMTP id 3C215B013;
  Wed, 18 Nov 2020 21:34:24 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
- id A0C1D1E130B; Wed, 18 Nov 2020 15:10:24 +0100 (CET)
-Date: Wed, 18 Nov 2020 15:10:24 +0100
+ id 90FA11E1319; Wed, 18 Nov 2020 15:19:27 +0100 (CET)
+Date: Wed, 18 Nov 2020 15:19:27 +0100
 From: Jan Kara <jack@suse.cz>
 To: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 02/20] block: remove a duplicate __disk_get_part prototype
-Message-ID: <20201118141024.GG1981@quack2.suse.cz>
+Subject: Re: [PATCH 04/20] block: use disk_part_iter_exit in
+ disk_part_iter_next
+Message-ID: <20201118141927.GI1981@quack2.suse.cz>
 References: <20201118084800.2339180-1-hch@lst.de>
- <20201118084800.2339180-3-hch@lst.de>
+ <20201118084800.2339180-5-hch@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20201118084800.2339180-3-hch@lst.de>
+In-Reply-To: <20201118084800.2339180-5-hch@lst.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201118_163426_827029_3E33D4EF 
-X-CRM114-Status: GOOD (  17.49  )
+X-CRM114-CacheID: sfid-20201118_163429_049787_FC2A5DA0 
+X-CRM114-Status: GOOD (  18.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,31 +83,36 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed 18-11-20 09:47:42, Christoph Hellwig wrote:
+On Wed 18-11-20 09:47:44, Christoph Hellwig wrote:
+> Call disk_part_iter_exit in disk_part_iter_next instead of duplicating
+> the functionality.
+> 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Looks good. You can add:
+OK. You can add:
 
 Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
 
 > ---
->  include/linux/genhd.h | 1 -
->  1 file changed, 1 deletion(-)
+>  block/genhd.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> diff --git a/include/linux/genhd.h b/include/linux/genhd.h
-> index 46553d6d602563..22f5b9fd96f8bf 100644
-> --- a/include/linux/genhd.h
-> +++ b/include/linux/genhd.h
-> @@ -250,7 +250,6 @@ static inline dev_t part_devt(struct hd_struct *part)
->  	return part_to_dev(part)->devt;
->  }
+> diff --git a/block/genhd.c b/block/genhd.c
+> index 4e039524f92b8f..0bd9c41dd4cb69 100644
+> --- a/block/genhd.c
+> +++ b/block/genhd.c
+> @@ -227,8 +227,7 @@ struct hd_struct *disk_part_iter_next(struct disk_part_iter *piter)
+>  	int inc, end;
 >  
-> -extern struct hd_struct *__disk_get_part(struct gendisk *disk, int partno);
->  extern struct hd_struct *disk_get_part(struct gendisk *disk, int partno);
+>  	/* put the last partition */
+> -	disk_put_part(piter->part);
+> -	piter->part = NULL;
+> +	disk_part_iter_exit(piter);
 >  
->  static inline void disk_put_part(struct hd_struct *part)
+>  	/* get part_tbl */
+>  	rcu_read_lock();
 > -- 
 > 2.29.2
 > 
