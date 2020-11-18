@@ -2,77 +2,80 @@ Return-Path: <SRS0=T29d=EY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEBEEC56202
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 06:43:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BFC2FC5519F
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 06:43:58 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 678BC24655
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 06:43:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3C5C5206B6
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 06:43:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IukmT9Vj";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="nEBuvp/4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 678BC24655
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Y4KPqbXb";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="AVBnh8v1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C5C5206B6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:From:Subject:Mime-Version:Message-Id:Date:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=nrO1/YdlBFG6fkC/mDO8KYhti1Q/8+KtXiaXIMvcQ4g=; b=IukmT9Vjjj2gnn7s9Yv7saHnxp
-	8pv0Zu7Xioh1ojY9ymGGfa7mQ/4oi1qJEmI+WqcqY2iNPhqJU3DO2V7dBtypbCp0d/IV3JHyIfMjv
-	Dc6f1oo1HsQfhxi5vO5xROyCTn7/h82pv6T6szlGkBaI0fNkY0Q6Iz6PE+uOX4p0FuMR1Ob0PDP3c
-	k4Gl7Dns+r/45lG9DXhIdE1b4TwLZK+H3KGWIhmx7nqvMp6Ax8CP88Z+M4wSufK0901WrP8tMckS9
-	N1BOUia8gSMBD6+EunnOwvyYA1vxIF1PAS35yM+EEG0ORnhWdT3ZwzvsSvX9DjTKCaenptZfLVJUX
-	+lHQc0Dg==;
+	List-Unsubscribe:List-Id:To:From:Subject:References:Mime-Version:Message-Id:
+	In-Reply-To:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=VA+4giwcOAX6BX60/kDbwhb7CAqNR2Gqh1tIgw2K7HM=; b=Y4KPqbXb9Jz+gMcPEdxXVCGN9
+	wIBh8a36jDaqnvxUepg+PKyi4iKzwjzZXoEvcGRjuyoVGiuCZW5TLyEvrVeZaHBppDUF0m1KHgvtt
+	PqIW9Meh65S7Cd21tP5qw4qJe92I6Fqvn5AgWCBV2hRAUgprEdC08hNvgIhjl1pGjBs+NItD9uSIJ
+	M1sARXHJS6Bkc8qjxb1OG4Me+5iYtmgnh1YpIRT5II/3MA5ymRtoub8qXXUDZdLand0tYZliD2AkP
+	J3g7kafPsCyx4HdJ+SA5OeTiDeNxcFp/wt1B4B32W57Lnp/bjuFzRvkpQz1QOQ6rnZqgAKFugJuwk
+	hrgwa7cEg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kfHBC-0002r7-0Y; Wed, 18 Nov 2020 06:42:58 +0000
-Received: from mail-qv1-xf4a.google.com ([2607:f8b0:4864:20::f4a])
+	id 1kfHBD-0002ra-Me; Wed, 18 Nov 2020 06:42:59 +0000
+Received: from mail-yb1-xb49.google.com ([2607:f8b0:4864:20::b49])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kfHB8-0002q4-Vb
- for linux-mtd@lists.infradead.org; Wed, 18 Nov 2020 06:42:55 +0000
-Received: by mail-qv1-xf4a.google.com with SMTP id 60so657699qvb.15
- for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2020 22:42:51 -0800 (PST)
+ id 1kfHB9-0002q5-NB
+ for linux-mtd@lists.infradead.org; Wed, 18 Nov 2020 06:42:56 +0000
+Received: by mail-yb1-xb49.google.com with SMTP id h9so909040ybj.10
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2020 22:42:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=sender:date:message-id:mime-version:subject:from:to:cc;
- bh=u5caVYpjW51UviyAUiIiuabnW39XcM6vjoXzylmjMQQ=;
- b=nEBuvp/4qXTH4AAIx8Gr2DG2ZKpgZ7YLYjZB4voXYemMwTXptimZcegqwTHgPpPw0I
- EwVwGOxQa0Aap22fetPS3Lj1KFiJioOyzRYapPZ3sh/IAuvruSKA7NOPaADtyCApdcOZ
- eAHvd6+arAeAaZ+UyJBdV9j0eelWwDnmi6lZpJl9AxxsRYC6qRxvLZVskUhKpBbGb5qW
- pV4o4S/wW+/n3D8iLw3TM6UN0E6wiazwRqgTjGZUDhQT6iU9/QB6j3bqBsuOg9PvT/PI
- dyzTuACoqvvljMcN66fAqWLJpRZe+hY81fFWPiwVJVjTQu1i6Bp5N0pAHXwnA55L1ZPQ
- JGzA==
+ h=sender:date:in-reply-to:message-id:mime-version:references:subject
+ :from:to:cc; bh=DV09QN89xVJWJy2G2Lk6hdWThRemlVWRM2oh2xdx8V4=;
+ b=AVBnh8v1C3R+KGtEy4i7FdueXXEomxX/n+pWlo3sCw+oytZ2q9hGno6HSM7JbvFxwz
+ OrHKZbOdvixT/eQizY+YzgeKTv0DIhEkVYYhBPU3pPK8sXsDPixDe+iha7Ydrr+JA+tN
+ jI2tRDuaXk0i+4VuBZivUjlwtxNDHwWzZnZKS8JjCW74eyusJOGHWsQZGUkYl8gj14UB
+ prKHhzqZWojkco+Wv9VgqltNqWvBEtpjgoKPbVXhiabvoPRQBIoUXyShIYeTyNps9HLV
+ PvJYtWLReRl8A2jxvzTvygcUveMwL8qxkzhkUktD1hg5glU9IOR39afCciwVwlD3iqYQ
+ A12Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
- :to:cc;
- bh=u5caVYpjW51UviyAUiIiuabnW39XcM6vjoXzylmjMQQ=;
- b=Rk+ZLIK5F89V/MRBlQB72g68NexuBXaL+RLVsm5xsk+uo7ZyoJNrvG3qIhPeUS+nLf
- Bme9twjZhXVncWUAF9Ogm+4Muv3ioW7i7q8Zu74UwCFXCDu2NssDLDYMTzt5Cd+zq3nF
- UXOmbcbVz33fp2fpPvwdPr8qLEG0o22pN3MEgLrdt+rYLXVh8S/up+Vpw3tu2PiWh61A
- 78FsMXMcjPhyiHZ2sG1Jd50mIh1vaSOKgAzFeJmvEniHXCCMcvI/Q0fCgbPTdBzajkwK
- IPY13T/Ll+6EQHCB3WArhQRNsBb8vDf8CF2h/ulOtRlR2d41pV5s3WLVQE1t2xz+m1Hf
- Lfpw==
-X-Gm-Message-State: AOAM532Yljtm4/UD8M3j1+94+A4Gqj2ADgdUABkzheGt59ueBNEp1OYV
- 54tkwxvbrmpRZyFiNwgZOgbwgtdpbrg=
-X-Google-Smtp-Source: ABdhPJxIZ2FilqfFWaJShB2bRFVummoWsUhq+iNGutp/cAxbjC3GBHd8GSqHZEJazc+0X49BH56xSs8BuGU=
+ h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+ :references:subject:from:to:cc;
+ bh=DV09QN89xVJWJy2G2Lk6hdWThRemlVWRM2oh2xdx8V4=;
+ b=D5VfTh4PeGxBbmzZbbcL9IKekI+W2mDv9OuUGLTM1hM5K85B66ZkqKjGGXMzGNbzlY
+ aDXATuuozJzgq2feM0w7vsIcfm0LcrsFUNaC7GhxmDqf8CdwgEW2rreuQfv+CeUY5F5t
+ 0s4XcF3hsYNKTYelbEi2sCbkQWtL4vGIARHVnFTkgy/5IF+gZ5RjKNqUNTvu5upa8hJp
+ QzBQfMylx8YydGkhkF+gr1R+xF1HdUxAFgL8m9+7chV4cmhIARAKUGK9DFrGJ3l/Xfk9
+ 7bUz7eqnGQpLRy6pzqwz1UBWVH19AsSVbqHkmZkrKzufGSh7AY4QHl1k/t2QY/Tqns2y
+ JFTQ==
+X-Gm-Message-State: AOAM530aweROW81EsJ9iIgvMMtLN17R4ld1YRgbxy61db98lfklTEffQ
+ XTgRAQCz88b4NEw50+qPwBz8SXfNy94=
+X-Google-Smtp-Source: ABdhPJxOd7e3q7u9BtHqGyF6Mlg3/h4hF+stEzn8jpxyxNb8EuNiIyfWe5DKbwvldnocmuozJqNRYtSR7EM=
 X-Received: from drosen.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:4e6f])
- (user=drosen job=sendgmr) by 2002:ad4:490d:: with SMTP id
- bh13mr3584587qvb.14.1605681769641; 
- Tue, 17 Nov 2020 22:42:49 -0800 (PST)
-Date: Wed, 18 Nov 2020 06:42:42 +0000
-Message-Id: <20201118064245.265117-1-drosen@google.com>
+ (user=drosen job=sendgmr) by 2002:a25:e7cd:: with SMTP id
+ e196mr4372701ybh.375.1605681771546; 
+ Tue, 17 Nov 2020 22:42:51 -0800 (PST)
+Date: Wed, 18 Nov 2020 06:42:43 +0000
+In-Reply-To: <20201118064245.265117-1-drosen@google.com>
+Message-Id: <20201118064245.265117-2-drosen@google.com>
 Mime-Version: 1.0
+References: <20201118064245.265117-1-drosen@google.com>
 X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-Subject: [PATCH v3 0/3] Add support for Encryption and Casefolding in F2FS
+Subject: [PATCH v3 1/3] libfs: Add generic function for setting dentry_ops
 From: Daniel Rosenberg <drosen@google.com>
 To: "Theodore Y . Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>, 
  Eric Biggers <ebiggers@kernel.org>, Andreas Dilger <adilger.kernel@dilger.ca>, 
@@ -80,8 +83,8 @@ To: "Theodore Y . Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
  Richard Weinberger <richard@nod.at>, linux-fscrypt@vger.kernel.org,
  linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201118_014255_030034_FBB523AE 
-X-CRM114-Status: GOOD (  12.52  )
+X-CRM114-CacheID: sfid-20201118_014255_795628_5C8E584F 
+X-CRM114-Status: GOOD (  20.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,58 +104,121 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-These patches are on top of the torvalds tree.
+This adds a function to set dentry operations at lookup time that will
+work for both encrypted filenames and casefolded filenames.
 
-F2FS currently supports casefolding and encryption, but not at
-the same time. These patches aim to rectify that. In a later follow up,
-this will be added for Ext4 as well.
+A filesystem that supports both features simultaneously can use this
+function during lookup preparations to set up its dentry operations once
+fscrypt no longer does that itself.
 
-The f2fs-tools changes have already been applied.
+Currently the casefolding dentry operation are always set if the
+filesystem defines an encoding because the features is toggleable on
+empty directories. Unlike in the encryption case, the dentry operations
+used come from the parent. Since we don't know what set of functions
+we'll eventually need, and cannot change them later, we enable the
+casefolding operations if the filesystem supports them at all.
 
-Since both fscrypt and casefolding require their own dentry operations,
-I've moved the responsibility of setting the dentry operations from fscrypt
-to the filesystems and provided helper functions that should work for most
-cases.
+By splitting out the various cases, we support as few dentry operations
+as we can get away with, maximizing compatibility with overlayfs, which
+will not function if a filesystem supports certain dentry_operations.
 
-These are a follow-up to the previously sent patch set
-"[PATCH v12 0/4] Prepare for upcoming Casefolding/Encryption patches"
+Signed-off-by: Daniel Rosenberg <drosen@google.com>
+---
+ fs/libfs.c         | 70 ++++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/fs.h |  1 +
+ 2 files changed, 71 insertions(+)
 
-v2:
-Simplified generic dentry_op function
-Passed through errors in f2fs_match_ci_name
-
-v3:
-Split some long lines
-Cleaned up some code
-Made some comments clearer
-Fixed bug in v2 error passing
-
-Daniel Rosenberg (3):
-  libfs: Add generic function for setting dentry_ops
-  fscrypt: Have filesystems handle their d_ops
-  f2fs: Handle casefolding with Encryption
-
- fs/crypto/fname.c       |   4 --
- fs/crypto/hooks.c       |   1 -
- fs/ext4/dir.c           |   7 ---
- fs/ext4/ext4.h          |   4 --
- fs/ext4/namei.c         |   1 +
- fs/ext4/super.c         |   5 --
- fs/f2fs/dir.c           | 105 +++++++++++++++++++++++++++++-----------
- fs/f2fs/f2fs.h          |  11 ++---
- fs/f2fs/hash.c          |  11 ++++-
- fs/f2fs/inline.c        |   4 ++
- fs/f2fs/namei.c         |   1 +
- fs/f2fs/recovery.c      |  12 ++++-
- fs/f2fs/super.c         |   7 ---
- fs/libfs.c              |  70 +++++++++++++++++++++++++++
- fs/ubifs/dir.c          |   1 +
- include/linux/fs.h      |   1 +
- include/linux/fscrypt.h |   7 ++-
- 17 files changed, 185 insertions(+), 67 deletions(-)
-
-
-base-commit: 0fa8ee0d9ab95c9350b8b84574824d9a384a9f7d
+diff --git a/fs/libfs.c b/fs/libfs.c
+index fc34361c1489..babef1f7b50e 100644
+--- a/fs/libfs.c
++++ b/fs/libfs.c
+@@ -1449,4 +1449,74 @@ int generic_ci_d_hash(const struct dentry *dentry, struct qstr *str)
+ 	return 0;
+ }
+ EXPORT_SYMBOL(generic_ci_d_hash);
++
++static const struct dentry_operations generic_ci_dentry_ops = {
++	.d_hash = generic_ci_d_hash,
++	.d_compare = generic_ci_d_compare,
++};
++#endif
++
++#ifdef CONFIG_FS_ENCRYPTION
++static const struct dentry_operations generic_encrypted_dentry_ops = {
++	.d_revalidate = fscrypt_d_revalidate,
++};
++#endif
++
++#if IS_ENABLED(CONFIG_UNICODE) && IS_ENABLED(CONFIG_FS_ENCRYPTION)
++static const struct dentry_operations generic_encrypted_ci_dentry_ops = {
++	.d_hash = generic_ci_d_hash,
++	.d_compare = generic_ci_d_compare,
++	.d_revalidate = fscrypt_d_revalidate,
++};
++#endif
++
++/**
++ * generic_set_encrypted_ci_d_ops - helper for setting d_ops for given dentry
++ * @dentry:	dentry to set ops on
++ *
++ * Casefolded directories need d_hash and d_compare set, so that the dentries
++ * contained in them are handled case-insensitively.  Note that these operations
++ * are needed on the parent directory rather than on the dentries in it, and
++ * while the casefolding flag can be toggled on and off on an empty directory,
++ * dentry_operations can't be changed later.  As a result, if the filesystem has
++ * casefolding support enabled at all, we have to give all dentries the
++ * casefolding operations even if their inode doesn't have the casefolding flag
++ * currently (and thus the casefolding ops would be no-ops for now).
++ *
++ * Encryption works differently in that the only dentry operation it needs is
++ * d_revalidate, which it only needs on dentries that have the no-key name flag.
++ * The no-key flag can't be set "later", so we don't have to worry about that.
++ *
++ * Finally, to maximize compatibility with overlayfs (which isn't compatible
++ * with certain dentry operations) and to avoid taking an unnecessary
++ * performance hit, we use custom dentry_operations for each possible
++ * combination rather than always installing all operations.
++ */
++void generic_set_encrypted_ci_d_ops(struct dentry *dentry)
++{
++#ifdef CONFIG_FS_ENCRYPTION
++	bool needs_encrypt_ops = dentry->d_flags & DCACHE_NOKEY_NAME;
++#endif
++#ifdef CONFIG_UNICODE
++	bool needs_ci_ops = dentry->d_sb->s_encoding;
++#endif
++#if defined(CONFIG_FS_ENCRYPTION) && defined(CONFIG_UNICODE)
++	if (needs_encrypt_ops && needs_ci_ops) {
++		d_set_d_op(dentry, &generic_encrypted_ci_dentry_ops);
++		return;
++	}
+ #endif
++#ifdef CONFIG_FS_ENCRYPTION
++	if (needs_encrypt_ops) {
++		d_set_d_op(dentry, &generic_encrypted_dentry_ops);
++		return;
++	}
++#endif
++#ifdef CONFIG_UNICODE
++	if (needs_ci_ops) {
++		d_set_d_op(dentry, &generic_ci_dentry_ops);
++		return;
++	}
++#endif
++}
++EXPORT_SYMBOL(generic_set_encrypted_ci_d_ops);
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 8667d0cdc71e..11345e66353b 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -3202,6 +3202,7 @@ extern int generic_ci_d_hash(const struct dentry *dentry, struct qstr *str);
+ extern int generic_ci_d_compare(const struct dentry *dentry, unsigned int len,
+ 				const char *str, const struct qstr *name);
+ #endif
++extern void generic_set_encrypted_ci_d_ops(struct dentry *dentry);
+ 
+ #ifdef CONFIG_MIGRATION
+ extern int buffer_migrate_page(struct address_space *,
 -- 
 2.29.2.454.gaff20da3a2-goog
 
