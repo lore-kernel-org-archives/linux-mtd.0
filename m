@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7F27C5519F
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 08:51:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B820EC5519F
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 08:51:58 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E04C420719
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 08:51:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 414A420719
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 08:51:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LZyPxxvO";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="rGa6t8Dx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E04C420719
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kYspoDYx";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="jr1pmgSm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 414A420719
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,37 +26,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=g7FuMuKOc+PFQ0NXQZUlRQeWJrH/ATeQ66/ZKHqNp78=; b=LZyPxxvOnshJPqU0lrS+5l7IE
-	RLp8zVG7ArR2NfwzN5SJ+BJBzYuK4i1tgAdPQO9ZSVMGOSUeWFFn9HQzN80grO8IPdHYxmnSHrEkD
-	2b2Qt2v+6o13/HEc6U1Midids3XPf4Y5NfMpBDHN2Yuj8UcnAGhTORAejnzEV9foQdt+/sFzVNd4x
-	fwdjbfCpbWCifth7g3DAj6iALGcZFsxdbe/trhH8/s0ae6ajId1+5LzyyQsEu2y64/PN79DSgt42/
-	ulGLBWGOK2mdimOflas5iGuR56LTg5zdCL1ViR3+/B5i98UN7/ua1kh/zRIGxKdED71F7n2Hpg5xi
-	ZrUw3EiRA==;
+	 bh=Sys5n1x6J4bItmCAHmizXU5T4h5UIPiYbtHcjCtOUJY=; b=kYspoDYxK9SfC1SeGNdl7vDSt
+	kG1hk2D8NAsqw7WBsl5zN58JFz/2uBtpiaappb46/9EEiIjnI3pTD8iT9uivqqo999jnCk6cEnCry
+	okG/+q3sOLZqLzKdjTfxlfgHrlowTesZ5zkxXpq/m4B4UAU8kfZ2wj0+ZIutcHSoBhbXhLWmkHgFG
+	U5FQvHorkP8CuJBdBPNgjh01+y/wwLFeMj6SuFchJO1CWxDYdESyvAkNf7pL3MMNPfPsFg9WX1HPi
+	53oGbGDZ9BryfjZIhLk07HkkwdDrGg4jZbLIWgOqVZ8wWSVUtAgHWN+NaJVffJQs+48ER0xb7fJA0
+	UbRhcrfkA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kfJB0-0000v9-6I; Wed, 18 Nov 2020 08:50:54 +0000
+	id 1kfJBN-00016l-OV; Wed, 18 Nov 2020 08:51:17 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kfJ8d-00082U-59
- for linux-mtd@merlin.infradead.org; Wed, 18 Nov 2020 08:48:27 +0000
+ id 1kfJ8h-00083u-8w
+ for linux-mtd@merlin.infradead.org; Wed, 18 Nov 2020 08:48:31 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=JoiSfNakOoDN8Js/5ilIUu4DQg1IjnPdXCdcwWPUdmw=; b=rGa6t8Dx6NmDPeK2nXbzeM+sdR
- X577T39+JSmItnrefwvdRje6hDp4y/9gKNP/saei25Opd0rFvwDIuXdTVo0rNKiefAW2kX3dMfdRh
- jrPVEd1CdvKIBTcF+1ST7TLXQsBI5HbrgCmQiLnXQt6AfSUm8CmqThUBw9j0QR3ZDPiIMPDL+xwEp
- Mjg5eIu87Q2U5qFnyXTSzpRRQhBATBUh3DUpslR8frMFPyB6U9dRCnCOwDYhygtNBT8qt/6qiFl6U
- AG9ZNHGE+Np9sC/e819nMnnDd0hXxoqVIsN4vshEtrYteyAgH2TG40iyiJ+YlX92ZeiSfB54jbZou
- L/UfiRCw==;
+ bh=jJNK9/H8sfmZrYurqzVwgyu9MJNwxw5ihe1GEzXuM6I=; b=jr1pmgSmLgODWAxYLebiTtixWG
+ E1FQCz1t4RsLXrDcKfCHo6N5wK4/ZRUATPnOoS+1KhQWSkL+IYBAcKPpKT/D+msyWWNJRH4w+SFnj
+ JBRSKKj3TirzVD1MdsKHZ9Flq10GFrmbhjDJZhSyjzB4kyj1B0nzh8UbaRZ4y/HZdtSR9e8+1QDyD
+ trkeCJ3uOhAJr0QSCPeeqOHGZi+qybaTd0Iwo6NsH61NtELVxfc3F3mwTNzCSqbmQPVbAslaT7l/f
+ rcS41nOzYQ+YaKX/c14HNjwjzYbiCVclFfMYiSfxLG2wzSa+j8BcmUl2NsNkYxtieohJSwf+tr+K1
+ +WNVXfww==;
 Received: from [2001:4bb8:18c:31ba:32b1:ec66:5459:36a] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kfJ8b-0007nN-8G; Wed, 18 Nov 2020 08:48:25 +0000
+ id 1kfJ8f-0007o7-Ef; Wed, 18 Nov 2020 08:48:30 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 14/20] block: remove the nr_sects field in struct hd_struct
-Date: Wed, 18 Nov 2020 09:47:54 +0100
-Message-Id: <20201118084800.2339180-15-hch@lst.de>
+Subject: [PATCH 16/20] block: stop using bdget_disk for partition 0
+Date: Wed, 18 Nov 2020 09:47:56 +0100
+Message-Id: <20201118084800.2339180-17-hch@lst.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201118084800.2339180-1-hch@lst.de>
 References: <20201118084800.2339180-1-hch@lst.de>
@@ -86,587 +86,213 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Now that the hd_struct always has a block device attached to it, there is
-no need for having two size field that just get out of sync.
-
-Additional the field in hd_struct did not use proper serializiation,
-possibly allowing for torn writes.  By only using the block_device field
-this problem also gets fixed.
+We can just dereference the point in struct gendisk instead.  Also
+remove the now unused export.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- block/bio.c                        |  2 +-
- block/blk-core.c                   |  2 +-
- block/blk.h                        | 53 ----------------------
- block/genhd.c                      | 34 +++++++-------
- block/partitions/core.c            | 17 ++++---
- drivers/block/loop.c               |  1 -
- drivers/block/nbd.c                |  2 +-
- drivers/block/xen-blkback/common.h |  4 +-
- drivers/md/bcache/super.c          |  2 +-
- drivers/s390/block/dasd_ioctl.c    |  4 +-
- drivers/target/target_core_pscsi.c |  7 +--
- fs/block_dev.c                     | 73 +-----------------------------
- fs/f2fs/super.c                    |  2 +-
- fs/pstore/blk.c                    |  2 +-
- include/linux/genhd.h              | 29 +++---------
- kernel/trace/blktrace.c            |  2 +-
- 16 files changed, 47 insertions(+), 189 deletions(-)
+ block/genhd.c                   |  1 -
+ drivers/block/nbd.c             |  4 +---
+ drivers/block/xen-blkfront.c    | 20 +++++---------------
+ drivers/block/zram/zram_drv.c   | 18 +++---------------
+ drivers/md/dm.c                 |  8 +-------
+ drivers/s390/block/dasd_ioctl.c |  5 ++---
+ 6 files changed, 12 insertions(+), 44 deletions(-)
 
-diff --git a/block/bio.c b/block/bio.c
-index fa01bef35bb1fe..0c5269997434d6 100644
---- a/block/bio.c
-+++ b/block/bio.c
-@@ -613,7 +613,7 @@ void guard_bio_eod(struct bio *bio)
- 	rcu_read_lock();
- 	part = __disk_get_part(bio->bi_disk, bio->bi_partno);
- 	if (part)
--		maxsector = part_nr_sects_read(part);
-+		maxsector = bdev_nr_sectors(part->bdev);
- 	else
- 		maxsector = get_capacity(bio->bi_disk);
- 	rcu_read_unlock();
-diff --git a/block/blk-core.c b/block/blk-core.c
-index 2db8bda43b6e6d..988f45094a387b 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -755,7 +755,7 @@ static inline int blk_partition_remap(struct bio *bio)
- 		goto out;
- 
- 	if (bio_sectors(bio)) {
--		if (bio_check_eod(bio, part_nr_sects_read(p)))
-+		if (bio_check_eod(bio, bdev_nr_sectors(p->bdev)))
- 			goto out;
- 		bio->bi_iter.bi_sector += p->start_sect;
- 		trace_block_bio_remap(bio->bi_disk->queue, bio, part_devt(p),
-diff --git a/block/blk.h b/block/blk.h
-index c4839abcfa27eb..09cee7024fb43e 100644
---- a/block/blk.h
-+++ b/block/blk.h
-@@ -387,59 +387,6 @@ static inline void hd_free_part(struct hd_struct *part)
- 	percpu_ref_exit(&part->ref);
- }
- 
--/*
-- * Any access of part->nr_sects which is not protected by partition
-- * bd_mutex or gendisk bdev bd_mutex, should be done using this
-- * accessor function.
-- *
-- * Code written along the lines of i_size_read() and i_size_write().
-- * CONFIG_PREEMPTION case optimizes the case of UP kernel with preemption
-- * on.
-- */
--static inline sector_t part_nr_sects_read(struct hd_struct *part)
--{
--#if BITS_PER_LONG==32 && defined(CONFIG_SMP)
--	sector_t nr_sects;
--	unsigned seq;
--	do {
--		seq = read_seqcount_begin(&part->nr_sects_seq);
--		nr_sects = part->nr_sects;
--	} while (read_seqcount_retry(&part->nr_sects_seq, seq));
--	return nr_sects;
--#elif BITS_PER_LONG==32 && defined(CONFIG_PREEMPTION)
--	sector_t nr_sects;
--
--	preempt_disable();
--	nr_sects = part->nr_sects;
--	preempt_enable();
--	return nr_sects;
--#else
--	return part->nr_sects;
--#endif
--}
--
--/*
-- * Should be called with mutex lock held (typically bd_mutex) of partition
-- * to provide mutual exlusion among writers otherwise seqcount might be
-- * left in wrong state leaving the readers spinning infinitely.
-- */
--static inline void part_nr_sects_write(struct hd_struct *part, sector_t size)
--{
--#if BITS_PER_LONG==32 && defined(CONFIG_SMP)
--	preempt_disable();
--	write_seqcount_begin(&part->nr_sects_seq);
--	part->nr_sects = size;
--	write_seqcount_end(&part->nr_sects_seq);
--	preempt_enable();
--#elif BITS_PER_LONG==32 && defined(CONFIG_PREEMPTION)
--	preempt_disable();
--	part->nr_sects = size;
--	preempt_enable();
--#else
--	part->nr_sects = size;
--#endif
--}
--
- int bio_add_hw_page(struct request_queue *q, struct bio *bio,
- 		struct page *page, unsigned int len, unsigned int offset,
- 		unsigned int max_sectors, bool *same_page);
 diff --git a/block/genhd.c b/block/genhd.c
-index 94de95287a6370..e101b6843f7437 100644
+index a14e2408e3d4e8..ec41d0f18f5ce1 100644
 --- a/block/genhd.c
 +++ b/block/genhd.c
-@@ -38,6 +38,16 @@ static void disk_add_events(struct gendisk *disk);
- static void disk_del_events(struct gendisk *disk);
- static void disk_release_events(struct gendisk *disk);
+@@ -907,7 +907,6 @@ struct block_device *bdget_disk(struct gendisk *disk, int partno)
  
-+void set_capacity(struct gendisk *disk, sector_t sectors)
-+{
-+	struct block_device *bdev = disk->part0.bdev;
-+
-+	spin_lock(&bdev->bd_size_lock);
-+	i_size_write(bdev->bd_inode, (loff_t)sectors << SECTOR_SHIFT);
-+	spin_unlock(&bdev->bd_size_lock);
-+}
-+EXPORT_SYMBOL(set_capacity);
-+
+ 	return bdev;
+ }
+-EXPORT_SYMBOL(bdget_disk);
+ 
  /*
-  * Set disk capacity and notify if the size is not currently zero and will not
-  * be set to zero.  Returns true if a uevent was sent, otherwise false.
-@@ -47,11 +57,12 @@ bool set_capacity_and_notify(struct gendisk *disk, sector_t size)
- 	sector_t capacity = get_capacity(disk);
- 
- 	set_capacity(disk, size);
--	revalidate_disk_size(disk, true);
- 
- 	if (capacity != size && capacity != 0 && size != 0) {
- 		char *envp[] = { "RESIZE=1", NULL };
- 
-+		pr_info("%s: detected capacity change from %lld to %lld\n",
-+		       disk->disk_name, size, capacity);
- 		kobject_uevent_env(&disk_to_dev(disk)->kobj, KOBJ_CHANGE, envp);
- 		return true;
- 	}
-@@ -245,7 +256,7 @@ struct hd_struct *disk_part_iter_next(struct disk_part_iter *piter)
- 		part = rcu_dereference(ptbl->part[piter->idx]);
- 		if (!part)
- 			continue;
--		if (!part_nr_sects_read(part) &&
-+		if (!bdev_nr_sectors(part->bdev) &&
- 		    !(piter->flags & DISK_PITER_INCL_EMPTY) &&
- 		    !(piter->flags & DISK_PITER_INCL_EMPTY_PART0 &&
- 		      piter->idx == 0))
-@@ -282,7 +293,7 @@ EXPORT_SYMBOL_GPL(disk_part_iter_exit);
- static inline int sector_in_part(struct hd_struct *part, sector_t sector)
- {
- 	return part->start_sect <= sector &&
--		sector < part->start_sect + part_nr_sects_read(part);
-+		sector < part->start_sect + bdev_nr_sectors(part->bdev);
- }
- 
- /**
-@@ -983,7 +994,7 @@ void __init printk_all_partitions(void)
- 
- 			printk("%s%s %10llu %s %s", is_part0 ? "" : "  ",
- 			       bdevt_str(part_devt(part), devt_buf),
--			       (unsigned long long)part_nr_sects_read(part) >> 1
-+			       bdev_nr_sectors(part->bdev) >> 1
- 			       , disk_name(disk, part->partno, name_buf),
- 			       part->info ? part->info->uuid : "");
- 			if (is_part0) {
-@@ -1076,7 +1087,7 @@ static int show_partition(struct seq_file *seqf, void *v)
- 	while ((part = disk_part_iter_next(&piter)))
- 		seq_printf(seqf, "%4d  %7d %10llu %s\n",
- 			   MAJOR(part_devt(part)), MINOR(part_devt(part)),
--			   (unsigned long long)part_nr_sects_read(part) >> 1,
-+			   bdev_nr_sectors(part->bdev) >> 1,
- 			   disk_name(sgp, part->partno, buf));
- 	disk_part_iter_exit(&piter);
- 
-@@ -1158,8 +1169,7 @@ ssize_t part_size_show(struct device *dev,
- {
- 	struct hd_struct *p = dev_to_part(dev);
- 
--	return sprintf(buf, "%llu\n",
--		(unsigned long long)part_nr_sects_read(p));
-+	return sprintf(buf, "%llu\n", bdev_nr_sectors(p->bdev));
- }
- 
- ssize_t part_stat_show(struct device *dev,
-@@ -1616,16 +1626,6 @@ struct gendisk *__alloc_disk_node(int minors, int node_id)
- 	ptbl = rcu_dereference_protected(disk->part_tbl, 1);
- 	rcu_assign_pointer(ptbl->part[0], &disk->part0);
- 
--	/*
--	 * set_capacity() and get_capacity() currently don't use
--	 * seqcounter to read/update the part0->nr_sects. Still init
--	 * the counter as we can read the sectors in IO submission
--	 * patch using seqence counters.
--	 *
--	 * TODO: Ideally set_capacity() and get_capacity() should be
--	 * converted to make use of bd_mutex and sequence counters.
--	 */
--	hd_sects_seq_init(&disk->part0);
- 	if (hd_ref_init(&disk->part0)) {
- 		hd_free_part(&disk->part0);
- 		return NULL;
-diff --git a/block/partitions/core.c b/block/partitions/core.c
-index 0ba0bf44b88af3..aae857c22af05d 100644
---- a/block/partitions/core.c
-+++ b/block/partitions/core.c
-@@ -85,6 +85,13 @@ static int (*check_part[])(struct parsed_partitions *) = {
- 	NULL
- };
- 
-+static void bdev_set_nr_sectors(struct block_device *bdev, sector_t sectors)
-+{
-+	spin_lock(&bdev->bd_size_lock);
-+	i_size_write(bdev->bd_inode, (loff_t)sectors << SECTOR_SHIFT);
-+	spin_unlock(&bdev->bd_size_lock);
-+}
-+
- static struct parsed_partitions *allocate_partitions(struct gendisk *hd)
- {
- 	struct parsed_partitions *state;
-@@ -295,7 +302,7 @@ static void hd_struct_free_work(struct work_struct *work)
- 	put_device(disk_to_dev(disk));
- 
- 	part->start_sect = 0;
--	part->nr_sects = 0;
-+	bdev_set_nr_sectors(part->bdev, 0);
- 	part_stat_set_all(part, 0);
- 	put_device(part_to_dev(part));
- }
-@@ -410,11 +417,10 @@ static struct hd_struct *add_partition(struct gendisk *disk, int partno,
- 	if (!p->bdev)
- 		goto out_free_stats;
- 
--	hd_sects_seq_init(p);
- 	pdev = part_to_dev(p);
- 
- 	p->start_sect = start;
--	p->nr_sects = len;
-+	bdev_set_nr_sectors(p->bdev, len);
- 	p->partno = partno;
- 	p->policy = get_disk_ro(disk);
- 
-@@ -508,7 +514,7 @@ static bool partition_overlaps(struct gendisk *disk, sector_t start,
- 	disk_part_iter_init(&piter, disk, DISK_PITER_INCL_EMPTY);
- 	while ((part = disk_part_iter_next(&piter))) {
- 		if (part->partno == skip_partno ||
--		    start >= part->start_sect + part->nr_sects ||
-+		    start >= part->start_sect + bdev_nr_sectors(part->bdev) ||
- 		    start + length <= part->start_sect)
- 			continue;
- 		overlap = true;
-@@ -599,8 +605,7 @@ int bdev_resize_partition(struct block_device *bdev, int partno,
- 	if (partition_overlaps(bdev->bd_disk, start, length, partno))
- 		goto out_unlock;
- 
--	part_nr_sects_write(part, length);
--	bd_set_nr_sectors(bdevp, length);
-+	bdev_set_nr_sectors(bdevp, length);
- 
- 	ret = 0;
- out_unlock:
-diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index 599e94a7e69259..9d2587f6167cd8 100644
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -1243,7 +1243,6 @@ static int __loop_clr_fd(struct loop_device *lo, bool release)
- 	set_capacity(lo->lo_disk, 0);
- 	loop_sysfs_exit(lo);
- 	if (bdev) {
--		bd_set_nr_sectors(bdev, 0);
- 		/* let user-space know about this change */
- 		kobject_uevent(&disk_to_dev(bdev->bd_disk)->kobj, KOBJ_CHANGE);
- 	}
+  * print a full list of all partitions - intended for places where the root
 diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index 45b0423ef2c53d..014683968ce174 100644
+index 014683968ce174..92f84ed0ba9eb6 100644
 --- a/drivers/block/nbd.c
 +++ b/drivers/block/nbd.c
-@@ -1132,7 +1132,7 @@ static void nbd_bdev_reset(struct block_device *bdev)
+@@ -1488,12 +1488,10 @@ static int nbd_open(struct block_device *bdev, fmode_t mode)
+ static void nbd_release(struct gendisk *disk, fmode_t mode)
  {
- 	if (bdev->bd_openers > 1)
- 		return;
--	bd_set_nr_sectors(bdev, 0);
-+	set_capacity(bdev->bd_disk, 0);
- }
+ 	struct nbd_device *nbd = disk->private_data;
+-	struct block_device *bdev = bdget_disk(disk, 0);
  
- static void nbd_parse_flags(struct nbd_device *nbd)
-diff --git a/drivers/block/xen-blkback/common.h b/drivers/block/xen-blkback/common.h
-index c6ea5d38c509a6..0762db247b41b3 100644
---- a/drivers/block/xen-blkback/common.h
-+++ b/drivers/block/xen-blkback/common.h
-@@ -358,9 +358,7 @@ struct pending_req {
- };
+ 	if (test_bit(NBD_RT_DISCONNECT_ON_CLOSE, &nbd->config->runtime_flags) &&
+-			bdev->bd_openers == 0)
++			disk->part0->bd_openers == 0)
+ 		nbd_disconnect_and_put(nbd);
+-	bdput(bdev);
  
+ 	nbd_config_put(nbd);
+ 	nbd_put(nbd);
+diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
+index 79521e33d30ed5..188e0b47534bcf 100644
+--- a/drivers/block/xen-blkfront.c
++++ b/drivers/block/xen-blkfront.c
+@@ -2153,7 +2153,7 @@ static void blkfront_closing(struct blkfront_info *info)
+ 	}
  
--#define vbd_sz(_v)	((_v)->bdev->bd_part ? \
--			 (_v)->bdev->bd_part->nr_sects : \
--			  get_capacity((_v)->bdev->bd_disk))
-+#define vbd_sz(_v)	bdev_nr_sectors((_v)->bdev)
+ 	if (info->gd)
+-		bdev = bdget_disk(info->gd, 0);
++		bdev = bdgrab(info->gd->part0);
  
- #define xen_blkif_get(_b) (atomic_inc(&(_b)->refcnt))
- #define xen_blkif_put(_b)				\
-diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-index a6a5e21e4fd136..e5db2cdd114112 100644
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -1408,7 +1408,7 @@ static int cached_dev_init(struct cached_dev *dc, unsigned int block_size)
- 			q->limits.raid_partial_stripes_expensive;
+ 	mutex_unlock(&info->mutex);
  
- 	ret = bcache_device_init(&dc->disk, block_size,
--			 dc->bdev->bd_part->nr_sects - dc->sb.data_offset,
-+			 bdev_nr_sectors(dc->bdev) - dc->sb.data_offset,
- 			 dc->bdev, &bcache_cached_ops);
- 	if (ret)
- 		return ret;
-diff --git a/drivers/s390/block/dasd_ioctl.c b/drivers/s390/block/dasd_ioctl.c
-index 3359559517bfcf..304eba1acf163c 100644
---- a/drivers/s390/block/dasd_ioctl.c
-+++ b/drivers/s390/block/dasd_ioctl.c
-@@ -54,8 +54,6 @@ dasd_ioctl_enable(struct block_device *bdev)
- 		return -ENODEV;
+@@ -2518,7 +2518,7 @@ static int blkfront_remove(struct xenbus_device *xbdev)
  
- 	dasd_enable_device(base);
--	/* Formatting the dasd device can change the capacity. */
--	bd_set_nr_sectors(bdev, get_capacity(base->block->gdp));
- 	dasd_put_device(base);
- 	return 0;
- }
-@@ -88,7 +86,7 @@ dasd_ioctl_disable(struct block_device *bdev)
- 	 * Set i_size to zero, since read, write, etc. check against this
- 	 * value.
- 	 */
--	bd_set_nr_sectors(bdev, 0);
-+	set_capacity(bdev->bd_disk, 0);
- 	dasd_put_device(base);
- 	return 0;
- }
-diff --git a/drivers/target/target_core_pscsi.c b/drivers/target/target_core_pscsi.c
-index 4e37fa9b409d52..a70c33c49f0960 100644
---- a/drivers/target/target_core_pscsi.c
-+++ b/drivers/target/target_core_pscsi.c
-@@ -1027,12 +1027,7 @@ static u32 pscsi_get_device_type(struct se_device *dev)
+ 	disk = info->gd;
+ 	if (disk)
+-		bdev = bdget_disk(disk, 0);
++		bdev = bdgrab(disk->part0);
  
- static sector_t pscsi_get_blocks(struct se_device *dev)
+ 	info->xbdev = NULL;
+ 	mutex_unlock(&info->mutex);
+@@ -2595,19 +2595,11 @@ static int blkif_open(struct block_device *bdev, fmode_t mode)
+ static void blkif_release(struct gendisk *disk, fmode_t mode)
  {
--	struct pscsi_dev_virt *pdv = PSCSI_DEV(dev);
--
--	if (pdv->pdv_bd && pdv->pdv_bd->bd_part)
--		return pdv->pdv_bd->bd_part->nr_sects;
--
--	return 0;
-+	return bdev_nr_sectors(PSCSI_DEV(dev)->pdv_bd);
- }
- 
- static void pscsi_req_done(struct request *req, blk_status_t status)
-diff --git a/fs/block_dev.c b/fs/block_dev.c
-index 258a1ced924483..a5a2ac4ca1ce9c 100644
---- a/fs/block_dev.c
-+++ b/fs/block_dev.c
-@@ -1278,70 +1278,6 @@ void bd_unlink_disk_holder(struct block_device *bdev, struct gendisk *disk)
- EXPORT_SYMBOL_GPL(bd_unlink_disk_holder);
- #endif
- 
--/**
-- * check_disk_size_change - checks for disk size change and adjusts bdev size.
-- * @disk: struct gendisk to check
-- * @bdev: struct bdev to adjust.
-- * @verbose: if %true log a message about a size change if there is any
-- *
-- * This routine checks to see if the bdev size does not match the disk size
-- * and adjusts it if it differs. When shrinking the bdev size, its all caches
-- * are freed.
-- */
--static void check_disk_size_change(struct gendisk *disk,
--		struct block_device *bdev, bool verbose)
--{
--	loff_t disk_size, bdev_size;
--
--	spin_lock(&bdev->bd_size_lock);
--	disk_size = (loff_t)get_capacity(disk) << 9;
--	bdev_size = i_size_read(bdev->bd_inode);
--	if (disk_size != bdev_size) {
--		if (verbose) {
--			printk(KERN_INFO
--			       "%s: detected capacity change from %lld to %lld\n",
--			       disk->disk_name, bdev_size, disk_size);
--		}
--		i_size_write(bdev->bd_inode, disk_size);
--	}
--	spin_unlock(&bdev->bd_size_lock);
--}
--
--/**
-- * revalidate_disk_size - checks for disk size change and adjusts bdev size.
-- * @disk: struct gendisk to check
-- * @verbose: if %true log a message about a size change if there is any
-- *
-- * This routine checks to see if the bdev size does not match the disk size
-- * and adjusts it if it differs. When shrinking the bdev size, its all caches
-- * are freed.
-- */
--void revalidate_disk_size(struct gendisk *disk, bool verbose)
--{
+ 	struct blkfront_info *info = disk->private_data;
 -	struct block_device *bdev;
--
--	/*
--	 * Hidden disks don't have associated bdev so there's no point in
--	 * revalidating them.
--	 */
--	if (disk->flags & GENHD_FL_HIDDEN)
--		return;
+ 	struct xenbus_device *xbdev;
+ 
+ 	mutex_lock(&blkfront_mutex);
 -
 -	bdev = bdget_disk(disk, 0);
+-
+-	if (!bdev) {
+-		WARN(1, "Block device %s yanked out from us!\n", disk->disk_name);
++	if (disk->part0->bd_openers)
+ 		goto out_mutex;
+-	}
+-	if (bdev->bd_openers)
+-		goto out;
+ 
+ 	/*
+ 	 * Check if we have been instructed to close. We will have
+@@ -2619,7 +2611,7 @@ static void blkif_release(struct gendisk *disk, fmode_t mode)
+ 
+ 	if (xbdev && xbdev->state == XenbusStateClosing) {
+ 		/* pending switch to state closed */
+-		dev_info(disk_to_dev(bdev->bd_disk), "releasing disk\n");
++		dev_info(disk_to_dev(disk), "releasing disk\n");
+ 		xlvbd_release_gendisk(info);
+ 		xenbus_frontend_closed(info->xbdev);
+  	}
+@@ -2628,14 +2620,12 @@ static void blkif_release(struct gendisk *disk, fmode_t mode)
+ 
+ 	if (!xbdev) {
+ 		/* sudden device removal */
+-		dev_info(disk_to_dev(bdev->bd_disk), "releasing disk\n");
++		dev_info(disk_to_dev(disk), "releasing disk\n");
+ 		xlvbd_release_gendisk(info);
+ 		disk->private_data = NULL;
+ 		free_info(info);
+ 	}
+ 
+-out:
+-	bdput(bdev);
+ out_mutex:
+ 	mutex_unlock(&blkfront_mutex);
+ }
+diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+index 01757f9578dcb8..56024905bd242c 100644
+--- a/drivers/block/zram/zram_drv.c
++++ b/drivers/block/zram/zram_drv.c
+@@ -1748,7 +1748,7 @@ static ssize_t reset_store(struct device *dev,
+ 		struct device_attribute *attr, const char *buf, size_t len)
+ {
+ 	struct zram *zram = dev_to_zram(dev);
+-	struct block_device *bdev;
++	struct block_device *bdev = zram->disk->part0;
+ 	unsigned short do_reset;
+ 	int ret = 0;
+ 
+@@ -1758,17 +1758,12 @@ static ssize_t reset_store(struct device *dev,
+ 	if (!do_reset)
+ 		return -EINVAL;
+ 
+-	bdev = bdget_disk(zram->disk, 0);
+-	if (!bdev)
+-		return -ENOMEM;
+-
+ 	mutex_lock(&bdev->bd_mutex);
+ 	if (bdev->bd_openers)
+ 		ret = -EBUSY;
+ 	else
+ 		zram_reset_device(zram);
+ 	mutex_unlock(&bdev->bd_mutex);
+-	bdput(bdev);
+ 
+ 	return ret ? ret : len;
+ }
+@@ -1933,15 +1928,8 @@ static int zram_add(void)
+ 
+ static int zram_remove(struct zram *zram)
+ {
+-	struct block_device *bdev = bdget_disk(zram->disk, 0);
+-
 -	if (bdev) {
--		check_disk_size_change(disk, bdev, verbose);
+-		if (bdev->bd_openers) {
+-			bdput(bdev);
+-			return -EBUSY;
+-		}
 -		bdput(bdev);
 -	}
--}
--
--void bd_set_nr_sectors(struct block_device *bdev, sector_t sectors)
--{
--	spin_lock(&bdev->bd_size_lock);
--	i_size_write(bdev->bd_inode, (loff_t)sectors << SECTOR_SHIFT);
--	spin_unlock(&bdev->bd_size_lock);
--}
--EXPORT_SYMBOL(bd_set_nr_sectors);
--
- static void __blkdev_put(struct block_device *bdev, fmode_t mode, int for_part);
++	if (zram->disk->part0->bd_openers)
++		return -EBUSY;
  
- int bdev_disk_changed(struct block_device *bdev, bool invalidate)
-@@ -1375,8 +1311,6 @@ int bdev_disk_changed(struct block_device *bdev, bool invalidate)
- 			disk->fops->revalidate_disk(disk);
- 	}
- 
--	check_disk_size_change(disk, bdev, !invalidate);
--
- 	if (get_capacity(disk)) {
- 		ret = blk_add_partitions(disk, bdev);
- 		if (ret == -EAGAIN)
-@@ -1474,10 +1408,8 @@ static int __blkdev_get(struct block_device *bdev, fmode_t mode, void *holder,
- 					need_restart = true;
- 			}
- 
--			if (!ret) {
--				bd_set_nr_sectors(bdev, get_capacity(disk));
-+			if (!ret)
- 				set_init_blocksize(bdev);
--			}
- 
- 			/*
- 			 * If the device is invalidated, rescan partition
-@@ -1499,11 +1431,10 @@ static int __blkdev_get(struct block_device *bdev, fmode_t mode, void *holder,
- 			bdgrab(bdev_whole(bdev));
- 			bdev->bd_part = disk_get_part(disk, bdev->bd_partno);
- 			if (!(disk->flags & GENHD_FL_UP) ||
--			    !bdev->bd_part || !bdev->bd_part->nr_sects) {
-+			    !bdev->bd_part || !bdev_nr_sectors(bdev)) {
- 				ret = -ENXIO;
- 				goto out_clear;
- 			}
--			bd_set_nr_sectors(bdev, bdev->bd_part->nr_sects);
- 			set_init_blocksize(bdev);
- 		}
- 
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 00eff2f5180790..d4e7fab352bacb 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -3151,7 +3151,7 @@ static int f2fs_report_zone_cb(struct blk_zone *zone, unsigned int idx,
- static int init_blkz_info(struct f2fs_sb_info *sbi, int devi)
- {
- 	struct block_device *bdev = FDEV(devi).bdev;
--	sector_t nr_sectors = bdev->bd_part->nr_sects;
-+	sector_t nr_sectors = bdev_nr_sectors(bdev);
- 	struct f2fs_report_zones_args rep_zone_arg;
- 	int ret;
- 
-diff --git a/fs/pstore/blk.c b/fs/pstore/blk.c
-index fcd5563dde063c..777a26f7bbe2aa 100644
---- a/fs/pstore/blk.c
-+++ b/fs/pstore/blk.c
-@@ -245,7 +245,7 @@ static struct block_device *psblk_get_bdev(void *holder,
- 			return bdev;
- 	}
- 
--	nr_sects = part_nr_sects_read(bdev->bd_part);
-+	nr_sects = bdev_nr_sectors(bdev);
- 	if (!nr_sects) {
- 		pr_err("not enough space for '%s'\n", blkdev);
- 		blkdev_put(bdev, mode);
-diff --git a/include/linux/genhd.h b/include/linux/genhd.h
-index ab5fca99764e7a..e01618dfafc05c 100644
---- a/include/linux/genhd.h
-+++ b/include/linux/genhd.h
-@@ -52,15 +52,6 @@ struct partition_meta_info {
- 
- struct hd_struct {
- 	sector_t start_sect;
--	/*
--	 * nr_sects is protected by sequence counter. One might extend a
--	 * partition while IO is happening to it and update of nr_sects
--	 * can be non-atomic on 32bit machines with 64bit sector_t.
--	 */
--	sector_t nr_sects;
--#if BITS_PER_LONG==32 && defined(CONFIG_SMP)
--	seqcount_t nr_sects_seq;
--#endif
- 	unsigned long stamp;
- 	struct disk_stats __percpu *dkstats;
- 	struct percpu_ref ref;
-@@ -259,13 +250,6 @@ static inline void disk_put_part(struct hd_struct *part)
- 		put_device(part_to_dev(part));
- }
- 
--static inline void hd_sects_seq_init(struct hd_struct *p)
--{
--#if BITS_PER_LONG==32 && defined(CONFIG_SMP)
--	seqcount_init(&p->nr_sects_seq);
--#endif
--}
--
- /*
-  * Smarter partition iterator without context limits.
+ 	del_gendisk(zram->disk);
+ 	zram_debugfs_unregister(zram);
+diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+index c9438feefe55a3..ec48ccae50dd53 100644
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -2375,17 +2375,12 @@ struct dm_table *dm_swap_table(struct mapped_device *md, struct dm_table *table)
   */
-@@ -323,13 +307,15 @@ static inline sector_t get_start_sect(struct block_device *bdev)
+ static int lock_fs(struct mapped_device *md)
  {
- 	return bdev->bd_part->start_sect;
+-	struct block_device *bdev;
+ 	int r;
+ 
+ 	WARN_ON(md->frozen_sb);
+ 
+-	bdev = bdget_disk(md->disk, 0);
+-	if (!bdev)
+-		return -ENOMEM;
+-	md->frozen_sb = freeze_bdev(bdev);
++	md->frozen_sb = freeze_bdev(md->disk->part0);
+ 	if (IS_ERR(md->frozen_sb)) {
+-		bdput(bdev);
+ 		r = PTR_ERR(md->frozen_sb);
+ 		md->frozen_sb = NULL;
+ 		return r;
+@@ -2402,7 +2397,6 @@ static void unlock_fs(struct mapped_device *md)
+ 		return;
+ 
+ 	thaw_bdev(md->frozen_sb->s_bdev, md->frozen_sb);
+-	bdput(md->frozen_sb->s_bdev);
+ 	md->frozen_sb = NULL;
+ 	clear_bit(DMF_FROZEN, &md->flags);
  }
--static inline sector_t get_capacity(struct gendisk *disk)
-+	
-+static inline sector_t bdev_nr_sectors(struct block_device *bdev)
- {
--	return disk->part0.nr_sects;
-+	return i_size_read(bdev->bd_inode) >> 9;
- }
--static inline void set_capacity(struct gendisk *disk, sector_t size)
-+	
-+static inline sector_t get_capacity(struct gendisk *disk)
- {
--	disk->part0.nr_sects = size;
-+	return bdev_nr_sectors(disk->part0.bdev);
- }
+diff --git a/drivers/s390/block/dasd_ioctl.c b/drivers/s390/block/dasd_ioctl.c
+index 304eba1acf163c..9f642440894655 100644
+--- a/drivers/s390/block/dasd_ioctl.c
++++ b/drivers/s390/block/dasd_ioctl.c
+@@ -220,9 +220,8 @@ dasd_format(struct dasd_block *block, struct format_data_t *fdata)
+ 	 * enabling the device later.
+ 	 */
+ 	if (fdata->start_unit == 0) {
+-		struct block_device *bdev = bdget_disk(block->gdp, 0);
+-		bdev->bd_inode->i_blkbits = blksize_bits(fdata->blksize);
+-		bdput(bdev);
++		block->gdp->part0->bd_inode->i_blkbits =
++			blksize_bits(fdata->blksize);
+ 	}
  
- int bdev_disk_changed(struct block_device *bdev, bool invalidate);
-@@ -363,10 +349,9 @@ int __register_blkdev(unsigned int major, const char *name,
- 	__register_blkdev(major, name, NULL)
- void unregister_blkdev(unsigned int major, const char *name);
- 
--void revalidate_disk_size(struct gendisk *disk, bool verbose);
- bool bdev_check_media_change(struct block_device *bdev);
- int __invalidate_device(struct block_device *bdev, bool kill_dirty);
--void bd_set_nr_sectors(struct block_device *bdev, sector_t sectors);
-+void set_capacity(struct gendisk *disk, sector_t size);
- 
- /* for drivers/char/raw.c: */
- int blkdev_ioctl(struct block_device *, fmode_t, unsigned, unsigned long);
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index f1022945e3460b..7076d588a50d69 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -465,7 +465,7 @@ static void blk_trace_setup_lba(struct blk_trace *bt,
- 
- 	if (part) {
- 		bt->start_lba = part->start_sect;
--		bt->end_lba = part->start_sect + part->nr_sects;
-+		bt->end_lba = part->start_sect + bdev_nr_sectors(bdev);
- 	} else {
- 		bt->start_lba = 0;
- 		bt->end_lba = -1ULL;
+ 	rc = base->discipline->format_device(base, fdata, 1);
 -- 
 2.29.2
 
