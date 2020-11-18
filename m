@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B441AC5519F
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 21:35:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 369ADC63798
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 21:35:26 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 40C7520780
+	by mail.kernel.org (Postfix) with ESMTPS id BFF92246CA
 	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 21:35:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oF4U8U/n"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 40C7520780
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GGPbzyDP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BFF92246CA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=MaajrdYVJ3s1rTAQ00CRsYuUv2it6SZx9cE0PR7Tl4c=; b=oF4U8U/nfDS4QJPR7HJV4rPaw
-	9Ep8xaHXe2pEaC5zBYfjfNSX+3ezq8JCaiJkWtxGSHqfEiRkwaRf/kIY5IBiD7R9NeKOwyuJEfguw
-	/B2uG6GrmsFOt4d4g4cqQWnEeYihmCObF9p3lXAb2Zu4aRa/6Xo7gC/mdanoGTnhpAIMCP87HnGjB
-	U/mqAdnJi/qbMSNBKcxGO+4Ga5MwSVXLmw+gYX5P0fqtACRT4t8bYT2KzNoTDudF3g0hGcFy9drhI
-	nWU9EAVsEZs+tgKR90lIzIV+bvyiDD4Lm3DxJvAA7Y40mFhg2JG63X5TPGTmBnQc6dtk8RTbN+i04
-	BPCR+6Tgw==;
+	 bh=Rd31a0EtA0gFbmiZpeKpYaTOByTv6TGrLDi4563S2/I=; b=GGPbzyDP2AGJDGW0wHWLyfA+o
+	tPtmM8srW/eACjSKOoDipofJEWH98JtN9GgBrkcdQ2GsI27HGKXnau2Ec774hZfoW/418ah/XMavT
+	MmyYfcUa8nG3oeSgD3wKtgN+9szXFvxpu0CENfjfgPGlb3Yeaw9dLvWOY+QvxbgmM0mQWWY4a0QK5
+	j8qxyNq7suDdjCoNguYKqVxE8bNm8FaNNM0/JwfvwkWovU4+lcK6om2RwYc7lK8U0BtpfhnJrY72h
+	JftCeYiCY/lbs8Wwnfzm8SLznpPDfCoaPFMw5MmvaQSBlqTScttxW7BzfOYzKcwX+v0I2qiFUFm6f
+	Ttp8uCXhQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kfV6F-0003Ih-6j; Wed, 18 Nov 2020 21:34:47 +0000
+	id 1kfV6B-0003H8-9a; Wed, 18 Nov 2020 21:34:43 +0000
 Received: from mx2.suse.de ([195.135.220.15])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kfV5w-0003Ay-PP
+ id 1kfV5u-00039K-HW
  for linux-mtd@lists.infradead.org; Wed, 18 Nov 2020 21:34:30 +0000
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 3C215B013;
- Wed, 18 Nov 2020 21:34:24 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id 01321B000;
+ Wed, 18 Nov 2020 21:34:23 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
- id 90FA11E1319; Wed, 18 Nov 2020 15:19:27 +0100 (CET)
-Date: Wed, 18 Nov 2020 15:19:27 +0100
+ id BCB4E1E1330; Wed, 18 Nov 2020 15:46:40 +0100 (CET)
+Date: Wed, 18 Nov 2020 15:46:40 +0100
 From: Jan Kara <jack@suse.cz>
 To: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 04/20] block: use disk_part_iter_exit in
- disk_part_iter_next
-Message-ID: <20201118141927.GI1981@quack2.suse.cz>
+Subject: Re: [PATCH 10/20] block: refactor __blkdev_put
+Message-ID: <20201118144640.GO1981@quack2.suse.cz>
 References: <20201118084800.2339180-1-hch@lst.de>
- <20201118084800.2339180-5-hch@lst.de>
+ <20201118084800.2339180-11-hch@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20201118084800.2339180-5-hch@lst.de>
+In-Reply-To: <20201118084800.2339180-11-hch@lst.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201118_163429_049787_FC2A5DA0 
-X-CRM114-Status: GOOD (  18.84  )
+X-CRM114-CacheID: sfid-20201118_163426_973628_58D4D68E 
+X-CRM114-Status: GOOD (  19.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,36 +82,56 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed 18-11-20 09:47:44, Christoph Hellwig wrote:
-> Call disk_part_iter_exit in disk_part_iter_next instead of duplicating
-> the functionality.
+On Wed 18-11-20 09:47:50, Christoph Hellwig wrote:
+> Reorder the code to have one big section for the last close, and to use
+> bdev_is_partition.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-OK. You can add:
+Looks good. You can add:
 
 Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
 
 > ---
->  block/genhd.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+>  fs/block_dev.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
 > 
-> diff --git a/block/genhd.c b/block/genhd.c
-> index 4e039524f92b8f..0bd9c41dd4cb69 100644
-> --- a/block/genhd.c
-> +++ b/block/genhd.c
-> @@ -227,8 +227,7 @@ struct hd_struct *disk_part_iter_next(struct disk_part_iter *piter)
->  	int inc, end;
+> diff --git a/fs/block_dev.c b/fs/block_dev.c
+> index 29db12c3bb501c..4c4d6c30382c06 100644
+> --- a/fs/block_dev.c
+> +++ b/fs/block_dev.c
+> @@ -1745,22 +1745,22 @@ static void __blkdev_put(struct block_device *bdev, fmode_t mode, int for_part)
+>  		WARN_ON_ONCE(bdev->bd_holders);
+>  		sync_blockdev(bdev);
+>  		kill_bdev(bdev);
+> -
+>  		bdev_write_inode(bdev);
+> -	}
+> -	if (bdev->bd_contains == bdev) {
+> -		if (disk->fops->release)
+> +
+> +		if (!bdev_is_partition(bdev) && disk->fops->release)
+>  			disk->fops->release(disk, mode);
+> -	}
+> -	if (!bdev->bd_openers) {
+> +
+>  		disk_put_part(bdev->bd_part);
+>  		bdev->bd_part = NULL;
+>  		bdev->bd_disk = NULL;
+> -		if (bdev != bdev->bd_contains)
+> +		if (bdev_is_partition(bdev))
+>  			victim = bdev->bd_contains;
+>  		bdev->bd_contains = NULL;
 >  
->  	/* put the last partition */
-> -	disk_put_part(piter->part);
-> -	piter->part = NULL;
-> +	disk_part_iter_exit(piter);
->  
->  	/* get part_tbl */
->  	rcu_read_lock();
+>  		put_disk_and_module(disk);
+> +	} else {
+> +		if (!bdev_is_partition(bdev) && disk->fops->release)
+> +			disk->fops->release(disk, mode);
+>  	}
+>  	mutex_unlock(&bdev->bd_mutex);
+>  	bdput(bdev);
 > -- 
 > 2.29.2
 > 
