@@ -5,19 +5,19 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A76F7C63697
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 08:49:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32146C63777
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 08:49:24 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EDD5320719
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 08:49:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ADEAB241A5
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 08:49:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RJEQN0zL";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="tqlpD2Lw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EDD5320719
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="yaFusYdS";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="KdghkPK+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ADEAB241A5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,37 +26,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=9ldvkJd2IABWq5XnTa2lqerU9cXhj5xdLaxOuytfLUU=; b=RJEQN0zLN4XEiMLSKRTvl+F9X
-	hg8AR4d/pEd3kzmGOIEE0abXbR5+Vop+YGOvi+WWCThyNTruZM3y3+5D9olQBPU5JR7zZg4hhwh2Y
-	hYQIZxBiMA/qCQoMPdg2rsj6V/y1OjoGmF6FET45nQWL1wJzcyAjJrCChvbkKHwJ/7M89V4Mjy3S2
-	9iMsFYgkglhZ+kTW9KvSyjz2Vs0Y55VInn3yBTudZsZDK7FOXTYswJtJhsQfVgV0b3HR/Ntmo8xa1
-	LsMotp1SeoX3wW112ST2qOpfhOh0MhHVaWmnWrTM8BQ6QTuJ4vNnQ44MECuDMzaLdp3VX14FpxmxA
-	QhPsQkh0A==;
+	 bh=m3Dluo2we7sc/43qtOwnSepRABtZ+NPJTpICb7Km6eo=; b=yaFusYdSzYMd+sbHbSP8L0/45
+	J3z1hXKpIr6FDQpTyuMCY+d2fzIz4lonmpTlh0tkx2GgRct1LCXzNcLnoOyUODDyZJeAbmpq3VEY7
+	2OgJx3dqif5zWFRFJaxJ/hqfXv8Yg2IlBhdNEqSeTEYpt8kLEJKHZzbu9rmblKDI01N5dKZG2joz3
+	aqccQs7SjGqEAhCa3mk7itUCB5kNPEo3ctR7X1UOgtjWmoqCjsT8O9BA76WMbKTKkV/h56Pe6kShg
+	UI58bPiXnx2ApAY9GRdgNVVRcJy4I5kh2ziBtCC+M/jz/8QrG1k4n7q4u4oR0x5o26RDVRRB/G2Ur
+	lMeO+4JAw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kfJ8z-0008D1-6K; Wed, 18 Nov 2020 08:48:49 +0000
+	id 1kfJ8b-00081y-P8; Wed, 18 Nov 2020 08:48:25 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kfJ8S-0007zS-LA
- for linux-mtd@merlin.infradead.org; Wed, 18 Nov 2020 08:48:16 +0000
+ id 1kfJ8M-0007xq-KF
+ for linux-mtd@merlin.infradead.org; Wed, 18 Nov 2020 08:48:10 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=W6vAbrHw5UIe+hBqHSxB53buLdYkSelEr9Mgh5kMt7I=; b=tqlpD2LwWrfiR177Afk+lAf6gG
- SdmN28pAYbTuw2kFiO29RbN7xRKWcK+sQd821VIf7xVnbdqQONrfdCuRtoqMmY0zDB4DyogQkJMe7
- 9KJZJnJN50aEkWC27Pt/nYWB/lO0+TLNoU3MJjrzcHqOdJLhZAe/lA/w0T2YZcgTl2HKfT7BX/UmQ
- qR0sr3QQ090u2mE8YUnyoTA6wu2oYHnwkBT2mdSvairMOUdPrhfoWp8XHx+R1gi5pmhnBe8qvea52
- 8A5EiVzDe66E9rlleHsfTARbQmub+5RZzwBNLiRZMW1rvIw+AhtX9+xd6ISnwxbQOslYFzI6NMx5l
- zyrQfYxw==;
+ bh=HlR8BHDvXv9Sgk92bGXzXu1h5fBqLDHnxGaHmTelGu0=; b=KdghkPK+bK39xYpfOITSgGrMVp
+ BZli70ghNiYun7n+87JdzQVckkFmjA/iVEU1uoAHxbpWKwGwUBpwv8NlGzqCCuztL0lPtEylchCPx
+ X77Zf9jDIFy/H0VRo0NOUt6YvmcSPgxMUC7DF5aAGAQes6WU3Pdt/eM+kILHXyjoQeMLFgGOGqGO2
+ 2wQ3zSfil9jGD9rGJGwOm7NLvJIwXJnBSIFtI1p+WPxnBXhtK4tCfAOpvizcMYINpM9jc8zU6z+H6
+ QZvAKdshaOtNqnFRSbHHIEzczFZ/YzEf/GcUelmoGKLkJaXLcQNXVKFdaUzmSzDBrHLYmuWBgWQTb
+ Qy4idlSQ==;
 Received: from [2001:4bb8:18c:31ba:32b1:ec66:5459:36a] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kfJ8Q-0007lQ-JE; Wed, 18 Nov 2020 08:48:15 +0000
+ id 1kfJ8K-0007ko-U7; Wed, 18 Nov 2020 08:48:09 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 07/20] init: refactor name_to_dev_t
-Date: Wed, 18 Nov 2020 09:47:47 +0100
-Message-Id: <20201118084800.2339180-8-hch@lst.de>
+Subject: [PATCH 04/20] block: use disk_part_iter_exit in disk_part_iter_next
+Date: Wed, 18 Nov 2020 09:47:44 +0100
+Message-Id: <20201118084800.2339180-5-hch@lst.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201118084800.2339180-1-hch@lst.de>
 References: <20201118084800.2339180-1-hch@lst.de>
@@ -86,250 +86,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Split each case into a self-contained helper.
+Call disk_part_iter_exit in disk_part_iter_next instead of duplicating
+the functionality.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- include/linux/genhd.h |   7 +-
- init/do_mounts.c      | 183 +++++++++++++++++++++---------------------
- 2 files changed, 91 insertions(+), 99 deletions(-)
+ block/genhd.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/include/linux/genhd.h b/include/linux/genhd.h
-index 22f5b9fd96f8bf..ca5e356084c353 100644
---- a/include/linux/genhd.h
-+++ b/include/linux/genhd.h
-@@ -388,18 +388,13 @@ static inline void bd_unlink_disk_holder(struct block_device *bdev,
- }
- #endif /* CONFIG_SYSFS */
+diff --git a/block/genhd.c b/block/genhd.c
+index 4e039524f92b8f..0bd9c41dd4cb69 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -227,8 +227,7 @@ struct hd_struct *disk_part_iter_next(struct disk_part_iter *piter)
+ 	int inc, end;
  
-+dev_t blk_lookup_devt(const char *name, int partno);
- #ifdef CONFIG_BLOCK
- void printk_all_partitions(void);
--dev_t blk_lookup_devt(const char *name, int partno);
- #else /* CONFIG_BLOCK */
- static inline void printk_all_partitions(void)
- {
- }
--static inline dev_t blk_lookup_devt(const char *name, int partno)
--{
--	dev_t devt = MKDEV(0, 0);
--	return devt;
--}
- #endif /* CONFIG_BLOCK */
+ 	/* put the last partition */
+-	disk_put_part(piter->part);
+-	piter->part = NULL;
++	disk_part_iter_exit(piter);
  
- #endif /* _LINUX_GENHD_H */
-diff --git a/init/do_mounts.c b/init/do_mounts.c
-index b5f9604d0c98a2..aef2f24461c7f1 100644
---- a/init/do_mounts.c
-+++ b/init/do_mounts.c
-@@ -90,7 +90,6 @@ static int match_dev_by_uuid(struct device *dev, const void *data)
- 	return 0;
- }
- 
--
- /**
-  * devt_from_partuuid - looks up the dev_t of a partition by its UUID
-  * @uuid_str:	char array containing ascii UUID
-@@ -186,7 +185,83 @@ static int match_dev_by_label(struct device *dev, const void *data)
- 
- 	return 0;
- }
--#endif
-+
-+static dev_t devt_from_partlabel(const char *label)
-+{
-+	struct device *dev;
-+	dev_t devt = 0;
-+
-+	dev = class_find_device(&block_class, NULL, label, &match_dev_by_label);
-+	if (dev) {
-+		devt = dev->devt;
-+		put_device(dev);
-+	}
-+
-+	return devt;
-+}
-+
-+static dev_t devt_from_devname(const char *name)
-+{
-+	dev_t devt = 0;
-+	int part;
-+	char s[32];
-+	char *p;
-+
-+	if (strlen(name) > 31)
-+		return 0;
-+	strcpy(s, name);
-+	for (p = s; *p; p++) {
-+		if (*p == '/')
-+			*p = '!';
-+	}
-+
-+	devt = blk_lookup_devt(s, 0);
-+	if (devt)
-+		return devt;
-+
-+	/*
-+	 * Try non-existent, but valid partition, which may only exist after
-+	 * opening the device, like partitioned md devices.
-+	 */
-+	while (p > s && isdigit(p[-1]))
-+		p--;
-+	if (p == s || !*p || *p == '0')
-+		return 0;
-+
-+	/* try disk name without <part number> */
-+	part = simple_strtoul(p, NULL, 10);
-+	*p = '\0';
-+	devt = blk_lookup_devt(s, part);
-+	if (devt)
-+		return devt;
-+
-+	/* try disk name without p<part number> */
-+	if (p < s + 2 || !isdigit(p[-2]) || p[-1] != 'p')
-+		return 0;
-+	p[-1] = '\0';
-+	return blk_lookup_devt(s, part);
-+}
-+#endif /* CONFIG_BLOCK */
-+
-+static dev_t devt_from_devnum(const char *name)
-+{
-+	unsigned maj, min, offset;
-+	dev_t devt = 0;
-+	char *p, dummy;
-+
-+	if (sscanf(name, "%u:%u%c", &maj, &min, &dummy) == 2 ||
-+	    sscanf(name, "%u:%u:%u:%c", &maj, &min, &offset, &dummy) == 3) {
-+		devt = MKDEV(maj, min);
-+		if (maj != MAJOR(devt) || min != MINOR(devt))
-+			return 0;
-+	} else {
-+		devt = new_decode_dev(simple_strtoul(name, &p, 16));
-+		if (*p)
-+			return 0;
-+	}
-+
-+	return devt;
-+}
- 
- /*
-  *	Convert a name into device number.  We accept the following variants:
-@@ -218,101 +293,23 @@ static int match_dev_by_label(struct device *dev, const void *data)
-  *	name contains slashes, the device name has them replaced with
-  *	bangs.
-  */
--
- dev_t name_to_dev_t(const char *name)
- {
--	char s[32];
--	char *p;
--	dev_t res = 0;
--	int part;
--
-+	if (strcmp(name, "/dev/nfs") == 0)
-+		return Root_NFS;
-+	if (strcmp(name, "/dev/cifs") == 0)
-+		return Root_CIFS;
-+	if (strcmp(name, "/dev/ram") == 0)
-+		return Root_RAM0;
- #ifdef CONFIG_BLOCK
--	if (strncmp(name, "PARTUUID=", 9) == 0) {
--		name += 9;
--		res = devt_from_partuuid(name);
--		if (!res)
--			goto fail;
--		goto done;
--	} else if (strncmp(name, "PARTLABEL=", 10) == 0) {
--		struct device *dev;
--
--		dev = class_find_device(&block_class, NULL, name + 10,
--					&match_dev_by_label);
--		if (!dev)
--			goto fail;
--
--		res = dev->devt;
--		put_device(dev);
--		goto done;
--	}
-+	if (strncmp(name, "PARTUUID=", 9) == 0)
-+		return devt_from_partuuid(name + 9);
-+	if (strncmp(name, "PARTLABEL=", 10) == 0)
-+		return devt_from_partlabel(name + 10);
-+	if (strncmp(name, "/dev/", 5) == 0)
-+		return devt_from_devname(name + 5);
- #endif
--
--	if (strncmp(name, "/dev/", 5) != 0) {
--		unsigned maj, min, offset;
--		char dummy;
--
--		if ((sscanf(name, "%u:%u%c", &maj, &min, &dummy) == 2) ||
--		    (sscanf(name, "%u:%u:%u:%c", &maj, &min, &offset, &dummy) == 3)) {
--			res = MKDEV(maj, min);
--			if (maj != MAJOR(res) || min != MINOR(res))
--				goto fail;
--		} else {
--			res = new_decode_dev(simple_strtoul(name, &p, 16));
--			if (*p)
--				goto fail;
--		}
--		goto done;
--	}
--
--	name += 5;
--	res = Root_NFS;
--	if (strcmp(name, "nfs") == 0)
--		goto done;
--	res = Root_CIFS;
--	if (strcmp(name, "cifs") == 0)
--		goto done;
--	res = Root_RAM0;
--	if (strcmp(name, "ram") == 0)
--		goto done;
--
--	if (strlen(name) > 31)
--		goto fail;
--	strcpy(s, name);
--	for (p = s; *p; p++)
--		if (*p == '/')
--			*p = '!';
--	res = blk_lookup_devt(s, 0);
--	if (res)
--		goto done;
--
--	/*
--	 * try non-existent, but valid partition, which may only exist
--	 * after revalidating the disk, like partitioned md devices
--	 */
--	while (p > s && isdigit(p[-1]))
--		p--;
--	if (p == s || !*p || *p == '0')
--		goto fail;
--
--	/* try disk name without <part number> */
--	part = simple_strtoul(p, NULL, 10);
--	*p = '\0';
--	res = blk_lookup_devt(s, part);
--	if (res)
--		goto done;
--
--	/* try disk name without p<part number> */
--	if (p < s + 2 || !isdigit(p[-2]) || p[-1] != 'p')
--		goto fail;
--	p[-1] = '\0';
--	res = blk_lookup_devt(s, part);
--	if (res)
--		goto done;
--
--fail:
--	return 0;
--done:
--	return res;
-+	return devt_from_devnum(name);
- }
- EXPORT_SYMBOL_GPL(name_to_dev_t);
- 
+ 	/* get part_tbl */
+ 	rcu_read_lock();
 -- 
 2.29.2
 
