@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4310C5519F
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 07:58:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05B69C6369E
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 07:58:30 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 648C42080A
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 07:58:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7A7FE2080A
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 07:58:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JG8e15aB";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="c7cLjJHQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 648C42080A
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tP3bBIXB";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="e/HwAPAU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A7FE2080A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,44 +26,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=23idaewOcmMBtNSht3XpkuXXymmUgDI1JU4yAjs1Yuc=; b=JG8e15aBywe4JWA2SSUbcLRE0
-	O+8hdfAwoM1hTMWcVoiYWAApew9zgoKsqLLey0fcjp7cE7/D0ExwcBcihNV/5SfzlbYDjmcQR1dqY
-	qyGDVS/jqgD6i9VA7MyuZoxFSWkwRWNhePmQ5IaW/YMgZPNLnqoU7rFu6iZDjxy4bBS6HoqRKr2ND
-	T5R4LCRVvAz//tuDU1BNuZqSvUXs7F9rGsuftSj2FfqlymBX+7MMNvxu+YWQEZQZKGF9RicHWQM37
-	72an5GUsFhzRuLDnDR9VSAghTKcZU9ce9EAIwu8gm6MrzDf6njV+eD6GBurtV1aLGhQBReOsyr9sy
-	hTZkBnE/A==;
+	 bh=ltAS6o2X/7B6rLPSN+WO5wAgPWSAdI5hBavzlelxcyo=; b=tP3bBIXBlbamkfwlHgpfD/Ymb
+	w9AsyfNJOX16aQBCH8FiHEfy9lBk/sMbfrjtNWe0pDY43ponQuzQX7z7jrZy8hnPYZmVSu+h1+jwE
+	D/mD2SAh3O/B8vuZ4dJZbYsnME1tnZJAv/Gb6f9KS0JQTp4AClkxmMrMjHD0gmDeUPsE2MCFtQPqd
+	fLM/e9k0omh5XvtWfPTwAv5l+5zftmstMWLnvubb0XvQp6dH/Mz4mq1Yp5uvzz5ElLyuz8E9SJty8
+	DsFxbQXx8tl10z/quRqaST30U7DPiJMducV4XqnWrY3KSMF+kXWH47Rfxgm3Tg7adtP1vI9j6h0oW
+	oVr9Ph3mQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kfILb-0002mB-W4; Wed, 18 Nov 2020 07:57:48 +0000
+	id 1kfILd-0002mR-GV; Wed, 18 Nov 2020 07:57:49 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kfILV-0002jJ-2K
- for linux-mtd@lists.infradead.org; Wed, 18 Nov 2020 07:57:42 +0000
+ id 1kfILV-0002jk-G7
+ for linux-mtd@lists.infradead.org; Wed, 18 Nov 2020 07:57:43 +0000
 Received: from sol.attlocal.net
  (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 2419920B80;
+ by mail.kernel.org (Postfix) with ESMTPSA id 8E936246AD;
  Wed, 18 Nov 2020 07:57:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
  s=default; t=1605686260;
- bh=3OsEYdcS4OXEC4S/G7MM1sLUIzE8N1bOkGh+royk33o=;
+ bh=BEN/nXkzCxItOwaUusssDXqaGvS3fLCaGZUERnKW1Rw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=c7cLjJHQpC3nSDFO4proY4QRa0P96Ih6le3z/91WWyOKE3Z5PochE5fqjTob041/2
- brGZ+WeaJWqgDddJkzN1St9g7Zks55FLOKIMmNgj4ZyafhYDB9odDybtwvl4NrdhlV
- /e1eD0rWkK/diWMI77ke9p3Nzz9WadhOoZc1xss0=
+ b=e/HwAPAUfwWD3CYv6a/mOp2hLJpW5wozpT1BNRIXXvp/OgkMuve+wzODbU6LKp9aY
+ 53AJ0gl3dNvpSGTT5HLz5hglv0eYTUKfSUTZjgT1bf7/IFM+q027VDdVfpXVB4/OgZ
+ Xhe6UjkN0HzYPb3P4upnVEXOgIwi61ADoShmv5qM=
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-fscrypt@vger.kernel.org
-Subject: [PATCH 2/5] ext4: prevent creating duplicate encrypted filenames
-Date: Tue, 17 Nov 2020 23:56:06 -0800
-Message-Id: <20201118075609.120337-3-ebiggers@kernel.org>
+Subject: [PATCH 3/5] f2fs: prevent creating duplicate encrypted filenames
+Date: Tue, 17 Nov 2020 23:56:07 -0800
+Message-Id: <20201118075609.120337-4-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201118075609.120337-1-ebiggers@kernel.org>
 References: <20201118075609.120337-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201118_025741_240100_3A541311 
-X-CRM114-Status: GOOD (  13.18  )
+X-CRM114-CacheID: sfid-20201118_025741_678637_EB6CE181 
+X-CRM114-Status: GOOD (  14.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,33 +89,31 @@ As described in "fscrypt: add fscrypt_is_nokey_name()", it's possible to
 create a duplicate filename in an encrypted directory by creating a file
 concurrently with adding the directory's encryption key.
 
-Fix this bug on ext4 by rejecting no-key dentries in ext4_add_entry().
+Fix this bug on f2fs by rejecting no-key dentries in f2fs_add_link().
 
-Note that the duplicate check in ext4_find_dest_de() sometimes prevented
-this bug.  However in many cases it didn't, since ext4_find_dest_de()
-doesn't examine every dentry.
+Note that the weird check for the current task in f2fs_do_add_link()
+seems to make this bug difficult to reproduce on f2fs.
 
-Fixes: 4461471107b7 ("ext4 crypto: enable filename encryption")
+Fixes: 9ea97163c6da ("f2fs crypto: add filename encryption for f2fs_add_link")
 Cc: stable@vger.kernel.org
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/ext4/namei.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/f2fs/f2fs.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 33509266f5a0..793fc7db9d28 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -2195,6 +2195,9 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
- 	if (!dentry->d_name.len)
- 		return -EINVAL;
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index cb700d797296..9a321c52face 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -3251,6 +3251,8 @@ bool f2fs_empty_dir(struct inode *dir);
  
+ static inline int f2fs_add_link(struct dentry *dentry, struct inode *inode)
+ {
 +	if (fscrypt_is_nokey_name(dentry))
 +		return -ENOKEY;
-+
- #ifdef CONFIG_UNICODE
- 	if (sb_has_strict_encoding(sb) && IS_CASEFOLDED(dir) &&
- 	    sb->s_encoding && utf8_validate(sb->s_encoding, &dentry->d_name))
+ 	return f2fs_do_add_link(d_inode(dentry->d_parent), &dentry->d_name,
+ 				inode, inode->i_ino, inode->i_mode);
+ }
 -- 
 2.29.2
 
