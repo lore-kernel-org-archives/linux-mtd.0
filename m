@@ -3,63 +3,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5276AC5519F
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 08:49:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE8E2C5519F
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 08:49:32 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C8F1920719
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 08:49:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4808220719
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2020 08:49:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="V5i5srLt";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Nx+h2rhZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C8F1920719
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WipCwaxB";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="MbUsQaP4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4808220719
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=4SD7z+lYnFNOY9BHC4y/aEy8jlxTgBDsaVefOtQ1XVY=; b=V5i5srLtD0ypKtPEpwovW0GXk
-	ZuV4dTYZILpMaIj7p1s8EJdE/5riPvPoApLKH2BO/ak6J4pwcoluHeQH3bYnkBVHmROsZCFv99f8N
-	5tmh9brcwfykMJwo70LyqNI3+0lP4ARVTQ5LfwyvMCDPlVnKiq6N5HLTYzfQSLznhFJQUtA2pEPau
-	yh/fVvEyrUPZdDfRfpsp+jy6xgpLETKFjRwpKG8fBzEx9qgZIPkBJYJb+D0V5qlnSwwJtjuRnWY8y
-	ozPNWY79O/O9yLTr6Ilp2UHhHdyqyfPjvF50M2pqXrEwSRAlLafzcs/dUgOpaMpvlbv3xrn00D7Qa
-	EBWgfRLdg==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=EPGXhCY1HuvVsg6FkaeWTmS/6kK8GNHRio43cyE7TGk=; b=WipCwaxBodU/SqqHicdTZSWm53
+	K+GhAEtnn3hDQyi7R8MrEpE1Hhn4GXXMJ5bgZ5qTIjnlBmSfEdqjnuDLQR9YfZDmH9bXTS3T0Dykk
+	Fe//C7hvwPshlymY72Buzd6PWTv55uyme/K30ESHoPAsRBFXD2zwoEnW78SkqVZj999sz+w0dgy7o
+	FdA0w2fybVNcFkUdAW+I151UjXY4r3Wt11qUoA0ABzyOZRKQfKOZ0ivDl+3JXkfkfXuN8oleST3Uc
+	1PVmQEL4rpW9ZEE/GiwmcXOH9Ull/sElIGYi09ROXCFq4VmF+P2qagoVbo3vJMtwXtczZKiEaegRm
+	iZxJoBqg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kfJ96-0008Gv-Ty; Wed, 18 Nov 2020 08:48:56 +0000
+	id 1kfJ8L-0007xg-Ow; Wed, 18 Nov 2020 08:48:09 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kfJ8T-0007zr-Uz
- for linux-mtd@merlin.infradead.org; Wed, 18 Nov 2020 08:48:18 +0000
+ id 1kfJ8I-0007wi-8q
+ for linux-mtd@merlin.infradead.org; Wed, 18 Nov 2020 08:48:06 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
- References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
- Content-Type:Content-ID:Content-Description;
- bh=AZC0zIud/sy36HL3UqpdhruuJxaP+dAsE+XWl7N2xio=; b=Nx+h2rhZg/HvIdxi/V4Jhb3r0u
- Ha9RMCfuFy1DcNiHVfggBRgvESO9x7+pxSBvldUugXJje0PXHGlc4RwDDAg7KizNUutdw1Oz6YYyv
- GW4iMGk2/W7s5u9pbxqjoSdBjJixbVkMGKI4sJ3RWvWoE3K0iOy/pbqDa1e1ML4CIGcPuaXqz2g9g
- GWC0Sp67FA+/219oiqS3gSXWZE8BQ1pE8WMHKNGls47Mx8ZIwmqDOxT3eb3qNMpqy/o6N2LhYhPo2
- rajpeTK4bPGzZuMUv7onhX7MqP2bpqaR14FcEdjZKriDz9DBejg943e2dL+oCaa6VfesI9rxujAcy
- PLSuDG6w==;
+ Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+ Content-Description:In-Reply-To:References;
+ bh=rtXdmB6pB+D+QbtGbV+uHFq0yQJijYyGHbBI0cLjv2A=; b=MbUsQaP4K2SpOGVW5mv43oSYV6
+ aSTVb67wwO58YAjNvYMV+JptsTZETqgQ3iVNAbfWHCQ9HE5JT81DQ5LdbNLiSSXvHq/k7/yLci8zE
+ BWakOahKmMr+FGf6UbLTbY5ACvNjirGAI+lCUyjSOA50PJSXlUcCDA0CuGKj7KT+rJUTyYFPsUGnT
+ 6eRsMiIYjULW2kg2XeaXIAB0btu3VodTKNE1Pz44bT6gTmxgQcB687KguKJxiJBm9EAIUQxLSiLOJ
+ rMJ8Ixv3mA08atwcPFG6zZ0vA+A8nlhq/s/JYSobbimDNkp47kt2AOxl+LkE9cWtZofajTO0QNTZm
+ OmM7zM1Q==;
 Received: from [2001:4bb8:18c:31ba:32b1:ec66:5459:36a] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kfJ8S-0007lc-Hx; Wed, 18 Nov 2020 08:48:16 +0000
+ id 1kfJ8E-0007kG-NB; Wed, 18 Nov 2020 08:48:03 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 08/20] init: refactor devt_from_partuuid
-Date: Wed, 18 Nov 2020 09:47:48 +0100
-Message-Id: <20201118084800.2339180-9-hch@lst.de>
+Subject: merge struct block_device and struct hd_struct
+Date: Wed, 18 Nov 2020 09:47:40 +0100
+Message-Id: <20201118084800.2339180-1-hch@lst.de>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201118084800.2339180-1-hch@lst.de>
-References: <20201118084800.2339180-1-hch@lst.de>
 MIME-Version: 1.0
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by
  casper.infradead.org. See http://www.infradead.org/rpr.html
@@ -86,119 +84,85 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The code in devt_from_partuuid is very convoluted.  Refactor a bit by
-sanitizing the goto and variable name usage.
+Hi Jens,
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- init/do_mounts.c | 68 ++++++++++++++++++++++--------------------------
- 1 file changed, 31 insertions(+), 37 deletions(-)
+this series cleans up our main per-device node data structure by merging
+the block_device and hd_struct data structures that have the same scope,
+but different life times.  The main effect (besides removing lots of
+code) is that instead of having two device sizes that need complex
+synchronization there is just one now.
 
-diff --git a/init/do_mounts.c b/init/do_mounts.c
-index aef2f24461c7f1..afa26a4028d25e 100644
---- a/init/do_mounts.c
-+++ b/init/do_mounts.c
-@@ -105,13 +105,10 @@ static int match_dev_by_uuid(struct device *dev, const void *data)
-  */
- static dev_t devt_from_partuuid(const char *uuid_str)
- {
--	dev_t res = 0;
- 	struct uuidcmp cmp;
- 	struct device *dev = NULL;
--	struct gendisk *disk;
--	struct hd_struct *part;
-+	dev_t devt = 0;
- 	int offset = 0;
--	bool clear_root_wait = false;
- 	char *slash;
- 
- 	cmp.uuid = uuid_str;
-@@ -120,52 +117,49 @@ static dev_t devt_from_partuuid(const char *uuid_str)
- 	/* Check for optional partition number offset attributes. */
- 	if (slash) {
- 		char c = 0;
-+
- 		/* Explicitly fail on poor PARTUUID syntax. */
--		if (sscanf(slash + 1,
--			   "PARTNROFF=%d%c", &offset, &c) != 1) {
--			clear_root_wait = true;
--			goto done;
--		}
-+		if (sscanf(slash + 1, "PARTNROFF=%d%c", &offset, &c) != 1)
-+			goto clear_root_wait;
- 		cmp.len = slash - uuid_str;
- 	} else {
- 		cmp.len = strlen(uuid_str);
- 	}
- 
--	if (!cmp.len) {
--		clear_root_wait = true;
--		goto done;
--	}
-+	if (!cmp.len)
-+		goto clear_root_wait;
- 
--	dev = class_find_device(&block_class, NULL, &cmp,
--				&match_dev_by_uuid);
-+	dev = class_find_device(&block_class, NULL, &cmp, &match_dev_by_uuid);
- 	if (!dev)
--		goto done;
--
--	res = dev->devt;
-+		return 0;
- 
--	/* Attempt to find the partition by offset. */
--	if (!offset)
--		goto no_offset;
-+	if (offset) {
-+		/*
-+		 * Attempt to find the requested partition by adding an offset
-+		 * to the partition number found by UUID.
-+		 */
-+		struct hd_struct *part;
- 
--	res = 0;
--	disk = part_to_disk(dev_to_part(dev));
--	part = disk_get_part(disk, dev_to_part(dev)->partno + offset);
--	if (part) {
--		res = part_devt(part);
--		put_device(part_to_dev(part));
-+		part = disk_get_part(dev_to_disk(dev),
-+				     dev_to_part(dev)->partno + offset);
-+		if (part) {
-+			devt = part_devt(part);
-+			put_device(part_to_dev(part));
-+		}
-+	} else {
-+		devt = dev->devt;
- 	}
- 
--no_offset:
- 	put_device(dev);
--done:
--	if (clear_root_wait) {
--		pr_err("VFS: PARTUUID= is invalid.\n"
--		       "Expected PARTUUID=<valid-uuid-id>[/PARTNROFF=%%d]\n");
--		if (root_wait)
--			pr_err("Disabling rootwait; root= is invalid.\n");
--		root_wait = 0;
--	}
--	return res;
-+	return devt;
-+
-+clear_root_wait:
-+	pr_err("VFS: PARTUUID= is invalid.\n"
-+	       "Expected PARTUUID=<valid-uuid-id>[/PARTNROFF=%%d]\n");
-+	if (root_wait)
-+		pr_err("Disabling rootwait; root= is invalid.\n");
-+	root_wait = 0;
-+	return 0;
- }
- 
- /**
--- 
-2.29.2
+Note that it depends on the previous "misc cleanups" series.
 
+A git tree is available here:
+
+    git://git.infradead.org/users/hch/block.git bdev-lookup
+
+Gitweb:
+
+    http://git.infradead.org/users/hch/block.git/shortlog/refs/heads/bdev-lookup
+
+Diffstat:
+ block/bio.c                                  |    6 
+ block/blk-cgroup.c                           |   50 +-
+ block/blk-core.c                             |   85 +--
+ block/blk-flush.c                            |    2 
+ block/blk-iocost.c                           |   36 -
+ block/blk-lib.c                              |    2 
+ block/blk-merge.c                            |    6 
+ block/blk-mq.c                               |   11 
+ block/blk-mq.h                               |    5 
+ block/blk.h                                  |   92 ----
+ block/genhd.c                                |  444 +++++---------------
+ block/ioctl.c                                |    7 
+ block/partitions/core.c                      |  238 +++--------
+ drivers/block/drbd/drbd_receiver.c           |    2 
+ drivers/block/drbd/drbd_worker.c             |    2 
+ drivers/block/loop.c                         |   21 
+ drivers/block/nbd.c                          |    6 
+ drivers/block/xen-blkback/common.h           |    4 
+ drivers/block/xen-blkfront.c                 |   20 
+ drivers/block/zram/zram_drv.c                |   20 
+ drivers/md/bcache/request.c                  |    4 
+ drivers/md/bcache/super.c                    |   53 --
+ drivers/md/dm-table.c                        |    9 
+ drivers/md/dm.c                              |   16 
+ drivers/md/md.c                              |    8 
+ drivers/mtd/mtdsuper.c                       |   17 
+ drivers/nvme/target/admin-cmd.c              |   20 
+ drivers/s390/block/dasd.c                    |    8 
+ drivers/s390/block/dasd_ioctl.c              |    9 
+ drivers/scsi/scsicam.c                       |    2 
+ drivers/target/target_core_file.c            |    6 
+ drivers/target/target_core_pscsi.c           |    7 
+ drivers/usb/gadget/function/storage_common.c |    8 
+ fs/block_dev.c                               |  578 ++++++++-------------------
+ fs/btrfs/sysfs.c                             |   15 
+ fs/btrfs/volumes.c                           |   13 
+ fs/ext4/super.c                              |   18 
+ fs/ext4/sysfs.c                              |   10 
+ fs/f2fs/checkpoint.c                         |    5 
+ fs/f2fs/f2fs.h                               |    2 
+ fs/f2fs/super.c                              |    8 
+ fs/f2fs/sysfs.c                              |    9 
+ fs/inode.c                                   |    3 
+ fs/internal.h                                |    7 
+ fs/io_uring.c                                |   10 
+ fs/pipe.c                                    |    5 
+ fs/pstore/blk.c                              |    2 
+ fs/quota/quota.c                             |   40 +
+ fs/statfs.c                                  |    2 
+ fs/super.c                                   |   86 ----
+ include/linux/blk-cgroup.h                   |    4 
+ include/linux/blk_types.h                    |   26 +
+ include/linux/blkdev.h                       |   24 -
+ include/linux/fs.h                           |    5 
+ include/linux/genhd.h                        |  104 ----
+ include/linux/part_stat.h                    |   17 
+ init/do_mounts.c                             |  271 +++++-------
+ kernel/trace/blktrace.c                      |   54 --
+ mm/filemap.c                                 |    9 
+ 59 files changed, 837 insertions(+), 1716 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
