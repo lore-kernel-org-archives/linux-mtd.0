@@ -7,58 +7,58 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DFBEBC56201
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 21:06:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02CB8C388F9
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 21:06:36 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6D788221F1
+	by mail.kernel.org (Postfix) with ESMTPS id 4535A221EB
 	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 21:06:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RdrMREvb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D788221F1
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pg1L56Tl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4535A221EB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=jy30D1vJ3CJ00eYgZV8qCwqcsQ8HS+TBfP1cI5quR70=; b=RdrMREvbWWBqZLmhAIk5aVMnd
-	OghACKUggKN2nqiwj5ufBB2xPc8MLVnW56DpFyIifc648fOeqsyNiN6JEIoA7D1RObXjs1Hfo28LM
-	MGmHAfv6PjBpTw212LwENf7jx15Hq3/1+xOemirdwl7mhe6IFLFwnRDgvx7/oxi3BMWCLy/xtV+BU
-	tE8zgg47I6ttxcHKHUmTa+xaW//stk7IAJp1U5Q6fVb0X6uYYf2n2Kdyeid6ZA2coBo0wG4r9ehD7
-	oSWlMjbd2x5eiFYTmYkL30HeF1f2MuqggXksGMxk1afGPCqBdGTR6l48aXUjJSweHPJJXyLsFPB2u
-	4NhTO8y+Q==;
+	Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
+	:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:To:From:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=8TL9gItn27JeeBbLVgK5F7MsviZwf3W11O1UqGYcdQo=; b=pg1L56Tld1Gf1zVFxEOnNzhHkh
+	GdN1S6QoHLaN8vMBiSZpf1KzmBdOLiKQhPA1siiIK9dZN3K8UT87By90WjJNN46B5vvZLlVhvIfaN
+	1qQ8T0mjCCTocduP2dgv0/OKZxDZW3rOFghQFA/6fM8yDUOo4XLEtjP+GAgGm7vgUre2jwsxHIyMx
+	9ALHGmdL80cVyGD108WCUs9tq42mv0xGTTvOAE7UETueJ0Krbjx2UMLNC0yJH8ScRQr+Q1xcAtYrr
+	IdyIEXyKyfD8Lvv4gQjq/iEI5tT9hAdMGpLA1HbsqYFAe+eUzml7kQGYB37bBdQxYJijTzj2X8ewr
+	ddU+nzXw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kfr7c-00011a-4h; Thu, 19 Nov 2020 21:05:40 +0000
-Received: from relay5-d.mail.gandi.net ([217.70.183.197])
+	id 1kfr83-00017l-O8; Thu, 19 Nov 2020 21:06:07 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kfr7Z-00010x-3v
- for linux-mtd@lists.infradead.org; Thu, 19 Nov 2020 21:05:38 +0000
+ id 1kfr81-00016s-TM
+ for linux-mtd@lists.infradead.org; Thu, 19 Nov 2020 21:06:06 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 881FF1C0007;
- Thu, 19 Nov 2020 21:05:34 +0000 (UTC)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 0A50AC0003;
+ Thu, 19 Nov 2020 21:06:03 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Baskov Evgeiny <baskov@ispras.ru>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH] mtd-ram: correctly free memory on error path in
- platram_probe()
-Date: Thu, 19 Nov 2020 22:05:33 +0100
-Message-Id: <20201119210533.23671-1-miquel.raynal@bootlin.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: rawnand: orion: Allow compile testing
+Date: Thu, 19 Nov 2020 22:06:02 +0100
+Message-Id: <20201119210603.24128-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201113160537.899-1-baskov@ispras.ru>
+In-Reply-To: <20201113124058.333-1-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: e0e1153084bc04b055787b0b8ef664024c6e2ced
+X-linux-mtd-patch-commit: 3d98f6a5192af313bcd95eaa41762f3e180cbb27
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201119_160537_741562_484EB877 
-X-CRM114-Status: UNSURE (   7.78  )
+X-CRM114-CacheID: sfid-20201119_160606_054616_83C5ACC3 
+X-CRM114-Status: UNSURE (   7.28  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -71,26 +71,18 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: ldv-project@linuxtesting.org, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Vignesh Raghavendra <vigneshr@ti.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2020-11-13 at 16:05:37 UTC, Baskov Evgeiny wrote:
-> If an error happens in mtd_device_parse_register or mtd_device_register,
-> memory allocated for struct platram_info is leaked.
+On Fri, 2020-11-13 at 12:40:58 UTC, Miquel Raynal wrote:
+> There is nothing preventing compile testing in this driver so enable
+> it.
 > 
-> Make platram_probe() call platram_remove() on all error paths
-> after struct platram_info allocation to correctly free resources.
-> 
-> Found by Linux Driver Verification project (linuxtesting.org).
-> 
-> Signed-off-by: Baskov Evgeiny <baskov@ispras.ru>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next.
 
 Miquel
 
