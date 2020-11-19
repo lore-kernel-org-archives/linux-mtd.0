@@ -5,18 +5,18 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 905DEC6379F
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 21:07:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AD90C56201
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 21:08:25 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 26EE6221EB
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 21:07:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ACBBB22253
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 21:08:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="M/ANGD5d"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26EE6221EB
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fp1KiKAe"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ACBBB22253
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=AyzALa79or3hVtNGvrFGuiJmRXp6nMDcLUcfTo5w7+M=; b=M/ANGD5dbcdU9O8VWYL0RwFWC
-	J2ZVZ2Wu58B1ZTotI30GS2orc/EISl7T4FbDSRlEkYvAilEpzEkr6blXAsMgoLH4p4u06ZdkT03Tq
-	X/cC+jfF86J7SEllNnVEV+A2z1DkKtsKLXTUkrMoTi3OWZg+04do8SERf6a26mIUdKIKU7PJJBeX8
-	JGuK38fRlRyAOx/0HF+zlnWdgih+tyF3p/GY7LRYVOqwTEg3hSiCjuk0tzA/rELl5q86j9yxsDR9I
-	huPyJOD/gdv3SG8FinJSQ3xSKflGnVMKHD87gVlcafbPc2D0+HMPKuA8xG3Bf+Alg0I3cjbP8KEIz
-	s+ABRuPxg==;
+	 bh=7hAkAwBRo4yLk5Rq+zP9AbhitbEWUbHdpcEJGMcRi5o=; b=fp1KiKAeK7rzAUqcyzA3/tM4j
+	D2izno1FMyuno4BDsDAGDmZljQ8WHnVM0Xs+zbPnnkm+WLPmvAjOL8bIpLacRkn+EYN12V786enkN
+	L6fsgy0kEPMBX+caVuhAZJrM89iRMm7GWf9ypzVS0DDnJ/K/Rutsd/4l9HOgy/4P4o42hVJ9yOwEf
+	dlj1L0EKrv1Blu5+4KN3dK75A/xuO+NOfP7TXmoLpfxCIA1Z/3OSw1tay2+lei3R8FOLSPzIDN7+U
+	LuVtnSn6Wpv1xHPySCe0glw29qYADVxJwSB71QUST3iHVq+fuB7EoiClSOgsCbumnkFVB5OauLgtq
+	Huv6ZCCqw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kfr8u-0001Tk-F5; Thu, 19 Nov 2020 21:07:00 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1kfr9Z-0001ns-6J; Thu, 19 Nov 2020 21:07:42 +0000
+Received: from relay12.mail.gandi.net ([217.70.178.232])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kfr8r-0001S3-Jg
- for linux-mtd@lists.infradead.org; Thu, 19 Nov 2020 21:06:58 +0000
-X-Originating-IP: 91.224.148.103
+ id 1kfr9O-0001iZ-23
+ for linux-mtd@lists.infradead.org; Thu, 19 Nov 2020 21:07:31 +0000
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id A51B3240003;
- Thu, 19 Nov 2020 21:06:55 +0000 (UTC)
+ by relay12.mail.gandi.net (Postfix) with ESMTPSA id DA763200002;
+ Thu, 19 Nov 2020 21:07:27 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] docs: mtd: Avoid htmldocs warnings
-Date: Thu, 19 Nov 2020 22:06:54 +0100
-Message-Id: <20201119210654.24754-1-miquel.raynal@bootlin.com>
+To: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v3 22/23] mtd: onenand: Fix some kernel-doc misdemeanours
+Date: Thu, 19 Nov 2020 22:07:26 +0100
+Message-Id: <20201119210726.25150-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201113123831.32429-1-miquel.raynal@bootlin.com>
+In-Reply-To: <20201109182206.3037326-23-lee.jones@linaro.org>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: a115d8f6af3815df51a7a81bda7911a8fa1c1ec1
+X-linux-mtd-patch-commit: 59d61489c4450eb8782f1eca93833f4b18ead69f
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201119_160657_824381_1EB4D6C1 
-X-CRM114-Status: UNSURE (   8.58  )
+X-CRM114-CacheID: sfid-20201119_160730_413616_281664E1 
+X-CRM114-Status: UNSURE (   9.03  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -71,24 +68,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, Kyungmin Park <kyungmin.park@samsung.com>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2020-11-13 at 12:38:31 UTC, Miquel Raynal wrote:
-> Moving files around produced the following warnings:
+On Mon, 2020-11-09 at 18:22:05 UTC, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
 > 
->        Error: Cannot open file drivers/mtd/nand/raw/nand_ecc.c
->        Error: Cannot open file drivers/mtd/nand/raw/nand_ecc.c
+>  drivers/mtd/nand/onenand/onenand_base.c:140: warning: Function parameter or member 'mtd' not described in 'onenand_ooblayout_32_64_ecc'
+>  drivers/mtd/nand/onenand/onenand_base.c:140: warning: Function parameter or member 'section' not described in 'onenand_ooblayout_32_64_ecc'
+>  drivers/mtd/nand/onenand/onenand_base.c:140: warning: Function parameter or member 'oobregion' not described in 'onenand_ooblayout_32_64_ecc'
+>  drivers/mtd/nand/onenand/onenand_base.c:1436: warning: bad line:
+>  drivers/mtd/nand/onenand/onenand_base.c:1971: warning: Function parameter or member 'ops' not described in 'onenand_write_oob_nolock'
+>  drivers/mtd/nand/onenand/onenand_base.c:1971: warning: Excess function parameter 'len' description in 'onenand_write_oob_nolock'
+>  drivers/mtd/nand/onenand/onenand_base.c:1971: warning: Excess function parameter 'retlen' description in 'onenand_write_oob_nolock'
+>  drivers/mtd/nand/onenand/onenand_base.c:1971: warning: Excess function parameter 'buf' description in 'onenand_write_oob_nolock'
+>  drivers/mtd/nand/onenand/onenand_base.c:1971: warning: Excess function parameter 'mode' description in 'onenand_write_oob_nolock'
+>  drivers/mtd/nand/onenand/onenand_base.c:2156: warning: Function parameter or member 'block_size' not described in 'onenand_multiblock_erase'
+>  drivers/mtd/nand/onenand/onenand_base.c:2156: warning: Excess function parameter 'region' description in 'onenand_multiblock_erase'
+>  drivers/mtd/nand/onenand/onenand_base.c:2771: warning: Function parameter or member 'ops' not described in 'onenand_otp_write_oob_nolock'
+>  drivers/mtd/nand/onenand/onenand_base.c:2771: warning: Excess function parameter 'len' description in 'onenand_otp_write_oob_nolock'
+>  drivers/mtd/nand/onenand/onenand_base.c:2771: warning: Excess function parameter 'retlen' description in 'onenand_otp_write_oob_nolock'
+>  drivers/mtd/nand/onenand/onenand_base.c:2771: warning: Excess function parameter 'buf' description in 'onenand_otp_write_oob_nolock'
+>  drivers/mtd/nand/onenand/onenand_base.c:3387: warning: Function parameter or member 'mtd' not described in 'flexonenand_get_boundary'
+>  drivers/mtd/nand/onenand/onenand_base.c:3387: warning: Excess function parameter 'onenand_info' description in 'flexonenand_get_boundary'
+>  drivers/mtd/nand/onenand/onenand_base.c:3509: warning: Function parameter or member 'mtd' not described in 'flexonenand_check_blocks_erased'
+>  drivers/mtd/nand/onenand/onenand_base.c:3509: warning: Excess function parameter 'mtd_info' description in 'flexonenand_check_blocks_erased'
+>  drivers/mtd/nand/onenand/onenand_base.c:3557: warning: Function parameter or member 'die' not described in 'flexonenand_set_boundary'
+>  drivers/mtd/nand/onenand/onenand_base.c:3557: warning: Function parameter or member 'boundary' not described in 'flexonenand_set_boundary'
+>  drivers/mtd/nand/onenand/onenand_base.c:3557: warning: Function parameter or member 'lock' not described in 'flexonenand_set_boundary'
 > 
-> Fix one by just dropping the reference because it is not relevant, the
-> other by using a better noun instead of a file name.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Cc: Kyungmin Park <kyungmin.park@samsung.com>
+> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Vignesh Raghavendra <vigneshr@ti.com>
+> Cc: linux-mtd@lists.infradead.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
 Miquel
 
