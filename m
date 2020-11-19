@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A27EC2D0E4
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 14:19:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3114CC63697
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 14:19:40 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A597322256
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 14:19:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ACB8222226
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 14:19:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gnj0Zq8L"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A597322256
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qD6+t+23"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ACB8222226
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=stbYkPzz7Mzj4rz523KeP/G6u3KSIcmy4QwAbrSvsmI=; b=gnj0Zq8LU/PCXya2HYpmvtcjn
-	uZkh85DolOJVk4FrD07wuX9RZJliQ8gP7ZSkxkwelJzyTs8QTGxCyGYVmk4sTgIrxRlfERAA4innN
-	k5ZVE9GiNLce/XBOrnGZfFg+sdzrm+J4W8VYsvQJUnb4hEg6xIwYKWcBznNVSElp0GB4r1vg8YK8e
-	W+LKyy0+NIFcmc28O7Bu1IWOHbHcqP4OcAJimpf6RkV63WN3VCuYwuzxfVzs6G1Sq7kC6hVje4RUg
-	Im7ug8ToX8Ze5BI2Amgwc0j3hfzB8ZBVu7rckwqXjCjFk348SmZl2S1U3lUJpx4kmNy7qplv/mB9E
-	PyItyTllQ==;
+	 bh=3fLhdP8tOWLZMuWHFmpfxGuxWmxBnc07Dy85UCRpA8I=; b=qD6+t+23rYnelAfrnGqNxi5iU
+	kw2rABud1VuiKKRYpDWANyrlqSb41zAll0PbeWtOexGyFzPIZ37PcyFvX6BIbmez1ssjYTVvQYOJb
+	BFCisPgAalYT6iUSu3gffpFmRIWTPZ/yZ24us/ZubW3RdO2U+MheT8L4yspvL1ni+yUZ5glPoWNx/
+	iTkelvSWgpOkhqCdY/oF9Noa7SaqL0o9TuXd+dG+TipxXJC0FdRt/ZEPEu9RbgD9lPYlAsfQO9jA/
+	0LHvuWWHvRcUisU6nW+RQaLRcjh4qzqafnkzozJP0sQAt6hmyWF/Ddm7DMQvTpcd/c0Jba3Y/T8SN
+	XVEZInFxA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kfklp-0003NC-1A; Thu, 19 Nov 2020 14:18:45 +0000
+	id 1kfkll-0003MO-Ax; Thu, 19 Nov 2020 14:18:41 +0000
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kfklg-0003JN-Og
- for linux-mtd@lists.infradead.org; Thu, 19 Nov 2020 14:18:38 +0000
+ id 1kfklg-0003JK-PG
+ for linux-mtd@lists.infradead.org; Thu, 19 Nov 2020 14:18:37 +0000
 Received: from localhost (localhost [127.0.0.1])
- by lilium.sigma-star.at (Postfix) with ESMTP id 987F6181C88E7;
- Thu, 19 Nov 2020 15:18:27 +0100 (CET)
+ by lilium.sigma-star.at (Postfix) with ESMTP id CEE1F181C88E4;
+ Thu, 19 Nov 2020 15:18:26 +0100 (CET)
 Received: from lilium.sigma-star.at ([127.0.0.1])
  by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id vhznnC7JMG0k; Thu, 19 Nov 2020 15:18:26 +0100 (CET)
+ with ESMTP id 8Geu4G_KY9Fm; Thu, 19 Nov 2020 15:18:26 +0100 (CET)
 Received: from lilium.sigma-star.at ([127.0.0.1])
  by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id dDO3U2oTBdgd; Thu, 19 Nov 2020 15:18:26 +0100 (CET)
+ with ESMTP id 9Y_VR-WpkaVL; Thu, 19 Nov 2020 15:18:26 +0100 (CET)
 From: Richard Weinberger <richard@nod.at>
 To: miklos@szeredi.hu
-Subject: [PATCH 3/5] fuse: Make cuse_parse_one a common helper
-Date: Thu, 19 Nov 2020 15:16:57 +0100
-Message-Id: <20201119141659.26176-4-richard@nod.at>
+Subject: [PATCH 2/5] fuse: Export fuse_simple_request
+Date: Thu, 19 Nov 2020 15:16:56 +0100
+Message-Id: <20201119141659.26176-3-richard@nod.at>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201119141659.26176-1-richard@nod.at>
 References: <20201119141659.26176-1-richard@nod.at>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201119_091837_104573_6B21C4F5 
-X-CRM114-Status: GOOD (  23.42  )
+X-CRM114-CacheID: sfid-20201119_091836_988924_8D579279 
+X-CRM114-Status: UNSURE (   9.62  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,209 +79,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This function will be used by MUSE too, let's share it.
+MUSE will use this function to issue requests,
+so export it.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- fs/fuse/Kconfig  |  4 +++
- fs/fuse/Makefile |  1 +
- fs/fuse/cuse.c   | 58 +----------------------------------------
- fs/fuse/fuse_i.h |  3 +++
- fs/fuse/helper.c | 68 ++++++++++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 77 insertions(+), 57 deletions(-)
- create mode 100644 fs/fuse/helper.c
+ fs/fuse/dev.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/fuse/Kconfig b/fs/fuse/Kconfig
-index 40ce9a1c12e5..9c8cc1e7b3a5 100644
---- a/fs/fuse/Kconfig
-+++ b/fs/fuse/Kconfig
-@@ -18,9 +18,13 @@ config FUSE_FS
- 	  If you want to develop a userspace FS, or if you want to use
- 	  a filesystem based on FUSE, answer Y or M.
+diff --git a/fs/fuse/dev.c b/fs/fuse/dev.c
+index 588f8d1240aa..8b7209537683 100644
+--- a/fs/fuse/dev.c
++++ b/fs/fuse/dev.c
+@@ -522,6 +522,7 @@ ssize_t fuse_simple_request(struct fuse_mount *fm, struct fuse_args *args)
  
-+config FUSE_HELPER
-+	def_bool n
-+
- config CUSE
- 	tristate "Character device in Userspace support"
- 	depends on FUSE_FS
-+	select FUSE_HELPER
- 	help
- 	  This FUSE extension allows character devices to be
- 	  implemented in userspace.
-diff --git a/fs/fuse/Makefile b/fs/fuse/Makefile
-index 8c7021fb2cd4..7a5768cce6be 100644
---- a/fs/fuse/Makefile
-+++ b/fs/fuse/Makefile
-@@ -9,5 +9,6 @@ obj-$(CONFIG_VIRTIO_FS) += virtiofs.o
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(fuse_simple_request);
  
- fuse-y := dev.o dir.o file.o inode.o control.o xattr.o acl.o readdir.o
- fuse-$(CONFIG_FUSE_DAX) += dax.o
-+fuse-$(CONFIG_FUSE_HELPER) += helper.o
- 
- virtiofs-y := virtio_fs.o
-diff --git a/fs/fuse/cuse.c b/fs/fuse/cuse.c
-index 55744430b0f0..24c015547130 100644
---- a/fs/fuse/cuse.c
-+++ b/fs/fuse/cuse.c
-@@ -199,62 +199,6 @@ struct cuse_devinfo {
- 	const char		*name;
- };
- 
--/**
-- * cuse_parse_one - parse one key=value pair
-- * @pp: i/o parameter for the current position
-- * @end: points to one past the end of the packed string
-- * @keyp: out parameter for key
-- * @valp: out parameter for value
-- *
-- * *@pp points to packed strings - "key0=val0\0key1=val1\0" which ends
-- * at @end - 1.  This function parses one pair and set *@keyp to the
-- * start of the key and *@valp to the start of the value.  Note that
-- * the original string is modified such that the key string is
-- * terminated with '\0'.  *@pp is updated to point to the next string.
-- *
-- * RETURNS:
-- * 1 on successful parse, 0 on EOF, -errno on failure.
-- */
--static int cuse_parse_one(char **pp, char *end, char **keyp, char **valp)
--{
--	char *p = *pp;
--	char *key, *val;
--
--	while (p < end && *p == '\0')
--		p++;
--	if (p == end)
--		return 0;
--
--	if (end[-1] != '\0') {
--		pr_err("info not properly terminated\n");
--		return -EINVAL;
--	}
--
--	key = val = p;
--	p += strlen(p);
--
--	if (valp) {
--		strsep(&val, "=");
--		if (!val)
--			val = key + strlen(key);
--		key = strstrip(key);
--		val = strstrip(val);
--	} else
--		key = strstrip(key);
--
--	if (!strlen(key)) {
--		pr_err("zero length info key specified\n");
--		return -EINVAL;
--	}
--
--	*pp = p;
--	*keyp = key;
--	if (valp)
--		*valp = val;
--
--	return 1;
--}
--
- /**
-  * cuse_parse_dev_info - parse device info
-  * @p: device info string
-@@ -275,7 +219,7 @@ static int cuse_parse_devinfo(char *p, size_t len, struct cuse_devinfo *devinfo)
- 	int rc;
- 
- 	while (true) {
--		rc = cuse_parse_one(&p, end, &key, &val);
-+		rc = fuse_kv_parse_one(&p, end, &key, &val);
- 		if (rc < 0)
- 			return rc;
- 		if (!rc)
-diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-index 637caddff2a8..d36c71568a80 100644
---- a/fs/fuse/fuse_i.h
-+++ b/fs/fuse/fuse_i.h
-@@ -1210,4 +1210,7 @@ void fuse_dax_inode_cleanup(struct inode *inode);
- bool fuse_dax_check_alignment(struct fuse_conn *fc, unsigned int map_alignment);
- void fuse_dax_cancel_work(struct fuse_conn *fc);
- 
-+/* helper.c */
-+int fuse_kv_parse_one(char **pp, char *end, char **keyp, char **valp);
-+
- #endif /* _FS_FUSE_I_H */
-diff --git a/fs/fuse/helper.c b/fs/fuse/helper.c
-new file mode 100644
-index 000000000000..35d37338445e
---- /dev/null
-+++ b/fs/fuse/helper.c
-@@ -0,0 +1,68 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Helper functions used by CUSE and MUSE
-+ *
-+ * Copyright (C) 2008-2009  SUSE Linux Products GmbH
-+ * Copyright (C) 2008-2009  Tejun Heo <tj@kernel.org>
-+ *
-+ */
-+
-+#include <linux/string.h>
-+#include <linux/module.h>
-+
-+/**
-+ * fuse_kv_parse_one - parse one key=value pair
-+ * @pp: i/o parameter for the current position
-+ * @end: points to one past the end of the packed string
-+ * @keyp: out parameter for key
-+ * @valp: out parameter for value
-+ *
-+ * *@pp points to packed strings - "key0=val0\0key1=val1\0" which ends
-+ * at @end - 1.  This function parses one pair and set *@keyp to the
-+ * start of the key and *@valp to the start of the value.  Note that
-+ * the original string is modified such that the key string is
-+ * terminated with '\0'.  *@pp is updated to point to the next string.
-+ *
-+ * RETURNS:
-+ * 1 on successful parse, 0 on EOF, -errno on failure.
-+ */
-+int fuse_kv_parse_one(char **pp, char *end, char **keyp, char **valp)
-+{
-+	char *p = *pp;
-+	char *key, *val;
-+
-+	while (p < end && *p == '\0')
-+		p++;
-+	if (p == end)
-+		return 0;
-+
-+	if (end[-1] != '\0') {
-+		pr_err("info not properly terminated\n");
-+		return -EINVAL;
-+	}
-+
-+	key = val = p;
-+	p += strlen(p);
-+
-+	if (valp) {
-+		strsep(&val, "=");
-+		if (!val)
-+			val = key + strlen(key);
-+		key = strstrip(key);
-+		val = strstrip(val);
-+	} else
-+		key = strstrip(key);
-+
-+	if (!strlen(key)) {
-+		pr_err("zero length info key specified\n");
-+		return -EINVAL;
-+	}
-+
-+	*pp = p;
-+	*keyp = key;
-+	if (valp)
-+		*valp = val;
-+
-+	return 1;
-+}
-+EXPORT_SYMBOL_GPL(fuse_kv_parse_one);
+ static bool fuse_request_queue_background(struct fuse_req *req)
+ {
 -- 
 2.26.2
 
