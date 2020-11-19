@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19E22C56201
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 21:08:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1307C388F9
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 21:08:52 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 86D3A22255
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 21:08:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 23BB122255
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 21:08:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="3gIhJ6ux"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 86D3A22255
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="io++YvZj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 23BB122255
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=4BFl+BKm+dh7HHypPXpi6HppdgmvexaOV3I/GypMaG0=; b=3gIhJ6uxhi7htnMDEkNbGDVPS
-	EwN+VXhDBLK5KeweeIAHKdXgpezwiKBcmCmrruje93/OjkWWDoDEHEK0yUXSnZo9yHljHwtIqsvFr
-	zwR+MvNPsxwnS6ZSFfI9VQMwH5WZquwOjsiv/cMGJNDzVYJzcie18vlSRHRNIpfUbxquxscQb4VFx
-	ADwzvplsdGEndbrRcdmTo/e4ipRrmdXXA/ddMueh3CdH6i2hyFEcU5+MjN3clnjER3nb9Oe/5SODg
-	TrX1dbgEFh1nhvsTxRujGq3q7EvN5/B4YOdisJyYlzmhymScQ4PJWno0r7TW8KHqHENS0y5nhuofG
-	FhxS8VRUQ==;
+	 bh=mTT4/FBuslXQW+YWfSpyshCmVAZL5i7s+0Aq/4h/pVY=; b=io++YvZj+aUAWrmOK/nE1SuR9
+	H/IowMpH4ySY/BgGZeZGuU6H5gK4G0GBponXLl0SbfBZH6BNAq4WwiXsjfpHswS2eZ86TWOOXwOom
+	p9DLv1dqsQ4KHsc2z0G+UYiSTI5cbJLFlBZkJ3qKoMCHFX46Hcs/UYNS50+UcKFDJUPkqS9wMZ+Qs
+	7CWlLJolDS6jeLdS0wR406CbTQCPsHU5A5bnFN6p0WFI+Z+7JHRRDxc3XbAIC/AlRUWyp6LIW9vmz
+	4xEP8MOsdKQYmbcCd15drU8TqtsJVKWWvQ4RqSMKROl3qE4yQoLaSKzt2QI39hUluiL0ky/j+Ywg7
+	uhmEvS+CA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kfr9M-0001hh-4z; Thu, 19 Nov 2020 21:07:28 +0000
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+	id 1kfr9j-0001t0-NC; Thu, 19 Nov 2020 21:07:51 +0000
+Received: from relay8-d.mail.gandi.net ([217.70.183.201])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kfr9H-0001ed-HY
- for linux-mtd@lists.infradead.org; Thu, 19 Nov 2020 21:07:26 +0000
+ id 1kfr9V-0001mB-KY
+ for linux-mtd@lists.infradead.org; Thu, 19 Nov 2020 21:07:40 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 38C10C0006;
- Thu, 19 Nov 2020 21:07:17 +0000 (UTC)
+ by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id A090E1BF205;
+ Thu, 19 Nov 2020 21:07:34 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v3 23/23] mtd: devices: powernv_flash: Add function names
- to headers and fix 'dev'
-Date: Thu, 19 Nov 2020 22:07:16 +0100
-Message-Id: <20201119210716.25046-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v3 21/23] mtd: rawnand: arasan: Document 'anfc_op's 'buf'
+ member
+Date: Thu, 19 Nov 2020 22:07:33 +0100
+Message-Id: <20201119210733.25233-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201109182206.3037326-24-lee.jones@linaro.org>
+In-Reply-To: <20201109182206.3037326-22-lee.jones@linaro.org>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 30e98cd953d769136c6d859e0b7c4fc780296503
+X-linux-mtd-patch-commit: f20b203e99dd257f04bb55ecd0db8c6a3b9d29c1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201119_160724_048782_CFB13AD7 
-X-CRM114-Status: UNSURE (   9.23  )
+X-CRM114-CacheID: sfid-20201119_160737_818762_E8451813 
+X-CRM114-Status: UNSURE (   8.10  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -71,31 +71,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-kernel@vger.kernel.org,
- Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
+ linux-kernel@vger.kernel.org, Choudary Kalluri <punnaia@xilinx.com>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Naga Sureshkumar Relli <nagasure@xilinx.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2020-11-09 at 18:22:06 UTC, Lee Jones wrote:
+On Mon, 2020-11-09 at 18:22:04 UTC, Lee Jones wrote:
 > Fixes the following W=1 kernel build warning(s):
 > 
->  drivers/mtd/devices/powernv_flash.c:129: warning: Cannot understand  * @mtd: the device
->  drivers/mtd/devices/powernv_flash.c:145: warning: Cannot understand  * @mtd: the device
->  drivers/mtd/devices/powernv_flash.c:161: warning: Cannot understand  * @mtd: the device
->  drivers/mtd/devices/powernv_flash.c:184: warning: Function parameter or member 'dev' not described in 'powernv_flash_set_driver_info'
+>  drivers/mtd/nand/raw/arasan-nand-controller.c:133: warning: Function parameter or member 'buf' not described in 'anfc_op'
 > 
+> Cc: Naga Sureshkumar Relli <nagasure@xilinx.com>
 > Cc: Miquel Raynal <miquel.raynal@bootlin.com>
 > Cc: Richard Weinberger <richard@nod.at>
 > Cc: Vignesh Raghavendra <vigneshr@ti.com>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Choudary Kalluri <punnaia@xilinx.com>
 > Cc: linux-mtd@lists.infradead.org
-> Cc: linuxppc-dev@lists.ozlabs.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
