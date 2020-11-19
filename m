@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE00BC63777
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 21:15:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E936FC56201
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 21:15:19 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7A7D222256
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 21:15:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 622A022240
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 21:15:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="i210dH6P"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A7D222256
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jbwBCO8x"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 622A022240
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=dJj+S9skNtqOUc1i2bCy/EflHpPDNKJ9/cSjj8kKqjg=; b=i210dH6P7XwrQWnKkzp2iXvRG
-	zte0JvnmhInzDRj50V+BFs9LAahka0GR5ZQsXC5GnQoLOHcj+8ZWy4JcJBOXL11TVyeI+z8LsLU36
-	Uw1PrclqnIe0pLN8JuJxbz0EE98HPhOliZLpPk1YrKxnwS+R7uLG08ta8EQmWZrjXUPjZdyzwSG26
-	4JOwQIC9BnQ4TnYLgtVye2XZc3Dq7omf59+tnwkcJgpgKt61wCQwEWlWYeWi/rCtPKMBHRL4HCboZ
-	gSOaa78AXX/4MvgW6MHQYE6MpGVM1Qc5v0FbhUqSBfld1nH3RFTwIAH3FYNMSl93d2W2bSLp3kVPZ
-	JmqCp0UoQ==;
+	 bh=yvtFPoSzTehjl9wR1MsGOAKO0vO6sxfySrio1S+9enM=; b=jbwBCO8xttvumt8LKIKy9FR+G
+	5eoUlfTdl6sh8o2JL7lOS9nKfii5zP1YXIlH95EjW0NFJ56gQLekKlalKx5LLw/iK3sp3b6n5fH39
+	4icMvPQdo86sSWtyyN+QLsDjRXDpVeZWNidxZhajwGt40vBKlU5WCrj125b4tcdu2kMX3++KRivni
+	TOEgAc0bDYZIvrRa9ZscnldHnDhWYs68MPtfm9BoaE37wWLajNjwlKGeITKR8TFoDmawUiSKXr0Xr
+	wDHhQTRq+sMKKHTDPvmJFFYeOVNloZs/Q/PGLJfos7nH305OOkdtyyfg33QqQ5qHU1d7Mv5qumtpk
+	x0ktb39UA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kfrFn-0000LE-3W; Thu, 19 Nov 2020 21:14:07 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1kfrFo-0000LS-Ir; Thu, 19 Nov 2020 21:14:08 +0000
+Received: from relay8-d.mail.gandi.net ([217.70.183.201])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kfrCs-0003Sk-UP
- for linux-mtd@lists.infradead.org; Thu, 19 Nov 2020 21:11:08 +0000
+ id 1kfrCx-0003Vg-Do
+ for linux-mtd@lists.infradead.org; Thu, 19 Nov 2020 21:11:12 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 627EEFF803;
- Thu, 19 Nov 2020 21:11:01 +0000 (UTC)
+ by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 0362C1BF206;
+ Thu, 19 Nov 2020 21:11:08 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v3 04/23] mtd: devices: docg3: Fix kernel-doc 'bad line'
- and 'excessive doc' issues
-Date: Thu, 19 Nov 2020 22:11:00 +0100
-Message-Id: <20201119211100.27127-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v3 03/23] mtd: onenand: onenand_base: Fix expected
+ kernel-doc formatting
+Date: Thu, 19 Nov 2020 22:11:07 +0100
+Message-Id: <20201119211107.27287-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201109182206.3037326-5-lee.jones@linaro.org>
+In-Reply-To: <20201109182206.3037326-4-lee.jones@linaro.org>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 3c1d2364363836287e2b8a3bda7dfa3e0316cbd1
+X-linux-mtd-patch-commit: 7abc17b3ab63d44a96e281617aff61e1424304d8
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201119_161107_207481_A7DA643F 
-X-CRM114-Status: UNSURE (   9.60  )
+X-CRM114-CacheID: sfid-20201119_161111_785567_B8D32C79 
+X-CRM114-Status: UNSURE (   9.02  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -71,26 +71,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>
+ linux-kernel@vger.kernel.org, Kyungmin Park <kyungmin.park@samsung.com>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Adrian Hunter <ext-adrian.hunter@nokia.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2020-11-09 at 18:21:47 UTC, Lee Jones wrote:
-> This patch also places the descriptions in the correct order.
-> 
+On Mon, 2020-11-09 at 18:21:46 UTC, Lee Jones wrote:
 > Fixes the following W=1 kernel build warning(s):
 > 
->  drivers/mtd/devices/docg3.c:819: warning: bad line:
->  drivers/mtd/devices/docg3.c:1799: warning: Excess function parameter 'base' description in 'doc_probe_device'
+>  drivers/mtd/nand/onenand/onenand_base.c:140: warning: Function parameter or member 'mtd' not described in 'onenand_ooblayout_32_64_ecc'
+>  drivers/mtd/nand/onenand/onenand_base.c:140: warning: Function parameter or member 'section' not described in 'onenand_ooblayout_32_64_ecc'
+>  drivers/mtd/nand/onenand/onenand_base.c:140: warning: Function parameter or member 'oobregion' not described in 'onenand_ooblayout_32_64_ecc'
+>  drivers/mtd/nand/onenand/onenand_base.c:200: warning: Function parameter or member 'addr' not described in 'onenand_readw'
+>  drivers/mtd/nand/onenand/onenand_base.c:212: warning: Function parameter or member 'value' not described in 'onenand_writew'
+>  drivers/mtd/nand/onenand/onenand_base.c:212: warning: Function parameter or member 'addr' not described in 'onenand_writew'
+>  drivers/mtd/nand/onenand/onenand_base.c:225: warning: Function parameter or member 'this' not described in 'onenand_block_address'
+>  drivers/mtd/nand/onenand/onenand_base.c:225: warning: Function parameter or member 'block' not described in 'onenand_block_address'
+>  drivers/mtd/nand/onenand/onenand_base.c:242: warning: Function parameter or member 'this' not described in 'onenand_bufferram_address'
+>  drivers/mtd/nand/onenand/onenand_base.c:242: warning: Function parameter or member 'block' not described in 'onenand_bufferram_address'
 > 
-> Cc: Robert Jarzmik <robert.jarzmik@free.fr>
+>  NB: Snipped 200 lines for brevity.
+> 
+> Cc: Kyungmin Park <kyungmin.park@samsung.com>
 > Cc: Miquel Raynal <miquel.raynal@bootlin.com>
 > Cc: Richard Weinberger <richard@nod.at>
 > Cc: Vignesh Raghavendra <vigneshr@ti.com>
+> Cc: Adrian Hunter <ext-adrian.hunter@nokia.com>
 > Cc: linux-mtd@lists.infradead.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
