@@ -7,57 +7,65 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6DA1C5519F
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 02:52:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 996BAC388F9
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 05:57:01 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 00AE0246C0
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 02:52:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 198812225E
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 05:56:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="coomWc5R"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 00AE0246C0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dbLFnGgo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 198812225E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=F7wZPQFjLtFQMKELTwxXwQ1sZCXHW5fbjz/CTUM020Y=; b=coomWc5RV55DwQ8/bLqFc+dFz
-	OPPy+P1e3od1cBxGILflhl+q3uOgxCPpmZSpb0WKCwjNRAfG9TGkWWqxfkjyUlxxMO9xS4mkMS/XQ
-	npcFRLgyEGOw+bS3rDRgQlPBSQ9zoGizkTaFtA1/Pi4FENn6aL9G8NZceT1jFfuH+rXkCF+sGGHXE
-	1YvtSiSIAWCpAC6mi5ogBphuxmgE6zkaY0d4veMD95t7UtDgN34LPAE5+qqEWPbQK89RBTN2o6Gci
-	YB50eNCm0AE6zvT7eKro0tW60krAnG6+lOPo/OJzdyVaAC5EK5hwnkZuIUfxy7Wk5VbckwTEKzWDc
-	Lhl/veNmg==;
+	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
+	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=lNQp3yazZt71kgCsakfqSU+tSfaykrlwRKG19KiY7LQ=; b=dbLFnGgoR50oACuT6S0/LNsAPD
+	wANlk2Z7NxLR92czMWulygjggddsu6f2KliuPDogh72SGP89px9SI//ljrLBA/bfJ1gFZpw7kIiuS
+	Bk7m1824e1C7PlwaDh7j3xspUlX6qH07CIe+BGo3Fplmcc6/cttALkWcC+sQRwlJluDIoA6IV1bIA
+	Tx5+/kGQEJGUEEbFKVov/Kh6DkPyf9cebW5m9vcOAoAc4xxC/hmb+AzL9SE2fPrR5n1ZuHYplkwjM
+	H2z14sO57M0njVuo4pQoe4BnAXQwfBttR9/D5LFtLNXuAL+JIL/a6+6Ohn1kx6Ldbod0L0h5R8we2
+	evhC1OJA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kfa2c-0005qL-Et; Thu, 19 Nov 2020 02:51:22 +0000
-Received: from szxga04-in.huawei.com ([45.249.212.190])
+	id 1kfcvm-00069a-1T; Thu, 19 Nov 2020 05:56:30 +0000
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kfa2W-0005pZ-9Z
- for linux-mtd@lists.infradead.org; Thu, 19 Nov 2020 02:51:19 +0000
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
- by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cc41G35s5z15MtC;
- Thu, 19 Nov 2020 10:50:42 +0800 (CST)
-Received: from DESKTOP-FKFNUOQ.china.huawei.com (10.67.101.50) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 19 Nov 2020 10:50:50 +0800
-From: Zhe Li <lizhe67@huawei.com>
-To: <lizhe67@huawei.com>, <richard@nod.at>, <dwmw2@infradead.org>
-Subject: Re: [PATCH 2/2] jffs2: fix can't set rp_size to zero during remounting
-Date: Thu, 19 Nov 2020 10:50:50 +0800
-Message-ID: <20201119025050.38472-1-lizhe67@huawei.com>
-X-Mailer: git-send-email 2.21.0.windows.1
-In-Reply-To: <20201014065443.18512-2-lizhe67@huawei.com>
-References: <20201014065443.18512-2-lizhe67@huawei.com>
-MIME-Version: 1.0
-X-Originating-IP: [10.67.101.50]
-X-CFilter-Loop: Reflected
+ id 1kfcvY-000678-Ej
+ for linux-mtd@lists.infradead.org; Thu, 19 Nov 2020 05:56:20 +0000
+IronPort-SDR: 0y3VR3JTRGbDCnqopzT84s0OY7gLYQ/36pZ+UTcWIv7tTlWXuT9rQkYuXQGqGrLgnzul62tkTw
+ 6I5xLZrkmvfg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="171405885"
+X-IronPort-AV: E=Sophos;i="5.77,489,1596524400"; d="scan'208";a="171405885"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Nov 2020 21:56:02 -0800
+IronPort-SDR: 1bCCA+NdNA2ugfiPUE/ENQRYXB7aH4UUYJubJYaBUuS7yYt+RkYHnv1B0XKC3HdSzC3PIpFdkk
+ twdA1BwOXQXg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,489,1596524400"; d="scan'208";a="325857376"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+ by orsmga003.jf.intel.com with ESMTP; 18 Nov 2020 21:56:00 -0800
+From: "Ramuthevar,
+ Vadivel MuruganX" <vadivel.muruganx.ramuthevar@linux.intel.com>
+To: broonie@kernel.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
+Subject: [PATCH v8 1/6] spi: cadence-quadspi: Add QSPI support for Intel LGM
+ SoC
+Date: Thu, 19 Nov 2020 13:55:49 +0800
+Message-Id: <20201119055551.26493-2-vadivel.muruganx.ramuthevar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20201119055551.26493-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+References: <20201119055551.26493-1-vadivel.muruganx.ramuthevar@linux.intel.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201118_215116_701138_B0AFB0A7 
-X-CRM114-Status: GOOD (  19.22  )
+X-CRM114-CacheID: sfid-20201119_005619_206795_648EDBDE 
+X-CRM114-Status: GOOD (  16.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,87 +77,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: qiuxi1@huawei.com, zhongjubin@huawei.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, wangfangpeng1@huawei.com, chenjie6@huawei.com
+Cc: cheol.yong.kim@intel.com, vigneshr@ti.com,
+ Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>,
+ linux-mtd@lists.infradead.org, qi-ming.wu@intel.com, p.yadav@ti.com
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Maintainer ping?
+From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 
-	Zhe
+Add QSPI controller support for Intel LGM SoC.
 
-On Tue, 13 Oct 2020 19:41:30 +0800, Zhe Li wrote:
->
->Set rp_size to zero will be ignore during remounting.
->
->The method to identify whether we input a remounting option of
->rp_size is to check if the rp_size input is zero. It can not work
->well if we pass "rp_size=0".
->
->This patch add a bool variable "set_rp_size" to fix this problem.
->
->By the way, the problem of NULL pointer dereference in rp_size
->fs option parsing showed at
->https://lore.kernel.org/linux-mtd/20201012131204.59102-1-jamie@nuviainc.com/T/#u
->should be applyed before this patch to make sure it works well.
->
->Reported-by: Jubin Zhong <zhongjubin@huawei.com>
->Signed-off-by: lizhe <lizhe67@huawei.com>
->---
-> fs/jffs2/jffs2_fs_sb.h | 1 +
-> fs/jffs2/super.c       | 7 +++++--
-> 2 files changed, 6 insertions(+), 2 deletions(-)
->
->diff --git a/fs/jffs2/jffs2_fs_sb.h b/fs/jffs2/jffs2_fs_sb.h
->index 778275f48a87..5a7091746f68 100644
->--- a/fs/jffs2/jffs2_fs_sb.h
->+++ b/fs/jffs2/jffs2_fs_sb.h
->@@ -38,6 +38,7 @@ struct jffs2_mount_opts {
-> 	 * users. This is implemented simply by means of not allowing the
-> 	 * latter users to write to the file system if the amount if the
-> 	 * available space is less then 'rp_size'. */
->+	bool set_rp_size;
-> 	unsigned int rp_size;
-> };
-> 
->diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
->index 4fd297bdf0f3..c523adaca79f 100644
->--- a/fs/jffs2/super.c
->+++ b/fs/jffs2/super.c
->@@ -88,7 +88,7 @@ static int jffs2_show_options(struct seq_file *s, struct dentry *root)
-> 
-> 	if (opts->override_compr)
-> 		seq_printf(s, ",compr=%s", jffs2_compr_name(opts->compr));
->-	if (opts->rp_size)
->+	if (opts->set_rp_size)
-> 		seq_printf(s, ",rp_size=%u", opts->rp_size / 1024);
-> 
-> 	return 0;
->@@ -206,6 +206,7 @@ static int jffs2_parse_param(struct fs_context *fc, struct fs_parameter *param)
-> 		if (opt > c->mtd->size)
-> 			return invalf(fc, "jffs2: Too large reserve pool specified, max is %llu KB",
-> 				      c->mtd->size / 1024);
->+		c->mount_opts.set_rp_size = true;
-> 		c->mount_opts.rp_size = opt;
-> 		break;
-> 	default:
->@@ -225,8 +226,10 @@ static inline void jffs2_update_mount_opts(struct fs_context *fc)
-> 		c->mount_opts.override_compr = new_c->mount_opts.override_compr;
-> 		c->mount_opts.compr = new_c->mount_opts.compr;
-> 	}
->-	if (new_c->mount_opts.rp_size)
->+	if (new_c->mount_opts.set_rp_size) {
->+		c->mount_opts.set_rp_size = new_c->mount_opts.set_rp_size;
-> 		c->mount_opts.rp_size = new_c->mount_opts.rp_size;
->+	}
-> 	mutex_unlock(&c->alloc_sem);
-> }
-> 
->-- 
->2.12.3
->
+Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+---
+ drivers/spi/Kconfig               | 2 +-
+ drivers/spi/spi-cadence-quadspi.c | 3 +++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
+index d2c976e55b8b..926da61eee5a 100644
+--- a/drivers/spi/Kconfig
++++ b/drivers/spi/Kconfig
+@@ -203,7 +203,7 @@ config SPI_CADENCE
+ 
+ config SPI_CADENCE_QUADSPI
+ 	tristate "Cadence Quad SPI controller"
+-	depends on OF && (ARM || ARM64 || COMPILE_TEST)
++	depends on OF && (ARM || ARM64 || X86 || COMPILE_TEST)
+ 	help
+ 	  Enable support for the Cadence Quad SPI Flash controller.
+ 
+diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+index 40938cf3806d..d7b10c46fa70 100644
+--- a/drivers/spi/spi-cadence-quadspi.c
++++ b/drivers/spi/spi-cadence-quadspi.c
+@@ -1401,6 +1401,9 @@ static const struct of_device_id cqspi_dt_ids[] = {
+ 		.compatible = "ti,am654-ospi",
+ 		.data = &am654_ospi,
+ 	},
++	{
++		.compatible = "intel,lgm-qspi",
++	},
+ 	{ /* end of table */ }
+ };
+ 
+-- 
+2.11.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
