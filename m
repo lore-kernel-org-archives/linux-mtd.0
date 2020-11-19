@@ -2,62 +2,87 @@ Return-Path: <SRS0=mdPP=EZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82D1FC388F9
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 12:06:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97DA1C2D0E4
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 12:39:25 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CBEB02469D
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 12:06:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 085572224E
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 12:39:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sEJlKBMe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CBEB02469D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Suw3w6WD";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="LaqX9r7f"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 085572224E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=wFpAwOgBzwjinA6BwvhzwkSx4l2A0VSZw/pBY3v1TeI=; b=sEJlKBMeAwvK4ziLSiMxA+Fr/
-	zi+bmTQVRZ6UQ1fOORJ+wQpyY9A4hKiJQ+glIcjbIeMRZA/2/I/+GoTFxjHxonlqZHaEPuLKR48c1
-	etI+EjALL2WzdFyNDYOGzPCpism4P8VUMyWqBZU5jTsvHz4mjwIGigDeU+VZJ00m1AltrIBmjRKhU
-	I6Z5U0mdUOqrZxgF0b8Y9T2+WrU22NtAoz/HardccRRqF/RhjUS5OcHAgpG9gh3Itjip+09phTQMb
-	EACHLzs6BJhL4lVkBmjqxDZRxA3LZR016NUC5QyQRlu317MJ9wP68H5TDZY9CuOjjP36mC9aFm9GX
-	IuYtbhmCw==;
+	 bh=NzaMNZTovEOVpkBHDAVMV/zGHTCLD4r9WFw5zgTPupw=; b=Suw3w6WDBC3FbqDe2EVDGokls
+	2Yq1dsNuHHMO1mP+VBKplcbOHJBKziQAw8bcnnE+TRiKoJof/htDQyKgU7XL/q9U0vzGiD0l3SdSk
+	td7vNpPBAICpn8GY4hqdR20ytoY+lXDOv332mlfJfrZjUq/Zsp1xhj5chGbEObxaNTb++e6TJNrw2
+	MqpNcK/+/rsdVHeKpOXvGPiATewqdWLSffIyBlI53UrarJ2Kb7mHvzFPrlC0usKQFZkVLcVytpzGJ
+	nwd6fOLl1IgTJhG8g/qA8BUUVuhkph41HpE4lHuFsdRAwi9wdz7KeXw8zN/l7vX+5BkAZXTarjEkL
+	5CbbJ0dzw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kfigs-0002Sz-5y; Thu, 19 Nov 2020 12:05:30 +0000
-Received: from mx2.suse.de ([195.135.220.15])
+	id 1kfjBS-00081L-NM; Thu, 19 Nov 2020 12:37:06 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kfigp-0002Ro-2E
- for linux-mtd@lists.infradead.org; Thu, 19 Nov 2020 12:05:28 +0000
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id E1DC2AA4F;
- Thu, 19 Nov 2020 12:05:25 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
- id 4E3FB1E130B; Thu, 19 Nov 2020 13:05:25 +0100 (CET)
-Date: Thu, 19 Nov 2020 13:05:25 +0100
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 14/20] block: remove the nr_sects field in struct hd_struct
-Message-ID: <20201119120525.GW1981@quack2.suse.cz>
-References: <20201118084800.2339180-1-hch@lst.de>
- <20201118084800.2339180-15-hch@lst.de>
+ id 1kfjBQ-00080N-DR
+ for linux-mtd@lists.infradead.org; Thu, 19 Nov 2020 12:37:05 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AJCavTG056603;
+ Thu, 19 Nov 2020 06:36:57 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1605789417;
+ bh=36qW6Hdzvc8q4QaaKaYXTa+cp2qx83QVdrm6XFKQ1mk=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=LaqX9r7fkasp1lEJ6ulnGxx7lDd582brlyX9MZKjsoQM0lnciWRMkP/1PI9cNq7qK
+ rjRy9CzWSErxPIc3H9CLuL8VGISPZ5hP27fjT+y53qH1XfY0eCnwXohcEO4zF8Qs9c
+ n9L4S3Qf/2zCgmikOSMyTu7xeQ8yetn/0oGdCcAc=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AJCauKE064137
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Thu, 19 Nov 2020 06:36:56 -0600
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 19
+ Nov 2020 06:36:56 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 19 Nov 2020 06:36:56 -0600
+Received: from [10.250.233.179] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AJCarAt001987;
+ Thu, 19 Nov 2020 06:36:54 -0600
+Subject: Re: [PATCH v8 0/6] spi: cadence-quadspi: Add QSPI controller support
+ for Intel LGM SoC
+To: "Ramuthevar,Vadivel MuruganX"
+ <vadivel.muruganx.ramuthevar@linux.intel.com>,
+ <broonie@kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-spi@vger.kernel.org>
+References: <20201119055551.26493-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <98b7b367-0bf3-e745-1dd2-302f76bab0b7@ti.com>
+Date: Thu, 19 Nov 2020 18:06:53 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20201118084800.2339180-15-hch@lst.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201119055551.26493-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201119_070527_339902_A5D02F89 
-X-CRM114-Status: GOOD (  29.60  )
+X-CRM114-CacheID: sfid-20201119_073704_734701_1BA65171 
+X-CRM114-Status: GOOD (  20.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,132 +94,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Jens Axboe <axboe@kernel.dk>, Mike Snitzer <snitzer@redhat.com>,
- Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
- Richard Weinberger <richard@nod.at>, Josef Bacik <josef@toxicpanda.com>,
- Coly Li <colyli@suse.de>, linux-block@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, dm-devel@redhat.com,
- linux-mtd@lists.infradead.org, Jan Kara <jack@suse.com>,
- Tejun Heo <tj@kernel.org>, xen-devel@lists.xenproject.org,
- linux-bcache@vger.kernel.org, linux-mm@kvack.org
+Cc: cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
+ linux-mtd@lists.infradead.org, p.yadav@ti.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed 18-11-20 09:47:54, Christoph Hellwig wrote:
-> Now that the hd_struct always has a block device attached to it, there is
-> no need for having two size field that just get out of sync.
+
+
+On 11/19/20 11:25 AM, Ramuthevar,Vadivel MuruganX wrote:
+> Add QSPI controller support for Intel LGM SoC.
 > 
-> Additional the field in hd_struct did not use proper serializiation,
-> possibly allowing for torn writes.  By only using the block_device field
-> this problem also gets fixed.
+> Note from Vignesh(mtd subsystem maintainer):
+> This series is a subset of "[PATCH v12 0/4] spi: cadence-quadspi: Add
+> support for the Cadence QSPI controller" by Ramuthevar,Vadivel MuruganX
+> <vadivel.muruganx.ramuthevar@linux.intel.com> that intended to move
+> cadence-quadspi driver to spi-mem framework
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Those patches were trying to accomplish too many things in a single set
+> of patches and need to split into smaller patches. This is reduced
+> version of above series.
+> 
+> Changes that are intended to make migration easy are split into separate
+> patches. Patches 1 to 3 drop features that cannot be supported under
+> spi-mem at the moment (backward compatibility is maintained).
+> Patch 4-5 are trivial cleanups. Patch 6 does the actual conversion to
+> spi-mem and patch 7 moves the driver to drivers/spi folder.
+> 
+> I have tested both INDAC mode (used by non TI platforms like Altera
+> SoCFPGA) and DAC mode (used by TI platforms) on TI EVMs.
+> 
+> Patches to move move bindings over to
+> "Documentation/devicetree/bindings/spi/" directory and also conversion
+> of bindig doc to YAML will be posted separately.  Support for Intel
+> platform would follow that.
+> 
+> Reference:
+>         https://lkml.org/lkml/2020/6/1/50
+> 
+> ---
+> v8:
+>   - As Mark suggested to add the dt-bindings documentation patches
+>     end of the series , so dropped.  
 
-Overall the patch looks good but I have a couple of comments below.
-
-> diff --git a/block/bio.c b/block/bio.c
-> index fa01bef35bb1fe..0c5269997434d6 100644
-> --- a/block/bio.c
-> +++ b/block/bio.c
-> @@ -613,7 +613,7 @@ void guard_bio_eod(struct bio *bio)
->  	rcu_read_lock();
->  	part = __disk_get_part(bio->bi_disk, bio->bi_partno);
->  	if (part)
-> -		maxsector = part_nr_sects_read(part);
-> +		maxsector = bdev_nr_sectors(part->bdev);
->  	else
->  		maxsector = get_capacity(bio->bi_disk);
-
-I have to say that after these changes I find it a bit confusing that we
-have get/set_capacity() and bdev_nr_sectors() / bdev_set_nr_sectors() and
-they are all the same thing (i_size of the bdev). Is there a reason for the
-distinction?
-
-> diff --git a/block/genhd.c b/block/genhd.c
-> index 94de95287a6370..e101b6843f7437 100644
-> --- a/block/genhd.c
-> +++ b/block/genhd.c
-> @@ -38,6 +38,16 @@ static void disk_add_events(struct gendisk *disk);
->  static void disk_del_events(struct gendisk *disk);
->  static void disk_release_events(struct gendisk *disk);
->  
-> +void set_capacity(struct gendisk *disk, sector_t sectors)
-> +{
-> +	struct block_device *bdev = disk->part0.bdev;
-> +
-> +	spin_lock(&bdev->bd_size_lock);
-> +	i_size_write(bdev->bd_inode, (loff_t)sectors << SECTOR_SHIFT);
-> +	spin_unlock(&bdev->bd_size_lock);
-
-AFAICT bd_size_lock is pointless after these changes so we can just remove
-it?
-
-> +}
-> +EXPORT_SYMBOL(set_capacity);
-> +
->  /*
->   * Set disk capacity and notify if the size is not currently zero and will not
->   * be set to zero.  Returns true if a uevent was sent, otherwise false.
-> @@ -47,11 +57,12 @@ bool set_capacity_and_notify(struct gendisk *disk, sector_t size)
->  	sector_t capacity = get_capacity(disk);
->  
->  	set_capacity(disk, size);
-> -	revalidate_disk_size(disk, true);
->  
->  	if (capacity != size && capacity != 0 && size != 0) {
->  		char *envp[] = { "RESIZE=1", NULL };
->  
-> +		pr_info("%s: detected capacity change from %lld to %lld\n",
-> +		       disk->disk_name, size, capacity);
-
-So we are now missing above message for transitions from / to 0 capacity?
-Is there any other notification in the kernel log when e.g. media is
-inserted into a CD-ROM drive? I remember using these messages for detecting
-that...
-
-Also what about GENHD_FL_HIDDEN devices? Are we sure we never set capacity
-for them?
-
->  		kobject_uevent_env(&disk_to_dev(disk)->kobj, KOBJ_CHANGE, envp);
->  		return true;
->  	}
-
-...
-
-> @@ -983,7 +994,7 @@ void __init printk_all_partitions(void)
->  
->  			printk("%s%s %10llu %s %s", is_part0 ? "" : "  ",
->  			       bdevt_str(part_devt(part), devt_buf),
-> -			       (unsigned long long)part_nr_sects_read(part) >> 1
-> +			       bdev_nr_sectors(part->bdev) >> 1
->  			       , disk_name(disk, part->partno, name_buf),
->  			       part->info ? part->info->uuid : "");
->  			if (is_part0) {
-> @@ -1076,7 +1087,7 @@ static int show_partition(struct seq_file *seqf, void *v)
->  	while ((part = disk_part_iter_next(&piter)))
->  		seq_printf(seqf, "%4d  %7d %10llu %s\n",
->  			   MAJOR(part_devt(part)), MINOR(part_devt(part)),
-> -			   (unsigned long long)part_nr_sects_read(part) >> 1,
-> +			   bdev_nr_sectors(part->bdev) >> 1,
->  			   disk_name(sgp, part->partno, buf));
->  	disk_part_iter_exit(&piter);
->  
-> @@ -1158,8 +1169,7 @@ ssize_t part_size_show(struct device *dev,
->  {
->  	struct hd_struct *p = dev_to_part(dev);
->  
-> -	return sprintf(buf, "%llu\n",
-> -		(unsigned long long)part_nr_sects_read(p));
-> +	return sprintf(buf, "%llu\n", bdev_nr_sectors(p->bdev));
-
-Is sector_t really guaranteed to be unsigned long long?
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Suggestion was to drop patches converting legacy binding doc to YAML schema.
+You still need to include a patch documenting new compatible
+"intel,lgm-qspi" in the existing (legacy) binding doc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
