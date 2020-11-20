@@ -1,64 +1,80 @@
-Return-Path: <SRS0=mdPP=EZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=dDgs=E2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4742BC388F9
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 22:37:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61D68C388F9
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2020 00:08:28 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B745A2224D
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2020 22:37:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E683C2083B
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2020 00:08:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="u3mft2kJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B745A2224D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="yOC6ahZv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E683C2083B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=sCoyVIvxlOzWtNvQ2MtSzv5aamm1S4UTbXSiXt60zsY=; b=u3mft2kJzm4prXVKiKee3yBOD
-	gU6JRtccxtO65rcInH/sKHZcLyQoIFG1nAoBw6y20rpM+q9us8mUWAf/ACyNUoOhLiNxQMxLoO9ta
-	Vdg39WI2uipAMHsse63RinQ6sDSBPmy7XKiHmjP51ozwNMr75XQcV7ISC9uYOBIBpMunWJH0xh47i
-	oHahBd7B/k5fKeJBRrjK5YPkRWrlB4LpYbY4IccJmLfnE1Z7ywvfbcAK5HL1wYba9S/z4csuk8e/7
-	odPw+bIsuc25Eq745QaB1+RNmKRi+pzVDhnnXcp/9W909W8G0SjzKb/QF0x8R/mxpYTxTQFl/Ll2X
-	0rNy+l93Q==;
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:Reply-To:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=1PNewjXh/SSuw9QxDdlZy09/hHErro8pFBI60B98enI=; b=yOC6ahZvm14m3g
+	GSTnRoM7dC6RPvi0W/+V2JKpFFx/oG58taQAJISISw/GAefpfyhlh7Y+lPkZijtKQzA+1l8cGIf/n
+	/5/oK4spMjeRycewY5sKjRIhlq8fUzASkJFhS++buFT7ASNKpj2Es/ZRZx1QXaQ/CMXyzk9Mx+LZL
+	dcVbOyWi/pHTv6T+evDlO4CSwON+DmnUN5l/rUZYtS8rTYhuPkdAzgof46OSuKXtfz570WXpq1Au3
+	il0OXyE28/AKw2Cdn4V+gv2m377c/NpG9JkbfqfqGUxE5RLEcXKjFw7v0GjY+VXvJZVi7LfQAn7ig
+	+2lJIeaUSFh7VkjSK8Dw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kfrEH-0004Bn-Fh; Thu, 19 Nov 2020 21:12:33 +0000
-Received: from relay4-d.mail.gandi.net ([217.70.183.196])
+	id 1kftx5-0004HX-OW; Fri, 20 Nov 2020 00:06:59 +0000
+Received: from mga04.intel.com ([192.55.52.120])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kfrCU-0003I2-7U
- for linux-mtd@lists.infradead.org; Thu, 19 Nov 2020 21:10:43 +0000
-X-Originating-IP: 91.224.148.103
-Received: from localhost.localdomain (unknown [91.224.148.103])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id DBFC4E0006;
- Thu, 19 Nov 2020 21:10:39 +0000 (UTC)
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v3 07/23] mtd: spi-nor: hisi-sfc: Demote non-conformant
- kernel-doc
-Date: Thu, 19 Nov 2020 22:10:38 +0100
-Message-Id: <20201119211038.26454-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201109182206.3037326-8-lee.jones@linaro.org>
-References: 
+ id 1kftwx-0004Fp-7E
+ for linux-mtd@lists.infradead.org; Fri, 20 Nov 2020 00:06:57 +0000
+IronPort-SDR: IaJzoJflw+C/B85JPYT5tA6yJ47Fk3hsfV/DynLVdL6b7HhNs9rH9aQB1a86cmG/Qu2G4ScAlt
+ LZDth14y0Jvg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="168814804"
+X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; d="scan'208";a="168814804"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Nov 2020 16:06:44 -0800
+IronPort-SDR: iz+IielfoYppbtbikNhl3Wz2qLKZa2w0KeA48U77kvg/3ENjHg7xD+kQMaK7TM4lLN8PWKg+s4
+ hFNuXq6YmpQw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; d="scan'208";a="360222742"
+Received: from linux.intel.com ([10.54.29.200])
+ by fmsmga004.fm.intel.com with ESMTP; 19 Nov 2020 16:06:43 -0800
+Received: from [10.213.153.3] (vramuthx-MOBL1.gar.corp.intel.com
+ [10.213.153.3])
+ by linux.intel.com (Postfix) with ESMTP id A8265580806;
+ Thu, 19 Nov 2020 16:06:40 -0800 (PST)
+Subject: Re: [PATCH v8 0/6] spi: cadence-quadspi: Add QSPI controller support
+ for Intel LGM SoC
+To: Vignesh Raghavendra <vigneshr@ti.com>, broonie@kernel.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
+References: <20201119055551.26493-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <98b7b367-0bf3-e745-1dd2-302f76bab0b7@ti.com>
+From: "Ramuthevar, Vadivel MuruganX"
+ <vadivel.muruganx.ramuthevar@linux.intel.com>
+Message-ID: <b57321fc-f6ff-1a15-20fa-e776416544c9@linux.intel.com>
+Date: Fri, 20 Nov 2020 08:06:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: d0992b41e3b5d9bb279355fcb14bf6a985d7f2fb
+In-Reply-To: <98b7b367-0bf3-e745-1dd2-302f76bab0b7@ti.com>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201119_161042_642674_548D589A 
-X-CRM114-Status: UNSURE (   8.81  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20201119_190651_482601_F67D047E 
+X-CRM114-Status: GOOD (  21.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,37 +86,66 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, Sumit Semwal <sumit.semwal@linaro.org>,
- linaro-mm-sig@lists.linaro.org, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- =?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- linux-media@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
+Cc: cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
+ linux-mtd@lists.infradead.org, p.yadav@ti.com
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gTW9uLCAyMDIwLTExLTA5IGF0IDE4OjIxOjUwIFVUQywgTGVlIEpvbmVzIHdyb3RlOgo+IEZp
-eGVzIHRoZSBmb2xsb3dpbmcgVz0xIGtlcm5lbCBidWlsZCB3YXJuaW5nKHMpOgo+IAo+ICBkcml2
-ZXJzL210ZC9zcGktbm9yL2NvbnRyb2xsZXJzL2hpc2ktc2ZjLmM6MzI4OiB3YXJuaW5nOiBGdW5j
-dGlvbiBwYXJhbWV0ZXIgb3IgbWVtYmVyICducCcgbm90IGRlc2NyaWJlZCBpbiAnaGlzaV9zcGlf
-bm9yX3JlZ2lzdGVyJwo+ICBkcml2ZXJzL210ZC9zcGktbm9yL2NvbnRyb2xsZXJzL2hpc2ktc2Zj
-LmM6MzI4OiB3YXJuaW5nOiBGdW5jdGlvbiBwYXJhbWV0ZXIgb3IgbWVtYmVyICdob3N0JyBub3Qg
-ZGVzY3JpYmVkIGluICdoaXNpX3NwaV9ub3JfcmVnaXN0ZXInCj4gCj4gQ2M6IFR1ZG9yIEFtYmFy
-dXMgPHR1ZG9yLmFtYmFydXNAbWljcm9jaGlwLmNvbT4KPiBDYzogTWlxdWVsIFJheW5hbCA8bWlx
-dWVsLnJheW5hbEBib290bGluLmNvbT4KPiBDYzogUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJk
-QG5vZC5hdD4KPiBDYzogVmlnbmVzaCBSYWdoYXZlbmRyYSA8dmlnbmVzaHJAdGkuY29tPgo+IENj
-OiBTdW1pdCBTZW13YWwgPHN1bWl0LnNlbXdhbEBsaW5hcm8ub3JnPgo+IENjOiAiQ2hyaXN0aWFu
-IEvDtm5pZyIgPGNocmlzdGlhbi5rb2VuaWdAYW1kLmNvbT4KPiBDYzogbGludXgtbXRkQGxpc3Rz
-LmluZnJhZGVhZC5vcmcKPiBDYzogbGludXgtbWVkaWFAdmdlci5rZXJuZWwub3JnCj4gQ2M6IGRy
-aS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKPiBDYzogbGluYXJvLW1tLXNpZ0BsaXN0cy5s
-aW5hcm8ub3JnCj4gU2lnbmVkLW9mZi1ieTogTGVlIEpvbmVzIDxsZWUuam9uZXNAbGluYXJvLm9y
-Zz4KPiBSZXZpZXdlZC1ieTogVmlnbmVzaCBSYWdoYXZlbmRyYSA8dmlnbmVzaHJAdGkuY29tPgoK
-QXBwbGllZCB0byBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dp
-dC9tdGQvbGludXguZ2l0IG5hbmQvbmV4dCwgdGhhbmtzLgoKTWlxdWVsCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
-c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vbGludXgtbXRkLwo=
+
+Hi Vignesh,
+
+Thank you very much for the review comments...
+
+On 19/11/2020 8:36 pm, Vignesh Raghavendra wrote:
+> 
+> 
+> On 11/19/20 11:25 AM, Ramuthevar,Vadivel MuruganX wrote:
+>> Add QSPI controller support for Intel LGM SoC.
+>>
+>> Note from Vignesh(mtd subsystem maintainer):H
+>> This series is a subset of "[PATCH v12 0/4] spi: cadence-quadspi: Add
+>> support for the Cadence QSPI controller" by Ramuthevar,Vadivel MuruganX
+>> <vadivel.muruganx.ramuthevar@linux.intel.com> that intended to move
+>> cadence-quadspi driver to spi-mem framework
+>>
+>> Those patches were trying to accomplish too many things in a single set
+>> of patches and need to split into smaller patches. This is reduced
+>> version of above series.
+>>
+>> Changes that are intended to make migration easy are split into separate
+>> patches. Patches 1 to 3 drop features that cannot be supported under
+>> spi-mem at the moment (backward compatibility is maintained).
+>> Patch 4-5 are trivial cleanups. Patch 6 does the actual conversion to
+>> spi-mem and patch 7 moves the driver to drivers/spi folder.
+>>
+>> I have tested both INDAC mode (used by non TI platforms like Altera
+>> SoCFPGA) and DAC mode (used by TI platforms) on TI EVMs.
+>>
+>> Patches to move move bindings over to
+>> "Documentation/devicetree/bindings/spi/" directory and also conversion
+>> of bindig doc to YAML will be posted separately.  Support for Intel
+>> platform would follow that.
+>>
+>> Reference:
+>>          https://lkml.org/lkml/2020/6/1/50
+>>
+>> ---
+>> v8:
+>>    - As Mark suggested to add the dt-bindings documentation patches
+>>      end of the series , so dropped.
+> 
+> Suggestion was to drop patches converting legacy binding doc to YAML schema.
+> You still need to include a patch documenting new compatible
+> "intel,lgm-qspi" in the existing (legacy) binding doc.
+Noted, will do that.
+
+Regards
+Vadivel
+> 
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
