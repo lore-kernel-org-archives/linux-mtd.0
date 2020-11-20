@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EC35C2D0E4
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2020 19:03:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67E68C56201
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2020 19:05:57 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CB75D2222F
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2020 19:03:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A11202222F
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2020 19:05:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NeaDn7/1";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="n09KqYny"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB75D2222F
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dCyOj+6V";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="RC17bKQE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A11202222F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,24 +26,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
 	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=4AS2o/kvXyO1CiZAZNDzDctlLFJaBx0f7zbtuJzjo9E=; b=NeaDn7/1uQMmSEpRhV0AGipNP
-	aYZqGQlgaz0P1yefWiebTLWEI6TPVjIkI5vsP9HkAWcpsTGe7ye8S4U165bpBaYWTXcMhNzlqD7yK
-	pqRQquCmbxcNZD9fPFFlBuexOanMCxKzyOajbw9pFpQtjWLTZhmrcDkTqDsBhX3C/nNDPh9546y6d
-	ZQFht1qzjKLeZZUbl4MogVuibEUk61M8uCA86m+y3gBiidbmx77OlgoHhW49HftN/pOCVgdI5Intq
-	jUcSWk0Oo1S6delXW8pYXwH0wcjFinWiPdWGjo/KHbPlrEgLbx4fjLvhCMLsn+wZUk0db3QCwbMIV
-	mbvafOlfw==;
+	 bh=CXNvUMrqmIVkc+foUexS8fXkukwINNKokKJ+IZiDrCc=; b=dCyOj+6Vfo/OFuWtZVvm84kx/
+	cDCohSj57vmV+ubm81G9TVbiCjAyv4x7vI4P8/AhmGOeKIVd22eGNgb3wE9pmaprCc9HBREjUDeR5
+	7hUD95gSQ6iFv1AFpvIRUPQrT9WPJZUZzAAhurV3Qnqv6EEBnzEgCEOa0k9VJNfC9/5h7Jjqn7B+V
+	Z+jdhZGtjvIF1GOXtbI7w8tAHruGZzSop9bHNa6kDamoKjv9KGZoyOpB8HC4Q+sTZzKg1jjJhbi+j
+	iaRu9bhgkWLLjFIN4PR5ZEVZw6YayoTFJh/55ib5DgaOmvtz8d4Idee3T4E+EYriUazdZfO070wwW
+	WMKZz0dLA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kgBgH-0000Lz-Sg; Fri, 20 Nov 2020 19:02:49 +0000
-Received: from gateway30.websitewelcome.com ([192.185.193.11])
+	id 1kgBim-0000sV-0f; Fri, 20 Nov 2020 19:05:24 +0000
+Received: from gateway33.websitewelcome.com ([192.185.145.9])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kgBgC-0000Cm-NN
- for linux-mtd@lists.infradead.org; Fri, 20 Nov 2020 19:02:47 +0000
-Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
- by gateway30.websitewelcome.com (Postfix) with ESMTP id 0C9853E50
- for <linux-mtd@lists.infradead.org>; Fri, 20 Nov 2020 13:02:32 -0600 (CST)
+ id 1kgBij-0000rf-Cr
+ for linux-mtd@lists.infradead.org; Fri, 20 Nov 2020 19:05:22 +0000
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+ by gateway33.websitewelcome.com (Postfix) with ESMTP id 19C7B58F64F
+ for <linux-mtd@lists.infradead.org>;
+ Fri, 20 Nov 2020 13:04:52 -0600 (CST)
 Received: from gator4166.hostgator.com ([108.167.133.22]) by cmsmtp with SMTP
- id gBfzkXnFPiQiZgBfzkDiZ7; Fri, 20 Nov 2020 13:02:32 -0600
+ id gBiGknjaNuDoAgBiGkSxES; Fri, 20 Nov 2020 13:04:52 -0600
 X-Authority-Reason: nr=8
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
@@ -51,23 +52,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
  Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
  List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=+4VxQ3E1SMf3fqpPxA59SXnFTIYnqNYQQfNHAF4XRGw=; b=n09KqYnyKHrO7dveIUWc55mzig
- y4HUZZbrqh9oIGiAW16mTaR8pcvnAozTxI+rYVVIt9CxAErudOIqW44giqY0jAAxUq2Az5FkJRw8D
- DdYM3ceCwzW72Iyh3zFwKX+btf9zXkIFnOla0anfthw4DZBTFFqyoxwOvEOl2OJ26TOTLqWU9obCG
- intkFNaJRljaeNwR96RWCduzT1c1ht64s9kRw8R+vb7ftuKF/SC10c1DXlPqmQL512w8QCfyvTWtG
- dzgy+MeNJCgbGq47RynDwYUz9POm4OiFKWoqxvHGtR/GFZ1BW9GSDXleqWC/tOZ433VaTMSGJy7Ut
- yE2h40Yg==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:52198
+ bh=o6HouBgCeARvPDycxq+DQL9GTuV0FZaznhFf+B5lvvQ=; b=RC17bKQEy60oNUOsP9/+FoFba3
+ 7IOvK7tatxfYFulfXrzo1R1inJiR70+fGm96EOiyxuGoF10JW8F/HPs+jPpuI495euTAFQHufGSAV
+ KFk2OzUW7hWgtf7v4LM6Poy7NupLGz6fEDbexZ2hS8wrxAWAlGQM9lxjgUTuzQh4+AEwwhtM/J+sO
+ AoW8/bIYU33TR8wm0Dkj1ZL5b4OT77sQWi2RWgP14r2tlNn5M1PdILrguUL1Nl2Hy0yV5KIqCCVAo
+ j0nfxV1qHzIcwVylK9t1AWmoK15QajwvXxprFA+S9YfES+wOdY+ET5oNf4zzGyJ24cDNT8LjZrCcC
+ nhh+2ALA==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:52360
  helo=[192.168.15.4])
  by gator4166.hostgator.com with esmtpsa (TLS1.2) tls
  TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.93)
  (envelope-from <gustavo@embeddedor.com>)
- id 1kgBfw-0000VH-WA; Fri, 20 Nov 2020 13:02:29 -0600
+ id 1kgBiD-00024G-7d; Fri, 20 Nov 2020 13:04:49 -0600
 Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
-To: Joe Perches <joe@perches.com>, "Gustavo A. R. Silva"
- <gustavoars@kernel.org>, linux-kernel@vger.kernel.org
+To: Jakub Kicinski <kuba@kernel.org>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>
 References: <cover.1605896059.git.gustavoars@kernel.org>
- <3e0bbb1644fe53d79322c2feb28ccaf3e20c0e94.camel@perches.com>
+ <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 Autocrypt: addr=gustavo@embeddedor.com; keydata=
  xsFNBFssHAwBEADIy3ZoPq3z5UpsUknd2v+IQud4TMJnJLTeXgTf4biSDSrXn73JQgsISBwG
@@ -113,12 +114,12 @@ Autocrypt: addr=gustavo@embeddedor.com; keydata=
  6i6Rd2U/i8jH5WvzR57UeWxE4P8bQc0hNGrUsHQH6bpHV2lbuhDdqo+cM9ehGZEO3+gCDFmK
  rjspZjkJbB5Gadzvts5fcWGOXEvuT8uQSvl+vEL0g6vczsyPBtqoBLa9SNrSVtSixD1uOgyt
  AP7RWS474w==
-Message-ID: <9f986394-125a-81f7-7696-fe1a9f4eb4f5@embeddedor.com>
-Date: Fri, 20 Nov 2020 13:02:34 -0600
+Message-ID: <4609d49b-4dd3-c017-b76e-a8a536871c05@embeddedor.com>
+Date: Fri, 20 Nov 2020 13:04:55 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <3e0bbb1644fe53d79322c2feb28ccaf3e20c0e94.camel@perches.com>
+In-Reply-To: <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Content-Language: en-US
 X-AntiAbuse: This header was added to track abuse,
  please include it with any abuse report
@@ -129,19 +130,19 @@ X-AntiAbuse: Sender Address Domain - embeddedor.com
 X-BWhitelist: no
 X-Source-IP: 187.162.31.110
 X-Source-L: No
-X-Exim-ID: 1kgBfw-0000VH-WA
+X-Exim-ID: 1kgBiD-00024G-7d
 X-Source: 
 X-Source-Args: 
 X-Source-Dir: 
 X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.4])
- [187.162.31.110]:52198
+ [187.162.31.110]:52360
 X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 45
+X-Email-Count: 122
 X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
 X-Local-Domain: yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201120_140244_959835_2330A1C1 
-X-CRM114-Status: GOOD (  13.47  )
+X-CRM114-CacheID: sfid-20201120_140521_568593_1019CDC4 
+X-CRM114-Status: GOOD (  16.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -167,8 +168,9 @@ Cc: alsa-devel@alsa-project.org, linux-atm-general@lists.sourceforge.net,
  rds-devel@oss.oracle.com, Nick Desaulniers <ndesaulniers@google.com>,
  linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org,
  oss-drivers@netronome.com, bridge@lists.linux-foundation.org,
- amd-gfx@lists.freedesktop.org, linux-stm32@st-md-mailman.stormreply.com,
- cluster-devel@redhat.com, linux-acpi@vger.kernel.org, coreteam@netfilter.org,
+ linux-security-module@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+ linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
+ linux-acpi@vger.kernel.org, coreteam@netfilter.org,
  intel-wired-lan@lists.osuosl.org, linux-input@vger.kernel.org,
  Miguel Ojeda <ojeda@kernel.org>, tipc-discussion@lists.sourceforge.net,
  linux-ext4@vger.kernel.org, linux-media@vger.kernel.org,
@@ -183,22 +185,22 @@ Cc: alsa-devel@alsa-project.org, linux-atm-general@lists.sourceforge.net,
  x86@kernel.org, linux-nfs@vger.kernel.org, GR-Linux-NIC-Dev@marvell.com,
  Kees Cook <keescook@chromium.org>, linux-mm@kvack.org, netdev@vger.kernel.org,
  linux-decnet-user@lists.sourceforge.net, linux-mmc@vger.kernel.org,
- linux-sctp@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-security-module@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-sctp@vger.kernel.org, linux-usb@vger.kernel.org,
  netfilter-devel@vger.kernel.org, linux-crypto@vger.kernel.org,
- patches@opensource.cirrus.com, linux-integrity@vger.kernel.org,
- target-devel@vger.kernel.org, linux-hardening@vger.kernel.org
+ patches@opensource.cirrus.com, Joe Perches <joe@perches.com>,
+ linux-integrity@vger.kernel.org, target-devel@vger.kernel.org,
+ linux-hardening@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
+Hi,
 
-On 11/20/20 12:28, Joe Perches wrote:
-> On Fri, 2020-11-20 at 12:21 -0600, Gustavo A. R. Silva wrote:
->> Hi all,
->>
+On 11/20/20 12:53, Jakub Kicinski wrote:
+> On Fri, 20 Nov 2020 12:21:39 -0600 Gustavo A. R. Silva wrote:
 >> This series aims to fix almost all remaining fall-through warnings in
 >> order to enable -Wimplicit-fallthrough for Clang.
 >>
@@ -209,16 +211,47 @@ On 11/20/20 12:28, Joe Perches wrote:
 >> Notice that in order to enable -Wimplicit-fallthrough for Clang, this
 >> change[1] is meant to be reverted at some point. So, this patch helps
 >> to move in that direction.
+>>
+>> Something important to mention is that there is currently a discrepancy
+>> between GCC and Clang when dealing with switch fall-through to empty case
+>> statements or to cases that only contain a break/continue/return
+>> statement[2][3][4].
 > 
-> This was a bit hard to parse for a second or three.
+> Are we sure we want to make this change? Was it discussed before?
 > 
-> Thanks Gustavo.
+> Are there any bugs Clangs puritanical definition of fallthrough helped
+> find?
 > 
-> How was this change done?
+> IMVHO compiler warnings are supposed to warn about issues that could
+> be bugs. Falling through to default: break; can hardly be a bug?!
 
-I audited case by case in order to determine the best fit for each
-situation. Depending on the surrounding logic, sometimes it makes
-more sense a goto or a fallthrough rather than merely a break.
+The justification for this is explained in this same changelog text:
+
+Now that the -Wimplicit-fallthrough option has been globally enabled[5],
+any compiler should really warn on missing either a fallthrough annotation
+or any of the other case-terminating statements (break/continue/return/
+goto) when falling through to the next case statement. Making exceptions
+to this introduces variation in case handling which may continue to lead
+to bugs, misunderstandings, and a general lack of robustness. The point
+of enabling options like -Wimplicit-fallthrough is to prevent human error
+and aid developers in spotting bugs before their code is even built/
+submitted/committed, therefore eliminating classes of bugs. So, in order
+to really accomplish this, we should, and can, move in the direction of
+addressing any error-prone scenarios and get rid of the unintentional
+fallthrough bug-class in the kernel, entirely, even if there is some minor
+redundancy. Better to have explicit case-ending statements than continue to
+have exceptions where one must guess as to the right result. The compiler
+will eliminate any actual redundancy.
+
+Note that there is already a patch in mainline that addresses almost
+40,000 of these issues[6].
+
+[1] commit e2079e93f562c ("kbuild: Do not enable -Wimplicit-fallthrough for clang for now")
+[2] ClangBuiltLinux#636
+[3] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=91432
+[4] https://godbolt.org/z/xgkvIh
+[5] commit a035d552a93b ("Makefile: Globally enable fall-through warning")
+[6] commit 4169e889e588 ("include: jhash/signal: Fix fall-through warnings for Clang")
 
 Thanks
 --
