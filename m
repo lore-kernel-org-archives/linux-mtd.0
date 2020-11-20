@@ -2,21 +2,22 @@ Return-Path: <SRS0=dDgs=E2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61D68C388F9
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2020 00:08:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB87AC388F9
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2020 00:31:26 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E683C2083B
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2020 00:08:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 72BF122240
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2020 00:31:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="yOC6ahZv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E683C2083B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Ihrwr40w"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72BF122240
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,56 +26,57 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
 	Message-ID:From:References:To:Subject:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1PNewjXh/SSuw9QxDdlZy09/hHErro8pFBI60B98enI=; b=yOC6ahZvm14m3g
-	GSTnRoM7dC6RPvi0W/+V2JKpFFx/oG58taQAJISISw/GAefpfyhlh7Y+lPkZijtKQzA+1l8cGIf/n
-	/5/oK4spMjeRycewY5sKjRIhlq8fUzASkJFhS++buFT7ASNKpj2Es/ZRZx1QXaQ/CMXyzk9Mx+LZL
-	dcVbOyWi/pHTv6T+evDlO4CSwON+DmnUN5l/rUZYtS8rTYhuPkdAzgof46OSuKXtfz570WXpq1Au3
-	il0OXyE28/AKw2Cdn4V+gv2m377c/NpG9JkbfqfqGUxE5RLEcXKjFw7v0GjY+VXvJZVi7LfQAn7ig
-	+2lJIeaUSFh7VkjSK8Dw==;
+	List-Owner; bh=p1kU9X3/ACxeLkhxWV2j1TuxVlGPCX4TKc9ldNvXoLw=; b=Ihrwr40wVqx1mf
+	TbJqXPTAQCE52VExyK+BIVnykoigR12y6n/mCQpDP01WlMcfpTbkCzmoPtPJ4SA+UklitY/VHSB2v
+	dYtXs8IlZwomVBiJq3No4Z/uF4KNY2b2ZqPLD162Dny2II4/oAhOIH+k/f+tH6R15l3R4M7NQjUoE
+	dTBzFCcyOmtpLaDqFSDi97O4eqBPLlxmLWv3tp5+oze/ums1dAySmvtKSJh9TmcMkyCYHMqh10NZf
+	aBAv4dZAVEyoDoSAtq2ruJ45FD2K32lhxJmmKA3Yp8+//7uLDa8RofeAW3dPHXPYYv5tx5Nz7TfR9
+	Laq0ywkB+ODXGj8zFzIw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kftx5-0004HX-OW; Fri, 20 Nov 2020 00:06:59 +0000
-Received: from mga04.intel.com ([192.55.52.120])
+	id 1kfuJi-0006Lt-64; Fri, 20 Nov 2020 00:30:22 +0000
+Received: from mga18.intel.com ([134.134.136.126])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kftwx-0004Fp-7E
- for linux-mtd@lists.infradead.org; Fri, 20 Nov 2020 00:06:57 +0000
-IronPort-SDR: IaJzoJflw+C/B85JPYT5tA6yJ47Fk3hsfV/DynLVdL6b7HhNs9rH9aQB1a86cmG/Qu2G4ScAlt
- LZDth14y0Jvg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="168814804"
-X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; d="scan'208";a="168814804"
+ id 1kfuJb-0006L5-Ob
+ for linux-mtd@lists.infradead.org; Fri, 20 Nov 2020 00:30:21 +0000
+IronPort-SDR: 43cl6+vjhIsaqR0GmYnyI8rLiIjf/spjwF2+eVLgY2zdZ9Ze1L65DurUKVs9lZ0DyDcGSjtvdk
+ Ajsw5clgNZBg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="159159889"
+X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; d="scan'208";a="159159889"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Nov 2020 16:06:44 -0800
-IronPort-SDR: iz+IielfoYppbtbikNhl3Wz2qLKZa2w0KeA48U77kvg/3ENjHg7xD+kQMaK7TM4lLN8PWKg+s4
- hFNuXq6YmpQw==
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Nov 2020 16:30:08 -0800
+IronPort-SDR: RMQWgMWYdT3LeRaF+AA5gw40c5DR1S77RVuHeW0wP13RKdHWx+sSFJh0s97bH3gqpNcEb/SOs7
+ Xf51d2XKhnnA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; d="scan'208";a="360222742"
+X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; d="scan'208";a="369040577"
 Received: from linux.intel.com ([10.54.29.200])
- by fmsmga004.fm.intel.com with ESMTP; 19 Nov 2020 16:06:43 -0800
+ by orsmga007.jf.intel.com with ESMTP; 19 Nov 2020 16:30:08 -0800
 Received: from [10.213.153.3] (vramuthx-MOBL1.gar.corp.intel.com
  [10.213.153.3])
- by linux.intel.com (Postfix) with ESMTP id A8265580806;
- Thu, 19 Nov 2020 16:06:40 -0800 (PST)
-Subject: Re: [PATCH v8 0/6] spi: cadence-quadspi: Add QSPI controller support
+ by linux.intel.com (Postfix) with ESMTP id 3B85F580409;
+ Thu, 19 Nov 2020 16:29:53 -0800 (PST)
+Subject: Re: [PATCH v8 3/6] spi: cadence-quadspi: Add multi-chipselect support
  for Intel LGM SoC
 To: Vignesh Raghavendra <vigneshr@ti.com>, broonie@kernel.org,
  linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
 References: <20201119055551.26493-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <98b7b367-0bf3-e745-1dd2-302f76bab0b7@ti.com>
+ <20201119055551.26493-4-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <9fc328cc-1f4d-1896-6dde-a107d76e14cb@ti.com>
 From: "Ramuthevar, Vadivel MuruganX"
  <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <b57321fc-f6ff-1a15-20fa-e776416544c9@linux.intel.com>
-Date: Fri, 20 Nov 2020 08:06:38 +0800
+Message-ID: <4d0f82a8-f87d-ba75-336f-564d89083732@linux.intel.com>
+Date: Fri, 20 Nov 2020 08:29:51 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.4.3
 MIME-Version: 1.0
-In-Reply-To: <98b7b367-0bf3-e745-1dd2-302f76bab0b7@ti.com>
+In-Reply-To: <9fc328cc-1f4d-1896-6dde-a107d76e14cb@ti.com>
 Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201119_190651_482601_F67D047E 
-X-CRM114-Status: GOOD (  21.45  )
+X-CRM114-CacheID: sfid-20201119_193015_974454_514E2A09 
+X-CRM114-Status: GOOD (  24.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,57 +96,112 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
 Hi Vignesh,
 
 Thank you very much for the review comments...
 
-On 19/11/2020 8:36 pm, Vignesh Raghavendra wrote:
+On 19/11/2020 8:57 pm, Vignesh Raghavendra wrote:
 > 
 > 
 > On 11/19/20 11:25 AM, Ramuthevar,Vadivel MuruganX wrote:
->> Add QSPI controller support for Intel LGM SoC.
+>> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 >>
->> Note from Vignesh(mtd subsystem maintainer):H
->> This series is a subset of "[PATCH v12 0/4] spi: cadence-quadspi: Add
->> support for the Cadence QSPI controller" by Ramuthevar,Vadivel MuruganX
->> <vadivel.muruganx.ramuthevar@linux.intel.com> that intended to move
->> cadence-quadspi driver to spi-mem framework
+>> Add multiple chipselect support for Intel LGM SoCs,
+>> currently QSPI-NOR and QSPI-NAND supported.
 >>
->> Those patches were trying to accomplish too many things in a single set
->> of patches and need to split into smaller patches. This is reduced
->> version of above series.
->>
->> Changes that are intended to make migration easy are split into separate
->> patches. Patches 1 to 3 drop features that cannot be supported under
->> spi-mem at the moment (backward compatibility is maintained).
->> Patch 4-5 are trivial cleanups. Patch 6 does the actual conversion to
->> spi-mem and patch 7 moves the driver to drivers/spi folder.
->>
->> I have tested both INDAC mode (used by non TI platforms like Altera
->> SoCFPGA) and DAC mode (used by TI platforms) on TI EVMs.
->>
->> Patches to move move bindings over to
->> "Documentation/devicetree/bindings/spi/" directory and also conversion
->> of bindig doc to YAML will be posted separately.  Support for Intel
->> platform would follow that.
->>
->> Reference:
->>          https://lkml.org/lkml/2020/6/1/50
->>
+>> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 >> ---
->> v8:
->>    - As Mark suggested to add the dt-bindings documentation patches
->>      end of the series , so dropped.
+>>   drivers/spi/spi-cadence-quadspi.c | 15 +++++++++++++++
+>>   1 file changed, 15 insertions(+)
+>>
+>> diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+>> index d12b765e87be..337778f75d5d 100644
+>> --- a/drivers/spi/spi-cadence-quadspi.c
+>> +++ b/drivers/spi/spi-cadence-quadspi.c
+>> @@ -38,6 +38,7 @@
+>>   
+>>   /* Capabilities */
+>>   #define CQSPI_SUPPORTS_OCTAL		BIT(0)
+>> +#define CQSPI_SUPPORTS_MULTI_CHIPSELECT BIT(1)
+>>   
+>>   struct cqspi_st;
+>>   
+>> @@ -75,6 +76,7 @@ struct cqspi_st {
+>>   	bool			is_decoded_cs;
+>>   	u32			fifo_depth;
+>>   	u32			fifo_width;
+>> +	u32			num_chipselect;
+>>   	bool			rclk_en;
+>>   	u32			trigger_address;
+>>   	u32			wr_delay;
+>> @@ -1049,6 +1051,7 @@ static int cqspi_of_get_flash_pdata(struct platform_device *pdev,
+>>   
+>>   static int cqspi_of_get_pdata(struct cqspi_st *cqspi)
+>>   {
+>> +	const struct cqspi_driver_platdata *ddata;
 > 
-> Suggestion was to drop patches converting legacy binding doc to YAML schema.
-> You still need to include a patch documenting new compatible
-> "intel,lgm-qspi" in the existing (legacy) binding doc.
-Noted, will do that.
+> Unused variable?
+currently used for this check
+if (ddata->hwcaps_mask & CQSPI_SUPPORTS_MULTI_CHIPSELECT) {
 
-Regards
-Vadivel
+next patch will drop it, because the above check to be removed.
 > 
+>>   	struct device *dev = &cqspi->pdev->dev;
+>>   	struct device_node *np = dev->of_node;
+>>   
+>> @@ -1070,6 +1073,14 @@ static int cqspi_of_get_pdata(struct cqspi_st *cqspi)
+>>   		return -ENXIO;
+>>   	}
+>>   
+>> +	ddata  = of_device_get_match_data(dev);
+>> +	if (ddata->hwcaps_mask & CQSPI_SUPPORTS_MULTI_CHIPSELECT) {
+> 
+> I don't see a need for this flag... Controller by default supports
+> multiple CS.
+Ok.
+> 
+>> +		if (of_property_read_u32(np, "num-cs", &cqspi->num_chipselect)) {
+>> +			dev_err(dev, "couldn't determine number of cs\n");
+>> +			return -ENXIO;
+>> +		}
+>> +	}
+>> +
+> 
+> 
+> Entire hunk can be replaced with:
+> 
+>          if (of_property_read_u32(np, "num-cs", &cqspi->num_chipselect))
+> 		cqspi->num_chipselect = CQSPI_MAX_CHIPSELECT;
+Noted, thanks!
+> 
+> 
+>>   	cqspi->rclk_en = of_property_read_bool(np, "cdns,rclk-en");
+>>   
+>>   	return 0;
+>> @@ -1302,6 +1313,9 @@ static int cqspi_probe(struct platform_device *pdev)
+>>   	cqspi->current_cs = -1;
+>>   	cqspi->sclk = 0;
+>>   
+>> +	if (ddata->hwcaps_mask & CQSPI_SUPPORTS_MULTI_CHIPSELECT)
+>> +		master->num_chipselect = cqspi->num_chipselect;
+>> +
+> 
+> And then this becomes:
+> 	master->num_chipselect = cqspi->num_chipselect;
+Ok, Noted.
+> 
+>>   	ret = cqspi_setup_flash(cqspi);
+>>   	if (ret) {
+>>   		dev_err(dev, "failed to setup flash parameters %d\n", ret);
+>> @@ -1391,6 +1405,7 @@ static const struct cqspi_driver_platdata am654_ospi = {
+>>   };
+>>   
+>>   static const struct cqspi_driver_platdata intel_lgm_qspi = {
+>> +	.hwcaps_mask = CQSPI_SUPPORTS_MULTI_CHIPSELECT,
+>>   	.quirks = CQSPI_DISABLE_DAC_MODE,
+>>   };
+>>   
+>>
 
 ______________________________________________________
 Linux MTD discussion mailing list
