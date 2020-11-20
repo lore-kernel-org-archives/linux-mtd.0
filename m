@@ -2,44 +2,44 @@ Return-Path: <SRS0=dDgs=E2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50388C56202
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2020 09:59:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FED8C63777
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2020 09:59:32 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5DFB022240
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2020 09:59:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E857222240
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2020 09:59:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YJshzyGd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5DFB022240
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="X4M93xSY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E857222240
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rock-chips.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=+V3ZyMDA4e79aL1cDwImJnxkd4VEB1ePSZ+3YTDdxwM=; b=YJshzyGdSK3KbMqYLobq/kAg0P
-	pm9e4SdAKwdMW0PsoN0iTTbprIUYCMUOjnlAqp1uaEfSl4YawSfIfi2WuxAKcoVhx/kd6joNMbJzF
-	cG+09kZRnQpg/RfVr8cZLkambuRVjUYLPDOnVuyQTqOd50DRz1o7E8+XxFpRsAka3hvx8qvqnjx4t
-	HePOeJPBeI7hb9eSBAgaicRB5wrXbKgYYAzDsDMsWxnMCzcVNP9NHPothgRhU393G42+Sv84a3cVy
-	YhXHXa3q5NO3WforKA99Mjy04DW7W7YaPdyHF7MIUlLSDhYf4cdPxQ+UjBxuG4eBtv40Wor4RkY9y
-	NFUHQdzA==;
+	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
+	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=srkCY3n+0JnPNmpxXW6kKvGF7HVTzn2yidNibKoxGUc=; b=X4M93xSYrnP+qzsmwgvkY9S1UZ
+	PTVxF4Sk7zl4W0nGC1FL1DlZI5eIsBJ+gXMqgOI3WfrZpAtKSpyjXedfntdRmTXuUPlALGU4FRbC1
+	V3CXD80a0Eo0tQ+QUER1ldKLGrbmvMpxgqz5j0ETJy6DjpYsEWVXZIYukvvkorUq742OgjqxzzD8g
+	0pzVdQgy5wwOYZC/oAFc477vo2k7pdPGNkCwu07RtiRknTD5WcJyQyTzF6QKNnoQyPYMWyNznOZ1x
+	cAUO/NLFmhnzd2HBOqfWmCILN9BScSLvkc1Hjmg+0/WlRpEreY+b0MI+OTrF2MuUyDUqYi0s1X2AK
+	U0nZrpRg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kg3B5-0007fU-Kt; Fri, 20 Nov 2020 09:58:03 +0000
+	id 1kg3B8-0007hV-RW; Fri, 20 Nov 2020 09:58:06 +0000
 Received: from lucky1.263xmail.com ([211.157.147.131])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kg39a-00072R-MO; Fri, 20 Nov 2020 09:56:40 +0000
+ id 1kg39c-00072z-K0; Fri, 20 Nov 2020 09:56:40 +0000
 Received: from localhost (unknown [192.168.167.223])
- by lucky1.263xmail.com (Postfix) with ESMTP id D1BD2B6AD6;
- Fri, 20 Nov 2020 17:56:19 +0800 (CST)
+ by lucky1.263xmail.com (Postfix) with ESMTP id 90E95B6A27;
+ Fri, 20 Nov 2020 17:56:20 +0800 (CST)
 X-MAIL-GRAY: 0
 X-MAIL-DELIVERY: 1
 X-ADDR-CHECKED4: 1
@@ -48,9 +48,9 @@ X-ABS-CHECKED: 0
 Received: from localhost.localdomain (unknown [58.22.7.114])
  by smtp.263.net (postfix) whith ESMTP id
  P21631T139747833935616S1605866174624500_; 
- Fri, 20 Nov 2020 17:56:19 +0800 (CST)
+ Fri, 20 Nov 2020 17:56:20 +0800 (CST)
 X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <d8ea9b059b25f44bd2a6f9b93ca5b6f3>
+X-UNIQUE-TAG: <8c60b62957be87e8119d0fd2edf8f776>
 X-RL-SENDER: yifeng.zhao@rock-chips.com
 X-SENDER: zyf@rock-chips.com
 X-LOGIN-NAME: yifeng.zhao@rock-chips.com
@@ -62,13 +62,16 @@ X-System-Flag: 0
 From: Yifeng Zhao <yifeng.zhao@rock-chips.com>
 To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
  robh+dt@kernel.org
-Subject: [PATCH v14 0/8] Add Rockchip NFC drivers for RK3308 and others
-Date: Fri, 20 Nov 2020 17:56:09 +0800
-Message-Id: <20201120095613.20172-1-yifeng.zhao@rock-chips.com>
+Subject: [PATCH v14 1/8] dt-bindings: mtd: Describe Rockchip RK3xxx NAND flash
+ controller
+Date: Fri, 20 Nov 2020 17:56:10 +0800
+Message-Id: <20201120095613.20172-2-yifeng.zhao@rock-chips.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201120095613.20172-1-yifeng.zhao@rock-chips.com>
+References: <20201120095613.20172-1-yifeng.zhao@rock-chips.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201120_045634_508047_4008219D 
-X-CRM114-Status: GOOD (  17.17  )
+X-CRM114-CacheID: sfid-20201120_045634_983749_3583FB71 
+X-CRM114-Status: GOOD (  16.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,109 +93,216 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Documentation support for Rockchip RK3xxx NAND flash controllers
 
-Rockchp's NFC(Nand Flash Controller) has four versions: V600, V622, V800 and
-V900.This series patch can support all four versions.
+Signed-off-by: Yifeng Zhao <yifeng.zhao@rock-chips.com>
+---
 
-
-Changes in v14:
-- Add oob_read and oob_write hook api.
-- Support timing config and ecc config for each chips.
-- Fix some comments.
-
-Changes in v13:
-- The nfc->buffer will realloc while the page size of the second mtd
-  is large than the first one.
-- Fix coding style.
-- Fix some comments.
-
+Changes in v14: None
+Changes in v13: None
 Changes in v12:
 - Fix some warnings while make dt_binding_check
 - Drop a allOf defined
 
-Changes in v11:
-- Fix compile error.
-
-Changes in v10:
-- Fix compile error on master v5.9-rc7.
-
-Changes in v9:
-- The nfc->buffer will realloc while the page size of the second mtd
-  is large than the first one
-- Fix coding style.
-- Remove struct rk_nfc_clk.
-- Prepend some function with rk_nfc_.
-- Replace function readl_poll_timeout_atomic with readl_relaxed_poll_timeout.
-- Remove function rk_nfc_read_byte and rk_nfc_write_byte.
-- Don't select the die if 'check_only == true' in function rk_nfc_exec_op.
-- Modify function rk_nfc_write_page and rk_nfc_write_page_raw.
-
+Changes in v11: None
+Changes in v10: None
+Changes in v9: None
 Changes in v8:
 - Fix a error while make dt_binding_check
 
 Changes in v7:
 - Fix some wrong define
-- Rebase to linux-next.
-- Fix coding style.
-- Reserved 4 bytes at the beginning of the oob area.
-- Page raw read and write included ecc data.
 
 Changes in v6:
 - Fix some wrong define
 - Modified the definition of compatible
-- The mtd->name set by NAND label property.
-- Add some comments.
-- Fix compile error.
 
 Changes in v5:
 - Fix some wrong define.
 - Add boot-medium define.
-- Remove some compatible define.
-- Add boot blocks support  with different ECC for bootROM.
-- Rename rockchip-nand.c to rockchip-nand-controller.c.
-- Unification of other variable names.
 - Remove some compatible define.
 
 Changes in v4:
 - The compatible define with rkxx_nfc.
 - Add assigned-clocks.
 - Fix some wrong defineChanges in.
-- Define platform data structure for the register offsets.
-- The compatible define with rkxx_nfc.
-- Use SET_SYSTEM_SLEEP_PM_OPS to define PM_OPS.
-- Use exec_op instead of legacy hooks.
 
 Changes in v3:
 - Change the title for the dt-bindings.
 
-Changes in v2:
-- Fix compile error.
-- Include header files sorted by file name.
+Changes in v2: None
 
-Yifeng Zhao (8):
-  dt-bindings: mtd: Describe Rockchip RK3xxx NAND flash controller
-  mtd: rawnand: rockchip: NFC drivers for RK3308, RK2928 and others
-  MAINTAINERS: add maintainers to ROCKCHIP NFC
-  arm64: dts: rockchip: Add NFC node for RK3308 SoC
-  arm64: dts: rockchip: Add NFC node for PX30 SoC
-  arm: dts: rockchip: Add NFC node for RV1108 SoC
-  arm: dts: rockchip: Add NFC node for RK2928 and other SoCs
-  arm: dts: rockchip: Add NFC node for RK3036 SoC
-
- .../mtd/rockchip,nand-controller.yaml         |  161 ++
- MAINTAINERS                                   |    4 +-
- arch/arm/boot/dts/rk3036.dtsi                 |   52 +
- arch/arm/boot/dts/rk3xxx.dtsi                 |    9 +
- arch/arm/boot/dts/rv1108.dtsi                 |   11 +
- arch/arm64/boot/dts/rockchip/px30.dtsi        |   15 +
- arch/arm64/boot/dts/rockchip/rk3308.dtsi      |   15 +
- drivers/mtd/nand/raw/Kconfig                  |   12 +
- drivers/mtd/nand/raw/Makefile                 |    1 +
- .../mtd/nand/raw/rockchip-nand-controller.c   | 1497 +++++++++++++++++
- 10 files changed, 1775 insertions(+), 2 deletions(-)
+ .../mtd/rockchip,nand-controller.yaml         | 161 ++++++++++++++++++
+ 1 file changed, 161 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
- create mode 100644 drivers/mtd/nand/raw/rockchip-nand-controller.c
 
+diff --git a/Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml b/Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
+new file mode 100644
+index 000000000000..0922536b1811
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
+@@ -0,0 +1,161 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/rockchip,nand-controller.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Rockchip SoCs NAND FLASH Controller (NFC)
++
++allOf:
++  - $ref: "nand-controller.yaml#"
++
++maintainers:
++  - Heiko Stuebner <heiko@sntech.de>
++
++properties:
++  compatible:
++    oneOf:
++      - const: rockchip,px30-nfc
++      - const: rockchip,rk2928-nfc
++      - const: rockchip,rv1108-nfc
++      - items:
++          - const: rockchip,rk3036-nfc
++          - const: rockchip,rk2928-nfc
++      - items:
++          - const: rockchip,rk3308-nfc
++          - const: rockchip,rv1108-nfc
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    minItems: 1
++    items:
++      - description: Bus Clock
++      - description: Module Clock
++
++  clock-names:
++    minItems: 1
++    items:
++      - const: ahb
++      - const: nfc
++
++  assigned-clocks:
++    maxItems: 1
++
++  assigned-clock-rates:
++    maxItems: 1
++
++  power-domains:
++    maxItems: 1
++
++patternProperties:
++  "^nand@[0-7]$":
++    type: object
++    properties:
++      reg:
++        minimum: 0
++        maximum: 7
++
++      nand-ecc-mode:
++        const: hw
++
++      nand-ecc-step-size:
++        const: 1024
++
++      nand-ecc-strength:
++        enum: [16, 24, 40, 60, 70]
++        description: |
++          The ECC configurations that can be supported are as follows.
++            NFC v600 ECC 16, 24, 40, 60
++              RK2928, RK3066, RK3188
++
++            NFC v622 ECC 16, 24, 40, 60
++              RK3036, RK3128
++
++            NFC v800 ECC 16
++              RK3308, RV1108
++
++            NFC v900 ECC 16, 40, 60, 70
++              RK3326, PX30
++
++      nand-bus-width:
++        const: 8
++
++      rockchip,boot-blks:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        minimum: 2
++        default: 16
++        description:
++          The NFC driver need this information to select ECC
++          algorithms supported by the boot ROM.
++          Only used in combination with 'nand-is-boot-medium'.
++
++      rockchip,boot-ecc-strength:
++        enum: [16, 24, 40, 60, 70]
++        allOf:
++          - $ref: /schemas/types.yaml#/definitions/uint32
++        description: |
++          If specified it indicates that a different BCH/ECC setting is
++          supported by the boot ROM.
++            NFC v600 ECC 16, 24
++              RK2928, RK3066, RK3188
++
++            NFC v622 ECC 16, 24, 40, 60
++              RK3036, RK3128
++
++            NFC v800 ECC 16
++              RK3308, RV1108
++
++            NFC v900 ECC 16, 70
++              RK3326, PX30
++
++          Only used in combination with 'nand-is-boot-medium'.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/rk3308-cru.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    nfc: nand-controller@ff4b0000 {
++      compatible = "rockchip,rk3308-nfc",
++                   "rockchip,rv1108-nfc";
++      reg = <0xff4b0000 0x4000>;
++      interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>;
++      clocks = <&cru HCLK_NANDC>, <&cru SCLK_NANDC>;
++      clock-names = "ahb", "nfc";
++      assigned-clocks = <&clks SCLK_NANDC>;
++      assigned-clock-rates = <150000000>;
++
++      pinctrl-0 = <&flash_ale &flash_bus8 &flash_cle &flash_csn0
++                   &flash_rdn &flash_rdy &flash_wrn>;
++      pinctrl-names = "default";
++
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      nand@0 {
++        reg = <0>;
++        label = "rk-nand";
++        nand-bus-width = <8>;
++        nand-ecc-mode = "hw";
++        nand-ecc-step-size = <1024>;
++        nand-ecc-strength = <16>;
++        nand-is-boot-medium;
++        rockchip,boot-blks = <8>;
++        rockchip,boot-ecc-strength = <16>;
++      };
++    };
++
++...
 -- 
 2.17.1
 
