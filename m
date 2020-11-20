@@ -2,76 +2,62 @@ Return-Path: <SRS0=dDgs=E2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE3C6C63777
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2020 10:02:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18BB3C56202
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2020 10:52:17 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5688922240
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2020 10:02:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 83CF42078B
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2020 10:52:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PX9hjjWI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5688922240
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rock-chips.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dnShs5r/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 83CF42078B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
-	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=M884myQJH3LnjgkRSIMa7/q7iTBmmAC1rWwco57OBUA=; b=PX9hjjWIm2St3JCKkRt73wOnUe
-	75lUL38UBlG5wy4mU5kCcQX5M3eHQxFH0NdWFiPLlvOHRiiGf9ccmw9RqW6HrvivG+kyj9hOCbco0
-	sOlN8y2nshYIzmRzApUA+Pk/E6g94oTQs1rhU2vxiDAU2uw1HOMBbd1BUbHL696Z0nMP1m34vgk62
-	I+ZJIO+daYCuo5OxaOVID0OaCWO8MVEBWeLx/wbiTpqhP59ydlgmeFOTXs1eLbo4r8/s8Oaf3MAmH
-	1O14YGNd47L7KuW/X3uXgtx/7UrxXjvvUpRfn3SJlNg5URdN1BPGk8ps2+9PKOJ7jaJOSydtt98oY
-	wlEBijrA==;
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=j6wv9jxw7C3QgRS3hu9tQ4EtkWHBJ+RKT14WFDA5NxE=; b=dnShs5r/6nPMWtUGb/XnzJwB5
+	HdN8QilRvG7VQB/SfuQED5aR0LMNxK3rDEcOalsG9SapecKGFb9dMeMk+a7470rz2TiZB5AjtD2uq
+	WlNC4eiS7O2g0cSHdKUtXFoU16r60fqVai/uiVmnVWnEZuD+sQhJV8667cIwpuUivBNfhxrsDA9s/
+	egdsG3C9PKuh1t/CDP0v/Lxp5JpiiYesKMfgaqqhCvVPuw9JwE6bXFSb2oYNb1mODoWRhvmFdhUBg
+	59HHtq5OIrtEAYgGVB1CLdWVlFLyF223Rp4j/1HOeQA5aN6yG2hSdbSegXEmwmESqv2h6HbInp/ka
+	16FkUpONQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kg3E6-0000oo-72; Fri, 20 Nov 2020 10:01:10 +0000
-Received: from lucky1.263xmail.com ([211.157.147.134])
+	id 1kg40b-0003oS-8I; Fri, 20 Nov 2020 10:51:17 +0000
+Received: from relay4-d.mail.gandi.net ([217.70.183.196])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kg3A9-0007Hb-QX; Fri, 20 Nov 2020 09:57:12 +0000
-Received: from localhost (unknown [192.168.167.13])
- by lucky1.263xmail.com (Postfix) with ESMTP id 4ECEDC565E;
- Fri, 20 Nov 2020 17:56:57 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [58.22.7.114])
- by smtp.263.net (postfix) whith ESMTP id
- P9243T140659012777728S1605866211174957_; 
- Fri, 20 Nov 2020 17:56:58 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <611d135c8c45277f31817273c68d3150>
-X-RL-SENDER: yifeng.zhao@rock-chips.com
-X-SENDER: zyf@rock-chips.com
-X-LOGIN-NAME: yifeng.zhao@rock-chips.com
-X-FST-TO: miquel.raynal@bootlin.com
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-DNS-TYPE: 0
-X-System-Flag: 0
-From: Yifeng Zhao <yifeng.zhao@rock-chips.com>
-To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- robh+dt@kernel.org
-Subject: [PATCH v14 8/8] arm: dts: rockchip: Add NFC node for RK3036 SoC
-Date: Fri, 20 Nov 2020 17:56:49 +0800
-Message-Id: <20201120095649.20226-4-yifeng.zhao@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201120095649.20226-1-yifeng.zhao@rock-chips.com>
-References: <20201120095613.20172-1-yifeng.zhao@rock-chips.com>
- <20201120095649.20226-1-yifeng.zhao@rock-chips.com>
+ id 1kg40Y-0003nw-79
+ for linux-mtd@lists.infradead.org; Fri, 20 Nov 2020 10:51:15 +0000
+X-Originating-IP: 91.224.148.103
+Received: from xps13 (unknown [91.224.148.103])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 73236E0029;
+ Fri, 20 Nov 2020 10:51:11 +0000 (UTC)
+Date: Fri, 20 Nov 2020 11:51:09 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: mtd: rawnand: gpmi: regression since
+ e5e5631cc88987a6f3cd8304660bd9190da95916
+Message-ID: <20201120115109.198d0e5d@xps13>
+In-Reply-To: <20201117123001.GE29830@pengutronix.de>
+References: <315838324eb25d3a1ab37ee90fa28fa1cdc48cae.camel@pengutronix.de>
+ <20201117123001.GE29830@pengutronix.de>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201120_045707_329855_3CACA8D6 
-X-CRM114-Status: GOOD (  10.97  )
+X-CRM114-CacheID: sfid-20201120_055114_473712_152D8E8C 
+X-CRM114-Status: GOOD (  16.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,114 +69,87 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, heiko@sntech.de,
- Yifeng Zhao <yifeng.zhao@rock-chips.com>, linux-kernel@vger.kernel.org,
- linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, Juergen Borleis <jbe@pengutronix.de>,
+ linux-mtd@lists.infradead.org, kernel@pengutronix.de, Han Xu <han.xu@nxp.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add NAND FLASH Controller(NFC) node for RK3036 SoC.
-
-Signed-off-by: Yifeng Zhao <yifeng.zhao@rock-chips.com>
----
-
-Changes in v14: None
-Changes in v13: None
-Changes in v12: None
-Changes in v11: None
-Changes in v10: None
-Changes in v9: None
-Changes in v8: None
-Changes in v7: None
-Changes in v6: None
-Changes in v5: None
-Changes in v4: None
-Changes in v3: None
-Changes in v2: None
-
- arch/arm/boot/dts/rk3036.dtsi | 52 +++++++++++++++++++++++++++++++++++
- 1 file changed, 52 insertions(+)
-
-diff --git a/arch/arm/boot/dts/rk3036.dtsi b/arch/arm/boot/dts/rk3036.dtsi
-index 093567022386..dda5a1f79aca 100644
---- a/arch/arm/boot/dts/rk3036.dtsi
-+++ b/arch/arm/boot/dts/rk3036.dtsi
-@@ -292,6 +292,21 @@
- 		status = "disabled";
- 	};
- 
-+	nfc: nand-controller@10500000 {
-+		compatible = "rockchip,rk3036-nfc",
-+			     "rockchip,rk2928-nfc";
-+		reg = <0x10500000 0x4000>;
-+		interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru HCLK_NANDC>, <&cru SCLK_NANDC>;
-+		clock-names = "ahb", "nfc";
-+		assigned-clocks = <&cru SCLK_NANDC>;
-+		assigned-clock-rates = <150000000>;
-+		pinctrl-0 = <&flash_ale &flash_bus8 &flash_cle &flash_csn0
-+			     &flash_rdn &flash_rdy &flash_wrn>;
-+		pinctrl-names = "default";
-+		status = "disabled";
-+	};
-+
- 	cru: clock-controller@20000000 {
- 		compatible = "rockchip,rk3036-cru";
- 		reg = <0x20000000 0x1000>;
-@@ -643,6 +658,43 @@
- 			};
- 		};
- 
-+		nfc {
-+			flash_ale: flash-ale {
-+				rockchip,pins = <2 RK_PA0 1 &pcfg_pull_default>;
-+			};
-+
-+			flash_bus8: flash-bus8 {
-+				rockchip,pins = <1 RK_PD0 1 &pcfg_pull_default>,
-+						<1 RK_PD1 1 &pcfg_pull_default>,
-+						<1 RK_PD2 1 &pcfg_pull_default>,
-+						<1 RK_PD3 1 &pcfg_pull_default>,
-+						<1 RK_PD4 1 &pcfg_pull_default>,
-+						<1 RK_PD5 1 &pcfg_pull_default>,
-+						<1 RK_PD6 1 &pcfg_pull_default>,
-+						<1 RK_PD7 1 &pcfg_pull_default>;
-+			};
-+
-+			flash_cle: flash-cle {
-+				rockchip,pins = <2 RK_PA1 1 &pcfg_pull_default>;
-+			};
-+
-+			flash_csn0: flash-csn0 {
-+				rockchip,pins = <2 RK_PA6 1 &pcfg_pull_default>;
-+			};
-+
-+			flash_rdn: flash-rdn {
-+				rockchip,pins = <2 RK_PA3 1 &pcfg_pull_default>;
-+			};
-+
-+			flash_rdy: flash-rdy {
-+				rockchip,pins = <2 RK_PA4 1 &pcfg_pull_default>;
-+			};
-+
-+			flash_wrn: flash-wrn {
-+				rockchip,pins = <2 RK_PA2 1 &pcfg_pull_default>;
-+			};
-+		};
-+
- 		emac {
- 			emac_xfer: emac-xfer {
- 				rockchip,pins = <2 RK_PB2 1 &pcfg_pull_default>, /* crs_dvalid */
--- 
-2.17.1
-
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGksCgpTYXNjaGEgSGF1ZXIgPHMuaGF1ZXJAcGVuZ3V0cm9uaXguZGU+IHdyb3RlIG9uIFR1ZSwg
+MTcgTm92IDIwMjAKMTM6MzA6MDEgKzAxMDA6Cgo+IE9uIFR1ZSwgTm92IDE3LCAyMDIwIGF0IDEx
+OjE2OjI2QU0gKzAxMDAsIEp1ZXJnZW4gQm9ybGVpcyB3cm90ZToKPiA+IEhpLAo+ID4gCj4gPiBy
+ZWFkaW5nIGEgTkFORCBwYWdlIGluIHJhdyBtb2RlIGlzIHJlcXVpcmVkIHRvIGNoZWNrIHRoZSBj
+b25zaXN0ZW5jZSBvZiB0aGUgc28tCj4gPiBjYWxsZWQgRkNCcyAodXNlZCB0byBib290IHRoZSBT
+b0MgZnJvbSBOQU5EIGNvbnRlbnQpLgo+ID4gCj4gPiBCZWZvcmUgZTVlNTYzMWNjODg5ODdhNmYz
+Y2Q4MzA0NjYwYmQ5MTkwZGE5NTkxNiAoIm10ZDogcmF3bmFuZDogZ3BtaTogVXNlCj4gPiBuYW5k
+X2V4dHJhY3RfYml0cygpIikgaXQgcmVhZHMgdGhlIGZpcnN0IHBhZ2Ugb2YgdGhlIE5BTkQgY29y
+cmVjdGx5IGFzOgo+ID4gCj4gPiAwMDAwMDAwMCAgMDAgMDAgODggZmIgZmYgZmYgNDYgNDMgIDQy
+IDIwIDAwIDAwIDAwIDAxIDUwIDNjICB8Li4uLi4uRkNCIC4uLi5QPHwKPiA+IDAwMDAwMDEwICAx
+OSAwNiAwMCAwMCAwMCAwMCAwMCAwOCAgMDAgMDAgODAgMDggMDAgMDAgNDAgMDAgIHwuLi4uLi4u
+Li4uLi4uLkAufAo+ID4gMDAwMDAwMjAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAw
+MCAwMCAwMCAwMCAwOSAwMCAgfC4uLi4uLi4uLi4uLi4uLi58Cj4gPiAwMDAwMDAzMCAgMDAgMDAg
+MDAgMDIgMDAgMDAgMDAgMDIgIDAwIDAwIDA5IDAwIDAwIDAwIDBhIDAwICB8Li4uLi4uLi4uLi4u
+Li4uLnwKPiA+IDAwMDAwMDQwICAwMCAwMCAwMyAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAg
+MDAgMDAgMDAgMDAgIHwuLi4uLi4uLi4uLi4uLi4ufAo+ID4gMDAwMDAwNTAgIDAwIDAwIDAwIDAw
+IDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfC4uLi4uLi4uLi4uLi4uLi58
+Cj4gPiAwMDAwMDA2MCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAxIDAwIDAw
+IDgwIDEwICB8Li4uLi4uLi4uLi4uLi4uLnwKPiA+IDAwMDAwMDcwICAwMCAwMCA1NSAwMSAwMCAw
+MCA1NSAwMSAgMDAgMDAgMDEgMDAgMDAgMDAgOWUgMDcgIHwuLlUuLi5VLi4uLi4uLi4ufAo+ID4g
+MDAwMDAwODAgIDAwIDAwIDAyIDAwIDAwIDAwIDAwIDA4ICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
+MCAgfC4uLi4uLi4uLi4uLi4uLi58Cj4gPiAwMDAwMDA5MCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
+MDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8Li4uLi4uLi4uLi4uLi4uLnwKPiA+ICoKPiA+
+IDAwMDAwMjAwICA0MCAwNSAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
+MDAgIHxALi4uLi4uLi4uLi4uLi4ufAo+ID4gMDAwMDAyMTAgIDQwIDAxIDAwIDAwIDAwIDgwIDA1
+IDAwICAwMCA4MCAwNSAwMCA0MCAwMSAwMCAwMCAgfEAuLi4uLi4uLi4uLkAuLi58Cj4gPiAwMDAw
+MDIyMCAgYzAgMDMgMDAgMDAgODAgMDIgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8
+Li4uLi4uLi4uLi4uLi4uLnwKPiA+IDAwMDAwMjMwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAg
+MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIHwuLi4uLi4uLi4uLi4uLi4ufAo+ID4gMDAwMDAyNDAg
+IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwNyAwMCAgfC4uLi4u
+Li4uLi4uLi4uLi58Cj4gPiAwMDAwMDI1MCAgODAgODMgMDYgMDAgMDAgMDAgMDcgMDAgIDAwIDAw
+IDA3IDAwIDAwIDA3IDAwIDAwICB8Li4uLi4uLi4uLi4uLi4uLnwKPiA+IDAwMDAwMjYwICAwMCA0
+MiAwNiAwMCA4MCAwNSAwMCAwMCAgMDAgNDAgMDYgMDAgMDAgMDAgMDAgMDAgIHwuQi4uLi4uLi5A
+Li4uLi4ufAo+ID4gMDAwMDAyNzAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAw
+MCAwMCAwMCAwMCAwMCAgfC4uLi4uLi4uLi4uLi4uLi58Cj4gPiAqCj4gPiAwMDAwMDc5MCAgMDAg
+MDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIGZjICB8Li4uLi4uLi4u
+Li4uLi4uLnwKPiA+IDAwMDAwN2EwICAwMyAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAg
+MDAgMDAgMDAgMDAgMDAgIHwuLi4uLi4uLi4uLi4uLi4ufAo+ID4gMDAwMDA3YjAgIDAwIDAwIDAw
+IDAwIDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfC4uLi4uLi4uLi4uLi4u
+Li58Cj4gPiAqCj4gPiAwMDAwMDgwMCAgZmYgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAw
+IDAwIDE3IDE1IDA2IDA2ICB8Li4uLi4uLi4uLi4uLi4uLnwKPiA+IDAwMDAwODEwICAxMCAxZiAw
+MyAwNyAwMCAwMCAwMCAxYyAgMGYgMTcgMWYgMDUgMDAgMDAgMDAgMDAgIHwuLi4uLi4uLi4uLi4u
+Li4ufAo+ID4gMDAwMDA4MjAgIDAwIDE5IDAwIDAwIDBlIDE5IDAwIDAwICAwMCAwMCAwMCAwMCAw
+MCAwMCAwMCAwMCAgfC4uLi4uLi4uLi4uLi4uLi58Cj4gPiAwMDAwMDgzMCAgMDAgMDAgMDAgMDAg
+MDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8Li4uLi4uLi4uLi4uLi4uLnwK
+PiA+ICoKPiA+IDAwMDAwODgwCj4gPiAKPiA+IEFmdGVyIGFwcGx5aW5nIGU1ZTU2MzFjYzg4OTg3
+YTZmM2NkODMwNDY2MGJkOTE5MGRhOTU5MTYgcmVhZGluZyB0aGUgc2FtZSBwYWdlCj4gPiB0aGUg
+cmVwb3J0ZWQgY29udGVudCBpcyBicm9rZW4gKHRoZSBOQU5EIHBhZ2Ugc3RpbGwgY29udGFpbnMg
+Y29ycmVjdCBkYXRhKToKPiA+IAo+ID4gMDAwMDAwMDAgIDAwIDAwIDg4IGZiIGZmIGZmIDQ2IDQz
+ICA0MiAyMCAwMCAwMCAwMCAwMSA1MCAzYyAgfC4uLi4uLkZDQiAuLi4uUDx8Cj4gPiAwMDAwMDAx
+MCAgMTkgMDYgMDAgMDAgMDAgMDAgMDAgMDggIDAwIDAwIDgwIDA4IDAwIDAwIDQwIDAwICB8Li4u
+Li4uLi4uLi4uLi5ALnwKPiA+IDAwMDAwMDIwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAg
+MDAgMDAgMDAgMDAgMDAgMDkgMDAgIHwuLi4uLi4uLi4uLi4uLi4ufAo+ID4gMDAwMDAwMzAgIDAw
+IDAwIDAwIDAyIDAwIDAwIDAwIDAyICAwMCAwMCAwOSAwMCAwMCAwMCAwYSAwMCAgfC4uLi4uLi4u
+Li4uLi4uLi58Cj4gPiAwMDAwMDA0MCAgNDAgMDUgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAw
+IDAwIDAwIDAwIDAwIDAwICB8QC4uLi4uLi4uLi4uLi4uLnwKPiA+IDAwMDAwMDUwICA0MCAwMSAw
+MCAwMCAwMCA4MCAwNSAwMCAgMDAgODAgMDUgMDAgNDAgMDEgMDAgMDAgIHxALi4uLi4uLi4uLi5A
+Li4ufAo+ID4gMDAwMDAwNjAgIGMwIDAzIDAwIDAwIDgwIDAyIDAwIDAwICAwMCAwMCAwMCAwMCAw
+MCAwMCAwMCAwMCAgfC4uLi4uLi4uLi4uLi4uLi58Cj4gPiAwMDAwMDA3MCAgMDAgMDAgMDAgMDAg
+MDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8Li4uLi4uLi4uLi4uLi4uLnwK
+PiA+ICoKPiA+IDAwMDAwMjUwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAg
+MDAgMDAgMDAgZmMgIHwuLi4uLi4uLi4uLi4uLi4ufAo+ID4gMDAwMDAyNjAgIDAzIDAwIDAwIDAw
+IDAwIDAwIDAwIDAwICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfC4uLi4uLi4uLi4uLi4uLi58
+Cj4gPiAwMDAwMDI3MCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIDAwIDAwIDAwIDAwIDAwIDAw
+IDAwIDAwICB8Li4uLi4uLi4uLi4uLi4uLnwKPiA+ICoKPiA+IDAwMDAwMmMwICAwNiA3MCBjMCBh
+OCAwMCAwMCAwMCAwMCAgMDAgMDAgMDAgMDAgNDAgMDAgMDAgMDAgIHwucC4uLi4uLi4uLi5ALi4u
+fCAgCj4gCj4gTm90ZSBiZWdpbm5pbmcgZnJvbSBvZmZzZXQgMHgyYzAgd2UgZ2V0IHNvbWUgdW5p
+bml0aWFsaXplZCBkYXRhLiBBbW9uZwo+IG90aGVyIHRoaW5ncyB3ZSBzYXcgc3lzdGVtZCB1bml0
+IGZpbGVzIHRoZXJlLgoKSW5kZWVkLCB0aGlzIHVuaXRpYWxpemVkIGRhdGEgbWFrZXMgbWUgdGhp
+bmcgdGhhdCBpdCBpcyBub3QgZnVsbHkKcmVsYXRlZCB0byB0aGlzIHBhdGNoLiBIb25lc3RseSB0
+aGlzIGlzIHN1cGVyIHdlaXJkLgoKSnVlcmdlbiB3b3VsZCB5b3UgaGF2ZSB0aGUgdGltZSB0byBk
+ZWJ1ZyBpdCBmdXJ0aGVyPyBJIGRvbid0IGhhdmUgdGhlCm5lY2Vzc2FyeSBoYXJkd2FyZSB0byBp
+bnZlc3RpZ2F0ZSB0aGlzIHJpZ2h0IG5vdy4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
+dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2xpbnV4LW10ZC8K
