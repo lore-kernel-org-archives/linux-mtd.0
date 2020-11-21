@@ -2,24 +2,23 @@ Return-Path: <SRS0=xNak=E3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BBEAC388F9
-	for <linux-mtd@archiver.kernel.org>; Sat, 21 Nov 2020 23:19:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD494C5519F
+	for <linux-mtd@archiver.kernel.org>; Sat, 21 Nov 2020 23:42:59 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DA6C0217A0
-	for <linux-mtd@archiver.kernel.org>; Sat, 21 Nov 2020 23:19:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8804920575
+	for <linux-mtd@archiver.kernel.org>; Sat, 21 Nov 2020 23:42:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="0ci65xt1";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="Lvt0xf0A";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="qZT/78tS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA6C0217A0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=HansenPartnership.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DxX3PaG/";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="raqllcum"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8804920575
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
@@ -27,58 +26,57 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Date:To:From:
 	Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=TleiQY2zWwBNfPc4v3x2rXHtxEqcbbpjs8igR6vMB28=; b=0ci65xt1Tejk8veN0tFIJxOE5
-	/FdrHJsadRIMhpGr3nhAX1YRXNdRwYBCT7pa/c/6pj9zFQQLLWaUBZ3Kuj0IVSkcBEI6S5+soL2CJ
-	l2/f+KtRLKGlkvjYXbhmytbEbZPteZz5IWGK1u0kyaVKeps2lsNEuyJth0MfU3wA/c03duItT9FBT
-	d/TBIwAqBM8S5n8vXfz0gK2R0YJbG7CsvobwDImnwjPe7LsX7VCiiZzX5jU8GkERnKcZAhPfpQhrc
-	BaRt0H+vJcz8DBeQGsYe+HKR1S6K1U6UVt6HWcYQaM5W1r0iRSwz7gy/BP16JrqqTQMHp51mgDLTT
-	LciMvUNtA==;
+	 bh=+A9TufI9Ies+tnGz0ejCDnQ2WghM7NF0f/dspoeVP+8=; b=DxX3PaG/DU2MjeF/EPRJEN3HC
+	PX2FkcaoZX7niezMw0/a+Fy/xWy6cOqU45lK7WjisZIiO1Xw6QThPtdY4Epmjsd48YTX2Ih/bIkbM
+	VWpgHZP0O0xvdR9lzNi24gYh6RupSZm19iehCELM99RFkII4ySvZWamdeGh/GIcJDltBkC8jO9O5P
+	7Lzvs+efAHtyr+i7Bkj2v5n/PnYCdtuvfL+wkmQMuB8yEl5LhEyyDyCbanXbLASBuFEEMu7NuflRS
+	S9i6Htnr7YNJXdb2eZA3YYGLvozTiW/Vc5XUn8UYf+8ygmBwrxmAzZXKE8k4/QuSu1Qi/cJp9vCBF
+	MxpA6yD0g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kgc8n-0001sp-Fb; Sat, 21 Nov 2020 23:18:01 +0000
-Received: from bedivere.hansenpartnership.com ([96.44.175.130])
+	id 1kgcW0-000652-4t; Sat, 21 Nov 2020 23:42:00 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kgc8k-0001qm-O4
- for linux-mtd@lists.infradead.org; Sat, 21 Nov 2020 23:17:59 +0000
-Received: from localhost (localhost [127.0.0.1])
- by bedivere.hansenpartnership.com (Postfix) with ESMTP id 2C7E2128048D;
- Sat, 21 Nov 2020 09:19:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=hansenpartnership.com; s=20151216; t=1605979140;
- bh=oKjwoQQYqAGHYIcGa87tH3kfRh6eNDZ11DRWs/5n6Nc=;
- h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
- b=Lvt0xf0A2UjzBqGR2epCNoE7DN6YV9pUrVXD+f22BVAeiOW2KxZsGCImkMcXBrgh/
- zD0zBdigF+USoIPaRfSUxU4T/o3yBTwQz1ZuRUKYioWvma2ORezv7XJ+/UVZk14HDg
- znn3A0Y1A4QkkRvYDhfOKnhgBoH92sfIP7bAjSz4=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new,
- port 10024)
- with ESMTP id dA_Y3gfv-HlR; Sat, 21 Nov 2020 09:19:00 -0800 (PST)
-Received: from jarvis.int.hansenpartnership.com (unknown
- [IPv6:2601:600:8280:66d1::527])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 584A71280481;
- Sat, 21 Nov 2020 09:18:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=hansenpartnership.com; s=20151216; t=1605979139;
- bh=oKjwoQQYqAGHYIcGa87tH3kfRh6eNDZ11DRWs/5n6Nc=;
- h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
- b=qZT/78tSZnguNV1yoYzSSmvqmDGgzNIuIpg2PbOws0zqwE5yu2CoK/DoUP3fxAE7/
- cwr3zThASX8R91ADl4Ew6X2dNx0rQAVJjUjWHCFXFVZg8s5iaP8BFiZuwsxl12vuws
- rCw1QQ3k1zT/j95+Y6p1vgihiOvqC5dVUCKPWDl0=
-Message-ID: <5843ef910b0e86c00d9c0143dec20f93823b016b.camel@HansenPartnership.com>
+ id 1kgcVx-000646-PX
+ for linux-mtd@merlin.infradead.org; Sat, 21 Nov 2020 23:41:57 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+ Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+ :Reply-To:Content-ID:Content-Description;
+ bh=j1pFkX66fFsn8IIQc2vdz+yDmIVMLcw8/Oh/TOVKpOw=; b=raqllcumwZvQ4hMtmOtnlaliw9
+ 1puuSNKm7LLvoCSp84tA0RTJb0xvwuxsguHT2Ny7FcW0js+CdIzl0RzivSVq6Xn58m5Y4q1ZWyrJG
+ opVv6RGdsMGPN2QDDCpSOIPfrWgp0RAwwxJvbfdVPKONoWa1UijV9NdRj2clPczDr4vZYNjuY3AGi
+ 9Qkw+tJhw6VazwvrX2Fph0yFR4kr+iTY0JF15ZQRTcR4llSfbHxpM7t/iN5+q8Zub4Ska/jTg0Yrv
+ i6CzjXG/nDODGngDGvQYYTIRWDqS4erl/D6t+PcWWmuYSzME4MSZNC0zD4bWPR7CG3CfGtzqA31DB
+ zF+/VIvw==;
+Received: from smtprelay0076.hostedemail.com ([216.40.44.76]
+ helo=smtprelay.hostedemail.com)
+ by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kgWP0-0003kA-1H
+ for linux-mtd@lists.infradead.org; Sat, 21 Nov 2020 17:10:25 +0000
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net
+ [216.40.38.60])
+ by smtprelay03.hostedemail.com (Postfix) with ESMTP id C09E2837F24A;
+ Sat, 21 Nov 2020 17:10:14 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-HE-Tag: crook72_110ffeb27355
+X-Filterd-Recvd-Size: 4090
+Received: from XPS-9350.home (unknown [47.151.128.180])
+ (Authenticated sender: joe@perches.com)
+ by omf05.hostedemail.com (Postfix) with ESMTPA;
+ Sat, 21 Nov 2020 17:10:09 +0000 (UTC)
+Message-ID: <2105f0c05e9eae8bee8e17dcc5314474b3c0bc73.camel@perches.com>
 Subject: Re: [RFC] MAINTAINERS tag for cleanup robot
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: trix@redhat.com, joe@perches.com, clang-built-linux@googlegroups.com
-Date: Sat, 21 Nov 2020 09:18:57 -0800
+From: Joe Perches <joe@perches.com>
+To: trix@redhat.com, clang-built-linux@googlegroups.com
+Date: Sat, 21 Nov 2020 09:10:08 -0800
 In-Reply-To: <20201121165058.1644182-1-trix@redhat.com>
 References: <20201121165058.1644182-1-trix@redhat.com>
-User-Agent: Evolution 3.34.4 
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201121_181758_941288_B8E75D3D 
-X-CRM114-Status: GOOD (  15.23  )
+X-CRM114-CacheID: sfid-20201121_171022_620626_C228E398 
+X-CRM114-Status: GOOD (  15.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,42 +104,84 @@ Cc: linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
  linux-bluetooth@vger.kernel.org, netfilter-devel@vger.kernel.org,
  linux-crypto@vger.kernel.org, patches@opensource.cirrus.com,
  linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On Sat, 2020-11-21 at 08:50 -0800, trix@redhat.com wrote:
 > A difficult part of automating commits is composing the subsystem
-> preamble in the commit log.  For the ongoing effort of a fixer
-> producing
-> one or two fixes a release the use of 'treewide:' does not seem
-> appropriate.
-> 
-> It would be better if the normal prefix was used.  Unfortunately
-> normal is
+> preamble in the commit log.  For the ongoing effort of a fixer producing
+> one or two fixes a release the use of 'treewide:' does not seem appropria=
+te.
+> =
+
+> It would be better if the normal prefix was used.  Unfortunately normal is
 > not consistent across the tree.
-> 
-> 
+> =
+
+> So I am looking for comments for adding a new tag to the MAINTAINERS file
+> =
+
 > 	D: Commit subsystem prefix
-> 
+> =
+
 > ex/ for FPGA DFL DRIVERS
-> 
+> =
+
 > 	D: fpga: dfl:
-> 
 
-I've got to bet this is going to cause more issues than it solves. 
-SCSI uses scsi: <driver>: for drivers but not every driver has a
-MAINTAINERS entry.  We use either scsi: or scsi: core: for mid layer
-things, but we're not consistent.  Block uses blk-<something>: for all
-of it's stuff but almost no <somtehing>s have a MAINTAINERS entry.  So
-the next thing you're going to cause is an explosion of suggested
-MAINTAINERs entries.
+I'm all for it.  Good luck with the effort.  It's not completely trivial.
 
-Has anyone actually complained about treewide:?
+From a decade ago:
 
-James
+https://lore.kernel.org/lkml/1289919077.28741.50.camel@Joe-Laptop/
 
+(and that thread started with extra semicolon patches too)
+
+> Continuing with cleaning up clang's -Wextra-semi-stmt
+
+> diff --git a/Makefile b/Makefile
+[]
+> @@ -1567,20 +1567,21 @@ help:
+> =A0	 echo  ''
+> =A0	@echo  'Static analysers:'
+> =A0	@echo  '  checkstack      - Generate a list of stack hogs'
+> =A0	@echo  '  versioncheck    - Sanity check on version.h usage'
+> =A0	@echo  '  includecheck    - Check for duplicate included header files'
+> =A0	@echo  '  export_report   - List the usages of all exported symbols'
+> =A0	@echo  '  headerdep       - Detect inclusion cycles in headers'
+> =A0	@echo  '  coccicheck      - Check with Coccinelle'
+> =A0	@echo  '  clang-analyzer  - Check with clang static analyzer'
+> =A0	@echo  '  clang-tidy      - Check with clang-tidy'
+> +	@echo  '  clang-tidy-fix  - Check and fix with clang-tidy'
+
+A pity the ordering of the code below isn't the same as the above.
+
+> -PHONY +=3D clang-tidy clang-analyzer
+> +PHONY +=3D clang-tidy-fix clang-tidy clang-analyzer
+[]
+> -clang-tidy clang-analyzer: $(extmod-prefix)compile_commands.json
+> +clang-tidy-fix clang-tidy clang-analyzer: $(extmod-prefix)compile_comman=
+ds.json
+> =A0	$(call cmd,clang_tools)
+> =A0else
+> -clang-tidy clang-analyzer:
+> +clang-tidy-fix clang-tidy clang-analyzer:
+
+[]
+
+> diff --git a/scripts/clang-tools/run-clang-tools.py b/scripts/clang-tools=
+/run-clang-tools.py
+[]
+> @@ -22,43 +22,57 @@ def parse_arguments():
+[]
+> =A0=A0=A0=A0=A0parser.add_argument("type",
+> -                        choices=3D["clang-tidy", "clang-analyzer"],
+> +                        choices=3D["clang-tidy-fix", "clang-tidy", "clan=
+g-analyzer"],
+
+etc...
 
 
 ______________________________________________________
