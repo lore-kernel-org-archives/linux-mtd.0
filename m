@@ -1,84 +1,66 @@
-Return-Path: <SRS0=xNak=E3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=A4L3=E4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_ADSP_ALL,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E2A6C56202
-	for <linux-mtd@archiver.kernel.org>; Sat, 21 Nov 2020 23:52:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5F13C388F9
+	for <linux-mtd@archiver.kernel.org>; Sun, 22 Nov 2020 00:15:46 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 260A120A8B
-	for <linux-mtd@archiver.kernel.org>; Sat, 21 Nov 2020 23:52:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 245CF2075E
+	for <linux-mtd@archiver.kernel.org>; Sun, 22 Nov 2020 00:15:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="o5Nc87zC";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="rP1fIMBo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 260A120A8B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="neEy5Ye/";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=narfation.org header.i=@narfation.org header.b="p9GgvFOL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 245CF2075E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=narfation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Date:To:From:
-	Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:Cc:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:To:From:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Nn47Y6N8UIxS7yyHx+tHs2kbPbN/u9appcIumFPf6+o=; b=o5Nc87zCvd4ipI4GXOhB9DFWE
-	adr1FboBFBaL9lQ6aMqG37kdjQS6xUZx/rjeUnc1ScE0YoB0BwZQ0ovrS7EX21pfqUSur4KlQkMwY
-	oKlOk2jiaNaGaREjp885i23Hb0KtN0l1uDkxhVwiWSv4AfzJ5kMjMZQEn0m4GJDQ5UVfV/qZFvJ+M
-	n451O0P/vgE0mOitO/biaIA15PVJakPhqNhwoMUoAJxhLXZya7UAKwPqYoWZQPo9z6H+7k/OJizkD
-	4rYcTFA5uM55Bwa0nP8Etjs2nCpn17FwIeQXZKnTY2gvCbFlp91pcG+DD0qluo9uttYAn1Vhh6zNV
-	vgQSOpLxw==;
+	 bh=ThCaVsiTkYhZ+tU6Dr7VlL6XusodPxcBdFV0ejKcn/Q=; b=neEy5Ye/EsIlZZHqRorxEXPi7
+	2gtQycmuKZ9Q9WtLOEI+hOmqxYPVyXQ/ALGWixSxmDtOY8Gx5Fr02WjHbGPuscqwFufa8MuJ0+r+H
+	nHHja7gctDeIbklyLDemb/Hf6YS0L//k1KA9od/mnncThPm8UQ6MwozLEOqjJym0FypO4S3L7mo41
+	wX73vpf1rAMEQeww0GYOtyXMajFiySv2RENaKis9drzrii9cftsyoYBxty48eHJVLj5zZDmJyqFBI
+	j4w9r/ZwdqlRW9mVAjLCfDbZgkfCFCkZmz7MpI2tVAGoh4HR8P5QmJBYIVLhmQDo4Mf9kPsWUZOSf
+	M52NiP4zQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kgcfQ-00086O-O4; Sat, 21 Nov 2020 23:51:44 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1kgd1T-0001wC-JL; Sun, 22 Nov 2020 00:14:31 +0000
+Received: from dvalin.narfation.org ([2a00:17d8:100::8b1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kgcfO-000869-LP
- for linux-mtd@merlin.infradead.org; Sat, 21 Nov 2020 23:51:42 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
- Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
- :Reply-To:Content-ID:Content-Description;
- bh=5O8JFyMK46NSPgfn3GxIXhJNNeZ/UyVGbwYB8FZeTTM=; b=rP1fIMBow2/PE6o59FIML/udnn
- OOujc8TKf6/urgE+nLlq6vcSs/0dPscLy6cZuIqyKqFgEZYeUuCeu+Oxxyo5VJf3FwW9ddNQsBL2g
- COfBrlzoqIjg8nSpe8xP1085HoojZPDIT4/cQ5FQvAodFgatMpmsRljLRGzA+/TbLwxtEOY4GGo2c
- nf9l2GwCibuojHKRpOpJWmn1nvpaST+TmTpqDAYu1nYtNdv7P98otKiXxdE2YI1YxoPrLZZfa1C/r
- DYKDCnN3ZtZHnbyD5JITPDOJ4JXxaH/cqtamaHLjgkTIoIlHGWbD8k7Tzx7lEc2acajGCQPaFuFEv
- NVju0Nzw==;
-Received: from smtprelay0156.hostedemail.com ([216.40.44.156]
- helo=smtprelay.hostedemail.com)
- by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kgXDP-0006Db-5H
- for linux-mtd@lists.infradead.org; Sat, 21 Nov 2020 18:02:30 +0000
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net
- [216.40.38.60])
- by smtprelay07.hostedemail.com (Postfix) with ESMTP id AF7D7181D3025;
- Sat, 21 Nov 2020 18:02:23 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-HE-Tag: uncle36_3402e8c27356
-X-Filterd-Recvd-Size: 3937
-Received: from XPS-9350.home (unknown [47.151.128.180])
- (Authenticated sender: joe@perches.com)
- by omf04.hostedemail.com (Postfix) with ESMTPA;
- Sat, 21 Nov 2020 18:02:18 +0000 (UTC)
-Message-ID: <f7643c9cb0a896f3ead65e86084b7c143e21ef43.camel@perches.com>
-Subject: Re: [RFC] MAINTAINERS tag for cleanup robot
-From: Joe Perches <joe@perches.com>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>,
- trix@redhat.com,  clang-built-linux@googlegroups.com
-Date: Sat, 21 Nov 2020 10:02:17 -0800
-In-Reply-To: <5843ef910b0e86c00d9c0143dec20f93823b016b.camel@HansenPartnership.com>
-References: <20201121165058.1644182-1-trix@redhat.com>
- <5843ef910b0e86c00d9c0143dec20f93823b016b.camel@HansenPartnership.com>
-User-Agent: Evolution 3.38.1-1 
+ id 1kgd1Q-0001ub-5h
+ for linux-mtd@lists.infradead.org; Sun, 22 Nov 2020 00:14:29 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
+ s=20121; t=1606004062;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Cj1wngFCjk9djvKAy6t7nyB6kZBenske4zVZclaXmf8=;
+ b=p9GgvFOLiTjeB7wfQltS1U9sTEiL7DS9dQsDHKZ+EedzMXgkr/fYuzhvXSIfpGJS5ng+Et
+ sHM0lTcdZ34pBmNz+BUUHbjBADzOeDuou0Wd+h2+2FoHy8jPGcagStZirclEaEEUhtDB03
+ Y2OqOc3x9U01n3z6ZiUDY47vXWfUEW0=
+From: Sven Eckelmann <sven@narfation.org>
+To: linux-mtd@lists.infradead.org, John Audia <graysky@archlinux.us>,
+ Adrian Schmutzler <freifunk@adrianschmutzler.de>, jstefek@datto.com
+Subject: Re: [PATCH] mtd: parser: cmdline: Support MTD names containing one or
+ more colons
+Date: Sun, 22 Nov 2020 01:14:14 +0100
+Message-ID: <7171837.EvYhyI6sBW@sven-edge>
+In-Reply-To: <20200429165347.48909-1-rminnich@google.com>
+References: <20200429165347.48909-1-rminnich@google.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201121_180227_589884_C02F1A94 
-X-CRM114-Status: GOOD (  18.91  )
+X-CRM114-CacheID: sfid-20201121_191428_572149_C6B02540 
+X-CRM114-Status: GOOD (  21.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,82 +72,199 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
- linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- platform-driver-x86@vger.kernel.org, ibm-acpi-devel@lists.sourceforge.net,
- keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-scsi@vger.kernel.org, amd-gfx@lists.freedesktop.org,
- cluster-devel@redhat.com, linux-acpi@vger.kernel.org,
- tboot-devel@lists.sourceforge.net, coreteam@netfilter.org,
- xen-devel@lists.xenproject.org, MPT-FusionLinux.pdl@broadcom.com,
- linux-media@vger.kernel.org, alsa-devel@alsa-project.org,
- intel-gfx@lists.freedesktop.org, ecryptfs@vger.kernel.org,
- linux-omap@vger.kernel.org, devel@acpica.org, linux-nfs@vger.kernel.org,
- netdev@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-bluetooth@vger.kernel.org, netfilter-devel@vger.kernel.org,
- linux-crypto@vger.kernel.org, patches@opensource.cirrus.com,
- linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Sasha Levin <sashal@kernel.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ "Ronald G. Minnich" <rminnich@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Ron Minnich <rminnich@google.com>, linux-kernel@vger.kernel.org,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>, linux-mtd@lists.infradead.org,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: multipart/mixed; boundary="===============7038700796320429993=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, 2020-11-21 at 09:18 -0800, James Bottomley wrote:
-> On Sat, 2020-11-21 at 08:50 -0800, trix@redhat.com wrote:
-> > A difficult part of automating commits is composing the subsystem
-> > preamble in the commit log.  For the ongoing effort of a fixer
-> > producing one or two fixes a release the use of 'treewide:' does
-> > not seem appropriate.
-> > 
-> > It would be better if the normal prefix was used.  Unfortunately
-> > normal is not consistent across the tree.
-> > 
-> > 	D: Commit subsystem prefix
-> > 
-> > ex/ for FPGA DFL DRIVERS
-> > 
-> > 	D: fpga: dfl:
+--===============7038700796320429993==
+Content-Type: multipart/signed; boundary="nextPart3334135.iIbC2pHGDl"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+
+--nextPart3334135.iIbC2pHGDl
+Content-Type: multipart/mixed; boundary="nextPart3563161.kQq0lBPeGt"; protected-headers="v1"
+Content-Transfer-Encoding: 7Bit
+From: Sven Eckelmann <sven@narfation.org>
+To: linux-mtd@lists.infradead.org, John Audia <graysky@archlinux.us>, Adrian Schmutzler <freifunk@adrianschmutzler.de>, jstefek@datto.com
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>, Boris Brezillon <boris.brezillon@collabora.com>, linux-mtd@lists.infradead.org, Ron Minnich <rminnich@google.com>, Brian Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, "Ronald G. Minnich" <rminnich@gmail.com>, Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH] mtd: parser: cmdline: Support MTD names containing one or more colons
+Date: Sun, 22 Nov 2020 01:14:14 +0100
+Message-ID: <7171837.EvYhyI6sBW@sven-edge>
+In-Reply-To: <20200429165347.48909-1-rminnich@google.com>
+References: <20200429165347.48909-1-rminnich@google.com>
+
+This is a multi-part message in MIME format.
+
+--nextPart3563161.kQq0lBPeGt
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+
+On Wednesday, 29 April 2020 18:53:47 CET Ronald G. Minnich wrote:
+> From: Boris Brezillon <boris.brezillon@collabora.com>
 > 
-> I've got to bet this is going to cause more issues than it solves. 
-> SCSI uses scsi: <driver>: for drivers but not every driver has a
-> MAINTAINERS entry.  We use either scsi: or scsi: core: for mid layer
-> things, but we're not consistent.  Block uses blk-<something>: for all
-> of it's stuff but almost no <somtehing>s have a MAINTAINERS entry.  So
-> the next thing you're going to cause is an explosion of suggested
-> MAINTAINERs entries.
+> Looks like some drivers define MTD names with a colon in it, thus
+> making mtdpart= parsing impossible. Let's fix the parser to gracefully
+> handle that case: the last ':' in a partition definition sequence is
+> considered instead of the first one.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+> Signed-off-by: Ron Minnich <rminnich@google.com>
+> Tested-by: Ron Minnich <rminnich@google.com>
+> ---
+>  drivers/mtd/parsers/cmdlinepart.c | 23 ++++++++++++++++++++---
+>  1 file changed, 20 insertions(+), 3 deletions(-)
 
-As well as some changes require simultaneous changes across
-multiple subsystems.
+This change broke OpenWrt booting on some IPQ40xx devices. Here for example 
+the parts of the cmdline which the u-boot on an OpenMesh A62 sets 
+automatically:
 
-> Has anyone actually complained about treewide:?
+    root=31:11 mtdparts=spi0.0:256k(0:SBL1),128k(0:MIBIB),384k(0:QSEE),64k(0:CDT),64k(0:DDRPARAMS),64k(0:APPSBLENV),512k(0:APPSBL),64k(0:ART),64k(custom),64k(0:KEYS),0x002b0000(kernel),0x00c80000(rootfs),15552k(inactive) rootfsname=rootfs rootwait
 
-It depends on what you mean by treewide:
+This is then parsed by newpart as: KEYS),0x002b0000(kernel),0x00c80000(rootfs),15552k(inactive)
 
-If a treewide: patch is applied by some "higher level" maintainer,
-then generally, no.
+And of course, this results in:
 
-If the treewide patch is also cc'd to many individual maintainers,
-then yes, many many times.
+    mtd: partition has size 0
+    [...]
+    /dev/root: Can't open blockdev
+    VFS: Cannot open root device "31:11" or unknown-block(31,11): error -6
+    Please append a correct "root=" boot option; here are the available partitions:
+    1f00           32768 mtdblock0
+    (driver?)
+    Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(31,11)
+    CPU1: stopping
+    CPU: 1 PID: 0 Comm: 
 
-Mostly because patches cause what is in their view churn or that
-changes are not specific to their subsystem grounds.
+This affects OpenWrt since the commit d6a9a92e3217 ("kernel: bump 5.4 to 
+5.4.69") because this change was backported to Linux v5.4.69. Reverting 
+this change fixes the problem for me.
 
-The treewide patch is sometimes dropped, sometimes broken up and
-generally not completely applied.
+And if I see it correctly, this is also affecting the kernel (4.14) for
+the OpenWrt 18.06.x + 19.07.x branch because it can also be found in
+there as part of the v4.14.200 release.
 
-What would be useful in many cases like this is for a pre and post
-application of the treewide patch to be compiled and the object
-code verified for lack of any logic change.
+Another workaround is to replace the first "(" with a NULL too. See the
+attached patch for the one which I used to fix the OpenWrt bootup.
 
-Unfortunately, gcc does not guarantee deterministic compilation so
-this isn't feasible with at least gcc.  Does clang guarantee this?
+Kind regards,
+	Sven
+--nextPart3563161.kQq0lBPeGt
+Content-Disposition: attachment; filename="499-mtd-parser-cmdline-Fix-parsing-of-part-names-with-co.patch"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/x-patch; charset="UTF-8"; name="499-mtd-parser-cmdline-Fix-parsing-of-part-names-with-co.patch"
 
-I'm not sure it's possible:
-https://blog.llvm.org/2019/11/deterministic-builds-with-clang-and-lld.html
+From: Sven Eckelmann <sven@narfation.org>
+Date: Sun, 22 Nov 2020 00:48:33 +0100
+Subject: [PATCH RFC] mtd: parser: cmdline: Fix parsing of part-names with colons
+
+Some devices (especially QCA ones) are already using hardcoded partition
+names with colons in it. The OpenMesh A62 for example provides following
+mtd relevant information via cmdline:
+
+  root=31:11 mtdparts=spi0.0:256k(0:SBL1),128k(0:MIBIB),384k(0:QSEE),64k(0:CDT),64k(0:DDRPARAMS),64k(0:APPSBLENV),512k(0:APPSBL),64k(0:ART),64k(custom),64k(0:KEYS),0x002b0000(kernel),0x00c80000(rootfs),15552k(inactive) rootfsname=rootfs rootwait
+
+The change to split only on the last colon between mtd-id and partitions
+will cause newpart to see following string for the first partition:
+
+  KEYS),0x002b0000(kernel),0x00c80000(rootfs),15552k(inactive)
+
+Such a partition list cannot be parsed and thus the device fails to boot.
+
+Avoid this behavior by making sure that the start of the first part-name
+("(") will also be the last byte the colon search algorithm is using for
+its mtd-id search.
+
+Fixes: eb13fa022741 ("mtd: parser: cmdline: Support MTD names containing one or more colons")
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+
+diff --git a/drivers/mtd/parsers/cmdlinepart.c b/drivers/mtd/parsers/cmdlinepart.c
+index 0625b25620ca766318ea4646a6e3761ff4d3a4cc..22881ea4c132ea5a5ba7aebd025d91bf1cd023af 100644
+--- a/drivers/mtd/parsers/cmdlinepart.c
++++ b/drivers/mtd/parsers/cmdlinepart.c
+@@ -218,7 +218,7 @@ static int mtdpart_setup_real(char *s)
+ 		struct cmdline_mtd_partition *this_mtd;
+ 		struct mtd_partition *parts;
+ 		int mtd_id_len, num_parts;
+-		char *p, *mtd_id, *semicol;
++		char *p, *mtd_id, *semicol, *open_parenth;
+ 
+ 		/*
+ 		 * Replace the first ';' by a NULL char so strrchr can work
+@@ -228,6 +228,13 @@ static int mtdpart_setup_real(char *s)
+ 		if (semicol)
+ 			*semicol = '\0';
+ 
++		/* make sure that part-names with ":" will not be handled as
++		 * part of the mtd-id with an ":"
++		 */
++		open_parenth = strchr(s, '(');
++		if (open_parenth)
++			*open_parenth = '\0';
++
+ 		mtd_id = s;
+ 
+ 		/*
+@@ -237,6 +244,10 @@ static int mtdpart_setup_real(char *s)
+ 		 */
+ 		p = strrchr(s, ':');
+ 
++		/* Restore the '(' now. */
++		if (open_parenth)
++			*open_parenth = '(';
++
+ 		/* Restore the ';' now. */
+ 		if (semicol)
+ 			*semicol = ';';
+
+--nextPart3563161.kQq0lBPeGt--
+
+--nextPart3334135.iIbC2pHGDl
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAl+5rVYACgkQXYcKB8Em
+e0YAow/+OnDWfvCurCi8ygHDUV1smV8NZQOfvjDB1giE16VqOjfewFrEFiXi+Pvu
+kNBrmkh7GrGHjCCu2RwkXG5g8+TOtDpuU5gcZ7QsnPgsfbg38dIY9hi8R+NiMy2a
+P4xKQUlyib0+OICZ8YIbn19IrmuMpVBk5sMOjMpUQR6uwAvID3nPCtWPFEuNIjVc
+xLenU2X+iFDZn9oc5JlC9iM0xFOmuXjZWYxTuZloxsCepXVC8jUBZsm7yXgFRrCm
++PJApU5IZrLIy5uYtI+nPxbp/c34tjXTGDJuUNMuWU63cegBYfRIUr0fcSURBHcJ
+sEg194GAuuLvuXmLQaMg9kFtAMkfCz8770ZmkXKSAGFWHhT/F5EAoT3m5HTuppFP
+TbdmHuh8AGyk4KULXdJLSAo5bOnkxXEDRU34uxGBU9ub95HsS15nxjlagW05VPRN
+kNNKW9mRzgUvAhm7g4D94apzSXNCpcPzzAAR1lJg1r3SH1spTuK7AqcjlGsvB6oe
+e6UhbBgxTPEVShVcO+t6XuEtaqPw5KHuyeKi9hc9D49kHxD2Q994fJVJX1fH9nEf
+7BoeuDahz4IgIf1RMW55k+TVY4i+Bf0Kbsrdbq/RRcSrK2R0e6OluSDSYiFyY1PS
+mdbEh6upSSHcr/O0DWr7+DJivjrNdtIhIRFj7T7vwh0z6vVEiWs=
+=I0FK
+-----END PGP SIGNATURE-----
+
+--nextPart3334135.iIbC2pHGDl--
 
 
+
+
+
+--===============7038700796320429993==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============7038700796320429993==--
+
+
+
+
