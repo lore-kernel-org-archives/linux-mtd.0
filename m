@@ -2,69 +2,75 @@ Return-Path: <SRS0=aMQG=E5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 258EDC2D0E4
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Nov 2020 07:38:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E28AC63697
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Nov 2020 07:55:39 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2E1A320738
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Nov 2020 07:38:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E9DC72073C
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Nov 2020 07:55:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IdTmKcUD";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=emcraft.com header.i=@emcraft.com header.b="D6Jup0JS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E1A320738
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=emcraft.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="1tC6vHuJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E9DC72073C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:Subject:References:In-Reply-To:
+	Message-ID:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=8kuGaOCZliHDN/IHR8sHX20OruE375+m/a624/6wo34=; b=IdTmKcUDtsq1fAtdF552zL3Uz
-	MXkt3C/WaNRkFaI2ohYYZn19L4bH7N61R9fyl/vTK2lo279dSFzTioYuEz6TM/CbLttzNXHsMBgX7
-	FJZejeDWagI+E5MxDVlnIKRbQwdwVrRb163AsFnUozbNymCbW/ZKtmuztPpKdNPfuAVr2IzWdLIpP
-	GR3K8Rfpv61IUkRyxxeNtQBNRmD+QM13omNAuvRt87vqSrdw7rYRCKIa5T+RjY2G2Y1Yn/3rl7Iby
-	odpZlDdmE72QqexNaUMvnUkibkLtNE6II7SDmK6GDYFK5nGrc+yq0R+K83CceWzl7kpLyU10fCKOt
-	ZGb5ARJUg==;
+	 bh=Iu5U81vIPOf9mmuFIuNPXxCsbZoVq+bVZBgmFioiRz8=; b=1tC6vHuJuqxXSbaN0Jq72W9uD
+	sNScBx0w2oLHMcQfwINXu8Xg6+UgFxmYnIDImHbYZNenQ6YfuwWvTFUgG2hMprsPMv5xlG8ag1kFe
+	6S3xS4AefXO/TJJ/0AzkU3RmUVrIGHRHKIm3Fm5CpHu/4LYIPI5NKfR/MgeqN/LKITTxFEJKOlx+W
+	1jWpI9F2vKVNCfZ6/BUJuej69JSupa3bR46fTnmyE+jWaCvgBkIKEZ3TzBaKAjz3fyf/ftShhWYdo
+	Q/U5pyomRq8/8IQiXkvFczr3AmJftt791yJHlvZzVlzh1xeOUTVDpSoV4LSOKZsAJ2FcL/ISbJmqB
+	OHQ3cWvyA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kh6PS-0003bk-DQ; Mon, 23 Nov 2020 07:37:14 +0000
-Received: from mail.emcraft.com ([142.93.143.113])
+	id 1kh6gE-0005H5-Ec; Mon, 23 Nov 2020 07:54:34 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kh6PP-0003bA-N6
- for linux-mtd@lists.infradead.org; Mon, 23 Nov 2020 07:37:12 +0000
-Received: from sergmir.emcraft.com (unknown [95.165.7.197])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.emcraft.com (Postfix) with ESMTPSA id 1D4D43F024;
- Mon, 23 Nov 2020 07:37:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=emcraft.com;
- s=default; t=1606117028;
- bh=sCowTSY93ddMjdJL3PJpji4nBDSLauuHzrQLUzozcHY=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=D6Jup0JS14rck6hFQES6lbXICEJofEzYql7qaTNrIcIlKm69ZbBAaE7aNCnQ2Pbfm
- 6poZmBJazQOiSbJ6mxiPwY2yVk8qHDshkpMhQOy2Tf7xWXWQ7H/vxVMNNqRX8MGMFl
- ggHN4nUsimTM58g4JroshguSj1lmb2owVqbzBhNE=
-Date: Mon, 23 Nov 2020 10:37:06 +0300
-From: Sergei Poselenov <sposelenov@emcraft.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Subject: Re: Help with UBI failure analysis
-Message-ID: <20201123103706.13a56898@sergmir.emcraft.com>
-In-Reply-To: <CAFLxGvyp9C6BuM3V3DDxCrs3LCuWc0dJgACZShB5qU01SHwh2Q@mail.gmail.com>
+ id 1kh6gB-0005Ei-Ts
+ for linux-mtd@lists.infradead.org; Mon, 23 Nov 2020 07:54:32 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 66671625DE1D;
+ Mon, 23 Nov 2020 08:54:22 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id uSaAkqWVZgvN; Mon, 23 Nov 2020 08:54:22 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 22D4E625DE24;
+ Mon, 23 Nov 2020 08:54:22 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id KimVQF91ahyd; Mon, 23 Nov 2020 08:54:22 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 0847E625DE1D;
+ Mon, 23 Nov 2020 08:54:22 +0100 (CET)
+Date: Mon, 23 Nov 2020 08:54:21 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: Sergei Poselenov <sposelenov@emcraft.com>
+Message-ID: <115359785.11218.1606118061930.JavaMail.zimbra@nod.at>
+In-Reply-To: <20201123103706.13a56898@sergmir.emcraft.com>
 References: <20200924113518.7c6dda33@sergmir>
  <CAFLxGvyp9C6BuM3V3DDxCrs3LCuWc0dJgACZShB5qU01SHwh2Q@mail.gmail.com>
-Organization: Emcraft Systems
-X-Mailer: Claws Mail 3.15.1-dirty (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ <20201123103706.13a56898@sergmir.emcraft.com>
+Subject: Re: Help with UBI failure analysis
 MIME-Version: 1.0
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Topic: Help with UBI failure analysis
+Thread-Index: MdMkVfAVg8u6yOTncsFdbNN3Oo/zGQ==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201123_023712_085810_226E4147 
-X-CRM114-Status: GOOD (  26.04  )
+X-CRM114-CacheID: sfid-20201123_025432_098983_5E270137 
+X-CRM114-Status: UNSURE (   5.57  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,155 +82,21 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Richard,
-
-Sorry for a long delay and thanks a lot for your reply. Could you please look at the crash dump below?
-
-We set up a simple write-compare test on that device (please see the original message in the threa), on an empty UBI partition:
-DIR=/mnt/data
-
-rm -rf $DIR/*
-touch $DIR/a1 $DIR/a2
-
-while :; do
-        for sz in 1 10 3 5; do
-                cs1=`md5sum $DIR/a1 | cut -f1 -d' '`
-                cs2=`md5sum $DIR/a2 | cut -f1 -d' '`
-                if [ "$cs1" = "$cs2" ]; then
-                        echo -n "." 
-                else
-                        echo "ERROR: $DIR/a1 and $DIR/a2 differ" 
-                        exit 1
-                fi
-                mv $DIR/a1 $DIR/b1
-                mv $DIR/a2 $DIR/b2
-                dd if=/dev/urandom of=/tmp/rnd count=$sz bs=1M 2> /dev/null
-                cp /tmp/rnd $DIR/a1
-                cp /tmp/rnd $DIR/a2
-                sync; echo 3 > /proc/sys/vm/drop_caches > /dev/null
-        done
-done
-
-
-After about ~3days, the test failed with the following messages on the board console:
-=================================
-...........................................................................................................
-...........................................................................................................
-.......................................ubi1 warning: ubi_eba_copy_leb: read data back from PEB 895 and it is different
-ubi1 error: wear_leveling_worker: error -22 while moving PEB 1 to PEB 895
-ubi1 warning: ubi_ro_mode: switch to read-only mode
-CPU: 0 PID: 181 Comm: ubi_bgt1d Not tainted 4.5.0 #4
-Hardware name: Freescale i.MX6 SoloX (Device Tree)
-[<800160f4>] (unwind_backtrace) from [<80013400>] (show_stack+0x10/0x14)
-[<80013400>] (show_stack) from [<8029c6ec>] (dump_stack+0x88/0x9c)
-[<8029c6ec>] (dump_stack) from [<8039fac8>] (wear_leveling_worker+0x808/0x858)
-[<8039fac8>] (wear_leveling_worker) from [<8039e724>] (do_work+0x84/0x104)
-[<8039e724>] (do_work) from [<803a02c8>] (ubi_thread+0xd4/0x170)
-[<803a02c8>] (ubi_thread) from [<8003c9c0>] (kthread+0xdc/0xf4)
-[<8003c9c0>] (kthread) from [<8000f7b8>] (ret_from_fork+0x14/0x3c)
-ubi1 error: do_work: work failed with error code -22
-ubi1 error: ubi_io_write: read-only mode
-ubi1 error: ubi_write_fastmap: unable to write vid_hdr to fastmap SB!
-ubi1 error: ubi_thread: ubi_bgt1d: work failed with error code -22
-ubi1 warning: ubi_update_fastmap: Unable to write new fastmap, err=-30
-ubi1 error: ubi_io_write: read-only mode
-ubi1 warning: ubi_eba_write_leb: failed to write VID header to LEB 0:2476, PEB 885
-UBIFS error (ubi1:0 pid 22714): ubifs_leb_map: mapping LEB 2476 failed, error -30
-UBIFS warning (ubi1:0 pid 22714): ubifs_ro_mode: switched to read-only mode, error -30
-CPU: 0 PID: 22714 Comm: cp Not tainted 4.5.0 #4
-Hardware name: Freescale i.MX6 SoloX (Device Tree)
-[<800160f4>] (unwind_backtrace) from [<80013400>] (show_stack+0x10/0x14)
-[<80013400>] (show_stack) from [<8029c6ec>] (dump_stack+0x88/0x9c)
-[<8029c6ec>] (dump_stack) from [<802057f8>] (ubifs_leb_map+0x118/0x120)
-[<802057f8>] (ubifs_leb_map) from [<8020ef00>] (ubifs_add_bud_to_log+0x1d0/0x330)
-[<8020ef00>] (ubifs_add_bud_to_log) from [<801f9b94>] (make_reservation+0x378/0x4ac)
-[<801f9b94>] (make_reservation) from [<801fa5bc>] (ubifs_jnl_write_data+0xe4/0x264)
-[<801fa5bc>] (ubifs_jnl_write_data) from [<801fc1ec>] (do_writepage+0x78/0x1cc)
-[<801fc1ec>] (do_writepage) from [<800aafc0>] (__writepage+0x14/0x40)
-[<800aafc0>] (__writepage) from [<800ab86c>] (write_cache_pages+0x170/0x3c0)
-[<800ab86c>] (write_cache_pages) from [<800abafc>] (generic_writepages+0x40/0x60)
-[<800abafc>] (generic_writepages) from [<800a2f68>] (__filemap_fdatawrite_range+0x78/0x9c)
-[<800a2f68>] (__filemap_fdatawrite_range) from [<800a30a8>] (filemap_write_and_wait_range+0x34/0x74)
-[<800a30a8>] (filemap_write_and_wait_range) from [<801fc934>] (ubifs_fsync+0x40/0xb4)
-[<801fc934>] (ubifs_fsync) from [<800a3e70>] (generic_file_write_iter+0x1b0/0x264)
-[<800a3e70>] (generic_file_write_iter) from [<801fde28>] (ubifs_write_iter+0xe8/0x178)
-[<801fde28>] (ubifs_write_iter) from [<800e3820>] (__vfs_write+0xa8/0xd8)
-[<800e3820>] (__vfs_write) from [<800e451c>] (vfs_write+0x90/0x164)
-[<800e451c>] (vfs_write) from [<800e4f64>] (SyS_write+0x44/0x9c)
-[<800e4f64>] (SyS_write) from [<8000f700>] (ret_fast_syscall+0x0/0x3c)
-CPU: 0 PID: 22714 Comm: cp Not tainted 4.5.0 #4
-Hardware name: Freescale i.MX6 SoloX (Device Tree)
-[<800160f4>] (unwind_backtrace) from [<80013400>] (show_stack+0x10/0x14)
-[<80013400>] (show_stack) from [<8029c6ec>] (dump_stack+0x88/0x9c)
-[<8029c6ec>] (dump_stack) from [<802057e4>] (ubifs_leb_map+0x104/0x120)
-[<802057e4>] (ubifs_leb_map) from [<8020ef00>] (ubifs_add_bud_to_log+0x1d0/0x330)
-[<8020ef00>] (ubifs_add_bud_to_log) from [<801f9b94>] (make_reservation+0x378/0x4ac)
-[<801f9b94>] (make_reservation) from [<801fa5bc>] (ubifs_jnl_write_data+0xe4/0x264)
-[<801fa5bc>] (ubifs_jnl_write_data) from [<801fc1ec>] (do_writepage+0x78/0x1cc)
-[<801fc1ec>] (do_writepage) from [<800aafc0>] (__writepage+0x14/0x40)
-[<800aafc0>] (__writepage) from [<800ab86c>] (write_cache_pages+0x170/0x3c0)
-[<800ab86c>] (write_cache_pages) from [<800abafc>] (generic_writepages+0x40/0x60)
-[<800abafc>] (generic_writepages) from [<800a2f68>] (__filemap_fdatawrite_range+0x78/0x9c)
-[<800a2f68>] (__filemap_fdatawrite_range) from [<800a30a8>] (filemap_write_and_wait_range+0x34/0x74)
-[<800a30a8>] (filemap_write_and_wait_range) from [<801fc934>] (ubifs_fsync+0x40/0xb4)
-[<801fc934>] (ubifs_fsync) from [<800a3e70>] (generic_file_write_iter+0x1b0/0x264)
-[<800a3e70>] (generic_file_write_iter) from [<801fde28>] (ubifs_write_iter+0xe8/0x178)
-[<801fde28>] (ubifs_write_iter) from [<800e3820>] (__vfs_write+0xa8/0xd8)
-[<800e3820>] (__vfs_write) from [<800e451c>] (vfs_write+0x90/0x164)
-[<800e451c>] (vfs_write) from [<800e4f64>] (SyS_write+0x44/0x9c)
-[<800e4f64>] (SyS_write) from [<8000f700>] (ret_fast_syscall+0x0/0x3c)
-UBIFS error (ubi1:0 pid 22714): make_reservation: cannot reserve 4144 bytes in jhead 2, error -30
-UBIFS error (ubi1:0 pid 22714): do_writepage: cannot write page 299 of inode 58400, error -30
-cp: write error: Read-only file system
-cp: can't create '/mnt/data/a2': Read-only file system
-UBIFS error (ubi1:0 pid 6): make_reservation: cannot reserve 4144 bytes in jhead 2, error -30
-UBIFS error (ubi1:0 pid 6): do_writepage: cannot write page 300 of inode 58400, error -30
-UBIFS error (ubi1:0 pid 6): make_reservation: cannot reserve 4144 bytes in jhead 2, error -30
-UBIFS error (ubi1:0 pid 6): do_writepage: cannot write page 301 of inode 58400, error -30
-md5sum: can't open '/mnt/data/a2': No such file or directory
-ERROR: /mnt/data/a1 and /mnt/data/a2 differ
-~ #
-~ # UBIFS error (ubi1:0 pid 6): make_reservation: cannot reserve 4144 bytes in jhead 2, error -30
-UBIFS error (ubi1:0 pid 6): make_reservation: cannot reserve 4144 bytes in jhead 2, error -30
-UBIFS error (ubi1:0 pid 6): do_writepage: cannot write page 303 of inode 58400, error -30
-========================
-
-Could you please share you thoughts on what could cause such errors? Does it confirm your initial suggestion that something happened on the MTD layer?
-
---
-Regards,
-Sergei Poselenov,
-Emcraft Systems
-
-On Thu, 24 Sep 2020 12:42:46 +0200 Richard Weinberger <richard.weinberger@gmail.com> wrote:
-
-> On Thu, Sep 24, 2020 at 10:41 AM Sergei Poselenov
-> <sposelenov@emcraft.com> wrote:
-> > Freeing unused kernel memory: 280K (80898000 - 808de000)
-> > UBIFS error (ubi0:0 pid 1): ubifs_read_node: bad node type (0 but expected 9)
-> > UBIFS error (ubi0:0 pid 1): ubifs_read_node: bad node at LEB 12:100352, LEB mapping status 1
-> > Not a node, first 24 bytes:
-> > 00000000: 55 42 49 23 01 00 00 00 00 00 00 00 00 00 00 02 00 00 08 00 00 00 10 00                          UBI#....................  
-> 
-> So, UBIFS reads from a node and finds a UBI EC header, this must not happen.
-> UBI headers are invisible to UBIFS. If UBIFS reads from a LEB and a
-> given offset, the offset is translated
-> to read data after the page(s) where EC/VID headers reside.
-> 
-> *unless* LEB 12 offset 100352 contains an UBIFS data node for a
-> nanddump you did before
-> and the index tree is corrupted. But I don't think so.
-> 
-> Looks more like a problem on the mtd side.
-> 
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+U2VyZ2VpLAoKLS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IC4uLi4uLi4uLi4uLi4u
+Li4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4u
+Li4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uCj4gLi4uLi4uLi4uLi4uLi4uLi4u
+Li4uLi4uLi4uLi4uLi4uLi4uLi4udWJpMSB3YXJuaW5nOiB1YmlfZWJhX2NvcHlfbGViOiByZWFk
+IGRhdGEKPiBiYWNrIGZyb20gUEVCIDg5NSBhbmQgaXQgaXMgZGlmZmVyZW50CgpzZWVtcyB0byBt
+ZSBsaWtlIGEgbXRkIGRyaXZlciBpc3N1ZS4KVUJJIHJlYWRzIGJhY2sgdGhlIGRhdGEgaXQganVz
+dCB3cm90ZSwgdGhlIGhlIHJlc3VsdCBpcyBub3QgdGhlIHNhbWUuClBsZWFzZSBub3RlLCBpbiBy
+ZWNlbnQga2VybmVscyB0aGlzIGNoZWNrIG5vIGxvbmdlciBleGlzdHMsIHNvIHRoZSBmYWlsdXJl
+IHdpbGwgbG9vayBkaWZmZXJlbnQuCgpUaGFua3MsCi8vcmljaGFyZAoKCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
+c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vbGludXgtbXRkLwo=
