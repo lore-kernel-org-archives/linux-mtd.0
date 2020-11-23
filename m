@@ -2,78 +2,93 @@ Return-Path: <SRS0=aMQG=E5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE73CC2D0E4
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Nov 2020 16:26:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B124C56202
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Nov 2020 16:33:07 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6EBE82080A
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Nov 2020 16:26:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3C4ED20708
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Nov 2020 16:33:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HYR+TyDg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6EBE82080A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jLS6hJYC";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="taYTQdLW";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="taYTQdLW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C4ED20708
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=HansenPartnership.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Date:To:From:
+	Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=g6SVVdjDrdujVKJe6v4usQmmgbjMMXtUSYbPfeWqQ+A=; b=HYR+TyDgRUZ94dU3uTkRE+x2G
-	cs1MTSvt51UBM4KZoqluB1mu59jAqP+WL4qPLKBUmC3B5WL7G3I1CFJKrwQ0UjT8LmAh1kAN9hYY5
-	Ka5os+3JAham/7E0Dg5N++XRf2js/xJSH6jZifYvDLh021SHvTUjI8GbsfbyBMltD6PkIglSDNbXD
-	XtNcO0VoCsXCY9LJZHfLDayQlrFMDMbWRBaPfSjZ28HKvf72dEaRz6D3+tI1elrlxRAj1j0FQUxIf
-	sIeph2L6T35ZOsbCSodUOMTa77IKO8FpJZKKJl+y3MdY5ejajs6OzD/iU7X7NpfDIPU0x9hHJgW0c
-	BZ2VfFJYA==;
+	 bh=EGHhhFasoePW66MrUNncXyS6ajifL10KuLrj7m8haeI=; b=jLS6hJYC1dTCxuT3lilfBLvp7
+	sx+gq7O6Ms/vsX7dtgZb+CxZZWXrdT4CM3ciQZsKoqAhmg1g1OuQKTniEZjU9b0xjZDG/mbTooFoH
+	yN22lCRPCrz3VHJIPrxnaABEeyEN5VP+MtD978D3WJbVYgsbxUbU50VKRzVhMXK2PJ7tmAxSC5CoH
+	khPOw/1+8BevJAHBF52nfjlyvnD2S2ZEqCzAYgiIjN7KUG8gTuL/mmUMER/CSTY4Vv1EG3WOsJu4X
+	zhfirsv6NkOIL3oNTEDkm5/YCLYc8yikVLA+f3cJkSnliYr7giqNypnNZZIpElO52GUjmmzwPOJnN
+	3puMF2OnA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1khEeP-0006T4-93; Mon, 23 Nov 2020 16:25:13 +0000
-Received: from mail-ot1-f68.google.com ([209.85.210.68])
+	id 1khEkm-0007R8-3c; Mon, 23 Nov 2020 16:31:48 +0000
+Received: from bedivere.hansenpartnership.com ([2607:fcd0:100:8a00::2])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khEeH-0006Ox-3w; Mon, 23 Nov 2020 16:25:06 +0000
-Received: by mail-ot1-f68.google.com with SMTP id n12so12914981otk.0;
- Mon, 23 Nov 2020 08:25:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=SWzdE85KMSmQ5K6aYMgWVQjn8/tst2VI3dLUnv/55SM=;
- b=jDEjvEJtiSTwKWHClnRHJtASuPUXtO8lR6UX+a4N1BXZGIB952iIySFAJcB0jDyBuM
- NhRo1t8lQa7N3W7ouvgsh8IgV2YkdBb95NX1K/9jtOMYHGlVxAvgSBwKPgdCk5NJTrx2
- uYcOjpM0bc28ZQlKoHSFfX9w4hp05Mt0kuLGG+fLXWwJgCYiiCmGfWeYX/7ztVQMaPks
- /LFPnpbaL9Ahwpms+y/auhqJs7dWr6exWznrag8LvdqM2Vo8VoeBZDpfYnpu6Y2Gg2wI
- TCspBd85QkOq+kSwfnH2bIcERput4mIgQCkdCqgH2Kuk7wxAmaO791KFfteuP1nA+rob
- Y8Pg==
-X-Gm-Message-State: AOAM532wsjkeTqJOy+uBsGV2EshVnvRexTMjMlbRRTMn/Ko+g45O4zS2
- 2Lz7FHHt8x8IyfDuBHmmg1xWmguGKEBwhy07Tr8=
-X-Google-Smtp-Source: ABdhPJxW9u67TbnPp8ObIChv5a6F+ncd8SoV+BFvs894Bl4MJzyAX0TVAjkpawJr+z1OvIzzPyEcIsCefAg0WelXSFg=
-X-Received: by 2002:a9d:16f:: with SMTP id 102mr68959otu.206.1606148702991;
- Mon, 23 Nov 2020 08:25:02 -0800 (PST)
-MIME-Version: 1.0
+ id 1khEkc-0007MG-RQ; Mon, 23 Nov 2020 16:31:40 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by bedivere.hansenpartnership.com (Postfix) with ESMTP id 7EDBD12808F6;
+ Mon, 23 Nov 2020 08:31:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=hansenpartnership.com; s=20151216; t=1606149095;
+ bh=+IhPqZ/v6VfDyyXzj4lMu9axEsbedJZyqBpFfwsfG+g=;
+ h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+ b=taYTQdLWt1uKXwIt/3Ve/mEupTdq+Wcpdv+UXp5WQMTWxY34l98m0qHLcdAiwuo2t
+ gwBg46qri78QHRql74q8THMzP+7WPx9XqttvrPch20gBcYUMT4pLXQarcLhIoin1Gp
+ Z+ziweydBKwdaV8ZmrW12X55c5G6vUR8Kiznotik=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new,
+ port 10024)
+ with ESMTP id S05__PC1UR2d; Mon, 23 Nov 2020 08:31:35 -0800 (PST)
+Received: from jarvis.int.hansenpartnership.com (unknown
+ [IPv6:2601:600:8280:66d1::527])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 9FAA112808A8;
+ Mon, 23 Nov 2020 08:31:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=hansenpartnership.com; s=20151216; t=1606149095;
+ bh=+IhPqZ/v6VfDyyXzj4lMu9axEsbedJZyqBpFfwsfG+g=;
+ h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+ b=taYTQdLWt1uKXwIt/3Ve/mEupTdq+Wcpdv+UXp5WQMTWxY34l98m0qHLcdAiwuo2t
+ gwBg46qri78QHRql74q8THMzP+7WPx9XqttvrPch20gBcYUMT4pLXQarcLhIoin1Gp
+ Z+ziweydBKwdaV8ZmrW12X55c5G6vUR8Kiznotik=
+Message-ID: <8f5611bb015e044fa1c0a48147293923c2d904e4.camel@HansenPartnership.com>
+Subject: Re: [Intel-wired-lan] [PATCH 000/141] Fix fall-through warnings for
+ Clang
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Date: Mon, 23 Nov 2020 08:31:30 -0800
+In-Reply-To: <20201123130348.GA3119@embeddedor>
 References: <cover.1605896059.git.gustavoars@kernel.org>
  <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
  <202011201129.B13FDB3C@keescook>
  <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
  <202011220816.8B6591A@keescook>
  <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
- <CANiq72nZrHWTA4_Msg6MP9snTyenC6-eGfD27CyfNSu7QoVZbw@mail.gmail.com>
- <1c7d7fde126bc0acf825766de64bf2f9b888f216.camel@HansenPartnership.com>
- <CANiq72m22Jb5_+62NnwX8xds2iUdWDMAqD8PZw9cuxdHd95W0A@mail.gmail.com>
- <fc45750b6d0277c401015b7aa11e16cd15f32ab2.camel@HansenPartnership.com>
-In-Reply-To: <fc45750b6d0277c401015b7aa11e16cd15f32ab2.camel@HansenPartnership.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 23 Nov 2020 17:24:51 +0100
-Message-ID: <CAJZ5v0jJ6GFm4LFCR2V3qvD9rZrVw=pXyXSjSWPYtQudg-F3xg@mail.gmail.com>
-Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
+ <ca071decb87cc7e905411423c05a48f9fd2f58d7.camel@perches.com>
+ <0147972a72bc13f3629de8a32dee6f1f308994b5.camel@HansenPartnership.com>
+ <d8d1e9add08cdd4158405e77762d4946037208f8.camel@perches.com>
+ <dbd2cb703ed9eefa7dde9281ea26ab0f7acc8afe.camel@HansenPartnership.com>
+ <20201123130348.GA3119@embeddedor>
+User-Agent: Evolution 3.34.4 
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201123_112505_466489_C9EF8A05 
-X-CRM114-Status: GOOD (  17.69  )
+X-CRM114-CacheID: sfid-20201123_113139_175022_786EF811 
+X-CRM114-Status: GOOD (  24.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,104 +100,116 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <alsa-devel@alsa-project.org>, linux-atm-general@lists.sourceforge.net,
- reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-wireless <linux-wireless@vger.kernel.org>,
- "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
- dri-devel <dri-devel@lists.freedesktop.org>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Nathan Chancellor <natechancellor@gmail.com>,
- "open list:LIBATA SUBSYSTEM \(Serial and Parallel ATA drivers\)"
- <linux-ide@vger.kernel.org>, dm-devel@redhat.com, keyrings@vger.kernel.org,
+Cc: alsa-devel@alsa-project.org, bridge@lists.linux-foundation.org,
+ target-devel@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
+ linux-iio@vger.kernel.org, linux-wireless@vger.kernel.org,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>, linux-fbdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, virtualization@lists.linux-foundation.org,
+ linux-ide@vger.kernel.org, dm-devel@redhat.com, keyrings@vger.kernel.org,
  linux-mtd@lists.infradead.org, GR-everest-linux-l2@marvell.com,
- wcn36xx@lists.infradead.org, samba-technical@lists.samba.org,
- linux-i3c@lists.infradead.org, linux1394-devel@lists.sourceforge.net,
- linux-afs@lists.infradead.org, usb-storage@lists.one-eyed-alien.net,
+ wcn36xx@lists.infradead.org, linux-i3c@lists.infradead.org,
+ linux1394-devel@lists.sourceforge.net, linux-afs@lists.infradead.org,
  drbd-dev@lists.linbit.com, devel@driverdev.osuosl.org,
  linux-cifs@vger.kernel.org, rds-devel@oss.oracle.com,
- Nick Desaulniers <ndesaulniers@google.com>,
- "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>,
+ linux-scsi@vger.kernel.org, linux-acpi@vger.kernel.org,
  linux-rdma@vger.kernel.org, oss-drivers@netronome.com,
- bridge@lists.linux-foundation.org, linux-security-module@vger.kernel.org,
- amd-gfx list <amd-gfx@lists.freedesktop.org>,
- linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
- ACPI Devel Maling List <linux-acpi@vger.kernel.org>, coreteam@netfilter.org,
- intel-wired-lan@lists.osuosl.org, linux-input <linux-input@vger.kernel.org>,
+ linux-atm-general@lists.sourceforge.net, ceph-devel@vger.kernel.org,
+ amd-gfx@lists.freedesktop.org, linux-stm32@st-md-mailman.stormreply.com,
+ cluster-devel@redhat.com, usb-storage@lists.one-eyed-alien.net,
+ linux-mmc@vger.kernel.org, coreteam@netfilter.org,
+ intel-wired-lan@lists.osuosl.org, linux-input@vger.kernel.org,
  Miguel Ojeda <ojeda@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
- Ext4 Developers List <linux-ext4@vger.kernel.org>,
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- Kees Cook <keescook@chromium.org>, selinux@vger.kernel.org,
- linux-arm-msm <linux-arm-msm@vger.kernel.org>,
- intel-gfx <intel-gfx@lists.freedesktop.org>, linux-geode@lists.infradead.org,
- linux-can@vger.kernel.org, linux-block@vger.kernel.org,
- linux-gpio@vger.kernel.org, op-tee@lists.trustedfirmware.org,
- "moderated list:ARM/Mediatek SoC..." <linux-mediatek@lists.infradead.org>,
- xen-devel@lists.xenproject.org, nouveau <nouveau@lists.freedesktop.org>,
- linux-hams@vger.kernel.org, ceph-devel@vger.kernel.org,
- virtualization@lists.linux-foundation.org,
- Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-hwmon@vger.kernel.org,
- linux-watchdog@vger.kernel.org, linux-nfs@vger.kernel.org,
- GR-Linux-NIC-Dev@marvell.com, tipc-discussion@lists.sourceforge.net,
- Linux-MM <linux-mm@kvack.org>, Network Development <netdev@vger.kernel.org>,
- linux-decnet-user@lists.sourceforge.net, linux-mmc <linux-mmc@vger.kernel.org>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- "maintainer:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, linux-sctp@vger.kernel.org,
- "open list:ULTRA-WIDEBAND \(UWB\) SUBSYSTEM:" <linux-usb@vger.kernel.org>,
- netfilter-devel@vger.kernel.org,
- Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+ linux-ext4@vger.kernel.org, netfilter-devel@vger.kernel.org,
+ linux-media@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+ selinux@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ intel-gfx@lists.freedesktop.org, linux-sctp@vger.kernel.org,
+ reiserfs-devel@vger.kernel.org, linux-geode@lists.infradead.org,
+ linux-block@vger.kernel.org, linux-gpio@vger.kernel.org,
+ op-tee@lists.trustedfirmware.org, linux-mediatek@lists.infradead.org,
+ xen-devel@lists.xenproject.org, nouveau@lists.freedesktop.org,
+ linux-hams@vger.kernel.org, Nathan Chancellor <natechancellor@gmail.com>,
+ linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-hwmon@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
+ linux-watchdog@vger.kernel.org, GR-Linux-NIC-Dev@marvell.com,
+ linux-mm@kvack.org, netdev@vger.kernel.org,
+ linux-decnet-user@lists.sourceforge.net, samba-technical@lists.samba.org,
+ linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-security-module@vger.kernel.org, linux-usb@vger.kernel.org,
+ tipc-discussion@lists.sourceforge.net, linux-crypto@vger.kernel.org,
  patches@opensource.cirrus.com, Joe Perches <joe@perches.com>,
- linux-integrity@vger.kernel.org, target-devel@vger.kernel.org,
+ linux-integrity@vger.kernel.org, linux-nfs@vger.kernel.org, x86@kernel.org,
  linux-hardening@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Nov 23, 2020 at 4:58 PM James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
->
-> On Mon, 2020-11-23 at 15:19 +0100, Miguel Ojeda wrote:
-> > On Sun, Nov 22, 2020 at 11:36 PM James Bottomley
-> > <James.Bottomley@hansenpartnership.com> wrote:
+On Mon, 2020-11-23 at 07:03 -0600, Gustavo A. R. Silva wrote:
+> On Sun, Nov 22, 2020 at 11:53:55AM -0800, James Bottomley wrote:
+> > On Sun, 2020-11-22 at 11:22 -0800, Joe Perches wrote:
+> > > On Sun, 2020-11-22 at 11:12 -0800, James Bottomley wrote:
+> > > > On Sun, 2020-11-22 at 10:25 -0800, Joe Perches wrote:
+> > > > > On Sun, 2020-11-22 at 10:21 -0800, James Bottomley wrote:
+> > > > > > Please tell me our reward for all this effort isn't a
+> > > > > > single missing error print.
+> > > > > 
+> > > > > There were quite literally dozens of logical defects found
+> > > > > by the fallthrough additions.  Very few were logging only.
+> > > > 
+> > > > So can you give us the best examples (or indeed all of them if
+> > > > someone is keeping score)?  hopefully this isn't a US election
+> > > > situation ...
+> > > 
+> > > Gustavo?  Are you running for congress now?
+> > > 
+> > > https://lwn.net/Articles/794944/
+> > 
+> > That's 21 reported fixes of which about 50% seem to produce no
+> > change in code behaviour at all, a quarter seem to have no user
+> > visible effect with the remaining quarter producing unexpected
+> > errors on obscure configuration parameters, which is why no-one
+> > really noticed them before.
+> 
+> The really important point here is the number of bugs this has
+> prevented and will prevent in the future. See an example of this,
+> below:
+> 
+> https://lore.kernel.org/linux-iio/20190813135802.GB27392@kroah.com/
 
-[cut]
+I think this falls into the same category as the other six bugs: it
+changes the output/input for parameters but no-one has really noticed,
+usually because the command is obscure or the bias effect is minor.
 
-> >
-> > Maintainers routinely review 1-line trivial patches, not to mention
-> > internal API changes, etc.
->
-> We're also complaining about the inability to recruit maintainers:
->
-> https://www.theregister.com/2020/06/30/hard_to_find_linux_maintainers_says_torvalds/
->
-> And burn out:
->
-> http://antirez.com/news/129
+> This work is still relevant, even if the total number of issues/bugs
+> we find in the process is zero (which is not the case).
 
-Right.
+Really, no ... something which produces no improvement has no value at
+all ... we really shouldn't be wasting maintainer time with it because
+it has a cost to merge.  I'm not sure we understand where the balance
+lies in value vs cost to merge but I am confident in the zero value
+case.
 
-> The whole crux of your argument seems to be maintainers' time isn't
-> important so we should accept all trivial patches ... I'm pushing back
-> on that assumption in two places, firstly the valulessness of the time
-> and secondly that all trivial patches are valuable.
->
-> > If some company does not want to pay for that, that's fine, but they
-> > don't get to be maintainers and claim `Supported`.
->
-> What I'm actually trying to articulate is a way of measuring value of
-> the patch vs cost ... it has nothing really to do with who foots the
-> actual bill.
->
-> One thesis I'm actually starting to formulate is that this continual
-> devaluing of maintainers is why we have so much difficulty keeping and
-> recruiting them.
+> "The sucky thing about doing hard work to deploy hardening is that
+> the result is totally invisible by definition (things not happening)
+> [..]"
+> - Dmitry Vyukov
 
-Absolutely.
+Really, no.  Something that can't be measured at all doesn't exist.
 
-This is just one of the factors involved, but a significant one IMV.
+And actually hardening is one of those things you can measure (which I
+do have to admit isn't true for everything in the security space) ...
+it's number of exploitable bugs found before you did it vs number of
+exploitable bugs found after you did it.  Usually hardening eliminates
+a class of bug, so the way I've measured hardening before is to go
+through the CVE list for the last couple of years for product X, find
+all the bugs that are of the class we're looking to eliminate and say
+if we had hardened X against this class of bug we'd have eliminated Y%
+of the exploits.  It can be quite impressive if Y is a suitably big
+number.
+
+James
+
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
