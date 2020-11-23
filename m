@@ -2,23 +2,21 @@ Return-Path: <SRS0=aMQG=E5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7573BC2D0E4
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Nov 2020 16:18:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE73CC2D0E4
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Nov 2020 16:26:09 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1EABE206F1
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Nov 2020 16:18:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6EBE82080A
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Nov 2020 16:26:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lb2Mb/QX";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jzsPhOCP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1EABE206F1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HYR+TyDg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6EBE82080A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
@@ -26,60 +24,56 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
 	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=OZpDKDnvfDzwaoAsg0Im/O2+MIlm07vajGZ6BtWYUYU=; b=lb2Mb/QX1iidlcl3tuQT1uPqD
-	2N393OuqaAkrYXT5kuPAkuHOjpLmRGRnXmXjJvf8leJm+jnUgRbHviwQIvHGe8Eagojt+Dm9zUEW7
-	zNAeJUNF+Dh5NWtngn2mdEna0WvwJuWYJgFeDT8u9fBgYdW46Gz0G9HlKLDdMqX4CHh57TXN0a10/
-	UTWUwyI3JLVNFJkk67n4vGELTuIjb72NVIoSeZAk7M7ApYZXyGhe0cDtmQI3Cxu0rvX0PQdIPNCKF
-	BhtqKFJH25AYhS6E1i6lDn8X28aoydXmuxvHpw+Pv5patBpKVYais5Blbt7gBp2ZmYgRM5djEOfzn
-	VGP7i97rg==;
+	 bh=g6SVVdjDrdujVKJe6v4usQmmgbjMMXtUSYbPfeWqQ+A=; b=HYR+TyDgRUZ94dU3uTkRE+x2G
+	cs1MTSvt51UBM4KZoqluB1mu59jAqP+WL4qPLKBUmC3B5WL7G3I1CFJKrwQ0UjT8LmAh1kAN9hYY5
+	Ka5os+3JAham/7E0Dg5N++XRf2js/xJSH6jZifYvDLh021SHvTUjI8GbsfbyBMltD6PkIglSDNbXD
+	XtNcO0VoCsXCY9LJZHfLDayQlrFMDMbWRBaPfSjZ28HKvf72dEaRz6D3+tI1elrlxRAj1j0FQUxIf
+	sIeph2L6T35ZOsbCSodUOMTa77IKO8FpJZKKJl+y3MdY5ejajs6OzD/iU7X7NpfDIPU0x9hHJgW0c
+	BZ2VfFJYA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1khEWj-0005JI-QH; Mon, 23 Nov 2020 16:17:17 +0000
-Received: from mail-io1-xd43.google.com ([2607:f8b0:4864:20::d43])
+	id 1khEeP-0006T4-93; Mon, 23 Nov 2020 16:25:13 +0000
+Received: from mail-ot1-f68.google.com ([209.85.210.68])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khEWh-0005Ij-S1
- for linux-mtd@lists.infradead.org; Mon, 23 Nov 2020 16:17:16 +0000
-Received: by mail-io1-xd43.google.com with SMTP id m9so18670754iox.10
- for <linux-mtd@lists.infradead.org>; Mon, 23 Nov 2020 08:17:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=9G9wehhbpTZzWWOvGr3rWAgWQ0geLC9Yp77M/YC6Idw=;
- b=jzsPhOCPkH8JcubkL+ilpCqrpmJxzR/ZZhmza1K1c0eddk7+QY69lMXZ1zjj7yUobv
- UPOat94Oznz5N+aYQtyK2tx44PHGHvaT6c5ydFaOoT5387NjxS4giDE0liSNJKSpvdGp
- HKiV67o8ZfM+QomP6uHJNCHgME5k654Lm9OlI5uZEZV/BZyGXhrMcp4osA9RqzKjR7Ze
- 0dIcMPHMz9M6e1KbFfvtyGGjldyt3D137VsBHg9GBRp12UjhpWPsI6mtFPtV54IoaC+K
- mSdXyd8g5UOodS4awURhueIsrAq2XHUWM9vJndBZGt3fLtR88qq6iY1NEsTPrUzb2MVL
- n+0A==
+ id 1khEeH-0006Ox-3w; Mon, 23 Nov 2020 16:25:06 +0000
+Received: by mail-ot1-f68.google.com with SMTP id n12so12914981otk.0;
+ Mon, 23 Nov 2020 08:25:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=9G9wehhbpTZzWWOvGr3rWAgWQ0geLC9Yp77M/YC6Idw=;
- b=RJmVv5LRae6IIGmYcifHB6uSLQdJZ2ChehJ1s7BQ4NCIeCUKRAtl+q43qf3hK/iTcx
- 3jIbh/tXCunrzPnK9YGf63W4zaxY55rjNbWNjL4QumhNYLRt+hPfrB8eg3o138vMoE3O
- 1z0a/PU+JM76Eve8Ql53GwfKYn/y2VyXND4vjw+Xtq/vxHRK/bYP1PXcGGc9eRNxEax6
- QjZqthHmyx3lVXXyXNNSDbJ2P+JO4bA9/LzM3T7Z6v9c1JZ/Fnxi8HClTdfsTpoyWY6w
- /3dc36D+ug5sk1RyF3IzhPzYj2o5i9hhrduEGR8c3yTTgJiXjswTHdzpZLMDeWJeuCUq
- vTdQ==
-X-Gm-Message-State: AOAM531vqect11qT23xCOn2Z0N3ZmTbcN9zXOGJAl+sLHIAHHsHNQIBC
- qrrs6VqREqGsalmPu9847N+gTTmg2Jz9oEMjZHM=
-X-Google-Smtp-Source: ABdhPJw5wxDBX8QpwE2CghMfFtPIAtnmG9XIUqmbpxXD9wxvuYGnavpxLlav0NBfuecvTCMrGKLgN0Lee5ktV7i8vQ8=
-X-Received: by 2002:a05:6602:22c7:: with SMTP id
- e7mr415585ioe.114.1606148231969; 
- Mon, 23 Nov 2020 08:17:11 -0800 (PST)
+ bh=SWzdE85KMSmQ5K6aYMgWVQjn8/tst2VI3dLUnv/55SM=;
+ b=jDEjvEJtiSTwKWHClnRHJtASuPUXtO8lR6UX+a4N1BXZGIB952iIySFAJcB0jDyBuM
+ NhRo1t8lQa7N3W7ouvgsh8IgV2YkdBb95NX1K/9jtOMYHGlVxAvgSBwKPgdCk5NJTrx2
+ uYcOjpM0bc28ZQlKoHSFfX9w4hp05Mt0kuLGG+fLXWwJgCYiiCmGfWeYX/7ztVQMaPks
+ /LFPnpbaL9Ahwpms+y/auhqJs7dWr6exWznrag8LvdqM2Vo8VoeBZDpfYnpu6Y2Gg2wI
+ TCspBd85QkOq+kSwfnH2bIcERput4mIgQCkdCqgH2Kuk7wxAmaO791KFfteuP1nA+rob
+ Y8Pg==
+X-Gm-Message-State: AOAM532wsjkeTqJOy+uBsGV2EshVnvRexTMjMlbRRTMn/Ko+g45O4zS2
+ 2Lz7FHHt8x8IyfDuBHmmg1xWmguGKEBwhy07Tr8=
+X-Google-Smtp-Source: ABdhPJxW9u67TbnPp8ObIChv5a6F+ncd8SoV+BFvs894Bl4MJzyAX0TVAjkpawJr+z1OvIzzPyEcIsCefAg0WelXSFg=
+X-Received: by 2002:a9d:16f:: with SMTP id 102mr68959otu.206.1606148702991;
+ Mon, 23 Nov 2020 08:25:02 -0800 (PST)
 MIME-Version: 1.0
-References: <20201121165058.1644182-1-trix@redhat.com>
- <5843ef910b0e86c00d9c0143dec20f93823b016b.camel@HansenPartnership.com>
- <87y2ism5or.fsf@intel.com>
-In-Reply-To: <87y2ism5or.fsf@intel.com>
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date: Mon, 23 Nov 2020 17:17:00 +0100
-Message-ID: <CAKXUXMydH+VtMeuftPRgCg_PYm2iChOMkUYjO=QTG=NRM3QFiw@mail.gmail.com>
-Subject: Re: [RFC] MAINTAINERS tag for cleanup robot
-To: Jani Nikula <jani.nikula@linux.intel.com>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+ <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011201129.B13FDB3C@keescook>
+ <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011220816.8B6591A@keescook>
+ <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
+ <CANiq72nZrHWTA4_Msg6MP9snTyenC6-eGfD27CyfNSu7QoVZbw@mail.gmail.com>
+ <1c7d7fde126bc0acf825766de64bf2f9b888f216.camel@HansenPartnership.com>
+ <CANiq72m22Jb5_+62NnwX8xds2iUdWDMAqD8PZw9cuxdHd95W0A@mail.gmail.com>
+ <fc45750b6d0277c401015b7aa11e16cd15f32ab2.camel@HansenPartnership.com>
+In-Reply-To: <fc45750b6d0277c401015b7aa11e16cd15f32ab2.camel@HansenPartnership.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 23 Nov 2020 17:24:51 +0100
+Message-ID: <CAJZ5v0jJ6GFm4LFCR2V3qvD9rZrVw=pXyXSjSWPYtQudg-F3xg@mail.gmail.com>
+Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201123_111715_930174_9AE6A78E 
-X-CRM114-Status: GOOD (  28.64  )
+X-CRM114-CacheID: sfid-20201123_112505_466489_C9EF8A05 
+X-CRM114-Status: GOOD (  17.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,116 +85,104 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
- Tom Rix <trix@redhat.com>, linux-fbdev@vger.kernel.org,
- dri-devel@lists.freedesktop.org, platform-driver-x86@vger.kernel.org,
- James Bottomley <James.Bottomley@hansenpartnership.com>,
- ibm-acpi-devel@lists.sourceforge.net,
- "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
- linux-mtd@lists.infradead.org, linux-scsi@vger.kernel.org,
- linux-acpi@vger.kernel.org, amd-gfx@lists.freedesktop.org,
- cluster-devel@redhat.com,
- clang-built-linux <clang-built-linux@googlegroups.com>,
- tboot-devel@lists.sourceforge.net, coreteam@netfilter.org,
- xen-devel@lists.xenproject.org, MPT-FusionLinux.pdl@broadcom.com,
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org,
- ecryptfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-omap@vger.kernel.org, devel@acpica.org, linux-nfs@vger.kernel.org,
- Netdev <netdev@vger.kernel.org>, linux-usb@vger.kernel.org,
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>, linux-atm-general@lists.sourceforge.net,
+ reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
  linux-wireless <linux-wireless@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-bluetooth@vger.kernel.org, netfilter-devel@vger.kernel.org,
- linux-crypto@vger.kernel.org, patches@opensource.cirrus.com,
- Joe Perches <joe@perches.com>, bpf@vger.kernel.org
+ "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
+ dri-devel <dri-devel@lists.freedesktop.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ Nathan Chancellor <natechancellor@gmail.com>,
+ "open list:LIBATA SUBSYSTEM \(Serial and Parallel ATA drivers\)"
+ <linux-ide@vger.kernel.org>, dm-devel@redhat.com, keyrings@vger.kernel.org,
+ linux-mtd@lists.infradead.org, GR-everest-linux-l2@marvell.com,
+ wcn36xx@lists.infradead.org, samba-technical@lists.samba.org,
+ linux-i3c@lists.infradead.org, linux1394-devel@lists.sourceforge.net,
+ linux-afs@lists.infradead.org, usb-storage@lists.one-eyed-alien.net,
+ drbd-dev@lists.linbit.com, devel@driverdev.osuosl.org,
+ linux-cifs@vger.kernel.org, rds-devel@oss.oracle.com,
+ Nick Desaulniers <ndesaulniers@google.com>,
+ "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>,
+ linux-rdma@vger.kernel.org, oss-drivers@netronome.com,
+ bridge@lists.linux-foundation.org, linux-security-module@vger.kernel.org,
+ amd-gfx list <amd-gfx@lists.freedesktop.org>,
+ linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
+ ACPI Devel Maling List <linux-acpi@vger.kernel.org>, coreteam@netfilter.org,
+ intel-wired-lan@lists.osuosl.org, linux-input <linux-input@vger.kernel.org>,
+ Miguel Ojeda <ojeda@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+ Ext4 Developers List <linux-ext4@vger.kernel.org>,
+ Linux Media Mailing List <linux-media@vger.kernel.org>,
+ Kees Cook <keescook@chromium.org>, selinux@vger.kernel.org,
+ linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+ intel-gfx <intel-gfx@lists.freedesktop.org>, linux-geode@lists.infradead.org,
+ linux-can@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-gpio@vger.kernel.org, op-tee@lists.trustedfirmware.org,
+ "moderated list:ARM/Mediatek SoC..." <linux-mediatek@lists.infradead.org>,
+ xen-devel@lists.xenproject.org, nouveau <nouveau@lists.freedesktop.org>,
+ linux-hams@vger.kernel.org, ceph-devel@vger.kernel.org,
+ virtualization@lists.linux-foundation.org,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-hwmon@vger.kernel.org,
+ linux-watchdog@vger.kernel.org, linux-nfs@vger.kernel.org,
+ GR-Linux-NIC-Dev@marvell.com, tipc-discussion@lists.sourceforge.net,
+ Linux-MM <linux-mm@kvack.org>, Network Development <netdev@vger.kernel.org>,
+ linux-decnet-user@lists.sourceforge.net, linux-mmc <linux-mmc@vger.kernel.org>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ "maintainer:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, linux-sctp@vger.kernel.org,
+ "open list:ULTRA-WIDEBAND \(UWB\) SUBSYSTEM:" <linux-usb@vger.kernel.org>,
+ netfilter-devel@vger.kernel.org,
+ Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+ patches@opensource.cirrus.com, Joe Perches <joe@perches.com>,
+ linux-integrity@vger.kernel.org, target-devel@vger.kernel.org,
+ linux-hardening@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Nov 23, 2020 at 4:52 PM Jani Nikula <jani.nikula@linux.intel.com> wrote:
+On Mon, Nov 23, 2020 at 4:58 PM James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
 >
-> On Sat, 21 Nov 2020, James Bottomley <James.Bottomley@HansenPartnership.com> wrote:
-> > On Sat, 2020-11-21 at 08:50 -0800, trix@redhat.com wrote:
-> >> A difficult part of automating commits is composing the subsystem
-> >> preamble in the commit log.  For the ongoing effort of a fixer
-> >> producing
-> >> one or two fixes a release the use of 'treewide:' does not seem
-> >> appropriate.
-> >>
-> >> It would be better if the normal prefix was used.  Unfortunately
-> >> normal is
-> >> not consistent across the tree.
-> >>
-> >>
-> >>      D: Commit subsystem prefix
-> >>
-> >> ex/ for FPGA DFL DRIVERS
-> >>
-> >>      D: fpga: dfl:
-> >>
+> On Mon, 2020-11-23 at 15:19 +0100, Miguel Ojeda wrote:
+> > On Sun, Nov 22, 2020 at 11:36 PM James Bottomley
+> > <James.Bottomley@hansenpartnership.com> wrote:
+
+[cut]
+
 > >
-> > I've got to bet this is going to cause more issues than it solves.
+> > Maintainers routinely review 1-line trivial patches, not to mention
+> > internal API changes, etc.
 >
-> Agreed.
+> We're also complaining about the inability to recruit maintainers:
 >
+> https://www.theregister.com/2020/06/30/hard_to_find_linux_maintainers_says_torvalds/
+>
+> And burn out:
+>
+> http://antirez.com/news/129
 
-Tom, this a problem only kernel janitors encounter; all other
-developers really do not have that issue. The time spent on creating
-the patch is much larger than the amount saved if the commit log
-header line prefix would be derived automatically. I believe Julia
-Lawall, Arnd Bergmann and Nathan Chancellor as long-term
-high-frequency janitors do have already scripted approaches to that
-issue. Maybe they simply need to share these scripts with you and you
-consolidate them and share with everyone?
+Right.
 
-Also, making clean-up patches cumbersome has a positive side as well;
-maintainers are not swamped with fully automated patch submissions.
-There have been some bad experiences with some submitters on that in
-the past...
+> The whole crux of your argument seems to be maintainers' time isn't
+> important so we should accept all trivial patches ... I'm pushing back
+> on that assumption in two places, firstly the valulessness of the time
+> and secondly that all trivial patches are valuable.
+>
+> > If some company does not want to pay for that, that's fine, but they
+> > don't get to be maintainers and claim `Supported`.
+>
+> What I'm actually trying to articulate is a way of measuring value of
+> the patch vs cost ... it has nothing really to do with who foots the
+> actual bill.
+>
+> One thesis I'm actually starting to formulate is that this continual
+> devaluing of maintainers is why we have so much difficulty keeping and
+> recruiting them.
 
-> > SCSI uses scsi: <driver>: for drivers but not every driver has a
-> > MAINTAINERS entry.  We use either scsi: or scsi: core: for mid layer
-> > things, but we're not consistent.  Block uses blk-<something>: for all
-> > of it's stuff but almost no <somtehing>s have a MAINTAINERS entry.  So
-> > the next thing you're going to cause is an explosion of suggested
-> > MAINTAINERs entries.
->
-> On the one hand, adoption of new MAINTAINERS entries has been really
-> slow. Look at B, C, or P, for instance. On the other hand, if this were
-> to get adopted, you'll potentially get conflicting prefixes for patches
-> touching multiple files. Then what?
->
-> I'm guessing a script looking at git log could come up with better
-> suggestions for prefixes via popularity contest than manually maintained
-> MAINTAINERS entries. It might not always get it right, but then human
-> outsiders aren't going to always get it right either.
->
-> Now you'll only need Someone(tm) to write the script. ;)
->
-> Something quick like this:
->
-> git log --since={1year} --pretty=format:%s -- <FILES> |\
->         grep -v "^\(Merge\|Revert\)" |\
->         sed 's/:[^:]*$//' |\
->         sort | uniq -c | sort -rn | head -5
->
-> already gives me results that really aren't worse than some of the
-> prefixes invented by drive-by contributors.
->
+Absolutely.
 
-I agree I do not see the need to introduce something in MAINTAINERS;
-from my observations maintaining MAINTAINERS, there is sufficient work
-on adoption and maintenance of the existing entries already without
-such an yet another additional entry. Some entries are outdated or
-wrong and the janitor task of cleaning those up is already enough work
-for involved janitors and enough churn for involved maintainers. So a
-machine-learned approach as above is probably good enough, but if you
-think you need more complex rules try to learn them from the data at
-hand... certainly a nice task to do with machine learning on commit
-message prefixes.
-
-Lukas
+This is just one of the factors involved, but a significant one IMV.
 
 ______________________________________________________
 Linux MTD discussion mailing list
