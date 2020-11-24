@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3581C64E7D
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 13:32:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51FAEC2D0E4
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 13:32:32 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F1472083E
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 13:32:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8D3E0204EC
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 13:32:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DUPzdptu";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="GrByciCm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F1472083E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BIMMQBv3";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="PBlG+SI1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D3E0204EC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,37 +26,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=zWPKhHrnYv9Is+t/pLY4CuvSvkyNcTkGnADCMqYw61k=; b=DUPzdptup9P9BRuujeO4lY1kg
-	a/4EVIdN//3eFgYhteQVxgfYrXXjgaGO8C3HH7hhDnLHbrKKOLVu472wLIQ76aWv8WJprSpA/QFia
-	HKi07xJOdMlEpcLULJcGUlyonrC29BFp2BZQCwQFXCE+kMREF23Jh69vkif8ubBPVqxfRMAskWaj4
-	oHBDf2IDGgsiQ86MQxel8b6b7ikjM2PrRYqMhRC3VJFE7kvGxb5ZTYp8j7QsJTXyVt1bJt2Z14vAi
-	LTHBMoBjI0VjWOxq77jA/nKQc0h6wxXxbwcTsrCb4yGRNREmP8xKhfkvP4cIzChJPhsnWTl9BUdaf
-	tC8hsi0Bw==;
+	 bh=MXWdXcJRZJ1UOUHwHp1pB1DNh4IJRx1n9jwPSmI1Pjw=; b=BIMMQBv3XR4UJcHUg6WjJig+W
+	/zG28ZMpwtkF78ObCKPcSG3M/sP+8gMPeslotqupXQ625CO1cqlfsMbEZlOIMSxzgiqWsxNN/WPO7
+	Kkzru5uQJN1SdF5amdGRBQj5XPEL2C7xA18Jl4LCIhmT6MP1YmZCYqMsmPAKRJC4tCe//5PfGV6ML
+	Plw1bJhJ9Do/wLIi4tD42vVobYq4QoZbmwzObwrHrA/U5MYDvR5jLJlXX/2Gt1m/fmWHd8QqzqV56
+	KGpwLtSXgXcGXFAf5HlrmCv66TTM4Z5T8+4P/zAAD4zs4nM0h6m0iz64Z0CeTADrI5dunNjezAeLD
+	uOPq/36ig==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1khYPr-0001Ip-IE; Tue, 24 Nov 2020 13:31:31 +0000
+	id 1khYPy-0001Ly-3A; Tue, 24 Nov 2020 13:31:38 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khYMk-00086D-KK
- for linux-mtd@merlin.infradead.org; Tue, 24 Nov 2020 13:28:18 +0000
+ id 1khYMm-00086Z-2R
+ for linux-mtd@merlin.infradead.org; Tue, 24 Nov 2020 13:28:20 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=5XlVZbSBkS7owyByi7+TU2krdZYtRQJNSLbElG7UMJM=; b=GrByciCmlypygW+ymXF+7X/jSp
- HsgeqlURzqGzlgS5RJ/o9YvA/LFELAtg9fJnwnXHIYCDHFU5pcD4d6q944dHkxA6N7cn0bDnE7VXh
- GGu35B6Gcg+bgzCRYC//r/GDM/4JYgkFo6e+maqC9WuOLWUBLvew8ZTAEOoLACaBDzdaiWX4kCzN1
- mrD6nnXkiMIkyK5dE06VrsauzZZkdbBiGnIewiH224Fo/WsEG8HJfz+sdUEhX6TsJp+ZFRhjiRw2S
- cY+TmRWWh+F6CCP9jGYgpqRwjHhvoZocC5aLnQE1p+91dxzwMcKB7t/OezvIVTW5MzvYKNFt5e/x4
- rVcbPBpg==;
+ bh=aYwkX4I6zMx34nzrdb7tYezzW5eC03Czg70BjD05yqI=; b=PBlG+SI1LP3b7gr/lJlKmKFFJd
+ bocVKBuspYZb9+bd6oRwQGEd0L7j3hQYuLx9nBobabPLesfL8HLab1E4KCm/5+LC3aeewsBsrF0Ec
+ hulcbyCIFfsfA8vcNobuzkqbXhMEwxxlSaiC+PbDLVpuj7Vfeb4n/Hc03FWeCTlPALu7BKMacg7VB
+ VdoUIV8XfOoQvjg+7Lpil7jQgfh2pOibzDF+EEKPx14W4pVYNFzWxgoqa5dOjKsd+dX8NOcHTR0xd
+ r+KlCQy9eeFmFLAe7pGrffUSOJRf0kI5rzxEXRSylWdG/EZ+5D3kd5agpzXpiDKm6I3+ieiU+g83C
+ 6CbAnNrA==;
 Received: from [2001:4bb8:180:5443:c70:4a89:bc61:3] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khYMj-0006XN-5i; Tue, 24 Nov 2020 13:28:17 +0000
+ id 1khYMk-0006Xd-Im; Tue, 24 Nov 2020 13:28:19 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 15/45] block: use put_device in put_disk
-Date: Tue, 24 Nov 2020 14:27:21 +0100
-Message-Id: <20201124132751.3747337-16-hch@lst.de>
+Subject: [PATCH 16/45] block: change the hash used for looking up block devices
+Date: Tue, 24 Nov 2020 14:27:22 +0100
+Message-Id: <20201124132751.3747337-17-hch@lst.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201124132751.3747337-1-hch@lst.de>
 References: <20201124132751.3747337-1-hch@lst.de>
@@ -88,30 +88,66 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use put_device to put the device instead of poking into the internals
-and using kobject_put.
+Adding the minor to the major creates tons of pointless conflicts. Just
+use the dev_t itself, which is 32-bits and thus is guaranteed to fit
+into ino_t.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- block/genhd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/block_dev.c | 26 ++------------------------
+ 1 file changed, 2 insertions(+), 24 deletions(-)
 
-diff --git a/block/genhd.c b/block/genhd.c
-index 0bd9c41dd4cb69..f46e89226fdf91 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -1803,7 +1803,7 @@ EXPORT_SYMBOL(__alloc_disk_node);
- void put_disk(struct gendisk *disk)
- {
- 	if (disk)
--		kobject_put(&disk_to_dev(disk)->kobj);
-+		put_device(disk_to_dev(disk));
+diff --git a/fs/block_dev.c b/fs/block_dev.c
+index f6a2a06ad262fa..437f67e12b2838 100644
+--- a/fs/block_dev.c
++++ b/fs/block_dev.c
+@@ -863,35 +863,12 @@ void __init bdev_cache_init(void)
+ 	blockdev_superblock = bd_mnt->mnt_sb;   /* For writeback */
  }
- EXPORT_SYMBOL(put_disk);
  
+-/*
+- * Most likely _very_ bad one - but then it's hardly critical for small
+- * /dev and can be fixed when somebody will need really large one.
+- * Keep in mind that it will be fed through icache hash function too.
+- */
+-static inline unsigned long hash(dev_t dev)
+-{
+-	return MAJOR(dev)+MINOR(dev);
+-}
+-
+-static int bdev_test(struct inode *inode, void *data)
+-{
+-	return BDEV_I(inode)->bdev.bd_dev == *(dev_t *)data;
+-}
+-
+-static int bdev_set(struct inode *inode, void *data)
+-{
+-	BDEV_I(inode)->bdev.bd_dev = *(dev_t *)data;
+-	return 0;
+-}
+-
+ static struct block_device *bdget(dev_t dev)
+ {
+ 	struct block_device *bdev;
+ 	struct inode *inode;
+ 
+-	inode = iget5_locked(blockdev_superblock, hash(dev),
+-			bdev_test, bdev_set, &dev);
+-
++	inode = iget_locked(blockdev_superblock, dev);
+ 	if (!inode)
+ 		return NULL;
+ 
+@@ -903,6 +880,7 @@ static struct block_device *bdget(dev_t dev)
+ 		bdev->bd_super = NULL;
+ 		bdev->bd_inode = inode;
+ 		bdev->bd_part_count = 0;
++		bdev->bd_dev = dev;
+ 		inode->i_mode = S_IFBLK;
+ 		inode->i_rdev = dev;
+ 		inode->i_bdev = bdev;
 -- 
 2.29.2
 
