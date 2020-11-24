@@ -2,62 +2,61 @@ Return-Path: <SRS0=p38J=E6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_ADSP_ALL,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D5E7C56201
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 06:26:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66A8CC56201
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 06:34:34 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7E5A32068D
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 06:26:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AD76D206CA
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 06:34:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qJSc1VZF";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=narfation.org header.i=@narfation.org header.b="bUlz8Chr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E5A32068D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=narfation.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DEtnBH8v"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD76D206CA
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To:From:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=2aiSQjSu5bL3Cs/C+XujetbGppD1p/bNGCA/T8qXSkY=; b=qJSc1VZF+bicZbCIsdeYgj+bfr
-	nRYACbQ5Ap2gLBjY/G4aKVlaKfqeSKuZvmYdHk5sZUtBAswE/zzqpF5QQ1+/6KTLrQxD01dfbQ41u
-	YVrkLsocIzMSXEdhYfOr0DNwTlYEbkMnJVTNfsN457vK1y9bJf9UnY0sQkc+tqjSLe/zzE6cHRuYY
-	EjcYsfBHDv5AxruJvsMbPGuxigQlS4yA13NhJE5VffSMwNgX4r5tomTeWp12WToEst4/UrdUgKoV3
-	QJ1xzyIlLJ/7G2nw1ShEiO4VK3jvmTBS83f31/OYZapA7R71fUq4Cax7OgmVcShoWUmnIq4ggz4Es
-	dUHRaFjg==;
+	bh=Yj+j15JXQobaKsLa+KoI96XalLQjdKe6Tkge0PILyps=; b=DEtnBH8vbpQc3hN5D9TJJq5Q3+
+	1xtjd+UyKilbbxysf19FdeHwcWzOJKamFLJ/ed3xJTf4MxnwjGdLqSH/GvE5m7V7W3zj4n94txkkK
+	hqfHIKeY/ylKerS4Hz5h1M8JotQMRMytF8Hn89WTiF14UIHdirN2bBZZ8v367Rryd5M8lfB805pEE
+	U+NFDk0L8lDlyD5moArJCflI1XxCWupOxvsMZvKkI+pCBjoQK6PJZi5sOTGp/6QaHJCcEy33XkeEl
+	QbL3AdFWGsg/uPR+ga+3M3LR1+Q6B2VpeU3bAdDtBKfk4CBCyxcfH+g0zhqjNY29jtY3NS1B1CTh2
+	vTLpy57g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1khRlj-00017p-Mz; Tue, 24 Nov 2020 06:25:39 +0000
-Received: from dvalin.narfation.org ([2a00:17d8:100::8b1])
+	id 1khRte-0001h2-7e; Tue, 24 Nov 2020 06:33:50 +0000
+Received: from szxga07-in.huawei.com ([45.249.212.35])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khRlg-00016g-JA
- for linux-mtd@lists.infradead.org; Tue, 24 Nov 2020 06:25:37 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
- s=20121; t=1606199132;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding;
- bh=93U9HTwir3MyESStXqylZH/Q5z8YATBcSDxn3s56cbo=;
- b=bUlz8ChrZE60d/IAoRJZG6KDQWjYAsBh/+hah+X9OmYHlfdQiYVAmDlpTTazHRVp1RtWOW
- PE03BjCp3y68P2hObttcpZdDcLLS93G2DaDLBOyuRSBlBULUY+8OCTfQdFVpk9/TRcAktW
- Akem4MIzhp7BsNm5sbu1/0Ud0WUsp6I=
-From: Sven Eckelmann <sven@narfation.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2] mtd: parser: cmdline: Fix parsing of part-names with colons
-Date: Tue, 24 Nov 2020 07:25:06 +0100
-Message-Id: <20201124062506.185392-1-sven@narfation.org>
-X-Mailer: git-send-email 2.29.2
+ id 1khRtb-0001g9-LR
+ for linux-mtd@lists.infradead.org; Tue, 24 Nov 2020 06:33:48 +0000
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+ by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CgDjn5nzLz72HV;
+ Tue, 24 Nov 2020 14:33:17 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Tue, 24 Nov 2020
+ 14:33:26 +0800
+From: Wang ShaoBo <bobo.shaobowang@huawei.com>
+To: <richard@nod.at>
+Subject: [PATCH] ubifs: Fix error return code in ubifs_init_authentication()
+Date: Tue, 24 Nov 2020 14:33:20 +0800
+Message-ID: <20201124063320.1799-1-bobo.shaobowang@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201124_012536_752775_96513271 
-X-CRM114-Status: GOOD (  12.39  )
+X-CRM114-CacheID: sfid-20201124_013347_960698_3B5027BB 
+X-CRM114-Status: UNSURE (   9.92  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,85 +68,42 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, richard@nod.at, rminnich@google.com,
- stable@vger.kernel.org, boris.brezillon@collabora.com,
- miquel.raynal@bootlin.com, Sven Eckelmann <sven@narfation.org>
+Cc: cj.chengjian@huawei.com, s.hauer@pengutronix.de,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ huawei.libin@huawei.com, herbert@gondor.apana.org.au
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Some devices (especially QCA ones) are already using hardcoded partition
-names with colons in it. The OpenMesh A62 for example provides following
-mtd relevant information via cmdline:
+Fix to return PTR_ERR() error code from the error handling case where
+ubifs_hash_get_desc() failed instead of 0 in ubifs_init_authentication(),
+as done elsewhere in this function.
 
-  root=31:11 mtdparts=spi0.0:256k(0:SBL1),128k(0:MIBIB),384k(0:QSEE),64k(0:CDT),64k(0:DDRPARAMS),64k(0:APPSBLENV),512k(0:APPSBL),64k(0:ART),64k(custom),64k(0:KEYS),0x002b0000(kernel),0x00c80000(rootfs),15552k(inactive) rootfsname=rootfs rootwait
-
-The change to split only on the last colon between mtd-id and partitions
-will cause newpart to see following string for the first partition:
-
-  KEYS),0x002b0000(kernel),0x00c80000(rootfs),15552k(inactive)
-
-Such a partition list cannot be parsed and thus the device fails to boot.
-
-Avoid this behavior by making sure that the start of the first part-name
-("(") will also be the last byte the mtd-id split algorithm is using for
-its colon search.
-
-Fixes: eb13fa022741 ("mtd: parser: cmdline: Support MTD names containing one or more colons")
-Cc: stable@vger.kernel.org
-Cc: Ron Minnich <rminnich@google.com>
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Fixes: 49525e5eecca5 ("ubifs: Add helper functions for authentication support")
+Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
 ---
-v2:
+ fs/ubifs/auth.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-* switch from net's multi-line comment style to mtd's multiline comment style
-* Add Ron Minnich as explicit Cc as we are missing his Tested-by
-
- drivers/mtd/parsers/cmdlinepart.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/parsers/cmdlinepart.c b/drivers/mtd/parsers/cmdlinepart.c
-index a79e4d866b08..0ddff1a4b51f 100644
---- a/drivers/mtd/parsers/cmdlinepart.c
-+++ b/drivers/mtd/parsers/cmdlinepart.c
-@@ -226,7 +226,7 @@ static int mtdpart_setup_real(char *s)
- 		struct cmdline_mtd_partition *this_mtd;
- 		struct mtd_partition *parts;
- 		int mtd_id_len, num_parts;
--		char *p, *mtd_id, *semicol;
-+		char *p, *mtd_id, *semicol, *open_parenth;
+diff --git a/fs/ubifs/auth.c b/fs/ubifs/auth.c
+index b93b3cd10bfd..8c50de693e1d 100644
+--- a/fs/ubifs/auth.c
++++ b/fs/ubifs/auth.c
+@@ -338,8 +338,10 @@ int ubifs_init_authentication(struct ubifs_info *c)
+ 	c->authenticated = true;
  
- 		/*
- 		 * Replace the first ';' by a NULL char so strrchr can work
-@@ -236,6 +236,14 @@ static int mtdpart_setup_real(char *s)
- 		if (semicol)
- 			*semicol = '\0';
+ 	c->log_hash = ubifs_hash_get_desc(c);
+-	if (IS_ERR(c->log_hash))
++	if (IS_ERR(c->log_hash)) {
++		err = PTR_ERR(c->log_hash);
+ 		goto out_free_hmac;
++	}
  
-+		/*
-+		 * make sure that part-names with ":" will not be handled as
-+		 * part of the mtd-id with an ":"
-+		 */
-+		open_parenth = strchr(s, '(');
-+		if (open_parenth)
-+			*open_parenth = '\0';
-+
- 		mtd_id = s;
+ 	err = 0;
  
- 		/*
-@@ -245,6 +253,10 @@ static int mtdpart_setup_real(char *s)
- 		 */
- 		p = strrchr(s, ':');
- 
-+		/* Restore the '(' now. */
-+		if (open_parenth)
-+			*open_parenth = '(';
-+
- 		/* Restore the ';' now. */
- 		if (semicol)
- 			*semicol = ';';
 -- 
-2.29.2
+2.17.1
 
 
 ______________________________________________________
