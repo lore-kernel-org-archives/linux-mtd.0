@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74416C825AA
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 13:29:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3020AC82580
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 13:30:33 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CF395206F9
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 13:29:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A8BB12083E
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 13:30:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DSyBKlox";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="gSBkuGb0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CF395206F9
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JABaTA/Q";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="QlVuTCTh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A8BB12083E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,37 +26,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Vc9Ui0INoJLIMf1t0LVYG84JXcOondM1F+W7MQ1o6cc=; b=DSyBKloxXK4zvaIT/mzsv3/V3
-	IH+XTfWgRc8YmdyxM5wmAIc3rUNPBOOAJZY8ZUNIOPQdlVeityBz/ZJrX9CS2o2BWEZM2b0WcaiaS
-	XJ4GAkkFuGNkXPfdDP36L2cGf40GBoWG+ToAJLDdPugmvgvag/QpK69r29ofr8ku704Fb9CYBjU25
-	UwGVJFGKJ8R49HcBkOEsap0smoNpPWk9u7RCjeRaqapO9J5kFs6Cy1dIHN0hAS/CKctbo8FLwYPig
-	Y5EHxJbvyQlFF4JFDBMMp6JE/QIWsLiF1KL7ZQtF7x47fQIGOuuZm9euLOnRnOYc8WmbJhgzNSuP2
-	E3RJI2KRQ==;
+	 bh=hjc9RzxF/5kPRixK7CO1H/MB4TVEg6jbmJyNPKUwUpg=; b=JABaTA/QoGImARtErxenhUthp
+	p0c57iEM4sGfx4OsU4TKtyYe/Ok9oPodKgXaiDFLouxn+AmWXYNsLhkEsdiiAOTEq3dcYghj2Idsp
+	xwet6TFg2I2kwHIdvHDUMStwSSL/hzGWB1DHTixluP5bL5B0E2Ph7pV5vnJavOiPxNL+BuNAHSBzq
+	KNaTz69PhP3rLrjyNeJblaXa+L/BSCwj2P/g+uvh3Y56kIOt+9BE0R2Bevae1zJsQxe/RhbLUtZ4l
+	mHQzirdaujNmztHbadC2VXkI3/G70pE6ijp9Tk2TCFEtT9l0aBUV0w9P+I9bfhHbQU84WC/+LhFwZ
+	KyYVhvVVg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1khYMw-0008B5-Qi; Tue, 24 Nov 2020 13:28:30 +0000
+	id 1khYOC-0000NU-B6; Tue, 24 Nov 2020 13:29:48 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khYMY-00082c-64
- for linux-mtd@merlin.infradead.org; Tue, 24 Nov 2020 13:28:06 +0000
+ id 1khYMb-00083a-Cy
+ for linux-mtd@merlin.infradead.org; Tue, 24 Nov 2020 13:28:09 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=q5VEN3b+/NuaC3nLa7Ob8T2zF/1/3On5f5TLNt/sEKk=; b=gSBkuGb01pZYejE/qt8U+f1Prp
- H6UFF5H/7Q8DKAajhbcAG/TWkWqcbJP6bF/2kpoG1MhuVrgkQKne/Is825NwtMjoMkmVuk6QyOhw4
- 6d32g0XCyz8crp9IhQ8kuRwKQHuh2i/recIYUgVpmwkRUq3tDkXkobmCdXxgw2dGWnUTzWgrewmho
- SphjpGruHOWqUH4vavWTPhddkaX2Ct2GTq94foULjN6riyh6UEzcq/lFdKB/Bgo2FSx5SzSq74gko
- EnRhAkBQn/CQvobi3r+bM87y3KzNaOsLt6QALXtIHOxRJ1xW5O4DJquFcSCvJ8LYd4MwXPv9+3hgu
- zAxlftXQ==;
+ bh=qOmzpRMb4vEzGwba4P3m5gENBKcm1ZKj8N5Pylgvbms=; b=QlVuTCTh45nrCbNvdsVoIgsOr3
+ o95XamtfFlHQdWoYLWTiXelkn0D+odqN40uheOBv3z0BV6r096cNZn1W0wS1mz+vFGmKDoLfxwB6t
+ 9+zKNn1qt6dRi6yiiLqPQAL91CKDp2S6xsY83LfbwnAlo50KMLRzxrcqOmqiSsIMFl8Aw9XpdKS+R
+ WZJmPOjQKJSU2brvqFKaHLDst3ASHFCm++DZPoqCslNlR8eV59MkIXKBDS0vMEWNRPVQfY4/6dJR2
+ 0yR6aoz6V/xEKpsBinRf0moR7ga9qiIpxc1qZCLa7UWzw8rxoOhDnTmEEP/Ho/mppNNW42sLXt019
+ r6XhQ5Zw==;
 Received: from [2001:4bb8:180:5443:c70:4a89:bc61:3] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khYMW-0006V1-Oc; Tue, 24 Nov 2020 13:28:05 +0000
+ id 1khYMZ-0006VO-IX; Tue, 24 Nov 2020 13:28:08 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 07/45] zram: do not call set_blocksize
-Date: Tue, 24 Nov 2020 14:27:13 +0100
-Message-Id: <20201124132751.3747337-8-hch@lst.de>
+Subject: [PATCH 09/45] dm: simplify flush_bio initialization in
+ __send_empty_flush
+Date: Tue, 24 Nov 2020 14:27:15 +0100
+Message-Id: <20201124132751.3747337-10-hch@lst.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201124132751.3747337-1-hch@lst.de>
 References: <20201124132751.3747337-1-hch@lst.de>
@@ -88,69 +89,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-set_blocksize is used by file systems to use their preferred buffer cache
-block size.  Block drivers should not set it.
+We don't really need the struct block_device to initialize a bio.  So
+switch from using bio_set_dev to manually setting up bi_disk (bi_partno
+will always be zero and has been cleared by bio_init already).
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Mike Snitzer <snitzer@redhat.com>
 ---
- drivers/block/zram/zram_drv.c | 11 +----------
- drivers/block/zram/zram_drv.h |  1 -
- 2 files changed, 1 insertion(+), 11 deletions(-)
+ drivers/md/dm.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index 2e6d75ec1afddb..88baa6158eaee1 100644
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -403,13 +403,10 @@ static void reset_bdev(struct zram *zram)
- 		return;
+diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+index 50541d336c719b..ab0a8335f098d9 100644
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -1422,18 +1422,12 @@ static int __send_empty_flush(struct clone_info *ci)
+ 	 */
+ 	bio_init(&flush_bio, NULL, 0);
+ 	flush_bio.bi_opf = REQ_OP_WRITE | REQ_PREFLUSH | REQ_SYNC;
++	flush_bio.bi_disk = ci->io->md->disk;
++	bio_associate_blkg(&flush_bio);
++
+ 	ci->bio = &flush_bio;
+ 	ci->sector_count = 0;
  
- 	bdev = zram->bdev;
--	if (zram->old_block_size)
--		set_blocksize(bdev, zram->old_block_size);
- 	blkdev_put(bdev, FMODE_READ|FMODE_WRITE|FMODE_EXCL);
- 	/* hope filp_close flush all of IO */
- 	filp_close(zram->backing_dev, NULL);
- 	zram->backing_dev = NULL;
--	zram->old_block_size = 0;
- 	zram->bdev = NULL;
- 	zram->disk->fops = &zram_devops;
- 	kvfree(zram->bitmap);
-@@ -454,7 +451,7 @@ static ssize_t backing_dev_store(struct device *dev,
- 	struct file *backing_dev = NULL;
- 	struct inode *inode;
- 	struct address_space *mapping;
--	unsigned int bitmap_sz, old_block_size = 0;
-+	unsigned int bitmap_sz;
- 	unsigned long nr_pages, *bitmap = NULL;
- 	struct block_device *bdev = NULL;
- 	int err;
-@@ -509,14 +506,8 @@ static ssize_t backing_dev_store(struct device *dev,
- 		goto out;
- 	}
- 
--	old_block_size = block_size(bdev);
--	err = set_blocksize(bdev, PAGE_SIZE);
--	if (err)
--		goto out;
+-	/*
+-	 * Empty flush uses a statically initialized bio, as the base for
+-	 * cloning.  However, blkg association requires that a bdev is
+-	 * associated with a gendisk, which doesn't happen until the bdev is
+-	 * opened.  So, blkg association is done at issue time of the flush
+-	 * rather than when the device is created in alloc_dev().
+-	 */
+-	bio_set_dev(ci->bio, ci->io->md->bdev);
 -
- 	reset_bdev(zram);
- 
--	zram->old_block_size = old_block_size;
- 	zram->bdev = bdev;
- 	zram->backing_dev = backing_dev;
- 	zram->bitmap = bitmap;
-diff --git a/drivers/block/zram/zram_drv.h b/drivers/block/zram/zram_drv.h
-index f2fd46daa76045..712354a4207c77 100644
---- a/drivers/block/zram/zram_drv.h
-+++ b/drivers/block/zram/zram_drv.h
-@@ -118,7 +118,6 @@ struct zram {
- 	bool wb_limit_enable;
- 	u64 bd_wb_limit;
- 	struct block_device *bdev;
--	unsigned int old_block_size;
- 	unsigned long *bitmap;
- 	unsigned long nr_pages;
- #endif
+ 	BUG_ON(bio_has_data(ci->bio));
+ 	while ((ti = dm_table_get_target(ci->map, target_nr++)))
+ 		__send_duplicate_bios(ci, ti, ti->num_flush_bios, NULL);
 -- 
 2.29.2
 
