@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A84FC63777
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 17:39:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57654C2D0E4
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 17:40:28 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9EB6B206F7
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 17:39:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DA17E206C0
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 17:40:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="b3PxDQ/P";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M4BrkAke"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9EB6B206F7
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="T505ui3+";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iAaQvjyW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA17E206C0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,65 +25,66 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=hTrKSerR2/DqHKNzVJLhi9C5kXOZAgrJeepoHfFwEDg=; b=b3PxDQ/P5nkx5seS9GjeodRdc
-	PRyVs8O4Uv3MmMt4HVDxzSp+ANqHVS8INLzAVRBek7aYSCjdw99soFDe6AxA4zPk8O/VSCO2rOJ+2
-	xuHvI1gwuRR9o8rwYQRP9V7l114S+yxvbb5877x9qcsfpiSDZOKpe4mJ97ylhEV0gYYP9w+fXradZ
-	IAlVRTHZpdgELUZgIeqJA0ekYOticwt0pXMCL/ioNxMs1la5wb77LXn3K582AzRk67fBE/v5SM1y6
-	Gco5I0eFO0UV3LRXpxPtPbQz00AMAoZtg8x4QdkbD6Lpt+Wi9micSPzvrnqRxl0dqHCBxpwYKDCJv
-	GAjDhSKcQ==;
+	 bh=nYkUjESq8V1UOGX73EkWW/X4HCsBZ7rHGjKJPraf+pg=; b=T505ui3+GwXY6wLWpIJeyEVKx
+	ubMvcn71TRmDCwRuBJSzOj1yP5D6YHJu/901m3owj2TyAsbDKYUskIOschEWkEuV8X5xR9/42mZHf
+	o8OHBeJnsAf4U2AhhGItnE9Z6S0OD7kWQtt8kL/hnKn86g/FDHP15BYNa0orGfLFLXpzdbPrncZN7
+	Uskv8OVW+8oxKRcM9n2RbJ+8zvBJj7rQ9WwcRlyTFO9EtyUdmVTlygunmDFjKV+teKU98IoZL36sz
+	wL6AWL5gFfTeX+jKMW3H6AzVXCi0iD4+x8O0VGPBHUNiJn3+QsAfKkN8CU+38grbgGfrR93idJY1y
+	ZQoRPVxwQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1khcHe-0003fD-Mj; Tue, 24 Nov 2020 17:39:18 +0000
-Received: from mail-qk1-x742.google.com ([2607:f8b0:4864:20::742])
+	id 1khcHx-0003p0-Db; Tue, 24 Nov 2020 17:39:37 +0000
+Received: from mail-qk1-x744.google.com ([2607:f8b0:4864:20::744])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khcHc-0003dg-Ji
- for linux-mtd@lists.infradead.org; Tue, 24 Nov 2020 17:39:17 +0000
-Received: by mail-qk1-x742.google.com with SMTP id u4so21472290qkk.10
- for <linux-mtd@lists.infradead.org>; Tue, 24 Nov 2020 09:39:16 -0800 (PST)
+ id 1khcHu-0003ms-FN
+ for linux-mtd@lists.infradead.org; Tue, 24 Nov 2020 17:39:35 +0000
+Received: by mail-qk1-x744.google.com with SMTP id y197so21489818qkb.7
+ for <linux-mtd@lists.infradead.org>; Tue, 24 Nov 2020 09:39:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=sender:date:from:to:cc:subject:message-id:references:mime-version
  :content-disposition:in-reply-to;
- bh=1gf+uZOc59XzmKEaDiZtFHdLCUgfXw7pOt3g9dTtDNI=;
- b=M4BrkAkexyVnkGUjwXdFjVYmVA9LVLj6ookNf5Ar0M5rW60FOFaco8NOC5V53XdKf3
- QJEfLqRZiaD+6aOYpsb7R05SzbB3BGYlmBRdin+nnS7Rl2/BZJIjCGem3ORrY6o5M9QB
- v9ss2oYhE9tLgFZfLE3LUECIa1myAFcsarnIGBk9Ar+eH0Bp+cdl7ZRZkZZx50CbTsHE
- K2VguikHFXg5qBSb0ELsCBeZfhaX/wrxj8/wztYcWOB/MjJmdrILJmWyfS//vV8R3Onf
- 0IRpZT97EaMt3VXXj+9C8TX6D4SZ8wZliFCO/qY/oBmhfCgjCD7BmPqTXEJzXRSaVyYm
- sdFw==
+ bh=gccbgbDD7s/mdcXht2fL6iBUT8Prx6ozPAIi1oy24XY=;
+ b=iAaQvjyW2JnxhLhsfg8rCUwKx68+n4VYv+x/cr19/l2gHjZ5rqQ2eHUQa56Yyrf+V0
+ 0EBO+8uJl3e7TpL8GOVdi3mPtP96tXMXp7if6adHqmGOPUC9KUkBCbpdOTkT7hALT+Ah
+ 7EHhHu8GvT+6D/0VCKlT2valDN6Ru1DvIbYtbLzR9+yA8jAAqgTW92ZCQEl3Pxl49Unt
+ n/9PGjVy4f9zVoTzBvz1OlBcvmK214hyEQI6i4iF3fx4WQFt+rk4+OOUR5M42Vw6rBoM
+ uLOJwtqDc9FyseTQMx+P4zZsyxqAY70M/tC6pBQFw6EbxPD3Q0UbNVnIzJCU6WGu3JSB
+ P/Ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
  :references:mime-version:content-disposition:in-reply-to;
- bh=1gf+uZOc59XzmKEaDiZtFHdLCUgfXw7pOt3g9dTtDNI=;
- b=UX4+ytphf5Am9nnKOqBTLRK2vTKgqDn4mzhh/Z0OQlPnMNTWKeWWpOhCAVrWuXZPud
- lYf4wKc79EqZ+0i0AGFarH1Imh6WBD87axg9KC3Uo3dr3LTC9F67EH7UWxLivrxdWtAY
- 9Jag6L04STsYBTQwZiGBh9JZPzLQbnsLL5PSOIHFQmbBN8VYirJOSty0fLDyDVKsyVRt
- TP7Tm2w/SAh60qVbOcLHAJPtNzT9UXqgizMCK9CRph/dBmy8k9RnSuPDh8qGKrNr0iBV
- tpUWOjxRDGhxPvjI/ibZbXn3PY2hb9qHmhFJP1t3QmTTm/iPCgvOKViD+e7l11dO9qis
- TdZw==
-X-Gm-Message-State: AOAM5331f7/CypsUHWl000DgX/Vk+L8GdOAdhvGh7UMMmja03CVBiuHW
- 2m8mwmxO/mQDomhGAKpSTd4=
-X-Google-Smtp-Source: ABdhPJw/9uU36tM4rV+p5Q1FKg2O4RrQNewNe3FrRSf3D7AKvxn62XJtfvC4G0F74E53WmoixHdIOg==
-X-Received: by 2002:a05:620a:569:: with SMTP id
- p9mr5395902qkp.119.1606239554812; 
- Tue, 24 Nov 2020 09:39:14 -0800 (PST)
+ bh=gccbgbDD7s/mdcXht2fL6iBUT8Prx6ozPAIi1oy24XY=;
+ b=b9pV8m66HRpKd5yBGEFW8nMHrMhIkJKOPg/M6T0wzK5wL8Q3UEf1+ciyTFowIG3xuL
+ dUQQCxBs+7K06gM9EvFUU0ic3I0jzNS2hIArHIw1VaMAxvhE1NyOllA9ez/stxDMvPcO
+ YHWDMd9hbHSp2BsZ9eFeZNW8tyP0eVw6gHCukE1hfmXOQ74XqST22B7XF2Id2uSXL9mB
+ /y0Ap6A3sxrGkxF95nwNu1CnZAOQh+6GV1+/86f2nKDXHxa/LKhiC1CRfgKI8JVayUdQ
+ 6uE1DE8K36ZJ9CL6XXyNiz7Ou9wh9YIx7YW0BhBB8Mc4kGGrUzzxvFS5SPWD7X3V+8tq
+ zUxg==
+X-Gm-Message-State: AOAM531IZMcs8B8ZlVxUk4TesdK41UtRXMPHK2TUWKU50ugcmpxrvJWE
+ LQ08XvxHM4aQRjQctMqwo1c=
+X-Google-Smtp-Source: ABdhPJxIyQph6LZGahQWIRSjw01El8frTqGQNdMpj1StAekmqcFeaj8JjyjEpK9CN9Iflo08fhI4fA==
+X-Received: by 2002:a05:620a:a1d:: with SMTP id
+ i29mr5820661qka.466.1606239572817; 
+ Tue, 24 Nov 2020 09:39:32 -0800 (PST)
 Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
- by smtp.gmail.com with ESMTPSA id o125sm13142963qke.56.2020.11.24.09.39.13
+ by smtp.gmail.com with ESMTPSA id e10sm13416860qkn.126.2020.11.24.09.39.31
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 24 Nov 2020 09:39:14 -0800 (PST)
-Date: Tue, 24 Nov 2020 12:38:50 -0500
+ Tue, 24 Nov 2020 09:39:32 -0800 (PST)
+Date: Tue, 24 Nov 2020 12:39:10 -0500
 From: Tejun Heo <tj@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 18/45] init: refactor devt_from_partuuid
-Message-ID: <X71FKqT9KtO4zTvw@mtj.duckdns.org>
+Subject: Re: [PATCH 19/45] init: cleanup match_dev_by_uuid and
+ match_dev_by_label
+Message-ID: <X71FPpCgw9t3JfIr@mtj.duckdns.org>
 References: <20201124132751.3747337-1-hch@lst.de>
- <20201124132751.3747337-19-hch@lst.de>
+ <20201124132751.3747337-20-hch@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20201124132751.3747337-19-hch@lst.de>
+In-Reply-To: <20201124132751.3747337-20-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201124_123916_726753_A9554770 
-X-CRM114-Status: GOOD (  12.23  )
+X-CRM114-CacheID: sfid-20201124_123934_615541_53EBAFC4 
+X-CRM114-Status: GOOD (  12.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,13 +111,14 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Nov 24, 2020 at 02:27:24PM +0100, Christoph Hellwig wrote:
-> The code in devt_from_partuuid is very convoluted.  Refactor a bit by
-> sanitizing the goto and variable name usage.
+On Tue, Nov 24, 2020 at 02:27:25PM +0100, Christoph Hellwig wrote:
+> Avoid a totally pointless goto label, and use the same style of
+> comparism for both helpers.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > Reviewed-by: Jan Kara <jack@suse.cz>
+> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
 Acked-by: Tejun Heo <tj@kernel.org>
 
