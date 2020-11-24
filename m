@@ -5,19 +5,19 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC6B8C82597
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 13:29:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B0E7C825A3
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 13:29:44 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 58FA4204EC
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 13:29:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BA608206F9
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 13:29:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Pjb61qOt";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="voamq2gI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 58FA4204EC
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JPqKZVFk";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ZoLAX4Iy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA608206F9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,37 +26,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=49HJI4+BHtTyaT1ZslTv6Fo64P0EhO2HLvedeyTYK9w=; b=Pjb61qOtj37Nu8tEe0r/CPOcV
-	g7c7a80NjbaLCZQ+zuHvkSC6f3O/c/pzMhxK7wIqS9cAaMkYthbI2UZLfcuiukx15h1ZWvovjNrTh
-	5PYGc/nm9MuDhbgqUR1mPvTffuNiS03iNJ/6Rrcxcr56mCveNMRUbbPU7mLFOieaFGtgA4H+I3Dmy
-	F2wt7+34R7hCwO07erhnu5TN/FWmNWUqtF3+ZHJJrTbcylVmypeF55yqSnYKFWAkLF7KlV1ZO1JWG
-	6oiaoMdUJ2mkwijdPnJdSxOAJQFYzBJoH2CJ0ZH14ofgyHWyOfwkBtKiKYcKD6koNm5Q0J9yDNAOZ
-	8MS4fDeVQ==;
+	 bh=PPp9xmyBlXgq4y9Knjp0TfMxN2tDlBLutwgvCleiyyk=; b=JPqKZVFkq+R80SSCA84j1zpQp
+	dp+Wu8WWi5xxE65HovAinGy6OEQQ3HvylXrpIH47xBzFOA76qQXRD0eTAoqHYUnPmn+7F6V4XGfgh
+	7UqN14lGeQyslCD09atWo2UdNKsLwnkpDLYuSPrCCRggqtkTUfCDvG0UqMfGabcFmapV23dpahZO8
+	VjNcyENfrqwjtKrRkbz5CaLVQLXK36U7Es495i614yc6/TeV+Ka+bQSjjfPpGkpZS+RHP5y73A9ms
+	w7/IOQJqxNyba6/CBriZuIB2DGQZ4zAkFUspgrVp3hnVp3Dbn9gu+4EBcFQngiwkhV8VFHLqhmnIr
+	OkBeVU/5g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1khYMn-00086v-EU; Tue, 24 Nov 2020 13:28:21 +0000
+	id 1khYNB-0008G3-6t; Tue, 24 Nov 2020 13:28:45 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khYMW-00082I-UN
- for linux-mtd@merlin.infradead.org; Tue, 24 Nov 2020 13:28:04 +0000
+ id 1khYMZ-000830-HT
+ for linux-mtd@merlin.infradead.org; Tue, 24 Nov 2020 13:28:07 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=kUYn0sikpHZNYDnsxFrAwXSb49C5P7DMdxps0LhhPGQ=; b=voamq2gIRabU8afAKL3jTQT86w
- 3voeMXKzWRc968NV3Og6QI7vPIsFgyzT+g3y7G5VN1mzlkrcmMY4Qg7EwhHhprBp2pFWLMjK63ObP
- R7mWTCNSKQkV5l0bX4rfRh4gKPGZnVeHwjNUcB1zJgqL93wnbxgFlTDmJRPjnCaFhMh+HPucQfU+S
- uovUuXHghcRdZOgSkakX0fZ9XuPs/BxiQ7jD+ibvnUIkvCuGFLC0BxmxD5xKdEPhugucjYN8I4Xpv
- WSH12/wojKPamwwzSgge7VqR4tsSr5bVtW0y1gEbh0LGN1fc0aleWXDqaFKriKv0dnauuuFj6BOkD
- RzQOH7Hw==;
+ bh=2AKcef4DY6iJcprvQynjGgbCIgh8d3+qztu8J6nwbBU=; b=ZoLAX4IygcjKDDGL+R/L/NGfMA
+ YlwR4qVUSVXjC/FQMPi9yNLQklagBSMZXN97OugbTjH0foML7tKuGRsO8QpQgajPY1ljXymAqnVGj
+ hBYSVVrFavzJRjAMnvihP4CU0J0lD++Ohhxbd0ATXtBWfXwjb/MhAMjN2LmALGIzwn1CsBVK8t7wz
+ SLIy4zz38tAxtqZlDxVQ3r1Vyfx0sAlWysmBq2CqEt2VFhQHpxjxBLAjG2dhmtEJWNshJafCuVX9Q
+ 8FnIDbA6123YSNJdoCn/kvc5rA13f5YX11HXcmevu5u8KVx9s1pGUvc4r6ukRByzfoXWk785N632H
+ EJ0mLWSQ==;
 Received: from [2001:4bb8:180:5443:c70:4a89:bc61:3] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khYMV-0006Ut-HC; Tue, 24 Nov 2020 13:28:03 +0000
+ id 1khYMY-0006VC-60; Tue, 24 Nov 2020 13:28:06 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 06/45] zram: remove the claim mechanism
-Date: Tue, 24 Nov 2020 14:27:12 +0100
-Message-Id: <20201124132751.3747337-7-hch@lst.de>
+Subject: [PATCH 08/45] loop: do not call set_blocksize
+Date: Tue, 24 Nov 2020 14:27:14 +0100
+Message-Id: <20201124132751.3747337-9-hch@lst.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201124132751.3747337-1-hch@lst.de>
 References: <20201124132751.3747337-1-hch@lst.de>
@@ -88,142 +88,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The zram claim mechanism was added to ensure no new opens come in
-during teardown.  But the proper way to archive that is to call
-del_gendisk first, which takes care of all that.  Once del_gendisk
-is called in the right place, the reset side can also be simplified
-as no I/O can be outstanding on a block device that is not open.
+set_blocksize is used by file systems to use their preferred buffer cache
+block size.  Block drivers should not set it.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/block/zram/zram_drv.c | 72 ++++++++---------------------------
- 1 file changed, 15 insertions(+), 57 deletions(-)
+ drivers/block/loop.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index 6d15d51cee2b7e..2e6d75ec1afddb 100644
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -1756,64 +1756,33 @@ static ssize_t disksize_store(struct device *dev,
- static ssize_t reset_store(struct device *dev,
- 		struct device_attribute *attr, const char *buf, size_t len)
- {
--	int ret;
--	unsigned short do_reset;
--	struct zram *zram;
-+	struct zram *zram = dev_to_zram(dev);
- 	struct block_device *bdev;
-+	unsigned short do_reset;
-+	int ret = 0;
+diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+index 9a27d4f1c08aac..b42c728620c9e4 100644
+--- a/drivers/block/loop.c
++++ b/drivers/block/loop.c
+@@ -1164,9 +1164,6 @@ static int loop_configure(struct loop_device *lo, fmode_t mode,
+ 	size = get_loop_size(lo, file);
+ 	loop_set_size(lo, size);
  
- 	ret = kstrtou16(buf, 10, &do_reset);
- 	if (ret)
- 		return ret;
+-	set_blocksize(bdev, S_ISBLK(inode->i_mode) ?
+-		      block_size(inode->i_bdev) : PAGE_SIZE);
 -
- 	if (!do_reset)
- 		return -EINVAL;
- 
--	zram = dev_to_zram(dev);
- 	bdev = bdget_disk(zram->disk, 0);
- 	if (!bdev)
- 		return -ENOMEM;
- 
- 	mutex_lock(&bdev->bd_mutex);
--	/* Do not reset an active device or claimed device */
--	if (bdev->bd_openers || zram->claim) {
--		mutex_unlock(&bdev->bd_mutex);
--		bdput(bdev);
--		return -EBUSY;
--	}
--
--	/* From now on, anyone can't open /dev/zram[0-9] */
--	zram->claim = true;
-+	if (bdev->bd_openers)
-+		ret = -EBUSY;
-+	else
-+		zram_reset_device(zram);
- 	mutex_unlock(&bdev->bd_mutex);
--
--	/* Make sure all the pending I/O are finished */
--	fsync_bdev(bdev);
--	zram_reset_device(zram);
- 	bdput(bdev);
- 
--	mutex_lock(&bdev->bd_mutex);
--	zram->claim = false;
--	mutex_unlock(&bdev->bd_mutex);
--
--	return len;
--}
--
--static int zram_open(struct block_device *bdev, fmode_t mode)
--{
--	int ret = 0;
--	struct zram *zram;
--
--	WARN_ON(!mutex_is_locked(&bdev->bd_mutex));
--
--	zram = bdev->bd_disk->private_data;
--	/* zram was claimed to reset so open request fails */
--	if (zram->claim)
--		ret = -EBUSY;
--
--	return ret;
-+	return ret ? ret : len;
- }
- 
- static const struct block_device_operations zram_devops = {
--	.open = zram_open,
- 	.submit_bio = zram_submit_bio,
- 	.swap_slot_free_notify = zram_slot_free_notify,
- 	.rw_page = zram_rw_page,
-@@ -1821,7 +1790,6 @@ static const struct block_device_operations zram_devops = {
- };
- 
- static const struct block_device_operations zram_wb_devops = {
--	.open = zram_open,
- 	.submit_bio = zram_submit_bio,
- 	.swap_slot_free_notify = zram_slot_free_notify,
- 	.owner = THIS_MODULE
-@@ -1974,32 +1942,22 @@ static int zram_add(void)
- 
- static int zram_remove(struct zram *zram)
- {
--	struct block_device *bdev;
--
--	bdev = bdget_disk(zram->disk, 0);
--	if (!bdev)
--		return -ENOMEM;
-+	struct block_device *bdev = bdget_disk(zram->disk, 0);
- 
--	mutex_lock(&bdev->bd_mutex);
--	if (bdev->bd_openers || zram->claim) {
--		mutex_unlock(&bdev->bd_mutex);
-+	if (bdev) {
-+		if (bdev->bd_openers) {
-+			bdput(bdev);
-+			return -EBUSY;
-+		}
- 		bdput(bdev);
--		return -EBUSY;
- 	}
- 
--	zram->claim = true;
--	mutex_unlock(&bdev->bd_mutex);
--
-+	del_gendisk(zram->disk);
- 	zram_debugfs_unregister(zram);
--
--	/* Make sure all the pending I/O are finished */
--	fsync_bdev(bdev);
- 	zram_reset_device(zram);
--	bdput(bdev);
- 
- 	pr_info("Removed device: %s\n", zram->disk->disk_name);
- 
--	del_gendisk(zram->disk);
- 	blk_cleanup_queue(zram->disk->queue);
- 	put_disk(zram->disk);
- 	kfree(zram);
+ 	lo->lo_state = Lo_bound;
+ 	if (part_shift)
+ 		lo->lo_flags |= LO_FLAGS_PARTSCAN;
 -- 
 2.29.2
 
