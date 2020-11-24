@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A20A4C56201
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 13:31:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3581C64E7D
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 13:32:17 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2C13220866
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 13:31:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8F1472083E
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 13:32:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fBEBptXm";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="EOAAPNtR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C13220866
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DUPzdptu";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="GrByciCm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F1472083E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,37 +26,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Yr+SrmxN4s7pFF7uMHBfBKxEsywGEzstwg2l/pBGIQM=; b=fBEBptXmSVciLMZVUX7WAr/vd
-	Fz0+bNykEE63Xh9kIdH/zAJH+4ngr+DtBjKWfbEnLAuPAwZ1SRyKb9fpcz6DbrJ84m94flBufOsKY
-	3Is52QD7ZjVsjqF8B1HQR2u/PI83GNc8gccT8H+xJQ/Pi/76BsPi/uRe3sRzYOPlkM2C+lIPV3mom
-	kOCDeQdpnpYgtyoivTsVZNAdRzjldSgk6I8IoWQwXJ1qbS7XE47tsR8QZ0sxYHAjIkzhCbtLzZm+5
-	CcELkcCeD7Gsi+rZNUslqcmrdEKUKDjxr1Re9An/S0PSL5geXZv+M39YX8Bw7jgyZSl39l4CtaNlG
-	lBQYI+Rzw==;
+	 bh=zWPKhHrnYv9Is+t/pLY4CuvSvkyNcTkGnADCMqYw61k=; b=DUPzdptup9P9BRuujeO4lY1kg
+	a/4EVIdN//3eFgYhteQVxgfYrXXjgaGO8C3HH7hhDnLHbrKKOLVu472wLIQ76aWv8WJprSpA/QFia
+	HKi07xJOdMlEpcLULJcGUlyonrC29BFp2BZQCwQFXCE+kMREF23Jh69vkif8ubBPVqxfRMAskWaj4
+	oHBDf2IDGgsiQ86MQxel8b6b7ikjM2PrRYqMhRC3VJFE7kvGxb5ZTYp8j7QsJTXyVt1bJt2Z14vAi
+	LTHBMoBjI0VjWOxq77jA/nKQc0h6wxXxbwcTsrCb4yGRNREmP8xKhfkvP4cIzChJPhsnWTl9BUdaf
+	tC8hsi0Bw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1khYPV-00017I-Ha; Tue, 24 Nov 2020 13:31:09 +0000
+	id 1khYPr-0001Ip-IE; Tue, 24 Nov 2020 13:31:31 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khYMj-00085p-7L
- for linux-mtd@merlin.infradead.org; Tue, 24 Nov 2020 13:28:17 +0000
+ id 1khYMk-00086D-KK
+ for linux-mtd@merlin.infradead.org; Tue, 24 Nov 2020 13:28:18 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=NU6baGQPMXpwn5pZ9gkDp3IVsd46BLx4N0SPrDXIchU=; b=EOAAPNtRZFDVKupvihhdIus3Uz
- DNcSizR54IlzQ7Yfr89Ztz2DVmH9B56VSYARQNlWEzEsbYaSuBOk0LN/us9lcD3b6z4L57avlUNBE
- X4UKxelEsGPLgoQ09dZONBvDgAZb9jXyd26PP9jeByPVcEQyALdmqCNoTI2Cal6EFAtVUX5nT7Vop
- Nqz1yf0Thq+fRg7FEzTN8nRwmL+HGPwAbN5hTH5oRcYFIFi33RiiVucACgiK9rfIk89I/c8SPq3fT
- xRcT6wCXamprxrUeW4unnNl7FZEsCMl6MwdVBhSFlNLC6OdMvXQXphLXXTwQIzV1e8E6JzrATYINy
- HhUQ1aeQ==;
+ bh=5XlVZbSBkS7owyByi7+TU2krdZYtRQJNSLbElG7UMJM=; b=GrByciCmlypygW+ymXF+7X/jSp
+ HsgeqlURzqGzlgS5RJ/o9YvA/LFELAtg9fJnwnXHIYCDHFU5pcD4d6q944dHkxA6N7cn0bDnE7VXh
+ GGu35B6Gcg+bgzCRYC//r/GDM/4JYgkFo6e+maqC9WuOLWUBLvew8ZTAEOoLACaBDzdaiWX4kCzN1
+ mrD6nnXkiMIkyK5dE06VrsauzZZkdbBiGnIewiH224Fo/WsEG8HJfz+sdUEhX6TsJp+ZFRhjiRw2S
+ cY+TmRWWh+F6CCP9jGYgpqRwjHhvoZocC5aLnQE1p+91dxzwMcKB7t/OezvIVTW5MzvYKNFt5e/x4
+ rVcbPBpg==;
 Received: from [2001:4bb8:180:5443:c70:4a89:bc61:3] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khYMh-0006Ww-C9; Tue, 24 Nov 2020 13:28:16 +0000
+ id 1khYMj-0006XN-5i; Tue, 24 Nov 2020 13:28:17 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 14/45] block: use disk_part_iter_exit in disk_part_iter_next
-Date: Tue, 24 Nov 2020 14:27:20 +0100
-Message-Id: <20201124132751.3747337-15-hch@lst.de>
+Subject: [PATCH 15/45] block: use put_device in put_disk
+Date: Tue, 24 Nov 2020 14:27:21 +0100
+Message-Id: <20201124132751.3747337-16-hch@lst.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201124132751.3747337-1-hch@lst.de>
 References: <20201124132751.3747337-1-hch@lst.de>
@@ -88,31 +88,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Call disk_part_iter_exit in disk_part_iter_next instead of duplicating
-the functionality.
+Use put_device to put the device instead of poking into the internals
+and using kobject_put.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Reviewed-by: Jan Kara <jack@suse.cz>
 Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- block/genhd.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ block/genhd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/block/genhd.c b/block/genhd.c
-index 4e039524f92b8f..0bd9c41dd4cb69 100644
+index 0bd9c41dd4cb69..f46e89226fdf91 100644
 --- a/block/genhd.c
 +++ b/block/genhd.c
-@@ -227,8 +227,7 @@ struct hd_struct *disk_part_iter_next(struct disk_part_iter *piter)
- 	int inc, end;
+@@ -1803,7 +1803,7 @@ EXPORT_SYMBOL(__alloc_disk_node);
+ void put_disk(struct gendisk *disk)
+ {
+ 	if (disk)
+-		kobject_put(&disk_to_dev(disk)->kobj);
++		put_device(disk_to_dev(disk));
+ }
+ EXPORT_SYMBOL(put_disk);
  
- 	/* put the last partition */
--	disk_put_part(piter->part);
--	piter->part = NULL;
-+	disk_part_iter_exit(piter);
- 
- 	/* get part_tbl */
- 	rcu_read_lock();
 -- 
 2.29.2
 
