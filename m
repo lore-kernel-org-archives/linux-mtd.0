@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F7F7C63777
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 17:38:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5515C63777
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 17:39:14 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B6A94206C0
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 17:38:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3BD73206C0
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 17:39:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QD9KlZaa";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bP/UrEJd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B6A94206C0
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tvftWnUh";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mQ/2SdU+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3BD73206C0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,65 +25,64 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=DDmCy85nm3v17BL9pGU3kj8GJx6iVopzyM86dJT7C/g=; b=QD9KlZaazVHZJsimX+F4E989M
-	8/uOvHMbraYX90mv3kQu0OlcXgsH4J9F3x9cdS5QCPPgUL3HlKQXhhDbYKni8XZNccWffgEoNT/Jz
-	4nvrtG/RtogcBAva264ARoRxeOkugy2AYg/BSZ0UcwsDVxMeGwg73ID8P/BHolXqSp15cyADhWrzx
-	9+7g0P96PwPYd8c4fO+6ZKPlAlvqJR/HBF/PXD+WppyEkPk99tK42XLZ9fmkLEA72yHG2DmhcfIKh
-	AkJjbMDkOr0n3M9jJNYNS3FkE/Mc21rZm+BsGFC3Yde2YDQh4IeCL+gJ/9EkiAb9e8m28kNfzGIaW
-	JgPhT69ZA==;
+	 bh=9tz74zQV4YnBvBe0OMrAIaTB1WyjGAZ0OPGjk39PRMs=; b=tvftWnUh39vE6UD1mPEWvN/fI
+	PAfbFctHIwW4LbGM+qrOjDAqsCQN86cpjH4QrFfQ3/oo2OOysbX5KomS2iBrSkN+5fVcjQ28A3FOM
+	vW+h1iRsMNTAcGmtUvQ0pay2g+pupap05qNk6eXx2/adslLrFOc5O/4Azclgcv23nj1YwUtVWolnw
+	laotk1EK6iRCgsx46uczSiJTmjqh4XZQKZpz/CvNSgZZrRA7JVPvY7egzSr/f6PipnRLNfRBpDyiC
+	4vQKnPYHQIpUcj1gW0yKYgcU6Yga5ZmQrO4oqwLmiFmNU0HL9fb15EScyN5GgCB8D/+5j7Il2SKKq
+	RCuulGfPQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1khcGX-0003Ex-Jp; Tue, 24 Nov 2020 17:38:09 +0000
-Received: from mail-qk1-x743.google.com ([2607:f8b0:4864:20::743])
+	id 1khcGp-0003Ju-DR; Tue, 24 Nov 2020 17:38:27 +0000
+Received: from mail-qk1-x741.google.com ([2607:f8b0:4864:20::741])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khcGU-0003Dl-IB
- for linux-mtd@lists.infradead.org; Tue, 24 Nov 2020 17:38:07 +0000
-Received: by mail-qk1-x743.google.com with SMTP id y18so5152674qki.11
- for <linux-mtd@lists.infradead.org>; Tue, 24 Nov 2020 09:38:06 -0800 (PST)
+ id 1khcGm-0003IH-EI
+ for linux-mtd@lists.infradead.org; Tue, 24 Nov 2020 17:38:25 +0000
+Received: by mail-qk1-x741.google.com with SMTP id d9so21474239qke.8
+ for <linux-mtd@lists.infradead.org>; Tue, 24 Nov 2020 09:38:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=sender:date:from:to:cc:subject:message-id:references:mime-version
  :content-disposition:in-reply-to;
- bh=E5yu6Z9CIGvjjdSWaM1JDiBNwd7R7l70HZvgJTMOMAo=;
- b=bP/UrEJdRXtdgl6ivVFuNIsepdmdiobKpEaoQqAkqVcxh4oLhWjED34HU2CgSOcS0r
- u8nX3lWOcITugT41Gz5ogHCeG5HvCzBWSnlVt6HFT/XLqvXGgBQUlkC2CFe4rQZ6Jdgz
- Xlh808EEDi3JUpO3tYkyT+AsuwhV2f7GO2Y1rVQbOYvLQXrbYCZEOEXyaM/QNly3oWKd
- nMDmSodcBiZ4nkTVRK5MN+HlnZkSvenRe7tY//FCQ2HZJpqhNw22PuiG5Df4AdGG0TX6
- 9RHtJd4eQvkljDEZVlwbW5qc2pplOC6tGot90vCLquU/Y2qjjEP022211N4bqrY0nZQk
- Cpng==
+ bh=m2ZvAloMQE/4x6qZGlu4klEd6I1OFmrdg9L02bbThZY=;
+ b=mQ/2SdU+idAG7rNq1qMaVxb9CR+RcWt1BHKTZWsDVy8fWCHqwJhHCvkgRkFmG5gG6l
+ 63dI7pIc19199ylq2PWs338wpUAaIlVHv4bO05m/1Tk1mu08D8CqxB2E3PYFAkryMgfE
+ H/1POZOqIABmkG6petf6pD/3aOMnkDRssdWhk0UsaRx2ckUhxiT3bRltu9ZmDeO6w6xs
+ euBOjZvBw84KJ31lUkNXglzMy/nzFsEPPBt7GRVCqAEkecyLnn3pxEkW/JpPGKSWAdFb
+ ar0JpCcxfg2HCjARPmkDqdzRoKlh3PeHrwbTzFIOvsccSM84XNZBR0TOpFWESYxO6GeG
+ MgoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
  :references:mime-version:content-disposition:in-reply-to;
- bh=E5yu6Z9CIGvjjdSWaM1JDiBNwd7R7l70HZvgJTMOMAo=;
- b=XaQ0eLRcOoHCMh8K6kVKAC06UoDZdWLsCAOdWCgu8BQLpSbHS2nhX6/+kiZ0viB+VP
- J4r4cp9oNyH2giKJqH/RLCGkIUx1ivnd7XIkIuxQRgg8VM94gFwMP+RAR14L8Ya2WFl8
- UDDTklwx2wk6qZBmLLVYwq+TZo24Zuhgj+sC4llWnPKuXhc3Mr9+bx3LOKPB4ckEcfRm
- /UdrISet023qGADqlMDfjBXQyTQlobjVceTOyYe8mrRGjbDIgyxIhNA0CFqAfK/XaabH
- gbpfCoEsUQ+YoF8Fo5FEDDbjxRAhUWdCkJBd00DXlP6KprsqYM1pwN7fYhNxoCMtqV2M
- qXrA==
-X-Gm-Message-State: AOAM533iIULhazMOikRRKCcJEWvbw4SyJ9KoHRDKdmEVlurinJW/wzxm
- EVY8MoJf1sItQe85zkkPRB0=
-X-Google-Smtp-Source: ABdhPJyi1T8dRX2wY3q65x2J+bQePuJjN+c8Pa1HrFeBbFFSDxXqbhzlU09MTDkUoIjmr+Nu4Id3fQ==
-X-Received: by 2002:a37:7bc7:: with SMTP id w190mr5863735qkc.476.1606239484751; 
- Tue, 24 Nov 2020 09:38:04 -0800 (PST)
+ bh=m2ZvAloMQE/4x6qZGlu4klEd6I1OFmrdg9L02bbThZY=;
+ b=Ou/cnKcKfds3kv4stxXwpVIW7goZB2Z4ZD/nPukFrClc2GlsXMWNbWP9kqk1eCOeAd
+ HCbcHdiSV6vohpRSHFYJSv+h8U7JtAPkPiM2u4Xf4+I6HPGo5UpoSpivMmtMB50t4GMg
+ YLcoqtXtRlnWe0FGIexKiiODvzK+pf/2HdpdWgtjCD/GUUabTzKI7NwGp/Tufsrj/+2J
+ q7gMB6rYqg18p7lcSChaKgp3/TRnHJF8W16gQ2NrZAA9HphIJLuB3o7g/43LMPdJ6dih
+ 0GGHUdgibGJ9ROpqzeSfHP3hz0FAlH9x8VVn7od2j8c7xLPnGFAQMmbN/eIewfd1Mzfe
+ /a4g==
+X-Gm-Message-State: AOAM530s1JPJRr41xdVb3cUaNSXLxZn8z1rpISke4tSdM87xOX97Tf3q
+ h1LB3Z3PM8xT0YelWEKrTJE=
+X-Google-Smtp-Source: ABdhPJydGVRMFQ1+r3+Z46PpDtXJ8+bSnv4nPK+7aFRRl1d4ZdhaX+JqGpjWBGRDvXsi5fkaK49s7A==
+X-Received: by 2002:ae9:e80d:: with SMTP id a13mr6004436qkg.140.1606239502291; 
+ Tue, 24 Nov 2020 09:38:22 -0800 (PST)
 Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
- by smtp.gmail.com with ESMTPSA id i4sm12549778qti.78.2020.11.24.09.38.03
+ by smtp.gmail.com with ESMTPSA id x21sm13062842qkx.31.2020.11.24.09.38.20
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 24 Nov 2020 09:38:04 -0800 (PST)
-Date: Tue, 24 Nov 2020 12:37:42 -0500
+ Tue, 24 Nov 2020 09:38:21 -0800 (PST)
+Date: Tue, 24 Nov 2020 12:37:58 -0500
 From: Tejun Heo <tj@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 14/45] block: use disk_part_iter_exit in
- disk_part_iter_next
-Message-ID: <X71E5ohZ7I/tDKWO@mtj.duckdns.org>
+Subject: Re: [PATCH 15/45] block: use put_device in put_disk
+Message-ID: <X71E9mG4sw2WiIEj@mtj.duckdns.org>
 References: <20201124132751.3747337-1-hch@lst.de>
- <20201124132751.3747337-15-hch@lst.de>
+ <20201124132751.3747337-16-hch@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20201124132751.3747337-15-hch@lst.de>
+In-Reply-To: <20201124132751.3747337-16-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201124_123806_623028_8DC39E80 
-X-CRM114-Status: GOOD (  11.39  )
+X-CRM114-CacheID: sfid-20201124_123824_549946_6ED9B00A 
+X-CRM114-Status: GOOD (  13.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,9 +109,14 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Nov 24, 2020 at 02:27:20PM +0100, Christoph Hellwig wrote:
-> Call disk_part_iter_exit in disk_part_iter_next instead of duplicating
-> the functionality.
+On Tue, Nov 24, 2020 at 02:27:21PM +0100, Christoph Hellwig wrote:
+> Use put_device to put the device instead of poking into the internals
+> and using kobject_put.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
 Acked-by: Tejun Heo <tj@kernel.org>
 
