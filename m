@@ -5,19 +5,19 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 613B1C82591
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 13:28:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4734C825BB
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 13:29:21 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D45A8206F9
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 13:28:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 16A63208FE
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 13:29:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NOZcg/9e";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="REng/ovL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D45A8206F9
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QCkRvGDS";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="pWcZmhed"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 16A63208FE
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,37 +26,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=LkoTrdcpaLq2buvK6PsL90mVK+xQP3fdIAhnozWtI1k=; b=NOZcg/9e3M7VGF+QPEj6UomVY
-	So+T7uZ7CqbUBSSbEmPKsbOW/lZFxhZP3uTOYDehKMtYIY//OTk8MKOZaq9bhzog0fIdC15etEFHQ
-	nTTXjAODznnH8KjeTZC92kkggs+OOGHZVVR4xtYWCJytSSpBEG23lqcDZF1ObGiit/uvw7LktftH7
-	MtROFN0QdOVrmFO+YVYvEM7dVpqZy8QcjEf9K5yvs+bm2KO3UyxDL/TDQQSZU4ckQemjde7In09Vj
-	kIOCmlKriYru5a4qatMI6iudz8Kqr8SMEDNimmIdGaochkRB2YEq6KpL6q6jd38TQtNESurBMN6/3
-	1ZwcFL3Dw==;
+	 bh=vPBxZhut8nJJb5lQOi10E09dhS0ur6VZvvT1aB3eAck=; b=QCkRvGDSl19l7YRhnULm5gg7m
+	lmY3LlrJxRDVvdmDeq4xSuGPr0kvlNeqCJ51lg2ltuXhu3enTyrd2m2odwpR/xO9LHQtcihY2d0SV
+	Bw+jWTJgrl+o2yfBVAcgqjXyh46uHvD97mLiGMvmGinm3E+5gHT3BPffUkDCXoqSUKsHftmlw4Ko4
+	11g6QNam9ypkkob6FayAX+N691pFkWB10BFZElfVtNFdkE21pes65Zwz0Szl1UD5sETlvGazdwyMS
+	7bQRE+EPRDuNn94HG5y2aErv67evRDj7bNk1JKM3rSrQYVnebeirmF63ojC1gO8MMJjorDdbSFhmU
+	g3GYWGrYw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1khYMi-00085f-SC; Tue, 24 Nov 2020 13:28:16 +0000
+	id 1khYMU-00081g-Vd; Tue, 24 Nov 2020 13:28:03 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khYMV-00081n-HK
- for linux-mtd@merlin.infradead.org; Tue, 24 Nov 2020 13:28:03 +0000
+ id 1khYMR-00080q-76
+ for linux-mtd@merlin.infradead.org; Tue, 24 Nov 2020 13:27:59 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=0e+oH+92GlExM9i4SIPWTJvhHTDsEZRU6nAY6yeduas=; b=REng/ovLixhm4d/5DVr1VL2uxE
- 639N3KIOFrakBFne91QmfkqFXFb98IXLDOJAJjpMFMj6wLqG5p9ivwi/IdkTiYg4UpBWe6eJ1dbQ0
- HBBalWEc8V1HK853AyKP05+uuRQAG2MYtBlard5dwdv3pfAPnyCU606UPfuqSfkDGROj+x/Jgp80m
- xgK0Cn++2YT5C/MR23s2fjCN+ORZdOrOQHa/0v4hpeslgE++xWymjVqNfUo2VOJ114NGbFD3umqP5
- 6luT+lKBWO6SNfhge4bMavfuGRB4GvvtxnMy6Fhr3dVO8r0ujYfdajMXqb4qBL494koWxbslNF9Up
- gR2DYZAw==;
+ bh=Q/MCT6maV/iKaSxRRRnLFBnoEWfPfC40ypgl1Ci8nRk=; b=pWcZmhed1VtM52P3q1JMqqjfxR
+ GWMfkfGGh21/NCT85snknz3WDUM0FCyAbepRt+ZELj82dad4m3br4Sawb66pKbQxSAEUaJxSeL+Ll
+ 71lYUsvhjLKgY/YbGp0X++3PkxXh+KrssNfKTT0h2mCWPuefl+mBpjJwTcCV+e1SRjBbrscsDgFCm
+ lMW8Geg/e4WV3fB64E9SDr1XU5cgwgMIdLeq0nWxNCx03aqe1+hiU2wmbmGncWiO1/xxhiOEuXkHa
+ z9KSmzy5zBC51q81wbv9yHNv1xP232XeeVA1TEmOLWeYTbWgkPDrO0cmsehbzSHT+I2DtVpVX0ELT
+ qGUkh4WA==;
 Received: from [2001:4bb8:180:5443:c70:4a89:bc61:3] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khYMU-0006Uj-4z; Tue, 24 Nov 2020 13:28:02 +0000
+ id 1khYMO-0006UA-S8; Tue, 24 Nov 2020 13:27:58 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 05/45] mtip32xx: remove the call to fsync_bdev on removal
-Date: Tue, 24 Nov 2020 14:27:11 +0100
-Message-Id: <20201124132751.3747337-6-hch@lst.de>
+Subject: [PATCH 02/45] filemap: consistently use ->f_mapping over ->i_mapping
+Date: Tue, 24 Nov 2020 14:27:08 +0100
+Message-Id: <20201124132751.3747337-3-hch@lst.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201124132751.3747337-1-hch@lst.de>
 References: <20201124132751.3747337-1-hch@lst.de>
@@ -88,75 +88,67 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-del_gendisk already calls fsync_bdev for every partition, no need
-to do this twice.
+Use file->f_mapping in all remaining places that have a struct file
+available to properly handle the case where inode->i_mapping !=
+file_inode(file)->i_mapping.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/block/mtip32xx/mtip32xx.c | 15 ---------------
- drivers/block/mtip32xx/mtip32xx.h |  2 --
- 2 files changed, 17 deletions(-)
+ mm/filemap.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/block/mtip32xx/mtip32xx.c b/drivers/block/mtip32xx/mtip32xx.c
-index 153e2cdecb4d40..53ac59d19ae530 100644
---- a/drivers/block/mtip32xx/mtip32xx.c
-+++ b/drivers/block/mtip32xx/mtip32xx.c
-@@ -3687,7 +3687,6 @@ static int mtip_block_initialize(struct driver_data *dd)
- 	/* Enable the block device and add it to /dev */
- 	device_add_disk(&dd->pdev->dev, dd->disk, NULL);
+diff --git a/mm/filemap.c b/mm/filemap.c
+index d5e7c2029d16b4..4f583489aa3c2a 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2886,14 +2886,14 @@ EXPORT_SYMBOL(filemap_map_pages);
  
--	dd->bdev = bdget_disk(dd->disk, 0);
- 	/*
- 	 * Now that the disk is active, initialize any sysfs attributes
- 	 * managed by the protocol layer.
-@@ -3721,9 +3720,6 @@ static int mtip_block_initialize(struct driver_data *dd)
- 	return rv;
+ vm_fault_t filemap_page_mkwrite(struct vm_fault *vmf)
+ {
++	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
+ 	struct page *page = vmf->page;
+-	struct inode *inode = file_inode(vmf->vma->vm_file);
+ 	vm_fault_t ret = VM_FAULT_LOCKED;
  
- kthread_run_error:
--	bdput(dd->bdev);
--	dd->bdev = NULL;
--
- 	/* Delete our gendisk. This also removes the device from /dev */
- 	del_gendisk(dd->disk);
+-	sb_start_pagefault(inode->i_sb);
++	sb_start_pagefault(mapping->host->i_sb);
+ 	file_update_time(vmf->vma->vm_file);
+ 	lock_page(page);
+-	if (page->mapping != inode->i_mapping) {
++	if (page->mapping != mapping) {
+ 		unlock_page(page);
+ 		ret = VM_FAULT_NOPAGE;
+ 		goto out;
+@@ -2906,7 +2906,7 @@ vm_fault_t filemap_page_mkwrite(struct vm_fault *vmf)
+ 	set_page_dirty(page);
+ 	wait_for_stable_page(page);
+ out:
+-	sb_end_pagefault(inode->i_sb);
++	sb_end_pagefault(mapping->host->i_sb);
+ 	return ret;
+ }
  
-@@ -3804,14 +3800,6 @@ static int mtip_block_remove(struct driver_data *dd)
- 	blk_mq_tagset_busy_iter(&dd->tags, mtip_no_dev_cleanup, dd);
- 	blk_mq_unquiesce_queue(dd->queue);
+@@ -3149,10 +3149,9 @@ void dio_warn_stale_pagecache(struct file *filp)
+ {
+ 	static DEFINE_RATELIMIT_STATE(_rs, 86400 * HZ, DEFAULT_RATELIMIT_BURST);
+ 	char pathname[128];
+-	struct inode *inode = file_inode(filp);
+ 	char *path;
  
--	/*
--	 * Delete our gendisk structure. This also removes the device
--	 * from /dev
--	 */
--	if (dd->bdev) {
--		bdput(dd->bdev);
--		dd->bdev = NULL;
--	}
- 	if (dd->disk) {
- 		if (test_bit(MTIP_DDF_INIT_DONE_BIT, &dd->dd_flag))
- 			del_gendisk(dd->disk);
-@@ -4206,9 +4194,6 @@ static void mtip_pci_remove(struct pci_dev *pdev)
- 	} while (atomic_read(&dd->irq_workers_active) != 0 &&
- 		time_before(jiffies, to));
+-	errseq_set(&inode->i_mapping->wb_err, -EIO);
++	errseq_set(&filp->f_mapping->wb_err, -EIO);
+ 	if (__ratelimit(&_rs)) {
+ 		path = file_path(filp, pathname, sizeof(pathname));
+ 		if (IS_ERR(path))
+@@ -3179,7 +3178,7 @@ generic_file_direct_write(struct kiocb *iocb, struct iov_iter *from)
  
--	if (!dd->sr)
--		fsync_bdev(dd->bdev);
--
- 	if (atomic_read(&dd->irq_workers_active) != 0) {
- 		dev_warn(&dd->pdev->dev,
- 			"Completion workers still active!\n");
-diff --git a/drivers/block/mtip32xx/mtip32xx.h b/drivers/block/mtip32xx/mtip32xx.h
-index e22a7f0523bf30..88f4206310e4c8 100644
---- a/drivers/block/mtip32xx/mtip32xx.h
-+++ b/drivers/block/mtip32xx/mtip32xx.h
-@@ -463,8 +463,6 @@ struct driver_data {
- 
- 	int isr_binding;
- 
--	struct block_device *bdev;
--
- 	struct list_head online_list; /* linkage for online list */
- 
- 	struct list_head remove_list; /* linkage for removing list */
+ 	if (iocb->ki_flags & IOCB_NOWAIT) {
+ 		/* If there are pages to writeback, return */
+-		if (filemap_range_has_page(inode->i_mapping, pos,
++		if (filemap_range_has_page(file->f_mapping, pos,
+ 					   pos + write_len - 1))
+ 			return -EAGAIN;
+ 	} else {
 -- 
 2.29.2
 
