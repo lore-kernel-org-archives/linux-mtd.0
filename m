@@ -2,21 +2,21 @@ Return-Path: <SRS0=p38J=E6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CEFD6C63777
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 21:20:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AF2EC56202
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 21:20:32 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6227D206E0
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 21:20:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 371BB206E0
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 21:20:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="molJhAqY";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OzhyL5qO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6227D206E0
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EHPBYmv7";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="uiOjPjtU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 371BB206E0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,65 +25,65 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=SRae1TWZ+PaRkKqK/GJg+4ZFXPOg7qau1dbxLNHD32Q=; b=molJhAqYl9/77zh0Ps1+4lCNB
-	G2i6QN14bULqzO2SflueV6V0pCgVe446H9SRQUn/GdSc6hf98DVQnC/ctWOx3lvDuc9J3p7RjOBqz
-	YNs489rcVk1T0pCatAE0bLOnRG/YWAktYgCzJRUymknNDCrWrom9lWVZaDp/ZbmjS/uP5Ifq9j0kt
-	UfSF2nDQC8kuwCne/sKpOy/4vvRwyhsckKDgOGR7tif7C4j5wPOAkIzw9aXGCCoD5o60/qCx3cRif
-	2E+LqtxB44kmw5gnw1oSZB65bHvB+1ZY0IiBEfYBtmGEs92PB/KAe9Lp7O71g412ZiRp1hmE7S+El
-	Ecsopyy6w==;
+	 bh=ADZ9QeQETIe6Hv6Utwln00AngTtNwGIk0sIh+C1p2Q0=; b=EHPBYmv7gSJoXhtmR/Rl+4tQV
+	sl7KX8fvu/HCJjbz5bTK5ZREYKcMD80Zc7Zrv1j6xK28KieocVdA43VXV2bcLAlY7FFJzGc8U7buj
+	b8cFkjafHL8PK52wRN/71yK6qlgXceE16KPQ/4SuRdCiwiLpLBlvaYZBNVcTEB0k5ayQJOKFqAA4u
+	WUmFeyGS6tFCJ42/h8znCkM9eRY/uAURm8LaQ1a8KbOsU/kEqPnKzF7BH5f5TCGeWCG5btRleyr5k
+	/eiI0SV2oyJAEpB5GVh9Om5ze9aZ2vTU2SaF25N2y0nAcjBpmgcGDNj36of1rSPNGdRQfsAnHZ+gX
+	MQ67sbIlg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1khfiY-0000gH-9H; Tue, 24 Nov 2020 21:19:18 +0000
-Received: from mail-qv1-xf42.google.com ([2607:f8b0:4864:20::f42])
+	id 1khfjE-0000p8-6p; Tue, 24 Nov 2020 21:20:00 +0000
+Received: from mail-qv1-xf44.google.com ([2607:f8b0:4864:20::f44])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khfiV-0000fD-PC
- for linux-mtd@lists.infradead.org; Tue, 24 Nov 2020 21:19:17 +0000
-Received: by mail-qv1-xf42.google.com with SMTP id u23so11372904qvf.1
- for <linux-mtd@lists.infradead.org>; Tue, 24 Nov 2020 13:19:15 -0800 (PST)
+ id 1khfjA-0000n7-GF
+ for linux-mtd@lists.infradead.org; Tue, 24 Nov 2020 21:19:57 +0000
+Received: by mail-qv1-xf44.google.com with SMTP id es6so2600758qvb.7
+ for <linux-mtd@lists.infradead.org>; Tue, 24 Nov 2020 13:19:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=sender:date:from:to:cc:subject:message-id:references:mime-version
  :content-disposition:in-reply-to;
- bh=sg9SO3UStMfqHkCvNI1YBGGkjTmKJ7UaheqYby9uxnM=;
- b=OzhyL5qOUmNMCmaqmA0AJ7YTZnOa5s8lOvdGSd5gsRFwIjVjcK9RMkEdmOZVvPKHkC
- HEfwzTPFGhRpcwv4Zdi1eKZAQCSJDqL9242nm6t+004qxnjr2Wo1RG+dvaQzjYpDTlFJ
- y4MEeMckfEdVhdL9TeWxoL3uJseLhfNpPNLJKI+4lWddjQrQSYtmPS6DbLtZKSCyuI0M
- VPOnBALIPZDz9HaljCXz/QtzQMoFkORQ/oSOcQG0yJ5cuTGS83XWqbo7FaIck74bBkz3
- zSrrMusanZp5T2dH6BfcuYD799YU+BVDp+VbnKu/pAzjL4fvbG44Apq0OxYfntbUtAy3
- IgsQ==
+ bh=A2Ux7RQ7mBCZEojzGvR0WDuZtfXBN33NUKSWm/nAx2s=;
+ b=uiOjPjtUtQlGuTii+qORJIGUPOgnFY1nUtEhKLlffzZur6sGJm+gKH90kLKTftzjMY
+ gUznZxSbf+gcBmxTds5RUXjrVxrE+Fq2EmBwcWZB+pJf3BS5L+QJ7kv+CxvIAOrqPzEX
+ dMqmSibOB0dtykbXe/2E2zoCxbKuzPbH5RmI+Xfb2tQjieKxRGRgQgps4Mrmdf0e2l3a
+ eNnhJnzPz0bblYg/4cAkndkSQkON8xjuTRqoNexKjm8D+3aqj4P9Sj0gjlauNmeONhmf
+ 5kvr4Ddaona2AGKfmkN2405koPZEL1O1mk4yy01pHWJJDJlpvcRl+PE1xhRDe1lIBY+4
+ jUGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
  :references:mime-version:content-disposition:in-reply-to;
- bh=sg9SO3UStMfqHkCvNI1YBGGkjTmKJ7UaheqYby9uxnM=;
- b=tztbpDfK0IBvs+QJL8dHZUaKAV/9K4KTBC8exPDpqv72jAObV6WS6ylVB30w67Ye7c
- eXET1KJWg/waLSkoOmDex27dwkAaJIw67+e88G0iWowQW5VplQDIWGmP6nfiAXx3XE8V
- uWW6a7hupTkAy+HZXtVbHZAFvSNRsIu5wFviIBq4rotDRsalsZzS5b8TeZlQidZ9eRMg
- cnZPOCElNAFjUxLiTbI48InjdJR+Hgwjtl4WjwSingKd5vRFY/+8BCWUhw3sbcIKV2r4
- obnmeNLSo7YV6Zx2OKhkAV3i8/i5qzOBTp320TvYROEe6dgrokOKLEo/0sbOSwFY/Rbl
- jX5A==
-X-Gm-Message-State: AOAM533n8+Jm9dYzj00mlolKlABkYqCH/WwTdZYI3Lb2J272AWO7vU/M
- tZk7b7dxYOgKJs3vzMePRrw=
-X-Google-Smtp-Source: ABdhPJymsM7t3QC8HGlAx0p+5Wt4X/uLuUZsX3zmVjKyK1/8swtwKOE7/+uzSFJWv6qwdRjGjoCR5w==
-X-Received: by 2002:a0c:fa08:: with SMTP id q8mr548456qvn.25.1606252753574;
- Tue, 24 Nov 2020 13:19:13 -0800 (PST)
+ bh=A2Ux7RQ7mBCZEojzGvR0WDuZtfXBN33NUKSWm/nAx2s=;
+ b=dBwx3B9btjd9jnBIcLQFHz8OyvMMY7DsKdpLG6E0UjoZw34Y38BLW08DQt3x9CgFxm
+ SGPwV+ogZrZOktnWilU10UX3i7FuDhdglFys5NyVQ4IxAqUJY5k0jK0lYB3vo23J/5iA
+ GRcy6ubDYBlfxdRGll+EtYZ2q/QkQI1H7cZqKqy402oFXWjwfJL2B+IeALlyPl1U+quz
+ aAcZslR/MvP/8E41BVQUWZWCkIK2X6n/e6lG6trRltdsKM0oOaa/bH/wmQIsuE/JMh8o
+ Nk1scUP8dHS8CAsdif2sE4QUdNmULKCLY4+OEmRKAO/MEUVJNgQ/BwL+NE+gvOlL6MII
+ Epzw==
+X-Gm-Message-State: AOAM532B/bWykNvG2318Ndjj0BMO+d8mEg47ncfh7kw8WkUdzbJlqy/4
+ ehHBi5SwAxKyGBQr36Uwgxk=
+X-Google-Smtp-Source: ABdhPJxvWSMIcF1QvtVmsROEnFEfbgneWE4I12McWSmR7ItrCaZw+O6oSDwh472sj7fwnSIDMbgqhQ==
+X-Received: by 2002:a05:6214:443:: with SMTP id
+ cc3mr455144qvb.53.1606252794270; 
+ Tue, 24 Nov 2020 13:19:54 -0800 (PST)
 Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
- by smtp.gmail.com with ESMTPSA id c27sm387614qkk.57.2020.11.24.13.19.12
+ by smtp.gmail.com with ESMTPSA id l46sm308143qta.44.2020.11.24.13.19.53
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 24 Nov 2020 13:19:12 -0800 (PST)
-Date: Tue, 24 Nov 2020 16:18:49 -0500
+ Tue, 24 Nov 2020 13:19:53 -0800 (PST)
+Date: Tue, 24 Nov 2020 16:19:31 -0500
 From: Tejun Heo <tj@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 25/45] block: reference struct block_device from struct
- hd_struct
-Message-ID: <X714udEyPuGarVYp@mtj.duckdns.org>
+Subject: Re: [PATCH 26/45] block: remove ->bd_contains
+Message-ID: <X7144xvjxqhopOck@mtj.duckdns.org>
 References: <20201124132751.3747337-1-hch@lst.de>
- <20201124132751.3747337-26-hch@lst.de>
+ <20201124132751.3747337-27-hch@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20201124132751.3747337-26-hch@lst.de>
+In-Reply-To: <20201124132751.3747337-27-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201124_161915_851278_07F6A93F 
-X-CRM114-Status: GOOD (  22.22  )
+X-CRM114-CacheID: sfid-20201124_161956_666929_91A3F8A1 
+X-CRM114-Status: GOOD (  13.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,39 +110,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello,
-
-Please see lkml.kernel.org/r/X708BTJ5njtbC2z1@mtj.duckdns.org for a few nits
-on the previous version.
-
-On Tue, Nov 24, 2020 at 02:27:31PM +0100, Christoph Hellwig wrote:
-> To simplify block device lookup and a few other upcoming areas, make sure
-> that we always have a struct block_device available for each disk and
-> each partition.  The only downside of this is that each device and
-> partition uses a little more memory.  The upside will be that a lot of
-> code can be simplified.
+On Tue, Nov 24, 2020 at 02:27:32PM +0100, Christoph Hellwig wrote:
+> Now that each hd_struct has a reference to the corresponding
+> block_device, there is no need for the bd_contains pointer.  Add
+> a bdev_whole() helper to look up the whole device block_device
+> struture instead.
 > 
-> With that all we need to look up the block device is to lookup the inode
-> and do a few sanity checks on the gendisk, instead of the separate lookup
-> for the gendisk.  These checks are in a new RCU critical section and
-> the disk is now freed using kfree_rcu().
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Reviewed-by: Jan Kara <jack@suse.cz>
 
-I might be confused but am wondering whether RCU is needed. It's currently
-used to ensure that gendisk is accessible in the blkdev_get path but
-wouldn't it be possible to simply pin gendisk from block_devices? The
-gendisk and hd_structs hold the base refs of the block_devices and in turn
-the block_devices pin the gendisk. When the gendisk gets deleted, it puts
-the base refs of the block devices but stays around while the block devices
-are being accessed.
-
-Also, would it make sense to separate out lookup_sem removal? I *think* it's
-there to ensure that the same bdev doesn't get associated with old and new
-gendisks at the same time but can't wrap my head around how it works
-exactly. I can see that this may not be needed once the lifetimes of gendisk
-and block_devices are tied together but that may warrant a bit more
-explanation.
-
-Thanks.
+Acked-by: Tejun Heo <tj@kernel.org>
 
 -- 
 tejun
