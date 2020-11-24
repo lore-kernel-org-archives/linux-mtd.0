@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92FB9C2D0E4
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 13:31:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6385C56201
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 13:31:30 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EF409204EC
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 13:31:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 31C21204EC
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 13:31:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="zjJNZD0/";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="iay1UgkM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF409204EC
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rrhoDQ4/";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="T0mbtous"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 31C21204EC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,37 +26,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Bpm91THHnLXXOMdn2IUApvaS3+bcI1SUqnGxX1fT3Qw=; b=zjJNZD0/NWCXrjdkBlMvH0yUS
-	ShcQXYRM6GizLKPfgZlY1r9qlf9GxFO7vpmcItrnK5k67QQu4exP6NUisiWbtMV03FaMIocTFNAK1
-	wYAvVxozkXnyF2nSC825K67Id5mN2bedQ2qKjnyXFx3vJYFJ7yExnmA8gdxkr7ZLW8RWr4XsaoSYI
-	+9rF+5kwgVX/cE95oPHCzW5hCXrVXYnQCqQ1GAp0oFXFceW2Er6+hDqDY/W3mlkRj0jFT2Ir4eQPU
-	T5p51ckJ06RAF3I7DyifDC5xpl2EZ7hkBVuhpJk18hgGkEflaxEeDhRq5XsLrx6LF0VpCvxofis7a
-	B/n71mGPA==;
+	 bh=mq/PTOWuDeLj85RRXGRjuFjyZLSwADd8pAadV4bPnDU=; b=rrhoDQ4/COFA6kVr5/qIA9ClG
+	iO0TZovTzuUwvPgTJnd6QYuf1TwE4V6svWbLvVATgni3nfnCI0UBU3R+jyYpvLavafJslGGT/hjN4
+	CS2hDn307jB7zj5ZQtfE2OOzUKNRBmwSTxTAgmB9iJRChLD2p3pc1szw+ASiwjaHmMiwG7kxiUoTW
+	v/z9hbwMC9MTsVh/MP7zvS2l40wKhhX63KdSjPG95H5lQKFxNsXApZqF05luHYJo/MtexxXX/2tHO
+	zB3FNCAoQ4lAEKyrPKFm81eGMl8siq1wwSQO312Qb3JuBaKlE3WN1wovzGDHeaeh7GIQNmxOt6oPq
+	VOXs/QTcQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1khYP1-0000rL-1c; Tue, 24 Nov 2020 13:30:39 +0000
+	id 1khYPA-0000vn-BT; Tue, 24 Nov 2020 13:30:48 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khYMe-00084Z-Fn
- for linux-mtd@merlin.infradead.org; Tue, 24 Nov 2020 13:28:12 +0000
+ id 1khYMg-000859-0v
+ for linux-mtd@merlin.infradead.org; Tue, 24 Nov 2020 13:28:14 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=Ya7mNl614k8cPEx//1LbBwD1mBTI6q+TUS2d4XeT6DY=; b=iay1UgkMtKfQ94ufwnWzk2T1it
- c3R7eVYN9ml3Ywzgas/Gd9buHnKumjaigSbyg1fPjmWGpoRxU/Ek5+fXa/aVGF5IwolH6uhPeyqXg
- DL3BpGdtWlvBlZGgRl6YFd9TchAoOKNQ3CQdeKQsVAHkF4KVJlc5U5b1Es0gwwJlxLXKhao0DIH4f
- I6Z9XFgDf5i76KLycjVCRbd6nn4p6eFYr5DszA7JqBQnbOk9oqwKjl/u9Cj1QKjlzfSam/1Xl0WBh
- o3Zpx2Uoye0mnaezi08x9l1pycXROgv4ksjzY0neMwRpaXspy5GWJjavFXe45MHLxT+eJ+V5whCq4
- kvpN+7fQ==;
+ bh=/O13+dcLk1L7JyoO+1N94KNWJ8AA8wxdNDwugfkz49U=; b=T0mbtousMy3gTU4W+Hav1SXmPG
+ ntoJpVsr1rVrypAPqknRPUnpesJSMBrUc00lVI6rw9tW7L0UTd5qDYChjsDIp5I+2p9rgRfczorvW
+ myNaorvAqWHtFI8YzROhDDUSGaAL1oE03jbsWr7RUeag8w/Fra4vYKypkXrsbnoMydets0qq/jCNw
+ kAWVxaa3y0zHwqhTRdVwYBa7yrqO3jWUl7tXKnrMDreCJh9HnCSyQhcMGVcHEbB5RfozmnnymLj8T
+ T8hSeMtKcFNU6MG3WPtXCg75QSQ31Et+ZdTKD3UyLrPnveQ8KHIGAcZK2WiJCk91FG4lz+px4829j
+ pUPMLhxA==;
 Received: from [2001:4bb8:180:5443:c70:4a89:bc61:3] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khYMc-0006W0-RY; Tue, 24 Nov 2020 13:28:11 +0000
+ id 1khYMe-0006WC-FD; Tue, 24 Nov 2020 13:28:12 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 11/45] block: remove a duplicate __disk_get_part prototype
-Date: Tue, 24 Nov 2020 14:27:17 +0100
-Message-Id: <20201124132751.3747337-12-hch@lst.de>
+Subject: [PATCH 12/45] block: remove a superflous check in blkpg_do_ioctl
+Date: Tue, 24 Nov 2020 14:27:18 +0100
+Message-Id: <20201124132751.3747337-13-hch@lst.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201124132751.3747337-1-hch@lst.de>
 References: <20201124132751.3747337-1-hch@lst.de>
@@ -88,26 +88,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- include/linux/genhd.h | 1 -
- 1 file changed, 1 deletion(-)
+sector_t is now always a u64, so this check is not needed.
 
-diff --git a/include/linux/genhd.h b/include/linux/genhd.h
-index 46553d6d602563..22f5b9fd96f8bf 100644
---- a/include/linux/genhd.h
-+++ b/include/linux/genhd.h
-@@ -250,7 +250,6 @@ static inline dev_t part_devt(struct hd_struct *part)
- 	return part_to_dev(part)->devt;
- }
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ block/ioctl.c | 9 ---------
+ 1 file changed, 9 deletions(-)
+
+diff --git a/block/ioctl.c b/block/ioctl.c
+index 6b785181344fe1..0c09bb7a6ff35f 100644
+--- a/block/ioctl.c
++++ b/block/ioctl.c
+@@ -35,15 +35,6 @@ static int blkpg_do_ioctl(struct block_device *bdev,
+ 	start = p.start >> SECTOR_SHIFT;
+ 	length = p.length >> SECTOR_SHIFT;
  
--extern struct hd_struct *__disk_get_part(struct gendisk *disk, int partno);
- extern struct hd_struct *disk_get_part(struct gendisk *disk, int partno);
- 
- static inline void disk_put_part(struct hd_struct *part)
+-	/* check for fit in a hd_struct */
+-	if (sizeof(sector_t) < sizeof(long long)) {
+-		long pstart = start, plength = length;
+-
+-		if (pstart != start || plength != length || pstart < 0 ||
+-		    plength < 0 || p.pno > 65535)
+-			return -EINVAL;
+-	}
+-
+ 	switch (op) {
+ 	case BLKPG_ADD_PARTITION:
+ 		/* check if partition is aligned to blocksize */
 -- 
 2.29.2
 
