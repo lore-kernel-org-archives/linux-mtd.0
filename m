@@ -2,92 +2,64 @@ Return-Path: <SRS0=DcMO=E7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F1C3C5519F
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2020 10:38:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39876C64E7A
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2020 11:41:31 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B3B242063A
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2020 10:38:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B1AEE206D9
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2020 11:41:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="at0I+p39";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YCtEdyPA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B3B242063A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="1ImqYfJc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B1AEE206D9
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=J6lr1DQrEkBxSUVSKKtsFsm7divtn3Xce8dMJwsadHI=; b=at0I+p39qEMZ9lgTS9DpIqyIJ
-	jb5LGy8U2md49I/NkeWKwa5JXprgLTIq1VsvjIUuXrWNuUxSqZ8LX3OH5d2MYaPMXmO2gNBsK+82J
-	xZhbaxTuzrz5yW1f6HgsSUfz3QPIjCevry5fN9OqqFhkMQFYjDhIOLB0fktL2Uqivi0ySiTx0iLGd
-	YY1gnt4BeCu0kfgUqdU8KKzhrt2IzsTTVKaQmW70PL+M0GDWfMt4T6c3JXwMiZ3JYkeBxAmL/67DP
-	Y9jKoyOfj6rNV2l+sUdDNPb/71QkeueJNFh9W2mEtmHCg2Ov/KbWSQZEiKsgshoELd1A2/zMYDYny
-	7fwd2f67g==;
+	 bh=oJIZCQ0U/pkDsQ9bdCiInKFFWoMNW1364s6+LXgU2xo=; b=1ImqYfJcUhiT3U4PC5nsZud0M
+	GZE1agSBxyBBQ84T/DvTD8yMZxJLHCRBiC+OIB1qXjKxfGEclF1RdHhagm669X8VLBmCx01p8SiJL
+	3knAw2krSGDdee0dIjMLMGOeWuFlxxmSb30Bs4i95WbNvVtJyoqS2zxZDNJZV2uFqBPiQHiYY226x
+	+4d4xuJgPR0xndF3VKSTiSB57QO3KkI5lS6JqzlVzLSY0VOCm0YKjM3tGCSDBbfhFF4+yO4KTWYCr
+	raZTzIrEUrGWYx2rtyEi7stDbTVBfNzyAzwh41rCmibnaw2kMhSOo7OIvopMzFXnN3Es3bfZCzIz1
+	+lJeUVvLQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1khsBB-0001Bl-0B; Wed, 25 Nov 2020 10:37:41 +0000
-Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
+	id 1khtAI-0002Q9-OS; Wed, 25 Nov 2020 11:40:50 +0000
+Received: from mx2.suse.de ([195.135.220.15])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khsB2-00015d-4L; Wed, 25 Nov 2020 10:37:33 +0000
-Received: by mail-pl1-x644.google.com with SMTP id v21so896270plo.12;
- Wed, 25 Nov 2020 02:37:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=lG3+Uwz8lZti6FSb8xjGyaQfdt5OwV03xvf6+L3ZqWc=;
- b=YCtEdyPA4vCzWZsMjIt3djSgR9gg7vMRhn3I5LT7lEmWHdT3b/jEkR0QdduouORJ7k
- kiuUl5RijkS3EJmc3PIdIbhuWrYEtLAccN+wdoprBDsU56ruoUGszfH1Sxvuy4WXIhMK
- 0dDt7R//JtRYOU1+gQ96Rpa2FinP3O1pFccTMutbPTGjvqTac0chojMQO8cZdySzLIim
- HHsTKo91pUaUTwyxPnWizwDASocTC+n+eyDdN/HKPn9pe4V2vLDA/DOFrCcWbsrVXkvE
- 5CsjPeXzCB0gF8EvrEVdW+qQjVnUcViOyjSAD57xy0gbwLs+FCHLejwxIxOdH/xJHiTG
- +NRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=lG3+Uwz8lZti6FSb8xjGyaQfdt5OwV03xvf6+L3ZqWc=;
- b=J/0C0HAKfE/kkAmCTv+1Oc6vcbyBlGeY+yA6DOVZwQu47K1b4UIk7sYLu5bpZGXQXs
- A9xzZ2R2Piz9a0r5C01YzzoivdT4610cYDN7yJnFyeip7SQmM0x2pAmqsyv5XXojzXqf
- A1csZms+TLFlUoUCfeQ49VeCWWzIv6deVcoC/Yoj8X4hnZ4o/KJnEsyDO4EiXUdDUsDp
- q9kxieRyIrHXBn/5ZGQ5ATwT6fjvkX1ECPjNJd9XznlV9jVGw3H4pL3/TFXx2MzqBQc5
- x0AL0+93IqYyPLXTeYISTVfGZQpDygzclIlNfNaMcyeMRI9t6sJ38afd3sdIl+fyre62
- gH2g==
-X-Gm-Message-State: AOAM530AIAycjyWbxhnvUoq0tjjxOROwu7jlWF8UhCS1CxwIeuX1T/h1
- N2ZF5j/8B3eJ08Kla45nWdLzLcyG8ChU9Qh2mpI=
-X-Google-Smtp-Source: ABdhPJzEY8ebPN4xZ4jf0ZFVw9i65L6qlCom+E751HZA34/qY3SkadUuuLf2HukIG4qONDPWI5feIsM1VQGLuSbFYSc=
-X-Received: by 2002:a17:902:ead2:b029:da:2596:198e with SMTP id
- p18-20020a170902ead2b02900da2596198emr1937529pld.21.1606300648824; Wed, 25
- Nov 2020 02:37:28 -0800 (PST)
+ id 1khtAF-0002Ot-OF
+ for linux-mtd@lists.infradead.org; Wed, 25 Nov 2020 11:40:48 +0000
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 3F6BDAC41;
+ Wed, 25 Nov 2020 11:40:45 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+ id D8B791E130F; Wed, 25 Nov 2020 12:40:44 +0100 (CET)
+Date: Wed, 25 Nov 2020 12:40:44 +0100
+From: Jan Kara <jack@suse.cz>
+To: Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH 11/20] block: reference struct block_device from struct
+ hd_struct
+Message-ID: <20201125114044.GC16944@quack2.suse.cz>
+References: <20201118084800.2339180-1-hch@lst.de>
+ <20201118084800.2339180-12-hch@lst.de>
+ <X708BTJ5njtbC2z1@mtj.duckdns.org>
 MIME-Version: 1.0
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011201129.B13FDB3C@keescook>
- <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011220816.8B6591A@keescook>
- <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
- <CANiq72nZrHWTA4_Msg6MP9snTyenC6-eGfD27CyfNSu7QoVZbw@mail.gmail.com>
- <1c7d7fde126bc0acf825766de64bf2f9b888f216.camel@HansenPartnership.com>
- <CANiq72m22Jb5_+62NnwX8xds2iUdWDMAqD8PZw9cuxdHd95W0A@mail.gmail.com>
- <fc45750b6d0277c401015b7aa11e16cd15f32ab2.camel@HansenPartnership.com>
- <CANiq72k5tpDoDPmJ0ZWc1DGqm+81Gi-uEENAtvEs9v3SZcx6_Q@mail.gmail.com>
- <4993259d01a0064f8bb22770503490f9252f3659.camel@HansenPartnership.com>
-In-Reply-To: <4993259d01a0064f8bb22770503490f9252f3659.camel@HansenPartnership.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Wed, 25 Nov 2020 12:38:17 +0200
-Message-ID: <CAHp75VfaewwkLsrht95Q7DaxFk7JpQjwx0KQ7Jvh5f7DUbZkRA@mail.gmail.com>
-Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Content-Disposition: inline
+In-Reply-To: <X708BTJ5njtbC2z1@mtj.duckdns.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201125_053732_208702_498E4F98 
-X-CRM114-Status: GOOD (  13.62  )
+X-CRM114-CacheID: sfid-20201125_064047_919358_3BA60542 
+X-CRM114-Status: GOOD (  21.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,90 +71,60 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- linux-atm-general@lists.sourceforge.net, reiserfs-devel@vger.kernel.org,
- linux-iio <linux-iio@vger.kernel.org>,
- linux-wireless <linux-wireless@vger.kernel.org>,
- "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
- dri-devel <dri-devel@lists.freedesktop.org>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Nathan Chancellor <natechancellor@gmail.com>, linux-ide@vger.kernel.org,
- device-mapper development <dm-devel@redhat.com>, keyrings@vger.kernel.org,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- GR-everest-linux-l2@marvell.com, wcn36xx@lists.infradead.org,
- samba-technical@lists.samba.org, linux-i3c@lists.infradead.org,
- linux1394-devel@lists.sourceforge.net, linux-afs@lists.infradead.org,
- usb-storage@lists.one-eyed-alien.net, drbd-dev@lists.linbit.com,
- "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
- linux-cifs@vger.kernel.org, rds-devel@oss.oracle.com,
- Nick Desaulniers <ndesaulniers@google.com>,
- linux-scsi <linux-scsi@vger.kernel.org>,
- "open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
- oss-drivers@netronome.com, bridge@lists.linux-foundation.org,
- linux-security-module <linux-security-module@vger.kernel.org>,
- amd-gfx@lists.freedesktop.org, linux-stm32@st-md-mailman.stormreply.com,
- cluster-devel@redhat.com, ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
- coreteam@netfilter.org, intel-wired-lan@lists.osuosl.org,
- linux-input <linux-input@vger.kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
- Jakub Kicinski <kuba@kernel.org>,
- Ext4 Developers List <linux-ext4@vger.kernel.org>,
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- Kees Cook <keescook@chromium.org>, selinux@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, intel-gfx <intel-gfx@lists.freedesktop.org>,
- linux-geode@lists.infradead.org, linux-can@vger.kernel.org,
- linux-block@vger.kernel.org,
- "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
- op-tee@lists.trustedfirmware.org,
- "moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>,
- xen-devel@lists.xenproject.org, nouveau@lists.freedesktop.org,
- linux-hams@vger.kernel.org, ceph-devel@vger.kernel.org,
- virtualization@lists.linux-foundation.org,
- Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-hwmon@vger.kernel.org,
- linux-watchdog@vger.kernel.org, linux-nfs@vger.kernel.org,
- GR-Linux-NIC-Dev@marvell.com, tipc-discussion@lists.sourceforge.net,
- Linux-MM <linux-mm@kvack.org>, Network Development <netdev@vger.kernel.org>,
- linux-decnet-user@lists.sourceforge.net, linux-mmc <linux-mmc@vger.kernel.org>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- "maintainer:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, linux-sctp@vger.kernel.org,
- USB <linux-usb@vger.kernel.org>, netfilter-devel@vger.kernel.org,
- Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
- patches@opensource.cirrus.com, Joe Perches <joe@perches.com>,
- linux-integrity <linux-integrity@vger.kernel.org>,
- target-devel <target-devel@vger.kernel.org>, linux-hardening@vger.kernel.org
+Cc: Jens Axboe <axboe@kernel.dk>, Mike Snitzer <snitzer@redhat.com>,
+ Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+ Richard Weinberger <richard@nod.at>, Josef Bacik <josef@toxicpanda.com>,
+ Coly Li <colyli@suse.de>, linux-block@vger.kernel.org, linux-mm@kvack.org,
+ dm-devel@redhat.com, linux-mtd@lists.infradead.org, Jan Kara <jack@suse.com>,
+ linux-fsdevel@vger.kernel.org, xen-devel@lists.xenproject.org,
+ linux-bcache@vger.kernel.org, Christoph Hellwig <hch@lst.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Nov 23, 2020 at 10:39 PM James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
-> On Mon, 2020-11-23 at 19:56 +0100, Miguel Ojeda wrote:
-> > On Mon, Nov 23, 2020 at 4:58 PM James Bottomley
-> > <James.Bottomley@hansenpartnership.com> wrote:
 
-...
+Hello!
 
-> > But if we do the math, for an author, at even 1 minute per line
-> > change and assuming nothing can be automated at all, it would take 1
-> > month of work. For maintainers, a couple of trivial lines is noise
-> > compared to many other patches.
->
-> So you think a one line patch should take one minute to produce ... I
-> really don't think that's grounded in reality.  I suppose a one line
-> patch only takes a minute to merge with b4 if no-one reviews or tests
-> it, but that's not really desirable.
+On Tue 24-11-20 11:59:49, Tejun Heo wrote:
+> > diff --git a/block/partitions/core.c b/block/partitions/core.c
+> > index a02e224115943d..0ba0bf44b88af3 100644
+> > --- a/block/partitions/core.c
+> > +++ b/block/partitions/core.c
+> > @@ -340,12 +340,11 @@ void delete_partition(struct hd_struct *part)
+> >  	device_del(part_to_dev(part));
+> >  
+> >  	/*
+> > -	 * Remove gendisk pointer from idr so that it cannot be looked up
+> > -	 * while RCU period before freeing gendisk is running to prevent
+> > -	 * use-after-free issues. Note that the device number stays
+> > -	 * "in-use" until we really free the gendisk.
+> > +	 * Remove the block device from the inode hash, so that it cannot be
+> > +	 * looked up while waiting for the RCU grace period.
+> >  	 */
+> > -	blk_invalidate_devt(part_devt(part));
+> > +	remove_inode_hash(part->bdev->bd_inode);
+> 
+> I don't think this is necessary now that the bdev and inode lifetimes are
+> one. Before, punching out the association early was necessary because we
+> could be in a situation where we can successfully look up a part from idr
+> and then try to pin the associated disk which may already be freed. With the
+> new code, the lookup is through the inode whose lifetime is one and the same
+> with gendisk, so use-after-free isn't possible and __blkdev_get() will
+> reliably reject such open attempts.
 
-In my practice most of the one line patches were either to fix or to
-introduce quite interesting issues.
-1 minute is 2-3 orders less than usually needed for such patches.
-That's why I don't like churn produced by people who often even didn't
-compile their useful contributions.
+I think the remove_inode_hash() call is actually still needed. Consider a
+situation when the disk is unplugged, gendisk gets destroyed, bdev still
+lives on (e.g. because it is still open). Device gets re-plugged, gendisk
+for the same device number gets created. But we really need new bdev for
+this because from higher level POV this is completely new device. And the
+old bdev needs to live on as long as it is open. So IMO we still need to
+just unhash the inode and leave it lingering in the background.
 
+								Honza
 -- 
-With Best Regards,
-Andy Shevchenko
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 ______________________________________________________
 Linux MTD discussion mailing list
