@@ -1,69 +1,70 @@
-Return-Path: <SRS0=p38J=E6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=DcMO=E7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88A07C2D0E4
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 23:54:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9B05C2D0E4
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2020 00:25:33 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 26B412137B
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2020 23:54:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6AEE1206F7
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2020 00:25:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JIZ0LYnj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26B412137B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=telegraphics.com.au
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LL2DSIDc";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="K69+GBBX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6AEE1206F7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:Message-ID:In-Reply-To:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=MCbCyLb/3PpVYL3BL6U3DhQUzF/4PyJzL5oBbM/O3io=; b=JIZ0LYnjwb5GkdHuTWkFzqXT6
-	sj/7DYNJpCxgRFOS2SrGHnvyYa7g3sW+NI0OTl7mHRlmzD1Oz/o9SWUmGQJHTMQAGDFtb+SyBl0Dl
-	l/AscQPNoVRqGt4C6klDUzN9XaNEcjg8VmREg2LfhwCEOocweNfXx2fFQPtEYWR/NmZBKZanULa11
-	MT7G0FQluX8QgVyOVUSivmezLkHHOCHsI4GsQ62p2GIE7Ysgao1THSUl9fcgGkiittYK/hjcjEoc0
-	OoBZAQyx+6cLrYdwhb3nf13xXqaFI86/lBFafxAoT3SB3Q7EdXT1BVQLnDrV8dkEhJAfdGucRTbTW
-	pJkUzhxDg==;
+	 bh=VFSzKMNE/frl7i6vHBCrFDKX4y94lsdYO3gxqA1btT4=; b=LL2DSIDclJkPdl8WSnSzbx8nM
+	el/YbRi6YwppuJOwpKVcn5wPpjee8r0WdXTXp/dfudv/3WkTAP1CM4+6eGbtCLgDL8JylzAoAYtZF
+	hLCDz845aIfjR7atYz/3ZP0mHO39aDx3E1FyucwCmaUv2bvMgD7ZkuYOoDbiB9mRzTmeI8ONZ9fdo
+	jjgYVYc9De6nMMVjUTXRHE7eICH6JGwF59BqRu+Nn9lBx6sWZRpAsurBAH2AisDLo+X972qJRAaVm
+	DX/i0UdlEVB4/N6YcL/8f8bYzEUKdYRgP6Elv1NMIwejLJjRdKp67XHcXxpmLdlEUgwhnpR/WD+Go
+	v3kW9oyow==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1khi7g-0007rV-AW; Tue, 24 Nov 2020 23:53:24 +0000
-Received: from kvm5.telegraphics.com.au ([98.124.60.144])
- by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khi7Z-0007pc-Pt; Tue, 24 Nov 2020 23:53:18 +0000
-Received: from localhost (localhost.localdomain [127.0.0.1])
- by kvm5.telegraphics.com.au (Postfix) with ESMTP id DCBBC2AA63;
- Tue, 24 Nov 2020 18:53:13 -0500 (EST)
-Date: Wed, 25 Nov 2020 10:53:13 +1100 (AEDT)
-From: Finn Thain <fthain@telegraphics.com.au>
-To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Subject: Re: [Intel-wired-lan] [PATCH 000/141] Fix fall-through warnings for
- Clang
-In-Reply-To: <CANiq72nUt57u5DG9rH=DB0DzQH7U6-QbG-2Ou+PyCY=p=_Ggag@mail.gmail.com>
-Message-ID: <alpine.LNX.2.23.453.2011251022550.14@nippy.intranet>
-References: <202011201129.B13FDB3C@keescook>
- <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011220816.8B6591A@keescook>
- <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
- <ca071decb87cc7e905411423c05a48f9fd2f58d7.camel@perches.com>
- <0147972a72bc13f3629de8a32dee6f1f308994b5.camel@HansenPartnership.com>
- <d8d1e9add08cdd4158405e77762d4946037208f8.camel@perches.com>
- <dbd2cb703ed9eefa7dde9281ea26ab0f7acc8afe.camel@HansenPartnership.com>
- <20201123130348.GA3119@embeddedor>
- <8f5611bb015e044fa1c0a48147293923c2d904e4.camel@HansenPartnership.com>
- <202011241327.BB28F12F6@keescook>
- <alpine.LNX.2.23.453.2011250859290.15@nippy.intranet>
- <CANiq72nUt57u5DG9rH=DB0DzQH7U6-QbG-2Ou+PyCY=p=_Ggag@mail.gmail.com>
+	id 1khicJ-0001ZQ-Ge; Wed, 25 Nov 2020 00:25:03 +0000
+Received: from mail.kernel.org ([198.145.29.99])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1khic3-0001Sn-Ec
+ for linux-mtd@lists.infradead.org; Wed, 25 Nov 2020 00:24:49 +0000
+Received: from sol.attlocal.net
+ (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id BD4682168B;
+ Wed, 25 Nov 2020 00:24:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1606263886;
+ bh=sW9kCpHg/sDmA6ymdn9CX3KA5XvEp3ayB2EpWqKWKAU=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=K69+GBBXBn4aXkvDANL2m4C3Uwm2MG/DwglSUIEvtrVbRom0kW3lKn/v51W6I0AZp
+ EvfWZAt+vU9ps1TyC4Wvoe5R3WKuIPEKEhV1Vzt5W5ypvumvcCCi1wlnBF2IXXMHGW
+ NihS0BQPZCcwny3n3ocL9m7Mvn5puvL49h16c83w=
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-fscrypt@vger.kernel.org
+Subject: [PATCH 4/9] ext4: don't call fscrypt_get_encryption_info() from
+ dx_show_leaf()
+Date: Tue, 24 Nov 2020 16:23:31 -0800
+Message-Id: <20201125002336.274045-5-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201125002336.274045-1-ebiggers@kernel.org>
+References: <20201125002336.274045-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201124_185317_886342_3C835135 
-X-CRM114-Status: GOOD (  10.42  )
+X-CRM114-CacheID: sfid-20201124_192447_575714_1D3E116D 
+X-CRM114-Status: GOOD (  14.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,83 +76,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, bridge@lists.linux-foundation.org,
- target-devel@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
- linux-iio@vger.kernel.org, linux-wireless <linux-wireless@vger.kernel.org>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>, linux-fbdev@vger.kernel.org,
- dri-devel@lists.freedesktop.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- James Bottomley <James.Bottomley@hansenpartnership.com>,
- linux-ide@vger.kernel.org, dm-devel@redhat.com, keyrings@vger.kernel.org,
- linux-mtd@lists.infradead.org, GR-everest-linux-l2@marvell.com,
- wcn36xx@lists.infradead.org, linux-i3c@lists.infradead.org,
- linux1394-devel@lists.sourceforge.net, linux-afs@lists.infradead.org,
- drbd-dev@lists.linbit.com, devel@driverdev.osuosl.org,
- linux-cifs@vger.kernel.org, rds-devel@oss.oracle.com,
- linux-scsi@vger.kernel.org, linux-acpi@vger.kernel.org,
- linux-rdma@vger.kernel.org, oss-drivers@netronome.com,
- linux-atm-general@lists.sourceforge.net, ceph-devel@vger.kernel.org,
- amd-gfx@lists.freedesktop.org, linux-stm32@st-md-mailman.stormreply.com,
- cluster-devel@redhat.com, usb-storage@lists.one-eyed-alien.net,
- linux-mmc@vger.kernel.org, coreteam@netfilter.org,
- intel-wired-lan@lists.osuosl.org, linux-input <linux-input@vger.kernel.org>,
- Miguel Ojeda <ojeda@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
- Ext4 Developers List <linux-ext4@vger.kernel.org>,
- virtualization@lists.linux-foundation.org, netfilter-devel@vger.kernel.org,
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- Kees Cook <keescook@chromium.org>, selinux@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, intel-gfx@lists.freedesktop.org,
- linux-sctp@vger.kernel.org, reiserfs-devel@vger.kernel.org,
- linux-geode@lists.infradead.org, linux-block@vger.kernel.org,
- linux-gpio@vger.kernel.org, op-tee@lists.trustedfirmware.org,
- linux-mediatek@lists.infradead.org, xen-devel@lists.xenproject.org,
- nouveau@lists.freedesktop.org, linux-hams@vger.kernel.org,
- Nathan Chancellor <natechancellor@gmail.com>, linux-can@vger.kernel.org,
- Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-hwmon@vger.kernel.org,
- Nick Desaulniers <ndesaulniers@google.com>, linux-watchdog@vger.kernel.org,
- GR-Linux-NIC-Dev@marvell.com, Linux-MM <linux-mm@kvack.org>,
- Network Development <netdev@vger.kernel.org>,
- linux-decnet-user@lists.sourceforge.net, samba-technical@lists.samba.org,
- linux-kernel <linux-kernel@vger.kernel.org>, linux-renesas-soc@vger.kernel.org,
- linux-security-module@vger.kernel.org, linux-usb@vger.kernel.org,
- tipc-discussion@lists.sourceforge.net,
- Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
- patches@opensource.cirrus.com, Joe Perches <joe@perches.com>,
- linux-integrity@vger.kernel.org, linux-nfs@vger.kernel.org,
- "maintainer:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
- linux-hardening@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-f2fs-devel@lists.sourceforge.net
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+From: Eric Biggers <ebiggers@google.com>
 
-On Wed, 25 Nov 2020, Miguel Ojeda wrote:
+The call to fscrypt_get_encryption_info() in dx_show_leaf() is too low
+in the call tree; fscrypt_get_encryption_info() should have already been
+called when starting the directory operation.  And indeed, it already
+is.  Moreover, the encryption key is guaranteed to already be available
+because dx_show_leaf() is only called when adding a new directory entry.
 
-> 
-> The C standard has nothing to do with this. We use compiler extensions 
-> of several kinds, for many years. Even discounting those extensions, the 
-> kernel is not even conforming to C due to e.g. strict aliasing. I am not 
-> sure what you are trying to argue here.
-> 
+And even if the key wasn't available, dx_show_leaf() uses
+fscrypt_fname_disk_to_usr() which knows how to create a no-key name.
 
-I'm saying that supporting the official language spec makes more sense 
-than attempting to support a multitude of divergent interpretations of the 
-spec (i.e. gcc, clang, coverity etc.)
+So for the above reasons, and because it would be desirable to stop
+exporting fscrypt_get_encryption_info() directly to filesystems, remove
+the call to fscrypt_get_encryption_info() from dx_show_leaf().
 
-I'm also saying that the reason why we use -std=gnu89 is that existing 
-code was written in that language, not in ad hoc languages comprised of 
-collections of extensions that change with every release.
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/ext4/namei.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-> But, since you insist: yes, the `fallthrough` attribute is in the 
-> current C2x draft.
-> 
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index 793fc7db9d28..7b31aea3e025 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -643,13 +643,7 @@ static struct stats dx_show_leaf(struct inode *dir,
+ 
+ 				name  = de->name;
+ 				len = de->name_len;
+-				if (IS_ENCRYPTED(dir))
+-					res = fscrypt_get_encryption_info(dir);
+-				if (res) {
+-					printk(KERN_WARNING "Error setting up"
+-					       " fname crypto: %d\n", res);
+-				}
+-				if (!fscrypt_has_encryption_key(dir)) {
++				if (!IS_ENCRYPTED(dir)) {
+ 					/* Directory is not encrypted */
+ 					ext4fs_dirhash(dir, de->name,
+ 						de->name_len, &h);
+-- 
+2.29.2
 
-Thank you for checking. I found a free version that's only 6 weeks old:
-
-http://www.open-std.org/jtc1/sc22/wg14/www/docs/n2583.pdf
-
-It will be interesting to see whether 6.7.11.5 changes once the various 
-implementations reach agreement.
 
 ______________________________________________________
 Linux MTD discussion mailing list
