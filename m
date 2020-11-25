@@ -4,20 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04410C56202
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CBC05C2D0E4
 	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2020 00:25:49 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8AFBF206F7
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2020 00:25:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 77635206F7
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2020 00:25:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="zqUpiNg4";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="LXljaE/j"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8AFBF206F7
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="SWjHF9DC";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="AJl8OkUG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 77635206F7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,44 +26,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=fwFwYFz7le/r8JQFLnlYn5W2+FfeP45tpgGYloQ6TLw=; b=zqUpiNg45GbdKPfc31du4QYjQ
-	+ImRMnl5ZIMV/eQfFSHE8zT0WRCFrKm91GdjNFr1ZV82ATz0PE+obtSpmNn4DAgkqcirhNibyAR0z
-	Jm+RMlUXZK5o6kz7ESAPcaQ1bFv52eR41zzZHfRulKbAxBy1uSKRsLKUPigNgrl30V4dfUdn/EC3V
-	o4GH+tCans+9wA8ZCMtlQOZwCaqu0NHfw9QFKOXg8LsRq57CgDgnCsTssXs4h6MLCZIVlfoU7ic6o
-	GjyzcNt3QzSjRTG5XP8aHKH+oaFocRmWyiWcKQkDV0zd06K8LSv/BDXdY1KdM7dAjI2D6Hs9thHwb
-	9MWSyCd2g==;
+	 bh=IdG/l+1flh9kOeD7R0bRlaWCIBuXTEyCD6xz4bNpS5M=; b=SWjHF9DClqgoCyD9waSgZEnFF
+	PkBENKOpsQGV4RPK+Z6sWclsO+IpAyXu4Q0SzMYm+uOI6mgsM8PFvkep4kXNEZoH+Y2xgpTshiZ/J
+	6GCpnxDKx1gH1bfaN+Cq1CGoZeIvAth/YMTuHadjjJqkOQPn6z2EZ+vVdmRGboZtSi4goFk6A+J+7
+	m5NH1U0z5VwkpSpNcltk025dgjwAZHUWCYrM6qdOfDH1kUqH2HVt7Ssj7wF0vVfQxWSmYA4Kgpgjp
+	zJRzjgNIQhHHaoHjf3ZmWXxylf4+GULZ+uj7rEvt58vn4ZTWekquFf7nKLFXecc6UHn+ek4DqL1Fz
+	7Thci0OiA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1khicU-0001d7-6L; Wed, 25 Nov 2020 00:25:14 +0000
+	id 1khicB-0001XS-T5; Wed, 25 Nov 2020 00:24:56 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khic4-0001Tf-NC
- for linux-mtd@lists.infradead.org; Wed, 25 Nov 2020 00:24:52 +0000
+ id 1khic2-0001SF-RB
+ for linux-mtd@lists.infradead.org; Wed, 25 Nov 2020 00:24:47 +0000
 Received: from sol.attlocal.net
  (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 8AF542173E;
- Wed, 25 Nov 2020 00:24:47 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id F2DB02151B;
+ Wed, 25 Nov 2020 00:24:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1606263887;
- bh=ABvDlXMwjRq5govS1GsOlH9NgSkx2Q1+FWd/EUcY1U8=;
+ s=default; t=1606263886;
+ bh=rnYdUr37PtuJdOHsrO7sMu2HuLBhc/5UVpsjNmKp6y8=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=LXljaE/jMVXFHaMrkVVLTTRANdzCOz4et9MOVW8G6aVFZLsykL8yQST5y0NwuNDwP
- 8vTr++uc04ONtcJUMiq+jHlS5K4vPYzlvAEWuu0e2oRUhqlKTIXzqUas8qwdmGWZ6N
- 3m9HsnYwlQrmNxSuDRq/lS/nzCIBKAHdPUMz7s6k=
+ b=AJl8OkUGDWFwxrxlZqEpgv4PwMCU1rjl5L7p1rg/lZNBS90ofHleDkHoORna07IZH
+ L4PwZP6J+7e4F/HrUuXir6oThE5TGXcT0nQplwrbj/sZESB+7UVh4fPV9Lswxl7DZb
+ 3Gx3DfYhqSUtcl/Z9Qd87ORSV1pWNXLhGd1ryKoM=
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-fscrypt@vger.kernel.org
-Subject: [PATCH 7/9] fscrypt: move fscrypt_require_key() to fscrypt_private.h
-Date: Tue, 24 Nov 2020 16:23:34 -0800
-Message-Id: <20201125002336.274045-8-ebiggers@kernel.org>
+Subject: [PATCH 1/9] ext4: remove ext4_dir_open()
+Date: Tue, 24 Nov 2020 16:23:28 -0800
+Message-Id: <20201125002336.274045-2-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201125002336.274045-1-ebiggers@kernel.org>
 References: <20201125002336.274045-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201124_192449_085824_86C7D646 
-X-CRM114-Status: GOOD (  20.56  )
+X-CRM114-CacheID: sfid-20201124_192446_981242_88486B5D 
+X-CRM114-Status: GOOD (  13.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,90 +84,45 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-fscrypt_require_key() is now only used by files in fs/crypto/.  So
-reduce its visibility to fscrypt_private.h.  This is also a prerequsite
-for unexporting fscrypt_get_encryption_info().
+Since encrypted directories can be opened without their encryption key
+being available, and each readdir tries to set up the key, trying to set
+up the key in ->open() too isn't really useful.
+
+Just remove it so that directories don't need an ->open() method
+anymore, and so that we eliminate a use of fscrypt_get_encryption_info()
+(which I'd like to stop exporting to filesystems).
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/fscrypt_private.h | 26 ++++++++++++++++++++++++++
- include/linux/fscrypt.h     | 26 --------------------------
- 2 files changed, 26 insertions(+), 26 deletions(-)
+ fs/ext4/dir.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index a61d4dbf0a0b..16dd55080127 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -571,6 +571,32 @@ int fscrypt_derive_dirhash_key(struct fscrypt_info *ci,
- void fscrypt_hash_inode_number(struct fscrypt_info *ci,
- 			       const struct fscrypt_master_key *mk);
- 
-+/**
-+ * fscrypt_require_key() - require an inode's encryption key
-+ * @inode: the inode we need the key for
-+ *
-+ * If the inode is encrypted, set up its encryption key if not already done.
-+ * Then require that the key be present and return -ENOKEY otherwise.
-+ *
-+ * No locks are needed, and the key will live as long as the struct inode --- so
-+ * it won't go away from under you.
-+ *
-+ * Return: 0 on success, -ENOKEY if the key is missing, or another -errno code
-+ * if a problem occurred while setting up the encryption key.
-+ */
-+static inline int fscrypt_require_key(struct inode *inode)
-+{
-+	if (IS_ENCRYPTED(inode)) {
-+		int err = fscrypt_get_encryption_info(inode);
-+
-+		if (err)
-+			return err;
-+		if (!fscrypt_has_encryption_key(inode))
-+			return -ENOKEY;
-+	}
-+	return 0;
-+}
-+
- /* keysetup_v1.c */
- 
- void fscrypt_put_direct_key(struct fscrypt_direct_key *dk);
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index b20900bb829f..a07610f27926 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -688,32 +688,6 @@ static inline bool fscrypt_has_encryption_key(const struct inode *inode)
- 	return fscrypt_get_info(inode) != NULL;
+diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
+index ca50c90adc4c..16bfbdd5007c 100644
+--- a/fs/ext4/dir.c
++++ b/fs/ext4/dir.c
+@@ -616,13 +616,6 @@ static int ext4_dx_readdir(struct file *file, struct dir_context *ctx)
+ 	return 0;
  }
  
--/**
-- * fscrypt_require_key() - require an inode's encryption key
-- * @inode: the inode we need the key for
-- *
-- * If the inode is encrypted, set up its encryption key if not already done.
-- * Then require that the key be present and return -ENOKEY otherwise.
-- *
-- * No locks are needed, and the key will live as long as the struct inode --- so
-- * it won't go away from under you.
-- *
-- * Return: 0 on success, -ENOKEY if the key is missing, or another -errno code
-- * if a problem occurred while setting up the encryption key.
-- */
--static inline int fscrypt_require_key(struct inode *inode)
+-static int ext4_dir_open(struct inode * inode, struct file * filp)
 -{
--	if (IS_ENCRYPTED(inode)) {
--		int err = fscrypt_get_encryption_info(inode);
--
--		if (err)
--			return err;
--		if (!fscrypt_has_encryption_key(inode))
--			return -ENOKEY;
--	}
+-	if (IS_ENCRYPTED(inode))
+-		return fscrypt_get_encryption_info(inode) ? -EACCES : 0;
 -	return 0;
 -}
 -
- /**
-  * fscrypt_prepare_link() - prepare to link an inode into a possibly-encrypted
-  *			    directory
+ static int ext4_release_dir(struct inode *inode, struct file *filp)
+ {
+ 	if (filp->private_data)
+@@ -664,7 +657,6 @@ const struct file_operations ext4_dir_operations = {
+ 	.compat_ioctl	= ext4_compat_ioctl,
+ #endif
+ 	.fsync		= ext4_sync_file,
+-	.open		= ext4_dir_open,
+ 	.release	= ext4_release_dir,
+ };
+ 
 -- 
 2.29.2
 
