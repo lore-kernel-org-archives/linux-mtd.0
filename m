@@ -2,93 +2,61 @@ Return-Path: <SRS0=DcMO=E7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC3F6C5519F
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2020 07:06:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E085AC5519F
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2020 07:13:11 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3F43A206E5
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2020 07:06:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3068820857
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2020 07:13:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="P7uHgYbl";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="DUjk2u5m";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="DUjk2u5m"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F43A206E5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=HansenPartnership.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pWU2ZvY/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3068820857
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Date:To:From:
-	Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=VDzNEkqFkbPP/eS4r3sSg1O8G0ChMN0a9EtgQX/1VCU=; b=P7uHgYbl4mlRwAf+X//4nVL/l
-	mhTlKWnGZZ/yCPg9S3jU5KpqSNpQKgWFuHtYHu4ejZfuftiRon/ZVjq2nvtkQYa4EP9+pLTfEeMCe
-	k0QmRRqnogERCGJbs3PcQxA+xUjNOk3CdXl8+FPsWKh05jnB1HVII+2ikHPg2lmD5N9CKrwkwZiOu
-	gG7gTOiIMzTuTIUhMtuMHoRdZ/CUK24rEjJlS446U/0QkVPiADPlSQrMF8N1LmbokqBbNgqVsHZIE
-	jQcyCc5dPn/mNxostX4mR3n7GgwK6Z3hJnYzgMNbS5NKewDubpULsGcst0ZICjbS43JFtvt+9+ZTK
-	925qyIEMQ==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=HkX6zxg1m10LKNz18cuH92rxdgq+0kKsric45pBcV7s=; b=pWU2ZvY/rEMNDfJMWvq5iV2d7R
+	yE9XZjjYGO6T9rm+MrpWQIJOqmpuCLfkl2IMpAwFGxr2gZa+CjKjtkakcZBIvFdPyrD9troOGT7jh
+	hOGCCs8QbbPE3ngzRaIULxQR/6+Ogz25+ckL2sOEd7ggIpxq/pGrEUS8QGHqP3tbrpAwwPlOGf2tV
+	e/u6KERr5ti4cP5ouEVfyFYZcbXWBv34U20kFHFh4opD1nd899bZv10BA4u2h77ro1QCK2DEtA2n8
+	mG/BfbqDq/9CPMy3cIFWbVO6E/QItZlLoMN+ML8ykIr8oydM+cSK3omZw0CP6SwW5S38eovuvnYgH
+	EYwalU4Q==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1khosD-00059D-Pf; Wed, 25 Nov 2020 07:05:53 +0000
-Received: from bedivere.hansenpartnership.com ([96.44.175.130])
+	id 1khoy8-0005fS-8g; Wed, 25 Nov 2020 07:12:00 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khos7-00055o-7L; Wed, 25 Nov 2020 07:05:48 +0000
-Received: from localhost (localhost [127.0.0.1])
- by bedivere.hansenpartnership.com (Postfix) with ESMTP id 313DE1280408;
- Tue, 24 Nov 2020 23:05:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=hansenpartnership.com; s=20151216; t=1606287940;
- bh=PpyvloC8ztllb7q8ndtGKJRs78ChiB3jg6tteM0zYL0=;
- h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
- b=DUjk2u5mMxkvusJZ7TUknDmT+9jEkjAK5Du54VYrLnX3ZVAsqbXKInJF3+bjbWxe1
- sPTOm9Jo8O4FiM37EcbSbGJ09Z6i3toRLj70BanOqmx/doOouqQw1ofRfirJ315HKN
- ACp6UaCD/rMf1rqLOvr/v7W+FqOYQZREI5LkhaoU=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new,
- port 10024)
- with ESMTP id 8AuMCu2vLv9Z; Tue, 24 Nov 2020 23:05:40 -0800 (PST)
-Received: from jarvis.int.hansenpartnership.com (unknown
- [IPv6:2601:600:8280:66d1::527])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id A873112803EC;
- Tue, 24 Nov 2020 23:05:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=hansenpartnership.com; s=20151216; t=1606287940;
- bh=PpyvloC8ztllb7q8ndtGKJRs78ChiB3jg6tteM0zYL0=;
- h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
- b=DUjk2u5mMxkvusJZ7TUknDmT+9jEkjAK5Du54VYrLnX3ZVAsqbXKInJF3+bjbWxe1
- sPTOm9Jo8O4FiM37EcbSbGJ09Z6i3toRLj70BanOqmx/doOouqQw1ofRfirJ315HKN
- ACp6UaCD/rMf1rqLOvr/v7W+FqOYQZREI5LkhaoU=
-Message-ID: <a841536fe65bb33f1c72ce2455a6eb47a0107565.camel@HansenPartnership.com>
-Subject: Re: [Intel-wired-lan] [PATCH 000/141] Fix fall-through warnings for
- Clang
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Kees Cook <keescook@chromium.org>
-Date: Tue, 24 Nov 2020 23:05:35 -0800
-In-Reply-To: <202011241327.BB28F12F6@keescook>
-References: <202011201129.B13FDB3C@keescook>
- <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011220816.8B6591A@keescook>
- <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
- <ca071decb87cc7e905411423c05a48f9fd2f58d7.camel@perches.com>
- <0147972a72bc13f3629de8a32dee6f1f308994b5.camel@HansenPartnership.com>
- <d8d1e9add08cdd4158405e77762d4946037208f8.camel@perches.com>
- <dbd2cb703ed9eefa7dde9281ea26ab0f7acc8afe.camel@HansenPartnership.com>
- <20201123130348.GA3119@embeddedor>
- <8f5611bb015e044fa1c0a48147293923c2d904e4.camel@HansenPartnership.com>
- <202011241327.BB28F12F6@keescook>
-User-Agent: Evolution 3.34.4 
+ id 1khoy4-0005eG-4Y
+ for linux-mtd@lists.infradead.org; Wed, 25 Nov 2020 07:11:59 +0000
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+ by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CgsWK6J12zhgy5;
+ Wed, 25 Nov 2020 15:11:25 +0800 (CST)
+Received: from DESKTOP-8N3QUD5.china.huawei.com (10.67.101.227) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 25 Nov 2020 15:11:35 +0800
+From: Guohua Zhong <zhongguohua1@huawei.com>
+To: <patrick@baymotion.com>, <joern@lazybastard.org>,
+ <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
+Subject: [PATCH v2] phram: Allow the user to set the erase page size.
+Date: Wed, 25 Nov 2020 15:11:32 +0800
+Message-ID: <20201125071132.39988-1-zhongguohua1@huawei.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
+X-Originating-IP: [10.67.101.227]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201125_020547_404517_4026B15A 
-X-CRM114-Status: GOOD (  25.44  )
+X-CRM114-CacheID: sfid-20201125_021158_330829_3EEB90E9 
+X-CRM114-Status: GOOD (  18.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,108 +68,173 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, bridge@lists.linux-foundation.org,
- target-devel@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
- linux-iio@vger.kernel.org, samba-technical@lists.samba.org,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>, linux-fbdev@vger.kernel.org,
- dri-devel@lists.freedesktop.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- linux-ide@vger.kernel.org, dm-devel@redhat.com, keyrings@vger.kernel.org,
- linux-mtd@lists.infradead.org, GR-everest-linux-l2@marvell.com,
- wcn36xx@lists.infradead.org, linux-i3c@lists.infradead.org,
- linux1394-devel@lists.sourceforge.net, linux-afs@lists.infradead.org,
- drbd-dev@lists.linbit.com, devel@driverdev.osuosl.org,
- linux-cifs@vger.kernel.org, rds-devel@oss.oracle.com,
- linux-scsi@vger.kernel.org, linux-acpi@vger.kernel.org,
- linux-rdma@vger.kernel.org, oss-drivers@netronome.com,
- linux-atm-general@lists.sourceforge.net, ceph-devel@vger.kernel.org,
- amd-gfx@lists.freedesktop.org, linux-stm32@st-md-mailman.stormreply.com,
- cluster-devel@redhat.com, usb-storage@lists.one-eyed-alien.net,
- linux-mmc@vger.kernel.org, coreteam@netfilter.org,
- intel-wired-lan@lists.osuosl.org, linux-input@vger.kernel.org,
- Miguel Ojeda <ojeda@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
- linux-ext4@vger.kernel.org, virtualization@lists.linux-foundation.org,
- netfilter-devel@vger.kernel.org, linux-media@vger.kernel.org,
- linux-watchdog@vger.kernel.org, selinux@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, intel-gfx@lists.freedesktop.org,
- linux-sctp@vger.kernel.org, reiserfs-devel@vger.kernel.org,
- linux-geode@lists.infradead.org, linux-block@vger.kernel.org,
- linux-gpio@vger.kernel.org, op-tee@lists.trustedfirmware.org,
- linux-mediatek@lists.infradead.org, xen-devel@lists.xenproject.org,
- nouveau@lists.freedesktop.org, linux-hams@vger.kernel.org,
- Nathan Chancellor <natechancellor@gmail.com>, linux-can@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
- Nick Desaulniers <ndesaulniers@google.com>, linux-nfs@vger.kernel.org,
- GR-Linux-NIC-Dev@marvell.com, linux-mm@kvack.org, netdev@vger.kernel.org,
- linux-decnet-user@lists.sourceforge.net, linux-wireless@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-security-module@vger.kernel.org, linux-usb@vger.kernel.org,
- tipc-discussion@lists.sourceforge.net, linux-crypto@vger.kernel.org,
- patches@opensource.cirrus.com, Joe Perches <joe@perches.com>,
- linux-integrity@vger.kernel.org, x86@kernel.org,
- linux-hardening@vger.kernel.org
+Cc: nixiaoming@huawei.com, wangle6@huawei.com, young.liuyang@huawei.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2020-11-24 at 13:32 -0800, Kees Cook wrote:
-> On Mon, Nov 23, 2020 at 08:31:30AM -0800, James Bottomley wrote:
-> > Really, no ... something which produces no improvement has no value
-> > at all ... we really shouldn't be wasting maintainer time with it
-> > because it has a cost to merge.  I'm not sure we understand where
-> > the balance lies in value vs cost to merge but I am confident in
-> > the zero value case.
-> 
-> What? We can't measure how many future bugs aren't introduced because
-> the kernel requires explicit case flow-control statements for all new
-> code.
+Permit the user to specify the erase page size as a parameter.
+This solves two problems:
 
-No but we can measure how vulnerable our current coding habits are to
-the mistake this warning would potentially prevent.  I don't think it's
-wrong to extrapolate that if we had no instances at all of prior coding
-problems we likely wouldn't have any in future either making adopting
-the changes needed to enable the warning valueless ... that's the zero
-value case I was referring to above.
+- phram can access images made by mkfs.jffs2.  mkfs.jffs2 won't
+create images with erase sizes less than 8KiB; many architectures
+define PAGE_SIZE as 4KiB.
 
-Now, what we have seems to be about 6 cases (at least what's been shown
-in this thread) where a missing break would cause potentially user
-visible issues.  That means the value of this isn't zero, but it's not
-a no-brainer massive win either.  That's why I think asking what we've
-invested vs the return isn't a useless exercise.
+- Allows more effective use of small capacity devices.  JFFS2
+needs somewhere between 2 and 5 empty pages for garbage collection;
+and for an NVRAM part with only 32KiB of space, a smaller erase page
+allows much better utilization in applications where garbage collection
+is important.
 
-> We already enable -Wimplicit-fallthrough globally, so that's not the
-> discussion. The issue is that Clang is (correctly) even more strict
-> than GCC for this, so these are the remaining ones to fix for full
-> Clang coverage too.
-> 
-> People have spent more time debating this already than it would have
-> taken to apply the patches. :)
+Signed-off-by: Patrick O'Grady <patrick@baymotion.com>
+Reviewed-by: Joern Engel <joern@logfs.org>
+Link: https://lore.kernel.org/lkml/CAJ7m5OqYv_=JB9NhHsqBsa8YU0DFRoP7C+W10PY22wonAGJK=A@mail.gmail.com/
+[Guohua Zhong: fix token array index out of bounds and update patch for kernel master branch]
+Signed-off-by: Guohua Zhong <zhongguohua1@huawei.com>
+Reported-by: kernel test robot <lkp@intel.com>
 
-You mean we've already spent 90% of the effort to come this far so we
-might as well go the remaining 10% because then at least we get some
-return? It's certainly a clinching argument in defence procurement ...
+-------
+v2:
+ fix build error which is reported by kernel test robot
 
-> This is about robustness and language wrangling. It's a big code-
-> base, and this is the price of our managing technical debt for
-> permanent robustness improvements. (The numbers I ran from Gustavo's
-> earlier patches were that about 10% of the places adjusted were
-> identified as legitimate bugs being fixed. This final series may be
-> lower, but there are still bugs being found from it -- we need to
-> finish this and shut the door on it for good.)
+v1: https://lore.kernel.org/lkml/20201124061053.10812-1-zhongguohua1@huawei.com/
+ 1.fix token array index out of bounds
+ 2.update patch for kernel master branch
+---
+ drivers/mtd/devices/phram.c | 52 +++++++++++++++++++++++++++++----------------
+ 1 file changed, 34 insertions(+), 18 deletions(-)
 
-I got my six patches by analyzing the lwn.net report of the fixes that
-was cited which had 21 of which 50% didn't actually change the emitted
-code, and 25% didn't have a user visible effect.
-
-But the broader point I'm making is just because the compiler people
-come up with a shiny new warning doesn't necessarily mean the problem
-it's detecting is one that causes us actual problems in the code base. 
-I'd really be happier if we had a theory about what classes of CVE or
-bug we could eliminate before we embrace the next new warning.
-
-James
-
-
+diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
+index 087b5e86d1bf..1729b94b2abf 100644
+--- a/drivers/mtd/devices/phram.c
++++ b/drivers/mtd/devices/phram.c
+@@ -6,14 +6,14 @@
+  * Usage:
+  *
+  * one commend line parameter per device, each in the form:
+- *   phram=<name>,<start>,<len>
++ *   phram=<name>,<start>,<len>[,<erasesize>]
+  * <name> may be up to 63 characters.
+- * <start> and <len> can be octal, decimal or hexadecimal.  If followed
++ * <start>, <len>, and <erasesize> can be octal, decimal or hexadecimal.  If followed
+  * by "ki", "Mi" or "Gi", the numbers will be interpreted as kilo, mega or
+- * gigabytes.
++ * gigabytes. <erasesize> is optional and defaults to PAGE_SIZE.
+  *
+  * Example:
+- *	phram=swap,64Mi,128Mi phram=test,900Mi,1Mi
++ *	phram=swap,64Mi,128Mi phram=test,900Mi,1Mi,64Ki
+  */
+ 
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+@@ -26,6 +26,7 @@
+ #include <linux/moduleparam.h>
+ #include <linux/slab.h>
+ #include <linux/mtd/mtd.h>
++#include <asm/div64.h>
+ 
+ struct phram_mtd_list {
+ 	struct mtd_info mtd;
+@@ -88,7 +89,7 @@ static void unregister_devices(void)
+ 	}
+ }
+ 
+-static int register_device(char *name, phys_addr_t start, size_t len)
++static int register_device(char *name, phys_addr_t start, size_t len, uint32_t erasesize)
+ {
+ 	struct phram_mtd_list *new;
+ 	int ret = -ENOMEM;
+@@ -115,7 +116,7 @@ static int register_device(char *name, phys_addr_t start, size_t len)
+ 	new->mtd._write = phram_write;
+ 	new->mtd.owner = THIS_MODULE;
+ 	new->mtd.type = MTD_RAM;
+-	new->mtd.erasesize = PAGE_SIZE;
++	new->mtd.erasesize = erasesize;
+ 	new->mtd.writesize = 1;
+ 
+ 	ret = -EAGAIN;
+@@ -204,22 +205,23 @@ static inline void kill_final_newline(char *str)
+ static int phram_init_called;
+ /*
+  * This shall contain the module parameter if any. It is of the form:
+- * - phram=<device>,<address>,<size> for module case
+- * - phram.phram=<device>,<address>,<size> for built-in case
+- * We leave 64 bytes for the device name, 20 for the address and 20 for the
+- * size.
+- * Example: phram.phram=rootfs,0xa0000000,512Mi
++ * - phram=<device>,<address>,<size>[,<erasesize>] for module case
++ * - phram.phram=<device>,<address>,<size>[,<erasesize>] for built-in case
++ * We leave 64 bytes for the device name, 20 for the address , 20 for the
++ * size and 20 for the erasesize.
++ * Example: phram.phram=rootfs,0xa0000000,512Mi,65536
+  */
+-static char phram_paramline[64 + 20 + 20];
++static char phram_paramline[64 + 20 + 20 + 20];
+ #endif
+ 
+ static int phram_setup(const char *val)
+ {
+-	char buf[64 + 20 + 20], *str = buf;
+-	char *token[3];
++	char buf[64 + 20 + 20 + 20], *str = buf;
++	char *token[4];
+ 	char *name;
+ 	uint64_t start;
+ 	uint64_t len;
++	uint64_t erasesize = PAGE_SIZE;
+ 	int i, ret;
+ 
+ 	if (strnlen(val, sizeof(buf)) >= sizeof(buf))
+@@ -228,7 +230,7 @@ static int phram_setup(const char *val)
+ 	strcpy(str, val);
+ 	kill_final_newline(str);
+ 
+-	for (i = 0; i < 3; i++)
++	for (i = 0; i < 4; i++)
+ 		token[i] = strsep(&str, ",");
+ 
+ 	if (str)
+@@ -253,11 +255,25 @@ static int phram_setup(const char *val)
+ 		goto error;
+ 	}
+ 
+-	ret = register_device(name, start, len);
++	if (token[3]) {
++		ret = parse_num64(&erasesize, token[3]);
++		if (ret) {
++			parse_err("illegal erasesize\n");
++			goto error;
++		}
++	}
++
++	if (len == 0 || erasesize == 0 || erasesize > len
++	    || erasesize > UINT_MAX || do_div(len, (uint32_t)erasesize) != 0) {
++		parse_err("illegal erasesize or len\n");
++		goto error;
++	}
++
++	ret = register_device(name, start, len, (uint32_t)erasesize);
+ 	if (ret)
+ 		goto error;
+ 
+-	pr_info("%s device: %#llx at %#llx\n", name, len, start);
++	pr_info("%s device: %#llx at %#llx for erasesize %#llx\n", name, len, start, erasesize);
+ 	return 0;
+ 
+ error:
+@@ -298,7 +314,7 @@ static int phram_param_call(const char *val, const struct kernel_param *kp)
+ }
+ 
+ module_param_call(phram, phram_param_call, NULL, NULL, 0200);
+-MODULE_PARM_DESC(phram, "Memory region to map. \"phram=<name>,<start>,<length>\"");
++MODULE_PARM_DESC(phram, "Memory region to map. \"phram=<name>,<start>,<length>[,<erasesize>]\"");
+ 
+ 
+ static int __init init_phram(void)
+-- 
+2.12.3
 
 
 ______________________________________________________
