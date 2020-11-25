@@ -2,94 +2,74 @@ Return-Path: <SRS0=DcMO=E7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2765EC56202
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2020 18:25:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ECD6BC56201
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2020 18:53:16 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9A409206CA
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2020 18:25:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2C9C620674
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2020 18:53:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PaPn06oF";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bn+pL/Hm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A409206CA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nVguUHHR";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=walle.cc header.i=@walle.cc header.b="jvW56JVa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C9C620674
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
+	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=wwARR9A143vyOgVckz6GHCILnYILEwa0QgOPgCe2kgs=; b=PaPn06oFMYW00OEF+zbPJVCfH
-	tAe07AUo/M9tZUs9RHOlzC21xna60oeRI+k8BehJBLuLTxNW9ahr1IBtsX3XT+5GaqmkfeeqZ44Yp
-	k1rXmccM2YJT2wldlKXZoeayJCb9WgPqNboIZnq17K+3dNHA5ifv4w0+uZaEGdpfrdqX2SxTnVIjF
-	nMuQhrGGjAzAxV/AIqF1q0Nt0qHHhKjlGKtWdkL4p63voKAfUryWebuVpAw6qYqgzb7uegzgOQJR6
-	Z4CXjLoIBc//ueyPa4DrCe1E0l/LunFrysy1mrTHYh18bbegsKc5ePXh2NAcd7KxRHxU4EXwUPR+4
-	VUwzk4WjA==;
+	 bh=makQmqOTenjaLtbe/4U0YNaOFW3PZtKWWZsQ8ik/lbc=; b=nVguUHHRqexRJ94/JW/9htvDE
+	MdfFtjjJKbY7eSTWzuushaA8ebeKIwdiXpvaXzEiy0Bc4Ngl4dvYBCUfm4NSdbeNdXoTsAMg81EpU
+	Ldh9wPKlPwSquRAqf1I/3CBahou1t86Hox2mx9nr45rR2hw3BYULnJx8xbSgbQLQBXIJE6O0xUDtM
+	1s97ygwAR7VxFlYzIieyH+V23U0MZciQ+gOKMtVgBmCGYqFXYmBfdEfP3KQuLwyfCm6EIFfzHHwau
+	ypTqOX0dDRJ+i72991GfmmJJNAzOqnE13TrCIoEMbdx9l+xzgV8CpNS4UrbmGE342amwf3BAJL5ll
+	rzR7jRMlQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1khzT9-0002Vv-TG; Wed, 25 Nov 2020 18:24:43 +0000
-Received: from mail-yb1-xb42.google.com ([2607:f8b0:4864:20::b42])
+	id 1khzuA-0005NQ-4h; Wed, 25 Nov 2020 18:52:38 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khyDX-00073d-Hm; Wed, 25 Nov 2020 17:04:33 +0000
-Received: by mail-yb1-xb42.google.com with SMTP id g15so375929ybq.6;
- Wed, 25 Nov 2020 09:04:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=U7yONu+GErpj3wVA3mUEvd1gZrZu1iMtuB4J5cc4iYs=;
- b=bn+pL/HmrYW2tlvsO08UsmlB+e0sDsIo/gBe6lZBPy5Ml0r7IepVRmwL3Z1msCDTmB
- 4Fj8yYJnSSwKpycrMD6jc9mJYcLEOxyjBt+mj/swgeJwfcTqBWFSYbINT99XJh8MBLLG
- BhdJX4URpdAlU1PS41QCV8cX0uycEbKi5uankHMmLYXfRheyb1dBSnJ2lYbkM9jPzYRg
- +YL1Fiv4xli6A/G5oR00+c/fqffNKJdLOgNLmafCTxGe8sUqpvTjraMjrzXLQkd2Vyg7
- 6NJIAQ3gm8Ro9XvzXTxxo6aHXEqSB5bdv5UB5bHkEX37ZUG4NR8CwSl4aaovOFcf7q/J
- MTKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=U7yONu+GErpj3wVA3mUEvd1gZrZu1iMtuB4J5cc4iYs=;
- b=ltcKgrbbFl2kP4M7vcb+2c4J2zz16fpLZBcq5kGBI0s388AENCmt2pQ/qPYmo1CtYU
- KMIhI6p8EsgQKG/IG74OaRZGiAB0l0ApQsY+cBihQ6qmpvNNiLDfSsjfI6+qcUxESrWW
- KJObpRRREXz7MFjtu+AQKHEyIbsje9jroOso7Idx8zAksWv8Ubk2+LRS5q6dq9/VmS3/
- D9SswmT2WwWNujRBesCXthsEizPxB2KNWdwRLSm0Rus/MyqTte6K0eLbqQKahVGSRYwd
- CvATH4ZjlNW0C5GT3wixAxEuIlNQkHPCMyp6xf0S7h0AeoCnb3bVt0eaIfzUb6ogjSmj
- zqGg==
-X-Gm-Message-State: AOAM533yzWEqk17uSwOlixR/Kv2hJ9BkCcT42s2eqdNhuQ9LSv7x4Dcx
- ZJF52QQLwJicxJzYqa6jvjO7GTmlVgfVotoBSuI=
-X-Google-Smtp-Source: ABdhPJwRDTWwRnnt/vVfXeVU3lUNCXdaAf9CCrzUJdkBRbFdtXrCpJBbeymEiGhAam+E5oqqQjDTbAdkVQMGwErIDPw=
-X-Received: by 2002:a25:aac5:: with SMTP id t63mr6307293ybi.22.1606323866493; 
- Wed, 25 Nov 2020 09:04:26 -0800 (PST)
+ id 1khzu7-0005Mw-98
+ for linux-mtd@lists.infradead.org; Wed, 25 Nov 2020 18:52:36 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 92A4A22FEB;
+ Wed, 25 Nov 2020 19:52:32 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1606330352;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=5b56CBLECMvLLKiJplwMaGwXiawOOTRdGRqJJQKr60I=;
+ b=jvW56JVaOaX6AwYedmmrRJoWAYryzNh2J+8S2X67C/ELepCS/uQIn29w0kdulebLeY7Ns0
+ 2CgSVxsaKLaecMat8AipHEJBhQmiWBd/jUQI5rmOZngk9PzFUzvzlHCU5l9TAlepTVLf5L
+ eYALLM6Xxprz7sCwLA60fSQfXL/xw9k=
 MIME-Version: 1.0
-References: <202011201129.B13FDB3C@keescook>
- <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011220816.8B6591A@keescook>
- <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
- <ca071decb87cc7e905411423c05a48f9fd2f58d7.camel@perches.com>
- <0147972a72bc13f3629de8a32dee6f1f308994b5.camel@HansenPartnership.com>
- <d8d1e9add08cdd4158405e77762d4946037208f8.camel@perches.com>
- <dbd2cb703ed9eefa7dde9281ea26ab0f7acc8afe.camel@HansenPartnership.com>
- <20201123130348.GA3119@embeddedor>
- <8f5611bb015e044fa1c0a48147293923c2d904e4.camel@HansenPartnership.com>
- <202011241327.BB28F12F6@keescook>
- <a841536fe65bb33f1c72ce2455a6eb47a0107565.camel@HansenPartnership.com>
- <CAKwvOdkGBn7nuWTAqrORMeN1G+w3YwBfCqqaRD2nwvoAXKi=Aw@mail.gmail.com>
- <20201125082405.1d8c23dc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201125082405.1d8c23dc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Wed, 25 Nov 2020 18:04:15 +0100
-Message-ID: <CANiq72=RuekXf1O6Fxrz2Eend0GtS6=E72P4T2=48SDqVcTChA@mail.gmail.com>
-Subject: Re: [Intel-wired-lan] [PATCH 000/141] Fix fall-through warnings for
- Clang
-To: Jakub Kicinski <kuba@kernel.org>
+Date: Wed, 25 Nov 2020 19:52:32 +0100
+From: Michael Walle <michael@walle.cc>
+To: Tudor.Ambarus@microchip.com
+Subject: Re: [PATCH v5 3/3] mtd: spi-nor: keep lock bits if they are
+ non-volatile
+In-Reply-To: <e9437b3e-de44-7b17-df2c-6a8502b48ca4@microchip.com>
+References: <20201003153235.29762-1-michael@walle.cc>
+ <20201003153235.29762-4-michael@walle.cc>
+ <e9437b3e-de44-7b17-df2c-6a8502b48ca4@microchip.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <f6344b9cb5c61c3bfd075e231b708269@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201125_120432_048207_6AF38472 
-X-CRM114-Status: GOOD (  13.04  )
+X-CRM114-CacheID: sfid-20201125_135235_565890_6B95B4E2 
+X-CRM114-Status: GOOD (  31.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,100 +81,303 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, bridge@lists.linux-foundation.org,
- linux-iio@vger.kernel.org, linux-wireless <linux-wireless@vger.kernel.org>,
- linux-fbdev@vger.kernel.org, dri-devel <dri-devel@lists.freedesktop.org>,
- LKML <linux-kernel@vger.kernel.org>,
- James Bottomley <James.Bottomley@hansenpartnership.com>,
- linux-ide@vger.kernel.org, dm-devel@redhat.com, keyrings@vger.kernel.org,
- linux-mtd@lists.infradead.org, GR-everest-linux-l2@marvell.com,
- wcn36xx@lists.infradead.org, linux-i3c@lists.infradead.org,
- linux1394-devel@lists.sourceforge.net, linux-afs@lists.infradead.org,
- drbd-dev@lists.linbit.com, devel@driverdev.osuosl.org,
- linux-cifs@vger.kernel.org, rds-devel@oss.oracle.com,
- linux-scsi@vger.kernel.org, linux-acpi@vger.kernel.org,
- linux-rdma@vger.kernel.org, oss-drivers@netronome.com,
- linux-atm-general@lists.sourceforge.net, ceph-devel@vger.kernel.org,
- amd-gfx list <amd-gfx@lists.freedesktop.org>,
- linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
- usb-storage@lists.one-eyed-alien.net, linux-mmc@vger.kernel.org,
- coreteam@netfilter.org, intel-wired-lan@lists.osuosl.org,
- linux-input <linux-input@vger.kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
- xen-devel@lists.xenproject.org,
- Ext4 Developers List <linux-ext4@vger.kernel.org>,
- virtualization@lists.linux-foundation.org, netfilter-devel@vger.kernel.org,
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- Kees Cook <keescook@chromium.org>, selinux@vger.kernel.org,
- linux-arm-msm <linux-arm-msm@vger.kernel.org>, intel-gfx@lists.freedesktop.org,
- linux-sctp@vger.kernel.org, reiserfs-devel@vger.kernel.org,
- linux-geode@lists.infradead.org, linux-block@vger.kernel.org,
- linux-gpio@vger.kernel.org, op-tee@lists.trustedfirmware.org,
- linux-mediatek@lists.infradead.org, nouveau@lists.freedesktop.org,
- linux-hams@vger.kernel.org, Nathan Chancellor <natechancellor@gmail.com>,
- linux-can@vger.kernel.org, Linux ARM <linux-arm-kernel@lists.infradead.org>,
- linux-hwmon@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
- linux-watchdog@vger.kernel.org, GR-Linux-NIC-Dev@marvell.com,
- Linux Memory Management List <linux-mm@kvack.org>,
- Network Development <netdev@vger.kernel.org>,
- linux-decnet-user@lists.sourceforge.net, samba-technical@lists.samba.org,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- linux-security-module@vger.kernel.org, linux-usb@vger.kernel.org,
- tipc-discussion@lists.sourceforge.net,
- =?UTF-8?Q?open_list=3AHARDWARE_RANDOM_NUMBER_GENERATOR_CORE_=3Clinux=2Dcrypt?=
- =?UTF-8?Q?o=40vger=2Ekernel=2Eorg=3E=2C_patches=40opensource=2Ecirrus=2Ecom=2C_linux=2Dint?=
- =?UTF-8?Q?egrity=40vger=2Ekernel=2Eorg=2C_target=2Ddevel=40vger=2Ekernel=2Eorg=2C_linux=2D?=
- =?UTF-8?Q?hardening=40vger=2Ekernel=2Eorg=2C_Jonathan_Cameron_=3CJonathan=2ECamero?=
- =?UTF-8?Q?n=40huawei=2Ecom=3E=2C_Greg_KH?= <gregkh@linuxfoundation.org>,
- Joe Perches <joe@perches.com>, linux-nfs@vger.kernel.org,
- "maintainer:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Cc: vigneshr@ti.com, richard@nod.at, linux-kernel@vger.kernel.org,
+ boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
+ miquel.raynal@bootlin.com
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Nov 25, 2020 at 5:24 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> And just to spell it out,
->
-> case ENUM_VALUE1:
->         bla();
->         break;
-> case ENUM_VALUE2:
->         bla();
-> default:
->         break;
->
-> is a fairly idiomatic way of indicating that not all values of the enum
-> are expected to be handled by the switch statement.
+Am 2020-11-25 13:21, schrieb Tudor.Ambarus@microchip.com:
+[..]
+>> diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
+>> index 49d392c6c8bc..19665095aeab 100644
+>> --- a/drivers/mtd/spi-nor/atmel.c
+>> +++ b/drivers/mtd/spi-nor/atmel.c
+>> @@ -8,23 +8,120 @@
+>> 
+>>  #include "core.h"
+>> 
+>> +#define ATMEL_SR_GLOBAL_PROTECT_MASK GENMASK(5, 2)
+>> +
+>> +/**
+>> + * atmel_set_global_protection - Do a Global Protect or Unprotect 
+>> command
+>> + * @nor:       pointer to 'struct spi_nor'
+>> + * @ofs:       offset in bytes
+>> + * @len:       len in bytes
+>> + * @is_protect:        if true do a Global Protect otherwise it is a 
+>> Global Unprotect
+>> + *
+>> + * Return: 0 on success, -error otherwise.
+>> + */
+>> +static int atmel_set_global_protection(struct spi_nor *nor, loff_t 
+>> ofs,
+>> +                                      uint64_t len, bool is_protect)
+>> +{
+>> +       int ret;
+>> +       u8 sr;
+>> +
+>> +       /* We only support locking the whole flash array */
+>> +       if (ofs || len != nor->params->size)
+>> +               return -EINVAL;
+>> +
+>> +       ret = spi_nor_read_sr(nor, nor->bouncebuf);
+>> +       if (ret)
+>> +               return ret;
+>> +       sr = nor->bouncebuf[0];
+>> +
+>> +       /* SRWD bit needs to be cleared, otherwise the protection 
+>> doesn't change */
+>> +       if (sr & SR_SRWD) {
+>> +               sr &= ~SR_SRWD;
+>> +               ret = spi_nor_write_sr_and_check(nor, sr);
+>> +               if (ret) {
+>> +                       dev_err(nor->dev, "unable to clear SRWD bit, 
+>> WP# asserted?\n");
+>> +                       return ret;
+>> +               }
+>> +       }
+>> +
+>> +       if (is_protect)
+>> +               sr |= ATMEL_SR_GLOBAL_PROTECT_MASK;
+>> +       else
+>> +               sr &= ~ATMEL_SR_GLOBAL_PROTECT_MASK;
+>> +
+>> +       return spi_nor_write_sr_and_check(nor, sr);
+>> +}
+>> +
+>> +static int atmel_global_protect(struct spi_nor *nor, loff_t ofs, 
+>> uint64_t len)
+>> +{
+>> +       return atmel_set_global_protection(nor, ofs, len, true);
+>> +}
+>> +
+>> +static int atmel_global_unprotect(struct spi_nor *nor, loff_t ofs, 
+>> uint64_t len)
+>> +{
+>> +       return atmel_set_global_protection(nor, ofs, len, false);
+>> +}
+>> +
+>> +static int atmel_is_global_protected(struct spi_nor *nor, loff_t ofs, 
+>> uint64_t len)
+>> +{
+>> +       int ret;
+>> +
+>> +       if (ofs >= nor->params->size || (ofs + len) > 
+>> nor->params->size)
+>> +               return -EINVAL;
+>> +
+>> +       ret = spi_nor_read_sr(nor, nor->bouncebuf);
+>> +       if (ret)
+>> +               return ret;
+>> +
+>> +       return ((nor->bouncebuf[0] & ATMEL_SR_GLOBAL_PROTECT_MASK) == 
+>> ATMEL_SR_GLOBAL_PROTECT_MASK);
+>> +}
+>> +
+>> +static const struct spi_nor_locking_ops atmel_global_protection_ops = 
+>> {
+>> +       .lock = atmel_global_protect,
+>> +       .unlock = atmel_global_unprotect,
+>> +       .is_locked = atmel_is_global_protected,
+>> +};
+> 
+> Skimming through my notes in 1/3, I'm guessing this will not work for 
+> any
+> of the atmel flashes that we currently have.
+> 
+> Can we instead return -EOPNOTSUPP for .is_locked and .lock and just
+> write a 0x00 to SR
+> for the .unlock method?
 
-It looks like a benign typo to me -- `ENUM_VALUE2` does not follow the
-same pattern like `ENUM_VALUE1`. To me, the presence of the `default`
-is what indicates (explicitly) that not everything is handled.
+As mentioned in my previous reply to 1/3 I don't think it is enough to
+just write 0 because you first have to disable the SPRL.
 
-> Applying a real patch set and then getting a few follow ups the next day
-> for trivial coding things like fallthrough missing or static missing,
-> just because I didn't have the full range of compilers to check with
-> before applying makes me feel pretty shitty, like I'm not doing a good
-> job. YMMV.
+For the other ops, for what atmel flash do you think this won't work?
 
-The number of compilers, checkers, static analyzers, tests, etc. we
-use keeps going up. That, indeed, means maintainers will miss more
-things (unless maintainers do more work than before). But catching
-bugs before they happen is *not* a bad thing.
+All the flashes which uses these ops were marked as "Global
+Protect/Unprotect same as in at25df041a." by you. So I think it should
+work on all of these. Or am I missing something here?
 
-Perhaps we could encourage more rebasing in -next (while still giving
-credit to bots and testers) to avoid having many fixing commits
-afterwards, but that is orthogonal.
+[..]
 
-I really don't think we should encourage the feeling that a maintainer
-is doing a bad job if they don't catch everything on their reviews.
-Any review is worth it. Maintainers, in the end, are just the
-"guaranteed" reviewers that decide when the code looks reasonable
-enough. They should definitely not feel pressured to be perfect.
+>> diff --git a/drivers/mtd/spi-nor/esmt.c b/drivers/mtd/spi-nor/esmt.c
+>> index c93170008118..c2ebf29d95f2 100644
+>> --- a/drivers/mtd/spi-nor/esmt.c
+>> +++ b/drivers/mtd/spi-nor/esmt.c
+>> @@ -11,9 +11,13 @@
+>>  static const struct flash_info esmt_parts[] = {
+>>         /* ESMT */
+>>         { "f25l32pa", INFO(0x8c2016, 0, 64 * 1024, 64,
+>> -                          SECT_4K | SPI_NOR_HAS_LOCK) },
+>> +                          SECT_4K | SPI_NOR_HAS_LOCK | 
+>> SPI_NOR_WP_IS_VOLATILE) },
+> 
+> https://www.esmt.com.tw/upload/pdf/ESMT/datasheets/F25L32PA.pdf
+> BP GENMASK(4,2), volatile, ok
+> 
+>>         { "f25l32qa", INFO(0x8c4116, 0, 64 * 1024, 64,
+>> -                          SECT_4K | SPI_NOR_HAS_LOCK) },
+>> +                          SECT_4K | SPI_NOR_HAS_LOCK | 
+>> SPI_NOR_WP_IS_VOLATILE) },
+> 
+> https://datasheetspdf.com/pdf-file/796196/ESMT/F25L32QA/1
+> Datasheet states that "BP0~3, QE and BPL bits are non-volatile."
+> At the same time, it says: "After power-up, BP3, BP2, BP1 and BP0 bits
+> are set to 0."
 
-Cheers,
-Miguel
+Mhh I had this datasheet:
+https://www.esmt.com.tw/upload/pdf/ESMT/datasheets/F25L32QA.pdf
+
+In that one they are volatile.. but yours is a newer version. So I
+guess the flashes with the PA suffix have volatile BP and the QA ones
+have the non-volatile version.
+
+> Maybe factory default setting for BPn is 0? Let's treat them as NV, as 
+> in
+> f25l64qa.
+
+Yes will fix it.
+
+> Do we need BP3?
+
+Rather the top bottom bit. But that is outside of the scope of this 
+patch.
+And as per your rule, as I don't have this particular flash I cannot 
+test
+and thus couldn't add the TB bit (technically). But if you like I can do
+another patch (outside of this series and after it is applied) which 
+will
+add the TB bit flag.
+
+> 
+>> +       /*
+>> +        * According to the datasheet the BPn bits are non-volatile, 
+>> whereas
+>> +        * they are volatile for the smaller f25l32qa.
+>> +        */
+>>         { "f25l64qa", INFO(0x8c4117, 0, 64 * 1024, 128,
+>>                            SECT_4K | SPI_NOR_HAS_LOCK) },
+> 
+> https://datasheetspdf.com/pdf-file/967488/EliteSemiconductor/F25L64QA/1
+> BP GENMASK(5, 2), non-volatile.
+> 
+> BP3?
+
+Same as F25L32QA.
+
+> 
+> 
+>>  };
+>> diff --git a/drivers/mtd/spi-nor/intel.c b/drivers/mtd/spi-nor/intel.c
+>> index d8196f101368..c45ea0ad01f0 100644
+>> --- a/drivers/mtd/spi-nor/intel.c
+>> +++ b/drivers/mtd/spi-nor/intel.c
+>> @@ -10,9 +10,9 @@
+>> 
+>>  static const struct flash_info intel_parts[] = {
+>>         /* Intel/Numonyx -- xxxs33b */
+>> -       { "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, 0) },
+>> -       { "320s33b",  INFO(0x898912, 0, 64 * 1024,  64, 0) },
+>> -       { "640s33b",  INFO(0x898913, 0, 64 * 1024, 128, 0) },
+>> +       { "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, 
+>> SPI_NOR_WP_IS_VOLATILE) },
+>> +       { "320s33b",  INFO(0x898912, 0, 64 * 1024,  64, 
+>> SPI_NOR_WP_IS_VOLATILE) },
+>> +       { "640s33b",  INFO(0x898913, 0, 64 * 1024, 128, 
+>> SPI_NOR_WP_IS_VOLATILE) },
+> 
+> http://www.datasheet.hk/view_download.php?id=1561787&file=0282\qh25f016s33b8_649107.pdf
+> BP GENMASK(4,2) all volatile, all set to 1 at power-up.
+> 
+> You can add SPI_NOR_HAS_LOCK to each flash, and get rid of the 
+> manufacturer
+> generalization.
+
+ok
+
+> 
+>>  };
+>> 
+>>  static void intel_default_init(struct spi_nor *nor)
+>> diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
+>> index 8b169fa4102a..5e4450877d66 100644
+>> --- a/drivers/mtd/spi-nor/sst.c
+>> +++ b/drivers/mtd/spi-nor/sst.c
+>> @@ -11,26 +11,27 @@
+>>  static const struct flash_info sst_parts[] = {
+>>         /* SST -- large erase sizes are "overlays", "sectors" are 4K 
+>> */
+>>         { "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024,  8,
+>> -                             SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK) 
+>> },
+>> +                             SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK | 
+>> SPI_NOR_WP_IS_VOLATILE) },
+>>         { "sst25vf080b", INFO(0xbf258e, 0, 64 * 1024, 16,
+>> -                             SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK) 
+>> },
+>> +                             SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK | 
+>> SPI_NOR_WP_IS_VOLATILE) },
+>>         { "sst25vf016b", INFO(0xbf2541, 0, 64 * 1024, 32,
+>> -                             SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK) 
+>> },
+>> +                             SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK | 
+>> SPI_NOR_WP_IS_VOLATILE) },
+>>         { "sst25vf032b", INFO(0xbf254a, 0, 64 * 1024, 64,
+>> -                             SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK) 
+>> },
+>> -       { "sst25vf064c", INFO(0xbf254b, 0, 64 * 1024, 128, SECT_4K | 
+>> SPI_NOR_HAS_LOCK) },
+>> +                             SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK | 
+>> SPI_NOR_WP_IS_VOLATILE) },
+>> +       { "sst25vf064c", INFO(0xbf254b, 0, 64 * 1024, 128,
+>> +                             SECT_4K | SPI_NOR_HAS_LOCK | 
+>> SPI_NOR_WP_IS_VOLATILE) },
+> 
+> Looks like BP3 is needed here.
+
+https://ww1.microchip.com/downloads/en/DeviceDoc/20005036C.pdf
+
+agreed. But again cannot test it. Would add it as a seperate patch
+to this series. (or leave it like it is)
+
+> 
+>>         { "sst25wf512",  INFO(0xbf2501, 0, 64 * 1024,  1,
+>> -                             SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK) 
+>> },
+>> +                             SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK | 
+>> SPI_NOR_WP_IS_VOLATILE) },
+>>         { "sst25wf010",  INFO(0xbf2502, 0, 64 * 1024,  2,
+>> -                             SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK) 
+>> },
+>> +                             SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK | 
+>> SPI_NOR_WP_IS_VOLATILE) },
+>>         { "sst25wf020",  INFO(0xbf2503, 0, 64 * 1024,  4,
+>> -                             SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK) 
+>> },
+>> +                             SECT_4K | SST_WRITE | SPI_NOR_HAS_LOCK | 
+>> SPI_NOR_WP_IS_VOLATILE) },
+>>         { "sst25wf020a", INFO(0x621612, 0, 64 * 1024,  4, SECT_4K | 
+>> SPI_NOR_HAS_LOCK) },
+>>         { "sst25wf040b", INFO(0x621613, 0, 64 * 1024,  8, SECT_4K | 
+>> SPI_NOR_HAS_LOCK) },
+> 
+> These two flashes have just two BP bits located at bit 2 and 3.
+> Probably will work.
+
+Mhh? What datasheet were you looking at? There are three BPs:
+https://ww1.microchip.com/downloads/en/DeviceDoc/SST25WF040B-4-Mbit-1.8V-SPI-Serial-Flash-Data-Sheet-DS20005193E.pdf
+
+Ahh here are the tables which only inidicate two. But there are three.
+https://ww1.microchip.com/downloads/en/DeviceDoc/20005016C.pdf
+
+And yes since the rework of the BP bits algorithm this should work
+as expected. Its just because the flash is too small to actually fill
+up all the BP bits.
+
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
