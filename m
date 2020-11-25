@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B39D6C5519F
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2020 12:17:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B9B0C5519F
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2020 12:20:08 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 44EAA206E5
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2020 12:17:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8BF78206E5
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2020 12:20:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QM4gokff"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 44EAA206E5
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iC04BOqj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8BF78206E5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=tk4ikztI+xHofboZn3+QepPTpVe3SKuA18B6j8AFFUk=; b=QM4gokff+Cu5MKseb8WX9l5zC
-	cRjceG4NGecxL/hr32LiaroS+wOQtNnNPhaMDtUPi1PMTBUcFta4z7QmGzQMR7F+UJrvoYV0TSk3V
-	rio6M+wOv5dijlHeSoCUiqeRmXg2s0lfb21EIAVLstzF5WS21My74aWbeLcsIfNu2H6JV0vShi4/t
-	auFo7pXizx8HPQ82wt0bVSYyjAlRbTE55dP7AK2aarGDUCLRssQb0yZ6Flylbw5nSpG185nWHApG+
-	Kd/axK3xSGBADEJV4VL3dXonmZ3ucI+Sr/ZmSzvUORAjap3F6sqrW2NMajAF+7sWSjyQaJfuevrsS
-	oS1gadmaA==;
+	 bh=I8TAaijaCi7i6qbySU9k+AqHYpMQpHu2JFxfmmvq2Ys=; b=iC04BOqjmUzs/uxISQAF8wyvR
+	uSQyujBdu2WpiE99haxWz4ltQd3n4jluTz7wfsSYjgziYl31YRMHyI5IiIRRpjwvEyh+baNjTjXQK
+	27ogajVobql0GrfCzdHMmouv/ZtgYcx5egcSdmStxijzHMXCUdhZMjz8duzVGl34Q9DTm1Hd0OKKD
+	Zzaiz1hOty18VXjxPLl5dwecCYRnFXEWVK/KWJQC23tO+7RV8RzRtdZsBImh48m0yEKf3XFsgBNuj
+	BTpKNwadzC29I7J9fo1vMpluzh2xQ4TwbwsMAn8pfKFiVAelWV+Bj7Fb2gqBmjk3M8he46PyR4ZmK
+	iyNO4wMPA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1khtj6-0007KB-Ia; Wed, 25 Nov 2020 12:16:48 +0000
+	id 1khtlS-0007d2-DF; Wed, 25 Nov 2020 12:19:14 +0000
 Received: from mx2.suse.de ([195.135.220.15])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khtj3-0007JP-La
- for linux-mtd@lists.infradead.org; Wed, 25 Nov 2020 12:16:46 +0000
+ id 1khtlQ-0007ca-5M
+ for linux-mtd@lists.infradead.org; Wed, 25 Nov 2020 12:19:13 +0000
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 8E6B3AF0B;
- Wed, 25 Nov 2020 12:16:44 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id 1AB0FACBD;
+ Wed, 25 Nov 2020 12:19:11 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
- id 2138A1E130F; Wed, 25 Nov 2020 13:16:44 +0100 (CET)
-Date: Wed, 25 Nov 2020 13:16:44 +0100
+ id D76D91E130F; Wed, 25 Nov 2020 13:19:10 +0100 (CET)
+Date: Wed, 25 Nov 2020 13:19:10 +0100
 From: Jan Kara <jack@suse.cz>
 To: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 02/45] filemap: consistently use ->f_mapping over
- ->i_mapping
-Message-ID: <20201125121644.GF16944@quack2.suse.cz>
+Subject: Re: [PATCH 03/45] fs: remove get_super_thawed and
+ get_super_exclusive_thawed
+Message-ID: <20201125121910.GG16944@quack2.suse.cz>
 References: <20201124132751.3747337-1-hch@lst.de>
- <20201124132751.3747337-3-hch@lst.de>
+ <20201124132751.3747337-4-hch@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20201124132751.3747337-3-hch@lst.de>
+In-Reply-To: <20201124132751.3747337-4-hch@lst.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201125_071645_835772_097AF6EA 
-X-CRM114-Status: GOOD (  22.43  )
+X-CRM114-CacheID: sfid-20201125_071912_421942_7C308978 
+X-CRM114-Status: GOOD (  29.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,75 +85,196 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue 24-11-20 14:27:08, Christoph Hellwig wrote:
-> Use file->f_mapping in all remaining places that have a struct file
-> available to properly handle the case where inode->i_mapping !=
-> file_inode(file)->i_mapping.
+On Tue 24-11-20 14:27:09, Christoph Hellwig wrote:
+> Just open code the wait in the only caller of both functions.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Looks good to me. You can add:
+Fine by me. You can add:
 
 Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
 
 > ---
->  mm/filemap.c | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
+>  fs/internal.h      |  2 ++
+>  fs/quota/quota.c   | 31 +++++++++++++++++++++-------
+>  fs/super.c         | 51 ++--------------------------------------------
+>  include/linux/fs.h |  4 +---
+>  4 files changed, 29 insertions(+), 59 deletions(-)
 > 
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index d5e7c2029d16b4..4f583489aa3c2a 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -2886,14 +2886,14 @@ EXPORT_SYMBOL(filemap_map_pages);
+> diff --git a/fs/internal.h b/fs/internal.h
+> index a7cd0f64faa4ab..47be21dfeebef5 100644
+> --- a/fs/internal.h
+> +++ b/fs/internal.h
+> @@ -114,7 +114,9 @@ extern struct file *alloc_empty_file_noaccount(int, const struct cred *);
+>   */
+>  extern int reconfigure_super(struct fs_context *);
+>  extern bool trylock_super(struct super_block *sb);
+> +struct super_block *__get_super(struct block_device *bdev, bool excl);
+>  extern struct super_block *user_get_super(dev_t);
+> +void put_super(struct super_block *sb);
+>  extern bool mount_capable(struct fs_context *);
 >  
->  vm_fault_t filemap_page_mkwrite(struct vm_fault *vmf)
+>  /*
+> diff --git a/fs/quota/quota.c b/fs/quota/quota.c
+> index 9af95c7a0bbe3c..f3d32b0d9008f2 100644
+> --- a/fs/quota/quota.c
+> +++ b/fs/quota/quota.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/writeback.h>
+>  #include <linux/nospec.h>
+>  #include "compat.h"
+> +#include "../internal.h"
+>  
+>  static int check_quotactl_permission(struct super_block *sb, int type, int cmd,
+>  				     qid_t id)
+> @@ -868,6 +869,7 @@ static struct super_block *quotactl_block(const char __user *special, int cmd)
+>  	struct block_device *bdev;
+>  	struct super_block *sb;
+>  	struct filename *tmp = getname(special);
+> +	bool excl = false, thawed = false;
+>  
+>  	if (IS_ERR(tmp))
+>  		return ERR_CAST(tmp);
+> @@ -875,17 +877,32 @@ static struct super_block *quotactl_block(const char __user *special, int cmd)
+>  	putname(tmp);
+>  	if (IS_ERR(bdev))
+>  		return ERR_CAST(bdev);
+> -	if (quotactl_cmd_onoff(cmd))
+> -		sb = get_super_exclusive_thawed(bdev);
+> -	else if (quotactl_cmd_write(cmd))
+> -		sb = get_super_thawed(bdev);
+> -	else
+> -		sb = get_super(bdev);
+> +
+> +	if (quotactl_cmd_onoff(cmd)) {
+> +		excl = true;
+> +		thawed = true;
+> +	} else if (quotactl_cmd_write(cmd)) {
+> +		thawed = true;
+> +	}
+> +
+> +retry:
+> +	sb = __get_super(bdev, excl);
+> +	if (thawed && sb && sb->s_writers.frozen != SB_UNFROZEN) {
+> +		if (excl)
+> +			up_write(&sb->s_umount);
+> +		else
+> +			up_read(&sb->s_umount);
+> +		wait_event(sb->s_writers.wait_unfrozen,
+> +			   sb->s_writers.frozen == SB_UNFROZEN);
+> +		put_super(sb);
+> +		goto retry;
+> +	}
+> +
+>  	bdput(bdev);
+>  	if (!sb)
+>  		return ERR_PTR(-ENODEV);
+> -
+>  	return sb;
+> +
+>  #else
+>  	return ERR_PTR(-ENODEV);
+>  #endif
+> diff --git a/fs/super.c b/fs/super.c
+> index 98bb0629ee108e..343e5c1e538d2a 100644
+> --- a/fs/super.c
+> +++ b/fs/super.c
+> @@ -307,7 +307,7 @@ static void __put_super(struct super_block *s)
+>   *	Drops a temporary reference, frees superblock if there's no
+>   *	references left.
+>   */
+> -static void put_super(struct super_block *sb)
+> +void put_super(struct super_block *sb)
 >  {
-> +	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
->  	struct page *page = vmf->page;
-> -	struct inode *inode = file_inode(vmf->vma->vm_file);
->  	vm_fault_t ret = VM_FAULT_LOCKED;
+>  	spin_lock(&sb_lock);
+>  	__put_super(sb);
+> @@ -740,7 +740,7 @@ void iterate_supers_type(struct file_system_type *type,
 >  
-> -	sb_start_pagefault(inode->i_sb);
-> +	sb_start_pagefault(mapping->host->i_sb);
->  	file_update_time(vmf->vma->vm_file);
->  	lock_page(page);
-> -	if (page->mapping != inode->i_mapping) {
-> +	if (page->mapping != mapping) {
->  		unlock_page(page);
->  		ret = VM_FAULT_NOPAGE;
->  		goto out;
-> @@ -2906,7 +2906,7 @@ vm_fault_t filemap_page_mkwrite(struct vm_fault *vmf)
->  	set_page_dirty(page);
->  	wait_for_stable_page(page);
->  out:
-> -	sb_end_pagefault(inode->i_sb);
-> +	sb_end_pagefault(mapping->host->i_sb);
->  	return ret;
+>  EXPORT_SYMBOL(iterate_supers_type);
+>  
+> -static struct super_block *__get_super(struct block_device *bdev, bool excl)
+> +struct super_block *__get_super(struct block_device *bdev, bool excl)
+>  {
+>  	struct super_block *sb;
+>  
+> @@ -789,53 +789,6 @@ struct super_block *get_super(struct block_device *bdev)
 >  }
+>  EXPORT_SYMBOL(get_super);
 >  
-> @@ -3149,10 +3149,9 @@ void dio_warn_stale_pagecache(struct file *filp)
->  {
->  	static DEFINE_RATELIMIT_STATE(_rs, 86400 * HZ, DEFAULT_RATELIMIT_BURST);
->  	char pathname[128];
-> -	struct inode *inode = file_inode(filp);
->  	char *path;
+> -static struct super_block *__get_super_thawed(struct block_device *bdev,
+> -					      bool excl)
+> -{
+> -	while (1) {
+> -		struct super_block *s = __get_super(bdev, excl);
+> -		if (!s || s->s_writers.frozen == SB_UNFROZEN)
+> -			return s;
+> -		if (!excl)
+> -			up_read(&s->s_umount);
+> -		else
+> -			up_write(&s->s_umount);
+> -		wait_event(s->s_writers.wait_unfrozen,
+> -			   s->s_writers.frozen == SB_UNFROZEN);
+> -		put_super(s);
+> -	}
+> -}
+> -
+> -/**
+> - *	get_super_thawed - get thawed superblock of a device
+> - *	@bdev: device to get the superblock for
+> - *
+> - *	Scans the superblock list and finds the superblock of the file system
+> - *	mounted on the device. The superblock is returned once it is thawed
+> - *	(or immediately if it was not frozen). %NULL is returned if no match
+> - *	is found.
+> - */
+> -struct super_block *get_super_thawed(struct block_device *bdev)
+> -{
+> -	return __get_super_thawed(bdev, false);
+> -}
+> -EXPORT_SYMBOL(get_super_thawed);
+> -
+> -/**
+> - *	get_super_exclusive_thawed - get thawed superblock of a device
+> - *	@bdev: device to get the superblock for
+> - *
+> - *	Scans the superblock list and finds the superblock of the file system
+> - *	mounted on the device. The superblock is returned once it is thawed
+> - *	(or immediately if it was not frozen) and s_umount semaphore is held
+> - *	in exclusive mode. %NULL is returned if no match is found.
+> - */
+> -struct super_block *get_super_exclusive_thawed(struct block_device *bdev)
+> -{
+> -	return __get_super_thawed(bdev, true);
+> -}
+> -EXPORT_SYMBOL(get_super_exclusive_thawed);
+> -
+>  /**
+>   * get_active_super - get an active reference to the superblock of a device
+>   * @bdev: device to get the superblock for
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 8667d0cdc71e76..a61df0dd4f1989 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -1409,7 +1409,7 @@ enum {
 >  
-> -	errseq_set(&inode->i_mapping->wb_err, -EIO);
-> +	errseq_set(&filp->f_mapping->wb_err, -EIO);
->  	if (__ratelimit(&_rs)) {
->  		path = file_path(filp, pathname, sizeof(pathname));
->  		if (IS_ERR(path))
-> @@ -3179,7 +3178,7 @@ generic_file_direct_write(struct kiocb *iocb, struct iov_iter *from)
+>  struct sb_writers {
+>  	int				frozen;		/* Is sb frozen? */
+> -	wait_queue_head_t		wait_unfrozen;	/* for get_super_thawed() */
+> +	wait_queue_head_t		wait_unfrozen;	/* wait for thaw */
+>  	struct percpu_rw_semaphore	rw_sem[SB_FREEZE_LEVELS];
+>  };
 >  
->  	if (iocb->ki_flags & IOCB_NOWAIT) {
->  		/* If there are pages to writeback, return */
-> -		if (filemap_range_has_page(inode->i_mapping, pos,
-> +		if (filemap_range_has_page(file->f_mapping, pos,
->  					   pos + write_len - 1))
->  			return -EAGAIN;
->  	} else {
+> @@ -3132,8 +3132,6 @@ extern struct file_system_type *get_filesystem(struct file_system_type *fs);
+>  extern void put_filesystem(struct file_system_type *fs);
+>  extern struct file_system_type *get_fs_type(const char *name);
+>  extern struct super_block *get_super(struct block_device *);
+> -extern struct super_block *get_super_thawed(struct block_device *);
+> -extern struct super_block *get_super_exclusive_thawed(struct block_device *bdev);
+>  extern struct super_block *get_active_super(struct block_device *bdev);
+>  extern void drop_super(struct super_block *sb);
+>  extern void drop_super_exclusive(struct super_block *sb);
 > -- 
 > 2.29.2
 > 
