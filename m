@@ -5,18 +5,18 @@ X-Spam-Level:
 X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B77AC56202
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 16:57:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63B9BC56202
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 16:59:52 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CC88F221EB
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 16:57:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 10EE3221EB
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 16:59:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="boRKUu3l"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC88F221EB
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="2IsxhpPr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 10EE3221EB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=T5l6GSMa0VEbeNnGrL+NbCoLMHAnSwHLWItzMBkZmUU=; b=boRKUu3loXnT/b9o0tfHz8x24
-	MgIfAHM5BDHHjMiqRfd1WaKp6M9sYLHp5vx/VdlLyz2cZ1eVHm1Bjl/HITulaqMAEau+ht39o6raV
-	uHx3ZW7ytbJMxxBcZmlTWhVEBjW+l4dImmYHruQRyjoRVL4+PPa8CEhRaK5CsXgnfc0FJ0WDoKgit
-	YaC5MbrHTRS/xO0cIMC3Yys7tiTj5eCDhXcaFwbrFqHHkQcoXidjCUNcANT6LyttiDZaa5KvCUNfR
-	DWCSzjw0/JAnQZtpvviDXHCddxDOylL4nFsXP7TKu0TiLO98e6fjfUJ0KinMEmnollSZKZpQPUQqA
-	mEsGGD2YA==;
+	 bh=Q8xKbGqOjgNlR3yq2lrj4aJJipxdrwFV+dCUvCSnt58=; b=2IsxhpPra45I6nxxB0d3WYrJr
+	u5WUVh48GKFrjEz0mtaoqLZdgb8RS8n734hD9oQid9IrqSVZY4P0pUQbEpiawcLHxEndBV4TvHVfi
+	ePBtN8bXDmVprL2c6UiXgg17Oh3fmYOf+WB+CukCMiMreehk636EiITgluhvrhGQi+2BO0at09b3W
+	32poR5wlkx9Ca/fv2zJfibO89BG8S2jaw+DYRIhuYbQPDTJTxlQarUJammV0o6oZ/uj8vjyB4jig0
+	COs31q6569aIQyhAUC0M+4JH9TxYppeSDJLVKl7UM6/pj/7MWOZ6qcZLO8Nqj7C1CMIqx3J0DTYpn
+	WMsNocbng==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kiKZZ-0003zz-Fu; Thu, 26 Nov 2020 16:56:45 +0000
+	id 1kiKbf-0004Je-AW; Thu, 26 Nov 2020 16:58:55 +0000
 Received: from mx2.suse.de ([195.135.220.15])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kiKZX-0003z9-1L
- for linux-mtd@lists.infradead.org; Thu, 26 Nov 2020 16:56:43 +0000
+ id 1kiKbb-0004IQ-7w
+ for linux-mtd@lists.infradead.org; Thu, 26 Nov 2020 16:58:52 +0000
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 00CC4AD20;
- Thu, 26 Nov 2020 16:56:42 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id 28304ACE0;
+ Thu, 26 Nov 2020 16:58:50 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
- id 841961E10D0; Thu, 26 Nov 2020 17:56:41 +0100 (CET)
-Date: Thu, 26 Nov 2020 17:56:41 +0100
+ id E46921E10D0; Thu, 26 Nov 2020 17:58:49 +0100 (CET)
+Date: Thu, 26 Nov 2020 17:58:49 +0100
 From: Jan Kara <jack@suse.cz>
 To: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 31/44] block: move the start_sect field to struct
+Subject: Re: [PATCH 32/44] block: move the partition_meta_info to struct
  block_device
-Message-ID: <20201126165641.GQ422@quack2.suse.cz>
+Message-ID: <20201126165849.GR422@quack2.suse.cz>
 References: <20201126130422.92945-1-hch@lst.de>
- <20201126130422.92945-32-hch@lst.de>
+ <20201126130422.92945-33-hch@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20201126130422.92945-32-hch@lst.de>
+In-Reply-To: <20201126130422.92945-33-hch@lst.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201126_115643_239345_813B83C9 
-X-CRM114-Status: GOOD (  16.69  )
+X-CRM114-CacheID: sfid-20201126_115851_555912_877D6E1B 
+X-CRM114-Status: GOOD (  26.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,30 +83,171 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu 26-11-20 14:04:09, Christoph Hellwig wrote:
-> Move the start_sect field to struct block_device in preparation
-> of killing struct hd_struct.
+On Thu 26-11-20 14:04:10, Christoph Hellwig wrote:
+> Move the partition_meta_info to struct block_device in preparation for
+> killing struct hd_struct.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Looks good, just one nit below. Feel free to add:
+Looks good to me. You can add:
 
 Reviewed-by: Jan Kara <jack@suse.cz>
 
+								Honza
+
+
+> ---
+>  block/blk.h               |  1 -
+>  block/genhd.c             |  3 ++-
+>  block/partitions/core.c   | 18 +++++++-----------
+>  fs/block_dev.c            |  1 +
+>  include/linux/blk_types.h |  2 ++
+>  include/linux/genhd.h     |  1 -
+>  init/do_mounts.c          |  7 ++++---
+>  7 files changed, 16 insertions(+), 17 deletions(-)
+> 
+> diff --git a/block/blk.h b/block/blk.h
+> index 3f801f6e86f8a1..0bd4b58bcbaf77 100644
+> --- a/block/blk.h
+> +++ b/block/blk.h
+> @@ -381,7 +381,6 @@ static inline void hd_struct_put(struct hd_struct *part)
+>  
+>  static inline void hd_free_part(struct hd_struct *part)
+>  {
+> -	kfree(part->info);
+>  	bdput(part->bdev);
+>  	percpu_ref_exit(&part->ref);
+>  }
+> diff --git a/block/genhd.c b/block/genhd.c
+> index 7bb45382658385..fe202a12eec096 100644
+> --- a/block/genhd.c
+> +++ b/block/genhd.c
+> @@ -1002,7 +1002,8 @@ void __init printk_all_partitions(void)
+>  			       bdevt_str(part_devt(part), devt_buf),
+>  			       bdev_nr_sectors(part->bdev) >> 1,
+>  			       disk_name(disk, part->partno, name_buf),
+> -			       part->info ? part->info->uuid : "");
+> +			       part->bdev->bd_meta_info ?
+> +					part->bdev->bd_meta_info->uuid : "");
+>  			if (is_part0) {
+>  				if (dev->parent && dev->parent->driver)
+>  					printk(" driver: %s\n",
 > diff --git a/block/partitions/core.c b/block/partitions/core.c
-> index 8924e1ea8b2ad6..485777cea26bfa 100644
+> index 485777cea26bfa..224a22d82fb86f 100644
 > --- a/block/partitions/core.c
 > +++ b/block/partitions/core.c
-> @@ -192,7 +192,7 @@ static ssize_t part_start_show(struct device *dev,
->  {
->  	struct hd_struct *p = dev_to_part(dev);
+> @@ -275,8 +275,9 @@ static int part_uevent(struct device *dev, struct kobj_uevent_env *env)
+>  	struct hd_struct *part = dev_to_part(dev);
 >  
-> -	return sprintf(buf, "%llu\n",(unsigned long long)p->start_sect);
-> +	return sprintf(buf, "%llu\n",(unsigned long long)p->bdev->bd_start_sect);
-
-The long long conversion is pointless here, right?
-
-									Honza
+>  	add_uevent_var(env, "PARTN=%u", part->partno);
+> -	if (part->info && part->info->volname[0])
+> -		add_uevent_var(env, "PARTNAME=%s", part->info->volname);
+> +	if (part->bdev->bd_meta_info && part->bdev->bd_meta_info->volname[0])
+> +		add_uevent_var(env, "PARTNAME=%s",
+> +			       part->bdev->bd_meta_info->volname);
+>  	return 0;
+>  }
+>  
+> @@ -422,13 +423,10 @@ static struct hd_struct *add_partition(struct gendisk *disk, int partno,
+>  	p->policy = get_disk_ro(disk);
+>  
+>  	if (info) {
+> -		struct partition_meta_info *pinfo;
+> -
+> -		pinfo = kzalloc_node(sizeof(*pinfo), GFP_KERNEL, disk->node_id);
+> -		if (!pinfo)
+> +		err = -ENOMEM;
+> +		bdev->bd_meta_info = kmemdup(info, sizeof(*info), GFP_KERNEL);
+> +		if (!bdev->bd_meta_info)
+>  			goto out_bdput;
+> -		memcpy(pinfo, info, sizeof(*info));
+> -		p->info = pinfo;
+>  	}
+>  
+>  	dname = dev_name(ddev);
+> @@ -444,7 +442,7 @@ static struct hd_struct *add_partition(struct gendisk *disk, int partno,
+>  
+>  	err = blk_alloc_devt(p, &devt);
+>  	if (err)
+> -		goto out_free_info;
+> +		goto out_bdput;
+>  	pdev->devt = devt;
+>  
+>  	/* delay uevent until 'holders' subdir is created */
+> @@ -481,8 +479,6 @@ static struct hd_struct *add_partition(struct gendisk *disk, int partno,
+>  		kobject_uevent(&pdev->kobj, KOBJ_ADD);
+>  	return p;
+>  
+> -out_free_info:
+> -	kfree(p->info);
+>  out_bdput:
+>  	bdput(bdev);
+>  out_free:
+> diff --git a/fs/block_dev.c b/fs/block_dev.c
+> index 11e6a9a255845d..62fae6a0e8aa56 100644
+> --- a/fs/block_dev.c
+> +++ b/fs/block_dev.c
+> @@ -785,6 +785,7 @@ static void bdev_free_inode(struct inode *inode)
+>  	struct block_device *bdev = I_BDEV(inode);
+>  
+>  	free_percpu(bdev->bd_stats);
+> +	kfree(bdev->bd_meta_info);
+>  
+>  	kmem_cache_free(bdev_cachep, BDEV_I(inode));
+>  }
+> diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
+> index a690008f60cd92..2f8ede04e5a94c 100644
+> --- a/include/linux/blk_types.h
+> +++ b/include/linux/blk_types.h
+> @@ -49,6 +49,8 @@ struct block_device {
+>  	/* Mutex for freeze */
+>  	struct mutex		bd_fsfreeze_mutex;
+>  	struct super_block	*bd_fsfreeze_sb;
+> +
+> +	struct partition_meta_info *bd_meta_info;
+>  } __randomize_layout;
+>  
+>  #define bdev_whole(_bdev) \
+> diff --git a/include/linux/genhd.h b/include/linux/genhd.h
+> index 50d27f5d38e2af..30d7076155b4d2 100644
+> --- a/include/linux/genhd.h
+> +++ b/include/linux/genhd.h
+> @@ -57,7 +57,6 @@ struct hd_struct {
+>  	struct device __dev;
+>  	struct kobject *holder_dir;
+>  	int policy, partno;
+> -	struct partition_meta_info *info;
+>  #ifdef CONFIG_FAIL_MAKE_REQUEST
+>  	int make_it_fail;
+>  #endif
+> diff --git a/init/do_mounts.c b/init/do_mounts.c
+> index 5879edf083b318..368ccb71850126 100644
+> --- a/init/do_mounts.c
+> +++ b/init/do_mounts.c
+> @@ -79,8 +79,8 @@ static int match_dev_by_uuid(struct device *dev, const void *data)
+>  	const struct uuidcmp *cmp = data;
+>  	struct hd_struct *part = dev_to_part(dev);
+>  
+> -	if (!part->info ||
+> -	    strncasecmp(cmp->uuid, part->info->uuid, cmp->len))
+> +	if (!part->bdev->bd_meta_info ||
+> +	    strncasecmp(cmp->uuid, part->bdev->bd_meta_info->uuid, cmp->len))
+>  		return 0;
+>  	return 1;
+>  }
+> @@ -169,7 +169,8 @@ static int match_dev_by_label(struct device *dev, const void *data)
+>  	const char *label = data;
+>  	struct hd_struct *part = dev_to_part(dev);
+>  
+> -	if (!part->info || strcmp(label, part->info->volname))
+> +	if (!part->bdev->bd_meta_info ||
+> +	    strcmp(label, part->bdev->bd_meta_info->volname))
+>  		return 0;
+>  	return 1;
+>  }
+> -- 
+> 2.29.2
+> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
