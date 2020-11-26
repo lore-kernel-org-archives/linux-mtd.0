@@ -2,64 +2,63 @@ Return-Path: <SRS0=PI1R=FA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0018CC83034
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 13:07:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5686C64E7B
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 13:08:03 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9B2C2221EB
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 13:07:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6AA8621D46
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 13:08:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="L0OJbib5";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Tzdtw/yB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B2C2221EB
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rOC2CnLy";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="jDdN7hAO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6AA8621D46
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=6K44ej+ZvOw5VJdjgNO9xTZJ1Gfb42SBvD6n3fLfSIw=; b=L0OJbib5w7XKWwos5POLPEnG2
-	cYqjhOeQimPrhOiqRSuKFZaf3w0Ce+tR/2S2eo9HJkYk1ip4vhKomoxrlhyy8BjN5ztzXhqlXMiml
-	5359mN45dNqJatPxeGH29kntQoV865U4ePBRHVDEnNXgwbg8jJ7jxnzEH+5vAcV42zx1KhxaQOpBB
-	2pZM+/dh91VhbpQf7qKidAeB+vaCoHpKqGqEJtSwiANAdOrl3ENflPNmRJcJLnVtvAky7qNLb0qGm
-	4mqqWUaWXub5NR/VoRO0PHrF+MiE9jFDV/1f5AjH3042pLV7HOQMEq888qZAPLenLRU7pTOYDNpFP
-	xiR6vOhvQ==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=El+4dCpyHU33ONSMtCrGb7iZo1r/zpEMG4eyM+IdaX0=; b=rOC2CnLyhviRrYaTkPzYRrEmQW
+	uzcONZXmMsWa/ESo1AJdxTk7kcz6/TXsHpbHsJ2Xguu/m0Yb+a9bTIsTc+sDjWL3OtGACx9hHRem9
+	rh14zwhsK/OxGJVveV6a/Ml7Q2LBoP/4tLugZIuPls3Nl3L6toPx7cPe09klktmyC2y0Fc8YCr8To
+	nV8M3VrP01ofED3SsKlJ0Pzhpnu/XH0A3o+nteZTe331AzU8OlFDHi3FzX7bThPbmThUm8OpB02IM
+	suq1cLqCHDnqBccZYGwy1fhBUtAPa9neM9coukZp9MxTpXkz/JPyDMDDUoFVGWoutSF3lO7gBe8Yq
+	DpvECQQA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kiGz3-00081w-6V; Thu, 26 Nov 2020 13:06:49 +0000
+	id 1kiGz8-00082m-9B; Thu, 26 Nov 2020 13:06:54 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kiGys-00080R-Sz
+ id 1kiGyr-00080N-Om
  for linux-mtd@merlin.infradead.org; Thu, 26 Nov 2020 13:06:40 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
- References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
- Content-Type:Content-ID:Content-Description;
- bh=Lt23dvr/EePId5z235Ac/5RuSuqAjNhom33xSrBSmHc=; b=Tzdtw/yBul1Zx4LsFoDDzBliGo
- vlm6QI7NI0S/m39f0pGasxDy2YXD02CPzGfaBU+mth1yLhghT2xT7IIe7NfOP7JfWd81DpuNTuZ6J
- fGTUsnFRln1WrtYyffsKFKrmW8pR2YSewD+fdzpdHFCNeZ6uKFeP9Z9g4ZUxV874dE60DWp76w7kZ
- tlqZ7LNDRbxNvAgxMFZhhXPNBGkzumbPvfARkd9mgiNrNiTWK5LtDB5aew5lDV+Xa6Xi7pow7iwIO
- Qn3jndRxHZ31Ao7d7fmsn1GYpSqFtB/1CBvL3i4yncHY5A+XGdhgzGHHEa1AvkDTQBcMGHd8qqo7o
- wQbAXz4g==;
-Received: from [2001:4bb8:18c:1dd6:27b8:b8a1:c13e:ceb1] (helo=localhost)
+ Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+ Content-Description:In-Reply-To:References;
+ bh=0Gv0fe8by51pBpJ9y/s+Bsc/pkGppT00OZEyWHEsCkc=; b=jDdN7hAOVm64LI4GLxtV8Xg4mQ
+ Jhk3sYSO6NihDo6ErowuZ0lfW/FXxua0lGjFFXZ7hTshuIG02Qgh+ZtMvse28KRgXFa6YwznZ+zRM
+ 3SxJO9yOYalt/DOk9qnsxGmaq7Mm9pzMjycc3T8ZVi1jmSl4nMDZlkZJE3sN2+dyKPgpDMwt3zqvb
+ SLuGPt5RBvuzIbdy43KrQgJ8FQup0kday2ag+tEAKT+U9PvPIbgh9dCIaX43s80gP5kUo5vBfWj55
+ /k2Iy70DlOmB3z37Z9eoOo/XoZR8yNFXm3CeZynj7ahBX+ghuAT/JfcmZJ2vsfJVhk0COVF7tTO+/
+ LxGu4YBQ==;
+Received: from 089144198196.atnat0007.highway.a1.net ([89.144.198.196]
+ helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kiGyr-0003wL-Jh; Thu, 26 Nov 2020 13:06:37 +0000
+ id 1kiGyo-0003va-9E; Thu, 26 Nov 2020 13:06:35 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 02/44] filemap: consistently use ->f_mapping over ->i_mapping
-Date: Thu, 26 Nov 2020 14:03:40 +0100
-Message-Id: <20201126130422.92945-3-hch@lst.de>
+Subject: merge struct block_device and struct hd_struct v3
+Date: Thu, 26 Nov 2020 14:03:38 +0100
+Message-Id: <20201126130422.92945-1-hch@lst.de>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201126130422.92945-1-hch@lst.de>
-References: <20201126130422.92945-1-hch@lst.de>
 MIME-Version: 1.0
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by
  casper.infradead.org. See http://www.infradead.org/rpr.html
@@ -77,83 +76,60 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Cc: linux-bcache@vger.kernel.org, Jan Kara <jack@suse.cz>,
  Mike Snitzer <snitzer@redhat.com>, linux-mm@kvack.org,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jan Kara <jack@suse.com>,
- Josef Bacik <josef@toxicpanda.com>, Matthew Wilcox <willy@infradead.org>,
- Coly Li <colyli@suse.de>, linux-block@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, dm-devel@redhat.com,
- linux-mtd@lists.infradead.org, Hannes Reinecke <hare@suse.de>,
+ Josef Bacik <josef@toxicpanda.com>, Coly Li <colyli@suse.de>,
+ linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ dm-devel@redhat.com, linux-mtd@lists.infradead.org,
  Johannes Thumshirn <johannes.thumshirn@wdc.com>, Tejun Heo <tj@kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use file->f_mapping in all remaining places that have a struct file
-available to properly handle the case where inode->i_mapping !=
-file_inode(file)->i_mapping.
+Hi Jens,
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- mm/filemap.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+this series cleans up our main per-device node data structure by merging
+the block_device and hd_struct data structures that have the same scope,
+but different life times.  The main effect (besides removing lots of
+code) is that instead of having two device sizes that need complex
+synchronization there is just one now.
 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index d5e7c2029d16b4..4f583489aa3c2a 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -2886,14 +2886,14 @@ EXPORT_SYMBOL(filemap_map_pages);
- 
- vm_fault_t filemap_page_mkwrite(struct vm_fault *vmf)
- {
-+	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
- 	struct page *page = vmf->page;
--	struct inode *inode = file_inode(vmf->vma->vm_file);
- 	vm_fault_t ret = VM_FAULT_LOCKED;
- 
--	sb_start_pagefault(inode->i_sb);
-+	sb_start_pagefault(mapping->host->i_sb);
- 	file_update_time(vmf->vma->vm_file);
- 	lock_page(page);
--	if (page->mapping != inode->i_mapping) {
-+	if (page->mapping != mapping) {
- 		unlock_page(page);
- 		ret = VM_FAULT_NOPAGE;
- 		goto out;
-@@ -2906,7 +2906,7 @@ vm_fault_t filemap_page_mkwrite(struct vm_fault *vmf)
- 	set_page_dirty(page);
- 	wait_for_stable_page(page);
- out:
--	sb_end_pagefault(inode->i_sb);
-+	sb_end_pagefault(mapping->host->i_sb);
- 	return ret;
- }
- 
-@@ -3149,10 +3149,9 @@ void dio_warn_stale_pagecache(struct file *filp)
- {
- 	static DEFINE_RATELIMIT_STATE(_rs, 86400 * HZ, DEFAULT_RATELIMIT_BURST);
- 	char pathname[128];
--	struct inode *inode = file_inode(filp);
- 	char *path;
- 
--	errseq_set(&inode->i_mapping->wb_err, -EIO);
-+	errseq_set(&filp->f_mapping->wb_err, -EIO);
- 	if (__ratelimit(&_rs)) {
- 		path = file_path(filp, pathname, sizeof(pathname));
- 		if (IS_ERR(path))
-@@ -3179,7 +3178,7 @@ generic_file_direct_write(struct kiocb *iocb, struct iov_iter *from)
- 
- 	if (iocb->ki_flags & IOCB_NOWAIT) {
- 		/* If there are pages to writeback, return */
--		if (filemap_range_has_page(inode->i_mapping, pos,
-+		if (filemap_range_has_page(file->f_mapping, pos,
- 					   pos + write_len - 1))
- 			return -EAGAIN;
- 	} else {
--- 
-2.29.2
+Note that this now includes the previous "misc cleanups" series as I had
+to fix up a thing in there with the changed patch ordering.
 
+The first patch already is in 5.10-rc, but not in for-5.11/block
+
+A git tree is available here:
+
+    git://git.infradead.org/users/hch/block.git bdev-lookup
+
+Gitweb:
+
+    http://git.infradead.org/users/hch/block.git/shortlog/refs/heads/bdev-lookup
+
+Changes since v2:
+ - keep a reference to the whole device bdev from each partition bdev
+   to simplify blkdev_get
+ - drop a stale commen in freeze_bdev
+ - fix an incorrect hunk that ignored error in thaw_bdev
+ - add back a missing call to mapping_set_gfp_mask
+ - misc typo fixes, comment and commit log improvements
+ - keep using a global lock to synchronize gendisk lookup
+ - do not call ->open for blk-cgroup configuration updates
+ - drop a zram cleanup patch
+
+Changes since v1:
+ - spelling fixes
+ - fix error unwinding in __alloc_disk_node
+ - use bdev_is_partition in a few more places
+ - don't send the RESIZE=1 uevent for hidden gendisks
+ - rename __bdget_disk to disk_find_part
+ - drop a bcache patch
+ - some patch reordering
+ - add more refactoring
+ - use rcu protection to prevent racing with a disk going away
+   in blkdev_get
+ - split up some of the big patches into many small ones
+ - clean up the freeze_bdev interface
 
 ______________________________________________________
 Linux MTD discussion mailing list
