@@ -2,62 +2,67 @@ Return-Path: <SRS0=PI1R=FA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96D0EC56202
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 14:55:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11D4CC56202
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 14:56:47 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2E54320B80
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 14:55:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 68385206B7
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 14:56:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Be2HCfbk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E54320B80
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="d7MJGUGq";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="kTeBBPXT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68385206B7
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=N44cXrnvka6eL3cOOH2JzT/8bEZiyOoc8XHjj5czStA=; b=Be2HCfbkcj9z2I20cPHVNbwVn
-	Nq+yh5GgET8aI+9RXUaQIisIWf9+dcIQla2irpr0cD/g0i7dKrCClsk6hAOMEA7b/UN7OeN3uXqiv
-	jojf9XqHQtDN2M+zunkRSw6EIlef7DBhUXmNCpNPd43PExEbpAw/x52uCbjRsFcf+2YEb4eDVgnyL
-	SGD3g9fLw88ISNrFi7jw1xRPNs92tT0+Dte3RU5Oz+x/c6R86L1Dowuit8nknnuzE4d0yu2BzY8Pw
-	bx1tHukyq8MTxTNUpZ3DPUYwp8/AhChYJN030UTCYIzOSByODOzdEZ1rSvuZC+EvV3pZJgHGDtNMO
-	cJ7K4Q8Ew==;
+	 bh=dhV4+8hetoOSWv5PmV0bHjti7NtMmOBaLGcuobdEyPU=; b=d7MJGUGqSxcN5IuDZ9cy3POo3
+	UmwpMy7gbnCp/+OmHzmXyV3eU2aYtFXE2IYRCt33yBmPpsdzwfJU3NOzYJv5orB/VGOmBD7zZ2hFg
+	kkwctK7E6eYphdh03yAwFsZhQ6k/XOAsYwitZ7LgKFZX966+ELNxlwBIaVVn1LR71txU0KOr9Mzu5
+	ZUyVhZDWYR8PkX1shSCmyZ3Yyi9eyAapUo6kVoFdP7qho4adbA0YGI5bD+tc3AFEazqa5//Wonsgf
+	AFIGkLNvOZp2HXTsjCvUqvK8N4KXTZOtELyeiMjNxXde8NnhpKWk7d9xV/xP7zcrik8CJvTJdSVYE
+	PCog8WHag==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kiIgA-0006zW-Hx; Thu, 26 Nov 2020 14:55:26 +0000
-Received: from mx2.suse.de ([195.135.220.15])
+	id 1kiH1V-0000io-5Q; Thu, 26 Nov 2020 13:09:21 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kiIg7-0006yl-OK
- for linux-mtd@lists.infradead.org; Thu, 26 Nov 2020 14:55:24 +0000
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 75E3FADB3;
- Thu, 26 Nov 2020 14:55:22 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
- id E17411E10D0; Thu, 26 Nov 2020 15:55:21 +0100 (CET)
-Date: Thu, 26 Nov 2020 15:55:21 +0100
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 20/44] block: refactor blkdev_get
-Message-ID: <20201126145521.GG422@quack2.suse.cz>
+ id 1kiGz5-00082U-Ox
+ for linux-mtd@merlin.infradead.org; Thu, 26 Nov 2020 13:06:52 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+ References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+ Content-Type:Content-ID:Content-Description;
+ bh=TyzqnxJJ0lPyhYWk7Q6Y2rXryMj44xbGM+SIZQYkZvc=; b=kTeBBPXTZGDQlqvWXi1ub7lmvK
+ cpnK08gWLXcWbBPPdmkRvLMxHdqyIGOqpWCQb5BjlbvAcY6waRjucuwF4EbPBG7PVYT8grRUIiy1I
+ fRAKYhasJriE+kayDsRRwhhmS9JHgMY4jzN3q2QtYJh7eowAxjzyt6GZ+uqeAJoSrPo/M4Y/2G0Rq
+ 2AeJ6qfmzuWSmewSR31lCCoXK3I4tQvHKtPnxfZPwYX2hoOoyg85yVBAu4gJlqBjdkuYiZkCjfykT
+ 5S+Pyh1/6J6gTrQdbfu2ByGBPLfUPRdCc3a/D5X6Ubl7OXvbluV+9MZBFCnaPBnqGtNXp5j+aW9pi
+ +okagJjg==;
+Received: from [2001:4bb8:18c:1dd6:27b8:b8a1:c13e:ceb1] (helo=localhost)
+ by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kiGz3-0003zN-SH; Thu, 26 Nov 2020 13:06:50 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 12/44] block: add a bdev_kobj helper
+Date: Thu, 26 Nov 2020 14:03:50 +0100
+Message-Id: <20201126130422.92945-13-hch@lst.de>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201126130422.92945-1-hch@lst.de>
 References: <20201126130422.92945-1-hch@lst.de>
- <20201126130422.92945-21-hch@lst.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20201126130422.92945-21-hch@lst.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201126_095524_111452_71CFA127 
-X-CRM114-Status: GOOD (  36.71  )
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by
+ casper.infradead.org. See http://www.infradead.org/rpr.html
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,333 +74,170 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
+Cc: linux-bcache@vger.kernel.org, Jan Kara <jack@suse.cz>,
  Mike Snitzer <snitzer@redhat.com>, linux-mm@kvack.org,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jan Kara <jack@suse.com>,
  Josef Bacik <josef@toxicpanda.com>, Coly Li <colyli@suse.de>,
  linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  dm-devel@redhat.com, linux-mtd@lists.infradead.org,
- Johannes Thumshirn <johannes.thumshirn@wdc.com>, Tejun Heo <tj@kernel.org>,
- linux-bcache@vger.kernel.org
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>, Tejun Heo <tj@kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu 26-11-20 14:03:58, Christoph Hellwig wrote:
-> Move more code that is only run on the outer open but not the open of
-> the underlying whole device when opening a partition into blkdev_get,
-> which leads to a much easier to follow structure.
-> 
-> This allows to simplify the disk and module refcounting so that one
-> reference is held for each open, similar to what we do with normal
-> file operations.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Tejun Heo <tj@kernel.org>
+Add a little helper to find the kobject for a struct block_device.
 
-The patch looks good to me. You can add:
-
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Reviewed-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Acked-by: Tejun Heo <tj@kernel.org>
+Acked-by: Coly Li <colyli@suse.de>		[bcache]
+---
+ drivers/md/bcache/super.c |  7 ++-----
+ drivers/md/md.c           |  4 +---
+ fs/block_dev.c            |  6 +++---
+ fs/btrfs/sysfs.c          | 15 +++------------
+ include/linux/blk_types.h |  3 +++
+ 5 files changed, 12 insertions(+), 23 deletions(-)
 
-								Honza
-
-
-> ---
->  fs/block_dev.c | 185 +++++++++++++++++++++++--------------------------
->  1 file changed, 86 insertions(+), 99 deletions(-)
-> 
-> diff --git a/fs/block_dev.c b/fs/block_dev.c
-> index 41c50cfba864e2..86a61a2141f642 100644
-> --- a/fs/block_dev.c
-> +++ b/fs/block_dev.c
-> @@ -1403,46 +1403,12 @@ EXPORT_SYMBOL_GPL(bdev_disk_changed);
->   *  mutex_lock(part->bd_mutex)
->   *    mutex_lock_nested(whole->bd_mutex, 1)
->   */
-> -
-> -static int __blkdev_get(struct block_device *bdev, fmode_t mode, void *holder,
-> -		int for_part)
-> +static int __blkdev_get(struct block_device *bdev, struct gendisk *disk,
-> +		int partno, fmode_t mode)
->  {
-> -	struct block_device *whole = NULL, *claiming = NULL;
-> -	struct gendisk *disk;
->  	int ret;
-> -	int partno;
-> -	bool first_open = false, unblock_events = true, need_restart;
-> -
-> - restart:
-> -	need_restart = false;
-> -	ret = -ENXIO;
-> -	disk = bdev_get_gendisk(bdev, &partno);
-> -	if (!disk)
-> -		goto out;
-> -
-> -	if (partno) {
-> -		whole = bdget_disk(disk, 0);
-> -		if (!whole) {
-> -			ret = -ENOMEM;
-> -			goto out_put_disk;
-> -		}
-> -	}
->  
-> -	if (!for_part && (mode & FMODE_EXCL)) {
-> -		WARN_ON_ONCE(!holder);
-> -		if (whole)
-> -			claiming = whole;
-> -		else
-> -			claiming = bdev;
-> -		ret = bd_prepare_to_claim(bdev, claiming, holder);
-> -		if (ret)
-> -			goto out_put_whole;
-> -	}
-> -
-> -	disk_block_events(disk);
-> -	mutex_lock_nested(&bdev->bd_mutex, for_part);
->  	if (!bdev->bd_openers) {
-> -		first_open = true;
->  		bdev->bd_disk = disk;
->  		bdev->bd_contains = bdev;
->  		bdev->bd_partno = partno;
-> @@ -1454,15 +1420,8 @@ static int __blkdev_get(struct block_device *bdev, fmode_t mode, void *holder,
->  				goto out_clear;
->  
->  			ret = 0;
-> -			if (disk->fops->open) {
-> +			if (disk->fops->open)
->  				ret = disk->fops->open(bdev, mode);
-> -				/*
-> -				 * If we lost a race with 'disk' being deleted,
-> -				 * try again.  See md.c
-> -				 */
-> -				if (ret == -ERESTARTSYS)
-> -					need_restart = true;
-> -			}
->  
->  			if (!ret) {
->  				bd_set_nr_sectors(bdev, get_capacity(disk));
-> @@ -1482,14 +1441,23 @@ static int __blkdev_get(struct block_device *bdev, fmode_t mode, void *holder,
->  			if (ret)
->  				goto out_clear;
->  		} else {
-> -			BUG_ON(for_part);
-> -			ret = __blkdev_get(whole, mode, NULL, 1);
-> -			if (ret)
-> +			struct block_device *whole = bdget_disk(disk, 0);
-> +
-> +			mutex_lock_nested(&whole->bd_mutex, 1);
-> +			ret = __blkdev_get(whole, disk, 0, mode);
-> +			if (ret) {
-> +				mutex_unlock(&whole->bd_mutex);
-> +				bdput(whole);
->  				goto out_clear;
-> -			bdev->bd_contains = bdgrab(whole);
-> +			}
-> +			whole->bd_part_count++;
-> +			mutex_unlock(&whole->bd_mutex);
-> +
-> +			bdev->bd_contains = whole;
->  			bdev->bd_part = disk_get_part(disk, partno);
->  			if (!(disk->flags & GENHD_FL_UP) ||
->  			    !bdev->bd_part || !bdev->bd_part->nr_sects) {
-> +				__blkdev_put(whole, mode, 1);
->  				ret = -ENXIO;
->  				goto out_clear;
->  			}
-> @@ -1509,58 +1477,17 @@ static int __blkdev_get(struct block_device *bdev, fmode_t mode, void *holder,
->  			    (!ret || ret == -ENOMEDIUM))
->  				bdev_disk_changed(bdev, ret == -ENOMEDIUM);
->  			if (ret)
-> -				goto out_unlock_bdev;
-> +				return ret;
->  		}
->  	}
->  	bdev->bd_openers++;
-> -	if (for_part)
-> -		bdev->bd_part_count++;
-> -	if (claiming)
-> -		bd_finish_claiming(bdev, claiming, holder);
-> -
-> -	/*
-> -	 * Block event polling for write claims if requested.  Any write holder
-> -	 * makes the write_holder state stick until all are released.  This is
-> -	 * good enough and tracking individual writeable reference is too
-> -	 * fragile given the way @mode is used in blkdev_get/put().
-> -	 */
-> -	if (claiming && (mode & FMODE_WRITE) && !bdev->bd_write_holder &&
-> -	    (disk->flags & GENHD_FL_BLOCK_EVENTS_ON_EXCL_WRITE)) {
-> -		bdev->bd_write_holder = true;
-> -		unblock_events = false;
-> -	}
-> -	mutex_unlock(&bdev->bd_mutex);
-> -
-> -	if (unblock_events)
-> -		disk_unblock_events(disk);
-> -
-> -	/* only one opener holds refs to the module and disk */
-> -	if (!first_open)
-> -		put_disk_and_module(disk);
-> -	if (whole)
-> -		bdput(whole);
->  	return 0;
->  
->   out_clear:
->  	disk_put_part(bdev->bd_part);
->  	bdev->bd_disk = NULL;
->  	bdev->bd_part = NULL;
-> -	if (bdev != bdev->bd_contains)
-> -		__blkdev_put(bdev->bd_contains, mode, 1);
->  	bdev->bd_contains = NULL;
-> - out_unlock_bdev:
-> -	if (claiming)
-> -		bd_abort_claiming(bdev, claiming, holder);
-> -	mutex_unlock(&bdev->bd_mutex);
-> -	disk_unblock_events(disk);
-> - out_put_whole:
-> - 	if (whole)
-> -		bdput(whole);
-> - out_put_disk:
-> -	put_disk_and_module(disk);
-> -	if (need_restart)
-> -		goto restart;
-> - out:
->  	return ret;
->  }
->  
-> @@ -1585,7 +1512,12 @@ static int __blkdev_get(struct block_device *bdev, fmode_t mode, void *holder,
->   */
->  static int blkdev_get(struct block_device *bdev, fmode_t mode, void *holder)
->  {
-> -	int ret, perm = 0;
-> +	struct block_device *claiming;
-> +	bool unblock_events = true;
-> +	struct gendisk *disk;
-> +	int perm = 0;
-> +	int partno;
-> +	int ret;
->  
->  	if (mode & FMODE_READ)
->  		perm |= MAY_READ;
-> @@ -1595,13 +1527,67 @@ static int blkdev_get(struct block_device *bdev, fmode_t mode, void *holder)
->  	if (ret)
->  		goto bdput;
->  
-> -	ret =__blkdev_get(bdev, mode, holder, 0);
-> -	if (ret)
-> +	/*
-> +	 * If we lost a race with 'disk' being deleted, try again.  See md.c.
-> +	 */
-> +retry:
-> +	ret = -ENXIO;
-> +	disk = bdev_get_gendisk(bdev, &partno);
-> +	if (!disk)
->  		goto bdput;
-> -	return 0;
->  
-> +	if (mode & FMODE_EXCL) {
-> +		WARN_ON_ONCE(!holder);
-> +	
-> +		ret = -ENOMEM;
-> +		claiming = bdget_disk(disk, 0);
-> +		if (!claiming)
-> +			goto put_disk;
-> +		ret = bd_prepare_to_claim(bdev, claiming, holder);
-> +		if (ret)
-> +			goto put_claiming;
-> +	}
-> +
-> +	disk_block_events(disk);
-> +
-> +	mutex_lock(&bdev->bd_mutex);
-> +	ret =__blkdev_get(bdev, disk, partno, mode);
-> +	if (!(mode & FMODE_EXCL)) {
-> +		; /* nothing to do here */
-> +	} else if (ret) {
-> +		bd_abort_claiming(bdev, claiming, holder);
-> +	} else {
-> +		bd_finish_claiming(bdev, claiming, holder);
-> +
-> +		/*
-> +		 * Block event polling for write claims if requested.  Any write
-> +		 * holder makes the write_holder state stick until all are
-> +		 * released.  This is good enough and tracking individual
-> +		 * writeable reference is too fragile given the way @mode is
-> +		 * used in blkdev_get/put().
-> +		 */
-> +		if ((mode & FMODE_WRITE) && !bdev->bd_write_holder &&
-> +		    (disk->flags & GENHD_FL_BLOCK_EVENTS_ON_EXCL_WRITE)) {
-> +			bdev->bd_write_holder = true;
-> +			unblock_events = false;
-> +		}
-> +	}
-> +	mutex_unlock(&bdev->bd_mutex);
-> +
-> +	if (unblock_events)
-> +		disk_unblock_events(disk);
-> +
-> +put_claiming:
-> +	if (mode & FMODE_EXCL)
-> +		bdput(claiming);
-> +put_disk:
-> +	if (ret)
-> +		put_disk_and_module(disk);
-> +	if (ret == -ERESTARTSYS)
-> +		goto retry;
->  bdput:
-> -	bdput(bdev);
-> +	if (ret)
-> +		bdput(bdev);
->  	return ret;
->  }
->  
-> @@ -1749,8 +1735,6 @@ static void __blkdev_put(struct block_device *bdev, fmode_t mode, int for_part)
->  		if (bdev_is_partition(bdev))
->  			victim = bdev->bd_contains;
->  		bdev->bd_contains = NULL;
-> -
-> -		put_disk_and_module(disk);
->  	} else {
->  		if (!bdev_is_partition(bdev) && disk->fops->release)
->  			disk->fops->release(disk, mode);
-> @@ -1763,6 +1747,8 @@ static void __blkdev_put(struct block_device *bdev, fmode_t mode, int for_part)
->  
->  void blkdev_put(struct block_device *bdev, fmode_t mode)
->  {
-> +	struct gendisk *disk = bdev->bd_disk;
-> +
->  	mutex_lock(&bdev->bd_mutex);
->  
->  	if (mode & FMODE_EXCL) {
-> @@ -1791,7 +1777,7 @@ void blkdev_put(struct block_device *bdev, fmode_t mode)
->  		 * unblock evpoll if it was a write holder.
->  		 */
->  		if (bdev_free && bdev->bd_write_holder) {
-> -			disk_unblock_events(bdev->bd_disk);
-> +			disk_unblock_events(disk);
->  			bdev->bd_write_holder = false;
->  		}
->  	}
-> @@ -1801,11 +1787,12 @@ void blkdev_put(struct block_device *bdev, fmode_t mode)
->  	 * event.  This is to ensure detection of media removal commanded
->  	 * from userland - e.g. eject(1).
->  	 */
-> -	disk_flush_events(bdev->bd_disk, DISK_EVENT_MEDIA_CHANGE);
-> +	disk_flush_events(disk, DISK_EVENT_MEDIA_CHANGE);
->  
->  	mutex_unlock(&bdev->bd_mutex);
->  
->  	__blkdev_put(bdev, mode, 0);
-> +	put_disk_and_module(disk);
->  }
->  EXPORT_SYMBOL(blkdev_put);
->  
-> -- 
-> 2.29.2
-> 
+diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+index 46a00134a36ae1..a6a5e21e4fd136 100644
+--- a/drivers/md/bcache/super.c
++++ b/drivers/md/bcache/super.c
+@@ -1447,8 +1447,7 @@ static int register_bdev(struct cache_sb *sb, struct cache_sb_disk *sb_disk,
+ 		goto err;
+ 
+ 	err = "error creating kobject";
+-	if (kobject_add(&dc->disk.kobj, &part_to_dev(bdev->bd_part)->kobj,
+-			"bcache"))
++	if (kobject_add(&dc->disk.kobj, bdev_kobj(bdev), "bcache"))
+ 		goto err;
+ 	if (bch_cache_accounting_add_kobjs(&dc->accounting, &dc->disk.kobj))
+ 		goto err;
+@@ -2342,9 +2341,7 @@ static int register_cache(struct cache_sb *sb, struct cache_sb_disk *sb_disk,
+ 		goto err;
+ 	}
+ 
+-	if (kobject_add(&ca->kobj,
+-			&part_to_dev(bdev->bd_part)->kobj,
+-			"bcache")) {
++	if (kobject_add(&ca->kobj, bdev_kobj(bdev), "bcache")) {
+ 		err = "error calling kobject_add";
+ 		ret = -ENOMEM;
+ 		goto out;
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index b2edf5e0f965b5..7ce6047c856ea2 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -2414,7 +2414,6 @@ EXPORT_SYMBOL(md_integrity_add_rdev);
+ static int bind_rdev_to_array(struct md_rdev *rdev, struct mddev *mddev)
+ {
+ 	char b[BDEVNAME_SIZE];
+-	struct kobject *ko;
+ 	int err;
+ 
+ 	/* prevent duplicates */
+@@ -2477,9 +2476,8 @@ static int bind_rdev_to_array(struct md_rdev *rdev, struct mddev *mddev)
+ 	if ((err = kobject_add(&rdev->kobj, &mddev->kobj, "dev-%s", b)))
+ 		goto fail;
+ 
+-	ko = &part_to_dev(rdev->bdev->bd_part)->kobj;
+ 	/* failure here is OK */
+-	err = sysfs_create_link(&rdev->kobj, ko, "block");
++	err = sysfs_create_link(&rdev->kobj, bdev_kobj(rdev->bdev), "block");
+ 	rdev->sysfs_state = sysfs_get_dirent_safe(rdev->kobj.sd, "state");
+ 	rdev->sysfs_unack_badblocks =
+ 		sysfs_get_dirent_safe(rdev->kobj.sd, "unacknowledged_bad_blocks");
+diff --git a/fs/block_dev.c b/fs/block_dev.c
+index 33c29106c98907..c5755150c6be62 100644
+--- a/fs/block_dev.c
++++ b/fs/block_dev.c
+@@ -1242,7 +1242,7 @@ int bd_link_disk_holder(struct block_device *bdev, struct gendisk *disk)
+ 	holder->disk = disk;
+ 	holder->refcnt = 1;
+ 
+-	ret = add_symlink(disk->slave_dir, &part_to_dev(bdev->bd_part)->kobj);
++	ret = add_symlink(disk->slave_dir, bdev_kobj(bdev));
+ 	if (ret)
+ 		goto out_free;
+ 
+@@ -1259,7 +1259,7 @@ int bd_link_disk_holder(struct block_device *bdev, struct gendisk *disk)
+ 	goto out_unlock;
+ 
+ out_del:
+-	del_symlink(disk->slave_dir, &part_to_dev(bdev->bd_part)->kobj);
++	del_symlink(disk->slave_dir, bdev_kobj(bdev));
+ out_free:
+ 	kfree(holder);
+ out_unlock:
+@@ -1287,7 +1287,7 @@ void bd_unlink_disk_holder(struct block_device *bdev, struct gendisk *disk)
+ 	holder = bd_find_holder_disk(bdev, disk);
+ 
+ 	if (!WARN_ON_ONCE(holder == NULL) && !--holder->refcnt) {
+-		del_symlink(disk->slave_dir, &part_to_dev(bdev->bd_part)->kobj);
++		del_symlink(disk->slave_dir, bdev_kobj(bdev));
+ 		del_symlink(bdev->bd_part->holder_dir,
+ 			    &disk_to_dev(disk)->kobj);
+ 		kobject_put(bdev->bd_part->holder_dir);
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index 279d9262b676d4..24b6c6dc69000a 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -1232,8 +1232,6 @@ int btrfs_sysfs_add_space_info_type(struct btrfs_fs_info *fs_info,
+ 
+ void btrfs_sysfs_remove_device(struct btrfs_device *device)
+ {
+-	struct hd_struct *disk;
+-	struct kobject *disk_kobj;
+ 	struct kobject *devices_kobj;
+ 
+ 	/*
+@@ -1243,11 +1241,8 @@ void btrfs_sysfs_remove_device(struct btrfs_device *device)
+ 	devices_kobj = device->fs_info->fs_devices->devices_kobj;
+ 	ASSERT(devices_kobj);
+ 
+-	if (device->bdev) {
+-		disk = device->bdev->bd_part;
+-		disk_kobj = &part_to_dev(disk)->kobj;
+-		sysfs_remove_link(devices_kobj, disk_kobj->name);
+-	}
++	if (device->bdev)
++		sysfs_remove_link(devices_kobj, bdev_kobj(device->bdev)->name);
+ 
+ 	if (device->devid_kobj.state_initialized) {
+ 		kobject_del(&device->devid_kobj);
+@@ -1353,11 +1348,7 @@ int btrfs_sysfs_add_device(struct btrfs_device *device)
+ 	nofs_flag = memalloc_nofs_save();
+ 
+ 	if (device->bdev) {
+-		struct hd_struct *disk;
+-		struct kobject *disk_kobj;
+-
+-		disk = device->bdev->bd_part;
+-		disk_kobj = &part_to_dev(disk)->kobj;
++		struct kobject *disk_kobj = bdev_kobj(device->bdev);
+ 
+ 		ret = sysfs_create_link(devices_kobj, disk_kobj, disk_kobj->name);
+ 		if (ret) {
+diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
+index ebfb4e7c1fd125..9698f459cc65c9 100644
+--- a/include/linux/blk_types.h
++++ b/include/linux/blk_types.h
+@@ -49,6 +49,9 @@ struct block_device {
+ 	struct super_block	*bd_fsfreeze_sb;
+ } __randomize_layout;
+ 
++#define bdev_kobj(_bdev) \
++	(&part_to_dev((_bdev)->bd_part)->kobj)
++
+ /*
+  * Block error status values.  See block/blk-core:blk_errors for the details.
+  * Alpha cannot write a byte atomically, so we need to use 32-bit value.
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.29.2
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
