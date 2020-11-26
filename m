@@ -5,19 +5,19 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34542C56202
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 13:09:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5F9EC63697
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 13:09:33 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B74D721D46
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 13:09:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 500FF21D46
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 13:09:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fX0HjFdx";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="frQf5+o7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B74D721D46
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cU6eVUWO";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WipNHSiT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 500FF21D46
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,38 +26,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=hjc9RzxF/5kPRixK7CO1H/MB4TVEg6jbmJyNPKUwUpg=; b=fX0HjFdxykJROv9KnD7R6/XgN
-	QBSaJ7vsoX8PO+TA/ZiTGwn6OqcCg9QquL5VR+UfBU3PfvuiAc+bDdHu8LQDX6ki41v8RMrkebbCT
-	815tZ7re3GAGqkWoz2ZFpixejdli4Q+NRuVXrBrY4I+39aeia0P8a24pvPa3aLD+M8+mVooo/pocQ
-	AWpCE9D8R+KPFNhg6BlDgjQyqYfhnyNInE7D+co5KHNfYlIBn95tcv6fP22yYdKcgsaqiq04+ngPf
-	4ScmL5/32CKYxa2TTzwN+Ecrh+zG55ZuDCm/kfMPAve9kiXMTKfyfIRJszKFJrnrU33wC6O8+PvB8
-	5ONqqCAhA==;
+	 bh=YJhxkUAiaKqRcr/l7ZNpwdIW5ur9VLGZpdYO0LKvEcU=; b=cU6eVUWOSHVFykkopaSKkrNP3
+	L7WQjTJEoJFymI1QIapkf1N1V/kCYnS/iCuHQyWYJhzw2imGIFye8L6ESp6fVR/fLhvN9xlkT1td6
+	EvaQ86D5tMndFY9R9KNQ7JrA4r5WGnXRJwGmaxP6trmPTTVi8rQqF27DpnwSRTGtu1YSTUk/FzwFM
+	HjO6rESygFmfEJyllQDv3KYXGJQfI34mkBp0KsVmACYvWm3fuecMiEjJp1kdn6HKiBjvhQMW52l/n
+	nMFt8Z4xwbHZd+YZ346QWjG7xeeKuxdReSLjSjTWqnXa0mFvYdS/r368H/WmqUgxylKFbp8gicqUE
+	rOn+FIi7A==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kiH0g-0000J5-V8; Thu, 26 Nov 2020 13:08:31 +0000
+	id 1kiH0s-0000RK-PG; Thu, 26 Nov 2020 13:08:42 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kiGz0-00081Y-3c
- for linux-mtd@merlin.infradead.org; Thu, 26 Nov 2020 13:06:46 +0000
+ id 1kiGz1-00081n-Hl
+ for linux-mtd@merlin.infradead.org; Thu, 26 Nov 2020 13:06:48 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=qOmzpRMb4vEzGwba4P3m5gENBKcm1ZKj8N5Pylgvbms=; b=frQf5+o7/NEEwvyZN+t2Km5Ptl
- NbZc0zYkcrH+IirsiacpBTVbLlfEA1hzVC3a1JMUpYfnRBaxbcnseEGspGlij5gGLt/b1dXtWHRnW
- j7Nwk+zMr1rHM001tS7jauuj3xz4Ff7g5hqe72Jm8GhyTteC9Epan9fy6PzkAQHF3YoAGeCsN0JEb
- Vrp/UQrhUUKz3ZV4E1mpp5iyaIB3UfSxRhD9jTjfaSnJ+dPweTGrMJUxgZ7eV3Ksy18x0da98PCml
- 3Wc0i0cpZBIwV780R1d+Ru6O+O+5N8Q0luFoj6zjTKcB+1kxHPewVhpv7sGiBRxlZBhTNS/mwFo0W
- vCkZ+Qkw==;
+ bh=qLuO7hD0TG0p9aylN+kHqBJxf5z3v4FVxxZ2M17hRmY=; b=WipNHSiTxaCf/i02olOf7S3b9k
+ 7tumqyBklwAOPoXqVFvK7+2BEqr7y+sx5mtON0mAzzW3MNkz4zrs+oOdvLTnVFxaaiMonNJfLIy8Q
+ mg8VT4WS4Ip5pd4gfxLpdNLWZoV6OX52On+8eE2jJEIcq7Cp7fEZVK3+QcKPIzI836DMs1oSmZ5mn
+ CI/Pdisi9YSbIPpv0OjyO44mtEppEv4VK/NnydCG5MxTm7rW/g9HPg4FdYgn79eOrdDjUnC2veigu
+ rt+xk0G2+KPdni2kRxB8tq3rtjl7wPFlb2kyTIaT/RrtRyhEAMkAYShxe7iJog3pPC+knYv7531E4
+ QzH7l/gQ==;
 Received: from [2001:4bb8:18c:1dd6:27b8:b8a1:c13e:ceb1] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kiGyy-0003xt-Re; Thu, 26 Nov 2020 13:06:45 +0000
+ id 1kiGyz-0003y8-VM; Thu, 26 Nov 2020 13:06:46 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 08/44] dm: simplify flush_bio initialization in
- __send_empty_flush
-Date: Thu, 26 Nov 2020 14:03:46 +0100
-Message-Id: <20201126130422.92945-9-hch@lst.de>
+Subject: [PATCH 09/44] dm: remove the block_device reference in struct
+ mapped_device
+Date: Thu, 26 Nov 2020 14:03:47 +0100
+Message-Id: <20201126130422.92945-10-hch@lst.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201126130422.92945-1-hch@lst.de>
 References: <20201126130422.92945-1-hch@lst.de>
@@ -87,42 +87,94 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-We don't really need the struct block_device to initialize a bio.  So
-switch from using bio_set_dev to manually setting up bi_disk (bi_partno
-will always be zero and has been cleared by bio_init already).
+Get rid of the long-lasting struct block_device reference in
+struct mapped_device.  The only remaining user is the freeze code,
+where we can trivially look up the block device at freeze time
+and release the reference at thaw time.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Acked-by: Mike Snitzer <snitzer@redhat.com>
 ---
- drivers/md/dm.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ drivers/md/dm-core.h |  2 --
+ drivers/md/dm.c      | 25 ++++++++++++++-----------
+ 2 files changed, 14 insertions(+), 13 deletions(-)
 
+diff --git a/drivers/md/dm-core.h b/drivers/md/dm-core.h
+index aace147effcacb..086d293c2b036c 100644
+--- a/drivers/md/dm-core.h
++++ b/drivers/md/dm-core.h
+@@ -102,8 +102,6 @@ struct mapped_device {
+ 	/* kobject and completion */
+ 	struct dm_kobject_holder kobj_holder;
+ 
+-	struct block_device *bdev;
+-
+ 	struct dm_stats stats;
+ 
+ 	/* for blk-mq request-based DM support */
 diff --git a/drivers/md/dm.c b/drivers/md/dm.c
-index 50541d336c719b..ab0a8335f098d9 100644
+index ab0a8335f098d9..48051db006f30c 100644
 --- a/drivers/md/dm.c
 +++ b/drivers/md/dm.c
-@@ -1422,18 +1422,12 @@ static int __send_empty_flush(struct clone_info *ci)
- 	 */
- 	bio_init(&flush_bio, NULL, 0);
- 	flush_bio.bi_opf = REQ_OP_WRITE | REQ_PREFLUSH | REQ_SYNC;
-+	flush_bio.bi_disk = ci->io->md->disk;
-+	bio_associate_blkg(&flush_bio);
-+
- 	ci->bio = &flush_bio;
- 	ci->sector_count = 0;
+@@ -1744,11 +1744,6 @@ static void cleanup_mapped_device(struct mapped_device *md)
  
--	/*
--	 * Empty flush uses a statically initialized bio, as the base for
--	 * cloning.  However, blkg association requires that a bdev is
--	 * associated with a gendisk, which doesn't happen until the bdev is
--	 * opened.  So, blkg association is done at issue time of the flush
--	 * rather than when the device is created in alloc_dev().
--	 */
--	bio_set_dev(ci->bio, ci->io->md->bdev);
+ 	cleanup_srcu_struct(&md->io_barrier);
+ 
+-	if (md->bdev) {
+-		bdput(md->bdev);
+-		md->bdev = NULL;
+-	}
 -
- 	BUG_ON(bio_has_data(ci->bio));
- 	while ((ti = dm_table_get_target(ci->map, target_nr++)))
- 		__send_duplicate_bios(ci, ti, ti->num_flush_bios, NULL);
+ 	mutex_destroy(&md->suspend_lock);
+ 	mutex_destroy(&md->type_lock);
+ 	mutex_destroy(&md->table_devices_lock);
+@@ -1840,10 +1835,6 @@ static struct mapped_device *alloc_dev(int minor)
+ 	if (!md->wq)
+ 		goto bad;
+ 
+-	md->bdev = bdget_disk(md->disk, 0);
+-	if (!md->bdev)
+-		goto bad;
+-
+ 	dm_stats_init(&md->stats);
+ 
+ 	/* Populate the mapping, nobody knows we exist yet */
+@@ -2384,11 +2375,16 @@ struct dm_table *dm_swap_table(struct mapped_device *md, struct dm_table *table)
+  */
+ static int lock_fs(struct mapped_device *md)
+ {
++	struct block_device *bdev;
+ 	int r;
+ 
+ 	WARN_ON(test_bit(DMF_FROZEN, &md->flags));
+ 
+-	r = freeze_bdev(md->bdev);
++	bdev = bdget_disk(md->disk, 0);
++	if (!bdev)
++		return -ENOMEM;
++	r = freeze_bdev(bdev);
++	bdput(bdev);
+ 	if (!r)
+ 		set_bit(DMF_FROZEN, &md->flags);
+ 	return r;
+@@ -2396,9 +2392,16 @@ static int lock_fs(struct mapped_device *md)
+ 
+ static void unlock_fs(struct mapped_device *md)
+ {
++	struct block_device *bdev;
++
+ 	if (!test_bit(DMF_FROZEN, &md->flags))
+ 		return;
+-	thaw_bdev(md->bdev);
++
++	bdev = bdget_disk(md->disk, 0);
++	if (!bdev)
++		return;
++	thaw_bdev(bdev);
++	bdput(bdev);
+ 	clear_bit(DMF_FROZEN, &md->flags);
+ }
+ 
 -- 
 2.29.2
 
