@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C0DCC63697
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0056C64E75
 	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 13:12:46 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A3E3821D7E
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 13:12:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 218FF221EB
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 13:12:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VJx6atGa";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="pD29czXU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A3E3821D7E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="S4KV1OQ4";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="k3nNG2RH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 218FF221EB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,37 +26,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=owcmsaFbnZWDz3hDHBBjq+aR0vE4XzsscChrsUrSttw=; b=VJx6atGaDcFaJ4vmg+tR2nApe
-	pGDCXjkEmuNqlvZu1x5FlBM78mzxxWc7t6vgq9P0zmcig/wq4ylIE7suz50e/9CJ6twPfFNgY8Gqf
-	StfqxfD+71jhYJqsno7DCtxX4wZ240LAAF3br0nxsZGphwwkm/eb0jxmQeF3uQxa5kZAlboMSmXs8
-	ZB1b+M5/otn8ZfwXpBUx0+6oPdPm0f/hi9pSMUUL+xSxNs8nYngNJsk7YrZui0ClwF88deTuA9QhA
-	PnQ6hTRs59wLRLc9oNu7gqVqDQnj7X98JxOjhLHhjeF17s049WOhLKFj/Yd6RXSspAV0r4lAhw06P
-	2gJCJxfYw==;
+	 bh=KyeSPXaKCKQQ8UJI//YFUtVl8hz1OpDGO0Mjts3Ds4Y=; b=S4KV1OQ4HBlLGjpWuYrB36h5v
+	2cyMdBLcQ6gd3+Ju/2Gnxdr7rBIiFNZiYJawDBDWfBq5BO5KQt4RYJE2Q1/zMvJGx/GjZbwtoP5A8
+	6qHtyc+KoxiNsMPs9zyBGFoo8/McGzOpBf3TfOl47r09QfTMGwJ6S3yWdZ034ylsjkgqjc+HD2qWM
+	hX9eUXx87Oh5gtHOlIQzyfNEw+axSBgHRIv0XCaRPYX8RmMhaZCFmQ1u7cgwn06/P9TluVVz7U60d
+	IulF/UQSw3uPWxR5GAMc78W1lp735xZ0UF7aDGhgYsXLSPsPnTfeGQEwUIme5eGxPIOufvGxF0NrY
+	Khefr5W8g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kiH44-0000Ki-W1; Thu, 26 Nov 2020 13:12:01 +0000
+	id 1kiH42-0000K0-76; Thu, 26 Nov 2020 13:11:58 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kiGzF-00085I-H6
- for linux-mtd@merlin.infradead.org; Thu, 26 Nov 2020 13:07:03 +0000
+ id 1kiGzE-00084y-Dc
+ for linux-mtd@merlin.infradead.org; Thu, 26 Nov 2020 13:07:00 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=Bme5TLsLFPob464lUA3WbC3cRcGjsnB3bNEoo7Ro4xo=; b=pD29czXUGx7/JOI4aMyEeWQSMv
- N1pSrnLkpYZ1vq8lC0yj+QgDREYrZk8VsWtw25yH+LOOzsfPs12mfVambko3CQU5GmLhQd+ADpITR
- NimIO8kPlWXa1Ia40xiB690MR+b5inhHr9jscb7BELxpkGdihO6KSv4PW4H+bkyq/lvvorRsTObAn
- Z9+1XFVjPvzDzKPe4mnNvFUtdTeoIJI+do7cSsBSktZYaHDBuk98oBX5ks+o27ANd3JuHjqbQ/zPV
- JT3vxOZ0JJZMxIPsjC2wmWnt/UCdnXQTIIFNjhYzNw52BemG06yiDmkrywPn4RYaymOzpQ9HDY4rz
- q2zpyhig==;
+ bh=h5jD3nKoGxX1nrfDFkuFqjmtZeLc4uJpqdz/BICw9t8=; b=k3nNG2RH75y58js8+Vo5pBOeIS
+ j/gFhWrm8PRi2UDdC/MtMS33EBTuzXL6Ns8KGuAqd9Fy9kQS/aLWk0O+UcJquNAE+FCNCieqwpEtW
+ grhxwW+y6kKMy/YJXpk5Oq2Oh6p9RyGUnUk+mzGx6GMaz5GkKeuirVqT8TTN/kr7q7gfMSypBh7iL
+ 72+DisgEGO6LqCBdeMFAJIRF4A0d6vHIS+w6E5SLxZ6rN+KGzF6tYBXU/WSD2XZKPxbnW2GcH8Fk6
+ z2WdYER0oJynrKhhL6oEmXPUOTEgQVOz63wWfaAVPF0AUCwf/+aIcYWz60nXpAkgdW5p+n66ZlZTv
+ 97LC62kA==;
 Received: from [2001:4bb8:18c:1dd6:27b8:b8a1:c13e:ceb1] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kiGzE-00041Y-0x; Thu, 26 Nov 2020 13:07:00 +0000
+ id 1kiGzC-00041F-RE; Thu, 26 Nov 2020 13:06:59 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 19/44] block: refactor __blkdev_put
-Date: Thu, 26 Nov 2020 14:03:57 +0100
-Message-Id: <20201126130422.92945-20-hch@lst.de>
+Subject: [PATCH 18/44] init: cleanup match_dev_by_uuid and match_dev_by_label
+Date: Thu, 26 Nov 2020 14:03:56 +0100
+Message-Id: <20201126130422.92945-19-hch@lst.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201126130422.92945-1-hch@lst.de>
 References: <20201126130422.92945-1-hch@lst.de>
@@ -86,51 +86,55 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Reorder the code to have one big section for the last close, and to use
-bdev_is_partition.
+Avoid a totally pointless goto label, and use the same style of
+comparism for both helpers.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Reviewed-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Acked-by: Tejun Heo <tj@kernel.org>
 ---
- fs/block_dev.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ init/do_mounts.c | 18 ++++++------------
+ 1 file changed, 6 insertions(+), 12 deletions(-)
 
-diff --git a/fs/block_dev.c b/fs/block_dev.c
-index d707ab376da86e..41c50cfba864e2 100644
---- a/fs/block_dev.c
-+++ b/fs/block_dev.c
-@@ -1738,22 +1738,22 @@ static void __blkdev_put(struct block_device *bdev, fmode_t mode, int for_part)
- 		WARN_ON_ONCE(bdev->bd_holders);
- 		sync_blockdev(bdev);
- 		kill_bdev(bdev);
--
- 		bdev_write_inode(bdev);
--	}
--	if (bdev->bd_contains == bdev) {
--		if (disk->fops->release)
-+
-+		if (!bdev_is_partition(bdev) && disk->fops->release)
- 			disk->fops->release(disk, mode);
--	}
--	if (!bdev->bd_openers) {
-+
- 		disk_put_part(bdev->bd_part);
- 		bdev->bd_part = NULL;
- 		bdev->bd_disk = NULL;
--		if (bdev != bdev->bd_contains)
-+		if (bdev_is_partition(bdev))
- 			victim = bdev->bd_contains;
- 		bdev->bd_contains = NULL;
+diff --git a/init/do_mounts.c b/init/do_mounts.c
+index afa26a4028d25e..5879edf083b318 100644
+--- a/init/do_mounts.c
++++ b/init/do_mounts.c
+@@ -79,15 +79,10 @@ static int match_dev_by_uuid(struct device *dev, const void *data)
+ 	const struct uuidcmp *cmp = data;
+ 	struct hd_struct *part = dev_to_part(dev);
  
- 		put_disk_and_module(disk);
-+	} else {
-+		if (!bdev_is_partition(bdev) && disk->fops->release)
-+			disk->fops->release(disk, mode);
- 	}
- 	mutex_unlock(&bdev->bd_mutex);
- 	bdput(bdev);
+-	if (!part->info)
+-		goto no_match;
+-
+-	if (strncasecmp(cmp->uuid, part->info->uuid, cmp->len))
+-		goto no_match;
+-
++	if (!part->info ||
++	    strncasecmp(cmp->uuid, part->info->uuid, cmp->len))
++		return 0;
+ 	return 1;
+-no_match:
+-	return 0;
+ }
+ 
+ /**
+@@ -174,10 +169,9 @@ static int match_dev_by_label(struct device *dev, const void *data)
+ 	const char *label = data;
+ 	struct hd_struct *part = dev_to_part(dev);
+ 
+-	if (part->info && !strcmp(label, part->info->volname))
+-		return 1;
+-
+-	return 0;
++	if (!part->info || strcmp(label, part->info->volname))
++		return 0;
++	return 1;
+ }
+ 
+ static dev_t devt_from_partlabel(const char *label)
 -- 
 2.29.2
 
