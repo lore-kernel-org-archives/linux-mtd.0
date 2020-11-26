@@ -2,94 +2,62 @@ Return-Path: <SRS0=PI1R=FA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CB2AC56202
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 14:54:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96D0EC56202
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 14:55:54 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 93B2A20B80
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 14:54:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2E54320B80
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 14:55:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="j0rbdHq6";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QWuS1TBf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 93B2A20B80
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Be2HCfbk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E54320B80
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=fgHIywVjNWJSUZWQGgV0dKaaMFCDYE1Eqg5xhrfzZAk=; b=j0rbdHq6Q40Fhq4639nbeILfH
-	Vt5QF0ps7BP/YAnLP59vnAaPXyv2lQ7en9YgklBqeRPZkwy2R52oI/PjPWHg5wCwl/Sb/HtxjtH/I
-	+QHblMX3k3R5il+KPfqv9GHjS1mSDF+ApGOD6eKwJKkrhCwGurGj7Z/KO9n5N2HoiExIoVbjLCjrH
-	NInPUbyJEccfDImiWb2UPZy4fh0TmrxheZlHVgkl/aPUWQxFZ1Ig48p8aE2GroWVJ0/Oqr7cw24/I
-	UYptGSIUKOM7qPYEZeriYYrSV/bMqmZjfmEx4ERqoQy1GqJEZWCROLugOGs+uBbIpGDm0FXhAr8xM
-	QSHV2a1vA==;
+	 bh=N44cXrnvka6eL3cOOH2JzT/8bEZiyOoc8XHjj5czStA=; b=Be2HCfbkcj9z2I20cPHVNbwVn
+	Nq+yh5GgET8aI+9RXUaQIisIWf9+dcIQla2irpr0cD/g0i7dKrCClsk6hAOMEA7b/UN7OeN3uXqiv
+	jojf9XqHQtDN2M+zunkRSw6EIlef7DBhUXmNCpNPd43PExEbpAw/x52uCbjRsFcf+2YEb4eDVgnyL
+	SGD3g9fLw88ISNrFi7jw1xRPNs92tT0+Dte3RU5Oz+x/c6R86L1Dowuit8nknnuzE4d0yu2BzY8Pw
+	bx1tHukyq8MTxTNUpZ3DPUYwp8/AhChYJN030UTCYIzOSByODOzdEZ1rSvuZC+EvV3pZJgHGDtNMO
+	cJ7K4Q8Ew==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kiIeb-0006gs-7S; Thu, 26 Nov 2020 14:53:49 +0000
-Received: from mail-yb1-xb44.google.com ([2607:f8b0:4864:20::b44])
+	id 1kiIgA-0006zW-Hx; Thu, 26 Nov 2020 14:55:26 +0000
+Received: from mx2.suse.de ([195.135.220.15])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kiIeV-0006eF-Ln; Thu, 26 Nov 2020 14:53:44 +0000
-Received: by mail-yb1-xb44.google.com with SMTP id l14so1881469ybq.3;
- Thu, 26 Nov 2020 06:53:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=DTotsfb8u+PB0eT0g4gTrA/vgT4HfiDZTYQ/geteWC4=;
- b=QWuS1TBfImi/m9J+5lB37414TjwoB+kfRyX/7ohuLNDuEazbBA4fEE506RPmuhzrQT
- KCYao+uRLv4Su9SW/eKLjGfymcNDAcVP9irkT5MfO/ys+N1YXqwwODp/at6Hjf5mbn7y
- sEjBq+fitA5RwLT9szzutyPemHxF/3vzz+qMkDnIA1HF+rIjtAU7PcoRO+GQ0ANzP2/3
- 4RgPAdoGGim7svP8Zrp9IWC0s7kVtrSQn/PXobh5aGfJoVk3uyVZYliED/q0Nk6tCoA8
- W9fyUHPup50QVVdVd9NqYx0m2pkDUcyuxLwwV68mOS3NFLJOgvtFKpngAgg7rBEfKLyO
- Kn5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=DTotsfb8u+PB0eT0g4gTrA/vgT4HfiDZTYQ/geteWC4=;
- b=YU2AeI6eMA4hl40yO8uxQbcocXXP4TWt08LEoHLXKWsXJSFK6gL3oz9MVZHOKJ4NTR
- bjwMztOjb6qdPbEzRTZ1qX5gIC80rdq8GR136nvOnBe/NyO4Y7XB3zN9iv32oC689f+H
- uNY4OPqPOBOO3VjpAiJw2FPEsMls/S+orxLg6zsisOLvTlkfoXoR4ey22xu7c8R66/kj
- oNM/B3dy063tpz+xg85wCVuDV4NHk6Nw5gwZS7SW8+HRLy3/oc+0XKzs8PASaOJVBn2S
- SDbWL1vBmFdVtLmvIzS6F3mECFDIPGZNqeS68udrdBATgPOq+BhuBwlniYuDX2YSydfH
- 4BJA==
-X-Gm-Message-State: AOAM531i3hL1I3kmjPUhvoKLAQqhM2d40wTLjra4INCvz/gcK+UnoI2n
- MU8SMxd45hIGJ0c3FZr0UYKdyQu+VVXGMXliqQ8=
-X-Google-Smtp-Source: ABdhPJxnOXTYq+iR4KCiqWmvI5brXjGTtWFP5n3J8AJAa70YoLiXvitjZtrbfPlByRts+Q0mJZBucXgMnTrbOCoAA44=
-X-Received: by 2002:a25:aac5:: with SMTP id t63mr5128050ybi.22.1606402419264; 
- Thu, 26 Nov 2020 06:53:39 -0800 (PST)
+ id 1kiIg7-0006yl-OK
+ for linux-mtd@lists.infradead.org; Thu, 26 Nov 2020 14:55:24 +0000
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 75E3FADB3;
+ Thu, 26 Nov 2020 14:55:22 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+ id E17411E10D0; Thu, 26 Nov 2020 15:55:21 +0100 (CET)
+Date: Thu, 26 Nov 2020 15:55:21 +0100
+From: Jan Kara <jack@suse.cz>
+To: Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 20/44] block: refactor blkdev_get
+Message-ID: <20201126145521.GG422@quack2.suse.cz>
+References: <20201126130422.92945-1-hch@lst.de>
+ <20201126130422.92945-21-hch@lst.de>
 MIME-Version: 1.0
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011201129.B13FDB3C@keescook>
- <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011220816.8B6591A@keescook>
- <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
- <CANiq72nZrHWTA4_Msg6MP9snTyenC6-eGfD27CyfNSu7QoVZbw@mail.gmail.com>
- <1c7d7fde126bc0acf825766de64bf2f9b888f216.camel@HansenPartnership.com>
- <CANiq72m22Jb5_+62NnwX8xds2iUdWDMAqD8PZw9cuxdHd95W0A@mail.gmail.com>
- <fc45750b6d0277c401015b7aa11e16cd15f32ab2.camel@HansenPartnership.com>
- <CANiq72k5tpDoDPmJ0ZWc1DGqm+81Gi-uEENAtvEs9v3SZcx6_Q@mail.gmail.com>
- <4993259d01a0064f8bb22770503490f9252f3659.camel@HansenPartnership.com>
- <CANiq72kqO=bYMJnFS2uYRpgWATJ=uXxZuNUsTXT+3aLtrpnzvQ@mail.gmail.com>
- <44005bde-f6d4-5eaa-39b8-1a5efeedb2d3@gmail.com>
-In-Reply-To: <44005bde-f6d4-5eaa-39b8-1a5efeedb2d3@gmail.com>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Thu, 26 Nov 2020 15:53:27 +0100
-Message-ID: <CANiq72nobq=ptWK-qWxU91JHqkKhMcRtJNnw2XJd5-vSJWZd8Q@mail.gmail.com>
-Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
-To: Edward Cree <ecree.xilinx@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <20201126130422.92945-21-hch@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201126_095343_753164_6C9F68FB 
-X-CRM114-Status: GOOD (  26.55  )
+X-CRM114-CacheID: sfid-20201126_095524_111452_71CFA127 
+X-CRM114-Status: GOOD (  36.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,115 +69,334 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, linux-atm-general@lists.sourceforge.net,
- reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-wireless <linux-wireless@vger.kernel.org>, linux-fbdev@vger.kernel.org,
- dri-devel <dri-devel@lists.freedesktop.org>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- James Bottomley <James.Bottomley@hansenpartnership.com>,
- linux-ide@vger.kernel.org, dm-devel@redhat.com, keyrings@vger.kernel.org,
- linux-mtd@lists.infradead.org, GR-everest-linux-l2@marvell.com,
- wcn36xx@lists.infradead.org, samba-technical@lists.samba.org,
- linux-i3c@lists.infradead.org, linux1394-devel@lists.sourceforge.net,
- linux-afs@lists.infradead.org, usb-storage@lists.one-eyed-alien.net,
- drbd-dev@lists.linbit.com, devel@driverdev.osuosl.org,
- linux-cifs@vger.kernel.org, rds-devel@oss.oracle.com,
- Nick Desaulniers <ndesaulniers@google.com>, linux-scsi@vger.kernel.org,
- Nathan Chancellor <natechancellor@gmail.com>, linux-rdma@vger.kernel.org,
- oss-drivers@netronome.com, bridge@lists.linux-foundation.org,
- linux-security-module@vger.kernel.org,
- amd-gfx list <amd-gfx@lists.freedesktop.org>,
- linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
- linux-acpi@vger.kernel.org, coreteam@netfilter.org,
- intel-wired-lan@lists.osuosl.org, linux-input <linux-input@vger.kernel.org>,
- Miguel Ojeda <ojeda@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
- Ext4 Developers List <linux-ext4@vger.kernel.org>,
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- Kees Cook <keescook@chromium.org>, selinux@vger.kernel.org,
- linux-arm-msm <linux-arm-msm@vger.kernel.org>, intel-gfx@lists.freedesktop.org,
- linux-geode@lists.infradead.org, linux-can@vger.kernel.org,
- linux-block@vger.kernel.org, linux-gpio@vger.kernel.org,
- op-tee@lists.trustedfirmware.org, linux-mediatek@lists.infradead.org,
- xen-devel@lists.xenproject.org, nouveau@lists.freedesktop.org,
- linux-hams@vger.kernel.org, ceph-devel@vger.kernel.org,
- virtualization@lists.linux-foundation.org,
- Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-hwmon@vger.kernel.org,
- linux-watchdog@vger.kernel.org, linux-nfs@vger.kernel.org,
- GR-Linux-NIC-Dev@marvell.com, tipc-discussion@lists.sourceforge.net,
- Linux-MM <linux-mm@kvack.org>, Network Development <netdev@vger.kernel.org>,
- linux-decnet-user@lists.sourceforge.net, linux-mmc@vger.kernel.org,
- linux-kernel <linux-kernel@vger.kernel.org>,
- "maintainer:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>, linux-sctp@vger.kernel.org,
- linux-usb@vger.kernel.org, netfilter-devel@vger.kernel.org,
- Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
- patches@opensource.cirrus.com, Joe Perches <joe@perches.com>,
- linux-integrity@vger.kernel.org, target-devel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
+ Mike Snitzer <snitzer@redhat.com>, linux-mm@kvack.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jan Kara <jack@suse.com>,
+ Josef Bacik <josef@toxicpanda.com>, Coly Li <colyli@suse.de>,
+ linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ dm-devel@redhat.com, linux-mtd@lists.infradead.org,
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>, Tejun Heo <tj@kernel.org>,
+ linux-bcache@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkLCBOb3YgMjUsIDIwMjAgYXQgMTE6NDQgUE0gRWR3YXJkIENyZWUgPGVjcmVlLnhpbGlu
-eEBnbWFpbC5jb20+IHdyb3RlOgo+Cj4gVG8gbWFrZSB0aGUgaW50ZW50IGNsZWFyLCB5b3UgaGF2
-ZSB0byBmaXJzdCBiZSBjZXJ0YWluIHRoYXQgeW91Cj4gIHVuZGVyc3RhbmQgdGhlIGludGVudDsg
-b3RoZXJ3aXNlIGJ5IGFkZGluZyBlaXRoZXIgYSBicmVhayBvciBhCj4gIGZhbGx0aHJvdWdoIHRv
-IHN1cHByZXNzIHRoZSB3YXJuaW5nIHlvdSBhcmUganVzdCBkZXN0cm95aW5nIHRoZQo+ICBpbmZv
-cm1hdGlvbiB0aGF0ICJ0aGUgaW50ZW50IG9mIHRoaXMgY29kZSBpcyB1bmtub3duIi4KCklmIHlv
-dSBkb24ndCBrbm93IHdoYXQgdGhlIGludGVudCBvZiB5b3VyIG93biBjb2RlIGlzLCB0aGVuIHlv
-dQoqYWxyZWFkeSogaGF2ZSBhIHByb2JsZW0gaW4geW91ciBoYW5kcy4KCj4gRmlndXJpbmcgb3V0
-IHRoZSBpbnRlbnQgb2YgYSBwaWVjZSBvZiB1bmZhbWlsaWFyIGNvZGUgdGFrZXMgbW9yZQo+ICB0
-aGFuIDEgbWludXRlOyBqdXN0IGJlY2F1c2UKPiAgICAgY2FzZSBmb286Cj4gICAgICAgICB0aGlu
-ZzsKPiAgICAgY2FzZSBiYXI6Cj4gICAgICAgICBicmVhazsKPiAgcHJvZHVjZXMgaWRlbnRpY2Fs
-IGNvZGUgdG8KPiAgICAgY2FzZSBmb286Cj4gICAgICAgICB0aGluZzsKPiAgICAgICAgIGJyZWFr
-Owo+ICAgICBjYXNlIGJhcjoKPiAgICAgICAgIGJyZWFrOwo+ICBkb2Vzbid0IG1lYW4gdGhhdCAq
-ZWl0aGVyKiBpcyBjb3JyZWN0IOKAlCBtYXliZSB0aGUgYXV0aG9yIG1lYW50CgpXaGF0IHRha2Vz
-IDEgbWludXRlIGlzIGFkZGluZyBpdCAqbWVjaGFuaWNhbGx5KiBieSB0aGUgYXV0aG9yLCBpLmUu
-IHNvCnRoYXQgeW91IGxhdGVyIGNvbXBhcmUgd2hldGhlciBjb2RlZ2VuIGlzIHRoZSBzYW1lLgoK
-PiAgdG8gd3JpdGUKPiAgICAgY2FzZSBmb286Cj4gICAgICAgICByZXR1cm4gdGhpbmc7Cj4gICAg
-IGNhc2UgYmFyOgo+ICAgICAgICAgYnJlYWs7Cj4gIGFuZCBieSBpbnNlcnRpbmcgdGhhdCBicmVh
-ayB5b3UndmUgZGVzdHJveWVkIHRoZSBtYXJrZXIgdGhhdAo+ICB3b3VsZCBkaXJlY3Qgc29tZW9u
-ZSB3aG8ga25ldyB3aGF0IHRoZSBjb2RlIHdhcyBhYm91dCB0byBsb29rCj4gIGF0IHRoYXQgcG9p
-bnQgaW4gdGhlIGNvZGUgYW5kIHNwb3QgdGhlIHByb2JsZW0uCgpUaGVuIGl0IG1lYW5zIHlvdSBh
-bHJlYWR5IGhhdmUgYSBidWcuIFRoaXMgcGF0Y2hzZXQgZ2l2ZXMgdGhlCm1haW50YWluZXIgYSBj
-aGFuY2UgdG8gbm90aWNlIGl0LCB3aGljaCBpcyBhIGdvb2QgdGhpbmcuIFRoZSAieW91J3ZlCmRl
-c3Ryb3llZCB0aGUgbWFya2V0IiBjbGFpbSBpcyBib2d1cywgYmVjYXVzZToKICAxLiB5b3Ugd2Vy
-ZSBub3QgbG9va2luZyBpbnRvIGl0CiAgMi4geW91IGRpZG4ndCBub3RpY2UgdGhlIGJ1ZyBzbyBm
-YXIKICAzLiBpcyBpbXBsaWNpdCAtLSBoYXJkZXIgdG8gc3BvdAogIDQuIGlzIG9ubHkgdXNlZnVs
-IGlmIHlvdSBleHBsaWNpdGx5IHRha2UgYSBsb29rIGF0IHRoaXMga2luZCBvZiBidWcuClNvIHdo
-eSBkb24ndCB5b3UgZG8gaXQgbm93PwoKPiBUaHVzLCB5b3UgKmFsd2F5cyogaGF2ZSB0byBsb29r
-IGF0IG1vcmUgdGhhbiBqdXN0IHRoZSBpbW1lZGlhdGUKPiAgbWVjaGFuaWNhbCBjb250ZXh0IG9m
-IHRoZSBjb2RlLCB0byBtYWtlIGEgcHJvcGVyIGp1ZGdlbWVudCB0aGF0Cj4gIHllcywgdGhpcyB3
-YXMgdGhlIGludGVudC4KCkkgZmluZCB0aGF0IGlzIHRoZSByZXNwb25zaWJpbGl0eSBvZiB0aGUg
-bWFpbnRhaW5lcnMgYW5kIHJldmlld2VycyBmb3IKdHJlZS13aWRlIHBhdGNoZXMgbGlrZSB0aGlz
-LCBhc3N1bWluZyB0aGV5IHdhbnQuIFRoZXkgY2FuIGFsc28ga2VlcAp0aGUgYmVoYXZpb3IgKGFu
-ZCB0aGUgYnVncykgd2l0aG91dCBzcGVuZGluZyB0aW1lLiBUaGVpciBjaG9pY2UuCgo+IElmIHlv
-dSB0aGluayB0aGF0IHRoYXQgc29ydCBvZiB0aGluZwo+ICBjYW4gYmUgZG9uZSBpbiBhbiAqYXZl
-cmFnZSogdGltZSBvZiBvbmUgbWludXRlLCB0aGVuIEkgaG9wZSB5b3UKPiAgc3RheSBhd2F5IGZy
-b20gY29kZSBJJ20gcmVzcG9uc2libGUgZm9yIQoKUGxlYXNlIGRvbid0IGFjY3VzZSBvdGhlcnMg
-b2YgcmVja2xlc3NuZXNzIG9yIGluY29tcGV0ZW5jZSwgZXNwZWNpYWxseQppZiB5b3UgZGlkbid0
-IHVuZGVyc3RhbmQgd2hhdCB0aGV5IHNhaWQuCgo+IEEgd2FybmluZyBpcyBvbmx5IHVzZWZ1bCBi
-ZWNhdXNlIGl0IG1ha2VzIHlvdSAqdGhpbmsqIGFib3V0IHRoZQo+ICBjb2RlLiAgSWYgeW91IHN1
-cHByZXNzIHRoZSB3YXJuaW5nIHdpdGhvdXQgZG9pbmcgdGhhdCB0aGlua2luZywKPiAgdGhlbiB5
-b3UgbWFkZSB0aGUgd2FybmluZyB1c2VsZXNzOyBhbmQgaWYgdGhlIHdhcm5pbmcgbWFkZSB5b3UK
-PiAgdGhpbmsgYWJvdXQgY29kZSB0aGF0IGRpZG4ndCAqbmVlZCogaXQsIHRoZW4gdGhlIHdhcm5p
-bmcgd2FzCj4gIHVzZWxlc3MgZnJvbSB0aGUgc3RhcnQuCgpXZSBhcmUgbm90IHN1cHByZXNzaW5n
-IHRoZSB3YXJuaW5nLiBRdWl0ZSB0aGUgb3Bwb3NpdGUsIGluIGZhY3QuCgo+IFNvIG1ha2UgeW91
-ciBtaW5kIHVwOiBkb2VzIENsYW5nJ3Mgc3RyaWN0ZXIgLVdpbXBsaWNpdC1mYWxsdGhyb3VnaAo+
-ICBmbGFnIHVwIGNvZGUgdGhhdCBuZWVkcyB0aG91Z2h0IChpbiB3aGljaCBjYXNlIHRoZSBmaXhl
-cyB0YWtlCj4gIGVmZm9ydCBib3RoIHRvIGF1dGhvciBhbmQgdG8gcmV2aWV3KQoKQXMgSSBzYWlk
-IHNldmVyYWwgdGltZXMgYWxyZWFkeSwgaXQgZG9lcyB0YWtlIHRpbWUgdG8gcmV2aWV3IGlmIHRo
-ZQptYWludGFpbmVyIHdhbnRzIHRvIHRha2UgdGhlIGNoYW5jZSB0byBzZWUgaWYgdGhleSBoYWQg
-YSBidWcgdG8gYmVnaW4Kd2l0aCwgYnV0IGl0IGRvZXMgbm90IHJlcXVpcmUgdGhvdWdodCBmb3Ig
-dGhlIGF1dGhvciBpZiB0aGV5IGp1c3QgZ28KZm9yIGVxdWl2YWxlbnQgY29kZWdlbi4KCj4gb3Ig
-ZG9lcyBpdCBmbGFnIHVwIGNvZGUKPiAgdGhhdCBjYW4gYmUgbWluZGxlc3NseSAiZml4ZWQiIChp
-biB3aGljaCBjYXNlIHRoZSB3YXJuaW5nIGlzCj4gIHdvcnRobGVzcyk/ICBQcm9wb25lbnRzIGlu
-IHRoaXMgdGhyZWFkIHNlZW0gdG8gYmUgdHJ5aW5nIHRvCj4gIGhhdmUgaXQgYm90aCB3YXlzLgoK
-QSB3YXJuaW5nIGlzIG5vdCB3b3J0aGxlc3MganVzdCBiZWNhdXNlIHlvdSBjYW4gbWluZGxlc3Ns
-eSBmaXggaXQuClRoZXJlIGFyZSBtYW55IGNvdW50ZXJleGFtcGxlcywgZS5nLiBtYW55CmNoZWNr
-cGF0Y2gvbGludC9sYW5nLWZvcm1hdC9pbmRlbnRhdGlvbiB3YXJuaW5ncywgZnVuY3Rpb25hbCBv
-bmVzIGxpa2UKdGhlIGBpZiAoYSA9IGIpYCB3YXJuaW5nLi4uCgpDaGVlcnMsCk1pZ3VlbAoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4
-IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Thu 26-11-20 14:03:58, Christoph Hellwig wrote:
+> Move more code that is only run on the outer open but not the open of
+> the underlying whole device when opening a partition into blkdev_get,
+> which leads to a much easier to follow structure.
+> 
+> This allows to simplify the disk and module refcounting so that one
+> reference is held for each open, similar to what we do with normal
+> file operations.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Acked-by: Tejun Heo <tj@kernel.org>
+
+The patch looks good to me. You can add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+
+> ---
+>  fs/block_dev.c | 185 +++++++++++++++++++++++--------------------------
+>  1 file changed, 86 insertions(+), 99 deletions(-)
+> 
+> diff --git a/fs/block_dev.c b/fs/block_dev.c
+> index 41c50cfba864e2..86a61a2141f642 100644
+> --- a/fs/block_dev.c
+> +++ b/fs/block_dev.c
+> @@ -1403,46 +1403,12 @@ EXPORT_SYMBOL_GPL(bdev_disk_changed);
+>   *  mutex_lock(part->bd_mutex)
+>   *    mutex_lock_nested(whole->bd_mutex, 1)
+>   */
+> -
+> -static int __blkdev_get(struct block_device *bdev, fmode_t mode, void *holder,
+> -		int for_part)
+> +static int __blkdev_get(struct block_device *bdev, struct gendisk *disk,
+> +		int partno, fmode_t mode)
+>  {
+> -	struct block_device *whole = NULL, *claiming = NULL;
+> -	struct gendisk *disk;
+>  	int ret;
+> -	int partno;
+> -	bool first_open = false, unblock_events = true, need_restart;
+> -
+> - restart:
+> -	need_restart = false;
+> -	ret = -ENXIO;
+> -	disk = bdev_get_gendisk(bdev, &partno);
+> -	if (!disk)
+> -		goto out;
+> -
+> -	if (partno) {
+> -		whole = bdget_disk(disk, 0);
+> -		if (!whole) {
+> -			ret = -ENOMEM;
+> -			goto out_put_disk;
+> -		}
+> -	}
+>  
+> -	if (!for_part && (mode & FMODE_EXCL)) {
+> -		WARN_ON_ONCE(!holder);
+> -		if (whole)
+> -			claiming = whole;
+> -		else
+> -			claiming = bdev;
+> -		ret = bd_prepare_to_claim(bdev, claiming, holder);
+> -		if (ret)
+> -			goto out_put_whole;
+> -	}
+> -
+> -	disk_block_events(disk);
+> -	mutex_lock_nested(&bdev->bd_mutex, for_part);
+>  	if (!bdev->bd_openers) {
+> -		first_open = true;
+>  		bdev->bd_disk = disk;
+>  		bdev->bd_contains = bdev;
+>  		bdev->bd_partno = partno;
+> @@ -1454,15 +1420,8 @@ static int __blkdev_get(struct block_device *bdev, fmode_t mode, void *holder,
+>  				goto out_clear;
+>  
+>  			ret = 0;
+> -			if (disk->fops->open) {
+> +			if (disk->fops->open)
+>  				ret = disk->fops->open(bdev, mode);
+> -				/*
+> -				 * If we lost a race with 'disk' being deleted,
+> -				 * try again.  See md.c
+> -				 */
+> -				if (ret == -ERESTARTSYS)
+> -					need_restart = true;
+> -			}
+>  
+>  			if (!ret) {
+>  				bd_set_nr_sectors(bdev, get_capacity(disk));
+> @@ -1482,14 +1441,23 @@ static int __blkdev_get(struct block_device *bdev, fmode_t mode, void *holder,
+>  			if (ret)
+>  				goto out_clear;
+>  		} else {
+> -			BUG_ON(for_part);
+> -			ret = __blkdev_get(whole, mode, NULL, 1);
+> -			if (ret)
+> +			struct block_device *whole = bdget_disk(disk, 0);
+> +
+> +			mutex_lock_nested(&whole->bd_mutex, 1);
+> +			ret = __blkdev_get(whole, disk, 0, mode);
+> +			if (ret) {
+> +				mutex_unlock(&whole->bd_mutex);
+> +				bdput(whole);
+>  				goto out_clear;
+> -			bdev->bd_contains = bdgrab(whole);
+> +			}
+> +			whole->bd_part_count++;
+> +			mutex_unlock(&whole->bd_mutex);
+> +
+> +			bdev->bd_contains = whole;
+>  			bdev->bd_part = disk_get_part(disk, partno);
+>  			if (!(disk->flags & GENHD_FL_UP) ||
+>  			    !bdev->bd_part || !bdev->bd_part->nr_sects) {
+> +				__blkdev_put(whole, mode, 1);
+>  				ret = -ENXIO;
+>  				goto out_clear;
+>  			}
+> @@ -1509,58 +1477,17 @@ static int __blkdev_get(struct block_device *bdev, fmode_t mode, void *holder,
+>  			    (!ret || ret == -ENOMEDIUM))
+>  				bdev_disk_changed(bdev, ret == -ENOMEDIUM);
+>  			if (ret)
+> -				goto out_unlock_bdev;
+> +				return ret;
+>  		}
+>  	}
+>  	bdev->bd_openers++;
+> -	if (for_part)
+> -		bdev->bd_part_count++;
+> -	if (claiming)
+> -		bd_finish_claiming(bdev, claiming, holder);
+> -
+> -	/*
+> -	 * Block event polling for write claims if requested.  Any write holder
+> -	 * makes the write_holder state stick until all are released.  This is
+> -	 * good enough and tracking individual writeable reference is too
+> -	 * fragile given the way @mode is used in blkdev_get/put().
+> -	 */
+> -	if (claiming && (mode & FMODE_WRITE) && !bdev->bd_write_holder &&
+> -	    (disk->flags & GENHD_FL_BLOCK_EVENTS_ON_EXCL_WRITE)) {
+> -		bdev->bd_write_holder = true;
+> -		unblock_events = false;
+> -	}
+> -	mutex_unlock(&bdev->bd_mutex);
+> -
+> -	if (unblock_events)
+> -		disk_unblock_events(disk);
+> -
+> -	/* only one opener holds refs to the module and disk */
+> -	if (!first_open)
+> -		put_disk_and_module(disk);
+> -	if (whole)
+> -		bdput(whole);
+>  	return 0;
+>  
+>   out_clear:
+>  	disk_put_part(bdev->bd_part);
+>  	bdev->bd_disk = NULL;
+>  	bdev->bd_part = NULL;
+> -	if (bdev != bdev->bd_contains)
+> -		__blkdev_put(bdev->bd_contains, mode, 1);
+>  	bdev->bd_contains = NULL;
+> - out_unlock_bdev:
+> -	if (claiming)
+> -		bd_abort_claiming(bdev, claiming, holder);
+> -	mutex_unlock(&bdev->bd_mutex);
+> -	disk_unblock_events(disk);
+> - out_put_whole:
+> - 	if (whole)
+> -		bdput(whole);
+> - out_put_disk:
+> -	put_disk_and_module(disk);
+> -	if (need_restart)
+> -		goto restart;
+> - out:
+>  	return ret;
+>  }
+>  
+> @@ -1585,7 +1512,12 @@ static int __blkdev_get(struct block_device *bdev, fmode_t mode, void *holder,
+>   */
+>  static int blkdev_get(struct block_device *bdev, fmode_t mode, void *holder)
+>  {
+> -	int ret, perm = 0;
+> +	struct block_device *claiming;
+> +	bool unblock_events = true;
+> +	struct gendisk *disk;
+> +	int perm = 0;
+> +	int partno;
+> +	int ret;
+>  
+>  	if (mode & FMODE_READ)
+>  		perm |= MAY_READ;
+> @@ -1595,13 +1527,67 @@ static int blkdev_get(struct block_device *bdev, fmode_t mode, void *holder)
+>  	if (ret)
+>  		goto bdput;
+>  
+> -	ret =__blkdev_get(bdev, mode, holder, 0);
+> -	if (ret)
+> +	/*
+> +	 * If we lost a race with 'disk' being deleted, try again.  See md.c.
+> +	 */
+> +retry:
+> +	ret = -ENXIO;
+> +	disk = bdev_get_gendisk(bdev, &partno);
+> +	if (!disk)
+>  		goto bdput;
+> -	return 0;
+>  
+> +	if (mode & FMODE_EXCL) {
+> +		WARN_ON_ONCE(!holder);
+> +	
+> +		ret = -ENOMEM;
+> +		claiming = bdget_disk(disk, 0);
+> +		if (!claiming)
+> +			goto put_disk;
+> +		ret = bd_prepare_to_claim(bdev, claiming, holder);
+> +		if (ret)
+> +			goto put_claiming;
+> +	}
+> +
+> +	disk_block_events(disk);
+> +
+> +	mutex_lock(&bdev->bd_mutex);
+> +	ret =__blkdev_get(bdev, disk, partno, mode);
+> +	if (!(mode & FMODE_EXCL)) {
+> +		; /* nothing to do here */
+> +	} else if (ret) {
+> +		bd_abort_claiming(bdev, claiming, holder);
+> +	} else {
+> +		bd_finish_claiming(bdev, claiming, holder);
+> +
+> +		/*
+> +		 * Block event polling for write claims if requested.  Any write
+> +		 * holder makes the write_holder state stick until all are
+> +		 * released.  This is good enough and tracking individual
+> +		 * writeable reference is too fragile given the way @mode is
+> +		 * used in blkdev_get/put().
+> +		 */
+> +		if ((mode & FMODE_WRITE) && !bdev->bd_write_holder &&
+> +		    (disk->flags & GENHD_FL_BLOCK_EVENTS_ON_EXCL_WRITE)) {
+> +			bdev->bd_write_holder = true;
+> +			unblock_events = false;
+> +		}
+> +	}
+> +	mutex_unlock(&bdev->bd_mutex);
+> +
+> +	if (unblock_events)
+> +		disk_unblock_events(disk);
+> +
+> +put_claiming:
+> +	if (mode & FMODE_EXCL)
+> +		bdput(claiming);
+> +put_disk:
+> +	if (ret)
+> +		put_disk_and_module(disk);
+> +	if (ret == -ERESTARTSYS)
+> +		goto retry;
+>  bdput:
+> -	bdput(bdev);
+> +	if (ret)
+> +		bdput(bdev);
+>  	return ret;
+>  }
+>  
+> @@ -1749,8 +1735,6 @@ static void __blkdev_put(struct block_device *bdev, fmode_t mode, int for_part)
+>  		if (bdev_is_partition(bdev))
+>  			victim = bdev->bd_contains;
+>  		bdev->bd_contains = NULL;
+> -
+> -		put_disk_and_module(disk);
+>  	} else {
+>  		if (!bdev_is_partition(bdev) && disk->fops->release)
+>  			disk->fops->release(disk, mode);
+> @@ -1763,6 +1747,8 @@ static void __blkdev_put(struct block_device *bdev, fmode_t mode, int for_part)
+>  
+>  void blkdev_put(struct block_device *bdev, fmode_t mode)
+>  {
+> +	struct gendisk *disk = bdev->bd_disk;
+> +
+>  	mutex_lock(&bdev->bd_mutex);
+>  
+>  	if (mode & FMODE_EXCL) {
+> @@ -1791,7 +1777,7 @@ void blkdev_put(struct block_device *bdev, fmode_t mode)
+>  		 * unblock evpoll if it was a write holder.
+>  		 */
+>  		if (bdev_free && bdev->bd_write_holder) {
+> -			disk_unblock_events(bdev->bd_disk);
+> +			disk_unblock_events(disk);
+>  			bdev->bd_write_holder = false;
+>  		}
+>  	}
+> @@ -1801,11 +1787,12 @@ void blkdev_put(struct block_device *bdev, fmode_t mode)
+>  	 * event.  This is to ensure detection of media removal commanded
+>  	 * from userland - e.g. eject(1).
+>  	 */
+> -	disk_flush_events(bdev->bd_disk, DISK_EVENT_MEDIA_CHANGE);
+> +	disk_flush_events(disk, DISK_EVENT_MEDIA_CHANGE);
+>  
+>  	mutex_unlock(&bdev->bd_mutex);
+>  
+>  	__blkdev_put(bdev, mode, 0);
+> +	put_disk_and_module(disk);
+>  }
+>  EXPORT_SYMBOL(blkdev_put);
+>  
+> -- 
+> 2.29.2
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
