@@ -5,19 +5,19 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11D4CC56202
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 14:56:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44D80C56202
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 15:02:59 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 68385206B7
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 14:56:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CA4F820B80
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2020 15:02:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="d7MJGUGq";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="kTeBBPXT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68385206B7
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ejIcooQu";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="NVToo5zU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA4F820B80
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,37 +26,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=dhV4+8hetoOSWv5PmV0bHjti7NtMmOBaLGcuobdEyPU=; b=d7MJGUGqSxcN5IuDZ9cy3POo3
-	UmwpMy7gbnCp/+OmHzmXyV3eU2aYtFXE2IYRCt33yBmPpsdzwfJU3NOzYJv5orB/VGOmBD7zZ2hFg
-	kkwctK7E6eYphdh03yAwFsZhQ6k/XOAsYwitZ7LgKFZX966+ELNxlwBIaVVn1LR71txU0KOr9Mzu5
-	ZUyVhZDWYR8PkX1shSCmyZ3Yyi9eyAapUo6kVoFdP7qho4adbA0YGI5bD+tc3AFEazqa5//Wonsgf
-	AFIGkLNvOZp2HXTsjCvUqvK8N4KXTZOtELyeiMjNxXde8NnhpKWk7d9xV/xP7zcrik8CJvTJdSVYE
-	PCog8WHag==;
+	 bh=uXhkhTkCnp+d8cW2YYFt0Vj3r+EDZVQVRvxKSWFjTU4=; b=ejIcooQum2K8pOiyYADySTzx3
+	9/MdezrOG6HDsBNoYzjrW541ULWCQR6qcHU76DmLKV/3JUPdsFizXyzYqGvSbO+Tiuh7kdukMQ9P6
+	37L5WYtaS15jwBCaLtYlDklHTTk4kyEEaYgwX4dhvGve87PEUTGxwyoVjJFjw5qKT4zx+d4SztqyI
+	iGa/J0sJYydhRhpbx1dI5SsRQt9VlMfqEVyCaLDCSnKfbrvLBfUDCIVZW3TFb/K7B4cp45RYMWi3M
+	DXW4ZqFWTSjxT1LZAeHtL5Pi1MNXqkmkRveIPSxSLeKln2Q1XRr2scV+1y3nhf4oGLfjMb4tc7PpR
+	gfOxA8zaQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kiH1V-0000io-5Q; Thu, 26 Nov 2020 13:09:21 +0000
+	id 1kiH2A-00013U-7r; Thu, 26 Nov 2020 13:10:02 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kiGz5-00082U-Ox
- for linux-mtd@merlin.infradead.org; Thu, 26 Nov 2020 13:06:52 +0000
+ id 1kiGz9-00083I-QO
+ for linux-mtd@merlin.infradead.org; Thu, 26 Nov 2020 13:06:56 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=TyzqnxJJ0lPyhYWk7Q6Y2rXryMj44xbGM+SIZQYkZvc=; b=kTeBBPXTZGDQlqvWXi1ub7lmvK
- cpnK08gWLXcWbBPPdmkRvLMxHdqyIGOqpWCQb5BjlbvAcY6waRjucuwF4EbPBG7PVYT8grRUIiy1I
- fRAKYhasJriE+kayDsRRwhhmS9JHgMY4jzN3q2QtYJh7eowAxjzyt6GZ+uqeAJoSrPo/M4Y/2G0Rq
- 2AeJ6qfmzuWSmewSR31lCCoXK3I4tQvHKtPnxfZPwYX2hoOoyg85yVBAu4gJlqBjdkuYiZkCjfykT
- 5S+Pyh1/6J6gTrQdbfu2ByGBPLfUPRdCc3a/D5X6Ubl7OXvbluV+9MZBFCnaPBnqGtNXp5j+aW9pi
- +okagJjg==;
+ bh=SW7QB0PrcKUZMioCTHfjVYRSAQJETlEvEJA7mQw1f90=; b=NVToo5zU1EFnAElnvGaVj64+Rx
+ nW3JxcaS+L7MPu3shf5g1nJc5Ijppk71Op9TuJplM5DJKDp5UB2L9eyDVqcgKMJLAQhE7VwVil29k
+ Jd6YI1q8NsyxKxrsXImlhwM7jb4VZ5CDEcsbuhetZoJ3P1pTD9ux5QphDxyMZri4O2urqFS7vWvcS
+ B2GJrmPRYwydkICtqROCG+yFhr64PFv6ZO6TusbpDN43JuAyxbLS/LLwLTBP8WZuHUo2/v9qtuZ3w
+ wlOQxaBlPsRBUrgYABJ9UCJ7xMIGsZmIqC9FqvTcu+emmm51PWeePdnojUtNLM8o9j+nahMKajOW+
+ rcfNluMw==;
 Received: from [2001:4bb8:18c:1dd6:27b8:b8a1:c13e:ceb1] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kiGz3-0003zN-SH; Thu, 26 Nov 2020 13:06:50 +0000
+ id 1kiGz8-00040S-Ao; Thu, 26 Nov 2020 13:06:54 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 12/44] block: add a bdev_kobj helper
-Date: Thu, 26 Nov 2020 14:03:50 +0100
-Message-Id: <20201126130422.92945-13-hch@lst.de>
+Subject: [PATCH 15/44] block: change the hash used for looking up block devices
+Date: Thu, 26 Nov 2020 14:03:53 +0100
+Message-Id: <20201126130422.92945-16-hch@lst.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201126130422.92945-1-hch@lst.de>
 References: <20201126130422.92945-1-hch@lst.de>
@@ -86,155 +86,67 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add a little helper to find the kobject for a struct block_device.
+Adding the minor to the major creates tons of pointless conflicts. Just
+use the dev_t itself, which is 32-bits and thus is guaranteed to fit
+into ino_t.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Acked-by: Tejun Heo <tj@kernel.org>
-Acked-by: Coly Li <colyli@suse.de>		[bcache]
 ---
- drivers/md/bcache/super.c |  7 ++-----
- drivers/md/md.c           |  4 +---
- fs/block_dev.c            |  6 +++---
- fs/btrfs/sysfs.c          | 15 +++------------
- include/linux/blk_types.h |  3 +++
- 5 files changed, 12 insertions(+), 23 deletions(-)
+ fs/block_dev.c | 26 ++------------------------
+ 1 file changed, 2 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-index 46a00134a36ae1..a6a5e21e4fd136 100644
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -1447,8 +1447,7 @@ static int register_bdev(struct cache_sb *sb, struct cache_sb_disk *sb_disk,
- 		goto err;
- 
- 	err = "error creating kobject";
--	if (kobject_add(&dc->disk.kobj, &part_to_dev(bdev->bd_part)->kobj,
--			"bcache"))
-+	if (kobject_add(&dc->disk.kobj, bdev_kobj(bdev), "bcache"))
- 		goto err;
- 	if (bch_cache_accounting_add_kobjs(&dc->accounting, &dc->disk.kobj))
- 		goto err;
-@@ -2342,9 +2341,7 @@ static int register_cache(struct cache_sb *sb, struct cache_sb_disk *sb_disk,
- 		goto err;
- 	}
- 
--	if (kobject_add(&ca->kobj,
--			&part_to_dev(bdev->bd_part)->kobj,
--			"bcache")) {
-+	if (kobject_add(&ca->kobj, bdev_kobj(bdev), "bcache")) {
- 		err = "error calling kobject_add";
- 		ret = -ENOMEM;
- 		goto out;
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index b2edf5e0f965b5..7ce6047c856ea2 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -2414,7 +2414,6 @@ EXPORT_SYMBOL(md_integrity_add_rdev);
- static int bind_rdev_to_array(struct md_rdev *rdev, struct mddev *mddev)
- {
- 	char b[BDEVNAME_SIZE];
--	struct kobject *ko;
- 	int err;
- 
- 	/* prevent duplicates */
-@@ -2477,9 +2476,8 @@ static int bind_rdev_to_array(struct md_rdev *rdev, struct mddev *mddev)
- 	if ((err = kobject_add(&rdev->kobj, &mddev->kobj, "dev-%s", b)))
- 		goto fail;
- 
--	ko = &part_to_dev(rdev->bdev->bd_part)->kobj;
- 	/* failure here is OK */
--	err = sysfs_create_link(&rdev->kobj, ko, "block");
-+	err = sysfs_create_link(&rdev->kobj, bdev_kobj(rdev->bdev), "block");
- 	rdev->sysfs_state = sysfs_get_dirent_safe(rdev->kobj.sd, "state");
- 	rdev->sysfs_unack_badblocks =
- 		sysfs_get_dirent_safe(rdev->kobj.sd, "unacknowledged_bad_blocks");
 diff --git a/fs/block_dev.c b/fs/block_dev.c
-index 33c29106c98907..c5755150c6be62 100644
+index c5755150c6be62..d707ab376da86e 100644
 --- a/fs/block_dev.c
 +++ b/fs/block_dev.c
-@@ -1242,7 +1242,7 @@ int bd_link_disk_holder(struct block_device *bdev, struct gendisk *disk)
- 	holder->disk = disk;
- 	holder->refcnt = 1;
+@@ -863,35 +863,12 @@ void __init bdev_cache_init(void)
+ 	blockdev_superblock = bd_mnt->mnt_sb;   /* For writeback */
+ }
  
--	ret = add_symlink(disk->slave_dir, &part_to_dev(bdev->bd_part)->kobj);
-+	ret = add_symlink(disk->slave_dir, bdev_kobj(bdev));
- 	if (ret)
- 		goto out_free;
- 
-@@ -1259,7 +1259,7 @@ int bd_link_disk_holder(struct block_device *bdev, struct gendisk *disk)
- 	goto out_unlock;
- 
- out_del:
--	del_symlink(disk->slave_dir, &part_to_dev(bdev->bd_part)->kobj);
-+	del_symlink(disk->slave_dir, bdev_kobj(bdev));
- out_free:
- 	kfree(holder);
- out_unlock:
-@@ -1287,7 +1287,7 @@ void bd_unlink_disk_holder(struct block_device *bdev, struct gendisk *disk)
- 	holder = bd_find_holder_disk(bdev, disk);
- 
- 	if (!WARN_ON_ONCE(holder == NULL) && !--holder->refcnt) {
--		del_symlink(disk->slave_dir, &part_to_dev(bdev->bd_part)->kobj);
-+		del_symlink(disk->slave_dir, bdev_kobj(bdev));
- 		del_symlink(bdev->bd_part->holder_dir,
- 			    &disk_to_dev(disk)->kobj);
- 		kobject_put(bdev->bd_part->holder_dir);
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 279d9262b676d4..24b6c6dc69000a 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -1232,8 +1232,6 @@ int btrfs_sysfs_add_space_info_type(struct btrfs_fs_info *fs_info,
- 
- void btrfs_sysfs_remove_device(struct btrfs_device *device)
- {
--	struct hd_struct *disk;
--	struct kobject *disk_kobj;
- 	struct kobject *devices_kobj;
- 
- 	/*
-@@ -1243,11 +1241,8 @@ void btrfs_sysfs_remove_device(struct btrfs_device *device)
- 	devices_kobj = device->fs_info->fs_devices->devices_kobj;
- 	ASSERT(devices_kobj);
- 
--	if (device->bdev) {
--		disk = device->bdev->bd_part;
--		disk_kobj = &part_to_dev(disk)->kobj;
--		sysfs_remove_link(devices_kobj, disk_kobj->name);
--	}
-+	if (device->bdev)
-+		sysfs_remove_link(devices_kobj, bdev_kobj(device->bdev)->name);
- 
- 	if (device->devid_kobj.state_initialized) {
- 		kobject_del(&device->devid_kobj);
-@@ -1353,11 +1348,7 @@ int btrfs_sysfs_add_device(struct btrfs_device *device)
- 	nofs_flag = memalloc_nofs_save();
- 
- 	if (device->bdev) {
--		struct hd_struct *disk;
--		struct kobject *disk_kobj;
+-/*
+- * Most likely _very_ bad one - but then it's hardly critical for small
+- * /dev and can be fixed when somebody will need really large one.
+- * Keep in mind that it will be fed through icache hash function too.
+- */
+-static inline unsigned long hash(dev_t dev)
+-{
+-	return MAJOR(dev)+MINOR(dev);
+-}
 -
--		disk = device->bdev->bd_part;
--		disk_kobj = &part_to_dev(disk)->kobj;
-+		struct kobject *disk_kobj = bdev_kobj(device->bdev);
+-static int bdev_test(struct inode *inode, void *data)
+-{
+-	return BDEV_I(inode)->bdev.bd_dev == *(dev_t *)data;
+-}
+-
+-static int bdev_set(struct inode *inode, void *data)
+-{
+-	BDEV_I(inode)->bdev.bd_dev = *(dev_t *)data;
+-	return 0;
+-}
+-
+ static struct block_device *bdget(dev_t dev)
+ {
+ 	struct block_device *bdev;
+ 	struct inode *inode;
  
- 		ret = sysfs_create_link(devices_kobj, disk_kobj, disk_kobj->name);
- 		if (ret) {
-diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
-index ebfb4e7c1fd125..9698f459cc65c9 100644
---- a/include/linux/blk_types.h
-+++ b/include/linux/blk_types.h
-@@ -49,6 +49,9 @@ struct block_device {
- 	struct super_block	*bd_fsfreeze_sb;
- } __randomize_layout;
+-	inode = iget5_locked(blockdev_superblock, hash(dev),
+-			bdev_test, bdev_set, &dev);
+-
++	inode = iget_locked(blockdev_superblock, dev);
+ 	if (!inode)
+ 		return NULL;
  
-+#define bdev_kobj(_bdev) \
-+	(&part_to_dev((_bdev)->bd_part)->kobj)
-+
- /*
-  * Block error status values.  See block/blk-core:blk_errors for the details.
-  * Alpha cannot write a byte atomically, so we need to use 32-bit value.
+@@ -903,6 +880,7 @@ static struct block_device *bdget(dev_t dev)
+ 		bdev->bd_super = NULL;
+ 		bdev->bd_inode = inode;
+ 		bdev->bd_part_count = 0;
++		bdev->bd_dev = dev;
+ 		inode->i_mode = S_IFBLK;
+ 		inode->i_rdev = dev;
+ 		inode->i_bdev = bdev;
 -- 
 2.29.2
 
