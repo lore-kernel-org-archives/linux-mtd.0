@@ -2,21 +2,21 @@ Return-Path: <SRS0=1rsk=FB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE8FEC2D0E4
-	for <linux-mtd@archiver.kernel.org>; Fri, 27 Nov 2020 12:46:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 374CAC2D0E4
+	for <linux-mtd@archiver.kernel.org>; Fri, 27 Nov 2020 12:54:55 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5FB79204EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 27 Nov 2020 12:46:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 036B022243
+	for <linux-mtd@archiver.kernel.org>; Fri, 27 Nov 2020 12:54:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AAIZP+Lp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5FB79204EF
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="j+6Yi+EI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 036B022243
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,42 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=rMXWszhAjNWdz4vN5gfqCT5WcL0ZvJsPAS/cDPKhLLU=; b=AAIZP+Lp3l+xGJVlbNvykRYkM
-	sH/23vxChkiPftsOkJ3oqnveruyp2uj+C25qXVu4VqDR+w1qi7XKCswGUjCCwZQeiYlQslYK+flUP
-	Z2gK2lKW72y219/cQQdtbAIy6sPL7w8JVDpLLyPGhBHNB0it0+Uv9xmyJK1fELyCDinLtdNhNr8ct
-	B9UnavyOPdF1ATPrGQPrvxjoe6ig0k8gKBd57imogqQ9wBtIHW+mpBKxmf0fg2SfQ+KMpWtaY6byi
-	URXWwAPIjdy5FKspFwfM4nxGgLt5Q1R/XS9GTzka/cKV/rfvw89us9oYop38LrKfPFu1VG/eafw31
-	aE8ZocH5g==;
+	 bh=TvCg6mtf2fBcP2UO9VSdPTzyk0/+0V7JbLyvf/a9COM=; b=j+6Yi+EIeuYjEpxpX/ak9WPXn
+	cJWXD2mXc9r0fp+fLqOkdeFJZQ2/jaxe6mbAtUH+dU0G8bbyrLyotGznop9GvkqqycoUYv6ksdxP9
+	1+tfTq3gxrKDtHAXrbpWhv3l2fBpCjPhbUYbFfJLeP3BVXjDqX2kJLbS/zKTEl1+Blp7GXaDcDbjy
+	A7lrJs9T1fyt4NKEgjwV1sy1fV7nsfgTqGKs2VO00615LTmRz731R389r2VJCkDwqrU/0Iueq4T+N
+	yKJ0aJC0IcgXy/Og9g25vb5976TThVPAGss6QlVGaFHKvGLLl7azfxjvCGEdpB1RBEk2HOVNbGipp
+	xHMbNgsQA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kid8A-0005W8-Ji; Fri, 27 Nov 2020 12:45:42 +0000
+	id 1kidFy-0003Xe-Ac; Fri, 27 Nov 2020 12:53:46 +0000
 Received: from mx2.suse.de ([195.135.220.15])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kid87-0005TF-GN
- for linux-mtd@lists.infradead.org; Fri, 27 Nov 2020 12:45:40 +0000
+ id 1kidFv-0003WM-92
+ for linux-mtd@lists.infradead.org; Fri, 27 Nov 2020 12:53:44 +0000
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 280CAABD7;
- Fri, 27 Nov 2020 12:45:38 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id 3E46AABD7;
+ Fri, 27 Nov 2020 12:53:42 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
- id 4AC6D1E1318; Fri, 27 Nov 2020 13:45:37 +0100 (CET)
-Date: Fri, 27 Nov 2020 13:45:37 +0100
+ id 8B3201E1318; Fri, 27 Nov 2020 13:53:41 +0100 (CET)
+Date: Fri, 27 Nov 2020 13:53:41 +0100
 From: Jan Kara <jack@suse.cz>
 To: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 37/44] block: switch partition lookup to use struct
+Subject: Re: [PATCH 41/44] block: switch disk_part_iter_* to use a struct
  block_device
-Message-ID: <20201127124537.GC27162@quack2.suse.cz>
+Message-ID: <20201127125341.GD27162@quack2.suse.cz>
 References: <20201126130422.92945-1-hch@lst.de>
- <20201126130422.92945-38-hch@lst.de>
- <20201126182219.GC422@quack2.suse.cz>
- <20201127094842.GA15984@lst.de>
+ <20201126130422.92945-42-hch@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20201127094842.GA15984@lst.de>
+In-Reply-To: <20201126130422.92945-42-hch@lst.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201127_074539_725443_AD75120B 
-X-CRM114-Status: GOOD (  23.17  )
+X-CRM114-CacheID: sfid-20201127_075343_545904_3DF71E5C 
+X-CRM114-Status: GOOD (  17.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,8 +70,8 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Jens Axboe <axboe@kernel.dk>, Chao Yu <yuchao0@huawei.com>,
- Jan Kara <jack@suse.cz>, Mike Snitzer <snitzer@redhat.com>, linux-mm@kvack.org,
+Cc: Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
+ Mike Snitzer <snitzer@redhat.com>, linux-mm@kvack.org,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jan Kara <jack@suse.com>,
  Josef Bacik <josef@toxicpanda.com>, Coly Li <colyli@suse.de>,
  linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
@@ -85,50 +83,48 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri 27-11-20 10:48:42, Christoph Hellwig wrote:
-> On Thu, Nov 26, 2020 at 07:22:19PM +0100, Jan Kara wrote:
-> > On Thu 26-11-20 14:04:15, Christoph Hellwig wrote:
-> > >  struct hd_struct *disk_get_part(struct gendisk *disk, int partno)
-> > >  {
-> > > -	struct hd_struct *part;
-> > > +	struct block_device *part;
-> > >  
-> > >  	rcu_read_lock();
-> > >  	part = __disk_get_part(disk, partno);
-> > > -	if (part)
-> > > -		get_device(part_to_dev(part));
-> > > -	rcu_read_unlock();
-> > > +	if (!part) {
-> > > +		rcu_read_unlock();
-> > > +		return NULL;
-> > > +	}
-> > >  
-> > > -	return part;
-> > > +	get_device(part_to_dev(part->bd_part));
-> > > +	rcu_read_unlock();
-> > > +	return part->bd_part;
-> > >  }
-> > 
-> > This is not directly related to this particular patch but I'm wondering:
-> > What prevents say del_gendisk() from racing with disk_get_part(), so that
-> > delete_partition() is called just after we fetched 'part' pointer and the
-> > last 'part' kobject ref is dropped before disk_get_part() calls
-> > get_device()? I don't see anything preventing that and so we'd hand out
-> > 'part' that is soon to be freed (after RCU grace period expires).
+On Thu 26-11-20 14:04:19, Christoph Hellwig wrote:
+> Switch the partition iter infrastructure to iterate over block_device
+> references instead of hd_struct ones mostly used to get at the
+> block_device.
 > 
-> At this point the hd_struct is already allocated together with the
-> block_device, and thus only freed after the last block_device reference
-> goes away plus the inode freeing RCU grace period.  So the device model
-> ref to part is indeed gone, but that simply does not matter any more.
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Well, but once device model ref to part is gone, we're going to free the
-bdev inode ref as well. Thus there's nothing which pins the bdev containing
-hd_struct?
+The patch mostly looks good. Two comments below.
 
-But now as I'm thinking about it you later switch the device model reference
-to just pure inode reference and use igrab() which will reliably return
-NULL if the inode is on it's way to be destroyed so probably we are safe in
-the final state.
+> diff --git a/block/genhd.c b/block/genhd.c
+> index 28299b24173be1..b58595f2ca33b1 100644
+> --- a/block/genhd.c
+> +++ b/block/genhd.c
+> @@ -233,7 +233,7 @@ EXPORT_SYMBOL_GPL(disk_part_iter_init);
+>   * CONTEXT:
+>   * Don't care.
+>   */
+> -struct hd_struct *disk_part_iter_next(struct disk_part_iter *piter)
+> +struct block_device *disk_part_iter_next(struct disk_part_iter *piter)
+>  {
+>  	struct disk_part_tbl *ptbl;
+>  	int inc, end;
+
+There's:
+
+        /* put the last partition */
+        disk_put_part(piter->part);
+        piter->part = NULL;
+
+at the beginning of disk_part_iter_next() which also needs switching to
+bdput(), doesn't it?
+
+> @@ -271,8 +271,7 @@ struct hd_struct *disk_part_iter_next(struct disk_part_iter *piter)
+>  		      piter->idx == 0))
+>  			continue;
+>  
+> -		get_device(part_to_dev(part->bd_part));
+> -		piter->part = part->bd_part;
+> +		piter->part = bdgrab(part);
+
+bdgrab() could return NULL if we are racing with delete_partition() so I
+think we need to take care of that.
 
 								Honza
 -- 
