@@ -2,85 +2,97 @@ Return-Path: <SRS0=1rsk=FB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C74B2C3E8C5
-	for <linux-mtd@archiver.kernel.org>; Fri, 27 Nov 2020 18:56:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3A42C5519F
+	for <linux-mtd@archiver.kernel.org>; Fri, 27 Nov 2020 19:14:42 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F145321D7A
-	for <linux-mtd@archiver.kernel.org>; Fri, 27 Nov 2020 18:56:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 52F77221F1
+	for <linux-mtd@archiver.kernel.org>; Fri, 27 Nov 2020 19:14:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="q26jkTjQ";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BPYHoK7W"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F145321D7A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="szp2PAP3";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gscfPmR9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 52F77221F1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=0WZbfA6CWoV1GsKhgNzuzYms0Xw+l/Wa1rMfJ4HVsiQ=; b=q26jkTjQIvkkMzyq/6ZFNzOva
-	+zwKbvAbK8+oOm7b6hPmlCNeVjdYUQFYtFIs48KlAkERSsyRq0KwYLr2727rcrcYC/c8+NOomVyzK
-	FcuDAlSOk/rnifoXjRpzTnmxd302tL/XLHXRlyj4HqrO483R1ihUxxR8kyrs9bBRWJpL4wXhE7ElN
-	CTX5mUAdbRdQduSwh6GW3himiQtOkwu3euH0c4a2h8S0AMa4z8ENoWN/7Gn3OHYq4aU2ptibZYhXR
-	+32N/y+SZ2wxPTspDtJ+ElSGy5USq9v/NK54ysKlM9v4tBEE3z1lh9XZTYgHzBcuFS2JM5tX39Lb7
-	DPd43/Z2A==;
+	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=q/AmR+fvx3w0lgANv7yD7iOcYfo6qMYff4YObYbwwsQ=; b=szp2PAP3aIj+AhxJCAvnc2K+v0
+	0XurNOx83WdXBhMNAroqplifS5MG96C4pLJYK6ACLqiTQ98vmeMxhigXrp4ZxokQFnZ7vQ7uCsvY1
+	jA1jBmvMDAaW53aCshL6qicWZE+3fpRn4RX5MLRP9E8i6erqGvKLBG3Lcb+osb5uJ+ijzNPR1Re5J
+	y454yytpt5u4gRy6ScB/WqumRlggmXSZi6W+P++9WjjOfkEwgblJ64d5DbRH/t34vL1V4kTBZQqty
+	VpMpmpsa5nSBdN79OTdWXltryZ6tTkzfe3oiAkY8VojoSeYqcDJX183GTwS4tkQ3eE2yzWlm79yh8
+	TU4m5PKQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kiitJ-0001MZ-S5; Fri, 27 Nov 2020 18:54:45 +0000
-Received: from mail-oi1-x241.google.com ([2607:f8b0:4864:20::241])
+	id 1kijC6-00039y-Fm; Fri, 27 Nov 2020 19:14:10 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kiitH-0001Lx-Ai
- for linux-mtd@lists.infradead.org; Fri, 27 Nov 2020 18:54:44 +0000
-Received: by mail-oi1-x241.google.com with SMTP id c80so6878482oib.2
- for <linux-mtd@lists.infradead.org>; Fri, 27 Nov 2020 10:54:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=c3DOpGKcNuqaqLPfhIybZ4DKwkBEL6Fp9+iinumCxq0=;
- b=BPYHoK7WvONz5Wu61Z/bKc5Bhr3rGM9q5Jrq9ztWStaBRd0HCTZJLrMLcIszKg+cy/
- 9FHdRpFB5C+PBidIIMmZkppgXVbhfAoAHZ2wAapO475ctjKcumPS4ocr2Ly9jJ/VRnD6
- 15lI8JRnKAD7ujNzyOdUZr+9BFu8Kqonb5kaAqwnU6rDaQQx3duZUNtuP/4rJeogw5ND
- ZNX2MHtvujQGz8TSyTntnjgz/eidDVCYHJwB3IBBDO+rTa7XIoCnKSpKehv/G06N6RAr
- TmUg4+ozAsJr/nRWkfukP5YzBCpkpPXtCHYjvjTLXV8a4FlsfAoVdIfMpdr7hnmVu5o+
- aATw==
+ id 1kijC1-00037m-My
+ for linux-mtd@lists.infradead.org; Fri, 27 Nov 2020 19:14:07 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1606504445;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:content-type:content-type;
+ bh=/d0gr28L5usZ6CMCStP6D3CMWZKIP6JyYolWhvHhl68=;
+ b=gscfPmR9gmexwSsk6l80GRqiLls5lmBfDGi3XqUTqcUngXhu5cMpTKc8PoTr+tdZUuksDY
+ qEdIf/0t4fYMowQL/ivl6+iSk3qwBa9T+40/8Rh2Bwz8V1UE5Os5znbn4iOWn5LqrHkt2z
+ WiOAeD1yGHv6zBowV/G8yV5ADvR8FpM=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-157-t8zXGRXUNrOadpm6p_kPDQ-1; Fri, 27 Nov 2020 14:14:03 -0500
+X-MC-Unique: t8zXGRXUNrOadpm6p_kPDQ-1
+Received: by mail-qt1-f197.google.com with SMTP id x62so336038qtd.11
+ for <linux-mtd@lists.infradead.org>; Fri, 27 Nov 2020 11:14:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=c3DOpGKcNuqaqLPfhIybZ4DKwkBEL6Fp9+iinumCxq0=;
- b=W+9DWYE/hLVX6hrzds+Z1nnTdKssI82vmVHtW/J3+VuZDzYV0QrSsMTDTTlOg6r5NS
- BlOJrPS+mV6ZZrZkYFJOJzDkDTfTjOy93dQvm27S6+N6IKsF0Mm3NRX2c5adSami/IWX
- hazGsTPXgu429JrMUBwVqQWofMx6QUAqz8mdrJez4eAI+BZOtAX8KvVeQgGuZMBKhP4U
- dMXiZt/exZOMwGxTXrB8lOcIAeCpjuCEJprwTNK44MxEA4pCr66mUQ6VxApE8d8Ty1HN
- HY1MIypbaco6H2XJoYQHyZqvZU7TS/2qnsV72Zesjt/b5AG/qbCldxJsfP0Xplj3yLQ5
- bp7g==
-X-Gm-Message-State: AOAM532EB56l5IUNjC153MQKnGIXyh+k7UQ+X13OtDUyf20nk8oyYlQ2
- GhKTl6vZeZyJqxRr3k42RSRP3bNdhqjc1r3D+3A+TKN6tlg=
-X-Google-Smtp-Source: ABdhPJxDTdz92QYgFKxhNOR2iBXHl8FwZTKA2U9M6iM+aK85NFetSAcJSq2aQejbK5dHboX9GvZdmnRycdcHtOhhpBc=
-X-Received: by 2002:a05:6808:d:: with SMTP id u13mr6619175oic.49.1606503281228; 
- Fri, 27 Nov 2020 10:54:41 -0800 (PST)
-MIME-Version: 1.0
-References: <20200429165347.48909-1-rminnich@google.com>
- <2666350.AiC22s8V5E@sven-edge>
- <CAP6exY+hHrVvaMcF2tWUUJT=JS_J9NHx=92DzO=GAN==ACSh1Q@mail.gmail.com>
- <2124367.HovnAMPojK@sven-edge>
-In-Reply-To: <2124367.HovnAMPojK@sven-edge>
-From: ron minnich <rminnich@gmail.com>
-Date: Fri, 27 Nov 2020 10:54:30 -0800
-Message-ID: <CAP6exYJ7QR+Y7Vsumecx_3rUC4cNY4xJj4e6759S8US6FX7ADg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: parser: cmdline: Support MTD names containing one or
- more colons
-To: Sven Eckelmann <sven@narfation.org>
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=/d0gr28L5usZ6CMCStP6D3CMWZKIP6JyYolWhvHhl68=;
+ b=PU6laovHkJ+invYriaFbvl/6abVK0PavV0zxmtCJM8AcFmsUd1zUp9/goY0x8kRdTt
+ 1XVDlIyje5BUeQz30JrRTEUVF6UDu4Wc3Xdlk1+jmZlorMHqiIrtj6gXCPUvBh+qtxHw
+ 9u9tWez0Q5Zk3GPUmWKC+g2YUAilSy7olcWfhDnrJXg+LriefIkiLG+TsLFZ1lxytW64
+ CwzR2ja54W+1bB6SJpo228tqBiPGF8qRtKeiP/HK795Yf+evZo82OuXxh3nWGlqFSVwx
+ 3l+2A/44MGsaWkTgopELwvTrj1AvGxt7QZ/qzPwdkouP8OTA7YJQ60AW0/vdWHVzhoui
+ pI+g==
+X-Gm-Message-State: AOAM531u1GaMjyM0jUBz4rwtOXpOAH+Q46+mZ2K8IZkblE15Ff3HauOf
+ 8BhAJDVHo0z1porDE74n/OW8ofhhpttlQIvw3H5U8evAnOpcv/W1Rpwlf95irNMVwj/L2dhUJNi
+ geopI7QkbUm2Wiw2tOl75j6heYQ==
+X-Received: by 2002:a05:620a:48b:: with SMTP id
+ 11mr10169624qkr.0.1606504442621; 
+ Fri, 27 Nov 2020 11:14:02 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxmHKP07wAts1TRf4OZfzg/0usM+pvzZL055IEPgN96PXnE7spOh+01PIIHtFzGB/nP4UcOWQ==
+X-Received: by 2002:a05:620a:48b:: with SMTP id
+ 11mr10169611qkr.0.1606504442440; 
+ Fri, 27 Nov 2020 11:14:02 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com.
+ [75.142.250.213])
+ by smtp.gmail.com with ESMTPSA id e131sm7210805qkb.101.2020.11.27.11.14.01
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 27 Nov 2020 11:14:01 -0800 (PST)
+From: trix@redhat.com
+To: dwmw2@infradead.org,
+	richard@nod.at,
+	gustavoars@kernel.org
+Subject: [PATCH] jffs2: remove trailing semicolon in macro definition
+Date: Fri, 27 Nov 2020 11:13:57 -0800
+Message-Id: <20201127191357.2852751-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.4
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=trix@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201127_135443_403726_77FAA41B 
-X-CRM114-Status: GOOD (  24.56  )
+X-CRM114-CacheID: sfid-20201127_141405_823777_D4309597 
+X-CRM114-Status: GOOD (  11.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,76 +104,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Sasha Levin <sashal@kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Ron Minnich <rminnich@google.com>,
- lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Adrian Schmutzler <freifunk@adrianschmutzler.de>, jstefek@datto.com,
- Boris Brezillon <boris.brezillon@collabora.com>,
- John Audia <graysky@archlinux.us>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: Tom Rix <trix@redhat.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Thanks, Sven, for your patience, I will indeed try to test this next week.
+From: Tom Rix <trix@redhat.com>
 
-On Fri, Nov 27, 2020 at 9:35 AM Sven Eckelmann <sven@narfation.org> wrote:
->
-> On Friday, 27 November 2020 18:16:54 CET ron minnich wrote:
-> > What none of the people involved in the original patch knew was that
-> > there would be other ':' in use. Sorry!
-> >
-> > But you are right, my idea is a complete non-starter, don't know what
-> > I was thinking.
->
-> I am still not sure because I still didn't get what you actually wanted to
-> change. I first thought that you wanted to change
->
->     mtdparts=spi0.0:256k(0:SBL1)
->
-> to
->
->     mtdparts=spi0.0!256k(0:SBL1)
->
-> which wouldn't work for me when ":" is not supported anymore. And it would
-> break a lot of already working installations.
->
-> But maybe I completely misread it. Maybe you wanted to introduce an
-> optional(!!!) stop marker like !
->
->     mtdparts=spi0.0!:256k(0:SBL1)
->
-> to inform the parser that it doesn't have to search for : before the !. While
-> this could work for me, I am not qualified enough to say which character is
-> not yet used and can be utilized.
->
-> But the note about [ and ] at least makes sense to me (if it is optional):
->
->     mtdparts=[spi0.0]:256k(0:SBL1)
->
-> But I am not sure if this will be a problem for people which already adopted
-> PCI IDs inside the mtdparts without [ and ].
->
-> > So it seems your patch, if it works, is the way to go?
->
-> At least this is a workaround [1] which can be pushed to all the stable
-> kernels which broke with the "Support MTD names containing one or more colons"
-> patch. And the one which OpenWrt adopted now to get the devices booting again.
-> It is only waiting for a Tested-by from you.
->
-> > I can't think
-> > of anything better that lets us preserve current behavior and support
-> > PCI device specifiers?
->
-> I am not that deep in this topic. So I am not sure what else could be done.
->
-> Kind regards,
->         Sven
->
-> [1] https://patchwork.ozlabs.org/project/linux-mtd/patch/20201124062506.185392-1-sven@narfation.org/
+The macro use will already have a semicolon.
+
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ fs/jffs2/nodelist.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/jffs2/nodelist.h b/fs/jffs2/nodelist.h
+index 8ff4d1a1e774..2e98fa277dab 100644
+--- a/fs/jffs2/nodelist.h
++++ b/fs/jffs2/nodelist.h
+@@ -349,14 +349,14 @@ static inline struct jffs2_node_frag *frag_last(struct rb_root *root)
+ #define frag_parent(frag) rb_entry(rb_parent(&(frag)->rb), struct jffs2_node_frag, rb)
+ #define frag_left(frag) rb_entry((frag)->rb.rb_left, struct jffs2_node_frag, rb)
+ #define frag_right(frag) rb_entry((frag)->rb.rb_right, struct jffs2_node_frag, rb)
+-#define frag_erase(frag, list) rb_erase(&frag->rb, list);
++#define frag_erase(frag, list) rb_erase(&frag->rb, list)
+ 
+ #define tn_next(tn) rb_entry(rb_next(&(tn)->rb), struct jffs2_tmp_dnode_info, rb)
+ #define tn_prev(tn) rb_entry(rb_prev(&(tn)->rb), struct jffs2_tmp_dnode_info, rb)
+ #define tn_parent(tn) rb_entry(rb_parent(&(tn)->rb), struct jffs2_tmp_dnode_info, rb)
+ #define tn_left(tn) rb_entry((tn)->rb.rb_left, struct jffs2_tmp_dnode_info, rb)
+ #define tn_right(tn) rb_entry((tn)->rb.rb_right, struct jffs2_tmp_dnode_info, rb)
+-#define tn_erase(tn, list) rb_erase(&tn->rb, list);
++#define tn_erase(tn, list) rb_erase(&tn->rb, list)
+ #define tn_last(list) rb_entry(rb_last(list), struct jffs2_tmp_dnode_info, rb)
+ #define tn_first(list) rb_entry(rb_first(list), struct jffs2_tmp_dnode_info, rb)
+ 
+-- 
+2.18.4
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
