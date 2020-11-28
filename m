@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 512B7C63697
-	for <linux-mtd@archiver.kernel.org>; Sat, 28 Nov 2020 16:25:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5114C63697
+	for <linux-mtd@archiver.kernel.org>; Sat, 28 Nov 2020 16:28:25 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C545B246CA
-	for <linux-mtd@archiver.kernel.org>; Sat, 28 Nov 2020 16:25:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 83E72246CA
+	for <linux-mtd@archiver.kernel.org>; Sat, 28 Nov 2020 16:28:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NRlHMUnM";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Q76mmDyn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C545B246CA
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IWBxoWBR";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Pzr1nja0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 83E72246CA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,37 +26,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=VjTmjG6TzGfrfSOAVvf92ciHShJA+YSQejQil5deZY8=; b=NRlHMUnMSP1DbG3H+5LDrGPnM
-	ckNYL4IHqeNaDW85LourA7uIN5Nxh5SFp88MjbH8B4VzXhAjv8m4Id2x5RGqfmOfZYR7ONGHiu08/
-	ExGm56gH9BOYdAVB24Vz8vnbPtm13bgmfbHbCFFnHYt/vIDIpJ5NURm37MWMWtpbnuhkR4Tamj7dL
-	WRduG3WRMnOS+5yyzms/7m/snhiL39HHclOYFBJnlROpqTgUNvLmJuvW4GUXb1N15/jpXuzS994AY
-	TRGHupAAy230nYP3dg8Z8QNPKQM67TXIw3kniBlirYifHiYCVefs6mIvMXwd5+vbngcDjVS+ZtAOQ
-	wznCCfmiQ==;
+	 bh=BKx+U3V42/m2r2XqsZU+qZa0HpIezxhhyDoJQJmt1to=; b=IWBxoWBRfKWcjeP1Yy9PVhztx
+	wFM9ZjU/ah19oJ/MiCIcqcl5ObvNYFA3xOeUrW0obzTZ6DoA8jJ9qUWQN7EYh3RUBrbI+7l3v3jA3
+	Si49eijOaNq/Nn3mr0BdY0UasRMHO0iQ5fCKQQYCkQiRDTF8K0BsYvnrdQyDOnorQDcUOJrf+Acha
+	dx8E5qI2CUzj19znz0R1B36HMux7svyWp4rbS176GPc8M2V2MeVg5DRdII2LN0B3uVzqFy1JrxlW0
+	MspccRhNC1qrVGmQgdf5jya5PXtYqAyhhWASt5M8XtqpsmubBUoDOkPZkg/M1QMv471I0ecJgPh7M
+	Gq8vH8f0A==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kj31j-0005T5-Fj; Sat, 28 Nov 2020 16:24:47 +0000
+	id 1kj34h-0000Lc-Uz; Sat, 28 Nov 2020 16:27:51 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kj2tO-000119-2S
- for linux-mtd@merlin.infradead.org; Sat, 28 Nov 2020 16:16:10 +0000
+ id 1kj2xh-0003Mz-N2
+ for linux-mtd@merlin.infradead.org; Sat, 28 Nov 2020 16:20:37 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=38U0dQMz4+ZExMx2fSC8cdXYLSKZYF5gTXwDixADfzM=; b=Q76mmDynbuVUiqOi+wEq23c3om
- NOeN0xyklr63k7NunHitRVQXKnQ2pS+eEaSkpMIye4fo+pOKLSzMrc4vVIboG8D1rowBNltgmB3mD
- 1M1KxMhE8yx9CgadhEwturpAGBUq9/HmKAcdOLuzK6TSjsZ8ZPjWa8dNy1KiYxClgB8KH0UCKPNe2
- Lh6xiN+Ap3m0dBBpQp9/mt6dObAyJ4SWlRfYeqldEp36Uwmmd8LM2pvAYErMLIniHpRLfkRhiLodb
- iGACv2lTy9lUHPpV5fQuCg/gT2umyAT1qlFWAJHjgthD5QV6MfbsQYqKMVhpt1rBLhYywYCCLDCGq
- yVYUvTgA==;
-Received: from [2001:4bb8:18c:1dd6:48f3:741a:602e:7fdd] (helo=localhost)
+ bh=coxIlFm7FcSMnYoHU+VRJv+WNmt8/1D9LTOeQ77ktrM=; b=Pzr1nja0AE7hr3st3239LMciL+
+ t4cyDfRDhOoe4r2y8ZHb353ytAggEVHWwAwi/ZlnPjwj4FL+gDM++fXMGZbMJNrErgC7xreA8ubIe
+ ceCoaJD5BcQz7KRYF1fwdUolUqwKhaTZAO8tB3TvKD3Yp1N3xfqnVjlPD6uwDIYM2QOB44Rj8gn+n
+ EHMQLrTzqM15pCHqLBb00ZtS2/NcYv2/JFTbpYE6g+tsqYbNRtSLkHbi5geaHiRxp6qLHtPYPBxWC
+ r1TuNrOW/6dxw2cgc4pat3wfudMxZQP/Ycjz7oXXMs7Gy3Dsf627oC3lTm9xA9kIw1k1vXGUsvUad
+ Env84xzQ==;
+Received: from 089144198196.atnat0007.highway.a1.net ([89.144.198.196]
+ helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kj2tM-0000OC-2u; Sat, 28 Nov 2020 16:16:08 +0000
+ id 1kj2xe-0000jX-Sg; Sat, 28 Nov 2020 16:20:35 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 32/45] block: move the start_sect field to struct block_device
-Date: Sat, 28 Nov 2020 17:14:57 +0100
-Message-Id: <20201128161510.347752-33-hch@lst.de>
+Subject: [PATCH 35/45] block: move make_it_fail to struct block_device
+Date: Sat, 28 Nov 2020 17:15:00 +0100
+Message-Id: <20201128161510.347752-36-hch@lst.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201128161510.347752-1-hch@lst.de>
 References: <20201128161510.347752-1-hch@lst.de>
@@ -86,214 +87,82 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Move the start_sect field to struct block_device in preparation
-of killing struct hd_struct.
+Move the make_it_fail flag to struct block_device an turn it into a bool
+in preparation of killing struct hd_struct.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Jan Kara <jack@suse.cz>
 ---
- block/blk-core.c          |  5 +++--
- block/blk-lib.c           |  2 +-
- block/genhd.c             |  4 ++--
- block/partitions/core.c   | 17 +++++++++--------
- include/linux/blk_types.h |  1 +
- include/linux/blkdev.h    |  4 ++--
- include/linux/genhd.h     |  3 +--
- kernel/trace/blktrace.c   | 11 +++--------
- 8 files changed, 22 insertions(+), 25 deletions(-)
+ block/blk-core.c          | 3 ++-
+ block/genhd.c             | 4 ++--
+ include/linux/blk_types.h | 3 +++
+ include/linux/genhd.h     | 3 ---
+ 4 files changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/block/blk-core.c b/block/blk-core.c
-index d2c9cb24e087f3..9a3793d5ce38d4 100644
+index 9a3793d5ce38d4..9121390be97a76 100644
 --- a/block/blk-core.c
 +++ b/block/blk-core.c
-@@ -757,9 +757,10 @@ static inline int blk_partition_remap(struct bio *bio)
- 	if (bio_sectors(bio)) {
- 		if (bio_check_eod(bio, bdev_nr_sectors(p->bdev)))
- 			goto out;
--		bio->bi_iter.bi_sector += p->start_sect;
-+		bio->bi_iter.bi_sector += p->bdev->bd_start_sect;
- 		trace_block_bio_remap(bio->bi_disk->queue, bio, part_devt(p),
--				      bio->bi_iter.bi_sector - p->start_sect);
-+				      bio->bi_iter.bi_sector -
-+				      p->bdev->bd_start_sect);
- 	}
- 	bio->bi_partno = 0;
- 	ret = 0;
-diff --git a/block/blk-lib.c b/block/blk-lib.c
-index e90614fd8d6a42..752f9c7220622a 100644
---- a/block/blk-lib.c
-+++ b/block/blk-lib.c
-@@ -65,7 +65,7 @@ int __blkdev_issue_discard(struct block_device *bdev, sector_t sector,
+@@ -668,7 +668,8 @@ __setup("fail_make_request=", setup_fail_make_request);
  
- 	/* In case the discard request is in a partition */
- 	if (bdev_is_partition(bdev))
--		part_offset = bdev->bd_part->start_sect;
-+		part_offset = bdev->bd_start_sect;
- 
- 	while (nr_sects) {
- 		sector_t granularity_aligned_lba, req_sects;
-diff --git a/block/genhd.c b/block/genhd.c
-index 9eead2970cb3d4..7bb45382658385 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -297,8 +297,8 @@ EXPORT_SYMBOL_GPL(disk_part_iter_exit);
- 
- static inline int sector_in_part(struct hd_struct *part, sector_t sector)
+ static bool should_fail_request(struct hd_struct *part, unsigned int bytes)
  {
--	return part->start_sect <= sector &&
--		sector < part->start_sect + bdev_nr_sectors(part->bdev);
-+	return part->bdev->bd_start_sect <= sector &&
-+		sector < part->bdev->bd_start_sect + bdev_nr_sectors(part->bdev);
+-	return part->make_it_fail && should_fail(&fail_make_request, bytes);
++	return part->bdev->bd_make_it_fail &&
++		should_fail(&fail_make_request, bytes);
  }
  
- /**
-diff --git a/block/partitions/core.c b/block/partitions/core.c
-index 8924e1ea8b2ad6..460a745812c6d4 100644
---- a/block/partitions/core.c
-+++ b/block/partitions/core.c
-@@ -192,7 +192,7 @@ static ssize_t part_start_show(struct device *dev,
+ static int __init fail_make_request_debugfs(void)
+diff --git a/block/genhd.c b/block/genhd.c
+index a964e7532fedd5..0371558ccde14c 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -1284,7 +1284,7 @@ ssize_t part_fail_show(struct device *dev,
  {
  	struct hd_struct *p = dev_to_part(dev);
  
--	return sprintf(buf, "%llu\n",(unsigned long long)p->start_sect);
-+	return sprintf(buf, "%llu\n", p->bdev->bd_start_sect);
+-	return sprintf(buf, "%d\n", p->make_it_fail);
++	return sprintf(buf, "%d\n", p->bdev->bd_make_it_fail);
  }
  
- static ssize_t part_ro_show(struct device *dev,
-@@ -209,7 +209,7 @@ static ssize_t part_alignment_offset_show(struct device *dev,
+ ssize_t part_fail_store(struct device *dev,
+@@ -1295,7 +1295,7 @@ ssize_t part_fail_store(struct device *dev,
+ 	int i;
  
- 	return sprintf(buf, "%u\n",
- 		queue_limit_alignment_offset(&part_to_disk(p)->queue->limits,
--				p->start_sect));
-+				p->bdev->bd_start_sect));
+ 	if (count > 0 && sscanf(buf, "%d", &i) > 0)
+-		p->make_it_fail = (i == 0) ? 0 : 1;
++		p->pdev->bd_make_it_fail = (i == 0) ? 0 : 1;
+ 
+ 	return count;
  }
- 
- static ssize_t part_discard_alignment_show(struct device *dev,
-@@ -219,7 +219,7 @@ static ssize_t part_discard_alignment_show(struct device *dev,
- 
- 	return sprintf(buf, "%u\n",
- 		queue_limit_discard_alignment(&part_to_disk(p)->queue->limits,
--				p->start_sect));
-+				p->bdev->bd_start_sect));
- }
- 
- static DEVICE_ATTR(partition, 0444, part_partition_show, NULL);
-@@ -301,7 +301,7 @@ static void hd_struct_free_work(struct work_struct *work)
- 	 */
- 	put_device(disk_to_dev(disk));
- 
--	part->start_sect = 0;
-+	part->bdev->bd_start_sect = 0;
- 	bdev_set_nr_sectors(part->bdev, 0);
- 	part_stat_set_all(part, 0);
- 	put_device(part_to_dev(part));
-@@ -416,7 +416,7 @@ static struct hd_struct *add_partition(struct gendisk *disk, int partno,
- 
- 	pdev = part_to_dev(p);
- 
--	p->start_sect = start;
-+	bdev->bd_start_sect = start;
- 	bdev_set_nr_sectors(bdev, len);
- 	p->partno = partno;
- 	p->policy = get_disk_ro(disk);
-@@ -508,8 +508,9 @@ static bool partition_overlaps(struct gendisk *disk, sector_t start,
- 	disk_part_iter_init(&piter, disk, DISK_PITER_INCL_EMPTY);
- 	while ((part = disk_part_iter_next(&piter))) {
- 		if (part->partno == skip_partno ||
--		    start >= part->start_sect + bdev_nr_sectors(part->bdev) ||
--		    start + length <= part->start_sect)
-+		    start >= part->bdev->bd_start_sect +
-+			bdev_nr_sectors(part->bdev) ||
-+		    start + length <= part->bdev->bd_start_sect)
- 			continue;
- 		overlap = true;
- 		break;
-@@ -592,7 +593,7 @@ int bdev_resize_partition(struct block_device *bdev, int partno,
- 	mutex_lock_nested(&bdev->bd_mutex, 1);
- 
- 	ret = -EINVAL;
--	if (start != part->start_sect)
-+	if (start != part->bdev->bd_start_sect)
- 		goto out_unlock;
- 
- 	ret = -EBUSY;
 diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
-index 520011b95276fb..a690008f60cd92 100644
+index c0591e52d7d7ce..b237f1e4081405 100644
 --- a/include/linux/blk_types.h
 +++ b/include/linux/blk_types.h
-@@ -20,6 +20,7 @@ typedef void (bio_end_io_t) (struct bio *);
- struct bio_crypt_ctx;
+@@ -52,6 +52,9 @@ struct block_device {
+ 	struct super_block	*bd_fsfreeze_sb;
  
- struct block_device {
-+	sector_t		bd_start_sect;
- 	struct disk_stats __percpu *bd_stats;
- 	unsigned long		bd_stamp;
- 	dev_t			bd_dev;
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 43a25d855e049a..619adea5709853 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -1488,7 +1488,7 @@ static inline int bdev_alignment_offset(struct block_device *bdev)
- 		return -1;
- 	if (bdev_is_partition(bdev))
- 		return queue_limit_alignment_offset(&q->limits,
--				bdev->bd_part->start_sect);
-+				bdev->bd_start_sect);
- 	return q->limits.alignment_offset;
- }
+ 	struct partition_meta_info *bd_meta_info;
++#ifdef CONFIG_FAIL_MAKE_REQUEST
++	bool			bd_make_it_fail;
++#endif
+ } __randomize_layout;
  
-@@ -1529,7 +1529,7 @@ static inline int bdev_discard_alignment(struct block_device *bdev)
- 
- 	if (bdev_is_partition(bdev))
- 		return queue_limit_discard_alignment(&q->limits,
--				bdev->bd_part->start_sect);
-+				bdev->bd_start_sect);
- 	return q->limits.discard_alignment;
- }
- 
+ #define bdev_whole(_bdev) \
 diff --git a/include/linux/genhd.h b/include/linux/genhd.h
-index 804ac45fbfbc53..50d27f5d38e2af 100644
+index b4a5c05593b99c..349cf6403ccddc 100644
 --- a/include/linux/genhd.h
 +++ b/include/linux/genhd.h
-@@ -51,7 +51,6 @@ struct partition_meta_info {
+@@ -56,9 +56,6 @@ struct hd_struct {
+ 	struct block_device *bdev;
+ 	struct device __dev;
+ 	int policy, partno;
+-#ifdef CONFIG_FAIL_MAKE_REQUEST
+-	int make_it_fail;
+-#endif
+ 	struct rcu_work rcu_work;
  };
  
- struct hd_struct {
--	sector_t start_sect;
- 	struct percpu_ref ref;
- 
- 	struct block_device *bdev;
-@@ -298,7 +297,7 @@ extern void rand_initialize_disk(struct gendisk *disk);
- 
- static inline sector_t get_start_sect(struct block_device *bdev)
- {
--	return bdev->bd_part->start_sect;
-+	return bdev->bd_start_sect;
- }
- 
- static inline sector_t bdev_nr_sectors(struct block_device *bdev)
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index 7076d588a50d69..8a723a91ec5a06 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -458,14 +458,9 @@ static struct rchan_callbacks blk_relay_callbacks = {
- static void blk_trace_setup_lba(struct blk_trace *bt,
- 				struct block_device *bdev)
- {
--	struct hd_struct *part = NULL;
--
--	if (bdev)
--		part = bdev->bd_part;
--
--	if (part) {
--		bt->start_lba = part->start_sect;
--		bt->end_lba = part->start_sect + bdev_nr_sectors(bdev);
-+	if (bdev) {
-+		bt->start_lba = bdev->bd_start_sect;
-+		bt->end_lba = bdev->bd_start_sect + bdev_nr_sectors(bdev);
- 	} else {
- 		bt->start_lba = 0;
- 		bt->end_lba = -1ULL;
 -- 
 2.29.2
 
