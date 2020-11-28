@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C97FFC63697
-	for <linux-mtd@archiver.kernel.org>; Sat, 28 Nov 2020 16:35:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B91BC63697
+	for <linux-mtd@archiver.kernel.org>; Sat, 28 Nov 2020 16:43:07 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 67A04246CA
-	for <linux-mtd@archiver.kernel.org>; Sat, 28 Nov 2020 16:35:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 560C0246CF
+	for <linux-mtd@archiver.kernel.org>; Sat, 28 Nov 2020 16:43:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LXjTLoAF";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="IcHCNcdW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 67A04246CA
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gdiGxd9W";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="moX275hE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 560C0246CF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,37 +26,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=K/E7+CQcRSTlxQgGGLjJAeUjy7sEhZg1LaUj4weT2uU=; b=LXjTLoAFZc8MGg3v1oItovhBs
-	uVoIk2G9rA+rj/SftWq0ENuZPUou1/uYGKETBO3TQM60ryN9VGerQjCuvnckg3xoWifaeTIxYaKj/
-	bI0x0TUAqhD0SjdgGXgtd1jPbQDRQQs25XI9C+t/a5kG3QTUNtUvvlCbLEK6rLZpzSzlpVclHM+L3
-	XZjTw78l3b5OMqYD9h9zzf/+iyz70v5JP6jHDk21kiC4NITP3b40aam0JOcDYg/1D9qfCf9OMSqjf
-	VgiO1HQ+yQ7WH1HDtMBkxmNtp/b01lfFbdAGxMSnM+bIJ430iOq7FUCPwNqTMyDFu74vij2p+XJpz
-	k4WWm3ziA==;
+	 bh=ydZC78rHZiOWbVtgOlMKSCGck4amp172UXL6N8T0lNQ=; b=gdiGxd9WknoT2KB1iOtZlG4kp
+	en+wuyeHAF7preQL5S6gnDX4Fss+2Opzuc0E66Ug1Ca3fQMd6Y/5JRZDqTAkRehtI8GES9dwxEFgb
+	Upbd7MRZJTZ8Uq4MAv9sH7bXm3fiqjjN8FDA+29qLO2WEF8bxVqB+LX+akSMmezPAbN2/IzIlAqzX
+	105ijVpXzxflvsdBcA3L8nNWbhXmZq1JApReDz1ZwBO3950VdZK+HMf+lHt7DGpCVEzBEqri4MTMV
+	a3ivTBrmInn6TOwoA5jZXsH73W9yWEewzpMWZa+UJYaZXX/eFKhpHTAQ2wiOF5eEbzc4b5JBFhfKW
+	QSKx3yL7A==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kj3Au-00026n-7d; Sat, 28 Nov 2020 16:34:16 +0000
+	id 1kj32m-0005wT-Ex; Sat, 28 Nov 2020 16:25:52 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kj3AW-0001vF-1b
- for linux-mtd@merlin.infradead.org; Sat, 28 Nov 2020 16:33:52 +0000
+ id 1kj2tP-00012C-Jd
+ for linux-mtd@merlin.infradead.org; Sat, 28 Nov 2020 16:16:11 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=heCvtIZ249OT7g4hkmPpMDCKMY4TD/OnWlbfRmdYc4A=; b=IcHCNcdWqhGECkM/IKMbbQQT4P
- 97Frenf+cGaenhB0wcs/UokW6crwv30ZQ6PFVQ8jIav+bTE2guFWi5rFaqPl5IQLd5bPhy7v4YPR0
- 4hSJJGBZYU1MZ9TH4KbVTuB253diJulDZATRXpYas+2XvCV4nN6sPoguTpPQVnwBjLJhySezf9vNj
- QFE9t+3Ki0xB1pdGJ2cR8Oyu7uppg8YFI7d68YfFt4SB9OM0eBX5/3isURUa5Mp/YIJ2c5Lya5FDG
- ZOZBY8L089XuBEDsvT9k9UKGvBKfvjSk1bWZYSXTsVweDOMgA4Ruzzj+WJhvBjcbtVjcOJetKQks+
- YLBYRSBg==;
+ bh=UgVkmALFIWqry4eWbGmtJ4BhyI76zNGGn8dFufuva+w=; b=moX275hEfmihvK/a0gTQdhR7z4
+ gJzZ+ci4w16CBgiGtMT63fBnbgOW11p29112pT3MPhnLylSmzfD4jIdMPMMM/30t8stpKk3mp9OeU
+ vcWPwPLlOW2z4VkZAMkJfTaZsEE+QkNcHy4xJfWNROasa4ELKV88z5lG0D9Ss0hLxKv+w4UmhzffG
+ +wtv0OLHxOA9nVaonaPNNXhm1b04McORQ1WvR3A5W0rPy1J52qUAk9TYCSTkbalcFxNKgqPk3m64F
+ 6V+HxIERI5U5m/VrkjkF0splOFLMG94gLVSra7IfU3sEsMHdfMiLto3pLZ1M1g6oIPVg/TuK1OGXH
+ jW8w56rw==;
 Received: from [2001:4bb8:18c:1dd6:48f3:741a:602e:7fdd] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kj3AU-0001dR-LE; Sat, 28 Nov 2020 16:33:51 +0000
+ id 1kj2tN-0000Ok-Vg; Sat, 28 Nov 2020 16:16:10 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 45/45] block: stop using bdget_disk for partition 0
-Date: Sat, 28 Nov 2020 17:15:10 +0100
-Message-Id: <20201128161510.347752-46-hch@lst.de>
+Subject: [PATCH 33/45] block: move the partition_meta_info to struct
+ block_device
+Date: Sat, 28 Nov 2020 17:14:58 +0100
+Message-Id: <20201128161510.347752-34-hch@lst.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201128161510.347752-1-hch@lst.de>
 References: <20201128161510.347752-1-hch@lst.de>
@@ -86,243 +87,160 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-We can just dereference the point in struct gendisk instead.  Also
-remove the now unused export.
+Move the partition_meta_info to struct block_device in preparation for
+killing struct hd_struct.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Jan Kara <jack@suse.cz>
 ---
- block/genhd.c                   |  1 -
- drivers/block/nbd.c             |  4 +---
- drivers/block/xen-blkfront.c    | 20 +++++---------------
- drivers/block/zram/zram_drv.c   | 14 ++------------
- drivers/md/dm.c                 | 16 ++--------------
- drivers/s390/block/dasd_ioctl.c |  5 ++---
- fs/block_dev.c                  |  2 +-
- 7 files changed, 13 insertions(+), 49 deletions(-)
+ block/blk.h               |  1 -
+ block/genhd.c             |  3 ++-
+ block/partitions/core.c   | 18 +++++++-----------
+ fs/block_dev.c            |  1 +
+ include/linux/blk_types.h |  2 ++
+ include/linux/genhd.h     |  1 -
+ init/do_mounts.c          |  7 ++++---
+ 7 files changed, 16 insertions(+), 17 deletions(-)
 
+diff --git a/block/blk.h b/block/blk.h
+index 3f801f6e86f8a1..0bd4b58bcbaf77 100644
+--- a/block/blk.h
++++ b/block/blk.h
+@@ -381,7 +381,6 @@ static inline void hd_struct_put(struct hd_struct *part)
+ 
+ static inline void hd_free_part(struct hd_struct *part)
+ {
+-	kfree(part->info);
+ 	bdput(part->bdev);
+ 	percpu_ref_exit(&part->ref);
+ }
 diff --git a/block/genhd.c b/block/genhd.c
-index f6dd02fe614d2c..565cf36a5f1864 100644
+index 7bb45382658385..fe202a12eec096 100644
 --- a/block/genhd.c
 +++ b/block/genhd.c
-@@ -922,7 +922,6 @@ struct block_device *bdget_disk(struct gendisk *disk, int partno)
+@@ -1002,7 +1002,8 @@ void __init printk_all_partitions(void)
+ 			       bdevt_str(part_devt(part), devt_buf),
+ 			       bdev_nr_sectors(part->bdev) >> 1,
+ 			       disk_name(disk, part->partno, name_buf),
+-			       part->info ? part->info->uuid : "");
++			       part->bdev->bd_meta_info ?
++					part->bdev->bd_meta_info->uuid : "");
+ 			if (is_part0) {
+ 				if (dev->parent && dev->parent->driver)
+ 					printk(" driver: %s\n",
+diff --git a/block/partitions/core.c b/block/partitions/core.c
+index 460a745812c6d4..07df9ff554627f 100644
+--- a/block/partitions/core.c
++++ b/block/partitions/core.c
+@@ -275,8 +275,9 @@ static int part_uevent(struct device *dev, struct kobj_uevent_env *env)
+ 	struct hd_struct *part = dev_to_part(dev);
  
- 	return bdev;
- }
--EXPORT_SYMBOL(bdget_disk);
- 
- /*
-  * print a full list of all partitions - intended for places where the root
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index 014683968ce174..92f84ed0ba9eb6 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -1488,12 +1488,10 @@ static int nbd_open(struct block_device *bdev, fmode_t mode)
- static void nbd_release(struct gendisk *disk, fmode_t mode)
- {
- 	struct nbd_device *nbd = disk->private_data;
--	struct block_device *bdev = bdget_disk(disk, 0);
- 
- 	if (test_bit(NBD_RT_DISCONNECT_ON_CLOSE, &nbd->config->runtime_flags) &&
--			bdev->bd_openers == 0)
-+			disk->part0->bd_openers == 0)
- 		nbd_disconnect_and_put(nbd);
--	bdput(bdev);
- 
- 	nbd_config_put(nbd);
- 	nbd_put(nbd);
-diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
-index 79521e33d30ed5..188e0b47534bcf 100644
---- a/drivers/block/xen-blkfront.c
-+++ b/drivers/block/xen-blkfront.c
-@@ -2153,7 +2153,7 @@ static void blkfront_closing(struct blkfront_info *info)
- 	}
- 
- 	if (info->gd)
--		bdev = bdget_disk(info->gd, 0);
-+		bdev = bdgrab(info->gd->part0);
- 
- 	mutex_unlock(&info->mutex);
- 
-@@ -2518,7 +2518,7 @@ static int blkfront_remove(struct xenbus_device *xbdev)
- 
- 	disk = info->gd;
- 	if (disk)
--		bdev = bdget_disk(disk, 0);
-+		bdev = bdgrab(disk->part0);
- 
- 	info->xbdev = NULL;
- 	mutex_unlock(&info->mutex);
-@@ -2595,19 +2595,11 @@ static int blkif_open(struct block_device *bdev, fmode_t mode)
- static void blkif_release(struct gendisk *disk, fmode_t mode)
- {
- 	struct blkfront_info *info = disk->private_data;
--	struct block_device *bdev;
- 	struct xenbus_device *xbdev;
- 
- 	mutex_lock(&blkfront_mutex);
--
--	bdev = bdget_disk(disk, 0);
--
--	if (!bdev) {
--		WARN(1, "Block device %s yanked out from us!\n", disk->disk_name);
-+	if (disk->part0->bd_openers)
- 		goto out_mutex;
--	}
--	if (bdev->bd_openers)
--		goto out;
- 
- 	/*
- 	 * Check if we have been instructed to close. We will have
-@@ -2619,7 +2611,7 @@ static void blkif_release(struct gendisk *disk, fmode_t mode)
- 
- 	if (xbdev && xbdev->state == XenbusStateClosing) {
- 		/* pending switch to state closed */
--		dev_info(disk_to_dev(bdev->bd_disk), "releasing disk\n");
-+		dev_info(disk_to_dev(disk), "releasing disk\n");
- 		xlvbd_release_gendisk(info);
- 		xenbus_frontend_closed(info->xbdev);
-  	}
-@@ -2628,14 +2620,12 @@ static void blkif_release(struct gendisk *disk, fmode_t mode)
- 
- 	if (!xbdev) {
- 		/* sudden device removal */
--		dev_info(disk_to_dev(bdev->bd_disk), "releasing disk\n");
-+		dev_info(disk_to_dev(disk), "releasing disk\n");
- 		xlvbd_release_gendisk(info);
- 		disk->private_data = NULL;
- 		free_info(info);
- 	}
- 
--out:
--	bdput(bdev);
- out_mutex:
- 	mutex_unlock(&blkfront_mutex);
- }
-diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index dc8957d173d37c..b0701bae6e9800 100644
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -1760,15 +1760,12 @@ static ssize_t reset_store(struct device *dev,
- 		return -EINVAL;
- 
- 	zram = dev_to_zram(dev);
--	bdev = bdget_disk(zram->disk, 0);
--	if (!bdev)
--		return -ENOMEM;
-+	bdev = zram->disk->part0;
- 
- 	mutex_lock(&bdev->bd_mutex);
- 	/* Do not reset an active device or claimed device */
- 	if (bdev->bd_openers || zram->claim) {
- 		mutex_unlock(&bdev->bd_mutex);
--		bdput(bdev);
- 		return -EBUSY;
- 	}
- 
-@@ -1779,7 +1776,6 @@ static ssize_t reset_store(struct device *dev,
- 	/* Make sure all the pending I/O are finished */
- 	fsync_bdev(bdev);
- 	zram_reset_device(zram);
--	bdput(bdev);
- 
- 	mutex_lock(&bdev->bd_mutex);
- 	zram->claim = false;
-@@ -1965,16 +1961,11 @@ static int zram_add(void)
- 
- static int zram_remove(struct zram *zram)
- {
--	struct block_device *bdev;
--
--	bdev = bdget_disk(zram->disk, 0);
--	if (!bdev)
--		return -ENOMEM;
-+	struct block_device *bdev = zram->disk->part0;
- 
- 	mutex_lock(&bdev->bd_mutex);
- 	if (bdev->bd_openers || zram->claim) {
- 		mutex_unlock(&bdev->bd_mutex);
--		bdput(bdev);
- 		return -EBUSY;
- 	}
- 
-@@ -1986,7 +1977,6 @@ static int zram_remove(struct zram *zram)
- 	/* Make sure all the pending I/O are finished */
- 	fsync_bdev(bdev);
- 	zram_reset_device(zram);
--	bdput(bdev);
- 
- 	pr_info("Removed device: %s\n", zram->disk->disk_name);
- 
-diff --git a/drivers/md/dm.c b/drivers/md/dm.c
-index 176adcff56b380..ed7e836efbcdbc 100644
---- a/drivers/md/dm.c
-+++ b/drivers/md/dm.c
-@@ -2375,16 +2375,11 @@ struct dm_table *dm_swap_table(struct mapped_device *md, struct dm_table *table)
-  */
- static int lock_fs(struct mapped_device *md)
- {
--	struct block_device *bdev;
- 	int r;
- 
- 	WARN_ON(test_bit(DMF_FROZEN, &md->flags));
- 
--	bdev = bdget_disk(md->disk, 0);
--	if (!bdev)
--		return -ENOMEM;
--	r = freeze_bdev(bdev);
--	bdput(bdev);
-+	r = freeze_bdev(md->disk->part0);
- 	if (!r)
- 		set_bit(DMF_FROZEN, &md->flags);
- 	return r;
-@@ -2392,16 +2387,9 @@ static int lock_fs(struct mapped_device *md)
- 
- static void unlock_fs(struct mapped_device *md)
- {
--	struct block_device *bdev;
--
- 	if (!test_bit(DMF_FROZEN, &md->flags))
- 		return;
--
--	bdev = bdget_disk(md->disk, 0);
--	if (!bdev)
--		return;
--	thaw_bdev(bdev);
--	bdput(bdev);
-+	thaw_bdev(md->disk->part0);
- 	clear_bit(DMF_FROZEN, &md->flags);
+ 	add_uevent_var(env, "PARTN=%u", part->partno);
+-	if (part->info && part->info->volname[0])
+-		add_uevent_var(env, "PARTNAME=%s", part->info->volname);
++	if (part->bdev->bd_meta_info && part->bdev->bd_meta_info->volname[0])
++		add_uevent_var(env, "PARTNAME=%s",
++			       part->bdev->bd_meta_info->volname);
+ 	return 0;
  }
  
-diff --git a/drivers/s390/block/dasd_ioctl.c b/drivers/s390/block/dasd_ioctl.c
-index 304eba1acf163c..9f642440894655 100644
---- a/drivers/s390/block/dasd_ioctl.c
-+++ b/drivers/s390/block/dasd_ioctl.c
-@@ -220,9 +220,8 @@ dasd_format(struct dasd_block *block, struct format_data_t *fdata)
- 	 * enabling the device later.
- 	 */
- 	if (fdata->start_unit == 0) {
--		struct block_device *bdev = bdget_disk(block->gdp, 0);
--		bdev->bd_inode->i_blkbits = blksize_bits(fdata->blksize);
--		bdput(bdev);
-+		block->gdp->part0->bd_inode->i_blkbits =
-+			blksize_bits(fdata->blksize);
+@@ -422,13 +423,10 @@ static struct hd_struct *add_partition(struct gendisk *disk, int partno,
+ 	p->policy = get_disk_ro(disk);
+ 
+ 	if (info) {
+-		struct partition_meta_info *pinfo;
+-
+-		pinfo = kzalloc_node(sizeof(*pinfo), GFP_KERNEL, disk->node_id);
+-		if (!pinfo)
++		err = -ENOMEM;
++		bdev->bd_meta_info = kmemdup(info, sizeof(*info), GFP_KERNEL);
++		if (!bdev->bd_meta_info)
+ 			goto out_bdput;
+-		memcpy(pinfo, info, sizeof(*info));
+-		p->info = pinfo;
  	}
  
- 	rc = base->discipline->format_device(base, fdata, 1);
+ 	dname = dev_name(ddev);
+@@ -444,7 +442,7 @@ static struct hd_struct *add_partition(struct gendisk *disk, int partno,
+ 
+ 	err = blk_alloc_devt(p, &devt);
+ 	if (err)
+-		goto out_free_info;
++		goto out_bdput;
+ 	pdev->devt = devt;
+ 
+ 	/* delay uevent until 'holders' subdir is created */
+@@ -481,8 +479,6 @@ static struct hd_struct *add_partition(struct gendisk *disk, int partno,
+ 		kobject_uevent(&pdev->kobj, KOBJ_ADD);
+ 	return p;
+ 
+-out_free_info:
+-	kfree(p->info);
+ out_bdput:
+ 	bdput(bdev);
+ out_free:
 diff --git a/fs/block_dev.c b/fs/block_dev.c
-index a9905d8fd02b23..9e56ee1f265230 100644
+index 0832c7830f3a10..0770f654b09cdf 100644
 --- a/fs/block_dev.c
 +++ b/fs/block_dev.c
-@@ -1299,7 +1299,7 @@ static int __blkdev_get(struct block_device *bdev, fmode_t mode)
- 			if (ret)
- 				return ret;
- 		} else {
--			struct block_device *whole = bdget_disk(disk, 0);
-+			struct block_device *whole = bdgrab(disk->part0);
+@@ -785,6 +785,7 @@ static void bdev_free_inode(struct inode *inode)
+ 	struct block_device *bdev = I_BDEV(inode);
  
- 			mutex_lock_nested(&whole->bd_mutex, 1);
- 			ret = __blkdev_get(whole, mode);
+ 	free_percpu(bdev->bd_stats);
++	kfree(bdev->bd_meta_info);
+ 
+ 	kmem_cache_free(bdev_cachep, BDEV_I(inode));
+ }
+diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
+index a690008f60cd92..2f8ede04e5a94c 100644
+--- a/include/linux/blk_types.h
++++ b/include/linux/blk_types.h
+@@ -49,6 +49,8 @@ struct block_device {
+ 	/* Mutex for freeze */
+ 	struct mutex		bd_fsfreeze_mutex;
+ 	struct super_block	*bd_fsfreeze_sb;
++
++	struct partition_meta_info *bd_meta_info;
+ } __randomize_layout;
+ 
+ #define bdev_whole(_bdev) \
+diff --git a/include/linux/genhd.h b/include/linux/genhd.h
+index 50d27f5d38e2af..30d7076155b4d2 100644
+--- a/include/linux/genhd.h
++++ b/include/linux/genhd.h
+@@ -57,7 +57,6 @@ struct hd_struct {
+ 	struct device __dev;
+ 	struct kobject *holder_dir;
+ 	int policy, partno;
+-	struct partition_meta_info *info;
+ #ifdef CONFIG_FAIL_MAKE_REQUEST
+ 	int make_it_fail;
+ #endif
+diff --git a/init/do_mounts.c b/init/do_mounts.c
+index 5879edf083b318..368ccb71850126 100644
+--- a/init/do_mounts.c
++++ b/init/do_mounts.c
+@@ -79,8 +79,8 @@ static int match_dev_by_uuid(struct device *dev, const void *data)
+ 	const struct uuidcmp *cmp = data;
+ 	struct hd_struct *part = dev_to_part(dev);
+ 
+-	if (!part->info ||
+-	    strncasecmp(cmp->uuid, part->info->uuid, cmp->len))
++	if (!part->bdev->bd_meta_info ||
++	    strncasecmp(cmp->uuid, part->bdev->bd_meta_info->uuid, cmp->len))
+ 		return 0;
+ 	return 1;
+ }
+@@ -169,7 +169,8 @@ static int match_dev_by_label(struct device *dev, const void *data)
+ 	const char *label = data;
+ 	struct hd_struct *part = dev_to_part(dev);
+ 
+-	if (!part->info || strcmp(label, part->info->volname))
++	if (!part->bdev->bd_meta_info ||
++	    strcmp(label, part->bdev->bd_meta_info->volname))
+ 		return 0;
+ 	return 1;
+ }
 -- 
 2.29.2
 
