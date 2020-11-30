@@ -2,23 +2,22 @@ Return-Path: <SRS0=z5ty=FE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7333C63777
-	for <linux-mtd@archiver.kernel.org>; Mon, 30 Nov 2020 17:56:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DFB6C64E7B
+	for <linux-mtd@archiver.kernel.org>; Mon, 30 Nov 2020 18:24:52 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 72BF42065D
-	for <linux-mtd@archiver.kernel.org>; Mon, 30 Nov 2020 17:56:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AF5F2206F9
+	for <linux-mtd@archiver.kernel.org>; Mon, 30 Nov 2020 18:24:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="0zIWzbCR";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="BrK4tMKO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72BF42065D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HGsdt+DF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AF5F2206F9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
@@ -26,77 +25,56 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=oLuyZbVp/6ThjqLZbsH6tprk9bjDcY47o6pinQwIszA=; b=0zIWzbCRrU1Mp02weEYmd0gRt
-	0F+GE57GJ4ThblW6bqisXInKlMftosYO6cDkhKN7P7ADp6zXyI0wP9KKkJ2Tq91XVmU7Z8xuggMBT
-	zZtQbM8xGUOK4aZ0W9Tnef9E0L4a/cR3N7xBwT9g4thxwyDntgrpGP7Ay9YgN5UWVg9tE9HUKrHmQ
-	DDxodyMk/sSozLXirLf8TfrgU0AjkPSRTIrePfjsupHgM0URog8drVgwrd23LFJwNkEm097PHTETh
-	B+8iKZ+TcChG4QEr1MCSU9QKeUWWtRahqrRJr7yFq+l8JcdbHd2keGdRfKSp4xMBs/Z0OxI+AFfDg
-	hLY8X7JRQ==;
+	 bh=nJ4F8YTYlY3sbgC7c7hbDTSNOTllDj9YDQeb4e+w/70=; b=HGsdt+DFMrRZkH2eYVCddn+zH
+	LaBwpsWZEpjT93tu2I65Eamu7vH1zsm+PuBTRO8CPWib1lmItCL97bpbSd1/UxsV9Z5VgPnUEX0Yv
+	WXgL7WN5R/g1G2sUO/TaWhO3qVtGiTqHCsBYHN+Qw7VcoWD2lbD9stM6ge+BuBFBg7SGFdgsOSL0N
+	8LKKcf16Qja+wooRFhtpS75dXCnmMlWr5FR20YWULrA+o0zQ4rZWB+nvUjbqzf3P4uKyPRDfew5Vj
+	vYylXNer1IO13iX5m8zbfsgWu83UFsJkD3YQK7bJlpZCPl+iZQVtrlV8qb3ZKzpNwQhQbf8CHVlN1
+	SRfZ0VATw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kjnOw-0007AU-Vs; Mon, 30 Nov 2020 17:55:51 +0000
-Received: from aserp2130.oracle.com ([141.146.126.79])
+	id 1kjnqA-0002cu-0h; Mon, 30 Nov 2020 18:23:58 +0000
+Received: from mail-il1-f193.google.com ([209.85.166.193])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kjnOt-00079U-NI
- for linux-mtd@lists.infradead.org; Mon, 30 Nov 2020 17:55:49 +0000
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
- by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUHt6sJ032368;
- Mon, 30 Nov 2020 17:55:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=yU/s1Wkvr4/ioNoOs3LBBcInryfxg69nAE5giYmsDtI=;
- b=BrK4tMKOyzxrwpzYTlNpbblVdyLj99rOklmu5b7G3fLXIWb2oNqMQu74n9tgiYZwSkBI
- q8IW2lAJ5A6imO7tAcmjiauSeYKxYgvojWgmqUb+glplMcsSBpQB/nymMvV9krD+mvOx
- DJ6IExm9EXZp2F4lOGfprRJVEjVxzJHYcSqaNjkbyM3Wnz0FCyTZBf6e1ZkXGRMOrel5
- iTClNF3xexyfxuNMgiBvvTscsy1ludxN/bcAKiqWKZHalWlxEqVF8X/LXFrIQD7ENvWF
- 7khVBK6sKTyMNkKp2BlgN/EPcZ+SSXaDxEH2cewbxY+orjH/5z/Hz13U2jTrI6mOMPxb Ow== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
- by aserp2130.oracle.com with ESMTP id 353c2apjs8-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 30 Nov 2020 17:55:34 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
- by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUHk2nh011017;
- Mon, 30 Nov 2020 17:55:34 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
- by aserp3020.oracle.com with ESMTP id 3540ewv77j-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 30 Nov 2020 17:55:34 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
- by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AUHtSUK012345;
- Mon, 30 Nov 2020 17:55:28 GMT
-Received: from localhost (/67.169.218.210)
- by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Mon, 30 Nov 2020 09:55:28 -0800
-Date: Mon, 30 Nov 2020 09:55:26 -0800
-From: "Darrick J. Wong" <darrick.wong@oracle.com>
-To: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 04/45] fs: simplify freeze_bdev/thaw_bdev
-Message-ID: <20201130175526.GA143012@magnolia>
-References: <20201128161510.347752-1-hch@lst.de>
- <20201128161510.347752-5-hch@lst.de>
+ id 1kjnpi-0002SR-4o; Mon, 30 Nov 2020 18:23:31 +0000
+Received: by mail-il1-f193.google.com with SMTP id g1so12247837ilk.7;
+ Mon, 30 Nov 2020 10:23:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=0neMxzWOSFLOXSknMHOSEKClv5G9ep++zXnTP/Rc0O8=;
+ b=T2mjrhcPLoi98qq06qhm/nx+Ijr1WliYpjIbgebTmxoULR/AoAXLZV7zicqabkBiZz
+ 5YN09l1t00FtBX5JdJinQ6Dow5NTGfTgWTd4mJnn6FD8X3ArGgVH297aeGw6u3JDs6n8
+ 3tSuacyiQ/X4AStBarwqSH64zgWd8VNNp3wuLaaVDTnvNk3kZwLkHWREbuiAwdU9uGqJ
+ VUsKR2+LT/BzdGnoBsfujYf8W/gQGp5AcTNbq2/yhkrQa85vCBAm2hnY7TIYwuVzS8xn
+ b3TsNhrek/k2Zwri9nL9e+UQk86LFL8V2JiklciY4h0a2JYtaQsi9CLwsX87EPE+HtLy
+ Nvgw==
+X-Gm-Message-State: AOAM531ua3DES3XruQpwhgl47zem4fLA3Pnn0r8Z3OQUfQfm+zMMyEwe
+ 7dI4yGt8En8Kfnzmi3EqvQ==
+X-Google-Smtp-Source: ABdhPJzHXlx/TfQVfpIfEHQeSQemYh6/jCa4ib42N0v8d/w5/13Z4A2a0QvXXmVQUGCBpZNO2HvgFQ==
+X-Received: by 2002:a92:40c8:: with SMTP id d69mr19411707ill.66.1606760608911; 
+ Mon, 30 Nov 2020 10:23:28 -0800 (PST)
+Received: from xps15 ([64.188.179.253])
+ by smtp.gmail.com with ESMTPSA id z6sm11205177ilm.69.2020.11.30.10.23.25
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 30 Nov 2020 10:23:26 -0800 (PST)
+Received: (nullmailer pid 2759200 invoked by uid 1000);
+ Mon, 30 Nov 2020 18:23:24 -0000
+Date: Mon, 30 Nov 2020 11:23:24 -0700
+From: Rob Herring <robh@kernel.org>
+To: Yifeng Zhao <yifeng.zhao@rock-chips.com>
+Subject: Re: [PATCH v14 1/8] dt-bindings: mtd: Describe Rockchip RK3xxx NAND
+ flash controller
+Message-ID: <20201130182324.GA2757731@robh.at.kernel.org>
+References: <20201120095613.20172-1-yifeng.zhao@rock-chips.com>
+ <20201120095613.20172-2-yifeng.zhao@rock-chips.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20201128161510.347752-5-hch@lst.de>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821
- signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0
- malwarescore=0 phishscore=0
- suspectscore=1 bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011300116
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821
- signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1
- lowpriorityscore=0
- clxscore=1011 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011300117
+In-Reply-To: <20201120095613.20172-2-yifeng.zhao@rock-chips.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201130_125547_916073_F63DA364 
-X-CRM114-Status: GOOD (  37.36  )
+X-CRM114-CacheID: sfid-20201130_132330_263169_29CB58E0 
+X-CRM114-Status: GOOD (  16.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,284 +86,67 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Jens Axboe <axboe@kernel.dk>, Chao Yu <yuchao0@huawei.com>,
- Jan Kara <jack@suse.cz>, Mike Snitzer <snitzer@redhat.com>, linux-mm@kvack.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jan Kara <jack@suse.com>,
- Josef Bacik <josef@toxicpanda.com>, Coly Li <colyli@suse.de>,
- linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- dm-devel@redhat.com, linux-mtd@lists.infradead.org,
- Johannes Thumshirn <johannes.thumshirn@wdc.com>, Tejun Heo <tj@kernel.org>,
- linux-bcache@vger.kernel.org
+Cc: devicetree@vger.kernel.org, vigneshr@ti.com, richard@nod.at,
+ linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+ robh+dt@kernel.org, linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
+ linux-arm-kernel@lists.infradead.org, heiko@sntech.de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Nov 28, 2020 at 05:14:29PM +0100, Christoph Hellwig wrote:
-> Store the frozen superblock in struct block_device to avoid the awkward
-> interface that can return a sb only used a cookie, an ERR_PTR or NULL.
+On Fri, 20 Nov 2020 17:56:10 +0800, Yifeng Zhao wrote:
+> Documentation support for Rockchip RK3xxx NAND flash controllers
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> Acked-by: Chao Yu <yuchao0@huawei.com>		[f2fs]
+> Signed-off-by: Yifeng Zhao <yifeng.zhao@rock-chips.com>
 > ---
->  drivers/md/dm-core.h      |  5 -----
->  drivers/md/dm.c           | 20 ++++++--------------
->  fs/block_dev.c            | 37 +++++++++++++++----------------------
->  fs/buffer.c               |  2 +-
->  fs/ext4/ioctl.c           |  2 +-
->  fs/f2fs/file.c            | 14 +++++---------
->  fs/xfs/xfs_fsops.c        |  7 ++-----
-
-For the xfs part:
-Acked-by: Darrick J. Wong <darrick.wong@oracle.com>
-
-(I did glance at the other 44 patches and didn't see anything that
-screamed 'wrong' but I wouldn't call that a strong review...)
-
---D
-
->  include/linux/blk_types.h |  1 +
->  include/linux/blkdev.h    |  4 ++--
->  9 files changed, 33 insertions(+), 59 deletions(-)
 > 
-> diff --git a/drivers/md/dm-core.h b/drivers/md/dm-core.h
-> index d522093cb39dda..aace147effcacb 100644
-> --- a/drivers/md/dm-core.h
-> +++ b/drivers/md/dm-core.h
-> @@ -96,11 +96,6 @@ struct mapped_device {
->  	 */
->  	struct workqueue_struct *wq;
->  
-> -	/*
-> -	 * freeze/thaw support require holding onto a super block
-> -	 */
-> -	struct super_block *frozen_sb;
-> -
->  	/* forced geometry settings */
->  	struct hd_geometry geometry;
->  
-> diff --git a/drivers/md/dm.c b/drivers/md/dm.c
-> index 54739f1b579bc8..50541d336c719b 100644
-> --- a/drivers/md/dm.c
-> +++ b/drivers/md/dm.c
-> @@ -2392,27 +2392,19 @@ static int lock_fs(struct mapped_device *md)
->  {
->  	int r;
->  
-> -	WARN_ON(md->frozen_sb);
-> +	WARN_ON(test_bit(DMF_FROZEN, &md->flags));
->  
-> -	md->frozen_sb = freeze_bdev(md->bdev);
-> -	if (IS_ERR(md->frozen_sb)) {
-> -		r = PTR_ERR(md->frozen_sb);
-> -		md->frozen_sb = NULL;
-> -		return r;
-> -	}
-> -
-> -	set_bit(DMF_FROZEN, &md->flags);
-> -
-> -	return 0;
-> +	r = freeze_bdev(md->bdev);
-> +	if (!r)
-> +		set_bit(DMF_FROZEN, &md->flags);
-> +	return r;
->  }
->  
->  static void unlock_fs(struct mapped_device *md)
->  {
->  	if (!test_bit(DMF_FROZEN, &md->flags))
->  		return;
-> -
-> -	thaw_bdev(md->bdev, md->frozen_sb);
-> -	md->frozen_sb = NULL;
-> +	thaw_bdev(md->bdev);
->  	clear_bit(DMF_FROZEN, &md->flags);
->  }
->  
-> diff --git a/fs/block_dev.c b/fs/block_dev.c
-> index d8664f5c1ff669..33c29106c98907 100644
-> --- a/fs/block_dev.c
-> +++ b/fs/block_dev.c
-> @@ -548,55 +548,47 @@ EXPORT_SYMBOL(fsync_bdev);
->   * count down in thaw_bdev(). When it becomes 0, thaw_bdev() will unfreeze
->   * actually.
->   */
-> -struct super_block *freeze_bdev(struct block_device *bdev)
-> +int freeze_bdev(struct block_device *bdev)
->  {
->  	struct super_block *sb;
->  	int error = 0;
->  
->  	mutex_lock(&bdev->bd_fsfreeze_mutex);
-> -	if (++bdev->bd_fsfreeze_count > 1) {
-> -		/*
-> -		 * We don't even need to grab a reference - the first call
-> -		 * to freeze_bdev grab an active reference and only the last
-> -		 * thaw_bdev drops it.
-> -		 */
-> -		sb = get_super(bdev);
-> -		if (sb)
-> -			drop_super(sb);
-> -		mutex_unlock(&bdev->bd_fsfreeze_mutex);
-> -		return sb;
-> -	}
-> +	if (++bdev->bd_fsfreeze_count > 1)
-> +		goto done;
->  
->  	sb = get_active_super(bdev);
->  	if (!sb)
-> -		goto out;
-> +		goto sync;
->  	if (sb->s_op->freeze_super)
->  		error = sb->s_op->freeze_super(sb);
->  	else
->  		error = freeze_super(sb);
-> +	deactivate_super(sb);
-> +
->  	if (error) {
-> -		deactivate_super(sb);
->  		bdev->bd_fsfreeze_count--;
-> -		mutex_unlock(&bdev->bd_fsfreeze_mutex);
-> -		return ERR_PTR(error);
-> +		goto done;
->  	}
-> -	deactivate_super(sb);
-> - out:
-> +	bdev->bd_fsfreeze_sb = sb;
-> +
-> +sync:
->  	sync_blockdev(bdev);
-> +done:
->  	mutex_unlock(&bdev->bd_fsfreeze_mutex);
-> -	return sb;	/* thaw_bdev releases s->s_umount */
-> +	return error;
->  }
->  EXPORT_SYMBOL(freeze_bdev);
->  
->  /**
->   * thaw_bdev  -- unlock filesystem
->   * @bdev:	blockdevice to unlock
-> - * @sb:		associated superblock
->   *
->   * Unlocks the filesystem and marks it writeable again after freeze_bdev().
->   */
-> -int thaw_bdev(struct block_device *bdev, struct super_block *sb)
-> +int thaw_bdev(struct block_device *bdev)
->  {
-> +	struct super_block *sb;
->  	int error = -EINVAL;
->  
->  	mutex_lock(&bdev->bd_fsfreeze_mutex);
-> @@ -607,6 +599,7 @@ int thaw_bdev(struct block_device *bdev, struct super_block *sb)
->  	if (--bdev->bd_fsfreeze_count > 0)
->  		goto out;
->  
-> +	sb = bdev->bd_fsfreeze_sb;
->  	if (!sb)
->  		goto out;
->  
-> diff --git a/fs/buffer.c b/fs/buffer.c
-> index 23f645657488ba..a7595ada9400ff 100644
-> --- a/fs/buffer.c
-> +++ b/fs/buffer.c
-> @@ -523,7 +523,7 @@ static int osync_buffers_list(spinlock_t *lock, struct list_head *list)
->  
->  void emergency_thaw_bdev(struct super_block *sb)
->  {
-> -	while (sb->s_bdev && !thaw_bdev(sb->s_bdev, sb))
-> +	while (sb->s_bdev && !thaw_bdev(sb->s_bdev))
->  		printk(KERN_WARNING "Emergency Thaw on %pg\n", sb->s_bdev);
->  }
->  
-> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-> index f0381876a7e5b0..524e134324475e 100644
-> --- a/fs/ext4/ioctl.c
-> +++ b/fs/ext4/ioctl.c
-> @@ -624,7 +624,7 @@ static int ext4_shutdown(struct super_block *sb, unsigned long arg)
->  	case EXT4_GOING_FLAGS_DEFAULT:
->  		freeze_bdev(sb->s_bdev);
->  		set_bit(EXT4_FLAGS_SHUTDOWN, &sbi->s_ext4_flags);
-> -		thaw_bdev(sb->s_bdev, sb);
-> +		thaw_bdev(sb->s_bdev);
->  		break;
->  	case EXT4_GOING_FLAGS_LOGFLUSH:
->  		set_bit(EXT4_FLAGS_SHUTDOWN, &sbi->s_ext4_flags);
-> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> index ee861c6d9ff026..a9fc482a0e60a5 100644
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -2230,16 +2230,12 @@ static int f2fs_ioc_shutdown(struct file *filp, unsigned long arg)
->  
->  	switch (in) {
->  	case F2FS_GOING_DOWN_FULLSYNC:
-> -		sb = freeze_bdev(sb->s_bdev);
-> -		if (IS_ERR(sb)) {
-> -			ret = PTR_ERR(sb);
-> +		ret = freeze_bdev(sb->s_bdev);
-> +		if (ret)
->  			goto out;
-> -		}
-> -		if (sb) {
-> -			f2fs_stop_checkpoint(sbi, false);
-> -			set_sbi_flag(sbi, SBI_IS_SHUTDOWN);
-> -			thaw_bdev(sb->s_bdev, sb);
-> -		}
-> +		f2fs_stop_checkpoint(sbi, false);
-> +		set_sbi_flag(sbi, SBI_IS_SHUTDOWN);
-> +		thaw_bdev(sb->s_bdev);
->  		break;
->  	case F2FS_GOING_DOWN_METASYNC:
->  		/* do checkpoint only */
-> diff --git a/fs/xfs/xfs_fsops.c b/fs/xfs/xfs_fsops.c
-> index ef1d5bb88b93ab..b7c5783a031c69 100644
-> --- a/fs/xfs/xfs_fsops.c
-> +++ b/fs/xfs/xfs_fsops.c
-> @@ -433,13 +433,10 @@ xfs_fs_goingdown(
->  {
->  	switch (inflags) {
->  	case XFS_FSOP_GOING_FLAGS_DEFAULT: {
-> -		struct super_block *sb = freeze_bdev(mp->m_super->s_bdev);
-> -
-> -		if (sb && !IS_ERR(sb)) {
-> +		if (!freeze_bdev(mp->m_super->s_bdev)) {
->  			xfs_force_shutdown(mp, SHUTDOWN_FORCE_UMOUNT);
-> -			thaw_bdev(sb->s_bdev, sb);
-> +			thaw_bdev(mp->m_super->s_bdev);
->  		}
-> -
->  		break;
->  	}
->  	case XFS_FSOP_GOING_FLAGS_LOGFLUSH:
-> diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
-> index d9b69bbde5cc54..ebfb4e7c1fd125 100644
-> --- a/include/linux/blk_types.h
-> +++ b/include/linux/blk_types.h
-> @@ -46,6 +46,7 @@ struct block_device {
->  	int			bd_fsfreeze_count;
->  	/* Mutex for freeze */
->  	struct mutex		bd_fsfreeze_mutex;
-> +	struct super_block	*bd_fsfreeze_sb;
->  } __randomize_layout;
->  
->  /*
-> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> index 05b346a68c2eee..12810a19edebc4 100644
-> --- a/include/linux/blkdev.h
-> +++ b/include/linux/blkdev.h
-> @@ -2020,7 +2020,7 @@ static inline int sync_blockdev(struct block_device *bdev)
->  #endif
->  int fsync_bdev(struct block_device *bdev);
->  
-> -struct super_block *freeze_bdev(struct block_device *bdev);
-> -int thaw_bdev(struct block_device *bdev, struct super_block *sb);
-> +int freeze_bdev(struct block_device *bdev);
-> +int thaw_bdev(struct block_device *bdev);
->  
->  #endif /* _LINUX_BLKDEV_H */
-> -- 
-> 2.29.2
+> Changes in v14: None
+> Changes in v13: None
+> Changes in v12:
+> - Fix some warnings while make dt_binding_check
+> - Drop a allOf defined
 > 
+> Changes in v11: None
+> Changes in v10: None
+> Changes in v9: None
+> Changes in v8:
+> - Fix a error while make dt_binding_check
+> 
+> Changes in v7:
+> - Fix some wrong define
+> 
+> Changes in v6:
+> - Fix some wrong define
+> - Modified the definition of compatible
+> 
+> Changes in v5:
+> - Fix some wrong define.
+> - Add boot-medium define.
+> - Remove some compatible define.
+> 
+> Changes in v4:
+> - The compatible define with rkxx_nfc.
+> - Add assigned-clocks.
+> - Fix some wrong defineChanges in.
+> 
+> Changes in v3:
+> - Change the title for the dt-bindings.
+> 
+> Changes in v2: None
+> 
+>  .../mtd/rockchip,nand-controller.yaml         | 161 ++++++++++++++++++
+>  1 file changed, 161 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
+> 
+
+
+Please add Acked-by/Reviewed-by tags when posting new versions. However,
+there's no need to repost patches *only* to add the tags. The upstream
+maintainer will do that for acks received on the version they apply.
+
+If a tag was not added on purpose, please state why and what changed.
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
