@@ -2,62 +2,62 @@ Return-Path: <SRS0=z5ty=FE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87183C5519F
-	for <linux-mtd@archiver.kernel.org>; Mon, 30 Nov 2020 08:05:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1174FC71156
+	for <linux-mtd@archiver.kernel.org>; Mon, 30 Nov 2020 09:10:42 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E4C0B20709
-	for <linux-mtd@archiver.kernel.org>; Mon, 30 Nov 2020 08:05:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6CAE2207BC
+	for <linux-mtd@archiver.kernel.org>; Mon, 30 Nov 2020 09:10:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VzsXMDXd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E4C0B20709
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="z8YaKSCZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6CAE2207BC
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=K3fGfo1pYbmZO1XvkHcJvxao17huomSNmkUa/84lxxg=; b=VzsXMDXdJwufU3teN+y/BYCGF
-	eeOZaENakD61hMFRo02ikO9/GKiN7xRDRDluABolOmcxrgIWxdq54PqEUpiFljLLsmDdAO+uyb/3l
-	usUfOG5sXPacGrZ0M6Tz/uRW/avgm68ic8ididqzYwEC59IWhLJXVJSh1Oz+W0tiTvlvrDsF5lqlP
-	xGNdWcam0+dFCBDZ2GKix9WHlichx6wuF/X/hJ8D9xUCfc7havBLsUpsJ8uZr93rfgxBDOfh2H8nQ
-	968Enz5hTwcrOFwYGs4btkH+zD3qhDmA6ZypDdnDogLGFJURVMRlB6D65PBgj/z7Aumdi/iwxXcir
-	V+GdU58xw==;
+	 bh=CFG8NtxhDO602CAwD/HRtR+yCHAc+VHYBiZgecNtnIA=; b=z8YaKSCZXakHQ++uCwbJwXxZ9
+	vzdDlHguP6zIDol/IgkQrWy0YS1s570nx8yrCF9jNvpTBwpYAv2gFpwIWBKurvGJvyTp1/T1qsYAI
+	5Oc/8C0XCLy/AaP6IpANm8GDMgK3SR10Sm2LeQtfoUM6xlWvCdEk/v2zNEFapEp4mSLjqDk4lMaG/
+	bya0hWfL84jrlkYYbYuX3CPGM9bcImLbwOn3JPiMfvBI/0LD13o4NK1nvFUUV2lBSyzpCZKdtXRyG
+	fL8ATbDRVsM+7bltUsNwEnsP4+O4mksFt2vtQLst4IgapVv9cfHXpdZ0BTDwN3Qj2wsffmf0xYaNT
+	g8LGtXZkA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kjeAb-0007NP-W6; Mon, 30 Nov 2020 08:04:26 +0000
-Received: from relay10.mail.gandi.net ([217.70.178.230])
+	id 1kjfBa-0005o8-Qe; Mon, 30 Nov 2020 09:09:30 +0000
+Received: from mx2.suse.de ([195.135.220.15])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kjeAY-0007My-9L
- for linux-mtd@lists.infradead.org; Mon, 30 Nov 2020 08:04:23 +0000
-Received: from xps13 (unknown [91.224.148.103])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay10.mail.gandi.net (Postfix) with ESMTPSA id A328E240005;
- Mon, 30 Nov 2020 08:04:14 +0000 (UTC)
-Date: Mon, 30 Nov 2020 09:04:12 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Nathan Chancellor <natechancellor@gmail.com>
-Subject: Re: [PATCH 17/19] mtd: rawnand: r852: Move the ECC initialization
- to ->attach_chip()
-Message-ID: <20201130090412.5fac23d3@xps13>
-In-Reply-To: <20201130010755.GA1956350@ubuntu-m3-large-x86>
-References: <20201113123424.32233-1-miquel.raynal@bootlin.com>
- <20201113123424.32233-18-miquel.raynal@bootlin.com>
- <20201130010755.GA1956350@ubuntu-m3-large-x86>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1kjfBY-0005nI-41
+ for linux-mtd@lists.infradead.org; Mon, 30 Nov 2020 09:09:28 +0000
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 84675AC6A;
+ Mon, 30 Nov 2020 09:09:25 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+ id 0D4011E131B; Mon, 30 Nov 2020 10:09:25 +0100 (CET)
+Date: Mon, 30 Nov 2020 10:09:25 +0100
+From: Jan Kara <jack@suse.cz>
+To: Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 16/45] block: switch bdgrab to use igrab
+Message-ID: <20201130090925.GB11250@quack2.suse.cz>
+References: <20201128161510.347752-1-hch@lst.de>
+ <20201128161510.347752-17-hch@lst.de>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20201128161510.347752-17-hch@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201130_030422_444256_05BD36DC 
-X-CRM114-Status: GOOD (  19.14  )
+X-CRM114-CacheID: sfid-20201130_040928_294090_C0D4F2DA 
+X-CRM114-Status: GOOD (  22.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,51 +69,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Maxim Levitsky <maximlevitsky@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
+ Mike Snitzer <snitzer@redhat.com>, linux-mm@kvack.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jan Kara <jack@suse.com>,
+ Josef Bacik <josef@toxicpanda.com>, Coly Li <colyli@suse.de>,
+ linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ dm-devel@redhat.com, linux-mtd@lists.infradead.org,
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>, Tejun Heo <tj@kernel.org>,
+ linux-bcache@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTmF0aGFuLAoKTmF0aGFuIENoYW5jZWxsb3IgPG5hdGVjaGFuY2VsbG9yQGdtYWlsLmNvbT4g
-d3JvdGUgb24gU3VuLCAyOSBOb3YgMjAyMAoxODowNzo1NSAtMDcwMDoKCj4gT24gRnJpLCBOb3Yg
-MTMsIDIwMjAgYXQgMDE6MzQ6MjJQTSArMDEwMCwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiA+IFRo
-ZSBwcm9iZSBmdW5jdGlvbiBpcyBvbmx5IHN1cHBvc2VkIHRvIGluaXRpYWxpemUgdGhlIGNvbnRy
-b2xsZXIKPiA+IGhhcmR3YXJlIGJ1dCBub3QgdGhlIEVDQyBlbmdpbmUuIEluZGVlZCwgd2UgZG9u
-J3Qga25vdyBhbnl0aGluZyBhYm91dAo+ID4gdGhlIE5BTkQgY2hpcChzKSBhdCB0aGlzIHN0YWdl
-LiBMZXQncyBtb3ZlIHRoZSBsb2dpYyBpbml0aWFsaXppbmcgdGhlCj4gPiBFQ0MgZW5naW5lLCBl
-dmVuIHByZXR0eSBzaW1wbGUsIHRvIHRoZSAtPmF0dGFjaF9jaGlwKCkgaG9vayB3aGljaCBnZXRz
-Cj4gPiBjYWxsZWQgZHVyaW5nIG5hbmRfc2NhbigpIHJvdXRpbmUsIGFmdGVyIHRoZSBOQU5EIGNo
-aXAgZGlzY292ZXJ5LiBBcwo+ID4gdGhlIHByZXZpb3VzbHkgbWVudGlvbmVkIGxvZ2ljIGlzIHN1
-cHBvc2VkIHRvIHBhcnNlIHRoZSBEVCBmb3IgdXMsIGl0Cj4gPiBpcyBsaWtlbHkgdGhhdCB0aGUg
-Y2hpcC0+ZWNjLiogZW50cmllcyBiZSBvdmVyd3JpdHRlbi4gU28gbGV0J3MgYXZvaWQKPiA+IHRo
-aXMgYnkgbW92aW5nIHRoZXNlIGxpbmVzIHRvIC0+YXR0YWNoX2NoaXAoKS4KPiA+IAo+ID4gRml4
-ZXM6IGQ3MTU3ZmY0OWE1YiAoIm10ZDogcmF3bmFuZDogVXNlIHRoZSBFQ0MgZnJhbWV3b3JrIHVz
-ZXIgaW5wdXQgcGFyc2luZyBiaXRzIikKPiA+IFNpZ25lZC1vZmYtYnk6IE1pcXVlbCBSYXluYWwg
-PG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+Cj4gPiBDYzogTWF4aW0gTGV2aXRza3kgPG1heGlt
-bGV2aXRza3lAZ21haWwuY29tPiAgCj4gCj4gSnVzdCBhcyBhIGhlYWRzIHVwLCB0aGlzIHBhdGNo
-IHdhcyBhcHBsaWVkIHRvIG10ZC9maXhlcyBhcwo+IGNvbW1pdCA3ZWY5NjlhMDQyMjggKCJtdGQ6
-IHJhd25hbmQ6IHI4NTI6IE1vdmUgdGhlIEVDQwo+IGluaXRpYWxpemF0aW9uIHRvIC0+YXR0YWNo
-X2NoaXAoKSIpIGJ1dCBpdCBhcHBlYXJzIHRvIGFsc28gYmUgYXBwbGllZCB0bwo+IG5hbmQvbmV4
-dCBhcyBjb21taXQgMGMyYjY5ZjU1MTMyICgibXRkOiByYXduYW5kOiByODUyOiBNb3ZlIHRoZSBF
-Q0MKPiBpbml0aWFsaXphdGlvbiB0byAtPmF0dGFjaF9jaGlwKCkiKSwgd2hlcmUgZHVlIHRvIGl0
-cyBtaXNtZXJnZWQgbmF0dXJlLAo+IGl0IGNhdXNlcyBhIGNsYW5nIHdhcm5pbmc6Cj4gCj4gLi4v
-ZHJpdmVycy9tdGQvbmFuZC9yYXcvcjg1Mi5jOjg3NDoyNDogd2FybmluZzogdmFyaWFibGUgJ2Rl
-dicgaXMgdW5pbml0aWFsaXplZCB3aGVuIHVzZWQgaGVyZSBbLVd1bmluaXRpYWxpemVkXQo+ICAg
-ICAgICAgbmFuZF9jb250cm9sbGVyX2luaXQoJmRldi0+Y29udHJvbGxlcik7Cj4gICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgXn5+Cj4gLi4vZHJpdmVycy9tdGQvbmFuZC9yYXcvcjg1Mi5j
-Ojg0NzoyNTogbm90ZTogaW5pdGlhbGl6ZSB0aGUgdmFyaWFibGUgJ2RldicgdG8gc2lsZW5jZSB0
-aGlzIHdhcm5pbmcKPiAgICAgICAgIHN0cnVjdCByODUyX2RldmljZSAqZGV2Owo+ICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICBeCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICA9IE5VTEwKPiAxIHdhcm5pbmcgZ2VuZXJhdGVkLgo+IAo+IENoZWVycywKPiBOYXRoYW4gQ2hh
-bmNlbGxvcgoKQWJzb2x1dGVseSwgdGhpcyBmaXggY2FtZSBsYXRlLCBuYW5kL25leHQgd2FzIGFs
-cmVhZHkgc2V0IHVwIGFuZCB0aGVyZQp3YXMgY29uZmxpY3RzIGJldHdlZW4gdGhlIHR3by4gSSBh
-cHBsaWVkIHRoZXNlIHNhbWUgcGF0Y2hlcyBhdCB0aGUgcm9vdApvZiBuYW5kL25leHQgdG8gYmUg
-c3VyZSB0aGUgYnJhbmNoIHdvdWxkIHN0aWxsIGJlIHZhbGlkIHVudGlsIHRoZSBuZXh0Ci1yYyB3
-b3VsZCBjb21lIG91dCAodG9kYXkpLgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
-b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vbGludXgtbXRkLwo=
+On Sat 28-11-20 17:14:41, Christoph Hellwig wrote:
+> All of the current callers already have a reference, but to prepare for
+> additional users ensure bdgrab returns NULL if the block device is beeing
+								     ^^^ being
+
+> freed.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+
+Otherwise looks good. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  fs/block_dev.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/block_dev.c b/fs/block_dev.c
+> index d707ab376da86e..962fabe8a67b83 100644
+> --- a/fs/block_dev.c
+> +++ b/fs/block_dev.c
+> @@ -894,10 +894,14 @@ static struct block_device *bdget(dev_t dev)
+>  /**
+>   * bdgrab -- Grab a reference to an already referenced block device
+>   * @bdev:	Block device to grab a reference to.
+> + *
+> + * Returns the block_device with an additional reference when successful,
+> + * or NULL if the inode is already beeing freed.
+>   */
+>  struct block_device *bdgrab(struct block_device *bdev)
+>  {
+> -	ihold(bdev->bd_inode);
+> +	if (!igrab(bdev->bd_inode))
+> +		return NULL;
+>  	return bdev;
+>  }
+>  EXPORT_SYMBOL(bdgrab);
+> -- 
+> 2.29.2
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
