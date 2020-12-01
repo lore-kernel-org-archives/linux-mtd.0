@@ -2,84 +2,103 @@ Return-Path: <SRS0=jbuo=FF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56AB9C64E7A
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Dec 2020 10:28:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB7EEC64E7A
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Dec 2020 14:06:46 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CE0A520770
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Dec 2020 10:28:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 44D2620705
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Dec 2020 14:06:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TVSn/WL5";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="dSPRwwKd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE0A520770
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fVWU77lj";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="vLWTsjji"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 44D2620705
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=a7YDabAApTxwD0fH7xqQF30WJEO/FOuh1qgouPU+oqc=; b=TVSn/WL5C9bQIOijdBFDw5s6Pb
-	LwYInG+KhAa7KKHtMdrHXDlv6no01MS7dGt5Tifj+SK0fLONc7umm+iJK+SDL7bdr/VlJcgJFGLIh
-	BJnHklYHKCzL8g+U0tsk7QhIvYn5ZKhVLdks1WnMkHVnQV/9tdl4SGmY9tkjv6rrhEFTGaNp/EVzL
-	k14/i/6RiVr6J++JyH9tFGdTIKKonTo9jh0MGktxC2zOSbo3p0hQUH0wUQJL6VnuFiXauxrk0TvWN
-	Pt0yX38ikoT1WoW24rFg8+fUEgwzYyP0p69dLal7o0Q8oXq17yM0ELqxRaT52WVl4h4RMUuRA9tfy
-	jPXolsfw==;
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=GQrjYiQszIDoswN3PWNkgBzI/ZO5x/JSclYLvz/OvUw=; b=fVWU77ljwS5WxxPgDh/3AixsX
+	i7SlEiBP60yhY/iwWX6yn+IzORuqmMVGaTivokbmFaapxemEn6mO9ZBX+5xz9pdM7fo2dPpK2B2XE
+	Y4g7gKYb+A8CqFr/hfdRUbTwmW+i9xFf1+E0B2VjWn02X9rzZnRlJA0MMHIqhN0W26fQ9ASd0JZNj
+	nUycslJP0/ACY8WKHvOxXj7rAFDzDhGr0+j2JmlWjcylPBit5dYmt5G77kjCkf+qCY1dI9Ogpi/CR
+	+zK/dpVmi7tl3YZJoiRavC6Yb3Nc7lbyOIMGJGB4sCJTVqE6YsaZ1v+IiJoq1eqkBIHw6egVutla8
+	Pn4JocnOA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kk2sU-0005pB-PR; Tue, 01 Dec 2020 10:27:22 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1kk6IB-0004pQ-D7; Tue, 01 Dec 2020 14:06:07 +0000
+Received: from aserp2120.oracle.com ([141.146.126.78])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kk2sR-0005ni-Nl
- for linux-mtd@lists.infradead.org; Tue, 01 Dec 2020 10:27:20 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0B1ARFoF026753;
- Tue, 1 Dec 2020 04:27:15 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1606818435;
- bh=dzMlfGnG8XmlsSokD5RUWqJd9nznHlbq2+gpDGLKO48=;
- h=From:To:CC:Subject:Date;
- b=dSPRwwKd4jtX3qiI4RHJJZ/9fh14BfSWgoK2Po+SBnVZ8so7MqQ6Rf0GhBGZxM6k6
- 8cAtKQxpdYmDa3dU0Dhvmxfi/qqsuSpuq9pkudLVDR7WQM04FTxCi5q+EZm5z/XYJ8
- p8ZO547RselZoRC1yp/40d5zmm52KOX2i2PU42Zg=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0B1ARFmq095872
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 1 Dec 2020 04:27:15 -0600
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 1 Dec
- 2020 04:27:15 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 1 Dec 2020 04:27:15 -0600
-Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
- [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0B1ARCuY080862;
- Tue, 1 Dec 2020 04:27:13 -0600
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 0/3] mtd: Make sure UBIFS does not do multi-pass page
- programming on flashes that don't support it
-Date: Tue, 1 Dec 2020 15:57:08 +0530
-Message-ID: <20201201102711.8727-1-p.yadav@ti.com>
-X-Mailer: git-send-email 2.28.0
+ id 1kk6I7-0004mt-1G; Tue, 01 Dec 2020 14:06:05 +0000
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+ by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B1DstBi119028;
+ Tue, 1 Dec 2020 14:05:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=pTmh0fAx41hLIvYDyOekZfZD8/4rzzXxS/TqqdPExwg=;
+ b=vLWTsjjic+1p3i9uxybiHNVi42dcBKcTvA6AfpFTEr0sUNmVqp9yRxLgg7kIK5qGUN0J
+ oofgNIgToJJBxsPbFd+Am4pBxk6JPpjzRqo19VpEwymshbhsnRALOcfpiO21XOp3kmxr
+ lgOLJrUqyUshUH+0ojxyxXIg1LFHdnj2t2Bklh5y68LsxqqiRxoSPtOWNIoWynIJF754
+ 5bVkuWqCYCEFs8tq7LyeOV+zI3/vr+tI5ZKBss7pqjTfnpXNJRaPwJeD8R6AGcywA+BA
+ lerBH0PS/hUi55aURtflNdJ2juhGcYo6ht8r8gtlOn38U9XkoMGDxbASv62fD9VykISM Rg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+ by aserp2120.oracle.com with ESMTP id 353egkjkku-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 01 Dec 2020 14:05:42 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+ by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B1Du5XW003807;
+ Tue, 1 Dec 2020 14:05:42 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+ by aserp3020.oracle.com with ESMTP id 3540ey0hqs-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 01 Dec 2020 14:05:42 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+ by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B1E1twO021849;
+ Tue, 1 Dec 2020 14:05:41 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+ by aserp3020.oracle.com with ESMTP id 3540ey0hp9-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 01 Dec 2020 14:05:40 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+ by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B1E5MSD015816;
+ Tue, 1 Dec 2020 14:05:23 GMT
+Received: from kadam (/102.36.221.92) by default (Oracle Beehive Gateway v4.0)
+ with ESMTP ; Tue, 01 Dec 2020 06:05:21 -0800
+Date: Tue, 1 Dec 2020 17:04:49 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
+Message-ID: <20201201140449.GG2767@kadam>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+ <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011201129.B13FDB3C@keescook>
+ <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011220816.8B6591A@keescook>
 MIME-Version: 1.0
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Disposition: inline
+In-Reply-To: <202011220816.8B6591A@keescook>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821
+ signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0
+ bulkscore=0 suspectscore=0
+ phishscore=0 mlxlogscore=944 lowpriorityscore=0 malwarescore=0
+ priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1011 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012010090
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201201_052719_874814_4A95787D 
-X-CRM114-Status: GOOD (  16.15  )
+X-CRM114-CacheID: sfid-20201201_090603_250403_FBB1A8AD 
+X-CRM114-Status: GOOD (  30.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,54 +110,101 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Pratyush Yadav <p.yadav@ti.com>
+Cc: alsa-devel@alsa-project.org, bridge@lists.linux-foundation.org,
+ target-devel@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-wireless@vger.kernel.org, linux-fbdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, virtualization@lists.linux-foundation.org,
+ linux-mm@kvack.org, linux-ide@vger.kernel.org, dm-devel@redhat.com,
+ keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
+ GR-everest-linux-l2@marvell.com, wcn36xx@lists.infradead.org,
+ linux-i3c@lists.infradead.org, linux1394-devel@lists.sourceforge.net,
+ linux-afs@lists.infradead.org, devel@driverdev.osuosl.org,
+ linux-cifs@vger.kernel.org, rds-devel@oss.oracle.com,
+ linux-scsi@vger.kernel.org, linux-acpi@vger.kernel.org,
+ linux-rdma@vger.kernel.org, oss-drivers@netronome.com,
+ linux-atm-general@lists.sourceforge.net, ceph-devel@vger.kernel.org,
+ amd-gfx@lists.freedesktop.org, linux-stm32@st-md-mailman.stormreply.com,
+ cluster-devel@redhat.com, usb-storage@lists.one-eyed-alien.net,
+ linux-mmc@vger.kernel.org, coreteam@netfilter.org,
+ intel-wired-lan@lists.osuosl.org,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>, linux-input@vger.kernel.org,
+ Miguel Ojeda <ojeda@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+ linux-ext4@vger.kernel.org, netfilter-devel@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
+ selinux@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ intel-gfx@lists.freedesktop.org, linux-sctp@vger.kernel.org,
+ reiserfs-devel@vger.kernel.org, linux-geode@lists.infradead.org,
+ linux-block@vger.kernel.org, linux-gpio@vger.kernel.org,
+ op-tee@lists.trustedfirmware.org, linux-mediatek@lists.infradead.org,
+ xen-devel@lists.xenproject.org, drbd-dev@tron.linbit.com,
+ linux-hams@vger.kernel.org, Nathan Chancellor <natechancellor@gmail.com>,
+ linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-hwmon@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
+ linux-nfs@vger.kernel.org, GR-Linux-NIC-Dev@marvell.com,
+ nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
+ linux-decnet-user@lists.sourceforge.net, samba-technical@lists.samba.org,
+ linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-security-module@vger.kernel.org, linux-usb@vger.kernel.org,
+ tipc-discussion@lists.sourceforge.net, linux-crypto@vger.kernel.org,
+ patches@opensource.cirrus.com, Joe Perches <joe@perches.com>,
+ linux-integrity@vger.kernel.org, x86@kernel.org,
+ linux-hardening@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+On Sun, Nov 22, 2020 at 08:17:03AM -0800, Kees Cook wrote:
+> On Fri, Nov 20, 2020 at 11:51:42AM -0800, Jakub Kicinski wrote:
+> > On Fri, 20 Nov 2020 11:30:40 -0800 Kees Cook wrote:
+> > > On Fri, Nov 20, 2020 at 10:53:44AM -0800, Jakub Kicinski wrote:
+> > > > On Fri, 20 Nov 2020 12:21:39 -0600 Gustavo A. R. Silva wrote:  
+> > > > > This series aims to fix almost all remaining fall-through warnings in
+> > > > > order to enable -Wimplicit-fallthrough for Clang.
+> > > > > 
+> > > > > In preparation to enable -Wimplicit-fallthrough for Clang, explicitly
+> > > > > add multiple break/goto/return/fallthrough statements instead of just
+> > > > > letting the code fall through to the next case.
+> > > > > 
+> > > > > Notice that in order to enable -Wimplicit-fallthrough for Clang, this
+> > > > > change[1] is meant to be reverted at some point. So, this patch helps
+> > > > > to move in that direction.
+> > > > > 
+> > > > > Something important to mention is that there is currently a discrepancy
+> > > > > between GCC and Clang when dealing with switch fall-through to empty case
+> > > > > statements or to cases that only contain a break/continue/return
+> > > > > statement[2][3][4].  
+> > > > 
+> > > > Are we sure we want to make this change? Was it discussed before?
+> > > > 
+> > > > Are there any bugs Clangs puritanical definition of fallthrough helped
+> > > > find?
+> > > > 
+> > > > IMVHO compiler warnings are supposed to warn about issues that could
+> > > > be bugs. Falling through to default: break; can hardly be a bug?!  
+> > > 
+> > > It's certainly a place where the intent is not always clear. I think
+> > > this makes all the cases unambiguous, and doesn't impact the machine
+> > > code, since the compiler will happily optimize away any behavioral
+> > > redundancy.
+> > 
+> > If none of the 140 patches here fix a real bug, and there is no change
+> > to machine code then it sounds to me like a W=2 kind of a warning.
+> 
+> FWIW, this series has found at least one bug so far:
+> https://lore.kernel.org/lkml/CAFCwf11izHF=g1mGry1fE5kvFFFrxzhPSM6qKAO8gxSp=Kr_CQ@mail.gmail.com/
 
-The Cypress Semper S28 flash family uses 2-bit ECC by default. Under
-this ECC scheme, multi-pass page programs result in a program error.
-This means that unlike many other SPI NOR flashes, bit-walking cannot be
-done. In other words, once a page is programmed, its bits cannot then be
-flipped to 0 without an erase in between.
+This is a fallthrough to a return and not to a break.  That should
+trigger a warning.  The fallthrough to a break should not generate a
+warning.
 
-This causes problems with UBIFS because it uses bit-walking to clear EC
-and VID magic numbers from a PEB before issuing an erase to preserve the
-file system correctness in case of power cuts.
+The bug we're trying to fix is "missing break statement" but if the
+result of the bug is "we hit a break statement" then now we're just
+talking about style.  GCC should limit itself to warning about
+potentially buggy code.
 
-This series fixes that by setting mtd->writesize to the ECC block size
-(16) and making sure UBIFS does not try to do a multi-pass write on
-flashes with writesize > 1.
-
-It is based on the xSPI/8D series that adds support for Cypress S28
-flash [0] (it is in next now). The patches themselves are independent of
-that series in the sense that they don't rely on 8D support. But since
-S28 flash is not supported without that series, these patches don't make
-much sense without it.
-
-Tested on Cypress S28HS512T and MT35XU512ABA on J7200 and J721E
-respectively.
-
-[0] https://lore.kernel.org/linux-mtd/20201005153138.6437-1-p.yadav@ti.com/
-
-Pratyush Yadav (3):
-  UBI: Do not zero out EC and VID on ECC-ed NOR flashes
-  mtd: spi-nor: core: Allow flashes to specify MTD writesize
-  mtd: spi-nor: spansion: Set ECC block size
-
- drivers/mtd/spi-nor/core.c     | 3 ++-
- drivers/mtd/spi-nor/core.h     | 3 +++
- drivers/mtd/spi-nor/spansion.c | 1 +
- drivers/mtd/ubi/build.c        | 4 +---
- drivers/mtd/ubi/io.c           | 9 ++++++++-
- 5 files changed, 15 insertions(+), 5 deletions(-)
-
---
-2.28.0
-
+regards,
+dan carpenter
 
 ______________________________________________________
 Linux MTD discussion mailing list
