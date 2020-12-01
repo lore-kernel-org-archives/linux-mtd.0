@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EB94C64E7A
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Dec 2020 19:11:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54936C64E7B
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Dec 2020 19:21:12 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D6F4D20639
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Dec 2020 19:11:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C4DAA20639
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Dec 2020 19:21:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="E/LpJUUA";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="I5YX0/C5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D6F4D20639
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="caxNNBDr";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="KIVEomxV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C4DAA20639
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,62 +26,62 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=jmvwF/zoZevih3rbSTf7C/qIb/2w+LYoZX1d1NmqCrM=; b=E/LpJUUAd7dSQ/FBIgX+WcaZn
-	ysnCNyYBM6LrtMDkmkmuVE2v0fTcJbQ5hx91y6S/SbMf/tiKXeD7Ex++6R3CKeFieH6zomElSATWc
-	PgfwmLkT9Ud10+AQSbgQOO1BlkfCjKta1mr2fsFnOo/4gH9pEavmZdfDJjgJZ28WvmqDSjJPCICE5
-	nKJHRt48MDc0jnCzSTN6eeL7NH48stWkSDNSetj+c5MzxXvvzuuPvfdSQhz97GZjxv8t3BFI3PwQ/
-	z+jmoQexlZGDuQYLCcO+b81wZD+YYTBeQcJQUUSWuGfmCfk/BylnNFLe3aRcTu3p7T7E45A4vJA2k
-	Ak+cp72yg==;
+	 bh=gpaoVXcWNeA4PeNu2C8sm7M+Q9LBpX7LG19i5uHs3pY=; b=caxNNBDr/SF/knYZ8//EKkGag
+	phTCmmed50XhobB4Lh+zbAa5n8PXR5JS4KfFxIHbpQs6KX2gWIHFsZj0/ZVcE9kDXVFKHTX/aZXWB
+	tRitm1ZbXYmd3o6ipFnPdOO6MEqidD0w07VPPfG6u/ZHe9QzVM09qe911gYSljz9EaQkhK+xaUBvn
+	yCkJd/lVVFpG0DQAZACi4x11+KPyAUpz+QBKZD9C8jSRQhEsZLDMkHvr2ajTSP0xEmUgRfzWsK5Xs
+	9FE5JUGejSOE1akw7+jnf9DIYNDGB3DkReUVmPj4e6avzHtz+GVdtKLmdTJUKsFTF1x40O6te1cMa
+	LzcjNTInA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kkB2o-0002Ny-QF; Tue, 01 Dec 2020 19:10:34 +0000
-Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
+	id 1kkBCI-0003cT-QC; Tue, 01 Dec 2020 19:20:22 +0000
+Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kkB2l-0002NH-MO
- for linux-mtd@lists.infradead.org; Tue, 01 Dec 2020 19:10:33 +0000
-Received: by mail-pl1-x644.google.com with SMTP id 4so1682830plk.5
- for <linux-mtd@lists.infradead.org>; Tue, 01 Dec 2020 11:10:30 -0800 (PST)
+ id 1kkBCF-0003bd-Ij
+ for linux-mtd@lists.infradead.org; Tue, 01 Dec 2020 19:20:20 +0000
+Received: by mail-pf1-x442.google.com with SMTP id w6so1773915pfu.1
+ for <linux-mtd@lists.infradead.org>; Tue, 01 Dec 2020 11:20:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
  h=date:from:to:cc:subject:message-id:references:mime-version
  :content-disposition:in-reply-to;
- bh=H90UyAJzvmoPRUfMh6apfAgsUXazwUJB3aNHvcWIGHI=;
- b=I5YX0/C5nVbGAWieLr/8Ha6VtOsNkjWnnJ2Qd/Y9ewwbhhMcDtFL+5KhABvcX+In0o
- x7Xu2ydSilrJRpv0QQ8N/m0XoiMV6C4Q53/6aaxK+lQ1S2YGq5YNRaKjjq7HGffu86TL
- UhHkgFuFvIpcoYkdkwwdicoqg0Coi5RRsjjzE=
+ bh=UNtFxOQ4O2xPBFWrY/r+XwQcNVVjoO3zZJHkFA0yk+E=;
+ b=KIVEomxVAADgG+V3vucWYExkCHk7pkgg652UAixA4Q3FRU8XTmPH3XX5dK5BCzfR2l
+ ebbvWYq4vvxBYFyUa0fMS+4zN0kjEtBEzbG/0IDsu1WJoN1ayoSPcLvveTmvwZLOEZWA
+ 1931MXK+C3YJMyK9b2KJHge4rVxoa2aMsfe9c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to;
- bh=H90UyAJzvmoPRUfMh6apfAgsUXazwUJB3aNHvcWIGHI=;
- b=V2wv9alE28Z7M7LT3FyUa8yoQ9t3lmtL1A2wy+ZxIDGqbjoyHGnLZc6DMtb3tLPRFt
- tu2vorFcq/7Hhh/6JglDSOAENN1dIjpcQsP18DhYqt7d4SjLv5SdjE7S9GgF1iZsn4xA
- gKtfW+DO7us/4l18cgbOnA3qWh5p9N0FqmQo38JTgGdS5RfWK5fgu7IDXfG5jnLPvmcD
- EnclO+bQPyFEZrykn1Lf/HAojyWiSnpUCXDg3uyVxTmhPStJgtqz7OGiVXs2JOSYIM6q
- W0nzbrltQgf1MA3mpcwRb89GD8e9gxUz8OqZ2bjEcwj0quN9JzNocGSPP8vzd7BKU1b2
- ni0A==
-X-Gm-Message-State: AOAM5332G6lol5580fP74iBjLo41oaX0/C35r2ONxa4DztkcicyR3LfK
- LyVMM1o/DoBpcA4dCPn8tNBqdXW4P92GJMr0
-X-Google-Smtp-Source: ABdhPJx7x0iRMtUz5Ywwp5v5n5BadeJy9m8KDj6Zo4n0WVF4edJ+2HmN3yI/8gKoFC66PFpZIwuaCA==
-X-Received: by 2002:a17:902:9a4c:b029:d6:1f21:8021 with SMTP id
- x12-20020a1709029a4cb02900d61f218021mr4154492plv.58.1606849829316; 
- Tue, 01 Dec 2020 11:10:29 -0800 (PST)
+ bh=UNtFxOQ4O2xPBFWrY/r+XwQcNVVjoO3zZJHkFA0yk+E=;
+ b=HFYd1MP4nShCDXdXTepRGh2t+S5W+GkDHkYm7gtfC7/Od5VniM8hO+WPmn4imjCNnE
+ UZ+StlfISbH52v6BVYssVYfKhdMXVC57zeLMuF+cG6as/FTNS7aA8NVs/K52ludJLkcB
+ TNUlDkGjlitQFTgZXTxvdCCQMmU0S/jHEPgnyV+AEMmi7pnAo9LjT00MXbR6ti43DYab
+ yR8j0t44//eUQxMc4QyCocM9zvoTw+sQWKQnuSsafzYnSf9A6QW+HkUgNNOcJZa7HJmz
+ WPSjAs4MhY+2uFO91kGmZ053Xk2Isaf7aOKSr0IeK2a9k47C5upkIGwSPZ8O5Z5xXb77
+ uHkw==
+X-Gm-Message-State: AOAM531YzRjDRKJEutY09IDU4/03dhfhV5sHg1PN6boEUR98SXGSp9tH
+ y56e45Mu8lbOtQ8rhZY0sTxWRg==
+X-Google-Smtp-Source: ABdhPJxzRPXUo3h35t+Wv6xoj7vNs214gALSlt5JxU9Scdc9UW3uX5K0pMMc0ffAavMIlm60tp8uGQ==
+X-Received: by 2002:a05:6a00:882:b029:19c:5287:4a1e with SMTP id
+ q2-20020a056a000882b029019c52874a1emr2345984pfj.44.1606850417451; 
+ Tue, 01 Dec 2020 11:20:17 -0800 (PST)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
- by smtp.gmail.com with ESMTPSA id 184sm542646pfc.28.2020.12.01.11.10.28
+ by smtp.gmail.com with ESMTPSA id s21sm344612pgk.52.2020.12.01.11.20.16
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 01 Dec 2020 11:10:28 -0800 (PST)
-Date: Tue, 1 Dec 2020 11:10:27 -0800
+ Tue, 01 Dec 2020 11:20:16 -0800 (PST)
+Date: Tue, 1 Dec 2020 11:20:15 -0800
 From: Kees Cook <keescook@chromium.org>
 To: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 2/9] pstore/blk: update the command line example
-Message-ID: <202012011109.6D417FB4@keescook>
+Subject: Re: [PATCH 4/9] pstore/blk: remove __unregister_pstore_blk
+Message-ID: <202012011119.A3816E1B0@keescook>
 References: <20201016132047.3068029-1-hch@lst.de>
- <20201016132047.3068029-3-hch@lst.de>
+ <20201016132047.3068029-5-hch@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20201016132047.3068029-3-hch@lst.de>
+In-Reply-To: <20201016132047.3068029-5-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201201_141031_924257_CACFB97D 
-X-CRM114-Status: GOOD (  19.33  )
+X-CRM114-CacheID: sfid-20201201_142019_674458_AF3C55E1 
+X-CRM114-Status: GOOD (  23.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,34 +101,67 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Oct 16, 2020 at 03:20:40PM +0200, Christoph Hellwig wrote:
-> Use the human readable device name instead of the device number, and
-> add the required best_effort parameter.
+On Fri, Oct 16, 2020 at 03:20:42PM +0200, Christoph Hellwig wrote:
+> Fold __unregister_pstore_blk into its only caller, and merge the
+> two identical calls to __unregister_pstore_device that exist in the
+> caller now.
+
+Meh, I'm not a fan of this. I like it in a separate function. Pushing it
+into the _exit() routine feels weird to me.
+
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
-
-Yeah, best_effort is needed here. I think changing from major:minor to a
-path is also fine.
-
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
 > ---
->  Documentation/admin-guide/pstore-blk.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  fs/pstore/blk.c | 27 ++++++---------------------
+>  1 file changed, 6 insertions(+), 21 deletions(-)
 > 
-> diff --git a/Documentation/admin-guide/pstore-blk.rst b/Documentation/admin-guide/pstore-blk.rst
-> index 296d5027787ac2..d9ec8b0572d3b2 100644
-> --- a/Documentation/admin-guide/pstore-blk.rst
-> +++ b/Documentation/admin-guide/pstore-blk.rst
-> @@ -35,7 +35,7 @@ module parameters have priority over Kconfig.
+> diff --git a/fs/pstore/blk.c b/fs/pstore/blk.c
+> index 7f8368e94b3604..3a2214ecf942ae 100644
+> --- a/fs/pstore/blk.c
+> +++ b/fs/pstore/blk.c
+> @@ -388,19 +388,6 @@ static int __register_pstore_blk(void)
+>  	return ret;
+>  }
 >  
->  Here is an example for module parameters::
+> -static void __unregister_pstore_blk(unsigned int major)
+> -{
+> -	struct pstore_device_info dev = { .read = psblk_generic_blk_read };
+> -	void *holder = blkdev;
+> -
+> -	lockdep_assert_held(&pstore_blk_lock);
+> -	if (psblk_bdev && MAJOR(psblk_bdev->bd_dev) == major) {
+> -		__unregister_pstore_device(&dev);
+> -		psblk_put_bdev(psblk_bdev, holder);
+> -		psblk_bdev = NULL;
+> -	}
+> -}
+> -
+>  /* get information of pstore/blk */
+>  int pstore_blk_get_config(struct pstore_blk_config *info)
+>  {
+> @@ -430,16 +417,14 @@ late_initcall(pstore_blk_init);
 >  
-> -        pstore_blk.blkdev=179:7 pstore_blk.kmsg_size=64
-> +        pstore_blk.blkdev=/dev/mmcblk0p7 pstore_blk.kmsg_size=64 best_effort=y
->  
->  The detail of each configurations may be of interest to you.
->  
+>  static void __exit pstore_blk_exit(void)
+>  {
+> +	struct pstore_device_info dev = { };
+> +
+>  	mutex_lock(&pstore_blk_lock);
+> +	if (pstore_zone_info)
+> +		dev.read = pstore_zone_info->read;
+> +	__unregister_pstore_device(&dev);
+>  	if (psblk_bdev)
+> -		__unregister_pstore_blk(MAJOR(psblk_bdev->bd_dev));
+> -	else {
+> -		struct pstore_device_info dev = { };
+> -
+> -		if (pstore_zone_info)
+> -			dev.read = pstore_zone_info->read;
+> -		__unregister_pstore_device(&dev);
+> -	}
+> +		psblk_put_bdev(psblk_bdev, blkdev);
+>  	mutex_unlock(&pstore_blk_lock);
+>  }
+>  module_exit(pstore_blk_exit);
 > -- 
 > 2.28.0
 > 
