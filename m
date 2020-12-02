@@ -2,68 +2,70 @@ Return-Path: <SRS0=vKR5=FG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6139FC6369E
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Dec 2020 23:01:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DAD3C71155
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Dec 2020 23:01:42 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D16E2221FD
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Dec 2020 23:01:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D16E2221FD
+	by mail.kernel.org (Postfix) with ESMTPS id B30BD221FD
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Dec 2020 23:01:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B30BD221FD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=82Ld+sah/1uTanPJnD4VtOvEt7sh/dtubFTayyRQg0g=; b=NZtyg8LlcdpwAbq6ahsL3hmIyk
-	VjK/v+VdUuOwVCoHrkYiTJ+zIZOFszUkMeHeEj618JTGZHHmsyv+LhH6TFh/YxhBvxXEaEEtAoh7i
-	zL10qsKdFnNLxGYJSlSd4xRDp2xHHMyx51aZzvvyRJ5FWFO/bE+kA9L4IW0KIpkYGi4C3oLB4YyQQ
-	fwHs3jx8oI2cwINy3lUe0BvZxfcNjF4FYB5xfa/hWZV1f0KHHzfKoKCIcLDJ5/kxqKqZEEbEykb1/
-	ERAWUZ/QT5xuOTam1jUP0z81G/lM1+wMY/YueXUs4zhrI1+9oVLq8wEUNAHj7TA8k2YzBmR4T6IXs
-	bJD+pfgg==;
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=g+shSLKnBQOxHFkdr/ejGb6GJvPtJbmN8byYSINf9gY=; b=z6jBvaju3t+uN1zA5PMAreE+V
+	lPMqxkr/XrWaZQ/CCfmEYKVx3oO4v/sh3qPEeB+d0jXtvdMOMm9+BO2TMEKKmgtvBjsfa1aAIj1/8
+	4kWS8Kx5uGvUE2C5N9vzB95VNzHl5tw0frR1SUOJ6R4qoDS+doDXMlb6UOPOOnNSsjGdDCcS7Hq0x
+	VDjebOFsoBdwys1+DQo1j8XcbdqAAy+46JQ2MnZh3Mmx8Yy8utA0FAaVgmAJH1R5enijS/xx2EWHI
+	XTLTJF7RAjT1jvPrUU06d0DPoMlbltsRxUTCOYyuX0CDjOVgnRXSw5eNVfyc//2+SvFqtJ0451fV+
+	ZYMVT7dpQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kkb7N-0001lk-4s; Wed, 02 Dec 2020 23:01:01 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1kkb7U-0001os-SF; Wed, 02 Dec 2020 23:01:08 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kkb7K-0001ju-8D
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2020 23:00:59 +0000
+ id 1kkb7M-0001kZ-5F
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2020 23:01:01 +0000
 Received: from apollo.fritz.box (unknown
  [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id ADFDD23E43;
- Thu,  3 Dec 2020 00:00:54 +0100 (CET)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 76ABC23E5B;
+ Thu,  3 Dec 2020 00:00:58 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1606950055;
+ s=mail2016061301; t=1606950058;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding;
- bh=VbAeyqT69wmC7k3gUjKgzJ7BJQNzs3FcYwUcXu4/g+Q=;
- b=MtYEYxjbAQnQW4lxNQIqODTjShc19nOUglNpUlPhHBtbopfliXasR8y0Hq5fmXMNCJSRCe
- B1SaUAQrKdswL6HoXB1hC+LFJzbo6TxQbgg5Fb0T8oEbOmgv+P2tftsauh1PAoK0J4jkLH
- RopfBRstjNj99nthqlzEqN/kaXuIXvg=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=tA/aM6lWMfa7TmNVA8dfiG+itOvZgqH1cE8LTQP5Qes=;
+ b=qTIbY8IdbkBb03JKv09ERJyQryGyyn0LDkdFpnZaMzWuFqk2t6yTeC3kokoPU2Hm2619TM
+ FSxUi1G7sy50T/pe3sxBiGBaJD00g/r9bGG7LWzI+Kjo5cDk9XidfGzVCdvjWPWxQ1X9l5
+ XoSWo0G4Enik+j+L/twUr2sNgVwZy5o=
 From: Michael Walle <michael@walle.cc>
 To: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v7 0/7] mtd: spi-nor: keep lock bits if they are non-volatile
-Date: Thu,  3 Dec 2020 00:00:33 +0100
-Message-Id: <20201202230040.14009-1-michael@walle.cc>
+Subject: [PATCH v7 2/7] mtd: spi-nor: ignore errors in spi_nor_unlock_all()
+Date: Thu,  3 Dec 2020 00:00:35 +0100
+Message-Id: <20201202230040.14009-3-michael@walle.cc>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201202230040.14009-1-michael@walle.cc>
+References: <20201202230040.14009-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201202_180058_435941_C4919268 
-X-CRM114-Status: UNSURE (   9.76  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20201202_180100_381876_E0AF5740 
+X-CRM114-Status: GOOD (  16.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,37 +87,81 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-I bundled this as a series, because otherwise there will be conflicts
-because the "remove global protection flag" patches modify the same lines
-as the main patch.
+Just try to unlock the whole SPI-NOR flash array. Don't abort the
+probing in case of an error. Justifications:
+ (1) For some boards, this just works because
+     spi_nor_write_16bit_sr_and_check() is broken and just checks the
+     second half of the 16bit. Once that will be fixed, SPI probe will
+     fail for boards which has hardware-write protected SPI-NOR flashes.
+ (2) Until now, hardware write-protection was the only viable solution
+     to use the block protection bits. This is because this very
+     function spi_nor_unlock_all() will be called unconditionally on
+     every linux boot. Therefore, this bits only makes sense in
+     combination with the hardware write-protection. If we would fail
+     the SPI probe on an error in spi_nor_unlock_all() we'd break
+     virtually all users of the block protection bits.
+ (3) We should try hard to keep the MTD working even if the flash might
+     not be writable/erasable.
 
-There are now two more patches:
-  mtd: spi-nor: sst: fix BPn bits for the SST25VF064C
-  mtd: spi-nor: ignore errors in spi_nor_unlock_all()
-Both are fixes and are first in this series. This will ensure that they
-even have a chance to apply cleanly to the stable trees as the following
-patches touches the same lines.
+Fixes: 3e0930f109e7 ("mtd: spi-nor: Rework the disabling of block write protection")
+Signed-off-by: Michael Walle <michael@walle.cc>
+---
+changes since v6:
+ - new patch
 
-See invdividual patches for the version history.
+ drivers/mtd/spi-nor/core.c | 23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
 
-Michael Walle (7):
-  mtd: spi-nor: sst: fix BPn bits for the SST25VF064C
-  mtd: spi-nor: ignore errors in spi_nor_unlock_all()
-  mtd: spi-nor: atmel: remove global protection flag
-  mtd: spi-nor: sst: remove global protection flag
-  mtd: spi-nor: intel: remove global protection flag
-  mtd: spi-nor: atmel: fix unlock_all() for AT25FS010/040
-  mtd: spi-nor: keep lock bits if they are non-volatile
-
- drivers/mtd/spi-nor/Kconfig |  44 +++++++++
- drivers/mtd/spi-nor/atmel.c | 191 ++++++++++++++++++++++++++++++++----
- drivers/mtd/spi-nor/core.c  |  46 ++++++---
- drivers/mtd/spi-nor/core.h  |   9 ++
- drivers/mtd/spi-nor/esmt.c  |   2 +-
- drivers/mtd/spi-nor/intel.c |  19 ++--
- drivers/mtd/spi-nor/sst.c   |  32 +++---
- 7 files changed, 279 insertions(+), 64 deletions(-)
-
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 5bee7c8da4dc..013198abe929 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3121,20 +3121,27 @@ static int spi_nor_quad_enable(struct spi_nor *nor)
+ }
+ 
+ /**
+- * spi_nor_unlock_all() - Unlocks the entire flash memory array.
++ * spi_nor_try_unlock_all() - Tries to unlock the entire flash memory array.
+  * @nor:	pointer to a 'struct spi_nor'.
+  *
+  * Some SPI NOR flashes are write protected by default after a power-on reset
+  * cycle, in order to avoid inadvertent writes during power-up. Backward
+  * compatibility imposes to unlock the entire flash memory array at power-up
+  * by default.
++ *
++ * Unprotecting the entire flash array will fail for boards which are hardware
++ * write-protected. Thus any errors are ignored.
+  */
+-static int spi_nor_unlock_all(struct spi_nor *nor)
++static void spi_nor_try_unlock_all(struct spi_nor *nor)
+ {
+-	if (nor->flags & SNOR_F_HAS_LOCK)
+-		return spi_nor_unlock(&nor->mtd, 0, nor->params->size);
++	int ret;
+ 
+-	return 0;
++	if (!(nor->flags & SNOR_F_HAS_LOCK))
++		return;
++
++	ret = spi_nor_unlock(&nor->mtd, 0, nor->params->size);
++	if (ret)
++		dev_dbg(nor->dev, "Failed to unlock the entire flash memory array\n");
+ }
+ 
+ static int spi_nor_init(struct spi_nor *nor)
+@@ -3153,11 +3160,7 @@ static int spi_nor_init(struct spi_nor *nor)
+ 		return err;
+ 	}
+ 
+-	err = spi_nor_unlock_all(nor);
+-	if (err) {
+-		dev_dbg(nor->dev, "Failed to unlock the entire flash memory array\n");
+-		return err;
+-	}
++	spi_nor_try_unlock_all(nor);
+ 
+ 	if (nor->addr_width == 4 &&
+ 	    nor->read_proto != SNOR_PROTO_8_8_8_DTR &&
 -- 
 2.20.1
 
