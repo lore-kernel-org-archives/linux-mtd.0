@@ -3,18 +3,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48B86C6369E
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Dec 2020 22:26:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD990C6369E
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Dec 2020 22:48:26 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6DC8220758
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Dec 2020 22:26:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6DC8220758
+	by mail.kernel.org (Postfix) with ESMTPS id 339B1221F7
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Dec 2020 22:48:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 339B1221F7
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,67 +23,66 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:To:In-Reply-To:Date:Subject:Mime-Version:Message-Id:From:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=dCFUSB5thckb8mMIN1+K2L2VjO5gN86DtGUcfvJ3MYc=; b=KSCBa/l3MM1OHIg/DF4GXvph4
-	f1ly0n5IE5C/Kjvjl/iKcsDainvZtZhH5l18bLaGG12vO9OFlqOgGQ75seT/l5Jpr5Hem2wKNfZT8
-	Ztuq598hy8LKUOZ2bl4G5RZuS0MxyCi+YmHeyebkZow6TPPM9vUyon4cy1+0fDphpzW5eM+3C80C6
-	AFpJUsV2eSzzIw7j4iYbKENkehP3HFqMm7bOKY9vOY/DVs7SbhGQvN/uJruxl6FR2Nn5dgVFR2Aq2
-	WWm7rf1mSt9YJcaMKTsElEVl34DtheZm6D2oaVtYQu8mqrLE91ylnYx50bA3kdL3AsDIlK6QzGkiF
-	pue0IlEbA==;
+	 bh=Iu+WwtRICJsR2NsKbfMEWWIEwn0jtWNg5HN3OoCS9MQ=; b=WyzQs31HFoohOwNCFiHDJOB1i
+	TKmO5Rt86ZTnOVHcmezcqOGunBEdWjJfJfktrzyaZJLA5ClqFa0IlYk2SNzPmSexCbiqqdAnRNk/k
+	Qhnb5udRWu8LCHg21owBge2TF0gpxTTAVScdoUoQGEbM7qgsDCtT14vvxpRNpzx4Za36FuBjhpgyV
+	9DzUeERylqkzoh6rKYnnChOO6KV6FfCN5XI7xucq9zWHCXLrE4yb397kyyypBgSKa/ABp7WiA/Hh0
+	9at0Q2Q/ByWYnMM+WHnBzRHaVbnZO/ajHNN2FHAaIdVnELRtMFn8/k7ff9lQPLUsYVTAIJusDNNab
+	s5QPo++fQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kkaZA-0005Rq-AB; Wed, 02 Dec 2020 22:25:40 +0000
-Received: from mail-pj1-x1042.google.com ([2607:f8b0:4864:20::1042])
+	id 1kkauW-0007o6-7j; Wed, 02 Dec 2020 22:47:44 +0000
+Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kkaZ5-0005RM-G2
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2020 22:25:38 +0000
-Received: by mail-pj1-x1042.google.com with SMTP id f14so1404246pju.4
- for <linux-mtd@lists.infradead.org>; Wed, 02 Dec 2020 14:25:32 -0800 (PST)
+ id 1kkauS-0007nT-B3
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2020 22:47:42 +0000
+Received: by mail-pl1-x644.google.com with SMTP id u2so27309pls.10
+ for <linux-mtd@lists.infradead.org>; Wed, 02 Dec 2020 14:47:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=dilger-ca.20150623.gappssmtp.com; s=20150623;
  h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
- :references; bh=5utOZVf3veGfMRoQbf2Yx/BFy8qrmXGBXUjzJ8dKZ44=;
- b=0GCKxWP2V5HaarOWgPvAdnTXx2FRqhPN6H35kJgFG3cmfCi3Mddc/k9uZy+S4h4RDb
- GWBTdRXy44u1W/nWYPm+u+lkq4wJf2L4nVB5o2OjsEbewfP8nzxKvEhWSMVrSC0kOvgb
- 0HxT5OC7CC6zKJfKgWvYI06cW2z5Phvfgnj5CcLaKtsgSIa1sQGX6oJp4DGArUZMhAdu
- vLg3EdS/BuQWOoz3IKjtHpV7T2vxkNo9dDNFEmcIc0gvSZDIqsDmYo+F6yJL1uo54bch
- xJ5Q+grshGBi7lOzhF4S2LMjssIrN+Y9pZ7B1MvPnIRMtvy489e4qHIuK8pAywGAbEvV
- YIvw==
+ :references; bh=vORerP6L/9bHX6qRWOpedpBg2yoOaAJwQR4f5QrHgzY=;
+ b=1el56WgEpgq3xnPh001U6Fkgb2fbjprgnUOqeilkzqGyUXAAkaBxUaXWePyY00Hqyq
+ +vy6sTBDn0OzfoamQRLnUbFgHe055OMX4yn2qFsp6NPgPnQKmKNWtD6WZs8jsFSZzIkK
+ 8mg9ctITY6lQ+wDsiNuVAN2U1TJ5PResPI0QfWtQpV+osGga2mqiz34swVj6m6ONAMJc
+ ReobA3tSRwTfKDV/JP8JI3mz4yjPru78Jeu9oKx8sOQovRSndHq/GBdLnPDj2gZNdVPI
+ KUY51AAG380tdNGDQoGmnFT2dYayb8PMnrwH+191OsAxr4Jahk1Wvb5ShUp2CpGY05md
+ vSLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:message-id:mime-version:subject:date
  :in-reply-to:cc:to:references;
- bh=5utOZVf3veGfMRoQbf2Yx/BFy8qrmXGBXUjzJ8dKZ44=;
- b=Ia4+lTfcg7Mqimj7+0SMQ76n5gwMD94A+Tnz7vAVtJ6dEjfKyvkzUaR94zqvJ6miyU
- kYn0ZCRwX02W0iYM2fEOMn8X+SJp89mcKKaUK3eTuHheCgqSLJGgTJ8EtcKvwNj06hdc
- bdU2o14tuh5M1ZXLHYK6WMAKYKpBFmb8OJXA47yEXAMw2mwl8j2sPRwjvZGUb0QatpMd
- 0u6KDzCo64bCycdTUQS63vzvmge/nErYObyDqDF1xa5eYpvCpGYJUw5+bn40NOBYoCji
- siP0Gm1ySG7mi/loV4QS+frnZUR4ZuSpqE1zeqW9s+2bkxqi5YHXzJg5dtbHfMetCHM4
- lNwQ==
-X-Gm-Message-State: AOAM531lci2KW7WODbiNfPkyYVSCmwLPLwl+RIhDol1wQJRUTcoMk7Xu
- KKIQX7M7N4M9axDNj0KKXyYxKg==
-X-Google-Smtp-Source: ABdhPJw2pnDywanmCG7P6trWRpLjwJHWFEhzfNkYWRCskdYELm+ojAXsHpq14/R1YtqT0yrv9Dcmgw==
-X-Received: by 2002:a17:902:8691:b029:d7:e0f9:b1b with SMTP id
- g17-20020a1709028691b02900d7e0f90b1bmr271552plo.37.1606947929537; 
- Wed, 02 Dec 2020 14:25:29 -0800 (PST)
+ bh=vORerP6L/9bHX6qRWOpedpBg2yoOaAJwQR4f5QrHgzY=;
+ b=GtMI5I56S46z9k0q6W/ZLyaCYlmoC7rFI3vY+2CJK1VcV9bvhJmXHI9UtbRYUiIXpr
+ mpzUxUErzom4bixDCNnamlSSEAdGipsATmo5cD7kvrXkcj1KFbV2nR7ZHsO4k50SsalG
+ UeknkTUsLuudczLGeWB1RqHuzalQdzAaZk/0VVoSJfkvF7ndnXniKGbXCs3/fho0Xl3k
+ caHjSoRoxQkZRt80PqRLk1WENir1/+iQFHfZwjIdiWTc12rRVzftFrysE7axq0uoc4NU
+ jaKutmBjGLQFwgzUCr2tv7vKeledLUhOCz/GwPMlmoqz52ijT8F5UKj9hh1dv9xP9tpQ
+ xYXQ==
+X-Gm-Message-State: AOAM532HUDqzOC8wkbTX83Z+/oU3U7GDFqYZwV4lFPnik8RNTyza1hbD
+ bC8BFRgEtoJouNYIDGA1Z7ASeg==
+X-Google-Smtp-Source: ABdhPJzvtcEpSpJOY7N/htLhQegQLezTxksVZDb1dI8FPDBzUhlQkPa2qBrzVfdvz/AYe95rpcpgJA==
+X-Received: by 2002:a17:902:8c8a:b029:d6:d1e7:e78e with SMTP id
+ t10-20020a1709028c8ab02900d6d1e7e78emr247976plo.39.1606949257113; 
+ Wed, 02 Dec 2020 14:47:37 -0800 (PST)
 Received: from [192.168.10.160] (S01061cabc081bf83.cg.shawcable.net.
  [70.77.221.9])
- by smtp.gmail.com with ESMTPSA id h4sm70851pgp.8.2020.12.02.14.25.28
+ by smtp.gmail.com with ESMTPSA id s17sm91991pge.37.2020.12.02.14.47.35
  (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 02 Dec 2020 14:25:28 -0800 (PST)
+ Wed, 02 Dec 2020 14:47:36 -0800 (PST)
 From: Andreas Dilger <adilger@dilger.ca>
-Message-Id: <047AD2C4-4E34-4325-B2B6-02E240ED50DD@dilger.ca>
+Message-Id: <D73BD1C1-90F2-4B80-9B1D-0FA1560BB4AC@dilger.ca>
 Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH 0/9] Allow deleting files with unsupported encryption
- policy
-Date: Wed, 2 Dec 2020 15:25:25 -0700
-In-Reply-To: <X8gCKTx96rXUMh0i@gmail.com>
+Subject: Re: [PATCH 1/9] ext4: remove ext4_dir_open()
+Date: Wed, 2 Dec 2020 15:47:34 -0700
+In-Reply-To: <20201125002336.274045-2-ebiggers@kernel.org>
 To: Eric Biggers <ebiggers@kernel.org>
 References: <20201125002336.274045-1-ebiggers@kernel.org>
- <X8gCKTx96rXUMh0i@gmail.com>
+ <20201125002336.274045-2-ebiggers@kernel.org>
 X-Mailer: Apple Mail (2.3273)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201202_172535_659991_C4911BB2 
-X-CRM114-Status: GOOD (  17.50  )
+X-CRM114-CacheID: sfid-20201202_174740_442199_498FB912 
+X-CRM114-Status: GOOD (  18.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,88 +95,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-f2fs-devel@lists.sourceforge.net
-Content-Type: multipart/mixed; boundary="===============7742997576479367454=="
+ Ext4 Developers List <linux-ext4@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, linux-f2fs-devel@lists.sourceforge.net
+Content-Type: multipart/mixed; boundary="===============9003762526601135140=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
---===============7742997576479367454==
+--===============9003762526601135140==
 Content-Type: multipart/signed;
- boundary="Apple-Mail=_68D5BA99-AE77-4AE7-932A-159B4173426B";
+ boundary="Apple-Mail=_01B6A6AB-07E6-44B3-840B-68217F3B3E58";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 
 
---Apple-Mail=_68D5BA99-AE77-4AE7-932A-159B4173426B
+--Apple-Mail=_01B6A6AB-07E6-44B3-840B-68217F3B3E58
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain;
 	charset=us-ascii
 
-On Dec 2, 2020, at 2:07 PM, Eric Biggers <ebiggers@kernel.org> wrote:
+On Nov 24, 2020, at 5:23 PM, Eric Biggers <ebiggers@kernel.org> wrote:
 >=20
-> On Tue, Nov 24, 2020 at 04:23:27PM -0800, Eric Biggers wrote:
->> Currently it's impossible to delete files that use an unsupported
->> encryption policy, as the kernel will just return an error when
->> performing any operation on the top-level encrypted directory, even =
-just
->> a path lookup into the directory or opening the directory for =
-readdir.
->>=20
->> It's desirable to return errors for most operations on files that use =
-an
->> unsupported encryption policy, but the current behavior is too =
-strict.
->> We need to allow enough to delete files, so that people can't be =
-stuck
->> with undeletable files when downgrading kernel versions.  That =
-includes
->> allowing directories to be listed and allowing dentries to be looked =
-up.
->>=20
->> This series fixes this (on ext4, f2fs, and ubifs) by treating an
->> unsupported encryption policy in the same way as "key unavailable" in
->> the cases that are required for a recursive delete to work.
->>=20
->> The actual fix is in patch 9, so see that for more details.
->>=20
->> Patches 1-8 are cleanups that prepare for the actual fix by removing
->> direct use of fscrypt_get_encryption_info() by filesystems.
->>=20
->> This patchset applies to branch "master" (commit 4a4b8721f1a5) of
->> https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git.
->>=20
->> Eric Biggers (9):
->>  ext4: remove ext4_dir_open()
->>  f2fs: remove f2fs_dir_open()
->>  ubifs: remove ubifs_dir_open()
->>  ext4: don't call fscrypt_get_encryption_info() from dx_show_leaf()
->>  fscrypt: introduce fscrypt_prepare_readdir()
->>  fscrypt: move body of fscrypt_prepare_setattr() out-of-line
->>  fscrypt: move fscrypt_require_key() to fscrypt_private.h
->>  fscrypt: unexport fscrypt_get_encryption_info()
->>  fscrypt: allow deleting files with unsupported encryption policy
->>=20
->> fs/crypto/fname.c           |  8 +++-
->> fs/crypto/fscrypt_private.h | 28 ++++++++++++++
->> fs/crypto/hooks.c           | 16 +++++++-
->> fs/crypto/keysetup.c        | 20 ++++++++--
->> fs/crypto/policy.c          | 22 +++++++----
->> fs/ext4/dir.c               | 16 ++------
->> fs/ext4/namei.c             | 10 +----
->> fs/f2fs/dir.c               | 10 +----
->> fs/ubifs/dir.c              | 11 +-----
->> include/linux/fscrypt.h     | 75 =
-+++++++++++++++++++------------------
->> 10 files changed, 126 insertions(+), 90 deletions(-)
->>=20
->>=20
->> base-commit: 4a4b8721f1a5e4b01e45b3153c68d5a1014b25de
+> From: Eric Biggers <ebiggers@google.com>
 >=20
-> Any more comments on this patch series?
+> Since encrypted directories can be opened without their encryption key
+> being available, and each readdir tries to set up the key, trying to =
+set
+> up the key in ->open() too isn't really useful.
+>=20
+> Just remove it so that directories don't need an ->open() method
+> anymore, and so that we eliminate a use of =
+fscrypt_get_encryption_info()
+> (which I'd like to stop exporting to filesystems).
+>=20
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-I think the general idea makes sense.  I'll review the ext4 patches in =
-the series.
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+
+> ---
+> fs/ext4/dir.c | 8 --------
+> 1 file changed, 8 deletions(-)
+>=20
+> diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
+> index ca50c90adc4c..16bfbdd5007c 100644
+> --- a/fs/ext4/dir.c
+> +++ b/fs/ext4/dir.c
+> @@ -616,13 +616,6 @@ static int ext4_dx_readdir(struct file *file, =
+struct dir_context *ctx)
+> 	return 0;
+> }
+>=20
+> -static int ext4_dir_open(struct inode * inode, struct file * filp)
+> -{
+> -	if (IS_ENCRYPTED(inode))
+> -		return fscrypt_get_encryption_info(inode) ? -EACCES : 0;
+> -	return 0;
+> -}
+> -
+> static int ext4_release_dir(struct inode *inode, struct file *filp)
+> {
+> 	if (filp->private_data)
+> @@ -664,7 +657,6 @@ const struct file_operations ext4_dir_operations =3D=
+ {
+> 	.compat_ioctl	=3D ext4_compat_ioctl,
+> #endif
+> 	.fsync		=3D ext4_sync_file,
+> -	.open		=3D ext4_dir_open,
+> 	.release	=3D ext4_release_dir,
+> };
+>=20
+> --
+> 2.29.2
+>=20
 
 
 Cheers, Andreas
@@ -187,7 +175,7 @@ Cheers, Andreas
 
 
 
---Apple-Mail=_68D5BA99-AE77-4AE7-932A-159B4173426B
+--Apple-Mail=_01B6A6AB-07E6-44B3-840B-68217F3B3E58
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
 	filename=signature.asc
@@ -198,25 +186,25 @@ Content-Description: Message signed with OpenPGP
 -----BEGIN PGP SIGNATURE-----
 Comment: GPGTools - http://gpgtools.org
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl/IFFUACgkQcqXauRfM
-H+CrkBAAmi+u5EOfLwZ4a5VQwxEzgad3GDbuBgmWS1SBHEetbx+9IRVZ6usAo4Ce
-8AN1KeZFZcVbPD2Qjo3mAULr8MzuJEOP6qKsMUKT/0zN1LAmd4J8oMnfk0aJBKl0
-SXKoKNuHi7CXHIiimj1zqZa8ToaEm30zlmSwRYRy/AbBnT2PIluKaDehsiSJoq1a
-r5KXAI3WlsnOVzmp32PVeHnvAVLsb9hCSwZYZDNmawT0GR+0dupyMinz5fx0XP/N
-QPY32OjFavTd2ON1Q0+f07nbKnbXn1gIWOVI8/z80EoXYuyIgJvAqUjou3O7LFBS
-6FpDmoMNx+cJBBfGlJkC/PeuqapF9SICwuP+d0Sc0bkn+R2rxsFSSjJUbVrxf/k7
-qW0Urs/amJS6fjuZIZntzfaHAD+x782+dqAyBH4d5Z4pGiFaSBo8cdHbLcX627Uf
-8THXBZzkpCOUGypQUPT2+zjA6VMxLJV5HwddG86p0GwLEi3o/YCm3R8xrbLelq4G
-SMJLpcicYnD7UbcukGJHVZvchSClprDbIlBjgP9ArcLzQ4FYJ7OS6TU5EL8NkoE3
-7FVtrDvS9ypXmqWx6n+X7sVfGCV0NRjBacINaYmwlv9ZCs5DUXS8w4HSXse/kc4m
-JINcTZoFZHSG2H0vfRnxnC6oUXE54gAalfjOOZobMLEOHR8Fw3I=
-=ZB7J
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl/IGYYACgkQcqXauRfM
+H+C5uA//dj+kl3QNfH3INI0cUezlI1fsFhtgaBhqU0VNBLme8P4JBKO0H5eEo2U1
+Y4jxLrMogg0cHNDBOnktxcbRxez2fM3PkmtOYDE3CiGbtI1EcEzv8iyVI3U+doBC
+C+YFk5u651LYq82qy8ABQTSglxqQZp0cUJct1WWyBRmtia5jPrlcK8lBnsO0wVyA
+Q5PbLHcRntIRbx6f+OlTbScOQQXkzgJ2qsx55OOooCGfAOydg4NnfaRwcarr7xNN
+RDD1McW6dmuSv4zDDnN5HecGb+C8T31+4HxsJz9yh8e2LRFyn9QcVGJljdBb+GJZ
+FKEpeC1bgsgC955LuijiS7KtKHZCrzh/rfOeZDjD8Im7tpX/k5PP4i1TDEpDtZ2y
+rQ13XvtIXfLVg/lscoIfP0IhiI+bhrM2CVff4av9WsK5LfoSLO+oQLXQ7Y++a1ZG
+QveizaFGtrocBZAqf/WulCKgbm2WF9aOOw+Y8k2MItZzx0nfVSlnftGCuJ7/MAyl
+zn/MikLGNo1I+5pCtvxMAucowDtVHQi3d2q6Eu/PGSrlqsrnIj3w5D9WbPKz4lEA
+MIKk3h4RKPerTakBdwx/CWqqSX0OCFc/KIZSgPMOy+8S+ukORniUIHyVWXemRrA1
+2X63GGsYOdJJPGjYJJ6BeuHAqCBO4qVg0zK6HayeeiRSu9Xb2Bc=
+=Osx2
 -----END PGP SIGNATURE-----
 
---Apple-Mail=_68D5BA99-AE77-4AE7-932A-159B4173426B--
+--Apple-Mail=_01B6A6AB-07E6-44B3-840B-68217F3B3E58--
 
 
---===============7742997576479367454==
+--===============9003762526601135140==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -226,5 +214,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============7742997576479367454==--
+--===============9003762526601135140==--
 
