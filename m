@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D259C64E7B
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Dec 2020 22:55:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4ED5C6369E
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Dec 2020 22:56:33 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1B42B221FD
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Dec 2020 22:55:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B42B221FD
+	by mail.kernel.org (Postfix) with ESMTPS id 2AC17221FD
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Dec 2020 22:56:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2AC17221FD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,66 +23,65 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:To:In-Reply-To:Date:Subject:Mime-Version:Message-Id:From:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=IhdQ8+i/PlQRzBrxDHyNHH8+U6VkKTtQ8GGef7m0Q3w=; b=sbvoHyS6XcL/Pa7Y6mdMWFFm3
-	XRVP6DpfUa6nLN/5K5ytxp+LvcTBvfIoHQTWoq353Xwjqji2ZTCZkqN9oYJHBiIzelBREl3PhO5Rn
-	ZaBMR7J4xeRyQyrDBfyVl+gQEcoQgAtzY51Qs7TTC3rXaDZrSnZBR8QGurT7AEJYhXU+Ku67WN7am
-	g16nU71deC4RoFBHnud/SUQay1vuwTz5qB7gG5fsVkNR8W4GS+Z37/qXa4OwqyBEw2+y4C1o4LgQQ
-	C9/m6m9RGvon8wwqHePED4A29sTeL6De+Z1YlrOFl2+lMOyEBvHzYyLc1y8US9T8hReaXeyM89uQ6
-	reDNtfaJg==;
+	 bh=8GwPvSx/JpQ9HIsspkQ+IiawYoN18nBM4plOAOSFrv8=; b=zJrsBqkxsF5Wcg+m1fO0NFKuM
+	bxHOTn/Ix2dtz13aoGkc9zaNpIjSRtMlFqpQI88PcK00do7FhMhhlLCMMesa89221jw2F++Dp5Ddl
+	hz4ebMZgnpl77iTTNyxXoMUR7vH+vPKjmXBsFKUl/equVLezfiRvBSb7VWUK8nfU9elCiu5JuUlz8
+	MF2d06qXSllUE54Td9+gpiQGpzZ2GsmsVGJWAuUaCFL+Mc7kqVbln/mrA7QkL8HIGvzIgpAepqU97
+	WCOIiF+kihGSt6chy2MZMwRVOMZhxrvpwbsRPK5mi2cCXagEHiq4uUxqoYE02dlqsYW8YPq4MXJe7
+	QHF/vRIQw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kkb1J-0000Ro-87; Wed, 02 Dec 2020 22:54:45 +0000
-Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
+	id 1kkb27-0000dO-U5; Wed, 02 Dec 2020 22:55:36 +0000
+Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kkb1G-0000R8-Ql
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2020 22:54:43 +0000
-Received: by mail-pg1-x543.google.com with SMTP id m9so194017pgb.4
- for <linux-mtd@lists.infradead.org>; Wed, 02 Dec 2020 14:54:42 -0800 (PST)
+ id 1kkb23-0000bQ-A3
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2020 22:55:32 +0000
+Received: by mail-pg1-x544.google.com with SMTP id w4so163971pgg.13
+ for <linux-mtd@lists.infradead.org>; Wed, 02 Dec 2020 14:55:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=dilger-ca.20150623.gappssmtp.com; s=20150623;
  h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
- :references; bh=n8gRmB/1qFzqG7wddTsdPmwprBqt+MsER1xrW91iNJ0=;
- b=ztmQVFcVMMIf8Z+Utie3UySUBHHHBp1eUtR3cRJCGhd9/C8pdBnTSc2cPOiJwkrBXT
- pzREWBO8OC4AU9zTSsUPJHfiMZHCyGQpmtZsv3HqfnEtxIzA/kTuICw3tbRl5sz+x/d7
- TwaKstUxMuCq6gFB3RL74G6jP/eUod6qm91FI/QNaZUYD3nhmmVJu1JxXUJxBoopDOTf
- z4Qosaua5fPmKQ+YCTDnktGluWKbN+vzCCd1rZz9N4oePmRwmsIG/sYEvhwKkGaemeIP
- DAHTUugz7HrfjV5yUpRUiZJxFBFR+HqF2T7TBMxWbkf3q9KjpyxmcIrfHngIqoD7wwqz
- 3CeQ==
+ :references; bh=L1XwcgAgK+XPh06m1JOhanYVC+SJck5f59jqFhEbGDI=;
+ b=OwL6XjWUFECYdRQ/BDLTIJAKSgvOzBIuCYy8go0ZXtgmYtIS6brmm3R75wKrH/EzdW
+ csYX6sHsrX/dQo5LpEUFXjpu2EW1GEYnRTgcxcM3Q80zvBIXhSTyN7ndhrFSNEaaaeTq
+ rDvv2G/W8JVcmQNzgNEXr/NFhBclSpQs4pZ8otFmuWHqA4gGLzvCAsj9/JxSmB1kXQqT
+ XwI8qVE6oZSHU1Jw9a0tGd59fXSMlRg1RTFFOL5q5ulXyj95INVDi6t4YT6vd1ckEdm7
+ IrvCuRd4lAmV3QBrpL03jA2ZaTRbONd9YRBguJoX+VmrZ0VHG7tr/amdrwGGvBN6qDk6
+ a4LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:message-id:mime-version:subject:date
  :in-reply-to:cc:to:references;
- bh=n8gRmB/1qFzqG7wddTsdPmwprBqt+MsER1xrW91iNJ0=;
- b=NY5cbAjECql7UJG6b+sb2MtTNj7i8Vng8omxgW71FhVm6oFxCJcEotUmDXl4GqnLUa
- ltSLbJSwkoqviHUK3MQ2y6q0S6h/B8S7d6IsvTQZ4pcScYpGT4T+Aot1hIBt7I81Y0Dm
- B8AXljSXiYEBA6x+NJzPPQG26VT/2OB3fO2xuPiFWANvoNZP/AGiWaA+jAyK3DfpuDrS
- FwsvqE0e0sCKZr4oGKXEF0Bpl47prQowQ+0Bkt1jg5qxNfmTP/LMNVZzKrhRApTYNwfr
- pxOezXCM4jzgJH78Dq/7OgC1sC7XRtpps4eAmm4HN5lTkNA/kDRGsUbNitJT/SJhdbdV
- MMzA==
-X-Gm-Message-State: AOAM532JwKBoQAudUz9VTwc0zdFO5sX4/oXG/tLCVaXIuoU7Utu0FqDf
- g9ZfQDjQ9kjGmkG/i9lXbns8WQ==
-X-Google-Smtp-Source: ABdhPJyroWX50B50vCBi4SXruvM8BeO/oOit3dvyqmtAmZ75kqPYuqDG6vNNxp/rOzH/+nGwcDJ7mQ==
-X-Received: by 2002:a63:2060:: with SMTP id r32mr445169pgm.129.1606949680485; 
- Wed, 02 Dec 2020 14:54:40 -0800 (PST)
+ bh=L1XwcgAgK+XPh06m1JOhanYVC+SJck5f59jqFhEbGDI=;
+ b=dZHeKQrij8aQkYZZyagngvp12DGTC2dWnC3eDmnF68pw/E+iHJSLteYfkdVZ/WTD8q
+ 3FcIICTejWNeOBDi3/q8aq6+9Cp4rx5WAK05UOhEk/rc9dVmo63r01l9l7BsCrIAzpnr
+ pkf6rwK6CNPBrzvfrYrC7gVi4xUHdzH8FjtwN+0o1DDK6kZCtUk80fqssQ7tOkuMn9DU
+ QzRg/iUe6HW5wZE4P9uSIcckwBKSwPJlRJYwO+DpSlzkOT0eFwpPJMWoTDO9+o1cG5my
+ 4LIE+lAjQRY5JjrF6tjP7aTn0YhuhIjuIcMwwfAZKBFzHgZLVmmuhDzzX/gPSJrqCA+V
+ hpLw==
+X-Gm-Message-State: AOAM530RnS6JqSNMiSF644aNZAlvRMMmiat99WwHzkFVgvE5Mkj6xmvL
+ ZYAewWBp6nu0pedME4UmOdKkMQ==
+X-Google-Smtp-Source: ABdhPJwK/zFevwSSRtCDcQVZpXqyUJSqXvW1jH45dooiPbjfLKwrs2ybCyTmfz3+OkLtgYzUUvQXwQ==
+X-Received: by 2002:a63:7208:: with SMTP id n8mr444147pgc.99.1606949729114;
+ Wed, 02 Dec 2020 14:55:29 -0800 (PST)
 Received: from [192.168.10.160] (S01061cabc081bf83.cg.shawcable.net.
  [70.77.221.9])
- by smtp.gmail.com with ESMTPSA id x23sm107703pfo.209.2020.12.02.14.54.39
+ by smtp.gmail.com with ESMTPSA id x23sm107703pfo.209.2020.12.02.14.55.27
  (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 02 Dec 2020 14:54:39 -0800 (PST)
+ Wed, 02 Dec 2020 14:55:28 -0800 (PST)
 From: Andreas Dilger <adilger@dilger.ca>
-Message-Id: <F996D2F5-8821-4C8E-B9A7-0017B8F70D6D@dilger.ca>
+Message-Id: <B0FCE075-6DBB-4F1E-BBAB-762112445AB7@dilger.ca>
 Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH 7/9] fscrypt: move fscrypt_require_key() to
- fscrypt_private.h
-Date: Wed, 2 Dec 2020 15:54:38 -0700
-In-Reply-To: <20201125002336.274045-8-ebiggers@kernel.org>
+Subject: Re: [PATCH 8/9] fscrypt: unexport fscrypt_get_encryption_info()
+Date: Wed, 2 Dec 2020 15:55:26 -0700
+In-Reply-To: <20201125002336.274045-9-ebiggers@kernel.org>
 To: Eric Biggers <ebiggers@kernel.org>
 References: <20201125002336.274045-1-ebiggers@kernel.org>
- <20201125002336.274045-8-ebiggers@kernel.org>
+ <20201125002336.274045-9-ebiggers@kernel.org>
 X-Mailer: Apple Mail (2.3273)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201202_175442_948805_0C48CBFF 
-X-CRM114-Status: GOOD (  25.65  )
+X-CRM114-CacheID: sfid-20201202_175531_574378_6FC63A00 
+X-CRM114-Status: GOOD (  21.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,18 +96,18 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Cc: linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
  linux-ext4@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-f2fs-devel@lists.sourceforge.net
-Content-Type: multipart/mixed; boundary="===============0511380451317361393=="
+Content-Type: multipart/mixed; boundary="===============1503591470844336544=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
---===============0511380451317361393==
+--===============1503591470844336544==
 Content-Type: multipart/signed;
- boundary="Apple-Mail=_53D94ECE-D613-426B-A535-CC8071F61DE4";
+ boundary="Apple-Mail=_C98ABB42-779F-468B-82F9-A32B713E39D7";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 
 
---Apple-Mail=_53D94ECE-D613-426B-A535-CC8071F61DE4
+--Apple-Mail=_C98ABB42-779F-468B-82F9-A32B713E39D7
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain;
 	charset=us-ascii
@@ -118,103 +117,88 @@ Content-Type: text/plain;
 >=20
 > From: Eric Biggers <ebiggers@google.com>
 >=20
-> fscrypt_require_key() is now only used by files in fs/crypto/.  So
-> reduce its visibility to fscrypt_private.h.  This is also a =
-prerequsite
-> for unexporting fscrypt_get_encryption_info().
+> Now that fscrypt_get_encryption_info() is only called from files in
+> fs/crypto/ (due to all key setup now being handled by higher-level
+> helper functions instead of directly by filesystems), unexport it and
+> move its declaration to fscrypt_private.h.
 >=20
 > Signed-off-by: Eric Biggers <ebiggers@google.com>
 
 Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 
 > ---
-> fs/crypto/fscrypt_private.h | 26 ++++++++++++++++++++++++++
-> include/linux/fscrypt.h     | 26 --------------------------
-> 2 files changed, 26 insertions(+), 26 deletions(-)
+> fs/crypto/fscrypt_private.h | 2 ++
+> fs/crypto/keysetup.c        | 1 -
+> include/linux/fscrypt.h     | 7 +------
+> 3 files changed, 3 insertions(+), 7 deletions(-)
 >=20
 > diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-> index a61d4dbf0a0b..16dd55080127 100644
+> index 16dd55080127..c1c302656c34 100644
 > --- a/fs/crypto/fscrypt_private.h
 > +++ b/fs/crypto/fscrypt_private.h
-> @@ -571,6 +571,32 @@ int fscrypt_derive_dirhash_key(struct =
-fscrypt_info *ci,
+> @@ -571,6 +571,8 @@ int fscrypt_derive_dirhash_key(struct fscrypt_info =
+*ci,
 > void fscrypt_hash_inode_number(struct fscrypt_info *ci,
 > 			       const struct fscrypt_master_key *mk);
 >=20
-> +/**
-> + * fscrypt_require_key() - require an inode's encryption key
-> + * @inode: the inode we need the key for
-> + *
-> + * If the inode is encrypted, set up its encryption key if not =
-already done.
-> + * Then require that the key be present and return -ENOKEY otherwise.
-> + *
-> + * No locks are needed, and the key will live as long as the struct =
-inode --- so
-> + * it won't go away from under you.
-> + *
-> + * Return: 0 on success, -ENOKEY if the key is missing, or another =
--errno code
-> + * if a problem occurred while setting up the encryption key.
-> + */
-> +static inline int fscrypt_require_key(struct inode *inode)
-> +{
-> +	if (IS_ENCRYPTED(inode)) {
-> +		int err =3D fscrypt_get_encryption_info(inode);
+> +int fscrypt_get_encryption_info(struct inode *inode);
 > +
-> +		if (err)
-> +			return err;
-> +		if (!fscrypt_has_encryption_key(inode))
-> +			return -ENOKEY;
-> +	}
-> +	return 0;
-> +}
-> +
-> /* keysetup_v1.c */
+> /**
+>  * fscrypt_require_key() - require an inode's encryption key
+>  * @inode: the inode we need the key for
+> diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
+> index 50675b42d5b7..6339b3069a40 100644
+> --- a/fs/crypto/keysetup.c
+> +++ b/fs/crypto/keysetup.c
+> @@ -589,7 +589,6 @@ int fscrypt_get_encryption_info(struct inode =
+*inode)
+> 		res =3D 0;
+> 	return res;
+> }
+> -EXPORT_SYMBOL(fscrypt_get_encryption_info);
 >=20
-> void fscrypt_put_direct_key(struct fscrypt_direct_key *dk);
+> /**
+>  * fscrypt_prepare_new_inode() - prepare to create a new inode in a =
+directory
 > diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-> index b20900bb829f..a07610f27926 100644
+> index a07610f27926..4b163f5e58e9 100644
 > --- a/include/linux/fscrypt.h
 > +++ b/include/linux/fscrypt.h
-> @@ -688,32 +688,6 @@ static inline bool =
-fscrypt_has_encryption_key(const struct inode *inode)
-> 	return fscrypt_get_info(inode) !=3D NULL;
+> @@ -75,7 +75,7 @@ struct fscrypt_operations {
+> static inline struct fscrypt_info *fscrypt_get_info(const struct inode =
+*inode)
+> {
+> 	/*
+> -	 * Pairs with the cmpxchg_release() in =
+fscrypt_get_encryption_info().
+> +	 * Pairs with the cmpxchg_release() in =
+fscrypt_setup_encryption_info().
+> 	 * I.e., another task may publish ->i_crypt_info concurrently, =
+executing
+> 	 * a RELEASE barrier.  We need to use smp_load_acquire() here to =
+safely
+> 	 * ACQUIRE the memory the other task published.
+> @@ -200,7 +200,6 @@ int fscrypt_ioctl_remove_key_all_users(struct file =
+*filp, void __user *arg);
+> int fscrypt_ioctl_get_key_status(struct file *filp, void __user *arg);
+>=20
+> /* keysetup.c */
+> -int fscrypt_get_encryption_info(struct inode *inode);
+> int fscrypt_prepare_new_inode(struct inode *dir, struct inode *inode,
+> 			      bool *encrypt_ret);
+> void fscrypt_put_encryption_info(struct inode *inode);
+> @@ -408,10 +407,6 @@ static inline int =
+fscrypt_ioctl_get_key_status(struct file *filp,
 > }
 >=20
-> -/**
-> - * fscrypt_require_key() - require an inode's encryption key
-> - * @inode: the inode we need the key for
-> - *
-> - * If the inode is encrypted, set up its encryption key if not =
-already done.
-> - * Then require that the key be present and return -ENOKEY otherwise.
-> - *
-> - * No locks are needed, and the key will live as long as the struct =
-inode --- so
-> - * it won't go away from under you.
-> - *
-> - * Return: 0 on success, -ENOKEY if the key is missing, or another =
--errno code
-> - * if a problem occurred while setting up the encryption key.
-> - */
-> -static inline int fscrypt_require_key(struct inode *inode)
+> /* keysetup.c */
+> -static inline int fscrypt_get_encryption_info(struct inode *inode)
 > -{
-> -	if (IS_ENCRYPTED(inode)) {
-> -		int err =3D fscrypt_get_encryption_info(inode);
-> -
-> -		if (err)
-> -			return err;
-> -		if (!fscrypt_has_encryption_key(inode))
-> -			return -ENOKEY;
-> -	}
-> -	return 0;
+> -	return -EOPNOTSUPP;
 > -}
-> -
-> /**
->  * fscrypt_prepare_link() - prepare to link an inode into a =
-possibly-encrypted
->  *			    directory
+>=20
+> static inline int fscrypt_prepare_new_inode(struct inode *dir,
+> 					    struct inode *inode,
 > --
 > 2.29.2
 >=20
@@ -227,7 +211,7 @@ Cheers, Andreas
 
 
 
---Apple-Mail=_53D94ECE-D613-426B-A535-CC8071F61DE4
+--Apple-Mail=_C98ABB42-779F-468B-82F9-A32B713E39D7
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
 	filename=signature.asc
@@ -238,25 +222,25 @@ Content-Description: Message signed with OpenPGP
 -----BEGIN PGP SIGNATURE-----
 Comment: GPGTools - http://gpgtools.org
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl/IGy4ACgkQcqXauRfM
-H+DQAw//fLJfA+YSOvXOMgSO+VdKYlIGvZ+7i0b/EqobCgX+LimQHN/xWB2LXTxR
-jA5ZJs27vliuurESPr0tAsB/UdRe2ToZfgBDZfKA9sH7msuMmbFQPxYFP3tDAb4V
-xFyNxz2jn8fWUWr5rsyNKRTESZKOvf+7V0Vxcw4dyXdgP4DBrfiJpSh/WmFV/4IW
-Jhnec+7AaWP9Sd83mz6Vwte4JY55jvF5QwHGTq7J/3JiGoFpCAgfIzkTcymQ3bkn
-M23wmBvgRaZdPrDItE8F2tz1QsU+Prqk8uZI9uL3U4wVpzM0Si7pQdaS3wRVE5Fs
-0Yi87MdoEDFwTtslLi1K5PkREhgA55myWqMocNSX6HTAf3b68yCcd23eauBRAv9F
-xvwRB5UztbQmQIGnGwRnAcwmB0dhC6Z9vFJjRTXpckwVrxe3lkICpxKZU/ZmE0yj
-Sl4G5WHzY8uCh6TtYIqRPI7ylM4UJqmmnF+pWt8Qqnnmi5KRuwv+lFwCIbkWQ12X
-WUzcoL/A5uKqYcitlZBv9xNw95BskeiD+QwOnEM1gUsCinQji5cxGRDZNiP2lnZD
-RtcHUerikV40EI7zS8BbjuLbMpiTrlw/HP1KD1L+41RB+zarX7+0V++0dkOtljxz
-I/HXYJt5dEmXGaZNiZdO5AmFO3stSNAIvkQwTXKKBi1vpy4PWsk=
-=znFQ
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl/IG18ACgkQcqXauRfM
+H+Bb3Q/+N5KoLVZ0SdPOGc9zFf30gVxx9174tO5hYC8bEXeibRo93gRWaBks6jTz
+bKADVjbP+PsYOkOVkiVEjxDYaVecrOLCZM4i0HYbSkBC2TF+FMf+8t6Off/ADUdv
+zCDcRRget6d6/xvWQmnX/neBSax+mJ9NThwmwtP52BiYgH7Ufw9DU3y1s7cYUcqw
+lxkKunK0y5g+Pv0AeN1BP4tVSj4JD4zBoIuWYaJaj5jXMtRVS0Z9hjayM/jEozhp
+VeQzo1KlHTtzlX2RUT8V3f+MxEKtwm7yb21eKGRi8chOl8lG9rpayZ/h2BKm2TD2
+uG/Eb0tP/22P0f++v31nUb+GlE3VcuSZUEdckw6tR/11Jc3vpKB2dzG28qgweiX5
+Acf7xvneXY8hJIQqoRjdPxU0chyQ1XbYL1o3fV6Pu7OeMchPRgei+nocseE5LQBv
+3WuxcX31YtNMI3piijqyr9RFaKp2jFzuPK9pY7RAvdk/h9SRTxhevMhb22vn8EkB
+vWz6D9TiIVyA6Solq0VCd0IYKZh66+kQ1eLxOmbBclENmzjqDahynk5jWi3g8Mhz
+whCP62Vo7aCE+kpnNL7V4ZNvQ5/a5ylPvvNbppQ+q6xFbeXT3uAtl9DaIXMZHj7q
+aOqCgMNW1I5SjXCtvpHPBjGQaJdAr3EbztK+02kQXvfohio7PKY=
+=boNE
 -----END PGP SIGNATURE-----
 
---Apple-Mail=_53D94ECE-D613-426B-A535-CC8071F61DE4--
+--Apple-Mail=_C98ABB42-779F-468B-82F9-A32B713E39D7--
 
 
---===============0511380451317361393==
+--===============1503591470844336544==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -266,5 +250,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============0511380451317361393==--
+--===============1503591470844336544==--
 
