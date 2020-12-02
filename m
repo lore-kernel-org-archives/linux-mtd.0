@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73540C6369E
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Dec 2020 22:49:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E993FC64E7B
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Dec 2020 22:52:51 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CCD0B221F7
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Dec 2020 22:49:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CCD0B221F7
+	by mail.kernel.org (Postfix) with ESMTPS id 6B111221F7
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Dec 2020 22:52:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B111221F7
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,67 +23,66 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:To:In-Reply-To:Date:Subject:Mime-Version:Message-Id:From:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=dU+3pAN7dH+h0yHJGxsowIcdYpJM+nA+hsjQTtIDEPE=; b=uVJTAjS5+6gN8nWw9nqTdOTXw
-	lq/TmHMS0Z0UNB81xLIaRP4ai8WXtrLzHxRguvDMTMaAN/ctroaEnmFDs1f1GQgdJB32i20mKy2bg
-	kRZXkgrqLFc6J8vmiSOtCk2MmBVU/4RvzR8F6001Z/fdvuTgQKDPhyECWuhAXWb9SOAEenK1NzMta
-	iBD0arq9t9v2vcC49gJDJ+40f9w0GYlbVORv1jJLHBQNKESvXOwyRoI2Vs4op71Ca95irY4SmsfUU
-	31kKgklE96zNgwLdAlsAqljXgSCRYpdT0Zcy0gmYrlwUxc8sucOuLCSILdjsqzOjfcxmYLAu4YWz2
-	vPZFI3BGQ==;
+	 bh=h3no9OPpder1WCExIRGaOcIKCwn4yZD8R2rPvj1doAg=; b=NsAdE6SV/TEeynxErfW6ca69V
+	xiqREo/Ce8WuGx5+lCvrkwGE5bF1dwUZpfwvsiGlehWASaxINIVW98ujl2GSzEc/tJujQnXgvXl3+
+	W1UcbaA/0ED1I223elnitLdedcSG/gEfS+Q8gszyIHUkaNr1DKr/Zlri27NhOnsxoDuF//uYxnuoI
+	NqRl6YpbnFeooyF6e9jV+Q/RVXq4IofH8FkGe8mNe+Jtg5K6FhdK9ddyN+bCHiit+O0wk0QpPzLV7
+	bZ6o2rUAfWL6o4TV+u26dPtJ1qiSuCtj9qD+Lvoi0DF3EhU+oB67Kyaw4DtR104fXcvY+affH2kFh
+	MK8KDdPNQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kkavV-0007xV-3l; Wed, 02 Dec 2020 22:48:45 +0000
-Received: from mail-pj1-x1044.google.com ([2607:f8b0:4864:20::1044])
+	id 1kkayz-0008KV-GQ; Wed, 02 Dec 2020 22:52:21 +0000
+Received: from mail-pj1-x1041.google.com ([2607:f8b0:4864:20::1041])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kkavS-0007ur-D0
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2020 22:48:43 +0000
-Received: by mail-pj1-x1044.google.com with SMTP id l23so6269pjg.1
- for <linux-mtd@lists.infradead.org>; Wed, 02 Dec 2020 14:48:41 -0800 (PST)
+ id 1kkayw-0008Jo-Rc
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2020 22:52:19 +0000
+Received: by mail-pj1-x1041.google.com with SMTP id e5so13105pjt.0
+ for <linux-mtd@lists.infradead.org>; Wed, 02 Dec 2020 14:52:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=dilger-ca.20150623.gappssmtp.com; s=20150623;
  h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
- :references; bh=9QfXOnDQXBcVNRGuammJHFxREgoMLaRZ+ETyqz3mSr4=;
- b=qmksV4Dals8a82iYZ6RK8iTVyq6BvbUIrYlGWlQ4O/dpBg0D4yX82WYzUNnAE7hJkr
- N8u9EtWId4CNnvU9sf2UIYJKK/91kqto6cPWMEOIYb/gkXMSps6xKX28m20aibsE3mBr
- VDOhSnMNyA3R6tzYwNFOIs+YNklblSN7U6U+J0VihswubYFQLsNzqwS3UBvEJN0Nmyec
- HCZ9oNIHzuiIWpY4buwK5YObY3wfTIKU2KeM1O1PBayhixMlEDFN+hepJR39diyLQrNe
- XVKVCKfT0Vtq0ecgex0eZJ8WyKiBOnEvPK9MzoVIcOBcpkOCekthdDwUuQ0Fn7V4VMJt
- toXQ==
+ :references; bh=lAa6ISm7uCrPT+h5o/8USKpvXIqsWq8U2NOa5556/m8=;
+ b=cNWo4yBwRTwBwps8iyf8xmXmepIGTSCNf2LNGSIVMYdxdwlw6oVkX1Kl2NcbO5Zzq6
+ Ei+x9gnv/ErCspG8p37WUrwiRoribroM4jK4LiahFy4A7mcu/GsMxVqWIIZsICuSPm3e
+ BwN9orCgpdbZfC5izYfsDSTJIhRr/Vxv+YcWfl/tgkDTE/f46tvdOuwTHEVr9yA1CitO
+ WAOTYd8siLfnKPDQKSeItxevtwzNjjG4fWfL71JFX6ndHZtrtkNLEq32DrQgAImMa111
+ b07Uk4E6XS5n2cJt5a/hP3VgG+u50Rzu0PVSI8pZjbXqpd3gSsE6fYr8zmzpZjjdrXfF
+ H0gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:message-id:mime-version:subject:date
  :in-reply-to:cc:to:references;
- bh=9QfXOnDQXBcVNRGuammJHFxREgoMLaRZ+ETyqz3mSr4=;
- b=bewRCTccgb57SBNv0rA8AUMmigu7USLOY3TW9xCmrxJjlbMfJ5+RntvaZBG4e4gs/0
- tr4VlKnSsLMZN8AjQPxsyKteJJNJzQ5iqIism2Fhzkab2RugdD+nCy/l/f+MGAZLGHYv
- UQ4hO9XpjM31Ir+zYELOvByrSrPbm4ZsheA7eqvAoUoomi9e1khDWj5RQZUsSveT1BJk
- T+XNI1eNlaJuboW0ErdUSWYUKmYtCPgWM9KcUf03a/IY+m7Uzq1CRaFBTsblX9bqiwbV
- /0tPk4Z5aEe/YZ3KOBjpKqhA+VEKmU7uAVPMCg0q6ASI4Gs6TnIJrZOXPKrCTyg5qAEg
- A8sw==
-X-Gm-Message-State: AOAM533mZn85OObc+kWW7rTjq3JH+lZTrOKUKTHLXP5Di2jABEo06qVW
- +Q9eAtF2SnKZ8ctDOzexwttR/T2ZfV1TJuEl
-X-Google-Smtp-Source: ABdhPJwGO33+14WKujPnINCQQRxu9coWEviCw1QTjdn6wzLYUL8K2FoZeAWtCeVe/xzwjeL4Ge2htA==
-X-Received: by 2002:a17:902:b70d:b029:da:5196:1181 with SMTP id
- d13-20020a170902b70db02900da51961181mr232870pls.81.1606949320011; 
- Wed, 02 Dec 2020 14:48:40 -0800 (PST)
+ bh=lAa6ISm7uCrPT+h5o/8USKpvXIqsWq8U2NOa5556/m8=;
+ b=UPeDmA/gKnM/0n2Ik+36AjiQhl5YfHkDeqnbu8Ep/SL54Ln7i/OV2DT+D3NO+o+wbM
+ V9xDY0fwJChK9EnAyX88hYVtYA2iSGCoQPwX4UxgrMST5d2sTy9cPY+u4Wirm7kU/YG1
+ ageHqGaXjP2pFiI7xkN0oMNyxDx4Q1X/SNlMfT91uMhHuxHxn0jiyrsqoVzDBDfL9ZNo
+ HnrAg0zgpc8DlnCw9SiBPlXpIoNrVki74AlQwvsNBEjWqZXjiL7SBeEvL71wae7wMsda
+ qVqmwglPudqhARajzG163QQp6zItlHcXudOqwHR3Qe1wJZjrb8/FHJT4jpMj9VQWbYNS
+ GA7Q==
+X-Gm-Message-State: AOAM53141oM09e9pO9gyXUq5nelmEZ6/UysJgJcGC+HVI2zGowED4hne
+ zyi8mbXjgwJLfiP7EhdtXKcaLA==
+X-Google-Smtp-Source: ABdhPJxtnCQS2009pSf+S+On0hCx6qSAE8Q3l/QJC0K2JWJb2MdsnrrnPhEAqtLqDMMh7/JX8+0pLQ==
+X-Received: by 2002:a17:902:ab98:b029:d8:c5e8:978a with SMTP id
+ f24-20020a170902ab98b02900d8c5e8978amr280062plr.56.1606949536254; 
+ Wed, 02 Dec 2020 14:52:16 -0800 (PST)
 Received: from [192.168.10.160] (S01061cabc081bf83.cg.shawcable.net.
  [70.77.221.9])
- by smtp.gmail.com with ESMTPSA id q4sm98773pgl.14.2020.12.02.14.48.39
+ by smtp.gmail.com with ESMTPSA id k4sm119861pfa.103.2020.12.02.14.52.15
  (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 02 Dec 2020 14:48:39 -0800 (PST)
+ Wed, 02 Dec 2020 14:52:15 -0800 (PST)
 From: Andreas Dilger <adilger@dilger.ca>
-Message-Id: <317E7E03-9620-4610-8DA5-63221FE41F04@dilger.ca>
+Message-Id: <5C84DBE6-E9AE-44D9-8BFC-0683C85F666C@dilger.ca>
 Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH 4/9] ext4: don't call fscrypt_get_encryption_info() from
- dx_show_leaf()
-Date: Wed, 2 Dec 2020 15:48:37 -0700
-In-Reply-To: <20201125002336.274045-5-ebiggers@kernel.org>
+Subject: Re: [PATCH 5/9] fscrypt: introduce fscrypt_prepare_readdir()
+Date: Wed, 2 Dec 2020 15:52:13 -0700
+In-Reply-To: <20201125002336.274045-6-ebiggers@kernel.org>
 To: Eric Biggers <ebiggers@kernel.org>
 References: <20201125002336.274045-1-ebiggers@kernel.org>
- <20201125002336.274045-5-ebiggers@kernel.org>
+ <20201125002336.274045-6-ebiggers@kernel.org>
 X-Mailer: Apple Mail (2.3273)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201202_174842_479757_1E01F162 
-X-CRM114-Status: GOOD (  21.99  )
+X-CRM114-CacheID: sfid-20201202_175218_910869_2D0C70FA 
+X-CRM114-Status: GOOD (  28.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,69 +97,194 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Cc: linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
  linux-ext4@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-f2fs-devel@lists.sourceforge.net
-Content-Type: multipart/mixed; boundary="===============6994428986927000763=="
+Content-Type: multipart/mixed; boundary="===============8085923304330606966=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
---===============6994428986927000763==
+--===============8085923304330606966==
 Content-Type: multipart/signed;
- boundary="Apple-Mail=_B03EA783-7B75-4554-A00C-B7E221071E74";
+ boundary="Apple-Mail=_086127B6-A5B9-4644-AEED-CBE64C521D8D";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 
 
---Apple-Mail=_B03EA783-7B75-4554-A00C-B7E221071E74
-Content-Transfer-Encoding: 7bit
+--Apple-Mail=_086127B6-A5B9-4644-AEED-CBE64C521D8D
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain;
 	charset=us-ascii
 
 On Nov 24, 2020, at 5:23 PM, Eric Biggers <ebiggers@kernel.org> wrote:
-> 
+>=20
 > From: Eric Biggers <ebiggers@google.com>
-> 
-> The call to fscrypt_get_encryption_info() in dx_show_leaf() is too low
-> in the call tree; fscrypt_get_encryption_info() should have already been
-> called when starting the directory operation.  And indeed, it already
-> is.  Moreover, the encryption key is guaranteed to already be available
-> because dx_show_leaf() is only called when adding a new directory entry.
-> 
-> And even if the key wasn't available, dx_show_leaf() uses
-> fscrypt_fname_disk_to_usr() which knows how to create a no-key name.
-> 
-> So for the above reasons, and because it would be desirable to stop
-> exporting fscrypt_get_encryption_info() directly to filesystems, remove
-> the call to fscrypt_get_encryption_info() from dx_show_leaf().
-> 
+>=20
+> The last remaining use of fscrypt_get_encryption_info() from =
+filesystems
+> is for readdir (->iterate_shared()).  Every other call is now in
+> fs/crypto/ as part of some other higher-level operation.
+>=20
+> We need to add a new argument to fscrypt_get_encryption_info() to
+> indicate whether the encryption policy to allowed to be unrecognized =
+or
+> not.  Doing this is easier if we can work with high-level operations
+> rather than direct filesystem use of fscrypt_get_encryption_info().
+>=20
+> So add a function fscrypt_prepare_readdir() which wraps the call to
+> fscrypt_get_encryption_info() for the readdir use case.
+>=20
 > Signed-off-by: Eric Biggers <ebiggers@google.com>
 
 Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 
 > ---
-> fs/ext4/namei.c | 8 +-------
-> 1 file changed, 1 insertion(+), 7 deletions(-)
-> 
+> fs/crypto/hooks.c       |  6 ++++++
+> fs/ext4/dir.c           |  8 +++-----
+> fs/ext4/namei.c         |  2 +-
+> fs/f2fs/dir.c           |  2 +-
+> fs/ubifs/dir.c          |  2 +-
+> include/linux/fscrypt.h | 24 ++++++++++++++++++++++++
+> 6 files changed, 36 insertions(+), 8 deletions(-)
+>=20
+> diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
+> index c809a4afa057..82f351d3113a 100644
+> --- a/fs/crypto/hooks.c
+> +++ b/fs/crypto/hooks.c
+> @@ -114,6 +114,12 @@ int __fscrypt_prepare_lookup(struct inode *dir, =
+struct dentry *dentry,
+> }
+> EXPORT_SYMBOL_GPL(__fscrypt_prepare_lookup);
+>=20
+> +int __fscrypt_prepare_readdir(struct inode *dir)
+> +{
+> +	return fscrypt_get_encryption_info(dir);
+> +}
+> +EXPORT_SYMBOL_GPL(__fscrypt_prepare_readdir);
+> +
+> /**
+>  * fscrypt_prepare_setflags() - prepare to change flags with =
+FS_IOC_SETFLAGS
+>  * @inode: the inode on which flags are being changed
+> diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
+> index 16bfbdd5007c..c6d16353326a 100644
+> --- a/fs/ext4/dir.c
+> +++ b/fs/ext4/dir.c
+> @@ -118,11 +118,9 @@ static int ext4_readdir(struct file *file, struct =
+dir_context *ctx)
+> 	struct buffer_head *bh =3D NULL;
+> 	struct fscrypt_str fstr =3D FSTR_INIT(NULL, 0);
+>=20
+> -	if (IS_ENCRYPTED(inode)) {
+> -		err =3D fscrypt_get_encryption_info(inode);
+> -		if (err)
+> -			return err;
+> -	}
+> +	err =3D fscrypt_prepare_readdir(inode);
+> +	if (err)
+> +		return err;
+>=20
+> 	if (is_dx_dir(inode)) {
+> 		err =3D ext4_dx_readdir(file, ctx);
 > diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index 793fc7db9d28..7b31aea3e025 100644
+> index 7b31aea3e025..5fa8436cd5fa 100644
 > --- a/fs/ext4/namei.c
 > +++ b/fs/ext4/namei.c
-> @@ -643,13 +643,7 @@ static struct stats dx_show_leaf(struct inode *dir,
-> 
-> 				name  = de->name;
-> 				len = de->name_len;
-> -				if (IS_ENCRYPTED(dir))
-> -					res = fscrypt_get_encryption_info(dir);
-> -				if (res) {
-> -					printk(KERN_WARNING "Error setting up"
-> -					       " fname crypto: %d\n", res);
-> -				}
-> -				if (!fscrypt_has_encryption_key(dir)) {
-> +				if (!IS_ENCRYPTED(dir)) {
-> 					/* Directory is not encrypted */
-> 					ext4fs_dirhash(dir, de->name,
-> 						de->name_len, &h);
+> @@ -1004,7 +1004,7 @@ static int htree_dirblock_to_tree(struct file =
+*dir_file,
+> 					   EXT4_DIR_REC_LEN(0));
+> 	/* Check if the directory is encrypted */
+> 	if (IS_ENCRYPTED(dir)) {
+> -		err =3D fscrypt_get_encryption_info(dir);
+> +		err =3D fscrypt_prepare_readdir(dir);
+> 		if (err < 0) {
+> 			brelse(bh);
+> 			return err;
+> diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
+> index 47bee953fc8d..049500f1e764 100644
+> --- a/fs/f2fs/dir.c
+> +++ b/fs/f2fs/dir.c
+> @@ -1022,7 +1022,7 @@ static int f2fs_readdir(struct file *file, =
+struct dir_context *ctx)
+> 	int err =3D 0;
+>=20
+> 	if (IS_ENCRYPTED(inode)) {
+> -		err =3D fscrypt_get_encryption_info(inode);
+> +		err =3D fscrypt_prepare_readdir(inode);
+> 		if (err)
+> 			goto out;
+>=20
+> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+> index 009fbf844d3e..1f33a5598b93 100644
+> --- a/fs/ubifs/dir.c
+> +++ b/fs/ubifs/dir.c
+> @@ -514,7 +514,7 @@ static int ubifs_readdir(struct file *file, struct =
+dir_context *ctx)
+> 		return 0;
+>=20
+> 	if (encrypted) {
+> -		err =3D fscrypt_get_encryption_info(dir);
+> +		err =3D fscrypt_prepare_readdir(dir);
+> 		if (err)
+> 			return err;
+>=20
+> diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+> index 0c9e64969b73..8cbb26f55695 100644
+> --- a/include/linux/fscrypt.h
+> +++ b/include/linux/fscrypt.h
+> @@ -242,6 +242,7 @@ int __fscrypt_prepare_rename(struct inode =
+*old_dir, struct dentry *old_dentry,
+> 			     unsigned int flags);
+> int __fscrypt_prepare_lookup(struct inode *dir, struct dentry *dentry,
+> 			     struct fscrypt_name *fname);
+> +int __fscrypt_prepare_readdir(struct inode *dir);
+> int fscrypt_prepare_setflags(struct inode *inode,
+> 			     unsigned int oldflags, unsigned int flags);
+> int fscrypt_prepare_symlink(struct inode *dir, const char *target,
+> @@ -537,6 +538,11 @@ static inline int __fscrypt_prepare_lookup(struct =
+inode *dir,
+> 	return -EOPNOTSUPP;
+> }
+>=20
+> +static inline int __fscrypt_prepare_readdir(struct inode *dir)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> static inline int fscrypt_prepare_setflags(struct inode *inode,
+> 					   unsigned int oldflags,
+> 					   unsigned int flags)
+> @@ -795,6 +801,24 @@ static inline int fscrypt_prepare_lookup(struct =
+inode *dir,
+> 	return 0;
+> }
+>=20
+> +/**
+> + * fscrypt_prepare_readdir() - prepare to read a possibly-encrypted =
+directory
+> + * @dir: the directory inode
+> + *
+> + * If the directory is encrypted and it doesn't already have its =
+encryption key
+> + * set up, try to set it up so that the filenames will be listed in =
+plaintext
+> + * form rather than in no-key form.
+> + *
+> + * Return: 0 on success; -errno on error.  Note that the encryption =
+key being
+> + *	   unavailable is not considered an error.
+> + */
+> +static inline int fscrypt_prepare_readdir(struct inode *dir)
+> +{
+> +	if (IS_ENCRYPTED(dir))
+> +		return __fscrypt_prepare_readdir(dir);
+> +	return 0;
+> +}
+> +
+> /**
+>  * fscrypt_prepare_setattr() - prepare to change a possibly-encrypted =
+inode's
+>  *			       attributes
 > --
 > 2.29.2
-> 
+>=20
 
 
 Cheers, Andreas
@@ -170,7 +294,7 @@ Cheers, Andreas
 
 
 
---Apple-Mail=_B03EA783-7B75-4554-A00C-B7E221071E74
+--Apple-Mail=_086127B6-A5B9-4644-AEED-CBE64C521D8D
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
 	filename=signature.asc
@@ -181,25 +305,25 @@ Content-Description: Message signed with OpenPGP
 -----BEGIN PGP SIGNATURE-----
 Comment: GPGTools - http://gpgtools.org
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl/IGcUACgkQcqXauRfM
-H+CFUQ/7BW3B4eOfjKM/CmfaV3AGSXDkVCxci+BVZOXQd5jPh0jD6P+vnNHrVvaJ
-OrmL9sLLzlXw39gLrZk21geNwdDWRXvNSp+mY0TmTjDBGeTvrQQydNMziRYs6xcS
-+Dei6c8LQA05JAqTDHbzV9rVRE/Xxbdsux09cUB21Agt3ruFi/90TPK7G6s3ObJD
-Asbh05XZ1JqaZ8W65AUPlQzwqrLXL8WCS/Qkfp0nsXWvebKRdrDtJ8FaEPjiZkeF
-rhS72LzdH8Arwc4kHVe1TVw4txY0su010X14LXUIQXZT8MjZrkbArOtPut+XMrpX
-8IdD3KaUFhBAvB89fK2QIN62Y+RRiPkSXQFHCz/P/S/ruRjxnjaG57PesasV/D4D
-4aYArbY8+QgrpbqY8AayIDZNqOkf9xMc5xD3nm5hjqN1htXPnHxozSUa31+CXRuC
-nSb1MvlGtQX6j2cpXtTrrm4jwVKW8W4JhMaUBWmaUTKvxmZvfBpOQ6BSfaSBHuDW
-2mgj4jQAiqw/9ZIMY9QYKjQZszI9CUXXZdstrqhJhoQM6z4etgh3yKkvnp2gR9QP
-xSwGVQ6D8z+AECS7YLnZIgrVyK4Fb9Adha36LbjFyvt0+sRroXbtMsorXLorJmQi
-30z/sqoYZ5O7zhIvTegvrIJZrjuX6XPT80DQqhswJFw2fteJFsQ=
-=Ks9F
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl/IGp0ACgkQcqXauRfM
+H+AP6Q/+MHpJH7lRfuvglXXmU4UThuvLs/rAMJKbloZXk/CvPKBUEtAUpscsZEur
+9/Z4MUJTzAtVlc3PG391SSc4QqSOu58K5r8ZBtv9GsFZniEtRbRmuJJoAXorKz5Q
+BiglWRT0Z2xWl0UdWMui5e8TldO2xAU3S4mznT+lZfiJsbjxM8u7vz4MkfPPNZx5
+hKskvYV5YPSPlA1LGkNF89vyNxYXxDelt9lQJSs8tNMrhueXra5ddki6YO7ulwpL
+6eaLYmnkPVZt7STEVNG5Aq/ZRkAlav/DIb2f6+9qHULMVMoibulXeyWSvCzshbt6
+zGL7e5+MQUE+wb8rFe25Ic92sUZtEZ8JAKdQB6K6ZdZ0PWCNWLSRXDJJJwCi0MQM
+XDKgR2ysAjioEpiNydcFDj5KMLEmVI4gu19KN0MpaX0B/kHNn+BG2QfVes25mSCT
+XMgccEzyHISrDWtBRuUQoscTRKqUMLspJw++fPgCmT8lXARfV1YvI3C2GqzFd4HT
+PRUCoArtHppOu7RgPNT12mTjmmwGF+YJ8WmgXgITWkkVfacHWFYVyf8DKT7JqYXy
+VHfJoxwb73Xb/zQV73iPllCKfU0F4sRVNWHb0UeaoLZU7PecqTBzNSsPSpo/C/pL
+hAmIUa7+slR997Sc0ng5C3PEhlAY5iLTdoiejVyYtknlAO05puA=
+=kCNT
 -----END PGP SIGNATURE-----
 
---Apple-Mail=_B03EA783-7B75-4554-A00C-B7E221071E74--
+--Apple-Mail=_086127B6-A5B9-4644-AEED-CBE64C521D8D--
 
 
---===============6994428986927000763==
+--===============8085923304330606966==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -209,5 +333,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============6994428986927000763==--
+--===============8085923304330606966==--
 
