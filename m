@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-18.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 218F9C6369E
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73CB2C71155
 	for <linux-mtd@archiver.kernel.org>; Thu,  3 Dec 2020 02:23:41 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B3B8B21D91
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Dec 2020 02:23:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B3B8B21D91
+	by mail.kernel.org (Postfix) with ESMTPS id 0DA5D22201
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Dec 2020 02:23:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0DA5D22201
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,34 +23,34 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=NKTSwrwUfe4wky4QuOiitFkEFTNlvVtNA7Q38DiwJUA=; b=fJXZCSQC9rTV/wACWTgXqEBw9
-	LUQPbaC53WqXc4LDDD9okJadgJEBzJw1leeAg7cBY/Ehk3KuDZcQulspk9xRm78zp3k0ugNDac2yX
-	xWio41vGcfhyX6KXbd49JZy8UMkTLU3HzM0KgArHaZLoedhwg9FWK1w7aSK+aQaDC/6HxTPTchjM1
-	HZNLwgSsFePTsAa/TLxt5LyPxn7py9NO8f4z4Zn5wHghhQAdjmKDoYITpT5h1yMmVFZpP8PSqJZjo
-	032q0oaHkvdPIwO7dC7balosgBiwMDPiGKDsIn6k8uCIvKkE9InwBsrSefiSH1PL4BqfgnqfKmRt1
-	myndt6b/w==;
+	 bh=KToo6Q5bD1I/s2Twi9fqDB7FXqrNuAR6sg3TvOTl8YU=; b=QdwsYn/1Qp2veMnWpERYvG53S
+	hGppWSXlv3BBXFKJZESqlPGZyu8TOkyyCilmHtt3jHsrTwnAMddTXCl0WMVV8GTggnidnQ0tAXQKe
+	8HhHdwS9nBZ65ZWmT9vb2P6hjAIg3x05DN/wVgSzuD9HCIDR2/OimRT9U7TNlSdLWcC/Z/9Wfiojt
+	ccr0n6OBtv82Xq0E1lVLF3a8oPNP2SLqsaU1UrgygquKfBJT5ToNUlYQaZrPIqiJz+BEwgdmY73gC
+	y7umjfL5I7wu7q2g2ISr9SbWtrf+vQwr6mcRQs+TtTg9w0EqNot/XS+SyzDln+Ysah8Hjcj8yr5Oh
+	s1IeHtrIg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kkeGp-0007BZ-Ml; Thu, 03 Dec 2020 02:22:59 +0000
+	id 1kkeGr-0007C2-Ie; Thu, 03 Dec 2020 02:23:01 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kkeGf-000775-17
- for linux-mtd@lists.infradead.org; Thu, 03 Dec 2020 02:22:51 +0000
+ id 1kkeGf-00077J-6o
+ for linux-mtd@lists.infradead.org; Thu, 03 Dec 2020 02:22:50 +0000
 From: Eric Biggers <ebiggers@kernel.org>
 Authentication-Results: mail.kernel.org;
  dkim=permerror (bad message/signature format)
 To: linux-fscrypt@vger.kernel.org
-Subject: [PATCH v2 2/9] f2fs: remove f2fs_dir_open()
-Date: Wed,  2 Dec 2020 18:20:34 -0800
-Message-Id: <20201203022041.230976-3-ebiggers@kernel.org>
+Subject: [PATCH v2 4/9] ext4: don't call fscrypt_get_encryption_info() from
+ dx_show_leaf()
+Date: Wed,  2 Dec 2020 18:20:36 -0800
+Message-Id: <20201203022041.230976-5-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201203022041.230976-1-ebiggers@kernel.org>
 References: <20201203022041.230976-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201202_212249_173990_4D885455 
-X-CRM114-Status: UNSURE (   8.83  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20201202_212249_335045_598BFAE6 
+X-CRM114-Status: GOOD (  10.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -62,8 +62,8 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-mtd@lists.infradead.org, Chao Yu <yuchao0@huawei.com>,
+Cc: linux-fsdevel@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>,
+ linux-ext4@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-f2fs-devel@lists.sourceforge.net
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -72,44 +72,44 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Since encrypted directories can be opened and searched without their key
-being available, and each readdir and ->lookup() tries to set up the
-key, trying to set up the key in ->open() too isn't really useful.
+The call to fscrypt_get_encryption_info() in dx_show_leaf() is too low
+in the call tree; fscrypt_get_encryption_info() should have already been
+called when starting the directory operation.  And indeed, it already
+is.  Moreover, the encryption key is guaranteed to already be available
+because dx_show_leaf() is only called when adding a new directory entry.
 
-Just remove it so that directories don't need an ->open() method
-anymore, and so that we eliminate a use of fscrypt_get_encryption_info()
-(which I'd like to stop exporting to filesystems).
+And even if the key wasn't available, dx_show_leaf() uses
+fscrypt_fname_disk_to_usr() which knows how to create a no-key name.
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
+So for the above reasons, and because it would be desirable to stop
+exporting fscrypt_get_encryption_info() directly to filesystems, remove
+the call to fscrypt_get_encryption_info() from dx_show_leaf().
+
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/f2fs/dir.c | 8 --------
- 1 file changed, 8 deletions(-)
+ fs/ext4/namei.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-index 4b9ef8bbfa4a9..47bee953fc8d8 100644
---- a/fs/f2fs/dir.c
-+++ b/fs/f2fs/dir.c
-@@ -1081,19 +1081,11 @@ static int f2fs_readdir(struct file *file, struct dir_context *ctx)
- 	return err < 0 ? err : 0;
- }
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index 793fc7db9d28f..7b31aea3e0253 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -643,13 +643,7 @@ static struct stats dx_show_leaf(struct inode *dir,
  
--static int f2fs_dir_open(struct inode *inode, struct file *filp)
--{
--	if (IS_ENCRYPTED(inode))
--		return fscrypt_get_encryption_info(inode) ? -EACCES : 0;
--	return 0;
--}
--
- const struct file_operations f2fs_dir_operations = {
- 	.llseek		= generic_file_llseek,
- 	.read		= generic_read_dir,
- 	.iterate_shared	= f2fs_readdir,
- 	.fsync		= f2fs_sync_file,
--	.open		= f2fs_dir_open,
- 	.unlocked_ioctl	= f2fs_ioctl,
- #ifdef CONFIG_COMPAT
- 	.compat_ioctl   = f2fs_compat_ioctl,
+ 				name  = de->name;
+ 				len = de->name_len;
+-				if (IS_ENCRYPTED(dir))
+-					res = fscrypt_get_encryption_info(dir);
+-				if (res) {
+-					printk(KERN_WARNING "Error setting up"
+-					       " fname crypto: %d\n", res);
+-				}
+-				if (!fscrypt_has_encryption_key(dir)) {
++				if (!IS_ENCRYPTED(dir)) {
+ 					/* Directory is not encrypted */
+ 					ext4fs_dirhash(dir, de->name,
+ 						de->name_len, &h);
 -- 
 2.29.2
 
