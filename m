@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-18.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF6ACC4361A
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Dec 2020 19:05:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05286C4361A
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Dec 2020 19:05:08 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8BBAE21D95
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Dec 2020 19:05:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8BBAE21D95
+	by mail.kernel.org (Postfix) with ESMTPS id 93C8B21D1B
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Dec 2020 19:05:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 93C8B21D1B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,39 +23,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=kFth5Gpn8X8dOb+yqOHz3uszefG0FySTqU9ZjMFuj4c=; b=IS7cN1uXHEYP9pU1kygV5GKsk
-	+H1HF4khwrfy5MkLFUsUPrE1vnUPWNP5/MB2SLhonTKxyYKZfbPubrFnjA1YIoOnh7xFJVH80OEj7
-	cmpRLGezvLyYpQe9qYyNO5+Vpeto2iExK4dZj6xLp/plcGPOQgzhmUi+l0ffRvuTFgklBCwynVODz
-	Oo7uGlXTYHoVM1W8A8HmT4b/zTGXK0Ch6/8sdEuktcZ5Xwq8DHZ9z/Jwzvc63AX2ZU6t9HHZBPZrw
-	Lce0utrqeBPJaQE6kmM5y2mJCM5a10OhU9uGx7LFhLPJ/zgXbRMl1+iYNpXcqDYktgCFtULTsO529
-	V6YFfNnEA==;
+	 bh=RIkRcPCLvjJ8AaIcuuQyjxfPdJY3DztWLl0YsKkwKVI=; b=1+nTbwIFKT8IS0c3867NX1Jyo
+	DrLfnYgzWEMbQW6cROvojnPSkMzEQKWkNXdSda7ydsOpOT1EQIrX1/MysH/id6dd4rpFv+/SJQSQN
+	zTx5EHkDTaMI9rDXQ59DGyE/d8J0JZXcikDI5gHv6u4LFEFqKqLWUX4VBmu7gD+tXfVVG7hzv/rm4
+	HNnWVjRjHNChzL8N8TbCD0QdVp3JVqWd7t3osGJKO2FoeKT0ZYL2HAaE6xdbv28Bt84cIcatnEbv9
+	9uZIhvkcI2JOBj9kbT4tqBlQx4GIJ9H1KVR0KZrm3SNZTHVw0S0aY6ZuRTKKbWfczuptx7znJ/HPN
+	nykC3Da/g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kktte-0006Ii-9o; Thu, 03 Dec 2020 19:04:06 +0000
+	id 1kktth-0006JL-FH; Thu, 03 Dec 2020 19:04:09 +0000
 Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kkttN-0006Dc-GV
+ id 1kkttO-0006E5-6j
  for linux-mtd@lists.infradead.org; Thu, 03 Dec 2020 19:03:53 +0000
 X-Originating-IP: 91.224.148.103
 Received: from localhost.localdomain (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 16BEB240002;
- Thu,  3 Dec 2020 19:03:47 +0000 (UTC)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id C52B524000D;
+ Thu,  3 Dec 2020 19:03:48 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH 6/9] mtd: rawnand: pasemi: Do not force a particular software
- ECC engine
-Date: Thu,  3 Dec 2020 20:03:37 +0100
-Message-Id: <20201203190340.15522-7-miquel.raynal@bootlin.com>
+Subject: [PATCH 7/9] mtd: rawnand: plat_nand: Do not force a particular
+ software ECC engine
+Date: Thu,  3 Dec 2020 20:03:38 +0100
+Message-Id: <20201203190340.15522-8-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201203190340.15522-1-miquel.raynal@bootlin.com>
 References: <20201203190340.15522-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201203_140349_671379_7479B323 
-X-CRM114-Status: GOOD (  13.39  )
+X-CRM114-CacheID: sfid-20201203_140350_454233_1D83AD2A 
+X-CRM114-Status: GOOD (  13.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,18 +85,18 @@ only a default.
 
 Add the necessary logic to be sure Hamming keeps being only a default.
 
-Fixes: 8fc6f1f042b2 ("mtd: rawnand: pasemi: Move the ECC initialization to ->attach_chip()")
+Fixes: 612e048e6aab ("mtd: rawnand: plat_nand: Move the ECC initialization to ->attach_chip()")
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/pasemi_nand.c | 4 +++-
+ drivers/mtd/nand/raw/plat_nand.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/pasemi_nand.c b/drivers/mtd/nand/raw/pasemi_nand.c
-index 4dfff34800f4..68c08772d7c2 100644
---- a/drivers/mtd/nand/raw/pasemi_nand.c
-+++ b/drivers/mtd/nand/raw/pasemi_nand.c
-@@ -77,7 +77,9 @@ static int pasemi_device_ready(struct nand_chip *chip)
- static int pasemi_attach_chip(struct nand_chip *chip)
+diff --git a/drivers/mtd/nand/raw/plat_nand.c b/drivers/mtd/nand/raw/plat_nand.c
+index 93d9f1694dc1..7711e1020c21 100644
+--- a/drivers/mtd/nand/raw/plat_nand.c
++++ b/drivers/mtd/nand/raw/plat_nand.c
+@@ -22,7 +22,9 @@ struct plat_nand_data {
+ static int plat_nand_attach_chip(struct nand_chip *chip)
  {
  	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
 -	chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
