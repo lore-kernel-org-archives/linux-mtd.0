@@ -4,17 +4,17 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-18.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24EBFC64E7C
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB446C71156
 	for <linux-mtd@archiver.kernel.org>; Thu,  3 Dec 2020 02:23:42 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AF1A321D91
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Dec 2020 02:23:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AF1A321D91
+	by mail.kernel.org (Postfix) with ESMTPS id 18F2022201
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Dec 2020 02:23:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 18F2022201
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,34 +23,34 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=5OnHF7E2N6WUmi4LmWZs4MM9m4YzQwz4ykcMLp5ek4w=; b=PLhg23wkd9XvfVfpUNHz+/WZx
-	SM6j+2do64wUZmWgjbccGJ2WrtxkxWcvTXL9dTkIUZHTCGpsSKta4vaAS74H2kSRq3ObUI/MiwQ7l
-	y5XMXAw8GXs25ZVmphIdj/VUrwd5t9assedV96aIb/i9/WVrMh2iE219iI4rpy3jTdnC6oBRqs4d5
-	HQqO1caVh6fV0vo6eu/RZBU9U5BOD8K04Tlj7RtNoKnjXi8bhWU/oaYCAoYVoKsZMcpZn5YWMZ0ul
-	m67Is5kMYtS5RfZ5TMh9kCFhGXI4+RYM8L/fC0TGV4uqFKsMv8zSxSdfU2J6eMGaqJVNiPbp1TAVL
-	BaKWz5/Aw==;
+	 bh=AiZd4melL8ETHuy3tAYpNOdfkg4Rp9p4AaVNKUUML4c=; b=vWTvgnVC1kpbiSWXAbnw5X69I
+	GefnN3RVdNUrwzgx+jGw8BZklW6u7ddHyNXuc2U3gXaDyLYG7Y8iLM6wPyVKvZBsW4M/wcoGUq9eD
+	ODOyX/pubFLwKPUstgQ/CuFAX2fjzs2KoZwoN1QDPib2exeyS0qAsLRw73f5SimLam89j0rT5Xm2/
+	nbVgLdPTrapAWIJOKz7dXccQlsykwFFS2AIrEH5rOCAp079CYldRyehe1Z9rElzA0gnSRssF2S+6D
+	Gh1nrptYFjoooNwtoD5XzRLYkD/WUIkqtHNJokwu3iLF/A/maudGnL3s5Uaq0G62dxKRGNJ9xw3ut
+	5P8+7IJqQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kkeGl-0007AK-8o; Thu, 03 Dec 2020 02:22:55 +0000
+	id 1kkeGv-0007D7-KZ; Thu, 03 Dec 2020 02:23:05 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kkeGe-000770-O6
- for linux-mtd@lists.infradead.org; Thu, 03 Dec 2020 02:22:49 +0000
+ id 1kkeGg-00078P-Cv
+ for linux-mtd@lists.infradead.org; Thu, 03 Dec 2020 02:22:54 +0000
 From: Eric Biggers <ebiggers@kernel.org>
 Authentication-Results: mail.kernel.org;
  dkim=permerror (bad message/signature format)
 To: linux-fscrypt@vger.kernel.org
-Subject: [PATCH v2 1/9] ext4: remove ext4_dir_open()
-Date: Wed,  2 Dec 2020 18:20:33 -0800
-Message-Id: <20201203022041.230976-2-ebiggers@kernel.org>
+Subject: [PATCH v2 6/9] fscrypt: move body of fscrypt_prepare_setattr()
+ out-of-line
+Date: Wed,  2 Dec 2020 18:20:38 -0800
+Message-Id: <20201203022041.230976-7-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201203022041.230976-1-ebiggers@kernel.org>
 References: <20201203022041.230976-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201202_212248_914480_1F0E7971 
-X-CRM114-Status: UNSURE (   9.61  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20201202_212250_782561_0A8B97F7 
+X-CRM114-Status: GOOD (  12.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,45 +72,71 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Since encrypted directories can be opened and searched without their key
-being available, and each readdir and ->lookup() tries to set up the
-key, trying to set up the key in ->open() too isn't really useful.
-
-Just remove it so that directories don't need an ->open() method
-anymore, and so that we eliminate a use of fscrypt_get_encryption_info()
-(which I'd like to stop exporting to filesystems).
+In preparation for reducing the visibility of fscrypt_require_key() by
+moving it to fscrypt_private.h, move the call to it from
+fscrypt_prepare_setattr() to an out-of-line function.
 
 Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/ext4/dir.c | 8 --------
- 1 file changed, 8 deletions(-)
+ fs/crypto/hooks.c       |  8 ++++++++
+ include/linux/fscrypt.h | 11 +++++++++--
+ 2 files changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
-index ca50c90adc4c4..16bfbdd5007c7 100644
---- a/fs/ext4/dir.c
-+++ b/fs/ext4/dir.c
-@@ -616,13 +616,6 @@ static int ext4_dx_readdir(struct file *file, struct dir_context *ctx)
- 	return 0;
+diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
+index 82f351d3113ac..1c16dba222d95 100644
+--- a/fs/crypto/hooks.c
++++ b/fs/crypto/hooks.c
+@@ -120,6 +120,14 @@ int __fscrypt_prepare_readdir(struct inode *dir)
+ }
+ EXPORT_SYMBOL_GPL(__fscrypt_prepare_readdir);
+ 
++int __fscrypt_prepare_setattr(struct dentry *dentry, struct iattr *attr)
++{
++	if (attr->ia_valid & ATTR_SIZE)
++		return fscrypt_require_key(d_inode(dentry));
++	return 0;
++}
++EXPORT_SYMBOL_GPL(__fscrypt_prepare_setattr);
++
+ /**
+  * fscrypt_prepare_setflags() - prepare to change flags with FS_IOC_SETFLAGS
+  * @inode: the inode on which flags are being changed
+diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+index 8cbb26f556952..b20900bb829fc 100644
+--- a/include/linux/fscrypt.h
++++ b/include/linux/fscrypt.h
+@@ -243,6 +243,7 @@ int __fscrypt_prepare_rename(struct inode *old_dir, struct dentry *old_dentry,
+ int __fscrypt_prepare_lookup(struct inode *dir, struct dentry *dentry,
+ 			     struct fscrypt_name *fname);
+ int __fscrypt_prepare_readdir(struct inode *dir);
++int __fscrypt_prepare_setattr(struct dentry *dentry, struct iattr *attr);
+ int fscrypt_prepare_setflags(struct inode *inode,
+ 			     unsigned int oldflags, unsigned int flags);
+ int fscrypt_prepare_symlink(struct inode *dir, const char *target,
+@@ -543,6 +544,12 @@ static inline int __fscrypt_prepare_readdir(struct inode *dir)
+ 	return -EOPNOTSUPP;
  }
  
--static int ext4_dir_open(struct inode * inode, struct file * filp)
--{
--	if (IS_ENCRYPTED(inode))
--		return fscrypt_get_encryption_info(inode) ? -EACCES : 0;
--	return 0;
--}
--
- static int ext4_release_dir(struct inode *inode, struct file *filp)
++static inline int __fscrypt_prepare_setattr(struct dentry *dentry,
++					    struct iattr *attr)
++{
++	return -EOPNOTSUPP;
++}
++
+ static inline int fscrypt_prepare_setflags(struct inode *inode,
+ 					   unsigned int oldflags,
+ 					   unsigned int flags)
+@@ -840,8 +847,8 @@ static inline int fscrypt_prepare_readdir(struct inode *dir)
+ static inline int fscrypt_prepare_setattr(struct dentry *dentry,
+ 					  struct iattr *attr)
  {
- 	if (filp->private_data)
-@@ -664,7 +657,6 @@ const struct file_operations ext4_dir_operations = {
- 	.compat_ioctl	= ext4_compat_ioctl,
- #endif
- 	.fsync		= ext4_sync_file,
--	.open		= ext4_dir_open,
- 	.release	= ext4_release_dir,
- };
+-	if (attr->ia_valid & ATTR_SIZE)
+-		return fscrypt_require_key(d_inode(dentry));
++	if (IS_ENCRYPTED(d_inode(dentry)))
++		return __fscrypt_prepare_setattr(dentry, attr);
+ 	return 0;
+ }
  
 -- 
 2.29.2
