@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-18.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CFF3FC71156
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CCE06C71155
 	for <linux-mtd@archiver.kernel.org>; Thu,  3 Dec 2020 02:23:47 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6CF2A22228
+	by mail.kernel.org (Postfix) with ESMTPS id 69EEE22206
 	for <linux-mtd@archiver.kernel.org>; Thu,  3 Dec 2020 02:23:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6CF2A22228
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 69EEE22206
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,34 +23,33 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Iv2rKQ/FI9oafqiNXibKVpZJrRQM/Jjo1qkju9+CpxE=; b=f0fMB2JTvSR8qZ8mFap6K/3Vr
-	NtkmwRUxB1jJWoJ3rB9BjAImm6uWhfuwKT5whrxAsnayuwsjkGEDseveFb1FEDSPwF6zQF/k14e0b
-	YRq75oojfGit/3XbNLmtj2d86DaTz8gDer3aoDIwrYDlOBwNLrhsSoSWY2jVJeGy6tNkwt6NU4MDd
-	xjwAlKc+0Z5/ZkmOnPU//o0sZaKq917ZuwIPS3wsKvAyX8WJNOcpD3MBqR05bzUg6q+KEi7oIBLLL
-	uQwABAeHqdi5MYKdFsUtcjTSoxO2iSueFfhXHs1FVChIYsmnGsQJV5qVwttpk3M8scdekq+Nmi7BQ
-	WzZoGrHrQ==;
+	 bh=vuHAw6dzy48tpw/nedSDzyG1lfpZhYk5rW2ctjSIeco=; b=Tutu4XgImUn47CtfTZIhWBAet
+	lVU7ifT5KisyZlUlXWyTqhn4WkO7Hr9+BtV3lsaPb3E5gqCcVorKeyTYI0EkMJOAmQ1Up1JMQ5Dts
+	i1GtF4meq6n3xjdMYgnbmiiZou0qh/kSvUezlMnpnZljBAdW2opw8fZk/sDOGWoJLm2zD7rvJmfV0
+	ZJB/hcMW91eCPkLjdUi4n8rbSP1x+clRthMG7asGsq7PI2p9O8s09OU7nIpv2iWwo/bfLn6VKkMfB
+	rxmnrlYokKqzrQ4Ex266hREDCwDl8kk1BfUOspehBbCHIEsPDb230H2C4qPOi96b0spiqXMEd/KzJ
+	oo2+InXjA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kkeGy-0007EF-RG; Thu, 03 Dec 2020 02:23:08 +0000
+	id 1kkeGt-0007CZ-C5; Thu, 03 Dec 2020 02:23:03 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kkeGg-00078R-K0
+ id 1kkeGh-00078S-3S
  for linux-mtd@lists.infradead.org; Thu, 03 Dec 2020 02:22:54 +0000
 From: Eric Biggers <ebiggers@kernel.org>
 Authentication-Results: mail.kernel.org;
  dkim=permerror (bad message/signature format)
 To: linux-fscrypt@vger.kernel.org
-Subject: [PATCH v2 7/9] fscrypt: move fscrypt_require_key() to
- fscrypt_private.h
-Date: Wed,  2 Dec 2020 18:20:39 -0800
-Message-Id: <20201203022041.230976-8-ebiggers@kernel.org>
+Subject: [PATCH v2 8/9] fscrypt: unexport fscrypt_get_encryption_info()
+Date: Wed,  2 Dec 2020 18:20:40 -0800
+Message-Id: <20201203022041.230976-9-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201203022041.230976-1-ebiggers@kernel.org>
 References: <20201203022041.230976-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201202_212250_830448_5AF6EEC2 
-X-CRM114-Status: GOOD (  16.72  )
+X-CRM114-CacheID: sfid-20201202_212251_280304_21FC12BF 
+X-CRM114-Status: GOOD (  11.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,91 +71,76 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-fscrypt_require_key() is now only used by files in fs/crypto/.  So
-reduce its visibility to fscrypt_private.h.  This is also a prerequsite
-for unexporting fscrypt_get_encryption_info().
+Now that fscrypt_get_encryption_info() is only called from files in
+fs/crypto/ (due to all key setup now being handled by higher-level
+helper functions instead of directly by filesystems), unexport it and
+move its declaration to fscrypt_private.h.
 
 Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/fscrypt_private.h | 26 ++++++++++++++++++++++++++
- include/linux/fscrypt.h     | 26 --------------------------
- 2 files changed, 26 insertions(+), 26 deletions(-)
+ fs/crypto/fscrypt_private.h | 2 ++
+ fs/crypto/keysetup.c        | 1 -
+ include/linux/fscrypt.h     | 7 +------
+ 3 files changed, 3 insertions(+), 7 deletions(-)
 
 diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index a61d4dbf0a0b0..16dd55080127a 100644
+index 16dd55080127a..c1c302656c345 100644
 --- a/fs/crypto/fscrypt_private.h
 +++ b/fs/crypto/fscrypt_private.h
-@@ -571,6 +571,32 @@ int fscrypt_derive_dirhash_key(struct fscrypt_info *ci,
+@@ -571,6 +571,8 @@ int fscrypt_derive_dirhash_key(struct fscrypt_info *ci,
  void fscrypt_hash_inode_number(struct fscrypt_info *ci,
  			       const struct fscrypt_master_key *mk);
  
-+/**
-+ * fscrypt_require_key() - require an inode's encryption key
-+ * @inode: the inode we need the key for
-+ *
-+ * If the inode is encrypted, set up its encryption key if not already done.
-+ * Then require that the key be present and return -ENOKEY otherwise.
-+ *
-+ * No locks are needed, and the key will live as long as the struct inode --- so
-+ * it won't go away from under you.
-+ *
-+ * Return: 0 on success, -ENOKEY if the key is missing, or another -errno code
-+ * if a problem occurred while setting up the encryption key.
-+ */
-+static inline int fscrypt_require_key(struct inode *inode)
-+{
-+	if (IS_ENCRYPTED(inode)) {
-+		int err = fscrypt_get_encryption_info(inode);
++int fscrypt_get_encryption_info(struct inode *inode);
 +
-+		if (err)
-+			return err;
-+		if (!fscrypt_has_encryption_key(inode))
-+			return -ENOKEY;
-+	}
-+	return 0;
-+}
-+
- /* keysetup_v1.c */
+ /**
+  * fscrypt_require_key() - require an inode's encryption key
+  * @inode: the inode we need the key for
+diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
+index 50675b42d5b7c..6339b3069a400 100644
+--- a/fs/crypto/keysetup.c
++++ b/fs/crypto/keysetup.c
+@@ -589,7 +589,6 @@ int fscrypt_get_encryption_info(struct inode *inode)
+ 		res = 0;
+ 	return res;
+ }
+-EXPORT_SYMBOL(fscrypt_get_encryption_info);
  
- void fscrypt_put_direct_key(struct fscrypt_direct_key *dk);
+ /**
+  * fscrypt_prepare_new_inode() - prepare to create a new inode in a directory
 diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index b20900bb829fc..a07610f279266 100644
+index a07610f279266..4b163f5e58e9f 100644
 --- a/include/linux/fscrypt.h
 +++ b/include/linux/fscrypt.h
-@@ -688,32 +688,6 @@ static inline bool fscrypt_has_encryption_key(const struct inode *inode)
- 	return fscrypt_get_info(inode) != NULL;
+@@ -75,7 +75,7 @@ struct fscrypt_operations {
+ static inline struct fscrypt_info *fscrypt_get_info(const struct inode *inode)
+ {
+ 	/*
+-	 * Pairs with the cmpxchg_release() in fscrypt_get_encryption_info().
++	 * Pairs with the cmpxchg_release() in fscrypt_setup_encryption_info().
+ 	 * I.e., another task may publish ->i_crypt_info concurrently, executing
+ 	 * a RELEASE barrier.  We need to use smp_load_acquire() here to safely
+ 	 * ACQUIRE the memory the other task published.
+@@ -200,7 +200,6 @@ int fscrypt_ioctl_remove_key_all_users(struct file *filp, void __user *arg);
+ int fscrypt_ioctl_get_key_status(struct file *filp, void __user *arg);
+ 
+ /* keysetup.c */
+-int fscrypt_get_encryption_info(struct inode *inode);
+ int fscrypt_prepare_new_inode(struct inode *dir, struct inode *inode,
+ 			      bool *encrypt_ret);
+ void fscrypt_put_encryption_info(struct inode *inode);
+@@ -408,10 +407,6 @@ static inline int fscrypt_ioctl_get_key_status(struct file *filp,
  }
  
--/**
-- * fscrypt_require_key() - require an inode's encryption key
-- * @inode: the inode we need the key for
-- *
-- * If the inode is encrypted, set up its encryption key if not already done.
-- * Then require that the key be present and return -ENOKEY otherwise.
-- *
-- * No locks are needed, and the key will live as long as the struct inode --- so
-- * it won't go away from under you.
-- *
-- * Return: 0 on success, -ENOKEY if the key is missing, or another -errno code
-- * if a problem occurred while setting up the encryption key.
-- */
--static inline int fscrypt_require_key(struct inode *inode)
+ /* keysetup.c */
+-static inline int fscrypt_get_encryption_info(struct inode *inode)
 -{
--	if (IS_ENCRYPTED(inode)) {
--		int err = fscrypt_get_encryption_info(inode);
--
--		if (err)
--			return err;
--		if (!fscrypt_has_encryption_key(inode))
--			return -ENOKEY;
--	}
--	return 0;
+-	return -EOPNOTSUPP;
 -}
--
- /**
-  * fscrypt_prepare_link() - prepare to link an inode into a possibly-encrypted
-  *			    directory
+ 
+ static inline int fscrypt_prepare_new_inode(struct inode *dir,
+ 					    struct inode *inode,
 -- 
 2.29.2
 
