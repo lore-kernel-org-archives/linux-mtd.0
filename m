@@ -2,61 +2,56 @@ Return-Path: <SRS0=SnlB=FI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46BDAC433FE
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Dec 2020 16:25:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96B4FC433FE
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Dec 2020 17:37:46 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C9EF5229C6
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Dec 2020 16:25:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9EF5229C6
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 57B26229C4
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Dec 2020 17:37:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 57B26229C4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lunn.ch
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=puMcW2cwfSfokWEcCQlJnERuIcbkcX3+t9r0xwL3GcE=; b=uEHZWwVupM+IsOIT/P4jCUksD
-	naF9aPFIrO/MpQUKu+kH4Gx6lLs9gAwZypY04KT9kWeNgDtiaufJL59d52eBht7kdvDA3tC/gAxZ6
-	FRu3bCpeBqnLc4OT4eQguQLe1Oj/KM9MVKna2LL73sSupwiEiEJrCniMa/WSBlU7+cX8ZKVIZyo57
-	1g3wHKKn6cTS4zZoV1JNan4q8o6UC1AxDBicTMvJIjJ5YNBZ49X3ZDW1xGa1flnpN9AqRgXrv0qZk
-	whTxA16bo3xOeIcOwNN3dyPYG/6dlNlcDPFufICmqi5WCfCTAxlP83Z8Vjif6Rx/GXhitqUdG8PTY
-	qQ+d+hyGg==;
+	 bh=sSXb3hvT8uECAbAMgOnNfCesxg7Xqb/hFdjTeRm2sZU=; b=zKs3wrACYevLxgtclKcSKA2hV
+	EpsuAEt2Or2IRhNiNtGUyF6ClHmKU6LIx5Yzu9hanCdkhZm3/ULBc4LQX2EsY08K9K1EF+PPt9U+e
+	A+BPRYH6QXcn75lJjmdWC3YWKr6ge03ZfhAFG+sz7rMw0SxhThLAb8Iofk8TPlNjXaYvddaqXXP12
+	yZB9YqKTMwl97gBQiyoLLzumHz5/5WrHGXsQtz6n6E1Sb5FmZbsZO4kTNaFNH/Hk9VXknYFiIJszq
+	G0NyZDleCNV2UHrzCrcs10R2DJYrlVvSKn7zgt4wZDxb6UI8Jw8EnPMLHVhDy6awx0A+XEX355xrS
+	ZBYT0Zcwg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1klDtd-0005rT-HW; Fri, 04 Dec 2020 16:25:25 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1klF0A-00047D-MG; Fri, 04 Dec 2020 17:36:14 +0000
+Received: from vps0.lunn.ch ([185.16.172.187])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1klDtX-0005pG-Cs; Fri, 04 Dec 2020 16:25:20 +0000
-X-Originating-IP: 91.224.148.103
-Received: from localhost.localdomain (unknown [91.224.148.103])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 3FF331BF205;
- Fri,  4 Dec 2020 16:25:14 +0000 (UTC)
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Arnd Bergmann <arnd@kernel.org>, linux-mtd@lists.infradead.org,
- Krzysztof Kozlowski <krzk@kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH] [for NAND] ARM: s3c: gta02: fix for missing
- linux/mtd/nand_ecc.h
-Date: Fri,  4 Dec 2020 17:25:13 +0100
-Message-Id: <20201204162513.1142-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201204161137.2729220-1-arnd@kernel.org>
-References: 
+ id 1klF08-00046j-7w; Fri, 04 Dec 2020 17:36:13 +0000
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+ (envelope-from <andrew@lunn.ch>)
+ id 1klEzz-00AFJi-9k; Fri, 04 Dec 2020 18:36:03 +0100
+Date: Fri, 4 Dec 2020 18:36:03 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Alexander Dahl <ada@thorsis.com>
+Subject: Re: net: macb: fail when there's no PHY
+Message-ID: <20201204173603.GE2400258@lunn.ch>
+References: <20201202183531.GJ2324545@lunn.ch>
+ <20201203214941.GA2409950@lunn.ch> <rqbobm$5qk$1@ciao.gmane.io>
+ <3542036.FvJvBFsO4O@ada>
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 7a26863a23e4fbfee040f8c8c5fdce0419dc0920
+Content-Disposition: inline
+In-Reply-To: <3542036.FvJvBFsO4O@ada>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201204_112519_642609_FB1F2E5B 
-X-CRM114-Status: UNSURE (   9.69  )
+X-CRM114-CacheID: sfid-20201204_123612_302294_ADCBB6A7 
+X-CRM114-Status: UNSURE (   8.38  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -69,27 +64,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-samsung-soc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: netdev@vger.kernel.org, Grant Edwards <grant.b.edwards@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2020-12-04 at 16:10:12 UTC, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+> > > 5.10 is LTS. Well, it will be, once it is actually released!
+> > 
+> > Convincing people to ship an unreleased kernel would be a whole
+> > 'nother bucket of worms.
 > 
-> The header file got renamed, so any file including it needs to
-> be adapted to avoid:
+> +1
 > 
-> arch/arm/mach-s3c/mach-gta02.c:40:10: fatal error: 'linux/mtd/nand_ecc.h' file not found
-> 
-> Fixes: 3f27bb3e3777 ("mtd: nand: ecc-hamming: Move Hamming code to the generic NAND layer")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Judging just from the release dates of the last LTS kernels, I would have 
+> guessed v5.11 will get LTS.  But there has been no announcement yet and I 
+> suppose there will be none before release?
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+It was announced a while ago. e.g:
 
-Miquel
+https://itsfoss.com/kernel-5-10/
+
+	Andrew
 
 ______________________________________________________
 Linux MTD discussion mailing list
