@@ -2,81 +2,53 @@ Return-Path: <SRS0=SnlB=FI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88C7BC4361A
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Dec 2020 15:01:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F64FC4361A
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Dec 2020 16:12:30 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 317D222B2D
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Dec 2020 15:01:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 317D222B2D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 9C4E72223E
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Dec 2020 16:12:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C4E72223E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=3r8sfuCyEJOZUck3E+uKSweUj54b4M5E92M7Shn2RSo=; b=ov+e1KD37M1Pw7WnlXOIZz87JY
-	Eb5oPjeuD7hSYUugPTDOPXydyQ1uBg7BkwidJMGKKb5dR1wEhtsJxUntpvHGThXlJE96w9LzgjFck
-	mamSUgKbD20pmf3sxlvnw4PxuPEracwURsznB4XehPUwEaSW4j1Kf18i76g5NGk4y7/Ctg0Y3ytpL
-	KpB7uWy+wyCjf9X2K+bxir6R2adxsAMH0UW/1r/HqMimsSAJxos3FWI15wq0sAGBzv5jcYDgrQJb7
-	GGHSlL1vaBYmJwx4SImII4aVbR1LfEbOYDXDtUIvG/bZ9AhzI/lkijjMejrQx/pboRoFhbNJKpZfN
-	ZB7c3muw==;
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=howYiMjGUigBPhJOV9JPzmu/n0fLszGnJ9jf+JVNL0Q=; b=SsciaV/32Q7lR9ePP2pFoSBFs6
+	+smHYSNuZdhDRXAtnaV4RqhCH/1G6T1yzG0LqdGPW+g+2MoSEpwtBJJ+FuGnjWaFyqa9cPaFLNEjb
+	Qw4OCX9mCUjqCku75bDQL3OQD1dIX8wJ5jfzHvHHSU/4V0Cik6NlkRS3uWAqDH5Tkc6gcw89+M+Zu
+	+LI+eWr89Ok326I5fw1mEFAWU8CnAo5hxrrRV51JzL4VWtgIVJ+ppQUEq01Mvy5tWVbk2qWztM/s7
+	MmzezGzpj833cb3mC5PPO3q/Pcz/+tjGw0JulqIziw1wsRzofEbb9MkKCi20tQTgPToRldHZe9Z2l
+	EVzr2R3g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1klCZm-0000mY-PD; Fri, 04 Dec 2020 15:00:50 +0000
-Received: from mail-qv1-xf41.google.com ([2607:f8b0:4864:20::f41])
+	id 1klDgW-0003Dx-Bg; Fri, 04 Dec 2020 16:11:52 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1klCZi-0000kL-74
- for linux-mtd@lists.infradead.org; Fri, 04 Dec 2020 15:00:47 +0000
-Received: by mail-qv1-xf41.google.com with SMTP id 4so2881485qvh.1
- for <linux-mtd@lists.infradead.org>; Fri, 04 Dec 2020 07:00:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id;
- bh=x91ziFr9IjaRA+UG3mGYQ/hsz2KhJaVjfrIEoefHpGQ=;
- b=ipDRBNFKzTILYAtZ01etYZj2u+m/s5w43HeujGtQgKcv/la9zdCGclFaMi95HXvsuy
- mJXl+IdRaxyG4FUvGdrJQDq7r/97DGAFBtn1uJcG+lCMjRWTBx+22ktcKDs7cfZdR7mF
- r9HCDbaLRQVQfuVhg5mic3Nn6jil1PO9NG9xqAHCLbEDzvRRlideVlXdj+HrqrKpwPHu
- 9dPpQcVRYNoglgynUl7eP0/3+h4iacPa82BQhssh9A+2e1oQrP+uWvUa+fI4Lgc7wR8P
- +PoVsCorKDWs4VWBGMTy7I1gFqm5oODOiNmmA9NVxhj8BY4xWrga7z/tP1m0aRcoSBXN
- waPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=x91ziFr9IjaRA+UG3mGYQ/hsz2KhJaVjfrIEoefHpGQ=;
- b=Z/T5i3yZV8hMFg8guCQVDIQJRcPr7mgQSe2BEwMbVml2Tl2Ai+gfgpkOE0HVvxNwZG
- 7i3fN9arPHTT4GJsHubM0aTbbW8IuWe4AooIy+6xaI7ddZBSw8qDk30D/rjj5oSCoSA4
- jLUftlmBW+ifgKH55a1pzGpuNlW9gAKKx6qkLsz/1PsucNNlPSeW0c4xzagmWxes94fA
- zDnNAQhvM3JGA9B3uXcGsVDlOfbnGURKRQ2FpgukSDnKaioXgXiQz8XIitBt28gCVhx4
- Zz6loRTQGGZP5mSLUXa0uVMlurT5Lfvg8i5J+rSA/ie+QgAx2cTnlOpY8GpEhngpaWRh
- BWoQ==
-X-Gm-Message-State: AOAM533p8vh7P+99Fb5RpTQ2dHFuF/nhLM5AOIySWLU6M5fQX7GpQfN7
- GdGRNZ6P34V40hToz9xb3fM=
-X-Google-Smtp-Source: ABdhPJzHPddBWJfvNcrCYx4OVsrYY8/oSYSpYVOR0wn5k/t3BoUH1XEumRlgRN2oButUeqoytgvPig==
-X-Received: by 2002:a05:6214:973:: with SMTP id
- do19mr1556886qvb.26.1607094042724; 
- Fri, 04 Dec 2020 07:00:42 -0800 (PST)
-Received: from localhost.localdomain ([177.194.72.74])
- by smtp.gmail.com with ESMTPSA id h26sm4806456qkh.127.2020.12.04.07.00.40
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 04 Dec 2020 07:00:41 -0800 (PST)
-From: Fabio Estevam <festevam@gmail.com>
-To: miquel.raynal@bootlin.com
-Subject: [PATCH 1/2] mtd: rawnand: mxc: Use device_get_match_data()
-Date: Fri,  4 Dec 2020 11:58:17 -0300
-Message-Id: <20201204145818.32739-1-festevam@gmail.com>
-X-Mailer: git-send-email 2.17.1
+ id 1klDgR-0003DF-QF; Fri, 04 Dec 2020 16:11:48 +0000
+From: Arnd Bergmann <arnd@kernel.org>
+Authentication-Results: mail.kernel.org;
+ dkim=permerror (bad message/signature format)
+To: linux-mtd@lists.infradead.org, Krzysztof Kozlowski <krzk@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH] [for NAND] ARM: s3c: gta02: fix for missing
+ linux/mtd/nand_ecc.h
+Date: Fri,  4 Dec 2020 17:10:12 +0100
+Message-Id: <20201204161137.2729220-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201204_100046_325209_2FAEA9BF 
-X-CRM114-Status: GOOD (  12.19  )
+X-CRM114-CacheID: sfid-20201204_111148_018693_97EBC53F 
+X-CRM114-Status: GOOD (  13.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,45 +60,185 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Fabio Estevam <festevam@gmail.com>, linux-mtd@lists.infradead.org
-MIME-Version: 1.0
+Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The retrieval of driver data can be a bit simplified by using
-device_get_match_data(), so switch to it.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
+The header file got renamed, so any file including it needs to
+be adapted to avoid:
+
+arch/arm/mach-s3c/mach-gta02.c:40:10: fatal error: 'linux/mtd/nand_ecc.h' file not found
+
+Fixes: 3f27bb3e3777 ("mtd: nand: ecc-hamming: Move Hamming code to the generic NAND layer")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/mtd/nand/raw/mxc_nand.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+It's currently broken in -next because of the change in the
+MTD NAND driver. Please add this patch to the same branch or
+fold it into the patch that broke it.
+---
+ arch/arm/mach-s3c/common-smdk-s3c24xx.c | 2 +-
+ arch/arm/mach-s3c/mach-anubis.c         | 2 +-
+ arch/arm/mach-s3c/mach-at2440evb.c      | 2 +-
+ arch/arm/mach-s3c/mach-bast.c           | 2 +-
+ arch/arm/mach-s3c/mach-gta02.c          | 2 +-
+ arch/arm/mach-s3c/mach-jive.c           | 2 +-
+ arch/arm/mach-s3c/mach-mini2440.c       | 2 +-
+ arch/arm/mach-s3c/mach-osiris.c         | 2 +-
+ arch/arm/mach-s3c/mach-qt2410.c         | 2 +-
+ arch/arm/mach-s3c/mach-rx3715.c         | 2 +-
+ arch/arm/mach-s3c/mach-vstms.c          | 2 +-
+ 11 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
-index f896364968d8..d5c445eb93ad 100644
---- a/drivers/mtd/nand/raw/mxc_nand.c
-+++ b/drivers/mtd/nand/raw/mxc_nand.c
-@@ -1714,7 +1714,6 @@ static const struct nand_controller_ops mxcnd_controller_ops = {
+diff --git a/arch/arm/mach-s3c/common-smdk-s3c24xx.c b/arch/arm/mach-s3c/common-smdk-s3c24xx.c
+index f860d8bcba0e..6d124bbd384c 100644
+--- a/arch/arm/mach-s3c/common-smdk-s3c24xx.c
++++ b/arch/arm/mach-s3c/common-smdk-s3c24xx.c
+@@ -20,7 +20,7 @@
  
- static int mxcnd_probe(struct platform_device *pdev)
- {
--	const struct of_device_id *of_id;
- 	struct nand_chip *this;
- 	struct mtd_info *mtd;
- 	struct mxc_nand_host *host;
-@@ -1756,8 +1755,7 @@ static int mxcnd_probe(struct platform_device *pdev)
- 	if (IS_ERR(host->clk))
- 		return PTR_ERR(host->clk);
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/rawnand.h>
+-#include <linux/mtd/nand_ecc.h>
++#include <linux/mtd/nand-ecc-sw-hamming.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/io.h>
  
--	of_id = of_match_device(mxcnd_dt_ids, host->dev);
--	host->devtype_data = of_id->data;
-+	host->devtype_data = device_get_match_data(&pdev->dev);
+diff --git a/arch/arm/mach-s3c/mach-anubis.c b/arch/arm/mach-s3c/mach-anubis.c
+index 90e3fd98a3ac..04147cc0adcc 100644
+--- a/arch/arm/mach-s3c/mach-anubis.c
++++ b/arch/arm/mach-s3c/mach-anubis.c
+@@ -34,7 +34,7 @@
  
- 	if (!host->devtype_data->setup_interface)
- 		this->options |= NAND_KEEP_TIMINGS;
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/rawnand.h>
+-#include <linux/mtd/nand_ecc.h>
++#include <linux/mtd/nand-ecc-sw-hamming.h>
+ #include <linux/mtd/partitions.h>
+ 
+ #include <net/ax88796.h>
+diff --git a/arch/arm/mach-s3c/mach-at2440evb.c b/arch/arm/mach-s3c/mach-at2440evb.c
+index 5fa49d4e2650..c6a5a51d84aa 100644
+--- a/arch/arm/mach-s3c/mach-at2440evb.c
++++ b/arch/arm/mach-s3c/mach-at2440evb.c
+@@ -35,7 +35,7 @@
+ 
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/rawnand.h>
+-#include <linux/mtd/nand_ecc.h>
++#include <linux/mtd/nand-ecc-sw-hamming.h>
+ #include <linux/mtd/partitions.h>
+ 
+ #include "devs.h"
+diff --git a/arch/arm/mach-s3c/mach-bast.c b/arch/arm/mach-s3c/mach-bast.c
+index 328f5d9ae9f9..27e8d5950228 100644
+--- a/arch/arm/mach-s3c/mach-bast.c
++++ b/arch/arm/mach-s3c/mach-bast.c
+@@ -24,7 +24,7 @@
+ 
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/rawnand.h>
+-#include <linux/mtd/nand_ecc.h>
++#include <linux/mtd/nand-ecc-sw-hamming.h>
+ #include <linux/mtd/partitions.h>
+ 
+ #include <linux/platform_data/asoc-s3c24xx_simtec.h>
+diff --git a/arch/arm/mach-s3c/mach-gta02.c b/arch/arm/mach-s3c/mach-gta02.c
+index 3c75c7d112ea..aec8b451c016 100644
+--- a/arch/arm/mach-s3c/mach-gta02.c
++++ b/arch/arm/mach-s3c/mach-gta02.c
+@@ -37,7 +37,7 @@
+ 
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/rawnand.h>
+-#include <linux/mtd/nand_ecc.h>
++#include <linux/mtd/nand-ecc-sw-hamming.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/mtd/physmap.h>
+ 
+diff --git a/arch/arm/mach-s3c/mach-jive.c b/arch/arm/mach-s3c/mach-jive.c
+index 2a29c3eca559..0785638a9069 100644
+--- a/arch/arm/mach-s3c/mach-jive.c
++++ b/arch/arm/mach-s3c/mach-jive.c
+@@ -40,7 +40,7 @@
+ 
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/rawnand.h>
+-#include <linux/mtd/nand_ecc.h>
++#include <linux/mtd/nand-ecc-sw-hamming.h>
+ #include <linux/mtd/partitions.h>
+ 
+ #include "gpio-cfg.h"
+diff --git a/arch/arm/mach-s3c/mach-mini2440.c b/arch/arm/mach-s3c/mach-mini2440.c
+index dc22ab839b95..4100905dfbd0 100644
+--- a/arch/arm/mach-s3c/mach-mini2440.c
++++ b/arch/arm/mach-s3c/mach-mini2440.c
+@@ -44,7 +44,7 @@
+ 
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/rawnand.h>
+-#include <linux/mtd/nand_ecc.h>
++#include <linux/mtd/nand-ecc-sw-hamming.h>
+ #include <linux/mtd/partitions.h>
+ 
+ #include "gpio-cfg.h"
+diff --git a/arch/arm/mach-s3c/mach-osiris.c b/arch/arm/mach-s3c/mach-osiris.c
+index 81744ca67d1d..3aefb9d22340 100644
+--- a/arch/arm/mach-s3c/mach-osiris.c
++++ b/arch/arm/mach-s3c/mach-osiris.c
+@@ -33,7 +33,7 @@
+ 
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/rawnand.h>
+-#include <linux/mtd/nand_ecc.h>
++#include <linux/mtd/nand-ecc-sw-hamming.h>
+ #include <linux/mtd/partitions.h>
+ 
+ #include "cpu.h"
+diff --git a/arch/arm/mach-s3c/mach-qt2410.c b/arch/arm/mach-s3c/mach-qt2410.c
+index 151e8e373d40..f88b961798fd 100644
+--- a/arch/arm/mach-s3c/mach-qt2410.c
++++ b/arch/arm/mach-s3c/mach-qt2410.c
+@@ -21,7 +21,7 @@
+ #include <linux/io.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/rawnand.h>
+-#include <linux/mtd/nand_ecc.h>
++#include <linux/mtd/nand-ecc-sw-hamming.h>
+ #include <linux/mtd/partitions.h>
+ 
+ #include <asm/mach/arch.h>
+diff --git a/arch/arm/mach-s3c/mach-rx3715.c b/arch/arm/mach-s3c/mach-rx3715.c
+index a03662a47b38..9fd2d9dc3689 100644
+--- a/arch/arm/mach-s3c/mach-rx3715.c
++++ b/arch/arm/mach-s3c/mach-rx3715.c
+@@ -22,7 +22,7 @@
+ #include <linux/io.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/rawnand.h>
+-#include <linux/mtd/nand_ecc.h>
++#include <linux/mtd/nand-ecc-sw-hamming.h>
+ #include <linux/mtd/partitions.h>
+ 
+ #include <asm/mach/arch.h>
+diff --git a/arch/arm/mach-s3c/mach-vstms.c b/arch/arm/mach-s3c/mach-vstms.c
+index 05f19f5ffabb..ec024af7b0ce 100644
+--- a/arch/arm/mach-s3c/mach-vstms.c
++++ b/arch/arm/mach-s3c/mach-vstms.c
+@@ -16,7 +16,7 @@
+ #include <linux/io.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/rawnand.h>
+-#include <linux/mtd/nand_ecc.h>
++#include <linux/mtd/nand-ecc-sw-hamming.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/memblock.h>
+ 
 -- 
-2.17.1
+2.27.0
 
 
 ______________________________________________________
