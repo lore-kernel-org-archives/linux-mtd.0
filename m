@@ -2,58 +2,59 @@ Return-Path: <SRS0=dr6A=FL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D753DC433FE
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Dec 2020 07:57:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0649CC4361B
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Dec 2020 08:54:40 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 60B6D2220B
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Dec 2020 07:57:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 60B6D2220B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id A76E0225A9
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Dec 2020 08:54:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A76E0225A9
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=SZhVSNfYTd0r3+yGrIh4CqDRj0m8omxuP6rjuQCP/q8=; b=f5eJOC1n3rYRovyi2emfLiFi3
-	QSNmjJjBiHUbTyOQv+vieSNzczu6YeYPKInIfUFXI+wR1POhJeM5/ypmd0PRah0xiybmSoli2iHbF
-	prHvBU058G1iZyUAEkxopL1vJZdTJFpUbRB9yRYnfVt74mE1Vdipo06l71t/NDmGu2HPdxTeo5P4e
-	aal1z0FCOlgWtYZ84Y9NbC1riiyNxAa68vxZAfG7nWmrZKqX22T3a4IV6V1ovotmRUrWtRIAnH7Ba
-	+XwBXano5j44TnNd9OuLHfje+soYFPxSkYmp2ASGESXHl1xfQGDi1kXQDmdFQ80opkRuHQbnRPqW1
-	7ToQALNEQ==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=AerFooyenHtfT1Msszz3YrnS2J9qNWZybXvCwRTyvwQ=; b=zSwDiEwvVyuR/DpKMyWvb7fHd+
+	vgxQO9c2E3kXO7CNtQga7Lwf1A2OUWUxFlTQt+LCepWKA3/GrBABncCaMelILIamnnYjSvT/0IfyK
+	dYjC8GCa8Qnuzg6cSAy6xzzF5+E1KHA4axzTNadZE1En0u08LV19haQ22CIua6DzpY13DejRmQ5MH
+	q/edwT56DhfVlKg4YsZKlg9Wey+4pj55h4C9oLCwatjehxLShTFfYbdbxAzq/bY8etd+raOgh1kfb
+	gVKaOZDgfML9eGamP5dukMNT/MbsmB6mDqsJzp+JCVmU+S4kl3xgAlLfkidtmUTPHaT6td4tR5ueW
+	oCK98P1A==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kmBNX-0007bt-21; Mon, 07 Dec 2020 07:56:15 +0000
-Received: from relay10.mail.gandi.net ([217.70.178.230])
+	id 1kmCHT-0005Dm-5P; Mon, 07 Dec 2020 08:54:03 +0000
+Received: from szxga04-in.huawei.com ([45.249.212.190])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kmBNU-0007bN-2Z
- for linux-mtd@lists.infradead.org; Mon, 07 Dec 2020 07:56:13 +0000
-Received: from xps13 (lfbn-tou-1-1617-103.w109-220.abo.wanadoo.fr
- [109.220.208.103]) (Authenticated sender: miquel.raynal@bootlin.com)
- by relay10.mail.gandi.net (Postfix) with ESMTPSA id B2731240006;
- Mon,  7 Dec 2020 07:56:05 +0000 (UTC)
-Date: Mon, 7 Dec 2020 08:56:04 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Guohua Zhong <zhongguohua1@huawei.com>
-Subject: Re: [PATCH v2] phram: Allow the user to set the erase page size.
-Message-ID: <20201207085604.57a37f69@xps13>
-In-Reply-To: <20201207070715.15016-1-zhongguohua1@huawei.com>
-References: <CAFLxGvxSycd=6WE4=XnrXxuF2Bc6A6ULA8GfkT8QvgcX=2Gk8g@mail.gmail.com>
- <20201207070715.15016-1-zhongguohua1@huawei.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1kmCHP-0005Bz-V0
+ for linux-mtd@lists.infradead.org; Mon, 07 Dec 2020 08:54:01 +0000
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+ by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CqHCF02K4zkmH9;
+ Mon,  7 Dec 2020 16:53:13 +0800 (CST)
+Received: from DESKTOP-8N3QUD5.china.huawei.com (10.67.101.227) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 7 Dec 2020 16:53:43 +0800
+From: Guohua Zhong <zhongguohua1@huawei.com>
+To: <patrick@baymotion.com>, <joern@lazybastard.org>,
+ <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
+Subject: [PATCH v3] phram: Allow the user to set the erase page size.
+Date: Mon, 7 Dec 2020 16:53:42 +0800
+Message-ID: <20201207085342.24852-1-zhongguohua1@huawei.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
+X-Originating-IP: [10.67.101.227]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201207_025612_215320_750BAB08 
-X-CRM114-Status: GOOD (  22.36  )
+X-CRM114-CacheID: sfid-20201207_035400_519455_E333A999 
+X-CRM114-Status: GOOD (  17.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -65,58 +66,179 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: wangle6@huawei.com, young.liuyang@huawei.com, vigneshr@ti.com,
- richard.weinberger@gmail.com, nixiaoming@huawei.com, joern@lazybastard.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, richard@nod.at,
- patrick@baymotion.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: zhongguohua1@huawei.com, wangle6@huawei.com, young.liuyang@huawei.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ nixiaoming@huawei.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgR3VvaHVhLAoKR3VvaHVhIFpob25nIDx6aG9uZ2d1b2h1YTFAaHVhd2VpLmNvbT4gd3JvdGUg
-b24gTW9uLCA3IERlYyAyMDIwCjE1OjA3OjE1ICswODAwOgoKPiBPbiBNb24sIERlYyA3LCAyMDIw
-IGF0IDE0OjU2IEFNIEd1b2h1YSBaaG9uZyA8emhvbmdndW9odWExQGh1YXdlaS5jb20+IHdyb3Rl
-Ogo+ID4gIAo+ID4+IFBlcm1pdCB0aGUgdXNlciB0byBzcGVjaWZ5IHRoZSBlcmFzZSBwYWdlIHNp
-emUgYXMgYSBwYXJhbWV0ZXIuCj4gPj4gVGhpcyBzb2x2ZXMgdHdvIHByb2JsZW1zOiAgCj4gPiAg
-Cj4gPj4gLSBwaHJhbSBjYW4gYWNjZXNzIGltYWdlcyBtYWRlIGJ5IG1rZnMuamZmczIuICBta2Zz
-LmpmZnMyIHdvbid0Cj4gPj4gY3JlYXRlIGltYWdlcyB3aXRoIGVyYXNlIHNpemVzIGxlc3MgdGhh
-biA4S2lCOyBtYW55IGFyY2hpdGVjdHVyZXMKPiA+PiBkZWZpbmUgUEFHRV9TSVpFIGFzIDRLaUIu
-ICAKPiA+ICAKPiA+PiAtIEFsbG93cyBtb3JlIGVmZmVjdGl2ZSB1c2Ugb2Ygc21hbGwgY2FwYWNp
-dHkgZGV2aWNlcy4gIEpGRlMyCj4gPj4gbmVlZHMgc29tZXdoZXJlIGJldHdlZW4gMiBhbmQgNSBl
-bXB0eSBwYWdlcyBmb3IgZ2FyYmFnZSBjb2xsZWN0aW9uOwo+ID4+IGFuZCBmb3IgYW4gTlZSQU0g
-cGFydCB3aXRoIG9ubHkgMzJLaUIgb2Ygc3BhY2UsIGEgc21hbGxlciBlcmFzZSBwYWdlCj4gPj4g
-YWxsb3dzIG11Y2ggYmV0dGVyIHV0aWxpemF0aW9uIGluIGFwcGxpY2F0aW9ucyB3aGVyZSBnYXJi
-YWdlIGNvbGxlY3Rpb24KPiA+PiBpcyBpbXBvcnRhbnQuICAKPiA+ICAKPiA+PiBTaWduZWQtb2Zm
-LWJ5OiBQYXRyaWNrIE8nR3JhZHkgPHBhdHJpY2tAYmF5bW90aW9uLmNvbT4KPiA+PiBSZXZpZXdl
-ZC1ieTogSm9lcm4gRW5nZWwgPGpvZXJuQGxvZ2ZzLm9yZz4KPiA+PiBMaW5rOiBodHRwczovL2xv
-cmUua2VybmVsLm9yZy9sa21sL0NBSjdtNU9xWXZfPUpCOU5oSHNxQnNhOFlVMERGUm9QN0MrVzEw
-UFkyMndvbkFHSks9QUBtYWlsLmdtYWlsLmNvbS8KPiA+PiBbR3VvaHVhIFpob25nOiBmaXggdG9r
-ZW4gYXJyYXkgaW5kZXggb3V0IG9mIGJvdW5kcyBhbmQgdXBkYXRlIHBhdGNoIGZvciBrZXJuZWwg
-bWFzdGVyIGJyYW5jaF0KPiA+PiBTaWduZWQtb2ZmLWJ5OiBHdW9odWEgWmhvbmcgPHpob25nZ3Vv
-aHVhMUBodWF3ZWkuY29tPgo+ID4+IFJlcG9ydGVkLWJ5OiBrZXJuZWwgdGVzdCByb2JvdCA8bGtw
-QGludGVsLmNvbT4gIAo+ID4KPiA+IExvb2tzIGdvb2QgdG8gbWUsIGV4Y2VwdCB0aGUgYXV0aG9y
-c2hpcC4KPiA+IElmIEkgdW5kZXJzdGFuZCBjb3JyZWN0bHksIHlvdSB0b29rIHRoaXMgb2xkIHBh
-dGNoIGFuZCByZXNlbmQgaXQuCj4gPiBQbGVhc2UgbWFrZSBzdXJlIHRoYXQgdGhlICJGcm9tOiIt
-TGluZSBjb250YWlucyB0aGUgb3JpZ2luYWwgYXV0aG9yLgo+ID4gWW91IGNhbiBmaXggdGhpcyB1
-cCB1c2luZyBnaXQgY29tbWl0IC0tYW1lbmQgLS1hdXRob3I9Lgo+ID4gVGhlIGdpdCBmb3JtYXQt
-cGF0Y2ggd2lsbCBjcmVhdGUgYSBjb3JyZWN0IHBhdGNoLiAgCj4gCj4gU29ycnksIEkgYW0gbm90
-IGNsZWFyIHRoaXMgcnVsZSBiZWZvcmUuIEJ1dCBJIGZvdW5kIHRoZSBzYW1lIGlzc3VlIGluZGVw
-ZW5kZW50bHkuIEl0IGxvb2tzIGdvb2QgCj4gYWZ0ZXIgY2hhbmdnaW5nIHRoZSBlcmFzZSBzaXpl
-IGZvciBwaHJhbSBkcml2ZXIuIFRoZW4gd2hlbiBJIHRyeSB0byBzZW5kIHRoZSBwYXRjaCwgSSBm
-b3VuZCB0aGF0IAo+IFBhdHJpY2sgTydHcmFkeSBoYXMgYWxyZWFkeSBzZW5kIGEgcGF0Y2ggd2hp
-Y2ggaGFzIG5vdCBiZWVuIG1lcmdlZCBhcyB0aGUgbGluayBiZWxvdwo+IGh0dHBzOi8vbG9yZS5r
-ZXJuZWwub3JnL2xrbWwvQ0FKN201T3FZdl89SkI5TmhIc3FCc2E4WVUwREZSb1A3QytXMTBQWTIy
-d29uQUdKSz1BQG1haWwuZ21haWwuY29tLwo+IAo+IFNvIEkgcmVzZW5kIGEgcGF0Y2ggd2l0aCBz
-b21lIGNoYW5nZSBhbmQgZml4IGZvciBtYWlubGluZSBrZXJuZWwgd2l0aCB0aGUgb2xkIHBhdGNo
-IGxpbmsgb2YgUGF0cmljayBPJ0dyYWR5Lgo+IAo+IElmIEkgbmVlZCB0byBjaGFuZ2UgdGhlIGF1
-dGhvcnNoaXAsIEkgd2lsbCByZXNlbmQgdGhpcyBwYXRjaCBmb3IgVjMgd2l0aCBhdXRob3JzaGlw
-IG9mIFBhdHJpY2sgTydHcmFkeS4KClllcyBwbGVhc2UuIEFsc28gcGxlYXNlIGRyb3AgdGhlIHJl
-ZmVyZW5jZSB0byBrZXJuZWwgdGVzdCByb2JvdCBhcyB5b3UKYXJlIG5vdCBmaXhpbmcgYW4gaXNz
-dWUgaW4gdGhlIGtlcm5lbCB0aGF0IHRoZSByb2JvdCByZXBvcnRlZCAocGVyaGFwcwp5b3UgaGFk
-IGEgd2FybmluZyBmcm9tIHRoZSByb2JvdCBhYm91dCB0aGUgcGF0Y2ggaXRzZWxmLCB0aGlzIGlz
-CmNhbGxlZCBhIHJldmlldyBhbmQgd2UgdXN1YWxseSBkb24ndCBnZXQgY3JlZGl0ZWQgZm9yIHRo
-YXQsIGF0IGxlYXN0Cm5vdCB3aXRoIGEgbWlzbGVhZGluZyByZXBvcnRlZC1ieSB0YWcpLgoKVGhh
-bmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0
-cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+From: Patrick O'Grady <patrick@baymotion.com>
+
+Permit the user to specify the erase page size as a parameter.
+This solves two problems:
+
+- phram can access images made by mkfs.jffs2.  mkfs.jffs2 won't
+create images with erase sizes less than 8KiB; many architectures
+define PAGE_SIZE as 4KiB.
+
+- Allows more effective use of small capacity devices.  JFFS2
+needs somewhere between 2 and 5 empty pages for garbage collection;
+and for an NVRAM part with only 32KiB of space, a smaller erase page
+allows much better utilization in applications where garbage collection
+is important.
+
+Signed-off-by: Patrick O'Grady <patrick@baymotion.com>
+Reviewed-by: Joern Engel <joern@logfs.org>
+Link: https://lore.kernel.org/lkml/CAJ7m5OqYv_=JB9NhHsqBsa8YU0DFRoP7C+W10PY22wonAGJK=A@mail.gmail.com/
+[Guohua Zhong: fix token array index out of bounds and update patch for kernel master branch]
+Signed-off-by: Guohua Zhong <zhongguohua1@huawei.com>
+
+v3:
+ update authorship for Patrick O'Grady and remove the reported-by tag for kernel test robot
+
+v2: https://lore.kernel.org/lkml/20201204080821.46868-1-zhongguohua1@huawei.com/
+ fix build error which is reported by kernel test robot
+
+v1: https://lore.kernel.org/lkml/20201124061053.10812-1-zhongguohua1@huawei.com/
+ 1.fix token array index out of bounds
+ 2.update patch for kernel master branch
+---
+ drivers/mtd/devices/phram.c | 52 +++++++++++++++++++++++++++++----------------
+ 1 file changed, 34 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
+index 087b5e86d1bf..1729b94b2abf 100644
+--- a/drivers/mtd/devices/phram.c
++++ b/drivers/mtd/devices/phram.c
+@@ -6,14 +6,14 @@
+  * Usage:
+  *
+  * one commend line parameter per device, each in the form:
+- *   phram=<name>,<start>,<len>
++ *   phram=<name>,<start>,<len>[,<erasesize>]
+  * <name> may be up to 63 characters.
+- * <start> and <len> can be octal, decimal or hexadecimal.  If followed
++ * <start>, <len>, and <erasesize> can be octal, decimal or hexadecimal.  If followed
+  * by "ki", "Mi" or "Gi", the numbers will be interpreted as kilo, mega or
+- * gigabytes.
++ * gigabytes. <erasesize> is optional and defaults to PAGE_SIZE.
+  *
+  * Example:
+- *	phram=swap,64Mi,128Mi phram=test,900Mi,1Mi
++ *	phram=swap,64Mi,128Mi phram=test,900Mi,1Mi,64Ki
+  */
+ 
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+@@ -26,6 +26,7 @@
+ #include <linux/moduleparam.h>
+ #include <linux/slab.h>
+ #include <linux/mtd/mtd.h>
++#include <asm/div64.h>
+ 
+ struct phram_mtd_list {
+ 	struct mtd_info mtd;
+@@ -88,7 +89,7 @@ static void unregister_devices(void)
+ 	}
+ }
+ 
+-static int register_device(char *name, phys_addr_t start, size_t len)
++static int register_device(char *name, phys_addr_t start, size_t len, uint32_t erasesize)
+ {
+ 	struct phram_mtd_list *new;
+ 	int ret = -ENOMEM;
+@@ -115,7 +116,7 @@ static int register_device(char *name, phys_addr_t start, size_t len)
+ 	new->mtd._write = phram_write;
+ 	new->mtd.owner = THIS_MODULE;
+ 	new->mtd.type = MTD_RAM;
+-	new->mtd.erasesize = PAGE_SIZE;
++	new->mtd.erasesize = erasesize;
+ 	new->mtd.writesize = 1;
+ 
+ 	ret = -EAGAIN;
+@@ -204,22 +205,23 @@ static inline void kill_final_newline(char *str)
+ static int phram_init_called;
+ /*
+  * This shall contain the module parameter if any. It is of the form:
+- * - phram=<device>,<address>,<size> for module case
+- * - phram.phram=<device>,<address>,<size> for built-in case
+- * We leave 64 bytes for the device name, 20 for the address and 20 for the
+- * size.
+- * Example: phram.phram=rootfs,0xa0000000,512Mi
++ * - phram=<device>,<address>,<size>[,<erasesize>] for module case
++ * - phram.phram=<device>,<address>,<size>[,<erasesize>] for built-in case
++ * We leave 64 bytes for the device name, 20 for the address , 20 for the
++ * size and 20 for the erasesize.
++ * Example: phram.phram=rootfs,0xa0000000,512Mi,65536
+  */
+-static char phram_paramline[64 + 20 + 20];
++static char phram_paramline[64 + 20 + 20 + 20];
+ #endif
+ 
+ static int phram_setup(const char *val)
+ {
+-	char buf[64 + 20 + 20], *str = buf;
+-	char *token[3];
++	char buf[64 + 20 + 20 + 20], *str = buf;
++	char *token[4];
+ 	char *name;
+ 	uint64_t start;
+ 	uint64_t len;
++	uint64_t erasesize = PAGE_SIZE;
+ 	int i, ret;
+ 
+ 	if (strnlen(val, sizeof(buf)) >= sizeof(buf))
+@@ -228,7 +230,7 @@ static int phram_setup(const char *val)
+ 	strcpy(str, val);
+ 	kill_final_newline(str);
+ 
+-	for (i = 0; i < 3; i++)
++	for (i = 0; i < 4; i++)
+ 		token[i] = strsep(&str, ",");
+ 
+ 	if (str)
+@@ -253,11 +255,25 @@ static int phram_setup(const char *val)
+ 		goto error;
+ 	}
+ 
+-	ret = register_device(name, start, len);
++	if (token[3]) {
++		ret = parse_num64(&erasesize, token[3]);
++		if (ret) {
++			parse_err("illegal erasesize\n");
++			goto error;
++		}
++	}
++
++	if (len == 0 || erasesize == 0 || erasesize > len
++	    || erasesize > UINT_MAX || do_div(len, (uint32_t)erasesize) != 0) {
++		parse_err("illegal erasesize or len\n");
++		goto error;
++	}
++
++	ret = register_device(name, start, len, (uint32_t)erasesize);
+ 	if (ret)
+ 		goto error;
+ 
+-	pr_info("%s device: %#llx at %#llx\n", name, len, start);
++	pr_info("%s device: %#llx at %#llx for erasesize %#llx\n", name, len, start, erasesize);
+ 	return 0;
+ 
+ error:
+@@ -298,7 +314,7 @@ static int phram_param_call(const char *val, const struct kernel_param *kp)
+ }
+ 
+ module_param_call(phram, phram_param_call, NULL, NULL, 0200);
+-MODULE_PARM_DESC(phram, "Memory region to map. \"phram=<name>,<start>,<length>\"");
++MODULE_PARM_DESC(phram, "Memory region to map. \"phram=<name>,<start>,<length>[,<erasesize>]\"");
+ 
+ 
+ static int __init init_phram(void)
+-- 
+2.12.3
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
