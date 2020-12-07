@@ -2,80 +2,60 @@ Return-Path: <SRS0=dr6A=FL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9AB1C4361B
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Dec 2020 02:47:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01938C4361B
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Dec 2020 07:08:17 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3932C22CA0
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Dec 2020 02:47:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3932C22CA0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7F2D4229C6
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Dec 2020 07:08:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7F2D4229C6
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=szNNj66K7tMlSjd5YjiweoRXYHOx854aTm+1GZcGJ+k=; b=Z9gTZR4AIdIr3Hv6c54yFdySL5
-	A91vM+789L/WE4IoZjydUFB/XxEctD5RDqopTSXppaJ7+ICY4tjjHy0de6XVMzURAdpnYtJX8+2sg
-	76Oajm6u2KhYPZ1xz9zkrlSBzxRmw/WNdZdvgHw96HwfqEr7XPwr24x2XjPYK6od1+JcunLnz3Odu
-	pTKlKCFDsHmNviHZXi1dIHWWvj5aUd64Ui+HVgJwgRzYPDQ+R1p4VJhXZ0p5F08jOePB+Dri0g+Ba
-	N4VXlk/An2L8Ci1nTD5dnsfpgpNriVJr5UL5RMrEHTX9wGw7bBklScE+Z5J22zqFoIdBkHVMaylOp
-	xQ1JCQwQ==;
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=o6d+E95PcqmYSBuID5mgi5e3Hqx2I7dRqhvzTtmGFQU=; b=bAsY0zBhAzS16r1I/+xyc59qp
+	2OpGchqjzVIeb9caUcv4iAOgzMWSFjYbJhM+JP4W/SnqaaTUO2kJO6QmjjoPXjcmi4s1b5zyiSPQT
+	rDkKdd0SfZ7rF+AKcq1WhhgdF0ZsfZtFdZX/OP/MlFdi/6OfGMnRr8RdIJhmTv+Ju6zkW3BjuUpUM
+	a7vrY7lUgvYXi1sWHO0mXKqRkLYmLxXwpNmmlTL6MVC2Ph8+wc9JnYnR028vpATzjT86ojhsQzidZ
+	EjONOy/t/aenIfbDMhwuoUzbpGzlGgaYqf02IMpE0p2QU/ehFzMJsZfrEB60Mp+eir5oHkWhjuGo9
+	ZTcoc/Hgg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1km6Yb-0003WN-Nj; Mon, 07 Dec 2020 02:47:21 +0000
-Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
+	id 1kmAcQ-0002a1-Qk; Mon, 07 Dec 2020 07:07:34 +0000
+Received: from szxga07-in.huawei.com ([45.249.212.35])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1km6YY-0003Vb-Ni
- for linux-mtd@lists.infradead.org; Mon, 07 Dec 2020 02:47:19 +0000
-Received: by mail-pf1-x441.google.com with SMTP id 11so2113295pfu.4
- for <linux-mtd@lists.infradead.org>; Sun, 06 Dec 2020 18:47:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id;
- bh=lUjtHUc+/RanEZLK6AwzwiyRY6nDEaJFoU8TjTaj7Vw=;
- b=r/EAKvlk4KcV0aPkG+j+X82hY3XfkftcAGtTkSC9c8jiCUbqn4PsY9xEwr9EzwBtGl
- b8v8XCgyaH6qyOPdRnys1bkOVGp8HTP5a6nfTV4JZM0tDaI9HAwS+9egM/RLxLz06AJc
- c5Io+pDvd8tJ5+Ke4Tj+MQITiK+yDQw3MIun3pG1EPWXJ5AViHV2LSmhdMVd2CWjKo2m
- cGBxob9huGEcTXHFBbxsPMlSEPan29kQeWlysrEXG2487KEknCTJLyZqdAJJ0nj3hoLl
- pI0dTsqWDdgGH6+Pkl2EiaPBBAv2kGhWw4EKOqESXvyGPL/I6nNOCiyjvO3+v2Mcq4pQ
- zYIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=lUjtHUc+/RanEZLK6AwzwiyRY6nDEaJFoU8TjTaj7Vw=;
- b=NO9UfGiaJp8Zo3kWJRoK8e/Qk3tEM8P7eCWNIGAiJgqO36UEjqvKVyVtdQmCOa6Q39
- nc3beRtr5aDKlLECnUp0cO9vlBieTm9XNqpdcCBwd5sbW81Z8WCJYyej1uIpluuHL9WC
- aGz8we1QMdEHadMbL0o07WA+b3jLBDgN31o/hl0xGCHBfiAujaTBS3rNFeceFJQwmJoi
- er8yvtjEvsO3rLiLss5J9huEON6r8mUVRqesPoLqIIQoolxSo4XawtR4IiCYXpk75a5U
- XpTVoP2mNtuK/hqCdVnlMSOp6vLeEYx69Gbq1Cj7FPyAa6fYvO0W0C8rxMsJHA/V/nX0
- mHYA==
-X-Gm-Message-State: AOAM533pD6BdFqEg1xBPB6VBYoQCNqN+iyxfM/pcBPy4wknsUuOPpvvc
- BOiyCR51CkYh5/qBqutfKsA=
-X-Google-Smtp-Source: ABdhPJxbot3J20xUZBkWXQqicQ6Nxxr4DCxsmtzKWqwM0VBuqyA3iZLhF+EqEnbaSYUgkQchYWDFcw==
-X-Received: by 2002:a63:f308:: with SMTP id l8mr17020520pgh.68.1607309235694; 
- Sun, 06 Dec 2020 18:47:15 -0800 (PST)
-Received: from DESKTOP-8REGVGF.localdomain ([115.164.208.235])
- by smtp.gmail.com with ESMTPSA id 5sm10328812pgm.57.2020.12.06.18.47.12
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 06 Dec 2020 18:47:15 -0800 (PST)
-From: Sieng Piaw Liew <liew.s.piaw@gmail.com>
-To: 
-Subject: [PATCH] mtd: spi-nor: macronix: enable 4-bit BP support for MX25L6405D
-Date: Mon,  7 Dec 2020 10:46:12 +0800
-Message-Id: <20201207024612.1318-1-liew.s.piaw@gmail.com>
-X-Mailer: git-send-email 2.17.1
+ id 1kmAcN-0002Z8-LC
+ for linux-mtd@lists.infradead.org; Mon, 07 Dec 2020 07:07:33 +0000
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+ by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CqDrY1NgPz79bf;
+ Mon,  7 Dec 2020 15:06:53 +0800 (CST)
+Received: from DESKTOP-8N3QUD5.china.huawei.com (10.67.101.227) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 7 Dec 2020 15:07:17 +0800
+From: Guohua Zhong <zhongguohua1@huawei.com>
+To: <richard.weinberger@gmail.com>
+Subject: Re: Re: [PATCH v2] phram: Allow the user to set the erase page size.
+Date: Mon, 7 Dec 2020 15:07:15 +0800
+Message-ID: <20201207070715.15016-1-zhongguohua1@huawei.com>
+X-Mailer: git-send-email 2.21.0.windows.1
+In-Reply-To: <CAFLxGvxSycd=6WE4=XnrXxuF2Bc6A6ULA8GfkT8QvgcX=2Gk8g@mail.gmail.com>
+References: <CAFLxGvxSycd=6WE4=XnrXxuF2Bc6A6ULA8GfkT8QvgcX=2Gk8g@mail.gmail.com>
+MIME-Version: 1.0
+X-Originating-IP: [10.67.101.227]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201206_214718_814644_F3A8E16A 
-X-CRM114-Status: GOOD (  11.36  )
+X-CRM114-CacheID: sfid-20201207_020731_973218_5DE39DEF 
+X-CRM114-Status: GOOD (  15.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,45 +67,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- liew.s.piaw@gmail.com
-MIME-Version: 1.0
+Cc: zhongguohua1@huawei.com, wangle6@huawei.com, young.liuyang@huawei.com,
+ vigneshr@ti.com, patrick@baymotion.com, joern@lazybastard.org,
+ linux-kernel@vger.kernel.org, richard@nod.at, linux-mtd@lists.infradead.org,
+ miquel.raynal@bootlin.com, nixiaoming@huawei.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Enable 4-bit Block Protect support for MX256405D and its variants using
-the same ID.
+On Mon, Dec 7, 2020 at 14:56 AM Guohua Zhong <zhongguohua1@huawei.com> wrote:
+>
+>> Permit the user to specify the erase page size as a parameter.
+>> This solves two problems:
+>
+>> - phram can access images made by mkfs.jffs2.  mkfs.jffs2 won't
+>> create images with erase sizes less than 8KiB; many architectures
+>> define PAGE_SIZE as 4KiB.
+>
+>> - Allows more effective use of small capacity devices.  JFFS2
+>> needs somewhere between 2 and 5 empty pages for garbage collection;
+>> and for an NVRAM part with only 32KiB of space, a smaller erase page
+>> allows much better utilization in applications where garbage collection
+>> is important.
+>
+>> Signed-off-by: Patrick O'Grady <patrick@baymotion.com>
+>> Reviewed-by: Joern Engel <joern@logfs.org>
+>> Link: https://lore.kernel.org/lkml/CAJ7m5OqYv_=JB9NhHsqBsa8YU0DFRoP7C+W10PY22wonAGJK=A@mail.gmail.com/
+>> [Guohua Zhong: fix token array index out of bounds and update patch for kernel master branch]
+>> Signed-off-by: Guohua Zhong <zhongguohua1@huawei.com>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>
+> Looks good to me, except the authorship.
+> If I understand correctly, you took this old patch and resend it.
+> Please make sure that the "From:"-Line contains the original author.
+> You can fix this up using git commit --amend --author=.
+> The git format-patch will create a correct patch.
 
-Tested on Innacom W3400V6 router with MX25L6406E chip.
-https://github.com/openwrt/openwrt/pull/3501
+Sorry, I am not clear this rule before. But I found the same issue independently. It looks good 
+after changging the erase size for phram driver. Then when I try to send the patch, I found that 
+Patrick O'Grady has already send a patch which has not been merged as the link below
+https://lore.kernel.org/lkml/CAJ7m5OqYv_=JB9NhHsqBsa8YU0DFRoP7C+W10PY22wonAGJK=A@mail.gmail.com/
 
-Signed-off-by: Sieng Piaw Liew <liew.s.piaw@gmail.com>
----
- drivers/mtd/spi-nor/macronix.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+So I resend a patch with some change and fix for mainline kernel with the old patch link of Patrick O'Grady.
 
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index 9203abaac229..7aa8b1ee9daa 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -42,7 +42,8 @@ static const struct flash_info macronix_parts[] = {
- 	{ "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,  32, SECT_4K) },
- 	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K) },
- 	{ "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64, SECT_4K) },
--	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, SECT_4K) },
-+	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128,
-+			      SECT_4K | SPI_NOR_4BIT_BP) },
- 	{ "mx25u2033e",  INFO(0xc22532, 0, 64 * 1024,   4, SECT_4K) },
- 	{ "mx25u3235f",	 INFO(0xc22536, 0, 64 * 1024,  64,
- 			      SECT_4K | SPI_NOR_DUAL_READ |
+If I need to change the authorship, I will resend this patch for V3 with authorship of Patrick O'Grady.
+
 -- 
-2.17.1
-
+Thanks,
+//guohua
 
 ______________________________________________________
 Linux MTD discussion mailing list
