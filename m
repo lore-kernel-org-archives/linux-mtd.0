@@ -2,59 +2,58 @@ Return-Path: <SRS0=dr6A=FL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0649CC4361B
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Dec 2020 08:54:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C60F1C4167B
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Dec 2020 08:57:25 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A76E0225A9
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Dec 2020 08:54:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A76E0225A9
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7B1DC2336D
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Dec 2020 08:57:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B1DC2336D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=AerFooyenHtfT1Msszz3YrnS2J9qNWZybXvCwRTyvwQ=; b=zSwDiEwvVyuR/DpKMyWvb7fHd+
-	vgxQO9c2E3kXO7CNtQga7Lwf1A2OUWUxFlTQt+LCepWKA3/GrBABncCaMelILIamnnYjSvT/0IfyK
-	dYjC8GCa8Qnuzg6cSAy6xzzF5+E1KHA4axzTNadZE1En0u08LV19haQ22CIua6DzpY13DejRmQ5MH
-	q/edwT56DhfVlKg4YsZKlg9Wey+4pj55h4C9oLCwatjehxLShTFfYbdbxAzq/bY8etd+raOgh1kfb
-	gVKaOZDgfML9eGamP5dukMNT/MbsmB6mDqsJzp+JCVmU+S4kl3xgAlLfkidtmUTPHaT6td4tR5ueW
-	oCK98P1A==;
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=xkx1gltCfyeu5tbCuFUIYJZFieVnSj3Axfbg7gdqMIw=; b=rJFCZGbu8IwfXfcrruiZR2fJ/
+	WqPS5Y8doqfvNoLriVTyPMo+PA7sjmxeGarh7qJZ+9i6Cc3TbplQA/Lq6hyVStilifZzZDDin02fS
+	pShb55AbyDWj1NHT7MXKg/LoTXAfx9Rv6uBTpDjV+7iIN0SdBHyC7qXBiWFfjlov0prE0/wstJLRJ
+	Zchvr2391BbHy7L7SvW+JdjX3di2ehIkgaCYLKP1Ek1e87jk40Eab3RuEdEULQ0lJTHty9iYmso3G
+	GZdtdR6nWjNO5QBijI+rqNuRo/GeKgdJ6J+9lQUtpRpa8rLZZXLi8ALenoLpCzjNT2eL8SdWw1sTI
+	2pt39wcOg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kmCHT-0005Dm-5P; Mon, 07 Dec 2020 08:54:03 +0000
-Received: from szxga04-in.huawei.com ([45.249.212.190])
+	id 1kmCJr-0005hO-AZ; Mon, 07 Dec 2020 08:56:31 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kmCHP-0005Bz-V0
- for linux-mtd@lists.infradead.org; Mon, 07 Dec 2020 08:54:01 +0000
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
- by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CqHCF02K4zkmH9;
- Mon,  7 Dec 2020 16:53:13 +0800 (CST)
-Received: from DESKTOP-8N3QUD5.china.huawei.com (10.67.101.227) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 7 Dec 2020 16:53:43 +0800
-From: Guohua Zhong <zhongguohua1@huawei.com>
-To: <patrick@baymotion.com>, <joern@lazybastard.org>,
- <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
-Subject: [PATCH v3] phram: Allow the user to set the erase page size.
-Date: Mon, 7 Dec 2020 16:53:42 +0800
-Message-ID: <20201207085342.24852-1-zhongguohua1@huawei.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+ id 1kmCJn-0005gR-Ol
+ for linux-mtd@lists.infradead.org; Mon, 07 Dec 2020 08:56:29 +0000
+X-Originating-IP: 109.220.208.103
+Received: from xps13 (lfbn-tou-1-1617-103.w109-220.abo.wanadoo.fr
+ [109.220.208.103]) (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 3BFBAFF80C;
+ Mon,  7 Dec 2020 08:56:20 +0000 (UTC)
+Date: Mon, 7 Dec 2020 09:56:19 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Guohua Zhong <zhongguohua1@huawei.com>
+Subject: Re: [PATCH v3] phram: Allow the user to set the erase page size.
+Message-ID: <20201207095619.3d115786@xps13>
+In-Reply-To: <20201207085342.24852-1-zhongguohua1@huawei.com>
+References: <20201207085342.24852-1-zhongguohua1@huawei.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Originating-IP: [10.67.101.227]
-X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201207_035400_519455_E333A999 
-X-CRM114-Status: GOOD (  17.57  )
+X-CRM114-CacheID: sfid-20201207_035628_045001_50B6A77F 
+X-CRM114-Status: GOOD (  28.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,179 +65,124 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: zhongguohua1@huawei.com, wangle6@huawei.com, young.liuyang@huawei.com,
+Cc: nixiaoming@huawei.com, wangle6@huawei.com, young.liuyang@huawei.com,
+ vigneshr@ti.com, richard@nod.at, joern@lazybastard.org,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- nixiaoming@huawei.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+ patrick@baymotion.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Patrick O'Grady <patrick@baymotion.com>
-
-Permit the user to specify the erase page size as a parameter.
-This solves two problems:
-
-- phram can access images made by mkfs.jffs2.  mkfs.jffs2 won't
-create images with erase sizes less than 8KiB; many architectures
-define PAGE_SIZE as 4KiB.
-
-- Allows more effective use of small capacity devices.  JFFS2
-needs somewhere between 2 and 5 empty pages for garbage collection;
-and for an NVRAM part with only 32KiB of space, a smaller erase page
-allows much better utilization in applications where garbage collection
-is important.
-
-Signed-off-by: Patrick O'Grady <patrick@baymotion.com>
-Reviewed-by: Joern Engel <joern@logfs.org>
-Link: https://lore.kernel.org/lkml/CAJ7m5OqYv_=JB9NhHsqBsa8YU0DFRoP7C+W10PY22wonAGJK=A@mail.gmail.com/
-[Guohua Zhong: fix token array index out of bounds and update patch for kernel master branch]
-Signed-off-by: Guohua Zhong <zhongguohua1@huawei.com>
-
-v3:
- update authorship for Patrick O'Grady and remove the reported-by tag for kernel test robot
-
-v2: https://lore.kernel.org/lkml/20201204080821.46868-1-zhongguohua1@huawei.com/
- fix build error which is reported by kernel test robot
-
-v1: https://lore.kernel.org/lkml/20201124061053.10812-1-zhongguohua1@huawei.com/
- 1.fix token array index out of bounds
- 2.update patch for kernel master branch
----
- drivers/mtd/devices/phram.c | 52 +++++++++++++++++++++++++++++----------------
- 1 file changed, 34 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
-index 087b5e86d1bf..1729b94b2abf 100644
---- a/drivers/mtd/devices/phram.c
-+++ b/drivers/mtd/devices/phram.c
-@@ -6,14 +6,14 @@
-  * Usage:
-  *
-  * one commend line parameter per device, each in the form:
-- *   phram=<name>,<start>,<len>
-+ *   phram=<name>,<start>,<len>[,<erasesize>]
-  * <name> may be up to 63 characters.
-- * <start> and <len> can be octal, decimal or hexadecimal.  If followed
-+ * <start>, <len>, and <erasesize> can be octal, decimal or hexadecimal.  If followed
-  * by "ki", "Mi" or "Gi", the numbers will be interpreted as kilo, mega or
-- * gigabytes.
-+ * gigabytes. <erasesize> is optional and defaults to PAGE_SIZE.
-  *
-  * Example:
-- *	phram=swap,64Mi,128Mi phram=test,900Mi,1Mi
-+ *	phram=swap,64Mi,128Mi phram=test,900Mi,1Mi,64Ki
-  */
- 
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-@@ -26,6 +26,7 @@
- #include <linux/moduleparam.h>
- #include <linux/slab.h>
- #include <linux/mtd/mtd.h>
-+#include <asm/div64.h>
- 
- struct phram_mtd_list {
- 	struct mtd_info mtd;
-@@ -88,7 +89,7 @@ static void unregister_devices(void)
- 	}
- }
- 
--static int register_device(char *name, phys_addr_t start, size_t len)
-+static int register_device(char *name, phys_addr_t start, size_t len, uint32_t erasesize)
- {
- 	struct phram_mtd_list *new;
- 	int ret = -ENOMEM;
-@@ -115,7 +116,7 @@ static int register_device(char *name, phys_addr_t start, size_t len)
- 	new->mtd._write = phram_write;
- 	new->mtd.owner = THIS_MODULE;
- 	new->mtd.type = MTD_RAM;
--	new->mtd.erasesize = PAGE_SIZE;
-+	new->mtd.erasesize = erasesize;
- 	new->mtd.writesize = 1;
- 
- 	ret = -EAGAIN;
-@@ -204,22 +205,23 @@ static inline void kill_final_newline(char *str)
- static int phram_init_called;
- /*
-  * This shall contain the module parameter if any. It is of the form:
-- * - phram=<device>,<address>,<size> for module case
-- * - phram.phram=<device>,<address>,<size> for built-in case
-- * We leave 64 bytes for the device name, 20 for the address and 20 for the
-- * size.
-- * Example: phram.phram=rootfs,0xa0000000,512Mi
-+ * - phram=<device>,<address>,<size>[,<erasesize>] for module case
-+ * - phram.phram=<device>,<address>,<size>[,<erasesize>] for built-in case
-+ * We leave 64 bytes for the device name, 20 for the address , 20 for the
-+ * size and 20 for the erasesize.
-+ * Example: phram.phram=rootfs,0xa0000000,512Mi,65536
-  */
--static char phram_paramline[64 + 20 + 20];
-+static char phram_paramline[64 + 20 + 20 + 20];
- #endif
- 
- static int phram_setup(const char *val)
- {
--	char buf[64 + 20 + 20], *str = buf;
--	char *token[3];
-+	char buf[64 + 20 + 20 + 20], *str = buf;
-+	char *token[4];
- 	char *name;
- 	uint64_t start;
- 	uint64_t len;
-+	uint64_t erasesize = PAGE_SIZE;
- 	int i, ret;
- 
- 	if (strnlen(val, sizeof(buf)) >= sizeof(buf))
-@@ -228,7 +230,7 @@ static int phram_setup(const char *val)
- 	strcpy(str, val);
- 	kill_final_newline(str);
- 
--	for (i = 0; i < 3; i++)
-+	for (i = 0; i < 4; i++)
- 		token[i] = strsep(&str, ",");
- 
- 	if (str)
-@@ -253,11 +255,25 @@ static int phram_setup(const char *val)
- 		goto error;
- 	}
- 
--	ret = register_device(name, start, len);
-+	if (token[3]) {
-+		ret = parse_num64(&erasesize, token[3]);
-+		if (ret) {
-+			parse_err("illegal erasesize\n");
-+			goto error;
-+		}
-+	}
-+
-+	if (len == 0 || erasesize == 0 || erasesize > len
-+	    || erasesize > UINT_MAX || do_div(len, (uint32_t)erasesize) != 0) {
-+		parse_err("illegal erasesize or len\n");
-+		goto error;
-+	}
-+
-+	ret = register_device(name, start, len, (uint32_t)erasesize);
- 	if (ret)
- 		goto error;
- 
--	pr_info("%s device: %#llx at %#llx\n", name, len, start);
-+	pr_info("%s device: %#llx at %#llx for erasesize %#llx\n", name, len, start, erasesize);
- 	return 0;
- 
- error:
-@@ -298,7 +314,7 @@ static int phram_param_call(const char *val, const struct kernel_param *kp)
- }
- 
- module_param_call(phram, phram_param_call, NULL, NULL, 0200);
--MODULE_PARM_DESC(phram, "Memory region to map. \"phram=<name>,<start>,<length>\"");
-+MODULE_PARM_DESC(phram, "Memory region to map. \"phram=<name>,<start>,<length>[,<erasesize>]\"");
- 
- 
- static int __init init_phram(void)
--- 
-2.12.3
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgR3VvaHVhLAoKR3VvaHVhIFpob25nIDx6aG9uZ2d1b2h1YTFAaHVhd2VpLmNvbT4gd3JvdGUg
+b24gTW9uLCA3IERlYyAyMDIwCjE2OjUzOjQyICswODAwOgoKPiBGcm9tOiBQYXRyaWNrIE8nR3Jh
+ZHkgPHBhdHJpY2tAYmF5bW90aW9uLmNvbT4KPiAKPiBQZXJtaXQgdGhlIHVzZXIgdG8gc3BlY2lm
+eSB0aGUgZXJhc2UgcGFnZSBzaXplIGFzIGEgcGFyYW1ldGVyLgo+IFRoaXMgc29sdmVzIHR3byBw
+cm9ibGVtczoKPiAKPiAtIHBocmFtIGNhbiBhY2Nlc3MgaW1hZ2VzIG1hZGUgYnkgbWtmcy5qZmZz
+Mi4gIG1rZnMuamZmczIgd29uJ3QKPiBjcmVhdGUgaW1hZ2VzIHdpdGggZXJhc2Ugc2l6ZXMgbGVz
+cyB0aGFuIDhLaUI7IG1hbnkgYXJjaGl0ZWN0dXJlcwo+IGRlZmluZSBQQUdFX1NJWkUgYXMgNEtp
+Qi4KPiAKPiAtIEFsbG93cyBtb3JlIGVmZmVjdGl2ZSB1c2Ugb2Ygc21hbGwgY2FwYWNpdHkgZGV2
+aWNlcy4gIEpGRlMyCj4gbmVlZHMgc29tZXdoZXJlIGJldHdlZW4gMiBhbmQgNSBlbXB0eSBwYWdl
+cyBmb3IgZ2FyYmFnZSBjb2xsZWN0aW9uOwo+IGFuZCBmb3IgYW4gTlZSQU0gcGFydCB3aXRoIG9u
+bHkgMzJLaUIgb2Ygc3BhY2UsIGEgc21hbGxlciBlcmFzZSBwYWdlCj4gYWxsb3dzIG11Y2ggYmV0
+dGVyIHV0aWxpemF0aW9uIGluIGFwcGxpY2F0aW9ucyB3aGVyZSBnYXJiYWdlIGNvbGxlY3Rpb24K
+PiBpcyBpbXBvcnRhbnQuCj4gCj4gU2lnbmVkLW9mZi1ieTogUGF0cmljayBPJ0dyYWR5IDxwYXRy
+aWNrQGJheW1vdGlvbi5jb20+Cj4gUmV2aWV3ZWQtYnk6IEpvZXJuIEVuZ2VsIDxqb2VybkBsb2dm
+cy5vcmc+Cj4gTGluazogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGttbC9DQUo3bTVPcVl2Xz1K
+QjlOaEhzcUJzYThZVTBERlJvUDdDK1cxMFBZMjJ3b25BR0pLPUFAbWFpbC5nbWFpbC5jb20vCj4g
+W0d1b2h1YSBaaG9uZzogZml4IHRva2VuIGFycmF5IGluZGV4IG91dCBvZiBib3VuZHMgYW5kIHVw
+ZGF0ZSBwYXRjaCBmb3Iga2VybmVsIG1hc3RlciBicmFuY2hdCj4gU2lnbmVkLW9mZi1ieTogR3Vv
+aHVhIFpob25nIDx6aG9uZ2d1b2h1YTFAaHVhd2VpLmNvbT4KPiAKPiB2MzoKPiAgdXBkYXRlIGF1
+dGhvcnNoaXAgZm9yIFBhdHJpY2sgTydHcmFkeSBhbmQgcmVtb3ZlIHRoZSByZXBvcnRlZC1ieSB0
+YWcgZm9yIGtlcm5lbCB0ZXN0IHJvYm90Cj4gCj4gdjI6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3Jn
+L2xrbWwvMjAyMDEyMDQwODA4MjEuNDY4NjgtMS16aG9uZ2d1b2h1YTFAaHVhd2VpLmNvbS8KPiAg
+Zml4IGJ1aWxkIGVycm9yIHdoaWNoIGlzIHJlcG9ydGVkIGJ5IGtlcm5lbCB0ZXN0IHJvYm90Cj4g
+Cj4gdjE6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvMjAyMDExMjQwNjEwNTMuMTA4MTIt
+MS16aG9uZ2d1b2h1YTFAaHVhd2VpLmNvbS8KPiAgMS5maXggdG9rZW4gYXJyYXkgaW5kZXggb3V0
+IG9mIGJvdW5kcwo+ICAyLnVwZGF0ZSBwYXRjaCBmb3Iga2VybmVsIG1hc3RlciBicmFuY2gKCkkg
+Y2Fubm90IGFwcGx5IHlvdXIgcGF0Y2ggYXMtaXM6IHRoZSBjaGFuZ2Vsb2cgKHYxLCB2MiwgZXRj
+KSBzaG91bGQgYmUKYmVsb3cgdGhlIHRocmVlIGRhc2hlcy4uLgoKPiAtLS0KCi4uLmhlcmUhCgpP
+dGhlcndpc2UgaXQgd291bGQgYmUgcGFydCBvZiB0aGUgZmluYWwgY29tbWl0IG1lc3NhZ2UsIHdo
+aWNoIGlzIG5vdApzb21ldGhpbmcgd2Ugd2FudC4KCj4gIGRyaXZlcnMvbXRkL2RldmljZXMvcGhy
+YW0uYyB8IDUyICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLQo+
+ICAxIGZpbGUgY2hhbmdlZCwgMzQgaW5zZXJ0aW9ucygrKSwgMTggZGVsZXRpb25zKC0pCj4gCj4g
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL2RldmljZXMvcGhyYW0uYyBiL2RyaXZlcnMvbXRkL2Rl
+dmljZXMvcGhyYW0uYwo+IGluZGV4IDA4N2I1ZTg2ZDFiZi4uMTcyOWI5NGIyYWJmIDEwMDY0NAo+
+IC0tLSBhL2RyaXZlcnMvbXRkL2RldmljZXMvcGhyYW0uYwo+ICsrKyBiL2RyaXZlcnMvbXRkL2Rl
+dmljZXMvcGhyYW0uYwo+IEBAIC02LDE0ICs2LDE0IEBACj4gICAqIFVzYWdlOgo+ICAgKgo+ICAg
+KiBvbmUgY29tbWVuZCBsaW5lIHBhcmFtZXRlciBwZXIgZGV2aWNlLCBlYWNoIGluIHRoZSBmb3Jt
+Ogo+IC0gKiAgIHBocmFtPTxuYW1lPiw8c3RhcnQ+LDxsZW4+Cj4gKyAqICAgcGhyYW09PG5hbWU+
+LDxzdGFydD4sPGxlbj5bLDxlcmFzZXNpemU+XQo+ICAgKiA8bmFtZT4gbWF5IGJlIHVwIHRvIDYz
+IGNoYXJhY3RlcnMuCj4gLSAqIDxzdGFydD4gYW5kIDxsZW4+IGNhbiBiZSBvY3RhbCwgZGVjaW1h
+bCBvciBoZXhhZGVjaW1hbC4gIElmIGZvbGxvd2VkCj4gKyAqIDxzdGFydD4sIDxsZW4+LCBhbmQg
+PGVyYXNlc2l6ZT4gY2FuIGJlIG9jdGFsLCBkZWNpbWFsIG9yIGhleGFkZWNpbWFsLiAgSWYgZm9s
+bG93ZWQKPiAgICogYnkgImtpIiwgIk1pIiBvciAiR2kiLCB0aGUgbnVtYmVycyB3aWxsIGJlIGlu
+dGVycHJldGVkIGFzIGtpbG8sIG1lZ2Egb3IKPiAtICogZ2lnYWJ5dGVzLgo+ICsgKiBnaWdhYnl0
+ZXMuIDxlcmFzZXNpemU+IGlzIG9wdGlvbmFsIGFuZCBkZWZhdWx0cyB0byBQQUdFX1NJWkUuCj4g
+ICAqCj4gICAqIEV4YW1wbGU6Cj4gLSAqCXBocmFtPXN3YXAsNjRNaSwxMjhNaSBwaHJhbT10ZXN0
+LDkwME1pLDFNaQo+ICsgKglwaHJhbT1zd2FwLDY0TWksMTI4TWkgcGhyYW09dGVzdCw5MDBNaSwx
+TWksNjRLaQo+ICAgKi8KPiAgCj4gICNkZWZpbmUgcHJfZm10KGZtdCkgS0JVSUxEX01PRE5BTUUg
+IjogIiBmbXQKPiBAQCAtMjYsNiArMjYsNyBAQAo+ICAjaW5jbHVkZSA8bGludXgvbW9kdWxlcGFy
+YW0uaD4KPiAgI2luY2x1ZGUgPGxpbnV4L3NsYWIuaD4KPiAgI2luY2x1ZGUgPGxpbnV4L210ZC9t
+dGQuaD4KPiArI2luY2x1ZGUgPGFzbS9kaXY2NC5oPgo+ICAKPiAgc3RydWN0IHBocmFtX210ZF9s
+aXN0IHsKPiAgCXN0cnVjdCBtdGRfaW5mbyBtdGQ7Cj4gQEAgLTg4LDcgKzg5LDcgQEAgc3RhdGlj
+IHZvaWQgdW5yZWdpc3Rlcl9kZXZpY2VzKHZvaWQpCj4gIAl9Cj4gIH0KPiAgCj4gLXN0YXRpYyBp
+bnQgcmVnaXN0ZXJfZGV2aWNlKGNoYXIgKm5hbWUsIHBoeXNfYWRkcl90IHN0YXJ0LCBzaXplX3Qg
+bGVuKQo+ICtzdGF0aWMgaW50IHJlZ2lzdGVyX2RldmljZShjaGFyICpuYW1lLCBwaHlzX2FkZHJf
+dCBzdGFydCwgc2l6ZV90IGxlbiwgdWludDMyX3QgZXJhc2VzaXplKQo+ICB7Cj4gIAlzdHJ1Y3Qg
+cGhyYW1fbXRkX2xpc3QgKm5ldzsKPiAgCWludCByZXQgPSAtRU5PTUVNOwo+IEBAIC0xMTUsNyAr
+MTE2LDcgQEAgc3RhdGljIGludCByZWdpc3Rlcl9kZXZpY2UoY2hhciAqbmFtZSwgcGh5c19hZGRy
+X3Qgc3RhcnQsIHNpemVfdCBsZW4pCj4gIAluZXctPm10ZC5fd3JpdGUgPSBwaHJhbV93cml0ZTsK
+PiAgCW5ldy0+bXRkLm93bmVyID0gVEhJU19NT0RVTEU7Cj4gIAluZXctPm10ZC50eXBlID0gTVRE
+X1JBTTsKPiAtCW5ldy0+bXRkLmVyYXNlc2l6ZSA9IFBBR0VfU0laRTsKPiArCW5ldy0+bXRkLmVy
+YXNlc2l6ZSA9IGVyYXNlc2l6ZTsKPiAgCW5ldy0+bXRkLndyaXRlc2l6ZSA9IDE7Cj4gIAo+ICAJ
+cmV0ID0gLUVBR0FJTjsKPiBAQCAtMjA0LDIyICsyMDUsMjMgQEAgc3RhdGljIGlubGluZSB2b2lk
+IGtpbGxfZmluYWxfbmV3bGluZShjaGFyICpzdHIpCj4gIHN0YXRpYyBpbnQgcGhyYW1faW5pdF9j
+YWxsZWQ7Cj4gIC8qCj4gICAqIFRoaXMgc2hhbGwgY29udGFpbiB0aGUgbW9kdWxlIHBhcmFtZXRl
+ciBpZiBhbnkuIEl0IGlzIG9mIHRoZSBmb3JtOgo+IC0gKiAtIHBocmFtPTxkZXZpY2U+LDxhZGRy
+ZXNzPiw8c2l6ZT4gZm9yIG1vZHVsZSBjYXNlCj4gLSAqIC0gcGhyYW0ucGhyYW09PGRldmljZT4s
+PGFkZHJlc3M+LDxzaXplPiBmb3IgYnVpbHQtaW4gY2FzZQo+IC0gKiBXZSBsZWF2ZSA2NCBieXRl
+cyBmb3IgdGhlIGRldmljZSBuYW1lLCAyMCBmb3IgdGhlIGFkZHJlc3MgYW5kIDIwIGZvciB0aGUK
+PiAtICogc2l6ZS4KPiAtICogRXhhbXBsZTogcGhyYW0ucGhyYW09cm9vdGZzLDB4YTAwMDAwMDAs
+NTEyTWkKPiArICogLSBwaHJhbT08ZGV2aWNlPiw8YWRkcmVzcz4sPHNpemU+Wyw8ZXJhc2VzaXpl
+Pl0gZm9yIG1vZHVsZSBjYXNlCj4gKyAqIC0gcGhyYW0ucGhyYW09PGRldmljZT4sPGFkZHJlc3M+
+LDxzaXplPlssPGVyYXNlc2l6ZT5dIGZvciBidWlsdC1pbiBjYXNlCj4gKyAqIFdlIGxlYXZlIDY0
+IGJ5dGVzIGZvciB0aGUgZGV2aWNlIG5hbWUsIDIwIGZvciB0aGUgYWRkcmVzcyAsIDIwIGZvciB0
+aGUKPiArICogc2l6ZSBhbmQgMjAgZm9yIHRoZSBlcmFzZXNpemUuCj4gKyAqIEV4YW1wbGU6IHBo
+cmFtLnBocmFtPXJvb3RmcywweGEwMDAwMDAwLDUxMk1pLDY1NTM2Cj4gICAqLwo+IC1zdGF0aWMg
+Y2hhciBwaHJhbV9wYXJhbWxpbmVbNjQgKyAyMCArIDIwXTsKPiArc3RhdGljIGNoYXIgcGhyYW1f
+cGFyYW1saW5lWzY0ICsgMjAgKyAyMCArIDIwXTsKPiAgI2VuZGlmCj4gIAo+ICBzdGF0aWMgaW50
+IHBocmFtX3NldHVwKGNvbnN0IGNoYXIgKnZhbCkKPiAgewo+IC0JY2hhciBidWZbNjQgKyAyMCAr
+IDIwXSwgKnN0ciA9IGJ1ZjsKPiAtCWNoYXIgKnRva2VuWzNdOwo+ICsJY2hhciBidWZbNjQgKyAy
+MCArIDIwICsgMjBdLCAqc3RyID0gYnVmOwo+ICsJY2hhciAqdG9rZW5bNF07Cj4gIAljaGFyICpu
+YW1lOwo+ICAJdWludDY0X3Qgc3RhcnQ7Cj4gIAl1aW50NjRfdCBsZW47Cj4gKwl1aW50NjRfdCBl
+cmFzZXNpemUgPSBQQUdFX1NJWkU7Cj4gIAlpbnQgaSwgcmV0Owo+ICAKPiAgCWlmIChzdHJubGVu
+KHZhbCwgc2l6ZW9mKGJ1ZikpID49IHNpemVvZihidWYpKQo+IEBAIC0yMjgsNyArMjMwLDcgQEAg
+c3RhdGljIGludCBwaHJhbV9zZXR1cChjb25zdCBjaGFyICp2YWwpCj4gIAlzdHJjcHkoc3RyLCB2
+YWwpOwo+ICAJa2lsbF9maW5hbF9uZXdsaW5lKHN0cik7Cj4gIAo+IC0JZm9yIChpID0gMDsgaSA8
+IDM7IGkrKykKPiArCWZvciAoaSA9IDA7IGkgPCA0OyBpKyspCj4gIAkJdG9rZW5baV0gPSBzdHJz
+ZXAoJnN0ciwgIiwiKTsKPiAgCj4gIAlpZiAoc3RyKQo+IEBAIC0yNTMsMTEgKzI1NSwyNSBAQCBz
+dGF0aWMgaW50IHBocmFtX3NldHVwKGNvbnN0IGNoYXIgKnZhbCkKPiAgCQlnb3RvIGVycm9yOwo+
+ICAJfQo+ICAKPiAtCXJldCA9IHJlZ2lzdGVyX2RldmljZShuYW1lLCBzdGFydCwgbGVuKTsKPiAr
+CWlmICh0b2tlblszXSkgewo+ICsJCXJldCA9IHBhcnNlX251bTY0KCZlcmFzZXNpemUsIHRva2Vu
+WzNdKTsKPiArCQlpZiAocmV0KSB7Cj4gKwkJCXBhcnNlX2VycigiaWxsZWdhbCBlcmFzZXNpemVc
+biIpOwo+ICsJCQlnb3RvIGVycm9yOwo+ICsJCX0KPiArCX0KPiArCj4gKwlpZiAobGVuID09IDAg
+fHwgZXJhc2VzaXplID09IDAgfHwgZXJhc2VzaXplID4gbGVuCj4gKwkgICAgfHwgZXJhc2VzaXpl
+ID4gVUlOVF9NQVggfHwgZG9fZGl2KGxlbiwgKHVpbnQzMl90KWVyYXNlc2l6ZSkgIT0gMCkgewo+
+ICsJCXBhcnNlX2VycigiaWxsZWdhbCBlcmFzZXNpemUgb3IgbGVuXG4iKTsKPiArCQlnb3RvIGVy
+cm9yOwo+ICsJfQo+ICsKPiArCXJldCA9IHJlZ2lzdGVyX2RldmljZShuYW1lLCBzdGFydCwgbGVu
+LCAodWludDMyX3QpZXJhc2VzaXplKTsKPiAgCWlmIChyZXQpCj4gIAkJZ290byBlcnJvcjsKPiAg
+Cj4gLQlwcl9pbmZvKCIlcyBkZXZpY2U6ICUjbGx4IGF0ICUjbGx4XG4iLCBuYW1lLCBsZW4sIHN0
+YXJ0KTsKPiArCXByX2luZm8oIiVzIGRldmljZTogJSNsbHggYXQgJSNsbHggZm9yIGVyYXNlc2l6
+ZSAlI2xseFxuIiwgbmFtZSwgbGVuLCBzdGFydCwgZXJhc2VzaXplKTsKPiAgCXJldHVybiAwOwo+
+ICAKPiAgZXJyb3I6Cj4gQEAgLTI5OCw3ICszMTQsNyBAQCBzdGF0aWMgaW50IHBocmFtX3BhcmFt
+X2NhbGwoY29uc3QgY2hhciAqdmFsLCBjb25zdCBzdHJ1Y3Qga2VybmVsX3BhcmFtICprcCkKPiAg
+fQo+ICAKPiAgbW9kdWxlX3BhcmFtX2NhbGwocGhyYW0sIHBocmFtX3BhcmFtX2NhbGwsIE5VTEws
+IE5VTEwsIDAyMDApOwo+IC1NT0RVTEVfUEFSTV9ERVNDKHBocmFtLCAiTWVtb3J5IHJlZ2lvbiB0
+byBtYXAuIFwicGhyYW09PG5hbWU+LDxzdGFydD4sPGxlbmd0aD5cIiIpOwo+ICtNT0RVTEVfUEFS
+TV9ERVNDKHBocmFtLCAiTWVtb3J5IHJlZ2lvbiB0byBtYXAuIFwicGhyYW09PG5hbWU+LDxzdGFy
+dD4sPGxlbmd0aD5bLDxlcmFzZXNpemU+XVwiIik7Cj4gIAo+ICAKPiAgc3RhdGljIGludCBfX2lu
+aXQgaW5pdF9waHJhbSh2b2lkKQoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24g
+bWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
+bGludXgtbXRkLwo=
