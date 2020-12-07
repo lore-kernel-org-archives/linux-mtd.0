@@ -2,73 +2,59 @@ Return-Path: <SRS0=dr6A=FL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53F98C433FE
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Dec 2020 09:51:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1FE7C4361B
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Dec 2020 09:56:35 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0F4C922B3B
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Dec 2020 09:51:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0F4C922B3B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	by mail.kernel.org (Postfix) with ESMTPS id 6C7F42311A
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Dec 2020 09:56:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C7F42311A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=n1L47SXVCdoa7tg/hZK9oYZn+p1zwDe0ec4w+oGcW6o=; b=jkxMfQxvJrdYPxw5t5oxmPrtk
-	D4ZsXPA+awYX88BlrDyt/RCFav5DqAxclS258FxM48lZK1wVvBBb08jemy+icXMHuOduxtE7qlbMy
-	ftryQLE5UPy5Dnae4M6fbw2Y9Byj+PcMS5/avx2jHEFiak5NtNnxxQiLE56WNMgqmh/KYnIMrTnlG
-	W3wz+jqhzGc1zuTDVWkdI8IYc/FdzPHa0yfjL4D2zoWvN4QMmXr3gMQEOEadO6LmfW2p7/i1F/Gqx
-	spxX7Rqkk0PIyXYZGm+dj9aIOT2M10qLCpdYYhnzzqdRofytUEqBlWpaqXZEIaqqkdJkVJkbxEqT9
-	0WR50gxzw==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=qB4l8CYwXCAxEImveS74bLMiTcFH8eQDYBStl+DxzTE=; b=wcdTKzGKigpPsqEhFUxXvgOaKB
+	KeHfiPP2cyPO2DiEtQlrcz3TASYitFJ/R5ZEsQnnQ1oQUt8rTR0UGOtT02teT9a4XoXviYmO1bjM7
+	Ei9LqT8LZ9FDf76owOcnHkYUXeckLQIaG+TdC5WPlAjJi5sCuJVv28fqjFUYoLWVn1gNDsg1eUi9L
+	ybDEJH8LFzJVuPpc+V1aApAbYTwIl7c7e0HhCPJqhmaZ+I1RZfl9aaADpz7iyRFOmyzWyY6c6d1xY
+	7oKloiky0cArdVHvB4ezO8OQS5l7zZZ7tEJyR28qUQw6kOOmwjKPks8g1JZ2Hh/xzpQX0GSlQG6AA
+	+rbNxPlw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kmD9n-0000hf-9O; Mon, 07 Dec 2020 09:50:11 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1kmDFL-0001yq-Tp; Mon, 07 Dec 2020 09:55:55 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kmD9l-0000gc-3L
- for linux-mtd@lists.infradead.org; Mon, 07 Dec 2020 09:50:10 +0000
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <sha@pengutronix.de>)
- id 1kmD9j-0005HY-5s; Mon, 07 Dec 2020 10:50:07 +0100
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
- (envelope-from <sha@pengutronix.de>)
- id 1kmD9i-0003gZ-Df; Mon, 07 Dec 2020 10:50:06 +0100
-Date: Mon, 7 Dec 2020 10:50:06 +0100
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Han Xu <han.xu@nxp.com>
-Subject: Re: [PATCH 1/2] mtd: rawnand: gpmi: Fix the driver only sense CS0
- R/B issue
-Message-ID: <20201207095006.GK3977@pengutronix.de>
-References: <20201205063004.3099-1-han.xu@nxp.com>
+ id 1kmDFI-0001xD-3r
+ for linux-mtd@lists.infradead.org; Mon, 07 Dec 2020 09:55:54 +0000
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+ by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CqJZh2zm1zhnZw;
+ Mon,  7 Dec 2020 17:55:08 +0800 (CST)
+Received: from DESKTOP-8N3QUD5.china.huawei.com (10.67.101.227) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 7 Dec 2020 17:55:30 +0800
+From: Guohua Zhong <zhongguohua1@huawei.com>
+To: <patrick@baymotion.com>, <joern@lazybastard.org>,
+ <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
+Subject: [PATCH v4] phram: Allow the user to set the erase page size.
+Date: Mon, 7 Dec 2020 17:55:29 +0800
+Message-ID: <20201207095529.20896-1-zhongguohua1@huawei.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20201205063004.3099-1-han.xu@nxp.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-IRC: #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 10:47:25 up 4 days, 22:14, 60 users, load average: 0.16, 0.31, 0.31
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+X-Originating-IP: [10.67.101.227]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201207_045009_317352_5CCD0A63 
-X-CRM114-Status: GOOD (  12.53  )
+X-CRM114-CacheID: sfid-20201207_045552_664384_D5DE5728 
+X-CRM114-Status: GOOD (  17.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,47 +66,181 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com
+Cc: zhongguohua1@huawei.com, wangle6@huawei.com, young.liuyang@huawei.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ nixiaoming@huawei.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Dec 05, 2020 at 12:30:03AM -0600, Han Xu wrote:
-> set the GPMI CTRL1 GANGED_RDYBUSY bit so dirver can sense the R/B signal
-> from all CS.
-> 
-> For the NAND chip MT29F64G08AFAAAWP, only the first chip detected
-> without the patch.
-> 
-> [    3.764118] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0x68
-> [    3.770613] nand: Micron MT29F64G08AFAAAWP
-> [    3.774752] nand: 4096 MiB, SLC, erase size: 1024 KiB, page size: 8192, OOB size: 448
-> [    3.786421] Bad block table found at page 524160, version 0x01
-> [    3.792730] Bad block table found at page 524032, version 0x01
-> 
-> After applying the patch
-> 
-> [    3.764445] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0x68
-> [    3.770941] nand: Micron MT29F64G08AFAAAWP
-> [    3.775080] nand: 4096 MiB, SLC, erase size: 1024 KiB, page size: 8192, OOB size: 448
-> [    3.784390] nand: 2 chips detected
-> [    3.790900] Bad block table found at page 524160, version 0x01
-> [    3.796776] Bad block table found at page 1048448, version 0x01
-> 
-> Fixes: 3045f8e36963 ("mtd: rawnand: gpmi: move all driver code into single file")
+From: Patrick O'Grady <patrick@baymotion.com>
 
-I don't see how 3045f8e36963 changes his behaviour. Are you sure it
-worked without this patch?
+Permit the user to specify the erase page size as a parameter.
+This solves two problems:
 
-Sascha
+- phram can access images made by mkfs.jffs2.  mkfs.jffs2 won't
+create images with erase sizes less than 8KiB; many architectures
+define PAGE_SIZE as 4KiB.
 
+- Allows more effective use of small capacity devices.  JFFS2
+needs somewhere between 2 and 5 empty pages for garbage collection;
+and for an NVRAM part with only 32KiB of space, a smaller erase page
+allows much better utilization in applications where garbage collection
+is important.
 
+Signed-off-by: Patrick O'Grady <patrick@baymotion.com>
+Reviewed-by: Joern Engel <joern@logfs.org>
+Link: https://lore.kernel.org/lkml/CAJ7m5OqYv_=JB9NhHsqBsa8YU0DFRoP7C+W10PY22wonAGJK=A@mail.gmail.com/
+[Guohua Zhong: fix token array index out of bounds and update patch for kernel master branch]
+Signed-off-by: Guohua Zhong <zhongguohua1@huawei.com>
+---
+v4:
+ add three dash before changelog (v1, v2, etc) according to Miquel Raynal
+
+v3: https://lore.kernel.org/lkml/20201207085342.24852-1-zhongguohua1@huawei.com/
+ update authorship for Patrick O'Grady and remove the reported-by tag for kernel test robot
+
+v2: https://lore.kernel.org/lkml/20201204080821.46868-1-zhongguohua1@huawei.com/
+ fix build error which is reported by kernel test robot
+
+v1: https://lore.kernel.org/lkml/20201124061053.10812-1-zhongguohua1@huawei.com/
+ 1.fix token array index out of bounds
+ 2.update patch for kernel master branch
+---
+ drivers/mtd/devices/phram.c | 52 +++++++++++++++++++++++++++++----------------
+ 1 file changed, 34 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
+index 087b5e86d1bf..1729b94b2abf 100644
+--- a/drivers/mtd/devices/phram.c
++++ b/drivers/mtd/devices/phram.c
+@@ -6,14 +6,14 @@
+  * Usage:
+  *
+  * one commend line parameter per device, each in the form:
+- *   phram=<name>,<start>,<len>
++ *   phram=<name>,<start>,<len>[,<erasesize>]
+  * <name> may be up to 63 characters.
+- * <start> and <len> can be octal, decimal or hexadecimal.  If followed
++ * <start>, <len>, and <erasesize> can be octal, decimal or hexadecimal.  If followed
+  * by "ki", "Mi" or "Gi", the numbers will be interpreted as kilo, mega or
+- * gigabytes.
++ * gigabytes. <erasesize> is optional and defaults to PAGE_SIZE.
+  *
+  * Example:
+- *	phram=swap,64Mi,128Mi phram=test,900Mi,1Mi
++ *	phram=swap,64Mi,128Mi phram=test,900Mi,1Mi,64Ki
+  */
+ 
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+@@ -26,6 +26,7 @@
+ #include <linux/moduleparam.h>
+ #include <linux/slab.h>
+ #include <linux/mtd/mtd.h>
++#include <asm/div64.h>
+ 
+ struct phram_mtd_list {
+ 	struct mtd_info mtd;
+@@ -88,7 +89,7 @@ static void unregister_devices(void)
+ 	}
+ }
+ 
+-static int register_device(char *name, phys_addr_t start, size_t len)
++static int register_device(char *name, phys_addr_t start, size_t len, uint32_t erasesize)
+ {
+ 	struct phram_mtd_list *new;
+ 	int ret = -ENOMEM;
+@@ -115,7 +116,7 @@ static int register_device(char *name, phys_addr_t start, size_t len)
+ 	new->mtd._write = phram_write;
+ 	new->mtd.owner = THIS_MODULE;
+ 	new->mtd.type = MTD_RAM;
+-	new->mtd.erasesize = PAGE_SIZE;
++	new->mtd.erasesize = erasesize;
+ 	new->mtd.writesize = 1;
+ 
+ 	ret = -EAGAIN;
+@@ -204,22 +205,23 @@ static inline void kill_final_newline(char *str)
+ static int phram_init_called;
+ /*
+  * This shall contain the module parameter if any. It is of the form:
+- * - phram=<device>,<address>,<size> for module case
+- * - phram.phram=<device>,<address>,<size> for built-in case
+- * We leave 64 bytes for the device name, 20 for the address and 20 for the
+- * size.
+- * Example: phram.phram=rootfs,0xa0000000,512Mi
++ * - phram=<device>,<address>,<size>[,<erasesize>] for module case
++ * - phram.phram=<device>,<address>,<size>[,<erasesize>] for built-in case
++ * We leave 64 bytes for the device name, 20 for the address , 20 for the
++ * size and 20 for the erasesize.
++ * Example: phram.phram=rootfs,0xa0000000,512Mi,65536
+  */
+-static char phram_paramline[64 + 20 + 20];
++static char phram_paramline[64 + 20 + 20 + 20];
+ #endif
+ 
+ static int phram_setup(const char *val)
+ {
+-	char buf[64 + 20 + 20], *str = buf;
+-	char *token[3];
++	char buf[64 + 20 + 20 + 20], *str = buf;
++	char *token[4];
+ 	char *name;
+ 	uint64_t start;
+ 	uint64_t len;
++	uint64_t erasesize = PAGE_SIZE;
+ 	int i, ret;
+ 
+ 	if (strnlen(val, sizeof(buf)) >= sizeof(buf))
+@@ -228,7 +230,7 @@ static int phram_setup(const char *val)
+ 	strcpy(str, val);
+ 	kill_final_newline(str);
+ 
+-	for (i = 0; i < 3; i++)
++	for (i = 0; i < 4; i++)
+ 		token[i] = strsep(&str, ",");
+ 
+ 	if (str)
+@@ -253,11 +255,25 @@ static int phram_setup(const char *val)
+ 		goto error;
+ 	}
+ 
+-	ret = register_device(name, start, len);
++	if (token[3]) {
++		ret = parse_num64(&erasesize, token[3]);
++		if (ret) {
++			parse_err("illegal erasesize\n");
++			goto error;
++		}
++	}
++
++	if (len == 0 || erasesize == 0 || erasesize > len
++	    || erasesize > UINT_MAX || do_div(len, (uint32_t)erasesize) != 0) {
++		parse_err("illegal erasesize or len\n");
++		goto error;
++	}
++
++	ret = register_device(name, start, len, (uint32_t)erasesize);
+ 	if (ret)
+ 		goto error;
+ 
+-	pr_info("%s device: %#llx at %#llx\n", name, len, start);
++	pr_info("%s device: %#llx at %#llx for erasesize %#llx\n", name, len, start, erasesize);
+ 	return 0;
+ 
+ error:
+@@ -298,7 +314,7 @@ static int phram_param_call(const char *val, const struct kernel_param *kp)
+ }
+ 
+ module_param_call(phram, phram_param_call, NULL, NULL, 0200);
+-MODULE_PARM_DESC(phram, "Memory region to map. \"phram=<name>,<start>,<length>\"");
++MODULE_PARM_DESC(phram, "Memory region to map. \"phram=<name>,<start>,<length>[,<erasesize>]\"");
+ 
+ 
+ static int __init init_phram(void)
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.12.3
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
