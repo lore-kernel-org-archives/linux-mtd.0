@@ -1,21 +1,22 @@
-Return-Path: <SRS0=dr6A=FL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=eGw4=FM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-17.2 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A64DC433FE
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Dec 2020 21:53:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DA25C4361B
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Dec 2020 01:20:32 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C82E123406
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Dec 2020 21:53:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C82E123406
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id ABFFF205ED
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Dec 2020 01:20:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ABFFF205ED
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
@@ -23,57 +24,67 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=OCLwRlpYe5dAYGXeCNA6+oBYg7L9/5IlZ8YsAiTm3ME=; b=D0FG+BX7b6jXl4fUaM3xzTOei
-	isLVD6y5Mr9EFQ04CclQuTTKcO7ZNB8bqJcDr4kD6S8bjlLlCp/ttoKVUswswlbejVfNeM09n/4dR
-	MFwVFiwikqij/NsvZLLtByLpt1bjtdF3MJHiNiBjhBz+Oh1ZNN9o3dhbRgiOJFqTSxbrW5rCsg5yn
-	uzCoEGs/hB7PHjW4pJ6cyuL+o4fCeufdXtqtJ9VLdrR9RrCnWxOqp4QzpQ7SrzhycsFMRPbAGiVEX
-	nsyAsi/pSsKhMBqitbfzvluF5lSLgzRNGMv14tprd1mE2K92Zarkngg++wozQxztzz+3hkVBaf3so
-	h90ubhCCQ==;
+	 bh=6qqEMmoNXi0DSGdXmmstfkv50d6Y4moiXnBfn/A1NLc=; b=LqDsUXeBctT/mSRMpdgf9yCYk
+	KrXOX+dcM5JFM+MxUv35/IB7nBrXprXwGN70ypkwvw3k5CHG38bBB96HSLFKPLTHT5TILVxI14Ldb
+	ITrS5RyJYFsxJJWNv5tS9PWMEY8EpQUAv3pxl/hXC/2Xi2n22MOoYvhIdxAxo1eZLwAmuvdwVeyCg
+	uvBuVXVNaHV+02dQIOrC7Ifpj549yQifuWNRi1MFwr06lSVFgPfbz4CLcvu84IIp89Eoh5ohSDf6q
+	RtjbdUU77NW9To9TVNCQF7WJ+g/NSXrgQqkr8rwcdLNXDhUEWrJCWtD8UiWLDOVgR7nGXPGj/HNFM
+	j1RqhOSPw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kmOQz-0008WM-KV; Mon, 07 Dec 2020 21:52:41 +0000
-Received: from mail-oi1-f195.google.com ([209.85.167.195])
+	id 1kmRfP-0003Pe-Ud; Tue, 08 Dec 2020 01:19:48 +0000
+Received: from mail-pl1-x642.google.com ([2607:f8b0:4864:20::642])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kmOQw-0008Vi-Fw
- for linux-mtd@lists.infradead.org; Mon, 07 Dec 2020 21:52:39 +0000
-Received: by mail-oi1-f195.google.com with SMTP id o25so17180585oie.5
- for <linux-mtd@lists.infradead.org>; Mon, 07 Dec 2020 13:52:38 -0800 (PST)
+ id 1kmRfN-0003P7-4L
+ for linux-mtd@lists.infradead.org; Tue, 08 Dec 2020 01:19:46 +0000
+Received: by mail-pl1-x642.google.com with SMTP id u4so424846plr.12
+ for <linux-mtd@lists.infradead.org>; Mon, 07 Dec 2020 17:19:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=lFbuQKLeAhpAAfgYiFKXrW7VWl8h2CMcWnPvP0ViZ/4=;
+ b=uxUBtVmrMtQ5jQorGj0gobnzg71+HD0mvLX7WlgSaDnuvVEeLunog/VsCzRw2GLLuC
+ RAyAYHLdpm/w/csWMtw19quePNvzc4rDWkjjgNtxqBIeR7EUde2mFAV9GYDJo8Dl12PI
+ CPVQFapQV7PVZQrahrPmfUu3vtUhd2ypQ+BZXbsrdMBz4AYN8zH9GLW97c5ghobIpJBO
+ VexuUo5wWJ8vtOVq4TY2X7qsH0mR9vJp7KpN/16f3NXaezsUiNDj7S2UBP+mbm0wRE2j
+ zpVMJln0m4vuiW3JzmgxWsSvBWYYGrkuiSLAfdNwDHBINaFzWBZ0P83Z3gd2L4BBiE8j
+ x9lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=BF1tW52ALryUZKid8lBVkGB4okYZtkPfb/JX9FH4Smo=;
- b=VKcVhiFreH/G14/LxAaVAEtNVleC8VRkUN9Dapf33qX3U3D2lE+AUcMci61bzT/67m
- oq5SmvmcnebnjQjYkWJ7FSreIZu80RAzshIWASL3EmX4zVj/l44alSEA1eCFdJmhHoea
- tRHXmgNzqJr6sTpB85O3nzp1ICOWK+T5Qfk98uqedptvwJqdWu2gq1AxO/Y9Biw7pehB
- ARBw0lPgeh4LtP19YmaXuUMgdbQWGripmOHrfPjKGGz7XNlm0Wp2sXq9V7cYf6xnns3c
- MCH5wjBIpQaanUcCdZico1Bem4Nqbv4Q1Q540CRUlDqsKIosHBEM6ATqRNCpKbZwFitc
- 6SVw==
-X-Gm-Message-State: AOAM530epNdffMMRUplvm5NV1rRA9LEbYWXy4wQ6cLsrQI3vD0f+RY/v
- c+7hOQB9pe1Nb+uz04c45g==
-X-Google-Smtp-Source: ABdhPJzBabPROxUsAAgxBwNPRqzXMt8tXAiikj8ao9VyU4y4TZD60k59EMloR0FVVTnixBGqZFonog==
-X-Received: by 2002:aca:cf4a:: with SMTP id f71mr627363oig.157.1607377957848; 
- Mon, 07 Dec 2020 13:52:37 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id f10sm2605122oti.11.2020.12.07.13.52.36
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 07 Dec 2020 13:52:37 -0800 (PST)
-Received: (nullmailer pid 896927 invoked by uid 1000);
- Mon, 07 Dec 2020 21:52:36 -0000
-Date: Mon, 7 Dec 2020 15:52:36 -0600
-From: Rob Herring <robh@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: Re: [PATCH v3 1/4] dt-bindings: mtd: partitions: Add binding for
- Qcom SMEM parser
-Message-ID: <20201207215236.GB892840@robh.at.kernel.org>
-References: <20201119071308.9292-1-manivannan.sadhasivam@linaro.org>
- <20201119071308.9292-2-manivannan.sadhasivam@linaro.org>
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=lFbuQKLeAhpAAfgYiFKXrW7VWl8h2CMcWnPvP0ViZ/4=;
+ b=t0WtyqDqdwnmIZXA/kQ3Erlkz8tLdYhicczxQFXE5XUy5NfGT8V1wAof5RWHX4qcah
+ jtP4+YDmaEwtVGGOWpFmMp2cOTaetfVJlxu5HWyC2BdjvA+tjsiXlWLBBbknf8zF5uyN
+ +oj2awnyLtgg7tHPmyMir1ctKtplqHU+2sjZ63U/bz7696VHS2Qo6rZ5QiC8nbZnAOFH
+ 3WRA6SdfT6dEdLo1VHeK+33azfc2ctLAKYJHwAtvqj2vrjOH0KiCI3zZ34+nZjM9DIJD
+ QHjoVlyu+p+9iIluJSy7rgxYVXH0fYDx5QkciiAYWFCB5Fzl6xNZNhyOocExOd2Kk+SU
+ 5xcw==
+X-Gm-Message-State: AOAM533vVKbAl6mBgl5CB70nUvR+pJX0flWfn9t3LhSeHrRGUqHbGB19
+ sjUrXeVnrptWze/KwTjWf8m1PxRz4CAc4rsN/1I=
+X-Google-Smtp-Source: ABdhPJzKGVZDeflu26vkS5pCHroCNG0RjvHZTgh+6J2ah4TzDpxmXD1Dvm32CJnGbybS1z20Xbw14g==
+X-Received: by 2002:a17:902:ac90:b029:da:fd0c:53ba with SMTP id
+ h16-20020a170902ac90b02900dafd0c53bamr6110596plr.23.1607390382566; 
+ Mon, 07 Dec 2020 17:19:42 -0800 (PST)
+Received: from DESKTOP-8REGVGF.localdomain ([124.13.157.5])
+ by smtp.gmail.com with ESMTPSA id mj5sm472656pjb.20.2020.12.07.17.19.40
+ (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+ Mon, 07 Dec 2020 17:19:42 -0800 (PST)
+Date: Tue, 8 Dec 2020 09:19:38 +0800
+From: Sieng Piaw Liew <liew.s.piaw@gmail.com>
+To: Tudor.Ambarus@microchip.com
+Subject: Re: [PATCH] mtd: spi-nor: macronix: enable 4-bit BP support for
+ MX25L6405D
+Message-ID: <20201208011938.GB12175@DESKTOP-8REGVGF.localdomain>
+References: <20201207024612.1318-1-liew.s.piaw@gmail.com>
+ <cc1a8c52-6319-2d37-8df8-f6205bdbfb37@microchip.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20201119071308.9292-2-manivannan.sadhasivam@linaro.org>
+In-Reply-To: <cc1a8c52-6319-2d37-8df8-f6205bdbfb37@microchip.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201207_165238_563263_57A5A550 
-X-CRM114-Status: GOOD (  16.78  )
+X-CRM114-CacheID: sfid-20201207_201945_239723_6784CAA9 
+X-CRM114-Status: GOOD (  20.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,69 +96,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, vigneshr@ti.com, richard@nod.at,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- bjorn.andersson@linaro.org, linux-mtd@lists.infradead.org,
- miquel.raynal@bootlin.com
+Cc: richard@nod.at, linux-mtd@lists.infradead.org, vigneshr@ti.com,
+ linux-kernel@vger.kernel.org, miquel.raynal@bootlin.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Nov 19, 2020 at 12:43:05PM +0530, Manivannan Sadhasivam wrote:
-> Add YAML binding for Qualcomm Shared Memory (SMEM) Flash partition
-> parser.
+On Mon, Dec 07, 2020 at 05:53:20PM +0000, Tudor.Ambarus@microchip.com wrote:
+> Hi, Sieng,
 > 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  .../mtd/partitions/qcom,smem-part.yaml        | 33 +++++++++++++++++++
->  1 file changed, 33 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
+> On 12/7/20 4:46 AM, Sieng Piaw Liew wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > Enable 4-bit Block Protect support for MX256405D and its variants using
+> > the same ID.
+> > 
+> > Tested on Innacom W3400V6 router with MX25L6406E chip.
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml b/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
-> new file mode 100644
-> index 000000000000..cf3f8c1e035d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
-> @@ -0,0 +1,33 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/partitions/qcom,smem-part.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm SMEM NAND flash partition parser binding
-> +
-> +maintainers:
-> +  - Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> +
-> +description: |
-> +  The Qualcomm SoCs supporting the NAND controller interface features a Shared
-> +  Memory (SMEM) based partition table scheme. The maximum partitions supported
-> +  varies between partition table revisions. V3 supports maximum 16 partitions
-> +  and V4 supports 48 partitions.
+> :) What kind of tests did you exactly make?
 
-V3 vs. V4 (and any other version for that matter) is discoverable?
+OpenWrt cannot write into spi-nor after first boot.
+After hacking 4-bit BP support into OpenWrt's kernel v5.4, writing works.
 
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,smem-part
-> +
-> +required:
-> +  - compatible
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    flash {
-> +        partitions {
-> +            compatible = "qcom,smem-part";
-> +        };
-> +    };
-> -- 
-> 2.17.1
+> 
+> > https://github.com/openwrt/openwrt/pull/3501
+> > 
+> > Signed-off-by: Sieng Piaw Liew <liew.s.piaw@gmail.com>
+> > ---
+> >  drivers/mtd/spi-nor/macronix.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+> > index 9203abaac229..7aa8b1ee9daa 100644
+> > --- a/drivers/mtd/spi-nor/macronix.c
+> > +++ b/drivers/mtd/spi-nor/macronix.c
+> > @@ -42,7 +42,8 @@ static const struct flash_info macronix_parts[] = {
+> >         { "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,  32, SECT_4K) },
+> >         { "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K) },
+> >         { "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64, SECT_4K) },
+> > -       { "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, SECT_4K) },
+> > +       { "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128,
+> > +                             SECT_4K | SPI_NOR_4BIT_BP) },
+> 
+> I assume this won't work because it misses the SPI_NOR_HAS_LOCK flag.
+> 
+> Cheers,
+> ta
+
+Yes, I'll have v2 patch sent shortly.
+
+> 
+> >         { "mx25u2033e",  INFO(0xc22532, 0, 64 * 1024,   4, SECT_4K) },
+> >         { "mx25u3235f",  INFO(0xc22536, 0, 64 * 1024,  64,
+> >                               SECT_4K | SPI_NOR_DUAL_READ |
+> > --
+> > 2.17.1
+> > 
 > 
 
 ______________________________________________________
