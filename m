@@ -2,89 +2,66 @@ Return-Path: <SRS0=eGw4=FM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.2 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DA25C4361B
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Dec 2020 01:20:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38CBCC4361B
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Dec 2020 01:24:20 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ABFFF205ED
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Dec 2020 01:20:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ABFFF205ED
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 99F892343F
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Dec 2020 01:24:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 99F892343F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=6qqEMmoNXi0DSGdXmmstfkv50d6Y4moiXnBfn/A1NLc=; b=LqDsUXeBctT/mSRMpdgf9yCYk
-	KrXOX+dcM5JFM+MxUv35/IB7nBrXprXwGN70ypkwvw3k5CHG38bBB96HSLFKPLTHT5TILVxI14Ldb
-	ITrS5RyJYFsxJJWNv5tS9PWMEY8EpQUAv3pxl/hXC/2Xi2n22MOoYvhIdxAxo1eZLwAmuvdwVeyCg
-	uvBuVXVNaHV+02dQIOrC7Ifpj549yQifuWNRi1MFwr06lSVFgPfbz4CLcvu84IIp89Eoh5ohSDf6q
-	RtjbdUU77NW9To9TVNCQF7WJ+g/NSXrgQqkr8rwcdLNXDhUEWrJCWtD8UiWLDOVgR7nGXPGj/HNFM
-	j1RqhOSPw==;
+	 bh=4SZC7/Kof+ILVa2STN0Y4a1Og5HJ2OxxGSxfaFYXnOc=; b=aP2qCOBYq2Kg96WqgYU2EZcjE
+	P7Xs19yp+YA1XoWe+MmarE+q40y8lXQzEoPCWtvj2+C5mBWztHqhFYYasEyGg5n6qDw8Lh/3MYTHA
+	kmAmNOuGPVLdu8EnfwfHSx7hMbFMeyGrynb8fHbR3zF6xAoqTbkfh7CeKVJTOmPqSSl778bcRnsqs
+	fJ9uhxU1ibKmVl8Rg2X+hpAZn8THCaXPnOZVwmRu982XKWu5tsbHLDiALxbJozEmwskuzy9qBJrIK
+	0qB8conGUENBSQYxfcRL3SpPoWCGYsIRNFaSeoGDvnFybcwBBgGFesRH6/QClUok+bxAaZs2+kwA+
+	LOYmCErnA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kmRfP-0003Pe-Ud; Tue, 08 Dec 2020 01:19:48 +0000
-Received: from mail-pl1-x642.google.com ([2607:f8b0:4864:20::642])
+	id 1kmRio-0003fd-8l; Tue, 08 Dec 2020 01:23:18 +0000
+Received: from szxga04-in.huawei.com ([45.249.212.190])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kmRfN-0003P7-4L
- for linux-mtd@lists.infradead.org; Tue, 08 Dec 2020 01:19:46 +0000
-Received: by mail-pl1-x642.google.com with SMTP id u4so424846plr.12
- for <linux-mtd@lists.infradead.org>; Mon, 07 Dec 2020 17:19:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=lFbuQKLeAhpAAfgYiFKXrW7VWl8h2CMcWnPvP0ViZ/4=;
- b=uxUBtVmrMtQ5jQorGj0gobnzg71+HD0mvLX7WlgSaDnuvVEeLunog/VsCzRw2GLLuC
- RAyAYHLdpm/w/csWMtw19quePNvzc4rDWkjjgNtxqBIeR7EUde2mFAV9GYDJo8Dl12PI
- CPVQFapQV7PVZQrahrPmfUu3vtUhd2ypQ+BZXbsrdMBz4AYN8zH9GLW97c5ghobIpJBO
- VexuUo5wWJ8vtOVq4TY2X7qsH0mR9vJp7KpN/16f3NXaezsUiNDj7S2UBP+mbm0wRE2j
- zpVMJln0m4vuiW3JzmgxWsSvBWYYGrkuiSLAfdNwDHBINaFzWBZ0P83Z3gd2L4BBiE8j
- x9lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=lFbuQKLeAhpAAfgYiFKXrW7VWl8h2CMcWnPvP0ViZ/4=;
- b=t0WtyqDqdwnmIZXA/kQ3Erlkz8tLdYhicczxQFXE5XUy5NfGT8V1wAof5RWHX4qcah
- jtP4+YDmaEwtVGGOWpFmMp2cOTaetfVJlxu5HWyC2BdjvA+tjsiXlWLBBbknf8zF5uyN
- +oj2awnyLtgg7tHPmyMir1ctKtplqHU+2sjZ63U/bz7696VHS2Qo6rZ5QiC8nbZnAOFH
- 3WRA6SdfT6dEdLo1VHeK+33azfc2ctLAKYJHwAtvqj2vrjOH0KiCI3zZ34+nZjM9DIJD
- QHjoVlyu+p+9iIluJSy7rgxYVXH0fYDx5QkciiAYWFCB5Fzl6xNZNhyOocExOd2Kk+SU
- 5xcw==
-X-Gm-Message-State: AOAM533vVKbAl6mBgl5CB70nUvR+pJX0flWfn9t3LhSeHrRGUqHbGB19
- sjUrXeVnrptWze/KwTjWf8m1PxRz4CAc4rsN/1I=
-X-Google-Smtp-Source: ABdhPJzKGVZDeflu26vkS5pCHroCNG0RjvHZTgh+6J2ah4TzDpxmXD1Dvm32CJnGbybS1z20Xbw14g==
-X-Received: by 2002:a17:902:ac90:b029:da:fd0c:53ba with SMTP id
- h16-20020a170902ac90b02900dafd0c53bamr6110596plr.23.1607390382566; 
- Mon, 07 Dec 2020 17:19:42 -0800 (PST)
-Received: from DESKTOP-8REGVGF.localdomain ([124.13.157.5])
- by smtp.gmail.com with ESMTPSA id mj5sm472656pjb.20.2020.12.07.17.19.40
- (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
- Mon, 07 Dec 2020 17:19:42 -0800 (PST)
-Date: Tue, 8 Dec 2020 09:19:38 +0800
-From: Sieng Piaw Liew <liew.s.piaw@gmail.com>
-To: Tudor.Ambarus@microchip.com
-Subject: Re: [PATCH] mtd: spi-nor: macronix: enable 4-bit BP support for
- MX25L6405D
-Message-ID: <20201208011938.GB12175@DESKTOP-8REGVGF.localdomain>
-References: <20201207024612.1318-1-liew.s.piaw@gmail.com>
- <cc1a8c52-6319-2d37-8df8-f6205bdbfb37@microchip.com>
+ id 1kmRil-0003ej-6O
+ for linux-mtd@lists.infradead.org; Tue, 08 Dec 2020 01:23:16 +0000
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+ by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cqj8s4LCmz15Xkq;
+ Tue,  8 Dec 2020 09:22:37 +0800 (CST)
+Received: from [10.67.102.197] (10.67.102.197) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 8 Dec 2020 09:23:00 +0800
+Subject: Re: ping // [PATCH] mtd:cfi_cmdset_0002: fix atomic sleep bug when
+ CONFIG_MTD_XIP=y
+To: Vignesh Raghavendra <vigneshr@ti.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>
+References: <20201127130731.99270-1-nixiaoming@huawei.com>
+ <a02e1364-3b82-039a-4b65-e2a216663dd4@huawei.com>
+ <20201207115228.0a6de398@xps13> <73b539eb-616e-64d8-07d8-4606da2ea2ea@ti.com>
+From: Xiaoming Ni <nixiaoming@huawei.com>
+Message-ID: <b5c52547-b3cc-4217-cc69-067cee7d536f@huawei.com>
+Date: Tue, 8 Dec 2020 09:23:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.0.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <cc1a8c52-6319-2d37-8df8-f6205bdbfb37@microchip.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <73b539eb-616e-64d8-07d8-4606da2ea2ea@ti.com>
+X-Originating-IP: [10.67.102.197]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201207_201945_239723_6784CAA9 
-X-CRM114-Status: GOOD (  20.89  )
+X-CRM114-CacheID: sfid-20201207_202315_716444_BAA8EE09 
+X-CRM114-Status: GOOD (  17.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,64 +73,116 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: richard@nod.at, linux-mtd@lists.infradead.org, vigneshr@ti.com,
- linux-kernel@vger.kernel.org, miquel.raynal@bootlin.com
-Content-Type: text/plain; charset="us-ascii"
+Cc: wangle6@huawei.com, tudor.ambarus@microchip.com, richard@nod.at,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+ linux-mtd@lists.infradead.org, gregkh@linuxfoundation.org, tglx@linutronix.de
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Dec 07, 2020 at 05:53:20PM +0000, Tudor.Ambarus@microchip.com wrote:
-> Hi, Sieng,
+On 2020/12/8 2:59, Vignesh Raghavendra wrote:
+> Hi Xiaoming,
 > 
-> On 12/7/20 4:46 AM, Sieng Piaw Liew wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> > Enable 4-bit Block Protect support for MX256405D and its variants using
-> > the same ID.
-> > 
-> > Tested on Innacom W3400V6 router with MX25L6406E chip.
+> On 12/7/20 4:23 PM, Miquel Raynal wrote:
+>> Hi Xiaoming,
+>>
+>> Xiaoming Ni <nixiaoming@huawei.com> wrote on Mon, 7 Dec 2020 18:48:33
+>> +0800:
+>>
+>>> ping
+>>>
+>>> On 2020/11/27 21:07, Xiaoming Ni wrote:
+>>>> When CONFIG_MTD_XIP=y, local_irq_disable() is called in xip_disable().
+>>>> To avoid sleep in interrupt context, we need to call local_irq_enable()
+>>>> before schedule().
+>>>>
+>>>> The problem call stack is as follows:
+>>>> bug1:
+>>>> 	do_write_oneword_retry()
+>>>> 		xip_disable()
+>>>> 			local_irq_disable()
+>>>> 		do_write_oneword_once()
+>>>> 			schedule()
+>>>> bug2:
+>>>> 	do_write_buffer()
+>>>> 		xip_disable()
+>>>> 			local_irq_disable()
+>>>> 		do_write_buffer_wait()
+>>>> 			schedule()
+>>>> bug3:
+>>>> 	do_erase_chip()
+>>>> 		xip_disable()
+>>>> 			local_irq_disable()
+>>>> 		schedule()
+>>>> bug4:
+>>>> 	do_erase_oneblock()
+>>>> 		xip_disable()
+>>>> 			local_irq_disable()
+>>>> 		schedule()
+>>>>
+>>>> Fixes: 02b15e343aee ("[MTD] XIP for AMD CFI flash.")
+>>>> Cc: stable@vger.kernel.org # v2.6.13
+>>>> Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+>>>> ---
+>>>>    drivers/mtd/chips/cfi_cmdset_0002.c | 16 ++++++++++++++++
+>>>>    1 file changed, 16 insertions(+)
+>>>>
+>>>> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+>>>> index a1f3e1031c3d..12c3776f093a 100644
+>>>> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+>>>> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+>>>> @@ -1682,7 +1682,11 @@ static int __xipram do_write_oneword_once(struct map_info *map,
+>>>>    			set_current_state(TASK_UNINTERRUPTIBLE);
+>>>>    			add_wait_queue(&chip->wq, &wait);
+>>>>    			mutex_unlock(&chip->mutex);
+>>>> +			if (IS_ENABLED(CONFIG_MTD_XIP))
+>>>> +				local_irq_enable();
+>>>>    			schedule();
+>>>> +			if (IS_ENABLED(CONFIG_MTD_XIP))
+>>>> +				local_irq_disable();
+>>
+>> The fix really seems strange to me. I will let Vignesh decide but I
+>> think we should consider updating/fixing xip_disable instead.
 > 
-> :) What kind of tests did you exactly make?
+> Agree with Miquel. Have you done any testing
+> or is this purely based on code inspection?
+> 
+I don't have the corresponding device test environment.
+I found the problem through code review.
 
-OpenWrt cannot write into spi-nor after first boot.
-After hacking 4-bit BP support into OpenWrt's kernel v5.4, writing works.
 
+> What about comment before xip_disable() function:
 > 
-> > https://github.com/openwrt/openwrt/pull/3501
-> > 
-> > Signed-off-by: Sieng Piaw Liew <liew.s.piaw@gmail.com>
-> > ---
-> >  drivers/mtd/spi-nor/macronix.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-> > index 9203abaac229..7aa8b1ee9daa 100644
-> > --- a/drivers/mtd/spi-nor/macronix.c
-> > +++ b/drivers/mtd/spi-nor/macronix.c
-> > @@ -42,7 +42,8 @@ static const struct flash_info macronix_parts[] = {
-> >         { "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,  32, SECT_4K) },
-> >         { "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K) },
-> >         { "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64, SECT_4K) },
-> > -       { "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, SECT_4K) },
-> > +       { "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128,
-> > +                             SECT_4K | SPI_NOR_4BIT_BP) },
+> /*
+>   * No interrupt what so ever can be serviced while the flash isn't in array
+>   * mode.  This is ensured by the xip_disable() and xip_enable() functions
+>   * enclosing any code path where the flash is known not to be in array mode.
+>   * And within a XIP disabled code path, only functions marked with __xipram
+>   * may be called and nothing else (it's a good thing to inspect generated
+>   * assembly to make sure inline functions were actually inlined and that gcc
+>   * didn't emit calls to its own support functions). Also configuring MTD CFI
+>   * support to a single buswidth and a single interleave is also recommended.
+>   */
 > 
-> I assume this won't work because it misses the SPI_NOR_HAS_LOCK flag.
-> 
-> Cheers,
-> ta
+> So, I don't think the fix is as simple as this patch.
+>
++xip_enable();
+  schedule();
++xip_disable();
 
-Yes, I'll have v2 patch sent shortly.
+Do I need to change it to this?
 
+
+
+> Regards
+> Vignesh
+> .
 > 
-> >         { "mx25u2033e",  INFO(0xc22532, 0, 64 * 1024,   4, SECT_4K) },
-> >         { "mx25u3235f",  INFO(0xc22536, 0, 64 * 1024,  64,
-> >                               SECT_4K | SPI_NOR_DUAL_READ |
-> > --
-> > 2.17.1
-> > 
-> 
+
+Thanks
+Xiaoming Ni
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
