@@ -2,84 +2,73 @@ Return-Path: <SRS0=eGw4=FM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C002C4361B
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Dec 2020 18:11:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39F43C4361B
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Dec 2020 20:23:39 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 26B0B23B54
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Dec 2020 18:11:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26B0B23B54
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	by mail.kernel.org (Postfix) with ESMTPS id C5FA22388C
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Dec 2020 20:23:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C5FA22388C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ami.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
-	:List-Id:In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Z9pJMZ1qwU7juJAF6QZ4jKcpLIs3jMs5G68zbsNLkLg=; b=YGPxmkOmgj/bf0yi2oZjsem/tT
-	Y9kLk0F7T7CqtQ+I6zV5Bn4ayvQmzbfkaYWxDldJJ8r4WcO7q8Ay0Wrn8PaK73HRSMTR/FWvUI/6S
-	0Z1VJ53ETw3rKJ2Ckn0aFe4ithM9h900BkHYvm48jjmHOq1dfcnCbJNzJJj7zjsyZRO/Z3FFfP42M
-	i4wvft+GNsRhtHsU3DlaGFzC07vhLhvxsAw83mue3UHUnQWaz/gix5DC+hfQ7GN0VdPvxHMrjTold
-	vp8ZKQc5H65jVs3bTOcVgEmdPcJRzrpSzG781JdYe9tTgOHqieTPeNsiOYCb8RJ650EZp0+ZBmyfa
-	HDMSTeqA==;
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=AddmzmlSgFOd0kcyHgEd5khy7vGJ7kOolc35QcR2N0I=; b=vb8gsxKwQnUwP8AXWvjSjO0s3
+	hVPNkW+cczcnZE/2x/ZjtO3HA/ShUf9+wO1OlDwW8A3yxUqaGug0D7R1ycPXe+lYM+eWfERGsg2X7
+	ciJSIBuGXvLaYqhVsly036t3sCIgWUUxB1TwA6OVMlqQmZGkLqQO/o7GYOGmOBtixtvnqcGfpsgzS
+	I6vVDPzu2cFNj9RWIAzD0IsaahG6KVMuFzqQVG7KhvLnl5G8y8k0oQw2Gt1ob/33HnSBrn8SgzawP
+	zU6cYzSsAV67sMdRCUctWjlulLrgGHLAsnDdoV75ldc35JscyB6AvplJtClzx0Wkv9NmMMBD8CjJi
+	yZT5J27NQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kmhS1-0000LA-Ch; Tue, 08 Dec 2020 18:11:01 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1kmjVm-00030r-7h; Tue, 08 Dec 2020 20:23:02 +0000
+Received: from atlmailgw1.ami.com ([63.147.10.40])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kmhRy-0000KJ-9L
- for linux-mtd@lists.infradead.org; Tue, 08 Dec 2020 18:10:59 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0B8IAsIO060952;
- Tue, 8 Dec 2020 12:10:54 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1607451054;
- bh=KukNEevA95t01KvHxeKqUpiG0yj/87OEttzDlhLnfr0=;
- h=Date:From:To:Subject:References:In-Reply-To;
- b=PKZxcP+91fPhvIxMRdbBkUtI4nXDQzONgYsz8byNZB3dB+0NAb1KEHlTOUGkXYakv
- 8qpzWjAbYUGrHTxtNkSDml9JYmGMD7a0VGII0YEx2MkTP0gyTZDjPeF1LN05xA3AVC
- vCc/B8EK65qDnf+WNRW0TLr9rtieCum6MKk4TIBc=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0B8IAs7A103397
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 8 Dec 2020 12:10:54 -0600
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 8 Dec
- 2020 12:10:54 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 8 Dec 2020 12:10:54 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0B8IArMI058897;
- Tue, 8 Dec 2020 12:10:53 -0600
-Date: Tue, 8 Dec 2020 23:40:52 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/3] UBI: Do not zero out EC and VID on ECC-ed NOR
- flashes
-Message-ID: <20201208181050.z747aiiccoxj6xqz@ti.com>
-References: <20201201102711.8727-1-p.yadav@ti.com>
- <20201201102711.8727-2-p.yadav@ti.com>
+ id 1kmjVj-00030M-D4
+ for linux-mtd@lists.infradead.org; Tue, 08 Dec 2020 20:23:00 +0000
+X-AuditID: ac1060b2-a93ff700000017ec-f2-5fcfe0a123aa
+Received: from atlms1.us.megatrends.com (atlms1.us.megatrends.com
+ [172.16.96.144])
+ (using TLS with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (Client did not present a certificate)
+ by atlmailgw1.ami.com (Symantec Messaging Gateway) with SMTP id
+ 9F.DB.06124.2A0EFCF5; Tue,  8 Dec 2020 15:22:58 -0500 (EST)
+Received: from ami-us-wk.us.megatrends.com (172.16.98.207) by
+ atlms1.us.megatrends.com (172.16.96.144) with Microsoft SMTP Server (TLS) id
+ 14.3.468.0; Tue, 8 Dec 2020 15:22:57 -0500
+From: Hongwei Zhang <hongweiz@ami.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: [PATCH,Aspeed, v1 1/1] mtd: spi-nor: add Micron MT25QL01G flash
+Date: Tue, 8 Dec 2020 15:22:20 -0500
+Message-ID: <20201208202220.30302-2-hongweiz@ami.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201208202220.30302-1-hongweiz@ami.com>
+References: <20201208202220.30302-1-hongweiz@ami.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20201201102711.8727-2-p.yadav@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Originating-IP: [172.16.98.207]
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrFLMWRmVeSWpSXmKPExsWyRiBhgu6iB+fjDWbeF7HYdZnD4vf5v8wW
+ u5uWsVt8XOLgwOJxtX0Xu8fFj8eYPTYvqfe482MpYwBLFJdNSmpOZllqkb5dAlfGnq7FTAVt
+ HBUPl11kbWA8zNbFyMkhIWAiMeHtZCCbi0NIYBeTxMWVJ5kgnJ2MEs2/5jCCVLEJqEns3TyH
+ CcQWEdCXeN9+G6yDWWAKo0TrqTVgRcICHhL7fy1hB7FZBFQkrrV9AWvgFTCVeLPoGAvEOnmJ
+ 1RsOMIPYnAJmEgtmN7GC2EJANU/uvWCGqBeUODnzCVg9s4CExMEXEHEhAVmJW4ceM0HMUZR4
+ 8Os76wRGgVlIWmYhaVnAyLSKUSixJCc3MTMnvdxQLzE3Uy85P3cTIyQ8N+1gbLlofoiRiYPx
+ EKMEB7OSCK+a1Nl4Id6UxMqq1KL8+KLSnNTiQ4zSHCxK4ryr3I/GCwmkJ5akZqemFqQWwWSZ
+ ODilGhiFQgPMbl+b86Ffdd7eWPGqDfdZLj1blebdw9fD1nBWW+fg7fmBZ1fvDeW40/Vkiibj
+ zp8Z3atPNxTd45Pnf3FMtyUn/d/VvytEo664c5lc59dSb47ZkprcJXPTxMqr9+Bic667J/be
+ ep63e0XMEzde0+/Rs5+/7+93yvhfovaphv/Ltuq0+htKLMUZiYZazEXFiQA53pcQPQIAAA==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201208_131058_405434_6DFA0D68 
-X-CRM114-Status: GOOD (  13.61  )
+X-CRM114-CacheID: sfid-20201208_152259_557053_A5A797C6 
+X-CRM114-Status: GOOD (  12.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,33 +80,35 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: Andrew Jeffery <andrew@aj.id.au>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Hongwei Zhang <hongweiz@ami.com>, Joel Stanley <joel@jms.id.au>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Richard,
+Add Micron MT25QL01G flash, used on AST2600 board.
 
-On 01/12/20 03:57PM, Pratyush Yadav wrote:
-> For NOR flashes EC and VID are zeroed out before an erase is issued to
-> make sure UBI does not mistakenly treat the PEB as used and associate it
-> with an LEB.
-> 
-> But on some flashes, like the Cypress Semper S28 SPI NOR flash family,
-> multi-pass page programming is not allowed on the default ECC scheme.
-> This means zeroing out these magic numbers will result in the flash
-> throwing a page programming error.
-> 
-> Do not zero out EC and VID for such flashes. A writesize > 1 is an
-> indication of an ECC-ed flash.
+Signed-off-by: Hongwei Zhang <hongweiz@ami.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Patches 2/3 and 3/3 have been picked up in the spi-nor tree. Can you 
-please pick this patch up?
-
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 99ce971ebc6d..800890038c39 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -2312,6 +2312,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+ 	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
+ 	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
++	{ "mt25ql01g",   INFO(0x21ba20, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
+ 	{ "mt25ql02g",   INFO(0x20ba22, 0, 64 * 1024, 4096,
+ 			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
+ 			      NO_CHIP_ERASE) },
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments India
+2.17.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
