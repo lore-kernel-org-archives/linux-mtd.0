@@ -1,81 +1,129 @@
-Return-Path: <SRS0=eGw4=FM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=ozsj=FN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09FCBC433FE
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Dec 2020 22:13:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33676C433FE
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Dec 2020 03:52:27 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AD95622288
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Dec 2020 22:13:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD95622288
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id D57A3239FD
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Dec 2020 03:52:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D57A3239FD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=dQKLRsnA4ZuKW0toy1kUNHpbkrqHHy8MIwICxROTI8I=; b=iQJ07GxQCm38RMFcnkx/hh/1IZ
-	HycqCqdA7CQXNnHqj350yYdYobNDn45wlyq6Qf7RqkvILh0joTF00w4QxLHmomCVF+EBW6F3+bAfQ
-	P/lElcAlijbsdrBFCexex+5HzRaQRxXoPxuzUW52YO1xE8jUiiADZrWiqL8TrRsrwrCUsx9BgCnUR
-	YQ+BOBW2sC8YxOHXUEjJCnyjvugx0HAYYKCtWwyPJ9WM/7Zkc/fM096dIHYdYHOXX4MZEG+YXEG8t
-	TN7Q5lydSPUau3NMCvgFe8U6H3Ws6SKObAblq9c/cFaVWdTpC5PMC+fUDqKrn4N3ZN6b7Iajgyh8C
-	uvNy5iMA==;
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=RbSXNvSMuXHnT2UtgjZe54eZQQRfEb8AWDhgMnpvHHg=; b=KY9xdRXNd1OcZ8754oTAmpTbxD
+	R1LgvEs8oj24IyQUbX/28h/TtiIVxzqwJDw4MPYrV1AKLteJSbItxef9AG5QsTDDeW/yQVMQwaQ8T
+	xdJvZyTg2BUzOpK0iF9btFInPMNxH6u4u4OdDd2iJF6Bj//pfaR4v4uuPGRC4GYMvR9eBf5jtNrsq
+	pr3O3eo+jDBoyaG0++ZV5d3IzB8bwXIBeLDG35OOVW53nPlKyQpQIt6lATDe1hEpbkzWog7pgEhc6
+	eXwWUVty1JtsqbSotM0Iks9/EznFsrM1iLS0Rnyf/rcLOCL2P66IR/7omyum3afHutXUQ9F+9G+xz
+	0oa8weDQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kmlE5-0002IX-Ro; Tue, 08 Dec 2020 22:12:53 +0000
-Received: from mail-qt1-x843.google.com ([2607:f8b0:4864:20::843])
+	id 1kmqVj-0002nK-Il; Wed, 09 Dec 2020 03:51:27 +0000
+Received: from mail-eopbgr150082.outbound.protection.outlook.com
+ ([40.107.15.82] helo=EUR01-DB5-obe.outbound.protection.outlook.com)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kmlE3-0002IE-AW
- for linux-mtd@lists.infradead.org; Tue, 08 Dec 2020 22:12:52 +0000
-Received: by mail-qt1-x843.google.com with SMTP id 7so13166829qtp.1
- for <linux-mtd@lists.infradead.org>; Tue, 08 Dec 2020 14:12:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id;
- bh=ScyxoivQ5p7CVZv7RTbksbq6DTpHoZgKHZPCi8Pz30o=;
- b=KDrak4YY5GIgIMOQqWk3hRAI737dgv3TZ6+w+hcb2ceLFzCAc+GHfR8B1c7lNjDVcs
- 1z92V/pKHDxDBfTEmm6IutZqk5YI1u1jkWFWl7sPz/VcNbxeGdVJFMEagk8A6t6b4Kc7
- 3bJLJo6U2fFU/JjsPpPAZfVHtqthv+H9Fq46T1WJqIefrnMfbT1EM5LvjyjiUYR9hC2H
- G/mpi6i5Wzen/6VlEODB7ggpPRufo+t6EodHkSagswgKACzrZpHnLwEVLI3wKvga+DEg
- +ttMmQBEh2NOFzqKYJ28WzVk3zGndWAN/LSnd0cf4A0sFyjmv0arrlvssDMD5jDr39BL
- uLhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=ScyxoivQ5p7CVZv7RTbksbq6DTpHoZgKHZPCi8Pz30o=;
- b=hgrzFYzM22cggPUSi9aR0/FxIf2HEsUb6AiKKhk1DkOSq10rwKNEztB0PX3S6LqeMa
- yDSWqzj+iuHr0LS4MkO3zd+Q0zQWQwrxhjtNjACJWqauqfoCZQu/xawCXg7Ty8QKIubS
- wKQ2BrXrsE0tI0QlBKsWSv0r5wf3zj/eL0BZxd0PJpKjEnF9uxkJPAn3N/g08iy1l1ON
- +z89YaNZaE2ut5ovjaoLr31ESorWwZZhvNGctRADOrUMscaLKcLFBsRgU39OMp+Id/5h
- +RrWOWvCN0WtM9o/r8bdYu8+EWgZ2xEkmaN5dadlUPBgpPHYR5baW/UGnxLf0DTpeo62
- /X+A==
-X-Gm-Message-State: AOAM532Zg1PnpbO7q/TL7fjpGi9462iNx3ayotQJ74L6VAB+1n8z2JBK
- lKnqkujISjTLfe3D4VMXcpAkSe6TmfJp9w==
-X-Google-Smtp-Source: ABdhPJzxBXoXQyrEIIfA8qLCELKrWiM+WIPuR2ZgOkvXqRO2F1Rv6mwzVJQpSduGrwqNp84TyS2UXA==
-X-Received: by 2002:ac8:4986:: with SMTP id f6mr167857qtq.43.1607465568455;
- Tue, 08 Dec 2020 14:12:48 -0800 (PST)
-Received: from localhost.localdomain ([177.194.79.136])
- by smtp.gmail.com with ESMTPSA id q20sm27475qkj.49.2020.12.08.14.12.46
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 08 Dec 2020 14:12:47 -0800 (PST)
-From: Fabio Estevam <festevam@gmail.com>
-To: miquel.raynal@bootlin.com
-Subject: [PATCH] mtd: rawnand: gpmi: Use a single line for of_device_id
-Date: Tue,  8 Dec 2020 19:12:43 -0300
-Message-Id: <20201208221243.3255-1-festevam@gmail.com>
+ id 1kmqVf-0002me-Qb
+ for linux-mtd@lists.infradead.org; Wed, 09 Dec 2020 03:51:25 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N21AhuLZNRg4sacp3zYBZilpTScaB22Rrh11mYLwJMqR8cffr32cWuXYNGOlc4zweEJClNKA1NvAlDdMehwULoRccp+3LNhIjPi9M00IGSIGE9pAGT2eKh2ph6MAdmg+8QKaI0rM2/eKU7txm6JK5ZhmiCFyQZbQrBgexGW4ZslcMx49JfN/clkUU9nSakWKohLYcJaBJSgvoXFupS9FJC7lVdVq63H6GJrX59Q1xBvxaWFM0MtM2QT7RHzysuZUoc4+C/K6bpO/T9+2jyMcQ0mDxuh+skqiLNaeX2atdcH3m3ZjHbEVgK1GcaImaR72tmhZqyAr7yor+6u7JMSoEg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iluagt7hr6xJCfA7eGl8as9LnTPJfOEanMxcYrHnZaQ=;
+ b=PKl+gJzer3qwH22QVBjSgVWbjfNXa7JNmExEgRDWyj0EZ+rLU10gPEG739edItmjbQ4dNgirGvIdPXh6IBFslGln9uE7S2PLzZT3qV4R+nGzaY3CEfhL2NK+aqFgVtjycpU06PidhDbyjS2Y1zz+WD+oZah4ni1Y/+47s/dG4wu/ViQuXIZlq1hE3CXB4oVAE8Qbhy9gD3fqSCY0fC/4ZfK4x3YgG1vChSMy5vU/WJqy+2760cYT6qtlkSGV7AIR5fK+6NCAmdTJkAfPfC+tSnzfHR403WIl3OFTLvmdQB/nxnG0L6JmgnLBiWHvpHcKxiYASi0jVN29liLOTrfjCA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iluagt7hr6xJCfA7eGl8as9LnTPJfOEanMxcYrHnZaQ=;
+ b=LNmBWH3EY43MZIv12XDpP9pdEqPgdnRYckF9Z+fLsADZ4oqeuI2muPW+wlkTQrEeDU5e6K4yYnXvyuU4s4Bnhz9DcZ7VrzkaheGGHhRqDagsFZ1U++FXggduSOT7xBzx3YGJ4kP9nBpqgdGdPkPHrhL3NVFG18Qa3M4UAGdOpSg=
+Authentication-Results: bootlin.com; dkim=none (message not signed)
+ header.d=none;bootlin.com; dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR0402MB3701.eurprd04.prod.outlook.com
+ (2603:10a6:209:1a::16) by AM6PR0402MB3365.eurprd04.prod.outlook.com
+ (2603:10a6:209:c::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.18; Wed, 9 Dec
+ 2020 03:51:19 +0000
+Received: from AM6PR0402MB3701.eurprd04.prod.outlook.com
+ ([fe80::e094:5ce6:8b18:3637]) by AM6PR0402MB3701.eurprd04.prod.outlook.com
+ ([fe80::e094:5ce6:8b18:3637%5]) with mapi id 15.20.3632.023; Wed, 9 Dec 2020
+ 03:51:19 +0000
+From: Han Xu <han.xu@nxp.com>
+To: miquel.raynal@bootlin.com,
+	s.hauer@pengutronix.de
+Subject: [PATCH v2 0/2] fix some gpmi nand driver bugs
+Date: Tue,  8 Dec 2020 21:51:02 -0600
+Message-Id: <20201209035104.22679-1-han.xu@nxp.com>
 X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [70.112.23.252]
+X-ClientProxiedBy: DM6PR07CA0096.namprd07.prod.outlook.com
+ (2603:10b6:5:337::29) To AM6PR0402MB3701.eurprd04.prod.outlook.com
+ (2603:10a6:209:1a::16)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from umbrella.lan (70.112.23.252) by
+ DM6PR07CA0096.namprd07.prod.outlook.com (2603:10b6:5:337::29) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3654.12 via Frontend Transport; Wed, 9 Dec 2020 03:51:18 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 16dd15ae-5b5f-40c4-0bb6-08d89bf5b018
+X-MS-TrafficTypeDiagnostic: AM6PR0402MB3365:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR0402MB33659A446544B20652AD356F97CC0@AM6PR0402MB3365.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7BQGzLaE1blyUtCTIdR9mXV9wnxQIWmnKhj43tZv4Dey00lPeflN320gkjL+HWycdm6QsX5WE2arWHtcO/HrR3/cemx3W8QsFXJWf6EHQsrICe7HpzMoL83TyrpLG2tOlYDjkpm0Z4V29z4fRkT3ig7jp9zzFlCTDZT6QxeV1Pou+h/569RNp3xNy8VGvr3xWDF4vXBuHGAWt7oWFpQ4IAgC5bSXAl+aayPpY9re2i+g88vUV29ZROR1bgWFsx+HALCuWD81mzPt7gAvXG0hS0+mLP6tbyIznqrgRdyhnvgdEvCnREErQw6DXnE9lJDQVbNuZCds7hOdKXukBOhGmuA7+0yOeFXzWmvPCt/fudQbYr2GneKAwYJGbgWDIfrs
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:AM6PR0402MB3701.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(366004)(346002)(136003)(376002)(8936002)(44832011)(956004)(6512007)(52116002)(2616005)(26005)(2906002)(86362001)(8676002)(508600001)(8886007)(5660300002)(36756003)(66946007)(4744005)(16526019)(186003)(6506007)(1076003)(4326008)(66476007)(34490700003)(66556008)(6666004)(6486002)(83380400001);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?VDFzfpgS7eUM/ITbQHjh+RncTF3g8UbubtxcZ8pBnDVstadPGeJFGlVp0Qf/?=
+ =?us-ascii?Q?lyKUFV6mQU5w+EsmnSBPnz0XUJopasx+TFFvSV6EjytATgQFhPNSnOg0yhzb?=
+ =?us-ascii?Q?sulvYFYv3CSVIM3moJm78ka4SwiLCQULcxPpJHeXwxwe5ZPdtZnF9jBycL1n?=
+ =?us-ascii?Q?wqHikRYiMgUBWOz+QNtgQjv1myG8vaJIeoqnIf4V8maeXRs1iJR/UGIbIfD4?=
+ =?us-ascii?Q?pd8M+q8kF8B/Ct2n0UUCtcXuBWh4K6WkqKWL7N0+aT2XIDfBtidqfRs5ZKBQ?=
+ =?us-ascii?Q?XrY4WWXfmf8P4AgwtVBQfQb7NURprbE/OE+YYan4JKuyKQqAuTsGtujEk7yV?=
+ =?us-ascii?Q?IDbjpVtamyI9dELxIpWY2H4iK+CvjGJJGRd4uUhaeWAWLYm+W55BA9zOyOqw?=
+ =?us-ascii?Q?47a6HMz7Xfb35+W7TZbNuJgltmd0eY1p8RXVGLTg4YVUJHtzDMHRBzxeuD2A?=
+ =?us-ascii?Q?Ho5Y8yrbVhMYq/kTQLrIRhjHRpI3+0OJM3KjzjaPidnGufD0O11Si6fWTuGD?=
+ =?us-ascii?Q?Q0SFBoKlKYFF8CmsYBJ3J68gDPcGVmX7TrAR30joKhAbCVd+1QYJLlRmegvl?=
+ =?us-ascii?Q?hqC1fF53AWXK+EK8PGTAiNcZX+34PcPxqnQSxbIl3xuxmZ6HhpFz4ki57Y5k?=
+ =?us-ascii?Q?txANlbEgDj881sit9boc5ZjpsJ++GCgBe/IUV7dgA3N/sUKj3sidxzuDlVGV?=
+ =?us-ascii?Q?zwqRC/L60DW5VBHRVmcY55dYWh7C4EP2223tQcnUvyR1kdXQPyNIFVyuaQpP?=
+ =?us-ascii?Q?HRft981bvW0u9baIIkXYRQaw5Z+MpWp9PYwUrcyrkJzrcgQa2YmMG+VtEFDK?=
+ =?us-ascii?Q?JfpRSmGcA+yZyPBS401M4EIbFtF2aRHgUdr/PoieNPN1hbRbrpB0XZmTNEBR?=
+ =?us-ascii?Q?JXgJvqzESKjX+zOLe9zkGb+NZQeEWOwKPr/u6cpm7hNZQghfjmkTREBFpuuV?=
+ =?us-ascii?Q?T99NtTX14jMTgnHUjasZ1Iuj2uosFchHCe9CqGLkoXIsRvkduAIaLcerzGi4?=
+ =?us-ascii?Q?cuzM?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR0402MB3701.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2020 03:51:19.5954 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-Network-Message-Id: 16dd15ae-5b5f-40c4-0bb6-08d89bf5b018
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HBQt0ZN/l3RX0ZqrjXkn/4XoxBxcAmJANajBxe/Eq1nPTW2okYefBolGkNpM3HSY
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR0402MB3365
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201208_171251_410275_4EE8C1E2 
-X-CRM114-Status: GOOD (  11.98  )
+X-CRM114-CacheID: sfid-20201208_225124_089692_B124097F 
+X-CRM114-Status: GOOD (  10.80  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,55 +135,28 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: han.xu@nxp.com, linux-mtd@lists.infradead.org,
- Fabio Estevam <festevam@gmail.com>
-MIME-Version: 1.0
+Cc: han.xu@nxp.com, linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The .compatible and .data pairs can be stored in a single line, which
-makes the code more concise.
+fix gpmi nand driver cannot sense multi-cs chip issue and the random DMA
+timeout bug. 
 
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
----
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 22 ++++++----------------
- 1 file changed, 6 insertions(+), 16 deletions(-)
+changes from v1:
+* fixed the typo
+* removed the fixes tag
+* added Sascha's review tag
 
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index 02bb98fa83d7..159b0223feaf 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -2465,22 +2465,12 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
- }
- 
- static const struct of_device_id gpmi_nand_id_table[] = {
--	{
--		.compatible = "fsl,imx23-gpmi-nand",
--		.data = &gpmi_devdata_imx23,
--	}, {
--		.compatible = "fsl,imx28-gpmi-nand",
--		.data = &gpmi_devdata_imx28,
--	}, {
--		.compatible = "fsl,imx6q-gpmi-nand",
--		.data = &gpmi_devdata_imx6q,
--	}, {
--		.compatible = "fsl,imx6sx-gpmi-nand",
--		.data = &gpmi_devdata_imx6sx,
--	}, {
--		.compatible = "fsl,imx7d-gpmi-nand",
--		.data = &gpmi_devdata_imx7d,
--	}, {}
-+	{ .compatible = "fsl,imx23-gpmi-nand", .data = &gpmi_devdata_imx23, },
-+	{ .compatible = "fsl,imx28-gpmi-nand", .data = &gpmi_devdata_imx28, },
-+	{ .compatible = "fsl,imx6q-gpmi-nand", .data = &gpmi_devdata_imx6q, },
-+	{ .compatible = "fsl,imx6sx-gpmi-nand", .data = &gpmi_devdata_imx6sx, },
-+	{ .compatible = "fsl,imx7d-gpmi-nand", .data = &gpmi_devdata_imx7d,},
-+	{}
- };
- MODULE_DEVICE_TABLE(of, gpmi_nand_id_table);
- 
+Han Xu (2):
+  mtd: rawnand: gpmi: Fix the driver only sense CS0 R/B issue
+  mtd: rawnand: gpmi: Fix the random DMA timeout issue
+
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 36 +++++++++++++++-------
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-regs.h |  1 +
+ 2 files changed, 26 insertions(+), 11 deletions(-)
+
 -- 
 2.17.1
 
