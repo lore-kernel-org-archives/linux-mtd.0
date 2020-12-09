@@ -2,76 +2,83 @@ Return-Path: <SRS0=ozsj=FN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BBD4CC4361B
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Dec 2020 14:40:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DA06C433FE
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Dec 2020 21:35:54 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 72B5E227C3
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Dec 2020 14:40:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72B5E227C3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id BD73023B51
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Dec 2020 21:35:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BD73023B51
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
-	:List-Id:To:Subject:Message-ID:Date:From:MIME-Version:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=V3kki7ls4/QGCw+T2esfjNfUCcYEZrlVRDsy8TFs60g=; b=3BiwlxdT8rdq7CPslkB0gdH9EH
-	RQwpVSvUue8B44NMRZsOh7RYDdaoimDIRuCJ/9WLDi5AK8QNlBmC94HkZXXkQ3qsAdWyA2ZUI2abq
-	D/erodRTTiCWDrqoKRdMyG2uPCQ40V9PFy5f4KdGbtU+UzRV4tvH93HvoEZf9hRverqHTog+2B7XM
-	u6/lrLypgrppeiUpvAvNDgVluTX6CR9sFLcblEcUpc7T6LhfFrs+4vn6JODVEUv4fh7Dd3rCAGaox
-	BTdsDhYSQHx5TimIoOVQvEJk4GeDwS45E5mFP+JdNS02G5rJKEe/y02mAywKAUGBF464ap/vDD5H3
-	ivBKo7Pg==;
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=7nZOGojVNrRT8ihxWBgPB7QMc/R7JJ7AfDhYOGX0K4w=; b=JhpJVo6H62kDQtL2wf18kJ3eo
+	wRdvpigUXgx3TPXv5OT0bGVaY10p8Ibn1KVhIUDfI4IxqBd60uN3egk23IWoETuurCmVOW+0JjIgf
+	3l54i5W5TyJgLd6321/f1WgyPwUJZXjq8Zn8gHoZ3yNXEFwXl5UYupIgWRdjKXrCVGcNbxqCAmnWM
+	P6X3CgLMWdbSpms8AdIEGNniAF+GBPnbyS45CRpncYGueWAw8EXKO+w1Glo3E8mU54JlacLJsHgOW
+	db5pePRczLqU4F6VjBvV8Uk+W/M5RU+JiQaila3o/4O0bx4iu/29ubQB1A63iSLOo6V0Oe3pl4ya0
+	l4KNbVVrw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kn0cn-0006Cr-BH; Wed, 09 Dec 2020 14:39:25 +0000
-Received: from mail-oi1-x235.google.com ([2607:f8b0:4864:20::235])
+	id 1kn76Q-0005lf-Nb; Wed, 09 Dec 2020 21:34:26 +0000
+Received: from mail-yb1-xb34.google.com ([2607:f8b0:4864:20::b34])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kn0cj-0006Bc-Et
- for linux-mtd@lists.infradead.org; Wed, 09 Dec 2020 14:39:23 +0000
-Received: by mail-oi1-x235.google.com with SMTP id d27so1942268oic.0
- for <linux-mtd@lists.infradead.org>; Wed, 09 Dec 2020 06:39:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:from:date:message-id:subject:to;
- bh=uXiBeTOot2thzmD6KKXKi/NvdQ/5muATYkdIEDEKGuY=;
- b=eZ2ADwmcrMNHuLVFtaRVqCrD7zfMH68kNPlJ1HqKnJOvFf7F2RedO8BRXUYa3Uwiym
- H9A/+nQa65/l0tWPen95JQYYChnW95tjA8PKfedUUmnlBXC9FZ6YAKTdvEF4FSjC7YI6
- pRe95uNm3Esw7JH5B2Oeub6M1KNJ/WCXPnCHmokcVQ7nu03wMzSEDZ7w0SzrBaRTnYzj
- VFz3bEc7okG9oa8p87vzjOvD7tKJKPiW4qf34P9bQa1R+uPgXlQ9RllErFtdJeM09Q0p
- YTcHB3gYwTIpzi3UTpLbHhi5Lfy6ov/HeTULKBmHWaZUcISjq3rAGHyT1q53TKpGr3ch
- di0Q==
+ id 1kn76K-0005kv-95
+ for linux-mtd@lists.infradead.org; Wed, 09 Dec 2020 21:34:20 +0000
+Received: by mail-yb1-xb34.google.com with SMTP id o144so2211793ybc.0
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Dec 2020 13:34:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=WoBbCW1j0xXBMJt/PT/2gTRPKTDTWPngtH0+ZXt3d6c=;
+ b=RwoRHgTy+IuZ6UWgisfK9RVBoQr1osv+GkgdBadEFRg7/Q+XNonWDvgCNCtYa3V2V8
+ v0v9DgbyfjusCfAG6DLmY06TjbkZiNwuUYSJtD4NtLOycTapfhuQs6rnNVqw/NuA0cxE
+ oqkwx5ceKPOnkpM1W0NWSefUhW89pEwHVqR+Tyi6w/zfACeRkTrQwn6UbAEaNz9nQMiQ
+ 5/O1qyf5atirDnGT5QYhDXmCbdLvXC2t2poZwxFZbb5YMGltS3pHrKJB1pE+HDte7J3t
+ SCzbkN6Yy3FPwCHGD/gHRFTEbG2kNM9M0VKjXu4nBihI6BwJfBu7E17pG4NXSFoBteTk
+ JkhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
- bh=uXiBeTOot2thzmD6KKXKi/NvdQ/5muATYkdIEDEKGuY=;
- b=a9c2k1KcXUQTlLDzr1ZpVAsvzcHgNaWQjS0bRnCkXvFe17DsFGmgQifl0VYuT1E6hs
- kfc3tPws+4XhwPHtLs3VLlEM47ZHitxXGiZdnpgtZud/jDkq8JOG6TqIyXUtmxnk1WT4
- elFpN4zEqxmQ2yLeAQNio2ohQhyLbhoHM5zKaNBAAjmWoMjPtH2tegy5+cpKmr2x4Ttw
- qPYnUlJsbVdIihgxE2OznHd/4SJCu+B1+mmzU8MIwXB/7HFzBNCJZoKakjC3Sd4ptgMY
- j9vJSrNJ6NjtWYOlsfG37UPR7n0f4yvrcm8Cxo+URideXZ+Jnko7Z7cBDup+90XguJqP
- cKQQ==
-X-Gm-Message-State: AOAM530OZ/x4247RL4S6YM+DrFf4kHBcat4kR/Et4S0s1D6SR4PH786W
- 8TUkUwNUbNDIbvFPOIU/PmAkDvjyxtAG9ko16afAOFxlCVM=
-X-Google-Smtp-Source: ABdhPJwBFYLcULQZgnh9QbP0D8wM5WtrjzOvPPu3+YqODns6QCdk6NwDKabfwBx94pwsBewsAREb560ptYDH1uu1fRk=
-X-Received: by 2002:aca:ab8c:: with SMTP id u134mr2005742oie.15.1607524757798; 
- Wed, 09 Dec 2020 06:39:17 -0800 (PST)
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=WoBbCW1j0xXBMJt/PT/2gTRPKTDTWPngtH0+ZXt3d6c=;
+ b=dFzsHD+mlArtH8zRKNnROEt9/8PwO7ji+LGBadtr4I6p18Z8T9ELDL/V6WVAu5+uYg
+ ERFNrNeFSSYVznp6Ngaqy1tJsgoXYoQ7vZhDUOvLC6e5l4Rkp0V+J1vE9y0KtFU32qMv
+ ct6/aCJuPGAsjATZT9zecuMyF2h3mn4+0WMxTp/Nprd8d4tmlm4z+SHhYMsMEx3zB/Hi
+ NiEUODnThWmgmum2ggi5RywGQCrR5DBP9houstS1PC36VC69Jdc0CPpsjK1vEwDoioEn
+ UI6ereK7PfL4iQcanG4OXfhpDy3ZrDvKWTYPnytbntyDfcx/2WiZ0ZSAoRldp+tVZpGG
+ Qm/g==
+X-Gm-Message-State: AOAM530IYbXYx6XFSjHR+qceAw3qrLDlbmKpoocIvRVkyV5yevPbNG5z
+ oaqmty1Z53Tdo1u4vrVE+R+ycYN3PDspW54JIv5vMINFuIz8sA==
+X-Google-Smtp-Source: ABdhPJwuapOrBFJ9X7Jy0LnnrbSGVSx0sVQ5aZeHVIo3eraDHa2ESu3HF6TKTzB4RAZmXwejsYnjUIRDCFT5PTJ0LTk=
+X-Received: by 2002:a25:3ac3:: with SMTP id h186mr6095641yba.155.1607549656265; 
+ Wed, 09 Dec 2020 13:34:16 -0800 (PST)
 MIME-Version: 1.0
-From: Emil Lenngren <emil.lenngren@gmail.com>
-Date: Wed, 9 Dec 2020 15:39:06 +0100
-Message-ID: <CAO1O6semtZ0kYKoAdQWSKeLuLfg-_40erK_UrG5Mcx71znzFCw@mail.gmail.com>
-Subject: SPI NAND bitflip threshold?
-To: linux-mtd <linux-mtd@lists.infradead.org>
+References: <20200429165347.48909-1-rminnich@google.com>
+ <2124367.HovnAMPojK@sven-edge>
+ <CAP6exYJ7QR+Y7Vsumecx_3rUC4cNY4xJj4e6759S8US6FX7ADg@mail.gmail.com>
+ <2560223.mvXUDI8C0e@ripper>
+ <CAP6exYK75zwqhtrMykMqPepPfq=S95UEByy61D136aPKCBBSRQ@mail.gmail.com>
+In-Reply-To: <CAP6exYK75zwqhtrMykMqPepPfq=S95UEByy61D136aPKCBBSRQ@mail.gmail.com>
+From: Ron Minnich <rminnich@google.com>
+Date: Wed, 9 Dec 2020 13:34:05 -0800
+Message-ID: <CAPAv03O2-hgx=-5bKcBy9hdK4apb9wzeO3nbLNT_ZJuJgTQWhw@mail.gmail.com>
+Subject: Re: [PATCH] mtd: parser: cmdline: Support MTD names containing one or
+ more colons
+To: ron minnich <rminnich@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201209_093921_508853_5D575903 
-X-CRM114-Status: UNSURE (   6.88  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20201209_163420_353270_2E713AB3 
+X-CRM114-Status: GOOD (  10.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,31 +90,35 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: Sasha Levin <sashal@kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Adrian Schmutzler <freifunk@adrianschmutzler.de>, jstefek@datto.com,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ John Audia <graysky@archlinux.us>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Sven Eckelmann <sven@narfation.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi. I'm using UBI together with a Toshiba SPI NAND (TC58CVG1S3HRAIJ to
-be specific). I'm looking into at which bitflip threshold UBI
-will/should move the page. As it is now, if I read the code correctly,
-it seems mtd/spi/core.c doesn't set bitflip_threshold to any specific
-value so mtdcore.c sets it to ecc_strength in add_mtd_device, which to
-me seems a bit high, considering my flash can correct 8 bits.
+Tested-by: Ian Goegebuer <goegebuer@google.com>
 
-Per some discussions a long time ago
-(http://lists.infradead.org/pipermail/linux-mtd/2015-January/057334.html),
-raw nand currently uses 3/4 * ecc_strength as default, which seems
-more reasonable.
-
-In my flash datasheet, I can see that the default there for "ECC Bit
-Flip Count Detection" is 4 bits (out of 8), which is even lower.
-
-So my question is if the current solution should be changed to either
-3/4 (or some other good default) or maybe be read from the flash
-configuration registers (if supported)?
-
-/Emil
+On Mon, Dec 7, 2020 at 7:24 AM ron minnich <rminnich@gmail.com> wrote:
+>
+> I pinged the person again. Hope to hear today. Sorry for delay.
+>
+> On Sun, Dec 6, 2020 at 11:52 PM Sven Eckelmann <sven@narfation.org> wrote:
+> >
+> > On Friday, 27 November 2020 19:54:30 CET ron minnich wrote:
+> > > Thanks, Sven, for your patience, I will indeed try to test this next week.
+> >
+> > Any test results?
+> >
+> > Kind regards,
+> >         Sven
 
 ______________________________________________________
 Linux MTD discussion mailing list
