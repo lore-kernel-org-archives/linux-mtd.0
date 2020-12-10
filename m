@@ -2,57 +2,86 @@ Return-Path: <SRS0=O8Pa=FO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C068C0018C
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Dec 2020 03:24:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD871C433FE
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Dec 2020 04:10:37 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 28BEF22A99
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Dec 2020 03:24:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 28BEF22A99
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
+	by mail.kernel.org (Postfix) with ESMTPS id 5FA3D23142
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Dec 2020 04:10:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5FA3D23142
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
-	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=V2dZmQs2xTNn49dIYoHBYYkmYA22XMhQgMv+ZnGPdPI=; b=efqGVGMajNHNg9Octhh4YlOX/C
-	XVRC+qhJ2oG/v35vP1zYyksECJCJAYavX5EEeR0apogQRlyDiuBgzGqpE0bHoYsC152saHv8lJmxT
-	DK62bpo7vATYfdt9szebd3O1K6r5BC4iSz2VTZVkn8pMOTLD9g++VWE9atypll3m7UfVCFOIVtCZd
-	QRIXmkLgzpGiuhBzScCTfhWBUCA/HdM392UKUkykWHARmKZgFza2zeVD/yV5e1WYi0huGecywHvGy
-	OHtDyP6q0h2Jr4xe1/yWEbGNCBNzh0OTCecCMzuChkdkl8Zv4qZviZ0JE1qhZNe5kM3eFBDwWLW+U
-	PV59xttA==;
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=CNuHGRewhrgcpRS4V/HDcFtbjnM11bsXU36Q781qVOE=; b=KjfVXa+0b9uzfBZbf8HxdwYiR
+	Rd3qEU8r+nOC4KiYeDTxYxkPmgrI7cErCIYEheR3NPTyWsbwkVXF6IAfVhFZIZDMgGWN0J99Eathv
+	wkB/K5viylMjX45M3k2DJTu1ca9u+eEB9AexRJ6GeM7VJZmLOrPd2nhp/jC9NgW/tvqavqBib3QDj
+	nzqjcIN8LAOmZd+SgsGhww0XK+Yjx35Ub1qN7/ArBCcPcFITkTjR8ef+qOdKpTYG0tDy2vv0PB827
+	rakXuQ1Zu5EPMToQOM7fenR+8IhlZCluJJNmEmcu/zkL8IUZFey4OpoOGe0wGXhOAFeHbOiRpVOsV
+	IB9WhHY/g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1knCXl-0002K5-3T; Thu, 10 Dec 2020 03:23:01 +0000
-Received: from twhmllg3.macronix.com ([211.75.127.131])
+	id 1knDHB-0000Tf-Bl; Thu, 10 Dec 2020 04:09:57 +0000
+Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1knCXg-0002IU-MH
- for linux-mtd@lists.infradead.org; Thu, 10 Dec 2020 03:22:57 +0000
-Received: from localhost.localdomain ([172.17.195.95])
- by TWHMLLG3.macronix.com with ESMTP id 0BA3MURg011440;
- Thu, 10 Dec 2020 11:22:39 +0800 (GMT-8)
- (envelope-from ycllin@mxic.com.tw)
-From: YouChing Lin <ycllin@mxic.com.tw>
-To: miquel.raynal@bootlin.com, vigneshr@ti.com
-Subject: [PATCH 2/2] mtd: spinand: macronix: Add support for MX35LFxG24AD
-Date: Thu, 10 Dec 2020 11:22:09 +0800
-Message-Id: <1607570529-22341-3-git-send-email-ycllin@mxic.com.tw>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1607570529-22341-1-git-send-email-ycllin@mxic.com.tw>
-References: <1607570529-22341-1-git-send-email-ycllin@mxic.com.tw>
-X-MAIL: TWHMLLG3.macronix.com 0BA3MURg011440
+ id 1knDH7-0000T0-ES
+ for linux-mtd@lists.infradead.org; Thu, 10 Dec 2020 04:09:55 +0000
+Received: by mail-pf1-x442.google.com with SMTP id s21so2787824pfu.13
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Dec 2020 20:09:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=xcTIK9EuU/nUrywQ42KgiTpojaNUUcCg7lCxBZYe+ro=;
+ b=fnU7LyieLQoXRkcIpEG2TC3KGf26P25XUm6Aa6vvnyslUXabLXMqgRcSSk0q+a2ihy
+ +Pzl5zOd0BFQiyuVETdHmIMeGm/KkS1MnMfWFVtHcse2QmqwFWUzMWzTUKj5D5x7ENBo
+ GrN1HC56GzpnHhGR/+rRgD2jz/0h+izZOjbrfUV87HG130n2pspoymgRfrvWTKjj7Hrx
+ xzCZCMUGrCDnGGF/kVXtirv9w3I2QAHMZLTaOlVABbsMKRaj4wkgzhVQCvFoj76/1oN3
+ uPnbvD2PN+w42/aVF2V1qL+kvSYOu3ullENf5LsTKM5WAKwKjF1Axdgd7iHzUaAU79m5
+ Z9jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=xcTIK9EuU/nUrywQ42KgiTpojaNUUcCg7lCxBZYe+ro=;
+ b=dzj0t9CGy7eIH5mEksgRWQRuSxKrccLTesUDCGHhupBHPbWTbXNZy52WCEz3G5fy2w
+ 4zCUvZBc6IKOT65b0gC88gk/xsr4Tz+Igfcn0TOorqReAuIoUqcEwnaBwalNh/4uWEdB
+ YJz9IqB63ten1SJd9HiOlsgUCUBOPad+Da9H1lqaM6LRk6+YJ08ocpu52jzBZbD8GOif
+ Qd+i2WJwwuk7/aVGMkqHe7s7kBxlxucl1TJ9wOfuJakscv823bKIMjvjtM9D7TOmjJrB
+ QaKtGTJgrtib/3OPniQ+kYrbwkbv6GzwT80XQ6XQ/DLTQO8qHwY1Rf6ofgiiegEVqxM2
+ yKCg==
+X-Gm-Message-State: AOAM531WiVmqA8jVRZ0oCP5uMF7Q6GuJEvpm+/R5EiQhQaSwVnCZuNv6
+ C5ZzBMlV210pwTaeen30dwb7
+X-Google-Smtp-Source: ABdhPJx79zoeXoS4V9GMiwip0g7YFZBRf2fkNcpngbFSVvFH5NMQ3Dqxbn0fdY79tWGZS1R4YEeA9Q==
+X-Received: by 2002:a17:90a:d790:: with SMTP id
+ z16mr5493949pju.88.1607573391179; 
+ Wed, 09 Dec 2020 20:09:51 -0800 (PST)
+Received: from thinkpad ([103.59.133.81])
+ by smtp.gmail.com with ESMTPSA id f29sm4587205pfk.32.2020.12.09.20.09.46
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 09 Dec 2020 20:09:50 -0800 (PST)
+Date: Thu, 10 Dec 2020 09:39:42 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ robh+dt@kernel.org
+Subject: Re: [PATCH v3 0/4] Add support for Qcom SMEM based NAND parser
+Message-ID: <20201210040942.GD6466@thinkpad>
+References: <20201119071308.9292-1-manivannan.sadhasivam@linaro.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20201119071308.9292-1-manivannan.sadhasivam@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201209_222257_173565_42DC54DA 
-X-CRM114-Status: UNSURE (   8.71  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20201209_230953_562624_676D8CC4 
+X-CRM114-Status: GOOD (  17.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -64,68 +93,62 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: juliensu@mxic.com.tw, ycllin@mxic.com.tw, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-MIME-Version: 1.0
+Cc: devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ bjorn.andersson@linaro.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The Macronix MX35LF1G24AD(/2G24AD/4G24AD) are 3V, 1G/2G/4Gbit serial
-SLC NAND flash device (without on-die ECC).
+Hi,
 
-Validated by read, erase, read back, write, read back on Xilinx Zynq
-PicoZed FPGA board which included Macronix SPI Host(drivers/spi/spi-mxic.c)
-& S/W BCH ecc(drivers/mtd/nand/ecc-sw-bch.c) with bug fixing patch
-(mtd: nand: ecc-bch: Fix the size of calc_buf/code_buf of the BCH).
+On Thu, Nov 19, 2020 at 12:43:04PM +0530, Manivannan Sadhasivam wrote:
+> Hello,
+> 
+> This series adds support for parsing the partitions defined in Shared
+> Memory (SMEM) of the Qualcomm platforms supporting NAND interface.
+> Current parser only supports V3 and V4 of the partition tables.
+> 
+> This series has been tested on SDX55 MTP board which has an onboard NAND
+> device.
+> 
 
-Signed-off-by: YouChing Lin <ycllin@mxic.com.tw>
----
- drivers/mtd/nand/spi/macronix.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+Any update on this series?
 
-diff --git a/drivers/mtd/nand/spi/macronix.c b/drivers/mtd/nand/spi/macronix.c
-index 3786b1b..6701aaa 100644
---- a/drivers/mtd/nand/spi/macronix.c
-+++ b/drivers/mtd/nand/spi/macronix.c
-@@ -139,6 +139,33 @@ static int mx35lf1ge4ab_ecc_get_status(struct spinand_device *spinand,
- 		     0,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
- 				     mx35lf1ge4ab_ecc_get_status)),
-+	SPINAND_INFO("MX35LF1G24AD",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x14),
-+		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL)),
-+	SPINAND_INFO("MX35LF2G24AD",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x24),
-+		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL)),
-+	SPINAND_INFO("MX35LF4G24AD",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x35),
-+		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 2, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL)),
- 	SPINAND_INFO("MX31LF1GE4BC",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x1e),
- 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
--- 
-1.9.1
+Thanks,
+Mani
 
+> Thanks,
+> Mani
+> 
+> Changes in v3:
+> 
+> * Handled le32 parameters in parser, collected review from Linus W.
+> 
+> Changes in v2:
+> 
+> * Added additionalProperties: false and removed unit address in binding
+> 
+> Manivannan Sadhasivam (4):
+>   dt-bindings: mtd: partitions: Add binding for Qcom SMEM parser
+>   mtd: parsers: Add Qcom SMEM parser
+>   mtd: rawnand: qcom: Add support for Qcom SMEM parser
+>   mtd: parsers: afs: Fix freeing the part name memory in failure
+> 
+>  .../mtd/partitions/qcom,smem-part.yaml        |  33 ++++
+>  drivers/mtd/nand/raw/qcom_nandc.c             |   4 +-
+>  drivers/mtd/parsers/Kconfig                   |   8 +
+>  drivers/mtd/parsers/Makefile                  |   1 +
+>  drivers/mtd/parsers/afs.c                     |   4 +-
+>  drivers/mtd/parsers/qcomsmempart.c            | 170 ++++++++++++++++++
+>  6 files changed, 216 insertions(+), 4 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
+>  create mode 100644 drivers/mtd/parsers/qcomsmempart.c
+> 
+> -- 
+> 2.17.1
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
