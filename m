@@ -1,84 +1,74 @@
-Return-Path: <SRS0=ozsj=FN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=O8Pa=FO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DA06C433FE
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Dec 2020 21:35:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4563C433FE
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Dec 2020 00:22:56 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BD73023B51
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Dec 2020 21:35:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BD73023B51
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	by mail.kernel.org (Postfix) with ESMTPS id 1EEC523770
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Dec 2020 00:22:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1EEC523770
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rock-chips.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=7nZOGojVNrRT8ihxWBgPB7QMc/R7JJ7AfDhYOGX0K4w=; b=JhpJVo6H62kDQtL2wf18kJ3eo
-	wRdvpigUXgx3TPXv5OT0bGVaY10p8Ibn1KVhIUDfI4IxqBd60uN3egk23IWoETuurCmVOW+0JjIgf
-	3l54i5W5TyJgLd6321/f1WgyPwUJZXjq8Zn8gHoZ3yNXEFwXl5UYupIgWRdjKXrCVGcNbxqCAmnWM
-	P6X3CgLMWdbSpms8AdIEGNniAF+GBPnbyS45CRpncYGueWAw8EXKO+w1Glo3E8mU54JlacLJsHgOW
-	db5pePRczLqU4F6VjBvV8Uk+W/M5RU+JiQaila3o/4O0bx4iu/29ubQB1A63iSLOo6V0Oe3pl4ya0
-	l4KNbVVrw==;
+	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
+	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=tLHNCwLKZKZizUWIaZ7vMPO88FwBXFwdXIJFYjcG7EY=; b=RaohEz1/J6QpvKOrWiGgz+KaVR
+	gH7Bq3al0JN8vUX7p+JY0lXfojTYs8nGXiWhiygcZdwWU+OtxPPskP7Q7WsMFmYvZ+1fkdKi8I76A
+	cU0AfNM4ZsM6Uv5rauARW4WDXvqhOblMt4gQxMWb3gQXMBfQhPhH7vqw9KcwdWTwJ7S1UKW9OvaC+
+	RnmdZQ3HIwcYqobb2ePdaDZMYsO8bBdk91WkZckOa4QTh4ORFf2NYobm9lIPN6g0ow35BmpKs44Zl
+	YX4PjkE7TabNyS0EsXeK58bSbeBivqVM9uZTmhGKL4kLioR9uxCO/BZ0GSvUYKI/W/UD041hkmOtw
+	duOLxWkA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kn76Q-0005lf-Nb; Wed, 09 Dec 2020 21:34:26 +0000
-Received: from mail-yb1-xb34.google.com ([2607:f8b0:4864:20::b34])
+	id 1kn9ic-000364-Nn; Thu, 10 Dec 2020 00:22:02 +0000
+Received: from lucky1.263xmail.com ([211.157.147.135])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kn76K-0005kv-95
- for linux-mtd@lists.infradead.org; Wed, 09 Dec 2020 21:34:20 +0000
-Received: by mail-yb1-xb34.google.com with SMTP id o144so2211793ybc.0
- for <linux-mtd@lists.infradead.org>; Wed, 09 Dec 2020 13:34:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=WoBbCW1j0xXBMJt/PT/2gTRPKTDTWPngtH0+ZXt3d6c=;
- b=RwoRHgTy+IuZ6UWgisfK9RVBoQr1osv+GkgdBadEFRg7/Q+XNonWDvgCNCtYa3V2V8
- v0v9DgbyfjusCfAG6DLmY06TjbkZiNwuUYSJtD4NtLOycTapfhuQs6rnNVqw/NuA0cxE
- oqkwx5ceKPOnkpM1W0NWSefUhW89pEwHVqR+Tyi6w/zfACeRkTrQwn6UbAEaNz9nQMiQ
- 5/O1qyf5atirDnGT5QYhDXmCbdLvXC2t2poZwxFZbb5YMGltS3pHrKJB1pE+HDte7J3t
- SCzbkN6Yy3FPwCHGD/gHRFTEbG2kNM9M0VKjXu4nBihI6BwJfBu7E17pG4NXSFoBteTk
- JkhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=WoBbCW1j0xXBMJt/PT/2gTRPKTDTWPngtH0+ZXt3d6c=;
- b=dFzsHD+mlArtH8zRKNnROEt9/8PwO7ji+LGBadtr4I6p18Z8T9ELDL/V6WVAu5+uYg
- ERFNrNeFSSYVznp6Ngaqy1tJsgoXYoQ7vZhDUOvLC6e5l4Rkp0V+J1vE9y0KtFU32qMv
- ct6/aCJuPGAsjATZT9zecuMyF2h3mn4+0WMxTp/Nprd8d4tmlm4z+SHhYMsMEx3zB/Hi
- NiEUODnThWmgmum2ggi5RywGQCrR5DBP9houstS1PC36VC69Jdc0CPpsjK1vEwDoioEn
- UI6ereK7PfL4iQcanG4OXfhpDy3ZrDvKWTYPnytbntyDfcx/2WiZ0ZSAoRldp+tVZpGG
- Qm/g==
-X-Gm-Message-State: AOAM530IYbXYx6XFSjHR+qceAw3qrLDlbmKpoocIvRVkyV5yevPbNG5z
- oaqmty1Z53Tdo1u4vrVE+R+ycYN3PDspW54JIv5vMINFuIz8sA==
-X-Google-Smtp-Source: ABdhPJwuapOrBFJ9X7Jy0LnnrbSGVSx0sVQ5aZeHVIo3eraDHa2ESu3HF6TKTzB4RAZmXwejsYnjUIRDCFT5PTJ0LTk=
-X-Received: by 2002:a25:3ac3:: with SMTP id h186mr6095641yba.155.1607549656265; 
- Wed, 09 Dec 2020 13:34:16 -0800 (PST)
-MIME-Version: 1.0
-References: <20200429165347.48909-1-rminnich@google.com>
- <2124367.HovnAMPojK@sven-edge>
- <CAP6exYJ7QR+Y7Vsumecx_3rUC4cNY4xJj4e6759S8US6FX7ADg@mail.gmail.com>
- <2560223.mvXUDI8C0e@ripper>
- <CAP6exYK75zwqhtrMykMqPepPfq=S95UEByy61D136aPKCBBSRQ@mail.gmail.com>
-In-Reply-To: <CAP6exYK75zwqhtrMykMqPepPfq=S95UEByy61D136aPKCBBSRQ@mail.gmail.com>
-From: Ron Minnich <rminnich@google.com>
-Date: Wed, 9 Dec 2020 13:34:05 -0800
-Message-ID: <CAPAv03O2-hgx=-5bKcBy9hdK4apb9wzeO3nbLNT_ZJuJgTQWhw@mail.gmail.com>
-Subject: Re: [PATCH] mtd: parser: cmdline: Support MTD names containing one or
- more colons
-To: ron minnich <rminnich@gmail.com>
+ id 1kn9iR-000337-5e; Thu, 10 Dec 2020 00:21:52 +0000
+Received: from localhost (unknown [192.168.167.13])
+ by lucky1.263xmail.com (Postfix) with ESMTP id 9FA00A608A;
+ Thu, 10 Dec 2020 08:21:42 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+ by smtp.263.net (postfix) whith ESMTP id
+ P20466T140379108411136S1607559696395890_; 
+ Thu, 10 Dec 2020 08:21:42 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <80ca46b2aaeb8be9b277f13c355318ea>
+X-RL-SENDER: yifeng.zhao@rock-chips.com
+X-SENDER: zyf@rock-chips.com
+X-LOGIN-NAME: yifeng.zhao@rock-chips.com
+X-FST-TO: miquel.raynal@bootlin.com
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From: Yifeng Zhao <yifeng.zhao@rock-chips.com>
+To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ robh+dt@kernel.org
+Subject: [PATCH v16 1/8] dt-bindings: mtd: Describe Rockchip RK3xxx NAND flash
+ controller
+Date: Thu, 10 Dec 2020 08:21:31 +0800
+Message-Id: <20201210002134.5686-2-yifeng.zhao@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201210002134.5686-1-yifeng.zhao@rock-chips.com>
+References: <20201210002134.5686-1-yifeng.zhao@rock-chips.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201209_163420_353270_2E713AB3 
-X-CRM114-Status: GOOD (  10.91  )
+X-CRM114-CacheID: sfid-20201209_192151_706972_1812F477 
+X-CRM114-Status: GOOD (  15.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,35 +80,234 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Sasha Levin <sashal@kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Adrian Schmutzler <freifunk@adrianschmutzler.de>, jstefek@datto.com,
- Boris Brezillon <boris.brezillon@collabora.com>,
- John Audia <graysky@archlinux.us>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Sven Eckelmann <sven@narfation.org>
+Cc: devicetree@vger.kernel.org, heiko@sntech.de,
+ Yifeng Zhao <yifeng.zhao@rock-chips.com>, linux-kernel@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Tested-by: Ian Goegebuer <goegebuer@google.com>
+Documentation support for Rockchip RK3xxx NAND flash controllers
 
-On Mon, Dec 7, 2020 at 7:24 AM ron minnich <rminnich@gmail.com> wrote:
->
-> I pinged the person again. Hope to hear today. Sorry for delay.
->
-> On Sun, Dec 6, 2020 at 11:52 PM Sven Eckelmann <sven@narfation.org> wrote:
-> >
-> > On Friday, 27 November 2020 19:54:30 CET ron minnich wrote:
-> > > Thanks, Sven, for your patience, I will indeed try to test this next week.
-> >
-> > Any test results?
-> >
-> > Kind regards,
-> >         Sven
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Yifeng Zhao <yifeng.zhao@rock-chips.com>
+---
+
+Changes in v16: None
+Changes in v15: None
+Changes in v14: None
+Changes in v13: None
+Changes in v12:
+- Fix some warnings while make dt_binding_check
+- Drop a allOf defined
+
+Changes in v11: None
+Changes in v10: None
+Changes in v9: None
+Changes in v8:
+- Fix a error while make dt_binding_check
+
+Changes in v7:
+- Fix some wrong define
+
+Changes in v6:
+- Fix some wrong define
+- Modified the definition of compatible
+
+Changes in v5:
+- Fix some wrong define.
+- Add boot-medium define.
+- Remove some compatible define.
+
+Changes in v4:
+- The compatible define with rkxx_nfc.
+- Add assigned-clocks.
+- Fix some wrong defineChanges in.
+
+Changes in v3:
+- Change the title for the dt-bindings.
+
+Changes in v2: None
+
+ .../mtd/rockchip,nand-controller.yaml         | 161 ++++++++++++++++++
+ 1 file changed, 161 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
+
+diff --git a/Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml b/Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
+new file mode 100644
+index 000000000000..0922536b1811
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
+@@ -0,0 +1,161 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/rockchip,nand-controller.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Rockchip SoCs NAND FLASH Controller (NFC)
++
++allOf:
++  - $ref: "nand-controller.yaml#"
++
++maintainers:
++  - Heiko Stuebner <heiko@sntech.de>
++
++properties:
++  compatible:
++    oneOf:
++      - const: rockchip,px30-nfc
++      - const: rockchip,rk2928-nfc
++      - const: rockchip,rv1108-nfc
++      - items:
++          - const: rockchip,rk3036-nfc
++          - const: rockchip,rk2928-nfc
++      - items:
++          - const: rockchip,rk3308-nfc
++          - const: rockchip,rv1108-nfc
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    minItems: 1
++    items:
++      - description: Bus Clock
++      - description: Module Clock
++
++  clock-names:
++    minItems: 1
++    items:
++      - const: ahb
++      - const: nfc
++
++  assigned-clocks:
++    maxItems: 1
++
++  assigned-clock-rates:
++    maxItems: 1
++
++  power-domains:
++    maxItems: 1
++
++patternProperties:
++  "^nand@[0-7]$":
++    type: object
++    properties:
++      reg:
++        minimum: 0
++        maximum: 7
++
++      nand-ecc-mode:
++        const: hw
++
++      nand-ecc-step-size:
++        const: 1024
++
++      nand-ecc-strength:
++        enum: [16, 24, 40, 60, 70]
++        description: |
++          The ECC configurations that can be supported are as follows.
++            NFC v600 ECC 16, 24, 40, 60
++              RK2928, RK3066, RK3188
++
++            NFC v622 ECC 16, 24, 40, 60
++              RK3036, RK3128
++
++            NFC v800 ECC 16
++              RK3308, RV1108
++
++            NFC v900 ECC 16, 40, 60, 70
++              RK3326, PX30
++
++      nand-bus-width:
++        const: 8
++
++      rockchip,boot-blks:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        minimum: 2
++        default: 16
++        description:
++          The NFC driver need this information to select ECC
++          algorithms supported by the boot ROM.
++          Only used in combination with 'nand-is-boot-medium'.
++
++      rockchip,boot-ecc-strength:
++        enum: [16, 24, 40, 60, 70]
++        allOf:
++          - $ref: /schemas/types.yaml#/definitions/uint32
++        description: |
++          If specified it indicates that a different BCH/ECC setting is
++          supported by the boot ROM.
++            NFC v600 ECC 16, 24
++              RK2928, RK3066, RK3188
++
++            NFC v622 ECC 16, 24, 40, 60
++              RK3036, RK3128
++
++            NFC v800 ECC 16
++              RK3308, RV1108
++
++            NFC v900 ECC 16, 70
++              RK3326, PX30
++
++          Only used in combination with 'nand-is-boot-medium'.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/rk3308-cru.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    nfc: nand-controller@ff4b0000 {
++      compatible = "rockchip,rk3308-nfc",
++                   "rockchip,rv1108-nfc";
++      reg = <0xff4b0000 0x4000>;
++      interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>;
++      clocks = <&cru HCLK_NANDC>, <&cru SCLK_NANDC>;
++      clock-names = "ahb", "nfc";
++      assigned-clocks = <&clks SCLK_NANDC>;
++      assigned-clock-rates = <150000000>;
++
++      pinctrl-0 = <&flash_ale &flash_bus8 &flash_cle &flash_csn0
++                   &flash_rdn &flash_rdy &flash_wrn>;
++      pinctrl-names = "default";
++
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      nand@0 {
++        reg = <0>;
++        label = "rk-nand";
++        nand-bus-width = <8>;
++        nand-ecc-mode = "hw";
++        nand-ecc-step-size = <1024>;
++        nand-ecc-strength = <16>;
++        nand-is-boot-medium;
++        rockchip,boot-blks = <8>;
++        rockchip,boot-ecc-strength = <16>;
++      };
++    };
++
++...
+-- 
+2.17.1
+
+
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
