@@ -2,80 +2,77 @@ Return-Path: <SRS0=YYID=FS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-20.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8DDFC4361B
-	for <linux-mtd@archiver.kernel.org>; Mon, 14 Dec 2020 07:48:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D309EC4361B
+	for <linux-mtd@archiver.kernel.org>; Mon, 14 Dec 2020 08:04:09 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 79912225AC
-	for <linux-mtd@archiver.kernel.org>; Mon, 14 Dec 2020 07:48:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 79912225AC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8D9F2225AC
+	for <linux-mtd@archiver.kernel.org>; Mon, 14 Dec 2020 08:04:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D9F2225AC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:From:To:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=2yeKkl15K1LzPVaMiDHpsig2lmYOjikwgsBQVB2o65s=; b=RDK8P5maHcI6ivmc+lzt92zf3Q
-	7YuzAcJxpyh7TZaqI2c//j7WQRQeO3eQsYlp74dCRDdHtx/Xy50V6FOBhPHITpk/G8bRlQB/oS1RR
-	NSDZ8/ABpeetXvc9jezt7CKosc7YyhpvvsiNY2W7DLdmMHGwm0RgSjnfrXIjaAB0xoN8eAym8dg8P
-	A+eocU2MWt+1m+EHuf1TzzXIVMdWLCc6qQ7flmZ47Jjohd2VVU6uDb2CqR3UzfeUaJ8ECtWul2DgC
-	nok34NCFwBgw64C9uNBWCb8XBh2bZ5MkJgjWrmYA/vbOgy1AMxFa1FQonOGI/LnVeXmF0/oVrFqMB
-	YynfhYtA==;
+	Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
+	:List-Id:To:Subject:Message-ID:Date:From:MIME-Version:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=CLWgtlC/tHxZxrQkbRsqildLsEKBxw7+1zRkX4mJ8P4=; b=fzgxF5yp82qzldb2L/ynANeYP/
+	E1nxZ+NMvrGL18b6WMfamP5lRqbl6wEoIjD0QK8bTQ+4A/tHyNv+Wt0DbnDTinZjIXE2+lIUV21Wz
+	Orp1HGyh512otUdtMtEZ3TSZIGmj3c6oCh6OWX91P4LWAIXakODCliVO4XGmR+PM+SPUbUSEWGn6S
+	xuN9hVzbxvc9dHJNCkLE4Dfjo6wx6RHUoMBYxyxTU04XhDjmCZWaUgJ1wO7kgPRQ0UGzsrYaDYXW1
+	DKj9gzPKWVGbaaghdfxjxszDMYMIJTYPU4pI+VY47kOeWr9FuYJz8wH4pFgnM+0Z3hWZJE/A+tZ2h
+	yN1e+GoQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1koiaK-0003hI-LF; Mon, 14 Dec 2020 07:47:56 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1koipM-0004Ib-Bd; Mon, 14 Dec 2020 08:03:28 +0000
+Received: from mail-il1-x12c.google.com ([2607:f8b0:4864:20::12c])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1koiaH-0003gs-Tq
- for linux-mtd@lists.infradead.org; Mon, 14 Dec 2020 07:47:55 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BE7lnT7087235;
- Mon, 14 Dec 2020 01:47:49 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1607932069;
- bh=iocDzUalopMm/mbo0zURSG/+IpI0aMKkS/05ZYw+zos=;
- h=To:From:CC:Subject:Date;
- b=cFcuhedptsuTfBFzyrPx/XN3GnWbXJCYZDG2CwV3Kbg2SMCaEmMupBjJZCe9RPCSB
- 2UejCGqBzyG/ZZiToZPouGxBX93jHJS5PlGRYBj7uAWvdLuGru/XGlitZg8QDi8Hwt
- pMe9EGDSQIjN73ZEgepvMiuRr965XjJmS9QW4WyI=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BE7lnJO119335
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 14 Dec 2020 01:47:49 -0600
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 14
- Dec 2020 01:47:48 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 14 Dec 2020 01:47:49 -0600
-Received: from [10.250.233.179] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BE7lkTj032696;
- Mon, 14 Dec 2020 01:47:47 -0600
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Tudor Ambarus <Tudor.Ambarus@microchip.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [GIT PULL] mtd: spi-nor: Changes for 5.11
-Message-ID: <6d3e787f-f969-0f09-2679-6afc1e8e6121@ti.com>
-Date: Mon, 14 Dec 2020 13:17:46 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ id 1koipJ-0004IB-Hd
+ for linux-mtd@lists.infradead.org; Mon, 14 Dec 2020 08:03:26 +0000
+Received: by mail-il1-x12c.google.com with SMTP id r17so14969964ilo.11
+ for <linux-mtd@lists.infradead.org>; Mon, 14 Dec 2020 00:03:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:from:date:message-id:subject:to;
+ bh=VXLywW6BUpmMKVVX0mp2Y/FdhX/gGmyrpnvQlg6/Lts=;
+ b=AFALOWKs51V+9fHxhqMpgxzSKjWjSzP1G6pnsQtfoFsnW6n0upujhK8mvBbT4vHL8F
+ v51Gx7OcpsSIHESepP7RTrh41OgSdA46gAq4RKJsZRgiQqV/UbqnL4AwVJCRAKZdfvJR
+ QulcgPpym/+PiwasJskE5B+VT4oLg9E3ScvI8F0jnAVoPMpU4Ha0CQBPdA3nnfD7NCCw
+ kINfINcODJgQ1Rv15Gs7sLomFZuSiKncxGAyPutWNBTS4wMrnvgwZm4LGVSyt3eNcNPT
+ LYRgoRJ/Qg3ulWwXFp2xOXOzsfFvvi88S1pAfDWbZ4R7q9hlAI+X7WIJGtA1W9Zxzm43
+ YgwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=VXLywW6BUpmMKVVX0mp2Y/FdhX/gGmyrpnvQlg6/Lts=;
+ b=YXv7jTxcoh9iis6DucWCQ/DXBRKuf5N5y4AtkJYz5u2+YJs4It4/0+lLrsfMqB7dLp
+ eTv4xhRX9V0nKdf1s6I0nWno2+LweG663+LvnvuNqaaGku/cVE4am+2pe2MTCqfXmNiy
+ jjEqmBeJR4wb1ad3OqbCIbC5YAp3X+KHbjGk0c83JsAsB4jyp6S7QV4t7LZrLKjB7GV2
+ dsO6T+W9PHkWjkcO/UaPJUSnpcEUuYUSG+Gf85F1594sAxGC2VeCV/5OVwNrAPw9VSmg
+ 1H2upjaZY08Wj8IWPigGrBOdyGlaXiX7eeKR9Dp2cMG336CxhZtsBdVlO8hi/jbTq+1X
+ /aZQ==
+X-Gm-Message-State: AOAM531C7tg8vzYmCG5woyxz7nY4dASMcfJhhrnGHELx/p5aYB9Xme5Q
+ VZ8xuhdM1+kBS6kj+TolIAqmBdR/lBem/nGw2rmI+/ysEEg=
+X-Google-Smtp-Source: ABdhPJwrRak9oL+vLEOkK5B5WR+JOpTZ+U2mIwaT4Ymy+Fy8UhwYqXSPlkTwJ2zUQaJQpH9zrpgogOaJ3gTQxuKCtwE=
+X-Received: by 2002:a92:cec3:: with SMTP id z3mr33509592ilq.256.1607933002269; 
+ Mon, 14 Dec 2020 00:03:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Received: by 2002:ac0:f20c:0:0:0:0:0 with HTTP; Mon, 14 Dec 2020 00:03:21
+ -0800 (PST)
+From: David Schaefer <david.tillmann.schaefer@gmail.com>
+Date: Mon, 14 Dec 2020 09:03:21 +0100
+Message-ID: <CAK+FTGhwM02y_eg6cE=GNcOH8G8eQjia0PD+JVrR=eSedQxWAA@mail.gmail.com>
+Subject: WD MyCloud Ex, Armada-370, pxa3xx-nand, marvell-nfc
+To: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201214_024754_414387_2F5A2D27 
-X-CRM114-Status: GOOD (  14.10  )
+X-CRM114-CacheID: sfid-20201214_030325_605971_6AF96731 
+X-CRM114-Status: GOOD (  11.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,67 +84,62 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWlxdWVsLCBSaWNoYXJkCgpQbGVhc2UgcHVsbCBTUEkgTk9SIGNoYW5nZXMgZm9yIDUuMTEt
-cmMxLiBQUiBpcyBiYXNlZCBvbiB2NS4xMC1yYzMuCgpSZWdhcmRzClZpZ25lc2gKClRoZSBmb2xs
-b3dpbmcgY2hhbmdlcyBzaW5jZSBjb21taXQgZjgzOTRmMjMyYjFlYWI2NDljZTJkZjVjNWYxNWIw
-ZTUyOGM5MjA5MToKCiAgTGludXggNS4xMC1yYzMgKDIwMjAtMTEtMDggMTY6MTA6MTYgLTA4MDAp
-CgphcmUgYXZhaWxhYmxlIGluIHRoZSBHaXQgcmVwb3NpdG9yeSBhdDoKCiAgZ2l0Oi8vZ2l0Lmtl
-cm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L210ZC9saW51eC5naXQgdGFncy9zcGkt
-bm9yL2Zvci01LjExCgpmb3IgeW91IHRvIGZldGNoIGNoYW5nZXMgdXAgdG8gMzFhZDNlZmYwOTNj
-ZjIxODcyZjM4NTAyMTI0MmMwMGM3YTJhYmY2YjoKCiAgbXRkOiBzcGktbm9yOiBrZWVwIGxvY2sg
-Yml0cyBpZiB0aGV5IGFyZSBub24tdm9sYXRpbGUgKDIwMjAtMTItMDcgMjM6MDE6MTUgKzA1MzAp
-CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tClNQSSBOT1IgY29yZSBjaGFuZ2VzOgoKLSBJbml0aWFsIHN1cHBvcnQgZm9yIHN0
-YXRlZnVsIE9jdGFsIERUUiBtb2RlIHVzaW5nIHZvbGF0aWxlIHNldHRpbmdzCi0gUHJlbGltaW5h
-cnkgc3VwcG9ydCBmb3IgSkVERUMgMjUxICh4U1BJKSBhbmQgSkVERUMgMjE2RCBzdGFuZGFyZHMK
-LSBTdXBwb3J0IGZvciBDeXByZXNzIFNlbXBlciBmbGFzaAotIFN1cHBvcnQgdG8gc3BlY2lmeSBF
-Q0MgYmxvY2sgc2l6ZSBvZiBTUEkgTk9SIGZsYXNoZXMKLSBGaXhlcyB0byBhdm9pZCBjbGVhcmlu
-ZyBvZiBub24tdm9sYXRpbGUgQmxvY2sgUHJvdGVjdGlvbiBiaXRzIGF0IHByb2JlCgotLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-CkpvbmF0aGFuIE5ldXNjaMOkZmVyICgxKToKICAgICAgbXRkOiBzcGktbm9yOiBGaXggbXVsdGlw
-bGUgdHlwb3MKCk1pY2hhZWwgV2FsbGUgKDcpOgogICAgICBtdGQ6IHNwaS1ub3I6IHNzdDogZml4
-IEJQbiBiaXRzIGZvciB0aGUgU1NUMjVWRjA2NEMKICAgICAgbXRkOiBzcGktbm9yOiBpZ25vcmUg
-ZXJyb3JzIGluIHNwaV9ub3JfdW5sb2NrX2FsbCgpCiAgICAgIG10ZDogc3BpLW5vcjogYXRtZWw6
-IHJlbW92ZSBnbG9iYWwgcHJvdGVjdGlvbiBmbGFnCiAgICAgIG10ZDogc3BpLW5vcjogc3N0OiBy
-ZW1vdmUgZ2xvYmFsIHByb3RlY3Rpb24gZmxhZwogICAgICBtdGQ6IHNwaS1ub3I6IGludGVsOiBy
-ZW1vdmUgZ2xvYmFsIHByb3RlY3Rpb24gZmxhZwogICAgICBtdGQ6IHNwaS1ub3I6IGF0bWVsOiBm
-aXggdW5sb2NrX2FsbCgpIGZvciBBVDI1RlMwMTAvMDQwCiAgICAgIG10ZDogc3BpLW5vcjoga2Vl
-cCBsb2NrIGJpdHMgaWYgdGhleSBhcmUgbm9uLXZvbGF0aWxlCgpQcmF0eXVzaCBZYWRhdiAoMTUp
-OgogICAgICBtdGQ6IHNwaS1ub3I6IGNvcmU6IHVzZSBFT1BOT1RTVVBQIGluc3RlYWQgb2YgRU5P
-VFNVUFAKICAgICAgbXRkOiBzcGktbm9yOiBhZGQgc3BpX25vcl9jb250cm9sbGVyX29wc197cmVh
-ZF9yZWcsIHdyaXRlX3JlZywgZXJhc2V9KCkKICAgICAgbXRkOiBzcGktbm9yOiBhZGQgc3VwcG9y
-dCBmb3IgRFRSIHByb3RvY29sCiAgICAgIG10ZDogc3BpLW5vcjogc2ZkcDogZ2V0IGNvbW1hbmQg
-b3Bjb2RlIGV4dGVuc2lvbiB0eXBlIGZyb20gQkZQVAogICAgICBtdGQ6IHNwaS1ub3I6IHNmZHA6
-IHBhcnNlIHhTUEkgUHJvZmlsZSAxLjAgdGFibGUKICAgICAgbXRkOiBzcGktbm9yOiBjb3JlOiB1
-c2UgZHVtbXkgY3ljbGUgYW5kIGFkZHJlc3Mgd2lkdGggaW5mbyBmcm9tIFNGRFAKICAgICAgbXRk
-OiBzcGktbm9yOiBjb3JlOiBkbyAyIGJ5dGUgcmVhZHMgZm9yIFNSIGFuZCBGU1IgaW4gRFRSIG1v
-ZGUKICAgICAgbXRkOiBzcGktbm9yOiBjb3JlOiBlbmFibGUgb2N0YWwgRFRSIG1vZGUgd2hlbiBw
-b3NzaWJsZQogICAgICBtdGQ6IHNwaS1ub3I6IHNmZHA6IGRldGVjdCBTb2Z0IFJlc2V0IHNlcXVl
-bmNlIHN1cHBvcnQgZnJvbSBCRlBUCiAgICAgIG10ZDogc3BpLW5vcjogY29yZTogcGVyZm9ybSBh
-IFNvZnQgUmVzZXQgb24gc2h1dGRvd24KICAgICAgbXRkOiBzcGktbm9yOiBjb3JlOiBkaXNhYmxl
-IE9jdGFsIERUUiBtb2RlIG9uIHN1c3BlbmQuCiAgICAgIG10ZDogc3BpLW5vcjogc3BhbnNpb246
-IGFkZCBzdXBwb3J0IGZvciBDeXByZXNzIFNlbXBlciBmbGFzaAogICAgICBtdGQ6IHNwaS1ub3I6
-IG1pY3Jvbi1zdDogYWxsb3cgdXNpbmcgTVQzNVhVNTEyQUJBIGluIE9jdGFsIERUUiBtb2RlCiAg
-ICAgIG10ZDogc3BpLW5vcjogY29yZTogQWxsb3cgZmxhc2hlcyB0byBzcGVjaWZ5IE1URCB3cml0
-ZXNpemUKICAgICAgbXRkOiBzcGktbm9yOiBzcGFuc2lvbjogU2V0IEVDQyBibG9jayBzaXplCgpU
-dWRvciBBbWJhcnVzICgyKToKICAgICAgbXRkOiBzcGktbm9yOiBJbnRyb2R1Y2UgU05PUl9GX0lP
-X01PREVfRU5fVk9MQVRJTEUKICAgICAgbXRkOiBzcGktbm9yOiBQYXJzZSBTRkRQIFNDQ1IgTWFw
-CgogZHJpdmVycy9tdGQvc3BpLW5vci9LY29uZmlnICAgICB8ICA0NCArCiBkcml2ZXJzL210ZC9z
-cGktbm9yL2F0bWVsLmMgICAgIHwgMTkxICsrLQogZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMg
-ICAgICB8IDU5NSArKysrKysrLS0tCiBkcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuaCAgICAgIHwg
-IDM4ICsKIGRyaXZlcnMvbXRkL3NwaS1ub3IvZXNtdC5jICAgICAgfCAgIDIgKy0KIGRyaXZlcnMv
-bXRkL3NwaS1ub3IvaW50ZWwuYyAgICAgfCAgMTkgKy0KIGRyaXZlcnMvbXRkL3NwaS1ub3IvbWlj
-cm9uLXN0LmMgfCAxMTUgKy0KIGRyaXZlcnMvbXRkL3NwaS1ub3Ivc2ZkcC5jICAgICAgfCAxNzIg
-KystCiBkcml2ZXJzL210ZC9zcGktbm9yL3NmZHAuaCAgICAgIHwgICA4ICsKIGRyaXZlcnMvbXRk
-L3NwaS1ub3Ivc3BhbnNpb24uYyAgfCAxNzIgKysrCiBkcml2ZXJzL210ZC9zcGktbm9yL3NzdC5j
-ICAgICAgIHwgIDMyICstCiBpbmNsdWRlL2xpbnV4L210ZC9zcGktbm9yLmggICAgIHwgIDU1ICst
-CiAxMiBmaWxlcyBjaGFuZ2VkLCAxMjM2IGluc2VydGlvbnMoKyksIDIwNyBkZWxldGlvbnMoLSkK
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
-aW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Hi,
+
+I am trying to upgrade to a more recent kernel. I face the issue that
+I am missing the /dev/mtdblock1-6 devices. I have tracked down that
+issue shows up the first time with 4.16.1 and does not exist with
+4.15.18.
+
+Also I have this initalization during 4.15.18:
+
+> f10d0000.nand: This platform can't do DMA on this device
+> nand: device found, Manufacturer ID: 0xad, Chip ID: 0xda
+> nand: Hynix H27U2G8F2CTR-BC
+> nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+> pxa3xx-nand f10d0000.nand: ECC strength 16, ECC step size 2048
+> Bad block table found at page 131008, version 0x01
+> Bad block table found at page 130944, version 0x01
+> nand_read_bbt: bad block at 0x00000e7c0000
+> 7 ofpart partitions found on MTD device pxa3xx_nand-0
+> Creating 7 MTD partitions on "pxa3xpxa3xx-nand x_nand-0":
+> 0x000000000000-0x000000500000 : "u-Boot"
+> 0x000000500000-0x000000a00000 : "uImage"
+> 0x000000a00000-0x000000f00000 : "ramdisk"
+> 0x000000f00000-0x00000d800000 : "image.cfs"
+> 0x00000dd00000-0x00000ec00000 : "rescue firmware"
+> 0x00000ec00000-0x000010000000 : "config"
+> 0x00000d800000-0x00000dd00000 : "reserve"
+
+and this with 4.16.1:
+
+> nand: device found, Manufacturer ID: 0xad, Chip ID: 0xda
+> nand: Hynix H27U2G8F2CTR-BC
+> nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+> marvell-nfc f10d0000.nand: Timeout on CMDD (NDSR: 0x00000080)
+> marvell-nfc f10d0000.nand: Timeout on CMDD (NDSR: 0x00000280)
+> Bad block table not found for chip 0
+> Bad block table not found for chip 0
+> Scanning device for bad blocks
+> Bad eraseblock 1854 at 0x00000e7c0000
+
+I have tried 4.19.161 and 5.4.83 as well but my /dev/mtdblock1-6
+devices keep being missing.
+
+What do I have to do to turn them back on? Do I have to modify my dts
+file for the new driver marvell_nand?
+https://fox-exe.ru/WDMyCloud/WDMyCloud-Mirror/Developing/kernel-4.15.0-rc6/armada-370-wdmc-mirror-gen1.dts
+
+I've read whatever I found and do not know how to continue here.
+
+Kind regards
+David
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
