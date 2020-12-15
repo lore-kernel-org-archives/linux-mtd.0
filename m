@@ -2,87 +2,65 @@ Return-Path: <SRS0=cBb+=FT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E97EC4361B
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Dec 2020 21:21:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5492C2BB48
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Dec 2020 21:48:37 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EBF8122CB8
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Dec 2020 21:21:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EBF8122CB8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 0201222D07
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Dec 2020 21:48:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0201222D07
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=biot.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=iK4hpvlh6qJrMIFnRiLpph7Z9iY6wAL4X1Wja9wjElo=; b=HvGiIru/4Kvm5Gz3GmDdIe22E
-	cv4pbupG+/tLySUwOwL/Qnc4f2u0lIK1t5OFtSDx/SFCetowJgb/nYs13Ckp4/QKdtDEJ2Y0VGIEX
-	0spENHBxEz+PBqomd+HeB6ZAqdOOGJesXdPhm0qvtFyB8/1otDSdyrZfr0tAMh+p/QnwPOKi8g4+j
-	V+HlNsSAgUHjawiVexvKo69MPiNoprUBPS3NGILWl7X3bb7HXVbg6NQFgq1Q4glcUb+3c1n0anjt1
-	Md9m20pRWPDr9NgIS6FwHtlq8BV7SUPjBq89iHjxZ9mkoHrccTWXVPTCjhq68cw4jd1RKsXpy9u0o
-	8vEPnTQjA==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=EgOE1oUwbVx+Vocflw67B9rjSRwOVy8Hveep6qGtW2s=; b=Om7PO5dDnxIAfmjythuWT+Ev0n
+	JKW1E77wNUy6oLxTHkEmqZVLTN5O74MInsjtiIB/OKm35RaERcHck6wa78DefuYyzI2hKNcavSTW+
+	q2pyxHGEXWvCYUaxCvIuXSk5O4Ck3gHGinT0TfT31HIsZRMCXGlint3PUIXTWbQzhWNQ3Yi69Yqkk
+	KA2dYYNQRe5L0PPX6sJac6cmfYAOhY9wXJKs/4OMYEm4vxFGFe6yu6nUIOrxSDDmhlIjxDiw8TU4H
+	/+720XJAi8FIRZ8H+PlDpNnAuwP5TFQCPtzRbVQLiHrIaI4E8bHtcEGSwawqCcY159mgFOMnYDXIz
+	a07YzT2Q==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kpHkY-00049g-FC; Tue, 15 Dec 2020 21:20:50 +0000
-Received: from mail-io1-xd2b.google.com ([2607:f8b0:4864:20::d2b])
+	id 1kpIAi-0008Jm-Qz; Tue, 15 Dec 2020 21:47:52 +0000
+Received: from yawp.biot.com ([2a01:4f8:10a:8e::fce2])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kpHkV-00048a-1E
- for linux-mtd@lists.infradead.org; Tue, 15 Dec 2020 21:20:48 +0000
-Received: by mail-io1-xd2b.google.com with SMTP id n4so21966545iow.12
- for <linux-mtd@lists.infradead.org>; Tue, 15 Dec 2020 13:20:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=BSY++fu+JOJy4wBPbgXtb2icREa1Qg8NcQwcGp7j2BE=;
- b=aomtLnNj7j8/dl8z/TAdoZk/3EA1VzsFYtya9gmeUGSHGjGAc8TXGUL/m4YgaxZC7Q
- GWo+EWxmvJCFfBKuk87Jhirf6W+wNabJIUpvZxMEybwoioMmCZ+sfT4lFeJ2Bhae/Pom
- 4n0/PR8EOynap4boD0MnAoaGN94pwPyhDH+IDIoDCUY78kBECje8Jspi/GTjBVR5ShaS
- wGxX9l9B4Gs4BCH9s+emVcPDTPuU+z0nHe6dBVBmg1greywV5cZWuX8uOANFtDzV9JuR
- R6+MiuRVOy2fRUl23fSMf651xEhI1azzpMyMr47lerOSmKJoOJBoX3i2u86gSgaXLTAo
- DfjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=BSY++fu+JOJy4wBPbgXtb2icREa1Qg8NcQwcGp7j2BE=;
- b=WqoEDfrbKfMIyYFZYgimBMHo0RsEwUQefp5B7DY3FlSt/BOhLPJ2k62TZSLvdID9QJ
- 8n6z2xMoB+j/rnEL3ByRjqh6F18ln5K/hmPR/IC9H91gFXE/mFkeBy4uzTws0lsPNuwM
- oPGPxLCnfDkL3W3UiNpf8GAMPcBi2i/1gaFMEZJ0oa006ZdzhR0pOOYUK0iMKgAlZNcl
- oQEt/8i13bw31g56PHSY9yusbIO2LxqJ73bLdoBiRHX04JDsfSTxc+1TVmyK9XRVqu7J
- qAglHgG2WJNV0ar/VUAsTC2w/3vmK/sz3pPjSI+wLAZq87UJxsVguCTnjgM+aJu2ueKY
- 1slw==
-X-Gm-Message-State: AOAM531BPcJ/obczWdQEg3VpW1+vBOaAXe8E6Af8Lyt/oyS4aRUPWn4y
- V1QXiatE9R2iZZ9HiZsswBDcGBGf5+x3ZbYNFWzp9qICk+DvDQ==
-X-Google-Smtp-Source: ABdhPJxZWmc7RlWjXHKyHc1/pQRBE7d4kzvw/flszUyaSHPoA/ZBgXqebccIhOPQVJs2UEnbP0mla1KT6F13dXhlPBw=
-X-Received: by 2002:a02:6a0e:: with SMTP id l14mr41012664jac.58.1608067242717; 
- Tue, 15 Dec 2020 13:20:42 -0800 (PST)
+ id 1kpIAa-0008JJ-Hu
+ for linux-mtd@lists.infradead.org; Tue, 15 Dec 2020 21:47:45 +0000
+Received: from debian-spamd by yawp.biot.com with sa-checked (Exim 4.93)
+ (envelope-from <bert@biot.com>) id 1kpIAX-0087WY-2P
+ for linux-mtd@lists.infradead.org; Tue, 15 Dec 2020 22:47:41 +0100
+Received: from [2a02:578:460c:1:ae1f:6bff:fed1:9ca8] (helo=sumner.biot.com)
+ by yawp.biot.com with esmtps (TLS1.3) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93)
+ (envelope-from <bert@biot.com>)
+ id 1kpI9w-0087Sm-L3; Tue, 15 Dec 2020 22:47:04 +0100
+Received: from bert by sumner.biot.com with local (Exim 4.93)
+ (envelope-from <bert@biot.com>)
+ id 1kpI9w-002j4z-6D; Tue, 15 Dec 2020 22:47:04 +0100
+From: Bert Vermeulen <bert@biot.com>
+To: tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, broonie@kernel.org, john.garry@huawei.com,
+ bbrezillon@kernel.org, gch981213@gmail.com,
+ vadivel.muruganx.ramuthevar@linux.intel.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Subject: [PATCH] Add spi-nor driver for Realtek RTL838x/RTL839x switch SoCs
+Date: Tue, 15 Dec 2020 22:46:56 +0100
+Message-Id: <20201215214656.649896-1-bert@biot.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CAK+FTGhwM02y_eg6cE=GNcOH8G8eQjia0PD+JVrR=eSedQxWAA@mail.gmail.com>
- <CAFLxGvyNtHOQZ1OnSsh=Md9Lx7e8j307uRCNvS_qvNp6FW1_pg@mail.gmail.com>
- <CAK+FTGjg1sMtE0Vk=mztO6_HP0VJ=mYy1b0nAEXDw6Dtx6AtUw@mail.gmail.com>
- <2020191742.126461.1607959229137.JavaMail.zimbra@nod.at>
- <CAK+FTGirwvd5Sdww4kkYCy0BMmnZsP=Tq=cAePxraXa3AcGbiQ@mail.gmail.com>
- <CAK+FTGhhFCVM4wazP5epp9E9kPf7=iAYRCmwZECXmszBmRERzw@mail.gmail.com>
- <20201215165636.41d69087@xps13>
- <CAK+FTGin3jY2B6Ym4iZma0xs-YhRU24b90yPgQS9ZNTVi84SDA@mail.gmail.com>
- <20201215174621.0a9d1c3f@xps13>
-In-Reply-To: <20201215174621.0a9d1c3f@xps13>
-From: David Schaefer <david.tillmann.schaefer@gmail.com>
-Date: Tue, 15 Dec 2020 22:20:31 +0100
-Message-ID: <CAK+FTGhaXiS-jYbqYD1b-hAG7M4qbbQGQVGnSYeE6CqMOw4fLA@mail.gmail.com>
-Subject: Re: WD MyCloud Ex, Armada-370, pxa3xx-nand, marvell-nfc
-To: Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201215_162047_107658_B6C02F90 
-X-CRM114-Status: GOOD (  18.78  )
+X-CRM114-CacheID: sfid-20201215_164744_718105_D9AFE5E8 
+X-CRM114-Status: GOOD (  25.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,53 +72,446 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>,
- linux-mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Bert Vermeulen <bert@biot.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWlxdcOobAoKPiBNYXliZSBJIHNob3VsZCBhc2sgeW91IHdoeSB5b3UgYXJlIHVzaW5nIG10
-ZGJsb2NrIGFuZCB1c2luZyBkZCBvbiB0b3AKPiBvZiBpdD8gSWYgeW91IHdhbnQgdG8gdGFja2xl
-IGEgTkFORCBpc3N1ZSwgeW91IHNob3VsZCBwcm9iYWJseSAgYWRkcmVzcwo+IHRoZSBtdGQgZGV2
-aWNlIGRpcmVjdGx5IGFuZCB1c2UgdGhlIHRvb2xzIHByb3ZpZGVkIGJ5IHRoZSBtdGQtdXRpbHMK
-PiB1c2Vyc3BhY2UgdGVzdCBzdWl0ZSAobmFuZHBhZ2V0ZXN0IHNlZW1zIGEgZ29vZCBmaXQpLgpX
-aGF0IEkgYW0gdHJ5aW5nIHRvIGFjY29tcGxpc2ggaXMgcnVubmluZyBhIGRlYmlhbiB3aXRoIGEg
-a2VybmVsIG1vcmUKdGhhbiA0LjE1IG9uIGEgV0QgTXlDbG91ZCBFeDIuIEkgZm9sbG93IGEgd3Jp
-dHRlbiBkb3duIGFwcHJvYWNoIHRoYXQKaGFzIGJlZW4gbGVkIHRvIHN1Y2Nlc3MgYnkgb3RoZXJz
-LiBJdCBpbnZvbHZlcwpkZCBpZj0vZGV2L3plcm8gb2Y9L2Rldi9tdGRibG9jazEKZGQgaWY9dUlt
-YWdlIG9mPS9kZXYvbXRkYmxvY2sxCmRkIGlmPS9kZXYvemVybyBvZj0vZGV2L210ZGJsb2NrMgpk
-ZCBpZj11UmFtZGlzayBvZj0vZGV2L210ZGJsb2NrMgoKSSBjb3VsZCB1c2UgbW9yZSBhcHByb3By
-aWF0ZSB3YXlzIHRvIGRlYWwgd2l0aCB0aGVzZSBkZXZpY2VzIGlmIEkga25ldyBvZiBhbnkuCgo+
-IFlvdSBtaWdodCB3YW50IHRvIHRyeSBhIG11Y2ggbW9yZSByZWNlbnQga2VybmVsIHRoZW4uIFBy
-b2JhYmx5IHRoYXQKPiB1c2luZyBhIDUuOSBvciA1LjEwIGlzIGEgZ29vZCB0YXJnZXQgZm9yIG5v
-dy4KSSBhbSBjb21waWxpbmcgNS4xMCByaWdodCBub3cgYW5kIGFtIGxvb2tpbmcgZm9yd2FyZCB0
-byB0aGUgcmVzdWx0cy4gSQpoYXZlIGhhZCA1LjQgcnVubmluZyBhbHJlYWR5IHdpdGggbm8gbXRk
-YmxvY2sgZGV2aWNlcyBzaG93aW5nIHVwLgoKPiBJIHJlYWxseSBkb24ndCB0aGluayB1c2luZyAt
-WCB0aGVpcnMgYmxpbmRseSBpcyB3aXNlLCB5b3Ugc2hvdWxkCj4gZGVmaW5pdGVseSB0cnkgdG8g
-dW5kZXJzdGFuZCB0aGUgY29uZmxpY3QgYW5kIG1lcmdlIGl0IGJ5IGhhbmQuCkkgdHJpZWQgYnV0
-IGRpZG4ndCBmZWVsIHRvIGJlIGluIHRoZSBwb3NpdGlvbiB0byBtYWtlIHRoZSBjYWxsLgpBbnlo
-b3csIHNpbmNlIEkgaGF2ZSBzZWVuIHRoZSBjb21taXRzIGFyZSBhbGwgcGFydCBvZiBrZXJuZWxz
-IDQuMTcsCjQuMjAsIDUuMCwgYW5kIDUuMTAgdGhpcyB3aWxsIG5vdCBiZSBhbiBpc3N1ZSBub3cg
-d2hlbiBJIHJ1biA1LjEwLgoKPiA+IC0gbWFydmVsbC1uZmMgZjEwZDAwMDAubmFuZDogVGltZW91
-dCB3YWl0aW5nIGZvciBSQiBzaWduYWwKPiBUaGlzIG9uZSBpcyBhIHJlYWwgZXJyb3IgYnV0IGdv
-dCBmaXhlZCBieSBhbm90aGVyIGNvbW1pdC4KPiA+IC0gcHJpbnRfcmVxX2Vycm9yOiBJL08gZXJy
-b3IsIGRldiBtdGRibG9jazYsIHNlY3RvciAwCj4gPiBwcmludF9yZXFfZXJyb3I6IEkvTyBlcnJv
-ciwgZGV2IG10ZGJsb2NrNiwgc2VjdG9yIDAKPiA+IHByaW50X3JlcV9lcnJvcjogSS9PIGVycm9y
-LCBkZXYgbXRkYmxvY2s2LCBzZWN0b3IgMAo+ID4gcHJpbnRfcmVxX2Vycm9yOiBJL08gZXJyb3Is
-IGRldiBtdGRibG9jazUsIHNlY3RvciAwCj4gPiBwcmludF9yZXFfZXJyb3I6IEkvTyBlcnJvciwg
-ZGV2IG10ZGJsb2NrNSwgc2VjdG9yIDAKPiA+IHByaW50X3JlcV9lcnJvcjogSS9PIGVycm9yLCBk
-ZXYgbXRkYmxvY2s1LCBzZWN0b3IgMAo+ID4gcHJpbnRfcmVxX2Vycm9yOiBJL08gZXJyb3IsIGRl
-diBtdGRibG9jazQsIHNlY3RvciAwCj4gPiBwcmludF9yZXFfZXJyb3I6IEkvTyBlcnJvciwgZGV2
-IG10ZGJsb2NrNCwgc2VjdG9yIDAKPiA+IHByaW50X3JlcV9lcnJvcjogSS9PIGVycm9yLCBkZXYg
-bXRkYmxvY2s0LCBzZWN0b3IgMAo+ID4gcHJpbnRfcmVxX2Vycm9yOiBJL08gZXJyb3IsIGRldiBt
-dGRibG9jazMsIHNlY3RvciAwCj4gVGhpcyBvbmUgc2VlbSByZWxhdGVkIGJ1dCBJIGRvbid0IGtu
-b3cgZnJvbSB3aGVyZSBpdCBjb21lcy4KPiA+IGRkOiB3cml0aW5nICcvZGV2L210ZGJsb2NrMSc6
-IElucHV0L291dHB1dCBlcnJvcgpJIHdpbGwgY2hlY2sgaWYgSSBzZWUgdGhlc2UgaXNzdWVzIHdp
-dGggNS4xMCB3aGVuIGl0J3MgYnVpbHQuCgo+ID4gUGxlYXNlIGFkdmlzZSBtZSBpZiBJIGRpZAo+
-ID4gYW55dGhpbmcgd3Jvbmcgb3IgeW91IG5lZWQgYW55IG1vcmUgaW5mb3JtYXRpb24uCj4gR29v
-ZCBsdWNrIDopClRoYW5rcyA6KQoKS2luZCByZWdhcmRzCkRhdmlkCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
-b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vbGludXgtbXRkLwo=
+This driver supports the spiflash core in all RTL838x/RTL839x SoCs,
+and likely some older models as well (RTL8196C).
+
+Signed-off-by: Bert Vermeulen <bert@biot.com>
+---
+ drivers/mtd/spi-nor/controllers/Kconfig       |   7 +
+ drivers/mtd/spi-nor/controllers/Makefile      |   1 +
+ .../spi-nor/controllers/rtl8380-spiflash.c    | 347 ++++++++++++++++++
+ .../spi-nor/controllers/rtl8380-spiflash.h    |  34 ++
+ 4 files changed, 389 insertions(+)
+ create mode 100644 drivers/mtd/spi-nor/controllers/rtl8380-spiflash.c
+ create mode 100644 drivers/mtd/spi-nor/controllers/rtl8380-spiflash.h
+
+diff --git a/drivers/mtd/spi-nor/controllers/Kconfig b/drivers/mtd/spi-nor/controllers/Kconfig
+index 5c0e0ec2e6d1..1e035c511ea5 100644
+--- a/drivers/mtd/spi-nor/controllers/Kconfig
++++ b/drivers/mtd/spi-nor/controllers/Kconfig
+@@ -62,3 +62,10 @@ config SPI_INTEL_SPI_PLATFORM
+ 
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called intel-spi-platform.
++
++config SPI_REALTEK_RTL8380
++	tristate "Realtek RTL8380 SPI flash controller"
++	depends on MACH_REALTEK
++	help
++	  This enables support for the SPI flash controller in the Realtek
++	  RTL8380 series SoCs.
+diff --git a/drivers/mtd/spi-nor/controllers/Makefile b/drivers/mtd/spi-nor/controllers/Makefile
+index e7abba491d98..f03a79e88a78 100644
+--- a/drivers/mtd/spi-nor/controllers/Makefile
++++ b/drivers/mtd/spi-nor/controllers/Makefile
+@@ -5,3 +5,4 @@ obj-$(CONFIG_SPI_NXP_SPIFI)	+= nxp-spifi.o
+ obj-$(CONFIG_SPI_INTEL_SPI)	+= intel-spi.o
+ obj-$(CONFIG_SPI_INTEL_SPI_PCI)	+= intel-spi-pci.o
+ obj-$(CONFIG_SPI_INTEL_SPI_PLATFORM)	+= intel-spi-platform.o
++obj-$(CONFIG_SPI_REALTEK_RTL8380)	+= rtl8380-spiflash.o
+diff --git a/drivers/mtd/spi-nor/controllers/rtl8380-spiflash.c b/drivers/mtd/spi-nor/controllers/rtl8380-spiflash.c
+new file mode 100644
+index 000000000000..cd1f48f1e3d0
+--- /dev/null
++++ b/drivers/mtd/spi-nor/controllers/rtl8380-spiflash.c
+@@ -0,0 +1,347 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/mtd/spi-nor.h>
++
++#include "rtl8380-spiflash.h"
++
++
++extern struct realtek_soc_info soc_info;
++
++static int rtl8380_nor_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, size_t len);
++static int rtl8380_nor_write_reg(struct spi_nor *nor, u8 opcode, const u8 *buf, size_t len);
++
++
++static inline u32 rtl8380_read(struct rtl8380_nor *rtnor, u32 reg, bool wait)
++{
++	if (wait)
++		while (!(readl(rtnor->base + RTL8380_SPI_SFCSR) & RTL8380_SPI_SFCSR_RDY))
++			;
++	return readl(rtnor->base + reg);
++}
++
++static inline void rtl8380_write(struct rtl8380_nor *rtnor, u32 reg, u32 value, bool wait)
++{
++	if (wait)
++		while (!(readl(rtnor->base + RTL8380_SPI_SFCSR) & RTL8380_SPI_SFCSR_RDY))
++			;
++	writel(value, rtnor->base + reg);
++}
++
++/*
++ * Deactivate both chip selects and return base SFCSR register settings: correct
++ * CS, data length 1, IO width 1.
++ */
++static uint32_t spi_prep(struct rtl8380_nor *rtnor)
++{
++	uint32_t init, ret;
++
++	/* Deactivate CS0 and CS1 first */
++	init = (RTL8380_SPI_SFCSR_CSB0 | RTL8380_SPI_SFCSR_CSB1) & RTL8380_SPI_SFCSR_LEN_MASK;
++	rtl8380_write(rtnor, RTL8380_SPI_SFCSR, init, true);
++
++	/* CS bitfield is active low, so reversed logic */
++	if (rtnor->cs == 0)
++		ret = RTL8380_SPI_SFCSR_LEN1 | RTL8380_SPI_SFCSR_CSB1;
++	else
++		ret = RTL8380_SPI_SFCSR_LEN1 | RTL8380_SPI_SFCSR_CSB0 | RTL8380_SPI_SFCSR_CS;
++
++	return ret;
++}
++
++static int rtl8380_nor_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, size_t len)
++{
++	struct rtl8380_nor *rtnor = nor->priv;
++	uint32_t sfcsr;
++
++	sfcsr = spi_prep(rtnor);
++	sfcsr &= RTL8380_SPI_SFCSR_LEN_MASK | RTL8380_SPI_SFCSR_LEN1;
++
++	rtl8380_write(rtnor, RTL8380_SPI_SFCSR, sfcsr, true);
++	rtl8380_write(rtnor, RTL8380_SPI_SFDR, opcode << 24, true);
++
++	while (len > 0) {
++		*(buf) = rtl8380_read(rtnor, RTL8380_SPI_SFDR, true) >> 24;
++		buf++;
++		len--;
++	}
++
++	return 0;
++}
++
++static int rtl8380_nor_write_reg(struct spi_nor *nor, u8 opcode, const u8 *buf,
++				 size_t len)
++{
++	struct rtl8380_nor *rtnor = nor->priv;
++	uint32_t sfcsr, sfdr, len_bits;
++
++	sfcsr = spi_prep(rtnor);
++	sfdr = opcode << 24;
++
++	if (len == 0) {
++		len_bits = RTL8380_SPI_SFCSR_LEN1;
++	} else if (len == 1) {
++		sfdr |= buf[0] << 16;
++		len_bits = RTL8380_SPI_SFCSR_LEN2;
++	} else if (len == 2) {
++		sfdr |= buf[0] << 16;
++		sfdr |= buf[1] << 8;
++		len_bits = RTL8380_SPI_SFCSR_LEN3;
++	} else {
++		return -EINVAL;
++	}
++	sfcsr |= len_bits;
++
++	rtl8380_write(rtnor, RTL8380_SPI_SFCSR, sfcsr, true);
++	rtl8380_write(rtnor, RTL8380_SPI_SFDR, sfdr, true);
++
++	return 0;
++}
++
++static ssize_t rtl8380_nor_read(struct spi_nor *nor, loff_t from, size_t len,
++				u_char *buf)
++{
++	struct rtl8380_nor *rtnor = nor->priv;
++	uint32_t sfcsr;
++	ssize_t ret = 0;
++	int sfcsr_addrlen_bits, i;
++
++	if (rtnor->nor.addr_width == 4) {
++		sfcsr_addrlen_bits = 0x03;
++	} else {
++		sfcsr_addrlen_bits = 0x02;
++		from <<= 8;
++	}
++
++	sfcsr = spi_prep(rtnor);
++	sfcsr &= RTL8380_SPI_SFCSR_LEN_MASK;
++
++	/* Send read command */
++	rtl8380_write(rtnor, RTL8380_SPI_SFCSR, sfcsr | RTL8380_SPI_SFCSR_LEN1, true);
++	rtl8380_write(rtnor, RTL8380_SPI_SFDR, rtnor->nor.read_opcode << 24, false);
++
++	/* Send address */
++	rtl8380_write(rtnor, RTL8380_SPI_SFCSR, sfcsr | (sfcsr_addrlen_bits << 28), true);
++	rtl8380_write(rtnor, RTL8380_SPI_SFDR, from, false);
++
++	/* Dummy cycles */
++	for (i = 0; i < nor->read_dummy / 8; i++) {
++		rtl8380_write(rtnor, RTL8380_SPI_SFCSR, sfcsr, true);
++		rtl8380_write(rtnor, RTL8380_SPI_SFDR, 0, false);
++	}
++
++	/* Read 4 bytes at a time */
++	rtl8380_write(rtnor, RTL8380_SPI_SFCSR, sfcsr | RTL8380_SPI_SFCSR_LEN4, true);
++	while (len >= 4){
++		*((uint32_t*) buf) = rtl8380_read(rtnor, RTL8380_SPI_SFDR, false);
++		buf += 4;
++		len -= 4;
++		ret += 4;
++	}
++
++	/* Read remainder 1 byte at a time */
++	rtl8380_write(rtnor, RTL8380_SPI_SFCSR, sfcsr | RTL8380_SPI_SFCSR_LEN1, true);
++	while (len > 0) {
++		*(buf) = rtl8380_read(rtnor, RTL8380_SPI_SFDR, false) >> 24;
++		buf++;
++		len--;
++		ret++;
++	}
++
++	return ret;
++}
++
++static ssize_t rtl8380_nor_write(struct spi_nor *nor, loff_t to, size_t len,
++				 const u_char *buf)
++{
++	struct rtl8380_nor *rtnor = nor->priv;
++	uint32_t sfcsr;
++	ssize_t ret = 0;
++	int sfcsr_addrlen_bits;
++
++	if (rtnor->nor.addr_width == 4) {
++		sfcsr_addrlen_bits = 0x03;
++	} else {
++		sfcsr_addrlen_bits = 0x02;
++		to <<= 8;
++	}
++
++	sfcsr = spi_prep(rtnor);
++	sfcsr &= RTL8380_SPI_SFCSR_LEN_MASK;
++
++	/* Send write command */
++	rtl8380_write(rtnor, RTL8380_SPI_SFCSR, sfcsr | RTL8380_SPI_SFCSR_LEN1, true);
++	rtl8380_write(rtnor, RTL8380_SPI_SFDR, nor->program_opcode << 24, false);
++
++	/* Send address */
++	rtl8380_write(rtnor, RTL8380_SPI_SFCSR, sfcsr | (sfcsr_addrlen_bits << 28), true);
++	rtl8380_write(rtnor, RTL8380_SPI_SFDR, to, false);
++
++	/* Write 4 bytes at a time */
++	rtl8380_write(rtnor, RTL8380_SPI_SFCSR, sfcsr | RTL8380_SPI_SFCSR_LEN4, true);
++	while (len >= 4) {
++		rtl8380_write(rtnor, RTL8380_SPI_SFDR, *((uint32_t*)buf), true);
++		buf += 4;
++		len -= 4;
++		ret += 4;
++	}
++
++	/* Write remainder 1 byte at a time */
++	rtl8380_write(rtnor, RTL8380_SPI_SFCSR, sfcsr | RTL8380_SPI_SFCSR_LEN1, true);
++	while (len > 0) {
++		rtl8380_write(rtnor, RTL8380_SPI_SFDR, *buf << 24, true);
++		buf++;
++		len--;
++		ret++;
++	}
++
++	return ret;
++}
++
++static int rtl8380_erase(struct spi_nor *nor, loff_t offset)
++{
++	struct rtl8380_nor *rtnor = nor->priv;
++	uint32_t sfcsr;
++	int sfcsr_addrlen_bits;
++
++	if (rtnor->nor.addr_width == 4) {
++		sfcsr_addrlen_bits = 0x03;
++	} else {
++		sfcsr_addrlen_bits = 0x02;
++		offset <<= 8;
++	}
++
++	sfcsr = spi_prep(rtnor);
++
++	/* Send erase command */
++	rtl8380_write(rtnor, RTL8380_SPI_SFCSR, sfcsr | RTL8380_SPI_SFCSR_LEN1, true);
++	rtl8380_write(rtnor, RTL8380_SPI_SFDR, nor->erase_opcode << 24, false);
++
++	/* Send address */
++	rtl8380_write(rtnor, RTL8380_SPI_SFCSR, sfcsr | (sfcsr_addrlen_bits << 28), true);
++	rtl8380_write(rtnor, RTL8380_SPI_SFDR, offset, false);
++
++	return 0;
++}
++
++static const struct spi_nor_controller_ops rtl8380_controller_ops = {
++	.read_reg = rtl8380_nor_read_reg,
++	.write_reg = rtl8380_nor_write_reg,
++	.read = rtl8380_nor_read,
++	.write = rtl8380_nor_write,
++	.erase = rtl8380_erase,
++};
++
++static int rtl8380_spi_nor_scan(struct spi_nor *nor)
++{
++	struct rtl8380_nor *rtnor = nor->priv;
++	static const struct spi_nor_hwcaps hwcaps = {
++		.mask = SNOR_HWCAPS_READ | SNOR_HWCAPS_READ_FAST | SNOR_HWCAPS_PP
++	};
++	u32 sfcr;
++	int ret;
++
++	/* Turn on big-endian byte ordering */
++	sfcr = rtl8380_read(rtnor, RTL8380_SPI_SFCR, true);
++	sfcr |= RTL8380_SPI_SFCR_RBO | RTL8380_SPI_SFCR_WBO;
++	rtl8380_write(rtnor, RTL8380_SPI_SFCR, sfcr, true);
++
++	ret = spi_nor_scan(nor, NULL, &hwcaps);
++
++	return ret;
++}
++
++static int rtl8380_nor_init(struct rtl8380_nor *rtnor,
++		     struct device_node *flash_node)
++{
++	struct spi_nor *nor;
++	int ret;
++
++	nor = &rtnor->nor;
++	nor->priv = rtnor;
++	spi_nor_set_flash_node(nor, flash_node);
++	nor->controller_ops = &rtl8380_controller_ops;
++	nor->mtd.name = "rtl8380-spiflash";
++
++	ret = rtl8380_spi_nor_scan(nor);
++	if (ret)
++		return ret;
++	pr_info("SPI flash address width is %d bytes\n", nor->addr_width);
++
++	ret = mtd_device_parse_register(&nor->mtd, NULL, NULL, NULL, 0);
++
++	return ret;
++}
++
++static int rtl8380_nor_drv_probe(struct platform_device *pdev)
++{
++	struct device_node *flash_np;
++	struct resource *res;
++	struct rtl8380_nor *rtnor;
++	int ret;
++
++	if (!pdev->dev.of_node) {
++		dev_err(&pdev->dev, "No DT found\n");
++		return -EINVAL;
++	}
++
++	rtnor = devm_kzalloc(&pdev->dev, sizeof(*rtnor), GFP_KERNEL);
++	if (!rtnor)
++		return -ENOMEM;
++	platform_set_drvdata(pdev, rtnor);
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	rtnor->base = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(rtnor->base))
++		return PTR_ERR(rtnor->base);
++
++	rtnor->nor.dev = &pdev->dev;
++
++	/* Only support one attached flash */
++	flash_np = of_get_next_available_child(pdev->dev.of_node, NULL);
++	if (!flash_np) {
++		dev_err(&pdev->dev, "no SPI flash device to configure\n");
++		return -ENODEV;
++	}
++
++	/* Optional chip select, defaults to 0 */
++	ret = of_property_read_u32(flash_np, "reg", &rtnor->cs);
++	if (ret)
++		rtnor->cs = 0;
++
++	ret = rtl8380_nor_init(rtnor, flash_np);
++
++	return ret;
++}
++
++static int rtl8380_nor_drv_remove(struct platform_device *pdev)
++{
++	struct rtl8380_nor *rtnor;
++
++	rtnor = platform_get_drvdata(pdev);
++	mtd_device_unregister(&rtnor->nor.mtd);
++
++	return 0;
++}
++
++static const struct of_device_id rtl8380_nor_of_ids[] = {
++	{ .compatible = "realtek,rtl8380-spiflash"},
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, rtl8380_nor_of_ids);
++
++static struct platform_driver rtl8380_nor_driver = {
++	.probe = rtl8380_nor_drv_probe,
++	.remove = rtl8380_nor_drv_remove,
++	.driver = {
++		.name = "rtl8380-spiflash",
++		.pm = NULL,
++		.of_match_table = rtl8380_nor_of_ids,
++	},
++};
++
++module_platform_driver(rtl8380_nor_driver);
++
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("RTL8380 SPI NOR Flash Driver");
+diff --git a/drivers/mtd/spi-nor/controllers/rtl8380-spiflash.h b/drivers/mtd/spi-nor/controllers/rtl8380-spiflash.h
+new file mode 100644
+index 000000000000..754e67087ed1
+--- /dev/null
++++ b/drivers/mtd/spi-nor/controllers/rtl8380-spiflash.h
+@@ -0,0 +1,34 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++#ifndef _RTL8380_SPIFLASH_H_
++#define _RTL8380_SPIFLASH_H_
++
++struct rtl8380_nor {
++	struct spi_nor nor;
++	void __iomem *base;
++	u32 cs;
++};
++
++/* SPI Flash Configuration Register */
++#define RTL8380_SPI_SFCR		0x00
++#define RTL8380_SPI_SFCR_RBO		BIT(28)
++#define RTL8380_SPI_SFCR_WBO		BIT(27)
++
++/* SPI Flash Control and Status Register */
++#define RTL8380_SPI_SFCSR		0x08
++#define RTL8380_SPI_SFCSR_CSB0		BIT(31)
++#define RTL8380_SPI_SFCSR_CSB1		BIT(30)
++#define RTL8380_SPI_SFCSR_RDY		BIT(27)
++#define RTL8380_SPI_SFCSR_CS		BIT(24)
++#define RTL8380_SPI_SFCSR_LEN_MASK	~(0x03 << 28)
++#define RTL8380_SPI_SFCSR_LEN1		(0x00 << 28)
++#define RTL8380_SPI_SFCSR_LEN2		(0x01 << 28)
++#define RTL8380_SPI_SFCSR_LEN3		(0x02 << 28)
++#define RTL8380_SPI_SFCSR_LEN4		(0x03 << 28)
++
++/* SPI Flash Data Registers */
++#define RTL8380_SPI_SFDR	0x0c
++#define RTL8380_SPI_SFDR2	0x10
++
++#endif /* _RTL8380_SPIFLASH_H_ */
++
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
