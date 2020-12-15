@@ -2,84 +2,94 @@ Return-Path: <SRS0=cBb+=FT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,BIGNUM_EMAILS,
+	DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40E8AC2BB48
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Dec 2020 10:16:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46A53C2BB48
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Dec 2020 12:43:41 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CDAD322202
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Dec 2020 10:16:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CDAD322202
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id E4750224D4
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Dec 2020 12:43:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E4750224D4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=r8ABoJWZPmT7RUe3iDWwJ1fmbl1BSeWnLX53Sapoq9c=; b=Vm07VYoaQeyqCz9FwLpH126jm
-	TJv4dMKBmWFfO+kcSEociv3ztxmNsGzeSG8LH8SuTtns850LAMCXqEo2a5ArbAmssIUGAun6+yHCt
-	wgN7nZF/gba1EgKJ+k9dv+Tb80ccDQYQge6wNnOfhqF8fZwx9k7opmNLs12Um2ySxNmL+w8Pj2Cy8
-	H/vFTV1d30Ou2lk44IzZ9HxU0sve2b5PF1tbZn2Ui5CH8QLiz4lbdjW+EhlcAEzV1Lq8KLJfXTs+c
-	nr0U6UBqhE8DP5Onkyo760GukTOyWzgTGrmdnV8DgfgER8SzJH3ZREQfK29ieWwBr8uXOwlbtN9+h
-	rp8EHna3Q==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From:Date:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=8HImfV2tYKLYjDXmUb3VkbROA11taQDK86zLUh4T6lA=; b=jkLDF3qKNS+0PsNwsVHHHsYV0M
+	8mHBFHJgHHln4/67AELfk+xBqyptyTsQsEqJls8GJPTWtvva37pywyYgVZpws9G0Ipcxm2GDPxtBl
+	TgWUshIbsoyNS2jwrikm2q6quzQIiVggzeT3Oy10XUUciH1kVBi+kR/1UTz2exqCLzMLtLOH70Hqy
+	/QM6VDdu/jHSY6hTHl7zvQxIvt03seLtMljgsn8Yd+jcAdOoPuEKi0+eFZD13ErqUA/6GuD1JMYgw
+	xAHUL4AhV68sSE1jLFckXa2BNl41I6fsp9dB2wNXSJJKAfCQMlH2g64IqwtXj9pSchISAT6VO8z5Z
+	f9yUr21A==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kp7M2-0007Uz-7B; Tue, 15 Dec 2020 10:14:50 +0000
-Received: from mail-io1-xd2b.google.com ([2607:f8b0:4864:20::d2b])
+	id 1kp9fE-00065P-4m; Tue, 15 Dec 2020 12:42:48 +0000
+Received: from userp2130.oracle.com ([156.151.31.86])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kp7Ly-0007Tz-JR
- for linux-mtd@lists.infradead.org; Tue, 15 Dec 2020 10:14:48 +0000
-Received: by mail-io1-xd2b.google.com with SMTP id d9so19937485iob.6
- for <linux-mtd@lists.infradead.org>; Tue, 15 Dec 2020 02:14:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=zDhQOsKrjTaCUv75G8cPeRVaONcjLVIBaibHEU0W478=;
- b=XJ1D6oyf4qAK9GkbVwUplBbfCjod1/Cl8iqTXvPSXlTWm11ZGlC84kF/PwI/sGGVBT
- F8Aq5AOh+bp3AEYTJm8/giXt4mAsYJicUnEr4qk7snwAQIYM4jjvnKOytoTHFzyVdXmU
- sywaPWJaxxXPaF4PPK8DiqbvGuTGqHuo/E1/JespOZBTZa2+DbpL0oOBoI7zNhY353nN
- 0ZmycMumSbpNl9I84PeudXmWiihBawabbtxHU83A5WRTn+dwet05IeNa/b7CpuQ4Bjfr
- L5YOnQQUG7SujGRKJDtlKjwpez6Py7hpsHwaw93/XjqImgINkMW1JMB0i/0aPknznj/h
- +dnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=zDhQOsKrjTaCUv75G8cPeRVaONcjLVIBaibHEU0W478=;
- b=lO86wLgr9IQnnPA6xaaQHEDpn1V7PrMnthI8V8crp+fXZ6HN45UBdBqt9+wUiiO74u
- WLEKdJoqfV3ICTfRYlPdbNpVQVphvDsBkyOkqGLkhJQOcntIgY0WyhQK7uSH2pOzknLS
- CzxPEJRBvuHmfwng++LsAkvTMGtMlyzaajveyLuE2Kmw5BYoC7+yUd9e+nGsOgnx73tI
- ACBcuTlRs+VN6luDb3ocY6NGDAWkWlXy4o3ygpwN45A5Wr6OqB4si86uRAv9vEtHIV7m
- E/YSTAsH3U8KZq6viJmwsWIpKgjUIApKYHJz0w4APyswg+rxSfE9DtJVDqadhz/aXdN8
- 3G/A==
-X-Gm-Message-State: AOAM530jSkV25Ygw4GbvCpsGwRpMUrt7qWclzm/xpCRVfEfay/37fh1E
- 859OFLzvyv8WmMcu00RxSkIdjqRqDbivDCQBo6I=
-X-Google-Smtp-Source: ABdhPJy9yt1G+hngQ/zyoadADNWZj0LdFipEvOL21ZFJ1geFBX0/iFTMd/fhTPHyuFn4DePhmYQXJ+Q5G8g/iN2RVJE=
-X-Received: by 2002:a02:c608:: with SMTP id i8mr38097973jan.125.1608027282000; 
- Tue, 15 Dec 2020 02:14:42 -0800 (PST)
+ id 1kp9fB-00064p-Rt
+ for linux-mtd@lists.infradead.org; Tue, 15 Dec 2020 12:42:46 +0000
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+ by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BFCYFQa004333;
+ Tue, 15 Dec 2020 12:42:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=u+SfNaOsD6SKg7kZNjVKQoBUmn78iriSfAYz8UpN+9U=;
+ b=RLKvMGBXy5Y3g8gMGN9jK1UOM+vKzEry0cVUAz+TedVRYKPGvrvGuJWZZpS8pL/pKssT
+ XLComAVz+xo+c4kp6/FusdqhNlqgACw5iZvl1cLK0tzfiEYT3f0ZzTPcU6XYSQk3qvEz
+ FYWcOrPG3PESoKufjczEzVkWxER5vCkC5jo+vt6h5EkJ2jUZjJgL67+J/upSCqZlJa8C
+ 1Bhrfzsa21zXGViiAMAhiOyy7Kz01Bxwd7ROp6ki6owJcD0szrlNnjidoabP/nUcV+FW
+ +xeCJKkei/VZnx+khQylY3rVP5q4yobHr/IcJtywY4TQ8/wEeOi3HBSh9ZENZ2vvjs0r 6g== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+ by userp2130.oracle.com with ESMTP id 35cn9raam2-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 15 Dec 2020 12:42:41 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+ by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BFCg7eb065449;
+ Tue, 15 Dec 2020 12:42:41 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+ by userp3030.oracle.com with ESMTP id 35d7sw4y85-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 15 Dec 2020 12:42:40 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+ by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BFCgdVV005333;
+ Tue, 15 Dec 2020 12:42:40 GMT
+Received: from mwanda (/102.36.221.92) by default (Oracle Beehive Gateway v4.0)
+ with ESMTP ; Tue, 15 Dec 2020 04:42:39 -0800
+Date: Tue, 15 Dec 2020 15:42:33 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: vadivel.muruganx.ramuthevar@linux.intel.com
+Subject: [bug report] mtd: rawnand: Add NAND controller support on Intel LGM
+ SoC
+Message-ID: <X9ivOeOWa9rtbXpl@mwanda>
 MIME-Version: 1.0
-References: <CAK+FTGhwM02y_eg6cE=GNcOH8G8eQjia0PD+JVrR=eSedQxWAA@mail.gmail.com>
- <CAFLxGvyNtHOQZ1OnSsh=Md9Lx7e8j307uRCNvS_qvNp6FW1_pg@mail.gmail.com>
- <CAK+FTGjg1sMtE0Vk=mztO6_HP0VJ=mYy1b0nAEXDw6Dtx6AtUw@mail.gmail.com>
- <2020191742.126461.1607959229137.JavaMail.zimbra@nod.at>
- <CAK+FTGirwvd5Sdww4kkYCy0BMmnZsP=Tq=cAePxraXa3AcGbiQ@mail.gmail.com>
- <CAFLxGvx4eZ3ZrciBLpF6qiQ7Srev=jGtyf50sC-qN9Q=z+xDQQ@mail.gmail.com>
- <20201215000355.760d3a95@xps13>
-In-Reply-To: <20201215000355.760d3a95@xps13>
-From: David Schaefer <david.tillmann.schaefer@gmail.com>
-Date: Tue, 15 Dec 2020 11:14:31 +0100
-Message-ID: <CAK+FTGi0bXdPsJiWQYkxotkM+E1DXchgQG-VfCNKJSiQrbHBxA@mail.gmail.com>
-Subject: Re: WD MyCloud Ex, Armada-370, pxa3xx-nand, marvell-nfc
-To: Miquel Raynal <miquel.raynal@bootlin.com>
+Content-Disposition: inline
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9835
+ signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0
+ bulkscore=0
+ mlxlogscore=859 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012150090
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9835
+ signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0
+ mlxlogscore=876
+ impostorscore=0 lowpriorityscore=0 clxscore=1011 spamscore=0
+ malwarescore=0 priorityscore=1501 phishscore=0 mlxscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012150089
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201215_051446_693305_B18F6E51 
-X-CRM114-Status: GOOD (  23.97  )
+X-CRM114-CacheID: sfid-20201215_074246_075491_1F950750 
+X-CRM114-Status: GOOD (  13.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,918 +101,105 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard.weinberger@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
+Hello Ramuthevar Vadivel Murugan,
 
-Am Di., 15. Dez. 2020 um 00:03 Uhr schrieb Miquel Raynal
-<miquel.raynal@bootlin.com>:
-> > > If this is a regression, how can we continue here? Can I give hardware
-> > > specs and logs? I have soldered on the board to access UART. I can
-> > > provide e.g. boot logs.
-> >
-> > No need to worry. Let's wait for Miquel, I'm sure he has an idea.
-> > In the absolute worst case we reconstruct the old driver.
-> >
->
-> Yes indeed, this looks like a regression but I bet we already fixed it.
-> Perhaps there has been a backporting issue and we did not spot it.
-> Can you please try the following fixes (in this order):
-> f6997bec6af4 mtd: rawnand: marvell: fix the chip-select DT parsing logic
-> b76401fc4ba7 mtd: rawnand: marvell: pass ms delay to wait_op
-> a2ee41fd953e mtd: rawnand: marvell: fix command xtype in BCH write hook
-> 90d617633368 mtd: rawnand: marvell: Fix read logic for layouts with ->nchunks > 2
-> 7fd130f7416f mtd: rawnand: marvell: support 8b/512B strength for 2kiB pages layout
-> 53c83b59759c mtd: rawnand: marvell: fix the IRQ handler complete() condition
-> cafb56dd741e mtd: rawnand: marvell: prevent timeouts on a loaded machine
-> c27075772d1f mtd: rawnand: marvell: Fix the condition on a return code
+The patch 0b1039f016e8: "mtd: rawnand: Add NAND controller support on
+Intel LGM SoC" from Nov 10, 2020, leads to the following static
+checker warning:
 
-Thank you for your suggested commits. I guess you are right and the
-issue already
-has been fixed. I am not sure which commit is working for production
-so I have attached
-the boot logs for all kernels that I obtained by cherry-picking your
-suggested commits from
-top to bottom, one by one. Please note that there was a merge conflict
-when merging
-7fd130f7416f that I solved by '-X theirs'.
+	drivers/mtd/nand/raw/intel-nand-controller.c:683 ebu_nand_probe()
+	warn: 'ebu_host->clk' not released on lines: 633,638,644,652.
 
-Kind regards
-David
+drivers/mtd/nand/raw/intel-nand-controller.c
+   617                  return PTR_ERR(ebu_host->cs[cs].chipaddr);
+   618  
+   619          ebu_host->clk = devm_clk_get(dev, NULL);
+   620          if (IS_ERR(ebu_host->clk))
+   621                  return dev_err_probe(dev, PTR_ERR(ebu_host->clk),
+   622                                       "failed to get clock\n");
+   623  
+   624          ret = clk_prepare_enable(ebu_host->clk);
+   625          if (ret) {
+   626                  dev_err(dev, "failed to enable clock: %d\n", ret);
+   627                  return ret;
+   628          }
+   629          ebu_host->clk_rate = clk_get_rate(ebu_host->clk);
+   630  
+   631          ebu_host->dma_tx = dma_request_chan(dev, "tx");
+   632          if (IS_ERR(ebu_host->dma_tx))
+   633                  return dev_err_probe(dev, PTR_ERR(ebu_host->dma_tx),
+   634                                       "failed to request DMA tx chan!.\n");
 
-------------- cherry-pick f6997bec6af4
-nand: device found, Manufacturer ID: 0xad, Chip ID: 0xda
-nand: Hynix H27U2G8F2CTR-BC
-nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-Bad block table not found for chip 0
-Bad block table not found for chip 0
-Scanning device for bad blocks
-Bad eraseblock 1854 at 0x00000e7c0000
--> does not continue booting
+clk_disable_unprepare(ebu_host->clk); before returning?
 
-------------- cherry-pick b76401fc4ba7
-nand: device found, Manufacturer ID: 0xad, Chip ID: 0xda
-nand: Hynix H27U2G8F2CTR-BC
-nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-Bad block table not found for chip 0
-Bad block table not found for chip 0
-Scanning device for bad blocks
-Bad eraseblock 1854 at 0x00000e7c0000
-marvell-nfc f10d0000.nand: Timeout waiting for RB signal
-nand_bbt: error while writing BBT block -110
-marvell-nfc f10d0000.nand: Timeout waiting for RB signal
-marvell-nfc f10d0000.nand: Timeout waiting for RB signal
-nand_bbt: error -110 while marking block 2047 bad
-marvell-nfc f10d0000.nand: Timeout waiting for RB signal
-nand_bbt: error while writing BBT block -110
-marvell-nfc f10d0000.nand: Timeout waiting for RB signal
-ata1: SATA link down (SStatus 0 SControl F300)
-marvell-nfc f10d0000.nand: Timeout waiting for RB signal
-nand_bbt: error -110 while marking block 2046 bad
-marvell-nfc f10d0000.nand: Timeout waiting for RB signal
-nand_bbt: error while writing BBT block -110
-marvell-nfc f10d0000.nand: Timeout waiting for RB signal
-marvell-nfc f10d0000.nand: Timeout waiting for RB signal
-nand_bbt: error -110 while marking block 2045 bad
-marvell-nfc f10d0000.nand: Timeout waiting for RB signal
-nand_bbt: error while writing BBT block -110
-marvell-nfc f10d0000.nand: Timeout waiting for RB signal
-marvell-nfc f10d0000.nand: Timeout waiting for RB signal
-nand_bbt: error -110 while marking block 2044 bad
-marvell-nfc f10d0000.nand: Timeout waiting for RB signal
-nand_bbt: error while writing BBT block -110
-marvell-nfc f10d0000.nand: Timeout waiting for RB signal
-marvell-nfc f10d0000.nand: Timeout waiting for RB signal
-nand_bbt: error -110 while marking block 2043 bad
-marvell-nfc f10d0000.nand: Timeout waiting for RB signal
-nand_bbt: error while writing BBT block -110
-marvell-nfc f10d0000.nand: Timeout waiting for RB signal
-marvell-nfc f10d0000.nand: Timeout waiting for RB signal
-nand_bbt: error -110 while marking block 2042 bad
-marvell-nfc f10d0000.nand: Timeout waiting for RB signal
-nand_bbt: error while writing BBT block -110
-ata2: SATA link down (SStatus 0 SControl F300)
-marvell-nfc f10d0000.nand: Timeout waiting for RB signal
-marvell-nfc f10d0000.nand: Timeout waiting for RB signal
-nand_bbt: error -110 while marking block 2041 bad
-marvell-nfc f10d0000.nand: Timeout waiting for RB signal
-nand_bbt: error while writing BBT block -110
-marvell-nfc f10d0000.nand: Timeout waiting for RB signal
-marvell-nfc f10d0000.nand: Timeout waiting for RB signal
-nand_bbt: error -110 while marking block 2040 bad
-No space left to write bad block table
-nand_bbt: error while writing bad block table -28
-marvell-nfc f10d0000.nand: nand_scan_tail failed: -28
-marvell-nfc: probe of f10d0000.nand failed with error -28
-Ethernet Channel Bonding Driver: v3.7.1 (April 27, 2011)
-libphy: Fixed MDIO Bus: probed
-libphy: orion_mdio_bus: probed
-mvneta f1074000.ethernet eth0: Using hardware mac address 00:50:43:02:02:00
-usbcore: registered new interface driver lan78xx
-ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
-ehci-orion: EHCI orion driver
-orion-ehci f1050000.usb: EHCI Host Controller
-orion-ehci f1050000.usb: new USB bus registered, assigned bus number 1
-orion-ehci f1050000.usb: irq 27, io mem 0xf1050000
-orion-ehci f1050000.usb: USB 2.0 started, EHCI 1.00
-usb usb1: New USB device found, idVendor=1d6b, idProduct=0002
-usb usb1: New USB device strings: Mfr=3, Product=2, SerialNumber=1
-usb usb1: Product: EHCI Host Controller
-usb usb1: Manufacturer: Linux 4.16.0+ ehci_hcd
-usb usb1: SerialNumber: f1050000.usb
-hub 1-0:1.0: USB hub found
-hub 1-0:1.0: 1 port detected
-usbcore: registered new interface driver usb-storage
-rtc-mv f1010300.rtc: internal RTC not ticking
-i2c /dev entries driver
-device-mapper: ioctl: 4.37.0-ioctl (2017-09-20) initialised: dm-devel@redhat.com
-sdhci: Secure Digital Host Controller Interface driver
-sdhci: Copyright(c) Pierre Ossman
-sdhci-pltfm: SDHCI platform and OF driver helper
-ledtrig-cpu: registered to indicate activity on CPUs
-marvell-cesa f1090000.crypto: CESA device successfully registered
-hidraw: raw HID events driver (C) Jiri Kosina
-usbcore: registered new interface driver usbhid
-usbhid: USB HID core driver
-NET: Registered protocol family 10
-Segment Routing with IPv6
-sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
-NET: Registered protocol family 17
-Bridge firewalling registered
-8021q: 802.1Q VLAN Support v1.8
-Key type dns_resolver registered
-Registering SWP/SWPB emulation handler
-Loading compiled-in X.509 certificates
-armada-370-pinctrl f1018000.pin-ctrl: unsupported function gpio on pin mpp54
-pinctrl core: failed to register map default (0): invalid type given
-reg-fixed-voltage: probe of regulators:regulator@2 failed with error -22
-input: gpio-keys as /devices/platform/gpio-keys/input/input0
-hctosys: unable to open rtc device (rtc0)
-Freeing unused kernel memory: 1024K
-# Loading, please wait...
-# Mounting filesystems...
-# Check disk and init
-### Press any key to stop and run shell... (2)mdadm: No arrays found
-in config file or automatically
-# /dev/md1 not exist!
-# Runing a shell...
-mvneta f1074000.ethernet eth0: PHY [f1072004.mdio-mii:00] driver
-[Marvell 88E1510]
-mvneta f1074000.ethernet eth0: configuring for phy/rgmii-id link mode
-IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready
-udhcpc (v1.24.1) started
-Setting IP address 0.0.0.0 on eth0
-Sending discover...
-Sending discover...
-mvneta f1074000.ethernet eth0: Link is Up - 1Gbps/Full - flow control off
-IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
-Sending discover...
-Sending select for 192.168.178.59...
-Lease of 192.168.178.59 obtained, lease time 864000
-Setting IP address 192.168.178.59 on eth0
-Deleting routers
-route: SIOCDELRT: No such process
-Adding router 192.168.178.1
-Recreating /etc/resolv.conf
- Adding DNS server 192.168.178.1
-udhcpc (v1.24.1) started
-Setting IP address 0.0.0.0 on eth0
-Sending discover...
-Sending select for 192.168.178.59...
-Lease of 192.168.178.59 obtained, lease time 864000
-Setting IP address 192.168.178.59 on eth0
-Deleting routers
-route: SIOCDELRT: No such process
-Adding router 192.168.178.1
-Recreating /etc/resolv.conf
- Adding DNS server 192.168.178.1
+   635  
+   636          ebu_host->dma_rx = dma_request_chan(dev, "rx");
+   637          if (IS_ERR(ebu_host->dma_rx))
+   638                  return dev_err_probe(dev, PTR_ERR(ebu_host->dma_rx),
+   639                                       "failed to request DMA rx chan!.\n");
 
- / # ls /dev/mtd*
-ls: /dev/mtd*: No such file or directory
+Here
 
-------------- cherry-pick a2ee41fd953e
-nand: device found, Manufacturer ID: 0xad, Chip ID: 0xda
-nand: Hynix H27U2G8F2CTR-BC
-nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-Bad block table not found for chip 0
-Bad block table not found for chip 0
-Scanning device for bad blocks
-Bad eraseblock 1854 at 0x00000e7c0000
-Bad block table written to 0x00000ffe0000, version 0x01
-Bad block table written to 0x00000ffc0000, version 0x01
-7 ofpart partitions found on MTD device pxa3xx_nand-0
-Creating 7 MTD partitions on "pxa3xx_nand-0":
-0x000000000000-0x000000500000 : "u-Boot"
-0x000000500000-0x000000a00000 : "uImage"
-0x000000a00000-0x000000f00000 : "ramdisk"
-0x000000f00000-0x00000d800000 : "image.cfs"
-0x00000dd00000-0x00000ec00000 : "rescue firmware"
-0x00000ec00000-0x000010000000 : "config"
-0x00000d800000-0x00000dd00000 : "reserve"
-Ethernet Channel Bonding Driver: v3.7.1 (April 27, 2011)
-libphy: Fixed MDIO Bus: probed
-libphy: orion_mdio_bus: probed
-mvneta f1074000.ethernet eth0: Using hardware mac address 00:50:43:02:02:00
-usbcore: registered new interface driver lan78xx
-ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
-ehci-orion: EHCI orion driver
-orion-ehci f1050000.usb: EHCI Host Controller
-orion-ehci f1050000.usb: new USB bus registered, assigned bus number 1
-orion-ehci f1050000.usb: irq 27, io mem 0xf1050000
-ata1: SATA link down (SStatus 0 SControl F300)
-orion-ehci f1050000.usb: USB 2.0 started, EHCI 1.00
-usb usb1: New USB device found, idVendor=1d6b, idProduct=0002
-usb usb1: New USB device strings: Mfr=3, Product=2, SerialNumber=1
-usb usb1: Product: EHCI Host Controller
-usb usb1: Manufacturer: Linux 4.16.0+ ehci_hcd
-usb usb1: SerialNumber: f1050000.usb
-hub 1-0:1.0: USB hub found
-hub 1-0:1.0: 1 port detected
-usbcore: registered new interface driver usb-storage
-ata2: SATA link down (SStatus 0 SControl F300)
-rtc-mv f1010300.rtc: internal RTC not ticking
-i2c /dev entries driver
-device-mapper: ioctl: 4.37.0-ioctl (2017-09-20) initialised: dm-devel@redhat.com
-sdhci: Secure Digital Host Controller Interface driver
-sdhci: Copyright(c) Pierre Ossman
-sdhci-pltfm: SDHCI platform and OF driver helper
-ledtrig-cpu: registered to indicate activity on CPUs
-marvell-cesa f1090000.crypto: CESA device successfully registered
-hidraw: raw HID events driver (C) Jiri Kosina
-usbcore: registered new interface driver usbhid
-usbhid: USB HID core driver
-NET: Registered protocol family 10
-Segment Routing with IPv6
-sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
-NET: Registered protocol family 17
-Bridge firewalling registered
-8021q: 802.1Q VLAN Support v1.8
-Key type dns_resolver registered
-Registering SWP/SWPB emulation handler
-Loading compiled-in X.509 certificates
-armada-370-pinctrl f1018000.pin-ctrl: unsupported function gpio on pin mpp54
-pinctrl core: failed to register map default (0): invalid type given
-reg-fixed-voltage: probe of regulators:regulator@2 failed with error -22
-input: gpio-keys as /devices/platform/gpio-keys/input/input0
-hctosys: unable to open rtc device (rtc0)
-Freeing unused kernel memory: 1024K
-# Loading, please wait...
-# Mounting filesystems...
-# Check disk and init
-### Press any key to stop and run shell... (2)print_req_error: I/O
-error, dev mtdblock6, sector 0
-print_req_error: I/O error, dev mtdblock6, sector 0
-print_req_error: I/O error, dev mtdblock6, sector 0
-print_req_error: I/O error, dev mtdblock5, sector 0
-print_req_error: I/O error, dev mtdblock5, sector 0
-print_req_error: I/O error, dev mtdblock5, sector 0
-print_req_error: I/O error, dev mtdblock4, sector 0
-print_req_error: I/O error, dev mtdblock4, sector 0
-print_req_error: I/O error, dev mtdblock4, sector 0
-print_req_error: I/O error, dev mtdblock3, sector 0
-mdadm: No arrays found in config file or automatically
-# /dev/md1 not exist!
-# Runing a shell...
-mvneta f1074000.ethernet eth0: PHY [f1072004.mdio-mii:00] driver
-[Marvell 88E1510]
-mvneta f1074000.ethernet eth0: configuring for phy/rgmii-id link mode
-IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready
-udhcpc (v1.24.1) started
-Setting IP address 0.0.0.0 on eth0
-Sending discover...
-Sending discover...
-mvneta f1074000.ethernet eth0: Link is Up - 1Gbps/Full - flow control off
-IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
-Sending discover...
-Sending select for 192.168.178.66...
-Lease of 192.168.178.66 obtained, lease time 864000
-Setting IP address 192.168.178.66 on eth0
-Deleting routers
-route: SIOCDELRT: No such process
-Adding router 192.168.178.1
-Recreating /etc/resolv.conf
- Adding DNS server 192.168.178.1
-udhcpc (v1.24.1) started
-Setting IP address 0.0.0.0 on eth0
-Sending discover...
-Sending select for 192.168.178.66...
-Lease of 192.168.178.66 obtained, lease time 864000
-Setting IP address 192.168.178.66 on eth0
-Deleting routers
-route: SIOCDELRT: No such process
-Adding router 192.168.178.1
-Recreating /etc/resolv.conf
- Adding DNS server 192.168.178.1
-/ # ls /dev/mtd*
-/dev/mtd0       /dev/mtd2ro     /dev/mtd5       /dev/mtdblock1  /dev/mtdblock6
-/dev/mtd0ro     /dev/mtd3       /dev/mtd5ro     /dev/mtdblock2
-/dev/mtd1       /dev/mtd3ro     /dev/mtd6       /dev/mtdblock3
-/dev/mtd1ro     /dev/mtd4       /dev/mtd6ro     /dev/mtdblock4
-/dev/mtd2       /dev/mtd4ro     /dev/mtdblock0  /dev/mtdblock5
+   640  
+   641          resname = devm_kasprintf(dev, GFP_KERNEL, "addr_sel%d", cs);
+   642          res = platform_get_resource_byname(pdev, IORESOURCE_MEM, resname);
+   643          if (!res)
+   644                  return -EINVAL;
 
-------------- cherry-pick 90d617633368
-nand: device found, Manufacturer ID: 0xad, Chip ID: 0xda
-nand: Hynix H27U2G8F2CTR-BC
-nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-Bad block table not found for chip 0
-Bad block table not found for chip 0
-Scanning device for bad blocks
-Bad eraseblock 1854 at 0x00000e7c0000
-Bad block table written to 0x00000ffe0000, version 0x01
-Bad block table written to 0x00000ffc0000, version 0x01
-7 ofpart partitions found on MTD device pxa3xx_nand-0
-Creating 7 MTD partitions on "pxa3xx_nand-0":
-0x000000000000-0x000000500000 : "u-Boot"
-0x000000500000-0x000000a00000 : "uImage"
-0x000000a00000-0x000000f00000 : "ramdisk"
-0x000000f00000-0x00000d800000 : "image.cfs"
-0x00000dd00000-0x00000ec00000 : "rescue firmware"
-0x00000ec00000-0x000010000000 : "config"
-0x00000d800000-0x00000dd00000 : "reserve"
-Ethernet Channel Bonding Driver: v3.7.1 (April 27, 2011)
-libphy: Fixed MDIO Bus: probed
-libphy: orion_mdio_bus: probed
-mvneta f1074000.ethernet eth0: Using hardware mac address 00:50:43:02:02:00
-usbcore: registered new interface driver lan78xx
-ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
-ehci-orion: EHCI orion driver
-orion-ehci f1050000.usb: EHCI Host Controller
-orion-ehci f1050000.usb: new USB bus registered, assigned bus number 1
-orion-ehci f1050000.usb: irq 27, io mem 0xf1050000
-ata1: SATA link down (SStatus 0 SControl F300)
-orion-ehci f1050000.usb: USB 2.0 started, EHCI 1.00
-usb usb1: New USB device found, idVendor=1d6b, idProduct=0002
-usb usb1: New USB device strings: Mfr=3, Product=2, SerialNumber=1
-usb usb1: Product: EHCI Host Controller
-usb usb1: Manufacturer: Linux 4.16.0+ ehci_hcd
-usb usb1: SerialNumber: f1050000.usb
-hub 1-0:1.0: USB hub found
-hub 1-0:1.0: 1 port detected
-usbcore: registered new interface driver usb-storage
-ata2: SATA link down (SStatus 0 SControl F300)
-rtc-mv f1010300.rtc: internal RTC not ticking
-i2c /dev entries driver
-device-mapper: ioctl: 4.37.0-ioctl (2017-09-20) initialised: dm-devel@redhat.com
-sdhci: Secure Digital Host Controller Interface driver
-sdhci: Copyright(c) Pierre Ossman
-sdhci-pltfm: SDHCI platform and OF driver helper
-ledtrig-cpu: registered to indicate activity on CPUs
-marvell-cesa f1090000.crypto: CESA device successfully registered
-hidraw: raw HID events driver (C) Jiri Kosina
-usbcore: registered new interface driver usbhid
-usbhid: USB HID core driver
-NET: Registered protocol family 10
-Segment Routing with IPv6
-sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
-NET: Registered protocol family 17
-Bridge firewalling registered
-8021q: 802.1Q VLAN Support v1.8
-Key type dns_resolver registered
-Registering SWP/SWPB emulation handler
-Loading compiled-in X.509 certificates
-armada-370-pinctrl f1018000.pin-ctrl: unsupported function gpio on pin mpp54
-pinctrl core: failed to register map default (0): invalid type given
-reg-fixed-voltage: probe of regulators:regulator@2 failed with error -22
-input: gpio-keys as /devices/platform/gpio-keys/input/input0
-hctosys: unable to open rtc device (rtc0)
-Freeing unused kernel memory: 1024K
-# Loading, please wait...
-# Mounting filesystems...
-# Check disk and init
-### Press any key to stop and run shell... (2)print_req_error: I/O
-error, dev mtdblock6, sector 0
-print_req_error: I/O error, dev mtdblock6, sector 0
-print_req_error: I/O error, dev mtdblock6, sector 0
-print_req_error: I/O error, dev mtdblock5, sector 0
-print_req_error: I/O error, dev mtdblock5, sector 0
-print_req_error: I/O error, dev mtdblock5, sector 0
-print_req_error: I/O error, dev mtdblock4, sector 0
-print_req_error: I/O error, dev mtdblock4, sector 0
-print_req_error: I/O error, dev mtdblock4, sector 0
-print_req_error: I/O error, dev mtdblock3, sector 0
-mdadm: No arrays found in config file or automatically
-# /dev/md1 not exist!
-# Runing a shell...
-mvneta f1074000.ethernet eth0: PHY [f1072004.mdio-mii:00] driver
-[Marvell 88E1510]
-mvneta f1074000.ethernet eth0: configuring for phy/rgmii-id link mode
-IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready
-udhcpc (v1.24.1) started
-Setting IP address 0.0.0.0 on eth0
-Sending discover...
-Sending discover...
-mvneta f1074000.ethernet eth0: Link is Up - 1Gbps/Full - flow control off
-IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
-Sending discover...
-Sending select for 192.168.178.70...
-Lease of 192.168.178.70 obtained, lease time 864000
-Setting IP address 192.168.178.70 on eth0
-Deleting routers
-route: SIOCDELRT: No such process
-Adding router 192.168.178.1
-Recreating /etc/resolv.conf
- Adding DNS server 192.168.178.1
-udhcpc (v1.24.1) started
-Setting IP address 0.0.0.0 on eth0
-Sending discover...
-Sending select for 192.168.178.70...
-Lease of 192.168.178.70 obtained, lease time 864000
-Setting IP address 192.168.178.70 on eth0
-Deleting routers
-route: SIOCDELRT: No such process
-Adding router 192.168.178.1
-Recreating /etc/resolv.conf
- Adding DNS server 192.168.178.1
-/ # ls /dev/mtd*
-/dev/mtd0       /dev/mtd2ro     /dev/mtd5       /dev/mtdblock1  /dev/mtdblock6
-/dev/mtd0ro     /dev/mtd3       /dev/mtd5ro     /dev/mtdblock2
-/dev/mtd1       /dev/mtd3ro     /dev/mtd6       /dev/mtdblock3
-/dev/mtd1ro     /dev/mtd4       /dev/mtd6ro     /dev/mtdblock4
-/dev/mtd2       /dev/mtd4ro     /dev/mtdblock0  /dev/mtdblock5
+here
 
-------------- cherry-pick 7fd130f7416f -X theirs
-nand: device found, Manufacturer ID: 0xad, Chip ID: 0xda
-nand: Hynix H27U2G8F2CTR-BC
-nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-Bad block table not found for chip 0
-Bad block table not found for chip 0
-Scanning device for bad blocks
-Bad eraseblock 1854 at 0x00000e7c0000
-Bad block table written to 0x00000ffe0000, version 0x01
-Bad block table written to 0x00000ffc0000, version 0x01
-7 ofpart partitions found on MTD device pxa3xx_nand-0
-Creating 7 MTD partitions on "pxa3xx_nand-0":
-0x000000000000-0x000000500000 : "u-Boot"
-0x000000500000-0x000000a00000 : "uImage"
-0x000000a00000-0x000000f00000 : "ramdisk"
-0x000000f00000-0x00000d800000 : "image.cfs"
-0x00000dd00000-0x00000ec00000 : "rescue firmware"
-0x00000ec00000-0x000010000000 : "config"
-0x00000d800000-0x00000dd00000 : "reserve"
-Ethernet Channel Bonding Driver: v3.7.1 (April 27, 2011)
-libphy: Fixed MDIO Bus: probed
-libphy: orion_mdio_bus: probed
-mvneta f1074000.ethernet eth0: Using hardware mac address 00:50:43:02:02:00
-usbcore: registered new interface driver lan78xx
-ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
-ehci-orion: EHCI orion driver
-orion-ehci f1050000.usb: EHCI Host Controller
-orion-ehci f1050000.usb: new USB bus registered, assigned bus number 1
-orion-ehci f1050000.usb: irq 27, io mem 0xf1050000
-ata1: SATA link down (SStatus 0 SControl F300)
-orion-ehci f1050000.usb: USB 2.0 started, EHCI 1.00
-usb usb1: New USB device found, idVendor=1d6b, idProduct=0002
-usb usb1: New USB device strings: Mfr=3, Product=2, SerialNumber=1
-usb usb1: Product: EHCI Host Controller
-usb usb1: Manufacturer: Linux 4.16.0+ ehci_hcd
-usb usb1: SerialNumber: f1050000.usb
-hub 1-0:1.0: USB hub found
-hub 1-0:1.0: 1 port detected
-usbcore: registered new interface driver usb-storage
-ata2: SATA link down (SStatus 0 SControl F300)
-rtc-mv f1010300.rtc: internal RTC not ticking
-i2c /dev entries driver
-device-mapper: ioctl: 4.37.0-ioctl (2017-09-20) initialised: dm-devel@redhat.com
-sdhci: Secure Digital Host Controller Interface driver
-sdhci: Copyright(c) Pierre Ossman
-sdhci-pltfm: SDHCI platform and OF driver helper
-ledtrig-cpu: registered to indicate activity on CPUs
-marvell-cesa f1090000.crypto: CESA device successfully registered
-hidraw: raw HID events driver (C) Jiri Kosina
-usbcore: registered new interface driver usbhid
-usbhid: USB HID core driver
-NET: Registered protocol family 10
-Segment Routing with IPv6
-sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
-NET: Registered protocol family 17
-Bridge firewalling registered
-8021q: 802.1Q VLAN Support v1.8
-Key type dns_resolver registered
-Registering SWP/SWPB emulation handler
-Loading compiled-in X.509 certificates
-armada-370-pinctrl f1018000.pin-ctrl: unsupported function gpio on pin mpp54
-pinctrl core: failed to register map default (0): invalid type given
-reg-fixed-voltage: probe of regulators:regulator@2 failed with error -22
-input: gpio-keys as /devices/platform/gpio-keys/input/input0
-hctosys: unable to open rtc device (rtc0)
-Freeing unused kernel memory: 1024K
-# Loading, please wait...
-# Mounting filesystems...
-# Check disk and init
-### Press any key to stop and run shell... (2)print_req_error: I/O
-error, dev mtdblock6, sector 0
-print_req_error: I/O error, dev mtdblock6, sector 0
-print_req_error: I/O error, dev mtdblock6, sector 0
-print_req_error: I/O error, dev mtdblock5, sector 0
-print_req_error: I/O error, dev mtdblock5, sector 0
-print_req_error: I/O error, dev mtdblock5, sector 0
-print_req_error: I/O error, dev mtdblock4, sector 0
-print_req_error: I/O error, dev mtdblock4, sector 0
-print_req_error: I/O error, dev mtdblock4, sector 0
-print_req_error: I/O error, dev mtdblock3, sector 0
-mdadm: No arrays found in config file or automatically
-# /dev/md1 not exist!
-# Runing a shell...
-mvneta f1074000.ethernet eth0: PHY [f1072004.mdio-mii:00] driver
-[Marvell 88E1510]
-mvneta f1074000.ethernet eth0: configuring for phy/rgmii-id link mode
-IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready
-udhcpc (v1.24.1) started
-Setting IP address 0.0.0.0 on eth0
-Sending discover...
-Sending discover...
-mvneta f1074000.ethernet eth0: Link is Up - 1Gbps/Full - flow control off
-IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
-Sending discover...
-Sending select for 192.168.178.72...
-Lease of 192.168.178.72 obtained, lease time 864000
-Setting IP address 192.168.178.72 on eth0
-Deleting routers
-route: SIOCDELRT: No such process
-Adding router 192.168.178.1
-Recreating /etc/resolv.conf
- Adding DNS server 192.168.178.1
-udhcpc (v1.24.1) started
-Setting IP address 0.0.0.0 on eth0
-Sending discover...
-Sending select for 192.168.178.72...
-Lease of 192.168.178.72 obtained, lease time 864000
-Setting IP address 192.168.178.72 on eth0
-Deleting routers
-route: SIOCDELRT: No such process
-Adding router 192.168.178.1
-Recreating /etc/resolv.conf
- Adding DNS server 192.168.178.1
-/ # ls /dev/mtd*
-/dev/mtd0       /dev/mtd2ro     /dev/mtd5       /dev/mtdblock1  /dev/mtdblock6
-/dev/mtd0ro     /dev/mtd3       /dev/mtd5ro     /dev/mtdblock2
-/dev/mtd1       /dev/mtd3ro     /dev/mtd6       /dev/mtdblock3
-/dev/mtd1ro     /dev/mtd4       /dev/mtd6ro     /dev/mtdblock4
-/dev/mtd2       /dev/mtd4ro     /dev/mtdblock0  /dev/mtdblock5
-------------- cherry-pick 53c83b59759c
-nand: device found, Manufacturer ID: 0xad, Chip ID: 0xda
-nand: Hynix H27U2G8F2CTR-BC
-nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-Bad block table not found for chip 0
-Bad block table not found for chip 0
-Scanning device for bad blocks
-Bad eraseblock 1854 at 0x00000e7c0000
-Bad block table written to 0x00000ffe0000, version 0x01
-Bad block table written to 0x00000ffc0000, version 0x01
-7 ofpart partitions found on MTD device pxa3xx_nand-0
-Creating 7 MTD partitions on "pxa3xx_nand-0":
-0x000000000000-0x000000500000 : "u-Boot"
-0x000000500000-0x000000a00000 : "uImage"
-0x000000a00000-0x000000f00000 : "ramdisk"
-0x000000f00000-0x00000d800000 : "image.cfs"
-0x00000dd00000-0x00000ec00000 : "rescue firmware"
-0x00000ec00000-0x000010000000 : "config"
-0x00000d800000-0x00000dd00000 : "reserve"
-Ethernet Channel Bonding Driver: v3.7.1 (April 27, 2011)
-libphy: Fixed MDIO Bus: probed
-libphy: orion_mdio_bus: probed
-mvneta f1074000.ethernet eth0: Using hardware mac address 00:50:43:02:02:00
-usbcore: registered new interface driver lan78xx
-ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
-ehci-orion: EHCI orion driver
-orion-ehci f1050000.usb: EHCI Host Controller
-orion-ehci f1050000.usb: new USB bus registered, assigned bus number 1
-orion-ehci f1050000.usb: irq 27, io mem 0xf1050000
-ata1: SATA link down (SStatus 0 SControl F300)
-orion-ehci f1050000.usb: USB 2.0 started, EHCI 1.00
-usb usb1: New USB device found, idVendor=1d6b, idProduct=0002
-usb usb1: New USB device strings: Mfr=3, Product=2, SerialNumber=1
-usb usb1: Product: EHCI Host Controller
-usb usb1: Manufacturer: Linux 4.16.0+ ehci_hcd
-usb usb1: SerialNumber: f1050000.usb
-hub 1-0:1.0: USB hub found
-hub 1-0:1.0: 1 port detected
-usbcore: registered new interface driver usb-storage
-ata2: SATA link down (SStatus 0 SControl F300)
-rtc-mv f1010300.rtc: internal RTC not ticking
-i2c /dev entries driver
-device-mapper: ioctl: 4.37.0-ioctl (2017-09-20) initialised: dm-devel@redhat.com
-sdhci: Secure Digital Host Controller Interface driver
-sdhci: Copyright(c) Pierre Ossman
-sdhci-pltfm: SDHCI platform and OF driver helper
-ledtrig-cpu: registered to indicate activity on CPUs
-marvell-cesa f1090000.crypto: CESA device successfully registered
-hidraw: raw HID events driver (C) Jiri Kosina
-usbcore: registered new interface driver usbhid
-usbhid: USB HID core driver
-NET: Registered protocol family 10
-Segment Routing with IPv6
-sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
-NET: Registered protocol family 17
-Bridge firewalling registered
-8021q: 802.1Q VLAN Support v1.8
-Key type dns_resolver registered
-Registering SWP/SWPB emulation handler
-Loading compiled-in X.509 certificates
-armada-370-pinctrl f1018000.pin-ctrl: unsupported function gpio on pin mpp54
-pinctrl core: failed to register map default (0): invalid type given
-reg-fixed-voltage: probe of regulators:regulator@2 failed with error -22
-input: gpio-keys as /devices/platform/gpio-keys/input/input0
-hctosys: unable to open rtc device (rtc0)
-Freeing unused kernel memory: 1024K
-# Loading, please wait...
-# Mounting filesystems...
-# Check disk and init
-### Press any key to stop and run shell... (2)print_req_error: I/O
-error, dev mtdblock6, sector 0
-print_req_error: I/O error, dev mtdblock6, sector 0
-print_req_error: I/O error, dev mtdblock6, sector 0
-print_req_error: I/O error, dev mtdblock5, sector 0
-print_req_error: I/O error, dev mtdblock5, sector 0
-print_req_error: I/O error, dev mtdblock5, sector 0
-print_req_error: I/O error, dev mtdblock4, sector 0
-print_req_error: I/O error, dev mtdblock4, sector 0
-print_req_error: I/O error, dev mtdblock4, sector 0
-print_req_error: I/O error, dev mtdblock3, sector 0
-mdadm: No arrays found in config file or automatically
-# /dev/md1 not exist!
-# Runing a shell...
-mvneta f1074000.ethernet eth0: PHY [f1072004.mdio-mii:00] driver
-[Marvell 88E1510]
-mvneta f1074000.ethernet eth0: configuring for phy/rgmii-id link mode
-IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready
-udhcpc (v1.24.1) started
-Setting IP address 0.0.0.0 on eth0
-Sending discover...
-Sending discover...
-mvneta f1074000.ethernet eth0: Link is Up - 1Gbps/Full - flow control off
-IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
-Sending discover...
-Sending select for 192.168.178.73...
-Lease of 192.168.178.73 obtained, lease time 864000
-Setting IP address 192.168.178.73 on eth0
-Deleting routers
-route: SIOCDELRT: No such process
-Adding router 192.168.178.1
-Recreating /etc/resolv.conf
- Adding DNS server 192.168.178.1
-udhcpc (v1.24.1) started
-Setting IP address 0.0.0.0 on eth0
-Sending discover...
-Sending select for 192.168.178.73...
-Lease of 192.168.178.73 obtained, lease time 864000
-Setting IP address 192.168.178.73 on eth0
-Deleting routers
-route: SIOCDELRT: No such process
-Adding router 192.168.178.1
-Recreating /etc/resolv.conf
- Adding DNS server 192.168.178.1
-/ # ls /dev/mtd*
-/dev/mtd0       /dev/mtd2ro     /dev/mtd5       /dev/mtdblock1  /dev/mtdblock6
-/dev/mtd0ro     /dev/mtd3       /dev/mtd5ro     /dev/mtdblock2
-/dev/mtd1       /dev/mtd3ro     /dev/mtd6       /dev/mtdblock3
-/dev/mtd1ro     /dev/mtd4       /dev/mtd6ro     /dev/mtdblock4
-/dev/mtd2       /dev/mtd4ro     /dev/mtdblock0  /dev/mtdblock5
+   645          ebu_host->cs[cs].addr_sel = res->start;
+   646          writel(ebu_host->cs[cs].addr_sel | EBU_ADDR_MASK(5) | EBU_ADDR_SEL_REGEN,
+   647                 ebu_host->ebu + EBU_ADDR_SEL(cs));
+   648  
+   649          nand_set_flash_node(&ebu_host->chip, dev->of_node);
+   650          if (!mtd->name) {
+   651                  dev_err(ebu_host->dev, "NAND label property is mandatory\n");
+   652                  return -EINVAL;
 
-------------- cherry-pick cafb56dd741e
-nand: device found, Manufacturer ID: 0xad, Chip ID: 0xda
-nand: Hynix H27U2G8F2CTR-BC
-nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-Bad block table not found for chip 0
-Bad block table not found for chip 0
-Scanning device for bad blocks
-Bad eraseblock 1854 at 0x00000e7c0000
-Bad block table written to 0x00000ffe0000, version 0x01
-Bad block table written to 0x00000ffc0000, version 0x01
-7 ofpart partitions found on MTD device pxa3xx_nand-0
-Creating 7 MTD partitions on "pxa3xx_nand-0":
-0x000000000000-0x000000500000 : "u-Boot"
-0x000000500000-0x000000a00000 : "uImage"
-0x000000a00000-0x000000f00000 : "ramdisk"
-0x000000f00000-0x00000d800000 : "image.cfs"
-0x00000dd00000-0x00000ec00000 : "rescue firmware"
-0x00000ec00000-0x000010000000 : "config"
-0x00000d800000-0x00000dd00000 : "reserve"
-Ethernet Channel Bonding Driver: v3.7.1 (April 27, 2011)
-libphy: Fixed MDIO Bus: probed
-libphy: orion_mdio_bus: probed
-mvneta f1074000.ethernet eth0: Using hardware mac address 00:50:43:02:02:00
-usbcore: registered new interface driver lan78xx
-ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
-ehci-orion: EHCI orion driver
-orion-ehci f1050000.usb: EHCI Host Controller
-orion-ehci f1050000.usb: new USB bus registered, assigned bus number 1
-orion-ehci f1050000.usb: irq 27, io mem 0xf1050000
-ata1: SATA link down (SStatus 0 SControl F300)
-orion-ehci f1050000.usb: USB 2.0 started, EHCI 1.00
-usb usb1: New USB device found, idVendor=1d6b, idProduct=0002
-usb usb1: New USB device strings: Mfr=3, Product=2, SerialNumber=1
-usb usb1: Product: EHCI Host Controller
-usb usb1: Manufacturer: Linux 4.16.0+ ehci_hcd
-usb usb1: SerialNumber: f1050000.usb
-hub 1-0:1.0: USB hub found
-hub 1-0:1.0: 1 port detected
-usbcore: registered new interface driver usb-storage
-ata2: SATA link down (SStatus 0 SControl F300)
-rtc-mv f1010300.rtc: internal RTC not ticking
-i2c /dev entries driver
-device-mapper: ioctl: 4.37.0-ioctl (2017-09-20) initialised: dm-devel@redhat.com
-sdhci: Secure Digital Host Controller Interface driver
-sdhci: Copyright(c) Pierre Ossman
-sdhci-pltfm: SDHCI platform and OF driver helper
-ledtrig-cpu: registered to indicate activity on CPUs
-marvell-cesa f1090000.crypto: CESA device successfully registered
-hidraw: raw HID events driver (C) Jiri Kosina
-usbcore: registered new interface driver usbhid
-usbhid: USB HID core driver
-NET: Registered protocol family 10
-Segment Routing with IPv6
-sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
-NET: Registered protocol family 17
-Bridge firewalling registered
-8021q: 802.1Q VLAN Support v1.8
-Key type dns_resolver registered
-Registering SWP/SWPB emulation handler
-Loading compiled-in X.509 certificates
-armada-370-pinctrl f1018000.pin-ctrl: unsupported function gpio on pin mpp54
-pinctrl core: failed to register map default (0): invalid type given
-reg-fixed-voltage: probe of regulators:regulator@2 failed with error -22
-input: gpio-keys as /devices/platform/gpio-keys/input/input0
-hctosys: unable to open rtc device (rtc0)
-Freeing unused kernel memory: 1024K
-# Loading, please wait...
-# Mounting filesystems...
-# Check disk and init
-### Press any key to stop and run shell... (2)print_req_error: I/O
-error, dev mtdblock6, sector 0
-print_req_error: I/O error, dev mtdblock6, sector 0
-print_req_error: I/O error, dev mtdblock6, sector 0
-print_req_error: I/O error, dev mtdblock5, sector 0
-print_req_error: I/O error, dev mtdblock5, sector 0
-print_req_error: I/O error, dev mtdblock5, sector 0
-print_req_error: I/O error, dev mtdblock4, sector 0
-print_req_error: I/O error, dev mtdblock4, sector 0
-print_req_error: I/O error, dev mtdblock4, sector 0
-print_req_error: I/O error, dev mtdblock3, sector 0
-mdadm: No arrays found in config file or automatically
-# /dev/md1 not exist!
-# Runing a shell...
-mvneta f1074000.ethernet eth0: PHY [f1072004.mdio-mii:00] driver
-[Marvell 88E1510]
-mvneta f1074000.ethernet eth0: configuring for phy/rgmii-id link mode
-IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready
-udhcpc (v1.24.1) started
-Setting IP address 0.0.0.0 on eth0
-Sending discover...
-Sending discover...
-mvneta f1074000.ethernet eth0: Link is Up - 1Gbps/Full - flow control off
-IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
-Sending discover...
-Sending select for 192.168.178.74...
-Lease of 192.168.178.74 obtained, lease time 864000
-Setting IP address 192.168.178.74 on eth0
-Deleting routers
-route: SIOCDELRT: No such process
-Adding router 192.168.178.1
-Recreating /etc/resolv.conf
- Adding DNS server 192.168.178.1
-udhcpc (v1.24.1) started
-Setting IP address 0.0.0.0 on eth0
-Sending discover...
-Sending select for 192.168.178.74...
-Lease of 192.168.178.74 obtained, lease time 864000
-Setting IP address 192.168.178.74 on eth0
-Deleting routers
-route: SIOCDELRT: No such process
-Adding router 192.168.178.1
-Recreating /etc/resolv.conf
- Adding DNS server 192.168.178.1
-/ # ls /dev/mtd*
-/dev/mtd0       /dev/mtd2ro     /dev/mtd5       /dev/mtdblock1  /dev/mtdblock6
-/dev/mtd0ro     /dev/mtd3       /dev/mtd5ro     /dev/mtdblock2
-/dev/mtd1       /dev/mtd3ro     /dev/mtd6       /dev/mtdblock3
-/dev/mtd1ro     /dev/mtd4       /dev/mtd6ro     /dev/mtdblock4
-/dev/mtd2       /dev/mtd4ro     /dev/mtdblock0  /dev/mtdblock5
+here
 
-------------- cherry-pick c27075772d1f
-nand: device found, Manufacturer ID: 0xad, Chip ID: 0xda
-nand: Hynix H27U2G8F2CTR-BC
-nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-Bad block table not found for chip 0
-Bad block table not found for chip 0
-Scanning device for bad blocks
-Bad eraseblock 1854 at 0x00000e7c0000
-Bad block table written to 0x00000ffe0000, version 0x01
-Bad block table written to 0x00000ffc0000, version 0x01
-7 ofpart partitions found on MTD device pxa3xx_nand-0
-Creating 7 MTD partitions on "pxa3xx_nand-0":
-0x000000000000-0x000000500000 : "u-Boot"
-0x000000500000-0x000000a00000 : "uImage"
-0x000000a00000-0x000000f00000 : "ramdisk"
-0x000000f00000-0x00000d800000 : "image.cfs"
-0x00000dd00000-0x00000ec00000 : "rescue firmware"
-0x00000ec00000-0x000010000000 : "config"
-0x00000d800000-0x00000dd00000 : "reserve"
-Ethernet Channel Bonding Driver: v3.7.1 (April 27, 2011)
-libphy: Fixed MDIO Bus: probed
-libphy: orion_mdio_bus: probed
-mvneta f1074000.ethernet eth0: Using hardware mac address 00:50:43:02:02:00
-usbcore: registered new interface driver lan78xx
-ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
-ehci-orion: EHCI orion driver
-orion-ehci f1050000.usb: EHCI Host Controller
-orion-ehci f1050000.usb: new USB bus registered, assigned bus number 1
-orion-ehci f1050000.usb: irq 27, io mem 0xf1050000
-ata1: SATA link down (SStatus 0 SControl F300)
-orion-ehci f1050000.usb: USB 2.0 started, EHCI 1.00
-usb usb1: New USB device found, idVendor=1d6b, idProduct=0002
-usb usb1: New USB device strings: Mfr=3, Product=2, SerialNumber=1
-usb usb1: Product: EHCI Host Controller
-usb usb1: Manufacturer: Linux 4.16.0+ ehci_hcd
-usb usb1: SerialNumber: f1050000.usb
-hub 1-0:1.0: USB hub found
-hub 1-0:1.0: 1 port detected
-usbcore: registered new interface driver usb-storage
-ata2: SATA link down (SStatus 0 SControl F300)
-rtc-mv f1010300.rtc: internal RTC not ticking
-i2c /dev entries driver
-device-mapper: ioctl: 4.37.0-ioctl (2017-09-20) initialised: dm-devel@redhat.com
-sdhci: Secure Digital Host Controller Interface driver
-sdhci: Copyright(c) Pierre Ossman
-sdhci-pltfm: SDHCI platform and OF driver helper
-ledtrig-cpu: registered to indicate activity on CPUs
-marvell-cesa f1090000.crypto: CESA device successfully registered
-hidraw: raw HID events driver (C) Jiri Kosina
-usbcore: registered new interface driver usbhid
-usbhid: USB HID core driver
-NET: Registered protocol family 10
-Segment Routing with IPv6
-sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
-NET: Registered protocol family 17
-Bridge firewalling registered
-8021q: 802.1Q VLAN Support v1.8
-Key type dns_resolver registered
-Registering SWP/SWPB emulation handler
-Loading compiled-in X.509 certificates
-armada-370-pinctrl f1018000.pin-ctrl: unsupported function gpio on pin mpp54
-pinctrl core: failed to register map default (0): invalid type given
-reg-fixed-voltage: probe of regulators:regulator@2 failed with error -22
-input: gpio-keys as /devices/platform/gpio-keys/input/input0
-hctosys: unable to open rtc device (rtc0)
-Freeing unused kernel memory: 1024K
-# Loading, please wait...
-# Mounting filesystems...
-# Check disk and init
-### Press any key to stop and run shell... (2)print_req_error: I/O
-error, dev mtdblock6, sector 0
-print_req_error: I/O error, dev mtdblock6, sector 0
-print_req_error: I/O error, dev mtdblock6, sector 0
-print_req_error: I/O error, dev mtdblock5, sector 0
-print_req_error: I/O error, dev mtdblock5, sector 0
-print_req_error: I/O error, dev mtdblock5, sector 0
-print_req_error: I/O error, dev mtdblock4, sector 0
-print_req_error: I/O error, dev mtdblock4, sector 0
-print_req_error: I/O error, dev mtdblock4, sector 0
-print_req_error: I/O error, dev mtdblock3, sector 0
-mdadm: No arrays found in config file or automatically
-# /dev/md1 not exist!
-# Runing a shell...
-mvneta f1074000.ethernet eth0: PHY [f1072004.mdio-mii:00] driver
-[Marvell 88E1510]
-mvneta f1074000.ethernet eth0: configuring for phy/rgmii-id link mode
-IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready
-udhcpc (v1.24.1) started
-Setting IP address 0.0.0.0 on eth0
-Sending discover...
-Sending discover...
-mvneta f1074000.ethernet eth0: Link is Up - 1Gbps/Full - flow control off
-IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
-Sending discover...
-Sending select for 192.168.178.75...
-Lease of 192.168.178.75 obtained, lease time 864000
-Setting IP address 192.168.178.75 on eth0
-Deleting routers
-route: SIOCDELRT: No such process
-Adding router 192.168.178.1
-Recreating /etc/resolv.conf
- Adding DNS server 192.168.178.1
-udhcpc (v1.24.1) started
-Setting IP address 0.0.0.0 on eth0
-Sending discover...
-Sending select for 192.168.178.75...
-Lease of 192.168.178.75 obtained, lease time 864000
-Setting IP address 192.168.178.75 on eth0
-Deleting routers
-route: SIOCDELRT: No such process
-Adding router 192.168.178.1
-Recreating /etc/resolv.conf
- Adding DNS server 192.168.178.1
-/ # ls /dev/mtd*
-/dev/mtd0       /dev/mtd2ro     /dev/mtd5       /dev/mtdblock1  /dev/mtdblock6
-/dev/mtd0ro     /dev/mtd3       /dev/mtd5ro     /dev/mtdblock2
-/dev/mtd1       /dev/mtd3ro     /dev/mtd6       /dev/mtdblock3
-/dev/mtd1ro     /dev/mtd4       /dev/mtd6ro     /dev/mtdblock4
-/dev/mtd2       /dev/mtd4ro     /dev/mtdblock0  /dev/mtdblock5
+   653          }
+   654  
+   655          mtd = nand_to_mtd(&ebu_host->chip);
+   656          mtd->dev.parent = dev;
+   657          ebu_host->dev = dev;
+   658  
+   659          platform_set_drvdata(pdev, ebu_host);
+   660          nand_set_controller_data(&ebu_host->chip, ebu_host);
+   661  
+   662          nand = &ebu_host->chip;
+   663          nand->controller = &ebu_host->controller;
+   664          nand->controller->ops = &ebu_nand_controller_ops;
+   665  
+   666          /* Scan to find existence of the device */
+   667          ret = nand_scan(&ebu_host->chip, 1);
+   668          if (ret)
+   669                  goto err_cleanup_dma;
+   670  
+   671          ret = mtd_device_register(mtd, NULL, 0);
+   672          if (ret)
+   673                  goto err_clean_nand;
+   674  
+   675          return 0;
+   676  
+   677  err_clean_nand:
+   678          nand_cleanup(&ebu_host->chip);
+   679  err_cleanup_dma:
+   680          ebu_dma_cleanup(ebu_host);
+   681          clk_disable_unprepare(ebu_host->clk);
+   682  
+   683          return ret;
+   684  }
+
+regards,
+dan carpenter
 
 ______________________________________________________
 Linux MTD discussion mailing list
