@@ -1,81 +1,75 @@
-Return-Path: <SRS0=ujMC=FW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=vxLv=FX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00BBCC4361B
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Dec 2020 14:16:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34B2DC4361B
+	for <linux-mtd@archiver.kernel.org>; Sat, 19 Dec 2020 08:59:05 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8FA1023AAA
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Dec 2020 14:16:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8FA1023AAA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	by mail.kernel.org (Postfix) with ESMTPS id 941CC23B84
+	for <linux-mtd@archiver.kernel.org>; Sat, 19 Dec 2020 08:59:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 941CC23B84
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=damenly.su
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=ZIxKNI3BHkrhftOOniNhf5AmbzbismjStKg3kz1KzNE=; b=hZsD0XFvxf0e7bSqfL1a5FvSN
-	EHz0G8iPW4qgscvk1sT4MWnZash+Ewc+UxARHfr2GNgm3qzbM/Q0s6ty9L3lgSVMJxmDNzepKZNJC
-	xCzJ6q36wGUyLtpKy+UzqNbHnSg592UZObxYY2tI2jZaeWV44zYQFplWaBk/85jUb9rWRkK13I9G4
-	HyIphNAL2FBCI3GeOW7wrWL+TO7cV5UptTFyl1++lPTgNtHKCtKYj962WNbPgFxwzb/hUO56tXyXu
-	Cbb6N3hKm/Jr+TTmQBgqAJ7/gSPXVKv+fvpiy67vCZs+o5UQ4Teap3x/8bszlMzTLiBZbltzl0nco
-	PnDcmbJzQ==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=EnAxK0X9g43BwAKTBLtgICTBBoNve29k1/1PDWamxzc=; b=cQ8fBbXHOA2EueW0IMDaBx8VHW
+	bOdCEq8H4lBpqDYs73RnrNafZAIctkl1yLKRIfJfBYKniHlnWHnPVr0kDQ/9pQxMZRrChSSzjII45
+	jfnwNWUhVlE/RydFjcGLNI2+vRCh/HLnOr1p5NrouN+4Gl1ZoPuDrw0Dyuo2Ovp+zITdjEhBAEMVn
+	J0bRF5V5oN/KaVMe27N1MkpRPjkJ3A1bmXAAPjR7o3d5OKqh56RQZtbRsSDqIcj+tOrm+TBIgNvwc
+	54kRQNVWgBMtfXtdDPsG/qr9FZD1RPrvhLvUlOHNbGWcXwRBtld3d6iKqwD6HO/wFzjmY4KcOkKSg
+	JsrwZQvg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kqGY8-0001n6-6J; Fri, 18 Dec 2020 14:16:04 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1kqY3j-0000Zx-S8; Sat, 19 Dec 2020 08:57:51 +0000
+Received: from eu-shark1.inbox.eu ([195.216.236.81])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kqGY1-0001mQ-9K
- for linux-mtd@lists.infradead.org; Fri, 18 Dec 2020 14:15:58 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BIEFpSF091620;
- Fri, 18 Dec 2020 08:15:51 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1608300951;
- bh=DwkWsrszvMiOb0nL+AJTXiIMeG3qwYFNPypoohDjmBM=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=VzidrxPLx6gfI/Qmz3CYdCjimJ+1lzhleusL0O2SrwEQ7Hl7IYPi9Ib2sbyP9r5XD
- l8DvOfP7CfnqYiY3wVDJBxWXkkJbqsz1izeDt+Mmb9RHUqtVA0TTIHuxphye1A8V2j
- ofvAICBbrvQUasQ4DbpGv3Lg+Pnj+6355q+b5xb0=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BIEFp2E002848
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 18 Dec 2020 08:15:51 -0600
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 18
- Dec 2020 08:15:51 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 18 Dec 2020 08:15:51 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BIEFoHU092617;
- Fri, 18 Dec 2020 08:15:51 -0600
-Date: Fri, 18 Dec 2020 19:45:50 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH] mtd: spi-nor: sfdp: Fix SMPT parsing when 4BAIT table is
- before SMPT
-Message-ID: <20201218141550.f2ik6lw65ly4lca5@ti.com>
-References: <20201212115817.5122-1-vigneshr@ti.com>
+ id 1kqY3f-0000ZP-LR
+ for linux-mtd@lists.infradead.org; Sat, 19 Dec 2020 08:57:49 +0000
+Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
+ by eu-shark1-out.inbox.eu (Postfix) with ESMTP id 8C0A36C00751;
+ Sat, 19 Dec 2020 10:57:39 +0200 (EET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
+ t=1608368259; bh=bA6Opc/bHiS0/mcvzx5Q+X9Y7wqZHP7d52fIofZOCvU=;
+ h=From:To:Cc:Subject:Date;
+ b=MMz2pOgbH1duhU52iWbqbFzS3nVwE9BUNX0Iuaz46cFqFjwCYNfWHoqlhSN/nMTXU
+ j5ma8OYDObL7Q/ZQw4YZZdEt530eXSWipB/wkIqCDx6LZ/pPyOhSzZMlx31OM6PT0J
+ ff5kvrc828CRuwCxQ8YqIlLeWliOtU55l5Ghy+5M=
+Received: from localhost (localhost [127.0.0.1])
+ by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 79A2F6C0072E;
+ Sat, 19 Dec 2020 10:57:39 +0200 (EET)
+Received: from eu-shark1.inbox.eu ([127.0.0.1])
+ by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
+ with ESMTP id MMsrua-6x-2B; Sat, 19 Dec 2020 10:57:39 +0200 (EET)
+Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
+ by eu-shark1-in.inbox.eu (Postfix) with ESMTP id EA2EC6C00606;
+ Sat, 19 Dec 2020 10:57:38 +0200 (EET)
+Received: from localhost.localdomain (unknown [45.87.95.238])
+ (Authenticated sender: l@damenly.su)
+ by mail.inbox.eu (Postfix) with ESMTPA id 13EC21BE0094;
+ Sat, 19 Dec 2020 10:57:34 +0200 (EET)
+From: Su Yue <l@damenly.su>
+To: fstests@vger.kernel.org
+Subject: [PATCH] shared/032: add options for jffs2
+Date: Sat, 19 Dec 2020 16:57:24 +0800
+Message-Id: <20201219085724.25780-1-l@damenly.su>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20201212115817.5122-1-vigneshr@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Virus-Scanned: OK
+X-ESPOL: +d1m7upSaUCpygHhXxmtCAUr1kpEWOj78+Ck2RhHnnjyLUzwc0kLUBG1lW93SXqk
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201218_091557_428186_53CD1543 
-X-CRM114-Status: GOOD (  13.75  )
+X-CRM114-CacheID: sfid-20201219_035747_938411_23E59441 
+X-CRM114-Status: GOOD (  10.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,50 +81,71 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris Brezillon <bbrezillon@kernel.org>,
- Richard Weinberger <richard@nod.at>,
- Tudor Ambarus <tudor.ambarus@microchip.com>, linux-kernel@vger.kernel.org,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: l@damenly.su, linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Vignesh,
+Recently I found that my disk space was eaten by results/shared/032.full
+after one round of xfstests running. The file was filled with binary
+bytes by the command:
+`mkfs -t jffs2 /dev/mapper/test-2 >> results/shared/032.full 2>&1`
 
-On 12/12/20 05:28PM, Vignesh Raghavendra wrote:
-> If 4BAIT table appears before SMPT then, nor->addr_width is set to 4 before
-> SMPT table is parsed. This causes SMPT parser code to use addr_width of 4
-> for reading current sector map configuration in spi_nor_get_map_in_use()
-> if SMPT_CMD_ADDRESS_LEN reads SMPT_CMD_ADDRESS_LEN_USE_CURRENT (see
-> spi_nor_smpt_addr_width()). Instead code should be using the value
-> presented by BFPT_DWORD1_ADDRESS_BYTES field. On S28HS family of devices
-> this bug leads to selection of invalid sector mapping thus causing erase
-> and write failures.
-> 
-> Fix this by parsing 4BAIT address table at the very end after all other
-> parameter tables are parsed.
+Manual of mkfs.jffs2:
+========================================================================
+The program mkfs.jffs2 creates a JFFS2 (Second Journalling Flash
+File System) file system image and writes the resulting image to the
+file specified by the -o option or by default to the standard output,
+unless the standard output is a terminal device in which case mkfs.jffs2
+will abort. The file system image is created using the files and
+directories contained in the directory specified by the option -r or
+the present directory, if the -r option is not specified.
+========================================================================
 
-I'm not convinced this is the best way to go about this. What if we have 
-another table tomorrow that introduces some other side effect? Will we 
-special-case all those as well? IMO a better way of going about this 
-would be to make these parsers not affect the current state of the 
-flash, but instead store that information as a possible future state of 
-the flash. Then we can use that to finally decide what we want to do in 
-spi_nor_set_addr_width(). In fact, that information is already stored 
-via SNOR_F_HAS_4BAIT (though I'm not too opposed to adding a 
-nor->params->addr_width).
+So the command equals to
+`mkfs -t jffs2 -r xfstests-dev /dev/mapper/test-2 \
+    -o results/shared/032.full >> results/shared/032.full 2>&1`
 
-I see this as a cleaner alternative to your approach. We do need to be 
-careful about any obscure bugs here like with [0] though.
+The output image 032.full is under the directory xfstests-dev.
+mkfs.jffs2 keeps reading from 032.full in page size and append bytes
+to 032.full until the disk where xfstests-devel located is full.
 
-[0] https://lore.kernel.org/linux-mtd/20201006132346.12652-1-bert@biot.com/
+Fix it by setting @preargs to '-r /proc/fs -o' for jffs2, now the output
+is $SCRATCH_DEV. Since mkfs.jffs2 doesn't check overwrite case, just
+skip overwrite attempt.
 
+Signed-off-by: Su Yue <l@damenly.su>
+---
+ tests/shared/032 | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/tests/shared/032 b/tests/shared/032
+index 00ae6860d9d5..5da606177440 100755
+--- a/tests/shared/032
++++ b/tests/shared/032
+@@ -55,6 +55,8 @@ do
+ 	[ $fs = ext3 ] && preargs="-F"
+ 	[ $fs = ext4 ] && preargs="-F"
+ 	[ $fs = ext4dev ] && preargs="-F"
++	# jffs2 mkfs requires '-r $directory' and '-o $image'
++	[ $fs = jffs2 ] && preargs="-r /proc/fs -o"
+ 
+ 	# overwite the first few Kb - should blow away superblocks
+ 	$here/src/devzero -n 20 $SCRATCH_DEV >/dev/null
+@@ -66,6 +68,9 @@ do
+ 
+ 	if [ $? -eq 0 ] ; then
+ 		# next, ensure we don't overwrite it
++		# jffs mkfs don't check overwrite case
++		[ $fs = jffs2 ] && continue
++
+ 		echo "=== Attempting $FSTYP overwrite of $fs..." >>$seqres.full
+ 		${MKFS_PROG} -t $FSTYP $SCRATCH_DEV >>$seqres.full 2>&1
+ 
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments India
+2.29.2
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
