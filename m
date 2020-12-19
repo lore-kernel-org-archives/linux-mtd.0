@@ -5,71 +5,56 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F02B5C0018C
-	for <linux-mtd@archiver.kernel.org>; Sat, 19 Dec 2020 09:12:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CCADC4361B
+	for <linux-mtd@archiver.kernel.org>; Sat, 19 Dec 2020 12:50:55 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A42C623BE2
-	for <linux-mtd@archiver.kernel.org>; Sat, 19 Dec 2020 09:12:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A42C623BE2
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=damenly.su
+	by mail.kernel.org (Postfix) with ESMTPS id 233B323AC2
+	for <linux-mtd@archiver.kernel.org>; Sat, 19 Dec 2020 12:50:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 233B323AC2
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To:From:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=2HRHsUMLAMz0OQ6w+WeOn4n49QY6x2I+e6SMIuywB74=; b=cAkqKIp7HgKvln9D1wtoEj0vf6
-	xOnRklj34dXgmU62AjHwkowQiTyEDE7vc5C6XS2n+KcEUej4uk5RWz6vqitAeoIf56qz3ALrhFOkw
-	KEFyysJNicH/mfiGxZ8Mo0QijD7XcVqjHe2al909No+ECYLmDDsV1GcY0jy5LE5osr7wrlWGwL3Zf
-	5Xy9YD2yk2e8L2rb013E1Gegr8M59E6glx0ms0/Ag/MFaVsLpFNYHFsacpRBu/HhbEoBQGSJKQWHI
-	nmKy/J0hqN4rTJRQj2L7C3gYEuO6CMu7FDaho6PVHQlK7ox600IUAaEHfbfUj6OrRSjNocmIh1sqm
-	30ImQ5kg==;
+	bh=OKnAS/2CS80XPPAZ/Ao+QCd3Qkcg4NjOScChWqXcb/M=; b=qSlasWpncFKPAAsi8HNqw1WRk0
+	G0kH1i27geZssbdtnjruXnIfwTAj4zO2hzbTtgKakKkQ7UUIHoBMA8lKfjauRo9QL1uz+HdimmCXy
+	Ctw1eukF+45fsxblBVobSZIlQOKmy26TfV2JVitCujTsoG8oC9TJkf0wNmb2YHiN7UZKmGGJl9ffP
+	qEqcdZwhtkA7H4+VTMOzRVzvIjtKn1QO0CFYwCHlu0sRg1gAx1aWU6EJCS+xBKsAR4SE+Zg2cn09d
+	yMG8yKUi8kwC8Tu+4jrqe8BhJhxCOtz2kIyuIXy+ghvwkqfGt9tTwcIWxaloUnjCXAbf5xoOeRZGp
+	hDfDS7Gg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kqYGg-0001Kw-Mj; Sat, 19 Dec 2020 09:11:14 +0000
-Received: from eu-shark1.inbox.eu ([195.216.236.81])
+	id 1kqbgd-0003EB-EV; Sat, 19 Dec 2020 12:50:15 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kqYGe-0001Kb-GO
- for linux-mtd@lists.infradead.org; Sat, 19 Dec 2020 09:11:13 +0000
-Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
- by eu-shark1-out.inbox.eu (Postfix) with ESMTP id 5EAB66C00781;
- Sat, 19 Dec 2020 11:11:11 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
- t=1608369071; bh=9Qiuyis32ZgrNgXBpCGhfBqxbOpZ+gNJ9BfYCkqdJcw=;
- h=From:To:Cc:Subject:Date;
- b=Kp1JluowjQ5t08A0B/WbcLHfgnpM8VEazWpoyUtJ2QTnCM1ti6I1yrpck+iqu9pjF
- YlujZBrszjC4ozk6XjoAvSsnDHZ5oc/GKfGMPTfufk9BQIUqp/4LNV+RDEI9zI8bfe
- vSWusHf0VgxXcxIWX/ucnOJaJI3+DNde4V5oij2c=
-Received: from localhost (localhost [127.0.0.1])
- by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 50DD36C00772;
- Sat, 19 Dec 2020 11:11:11 +0200 (EET)
-Received: from eu-shark1.inbox.eu ([127.0.0.1])
- by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
- with ESMTP id MabOrzD9QT-M; Sat, 19 Dec 2020 11:11:11 +0200 (EET)
-Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
- by eu-shark1-in.inbox.eu (Postfix) with ESMTP id D9F2B6C00770;
- Sat, 19 Dec 2020 11:11:10 +0200 (EET)
-Received: from localhost.localdomain (unknown [45.87.95.238])
- (Authenticated sender: l@damenly.su)
- by mail.inbox.eu (Postfix) with ESMTPA id 90DA91BE0094;
- Sat, 19 Dec 2020 11:11:08 +0200 (EET)
-From: Su Yue <l@damenly.su>
-To: fstests@vger.kernel.org
-Subject: [PATCH v2] shared/032: add options for jffs2
-Date: Sat, 19 Dec 2020 17:10:58 +0800
-Message-Id: <20201219091058.26422-1-l@damenly.su>
-X-Mailer: git-send-email 2.29.2
+ id 1kqbga-0003At-Gl
+ for linux-mtd@lists.infradead.org; Sat, 19 Dec 2020 12:50:13 +0000
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+ by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CylsN006Bzhtyl;
+ Sat, 19 Dec 2020 20:48:39 +0800 (CST)
+Received: from use12-sp2.huawei.com (10.67.189.20) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 19 Dec 2020 20:49:13 +0800
+From: Jubin Zhong <zhongjubin@huawei.com>
+To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
+Subject: [PATCH] ubi: remove dead code in validate_vid_hdr()
+Date: Sat, 19 Dec 2020 20:49:10 +0800
+Message-ID: <1608382150-102703-1-git-send-email-zhongjubin@huawei.com>
+X-Mailer: git-send-email 1.8.5.6
 MIME-Version: 1.0
-X-Virus-Scanned: OK
-X-ESPOL: 6NpmlYxOGzysiV+lRWetdgtNzzY6IuClpKemqX1UmH7kOSmad00TUhO/gQ4FQH+k
+X-Originating-IP: [10.67.189.20]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201219_041112_681546_62B19DAF 
-X-CRM114-Status: GOOD (  11.15  )
+X-CRM114-CacheID: sfid-20201219_075012_899591_68566517 
+X-CRM114-Status: UNSURE (   9.55  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,75 +66,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: l@damenly.su, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ wangfangpeng1@huawei.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Recently I found that my disk space was eaten by results/shared/032.full
-after one round of xfstests running. The file was filled with binary
-bytes by the command:
-`mkfs -t jffs2 /dev/mapper/test-2 >> results/shared/032.full 2>&1`
+data_size is already checked against zero when vol_type matches
+UBI_VID_STATIC. Remove the following dead code.
 
-Manual of mkfs.jffs2:
-========================================================================
-The program mkfs.jffs2 creates a JFFS2 (Second Journalling Flash
-File System) file system image and writes the resulting image to the
-file specified by the -o option or by default to the standard output,
-unless the standard output is a terminal device in which case mkfs.jffs2
-will abort. The file system image is created using the files and
-directories contained in the directory specified by the option -r or
-the present directory, if the -r option is not specified.
-========================================================================
-
-So the command equals to
-`mkfs -t jffs2 -r xfstests-dev /dev/mapper/test-2 \
-    -o xfstests-dev/results/shared/032.full \
-    >>xfstests-dev/results/shared/032.full 2>&1`
-
-The output image 032.full is under the directory xfstests-dev.
-mkfs.jffs2 keeps reading from 032.full in page size and append bytes
-to 032.full until the disk where xfstests-devel located is full.
-
-Fix it by setting @preargs to '-r /proc/fs -o' for jffs2, now the output
-is $SCRATCH_DEV. Since mkfs.jffs2 doesn't check overwrite case, just
-skip overwrite attempt.
-
-Signed-off-by: Su Yue <l@damenly.su>
+Signed-off-by: Jubin Zhong <zhongjubin@huawei.com>
 ---
-v2:
-  Fix typos in comment.
-  Fix path of results/shared/032.full in commit message.
----
- tests/shared/032 | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/mtd/ubi/io.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/tests/shared/032 b/tests/shared/032
-index 00ae6860d9d5..9836f13a691b 100755
---- a/tests/shared/032
-+++ b/tests/shared/032
-@@ -55,6 +55,8 @@ do
- 	[ $fs = ext3 ] && preargs="-F"
- 	[ $fs = ext4 ] && preargs="-F"
- 	[ $fs = ext4dev ] && preargs="-F"
-+	# jffs2 mkfs requires '-r $directory' and '-o $image'
-+	[ $fs = jffs2 ] && preargs="-r /proc/fs -o"
- 
- 	# overwite the first few Kb - should blow away superblocks
- 	$here/src/devzero -n 20 $SCRATCH_DEV >/dev/null
-@@ -66,6 +68,9 @@ do
- 
- 	if [ $? -eq 0 ] ; then
- 		# next, ensure we don't overwrite it
-+		# jffs2 mkfs doesn't check overwrite case
-+		[ $fs = jffs2 ] && continue
-+
- 		echo "=== Attempting $FSTYP overwrite of $fs..." >>$seqres.full
- 		${MKFS_PROG} -t $FSTYP $SCRATCH_DEV >>$seqres.full 2>&1
- 
+diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
+index 2f3312c..8a7306c 100644
+--- a/drivers/mtd/ubi/io.c
++++ b/drivers/mtd/ubi/io.c
+@@ -913,12 +913,7 @@ static int validate_vid_hdr(const struct ubi_device *ubi,
+ 				ubi_err(ubi, "bad data_size");
+ 				goto bad;
+ 			}
+-		} else if (lnum == used_ebs - 1) {
+-			if (data_size == 0) {
+-				ubi_err(ubi, "bad data_size at last LEB");
+-				goto bad;
+-			}
+-		} else {
++		} else if (lnum > used_ebs - 1) {
+ 			ubi_err(ubi, "too high lnum");
+ 			goto bad;
+ 		}
 -- 
-2.29.2
+1.8.5.6
 
 
 ______________________________________________________
