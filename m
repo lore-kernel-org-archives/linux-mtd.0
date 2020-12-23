@@ -2,58 +2,76 @@ Return-Path: <SRS0=nxGi=F3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE24BC433DB
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Dec 2020 06:30:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58A79C433DB
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Dec 2020 07:07:21 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4E54B205CA
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Dec 2020 06:30:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4E54B205CA
+	by mail.kernel.org (Postfix) with ESMTPS id B69ED207B5
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Dec 2020 07:07:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B69ED207B5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=uMBpFGMUtoZ1qdgfXQTVW34WGPtTL8xKT8nuzWdhVSE=; b=G75/a2qePSTdhe4qEuy5fd09e+
-	eKHmIqFyDkYnUw3GamjLjjydEbEzGlvCe62kfNwEIFJxCUzVQqZvLpWH0BuB/nD5wmDo10YByazF6
-	NXvcus255cXqE+/mIkEoy8NJvaBc5F61+AfoWwf4tnWBOY6HxTkR10t1SuW0nbXgA/SNQW9Rhoewp
-	ADnsphu0xoZGH1JIdrYGE45gBAaJMmPNRlt0R6Jo7s9zTSNRUsb7Qk6NceK399x0cm2ws+b2R96RH
-	qzbyleG7or/pplrMoOQwIZks58B0IusUS4cL/Md2/rIJ3yEYecIyCirpmr0+x5Vn0KJLHSSsTsHrZ
-	CWnY4nNQ==;
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=hB7+SkyvWdO8He+VaYvQURWeT3/HQAjDAnAeViiYT0U=; b=ywhGl2V34+4IBrgTMNtLFXnG4
+	Do2pTY4n0AgFhFjJcST7RinFjp2JMr0S27OparWIxyGZcYv7qynSLISjA5o8xxNqJUwBTHDZPh4rp
+	B6XFs80I0OApiO/rv6wgzA3DboKhhyeIkOC7z+WAHvdPsACHGmecft8jccMhA9T48Kfcds8AMlVFU
+	uP4IHQ/3MCAUimthfbZ1v14krbhBfypT8+uGc50o6x3jaAQ9h0FmJ/26eSJgsp6GxsNr/OpKXkP2i
+	hlHAQNtboPtzGnVGwFhMF8HTZ2HeqKb6okFSeF9ZKCroOPttXYMlmpYiMCq2nntnc1/RvBLPpqM5r
+	HbjjweIrA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1krxdn-0006QU-B5; Wed, 23 Dec 2020 06:28:55 +0000
-Received: from szxga05-in.huawei.com ([45.249.212.191])
+	id 1kryD8-0001Ya-66; Wed, 23 Dec 2020 07:05:26 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1krxde-0006O2-N0
- for linux-mtd@lists.infradead.org; Wed, 23 Dec 2020 06:28:49 +0000
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
- by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D13CZ4vDvzM0jm;
- Wed, 23 Dec 2020 14:27:22 +0800 (CST)
-Received: from DESKTOP-2DH7KI2.china.huawei.com (10.67.101.108) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 23 Dec 2020 14:28:08 +0800
-From: Chengsong Ke <kechengsong@huawei.com>
-To: <richard@nod.at>, <s.hauer@pengutronix.de>
-Subject: [PATCH] ubifs: Fix read out-of-bounds in ubifs_jnl_write_inode()
-Date: Wed, 23 Dec 2020 14:28:08 +0800
-Message-ID: <20201223062808.27512-1-kechengsong@huawei.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+ id 1kryD6-0001YR-2h
+ for linux-mtd@merlin.infradead.org; Wed, 23 Dec 2020 07:05:24 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+ In-Reply-To:MIME-Version:Date:Message-ID:From:References:CC:To:Subject:Sender
+ :Reply-To:Content-ID:Content-Description;
+ bh=PQ0qo8qTCXysbt/1+ZEBF5P8TANtF5xEF2PBjpNtN6M=; b=bPh2rOdOBYanjf0o4/b+cz+L/o
+ RPMzdkypuZupjqLSl+UnlITRvhY2cqLvkrO0BkGPVw2qkddGmrh4K5OdkkhHSRsNRvI73F8/LYPpl
+ I0xOPyUG2BMQSqcHm587TbSWzjlCNTrtyHl0L/U2LramazVyptqHN47EE0q5BA3Sm7UZQs1QIBL5o
+ 5Dbe+Jvn7W0ah3k6QaGcnPlTq5Px4XjYqDoWV+WoqangikR5rSDyIIElT07vvqhcBuTgaLuyYjSpt
+ l8v0dAALP2h4TLuPhYgQvIBvO6wJRSkfouCCf+XVmKP2IpJ3HpYvvO2x59T3RYiXLAU8pNmmuBblq
+ jltQP8DQ==;
+Received: from szxga05-in.huawei.com ([45.249.212.191])
+ by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kryCw-0001Qf-SY
+ for linux-mtd@lists.infradead.org; Wed, 23 Dec 2020 07:05:20 +0000
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+ by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D13w96M36zhrvq;
+ Wed, 23 Dec 2020 14:59:05 +0800 (CST)
+Received: from [10.174.176.185] (10.174.176.185) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 23 Dec 2020 14:59:39 +0800
+Subject: Re: [PATCH] ubifs: Fix read out-of-bounds in ubifs_jnl_write_inode()
+To: Chengsong Ke <kechengsong@huawei.com>, <richard@nod.at>,
+ <s.hauer@pengutronix.de>
+References: <20201223062808.27512-1-kechengsong@huawei.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <f048a4ab-963d-daca-ba8c-c24e18a68f7b@huawei.com>
+Date: Wed, 23 Dec 2020 14:59:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-Originating-IP: [10.67.101.108]
+In-Reply-To: <20201223062808.27512-1-kechengsong@huawei.com>
+X-Originating-IP: [10.174.176.185]
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201223_012847_601329_0E16AC9B 
-X-CRM114-Status: GOOD (  11.22  )
+X-CRM114-CacheID: sfid-20201223_070515_516003_EE321AD5 
+X-CRM114-Status: GOOD (  18.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -65,208 +83,176 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: chengzhihao1@huawei.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, wangfangpeng1@huawei.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ wangfangpeng1@huawei.com
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: kechengsong <kechengsong@huawei.com>
-
-ubifs_jnl_write_inode() probably cause read out-of-bounds in some situation.
-There is kasan stack:
-[  336.432159] BUG: KASAN: slab-out-of-bounds in ecc_sw_hamming_calculate+0x1dc/0x7d0
-[  336.433634] Read of size 4 at addr ffff888019612ff8 by task kworker/u8:4/135
-[  336.434605]
-[  336.434830] CPU: 1 PID: 135 Comm: kworker/u8:4 Not tainted 5.10.0-11826-gaf2a097952f3-dirty #338
-[  336.436050] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
-[  336.437876] Workqueue: writeback wb_workfn (flush-ubifs_0_0)
-[  336.438670] Call Trace:
-[  336.439021]  ? dump_stack+0xdd/0x126
-[  336.439513]  ? print_address_description.constprop.0+0x2c/0x3c0
-[  336.440308]  ? _raw_write_lock_irqsave+0x140/0x140
-[  336.440921]  ? ecc_sw_hamming_calculate+0x1dc/0x7d0
-[  336.441546]  ? ecc_sw_hamming_calculate+0x1dc/0x7d0
-[  336.442186]  ? kasan_report.cold+0x5d/0xd8
-[  336.442711]  ? nand_reset_op+0x280/0x310
-[  336.443218]  ? ecc_sw_hamming_calculate+0x1dc/0x7d0
-[  336.443842]  ? __asan_load4+0x77/0x120
-[  336.444334]  ? ecc_sw_hamming_calculate+0x1dc/0x7d0
-[  336.444963]  ? nand_ecc_sw_hamming_calculate+0x6c/0x80
-[  336.445619]  ? rawnand_sw_hamming_calculate+0x12/0x20
-[  336.446263]  ? nand_write_page_swecc+0xa9/0x160
-[  336.446849]  ? nand_do_write_ops+0x390/0x830
-[  336.447406]  ? __writeback_single_inode+0x6cc/0x880
-[  336.448041]  ? nand_write_oob+0x78/0x100
-[  336.448568]  ? mtd_write_oob_std+0xe2/0x160
-[  336.449127]  ? mtd_write_oob+0xec/0x1b0
-[  336.449679]  ? mtd_write+0x92/0xf0
-[  336.450128]  ? mtd_write_oob+0x1b0/0x1b0
-[  336.450633]  ? ubi_self_check_all_ff+0x82/0x2e0 [ubi]
-[  336.451328]  ? __list_add_valid+0x2b/0x130
-[  336.451865]  ? ubi_io_write+0x2c2/0xa90 [ubi]
-[  336.452472]  ? _raw_read_lock_irq+0x90/0x90
-[  336.453078]  ? kmem_cache_alloc_trace+0x465/0x8b0
-[  336.453749]  ? do_sync_erase+0x350/0x350 [ubi]
-[  336.454430]  ? __kasan_check_write+0x20/0x30
-[  336.455050]  ? down_write+0xf2/0x190
-[  336.455569]  ? down_write_killable+0x1b0/0x1b0
-[  336.456221]  ? check_mapping+0x2c/0x590 [ubi]
-[  336.456890]  ? ubi_eba_write_leb+0x58a/0xfa0 [ubi]
-[  336.457618]  ? __kmalloc+0x490/0x910
-[  336.458142]  ? ubifs_jnl_write_inode.cold+0x6f/0x878 [ubifs]
-[  336.459033]  ? writeback_sb_inodes+0x3a9/0x9a0
-[  336.459672]  ? __writeback_inodes_wb+0xc8/0x170
-[  336.460330]  ? wb_writeback+0x637/0x700
-[  336.460882]  ? wb_workfn+0x8af/0xb80
-[  336.461398]  ? process_one_work+0x467/0x9f0
-[  336.462004]  ? worker_thread+0x34d/0x8e0
-[  336.462582]  ? kthread+0x204/0x280
-[  336.463047]  ? ret_from_fork+0x1f/0x30
-[  336.463570]  ? create_prof_cpu_mask+0x30/0x30
-[  336.464185]  ? ubi_eba_read_leb_sg+0x1f0/0x1f0 [ubi]
-[  336.464917]  ? hrtimer_active+0x9b/0x100
-[  336.465468]  ? ubi_leb_write+0x22c/0x2f0 [ubi]
-[  336.466130]  ? ubifs_leb_write+0xf2/0x1b0 [ubifs]
-[  336.466851]  ? ubifs_wbuf_write_nolock+0x412/0x1280 [ubifs]
-[  336.467686]  ? write_head+0xdf/0x1c0 [ubifs]
-[  336.468355]  ? ubifs_jnl_write_inode.cold+0x3ec/0x878 [ubifs]
-[  336.469183]  ? ret_from_fork+0x1e/0x30
-[  336.469707]  ? ubifs_jnl_write_data+0x660/0x660 [ubifs]
-[  336.470497]  ? unwind_next_frame+0x247/0xca0
-[  336.471095]  ? ret_from_fork+0x1f/0x30
-[  336.471574]  ? fprop_reflect_period_percpu.isra.0+0x1f/0x1b0
-[  336.472335]  ? generic_writepages+0x93/0x140
-[  336.472933]  ? __kasan_check_write+0x20/0x30
-[  336.473526]  ? mutex_lock+0xa6/0x110
-[  336.474031]  ? __mutex_lock_slowpath+0x30/0x30
-[  336.474662]  ? ubifs_write_inode+0x1c3/0x290 [ubifs]
-[  336.475446]  ? __writeback_single_inode+0x6cc/0x880
-[  336.476155]  ? wbc_attach_and_unlock_inode+0x2b6/0x400
-[  336.476891]  ? writeback_sb_inodes+0x3a9/0x9a0
-[  336.477528]  ? write_inode_now+0x1e0/0x1e0
-[  336.478119]  ? __writeback_inodes_wb+0xc8/0x170
-[  336.478770]  ? wb_writeback+0x637/0x700
-[  336.479326]  ? __writeback_inodes_wb+0x170/0x170
-[  336.479992]  ? current_work+0xa0/0xa0
-[  336.480524]  ? _find_next_bit.constprop.0+0x3e/0x140
-[  336.481241]  ? find_next_bit+0x18/0x30
-[  336.481780]  ? cpumask_next+0x2f/0x40
-[  336.482312]  ? wb_workfn+0x8af/0xb80
-[  336.482832]  ? update_cfs_group+0x1e/0x1b0
-[  336.483421]  ? inode_wait_for_writeback+0x60/0x60
-[  336.484106]  ? schedule+0xb7/0x240
-[  336.484595]  ? finish_task_switch+0x14e/0x9a0
-[  336.485225]  ? __kasan_check_write+0x20/0x30
-[  336.485841]  ? __schedule+0x6f4/0x1600
-[  336.486382]  ? __kasan_check_read+0x1d/0x30
-[  336.486981]  ? read_word_at_a_time+0x16/0x30
-[  336.487594]  ? process_one_work+0x467/0x9f0
-[  336.488198]  ? worker_thread+0x34d/0x8e0
-[  336.488762]  ? rescuer_thread+0x820/0x820
-[  336.489344]  ? kthread+0x204/0x280
-[  336.489839]  ? kthread_bind+0x50/0x50
-[  336.490367]  ? ret_from_fork+0x1f/0x30
-[  336.490913]
-[  336.491138] Allocated by task 135:
-[  336.491629]  kasan_save_stack+0x23/0x60
-[  336.492189]  __kasan_kmalloc.constprop.0+0x10b/0x120
-[  336.492898]  kasan_kmalloc+0xd/0x20
-[  336.493401]  __kmalloc+0x490/0x910
-[  336.493890]  ubifs_jnl_write_inode.cold+0x6f/0x878 [ubifs]
-[  336.494744]  ubifs_write_inode+0x1c3/0x290 [ubifs]
-[  336.495500]  __writeback_single_inode+0x6cc/0x880
-[  336.496179]  writeback_sb_inodes+0x3a9/0x9a0
-[  336.496791]  __writeback_inodes_wb+0xc8/0x170
-[  336.497417]  wb_writeback+0x637/0x700
-[  336.497949]  wb_workfn+0x8af/0xb80
-[  336.498440]  process_one_work+0x467/0x9f0
-[  336.499023]  worker_thread+0x34d/0x8e0
-[  336.499567]  kthread+0x204/0x280
-[  336.500050]  ret_from_fork+0x1f/0x30
-[  336.500570]
-[  336.500793] The buggy address belongs to the object at ffff888019612000
-[  336.500793]  which belongs to the cache kmalloc-4k of size 4096
-[  336.502550] The buggy address is located 4088 bytes inside of
-[  336.502550]  4096-byte region [ffff888019612000, ffff888019613000)
-[  336.504231] The buggy address belongs to the page:
-[  336.504917] page:000000003204ded8 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x19610
-[  336.506234] head:000000003204ded8 order:3 compound_mapcount:0 compound_pincount:0
-[  336.507293] flags: 0x1fffff80010200(slab|head)
-[  336.507934] raw: 001fffff80010200 ffffea0000667000 0000000200000002 ffff888010842140
-[  336.509038] raw: 0000000000000000 0000000080040004 00000001ffffffff ffff88801956e3c1
-[  336.510132] page dumped because: kasan: bad access detected
-[  336.510923] pages's memcg:ffff88801956e3c1
-[  336.511509]
-[  336.511730] Memory state around the buggy address:
-[  336.512421]  ffff888019612e80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[  336.513446]  ffff888019612f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[  336.514468] >ffff888019612f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01
-[  336.515494]                                                                 ^
-[  336.516506]  ffff888019613000: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  336.517535]  ffff888019613080: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  336.518560] ==================================================================
-
-The memory area allocated in ubifs_jnl_write_inode() is not aligned with 8 bytes:
-ino_start = ino = kmalloc(write_len, GFP_NOFS);
-
-When ino_start passed into write_head -> ubifs_wbuf_write_nolock:
-    n = aligned_len >> c->max_write_shift;
-    if (n) {
-      n <<= c->max_write_shift;
-      err = ubifs_leb_write(c, wbuf->lnum, buf + written, wbuf->offs, n);
-      // Read oob occurs here, read n bytes from buf, and buf is passed from @ino_start which is
-      // not 8 bytes aligned(write_len < n). Program read (n - write_len) more bytes.
-    }
-
-Reproducer:
-0. config KASAN && apply print.patch
-1. mount ubifs on /root/temp
-2. run test.sh
-3. cd /root/temp && ls // change atime for link_file
-4. wait 1~2 minutes
-
-Cc: <stable@vger.kernel.org>
-Fixes: 1e51764a3c2ac0 ("UBIFS: add new flash file system")
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=210865
-
-Signed-off-by: Chengsong Ke <kechengsong@huawei.com>
----
- fs/ubifs/io.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
-index 00b61dba62b7..6b9d550341e5 100644
---- a/fs/ubifs/io.c
-+++ b/fs/ubifs/io.c
-@@ -836,13 +836,20 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
- 		n <<= c->max_write_shift;
- 		dbg_io("write %d bytes to LEB %d:%d", n, wbuf->lnum,
- 		       wbuf->offs);
--		err = ubifs_leb_write(c, wbuf->lnum, buf + written,
-+
-+		memcpy(wbuf->buf, buf + written, min(len, n));
-+		if (n > len) {
-+			ubifs_assert(c, n - len < 8);
-+			ubifs_pad(c, wbuf->buf + len, n - len);
-+		}
-+
-+		err = ubifs_leb_write(c, wbuf->lnum, wbuf->buf,
- 				      wbuf->offs, n);
- 		if (err)
- 			goto out;
- 		wbuf->offs += n;
- 		aligned_len -= n;
--		len -= n;
-+		len -= min(len, n);
- 		written += n;
- 	}
- 
--- 
-2.12.3
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyMC8xMi8yMyAxNDoyOCwgQ2hlbmdzb25nIEtlINC0tcA6CgpSZXZpZXdlZC1ieTogWmhp
+aGFvIENoZW5nIDxjaGVuZ3poaWhhbzFAaHVhd2VpLmNvbT4KPiBGcm9tOiBrZWNoZW5nc29uZyA8
+a2VjaGVuZ3NvbmdAaHVhd2VpLmNvbT4KPiAKPiB1Ymlmc19qbmxfd3JpdGVfaW5vZGUoKSBwcm9i
+YWJseSBjYXVzZSByZWFkIG91dC1vZi1ib3VuZHMgaW4gc29tZSBzaXR1YXRpb24uCj4gVGhlcmUg
+aXMga2FzYW4gc3RhY2s6Cj4gWyAgMzM2LjQzMjE1OV0gQlVHOiBLQVNBTjogc2xhYi1vdXQtb2Yt
+Ym91bmRzIGluIGVjY19zd19oYW1taW5nX2NhbGN1bGF0ZSsweDFkYy8weDdkMAo+IFsgIDMzNi40
+MzM2MzRdIFJlYWQgb2Ygc2l6ZSA0IGF0IGFkZHIgZmZmZjg4ODAxOTYxMmZmOCBieSB0YXNrIGt3
+b3JrZXIvdTg6NC8xMzUKPiBbICAzMzYuNDM0NjA1XQo+IFsgIDMzNi40MzQ4MzBdIENQVTogMSBQ
+SUQ6IDEzNSBDb21tOiBrd29ya2VyL3U4OjQgTm90IHRhaW50ZWQgNS4xMC4wLTExODI2LWdhZjJh
+MDk3OTUyZjMtZGlydHkgIzMzOAo+IFsgIDMzNi40MzYwNTBdIEhhcmR3YXJlIG5hbWU6IFFFTVUg
+U3RhbmRhcmQgUEMgKGk0NDBGWCArIFBJSVgsIDE5OTYpLCBCSU9TID8tMjAxOTA3MjdfMDczODM2
+LWJ1aWxkdm0tcHBjNjRsZS0xNi5wcGMuZmVkb3JhcHJvamVjdC5vcmctMy5mYzMxIDA0LzAxLzIw
+MTQKPiBbICAzMzYuNDM3ODc2XSBXb3JrcXVldWU6IHdyaXRlYmFjayB3Yl93b3JrZm4gKGZsdXNo
+LXViaWZzXzBfMCkKPiBbICAzMzYuNDM4NjcwXSBDYWxsIFRyYWNlOgo+IFsgIDMzNi40MzkwMjFd
+ICA/IGR1bXBfc3RhY2srMHhkZC8weDEyNgo+IFsgIDMzNi40Mzk1MTNdICA/IHByaW50X2FkZHJl
+c3NfZGVzY3JpcHRpb24uY29uc3Rwcm9wLjArMHgyYy8weDNjMAo+IFsgIDMzNi40NDAzMDhdICA/
+IF9yYXdfd3JpdGVfbG9ja19pcnFzYXZlKzB4MTQwLzB4MTQwCj4gWyAgMzM2LjQ0MDkyMV0gID8g
+ZWNjX3N3X2hhbW1pbmdfY2FsY3VsYXRlKzB4MWRjLzB4N2QwCj4gWyAgMzM2LjQ0MTU0Nl0gID8g
+ZWNjX3N3X2hhbW1pbmdfY2FsY3VsYXRlKzB4MWRjLzB4N2QwCj4gWyAgMzM2LjQ0MjE4Nl0gID8g
+a2FzYW5fcmVwb3J0LmNvbGQrMHg1ZC8weGQ4Cj4gWyAgMzM2LjQ0MjcxMV0gID8gbmFuZF9yZXNl
+dF9vcCsweDI4MC8weDMxMAo+IFsgIDMzNi40NDMyMThdICA/IGVjY19zd19oYW1taW5nX2NhbGN1
+bGF0ZSsweDFkYy8weDdkMAo+IFsgIDMzNi40NDM4NDJdICA/IF9fYXNhbl9sb2FkNCsweDc3LzB4
+MTIwCj4gWyAgMzM2LjQ0NDMzNF0gID8gZWNjX3N3X2hhbW1pbmdfY2FsY3VsYXRlKzB4MWRjLzB4
+N2QwCj4gWyAgMzM2LjQ0NDk2M10gID8gbmFuZF9lY2Nfc3dfaGFtbWluZ19jYWxjdWxhdGUrMHg2
+Yy8weDgwCj4gWyAgMzM2LjQ0NTYxOV0gID8gcmF3bmFuZF9zd19oYW1taW5nX2NhbGN1bGF0ZSsw
+eDEyLzB4MjAKPiBbICAzMzYuNDQ2MjYzXSAgPyBuYW5kX3dyaXRlX3BhZ2Vfc3dlY2MrMHhhOS8w
+eDE2MAo+IFsgIDMzNi40NDY4NDldICA/IG5hbmRfZG9fd3JpdGVfb3BzKzB4MzkwLzB4ODMwCj4g
+WyAgMzM2LjQ0NzQwNl0gID8gX193cml0ZWJhY2tfc2luZ2xlX2lub2RlKzB4NmNjLzB4ODgwCj4g
+WyAgMzM2LjQ0ODA0MV0gID8gbmFuZF93cml0ZV9vb2IrMHg3OC8weDEwMAo+IFsgIDMzNi40NDg1
+NjhdICA/IG10ZF93cml0ZV9vb2Jfc3RkKzB4ZTIvMHgxNjAKPiBbICAzMzYuNDQ5MTI3XSAgPyBt
+dGRfd3JpdGVfb29iKzB4ZWMvMHgxYjAKPiBbICAzMzYuNDQ5Njc5XSAgPyBtdGRfd3JpdGUrMHg5
+Mi8weGYwCj4gWyAgMzM2LjQ1MDEyOF0gID8gbXRkX3dyaXRlX29vYisweDFiMC8weDFiMAo+IFsg
+IDMzNi40NTA2MzNdICA/IHViaV9zZWxmX2NoZWNrX2FsbF9mZisweDgyLzB4MmUwIFt1YmldCj4g
+WyAgMzM2LjQ1MTMyOF0gID8gX19saXN0X2FkZF92YWxpZCsweDJiLzB4MTMwCj4gWyAgMzM2LjQ1
+MTg2NV0gID8gdWJpX2lvX3dyaXRlKzB4MmMyLzB4YTkwIFt1YmldCj4gWyAgMzM2LjQ1MjQ3Ml0g
+ID8gX3Jhd19yZWFkX2xvY2tfaXJxKzB4OTAvMHg5MAo+IFsgIDMzNi40NTMwNzhdICA/IGttZW1f
+Y2FjaGVfYWxsb2NfdHJhY2UrMHg0NjUvMHg4YjAKPiBbICAzMzYuNDUzNzQ5XSAgPyBkb19zeW5j
+X2VyYXNlKzB4MzUwLzB4MzUwIFt1YmldCj4gWyAgMzM2LjQ1NDQzMF0gID8gX19rYXNhbl9jaGVj
+a193cml0ZSsweDIwLzB4MzAKPiBbICAzMzYuNDU1MDUwXSAgPyBkb3duX3dyaXRlKzB4ZjIvMHgx
+OTAKPiBbICAzMzYuNDU1NTY5XSAgPyBkb3duX3dyaXRlX2tpbGxhYmxlKzB4MWIwLzB4MWIwCj4g
+WyAgMzM2LjQ1NjIyMV0gID8gY2hlY2tfbWFwcGluZysweDJjLzB4NTkwIFt1YmldCj4gWyAgMzM2
+LjQ1Njg5MF0gID8gdWJpX2ViYV93cml0ZV9sZWIrMHg1OGEvMHhmYTAgW3ViaV0KPiBbICAzMzYu
+NDU3NjE4XSAgPyBfX2ttYWxsb2MrMHg0OTAvMHg5MTAKPiBbICAzMzYuNDU4MTQyXSAgPyB1Ymlm
+c19qbmxfd3JpdGVfaW5vZGUuY29sZCsweDZmLzB4ODc4IFt1Ymlmc10KPiBbICAzMzYuNDU5MDMz
+XSAgPyB3cml0ZWJhY2tfc2JfaW5vZGVzKzB4M2E5LzB4OWEwCj4gWyAgMzM2LjQ1OTY3Ml0gID8g
+X193cml0ZWJhY2tfaW5vZGVzX3diKzB4YzgvMHgxNzAKPiBbICAzMzYuNDYwMzMwXSAgPyB3Yl93
+cml0ZWJhY2srMHg2MzcvMHg3MDAKPiBbICAzMzYuNDYwODgyXSAgPyB3Yl93b3JrZm4rMHg4YWYv
+MHhiODAKPiBbICAzMzYuNDYxMzk4XSAgPyBwcm9jZXNzX29uZV93b3JrKzB4NDY3LzB4OWYwCj4g
+WyAgMzM2LjQ2MjAwNF0gID8gd29ya2VyX3RocmVhZCsweDM0ZC8weDhlMAo+IFsgIDMzNi40NjI1
+ODJdICA/IGt0aHJlYWQrMHgyMDQvMHgyODAKPiBbICAzMzYuNDYzMDQ3XSAgPyByZXRfZnJvbV9m
+b3JrKzB4MWYvMHgzMAo+IFsgIDMzNi40NjM1NzBdICA/IGNyZWF0ZV9wcm9mX2NwdV9tYXNrKzB4
+MzAvMHgzMAo+IFsgIDMzNi40NjQxODVdICA/IHViaV9lYmFfcmVhZF9sZWJfc2crMHgxZjAvMHgx
+ZjAgW3ViaV0KPiBbICAzMzYuNDY0OTE3XSAgPyBocnRpbWVyX2FjdGl2ZSsweDliLzB4MTAwCj4g
+WyAgMzM2LjQ2NTQ2OF0gID8gdWJpX2xlYl93cml0ZSsweDIyYy8weDJmMCBbdWJpXQo+IFsgIDMz
+Ni40NjYxMzBdICA/IHViaWZzX2xlYl93cml0ZSsweGYyLzB4MWIwIFt1Ymlmc10KPiBbICAzMzYu
+NDY2ODUxXSAgPyB1Ymlmc193YnVmX3dyaXRlX25vbG9jaysweDQxMi8weDEyODAgW3ViaWZzXQo+
+IFsgIDMzNi40Njc2ODZdICA/IHdyaXRlX2hlYWQrMHhkZi8weDFjMCBbdWJpZnNdCj4gWyAgMzM2
+LjQ2ODM1NV0gID8gdWJpZnNfam5sX3dyaXRlX2lub2RlLmNvbGQrMHgzZWMvMHg4NzggW3ViaWZz
+XQo+IFsgIDMzNi40NjkxODNdICA/IHJldF9mcm9tX2ZvcmsrMHgxZS8weDMwCj4gWyAgMzM2LjQ2
+OTcwN10gID8gdWJpZnNfam5sX3dyaXRlX2RhdGErMHg2NjAvMHg2NjAgW3ViaWZzXQo+IFsgIDMz
+Ni40NzA0OTddICA/IHVud2luZF9uZXh0X2ZyYW1lKzB4MjQ3LzB4Y2EwCj4gWyAgMzM2LjQ3MTA5
+NV0gID8gcmV0X2Zyb21fZm9yaysweDFmLzB4MzAKPiBbICAzMzYuNDcxNTc0XSAgPyBmcHJvcF9y
+ZWZsZWN0X3BlcmlvZF9wZXJjcHUuaXNyYS4wKzB4MWYvMHgxYjAKPiBbICAzMzYuNDcyMzM1XSAg
+PyBnZW5lcmljX3dyaXRlcGFnZXMrMHg5My8weDE0MAo+IFsgIDMzNi40NzI5MzNdICA/IF9fa2Fz
+YW5fY2hlY2tfd3JpdGUrMHgyMC8weDMwCj4gWyAgMzM2LjQ3MzUyNl0gID8gbXV0ZXhfbG9jaysw
+eGE2LzB4MTEwCj4gWyAgMzM2LjQ3NDAzMV0gID8gX19tdXRleF9sb2NrX3Nsb3dwYXRoKzB4MzAv
+MHgzMAo+IFsgIDMzNi40NzQ2NjJdICA/IHViaWZzX3dyaXRlX2lub2RlKzB4MWMzLzB4MjkwIFt1
+Ymlmc10KPiBbICAzMzYuNDc1NDQ2XSAgPyBfX3dyaXRlYmFja19zaW5nbGVfaW5vZGUrMHg2Y2Mv
+MHg4ODAKPiBbICAzMzYuNDc2MTU1XSAgPyB3YmNfYXR0YWNoX2FuZF91bmxvY2tfaW5vZGUrMHgy
+YjYvMHg0MDAKPiBbICAzMzYuNDc2ODkxXSAgPyB3cml0ZWJhY2tfc2JfaW5vZGVzKzB4M2E5LzB4
+OWEwCj4gWyAgMzM2LjQ3NzUyOF0gID8gd3JpdGVfaW5vZGVfbm93KzB4MWUwLzB4MWUwCj4gWyAg
+MzM2LjQ3ODExOV0gID8gX193cml0ZWJhY2tfaW5vZGVzX3diKzB4YzgvMHgxNzAKPiBbICAzMzYu
+NDc4NzcwXSAgPyB3Yl93cml0ZWJhY2srMHg2MzcvMHg3MDAKPiBbICAzMzYuNDc5MzI2XSAgPyBf
+X3dyaXRlYmFja19pbm9kZXNfd2IrMHgxNzAvMHgxNzAKPiBbICAzMzYuNDc5OTkyXSAgPyBjdXJy
+ZW50X3dvcmsrMHhhMC8weGEwCj4gWyAgMzM2LjQ4MDUyNF0gID8gX2ZpbmRfbmV4dF9iaXQuY29u
+c3Rwcm9wLjArMHgzZS8weDE0MAo+IFsgIDMzNi40ODEyNDFdICA/IGZpbmRfbmV4dF9iaXQrMHgx
+OC8weDMwCj4gWyAgMzM2LjQ4MTc4MF0gID8gY3B1bWFza19uZXh0KzB4MmYvMHg0MAo+IFsgIDMz
+Ni40ODIzMTJdICA/IHdiX3dvcmtmbisweDhhZi8weGI4MAo+IFsgIDMzNi40ODI4MzJdICA/IHVw
+ZGF0ZV9jZnNfZ3JvdXArMHgxZS8weDFiMAo+IFsgIDMzNi40ODM0MjFdICA/IGlub2RlX3dhaXRf
+Zm9yX3dyaXRlYmFjaysweDYwLzB4NjAKPiBbICAzMzYuNDg0MTA2XSAgPyBzY2hlZHVsZSsweGI3
+LzB4MjQwCj4gWyAgMzM2LjQ4NDU5NV0gID8gZmluaXNoX3Rhc2tfc3dpdGNoKzB4MTRlLzB4OWEw
+Cj4gWyAgMzM2LjQ4NTIyNV0gID8gX19rYXNhbl9jaGVja193cml0ZSsweDIwLzB4MzAKPiBbICAz
+MzYuNDg1ODQxXSAgPyBfX3NjaGVkdWxlKzB4NmY0LzB4MTYwMAo+IFsgIDMzNi40ODYzODJdICA/
+IF9fa2FzYW5fY2hlY2tfcmVhZCsweDFkLzB4MzAKPiBbICAzMzYuNDg2OTgxXSAgPyByZWFkX3dv
+cmRfYXRfYV90aW1lKzB4MTYvMHgzMAo+IFsgIDMzNi40ODc1OTRdICA/IHByb2Nlc3Nfb25lX3dv
+cmsrMHg0NjcvMHg5ZjAKPiBbICAzMzYuNDg4MTk4XSAgPyB3b3JrZXJfdGhyZWFkKzB4MzRkLzB4
+OGUwCj4gWyAgMzM2LjQ4ODc2Ml0gID8gcmVzY3Vlcl90aHJlYWQrMHg4MjAvMHg4MjAKPiBbICAz
+MzYuNDg5MzQ0XSAgPyBrdGhyZWFkKzB4MjA0LzB4MjgwCj4gWyAgMzM2LjQ4OTgzOV0gID8ga3Ro
+cmVhZF9iaW5kKzB4NTAvMHg1MAo+IFsgIDMzNi40OTAzNjddICA/IHJldF9mcm9tX2ZvcmsrMHgx
+Zi8weDMwCj4gWyAgMzM2LjQ5MDkxM10KPiBbICAzMzYuNDkxMTM4XSBBbGxvY2F0ZWQgYnkgdGFz
+ayAxMzU6Cj4gWyAgMzM2LjQ5MTYyOV0gIGthc2FuX3NhdmVfc3RhY2srMHgyMy8weDYwCj4gWyAg
+MzM2LjQ5MjE4OV0gIF9fa2FzYW5fa21hbGxvYy5jb25zdHByb3AuMCsweDEwYi8weDEyMAo+IFsg
+IDMzNi40OTI4OThdICBrYXNhbl9rbWFsbG9jKzB4ZC8weDIwCj4gWyAgMzM2LjQ5MzQwMV0gIF9f
+a21hbGxvYysweDQ5MC8weDkxMAo+IFsgIDMzNi40OTM4OTBdICB1Ymlmc19qbmxfd3JpdGVfaW5v
+ZGUuY29sZCsweDZmLzB4ODc4IFt1Ymlmc10KPiBbICAzMzYuNDk0NzQ0XSAgdWJpZnNfd3JpdGVf
+aW5vZGUrMHgxYzMvMHgyOTAgW3ViaWZzXQo+IFsgIDMzNi40OTU1MDBdICBfX3dyaXRlYmFja19z
+aW5nbGVfaW5vZGUrMHg2Y2MvMHg4ODAKPiBbICAzMzYuNDk2MTc5XSAgd3JpdGViYWNrX3NiX2lu
+b2RlcysweDNhOS8weDlhMAo+IFsgIDMzNi40OTY3OTFdICBfX3dyaXRlYmFja19pbm9kZXNfd2Ir
+MHhjOC8weDE3MAo+IFsgIDMzNi40OTc0MTddICB3Yl93cml0ZWJhY2srMHg2MzcvMHg3MDAKPiBb
+ICAzMzYuNDk3OTQ5XSAgd2Jfd29ya2ZuKzB4OGFmLzB4YjgwCj4gWyAgMzM2LjQ5ODQ0MF0gIHBy
+b2Nlc3Nfb25lX3dvcmsrMHg0NjcvMHg5ZjAKPiBbICAzMzYuNDk5MDIzXSAgd29ya2VyX3RocmVh
+ZCsweDM0ZC8weDhlMAo+IFsgIDMzNi40OTk1NjddICBrdGhyZWFkKzB4MjA0LzB4MjgwCj4gWyAg
+MzM2LjUwMDA1MF0gIHJldF9mcm9tX2ZvcmsrMHgxZi8weDMwCj4gWyAgMzM2LjUwMDU3MF0KPiBb
+ICAzMzYuNTAwNzkzXSBUaGUgYnVnZ3kgYWRkcmVzcyBiZWxvbmdzIHRvIHRoZSBvYmplY3QgYXQg
+ZmZmZjg4ODAxOTYxMjAwMAo+IFsgIDMzNi41MDA3OTNdICB3aGljaCBiZWxvbmdzIHRvIHRoZSBj
+YWNoZSBrbWFsbG9jLTRrIG9mIHNpemUgNDA5Ngo+IFsgIDMzNi41MDI1NTBdIFRoZSBidWdneSBh
+ZGRyZXNzIGlzIGxvY2F0ZWQgNDA4OCBieXRlcyBpbnNpZGUgb2YKPiBbICAzMzYuNTAyNTUwXSAg
+NDA5Ni1ieXRlIHJlZ2lvbiBbZmZmZjg4ODAxOTYxMjAwMCwgZmZmZjg4ODAxOTYxMzAwMCkKPiBb
+ICAzMzYuNTA0MjMxXSBUaGUgYnVnZ3kgYWRkcmVzcyBiZWxvbmdzIHRvIHRoZSBwYWdlOgo+IFsg
+IDMzNi41MDQ5MTddIHBhZ2U6MDAwMDAwMDAzMjA0ZGVkOCByZWZjb3VudDoxIG1hcGNvdW50OjAg
+bWFwcGluZzowMDAwMDAwMDAwMDAwMDAwIGluZGV4OjB4MCBwZm46MHgxOTYxMAo+IFsgIDMzNi41
+MDYyMzRdIGhlYWQ6MDAwMDAwMDAzMjA0ZGVkOCBvcmRlcjozIGNvbXBvdW5kX21hcGNvdW50OjAg
+Y29tcG91bmRfcGluY291bnQ6MAo+IFsgIDMzNi41MDcyOTNdIGZsYWdzOiAweDFmZmZmZjgwMDEw
+MjAwKHNsYWJ8aGVhZCkKPiBbICAzMzYuNTA3OTM0XSByYXc6IDAwMWZmZmZmODAwMTAyMDAgZmZm
+ZmVhMDAwMDY2NzAwMCAwMDAwMDAwMjAwMDAwMDAyIGZmZmY4ODgwMTA4NDIxNDAKPiBbICAzMzYu
+NTA5MDM4XSByYXc6IDAwMDAwMDAwMDAwMDAwMDAgMDAwMDAwMDA4MDA0MDAwNCAwMDAwMDAwMWZm
+ZmZmZmZmIGZmZmY4ODgwMTk1NmUzYzEKPiBbICAzMzYuNTEwMTMyXSBwYWdlIGR1bXBlZCBiZWNh
+dXNlOiBrYXNhbjogYmFkIGFjY2VzcyBkZXRlY3RlZAo+IFsgIDMzNi41MTA5MjNdIHBhZ2VzJ3Mg
+bWVtY2c6ZmZmZjg4ODAxOTU2ZTNjMQo+IFsgIDMzNi41MTE1MDldCj4gWyAgMzM2LjUxMTczMF0g
+TWVtb3J5IHN0YXRlIGFyb3VuZCB0aGUgYnVnZ3kgYWRkcmVzczoKPiBbICAzMzYuNTEyNDIxXSAg
+ZmZmZjg4ODAxOTYxMmU4MDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
+MDAgMDAgMDAKPiBbICAzMzYuNTEzNDQ2XSAgZmZmZjg4ODAxOTYxMmYwMDogMDAgMDAgMDAgMDAg
+MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKPiBbICAzMzYuNTE0NDY4XSA+ZmZm
+Zjg4ODAxOTYxMmY4MDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
+MDAgMDEKPiBbICAzMzYuNTE1NDk0XSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXgo+IFsgIDMzNi41MTY1MDZdICBmZmZmODg4
+MDE5NjEzMDAwOiBmYyBmYyBmYyBmYyBmYyBmYyBmYyBmYyBmYyBmYyBmYyBmYyBmYyBmYyBmYyBm
+Ywo+IFsgIDMzNi41MTc1MzVdICBmZmZmODg4MDE5NjEzMDgwOiBmYyBmYyBmYyBmYyBmYyBmYyBm
+YyBmYyBmYyBmYyBmYyBmYyBmYyBmYyBmYyBmYwo+IFsgIDMzNi41MTg1NjBdID09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQo+
+IAo+IFRoZSBtZW1vcnkgYXJlYSBhbGxvY2F0ZWQgaW4gdWJpZnNfam5sX3dyaXRlX2lub2RlKCkg
+aXMgbm90IGFsaWduZWQgd2l0aCA4IGJ5dGVzOgo+IGlub19zdGFydCA9IGlubyA9IGttYWxsb2Mo
+d3JpdGVfbGVuLCBHRlBfTk9GUyk7Cj4gCj4gV2hlbiBpbm9fc3RhcnQgcGFzc2VkIGludG8gd3Jp
+dGVfaGVhZCAtPiB1Ymlmc193YnVmX3dyaXRlX25vbG9jazoKPiAgICAgIG4gPSBhbGlnbmVkX2xl
+biA+PiBjLT5tYXhfd3JpdGVfc2hpZnQ7Cj4gICAgICBpZiAobikgewo+ICAgICAgICBuIDw8PSBj
+LT5tYXhfd3JpdGVfc2hpZnQ7Cj4gICAgICAgIGVyciA9IHViaWZzX2xlYl93cml0ZShjLCB3YnVm
+LT5sbnVtLCBidWYgKyB3cml0dGVuLCB3YnVmLT5vZmZzLCBuKTsKPiAgICAgICAgLy8gUmVhZCBv
+b2Igb2NjdXJzIGhlcmUsIHJlYWQgbiBieXRlcyBmcm9tIGJ1ZiwgYW5kIGJ1ZiBpcyBwYXNzZWQg
+ZnJvbSBAaW5vX3N0YXJ0IHdoaWNoIGlzCj4gICAgICAgIC8vIG5vdCA4IGJ5dGVzIGFsaWduZWQo
+d3JpdGVfbGVuIDwgbikuIFByb2dyYW0gcmVhZCAobiAtIHdyaXRlX2xlbikgbW9yZSBieXRlcy4K
+PiAgICAgIH0KPiAKPiBSZXByb2R1Y2VyOgo+IDAuIGNvbmZpZyBLQVNBTiAmJiBhcHBseSBwcmlu
+dC5wYXRjaAo+IDEuIG1vdW50IHViaWZzIG9uIC9yb290L3RlbXAKPiAyLiBydW4gdGVzdC5zaAo+
+IDMuIGNkIC9yb290L3RlbXAgJiYgbHMgLy8gY2hhbmdlIGF0aW1lIGZvciBsaW5rX2ZpbGUKPiA0
+LiB3YWl0IDF+MiBtaW51dGVzCj4gCj4gQ2M6IDxzdGFibGVAdmdlci5rZXJuZWwub3JnPgo+IEZp
+eGVzOiAxZTUxNzY0YTNjMmFjMCAoIlVCSUZTOiBhZGQgbmV3IGZsYXNoIGZpbGUgc3lzdGVtIikK
+PiBMaW5rOiBodHRwczovL2J1Z3ppbGxhLmtlcm5lbC5vcmcvc2hvd19idWcuY2dpP2lkPTIxMDg2
+NQo+IAo+IFNpZ25lZC1vZmYtYnk6IENoZW5nc29uZyBLZSA8a2VjaGVuZ3NvbmdAaHVhd2VpLmNv
+bT4KPiAtLS0KPiAgIGZzL3ViaWZzL2lvLmMgfCAxMSArKysrKysrKystLQo+ICAgMSBmaWxlIGNo
+YW5nZWQsIDkgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEv
+ZnMvdWJpZnMvaW8uYyBiL2ZzL3ViaWZzL2lvLmMKPiBpbmRleCAwMGI2MWRiYTYyYjcuLjZiOWQ1
+NTAzNDFlNSAxMDA2NDQKPiAtLS0gYS9mcy91Ymlmcy9pby5jCj4gKysrIGIvZnMvdWJpZnMvaW8u
+Ywo+IEBAIC04MzYsMTMgKzgzNiwyMCBAQCBpbnQgdWJpZnNfd2J1Zl93cml0ZV9ub2xvY2soc3Ry
+dWN0IHViaWZzX3didWYgKndidWYsIHZvaWQgKmJ1ZiwgaW50IGxlbikKPiAgIAkJbiA8PD0gYy0+
+bWF4X3dyaXRlX3NoaWZ0Owo+ICAgCQlkYmdfaW8oIndyaXRlICVkIGJ5dGVzIHRvIExFQiAlZDol
+ZCIsIG4sIHdidWYtPmxudW0sCj4gICAJCSAgICAgICB3YnVmLT5vZmZzKTsKPiAtCQllcnIgPSB1
+Ymlmc19sZWJfd3JpdGUoYywgd2J1Zi0+bG51bSwgYnVmICsgd3JpdHRlbiwKPiArCj4gKwkJbWVt
+Y3B5KHdidWYtPmJ1ZiwgYnVmICsgd3JpdHRlbiwgbWluKGxlbiwgbikpOwo+ICsJCWlmIChuID4g
+bGVuKSB7Cj4gKwkJCXViaWZzX2Fzc2VydChjLCBuIC0gbGVuIDwgOCk7Cj4gKwkJCXViaWZzX3Bh
+ZChjLCB3YnVmLT5idWYgKyBsZW4sIG4gLSBsZW4pOwo+ICsJCX0KPiArCj4gKwkJZXJyID0gdWJp
+ZnNfbGViX3dyaXRlKGMsIHdidWYtPmxudW0sIHdidWYtPmJ1ZiwKPiAgIAkJCQkgICAgICB3YnVm
+LT5vZmZzLCBuKTsKPiAgIAkJaWYgKGVycikKPiAgIAkJCWdvdG8gb3V0Owo+ICAgCQl3YnVmLT5v
+ZmZzICs9IG47Cj4gICAJCWFsaWduZWRfbGVuIC09IG47Cj4gLQkJbGVuIC09IG47Cj4gKwkJbGVu
+IC09IG1pbihsZW4sIG4pOwo+ICAgCQl3cml0dGVuICs9IG47Cj4gICAJfQo+ICAgCj4gCgoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4
+IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
