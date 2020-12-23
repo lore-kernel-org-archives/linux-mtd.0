@@ -2,58 +2,82 @@ Return-Path: <SRS0=nxGi=F3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 437A4C433E0
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Dec 2020 12:17:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 864CDC433E6
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Dec 2020 21:57:44 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ED005204EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Dec 2020 12:17:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ED005204EF
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	by mail.kernel.org (Postfix) with ESMTPS id 11706221FA
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Dec 2020 21:57:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11706221FA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=bMBWF84mae9G00WxWM6r9wUdEMMIFLaOexe+x6qVq68=; b=Zf4pGrV7jeKurLSlunt+DFZKS6
-	3KUHGaXcLT/3PPdAjU6bXtzLi2AGCHiErbgkIJL+21hZ419aDN3PwU1Vzo7AykxznmDZVPf4EhYWO
-	sZtN6C81e6Jz7jVeTmCA8bkF0UiiW31eXDAbg+XFBADr0RscFSc6+hefTZ5ILEBTHHx6ONH7qNbp9
-	nGW413ty0fqX0B2TfgIxvl3TYfidARf2P2GLpbfKM8IQUDvZ/hBlUgjL1WYViXrKm3jRM386DzcQi
-	smxizRMDdEWr4RnahffavfLW1jz1dEkwLfwTY+9if91fPBCVJghbUAW5xqubuqzn9GK+N7WibNqRd
-	X82ZsGMA==;
+	List-Unsubscribe:List-Id:To:From:Subject:References:Mime-Version:Message-Id:
+	In-Reply-To:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=LCjj6MsIuKiM4X3RfU1fsAXyFpU+r41efk6tF2Phn7M=; b=gsRACwxZu2pPhnU0M3RA5mXNT
+	GUHKu7u8DIZjR6qJywAeFr1WIAJgweKyWZeI94qSRB2X1zzLjOeBgxDrwvT1AL5zHmg3hOrJKDIGO
+	uMNGWBW2/lVtJbc4/wE65et8p3p6BzikgbdplejgAKp+R3kNUiY3qZ2B7scbRAqlHEf1DB17ekpcN
+	yGv6t8oqmp3UEVBErFDyOLSQE68L0U3o6MPJu3zM0isvSWLlT2l2nAjjZc4tIZaEaFoeekSRnOxv+
+	xIRysBLi+D9tR7pRU2pciYV7uK40X10hMaVgmNHtt+GZvBIYJtP8bUTYPNEI/EUy6VH9PEICxSD9m
+	XS81zltkg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ks33i-0007pG-AX; Wed, 23 Dec 2020 12:16:02 +0000
-Received: from szxga05-in.huawei.com ([45.249.212.191])
+	id 1ksC7s-0005N1-RZ; Wed, 23 Dec 2020 21:56:56 +0000
+Received: from mail-qv1-xf49.google.com ([2607:f8b0:4864:20::f49])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ks33c-0007lX-75
- for linux-mtd@lists.infradead.org; Wed, 23 Dec 2020 12:15:59 +0000
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
- by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D1BwV1K0dzM8W7;
- Wed, 23 Dec 2020 20:14:50 +0800 (CST)
-Received: from DESKTOP-2DH7KI2.china.huawei.com (10.67.101.108) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 23 Dec 2020 20:15:36 +0800
-From: Chengsong Ke <kechengsong@huawei.com>
-To: <richard@nod.at>, <s.hauer@pengutronix.de>
-Subject: [PATCH v2] ubifs: Fix read out-of-bounds in ubifs_jnl_write_inode()
-Date: Wed, 23 Dec 2020 20:15:36 +0800
-Message-ID: <20201223121536.6244-1-kechengsong@huawei.com>
-X-Mailer: git-send-email 2.21.0.windows.1
-MIME-Version: 1.0
-X-Originating-IP: [10.67.101.108]
-X-CFilter-Loop: Reflected
+ id 1ksC7q-0005MK-8H
+ for linux-mtd@lists.infradead.org; Wed, 23 Dec 2020 21:56:55 +0000
+Received: by mail-qv1-xf49.google.com with SMTP id f7so366391qvr.4
+ for <linux-mtd@lists.infradead.org>; Wed, 23 Dec 2020 13:56:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=sender:date:in-reply-to:message-id:mime-version:references:subject
+ :from:to:cc; bh=jCG+pP5B/ha4zc4aANM/eXYqzTZqfBuYgIBq10srGgc=;
+ b=nYnwax4SRVuQGeooRFDyFNIzMBuAzj2r78Z9tDwBEIoUniS/GEnKWslTLzZnz1Nj66
+ ROa3/HZfcX02fZCFHI3djGAdq4s+6dSMOjYaJqnBFasdx5ivJpisntJAeyn2mvX/40R5
+ RCGezh0HlnVam7sPVVjsZRtt5XA3MGpmBxuW9HhKmOznHKuVq7IA4BEmHIZbGIPfam9T
+ 8VC/NgTHTCuVE/+P+/HJWHFlHgczn3NQRq9Ce1pr1/NIhhClMv4LLbmdE00o1e98N2to
+ SXdi+NPV2axecTksd43+iolSehqV269OvtqJkuo1eFjml13ZZP1c7w6q19xRH0C1PZC0
+ iopQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+ :references:subject:from:to:cc;
+ bh=jCG+pP5B/ha4zc4aANM/eXYqzTZqfBuYgIBq10srGgc=;
+ b=tfIQqTlMRvLEcNhMf2yDm89wKGpT31fx2MVQtgPRmX05Yx7dvWWMkg52BJCZmrLXvJ
+ 1L/T/gUkve4DtJMTRfL3DY07DKfRRK8XQsytigot0zPLLydTr1y5laednMP3K/7NGkST
+ BjFGI7Ug2vVz6uz747B8efY11cqyb3eLgJ3wuiLBO7WJUV0xyk8sgpL/0C3weMGL0oDK
+ ZQfSnEVptmwmIbZIMOeCD+BJA5xIm5v0LyfnGMPgAAGLQyf1cShzA6uzqY0GjcbSyyNW
+ PAMBBDWrWiOS2Ugc02wN97zCQgVZoqWvWLnadqOzRSI1JnCSLD2WmvbSzctPTxsRJXPP
+ obZw==
+X-Gm-Message-State: AOAM532RxlNVf254aWZRYIQPNx6q0BvLp5wHdFT/xu92xglEWFMqSLvF
+ epujiC1xSqO0ER9mx+mAXT0mISc/knoSWT0=
+X-Google-Smtp-Source: ABdhPJzcdwpbleDWDWlKof2to9y4p0GOiPNS6G4j2LvnBlWfhcsRwwRXXcgSu5YAX4np3ypNVVy68a+po87tukw=
+X-Received: from overmind.svl.corp.google.com
+ ([2620:15c:2c5:3:1ea0:b8ff:fe77:e712])
+ (user=goegebuer job=sendgmr) by 2002:a05:6214:533:: with SMTP id
+ x19mr29179737qvw.20.1608760607341; Wed, 23 Dec 2020 13:56:47 -0800 (PST)
+Date: Wed, 23 Dec 2020 13:56:30 -0800
+In-Reply-To: <1887c783-7a80-a71c-949f-c07c83c2d0fe@ti.com>
+Message-Id: <20201223215630.1917891-1-goegebuer@google.com>
+Mime-Version: 1.0
+References: <1887c783-7a80-a71c-949f-c07c83c2d0fe@ti.com>
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+Subject: [PATCH] mtd: parser: cmdline: Support MTD names containing one or
+ more colons
+From: Ian Goegebuer <goegebuer@google.com>
+To: Vignesh Raghavendra <vigneshr@ti.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201223_071557_361020_2A067D47 
-X-CRM114-Status: GOOD (  12.73  )
+X-CRM114-CacheID: sfid-20201223_165654_352143_802EBBE2 
+X-CRM114-Status: GOOD (  14.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -65,205 +89,64 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: chengzhihao1@huawei.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, wangfangpeng1@huawei.com
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>, Boris Brezillon <bbrezillon@kernel.org>,
+ Jethro Beekman <jethro@fortanix.com>, linux-kernel@vger.kernel.org,
+ Ian Goegebuer <goegebuer@google.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+ "Ronald G . Minnich" <rminnich@google.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Thomas Gleixner <tglx@linutronix.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: kechengsong <kechengsong@huawei.com>
+On Intel platforms, the usable SPI area is located several
+MiB in from the start, to leave room for descriptors and
+the Management Engine binary. Further, not all the remaining
+space can be used, as the last 16 MiB contains firmware.
 
-ubifs_jnl_write_inode() probably cause read out-of-bounds in some situation.
-There is kasan stack:
-[  336.432159] BUG: KASAN: slab-out-of-bounds in ecc_sw_hamming_calculate+0x1dc/0x7d0
-[  336.433634] Read of size 4 at addr ffff888019612ff8 by task kworker/u8:4/135
-[  336.434605]
-[  336.434830] CPU: 1 PID: 135 Comm: kworker/u8:4 Not tainted 5.10.0-11826-gaf2a097952f3-dirty #338
-[  336.436050] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
-[  336.437876] Workqueue: writeback wb_workfn (flush-ubifs_0_0)
-[  336.438670] Call Trace:
-[  336.439021]  ? dump_stack+0xdd/0x126
-[  336.439513]  ? print_address_description.constprop.0+0x2c/0x3c0
-[  336.440308]  ? _raw_write_lock_irqsave+0x140/0x140
-[  336.440921]  ? ecc_sw_hamming_calculate+0x1dc/0x7d0
-[  336.441546]  ? ecc_sw_hamming_calculate+0x1dc/0x7d0
-[  336.442186]  ? kasan_report.cold+0x5d/0xd8
-[  336.442711]  ? nand_reset_op+0x280/0x310
-[  336.443218]  ? ecc_sw_hamming_calculate+0x1dc/0x7d0
-[  336.443842]  ? __asan_load4+0x77/0x120
-[  336.444334]  ? ecc_sw_hamming_calculate+0x1dc/0x7d0
-[  336.444963]  ? nand_ecc_sw_hamming_calculate+0x6c/0x80
-[  336.445619]  ? rawnand_sw_hamming_calculate+0x12/0x20
-[  336.446263]  ? nand_write_page_swecc+0xa9/0x160
-[  336.446849]  ? nand_do_write_ops+0x390/0x830
-[  336.447406]  ? __writeback_single_inode+0x6cc/0x880
-[  336.448041]  ? nand_write_oob+0x78/0x100
-[  336.448568]  ? mtd_write_oob_std+0xe2/0x160
-[  336.449127]  ? mtd_write_oob+0xec/0x1b0
-[  336.449679]  ? mtd_write+0x92/0xf0
-[  336.450128]  ? mtd_write_oob+0x1b0/0x1b0
-[  336.450633]  ? ubi_self_check_all_ff+0x82/0x2e0 [ubi]
-[  336.451328]  ? __list_add_valid+0x2b/0x130
-[  336.451865]  ? ubi_io_write+0x2c2/0xa90 [ubi]
-[  336.452472]  ? _raw_read_lock_irq+0x90/0x90
-[  336.453078]  ? kmem_cache_alloc_trace+0x465/0x8b0
-[  336.453749]  ? do_sync_erase+0x350/0x350 [ubi]
-[  336.454430]  ? __kasan_check_write+0x20/0x30
-[  336.455050]  ? down_write+0xf2/0x190
-[  336.455569]  ? down_write_killable+0x1b0/0x1b0
-[  336.456221]  ? check_mapping+0x2c/0x590 [ubi]
-[  336.456890]  ? ubi_eba_write_leb+0x58a/0xfa0 [ubi]
-[  336.457618]  ? __kmalloc+0x490/0x910
-[  336.458142]  ? ubifs_jnl_write_inode.cold+0x6f/0x878 [ubifs]
-[  336.459033]  ? writeback_sb_inodes+0x3a9/0x9a0
-[  336.459672]  ? __writeback_inodes_wb+0xc8/0x170
-[  336.460330]  ? wb_writeback+0x637/0x700
-[  336.460882]  ? wb_workfn+0x8af/0xb80
-[  336.461398]  ? process_one_work+0x467/0x9f0
-[  336.462004]  ? worker_thread+0x34d/0x8e0
-[  336.462582]  ? kthread+0x204/0x280
-[  336.463047]  ? ret_from_fork+0x1f/0x30
-[  336.463570]  ? create_prof_cpu_mask+0x30/0x30
-[  336.464185]  ? ubi_eba_read_leb_sg+0x1f0/0x1f0 [ubi]
-[  336.464917]  ? hrtimer_active+0x9b/0x100
-[  336.465468]  ? ubi_leb_write+0x22c/0x2f0 [ubi]
-[  336.466130]  ? ubifs_leb_write+0xf2/0x1b0 [ubifs]
-[  336.466851]  ? ubifs_wbuf_write_nolock+0x412/0x1280 [ubifs]
-[  336.467686]  ? write_head+0xdf/0x1c0 [ubifs]
-[  336.468355]  ? ubifs_jnl_write_inode.cold+0x3ec/0x878 [ubifs]
-[  336.469183]  ? ret_from_fork+0x1e/0x30
-[  336.469707]  ? ubifs_jnl_write_data+0x660/0x660 [ubifs]
-[  336.470497]  ? unwind_next_frame+0x247/0xca0
-[  336.471095]  ? ret_from_fork+0x1f/0x30
-[  336.471574]  ? fprop_reflect_period_percpu.isra.0+0x1f/0x1b0
-[  336.472335]  ? generic_writepages+0x93/0x140
-[  336.472933]  ? __kasan_check_write+0x20/0x30
-[  336.473526]  ? mutex_lock+0xa6/0x110
-[  336.474031]  ? __mutex_lock_slowpath+0x30/0x30
-[  336.474662]  ? ubifs_write_inode+0x1c3/0x290 [ubifs]
-[  336.475446]  ? __writeback_single_inode+0x6cc/0x880
-[  336.476155]  ? wbc_attach_and_unlock_inode+0x2b6/0x400
-[  336.476891]  ? writeback_sb_inodes+0x3a9/0x9a0
-[  336.477528]  ? write_inode_now+0x1e0/0x1e0
-[  336.478119]  ? __writeback_inodes_wb+0xc8/0x170
-[  336.478770]  ? wb_writeback+0x637/0x700
-[  336.479326]  ? __writeback_inodes_wb+0x170/0x170
-[  336.479992]  ? current_work+0xa0/0xa0
-[  336.480524]  ? _find_next_bit.constprop.0+0x3e/0x140
-[  336.481241]  ? find_next_bit+0x18/0x30
-[  336.481780]  ? cpumask_next+0x2f/0x40
-[  336.482312]  ? wb_workfn+0x8af/0xb80
-[  336.482832]  ? update_cfs_group+0x1e/0x1b0
-[  336.483421]  ? inode_wait_for_writeback+0x60/0x60
-[  336.484106]  ? schedule+0xb7/0x240
-[  336.484595]  ? finish_task_switch+0x14e/0x9a0
-[  336.485225]  ? __kasan_check_write+0x20/0x30
-[  336.485841]  ? __schedule+0x6f4/0x1600
-[  336.486382]  ? __kasan_check_read+0x1d/0x30
-[  336.486981]  ? read_word_at_a_time+0x16/0x30
-[  336.487594]  ? process_one_work+0x467/0x9f0
-[  336.488198]  ? worker_thread+0x34d/0x8e0
-[  336.488762]  ? rescuer_thread+0x820/0x820
-[  336.489344]  ? kthread+0x204/0x280
-[  336.489839]  ? kthread_bind+0x50/0x50
-[  336.490367]  ? ret_from_fork+0x1f/0x30
-[  336.490913]
-[  336.491138] Allocated by task 135:
-[  336.491629]  kasan_save_stack+0x23/0x60
-[  336.492189]  __kasan_kmalloc.constprop.0+0x10b/0x120
-[  336.492898]  kasan_kmalloc+0xd/0x20
-[  336.493401]  __kmalloc+0x490/0x910
-[  336.493890]  ubifs_jnl_write_inode.cold+0x6f/0x878 [ubifs]
-[  336.494744]  ubifs_write_inode+0x1c3/0x290 [ubifs]
-[  336.495500]  __writeback_single_inode+0x6cc/0x880
-[  336.496179]  writeback_sb_inodes+0x3a9/0x9a0
-[  336.496791]  __writeback_inodes_wb+0xc8/0x170
-[  336.497417]  wb_writeback+0x637/0x700
-[  336.497949]  wb_workfn+0x8af/0xb80
-[  336.498440]  process_one_work+0x467/0x9f0
-[  336.499023]  worker_thread+0x34d/0x8e0
-[  336.499567]  kthread+0x204/0x280
-[  336.500050]  ret_from_fork+0x1f/0x30
-[  336.500570]
-[  336.500793] The buggy address belongs to the object at ffff888019612000
-[  336.500793]  which belongs to the cache kmalloc-4k of size 4096
-[  336.502550] The buggy address is located 4088 bytes inside of
-[  336.502550]  4096-byte region [ffff888019612000, ffff888019613000)
-[  336.504231] The buggy address belongs to the page:
-[  336.504917] page:000000003204ded8 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x19610
-[  336.506234] head:000000003204ded8 order:3 compound_mapcount:0 compound_pincount:0
-[  336.507293] flags: 0x1fffff80010200(slab|head)
-[  336.507934] raw: 001fffff80010200 ffffea0000667000 0000000200000002 ffff888010842140
-[  336.509038] raw: 0000000000000000 0000000080040004 00000001ffffffff ffff88801956e3c1
-[  336.510132] page dumped because: kasan: bad access detected
-[  336.510923] pages's memcg:ffff88801956e3c1
-[  336.511509]
-[  336.511730] Memory state around the buggy address:
-[  336.512421]  ffff888019612e80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[  336.513446]  ffff888019612f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[  336.514468] >ffff888019612f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01
-[  336.515494]                                                                 ^
-[  336.516506]  ffff888019613000: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  336.517535]  ffff888019613080: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  336.518560] ==================================================================
+To make the SPI usable for mtdblock and other devices,
+it is necessary to enable command line partitions so the
+middle usable region can be specified.
 
-The memory area allocated in ubifs_jnl_write_inode() is not aligned with 8 bytes:
-ino_start = ino = kmalloc(write_len, GFP_NOFS);
+Add a part_probes array which includes only "cmdelineparts",
+and change to mtd_device_parse_register to use this part_probes.
 
-When ino_start passed into write_head -> ubifs_wbuf_write_nolock:
-    n = aligned_len >> c->max_write_shift;
-    if (n) {
-      n <<= c->max_write_shift;
-      err = ubifs_leb_write(c, wbuf->lnum, buf + written, wbuf->offs, n);
-      // Read oob occurs here, read n bytes from buf, and buf is passed from @ino_start which is
-      // not 8 bytes aligned(write_len < n). Program read (n - write_len) more bytes.
-    }
-
-Reproducer:
-0. config KASAN && apply print.patch
-1. mount ubifs on /root/temp
-2. run test.sh
-3. cd /root/temp && ls // change atime for link_file
-4. wait 1~2 minutes
-
-In order to solve the read oob problem in ubifs_wbuf_write_nolock, just align the write_len to
-8 bytes when alloc the memory. So that this patch will not affect the use of write_len in other
-functions, such as ubifs_jnl_write_inode->make_reservation and ubifs_jnl_write_inode->ubifs_node_calc_hash.
-
-Cc: <stable@vger.kernel.org>
-Fixes: 1e51764a3c2ac0 ("UBIFS: add new flash file system")
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=210865
-
-Signed-off-by: Chengsong Ke <kechengsong@huawei.com>
+Signed-off-by: "Ronald G. Minnich" <rminnich@google.com>
+Signed-off-by: Ian Goegebuer <goegebuer@google.com>
 ---
- fs/ubifs/journal.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/spi-nor/controllers/intel-spi.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index 03410ae0813a..fc918a66d208 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -577,7 +577,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
- 	else
- 		len += host_ui->data_len;
+diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
+index b54a56a68100..9de38851c411 100644
+--- a/drivers/mtd/spi-nor/controllers/intel-spi.c
++++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
+@@ -903,6 +903,8 @@ static const struct spi_nor_controller_ops intel_spi_controller_ops = {
+ 	.erase = intel_spi_erase,
+ };
  
--	dent = kzalloc(len, GFP_NOFS);
-+	dent = kzalloc(ALIGN(len, 8), GFP_NOFS);
- 	if (!dent)
- 		return -ENOMEM;
++static const char * const part_probes[] = { "cmdlinepart", NULL };
++
+ struct intel_spi *intel_spi_probe(struct device *dev,
+ 	struct resource *mem, const struct intel_spi_boardinfo *info)
+ {
+@@ -950,7 +952,8 @@ struct intel_spi *intel_spi_probe(struct device *dev,
+ 	if (!ispi->writeable || !writeable)
+ 		ispi->nor.mtd.flags &= ~MTD_WRITEABLE;
  
-@@ -866,7 +866,7 @@ int ubifs_jnl_write_inode(struct ubifs_info *c, const struct inode *inode)
- 	else
- 		write_len += ilen;
- 
--	ino_start = ino = kmalloc(write_len, GFP_NOFS);
-+	ino_start = ino = kzalloc(ALIGN(write_len, 8), GFP_NOFS);
- 	if (!ino)
- 		return -ENOMEM;
+-	ret = mtd_device_register(&ispi->nor.mtd, &part, 1);
++	ret = mtd_device_parse_register(&ispi->nor.mtd, part_probes,
++					NULL, &part, 1);
+ 	if (ret)
+ 		return ERR_PTR(ret);
  
 -- 
-2.12.3
+2.29.2.729.g45daf8777d-goog
 
 
 ______________________________________________________
