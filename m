@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C498C433E0
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC300C433E6
 	for <linux-mtd@archiver.kernel.org>; Mon, 28 Dec 2020 19:14:08 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C54C6229EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Dec 2020 19:14:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C54C6229EF
+	by mail.kernel.org (Postfix) with ESMTPS id 81E42229EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Dec 2020 19:14:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 81E42229EF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,43 +23,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=u95Z8bSvIVUCuug4PBXOKTF1gQB4CYKoYbQ343lnu00=; b=t3PUeJ3c7bXPfk3hQZctRWSfG
-	/QiX0AhSWnE9XP2lF7ynu4TnNJFD0b/z4cxAaCU4SUBiH4Xm3ZN35KOH3Obz969rtW3VhaYfhp/9c
-	ulApb1EwT24TJPFVstZww9qT9z7FNlkek3o20SJiMo1BAUCl8YGYmmT6k5Uoq92ZOK3rUwI+zwQwI
-	sVlAxoSJHKqfbAryEQmrDp6Sv6L9rVvuI/sZ219hhVobc5RMGbL37dx5ww5BG8XCcqciKtXOmOo4a
-	7VC0XcjabFJBrgNTCRFohhmWTJ7bHlA7ZfhCTQsnTaEtsp+FcjJpJAeaR6GNchKCx3kOKqzzWDUfP
-	YQzkG3ZUA==;
+	 bh=1EjFvKGRmBSpeJ6A5iSLJ7ogFA815XC1JFp0jJH8EdQ=; b=KRwBEUq+1xTsQrK/hQmc9SKjw
+	TOp3xnPgcv8FnMUPecuRd2WbyK8+y4O7rQymFIj/zZ4sg8BCtTjU7DirFCtCxdenMoAyV0t7q464i
+	lZNIyweEWdjAAjJ2xUMv47W2bZTOdwVLxWYTH+J1sa2E7jx/bupXOX+4l+px4pI/G8j0vl9dBGZyG
+	EwUHz7PJNSWP4jFBFysnXtaST11BsDUYG+wLQdqCxJxDd3VOBidc68+OvclexEAdZjRf7tIUvS3Qx
+	Bys2APtMbS9LjNg9yb7qAgHWJrw+CkShZ8uQsH6Im0+u8JbbVeSlbqELRNvz/uJE+CPlSro9GMt4J
+	iQmi+7VNQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ktxxM-00016A-Ra; Mon, 28 Dec 2020 19:13:24 +0000
+	id 1ktxxO-00016U-81; Mon, 28 Dec 2020 19:13:26 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ktxxF-00013C-Kw
- for linux-mtd@lists.infradead.org; Mon, 28 Dec 2020 19:13:18 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC1C322B2A;
- Mon, 28 Dec 2020 19:13:16 +0000 (UTC)
+ id 1ktxxF-00013d-Vm
+ for linux-mtd@lists.infradead.org; Mon, 28 Dec 2020 19:13:19 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A51022B2C;
+ Mon, 28 Dec 2020 19:13:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
  s=k20201202; t=1609182797;
- bh=wcDIzfW0TdVWW8ZUcFxkhA+O3mFdLmRyWJlQxT4S1QI=;
+ bh=IXmvQye9ZM3vzPLg/kY4jseJxfvpVBcbyPuNjzHTWF4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=bAQNUpGKbUC6XgijBxKuQ6fLblzIjwttUoUazHLtwrmvyRAc/Hp21PThkFceo2oND
- +20rouDAMTnb8+gPYw32tirqHwpl3Trft2e5ZG0gVJkOImuAdAkPKdMuxaKEVvzoQm
- 8od/01VOrXkJqs3NmQuHziqvc8o5IVveuM//bYZRclslEfElrjsTe7NX/6K9O2R9ud
- RPjixOFxq4uHlp3ZDFYPaEDRV2f5+gzHb5j82nO0p0ezNlQYr40a86s5ZeVk9oIWxi
- Pbj7E9prte/MgEp1mkzEDRYpcjCnfd6/Wc287+/VJezxQ6sKGj3VcSH8uHMtx3G5LU
- WYCR6iIAZSi3A==
+ b=jQya9WijPGAu5QKp6aRvs3aDB653D8Hv76AV5phKUMDyWFMiaAg4MHTwjj1RBt+7M
+ iyq/ZgVltry9M+5t2oZs30wMF/G6NKjpDSCP1XT4ZmTnB067VauLZvLoC91sIZm7iw
+ rkxpkiOCBwKY6rs/hwNhLjIlse4VYM8/FyBwuFDsCrFl3caRxhXwwvflQNIoNXRn5N
+ ZDtjg/qlyXGK7W8/kndpbTOxYKbUJvmR7QFeuUdu+YQ1SZCDndIiP2EQkHPrLdN9kJ
+ gfuDSlv09IpTCUmUEzasmBHTocNpQCUBmrVFqWHIx7yE7hUOJk8jOcu73YMA8+60hO
+ KxlKk0BLmhKuA==
 From: Eric Biggers <ebiggers@kernel.org>
 To: stable@vger.kernel.org
-Subject: [PATCH 4.19 2/4] ext4: prevent creating duplicate encrypted filenames
-Date: Mon, 28 Dec 2020 11:12:09 -0800
-Message-Id: <20201228191211.138300-3-ebiggers@kernel.org>
+Subject: [PATCH 4.19 3/4] f2fs: prevent creating duplicate encrypted filenames
+Date: Mon, 28 Dec 2020 11:12:10 -0800
+Message-Id: <20201228191211.138300-4-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228191211.138300-1-ebiggers@kernel.org>
 References: <20201228191211.138300-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201228_141317_778863_4C16C8F7 
-X-CRM114-Status: GOOD (  10.61  )
+X-CRM114-CacheID: sfid-20201228_141318_278591_EE139C39 
+X-CRM114-Status: GOOD (  11.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,40 +80,38 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-commit 75d18cd1868c2aee43553723872c35d7908f240f upstream.
+commit bfc2b7e8518999003a61f91c1deb5e88ed77b07d upstream.
 
 As described in "fscrypt: add fscrypt_is_nokey_name()", it's possible to
 create a duplicate filename in an encrypted directory by creating a file
 concurrently with adding the directory's encryption key.
 
-Fix this bug on ext4 by rejecting no-key dentries in ext4_add_entry().
+Fix this bug on f2fs by rejecting no-key dentries in f2fs_add_link().
 
-Note that the duplicate check in ext4_find_dest_de() sometimes prevented
-this bug.  However in many cases it didn't, since ext4_find_dest_de()
-doesn't examine every dentry.
+Note that the weird check for the current task in f2fs_do_add_link()
+seems to make this bug difficult to reproduce on f2fs.
 
-Fixes: 4461471107b7 ("ext4 crypto: enable filename encryption")
+Fixes: 9ea97163c6da ("f2fs crypto: add filename encryption for f2fs_add_link")
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20201118075609.120337-3-ebiggers@kernel.org
+Link: https://lore.kernel.org/r/20201118075609.120337-4-ebiggers@kernel.org
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/ext4/namei.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/f2fs/f2fs.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 4191552880bd7..3c238006870d3 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -2106,6 +2106,9 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
- 	if (!dentry->d_name.len)
- 		return -EINVAL;
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 53ffa6fe207a3..aacd8e11758ca 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -2857,6 +2857,8 @@ bool f2fs_empty_dir(struct inode *dir);
  
+ static inline int f2fs_add_link(struct dentry *dentry, struct inode *inode)
+ {
 +	if (fscrypt_is_nokey_name(dentry))
 +		return -ENOKEY;
-+
- 	retval = ext4_fname_setup_filename(dir, &dentry->d_name, 0, &fname);
- 	if (retval)
- 		return retval;
+ 	return f2fs_do_add_link(d_inode(dentry->d_parent), &dentry->d_name,
+ 				inode, inode->i_ino, inode->i_mode);
+ }
 -- 
 2.29.2
 
