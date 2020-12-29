@@ -1,65 +1,82 @@
-Return-Path: <SRS0=5rSU=GA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=fJla=GB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15FA8C433E0
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Dec 2020 19:14:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 652E5C433DB
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Dec 2020 05:53:05 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C522A229EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Dec 2020 19:14:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C522A229EF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id E15D920727
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Dec 2020 05:53:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E15D920727
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=EqwVVqv+TiX/QpBiEkkxKZmohTL+ulWc6MYXIxQa2Gk=; b=qjRJxRuBjn8FwhMvJGHcYY6K/
-	OfXeC/j0qrOFG50TAm9aUFLexNO/H6GayYHe9EVrhclRdcE4tpVmTxQiSYbpwzID0NXWQwpyQOvmd
-	6lqdGMLGWggVNZbWs88NbcZAjGSlUD5Z217Bs/oKtihUrYOtZ8CnPJomy+NmsbTresVlkWzU0YnR2
-	xJ3V1bwEw+HsBvW5g1JNa7VaqxtSI0QV+jqQ9ConXso2jWI1jOCujgw2Y/Yyz/2TiNmnmTO6jDSIN
-	CLJiI17yhZdnuZfoMY/763kcrAYOlzY2ENk+W2TC+T0dq2jwHQJQeGolwSo3eYso0WHJaH8wsTXCa
-	RT3qXbEaA==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=/JeqpC5sPQNQiwbZt6MmPVD9nGjaSgmst5vZd9DGrps=; b=tY5ltNiZ/U9Skg47jnohg406qW
+	demhUpb0AZS87IVqQAkVNuHra5nriJ+upNExprPFpdeeIL7GQOPvSs2Q8hlVK5rVxvT8RykjzibjJ
+	1zsu7W4ahr1tpwz+bWB6I5GeihVT1EU64Lz4Y2EIxf/ibAXFanlcqBL3UvO+9XB0NoyiM8r7kGydB
+	zvLgUc1hYK0dqX0G7a0F45MDAy134EZsPxuDmwHvrg6wFQjz4lENVbhNQekyXD1ci+1sQ7Lt3UeTd
+	Oj2K4zX31s05vjcPvjlni4YXVQwOpaE5DM4zpg/4cGbKqa0O8VtO923lykRzzITH2SCIi7vLRBOuk
+	NTBYktAA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1ktxxQ-0001Ad-Sm; Mon, 28 Dec 2020 19:13:28 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1ku7uz-0005oj-1O; Tue, 29 Dec 2020 05:51:37 +0000
+Received: from mail-pl1-x62b.google.com ([2607:f8b0:4864:20::62b])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ktxxG-00013s-Au
- for linux-mtd@lists.infradead.org; Mon, 28 Dec 2020 19:13:19 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A0C322B2E;
- Mon, 28 Dec 2020 19:13:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1609182797;
- bh=N+qYfVz4+Uj+NMYmjSwsWei2HRkcFTZan8zSaxyBzEo=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=opmjsRbYE6tq3PJ0ZVqNR1Me6EtnsPdOhHQBE3tQ/5BYPQt/JXVMMOh9HyZ9NACSr
- 05scxldZBG8Y563bBDRoFij0Ve13XlQBmf1bBsRUKPrtbodJ2A2YKW5lF+LKKHlME3
- VSVn7v2zY2L3pQeIAUEWozbV26EymQjS5vW+CZOlpjsFBvs/CDBfiFrFy9TsF8VwAs
- c8XcBoxeTW9wp1YIq7ALA1/c77g3YOef8WqkAv/AErVJWcDEKMPdqFoizBJUu29jY1
- eQyKNqLVYeHNsT3LfRUtC90EkByqYVb+Tvv87n0wN2fVksz1nyPq/ZQUyp0x8I8dx7
- tMUC4pLUEeYIA==
-From: Eric Biggers <ebiggers@kernel.org>
-To: stable@vger.kernel.org
-Subject: [PATCH 4.19 4/4] ubifs: prevent creating duplicate encrypted filenames
-Date: Mon, 28 Dec 2020 11:12:11 -0800
-Message-Id: <20201228191211.138300-5-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228191211.138300-1-ebiggers@kernel.org>
-References: <20201228191211.138300-1-ebiggers@kernel.org>
+ id 1ku7uu-0005nx-ES
+ for linux-mtd@lists.infradead.org; Tue, 29 Dec 2020 05:51:34 +0000
+Received: by mail-pl1-x62b.google.com with SMTP id v3so6698504plz.13
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Dec 2020 21:51:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=0x0f.com; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=Ws6av0vO/n+wtrNUa74n3tClewh7290nN7ExGkq43UI=;
+ b=YY41nMVeSFbTCpTx+MYE+RLVcV7VcqULCF0sXiC5fu3HDw4t/KZWH7ZUF1rr8VHw8u
+ 4i0NUe0+vqLBoKxuvW761+OekAaEKXolvcFlzmK76eVnaWnhEQjf+VhNQLvvhO3NrTq3
+ qCIgzBCCmuUYOTIku0kq01wRcRZd7K+1ybJtI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=Ws6av0vO/n+wtrNUa74n3tClewh7290nN7ExGkq43UI=;
+ b=VnGgTfx9vLz3hltS4fMd4VoJJSLk//UdD7iwaAkAq6C0nkbV/3CWM4TQGlUYPtrcMF
+ bRfE8LzmiWJBf65oGPqs2lnu44Qqd6YuF5pgMjx9kqbcxXaYLVCJsTubyE8OxqCXXFgI
+ EQscuxkqWhch0VnWT/0YE3ytxGUo0n7Ckodp6ND6vmVwME558WG++gqFrc5jnbxI3zPp
+ el0Hrh+m41Ro3FkkUg8r6Ox8lExfkeG/UhbgLjdcBqM9ntMlRp7PqDhlOwGQ/X+MeXhA
+ uDMmmgvxJzGG/PkOlbrHlTzUtowbFPlu8YPTSYelJiYp7IEXgKRqMRCHhXTpQahsKzaG
+ elKA==
+X-Gm-Message-State: AOAM532hj3DyMHDO966vIKmzz8ClmmrqZ7vQ0/IpqbkaJCGJmBky+XBR
+ VaK4OqAnxd3x18EyINA3zRk3uSnbt7p2oQ==
+X-Google-Smtp-Source: ABdhPJyho6BEPlXg0tseu2Gzc0+n/F44qHf9yOCIxgGR0kpQZq/Rh9SpXsyWd3kxTKjiFY3PI0SXaA==
+X-Received: by 2002:a17:90b:90f:: with SMTP id
+ bo15mr2474480pjb.148.1609221085820; 
+ Mon, 28 Dec 2020 21:51:25 -0800 (PST)
+Received: from shiro.work (p1268123-ipngn200803sizuokaden.shizuoka.ocn.ne.jp.
+ [118.13.124.123])
+ by smtp.googlemail.com with ESMTPSA id x23sm45041113pge.47.2020.12.28.21.51.23
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 28 Dec 2020 21:51:25 -0800 (PST)
+From: Daniel Palmer <daniel@0x0f.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 0/1] Add basic support for Foresee SPI NAND
+Date: Tue, 29 Dec 2020 14:50:58 +0900
+Message-Id: <20201229055059.2255021-1-daniel@0x0f.com>
+X-Mailer: git-send-email 2.30.0.rc2
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201228_141318_475860_AD6C16FE 
-X-CRM114-Status: GOOD (  13.15  )
+X-CRM114-CacheID: sfid-20201229_005132_655163_99A81F6F 
+X-CRM114-Status: GOOD (  13.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,97 +88,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-f2fs-devel@lists.sourceforge.net
+Cc: vigneshr@ti.com, richard@nod.at, Daniel Palmer <daniel@0x0f.com>,
+ linux-kernel@vger.kernel.org, miquel.raynal@bootlin.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Eric Biggers <ebiggers@google.com>
+This is my very crude attempt at adding support for Longsys'
+Foresee branded SPI NAND parts that are showing up on some
+boards.
 
-commit 76786a0f083473de31678bdb259a3d4167cf756d upstream.
+I fully admit I have no idea what I'm doing here and I basically
+took one of the existing files, ripped out what I didn't
+understand and tried to fill in the numbers from the datasheet
+without really knowing what they mean.
 
-As described in "fscrypt: add fscrypt_is_nokey_name()", it's possible to
-create a duplicate filename in an encrypted directory by creating a file
-concurrently with adding the directory's encryption key.
+This worked well enough for me to get something that looks like
+a correct dump of the SPI NAND from a board I'm working with.
+I need the vendor firmware on the board for reverse engineering
+so I haven't actually tried to write anything yet.
 
-Fix this bug on ubifs by rejecting no-key dentries in ubifs_create(),
-ubifs_mkdir(), ubifs_mknod(), and ubifs_symlink().
+The datasheet for this chip is linked. If someone that actually
+knows what they're doing could take a look and point out my
+mistakes that would be great.
 
-Note that ubifs doesn't actually report the duplicate filenames from
-readdir, but rather it seems to replace the original dentry with a new
-one (which is still wrong, just a different effect from ext4).
+Link: https://datasheet.lcsc.com/szlcsc/2008121142_FORESEE-FS35ND01G-S1Y2QWFI000_C719495.pdf
 
-On ubifs, this fixes xfstest generic/595 as well as the new xfstest I
-wrote specifically for this bug.
+Daniel Palmer (1):
+  mtd: spinand: add support for Foresee FS35ND01G
 
-Fixes: f4f61d2cc6d8 ("ubifs: Implement encrypted filenames")
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20201118075609.120337-5-ebiggers@kernel.org
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/ubifs/dir.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/spi/Makefile  |  2 +-
+ drivers/mtd/nand/spi/core.c    |  1 +
+ drivers/mtd/nand/spi/longsys.c | 45 ++++++++++++++++++++++++++++++++++
+ include/linux/mtd/spinand.h    |  1 +
+ 4 files changed, 48 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/mtd/nand/spi/longsys.c
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 10aab5dccaee4..8fe2ee5462a0b 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -290,6 +290,15 @@ static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
- 	return d_splice_alias(inode, dentry);
- }
- 
-+static int ubifs_prepare_create(struct inode *dir, struct dentry *dentry,
-+				struct fscrypt_name *nm)
-+{
-+	if (fscrypt_is_nokey_name(dentry))
-+		return -ENOKEY;
-+
-+	return fscrypt_setup_filename(dir, &dentry->d_name, 0, nm);
-+}
-+
- static int ubifs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
- 			bool excl)
- {
-@@ -313,7 +322,7 @@ static int ubifs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
- 	if (err)
- 		return err;
- 
--	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &nm);
-+	err = ubifs_prepare_create(dir, dentry, &nm);
- 	if (err)
- 		goto out_budg;
- 
-@@ -977,7 +986,7 @@ static int ubifs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
- 	if (err)
- 		return err;
- 
--	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &nm);
-+	err = ubifs_prepare_create(dir, dentry, &nm);
- 	if (err)
- 		goto out_budg;
- 
-@@ -1062,7 +1071,7 @@ static int ubifs_mknod(struct inode *dir, struct dentry *dentry,
- 		return err;
- 	}
- 
--	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &nm);
-+	err = ubifs_prepare_create(dir, dentry, &nm);
- 	if (err) {
- 		kfree(dev);
- 		goto out_budg;
-@@ -1146,7 +1155,7 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
- 	if (err)
- 		return err;
- 
--	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &nm);
-+	err = ubifs_prepare_create(dir, dentry, &nm);
- 	if (err)
- 		goto out_budg;
- 
 -- 
-2.29.2
+2.30.0.rc2
 
 
 ______________________________________________________
