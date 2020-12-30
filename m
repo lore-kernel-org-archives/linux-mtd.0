@@ -2,96 +2,63 @@ Return-Path: <SRS0=Kb5f=GC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6143CC433DB
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Dec 2020 15:39:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BCB65C433DB
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Dec 2020 15:41:27 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 240BE221F8
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Dec 2020 15:39:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 240BE221F8
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kroah.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7A6B921D1B
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Dec 2020 15:41:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A6B921D1B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=YRbn1EBlsk7AD2Pok1izcU1g0aEjphEY0VSQO/eyQEk=; b=xfX1Bvd9OE6E6KXQNgNllunpl
-	PYclHy4XAvEPc5zashK8ZmrruQnjdCXT87WzxLZnUOzqTqu5czAjnzn5llyUmFq/1Uus3R3WFHNgd
-	pfUA3eLgsZc4o/3PyaNUQsybzK5Lqb8a7nA8lIotVhX1Tq0fzUt0nd44zClM06XMdqBBycY/18aZU
-	bjvtbFbXChufq69r2f65P2zhMjIrQfgmumX7dpLssXtvOoS8C5uWoA+ccSZE+ohdsnvGt/qoHi0eV
-	sXGsSXT6d5NKRXL3YBykp+JosmtE1cUckr2jpPXDMVMMZt4CNZX7MoLi73pdVPZK9sY0+lfR16EzX
-	18L/slaYA==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:Date:From:To:
+	Subject:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:List-Owner;
+	 bh=tBHfOPHUy6bz0ip6jOkgrgyeceS2xEE+nYpkq+x6QH8=; b=PIdcde/FmaLLH9YAJNK6ocwIO
+	RcVbNm96cO8hu7gFBmVPIfpk3o51kDcEzW/F5f64GTd4IHIu651nqF/vVQu/SMkPCP1PgeSCJj1Dl
+	+owYigJtL74z+A5oLr8j8xTaLvNHMfELq3Rs/LiN1ymJZ9IFRzQP1oEpgHEVosMWr4NV+ENvUuWA6
+	+bgUwLmXCj4Llx3H1M4QMs+NjnHooXG1OfEcehHH5B3/taaU0LrlqPpINUPu3JUrCIgIf21eP2xev
+	qzOo5BFoe9x2r9W7VSI84M9TmO7lE+os78DGaihZtNavJOlhZtqMq3Tv1+NXT8OUkrwfAEfQt/83x
+	8uIIStTvQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kudYT-0003cR-0F; Wed, 30 Dec 2020 15:38:29 +0000
-Received: from out4-smtp.messagingengine.com ([66.111.4.28])
+	id 1kudak-0004Bi-H5; Wed, 30 Dec 2020 15:40:50 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kudYQ-0003b5-Hl
- for linux-mtd@lists.infradead.org; Wed, 30 Dec 2020 15:38:27 +0000
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailout.nyi.internal (Postfix) with ESMTP id 2A3F85C0126;
- Wed, 30 Dec 2020 10:38:22 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute5.internal (MEProxy); Wed, 30 Dec 2020 10:38:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
- date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=fm2; bh=InRV2t3SNNnx0dg/YV55vnEea55
- 63XkQ8Wd0NGN+R3E=; b=GPBardpKLEh2z1uzWPRP+tgWvEqjk7ksnQyhmDVBoxj
- nW/wCS7TnLggbjCGqLQ/tfAG+TIxbCz17SG2wOO6Xty+4EELhGZc85EGSc9SX0cP
- bKlgrjakgKyZL9B99hxldJDV31AWHFKdEJV9Bbx8atatPCm2TtORKONcGfRMQ/ce
- RQvngOP2g9OfUFOFi9kttiExMDUuIu4X4CInI7KD4aVIELWr6y317ykEahC1vdsL
- +EwHXs3ypdA0OYjS9DR3ZGJZDa3GoHdWzyOHl0GX8Q/Tji3a6ueSfMCH5nXFW4Lf
- d9nA6w52aXITFTVEJdjmq/uCQ1g7ZxoC8Xom9OMK7cw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=InRV2t
- 3SNNnx0dg/YV55vnEea5563XkQ8Wd0NGN+R3E=; b=Jh7znz4k8pK638beSiZcKY
- hnbeW2eviCnEHu1uOqFEtJNLDZUSVQxyqbxMQXkCstNajXZpv+iLUE/wcS6dZ1we
- 71SmL+0cbO5eUncCVlVC+x5R3QWFGL8mj8edd3pHGjCdIAijP5NpdHzbtT0jcsRs
- DymUiek1ZpJsuJ65TCqdk7OnJgYwuExnotDihq/9Gt9Di2cm9GJun8FSsuySo/WE
- QfIFWP4GTKmeBlmLVJOxyNeTs6fNMaSydcJ5aSGf7QhluWfUF+lV+vchPgkC6BbR
- M3XBM0wNlFH03yM4A7ImZE3UJ0gntKJdSpLvM7uFc8NKEptVxRSFiNSylsP31YcA
- ==
-X-ME-Sender: <xms:7Z7sX7Nz4-L15lmALMZKoxMLm9S8QeKuMe_0LX7Bo74enEekjZ7cOg>
- <xme:7Z7sX16WREB5KyJl-UVokscOc0lz8BJm_2to6atX_Boj-IQdLcoMPQU5Nc-HywfRC
- wP_hLSfGDw7Hg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvddvfedgjeekucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
- cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
- mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
- fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
- rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
- hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:7Z7sX3JvGcDgzQudF61rzqfGkl0wyBPXWs09FV3tMJIAJrAZbM2qiw>
- <xmx:7Z7sX3fMt_9mKZI_ZCkgHhA_kxVFdzg4F80PLyxfidBCKxZqnA-WTQ>
- <xmx:7Z7sXycCqMHvvv7nrqXaeuG3Qxe1Rhy2NrPeVuG2wRN21TTGmT8yJw>
- <xmx:7p7sXzLc7QbMMgrw9FJSA2QwD7Nv5dz0f69hS-drTbzNMbNUbi6wQg>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
- by mail.messagingengine.com (Postfix) with ESMTPA id 1E5BF1080057;
- Wed, 30 Dec 2020 10:38:21 -0500 (EST)
-Date: Wed, 30 Dec 2020 16:39:24 +0100
-From: Greg KH <greg@kroah.com>
-To: Eric Biggers <ebiggers@kernel.org>
-Subject: Re: [PATCH 5.4 0/4] fscrypt: prevent creating duplicate encrypted
- filenames
-Message-ID: <X+yfLAyAw8kOcOGz@kroah.com>
-References: <20201228185433.61129-1-ebiggers@kernel.org>
+ id 1kudaf-0004AH-Qc
+ for linux-mtd@lists.infradead.org; Wed, 30 Dec 2020 15:40:48 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0AFF21D1B;
+ Wed, 30 Dec 2020 15:40:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+ s=korg; t=1609342845;
+ bh=usovhedG93a4iaZkHPqyve6KR+G1E1NPY+mUVXbo14s=;
+ h=Subject:To:Cc:From:Date:In-Reply-To:From;
+ b=SxJxUvodbshQj/fsT2miesvKYZVK6BSmQB/7NVFXAp/lMX393PZrWKx0TeT89JjkN
+ QeXn3ELFSV2Hv3bYNDhewRP2ouDt/eW+XF6fjJnBnWvLMsB3CBR4CR9c31iongsTBl
+ 1GgZU9n7ztRhm3bEoTQnPbg2N8qRh0MV+a5nUwu8=
+Subject: Patch "f2fs: prevent creating duplicate encrypted filenames" has been
+ added to the 4.19-stable tree
+To: ebiggers@google.com, ebiggers@kernel.org, gregkh@linuxfoundation.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org
+From: <gregkh@linuxfoundation.org>
+Date: Wed, 30 Dec 2020 16:42:03 +0100
+In-Reply-To: <20201228191211.138300-4-ebiggers@kernel.org>
+Message-ID: <16093429237462@kroah.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20201228185433.61129-1-ebiggers@kernel.org>
+X-stable: commit
+X-Patchwork-Hint: ignore 
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201230_103826_677986_D671E586 
-X-CRM114-Status: UNSURE (   8.84  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20201230_104045_981948_3C7C2A1A 
+X-CRM114-Status: GOOD (  13.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,29 +70,77 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-mtd@lists.infradead.org, stable@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net
+Cc: stable-commits@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Dec 28, 2020 at 10:54:29AM -0800, Eric Biggers wrote:
-> Backport four commits from v5.11-rc1.  I resolved a conflict in the
-> first one.  The rest are clean cherry-picks which didn't get picked up
-> yet because they depend on the first one.
-> 
-> Eric Biggers (4):
->   fscrypt: add fscrypt_is_nokey_name()
->   ext4: prevent creating duplicate encrypted filenames
->   f2fs: prevent creating duplicate encrypted filenames
->   ubifs: prevent creating duplicate encrypted filenames
-> 
 
-All now applied, thanks.
+This is a note to let you know that I've just added the patch titled
 
-greg k-h
+    f2fs: prevent creating duplicate encrypted filenames
+
+to the 4.19-stable tree which can be found at:
+    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+
+The filename of the patch is:
+     f2fs-prevent-creating-duplicate-encrypted-filenames.patch
+and it can be found in the queue-4.19 subdirectory.
+
+If you, or anyone else, feels it should not be added to the stable tree,
+please let <stable@vger.kernel.org> know about it.
+
+
+From foo@baz Wed Dec 30 04:40:58 PM CET 2020
+From: Eric Biggers <ebiggers@kernel.org>
+Date: Mon, 28 Dec 2020 11:12:10 -0800
+Subject: f2fs: prevent creating duplicate encrypted filenames
+To: stable@vger.kernel.org
+Cc: linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org
+Message-ID: <20201228191211.138300-4-ebiggers@kernel.org>
+
+From: Eric Biggers <ebiggers@google.com>
+
+commit bfc2b7e8518999003a61f91c1deb5e88ed77b07d upstream.
+
+As described in "fscrypt: add fscrypt_is_nokey_name()", it's possible to
+create a duplicate filename in an encrypted directory by creating a file
+concurrently with adding the directory's encryption key.
+
+Fix this bug on f2fs by rejecting no-key dentries in f2fs_add_link().
+
+Note that the weird check for the current task in f2fs_do_add_link()
+seems to make this bug difficult to reproduce on f2fs.
+
+Fixes: 9ea97163c6da ("f2fs crypto: add filename encryption for f2fs_add_link")
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20201118075609.120337-4-ebiggers@kernel.org
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ fs/f2fs/f2fs.h |    2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -2857,6 +2857,8 @@ bool f2fs_empty_dir(struct inode *dir);
+ 
+ static inline int f2fs_add_link(struct dentry *dentry, struct inode *inode)
+ {
++	if (fscrypt_is_nokey_name(dentry))
++		return -ENOKEY;
+ 	return f2fs_do_add_link(d_inode(dentry->d_parent), &dentry->d_name,
+ 				inode, inode->i_ino, inode->i_mode);
+ }
+
+
+Patches currently in stable-queue which might be from ebiggers@kernel.org are
+
+queue-4.19/fscrypt-add-fscrypt_is_nokey_name.patch
+queue-4.19/ext4-prevent-creating-duplicate-encrypted-filenames.patch
+queue-4.19/ubifs-prevent-creating-duplicate-encrypted-filenames.patch
+queue-4.19/f2fs-prevent-creating-duplicate-encrypted-filenames.patch
 
 ______________________________________________________
 Linux MTD discussion mailing list
