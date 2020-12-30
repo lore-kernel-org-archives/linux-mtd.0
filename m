@@ -2,94 +2,63 @@ Return-Path: <SRS0=Kb5f=GC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87941C433E9
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Dec 2020 14:57:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D214C433DB
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Dec 2020 15:38:34 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3D2DA21919
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Dec 2020 14:57:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3D2DA21919
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	by mail.kernel.org (Postfix) with ESMTPS id E5E48221F8
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Dec 2020 15:38:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E5E48221F8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=8LwqtTG4pXb8DZ4n9zKVJt2c/Bn2icqarUPJkr9CcI0=; b=abzlFsm1N0ViiV8LdyUWXn0saZ
-	ZOs75MtHatKxQ14ler1Z9IxlLZc3ct9OpwUEsUSFqg/K6EBI1H4vzm2GzLhI43MNpq8kdajAnVMjw
-	M0/1jVvuqDcXCrDnSrwVQQp9GMhmw6rrBpTsCJ31SBPzAjchchDHybKyQwDjWgIVLUgAIIU9yAzRE
-	l7dVl2O5UusC+5eXvvis5sk1MU+bXxrZul5nADiuQ2U4svgm07NeqsFYTUjP57P+0WrXk248lTwuG
-	NJ4toyL8oYIC3QK/N5FJlYKNNNtbVm8zqhFBl31ob5v7344YNaZgNPa9Ck/59nmzvpcklTXZRGu0G
-	AF4NWIyw==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:Date:From:To:
+	Subject:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:List-Owner;
+	 bh=wpbjPKbffDF2LiSTDI+f9elcFQtm+gb4Ek5v7NLrQRg=; b=g4KLaPdL9bpPB+3R/HgUAiybB
+	ghSOHhXh3fWYoSr5e1t4tAD5vlQ6EnAOetaCYg5QOJ7DuAzZYrFKsUR89BBDJaYcvdIpkfPdG4JX+
+	i51BlKvLLhA4d2aSqdFPfh3UXs0wbfg8zDmOPykguSmSB8MWs0+ohf1mnCypJqbnqtT0cql12j6D6
+	uB1iSG8dFuWywb0LIU2h+02fEdc91RkiU7SNTJTgs+oIV7vLLuNiZrvoSUPO7C87thjeH57wUzibA
+	CUf9sc/kwAiOEqX3iF5Wb2Kp2/lIMnn97CqF+SNp6yOWnCNPqK+A4KyaFj7trNw1OyHx0sxMkvWKY
+	uZiMNwzRA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kuctd-0000Au-Gx; Wed, 30 Dec 2020 14:56:17 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124])
+	id 1kudY5-0003XE-6E; Wed, 30 Dec 2020 15:38:05 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kucta-0000AI-3M
- for linux-mtd@lists.infradead.org; Wed, 30 Dec 2020 14:56:15 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1609340173;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=w6RH1LM35oC579jEOnaRKqc5ukFlU7LKex1Uzqpw4kk=;
- b=DsILFxGaTgxGKAESNMOFGmPrxwapR/NT8bZr885iaF7mNL7nmI+P8aj5MuFw6D6qo1pQJ0
- BUV4sv6aFIRBfvxnuVLG9VxV8ZMsRDLkxpbscfTPqNY/txx6lYTQt5sGcrdVmihgZyP2iJ
- 8J5wedXs2D1OEKj/Hu89P/CjuSyACFo=
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
- [209.85.167.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-188-9wEcUwyXMmyWgMfkUIDV1w-1; Wed, 30 Dec 2020 09:56:11 -0500
-X-MC-Unique: 9wEcUwyXMmyWgMfkUIDV1w-1
-Received: by mail-oi1-f197.google.com with SMTP id i9so10784927oih.1
- for <linux-mtd@lists.infradead.org>; Wed, 30 Dec 2020 06:56:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=w6RH1LM35oC579jEOnaRKqc5ukFlU7LKex1Uzqpw4kk=;
- b=uLu8R4HXwlqrr//oc6agXMMXNbc7UIw6WXAs1wlON4/Xl909cgrDmttHU5jd0ezZxv
- dY8+fFgVa9zoq8Znymi1V915cpfs1KbErgOPvH+tqXG7QhmXzhEuhWrGtX+HNr2ELS75
- lcDgts9NVNArObOvkB4Uwe5Eu8Eugv7zoe3UQZKnJHerc9eVo1oDBnWPEDxjnm0vnO5R
- WGT0QXutFfcpIY8GtdGoCLh9LPuUx9nmPyOz9hHlWndnNbERk9jzSYgXcdIMNTxdhKq8
- KZWAk6qZKccaizWG3Yp+WmgVCwNUBIHkdWEzELi7+V8dy21VPAMqgWKZOC3ilsPsr1Fr
- hPKw==
-X-Gm-Message-State: AOAM530fWSLtU9c7f827+QlViJOl11E812ewIJD0a8+kU9Ic53EXG2Uu
- 6QHMMeulmd0Zn9ULP6SNDb/YY9Qm09cBPi/VqAQW1lKkFEhmRplMGLIJH1U5MW6kZ415ErPj8v1
- rVVfQ2QldHcIuvXsCYNTwx6I70Q==
-X-Received: by 2002:aca:c756:: with SMTP id x83mr5236803oif.62.1609340170236; 
- Wed, 30 Dec 2020 06:56:10 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzehqKYiVwDnLNT82AhFABnG8o3yzhpO/4tUUnnXBtpA58sMqTwX+mVIh8VsZNRaXuDA1uLcg==
-X-Received: by 2002:aca:c756:: with SMTP id x83mr5236795oif.62.1609340170082; 
- Wed, 30 Dec 2020 06:56:10 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com.
- [75.142.250.213])
- by smtp.gmail.com with ESMTPSA id s66sm9182400ooa.37.2020.12.30.06.56.08
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 30 Dec 2020 06:56:09 -0800 (PST)
-From: trix@redhat.com
-To: dwmw2@infradead.org, richard@nod.at, natechancellor@gmail.com,
- ndesaulniers@google.com
-Subject: [PATCH] jffs2: fix use after free in jffs2_sum_write_data()
-Date: Wed, 30 Dec 2020 06:56:04 -0800
-Message-Id: <20201230145604.1586486-1-trix@redhat.com>
-X-Mailer: git-send-email 2.27.0
+ id 1kudY2-0003Wf-36
+ for linux-mtd@lists.infradead.org; Wed, 30 Dec 2020 15:38:03 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0A2021D1B;
+ Wed, 30 Dec 2020 15:38:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+ s=korg; t=1609342681;
+ bh=qxhRBa2KaiTcCHjQB43Qxzod9Ik4qxM96Z7xu4wHZF0=;
+ h=Subject:To:Cc:From:Date:In-Reply-To:From;
+ b=LthfII419R0TTJRjyE6gnIZCVkPL0Cuvh2Q1XMuiBJ4AufxEyI3WC1slyMPB+rpEC
+ E4SPSzKmrDqg4v+cbTcEe35oWw/foG4n28AZSqU0DwKVQRaLlVTEo/a+TVX6sNapmM
+ Ue97ChxURwDFD7raqFFpayyeP2wcjgkcz5PSeewA=
+Subject: Patch "fscrypt: add fscrypt_is_nokey_name()" has been added to the
+ 5.4-stable tree
+To: ebiggers@google.com, ebiggers@kernel.org, gregkh@linuxfoundation.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org
+From: <gregkh@linuxfoundation.org>
+Date: Wed, 30 Dec 2020 16:39:11 +0100
+In-Reply-To: <20201228185433.61129-2-ebiggers@kernel.org>
+Message-ID: <16093427514897@kroah.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=trix@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
+X-stable: commit
+X-Patchwork-Hint: ignore 
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201230_095614_550182_2270ACEF 
-X-CRM114-Status: GOOD (  14.25  )
+X-CRM114-CacheID: sfid-20201230_103802_329208_B1C66DE2 
+X-CRM114-Status: GOOD (  24.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,61 +70,158 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: clang-built-linux@googlegroups.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Cc: stable-commits@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Tom Rix <trix@redhat.com>
 
-clang static analysis reports this problem
+This is a note to let you know that I've just added the patch titled
 
-fs/jffs2/summary.c:794:31: warning: Use of memory after it is freed
-                c->summary->sum_list_head = temp->u.next;
-                                            ^~~~~~~~~~~~
+    fscrypt: add fscrypt_is_nokey_name()
 
-In jffs2_sum_write_data(), in a loop summary data is handles a node at
-a time.  When it has written out the node it is removed the summary list,
-and the node is deleted.  In the corner case when a
-JFFS2_FEATURE_RWCOMPAT_COPY is seen, a call is made to
-jffs2_sum_disable_collecting().  jffs2_sum_disable_collecting() deletes
-the whole list which conflicts with the loop's deleting the list by parts.
+to the 5.4-stable tree which can be found at:
+    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
-To preserve the old behavior of stopping the write midway, bail out of
-the loop after disabling summary collection.
+The filename of the patch is:
+     fscrypt-add-fscrypt_is_nokey_name.patch
+and it can be found in the queue-5.4 subdirectory.
 
-Fixes: 6171586a7ae5 ("[JFFS2] Correct handling of JFFS2_FEATURE_RWCOMPAT_COPY nodes.")
-Signed-off-by: Tom Rix <trix@redhat.com>
+If you, or anyone else, feels it should not be added to the stable tree,
+please let <stable@vger.kernel.org> know about it.
+
+
+From foo@baz Wed Dec 30 04:37:58 PM CET 2020
+From: Eric Biggers <ebiggers@kernel.org>
+Date: Mon, 28 Dec 2020 10:54:30 -0800
+Subject: fscrypt: add fscrypt_is_nokey_name()
+To: stable@vger.kernel.org
+Cc: linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org
+Message-ID: <20201228185433.61129-2-ebiggers@kernel.org>
+
+From: Eric Biggers <ebiggers@google.com>
+
+commit 159e1de201b6fca10bfec50405a3b53a561096a8 upstream.
+
+It's possible to create a duplicate filename in an encrypted directory
+by creating a file concurrently with adding the encryption key.
+
+Specifically, sys_open(O_CREAT) (or sys_mkdir(), sys_mknod(), or
+sys_symlink()) can lookup the target filename while the directory's
+encryption key hasn't been added yet, resulting in a negative no-key
+dentry.  The VFS then calls ->create() (or ->mkdir(), ->mknod(), or
+->symlink()) because the dentry is negative.  Normally, ->create() would
+return -ENOKEY due to the directory's key being unavailable.  However,
+if the key was added between the dentry lookup and ->create(), then the
+filesystem will go ahead and try to create the file.
+
+If the target filename happens to already exist as a normal name (not a
+no-key name), a duplicate filename may be added to the directory.
+
+In order to fix this, we need to fix the filesystems to prevent
+->create(), ->mkdir(), ->mknod(), and ->symlink() on no-key names.
+(->rename() and ->link() need it too, but those are already handled
+correctly by fscrypt_prepare_rename() and fscrypt_prepare_link().)
+
+In preparation for this, add a helper function fscrypt_is_nokey_name()
+that filesystems can use to do this check.  Use this helper function for
+the existing checks that fs/crypto/ does for rename and link.
+
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20201118075609.120337-2-ebiggers@kernel.org
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/jffs2/summary.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/crypto/hooks.c       |   10 +++++-----
+ include/linux/fscrypt.h |   34 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 39 insertions(+), 5 deletions(-)
 
-diff --git a/fs/jffs2/summary.c b/fs/jffs2/summary.c
-index be7c8a6a5748..4fe64519870f 100644
---- a/fs/jffs2/summary.c
-+++ b/fs/jffs2/summary.c
-@@ -783,6 +783,8 @@ static int jffs2_sum_write_data(struct jffs2_sb_info *c, struct jffs2_eraseblock
- 					dbg_summary("Writing unknown RWCOMPAT_COPY node type %x\n",
- 						    je16_to_cpu(temp->u.nodetype));
- 					jffs2_sum_disable_collecting(c->summary);
-+					/* The above call removes the list, nothing more to do */
-+					goto bail_rwcompat;
- 				} else {
- 					BUG();	/* unknown node in summary information */
- 				}
-@@ -794,6 +796,7 @@ static int jffs2_sum_write_data(struct jffs2_sb_info *c, struct jffs2_eraseblock
+--- a/fs/crypto/hooks.c
++++ b/fs/crypto/hooks.c
+@@ -58,8 +58,8 @@ int __fscrypt_prepare_link(struct inode
+ 	if (err)
+ 		return err;
  
- 		c->summary->sum_num--;
- 	}
-+ bail_rwcompat:
+-	/* ... in case we looked up ciphertext name before key was added */
+-	if (dentry->d_flags & DCACHE_ENCRYPTED_NAME)
++	/* ... in case we looked up no-key name before key was added */
++	if (fscrypt_is_nokey_name(dentry))
+ 		return -ENOKEY;
  
- 	jffs2_sum_reset_collected(c->summary);
+ 	if (!fscrypt_has_permitted_context(dir, inode))
+@@ -83,9 +83,9 @@ int __fscrypt_prepare_rename(struct inod
+ 	if (err)
+ 		return err;
  
--- 
-2.27.0
+-	/* ... in case we looked up ciphertext name(s) before key was added */
+-	if ((old_dentry->d_flags | new_dentry->d_flags) &
+-	    DCACHE_ENCRYPTED_NAME)
++	/* ... in case we looked up no-key name(s) before key was added */
++	if (fscrypt_is_nokey_name(old_dentry) ||
++	    fscrypt_is_nokey_name(new_dentry))
+ 		return -ENOKEY;
+ 
+ 	if (old_dir != new_dir) {
+--- a/include/linux/fscrypt.h
++++ b/include/linux/fscrypt.h
+@@ -100,6 +100,35 @@ static inline void fscrypt_handle_d_move
+ 	dentry->d_flags &= ~DCACHE_ENCRYPTED_NAME;
+ }
+ 
++/**
++ * fscrypt_is_nokey_name() - test whether a dentry is a no-key name
++ * @dentry: the dentry to check
++ *
++ * This returns true if the dentry is a no-key dentry.  A no-key dentry is a
++ * dentry that was created in an encrypted directory that hasn't had its
++ * encryption key added yet.  Such dentries may be either positive or negative.
++ *
++ * When a filesystem is asked to create a new filename in an encrypted directory
++ * and the new filename's dentry is a no-key dentry, it must fail the operation
++ * with ENOKEY.  This includes ->create(), ->mkdir(), ->mknod(), ->symlink(),
++ * ->rename(), and ->link().  (However, ->rename() and ->link() are already
++ * handled by fscrypt_prepare_rename() and fscrypt_prepare_link().)
++ *
++ * This is necessary because creating a filename requires the directory's
++ * encryption key, but just checking for the key on the directory inode during
++ * the final filesystem operation doesn't guarantee that the key was available
++ * during the preceding dentry lookup.  And the key must have already been
++ * available during the dentry lookup in order for it to have been checked
++ * whether the filename already exists in the directory and for the new file's
++ * dentry not to be invalidated due to it incorrectly having the no-key flag.
++ *
++ * Return: %true if the dentry is a no-key name
++ */
++static inline bool fscrypt_is_nokey_name(const struct dentry *dentry)
++{
++	return dentry->d_flags & DCACHE_ENCRYPTED_NAME;
++}
++
+ /* crypto.c */
+ extern void fscrypt_enqueue_decrypt_work(struct work_struct *);
+ extern struct fscrypt_ctx *fscrypt_get_ctx(gfp_t);
+@@ -290,6 +319,11 @@ static inline void fscrypt_handle_d_move
+ {
+ }
+ 
++static inline bool fscrypt_is_nokey_name(const struct dentry *dentry)
++{
++	return false;
++}
++
+ /* crypto.c */
+ static inline void fscrypt_enqueue_decrypt_work(struct work_struct *work)
+ {
 
+
+Patches currently in stable-queue which might be from ebiggers@kernel.org are
+
+queue-5.4/fscrypt-remove-kernel-internal-constants-from-uapi-header.patch
+queue-5.4/fscrypt-add-fscrypt_is_nokey_name.patch
+queue-5.4/ext4-prevent-creating-duplicate-encrypted-filenames.patch
+queue-5.4/ubifs-prevent-creating-duplicate-encrypted-filenames.patch
+queue-5.4/f2fs-prevent-creating-duplicate-encrypted-filenames.patch
 
 ______________________________________________________
 Linux MTD discussion mailing list
