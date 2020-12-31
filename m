@@ -1,64 +1,92 @@
-Return-Path: <SRS0=Kb5f=GC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=XVws=GD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,GB_FAKE_RF_SHORT,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7ABD3C433E0
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Dec 2020 15:42:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AEBEC433DB
+	for <linux-mtd@archiver.kernel.org>; Thu, 31 Dec 2020 05:28:31 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3D6F8207A6
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Dec 2020 15:42:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3D6F8207A6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
+	by mail.kernel.org (Postfix) with ESMTPS id 7695B207A0
+	for <linux-mtd@archiver.kernel.org>; Thu, 31 Dec 2020 05:28:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7695B207A0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=szpital-wielun.pl
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:Date:From:To:
-	Subject:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:List-Owner;
-	 bh=deansFAHVcnnYMSSXs0uVW0b0o5SRylRuNbYprf5afE=; b=ZgZ5i4tDesRWTTVhn3pXJsVXy
-	malplfJt6rnPf3KBerdRsBYiO+GwFCr6nTYWCFeCthe7C/sjYKQQ8zWHwwv7rBmBho4N1+xot6JuQ
-	EhHkRGWDvNJuJ5qqdRwDj4cu8QvITM61m0dpjRAcA4PVg7X1+WkoapDF2OZx31L29Nx46CGKl1R4K
-	S4TPT9opBZEfu0YrikonbdLwypMqWyhVp0CTpWjBwykvhVHLKP/rwDEqF7wTTnb/Qfbg3uzLJCnqX
-	6fXbDaP2WzPf78nCMhLcTH/6qspr68Rz8q9TK07qWFVaVAMUUD6qhr+8aA+Ujj0UvWTznNEhIrrCf
-	1RY0ShVPQ==;
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:From:To:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=UMrfLPrINIUzUdWQZsCrBHkW+8poO8xT7lKPrdiQz6Y=; b=yX6QCbXuZ0fnIA
+	CZkhjUPyrZlAuRpZqRH3+WqM7i8SaxFh3fQBESOGzdZvigOL/sunF+Y2pnF/ybFf1lU0tCC1ntUPb
+	B7xmE7n7pZ83N4ayaCWIBWGn/gjY1ruQFX/tzmDRFU284jhWm+kAjeh1pyd+jhDEeADBjnDqKu5rQ
+	4avNyQQ+kF0Bhn5Ao9PCR4Qt4h6tljPrnKAnoLJAOUqs3K4JtTJVcqUqSu60qbCVqtgk+ZzTLec6J
+	G1N14LJZ8Us84Dx3K9DIzGrPtTpzCWcAn/7BalfefMOse4gx7X97fSupIuUuxX5Icu92ncUSDtMWE
+	FGMu3G4Du6N3dBv14AjQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kudat-0004EO-Ui; Wed, 30 Dec 2020 15:40:59 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1kuqUG-0000a0-3o; Thu, 31 Dec 2020 05:27:00 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kudak-0004Bj-Kj
- for linux-mtd@lists.infradead.org; Wed, 30 Dec 2020 15:40:53 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 828E4221F8;
- Wed, 30 Dec 2020 15:40:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1609342850;
- bh=6oWinRAClkcBVeQ4FIaMy3MJ5bBAnAuQxAeDf0gqE04=;
- h=Subject:To:Cc:From:Date:In-Reply-To:From;
- b=tATsiVGM7PZ+zW+JsmvWBuGphWLBUz2Au71A7ylm5MNA0MDjkj1QzrAwYdd5ny6dk
- M4PDBzNVmomYoeZc8ZjKtAulalGRw/Uy6AV1iJcmw2+K8KHqXZfZPy8SkdFOsOhdZM
- lgVhQ8ZuR4gdFrP4YAxgLkg9hjHHOHctns+yss5E=
-Subject: Patch "fscrypt: add fscrypt_is_nokey_name()" has been added to the
- 4.19-stable tree
-To: ebiggers@google.com, ebiggers@kernel.org, gregkh@linuxfoundation.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org
-From: <gregkh@linuxfoundation.org>
-Date: Wed, 30 Dec 2020 16:42:04 +0100
-In-Reply-To: <20201228191211.138300-2-ebiggers@kernel.org>
-Message-ID: <160934292422776@kroah.com>
+ id 1kuqUB-0000Zq-Qx
+ for linux-mtd@merlin.infradead.org; Thu, 31 Dec 2020 05:26:55 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+ MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:
+ Content-Description:In-Reply-To:References;
+ bh=SHmzmPmmFyBz5Kli4Voz+WNoViKhdVbl7ldzxD58hIA=; b=qWznhBIRdnXbSes2aqfCq14oFZ
+ 8f0PZgycT4vO9LurgeARsbMwLa4R+Wj9UjtALk2U5MLcf+Umqh9GB0ymDEQLIt/mZia4fnv2yvwPZ
+ EPuWN/kUR//JIw8Rixy8+eLpfeq9gwLKE5OdIco3v9fQ5ehDpiGciTGMzgC5aa9YteoxzSV4XvPNj
+ dB0jrVXxot3WgegCDSpDYWiwe68+f5mpNvMilJjujyM8ccUTkJC0+G4x6gBt39wBvy3mGJU2Udgg6
+ K0Eo24Z5mob7G4Ji3EdAhOU/zDq2zf1S8B5AhdDenzEZ8Lkio8oWJaIFNHVMP4S5S20FrmqQOt0L5
+ foJccxEg==;
+Received: from mail.szpital-wielun.pl ([156.67.116.115])
+ by casper.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
+ id 1kuqU6-000Pl3-LW
+ for linux-mtd@lists.infradead.org; Thu, 31 Dec 2020 05:26:53 +0000
+Received: from localhost (localhost.localdomain [127.0.0.1])
+ by mail.szpital-wielun.pl (Postfix) with ESMTP id 2ABDD12950CB;
+ Thu, 31 Dec 2020 06:06:40 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
+ szpital-wielun.pl; h=content-language:content-transfer-encoding
+ :content-type:content-type:mime-version:user-agent:date:date
+ :message-id:subject:subject:from:from; s=default; t=1609391199;
+ x=1611205600; bh=SHmzmPmmFyBz5Kli4Voz+WNoViKhdVbl7ldzxD58hIA=; b=
+ l23hl0Y4PLP+IQzTYiCLdlvorMS/bgxCz2JwUrdKw2/gouhcxz6CD+GtaerAVx28
+ AKOJRutnxLFV/kMBSbafvxjbenDAyuNMw7kKwvduk1IDPkckgMyOkZda8LO5WW74
+ LtorKPWYZAR8P5B9qnMaYv+OekCTXWEPRu6Z+BKmDNA=
+X-Virus-Scanned: Debian amavisd-new at mail.szpital-wielun.pl
+Received: from mail.szpital-wielun.pl ([127.0.0.1])
+ by localhost (mail.szpital-wielun.pl [127.0.0.1]) (amavisd-new, port 10026)
+ with LMTP id BoQJGoHyOPbF; Thu, 31 Dec 2020 06:06:39 +0100 (CET)
+Received: from szpital-wielun.pl (unknown [113.172.163.122])
+ (Authenticated sender: a.teluk@szpital-wielun.pl)
+ by mail.szpital-wielun.pl (Postfix) with ESMTPSA id 161621294DAE;
+ Thu, 31 Dec 2020 06:05:45 +0100 (CET)
+To: "stefano tubaro" <stefano.tubaro@polimi.it>,
+ "m galanti" <m.galanti@sit-consulting.it>, "ssiitt" <ssiitt@iol.it>,
+ "f federici" <f.federici@sit-consulting.it>,
+ "segreteria studenti" <segreteria.studenti@polimi.it>,
+ "linux mtd" <linux-mtd@lists.infradead.org>,
+ "joern" <joern@wohnheim.fh-wedel.de>
+From: massiblue <a.teluk@szpital-wielun.pl>
+Subject: =?UTF-8?Q?Fw=3AMassiblue=40libero.it?=
+Message-ID: <21a8e6eb-082f-4b62-b5c9-82e2dd563aad@szpital-wielun.pl>
+Date: Wed, 30 Dec 2020 23:05:49 -0600
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.3.1
 MIME-Version: 1.0
-X-stable: commit
-X-Patchwork-Hint: ignore 
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20201230_104051_124148_6A928C0F 
-X-CRM114-Status: GOOD (  24.45  )
+X-CRM114-CacheID: sfid-20201231_052653_157803_879A19AD 
+X-CRM114-Status: UNSURE (   2.71  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,161 +98,74 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: stable-commits@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-This is a note to let you know that I've just added the patch titled
-
-    fscrypt: add fscrypt_is_nokey_name()
-
-to the 4.19-stable tree which can be found at:
-    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
-
-The filename of the patch is:
-     fscrypt-add-fscrypt_is_nokey_name.patch
-and it can be found in the queue-4.19 subdirectory.
-
-If you, or anyone else, feels it should not be added to the stable tree,
-please let <stable@vger.kernel.org> know about it.
-
-
-From foo@baz Wed Dec 30 04:40:58 PM CET 2020
-From: Eric Biggers <ebiggers@kernel.org>
-Date: Mon, 28 Dec 2020 11:12:08 -0800
-Subject: fscrypt: add fscrypt_is_nokey_name()
-To: stable@vger.kernel.org
-Cc: linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org
-Message-ID: <20201228191211.138300-2-ebiggers@kernel.org>
-
-From: Eric Biggers <ebiggers@google.com>
-
-commit 159e1de201b6fca10bfec50405a3b53a561096a8 upstream.
-
-It's possible to create a duplicate filename in an encrypted directory
-by creating a file concurrently with adding the encryption key.
-
-Specifically, sys_open(O_CREAT) (or sys_mkdir(), sys_mknod(), or
-sys_symlink()) can lookup the target filename while the directory's
-encryption key hasn't been added yet, resulting in a negative no-key
-dentry.  The VFS then calls ->create() (or ->mkdir(), ->mknod(), or
-->symlink()) because the dentry is negative.  Normally, ->create() would
-return -ENOKEY due to the directory's key being unavailable.  However,
-if the key was added between the dentry lookup and ->create(), then the
-filesystem will go ahead and try to create the file.
-
-If the target filename happens to already exist as a normal name (not a
-no-key name), a duplicate filename may be added to the directory.
-
-In order to fix this, we need to fix the filesystems to prevent
-->create(), ->mkdir(), ->mknod(), and ->symlink() on no-key names.
-(->rename() and ->link() need it too, but those are already handled
-correctly by fscrypt_prepare_rename() and fscrypt_prepare_link().)
-
-In preparation for this, add a helper function fscrypt_is_nokey_name()
-that filesystems can use to do this check.  Use this helper function for
-the existing checks that fs/crypto/ does for rename and link.
-
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20201118075609.120337-2-ebiggers@kernel.org
-Signed-off-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- fs/crypto/hooks.c               |   10 +++++-----
- include/linux/fscrypt_notsupp.h |    5 +++++
- include/linux/fscrypt_supp.h    |   29 +++++++++++++++++++++++++++++
- 3 files changed, 39 insertions(+), 5 deletions(-)
-
---- a/fs/crypto/hooks.c
-+++ b/fs/crypto/hooks.c
-@@ -58,8 +58,8 @@ int __fscrypt_prepare_link(struct inode
- 	if (err)
- 		return err;
- 
--	/* ... in case we looked up ciphertext name before key was added */
--	if (dentry->d_flags & DCACHE_ENCRYPTED_NAME)
-+	/* ... in case we looked up no-key name before key was added */
-+	if (fscrypt_is_nokey_name(dentry))
- 		return -ENOKEY;
- 
- 	if (!fscrypt_has_permitted_context(dir, inode))
-@@ -83,9 +83,9 @@ int __fscrypt_prepare_rename(struct inod
- 	if (err)
- 		return err;
- 
--	/* ... in case we looked up ciphertext name(s) before key was added */
--	if ((old_dentry->d_flags | new_dentry->d_flags) &
--	    DCACHE_ENCRYPTED_NAME)
-+	/* ... in case we looked up no-key name(s) before key was added */
-+	if (fscrypt_is_nokey_name(old_dentry) ||
-+	    fscrypt_is_nokey_name(new_dentry))
- 		return -ENOKEY;
- 
- 	if (old_dir != new_dir) {
---- a/include/linux/fscrypt_notsupp.h
-+++ b/include/linux/fscrypt_notsupp.h
-@@ -24,6 +24,11 @@ static inline bool fscrypt_dummy_context
- 	return false;
- }
- 
-+static inline bool fscrypt_is_nokey_name(const struct dentry *dentry)
-+{
-+	return false;
-+}
-+
- /* crypto.c */
- static inline void fscrypt_enqueue_decrypt_work(struct work_struct *work)
- {
---- a/include/linux/fscrypt_supp.h
-+++ b/include/linux/fscrypt_supp.h
-@@ -58,6 +58,35 @@ static inline bool fscrypt_dummy_context
- 		inode->i_sb->s_cop->dummy_context(inode);
- }
- 
-+/**
-+ * fscrypt_is_nokey_name() - test whether a dentry is a no-key name
-+ * @dentry: the dentry to check
-+ *
-+ * This returns true if the dentry is a no-key dentry.  A no-key dentry is a
-+ * dentry that was created in an encrypted directory that hasn't had its
-+ * encryption key added yet.  Such dentries may be either positive or negative.
-+ *
-+ * When a filesystem is asked to create a new filename in an encrypted directory
-+ * and the new filename's dentry is a no-key dentry, it must fail the operation
-+ * with ENOKEY.  This includes ->create(), ->mkdir(), ->mknod(), ->symlink(),
-+ * ->rename(), and ->link().  (However, ->rename() and ->link() are already
-+ * handled by fscrypt_prepare_rename() and fscrypt_prepare_link().)
-+ *
-+ * This is necessary because creating a filename requires the directory's
-+ * encryption key, but just checking for the key on the directory inode during
-+ * the final filesystem operation doesn't guarantee that the key was available
-+ * during the preceding dentry lookup.  And the key must have already been
-+ * available during the dentry lookup in order for it to have been checked
-+ * whether the filename already exists in the directory and for the new file's
-+ * dentry not to be invalidated due to it incorrectly having the no-key flag.
-+ *
-+ * Return: %true if the dentry is a no-key name
-+ */
-+static inline bool fscrypt_is_nokey_name(const struct dentry *dentry)
-+{
-+	return dentry->d_flags & DCACHE_ENCRYPTED_NAME;
-+}
-+
- /* crypto.c */
- extern void fscrypt_enqueue_decrypt_work(struct work_struct *);
- extern struct fscrypt_ctx *fscrypt_get_ctx(const struct inode *, gfp_t);
-
-
-Patches currently in stable-queue which might be from ebiggers@kernel.org are
-
-queue-4.19/fscrypt-add-fscrypt_is_nokey_name.patch
-queue-4.19/ext4-prevent-creating-duplicate-encrypted-filenames.patch
-queue-4.19/ubifs-prevent-creating-duplicate-encrypted-filenames.patch
-queue-4.19/f2fs-prevent-creating-duplicate-encrypted-filenames.patch
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+aHR0cHM6Ly9iaXQubHkvM3BzVFZNdwoKCgoKCgoKU2luY2VyYW1lbnRlLG1hc3NpYmx1ZUBsaWJl
+cm8uaXQKCgoKCgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCiBBcyBob3NwaXRhbGl6YXRpb24gcmF0ZXMgYWNyb3Nz
+IHRoZSBjb3VudHJ5IHJpc2UsIGRlbWFuZCBmb3IgbnVyc2VzIGludGVuc2lmaWVzCkluIHRoZSBw
+YXN0IHR3byBtb250aHMsIGhvc3BpdGFsaXphdGlvbnMgYXJlIG1vcmUgdGhhbiB0aHJlZSB0aW1l
+cyB3aGF0IHRoZXkgd2VyZSBkdXJpbmcgdGhlIGZpcnN0IHdhdmUgb2YgdGhlIGNvcm9uYXZpcnVz
+IHBhbmRlbWljIGFuZCBtYW55IGhvc3BpdGFscyBhcmUgdHVybmluZyB0byB0cmF2ZWwgbnVyc2Vz
+IHRvIGZpbGwgc3RhZmZpbmcgc2hvcnRhZ2VzLiBDQlMgTmV3cyBzZW5pb3IgbWVkaWNhbCBjb3Jy
+ZXNwb25kZW50IERyLiBUYXJhIE5hcnVsYSBqb2lucyDigJxDQlMgVGhpcyBNb3JuaW5n4oCdIHdp
+dGggYSBzdG9yeSBvZiBhIHRyYXZlbCBudXJzZSB3aG8gaGFzIHNhY3JpZmljZWQgYmVpbmcgd2l0
+aCBoZXIgeW91bmcgY2hpbGRyZW4gdG8gYmUgb24gdGhlIGZyb250bGluZXMgc2F2aW5nIGxpdmVz
+LgpBcyBUaG91c2FuZHMgT2YgSXNyYWVsaSBUb3VyaXN0cyBWaXNpdCBEdWJhaSwgQSBTbWFsbCBK
+ZXdpc2ggQ29tbXVuaXR5IEdldHMgQSBCb29zdApUaGUgY29tbXVuaXR5IG1haW50YWlucyBhIGxv
+dyBwcm9maWxlLCBnaXZlbiBzZW5zaXRpdml0aWVzIGluIHRoZSByZWdpb24uIFNpbmNlIHRoZSBJ
+c3JhZWwtVW5pdGVkIEFyYWIgRW1pcmF0ZXMgcGVhY2UgZGVhbCB3YXMgYW5ub3VuY2VkLCBpdCBo
+YXMgc2NyYW1ibGVkIHRvIGFjY29tbW9kYXRlIGEgcnVzaCBvZiBKZXdpc2ggdmlzaXRvcnMuCkhv
+dyB0aGUgTm92YXZheCBDb3ZpZC0xOSBWYWNjaW5lIFdvcmtzClVzaW5nIGEgY29yb25hdmlydXMg
+cHJvdGVpbiB0byB0cmFpbiB0aGUgaW1tdW5lIHN5c3RlbS4KSm9uYXRoYW4gUG9sbGFyZDogSXNy
+YWVsIHNweSBncmVldGVkIGJ5IE5ldGFueWFodSBhZnRlciBmbHlpbmcgdG8gVGVsIEF2aXYKVGhl
+IEFtZXJpY2FuLCB3aG8gd2FzIGphaWxlZCBmb3IgMzAgeWVhcnMgZm9yIHNlbGxpbmcgVVMgc2Vj
+cmV0cywgaXMgd2VsY29tZWQgYnkgSXNyYWVsJ3MgUE0uClByZXNlcnZpbmcgTWFjYW8ncyBoYW5k
+bWFkZSBzaWducyBpbiB0aGUgZGlnaXRhbCBhZ2UKUGVyY2hlZCBvbiBhIHN0b29sIGluIGhpcyBk
+dXN0eSB3b3Jrc2hvcCBpbiBNYWNhbywgTGFtIFdlbmcgSW8gbG9va3MgbGlrZSBhIHNjaG9sYXIg
+b3IgYSBsaWJyYXJpYW4sIGJlc3BlY3RhY2xlZCBhbmQgaW4gZGVlcCBjb25jZW50cmF0aW9uLgpI
+YWNraW5nIGZpcm0gY2xhaW1zIGl0IGNhbiBkZWNyeXB0IFNpZ25hbCBhcHAncyBvbi1kZXZpY2Ug
+ZW5jcnlwdGlvbgpBIGNvbXBhbnkgY2xhaW1zIGl0IGNhbiBkZWNyeXB0IG1lc3NhZ2VzIHNlbnQg
+dXNpbmcgdGhlIFNpZ25hbCBtZXNzZW5nZXIgYXBwIG9uIEFuZHJvaWQgcGhvbmVzLCBkZXNwaXRl
+IGl0IGJlaW5nIGNvbnNpZGVyZWQgdG8gYmUgb25lIG9mIHRoZSBtb3N0IHNlY3VyZSBhcHBzIGFy
+b3VuZCB0aGF0IG9mZmVycyBlbmQtdG8tZW5kIGVuY3J5cHRpb24uCk5pa2tpIEhhbGV5IFNsYW1t
+ZWQgZm9yIOKAmERhdGVk4oCZIFNjYXJlIFRhY3RpYyBEZWNsYXJpbmcgU29jaWFsaXNtIERlbW9j
+cmF0c+KAmSAnRGVmYXVsdCBQb2xpY3nigJkKRm9ybWVyIFVTIEFtYmFzc2Fkb3IgdG8gdGhlIFVu
+aXRlZCBOYXRpb25zIE5pa2tpIEhhbGV5IGFsc28gaW5zaXN0ZWQgc2hlIHdhcyBzcGVha2luZyBv
+dXQg4oCcZm9yIHRoZSBzYWtlIG9mIEFtZXJpY2HigJlzIGZ1dHVyZeKAnSwgYXMgc2hlIG91dGxp
+bmVkIGhlciBwb2xpY3kgcHJlZGljdGlvbnMgYWhlYWQgb2YgdGhlIHRyYW5zaXRpb24gb2YgcG93
+ZXIgaW4gdGhlIE92YWwgT2ZmaWNlIHRvIERlbW9jcmF0IFByZXNpZGVudC1FbGVjdCBKb2UgQmlk
+ZW4uCk11cmRlci1zdWljaWRlIGxlYWRzIHRvIG5ldyBsaWZlIGZvciAyMC15ZWFyLW9sZApBIHN0
+b3J5IHRoYXQgYmVnaW5zIHdpdGggYSBzZW5zZWxlc3MgdHJhZ2VkeSBlbmRzIGluIHRyaXVtcGgg
+d2hlbiBhIHRlYW0gb2YgcGlvbmVlcmluZyBkb2N0b3JzIGFuZCBudXJzZXMgc2F2ZSB0aGUgbGlm
+ZSBvZiBhIGR5aW5nIHlvdW5nIG1vdGhlci4KT3VyIFRvcCBHbG9iYWwgU3RvcmllcyBPZiAyMDIw
+IE5vdCBBYm91dCBUaGUgUGFuZGVtaWMKQmV5b25jw6kncyBBZnJpY2EgdmlkZW8sIEludWl0IGFk
+dmljZSBvbiByYWlzaW5nIGtpZHMgd2l0aG91dCB5ZWxsaW5nIGFuZCAuLi4gbG9jdXN0cyEgSGVy
+ZSdzIHRoZSBzdXJwcmlzaW5nIG1peCBvZiBzdG9yaWVzIEdvYXRzIGFuZCBTb2RhIHJlYWRlcnMg
+bG92ZWQgaW4gMjAyMCB0aGF0IGhhdmUgbm90aGluZyB0byBkbyB3aXRoIENPVklELTE5LgpIb3cg
+UG9ldHMgVXNlIFB1bmN0dWF0aW9uIGFzIGEgU3VwZXJwb3dlciBhbmQgYSBTZWNyZXQgV2VhcG9u
+Ckp1c3QgbGlrZSBsaW5lIGJyZWFrcyBhbmQgc3BhY2luZyBkZWNpc2lvbnMsIHR5cG9ncmFwaGlj
+YWwgbWFya3MgY2FuIHNoYXBlIGhvdyBhIHJlYWRlciBoZWFycyB0aGUgbGFuZ3VhZ2UuCkJsYWNr
+YnVybiBkZWF0aDogTXVyZGVyIHByb2JlIGFmdGVyIGRlYXRoIG9mICdtdWNoLWxvdmVkJyBmYXRo
+ZXIKQSBtYW4gYW5kIGEgd29tYW4gYXJlIGhlbGQgb24gc3VzcGljaW9uIG9mIG11cmRlcmluZyBO
+aWdlbCBTY290dCwgd2hvIHdhcyBmb3VuZCB1bmNvbnNjaW91cyBpbiBCbGFja2J1cm4uCkZpcnN0
+IExhZHkgc2F5cyBzaGUgaGFzIG5vIGludGVyZXN0IGluIGFwcGVhcmluZyBpbiBtYWdhemluZXMK
+Rmlyc3QgTGFkeSBNZWxhbmlhIFRydW1wIGlzIGhlYXJkIHNheWluZyBzaGUgaGFzIG5vIGludGVy
+ZXN0IGluIGFwcGVhcmluZyBpbiBtYWdhemluZXMgaW4gYSB0YXBlIHNlY3JldGx5IHJlY29yZGVk
+IGJ5IFN0ZXBoYW5pZSBXaW5zdG9uIFdvbGtvZmYsIGEgZm9ybWVyIHNlbmlvciBhZHZpc2VyIHRv
+IE1lbGFuaWEgVHJ1bXAuCkJhY2tzdGFnZSB3aXRoLi4uIG91ciBwaWNrIG9mIHRoZSBiZXN0IFRW
+IHNob3dzIGFuZCBmaWxtcyBvZiAyMDIwClRWIGFuZCBmaWxtIHByb2R1Y3Rpb24gbWF5IGhhdmUg
+YmVlbiBoYWx0ZWQgYnkgdGhlIGNvcm9uYXZpcnVzIHBhbmRlbWljLCBidXQgZm9yIG1hbnkgMjAy
+MCB3aWxsIGJlIHRoZSB5ZWFyIHRoZXkgY29uc3VtZWQgbW9yZSBzaG93cyBhbmQgbW92aWVzIHRo
+YW4gZXZlciBiZWZvcmUuCkJCQyBFZGl0b3IgQmFzaGVkIEFmdGVyIFBsYWNpbmcgSksgUm93bGlu
+ZyBvbiAnR29vZC1Xcml0aW5nIEF3YXJkJyBMaXN0IGZvciBHZW5kZXIgSXNzdWVzIEVzc2F5ClRo
+ZSBwZXJzb24gd2hvIGNvbXBpbGVkIHRoZSBhd2FyZCBsaXN0IGRpZCBhY2tub3dsZWRnZSB0aGF0
+IFJvd2xpbmcgbWFuYWdlZCB0byBvZmZlbmQg4oCcbWFueSBwZW9wbGXigJ0gaW4g4oCcYSBibG9n
+IGFib3V0IHRoZSB0cmFuc2dlbmRlciBkZWJhdGXigJ0sIGFyZ3VpbmcsIGhvd2V2ZXIsIHRoYXQg
+4oCcb2ZmZW5jZSBpcyB0aGUgcHJpY2Ugb2YgZnJlZSBzcGVlY2jigJ0uCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
+c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vbGludXgtbXRkLwo=
