@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44ED1C433E6
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Jan 2021 04:13:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A9E1C433E0
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Jan 2021 04:13:22 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 05AE720C56
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Jan 2021 04:13:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 05AE720C56
+	by mail.kernel.org (Postfix) with ESMTPS id AC51C207B7
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Jan 2021 04:13:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC51C207B7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,65 +23,66 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=dXJKdk6Kxmp3uNTKJL8XYXuNyRXj37NgfFKM0Kudywk=; b=HN0WLMlBh3NYPh06i33W9VomX
-	2AXlTS48576YYXf0hIOC0op9oHFc8DJdAQJ8oLtbnfumrJlGWEtPPRSLbFCabwCfzj2ACp46k7Fhv
-	i5ccHi9ePwFIMs1Q6mS7rRRldA9oduOATUvJO1vcj7iJDoHnmTSKtWtiU7teMwc+wzl6jq+ZNay2I
-	HcOVjPYxf+LHT5+Md3PNVTlLgjkSUwLDbYFyglNHR81/iQKdbn4veshzlmVqiiAos48gl5Az80sO5
-	RSgM/jShAGTLhVmbvKJelJh1KIb+RzDodR8o9oUfEIAp7SRUo4QbrEirmHm/vyLit+Yz7xdzT8e2g
-	2b+PGkpiQ==;
+	 bh=v1SavrlOVRrF9Yl/3+44To7cZlMjrpdrp4UyO2SRF7M=; b=pewlChqJxcuShIQOvyD70uv37
+	RupOKiHyx23XWn0CQxpY0PcqZ2fHc4IXeRt0rvOkEbahJBk7EQU6RV5I3SgzxOL2pEUUsNqqB3mNf
+	Ltq4wFiVRXrx3ZLyMn3glj0o7HwgWHQ6tShORISXC//zcFwzV5fGxOH3tRU6raXqM33Ru4jlvCW2m
+	iO9QCWoI0e2VAEIQZICck75682RdOaEEheX2hi1SDgeqhA9XvjKbdfcrtqAW59U84/kTEub1zhmzJ
+	0R8Z7jQa0BBjrvlJ6CEcErhCaNsk4Vs1w2iRNktSNNHuhSEdsjny6AQ9JJlRKHtRzFvc4lM0fpwDa
+	WJctVpC5Q==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kwHDv-0002PW-3p; Mon, 04 Jan 2021 04:12:03 +0000
-Received: from mail-pj1-x102d.google.com ([2607:f8b0:4864:20::102d])
+	id 1kwHE1-0002Qs-I2; Mon, 04 Jan 2021 04:12:09 +0000
+Received: from mail-pl1-x636.google.com ([2607:f8b0:4864:20::636])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kwHDs-0002OZ-VI
- for linux-mtd@lists.infradead.org; Mon, 04 Jan 2021 04:12:01 +0000
-Received: by mail-pj1-x102d.google.com with SMTP id lb18so9219068pjb.5
- for <linux-mtd@lists.infradead.org>; Sun, 03 Jan 2021 20:12:00 -0800 (PST)
+ id 1kwHDy-0002Pk-H3
+ for linux-mtd@lists.infradead.org; Mon, 04 Jan 2021 04:12:07 +0000
+Received: by mail-pl1-x636.google.com with SMTP id q4so13818767plr.7
+ for <linux-mtd@lists.infradead.org>; Sun, 03 Jan 2021 20:12:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=icXjVyLr8ROGK9HCrfmW24KYFfrqOe76+5Eys2pUaYc=;
- b=MUCjeC0n9Jzu3Ybx2+wYVVQZHu+be4Ab/JPXX+mx10mppyE8coiYJHLOQtIFIiWFDu
- tBlRN12//WUM+lgkJ6PgC9GzcdK4GHlrAIP6kx+aY7vfmCUtpostUbWZCfZpQ12UkCNd
- YILCpHW+eidapdhkVCU2wnGb7ghd0CWy99a5KDahC2HjtHvatBy24V9XvqkEw13tpddq
- pYhhyexGjqX5E197g6JPx9sSYsm66uBLzbGojSD10uk6mLqL8umyT4wb09EKzPZPCZiq
- UxNrEFHQLeF5GjsYB/5icUIISqQFUxKDglWMdt8qNdZ5GPbR3ipp8tlvgXKgx4Jpab5X
- NTlw==
+ bh=wneBaSsM0xu86yHRW+fmULQ20sTukJwsm41Qy3J+Umg=;
+ b=kUog3bVTIvYUWWUzjYQiRQyzxAlie5iBaP/m/YoCMjhOoCsT5F3U3JzXz4OfLihcw1
+ 1Jfz8lCNkbUcL5zpmLYT36af6+u9c30idejRXIJnXxpoWV1itGu7GtGC+EeNuWsl9txK
+ vsWQKMoxfakSo0jp85msmiCUaKTYvpvbXOcCcnjofk2XnHJxOk6ncEMs+sVEt3LhN4Ck
+ SnN2gH1CzJhgK7MG4/RjaLccO4G+1/BNgtpUW7IeHVEYx1EIGFM8BeL+Hs2HSngLT2Ng
+ si/ivAd11a85yLlElbr6ZR4yQSLZ8SrYFtGdOjBTClmTc4GfgJt7S2xED02PsfxuT/SR
+ tkWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=icXjVyLr8ROGK9HCrfmW24KYFfrqOe76+5Eys2pUaYc=;
- b=gKDgL6c5quXAZebR+GSR9yTkQtTUQS0wAoPrLNU294Yq5eLZtzpgS2TVbEpYcXWPAd
- faAcetjiHdxyKWGh9m8u4VoBGKE70doygCyte1ivC2ppIEeFSBmTHZTyNXdd45MJCr9F
- Cx3wtab50TxGnV+5iepzwhGoUlKvZHYIiWxjxw61jI1waLaElVfcdawZ2Zr0mMaewwaK
- uS8UmF6cvhlKUEjkWgl1bGogdyZUH2TdmGaXdJgx9EFC3ZKRdLPoNhxvqdXxw40Akmsr
- O6jOs+Qp/xSe24MgdJBq+LAhhE1vSlthGcKxo+OeGBy9ntxdo5j4BqP17yf93Sd6d/Tr
- kc4Q==
-X-Gm-Message-State: AOAM530Z86XOHGQhurkoUFpAH/lZnmcphj9yKTaTKV+sjbwSw5VHNcZm
- p1R7n22pIFTOkpYUyT1sCqEe
-X-Google-Smtp-Source: ABdhPJwWuQlC9C42p7YriHVAU0fLFuzmlbs1I6A7poFZx8dMn5NBsQ8KChaZkRch5Lf4CybfrDMhpQ==
-X-Received: by 2002:a17:902:6bca:b029:dc:34e1:26b1 with SMTP id
- m10-20020a1709026bcab02900dc34e126b1mr52162525plt.52.1609733518888; 
- Sun, 03 Jan 2021 20:11:58 -0800 (PST)
+ bh=wneBaSsM0xu86yHRW+fmULQ20sTukJwsm41Qy3J+Umg=;
+ b=IN+mc4cofl/rmkS6noaxxkuUeUu7Ruc5WAj5dbtqnz7VY32jY5Xs1MP2nBWc1xDgyJ
+ tqNxWohaXsTJIShhCrm8RO8fbr0F1o/02INc4gYMHplkavGQlttpB9KHhD+neWDe4ryK
+ klo7/IY3w3I5oHpyzm63y/9GxiZnu3FgOSOaokrE/gNa7m19uurh4Y/f5xNvCFjtZVYB
+ jlUCv0QlVeB4WWmaF1NH7zwCZMO+c6aYswK5jXG+jhoIgqhePNMWvwudo7bYlPj1IFDI
+ y66g6hB/mB4A4elWbPCagu3TOAmx16v3XzrGJv27n22L6mVKyzHVGrg0M6AQcIS0bls2
+ R2FQ==
+X-Gm-Message-State: AOAM531XHr2oTUXuRsd0V3HHtQ3lbKABoEoD859bzMmauRDnt1UcFLYz
+ e8Wsp7D7v7DcfSd01Cl8pdSP
+X-Google-Smtp-Source: ABdhPJwp6G0zMQLd1gP3mxWQZWOQI5+R61JLxuOhu+0q+EumPWeHC8XjNAYRaBZ+3gNLo4XqYkOh7w==
+X-Received: by 2002:a17:902:8d97:b029:dc:313:ee70 with SMTP id
+ v23-20020a1709028d97b02900dc0313ee70mr70807129plo.82.1609733523386; 
+ Sun, 03 Jan 2021 20:12:03 -0800 (PST)
 Received: from localhost.localdomain ([103.77.37.160])
- by smtp.gmail.com with ESMTPSA id x22sm54899930pfc.19.2021.01.03.20.11.54
+ by smtp.gmail.com with ESMTPSA id x22sm54899930pfc.19.2021.01.03.20.11.59
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 03 Jan 2021 20:11:58 -0800 (PST)
+ Sun, 03 Jan 2021 20:12:02 -0800 (PST)
 From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
  robh+dt@kernel.org
-Subject: [PATCH v4 3/4] mtd: rawnand: qcom: Add support for Qcom SMEM parser
-Date: Mon,  4 Jan 2021 09:41:36 +0530
-Message-Id: <20210104041137.113075-4-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v4 4/4] mtd: parsers: afs: Fix freeing the part name memory in
+ failure
+Date: Mon,  4 Jan 2021 09:41:37 +0530
+Message-Id: <20210104041137.113075-5-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210104041137.113075-1-manivannan.sadhasivam@linaro.org>
 References: <20210104041137.113075-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210103_231201_046973_50C32FA4 
-X-CRM114-Status: GOOD (  11.97  )
+X-CRM114-CacheID: sfid-20210103_231206_613354_5B04EBDA 
+X-CRM114-Status: GOOD (  12.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,44 +95,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, bjorn.andersson@linaro.org,
- linux-mtd@lists.infradead.org,
+ Linus Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.org,
+ bjorn.andersson@linaro.org, linux-mtd@lists.infradead.org,
  Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for using Qualcomm SMEM based flash partition parser in
-Qualcomm NAND controller.
+In the case of failure while parsing the partitions, the iterator should
+be pre decremented by one before starting to free the memory allocated
+by kstrdup(). Because in the failure case, kstrdup() will not succeed
+and thus no memory will be allocated for the current iteration.
 
+Fixes: 1fca1f6abb38 ("mtd: afs: simplify partition parsing")
 Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>
 ---
- drivers/mtd/nand/raw/qcom_nandc.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mtd/parsers/afs.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 667e4bfe369f..fd4c318b520f 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -2821,6 +2821,8 @@ static int qcom_nandc_setup(struct qcom_nand_controller *nandc)
- 	return 0;
- }
+diff --git a/drivers/mtd/parsers/afs.c b/drivers/mtd/parsers/afs.c
+index 980e332bdac4..26116694c821 100644
+--- a/drivers/mtd/parsers/afs.c
++++ b/drivers/mtd/parsers/afs.c
+@@ -370,10 +370,8 @@ static int parse_afs_partitions(struct mtd_info *mtd,
+ 	return i;
  
-+static const char * const probes[] = { "qcomsmem", NULL };
-+
- static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
- 					    struct qcom_nand_host *host,
- 					    struct device_node *dn)
-@@ -2884,7 +2886,7 @@ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
- 		}
- 	}
- 
--	ret = mtd_device_register(mtd, NULL, 0);
-+	ret = mtd_device_parse_register(mtd, probes, NULL, NULL, 0);
- 	if (ret)
- 		nand_cleanup(chip);
- 
+ out_free_parts:
+-	while (i >= 0) {
++	while (--i >= 0)
+ 		kfree(parts[i].name);
+-		i--;
+-	}
+ 	kfree(parts);
+ 	*pparts = NULL;
+ 	return ret;
 -- 
 2.25.1
 
