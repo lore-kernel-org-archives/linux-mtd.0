@@ -2,76 +2,60 @@ Return-Path: <SRS0=PNEu=GI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C884C433E0
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Jan 2021 12:19:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BDF8C433E0
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Jan 2021 13:05:35 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A582D229C4
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Jan 2021 12:19:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A582D229C4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
+	by mail.kernel.org (Postfix) with ESMTPS id 19E1C22240
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Jan 2021 13:05:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 19E1C22240
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=3OEm6K0V3eZ0il1W0o3vh/PjcrsfgDBHFEL9olo1G9M=; b=v/xHnjk7+TBqasoiZ+7touUFU
-	yFkLqFuIjxg2JO6NIlbDiAk6ubnODI3wLbfYz24Lg5FfYhEOKkDcxSv1v7VaVLSrfHIJNetIuX5/q
-	teZ8iGCAC5IL/RBmZNiUrpTZiMP0EzXMLyh3V+CixZW6Ej8/NgTPDa187e6889/+hmwj4RDq6EBYI
-	j+8It1gqE+cWVYvSbOiBRIfnQyZR2xJDfPVf6hQLLS53c5Dl/E9cwWrwkf9+hQzl5L8J0CLNWRs7k
-	npXWyGV9uIuQPtLIjphFfYn7RTP9C+KrV6p5jnO9OkPBN4A9jBa+OLNRPfBqIA9QNOmaSe9p5xyQy
-	so/ZjrPSA==;
+	 bh=HKjqnhq7bgZdbEIW5SGNvdnV46zZOV5htkAYnOhgcYY=; b=fMb/1cp8nddynfD1I2vrPNjZU
+	8r/zPvaB7DLOY2TX2m06hvAfY27uWBLoQLibXGFXaRGaRhfgeaqUmcDaYInjguvJJVlBH/KlDnOfc
+	juYoyNsTvX8UOI+ngsKqAypd/fkZ0Z1qvj/u4SFDZTwmHJeSyNmwEx3sTPqNapbEdkOMAe/U9mybv
+	LkXx17b7+5DiD5H1yGXGCF8+n8DMBfcfXuawwn6zRN8FMwkzwZgjm+izjJ1LbFsAAOJUNXzVjLpQ8
+	F0zUVtdZU0s0tBOeEFlZCbvGnCPZiJnR8b6yKa1SMMOBtKVck/xVXwPmFri1ahxm/sCjtDbrnZa5L
+	xg1uCBR3g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kwlHS-0002bO-4j; Tue, 05 Jan 2021 12:17:42 +0000
-Received: from mail-qk1-x729.google.com ([2607:f8b0:4864:20::729])
+	id 1kwm0v-0001hj-8M; Tue, 05 Jan 2021 13:04:41 +0000
+Received: from relay10.mail.gandi.net ([217.70.178.230])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kwlHP-0002Z2-1p
- for linux-mtd@lists.infradead.org; Tue, 05 Jan 2021 12:17:40 +0000
-Received: by mail-qk1-x729.google.com with SMTP id n142so26199652qkn.2
- for <linux-mtd@lists.infradead.org>; Tue, 05 Jan 2021 04:17:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=0x0f.com; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=uHVyppheAtUsYWey0/FRVVlGWEXQunaZTKwgRTn10C4=;
- b=PjXAeqXP4DYwIsAsQ2O4Wvyds0A/KBI/EsGeMQmaFHnc4wqH02GyXchj4HN8SUEolr
- PHK27WI1BXuqv8NgDGDFiQwm2P9lHa2Kd3MJQxJ9FTGfphPfl+Dwb9fKBbqo7I9+CpWg
- M+gOWEE/mSgmFe7pOxIwoo8FpAnQwxG+sDQXU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=uHVyppheAtUsYWey0/FRVVlGWEXQunaZTKwgRTn10C4=;
- b=AzTGHJo4mrsCVm7/fbn+w70Cx6pDiCuS9fIP0uBgxZ70Qutq30xFEbQsAaDMYtLK46
- OabRe3G6I6QDSC9ZuAWwCtFYHg32yGWO7EZJetL/Gw223WK0Jxg6Omc+k+/rpfTsOVk/
- eqYRUTy1Ynd9Om98dWemYeSpgZjfwlfsv68RKgo/g+GRRrI75+xklSV+1G0xXbxC+/EX
- 71W8bJA7+FxQFyAOHnnCm1fSdUHizB5wkhYAjISKh/c5kJsetQBcD14NQ4Y4BJkfY7tK
- Z1nY6J+mSUrMSOhbERKO8VSxfbFc0kSMApX6JRyrBGp4sQjvfPspvSpnwCZNPyfzQ+U1
- V6Cg==
-X-Gm-Message-State: AOAM533uW565h7RPLpHrhhRd24tw+HYBO3Eqc52MtgpCM3yfvqaY9y/p
- 1U1gqFW+bDKnx5ZL5IFCzWLWbMXPeW+UEihnyk14dNb3EDs=
-X-Google-Smtp-Source: ABdhPJy5tjzaibSH7lb3AbHXayPPYaReUKnA+qJZEoC40CBWlYyT/l9r2rHRDXectmH9clM8fVamvSEK+Fs2WH7cnQo=
-X-Received: by 2002:a37:2742:: with SMTP id n63mr77678787qkn.390.1609849054700; 
- Tue, 05 Jan 2021 04:17:34 -0800 (PST)
-MIME-Version: 1.0
+ id 1kwm0s-0001gk-Vp
+ for linux-mtd@lists.infradead.org; Tue, 05 Jan 2021 13:04:39 +0000
+Received: from xps13 (lfbn-tou-1-1535-bdcst.w90-89.abo.wanadoo.fr
+ [90.89.98.255]) (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay10.mail.gandi.net (Postfix) with ESMTPSA id 82D77240008;
+ Tue,  5 Jan 2021 13:04:32 +0000 (UTC)
+Date: Tue, 5 Jan 2021 14:04:31 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Daniel Palmer <daniel@0x0f.com>
+Subject: Re: [PATCH 1/1] mtd: spinand: add support for Foresee FS35ND01G
+Message-ID: <20210105140431.185e8ce1@xps13>
+In-Reply-To: <CAFr9PXmPEQ2poQUTtaBH4CZ-S+sJjoUjJ5D_qA5aHZj7AASg7w@mail.gmail.com>
 References: <20201229055059.2255021-1-daniel@0x0f.com>
  <20201229055059.2255021-2-daniel@0x0f.com>
  <20210104151746.21cdde24@xps13>
-In-Reply-To: <20210104151746.21cdde24@xps13>
-From: Daniel Palmer <daniel@0x0f.com>
-Date: Tue, 5 Jan 2021 21:18:21 +0900
-Message-ID: <CAFr9PXmPEQ2poQUTtaBH4CZ-S+sJjoUjJ5D_qA5aHZj7AASg7w@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mtd: spinand: add support for Foresee FS35ND01G
-To: Miquel Raynal <miquel.raynal@bootlin.com>
+ <CAFr9PXmPEQ2poQUTtaBH4CZ-S+sJjoUjJ5D_qA5aHZj7AASg7w@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210105_071739_282060_418D926A 
-X-CRM114-Status: GOOD (  17.30  )
+X-CRM114-CacheID: sfid-20210105_080439_132042_90197519 
+X-CRM114-Status: GOOD (  23.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,60 +69,54 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: richard@nod.at, linux-mtd@lists.infradead.org,
  Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, vigneshr@ti.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
-
-On Mon, 4 Jan 2021 at 23:17, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> Perhaps giving the link of the datasheet here makes sense.
-
-Noted. I'll put that into v2.
-
-> > +#define SPINAND_MFR_LONGSYS          0xcd
->
-> Nitpick: I personally prefer uppercase hex numbers.
->
-
-Noted.
-
-> > +                  NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
-> > +                  NAND_ECCREQ(4, 512),
-> > +                  SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-> > +                                           &write_cache_variants,
-> > +                                           &update_cache_variants),
->
-> This device probably supports more variants (especially dual/quad
-> ones) but I guess it's not a problem to not have them here right now.
-
-Right now I can't really test dual or quad because my SPI driver
-doesn't know to do dual or quad io.
-I plan to add those in once I can validate they work.
-
-> > +                  SPINAND_HAS_QE_BIT,
-> > +                  SPINAND_ECCINFO(NULL,
-> > +                                  NULL)),
->
-> You should define the ->ecc and ->free hooks of the
-> mtd_ooblayout_ops structure and point to it here. It defines the free
-> OOB bytes and bytes used by the on-die ECC engine. You should find this
-> in the datasheet. You may look at other manufacturer drivers for
-> examples of how it should be implemented. It is the way to tell the
-> upper layers that eg. "byte 2 to 17 are ECC bytes, 18 until the end are
-> free to use".
-
-Ok I'll add those in. Is there a way I can test that my implementation is right?
-I.e. is writing something, reading it back and checking if the data is
-correct a good enough test here?
-I don't really want to make it look like this flash is supported and
-break someone's data. :)
-
-Thanks,
-
-Daniel
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgRGFuaWVsLAoKRGFuaWVsIFBhbG1lciA8ZGFuaWVsQDB4MGYuY29tPiB3cm90ZSBvbiBUdWUs
+IDUgSmFuIDIwMjEgMjE6MTg6MjEgKzA5MDA6Cgo+IEhpIE1pcXVlbCwKPiAKPiBPbiBNb24sIDQg
+SmFuIDIwMjEgYXQgMjM6MTcsIE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5j
+b20+IHdyb3RlOgo+ID4gUGVyaGFwcyBnaXZpbmcgdGhlIGxpbmsgb2YgdGhlIGRhdGFzaGVldCBo
+ZXJlIG1ha2VzIHNlbnNlLiAgCj4gCj4gTm90ZWQuIEknbGwgcHV0IHRoYXQgaW50byB2Mi4KPiAK
+PiA+ID4gKyNkZWZpbmUgU1BJTkFORF9NRlJfTE9OR1NZUyAgICAgICAgICAweGNkICAKPiA+Cj4g
+PiBOaXRwaWNrOiBJIHBlcnNvbmFsbHkgcHJlZmVyIHVwcGVyY2FzZSBoZXggbnVtYmVycy4KPiA+
+ICAKPiAKPiBOb3RlZC4KPiAKPiA+ID4gKyAgICAgICAgICAgICAgICAgIE5BTkRfTUVNT1JHKDEs
+IDIwNDgsIDY0LCA2NCwgMTAyNCwgMjAsIDEsIDEsIDEpLAo+ID4gPiArICAgICAgICAgICAgICAg
+ICAgTkFORF9FQ0NSRVEoNCwgNTEyKSwKPiA+ID4gKyAgICAgICAgICAgICAgICAgIFNQSU5BTkRf
+SU5GT19PUF9WQVJJQU5UUygmcmVhZF9jYWNoZV92YXJpYW50cywKPiA+ID4gKyAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAmd3JpdGVfY2FjaGVfdmFyaWFudHMsCj4g
+PiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgJnVwZGF0ZV9j
+YWNoZV92YXJpYW50cyksICAKPiA+Cj4gPiBUaGlzIGRldmljZSBwcm9iYWJseSBzdXBwb3J0cyBt
+b3JlIHZhcmlhbnRzIChlc3BlY2lhbGx5IGR1YWwvcXVhZAo+ID4gb25lcykgYnV0IEkgZ3Vlc3Mg
+aXQncyBub3QgYSBwcm9ibGVtIHRvIG5vdCBoYXZlIHRoZW0gaGVyZSByaWdodCBub3cuICAKPiAK
+PiBSaWdodCBub3cgSSBjYW4ndCByZWFsbHkgdGVzdCBkdWFsIG9yIHF1YWQgYmVjYXVzZSBteSBT
+UEkgZHJpdmVyCj4gZG9lc24ndCBrbm93IHRvIGRvIGR1YWwgb3IgcXVhZCBpby4KPiBJIHBsYW4g
+dG8gYWRkIHRob3NlIGluIG9uY2UgSSBjYW4gdmFsaWRhdGUgdGhleSB3b3JrLgo+IAo+ID4gPiAr
+ICAgICAgICAgICAgICAgICAgU1BJTkFORF9IQVNfUUVfQklULAo+ID4gPiArICAgICAgICAgICAg
+ICAgICAgU1BJTkFORF9FQ0NJTkZPKE5VTEwsCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgTlVMTCkpLCAgCj4gPgo+ID4gWW91IHNob3VsZCBkZWZpbmUgdGhlIC0+ZWNj
+IGFuZCAtPmZyZWUgaG9va3Mgb2YgdGhlCj4gPiBtdGRfb29ibGF5b3V0X29wcyBzdHJ1Y3R1cmUg
+YW5kIHBvaW50IHRvIGl0IGhlcmUuIEl0IGRlZmluZXMgdGhlIGZyZWUKPiA+IE9PQiBieXRlcyBh
+bmQgYnl0ZXMgdXNlZCBieSB0aGUgb24tZGllIEVDQyBlbmdpbmUuIFlvdSBzaG91bGQgZmluZCB0
+aGlzCj4gPiBpbiB0aGUgZGF0YXNoZWV0LiBZb3UgbWF5IGxvb2sgYXQgb3RoZXIgbWFudWZhY3R1
+cmVyIGRyaXZlcnMgZm9yCj4gPiBleGFtcGxlcyBvZiBob3cgaXQgc2hvdWxkIGJlIGltcGxlbWVu
+dGVkLiBJdCBpcyB0aGUgd2F5IHRvIHRlbGwgdGhlCj4gPiB1cHBlciBsYXllcnMgdGhhdCBlZy4g
+ImJ5dGUgMiB0byAxNyBhcmUgRUNDIGJ5dGVzLCAxOCB1bnRpbCB0aGUgZW5kIGFyZQo+ID4gZnJl
+ZSB0byB1c2UiLiAgCj4gCj4gT2sgSSdsbCBhZGQgdGhvc2UgaW4uIElzIHRoZXJlIGEgd2F5IEkg
+Y2FuIHRlc3QgdGhhdCBteSBpbXBsZW1lbnRhdGlvbiBpcyByaWdodD8KPiBJLmUuIGlzIHdyaXRp
+bmcgc29tZXRoaW5nLCByZWFkaW5nIGl0IGJhY2sgYW5kIGNoZWNraW5nIGlmIHRoZSBkYXRhIGlz
+Cj4gY29ycmVjdCBhIGdvb2QgZW5vdWdoIHRlc3QgaGVyZT8KPiBJIGRvbid0IHJlYWxseSB3YW50
+IHRvIG1ha2UgaXQgbG9vayBsaWtlIHRoaXMgZmxhc2ggaXMgc3VwcG9ydGVkIGFuZAo+IGJyZWFr
+IHNvbWVvbmUncyBkYXRhLiA6KQoKWW91IG1heSB0cnkgdG8gdXNlIGZsYXNoX2VyYXNlL25hbmR3
+cml0ZS9uYW5kZHVtcCBmcm9tIHRoZSBtdGQtdXRpbHMKcGFja2FnZS4gWW91IG1heSBmaXJzdCB1
+c2UgYSBkdW1teSBmdW5jdGlvbnMgYW5kIGRlY2xhcmUgdGhlIGVudGlyZQp6b25lIGZyZWUgKGV4
+Y2VwdCBmb3IgdGhlIGJhZCBibG9jayBtYXJrZXIgYXQgdGhlIGJlZ2lubmluZykuCgpUaGVuLCB5
+b3UgbWF5IHdyaXRlIHRoZSBlbnRpcmUgT09CIGFyZWEgaW4gcmVndWxhciBtb2RlIHRoZW4gcmVh
+ZCBpdCBpbgpyYXcgbW9kZSAoLW4pLiBTb21ldGltZXMgdGhlIEVDQyBieXRlcyBhcmUgbm90IHZp
+c2libGUsIGluIHRoaXMgY2FzZSBpdAptYXkgYmUgd29ydGggdHJ5aW5nIHdyaXRpbmcgdGhlIE9P
+QiBhcmVhIHdpdGgga25vd24gZGF0YSBhbmQgcmVhZCBpdApiYWNrIGFuZCBzZWUgd2hhdCB5b3Ug
+Z2V0LiBCdXQgdGhlc2UgaW5mb3JtYXRpb24gcHJvYmFibHkgYXJlIGluIHRoZQpkYXRhc2hlZXQu
+CgpHb29kIGx1Y2ssCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0
+cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
