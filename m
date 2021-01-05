@@ -2,149 +2,87 @@ Return-Path: <SRS0=PNEu=GI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE150C433E0
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Jan 2021 15:00:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10165C4332B
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Jan 2021 15:46:31 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9D79622B45
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Jan 2021 15:00:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D79622B45
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+	by mail.kernel.org (Postfix) with ESMTPS id B8A6B22BF3
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Jan 2021 15:46:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B8A6B22BF3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
-	:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Wa981EugvYTh6e9ToDsqGPU8xz88ovYPbsA/IOnUjEU=; b=Q7oM5fbDgaIsefI6fp10XXkCWL
-	seYk2UJ50aP7S2hi0u6jOboCsPDTIWGmsHXCbME7wDxun/l0Ov3dGbqH5YSgEA6Hd/B9jyQHksWXs
-	lCNjTwwMUiSqQ/4UicAxMXfxy0vOX/LleIGYtU69oH+5NP5/NwqJR3NcDEt7Rb37jArQBS0Ul2z2L
-	uJoK9kAoHFDwJ1UYvS+SRztB1Oey5g/LZOU0lPKcIqraqbHMTUFh+DlR6dIC8PoXmXXeh+RsEqE39
-	oOY8wqu33NK+TSXnmize1DMU9WEJDfvGw2lh4HIqKuoamAZI6pEBB+vpJ0fzn3/A1YRz+Gc+Alkc4
-	StoCCEEQ==;
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=xjCmNTZG2JSh7GwUZWeRQdEVpIzDJnt67sFSJv0VVW0=; b=Wwyurc8BiSiJEAs/SgVF+eAtH
+	YOmPnu6aDmnU+GdyRicoeGkA0j9eH420874QF76tYS9vbbTqwltjibVZt/hZ248lcN7b5lUvVitAU
+	ZiKurXXvW6xAwf+HElnA9SxIeKGxwPDLzdXBDP1OknYK0+Ajsb7JjOuNBcUQKgkqMUaDXzYlZyj8q
+	DFzfxvGQ8A+FDtARMWg7hwlgdKORVXKCNI2V1tGqkq3/l32ixoMADALuI5B7iumPXTAW83O0EiyUf
+	uny81vhVj90D8pX/8z6yo7u2B2RSBJDbC0bctMiuCetecq4C9rr7Ydn4GkeirjT3Jq2GccngBQMyb
+	wUiSEaEvA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kwnog-0004du-3n; Tue, 05 Jan 2021 15:00:10 +0000
-Received: from mail-ot1-x331.google.com ([2607:f8b0:4864:20::331])
+	id 1kwoWT-0003vO-Ad; Tue, 05 Jan 2021 15:45:25 +0000
+Received: from mail-pg1-x532.google.com ([2607:f8b0:4864:20::532])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kwnoc-0004dK-GK
- for linux-mtd@lists.infradead.org; Tue, 05 Jan 2021 15:00:07 +0000
-Received: by mail-ot1-x331.google.com with SMTP id a109so29495481otc.1
- for <linux-mtd@lists.infradead.org>; Tue, 05 Jan 2021 07:00:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=sender:subject:to:references:from:autocrypt:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=XGIUsDvo7WL/btexdYta+TWVo7yH7QS69njrSf9tUEE=;
- b=hWRzHPxYIl2QvM6KQJ9WCePC2Wc31LSxs2JVNGUIPUOr42yFSjzoHrNOYjC5mekUrA
- xsTju6UJER/7sQ+NR5YY8vs1OzeCxiGXQGxq0+SLogI0lZU7oU1HxtNoDVaOYW6vl93K
- 1dJhOY9OrLtkfHU2AqYLxlEFia069SYwzxrP6rjT9iMxk2YIXlAnCaOChH6sRImAfgV9
- VVsJXEIlDhiWb8XLdAdf+ffNqO5pHzxrROhQENUgdDdESieQYiyPDqqMLfRTn1mM1+Os
- oq5NnVSiNAoyqIL8YGUTlYlVAV2WSmzlIVRh/tKWkmZxVCmUITW16zsne0uy8Wscpc3s
- XGHw==
+ id 1kwoWP-0003up-UD
+ for linux-mtd@lists.infradead.org; Tue, 05 Jan 2021 15:45:23 +0000
+Received: by mail-pg1-x532.google.com with SMTP id n25so106402pgb.0
+ for <linux-mtd@lists.infradead.org>; Tue, 05 Jan 2021 07:45:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=wmdq60s18Orob2M8R2n5V4KYQtdV3Yib3WAUX7XuCRA=;
+ b=EPG8M9AvrhYIpee+SbG1huXyAy7IrVcW7HAb94w8S4MHsDV4hteSdVk+SDoYNWUbC8
+ I3F9JsKXpl3Cr6RR+b4cZkQ6p95idKhI2Yz6EjOl1bwnH11ST2SkT6XSsVgYJq8eNQwI
+ icluhOe2Cz+B9z4gIhCPZUzuNtg7fCWdj/WPXckWoUCpo9AXNGRln8bxMO2wgJcDTg5a
+ npXs3BSCKeTcoBm9MjfGOj5vgepcHI/3bpNGApLYPoN9kh9VnRbUd3lGDk0H+DWMlJd+
+ M5bLKdHYc60m+Qbqn+bUdNoMVRBtKBFY9J1JD3H+kt3hwzMbaQe1SXibpZnIHHZo5qh1
+ Tafw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:sender:subject:to:references:from:autocrypt
- :message-id:date:user-agent:mime-version:in-reply-to
- :content-language:content-transfer-encoding;
- bh=XGIUsDvo7WL/btexdYta+TWVo7yH7QS69njrSf9tUEE=;
- b=ChL5lcG+VGmYLDjtszilhluthNFUGuOsmSodj/laczy8+Vcb6Y7mM9/cTj1NW+MOG7
- P9uU9ua4/Uag1LNI1fz7WZzyfKR7elL6b/J7UfJp8Xhv9ruA8ZzORyASKnRnip6f6Atq
- tr5Pm6h8HQAlEEYlndP1zgcli42a7pV46TZm+M4ca7ryXwHlJTrR7eF7vgQzbzh4yVTI
- UzOdSAqdEaj5+k4NIO8M1vLKj4LrEqd1P0dndPaCovljaU+LiyIUcURap0X1qgYRONgR
- pURZpULwLhONFFSGoLQ5KzrTk+kmz011tYhgYUIPXVoq15Y0GN9zXyRlU1zr5s75sY5O
- oq2w==
-X-Gm-Message-State: AOAM531hGEaDUutMh4n95a+r503lgs8GQDdY67ur4VRMAUF/0iQEQMLK
- E2Zn60M/D1ItUTlm8I1vU5g=
-X-Google-Smtp-Source: ABdhPJz+TmHa+yxltlgEjO+dajpTRAK0O0Tmhgc4dSJIjWXqp6kHPWJo155UzE1wR1B4hBd/MJHdlg==
-X-Received: by 2002:a05:6830:22f9:: with SMTP id
- t25mr57121090otc.14.1609858803649; 
- Tue, 05 Jan 2021 07:00:03 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
- by smtp.gmail.com with ESMTPSA id
- h26sm15181205ots.9.2021.01.05.06.59.59
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 05 Jan 2021 07:00:02 -0800 (PST)
-Subject: Re: [PATCH 01/10] MIPS: TX49xx: Drop support
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Matt Mackall <mpm@selenic.com>, Herbert Xu <herbert@gondor.apana.org.au>,
- Dan Williams <dan.j.williams@intel.com>, Vinod Koul <vkoul@kernel.org>,
- "David S. Miller" <davem@davemloft.net>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Jakub Kicinski <kuba@kernel.org>, Alessandro Zummo <a.zummo@towertech.it>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Mark Brown <broonie@kernel.org>, Wim Van Sebroeck <wim@linux-watchdog.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, linux-mips@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
- dmaengine@vger.kernel.org, linux-ide@vger.kernel.org,
- linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
- linux-rtc@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-watchdog@vger.kernel.org, alsa-devel@alsa-project.org
-References: <20210105140305.141401-1-tsbogend@alpha.franken.de>
- <20210105140305.141401-2-tsbogend@alpha.franken.de>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <4dfb9153-d130-7bbf-a016-45a630d1d0cd@roeck-us.net>
-Date: Tue, 5 Jan 2021 06:59:58 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=wmdq60s18Orob2M8R2n5V4KYQtdV3Yib3WAUX7XuCRA=;
+ b=WNBu6UKpI7HGbSl7LDFWnrp7mgG9TT12xvh3GQPv8RiQi94EOpDLdPH2Hz8QPP4eFX
+ qF4O2eSJJEykjBa7ME1P1Are4WytbSpQN8+G1yNAKnt+TF80wvxpYDZiHt2M2+AJD8R2
+ YwZbeYiemlL8TEF0/l9j33PsSQVhmmQowpQ11fjzAZC9vMLyDzcUBAjH/Ml3Lhnq3haC
+ /hN8EXg4n6GPOpJcC2vtlLZV2P4FY2T4RF9H8zCaZkIPzkiYE0VjtGYfpkhosu5Wvn3g
+ +h4NC48WIAUsgFtPgYKg83mwLkjVYmGj4l+YGEYeu8ognHpKB1S46Xxseg5cz9affrF1
+ h5KA==
+X-Gm-Message-State: AOAM531HldWAV59D5O0Jyw9Wk7+MZ/Yndj2in8By12RwM07lJOU+d+x4
+ GmyAybRzkscdV4Z0YcFP3szvMLYSUZul
+X-Google-Smtp-Source: ABdhPJzORfhImBjPmxTt1LF1joW/a5t1awLr7bRLYIOTk+m8wxsNFjVtWFlAK4mlDeMiMu52703p5w==
+X-Received: by 2002:a63:6fce:: with SMTP id
+ k197mr49707959pgc.423.1609861517189; 
+ Tue, 05 Jan 2021 07:45:17 -0800 (PST)
+Received: from thinkpad ([103.77.37.191])
+ by smtp.gmail.com with ESMTPSA id q9sm186131pgb.82.2021.01.05.07.45.13
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 05 Jan 2021 07:45:16 -0800 (PST)
+Date: Tue, 5 Jan 2021 21:15:12 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: mdalam@codeaurora.org
+Subject: Re: [PATCH] mtd: rawnand: qcom: update last code word register
+Message-ID: <20210105154512.GC14794@thinkpad>
+References: <1608213776-19584-1-git-send-email-mdalam@codeaurora.org>
+ <20201231105303.GI7345@thinkpad>
+ <84dbe5ba193e0da45add2f74d6787bb5@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20210105140305.141401-2-tsbogend@alpha.franken.de>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <84dbe5ba193e0da45add2f74d6787bb5@codeaurora.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210105_100006_671884_51CB6C68 
-X-CRM114-Status: GOOD (  14.07  )
+X-CRM114-CacheID: sfid-20210105_104522_031771_35541AAC 
+X-CRM114-Status: GOOD (  37.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -156,23 +94,269 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: sricharan@codeaurora.org, boris.brezillon@collabora.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ miquel.raynal@bootlin.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 1/5/21 6:02 AM, Thomas Bogendoerfer wrote:
-> Looks like there are no boards with TX49xx CPUS other than reference
-> boards available. So it's time to drop Linux support for it.
+On Tue, Jan 05, 2021 at 12:24:45AM +0530, mdalam@codeaurora.org wrote:
+> On 2020-12-31 16:23, Manivannan Sadhasivam wrote:
+> > On Thu, Dec 17, 2020 at 07:32:56PM +0530, Md Sadre Alam wrote:
+> > > From QPIC version 2.0 onwards new register got added to
+> > > read last codeword. This change will update the same.
+> > > 
+> > > For first three code word READ_LOCATION_n register will be
+> > > use.For last code wrod READ_LOCATION_LAST_CW_n register will be
+> > > use.
+> > > 
+> > > Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+> > > ---
+> > >  drivers/mtd/nand/raw/qcom_nandc.c | 79
+> > > +++++++++++++++++++++++++++++++++------
+> > >  1 file changed, 67 insertions(+), 12 deletions(-)
+> > > 
+> > > diff --git a/drivers/mtd/nand/raw/qcom_nandc.c
+> > > b/drivers/mtd/nand/raw/qcom_nandc.c
+> > > index 667e4bf..eaef51d 100644
+> > > --- a/drivers/mtd/nand/raw/qcom_nandc.c
+> > > +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+> > > @@ -48,6 +48,10 @@
+> > >  #define	NAND_READ_LOCATION_1		0xf24
+> > >  #define	NAND_READ_LOCATION_2		0xf28
+> > >  #define	NAND_READ_LOCATION_3		0xf2c
+> > > +#define NAND_READ_LOCATION_LAST_CW_0    0xf40
+> > > +#define NAND_READ_LOCATION_LAST_CW_1    0xf44
+> > > +#define NAND_READ_LOCATION_LAST_CW_2    0xf48
+> > > +#define NAND_READ_LOCATION_LAST_CW_3    0xf4c
+> > 
+> > Please keep the alignment as before.
+> > 
+>  Fixed alignment in V2 patch
+> > > 
+> > >  /* dummy register offsets, used by write_reg_dma */
+> > >  #define	NAND_DEV_CMD1_RESTORE		0xdead
+> > > @@ -187,6 +191,12 @@ nandc_set_reg(nandc,
+> > > NAND_READ_LOCATION_##reg,			\
+> > >  	      ((size) << READ_LOCATION_SIZE) |			\
+> > >  	      ((is_last) << READ_LOCATION_LAST))
+> > > 
+> > > +#define nandc_set_read_loc_last(nandc, reg, offset, size, is_last)	\
+> > > +nandc_set_reg(nandc, NAND_READ_LOCATION_LAST_CW_##reg,			\
+> > > +	      ((offset) << READ_LOCATION_OFFSET) |		\
+> > > +	      ((size) << READ_LOCATION_SIZE) |			\
+> > > +	      ((is_last) << READ_LOCATION_LAST))
+> > > +
+> > >  /*
+> > >   * Returns the actual register address for all NAND_DEV_ registers
+> > >   * (i.e. NAND_DEV_CMD0, NAND_DEV_CMD1, NAND_DEV_CMD2 and
+> > > NAND_DEV_CMD_VLD)
+> > > @@ -316,6 +326,10 @@ struct nandc_regs {
+> > >  	__le32 read_location1;
+> > >  	__le32 read_location2;
+> > >  	__le32 read_location3;
+> > > +	__le32 read_location_last0;
+> > > +	__le32 read_location_last1;
+> > > +	__le32 read_location_last2;
+> > > +	__le32 read_location_last3;
+> > > 
+> > >  	__le32 erased_cw_detect_cfg_clr;
+> > >  	__le32 erased_cw_detect_cfg_set;
+> > > @@ -644,6 +658,14 @@ static __le32 *offset_to_nandc_reg(struct
+> > > nandc_regs *regs, int offset)
+> > >  		return &regs->read_location2;
+> > >  	case NAND_READ_LOCATION_3:
+> > >  		return &regs->read_location3;
+> > > +	case NAND_READ_LOCATION_LAST_CW_0:
+> > > +		return &regs->read_location_last0;
+> > > +	case NAND_READ_LOCATION_LAST_CW_1:
+> > > +		return &regs->read_location_last1;
+> > > +	case NAND_READ_LOCATION_LAST_CW_2:
+> > > +		return &regs->read_location_last2;
+> > > +	case NAND_READ_LOCATION_LAST_CW_3:
+> > > +		return &regs->read_location_last3;
+> > >  	default:
+> > >  		return NULL;
+> > >  	}
+> > > @@ -719,9 +741,13 @@ static void update_rw_regs(struct
+> > > qcom_nand_host *host, int num_cw, bool read)
+> > >  	nandc_set_reg(nandc, NAND_READ_STATUS, host->clrreadstatus);
+> > >  	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
+> > > 
+> > > -	if (read)
+> > > +	if (read) {
+> > > +		if (nandc->props->qpic_v2)
+> > > +			nandc_set_read_loc_last(nandc, 0, 0, host->use_ecc ?
+> > > +					host->cw_data : host->cw_size, 1);
+> > 
+> > Forgot to add else? Otherwise both NAND_READ_LOCATION_n and
+> > NAND_READ_LOCATION_LAST_CW_n
+> > will be used.
 > 
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> ---
+>   Here else is not needed , because to read last code word we need to
+> configure
+>   NAND_READ_LOCATION_LAST_CW_n register. Any way here we are doing only
+> register configuration.
+>   for all the code words. Earlier version of QPIC we were using
+> nandc_set_read_loc()
+>   for all the code words, but in qpic V2 onwards for last code word we have
+> to use
+>   NAND_READ_LOCATION_LAST_CW_n register. So configuring here the same.
+> 
 
->  drivers/watchdog/Kconfig                      |   2 +-
+nandc_set_read_loc() has the last argument "is_last". This is used to convey
+whether we need to set READ_LOCATION_LAST bit or not. This is fine for QPIC
+IP < 2, but for >=2 we need to use nandc_set_read_loc_last() only. My point
+is why do you need to still use nandc_set_read_loc() here for QPIC v2? That's
+why I asked you about using else().
 
-Acked-by: Guenter Roeck <linux@roeck-us.net>
+> 
+> > 
+> > >  		nandc_set_read_loc(nandc, 0, 0, host->use_ecc ?
+> > >  				   host->cw_data : host->cw_size, 1);
+> > > +	}
+> > >  }
+> > > 
+> > >  /*
+> > > @@ -1096,9 +1122,13 @@ static void config_nand_page_read(struct
+> > > qcom_nand_controller *nandc)
+> > >  static void
+> > >  config_nand_cw_read(struct qcom_nand_controller *nandc, bool use_ecc)
+> > >  {
+> > > -	if (nandc->props->is_bam)
+> > > +	if (nandc->props->is_bam) {
+> > > +		if (nandc->props->qpic_v2)
+> > > +			write_reg_dma(nandc, NAND_READ_LOCATION_LAST_CW_0,
+> > > +				      4, NAND_BAM_NEXT_SGL);
+> > >  		write_reg_dma(nandc, NAND_READ_LOCATION_0, 4,
+> > >  			      NAND_BAM_NEXT_SGL);
+> > 
+> > Don't you need to modify the number of registers to write? It can't be 4
+> > all the
+> > time if NAND_READ_LOCATION_LAST_CW_0 is used.
+> 
+>   Changed number of registers to write from 4 to 1 in V2 patch for register
+> NAND_READ_LOCATION_LAST_CW_0 .
+> > 
+> > > +	}
+> > > 
+> > >  	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
+> > >  	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
+> > > @@ -1633,16 +1663,28 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd,
+> > > struct nand_chip *chip,
+> > >  	}
+> > > 
+> > >  	if (nandc->props->is_bam) {
+> > > -		nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
+> > > +		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
+> > > +			nandc_set_read_loc_last(nandc, 0, read_loc, data_size1, 0);
+> > > +		else
+> > > +			nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
+> > 
+> > IIUC nandc_set_read_loc_last() is only needed to read the last codeword
+> > which is
+> > handled by the last command in this function:
+> 
+>   Function qcom_nandc_read_cw_raw() is getting called for each code word for
+> raw read and its reading
+>   one code word at a time. So to read last code word when condition cw ==
+> (ecc->steps - 1) will match, we have
+>   to configure NAND_READ_LOCATION_LAST_CW_n register. Because below piece of
+> code is doing one code word
+>   read for first three code word so same logic will also apply for last code
+> word as well.
+> 
 
-Guenter
+Fine, but still "cw == (ecc->steps - 1)" will stay same for all comparisions
+in this function, right? So why can't you use it only for the last command?
+
+> > 
+> > nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
+> > 
+> > >  		read_loc += data_size1;
+> > > 
+> > > -		nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
+> > > +		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
+> > > +			nandc_set_read_loc_last(nandc, 1, read_loc, oob_size1, 0);
+> > > +		else
+> > > +			nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
+> > >  		read_loc += oob_size1;
+> > > 
+> > > -		nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
+> > > +		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
+> > > +			nandc_set_read_loc_last(nandc, 2, read_loc, data_size2, 0);
+> > > +		else
+> > > +			nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
+> > >  		read_loc += data_size2;
+> > > 
+> > > -		nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
+> > > +		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
+> > > +			nandc_set_read_loc_last(nandc, 3, read_loc, oob_size2, 0);
+> > > +		else
+> > > +			nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
+> > >  	}
+> > > 
+> > >  	config_nand_cw_read(nandc, false);
+> > > @@ -1873,14 +1915,27 @@ static int read_page_ecc(struct
+> > > qcom_nand_host *host, u8 *data_buf,
+> > > 
+> > >  		if (nandc->props->is_bam) {
+> > >  			if (data_buf && oob_buf) {
+> > > -				nandc_set_read_loc(nandc, 0, 0, data_size, 0);
+> > > -				nandc_set_read_loc(nandc, 1, data_size,
+> > > -						   oob_size, 1);
+> > > +				if (nandc->props->qpic_v2 && i == (ecc->steps - 1)) {
+> > > +					nandc_set_read_loc_last(nandc, 0, 0, data_size, 0);
+> > 
+> > Why do you need this? Can't you use nandc_set_read_loc()? Same for below
+> > cases.
+> 
+>   Here we are looping for all the code words and when we will do
+> configuration for last
+>   code word we have to use NAND_READ_LOCATION_LAST_CW_n register that's why
+> i am using
+>   nandc_set_read_loc_last() instead of nandc_set_read_loc().
+> > 
+
+Sorry, confused! You are calling nandc_set_read_loc_last() twice and only the
+last one has "is_last" flag set. Can you please clarify?
+
+Thanks,
+Mani
+
+> > Thanks,
+> > Mani
+> > 
+> > > +					nandc_set_read_loc_last(nandc, 1, data_size,
+> > > +								oob_size, 1);
+> > > +				} else {
+> > > +					nandc_set_read_loc(nandc, 0, 0, data_size, 0);
+> > > +					nandc_set_read_loc(nandc, 1, data_size,
+> > > +							   oob_size, 1);
+> > > +				}
+> > >  			} else if (data_buf) {
+> > > -				nandc_set_read_loc(nandc, 0, 0, data_size, 1);
+> > > +				if (nandc->props->qpic_v2 && i == (ecc->steps - 1))
+> > > +					nandc_set_read_loc_last(nandc, 0, 0, data_size, 1);
+> > > +				else
+> > > +					nandc_set_read_loc(nandc, 0, 0, data_size, 1);
+> > >  			} else {
+> > > -				nandc_set_read_loc(nandc, 0, data_size,
+> > > -						   oob_size, 1);
+> > > +				if (nandc->props->qpic_v2 && i == (ecc->steps - 1))
+> > > +					nandc_set_read_loc_last(nandc, 0, data_size,
+> > > +								oob_size, 1);
+> > > +				else
+> > > +					nandc_set_read_loc(nandc, 0, data_size,
+> > > +							   oob_size, 1);
+> > >  			}
+> > >  		}
+> > > 
+> > > --
+> > > 2.7.4
+> > > 
 
 ______________________________________________________
 Linux MTD discussion mailing list
