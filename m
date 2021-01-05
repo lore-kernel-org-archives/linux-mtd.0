@@ -2,57 +2,69 @@ Return-Path: <SRS0=PNEu=GI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2841C433E0
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Jan 2021 13:33:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C369C433E0
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Jan 2021 14:04:46 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A21AA225AC
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Jan 2021 13:33:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A21AA225AC
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 0E78422AAB
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Jan 2021 14:04:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E78422AAB
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=ZefDBinu0H3KWhrsa8f7ne+7pCtM1tJxwLzllkDWT/A=; b=sdCfBTk7R27qkG0U7tWJzxbvw
-	AdZl8YC9gUc5DtpDDlZ/pz192tFm1V0f7YYvOaojCsJnPkZY2GbB9+FOo+vsdxLz8IzM8GoDr+CzT
-	3F38I7S5PfLzPHN33qSrtnRaxp82Cwg4BkuA1jmS0ZwXAiCQcb22NotjzpTkF6JAdEw6Lkae9iJyr
-	uvRo405ds1fFYHRkPgRSQxa7YCeL74i0AtMbEigcfsqfhLIZL/m3m2qkFrUJjsPRQD/D5fSdO0BBi
-	JXCK203RYwla6ky8adgQhHgPoDv038zmKXKCzPt7gvYJGxV0/r5AtJWQXz8TZmo0AmStbVo8YZQvH
-	kDVxcUkxA==;
+	Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
+	:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=kaarL62+YVrntSPvhTAeyDKvbZ4VRH9eMY4hQMni7kM=; b=E7CDmP8l/xhxE16mVU75byudku
+	i+rYwWc9vy+2eIAVKkL0ZV3Wwg6HF/q+esUe6MnxvWkXFAjg6IlY/gDDSp/Kq6HD1d6qFR73hWMKt
+	2ECYhkhcg0zdyDkkymHEx36rzszokJAy4NgYOgtdqemCJMXiLvZ7y6rhuj1R7doLFESLK5MhMDYaE
+	ZIt8YdRhSdjvmwyAgjffMwfaB87e9FT18LVVTVshKDdOyMf4boaQEkiqs3/iVEA2pSBASOISBXhdH
+	F6d6+Y9cT/aoNkqHJhpHS87+fkEOeXRfijJEwVO/0jVWChU5tzpbH9v57AL6HK/N2D9co4jSxrJC+
+	Ld+6/JJQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kwmRU-0005u2-9q; Tue, 05 Jan 2021 13:32:08 +0000
-Received: from relay11.mail.gandi.net ([217.70.178.231])
+	id 1kwmvz-0002Qx-5j; Tue, 05 Jan 2021 14:03:39 +0000
+Received: from mx2.suse.de ([195.135.220.15])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kwmRQ-0005tT-Iv
- for linux-mtd@lists.infradead.org; Tue, 05 Jan 2021 13:32:05 +0000
-Received: from xps13 (lfbn-tou-1-1535-bdcst.w90-89.abo.wanadoo.fr
- [90.89.98.255]) (Authenticated sender: miquel.raynal@bootlin.com)
- by relay11.mail.gandi.net (Postfix) with ESMTPSA id A9B69100018;
- Tue,  5 Jan 2021 13:31:58 +0000 (UTC)
-Date: Tue, 5 Jan 2021 14:31:57 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Md Sadre Alam <mdalam@codeaurora.org>
-Subject: Re: [PATCH V2] mtd: rawnand: qcom: update last code word register
-Message-ID: <20210105143157.6262f7d5@xps13>
-In-Reply-To: <1609785078-22310-1-git-send-email-mdalam@codeaurora.org>
-References: <1609785078-22310-1-git-send-email-mdalam@codeaurora.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1kwmvx-0002QG-51
+ for linux-mtd@lists.infradead.org; Tue, 05 Jan 2021 14:03:38 +0000
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id D2075AE61;
+ Tue,  5 Jan 2021 14:03:33 +0000 (UTC)
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Matt Mackall <mpm@selenic.com>, Herbert Xu <herbert@gondor.apana.org.au>,
+ Dan Williams <dan.j.williams@intel.com>, Vinod Koul <vkoul@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Jakub Kicinski <kuba@kernel.org>, Alessandro Zummo <a.zummo@towertech.it>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Mark Brown <broonie@kernel.org>, Wim Van Sebroeck <wim@linux-watchdog.org>,
+ Guenter Roeck <linux@roeck-us.net>, Liam Girdwood <lgirdwood@gmail.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-ide@vger.kernel.org, linux-mtd@lists.infradead.org,
+ netdev@vger.kernel.org, linux-rtc@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-watchdog@vger.kernel.org,
+ alsa-devel@alsa-project.org
+Subject: [PATCH 00/10] Remove support for TX49xx
+Date: Tue,  5 Jan 2021 15:02:45 +0100
+Message-Id: <20210105140305.141401-1-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210105_083204_722259_2ED2376A 
-X-CRM114-Status: GOOD (  17.83  )
+X-CRM114-CacheID: sfid-20210105_090337_433772_8C46229A 
+X-CRM114-Status: GOOD (  17.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -64,49 +76,183 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, linux-kernel@vger.kernel.org,
- boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
- manivannan.sadhasivam@linaro.org, sricharan@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpNZCBTYWRyZSBBbGFtIDxtZGFsYW1AY29kZWF1cm9yYS5vcmc+IHdyb3RlIG9uIFR1
-ZSwgIDUgSmFuIDIwMjEKMDA6MDE6MTggKzA1MzA6Cgo+IEZyb20gUVBJQyB2ZXJzaW9uIDIuMCBv
-bndhcmRzIG5ldyByZWdpc3RlciBnb3QgYWRkZWQgdG8KPiByZWFkIGxhc3QgY29kZXdvcmQuIFRo
-aXMgY2hhbmdlIHdpbGwgdXBkYXRlIHRoZSBzYW1lLgo+IAo+IEZvciBmaXJzdCB0aHJlZSBjb2Rl
-IHdvcmQgUkVBRF9MT0NBVElPTl9uIHJlZ2lzdGVyIHdpbGwgYmUKPiB1c2UuRm9yIGxhc3QgY29k
-ZSB3cm9kIFJFQURfTE9DQVRJT05fTEFTVF9DV19uIHJlZ2lzdGVyIHdpbGwgYmUKCnMvd3JvZC93
-b3JkCgo+IHVzZS4KPiAKClBsZWFzZSBhZGQgYSBGaXhlcyB0YWcgaGVyZQoKPiBTaWduZWQtb2Zm
-LWJ5OiBNZCBTYWRyZSBBbGFtIDxtZGFsYW1AY29kZWF1cm9yYS5vcmc+Cj4gLS0tCj4gW1YyXQo+
-ICAqIEZpeGVkIGFsaWdubWVudCBmb3IgTkFORF9SRUFEX0xPQ0FUSU9OX0xBU1RfQ1dfbiByZWcg
-bWFjcm8KPiAgKiBDaGFuZ2VkIG51bWJlciBvZiByZWdpc3RlciB3cml0ZSB0byAxIHdoZW4gTkFO
-RF9SRUFEX0xPQ0FUSU9OX0xBU1RfQ1dfbiByZWdpc3RlciB3aWxsIHVzZQo+ICBkcml2ZXJzL210
-ZC9uYW5kL3Jhdy9xY29tX25hbmRjLmMgfCAxMCArKysrKy0tLS0tCj4gIDEgZmlsZSBjaGFuZ2Vk
-LCA1IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZl
-cnMvbXRkL25hbmQvcmF3L3Fjb21fbmFuZGMuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L3Fjb21f
-bmFuZGMuYwo+IGluZGV4IGVhZWY1MWQuLjllODkyMzYgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9t
-dGQvbmFuZC9yYXcvcWNvbV9uYW5kYy5jCj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvcWNv
-bV9uYW5kYy5jCj4gQEAgLTQ4LDEwICs0OCwxMCBAQAo+ICAjZGVmaW5lCU5BTkRfUkVBRF9MT0NB
-VElPTl8xCQkweGYyNAo+ICAjZGVmaW5lCU5BTkRfUkVBRF9MT0NBVElPTl8yCQkweGYyOAo+ICAj
-ZGVmaW5lCU5BTkRfUkVBRF9MT0NBVElPTl8zCQkweGYyYwo+IC0jZGVmaW5lIE5BTkRfUkVBRF9M
-T0NBVElPTl9MQVNUX0NXXzAgICAgMHhmNDAKPiAtI2RlZmluZSBOQU5EX1JFQURfTE9DQVRJT05f
-TEFTVF9DV18xICAgIDB4ZjQ0Cj4gLSNkZWZpbmUgTkFORF9SRUFEX0xPQ0FUSU9OX0xBU1RfQ1df
-MiAgICAweGY0OAo+IC0jZGVmaW5lIE5BTkRfUkVBRF9MT0NBVElPTl9MQVNUX0NXXzMgICAgMHhm
-NGMKPiArI2RlZmluZQlOQU5EX1JFQURfTE9DQVRJT05fTEFTVF9DV18wCTB4ZjQwCj4gKyNkZWZp
-bmUJTkFORF9SRUFEX0xPQ0FUSU9OX0xBU1RfQ1dfMQkweGY0NAo+ICsjZGVmaW5lCU5BTkRfUkVB
-RF9MT0NBVElPTl9MQVNUX0NXXzIJMHhmNDgKPiArI2RlZmluZQlOQU5EX1JFQURfTE9DQVRJT05f
-TEFTVF9DV18zCTB4ZjRjCgpJdCBsb29rcyBsaWtlIHlvdSBmb3Jnb3QgdG8gc3F1YXNoIHRoaXMg
-dG8geW91IG9yaWdpbmFsIHBhdGNoIDopCgo+ICAKPiAgLyogZHVtbXkgcmVnaXN0ZXIgb2Zmc2V0
-cywgdXNlZCBieSB3cml0ZV9yZWdfZG1hICovCj4gICNkZWZpbmUJTkFORF9ERVZfQ01EMV9SRVNU
-T1JFCQkweGRlYWQKPiBAQCAtMTEyNSw3ICsxMTI1LDcgQEAgY29uZmlnX25hbmRfY3dfcmVhZChz
-dHJ1Y3QgcWNvbV9uYW5kX2NvbnRyb2xsZXIgKm5hbmRjLCBib29sIHVzZV9lY2MpCj4gIAlpZiAo
-bmFuZGMtPnByb3BzLT5pc19iYW0pIHsKPiAgCQlpZiAobmFuZGMtPnByb3BzLT5xcGljX3YyKQo+
-ICAJCQl3cml0ZV9yZWdfZG1hKG5hbmRjLCBOQU5EX1JFQURfTE9DQVRJT05fTEFTVF9DV18wLAo+
-IC0JCQkJICAgICAgNCwgTkFORF9CQU1fTkVYVF9TR0wpOwo+ICsJCQkJICAgICAgMSwgTkFORF9C
-QU1fTkVYVF9TR0wpOwo+ICAJCXdyaXRlX3JlZ19kbWEobmFuZGMsIE5BTkRfUkVBRF9MT0NBVElP
-Tl8wLCA0LAo+ICAJCQkgICAgICBOQU5EX0JBTV9ORVhUX1NHTCk7Cj4gIAl9CgpUaGFua3MsCk1p
-cXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+I couldn't find any buyable product other than reference boards using
+TX49xx CPUs. And since nobody showed interest in keeping support for
+it, it's time to remove it.
+
+I've split up the removal into seperate parts for different maintainers.
+So if the patch fits your needs, please take it via your tree or
+give me an ack so I can apply them  the mips-next tree.
+
+Thomas Bogendoerfer (10):
+  MIPS: TX49xx: Drop support
+  net: tc35815: Drop support for TX49XX boards
+  net: 8390: Drop support for TX49XX boards
+  spi: txx9: Remove driver
+  dma: tx49 removal
+  mtd: Remove drivers used by TX49xx
+  char: hw_random: Remove tx4939 driver
+  rtc: tx4939: Remove driver
+  ide: tx4938ide: Remove driver
+  ASoC: txx9: Remove driver
+
+ arch/mips/Kbuild.platforms                    |   1 -
+ arch/mips/Kconfig                             |  23 -
+ arch/mips/Makefile                            |   1 -
+ arch/mips/configs/rbtx49xx_defconfig          |  98 ---
+ arch/mips/include/asm/cpu-type.h              |   4 -
+ arch/mips/include/asm/cpu.h                   |   2 +-
+ .../asm/mach-tx49xx/cpu-feature-overrides.h   |  26 -
+ arch/mips/include/asm/mach-tx49xx/ioremap.h   |  30 -
+ arch/mips/include/asm/mach-tx49xx/kmalloc.h   |   7 -
+ .../include/asm/mach-tx49xx/mangle-port.h     |  27 -
+ arch/mips/include/asm/mach-tx49xx/spaces.h    |  17 -
+ arch/mips/include/asm/mipsregs.h              |   6 -
+ arch/mips/include/asm/txx9/boards.h           |  10 -
+ arch/mips/include/asm/txx9/generic.h          |   9 -
+ arch/mips/include/asm/txx9/rbtx4927.h         |  92 ---
+ arch/mips/include/asm/txx9/rbtx4938.h         | 145 ----
+ arch/mips/include/asm/txx9/rbtx4939.h         | 142 ----
+ arch/mips/include/asm/txx9/tx4927.h           | 273 --------
+ arch/mips/include/asm/txx9/tx4927pcic.h       | 203 ------
+ arch/mips/include/asm/txx9/tx4938.h           | 312 ---------
+ arch/mips/include/asm/txx9/tx4939.h           | 524 ---------------
+ arch/mips/include/asm/vermagic.h              |   2 -
+ arch/mips/kernel/cpu-probe.c                  |  10 -
+ arch/mips/kernel/idle.c                       |   3 -
+ arch/mips/mm/c-r4k.c                          |  77 ---
+ arch/mips/mm/page.c                           |   1 -
+ arch/mips/mm/tlbex.c                          |   1 -
+ arch/mips/pci/Makefile                        |   6 -
+ arch/mips/pci/fixup-rbtx4927.c                |  73 --
+ arch/mips/pci/fixup-rbtx4938.c                |  53 --
+ arch/mips/pci/ops-tx4927.c                    | 524 ---------------
+ arch/mips/pci/pci-tx4927.c                    |  91 ---
+ arch/mips/pci/pci-tx4938.c                    | 142 ----
+ arch/mips/pci/pci-tx4939.c                    | 107 ---
+ arch/mips/txx9/Kconfig                        |  89 ---
+ arch/mips/txx9/Makefile                       |   8 -
+ arch/mips/txx9/Platform                       |   3 -
+ arch/mips/txx9/generic/7segled.c              | 123 ----
+ arch/mips/txx9/generic/Makefile               |   4 -
+ arch/mips/txx9/generic/irq_tx4927.c           |  49 --
+ arch/mips/txx9/generic/irq_tx4938.c           |  37 --
+ arch/mips/txx9/generic/irq_tx4939.c           | 216 ------
+ arch/mips/txx9/generic/mem_tx4927.c           |  75 ---
+ arch/mips/txx9/generic/setup.c                | 158 +----
+ arch/mips/txx9/generic/setup_tx4927.c         | 337 ----------
+ arch/mips/txx9/generic/setup_tx4938.c         | 485 --------------
+ arch/mips/txx9/generic/setup_tx4939.c         | 568 ----------------
+ arch/mips/txx9/rbtx4927/Makefile              |   2 -
+ arch/mips/txx9/rbtx4927/irq.c                 | 198 ------
+ arch/mips/txx9/rbtx4927/prom.c                |  42 --
+ arch/mips/txx9/rbtx4927/setup.c               | 380 -----------
+ arch/mips/txx9/rbtx4938/Makefile              |   2 -
+ arch/mips/txx9/rbtx4938/irq.c                 | 157 -----
+ arch/mips/txx9/rbtx4938/prom.c                |  22 -
+ arch/mips/txx9/rbtx4938/setup.c               | 372 -----------
+ arch/mips/txx9/rbtx4939/Makefile              |   2 -
+ arch/mips/txx9/rbtx4939/irq.c                 |  95 ---
+ arch/mips/txx9/rbtx4939/prom.c                |  29 -
+ arch/mips/txx9/rbtx4939/setup.c               | 554 ---------------
+ drivers/char/hw_random/Kconfig                |  13 -
+ drivers/char/hw_random/Makefile               |   1 -
+ drivers/char/hw_random/tx4939-rng.c           | 157 -----
+ drivers/dma/Kconfig                           |   2 +-
+ drivers/dma/txx9dmac.h                        |  10 -
+ drivers/ide/Kconfig                           |  10 -
+ drivers/ide/Makefile                          |   3 -
+ drivers/ide/tx4938ide.c                       | 209 ------
+ drivers/ide/tx4939ide.c                       | 628 ------------------
+ drivers/mtd/maps/Kconfig                      |   6 -
+ drivers/mtd/maps/Makefile                     |   1 -
+ drivers/mtd/maps/rbtx4939-flash.c             | 133 ----
+ drivers/mtd/nand/raw/Kconfig                  |   7 -
+ drivers/mtd/nand/raw/Makefile                 |   1 -
+ drivers/mtd/nand/raw/txx9ndfmc.c              | 423 ------------
+ drivers/net/ethernet/8390/Kconfig             |   2 +-
+ drivers/net/ethernet/8390/ne.c                |   7 +-
+ drivers/net/ethernet/toshiba/tc35815.c        |  29 -
+ drivers/rtc/Kconfig                           |   7 -
+ drivers/rtc/Makefile                          |   1 -
+ drivers/rtc/rtc-tx4939.c                      | 303 ---------
+ drivers/spi/Kconfig                           |   6 -
+ drivers/spi/Makefile                          |   1 -
+ drivers/spi/spi-txx9.c                        | 477 -------------
+ drivers/watchdog/Kconfig                      |   2 +-
+ include/linux/platform_data/txx9/ndfmc.h      |  28 -
+ sound/soc/Kconfig                             |   1 -
+ sound/soc/Makefile                            |   1 -
+ sound/soc/txx9/Kconfig                        |  30 -
+ sound/soc/txx9/Makefile                       |  12 -
+ sound/soc/txx9/txx9aclc-ac97.c                | 230 -------
+ sound/soc/txx9/txx9aclc-generic.c             |  88 ---
+ sound/soc/txx9/txx9aclc.c                     | 422 ------------
+ sound/soc/txx9/txx9aclc.h                     |  71 --
+ 93 files changed, 6 insertions(+), 10365 deletions(-)
+ delete mode 100644 arch/mips/configs/rbtx49xx_defconfig
+ delete mode 100644 arch/mips/include/asm/mach-tx49xx/cpu-feature-overrides.h
+ delete mode 100644 arch/mips/include/asm/mach-tx49xx/ioremap.h
+ delete mode 100644 arch/mips/include/asm/mach-tx49xx/kmalloc.h
+ delete mode 100644 arch/mips/include/asm/mach-tx49xx/mangle-port.h
+ delete mode 100644 arch/mips/include/asm/mach-tx49xx/spaces.h
+ delete mode 100644 arch/mips/include/asm/txx9/rbtx4927.h
+ delete mode 100644 arch/mips/include/asm/txx9/rbtx4938.h
+ delete mode 100644 arch/mips/include/asm/txx9/rbtx4939.h
+ delete mode 100644 arch/mips/include/asm/txx9/tx4927.h
+ delete mode 100644 arch/mips/include/asm/txx9/tx4927pcic.h
+ delete mode 100644 arch/mips/include/asm/txx9/tx4938.h
+ delete mode 100644 arch/mips/include/asm/txx9/tx4939.h
+ delete mode 100644 arch/mips/pci/fixup-rbtx4927.c
+ delete mode 100644 arch/mips/pci/fixup-rbtx4938.c
+ delete mode 100644 arch/mips/pci/ops-tx4927.c
+ delete mode 100644 arch/mips/pci/pci-tx4927.c
+ delete mode 100644 arch/mips/pci/pci-tx4938.c
+ delete mode 100644 arch/mips/pci/pci-tx4939.c
+ delete mode 100644 arch/mips/txx9/generic/7segled.c
+ delete mode 100644 arch/mips/txx9/generic/irq_tx4927.c
+ delete mode 100644 arch/mips/txx9/generic/irq_tx4938.c
+ delete mode 100644 arch/mips/txx9/generic/irq_tx4939.c
+ delete mode 100644 arch/mips/txx9/generic/mem_tx4927.c
+ delete mode 100644 arch/mips/txx9/generic/setup_tx4927.c
+ delete mode 100644 arch/mips/txx9/generic/setup_tx4938.c
+ delete mode 100644 arch/mips/txx9/generic/setup_tx4939.c
+ delete mode 100644 arch/mips/txx9/rbtx4927/Makefile
+ delete mode 100644 arch/mips/txx9/rbtx4927/irq.c
+ delete mode 100644 arch/mips/txx9/rbtx4927/prom.c
+ delete mode 100644 arch/mips/txx9/rbtx4927/setup.c
+ delete mode 100644 arch/mips/txx9/rbtx4938/Makefile
+ delete mode 100644 arch/mips/txx9/rbtx4938/irq.c
+ delete mode 100644 arch/mips/txx9/rbtx4938/prom.c
+ delete mode 100644 arch/mips/txx9/rbtx4938/setup.c
+ delete mode 100644 arch/mips/txx9/rbtx4939/Makefile
+ delete mode 100644 arch/mips/txx9/rbtx4939/irq.c
+ delete mode 100644 arch/mips/txx9/rbtx4939/prom.c
+ delete mode 100644 arch/mips/txx9/rbtx4939/setup.c
+ delete mode 100644 drivers/char/hw_random/tx4939-rng.c
+ delete mode 100644 drivers/ide/tx4938ide.c
+ delete mode 100644 drivers/ide/tx4939ide.c
+ delete mode 100644 drivers/mtd/maps/rbtx4939-flash.c
+ delete mode 100644 drivers/mtd/nand/raw/txx9ndfmc.c
+ delete mode 100644 drivers/rtc/rtc-tx4939.c
+ delete mode 100644 drivers/spi/spi-txx9.c
+ delete mode 100644 include/linux/platform_data/txx9/ndfmc.h
+ delete mode 100644 sound/soc/txx9/Kconfig
+ delete mode 100644 sound/soc/txx9/Makefile
+ delete mode 100644 sound/soc/txx9/txx9aclc-ac97.c
+ delete mode 100644 sound/soc/txx9/txx9aclc-generic.c
+ delete mode 100644 sound/soc/txx9/txx9aclc.c
+ delete mode 100644 sound/soc/txx9/txx9aclc.h
+
+-- 
+2.29.2
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
