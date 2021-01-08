@@ -2,67 +2,60 @@ Return-Path: <SRS0=9pOF=GL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6142C433DB
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Jan 2021 08:30:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22D9EC433DB
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Jan 2021 09:24:08 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 73B5123435
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Jan 2021 08:30:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73B5123435
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id B862D22BEA
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Jan 2021 09:24:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B862D22BEA
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=iwCSqd5+w1XXDb43bPYLwmk5dZD4D1zuZ998J6Xi75Q=; b=ZNm8ikj1G0IXWzAxGrAxxnNLI
-	zKjBU7ItDZFb6Rt7IH3quS4P/E7lqbQ1Lnz8yxkSibusjDPUNPlyv4InxrRQ32PGufuGzVeo1U47K
-	u0tryU1d/hIx1gU+n+aK++L2pNl6bQGuVmjLf6teGiFI5hfx4YRWtgz8k2rR1stFwelbpDDFzvCyy
-	5FQEJKsZU2o4Lyz0AjCkYKOq/NPpUhJn2pzg+3RjE3az0j/meU/ykxVwQ94AAdqf7ns8d/PCR7wM4
-	acu4JX0sOGArL3xHN91BE9aILe4QLIAViQsTI/X3OwsS/DWquvgoMFf4RIo9ykT4TvNtwG5IIm+JF
-	mXKnJmp+Q==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=Vmyw1l27lHwrWGRkKybhKkvyFMp2EmFRRFsjEYASRvs=; b=d0lx6p8WEY7Awk1PBSCTgU4v9/
+	iijtcqVfEYVBT9GB/JzgYr1Z+7PpxC4kQz8lAKjX304TbJxHRVA6XEhL3A+MPj5VXh5KAxsGd4P9k
+	OS+PnnYYO3D4WvZEecDSgkpkc9f0A/K/qRG268xqZGuY3B0KMVhcczRUZLEiOPJPR6s3KbRjhrWHE
+	JMt8X2pODAdjKiUQ0sAiaIJ652AUg2XP7FQWmHgt3+K6cb0gIqbUZZkOGpOccv5B9yDXNubxNbEqZ
+	iR076n0DKolIgPlzHGfwn8YZel9w5JrY7oWqtEUMdmT9okmcUsELELoCZ+iVV7IESAPirDLYEbZG/
+	JR6hZD2A==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kxn7v-0004Qq-3v; Fri, 08 Jan 2021 08:28:07 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1kxnz2-0002Ng-2w; Fri, 08 Jan 2021 09:23:00 +0000
+Received: from szxga04-in.huawei.com ([45.249.212.190])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kxn7p-0004QJ-0j
- for linux-mtd@lists.infradead.org; Fri, 08 Jan 2021 08:28:01 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CC7A23435;
- Fri,  8 Jan 2021 08:27:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1610094479;
- bh=SAoDiXJG+49pPIJcmLEdT3YdpudMLb3tXzuV+M1ddMg=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=EnEKOJIN+WnD4u6lFgo77faKCj54N+d/pFKhcGzW/Y3/Ccl68siuEONd2+MQVmWwA
- g8i5J1Jp9PRFqP+bjh1UVHmW6ZNZoM79Em/nHN5DHOG6ps9hEvQuax6LdoYTVQba6R
- W0M3rPvSPrbm/vYAaPU9CsppYeuXAhSoIAN8UGVK69VCDMDjU1FlkyeISfeCHTf0Cp
- UrPLrlJpGz0S4tUYkZu+D7Yp8uZm4/13PvNs53jDnTG1yuR/TZx3S6Q2A5kjWrfu5R
- w1MefWO2hD7veYyvb2xtc7eB2pAO3ZpInFWl5OgE2Cy2VRAsn/olPyc/xhF+bAgyze
- 9qY+rCVqge15w==
-Date: Fri, 8 Jan 2021 13:57:54 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: Re: [PATCH 05/10] dma: tx49 removal
-Message-ID: <20210108082754.GW2771@vkoul-mobl>
-References: <20210105140305.141401-1-tsbogend@alpha.franken.de>
- <20210105140305.141401-6-tsbogend@alpha.franken.de>
- <b84dadc2e98b1986dc800c5f6f202880ed905b38.camel@perches.com>
- <20210107164015.GA12533@alpha.franken.de>
+ id 1kxnyy-0002Lc-55
+ for linux-mtd@lists.infradead.org; Fri, 08 Jan 2021 09:22:57 +0000
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+ by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DByKY5q6jz15r0J;
+ Fri,  8 Jan 2021 17:21:53 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 8 Jan 2021 17:22:40 +0800
+From: Zheng Yongjun <zhengyongjun3@huawei.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 -next] mtd: st_spi_fsm: convert comma to semicolon
+Date: Fri, 8 Jan 2021 17:23:25 +0800
+Message-ID: <20210108092325.19037-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210107164015.GA12533@alpha.franken.de>
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210108_032801_156773_3D419B33 
-X-CRM114-Status: GOOD (  16.84  )
+X-CRM114-CacheID: sfid-20210108_042256_556620_667F3DB8 
+X-CRM114-Status: UNSURE (   8.99  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,68 +67,35 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Liam Girdwood <lgirdwood@gmail.com>,
- alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
- linux-ide@vger.kernel.org, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-spi@vger.kernel.org,
- linux-rtc@vger.kernel.org, Wim Van Sebroeck <wim@linux-watchdog.org>,
- Herbert Xu <herbert@gondor.apana.org.au>, Richard Weinberger <richard@nod.at>,
- Jakub Kicinski <kuba@kernel.org>, Guenter Roeck <linux@roeck-us.net>,
- linux-watchdog@vger.kernel.org, Joe Perches <joe@perches.com>,
- Mark Brown <broonie@kernel.org>, Matt Mackall <mpm@selenic.com>,
- Dan Williams <dan.j.williams@intel.com>, Jaroslav Kysela <perex@perex.cz>,
- Alessandro Zummo <a.zummo@towertech.it>, netdev@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org,
- "David S.  Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Cc: Zheng Yongjun <zhengyongjun3@huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 07-01-21, 17:40, Thomas Bogendoerfer wrote:
-> On Wed, Jan 06, 2021 at 11:10:38AM -0800, Joe Perches wrote:
-> > On Tue, 2021-01-05 at 15:02 +0100, Thomas Bogendoerfer wrote:
-> > > Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> > []
-> > > diff --git a/drivers/dma/txx9dmac.h b/drivers/dma/txx9dmac.h
-> > []
-> > > @@ -26,11 +26,6 @@
-> > > =A0=A0* DMA channel.
-> > > =A0=A0*/
-> > > =A0
-> > > =
+Replace a comma between expression statements by a semicolon.
 
-> > > -#ifdef CONFIG_MACH_TX49XX
-> > > -static inline bool txx9_dma_have_SMPCHN(void)
-> > > -{
-> > > -	return true;
-> > > -}
-> > > =A0#define TXX9_DMA_USE_SIMPLE_CHAIN
-> > > =A0#else
-> > > =A0static inline bool txx9_dma_have_SMPCHN(void)
-> > =
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ drivers/mtd/devices/st_spi_fsm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > This doesn't look like it compiles as there's now an #else
-> > without an #if
-> =
+diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
+index 1888523d9745..983999c020d6 100644
+--- a/drivers/mtd/devices/st_spi_fsm.c
++++ b/drivers/mtd/devices/st_spi_fsm.c
+@@ -924,7 +924,7 @@ static int stfsm_read_status(struct stfsm *fsm, uint8_t cmd,
+ 	BUG_ON(bytes != 1 && bytes != 2);
+ 
+ 	seq->seq_opc[0] = (SEQ_OPC_PADS_1 | SEQ_OPC_CYCLES(8) |
+-			   SEQ_OPC_OPCODE(cmd)),
++			   SEQ_OPC_OPCODE(cmd));
+ 
+ 	stfsm_load_seq(fsm, seq);
+ 
+-- 
+2.22.0
 
-> you are right, no idea what I had in mind while doing that.
-> =
-
-> Vinod,
-> =
-
-> as this patch series found a still active user of the platform,
-> could you drop the patch from your tree, or do you want a revert
-> from me ?
-
-Dropped now
-
--- =
-
-~Vinod
 
 ______________________________________________________
 Linux MTD discussion mailing list
