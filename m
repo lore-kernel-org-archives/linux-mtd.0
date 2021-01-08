@@ -1,21 +1,21 @@
-Return-Path: <SRS0=uqc5=GK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=9pOF=GL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4224CC433DB
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Jan 2021 16:42:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6142C433DB
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Jan 2021 08:30:25 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D696723403
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Jan 2021 16:42:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D696723403
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+	by mail.kernel.org (Postfix) with ESMTPS id 73B5123435
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Jan 2021 08:30:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73B5123435
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
@@ -23,39 +23,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=AALwNwl9SzX0Mijod+VTBi7cWDfDRBEOIcs74XsNwYU=; b=0E2fp/NtVZLTZxGb+w54DjVim
-	08/ojVD3j5g9JLcXcWgGsNJygIQrOZQDi9ocjQt2fGPtB63gynkwpo8wiTRVEXUSgNYcfmXrNX2Cr
-	1m8iUpvf5/oo2MWk26OVsznJ+EOmuFJJKV4H460gxozPAsqS5jr+d4Z/jR5kVu/vfpwmZp1nVipSM
-	6Qphaq0SiKKH2fpmi2/dI7OvM6Wsc3RDIWcs0rNLeB24B3v6eQZ7ahH06mV2sAlQfsovI4fuGP3eZ
-	Sx/8Opu2neC5cc+i5BwPqO7zYI6Dagk7/VPPjT+yOVF/a9o1f/GkF0mfVhHPN6mei+/4UptU73yxH
-	p4rNhiiUw==;
+	 bh=iwCSqd5+w1XXDb43bPYLwmk5dZD4D1zuZ998J6Xi75Q=; b=ZNm8ikj1G0IXWzAxGrAxxnNLI
+	zKjBU7ItDZFb6Rt7IH3quS4P/E7lqbQ1Lnz8yxkSibusjDPUNPlyv4InxrRQ32PGufuGzVeo1U47K
+	u0tryU1d/hIx1gU+n+aK++L2pNl6bQGuVmjLf6teGiFI5hfx4YRWtgz8k2rR1stFwelbpDDFzvCyy
+	5FQEJKsZU2o4Lyz0AjCkYKOq/NPpUhJn2pzg+3RjE3az0j/meU/ykxVwQ94AAdqf7ns8d/PCR7wM4
+	acu4JX0sOGArL3xHN91BE9aILe4QLIAViQsTI/X3OwsS/DWquvgoMFf4RIo9ykT4TvNtwG5IIm+JF
+	mXKnJmp+Q==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kxYLI-0007Ye-IG; Thu, 07 Jan 2021 16:40:56 +0000
-Received: from elvis.franken.de ([193.175.24.41])
- by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kxYLG-0007Y6-Oj
- for linux-mtd@lists.infradead.org; Thu, 07 Jan 2021 16:40:55 +0000
-Received: from uucp (helo=alpha)
- by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
- id 1kxYL4-0000Tv-00; Thu, 07 Jan 2021 17:40:42 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
- id 98E5BC080E; Thu,  7 Jan 2021 17:40:15 +0100 (CET)
-Date: Thu, 7 Jan 2021 17:40:15 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Joe Perches <joe@perches.com>
+	id 1kxn7v-0004Qq-3v; Fri, 08 Jan 2021 08:28:07 +0000
+Received: from mail.kernel.org ([198.145.29.99])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kxn7p-0004QJ-0j
+ for linux-mtd@lists.infradead.org; Fri, 08 Jan 2021 08:28:01 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CC7A23435;
+ Fri,  8 Jan 2021 08:27:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1610094479;
+ bh=SAoDiXJG+49pPIJcmLEdT3YdpudMLb3tXzuV+M1ddMg=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=EnEKOJIN+WnD4u6lFgo77faKCj54N+d/pFKhcGzW/Y3/Ccl68siuEONd2+MQVmWwA
+ g8i5J1Jp9PRFqP+bjh1UVHmW6ZNZoM79Em/nHN5DHOG6ps9hEvQuax6LdoYTVQba6R
+ W0M3rPvSPrbm/vYAaPU9CsppYeuXAhSoIAN8UGVK69VCDMDjU1FlkyeISfeCHTf0Cp
+ UrPLrlJpGz0S4tUYkZu+D7Yp8uZm4/13PvNs53jDnTG1yuR/TZx3S6Q2A5kjWrfu5R
+ w1MefWO2hD7veYyvb2xtc7eB2pAO3ZpInFWl5OgE2Cy2VRAsn/olPyc/xhF+bAgyze
+ 9qY+rCVqge15w==
+Date: Fri, 8 Jan 2021 13:57:54 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Subject: Re: [PATCH 05/10] dma: tx49 removal
-Message-ID: <20210107164015.GA12533@alpha.franken.de>
+Message-ID: <20210108082754.GW2771@vkoul-mobl>
 References: <20210105140305.141401-1-tsbogend@alpha.franken.de>
  <20210105140305.141401-6-tsbogend@alpha.franken.de>
  <b84dadc2e98b1986dc800c5f6f202880ed905b38.camel@perches.com>
+ <20210107164015.GA12533@alpha.franken.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <b84dadc2e98b1986dc800c5f6f202880ed905b38.camel@perches.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210107164015.GA12533@alpha.franken.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210107_114055_061844_38C9FDAA 
-X-CRM114-Status: GOOD (  16.80  )
+X-CRM114-CacheID: sfid-20210108_032801_156773_3D419B33 
+X-CRM114-Status: GOOD (  16.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,11 +82,11 @@ Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
  linux-rtc@vger.kernel.org, Wim Van Sebroeck <wim@linux-watchdog.org>,
  Herbert Xu <herbert@gondor.apana.org.au>, Richard Weinberger <richard@nod.at>,
  Jakub Kicinski <kuba@kernel.org>, Guenter Roeck <linux@roeck-us.net>,
- linux-watchdog@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Matt Mackall <mpm@selenic.com>, Dan Williams <dan.j.williams@intel.com>,
- Jaroslav Kysela <perex@perex.cz>, Alessandro Zummo <a.zummo@towertech.it>,
- netdev@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+ linux-watchdog@vger.kernel.org, Joe Perches <joe@perches.com>,
+ Mark Brown <broonie@kernel.org>, Matt Mackall <mpm@selenic.com>,
+ Dan Williams <dan.j.williams@intel.com>, Jaroslav Kysela <perex@perex.cz>,
+ Alessandro Zummo <a.zummo@towertech.it>, netdev@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org,
  "David S.  Miller" <davem@davemloft.net>
 Content-Type: text/plain; charset="iso-8859-1"
@@ -87,45 +94,48 @@ Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jan 06, 2021 at 11:10:38AM -0800, Joe Perches wrote:
-> On Tue, 2021-01-05 at 15:02 +0100, Thomas Bogendoerfer wrote:
-> > Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> []
-> > diff --git a/drivers/dma/txx9dmac.h b/drivers/dma/txx9dmac.h
-> []
-> > @@ -26,11 +26,6 @@
-> > =A0=A0* DMA channel.
-> > =A0=A0*/
-> > =A0
+On 07-01-21, 17:40, Thomas Bogendoerfer wrote:
+> On Wed, Jan 06, 2021 at 11:10:38AM -0800, Joe Perches wrote:
+> > On Tue, 2021-01-05 at 15:02 +0100, Thomas Bogendoerfer wrote:
+> > > Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> > []
+> > > diff --git a/drivers/dma/txx9dmac.h b/drivers/dma/txx9dmac.h
+> > []
+> > > @@ -26,11 +26,6 @@
+> > > =A0=A0* DMA channel.
+> > > =A0=A0*/
+> > > =A0
+> > > =
+
+> > > -#ifdef CONFIG_MACH_TX49XX
+> > > -static inline bool txx9_dma_have_SMPCHN(void)
+> > > -{
+> > > -	return true;
+> > > -}
+> > > =A0#define TXX9_DMA_USE_SIMPLE_CHAIN
+> > > =A0#else
+> > > =A0static inline bool txx9_dma_have_SMPCHN(void)
 > > =
 
-> > -#ifdef CONFIG_MACH_TX49XX
-> > -static inline bool txx9_dma_have_SMPCHN(void)
-> > -{
-> > -	return true;
-> > -}
-> > =A0#define TXX9_DMA_USE_SIMPLE_CHAIN
-> > =A0#else
-> > =A0static inline bool txx9_dma_have_SMPCHN(void)
+> > This doesn't look like it compiles as there's now an #else
+> > without an #if
 > =
 
-> This doesn't look like it compiles as there's now an #else
-> without an #if
+> you are right, no idea what I had in mind while doing that.
+> =
 
-you are right, no idea what I had in mind while doing that.
+> Vinod,
+> =
 
-Vinod,
+> as this patch series found a still active user of the platform,
+> could you drop the patch from your tree, or do you want a revert
+> from me ?
 
-as this patch series found a still active user of the platform,
-could you drop the patch from your tree, or do you want a revert
-from me ?
-
-Thomas.
+Dropped now
 
 -- =
 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+~Vinod
 
 ______________________________________________________
 Linux MTD discussion mailing list
