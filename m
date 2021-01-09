@@ -1,99 +1,82 @@
-Return-Path: <SRS0=9pOF=GL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=oItk=GM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,BIGNUM_EMAILS,
-	DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1745C433E0
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Jan 2021 15:01:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DCCF0C433DB
+	for <linux-mtd@archiver.kernel.org>; Sat,  9 Jan 2021 15:14:12 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3B2DF23998
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Jan 2021 15:01:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B2DF23998
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7E2A023A04
+	for <linux-mtd@archiver.kernel.org>; Sat,  9 Jan 2021 15:14:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E2A023A04
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=HWQMzCSVr9FoOPYPwjJr8I60lyEPNrbFkEAjqfUO6Qw=; b=dbhr8yZGwbuRkMlVR6X/Du7gp
-	Pl2ieTFyZdfMbNPwdWiBXmFz6B7hrbddmm2xE27sksygW8p/hzned1hIn3r/QITqIB6KDJXfj4u/e
-	L5ohqLNVQ8f0eJS/0q+QoK2Js5Di2ij7SYzt9YIAXo3w9jlrXV6U1nhp1oxEWxDmDmyMxKc0nenop
-	C20sUpynpMgdQXLwDv+EMWicfmwYuqA+3wkOhYz2ay5GDux+Agbfbu8yLattZsJPlKmcJO0G+N15L
-	oAqzKYQ21FUyEANct5ML+mpGERF9rxXqP3eHp9vAFzTUpnXH4fef7anabz2H6fPvSZLxrNsv6cOLP
-	lh1gkDlJQ==;
+	 bh=TNQVN46UkPtRIzl6v+d0yjjV1fKgQim4hp3P+vzxCgw=; b=UkG3/bQF9RtkJIXGdHCRMRqYR
+	EBvITooYE2BBDiVpitc6N/j+ak8PkBZ7PqdcRIoaZsRB3YoqClABf0Whg45ofW7cVDqx3f/AIGpSn
+	MdIqPNHmbxEID4ffRDkR9qUIpwC4R1wzP3Tp3nzvwS7Ie6gHQX8gr87h5Gordy4Jelf8sM9xBXQD+
+	/0SFHYTZAP3V8bT8VcF+FaWXPtLlcK1D4TsrpiEvnRY1wPGItKkRH+hGzcvOKWfliN1/ADpkW+4PN
+	tBjvb+RSWZe0kietw5IajRp5yTwhI8dDXpIepuYR6hFvbIfaaz0MleA1b8G6zvr90/O5k+hC96nO5
+	F7IDxpdKw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kxtFP-0005Sj-VQ; Fri, 08 Jan 2021 15:00:16 +0000
-Received: from aserp2120.oracle.com ([141.146.126.78])
+	id 1kyFv7-0007Bv-Dm; Sat, 09 Jan 2021 15:12:49 +0000
+Received: from mail-io1-xd33.google.com ([2607:f8b0:4864:20::d33])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kxtFN-0005S2-8Z
- for linux-mtd@lists.infradead.org; Fri, 08 Jan 2021 15:00:14 +0000
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
- by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 108Et2j8122872;
- Fri, 8 Jan 2021 15:00:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=UW3ALFpXs9mwY/ZTNSxhk01nPeIrcsyW43Xh7CF/OjM=;
- b=Zko/sBDkTcDWA85CO0APE0G3XrWtYnLeJ48X6A2enUuHHHtfWXndiy+ue5O9I3082l0T
- 6373QxTBuFi9QMkEchgsOaWyaDGfHVph1wOiDSmrMSuUPl9iEYLOIFfKVaj5L3GuwsCN
- MdYsVIRGL4kb8kouE8Kb7nrDt6hU0rN8ywQK1C1BBfFmZAq1A7b8bgs3Dbe5l5IHwQ5M
- 6aB4s4A1wpp9IRcmX0sZE4zbN8Gff37BMD+xKAeixKCVHnAd8jMn+Bh5Nqqif4kNwjPz
- F72p9pIlONmMQhTdqpwTTWMYVqypjuwgYPcxcg4tSECfPK+tcdj7V71d4EHSJkaDwxDC cw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
- by aserp2120.oracle.com with ESMTP id 35wepmhe4j-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 08 Jan 2021 15:00:05 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
- by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 108EuY88154749;
- Fri, 8 Jan 2021 14:58:04 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
- by aserp3030.oracle.com with ESMTP id 35v4rfcxhg-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Fri, 08 Jan 2021 14:58:04 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
- by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 108Ew4a8023636;
- Fri, 8 Jan 2021 14:58:04 GMT
-Received: from kadam (/102.36.221.92) by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Fri, 08 Jan 2021 06:58:03 -0800
-Date: Fri, 8 Jan 2021 17:57:58 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: Re: [bug report] mtd: parsers: Add Qcom SMEM parser
-Message-ID: <20210108145758.GD5105@kadam>
-References: <X/hVmWrQqLd09/KJ@mwanda>
- <20210108132828.GA28625@work>
+ id 1kyFW6-00041H-G6
+ for linux-mtd@lists.infradead.org; Sat, 09 Jan 2021 14:46:59 +0000
+Received: by mail-io1-xd33.google.com with SMTP id e22so12362729iom.5
+ for <linux-mtd@lists.infradead.org>; Sat, 09 Jan 2021 06:46:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=mwPtia1nD/Qpi9Bhr6bRR8QuA62wP4vgG/hVzJ3pFmA=;
+ b=uBiUqvU8J9xzpgep/X3CoDRPTgE0pFrwnp+uaOTO4wCCY7l9dSZOcuh/LdMzW1fxKw
+ 7IBNgYutoVh46b3m8UPTNxCBsGyoWYXJtA/9y/6NHqJHzBsR3RHk1KYtFfsBcSC40ORL
+ u2vN+sMT2rQJfTMPMqKfxkUXyRdhJg9OkRdbOi/ucOL5zXSj8brcvscEt37aLXlKU0dn
+ Iii9jk4uePMpbZo4IIy02yXMSjP4HE9DREMX04iz/Ja547L9rJ06qA9yDQ4YsxKJiTzd
+ yVGNoYlgQg+CFp/21mrU/buhiJ6AN+c4dM8q4wciCIackodM8sZDvXWAX4tacD1dPexI
+ 4trg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=mwPtia1nD/Qpi9Bhr6bRR8QuA62wP4vgG/hVzJ3pFmA=;
+ b=eHr6zVsBVB5G2uw9DDvi7FtKNxXZaibpVn6yDaiBLl4BJXSGX0BWxzIbRQaWl5GSPW
+ 0XJftsJdLsLG6ND0Kdg4viB2YyezyQQqBpO8opMZolGTAlmkq+KicxPbxlQvPCMaJ4dJ
+ BjdOpZNePYShvVp7KpeuUNFYK1Mx5fepAGBojl36NMGmgT0YHqD2/2ev1YcZC0ai42de
+ ImKdha3DsbUUh4IrWA+a5R1Dggpoiwrc01O9caUmUFB6bS1Z9SimTkalNvLNl75LKfPp
+ 8xmNgeta1ReZAdmaoIqIblrX8/T57SCr4l8TLj/TReqNKC3U+wmKMYFnljezodjvsHoU
+ XS6w==
+X-Gm-Message-State: AOAM530lyO9mYOX6wKP3+a3am/Li0KUD9vRQ2g6N7PyIk1oKQ9pWXhrK
+ fYGF4I9Dpr8Fk6ztJ0MsLWcEkahESHQiY3ctp+E=
+X-Google-Smtp-Source: ABdhPJw0g3TN/vU0/kwfdtouZEqWFoCNTerwP3mHFo+G6c+F6KD2tsNGVTssvEO4VxDsE5HCDsm4Wh5AzLR3AoW94V8=
+X-Received: by 2002:a6b:db01:: with SMTP id t1mr9349370ioc.10.1610203616062;
+ Sat, 09 Jan 2021 06:46:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210108132828.GA28625@work>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857
- signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999
- mlxscore=0 bulkscore=0
- suspectscore=0 spamscore=0 adultscore=0 malwarescore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101080086
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857
- signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0
- bulkscore=0 spamscore=0
- impostorscore=0 phishscore=0 lowpriorityscore=0 suspectscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 clxscore=1015 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101080086
+References: <20200929230124.31491-1-miquel.raynal@bootlin.com>
+ <20200929230124.31491-5-miquel.raynal@bootlin.com>
+In-Reply-To: <20200929230124.31491-5-miquel.raynal@bootlin.com>
+From: Adam Ford <aford173@gmail.com>
+Date: Sat, 9 Jan 2021 08:46:44 -0600
+Message-ID: <CAHCN7xLHAd8B_OgR2_vPFZZJ95mwNGR29dmqFeKhhSU9_y_imA@mail.gmail.com>
+Subject: Re: [PATCH 04/20] mtd: nand: ecc-bch: Stop exporting the private
+ structure
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210108_100013_432372_4926FCBA 
-X-CRM114-Status: GOOD (  17.66  )
+X-CRM114-CacheID: sfid-20210109_094658_630427_A720ED59 
+X-CRM114-Status: GOOD (  31.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,42 +88,306 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, Julien Su <juliensu@mxic.com.tw>,
+ Richard Weinberger <richard@nod.at>, ycllin@mxic.com.tw,
+ linux-mtd@lists.infradead.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Linux-OMAP <linux-omap@vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jan 08, 2021 at 06:58:28PM +0530, Manivannan Sadhasivam wrote:
-> Hi Dan,
-> 
-> On Fri, Jan 08, 2021 at 03:52:41PM +0300, Dan Carpenter wrote:
-> > Hello Manivannan Sadhasivam,
-> > 
-> > The patch 803eb124e1a6: "mtd: parsers: Add Qcom SMEM parser" from Jan
-> > 4, 2021, leads to the following static checker warning:
-> > 
-> > 	drivers/mtd/parsers/qcomsmempart.c:109 parse_qcomsmem_part()
-> > 	warn: passing zero to 'PTR_ERR'
-> > 
-> > drivers/mtd/parsers/qcomsmempart.c
-> >     68          pr_debug("Parsing partition table info from SMEM\n");
-> >     69          ptable = qcom_smem_get(SMEM_APPS, SMEM_AARM_PARTITION_TABLE, &len);
-> >     70          if (IS_ERR(ptable)) {
-> > 
-> > Can "ptable" be NULL here?
-> > 
-> 
-> No it won't. It will return valid error ptr in failure cases.
+On Tue, Sep 29, 2020 at 6:09 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+>
+> The NAND BCH control structure has nothing to do outside of this
+> driver, all users of the nand_bch_init/free() functions just save it
+> to chip->ecc.priv so do it in this driver directly and return a
+> regular error code instead.
+>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
 
-The Smatch warning is actually about the IS_ERR_OR_NULL() later.  If it
-returns NULL then that's counted as success.  It's sometimes intentional
-but here is seems like qcom_smem_get() never returns NULL so it could
-be changed to just IS_ERR().
+Starting with this commit:  3c0fe36abebe, the kernel either doesn't
+build or returns errors on some omap2plus devices with the following
+error:
 
-regards,
-dan carpenter
+    nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xbc
+    nand: Micron MT29F4G16ABBDA3W
+    nand: 512 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+    nand: using OMAP_ECC_BCH8_CODE_HW_DETECTION_SW
+    Invalid ECC layout
+    omap2-nand 30000000.nand: unable to use BCH library
+    omap2-nand: probe of 30000000.nand failed with error -22
+    8<--- cut here ---
 
+There are few commits using git bisect that have build errors, so it
+wasn't possible for me to determine the exact commit that broke the
+ECC.  If the build failed, I marked it as 'bad' to git bisect.
+
+Newer commits have remedied the build issue, but the Invalid ECC
+layout error still exists as of 5.11-RC2.
+
+Do you have any suggestions on what I can do to remedy this?  I am
+willing to try and test.
+
+
+
+>  drivers/mtd/nand/ecc-sw-bch.c       | 36 ++++++++++++++++-------------
+>  drivers/mtd/nand/raw/fsmc_nand.c    |  2 +-
+>  drivers/mtd/nand/raw/nand_base.c    | 12 ++++++----
+>  drivers/mtd/nand/raw/omap2.c        | 16 ++++++-------
+>  include/linux/mtd/nand-ecc-sw-bch.h | 11 ++++-----
+>  5 files changed, 41 insertions(+), 36 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/ecc-sw-bch.c b/drivers/mtd/nand/ecc-sw-bch.c
+> index fe080a0837d8..97221ec3876e 100644
+> --- a/drivers/mtd/nand/ecc-sw-bch.c
+> +++ b/drivers/mtd/nand/ecc-sw-bch.c
+> @@ -90,7 +90,7 @@ EXPORT_SYMBOL(nand_bch_correct_data);
+>
+>  /**
+>   * nand_bch_init - Initialize software BCH ECC engine
+> - * @mtd: MTD device
+> + * @chip: NAND chip object
+>   *
+>   * Returns: a pointer to a new NAND BCH control structure, or NULL upon failure
+>   *
+> @@ -105,24 +105,24 @@ EXPORT_SYMBOL(nand_bch_correct_data);
+>   * @eccsize = 512 (thus, m = 13 is the smallest integer such that 2^m - 1 > 512 * 8)
+>   * @eccbytes = 7 (7 bytes are required to store m * t = 13 * 4 = 52 bits)
+>   */
+> -struct nand_bch_control *nand_bch_init(struct mtd_info *mtd)
+> +int nand_bch_init(struct nand_chip *chip)
+>  {
+> -       struct nand_chip *nand = mtd_to_nand(mtd);
+> +       struct mtd_info *mtd = nand_to_mtd(chip);
+>         unsigned int m, t, eccsteps, i;
+>         struct nand_bch_control *nbc = NULL;
+>         unsigned char *erased_page;
+> -       unsigned int eccsize = nand->ecc.size;
+> -       unsigned int eccbytes = nand->ecc.bytes;
+> -       unsigned int eccstrength = nand->ecc.strength;
+> +       unsigned int eccsize = chip->ecc.size;
+> +       unsigned int eccbytes = chip->ecc.bytes;
+> +       unsigned int eccstrength = chip->ecc.strength;
+>
+>         if (!eccbytes && eccstrength) {
+>                 eccbytes = DIV_ROUND_UP(eccstrength * fls(8 * eccsize), 8);
+> -               nand->ecc.bytes = eccbytes;
+> +               chip->ecc.bytes = eccbytes;
+>         }
+>
+>         if (!eccsize || !eccbytes) {
+>                 pr_warn("ecc parameters not supplied\n");
+> -               goto fail;
+> +               return -EINVAL;
+>         }
+>
+>         m = fls(1+8*eccsize);
+> @@ -130,7 +130,9 @@ struct nand_bch_control *nand_bch_init(struct mtd_info *mtd)
+>
+>         nbc = kzalloc(sizeof(*nbc), GFP_KERNEL);
+>         if (!nbc)
+> -               goto fail;
+> +               return -ENOMEM;
+> +
+> +       chip->ecc.priv = nbc;
+>
+>         nbc->bch = bch_init(m, t, 0, false);
+>         if (!nbc->bch)
+> @@ -165,8 +167,8 @@ struct nand_bch_control *nand_bch_init(struct mtd_info *mtd)
+>          * FIXME: we should probably rework the sequencing in nand_scan_tail()
+>          * to avoid setting those fields twice.
+>          */
+> -       nand->ecc.steps = eccsteps;
+> -       nand->ecc.total = eccsteps * eccbytes;
+> +       chip->ecc.steps = eccsteps;
+> +       chip->ecc.total = eccsteps * eccbytes;
+>         if (mtd_ooblayout_count_eccbytes(mtd) != (eccsteps*eccbytes)) {
+>                 pr_warn("invalid ecc layout\n");
+>                 goto fail;
+> @@ -192,12 +194,12 @@ struct nand_bch_control *nand_bch_init(struct mtd_info *mtd)
+>                 nbc->eccmask[i] ^= 0xff;
+>
+>         if (!eccstrength)
+> -               nand->ecc.strength = (eccbytes * 8) / fls(8 * eccsize);
+> +               chip->ecc.strength = (eccbytes * 8) / fls(8 * eccsize);
+>
+> -       return nbc;
+> +       return 0;
+>  fail:
+> -       nand_bch_free(nbc);
+> -       return NULL;
+> +       nand_bch_free(chip);
+> +       return -EINVAL;
+>  }
+>  EXPORT_SYMBOL(nand_bch_init);
+>
+> @@ -205,8 +207,10 @@ EXPORT_SYMBOL(nand_bch_init);
+>   * nand_bch_free - Release NAND BCH ECC resources
+>   * @nbc: NAND BCH control structure
+>   */
+> -void nand_bch_free(struct nand_bch_control *nbc)
+> +void nand_bch_free(struct nand_chip *chip)
+>  {
+> +       struct nand_bch_control *nbc = chip->ecc.priv;
+> +
+>         if (nbc) {
+>                 bch_free(nbc->bch);
+>                 kfree(nbc->errloc);
+> diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
+> index 4191831df182..1bc2462efeab 100644
+> --- a/drivers/mtd/nand/raw/fsmc_nand.c
+> +++ b/drivers/mtd/nand/raw/fsmc_nand.c
+> @@ -927,7 +927,7 @@ static int fsmc_nand_attach_chip(struct nand_chip *nand)
+>
+>         /*
+>          * Don't set layout for BCH4 SW ECC. This will be
+> -        * generated later in nand_bch_init() later.
+> +        * generated later during BCH initialization.
+>          */
+>         if (nand->ecc.engine_type == NAND_ECC_ENGINE_TYPE_ON_HOST) {
+>                 switch (mtd->oobsize) {
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index 189d3a301a38..c47441ddc5cf 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -5208,6 +5208,7 @@ static int nand_set_ecc_soft_ops(struct nand_chip *chip)
+>         struct mtd_info *mtd = nand_to_mtd(chip);
+>         struct nand_device *nanddev = mtd_to_nanddev(mtd);
+>         struct nand_ecc_ctrl *ecc = &chip->ecc;
+> +       int ret;
+>
+>         if (WARN_ON(ecc->engine_type != NAND_ECC_ENGINE_TYPE_SOFT))
+>                 return -EINVAL;
+> @@ -5294,13 +5295,14 @@ static int nand_set_ecc_soft_ops(struct nand_chip *chip)
+>                         ecc->strength = bytes * 8 / fls(8 * ecc->size);
+>                 }
+>
+> -               /* See nand_bch_init() for details. */
+> +               /* See the software BCH ECC initialization for details */
+>                 ecc->bytes = 0;
+> -               ecc->priv = nand_bch_init(mtd);
+> -               if (!ecc->priv) {
+> +               ret = nand_bch_init(chip);
+> +               if (ret) {
+>                         WARN(1, "BCH ECC initialization failed!\n");
+> -                       return -EINVAL;
+> +                       return ret;
+>                 }
+> +
+>                 return 0;
+>         default:
+>                 WARN(1, "Unsupported ECC algorithm!\n");
+> @@ -5960,7 +5962,7 @@ void nand_cleanup(struct nand_chip *chip)
+>  {
+>         if (chip->ecc.engine_type == NAND_ECC_ENGINE_TYPE_SOFT &&
+>             chip->ecc.algo == NAND_ECC_ALGO_BCH)
+> -               nand_bch_free((struct nand_bch_control *)chip->ecc.priv);
+> +               nand_bch_free(chip);
+>
+>         nanddev_cleanup(&chip->base);
+>
+> diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
+> index 0ef209e1cd87..6aab57336690 100644
+> --- a/drivers/mtd/nand/raw/omap2.c
+> +++ b/drivers/mtd/nand/raw/omap2.c
+> @@ -2047,10 +2047,10 @@ static int omap_nand_attach_chip(struct nand_chip *chip)
+>                 /* Reserve one byte for the OMAP marker */
+>                 oobbytes_per_step       = chip->ecc.bytes + 1;
+>                 /* Software BCH library is used for locating errors */
+> -               chip->ecc.priv          = nand_bch_init(mtd);
+> -               if (!chip->ecc.priv) {
+> +               err = nand_bch_init(chip);
+> +               if (err) {
+>                         dev_err(dev, "Unable to use BCH library\n");
+> -                       return -EINVAL;
+> +                       return err;
+>                 }
+>                 break;
+>
+> @@ -2089,10 +2089,10 @@ static int omap_nand_attach_chip(struct nand_chip *chip)
+>                 /* Reserve one byte for the OMAP marker */
+>                 oobbytes_per_step       = chip->ecc.bytes + 1;
+>                 /* Software BCH library is used for locating errors */
+> -               chip->ecc.priv          = nand_bch_init(mtd);
+> -               if (!chip->ecc.priv) {
+> +               err = nand_bch_init(chip);
+> +               if (err) {
+>                         dev_err(dev, "unable to use BCH library\n");
+> -                       return -EINVAL;
+> +                       return err;
+>                 }
+>                 break;
+>
+> @@ -2272,7 +2272,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+>         if (!IS_ERR_OR_NULL(info->dma))
+>                 dma_release_channel(info->dma);
+>         if (nand_chip->ecc.priv) {
+> -               nand_bch_free(nand_chip->ecc.priv);
+> +               nand_bch_free(nand_chip);
+>                 nand_chip->ecc.priv = NULL;
+>         }
+>         return err;
+> @@ -2286,7 +2286,7 @@ static int omap_nand_remove(struct platform_device *pdev)
+>         int ret;
+>
+>         if (nand_chip->ecc.priv) {
+> -               nand_bch_free(nand_chip->ecc.priv);
+> +               nand_bch_free(nand_chip);
+>                 nand_chip->ecc.priv = NULL;
+>         }
+>         if (info->dma)
+> diff --git a/include/linux/mtd/nand-ecc-sw-bch.h b/include/linux/mtd/nand-ecc-sw-bch.h
+> index 1e1ee3af82b1..b62b8bd4669f 100644
+> --- a/include/linux/mtd/nand-ecc-sw-bch.h
+> +++ b/include/linux/mtd/nand-ecc-sw-bch.h
+> @@ -10,7 +10,6 @@
+>
+>  struct mtd_info;
+>  struct nand_chip;
+> -struct nand_bch_control;
+>
+>  #if IS_ENABLED(CONFIG_MTD_NAND_ECC_SW_BCH)
+>
+> @@ -30,11 +29,11 @@ int nand_bch_correct_data(struct nand_chip *chip, u_char *dat,
+>  /*
+>   * Initialize BCH encoder/decoder
+>   */
+> -struct nand_bch_control *nand_bch_init(struct mtd_info *mtd);
+> +int nand_bch_init(struct nand_chip *chip);
+>  /*
+>   * Release BCH encoder/decoder resources
+>   */
+> -void nand_bch_free(struct nand_bch_control *nbc);
+> +void nand_bch_free(struct nand_chip *chip);
+>
+>  #else /* !CONFIG_MTD_NAND_ECC_SW_BCH */
+>
+> @@ -54,12 +53,12 @@ nand_bch_correct_data(struct nand_chip *chip, unsigned char *buf,
+>         return -ENOTSUPP;
+>  }
+>
+> -static inline struct nand_bch_control *nand_bch_init(struct mtd_info *mtd)
+> +static inline int nand_bch_init(struct nand_chip *chip)
+>  {
+> -       return NULL;
+> +       return -ENOTSUPP;
+>  }
+>
+> -static inline void nand_bch_free(struct nand_bch_control *nbc) {}
+> +static inline void nand_bch_free(struct nand_chip *chip) {}
+>
+>  #endif /* CONFIG_MTD_NAND_ECC_SW_BCH */
+>
+> --
+> 2.20.1
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
 ______________________________________________________
 Linux MTD discussion mailing list
