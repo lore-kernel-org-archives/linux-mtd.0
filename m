@@ -1,82 +1,80 @@
-Return-Path: <SRS0=oItk=GM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=UKyU=GN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DCCF0C433DB
-	for <linux-mtd@archiver.kernel.org>; Sat,  9 Jan 2021 15:14:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B240C433E0
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 Jan 2021 03:51:11 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7E2A023A04
-	for <linux-mtd@archiver.kernel.org>; Sat,  9 Jan 2021 15:14:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E2A023A04
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7950122D75
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 Jan 2021 03:51:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7950122D75
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
+	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=TNQVN46UkPtRIzl6v+d0yjjV1fKgQim4hp3P+vzxCgw=; b=UkG3/bQF9RtkJIXGdHCRMRqYR
-	EBvITooYE2BBDiVpitc6N/j+ak8PkBZ7PqdcRIoaZsRB3YoqClABf0Whg45ofW7cVDqx3f/AIGpSn
-	MdIqPNHmbxEID4ffRDkR9qUIpwC4R1wzP3Tp3nzvwS7Ie6gHQX8gr87h5Gordy4Jelf8sM9xBXQD+
-	/0SFHYTZAP3V8bT8VcF+FaWXPtLlcK1D4TsrpiEvnRY1wPGItKkRH+hGzcvOKWfliN1/ADpkW+4PN
-	tBjvb+RSWZe0kietw5IajRp5yTwhI8dDXpIepuYR6hFvbIfaaz0MleA1b8G6zvr90/O5k+hC96nO5
-	F7IDxpdKw==;
+	 bh=J8C1SEulKrpHqVnT0p4q2WoaCYJBrelaIJw/plcLQeU=; b=N5im6O/2b3u+mQVd2jOlG1riM
+	AYLFYPfqkrs9LHqQcMyCiNudhzWFEkSS/qgVrSCommev00vX+tlEn417Nl69hBllPV0/OJ3LdXfFG
+	orcMmOnAeQbnPZmRp1p1DrwYyLNOaQWiODAj3QMrWrM86TTTrxqZDNQvh80gDgkADJXM95G9+aHwd
+	VFZKZEDrtTIo1eRJPwyX84c0q3LDgcDwbtHCLswZOg8hgEFuUOTFEGs69LaDgn2izJWbswSlo5/cZ
+	f1ozOdSdU/lWI8T1EVYh5Pvto43qlyNIqUXJwXrKakiVQXNwKQICwmC5nxGOfBs44HBslyOjxnM0D
+	YTcVEpvjA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kyFv7-0007Bv-Dm; Sat, 09 Jan 2021 15:12:49 +0000
-Received: from mail-io1-xd33.google.com ([2607:f8b0:4864:20::d33])
+	id 1kyRjv-0007zB-KM; Sun, 10 Jan 2021 03:50:03 +0000
+Received: from m43-15.mailgun.net ([69.72.43.15])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kyFW6-00041H-G6
- for linux-mtd@lists.infradead.org; Sat, 09 Jan 2021 14:46:59 +0000
-Received: by mail-io1-xd33.google.com with SMTP id e22so12362729iom.5
- for <linux-mtd@lists.infradead.org>; Sat, 09 Jan 2021 06:46:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=mwPtia1nD/Qpi9Bhr6bRR8QuA62wP4vgG/hVzJ3pFmA=;
- b=uBiUqvU8J9xzpgep/X3CoDRPTgE0pFrwnp+uaOTO4wCCY7l9dSZOcuh/LdMzW1fxKw
- 7IBNgYutoVh46b3m8UPTNxCBsGyoWYXJtA/9y/6NHqJHzBsR3RHk1KYtFfsBcSC40ORL
- u2vN+sMT2rQJfTMPMqKfxkUXyRdhJg9OkRdbOi/ucOL5zXSj8brcvscEt37aLXlKU0dn
- Iii9jk4uePMpbZo4IIy02yXMSjP4HE9DREMX04iz/Ja547L9rJ06qA9yDQ4YsxKJiTzd
- yVGNoYlgQg+CFp/21mrU/buhiJ6AN+c4dM8q4wciCIackodM8sZDvXWAX4tacD1dPexI
- 4trg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=mwPtia1nD/Qpi9Bhr6bRR8QuA62wP4vgG/hVzJ3pFmA=;
- b=eHr6zVsBVB5G2uw9DDvi7FtKNxXZaibpVn6yDaiBLl4BJXSGX0BWxzIbRQaWl5GSPW
- 0XJftsJdLsLG6ND0Kdg4viB2YyezyQQqBpO8opMZolGTAlmkq+KicxPbxlQvPCMaJ4dJ
- BjdOpZNePYShvVp7KpeuUNFYK1Mx5fepAGBojl36NMGmgT0YHqD2/2ev1YcZC0ai42de
- ImKdha3DsbUUh4IrWA+a5R1Dggpoiwrc01O9caUmUFB6bS1Z9SimTkalNvLNl75LKfPp
- 8xmNgeta1ReZAdmaoIqIblrX8/T57SCr4l8TLj/TReqNKC3U+wmKMYFnljezodjvsHoU
- XS6w==
-X-Gm-Message-State: AOAM530lyO9mYOX6wKP3+a3am/Li0KUD9vRQ2g6N7PyIk1oKQ9pWXhrK
- fYGF4I9Dpr8Fk6ztJ0MsLWcEkahESHQiY3ctp+E=
-X-Google-Smtp-Source: ABdhPJw0g3TN/vU0/kwfdtouZEqWFoCNTerwP3mHFo+G6c+F6KD2tsNGVTssvEO4VxDsE5HCDsm4Wh5AzLR3AoW94V8=
-X-Received: by 2002:a6b:db01:: with SMTP id t1mr9349370ioc.10.1610203616062;
- Sat, 09 Jan 2021 06:46:56 -0800 (PST)
+ id 1kyRjp-0007xk-OK
+ for linux-mtd@lists.infradead.org; Sun, 10 Jan 2021 03:50:01 +0000
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1610250599; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=vgnmPoL9fCrt4e0NfS0tsjUCPmHr1u8RVOYjL7U31tw=;
+ b=iou7OVEhf8AgQW4uJ/qnSxKuzMG0yu4nFLziz4E2VaX6O9fBlLGx88pfDmyB/+0rU3Ynqase
+ DnWn1cpBPbHjiy5qHBa0rQsNJB2e+NCaxE/NXyXy7J8whOWCR0XTOYabjrB9tdyDKH/p+MyI
+ fL3yWJwu5MjkWzSjeK7GAy2ZimA=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyJkZDQ0ZiIsICJsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZyIsICJiZTllNGEiXQ==
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5ffa795a415a6293c5595e57 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 10 Jan 2021 03:49:46
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id 2E1E5C43464; Sun, 10 Jan 2021 03:49:46 +0000 (UTC)
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+ (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested) (Authenticated sender: mdalam)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 9A161C433CA;
+ Sun, 10 Jan 2021 03:49:44 +0000 (UTC)
 MIME-Version: 1.0
-References: <20200929230124.31491-1-miquel.raynal@bootlin.com>
- <20200929230124.31491-5-miquel.raynal@bootlin.com>
-In-Reply-To: <20200929230124.31491-5-miquel.raynal@bootlin.com>
-From: Adam Ford <aford173@gmail.com>
-Date: Sat, 9 Jan 2021 08:46:44 -0600
-Message-ID: <CAHCN7xLHAd8B_OgR2_vPFZZJ95mwNGR29dmqFeKhhSU9_y_imA@mail.gmail.com>
-Subject: Re: [PATCH 04/20] mtd: nand: ecc-bch: Stop exporting the private
- structure
-To: Miquel Raynal <miquel.raynal@bootlin.com>
+Date: Sun, 10 Jan 2021 09:19:44 +0530
+From: mdalam@codeaurora.org
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: Re: [PATCH] mtd: rawnand: qcom: update last code word register
+In-Reply-To: <20210105154512.GC14794@thinkpad>
+References: <1608213776-19584-1-git-send-email-mdalam@codeaurora.org>
+ <20201231105303.GI7345@thinkpad>
+ <84dbe5ba193e0da45add2f74d6787bb5@codeaurora.org>
+ <20210105154512.GC14794@thinkpad>
+Message-ID: <e9676c00c0aa97cd77ec2cb0d945740c@codeaurora.org>
+X-Sender: mdalam@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210109_094658_630427_A720ED59 
-X-CRM114-Status: GOOD (  31.68  )
+X-CRM114-CacheID: sfid-20210109_224959_821635_C724327C 
+X-CRM114-Status: GOOD (  36.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,306 +86,304 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, Julien Su <juliensu@mxic.com.tw>,
- Richard Weinberger <richard@nod.at>, ycllin@mxic.com.tw,
- linux-mtd@lists.infradead.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Linux-OMAP <linux-omap@vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Cc: sricharan@codeaurora.org, boris.brezillon@collabora.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ miquel.raynal@bootlin.com
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Sep 29, 2020 at 6:09 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->
-> The NAND BCH control structure has nothing to do outside of this
-> driver, all users of the nand_bch_init/free() functions just save it
-> to chip->ecc.priv so do it in this driver directly and return a
-> regular error code instead.
->
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
+On 2021-01-05 21:15, Manivannan Sadhasivam wrote:
+> On Tue, Jan 05, 2021 at 12:24:45AM +0530, mdalam@codeaurora.org wrote:
+>> On 2020-12-31 16:23, Manivannan Sadhasivam wrote:
+>> > On Thu, Dec 17, 2020 at 07:32:56PM +0530, Md Sadre Alam wrote:
+>> > > From QPIC version 2.0 onwards new register got added to
+>> > > read last codeword. This change will update the same.
+>> > >
+>> > > For first three code word READ_LOCATION_n register will be
+>> > > use.For last code wrod READ_LOCATION_LAST_CW_n register will be
+>> > > use.
+>> > >
+>> > > Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+>> > > ---
+>> > >  drivers/mtd/nand/raw/qcom_nandc.c | 79
+>> > > +++++++++++++++++++++++++++++++++------
+>> > >  1 file changed, 67 insertions(+), 12 deletions(-)
+>> > >
+>> > > diff --git a/drivers/mtd/nand/raw/qcom_nandc.c
+>> > > b/drivers/mtd/nand/raw/qcom_nandc.c
+>> > > index 667e4bf..eaef51d 100644
+>> > > --- a/drivers/mtd/nand/raw/qcom_nandc.c
+>> > > +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+>> > > @@ -48,6 +48,10 @@
+>> > >  #define	NAND_READ_LOCATION_1		0xf24
+>> > >  #define	NAND_READ_LOCATION_2		0xf28
+>> > >  #define	NAND_READ_LOCATION_3		0xf2c
+>> > > +#define NAND_READ_LOCATION_LAST_CW_0    0xf40
+>> > > +#define NAND_READ_LOCATION_LAST_CW_1    0xf44
+>> > > +#define NAND_READ_LOCATION_LAST_CW_2    0xf48
+>> > > +#define NAND_READ_LOCATION_LAST_CW_3    0xf4c
+>> >
+>> > Please keep the alignment as before.
+>> >
+>>  Fixed alignment in V2 patch
+>> > >
+>> > >  /* dummy register offsets, used by write_reg_dma */
+>> > >  #define	NAND_DEV_CMD1_RESTORE		0xdead
+>> > > @@ -187,6 +191,12 @@ nandc_set_reg(nandc,
+>> > > NAND_READ_LOCATION_##reg,			\
+>> > >  	      ((size) << READ_LOCATION_SIZE) |			\
+>> > >  	      ((is_last) << READ_LOCATION_LAST))
+>> > >
+>> > > +#define nandc_set_read_loc_last(nandc, reg, offset, size, is_last)	\
+>> > > +nandc_set_reg(nandc, NAND_READ_LOCATION_LAST_CW_##reg,			\
+>> > > +	      ((offset) << READ_LOCATION_OFFSET) |		\
+>> > > +	      ((size) << READ_LOCATION_SIZE) |			\
+>> > > +	      ((is_last) << READ_LOCATION_LAST))
+>> > > +
+>> > >  /*
+>> > >   * Returns the actual register address for all NAND_DEV_ registers
+>> > >   * (i.e. NAND_DEV_CMD0, NAND_DEV_CMD1, NAND_DEV_CMD2 and
+>> > > NAND_DEV_CMD_VLD)
+>> > > @@ -316,6 +326,10 @@ struct nandc_regs {
+>> > >  	__le32 read_location1;
+>> > >  	__le32 read_location2;
+>> > >  	__le32 read_location3;
+>> > > +	__le32 read_location_last0;
+>> > > +	__le32 read_location_last1;
+>> > > +	__le32 read_location_last2;
+>> > > +	__le32 read_location_last3;
+>> > >
+>> > >  	__le32 erased_cw_detect_cfg_clr;
+>> > >  	__le32 erased_cw_detect_cfg_set;
+>> > > @@ -644,6 +658,14 @@ static __le32 *offset_to_nandc_reg(struct
+>> > > nandc_regs *regs, int offset)
+>> > >  		return &regs->read_location2;
+>> > >  	case NAND_READ_LOCATION_3:
+>> > >  		return &regs->read_location3;
+>> > > +	case NAND_READ_LOCATION_LAST_CW_0:
+>> > > +		return &regs->read_location_last0;
+>> > > +	case NAND_READ_LOCATION_LAST_CW_1:
+>> > > +		return &regs->read_location_last1;
+>> > > +	case NAND_READ_LOCATION_LAST_CW_2:
+>> > > +		return &regs->read_location_last2;
+>> > > +	case NAND_READ_LOCATION_LAST_CW_3:
+>> > > +		return &regs->read_location_last3;
+>> > >  	default:
+>> > >  		return NULL;
+>> > >  	}
+>> > > @@ -719,9 +741,13 @@ static void update_rw_regs(struct
+>> > > qcom_nand_host *host, int num_cw, bool read)
+>> > >  	nandc_set_reg(nandc, NAND_READ_STATUS, host->clrreadstatus);
+>> > >  	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
+>> > >
+>> > > -	if (read)
+>> > > +	if (read) {
+>> > > +		if (nandc->props->qpic_v2)
+>> > > +			nandc_set_read_loc_last(nandc, 0, 0, host->use_ecc ?
+>> > > +					host->cw_data : host->cw_size, 1);
+>> >
+>> > Forgot to add else? Otherwise both NAND_READ_LOCATION_n and
+>> > NAND_READ_LOCATION_LAST_CW_n
+>> > will be used.
+>> 
+>>   Here else is not needed , because to read last code word we need to
+>> configure
+>>   NAND_READ_LOCATION_LAST_CW_n register. Any way here we are doing 
+>> only
+>> register configuration.
+>>   for all the code words. Earlier version of QPIC we were using
+>> nandc_set_read_loc()
+>>   for all the code words, but in qpic V2 onwards for last code word we 
+>> have
+>> to use
+>>   NAND_READ_LOCATION_LAST_CW_n register. So configuring here the same.
+>> 
+> 
+> nandc_set_read_loc() has the last argument "is_last". This is used to 
+> convey
+> whether we need to set READ_LOCATION_LAST bit or not. This is fine for 
+> QPIC
+> IP < 2, but for >=2 we need to use nandc_set_read_loc_last() only. My 
+> point
+> is why do you need to still use nandc_set_read_loc() here for QPIC v2? 
+> That's
+> why I asked you about using else().
+> 
+   Got it. I fixed this in V3 patch.
+>> 
+>> >
+>> > >  		nandc_set_read_loc(nandc, 0, 0, host->use_ecc ?
+>> > >  				   host->cw_data : host->cw_size, 1);
+>> > > +	}
+>> > >  }
+>> > >
+>> > >  /*
+>> > > @@ -1096,9 +1122,13 @@ static void config_nand_page_read(struct
+>> > > qcom_nand_controller *nandc)
+>> > >  static void
+>> > >  config_nand_cw_read(struct qcom_nand_controller *nandc, bool use_ecc)
+>> > >  {
+>> > > -	if (nandc->props->is_bam)
+>> > > +	if (nandc->props->is_bam) {
+>> > > +		if (nandc->props->qpic_v2)
+>> > > +			write_reg_dma(nandc, NAND_READ_LOCATION_LAST_CW_0,
+>> > > +				      4, NAND_BAM_NEXT_SGL);
+>> > >  		write_reg_dma(nandc, NAND_READ_LOCATION_0, 4,
+>> > >  			      NAND_BAM_NEXT_SGL);
+>> >
+>> > Don't you need to modify the number of registers to write? It can't be 4
+>> > all the
+>> > time if NAND_READ_LOCATION_LAST_CW_0 is used.
+>> 
+>>   Changed number of registers to write from 4 to 1 in V2 patch for 
+>> register
+>> NAND_READ_LOCATION_LAST_CW_0 .
+>> >
+>> > > +	}
+>> > >
+>> > >  	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
+>> > >  	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
+>> > > @@ -1633,16 +1663,28 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd,
+>> > > struct nand_chip *chip,
+>> > >  	}
+>> > >
+>> > >  	if (nandc->props->is_bam) {
+>> > > -		nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
+>> > > +		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
+>> > > +			nandc_set_read_loc_last(nandc, 0, read_loc, data_size1, 0);
+>> > > +		else
+>> > > +			nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
+>> >
+>> > IIUC nandc_set_read_loc_last() is only needed to read the last codeword
+>> > which is
+>> > handled by the last command in this function:
+>> 
+>>   Function qcom_nandc_read_cw_raw() is getting called for each code 
+>> word for
+>> raw read and its reading
+>>   one code word at a time. So to read last code word when condition cw 
+>> ==
+>> (ecc->steps - 1) will match, we have
+>>   to configure NAND_READ_LOCATION_LAST_CW_n register. Because below 
+>> piece of
+>> code is doing one code word
+>>   read for first three code word so same logic will also apply for 
+>> last code
+>> word as well.
+>> 
+> 
+> Fine, but still "cw == (ecc->steps - 1)" will stay same for all 
+> comparisions
+> in this function, right? So why can't you use it only for the last 
+> command?
+> 
+    Yes I understand, but data_size1, oob_size1, data_size2 and oob_size2 
+are the sizes
+    to extract these many bytes of data from buff whose offset specified 
+by the register
+    QPIC_NAND_READ_LOCATION_LAST_CW_n. "read_loc" also changing. 
+"is_last" is just a flag
+    which indicate this is the last read location to process.For last 
+code word also we  are
+    updating data_size1, oob_size1, data_size2 and oob_size2 so condition 
+should be applied for
+    all command not only for last command.
+>> >
+>> > nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
+>> >
+>> > >  		read_loc += data_size1;
+>> > >
+>> > > -		nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
+>> > > +		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
+>> > > +			nandc_set_read_loc_last(nandc, 1, read_loc, oob_size1, 0);
+>> > > +		else
+>> > > +			nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
+>> > >  		read_loc += oob_size1;
+>> > >
+>> > > -		nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
+>> > > +		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
+>> > > +			nandc_set_read_loc_last(nandc, 2, read_loc, data_size2, 0);
+>> > > +		else
+>> > > +			nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
+>> > >  		read_loc += data_size2;
+>> > >
+>> > > -		nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
+>> > > +		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
+>> > > +			nandc_set_read_loc_last(nandc, 3, read_loc, oob_size2, 0);
+>> > > +		else
+>> > > +			nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
+>> > >  	}
+>> > >
+>> > >  	config_nand_cw_read(nandc, false);
+>> > > @@ -1873,14 +1915,27 @@ static int read_page_ecc(struct
+>> > > qcom_nand_host *host, u8 *data_buf,
+>> > >
+>> > >  		if (nandc->props->is_bam) {
+>> > >  			if (data_buf && oob_buf) {
+>> > > -				nandc_set_read_loc(nandc, 0, 0, data_size, 0);
+>> > > -				nandc_set_read_loc(nandc, 1, data_size,
+>> > > -						   oob_size, 1);
+>> > > +				if (nandc->props->qpic_v2 && i == (ecc->steps - 1)) {
+>> > > +					nandc_set_read_loc_last(nandc, 0, 0, data_size, 0);
+>> >
+>> > Why do you need this? Can't you use nandc_set_read_loc()? Same for below
+>> > cases.
+>> 
+>>   Here we are looping for all the code words and when we will do
+>> configuration for last
+>>   code word we have to use NAND_READ_LOCATION_LAST_CW_n register 
+>> that's why
+>> i am using
+>>   nandc_set_read_loc_last() instead of nandc_set_read_loc().
+>> >
+> 
+> Sorry, confused! You are calling nandc_set_read_loc_last() twice and 
+> only the
+> last one has "is_last" flag set. Can you please clarify?
 
-Starting with this commit:  3c0fe36abebe, the kernel either doesn't
-build or returns errors on some omap2plus devices with the following
-error:
-
-    nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xbc
-    nand: Micron MT29F4G16ABBDA3W
-    nand: 512 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-    nand: using OMAP_ECC_BCH8_CODE_HW_DETECTION_SW
-    Invalid ECC layout
-    omap2-nand 30000000.nand: unable to use BCH library
-    omap2-nand: probe of 30000000.nand failed with error -22
-    8<--- cut here ---
-
-There are few commits using git bisect that have build errors, so it
-wasn't possible for me to determine the exact commit that broke the
-ECC.  If the build failed, I marked it as 'bad' to git bisect.
-
-Newer commits have remedied the build issue, but the Invalid ECC
-layout error still exists as of 5.11-RC2.
-
-Do you have any suggestions on what I can do to remedy this?  I am
-willing to try and test.
-
-
-
->  drivers/mtd/nand/ecc-sw-bch.c       | 36 ++++++++++++++++-------------
->  drivers/mtd/nand/raw/fsmc_nand.c    |  2 +-
->  drivers/mtd/nand/raw/nand_base.c    | 12 ++++++----
->  drivers/mtd/nand/raw/omap2.c        | 16 ++++++-------
->  include/linux/mtd/nand-ecc-sw-bch.h | 11 ++++-----
->  5 files changed, 41 insertions(+), 36 deletions(-)
->
-> diff --git a/drivers/mtd/nand/ecc-sw-bch.c b/drivers/mtd/nand/ecc-sw-bch.c
-> index fe080a0837d8..97221ec3876e 100644
-> --- a/drivers/mtd/nand/ecc-sw-bch.c
-> +++ b/drivers/mtd/nand/ecc-sw-bch.c
-> @@ -90,7 +90,7 @@ EXPORT_SYMBOL(nand_bch_correct_data);
->
->  /**
->   * nand_bch_init - Initialize software BCH ECC engine
-> - * @mtd: MTD device
-> + * @chip: NAND chip object
->   *
->   * Returns: a pointer to a new NAND BCH control structure, or NULL upon failure
->   *
-> @@ -105,24 +105,24 @@ EXPORT_SYMBOL(nand_bch_correct_data);
->   * @eccsize = 512 (thus, m = 13 is the smallest integer such that 2^m - 1 > 512 * 8)
->   * @eccbytes = 7 (7 bytes are required to store m * t = 13 * 4 = 52 bits)
->   */
-> -struct nand_bch_control *nand_bch_init(struct mtd_info *mtd)
-> +int nand_bch_init(struct nand_chip *chip)
->  {
-> -       struct nand_chip *nand = mtd_to_nand(mtd);
-> +       struct mtd_info *mtd = nand_to_mtd(chip);
->         unsigned int m, t, eccsteps, i;
->         struct nand_bch_control *nbc = NULL;
->         unsigned char *erased_page;
-> -       unsigned int eccsize = nand->ecc.size;
-> -       unsigned int eccbytes = nand->ecc.bytes;
-> -       unsigned int eccstrength = nand->ecc.strength;
-> +       unsigned int eccsize = chip->ecc.size;
-> +       unsigned int eccbytes = chip->ecc.bytes;
-> +       unsigned int eccstrength = chip->ecc.strength;
->
->         if (!eccbytes && eccstrength) {
->                 eccbytes = DIV_ROUND_UP(eccstrength * fls(8 * eccsize), 8);
-> -               nand->ecc.bytes = eccbytes;
-> +               chip->ecc.bytes = eccbytes;
->         }
->
->         if (!eccsize || !eccbytes) {
->                 pr_warn("ecc parameters not supplied\n");
-> -               goto fail;
-> +               return -EINVAL;
->         }
->
->         m = fls(1+8*eccsize);
-> @@ -130,7 +130,9 @@ struct nand_bch_control *nand_bch_init(struct mtd_info *mtd)
->
->         nbc = kzalloc(sizeof(*nbc), GFP_KERNEL);
->         if (!nbc)
-> -               goto fail;
-> +               return -ENOMEM;
-> +
-> +       chip->ecc.priv = nbc;
->
->         nbc->bch = bch_init(m, t, 0, false);
->         if (!nbc->bch)
-> @@ -165,8 +167,8 @@ struct nand_bch_control *nand_bch_init(struct mtd_info *mtd)
->          * FIXME: we should probably rework the sequencing in nand_scan_tail()
->          * to avoid setting those fields twice.
->          */
-> -       nand->ecc.steps = eccsteps;
-> -       nand->ecc.total = eccsteps * eccbytes;
-> +       chip->ecc.steps = eccsteps;
-> +       chip->ecc.total = eccsteps * eccbytes;
->         if (mtd_ooblayout_count_eccbytes(mtd) != (eccsteps*eccbytes)) {
->                 pr_warn("invalid ecc layout\n");
->                 goto fail;
-> @@ -192,12 +194,12 @@ struct nand_bch_control *nand_bch_init(struct mtd_info *mtd)
->                 nbc->eccmask[i] ^= 0xff;
->
->         if (!eccstrength)
-> -               nand->ecc.strength = (eccbytes * 8) / fls(8 * eccsize);
-> +               chip->ecc.strength = (eccbytes * 8) / fls(8 * eccsize);
->
-> -       return nbc;
-> +       return 0;
->  fail:
-> -       nand_bch_free(nbc);
-> -       return NULL;
-> +       nand_bch_free(chip);
-> +       return -EINVAL;
->  }
->  EXPORT_SYMBOL(nand_bch_init);
->
-> @@ -205,8 +207,10 @@ EXPORT_SYMBOL(nand_bch_init);
->   * nand_bch_free - Release NAND BCH ECC resources
->   * @nbc: NAND BCH control structure
->   */
-> -void nand_bch_free(struct nand_bch_control *nbc)
-> +void nand_bch_free(struct nand_chip *chip)
->  {
-> +       struct nand_bch_control *nbc = chip->ecc.priv;
-> +
->         if (nbc) {
->                 bch_free(nbc->bch);
->                 kfree(nbc->errloc);
-> diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
-> index 4191831df182..1bc2462efeab 100644
-> --- a/drivers/mtd/nand/raw/fsmc_nand.c
-> +++ b/drivers/mtd/nand/raw/fsmc_nand.c
-> @@ -927,7 +927,7 @@ static int fsmc_nand_attach_chip(struct nand_chip *nand)
->
->         /*
->          * Don't set layout for BCH4 SW ECC. This will be
-> -        * generated later in nand_bch_init() later.
-> +        * generated later during BCH initialization.
->          */
->         if (nand->ecc.engine_type == NAND_ECC_ENGINE_TYPE_ON_HOST) {
->                 switch (mtd->oobsize) {
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index 189d3a301a38..c47441ddc5cf 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -5208,6 +5208,7 @@ static int nand_set_ecc_soft_ops(struct nand_chip *chip)
->         struct mtd_info *mtd = nand_to_mtd(chip);
->         struct nand_device *nanddev = mtd_to_nanddev(mtd);
->         struct nand_ecc_ctrl *ecc = &chip->ecc;
-> +       int ret;
->
->         if (WARN_ON(ecc->engine_type != NAND_ECC_ENGINE_TYPE_SOFT))
->                 return -EINVAL;
-> @@ -5294,13 +5295,14 @@ static int nand_set_ecc_soft_ops(struct nand_chip *chip)
->                         ecc->strength = bytes * 8 / fls(8 * ecc->size);
->                 }
->
-> -               /* See nand_bch_init() for details. */
-> +               /* See the software BCH ECC initialization for details */
->                 ecc->bytes = 0;
-> -               ecc->priv = nand_bch_init(mtd);
-> -               if (!ecc->priv) {
-> +               ret = nand_bch_init(chip);
-> +               if (ret) {
->                         WARN(1, "BCH ECC initialization failed!\n");
-> -                       return -EINVAL;
-> +                       return ret;
->                 }
-> +
->                 return 0;
->         default:
->                 WARN(1, "Unsupported ECC algorithm!\n");
-> @@ -5960,7 +5962,7 @@ void nand_cleanup(struct nand_chip *chip)
->  {
->         if (chip->ecc.engine_type == NAND_ECC_ENGINE_TYPE_SOFT &&
->             chip->ecc.algo == NAND_ECC_ALGO_BCH)
-> -               nand_bch_free((struct nand_bch_control *)chip->ecc.priv);
-> +               nand_bch_free(chip);
->
->         nanddev_cleanup(&chip->base);
->
-> diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
-> index 0ef209e1cd87..6aab57336690 100644
-> --- a/drivers/mtd/nand/raw/omap2.c
-> +++ b/drivers/mtd/nand/raw/omap2.c
-> @@ -2047,10 +2047,10 @@ static int omap_nand_attach_chip(struct nand_chip *chip)
->                 /* Reserve one byte for the OMAP marker */
->                 oobbytes_per_step       = chip->ecc.bytes + 1;
->                 /* Software BCH library is used for locating errors */
-> -               chip->ecc.priv          = nand_bch_init(mtd);
-> -               if (!chip->ecc.priv) {
-> +               err = nand_bch_init(chip);
-> +               if (err) {
->                         dev_err(dev, "Unable to use BCH library\n");
-> -                       return -EINVAL;
-> +                       return err;
->                 }
->                 break;
->
-> @@ -2089,10 +2089,10 @@ static int omap_nand_attach_chip(struct nand_chip *chip)
->                 /* Reserve one byte for the OMAP marker */
->                 oobbytes_per_step       = chip->ecc.bytes + 1;
->                 /* Software BCH library is used for locating errors */
-> -               chip->ecc.priv          = nand_bch_init(mtd);
-> -               if (!chip->ecc.priv) {
-> +               err = nand_bch_init(chip);
-> +               if (err) {
->                         dev_err(dev, "unable to use BCH library\n");
-> -                       return -EINVAL;
-> +                       return err;
->                 }
->                 break;
->
-> @@ -2272,7 +2272,7 @@ static int omap_nand_probe(struct platform_device *pdev)
->         if (!IS_ERR_OR_NULL(info->dma))
->                 dma_release_channel(info->dma);
->         if (nand_chip->ecc.priv) {
-> -               nand_bch_free(nand_chip->ecc.priv);
-> +               nand_bch_free(nand_chip);
->                 nand_chip->ecc.priv = NULL;
->         }
->         return err;
-> @@ -2286,7 +2286,7 @@ static int omap_nand_remove(struct platform_device *pdev)
->         int ret;
->
->         if (nand_chip->ecc.priv) {
-> -               nand_bch_free(nand_chip->ecc.priv);
-> +               nand_bch_free(nand_chip);
->                 nand_chip->ecc.priv = NULL;
->         }
->         if (info->dma)
-> diff --git a/include/linux/mtd/nand-ecc-sw-bch.h b/include/linux/mtd/nand-ecc-sw-bch.h
-> index 1e1ee3af82b1..b62b8bd4669f 100644
-> --- a/include/linux/mtd/nand-ecc-sw-bch.h
-> +++ b/include/linux/mtd/nand-ecc-sw-bch.h
-> @@ -10,7 +10,6 @@
->
->  struct mtd_info;
->  struct nand_chip;
-> -struct nand_bch_control;
->
->  #if IS_ENABLED(CONFIG_MTD_NAND_ECC_SW_BCH)
->
-> @@ -30,11 +29,11 @@ int nand_bch_correct_data(struct nand_chip *chip, u_char *dat,
->  /*
->   * Initialize BCH encoder/decoder
->   */
-> -struct nand_bch_control *nand_bch_init(struct mtd_info *mtd);
-> +int nand_bch_init(struct nand_chip *chip);
->  /*
->   * Release BCH encoder/decoder resources
->   */
-> -void nand_bch_free(struct nand_bch_control *nbc);
-> +void nand_bch_free(struct nand_chip *chip);
->
->  #else /* !CONFIG_MTD_NAND_ECC_SW_BCH */
->
-> @@ -54,12 +53,12 @@ nand_bch_correct_data(struct nand_chip *chip, unsigned char *buf,
->         return -ENOTSUPP;
->  }
->
-> -static inline struct nand_bch_control *nand_bch_init(struct mtd_info *mtd)
-> +static inline int nand_bch_init(struct nand_chip *chip)
->  {
-> -       return NULL;
-> +       return -ENOTSUPP;
->  }
->
-> -static inline void nand_bch_free(struct nand_bch_control *nbc) {}
-> +static inline void nand_bch_free(struct nand_chip *chip) {}
->
->  #endif /* CONFIG_MTD_NAND_ECC_SW_BCH */
->
-> --
-> 2.20.1
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+   For last code word , in first call of nandc_set_read_loc_last() 
+"data_size" bytes will get extracted.
+   and in the the second call of nandc_set_read_loc_last() "oob_size" 
+bytes will get extracted and this
+   is the last read location to process so I am setting "is_last" flag in 
+the second call.
+> 
+> Thanks,
+> Mani
+> 
+>> > Thanks,
+>> > Mani
+>> >
+>> > > +					nandc_set_read_loc_last(nandc, 1, data_size,
+>> > > +								oob_size, 1);
+>> > > +				} else {
+>> > > +					nandc_set_read_loc(nandc, 0, 0, data_size, 0);
+>> > > +					nandc_set_read_loc(nandc, 1, data_size,
+>> > > +							   oob_size, 1);
+>> > > +				}
+>> > >  			} else if (data_buf) {
+>> > > -				nandc_set_read_loc(nandc, 0, 0, data_size, 1);
+>> > > +				if (nandc->props->qpic_v2 && i == (ecc->steps - 1))
+>> > > +					nandc_set_read_loc_last(nandc, 0, 0, data_size, 1);
+>> > > +				else
+>> > > +					nandc_set_read_loc(nandc, 0, 0, data_size, 1);
+>> > >  			} else {
+>> > > -				nandc_set_read_loc(nandc, 0, data_size,
+>> > > -						   oob_size, 1);
+>> > > +				if (nandc->props->qpic_v2 && i == (ecc->steps - 1))
+>> > > +					nandc_set_read_loc_last(nandc, 0, data_size,
+>> > > +								oob_size, 1);
+>> > > +				else
+>> > > +					nandc_set_read_loc(nandc, 0, data_size,
+>> > > +							   oob_size, 1);
+>> > >  			}
+>> > >  		}
+>> > >
+>> > > --
+>> > > 2.7.4
+>> > >
 
 ______________________________________________________
 Linux MTD discussion mailing list
