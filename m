@@ -2,80 +2,65 @@ Return-Path: <SRS0=RLHh=GQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3DB7C433E0
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Jan 2021 10:41:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F237C433DB
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Jan 2021 15:31:20 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 749B12339F
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Jan 2021 10:41:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 749B12339F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 1E57623102
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Jan 2021 15:31:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E57623102
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:References:
+	In-Reply-To:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=RxambUnJSwB4vXvBSzbn8MRg4dxfqxtIcT7Qot7l1nA=; b=uFNln0B6VewsRALaBalIgKQUD
-	OeLqW3/XoQS9T8OUgVXbZ1JX6ekrhBL/Ut4EJTyxad0gOvg3w96a4lJhesdqI8UkGDBkcVgwFgJSW
-	BleTKIfrxUakP4krMWe6DsvJTzLWHYBQ5Rk88fRX5uad1b3hw5sUTg4+MFJhiAWXVrG43vGE3I1j3
-	Hrott77M6eS96qic1mfRsu/VcjShW/yoftQDAn/Iu9Ya6rnNZs5xl14GTMMX6XCNJ4RgQHZdOFe2F
-	nEDmvQ1WEdKpVs1KtiJeuYolXaq3CTpxaIUoAOXccaxo8qPdm7jFV7GW8jvHvIpPWgzl6Tv8otJs6
-	HcJzxZ8/w==;
+	 bh=8R8CP/aBBccvwETNXpYTdiruC79U3cngBh2CtC7jG+o=; b=dwJ75C6Tv8rghGWQQ861y1S7c
+	qcMoHKCcfDTfF/fVr7Nvh86H4U6eWWjE35WgzR2ks3COc0hdm5EvZ5B82EXN0l0uWcZ5TUWlzD58R
+	WO2Z+RmArE8pzQf9CQlQx+c4l4taWbvzD1fxiYLyKw+g0ZePDSb/lZrwI/bOBAtYeYViKvgDCJsYd
+	I9NGXhurtKRJsEJ14cD4DqzisRXIpcJvXE8g9TcA8oFKJ7sRxVgfZDb0aUBhn6fIzoSGMBzLsE7eJ
+	ta/UnBKO2gmkXbNk3lEgKmdT5nQbQO3s86fZzG8raRQCZxIysn7qGTM/WHOFDLoQ+XATw6fiB38du
+	LJjtU0OTg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1kzdaD-0001XI-Iw; Wed, 13 Jan 2021 10:40:57 +0000
-Received: from mail-yb1-xb2c.google.com ([2607:f8b0:4864:20::b2c])
+	id 1kzi5u-0003bx-As; Wed, 13 Jan 2021 15:29:58 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kzda9-0001WU-VK
- for linux-mtd@lists.infradead.org; Wed, 13 Jan 2021 10:40:54 +0000
-Received: by mail-yb1-xb2c.google.com with SMTP id g4so1683932ybo.11
- for <linux-mtd@lists.infradead.org>; Wed, 13 Jan 2021 02:40:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=M4GfE42kBtvCWi2ob5yS+LHJ+0FeSDKJaF01TmLR5ac=;
- b=nAvLpvEMNuNOZr4+QhajAIas+1f9eC3ZI/pAJRq51nHl+QK/HZtuRYm1W/CVS+KXfV
- +9E0CNlyP61d9O6cApQYt7wvB7iAULJjPU79Q4qeyvOHZ+zOz4GHuU7dBrEKJjalqiWY
- ydp5p0QUFSEChQf+Vpvy/nOrx03WbOc/chqGBMAcCFGOz4F5BAlUtMKVwm+DB0s6llKV
- iCw/eCnAoX4JSNE0Gubp+rIne+3quHIXagWtV20OLaDCXp2ekd72LVYiaIMlJr4sz2F+
- XTunnP66+XXtQJoIqqhPSM+gE7ZJlfvL4h6Lyy1qCX62CmLD83w49EEzruyJ7lSy+NLu
- 8xoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=M4GfE42kBtvCWi2ob5yS+LHJ+0FeSDKJaF01TmLR5ac=;
- b=iiWsmRQ/VkNio5aAFScezR7SQrEtDjOU++8ZOrpOiydefpt2LAoDCBSY02IPYcNpvU
- 9G47chdMx7tN7/f5EzxkAIDEpb4IGplAywIeohjw7+bvHxc4KL7gMi0d5w4E63fAQEoz
- fKDTaplkuT1slnNW8ilCygSDbWUvgNeHo8UefH3NwHokH9A5G4GxU++Dqrq/0df6VwGI
- 6Fty1jbADPOYjYk54Oqzkq1pWm+no2xpOSr3MGgzQ3yyo8yIoDU2aCAr0Pvtx6TdIRoK
- lDHxrXtpDqqK6cEwcGgIMEUoLKpjcU5/GdsZ11ANDgg9E3ba8fAiU/SA4TEg3wwpkQoo
- zyAg==
-X-Gm-Message-State: AOAM531oWjTUhSiWxqr5uLmoD/RAyRfCqXYJ0o29PdDc/h8bkz8/bGmw
- 4WZzoZBTFpiMbrXCkEkK5ePGLv7UNJ/WI1HWXGM=
-X-Google-Smtp-Source: ABdhPJwhhyuHqAslX1NsvSR90DcrNZ+JX6Sfw5mdEXppYf+VxyWeRkbV6ryKC7sx4TBU+iG4XJBXelqUROXzGLUkPwE=
-X-Received: by 2002:a25:4d7:: with SMTP id 206mr2436247ybe.306.1610534451933; 
- Wed, 13 Jan 2021 02:40:51 -0800 (PST)
+ id 1kzi5O-0003Oe-Fl
+ for linux-mtd@lists.infradead.org; Wed, 13 Jan 2021 15:29:28 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05C7323383;
+ Wed, 13 Jan 2021 15:29:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1610551765;
+ bh=PHjVF9XXPvKg6/Tdjg1GEBq/X/hLVqnaQSAZDktWM6s=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=mw249fIN7eWt1+14k/RnfW88lJAHqPsy83R2WuvBH7KsID4IU770F4wtYGUlQAwYC
+ iNFsda3CTiiOyYZ8bsf+R7SWhfsRf/Mw1vqqpIafJ9lLEfAI/PKMriN6LNn3t1trg9
+ xM4OVVvNrR9SX9FNfF4X+SNAi61NWCIaGgiwVie4+RQ4TZPFRk5GZdWhv0JgvscxTS
+ 3XS6zMK7MxgffNqYXS8RUPZaZ+TqhN3R01QlvlAs2VUDDcYuFfgSmSLZdQQuu92enn
+ lueuIvlHCSrilB+4W6cDwA+6Fh1Dyvu5KfdwkONavmtiMT7sU0j7unwmwS3Usj9bfV
+ yU8384u8Iiesw==
+From: Mark Brown <broonie@kernel.org>
+To: linux-kernel@vger.kernel.org, "Ramuthevar,
+ Vadivel MuruganX" <vadivel.muruganx.ramuthevar@linux.intel.com>,
+ linux-spi@vger.kernel.org
+In-Reply-To: <20201124041840.31066-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+References: <20201124041840.31066-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+Subject: Re: [PATCH v9 0/5] spi: cadence-quadspi: Add QSPI controller support
+ for Intel LGM SoC
+Message-Id: <161055171029.21847.3382759454400721764.b4-ty@kernel.org>
+Date: Wed, 13 Jan 2021 15:28:30 +0000
 MIME-Version: 1.0
-References: <CAEUhbmUXiwiuPXHkAcfFQeNkp9xZk3gfCi+oVKSr2MF+5C44Zg@mail.gmail.com>
- <6396018a-485f-6eb4-7742-bdb5c4335ed4@microchip.com>
-In-Reply-To: <6396018a-485f-6eb4-7742-bdb5c4335ed4@microchip.com>
-From: Bin Meng <bmeng.cn@gmail.com>
-Date: Wed, 13 Jan 2021 18:40:40 +0800
-Message-ID: <CAEUhbmVKa69FWG-+NbG2aV1ZkpQjnEEsghS803V5f_GUAYkkBg@mail.gmail.com>
-Subject: Re: spi-nor dummy bytes for fast read command
-To: Tudor Ambarus <Tudor.Ambarus@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210113_054054_075385_F5847A54 
-X-CRM114-Status: GOOD (  23.92  )
+X-CRM114-CacheID: sfid-20210113_102927_220163_7D4B1A03 
+X-CRM114-Status: GOOD (  11.80  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,86 +72,61 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: U-Boot Mailing List <u-boot@lists.denx.de>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Jagan Teki <jagan@amarulasolutions.com>, Vignesh R <vigneshr@ti.com>
+Cc: cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
+ linux-mtd@lists.infradead.org, vigneshr@ti.com, p.yadav@ti.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jan 13, 2021 at 6:04 PM <Tudor.Ambarus@microchip.com> wrote:
->
-> On 1/13/21 4:06 AM, Bin Meng wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> >
-> > Hi,
->
-> Hi,
->
-> >
-> > It seems both U-Boot and Linux kernel spi-nor drivers have the same
-> > assumption on dummy cycles required in a fast read command.
-> >
-> > In U-Boot spi_nor_read_data(), there is a logic to calculate the dummy
-> > bytes needed for fast read command:
-> >
-> >     /* convert the dummy cycles to the number of bytes */
-> >     op.dummy.nbytes = (nor->read_dummy * op.dummy.buswidth) / 8;
-> >
-> > This logic assumes the (nor->read_dummy * op.dummy.buswidth) is a
-> > multiple of 8, otherwise this won't work.
-> >
-> > In Linux, the same logic exists in spi_nor_spimem_read_data().
-> >
-> > Note on most flashes this is not a problem, however on some flashes
-> > the dummy cycles for the fast read command is configurable. If the
-> > dummy cycle is configured to some odd value which makes this
-> > assumption false, then we get a non-working driver.
-> >
->
-> Right. We should use dummy cycles directly and get rid of the
-> dummy bytes logic. I have this in my todo queue for linux.
+On Tue, 24 Nov 2020 12:18:35 +0800, Ramuthevar, Vadivel MuruganX wrote:
+> Add QSPI controller support for Intel LGM SoC.
+> 
+> Patches to move move bindings over to
+> "Documentation/devicetree/bindings/spi/" directory and also added compatible
+> Support for Intel platform.
+> 
+> dt-bindings: spi: cadence-qspi: Add support for Intel lgm-qspi
+> (earlier patch mail thread and Ack-by)
+> link: "https://lore.kernel.org/lkml/5d6d1b85.1c69fb81.96938.0315@mx.google.com/"
+> 
+> [...]
 
-Thanks! Good to know this will be improved.
+Applied to
 
-I got another dummy cycle question during testing N25Q512 flash with
-the Xilinx ZynqMP Generic QSPI controller.
-The N25Q512 flash datasheet is at [1].
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-It seems both U-Boot and Linux spi-nor drivers assume that the dummy
-cycle bus width is equal to the address bus width. See codes:
+Thanks!
 
-spi_nor_read_data() in u-boot/drivers/mtd/spi/spi-nor-core.c:
+[1/5] spi: cadence-quadspi: Add QSPI support for Intel LGM SoC
+      commit: ab2d28750aacb773dc42d72fbad59146e8a6db5e
+[2/5] spi: cadence-quadspi: Disable the DAC for Intel LGM SoC
+      commit: ad2775dc3fc5d30dd51984ccbaa736cc7ea9caca
+[3/5] spi: cadence-quadspi: Add multi-chipselect support for Intel LGM SoC
+      commit: b436fb7d29bfa48ff5e00cbf413609c7a6d4d81e
+[4/5] spi: Move cadence-quadspi.txt to Documentation/devicetree/bindings/spi
+      commit: eb4aadc31ef4224b926d5165048cb297f4bda34f
+[5/5] dt-bindings: spi: cadence-qspi: Add support for Intel lgm-qspi
+      commit: fcebca39938fa9f6ed03f27fc75645ad7fd489e9
 
-op.dummy.buswidth = op.addr.buswidth;
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-spi_nor_spimem_setup_op() in linux/drivers/mtd/spi-nor/core.c:
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-        if (op->dummy.nbytes)
-                op->dummy.buswidth = spi_nor_get_protocol_addr_nbits(proto);
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-However the following Xilinx U-Boot driver:
-https://github.com/Xilinx/u-boot-xlnx/blob/master/drivers/spi/zynqmp_gqspi.c#L611
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-programs the controller's dummy cycle bus width to 4 (QSPI) when
-issuing the Fast Read Quad Output (6Bh). I changed the codes to
-program dummy cycle bus width to 1 (SPI) but the command did not read
-the flash contents at all.
-
-The board has a N25Q512 flash, and the datasheet does not state
-crystal clearly how many lines are used for 6Bh. Only figure 19
-showing the command sequence could be interpreted that dummy cycles
-need to be on 4 lines for 6Bh. But still it is not clear.
-
-Do you, or anyone happen to know whether this is indeed the case for
-N25Q512 flash? If yes, I think we will need some fix-ups in U-Boot and
-Linux spi-nor drivers for the Numonyx/Micron flashes?
-
-[1] https://media-www.micron.com/-/media/client/global/documents/products/data-sheet/nor-flash/serial-nor/n25q/n25q_512mb_1ce_3v_65nm.pdf
-
-Regards,
-Bin
+Thanks,
+Mark
 
 ______________________________________________________
 Linux MTD discussion mailing list
