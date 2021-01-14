@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC7B7C433DB
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 Jan 2021 15:48:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B431C433DB
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Jan 2021 15:48:59 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A8E8F23A9F
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 Jan 2021 15:48:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A8E8F23A9F
+	by mail.kernel.org (Postfix) with ESMTPS id 2EED823A9F
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Jan 2021 15:48:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2EED823A9F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,42 +23,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Dp0AonKMyZNjdcxBEnyG7ZumRxjgmw+gh2XZx1MN0Mg=; b=IMT5EROxVxsWTZWetMa+1Wd/+
-	6OOJ2kgweGAuiBJxlcAVh3V+nce5gjTT1tRYO9JgLpi5EPPVzJqGKUmszvoaAwLflpEECg9dyc99v
-	7ojV+FxlW4BFykYYSzH94uTYpUvR0tJtVV7ur2JviCsdgrk2AIQPTD/yjvdq+SBkeI7I6rI+UZM22
-	zSDCJIo1TWHfewvE5SI+tItIO88TAd43VdAuyzX+6E4i4xZLavkb2Vi/Uxu/FNjk/DDaNlns09gZ8
-	JWN4rXKtx/khscTmCEioBc0MUPjgzRbynRMrBgd+mdY49Als7UQylrGrF+tWmFE6oVyH4aapgHgbQ
-	n/pTOGTPw==;
+	 bh=4kIsTKSGc9gXBqM/y97mldh2IqHydvQObUz/I0xnXSc=; b=XTpLBWNoaNSmoW4r0FlmyqRgz
+	ma9GoJ+7STv0jfb1duxLe3qkar4WqmJK014fqIcYa9EUHvj+PV+cBcbL4duXEOb/w3IXbkJpg7Nng
+	pSBeG5jrLD++IYZyKQQ4RAUD+/PwYzVeI+dbJtXrO8bZVzufg7lwVhlAYr8B1RQyeI/UJCgaRLbYH
+	ZfLU/a1jsuX6dzEIX/I7byz0ZSI1AIczYzXoaa59Iy39CWfem0GjP2av2jlfiB/BNLNSAF4OPbXD7
+	DDig0c3Lz7PwMSx/Zbh8pXVXHDRzSBE9VH9FEUpD1nDkJB3nHUwgxxQ6+cVghj1QmBpj12BT6DO8r
+	saMhyhDoA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l04r8-0004Hp-KU; Thu, 14 Jan 2021 15:48:14 +0000
-Received: from relay3-d.mail.gandi.net ([217.70.183.195])
+	id 1l04qu-0004EJ-Bf; Thu, 14 Jan 2021 15:48:00 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l04r6-0004G4-2Y
- for linux-mtd@lists.infradead.org; Thu, 14 Jan 2021 15:48:13 +0000
+ id 1l04qr-0004DU-GD
+ for linux-mtd@lists.infradead.org; Thu, 14 Jan 2021 15:47:58 +0000
 X-Originating-IP: 86.201.233.230
 Received: from localhost.localdomain
  (lfbn-tou-1-151-230.w86-201.abo.wanadoo.fr [86.201.233.230])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id CE62160015;
- Thu, 14 Jan 2021 15:48:07 +0000 (UTC)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id EC9EEFF811;
+ Thu, 14 Jan 2021 15:47:52 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: rawnand: nandsim: Fix the logic when selecting
- Hamming soft ECC engine
-Date: Thu, 14 Jan 2021 16:48:06 +0100
-Message-Id: <20210114154806.32093-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH] mtd: spinand: Fix MTD_OPS_AUTO_OOB requests
+Date: Thu, 14 Jan 2021 16:47:51 +0100
+Message-Id: <20210114154751.31968-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210104093057.31178-1-miquel.raynal@bootlin.com>
+In-Reply-To: <20210107083813.24283-1-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 3c97be6982e689d7b2430187a11f8c78e573abdb
+X-linux-mtd-patch-commit: e708789c4a87989faff1131ccfdc465a1c1eddbc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210114_104812_318857_C4141AD6 
-X-CRM114-Status: UNSURE (   8.80  )
+X-CRM114-CacheID: sfid-20210114_104757_659890_7EB69660 
+X-CRM114-Status: UNSURE (   8.87  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -71,21 +70,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: kernel test robot <oliver.sang@intel.com>, stable@vger.kernel.org
+Cc: Felix Fietkau <nbd@nbd.name>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2021-01-04 at 09:30:57 UTC, Miquel Raynal wrote:
-> I have been fooled by the logic picking the right ECC engine which is
-> spread across two functions: *init_module() and *_attach(). I thought
-> this driver was not impacted by the recent changes around the ECC
-> engines DT parsing logic but in fact it is.
+On Thu, 2021-01-07 at 08:38:13 UTC, Miquel Raynal wrote:
+> The initial change breaking the logic is
+> commit 3d1f08b032dc ("mtd: spinand: Use the external ECC engine logic")
+> It inadvertently dropped proper OOB support while doing something
+> else.
 > 
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Fixes: d7157ff49a5b ("mtd: rawnand: Use the ECC framework user input parsing bits")
-> Cc: stable@vger.kernel.org
+> Shortly later, half of it got re-integrated by
+> commit 868cbe2a6dce ("mtd: spinand: Fix OOB read")
+> (pointing by the way to a  more early change which had nothing to do
+> with the issue). Problem is, this commit failed to revert the faulty
+> change entirely and missed the logic handling MTD_OPS_AUTO_OOB
+> requests.
+> 
+> Let's fix this mess by re-inserting the missing part now.
+> 
+> Fixes: 868cbe2a6dce ("mtd: spinand: Fix OOB read")
+> Reported-by: Felix Fietkau <nbd@nbd.name>
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes.
