@@ -2,61 +2,64 @@ Return-Path: <SRS0=AumS=GX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BBA9AC433DB
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Jan 2021 10:37:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA881C433DB
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Jan 2021 10:51:13 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2A43B2245C
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Jan 2021 10:37:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2A43B2245C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	by mail.kernel.org (Postfix) with ESMTPS id 54C0B2070A
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Jan 2021 10:51:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 54C0B2070A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sigma-star.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:Subject:
+	From:References:To:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=66OokPsfeknV2c5eGEvN89NT1K3GA4KkcHiAhAIzZd4=; b=a1gkB2Wj2JlxJyFhZ9rCbtAKq
-	Cnn7O1n6lz5mZAovbzrMXS9SDzXJ7t0Jjro5ZuUAVgaXbP8S5yZCCkQvbd7Hluf0w8MhFxH69JR03
-	4AMk0D579u52R5mRSAPbB7Hs4JQr2YBWqVbsNJaaUyGU9eX2c79irZKIsLyOIF6gfE7VJHdIlKNyw
-	4K2PYyvmNk0Vi7rs4GKJFNtMOI7aupMZ8x4kEodqyVYdtgwuVu4CSrReRxXlMU+41PCxGiH4Ip8o8
-	CXxFuvF/ho41y0iSsodOOM5+GglJ7CTJ1nqs6xkXVxW7SPWJCNAr31cIjlXxh71OMG3R0f0DdhgSq
-	DidJwONSA==;
+	 bh=XKAt6LeEFWyPjVeo6AM82qYFrStYRxTwm8hdO/qL3Wc=; b=mkzPvQfVUcMXuO5h+oRH868HR
+	LUZ8AOif5dE6oSoyCoEYbcriHLZj4kx3UrxjOlhio/fk0IwqCewxqQTK6mHjC5YiNXWhatfpURFS4
+	x0TpWAOO9mCw71dwhMwOogyig3ap/pd9OnUME2GX2IWv9YkB5DAobESdAO1+uaGS1PuyS/48yptAV
+	XM+D62bJr7W9yu+OTSdN3QjngM9buicm/GCz2o/9zhTtMK9JUV3VE1NdTpeG4c5YQqIIYA7Li7TUz
+	EFR39xv3qNF3z92k1xE9tRIe1i4cT08Nui9Ror0BCB1y6O1yUv9MU8MbS63I9DS48XUhgcvu+Y0Y6
+	pJJS3J6qQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l2Aqb-0001ji-LK; Wed, 20 Jan 2021 10:36:21 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1l2B3v-0003Es-Cs; Wed, 20 Jan 2021 10:50:07 +0000
+Received: from lilium.sigma-star.at ([109.75.188.150])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l2AqY-0001jD-Pb
- for linux-mtd@lists.infradead.org; Wed, 20 Jan 2021 10:36:19 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 69AB81F455F2;
- Wed, 20 Jan 2021 10:36:17 +0000 (GMT)
-Date: Wed, 20 Jan 2021 11:36:14 +0100
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v2 2/2] mtd: rawnand: omap: Use ECC information from the
- generic structures
-Message-ID: <20210120113614.6c5cb1e4@collabora.com>
-In-Reply-To: <20210120101750.1163-3-miquel.raynal@bootlin.com>
-References: <20210120101750.1163-1-miquel.raynal@bootlin.com>
- <20210120101750.1163-3-miquel.raynal@bootlin.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1l2B3s-0003EJ-GQ
+ for linux-mtd@lists.infradead.org; Wed, 20 Jan 2021 10:50:05 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lilium.sigma-star.at (Postfix) with ESMTP id 81887181CBDE1;
+ Wed, 20 Jan 2021 11:50:01 +0100 (CET)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+ by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id 7KSfT-Iu1jtL; Wed, 20 Jan 2021 11:50:01 +0100 (CET)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+ by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id xicYdwUnWqyp; Wed, 20 Jan 2021 11:50:01 +0100 (CET)
+To: Rouven Czerwinski <rouven@czerwinskis.de>, linux-mtd@lists.infradead.org
+References: <875z3tia5a.fsf@czerwinskis.de>
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Organization: sigma star gmbh
+Subject: Re: Test failures on NixOS unstable (gcc10?)
+Message-ID: <ca57d475-2a66-0146-3896-977c77c84e6b@sigma-star.at>
+Date: Wed, 20 Jan 2021 11:50:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <875z3tia5a.fsf@czerwinskis.de>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210120_053618_919831_FCF94C18 
-X-CRM114-Status: GOOD (  30.66  )
+X-CRM114-CacheID: sfid-20210120_055004_666800_BFFD426B 
+X-CRM114-Status: GOOD (  11.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,103 +71,35 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, ladis@triops.cz,
- linux-mtd@lists.infradead.org, Adam Ford <aford173@gmail.com>
-Content-Type: text/plain; charset="us-ascii"
+Cc: viric@viric.name
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 20 Jan 2021 11:17:50 +0100
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+Hi,
 
-> The OMAP driver may leverage software BCH logic to locate errors while
-> using its own hardware to detect the presence of errors. This is
-> achieved with a "mixed" mode which initializes manually the software
-> BCH internal logic while providing its own OOB layout.
+On 1/19/21 9:49 AM, Rouven Czerwinski wrote:
+> mtd-utils within NixOS automatically executes the tests, and those have
+> been failing since middle of 2020 [1]. I tried locally and can reproduce
+> on current nixpkgs master (latest available packages), I am attaching
+> the test-log as instructed by the test output. I think those failures
+> are due to NixOS using gcc-10 since then.
 > 
-> The issue here comes from the fact that the BCH driver has been
-> updated to only use generic NAND objects, and no longer depend on raw
-> NAND structures as it is usable from SPI-NAND as well. However, at the
-> end of the BCH context initialization, the driver checks the validity
-> of the OOB layout. At this stage, the raw NAND fields have not been
-> populated yet while being used by the layout helpers, leading to an
-> invalid layout.
-> 
-> The solution here is to use the fields from the generic ECC structures
-> which have already been updated and will always be valid instead of
-> the raw NAND ones.
-> 
-> Note: I don't know which commit exactly triggered the error, but the
-> entire migration to a generic BCH driver got merged in one go, so this
-> should not be a problem for stable backports.
-> 
-> Reported-by: Adam Ford <aford173@gmail.com>
-> Fixes: 80fe603160a4 ("mtd: nand: ecc-bch: Stop using raw NAND structures")
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  drivers/mtd/nand/raw/omap2.c | 16 ++++++++++------
->  1 file changed, 10 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
-> index fbb9955f2467..fd09b2a30abb 100644
-> --- a/drivers/mtd/nand/raw/omap2.c
-> +++ b/drivers/mtd/nand/raw/omap2.c
-> @@ -1866,18 +1866,20 @@ static const struct mtd_ooblayout_ops omap_ooblayout_ops = {
->  static int omap_sw_ooblayout_ecc(struct mtd_info *mtd, int section,
->  				 struct mtd_oob_region *oobregion)
->  {
-> -	struct nand_chip *chip = mtd_to_nand(mtd);
-> +	struct nand_device *nand = mtd_to_nanddev(mtd);
-> +	unsigned int nsteps = nanddev_get_ecc_nsteps(nand);
-> +	unsigned int ecc_bytes = nand->ecc.ctx.total / nsteps;
+Unfortunately, I have not yet been able to reproduce this.
 
-I'd recommend adding a helper for that one too
-(nanddev_ecc_bytes_per_step()?).
+The unit tests seem to work fine on my Fedora system with gcc-10.2.1,
+so this might be related to some other change at the time?
 
-This being said, I think you're better off applying v1 (which is
-self-contained) and keeping this refactor for the next release.
+I remember cmocka being a bit fragile from the time the unit tests where
+added. The "--enable-unit-tests" configure option tries to manipulate the
+CFLAGS from within the configure script to make it work. Is your build
+system perhaps attempting to set the CFLAGS externally at make time?
 
->  	int off = BADBLOCK_MARKER_LENGTH;
->  
-> -	if (section >= chip->ecc.steps)
-> +	if (section >= nsteps)
->  		return -ERANGE;
->  
->  	/*
->  	 * When SW correction is employed, one OMAP specific marker byte is
->  	 * reserved after each ECC step.
->  	 */
-> -	oobregion->offset = off + (section * (chip->ecc.bytes + 1));
-> -	oobregion->length = chip->ecc.bytes;
-> +	oobregion->offset = off + (section * (ecc_bytes + 1));
-> +	oobregion->length = ecc_bytes;
->  
->  	return 0;
->  }
-> @@ -1885,7 +1887,9 @@ static int omap_sw_ooblayout_ecc(struct mtd_info *mtd, int section,
->  static int omap_sw_ooblayout_free(struct mtd_info *mtd, int section,
->  				  struct mtd_oob_region *oobregion)
->  {
-> -	struct nand_chip *chip = mtd_to_nand(mtd);
-> +	struct nand_device *nand = mtd_to_nanddev(mtd);
-> +	unsigned int nsteps = nanddev_get_ecc_nsteps(nand);
-> +	unsigned int ecc_bytes = nand->ecc.ctx.total / nsteps;
->  	int off = BADBLOCK_MARKER_LENGTH;
->  
->  	if (section)
-> @@ -1895,7 +1899,7 @@ static int omap_sw_ooblayout_free(struct mtd_info *mtd, int section,
->  	 * When SW correction is employed, one OMAP specific marker byte is
->  	 * reserved after each ECC step.
->  	 */
-> -	off += ((chip->ecc.bytes + 1) * chip->ecc.steps);
-> +	off += ((ecc_bytes + 1) * nsteps);
->  	if (off >= mtd->oobsize)
->  		return -ERANGE;
->  
 
+Regards,
+
+David
 
 ______________________________________________________
 Linux MTD discussion mailing list
