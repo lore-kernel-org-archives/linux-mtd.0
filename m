@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-15.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CB86C433E0
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Jan 2021 12:30:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FC0DC433DB
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Jan 2021 12:31:00 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B9ADD2250F
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Jan 2021 12:30:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B9ADD2250F
+	by mail.kernel.org (Postfix) with ESMTPS id 079AF2250F
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Jan 2021 12:30:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 079AF2250F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,60 +23,58 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=bVRuqDcoGkksRVYJCubtmceUedORVapXYoCCKXZxhSw=; b=pDpNwck1F4iU3zUEU3sic7sZO
-	IPnlEEYg7EK/eXBKr6YTQm7D3sJHNfrpae56cp1eL0v31te7E8jGqLvW1Ia3kD+EJPEM4AhvSkSGb
-	KZFe0T/c9/LkxkINCtUvIAMiJ8sdjF6+RFX4XMRRjYNQHWYKIc8yNbifP+0F3mA4ZN9sqi2xHJP9u
-	TYNkmWv5m4edn1WN6rrw7rRBDn3bj7DOUJMdcUe6Zw5RPMTzmXE3BBeWwc3dhQKgHZ0sNchM0VARl
-	FYnBlQuHbLUcL5EAXk0JTr6k3lupfpVAdx6oBIUvcwbnDYsSe/R78x8OgL+pe58TVN/U2v9UEXyt/
-	TgNuFKiBg==;
+	 bh=LfLYCePP4hVhrBHHGgBEUSHSeyOI/tcP3z4QW2LoIf0=; b=ont1DdYpf4LYWnxBSpuc98gO8
+	OgatYsyF0aKuTRslsGXlKOgUm+8oh/VZDiJ8XRT0IvVtqmn5IA2YDZpwt9KOaJd1C3t+xOQKu7Wco
+	iOBbh93d2mxLK+O9n+e+6eTFeOlLFlIRdPY1xIuQbDvdRNvzbfEEBLzUDqHBPZ5EXcpNFFWxynnpi
+	XlGAPB+Mzcm9+nEAevQ0QD/2GduKKIYtM+bVk3yO/w0XZyrs0U8V00AIVWy1f/F7NDU74tBP40Sqk
+	iWei5Y2w7ePePRKiW7F+SEpgu1L+/yuDuzzyy8IHmiw16tkDzn4eL0gOaaxnmHqT/Ug2WW6ip7MkZ
+	7oXixCTZQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l2CcO-00009q-Ku; Wed, 20 Jan 2021 12:29:48 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1l2Cbv-00008a-Ii; Wed, 20 Jan 2021 12:29:19 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l2CcL-00009R-FT
- for linux-mtd@lists.infradead.org; Wed, 20 Jan 2021 12:29:46 +0000
+ id 1l2Cbs-000089-Eh
+ for linux-mtd@lists.infradead.org; Wed, 20 Jan 2021 12:29:17 +0000
 Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10KCTgfK001804;
- Wed, 20 Jan 2021 06:29:42 -0600
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10KCT8Qn046086;
+ Wed, 20 Jan 2021 06:29:08 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1611145782;
- bh=mkonnS399k2ET+gZIAzhzr9qheut3j+L6l9jvq4tMOE=;
+ s=ti-com-17Q1; t=1611145748;
+ bh=FCU6nL+sxUW7VDNVPhVlbOjfkAkOKlUADidYLY/WIbU=;
  h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=RohWxg8V/CpAtkgIldbR4jhijfWEqZNGf8ceyJW2ePIY0uYCUaCFLZC7MgkLWybmB
- r3Sp54du9pDJr/RVLoRosS/vHcfyvsBVEebcuywSvSKpcKzoEffQVaQqEwmNAoL7ZB
- 4er9TvbRh/aZsmzz1YOxaInWlE0SvhG6Gi0AAz/0=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10KCTg8Q090719
+ b=B5/xjmWq3G4pDNRmqpSZSl310yuyPr1FKcBiLDE6f2HmahDWB+VriIs1h21nC4f+k
+ y2Q0Z9QlezDWu3i/9kdkA0t0fNwOZWCWqLKw+BRghIysai+q8YQ9uz5loRixcOgvRy
+ rlgYpAQiKNIxEeajCLtJPfRTMlLb97ORTPGMP1pc=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10KCT8cL090345
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 20 Jan 2021 06:29:42 -0600
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ Wed, 20 Jan 2021 06:29:08 -0600
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 20
- Jan 2021 06:29:41 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ Jan 2021 06:29:08 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 20 Jan 2021 06:29:41 -0600
+ Frontend Transport; Wed, 20 Jan 2021 06:29:08 -0600
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10KCTfFa115893;
- Wed, 20 Jan 2021 06:29:41 -0600
-Date: Wed, 20 Jan 2021 17:59:40 +0530
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10KCT7eQ039549;
+ Wed, 20 Jan 2021 06:29:08 -0600
+Date: Wed, 20 Jan 2021 17:59:07 +0530
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: Re: [PATCH 2/2] mtd: spi-nor: sst: Add support for Global Unlock on
- sst26vf
-Message-ID: <20210120122940.2xkiwghtszzyylnm@ti.com>
+Subject: Re: [PATCH 1/2] mtd: spi-nor: Add Global Block Unlock command
+Message-ID: <20210120122431.csvnwlb4ihqbuvoq@ti.com>
 References: <20210120105411.254890-1-tudor.ambarus@microchip.com>
- <20210120105411.254890-2-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20210120105411.254890-2-tudor.ambarus@microchip.com>
+In-Reply-To: <20210120105411.254890-1-tudor.ambarus@microchip.com>
 User-Agent: NeoMutt/20171215
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210120_072945_622064_C14013EB 
-X-CRM114-Status: GOOD (  24.28  )
+X-CRM114-CacheID: sfid-20210120_072916_602919_1874A5BF 
+X-CRM114-Status: GOOD (  21.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,91 +97,105 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 Hi Tudor,
 
 On 20/01/21 12:54PM, Tudor Ambarus wrote:
-> Even if sst26vf shares the SPINOR_OP_GBULK opcode with
-> Macronix (ex. MX25U12835F) and Winbound (ex. W25Q128FV),
-> it has its own Individual Block Protection scheme, which
-> is also capable to read-lock individual parameter blocks.
-> Thus the sst26vf's Individual Block Protection scheme will
-> reside in the sst.c manufacturer driver.
+> The Global Block Unlock command has different names depending
+> on the manufacturer, but always the same command value: 0x98.
+> Macronix's MX25U12835F names it Gang Block Unlock, Winbound's
+> W25Q128FV names it Global Block Unlock and Microchip's
+> SST26VF064B names it Global Block Protection Unlock.
 > 
-> Add support to unlock the entire flash memory. The device
-> is write-protected by default after a power-on reset cycle
-> (volatile software protection), in order to avoid inadvertent
-> writes during power-up. Could do an erase, write, read back,
-> and compare when MTD_SPI_NOR_SWP_DISABLE_ON_VOLATILE=y.
+> Used in the Individual Block Protection mode, which is mutual
+
+Nitpick: s/mutual/mutually/
+
+> exclusive with the Block Protection mode (BP0-3).
 > 
 > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 > ---
->  drivers/mtd/spi-nor/sst.c | 38 ++++++++++++++++++++++++++++++++++++--
->  1 file changed, 36 insertions(+), 2 deletions(-)
+>  drivers/mtd/spi-nor/core.c  | 35 +++++++++++++++++++++++++++++++++++
+>  drivers/mtd/spi-nor/core.h  |  1 +
+>  include/linux/mtd/spi-nor.h |  1 +
+>  3 files changed, 37 insertions(+)
 > 
-> diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
-> index 00e48da0744a..1cd2a360c41e 100644
-> --- a/drivers/mtd/spi-nor/sst.c
-> +++ b/drivers/mtd/spi-nor/sst.c
-> @@ -8,6 +8,39 @@
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index 20df44b753da..cb275608cb7f 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -853,6 +853,41 @@ int spi_nor_wait_till_ready(struct spi_nor *nor)
+>  						    DEFAULT_READY_WAIT_JIFFIES);
+>  }
 >  
->  #include "core.h"
->  
-> +static int sst26vf_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+> +/**
+> + * spi_nor_global_block_unlock() - Unlock Global Block Protection.
+> + * @nor:	pointer to 'struct spi_nor'.
+> + *
+> + * Return: 0 on success, -errno otherwise.
+> + */
+> +int spi_nor_global_block_unlock(struct spi_nor *nor)
 > +{
-> +	return -EOPNOTSUPP;
-> +}
+> +	int ret;
 > +
-> +static int sst26vf_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
-> +{
-> +	if (!ofs && len == nor->params->size)
+> +	ret = spi_nor_write_enable(nor);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (nor->spimem) {
+> +		struct spi_mem_op op =
+> +			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_GBULK, 1),
 
-Nitpick: ofs is not a boolean value. Don't treat it as such. (ofs == 0 
-&& len == nor->params->size) makes the intent much clearer.
+Set the buswidth to 0...
 
-> +		return spi_nor_global_block_unlock(nor);
+> +				   SPI_MEM_OP_NO_ADDR,
+> +				   SPI_MEM_OP_NO_DUMMY,
+> +				   SPI_MEM_OP_NO_DATA);
+
+... and run the op through spi_nor_spimem_setup_op().
+
+With this fixed,
+
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+
 > +
-> +	return -EOPNOTSUPP;
+> +		ret = spi_mem_exec_op(nor->spimem, &op);
+> +	} else {
+> +		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_GBULK,
+> +						       NULL, 0);
+> +	}
+> +
+> +	if (ret) {
+> +		dev_dbg(nor->dev, "error %d on Global Block Unlock\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	return spi_nor_wait_till_ready(nor);
 > +}
 > +
-> +static int sst26vf_is_locked(struct spi_nor *nor, loff_t ofs, uint64_t len)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +
-> +static const struct spi_nor_locking_ops sst26vf_locking_ops = {
-> +	.lock = sst26vf_lock,
-> +	.unlock = sst26vf_unlock,
-> +	.is_locked = sst26vf_is_locked,
-> +};
-> +
-> +static void sst26vf_default_init(struct spi_nor *nor)
-> +{
-> +	nor->params->locking_ops = &sst26vf_locking_ops;
-> +}
-> +
-> +static const struct spi_nor_fixups sst26vf_fixups = {
-> +	.default_init = sst26vf_default_init,
-> +};
-> +
->  static const struct flash_info sst_parts[] = {
->  	/* SST -- large erase sizes are "overlays", "sectors" are 4K */
->  	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024,  8,
-> @@ -39,8 +72,9 @@ static const struct flash_info sst_parts[] = {
->  	{ "sst26vf016b", INFO(0xbf2641, 0, 64 * 1024, 32,
->  			      SECT_4K | SPI_NOR_DUAL_READ) },
->  	{ "sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128,
-> -			      SECT_4K | SPI_NOR_DUAL_READ |
-> -			      SPI_NOR_QUAD_READ) },
-> +			      SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-> +			      SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
-> +		.fixups = &sst26vf_fixups },
->  };
+>  /**
+>   * spi_nor_write_sr() - Write the Status Register.
+>   * @nor:	pointer to 'struct spi_nor'.
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index d631ee299de3..eb26796db026 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -434,6 +434,7 @@ int spi_nor_write_disable(struct spi_nor *nor);
+>  int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable);
+>  int spi_nor_write_ear(struct spi_nor *nor, u8 ear);
+>  int spi_nor_wait_till_ready(struct spi_nor *nor);
+> +int spi_nor_global_block_unlock(struct spi_nor *nor);
+>  int spi_nor_lock_and_prep(struct spi_nor *nor);
+>  void spi_nor_unlock_and_unprep(struct spi_nor *nor);
+>  int spi_nor_sr1_bit6_quad_enable(struct spi_nor *nor);
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index d13958de6d8a..a0d572855444 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -53,6 +53,7 @@
+>  #define SPINOR_OP_WREAR		0xc5	/* Write Extended Address Register */
+>  #define SPINOR_OP_SRSTEN	0x66	/* Software Reset Enable */
+>  #define SPINOR_OP_SRST		0x99	/* Software Reset */
+> +#define SPINOR_OP_GBULK		0x98    /* Global Block Unlock */
 >  
->  static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
-> -- 
-> 2.25.1
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>  /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
+>  #define SPINOR_OP_READ_4B	0x13	/* Read data bytes (low frequency) */
 
 -- 
 Regards,
