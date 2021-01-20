@@ -2,72 +2,62 @@ Return-Path: <SRS0=AumS=GX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-17.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3314C433E0
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Jan 2021 15:02:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C39BC433E0
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Jan 2021 15:07:25 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 33BDD23356
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Jan 2021 15:02:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 33BDD23356
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id F16E823356
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Jan 2021 15:07:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F16E823356
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
-	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=u71T48xSr58tzJhLSQMmv+o5s4Aq+Sn8qKG2g18NQpU=; b=KMfLNuNCEeFdPWOq+VsEKBpLI
-	3cVgrLIDX2Ks1zl3VdKw/SYdusBfJ19dPE2kY4dwsP/5ZtAGdXvosB2GpMTEK6JUBGOmJCDYelvxg
-	cnXkSyi+a6A41no/W+TsvzvRrLkTW+hSkWJywDXzJAvuT5pE3oH965ngNPJd7cZQEL7OBHs42Lwj6
-	U2QTY61ymvxs3yqyVBQ0SWxbOO7QQ9JIqDBdO4WM0w0tWdpvtgHffkS8vEbu6qiJUD+ee7LiKlI4g
-	8oIdLE2tvFLvXh+iUfPKIVkVupEDdu/4vYnO9gfNEEGZHFby7ulHlvxzo7XMVLA70qt+Q9bnWptCG
-	LV/gLkZfg==;
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=RTlzb6IjxEN5kBZE6GPfg+hi5uoBlELUmMu1Cuztgp8=; b=SYB/X0k+dVws9SO8JPwad4VN6P
+	3MRRA0BYOGlXNi0nkcscuEnfgN4ReoZ2FjmLLW1+xvK6GDNo/Zj3inLEz1NyBuclekIZlGjOvJiWo
+	LW5BGKIIg6C9HykIFALW9ufAvciYqd7HyoOu2qB1KYjL7CbKZ65SevjSxBI5yfCT1oxcWL/ePc72L
+	qxXhVOWM0p+sh02xlmP2sXxxcYAhZpw1llR9gG6unNlcbBzJ0f1UZ2CnXNn/jVg6ED4qEF3XOTusO
+	VPQfJNaAtkrNZY+97h6cOW5k4MPUGgmT9dvTltEULlMp2mrVeOxMr3UqCrzL6P2cjzLt2Itt3nBQX
+	NFNg+4UA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l2Ezu-0002Gd-IJ; Wed, 20 Jan 2021 15:02:14 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1l2F3g-0003Vq-2N; Wed, 20 Jan 2021 15:06:08 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l2Ezr-0002Ee-7Z
- for linux-mtd@lists.infradead.org; Wed, 20 Jan 2021 15:02:12 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 714C622727;
- Wed, 20 Jan 2021 16:02:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1611154925;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=sUHuaCPz16VMa7CYH8WbEw6Xdv8BgjZHYjL6590ZBPc=;
- b=uheoepFQtsTTigNWCwM48rCQ2vQd7kXwLLUWWEAbcWX0dujmbKPuCDvw0EPLqiG2FG5eNe
- Xi9jnS/JNKVvt9Knkf+e2CxjLqYd/q6j5+P1ISsc/Cy5Q4P2nX3xTK1v5C8iLW9XARHeKQ
- upEs8IEhrxDY2E3FDw2bHDIvyrL2y3Q=
+ id 1l2F3b-0003Uf-B1; Wed, 20 Jan 2021 15:06:05 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D2212336E;
+ Wed, 20 Jan 2021 15:06:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1611155162;
+ bh=oMU98zVbwV+NSKJw+ZB65S0eX4Ca97owmagKupOLvKs=;
+ h=From:To:Cc:Subject:Date:From;
+ b=p52JgYPqX//UBdzdQafDCuVa9CITCPRVFJwH4jVsr7fHT4ZKh28rgU8OyLBBVlkzW
+ MqsORHhorMTa2YJ9h5KLukISDauTp0hbgIlX6HvKUjKGaKLwq9e0S1bg4l9dBypoyL
+ W/C9+cI8t/PSynAbRqnMw68mBPAvV8q3Rg2/6jY5OPkyNzsKa37TWolMF34CH/ZBFp
+ R+dkgF4TDWkfQrBTS89AIcXK3LT9WW/KplKS3Ph8Q0gpUDlOq7+tFUCuotBA/5a5Jn
+ 7R+Xni2SJtsnG4xr1blQGX+HuonvkPWdncXr5VDpGw1aEf7ENNx+Xqrcc1jCPNjyM7
+ ffLGj46am2MMQ==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH] nand: raw: remove tango driver
+Date: Wed, 20 Jan 2021 16:05:26 +0100
+Message-Id: <20210120150555.1610132-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Date: Wed, 20 Jan 2021 16:02:05 +0100
-From: Michael Walle <michael@walle.cc>
-To: Tudor.Ambarus@microchip.com
-Subject: Re: [PATCH v2 2/2] mtd: spi-nor: sst: Add support for Global Unlock
- on sst26vf
-In-Reply-To: <ad0cc416-73b7-f626-115f-d192fac17957@microchip.com>
-References: <20210120131914.277363-1-tudor.ambarus@microchip.com>
- <20210120131914.277363-2-tudor.ambarus@microchip.com>
- <b3a61abec8927c7229c27415d2c769a8@walle.cc>
- <ad0cc416-73b7-f626-115f-d192fac17957@microchip.com>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <447aca9c61a45b05f7869b9747e2c301@walle.cc>
-X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210120_100211_387707_66117736 
-X-CRM114-Status: GOOD (  10.54  )
+X-CRM114-CacheID: sfid-20210120_100603_913013_E187B8EB 
+X-CRM114-Status: GOOD (  24.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,34 +69,796 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, richard@nod.at, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Kavyasree.Kotagiri@microchip.com,
- miquel.raynal@bootlin.com, p.yadav@ti.com
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Cc: Mans Rullgard <mans@mansr.com>, Arnd Bergmann <arnd@arndb.de>,
+ Marc Gonzalez <marc.w.gonzalez@free.fr>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-QW0gMjAyMS0wMS0yMCAxNTo1Miwgc2NocmllYiBUdWRvci5BbWJhcnVzQG1pY3JvY2hpcC5jb206
-Cj4gT24gMS8yMC8yMSA0OjA1IFBNLCBNaWNoYWVsIFdhbGxlIHdyb3RlOgo+Pj4gZGlmZiAtLWdp
-dCBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3N0LmMgYi9kcml2ZXJzL210ZC9zcGktbm9yL3NzdC5j
-Cj4+PiBpbmRleCAwMGU0OGRhMDc0NGEuLmQ2ZTEzOTZhYmI5NiAxMDA2NDQKPj4+IC0tLSBhL2Ry
-aXZlcnMvbXRkL3NwaS1ub3Ivc3N0LmMKPj4+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3N0
-LmMKPj4+IEBAIC04LDYgKzgsMzkgQEAKPj4+IAo+Pj4gwqAjaW5jbHVkZSAiY29yZS5oIgo+Pj4g
-Cj4+PiArc3RhdGljIGludCBzc3QyNnZmX2xvY2soc3RydWN0IHNwaV9ub3IgKm5vciwgbG9mZl90
-IG9mcywgdWludDY0X3QgCj4+PiBsZW4pCj4+PiArewo+Pj4gK8KgwqDCoMKgIHJldHVybiAtRU9Q
-Tk9UU1VQUDsKPj4+ICt9Cj4+PiArCj4+PiArc3RhdGljIGludCBzc3QyNnZmX3VubG9jayhzdHJ1
-Y3Qgc3BpX25vciAqbm9yLCBsb2ZmX3Qgb2ZzLCB1aW50NjRfdAo+Pj4gbGVuKQo+Pj4gK3sKPj4+
-ICvCoMKgwqDCoCBpZiAob2ZzID09IDAgJiYgbGVuID09IG5vci0+cGFyYW1zLT5zaXplKQo+Pj4g
-K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gc3BpX25vcl9nbG9iYWxfYmxvY2tfdW5s
-b2NrKG5vcik7Cj4+IAo+PiAKPj4gU29tZSBibG9ja3MgbWlnaHQgbm90IGJlIHVubG9ja2VkIGJl
-Y2F1c2UgdGhleSBhcmUgcGVybWFuZW50bHkKPj4gbG9ja2VkLiBEb2VzIGl0IG1ha2Ugc2Vuc2Ug
-dG8gcmVhZCBCUE5WIG9mIHRoZSBjb250cm9sIHJlZ2lzdGVyCj4+IGFuZCBhZGQgYSBkZWJ1ZyBt
-ZXNzYWdlIGhlcmU/Cj4gCj4gSXQgd291bGQsIHllcy4gSWYgYW55IGJsb2NrIGlzIHBlcm1hbmVu
-dGx5IGxvY2tlZCBpbiB0aGUgdW5sb2NrX2FsbCAKPiBjYXNlLAo+IEknbGwganVzdCBwcmludCBh
-IGRiZyBtZXNzYWdlIGFuZCByZXR1cm4gLUVJTlZBTC4gU291bmRzIGdvb2Q/CgpzcGlfbm9yX3Ny
-X3VubG9jaygpLCBhdG1lbF9hdDI1ZnNfdW5sb2NrKCkgYW5kIGF0bWVsX2dsb2JhbF91bnByb3Rl
-Y3QoKQp3aWxsIHJldHVybiAtRUlPIGluIGNhc2UgdGhlIFNSIHdhc24ndCB3cml0YWJsZS4KCi1t
-aWNoYWVsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+From: Arnd Bergmann <arnd@arndb.de>
+
+The tango platform is getting removed, so the driver is no
+longer needed.
+
+Cc: Marc Gonzalez <marc.w.gonzalez@free.fr>
+Cc: Mans Rullgard <mans@mansr.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/mtd/nand/raw/Kconfig      |   7 -
+ drivers/mtd/nand/raw/Makefile     |   1 -
+ drivers/mtd/nand/raw/tango_nand.c | 727 ------------------------------
+ 3 files changed, 735 deletions(-)
+ delete mode 100644 drivers/mtd/nand/raw/tango_nand.c
+
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index 4b84fd36e384..30f061939560 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -102,13 +102,6 @@ config MTD_NAND_S3C2410_CLKSTOP
+ 	  when the is NAND chip selected or released, but will save
+ 	  approximately 5mA of power when there is nothing happening.
+ 
+-config MTD_NAND_TANGO
+-	tristate "Tango NAND controller"
+-	depends on ARCH_TANGO || COMPILE_TEST
+-	depends on HAS_IOMEM
+-	help
+-	  Enables the NAND Flash controller on Tango chips.
+-
+ config MTD_NAND_SHARPSL
+ 	tristate "Sharp SL Series (C7xx + others) NAND controller"
+ 	depends on ARCH_PXA || COMPILE_TEST
+diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
+index 32475a28d8f8..d011c6c53f8f 100644
+--- a/drivers/mtd/nand/raw/Makefile
++++ b/drivers/mtd/nand/raw/Makefile
+@@ -10,7 +10,6 @@ obj-$(CONFIG_MTD_NAND_DENALI_PCI)	+= denali_pci.o
+ obj-$(CONFIG_MTD_NAND_DENALI_DT)	+= denali_dt.o
+ obj-$(CONFIG_MTD_NAND_AU1550)		+= au1550nd.o
+ obj-$(CONFIG_MTD_NAND_S3C2410)		+= s3c2410.o
+-obj-$(CONFIG_MTD_NAND_TANGO)		+= tango_nand.o
+ obj-$(CONFIG_MTD_NAND_DAVINCI)		+= davinci_nand.o
+ obj-$(CONFIG_MTD_NAND_DISKONCHIP)	+= diskonchip.o
+ obj-$(CONFIG_MTD_NAND_FSMC)		+= fsmc_nand.o
+diff --git a/drivers/mtd/nand/raw/tango_nand.c b/drivers/mtd/nand/raw/tango_nand.c
+deleted file mode 100644
+index 359187b5a4be..000000000000
+--- a/drivers/mtd/nand/raw/tango_nand.c
++++ /dev/null
+@@ -1,727 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+- * Copyright (C) 2016 Sigma Designs
+- */
+-
+-#include <linux/io.h>
+-#include <linux/of.h>
+-#include <linux/clk.h>
+-#include <linux/iopoll.h>
+-#include <linux/module.h>
+-#include <linux/mtd/rawnand.h>
+-#include <linux/dmaengine.h>
+-#include <linux/dma-mapping.h>
+-#include <linux/platform_device.h>
+-
+-/* Offsets relative to chip->base */
+-#define PBUS_CMD	0
+-#define PBUS_ADDR	4
+-#define PBUS_DATA	8
+-
+-/* Offsets relative to reg_base */
+-#define NFC_STATUS	0x00
+-#define NFC_FLASH_CMD	0x04
+-#define NFC_DEVICE_CFG	0x08
+-#define NFC_TIMING1	0x0c
+-#define NFC_TIMING2	0x10
+-#define NFC_XFER_CFG	0x14
+-#define NFC_PKT_0_CFG	0x18
+-#define NFC_PKT_N_CFG	0x1c
+-#define NFC_BB_CFG	0x20
+-#define NFC_ADDR_PAGE	0x24
+-#define NFC_ADDR_OFFSET	0x28
+-#define NFC_XFER_STATUS	0x2c
+-
+-/* NFC_STATUS values */
+-#define CMD_READY	BIT(31)
+-
+-/* NFC_FLASH_CMD values */
+-#define NFC_READ	1
+-#define NFC_WRITE	2
+-
+-/* NFC_XFER_STATUS values */
+-#define PAGE_IS_EMPTY	BIT(16)
+-
+-/* Offsets relative to mem_base */
+-#define METADATA	0x000
+-#define ERROR_REPORT	0x1c0
+-
+-/*
+- * Error reports are split in two bytes:
+- * byte 0 for the first packet in the page (PKT_0)
+- * byte 1 for other packets in the page (PKT_N, for N > 0)
+- * ERR_COUNT_PKT_N is the max error count over all but the first packet.
+- */
+-#define ERR_COUNT_PKT_0(v)	(((v) >> 0) & 0x3f)
+-#define ERR_COUNT_PKT_N(v)	(((v) >> 8) & 0x3f)
+-#define DECODE_FAIL_PKT_0(v)	(((v) & BIT(7)) == 0)
+-#define DECODE_FAIL_PKT_N(v)	(((v) & BIT(15)) == 0)
+-
+-/* Offsets relative to pbus_base */
+-#define PBUS_CS_CTRL	0x83c
+-#define PBUS_PAD_MODE	0x8f0
+-
+-/* PBUS_CS_CTRL values */
+-#define PBUS_IORDY	BIT(31)
+-
+-/*
+- * PBUS_PAD_MODE values
+- * In raw mode, the driver communicates directly with the NAND chips.
+- * In NFC mode, the NAND Flash controller manages the communication.
+- * We use NFC mode for read and write; raw mode for everything else.
+- */
+-#define MODE_RAW	0
+-#define MODE_NFC	BIT(31)
+-
+-#define METADATA_SIZE	4
+-#define BBM_SIZE	6
+-#define FIELD_ORDER	15
+-
+-#define MAX_CS		4
+-
+-struct tango_nfc {
+-	struct nand_controller hw;
+-	void __iomem *reg_base;
+-	void __iomem *mem_base;
+-	void __iomem *pbus_base;
+-	struct tango_chip *chips[MAX_CS];
+-	struct dma_chan *chan;
+-	int freq_kHz;
+-};
+-
+-#define to_tango_nfc(ptr) container_of(ptr, struct tango_nfc, hw)
+-
+-struct tango_chip {
+-	struct nand_chip nand_chip;
+-	void __iomem *base;
+-	u32 timing1;
+-	u32 timing2;
+-	u32 xfer_cfg;
+-	u32 pkt_0_cfg;
+-	u32 pkt_n_cfg;
+-	u32 bb_cfg;
+-};
+-
+-#define to_tango_chip(ptr) container_of(ptr, struct tango_chip, nand_chip)
+-
+-#define XFER_CFG(cs, page_count, steps, metadata_size)	\
+-	((cs) << 24 | (page_count) << 16 | (steps) << 8 | (metadata_size))
+-
+-#define PKT_CFG(size, strength) ((size) << 16 | (strength))
+-
+-#define BB_CFG(bb_offset, bb_size) ((bb_offset) << 16 | (bb_size))
+-
+-#define TIMING(t0, t1, t2, t3) ((t0) << 24 | (t1) << 16 | (t2) << 8 | (t3))
+-
+-static void tango_select_target(struct nand_chip *chip, unsigned int cs)
+-{
+-	struct tango_nfc *nfc = to_tango_nfc(chip->controller);
+-	struct tango_chip *tchip = to_tango_chip(chip);
+-
+-	writel_relaxed(tchip->timing1, nfc->reg_base + NFC_TIMING1);
+-	writel_relaxed(tchip->timing2, nfc->reg_base + NFC_TIMING2);
+-	writel_relaxed(tchip->xfer_cfg, nfc->reg_base + NFC_XFER_CFG);
+-	writel_relaxed(tchip->pkt_0_cfg, nfc->reg_base + NFC_PKT_0_CFG);
+-	writel_relaxed(tchip->pkt_n_cfg, nfc->reg_base + NFC_PKT_N_CFG);
+-	writel_relaxed(tchip->bb_cfg, nfc->reg_base + NFC_BB_CFG);
+-}
+-
+-static int tango_waitrdy(struct nand_chip *chip, unsigned int timeout_ms)
+-{
+-	struct tango_nfc *nfc = to_tango_nfc(chip->controller);
+-	u32 status;
+-
+-	return readl_relaxed_poll_timeout(nfc->pbus_base + PBUS_CS_CTRL,
+-					  status, status & PBUS_IORDY, 20,
+-					  timeout_ms);
+-}
+-
+-static int tango_exec_instr(struct nand_chip *chip,
+-			    const struct nand_op_instr *instr)
+-{
+-	struct tango_chip *tchip = to_tango_chip(chip);
+-	unsigned int i;
+-
+-	switch (instr->type) {
+-	case NAND_OP_CMD_INSTR:
+-		writeb_relaxed(instr->ctx.cmd.opcode, tchip->base + PBUS_CMD);
+-		return 0;
+-	case NAND_OP_ADDR_INSTR:
+-		for (i = 0; i < instr->ctx.addr.naddrs; i++)
+-			writeb_relaxed(instr->ctx.addr.addrs[i],
+-				       tchip->base + PBUS_ADDR);
+-		return 0;
+-	case NAND_OP_DATA_IN_INSTR:
+-		ioread8_rep(tchip->base + PBUS_DATA, instr->ctx.data.buf.in,
+-			    instr->ctx.data.len);
+-		return 0;
+-	case NAND_OP_DATA_OUT_INSTR:
+-		iowrite8_rep(tchip->base + PBUS_DATA, instr->ctx.data.buf.out,
+-			     instr->ctx.data.len);
+-		return 0;
+-	case NAND_OP_WAITRDY_INSTR:
+-		return tango_waitrdy(chip,
+-				     instr->ctx.waitrdy.timeout_ms);
+-	default:
+-		break;
+-	}
+-
+-	return -EINVAL;
+-}
+-
+-static int tango_exec_op(struct nand_chip *chip,
+-			 const struct nand_operation *op,
+-			 bool check_only)
+-{
+-	unsigned int i;
+-	int ret = 0;
+-
+-	if (check_only)
+-		return 0;
+-
+-	tango_select_target(chip, op->cs);
+-	for (i = 0; i < op->ninstrs; i++) {
+-		ret = tango_exec_instr(chip, &op->instrs[i]);
+-		if (ret)
+-			break;
+-	}
+-
+-	return ret;
+-}
+-
+-/*
+- * The controller does not check for bitflips in erased pages,
+- * therefore software must check instead.
+- */
+-static int check_erased_page(struct nand_chip *chip, u8 *buf)
+-{
+-	struct mtd_info *mtd = nand_to_mtd(chip);
+-	u8 *meta = chip->oob_poi + BBM_SIZE;
+-	u8 *ecc = chip->oob_poi + BBM_SIZE + METADATA_SIZE;
+-	const int ecc_size = chip->ecc.bytes;
+-	const int pkt_size = chip->ecc.size;
+-	int i, res, meta_len, bitflips = 0;
+-
+-	for (i = 0; i < chip->ecc.steps; ++i) {
+-		meta_len = i ? 0 : METADATA_SIZE;
+-		res = nand_check_erased_ecc_chunk(buf, pkt_size, ecc, ecc_size,
+-						  meta, meta_len,
+-						  chip->ecc.strength);
+-		if (res < 0)
+-			mtd->ecc_stats.failed++;
+-		else
+-			mtd->ecc_stats.corrected += res;
+-
+-		bitflips = max(res, bitflips);
+-		buf += pkt_size;
+-		ecc += ecc_size;
+-	}
+-
+-	return bitflips;
+-}
+-
+-static int decode_error_report(struct nand_chip *chip)
+-{
+-	u32 status, res;
+-	struct mtd_info *mtd = nand_to_mtd(chip);
+-	struct tango_nfc *nfc = to_tango_nfc(chip->controller);
+-
+-	status = readl_relaxed(nfc->reg_base + NFC_XFER_STATUS);
+-	if (status & PAGE_IS_EMPTY)
+-		return 0;
+-
+-	res = readl_relaxed(nfc->mem_base + ERROR_REPORT);
+-
+-	if (DECODE_FAIL_PKT_0(res) || DECODE_FAIL_PKT_N(res))
+-		return -EBADMSG;
+-
+-	/* ERR_COUNT_PKT_N is max, not sum, but that's all we have */
+-	mtd->ecc_stats.corrected +=
+-		ERR_COUNT_PKT_0(res) + ERR_COUNT_PKT_N(res);
+-
+-	return max(ERR_COUNT_PKT_0(res), ERR_COUNT_PKT_N(res));
+-}
+-
+-static void tango_dma_callback(void *arg)
+-{
+-	complete(arg);
+-}
+-
+-static int do_dma(struct tango_nfc *nfc, enum dma_data_direction dir, int cmd,
+-		  const void *buf, int len, int page)
+-{
+-	void __iomem *addr = nfc->reg_base + NFC_STATUS;
+-	struct dma_chan *chan = nfc->chan;
+-	struct dma_async_tx_descriptor *desc;
+-	enum dma_transfer_direction tdir;
+-	struct scatterlist sg;
+-	struct completion tx_done;
+-	int err = -EIO;
+-	u32 res, val;
+-
+-	sg_init_one(&sg, buf, len);
+-	if (dma_map_sg(chan->device->dev, &sg, 1, dir) != 1)
+-		return -EIO;
+-
+-	tdir = dir == DMA_TO_DEVICE ? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM;
+-	desc = dmaengine_prep_slave_sg(chan, &sg, 1, tdir, DMA_PREP_INTERRUPT);
+-	if (!desc)
+-		goto dma_unmap;
+-
+-	desc->callback = tango_dma_callback;
+-	desc->callback_param = &tx_done;
+-	init_completion(&tx_done);
+-
+-	writel_relaxed(MODE_NFC, nfc->pbus_base + PBUS_PAD_MODE);
+-
+-	writel_relaxed(page, nfc->reg_base + NFC_ADDR_PAGE);
+-	writel_relaxed(0, nfc->reg_base + NFC_ADDR_OFFSET);
+-	writel_relaxed(cmd, nfc->reg_base + NFC_FLASH_CMD);
+-
+-	dmaengine_submit(desc);
+-	dma_async_issue_pending(chan);
+-
+-	res = wait_for_completion_timeout(&tx_done, HZ);
+-	if (res > 0)
+-		err = readl_poll_timeout(addr, val, val & CMD_READY, 0, 1000);
+-
+-	writel_relaxed(MODE_RAW, nfc->pbus_base + PBUS_PAD_MODE);
+-
+-dma_unmap:
+-	dma_unmap_sg(chan->device->dev, &sg, 1, dir);
+-
+-	return err;
+-}
+-
+-static int tango_read_page(struct nand_chip *chip, u8 *buf,
+-			   int oob_required, int page)
+-{
+-	struct mtd_info *mtd = nand_to_mtd(chip);
+-	struct tango_nfc *nfc = to_tango_nfc(chip->controller);
+-	int err, res, len = mtd->writesize;
+-
+-	tango_select_target(chip, chip->cur_cs);
+-	if (oob_required)
+-		chip->ecc.read_oob(chip, page);
+-
+-	err = do_dma(nfc, DMA_FROM_DEVICE, NFC_READ, buf, len, page);
+-	if (err)
+-		return err;
+-
+-	res = decode_error_report(chip);
+-	if (res < 0) {
+-		chip->ecc.read_oob_raw(chip, page);
+-		res = check_erased_page(chip, buf);
+-	}
+-
+-	return res;
+-}
+-
+-static int tango_write_page(struct nand_chip *chip, const u8 *buf,
+-			    int oob_required, int page)
+-{
+-	struct mtd_info *mtd = nand_to_mtd(chip);
+-	struct tango_nfc *nfc = to_tango_nfc(chip->controller);
+-	const struct nand_sdr_timings *timings;
+-	int err, len = mtd->writesize;
+-	u8 status;
+-
+-	/* Calling tango_write_oob() would send PAGEPROG twice */
+-	if (oob_required)
+-		return -ENOTSUPP;
+-
+-	tango_select_target(chip, chip->cur_cs);
+-	writel_relaxed(0xffffffff, nfc->mem_base + METADATA);
+-	err = do_dma(nfc, DMA_TO_DEVICE, NFC_WRITE, buf, len, page);
+-	if (err)
+-		return err;
+-
+-	timings = nand_get_sdr_timings(nand_get_interface_config(chip));
+-	err = tango_waitrdy(chip, PSEC_TO_MSEC(timings->tR_max));
+-	if (err)
+-		return err;
+-
+-	err = nand_status_op(chip, &status);
+-	if (err)
+-		return err;
+-
+-	return (status & NAND_STATUS_FAIL) ? -EIO : 0;
+-}
+-
+-static void aux_read(struct nand_chip *chip, u8 **buf, int len, int *pos)
+-{
+-	*pos += len;
+-
+-	if (!*buf) {
+-		/* skip over "len" bytes */
+-		nand_change_read_column_op(chip, *pos, NULL, 0, false);
+-	} else {
+-		struct tango_chip *tchip = to_tango_chip(chip);
+-
+-		ioread8_rep(tchip->base + PBUS_DATA, *buf, len);
+-		*buf += len;
+-	}
+-}
+-
+-static void aux_write(struct nand_chip *chip, const u8 **buf, int len, int *pos)
+-{
+-	*pos += len;
+-
+-	if (!*buf) {
+-		/* skip over "len" bytes */
+-		nand_change_write_column_op(chip, *pos, NULL, 0, false);
+-	} else {
+-		struct tango_chip *tchip = to_tango_chip(chip);
+-
+-		iowrite8_rep(tchip->base + PBUS_DATA, *buf, len);
+-		*buf += len;
+-	}
+-}
+-
+-/*
+- * Physical page layout (not drawn to scale)
+- *
+- * NB: Bad Block Marker area splits PKT_N in two (N1, N2).
+- *
+- * +---+-----------------+-------+-----+-----------+-----+----+-------+
+- * | M |      PKT_0      | ECC_0 | ... |     N1    | BBM | N2 | ECC_N |
+- * +---+-----------------+-------+-----+-----------+-----+----+-------+
+- *
+- * Logical page layout:
+- *
+- *       +-----+---+-------+-----+-------+
+- * oob = | BBM | M | ECC_0 | ... | ECC_N |
+- *       +-----+---+-------+-----+-------+
+- *
+- *       +-----------------+-----+-----------------+
+- * buf = |      PKT_0      | ... |      PKT_N      |
+- *       +-----------------+-----+-----------------+
+- */
+-static void raw_read(struct nand_chip *chip, u8 *buf, u8 *oob)
+-{
+-	struct mtd_info *mtd = nand_to_mtd(chip);
+-	u8 *oob_orig = oob;
+-	const int page_size = mtd->writesize;
+-	const int ecc_size = chip->ecc.bytes;
+-	const int pkt_size = chip->ecc.size;
+-	int pos = 0; /* position within physical page */
+-	int rem = page_size; /* bytes remaining until BBM area */
+-
+-	if (oob)
+-		oob += BBM_SIZE;
+-
+-	aux_read(chip, &oob, METADATA_SIZE, &pos);
+-
+-	while (rem > pkt_size) {
+-		aux_read(chip, &buf, pkt_size, &pos);
+-		aux_read(chip, &oob, ecc_size, &pos);
+-		rem = page_size - pos;
+-	}
+-
+-	aux_read(chip, &buf, rem, &pos);
+-	aux_read(chip, &oob_orig, BBM_SIZE, &pos);
+-	aux_read(chip, &buf, pkt_size - rem, &pos);
+-	aux_read(chip, &oob, ecc_size, &pos);
+-}
+-
+-static void raw_write(struct nand_chip *chip, const u8 *buf, const u8 *oob)
+-{
+-	struct mtd_info *mtd = nand_to_mtd(chip);
+-	const u8 *oob_orig = oob;
+-	const int page_size = mtd->writesize;
+-	const int ecc_size = chip->ecc.bytes;
+-	const int pkt_size = chip->ecc.size;
+-	int pos = 0; /* position within physical page */
+-	int rem = page_size; /* bytes remaining until BBM area */
+-
+-	if (oob)
+-		oob += BBM_SIZE;
+-
+-	aux_write(chip, &oob, METADATA_SIZE, &pos);
+-
+-	while (rem > pkt_size) {
+-		aux_write(chip, &buf, pkt_size, &pos);
+-		aux_write(chip, &oob, ecc_size, &pos);
+-		rem = page_size - pos;
+-	}
+-
+-	aux_write(chip, &buf, rem, &pos);
+-	aux_write(chip, &oob_orig, BBM_SIZE, &pos);
+-	aux_write(chip, &buf, pkt_size - rem, &pos);
+-	aux_write(chip, &oob, ecc_size, &pos);
+-}
+-
+-static int tango_read_page_raw(struct nand_chip *chip, u8 *buf,
+-			       int oob_required, int page)
+-{
+-	tango_select_target(chip, chip->cur_cs);
+-	nand_read_page_op(chip, page, 0, NULL, 0);
+-	raw_read(chip, buf, chip->oob_poi);
+-	return 0;
+-}
+-
+-static int tango_write_page_raw(struct nand_chip *chip, const u8 *buf,
+-				int oob_required, int page)
+-{
+-	tango_select_target(chip, chip->cur_cs);
+-	nand_prog_page_begin_op(chip, page, 0, NULL, 0);
+-	raw_write(chip, buf, chip->oob_poi);
+-	return nand_prog_page_end_op(chip);
+-}
+-
+-static int tango_read_oob(struct nand_chip *chip, int page)
+-{
+-	tango_select_target(chip, chip->cur_cs);
+-	nand_read_page_op(chip, page, 0, NULL, 0);
+-	raw_read(chip, NULL, chip->oob_poi);
+-	return 0;
+-}
+-
+-static int tango_write_oob(struct nand_chip *chip, int page)
+-{
+-	tango_select_target(chip, chip->cur_cs);
+-	nand_prog_page_begin_op(chip, page, 0, NULL, 0);
+-	raw_write(chip, NULL, chip->oob_poi);
+-	return nand_prog_page_end_op(chip);
+-}
+-
+-static int oob_ecc(struct mtd_info *mtd, int idx, struct mtd_oob_region *res)
+-{
+-	struct nand_chip *chip = mtd_to_nand(mtd);
+-	struct nand_ecc_ctrl *ecc = &chip->ecc;
+-
+-	if (idx >= ecc->steps)
+-		return -ERANGE;
+-
+-	res->offset = BBM_SIZE + METADATA_SIZE + ecc->bytes * idx;
+-	res->length = ecc->bytes;
+-
+-	return 0;
+-}
+-
+-static int oob_free(struct mtd_info *mtd, int idx, struct mtd_oob_region *res)
+-{
+-	return -ERANGE; /* no free space in spare area */
+-}
+-
+-static const struct mtd_ooblayout_ops tango_nand_ooblayout_ops = {
+-	.ecc	= oob_ecc,
+-	.free	= oob_free,
+-};
+-
+-static u32 to_ticks(int kHz, int ps)
+-{
+-	return DIV_ROUND_UP_ULL((u64)kHz * ps, NSEC_PER_SEC);
+-}
+-
+-static int tango_set_timings(struct nand_chip *chip, int csline,
+-			     const struct nand_interface_config *conf)
+-{
+-	const struct nand_sdr_timings *sdr = nand_get_sdr_timings(conf);
+-	struct tango_nfc *nfc = to_tango_nfc(chip->controller);
+-	struct tango_chip *tchip = to_tango_chip(chip);
+-	u32 Trdy, Textw, Twc, Twpw, Tacc, Thold, Trpw, Textr;
+-	int kHz = nfc->freq_kHz;
+-
+-	if (IS_ERR(sdr))
+-		return PTR_ERR(sdr);
+-
+-	if (csline == NAND_DATA_IFACE_CHECK_ONLY)
+-		return 0;
+-
+-	Trdy = to_ticks(kHz, sdr->tCEA_max - sdr->tREA_max);
+-	Textw = to_ticks(kHz, sdr->tWB_max);
+-	Twc = to_ticks(kHz, sdr->tWC_min);
+-	Twpw = to_ticks(kHz, sdr->tWC_min - sdr->tWP_min);
+-
+-	Tacc = to_ticks(kHz, sdr->tREA_max);
+-	Thold = to_ticks(kHz, sdr->tREH_min);
+-	Trpw = to_ticks(kHz, sdr->tRC_min - sdr->tREH_min);
+-	Textr = to_ticks(kHz, sdr->tRHZ_max);
+-
+-	tchip->timing1 = TIMING(Trdy, Textw, Twc, Twpw);
+-	tchip->timing2 = TIMING(Tacc, Thold, Trpw, Textr);
+-
+-	return 0;
+-}
+-
+-static int tango_attach_chip(struct nand_chip *chip)
+-{
+-	struct nand_ecc_ctrl *ecc = &chip->ecc;
+-
+-	ecc->engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
+-	ecc->algo = NAND_ECC_ALGO_BCH;
+-	ecc->bytes = DIV_ROUND_UP(ecc->strength * FIELD_ORDER, BITS_PER_BYTE);
+-
+-	ecc->read_page_raw = tango_read_page_raw;
+-	ecc->write_page_raw = tango_write_page_raw;
+-	ecc->read_page = tango_read_page;
+-	ecc->write_page = tango_write_page;
+-	ecc->read_oob = tango_read_oob;
+-	ecc->write_oob = tango_write_oob;
+-
+-	return 0;
+-}
+-
+-static const struct nand_controller_ops tango_controller_ops = {
+-	.attach_chip = tango_attach_chip,
+-	.setup_interface = tango_set_timings,
+-	.exec_op = tango_exec_op,
+-};
+-
+-static int chip_init(struct device *dev, struct device_node *np)
+-{
+-	u32 cs;
+-	int err, res;
+-	struct mtd_info *mtd;
+-	struct nand_chip *chip;
+-	struct tango_chip *tchip;
+-	struct nand_ecc_ctrl *ecc;
+-	struct tango_nfc *nfc = dev_get_drvdata(dev);
+-
+-	tchip = devm_kzalloc(dev, sizeof(*tchip), GFP_KERNEL);
+-	if (!tchip)
+-		return -ENOMEM;
+-
+-	res = of_property_count_u32_elems(np, "reg");
+-	if (res < 0)
+-		return res;
+-
+-	if (res != 1)
+-		return -ENOTSUPP; /* Multi-CS chips are not supported */
+-
+-	err = of_property_read_u32_index(np, "reg", 0, &cs);
+-	if (err)
+-		return err;
+-
+-	if (cs >= MAX_CS)
+-		return -EINVAL;
+-
+-	chip = &tchip->nand_chip;
+-	ecc = &chip->ecc;
+-	mtd = nand_to_mtd(chip);
+-
+-	chip->options = NAND_USES_DMA |
+-			NAND_NO_SUBPAGE_WRITE |
+-			NAND_WAIT_TCCS;
+-	chip->controller = &nfc->hw;
+-	tchip->base = nfc->pbus_base + (cs * 256);
+-
+-	nand_set_flash_node(chip, np);
+-	mtd_set_ooblayout(mtd, &tango_nand_ooblayout_ops);
+-	mtd->dev.parent = dev;
+-
+-	err = nand_scan(chip, 1);
+-	if (err)
+-		return err;
+-
+-	tchip->xfer_cfg = XFER_CFG(cs, 1, ecc->steps, METADATA_SIZE);
+-	tchip->pkt_0_cfg = PKT_CFG(ecc->size + METADATA_SIZE, ecc->strength);
+-	tchip->pkt_n_cfg = PKT_CFG(ecc->size, ecc->strength);
+-	tchip->bb_cfg = BB_CFG(mtd->writesize, BBM_SIZE);
+-
+-	err = mtd_device_register(mtd, NULL, 0);
+-	if (err) {
+-		nand_cleanup(chip);
+-		return err;
+-	}
+-
+-	nfc->chips[cs] = tchip;
+-
+-	return 0;
+-}
+-
+-static int tango_nand_remove(struct platform_device *pdev)
+-{
+-	struct tango_nfc *nfc = platform_get_drvdata(pdev);
+-	struct nand_chip *chip;
+-	int cs, ret;
+-
+-	dma_release_channel(nfc->chan);
+-
+-	for (cs = 0; cs < MAX_CS; ++cs) {
+-		if (nfc->chips[cs]) {
+-			chip = &nfc->chips[cs]->nand_chip;
+-			ret = mtd_device_unregister(nand_to_mtd(chip));
+-			WARN_ON(ret);
+-			nand_cleanup(chip);
+-		}
+-	}
+-
+-	return 0;
+-}
+-
+-static int tango_nand_probe(struct platform_device *pdev)
+-{
+-	int err;
+-	struct clk *clk;
+-	struct resource *res;
+-	struct tango_nfc *nfc;
+-	struct device_node *np;
+-
+-	nfc = devm_kzalloc(&pdev->dev, sizeof(*nfc), GFP_KERNEL);
+-	if (!nfc)
+-		return -ENOMEM;
+-
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	nfc->reg_base = devm_ioremap_resource(&pdev->dev, res);
+-	if (IS_ERR(nfc->reg_base))
+-		return PTR_ERR(nfc->reg_base);
+-
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+-	nfc->mem_base = devm_ioremap_resource(&pdev->dev, res);
+-	if (IS_ERR(nfc->mem_base))
+-		return PTR_ERR(nfc->mem_base);
+-
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 2);
+-	nfc->pbus_base = devm_ioremap_resource(&pdev->dev, res);
+-	if (IS_ERR(nfc->pbus_base))
+-		return PTR_ERR(nfc->pbus_base);
+-
+-	writel_relaxed(MODE_RAW, nfc->pbus_base + PBUS_PAD_MODE);
+-
+-	clk = devm_clk_get(&pdev->dev, NULL);
+-	if (IS_ERR(clk))
+-		return PTR_ERR(clk);
+-
+-	nfc->chan = dma_request_chan(&pdev->dev, "rxtx");
+-	if (IS_ERR(nfc->chan))
+-		return PTR_ERR(nfc->chan);
+-
+-	platform_set_drvdata(pdev, nfc);
+-	nand_controller_init(&nfc->hw);
+-	nfc->hw.ops = &tango_controller_ops;
+-	nfc->freq_kHz = clk_get_rate(clk) / 1000;
+-
+-	for_each_child_of_node(pdev->dev.of_node, np) {
+-		err = chip_init(&pdev->dev, np);
+-		if (err) {
+-			tango_nand_remove(pdev);
+-			of_node_put(np);
+-			return err;
+-		}
+-	}
+-
+-	return 0;
+-}
+-
+-static const struct of_device_id tango_nand_ids[] = {
+-	{ .compatible = "sigma,smp8758-nand" },
+-	{ /* sentinel */ }
+-};
+-MODULE_DEVICE_TABLE(of, tango_nand_ids);
+-
+-static struct platform_driver tango_nand_driver = {
+-	.probe	= tango_nand_probe,
+-	.remove	= tango_nand_remove,
+-	.driver	= {
+-		.name		= "tango-nand",
+-		.of_match_table	= tango_nand_ids,
+-	},
+-};
+-
+-module_platform_driver(tango_nand_driver);
+-
+-MODULE_LICENSE("GPL");
+-MODULE_AUTHOR("Sigma Designs");
+-MODULE_DESCRIPTION("Tango4 NAND Flash controller driver");
+-- 
+2.29.2
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
