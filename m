@@ -2,61 +2,84 @@ Return-Path: <SRS0=x7NS=GZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF2F4C433DB
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Jan 2021 21:23:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7150EC433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Jan 2021 21:38:51 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 91E0C23AF8
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Jan 2021 21:23:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 91E0C23AF8
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+	by mail.kernel.org (Postfix) with ESMTPS id 29CE423B01
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Jan 2021 21:38:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 29CE423B01
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=IyGgkYnSN6yOV49FhHy8KdFme52IloXVhNJSXp+vvK4=; b=0lXMkiA1QAqkFzV2p6uvCfe56
-	RiVlso7BDNxeIB1uUH1OTl9Hdq+YtXpyaLHZA5g1zMafcr/Lpif+UsPEwDytqJ3X2/rE4P2o/KvfK
-	WFk1cF5vq8rQKaWHgOy+QZg4NlySMuZ4fnFB4dERJfGhyImt7+veQ/W3JZvHydjem12e5gWCL7Xlx
-	OFrTyB2TDHz8AcsaKxRXTffg3VjpUD07xGnPFp9SzHyyb8FtC/nsMcQUd/me3x7KQQAfzrJWjO9bl
-	Yot/Hl5Ldt4tov6wPdbAx0YEKvS5vuix96M5rjP2VqEPh+Xoz0wVxgrLEdCGW8k3ysRGVuI5Oclvj
-	ctbPFJK4w==;
+	 bh=lmbZ7RFy5oPZ0EgQsvGHrM7fvQrjT0lsaxfR5Q40agg=; b=zkfWTAAn67mAY77G2AeQt5+fg
+	bDPoUfk20sU9yQeoh8VIROSrVLT22SYreVMCwzhAcilCcwUNGPq6m/mxOeq459SK9iBoz12ucLYid
+	9mwdvuTluHpxcJmMG6gwWlWTfc6qHHu9B0eQU13R5DZY2aUi0xOScLCEzgfb0grKfwzTvgfqtLs5b
+	pV1jpCadO9G3ftWPaWI3xl5H/tO7s+ji9eFFOcAzy9Szv92Z9rH0NAEZqAh0ERyjA3JusXISjv1UD
+	UW8Q5ajTVCJm0lHFYYfgAUtWWO8qxmiZCjwbxZorpqFtx9D7FvRivGtJMATu5gLo/I33MoK4MqrPq
+	rhkKO4gVA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l33tI-0002E3-8Q; Fri, 22 Jan 2021 21:22:48 +0000
-Received: from lilium.sigma-star.at ([109.75.188.150])
+	id 1l3480-0005Ef-Ob; Fri, 22 Jan 2021 21:38:00 +0000
+Received: from mail-qk1-x729.google.com ([2607:f8b0:4864:20::729])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l33t9-0002Br-J3
- for linux-mtd@lists.infradead.org; Fri, 22 Jan 2021 21:22:42 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lilium.sigma-star.at (Postfix) with ESMTP id 2D753181CBE03;
- Fri, 22 Jan 2021 22:22:35 +0100 (CET)
-Received: from lilium.sigma-star.at ([127.0.0.1])
- by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id sQ4Lpq5mXoJP; Fri, 22 Jan 2021 22:22:34 +0100 (CET)
-Received: from lilium.sigma-star.at ([127.0.0.1])
- by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id vxMwvqs7u1ha; Fri, 22 Jan 2021 22:22:34 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/4] ubifs: Correctly set inode size in ubifs_link()
-Date: Fri, 22 Jan 2021 22:22:26 +0100
-Message-Id: <20210122212229.17072-2-richard@nod.at>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210122212229.17072-1-richard@nod.at>
-References: <20210122212229.17072-1-richard@nod.at>
+ id 1l347x-0005DG-RJ
+ for linux-mtd@lists.infradead.org; Fri, 22 Jan 2021 21:37:58 +0000
+Received: by mail-qk1-x729.google.com with SMTP id z11so6661574qkj.7
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Jan 2021 13:37:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=Z01sMEM1BHDDDy4DLJ6CtoFG8LkWlK4WVMit2bUEiks=;
+ b=exvIKpbaQJKw7viwBDrWQchThnS0qFGB2za1m3aBoBnhTpOWkyw3IDmeFY02EwPo8S
+ XFvhW1HFLhHvp4VBrzHpAcrjy3rexoNvhBIIN7aVtsUtwLl4AmmDcobelXXt4OMwCsuw
+ l4d8/GbHvv3DG3lFX5GvTt6Iq1SnfL7z/3ozFBVm9dwQo6pJwLmKVAg+VvSnRGZ5DM23
+ 54oO8OUWlUbQDdU09Q4RtKMH9vtDUvPk1AbzFdS4eKVcgElCWo5+z6kF61dvOXiXr2dU
+ rJGpK8/dpfFW2AkzDaRFF3eIZOa4dU5Z2vNWK6syiJ0r/JfQVUtdVr+6TKrVp4QD2k/e
+ /hqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=Z01sMEM1BHDDDy4DLJ6CtoFG8LkWlK4WVMit2bUEiks=;
+ b=ZSPnz8LvligwsdFJmDdA4QyT5dFd6PZ6xvuAnv1CqNBxhdeQ7BNdveVEyXLoXmbfd+
+ rlxfqQFxHLN/BCnQFDILzSZ0V/Coh5w1BuMCmDCm/h7+xkLd6wvdfDaiMAVsMWlNhhmM
+ f3DHB5E1dyiC6p2Ws5zfEJsYLLPR0qr/c6AMvTI0C6OyS/k3OkoyOlXemZkZsuyMzPPp
+ +u9jjQXj5CXiuyShppwVfOqO5ao8MFKj9Y3fczeLcMmeuV4LvtXj755euZGHnTYZGo8z
+ l1MdtA7swKaMzYS8BuyfgolG0xG6Ta9QsUMVshG0tp6ZmGzuuXEZ1DQzmrlqHBighE+u
+ EApA==
+X-Gm-Message-State: AOAM530OBYUR4JgFvAfiY1U3vKZ4ZNb8Uie9YoGLHO059vv1fN3zKY5a
+ ROlpk+1tzjS9icCj93bY1iJxNZJ0NyZJSMsX2mQ=
+X-Google-Smtp-Source: ABdhPJyjIS6wf1++BNEZehaFXPvE86D5YfbbVJc2+dJNt/eYNRD17y136paRfTW2VVbvirqQPmfvLC15rRHQkWoHo3o=
+X-Received: by 2002:a05:620a:22ab:: with SMTP id
+ p11mr6727935qkh.237.1611351474358; 
+ Fri, 22 Jan 2021 13:37:54 -0800 (PST)
 MIME-Version: 1.0
+References: <20210115153901.31052-1-zajec5@gmail.com>
+ <20210115153901.31052-3-zajec5@gmail.com>
+ <20210119165138.4982ae46@xps13>
+In-Reply-To: <20210119165138.4982ae46@xps13>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Fri, 22 Jan 2021 22:37:43 +0100
+Message-ID: <CAFLxGvxu0Fd1bgHzuKER_R+kG+jet2oKBUyBFVi9NqDTwv-aZQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mtd: parsers: ofpart: support BCM4908 fixed partitions
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210122_162240_103070_31C41F3C 
-X-CRM114-Status: GOOD (  10.43  )
+X-CRM114-CacheID: sfid-20210122_163757_938357_7045C679 
+X-CRM114-Status: UNSURE (   8.14  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,51 +91,22 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: richard@nod.at, david@sigma-star.at, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ LKML <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-We need to use fscrypt filename handling wrappers
-when calculating the size of a directory entry, otherwise
-UBIFS will report the wrong value (size of plain instead of cihper text)
-for st_size of a directory if fscrypt is enabled.
-
-Cc: stable@vger.kernel.org
-Fixes: f4f61d2cc6d8 ("ubifs: Implement encrypted filenames")
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- fs/ubifs/dir.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 9a6b8660425a..04912dedca48 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -693,7 +693,7 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
- 	struct inode *inode = d_inode(old_dentry);
- 	struct ubifs_inode *ui = ubifs_inode(inode);
- 	struct ubifs_inode *dir_ui = ubifs_inode(dir);
--	int err, sz_change = CALC_DENT_SIZE(dentry->d_name.len);
-+	int err, sz_change;
- 	struct ubifs_budget_req req = { .new_dent = 1, .dirtied_ino = 2,
- 				.dirtied_ino_d = ALIGN(ui->data_len, 8) };
- 	struct fscrypt_name nm;
-@@ -731,6 +731,8 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
- 	if (inode->i_nlink == 0)
- 		ubifs_delete_orphan(c, inode->i_ino);
- 
-+	sz_change = CALC_DENT_SIZE(fname_len(&nm));
-+
- 	inc_nlink(inode);
- 	ihold(inode);
- 	inode->i_ctime = current_time(inode);
--- 
-2.26.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gVHVlLCBKYW4gMTksIDIwMjEgYXQgNTowMSBQTSBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5
+bmFsQGJvb3RsaW4uY29tPiB3cm90ZToKPiA+IFNpZ25lZC1vZmYtYnk6IFJhZmHFgiBNacWCZWNr
+aSA8cmFmYWxAbWlsZWNraS5wbD4KPgo+IFRoZSBhcHByb2FjaCBsb29rcyBmaW5lIGJ5IG1lLCBs
+ZXQncyBzZWUgd2hhdCBvdGhlciBtYWludGFpbmVycyB0aGluay4KClNhbWUsIGxvb2tzIGdvb2Qg
+dG8gbWUhIDotKQoKLS0gClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFp
+bGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
+dXgtbXRkLwo=
