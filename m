@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23993C433DB
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Jan 2021 15:17:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08605C433E6
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Jan 2021 15:17:16 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DBEB9235DD
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Jan 2021 15:17:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DBEB9235DD
+	by mail.kernel.org (Postfix) with ESMTPS id C2EE9235DD
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Jan 2021 15:17:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C2EE9235DD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,32 +23,32 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=O6hxRqaNttNu7svmi91ErhWqJncGRw80ryVniFp70tw=; b=2SvWZsPU5jqva/3SoErMloTaI
-	5xUXYPrfOICb5+mWsyX701CndoKSIF3Y7v0riUJcoPlCHXQZxfdst1aWhRIVJ5OOab13rIKOIY+Of
-	t+WZO+xjj4eQcKa6YTfXYCzxiFIWQqYeiWeZi5FGod1Q6Oc2+uJrtTJNDiDhUIUneIQYDH2RpRRxW
-	yuz4G66mmixlveWOnMJD0d40BK8Hg1WEU6TteX2ExLHv+v3WWsZTayo4wWf9CBAyhuXpf2J1hZX8Q
-	k5yM2vJpusNCxoveV6HHhExnJM9SVmzdWcPGKst5TxLGWMNZHBWBTri7JT6tPdwudlyxXdwP2Wo+n
-	NvsgHIP9Q==;
+	 bh=YsGM9Q4jxnBEenom1ydAv3D8uSaarY4S+GCKAk7MI/g=; b=WRZT0gjR9RKnCfLsEpNQKlePD
+	GGw6iNurvGWkyrDTALnEyLtuxQuN8ttp2sgL3s/9Au70P8NQGaRO+2Czjwaml83QEWq6bIc4uCuNW
+	iE13GDv2cJndd9e4zEzRXOwrbyErbCip15QpF6oCMi6+byMZtjSHH1FqfLRPkYFgioEmShpY/ZkxP
+	6YYdZ8DJxrQ5E+lhS5Ftr5R+TBuQaphel6fObd8i3WulMIOxyvuCUKCl1wZ2MATuwATHy/ecdHP46
+	gVnrWf1TxCNtEEWEAnHNjoUfu11+3pJ69mk9N71Fq91Fsjy5XAWueliCDwkIN5Jwb/wJNfDI2MWwM
+	ZZG+SNsnQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l2yAX-0006vE-W5; Fri, 22 Jan 2021 15:16:14 +0000
+	id 1l2yAn-00072P-3H; Fri, 22 Jan 2021 15:16:29 +0000
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l2yAR-0006sg-5W
- for linux-mtd@lists.infradead.org; Fri, 22 Jan 2021 15:16:08 +0000
+ id 1l2yAh-0006zK-0Y
+ for linux-mtd@lists.infradead.org; Fri, 22 Jan 2021 15:16:24 +0000
 Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1l2yA1-0004Bw-H9; Fri, 22 Jan 2021 16:15:41 +0100
+ id 1l2yA1-0004Bs-HA; Fri, 22 Jan 2021 16:15:41 +0100
 Received: from sha by dude02.hi.pengutronix.de with local (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1l2yA0-0003qx-TQ; Fri, 22 Jan 2021 16:15:40 +0100
+ id 1l2yA0-0003ql-OG; Fri, 22 Jan 2021 16:15:40 +0100
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-fsdevel@vger.kernel.org
-Subject: [PATCH 5/8] ubifs: Factor out ubifs_set_feature_flag()
-Date: Fri, 22 Jan 2021 16:15:33 +0100
-Message-Id: <20210122151536.7982-6-s.hauer@pengutronix.de>
+Subject: [PATCH 2/8] ubifs: move checks and preparation into setflags()
+Date: Fri, 22 Jan 2021 16:15:30 +0100
+Message-Id: <20210122151536.7982-3-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210122151536.7982-1-s.hauer@pengutronix.de>
 References: <20210122151536.7982-1-s.hauer@pengutronix.de>
@@ -59,8 +59,8 @@ X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
  SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210122_101607_286718_D3A68C4C 
-X-CRM114-Status: GOOD (  14.64  )
+X-CRM114-CacheID: sfid-20210122_101623_095882_943DDDFA 
+X-CRM114-Status: GOOD (  18.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,62 +79,108 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The code setting a feature flag can be reused for upcoming projid
-support. Factor out a function to share the code.
+setflags() can be reused for upcoming FS_IOC_FS[SG]ETXATTR ioctl support.
+In preparation for that move the checks and preparation into that
+function so we can reuse them as well.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- fs/ubifs/sb.c | 24 +++++++++++++++---------
- 1 file changed, 15 insertions(+), 9 deletions(-)
+ fs/ubifs/ioctl.c | 46 +++++++++++++++++++++++++++-------------------
+ 1 file changed, 27 insertions(+), 19 deletions(-)
 
-diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
-index c160f718c288..87466836fcfc 100644
---- a/fs/ubifs/sb.c
-+++ b/fs/ubifs/sb.c
-@@ -924,28 +924,34 @@ int ubifs_fixup_free_space(struct ubifs_info *c)
+diff --git a/fs/ubifs/ioctl.c b/fs/ubifs/ioctl.c
+index 4363d85a3fd4..b64a9cec7d47 100644
+--- a/fs/ubifs/ioctl.c
++++ b/fs/ubifs/ioctl.c
+@@ -101,18 +101,35 @@ static int ubifs2ioctl(int ubifs_flags)
+ 	return ioctl_flags;
+ }
+ 
+-static int setflags(struct inode *inode, int flags)
++static int setflags(struct file *file, int flags)
+ {
+ 	int oldflags, err, release;
++	struct inode *inode = file_inode(file);
+ 	struct ubifs_inode *ui = ubifs_inode(inode);
+ 	struct ubifs_info *c = inode->i_sb->s_fs_info;
+ 	struct ubifs_budget_req req = { .dirtied_ino = 1,
+ 					.dirtied_ino_d = ui->data_len };
+ 
+-	err = ubifs_budget_space(c, &req);
++	if (IS_RDONLY(inode))
++		return -EROFS;
++
++	if (!inode_owner_or_capable(inode))
++		return -EACCES;
++
++	/*
++	 * Make sure the file-system is read-write and make sure it
++	 * will not become read-only while we are changing the flags.
++	 */
++	err = mnt_want_write_file(file);
+ 	if (err)
+ 		return err;
+ 
++	dbg_gen("set flags: %#x, i_flags %#x", flags, inode->i_flags);
++
++	err = ubifs_budget_space(c, &req);
++	if (err)
++		goto out_drop;
++
+ 	mutex_lock(&ui->ui_mutex);
+ 	oldflags = ubifs2ioctl(ui->flags);
+ 	err = vfs_ioc_setflags_prepare(inode, oldflags, flags);
+@@ -131,11 +148,17 @@ static int setflags(struct inode *inode, int flags)
+ 		ubifs_release_budget(c, &req);
+ 	if (IS_SYNC(inode))
+ 		err = write_inode_now(inode, 1);
++
++	mnt_drop_write_file(file);
++
+ 	return err;
+ 
+ out_unlock:
+ 	mutex_unlock(&ui->ui_mutex);
+ 	ubifs_release_budget(c, &req);
++out_drop:
++	mnt_drop_write_file(file);
++
  	return err;
  }
  
--int ubifs_enable_encryption(struct ubifs_info *c)
-+static int ubifs_set_feature_flag(struct ubifs_info *c, unsigned int flag)
- {
--	int err;
- 	struct ubifs_sb_node *sup = c->sup_node;
+@@ -152,12 +175,6 @@ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 		return put_user(flags, (int __user *) arg);
  
--	if (!IS_ENABLED(CONFIG_FS_ENCRYPTION))
--		return -EOPNOTSUPP;
+ 	case FS_IOC_SETFLAGS: {
+-		if (IS_RDONLY(inode))
+-			return -EROFS;
 -
--	if (c->encrypted)
-+	if ((sup->flags & cpu_to_le32(flag)) == cpu_to_le32(flag))
- 		return 0;
+-		if (!inode_owner_or_capable(inode))
+-			return -EACCES;
+-
+ 		if (get_user(flags, (int __user *) arg))
+ 			return -EFAULT;
  
- 	if (c->ro_mount || c->ro_media)
- 		return -EROFS;
+@@ -168,17 +185,8 @@ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 		if (!S_ISDIR(inode->i_mode))
+ 			flags &= ~FS_DIRSYNC_FL;
  
- 	if (c->fmt_version < 5) {
--		ubifs_err(c, "on-flash format version 5 is needed for encryption");
-+		ubifs_err(c, "on-flash format version 5 is needed for feature flags");
- 		return -EINVAL;
+-		/*
+-		 * Make sure the file-system is read-write and make sure it
+-		 * will not become read-only while we are changing the flags.
+-		 */
+-		err = mnt_want_write_file(file);
+-		if (err)
+-			return err;
+-		dbg_gen("set flags: %#x, i_flags %#x", flags, inode->i_flags);
+-		err = setflags(inode, flags);
+-		mnt_drop_write_file(file);
+-		return err;
++
++		return setflags(file, flags);
  	}
- 
--	sup->flags |= cpu_to_le32(UBIFS_FLG_ENCRYPTION);
-+	sup->flags |= cpu_to_le32(flag);
-+
-+	return ubifs_write_sb_node(c, sup);
-+}
-+
-+int ubifs_enable_encryption(struct ubifs_info *c)
-+{
-+	int err;
-+
-+	if (!IS_ENABLED(CONFIG_FS_ENCRYPTION))
-+		return -EOPNOTSUPP;
- 
--	err = ubifs_write_sb_node(c, sup);
-+	err = ubifs_set_feature_flag(c, UBIFS_FLG_ENCRYPTION);
- 	if (!err)
- 		c->encrypted = 1;
- 
+ 	case FS_IOC_SET_ENCRYPTION_POLICY: {
+ 		struct ubifs_info *c = inode->i_sb->s_fs_info;
 -- 
 2.20.1
 
