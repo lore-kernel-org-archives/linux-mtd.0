@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19FF7C433E9
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Jan 2021 21:23:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33171C433DB
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Jan 2021 21:23:35 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C30DB23AF8
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Jan 2021 21:23:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C30DB23AF8
+	by mail.kernel.org (Postfix) with ESMTPS id DB5F923AF8
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Jan 2021 21:23:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB5F923AF8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,41 +23,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=8yNKEXg+cUFL3qTT6I5/ovibxpyir4A2k4Z/1cmElz0=; b=EDs5W+Gq6FloW0MOG5ujrp/sV
-	ek9g7fsAuc2ICQh86Xn90VD3IeLGez0Am+R01TRUckn5hv65XOzeTdlH3XortvYyAHmFX/Ytnr4rx
-	JqJptux5Ces+fxRoFtNixewobM/37y//oRzWwLYpU1jqq6NAgi2++O3pjGZ+FbnnRDiNU9+3jDDU5
-	37IZTHO+mTOyA87IEdyWZmyYEjIuQg8Yf+pwr4cytkhmP/jjB26qjW74A8G/VC7I0OvwxRZ6AJfS8
-	YFq8YUoKcQrddrh1Maz0qxonSTEuqHdikV7lxQ0jzDyeJcMyIr/melUvqztftMCeJnA1/TLY5QTmC
-	u8d6YGgYw==;
+	 bh=ZvyTpBGPKOMFRBDjcA2qC6Bq0k0JD4b9MHvZJxUKFyE=; b=INOtsPpB2Hd0D1X5/mYC2OfPR
+	3PvIHnxMSo8WurxDyNswMqD3GpA0FnpNa5fULOLppMYVVel7y5haj7Ni86Yc2zn1v2TZWeyNWsAly
+	pHlesaJQbWr4a531fX1CnVEdrEBVAqq26RHktecOuLZVWrf0TfgoOUe8X072vNiiOs8oqiVi1YOx6
+	f/WPYz18UGCvU1pUwAPJEUfb3dXowMBYGy1ny+dJgjqiwyt1Tl8xfcoa0KZj0H2gS+NcVoD2JkRTC
+	jrrvT3fa1OdAr9+fukqbMa2jSS8SDkNLhWPmZW8U0nPNbPjk7v/Jr2+j7aSRhSAaukmRVYI07qnHh
+	oiTXvBmCw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l33tF-0002Di-OH; Fri, 22 Jan 2021 21:22:45 +0000
+	id 1l33tM-0002Ei-HH; Fri, 22 Jan 2021 21:22:52 +0000
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l33t9-0002Bu-LX
- for linux-mtd@lists.infradead.org; Fri, 22 Jan 2021 21:22:41 +0000
+ id 1l33t9-0002Bv-Kz
+ for linux-mtd@lists.infradead.org; Fri, 22 Jan 2021 21:22:42 +0000
 Received: from localhost (localhost [127.0.0.1])
- by lilium.sigma-star.at (Postfix) with ESMTP id AD32B181CBE05;
- Fri, 22 Jan 2021 22:22:35 +0100 (CET)
+ by lilium.sigma-star.at (Postfix) with ESMTP id 09420181CBE0E;
+ Fri, 22 Jan 2021 22:22:36 +0100 (CET)
 Received: from lilium.sigma-star.at ([127.0.0.1])
  by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id gZrYYPdzlWYm; Fri, 22 Jan 2021 22:22:35 +0100 (CET)
+ with ESMTP id QOALdkXGjvJJ; Fri, 22 Jan 2021 22:22:35 +0100 (CET)
 Received: from lilium.sigma-star.at ([127.0.0.1])
  by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id U1pPPa_0HFNy; Fri, 22 Jan 2021 22:22:35 +0100 (CET)
+ with ESMTP id lq2PuT6KfwIP; Fri, 22 Jan 2021 22:22:34 +0100 (CET)
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 3/4] ubifs: Update directory size when creating whiteouts
-Date: Fri, 22 Jan 2021 22:22:28 +0100
-Message-Id: <20210122212229.17072-4-richard@nod.at>
+Subject: [PATCH 2/4] ubifs: Don't add fscrypt context to xattrs
+Date: Fri, 22 Jan 2021 22:22:27 +0100
+Message-Id: <20210122212229.17072-3-richard@nod.at>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210122212229.17072-1-richard@nod.at>
 References: <20210122212229.17072-1-richard@nod.at>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210122_162240_106559_3DCD91E8 
-X-CRM114-Status: UNSURE (   9.48  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210122_162240_102346_97005D15 
+X-CRM114-Status: GOOD (  13.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,45 +75,128 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Although whiteouts are unlinked files they will get re-linked later,
-therefore the size of the parent directory needs to be updated too.
+In UBIFS xattrs are inodes too, make sure that these inodes
+don't get a fscrypt context.
+Otherwise we will end up with undeletable xattrs which will
+waste memory on the flash.
 
 Cc: stable@vger.kernel.org
-Fixes: 9e0a1fff8db5 ("ubifs: Implement RENAME_WHITEOUT")
+Fixes: d475a507457b ("ubifs: Add skeleton for fscrypto")
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- fs/ubifs/dir.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ fs/ubifs/dir.c   | 23 +++++++++++++----------
+ fs/ubifs/ubifs.h |  2 +-
+ fs/ubifs/xattr.c |  2 +-
+ 3 files changed, 15 insertions(+), 12 deletions(-)
 
 diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 8a34e0118ee9..b5d523e5854f 100644
+index 04912dedca48..8a34e0118ee9 100644
 --- a/fs/ubifs/dir.c
 +++ b/fs/ubifs/dir.c
-@@ -361,6 +361,7 @@ static int do_tmpfile(struct inode *dir, struct dentry *dentry,
- 	struct ubifs_budget_req ino_req = { .dirtied_ino = 1 };
- 	struct ubifs_inode *ui, *dir_ui = ubifs_inode(dir);
- 	int err, instantiated = 0;
-+	int sz_change = 0;
- 	struct fscrypt_name nm;
+@@ -68,13 +68,14 @@ static int inherit_flags(const struct inode *dir, umode_t mode)
+  * @c: UBIFS file-system description object
+  * @dir: parent directory inode
+  * @mode: inode mode flags
++ * @omit_fscrypt_ctx: Don't create a fscrypt context for this inode
+  *
+  * This function finds an unused inode number, allocates new inode and
+  * initializes it. Returns new inode in case of success and an error code in
+  * case of failure.
+  */
+ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
+-			      umode_t mode)
++			      umode_t mode, int omit_fscrypt_ctx)
+ {
+ 	int err;
+ 	struct inode *inode;
+@@ -99,10 +100,12 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
+ 			 current_time(inode);
+ 	inode->i_mapping->nrpages = 0;
  
- 	/*
-@@ -411,6 +412,8 @@ static int do_tmpfile(struct inode *dir, struct dentry *dentry,
- 		mark_inode_dirty(inode);
- 		drop_nlink(inode);
- 		*whiteout = inode;
-+		sz_change = CALC_DENT_SIZE(fname_len(&nm));
-+		dir->i_size += sz_change;
- 	} else {
- 		d_tmpfile(dentry, inode);
+-	err = fscrypt_prepare_new_inode(dir, inode, &encrypted);
+-	if (err) {
+-		ubifs_err(c, "fscrypt_prepare_new_inode failed: %i", err);
+-		goto out_iput;
++	if (!omit_fscrypt_ctx) {
++		err = fscrypt_prepare_new_inode(dir, inode, &encrypted);
++		if (err) {
++			ubifs_err(c, "fscrypt_prepare_new_inode failed: %i", err);
++			goto out_iput;
++		}
  	}
-@@ -430,6 +433,7 @@ static int do_tmpfile(struct inode *dir, struct dentry *dentry,
- 	return 0;
  
- out_cancel:
-+	dir->i_size -= sz_change;
- 	mutex_unlock(&dir_ui->ui_mutex);
- out_inode:
- 	make_bad_inode(inode);
+ 	switch (mode & S_IFMT) {
+@@ -309,7 +312,7 @@ static int ubifs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+ 
+ 	sz_change = CALC_DENT_SIZE(fname_len(&nm));
+ 
+-	inode = ubifs_new_inode(c, dir, mode);
++	inode = ubifs_new_inode(c, dir, mode, 0);
+ 	if (IS_ERR(inode)) {
+ 		err = PTR_ERR(inode);
+ 		goto out_fname;
+@@ -385,7 +388,7 @@ static int do_tmpfile(struct inode *dir, struct dentry *dentry,
+ 		return err;
+ 	}
+ 
+-	inode = ubifs_new_inode(c, dir, mode);
++	inode = ubifs_new_inode(c, dir, mode, 0);
+ 	if (IS_ERR(inode)) {
+ 		err = PTR_ERR(inode);
+ 		goto out_budg;
+@@ -971,7 +974,7 @@ static int ubifs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+ 
+ 	sz_change = CALC_DENT_SIZE(fname_len(&nm));
+ 
+-	inode = ubifs_new_inode(c, dir, S_IFDIR | mode);
++	inode = ubifs_new_inode(c, dir, S_IFDIR | mode, 0);
+ 	if (IS_ERR(inode)) {
+ 		err = PTR_ERR(inode);
+ 		goto out_fname;
+@@ -1058,7 +1061,7 @@ static int ubifs_mknod(struct inode *dir, struct dentry *dentry,
+ 
+ 	sz_change = CALC_DENT_SIZE(fname_len(&nm));
+ 
+-	inode = ubifs_new_inode(c, dir, mode);
++	inode = ubifs_new_inode(c, dir, mode, 0);
+ 	if (IS_ERR(inode)) {
+ 		kfree(dev);
+ 		err = PTR_ERR(inode);
+@@ -1140,7 +1143,7 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
+ 
+ 	sz_change = CALC_DENT_SIZE(fname_len(&nm));
+ 
+-	inode = ubifs_new_inode(c, dir, S_IFLNK | S_IRWXUGO);
++	inode = ubifs_new_inode(c, dir, S_IFLNK | S_IRWXUGO, 0);
+ 	if (IS_ERR(inode)) {
+ 		err = PTR_ERR(inode);
+ 		goto out_fname;
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index fc2cdde3b549..dc9b6ba41e77 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -1994,7 +1994,7 @@ int ubifs_update_time(struct inode *inode, struct timespec64 *time, int flags);
+ 
+ /* dir.c */
+ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
+-			      umode_t mode);
++			      umode_t mode, int omit_fscrypt_ctx);
+ int ubifs_getattr(const struct path *path, struct kstat *stat,
+ 		  u32 request_mask, unsigned int flags);
+ int ubifs_check_dir_empty(struct inode *dir);
+diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+index a0b9b349efe6..430abe9e56af 100644
+--- a/fs/ubifs/xattr.c
++++ b/fs/ubifs/xattr.c
+@@ -110,7 +110,7 @@ static int create_xattr(struct ubifs_info *c, struct inode *host,
+ 	if (err)
+ 		return err;
+ 
+-	inode = ubifs_new_inode(c, host, S_IFREG | S_IRWXUGO);
++	inode = ubifs_new_inode(c, host, S_IFREG | S_IRWXUGO, 1);
+ 	if (IS_ERR(inode)) {
+ 		err = PTR_ERR(inode);
+ 		goto out_budg;
 -- 
 2.26.2
 
