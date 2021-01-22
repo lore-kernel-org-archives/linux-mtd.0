@@ -2,19 +2,20 @@ Return-Path: <SRS0=x7NS=GZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-14.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06140C433DB
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Jan 2021 15:17:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF235C433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Jan 2021 15:17:13 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A8884235DD
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Jan 2021 15:17:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A8884235DD
+	by mail.kernel.org (Postfix) with ESMTPS id 8E3EA235DD
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Jan 2021 15:17:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8E3EA235DD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,32 +24,32 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=6nyLfNYmdRrsD5i8BAPEz7pT9rjzDX6mnMyj4iUJCOM=; b=kiYjb786hTGem9fYZsclWwOlH
-	dWtNtBrdrq9Sc9bxFbF4LentzvZoVT/4CeHnMr5uYmq1sOaYTssoIYRf6G2rv/n/M6mCwYCZAcdxK
-	P6hHq/l/dJ/ZLh2PMOGwUZ0NY9b2H12aVCaJC6HWes3MrNpuJTOo5csr8RJymL8ml039EXB4GtOCL
-	Ly8YLV8m5TUsVfO9NYkD9SkRfmdlL+8Wm++d/k/IgRfC0AWMLZhLZUcFURyUSNsWaBIFdCPlse2k4
-	1x1TvYIK3XZ7WlbvFRFx/dMhJX5IoH+Zr6ZM0tk8uZfYOXCY6vzdKWwJUQ80Iel6q/BWew6tZT0su
-	vuEqPwM4g==;
+	 bh=L6LbQlQpRft9oHtW2q5vAFVuDdiZsMtvWd50Ji2BBYA=; b=OtL6rzGXQabCb4U1NNo0Mmwfz
+	FAvE2jzsbzL5K+77USo4r9uqGyMh+W9j0U7yao8K+gqA6uMo9oR+91nnxWD/L9ZmWBOVcrivEKANl
+	wzjT2Vc244+xcfBIrtzEcXrGMz6veS/ei80PWVQjhVUUx4qoAaOekprt/BHV5i+qgWm+C/qALNIei
+	jN6aL1dig8fQkSdIVH/yhfix9Hh9fqGxObsxVwGX7Llrpg0Mq9BcAMWsYyBq/5y8aips6QyhG2HGD
+	mv4QH//N4EhMYGJVQTHwPyL1wwLrSysuFMhjlXeo7d4/GcqTFgyn2sTlMmXn2Kb0S+ZpK2EjAXBHJ
+	fml9SmrIA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l2yAc-0006xE-R3; Fri, 22 Jan 2021 15:16:18 +0000
+	id 1l2yAS-0006ta-EU; Fri, 22 Jan 2021 15:16:08 +0000
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l2yAZ-0006vl-6I
- for linux-mtd@lists.infradead.org; Fri, 22 Jan 2021 15:16:16 +0000
+ id 1l2yAI-0006qH-W5
+ for linux-mtd@lists.infradead.org; Fri, 22 Jan 2021 15:16:00 +0000
 Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1l2yA1-0004Bz-HF; Fri, 22 Jan 2021 16:15:41 +0100
+ id 1l2yA1-0004Bt-HH; Fri, 22 Jan 2021 16:15:41 +0100
 Received: from sha by dude02.hi.pengutronix.de with local (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1l2yA1-0003r2-0T; Fri, 22 Jan 2021 16:15:41 +0100
+ id 1l2yA0-0003qr-QC; Fri, 22 Jan 2021 16:15:40 +0100
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-fsdevel@vger.kernel.org
-Subject: [PATCH 7/8] ubifs: export get_znode
-Date: Fri, 22 Jan 2021 16:15:35 +0100
-Message-Id: <20210122151536.7982-8-s.hauer@pengutronix.de>
+Subject: [PATCH 3/8] ubifs: Add support for FS_IOC_FS[SG]ETXATTR ioctls
+Date: Fri, 22 Jan 2021 16:15:31 +0100
+Message-Id: <20210122151536.7982-4-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210122151536.7982-1-s.hauer@pengutronix.de>
 References: <20210122151536.7982-1-s.hauer@pengutronix.de>
@@ -59,8 +60,8 @@ X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
  SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210122_101615_326101_BB0286FB 
-X-CRM114-Status: GOOD (  17.40  )
+X-CRM114-CacheID: sfid-20210122_101559_088644_B00B6C96 
+X-CRM114-Status: GOOD (  19.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,152 +80,172 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-get_znode will be needed by upcoming UBIFS quota support. Rename it to
-ubifs_get_znode and export it.
+The FS_IOC_FS[SG]ETXATTR ioctls are an alternative to FS_IOC_[GS]ETFLAGS
+with additional features. This patch adds support for these ioctls.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- fs/ubifs/tnc.c   | 32 ++++++++++++++++----------------
- fs/ubifs/ubifs.h |  2 ++
- 2 files changed, 18 insertions(+), 16 deletions(-)
+ fs/ubifs/ioctl.c | 107 ++++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 102 insertions(+), 5 deletions(-)
 
-diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
-index 488f3da7a6c6..b30cd47a7e4c 100644
---- a/fs/ubifs/tnc.c
-+++ b/fs/ubifs/tnc.c
-@@ -570,15 +570,15 @@ static int matches_name(struct ubifs_info *c, struct ubifs_zbranch *zbr,
+diff --git a/fs/ubifs/ioctl.c b/fs/ubifs/ioctl.c
+index b64a9cec7d47..5977edd4d185 100644
+--- a/fs/ubifs/ioctl.c
++++ b/fs/ubifs/ioctl.c
+@@ -101,9 +101,46 @@ static int ubifs2ioctl(int ubifs_flags)
+ 	return ioctl_flags;
  }
  
- /**
-- * get_znode - get a TNC znode that may not be loaded yet.
-+ * ubifs_get_znode - get a TNC znode that may not be loaded yet.
-  * @c: UBIFS file-system description object
-  * @znode: parent znode
-  * @n: znode branch slot number
-  *
-  * This function returns the znode or a negative error code.
-  */
--static struct ubifs_znode *get_znode(struct ubifs_info *c,
--				     struct ubifs_znode *znode, int n)
-+struct ubifs_znode *ubifs_get_znode(struct ubifs_info *c,
-+				    struct ubifs_znode *znode, int n)
+-static int setflags(struct file *file, int flags)
++/* Transfer xflags flags to internal */
++static unsigned long ubifs_xflags_to_iflags(__u32 xflags)
  {
- 	struct ubifs_zbranch *zbr;
+-	int oldflags, err, release;
++	unsigned long iflags = 0;
++
++	if (xflags & FS_XFLAG_SYNC)
++		iflags |= UBIFS_SYNC_FL;
++	if (xflags & FS_XFLAG_IMMUTABLE)
++		iflags |= UBIFS_IMMUTABLE_FL;
++	if (xflags & FS_XFLAG_APPEND)
++		iflags |= UBIFS_APPEND_FL;
++
++        return iflags;
++}
++
++/* Transfer internal flags to xflags */
++static __u32 ubifs_iflags_to_xflags(unsigned long flags)
++{
++	__u32 xflags = 0;
++
++	if (flags & UBIFS_SYNC_FL)
++		xflags |= FS_XFLAG_SYNC;
++	if (flags & UBIFS_IMMUTABLE_FL)
++		xflags |= FS_XFLAG_IMMUTABLE;
++	if (flags & UBIFS_APPEND_FL)
++		xflags |= FS_XFLAG_APPEND;
++
++        return xflags;
++}
++
++static void ubifs_fill_fsxattr(struct inode *inode, struct fsxattr *fa)
++{
++	struct ubifs_inode *ui = ubifs_inode(inode);
++
++	simple_fill_fsxattr(fa, ubifs_iflags_to_xflags(ui->flags));
++}
++
++static int setflags(struct file *file, int flags, struct fsxattr *fa)
++{
++	int ubi_flags, oldflags, err, release;
+ 	struct inode *inode = file_inode(file);
+ 	struct ubifs_inode *ui = ubifs_inode(inode);
+ 	struct ubifs_info *c = inode->i_sb->s_fs_info;
+@@ -116,6 +153,13 @@ static int setflags(struct file *file, int flags)
+ 	if (!inode_owner_or_capable(inode))
+ 		return -EACCES;
  
-@@ -618,11 +618,11 @@ static int tnc_next(struct ubifs_info *c, struct ubifs_znode **zn, int *n)
- 		nn = znode->iip + 1;
- 		znode = zp;
- 		if (nn < znode->child_cnt) {
--			znode = get_znode(c, znode, nn);
-+			znode = ubifs_get_znode(c, znode, nn);
- 			if (IS_ERR(znode))
- 				return PTR_ERR(znode);
- 			while (znode->level != 0) {
--				znode = get_znode(c, znode, 0);
-+				znode = ubifs_get_znode(c, znode, 0);
- 				if (IS_ERR(znode))
- 					return PTR_ERR(znode);
- 			}
-@@ -662,12 +662,12 @@ static int tnc_prev(struct ubifs_info *c, struct ubifs_znode **zn, int *n)
- 		nn = znode->iip - 1;
- 		znode = zp;
- 		if (nn >= 0) {
--			znode = get_znode(c, znode, nn);
-+			znode = ubifs_get_znode(c, znode, nn);
- 			if (IS_ERR(znode))
- 				return PTR_ERR(znode);
- 			while (znode->level != 0) {
- 				nn = znode->child_cnt - 1;
--				znode = get_znode(c, znode, nn);
-+				znode = ubifs_get_znode(c, znode, nn);
- 				if (IS_ERR(znode))
- 					return PTR_ERR(znode);
- 			}
-@@ -2571,7 +2571,7 @@ static int tnc_delete(struct ubifs_info *c, struct ubifs_znode *znode, int n)
- 		while (znode->child_cnt == 1 && znode->level != 0) {
- 			zp = znode;
- 			zbr = &znode->zbranch[0];
--			znode = get_znode(c, znode, 0);
-+			znode = ubifs_get_znode(c, znode, 0);
- 			if (IS_ERR(znode))
- 				return PTR_ERR(znode);
- 			znode = dirty_cow_znode(c, zbr);
-@@ -3098,12 +3098,12 @@ static struct ubifs_znode *left_znode(struct ubifs_info *c,
- 			return NULL;
- 		if (n >= 0) {
- 			/* Now go down the rightmost branch to 'level' */
--			znode = get_znode(c, znode, n);
-+			znode = ubifs_get_znode(c, znode, n);
- 			if (IS_ERR(znode))
- 				return znode;
- 			while (znode->level != level) {
- 				n = znode->child_cnt - 1;
--				znode = get_znode(c, znode, n);
-+				znode = ubifs_get_znode(c, znode, n);
- 				if (IS_ERR(znode))
- 					return znode;
- 			}
-@@ -3135,11 +3135,11 @@ static struct ubifs_znode *right_znode(struct ubifs_info *c,
- 			return NULL;
- 		if (n < znode->child_cnt) {
- 			/* Now go down the leftmost branch to 'level' */
--			znode = get_znode(c, znode, n);
-+			znode = ubifs_get_znode(c, znode, n);
- 			if (IS_ERR(znode))
- 				return znode;
- 			while (znode->level != level) {
--				znode = get_znode(c, znode, 0);
-+				znode = ubifs_get_znode(c, znode, 0);
- 				if (IS_ERR(znode))
- 					return znode;
- 			}
-@@ -3224,13 +3224,13 @@ static struct ubifs_znode *lookup_znode(struct ubifs_info *c,
- 		}
- 		if (znode->level == level + 1)
- 			break;
--		znode = get_znode(c, znode, n);
-+		znode = ubifs_get_znode(c, znode, n);
- 		if (IS_ERR(znode))
- 			return znode;
++	ubifs_assert(c, !(flags && fa));
++
++	if (fa)
++		ubi_flags = ubifs_xflags_to_iflags(fa->fsx_xflags);
++	else
++		ubi_flags = ioctl2ubifs(flags);
++
+ 	/*
+ 	 * Make sure the file-system is read-write and make sure it
+ 	 * will not become read-only while we are changing the flags.
+@@ -132,12 +176,24 @@ static int setflags(struct file *file, int flags)
+ 
+ 	mutex_lock(&ui->ui_mutex);
+ 	oldflags = ubifs2ioctl(ui->flags);
+-	err = vfs_ioc_setflags_prepare(inode, oldflags, flags);
++	err = vfs_ioc_setflags_prepare(inode, oldflags, ubifs2ioctl(ubi_flags));
+ 	if (err)
+ 		goto out_unlock;
+ 
+ 	ui->flags &= ~ioctl2ubifs(UBIFS_SETTABLE_IOCTL_FLAGS);
+-	ui->flags |= ioctl2ubifs(flags);
++
++	if (fa) {
++		struct fsxattr old_fa;
++
++		ubifs_fill_fsxattr(inode, &old_fa);
++
++		err = vfs_ioc_fssetxattr_check(inode, &old_fa, fa);
++		if (err)
++			goto out_unlock;
++	}
++
++	ui->flags |= ubi_flags;
++
+ 	ubifs_set_inode_flags(inode);
+ 	inode->i_ctime = current_time(inode);
+ 	release = ui->dirty;
+@@ -162,6 +218,41 @@ static int setflags(struct file *file, int flags)
+ 	return err;
+ }
+ 
++static int ubifs_ioc_fsgetxattr(struct file *file, void __user *arg)
++{
++	struct inode *inode = file_inode(file);
++	struct fsxattr fa;
++
++	ubifs_fill_fsxattr(inode, &fa);
++
++	if (copy_to_user(arg, &fa, sizeof(fa)))
++		return -EFAULT;
++
++	return 0;
++}
++
++static int check_xflags(unsigned int flags)
++{
++	if (flags & ~(FS_XFLAG_SYNC | FS_XFLAG_IMMUTABLE | FS_XFLAG_APPEND))
++		return -EOPNOTSUPP;
++	return 0;
++}
++
++static int ubifs_ioc_fssetxattr(struct file *file, const void __user *arg)
++{
++	struct fsxattr fa;
++	int err;
++
++	if (copy_from_user(&fa, (struct fsxattr __user *)arg, sizeof(fa)))
++		return -EFAULT;
++
++	err = check_xflags(fa.fsx_xflags);
++	if (err)
++		return err;
++
++	return setflags(file, 0, &fa);
++}
++
+ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ {
+ 	int flags, err;
+@@ -186,7 +277,7 @@ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 			flags &= ~FS_DIRSYNC_FL;
+ 
+ 
+-		return setflags(file, flags);
++		return setflags(file, flags, NULL);
  	}
- 	/* Check if the child is the one we are looking for */
- 	if (znode->zbranch[n].lnum == lnum && znode->zbranch[n].offs == offs)
--		return get_znode(c, znode, n);
-+		return ubifs_get_znode(c, znode, n);
- 	/* If the key is unique, there is nowhere else to look */
- 	if (!is_hash_key(c, key))
- 		return NULL;
-@@ -3256,7 +3256,7 @@ static struct ubifs_znode *lookup_znode(struct ubifs_info *c,
- 		/* Check it */
- 		if (znode->zbranch[n].lnum == lnum &&
- 		    znode->zbranch[n].offs == offs)
--			return get_znode(c, znode, n);
-+			return ubifs_get_znode(c, znode, n);
- 		/* Stop if the key is less than the one we are looking for */
- 		if (keys_cmp(c, &znode->zbranch[n].key, key) < 0)
- 			break;
-@@ -3278,7 +3278,7 @@ static struct ubifs_znode *lookup_znode(struct ubifs_info *c,
- 		/* Check it */
- 		if (znode->zbranch[n].lnum == lnum &&
- 		    znode->zbranch[n].offs == offs)
--			return get_znode(c, znode, n);
-+			return ubifs_get_znode(c, znode, n);
- 		/* Stop if the key is greater than the one we are looking for */
- 		if (keys_cmp(c, &znode->zbranch[n].key, key) > 0)
- 			break;
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index fc7e05718fea..a29e5c3dd1fb 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -1820,6 +1820,8 @@ int ubifs_find_dirty_idx_leb(struct ubifs_info *c);
- int ubifs_save_dirty_idx_lnums(struct ubifs_info *c);
+ 	case FS_IOC_SET_ENCRYPTION_POLICY: {
+ 		struct ubifs_info *c = inode->i_sb->s_fs_info;
+@@ -218,6 +309,12 @@ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	case FS_IOC_GET_ENCRYPTION_NONCE:
+ 		return fscrypt_ioctl_get_nonce(file, (void __user *)arg);
  
- /* tnc.c */
-+struct ubifs_znode *ubifs_get_znode(struct ubifs_info *c,
-+				    struct ubifs_znode *znode, int n);
- int ubifs_lookup_level0(struct ubifs_info *c, const union ubifs_key *key,
- 			struct ubifs_znode **zn, int *n);
- int ubifs_tnc_lookup_nm(struct ubifs_info *c, const union ubifs_key *key,
++	case FS_IOC_FSGETXATTR:
++		return ubifs_ioc_fsgetxattr(file, (void __user *)arg);
++
++	case FS_IOC_FSSETXATTR:
++		return ubifs_ioc_fssetxattr(file, (const void __user *)arg);
++
+ 	default:
+ 		return -ENOTTY;
+ 	}
 -- 
 2.20.1
 
