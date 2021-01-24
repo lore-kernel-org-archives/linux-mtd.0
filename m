@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 989A4C433E6
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF4CCC433E9
 	for <linux-mtd@archiver.kernel.org>; Sun, 24 Jan 2021 23:22:20 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4C213229C7
+	by mail.kernel.org (Postfix) with ESMTPS id 849BA22C9C
 	for <linux-mtd@archiver.kernel.org>; Sun, 24 Jan 2021 23:22:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C213229C7
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 849BA22C9C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,40 +23,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=tYSghudK/QOXCT5Vyp/uSeQhfwmNGuf5MxBHiC8GakM=; b=2ATXMg5zsqJiFpRKoKfWG1vKQ
-	h/m7v4Ev6iQDRhHaAhDWFLUAZ+5f9GNYjFo+VoqtCD4HwZ/LAxgXuSlNaXb/j8rbQrYvxxtGlcmd4
-	a+8ZwaOlen7BmWqPbBLWEf2CnATVDcREGiPleRtOpuUjhsqFshqtE1ug7rbJPqxekUoEnAVW3k17X
-	a5dmGPJ0MOr+g1uIrDWP/vmsqzHjsbhdBpc8gc7k6G811bxzbE0Ms26ZXjZTQJ7Rig5IPvymKf6Qg
-	4SjVjmMfTzNoGG9GfMYDofyRdxbI3go+YVQ39LcyVWh4RPlQXoQ2X0IjiTnkXhZOSOq4IA9hQ4ph6
-	jZFobA6uA==;
+	 bh=P4XtacZXt8NsTZAkucZrLR0HdO3l096Q+baPpcMpufA=; b=hqXqj259AOTmnQLzMIA06aHZk
+	Vr8sbKVKPmhxRT6u+cy225Cbar4aih12EZvv33zdJnoQME267SVza+6vhopLTsmgHJyRrqgk6FWos
+	gbS7KiZwwDDQVIQNc39/KWb8cIu9OS5X7M2CDcuD2CuwBpseQz4CaI8LYsojWtAg8+Iuc2sT3JNe+
+	TpfTUV1bKKw0tHa+KtqLmS3mldXZ8AgeDih6RvgeOLpTtindcvyWp/02tGflGQF8ZmmpWYIfqyXGM
+	YOax/GKXpCfyqeWF1I9W1kP2jorXBeT4iZ2FAzLAgEziSfEuYyjAgKbkcSAfBaTny00dx2pKJgMvs
+	gNUpygFEA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l3oh7-00077M-CH; Sun, 24 Jan 2021 23:21:21 +0000
+	id 1l3oh3-00076e-Fs; Sun, 24 Jan 2021 23:21:17 +0000
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l3ogt-00074G-7e
- for linux-mtd@lists.infradead.org; Sun, 24 Jan 2021 23:21:09 +0000
+ id 1l3ogq-00072Y-SC
+ for linux-mtd@lists.infradead.org; Sun, 24 Jan 2021 23:21:07 +0000
 Received: from localhost (localhost [127.0.0.1])
- by lilium.sigma-star.at (Postfix) with ESMTP id C27B2180FCFCB;
- Mon, 25 Jan 2021 00:21:02 +0100 (CET)
+ by lilium.sigma-star.at (Postfix) with ESMTP id 2AF42181D91AC;
+ Mon, 25 Jan 2021 00:21:01 +0100 (CET)
 Received: from lilium.sigma-star.at ([127.0.0.1])
  by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id 0zSQ5wgsYSEQ; Mon, 25 Jan 2021 00:21:02 +0100 (CET)
+ with ESMTP id G1T-RcRj43zU; Mon, 25 Jan 2021 00:21:00 +0100 (CET)
 Received: from lilium.sigma-star.at ([127.0.0.1])
  by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id 2bhaQ0vUSK7X; Mon, 25 Jan 2021 00:21:02 +0100 (CET)
+ with ESMTP id 86Bd4mavDEFC; Mon, 25 Jan 2021 00:21:00 +0100 (CET)
 From: Richard Weinberger <richard@nod.at>
 To: miklos@szeredi.hu
-Subject: [PATCH 6/8] fuse: Add MUSE specific defines FUSE interface
-Date: Mon, 25 Jan 2021 00:20:05 +0100
-Message-Id: <20210124232007.21639-7-richard@nod.at>
+Subject: [PATCH 2/8] fuse: Export IO helpers
+Date: Mon, 25 Jan 2021 00:20:01 +0100
+Message-Id: <20210124232007.21639-3-richard@nod.at>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210124232007.21639-1-richard@nod.at>
 References: <20210124232007.21639-1-richard@nod.at>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210124_182107_411173_25876CB1 
-X-CRM114-Status: GOOD (  10.86  )
+X-CRM114-CacheID: sfid-20210124_182105_181845_D7A3ABD5 
+X-CRM114-Status: GOOD (  12.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,121 +77,95 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Raise the FUSE API minor version to 34 and add all
-MUSE specific operations and data structures.
-
-MUSE_INIT: Initialize a new connection and installs the MTD
-MUSE_ERASE: Erases a block
-MUSE_READ: Reads a page with or without OOB
-MUSE_WRITE: Writes a page with or without OOB
-MUSE_MARKBAD: Marks a block as bad
-MUSE_ISBAD: Checks whether a block is bad
-MUSE_SYNC: Flushes all cached data
+MUSE will use this functions in its IO path,
+so export them.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- include/uapi/linux/fuse.h | 76 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 76 insertions(+)
+ fs/fuse/file.c   | 16 +++-------------
+ fs/fuse/fuse_i.h | 16 ++++++++++++++++
+ 2 files changed, 19 insertions(+), 13 deletions(-)
 
-diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
-index 98ca64d1beb6..1c8fa9e42e73 100644
---- a/include/uapi/linux/fuse.h
-+++ b/include/uapi/linux/fuse.h
-@@ -179,6 +179,10 @@
-  *  7.33
-  *  - add FUSE_HANDLE_KILLPRIV_V2, FUSE_WRITE_KILL_SUIDGID, FATTR_KILL_SUIDGID
-  *  - add FUSE_OPEN_KILL_SUIDGID
-+ *
-+ *  7.34
-+ *  - add support for MUSE: MUSE_INIT, MUSE_ERASE, MUSE_READ, MUSE_WRITE,
-+ *    MUSE_MARKBAD, MUSE_ISBAD and MUSE_SYNC
-  */
+diff --git a/fs/fuse/file.c b/fs/fuse/file.c
+index 8cccecb55fb8..d41660b7f5bc 100644
+--- a/fs/fuse/file.c
++++ b/fs/fuse/file.c
+@@ -20,8 +20,8 @@
+ #include <linux/uio.h>
+ #include <linux/fs.h>
  
- #ifndef _LINUX_FUSE_H
-@@ -503,6 +507,15 @@ enum fuse_opcode {
- 	/* CUSE specific operations */
- 	CUSE_INIT		= 4096,
+-static struct page **fuse_pages_alloc(unsigned int npages, gfp_t flags,
+-				      struct fuse_page_desc **desc)
++struct page **fuse_pages_alloc(unsigned int npages, gfp_t flags,
++			       struct fuse_page_desc **desc)
+ {
+ 	struct page **pages;
  
-+	/* MUSE specific operations */
-+	MUSE_INIT		= 8192,
-+	MUSE_ERASE		= 8193,
-+	MUSE_READ		= 8194,
-+	MUSE_WRITE		= 8195,
-+	MUSE_MARKBAD		= 8196,
-+	MUSE_ISBAD		= 8197,
-+	MUSE_SYNC		= 8198,
-+
- 	/* Reserved opcodes: helpful to detect structure endian-ness */
- 	CUSE_INIT_BSWAP_RESERVED	= 1048576,	/* CUSE_INIT << 8 */
- 	FUSE_INIT_BSWAP_RESERVED	= 436207616,	/* FUSE_INIT << 24 */
-@@ -956,4 +969,67 @@ struct fuse_removemapping_one {
- #define FUSE_REMOVEMAPPING_MAX_ENTRY   \
- 		(PAGE_SIZE / sizeof(struct fuse_removemapping_one))
+@@ -31,6 +31,7 @@ static struct page **fuse_pages_alloc(unsigned int npages, gfp_t flags,
  
-+#define MUSE_INIT_INFO_MAX 4096
+ 	return pages;
+ }
++EXPORT_SYMBOL_GPL(fuse_pages_alloc);
+ 
+ static int fuse_send_open(struct fuse_mount *fm, u64 nodeid, struct file *file,
+ 			  int opcode, struct fuse_open_out *outargp)
+@@ -1356,17 +1357,6 @@ static inline void fuse_page_descs_length_init(struct fuse_page_desc *descs,
+ 		descs[i].length = PAGE_SIZE - descs[i].offset;
+ }
+ 
+-static inline unsigned long fuse_get_user_addr(const struct iov_iter *ii)
+-{
+-	return (unsigned long)ii->iov->iov_base + ii->iov_offset;
+-}
+-
+-static inline size_t fuse_get_frag_size(const struct iov_iter *ii,
+-					size_t max_size)
+-{
+-	return min(iov_iter_single_seg_count(ii), max_size);
+-}
+-
+ static int fuse_get_user_pages(struct fuse_args_pages *ap, struct iov_iter *ii,
+ 			       size_t *nbytesp, int write,
+ 			       unsigned int max_pages)
+diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
+index 7c4b8cb93f9f..8c56a3fd2c4e 100644
+--- a/fs/fuse/fuse_i.h
++++ b/fs/fuse/fuse_i.h
+@@ -31,6 +31,7 @@
+ #include <linux/pid_namespace.h>
+ #include <linux/refcount.h>
+ #include <linux/user_namespace.h>
++#include <linux/uio.h>
+ 
+ /** Default max number of pages that can be used in a single read request */
+ #define FUSE_DEFAULT_MAX_PAGES_PER_REQ 32
+@@ -871,6 +872,17 @@ static inline bool fuse_is_bad(struct inode *inode)
+ 	return unlikely(test_bit(FUSE_I_BAD, &get_fuse_inode(inode)->state));
+ }
+ 
++static inline unsigned long fuse_get_user_addr(const struct iov_iter *ii)
++{
++	return (unsigned long)ii->iov->iov_base + ii->iov_offset;
++}
 +
-+struct muse_init_in {
-+	uint32_t	fuse_major;
-+	uint32_t	fuse_minor;
-+};
++static inline size_t fuse_get_frag_size(const struct iov_iter *ii,
++					size_t max_size)
++{
++	return min(iov_iter_single_seg_count(ii), max_size);
++}
 +
-+struct muse_init_out {
-+	uint32_t	fuse_major;
-+	uint32_t	fuse_minor;
-+	uint32_t	max_read;
-+	uint32_t	max_write;
-+};
+ /** Device operations */
+ extern const struct file_operations fuse_dev_operations;
+ 
+@@ -1213,4 +1225,8 @@ void fuse_dax_inode_cleanup(struct inode *inode);
+ bool fuse_dax_check_alignment(struct fuse_conn *fc, unsigned int map_alignment);
+ void fuse_dax_cancel_work(struct fuse_conn *fc);
+ 
++/* file.c */
++struct page **fuse_pages_alloc(unsigned int npages, gfp_t flags,
++			       struct fuse_page_desc **desc);
 +
-+struct muse_erase_in {
-+	uint64_t	addr;
-+	uint64_t	len;
-+};
-+
-+#define MUSE_IO_INBAND		(1 << 0)
-+#define MUSE_IO_OOB_AUTO	(1 << 1)
-+#define MUSE_IO_OOB_PLACE	(1 << 2)
-+#define MUSE_IO_RAW		(1 << 3)
-+
-+struct muse_read_in {
-+	uint64_t	addr;
-+	uint64_t	len;
-+	uint32_t	flags;
-+	uint32_t	padding;
-+};
-+
-+struct muse_read_out {
-+	uint64_t	len;
-+	uint32_t	soft_error;
-+	uint32_t	padding;
-+};
-+
-+struct muse_write_in {
-+	uint64_t	addr;
-+	uint64_t	len;
-+	uint32_t	flags;
-+	uint32_t	padding;
-+};
-+
-+struct muse_write_out {
-+	uint64_t	len;
-+	uint32_t	soft_error;
-+	uint32_t	padding;
-+};
-+
-+struct muse_markbad_in {
-+	uint64_t	addr;
-+};
-+
-+struct muse_isbad_in {
-+	uint64_t	addr;
-+};
-+
-+struct muse_isbad_out {
-+	uint32_t	result;
-+	uint32_t	padding;
-+};
-+
- #endif /* _LINUX_FUSE_H */
+ #endif /* _FS_FUSE_I_H */
 -- 
 2.26.2
 
