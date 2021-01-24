@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5720C433DB
-	for <linux-mtd@archiver.kernel.org>; Sun, 24 Jan 2021 23:22:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95AC8C433DB
+	for <linux-mtd@archiver.kernel.org>; Sun, 24 Jan 2021 23:22:20 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 799F3229C6
-	for <linux-mtd@archiver.kernel.org>; Sun, 24 Jan 2021 23:22:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 799F3229C6
+	by mail.kernel.org (Postfix) with ESMTPS id 49DBC229C6
+	for <linux-mtd@archiver.kernel.org>; Sun, 24 Jan 2021 23:22:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 49DBC229C6
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,41 +23,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=a8vM5wzpi7d2uQHD2AlHQ2yPLock9t73ynwGZZN5/zA=; b=RR9IEpxgbV2NJmjrp8762LZpF
-	wVH/pJE4/WvKcyp/vjmAyesWfWwxgwpPCORfAOKhVnfOSIBwgZHXrzYoLOhwu4iIv6H53H8JxWA+E
-	bU3I/N7wkabiBNITJbar2Efe1vq54lhMRGvrlDQaqTtKRhgn2F9wGJPVOBf9LzBtvQaVvHPpq7r0o
-	7bI40hXfUFYjSmu3TsjuJNOMbd+aW2+E9Eb0AaVDzPOY7Ewf30/Q+rAcksPfQPkdKuWV/mX9516g8
-	Hllr91HqYERv2CIJmKedU4wOnIr2hOp+hCvAQz71K/PONkMyYYJgDuLEkuMQuSCKM7YBO6Twe+90o
-	M/cOQjoDw==;
+	 bh=zpj98lOR5IYClfX8O2eJ2shdqpRO5698MOcoq8nhlKY=; b=Y/0frxj2iDgsU9Y+Bj/tJSQoJ
+	MxigQY8CO/gSZoJgPVDZctyFjoU79whTe2uRLqVDH5LJGI3ZB4opR7MR9g0cUvpeHWzY4Y6joIHg0
+	+k82dr8aNsxO3DAddHdm3Itkki40ZrnXIoQABsb8JnaG/IzxfoYxQ/vLnDO7ykZ8yrdb9LSf17AMf
+	4nRzyAPLXGLhyqIcVfrG5OklChls/zaYdoCx8DO0uFBk+BdOq+W0mAO3SrDowsk8AZGlGBTsDTDuH
+	ExmaMMu8lwAG80qJcCD0z3uta+L7I5iNouEL8kW4ByBt49NmMwh+PtcsonPQA3ZzPLqV0Fc+1tzuS
+	tnagzItXQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l3oh9-00077d-4H; Sun, 24 Jan 2021 23:21:23 +0000
+	id 1l3oh1-00076M-6F; Sun, 24 Jan 2021 23:21:15 +0000
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l3ogt-00074N-8x
- for linux-mtd@lists.infradead.org; Sun, 24 Jan 2021 23:21:09 +0000
+ id 1l3ogq-00072b-Rf
+ for linux-mtd@lists.infradead.org; Sun, 24 Jan 2021 23:21:07 +0000
 Received: from localhost (localhost [127.0.0.1])
- by lilium.sigma-star.at (Postfix) with ESMTP id A3BDF180C83BB;
- Mon, 25 Jan 2021 00:21:03 +0100 (CET)
+ by lilium.sigma-star.at (Postfix) with ESMTP id E1630181D91A5;
+ Mon, 25 Jan 2021 00:21:01 +0100 (CET)
 Received: from lilium.sigma-star.at ([127.0.0.1])
  by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id 6D2F1lcsI7Qi; Mon, 25 Jan 2021 00:21:03 +0100 (CET)
+ with ESMTP id Do4_ytmT9iR7; Mon, 25 Jan 2021 00:21:01 +0100 (CET)
 Received: from lilium.sigma-star.at ([127.0.0.1])
  by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id IYOF_6MQpxn8; Mon, 25 Jan 2021 00:21:03 +0100 (CET)
+ with ESMTP id XsFqeP8NB1tz; Mon, 25 Jan 2021 00:21:01 +0100 (CET)
 From: Richard Weinberger <richard@nod.at>
 To: miklos@szeredi.hu
-Subject: [PATCH 8/8] MAINTAINERS: Add entry for MUSE
-Date: Mon, 25 Jan 2021 00:20:07 +0100
-Message-Id: <20210124232007.21639-9-richard@nod.at>
+Subject: [PATCH 4/8] mtd: Add MTD_MUSE flag
+Date: Mon, 25 Jan 2021 00:20:03 +0100
+Message-Id: <20210124232007.21639-5-richard@nod.at>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210124232007.21639-1-richard@nod.at>
 References: <20210124232007.21639-1-richard@nod.at>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210124_182107_442155_5FD1686A 
-X-CRM114-Status: UNSURE (   8.49  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210124_182105_079795_42EA54B3 
+X-CRM114-Status: GOOD (  10.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,32 +77,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Since MUSE lives in fs/fuse/, make sure that linux-mtd@ is CC'ed
-on patches such that MTD related aspects of changes can be reviewed.
+This flag will be set if an MTD is implemeted in userspace
+using MUSE.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+ include/uapi/mtd/mtd-abi.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index f79ec98bbb29..dabd9fd2e5e4 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12151,6 +12151,13 @@ L:	linux-usb@vger.kernel.org
- S:	Maintained
- F:	drivers/usb/musb/
+diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
+index 65b9db936557..2ad2217e3a96 100644
+--- a/include/uapi/mtd/mtd-abi.h
++++ b/include/uapi/mtd/mtd-abi.h
+@@ -105,6 +105,7 @@ struct mtd_write_req {
+ #define MTD_NO_ERASE		0x1000	/* No erase necessary */
+ #define MTD_POWERUP_LOCK	0x2000	/* Always locked after reset */
+ #define MTD_SLC_ON_MLC_EMULATION 0x4000	/* Emulate SLC behavior on MLC NANDs */
++#define MTD_MUSE		0x8000 /* This MTD is implemented in userspace */
  
-+MUSE: MTD IN USERSPACE DRIVER
-+M:	Richard Weinberger <richard@nod.at>
-+L:	linux-mtd@lists.infradead.org
-+L:	linux-fsdevel@vger.kernel.org
-+S:	Maintained
-+F:	fs/fuse/muse.c
-+
- MXL301RF MEDIA DRIVER
- M:	Akihiro Tsukada <tskd08@gmail.com>
- L:	linux-media@vger.kernel.org
+ /* Some common devices / combinations of capabilities */
+ #define MTD_CAP_ROM		0
 -- 
 2.26.2
 
