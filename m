@@ -3,58 +3,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C5CCBC433E0
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C97F4C433DB
 	for <linux-mtd@archiver.kernel.org>; Sun, 24 Jan 2021 23:22:03 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6B4B2229C6
+	by mail.kernel.org (Postfix) with ESMTPS id 6D8E1229C7
 	for <linux-mtd@archiver.kernel.org>; Sun, 24 Jan 2021 23:22:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B4B2229C6
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D8E1229C7
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=t7HkBOmFtnHLo1IPantdUJu9xyJbKtKQwdGzhcW02MY=; b=fflRIF+7H9RWBknGKO66gRbruU
-	gu0E3MHDxVepfKfzDtZZJ+jyv3g6m2waAnmpkc9p3aWkNelXBLd5NIcLe6niZhZ/M4NuJpKSJbnOU
-	4RZQNLYD1dZBIX9pn7I8X+IPHoaIxjsGhPsePDZTUujakJlMMcWGgZcsSNs08K3oRZDo1gbMFZbDn
-	1VF4F1OIO/EE4218LfZPtWdMauGjGecVrL1slPTrCL4sUiF0eymfTWj74qBf4OT7+aPDbo7JNLheH
-	Hx6LkUZPHzGK1xfIRh89YGKCN96CMOguggi/YImhKuiOJJzV5dcnPjj6qC2ZzR0zD2cgfeuQUpbbQ
-	+axx5ZFw==;
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=3fLhdP8tOWLZMuWHFmpfxGuxWmxBnc07Dy85UCRpA8I=; b=lLmSHR/2caPIWDp1v3FZwO6Zc
+	3bW3e3GF4vxtCr73KRVM+oM1d9mm7dpC8ez7VYMjUbh4e58UIP7NSKy2VImL5nFgf2b739idAe9Bt
+	kW4iCaYn21WjDSEXH2YWA7VW9s5Q+JFNvZ+EVCP+5tTO6hV6KFd2Yvp7wX2jJNl96fdOa2YPapbU5
+	GEdD3xG5T0Rzt9Vrxqe5JHi2WGp8wALfbl2on6a3ctyCgQ0DNjxNWnfamdRcxK4X8OnrwO5I+MXOx
+	2AZ1XpT8Cdy9ZWBm4JrQgAFEDZtPsaQtNFCnw40Ij88iTsJ2W/Yo5UIdtyb7ib49ZfyXf3yRMfgPR
+	kkhPkDuCw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l3ogy-000763-0G; Sun, 24 Jan 2021 23:21:12 +0000
+	id 1l3ogu-00075c-UQ; Sun, 24 Jan 2021 23:21:08 +0000
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l3ogq-00072S-OC
+ id 1l3ogq-00072T-Qj
  for linux-mtd@lists.infradead.org; Sun, 24 Jan 2021 23:21:06 +0000
 Received: from localhost (localhost [127.0.0.1])
- by lilium.sigma-star.at (Postfix) with ESMTP id 62F111809AD3C;
+ by lilium.sigma-star.at (Postfix) with ESMTP id D4ECC1809AD39;
  Mon, 25 Jan 2021 00:21:00 +0100 (CET)
 Received: from lilium.sigma-star.at ([127.0.0.1])
  by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id En2gXzSTGuNe; Mon, 25 Jan 2021 00:20:59 +0100 (CET)
+ with ESMTP id pR6BHobZVkWu; Mon, 25 Jan 2021 00:21:00 +0100 (CET)
 Received: from lilium.sigma-star.at ([127.0.0.1])
  by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id ft1g1MTWLLqg; Mon, 25 Jan 2021 00:20:59 +0100 (CET)
+ with ESMTP id B8rN2csFaLzK; Mon, 25 Jan 2021 00:21:00 +0100 (CET)
 From: Richard Weinberger <richard@nod.at>
 To: miklos@szeredi.hu
-Subject: [PATCH 0/8] MUSE: Userspace backed MTD v3
-Date: Mon, 25 Jan 2021 00:19:59 +0100
-Message-Id: <20210124232007.21639-1-richard@nod.at>
+Subject: [PATCH 1/8] fuse: Export fuse_simple_request
+Date: Mon, 25 Jan 2021 00:20:00 +0100
+Message-Id: <20210124232007.21639-2-richard@nod.at>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210124232007.21639-1-richard@nod.at>
+References: <20210124232007.21639-1-richard@nod.at>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210124_182105_038514_6DF444BE 
-X-CRM114-Status: GOOD (  17.95  )
+X-CRM114-CacheID: sfid-20210124_182104_962444_A84FCA65 
+X-CRM114-Status: UNSURE (   8.52  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,89 +73,35 @@ Cc: vigneshr@ti.com, fuse-devel@lists.sourceforge.net,
  Richard Weinberger <richard@nod.at>, miquel.raynal@bootlin.com,
  linux-kernel@vger.kernel.org, boris.brezillon@collabora.com,
  linux-mtd@lists.infradead.org, rminnich@google.com, sven@narfation.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SSdtIGhhcHB5IHRvIGFubm91bmNlIHRoZSBmaXJzdCBub24tUkZDIHZlcnNpb24gb2YgdGhpcyBw
-YXRjaCBzZXQuCk92ZXIgdGhlIHhtYXMgaG9saWRheXMgSSBmb3VuZCBzb21lIHRpbWUgdG8gZXhw
-ZXJpbWVudCB3aXRoIHZhcmlvdXMgdXNlcnNwYWNlCmltcGxlbWVudGF0aW9ucyBvZiBNVERzIGFu
-ZCBnYXZlIHRoZSBrZXJuZWwgc2lkZSBtb3JlIGZpbmUtdHVuaW5nLgoKUmF0aW9uYWxlOgotLS0t
-LS0tLS0tCgpXaGVuIHdvcmtpbmcgd2l0aCBmbGFzaCBkZXZpY2VzIGEgY29tbW9uIHRhc2sgaXMg
-ZW11bGF0aW5nIHRoZW0gdG8gcnVuIHZhcmlvdXMKdGVzdHMgb3IgaW5zcGVjdCBkdW1wcyBmcm9t
-IHJlYWwgaGFyZHdhcmUuIFRvIGFjaGlldmUgdGhhdCB3ZSBoYXZlIHBsZW50eSBvZgplbXVsYXRv
-cnMgaW4gdGhlIE1URCBzdWJzeXN0ZW06IG10ZHJhbSwgYmxvY2sybXRkLCBuYW5kc2ltLgoKRWFj
-aCBvZiB0aGVtIGltcGxlbWVudHMgYW4gYWQtaG9jIE1URCBhbmQgaGF2ZSB2YXJpb3VzIGRyYXdi
-YWNrcy4KT3ZlciB0aGUgbGFzdCB5ZWFycyBzb21lIGRldmVsb3BlcnMgdHJpZWQgdG8gZXh0ZW5k
-IHRoZW0gYnV0IHRoZXNlIGF0dGVtcHRzCm9mdGVuIGdvdCByZWplY3RlZCBiZWNhdXNlIHRoZXkg
-YWRkZWQganVzdCBtb3JlIGFkaG9jIGZlYXR1cmUgaW5zdGVhZCBvZgphZGRyZXNzaW5nIG92ZXJh
-bGwgcHJvYmxlbXMuCgpNVVNFIGlzIGEgbm92ZWwgYXBwcm9hY2ggdG8gYWRkcmVzcyB0aGUgbmVl
-ZCBvZiBhZHZhbmNlZCBNVEQgZW11bGF0b3JzLgpBZHZhbmNlZCBtZWFucyBpbiB0aGlzIGNvbnRl
-eHQgc3VwcG9ydGluZyBkaWZmZXJlbnQgKHZlbmRvciBzcGVjaWZpYykgaW1hZ2UKZm9ybWF0cywg
-ZGlmZmVyZW50IHdheXMgZm9yIGZhdWx0IGluamVjdGlvbiAoZnV6emluZykgYW5kIHJlY29kaW5n
-L3JlcGxheWluZwpJT3MgdG8gZW11bGF0ZSBwb3dlciBjdXRzLgoKVGhlIGNvcmUgZ29hbCBvZiBN
-VVNFIGlzIGhhdmluZyB0aGUgY29tcGxleGl0eSBvbiB0aGUgdXNlcnNwYWNlIHNpZGUgYW5kCm9u
-bHkgYSBzbWFsbCBNVEQgZHJpdmVyIGluIGtlcm5lbHNwYWNlLgpXaGlsZSBwbGF5aW5nIHdpdGgg
-ZGlmZmVyZW50IGFwcHJvYWNoZXMgSSByZWFsaXplZCB0aGF0IEZVU0Ugb2ZmZXJzIGV2ZXJ5dGhp
-bmcKd2UgbmVlZC4gU28gTVVTRSBpcyBhIGxpdHRsZSBsaWtlIENVU0UgZXhjZXB0IHRoYXQgaXQg
-ZG9lcyBub3QgaW1wbGVtZW50IGEKYmFyZSBjaGFyYWN0ZXIgZGV2aWNlIGJ1dCBhbiBNVEQuCgpO
-b3RlczoKLS0tLS0tCgotIE9PQiBzdXBwb3J0IGlzIGN1cnJlbnRseSBsaW1pdGVkLiBDdXJyZW50
-bHkgTVVTRSBoYXMgbm8gc3VwcG9ydCBmb3IgcHJvY2Vzc2luZwogIGluLSBhbmQgb3V0LWJhbmQg
-aW4gdGhlIHNhbWUgTVREIG9wZXJhdGlvbi4gSXQgaXMgZ29vZCBlbm91Z2ggdG8gbWFrZSBKRkZT
-MgogIGhhcHB5LiBUaGlzIGxpbWl0YXRpb24gaXMgYmVjYXVzZSBGVVNFIGhhcyBubyBzdXBwb3J0
-IG1vcmUgdGhhbiBvbmUgdmFyaWFibGUKICBsZW5ndGggYnVmZmVyIGluIGEgRlVTRSByZXF1ZXN0
-LgogIEF0IGxlYXN0IEkgZGlkbuKAmXQgZmluZCBhIGdvb2Qgd2F5IHRvIHBhc3MgbW9yZSB0aGFu
-IG9uZSBidWZmZXIgdG8gYSByZXF1ZXN0LgogIE1heWJlIEZVU0UgZm9sa3MgY2FuIGNvcnJlY3Qg
-bWUuIDotKQoKLSBFdmVyeSBNVEQgcmVhZC93cml0ZSBvcGVyYXRpb24gbWFwcyAxOjEgdG8gYSBN
-VVNFX1JFQUQvV1JJVEUgb3Bjb2RlLgogIFNpbmNlIEZVU0UgcmVxdWVzdHMgYXJlIG5vdCBjaGVh
-cCwgdGhlIGFtb3VudCBvZiByZWFkL3dyaXR0ZW4gYnl0ZXMgaW4gYSBNVEQKICBvcGVyYXRpb24g
-YXMgYSBodWdlIGltcGFjdCBvbiB0aGUgcGVyZm9ybWFuY2UuIEVzcGVjaWFsbHkgd2hlbiBOT1Ig
-c3R5bGUgTVREcwogIGFyZSBpbXBsZW1lbnRlZCBpbiB1c2Vyc3BhY2UgYSBsYXJnZSB3cml0ZWJ1
-ZnNpemUgc2hvdWxkIGJlIHJlcXVlc3RlZCB0byBnYWluCiAgZ29vZCB3cml0ZSBwZXJmb3JtYW5j
-ZS4KICBPbiB0aGUgb3RoZXIgaGFuZCwgTVREIG9wZXJhdGlvbnMgd2l0aCBsZW5ndGhzIGxhcmdl
-ciB0aGFuIHdyaXRlc2l6ZSBhcmUgKm5vdCoKICBzcGxpdCB1cCBpbnRvIG11bHRpcGxlIE1VU0Vf
-UkVBRC9XUklURSByZXF1ZXN0cy4gVGhpcyBtZWFucyB0aGF0IHVzZXJzcGFjZQogIGhhcyB0byBz
-cGxpdCB0aGVtIG1hbnVhbGx5IHdoZW4gZG9pbmcgcG93ZXItY3V0IGVtdWxhdGlvbi4KCi0gTVVT
-RSBpcyBub3Qgc3VwZXIgZmFzdC4gT24gbXkgaTUgd29ya3N0YXRpb24gbmFuZHNpbSBpcyBhbG1v
-c3QgdHdpY2UgYXMgZmFzdAogIGFzIGEgTkFORCBmbGFzaCBpbiB1c2Vyc3BhY2UuIEJ1dCBNVVNF
-IGlzIHN0aWxsIG1hZ25pdHVkZXMgZmFzdGVyIHRoYW4gYW55CiAgcmVhbCB3b3JsZCBNVEQgb3V0
-IHRoZXJlLiBTbyBpdCBpcyBnb29kIGVub3VnaCBmb3IgdGhlIHVzZSBjYXNlcyBJIGhhdmUgaW4K
-ICBtaW5kLgoKQ2hhbmdlbG9nOgotLS0tLS0tLS0tCgpDaGFuZ2VzIHNpbmNlIHYyIChSRkMpOgot
-IE9PQiBzdXBwb3J0Ci0gTVVTRV9SRUFEL1dSSVRFIG9wY29kZXMgYXJlIG5vIGxvbmdlciBhIG1p
-biBJTyBNVEQgdW5pdAotIE1URCBwYXJ0aXRpb25zIHN1cHBvcnQgdmlhIG10ZHBhcnRzIHN0cmlu
-ZwotIE1vcmUgY29kZSBjbGVhbnVwCi0gQ29kZSByZWJhc2VkIHRvIDUuMTEtcmM0CgpDaGFuZ2Vz
-IHNpbmNlIHYxIChSRkMpOgotIFJld3JvdGUgSU8gcGF0aCwgZnVzZV9kaXJlY3RfaW8oKSBpcyBu
-byBsb25nZXIgdXNlZC4KICBJbnN0ZWFkIG9mIGNoZWF0aW5nIGZ1c2VfZGlyZWN0X2lvKCkgdXNl
-IGN1c3RvbSBvcHMgdG8gaW1wbGVtZW50CiAgcmVhZGluZyBhbmQgd3JpdGluZy4gVGhhdCB3YXkg
-TVVTRSBubyBsb25nZXIgbmVlZHMgYSBkdW1teSBmaWxlIG9iamVjdAogIG5vciBhIGZ1c2UgZmls
-ZSBvYmplY3QuCiAgSW4gTVREIGFsbCBJTyBpcyBzeW5jaHJvbm91cyBhbmQgb3BlcmF0aW9ucyBv
-biBrZXJuZWwgYnVmZmVycywgdGhpcwogIG1ha2VzIElPIHByb2Nlc3Npbmcgc2ltcGxlIGZvciBN
-VVNFLgotIFN1cHBvcnQgZm9yIGJhZCBibG9ja3MuCi0gTm8gbW9yZSAoYWIpdXNlIG9mIEZVU0Ug
-b3BzIHN1Y2ggYXMgRlVTRV9GU1lOQy4KLSBNYWpvciBjb2RlIGNsZWFudXAuCgpUaGlzIHNlcmll
-cyBjYW4gYWxzbyBiZSBmb3VuZCBhdDoKZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51
-eC9rZXJuZWwvZ2l0L3J3L21pc2MuZ2l0IG11c2VfdjMKClJpY2hhcmQgV2VpbmJlcmdlciAoOCk6
-CiAgZnVzZTogRXhwb3J0IGZ1c2Vfc2ltcGxlX3JlcXVlc3QKICBmdXNlOiBFeHBvcnQgSU8gaGVs
-cGVycwogIGZ1c2U6IE1ha2UgY3VzZV9wYXJzZV9vbmUgYSBjb21tb24gaGVscGVyCiAgbXRkOiBB
-ZGQgTVREX01VU0UgZmxhZwogIG10ZDogQWxsb3cgcGFzc2luZyBhIGN1c3RvbSBjbWRsaW5lIHRv
-IGNtZGxpbmUgbGluZSBwYXJzZXIKICBmdXNlOiBBZGQgTVVTRSBzcGVjaWZpYyBkZWZpbmVzIEZV
-U0UgaW50ZXJmYWNlCiAgZnVzZTogSW1wbGVtZW50IE1VU0UgLSBNVEQgaW4gdXNlcnNwYWNlCiAg
-TUFJTlRBSU5FUlM6IEFkZCBlbnRyeSBmb3IgTVVTRQoKIERvY3VtZW50YXRpb24vQUJJL3Rlc3Rp
-bmcvc3lzZnMtY2xhc3MtbXRkIHwgICAgOCArCiBNQUlOVEFJTkVSUyAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICB8ICAgIDcgKwogZHJpdmVycy9tdGQvcGFyc2Vycy9jbWRsaW5lcGFydC5j
-ICAgICAgICAgfCAgIDczICstCiBmcy9mdXNlL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAg
-ICAgICB8ICAgMTUgKwogZnMvZnVzZS9NYWtlZmlsZSAgICAgICAgICAgICAgICAgICAgICAgICAg
-fCAgICAyICsKIGZzL2Z1c2UvY3VzZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA1
-OCArLQogZnMvZnVzZS9kZXYuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICAxICsK
-IGZzL2Z1c2UvZmlsZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAxNiArLQogZnMv
-ZnVzZS9mdXNlX2kuaCAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDE4ICsKIGZzL2Z1c2Uv
-aGVscGVyLmMgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA3MCArKwogZnMvZnVzZS9tdXNl
-LmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAxMDg2ICsrKysrKysrKysrKysrKysrKysr
-KwogaW5jbHVkZS9saW51eC9tdGQvcGFydGl0aW9ucy5oICAgICAgICAgICAgfCAgICAyICsKIGlu
-Y2x1ZGUvdWFwaS9saW51eC9mdXNlLmggICAgICAgICAgICAgICAgIHwgICA3NiArKwogaW5jbHVk
-ZS91YXBpL210ZC9tdGQtYWJpLmggICAgICAgICAgICAgICAgfCAgICAxICsKIDE0IGZpbGVzIGNo
-YW5nZWQsIDEzNDYgaW5zZXJ0aW9ucygrKSwgODcgZGVsZXRpb25zKC0pCiBjcmVhdGUgbW9kZSAx
-MDA2NDQgZnMvZnVzZS9oZWxwZXIuYwogY3JlYXRlIG1vZGUgMTAwNjQ0IGZzL2Z1c2UvbXVzZS5j
-CgotLSAKMi4yNi4yCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlz
-dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+MUSE will use this function to issue requests,
+so export it.
+
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ fs/fuse/dev.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/fuse/dev.c b/fs/fuse/dev.c
+index 588f8d1240aa..8b7209537683 100644
+--- a/fs/fuse/dev.c
++++ b/fs/fuse/dev.c
+@@ -522,6 +522,7 @@ ssize_t fuse_simple_request(struct fuse_mount *fm, struct fuse_args *args)
+ 
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(fuse_simple_request);
+ 
+ static bool fuse_request_queue_background(struct fuse_req *req)
+ {
+-- 
+2.26.2
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
