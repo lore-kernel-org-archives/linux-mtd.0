@@ -2,61 +2,71 @@ Return-Path: <SRS0=ZJz0=G6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43CF9C433DB
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Jan 2021 20:31:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 787C2C433E0
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Jan 2021 20:47:40 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DE7D460C3D
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Jan 2021 20:31:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE7D460C3D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id E475C64D9F
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Jan 2021 20:47:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E475C64D9F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:Subject:References:In-Reply-To:
+	Message-ID:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=pEBhSop67/kNQJ1+pL1BqdW2dAMpekmaOIiu1I5zIh4=; b=ehRlgk26+JoQvBfcAN1COL85e
-	WuREjDFo1Mrj4QDxQ8dvHg1O9vzFOY3d8brXc6cRQNCFnqZxKGWk7WY+ZDF55ANQ3A9gc/tR3eSCA
-	bWcrjo/39kPTwoOCA/RClLjOzsiQxEMAI25pH9eMx6UkllF54Lg4cZL3z9B4aQP8Oi+rrvNRt8X5L
-	0npEzromwRpQG/G1I3aCiIUI2G7onmYEm0+pOB5jNlranthszqYtwJH2IvYk0pzcz5Xugl2LlePZP
-	Z2df+rFxJVUFJVfGm0fP2ZrTM15yxv/pzuete5DwfrnT7pjpz+YsbUAlFtkhSljEhNLfO6RNbzAgR
-	+qwYCLBHA==;
+	 bh=ZeGkvk68jz4vnnrhBdf6FM1aUFPi7Ruf+nxiTdzc3PM=; b=jAkQKAR3gdOUQsUQDeqO1RgEe
+	4+duMwb+iodVt1ADlhyi0lfDFWtxt+fu2UpAsb018PAcswkVj2cDzKA3tpb8wSCQ0rOdbGm5F+Ja0
+	TnxGRaRGHiRbPVu2uL5yDiQ4yWAjc3hKMBBzp0gBe7E1m+spcib4l9c4cT8ae9LW2vvbJ0jwD/NZ0
+	O6p3EubrjaD7Ykdk8kylXeZuQrIUPSYGGT2NNmxIVfVrAgtoiQeXhdgo+16gKnn4juAmhTB1kXors
+	euMYQqCwJ5T5s0u21Ug26p6dYUsyArm5G0vbpVf9/b1JZ+HFt/jlb1HzLGfju8tU3kMMEWJrp5NbI
+	rU/RPUIhA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l4rSk-0002DG-Vn; Wed, 27 Jan 2021 20:30:51 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1l4riM-0005vB-2g; Wed, 27 Jan 2021 20:46:58 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l4rSR-00028G-3e
- for linux-mtd@lists.infradead.org; Wed, 27 Jan 2021 20:30:32 +0000
-X-Originating-IP: 86.210.203.150
-Received: from localhost.localdomain
- (lfbn-tou-1-972-150.w86-210.abo.wanadoo.fr [86.210.203.150])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id E4D741BF213;
- Wed, 27 Jan 2021 20:30:28 +0000 (UTC)
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3 7/9] mtd: rawnand: omap: Use ECC information from the
- generic structures
-Date: Wed, 27 Jan 2021 21:30:18 +0100
-Message-Id: <20210127203020.9574-8-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210127203020.9574-1-miquel.raynal@bootlin.com>
-References: <20210127203020.9574-1-miquel.raynal@bootlin.com>
+ id 1l4riJ-0005tS-JV
+ for linux-mtd@lists.infradead.org; Wed, 27 Jan 2021 20:46:56 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 78CDF61D8A8E;
+ Wed, 27 Jan 2021 21:46:42 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id vdBZFFYqQkLv; Wed, 27 Jan 2021 21:46:40 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id A4ED961D8A97;
+ Wed, 27 Jan 2021 21:46:40 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id p5INWvL6CD1R; Wed, 27 Jan 2021 21:46:40 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 79A2E61D8A8E;
+ Wed, 27 Jan 2021 21:46:40 +0100 (CET)
+Date: Wed, 27 Jan 2021 21:46:40 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: Tomas Winkler <tomas.winkler@intel.com>
+Message-ID: <9732911.325628.1611780400338.JavaMail.zimbra@nod.at>
+In-Reply-To: <20210127200319.662842-1-tomas.winkler@intel.com>
+References: <20210127200319.662842-1-tomas.winkler@intel.com>
+Subject: Re: [PATCH] mtd: use refcount to prevent corruption
 MIME-Version: 1.0
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Topic: use refcount to prevent corruption
+Thread-Index: r0YCwcJ7fDRcCCdg7evH/Zy4+yWw0g==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210127_153031_677493_23AE632C 
-X-CRM114-Status: GOOD (  13.03  )
+X-CRM114-CacheID: sfid-20210127_154655_757604_9EA587B2 
+X-CRM114-Status: UNSURE (   6.71  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,77 +78,30 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris Brezillon <boris.brezillon@collabora.com>,
- Adam Ford <aford173@gmail.com>, ladis@triops.cz,
+Cc: linux-kernel <linux-kernel@vger.kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-As part of a previous fix, we imported the BCH internal structure in
-order to get information about the BCH engine configuration.
-
-It is best not to access private structure so instead, a small rework
-has been done to export more information from the ECC engines. Now,
-let's use these.
-
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/nand/raw/omap2.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
-index 2c3e65cb68f3..c75e7a0b101f 100644
---- a/drivers/mtd/nand/raw/omap2.c
-+++ b/drivers/mtd/nand/raw/omap2.c
-@@ -1868,18 +1868,19 @@ static int omap_sw_ooblayout_ecc(struct mtd_info *mtd, int section,
- 				 struct mtd_oob_region *oobregion)
- {
- 	struct nand_device *nand = mtd_to_nanddev(mtd);
--	const struct nand_ecc_sw_bch_conf *engine_conf = nand->ecc.ctx.priv;
-+	unsigned int nsteps = nanddev_get_ecc_nsteps(nand);
-+	unsigned int ecc_bytes = nanddev_get_ecc_bytes_per_step(nand);
- 	int off = BADBLOCK_MARKER_LENGTH;
- 
--	if (section >= engine_conf->nsteps)
-+	if (section >= nsteps)
- 		return -ERANGE;
- 
- 	/*
- 	 * When SW correction is employed, one OMAP specific marker byte is
- 	 * reserved after each ECC step.
- 	 */
--	oobregion->offset = off + (section * (engine_conf->code_size + 1));
--	oobregion->length = engine_conf->code_size;
-+	oobregion->offset = off + (section * (ecc_bytes + 1));
-+	oobregion->length = ecc_bytes;
- 
- 	return 0;
- }
-@@ -1888,7 +1889,8 @@ static int omap_sw_ooblayout_free(struct mtd_info *mtd, int section,
- 				  struct mtd_oob_region *oobregion)
- {
- 	struct nand_device *nand = mtd_to_nanddev(mtd);
--	const struct nand_ecc_sw_bch_conf *engine_conf = nand->ecc.ctx.priv;
-+	unsigned int nsteps = nanddev_get_ecc_nsteps(nand);
-+	unsigned int ecc_bytes = nanddev_get_ecc_bytes_per_step(nand);
- 	int off = BADBLOCK_MARKER_LENGTH;
- 
- 	if (section)
-@@ -1898,7 +1900,7 @@ static int omap_sw_ooblayout_free(struct mtd_info *mtd, int section,
- 	 * When SW correction is employed, one OMAP specific marker byte is
- 	 * reserved after each ECC step.
- 	 */
--	off += ((engine_conf->code_size + 1) * engine_conf->nsteps);
-+	off += ((ecc_bytes + 1) * nsteps);
- 	if (off >= mtd->oobsize)
- 		return -ERANGE;
- 
--- 
-2.20.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VG9tYXMsCgotLS0tLSBVcnNwcsO8bmdsaWNoZSBNYWlsIC0tLS0tCj4gVm9uOiAiVG9tYXMgV2lu
+a2xlciIgPHRvbWFzLndpbmtsZXJAaW50ZWwuY29tPgo+IEFuOiAiTWlxdWVsIFJheW5hbCIgPG1p
+cXVlbC5yYXluYWxAYm9vdGxpbi5jb20+LCAicmljaGFyZCIgPHJpY2hhcmRAbm9kLmF0PiwgIlZp
+Z25lc2ggUmFnaGF2ZW5kcmEiIDx2aWduZXNockB0aS5jb20+LAo+ICJsaW51eC1tdGQiIDxsaW51
+eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZz4sICJsaW51eC1rZXJuZWwiIDxsaW51eC1rZXJuZWxA
+dmdlci5rZXJuZWwub3JnPgo+IENDOiAiVG9tYXMgV2lua2xlciIgPHRvbWFzLndpbmtsZXJAaW50
+ZWwuY29tPgo+IEdlc2VuZGV0OiBNaXR0d29jaCwgMjcuIEphbnVhciAyMDIxIDIxOjAzOjE5Cj4g
+QmV0cmVmZjogW1BBVENIXSBtdGQ6IHVzZSByZWZjb3VudCB0byBwcmV2ZW50IGNvcnJ1cHRpb24K
+Cj4gV2hlbiB1bmRlcmx5aW5nIGRldmljZSBpcyByZW1vdmVkIG10ZCBjb3JlIHdpbGwgY3Jhc2gK
+PiBpbiBjYXNlIHVzZXIgc3BhY2UgaXMgc3RpbGwgaG9sZGluZyBhbiBvcGVuIGhhbmRsZSB0byBh
+IG10ZCBkZXZpY2Ugbm9kZS4KPiBBIHByb3BlciByZWZjb3VudGluZyBpcyBuZWVkZWQgc28gZGV2
+aWNlIGlzIHJlbGVhc2Ugb25seSB3aGVuIGEKPiBwYXJ0aXRpb24gaGFzIG5vIGFjdGl2ZSB1c2Vy
+cy4gVGhlIGN1cnJlbnQgc2ltcGxlIGNvdW50ZXIgaXMgbm90Cj4gc3VmZmljaWVudC4KCkNhbiB5
+b3UgcGxlYXNlIGV4cGxhaW4gYSBsaXR0bGUgbW9yZSB3aGF0IGRldmljZXMgYXJlIGludm9sdmVk
+PwpEb2VzIGl0IGltcGxlbWVudCBfZ2V0X2RldmljZSgpIGFuZCBfcHV0X2RldmljZSgpPwoKVGhh
+bmtzLAovL3JpY2hhcmQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
