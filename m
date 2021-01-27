@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 924B3C433E9
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69D0FC433E6
 	for <linux-mtd@archiver.kernel.org>; Wed, 27 Jan 2021 20:31:30 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3B71960C3D
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Jan 2021 20:31:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B71960C3D
+	by mail.kernel.org (Postfix) with ESMTPS id 07A3F61488
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Jan 2021 20:31:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 07A3F61488
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,39 +23,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=6CEYUG9ah9XCjgEZeDO6wRV2/AFPKF9D0RDW57RYNMI=; b=tCzS0lfC70sJErUYRvGvLr2Mf
-	LAYuWQnmdq/ME25Y0Pv5yl7KzU4o+jeRu4jDrVpxmdi3RZjbDqUAbWsZF2lN0qKILcYeT9z910VzW
-	Svz5+WxYRV/s+J1XIUHmwLzUEztL7mOEFHBj0o5KmyGPUGFTUtqvpnv+TofieiLlqQnlAtu9sSNYq
-	mYHbbdtQGE7KKUmDyP1F9X9x2PPGEw3dtZOKaTldfuFogMrlKL+gGe6PKheeZoZ3J2zaID0JwNEZ2
-	Oj8ERmGeLIEUEGJyJwZ3l0t0L2Z2v2MraXO9afxq4xVLOpvYZ8MqWE9l1rHGjnzBN3+c+Rk93IAKQ
-	P2XMBOeeQ==;
+	 bh=s27qQdMqifjEdA/HI3ryHtiuwevVRCnUVNvMv3eqtWk=; b=hN7VGN6s3BZyWM9b22p31bljD
+	+OcPMInxuyZClmaCvS63sqR7jYF+i+kBLUzmQ6PcDJz4iQpcvGqULb8z1KcbjVxdlmLJXGXNW6JuL
+	Y/JAOQSY7yoPMHNy7QJJfwgMVGC4z0x1V5tjI/yUhEQLK5VEEyFXROKJaujBQHaMrze0V7tvIM2Bw
+	hWLtN7CegMSlF3aHkovPjSguVLyT/nCSqG56PRHmxvY7tq5GRpuuzTaLuGZ+PF4yW37wg1GDJDKjR
+	vImxva2vQf47/fCD/hvta5Jo1cE89+s3ItybJKaz2dmQCqdRoWFY5Wd8cA9KVU1Vp3FJupWAbaSfT
+	A/C4ras+A==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l4rSj-0002Cr-3x; Wed, 27 Jan 2021 20:30:49 +0000
+	id 1l4rSh-0002CS-FQ; Wed, 27 Jan 2021 20:30:47 +0000
 Received: from relay8-d.mail.gandi.net ([217.70.183.201])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l4rSQ-00028B-7E
+ id 1l4rSP-00027Y-EG
  for linux-mtd@lists.infradead.org; Wed, 27 Jan 2021 20:30:31 +0000
 X-Originating-IP: 86.210.203.150
 Received: from localhost.localdomain
  (lfbn-tou-1-972-150.w86-210.abo.wanadoo.fr [86.210.203.150])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 1C9261BF214;
- Wed, 27 Jan 2021 20:30:28 +0000 (UTC)
+ by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 44FB51BF20A;
+ Wed, 27 Jan 2021 20:30:27 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3 6/9] mtd: rawnand: Try not to use the ECC private structures
-Date: Wed, 27 Jan 2021 21:30:17 +0100
-Message-Id: <20210127203020.9574-7-miquel.raynal@bootlin.com>
+Subject: [PATCH v3 5/9] mtd: nand: Add a helper to retrieve the number of ECC
+ bytes per step
+Date: Wed, 27 Jan 2021 21:30:16 +0100
+Message-Id: <20210127203020.9574-6-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210127203020.9574-1-miquel.raynal@bootlin.com>
 References: <20210127203020.9574-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210127_153030_585354_443E67B9 
-X-CRM114-Status: UNSURE (   9.71  )
+X-CRM114-CacheID: sfid-20210127_153030_587312_7D871239 
+X-CRM114-Status: UNSURE (   9.57  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -76,58 +77,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Most of the time, there is no need to use the software ECC Hamming and
-BCH algorithms private context to know their configuration. All the
-data has been stored by their ->init_ctx() hook in the generic NAND
-ECC engine structure, so use this one when possible.
+This operation is very common and deserves a helper. It of course only
+works after the ECC engine initialization.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/nand_base.c | 16 +++++++---------
- 1 file changed, 7 insertions(+), 9 deletions(-)
+ include/linux/mtd/nand.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index c33fa1b1847f..4e1bd1e5d474 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -5162,8 +5162,8 @@ int rawnand_sw_hamming_init(struct nand_chip *chip)
- 	chip->ecc.size = base->ecc.ctx.conf.step_size;
- 	chip->ecc.strength = base->ecc.ctx.conf.strength;
- 	chip->ecc.total = base->ecc.ctx.total;
--	chip->ecc.steps = engine_conf->nsteps;
--	chip->ecc.bytes = engine_conf->code_size;
-+	chip->ecc.steps = nanddev_get_ecc_nsteps(base);
-+	chip->ecc.bytes = base->ecc.ctx.total / nanddev_get_ecc_nsteps(base);
- 
- 	return 0;
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 8a0116396689..32fc7edf65b3 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -597,6 +597,16 @@ nanddev_get_ecc_nsteps(struct nand_device *nand)
+ 	return nand->ecc.ctx.nsteps;
  }
-@@ -5201,7 +5201,7 @@ EXPORT_SYMBOL(rawnand_sw_hamming_cleanup);
- int rawnand_sw_bch_init(struct nand_chip *chip)
- {
- 	struct nand_device *base = &chip->base;
--	struct nand_ecc_sw_bch_conf *engine_conf;
-+	const struct nand_ecc_props *ecc_conf = nanddev_get_ecc_conf(base);
- 	int ret;
  
- 	base->ecc.user_conf.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
-@@ -5213,13 +5213,11 @@ int rawnand_sw_bch_init(struct nand_chip *chip)
- 	if (ret)
- 		return ret;
- 
--	engine_conf = base->ecc.ctx.priv;
--
--	chip->ecc.size = base->ecc.ctx.conf.step_size;
--	chip->ecc.strength = base->ecc.ctx.conf.strength;
-+	chip->ecc.size = ecc_conf->step_size;
-+	chip->ecc.strength = ecc_conf->strength;
- 	chip->ecc.total = base->ecc.ctx.total;
--	chip->ecc.steps = engine_conf->nsteps;
--	chip->ecc.bytes = engine_conf->code_size;
-+	chip->ecc.steps = nanddev_get_ecc_nsteps(base);
-+	chip->ecc.bytes = base->ecc.ctx.total / nanddev_get_ecc_nsteps(base);
- 
- 	return 0;
- }
++/**
++ * nanddev_get_ecc_bytes_per_step() - Extract the number of ECC bytes per step
++ * @nand: NAND device
++ */
++static inline unsigned int
++nanddev_get_ecc_bytes_per_step(struct nand_device *nand)
++{
++	return nand->ecc.ctx.total / nand->ecc.ctx.nsteps;
++}
++
+ /**
+  * nanddev_get_ecc_requirements() - Extract the ECC requirements from a NAND
+  *                                  device
 -- 
 2.20.1
 
