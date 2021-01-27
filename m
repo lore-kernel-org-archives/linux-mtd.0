@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69D0FC433E6
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Jan 2021 20:31:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EDE5C433E6
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Jan 2021 20:31:48 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 07A3F61488
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Jan 2021 20:31:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 07A3F61488
+	by mail.kernel.org (Postfix) with ESMTPS id 2451460C3D
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Jan 2021 20:31:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2451460C3D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,40 +23,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=s27qQdMqifjEdA/HI3ryHtiuwevVRCnUVNvMv3eqtWk=; b=hN7VGN6s3BZyWM9b22p31bljD
-	+OcPMInxuyZClmaCvS63sqR7jYF+i+kBLUzmQ6PcDJz4iQpcvGqULb8z1KcbjVxdlmLJXGXNW6JuL
-	Y/JAOQSY7yoPMHNy7QJJfwgMVGC4z0x1V5tjI/yUhEQLK5VEEyFXROKJaujBQHaMrze0V7tvIM2Bw
-	hWLtN7CegMSlF3aHkovPjSguVLyT/nCSqG56PRHmxvY7tq5GRpuuzTaLuGZ+PF4yW37wg1GDJDKjR
-	vImxva2vQf47/fCD/hvta5Jo1cE89+s3ItybJKaz2dmQCqdRoWFY5Wd8cA9KVU1Vp3FJupWAbaSfT
-	A/C4ras+A==;
+	 bh=B/QiIBMXLvLEd3+F6mqhnguFIxShBiQWO8sOY7u7Uzo=; b=hh6YV9IZNt1f4FCu24vOJeCRB
+	9R2tcgpsTVa67QAlR3ib9jztcUBloS4IQpQgO276ycvEWTJGygLMs0bh5MX78a+rAzNEByRTLs+AX
+	0m6G700d4iZSaiH5pC2THzZYC8Pm3KpJ59PK12cXA+fVFhi7N5xiY+ZFL7WmbE57VgrMAcWvTxUWO
+	UAEKfF8z1S0VKF2dZcKEF+XbFJMOkRslbOk0jhCH5ksB5uTWT22jBt8f2Rm/WduRNBUusF/6gmYu+
+	KZqkgCbCSy1IZ2nrCNcOZ7QVtZVX6WJTpqWSRebsViE+PM4zfOphRqwZXsrfk04FMrBD937QslKwq
+	nsoQcJMdA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l4rSh-0002CS-FQ; Wed, 27 Jan 2021 20:30:47 +0000
+	id 1l4rSY-0002Ay-CQ; Wed, 27 Jan 2021 20:30:38 +0000
 Received: from relay8-d.mail.gandi.net ([217.70.183.201])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l4rSP-00027Y-EG
- for linux-mtd@lists.infradead.org; Wed, 27 Jan 2021 20:30:31 +0000
+ id 1l4rSO-00026o-Hb
+ for linux-mtd@lists.infradead.org; Wed, 27 Jan 2021 20:30:30 +0000
 X-Originating-IP: 86.210.203.150
 Received: from localhost.localdomain
  (lfbn-tou-1-972-150.w86-210.abo.wanadoo.fr [86.210.203.150])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 44FB51BF20A;
- Wed, 27 Jan 2021 20:30:27 +0000 (UTC)
+ by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 6711A1BF203;
+ Wed, 27 Jan 2021 20:30:26 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3 5/9] mtd: nand: Add a helper to retrieve the number of ECC
- bytes per step
-Date: Wed, 27 Jan 2021 21:30:16 +0100
-Message-Id: <20210127203020.9574-6-miquel.raynal@bootlin.com>
+Subject: [PATCH v3 4/9] mtd: nand: Add a helper to retrieve the number of ECC
+ steps
+Date: Wed, 27 Jan 2021 21:30:15 +0100
+Message-Id: <20210127203020.9574-5-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210127203020.9574-1-miquel.raynal@bootlin.com>
 References: <20210127203020.9574-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210127_153030_587312_7D871239 
-X-CRM114-Status: UNSURE (   9.57  )
+X-CRM114-CacheID: sfid-20210127_153028_765050_5B291D85 
+X-CRM114-Status: UNSURE (   9.79  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -86,21 +86,21 @@ Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
  1 file changed, 10 insertions(+)
 
 diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 8a0116396689..32fc7edf65b3 100644
+index 632becb13b46..8a0116396689 100644
 --- a/include/linux/mtd/nand.h
 +++ b/include/linux/mtd/nand.h
-@@ -597,6 +597,16 @@ nanddev_get_ecc_nsteps(struct nand_device *nand)
- 	return nand->ecc.ctx.nsteps;
+@@ -587,6 +587,16 @@ nanddev_get_ecc_conf(struct nand_device *nand)
+ 	return &nand->ecc.ctx.conf;
  }
  
 +/**
-+ * nanddev_get_ecc_bytes_per_step() - Extract the number of ECC bytes per step
++ * nanddev_get_ecc_nsteps() - Extract the number of ECC steps
 + * @nand: NAND device
 + */
 +static inline unsigned int
-+nanddev_get_ecc_bytes_per_step(struct nand_device *nand)
++nanddev_get_ecc_nsteps(struct nand_device *nand)
 +{
-+	return nand->ecc.ctx.total / nand->ecc.ctx.nsteps;
++	return nand->ecc.ctx.nsteps;
 +}
 +
  /**
