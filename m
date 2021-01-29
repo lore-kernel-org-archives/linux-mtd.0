@@ -2,85 +2,92 @@ Return-Path: <SRS0=IJeB=HA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 142ADC433DB
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 Jan 2021 12:44:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 259F5C433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Jan 2021 16:13:17 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A363864E12
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 Jan 2021 12:44:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A363864E12
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id BBF2164DFA
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Jan 2021 16:13:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BBF2164DFA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:Message-ID:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=WjVlovSs9t72rpcQfI78UsYG63DoLHWRA+2c8mPXZd0=; b=XWTZWPk4w+rD1vR2uNJ7Q97Ax
-	yhkYE5taYzaxs9Hq0VYY4QF/Fco7zH4uI4vrY4GEijsCGFix0c5ez5kGcXbZHs7fkHi6GAHDGJ3LO
-	Vf6qctnlH8xQN3y+wS/8cchxR2oOEughq7697Vs69xyvhFBvB3twV9HnGcLnaW/XlLAv6jlDq/29k
-	1e9qgsu+XRgMeQrBFsez41jC4qPVWOpODVnvvSkoIbAIMmaaLjmTZIM8BuhvfFbkBffxYR+ce13dF
-	XOtndGyxjNQj4ogAJOwE7AlOAt/gaFRKCyCAw4PqRWFhMUGz4cS8jJn1FQggo6qg0sgsyyCEDaIU8
-	KFbjJ85jA==;
+	 bh=bUQinzhywJeTykm9fWWqWfSn6lIeCBJasx78SAMyIlQ=; b=rrXxqLeE2fe2aeYF0eBgaMzXO
+	6OZGp3GGb3rSayiZwqboTqFK0JQ1Pu+DI5RM1UbGBFiN3n97j7D8DS9RwuUhoqs/74XjaTlMBejxg
+	hTdZYgE96wCZrLt5IEEDMhy4Gw4K8u2Mgo23pxaFXtosU8F1Ox82aLNgC0gTSckvwFKy4b4R9Jr1f
+	SR2B/2Zc3yghdFUms1+cOoadNv5pur0JS9lfJDA4UyNIylEmnyyry6wXVSm/orpryFSpjWsa8BC+Y
+	Hpq2l8gzOeUKBa2OmOUFp4PG+Nt3gQ3LmFelehh4UYjbmYTgxDxOND/S/OPOubmfeZ4J64vEAmoXJ
+	lOghCRlEA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l5T7L-0005ys-RX; Fri, 29 Jan 2021 12:43:15 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1l5WNb-0002y7-Af; Fri, 29 Jan 2021 16:12:15 +0000
+Received: from mga03.intel.com ([134.134.136.65])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l5T7J-0005yV-Fd
- for linux-mtd@lists.infradead.org; Fri, 29 Jan 2021 12:43:14 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C65E364E0F;
- Fri, 29 Jan 2021 12:43:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1611924191;
- bh=wwWKq+MhqBTcFpgwdV6idWfHEU7FP5PCyLVXKZ/e/6c=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=mZHRZFdZNX/1VOww6YxCdW9/ecOQLYvR/zYYr4PzO4BblM1CCLnXL2wuS/7xTL0Rf
- zAGMKfth4G7M3Yl01gCPYExOfRwIy9Fx4YxSt7byijGD8Dkw/E/JiYzWWPBgN8cl9o
- YJcAR2ErxTuh5xPwfQ4QJVGPtPP082RXRJWqqzlCWMMzhuFzEmmGfAvV2wXzzMWdKM
- DPAHSdOqONkdU8xnLCk9FHGhwmKFE1eF6MlDtTezLoptYo/1yJQWhCrzBsrqPSsi+D
- XsExWcyowE2MDiYuDa0Dw6JsigJ2kzwnd+RENzvkaxwo5nfSKNiZmI8iOJL2+CwkdD
- XzpLtZ6AtsoCQ==
-Subject: Re: GPMI iMX6ull timeout on DMA
-To: Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
-References: <89ae32a0-9b19-4735-90eb-4ffa22aad704@kernel.org>
- <17b49e7d-ff63-315f-cf12-3474f7228c6d@kernel.org>
- <781dd4e6-a694-c3e1-ee13-9c5c51598623@kernel.org>
- <53cb8db7-bcf8-ee7c-84ee-59a14a04aad9@kernel.org>
- <20190730103822.7576645d@xps13>
- <0a6afd79-d5ca-24da-a62c-11146a3522f6@kernel.org>
- <20190731082823.6284f5a9@collabora.com>
- <e47b1de2-501a-9a1f-e980-48d2c396811a@kernel.org>
- <20190802145109.00c4a4eb@collabora.com>
- <b739696d-bb1d-bb04-cd45-3019712e29ad@kernel.org>
- <20190808183651.7c0962e7@collabora.com>
- <694cb2ac-68e6-72b1-3d55-e405b176a17f@kernel.org>
- <20190809082356.0cf60555@collabora.com>
- <ce7157e2-a8d0-7204-4003-8a711acb65b8@kernel.org>
- <20190809093235.09d89e20@collabora.com>
- <c5af9334-f679-6fc9-4d2a-1366a295598a@kernel.org>
- <20190809155934.40c43f29@collabora.com>
- <00b31833-69ba-42c5-57c9-37fa1f70efc5@kernel.org>
- <20190812093129.75888dad@collabora.com>
- <a47792dc-b19f-8af3-8748-5a21fb63271e@kernel.org>
- <CAOf5uwmPzCU8WFRQ1tQBdN7OVGZZ9SvdAG0YqVAyxmA1zwtUhg@mail.gmail.com>
-From: Greg Ungerer <gerg@kernel.org>
-Message-ID: <2e9e1f1c-ee57-425d-1791-70c66de52637@kernel.org>
-Date: Fri, 29 Jan 2021 22:43:06 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <CAOf5uwmPzCU8WFRQ1tQBdN7OVGZZ9SvdAG0YqVAyxmA1zwtUhg@mail.gmail.com>
+ id 1l5WNZ-0002xI-3Q
+ for linux-mtd@lists.infradead.org; Fri, 29 Jan 2021 16:12:14 +0000
+IronPort-SDR: O38GkirGFpYRwDTRu0JyD4x47EgcNUppcTrIYS/qEjBQ9kNFe0KfvwTdGZQ2JHGqthZIAj8R1M
+ ha2HHR3jIZlw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9878"; a="180519004"
+X-IronPort-AV: E=Sophos;i="5.79,385,1602572400"; d="scan'208";a="180519004"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 29 Jan 2021 08:12:08 -0800
+IronPort-SDR: 82l5O6IjMmvb+PkwYGRblaWqqMcKwhPQdPvd2vF1kBV4FZ/KNALq/pCUIt4lhZu+xJ929kvr1y
+ Qzir+xMEFJOQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,385,1602572400"; d="scan'208";a="431074549"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+ by orsmga001.jf.intel.com with ESMTP; 29 Jan 2021 08:12:07 -0800
+Received: from lcsmsx601.ger.corp.intel.com (10.109.210.10) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 29 Jan 2021 08:12:06 -0800
+Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
+ LCSMSX601.ger.corp.intel.com (10.109.210.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 29 Jan 2021 18:12:05 +0200
+Received: from hasmsx602.ger.corp.intel.com ([10.184.107.142]) by
+ HASMSX602.ger.corp.intel.com ([10.184.107.142]) with mapi id 15.01.1713.004;
+ Fri, 29 Jan 2021 18:12:04 +0200
+From: "Winkler, Tomas" <tomas.winkler@intel.com>
+To: Richard Weinberger <richard@nod.at>
+Subject: RE: [PATCH] mtd: use refcount to prevent corruption
+Thread-Topic: [PATCH] mtd: use refcount to prevent corruption
+Thread-Index: AQHW9OeD00Da249Jw0qJn6+VIZAeUao7z7AAgAAh5BBxoBSOfPxzntFAEGBJdu//fSiMQP//4NkAAA+XK+AnHY02HSbvTBPA
+Date: Fri, 29 Jan 2021 16:12:04 +0000
+Message-ID: <1a420da9edf449dcbc38dc17505b0ad5@intel.com>
+References: <20210127200319.662842-1-tomas.winkler@intel.com>
+ <c8d0f22c5fdf443cb8dda1f996b148d9@intel.com>
+ <1776363776.325713.1611782270873.JavaMail.zimbra@nod.at>
+ <a6cb6eb10bbb48989d3a9e087951e50e@intel.com>
+ <1665542284.336646.1611820031174.JavaMail.zimbra@nod.at>
+ <f91d7eff1d764ba7b47f023bc0fafacb@intel.com> <20210128100032.5eb542c6@xps13>
+ <10c2e98c393a486cab3bc953e9926e38@intel.com>
+ <1363048722.339069.1611865409332.JavaMail.zimbra@nod.at>
+In-Reply-To: <1363048722.339069.1611865409332.JavaMail.zimbra@nod.at>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.22.254.132]
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210129_074313_677779_33D94F16 
-X-CRM114-Status: GOOD (  19.93  )
+X-CRM114-CacheID: sfid-20210129_111213_332277_12149193 
+X-CRM114-Status: GOOD (  23.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,235 +99,68 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Boris Brezillon <boris.brezillon@collabora.com>, linux-mtd@lists.infradead.org,
- Boris Brezillon <bbrezillon@kernel.org>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Cc: linux-kernel <linux-kernel@vger.kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Michael,
-
-On 28/1/21 7:45 pm, Michael Nazzareno Trimarchi wrote:
-> Hi Greg
-> 
-> On Tue, Aug 13, 2019 at 2:50 AM Greg Ungerer <gerg@kernel.org> wrote:
->>
->> Hi Boris,
->>
->> On 12/8/19 5:31 pm, Boris Brezillon wrote:
->>> On Mon, 12 Aug 2019 12:50:36 +1000
->> [snip]
->>> Hm, CTRL1 is identical. Can you dump all regs at the beginning and at
->>> the end of those funcs?
->>
->> Here is a more complete dump of registers. Trace points are at
->> entry and exit of the respective functions in the different
->> kernel versions. Register dumping code is identical for both.
->>
->>
->> Linux version 4.16.0 (gerg@goober) (gcc version 4.8.3 (GCC)) #10 Tue Aug 13 10:24:28 AEST 2019
->> ...
-> 
-> I ran an overnight reboot process on linux-4.19.y tag: v4.19.169 and
-> I'm not able to reproduce up to now.
-> 
-> Do you have an update from your side?
-
-I haven't seen the problem for a while now.
-I pretty much only run modern kernels, I am currently using 5.10.
-So I am guessing it was resolved somewhere at some point, but I
-don't know exactly what change resolved it.
-
-Regards
-Greg
-
-
-
->> drivers/mtd/nand/gpmi-nand/gpmi-lib.c(1073): gpmi_begin(): ENTRY
->>     HW_GPMI_CTRL0=0x00000000
->>     HW_GPMI_CTRL1=0x01c4000c
->>     HW_GPMI_COMPARE=0x00000000
->>     HW_GPMI_ECCCTRL=0x00000400
->>     HW_GPMI_ECCCOUNT=0x00000000
->>     HW_GPMI_PAYLOAD=0x00000000
->>     HW_GPMI_AUXILIARY=0x00000000
->>     HW_GPMI_TIMING0=0x00010203
->>     HW_GPMI_TIMING1=0x00000000
->>     HW_GPMI_TIMING2=0x23023336
->>     HW_GPMI_DATA=0x00000000
->>     HW_GPMI_STAT=0xff000005
->>     HW_GPMI_DEBUG=0x00000000
->>     r->clock[0]=22000000
->> nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
->> nand: Micron MT29F2G08ABAEAWP
->> nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
->> gpmi-nand 1806000.gpmi-nand: enable the asynchronous EDO mode 5
->> drivers/mtd/nand/gpmi-nand/gpmi-lib.c(1073): gpmi_begin(): ENTRY
->>     HW_GPMI_CTRL0=0x01800001
->>     HW_GPMI_CTRL1=0x0104000c
->>     HW_GPMI_COMPARE=0x00000000
->>     HW_GPMI_ECCCTRL=0x00000000
->>     HW_GPMI_ECCCOUNT=0x00000000
->>     HW_GPMI_PAYLOAD=0x00000000
->>     HW_GPMI_AUXILIARY=0x00000000
->>     HW_GPMI_TIMING0=0x00010203
->>     HW_GPMI_TIMING1=0x05000000
->>     HW_GPMI_TIMING2=0x23023336
->>     HW_GPMI_DATA=0x00000000
->>     HW_GPMI_STAT=0xff000005
->>     HW_GPMI_DEBUG=0x00000101
->>     r->clock[0]=99000000
->> drivers/mtd/nand/gpmi-nand/gpmi-lib.c(1136): gpmi_begin(): EXIT
->>     HW_GPMI_CTRL0=0x01800001
->>     HW_GPMI_CTRL1=0x01c6800c
->>     HW_GPMI_COMPARE=0x00000000
->>     HW_GPMI_ECCCTRL=0x00000000
->>     HW_GPMI_ECCCOUNT=0x00000000
->>     HW_GPMI_PAYLOAD=0x00000000
->>     HW_GPMI_AUXILIARY=0x00000000
->>     HW_GPMI_TIMING0=0x00010101
->>     HW_GPMI_TIMING1=0x90000000
->>     HW_GPMI_TIMING2=0x23023336
->>     HW_GPMI_DATA=0x00000000
->>     HW_GPMI_STAT=0xff000005
->>     HW_GPMI_DEBUG=0x00000101
->>     r->clock[0]=99000000
->> Scanning device for bad blocks
->> 5 ofpart partitions found on MTD device gpmi-nand
->> Creating 5 MTD partitions on "gpmi-nand":
->> 0x000000000000-0x000000500000 : "u-boot"
->> 0x000000500000-0x000000600000 : "u-boot-env"
->> 0x000000600000-0x000000800000 : "log"
->> 0x000000800000-0x000010000000 : "flash"
->> 0x000000000000-0x000010000000 : "all"
->> gpmi-nand 1806000.gpmi-nand: driver registered.
->> ...
->>
->> Note that the first ENTRY dump has no matching EXIT dump. From the
->> code I assume it is returning from gpmi_begin() at the
->> "if (!hw.sample_delay_factor)" check.
->>
->>
->> And for the 5.1.14 kernel:
->>
->> Linux version 5.1.14 (gerg@goober) (gcc version 4.8.3 (GCC)) #27 Tue Aug 13 10:20:32 AEST 2019
->> ...
->> drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c(512): gpmi_nfc_apply_timings(): ENTRY
->>     HW_GPMI_CTRL0=0x00000000
->>     HW_GPMI_CTRL1=0x01c4000c
->>     HW_GPMI_COMPARE=0x00000000
->>     HW_GPMI_ECCCTRL=0x00000400
->>     HW_GPMI_ECCCOUNT=0x00000000
->>     HW_GPMI_PAYLOAD=0x00000000
->>     HW_GPMI_AUXILIARY=0x00000000
->>     HW_GPMI_TIMING0=0x00010203
->>     HW_GPMI_TIMING1=0x00000000
->>     HW_GPMI_TIMING2=0x23023336
->>     HW_GPMI_DATA=0x00000000
->>     HW_GPMI_STAT=0xff000005
->>     HW_GPMI_DEBUG=0x00000000
->>     r->clock[0]=22000000
->> drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c(536): gpmi_nfc_apply_timings(): EXIT
->>     HW_GPMI_CTRL0=0x00000000
->>     HW_GPMI_CTRL1=0x0104000c
->>     HW_GPMI_COMPARE=0x00000000
->>     HW_GPMI_ECCCTRL=0x00000400
->>     HW_GPMI_ECCCOUNT=0x00000000
->>     HW_GPMI_PAYLOAD=0x00000000
->>     HW_GPMI_AUXILIARY=0x00000000
->>     HW_GPMI_TIMING0=0x00020101
->>     HW_GPMI_TIMING1=0x60000000
->>     HW_GPMI_TIMING2=0x23023336
->>     HW_GPMI_DATA=0x00000000
->>     HW_GPMI_STAT=0xff000005
->>     HW_GPMI_DEBUG=0x00000000
->>     r->clock[0]=22000000
->> random: fast init done
->> nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
->> nand: Micron MT29F2G08ABAEAWP
->> nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
->> drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c(512): gpmi_nfc_apply_timings(): ENTRY
->>     HW_GPMI_CTRL0=0x01800001
->>     HW_GPMI_CTRL1=0x0104000c
->>     HW_GPMI_COMPARE=0x00000000
->>     HW_GPMI_ECCCTRL=0x00000000
->>     HW_GPMI_ECCCOUNT=0x00000000
->>     HW_GPMI_PAYLOAD=0x00000000
->>     HW_GPMI_AUXILIARY=0x00000000
->>     HW_GPMI_TIMING0=0x00020101
->>     HW_GPMI_TIMING1=0x60000000
->>     HW_GPMI_TIMING2=0x23023336
->>     HW_GPMI_DATA=0x0000003f
->>     HW_GPMI_STAT=0xff000005
->>     HW_GPMI_DEBUG=0x00000101
->>     r->clock[0]=22000000
->> drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c(536): gpmi_nfc_apply_timings(): EXIT
->>     HW_GPMI_CTRL0=0x01800001
->>     HW_GPMI_CTRL1=0x0104000c
->>     HW_GPMI_COMPARE=0x00000000
->>     HW_GPMI_ECCCTRL=0x00000000
->>     HW_GPMI_ECCCOUNT=0x00000000
->>     HW_GPMI_PAYLOAD=0x00000000
->>     HW_GPMI_AUXILIARY=0x00000000
->>     HW_GPMI_TIMING0=0x00020101
->>     HW_GPMI_TIMING1=0xb0000000
->>     HW_GPMI_TIMING2=0x23023336
->>     HW_GPMI_DATA=0x0000003f
->>     HW_GPMI_STAT=0xff000005
->>     HW_GPMI_DEBUG=0x00000101
->>     r->clock[0]=22000000
->> drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c(512): gpmi_nfc_apply_timings(): ENTRY
->>     HW_GPMI_CTRL0=0x01800001
->>     HW_GPMI_CTRL1=0x0104000c
->>     HW_GPMI_COMPARE=0x00000000
->>     HW_GPMI_ECCCTRL=0x00000000
->>     HW_GPMI_ECCCOUNT=0x00000000
->>     HW_GPMI_PAYLOAD=0x00000000
->>     HW_GPMI_AUXILIARY=0x00000000
->>     HW_GPMI_TIMING0=0x00020101
->>     HW_GPMI_TIMING1=0xb0000000
->>     HW_GPMI_TIMING2=0x23023336
->>     HW_GPMI_DATA=0x000000e0
->>     HW_GPMI_STAT=0xff000005
->>     HW_GPMI_DEBUG=0x00000000
->>     r->clock[0]=22000000
->> drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c(536): gpmi_nfc_apply_timings(): EXIT
->>     HW_GPMI_CTRL0=0x01800001
->>     HW_GPMI_CTRL1=0x01c6800c
->>     HW_GPMI_COMPARE=0x00000000
->>     HW_GPMI_ECCCTRL=0x00000000
->>     HW_GPMI_ECCCOUNT=0x00000000
->>     HW_GPMI_PAYLOAD=0x00000000
->>     HW_GPMI_AUXILIARY=0x00000000
->>     HW_GPMI_TIMING0=0x00010101
->>     HW_GPMI_TIMING1=0xe0000000
->>     HW_GPMI_TIMING2=0x23023336
->>     HW_GPMI_DATA=0x000000e0
->>     HW_GPMI_STAT=0xff000005
->>     HW_GPMI_DEBUG=0x00000000
->>     r->clock[0]=99000000
->> Scanning device for bad blocks
->> 5 fixed-partitions partitions found on MTD device gpmi-nand
->> Creating 5 MTD partitions on "gpmi-nand":
->> 0x000000000000-0x000000500000 : "u-boot"
->> 0x000000500000-0x000000600000 : "u-boot-env"
->> 0x000000600000-0x000000800000 : "log"
->> 0x000000800000-0x000010000000 : "flash"
->> 0x000000000000-0x000010000000 : "all"
->> gpmi-nand 1806000.gpmi-nand: driver registered.
->> ...
->>
->>
->> Regards
->> Greg
->>
->>
-> 
-> 
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+PiANCj4gVG9tYXMsDQo+IA0KPiAtLS0tLSBVcnNwcsO8bmdsaWNoZSBNYWlsIC0tLS0tDQo+ID4+
+IEFzIFJpY2hhcmQgd2FzIHNheWluZywgd2UgYXJlIHJlYWxseSBvcGVuIHRvIGVuaGFuY2UgTVRE
+IHJlZmNvdW50aW5nLg0KPiA+Pg0KPiA+PiBIb3dldmVyLCB0aGUgaXNzdWUgeW91IGFyZSBmYWNp
+bmcgaXMsIElNSE8sIG5vdCByZWxhdGVkIHRvIE1URCBidXQgdG8gTUZELg0KPiA+PiBUaGVyZSBz
+aG91bGQgYmUgYSB3YXkgdG8gYXZvaWQgTUZEIHRvIHZhbmlzaCBieSB0YWtpbmcgYSByZWZlcmVu
+Y2Ugb2YNCj4gPj4gaXQgdGhyb3VnaCBtdGQtPl9nZXRfZGV2aWNlKCkuIEkgZG9uJ3QgdGhpbmsg
+YWRkcmVzc2luZyB0aGUgY2FzZQ0KPiA+PiB3aGVyZSBNRkQgdmFuaXNoZXMgd2hpbGUgTVREIChh
+cyBhIHVzZXIpIGlzIHN0aWxsIGFjdGl2ZSBpcyB0aGUgcmlnaHQNCj4gYXBwcm9hY2guDQo+ID4N
+Cj4gPiBJIHRoaW5rIGl0IHdvbid0IHdvcmsgYmVjYXVzZSBNRkQgc3ViLWRyaXZlciByZW1vdmUo
+KSBpcyBjYWxsZWQgICBhbmQgaXQgbXVzdA0KPiA+IHN1Y2NlZWQgYmVjYXVzZSB0aGUgbWFpbiBk
+ZXZpY2UgIGlzIG5vdCBhY2Nlc3NpYmxlIHVubGlrZSBnbHVldWJpDQo+ID4gd2hpY2gganVzdCBy
+ZXR1cm5zIC1FQlVTWS4NCj4gDQo+IFdlbGwsIHRoZSB0cmljayBpbiBnbHViaSAoYW5kIG90aGVy
+IE1URHMgd2l0aCAiaG90cGx1ZyIgc3VwcG9ydCkgaXMgbm90IHRvIHJlamVjdA0KPiByZW1vdmFs
+IG9mIHRoZSBzdWItZGV2aWNlLiAtPl9wdXRfZGV2aWNlKCkgaXMgb2YgcmV0dXJuIHR5cGUgdm9p
+ZC4NCj4gVGhlIGtleSBpcyBncmFiYmluZyBhIHJlZmVyZW5jZSBvbiB0aGUgc3ViLWRldmljZSBp
+biAtPl9nZXRfZGV2aWNlKCkgc3VjaCB0aGF0DQo+IHRoZSBsYXllciBiZWxvdyBkb2Vzbid0IGV2
+ZW4gdHJ5IHRvIHJlbW92ZSB3aGlsZSB0aGUgTVREIGlzIGluIHVzZS4NCj4gDQo+ID4gc28gd2Ug
+cG9zdHBvbmUgdGhlIG10ZCB1bnJlZ2lzdGVyIHRvICBtdGRfaW5mby0+X3B1dF9kZXZpY2UoKSAg
+YnV0IGl0DQo+ID4gdGhhdCBzdGF0ZSB3ZSBoYXZlIG5vdGhpbmcgdG8gaG9sZCBvbiBhcyB0aGUg
+ZGV2aWNlIGlzIGdvbmUgaW4NCj4gPiByZW1vdmUoKSBVc2VyIHdpbGwgZmFpbCBhbnl3YXksIGFz
+IHRoZSB1bmRlcmx5aW5nIGRldmljZSBpcyBub3QNCj4gPiBmdW5jdGlvbmFsIGluIHRoYXQgc3Rh
+dGUuDQo+ID4gQW55d2F5IEkndmUgdHJpZWQgeW91ciBzdWdnZXN0aW9uLCB0aGUga2VybmVsIGlz
+IGNyYXNoaW5nLCBob3BlIEkNCj4gPiBoYXZlbid0IGRvbmUgc29tZSBzaWxseSBidWcuDQo+IA0K
+PiBDYW4geW91IHBvaW50IHVzIHRvIHRoZSBhZmZlY3RlZCBjb2RlPw0KPiBUaGlzIHdvdWxkIGhl
+bHAgYSBsb3QgdG8gdW5kZXJzdGFuZCB0aGUgaXNzdWUgYmV0dGVyLg0KQmVsb3cgaXMgYXBwcm94
+aW1hdGVseSB0aGUgc25pcHBldCANCg0KPiBJJ20gc3VyZSB3ZSBjYW4gZmluZCBhIHNvbHV0aW9u
+Lg0KT2theSB0aG91Z2ggIEkndmUgYWxyZWFkeSBmb3VuZCBhIHdvcmtpbmcgc29sdXRpb24uIA0K
+DQpzdHJ1Y3QgbXlfc3BpIHsNCiAgICAgICAgc3RydWN0IG10ZF9pbmZvIG10ZDsNCiAgICAgICAg
+c3RydWN0IGtyZWYgcmVmY250Ow0KICAgICAgICBib29sIGluaXQ7DQp9Ow0KDQpzdGF0aWMgaW50
+IG15X3NwaV9nZXRfbXRkKHN0cnVjdCBtdGRfaW5mbyAqbXRkKQ0Kew0KICAgICAgICBzdHJ1Y3Qg
+bXlfc3BpICpzcGkgPSBjb250YWluZXJfb2YobXRkLCBzdHJ1Y3QgbXlfc3BpLCBtdGQpOw0KDQog
+ICAgICAgIGlmICghc3BpLT5pbml0KQ0KICAgICAgICAgICAgICAgIHJldHVybiAtRU5PREVWOw0K
+DQogICAgICAgIGtyZWZfZ2V0KCZzcGktPnJlZmNudCk7DQoNCiAgICAgICAgc3BpLT5pbml0ID0g
+dHJ1ZTsNCg0KICAgICAgICByZXR1cm4gMDsNCn0NCg0Kc3RhdGljIHZvaWQgbXlfc3BpX3VucmVn
+aXN0ZXJfbXRkKHN0cnVjdCBrcmVmICprcmVmKQ0Kew0KICAgICAgICBzdHJ1Y3QgbXlfc3BpICpz
+cGkgPSBjb250YWluZXJfb2Yoa3JlZiwgc3RydWN0IG15X3NwaSwgcmVmY250KTsNCg0KICAgICAg
+ICBtdGRfZGV2aWNlX3VucmVnaXN0ZXIoJnNwaS0+bXRkKTsNCiAgICAgICAga2ZyZWUoc3BpKTsN
+Cn0NCg0Kc3RhdGljIGludCBteV9zcGlfcHV0X210ZChzdHJ1Y3QgbXRkX2luZm8gKm10ZCkNCnsN
+CiAgICAgICAgc3RydWN0IG15X3NwaSAqc3BpID0gY29udGFpbmVyX29mKG10ZCwgc3RydWN0IG15
+X3NwaSwgbXRkKTsNCg0KICAgICAgICBrcmVmX3B1dCgmc3BpLT5yZWZjbnQsIG15X3NwaV91bnJl
+Z2lzdGVyX210ZCk7DQoNCiAgICAgICAgcmV0dXJuIDA7DQp9DQoNCnN0YXRpYyBpbnQgbXlfc3Bp
+X2luaXRfbXRkKHN0YXRpYyBteV9zcGkgKnNwaSkNCnsNCiAgICAgICAgLi4uDQogICAgICAgIHNw
+aS0+bXRkLl9nZXRfZGV2aWNlID0gbXlfc3BpX2dldF9tdGQ7DQogICAgICAgIHNwaS0+bXRkLl9n
+ZXRfZGV2aWNlID0gbXlfc3BpX3B1dF9tdGQ7DQogICAgICAgIGtyZWZfaW5pdCgmc3BpLT5yZWZj
+bnQpOw0KICAgICAgICAuLi4NCn0NCg0Kc3RhdGljIGludCBteV9zcGlfcHJvYmUoc3RydWN0IHBs
+YXRmb3JtX2RldmljZSAqcGxhdGRldikNCnsNCiAgICAgICAgLi4uDQogICAgICAgIHNwaSA9IGt6
+YWxsb2Moc2l6ZSwgR0ZQX0tFUk5FTCk7DQogICAgICAgIHNwaS0+aW5pdCA9IHRydWU7DQogICAg
+ICAgIG15X3NwaV9pbml0X210ZChzcGkpOw0KICAgICAgICBwbGF0Zm9ybV9zZXRfZHJ2ZGF0YShw
+bGF0ZGV2LCBzcGkpOw0KICAgICAgICAuLi4NCiAgICAgICAgcmV0dXJuIDA7DQp9DQoNCg0Kc3Rh
+dGljIGludCBteV9zcGlfcmVtb3ZlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBsYXRkZXYpDQp7
+DQogICAgICAgIHN0cnVjdCBteV9zcGkgKnNwaSA9IHBsYXRmb3JtX2dldF9kcnZkYXRhKHBsYXRk
+ZXYpOw0KICAgICAgICBzcGktPmluaXQgPSBmYWxzZTsNCiAgICAgICAgbXlfc3BpX3B1dF9tdGQo
+JnNwaS0+bXRkKTsNCiAgICAgICAgcGxhdGZvcm1fc2V0X2RydmRhdGEocGxhdGRldiwgTlVMTCk7
+DQp9DQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRl
+YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
