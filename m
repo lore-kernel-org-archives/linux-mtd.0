@@ -2,65 +2,81 @@ Return-Path: <SRS0=Ud6c=HD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB959C433E0
-	for <linux-mtd@archiver.kernel.org>; Mon,  1 Feb 2021 12:57:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1200C433DB
+	for <linux-mtd@archiver.kernel.org>; Mon,  1 Feb 2021 13:14:58 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9877464EBA
-	for <linux-mtd@archiver.kernel.org>; Mon,  1 Feb 2021 12:57:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9877464EBA
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=hisilicon.com
+	by mail.kernel.org (Postfix) with ESMTPS id 6346360C41
+	for <linux-mtd@archiver.kernel.org>; Mon,  1 Feb 2021 13:14:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6346360C41
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=CK4IEe3aSNnfIkWBkD0IeJY8xjIrHmvw7QK56IuwRbY=; b=E1O2YqrCFepNBzs2C8JOeWl4P
-	yLzAEtmOTjAMuDO/NmrPf9p0MysOEVupomFFz1kKiWi/tCfXQeFkLFWgmA8W0hnaNhmcDoy54AKto
-	pzwYEv/XSe8NF7/TGZjgO/G2isuvKzOwSx1zkd2t8wFyUycMucP3xJTpPMbOz1L+Yx5zOtjd3L7kP
-	+0WmXX8CTLfHgNKjmRd6GtLRNt2fuMCdkxtfpPn9iIKqALffsX4yN/51A/WdoRVbjR++r6kQ+kMth
-	yNltRIwhwcWHFspqMVDuJtejQhiN2FYv5oLlYPJ2d1wpJPy8qX0wQ4ZhOs9r5B74h0gpWkXbuAWn7
-	ZD0Fe12Rg==;
+	 bh=m6f8ND6JjJaSCbx+pvNWItZ1S8/byRUR1IS3PAGJlTA=; b=3O2L8BR07Q2+JQJaobJG6jL4r
+	xV2NeRoDK/xtfkXNF3UQ55AUhpgoVsQ0Un7CCJhRqdCM8GhY/7J6DJD4TaoWUS32sPNkWBYEuW03T
+	IZHqGzOV38BK9u+K5wteWNolfaNRpQNEYbFB0+YixiHeMc+KddWVcPI39bxhEKyF5RPwyXG3m2FBm
+	XfLEmVoRaU64B0C7qzr1AbXLaBWeEfHGkifofH1EIDjutk6WpFVAXwVQAWaX4KTp5i+YmyWB4Hj30
+	wMudu1z8MhuUABRtDOvvaPMu+ug6+lk8h3OpbpyW4A2gemzJvB1+hPc/vrmmdP5NrfI71nQ8QN8J6
+	oZynX6UVw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l6YkD-0004zC-Ey; Mon, 01 Feb 2021 12:55:53 +0000
-Received: from szxga04-in.huawei.com ([45.249.212.190])
+	id 1l6Z22-000747-OE; Mon, 01 Feb 2021 13:14:18 +0000
+Received: from mail-qk1-x72a.google.com ([2607:f8b0:4864:20::72a])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l6Yk4-0004x6-NR
- for linux-mtd@lists.infradead.org; Mon, 01 Feb 2021 12:55:48 +0000
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
- by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DTnv505rhzlDr8;
- Mon,  1 Feb 2021 20:53:53 +0800 (CST)
-Received: from [127.0.0.1] (10.69.38.196) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Mon, 1 Feb 2021
- 20:55:23 +0800
-Subject: Re: [PATCH 1/2] mtd: spi-nor: check 4-byte address support when
- parsing 4bait
-To: Pratyush Yadav <p.yadav@ti.com>
-References: <1611740450-47975-1-git-send-email-yangyicong@hisilicon.com>
- <1611740450-47975-2-git-send-email-yangyicong@hisilicon.com>
- <20210129111649.jypytpp7dkywthwh@ti.com>
-From: Yicong Yang <yangyicong@hisilicon.com>
-Message-ID: <28c3dacb-e222-8d5e-b795-947b555551bf@hisilicon.com>
-Date: Mon, 1 Feb 2021 20:55:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+ id 1l6Z20-00073G-P3
+ for linux-mtd@lists.infradead.org; Mon, 01 Feb 2021 13:14:17 +0000
+Received: by mail-qk1-x72a.google.com with SMTP id x81so16094833qkb.0
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Feb 2021 05:14:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=m/m4iDNhXlC/4SoepFWMucxyT4bgcrx85mTDKJelr6A=;
+ b=IFGNwmuuTtFzC4nyasNkq/kmGH1XxBzW3n6shA/3Aq88TjZkak+MuRj+GqbtUEax/5
+ jmF/G4GG6QZL0JCK6d4mfZmN8ZlVdHteyLuw9fCY58FEcW07EEGga0Z7lUKra04nmEl3
+ pqQizOLJE7GCXECY54S21BxPO2zpzg/1rjbbhbXtefFsaisv3885IzSE92YowpuSrI9y
+ 3z6mi72i/o0p4BnUq6CJOLwKJEy4iPAs5bj2P/9mU7XwKjv/m8/KePWuNR2tjWPM9El9
+ hKEoWsUJiUwQp0BafM8MM1hIHR9k/Oj0jXbXnZ8b+2CgrsNZ3ZLTyMSnKCEurXK4/QhK
+ uWVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=m/m4iDNhXlC/4SoepFWMucxyT4bgcrx85mTDKJelr6A=;
+ b=s3Aq1HjsAAeNt/8BGafRTHDEKgIHp3XKyGTlyxiLINnpOYcj6xZBac1pREjjQn8cJi
+ bFz/r3L+OS5OeOoMzik5srjn1hvjx2RHslji6Bai4vgTlVToLa768DHffce4Co/ReK7/
+ tcXlrG7b6FsNyYi4ZVMNjDhETKetSFUFPPfoUVQbiTv5QKI7bX8TKUto976D1JSz3Q+X
+ RQ6mgL3QMArjJwfYJuQbaeK3C0j48ZQIXQnuXkiQ8qXlFnH12PDzh1Eu3DSGZ5LSHecc
+ Tgb7hNcmMnCVegkUpEpneedEIc406VQNlfgw/DwgVCUV0U5N1XS4zzEZ6dAtysjtcP9+
+ 1RvQ==
+X-Gm-Message-State: AOAM530uUqfYCHLLJ7w0Hy2Hwphk333dvwB+XQI5aHG/e1jMUOmgZ+nD
+ LN2Md1Vw/Lf/TJbLJkGgRTKZ+IpTl0FYIarLCM2H6mO8
+X-Google-Smtp-Source: ABdhPJxhHhM+hyiqlTKN68abhPZ0I8LNquuVChIU64oCRP2OQGuNQYluOjMTxVjJIoyl+9xLVQ0nB3dSbM9m/mZAN5c=
+X-Received: by 2002:a05:620a:5fa:: with SMTP id
+ z26mr16004586qkg.108.1612185253097; 
+ Mon, 01 Feb 2021 05:14:13 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210129111649.jypytpp7dkywthwh@ti.com>
-X-Originating-IP: [10.69.38.196]
-X-CFilter-Loop: Reflected
+References: <20210124232007.21639-1-richard@nod.at>
+In-Reply-To: <20210124232007.21639-1-richard@nod.at>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Mon, 1 Feb 2021 14:14:01 +0100
+Message-ID: <CAFLxGvzQo9H8h5XpLuVDYC8uaRrPmkH444yFv3jX0LNCs_nTmg@mail.gmail.com>
+Subject: Re: [PATCH 0/8] MUSE: Userspace backed MTD v3
+To: Richard Weinberger <richard@nod.at>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210201_075546_825007_1886CF04 
-X-CRM114-Status: GOOD (  31.52  )
+X-CRM114-CacheID: sfid-20210201_081416_920287_9F234505 
+X-CRM114-Status: GOOD (  29.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,156 +88,100 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, prime.zeng@huawei.com, tudor.ambarus@microchip.com,
- richard@nod.at, john.garry@huawei.com, linuxarm@openeuler.org,
- linux-spi@vger.kernel.org, broonie@kernel.org, linux-mtd@lists.infradead.org,
- miquel.raynal@bootlin.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Miklos Szeredi <miklos@szeredi.hu>,
+ "open list:FUSE: FILESYSTEM..." <fuse-devel@lists.sourceforge.net>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, LKML <linux-kernel@vger.kernel.org>,
+ Boris Brezillon <boris.brezillon@collabora.com>, linux-mtd@lists.infradead.org,
+ rminnich@google.com, sven@narfation.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Pratyush,
-
-Thanks for the comments. Some replies below.
-
-On 2021/1/29 19:16, Pratyush Yadav wrote:
-> Hi Yicong,
-> 
-> On 27/01/21 05:40PM, Yicong Yang wrote:
->> The spi-nor core will convert the address mode to 4-btye,
->> without checking whether 4-byte address is supported or not.
->> For example, the 16M s25fs128s1 can work under both 3-byte
->> and 4-byte address and provides a 4bait table. The spi-nor
->> will drive the flash under 4-byte address mode after parsing
->> the 4bait and will cause it unusable on platforms doesn't
->> support 4-byte.
-> 
-> Another problem caused by 4BAIT parser prematurely selecting the address 
-> width. See [0].
->  
-> Let's fix this 4BAIT problem once and for all. Instead of setting 
-> nor->addr_width to 4 in spi_nor_parse_4bait(), just set SNOR_F_HAS_4BAIT 
-> (which is already being done). Then in spi_nor_default_setup(), use this 
-> information when negotiating the read/write/program commands with the 
-> controller to determine the correct address width to use.
-
-The idea is great. ideally we should check the buswidth and commands in
-spi_nor_default_setup() and finally set address width in
-spi_nor_set_addr_width().
-
-> 
-> This refactor is easier said than done. We don't associate address width 
-> information with a command. Just protocol, opcode, and dummy cycles 
-> (only for read commands). A new mechanism needs to be added where we 
-> associate a set of supported addresses with a command and then the 
-> command negotiation can use all this information to arrive at the 
-> optimal set of commands.
-> 
-> With this in mind, it would be great if you can come up with a patch to 
-> add such a mechanism. But I would also be OK with this fix with the 
-> condition that it is clearly marked as a temporary fix, and mentions 
-> what should ideally be done.
-> 
-
-i'd like to get this issue fixed first to make the flash work properly,
-if possible. then to do the refactor as it may take me sometime.
-
->> Add checking of 4-byte address support when parsing the 4bait
->> table, stop converting the address mode if it's not supported.
->>
->> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
->> ---
->>  drivers/mtd/spi-nor/sfdp.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++
->>  1 file changed, 48 insertions(+)
->>
->> diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
->> index 6ee7719..fdafc9b 100644
->> --- a/drivers/mtd/spi-nor/sfdp.c
->> +++ b/drivers/mtd/spi-nor/sfdp.c
->> @@ -940,6 +940,27 @@ static int spi_nor_parse_smpt(struct spi_nor *nor,
->>  	return ret;
->>  }
->>  
->> +static int spi_nor_spimem_check_4byte_addr(struct spi_nor *nor,
->> +					   const struct spi_nor_read_command *read)
->> +{
->> +	struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(read->opcode, 1),
->> +					  SPI_MEM_OP_ADDR(4, 0, 1),
->> +					  SPI_MEM_OP_DUMMY(0, 1),
->> +					  SPI_MEM_OP_DATA_IN(0, NULL, 1));
-> 
-> Set buswidths to 0 here...
-
-ok.
-
-> 
->> +
->> +	op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(read->proto);
->> +	op.addr.buswidth = spi_nor_get_protocol_addr_nbits(read->proto);
->> +	op.data.buswidth = spi_nor_get_protocol_data_nbits(read->proto);
->> +	op.dummy.buswidth = op.addr.buswidth;
-> 
-> ... and use spi_nor_spimem_setup_op() to do this. It will also take care 
-> of setting up DTR ops.
-
-will change to the new function, i didn't notice it. :)
-
-Thanks,
-Yicong
-
-> 
->> +	op.dummy.nbytes = (read->num_mode_clocks + read->num_wait_states) *
->> +			  op.dummy.buswidth / 8;
->> +
->> +	if (!spi_mem_supports_op(nor->spimem, &op))
->> +		return -EOPNOTSUPP;
->> +
->> +	return 0;
->> +}
->> +
->>  /**
->>   * spi_nor_parse_4bait() - parse the 4-Byte Address Instruction Table
->>   * @nor:		pointer to a 'struct spi_nor'.
->> @@ -1061,6 +1082,33 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
->>  		goto out;
->>  
->>  	/*
->> +	 * Check whether the 4-byte address is supported before converting
->> +	 * the instruction set to 4-byte.
->> +	 */
->> +	if (nor->spimem) {
->> +		bool support = false;
->> +
->> +		for (i = 0; i < SNOR_CMD_READ_MAX; i++) {
->> +			struct spi_nor_read_command read_cmd;
->> +
->> +			memcpy(&read_cmd, &params->reads[i], sizeof(read_cmd));
->> +
->> +			read_cmd.opcode = spi_nor_convert_3to4_read(read_cmd.opcode);
->> +			if (!spi_nor_spimem_check_4byte_addr(nor, &read_cmd)) {
->> +				support = true;
->> +				break;
->> +			}
->> +		}
->> +
->> +		/*
->> +		 * No supported 4-byte instruction is found, stop parsing the
->> +		 * 4bait table.
->> +		 */
->> +		if (!support)
->> +			goto out;
->> +	}
->> +
->> +	/*
->>  	 * Discard all operations from the 4-byte instruction set which are
->>  	 * not supported by this memory.
->>  	 */
-> 
-> [0] https://lore.kernel.org/linux-mtd/20201212115817.5122-1-vigneshr@ti.com/
-> 
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+KmZyaWVuZGx5IEZVU0UgbWFpbnRhaW5lciBwaW5nKiA6LSkKCk9uIE1vbiwgSmFuIDI1LCAyMDIx
+IGF0IDEyOjI0IEFNIFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+IHdyb3RlOgo+
+Cj4gSSdtIGhhcHB5IHRvIGFubm91bmNlIHRoZSBmaXJzdCBub24tUkZDIHZlcnNpb24gb2YgdGhp
+cyBwYXRjaCBzZXQuCj4gT3ZlciB0aGUgeG1hcyBob2xpZGF5cyBJIGZvdW5kIHNvbWUgdGltZSB0
+byBleHBlcmltZW50IHdpdGggdmFyaW91cyB1c2Vyc3BhY2UKPiBpbXBsZW1lbnRhdGlvbnMgb2Yg
+TVREcyBhbmQgZ2F2ZSB0aGUga2VybmVsIHNpZGUgbW9yZSBmaW5lLXR1bmluZy4KPgo+IFJhdGlv
+bmFsZToKPiAtLS0tLS0tLS0tCj4KPiBXaGVuIHdvcmtpbmcgd2l0aCBmbGFzaCBkZXZpY2VzIGEg
+Y29tbW9uIHRhc2sgaXMgZW11bGF0aW5nIHRoZW0gdG8gcnVuIHZhcmlvdXMKPiB0ZXN0cyBvciBp
+bnNwZWN0IGR1bXBzIGZyb20gcmVhbCBoYXJkd2FyZS4gVG8gYWNoaWV2ZSB0aGF0IHdlIGhhdmUg
+cGxlbnR5IG9mCj4gZW11bGF0b3JzIGluIHRoZSBNVEQgc3Vic3lzdGVtOiBtdGRyYW0sIGJsb2Nr
+Mm10ZCwgbmFuZHNpbS4KPgo+IEVhY2ggb2YgdGhlbSBpbXBsZW1lbnRzIGFuIGFkLWhvYyBNVEQg
+YW5kIGhhdmUgdmFyaW91cyBkcmF3YmFja3MuCj4gT3ZlciB0aGUgbGFzdCB5ZWFycyBzb21lIGRl
+dmVsb3BlcnMgdHJpZWQgdG8gZXh0ZW5kIHRoZW0gYnV0IHRoZXNlIGF0dGVtcHRzCj4gb2Z0ZW4g
+Z290IHJlamVjdGVkIGJlY2F1c2UgdGhleSBhZGRlZCBqdXN0IG1vcmUgYWRob2MgZmVhdHVyZSBp
+bnN0ZWFkIG9mCj4gYWRkcmVzc2luZyBvdmVyYWxsIHByb2JsZW1zLgo+Cj4gTVVTRSBpcyBhIG5v
+dmVsIGFwcHJvYWNoIHRvIGFkZHJlc3MgdGhlIG5lZWQgb2YgYWR2YW5jZWQgTVREIGVtdWxhdG9y
+cy4KPiBBZHZhbmNlZCBtZWFucyBpbiB0aGlzIGNvbnRleHQgc3VwcG9ydGluZyBkaWZmZXJlbnQg
+KHZlbmRvciBzcGVjaWZpYykgaW1hZ2UKPiBmb3JtYXRzLCBkaWZmZXJlbnQgd2F5cyBmb3IgZmF1
+bHQgaW5qZWN0aW9uIChmdXp6aW5nKSBhbmQgcmVjb2RpbmcvcmVwbGF5aW5nCj4gSU9zIHRvIGVt
+dWxhdGUgcG93ZXIgY3V0cy4KPgo+IFRoZSBjb3JlIGdvYWwgb2YgTVVTRSBpcyBoYXZpbmcgdGhl
+IGNvbXBsZXhpdHkgb24gdGhlIHVzZXJzcGFjZSBzaWRlIGFuZAo+IG9ubHkgYSBzbWFsbCBNVEQg
+ZHJpdmVyIGluIGtlcm5lbHNwYWNlLgo+IFdoaWxlIHBsYXlpbmcgd2l0aCBkaWZmZXJlbnQgYXBw
+cm9hY2hlcyBJIHJlYWxpemVkIHRoYXQgRlVTRSBvZmZlcnMgZXZlcnl0aGluZwo+IHdlIG5lZWQu
+IFNvIE1VU0UgaXMgYSBsaXR0bGUgbGlrZSBDVVNFIGV4Y2VwdCB0aGF0IGl0IGRvZXMgbm90IGlt
+cGxlbWVudCBhCj4gYmFyZSBjaGFyYWN0ZXIgZGV2aWNlIGJ1dCBhbiBNVEQuCj4KPiBOb3RlczoK
+PiAtLS0tLS0KPgo+IC0gT09CIHN1cHBvcnQgaXMgY3VycmVudGx5IGxpbWl0ZWQuIEN1cnJlbnRs
+eSBNVVNFIGhhcyBubyBzdXBwb3J0IGZvciBwcm9jZXNzaW5nCj4gICBpbi0gYW5kIG91dC1iYW5k
+IGluIHRoZSBzYW1lIE1URCBvcGVyYXRpb24uIEl0IGlzIGdvb2QgZW5vdWdoIHRvIG1ha2UgSkZG
+UzIKPiAgIGhhcHB5LiBUaGlzIGxpbWl0YXRpb24gaXMgYmVjYXVzZSBGVVNFIGhhcyBubyBzdXBw
+b3J0IG1vcmUgdGhhbiBvbmUgdmFyaWFibGUKPiAgIGxlbmd0aCBidWZmZXIgaW4gYSBGVVNFIHJl
+cXVlc3QuCj4gICBBdCBsZWFzdCBJIGRpZG7igJl0IGZpbmQgYSBnb29kIHdheSB0byBwYXNzIG1v
+cmUgdGhhbiBvbmUgYnVmZmVyIHRvIGEgcmVxdWVzdC4KPiAgIE1heWJlIEZVU0UgZm9sa3MgY2Fu
+IGNvcnJlY3QgbWUuIDotKQo+Cj4gLSBFdmVyeSBNVEQgcmVhZC93cml0ZSBvcGVyYXRpb24gbWFw
+cyAxOjEgdG8gYSBNVVNFX1JFQUQvV1JJVEUgb3Bjb2RlLgo+ICAgU2luY2UgRlVTRSByZXF1ZXN0
+cyBhcmUgbm90IGNoZWFwLCB0aGUgYW1vdW50IG9mIHJlYWQvd3JpdHRlbiBieXRlcyBpbiBhIE1U
+RAo+ICAgb3BlcmF0aW9uIGFzIGEgaHVnZSBpbXBhY3Qgb24gdGhlIHBlcmZvcm1hbmNlLiBFc3Bl
+Y2lhbGx5IHdoZW4gTk9SIHN0eWxlIE1URHMKPiAgIGFyZSBpbXBsZW1lbnRlZCBpbiB1c2Vyc3Bh
+Y2UgYSBsYXJnZSB3cml0ZWJ1ZnNpemUgc2hvdWxkIGJlIHJlcXVlc3RlZCB0byBnYWluCj4gICBn
+b29kIHdyaXRlIHBlcmZvcm1hbmNlLgo+ICAgT24gdGhlIG90aGVyIGhhbmQsIE1URCBvcGVyYXRp
+b25zIHdpdGggbGVuZ3RocyBsYXJnZXIgdGhhbiB3cml0ZXNpemUgYXJlICpub3QqCj4gICBzcGxp
+dCB1cCBpbnRvIG11bHRpcGxlIE1VU0VfUkVBRC9XUklURSByZXF1ZXN0cy4gVGhpcyBtZWFucyB0
+aGF0IHVzZXJzcGFjZQo+ICAgaGFzIHRvIHNwbGl0IHRoZW0gbWFudWFsbHkgd2hlbiBkb2luZyBw
+b3dlci1jdXQgZW11bGF0aW9uLgo+Cj4gLSBNVVNFIGlzIG5vdCBzdXBlciBmYXN0LiBPbiBteSBp
+NSB3b3Jrc3RhdGlvbiBuYW5kc2ltIGlzIGFsbW9zdCB0d2ljZSBhcyBmYXN0Cj4gICBhcyBhIE5B
+TkQgZmxhc2ggaW4gdXNlcnNwYWNlLiBCdXQgTVVTRSBpcyBzdGlsbCBtYWduaXR1ZGVzIGZhc3Rl
+ciB0aGFuIGFueQo+ICAgcmVhbCB3b3JsZCBNVEQgb3V0IHRoZXJlLiBTbyBpdCBpcyBnb29kIGVu
+b3VnaCBmb3IgdGhlIHVzZSBjYXNlcyBJIGhhdmUgaW4KPiAgIG1pbmQuCj4KPiBDaGFuZ2Vsb2c6
+Cj4gLS0tLS0tLS0tLQo+Cj4gQ2hhbmdlcyBzaW5jZSB2MiAoUkZDKToKPiAtIE9PQiBzdXBwb3J0
+Cj4gLSBNVVNFX1JFQUQvV1JJVEUgb3Bjb2RlcyBhcmUgbm8gbG9uZ2VyIGEgbWluIElPIE1URCB1
+bml0Cj4gLSBNVEQgcGFydGl0aW9ucyBzdXBwb3J0IHZpYSBtdGRwYXJ0cyBzdHJpbmcKPiAtIE1v
+cmUgY29kZSBjbGVhbnVwCj4gLSBDb2RlIHJlYmFzZWQgdG8gNS4xMS1yYzQKPgo+IENoYW5nZXMg
+c2luY2UgdjEgKFJGQyk6Cj4gLSBSZXdyb3RlIElPIHBhdGgsIGZ1c2VfZGlyZWN0X2lvKCkgaXMg
+bm8gbG9uZ2VyIHVzZWQuCj4gICBJbnN0ZWFkIG9mIGNoZWF0aW5nIGZ1c2VfZGlyZWN0X2lvKCkg
+dXNlIGN1c3RvbSBvcHMgdG8gaW1wbGVtZW50Cj4gICByZWFkaW5nIGFuZCB3cml0aW5nLiBUaGF0
+IHdheSBNVVNFIG5vIGxvbmdlciBuZWVkcyBhIGR1bW15IGZpbGUgb2JqZWN0Cj4gICBub3IgYSBm
+dXNlIGZpbGUgb2JqZWN0Lgo+ICAgSW4gTVREIGFsbCBJTyBpcyBzeW5jaHJvbm91cyBhbmQgb3Bl
+cmF0aW9ucyBvbiBrZXJuZWwgYnVmZmVycywgdGhpcwo+ICAgbWFrZXMgSU8gcHJvY2Vzc2luZyBz
+aW1wbGUgZm9yIE1VU0UuCj4gLSBTdXBwb3J0IGZvciBiYWQgYmxvY2tzLgo+IC0gTm8gbW9yZSAo
+YWIpdXNlIG9mIEZVU0Ugb3BzIHN1Y2ggYXMgRlVTRV9GU1lOQy4KPiAtIE1ham9yIGNvZGUgY2xl
+YW51cC4KPgo+IFRoaXMgc2VyaWVzIGNhbiBhbHNvIGJlIGZvdW5kIGF0Ogo+IGdpdDovL2dpdC5r
+ZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9ydy9taXNjLmdpdCBtdXNlX3YzCj4K
+PiBSaWNoYXJkIFdlaW5iZXJnZXIgKDgpOgo+ICAgZnVzZTogRXhwb3J0IGZ1c2Vfc2ltcGxlX3Jl
+cXVlc3QKPiAgIGZ1c2U6IEV4cG9ydCBJTyBoZWxwZXJzCj4gICBmdXNlOiBNYWtlIGN1c2VfcGFy
+c2Vfb25lIGEgY29tbW9uIGhlbHBlcgo+ICAgbXRkOiBBZGQgTVREX01VU0UgZmxhZwo+ICAgbXRk
+OiBBbGxvdyBwYXNzaW5nIGEgY3VzdG9tIGNtZGxpbmUgdG8gY21kbGluZSBsaW5lIHBhcnNlcgo+
+ICAgZnVzZTogQWRkIE1VU0Ugc3BlY2lmaWMgZGVmaW5lcyBGVVNFIGludGVyZmFjZQo+ICAgZnVz
+ZTogSW1wbGVtZW50IE1VU0UgLSBNVEQgaW4gdXNlcnNwYWNlCj4gICBNQUlOVEFJTkVSUzogQWRk
+IGVudHJ5IGZvciBNVVNFCj4KPiAgRG9jdW1lbnRhdGlvbi9BQkkvdGVzdGluZy9zeXNmcy1jbGFz
+cy1tdGQgfCAgICA4ICsKPiAgTUFJTlRBSU5FUlMgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgfCAgICA3ICsKPiAgZHJpdmVycy9tdGQvcGFyc2Vycy9jbWRsaW5lcGFydC5jICAgICAgICAg
+fCAgIDczICstCj4gIGZzL2Z1c2UvS2NvbmZpZyAgICAgICAgICAgICAgICAgICAgICAgICAgIHwg
+ICAxNSArCj4gIGZzL2Z1c2UvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAg
+MiArCj4gIGZzL2Z1c2UvY3VzZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA1OCAr
+LQo+ICBmcy9mdXNlL2Rldi5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDEgKwo+
+ICBmcy9mdXNlL2ZpbGUuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMTYgKy0KPiAg
+ZnMvZnVzZS9mdXNlX2kuaCAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDE4ICsKPiAgZnMv
+ZnVzZS9oZWxwZXIuYyAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDcwICsrCj4gIGZzL2Z1
+c2UvbXVzZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgMTA4NiArKysrKysrKysrKysr
+KysrKysrKysKPiAgaW5jbHVkZS9saW51eC9tdGQvcGFydGl0aW9ucy5oICAgICAgICAgICAgfCAg
+ICAyICsKPiAgaW5jbHVkZS91YXBpL2xpbnV4L2Z1c2UuaCAgICAgICAgICAgICAgICAgfCAgIDc2
+ICsrCj4gIGluY2x1ZGUvdWFwaS9tdGQvbXRkLWFiaS5oICAgICAgICAgICAgICAgIHwgICAgMSAr
+Cj4gIDE0IGZpbGVzIGNoYW5nZWQsIDEzNDYgaW5zZXJ0aW9ucygrKSwgODcgZGVsZXRpb25zKC0p
+Cj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBmcy9mdXNlL2hlbHBlci5jCj4gIGNyZWF0ZSBtb2RlIDEw
+MDY0NCBmcy9mdXNlL211c2UuYwo+Cj4gLS0KPiAyLjI2LjIKPgoKCi0tIApUaGFua3MsCi8vcmlj
+aGFyZAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
