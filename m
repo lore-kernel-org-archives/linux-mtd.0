@@ -2,88 +2,61 @@ Return-Path: <SRS0=4NdN=HE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 221F1C433DB
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Feb 2021 04:17:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41039C433E0
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Feb 2021 08:05:26 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D596564ED7
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Feb 2021 04:17:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D596564ED7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id C3F4664EE4
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Feb 2021 08:05:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C3F4664EE4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
 	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=ZxpyzzgSKdVIrTCzDPHu7GEa4v8r/rT9ROxMK1rhEN8=; b=rZVY0b3bJIiksFa59vlvp+CIT
-	6XnUIp3wKL5h8OBRDXH60dRoYGagUO7sbpBoCUld8HLwnk0mjKkbdPIqAYqb+W3mMEbIbrfb+HOk1
-	GpbJcaPfd7mbQDZQuB/pojo0Bmd9TmLfhQQRGu6JGSTmwRftprPPXaOaAI6Td1Eg7o01w8U16mShP
-	muidpulSHISdIo2vwZKSvJa1s9Zs/YfEHSxzQRBrHNx4abihaB6wZdT4S7rZ8oxZ0aCLEmvFER2hL
-	PR4OgHx1//zeDgJjiezu4mjwer61VpOujUQCtDKaHW3Xkn02YqAKeXcY4cE6sG/Wx/aOOWGVgRLZb
-	0cWjAt1NA==;
+	 bh=3ubKBSAvfQVb3XdkH0/QIZhUb/p5gHSE8/Afae8x8WU=; b=iDVvZgF77oafzSKbrbPx1ZQLv
+	hZ2EcJKSqTOPN1tdsIIFTwoVYs5Zy3MELu6bLAiYV101ZX39MmX6SFzVvLzC9bI5r05JbMQPkt5X2
+	xPTOJh112WKgQDLQpMz+L+C1oyM2yWfrbLT9SGaiai7JLpeFukuwNPJTzHqzpZe4N4yxZztz3kQao
+	8cCIEMagMwQL4QSpfC2gyEP1iSbTqKX1TRxUhp2GqJ3UKJOg6qK9GUzUBhH5ANV1pkbc/wfWRomZF
+	jAI/UE/hOuUY6SOjPi4d2nLRRbX/f5gHyaBKfEzy85hwS7RN+Dvgw21b/eGYKT//2YWUrKfpdd5cl
+	2jGe/0ODA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l6n73-0002jP-5F; Tue, 02 Feb 2021 04:16:25 +0000
-Received: from mail-pg1-x52b.google.com ([2607:f8b0:4864:20::52b])
+	id 1l6qft-0007p9-43; Tue, 02 Feb 2021 08:04:37 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l6n6z-0002iW-UX
- for linux-mtd@lists.infradead.org; Tue, 02 Feb 2021 04:16:23 +0000
-Received: by mail-pg1-x52b.google.com with SMTP id b21so14044025pgk.7
- for <linux-mtd@lists.infradead.org>; Mon, 01 Feb 2021 20:16:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:content-transfer-encoding:in-reply-to
- :user-agent; bh=voXjzMFXu6z+viPuy/BWrmyMPRk9jtrQCw1WWpPx03o=;
- b=pEP+WfeazvjfFZlIx1bIoJGWjjlwEvSWlNVjbhUv1TxoUXLnsPEQW4mdPsyArWY/2g
- ruLtdpvOtbUXO0taNxCXVhRzia059Zi8ze96oKMr4wxKjI3YDL2rW44CyszxN6sI2mUh
- snf9M++3pL+0nPpXuXrstV+X1WFZEur2GFFCIwiAs98vx25shanCDYZDbUN7yrHqA5bq
- GirtT1SF9x8DwVJ7IwN2mHsPtVYYjilvE3nccHSTPaOpDIi1VQcfmT/PbcPnXAYKJGdw
- 7yBpG2to8UWenGoTZINfTNzh6MNUJrDrqdreSAKP1Jx3kjKac5vyr4DjR0GxFemv9CS6
- ksTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to:user-agent;
- bh=voXjzMFXu6z+viPuy/BWrmyMPRk9jtrQCw1WWpPx03o=;
- b=eYWi39nH3pxrXJd9rwxJTgsMSVzi7xEde2IPPbwWVDJYce0vBc9DTp6hN37ijcQb9H
- Ib5Kp+Gpe29rMlq0Bf8J2/CN69wi2DCyWWhvfEr5nG+BO0QVHcBK1O5WXzTnGe+0ZDgx
- 7ylycJME/XDgKzVfEqUg201VeS063Ftcw/cz+0eTiz8Q/2KaQpi/PYM7EoYOO5Xvv+1Z
- 4eVI1OrVgwsfBXMjqmdJZcXgJ4DxLSiJNK+w0qUnQFhiOZcxaSlRcMsEJH4d7o0RADW8
- QRiSu9/Fqs5WPUauJcmgsYMWtqL63T9DSW4OKD12j946ejxOIcK9roGqLs1MK8Tv8ZdB
- fCdA==
-X-Gm-Message-State: AOAM530PzenzTTA1bhAWoe4gwxcGe0bwOVNZc/WzeyZ6ybP3ytFx1YXC
- 9MDn01vEsf3lhcpSAR2vsGmL
-X-Google-Smtp-Source: ABdhPJw5Jt+ornFBPPnaCufSVeoU97SdnZ7+6U94Fqu8kywGM+I9lYLblJtPxaOxtmRemL7eOpJ9NA==
-X-Received: by 2002:a63:e10b:: with SMTP id z11mr20098899pgh.40.1612239379381; 
- Mon, 01 Feb 2021 20:16:19 -0800 (PST)
-Received: from work ([103.77.37.138])
- by smtp.gmail.com with ESMTPSA id i22sm995929pjv.35.2021.02.01.20.16.16
- (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
- Mon, 01 Feb 2021 20:16:18 -0800 (PST)
-Date: Tue, 2 Feb 2021 09:46:14 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH] mtd: rawnand: Do not check for bad block if bbt is
- unavailable
-Message-ID: <20210202041614.GA840@work>
-References: <20210130035412.6456-1-manivannan.sadhasivam@linaro.org>
- <20210201151824.5a9dca4a@xps13>
+ id 1l6qfn-0007o7-NU
+ for linux-mtd@lists.infradead.org; Tue, 02 Feb 2021 08:04:36 +0000
+X-Originating-IP: 86.210.203.150
+Received: from xps13 (lfbn-tou-1-972-150.w86-210.abo.wanadoo.fr
+ [86.210.203.150]) (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 2F38CFF80B;
+ Tue,  2 Feb 2021 08:04:26 +0000 (UTC)
+Date: Tue, 2 Feb 2021 09:04:24 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: zhengxunli@mxic.com.tw
+Subject: Re: [PATCH 3/3] spi: mxic: add maximum speed of spi host
+Message-ID: <20210202090424.710e015a@xps13>
+In-Reply-To: <OFCBF59ED0.4C198CA3-ON48258670.00236718-48258670.0026E452@mxic.com.tw>
+References: <1611908018-29937-1-git-send-email-zhengxunli@mxic.com.tw>
+ <1611908018-29937-4-git-send-email-zhengxunli@mxic.com.tw>
+ <20210201160247.1c83719c@xps13>
+ <OFCBF59ED0.4C198CA3-ON48258670.00236718-48258670.0026E452@mxic.com.tw>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210201151824.5a9dca4a@xps13>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210201_231622_320280_DF4C18CB 
-X-CRM114-Status: GOOD (  30.11  )
+X-CRM114-CacheID: sfid-20210202_030431_863784_2D24EDFD 
+X-CRM114-Status: GOOD (  14.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,103 +68,39 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, richard@nod.at, linux-kernel@vger.kernel.org,
- bjorn.andersson@linaro.org, boris.brezillon@collabora.com,
- linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Cc: juliensu@mxic.com.tw, ycllin@mxic.com.tw, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-On Mon, Feb 01, 2021 at 03:18:24PM +0100, Miquel Raynal wrote:
-> Hi Manivannan,
-> =
-
-> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote on Sat,
-> 30 Jan 2021 09:24:12 +0530:
-> =
-
-> > The bbt pointer will be unavailable when NAND_SKIP_BBTSCAN option is
-> > set for a NAND chip. The intention is to skip scanning for the bad
-> > blocks during boot time.
-> =
-
-> I don't have the same understanding: this flag skips the bad block
-> table scan, not the bad block scan. We do want to scan all the devices
-> in order to construct a RAM based table.
-> =
-
-> > However, the MTD core will call
-> > _block_isreserved() and _block_isbad() callbacks unconditionally for
-> > the rawnand devices due to the callbacks always present while collecting
-> > the ecc stats.
-> > =
-
-> > The _block_isreserved() callback for rawnand will bail out if bbt
-> > pointer is not available. But _block_isbad() will continue without
-> > checking for it. So this contradicts with the NAND_SKIP_BBTSCAN option
-> > since the bad block check will happen anyways (ie., not much difference
-> > between scanning for bad blocks and checking each block for bad ones).
-> > =
-
-> > Hence, do not check for the bad block if bbt pointer is unavailable.
-> =
-
-> Not checking for bad blocks at all feels insane. I don't really get the
-> scope and goal of such change?
-> =
-
-
-The issue I encountered is, on the Telit FN980 device one of the
-partition seems to be protected. So trying to read the bad blocks in
-that partition makes the device to reboot during boot.
-
-There seems to be no flag passed by the parser for this partition. So
-the only way I could let the device to boot is to completely skip the
-bad block check.
-
-AFAIK, MTD core only supports checking for the reserved blocks to be
-used for BBM and there is no way to check for a reserved partition like
-this.
-
-I agree that skipping bad block check is not a sane way but I don't know
-any other way to handle this problem.
-
-Thanks,
-Mani
-
-> > =
-
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> >  drivers/mtd/nand/raw/nand_base.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > =
-
-> > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/na=
-nd_base.c
-> > index c33fa1b1847f..f18cd1db79a9 100644
-> > --- a/drivers/mtd/nand/raw/nand_base.c
-> > +++ b/drivers/mtd/nand/raw/nand_base.c
-> > @@ -4286,6 +4286,9 @@ static int nand_block_isbad(struct mtd_info *mtd,=
- loff_t offs)
-> >  	int chipnr =3D (int)(offs >> chip->chip_shift);
-> >  	int ret;
-> >  =
-
-> > +	if (!chip->bbt)
-> > +		return 0;
-> > +
-> >  	/* Select the NAND device */
-> >  	ret =3D nand_get_device(chip);
-> >  	if (ret)
-> =
-
-> Cheers,
-> Miqu=E8l
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgo+ID4gPiBAQCAtNTM2LDcgKzUzNyw5IEBAIHN0YXRpYyBpbnQgbXhpY19zcGlfcHJv
+YmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAgIAo+ICpwZGV2KQo+ID4gPiAgewo+ID4gPiAgICAg
+c3RydWN0IHNwaV9tYXN0ZXIgKm1hc3RlcjsKPiA+ID4gICAgIHN0cnVjdCByZXNvdXJjZSAqcmVz
+Owo+ID4gPiArICAgc3RydWN0IGRldmljZV9ub2RlICpucCA9IHBkZXYtPmRldi5vZl9ub2RlOwo+
+ID4gPiAgICAgc3RydWN0IG14aWNfc3BpICpteGljOwo+ID4gPiArICAgdTMyIG1heF9mcmVxOwo+
+ID4gPiAgICAgaW50IHJldDsKPiA+ID4gCj4gPiA+ICAgICBtYXN0ZXIgPSBkZXZtX3NwaV9hbGxv
+Y19tYXN0ZXIoJnBkZXYtPmRldiwgc2l6ZW9mKHN0cnVjdCAgIAo+IG14aWNfc3BpKSk7Cj4gPiA+
+IEBAIC01ODAsNiArNTgzLDEwIEBAIHN0YXRpYyBpbnQgbXhpY19zcGlfcHJvYmUoc3RydWN0IHBs
+YXRmb3JtX2RldmljZSAgIAo+ICpwZGV2KQo+ID4gPiAgICAgICAgICAgU1BJX1JYX1FVQUQgfCBT
+UElfVFhfUVVBRCB8Cj4gPiA+ICAgICAgICAgICBTUElfUlhfT0NUQUwgfCBTUElfVFhfT0NUQUw7
+Cj4gPiA+IAo+ID4gPiArICAgaWYgKG9mX3Byb3BlcnR5X3JlYWRfdTMyKG5wLCAic3BpLW1heC1m
+cmVxdWVuY3kiLAo+ID4gPiArICAgICAgICAgICAgICZtYXN0ZXItPm1heF9zcGVlZF9oeikpCj4g
+PiA+ICsgICAgICBtYXN0ZXItPm1heF9zcGVlZF9oeiA9IDI1MDAwMDAwOyAvKiAyNU1IeiAqLyAg
+Cj4gPiAKPiA+IEFzIHNhaWQgYmVmb3JlLCB0aGVyZSBhcmUgdHdvIGxpbWl0YXRpb25zIHRvIHRh
+a2UgaW50byBhY2NvdW50Ogo+ID4gMS0geW91ciBjb250cm9sbGVyIG1heGltdW0gc3BlZWQKPiA+
+IDItIHlvdXIgZmxhc2ggbWF4aW11bSBzcGVlZAo+ID4gCj4gPiAoMSkgSSBkb24ndCB0aGluayB0
+aGlzIG5lZWRzIHRvIGJlIGV4cG9ydGVkIHRocm91Z2ggdGhlIERULCB0aGUgZHJpdmVyCj4gPiAg
+ICAga25vd3MgaGlzIG93biBsaW1pdGF0aW9ucyBhbmQgZW5mb3JjZXMgdGhlbS4gIAo+IAo+IElu
+IGZhY3QsIGlmIG1hc3Rlci0+bWF4X3NwZWVkX2h6IGlzIG5vdCBzZXQsIHNwaS0+bWF4X3NwZWVk
+X2h6IHdpbGwgYmUgMCAKPiBhbmQgdGhlCj4gaG9zdCBmcmVxdWVuY3kgY2Fubm90IGJlIHNldCBj
+b3JyZWN0bHkuCgpZb3Ugc2hvdWxkIHNldCBtYXN0ZXItPm1heF9zcGVlZF9oeiBpbiB0aGUgcHJv
+YmUuIFRoaXMgaXMgdGhlIG1heGltdW0Kc3BlZWQgeW91ciBob3N0IGNhbiBydW4gYXQgYW5kIGhh
+cyAqbm90aGluZyB0byBkbyogd2l0aCB3aGF0ZXZlciBkZXZpY2UKaXMgYXR0YWNoZWQgb24gdGhl
+IGJ1cy4KCkluIHRoZSBEVCwgdXNlIHRoZSBzcGktbWF4LWZyZXF1ZW5jeSBwcm9wZXJ0eSB0byBp
+bmZvcm0gdGhlIGNvbnRyb2xsZXIKYWJvdXQgdGhlIG1heGltdW0gc3BlZWQgdGhlIGRldmljZSBz
+dXBwb3J0cy4KClRoZW4gdGhlIGNvbnRyb2xsZXIgc2hvdWxkIHJlY2VpdmUgcmVxdWVzdHMgYXQg
+dGhlIGZyZXF1ZW5jeSBjaG9zZW4Kd2l0aDogbWluKG1hc3Rlcl9tYXhfZnJlcSwgZGV2aWNlX21h
+eF9mcmVxKS4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
+dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
