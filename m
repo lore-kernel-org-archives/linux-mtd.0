@@ -2,73 +2,100 @@ Return-Path: <SRS0=4NdN=HE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24259C433DB
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Feb 2021 17:54:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B62BBC433DB
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Feb 2021 20:11:22 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B059264F8D
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Feb 2021 17:54:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B059264F8D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 5BF6A64E40
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Feb 2021 20:11:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5BF6A64E40
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=johnthomson.fastmail.com.au
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=o5i6FQf+0MuR3RWOwY0UuLatFRT/CT71tSMx3k2+2H4=; b=Ie7sIPF3yttxwU7habM/K4FhSh
-	u0zo1+55Outcjlpd9I253WP/GDesUg+Mqn1btxKm28mTg5ILeARO7ntxqEvrL9d9eCCaPOFhgep2Q
-	QYZejolQFWjXxM4IdCqp6fKCDbhocwXeJY4resyZxw6C6RlGGyxHqBo/oUO71BF/huYRImtP0P+Tk
-	QqFANpIlSm5TQEK6ZbhYaQhWfjHwhBeGSDSXwZTuxjY1gxcgNhfcs5OHpsE5boBEXFRMOF2N+uspO
-	iJ61eJFhInXAo/A+k5v6E1eQWvnSfjD8nuQDduWhXKM9kIntCAuHPz5wxYROOZ9KD8HYIumzh931X
-	gjvX9JeA==;
+	List-Unsubscribe:List-Id:Subject:To:From:Date:References:In-Reply-To:
+	Message-Id:Mime-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=M0779RctdLEqYTLeaaBwZBQZoYnY0ZXeKWoAYrmlXak=; b=cOimpzlgvJsneduR4l/op85VC
+	+zZ74wv7wVPyiwlRs4302SUzNiOqF80uKmc3zxbj1xtK9x245wPEVWclBNzK7+2x7qUPvF9v+/bXr
+	SENDJ2p6DTenZnIdwiP4S9fb+T4DtEQCvVw1j9587mxxsZtP9ZAKd/4yRHiZ17bVMgPhvWF8rkgR+
+	Jsb2SoAO+hEv0ICLw5tEIfmpa36OYXiS0GrdKhnpddzS1NJZMAvPnoYavHdS4T/n7XU5nGlv9B3WS
+	qH+ToVxrHkg44Vls0pIVRZvxAPUTOhZImafAG+tXqlF7mRCFJ87l2P9t6vJO6jX71xYzFsAi/s3w2
+	aXhzPY16w==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l6zs1-0001Q2-Ba; Tue, 02 Feb 2021 17:53:45 +0000
-Received: from mail-oi1-f171.google.com ([209.85.167.171])
+	id 1l71zs-0006t1-Sp; Tue, 02 Feb 2021 20:10:00 +0000
+Received: from out5-smtp.messagingengine.com ([66.111.4.29])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l6zry-0001PR-Qn
- for linux-mtd@lists.infradead.org; Tue, 02 Feb 2021 17:53:44 +0000
-Received: by mail-oi1-f171.google.com with SMTP id n7so23639080oic.11
- for <linux-mtd@lists.infradead.org>; Tue, 02 Feb 2021 09:53:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=8vDbQmL5iEpetuc73BnBxCM6fFf2Ksz8RzcABWCqFJU=;
- b=eqQ8xDlpUAlccIT3aL+GaVfi9h5cEEplp2srb/FC17uuMmNrsR8Yeo8ASdZpZfvtBd
- ZtBWlfJB/HTpnAPguHXrLf3hApCLY0d2KFBHZ/imJyz2VOMzp9v+HS4dvMg3hblQ8AWd
- JDlEZ0Eor7WDtquZWljOlLGNIDlNGjJIdpiJ2+LRaVqR3p3nit0/PXNYX0VvyRepCRHQ
- qAFbJLbGDvfUHtNNZTYxWLezGDrnU0yTgJqZWx/NQWYAh0SJPy5FNEeDR+ovTowz8Fvj
- 0V6uVAkB3hfBk9BdI3ljG62Oufb2WRvzRCBERxXaNIc+j+hcGpLVrC5OrmNfVGxlGU1z
- mQyw==
-X-Gm-Message-State: AOAM533jhd9gb/HdCpMcd6iQoN0vwm3HccJwffCjjmPpvQWlkHxzTBfq
- cxYnFnO7wQ0s7q/e2BLgVw==
-X-Google-Smtp-Source: ABdhPJwIYDUyFnb5s/PSk+AdX838p6dxHfZoKOZ+WzBABVXuE4rg9x/AiinJzkyQAz7JTW4NvyEmIQ==
-X-Received: by 2002:aca:c64c:: with SMTP id w73mr3685645oif.168.1612288421912; 
- Tue, 02 Feb 2021 09:53:41 -0800 (PST)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.googlemail.com with ESMTPSA id a76sm5348460oib.45.2021.02.02.09.53.40
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 02 Feb 2021 09:53:40 -0800 (PST)
-From: Rob Herring <robh@kernel.org>
-To: devicetree@vger.kernel.org
-Subject: [PATCH] dt-bindings: mtd: spi-nor: Convert to DT schema format
-Date: Tue,  2 Feb 2021 11:53:39 -0600
-Message-Id: <20210202175340.3902494-1-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
+ id 1l71zp-0006s2-Jb
+ for linux-mtd@lists.infradead.org; Tue, 02 Feb 2021 20:09:59 +0000
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailout.nyi.internal (Postfix) with ESMTP id 939075C034D;
+ Tue,  2 Feb 2021 15:09:49 -0500 (EST)
+Received: from imap4 ([10.202.2.54])
+ by compute1.internal (MEProxy); Tue, 02 Feb 2021 15:09:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com.au;
+ h=mime-version:message-id:in-reply-to:references:date:from:to
+ :cc:subject:content-type; s=fm2; bh=sA+AU/n4/I/xsAJBbgiEJO8oMY76
+ mKXx9sM4Uq7UJao=; b=hvj88uq8ZOXU6NVHVxZr6lcTussLMmrD/h2HQ2kQwrBn
+ cCTsjUyyVlc1uy7WdtAlk3xrHZk6wXVbWl7fWU8VUFQuxJ8025494lzcCsA8Hojw
+ KjXaUfQ/QRJx62eCM5jnNC2HQMXhJjQtpc2JE664M07m7t9pxnxhhiP9q/slmx/7
+ DRT8fVRIKsI8SjwkBFUwbi8jIPpcFW0Qyl76svn7wK6Ke3MeZCWwXpLMcLudBvjT
+ vchRWbs5dcr6YaOskTUq/SIgTjvuv//5ljuA/aMb8x13LPyOApYHjt4sIWU/UTEC
+ j1Tl/yH/wSSnfc4ZGKR8bSn+fsppKTCjT+rkp9jQzw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=sA+AU/
+ n4/I/xsAJBbgiEJO8oMY76mKXx9sM4Uq7UJao=; b=iWvsa85Q0cHzrxUmXXaNkx
+ O8aLhxi9X6EphpmeeMq4Yx3WVre5Oh/t/VXt+ml2PqL7YDDYBYqHYfgR0H1QFYXo
+ VnI6WC8AqGKiHuAhBtvEsgWb6+/j3z6egVMUlV1RNsQkEZPrk9T216rOtiJqt4iB
+ OPxZQDQt+iRy/6bVLlnZnZ9jQo/OWc0qsoOdl5ECsA7iFds6p4O2sL3IomFGYLTP
+ rxecZYqpXtJJId5/2ZPpRspns6tn0EeUr+teUn9hU+HpxWGTio9Q/bGAJtUyt7QM
+ pBs+7wt2scVOtrtr8BDeqVia7wJar+dMOe1H/mRLPfxtI4HyxFFYniWKxYcSt8iQ
+ ==
+X-ME-Sender: <xms:jLEZYBktTP4LPOMxIxrRrAv97WWg-_-bL_2O3NbblZvpbCItnlP0rQ>
+ <xme:jLEZYM3F9T-brSm7q_Xzr1BxgYK4bMVsO7sVPlRDYcrS6GLBLdIFyscQgR_FLj_wN
+ YfLVxA1S4DjZV1_nA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrgedtgddufeehucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdflohhh
+ nhcuvfhhohhmshhonhdfuceoghhithesjhhohhhnthhhohhmshhonhdrfhgrshhtmhgrih
+ hlrdgtohhmrdgruheqnecuggftrfgrthhtvghrnhepveehjedvhfeghefhtdehhfevheef
+ vedugeeiveffkeeuiefgudffffeujedvgffhnecuvehluhhsthgvrhfuihiivgeptdenuc
+ frrghrrghmpehmrghilhhfrhhomhepghhithesjhhohhhnthhhohhmshhonhdrfhgrshht
+ mhgrihhlrdgtohhmrdgruh
+X-ME-Proxy: <xmx:jLEZYHq-tyGbFULG6zRHb1n1zf2Ee9VJlnordVqfOTN4zGod7TGvkQ>
+ <xmx:jLEZYBkiuRk-Ey9hMB0vYyEU5rFVdOaVsbrRFo9xVTw0S40bKk47dA>
+ <xmx:jLEZYP2-xaG4MNM9tUDWmrTZlOkxOQmRic_uiUfkUPfJztkPzeyAnQ>
+ <xmx:jbEZYAz4_QHCbr2WclkSKVk2-nfqCDQUwe38ez9YU28O_6X7KMToHg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+ id 0AE3016064E; Tue,  2 Feb 2021 15:09:48 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-93-gef6c4048e6-fm-20210128.002-gef6c4048
+Mime-Version: 1.0
+Message-Id: <b21034dc-f511-448f-9c1d-68013c640608@www.fastmail.com>
+In-Reply-To: <20210104122853.18428-1-git@johnthomson.fastmail.com.au>
+References: <20210104122853.18428-1-git@johnthomson.fastmail.com.au>
+Date: Tue, 02 Feb 2021 20:08:43 +0000
+From: "John Thomson" <git@johnthomson.fastmail.com.au>
+To: "Miquel Raynal" <miquel.raynal@bootlin.com>,
+ "Richard Weinberger" <richard@nod.at>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>,
+ "Tudor Ambarus" <tudor.ambarus@microchip.com>
+Subject: =?UTF-8?Q?Re:_[RFC_PATCH]_mtd:_spi-nor:_write_support_for_minor_aligned_?=
+ =?UTF-8?Q?partitions?=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210202_125342_892996_5C53183F 
-X-CRM114-Status: GOOD (  23.60  )
+X-CRM114-CacheID: sfid-20210202_150958_835028_A1A1C7DA 
+X-CRM114-Status: GOOD (  13.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,243 +107,74 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Convert the SPI-NOR binding to DT schema format. Like other memory chips,
-the compatible strings are a mess with vendor prefixes not being used
-consistently and some compatibles not documented. The resulting schema
-passes on 'compatible' checks for most in tree users with the exception
-of some oddballs.
+On Mon, 4 Jan 2021, at 12:28, John Thomson wrote:
+> --- a/drivers/mtd/mtdpart.c
+> +++ b/drivers/mtd/mtdpart.c
+> @@ -38,10 +38,11 @@ static struct mtd_info *allocate_partition(struct 
+> mtd_info *parent,
+>  	struct mtd_info *master = mtd_get_master(parent);
+>  	int wr_alignment = (parent->flags & MTD_NO_ERASE) ?
+>  			   master->writesize : master->erasesize;
+> +	int wr_alignment_minor;
 
-I dropped the 'm25p.*-nonjedec' compatible strings as these don't appear
-to be used anywhere.
+int wr_alignment_minor = 0;
 
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- .../devicetree/bindings/mtd/jedec,spi-nor.txt |  91 ----------------
- .../bindings/mtd/jedec,spi-nor.yaml           | 102 ++++++++++++++++++
- 2 files changed, 102 insertions(+), 91 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
- create mode 100644 Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> +	if (!(child->flags & MTD_NO_ERASE)) {
+> 	wr_alignment = child->erasesize;
+> +	if (child->erasesize_minor)
 
-diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
-deleted file mode 100644
-index f03be904d3c2..000000000000
---- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
-+++ /dev/null
-@@ -1,91 +0,0 @@
--* SPI NOR flash: ST M25Pxx (and similar) serial flash chips
--
--Required properties:
--- #address-cells, #size-cells : Must be present if the device has sub-nodes
--  representing partitions.
--- compatible : May include a device-specific string consisting of the
--               manufacturer and name of the chip. A list of supported chip
--               names follows.
--               Must also include "jedec,spi-nor" for any SPI NOR flash that can
--               be identified by the JEDEC READ ID opcode (0x9F).
--
--               Supported chip names:
--                 at25df321a
--                 at25df641
--                 at26df081a
--                 mr25h128
--                 mr25h256
--                 mr25h10
--                 mr25h40
--                 mx25l4005a
--                 mx25l1606e
--                 mx25l6405d
--                 mx25l12805d
--                 mx25l25635e
--                 n25q064
--                 n25q128a11
--                 n25q128a13
--                 n25q512a
--                 s25fl256s1
--                 s25fl512s
--                 s25sl12801
--                 s25fl008k
--                 s25fl064k
--                 sst25vf040b
--                 m25p40
--                 m25p80
--                 m25p16
--                 m25p32
--                 m25p64
--                 m25p128
--                 w25x80
--                 w25x32
--                 w25q32
--                 w25q64
--                 w25q32dw
--                 w25q80bl
--                 w25q128
--                 w25q256
--
--               The following chip names have been used historically to
--               designate quirky versions of flash chips that do not support the
--               JEDEC READ ID opcode (0x9F):
--                 m25p05-nonjedec
--                 m25p10-nonjedec
--                 m25p20-nonjedec
--                 m25p40-nonjedec
--                 m25p80-nonjedec
--                 m25p16-nonjedec
--                 m25p32-nonjedec
--                 m25p64-nonjedec
--                 m25p128-nonjedec
--
--- reg : Chip-Select number
--- spi-max-frequency : Maximum frequency of the SPI bus the chip can operate at
--
--Optional properties:
--- m25p,fast-read : Use the "fast read" opcode to read data from the chip instead
--                   of the usual "read" opcode. This opcode is not supported by
--                   all chips and support for it can not be detected at runtime.
--                   Refer to your chips' datasheet to check if this is supported
--                   by your chip.
--- broken-flash-reset : Some flash devices utilize stateful addressing modes
--		   (e.g., for 32-bit addressing) which need to be managed
--		   carefully by a system. Because these sorts of flash don't
--		   have a standardized software reset command, and because some
--		   systems don't toggle the flash RESET# pin upon system reset
--		   (if the pin even exists at all), there are systems which
--		   cannot reboot properly if the flash is left in the "wrong"
--		   state. This boolean flag can be used on such systems, to
--		   denote the absence of a reliable reset mechanism.
--
--Example:
--
--	flash: m25p80@0 {
--		#address-cells = <1>;
--		#size-cells = <1>;
--		compatible = "spansion,m25p80", "jedec,spi-nor";
--		reg = <0>;
--		spi-max-frequency = <40000000>;
--		m25p,fast-read;
--	};
-diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-new file mode 100644
-index 000000000000..5e7e5349f9a1
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-@@ -0,0 +1,102 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/jedec,spi-nor.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: SPI NOR flash ST M25Pxx (and similar) serial flash chips
-+
-+maintainers:
-+  - Rob Herring <robh@kernel.org>
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - pattern: "^((((micron|spansion|st),)?\
-+              (m25p(40|80|16|32|64|128)|\
-+              n25q(32b|064|128a11|128a13|256a|512a|164k)))|\
-+              atmel,at25df(321a|641|081a)|\
-+              everspin,mr25h(10|40|128|256)|\
-+              (mxicy|macronix),mx25l(4005a|1606e|6405d|8005|12805d|25635e)|\
-+              (mxicy|macronix),mx25u(4033|4035)|\
-+              (spansion,)?s25fl(128s|256s1|512s|008k|064k|164k)|\
-+              (sst|microchip),sst25vf(016b|032b|040b)|\
-+              (sst,)?sst26wf016b|\
-+              (sst,)?sst25wf(040b|080)|\
-+              winbond,w25x(80|32)|\
-+              (winbond,)?w25q(16|32(w|dw)?|64(dw)?|80bl|128(fw)?|256))$"
-+          - const: jedec,spi-nor
-+      - items:
-+          - enum:
-+              - issi,is25lp016d
-+              - micron,mt25qu02g
-+              - mxicy,mx25r1635f
-+              - mxicy,mx25u6435f
-+              - mxicy,mx25v8035f
-+              - spansion,s25sl12801
-+              - spansion,s25fs512s
-+          - const: jedec,spi-nor
-+      - const: jedec,spi-nor
-+    description:
-+      Must also include "jedec,spi-nor" for any SPI NOR flash that can be
-+      identified by the JEDEC READ ID opcode (0x9F).
-+
-+  reg:
-+    maxItems: 1
-+
-+  spi-max-frequency: true
-+  spi-rx-bus-width: true
-+  spi-tx-bus-width: true
-+
-+  m25p,fast-read:
-+    type: boolean
-+    description:
-+      Use the "fast read" opcode to read data from the chip instead of the usual
-+      "read" opcode. This opcode is not supported by all chips and support for
-+      it can not be detected at runtime. Refer to your chips' datasheet to check
-+      if this is supported by your chip.
-+
-+  broken-flash-reset:
-+    type: boolean
-+    description:
-+      Some flash devices utilize stateful addressing modes (e.g., for 32-bit
-+      addressing) which need to be managed carefully by a system. Because these
-+      sorts of flash don't have a standardized software reset command, and
-+      because some systems don't toggle the flash RESET# pin upon system reset
-+      (if the pin even exists at all), there are systems which cannot reboot
-+      properly if the flash is left in the "wrong" state. This boolean flag can
-+      be used on such systems, to denote the absence of a reliable reset
-+      mechanism.
-+
-+  label: true
-+
-+  partitions:
-+    type: object
-+
-+  '#address-cells': true
-+  '#size-cells': true
-+
-+patternProperties:
-+  # Note: use 'partitions' node for new users
-+  '^partition@':
-+    type: object
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    spi {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        flash@0 {
-+            #address-cells = <1>;
-+            #size-cells = <1>;
-+            compatible = "spansion,m25p80", "jedec,spi-nor";
-+            reg = <0>;
-+            spi-max-frequency = <40000000>;
-+            m25p,fast-read;
-+        };
-+    };
-+...
+if (child->erasesize_minor && IS_ENABLED(CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE)) {
+Config test wrap wr_alignment_minor being set,
+so that a partition on a minor boundary is only set writeable if the non-uniform erase path can be used.
+
+> +		wr_alignment_minor = child->erasesize_minor;
+> +	}
+
+> +		if (wr_alignment_minor) {
+
+smatch picked up a tested uninitialized symbol 'wr_alignment_minor' here,
+initialise as 0.
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+
+> +		if ((!wr_alignment_minor) || (wr_alignment_minor && remainder_minor != 0)) {
+
+If it is safe to boolean test the ints and u32, I should use this consistently?
+if ((!wr_alignment_minor) || (wr_alignment_minor && remainder_minor)) {
+Or is it clearer to use the math tests?
+if ((wr_alignment_minor == 0) || (wr_alignment_minor > 0 && remainder_minor > 0)) {
+
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -1225,7 +1225,11 @@ static u8 spi_nor_convert_3to4_erase(u8 opcode)
+>  
+>  static bool spi_nor_has_uniform_erase(const struct spi_nor *nor)
+>  {
+> +#ifdef CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE
+
+if (IS_ENABLED(CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE)) {
+and the closing brace better than the #ifdef here?
+
+> +	return false;
+> +#else
+>  	return !!nor->params->erase_map.uniform_erase_type;
+> +#endif
+>  }
+>  
+>  static void spi_nor_set_4byte_opcodes(struct spi_nor *nor)
+
+
+Otherwise, is this approach valid, or is there a better method I can use?
+
+Cheers,
 -- 
-2.27.0
-
+  John Thomson
 
 ______________________________________________________
 Linux MTD discussion mailing list
