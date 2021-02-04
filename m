@@ -1,97 +1,59 @@
-Return-Path: <SRS0=LI9S=HF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=OCz7=HG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-17.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0ED70C433E0
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Feb 2021 11:42:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37D20C433E0
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Feb 2021 03:56:41 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6A85564DF2
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Feb 2021 11:42:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A85564DF2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id C361C64F41
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Feb 2021 03:56:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C361C64F41
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:From:To:Subject:MIME-Version:References:
-	In-Reply-To:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=hk7XRUxl0QyRXx79nHXek9I6F41Ky7tg+qvD05+aF60=; b=cYeFiLBvmZWUnousUEsXFoJhC
-	zmp9sANc57R1+5nzloUh3McNFIdVr/b5Jt5ojMUFhvNr2d8ycwEPKnSLrJPTMilD36GXzzl1/SMx2
-	CXShDWuxu2Z0PUqho03+jVM+odn8foqxl/KhHlZj9K8qg2oN1rCgncFQXdVevPdQRIKYPtCP0FCYi
-	QfqiXR0beNU1JFeHk7H0QVjSLpMLciM/RzgXZoBJMwfVsBiPElr3Oz/JQY8urfjUY1e8r5ZaCnUuy
-	XYhjwaoybqjx45lcb2yTlZDqCYLQsHBuv1RPHQQHPbVcEtFNSdLrNY38qSvhLLcMgKRrEOhs8m2UN
-	b38zuEo6g==;
+	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=OtYurDbgCAo6FJqnw8rXWHlRVmPY6ASt0/BUfyRzXzQ=; b=eUa6huZHK6ssq4j8eQqgm0hzkw
+	MOVIA9uz1u2feil/gCz6li4iF719PUwQLMm03R7TBCDR1rzEUFqnzQHoruH2TyaIEVoiZoLUJRNVF
+	syIMNs6wHAch1t3WW9c4T9tbrhsc7uyvNcHpOvPyVeTwdtwLc6KXTpvoIQ/NqTMquyfEAtUsDt9gY
+	3/GN97I7lq29N/ekqdPGKJByqc8s+QLAKq4ri/x2PrgLFOQUJ5pq36NYP26FIE9R1EG0BagJDB278
+	kH5TrfeQJho06B5tektKc0RWVCdglJWTkbkn5TjAnq3j9uZWZr+Rx4BGNDa9JDezKjV70VthX5F/l
+	pnEy557Q==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l7GXb-00054C-Ol; Wed, 03 Feb 2021 11:41:47 +0000
-Received: from mail-pj1-x1029.google.com ([2607:f8b0:4864:20::1029])
+	id 1l7Vk7-0000qZ-4B; Thu, 04 Feb 2021 03:55:43 +0000
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l7GXY-000536-Np
- for linux-mtd@lists.infradead.org; Wed, 03 Feb 2021 11:41:45 +0000
-Received: by mail-pj1-x1029.google.com with SMTP id d2so4385128pjs.4
- for <linux-mtd@lists.infradead.org>; Wed, 03 Feb 2021 03:41:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:user-agent:in-reply-to:references:mime-version
- :content-transfer-encoding:subject:to:cc:from:message-id;
- bh=xR+OMVMVw++6jzb5vqbvGP1RTGBmrEmYExItlXvFh2U=;
- b=Rbdvs9Zl6hyvnUKBtlfOpgCIYmM0pbLg3sBeEC2y9cEMSP2JlqLsPByuxUCLYS1n72
- 8pfB5ZGTSuEr/2aouUet362g5g87lB3Ajlcygs6HkvCQQ22niJXJgzL0gsgSwImZJ4f0
- k/rJomkLXBvgGxb6j9DNJRjFEoEHfhCTm5naXiGe0elWS+iMi8hIJ/5+0NtCCqScbSYw
- 68YR4CWQ4O74Hs5gQEhNy5lc2+l3XDHrO6QIOC+jWHbM+v0f21GOAsYY5cU1NHBSl3jE
- aia3///KJOa/2jKr2e4xZ15XAIsPZe9ldy8zNg0aKxAjs7b8Ta+vSjRqf2+QRnGGoVrX
- O3+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:user-agent:in-reply-to:references
- :mime-version:content-transfer-encoding:subject:to:cc:from
- :message-id;
- bh=xR+OMVMVw++6jzb5vqbvGP1RTGBmrEmYExItlXvFh2U=;
- b=aLkXAh2iHuC4u96uQviPSUplfqmUSNrhJxaUhSkcrSmrJDOpLJMzhZLSgiJNBA5NhS
- j95e9CHNmonsLZWYwUby1jx7yLrRX7/Dt2PvLU43sJCDelULlfJumcdJzWBIKp9aDVbW
- ViFGvitxPc1vcEr7+gcoNztTnAAko5dJnIjzGtngAerThchai79BzvBzCKua2BTXTOXP
- SlVRO4yybf2pGxcFxPvMVlbBuPFUXFUytEAQgMxC0ZJnU+P7nxYH/8zN3zjcQouGVM2P
- DG84NpwxZRoiokkl3bp5O8ysvFltP5yzxgwlRFc5YTrrwd2yMC3QDLU2PO6g0jTwuEGI
- KPnw==
-X-Gm-Message-State: AOAM532eo/B/RgR0BKgpcDztpxfYVk7tSdFa6wn6f53sgyrRgLjTWzww
- CmAMuRiaPe34akawI2D4PhDO8mO0YWr+
-X-Google-Smtp-Source: ABdhPJzrZ6goS6KBHLSdJBCgFpo9ChXrhawqr5yJjo9iJQnx4TN+DQTMIZG9p5QgkpONT3OYlpQWnQ==
-X-Received: by 2002:a17:90a:b702:: with SMTP id
- l2mr2820197pjr.13.1612352502679; 
- Wed, 03 Feb 2021 03:41:42 -0800 (PST)
-Received: from ?IPv6:2409:4072:619f:ff99:700b:51f3:e28:b00?
- ([2409:4072:619f:ff99:700b:51f3:e28:b00])
- by smtp.gmail.com with ESMTPSA id 199sm2096001pfc.112.2021.02.03.03.41.41
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 03 Feb 2021 03:41:41 -0800 (PST)
-Date: Wed, 03 Feb 2021 17:11:31 +0530
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20210203122422.6963b0ed@collabora.com>
-References: <20210130035412.6456-1-manivannan.sadhasivam@linaro.org>
- <20210201151824.5a9dca4a@xps13> <20210202041614.GA840@work>
- <20210202091459.0c41a769@xps13>
- <AFD0F5A6-7876-447B-A089-85091225BE11@linaro.org>
- <20210203110522.12f2b326@xps13>
- <EBDAB319-549F-4CB1-8CE3-9DFA99DBFBC0@linaro.org>
- <20210203111914.1c2f68f6@collabora.com>
- <8A2468D5-B435-4923-BA4F-7BF7CC0FF207@linaro.org>
- <20210203122422.6963b0ed@collabora.com>
-MIME-Version: 1.0
-Subject: Re: [PATCH] mtd: rawnand: Do not check for bad block if bbt is
- unavailable
-To: Boris Brezillon <boris.brezillon@collabora.com>,richard@nod.at
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Message-ID: <F55F9D7B-0542-448E-A711-D1035E467ACA@linaro.org>
+ id 1l7Vjw-0000oD-Ke
+ for linux-mtd@lists.infradead.org; Thu, 04 Feb 2021 03:55:37 +0000
+X-Alimail-AntiSpam: AC=PASS; BC=-1|-1; BR=01201311R101e4; CH=green; DM=||false|;
+ DS=||; FP=0|-1|-1|-1|0|-1|-1|-1; HT=e01e04426;
+ MF=jiapeng.chong@linux.alibaba.com; NM=1; PH=DS; RN=6; SR=0;
+ TI=SMTPD_---0UNpI0P._1612410923; 
+Received: from
+ j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com
+ fp:SMTPD_---0UNpI0P._1612410923) by smtp.aliyun-inc.com(127.0.0.1);
+ Thu, 04 Feb 2021 11:55:28 +0800
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To: miquel.raynal@bootlin.com
+Subject: [PATCH] mtd: convert sysfs sprintf/snprintf family to sysfs_emit
+Date: Thu,  4 Feb 2021 11:55:21 +0800
+Message-Id: <1612410921-80984-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210203_064144_795199_F9AD4C77 
-X-CRM114-Status: GOOD (  15.57  )
+X-CRM114-CacheID: sfid-20210203_225534_497412_8BB7D6EC 
+X-CRM114-Status: UNSURE (   7.24  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,55 +65,185 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, bjorn.andersson@linaro.org,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: richard@nod.at, Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+ linux-mtd@lists.infradead.org, vigneshr@ti.com, linux-kernel@vger.kernel.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Fix the following coccicheck warning:
 
+./drivers/mtd/mtdcore.c: WARNING: use scnprintf or sprintf.
 
-On 3 February 2021 4:54:22 PM IST, Boris Brezillon <boris.brezillon@collabora.com> wrote:
->On Wed, 03 Feb 2021 16:22:42 +0530
->Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
->
->> On 3 February 2021 3:49:14 PM IST, Boris Brezillon
-><boris.brezillon@collabora.com> wrote:
->> >On Wed, 03 Feb 2021 15:42:02 +0530
->> >Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
->> >  
->> >> >> 
->> >> >> I got more information from the vendor, Telit. The access to
->the  
->> >3rd    
->> >> >partition is protected by Trustzone and any access in non
->privileged
->> >> >mode (where Linux kernel runs) causes kernel panic and the device
->> >> >reboots.   
->> >
->> >Out of curiosity, is it a per-CS-line thing or is this section
->> >protected on all CS?
->> >  
->> 
->> Sorry, I didn't get your question. 
->
->The qcom controller can handle several chips, each connected through a
->different CS (chip-select) line, right? I'm wondering if the firmware
->running in secure mode has the ability to block access for a specific
->CS line or if all CS lines have the same constraint. That will impact
->the way you describe it in your DT (in one case the secure-region
->property should be under the controller node, in the other case it
->should be under the NAND chip node).
+Reported-by: Abaci Robot<abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/mtd/mtdcore.c | 35 +++++++++++++++++------------------
+ 1 file changed, 17 insertions(+), 18 deletions(-)
 
-Right. I believe the implementation is common to all NAND chips so the property should be in the controller node. 
-
-Thanks, 
-Mani
-
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 2d6423d..c37056e 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -131,7 +131,7 @@ static ssize_t mtd_type_show(struct device *dev,
+ 		type = "unknown";
+ 	}
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n", type);
++	return sysfs_emit(buf, "%s\n", type);
+ }
+ static DEVICE_ATTR(type, S_IRUGO, mtd_type_show, NULL);
+ 
+@@ -140,7 +140,7 @@ static ssize_t mtd_flags_show(struct device *dev,
+ {
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "0x%lx\n", (unsigned long)mtd->flags);
++	return sysfs_emit(buf, "0x%lx\n", (unsigned long)mtd->flags);
+ }
+ static DEVICE_ATTR(flags, S_IRUGO, mtd_flags_show, NULL);
+ 
+@@ -149,8 +149,7 @@ static ssize_t mtd_size_show(struct device *dev,
+ {
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%llu\n",
+-		(unsigned long long)mtd->size);
++	return sysfs_emit(buf, "%llu\n", (unsigned long long)mtd->size);
+ }
+ static DEVICE_ATTR(size, S_IRUGO, mtd_size_show, NULL);
+ 
+@@ -159,7 +158,7 @@ static ssize_t mtd_erasesize_show(struct device *dev,
+ {
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%lu\n", (unsigned long)mtd->erasesize);
++	return sysfs_emit(buf, "%lu\n", (unsigned long)mtd->erasesize);
+ }
+ static DEVICE_ATTR(erasesize, S_IRUGO, mtd_erasesize_show, NULL);
+ 
+@@ -168,7 +167,7 @@ static ssize_t mtd_writesize_show(struct device *dev,
+ {
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%lu\n", (unsigned long)mtd->writesize);
++	return sysfs_emit(buf, "%lu\n", (unsigned long)mtd->writesize);
+ }
+ static DEVICE_ATTR(writesize, S_IRUGO, mtd_writesize_show, NULL);
+ 
+@@ -178,7 +177,7 @@ static ssize_t mtd_subpagesize_show(struct device *dev,
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 	unsigned int subpagesize = mtd->writesize >> mtd->subpage_sft;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%u\n", subpagesize);
++	return sysfs_emit(buf, "%u\n", subpagesize);
+ }
+ static DEVICE_ATTR(subpagesize, S_IRUGO, mtd_subpagesize_show, NULL);
+ 
+@@ -187,7 +186,7 @@ static ssize_t mtd_oobsize_show(struct device *dev,
+ {
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%lu\n", (unsigned long)mtd->oobsize);
++	return sysfs_emit(buf, "%lu\n", (unsigned long)mtd->oobsize);
+ }
+ static DEVICE_ATTR(oobsize, S_IRUGO, mtd_oobsize_show, NULL);
+ 
+@@ -196,7 +195,7 @@ static ssize_t mtd_oobavail_show(struct device *dev,
+ {
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%u\n", mtd->oobavail);
++	return sysfs_emit(buf, "%u\n", mtd->oobavail);
+ }
+ static DEVICE_ATTR(oobavail, S_IRUGO, mtd_oobavail_show, NULL);
+ 
+@@ -205,7 +204,7 @@ static ssize_t mtd_numeraseregions_show(struct device *dev,
+ {
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%u\n", mtd->numeraseregions);
++	return sysfs_emit(buf, "%u\n", mtd->numeraseregions);
+ }
+ static DEVICE_ATTR(numeraseregions, S_IRUGO, mtd_numeraseregions_show,
+ 	NULL);
+@@ -215,7 +214,7 @@ static ssize_t mtd_name_show(struct device *dev,
+ {
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n", mtd->name);
++	return sysfs_emit(buf, "%s\n", mtd->name);
+ }
+ static DEVICE_ATTR(name, S_IRUGO, mtd_name_show, NULL);
+ 
+@@ -224,7 +223,7 @@ static ssize_t mtd_ecc_strength_show(struct device *dev,
+ {
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%u\n", mtd->ecc_strength);
++	return sysfs_emit(buf, "%u\n", mtd->ecc_strength);
+ }
+ static DEVICE_ATTR(ecc_strength, S_IRUGO, mtd_ecc_strength_show, NULL);
+ 
+@@ -234,7 +233,7 @@ static ssize_t mtd_bitflip_threshold_show(struct device *dev,
+ {
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%u\n", mtd->bitflip_threshold);
++	return sysfs_emit(buf, "%u\n", mtd->bitflip_threshold);
+ }
+ 
+ static ssize_t mtd_bitflip_threshold_store(struct device *dev,
+@@ -261,7 +260,7 @@ static ssize_t mtd_ecc_step_size_show(struct device *dev,
+ {
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%u\n", mtd->ecc_step_size);
++	return sysfs_emit(buf, "%u\n", mtd->ecc_step_size);
+ 
+ }
+ static DEVICE_ATTR(ecc_step_size, S_IRUGO, mtd_ecc_step_size_show, NULL);
+@@ -272,7 +271,7 @@ static ssize_t mtd_ecc_stats_corrected_show(struct device *dev,
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 	struct mtd_ecc_stats *ecc_stats = &mtd->ecc_stats;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%u\n", ecc_stats->corrected);
++	return sysfs_emit(buf, "%u\n", ecc_stats->corrected);
+ }
+ static DEVICE_ATTR(corrected_bits, S_IRUGO,
+ 		   mtd_ecc_stats_corrected_show, NULL);
+@@ -283,7 +282,7 @@ static ssize_t mtd_ecc_stats_errors_show(struct device *dev,
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 	struct mtd_ecc_stats *ecc_stats = &mtd->ecc_stats;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%u\n", ecc_stats->failed);
++	return sysfs_emit(buf, "%u\n", ecc_stats->failed);
+ }
+ static DEVICE_ATTR(ecc_failures, S_IRUGO, mtd_ecc_stats_errors_show, NULL);
+ 
+@@ -293,7 +292,7 @@ static ssize_t mtd_badblocks_show(struct device *dev,
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 	struct mtd_ecc_stats *ecc_stats = &mtd->ecc_stats;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%u\n", ecc_stats->badblocks);
++	return sysfs_emit(buf, "%u\n", ecc_stats->badblocks);
+ }
+ static DEVICE_ATTR(bad_blocks, S_IRUGO, mtd_badblocks_show, NULL);
+ 
+@@ -303,7 +302,7 @@ static ssize_t mtd_bbtblocks_show(struct device *dev,
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 	struct mtd_ecc_stats *ecc_stats = &mtd->ecc_stats;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%u\n", ecc_stats->bbtblocks);
++	return sysfs_emit(buf, "%u\n", ecc_stats->bbtblocks);
+ }
+ static DEVICE_ATTR(bbt_blocks, S_IRUGO, mtd_bbtblocks_show, NULL);
+ 
 -- 
-Sent from my Android device with K-9 Mail. Please excuse my brevity.
+1.8.3.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
