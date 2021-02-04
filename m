@@ -2,58 +2,58 @@ Return-Path: <SRS0=OCz7=HG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37D20C433E0
-	for <linux-mtd@archiver.kernel.org>; Thu,  4 Feb 2021 03:56:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88788C433E0
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Feb 2021 08:13:06 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C361C64F41
-	for <linux-mtd@archiver.kernel.org>; Thu,  4 Feb 2021 03:56:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C361C64F41
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.alibaba.com
+	by mail.kernel.org (Postfix) with ESMTPS id 0DA5064F43
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Feb 2021 08:13:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0DA5064F43
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=OtYurDbgCAo6FJqnw8rXWHlRVmPY6ASt0/BUfyRzXzQ=; b=eUa6huZHK6ssq4j8eQqgm0hzkw
-	MOVIA9uz1u2feil/gCz6li4iF719PUwQLMm03R7TBCDR1rzEUFqnzQHoruH2TyaIEVoiZoLUJRNVF
-	syIMNs6wHAch1t3WW9c4T9tbrhsc7uyvNcHpOvPyVeTwdtwLc6KXTpvoIQ/NqTMquyfEAtUsDt9gY
-	3/GN97I7lq29N/ekqdPGKJByqc8s+QLAKq4ri/x2PrgLFOQUJ5pq36NYP26FIE9R1EG0BagJDB278
-	kH5TrfeQJho06B5tektKc0RWVCdglJWTkbkn5TjAnq3j9uZWZr+Rx4BGNDa9JDezKjV70VthX5F/l
-	pnEy557Q==;
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=OdFAJNKYYqmPj0ptKBN5AxJNljCyuKl1ozhVq7FnsgQ=; b=FgyPiWsvRwv4DlIcgFQR9G5ic
+	Mam43Saf/ZE68lXXwntVk2szoCVPaKWN3I8RrikRajmqgZfnQL1ciM/fsSrnEAhsUyBUY4FiHmjnB
+	vuxHQt+Ls/5d6VuwDReMBcW4fKGgrWr7OPY2dwTOdPOnnyHLZOXM8OLkI/A779Sk5FakG/ED2DrHu
+	e0J3YrBMHtd3h9rN1WIE9QGr7LAjWAAlGwgswgM52WLXw9dTgD0ZMMmQMwwtFHn9FoEGcYitQh1R1
+	d0Mpyy5BtoIT2XU1scdWJl0xuAIjFKS2iqxXLc5sRhIIq1Rzw4ClFQ/O/mjYjyxeHCxHDdp+vB/Vk
+	lOxoFqYSw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l7Vk7-0000qZ-4B; Thu, 04 Feb 2021 03:55:43 +0000
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131])
+	id 1l7ZkX-0002E1-RI; Thu, 04 Feb 2021 08:12:25 +0000
+Received: from relay11.mail.gandi.net ([217.70.178.231])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l7Vjw-0000oD-Ke
- for linux-mtd@lists.infradead.org; Thu, 04 Feb 2021 03:55:37 +0000
-X-Alimail-AntiSpam: AC=PASS; BC=-1|-1; BR=01201311R101e4; CH=green; DM=||false|;
- DS=||; FP=0|-1|-1|-1|0|-1|-1|-1; HT=e01e04426;
- MF=jiapeng.chong@linux.alibaba.com; NM=1; PH=DS; RN=6; SR=0;
- TI=SMTPD_---0UNpI0P._1612410923; 
-Received: from
- j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com
- fp:SMTPD_---0UNpI0P._1612410923) by smtp.aliyun-inc.com(127.0.0.1);
- Thu, 04 Feb 2021 11:55:28 +0800
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To: miquel.raynal@bootlin.com
-Subject: [PATCH] mtd: convert sysfs sprintf/snprintf family to sysfs_emit
-Date: Thu,  4 Feb 2021 11:55:21 +0800
-Message-Id: <1612410921-80984-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+ id 1l7ZkU-0002DQ-Jw
+ for linux-mtd@lists.infradead.org; Thu, 04 Feb 2021 08:12:24 +0000
+Received: from xps13 (lfbn-tou-1-972-150.w86-210.abo.wanadoo.fr
+ [86.210.203.150]) (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay11.mail.gandi.net (Postfix) with ESMTPSA id 848E0100011;
+ Thu,  4 Feb 2021 08:12:16 +0000 (UTC)
+Date: Thu, 4 Feb 2021 09:12:15 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: Re: [PATCH] mtd: convert sysfs sprintf/snprintf family to sysfs_emit
+Message-ID: <20210204091215.38ca0f99@xps13>
+In-Reply-To: <1612410921-80984-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+References: <1612410921-80984-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210203_225534_497412_8BB7D6EC 
-X-CRM114-Status: UNSURE (   7.24  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210204_031222_860242_0C18C063 
+X-CRM114-Status: GOOD (  14.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -65,186 +65,130 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: richard@nod.at, Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
- linux-mtd@lists.infradead.org, vigneshr@ti.com, linux-kernel@vger.kernel.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: richard@nod.at, linux-mtd@lists.infradead.org, vigneshr@ti.com,
+ linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Fix the following coccicheck warning:
-
-./drivers/mtd/mtdcore.c: WARNING: use scnprintf or sprintf.
-
-Reported-by: Abaci Robot<abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/mtd/mtdcore.c | 35 +++++++++++++++++------------------
- 1 file changed, 17 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 2d6423d..c37056e 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -131,7 +131,7 @@ static ssize_t mtd_type_show(struct device *dev,
- 		type = "unknown";
- 	}
- 
--	return snprintf(buf, PAGE_SIZE, "%s\n", type);
-+	return sysfs_emit(buf, "%s\n", type);
- }
- static DEVICE_ATTR(type, S_IRUGO, mtd_type_show, NULL);
- 
-@@ -140,7 +140,7 @@ static ssize_t mtd_flags_show(struct device *dev,
- {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "0x%lx\n", (unsigned long)mtd->flags);
-+	return sysfs_emit(buf, "0x%lx\n", (unsigned long)mtd->flags);
- }
- static DEVICE_ATTR(flags, S_IRUGO, mtd_flags_show, NULL);
- 
-@@ -149,8 +149,7 @@ static ssize_t mtd_size_show(struct device *dev,
- {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%llu\n",
--		(unsigned long long)mtd->size);
-+	return sysfs_emit(buf, "%llu\n", (unsigned long long)mtd->size);
- }
- static DEVICE_ATTR(size, S_IRUGO, mtd_size_show, NULL);
- 
-@@ -159,7 +158,7 @@ static ssize_t mtd_erasesize_show(struct device *dev,
- {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%lu\n", (unsigned long)mtd->erasesize);
-+	return sysfs_emit(buf, "%lu\n", (unsigned long)mtd->erasesize);
- }
- static DEVICE_ATTR(erasesize, S_IRUGO, mtd_erasesize_show, NULL);
- 
-@@ -168,7 +167,7 @@ static ssize_t mtd_writesize_show(struct device *dev,
- {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%lu\n", (unsigned long)mtd->writesize);
-+	return sysfs_emit(buf, "%lu\n", (unsigned long)mtd->writesize);
- }
- static DEVICE_ATTR(writesize, S_IRUGO, mtd_writesize_show, NULL);
- 
-@@ -178,7 +177,7 @@ static ssize_t mtd_subpagesize_show(struct device *dev,
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 	unsigned int subpagesize = mtd->writesize >> mtd->subpage_sft;
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", subpagesize);
-+	return sysfs_emit(buf, "%u\n", subpagesize);
- }
- static DEVICE_ATTR(subpagesize, S_IRUGO, mtd_subpagesize_show, NULL);
- 
-@@ -187,7 +186,7 @@ static ssize_t mtd_oobsize_show(struct device *dev,
- {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%lu\n", (unsigned long)mtd->oobsize);
-+	return sysfs_emit(buf, "%lu\n", (unsigned long)mtd->oobsize);
- }
- static DEVICE_ATTR(oobsize, S_IRUGO, mtd_oobsize_show, NULL);
- 
-@@ -196,7 +195,7 @@ static ssize_t mtd_oobavail_show(struct device *dev,
- {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", mtd->oobavail);
-+	return sysfs_emit(buf, "%u\n", mtd->oobavail);
- }
- static DEVICE_ATTR(oobavail, S_IRUGO, mtd_oobavail_show, NULL);
- 
-@@ -205,7 +204,7 @@ static ssize_t mtd_numeraseregions_show(struct device *dev,
- {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", mtd->numeraseregions);
-+	return sysfs_emit(buf, "%u\n", mtd->numeraseregions);
- }
- static DEVICE_ATTR(numeraseregions, S_IRUGO, mtd_numeraseregions_show,
- 	NULL);
-@@ -215,7 +214,7 @@ static ssize_t mtd_name_show(struct device *dev,
- {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%s\n", mtd->name);
-+	return sysfs_emit(buf, "%s\n", mtd->name);
- }
- static DEVICE_ATTR(name, S_IRUGO, mtd_name_show, NULL);
- 
-@@ -224,7 +223,7 @@ static ssize_t mtd_ecc_strength_show(struct device *dev,
- {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", mtd->ecc_strength);
-+	return sysfs_emit(buf, "%u\n", mtd->ecc_strength);
- }
- static DEVICE_ATTR(ecc_strength, S_IRUGO, mtd_ecc_strength_show, NULL);
- 
-@@ -234,7 +233,7 @@ static ssize_t mtd_bitflip_threshold_show(struct device *dev,
- {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", mtd->bitflip_threshold);
-+	return sysfs_emit(buf, "%u\n", mtd->bitflip_threshold);
- }
- 
- static ssize_t mtd_bitflip_threshold_store(struct device *dev,
-@@ -261,7 +260,7 @@ static ssize_t mtd_ecc_step_size_show(struct device *dev,
- {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", mtd->ecc_step_size);
-+	return sysfs_emit(buf, "%u\n", mtd->ecc_step_size);
- 
- }
- static DEVICE_ATTR(ecc_step_size, S_IRUGO, mtd_ecc_step_size_show, NULL);
-@@ -272,7 +271,7 @@ static ssize_t mtd_ecc_stats_corrected_show(struct device *dev,
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 	struct mtd_ecc_stats *ecc_stats = &mtd->ecc_stats;
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", ecc_stats->corrected);
-+	return sysfs_emit(buf, "%u\n", ecc_stats->corrected);
- }
- static DEVICE_ATTR(corrected_bits, S_IRUGO,
- 		   mtd_ecc_stats_corrected_show, NULL);
-@@ -283,7 +282,7 @@ static ssize_t mtd_ecc_stats_errors_show(struct device *dev,
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 	struct mtd_ecc_stats *ecc_stats = &mtd->ecc_stats;
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", ecc_stats->failed);
-+	return sysfs_emit(buf, "%u\n", ecc_stats->failed);
- }
- static DEVICE_ATTR(ecc_failures, S_IRUGO, mtd_ecc_stats_errors_show, NULL);
- 
-@@ -293,7 +292,7 @@ static ssize_t mtd_badblocks_show(struct device *dev,
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 	struct mtd_ecc_stats *ecc_stats = &mtd->ecc_stats;
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", ecc_stats->badblocks);
-+	return sysfs_emit(buf, "%u\n", ecc_stats->badblocks);
- }
- static DEVICE_ATTR(bad_blocks, S_IRUGO, mtd_badblocks_show, NULL);
- 
-@@ -303,7 +302,7 @@ static ssize_t mtd_bbtblocks_show(struct device *dev,
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 	struct mtd_ecc_stats *ecc_stats = &mtd->ecc_stats;
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", ecc_stats->bbtblocks);
-+	return sysfs_emit(buf, "%u\n", ecc_stats->bbtblocks);
- }
- static DEVICE_ATTR(bbt_blocks, S_IRUGO, mtd_bbtblocks_show, NULL);
- 
--- 
-1.8.3.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgSmlhcGVuZywKCkppYXBlbmcgQ2hvbmcgPGppYXBlbmcuY2hvbmdAbGludXguYWxpYmFiYS5j
+b20+IHdyb3RlIG9uIFRodSwgIDQgRmViCjIwMjEgMTE6NTU6MjEgKzA4MDA6Cgo+IEZpeCB0aGUg
+Zm9sbG93aW5nIGNvY2NpY2hlY2sgd2FybmluZzoKPiAKPiAuL2RyaXZlcnMvbXRkL210ZGNvcmUu
+YzogV0FSTklORzogdXNlIHNjbnByaW50ZiBvciBzcHJpbnRmLgoKVGhhdCdzIG5vdCB3aGF0IHlv
+dSBkbyBpbiB0aGUgYmVsb3cgY2hhbmdlIDopCgo+IAo+IFJlcG9ydGVkLWJ5OiBBYmFjaSBSb2Jv
+dDxhYmFjaUBsaW51eC5hbGliYWJhLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBKaWFwZW5nIENob25n
+IDxqaWFwZW5nLmNob25nQGxpbnV4LmFsaWJhYmEuY29tPgo+IC0tLQo+ICBkcml2ZXJzL210ZC9t
+dGRjb3JlLmMgfCAzNSArKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLQo+ICAxIGZp
+bGUgY2hhbmdlZCwgMTcgaW5zZXJ0aW9ucygrKSwgMTggZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAt
+LWdpdCBhL2RyaXZlcnMvbXRkL210ZGNvcmUuYyBiL2RyaXZlcnMvbXRkL210ZGNvcmUuYwo+IGlu
+ZGV4IDJkNjQyM2QuLmMzNzA1NmUgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQvbXRkY29yZS5j
+Cj4gKysrIGIvZHJpdmVycy9tdGQvbXRkY29yZS5jCj4gQEAgLTEzMSw3ICsxMzEsNyBAQCBzdGF0
+aWMgc3NpemVfdCBtdGRfdHlwZV9zaG93KHN0cnVjdCBkZXZpY2UgKmRldiwKPiAgCQl0eXBlID0g
+InVua25vd24iOwo+ICAJfQo+ICAKPiAtCXJldHVybiBzbnByaW50ZihidWYsIFBBR0VfU0laRSwg
+IiVzXG4iLCB0eXBlKTsKPiArCXJldHVybiBzeXNmc19lbWl0KGJ1ZiwgIiVzXG4iLCB0eXBlKTsK
+PiAgfQo+ICBzdGF0aWMgREVWSUNFX0FUVFIodHlwZSwgU19JUlVHTywgbXRkX3R5cGVfc2hvdywg
+TlVMTCk7Cj4gIAo+IEBAIC0xNDAsNyArMTQwLDcgQEAgc3RhdGljIHNzaXplX3QgbXRkX2ZsYWdz
+X3Nob3coc3RydWN0IGRldmljZSAqZGV2LAo+ICB7Cj4gIAlzdHJ1Y3QgbXRkX2luZm8gKm10ZCA9
+IGRldl9nZXRfZHJ2ZGF0YShkZXYpOwo+ICAKPiAtCXJldHVybiBzbnByaW50ZihidWYsIFBBR0Vf
+U0laRSwgIjB4JWx4XG4iLCAodW5zaWduZWQgbG9uZyltdGQtPmZsYWdzKTsKPiArCXJldHVybiBz
+eXNmc19lbWl0KGJ1ZiwgIjB4JWx4XG4iLCAodW5zaWduZWQgbG9uZyltdGQtPmZsYWdzKTsKPiAg
+fQo+ICBzdGF0aWMgREVWSUNFX0FUVFIoZmxhZ3MsIFNfSVJVR08sIG10ZF9mbGFnc19zaG93LCBO
+VUxMKTsKPiAgCj4gQEAgLTE0OSw4ICsxNDksNyBAQCBzdGF0aWMgc3NpemVfdCBtdGRfc2l6ZV9z
+aG93KHN0cnVjdCBkZXZpY2UgKmRldiwKPiAgewo+ICAJc3RydWN0IG10ZF9pbmZvICptdGQgPSBk
+ZXZfZ2V0X2RydmRhdGEoZGV2KTsKPiAgCj4gLQlyZXR1cm4gc25wcmludGYoYnVmLCBQQUdFX1NJ
+WkUsICIlbGx1XG4iLAo+IC0JCSh1bnNpZ25lZCBsb25nIGxvbmcpbXRkLT5zaXplKTsKPiArCXJl
+dHVybiBzeXNmc19lbWl0KGJ1ZiwgIiVsbHVcbiIsICh1bnNpZ25lZCBsb25nIGxvbmcpbXRkLT5z
+aXplKTsKPiAgfQo+ICBzdGF0aWMgREVWSUNFX0FUVFIoc2l6ZSwgU19JUlVHTywgbXRkX3NpemVf
+c2hvdywgTlVMTCk7Cj4gIAo+IEBAIC0xNTksNyArMTU4LDcgQEAgc3RhdGljIHNzaXplX3QgbXRk
+X2VyYXNlc2l6ZV9zaG93KHN0cnVjdCBkZXZpY2UgKmRldiwKPiAgewo+ICAJc3RydWN0IG10ZF9p
+bmZvICptdGQgPSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsKPiAgCj4gLQlyZXR1cm4gc25wcmludGYo
+YnVmLCBQQUdFX1NJWkUsICIlbHVcbiIsICh1bnNpZ25lZCBsb25nKW10ZC0+ZXJhc2VzaXplKTsK
+PiArCXJldHVybiBzeXNmc19lbWl0KGJ1ZiwgIiVsdVxuIiwgKHVuc2lnbmVkIGxvbmcpbXRkLT5l
+cmFzZXNpemUpOwo+ICB9Cj4gIHN0YXRpYyBERVZJQ0VfQVRUUihlcmFzZXNpemUsIFNfSVJVR08s
+IG10ZF9lcmFzZXNpemVfc2hvdywgTlVMTCk7Cj4gIAo+IEBAIC0xNjgsNyArMTY3LDcgQEAgc3Rh
+dGljIHNzaXplX3QgbXRkX3dyaXRlc2l6ZV9zaG93KHN0cnVjdCBkZXZpY2UgKmRldiwKPiAgewo+
+ICAJc3RydWN0IG10ZF9pbmZvICptdGQgPSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsKPiAgCj4gLQly
+ZXR1cm4gc25wcmludGYoYnVmLCBQQUdFX1NJWkUsICIlbHVcbiIsICh1bnNpZ25lZCBsb25nKW10
+ZC0+d3JpdGVzaXplKTsKPiArCXJldHVybiBzeXNmc19lbWl0KGJ1ZiwgIiVsdVxuIiwgKHVuc2ln
+bmVkIGxvbmcpbXRkLT53cml0ZXNpemUpOwo+ICB9Cj4gIHN0YXRpYyBERVZJQ0VfQVRUUih3cml0
+ZXNpemUsIFNfSVJVR08sIG10ZF93cml0ZXNpemVfc2hvdywgTlVMTCk7Cj4gIAo+IEBAIC0xNzgs
+NyArMTc3LDcgQEAgc3RhdGljIHNzaXplX3QgbXRkX3N1YnBhZ2VzaXplX3Nob3coc3RydWN0IGRl
+dmljZSAqZGV2LAo+ICAJc3RydWN0IG10ZF9pbmZvICptdGQgPSBkZXZfZ2V0X2RydmRhdGEoZGV2
+KTsKPiAgCXVuc2lnbmVkIGludCBzdWJwYWdlc2l6ZSA9IG10ZC0+d3JpdGVzaXplID4+IG10ZC0+
+c3VicGFnZV9zZnQ7Cj4gIAo+IC0JcmV0dXJuIHNucHJpbnRmKGJ1ZiwgUEFHRV9TSVpFLCAiJXVc
+biIsIHN1YnBhZ2VzaXplKTsKPiArCXJldHVybiBzeXNmc19lbWl0KGJ1ZiwgIiV1XG4iLCBzdWJw
+YWdlc2l6ZSk7Cj4gIH0KPiAgc3RhdGljIERFVklDRV9BVFRSKHN1YnBhZ2VzaXplLCBTX0lSVUdP
+LCBtdGRfc3VicGFnZXNpemVfc2hvdywgTlVMTCk7Cj4gIAo+IEBAIC0xODcsNyArMTg2LDcgQEAg
+c3RhdGljIHNzaXplX3QgbXRkX29vYnNpemVfc2hvdyhzdHJ1Y3QgZGV2aWNlICpkZXYsCj4gIHsK
+PiAgCXN0cnVjdCBtdGRfaW5mbyAqbXRkID0gZGV2X2dldF9kcnZkYXRhKGRldik7Cj4gIAo+IC0J
+cmV0dXJuIHNucHJpbnRmKGJ1ZiwgUEFHRV9TSVpFLCAiJWx1XG4iLCAodW5zaWduZWQgbG9uZylt
+dGQtPm9vYnNpemUpOwo+ICsJcmV0dXJuIHN5c2ZzX2VtaXQoYnVmLCAiJWx1XG4iLCAodW5zaWdu
+ZWQgbG9uZyltdGQtPm9vYnNpemUpOwo+ICB9Cj4gIHN0YXRpYyBERVZJQ0VfQVRUUihvb2JzaXpl
+LCBTX0lSVUdPLCBtdGRfb29ic2l6ZV9zaG93LCBOVUxMKTsKPiAgCj4gQEAgLTE5Niw3ICsxOTUs
+NyBAQCBzdGF0aWMgc3NpemVfdCBtdGRfb29iYXZhaWxfc2hvdyhzdHJ1Y3QgZGV2aWNlICpkZXYs
+Cj4gIHsKPiAgCXN0cnVjdCBtdGRfaW5mbyAqbXRkID0gZGV2X2dldF9kcnZkYXRhKGRldik7Cj4g
+IAo+IC0JcmV0dXJuIHNucHJpbnRmKGJ1ZiwgUEFHRV9TSVpFLCAiJXVcbiIsIG10ZC0+b29iYXZh
+aWwpOwo+ICsJcmV0dXJuIHN5c2ZzX2VtaXQoYnVmLCAiJXVcbiIsIG10ZC0+b29iYXZhaWwpOwo+
+ICB9Cj4gIHN0YXRpYyBERVZJQ0VfQVRUUihvb2JhdmFpbCwgU19JUlVHTywgbXRkX29vYmF2YWls
+X3Nob3csIE5VTEwpOwo+ICAKPiBAQCAtMjA1LDcgKzIwNCw3IEBAIHN0YXRpYyBzc2l6ZV90IG10
+ZF9udW1lcmFzZXJlZ2lvbnNfc2hvdyhzdHJ1Y3QgZGV2aWNlICpkZXYsCj4gIHsKPiAgCXN0cnVj
+dCBtdGRfaW5mbyAqbXRkID0gZGV2X2dldF9kcnZkYXRhKGRldik7Cj4gIAo+IC0JcmV0dXJuIHNu
+cHJpbnRmKGJ1ZiwgUEFHRV9TSVpFLCAiJXVcbiIsIG10ZC0+bnVtZXJhc2VyZWdpb25zKTsKPiAr
+CXJldHVybiBzeXNmc19lbWl0KGJ1ZiwgIiV1XG4iLCBtdGQtPm51bWVyYXNlcmVnaW9ucyk7Cj4g
+IH0KPiAgc3RhdGljIERFVklDRV9BVFRSKG51bWVyYXNlcmVnaW9ucywgU19JUlVHTywgbXRkX251
+bWVyYXNlcmVnaW9uc19zaG93LAo+ICAJTlVMTCk7Cj4gQEAgLTIxNSw3ICsyMTQsNyBAQCBzdGF0
+aWMgc3NpemVfdCBtdGRfbmFtZV9zaG93KHN0cnVjdCBkZXZpY2UgKmRldiwKPiAgewo+ICAJc3Ry
+dWN0IG10ZF9pbmZvICptdGQgPSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsKPiAgCj4gLQlyZXR1cm4g
+c25wcmludGYoYnVmLCBQQUdFX1NJWkUsICIlc1xuIiwgbXRkLT5uYW1lKTsKPiArCXJldHVybiBz
+eXNmc19lbWl0KGJ1ZiwgIiVzXG4iLCBtdGQtPm5hbWUpOwo+ICB9Cj4gIHN0YXRpYyBERVZJQ0Vf
+QVRUUihuYW1lLCBTX0lSVUdPLCBtdGRfbmFtZV9zaG93LCBOVUxMKTsKPiAgCj4gQEAgLTIyNCw3
+ICsyMjMsNyBAQCBzdGF0aWMgc3NpemVfdCBtdGRfZWNjX3N0cmVuZ3RoX3Nob3coc3RydWN0IGRl
+dmljZSAqZGV2LAo+ICB7Cj4gIAlzdHJ1Y3QgbXRkX2luZm8gKm10ZCA9IGRldl9nZXRfZHJ2ZGF0
+YShkZXYpOwo+ICAKPiAtCXJldHVybiBzbnByaW50ZihidWYsIFBBR0VfU0laRSwgIiV1XG4iLCBt
+dGQtPmVjY19zdHJlbmd0aCk7Cj4gKwlyZXR1cm4gc3lzZnNfZW1pdChidWYsICIldVxuIiwgbXRk
+LT5lY2Nfc3RyZW5ndGgpOwo+ICB9Cj4gIHN0YXRpYyBERVZJQ0VfQVRUUihlY2Nfc3RyZW5ndGgs
+IFNfSVJVR08sIG10ZF9lY2Nfc3RyZW5ndGhfc2hvdywgTlVMTCk7Cj4gIAo+IEBAIC0yMzQsNyAr
+MjMzLDcgQEAgc3RhdGljIHNzaXplX3QgbXRkX2JpdGZsaXBfdGhyZXNob2xkX3Nob3coc3RydWN0
+IGRldmljZSAqZGV2LAo+ICB7Cj4gIAlzdHJ1Y3QgbXRkX2luZm8gKm10ZCA9IGRldl9nZXRfZHJ2
+ZGF0YShkZXYpOwo+ICAKPiAtCXJldHVybiBzbnByaW50ZihidWYsIFBBR0VfU0laRSwgIiV1XG4i
+LCBtdGQtPmJpdGZsaXBfdGhyZXNob2xkKTsKPiArCXJldHVybiBzeXNmc19lbWl0KGJ1ZiwgIiV1
+XG4iLCBtdGQtPmJpdGZsaXBfdGhyZXNob2xkKTsKPiAgfQo+ICAKPiAgc3RhdGljIHNzaXplX3Qg
+bXRkX2JpdGZsaXBfdGhyZXNob2xkX3N0b3JlKHN0cnVjdCBkZXZpY2UgKmRldiwKPiBAQCAtMjYx
+LDcgKzI2MCw3IEBAIHN0YXRpYyBzc2l6ZV90IG10ZF9lY2Nfc3RlcF9zaXplX3Nob3coc3RydWN0
+IGRldmljZSAqZGV2LAo+ICB7Cj4gIAlzdHJ1Y3QgbXRkX2luZm8gKm10ZCA9IGRldl9nZXRfZHJ2
+ZGF0YShkZXYpOwo+ICAKPiAtCXJldHVybiBzbnByaW50ZihidWYsIFBBR0VfU0laRSwgIiV1XG4i
+LCBtdGQtPmVjY19zdGVwX3NpemUpOwo+ICsJcmV0dXJuIHN5c2ZzX2VtaXQoYnVmLCAiJXVcbiIs
+IG10ZC0+ZWNjX3N0ZXBfc2l6ZSk7Cj4gIAo+ICB9Cj4gIHN0YXRpYyBERVZJQ0VfQVRUUihlY2Nf
+c3RlcF9zaXplLCBTX0lSVUdPLCBtdGRfZWNjX3N0ZXBfc2l6ZV9zaG93LCBOVUxMKTsKPiBAQCAt
+MjcyLDcgKzI3MSw3IEBAIHN0YXRpYyBzc2l6ZV90IG10ZF9lY2Nfc3RhdHNfY29ycmVjdGVkX3No
+b3coc3RydWN0IGRldmljZSAqZGV2LAo+ICAJc3RydWN0IG10ZF9pbmZvICptdGQgPSBkZXZfZ2V0
+X2RydmRhdGEoZGV2KTsKPiAgCXN0cnVjdCBtdGRfZWNjX3N0YXRzICplY2Nfc3RhdHMgPSAmbXRk
+LT5lY2Nfc3RhdHM7Cj4gIAo+IC0JcmV0dXJuIHNucHJpbnRmKGJ1ZiwgUEFHRV9TSVpFLCAiJXVc
+biIsIGVjY19zdGF0cy0+Y29ycmVjdGVkKTsKPiArCXJldHVybiBzeXNmc19lbWl0KGJ1ZiwgIiV1
+XG4iLCBlY2Nfc3RhdHMtPmNvcnJlY3RlZCk7Cj4gIH0KPiAgc3RhdGljIERFVklDRV9BVFRSKGNv
+cnJlY3RlZF9iaXRzLCBTX0lSVUdPLAo+ICAJCSAgIG10ZF9lY2Nfc3RhdHNfY29ycmVjdGVkX3No
+b3csIE5VTEwpOwo+IEBAIC0yODMsNyArMjgyLDcgQEAgc3RhdGljIHNzaXplX3QgbXRkX2VjY19z
+dGF0c19lcnJvcnNfc2hvdyhzdHJ1Y3QgZGV2aWNlICpkZXYsCj4gIAlzdHJ1Y3QgbXRkX2luZm8g
+Km10ZCA9IGRldl9nZXRfZHJ2ZGF0YShkZXYpOwo+ICAJc3RydWN0IG10ZF9lY2Nfc3RhdHMgKmVj
+Y19zdGF0cyA9ICZtdGQtPmVjY19zdGF0czsKPiAgCj4gLQlyZXR1cm4gc25wcmludGYoYnVmLCBQ
+QUdFX1NJWkUsICIldVxuIiwgZWNjX3N0YXRzLT5mYWlsZWQpOwo+ICsJcmV0dXJuIHN5c2ZzX2Vt
+aXQoYnVmLCAiJXVcbiIsIGVjY19zdGF0cy0+ZmFpbGVkKTsKPiAgfQo+ICBzdGF0aWMgREVWSUNF
+X0FUVFIoZWNjX2ZhaWx1cmVzLCBTX0lSVUdPLCBtdGRfZWNjX3N0YXRzX2Vycm9yc19zaG93LCBO
+VUxMKTsKPiAgCj4gQEAgLTI5Myw3ICsyOTIsNyBAQCBzdGF0aWMgc3NpemVfdCBtdGRfYmFkYmxv
+Y2tzX3Nob3coc3RydWN0IGRldmljZSAqZGV2LAo+ICAJc3RydWN0IG10ZF9pbmZvICptdGQgPSBk
+ZXZfZ2V0X2RydmRhdGEoZGV2KTsKPiAgCXN0cnVjdCBtdGRfZWNjX3N0YXRzICplY2Nfc3RhdHMg
+PSAmbXRkLT5lY2Nfc3RhdHM7Cj4gIAo+IC0JcmV0dXJuIHNucHJpbnRmKGJ1ZiwgUEFHRV9TSVpF
+LCAiJXVcbiIsIGVjY19zdGF0cy0+YmFkYmxvY2tzKTsKPiArCXJldHVybiBzeXNmc19lbWl0KGJ1
+ZiwgIiV1XG4iLCBlY2Nfc3RhdHMtPmJhZGJsb2Nrcyk7Cj4gIH0KPiAgc3RhdGljIERFVklDRV9B
+VFRSKGJhZF9ibG9ja3MsIFNfSVJVR08sIG10ZF9iYWRibG9ja3Nfc2hvdywgTlVMTCk7Cj4gIAo+
+IEBAIC0zMDMsNyArMzAyLDcgQEAgc3RhdGljIHNzaXplX3QgbXRkX2JidGJsb2Nrc19zaG93KHN0
+cnVjdCBkZXZpY2UgKmRldiwKPiAgCXN0cnVjdCBtdGRfaW5mbyAqbXRkID0gZGV2X2dldF9kcnZk
+YXRhKGRldik7Cj4gIAlzdHJ1Y3QgbXRkX2VjY19zdGF0cyAqZWNjX3N0YXRzID0gJm10ZC0+ZWNj
+X3N0YXRzOwo+ICAKPiAtCXJldHVybiBzbnByaW50ZihidWYsIFBBR0VfU0laRSwgIiV1XG4iLCBl
+Y2Nfc3RhdHMtPmJidGJsb2Nrcyk7Cj4gKwlyZXR1cm4gc3lzZnNfZW1pdChidWYsICIldVxuIiwg
+ZWNjX3N0YXRzLT5iYnRibG9ja3MpOwo+ICB9Cj4gIHN0YXRpYyBERVZJQ0VfQVRUUihiYnRfYmxv
+Y2tzLCBTX0lSVUdPLCBtdGRfYmJ0YmxvY2tzX3Nob3csIE5VTEwpOwo+ICAKClRoYW5rcywKTWlx
+dcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
