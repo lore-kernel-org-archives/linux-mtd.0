@@ -2,84 +2,80 @@ Return-Path: <SRS0=OCz7=HG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30020C433DB
-	for <linux-mtd@archiver.kernel.org>; Thu,  4 Feb 2021 14:00:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67F14C433E0
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Feb 2021 17:46:10 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CDF9F64E3F
-	for <linux-mtd@archiver.kernel.org>; Thu,  4 Feb 2021 14:00:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CDF9F64E3F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id E4FAD60203
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Feb 2021 17:46:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E4FAD60203
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
-	:List-Id:MIME-Version:Message-ID:Date:References:In-Reply-To:Subject:To:From:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=JOxnhpvY9Q/Ecafjq37dBSSwhTS0IIR/AXugIlDELy4=; b=RC9yic683hnqGHCdZEdE6gTN6t
-	BOTpN2TLBUfWxOBSrUNXwjCqvZPEtnQo9CfghrxHVnDmLCjsNiLcwzF7YqPID3lZ0D+ZQOWWc2QXg
-	0mlKTFzPFsIx/VlX/lRaewy7qVcIRi8cHMX3MF1/jUVg47Zp/2uLHMz04edEvSQ/6dhMd2WmxFgoV
-	uBJG7Rpoow2QwgGLqbYh7qTGbD+8wPAbBgkMDv2Hr1Ye6mxz2z0Iggd8PFwFh7AUx4FTelZJndKlx
-	yndH6x54bqiYYOw2l4RrMn+7yv6Pjvwt/1mtgalFLSJkN3MChioT0y1n8NzCKdGcgIDgZsjWIQNXo
-	b5CjCXcA==;
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=huUfHRmKJ9J/LunUN7axkKJKoAUGpIh1fAzgVKj3gDY=; b=ZRBNlFHrriUvsPwVuZurma2pMi
+	1BlRmtd2cgpTng/5KygH+O2NsYERyxx5H1rEilcIrn7H4Lxlgo4DdJiLN5Zz01cQpc0nSCiYqNVY8
+	s0ieuhAhMuk3rts/MyrVf83VrZgw6/zKDn92k/zzn+Cl6bCnJm08BcngitZGh/XyQ8+SCueaEogq2
+	2dxv7DL5iA+CzVjewZ1ZDt2/NI6RhItdXJnF0LBVxO1O6I0p54QqJ3nLj2QC++xSl9RCDYI5RM2MQ
+	ObesqREn0YReAxruQNlx4RvblOK+R+H3P7TD72Dp3i1rv2x7w7wSREkN7pu4vfGNzXz9p3WngAk7m
+	8Pzdqv1w==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l7f9m-0008Lg-AY; Thu, 04 Feb 2021 13:58:50 +0000
-Received: from mail-lj1-x229.google.com ([2a00:1450:4864:20::229])
+	id 1l7ih7-0003rc-CY; Thu, 04 Feb 2021 17:45:29 +0000
+Received: from esa.microchip.iphmx.com ([68.232.153.233])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l7f9k-0008LG-Bo
- for linux-mtd@lists.infradead.org; Thu, 04 Feb 2021 13:58:49 +0000
-Received: by mail-lj1-x229.google.com with SMTP id u4so3504846ljh.6
- for <linux-mtd@lists.infradead.org>; Thu, 04 Feb 2021 05:58:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:subject:in-reply-to:references:date:message-id:mime-version;
- bh=V1m6qF4MLwaR/MU3q259CiWKnTFijYK+3f/Jcl5bP54=;
- b=b/h1WMvdO7EvCH8xyZPd58tTfo4LNgfJS/fqc7ag6hUtAi/priXHC9uXAJSdzDdQ7j
- P5PyzfZNdlYu6NByvj3h1Pgyzd1dztGe7nefnqPfcgfNXuNNfCNgZrD9MKbYUbSv5xXh
- rrtEfw5zDlwdAC8d6mvR0nOI9PtwQy07gpEfqO70bNFm12uufjCeNkIGdjzZKVg9gkyR
- qGFWQKbik/BlqhpyOAvDFEJpVIxCeKuvh8Tj3IHAtzIRs39gze3EzXA5/cXk9/rz+c3O
- 1yv3sRR106eKsu33r0scPkAJo3zWdja701ytdjNyJDEv2ZmKj44mdkJPhMoOApEXpaTg
- zspw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:subject:in-reply-to:references:date
- :message-id:mime-version;
- bh=V1m6qF4MLwaR/MU3q259CiWKnTFijYK+3f/Jcl5bP54=;
- b=toVrmdHmV7Fgd06EJcKCxOvmIkMeEu0YJbxC7Kmnz4sNnQYG4cR5PDndrxU3KbF5zR
- D1ASDdZ5ogS1cG2GuCXFXJC/fBfWEbNFvAUzubDBCZgKV2P4cF4J8GwdTnaZB0GYLJRr
- ce4U1BX8+3U0MMXzFMo/uCWlol3lr43o6jZxkacF5fjTOP+LROAsAj4OBbhmP+4Z1Ujm
- oqdfhJxyEqc65i7HPcSquNw3EMV/x+SWnHytWe8HlZ/NLon2RztJGGZeJ0bB5TsZG+FA
- S8EX4y6GqsTGT7XsdDVFGmpR+5rIjiPsHI6/MKxB32liJJ8TqCRu+mHTT/faApHblxGD
- l25g==
-X-Gm-Message-State: AOAM533HfAue/BjAKh/+UFMVbEXjaz56hXTq8n2wZ9qlgvRqk7+3Xuvu
- P/3X66YF1C/4pafQAOIqN4nUjhpEb83Yfg==
-X-Google-Smtp-Source: ABdhPJykYwhoz3xvLUH07LVWgQSAAddbriOwgcFYdY92U7qF5gioQFIFOxsNCCL2FUI8F9iw0YN4HA==
-X-Received: by 2002:a2e:9dc2:: with SMTP id x2mr4971470ljj.96.1612447126876;
- Thu, 04 Feb 2021 05:58:46 -0800 (PST)
-Received: from wbg (h-98-128-228-165.NA.cust.bahnhof.se. [98.128.228.165])
- by smtp.gmail.com with ESMTPSA id m4sm662085ljp.84.2021.02.04.05.58.45
- for <linux-mtd@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 04 Feb 2021 05:58:46 -0800 (PST)
-From: Joachim Wiberg <troglobit@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: []
-In-Reply-To: <87a6skynti.fsf@gmail.com>
-References: <87a6skynti.fsf@gmail.com>
-Date: Thu, 04 Feb 2021 14:58:45 +0100
-Message-ID: <877dnoylwq.fsf@gmail.com>
+ id 1l7ih4-0003rB-0k
+ for linux-mtd@lists.infradead.org; Thu, 04 Feb 2021 17:45:27 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1612460727; x=1643996727;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=pjBtbcoHDMSA0wjp+bsOxgmYsDoIS2N7/JQLbQ5pRx4=;
+ b=UOtm/T2Xvx7KFL4Q93+lxTXOvPAXGyjchyIS/vR3wFI6aN5ZkX1jwWgi
+ Opw99znxxorFapv3s/NsWKW26Mm+IqJ4V90IbMr98skNWrIc40s8nDxmV
+ TehujSruoYjSIKYNRhCwk3UE9IPvv2gAlEFIMo/c6VE/mImmQGxkt5Sbz
+ 2s9R+gazKK1pcoA4696FgAJxGiz5iTODvGVA8ToBKkmk4XJXg5nWOT52i
+ 7lxzXHO2aEjjP6dL05D2CLNuJ+kP2gZHOltxK2wbXqepVhPvQixq7hUQO
+ w3P4NXE5/AwDUKWajD+ifBb/77ec5wsTy1Xj3HtbG81xhX7ruZU97mZn1 g==;
+IronPort-SDR: fsYAYtW05pmaaqDNfF+3SXYWOjS5ES6UNGAphkbBn1RP1E/lFR9xLj0WNUZYpSyZn/svyjG5lf
+ T/bP0ZuOUc14cj9y/FQs0jEqX5rsBuJg2R9bK+FeQv+820BYn3xdLeMo5nf0jgQi39ype73VtF
+ wBqvkFz1RqJ6lubgxMTH5MpymMWY3yu7TBOIaVAVp+ramPGU+gFQRBL4+IoTXECE/ylNL7d21S
+ rZlzn1TTm48HBQRuGlSVnk0AZ3HUMzHkvP7h8MhL8yXzsfIOgax3A3WLFIynywJKC1MRs6Z9My
+ /EQ=
+X-IronPort-AV: E=Sophos;i="5.81,152,1610434800"; d="scan'208";a="108052498"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 04 Feb 2021 10:45:18 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 4 Feb 2021 10:45:11 -0700
+Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Thu, 4 Feb 2021 10:45:10 -0700
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
+Subject: [PATCH] mtd: spi-nor: Get rid of duplicated argument in
+ spi_nor_parse_sfdp()
+Date: Thu, 4 Feb 2021 19:45:07 +0200
+Message-ID: <20210204174507.593419-1-tudor.ambarus@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210204_085848_423845_95397658 
-X-CRM114-Status: UNSURE (   6.49  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210204_124526_355212_9A465FDA 
+X-CRM114-Status: GOOD (  24.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,19 +87,479 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Tudor
+ Ambarus <tudor.ambarus@microchip.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Feb 04, 2021 at 14:17, Joachim Wiberg <troglobit@gmail.com> wrote:
->     mtd: mtd2block: add support for an optional custom MTD label
+spi_nor_parse_sfdp(nor, nor->params);
+passes for the second argument a member within the first argument.
+Drop the second argument and obtain it directly from the first,
+and do it across all the children functions. This is a follow up for
+'commit 69a8eed58cc0 ("mtd: spi-nor: Don't copy self-pointing struct around")'
 
-Ugh, sorry about the noise.  Managed to press send instead of abort.
-An actual up-to-date patch for this is incoming though, as RFC.
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+---
+ drivers/mtd/spi-nor/core.c     | 10 ++--
+ drivers/mtd/spi-nor/core.h     |  6 +--
+ drivers/mtd/spi-nor/issi.c     |  3 +-
+ drivers/mtd/spi-nor/macronix.c |  3 +-
+ drivers/mtd/spi-nor/sfdp.c     | 87 +++++++++++++---------------------
+ drivers/mtd/spi-nor/sfdp.h     |  3 +-
+ drivers/mtd/spi-nor/spansion.c | 12 ++---
+ drivers/mtd/spi-nor/winbond.c  |  3 +-
+ 8 files changed, 49 insertions(+), 78 deletions(-)
 
-Regards
- /Joachim
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index c50b30fbb912..2b3b977626af 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2624,22 +2624,20 @@ void spi_nor_init_uniform_erase_map(struct spi_nor_erase_map *map,
+ 
+ int spi_nor_post_bfpt_fixups(struct spi_nor *nor,
+ 			     const struct sfdp_parameter_header *bfpt_header,
+-			     const struct sfdp_bfpt *bfpt,
+-			     struct spi_nor_flash_parameter *params)
++			     const struct sfdp_bfpt *bfpt)
+ {
+ 	int ret;
+ 
+ 	if (nor->manufacturer && nor->manufacturer->fixups &&
+ 	    nor->manufacturer->fixups->post_bfpt) {
+ 		ret = nor->manufacturer->fixups->post_bfpt(nor, bfpt_header,
+-							   bfpt, params);
++							   bfpt);
+ 		if (ret)
+ 			return ret;
+ 	}
+ 
+ 	if (nor->info->fixups && nor->info->fixups->post_bfpt)
+-		return nor->info->fixups->post_bfpt(nor, bfpt_header, bfpt,
+-						    params);
++		return nor->info->fixups->post_bfpt(nor, bfpt_header, bfpt);
+ 
+ 	return 0;
+ }
+@@ -2894,7 +2892,7 @@ static void spi_nor_sfdp_init_params(struct spi_nor *nor)
+ 
+ 	memcpy(&sfdp_params, nor->params, sizeof(sfdp_params));
+ 
+-	if (spi_nor_parse_sfdp(nor, nor->params)) {
++	if (spi_nor_parse_sfdp(nor)) {
+ 		memcpy(nor->params, &sfdp_params, sizeof(*nor->params));
+ 		nor->addr_width = 0;
+ 		nor->flags &= ~SNOR_F_4B_OPCODES;
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 4a3f7f150b5d..db07832ee66c 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -261,8 +261,7 @@ struct spi_nor_fixups {
+ 	void (*default_init)(struct spi_nor *nor);
+ 	int (*post_bfpt)(struct spi_nor *nor,
+ 			 const struct sfdp_parameter_header *bfpt_header,
+-			 const struct sfdp_bfpt *bfpt,
+-			 struct spi_nor_flash_parameter *params);
++			 const struct sfdp_bfpt *bfpt);
+ 	void (*post_sfdp)(struct spi_nor *nor);
+ };
+ 
+@@ -470,8 +469,7 @@ void spi_nor_init_uniform_erase_map(struct spi_nor_erase_map *map,
+ 
+ int spi_nor_post_bfpt_fixups(struct spi_nor *nor,
+ 			     const struct sfdp_parameter_header *bfpt_header,
+-			     const struct sfdp_bfpt *bfpt,
+-			     struct spi_nor_flash_parameter *params);
++			     const struct sfdp_bfpt *bfpt);
+ 
+ static struct spi_nor __maybe_unused *mtd_to_spi_nor(struct mtd_info *mtd)
+ {
+diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
+index ffcb60e54a80..1e5bb5408b68 100644
+--- a/drivers/mtd/spi-nor/issi.c
++++ b/drivers/mtd/spi-nor/issi.c
+@@ -11,8 +11,7 @@
+ static int
+ is25lp256_post_bfpt_fixups(struct spi_nor *nor,
+ 			   const struct sfdp_parameter_header *bfpt_header,
+-			   const struct sfdp_bfpt *bfpt,
+-			   struct spi_nor_flash_parameter *params)
++			   const struct sfdp_bfpt *bfpt)
+ {
+ 	/*
+ 	 * IS25LP256 supports 4B opcodes, but the BFPT advertises a
+diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+index 9203abaac229..6c2680b4cdad 100644
+--- a/drivers/mtd/spi-nor/macronix.c
++++ b/drivers/mtd/spi-nor/macronix.c
+@@ -11,8 +11,7 @@
+ static int
+ mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
+ 			    const struct sfdp_parameter_header *bfpt_header,
+-			    const struct sfdp_bfpt *bfpt,
+-			    struct spi_nor_flash_parameter *params)
++			    const struct sfdp_bfpt *bfpt)
+ {
+ 	/*
+ 	 * MX25L25635F supports 4B opcodes but MX25L25635E does not.
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index 6ee7719e5903..f6fe38ea000f 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -405,8 +405,6 @@ static void spi_nor_regions_sort_erase_types(struct spi_nor_erase_map *map)
+  * @nor:		pointer to a 'struct spi_nor'
+  * @bfpt_header:	pointer to the 'struct sfdp_parameter_header' describing
+  *			the Basic Flash Parameter Table length and version
+- * @params:		pointer to the 'struct spi_nor_flash_parameter' to be
+- *			filled
+  *
+  * The Basic Flash Parameter Table is the main and only mandatory table as
+  * defined by the SFDP (JESD216) specification.
+@@ -431,9 +429,9 @@ static void spi_nor_regions_sort_erase_types(struct spi_nor_erase_map *map)
+  * Return: 0 on success, -errno otherwise.
+  */
+ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+-			      const struct sfdp_parameter_header *bfpt_header,
+-			      struct spi_nor_flash_parameter *params)
++			      const struct sfdp_parameter_header *bfpt_header)
+ {
++	struct spi_nor_flash_parameter *params = nor->params;
+ 	struct spi_nor_erase_map *map = &params->erase_map;
+ 	struct spi_nor_erase_type *erase_type = map->erase_type;
+ 	struct sfdp_bfpt bfpt;
+@@ -552,8 +550,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+ 
+ 	/* Stop here if not JESD216 rev A or later. */
+ 	if (bfpt_header->length == BFPT_DWORD_MAX_JESD216)
+-		return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt,
+-						params);
++		return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt);
+ 
+ 	/* Page size: this field specifies 'N' so the page size = 2^N bytes. */
+ 	val = bfpt.dwords[BFPT_DWORD(11)];
+@@ -614,8 +611,8 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+ 
+ 	/* Stop here if not JESD216 rev C or later. */
+ 	if (bfpt_header->length == BFPT_DWORD_MAX_JESD216B)
+-		return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt,
+-						params);
++		return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt);
++
+ 	/* 8D-8D-8D command extension. */
+ 	switch (bfpt.dwords[BFPT_DWORD(18)] & BFPT_DWORD18_CMD_EXT_MASK) {
+ 	case BFPT_DWORD18_CMD_EXT_REP:
+@@ -635,7 +632,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+ 		return -EOPNOTSUPP;
+ 	}
+ 
+-	return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt, params);
++	return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt);
+ }
+ 
+ /**
+@@ -800,18 +797,14 @@ spi_nor_region_check_overlay(struct spi_nor_erase_region *region,
+ /**
+  * spi_nor_init_non_uniform_erase_map() - initialize the non-uniform erase map
+  * @nor:	pointer to a 'struct spi_nor'
+- * @params:     pointer to a duplicate 'struct spi_nor_flash_parameter' that is
+- *              used for storing SFDP parsed data
+  * @smpt:	pointer to the sector map parameter table
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-static int
+-spi_nor_init_non_uniform_erase_map(struct spi_nor *nor,
+-				   struct spi_nor_flash_parameter *params,
+-				   const u32 *smpt)
++static int spi_nor_init_non_uniform_erase_map(struct spi_nor *nor,
++					      const u32 *smpt)
+ {
+-	struct spi_nor_erase_map *map = &params->erase_map;
++	struct spi_nor_erase_map *map = &nor->params->erase_map;
+ 	struct spi_nor_erase_type *erase = map->erase_type;
+ 	struct spi_nor_erase_region *region;
+ 	u64 offset;
+@@ -890,8 +883,6 @@ spi_nor_init_non_uniform_erase_map(struct spi_nor *nor,
+  * spi_nor_parse_smpt() - parse Sector Map Parameter Table
+  * @nor:		pointer to a 'struct spi_nor'
+  * @smpt_header:	sector map parameter table header
+- * @params:		pointer to a duplicate 'struct spi_nor_flash_parameter'
+- *                      that is used for storing SFDP parsed data
+  *
+  * This table is optional, but when available, we parse it to identify the
+  * location and size of sectors within the main data array of the flash memory
+@@ -900,8 +891,7 @@ spi_nor_init_non_uniform_erase_map(struct spi_nor *nor,
+  * Return: 0 on success, -errno otherwise.
+  */
+ static int spi_nor_parse_smpt(struct spi_nor *nor,
+-			      const struct sfdp_parameter_header *smpt_header,
+-			      struct spi_nor_flash_parameter *params)
++			      const struct sfdp_parameter_header *smpt_header)
+ {
+ 	const u32 *sector_map;
+ 	u32 *smpt;
+@@ -929,11 +919,11 @@ static int spi_nor_parse_smpt(struct spi_nor *nor,
+ 		goto out;
+ 	}
+ 
+-	ret = spi_nor_init_non_uniform_erase_map(nor, params, sector_map);
++	ret = spi_nor_init_non_uniform_erase_map(nor, sector_map);
+ 	if (ret)
+ 		goto out;
+ 
+-	spi_nor_regions_sort_erase_types(&params->erase_map);
++	spi_nor_regions_sort_erase_types(&nor->params->erase_map);
+ 	/* fall through */
+ out:
+ 	kfree(smpt);
+@@ -945,13 +935,11 @@ static int spi_nor_parse_smpt(struct spi_nor *nor,
+  * @nor:		pointer to a 'struct spi_nor'.
+  * @param_header:	pointer to the 'struct sfdp_parameter_header' describing
+  *			the 4-Byte Address Instruction Table length and version.
+- * @params:		pointer to the 'struct spi_nor_flash_parameter' to be.
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+ static int spi_nor_parse_4bait(struct spi_nor *nor,
+-			       const struct sfdp_parameter_header *param_header,
+-			       struct spi_nor_flash_parameter *params)
++			       const struct sfdp_parameter_header *param_header)
+ {
+ 	static const struct sfdp_4bait reads[] = {
+ 		{ SNOR_HWCAPS_READ,		BIT(0) },
+@@ -975,8 +963,8 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+ 		{ 0u /* not used */,		BIT(11) },
+ 		{ 0u /* not used */,		BIT(12) },
+ 	};
+-	struct spi_nor_pp_command *params_pp = params->page_programs;
+-	struct spi_nor_erase_map *map = &params->erase_map;
++	struct spi_nor_pp_command *params_pp = nor->params->page_programs;
++	struct spi_nor_erase_map *map = &nor->params->erase_map;
+ 	struct spi_nor_erase_type *erase_type = map->erase_type;
+ 	u32 *dwords;
+ 	size_t len;
+@@ -1013,7 +1001,7 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+ 		const struct sfdp_4bait *read = &reads[i];
+ 
+ 		discard_hwcaps |= read->hwcaps;
+-		if ((params->hwcaps.mask & read->hwcaps) &&
++		if ((nor->params->hwcaps.mask & read->hwcaps) &&
+ 		    (dwords[0] & read->supported_bit))
+ 			read_hwcaps |= read->hwcaps;
+ 	}
+@@ -1029,8 +1017,8 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+ 		/*
+ 		 * The 4 Byte Address Instruction (Optional) Table is the only
+ 		 * SFDP table that indicates support for Page Program Commands.
+-		 * Bypass the params->hwcaps.mask and consider 4BAIT the biggest
+-		 * authority for specifying Page Program support.
++		 * Bypass the nor->params->hwcaps.mask and consider 4BAIT the
++		 * biggest authority for specifying Page Program support.
+ 		 */
+ 		discard_hwcaps |= program->hwcaps;
+ 		if (dwords[0] & program->supported_bit)
+@@ -1064,12 +1052,12 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+ 	 * Discard all operations from the 4-byte instruction set which are
+ 	 * not supported by this memory.
+ 	 */
+-	params->hwcaps.mask &= ~discard_hwcaps;
+-	params->hwcaps.mask |= (read_hwcaps | pp_hwcaps);
++	nor->params->hwcaps.mask &= ~discard_hwcaps;
++	nor->params->hwcaps.mask |= (read_hwcaps | pp_hwcaps);
+ 
+ 	/* Use the 4-byte address instruction set. */
+ 	for (i = 0; i < SNOR_CMD_READ_MAX; i++) {
+-		struct spi_nor_read_command *read_cmd = &params->reads[i];
++		struct spi_nor_read_command *read_cmd = &nor->params->reads[i];
+ 
+ 		read_cmd->opcode = spi_nor_convert_3to4_read(read_cmd->opcode);
+ 	}
+@@ -1131,13 +1119,11 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+  * @nor:		pointer to a 'struct spi_nor'
+  * @profile1_header:	pointer to the 'struct sfdp_parameter_header' describing
+  *			the Profile 1.0 Table length and version.
+- * @params:		pointer to the 'struct spi_nor_flash_parameter' to be.
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+ static int spi_nor_parse_profile1(struct spi_nor *nor,
+-				  const struct sfdp_parameter_header *profile1_header,
+-				  struct spi_nor_flash_parameter *params)
++				  const struct sfdp_parameter_header *profile1_header)
+ {
+ 	u32 *dwords, addr;
+ 	size_t len;
+@@ -1161,14 +1147,14 @@ static int spi_nor_parse_profile1(struct spi_nor *nor,
+ 
+ 	 /* Set the Read Status Register dummy cycles and dummy address bytes. */
+ 	if (dwords[0] & PROFILE1_DWORD1_RDSR_DUMMY)
+-		params->rdsr_dummy = 8;
++		nor->params->rdsr_dummy = 8;
+ 	else
+-		params->rdsr_dummy = 4;
++		nor->params->rdsr_dummy = 4;
+ 
+ 	if (dwords[0] & PROFILE1_DWORD1_RDSR_ADDR_BYTES)
+-		params->rdsr_addr_nbytes = 4;
++		nor->params->rdsr_addr_nbytes = 4;
+ 	else
+-		params->rdsr_addr_nbytes = 0;
++		nor->params->rdsr_addr_nbytes = 0;
+ 
+ 	/*
+ 	 * We don't know what speed the controller is running at. Find the
+@@ -1194,7 +1180,7 @@ static int spi_nor_parse_profile1(struct spi_nor *nor,
+ 	dummy = round_up(dummy, 2);
+ 
+ 	/* Update the fast read settings. */
+-	spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_8_8_8_DTR],
++	spi_nor_set_read_settings(&nor->params->reads[SNOR_CMD_READ_8_8_8_DTR],
+ 				  0, dummy, opcode,
+ 				  SNOR_PROTO_8_8_8_DTR);
+ 
+@@ -1211,13 +1197,11 @@ static int spi_nor_parse_profile1(struct spi_nor *nor,
+  * @nor:		pointer to a 'struct spi_nor'
+  * @sccr_header:	pointer to the 'struct sfdp_parameter_header' describing
+  *			the SCCR Map table length and version.
+- * @params:		pointer to the 'struct spi_nor_flash_parameter' to be.
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+ static int spi_nor_parse_sccr(struct spi_nor *nor,
+-			      const struct sfdp_parameter_header *sccr_header,
+-			      struct spi_nor_flash_parameter *params)
++			      const struct sfdp_parameter_header *sccr_header)
+ {
+ 	u32 *dwords, addr;
+ 	size_t len;
+@@ -1246,8 +1230,6 @@ static int spi_nor_parse_sccr(struct spi_nor *nor,
+ /**
+  * spi_nor_parse_sfdp() - parse the Serial Flash Discoverable Parameters.
+  * @nor:		pointer to a 'struct spi_nor'
+- * @params:		pointer to the 'struct spi_nor_flash_parameter' to be
+- *			filled
+  *
+  * The Serial Flash Discoverable Parameters are described by the JEDEC JESD216
+  * specification. This is a standard which tends to supported by almost all
+@@ -1257,8 +1239,7 @@ static int spi_nor_parse_sccr(struct spi_nor *nor,
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-int spi_nor_parse_sfdp(struct spi_nor *nor,
+-		       struct spi_nor_flash_parameter *params)
++int spi_nor_parse_sfdp(struct spi_nor *nor)
+ {
+ 	const struct sfdp_parameter_header *param_header, *bfpt_header;
+ 	struct sfdp_parameter_header *param_headers = NULL;
+@@ -1327,7 +1308,7 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
+ 			bfpt_header = param_header;
+ 	}
+ 
+-	err = spi_nor_parse_bfpt(nor, bfpt_header, params);
++	err = spi_nor_parse_bfpt(nor, bfpt_header);
+ 	if (err)
+ 		goto exit;
+ 
+@@ -1337,19 +1318,19 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
+ 
+ 		switch (SFDP_PARAM_HEADER_ID(param_header)) {
+ 		case SFDP_SECTOR_MAP_ID:
+-			err = spi_nor_parse_smpt(nor, param_header, params);
++			err = spi_nor_parse_smpt(nor, param_header);
+ 			break;
+ 
+ 		case SFDP_4BAIT_ID:
+-			err = spi_nor_parse_4bait(nor, param_header, params);
++			err = spi_nor_parse_4bait(nor, param_header);
+ 			break;
+ 
+ 		case SFDP_PROFILE1_ID:
+-			err = spi_nor_parse_profile1(nor, param_header, params);
++			err = spi_nor_parse_profile1(nor, param_header);
+ 			break;
+ 
+ 		case SFDP_SCCR_MAP_ID:
+-			err = spi_nor_parse_sccr(nor, param_header, params);
++			err = spi_nor_parse_sccr(nor, param_header);
+ 			break;
+ 
+ 		default:
+diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
+index 89152ae1cf3e..bbf80d2990ab 100644
+--- a/drivers/mtd/spi-nor/sfdp.h
++++ b/drivers/mtd/spi-nor/sfdp.h
+@@ -107,7 +107,6 @@ struct sfdp_parameter_header {
+ 	u8		id_msb;
+ };
+ 
+-int spi_nor_parse_sfdp(struct spi_nor *nor,
+-		       struct spi_nor_flash_parameter *params);
++int spi_nor_parse_sfdp(struct spi_nor *nor);
+ 
+ #endif /* __LINUX_MTD_SFDP_H */
+diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+index b0c5521c1e27..ee82dcd75310 100644
+--- a/drivers/mtd/spi-nor/spansion.c
++++ b/drivers/mtd/spi-nor/spansion.c
+@@ -142,8 +142,7 @@ static void s28hs512t_post_sfdp_fixup(struct spi_nor *nor)
+ 
+ static int s28hs512t_post_bfpt_fixup(struct spi_nor *nor,
+ 				     const struct sfdp_parameter_header *bfpt_header,
+-				     const struct sfdp_bfpt *bfpt,
+-				     struct spi_nor_flash_parameter *params)
++				     const struct sfdp_bfpt *bfpt)
+ {
+ 	/*
+ 	 * The BFPT table advertises a 512B page size but the page size is
+@@ -162,9 +161,9 @@ static int s28hs512t_post_bfpt_fixup(struct spi_nor *nor,
+ 		return ret;
+ 
+ 	if (nor->bouncebuf[0] & SPINOR_REG_CYPRESS_CFR3V_PGSZ)
+-		params->page_size = 512;
++		nor->params->page_size = 512;
+ 	else
+-		params->page_size = 256;
++		nor->params->page_size = 256;
+ 
+ 	return 0;
+ }
+@@ -178,8 +177,7 @@ static struct spi_nor_fixups s28hs512t_fixups = {
+ static int
+ s25fs_s_post_bfpt_fixups(struct spi_nor *nor,
+ 			 const struct sfdp_parameter_header *bfpt_header,
+-			 const struct sfdp_bfpt *bfpt,
+-			 struct spi_nor_flash_parameter *params)
++			 const struct sfdp_bfpt *bfpt)
+ {
+ 	/*
+ 	 * The S25FS-S chip family reports 512-byte pages in BFPT but
+@@ -187,7 +185,7 @@ s25fs_s_post_bfpt_fixups(struct spi_nor *nor,
+ 	 * of 256 bytes.  Overwrite the page size advertised by BFPT
+ 	 * to get the writes working.
+ 	 */
+-	params->page_size = 256;
++	nor->params->page_size = 256;
+ 
+ 	return 0;
+ }
+diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+index e5dfa786f190..5d5240fb9a32 100644
+--- a/drivers/mtd/spi-nor/winbond.c
++++ b/drivers/mtd/spi-nor/winbond.c
+@@ -11,8 +11,7 @@
+ static int
+ w25q256_post_bfpt_fixups(struct spi_nor *nor,
+ 			 const struct sfdp_parameter_header *bfpt_header,
+-			 const struct sfdp_bfpt *bfpt,
+-			 struct spi_nor_flash_parameter *params)
++			 const struct sfdp_bfpt *bfpt)
+ {
+ 	/*
+ 	 * W25Q256JV supports 4B opcodes but W25Q256FV does not.
+-- 
+2.25.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
