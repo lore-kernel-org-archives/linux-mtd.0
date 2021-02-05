@@ -2,91 +2,80 @@ Return-Path: <SRS0=fkbb=HH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4ED5AC433E0
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Feb 2021 13:37:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 672AAC433E0
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Feb 2021 13:47:35 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D974064DE1
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Feb 2021 13:37:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D974064DE1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id C1E6364FBC
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Feb 2021 13:47:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C1E6364FBC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:Cc:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
+	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=shxpaa8BxEmpoIE0gL/g7gU+nl1ThWA4shMVe5whtrU=; b=mqXe/VxiEmlx0ZWa+Cq9l4WOs
-	2j8kq0EkIzGtegjLDFqBa5KZa8n8jPyMUSeoyZ+MyXF8cT5/571SCuN7zqr2/mJZwpIYISdjH9p6m
-	dw6WhTIB33PGInVerKpCh+ex9W5lB+WUReMoWdkj0w/QnEkmdFBK32j8bqs4YRgksSHgQCoHKHPH1
-	fzF/stSKzGCD7mspoYSq+cjAOjqoLKDYBUQdQNCV0RJsuJCTcdRKqllC+qG5wLkhtZsvCi1l24DSe
-	PO8B2eDkvywJhBNDzDMSJZiYvkppKVMI0YgIoPkIgobgquSiPsH3/Tq10q04NoNbN7Q82jZVWSx/d
-	XWsMtUVcg==;
+	 bh=/Cawsbm1Sl+guLrMEeiGlOXHe4B8pxXm2fJyPp+V4Wk=; b=j0G+oJcwJvI2an+vU2N+7l+LG
+	xPGP6ARwwMiEqNstXQpW+tu4LGd1RfbozASxF6V4Ao339CFqs2KKY80sIw9eDfbsvLf9pdtuqxGdB
+	8r2gfOm1dcETZhYDaxqqT5x4MoiLx37L/9qoQiWiotfWP/B9dB/POADu/IxFk8ICFMjPBSFQPTZ5d
+	LcdY9+jFh+wp+7Ie1VUkLxv67egfL3960DEIm9PFEcMwcgySn3iVM7v/zoWr+0pIJxZJ5j2VEyiVk
+	d1zdCKyS6bzr9mh08qqfb8j6qIvx8JV+7TuY6kx7niqWfs+gxt/E/2wWSjQFxjRoTUR9qBRQp3OlR
+	6ZA5nPIuw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l81I7-0001M7-E2; Fri, 05 Feb 2021 13:36:55 +0000
-Received: from mail-qv1-xf31.google.com ([2607:f8b0:4864:20::f31])
+	id 1l81RS-0002f2-JS; Fri, 05 Feb 2021 13:46:34 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l81I4-0001Kc-KI
- for linux-mtd@lists.infradead.org; Fri, 05 Feb 2021 13:36:53 +0000
-Received: by mail-qv1-xf31.google.com with SMTP id u20so3397435qvx.7
- for <linux-mtd@lists.infradead.org>; Fri, 05 Feb 2021 05:36:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:mail-followup-to:references
- :mime-version:content-disposition:in-reply-to;
- bh=+mW6FpqAmKNeD8zGl6TjC13ZMf5E8ip1whQBn+m47Yw=;
- b=T9l/mpYX+hFDFWYFCi7BPQeSDhYrFell0kIK045Hl1dOHHuEBftPu7El5h6RqPIKzE
- LWISVwkwtYZ6zqOyqgOSLNU0Ipi7ox1/Uj+c19fuQ9pEpYJeVyHV2FeH7hA6FOJ7EieB
- PfJBFhlSwV0DId5m6z8SneBUv4CcJU+UUVgyApfQrTW2NL+IRSGhCWEBb4JiEXdT+meC
- rrpYwTIKmQG0moDFyL05IfjcQQDlqSSp5kaVJbpsR71HpltyKI0SdLSXq7jiTI0sGCC8
- 1Y+fFO48gUOgMgO0xVH3/88rr8/GkkQolZ66uLeekvE54pWE/SOB4BHnx7fl8GiKYl1g
- XFGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id
- :mail-followup-to:references:mime-version:content-disposition
- :in-reply-to;
- bh=+mW6FpqAmKNeD8zGl6TjC13ZMf5E8ip1whQBn+m47Yw=;
- b=qvzqKMQerbULfzFhhKKvMe4eYdRjpWNCIn5UYnf6GtstQ7XgeXLHkGppdOV1q+Rd0v
- iq/3EJ6G2MTJfGUfKQvwrVrlhbP4pNLpznhKHyJkXVa9xIJBpTDftmMUGMTPklthhA3G
- oyCHsFn5fW1BzuDXXzUacRUf+LhBReMohSirOuiwB4xcLMleRMQPODbSDpFsdVnunWyQ
- 3zCEseXK8Qj6d9JLwo0CZfIKKrQ8h/xHJdvPOB7AeeoqOxFn9H8eAIA2GO0Ja7GgK0Z5
- O6gn9WFcp0s2n1AVl69ko6hov/m+iPoNw/03knAgeoYDtVOwR1t/FkoRl0F4JS3yaC4A
- 2W5A==
-X-Gm-Message-State: AOAM533R2gWuvp3c3omDKzMWOCo4tUqh7rQaV9fh8oBV8jp3hwZhpbk0
- NwMbMvUnZ3iy7kYk4VfQeTI=
-X-Google-Smtp-Source: ABdhPJyaF3g7LIACGikT7qeW1QmsE8yC+KpfQNvX3PhX83BEhECpZWc6tt5yGPWjTX+/WnwOW0uQwg==
-X-Received: by 2002:a0c:b65c:: with SMTP id q28mr4365647qvf.49.1612532209689; 
- Fri, 05 Feb 2021 05:36:49 -0800 (PST)
-Received: from ArchLinux ([138.199.10.106])
- by smtp.gmail.com with ESMTPSA id q22sm5225046qki.51.2021.02.05.05.36.45
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 05 Feb 2021 05:36:48 -0800 (PST)
-Date: Fri, 5 Feb 2021 19:06:39 +0530
-From: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH] drivers: mtd: Better word replace a not so good word in
- the file mtd_blkdevs.c
-Message-ID: <YB1J53adyW4BBK3g@ArchLinux>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, richard@nod.at,
- vigneshr@ti.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, rdunlap@infradead.org
-References: <20210205124151.1386271-1-unixbhaskar@gmail.com>
- <20210205142618.116852a0@xps13>
+ id 1l81RP-0002ei-JU
+ for linux-mtd@lists.infradead.org; Fri, 05 Feb 2021 13:46:32 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 115DkRuB093953;
+ Fri, 5 Feb 2021 07:46:27 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1612532787;
+ bh=cB0WfTEJ3j7OEluhrKCZveupuzZyWbr/N7XfkmnBgmY=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=n/tLzFscrErJMCS0yYLR15tgBOTcIO/+yQiXgLgOtd8bDCXK3T68yhJa3Xz5TKyik
+ d/LXwQsdss99IlzmzzU0Zg9064h7E/rvIlo8/pp6ZnX1ZOS7N03w1m4bSuFk5imJEe
+ 5St5bMdL/N7ZruQGgjb3TKilT6pFQhEh/ygdOTAs=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 115DkRQK039984
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Fri, 5 Feb 2021 07:46:27 -0600
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 5 Feb
+ 2021 07:46:26 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 5 Feb 2021 07:46:26 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 115DkQ0M067702;
+ Fri, 5 Feb 2021 07:46:26 -0600
+Date: Fri, 5 Feb 2021 19:16:25 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: Re: [PATCH] mtd: spi-nor: Get rid of duplicated argument in
+ spi_nor_parse_sfdp()
+Message-ID: <20210205134625.6zmeit7ecqtzwyin@ti.com>
+References: <20210204174507.593419-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <20210205142618.116852a0@xps13>
+Content-Disposition: inline
+In-Reply-To: <20210204174507.593419-1-tudor.ambarus@microchip.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210205_083652_734804_17D3563B 
-X-CRM114-Status: GOOD (  17.84  )
+X-CRM114-CacheID: sfid-20210205_084631_770504_75BBB432 
+X-CRM114-Status: GOOD (  21.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,105 +87,110 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: richard@nod.at, rdunlap@infradead.org, linux-mtd@lists.infradead.org,
- vigneshr@ti.com, linux-kernel@vger.kernel.org
-Content-Type: multipart/mixed; boundary="===============2253513760496719014=="
+Cc: richard@nod.at, linux-mtd@lists.infradead.org, vigneshr@ti.com,
+ linux-kernel@vger.kernel.org, miquel.raynal@bootlin.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On 04/02/21 07:45PM, Tudor Ambarus wrote:
+> spi_nor_parse_sfdp(nor, nor->params);
+> passes for the second argument a member within the first argument.
+> Drop the second argument and obtain it directly from the first,
+> and do it across all the children functions. This is a follow up for
+> 'commit 69a8eed58cc0 ("mtd: spi-nor: Don't copy self-pointing struct around")'
+> 
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> ---
+>  drivers/mtd/spi-nor/core.c     | 10 ++--
+>  drivers/mtd/spi-nor/core.h     |  6 +--
+>  drivers/mtd/spi-nor/issi.c     |  3 +-
+>  drivers/mtd/spi-nor/macronix.c |  3 +-
+>  drivers/mtd/spi-nor/sfdp.c     | 87 +++++++++++++---------------------
+>  drivers/mtd/spi-nor/sfdp.h     |  3 +-
+>  drivers/mtd/spi-nor/spansion.c | 12 ++---
+>  drivers/mtd/spi-nor/winbond.c  |  3 +-
+>  8 files changed, 49 insertions(+), 78 deletions(-)
+> 
+[...]
+> @@ -945,13 +935,11 @@ static int spi_nor_parse_smpt(struct spi_nor *nor,
+>   * @nor:		pointer to a 'struct spi_nor'.
+>   * @param_header:	pointer to the 'struct sfdp_parameter_header' describing
+>   *			the 4-Byte Address Instruction Table length and version.
+> - * @params:		pointer to the 'struct spi_nor_flash_parameter' to be.
+>   *
+>   * Return: 0 on success, -errno otherwise.
+>   */
+>  static int spi_nor_parse_4bait(struct spi_nor *nor,
+> -			       const struct sfdp_parameter_header *param_header,
+> -			       struct spi_nor_flash_parameter *params)
+> +			       const struct sfdp_parameter_header *param_header)
+>  {
+>  	static const struct sfdp_4bait reads[] = {
+>  		{ SNOR_HWCAPS_READ,		BIT(0) },
+> @@ -975,8 +963,8 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+>  		{ 0u /* not used */,		BIT(11) },
+>  		{ 0u /* not used */,		BIT(12) },
+>  	};
+> -	struct spi_nor_pp_command *params_pp = params->page_programs;
+> -	struct spi_nor_erase_map *map = &params->erase_map;
+> +	struct spi_nor_pp_command *params_pp = nor->params->page_programs;
+> +	struct spi_nor_erase_map *map = &nor->params->erase_map;
+>  	struct spi_nor_erase_type *erase_type = map->erase_type;
+>  	u32 *dwords;
+>  	size_t len;
+> @@ -1013,7 +1001,7 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+>  		const struct sfdp_4bait *read = &reads[i];
+>  
+>  		discard_hwcaps |= read->hwcaps;
+> -		if ((params->hwcaps.mask & read->hwcaps) &&
+> +		if ((nor->params->hwcaps.mask & read->hwcaps) &&
+>  		    (dwords[0] & read->supported_bit))
+>  			read_hwcaps |= read->hwcaps;
+>  	}
+> @@ -1029,8 +1017,8 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+>  		/*
+>  		 * The 4 Byte Address Instruction (Optional) Table is the only
+>  		 * SFDP table that indicates support for Page Program Commands.
+> -		 * Bypass the params->hwcaps.mask and consider 4BAIT the biggest
+> -		 * authority for specifying Page Program support.
+> +		 * Bypass the nor->params->hwcaps.mask and consider 4BAIT the
+> +		 * biggest authority for specifying Page Program support.
+>  		 */
+>  		discard_hwcaps |= program->hwcaps;
+>  		if (dwords[0] & program->supported_bit)
+> @@ -1064,12 +1052,12 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+>  	 * Discard all operations from the 4-byte instruction set which are
+>  	 * not supported by this memory.
+>  	 */
+> -	params->hwcaps.mask &= ~discard_hwcaps;
+> -	params->hwcaps.mask |= (read_hwcaps | pp_hwcaps);
+> +	nor->params->hwcaps.mask &= ~discard_hwcaps;
+> +	nor->params->hwcaps.mask |= (read_hwcaps | pp_hwcaps);
+>  
+>  	/* Use the 4-byte address instruction set. */
+>  	for (i = 0; i < SNOR_CMD_READ_MAX; i++) {
+> -		struct spi_nor_read_command *read_cmd = &params->reads[i];
+> +		struct spi_nor_read_command *read_cmd = &nor->params->reads[i];
 
---===============2253513760496719014==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="HFkQv3hX6OCe4c2R"
-Content-Disposition: inline
+Nitpick: 'nor->params' is used in multiple places in this function. 
+Might be worth it to make it a local variable.
 
+Either way,
 
---HFkQv3hX6OCe4c2R
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 
-On 14:26 Fri 05 Feb 2021, Miquel Raynal wrote:
->Hi Bhaskar,
->
->Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote on Fri,  5 Feb 2021
->18:11:51 +0530:
->
->> s/fucking/invite/
->>
->>
->> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->> ---
->>  drivers/mtd/mtd_blkdevs.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
->> index fb8e12d590a1..756a0995e474 100644
->> --- a/drivers/mtd/mtd_blkdevs.c
->> +++ b/drivers/mtd/mtd_blkdevs.c
->> @@ -523,7 +523,7 @@ int register_mtd_blktrans(struct mtd_blktrans_ops *t=
-r)
->>  	int ret;
->>
->>  	/* Register the notifier if/when the first device type is
->> -	   registered, to prevent the link/init ordering from fucking
->> +	   registered, to prevent the link/init ordering from invite
->>  	   us over. */
->
->invite us over?
->
->I'm not a native English speaker but this does not bring any value to
->my ears. Worse, I don't even get the point. Better rewrite the comment
->entirely than just swapping "fucking" with a random word, no?
->
-Got your point , and I do understand "fuck" and "fucking" is so strong word
-that it is really difficult to replace with something else.
+>  
+>  		read_cmd->opcode = spi_nor_convert_3to4_read(read_cmd->opcode);
+>  	}
+[...]
 
-But..but you suggestion to rewrite the comments sounds good Miquel ...wish I
-could have that much time in hand to replace every sentence having that word
-=2E..all the patched sent with that word replaces...please step forward and=
- make
-and send patches .
-
-Today I sent 10 patches replacing that word(weather that make sense or not)
-you can see those in the ML ...please pick up as you wish and send patches.
-
-I was simply replacing the word ..never bother about the meaning it
-conveys..doesn't matter really.
-
-so...
-
-Thanks.
->Thanks,
->Miqu=C3=A8l
-
---HFkQv3hX6OCe4c2R
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmAdSeQACgkQsjqdtxFL
-KRW1egf/YR9x8QUVW/w4A7gXog8v2ormOeiIwMsmh+dFQXySybFM8XSENV01zq7+
-ihWte18fqmbBV4zXEuJ/fNApb5CCpfT7uUsAD3W5FGzyd+DkZN+0wL8V40tMfyyq
-eU59eGg0oh4wwrNQMuAMD8the+K91ki2ozbx77ElKqlC3beaKRp3IhMWSg8iu2WK
-kiRsYtWXBAM9Aa7Qnhza5w3UyHA48WWvXlk2hvujSIZasSbdHYs/gDsmQx4WsL7m
-+ljY3PHCUJI3I7x1djkD2JC8Qyboq447ChWT6TUTsV1fsq4hcWRW0gfnR07R1YUK
-uUGvdOJ/HxFgBEoz6A9cOUmdhyzfLQ==
-=oc0N
------END PGP SIGNATURE-----
-
---HFkQv3hX6OCe4c2R--
-
-
---===============2253513760496719014==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============2253513760496719014==--
-
