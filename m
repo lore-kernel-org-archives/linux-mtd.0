@@ -2,83 +2,82 @@ Return-Path: <SRS0=fkbb=HH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DCCCC433DB
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Feb 2021 13:32:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EAD65C433DB
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Feb 2021 13:34:46 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BEEA164FBC
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Feb 2021 13:32:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BEEA164FBC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8646A64E0B
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Feb 2021 13:34:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8646A64E0B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=CiGY3eywL9kLqwT+TcpWAzQAp3+Zj8jvV8hIYOEepQc=; b=vEtQ4ypc0Mr0TUwJ8xryO6M7D
-	ITT5AvinlGlVoGKU3aBFpaz5Jqgob4y+r6dsdaZ2/d/MIxOiplmwewmB+WTbwp73aT8XgZBkS/T6S
-	ydUycehJzMaL+lxgZkjG2MXK47deWyKf6FmN7BXU/muwkmy+cv6zKS5mgg3F85RuSKPIlpI3TUZxN
-	aBD7jrBDZTlcRYjWQhMK6uF0tDRHTXv5eOa1ZYh5LepkudS2JvIq/A2U/aAoBsI4dEBoblzTF0mId
-	tuJ4PMsAqo1orNazKwCAEFx8XOWPVQLRgPSeZjSKa7X1xWv5pZnUu1S1fmGCg2SkVUmYRlH19o5fZ
-	ngwZ2L/dQ==;
+	 bh=Pqq4N8/OeZrdl0jdWoYyHRA5rsdoZG5x1x2ljijFvq8=; b=MjmLchJeU5oJC5UTpilX1BVt9
+	aQBZHILxogobOzt6aNpTZhI+t2atnUG9Abhh46ah88svgLxWLMX6x+MHv6eEiHHLTNQAvsKaAn9yR
+	qw5a5bWddk45rjh9IrzqrlWdqjGSGFeXwI/uLtM+IL+WZXB0jxd2n/mOCfAbFmoDoHhGVx+feRMuZ
+	cPuorGJt4l2hD1hEdEV/jp7b9frGVqxaBUNnB9Yew0JT0pRwo7OmuFmny1ZKJywiNcPyw22mtsCwT
+	hkZBJO1f6/82OV9Kz4RDpGJyAj3zaw009slUH5w8uIJIr7N3FsEEP3RsgPvW6UWGZoRfqm3XU6RZi
+	YS0VvB56Q==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l81D8-0000CP-OH; Fri, 05 Feb 2021 13:31:46 +0000
-Received: from esa.microchip.iphmx.com ([68.232.154.123])
+	id 1l81Fa-0000q3-Nw; Fri, 05 Feb 2021 13:34:18 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l81D5-0000BI-J2
- for linux-mtd@lists.infradead.org; Fri, 05 Feb 2021 13:31:44 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1612531903; x=1644067903;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=TJ1Xni7oqhJicMe/bn1BWlaG9kF212vvJiz63NgX33g=;
- b=mamMVWQ4UOu2o9+Pa9MujL1a3E52DbzYUnbOe8oXPwNOQAPI+ao5j2w8
- QGQkC44bIc0Flz+IHUr9ijs9rwA/RV7NJNggPrCitJtUSAvoBS0z0aANw
- AJbwskp6I0JmxpDoYU9ZDbTNIowVvenWTpF7JDzLZHz/N4rkg7p5yNuXc
- y/56fhzCdF9/Bmm9xY2ez4KBGNptIWS4FnPs1mko3UfAbqSlUDPnO6utb
- H2C8HdP5f3X0NA7WmQ7vF/hv4Ce75SPMvTs3tybS5nHzVZsUsQg0e5yyv
- UT3nmthVpgYQ5IQQ7UWnjy+ZB8qmCOVyGFAgvge9jpnCl+aWZe5KVjJJl A==;
-IronPort-SDR: 8SPAgU3YWjpaUOym2T/H2rY69Knb4on0rW6QdWhP1OFUe7mz2ZNNoHtqnqDyKsIjjgrX2Nfy6t
- EDWRsWggWMJWPkxIbKPOobSH9O+BmKVZvXx86M4fNAOJtRM5NhjwW6kRYuABndCi+KTUsUE7um
- MW4PevwyCMvoynRyE4Ugf4+/cFHBOXiuuCjBazaKEm0QyVnmw50+fhUgQilC9LZfViCgULVaqx
- dqWsrpR39nzUMHLS8k64FcDfUBmNEdcPkEB2cc2gncy/BibuixtRXK3KMMRqMMhK6a4azYTZFx
- PKU=
-X-IronPort-AV: E=Sophos;i="5.81,154,1610434800"; d="scan'208";a="43072524"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 05 Feb 2021 06:31:41 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 5 Feb 2021 06:31:40 -0700
-Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Fri, 5 Feb 2021 06:31:38 -0700
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
-To: <vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@microchip.com>,
- <p.yadav@ti.com>, <michael@walle.cc>
-Subject: Re: [PATCH v3 1/2] mtd: spi-nor: Add Global Block Unlock command
-Date: Fri, 5 Feb 2021 15:31:33 +0200
-Message-ID: <161253178923.670759.16987268553514371903.b4-ty@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210121110546.382633-1-tudor.ambarus@microchip.com>
-References: <20210121110546.382633-1-tudor.ambarus@microchip.com>
+ id 1l81FY-0000oQ-BC
+ for linux-mtd@lists.infradead.org; Fri, 05 Feb 2021 13:34:17 +0000
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 115DY5aj104300;
+ Fri, 5 Feb 2021 07:34:05 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1612532045;
+ bh=7G5EZgBALAwKINIVceA7zaBP6Xj9+w1PtD8gISNG/Jw=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=KCP3EQwi4Q/m+R9xLbeKPQxyBboXpPBAOoLd2aoH1yiygn7MSFZKggitsX6D3EXdr
+ vyjSfExKEn2j4awRiL4bMoXGGFc+J4H934HGECFOHdVVzrZxvpJfwDwla5miMFogUH
+ P/dvrXNdunJsdNF2MEkyzlc6g4XoaA0OD/fKEpaE=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 115DY5Ds031613
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Fri, 5 Feb 2021 07:34:05 -0600
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 5 Feb
+ 2021 07:34:05 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 5 Feb 2021 07:34:05 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 115DY4h0041694;
+ Fri, 5 Feb 2021 07:34:05 -0600
+Date: Fri, 5 Feb 2021 19:04:04 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v2 1/2] mtd: spi-nor: macronix: add support for Macronix
+ octaflash
+Message-ID: <20210205133404.esqqeokhlp4askpq@ti.com>
+References: <1612517808-10010-1-git-send-email-zhengxunli@mxic.com.tw>
+ <1612517808-10010-2-git-send-email-zhengxunli@mxic.com.tw>
+ <20210205104736.2771074c@xps13>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20210205104736.2771074c@xps13>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210205_083143_794247_0038F83B 
-X-CRM114-Status: UNSURE (   7.45  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210205_083416_485244_5B086D7B 
+X-CRM114-Status: GOOD (  32.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,33 +89,133 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: richard@nod.at, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Kavyasree.Kotagiri@microchip.com, miquel.raynal@bootlin.com
+Cc: vigneshr@ti.com, juliensu@mxic.com.tw, ycllin@mxic.com.tw,
+ linux-spi@vger.kernel.org, broonie@kernel.org, linux-mtd@lists.infradead.org,
+ zhengxunli <zhengxunli@mxic.com.tw>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 21 Jan 2021 13:05:45 +0200, Tudor Ambarus wrote:
-> The Global Block Unlock command has different names depending
-> on the manufacturer, but always the same command value: 0x98.
-> Macronix's MX25U12835F names it Gang Block Unlock, Winbond's
-> W25Q128FV names it Global Block Unlock and Microchip's
-> SST26VF064B names it Global Block Protection Unlock.
+On 05/02/21 10:47AM, Miquel Raynal wrote:
+> Hello,
 > 
-> Used in the Individual Block Protection mode, which is mutually
-> exclusive with the Block Protection mode (BP0-3).
+> zhengxunli <zhengxunli@mxic.com.tw> wrote on Fri,  5 Feb 2021 17:36:47
+> +0800:
+> 
+> > The ocatflash is an xSPI compliant octal DTR flash. Add support
+> > for using it in octal DTR mode.
+> > 
+> > Enable Octal DTR mode with 20 dummy cycles to allow running at the
+> > maximum supported frequency of 200Mhz.
+> > 
+> > Try to verify the flash ID to check whether the flash memory in octal
+> > DTR mode is correct. When reading ID in OCTAL DTR mode, ID will appear
+> > in a repeated manner. ex: ID[0] = 0xc2, ID[1] = 0xc2, ID[2] = 0x94,
+> > ID[3] = 0x94... Rearrange the order so that the ID can pass.
+> > 
+> > Signed-off-by: zhengxunli <zhengxunli@mxic.com.tw>
+> > ---
+> >  drivers/mtd/spi-nor/macronix.c | 121 +++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 121 insertions(+)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+> > index 9203aba..7498978 100644
+> > --- a/drivers/mtd/spi-nor/macronix.c
+> > +++ b/drivers/mtd/spi-nor/macronix.c
+> > @@ -8,6 +8,16 @@
+> >  
+> >  #include "core.h"
+> >  
+> > +#define SPINOR_OP_RD_CR2		0x71		/* Read configuration register 2 */
+> > +#define SPINOR_OP_WR_CR2		0x72		/* Write configuration register 2 */
+> > +#define SPINOR_OP_MXIC_DTR_RD		0xee		/* Fast Read opcode in DTR mode */
+> > +#define SPINOR_REG_MXIC_CR2_MODE	0x00000000	/* For setting octal DTR mode */
+> > +#define SPINOR_REG_MXIC_OPI_DTR_EN	0x2		/* Enable Octal DTR */
+> > +#define SPINOR_REG_MXIC_OPI_DTR_DIS	0x1		/* Disable Octal DTR */
+> > +#define SPINOR_REG_MXIC_CR2_DC		0x00000300	/* For setting dummy cycles */
+> > +#define SPINOR_REG_MXIC_DC_20		0x0		/* Setting dummy cycles to 20 */
+> > +#define MXIC_MAX_DC			20		/* Maximum value of dummy cycles */
+> > +
+> >  static int
+> >  mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
+> >  			    const struct sfdp_parameter_header *bfpt_header,
+> > @@ -33,6 +43,113 @@
+> >  	.post_bfpt = mx25l25635_post_bfpt_fixups,
+> >  };
+> >  
+> > +/**
+> > + * spi_nor_macronix_octal_dtr_enable() - Enable octal DTR on Macronix flashes.
+> > + * @nor:		pointer to a 'struct spi_nor'
+> > + * @enable:		whether to enable or disable Octal DTR
+> > + *
+> > + * This also sets the memory access dummy cycles to 20 to allow the flash to
+> > + * run at up to 200MHz.
+> > + *
+> > + * Return: 0 on success, -errno otherwise.
+> > + */
+> > +static int spi_nor_macronix_octal_dtr_enable(struct spi_nor *nor, bool enable)
+> > +{
+> > +	struct spi_mem_op op;
+> > +	u8 *buf = nor->bouncebuf, i;
+> > +	int ret;
+> > +
+> > +	if (enable) {
+> > +		/* Use 20 dummy cycles for memory array reads. */
+> > +		ret = spi_nor_write_enable(nor);
+> > +		if (ret)
+> > +			return ret;
+> > +
+> > +		*buf = SPINOR_REG_MXIC_DC_20;
+> > +		op = (struct spi_mem_op)
+> > +			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_CR2, 1),
+> > +				   SPI_MEM_OP_ADDR(4, SPINOR_REG_MXIC_CR2_DC, 1),
+> > +				   SPI_MEM_OP_NO_DUMMY,
+> > +				   SPI_MEM_OP_DATA_OUT(1, buf, 1));
+> > +
+> > +		ret = spi_mem_exec_op(nor->spimem, &op);
+> > +		if (ret)
+> > +			return ret;
+> > +
+> > +		ret = spi_nor_wait_till_ready(nor);
+> > +		if (ret)
+> > +			return ret;
+> > +
+> > +		nor->read_dummy = MXIC_MAX_DC;
+> 
+> I am still not convinced by this constant value.
 
-Applied to spi-nor/next, thanks!
+I think a constant value is fine. This dummy cycle value reflects how 
+many cycles the master clock would go through before the flash starts 
+emitting the data. If the master (aka the controller) is running at a 
+lower frequency then those cycles go through slower, but the flash still 
+waits for them to finish before emitting data. And since the master is 
+driving the clock and the flash is just "reading" it, both remain in 
+sync.
 
-[1/2] mtd: spi-nor: Add Global Block Unlock command
-      https://git.kernel.org/mtd/c/a7a5acba0e06
-[2/2] mtd: spi-nor: sst: Add support for Global Unlock on sst26vf
-      https://git.kernel.org/mtd/c/75386810d3a6
+The dummy cycles need to be set for the worst case scenario [0]. The 
+flash usually needs a minimum amount of time before it is ready to emit 
+the data. So for example if the master is at 25 MHz, the clock period is 
+longer so 8 clock cycles [1] might be long enough to exceed that minimum 
+time. But when the master is running at 200 MHz, the clock period is 
+smaller so 8 cycles might not give the flash enough time to prepare. So 
+we need to to wait at least 20 cycles [1] before emitting data.
 
-Best regards,
+This is what my patches do for the Cypress S28 flash. I have tested it 
+on both 25 MHz and 166 MHz with 22 dummy cycles. It is not the most 
+efficient at 25 MHz since 5 dummy cycles is all that is needed for that 
+speed, but its the best we can do right now.
+
+[0] Since SPI NOR has no way of knowing what speed the controller is 
+running at, assume the fastest speed the flash can run at.
+[1] Hypothetical example. Don't know the actual values for this flash.
+ 
+> The rest looks good to me.
+
 -- 
-Tudor Ambarus <tudor.ambarus@microchip.com>
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
