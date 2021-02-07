@@ -1,82 +1,59 @@
-Return-Path: <SRS0=b6Ll=HI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=dz4H=HJ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74106C433DB
-	for <linux-mtd@archiver.kernel.org>; Sat,  6 Feb 2021 13:01:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BFC6C433E0
+	for <linux-mtd@archiver.kernel.org>; Sun,  7 Feb 2021 07:53:24 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2039264E5B
-	for <linux-mtd@archiver.kernel.org>; Sat,  6 Feb 2021 13:01:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2039264E5B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8530B64E88
+	for <linux-mtd@archiver.kernel.org>; Sun,  7 Feb 2021 07:53:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8530B64E88
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=4/1XxkpHkYQqPhBdw3a5hynkpcOwJPNps7qfjlregh0=; b=EY18S5rFST0kdI9wqFSiAyLqz
-	eLWE21fB1WHV5hGdd+P7KQ4W9ZYAtWCd6sbC//4xI8LNFoMwgXVWDQ4wtlJ+rxGc9GCyyCnpB1Ed+
-	NvRpM/ncjP0uIgRp7SthyalfI3G4f96uOnhVgY/XkTOpqF1rn7fsZTsLtUFYlUgQXZUUE6+eJRtQL
-	I/5WG9YFTVfL41d3FYU9/WTC3FMGv55GTFnKH+XMmLvVrXq3QKspIWz3A++DR5Yyi2aQxT6PwCwIG
-	swbOL89HE9GQxQHNyuVMwQaJQB7B0XjsL8mT8mpu3FOPugSBWUaNWJhu1J47Fk9zziycJn65t/dlA
-	Hx1WRldTQ==;
+	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=YXXGHM04dlawDkJVjS4Malpiwl0NmJrlSxjKQfc5dss=; b=Qqc+3na0NFN4T2ZmIX3gl19L4e
+	fcpa2+2aTSCXu5G6ImuIXBi9jJNenKeA+K7VD2flqd7cNtdBJUepSMolUm4lxfVXudgUm3JCHHGmw
+	fGzCmaImdJyPSDo8k3GDXtVMOsT/QEIfuOPVKcZyX8j72lr7qukAd447xUHRNNOuHFMbe6cv7HUx+
+	siTfWER+A4znCLaL3/NZI0WINWM1AwQe0NQb3+FW1DtheCCMj2SuJGcSUpdhp4+AqHVYqf8SLr3Nb
+	UnYv7r4ZWhBoRiOESSmswp5nU/S3H4xAV6xHWtIm2LzW259jdMcBKcC9ZQTKoXIm86rHpaFycetcE
+	+FN6ebdg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l8NBr-0000kb-87; Sat, 06 Feb 2021 12:59:55 +0000
-Received: from mail-pf1-x429.google.com ([2607:f8b0:4864:20::429])
+	id 1l8ero-00045U-8l; Sun, 07 Feb 2021 07:52:24 +0000
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l8NBj-0000jS-ML
- for linux-mtd@lists.infradead.org; Sat, 06 Feb 2021 12:59:49 +0000
-Received: by mail-pf1-x429.google.com with SMTP id u143so19383pfc.7
- for <linux-mtd@lists.infradead.org>; Sat, 06 Feb 2021 04:59:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=jOxeAVI4ep960RsP7Dr+OvXNN2qzuJYLqyTuQNnmHD0=;
- b=WGVhkfZuHCoXMYXi/LqUTiTa3wE+9vMaT4ixdh9reiNfUz9bV1KoI/SvMOE2ktCWTH
- l8WA/K8NIzIcqEpq4rwAXExjPHh5y7ks+aFjFXkfkf7r4Pi0X9zIGQIGUj5w1anbog1v
- zixyas6hfUlEIFiSh8xPdn42lkRcbSLcycxyYju6bR8g9tIA8nwW7nA4Fbld7G+c3ajE
- UIN7l3qW03p72lC3c3sN3q844sEVzvPEhIrI+DmUnvT/1489Ed+0SIZM3pIGXTn+cT4a
- 2vI40f4gJUAi8TrE13+/u4CzzaVy41VC5lInI0EtGQEQDjA2v6CQDSb/BqUFJZeBOrCh
- ezKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=jOxeAVI4ep960RsP7Dr+OvXNN2qzuJYLqyTuQNnmHD0=;
- b=izZfouSUdgVL0q8mjWd6FnFWHf5ONq20x2LAbu6kFmvO6+fuqatWTXGIpdSFHv39gt
- Tdn2fWu8nCwB+nilMt1szKvPcI15h/UDImaMfUJ+cnzxd5P+Azr9SJazwP7uyJaIZFFH
- hXGLIFIJk+fgfaIQex1kW+pBLCEJCzG74tgACqg1HzKP4yS8V2lrPvrDbd6OkkFcL+vv
- pmvZ8M6xGLcE/KCHL2bwprJnvATZ6YbtH7HdsNEpCS8YpyRdK31VLMle4IclUJD5KXfS
- Pfl7lF+W2ZB11YfS4/k0v1lwjuE30M9FyFl/90ytlVf5h1axigqOWRoXtW19BmVD+ooy
- R3gw==
-X-Gm-Message-State: AOAM533XTu9Pao7Xp0uRnD0QQdExQhjgSdlSxSpclxkTcjXA4lF3O1Sf
- Mxqmt3UlZKW+m5qec5myfPF0qflu4JxVNgzsWk4FKR/FR2s=
-X-Google-Smtp-Source: ABdhPJyAPoNl/jqtZYpuz4Gb8wZH/IDtiJxCl43Zkir32rq3M9jWC0rcD/Chw+vSSNvWKl9hptCsMA73+kXw/0icC5Y=
-X-Received: by 2002:a63:f614:: with SMTP id m20mr786017pgh.200.1612616383448; 
- Sat, 06 Feb 2021 04:59:43 -0800 (PST)
-MIME-Version: 1.0
-References: <20210127203020.9574-1-miquel.raynal@bootlin.com>
- <20210127203020.9574-2-miquel.raynal@bootlin.com>
-In-Reply-To: <20210127203020.9574-2-miquel.raynal@bootlin.com>
-From: Adam Ford <aford173@gmail.com>
-Date: Sat, 6 Feb 2021 06:59:32 -0600
-Message-ID: <CAHCN7xJsvHEUFRO9-DanEXX92LK8m4iMhHrOD3MLd3QXiKkNyg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/9] mtd: nand: Let ECC engines advertize the exact
- number of steps
-To: Miquel Raynal <miquel.raynal@bootlin.com>
+ id 1l8erk-000454-9N
+ for linux-mtd@lists.infradead.org; Sun, 07 Feb 2021 07:52:22 +0000
+X-Alimail-AntiSpam: AC=PASS; BC=-1|-1; BR=01201311R801e4; CH=green; DM=||false|;
+ DS=||; FP=0|-1|-1|-1|0|-1|-1|-1; HT=alimailimapcm10staff010182156082;
+ MF=jiapeng.chong@linux.alibaba.com; NM=1; PH=DS; RN=6; SR=0;
+ TI=SMTPD_---0UO3XDKG_1612684328; 
+Received: from
+ j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com
+ fp:SMTPD_---0UO3XDKG_1612684328) by smtp.aliyun-inc.com(127.0.0.1);
+ Sun, 07 Feb 2021 15:52:13 +0800
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To: miquel.raynal@bootlin.com
+Subject: [PATCH v2] mtd: convert sysfs sprintf/snprintf family to sysfs_emit
+Date: Sun,  7 Feb 2021 15:52:07 +0800
+Message-Id: <1612684327-115106-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210206_075947_776716_E0CD5C39 
-X-CRM114-Status: GOOD (  17.64  )
+X-CRM114-CacheID: sfid-20210207_025220_682675_30FF1445 
+X-CRM114-Status: UNSURE (   7.95  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,52 +65,188 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, ladis@triops.cz,
- Boris Brezillon <boris.brezillon@collabora.com>, linux-mtd@lists.infradead.org
+Cc: richard@nod.at, Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+ linux-mtd@lists.infradead.org, vigneshr@ti.com, linux-kernel@vger.kernel.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jan 27, 2021 at 2:30 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->
-> This is an information that might be useful for specific uses, so
-> export it, which might avoid having to guess the number of steps when
-> necessary.
->
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Fix the following coccicheck warning:
 
-For the series,
-Tested-by: Adam Ford <aford173@gmail.com> #logicpd Torpedo
+convert sysfs snprintf family to sysfs_emit in 'mtdcore.c'.
 
-> ---
->  include/linux/mtd/nand.h | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index 414f8a4d2853..632becb13b46 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -231,12 +231,14 @@ struct nand_ops {
->  /**
->   * struct nand_ecc_context - Context for the ECC engine
->   * @conf: basic ECC engine parameters
-> + * @nsteps: number of ECC steps
->   * @total: total number of bytes used for storing ECC codes, this is used by
->   *         generic OOB layouts
->   * @priv: ECC engine driver private data
->   */
->  struct nand_ecc_context {
->         struct nand_ecc_props conf;
-> +       unsigned int nsteps;
->         unsigned int total;
->         void *priv;
->  };
-> --
-> 2.20.1
->
+Reported-by: Abaci Robot<abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+Changes in v2:
+  - Adjust the description of the modified content.
+
+ drivers/mtd/mtdcore.c | 35 +++++++++++++++++------------------
+ 1 file changed, 17 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 2d6423d..c37056e 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -131,7 +131,7 @@ static ssize_t mtd_type_show(struct device *dev,
+ 		type = "unknown";
+ 	}
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n", type);
++	return sysfs_emit(buf, "%s\n", type);
+ }
+ static DEVICE_ATTR(type, S_IRUGO, mtd_type_show, NULL);
+ 
+@@ -140,7 +140,7 @@ static ssize_t mtd_flags_show(struct device *dev,
+ {
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "0x%lx\n", (unsigned long)mtd->flags);
++	return sysfs_emit(buf, "0x%lx\n", (unsigned long)mtd->flags);
+ }
+ static DEVICE_ATTR(flags, S_IRUGO, mtd_flags_show, NULL);
+ 
+@@ -149,8 +149,7 @@ static ssize_t mtd_size_show(struct device *dev,
+ {
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%llu\n",
+-		(unsigned long long)mtd->size);
++	return sysfs_emit(buf, "%llu\n", (unsigned long long)mtd->size);
+ }
+ static DEVICE_ATTR(size, S_IRUGO, mtd_size_show, NULL);
+ 
+@@ -159,7 +158,7 @@ static ssize_t mtd_erasesize_show(struct device *dev,
+ {
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%lu\n", (unsigned long)mtd->erasesize);
++	return sysfs_emit(buf, "%lu\n", (unsigned long)mtd->erasesize);
+ }
+ static DEVICE_ATTR(erasesize, S_IRUGO, mtd_erasesize_show, NULL);
+ 
+@@ -168,7 +167,7 @@ static ssize_t mtd_writesize_show(struct device *dev,
+ {
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%lu\n", (unsigned long)mtd->writesize);
++	return sysfs_emit(buf, "%lu\n", (unsigned long)mtd->writesize);
+ }
+ static DEVICE_ATTR(writesize, S_IRUGO, mtd_writesize_show, NULL);
+ 
+@@ -178,7 +177,7 @@ static ssize_t mtd_subpagesize_show(struct device *dev,
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 	unsigned int subpagesize = mtd->writesize >> mtd->subpage_sft;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%u\n", subpagesize);
++	return sysfs_emit(buf, "%u\n", subpagesize);
+ }
+ static DEVICE_ATTR(subpagesize, S_IRUGO, mtd_subpagesize_show, NULL);
+ 
+@@ -187,7 +186,7 @@ static ssize_t mtd_oobsize_show(struct device *dev,
+ {
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%lu\n", (unsigned long)mtd->oobsize);
++	return sysfs_emit(buf, "%lu\n", (unsigned long)mtd->oobsize);
+ }
+ static DEVICE_ATTR(oobsize, S_IRUGO, mtd_oobsize_show, NULL);
+ 
+@@ -196,7 +195,7 @@ static ssize_t mtd_oobavail_show(struct device *dev,
+ {
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%u\n", mtd->oobavail);
++	return sysfs_emit(buf, "%u\n", mtd->oobavail);
+ }
+ static DEVICE_ATTR(oobavail, S_IRUGO, mtd_oobavail_show, NULL);
+ 
+@@ -205,7 +204,7 @@ static ssize_t mtd_numeraseregions_show(struct device *dev,
+ {
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%u\n", mtd->numeraseregions);
++	return sysfs_emit(buf, "%u\n", mtd->numeraseregions);
+ }
+ static DEVICE_ATTR(numeraseregions, S_IRUGO, mtd_numeraseregions_show,
+ 	NULL);
+@@ -215,7 +214,7 @@ static ssize_t mtd_name_show(struct device *dev,
+ {
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n", mtd->name);
++	return sysfs_emit(buf, "%s\n", mtd->name);
+ }
+ static DEVICE_ATTR(name, S_IRUGO, mtd_name_show, NULL);
+ 
+@@ -224,7 +223,7 @@ static ssize_t mtd_ecc_strength_show(struct device *dev,
+ {
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%u\n", mtd->ecc_strength);
++	return sysfs_emit(buf, "%u\n", mtd->ecc_strength);
+ }
+ static DEVICE_ATTR(ecc_strength, S_IRUGO, mtd_ecc_strength_show, NULL);
+ 
+@@ -234,7 +233,7 @@ static ssize_t mtd_bitflip_threshold_show(struct device *dev,
+ {
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%u\n", mtd->bitflip_threshold);
++	return sysfs_emit(buf, "%u\n", mtd->bitflip_threshold);
+ }
+ 
+ static ssize_t mtd_bitflip_threshold_store(struct device *dev,
+@@ -261,7 +260,7 @@ static ssize_t mtd_ecc_step_size_show(struct device *dev,
+ {
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%u\n", mtd->ecc_step_size);
++	return sysfs_emit(buf, "%u\n", mtd->ecc_step_size);
+ 
+ }
+ static DEVICE_ATTR(ecc_step_size, S_IRUGO, mtd_ecc_step_size_show, NULL);
+@@ -272,7 +271,7 @@ static ssize_t mtd_ecc_stats_corrected_show(struct device *dev,
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 	struct mtd_ecc_stats *ecc_stats = &mtd->ecc_stats;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%u\n", ecc_stats->corrected);
++	return sysfs_emit(buf, "%u\n", ecc_stats->corrected);
+ }
+ static DEVICE_ATTR(corrected_bits, S_IRUGO,
+ 		   mtd_ecc_stats_corrected_show, NULL);
+@@ -283,7 +282,7 @@ static ssize_t mtd_ecc_stats_errors_show(struct device *dev,
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 	struct mtd_ecc_stats *ecc_stats = &mtd->ecc_stats;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%u\n", ecc_stats->failed);
++	return sysfs_emit(buf, "%u\n", ecc_stats->failed);
+ }
+ static DEVICE_ATTR(ecc_failures, S_IRUGO, mtd_ecc_stats_errors_show, NULL);
+ 
+@@ -293,7 +292,7 @@ static ssize_t mtd_badblocks_show(struct device *dev,
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 	struct mtd_ecc_stats *ecc_stats = &mtd->ecc_stats;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%u\n", ecc_stats->badblocks);
++	return sysfs_emit(buf, "%u\n", ecc_stats->badblocks);
+ }
+ static DEVICE_ATTR(bad_blocks, S_IRUGO, mtd_badblocks_show, NULL);
+ 
+@@ -303,7 +302,7 @@ static ssize_t mtd_bbtblocks_show(struct device *dev,
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 	struct mtd_ecc_stats *ecc_stats = &mtd->ecc_stats;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%u\n", ecc_stats->bbtblocks);
++	return sysfs_emit(buf, "%u\n", ecc_stats->bbtblocks);
+ }
+ static DEVICE_ATTR(bbt_blocks, S_IRUGO, mtd_bbtblocks_show, NULL);
+ 
+-- 
+1.8.3.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
