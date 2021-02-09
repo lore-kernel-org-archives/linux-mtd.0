@@ -7,73 +7,68 @@ X-Spam-Status: No, score=-4.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36446C433DB
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Feb 2021 15:23:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E28A7C433E0
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Feb 2021 15:42:02 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8C76464EBC
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Feb 2021 15:23:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C76464EBC
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=szeredi.hu
+	by mail.kernel.org (Postfix) with ESMTPS id 8EEE764E27
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Feb 2021 15:42:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8EEE764E27
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:Subject:References:In-Reply-To:
+	Message-ID:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=AwilzdX/W/HwHuugruutPstBdVdtXZP3DVlVFM40hxk=; b=JdHzUKDk5Eo4elEj4zGD7ua0U
-	2ccWrki6/G478WFr/ZXxNdj8ryF/tEYbd41aEz28n/rYC0Un1xJ2+f4QsYgN0kwFkSzODyM+WzSnO
-	1EvCCmwj9/HedGjDISwXpnSlF1W41EVDpoJZ1blV+rP9lFrVUmBWC618mvAtLNmmhwJkOm/xjJdYu
-	kf06Ja1lmTFEs+a11Sw3XNeL7C43m9dLBW03Jz3wrPmuGt3HRz+JxgPJYfdPBZKgurjt7DvSOlfw3
-	4esgv1A0HheQkMTWxaE8Vtp7VeoxwxnqyBYcm6fiKRXNi2DHsWSi5YlpiyDbdsrLrXBRBUvTA0uEw
-	yKKZkvRnQ==;
+	 bh=jcGzuMJBBZR7cQFHKyuegB07vrjZcM3mZKXM5G35+JM=; b=XSeehmxurLo3k33yVa6rnfaiv
+	jX7jMqP/tGuvFp/dr7596ujajULGrxk+TWFskb6e1SZCb1xl0NX5jacfviOfCnQ2ti1ibs+eiwjeR
+	95N7AX0D64tGsX8ZfSdwdyEF8+QdQW1aIHMdNn2hHMEE/qzjhQhJR6FsD15aSVYAVrkx/+OGCR5Oi
+	7VXPmXa2PnpnAFjiDNmsoGa0gQ/iOVUhB/eVq7DAU5xzepYhzpYtrrEy8SdJfekXiNzufZSuq61Ta
+	FZHQWmfsTG332ndAzWHX9QPf75kQ605aMIrZZI9sSkzNXSSmDzqJtiqNxhIkXwJTz58uej5GTxokX
+	rbrkujp+A==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l9Uqw-0007ei-Ha; Tue, 09 Feb 2021 15:22:58 +0000
-Received: from mail-vs1-xe2d.google.com ([2607:f8b0:4864:20::e2d])
+	id 1l9V8m-0001uY-By; Tue, 09 Feb 2021 15:41:24 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l9Uqs-0007dG-Rs
- for linux-mtd@lists.infradead.org; Tue, 09 Feb 2021 15:22:55 +0000
-Received: by mail-vs1-xe2d.google.com with SMTP id q23so9627454vsg.4
- for <linux-mtd@lists.infradead.org>; Tue, 09 Feb 2021 07:22:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=szeredi.hu; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=KCZz97uzCHGddkBTReOyagy60zeLzzCF1I6wRGccqhE=;
- b=DrGLXzDh3hkpXg9djEHKfEhye/AVp2sQm27tEP3KeWlb8f5B0Nwq7pfOpmCMi27AGG
- cT3f98YOQIj82GzIR7WKpE0qSo/tNcRAJhGVThQAGzoMebMIAEfoYr5PV7i1CPoYFxrm
- xA3xvwJFDKHwYFPCjP7VvoVrWLCnNMFsPj45A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=KCZz97uzCHGddkBTReOyagy60zeLzzCF1I6wRGccqhE=;
- b=DhmhQ77LpybHEaLWKS4m0hcGHbAkaJKixiX3/fHKQmZsN/1WuKjNVKgGGp172UJt1F
- t8WDrgx3SGz3RJSgjlpMxV+h4xtBTzKUXLoG005VqwvC5rjgwyqRrgGjlPrt+yhUlJeT
- nBhoXj9sWbyh5VprqYsk0iLshc87uPdEzeDvtVHmvmdsrHG6tyrjM8qE9zoE50FrWaPS
- O8NMRBJZ8SRg/L6Yu6IV1tN2VyF4jugL3ZkcnM9RmBXQU+P14AIgDWhwJX3Rk2WZY7CK
- RfFuLLMsCyrHMpHBJg4eVBsYsQaTol/XkvIl1UvKJ7nXge5JonmYDG3R2yzu4dKJRUKr
- gjfQ==
-X-Gm-Message-State: AOAM533Bp4vmJcdh7ibQuh/GDtd66NUUXBs5OI+5ESj+Gh/lg8N8elSE
- uj0ZlDn0anx93CoFsfJu7OZ1EOA4nQO1iD/9Pqxr5w==
-X-Google-Smtp-Source: ABdhPJyQaaW8l0xGMipKjEWaPlZilec/uO/KyZ287BqbXRG1zNpFaUAXEASIAMSauQrZVVkhPozcrTic5kP1jEc0OlQ=
-X-Received: by 2002:a67:a404:: with SMTP id n4mr13411993vse.0.1612884172982;
- Tue, 09 Feb 2021 07:22:52 -0800 (PST)
-MIME-Version: 1.0
+ id 1l9V8j-0001th-Ng
+ for linux-mtd@lists.infradead.org; Tue, 09 Feb 2021 15:41:22 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 0A8E56083276;
+ Tue,  9 Feb 2021 16:41:19 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id 6X5LfEg7z8cH; Tue,  9 Feb 2021 16:41:18 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 91ADC6083272;
+ Tue,  9 Feb 2021 16:41:18 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id 72_y7wqJgWsi; Tue,  9 Feb 2021 16:41:18 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 62549608A38F;
+ Tue,  9 Feb 2021 16:41:18 +0100 (CET)
+Date: Tue, 9 Feb 2021 16:41:18 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: Luca Risolia <luca.risolia@studio.unibo.it>
+Message-ID: <443281182.378615.1612885278254.JavaMail.zimbra@nod.at>
+In-Reply-To: <3a9c19cf-2c25-a3bf-a200-6d223952797a@studio.unibo.it>
 References: <20210124232007.21639-1-richard@nod.at>
  <CAJfpegvN2KdMj_7T-OF1PAs8xZiU3f4233AvigaXwwRAsgQEjw@mail.gmail.com>
  <563952295.378372.1612881357746.JavaMail.zimbra@nod.at>
  <3a9c19cf-2c25-a3bf-a200-6d223952797a@studio.unibo.it>
-In-Reply-To: <3a9c19cf-2c25-a3bf-a200-6d223952797a@studio.unibo.it>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Tue, 9 Feb 2021 16:22:42 +0100
-Message-ID: <CAJfpegv5zG0ixRrf-nauHkG-36C34xVO5jN_GX=3f4JamnRfwA@mail.gmail.com>
 Subject: Re: [fuse-devel] [PATCH 0/8] MUSE: Userspace backed MTD v3
-To: Luca Risolia <luca.risolia@studio.unibo.it>
+MIME-Version: 1.0
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Topic: MUSE: Userspace backed MTD v3
+Thread-Index: CNyuanlCgrWAfDgLZ61+F9X+2N1myA==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210209_102254_999131_1FB3576C 
-X-CRM114-Status: UNSURE (   9.87  )
+X-CRM114-CacheID: sfid-20210209_104121_883514_E8C1E811 
+X-CRM114-Status: UNSURE (   4.99  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -86,32 +81,25 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Miklos Szeredi <miklos@szeredi.hu>,
  fuse-devel <fuse-devel@lists.sourceforge.net>,
- Richard Weinberger <richard@nod.at>, Ron Minnich <rminnich@google.com>,
- linux-kernel <linux-kernel@vger.kernel.org>,
+ Ron Minnich <rminnich@google.com>, linux-kernel <linux-kernel@vger.kernel.org>,
  Boris Brezillon <boris.brezillon@collabora.com>,
  linux-mtd <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>, sven@narfation.org
+ Miquel Raynal <miquel.raynal@bootlin.com>, sven <sven@narfation.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Feb 9, 2021 at 4:10 PM Luca Risolia
-<luca.risolia@studio.unibo.it> wrote:
->
-> Hi guys,
->
 > a bit OT probably: is there any chance for you to also implement mmap()
 > for CUSE? That would be much appreciated.
 
-That's an old one.
-
-No, I don't have plans, but patches are welcome, of course.
+What exactly do you have in mind? I wonder about the use case.
+mmap() between a FUSE server and a client is more or less shared memory in userspace.
 
 Thanks,
-Miklos
+//richard
 
 ______________________________________________________
 Linux MTD discussion mailing list
