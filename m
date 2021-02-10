@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82E9BC433E6
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Feb 2021 11:01:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BC11C433E0
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Feb 2021 11:13:26 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 193E264E37
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Feb 2021 11:01:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 193E264E37
+	by mail.kernel.org (Postfix) with ESMTPS id 1176A64D99
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Feb 2021 11:13:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1176A64D99
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,60 +23,61 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
 	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=2T3R72qvGwXIkyFBytN6bd7qa9rLv6UuOnhbECOt4N4=; b=Qq0K2FsnqsufhWEiSiGAcZPUm
-	8N9al7X3+aJ+BuFl+HyvsJZ/6jK8GslLeI/0rInsinEec1LHxyxscObalVHtQzD4sJ66Om+2X8qiK
-	eGWv1tnaBJps2dC/R6c0Ptt5JEFwVDi//+NQJDFjtwpQtgQQujGVXLZDiFvtUpa3ciH5oJ9AK6XgY
-	17l00RM9JSZyrzNoDaKsgjZ9/uwefNgokxQsL200Y3Sp5SIg4ft0KvO1ItFsgUxAiW83mBXlguc0m
-	o9qfk8fphOym+qEzPnycn7TfXETT7PWzOwDgIOaTCdBAiv0O7lyqs8uy0gVyTydPtKUgYHzFYLQaj
-	6xJvnzHIQ==;
+	 bh=R355pCgvbndm8sCRblnZDsLxWx4jPMvGkrqIOm9rkVg=; b=pMD60Ye8oqaAZlBfZomZJpwuO
+	aAIf32hHUf8wivPFdAdcR5xeiWNap98GdQLmrMVyjMiajKqjijcj95OoBjRNqKKp4RPx9+cYDrF1S
+	jL0s71xIpPpoCQBMg31EJWz53Vl1lmbhXTjeqCfhE5v+kcU4TygggRLWWJlX76n/yYwi0SkXwFRIq
+	eotz5KWF5BshWHrpLbRn7nVtwc9xjf3OuE8gDlTKcMhoUhpRe7EBNdykUfgU8c1tzlgp+tmmNApQf
+	R3ULUnS0tDCjLsjsesKO7tH8TOFeVBOFL8TiGRqeuYlP5DjpLrlfAZuBGMHEbBZgO2wFP4wsPOa3p
+	JVZZohQjg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1l9nET-0008AK-0b; Wed, 10 Feb 2021 11:00:29 +0000
-Received: from mail-qt1-x830.google.com ([2607:f8b0:4864:20::830])
+	id 1l9nQO-0002cp-7N; Wed, 10 Feb 2021 11:12:48 +0000
+Received: from mail-qk1-x734.google.com ([2607:f8b0:4864:20::734])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l9nEM-00089l-RW
- for linux-mtd@lists.infradead.org; Wed, 10 Feb 2021 11:00:23 +0000
-Received: by mail-qt1-x830.google.com with SMTP id e11so1160681qtg.6
- for <linux-mtd@lists.infradead.org>; Wed, 10 Feb 2021 03:00:20 -0800 (PST)
+ id 1l9nPu-0002K9-4C
+ for linux-mtd@lists.infradead.org; Wed, 10 Feb 2021 11:12:21 +0000
+Received: by mail-qk1-x734.google.com with SMTP id v206so1210010qkb.3
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Feb 2021 03:12:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=04D7WiqCI7NQHqfoZHV7XOGofyTBt4zdFBB44Awvjnk=;
- b=IG0QkIZkXZBjKkv0lndbbKwa6qb49vZlpLlQYYEC6rcrm+bbZJ0eLAJ6fykd4gZR/S
- wxZ/m+KKUdUGCpBJmyhC2/jkax6yDV5lVYoJHw+Rk1oFUog9OFGY4JebESWsHgKWdQvT
- inWZcRJJhvyjr5v0feqPls+KpXtM62j2nGxavZpuL+OSnjW+0ZtvAIeBavx2Y80Hskdu
- wIJKl0EYjhto4vMpy5y7P7vLryfuVBOoLRNwjrCwg6O1t9T4VcnkOZ9t85stlS6b0mYj
- QBCUZ5NHMujcZB8AFEb3H+nFoGqstihuyfYR05SLUsphsbEKIIkFiV4C7Kk/8uqydq3n
- N58A==
+ :cc; bh=l6Aa5lO3nX8StZdHni5HLbVJmff/S5b/H+w9der7I6w=;
+ b=cH20E2hoIgdhIv7ZUGg4Kji8fgP8I30rf969LiyzfgKSxFOVljcaILS+YDx1Arwknx
+ NceojQ07JRuMuscoqMNGTcoOSE0ca9QeIpAoockv+iRRDufhxNTrOx9NrnJrLFOH3CUb
+ I4BT4EZY69waZThVs0Y8J7Kl4IYq4Tv96JYCPcICcqkvxrSX9ypNEYanl25M50qa2lvg
+ JPJ4jCBd2/pVVVR3XP5NX/FfnayqWe50rMBw0DV7nlvxOz1BypO2JSQN/+Ae2VfB4DXd
+ dnDqL5A9kUsz1OvkU6/L4JO/499Cz6+z/3M7bWB2e5FNhd2NhDZd+YCZK5doStLcqZef
+ uNKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=04D7WiqCI7NQHqfoZHV7XOGofyTBt4zdFBB44Awvjnk=;
- b=aCO8UyheutxzGBolxfQWZVzjuHDuL+H0ypIwcg4B2GRmzFfKTmeYFFqH+qWspId1Sl
- A5U1vpix+aD9UUfRRjIAWEJywkIn+xxaWl4o6xQ5f5t/dvWwViX1peDiphEz4GUhxA77
- A+om6Ho4nUMa8fVQ4YdNqWbqMzVXiKa19raZTh+gqrof3RbWPl/7KUY7QuLOT28eZH94
- k712FATzSZj4q9LBdYzI8eqVntRbK3btPmyGUrlBfXPub7/7VXS3GKtn1cSEZjGfeNHh
- XoJQU/qwsz94Vfk2HmTsSDB3btn4E/YwHRxxsmM9M3G/oiHECedvrj3KbQzvzsqwZIhA
- vxaQ==
-X-Gm-Message-State: AOAM531PRGkHmvqOT5bhp5cw3VDc9WRJm7t1ySQ1njPNa9I6aPgMZgip
- YDrbrfpyqMZeBCBEPWowyNGK3tUDf6qkiUFnJo4J0nZC
-X-Google-Smtp-Source: ABdhPJwRr7mUzNOAOmedbVFQ/Xg83qXUrqSrgg5dnbPM+Tw0UB426Rh12Fp9qp+LKpm6JkkJmK1UY7CzoSPfMBIy5dI=
-X-Received: by 2002:ac8:7210:: with SMTP id a16mr118272qtp.82.1612954819564;
- Wed, 10 Feb 2021 03:00:19 -0800 (PST)
+ bh=l6Aa5lO3nX8StZdHni5HLbVJmff/S5b/H+w9der7I6w=;
+ b=ijSU3hfW/TzvyYRjqjLTy/O/nQy+/eWjpZ/vlj6QF/oY/+cVh7dJuOtsv/scqn6Uzo
+ RSPXoXeP4nmdj6Y5Ayaks1QTHpa/HG2/qsSn9i3PTSf+wTmuLp5vzV6stcwExCMyxH5H
+ CrJ+UN0utx844X1ymss8H+J3BMA69vAa8OGyWwyuVu4Yyvu9Kts4ApgizMOSO3ZxY7ZF
+ LVmrAq6XqlI1lcXEH25Vap2DtNriFZGlEdWYaR28qABpUZaeYK7//i5tJAqv4/S3LQvG
+ B5WtK0ZW40JtrzhaV9KhbJ1jp3hkzMNWf+KO1HPSPha8mHucKQluEvAbmW0xHlOFuZ8a
+ /Cug==
+X-Gm-Message-State: AOAM533xuJdjDjUDfruIoXmNWH4yq+t0kMiqOvrQwjILIkzInBjquxRW
+ oHwPpHtJCLSOPu83WVUYYZR4Ap9K68i0B5uvd6A=
+X-Google-Smtp-Source: ABdhPJwsDcMa+DYZsa8ZrxJYIhlNsLdkVt1FpNlaoYv1QSqXBAhIM+dt/pKZRTwrf49Vu75DpaqqwcLJpz8kmVkv2bY=
+X-Received: by 2002:a37:678b:: with SMTP id b133mr2707612qkc.237.1612955535243; 
+ Wed, 10 Feb 2021 03:12:15 -0800 (PST)
 MIME-Version: 1.0
 References: <20210124232007.21639-1-richard@nod.at>
  <CAJfpegvN2KdMj_7T-OF1PAs8xZiU3f4233AvigaXwwRAsgQEjw@mail.gmail.com>
- <1507208626.379155.1612906761549.JavaMail.zimbra@nod.at>
- <CAJfpegugbvppOKhJ8KjSVGgZOGVuj6NSiy4n18mbD7Ui3wme6g@mail.gmail.com>
-In-Reply-To: <CAJfpegugbvppOKhJ8KjSVGgZOGVuj6NSiy4n18mbD7Ui3wme6g@mail.gmail.com>
+ <563952295.378372.1612881357746.JavaMail.zimbra@nod.at>
+ <1923896038.379134.1612901174023.JavaMail.zimbra@nod.at>
+ <CAJfpegufojx4q_CfR6L-fzSyQw9QXJZKy5xKVZZWaepADkL=Kw@mail.gmail.com>
+In-Reply-To: <CAJfpegufojx4q_CfR6L-fzSyQw9QXJZKy5xKVZZWaepADkL=Kw@mail.gmail.com>
 From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Wed, 10 Feb 2021 12:00:08 +0100
-Message-ID: <CAFLxGvwhdHeUDR8Mk8kyMvMCcRc4S4pcjs29ttPTHL2XWW93fg@mail.gmail.com>
+Date: Wed, 10 Feb 2021 12:12:03 +0100
+Message-ID: <CAFLxGvxhxxfT_ugmeFuqZ099Z+v-ENg9C6zq78sV45YzA5_Y_w@mail.gmail.com>
 Subject: Re: [PATCH 0/8] MUSE: Userspace backed MTD v3
 To: Miklos Szeredi <miklos@szeredi.hu>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210210_060022_951085_48EDA1F2 
-X-CRM114-Status: GOOD (  13.78  )
+X-CRM114-CacheID: sfid-20210210_061218_261925_6FCB778D 
+X-CRM114-Status: GOOD (  16.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,23 +101,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Feb 10, 2021 at 11:22 AM Miklos Szeredi <miklos@szeredi.hu> wrote:
-> > In MUSE one use case would be attaching two distinct (variable length) buffers to a
-> > single FUSE request, in both directions.
-> > If I read fuse_do_ioctl() correctly, it attaches always a single buffer per request
-> > but does multiple requests.
+On Wed, Feb 10, 2021 at 11:18 AM Miklos Szeredi <miklos@szeredi.hu> wrote:
+> > Does this more or less what you had in mind?
 >
-> Right.
+> Just moving the whole internal header file is not nice.  I did a
+> mechanical public/private separation of the interface based on what
+> CUSE uses.   Incremental patch attached.
 >
-> > In MUSE we cold go the same path and issue up to two requests.
-> > One for in-band and optionally a second one for the out-of-band data.
-> > Hmmm?
+> But this is just a start.  From the big structures still left in
+> <net/fuse.h> CUSE only uses the following fields:
 >
-> Does in-band and OOB data need to be handled together?  If so, then
-> two requests is not a good option.
+> fc: .minor, max_read, max_write, rcu, release, initialized, num_waiting
+> fm: .fc
+> ff: .fm
+> fud: .fc
+>
+> Dealing with the last 3 is trivial:  create and alloc function for the
+> fm, and create accessor functions for the accessed fields.
 
-They can be handled separately. All I need to figure who to abstract this nicely
-in libfuse.
+Ah, ok. So the goal is that <net/fuse.h> provides the bare minimum such that
+CUSE and MUSE can reside outside of fs/fuse?
+
+> Dealing with fc properly is probably a bit more involved, but does not
+> seem to be too compex at first glance.
+>
+> Do you want to take a stab at cleaning this up further?
+
+Yes. I guess for MUSE the interface needs little adaptations as well.
+But I won't be able to do this for the 5.12 merge window.
 
 -- 
 Thanks,
