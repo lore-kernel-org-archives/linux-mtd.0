@@ -2,61 +2,58 @@ Return-Path: <SRS0=6BKG=HN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF303C433DB
-	for <linux-mtd@archiver.kernel.org>; Thu, 11 Feb 2021 11:37:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FFE4C433E0
+	for <linux-mtd@archiver.kernel.org>; Thu, 11 Feb 2021 14:09:16 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4046064E16
-	for <linux-mtd@archiver.kernel.org>; Thu, 11 Feb 2021 11:37:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4046064E16
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=reto-schneider.ch
+	by mail.kernel.org (Postfix) with ESMTPS id 25DAD64E8A
+	for <linux-mtd@archiver.kernel.org>; Thu, 11 Feb 2021 14:09:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 25DAD64E8A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=wHyB312cNGNlJmYKIr6fF1DHuq4iRsphEHUBP87Lf34=; b=cvRLJewnG6ktuSOO2n7xMpdsY5
-	L/SC6DRK7K/J6OYL79VWsGiHVr71sgy/grjmViqEP/XlL68vA+nwsj5/uGQ0CZmmyda1MC6fCyi2c
-	l8JaHVRIqVDY3luoLVlvGr5KZF/6PqXRb04GmbJCfmA53/K6DnL1m5cIiCwECkhX+bxCw6T+WIyLZ
-	vVW8IM6xYIPu4H6Wq8de8jRjOIz4lQpQXYIXtEqDMQiNVxib9apJBhx06cQXaIlMUMRmUJyRcV7gE
-	gvRtg5kDpnkN2OfkHB8OWztJkawR67Z+xuaq0dCk2EHlI71noGtkgULV9siu/Ex2OYyGxofiIUS+A
-	yNGHieJg==;
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=dMEln+m5lnHAizSD3RTdPgh1ZZ9JUo5Mn3UsNhp2Z0k=; b=d6pzPHrM+31YAOEAQwXQ8t6In
+	9FPhiAF2OT5BbOzcZXo+1o8zcliT78r9aUKeD1XbdqFpPY0FSGS7HHBgxqckB8hLyYVh6hGvp5m2F
+	pXeCrgy3A8fysOziyoBa0TsJpT6gVL7cRt/njRPjAJFyxs4jukaRvNJlxhOJ6I5yw1o3cobBfA56K
+	TKbt6IcesjkfBDBYmjsw0h36zAQuiLzmuxwN63V8BscbaL5shnv4GC7cnNd7riBFPl1BpEkMu1u4P
+	PbTNVH1XQePAc+bNO3HyInuCKgmN5XdB/++afGpxCik6osFTbQYAjW8teAj7fOnBpY581hPlsQzIW
+	byn8akO1Q==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lAAH9-00007P-MU; Thu, 11 Feb 2021 11:36:47 +0000
-Received: from mxout012.mail.hostpoint.ch ([2a00:d70:0:e::312])
+	id 1lACdi-000816-Pb; Thu, 11 Feb 2021 14:08:14 +0000
+Received: from relay11.mail.gandi.net ([217.70.178.231])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lAAH3-00006r-6w
- for linux-mtd@lists.infradead.org; Thu, 11 Feb 2021 11:36:42 +0000
-Received: from [10.0.2.44] (helo=asmtp014.mail.hostpoint.ch)
- by mxout012.mail.hostpoint.ch with esmtp (Exim 4.92.3 (FreeBSD))
- (envelope-from <code@reto-schneider.ch>)
- id 1lAAGu-000LND-00; Thu, 11 Feb 2021 12:36:32 +0100
-Received: from [2a02:168:6182:1:4634:1fe:42be:43b4]
- (helo=ryzen2700.home.reto-schneider.ch)
- by asmtp014.mail.hostpoint.ch with esmtpsa
- (TLSv1.3:TLS_AES_256_GCM_SHA384:256) (Exim 4.92.3 (FreeBSD))
- (envelope-from <code@reto-schneider.ch>)
- id 1lAAGt-000GLF-QS; Thu, 11 Feb 2021 12:36:31 +0100
-X-Authenticated-Sender-Id: reto-schneider@reto-schneider.ch
-From: Reto Schneider <code@reto-schneider.ch>
-To: miquel.raynal@bootlin.com, richard@nod.at, linux-mtd@lists.infradead.org
-Subject: [PATCH v2] mtd: spinand: gigadevice: Support GD5F1GQ5UExxG
-Date: Thu, 11 Feb 2021 12:36:19 +0100
-Message-Id: <20210211113619.3502-1-code@reto-schneider.ch>
-X-Mailer: git-send-email 2.29.2
+ id 1lACdc-0007zX-QF
+ for linux-mtd@lists.infradead.org; Thu, 11 Feb 2021 14:08:10 +0000
+Received: from xps13 (aputeaux-654-1-105-167.w90-2.abo.wanadoo.fr [90.2.4.167])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay11.mail.gandi.net (Postfix) with ESMTPSA id B9DC810000F;
+ Thu, 11 Feb 2021 14:08:00 +0000 (UTC)
+Date: Thu, 11 Feb 2021 15:07:59 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: Re: [PATCH V4] mtd: rawnand: qcom: update last code word register
+Message-ID: <20210211150759.506f3463@xps13>
+In-Reply-To: <20210210090144.GE19226@work>
+References: <1611869959-5109-1-git-send-email-mdalam@codeaurora.org>
+ <20210210090144.GE19226@work>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210211_063641_272906_9C97921C 
-X-CRM114-Status: GOOD (  17.21  )
+X-CRM114-CacheID: sfid-20210211_090808_958287_188907B4 
+X-CRM114-Status: GOOD (  19.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,190 +65,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Stefan Roese <sr@denx.de>,
- Reto Schneider <reto.schneider@husqvarnagroup.com>,
- Frieder Schrempf <frieder.schrempf@kontron.de>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Md Sadre Alam <mdalam@codeaurora.org>, vigneshr@ti.com,
+ linux-kernel@vger.kernel.org, boris.brezillon@collabora.com,
+ linux-mtd@lists.infradead.org, sricharan@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Reto Schneider <reto.schneider@husqvarnagroup.com>
-
-The relevant changes to the already existing GD5F1GQ4UExxG support has
-been determined by consulting the GigaDevice product change notice
-AN-0392-10, version 1.0 from November 30, 2020.
-
-As the overlaps are huge, variable names have been generalized
-accordingly.
-
-Apart from the lowered ECC strength (4 instead of 8 bits per 512 bytes),
-the new device ID, and the extra quad IO dummy byte, no changes had to
-be taken into account.
-
-New hardware features are not supported, namely:
- - Power on reset
- - Unique ID
- - Double transfer rate (DTR)
- - Parameter page
- - Random data quad IO
-
-The inverted semantic of the "driver strength" register bits, defaulting
-to 100% instead of 50% for the Q5 devices, got ignored as the driver has
-never touched them anyway.
-
-The no longer supported "read from cache during block erase"
-functionality is not reflected as the current SPI NAND core does not
-support it anyway.
-
-Implementation has been tested on MediaTek MT7688 based GARDENA smart
-Gateways using both, GigaDevice GD5F1GQ5UEYIG and GD5F1GQ4UBYIG.
-
-Signed-off-by: Reto Schneider <reto.schneider@husqvarnagroup.com>
-Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-Reviewed-by: Stefan Roese <sr@denx.de>
----
-Changes in v2:
- - Commit message: Fix subject and typo, clarify effect of no longer
-   supported feature
-
- drivers/mtd/nand/spi/gigadevice.c | 69 +++++++++++++++++++++++++++----
- 1 file changed, 60 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/mtd/nand/spi/gigadevice.c b/drivers/mtd/nand/spi/gigadevice.c
-index 33c67403c4aa..1dd1c5898093 100644
---- a/drivers/mtd/nand/spi/gigadevice.c
-+++ b/drivers/mtd/nand/spi/gigadevice.c
-@@ -13,7 +13,10 @@
- #define GD5FXGQ4XA_STATUS_ECC_1_7_BITFLIPS	(1 << 4)
- #define GD5FXGQ4XA_STATUS_ECC_8_BITFLIPS	(3 << 4)
- 
--#define GD5FXGQ4UEXXG_REG_STATUS2		0xf0
-+#define GD5FXGQ5XE_STATUS_ECC_1_4_BITFLIPS	(1 << 4)
-+#define GD5FXGQ5XE_STATUS_ECC_4_BITFLIPS	(3 << 4)
-+
-+#define GD5FXGQXXEXXG_REG_STATUS2		0xf0
- 
- #define GD5FXGQ4UXFXXG_STATUS_ECC_MASK		(7 << 4)
- #define GD5FXGQ4UXFXXG_STATUS_ECC_NO_BITFLIPS	(0 << 4)
-@@ -102,7 +105,7 @@ static int gd5fxgq4xa_ecc_get_status(struct spinand_device *spinand,
- 	return -EINVAL;
- }
- 
--static int gd5fxgq4_variant2_ooblayout_ecc(struct mtd_info *mtd, int section,
-+static int gd5fxgqx_variant2_ooblayout_ecc(struct mtd_info *mtd, int section,
- 				       struct mtd_oob_region *region)
- {
- 	if (section)
-@@ -114,7 +117,7 @@ static int gd5fxgq4_variant2_ooblayout_ecc(struct mtd_info *mtd, int section,
- 	return 0;
- }
- 
--static int gd5fxgq4_variant2_ooblayout_free(struct mtd_info *mtd, int section,
-+static int gd5fxgqx_variant2_ooblayout_free(struct mtd_info *mtd, int section,
- 					struct mtd_oob_region *region)
- {
- 	if (section)
-@@ -127,9 +130,10 @@ static int gd5fxgq4_variant2_ooblayout_free(struct mtd_info *mtd, int section,
- 	return 0;
- }
- 
--static const struct mtd_ooblayout_ops gd5fxgq4_variant2_ooblayout = {
--	.ecc = gd5fxgq4_variant2_ooblayout_ecc,
--	.free = gd5fxgq4_variant2_ooblayout_free,
-+/* Valid for Q4/Q5 and Q6 (untested) devices */
-+static const struct mtd_ooblayout_ops gd5fxgqx_variant2_ooblayout = {
-+	.ecc = gd5fxgqx_variant2_ooblayout_ecc,
-+	.free = gd5fxgqx_variant2_ooblayout_free,
- };
- 
- static int gd5fxgq4xc_ooblayout_256_ecc(struct mtd_info *mtd, int section,
-@@ -165,7 +169,7 @@ static int gd5fxgq4uexxg_ecc_get_status(struct spinand_device *spinand,
- 					u8 status)
- {
- 	u8 status2;
--	struct spi_mem_op op = SPINAND_GET_FEATURE_OP(GD5FXGQ4UEXXG_REG_STATUS2,
-+	struct spi_mem_op op = SPINAND_GET_FEATURE_OP(GD5FXGQXXEXXG_REG_STATUS2,
- 						      &status2);
- 	int ret;
- 
-@@ -203,6 +207,43 @@ static int gd5fxgq4uexxg_ecc_get_status(struct spinand_device *spinand,
- 	return -EINVAL;
- }
- 
-+static int gd5fxgq5xexxg_ecc_get_status(struct spinand_device *spinand,
-+					u8 status)
-+{
-+	u8 status2;
-+	struct spi_mem_op op = SPINAND_GET_FEATURE_OP(GD5FXGQXXEXXG_REG_STATUS2,
-+						      &status2);
-+	int ret;
-+
-+	switch (status & STATUS_ECC_MASK) {
-+	case STATUS_ECC_NO_BITFLIPS:
-+		return 0;
-+
-+	case GD5FXGQ5XE_STATUS_ECC_1_4_BITFLIPS:
-+		/*
-+		 * Read status2 register to determine a more fine grained
-+		 * bit error status
-+		 */
-+		ret = spi_mem_exec_op(spinand->spimem, &op);
-+		if (ret)
-+			return ret;
-+
-+		/*
-+		 * 1 ... 4 bits are flipped (and corrected)
-+		 */
-+		/* bits sorted this way (1...0): ECCSE1, ECCSE0 */
-+		return ((status2 & STATUS_ECC_MASK) >> 4) + 1;
-+
-+	case STATUS_ECC_UNCOR_ERROR:
-+		return -EBADMSG;
-+
-+	default:
-+		break;
-+	}
-+
-+	return -EINVAL;
-+}
-+
- static int gd5fxgq4ufxxg_ecc_get_status(struct spinand_device *spinand,
- 					u8 status)
- {
-@@ -282,7 +323,7 @@ static const struct spinand_info gigadevice_spinand_table[] = {
- 					      &write_cache_variants,
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
--		     SPINAND_ECCINFO(&gd5fxgq4_variant2_ooblayout,
-+		     SPINAND_ECCINFO(&gd5fxgqx_variant2_ooblayout,
- 				     gd5fxgq4uexxg_ecc_get_status)),
- 	SPINAND_INFO("GD5F1GQ4UFxxG",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE, 0xb1, 0x48),
-@@ -292,8 +333,18 @@ static const struct spinand_info gigadevice_spinand_table[] = {
- 					      &write_cache_variants,
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
--		     SPINAND_ECCINFO(&gd5fxgq4_variant2_ooblayout,
-+		     SPINAND_ECCINFO(&gd5fxgqx_variant2_ooblayout,
- 				     gd5fxgq4ufxxg_ecc_get_status)),
-+	SPINAND_INFO("GD5F1GQ5UExxG",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x51),
-+		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
-+		     NAND_ECCREQ(4, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_HAS_QE_BIT,
-+		     SPINAND_ECCINFO(&gd5fxgqx_variant2_ooblayout,
-+				     gd5fxgq5xexxg_ecc_get_status)),
- };
- 
- static const struct spinand_manufacturer_ops gigadevice_spinand_manuf_ops = {
--- 
-2.29.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgpNYW5pdmFubmFuIFNhZGhhc2l2YW0gPG1hbml2YW5uYW4uc2FkaGFzaXZhbUBsaW5h
+cm8ub3JnPiB3cm90ZSBvbiBXZWQsCjEwIEZlYiAyMDIxIDE0OjMxOjQ0ICswNTMwOgoKPiBPbiBG
+cmksIEphbiAyOSwgMjAyMSBhdCAwMzowOToxOUFNICswNTMwLCBNZCBTYWRyZSBBbGFtIHdyb3Rl
+Ogo+ID4gRnJvbSBRUElDIHZlcnNpb24gMi4wIG9ud2FyZHMgbmV3IHJlZ2lzdGVyIGdvdCBhZGRl
+ZCB0bwo+ID4gcmVhZCBsYXN0IGNvZGV3b3JkLiBUaGlzIGNoYW5nZSB3aWxsIGFkZCB0aGUgUkVB
+RF9MT0NBVElPTl9MQVNUX0NXX24KPiA+IHJlZ2lzdGVyLgo+ID4gCj4gPiBGb3IgZmlyc3QgdGhy
+ZWUgY29kZSB3b3JkIFJFQURfTE9DQVRJT05fbiByZWdpc3RlciB3aWxsIGJlCj4gPiB1c2UuRm9y
+IGxhc3QgY29kZSB3b3JkIFJFQURfTE9DQVRJT05fTEFTVF9DV19uIHJlZ2lzdGVyIHdpbGwgYmUK
+PiA+IHVzZS4KClNvcnJ5IGZvciB0aGUgbGF0ZSBub3RpY2UsIEkgdGhpbmsgdGhlIHBhdGNoIGlz
+IGZpbmUgYnV0IGlmIHlvdSBkb24ndAptaW5kIEkgd291bGQgbGlrZSB0byBwcm9wb3NlIGEgc21h
+bGwgY2hhbmdlIHRoYXQgc2hvdWxkIHNpbXBsaWZ5IHlvdXIKcGF0Y2ggYSBsb3QsIHNlZSBiZWxv
+dy4KCj4gPiAKPiA+IFNpZ25lZC1vZmYtYnk6IE1kIFNhZHJlIEFsYW0gPG1kYWxhbUBjb2RlYXVy
+b3JhLm9yZz4gIAo+IAo+IFJldmlld2VkLWJ5OiBNYW5pdmFubmFuIFNhZGhhc2l2YW0gPG1hbml2
+YW5uYW4uc2FkaGFzaXZhbUBsaW5hcm8ub3JnPgo+IAo+IFRoYW5rcywKPiBNYW5pCj4gCj4gPiAt
+LS0KPiA+IFtWNF0KPiA+ICAqIE1vZGlmaWVkIGNvbmRpdGlvbiBmb3IgbmFuZGNfc2V0X3JlYWRf
+bG9jX2xhc3QoKSBpbiBxY29tX25hbmRjX3JlYWRfY3dfcmF3KCkuCj4gPiAgKiBBZGRlZCBvbmUg
+YWRkaXRpb25hbCBhcmd1bWVudCAibGFzdF9jdyIgdG8gdGhlIGZ1bmN0aW9uIGNvbmZpZ19uYW5k
+X2N3X3JlYWQoKQo+ID4gICAgdG8gaGFuZGxlIGxhc3QgY29kZSB3b3JkIGNvbmRpdGlvbi4KPiA+
+ICAqIENoYW5nZWQgdG90YWwgbnVtYmVyIG9mIGxhc3QgY29kZSB3b3JkIHJlZ2lzdGVyICJOQU5E
+X1JFQURfTE9DQVRJT05fTEFTVF9DV18wIiB0byA0Cj4gPiAgICB3aGlsZSBkb2luZyBjb2RlIHdv
+cmQgY29uZmlndXJhdGlvbi4KPiA+ICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9xY29tX25hbmRjLmMg
+fCAxMTAgKysrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0KPiA+ICAxIGZpbGUg
+Y2hhbmdlZCwgODQgaW5zZXJ0aW9ucygrKSwgMjYgZGVsZXRpb25zKC0pCj4gPiAKPiA+IGRpZmYg
+LS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9xY29tX25hbmRjLmMgYi9kcml2ZXJzL210ZC9u
+YW5kL3Jhdy9xY29tX25hbmRjLmMKPiA+IGluZGV4IDY2N2U0YmYuLjk0ODRiZTggMTAwNjQ0Cj4g
+PiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9xY29tX25hbmRjLmMKPiA+ICsrKyBiL2RyaXZl
+cnMvbXRkL25hbmQvcmF3L3Fjb21fbmFuZGMuYwo+ID4gQEAgLTQ4LDYgKzQ4LDEwIEBACj4gPiAg
+I2RlZmluZQlOQU5EX1JFQURfTE9DQVRJT05fMQkJMHhmMjQKPiA+ICAjZGVmaW5lCU5BTkRfUkVB
+RF9MT0NBVElPTl8yCQkweGYyOAo+ID4gICNkZWZpbmUJTkFORF9SRUFEX0xPQ0FUSU9OXzMJCTB4
+ZjJjCj4gPiArI2RlZmluZQlOQU5EX1JFQURfTE9DQVRJT05fTEFTVF9DV18wCTB4ZjQwCj4gPiAr
+I2RlZmluZQlOQU5EX1JFQURfTE9DQVRJT05fTEFTVF9DV18xCTB4ZjQ0Cj4gPiArI2RlZmluZQlO
+QU5EX1JFQURfTE9DQVRJT05fTEFTVF9DV18yCTB4ZjQ4Cj4gPiArI2RlZmluZQlOQU5EX1JFQURf
+TE9DQVRJT05fTEFTVF9DV18zCTB4ZjRjCj4gPiAgCj4gPiAgLyogZHVtbXkgcmVnaXN0ZXIgb2Zm
+c2V0cywgdXNlZCBieSB3cml0ZV9yZWdfZG1hICovCj4gPiAgI2RlZmluZQlOQU5EX0RFVl9DTUQx
+X1JFU1RPUkUJCTB4ZGVhZAo+ID4gQEAgLTE4Nyw2ICsxOTEsMTIgQEAgbmFuZGNfc2V0X3JlZyhu
+YW5kYywgTkFORF9SRUFEX0xPQ0FUSU9OXyMjcmVnLAkJCVwKPiA+ICAJICAgICAgKChzaXplKSA8
+PCBSRUFEX0xPQ0FUSU9OX1NJWkUpIHwJCQlcCj4gPiAgCSAgICAgICgoaXNfbGFzdCkgPDwgUkVB
+RF9MT0NBVElPTl9MQVNUKSkKPiA+ICAKPiA+ICsjZGVmaW5lIG5hbmRjX3NldF9yZWFkX2xvY19s
+YXN0KG5hbmRjLCByZWcsIG9mZnNldCwgc2l6ZSwgaXNfbGFzdCkJXAo+ID4gK25hbmRjX3NldF9y
+ZWcobmFuZGMsIE5BTkRfUkVBRF9MT0NBVElPTl9MQVNUX0NXXyMjcmVnLAkJCVwKPiA+ICsJICAg
+ICAgKChvZmZzZXQpIDw8IFJFQURfTE9DQVRJT05fT0ZGU0VUKSB8CQlcCj4gPiArCSAgICAgICgo
+c2l6ZSkgPDwgUkVBRF9MT0NBVElPTl9TSVpFKSB8CQkJXAo+ID4gKwkgICAgICAoKGlzX2xhc3Qp
+IDw8IFJFQURfTE9DQVRJT05fTEFTVCkpCj4gPiArCgpZb3UgY291bGQgcmVuYW1lIHRoZSBtYWNy
+byBuYW5kY19zZXRfcmVhZF9sb2MoKSBpbnRvCm5hbmRjX3NldF9yZWFkX2xvY19maXJzdCgpIG9y
+IGFueXRoaW5nIGVsc2UgdGhhdCBtYWtlIHNlbnNlLCB0aGVuIGhhdmUKYSBoZWxwZXIgd2hpY2gg
+ZG9lczoKCm5hbmRjX3NldF9yZWFkX2xvYygpCnsKCWlmIChjb25kaXRpb24gZm9yIGZpcnN0KQoJ
+CXJldHVybiBuYW5kY19zZXRfcmVhZF9sb2NfZmlyc3QoKTsKCWVsc2UKCQlyZXR1cm4gbmFuZGNf
+c2V0X3JlYWRfbG9jX2xhc3QoKTsKfQoKQW5kIGluIHRoZSByZXN0IG9mIHlvdXIgcGF0Y2ggeW91
+IHdvbid0IGhhdmUgdG8gdG91Y2ggYW55dGhpbmcgZWxzZS4KClRoYW5rcywKTWlxdcOobAoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4
+IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
