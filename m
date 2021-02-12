@@ -2,55 +2,81 @@ Return-Path: <SRS0=iZ7+=HO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 043AFC433E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Feb 2021 16:32:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4375DC433DB
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Feb 2021 21:01:07 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B8C336186A
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Feb 2021 16:32:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B8C336186A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baikalelectronics.ru
+	by mail.kernel.org (Postfix) with ESMTPS id EED6B64DF0
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Feb 2021 21:01:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EED6B64DF0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=wOC9YyZp0THpAXimv5ZC7qHBgd9gVzq9ton8cUv74JE=; b=I3x99fDSDhLAIB4Mmw2Le4ub6
-	ek/6L4Fh3gWjQUZVMvSpGdKSY3mdyhh8fD/zEXaU8ElzwPRMsCzRqFPkXgVH9W1NG94XiCo+7NCB5
-	/XH7g+8udfcGXFIPfnn0UB1uqJcU9V5fJwX54s64lW9cKR3gEPyJZJDOY3oFBY9P4+/CePX3maNcR
-	f9l1n7Y24gLR2f1/13UReWXEG/kWAaN6fZIuBo/KTItxJpulsPxl2mLd+p2F641GvyXmZC/RtV008
-	OyZ1fq75guNurKPB8ugYAWTMPjtbFRNg/Bi35JmhDFPCUs6rsusG22vGu+729k7U1bMOlxZ7fRvK6
-	xqHRN0MtQ==;
+	 bh=+C9RUUQDkQDN9edT+dsBkKfQUY7SzIr+PjW77Dk7eZ0=; b=qUHmM+I5+uj9kLfvxGoIB4DwP
+	AbbJfEw/BDJl4P2XT78NXQ5Y+oP8EyrT+DyfWhISN4mibeXqIND536+1UqfxUCwLaa1WirFhmynlt
+	OKLA/tx/mTUq6jsoAXn+yJbsRofKTpojO2Qbg0mXDpJ2ONtTbtbqOPRE3zelzi/YS/uQV5Ax+jxa1
+	LV5O0Lwo7eRm6ftJbJPwPZ3CDpQcTAC5uphewb5gBPQCIXeD075J83N9RVtWLJpWvF3d0Byzq3YS1
+	bL/Z1IG+QlzIf6LTwDFyOUjssPqWk2f9xIpejqim9FQHivMoDlU27Z/Ra1mEdFAxBI9FSRAX3xfjW
+	5Ue+ILCRA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lAbLJ-0002X6-IP; Fri, 12 Feb 2021 16:30:53 +0000
-Received: from mail.baikalelectronics.com ([87.245.175.226]
- helo=mail.baikalelectronics.ru)
- by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lAbLG-0002Uy-J9
- for linux-mtd@lists.infradead.org; Fri, 12 Feb 2021 16:30:51 +0000
-Date: Fri, 12 Feb 2021 19:30:41 +0300
-From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: Re: [PATCH] mtd: physmap: physmap-bt1-rom: Fix unintentional stack
- access
-Message-ID: <20210212163041.a23drtvtcv5vjem6@mobilestation>
-References: <20210212104022.GA242669@embeddedor>
+	id 1lAfXt-0001NU-1V; Fri, 12 Feb 2021 21:00:09 +0000
+Received: from mail-qk1-x72a.google.com ([2607:f8b0:4864:20::72a])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1lAfXq-0001MX-IF
+ for linux-mtd@lists.infradead.org; Fri, 12 Feb 2021 21:00:07 +0000
+Received: by mail-qk1-x72a.google.com with SMTP id j3so924022qkk.9
+ for <linux-mtd@lists.infradead.org>; Fri, 12 Feb 2021 13:00:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=7dfJau1Z2/Z0C+aryaDQsBuNGqh/xpuz6IGzQTXpFDE=;
+ b=ho4MgAkccq9A6xs2pboGPRayWLr3i1qFp20B9cvS0cs2FcJ2pX12SHB6BFfaJ7Mcnr
+ 3bs50en/QfINHzxw+JBaURVEmpKQJzWWBlTnLwfSKcYhheuGaM9wQbUHI66qhMwoeT/W
+ Rc4fMnk4XtdMHQNZZSgUDy6mFMkKyjmcMGR5WYJvBO0044F0iXkJc1wnREySood9aLLy
+ aUZc6bhqES6O/zN+iCS5zXfSIfg1xAI1wNXbgHQ2D6dyBMV8X3d9D4kTujrzNa5SAS0l
+ CbNnvd7LnTc3hrSyS6nqLdkn+p/5EbKzoXr8AkKudTP1CTVbJez7nx5xyrlfxQJDoMfJ
+ 1naA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=7dfJau1Z2/Z0C+aryaDQsBuNGqh/xpuz6IGzQTXpFDE=;
+ b=lg2QsssT6X8anQVEfljw5tJsUZxsWZEcOPg1+kpU2vPMO9es9DBqXO3dRvpXPShGBj
+ CsJx7t0/fW5q/tgI8ONs7RseE8QsH4b2PWX50X9o+JjOYat8ZKbcY2DHLI3nGxczokS8
+ hPkzBRyAmkkwzeVzS9+ia1DrXzv9ufTv6NRVO/ilofspenvUtU7PYpySdpF40qvHBhvb
+ EkkUDHD3k6pWO17tZMquft+mWUJrbDrePFvbKZBOE0IhqMPctBADdZ1IfXyHH7PX1WRH
+ K39k/jORiI/IwXg3kFM6oztI7ZTx8W5DGGusQ5ao4h7J+DlO/0hGiHS/GRgugUmKv9Gj
+ UeZQ==
+X-Gm-Message-State: AOAM533Fh86zVzCd+frD+Lf50fG97KBvBO+8xo0PtsV+PmX0/V7KjX5A
+ atDxX4Ttvfo+lDWqhXLi6kkNeBxBzWq1S0Le8fc=
+X-Google-Smtp-Source: ABdhPJy6Z0W4TyuKig4+Ca8RyGe2t1thus2KTVLAwJ8xpq6uicWcz6au/b4OKzrdNujYwPgFz/7vK2/TPBawsLn+Ass=
+X-Received: by 2002:a37:83c3:: with SMTP id f186mr3910863qkd.185.1613163603085; 
+ Fri, 12 Feb 2021 13:00:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210212104022.GA242669@embeddedor>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+References: <20210202124838.30805-1-jbe@pengutronix.de>
+In-Reply-To: <20210202124838.30805-1-jbe@pengutronix.de>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Fri, 12 Feb 2021 21:59:52 +0100
+Message-ID: <CAFLxGvw=5uK0AHmMq5vqOWiBzS68TBd-vU3G9mpWeTXeO5B47A@mail.gmail.com>
+Subject: Re: [PATCH] fs: ubifs: set s_uuid in super block to support ima/evm
+ uuid options
+To: Juergen Borleis <jbe@pengutronix.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210212_113050_795039_64CEBC2D 
-X-CRM114-Status: GOOD (  13.98  )
+X-CRM114-CacheID: sfid-20210212_160006_651494_0E7B2C56 
+X-CRM114-Status: UNSURE (   9.81  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -62,51 +88,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- linux-kernel@vger.kernel.org, Serge Semin <fancer.lancer@gmail.com>,
- linux-mtd@lists.infradead.org, linux-hardening@vger.kernel.org,
- Miquel Raynal <miquel.raynal@bootlin.com>, Kees Cook <keescook@chromium.org>
+Cc: Richard Weinberger <richard@nod.at>, LKML <linux-kernel@vger.kernel.org>,
+ Oleksij Rempel <o.rempel@pengutronix.de>, linux-mtd@lists.infradead.org,
+ kernel@pengutronix.de, Steffen Trumtrar <s.trumtrar@pengutronix.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Feb 12, 2021 at 04:40:22AM -0600, Gustavo A. R. Silva wrote:
-> Cast &data to (char *) in order to avoid unintentionally accessing
-> the stack.
-> 
-> Notice that data is of type u32, so any increment to &data
-> will be in the order of 4-byte chunks, and this piece of code
-> is actually intended to be a byte offset.
+On Tue, Feb 2, 2021 at 1:55 PM Juergen Borleis <jbe@pengutronix.de> wrote:
+>
+> From: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+>
+> This is required to provide uuid based integrity functionality for:
+> ima_policy (fsuuid option) and the 'evmctl' command ('--uuid' option).
+>
+> Signed-off-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Acked-by: Juergen Borleis <jbe@pengutronix.de>
 
-Thanks, one more time.)
-Acked-by: Serge Semin <fancer.lancer@gmail.com>
+I took this patch, thanks a lot for this but I have changed the sob-chain to:
 
-> 
-> Fixes: b3e79e7682e0 ("mtd: physmap: Add Baikal-T1 physically mapped ROM support")
-> Addresses-Coverity-ID: 1497765 ("Out-of-bounds access")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  drivers/mtd/maps/physmap-bt1-rom.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/maps/physmap-bt1-rom.c b/drivers/mtd/maps/physmap-bt1-rom.c
-> index a35450002284..58782cfaf71c 100644
-> --- a/drivers/mtd/maps/physmap-bt1-rom.c
-> +++ b/drivers/mtd/maps/physmap-bt1-rom.c
-> @@ -79,7 +79,7 @@ static void __xipram bt1_rom_map_copy_from(struct map_info *map,
->  	if (shift) {
->  		chunk = min_t(ssize_t, 4 - shift, len);
->  		data = readl_relaxed(src - shift);
-> -		memcpy(to, &data + shift, chunk);
-> +		memcpy(to, (char *)&data + shift, chunk);
->  		src += chunk;
->  		to += chunk;
->  		len -= chunk;
-> -- 
-> 2.27.0
-> 
+    Co-developed-by: Oleksij Rempel <o.rempel@pengutronix.de>
+    Co-developed-by: Juergen Borleis <jbe@pengutronix.de>
+    Signed-off-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+
+Namely, "patch was created by Steffen Trumtrar, Oleksij Rempel and
+Juergen Borleis.
+Steffen Trumtrar committed it and Juergen Borleis later sent it to the
+mailing list".
+
+Is this right?
+
+-- 
+Thanks,
+//richard
 
 ______________________________________________________
 Linux MTD discussion mailing list
