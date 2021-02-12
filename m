@@ -2,145 +2,135 @@ Return-Path: <SRS0=iZ7+=HO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D356C433E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Feb 2021 15:19:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8D26C433DB
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Feb 2021 15:48:50 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2BA9164DB1
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Feb 2021 15:19:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2BA9164DB1
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7C41F64E05
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Feb 2021 15:48:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7C41F64E05
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=witekio.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=zqlJ0oPqO0HHxkof6Tbw4Gy/YSytawxPo5VBEoLbwz4=; b=NxElB/OFAiQLCP0IEXWeSfU+z
-	RfOtlzRT59rGMtVfSkXBnTUVGJRcFh0tITqw2k9rChcZWv2pRslHfUR45F6r9nhRahMinZuKgO6U+
-	DOKsfyIKkJ+iboeyxwa3P8StUt3rYOWl5Z83dnTFd42VV9GtuNo/leRDOroLFhxJ4VroWC3n2nA43
-	m8EYq8MCKo3D6kBiz54oY9ixhXI/hbCr8n1lGzsGWZxoPPxXrzWalcYHrg+jYoJ0gUjZk/648A3fo
-	y7ogNZYgy7FkuK7+7IE1amC7ky4K2+Cu1fOL+E9TKPuWtFyf7gvoiJf2HkZU39KTtFx0PsDMqz+wz
-	yQ+XYBXZA==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=UR07ytaTnshUgsY//G6L039atFluRFQThFG9gnutxX0=; b=a2aVxSW+u3JXsvmGnmzVvKDsx8
+	k89G+Pi8HGKVg2o35tjmSp7swE+cKas0tQpPhLkW4mARsFIZYBWnMTi4KArGjrQIEqki75VrccUHC
+	7frPo6eVzO2aoVo3Tfq9w/g/SzYjPJjQmCEqrdScZVlcF6qY4sLOc27SFuhyTNXq4tZk1cWzcA3wE
+	LaoMjkvGFkLsNUyYKPLiI6MRejriiF4dbVDh/VJbYqBed8pQmNLRWidibQ9OQjLLLIQ0uIa14vkmw
+	Hb/xEMAmbi9bTShlx5KW7NnoHiPCS3LtAxVnBR0bFIxW/vBmwYkIilOn3yr6mnxgsreiiHc3Y6xvl
+	iCHaaAww==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lAaDO-0002RF-H9; Fri, 12 Feb 2021 15:18:38 +0000
-Received: from gateway22.websitewelcome.com ([192.185.46.229])
+	id 1lAag9-0005Xv-DL; Fri, 12 Feb 2021 15:48:21 +0000
+Received: from mail-eopbgr80089.outbound.protection.outlook.com ([40.107.8.89]
+ helo=EUR04-VI1-obe.outbound.protection.outlook.com)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lAaDL-0002Qr-6u
- for linux-mtd@lists.infradead.org; Fri, 12 Feb 2021 15:18:37 +0000
-Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
- by gateway22.websitewelcome.com (Postfix) with ESMTP id D92038E18
- for <linux-mtd@lists.infradead.org>; Fri, 12 Feb 2021 09:18:32 -0600 (CST)
-Received: from gator4166.hostgator.com ([108.167.133.22]) by cmsmtp with SMTP
- id AaDHlI2q2iQiZAaDIldqAL; Fri, 12 Feb 2021 09:18:32 -0600
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
- In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
- :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
- Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
- List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=YO0tk3mg70ipiOhCW3Sy2sB8YIM3iAlrmsHTXN5jgws=; b=PAdf7nC7StHFktq4++fY4aQBIP
- m1Vkf0SiEOVZbj2v6ciKXVFHHV1tInM/qPwF24hk81ItfRnkjXCs5EKbSGePHM8XP35joqdiCyp1L
- plNUc9owaUL6jXYbCpaaXq8XRFH8UVLqpOalXSrkkn3weCAX2slFrcwY6V6Hf3BqdSJVoBWiFaVJJ
- y2KwQ2b2XG9lOQhf4IAT9Xc4Ur6/MvI0qH6Z6E1rXFhLhORRP23im4h/K8cCfFJxPPzqghL1yWKSN
- u2Vj7KgDLfBatNYEmocMsZ8hXASmFSfssRvw2SY4DM0l0HpZl6dl862G/T4mH4Zmv81T3cg5bnPh/
- DMm2DAZg==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:51028
- helo=[192.168.15.8])
- by gator4166.hostgator.com with esmtpsa (TLS1.2) tls
- TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.93)
- (envelope-from <gustavo@embeddedor.com>)
- id 1lAaDH-0047zy-H4; Fri, 12 Feb 2021 09:18:31 -0600
-Subject: Re: [PATCH] mtd: physmap: physmap-bt1-rom: Fix unintentional stack
- access
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-References: <20210212104022.GA242669@embeddedor>
- <20210212151216.31a09ad1@xps13>
- <d4f2385d-bd4f-1af8-60c9-48657d046d5f@embeddedor.com>
- <20210212155031.08ad8742@xps13>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- VtSixD1uOgytAP7RWS474w==
-Message-ID: <c3cf8068-9e42-f48b-9f21-370dd1b25b37@embeddedor.com>
-Date: Fri, 12 Feb 2021 09:18:30 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ id 1lAag5-0005Ue-UJ
+ for linux-mtd@lists.infradead.org; Fri, 12 Feb 2021 15:48:19 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CVK2yl3PPOOPgXon12lWTcS8Pv5gsNPIl7OD1SgI2GUdthtvE/kpmjh8V37lM0NlHkF9Ecuwati5mszhhyBEmmo/CniY75AwydQSQ3plpZKegeCdpRUMglM6Ns2tT4nfXFxeYeaQVn9tjcWOVNWvMOT1/RtPu+nzZsu/ulLg/bvv6PY02fu/chpGZ8qfwsZESUZjWFzmLipmGHA0uAOmbqWi92HJFVAkxwtNnPrXumavnEY2sXLvseCA6whdCipS8yO3wXH+4Z/ZOfTVrXOnsPZhitRUrmDPEaC0XDSVKLxxKIio7fcKG9UBGcsgh5d0rGVpe3QbnBB513IrnIX+Qg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q4r7I4luoyjLjroamEzld0DxXr9UzgaI7rqNJRT9bIY=;
+ b=Z0r23fvgLsXXcollrgzWnp1ayxxGFVAu0YgFq9/w/5OBfGaliUDDTeg+qCx6WFuU62LDnX/5xWC2Fxukqe7pAWAlXIAz6eZXA8jPHCiX0y+KaxUBGWhZ6XFokHsRICtmolUwyV70Xh2XA+MnyZFNJ59RnQlbO1uPRQ3GwpssGZjy69hNGc2uZzrjwgvnPXsJqhOVqhLzEueZlbiV6Rvn5eRBqelmryj+9rlMJM2wxaSb9bYhQO4zhYm5p5GFZlKF98Q7q+qyFQ5Qg0m1mtSAMps0+qDioNQ/iTXvlNpQ/kpN2JX9EQHZzp7evv4424s32nUb61E0EwFbzrudHrQB4Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=witekio.com; dmarc=pass action=none header.from=witekio.com;
+ dkim=pass header.d=witekio.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=witekio.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q4r7I4luoyjLjroamEzld0DxXr9UzgaI7rqNJRT9bIY=;
+ b=uccZ29u8JVjrYd6ywWdPDtvpQ9wATIWZ+Rmb6bC2xRrfJ1UxTSnZrS9ShTGK5NdySg5esEgXfMt/Q3Fxu56n572+73+yFDlVGUznjpAO1vxlzE/rYl+2DdzhiVjQW+oVoFC2iM5p4nbtosIjZGYDkFfbLg5Qg4rj5qoGZO7eonQ=
+Authentication-Results: witekio.com; dkim=none (message not signed)
+ header.d=none;witekio.com; dmarc=none action=none header.from=witekio.com;
+Received: from PR3P192MB1104.EURP192.PROD.OUTLOOK.COM (2603:10a6:102:a6::18)
+ by PR3P192MB0699.EURP192.PROD.OUTLOOK.COM (2603:10a6:102:49::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25; Fri, 12 Feb
+ 2021 15:48:13 +0000
+Received: from PR3P192MB1104.EURP192.PROD.OUTLOOK.COM
+ ([fe80::7cb9:2a79:ba90:743f]) by PR3P192MB1104.EURP192.PROD.OUTLOOK.COM
+ ([fe80::7cb9:2a79:ba90:743f%6]) with mapi id 15.20.3846.026; Fri, 12 Feb 2021
+ 15:48:13 +0000
+From: Mathieu Dubois-Briand <mbriand@witekio.com>
+To: mbriand@witekio.com
+Subject: [PATCH] mtd: spi-nor: sfdp: Fix out of bound array access
+Date: Fri, 12 Feb 2021 16:47:17 +0100
+Message-Id: <20210212154717.362233-1-mbriand@witekio.com>
+X-Mailer: git-send-email 2.25.1
+X-Originating-IP: [2a01:e0a:4b9:9060:a10d:9ac4:ab20:2729]
+X-ClientProxiedBy: PR0P264CA0250.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100::22)
+ To PR3P192MB1104.EURP192.PROD.OUTLOOK.COM
+ (2603:10a6:102:a6::18)
 MIME-Version: 1.0
-In-Reply-To: <20210212155031.08ad8742@xps13>
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse,
- please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - lists.infradead.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lAaDH-0047zy-H4
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8])
- [187.162.31.110]:51028
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 6
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from WIPC17090108.witekio.dom
+ (2a01:e0a:4b9:9060:a10d:9ac4:ab20:2729) by
+ PR0P264CA0250.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100::22) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3825.26 via Frontend Transport; Fri, 12 Feb 2021 15:48:12 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4430ec44-0b4e-466c-47ad-08d8cf6d9ae0
+X-MS-TrafficTypeDiagnostic: PR3P192MB0699:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PR3P192MB0699A76323F9B04054BA2431A88B9@PR3P192MB0699.EURP192.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:229;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mWDjR528rkaTsDMRXN2HrN/sjO4w89itWXJSmkIM5jIU701OeKID5faSNd3+LPj8B+t9dsZpEMM5sNSM5cUqT5a7OMrF61o7S5kpY3LYwn0tTMLq6U983IJQLxUQAS//4HzIx6tqKe/7Iw43pPxIs8OSjpfhkkif0qh2dw8whtGZN/FFGK1vKyGpaF23x7Uz5zkfZWypUXv6n7ZiK7gcPh53RxO64DfifU7smWw/KEID342wLVGLSv3Gj30eXNgaHR4XyUy+3xLudAfKKOw8hY29AFUKOaSGaSODOIlOF6sUncs1rRDxAWbrFKunvIwSqYjvSPaJQDmrhBkvZyBDRNA5PerELZKNUd1tn5oxXc/wOAyZwafhKp3StLUvf6Un+OWJGlmr6BzsDU/8URC8m62yjrUi/dW1lLTlLJCneETLnYCCHALF10NZpH8Ix7tMPR+vbQ5ZSCu9zLoto9I7/sbl3FUA58vEZaETtfTAC+wTv5z3z6nhKp14lZzOiOyHrHBGc7ukMV5h8jas1+G4uQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:PR3P192MB1104.EURP192.PROD.OUTLOOK.COM; PTR:; CAT:NONE;
+ SFS:(376002)(39840400004)(396003)(346002)(366004)(136003)(5660300002)(66476007)(6512007)(66946007)(316002)(66556008)(34206002)(8936002)(8676002)(6506007)(478600001)(52116002)(86362001)(6486002)(2906002)(54906003)(4744005)(2616005)(186003)(83380400001)(1076003)(4326008)(37006003)(16526019)(36756003);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?q7kDmkf7jlntrMs40HmBF9FHIiOYLbSDhQXvaWkGJyc1q9TQ/PMKvB8m21ji?=
+ =?us-ascii?Q?QSjuAu1KzIE2cRQ2GZxcBLa4axa0tTReYikinyTGdZa0F9n7AorlIYV8nqj6?=
+ =?us-ascii?Q?nPQ7TKn6pHfVixYEzoPbMWr83ZYxsxjrlSuRsIIybCMkwziaHo1jnb3BqVa2?=
+ =?us-ascii?Q?ujjDwGKX9ObxUKFN1RXfJAEbsrelafi3jrvW58LxiPlCuHh0vzLofkI95spl?=
+ =?us-ascii?Q?1w5Rvbe8R77bKYsvcpjcJYkJDdpQeB32ByVaSJrV1Y9JytvsqqjGnuz/U7j8?=
+ =?us-ascii?Q?CtTMpYBZe1a5pUTRd6i2JqxHrIzHDrOPTJPkNZhh/uUXzmAdvIUnMseixjkj?=
+ =?us-ascii?Q?u2d81PfIQ4z93q6mTCPXJlnDHX2i/dTs6prnZGR4thZBh47hPwgwUqhW9h1q?=
+ =?us-ascii?Q?jvk8BixrhLJRePlMlEmFwBgpQNv4lk1v0OOG96Q0wVYeW/QOc1dTlinoHF8q?=
+ =?us-ascii?Q?AvQV1RrQuMNxlLQT10KUp4Mk2kUvMJqJUdiJR+bFjH3JJshOcJ9UHJSoPmYJ?=
+ =?us-ascii?Q?90Dq39hqXUGQnZqFWRNLCeRWkHbMEAR9LQElrTvybVaL6v30G7dSCaeP3Su0?=
+ =?us-ascii?Q?XEKoXFOTkt2ofGS3gYgNnNlRgGFnM8zYp69C8Qh8PqcPwlbLXgaL2BUWGEun?=
+ =?us-ascii?Q?/YpSPV47P4wtwcW/l2gvgcV4dEzGCNJ9J3IJ+w+FbTV7LdX0zU9bALk0Uv7X?=
+ =?us-ascii?Q?0iFfTu3kpxd/85Cj3NZmXrBn2f/nrLMe6VFxgIPoX2DMDJ5TrnuuA2TDMLlj?=
+ =?us-ascii?Q?AxI+EF7p5MqMD2WGF6nLyJLKmgSJnQ/SI3bz067jyRSHLvT+9FmCbCj0vuEY?=
+ =?us-ascii?Q?dX/WjkQL6vwYeJCd/SSZXr+Wlc7f6hfo47c7pPwsRk/A1ZGFnFWxliEn0Df3?=
+ =?us-ascii?Q?SZ7CpypSGHGx9J3jrfWpHS5R+5D1h1FuvziaoYTBl3qG0zbSisguOF0zI6Q3?=
+ =?us-ascii?Q?eMrR7dFnQ5u0UVEpneDi7cZSUt49BlwVeFWkjTiqc0qPqKmj9NE9OOggZJTC?=
+ =?us-ascii?Q?3nklHzlzOEs8bbukunVXYK/YwzYTzQNXYtxD2cKe0G84m2IMkboK6uRVKL4y?=
+ =?us-ascii?Q?5oab4o3TUlCN3Lg7sBql1n/Bklrfo68L77LL0o/usgq7lvLqVMxHno98wlBy?=
+ =?us-ascii?Q?3DF4+JOfmBqcZC9NIgCXdHAbGq3p95U2/0Kdk/YzZZD+3CxdNfiojpPyefBX?=
+ =?us-ascii?Q?swvv3qZOq86LVbUfkRk6k6uTjkM3tzdFvzQU/dbZeShbfQHwi9lUZ7IhkdSr?=
+ =?us-ascii?Q?x60HgUcdW7A6RW6q/tPN7wLMUBwrG+oTVO8Z4CBnc1hOE+JW/ICBJCCUCuIy?=
+ =?us-ascii?Q?1ryCceGF6VKHmIFwqoD1600Q+QdRwOs/IJ7QAHUQzmktGOR+Z7M0vkoqNxOi?=
+ =?us-ascii?Q?KTcPjbomJmy58a+qtNflkBpbvGUQ?=
+X-OriginatorOrg: witekio.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4430ec44-0b4e-466c-47ad-08d8cf6d9ae0
+X-MS-Exchange-CrossTenant-AuthSource: PR3P192MB1104.EURP192.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2021 15:48:13.1671 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 317e086a-301a-49af-9ea4-48a1c458b903
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dyzyI+sI0y0nsMF0ASjHleRLXQJ6QGq0ysSnSt47KvlnLhdwLbP+qBibdOQ/N5/37w0w/084ujsF0+CzZkbtrw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3P192MB0699
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210212_101835_358946_02B3D712 
-X-CRM114-Status: UNSURE (   6.44  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210212_104818_337365_3B98A22B 
+X-CRM114-Status: GOOD (  10.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -152,33 +142,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>, linux-kernel@vger.kernel.org,
- Serge Semin <Sergey.Semin@baikalelectronics.ru>, linux-mtd@lists.infradead.org,
- linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Fix array index: explicitly use the array length to access the last
+element, instead of an incorrectly set iteration variable.
 
+It seems this code was correct before following commit, were the
+iteration counter is reused, leading to a value that may be out of
+bound.
+Fixes: dc92843159a7 ("mtd: spi-nor: fix erase_type array to indicate
+current map conf")
 
-On 2/12/21 08:50, Miquel Raynal wrote:
+Signed-off-by: Mathieu Dubois-Briand <mbriand@witekio.com>
+---
+ drivers/mtd/spi-nor/sfdp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->> Now, if instead, you first cast ptr to 'char *' and increment it by 1,
->> then it will point to address 101.
-> 
-> Yep, I got confused with the proper addition compared to dereferencing.
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index 6ee7719e5903..11cc5d19e286 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -881,7 +881,7 @@ spi_nor_init_non_uniform_erase_map(struct spi_nor *nor,
+ 		if (!(regions_erase_type & BIT(erase[i].idx)))
+ 			spi_nor_set_erase_type(&erase[i], 0, 0xFF);
+ 
+-	spi_nor_region_mark_end(&region[i - 1]);
++	spi_nor_region_mark_end(&region[region_count - 1]);
+ 
+ 	return 0;
+ }
+-- 
+2.25.1
 
-No problem.
-
-> Patch looks legitimate.
-
-Great. :)
-
-Thanks
---
-Gustavo
 
 ______________________________________________________
 Linux MTD discussion mailing list
