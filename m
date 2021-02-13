@@ -8,14 +8,14 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94762C433E6
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB9BBC433E9
 	for <linux-mtd@archiver.kernel.org>; Sat, 13 Feb 2021 16:47:48 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 50CA764E3F
+	by mail.kernel.org (Postfix) with ESMTPS id 8B68164E43
 	for <linux-mtd@archiver.kernel.org>; Sat, 13 Feb 2021 16:47:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 50CA764E3F
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B68164E43
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,65 +24,65 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=7cR1tg2TLVGfjtm6KAecmxB9OF1e0PtuloIbPLWtac8=; b=ixPeSqftsYG+DgttHel7ZxyfM
-	clCPd5AoFkSsfIYR334RQ3RyLZ2jRZMFazaFxzt7zb68MHRdy9/cRe9oYs7TAgTfiTK8ENA4scEiF
-	nGEDc4UGIFASdh3WC5YqGEITkFKCJ6NxhUNL0nOIzbvtuKZ7uiPvkrbX4jlx42E+ytaGWVV5dX6mp
-	P3N9I8Rgd2i8h1oL10/PQXiI6ntSBL2D/GzzlBz9oREg7vltrJutVEAlvpYPTW6ClKRwbNZx48Lvp
-	PFx2biSHLhiGziZoasf7yyqj6bocvkSz+u3FyuwhZ0Lwpgy5yScc4/VD22g6co3B93jHGrWEF9wGr
-	QvKPdSksA==;
+	 bh=x69DYZ6L/iVukOPuPjqLuycoIKK0le19730o6E2i38g=; b=3LJ82f9ocFOlbClOlWlOWs8Op
+	SQmPu3KjMQcNW61X67TK7kqX7BPua6YQQ1x6wJNEVnga2HaAEYnNAJXPxE6SmEv/HrK0Apl79M+Tj
+	oj2k8ok15Jw3Vsij/guhRtWHNMSfoxhPx8KQ95vrBwEf/oFQOyut+6aQchr1IrC77dhOHrdgXTzjj
+	v1inVuKY2OaXsMWuquijQCZ6x1nYCdi2rfjBwHUOb7Apkb3XCidW9YjO7LVZzmjCqyzAqAHhDfwdf
+	ApBziOzKRpDo3EIUqghpJEsZMUCsSqpuB5MwzWkgNrHrxYY7Wezdn1atVVJw1sC0UEuJEQc8xE/fI
+	vNy/NtQsA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lAy4Y-0004r0-Bq; Sat, 13 Feb 2021 16:47:06 +0000
-Received: from mail-pf1-x430.google.com ([2607:f8b0:4864:20::430])
+	id 1lAy4M-0004p3-14; Sat, 13 Feb 2021 16:46:54 +0000
+Received: from mail-pg1-x52d.google.com ([2607:f8b0:4864:20::52d])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lAy4W-0004qU-2m
- for linux-mtd@lists.infradead.org; Sat, 13 Feb 2021 16:47:04 +0000
-Received: by mail-pf1-x430.google.com with SMTP id j12so1531182pfj.12
- for <linux-mtd@lists.infradead.org>; Sat, 13 Feb 2021 08:47:03 -0800 (PST)
+ id 1lAy4J-0004og-S6
+ for linux-mtd@lists.infradead.org; Sat, 13 Feb 2021 16:46:52 +0000
+Received: by mail-pg1-x52d.google.com with SMTP id t25so1702780pga.2
+ for <linux-mtd@lists.infradead.org>; Sat, 13 Feb 2021 08:46:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=wbOaWE3/W5QAfhUbixoIolMUbq3ZGWOO1rC6q+utlJ4=;
- b=USH7zZ22TdOpZU+R2nYwU8DQ0zcE11vwvqyUhvXFiB/LhYX4hQAzZkkkYQ3mpX3e7b
- 8Pg2lISkMJUnWliVap4ny5kNNrRpZPyCbx8zWIdcnyWiWIPZG0yaH33yxmx41zLqpZUr
- ma93VuXvZ9E/+nDE0VTLeWHGROKUQXWbVtFsIM95KV1OODfBUrxBTXQ+NdHJVhBDqfZp
- EEppwrZZnYZyhQ2CcT8XMJGIS3OwWGG5Qs+3XOikxhjQBna8KX64gM7yHAakNHuuCnFZ
- HxpdJav9q9z7QW4eI7qxRpJVTwAsvFqMVoEC1Ih308Ve/9+LqpsUCUnaBSXzZK5/2rvC
- H42Q==
+ bh=R7Pvgb3akR3Oq4fua7s4G8xA2ZE29AxfWMgMKg+V6GQ=;
+ b=ZGN8haYxxgwvXkuOWjI8pHScUM7pnodbWPESjdZ5MhNOHbXT2kBpH3YQLdzGtqXJcJ
+ eEbg0iFQa3toEhPD33NKIFkZtK5IA4rnnhH/SUslhYJAFpNWlu6puvRKH28iWLN6HLxT
+ 9OcH63HsANP8GuZJxk52x0PcS1kIa/ra2zB92OIH2w8VTyEX2eyLweJPS49P/hMSRyP/
+ 37BVlXQFTInv2bu1HWrV/mvBOGRk1iYoTl/TdcnV/IOQSsMkSfZB41o+4IzF7po6+58e
+ 73XFnlgMNTGesyVZnm5kPVA+ZjCffRjvVvbqjnefcNmvgmYq31WuZ5RssPTUoo0xfBpp
+ hEsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=wbOaWE3/W5QAfhUbixoIolMUbq3ZGWOO1rC6q+utlJ4=;
- b=GJiOOJ8jneHHQL1uL/SPfgbpMVrxzIWGvVxPLDdpOOz0h3RMIYRluxvmgy/ahTLoLK
- wjwm2rbg5+BCTrmu/Fskw0KBsnwimBFLswSY40rmY9KHLEMx1BMyxI53ukKCsmLGmMmo
- XSERZa45Un3XBMujbPz1RZvIpe4TCq5YERIqqthqg/eeZWyBQ4+xniJzaBmRDMCl95IX
- 0v35NAlRQVtM3kp+lGUGjelUCbLKdTTZFmj3FppXKfgKpAvTDccROMq9v743dXSqSmqL
- mNrifHmUnvKTFgjSt+HzbaKjnp6fTvndA8qLaGdfOteBa6FnmEe61glv2N/RUjo80N/m
- ajDw==
-X-Gm-Message-State: AOAM5308C4BJesgZIeUgQa2sKl/mQZFamWD/hXT05mdnnZeWtVq9J1v9
- wwmqLnmeadloR8E1+4pFe5c=
-X-Google-Smtp-Source: ABdhPJxpKYS868siiNRtZD+2OSRs9zy+vudS7dqGQu+4t5Tyhl18+dEaQB4IKirR8ryk3CYBixYSwg==
-X-Received: by 2002:a63:d304:: with SMTP id b4mr8123851pgg.299.1613234822070; 
- Sat, 13 Feb 2021 08:47:02 -0800 (PST)
+ bh=R7Pvgb3akR3Oq4fua7s4G8xA2ZE29AxfWMgMKg+V6GQ=;
+ b=iyhK5L8ghOrQwDvDB8vmKSxmM7+G3sMsqZw5aGieCg8vUkxzxZl4FtOy94Dx/em7Y8
+ IAG9GlyWYC5bNDVmNBJW/BnLr2JDVBuS+l/r8jjTwg/V0EAyX7gMSjgUf9wuE4jynNP6
+ vCX8GV+GQ5rAXWN6DFs4vm4CC635Oh1fjDFYjJs/ERyoLNhYxyz/SA6ewaVTsYDmuvfc
+ fx1/j2zADVJZI4w1pgsM/qxYRGIf+o4tIB8yXxA2qXyj7YHBTE8PG9BRDQKPWwIV5qPs
+ XaTKoZIHoQrXsJslMIN8h+fEh2OXszI1szFfZvf/JAa4rWBM3jwvsUdX9cpNvVLV0oYi
+ N1mA==
+X-Gm-Message-State: AOAM532FW4/zGR32SE59TKINJyBcyj3q6nln7CQ5rhf4DqJPkskgOQnN
+ FUBPC1uNAbibu3Zs9h5iBTo=
+X-Google-Smtp-Source: ABdhPJzKq+D3FGV/FEbvngLXiMiR9yRKLox0BW9HT3xzNMV4L2F6UdYgyRqi3Jq/hit+diSLceldsg==
+X-Received: by 2002:a65:60d1:: with SMTP id r17mr8228072pgv.210.1613234809820; 
+ Sat, 13 Feb 2021 08:46:49 -0800 (PST)
 Received: from localhost (185.212.56.4.16clouds.com. [185.212.56.4])
- by smtp.gmail.com with ESMTPSA id g15sm12508194pfb.30.2021.02.13.08.47.01
+ by smtp.gmail.com with ESMTPSA id y2sm11309320pjw.36.2021.02.13.08.46.49
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 13 Feb 2021 08:47:01 -0800 (PST)
+ Sat, 13 Feb 2021 08:46:49 -0800 (PST)
 From: Dejin Zheng <zhengdejin5@gmail.com>
 To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
  nixiaoming@huawei.com
-Subject: [PATCH mtd/next 4/8] mtd: mtdblock: Use module_mtd_blktrans to
- register driver
-Date: Sun, 14 Feb 2021 00:45:56 +0800
-Message-Id: <20210213164600.409061-5-zhengdejin5@gmail.com>
+Subject: [PATCH mtd/next 2/8] mtd: ftl: Use module_mtd_blktrans to register
+ driver
+Date: Sun, 14 Feb 2021 00:45:54 +0800
+Message-Id: <20210213164600.409061-3-zhengdejin5@gmail.com>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20210213164600.409061-1-zhengdejin5@gmail.com>
 References: <20210213164600.409061-1-zhengdejin5@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210213_114704_134661_33A9EAFA 
-X-CRM114-Status: GOOD (  11.61  )
+X-CRM114-CacheID: sfid-20210213_114651_944464_FAE604C8 
+X-CRM114-Status: GOOD (  11.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,34 +106,34 @@ register and unregister in the otherwise empty init/exit functions.
 
 Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
 ---
- drivers/mtd/mtdblock.c | 14 +-------------
+ drivers/mtd/ftl.c | 14 +-------------
  1 file changed, 1 insertion(+), 13 deletions(-)
 
-diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
-index 32e52d83b961..a80809543793 100644
---- a/drivers/mtd/mtdblock.c
-+++ b/drivers/mtd/mtdblock.c
-@@ -346,19 +346,7 @@ static struct mtd_blktrans_ops mtdblock_tr = {
+diff --git a/drivers/mtd/ftl.c b/drivers/mtd/ftl.c
+index 2578f27914ef..9b33c082179d 100644
+--- a/drivers/mtd/ftl.c
++++ b/drivers/mtd/ftl.c
+@@ -1056,19 +1056,7 @@ static struct mtd_blktrans_ops ftl_tr = {
  	.owner		= THIS_MODULE,
  };
  
--static int __init init_mtdblock(void)
+-static int __init init_ftl(void)
 -{
--	return register_mtd_blktrans(&mtdblock_tr);
+-	return register_mtd_blktrans(&ftl_tr);
 -}
 -
--static void __exit cleanup_mtdblock(void)
+-static void __exit cleanup_ftl(void)
 -{
--	deregister_mtd_blktrans(&mtdblock_tr);
+-	deregister_mtd_blktrans(&ftl_tr);
 -}
 -
--module_init(init_mtdblock);
--module_exit(cleanup_mtdblock);
+-module_init(init_ftl);
+-module_exit(cleanup_ftl);
 -
-+module_mtd_blktrans(mtdblock_tr);
++module_mtd_blktrans(ftl_tr);
  
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Nicolas Pitre <nico@fluxnic.net> et al.");
+ MODULE_LICENSE("Dual MPL/GPL");
+ MODULE_AUTHOR("David Hinds <dahinds@users.sourceforge.net>");
 -- 
 2.25.0
 
