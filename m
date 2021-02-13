@@ -8,14 +8,14 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77956C433DB
-	for <linux-mtd@archiver.kernel.org>; Sat, 13 Feb 2021 16:48:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98854C433E0
+	for <linux-mtd@archiver.kernel.org>; Sat, 13 Feb 2021 16:52:54 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2892164E3C
-	for <linux-mtd@archiver.kernel.org>; Sat, 13 Feb 2021 16:48:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2892164E3C
+	by mail.kernel.org (Postfix) with ESMTPS id 4701064DD8
+	for <linux-mtd@archiver.kernel.org>; Sat, 13 Feb 2021 16:52:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4701064DD8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,66 +24,66 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=cUKQn0POFk+ZVebz58TTjZUmbPjhAd4TQMzMnWyCU8A=; b=Ak9c4PPP+nrXsnsUQN7bkYBqb
-	rN3kZzU7awrn/W95ktm9ronbscnHsDmKxAuwQiMUVsvBdRRp5+xVR75xpKg4pTOmKzOxSDnoJ5Xye
-	dIKhSvw5Y8JRJGs/VPcPf1FYXqtfa0tmbgCEDVGA+VIA+uxd6BHyuTQGJ2sBneseiCZlp/BTIH5hJ
-	qr7wYsF2AhinaNN8P5Z0861yOT05HH1zNrjPdp93i2V/FgBXobTfV19aLNObxOMQjHEJ8k85Ph96V
-	GRqryOjq1ZuY5BUTiIeTuexwEeYijaG0Anm6rm9TPOcvBB8SsEO+M+aK5yfHZiU6QPkkwsFGk0I1h
-	oSpItzlyQ==;
+	 bh=u8hzHztUXR8e1h4Or3GK/TOeTzcGQMhjkiY/W3uYEYI=; b=cwA00sfOmPatnktuCbdZmorTj
+	6N0mByRwOyNCPV7Oegk/8gRWZDEO07sqvODYy9fqDRZO83LervdBL5Kr2WbedLvjV8JftsJG7B5ad
+	3rlIvLjDiLpWrrq1zK1weDmCVj3kTe3i0Q3Zo7tr7/NBrUqCrkBEBxe0Wb4uBXTHY7u6vTcXqcbHn
+	QkyIBC4iA1IFzsycxxo5OnhSUqyUDcKNBSk9dulnt/y0TZDTAseY1UOqOHmYzlRA5IvzBJFSPVmD0
+	WuRnTHM5HNfzOBLar0i0aePiaSlVh+miEgzLhz/dHtUBiS2ls+uYD/9qNZZPfzEeXn0wW+Ld8Cn9V
+	yWDwH1g4A==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lAy52-00051N-Ik; Sat, 13 Feb 2021 16:47:36 +0000
-Received: from mail-pf1-x435.google.com ([2607:f8b0:4864:20::435])
+	id 1lAy9P-000663-OL; Sat, 13 Feb 2021 16:52:07 +0000
+Received: from mail-oi1-x236.google.com ([2607:f8b0:4864:20::236])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lAy4x-0004z3-SL
- for linux-mtd@lists.infradead.org; Sat, 13 Feb 2021 16:47:32 +0000
-Received: by mail-pf1-x435.google.com with SMTP id t29so1535702pfg.11
- for <linux-mtd@lists.infradead.org>; Sat, 13 Feb 2021 08:47:31 -0800 (PST)
+ id 1lAy9N-00065J-F5
+ for linux-mtd@lists.infradead.org; Sat, 13 Feb 2021 16:52:06 +0000
+Received: by mail-oi1-x236.google.com with SMTP id 18so3260691oiz.7
+ for <linux-mtd@lists.infradead.org>; Sat, 13 Feb 2021 08:52:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=e7rP+FiAvuVb6aK9LL07jkn9OaioHOHo8nBGBg3+txw=;
- b=mNFhmTwyUc2LCO/jLz4SaMP2Lj2ABopQxgAwfIrVpDr7ndHmpqbupyk0y8Ahz83e0k
- hwisM0BEE8oUXameZ/D6f+ktGAxGtk8UCggPTECgGPwNwbTVkytI10+IKvsjKYickdQF
- /dp3ye20oHb6uI1XUKthUDCVLf5+V6iXpSJKx3UfqWfREShgMgqUyt1w8nTMNi98ckFT
- ny25Vk5XZ0EZV53H3CrmEJ0syxtGg8dcl/lBNe57qFvEInN+XoxjyPOwP6gSb9SLTKET
- DU0Egd1hHuetj2drWItSaNkLoUj+aVI+OZ921ZxcOUHMIBVtLFNu27T11ZypD8KBSqgi
- IpOw==
+ bh=gc4FZQoLFpjrjBvJ5zV+ImqklQ0xOESHz74DuFiIHsQ=;
+ b=IJc6s7RnxywqkaHHKfqNpelipqAsA6UxO0E7+Zul8oNEFLWqa/GhkRPV+O3LOm6MwE
+ T/5T0JwcezmFv7soctyMOxOQkoL5NeADH+EwzLEGXL6hOn+8z6QvWZ5AfP+LE0rYw3ZU
+ QmtVrKr8r2LZ0imwens5ke9KAWi4e1XmAJ52zQ0EgVi3BzKOG5MtHg213ScvqYQBVf4k
+ zzYY6ITsJEcahMhJJuSUHGLo142bZHHvRAJ9yi6MwJIaglGV0HawBPdnGm0g66kVV13o
+ np03stm29+SBYZDuLJH4Je4yQxurKc7zakuZ+/bpoVYvNlkzEEgyputQ8SL6MgoFMDiz
+ iJsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=e7rP+FiAvuVb6aK9LL07jkn9OaioHOHo8nBGBg3+txw=;
- b=Y6iH7/zO7wsRARXoIrTqxxffeJuMdm4O3UfiJq8SvoJW0TUxsXIrFihPvpKGfCRZqd
- gJFl2F//aOD7jWH8beTbLh/DVm3Hn67a/GP8F8j9LCbDAz96BmAA2KYbzZ322nU1ugS4
- 7MWh7+NpJ7VyU122UDtUycA7c804+CDMLFy9aecaUD7cBac0PUjdVmK8bjfC5eChApGm
- G9W7d60xk1cZCsqviT+YrL2XQ/juvqtEsjXnuLGJsYLt8yrh75Utt50PFfELtx7GiYyx
- RdrSdHaB8Yo/UkbCevjgk6IUa8DP9KsTPR4D17hSQALgXAEfcsnmhNPZZQnbA1Rb51Yu
- wBJA==
-X-Gm-Message-State: AOAM532ydnih35yB51bhFZ7VabT5z4MOeO7+JZenSy8Dr/2DLf9+lYSX
- 8BDa+/2E3lwFsMPOd24NswT37Wc/Eo8plg==
-X-Google-Smtp-Source: ABdhPJys5U/r0NwIzKRqe04a4gYr7Upl62J62lKvLdFaYPu5ekQOAMLBTpazgZp0tykehiIzuaWKIQ==
-X-Received: by 2002:a62:6382:0:b029:1d2:46ed:d813 with SMTP id
- x124-20020a6263820000b02901d246edd813mr7819089pfb.44.1613234849948; 
- Sat, 13 Feb 2021 08:47:29 -0800 (PST)
+ bh=gc4FZQoLFpjrjBvJ5zV+ImqklQ0xOESHz74DuFiIHsQ=;
+ b=OQpRlamvvfIsIAwqJhC0M9zPof1nP0joEE3bqrtraOsDhrTRIvwUDNpuHjclovHz2P
+ 4d9effYgCGY9hB4ghAkFNaC5f4dZIzDmCHduokcIbT5Je+kxQeSCWiTjkF4hJukAUF9n
+ mS50rUa5WUhSLmuPxRWVc5mU5i/oZY9r/i82HiurBenKuO4TeAo8+X4Ku7KuQ8tmy+fy
+ /acMemK92P3yTy3rwLJxul0OTPn+eZ8LQZoiFNv1YARp4QDbO3aLHPQEImsPRp7GV5kb
+ glYguimCGr9ifR5OO1I6nxlxIL3BIMMd5gTQqXxdswApIWA19/kNIv7LOh7lbkNsCCot
+ v8lw==
+X-Gm-Message-State: AOAM531W1z2OpNO1V699bR2qRCoyJrp1PCygfPuWj9LFiWzl1WS/c7RO
+ oFCMhGmfxt/Q7KMrc3vhv5ocDekSeWPskA==
+X-Google-Smtp-Source: ABdhPJwKudWopUJfjFHzJEHBg/99AA9kH0i+C64AaIBO41PqvohhUuBvR51iyIaOkEwkQDDpMbWGhQ==
+X-Received: by 2002:a17:90a:f2d3:: with SMTP id
+ gt19mr7774206pjb.212.1613234804489; 
+ Sat, 13 Feb 2021 08:46:44 -0800 (PST)
 Received: from localhost (185.212.56.4.16clouds.com. [185.212.56.4])
- by smtp.gmail.com with ESMTPSA id 9sm12484844pfw.48.2021.02.13.08.47.29
+ by smtp.gmail.com with ESMTPSA id p8sm12643984pgi.21.2021.02.13.08.46.43
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 13 Feb 2021 08:47:29 -0800 (PST)
+ Sat, 13 Feb 2021 08:46:44 -0800 (PST)
 From: Dejin Zheng <zhengdejin5@gmail.com>
 To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
  nixiaoming@huawei.com
-Subject: [PATCH mtd/next 8/8] mtd: rfd_ftl: Use module_mtd_blktrans to
- register driver
-Date: Sun, 14 Feb 2021 00:46:00 +0800
-Message-Id: <20210213164600.409061-9-zhengdejin5@gmail.com>
+Subject: [PATCH mtd/next 1/8] mtd: Add helper macro for register_mtd_blktrans
+ boilerplate
+Date: Sun, 14 Feb 2021 00:45:53 +0800
+Message-Id: <20210213164600.409061-2-zhengdejin5@gmail.com>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20210213164600.409061-1-zhengdejin5@gmail.com>
 References: <20210213164600.409061-1-zhengdejin5@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210213_114731_962938_F11FD2C2 
-X-CRM114-Status: GOOD (  11.50  )
+X-CRM114-CacheID: sfid-20210213_115205_521680_88B141C9 
+X-CRM114-Status: GOOD (  12.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,38 +102,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Removing some boilerplate by using module_mtd_blktrans instead of calling
-register and unregister in the otherwise empty init/exit functions.
+This patch introduces the module_mtd_blktrans macro which is a convenience
+macro for mtd blktrans modules similar to module_platform_driver.
+It is intended to be used by drivers which init/exit section does nothing
+but register/unregister the mtd blktrans driver. By using this macro it is
+possible to eliminate a few lines of boilerplate code per mtd blktrans
+driver.
 
 Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
 ---
- drivers/mtd/rfd_ftl.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+ include/linux/mtd/blktrans.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/mtd/rfd_ftl.c b/drivers/mtd/rfd_ftl.c
-index 3d1df82fa105..cce3bf6f99b4 100644
---- a/drivers/mtd/rfd_ftl.c
-+++ b/drivers/mtd/rfd_ftl.c
-@@ -794,18 +794,7 @@ static struct mtd_blktrans_ops rfd_ftl_tr = {
- 	.owner		= THIS_MODULE,
- };
+diff --git a/include/linux/mtd/blktrans.h b/include/linux/mtd/blktrans.h
+index 3c668cb1e344..15cc9b95e32b 100644
+--- a/include/linux/mtd/blktrans.h
++++ b/include/linux/mtd/blktrans.h
+@@ -77,5 +77,16 @@ extern int add_mtd_blktrans_dev(struct mtd_blktrans_dev *dev);
+ extern int del_mtd_blktrans_dev(struct mtd_blktrans_dev *dev);
+ extern int mtd_blktrans_cease_background(struct mtd_blktrans_dev *dev);
  
--static int __init init_rfd_ftl(void)
--{
--	return register_mtd_blktrans(&rfd_ftl_tr);
--}
--
--static void __exit cleanup_rfd_ftl(void)
--{
--	deregister_mtd_blktrans(&rfd_ftl_tr);
--}
--
--module_init(init_rfd_ftl);
--module_exit(cleanup_rfd_ftl);
-+module_mtd_blktrans(rfd_ftl_tr);
++/**
++ * module_mtd_blktrans() - Helper macro for registering a mtd blktrans driver
++ * @__mtd_blktrans: mtd_blktrans_ops struct
++ *
++ * Helper macro for mtd blktrans drivers which do not do anything special in
++ * module init/exit. This eliminates a lot of boilerplate. Each module may only
++ * use this macro once, and calling it replaces module_init() and module_exit()
++ */
++#define module_mtd_blktrans(__mtd_blktrans) \
++	module_driver(__mtd_blktrans, register_mtd_blktrans, \
++					deregister_mtd_blktrans)
  
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Sean Young <sean@mess.org>");
+ #endif /* __MTD_TRANS_H__ */
 -- 
 2.25.0
 
