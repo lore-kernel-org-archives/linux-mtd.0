@@ -8,14 +8,14 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35426C433E0
-	for <linux-mtd@archiver.kernel.org>; Sat, 13 Feb 2021 16:47:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77956C433DB
+	for <linux-mtd@archiver.kernel.org>; Sat, 13 Feb 2021 16:48:02 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC77161494
-	for <linux-mtd@archiver.kernel.org>; Sat, 13 Feb 2021 16:47:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC77161494
+	by mail.kernel.org (Postfix) with ESMTPS id 2892164E3C
+	for <linux-mtd@archiver.kernel.org>; Sat, 13 Feb 2021 16:48:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2892164E3C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,65 +24,66 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=++PJTSFG+btvWaBjPX1RImRvP0yvKLYNi1KQwTSOD3k=; b=0P+q6BNCZQodI4x+u8Iq0CJc9
-	Fi6QuxCjfcGe1fDChYFqdjtDTT1dqvmnEtIg/njTstWkvSNWJguVleb3N45b4LS5w9xD7Bbcr+hiD
-	jy3Xv6pQl8dRLPMlk1PQtVMY1SteIb6L40125oBA6Q/8XEYRIuLHOqbS2wzOtmWuGCa0quyls1LTH
-	fMCgD/1heidXoT7X1SRnUr+jMH8u3/3j2FrDaI/7+8WPjCaEbiJBj65w8JU7NlFWixIT9VeBF7SmS
-	e3p7w05R9zGqgA9xCIKZNV1jWhAMhmjJ7DPCJdPxiSRkYGYMEahcmZOBcRcSr06D8hj8x+HVLOXIZ
-	gBCbvd34g==;
+	 bh=cUKQn0POFk+ZVebz58TTjZUmbPjhAd4TQMzMnWyCU8A=; b=Ak9c4PPP+nrXsnsUQN7bkYBqb
+	rN3kZzU7awrn/W95ktm9ronbscnHsDmKxAuwQiMUVsvBdRRp5+xVR75xpKg4pTOmKzOxSDnoJ5Xye
+	dIKhSvw5Y8JRJGs/VPcPf1FYXqtfa0tmbgCEDVGA+VIA+uxd6BHyuTQGJ2sBneseiCZlp/BTIH5hJ
+	qr7wYsF2AhinaNN8P5Z0861yOT05HH1zNrjPdp93i2V/FgBXobTfV19aLNObxOMQjHEJ8k85Ph96V
+	GRqryOjq1ZuY5BUTiIeTuexwEeYijaG0Anm6rm9TPOcvBB8SsEO+M+aK5yfHZiU6QPkkwsFGk0I1h
+	oSpItzlyQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lAy4w-0004zD-V0; Sat, 13 Feb 2021 16:47:30 +0000
-Received: from mail-pf1-x42b.google.com ([2607:f8b0:4864:20::42b])
+	id 1lAy52-00051N-Ik; Sat, 13 Feb 2021 16:47:36 +0000
+Received: from mail-pf1-x435.google.com ([2607:f8b0:4864:20::435])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lAy4t-0004xH-0r
- for linux-mtd@lists.infradead.org; Sat, 13 Feb 2021 16:47:28 +0000
-Received: by mail-pf1-x42b.google.com with SMTP id 189so1550942pfy.6
- for <linux-mtd@lists.infradead.org>; Sat, 13 Feb 2021 08:47:26 -0800 (PST)
+ id 1lAy4x-0004z3-SL
+ for linux-mtd@lists.infradead.org; Sat, 13 Feb 2021 16:47:32 +0000
+Received: by mail-pf1-x435.google.com with SMTP id t29so1535702pfg.11
+ for <linux-mtd@lists.infradead.org>; Sat, 13 Feb 2021 08:47:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=LuFN5JlbvcMUz61kHz7biAIAIk4OfNdAOsuO5R8F53k=;
- b=JTx47GelbxDf0iIvPQxbGaHqhr0PHAszv7IYTP5WuXTAk4OwNcD0PeY9N1TjuivKuC
- NfS6gDyVMnPiXLAkeUbfn4QpCVp+NiclipStojb/O15Z6oJfVhq+7QH94TXEH9kIvEWu
- ykTZtm+82bA2qIFY4x+EVEa+TIDuOVj2csqPT40R0sPi5kvTyK3+u0EwLVHHtq5V1MBE
- z6ZgRDDzniV21Xa3f04QTtfCi6hRoI55MX3wadZtm8mbxCoEykCLyYn+P7EKfyxvU41R
- aKMtsRPMFyrXr3jRttrErGBCR5/oEslVhFL4BEOIFRAiGHZ2cMM2e/cCeafrSAXmvOwY
- arXQ==
+ bh=e7rP+FiAvuVb6aK9LL07jkn9OaioHOHo8nBGBg3+txw=;
+ b=mNFhmTwyUc2LCO/jLz4SaMP2Lj2ABopQxgAwfIrVpDr7ndHmpqbupyk0y8Ahz83e0k
+ hwisM0BEE8oUXameZ/D6f+ktGAxGtk8UCggPTECgGPwNwbTVkytI10+IKvsjKYickdQF
+ /dp3ye20oHb6uI1XUKthUDCVLf5+V6iXpSJKx3UfqWfREShgMgqUyt1w8nTMNi98ckFT
+ ny25Vk5XZ0EZV53H3CrmEJ0syxtGg8dcl/lBNe57qFvEInN+XoxjyPOwP6gSb9SLTKET
+ DU0Egd1hHuetj2drWItSaNkLoUj+aVI+OZ921ZxcOUHMIBVtLFNu27T11ZypD8KBSqgi
+ IpOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=LuFN5JlbvcMUz61kHz7biAIAIk4OfNdAOsuO5R8F53k=;
- b=mZ+5WpdYBtyURsC3kbPZrFgQkaUY/GM3tD4kDv0BHIKQ3gG5CwMCnYd68gon8ApIJ5
- D/8YrgvsNQw07wBxFXFX9FSBhHRz5B0OAn5GG3seNVyhPtluSqvAR/tmGOQ8bTH0CQ1d
- 2d64x2j9aKLHpjdabhNp8vZSei2rRTXdmBOZCXuXzxYXzPzQGeJRtbgqXHU0lLGwyG1s
- zjNEOxbfsMeZVWauh25JWqHgsL55bN/FUrhVwdBjyFQcc37jDxnK6n/M/WY5QqYGaile
- fuyk/NrUHmq2u7vMvAYl6IHF7YHIfOmsj+ijUxobmB5IkhLSJcFwBHH6HMWxXMGj7aPd
- 3pKg==
-X-Gm-Message-State: AOAM531H8ftaoKlLOU3qGaZkYtJrQC0F2fBbK+M7h+4DzaViy5YVfhzN
- Hfmn4dldj8lVVvUXfCypyOU=
-X-Google-Smtp-Source: ABdhPJxVsDyiEdMOsS/Msc4pi5ji7V60PGvB+WDlJVuAGPG7VUKQAVdXasVZcMD9FagvbnYrXMBjPg==
-X-Received: by 2002:a63:df11:: with SMTP id u17mr7986404pgg.345.1613234845112; 
- Sat, 13 Feb 2021 08:47:25 -0800 (PST)
+ bh=e7rP+FiAvuVb6aK9LL07jkn9OaioHOHo8nBGBg3+txw=;
+ b=Y6iH7/zO7wsRARXoIrTqxxffeJuMdm4O3UfiJq8SvoJW0TUxsXIrFihPvpKGfCRZqd
+ gJFl2F//aOD7jWH8beTbLh/DVm3Hn67a/GP8F8j9LCbDAz96BmAA2KYbzZ322nU1ugS4
+ 7MWh7+NpJ7VyU122UDtUycA7c804+CDMLFy9aecaUD7cBac0PUjdVmK8bjfC5eChApGm
+ G9W7d60xk1cZCsqviT+YrL2XQ/juvqtEsjXnuLGJsYLt8yrh75Utt50PFfELtx7GiYyx
+ RdrSdHaB8Yo/UkbCevjgk6IUa8DP9KsTPR4D17hSQALgXAEfcsnmhNPZZQnbA1Rb51Yu
+ wBJA==
+X-Gm-Message-State: AOAM532ydnih35yB51bhFZ7VabT5z4MOeO7+JZenSy8Dr/2DLf9+lYSX
+ 8BDa+/2E3lwFsMPOd24NswT37Wc/Eo8plg==
+X-Google-Smtp-Source: ABdhPJys5U/r0NwIzKRqe04a4gYr7Upl62J62lKvLdFaYPu5ekQOAMLBTpazgZp0tykehiIzuaWKIQ==
+X-Received: by 2002:a62:6382:0:b029:1d2:46ed:d813 with SMTP id
+ x124-20020a6263820000b02901d246edd813mr7819089pfb.44.1613234849948; 
+ Sat, 13 Feb 2021 08:47:29 -0800 (PST)
 Received: from localhost (185.212.56.4.16clouds.com. [185.212.56.4])
- by smtp.gmail.com with ESMTPSA id m4sm12478650pgu.4.2021.02.13.08.47.23
+ by smtp.gmail.com with ESMTPSA id 9sm12484844pfw.48.2021.02.13.08.47.29
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 13 Feb 2021 08:47:24 -0800 (PST)
+ Sat, 13 Feb 2021 08:47:29 -0800 (PST)
 From: Dejin Zheng <zhengdejin5@gmail.com>
 To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
  nixiaoming@huawei.com
-Subject: [PATCH mtd/next 7/8] mtd: nftlcore: Use module_mtd_blktrans to
+Subject: [PATCH mtd/next 8/8] mtd: rfd_ftl: Use module_mtd_blktrans to
  register driver
-Date: Sun, 14 Feb 2021 00:45:59 +0800
-Message-Id: <20210213164600.409061-8-zhengdejin5@gmail.com>
+Date: Sun, 14 Feb 2021 00:46:00 +0800
+Message-Id: <20210213164600.409061-9-zhengdejin5@gmail.com>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20210213164600.409061-1-zhengdejin5@gmail.com>
 References: <20210213164600.409061-1-zhengdejin5@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210213_114727_131659_CF23FAA7 
-X-CRM114-Status: GOOD (  11.73  )
+X-CRM114-CacheID: sfid-20210213_114731_962938_F11FD2C2 
+X-CRM114-Status: GOOD (  11.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,33 +107,33 @@ register and unregister in the otherwise empty init/exit functions.
 
 Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
 ---
- drivers/mtd/nftlcore.c | 13 +------------
+ drivers/mtd/rfd_ftl.c | 13 +------------
  1 file changed, 1 insertion(+), 12 deletions(-)
 
-diff --git a/drivers/mtd/nftlcore.c b/drivers/mtd/nftlcore.c
-index d44641129cdb..bcd0094f172d 100644
---- a/drivers/mtd/nftlcore.c
-+++ b/drivers/mtd/nftlcore.c
-@@ -797,18 +797,7 @@ static struct mtd_blktrans_ops nftl_tr = {
+diff --git a/drivers/mtd/rfd_ftl.c b/drivers/mtd/rfd_ftl.c
+index 3d1df82fa105..cce3bf6f99b4 100644
+--- a/drivers/mtd/rfd_ftl.c
++++ b/drivers/mtd/rfd_ftl.c
+@@ -794,18 +794,7 @@ static struct mtd_blktrans_ops rfd_ftl_tr = {
  	.owner		= THIS_MODULE,
  };
  
--static int __init init_nftl(void)
+-static int __init init_rfd_ftl(void)
 -{
--	return register_mtd_blktrans(&nftl_tr);
+-	return register_mtd_blktrans(&rfd_ftl_tr);
 -}
 -
--static void __exit cleanup_nftl(void)
+-static void __exit cleanup_rfd_ftl(void)
 -{
--	deregister_mtd_blktrans(&nftl_tr);
+-	deregister_mtd_blktrans(&rfd_ftl_tr);
 -}
 -
--module_init(init_nftl);
--module_exit(cleanup_nftl);
-+module_mtd_blktrans(nftl_tr);
+-module_init(init_rfd_ftl);
+-module_exit(cleanup_rfd_ftl);
++module_mtd_blktrans(rfd_ftl_tr);
  
  MODULE_LICENSE("GPL");
- MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org>, Fabrice Bellard <fabrice.bellard@netgem.com> et al.");
+ MODULE_AUTHOR("Sean Young <sean@mess.org>");
 -- 
 2.25.0
 
