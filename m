@@ -2,58 +2,75 @@ Return-Path: <SRS0=LIjS=HR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59500C433E9
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Feb 2021 10:24:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6F98C433DB
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Feb 2021 10:52:52 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 91A9564E00
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Feb 2021 10:24:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 91A9564E00
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 2403764E34
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Feb 2021 10:52:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2403764E34
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=pQ12pYPvRip52EYT2ZNnxsGXLAQALcDQnCfLUEcFYXQ=; b=LH/Lst+a+DDLawPWZJIkNgxAk
-	C3HzdqDZeB6Memc43yr/AZ7KNRZZf52cGRp6D/+ks8uoafpWvaS0DHKav6ufmPJs4AeMMOjsb8aIq
-	ofIHE2QcDQXSRfBNWGUWq7rrd0MZIzezH6nbIqZ39meSbbT++KKANPR8zk3pyGatMQOJWEuuydmSp
-	5FyYkTI+BpvmZgLCkzXunAHAU5G6mETNPgDSlUf13SIdhHQzlS4V4E9aP9o1XEbL1lE35OKQtlOI2
-	X5b0P2e23as4i+HzFfGXmBVvS6NHdD35ufNbgEB+9ziZL/Ad9VijR25HArIcxzsQ4fJRwivCDcoCu
-	Fdce7BW1A==;
+	 bh=Ag2txpw2SE56I/xr7QaRGKncxs8PVX8pXdbK38NzvpU=; b=1/LG92GQjY0M7aGIPcmb2REIj
+	3F82KS1S8nFAh6/kXt8hxPkhkzdsGw/FDBAFA6VTtFk15qUmLciu/IsWHe74EoiP2CO7e6lKOYvHW
+	l460zmXgHB38fwEyowCI68Ad9d2VsGmedL1Qp+Ex8OVdzC1HhD8aPwz+9PuFjT3TnsVCdcDtRJH18
+	CvHFMOtVqt2KJtixUGQanfHGQyy62rD6kT6cuTpfBGPB9JRNsd3HD9fWQOCh6DmrIk4G0vqerS5XT
+	h2YcJIITJfADUyonKF0JeP8qpsIcI4L73BARaDrU5BBJNR7IE2EHynXZsjfo3DX4X0UIAtQALBgH5
+	mhPXnA6mA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lBb3B-0003Zn-Da; Mon, 15 Feb 2021 10:24:17 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1lBbUF-0007eX-RO; Mon, 15 Feb 2021 10:52:15 +0000
+Received: from mail-qt1-x830.google.com ([2607:f8b0:4864:20::830])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lBb39-0003Yd-Cw
- for linux-mtd@lists.infradead.org; Mon, 15 Feb 2021 10:24:16 +0000
-X-Originating-IP: 92.184.108.178
-Received: from xps13 (pop.92-184-108-178.mobile.abo.orange.fr [92.184.108.178])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 1DB981BF208;
- Mon, 15 Feb 2021 10:24:11 +0000 (UTC)
-Date: Mon, 15 Feb 2021 11:24:09 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Daniel Palmer <daniel@0x0f.com>
-Subject: Re: [PATCH v2] mtd: spinand: add support for Foresee FS35ND01G-S1Y2
-Message-ID: <20210215112409.1a755bf0@xps13>
-In-Reply-To: <20210213095724.3411058-1-daniel@0x0f.com>
-References: <20210213095724.3411058-1-daniel@0x0f.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1lBbUA-0007dp-8G
+ for linux-mtd@lists.infradead.org; Mon, 15 Feb 2021 10:52:13 +0000
+Received: by mail-qt1-x830.google.com with SMTP id e15so4512347qte.9
+ for <linux-mtd@lists.infradead.org>; Mon, 15 Feb 2021 02:52:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=0x0f.com; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=DCasf8LNJD3cpLAIKwcnQnDK/FG08P6hSVCIDrM0RYw=;
+ b=bR3APCUVPyfLWINvrsY4rBV0tJPJ2vJxl2MMA4PfaJ9+ToWe+gmABk6gZvl30hLPiT
+ Q34qAj8AovuCyXI6WNPkM8emBbiL1eVMqTYKLakHTfx7Z2S/QZ6QhkbLxpeiX3plotSj
+ 2RvernIzAgYaTwhQ2V1J8vPJl8dDd8BV/yiak=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=DCasf8LNJD3cpLAIKwcnQnDK/FG08P6hSVCIDrM0RYw=;
+ b=EoRtUNW6TNelPgOpioYxFGzrr3+0JXInuqCFZcyZsG7+kvG7Az70U7iFLmFtz6jMMn
+ gAfMt4Uq1HAvzKmYg8ZNqRvvX1ZAiYf/PAiGywW1qB3UpbPuLOajZXBzS/BMe9waftJQ
+ iI8u4Z5vBj/0oz7UUrmp3WLC2RYSq0Zt2F+ywu6W0JoxSHc6rtZG/h/plD/CjVfkQL2H
+ MioMgPDffBw+LQ75L5fJy/yhFfDur0+Lsdr7BvzxG9TVzYcyPHZnIYYZa7rUvNDSQH9B
+ Fs92kYr39SjmruI36Pyx09oZ0LK7J22YBwyOKPSonz0ZbeSXizw4rTyGo4YRvE5IM2Pz
+ 9ahQ==
+X-Gm-Message-State: AOAM531Z/oP0nZFxLxwE4wbeQDCiha6g897z0P+aeMpsyXg+Fd0v8WxF
+ 7CeKVsBseYQd4MhXP3rU/3K+xOlwiMPPWBJl3PFgGg==
+X-Google-Smtp-Source: ABdhPJxBW6NjQrjDEqO6MyiBnClPreVbGfoQc5q2VUQgBvJ8XJWDhokzI83V1C9hl0pmFiDPDXNm4SEGE/ZEEXaT0bU=
+X-Received: by 2002:ac8:5dc8:: with SMTP id e8mr13664866qtx.249.1613386325969; 
+ Mon, 15 Feb 2021 02:52:05 -0800 (PST)
 MIME-Version: 1.0
+References: <20210213095724.3411058-1-daniel@0x0f.com>
+ <20210215112409.1a755bf0@xps13>
+In-Reply-To: <20210215112409.1a755bf0@xps13>
+From: Daniel Palmer <daniel@0x0f.com>
+Date: Mon, 15 Feb 2021 19:53:13 +0900
+Message-ID: <CAFr9PXkh+attaCc6C2UxB=qvXksWriWOaaoEndy4k6SGE0QOHQ@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: spinand: add support for Foresee FS35ND01G-S1Y2
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210215_052415_628064_9FCC2EAE 
-X-CRM114-Status: GOOD (  27.26  )
+X-CRM114-CacheID: sfid-20210215_055210_489960_08A5D195 
+X-CRM114-Status: GOOD (  29.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -65,105 +82,77 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: linux-mtd@lists.infradead.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgRGFuaWVsLAoKRGFuaWVsIFBhbG1lciA8ZGFuaWVsQDB4MGYuY29tPiB3cm90ZSBvbiBTYXQs
-IDEzIEZlYiAyMDIxIDE4OjU3OjI0CiswOTAwOgoKPiBBZGQgc3VwcG9ydCBmb3IgdGhlIEZvcmVz
-ZWUgRlMzNU5EMDFHLVMxWTIgbWFudWZhY3R1cmVkIGJ5IExvbmdzeXMuCj4gCj4gU2lnbmVkLW9m
-Zi1ieTogRGFuaWVsIFBhbG1lciA8ZGFuaWVsQDB4MGYuY29tPgo+IAo+IExpbms6IGh0dHBzOi8v
-ZGF0YXNoZWV0Lmxjc2MuY29tL3N6bGNzYy8yMDA4MTIxMTQyX0ZPUkVTRUUtRlMzNU5EMDFHLVMx
-WTJRV0ZJMDAwX0M3MTk0OTUucGRmCj4gLS0tCgpDYW4geW91IHBsZWFzZSBhZGQgYSBjaGFuZ2Vs
-b2cgaGVyZSB3aGVuIHlvdSBzZW5kIGEgbmV3IHZlcnNpb24gb2YgYQpwYXRjaD8KCj4gIGRyaXZl
-cnMvbXRkL25hbmQvc3BpL01ha2VmaWxlICB8ICAyICstCj4gIGRyaXZlcnMvbXRkL25hbmQvc3Bp
-L2NvcmUuYyAgICB8ICAxICsKPiAgZHJpdmVycy9tdGQvbmFuZC9zcGkvbG9uZ3N5cy5jIHwgODYg
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwo+ICBpbmNsdWRlL2xpbnV4L210ZC9z
-cGluYW5kLmggICAgfCAgMSArCj4gIDQgZmlsZXMgY2hhbmdlZCwgODkgaW5zZXJ0aW9ucygrKSwg
-MSBkZWxldGlvbigtKQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9tdGQvbmFuZC9zcGkv
-bG9uZ3N5cy5jCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvc3BpL01ha2VmaWxl
-IGIvZHJpdmVycy9tdGQvbmFuZC9zcGkvTWFrZWZpbGUKPiBpbmRleCA5NjYyYjljMWQ1YTkuLjFk
-NjgxOTAyMmU0MyAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL3NwaS9NYWtlZmlsZQo+
-ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvc3BpL01ha2VmaWxlCj4gQEAgLTEsMyArMSwzIEBACj4g
-ICMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAKPiAtc3BpbmFuZC1vYmpzIDo9IGNv
-cmUubyBnaWdhZGV2aWNlLm8gbWFjcm9uaXgubyBtaWNyb24ubyBwYXJhZ29uLm8gdG9zaGliYS5v
-IHdpbmJvbmQubwo+ICtzcGluYW5kLW9ianMgOj0gY29yZS5vIGdpZ2FkZXZpY2UubyBsb25nc3lz
-Lm8gbWFjcm9uaXgubyBtaWNyb24ubyBwYXJhZ29uLm8gdG9zaGliYS5vIHdpbmJvbmQubwo+ICBv
-YmotJChDT05GSUdfTVREX1NQSV9OQU5EKSArPSBzcGluYW5kLm8KPiBkaWZmIC0tZ2l0IGEvZHJp
-dmVycy9tdGQvbmFuZC9zcGkvY29yZS5jIGIvZHJpdmVycy9tdGQvbmFuZC9zcGkvY29yZS5jCj4g
-aW5kZXggNjFkOTMyYzFiNzE4Li44YzM2ZjBmNmIxYzkgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9t
-dGQvbmFuZC9zcGkvY29yZS5jCj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9zcGkvY29yZS5jCj4g
-QEAgLTg2NCw2ICs4NjQsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IG5hbmRfb3BzIHNwaW5hbmRf
-b3BzID0gewo+ICAKPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBzcGluYW5kX21hbnVmYWN0dXJlciAq
-c3BpbmFuZF9tYW51ZmFjdHVyZXJzW10gPSB7Cj4gIAkmZ2lnYWRldmljZV9zcGluYW5kX21hbnVm
-YWN0dXJlciwKPiArCSZsb25nc3lzX3NwaW5hbmRfbWFudWZhY3R1cmVyLAo+ICAJJm1hY3Jvbml4
-X3NwaW5hbmRfbWFudWZhY3R1cmVyLAo+ICAJJm1pY3Jvbl9zcGluYW5kX21hbnVmYWN0dXJlciwK
-PiAgCSZwYXJhZ29uX3NwaW5hbmRfbWFudWZhY3R1cmVyLAo+IGRpZmYgLS1naXQgYS9kcml2ZXJz
-L210ZC9uYW5kL3NwaS9sb25nc3lzLmMgYi9kcml2ZXJzL210ZC9uYW5kL3NwaS9sb25nc3lzLmMK
-PiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+IGluZGV4IDAwMDAwMDAwMDAwMC4uNDE4YmQ1YTFmMjBk
-Cj4gLS0tIC9kZXYvbnVsbAo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvc3BpL2xvbmdzeXMuYwo+
-IEBAIC0wLDAgKzEsODYgQEAKPiArLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAK
-PiArLyoKPiArICogQ29weXJpZ2h0IChjKSAyMDIwIERhbmllbCBQYWxtZXIgPGRhbmllbEB0aGlu
-Z3kuanA+Cj4gKyAqCj4gKyAqLwo+ICsKPiArI2luY2x1ZGUgPGxpbnV4L2RldmljZS5oPgo+ICsj
-aW5jbHVkZSA8bGludXgva2VybmVsLmg+Cj4gKyNpbmNsdWRlIDxsaW51eC9tdGQvc3BpbmFuZC5o
-Pgo+ICsKPiArI2RlZmluZSBTUElOQU5EX01GUl9MT05HU1lTCQkweENECj4gKwo+ICtzdGF0aWMg
-U1BJTkFORF9PUF9WQVJJQU5UUyhyZWFkX2NhY2hlX3ZhcmlhbnRzLAo+ICsJCVNQSU5BTkRfUEFH
-RV9SRUFEX0ZST01fQ0FDSEVfT1AodHJ1ZSwgMCwgMSwgTlVMTCwgMCksCj4gKwkJU1BJTkFORF9Q
-QUdFX1JFQURfRlJPTV9DQUNIRV9PUChmYWxzZSwgMCwgMSwgTlVMTCwgMCkpOwo+ICsKPiArc3Rh
-dGljIFNQSU5BTkRfT1BfVkFSSUFOVFMod3JpdGVfY2FjaGVfdmFyaWFudHMsCj4gKwkJU1BJTkFO
-RF9QUk9HX0xPQUQodHJ1ZSwgMCwgTlVMTCwgMCkpOwo+ICsKPiArc3RhdGljIFNQSU5BTkRfT1Bf
-VkFSSUFOVFModXBkYXRlX2NhY2hlX3ZhcmlhbnRzLAo+ICsJCVNQSU5BTkRfUFJPR19MT0FEKGZh
-bHNlLCAwLCBOVUxMLCAwKSk7Cj4gKwo+ICtzdGF0aWMgaW50IGZzMzVuZDAxZ19zMXkyX29vYmxh
-eW91dF9lY2Moc3RydWN0IG10ZF9pbmZvICptdGQsIGludCBzZWN0aW9uLAo+ICsJCQkJCXN0cnVj
-dCBtdGRfb29iX3JlZ2lvbiAqcmVnaW9uKQo+ICt7Cj4gKwlpZiAoc2VjdGlvbiA+IDMpCj4gKwkJ
-cmV0dXJuIC1FUkFOR0U7Cj4gKwo+ICsJLyogRUNDIGlzIG5vdCB1c2VyIGFjY2Vzc2libGUgKi8K
-PiArCXJlZ2lvbi0+b2Zmc2V0ID0gMDsKPiArCXJlZ2lvbi0+bGVuZ3RoID0gMDsKPiArCj4gKwly
-ZXR1cm4gMDsKPiArfQo+ICsKPiArc3RhdGljIGludCBmczM1bmQwMWdfczF5Ml9vb2JsYXlvdXRf
-ZnJlZShzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgaW50IHNlY3Rpb24sCj4gKwkJCQkgICAgc3RydWN0
-IG10ZF9vb2JfcmVnaW9uICpyZWdpb24pCj4gK3sKPiArCWlmIChzZWN0aW9uID4gMykKPiArCQly
-ZXR1cm4gLUVSQU5HRTsKPiArCj4gKwkvKgo+ICsJICogTm8gRUNDIGRhdGEgaXMgc3RvcmVkIGlu
-IHRoZSBhY2Nlc3NpYmxlIE9PQiBzbyB0aGUgZnVsbCAxNiBieXRlcwo+ICsJICogb2YgZWFjaCBz
-cGFyZSByZWdpb24gaXMgYXZhaWxhYmxlIHRvIHRoZSB1c2VyLiBBcHBhcmVudGx5IGFsc28KPiAr
-CSAqIGNvdmVyZWQgYnkgdGhlIGludGVybmFsIEVDQy4KCkhvdyBpcyB0aGlzIGV2ZW4gcG9zc2li
-bGU/IEVDQyBtdXN0IGJlIHN0b3JlZCBzb21ld2hlcmUsIG1heWJlIGl0IGlzCm5vdCBwb3NzaWJs
-ZSB0byByZXRyaWV2ZSBpdCBidXQgSSBndWVzcyB5b3UgY2Fubm90IHVzZSB0aGUgMzIgYnl0ZXMg
-b2YKT09CIGZvciB1c2VyIGRhdGEuIENhbiB5b3UgcGxlYXNlIHZlcmlmeSB0aGF0PwoKPiArCSAq
-Lwo+ICsJaWYgKHNlY3Rpb24pIHsKPiArCQlyZWdpb24tPm9mZnNldCA9IDE2ICogc2VjdGlvbjsK
-PiArCQlyZWdpb24tPmxlbmd0aCA9IDE2Owo+ICsJfSBlbHNlIHsKPiArCQkvKiBGaXJzdCBieXRl
-IGluIHNwYXJlMCBhcmVhIGlzIHVzZWQgZm9yIGJhZCBibG9jayBtYXJrZXIgKi8KPiArCQlyZWdp
-b24tPm9mZnNldCA9IDE7Cj4gKwkJcmVnaW9uLT5sZW5ndGggPSAxNTsKPiArCX0KPiArCj4gKwly
-ZXR1cm4gMDsKPiArfQo+ICsKPiArc3RhdGljIGNvbnN0IHN0cnVjdCBtdGRfb29ibGF5b3V0X29w
-cyBmczM1bmQwMWdfczF5Ml9vb2JsYXlvdXQgPSB7Cj4gKwkuZWNjID0gZnMzNW5kMDFnX3MxeTJf
-b29ibGF5b3V0X2VjYywKPiArCS5mcmVlID0gZnMzNW5kMDFnX3MxeTJfb29ibGF5b3V0X2ZyZWUs
-Cj4gK307Cj4gKwo+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHNwaW5hbmRfaW5mbyBsb25nc3lzX3Nw
-aW5hbmRfdGFibGVbXSA9IHsKPiArCVNQSU5BTkRfSU5GTygiRlMzNU5EMDFHLVMxWTIiLAo+ICsJ
-CSAgICAgU1BJTkFORF9JRChTUElOQU5EX1JFQURJRF9NRVRIT0RfT1BDT0RFX0RVTU1ZLCAweEVB
-LCAweDExKSwKPiArCQkgICAgIE5BTkRfTUVNT1JHKDEsIDIwNDgsIDY0LCA2NCwgMTAyNCwgMjAs
-IDEsIDEsIDEpLAo+ICsJCSAgICAgTkFORF9FQ0NSRVEoNCwgNTEyKSwKPiArCQkgICAgIFNQSU5B
-TkRfSU5GT19PUF9WQVJJQU5UUygmcmVhZF9jYWNoZV92YXJpYW50cywKPiArCQkJCQkgICAgICAm
-d3JpdGVfY2FjaGVfdmFyaWFudHMsCj4gKwkJCQkJICAgICAgJnVwZGF0ZV9jYWNoZV92YXJpYW50
-cyksCj4gKwkJICAgICBTUElOQU5EX0hBU19RRV9CSVQsCj4gKwkJICAgICBTUElOQU5EX0VDQ0lO
-Rk8oJmZzMzVuZDAxZ19zMXkyX29vYmxheW91dCwKPiArCQkJCSAgICAgTlVMTCkpLAo+ICt9Owo+
-ICsKPiArc3RhdGljIGNvbnN0IHN0cnVjdCBzcGluYW5kX21hbnVmYWN0dXJlcl9vcHMgbG9uZ3N5
-c19zcGluYW5kX21hbnVmX29wcyA9IHsKPiArfTsKPiArCj4gK2NvbnN0IHN0cnVjdCBzcGluYW5k
-X21hbnVmYWN0dXJlciBsb25nc3lzX3NwaW5hbmRfbWFudWZhY3R1cmVyID0gewo+ICsJLmlkID0g
-U1BJTkFORF9NRlJfTE9OR1NZUywKPiArCS5uYW1lID0gIkxvbmdzeXMiLAo+ICsJLmNoaXBzID0g
-bG9uZ3N5c19zcGluYW5kX3RhYmxlLAo+ICsJLm5jaGlwcyA9IEFSUkFZX1NJWkUobG9uZ3N5c19z
-cGluYW5kX3RhYmxlKSwKPiArCS5vcHMgPSAmbG9uZ3N5c19zcGluYW5kX21hbnVmX29wcywKPiAr
-fTsKPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9tdGQvc3BpbmFuZC5oIGIvaW5jbHVkZS9s
-aW51eC9tdGQvc3BpbmFuZC5oCj4gaW5kZXggNmJiOTJmMjY4MzNlLi44NjUxZTYzYTJmOGEgMTAw
-NjQ0Cj4gLS0tIGEvaW5jbHVkZS9saW51eC9tdGQvc3BpbmFuZC5oCj4gKysrIGIvaW5jbHVkZS9s
-aW51eC9tdGQvc3BpbmFuZC5oCj4gQEAgLTIzOSw2ICsyMzksNyBAQCBzdHJ1Y3Qgc3BpbmFuZF9t
-YW51ZmFjdHVyZXIgewo+ICAKPiAgLyogU1BJIE5BTkQgbWFudWZhY3R1cmVycyAqLwo+ICBleHRl
-cm4gY29uc3Qgc3RydWN0IHNwaW5hbmRfbWFudWZhY3R1cmVyIGdpZ2FkZXZpY2Vfc3BpbmFuZF9t
-YW51ZmFjdHVyZXI7Cj4gK2V4dGVybiBjb25zdCBzdHJ1Y3Qgc3BpbmFuZF9tYW51ZmFjdHVyZXIg
-bG9uZ3N5c19zcGluYW5kX21hbnVmYWN0dXJlcjsKPiAgZXh0ZXJuIGNvbnN0IHN0cnVjdCBzcGlu
-YW5kX21hbnVmYWN0dXJlciBtYWNyb25peF9zcGluYW5kX21hbnVmYWN0dXJlcjsKPiAgZXh0ZXJu
-IGNvbnN0IHN0cnVjdCBzcGluYW5kX21hbnVmYWN0dXJlciBtaWNyb25fc3BpbmFuZF9tYW51ZmFj
-dHVyZXI7Cj4gIGV4dGVybiBjb25zdCBzdHJ1Y3Qgc3BpbmFuZF9tYW51ZmFjdHVyZXIgcGFyYWdv
-bl9zcGluYW5kX21hbnVmYWN0dXJlcjsKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
-aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2xpbnV4LW10ZC8K
+Hi Miquel,
+
+On Mon, 15 Feb 2021 at 19:24, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+>
+> Can you please add a changelog here when you send a new version of a
+> patch?
+
+Sorry, I was going to add a cover letter but elsewhere got told that
+one isn't needed for a single patch..
+
+Basically I changed FS35ND01G to FS35ND01G-S1Y2 as that's the proper
+part number for the chip I have and there seem to be a few variations
+of this.
+Aside from that I fixed up the hex numbers to be uppercase and added
+the oob layout callbacks.
+
+> > +static int fs35nd01g_s1y2_ooblayout_free(struct mtd_info *mtd, int section,
+> > +                                 struct mtd_oob_region *region)
+> > +{
+> > +     if (section > 3)
+> > +             return -ERANGE;
+> > +
+> > +     /*
+> > +      * No ECC data is stored in the accessible OOB so the full 16 bytes
+> > +      * of each spare region is available to the user. Apparently also
+> > +      * covered by the internal ECC.
+>
+> How is this even possible? ECC must be stored somewhere, maybe it is
+> not possible to retrieve it but I guess you cannot use the 32 bytes of
+> OOB for user data. Can you please verify that?
+
+This worried me too as I could not find the OOB layout anywhere.
+They simply list there being 4 512 byte main areas and then 4 16 byte
+spare areas. The only other note is that the first byte of spare0 is
+used for the bad block marker.
+
+I contacted Longsys but they didn't get back to me.
+So what I did here was I started googling strings within the datasheet
+to find other chips that are probably the same IP inside and I found
+the FM25G01.
+It's datasheet shares a lot of the same text and the flash layout
+diagrams etc are the same.
+It has the same table for the flash layout. 4 512 byte areas and 4 16
+byte spare areas. It has the same note for the bad block marker and
+then one additional note:
+
+"2. Spare area 800H to 83FH is all available for user.
+ ECC parity codes are programmed in
+additional space and not user accessible."
+
+It would seem that the pages are actually bigger than 2K + 64 or there
+is some other place they keep the ECC.
+Or both datasheets are lying. Somewhere else in the datasheets it says
+that writes to the ECC area will be ignored but that doesn't make a
+lot of sense if the ECC area isn't user accessible in the first place.
+
+I didn't think about it at the time but I can take a dump of the OOB
+area of my FS35ND01G-S1Y2 to confirm it's all 0xff except for any
+factory marked bad blocks.
+
+Thanks,
+
+Daniel
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
