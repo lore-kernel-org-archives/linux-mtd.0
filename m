@@ -2,62 +2,77 @@ Return-Path: <SRS0=LIjS=HR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DB39C433E0
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Feb 2021 19:18:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80A82C433DB
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Feb 2021 19:20:15 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E8CCA64E13
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Feb 2021 19:18:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E8CCA64E13
+	by mail.kernel.org (Postfix) with ESMTPS id 4C75E64E16
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Feb 2021 19:20:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C75E64E16
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=wH2kcdXSgRaG7rAaQJzJQ1A1mgq0LTW1S9wAwHvuMWg=; b=p57rLxrtVafvnMQvDrS2rqvz4E
-	TUkChi204qdXGNsGQ055+yRnWD/D1i6p0kZw69rQi1o3meCV1Aj35NNEKxkFGngIeXjc8rjrvG/bu
-	sTbDF1yJlxzKC8qSHClMeVz+XgC8zt9qVq2uj7YwngZQWUNJLmCegigMm6Tw9yFgBq5sZhCY8k79p
-	dficBz9GZz/N/tKs98flnRKy6kRk1FBnCciCb2FGNdWG391UEXHsbIpkqCc8ZLfQ49LcXSZPNqvHC
-	Obg/0aia8EGIF+7PyqGWkorFp6dhc92rm0qATUOXohKEy9pEcW7WdRk8t/R32lXtictskH6Z0Nhj8
-	WvLwcyAA==;
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
+	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=h73W+l4EA0GvrDYF5EwaeldxrYTAkZ2UCHEiQrsc3Lk=; b=KnMVGcv+tn8xAmRPrATBKq4cv
+	rOVUtDVHUDpwbmmQL+Cs3Q5q17fCp4NgGPlSGSVIZIrZIu9qJqMf9UeEBnPx4JgkA7DCn10M0XjJM
+	vJJxvhcUwdpoWVewRCRNeS8/mTWEpQsKK/LFki3zr+VW38CbTZpWI/TdbvdgfG3ME97Z9jds95EHo
+	35TGAnu39UElDeUICuU4ByVSd04QNGfkzIaHZIbq4KEVV83lnLLiSXgudAzS0uWhh6i0Ej0R+d5jo
+	lxUr8+F+HXmovfjmqCEffJI8H41ZfF5kY8+47AiHMPm5S2LIBLnSKhbbiYEQbssbTWA8ugMSrcjEV
+	OD1SKL8Rw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lBjMw-0008O3-Mt; Mon, 15 Feb 2021 19:17:14 +0000
-Received: from alexa-out.qualcomm.com ([129.46.98.28])
+	id 1lBjP1-0000DA-4E; Mon, 15 Feb 2021 19:19:23 +0000
+Received: from m42-2.mailgun.net ([69.72.42.2])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lBjMu-0008Nc-Av
- for linux-mtd@lists.infradead.org; Mon, 15 Feb 2021 19:17:13 +0000
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
- by alexa-out.qualcomm.com with ESMTP; 15 Feb 2021 11:17:08 -0800
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
- by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA;
- 15 Feb 2021 11:17:06 -0800
-X-QCInternal: smtphost
-Received: from mdalam-linux.qualcomm.com ([10.201.2.71])
- by ironmsg01-blr.qualcomm.com with ESMTP; 16 Feb 2021 00:46:46 +0530
-Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
- id A368421D78; Tue, 16 Feb 2021 00:46:44 +0530 (IST)
-From: Md Sadre Alam <mdalam@codeaurora.org>
-To: miquel.raynal@bootlin.com, richard@nod.at, boris.brezillon@collabora.com,
- mani@kernel.org, krzk@kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: rawnand: qcom: update last code word register
-Date: Tue, 16 Feb 2021 00:46:42 +0530
-Message-Id: <1613416602-1175-1-git-send-email-mdalam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+ id 1lBjOv-0000Bp-P1
+ for linux-mtd@lists.infradead.org; Mon, 15 Feb 2021 19:19:20 +0000
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1613416758; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=j/f3tmtSL2nPpj1djxZ+o8iXqVNVb7TVceUokeZt5Wc=;
+ b=QiDxZ5ogLZN5EQze0irq7+sEJtNsXz+CcQZ26lXhzIA4f4h4iOMYiKfi9wzHRNAOTvniaXdr
+ fxo1ddPLFXj/JHcjenwdzIlSqhPJAn1assbHlP/X7yuRJy2Fp3/hAOKlc23GTssjSHfKYxhJ
+ MT6MgYfDHfW6XDfaG9dbce8WV6o=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyJkZDQ0ZiIsICJsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZyIsICJiZTllNGEiXQ==
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 602ac92b8e43a988b73390bc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Feb 2021 19:19:07
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id 29EDAC43465; Mon, 15 Feb 2021 19:19:07 +0000 (UTC)
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+ (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested) (Authenticated sender: mdalam)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id F3C8EC433C6;
+ Mon, 15 Feb 2021 19:19:05 +0000 (UTC)
+MIME-Version: 1.0
+Date: Tue, 16 Feb 2021 00:49:05 +0530
+From: mdalam@codeaurora.org
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH] mtd: rawnand: qcom: update last code word register
+In-Reply-To: <20210215094055.1c3847f8@xps13>
+References: <1613337451-8002-1-git-send-email-mdalam@codeaurora.org>
+ <20210215094055.1c3847f8@xps13>
+Message-ID: <e4658795d5a00960b32116a81d43222f@codeaurora.org>
+X-Sender: mdalam@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210215_141712_522855_41F32111 
-X-CRM114-Status: GOOD (  16.14  )
+X-CRM114-CacheID: sfid-20210215_141919_172564_02F9A7A8 
+X-CRM114-Status: GOOD (  21.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,291 +84,85 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: mdalam@codeaurora.org, sricharan@codeaurora.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: vigneshr@ti.com, mani@kernel.org, richard@nod.at,
+ linux-kernel@vger.kernel.org, krzk@kernel.org, boris.brezillon@collabora.com,
+ linux-mtd@lists.infradead.org, sricharan@codeaurora.org
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From QPIC version 2.0 onwards new register got added to
-read last codeword. This change will add the READ_LOCATION_LAST_CW_n
-register.
-
-For first three code word READ_LOCATION_n register will be
-use.For last code word READ_LOCATION_LAST_CW_n register will be
-use.
-
-Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
----
-[V6]
- * Updated write_reg_dma() function in "v6"
- * Removed extra indentation level in read_page_ecc() to read last code word in "v6"
- * Removed boolean check in config_nand_cw_read() in "v6"
- drivers/mtd/nand/raw/qcom_nandc.c | 118 ++++++++++++++++++++++++++++----------
- 1 file changed, 87 insertions(+), 31 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 667e4bf..bae352f 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -48,6 +48,10 @@
- #define	NAND_READ_LOCATION_1		0xf24
- #define	NAND_READ_LOCATION_2		0xf28
- #define	NAND_READ_LOCATION_3		0xf2c
-+#define	NAND_READ_LOCATION_LAST_CW_0	0xf40
-+#define	NAND_READ_LOCATION_LAST_CW_1	0xf44
-+#define	NAND_READ_LOCATION_LAST_CW_2	0xf48
-+#define	NAND_READ_LOCATION_LAST_CW_3	0xf4c
- 
- /* dummy register offsets, used by write_reg_dma */
- #define	NAND_DEV_CMD1_RESTORE		0xdead
-@@ -181,8 +185,14 @@
- #define	ECC_BCH_4BIT	BIT(2)
- #define	ECC_BCH_8BIT	BIT(3)
- 
--#define nandc_set_read_loc(nandc, reg, offset, size, is_last)	\
--nandc_set_reg(nandc, NAND_READ_LOCATION_##reg,			\
-+#define nandc_set_read_loc_first(nandc, reg, offset, size, is_last)	\
-+nandc_set_reg(nandc, reg,					\
-+	      ((offset) << READ_LOCATION_OFFSET) |		\
-+	      ((size) << READ_LOCATION_SIZE) |			\
-+	      ((is_last) << READ_LOCATION_LAST))
-+
-+#define nandc_set_read_loc_last(nandc, reg, offset, size, is_last)	\
-+nandc_set_reg(nandc, reg,					\
- 	      ((offset) << READ_LOCATION_OFFSET) |		\
- 	      ((size) << READ_LOCATION_SIZE) |			\
- 	      ((is_last) << READ_LOCATION_LAST))
-@@ -316,6 +326,10 @@ struct nandc_regs {
- 	__le32 read_location1;
- 	__le32 read_location2;
- 	__le32 read_location3;
-+	__le32 read_location_last0;
-+	__le32 read_location_last1;
-+	__le32 read_location_last2;
-+	__le32 read_location_last3;
- 
- 	__le32 erased_cw_detect_cfg_clr;
- 	__le32 erased_cw_detect_cfg_set;
-@@ -644,6 +658,14 @@ static __le32 *offset_to_nandc_reg(struct nandc_regs *regs, int offset)
- 		return &regs->read_location2;
- 	case NAND_READ_LOCATION_3:
- 		return &regs->read_location3;
-+	case NAND_READ_LOCATION_LAST_CW_0:
-+		return &regs->read_location_last0;
-+	case NAND_READ_LOCATION_LAST_CW_1:
-+		return &regs->read_location_last1;
-+	case NAND_READ_LOCATION_LAST_CW_2:
-+		return &regs->read_location_last2;
-+	case NAND_READ_LOCATION_LAST_CW_3:
-+		return &regs->read_location_last3;
- 	default:
- 		return NULL;
- 	}
-@@ -661,6 +683,26 @@ static void nandc_set_reg(struct qcom_nand_controller *nandc, int offset,
- 		*reg = cpu_to_le32(val);
- }
- 
-+/* helper to configure location register values */
-+static void nandc_set_read_loc(struct nand_chip *chip, int cw, int reg,
-+			       int offset, int size, int is_last)
-+{
-+	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-+	struct nand_ecc_ctrl *ecc = &chip->ecc;
-+
-+	int loc = NAND_READ_LOCATION_0;
-+
-+	if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
-+		loc = NAND_READ_LOCATION_LAST_CW_0;
-+
-+	loc += reg * 4;
-+
-+	if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
-+		return nandc_set_read_loc_last(nandc, loc, offset, size, is_last);
-+	else
-+		return nandc_set_read_loc_first(nandc, loc, offset, size, is_last);
-+}
-+
- /* helper to configure address register values */
- static void set_address(struct qcom_nand_host *host, u16 column, int page)
- {
-@@ -685,6 +727,7 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read)
- {
- 	struct nand_chip *chip = &host->chip;
- 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-+	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 	u32 cmd, cfg0, cfg1, ecc_bch_cfg;
- 
- 	if (read) {
-@@ -719,9 +762,14 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read)
- 	nandc_set_reg(nandc, NAND_READ_STATUS, host->clrreadstatus);
- 	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
- 
--	if (read)
--		nandc_set_read_loc(nandc, 0, 0, host->use_ecc ?
--				   host->cw_data : host->cw_size, 1);
-+	if (read) {
-+		if (nandc->props->qpic_v2)
-+			nandc_set_read_loc(chip, ecc->steps - 1, 0, 0, host->use_ecc ?
-+					host->cw_data : host->cw_size, 1);
-+		else
-+			nandc_set_read_loc(chip, 0, 0, 0, host->use_ecc ?
-+					host->cw_data : host->cw_size, 1);
-+	}
- }
- 
- /*
-@@ -1079,8 +1127,10 @@ static int write_data_dma(struct qcom_nand_controller *nandc, int reg_off,
-  * Helper to prepare DMA descriptors for configuring registers
-  * before reading a NAND page.
-  */
--static void config_nand_page_read(struct qcom_nand_controller *nandc)
-+static void config_nand_page_read(struct nand_chip *chip)
- {
-+	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-+
- 	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
- 	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
- 	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
-@@ -1094,11 +1144,19 @@ static void config_nand_page_read(struct qcom_nand_controller *nandc)
-  * before reading each codeword in NAND page.
-  */
- static void
--config_nand_cw_read(struct qcom_nand_controller *nandc, bool use_ecc)
-+config_nand_cw_read(struct nand_chip *chip, bool use_ecc, int cw)
- {
--	if (nandc->props->is_bam)
--		write_reg_dma(nandc, NAND_READ_LOCATION_0, 4,
--			      NAND_BAM_NEXT_SGL);
-+	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-+	struct nand_ecc_ctrl *ecc = &chip->ecc;
-+
-+	if (nandc->props->is_bam) {
-+		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
-+			write_reg_dma(nandc, NAND_READ_LOCATION_LAST_CW_0, 4,
-+				      NAND_BAM_NEXT_SGL);
-+		else
-+			write_reg_dma(nandc, NAND_READ_LOCATION_0, 4,
-+				      NAND_BAM_NEXT_SGL);
-+	}
- 
- 	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
- 	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
-@@ -1117,11 +1175,11 @@ config_nand_cw_read(struct qcom_nand_controller *nandc, bool use_ecc)
-  * single codeword in page
-  */
- static void
--config_nand_single_cw_page_read(struct qcom_nand_controller *nandc,
--				bool use_ecc)
-+config_nand_single_cw_page_read(struct nand_chip *chip,
-+				bool use_ecc, int cw)
- {
--	config_nand_page_read(nandc);
--	config_nand_cw_read(nandc, use_ecc);
-+	config_nand_page_read(chip);
-+	config_nand_cw_read(chip, use_ecc, cw);
- }
- 
- /*
-@@ -1205,7 +1263,7 @@ static int nandc_param(struct qcom_nand_host *host)
- 		nandc_set_reg(nandc, NAND_DEV_CMD_VLD_RESTORE, nandc->vld);
- 	}
- 
--	nandc_set_read_loc(nandc, 0, 0, 512, 1);
-+	nandc_set_read_loc(chip, 0, 0, 0, 512, 1);
- 
- 	if (!nandc->props->qpic_v2) {
- 		write_reg_dma(nandc, NAND_DEV_CMD_VLD, 1, 0);
-@@ -1215,7 +1273,7 @@ static int nandc_param(struct qcom_nand_host *host)
- 	nandc->buf_count = 512;
- 	memset(nandc->data_buffer, 0xff, nandc->buf_count);
- 
--	config_nand_single_cw_page_read(nandc, false);
-+	config_nand_single_cw_page_read(chip, false, 0);
- 
- 	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer,
- 		      nandc->buf_count, 0);
-@@ -1617,7 +1675,7 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 	clear_bam_transaction(nandc);
- 	set_address(host, host->cw_size * cw, page);
- 	update_rw_regs(host, 1, true);
--	config_nand_page_read(nandc);
-+	config_nand_page_read(chip);
- 
- 	data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
- 	oob_size1 = host->bbm_size;
-@@ -1633,19 +1691,19 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 	}
- 
- 	if (nandc->props->is_bam) {
--		nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
-+		nandc_set_read_loc(chip, cw, 0, read_loc, data_size1, 0);
- 		read_loc += data_size1;
- 
--		nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
-+		nandc_set_read_loc(chip, cw, 1, read_loc, oob_size1, 0);
- 		read_loc += oob_size1;
- 
--		nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
-+		nandc_set_read_loc(chip, cw, 2, read_loc, data_size2, 0);
- 		read_loc += data_size2;
- 
--		nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
-+		nandc_set_read_loc(chip, cw, 3, read_loc, oob_size2, 1);
- 	}
- 
--	config_nand_cw_read(nandc, false);
-+	config_nand_cw_read(chip, false, cw);
- 
- 	read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
- 	reg_off += data_size1;
-@@ -1856,7 +1914,7 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
- 	u8 *data_buf_start = data_buf, *oob_buf_start = oob_buf;
- 	int i, ret;
- 
--	config_nand_page_read(nandc);
-+	config_nand_page_read(chip);
- 
- 	/* queue cmd descs for each codeword */
- 	for (i = 0; i < ecc->steps; i++) {
-@@ -1873,18 +1931,16 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
- 
- 		if (nandc->props->is_bam) {
- 			if (data_buf && oob_buf) {
--				nandc_set_read_loc(nandc, 0, 0, data_size, 0);
--				nandc_set_read_loc(nandc, 1, data_size,
--						   oob_size, 1);
-+				nandc_set_read_loc(chip, i, 0, 0, data_size, 0);
-+				nandc_set_read_loc(chip, i, 1, data_size, oob_size, 1);
- 			} else if (data_buf) {
--				nandc_set_read_loc(nandc, 0, 0, data_size, 1);
-+				nandc_set_read_loc(chip, i, 0, 0, data_size, 1);
- 			} else {
--				nandc_set_read_loc(nandc, 0, data_size,
--						   oob_size, 1);
-+				nandc_set_read_loc(chip, i, 0, data_size, oob_size, 1);
- 			}
- 		}
- 
--		config_nand_cw_read(nandc, true);
-+		config_nand_cw_read(chip, true, i);
- 
- 		if (data_buf)
- 			read_data_dma(nandc, FLASH_BUF_ACC, data_buf,
-@@ -1946,7 +2002,7 @@ static int copy_last_cw(struct qcom_nand_host *host, int page)
- 	set_address(host, host->cw_size * (ecc->steps - 1), page);
- 	update_rw_regs(host, 1, true);
- 
--	config_nand_single_cw_page_read(nandc, host->use_ecc);
-+	config_nand_single_cw_page_read(chip, host->use_ecc, ecc->steps - 1);
- 
- 	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer, size, 0);
- 
--- 
-2.7.4
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMjAyMS0wMi0xNSAxNDoxMCwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiBIZWxsbywKPiAKPiBN
+ZCBTYWRyZSBBbGFtIDxtZGFsYW1AY29kZWF1cm9yYS5vcmc+IHdyb3RlIG9uIE1vbiwgMTUgRmVi
+IDIwMjEKPiAwMjo0NzozMSArMDUzMDoKPiAKPj4gRnJvbSBRUElDIHZlcnNpb24gMi4wIG9ud2Fy
+ZHMgbmV3IHJlZ2lzdGVyIGdvdCBhZGRlZCB0bwo+PiByZWFkIGxhc3QgY29kZXdvcmQuIFRoaXMg
+Y2hhbmdlIHdpbGwgYWRkIHRoZSBSRUFEX0xPQ0FUSU9OX0xBU1RfQ1dfbgo+PiByZWdpc3Rlci4K
+Pj4gCj4+IEZvciBmaXJzdCB0aHJlZSBjb2RlIHdvcmQgUkVBRF9MT0NBVElPTl9uIHJlZ2lzdGVy
+IHdpbGwgYmUKPj4gdXNlLkZvciBsYXN0IGNvZGUgd29yZCBSRUFEX0xPQ0FUSU9OX0xBU1RfQ1df
+biByZWdpc3RlciB3aWxsIGJlCj4+IHVzZS4KPj4gCj4+IFNpZ25lZC1vZmYtYnk6IE1kIFNhZHJl
+IEFsYW0gPG1kYWxhbUBjb2RlYXVyb3JhLm9yZz4KPj4gLS0tCj4+IFtWNV0KPj4gICogQWRkZWQg
+aGVscGVyIGZ1bmN0aW9uIHRvIHVwZGF0ZSBsb2NhdGlvbiByZWdpc3RlciB2YWx1ZS4KPiAKPiAK
+PiBQbGVhc2UgZG9uJ3QgZm9yZ2V0IHRoZSAidjUiIGluIHRoZSBtZXNzYWdlIG9iamVjdC4KPiAK
+Pj4gIC8qCj4+IEBAIC0xMDk0LDExICsxMTQxLDE2IEBAIHN0YXRpYyB2b2lkIGNvbmZpZ19uYW5k
+X3BhZ2VfcmVhZChzdHJ1Y3QgCj4+IHFjb21fbmFuZF9jb250cm9sbGVyICpuYW5kYykKPj4gICAq
+IGJlZm9yZSByZWFkaW5nIGVhY2ggY29kZXdvcmQgaW4gTkFORCBwYWdlLgo+PiAgICovCj4+ICBz
+dGF0aWMgdm9pZAo+PiAtY29uZmlnX25hbmRfY3dfcmVhZChzdHJ1Y3QgcWNvbV9uYW5kX2NvbnRy
+b2xsZXIgKm5hbmRjLCBib29sIHVzZV9lY2MpCj4+ICtjb25maWdfbmFuZF9jd19yZWFkKHN0cnVj
+dCBxY29tX25hbmRfY29udHJvbGxlciAqbmFuZGMsIGJvb2wgdXNlX2VjYywgCj4+IGJvb2wgbGFz
+dF9jdykKPj4gIHsKPj4gLQlpZiAobmFuZGMtPnByb3BzLT5pc19iYW0pCj4+IC0JCXdyaXRlX3Jl
+Z19kbWEobmFuZGMsIE5BTkRfUkVBRF9MT0NBVElPTl8wLCA0LAo+PiAtCQkJICAgICAgTkFORF9C
+QU1fTkVYVF9TR0wpOwo+PiArCWlmIChuYW5kYy0+cHJvcHMtPmlzX2JhbSkgewo+PiArCQlpZiAo
+bmFuZGMtPnByb3BzLT5xcGljX3YyICYmIGxhc3RfY3cpCj4+ICsJCQl3cml0ZV9yZWdfZG1hKG5h
+bmRjLCBOQU5EX1JFQURfTE9DQVRJT05fTEFTVF9DV18wLCA0LAo+PiArCQkJCSAgICAgIE5BTkRf
+QkFNX05FWFRfU0dMKTsKPj4gKwkJZWxzZQo+PiArCQkJd3JpdGVfcmVnX2RtYShuYW5kYywgTkFO
+RF9SRUFEX0xPQ0FUSU9OXzAsIDQsCj4+ICsJCQkJICAgICAgTkFORF9CQU1fTkVYVF9TR0wpOwo+
+IAo+IEkgZ3Vlc3Mgd3JpdGVfcmVnX2RtYSBzaG91bGQgYmUgdXBkYXRlZCBhcyB3ZWxsLgoKICAg
+VXBkYXRlZCBpbiBWNiBwYXRjaCAsIHBsZWFzZSBjaGVjay4KPiAKPiAKPiBbLi4uXQo+IAo+PiAK
+Pj4gLQljb25maWdfbmFuZF9jd19yZWFkKG5hbmRjLCBmYWxzZSk7Cj4+ICsJY29uZmlnX25hbmRf
+Y3dfcmVhZChuYW5kYywgZmFsc2UsIGN3ID09IGVjYy0+c3RlcHMgLSAxID8gdHJ1ZSA6IAo+PiBm
+YWxzZSk7Cj4+IAo+PiAgCXJlYWRfZGF0YV9kbWEobmFuZGMsIHJlZ19vZmYsIGRhdGFfYnVmLCBk
+YXRhX3NpemUxLCAwKTsKPj4gIAlyZWdfb2ZmICs9IGRhdGFfc2l6ZTE7Cj4+IEBAIC0xODczLDE4
+ICsxOTM4LDMxIEBAIHN0YXRpYyBpbnQgcmVhZF9wYWdlX2VjYyhzdHJ1Y3QgcWNvbV9uYW5kX2hv
+c3QgCj4+ICpob3N0LCB1OCAqZGF0YV9idWYsCj4+IAo+PiAgCQlpZiAobmFuZGMtPnByb3BzLT5p
+c19iYW0pIHsKPj4gIAkJCWlmIChkYXRhX2J1ZiAmJiBvb2JfYnVmKSB7Cj4+IC0JCQkJbmFuZGNf
+c2V0X3JlYWRfbG9jKG5hbmRjLCAwLCAwLCBkYXRhX3NpemUsIDApOwo+PiAtCQkJCW5hbmRjX3Nl
+dF9yZWFkX2xvYyhuYW5kYywgMSwgZGF0YV9zaXplLAo+PiAtCQkJCQkJICAgb29iX3NpemUsIDEp
+Owo+PiArCQkJCWlmIChuYW5kYy0+cHJvcHMtPnFwaWNfdjIgJiYgaSA9PSAoZWNjLT5zdGVwcyAt
+IDEpKSB7Cj4gCj4gSSB3b3VsZCBsaWtlIHRoZSBoZWxwZXIgdG8gaGFuZGxlIHRoaXMgY29uZGl0
+aW9uLiBJIHdvdWxkIHByZWZlciB0bwo+IGF2b2lkIHlldCBhbiBleHRyYSBpbmRlbnRhdGlvbiBs
+ZXZlbC4KCiAgIFVwZGF0ZWQgaW4gVjYgcGF0Y2ggLCBwbGVhc2UgY2hlY2suCj4gCj4+ICsJCQkJ
+CW5hbmRjX3NldF9yZWFkX2xvYyhjaGlwLCBpLCAwLCAwLCBkYXRhX3NpemUsIDApOwo+PiArCQkJ
+CQluYW5kY19zZXRfcmVhZF9sb2MoY2hpcCwgaSwgMSwgZGF0YV9zaXplLAo+PiArCQkJCQkJCSAg
+IG9vYl9zaXplLCAxKTsKPj4gKwkJCQl9IGVsc2Ugewo+PiArCQkJCQluYW5kY19zZXRfcmVhZF9s
+b2MoY2hpcCwgaSwgMCwgMCwgZGF0YV9zaXplLCAwKTsKPj4gKwkJCQkJbmFuZGNfc2V0X3JlYWRf
+bG9jKGNoaXAsIGksIDEsIGRhdGFfc2l6ZSwKPj4gKwkJCQkJCQkgICBvb2Jfc2l6ZSwgMSk7Cj4+
+ICsJCQkJfQo+PiAgCQkJfSBlbHNlIGlmIChkYXRhX2J1Zikgewo+PiAtCQkJCW5hbmRjX3NldF9y
+ZWFkX2xvYyhuYW5kYywgMCwgMCwgZGF0YV9zaXplLCAxKTsKPj4gKwkJCQlpZiAobmFuZGMtPnBy
+b3BzLT5xcGljX3YyICYmIGkgPT0gKGVjYy0+c3RlcHMgLSAxKSkKPj4gKwkJCQkJbmFuZGNfc2V0
+X3JlYWRfbG9jKGNoaXAsIGksIDAsIDAsIGRhdGFfc2l6ZSwgMSk7Cj4+ICsJCQkJZWxzZQo+PiAr
+CQkJCQluYW5kY19zZXRfcmVhZF9sb2MoY2hpcCwgaSwgMCwgMCwgZGF0YV9zaXplLCAxKTsKPj4g
+IAkJCX0gZWxzZSB7Cj4+IC0JCQkJbmFuZGNfc2V0X3JlYWRfbG9jKG5hbmRjLCAwLCBkYXRhX3Np
+emUsCj4+IC0JCQkJCQkgICBvb2Jfc2l6ZSwgMSk7Cj4+ICsJCQkJaWYgKG5hbmRjLT5wcm9wcy0+
+cXBpY192MiAmJiBpID09IChlY2MtPnN0ZXBzIC0gMSkpCj4+ICsJCQkJCW5hbmRjX3NldF9yZWFk
+X2xvYyhjaGlwLCBpLCAwLCBkYXRhX3NpemUsCj4+ICsJCQkJCQkJICAgb29iX3NpemUsIDEpOwo+
+PiArCQkJCWVsc2UKPj4gKwkJCQkJbmFuZGNfc2V0X3JlYWRfbG9jKGNoaXAsIGksIDAsIGRhdGFf
+c2l6ZSwKPj4gKwkJCQkJCQkgICBvb2Jfc2l6ZSwgMSk7Cj4+ICAJCQl9Cj4+ICAJCX0KPj4gCj4+
+IC0JCWNvbmZpZ19uYW5kX2N3X3JlYWQobmFuZGMsIHRydWUpOwo+PiArCQljb25maWdfbmFuZF9j
+d19yZWFkKG5hbmRjLCB0cnVlLCBpID09IGVjYy0+c3RlcHMgLSAxID8gdHJ1ZSA6IAo+PiBmYWxz
+ZSk7Cj4gCj4gCWkgPT0gKGVjYy0+c3RlcHMgLSAxKQo+IAo+IGlzIGFscmVhZHkgYSBib29sZWFu
+LCB5b3UgZG9uJ3QgbmVlZAo+IAo+IAkiPyB0cnVlIDogZmFsc2UiCj4gCgogICAgVXBkYXRlZCBp
+biBWNiBwYXRjaC4KCj4+IAo+PiAgCQlpZiAoZGF0YV9idWYpCj4+ICAJCQlyZWFkX2RhdGFfZG1h
+KG5hbmRjLCBGTEFTSF9CVUZfQUNDLCBkYXRhX2J1ZiwKPj4gQEAgLTE5NDYsNyArMjAyNCw3IEBA
+IHN0YXRpYyBpbnQgY29weV9sYXN0X2N3KHN0cnVjdCBxY29tX25hbmRfaG9zdCAKPj4gKmhvc3Qs
+IGludCBwYWdlKQo+PiAgCXNldF9hZGRyZXNzKGhvc3QsIGhvc3QtPmN3X3NpemUgKiAoZWNjLT5z
+dGVwcyAtIDEpLCBwYWdlKTsKPj4gIAl1cGRhdGVfcndfcmVncyhob3N0LCAxLCB0cnVlKTsKPj4g
+Cj4+IC0JY29uZmlnX25hbmRfc2luZ2xlX2N3X3BhZ2VfcmVhZChuYW5kYywgaG9zdC0+dXNlX2Vj
+Yyk7Cj4+ICsJY29uZmlnX25hbmRfc2luZ2xlX2N3X3BhZ2VfcmVhZChuYW5kYywgaG9zdC0+dXNl
+X2VjYywgdHJ1ZSk7Cj4gCj4gTWF5YmUgaXQncyBiZXN0IHRvIGp1c3QgZm9yd2FyZCB0aGUgY29k
+ZXdvcmQgYW5kIGxldCB0aGUgY29kZSB0aGF0Cj4gbmVlZHMgdG8ga25vdyBpZiBpdCBpcyB0aGUg
+bGFzdCBvbmUgb3Igbm90IGRvIHRoZSBjb21wYXJpc29uLgo+IAoKICAgVXBkYXRlZCBpbiBWNiBw
+YXRjaCwgcGxlYXNlIGNoZWNrLgo+PiAKPj4gIAlyZWFkX2RhdGFfZG1hKG5hbmRjLCBGTEFTSF9C
+VUZfQUNDLCBuYW5kYy0+ZGF0YV9idWZmZXIsIHNpemUsIDApOwo+PiAKPiAKPiBUaGFua3MsCj4g
+TWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
