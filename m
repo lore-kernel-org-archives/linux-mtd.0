@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE87BC433DB
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 18:21:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C46B0C433E0
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 18:22:26 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A1C9764DA1
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 18:21:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A1C9764DA1
+	by mail.kernel.org (Postfix) with ESMTPS id 71E7464E04
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 18:22:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 71E7464E04
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,48 +23,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=LEHQg7jEhTSv/ytwyQEPVIhjp6eyyg65pnYVejRK0NU=; b=TF9W6xwIkpvyf15pzIOwrCGPO
-	ZBRMck8KheMWfi15HXVP93s0f3NOgGDPytQSMhp/Fu3waPKZLvK/7EF5yIhmAreMb93pGArmPpOXW
-	eNS9EXf2Riz3mF+S+nDI+QHewt98NbA+pAaQBXgqNOj8tlVFBPMhWcqGg/H7B54KkU8rFerRkoKfp
-	adTChHDnCoeI31iD9agNMhhGNYWxfuDbfanXHz1JHuriP3YP+1nC/iKnjMPV1svL2qDik5rLiEEpQ
-	L7blysF8uI1dZ9Q2ZJT+WOU9peLXOhjVlJ57JoBM+7iThxaTJARWFdyRCVGKIDvuezAKHi4olsfeP
-	G0oBonUBw==;
+	 bh=6jKwgJgm7NCwJnj27oq3R0K37w4Sv0MbmJ4quCQo3Xo=; b=ZQ1ceqgjtvtXKji75qHI9NpnQ
+	gnhA+SnSZ5qWGk7BUyrBLfNUu7pwlwyCc/sIkXFs6DJ5cVhcZOmLBWQWqwT4Op12TeVmIdevA4wgC
+	jzh3qYHwm0cRD/AvCGRYCvEh3kp2hy6OIfRBl738FjDgfSVlDVoHXeBwdockxViC/SU+naIehg4nL
+	QL/fSW3QcRiIm0fIqi5x+46mK+Wl3WVYOm+xxj9uS1OLSRHPZLefyFaAaGLO++u+7WMkqld6FfOzB
+	sZw2UUWO2VPSzQczFZNyTLVOtsIpuz6jUdmoC5V3nfDCxYTpUw5n5Ic3+7bEP/RfyNHy0H9YEdR44
+	u15nXtLKA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lC4xU-000629-3p; Tue, 16 Feb 2021 18:20:24 +0000
+	id 1lC4yC-0006K0-4K; Tue, 16 Feb 2021 18:21:11 +0000
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lC4xA-0005tP-QR
- for linux-mtd@lists.infradead.org; Tue, 16 Feb 2021 18:20:08 +0000
-IronPort-SDR: MPmIRj2pQuiPbuHw1yRjl/x+5f+pwGH++gkVZda9zszm+hLOTZJ8NWppMNjAjkbewFbNtaxEWP
- XMCM7N7syCmw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="202169434"
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; d="scan'208";a="202169434"
+ id 1lC4xQ-0005uH-TN
+ for linux-mtd@lists.infradead.org; Tue, 16 Feb 2021 18:20:25 +0000
+IronPort-SDR: XTicbpHe9+gV0w5jyojySAPEdt9BJn2NSgdHigZfz31podwJuN+Iji+El1fWAfzc9Fc9WMJUhH
+ w6d1ld47TEZw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="202169505"
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; d="scan'208";a="202169505"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Feb 2021 10:20:03 -0800
-IronPort-SDR: 7jQhO0+zvQKYUbtQTv+mupz9t9vyFaiANQ8JhKt/gJozJJ+dI3Vz2RZ8tK+rJMIMNUqEycuK04
- VBhwXAMANBDA==
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; d="scan'208";a="399609163"
+ 16 Feb 2021 10:20:19 -0800
+IronPort-SDR: EJDvaIYhpYaOsjZ4Zo4lOXQNJuSKBX49wghtYeuI3k9XGC2OhUkGgmg9wbiJ6iX2P3pY/zpBh/
+ BxGieHQeqd5A==
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; d="scan'208";a="399609303"
 Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Feb 2021 10:20:00 -0800
+ 16 Feb 2021 10:20:16 -0800
 From: Tomas Winkler <tomas.winkler@intel.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Jani Nikula <jani.nikula@linux.intel.com>,
  Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
  Rodrigo Vivi <rodrigo.vivi@intel.com>
-Subject: [RFC PATCH 4/9] drm/i915/spi: implement region enumeration
-Date: Tue, 16 Feb 2021 20:19:20 +0200
-Message-Id: <20210216181925.650082-5-tomas.winkler@intel.com>
+Subject: [RFC PATCH 9/9] mtd: use refcount to prevent corruption
+Date: Tue, 16 Feb 2021 20:19:25 +0200
+Message-Id: <20210216181925.650082-10-tomas.winkler@intel.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210216181925.650082-1-tomas.winkler@intel.com>
 References: <20210216181925.650082-1-tomas.winkler@intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210216_132006_984832_0CCDAD12 
-X-CRM114-Status: GOOD (  17.29  )
+X-CRM114-CacheID: sfid-20210216_132023_311976_463191C8 
+X-CRM114-Status: GOOD (  18.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,248 +76,222 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Alexander Usyskin <alexander.usyskin@intel.com>,
- intel-gfx@lists.freedesktop.org, Lucas De Marchi <lucas.demarchi@intel.com>,
- linux-mtd@lists.infradead.org, Tomas Winkler <tomas.winkler@intel.com>,
+Cc: linux-mtd@lists.infradead.org, intel-gfx@lists.freedesktop.org,
+ Tomas Winkler <tomas.winkler@intel.com>,
+ Alexander Usyskin <alexander.usyskin@intel.com>,
  Vitaly Lubart <vitaly.lubart@intel.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In i915-spi, there is no access to the spi controller,
-all the information has to be extracted form the descriptor region.
+When underlying device is removed mtd core will crash
+in case user space is holding open handle.
+Need to use proper refcounting so device is release
+only when has no users.
 
-Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc: Lucas De Marchi <lucas.demarchi@intel.com>
 Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
 ---
- drivers/gpu/drm/i915/spi/intel_spi_drv.c | 190 +++++++++++++++++++++++
- 1 file changed, 190 insertions(+)
+ drivers/mtd/mtdcore.c   | 63 +++++++++++++++++++++++++----------------
+ drivers/mtd/mtdcore.h   |  1 +
+ drivers/mtd/mtdpart.c   | 13 +++++----
+ include/linux/mtd/mtd.h |  2 +-
+ 4 files changed, 47 insertions(+), 32 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/spi/intel_spi_drv.c b/drivers/gpu/drm/i915/spi/intel_spi_drv.c
-index 23261f35b71f..a1e7171d05db 100644
---- a/drivers/gpu/drm/i915/spi/intel_spi_drv.c
-+++ b/drivers/gpu/drm/i915/spi/intel_spi_drv.c
-@@ -16,14 +16,197 @@ struct i915_spi {
- 	void __iomem *base;
- 	size_t size;
- 	unsigned int nregions;
-+	u32 access_map;
- 	struct {
- 		const char *name;
- 		u8 id;
- 		u64 offset;
- 		u64 size;
-+		unsigned int is_readable:1;
-+		unsigned int is_writable:1;
- 	} regions[];
- };
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 2d6423d89a17..a3dacc7104a9 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -93,9 +93,31 @@ static void mtd_release(struct device *dev)
+ 	dev_t index = MTD_DEVT(mtd->index);
  
-+#define SPI_TRIGGER_REG       0x00000000
-+#define SPI_VALSIG_REG        0x00000010
-+#define SPI_ADDRESS_REG       0x00000040
-+#define SPI_REGION_ID_REG     0x00000044
-+/*
-+ * [15:0]-Erase size = 0x0010 4K 0x0080 32K 0x0100 64K
-+ * [23:16]-Reserved
-+ * [31:24]-Erase SPI RegionID
-+ */
-+#define SPI_ERASE_REG         0x00000048
-+#define SPI_ACCESS_ERROR_REG  0x00000070
-+#define SPI_ADDRESS_ERROR_REG 0x00000074
+ 	/* remove /dev/mtdXro node */
++	if (mtd_is_partition(mtd))
++		release_mtd_partition(mtd);
 +
-+/* Flash Valid Signature */
-+#define SPI_FLVALSIG          0x0FF0A55A
-+
-+#define SPI_MAP_ADDR_MASK     0x000000FF
-+#define SPI_MAP_ADDR_SHIFT    0x00000004
-+
-+#define REGION_ID_DESCRIPTOR  0
-+/* Flash Region Base Address */
-+#define FRBA      0x40
-+/* Flash Region __n - Flash Descriptor Record */
-+#define FLREG(__n)  (FRBA + ((__n) * 4))
-+/*  Flash Map 1 Register */
-+#define FLMAP1_REG  0x18
-+#define FLMSTR4_OFFSET 0x00C
-+
-+#define SPI_ACCESS_ERROR_PCIE_MASK 0x7
-+
-+static inline void spi_set_region_id(struct i915_spi *spi, u8 region)
+ 	device_destroy(&mtd_class, index + 1);
+ }
+ 
++static void mtd_device_release(struct kref *kref)
 +{
-+	iowrite32((u32)region, spi->base + SPI_REGION_ID_REG);
-+}
++	struct mtd_info *mtd = container_of(kref, struct mtd_info, refcnt);
 +
-+static inline u32 spi_error(struct i915_spi *spi)
-+{
-+	u32 reg = ioread32(spi->base + SPI_ACCESS_ERROR_REG) &
-+		  SPI_ACCESS_ERROR_PCIE_MASK;
++	pr_debug("%s %s\n", __func__, mtd->name);
 +
-+	/* reset error bits */
-+	if (reg)
-+		iowrite32(reg, spi->base + SPI_ACCESS_ERROR_REG);
-+
-+	return reg;
-+}
-+
-+static inline u32 spi_read32(struct i915_spi *spi, u32 address)
-+{
-+	void __iomem *base = spi->base;
-+
-+	iowrite32(address, base + SPI_ADDRESS_REG);
-+
-+	return ioread32(base + SPI_TRIGGER_REG);
-+}
-+
-+static int spi_get_access_map(struct i915_spi *spi)
-+{
-+	u32 flmap1;
-+	u32 fmba;
-+	u32 fmstr4;
-+	u32 fmstr4_addr;
-+
-+	spi_set_region_id(spi, REGION_ID_DESCRIPTOR);
-+
-+	flmap1 = spi_read32(spi, FLMAP1_REG);
-+	if (spi_error(spi))
-+		return -EIO;
-+	/* Get Flash Master Baser Address (FMBA) */
-+	fmba = ((flmap1 & SPI_MAP_ADDR_MASK) << SPI_MAP_ADDR_SHIFT);
-+	fmstr4_addr = fmba + FLMSTR4_OFFSET;
-+
-+	fmstr4 = spi_read32(spi, fmstr4_addr);
-+	if (spi_error(spi))
-+		return -EIO;
-+
-+	spi->access_map = fmstr4;
-+	return 0;
-+}
-+
-+static bool spi_region_readable(struct i915_spi *spi, u8 region)
-+{
-+	if (region < 12)
-+		return spi->access_map & (1 << (region + 8)); /* [19:8] */
-+	else
-+		return spi->access_map & (1 << (region - 12)); /* [3:0] */
-+}
-+
-+static bool spi_region_writeable(struct i915_spi *spi, u8 region)
-+{
-+	if (region < 12)
-+		return spi->access_map & (1 << (region + 20)); /* [31:20] */
-+	else
-+		return spi->access_map & (1 << (region - 8)); /* [7:4] */
-+}
-+
-+static int i915_spi_is_valid(struct i915_spi *spi)
-+{
-+	u32 is_valid;
-+
-+	spi_set_region_id(spi, REGION_ID_DESCRIPTOR);
-+
-+	is_valid = spi_read32(spi, SPI_VALSIG_REG);
-+	if (spi_error(spi))
-+		return -EIO;
-+
-+	if (is_valid != SPI_FLVALSIG)
-+		return -ENODEV;
-+
-+	return 0;
-+}
-+
-+static int i915_spi_init(struct i915_spi *spi, struct device *device)
-+{
-+	int ret;
-+	unsigned int i, n;
-+
-+	/* clean error register, previous errors are ignored */
-+	spi_error(spi);
-+
-+	ret = i915_spi_is_valid(spi);
-+	if (ret) {
-+		dev_err(device, "The SPI is not valid %d\n", ret);
-+		return ret;
++	if (mtd->nvmem) {
++		nvmem_unregister(mtd->nvmem);
++		mtd->nvmem = NULL;
 +	}
 +
-+	if (spi_get_access_map(spi))
-+		return -EIO;
++	idr_remove(&mtd_idr, mtd->index);
++	of_node_put(mtd_get_of_node(mtd));
 +
-+	for (i = 0, n = 0; i < spi->nregions; i++) {
-+		u32 address, base, limit, region;
-+		u8 id = spi->regions[i].id;
++	device_unregister(&mtd->dev);
 +
-+		address = FLREG(id);
-+		region = spi_read32(spi, address);
-+
-+		base = (region & 0x0000FFFF) << 12;
-+		limit = (((region & 0xFFFF0000) >> 16) << 12) | 0xFFF;
-+
-+		dev_dbg(device, "[%d] %s: region: 0x%08X base: 0x%08x limit: 0x%08x\n",
-+			id, spi->regions[i].name, region, base, limit);
-+
-+		if (base >= limit || (i > 0 && limit == 0)) {
-+			dev_dbg(device, "[%d] %s: disabled\n",
-+				id, spi->regions[i].name);
-+			spi->regions[i].is_readable = 0;
-+			continue;
-+		}
-+
-+		if (spi->size < limit)
-+			spi->size = limit;
-+
-+		spi->regions[i].offset = base;
-+		spi->regions[i].size = limit - base + 1;
-+		/* No write access to descriptor; mask it out*/
-+		spi->regions[i].is_writable = spi_region_writeable(spi, id);
-+
-+		spi->regions[i].is_readable = spi_region_readable(spi, id);
-+		dev_dbg(device, "Registered, %s id=%d offset=%lld size=%lld rd=%d wr=%d\n",
-+			spi->regions[i].name,
-+			spi->regions[i].id,
-+			spi->regions[i].offset,
-+			spi->regions[i].size,
-+			spi->regions[i].is_readable,
-+			spi->regions[i].is_writable);
-+
-+		if (spi->regions[i].is_readable)
-+			n++;
-+	}
-+
-+	dev_dbg(device, "Registered %d regions\n", n);
-+
-+	/* Need to add 1 to the amount of memory
-+	 * so it is reported as an even block
-+	 */
-+	spi->size += 1;
-+
-+	return n;
++	module_put(THIS_MODULE);
 +}
 +
- static int i915_spi_probe(struct platform_device *platdev)
+ static ssize_t mtd_type_show(struct device *dev,
+ 		struct device_attribute *attr, char *buf)
  {
- 	struct resource *bar;
-@@ -35,6 +218,7 @@ static int i915_spi_probe(struct platform_device *platdev)
- 	size_t size;
- 	char *name;
- 	size_t name_size;
-+	int ret;
- 
- 	device = &platdev->dev;
- 
-@@ -86,6 +270,12 @@ static int i915_spi_probe(struct platform_device *platdev)
- 		return PTR_ERR(spi->base);
+@@ -619,7 +641,7 @@ int add_mtd_device(struct mtd_info *mtd)
  	}
  
-+	ret = i915_spi_init(spi, device);
-+	if (ret < 0) {
-+		dev_err(device, "cannot initialize spi\n");
-+		return -ENODEV;
-+	}
-+
- 	platform_set_drvdata(platdev, spi);
+ 	mtd->index = i;
+-	mtd->usecount = 0;
++	kref_init(&mtd->refcnt);
  
- 	dev_dbg(device, "i915-spi is bound\n");
+ 	/* default value if not set by driver */
+ 	if (mtd->bitflip_threshold == 0)
+@@ -719,6 +741,8 @@ int del_mtd_device(struct mtd_info *mtd)
+ 	int ret;
+ 	struct mtd_notifier *not;
+ 
++	pr_debug("%s %s\n", __func__, mtd->name);
++
+ 	mutex_lock(&mtd_table_mutex);
+ 
+ 	debugfs_remove_recursive(mtd->dbg.dfs_dir);
+@@ -733,23 +757,8 @@ int del_mtd_device(struct mtd_info *mtd)
+ 	list_for_each_entry(not, &mtd_notifiers, list)
+ 		not->remove(mtd);
+ 
+-	if (mtd->usecount) {
+-		printk(KERN_NOTICE "Removing MTD device #%d (%s) with use count %d\n",
+-		       mtd->index, mtd->name, mtd->usecount);
+-		ret = -EBUSY;
+-	} else {
+-		/* Try to remove the NVMEM provider */
+-		if (mtd->nvmem)
+-			nvmem_unregister(mtd->nvmem);
+-
+-		device_unregister(&mtd->dev);
+-
+-		idr_remove(&mtd_idr, mtd->index);
+-		of_node_put(mtd_get_of_node(mtd));
+-
+-		module_put(THIS_MODULE);
+-		ret = 0;
+-	}
++	kref_put(&mtd->refcnt, mtd_device_release);
++	ret = 0;
+ 
+ out_error:
+ 	mutex_unlock(&mtd_table_mutex);
+@@ -984,20 +993,23 @@ int __get_mtd_device(struct mtd_info *mtd)
+ 	if (!try_module_get(master->owner))
+ 		return -ENODEV;
+ 
++	kref_get(&mtd->refcnt);
++	pr_debug("get mtd %s %d\n", mtd->name, kref_read(&mtd->refcnt));
++
+ 	if (master->_get_device) {
+ 		err = master->_get_device(mtd);
+ 
+ 		if (err) {
++			kref_put(&mtd->refcnt, mtd_device_release);
+ 			module_put(master->owner);
+ 			return err;
+ 		}
+ 	}
+ 
+-	master->usecount++;
+-
+ 	while (mtd->parent) {
+-		mtd->usecount++;
+ 		mtd = mtd->parent;
++		kref_get(&mtd->refcnt);
++		pr_debug("get mtd %s %d\n", mtd->name, kref_read(&mtd->refcnt));
+ 	}
+ 
+ 	return 0;
+@@ -1055,14 +1067,15 @@ void __put_mtd_device(struct mtd_info *mtd)
+ {
+ 	struct mtd_info *master = mtd_get_master(mtd);
+ 
++	kref_put(&mtd->refcnt, mtd_device_release);
++	pr_debug("put mtd %s %d\n", mtd->name, kref_read(&mtd->refcnt));
++
+ 	while (mtd->parent) {
+-		--mtd->usecount;
+-		BUG_ON(mtd->usecount < 0);
+ 		mtd = mtd->parent;
++		kref_put(&mtd->refcnt, mtd_device_release);
++		pr_debug("put mtd %s %d\n", mtd->name, kref_read(&mtd->refcnt));
+ 	}
+ 
+-	master->usecount--;
+-
+ 	if (master->_put_device)
+ 		master->_put_device(master);
+ 
+diff --git a/drivers/mtd/mtdcore.h b/drivers/mtd/mtdcore.h
+index b5eefeabf310..b014861a06a6 100644
+--- a/drivers/mtd/mtdcore.h
++++ b/drivers/mtd/mtdcore.h
+@@ -12,6 +12,7 @@ int __must_check add_mtd_device(struct mtd_info *mtd);
+ int del_mtd_device(struct mtd_info *mtd);
+ int add_mtd_partitions(struct mtd_info *, const struct mtd_partition *, int);
+ int del_mtd_partitions(struct mtd_info *);
++void release_mtd_partition(struct mtd_info *mtd);
+ 
+ struct mtd_partitions;
+ 
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 12ca4f19cb14..6d70b5d0e663 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -27,10 +27,17 @@
+ 
+ static inline void free_partition(struct mtd_info *mtd)
+ {
++	pr_err("free_partition \"%s\"\n", mtd->name);
+ 	kfree(mtd->name);
+ 	kfree(mtd);
+ }
+ 
++void release_mtd_partition(struct mtd_info *mtd)
++{
++	list_del_init(&mtd->part.node);
++	free_partition(mtd);
++}
++
+ static struct mtd_info *allocate_partition(struct mtd_info *parent,
+ 					   const struct mtd_partition *part,
+ 					   int partno, uint64_t cur_offset)
+@@ -313,9 +320,6 @@ static int __mtd_del_partition(struct mtd_info *mtd)
+ 	if (err)
+ 		return err;
+ 
+-	list_del(&child->part.node);
+-	free_partition(mtd);
+-
+ 	return 0;
+ }
+ 
+@@ -341,9 +345,6 @@ static int __del_mtd_partitions(struct mtd_info *mtd)
+ 			err = ret;
+ 			continue;
+ 		}
+-
+-		list_del(&child->part.node);
+-		free_partition(child);
+ 	}
+ 
+ 	return err;
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 157357ec1441..1217c9d8d69d 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -373,7 +373,7 @@ struct mtd_info {
+ 
+ 	struct module *owner;
+ 	struct device dev;
+-	int usecount;
++	struct kref refcnt;
+ 	struct mtd_debug_info dbg;
+ 	struct nvmem_device *nvmem;
+ 
 -- 
 2.26.2
 
