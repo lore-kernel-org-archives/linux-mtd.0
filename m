@@ -2,20 +2,19 @@ Return-Path: <SRS0=UIyM=HS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB24EC433E0
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 18:21:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A25DC433E0
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 18:21:35 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A78B864E04
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 18:21:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A78B864E04
+	by mail.kernel.org (Postfix) with ESMTPS id DA37B64DA1
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 18:21:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA37B64DA1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,48 +23,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=jIHkVlkjJLVbrOCrejmuaNZRVSkq9+/p2WrI5t03pf0=; b=o0YIGULxn+rmcYttgYaSQHFSk
-	Bgo0ekmuvkHdLASlKkevRVcaxdxgWX/VTKov1nxpmUbWte8NcnN4/5rFnMpdhLop7wsdP9IWi8Dv1
-	fu4xoLKkBwKP6k2Xb0MwsiCzwkcBwGQ1bjfv7eFaWxOhb5o1ek39uBEGWJiO+W0SGZ39Fieh/Litx
-	durH4Z49ZdMCXPFVoPT0tKtMZKXe/lO4Je1y1HTgBcoC2B5IBnXvLhefau2RDBfFZbnBCVYBpMeFN
-	6qPnkLSoQDr+CsBMwpmFI4nUaThHPncu3EH6JpkyVi4307/DdABp+ghdqKINjt27W3s6GRo85xfF3
-	GEZyXh6EA==;
+	 bh=gAHhWrEb0qrZlC+I3D+Tx/+EmBy8cbloLALVJkbHKnU=; b=pbW65qp1ACGPN7I9G5U9b5Cix
+	D52xoGxtCnRJw1238nPwsdYjfYlETODv2BeBW4rOMEX+n0rINIzti6RW7UmnTtYKYcpbSa5Jdip+i
+	umupk0ZirPRAwpZ4nAUTS3u1deEi7EU1P6pcFhn42OkhvqwcKv5WzrRcQKserGFnk52BqtnmzCL+p
+	5mDluwlzAdDtylbO91FuVC5e4XmMAHpmVZJ0UODLb2PSSR5LxLCKZm0zEf/MIFmFCmYosTJNxIF6Q
+	waaKpSzG21oHWEOl/3BJPteXx3tCX5TUaxeWR0Xbirf9vJ0RVIaNPxb4qq9OIJDVjTuM5YNPFSztI
+	7RRgCG3DQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lC4xc-00065u-Fa; Tue, 16 Feb 2021 18:20:32 +0000
+	id 1lC4xf-00067B-Ma; Tue, 16 Feb 2021 18:20:35 +0000
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lC4xD-0005uH-C1
- for linux-mtd@lists.infradead.org; Tue, 16 Feb 2021 18:20:11 +0000
-IronPort-SDR: eOFght4/THVlbkOIW3GdHnBf7cUZ5Tgcw3I6PMVpvhX6F7aHDr8+5Lg6jmF2VtVtKUeELJXkuJ
- hRS8hvNZkVbw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="202169456"
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; d="scan'208";a="202169456"
+ id 1lC4xH-0005xx-H6
+ for linux-mtd@lists.infradead.org; Tue, 16 Feb 2021 18:20:15 +0000
+IronPort-SDR: VwxfE+i0t6Jxjo6oA6Rr0yZpkrCONKiy3sfE3Sy4WcNoGO+8VCsSU5xdkSd747pMuKS0FNrl9C
+ FEBMjpHXkkVg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="202169469"
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; d="scan'208";a="202169469"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Feb 2021 10:20:06 -0800
-IronPort-SDR: Wa1O1q9EY+w++u31oNd/2qozICHOMeMxuSPt0XUDjgat1UL4brb8zwasmoLOLU8uWEwcAGUjrB
- ztF7McpA55XQ==
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; d="scan'208";a="399609201"
+ 16 Feb 2021 10:20:10 -0800
+IronPort-SDR: jlWW7UNI/mwQEjhAhXCFqxGnlg37B6ErK7DFwQE6i3ppIvHbXcboRHv/XDwKoTpLIHYu1WZMJj
+ YlUee6fuCsrQ==
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; d="scan'208";a="399609237"
 Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Feb 2021 10:20:03 -0800
+ 16 Feb 2021 10:20:06 -0800
 From: Tomas Winkler <tomas.winkler@intel.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Jani Nikula <jani.nikula@linux.intel.com>,
  Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
  Rodrigo Vivi <rodrigo.vivi@intel.com>
-Subject: [RFC PATCH 5/9] drm/i915/spi: implement spi access functions
-Date: Tue, 16 Feb 2021 20:19:21 +0200
-Message-Id: <20210216181925.650082-6-tomas.winkler@intel.com>
+Subject: [RFC PATCH 6/9] drm/i915/spi: spi register with mtd
+Date: Tue, 16 Feb 2021 20:19:22 +0200
+Message-Id: <20210216181925.650082-7-tomas.winkler@intel.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210216181925.650082-1-tomas.winkler@intel.com>
 References: <20210216181925.650082-1-tomas.winkler@intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210216_132008_659784_DA43FE56 
-X-CRM114-Status: GOOD (  18.30  )
+X-CRM114-CacheID: sfid-20210216_132011_890164_17F96092 
+X-CRM114-Status: GOOD (  17.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,180 +85,136 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Implement spi_read() spi_erase() spi_write() functions.
+Register the on-die spi device with the mtd subsystem.
+Add mtd access stub functions.
 
-Cc: Lucas De Marchi <lucas.demarchi@intel.com>
 Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc: Lucas De Marchi <lucas.demarchi@intel.com>
 Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
-Signed-off-by: Vitaly Lubart <vitaly.lubart@intel.com>
 ---
- drivers/gpu/drm/i915/spi/intel_spi_drv.c | 137 +++++++++++++++++++++++
- 1 file changed, 137 insertions(+)
+ drivers/gpu/drm/i915/spi/intel_spi_drv.c | 86 +++++++++++++++++++++++-
+ 1 file changed, 85 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/i915/spi/intel_spi_drv.c b/drivers/gpu/drm/i915/spi/intel_spi_drv.c
-index a1e7171d05db..df6a461d520d 100644
+index df6a461d520d..bdf58e14fd6b 100644
 --- a/drivers/gpu/drm/i915/spi/intel_spi_drv.c
 +++ b/drivers/gpu/drm/i915/spi/intel_spi_drv.c
-@@ -9,7 +9,10 @@
- #include <linux/io.h>
- #include <linux/device.h>
- #include <linux/slab.h>
-+#include <linux/sizes.h>
-+#include <linux/io-64-nonatomic-lo-hi.h>
- #include <linux/platform_device.h>
-+#include <linux/delay.h>
+@@ -15,7 +15,11 @@
+ #include <linux/delay.h>
  #include <spi/intel_spi.h>
  
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/partitions.h>
++
  struct i915_spi {
-@@ -83,6 +86,33 @@ static inline u32 spi_read32(struct i915_spi *spi, u32 address)
- 	return ioread32(base + SPI_TRIGGER_REG);
++	struct mtd_info mtd;
+ 	void __iomem *base;
+ 	size_t size;
+ 	unsigned int nregions;
+@@ -344,6 +348,73 @@ static int i915_spi_init(struct i915_spi *spi, struct device *device)
+ 	return n;
  }
  
-+static inline u64 spi_read64(struct i915_spi *spi, u32 address)
++static int i915_spi_erase(struct mtd_info *mtd, struct erase_info *info)
 +{
-+	void __iomem *base = spi->base;
++	dev_err(&mtd->dev, "erasing %lld %lld\n", info->addr, info->len);
 +
-+	iowrite32(address, base + SPI_ADDRESS_REG);
-+
-+	return readq(base + SPI_TRIGGER_REG);
++	return 0;
 +}
 +
-+static void spi_write32(struct i915_spi *spi, u32 address, u32 data)
++static int i915_spi_read(struct mtd_info *mtd, loff_t from, size_t len,
++			 size_t *retlen, u_char *buf)
 +{
-+	void __iomem *base = spi->base;
++	dev_err(&mtd->dev, "read %lld %zd\n", from, len);
 +
-+	iowrite32(address, base + SPI_ADDRESS_REG);
-+
-+	iowrite32(data, base + SPI_TRIGGER_REG);
++	return 0;
 +}
 +
-+static void spi_write64(struct i915_spi *spi, u32 address, u64 data)
++static int i915_spi_write(struct mtd_info *mtd, loff_t to, size_t len,
++			  size_t *retlen, const u_char *buf)
 +{
-+	void __iomem *base = spi->base;
++	dev_err(&mtd->dev, "writing %lld %zd\n", to, len);
 +
-+	iowrite32(address, base + SPI_ADDRESS_REG);
-+
-+	writeq(data, base + SPI_TRIGGER_REG);
++	return 0;
 +}
 +
- static int spi_get_access_map(struct i915_spi *spi)
- {
- 	u32 flmap1;
-@@ -139,6 +169,113 @@ static int i915_spi_is_valid(struct i915_spi *spi)
- 	return 0;
- }
- 
-+__maybe_unused
-+static unsigned int spi_get_region(const struct i915_spi *spi, loff_t from)
++static int i915_spi_init_mtd(struct i915_spi *spi, struct device *device,
++			     unsigned int nparts)
 +{
 +	unsigned int i;
++	unsigned int n;
++	struct mtd_partition *parts = NULL;
++	int ret;
 +
-+	for (i = 0; i < spi->nregions; i++) {
-+		if ((spi->regions[i].offset + spi->regions[i].size - 1) > from &&
-+		    spi->regions[i].offset <= from &&
-+		    spi->regions[i].size != 0)
-+			break;
++	dev_dbg(device, "registering with mtd\n");
++
++	spi->mtd.owner = THIS_MODULE;
++	spi->mtd.dev.parent = device;
++	spi->mtd.flags = MTD_CAP_NORFLASH | MTD_WRITEABLE;
++	spi->mtd.type = MTD_DATAFLASH;
++	spi->mtd.priv = spi;
++	spi->mtd._write = i915_spi_write;
++	spi->mtd._read = i915_spi_read;
++	spi->mtd._erase = i915_spi_erase;
++	spi->mtd.writesize = SZ_4; /* 4 bytes granularity */
++	spi->mtd.erasesize = SZ_4K; /* 4K bytes granularity */
++	spi->mtd.size = spi->size;
++
++	parts = kcalloc(spi->nregions, sizeof(*parts), GFP_KERNEL);
++	if (!parts)
++		return -ENOMEM;
++
++	for (i = 0, n = 0; i < spi->nregions && n < nparts; i++) {
++		if (!spi->regions[i].is_readable)
++			continue;
++		parts[n].name = spi->regions[i].name;
++		parts[n].offset  = spi->regions[i].offset;
++		parts[n].size = spi->regions[i].size;
++		if (!spi->regions[i].is_writable)
++			parts[n].mask_flags = MTD_WRITEABLE;
++		n++;
 +	}
 +
-+	return i;
++	ret = mtd_device_register(&spi->mtd, parts, n);
++
++	kfree(parts);
++
++	return ret;
 +}
 +
-+__maybe_unused
-+static ssize_t spi_write(struct i915_spi *spi, u8 region,
-+			 loff_t to, size_t len, const unsigned char *buf)
-+{
-+	size_t i;
-+	size_t len8;
-+
-+	spi_set_region_id(spi, region);
-+
-+	len8 = ALIGN_DOWN(len, sizeof(u64));
-+	for (i = 0; i < len8; i += sizeof(u64)) {
-+		u64 data;
-+
-+		memcpy(&data, &buf[i], sizeof(u64));
-+		spi_write64(spi, to + i, data);
-+		if (spi_error(spi))
-+			return -EIO;
-+	}
-+
-+	if (len8 != len) { /* caller ensure that write size is at least u32 */
-+		u32 data;
-+
-+		memcpy(&data, &buf[i], sizeof(u32));
-+		spi_write32(spi, to + len8, data);
-+		if (spi_error(spi))
-+			return -EIO;
-+	}
-+
-+	return len;
-+}
-+
-+__maybe_unused
-+static ssize_t spi_read(struct i915_spi *spi, u8 region,
-+			loff_t from, size_t len, unsigned char *buf)
-+{
-+	size_t i;
-+	size_t len8;
-+	size_t len4;
-+
-+	spi_set_region_id(spi, region);
-+
-+	len8 = ALIGN_DOWN(len, sizeof(u64));
-+	for (i = 0; i < len8; i += sizeof(u64)) {
-+		u64 data = spi_read64(spi, from + i);
-+
-+		if (spi_error(spi))
-+			return -EIO;
-+
-+		memcpy(&buf[i], &data, sizeof(data));
-+	}
-+
-+	len4 = len - len8;
-+	if (len4 >= sizeof(u32)) {
-+		u32 data = spi_read32(spi, from + i);
-+
-+		if (spi_error(spi))
-+			return -EIO;
-+		memcpy(&buf[i], &data, sizeof(data));
-+		i += sizeof(u32);
-+		len4 -= sizeof(u32);
-+	}
-+
-+	if (len4 > 0) {
-+		u32 data = spi_read32(spi, from + i);
-+
-+		if (spi_error(spi))
-+			return -EIO;
-+		memcpy(&buf[i], &data, len4);
-+	}
-+
-+	return len;
-+}
-+
-+__maybe_unused
-+static ssize_t
-+spi_erase(struct i915_spi *spi, u8 region, loff_t from, u64 len, u64 *fail_addr)
-+{
-+	u64 i;
-+	const u32 block = 0x10;
-+	void __iomem *base = spi->base;
-+
-+	for (i = 0; i < len; i += SZ_4K) {
-+		iowrite32(from + i, base + SPI_ADDRESS_REG);
-+		iowrite32(region << 24 | block, base + SPI_ERASE_REG);
-+		/* Since the writes are via sguint
-+		 * we cannot do back to back erases.
-+		 */
-+		msleep(50);
-+	}
-+	return len;
-+}
-+
- static int i915_spi_init(struct i915_spi *spi, struct device *device)
+ static int i915_spi_probe(struct platform_device *platdev)
  {
- 	int ret;
+ 	struct resource *bar;
+@@ -413,15 +484,28 @@ static int i915_spi_probe(struct platform_device *platdev)
+ 		return -ENODEV;
+ 	}
+ 
++	ret = i915_spi_init_mtd(spi, device, ret);
++	if (ret) {
++		dev_err(device, "i915-spi failed init mtd %d\n", ret);
++		return ret;
++	}
++
+ 	platform_set_drvdata(platdev, spi);
+ 
+ 	dev_dbg(device, "i915-spi is bound\n");
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ static int i915_spi_remove(struct platform_device *platdev)
+ {
++	struct i915_spi *spi = platform_get_drvdata(platdev);
++
++	if (!spi)
++		return 0;
++
++	mtd_device_unregister(&spi->mtd);
++
+ 	platform_set_drvdata(platdev, NULL);
+ 
+ 	return 0;
 -- 
 2.26.2
 
