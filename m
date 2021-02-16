@@ -2,71 +2,77 @@ Return-Path: <SRS0=UIyM=HS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37C17C433E0
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 16:29:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA54FC433DB
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 17:55:03 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D2B9064DF0
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 16:29:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D2B9064DF0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id 69EE964DAF
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 17:55:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 69EE964DAF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
+	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=F0NbYSiKJKAJEGe+qI73MUBS3ZFob2sPIKCmFnQZ/Pg=; b=KrRu1WCd1t9P7yGl9e3x8Ccrv
-	WJf93jj5flNKVjS8vw9WsMm87+Smz2PY0EMoGpYLRv42G5NIvlSrGoh4LaeAqOiJR3z2RrU711NwK
-	C2nxS86w/sZMXUQXC1d9Zll1lSvx5hNYCdNNw+FvTEZFEE76Wtd4JI1bkJnjXWnamRnHP73BksSzt
-	FjYIpUXj0uYhCzQPOagwAabSMLD61ADRNmxJIDVwle8nHhUVrl90ogB7482vxQIncX9t1Hjcm7KbE
-	Wdd9n2jknKkKrZxZDxjYwr8TzmRjNK0DIsDFS0k2vhhJOtmGJf+yqDYBLIwymXwCKSS0Elownwwyb
-	HomZ6Ob0w==;
+	 bh=s2IQ02GrmEJeLUP2xlpNWmvNLch9Kw0VRd5AsEkXCIs=; b=F73v5DVcqKsn55+PUi7dmLWpo
+	Fq6kMUoiY1qrrpIAfZDCAcc83wWy6DZiDvG9v6QyaizWjwfkiQbRhsf+g2Iaonp3hmkOvQpnN8jpC
+	CgDRiNNTPuRzqbAtsnJ62S7Hso9tV1XqsbOs07cN6rMyZN0mTBRulEhz5KHIodTS4jvmgeFaT8aIz
+	rGddxCs/H7So76b7KJc0ksDRP0T8fFCuLiHZ+h25veb4z2NtSmIta5PzQHI1fotaUo8wjkXaGG5JR
+	ZgPfI3d6lX0i7FZ3oVKoZXH+PzfjRZdQh9iTat+DgkcdccU3tH/L1d13ONU/d+CKokOKzWYIv4/56
+	MAbBkulKQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lC3D7-0002NV-27; Tue, 16 Feb 2021 16:28:25 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1lC4Xi-0003MM-Fe; Tue, 16 Feb 2021 17:53:46 +0000
+Received: from m42-2.mailgun.net ([69.72.42.2])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lC3Cz-0002KZ-1T
- for linux-mtd@lists.infradead.org; Tue, 16 Feb 2021 16:28:19 +0000
-Received: from mwalle01.fritz.box (unknown
- [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
- SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 2CC5A2224B;
- Tue, 16 Feb 2021 17:28:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1613492895;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=rkN+nniRYpvJndybcr0+lP5hReUrf9dkbKOshU1axfc=;
- b=olotWwMJlr+NrtrcAxY2BbCHHThSwGe4b+3cWvWcr6YMMx2zsPrPR/JS/dcUNHPva/FotX
- thMP3CbdblCfs0AUBfAh8KUBiZe7wUIssNQYKnco9tdXyb6WZQP7+Up9RjCVAxkptxA/z8
- dKGle8mbA3NJyZtDuAxJDMvN7y3Qdu4=
-From: Michael Walle <michael@walle.cc>
-To: linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH v3 2/2] mtd: spi-nor: implement OTP support for Winbond and
- similar flashes
-Date: Tue, 16 Feb 2021 17:28:07 +0100
-Message-Id: <20210216162807.13509-3-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210216162807.13509-1-michael@walle.cc>
-References: <20210216162807.13509-1-michael@walle.cc>
+ id 1lC4Xc-0003Lo-N7
+ for linux-mtd@lists.infradead.org; Tue, 16 Feb 2021 17:53:44 +0000
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1613498022; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=bcPIcgo03NFt9oPjZKquVA83F0QLcMCy2aa8bgBGqG8=;
+ b=bNxZdeZ5UGJUSA0iTbt7OLDX+/JYEZa2dVORykkushab8v9/yzASD5EXoPGBUrs1BDPMH2dq
+ HBR+Jqn0R/76zum8hxA7LciF0eJREHXf1DMA+zNNn0XRvBkBmhazfAe+DtqkJOhGsMcwG/0a
+ 5PsCcD6HmD61kPZkAtU0bWNOPOg=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyJkZDQ0ZiIsICJsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZyIsICJiZTllNGEiXQ==
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 602c069cb50d5f2cb4335c6d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Feb 2021 17:53:32
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id 94BDAC433C6; Tue, 16 Feb 2021 17:53:32 +0000 (UTC)
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+ (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested) (Authenticated sender: mdalam)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id E281CC433CA;
+ Tue, 16 Feb 2021 17:53:30 +0000 (UTC)
 MIME-Version: 1.0
+Date: Tue, 16 Feb 2021 23:23:30 +0530
+From: mdalam@codeaurora.org
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH] mtd: rawnand: qcom: update last code word register
+In-Reply-To: <20210216091613.1d0e7470@xps13>
+References: <1613416602-1175-1-git-send-email-mdalam@codeaurora.org>
+ <20210216091613.1d0e7470@xps13>
+Message-ID: <6f21a0cc139546c6351eb4e195dd43bd@codeaurora.org>
+X-Sender: mdalam@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210216_112817_344431_77E1FEA3 
-X-CRM114-Status: GOOD (  25.12  )
+X-CRM114-CacheID: sfid-20210216_125343_134915_38F0BF4F 
+X-CRM114-Status: GOOD (  33.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,326 +84,237 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>, Michael Walle <michael@walle.cc>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: mani@kernel.org, richard@nod.at, linux-kernel@vger.kernel.org,
+ krzk@kernel.org, boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
+ sricharan@codeaurora.org
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use the new OTP ops to implement OTP access on Winbond flashes. Most
-Winbond flashes provides up to four different OTP regions ("Security
-Registers").
-
-Winbond devices use a special opcode to read and write to the OTP
-regions, just like the RDSFDP opcode. In fact, it seems that the
-(undocumented) first OTP area of the newer flashes is the actual SFDP
-table.
-
-On a side note, Winbond devices also allow erasing the OTP regions as
-long as the area isn't locked down.
-
-This was tested on a Winbond W25Q32JW as well as on a W25Q32FW.
-
-Signed-off-by: Michael Walle <michael@walle.cc>
----
- drivers/mtd/spi-nor/core.c    |   2 +-
- drivers/mtd/spi-nor/core.h    |   6 ++
- drivers/mtd/spi-nor/otp.c     | 163 ++++++++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/winbond.c |  17 +++-
- include/linux/mtd/spi-nor.h   |   9 ++
- 5 files changed, 194 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index af9d7f194f01..1115046e2680 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -1034,7 +1034,7 @@ static int spi_nor_write_16bit_sr_and_check(struct spi_nor *nor, u8 sr1)
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
--static int spi_nor_write_16bit_cr_and_check(struct spi_nor *nor, u8 cr)
-+int spi_nor_write_16bit_cr_and_check(struct spi_nor *nor, u8 cr)
- {
- 	int ret;
- 	u8 *sr_cr = nor->bouncebuf;
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 5fb54ae08c5b..d755f2bf77e0 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -492,6 +492,7 @@ int spi_nor_read_sr(struct spi_nor *nor, u8 *sr);
- int spi_nor_read_cr(struct spi_nor *nor, u8 *cr);
- int spi_nor_write_sr(struct spi_nor *nor, const u8 *sr, size_t len);
- int spi_nor_write_sr_and_check(struct spi_nor *nor, u8 sr1);
-+int spi_nor_write_16bit_cr_and_check(struct spi_nor *nor, u8 cr);
- 
- int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr);
- ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t len,
-@@ -499,6 +500,11 @@ ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t len,
- ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
- 			   const u8 *buf);
- 
-+int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, uint64_t len, u8 *buf);
-+int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, uint64_t len, u8 *buf);
-+int spi_nor_otp_lock_sr2(struct spi_nor *nor, unsigned int region);
-+int spi_nor_otp_is_locked_sr2(struct spi_nor *nor, unsigned int region);
-+
- int spi_nor_hwcaps_read2cmd(u32 hwcaps);
- u8 spi_nor_convert_3to4_read(u8 opcode);
- void spi_nor_set_read_settings(struct spi_nor_read_command *read,
-diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
-index 59bd1a3f450d..89d055215d1e 100644
---- a/drivers/mtd/spi-nor/otp.c
-+++ b/drivers/mtd/spi-nor/otp.c
-@@ -10,6 +10,169 @@
- 
- #include "core.h"
- 
-+/**
-+ * spi_nor_otp_read_secr() - read OTP data
-+ * @nor:	pointer to 'struct spi_nor'
-+ * @from:       offset to read from
-+ * @len:        number of bytes to read
-+ * @buf:        pointer to dst buffer
-+ *
-+ * Read OTP data by using the SPINOR_OP_RSECR commands. This method is used on
-+ * GigaDevice and Winbond flashes.
-+ *
-+ * Return: number of bytes read successfully, -errno otherwise
-+ */
-+int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, uint64_t len, u8 *buf)
-+{
-+	u8 addr_width, read_opcode, read_dummy;
-+	struct spi_mem_dirmap_desc *rdesc;
-+	enum spi_nor_protocol read_proto;
-+	int ret;
-+
-+	read_opcode = nor->read_opcode;
-+	addr_width = nor->addr_width;
-+	read_dummy = nor->read_dummy;
-+	read_proto = nor->read_proto;
-+	rdesc = nor->dirmap.rdesc;
-+
-+	nor->read_opcode = SPINOR_OP_RSECR;
-+	nor->addr_width = 3;
-+	nor->read_dummy = 8;
-+	nor->read_proto = SNOR_PROTO_1_1_1;
-+	nor->dirmap.rdesc = NULL;
-+
-+	ret = spi_nor_read_data(nor, addr, len, buf);
-+
-+	nor->read_opcode = read_opcode;
-+	nor->addr_width = addr_width;
-+	nor->read_dummy = read_dummy;
-+	nor->read_proto = read_proto;
-+	nor->dirmap.rdesc = rdesc;
-+
-+	return ret;
-+}
-+
-+/**
-+ * spi_nor_otp_write_secr() - write OTP data
-+ * @nor:        pointer to 'struct spi_nor'
-+ * @to:         offset to write to
-+ * @len:        number of bytes to write
-+ * @buf:        pointer to src buffer
-+ *
-+ * Write OTP data by using the SPINOR_OP_PSECR commands. This method is used on
-+ * GigaDevice and Winbond flashes.
-+ *
-+ * Return: number of bytes written successfully, -errno otherwise
-+ */
-+int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, uint64_t len, u8 *buf)
-+{
-+	enum spi_nor_protocol write_proto;
-+	struct spi_mem_dirmap_desc *wdesc;
-+	u8 addr_width, program_opcode;
-+	int ret;
-+
-+	program_opcode = nor->program_opcode;
-+	addr_width = nor->addr_width;
-+	write_proto = nor->write_proto;
-+	wdesc = nor->dirmap.wdesc;
-+
-+	nor->program_opcode = SPINOR_OP_PSECR;
-+	nor->addr_width = 3;
-+	nor->write_proto = SNOR_PROTO_1_1_1;
-+	nor->dirmap.wdesc = NULL;
-+
-+	/*
-+	 * We only support a write to one single page. For now all winbond
-+	 * flashes only have one page per OTP region.
-+	 */
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		goto out;
-+
-+	ret = spi_nor_write_data(nor, addr, len, buf);
-+	if (ret < 0)
-+		goto out;
-+
-+	ret = spi_nor_wait_till_ready(nor);
-+
-+out:
-+	nor->program_opcode = program_opcode;
-+	nor->addr_width = addr_width;
-+	nor->write_proto = write_proto;
-+	nor->dirmap.wdesc = wdesc;
-+
-+	return ret;
-+}
-+
-+static int spi_nor_otp_lock_bit_cr(unsigned int region)
-+{
-+	static const int lock_bits[] = { SR2_LB1, SR2_LB2, SR2_LB3 };
-+
-+	if (region >= ARRAY_SIZE(lock_bits))
-+		return -EINVAL;
-+
-+	return lock_bits[region];
-+}
-+
-+/**
-+ * spi_nor_otp_lock_sr2() - lock the OTP region
-+ * @nor:        pointer to 'struct spi_nor'
-+ * @region:     OTP region
-+ *
-+ * Lock the OTP region by writing the status register-2. This method is used on
-+ * GigaDevice and Winbond flashes.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+int spi_nor_otp_lock_sr2(struct spi_nor *nor, unsigned int region)
-+{
-+	u8 *cr = nor->bouncebuf;
-+	int lock_bit;
-+	int ret;
-+
-+	lock_bit = spi_nor_otp_lock_bit_cr(region);
-+	if (lock_bit < 0)
-+		return lock_bit;
-+
-+	ret = spi_nor_read_cr(nor, cr);
-+	if (ret)
-+		return ret;
-+
-+	/* no need to write the register if region is already locked */
-+	if (cr[0] & lock_bit)
-+		return 0;
-+
-+	cr[0] |= lock_bit;
-+
-+	return spi_nor_write_16bit_cr_and_check(nor, cr[0]);
-+}
-+
-+/**
-+ * spi_nor_otp_is_locked_sr2() - get the OTP region lock status
-+ * @nor:        pointer to 'struct spi_nor'
-+ * @region:     OTP region
-+ *
-+ * Retrieve the OTP region lock bit by reading the status register-2. This
-+ * method is used on GigaDevice and Winbond flashes.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+int spi_nor_otp_is_locked_sr2(struct spi_nor *nor, unsigned int region)
-+{
-+	u8 *cr = nor->bouncebuf;
-+	int lock_bit;
-+	int ret;
-+
-+	lock_bit = spi_nor_otp_lock_bit_cr(region);
-+	if (lock_bit < 0)
-+		return lock_bit;
-+
-+	ret = spi_nor_read_cr(nor, cr);
-+	if (ret)
-+		return ret;
-+
-+	return cr[0] & lock_bit;
-+}
- static loff_t spi_nor_otp_region_start(struct spi_nor *nor, int region)
- {
- 	struct spi_nor_otp_info *info = &nor->params->otp_info;
-diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index e5dfa786f190..d3bbd2df7500 100644
---- a/drivers/mtd/spi-nor/winbond.c
-+++ b/drivers/mtd/spi-nor/winbond.c
-@@ -55,14 +55,18 @@ static const struct flash_info winbond_parts[] = {
- 	{ "w25q32", INFO(0xef4016, 0, 64 * 1024,  64, SECT_4K) },
- 	{ "w25q32dw", INFO(0xef6016, 0, 64 * 1024,  64,
- 			   SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
--			   SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
-+			   SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-+			   OTP_INFO(256, 3, 0x1000, 0x1000)
-+	},
-+
- 	{ "w25q32jv", INFO(0xef7016, 0, 64 * 1024,  64,
- 			   SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
- 			   SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
- 	},
- 	{ "w25q32jwm", INFO(0xef8016, 0, 64 * 1024,  64,
- 			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
--			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
-+			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-+			    OTP_INFO(256, 3, 0x1000, 0x1000) },
- 	{ "w25q64jwm", INFO(0xef8017, 0, 64 * 1024, 128,
- 			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
- 			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
-@@ -131,9 +135,18 @@ static int winbond_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
- 	return spi_nor_write_disable(nor);
- }
- 
-+static const struct spi_nor_otp_ops winbond_otp_ops = {
-+	.read = spi_nor_otp_read_secr,
-+	.write = spi_nor_otp_write_secr,
-+	.lock = spi_nor_otp_lock_sr2,
-+	.is_locked = spi_nor_otp_is_locked_sr2,
-+};
-+
- static void winbond_default_init(struct spi_nor *nor)
- {
- 	nor->params->set_4byte_addr_mode = winbond_set_4byte_addr_mode;
-+	if (nor->params->otp_info.n_otps)
-+		nor->params->otp_ops = &winbond_otp_ops;
- }
- 
- static const struct spi_nor_fixups winbond_fixups = {
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index a0d572855444..6d1956049e90 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -107,6 +107,11 @@
- #define SPINOR_OP_RD_EVCR      0x65    /* Read EVCR register */
- #define SPINOR_OP_WD_EVCR      0x61    /* Write EVCR register */
- 
-+/* Used for GigaDevices and Winbond flashes. */
-+#define SPINOR_OP_ESECR		0x44	/* Erase Security registers */
-+#define SPINOR_OP_PSECR		0x42	/* Program Security registers */
-+#define SPINOR_OP_RSECR		0x48	/* Read Security registers */
-+
- /* Status Register bits. */
- #define SR_WIP			BIT(0)	/* Write in progress */
- #define SR_WEL			BIT(1)	/* Write enable latch */
-@@ -138,8 +143,12 @@
- 
- /* Status Register 2 bits. */
- #define SR2_QUAD_EN_BIT1	BIT(1)
-+#define SR2_LB1			BIT(3)	/* Security Register Lock Bit 1 */
-+#define SR2_LB2			BIT(4)	/* Security Register Lock Bit 2 */
-+#define SR2_LB3			BIT(5)	/* Security Register Lock Bit 3 */
- #define SR2_QUAD_EN_BIT7	BIT(7)
- 
-+
- /* Supported SPI protocols */
- #define SNOR_PROTO_INST_MASK	GENMASK(23, 16)
- #define SNOR_PROTO_INST_SHIFT	16
--- 
-2.20.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMjAyMS0wMi0xNiAxMzo0NiwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiBIZWxsbywKPiAKPiBN
+ZCBTYWRyZSBBbGFtIDxtZGFsYW1AY29kZWF1cm9yYS5vcmc+IHdyb3RlIG9uIFR1ZSwgMTYgRmVi
+IDIwMjEKPiAwMDo0Njo0MiArMDUzMDoKPiAKPj4gRnJvbSBRUElDIHZlcnNpb24gMi4wIG9ud2Fy
+ZHMgbmV3IHJlZ2lzdGVyIGdvdCBhZGRlZCB0bwo+PiByZWFkIGxhc3QgY29kZXdvcmQuIFRoaXMg
+Y2hhbmdlIHdpbGwgYWRkIHRoZSBSRUFEX0xPQ0FUSU9OX0xBU1RfQ1dfbgo+PiByZWdpc3Rlci4K
+Pj4gCj4+IEZvciBmaXJzdCB0aHJlZSBjb2RlIHdvcmQgUkVBRF9MT0NBVElPTl9uIHJlZ2lzdGVy
+IHdpbGwgYmUKPj4gdXNlLkZvciBsYXN0IGNvZGUgd29yZCBSRUFEX0xPQ0FUSU9OX0xBU1RfQ1df
+biByZWdpc3RlciB3aWxsIGJlCj4+IHVzZS4KPj4gCj4+IFNpZ25lZC1vZmYtYnk6IE1kIFNhZHJl
+IEFsYW0gPG1kYWxhbUBjb2RlYXVyb3JhLm9yZz4KPj4gLS0tCj4+IFtWNl0KPiAKPiBJdCBpcyBh
+bHNvIHZlcnkgaW1wb3J0YW50IHRoYXQgeW91IG1hcmsgdGhlIHZlcnNpb24gaW4gdGhlIHN1Ympl
+Y3Q6Cj4gCj4gCVtQQVRDSCB2Nl0gbXRkOiByYXduYW5kOiBldGMKPiAKPiBPdGhlcndpc2UgaXQg
+aXMgZGlmZmljdWx0IHRvIGtlZXAgdHJhY2sgb24gdGhlIGNoYW5nZXMuCgogICBTdXJlIEkgd2ls
+bCBmb2xsb3cgdGhlIHNhbWUuCj4gCj4+ICAqIFVwZGF0ZWQgd3JpdGVfcmVnX2RtYSgpIGZ1bmN0
+aW9uIGluICJ2NiIKPj4gICogUmVtb3ZlZCBleHRyYSBpbmRlbnRhdGlvbiBsZXZlbCBpbiByZWFk
+X3BhZ2VfZWNjKCkgdG8gcmVhZCBsYXN0IAo+PiBjb2RlIHdvcmQgaW4gInY2Igo+PiAgKiBSZW1v
+dmVkIGJvb2xlYW4gY2hlY2sgaW4gY29uZmlnX25hbmRfY3dfcmVhZCgpIGluICJ2NiIKPj4gIGRy
+aXZlcnMvbXRkL25hbmQvcmF3L3Fjb21fbmFuZGMuYyB8IDExOCAKPj4gKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKy0tLS0tLS0tLS0KPj4gIDEgZmlsZSBjaGFuZ2VkLCA4NyBpbnNlcnRpb25z
+KCspLCAzMSBkZWxldGlvbnMoLSkKPj4gCj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5k
+L3Jhdy9xY29tX25hbmRjLmMgCj4+IGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvcWNvbV9uYW5kYy5j
+Cj4+IGluZGV4IDY2N2U0YmYuLmJhZTM1MmYgMTAwNjQ0Cj4+IC0tLSBhL2RyaXZlcnMvbXRkL25h
+bmQvcmF3L3Fjb21fbmFuZGMuYwo+PiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9xY29tX25h
+bmRjLmMKPj4gQEAgLTQ4LDYgKzQ4LDEwIEBACj4+ICAjZGVmaW5lCU5BTkRfUkVBRF9MT0NBVElP
+Tl8xCQkweGYyNAo+PiAgI2RlZmluZQlOQU5EX1JFQURfTE9DQVRJT05fMgkJMHhmMjgKPj4gICNk
+ZWZpbmUJTkFORF9SRUFEX0xPQ0FUSU9OXzMJCTB4ZjJjCj4+ICsjZGVmaW5lCU5BTkRfUkVBRF9M
+T0NBVElPTl9MQVNUX0NXXzAJMHhmNDAKPj4gKyNkZWZpbmUJTkFORF9SRUFEX0xPQ0FUSU9OX0xB
+U1RfQ1dfMQkweGY0NAo+PiArI2RlZmluZQlOQU5EX1JFQURfTE9DQVRJT05fTEFTVF9DV18yCTB4
+ZjQ4Cj4+ICsjZGVmaW5lCU5BTkRfUkVBRF9MT0NBVElPTl9MQVNUX0NXXzMJMHhmNGMKPj4gCj4+
+ICAvKiBkdW1teSByZWdpc3RlciBvZmZzZXRzLCB1c2VkIGJ5IHdyaXRlX3JlZ19kbWEgKi8KPj4g
+ICNkZWZpbmUJTkFORF9ERVZfQ01EMV9SRVNUT1JFCQkweGRlYWQKPj4gQEAgLTE4MSw4ICsxODUs
+MTQgQEAKPj4gICNkZWZpbmUJRUNDX0JDSF80QklUCUJJVCgyKQo+PiAgI2RlZmluZQlFQ0NfQkNI
+XzhCSVQJQklUKDMpCj4+IAo+PiAtI2RlZmluZSBuYW5kY19zZXRfcmVhZF9sb2MobmFuZGMsIHJl
+Zywgb2Zmc2V0LCBzaXplLCBpc19sYXN0KQlcCj4+IC1uYW5kY19zZXRfcmVnKG5hbmRjLCBOQU5E
+X1JFQURfTE9DQVRJT05fIyNyZWcsCQkJXAo+PiArI2RlZmluZSBuYW5kY19zZXRfcmVhZF9sb2Nf
+Zmlyc3QobmFuZGMsIHJlZywgb2Zmc2V0LCBzaXplLCBpc19sYXN0KQlcCj4+ICtuYW5kY19zZXRf
+cmVnKG5hbmRjLCByZWcsCQkJCQlcCj4+ICsJICAgICAgKChvZmZzZXQpIDw8IFJFQURfTE9DQVRJ
+T05fT0ZGU0VUKSB8CQlcCj4+ICsJICAgICAgKChzaXplKSA8PCBSRUFEX0xPQ0FUSU9OX1NJWkUp
+IHwJCQlcCj4+ICsJICAgICAgKChpc19sYXN0KSA8PCBSRUFEX0xPQ0FUSU9OX0xBU1QpKQo+PiAr
+Cj4+ICsjZGVmaW5lIG5hbmRjX3NldF9yZWFkX2xvY19sYXN0KG5hbmRjLCByZWcsIG9mZnNldCwg
+c2l6ZSwgaXNfbGFzdCkJXAo+PiArbmFuZGNfc2V0X3JlZyhuYW5kYywgcmVnLAkJCQkJXAo+PiAg
+CSAgICAgICgob2Zmc2V0KSA8PCBSRUFEX0xPQ0FUSU9OX09GRlNFVCkgfAkJXAo+PiAgCSAgICAg
+ICgoc2l6ZSkgPDwgUkVBRF9MT0NBVElPTl9TSVpFKSB8CQkJXAo+PiAgCSAgICAgICgoaXNfbGFz
+dCkgPDwgUkVBRF9MT0NBVElPTl9MQVNUKSkKPj4gQEAgLTMxNiw2ICszMjYsMTAgQEAgc3RydWN0
+IG5hbmRjX3JlZ3Mgewo+PiAgCV9fbGUzMiByZWFkX2xvY2F0aW9uMTsKPj4gIAlfX2xlMzIgcmVh
+ZF9sb2NhdGlvbjI7Cj4+ICAJX19sZTMyIHJlYWRfbG9jYXRpb24zOwo+PiArCV9fbGUzMiByZWFk
+X2xvY2F0aW9uX2xhc3QwOwo+PiArCV9fbGUzMiByZWFkX2xvY2F0aW9uX2xhc3QxOwo+PiArCV9f
+bGUzMiByZWFkX2xvY2F0aW9uX2xhc3QyOwo+PiArCV9fbGUzMiByZWFkX2xvY2F0aW9uX2xhc3Qz
+Owo+PiAKPj4gIAlfX2xlMzIgZXJhc2VkX2N3X2RldGVjdF9jZmdfY2xyOwo+PiAgCV9fbGUzMiBl
+cmFzZWRfY3dfZGV0ZWN0X2NmZ19zZXQ7Cj4+IEBAIC02NDQsNiArNjU4LDE0IEBAIHN0YXRpYyBf
+X2xlMzIgKm9mZnNldF90b19uYW5kY19yZWcoc3RydWN0IAo+PiBuYW5kY19yZWdzICpyZWdzLCBp
+bnQgb2Zmc2V0KQo+PiAgCQlyZXR1cm4gJnJlZ3MtPnJlYWRfbG9jYXRpb24yOwo+PiAgCWNhc2Ug
+TkFORF9SRUFEX0xPQ0FUSU9OXzM6Cj4+ICAJCXJldHVybiAmcmVncy0+cmVhZF9sb2NhdGlvbjM7
+Cj4+ICsJY2FzZSBOQU5EX1JFQURfTE9DQVRJT05fTEFTVF9DV18wOgo+PiArCQlyZXR1cm4gJnJl
+Z3MtPnJlYWRfbG9jYXRpb25fbGFzdDA7Cj4+ICsJY2FzZSBOQU5EX1JFQURfTE9DQVRJT05fTEFT
+VF9DV18xOgo+PiArCQlyZXR1cm4gJnJlZ3MtPnJlYWRfbG9jYXRpb25fbGFzdDE7Cj4+ICsJY2Fz
+ZSBOQU5EX1JFQURfTE9DQVRJT05fTEFTVF9DV18yOgo+PiArCQlyZXR1cm4gJnJlZ3MtPnJlYWRf
+bG9jYXRpb25fbGFzdDI7Cj4+ICsJY2FzZSBOQU5EX1JFQURfTE9DQVRJT05fTEFTVF9DV18zOgo+
+PiArCQlyZXR1cm4gJnJlZ3MtPnJlYWRfbG9jYXRpb25fbGFzdDM7Cj4+ICAJZGVmYXVsdDoKPj4g
+IAkJcmV0dXJuIE5VTEw7Cj4+ICAJfQo+PiBAQCAtNjYxLDYgKzY4MywyNiBAQCBzdGF0aWMgdm9p
+ZCBuYW5kY19zZXRfcmVnKHN0cnVjdCAKPj4gcWNvbV9uYW5kX2NvbnRyb2xsZXIgKm5hbmRjLCBp
+bnQgb2Zmc2V0LAo+PiAgCQkqcmVnID0gY3B1X3RvX2xlMzIodmFsKTsKPj4gIH0KPj4gCj4+ICsv
+KiBoZWxwZXIgdG8gY29uZmlndXJlIGxvY2F0aW9uIHJlZ2lzdGVyIHZhbHVlcyAqLwo+PiArc3Rh
+dGljIHZvaWQgbmFuZGNfc2V0X3JlYWRfbG9jKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsIGludCBj
+dywgaW50IAo+PiByZWcsCj4+ICsJCQkgICAgICAgaW50IG9mZnNldCwgaW50IHNpemUsIGludCBp
+c19sYXN0KQo+IAo+IFlvdSBrbm93IGN3LCB5b3UgaGF2ZSBhY2Nlc3MgdG8gY2hpcC0+ZWNjLnN0
+ZXBzLCBzbyB5b3UgY2FuIGRlcml2ZSBieQo+IHlvdXJzZWxmIGlmIGlzX2xhc3QgaXMgc2V0IG9y
+IG5vdC4gTm8gbmVlZCB0byBmb3J3YXJkIGl0IHRocm91Z2gKPiBmdW5jdGlvbiBjYWxscy4KCgog
+ICBUaGlzICJpc19sYXN0IiBpcyBub3QgZm9yIGxhc3QgY29kZSB3b3JkLCBpdCB3aWxsIGluZGlj
+YXRlIHRoZSAKTG9jYXRpb24gcmVnaXN0ZXIgIk5BTkRfUkVBRF9MT0NBVElPTl9uIiBsYXN0IGJp
+dC4KCiAgIGJpdFszMV06IEluZGljYXRlIHRoaXMgaXMgdGhlIGxhc3QgUmVhZCBsb2NhdGlvbiBu
+ZWVkaW5nIHByb2Nlc3NpbmcuCgo+IAo+PiArewo+PiArCXN0cnVjdCBxY29tX25hbmRfY29udHJv
+bGxlciAqbmFuZGMgPSBnZXRfcWNvbV9uYW5kX2NvbnRyb2xsZXIoY2hpcCk7Cj4+ICsJc3RydWN0
+IG5hbmRfZWNjX2N0cmwgKmVjYyA9ICZjaGlwLT5lY2M7Cj4+ICsKPj4gKwlpbnQgbG9jID0gTkFO
+RF9SRUFEX0xPQ0FUSU9OXzA7Cj4+ICsKPj4gKwlpZiAobmFuZGMtPnByb3BzLT5xcGljX3YyICYm
+IGN3ID09IChlY2MtPnN0ZXBzIC0gMSkpCj4+ICsJCWxvYyA9IE5BTkRfUkVBRF9MT0NBVElPTl9M
+QVNUX0NXXzA7Cj4+ICsKPj4gKwlsb2MgKz0gcmVnICogNDsKPj4gKwo+PiArCWlmIChuYW5kYy0+
+cHJvcHMtPnFwaWNfdjIgJiYgY3cgPT0gKGVjYy0+c3RlcHMgLSAxKSkKPiAKPiBKdXN0IGNvbXB1
+dGUgaXNfbGFzdCBhIHNpbmdsZSB0aW1lIGF0IHRoZSB0b3Agb2YgdGhlIGhlbHBlciBhbmQgdXNl
+IGl0LgoKICAgIFRoaXMgImlzX2xhc3QiIGlzIG5vdCBmb3IgbGFzdCBjb2RlIHdvcmQsIGl0IHdp
+bGwgaW5kaWNhdGUgdGhlIApMb2NhdGlvbiByZWdpc3RlciBsYXN0IGJpdC4KCiAgICBiaXRbMzFd
+OiBJbmRpY2F0ZSB0aGlzIGlzIHRoZSBsYXN0IFJlYWQgbG9jYXRpb24gbmVlZGluZyBwcm9jZXNz
+aW5nLgo+IAo+PiArCQlyZXR1cm4gbmFuZGNfc2V0X3JlYWRfbG9jX2xhc3QobmFuZGMsIGxvYywg
+b2Zmc2V0LCBzaXplLCBpc19sYXN0KTsKPj4gKwllbHNlCj4+ICsJCXJldHVybiBuYW5kY19zZXRf
+cmVhZF9sb2NfZmlyc3QobmFuZGMsIGxvYywgb2Zmc2V0LCBzaXplLCBpc19sYXN0KTsKPj4gK30K
+Pj4gKwo+PiAgLyogaGVscGVyIHRvIGNvbmZpZ3VyZSBhZGRyZXNzIHJlZ2lzdGVyIHZhbHVlcyAq
+Lwo+PiAgc3RhdGljIHZvaWQgc2V0X2FkZHJlc3Moc3RydWN0IHFjb21fbmFuZF9ob3N0ICpob3N0
+LCB1MTYgY29sdW1uLCBpbnQgCj4+IHBhZ2UpCj4+ICB7Cj4+IEBAIC02ODUsNiArNzI3LDcgQEAg
+c3RhdGljIHZvaWQgdXBkYXRlX3J3X3JlZ3Moc3RydWN0IHFjb21fbmFuZF9ob3N0IAo+PiAqaG9z
+dCwgaW50IG51bV9jdywgYm9vbCByZWFkKQo+PiAgewo+PiAgCXN0cnVjdCBuYW5kX2NoaXAgKmNo
+aXAgPSAmaG9zdC0+Y2hpcDsKPj4gIAlzdHJ1Y3QgcWNvbV9uYW5kX2NvbnRyb2xsZXIgKm5hbmRj
+ID0gZ2V0X3Fjb21fbmFuZF9jb250cm9sbGVyKGNoaXApOwo+PiArCXN0cnVjdCBuYW5kX2VjY19j
+dHJsICplY2MgPSAmY2hpcC0+ZWNjOwo+PiAgCXUzMiBjbWQsIGNmZzAsIGNmZzEsIGVjY19iY2hf
+Y2ZnOwo+PiAKPj4gIAlpZiAocmVhZCkgewo+PiBAQCAtNzE5LDkgKzc2MiwxNCBAQCBzdGF0aWMg
+dm9pZCB1cGRhdGVfcndfcmVncyhzdHJ1Y3QgcWNvbV9uYW5kX2hvc3QgCj4+ICpob3N0LCBpbnQg
+bnVtX2N3LCBib29sIHJlYWQpCj4+ICAJbmFuZGNfc2V0X3JlZyhuYW5kYywgTkFORF9SRUFEX1NU
+QVRVUywgaG9zdC0+Y2xycmVhZHN0YXR1cyk7Cj4+ICAJbmFuZGNfc2V0X3JlZyhuYW5kYywgTkFO
+RF9FWEVDX0NNRCwgMSk7Cj4+IAo+PiAtCWlmIChyZWFkKQo+PiAtCQluYW5kY19zZXRfcmVhZF9s
+b2MobmFuZGMsIDAsIDAsIGhvc3QtPnVzZV9lY2MgPwo+PiAtCQkJCSAgIGhvc3QtPmN3X2RhdGEg
+OiBob3N0LT5jd19zaXplLCAxKTsKPj4gKwlpZiAocmVhZCkgewo+PiArCQlpZiAobmFuZGMtPnBy
+b3BzLT5xcGljX3YyKQo+PiArCQkJbmFuZGNfc2V0X3JlYWRfbG9jKGNoaXAsIGVjYy0+c3RlcHMg
+LSAxLCAwLCAwLCBob3N0LT51c2VfZWNjID8KPj4gKwkJCQkJaG9zdC0+Y3dfZGF0YSA6IGhvc3Qt
+PmN3X3NpemUsIDEpOwo+PiArCQllbHNlCj4+ICsJCQluYW5kY19zZXRfcmVhZF9sb2MoY2hpcCwg
+MCwgMCwgMCwgaG9zdC0+dXNlX2VjYyA/Cj4+ICsJCQkJCWhvc3QtPmN3X2RhdGEgOiBob3N0LT5j
+d19zaXplLCAxKTsKPiAKPiBIZXJlIHlvdSBzaG91bGQgbm90IGhhdmUgdGhpcyBleHRyYSBpbmRl
+bnRhdGlvbiBsZXZlbCBhcyB3ZWxsLAo+IG5hbmRjX3NldF9yZWFkX2xvZygpIHNob3VsZCBJTUhP
+IGJlIGFibGUgdG8gaGlkZSB0aGUgY29tcGxleGl0eSBvZiB0aGUKPiB2ZXJzaW9ucy4KCiAgICBZ
+ZXMgLCB0aGlzIG9uZSBJIHdpbGwgZml4IGluIG5leHQgcGF0Y2guCj4gCj4+ICsJfQo+PiAgfQo+
+PiAKPj4gIC8qCj4+IEBAIC0xMDc5LDggKzExMjcsMTAgQEAgc3RhdGljIGludCB3cml0ZV9kYXRh
+X2RtYShzdHJ1Y3QgCj4+IHFjb21fbmFuZF9jb250cm9sbGVyICpuYW5kYywgaW50IHJlZ19vZmYs
+Cj4+ICAgKiBIZWxwZXIgdG8gcHJlcGFyZSBETUEgZGVzY3JpcHRvcnMgZm9yIGNvbmZpZ3VyaW5n
+IHJlZ2lzdGVycwo+PiAgICogYmVmb3JlIHJlYWRpbmcgYSBOQU5EIHBhZ2UuCj4+ICAgKi8KPj4g
+LXN0YXRpYyB2b2lkIGNvbmZpZ19uYW5kX3BhZ2VfcmVhZChzdHJ1Y3QgcWNvbV9uYW5kX2NvbnRy
+b2xsZXIgKm5hbmRjKQo+PiArc3RhdGljIHZvaWQgY29uZmlnX25hbmRfcGFnZV9yZWFkKHN0cnVj
+dCBuYW5kX2NoaXAgKmNoaXApCj4+ICB7Cj4+ICsJc3RydWN0IHFjb21fbmFuZF9jb250cm9sbGVy
+ICpuYW5kYyA9IGdldF9xY29tX25hbmRfY29udHJvbGxlcihjaGlwKTsKPj4gKwo+IAo+IEkgZG9u
+J3QgZ2V0IHdoeSB5b3UgY2hhbmdlIHRoZSBwYXJhbWV0ZXIgZnJvbSBuYW5kYyB0byBjaGlwLiBI
+b25uZXN0bHkKPiBJIGRvbid0IHRoaW5rIGl0IGlzIGEgYmFkIHRoaW5nLCBJJ20ganVzdCBjdXJp
+b3VzIHRvIHVuZGVyc3RhbmQgd2h5LiBJZgo+IHlvdSB3YW50IHRvIGRvIHRoYXQsIHBsZWFzZSBz
+dGFydCB3aXRoIGEgZmlyc3QgcGF0Y2gganVzdCBkb2luZyB0aGUKPiBjb252ZXJzaW9uLCBhbmQg
+dGhlbiBhIHNlY29uZCBwYXRjaCBhZGRpbmcgTEFTVF9DVyBzdXBwb3J0LiBPdGhlcndpc2UKPiBp
+dCBpcyBibHVycnkuCgogICBZZXMsIGhlcmUgaXRzIG5vdCBuZWVkZWQgdG8gY2hhbmdlIG5hbmRj
+IHRvIGNoaXAsIGkgd2lsbCByZXZlcnQgdGhpcyAKaW4gbmV4dCBwYXRjaC4KPiAKPj4gIAl3cml0
+ZV9yZWdfZG1hKG5hbmRjLCBOQU5EX0FERFIwLCAyLCAwKTsKPj4gIAl3cml0ZV9yZWdfZG1hKG5h
+bmRjLCBOQU5EX0RFVjBfQ0ZHMCwgMywgMCk7Cj4+ICAJd3JpdGVfcmVnX2RtYShuYW5kYywgTkFO
+RF9FQkkyX0VDQ19CVUZfQ0ZHLCAxLCAwKTsKPj4gQEAgLTEwOTQsMTEgKzExNDQsMTkgQEAgc3Rh
+dGljIHZvaWQgY29uZmlnX25hbmRfcGFnZV9yZWFkKHN0cnVjdCAKPj4gcWNvbV9uYW5kX2NvbnRy
+b2xsZXIgKm5hbmRjKQo+PiAgICogYmVmb3JlIHJlYWRpbmcgZWFjaCBjb2Rld29yZCBpbiBOQU5E
+IHBhZ2UuCj4+ICAgKi8KPj4gIHN0YXRpYyB2b2lkCj4+IC1jb25maWdfbmFuZF9jd19yZWFkKHN0
+cnVjdCBxY29tX25hbmRfY29udHJvbGxlciAqbmFuZGMsIGJvb2wgdXNlX2VjYykKPj4gK2NvbmZp
+Z19uYW5kX2N3X3JlYWQoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwgYm9vbCB1c2VfZWNjLCBpbnQg
+Y3cpCj4+ICB7Cj4+IC0JaWYgKG5hbmRjLT5wcm9wcy0+aXNfYmFtKQo+PiAtCQl3cml0ZV9yZWdf
+ZG1hKG5hbmRjLCBOQU5EX1JFQURfTE9DQVRJT05fMCwgNCwKPj4gLQkJCSAgICAgIE5BTkRfQkFN
+X05FWFRfU0dMKTsKPj4gKwlzdHJ1Y3QgcWNvbV9uYW5kX2NvbnRyb2xsZXIgKm5hbmRjID0gZ2V0
+X3Fjb21fbmFuZF9jb250cm9sbGVyKGNoaXApOwo+PiArCXN0cnVjdCBuYW5kX2VjY19jdHJsICpl
+Y2MgPSAmY2hpcC0+ZWNjOwo+PiArCj4+ICsJaWYgKG5hbmRjLT5wcm9wcy0+aXNfYmFtKSB7Cj4+
+ICsJCWlmIChuYW5kYy0+cHJvcHMtPnFwaWNfdjIgJiYgY3cgPT0gKGVjYy0+c3RlcHMgLSAxKSkK
+Pj4gKwkJCXdyaXRlX3JlZ19kbWEobmFuZGMsIE5BTkRfUkVBRF9MT0NBVElPTl9MQVNUX0NXXzAs
+IDQsCj4+ICsJCQkJICAgICAgTkFORF9CQU1fTkVYVF9TR0wpOwo+PiArCQllbHNlCj4+ICsJCQl3
+cml0ZV9yZWdfZG1hKG5hbmRjLCBOQU5EX1JFQURfTE9DQVRJT05fMCwgNCwKPj4gKwkJCQkgICAg
+ICBOQU5EX0JBTV9ORVhUX1NHTCk7Cj4+ICsJfQo+IAo+IFNhbWUgaGVyZSwgSSBhbSBwcmV0dHkg
+c3VyZSB3ZSBjYW4gYWJzdHJhY3QgdGhlIGNvbXBsZXhpdHkuCj4gCiAgICBIZXJlIEkgZGlkIHRo
+aXMgYmVjYXVzZSAsIGkgbmVlZCBwb2ludGVyIHRvIHN0cnVjdCBuYW5kX2VjY19jdHJsIApzdHJ1
+Y3R1cmUKICAgIHRvIGFjY2VzcyBlY2MtPnN0ZXBzIGZvciBDVyBjb21wYXJpc29uIGZvciBsYXN0
+IGNvZGUgd29yZC4gY3cgPT0gCihlY2MtPnN0ZXBzIC0gMSkKCiAgICBTbyBpIHRoaW5rIG5vIHNl
+cGFyYXRlIHBhdGNoIG5lZWRlZCBmb3IgY29udmVyc2lvbiBvZiBuYW5jLS0+Y2hpcC4KICAgIFBs
+ZWFzZSBsZXQgbWUga25vdyBpZiBzdGlsbCBzZXBhcmF0ZSBwYXRjaCBuZWVkZWQgZm9yIG5hbmMt
+LT5jaGlwIApjb252ZXJzaW9uLgoKPj4gCj4+ICAJd3JpdGVfcmVnX2RtYShuYW5kYywgTkFORF9G
+TEFTSF9DTUQsIDEsIE5BTkRfQkFNX05FWFRfU0dMKTsKPj4gIAl3cml0ZV9yZWdfZG1hKG5hbmRj
+LCBOQU5EX0VYRUNfQ01ELCAxLCBOQU5EX0JBTV9ORVhUX1NHTCk7Cj4+IEBAIC0xMTE3LDExICsx
+MTc1LDExIEBAIGNvbmZpZ19uYW5kX2N3X3JlYWQoc3RydWN0IAo+PiBxY29tX25hbmRfY29udHJv
+bGxlciAqbmFuZGMsIGJvb2wgdXNlX2VjYykKPj4gICAqIHNpbmdsZSBjb2Rld29yZCBpbiBwYWdl
+Cj4+ICAgKi8KPj4gIHN0YXRpYyB2b2lkCj4+IC1jb25maWdfbmFuZF9zaW5nbGVfY3dfcGFnZV9y
+ZWFkKHN0cnVjdCBxY29tX25hbmRfY29udHJvbGxlciAqbmFuZGMsCj4+IC0JCQkJYm9vbCB1c2Vf
+ZWNjKQo+PiArY29uZmlnX25hbmRfc2luZ2xlX2N3X3BhZ2VfcmVhZChzdHJ1Y3QgbmFuZF9jaGlw
+ICpjaGlwLAo+PiArCQkJCWJvb2wgdXNlX2VjYywgaW50IGN3KQo+PiAgewo+PiAtCWNvbmZpZ19u
+YW5kX3BhZ2VfcmVhZChuYW5kYyk7Cj4+IC0JY29uZmlnX25hbmRfY3dfcmVhZChuYW5kYywgdXNl
+X2VjYyk7Cj4+ICsJY29uZmlnX25hbmRfcGFnZV9yZWFkKGNoaXApOwo+PiArCWNvbmZpZ19uYW5k
+X2N3X3JlYWQoY2hpcCwgdXNlX2VjYywgY3cpOwo+PiAgfQo+PiAKPj4gIC8qCj4+IEBAIC0xMjA1
+LDcgKzEyNjMsNyBAQCBzdGF0aWMgaW50IG5hbmRjX3BhcmFtKHN0cnVjdCBxY29tX25hbmRfaG9z
+dCAKPj4gKmhvc3QpCj4+ICAJCW5hbmRjX3NldF9yZWcobmFuZGMsIE5BTkRfREVWX0NNRF9WTERf
+UkVTVE9SRSwgbmFuZGMtPnZsZCk7Cj4+ICAJfQo+PiAKPj4gLQluYW5kY19zZXRfcmVhZF9sb2Mo
+bmFuZGMsIDAsIDAsIDUxMiwgMSk7Cj4+ICsJbmFuZGNfc2V0X3JlYWRfbG9jKGNoaXAsIDAsIDAs
+IDAsIDUxMiwgMSk7Cj4+IAo+PiAgCWlmICghbmFuZGMtPnByb3BzLT5xcGljX3YyKSB7Cj4+ICAJ
+CXdyaXRlX3JlZ19kbWEobmFuZGMsIE5BTkRfREVWX0NNRF9WTEQsIDEsIDApOwo+PiBAQCAtMTIx
+NSw3ICsxMjczLDcgQEAgc3RhdGljIGludCBuYW5kY19wYXJhbShzdHJ1Y3QgcWNvbV9uYW5kX2hv
+c3QgCj4+ICpob3N0KQo+PiAgCW5hbmRjLT5idWZfY291bnQgPSA1MTI7Cj4+ICAJbWVtc2V0KG5h
+bmRjLT5kYXRhX2J1ZmZlciwgMHhmZiwgbmFuZGMtPmJ1Zl9jb3VudCk7Cj4+IAo+PiAtCWNvbmZp
+Z19uYW5kX3NpbmdsZV9jd19wYWdlX3JlYWQobmFuZGMsIGZhbHNlKTsKPj4gKwljb25maWdfbmFu
+ZF9zaW5nbGVfY3dfcGFnZV9yZWFkKGNoaXAsIGZhbHNlLCAwKTsKPj4gCj4+ICAJcmVhZF9kYXRh
+X2RtYShuYW5kYywgRkxBU0hfQlVGX0FDQywgbmFuZGMtPmRhdGFfYnVmZmVyLAo+PiAgCQkgICAg
+ICBuYW5kYy0+YnVmX2NvdW50LCAwKTsKPj4gQEAgLTE2MTcsNyArMTY3NSw3IEBAIHFjb21fbmFu
+ZGNfcmVhZF9jd19yYXcoc3RydWN0IG10ZF9pbmZvICptdGQsIAo+PiBzdHJ1Y3QgbmFuZF9jaGlw
+ICpjaGlwLAo+PiAgCWNsZWFyX2JhbV90cmFuc2FjdGlvbihuYW5kYyk7Cj4+ICAJc2V0X2FkZHJl
+c3MoaG9zdCwgaG9zdC0+Y3dfc2l6ZSAqIGN3LCBwYWdlKTsKPj4gIAl1cGRhdGVfcndfcmVncyho
+b3N0LCAxLCB0cnVlKTsKPj4gLQljb25maWdfbmFuZF9wYWdlX3JlYWQobmFuZGMpOwo+PiArCWNv
+bmZpZ19uYW5kX3BhZ2VfcmVhZChjaGlwKTsKPj4gCj4+ICAJZGF0YV9zaXplMSA9IG10ZC0+d3Jp
+dGVzaXplIC0gaG9zdC0+Y3dfc2l6ZSAqIChlY2MtPnN0ZXBzIC0gMSk7Cj4+ICAJb29iX3NpemUx
+ID0gaG9zdC0+YmJtX3NpemU7Cj4+IEBAIC0xNjMzLDE5ICsxNjkxLDE5IEBAIHFjb21fbmFuZGNf
+cmVhZF9jd19yYXcoc3RydWN0IG10ZF9pbmZvICptdGQsIAo+PiBzdHJ1Y3QgbmFuZF9jaGlwICpj
+aGlwLAo+PiAgCX0KPj4gCj4+ICAJaWYgKG5hbmRjLT5wcm9wcy0+aXNfYmFtKSB7Cj4+IC0JCW5h
+bmRjX3NldF9yZWFkX2xvYyhuYW5kYywgMCwgcmVhZF9sb2MsIGRhdGFfc2l6ZTEsIDApOwo+PiAr
+CQluYW5kY19zZXRfcmVhZF9sb2MoY2hpcCwgY3csIDAsIHJlYWRfbG9jLCBkYXRhX3NpemUxLCAw
+KTsKPj4gIAkJcmVhZF9sb2MgKz0gZGF0YV9zaXplMTsKPj4gCj4+IC0JCW5hbmRjX3NldF9yZWFk
+X2xvYyhuYW5kYywgMSwgcmVhZF9sb2MsIG9vYl9zaXplMSwgMCk7Cj4+ICsJCW5hbmRjX3NldF9y
+ZWFkX2xvYyhjaGlwLCBjdywgMSwgcmVhZF9sb2MsIG9vYl9zaXplMSwgMCk7Cj4+ICAJCXJlYWRf
+bG9jICs9IG9vYl9zaXplMTsKPj4gCj4+IC0JCW5hbmRjX3NldF9yZWFkX2xvYyhuYW5kYywgMiwg
+cmVhZF9sb2MsIGRhdGFfc2l6ZTIsIDApOwo+PiArCQluYW5kY19zZXRfcmVhZF9sb2MoY2hpcCwg
+Y3csIDIsIHJlYWRfbG9jLCBkYXRhX3NpemUyLCAwKTsKPj4gIAkJcmVhZF9sb2MgKz0gZGF0YV9z
+aXplMjsKPj4gCj4+IC0JCW5hbmRjX3NldF9yZWFkX2xvYyhuYW5kYywgMywgcmVhZF9sb2MsIG9v
+Yl9zaXplMiwgMSk7Cj4+ICsJCW5hbmRjX3NldF9yZWFkX2xvYyhjaGlwLCBjdywgMywgcmVhZF9s
+b2MsIG9vYl9zaXplMiwgMSk7Cj4+ICAJfQo+PiAKPj4gLQljb25maWdfbmFuZF9jd19yZWFkKG5h
+bmRjLCBmYWxzZSk7Cj4+ICsJY29uZmlnX25hbmRfY3dfcmVhZChjaGlwLCBmYWxzZSwgY3cpOwo+
+PiAKPj4gIAlyZWFkX2RhdGFfZG1hKG5hbmRjLCByZWdfb2ZmLCBkYXRhX2J1ZiwgZGF0YV9zaXpl
+MSwgMCk7Cj4+ICAJcmVnX29mZiArPSBkYXRhX3NpemUxOwo+PiBAQCAtMTg1Niw3ICsxOTE0LDcg
+QEAgc3RhdGljIGludCByZWFkX3BhZ2VfZWNjKHN0cnVjdCBxY29tX25hbmRfaG9zdCAKPj4gKmhv
+c3QsIHU4ICpkYXRhX2J1ZiwKPj4gIAl1OCAqZGF0YV9idWZfc3RhcnQgPSBkYXRhX2J1ZiwgKm9v
+Yl9idWZfc3RhcnQgPSBvb2JfYnVmOwo+PiAgCWludCBpLCByZXQ7Cj4+IAo+PiAtCWNvbmZpZ19u
+YW5kX3BhZ2VfcmVhZChuYW5kYyk7Cj4+ICsJY29uZmlnX25hbmRfcGFnZV9yZWFkKGNoaXApOwo+
+PiAKPj4gIAkvKiBxdWV1ZSBjbWQgZGVzY3MgZm9yIGVhY2ggY29kZXdvcmQgKi8KPj4gIAlmb3Ig
+KGkgPSAwOyBpIDwgZWNjLT5zdGVwczsgaSsrKSB7Cj4+IEBAIC0xODczLDE4ICsxOTMxLDE2IEBA
+IHN0YXRpYyBpbnQgcmVhZF9wYWdlX2VjYyhzdHJ1Y3QgcWNvbV9uYW5kX2hvc3QgCj4+ICpob3N0
+LCB1OCAqZGF0YV9idWYsCj4+IAo+PiAgCQlpZiAobmFuZGMtPnByb3BzLT5pc19iYW0pIHsKPj4g
+IAkJCWlmIChkYXRhX2J1ZiAmJiBvb2JfYnVmKSB7Cj4+IC0JCQkJbmFuZGNfc2V0X3JlYWRfbG9j
+KG5hbmRjLCAwLCAwLCBkYXRhX3NpemUsIDApOwo+PiAtCQkJCW5hbmRjX3NldF9yZWFkX2xvYyhu
+YW5kYywgMSwgZGF0YV9zaXplLAo+PiAtCQkJCQkJICAgb29iX3NpemUsIDEpOwo+PiArCQkJCW5h
+bmRjX3NldF9yZWFkX2xvYyhjaGlwLCBpLCAwLCAwLCBkYXRhX3NpemUsIDApOwo+PiArCQkJCW5h
+bmRjX3NldF9yZWFkX2xvYyhjaGlwLCBpLCAxLCBkYXRhX3NpemUsIG9vYl9zaXplLCAxKTsKPj4g
+IAkJCX0gZWxzZSBpZiAoZGF0YV9idWYpIHsKPj4gLQkJCQluYW5kY19zZXRfcmVhZF9sb2MobmFu
+ZGMsIDAsIDAsIGRhdGFfc2l6ZSwgMSk7Cj4+ICsJCQkJbmFuZGNfc2V0X3JlYWRfbG9jKGNoaXAs
+IGksIDAsIDAsIGRhdGFfc2l6ZSwgMSk7Cj4+ICAJCQl9IGVsc2Ugewo+PiAtCQkJCW5hbmRjX3Nl
+dF9yZWFkX2xvYyhuYW5kYywgMCwgZGF0YV9zaXplLAo+PiAtCQkJCQkJICAgb29iX3NpemUsIDEp
+Owo+PiArCQkJCW5hbmRjX3NldF9yZWFkX2xvYyhjaGlwLCBpLCAwLCBkYXRhX3NpemUsIG9vYl9z
+aXplLCAxKTsKPj4gIAkJCX0KPj4gIAkJfQo+PiAKPj4gLQkJY29uZmlnX25hbmRfY3dfcmVhZChu
+YW5kYywgdHJ1ZSk7Cj4+ICsJCWNvbmZpZ19uYW5kX2N3X3JlYWQoY2hpcCwgdHJ1ZSwgaSk7Cj4+
+IAo+PiAgCQlpZiAoZGF0YV9idWYpCj4+ICAJCQlyZWFkX2RhdGFfZG1hKG5hbmRjLCBGTEFTSF9C
+VUZfQUNDLCBkYXRhX2J1ZiwKPj4gQEAgLTE5NDYsNyArMjAwMiw3IEBAIHN0YXRpYyBpbnQgY29w
+eV9sYXN0X2N3KHN0cnVjdCBxY29tX25hbmRfaG9zdCAKPj4gKmhvc3QsIGludCBwYWdlKQo+PiAg
+CXNldF9hZGRyZXNzKGhvc3QsIGhvc3QtPmN3X3NpemUgKiAoZWNjLT5zdGVwcyAtIDEpLCBwYWdl
+KTsKPj4gIAl1cGRhdGVfcndfcmVncyhob3N0LCAxLCB0cnVlKTsKPj4gCj4+IC0JY29uZmlnX25h
+bmRfc2luZ2xlX2N3X3BhZ2VfcmVhZChuYW5kYywgaG9zdC0+dXNlX2VjYyk7Cj4+ICsJY29uZmln
+X25hbmRfc2luZ2xlX2N3X3BhZ2VfcmVhZChjaGlwLCBob3N0LT51c2VfZWNjLCBlY2MtPnN0ZXBz
+IC0gCj4+IDEpOwo+PiAKPj4gIAlyZWFkX2RhdGFfZG1hKG5hbmRjLCBGTEFTSF9CVUZfQUNDLCBu
+YW5kYy0+ZGF0YV9idWZmZXIsIHNpemUsIDApOwo+PiAKPiAKPiBUaGFua3MsCj4gTWlxdcOobAoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxp
+bnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
