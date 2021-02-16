@@ -7,64 +7,66 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 908B7C433DB
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 09:50:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB324C433DB
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 09:56:01 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2DF5064DA1
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 09:50:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DF5064DA1
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id 253AA64DC3
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 09:56:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 253AA64DC3
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=canb.auug.org.au
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
-	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:Cc:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	MIME-Version:References:In-Reply-To:Message-ID:Subject:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=3YYHhU6xOPIBv+fYlfSNrBnMyrhJcI1to7q6kKoNXHg=; b=OXxYQ+VcArWex2zTY5Vi3ytCY
-	masJ7qmtNATXEXydheSJ+GaTcZ+06GKaRRsviMGRhF0RxeEQxXa2Z4HyNS4Xv1ueWXw4k1TRkooIi
-	mLRGIB1ziVo2zvABnAWbfyLYkplDOY+qXFaUqJ08tyoUKBOH/gznkFdGzCmtO/d0SpftRw7L2xZ9E
-	ECV9+/L3/kY4eaU+uqAXX+8vbYfImUQNtj8NieE7REHYZKuwg3/zlDyLNT/pEjaOdOhloKbFiGV2q
-	IPFjOgHcRZE0fBRGimH9U2TJQjJbKYUhCS/gat6x8pPdvJ4BE/45UQRUmk03JK87L5nxtemtsoNQM
-	658Qc+6CQ==;
+	 bh=DntWIyVbMy/PlaQbWRqGRk/3jLW1+vIBuCOPBsBpHt4=; b=ibcVdDshHvnfJXfNFipP3KfPN
+	klvWuWBLPhiANJXHdyY4g02haQWq2j7+P1UgpQRJ2mbfytglv6ngtAcdqDvFHqc4+QUZTiwFEiZDg
+	AatAm8/CXN8ldr0HcmN2dwZABpY0OaLB0nkpoRx8LDxTT9XePsgQY+4uZqjNhm6y70nkc27iPXdHD
+	TnmqC277Zla4q3Ke8Fs8raIeBsRPHnwgyCUwbGduWFPho+S6X/8hWe4KfaRKh2RsLPqlsZW7GZ3fF
+	3tRyCWU3BIRIcxxpEq4orw0T0qUWBM1+iCwat+zEcdePtpoKfBuvQh6OZcQTVdg/Etmjx8ftDnXen
+	GsAh9xJRg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lBwyi-0003s5-Iv; Tue, 16 Feb 2021 09:49:08 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1lBx4Q-0004l9-1G; Tue, 16 Feb 2021 09:55:02 +0000
+Received: from ozlabs.org ([203.11.71.1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lBwyc-0003rS-P8
- for linux-mtd@lists.infradead.org; Tue, 16 Feb 2021 09:49:07 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 8F80A2223A;
- Tue, 16 Feb 2021 10:48:57 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1613468939;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=1RksCp8eFbUv7eQ9L3AeUqfjGYJPVdXYUeHACDCoxyY=;
- b=YoWAVdCr95aHfT0nuZVWkUaORbtAvFL+1zH3iQvAhWd6cnHk7RGsNLeG7Jh2mY3n756C59
- O+fZVyK5SjmebLx6rWeoGSdGsTwEJrX2089GxMq2SwGlZbTanbFZ2qS3wIYlk2OnjAutYD
- IIUPwgexliOCY+Y7gZTHVsV5hLvuH64=
+ id 1lBx4M-0004kG-8T
+ for linux-mtd@lists.infradead.org; Tue, 16 Feb 2021 09:54:59 +0000
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest
+ SHA256) (No client certificate requested)
+ by mail.ozlabs.org (Postfix) with ESMTPSA id 4DfxCb1VDbz9sVF;
+ Tue, 16 Feb 2021 20:54:51 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+ s=201702; t=1613469294;
+ bh=HYvXuZb0knOPlmLWaF+c88CkwNdfH+UjhMJy6nY83yM=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=cSM0tWu6SScpILWe7jYBWYC5KL09z8s/aYofNbdDYSJn5dOStu2l91K0YDo2erpdz
+ AoaobN63qCW/tJS52EehjlUmqJSbPzeuUMc62Duq0JCi/KseSgS818TXxSoC8b2FOh
+ e/h4nRoQ5Ux15AJwg/5RhBdUqhzSwTECJbOhTqhMQMCC0zk+O5C63mxxf6JhfFZiLX
+ gc0+S2uEL1uQK4QidvSqGegey3eSrwQ+v2gH/ZM56OreiQLSe3DFNCa0DdDiam4qfb
+ 3YR+CFNmT+49TALz4sWjb0Lh2ErDzhwDSqOYx6Qim1Ab2e+Ggut4aslCnD0Eo7XLvX
+ aI9TIpb168/KQ==
+Date: Tue, 16 Feb 2021 20:54:50 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v2] fs: ubifs: set s_uuid in super block to support
+ ima/evm uuid options
+Message-ID: <20210216205450.50883f70@canb.auug.org.au>
+In-Reply-To: <CAHp75VftQ6y58w+D6=nSwx3DRcLH3iwfx3RT8yv6rgS8O6OWHw@mail.gmail.com>
+References: <20210216072334.7575-1-jbe@pengutronix.de>
+ <20210216072334.7575-2-jbe@pengutronix.de>
+ <CAHp75Vcha++UUE6hw0n_pBnA24q_uJQekABSSktmjCoinfpSoA@mail.gmail.com>
+ <CAHp75VftQ6y58w+D6=nSwx3DRcLH3iwfx3RT8yv6rgS8O6OWHw@mail.gmail.com>
 MIME-Version: 1.0
-Date: Tue, 16 Feb 2021 10:48:57 +0100
-From: Michael Walle <michael@walle.cc>
-To: Pratyush Yadav <p.yadav@ti.com>
-Subject: Re: spi-nor: maxronix MX25L12835F support
-In-Reply-To: <20210216092743.jkhfjewu3cbnm5zm@ti.com>
-References: <CAEyMn7ZEp9f1SuE6umRDWkr8bVT5hdRi-4F3+G-GP9anuGG1Bw@mail.gmail.com>
- <20210216092743.jkhfjewu3cbnm5zm@ti.com>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <d7e81d38064ba59a24ec243cb84a1d97@walle.cc>
-X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210216_044904_347252_BBA44E23 
-X-CRM114-Status: GOOD (  14.85  )
+X-CRM114-CacheID: sfid-20210216_045458_838238_63EB2C3B 
+X-CRM114-Status: GOOD (  11.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,53 +78,66 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Heiko Thiery <heiko.thiery@gmail.com>, linux-mtd@lists.infradead.org
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Cc: Richard Weinberger <richard@nod.at>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Oleksij Rempel <o.rempel@pengutronix.de>, Juergen Borleis <jbe@pengutronix.de>,
+ "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+ Sascha Hauer <kernel@pengutronix.de>,
+ Steffen Trumtrar <s.trumtrar@pengutronix.de>
+Content-Type: multipart/mixed; boundary="===============7077023147159932983=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2021-02-16 10:27, schrieb Pratyush Yadav:
-> On 15/02/21 10:53PM, Heiko Thiery wrote:
->> Hi all,
->> 
->> I faced an issue with a SPI flash on our board. We use a macronix
->> MX25L12835F [1]. Unfortunately this flash has the same JEDEC ID like
->> the MX25L12805D [2].
->> 
->> The newer MX25L12835F has support for dual/quad read mode and RDSFDP
->> while the older doesn't.
->> 
->> I thought that I could do a fixup with a device specific
->> post_bfpt_fixups() call but by now this seems not possible. The older
->> MX25L12805D has no flags set that allows a call to
->> spi_nor_sfdp_init_params() and implements the fixup.
->> 
->> Has anyone an idea how to solve this?
-> 
-> The post_sfdp fixup is always run regardless of whether the flash has
-> SFDP or not. You can try putting your flash-specific fixups there.
+--===============7077023147159932983==
+Content-Type: multipart/signed; boundary="Sig_/qWYkc+vcu08yJpPLKWMWqLZ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Well the problem here is, that the SFDP setup is skipped though the
-flash would support SFDP. If the jedec id wasn't already in the table,
-there would be the flag SPI_NOR_QUAD_READ and the SFDP would be
-parsed. But because there is already the legacy device (which likely
-doesn't support SFDP) it really doesn't fit.
+--Sig_/qWYkc+vcu08yJpPLKWMWqLZ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Its unclear to me, why the SFDP is only parsed if one of the
-SPI_NOR_*_READ flags are set.
+Hi Andy,
 
->> [1] 
->> https://www.macronix.com/Lists/Datasheet/Attachments/7397/MX25L12835F,%203V,%20128Mb,%20v1.6.pdf
->> [2] 
->> https://www.mxic.com.tw/Lists/Datasheet/Attachments/7321/MX25L12805D,%203V,%20128Mb,%20v1.2.pdf
-> 
-> Both these links are broken.
+On Tue, 16 Feb 2021 11:11:08 +0200 Andy Shevchenko <andy.shevchenko@gmail.c=
+om> wrote:
+>
+> Stephen, do you have a check in Linux Next to catch the problem that
+> Co-developed-by is not being accompanied by a corresponding SoB?
 
-mh, they work for me.
+No, but I will see about adding one.  Thanks fo rthe heads up.
 
--michael
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/qWYkc+vcu08yJpPLKWMWqLZ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmArlmoACgkQAVBC80lX
+0Gyk9gf/cFLJBzqkelOcDcdg5i1eeRR+JHjg9FI5JWGHEWeLOksx5PD3/ZQGfkP4
+2u4fkkaD+ukCwxE7CfUOxzADMZI5anlQtjaiZfwi0uMfDZdXa1RBYbs6yGAcJ6Bf
+3uAaMUGhr4YUgsJ1WkfUe1KUmZeQQ/MAfRVHquYWIm/cqRLME6qFr0covEZ8PPt9
+8YMuV72cn0w2+b293YNTRqVQ5NUtwPBvNGcnZebTyHupuFAH5Af22tYaQl514VZk
+YJ1QuGrqbl8GvkeY3nzTC83+G2ghN/F1GZIQy88oaSf2N9l6UcvUMyQFWVrNL8oy
+gcqSu9z46WumC3RP41TP+GYDwX92aA==
+=319X
+-----END PGP SIGNATURE-----
+
+--Sig_/qWYkc+vcu08yJpPLKWMWqLZ--
+
+
+--===============7077023147159932983==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============7077023147159932983==--
+
