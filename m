@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16EA7C433E0
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 18:21:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5920C433DB
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 18:21:43 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C951264DA1
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 18:21:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C951264DA1
+	by mail.kernel.org (Postfix) with ESMTPS id 9EACB64E04
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 18:21:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9EACB64E04
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,48 +23,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=S9UuOkhS13/QQyG4auwjlTtNKNeXzLH1m9n1+p52E6c=; b=gK5RaxEO7RetQqsKbS5efVFPC
-	5ShFnz+5QQX+0L5trFwBrr0oG6dJLTSmEBZM1NIqtO933RUKu3HCIPdCk9zU6ek8i+9jH0vINKLDz
-	BzT4HJCG0LO4xwIueNtjAlsTB918s7inv9jAiYLYSeeMci5be2NoM/UvSQ1RwQK2wykk3ykqJ5yj6
-	1CieLKj4W/Psl8LuM2RVQ9EmdXR9v3YIg63OQpXpCnhjxBlXPRlIddEVmeAaeT7trRvqyOuHIUa5B
-	pKMME0sIZ1MsPo1BGu1kBYhdEVzLbJ/HFMlNHOSvH6gg5FQ5E77mjDTePaEjVMY9kL4AeIxX/DC1A
-	AbleWASAw==;
+	 bh=J4MKVg6D8HsMozsA46GEmjpN941HHG+UHoFeBFUhJ/c=; b=17tjtQp7cUnogS/c030D48/JY
+	qGm1rCDqLMz0AIeCu6PgA83POT8iXIY3BcKkCj6UxavkpNJ4FnGXmGxyqLrSGJbHL9FXgbYaHE5Ja
+	KvSRMFknt9pkMcO1JC2UWl5lxjWCBuHTwf0b+HMmlmYTuZrceEX8QZDW0mLo1TooBuPIeI4ZMLve8
+	HLeYGKHHhe/mEZEsPqP2uKoX5W+K2NiZmGwCeFey6rFvoAh/UJTu0Se0mn1qpQK5FZSSXTkxY9N+F
+	ng7bmeVtteIqYsh2B++IuOUxNtMAp1DCPESUAnJMPMsRbBM3fsjua+ugooXm99x/7s2eKYlcSnK7s
+	pzeLIDvZw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lC4xM-0005zt-Ae; Tue, 16 Feb 2021 18:20:16 +0000
+	id 1lC4xt-0006C9-E2; Tue, 16 Feb 2021 18:20:49 +0000
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lC4x8-0005uH-V0
- for linux-mtd@lists.infradead.org; Tue, 16 Feb 2021 18:20:05 +0000
-IronPort-SDR: eslIQ0gZKZShIHqqb2Ivo26mB1GLRpuQNHV5pYsaGfVG6r7c5d1l4NT3/MhxkgZdUgNi4+LtYh
- tBtWX7XKunrA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="202169402"
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; d="scan'208";a="202169402"
+ id 1lC4xN-0005xx-IF
+ for linux-mtd@lists.infradead.org; Tue, 16 Feb 2021 18:20:21 +0000
+IronPort-SDR: GNx2rNF8D+dKZXZxRaEC9P3rSMur7mV2pssrYp/P0hTbFpTNIq78W9+BiEeLXN3wcAhMc5ANbI
+ ey+9I/jWi5tw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="202169493"
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; d="scan'208";a="202169493"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Feb 2021 10:20:00 -0800
-IronPort-SDR: 5BrQ2ZVWZdJ0NteuRoXK7J04ErvcYqEn4+l3KNFXUA+xpeokt7oIdSeXnRdjzgsLkv/sn+efeJ
- 0uDHt7ZK5s/g==
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; d="scan'208";a="399609099"
+ 16 Feb 2021 10:20:16 -0800
+IronPort-SDR: YNQnl7WoJX4IbUBVXJaO1KyEfxdevgmwQ7obhlFNd5UgijBu0/6D1bP3rxkneQ4g3PqyM7XZmd
+ 5QnJJQB03Veg==
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; d="scan'208";a="399609286"
 Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Feb 2021 10:19:57 -0800
+ 16 Feb 2021 10:20:13 -0800
 From: Tomas Winkler <tomas.winkler@intel.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Jani Nikula <jani.nikula@linux.intel.com>,
  Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
  Rodrigo Vivi <rodrigo.vivi@intel.com>
-Subject: [RFC PATCH 3/9] drm/i915/spi: add driver for on-die spi device
-Date: Tue, 16 Feb 2021 20:19:19 +0200
-Message-Id: <20210216181925.650082-4-tomas.winkler@intel.com>
+Subject: [RFC PATCH 8/9] drm/i915/spi: serialize spi access
+Date: Tue, 16 Feb 2021 20:19:24 +0200
+Message-Id: <20210216181925.650082-9-tomas.winkler@intel.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210216181925.650082-1-tomas.winkler@intel.com>
 References: <20210216181925.650082-1-tomas.winkler@intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210216_132003_312971_864EEC20 
-X-CRM114-Status: GOOD (  18.45  )
+X-CRM114-CacheID: sfid-20210216_132017_857027_0A1F7853 
+X-CRM114-Status: GOOD (  15.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,168 +85,142 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add the platform driver for i915 on-die spi device, exposed via mfd
-framework.
+The SPI regions cannot be accessed in parallel because for each
+region the region selector has to be set. Add a mutex to prevent
+parallel access.
 
 Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Cc: Lucas De Marchi <lucas.demarchi@intel.com>
+Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
 Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
 ---
- drivers/gpu/drm/i915/Kconfig             |   2 +
- drivers/gpu/drm/i915/Makefile            |   3 +
- drivers/gpu/drm/i915/spi/intel_spi_drv.c | 116 +++++++++++++++++++++++
- 3 files changed, 121 insertions(+)
- create mode 100644 drivers/gpu/drm/i915/spi/intel_spi_drv.c
+ drivers/gpu/drm/i915/spi/intel_spi_drv.c | 32 +++++++++++++++++++++---
+ 1 file changed, 28 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/Kconfig b/drivers/gpu/drm/i915/Kconfig
-index abcaa8da45ac..13c870e5878e 100644
---- a/drivers/gpu/drm/i915/Kconfig
-+++ b/drivers/gpu/drm/i915/Kconfig
-@@ -27,6 +27,8 @@ config DRM_I915
- 	select CEC_CORE if CEC_NOTIFIER
- 	select VMAP_PFN
- 	select MFD_CORE
-+	select MTD
-+	select MTD_PARTITIONED_MASTER
- 	help
- 	  Choose this option if you have a system that has "Intel Graphics
- 	  Media Accelerator" or "HD Graphics" integrated graphics,
-diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
-index 7fa9120feb8d..f209cd541eec 100644
---- a/drivers/gpu/drm/i915/Makefile
-+++ b/drivers/gpu/drm/i915/Makefile
-@@ -299,6 +299,9 @@ endif
- obj-$(CONFIG_DRM_I915) += i915.o
- obj-$(CONFIG_DRM_I915_GVT_KVMGT) += gvt/kvmgt.o
- 
-+obj-m += i915_spi.o
-+i915_spi-y := spi/intel_spi_drv.o
-+
- # header test
- 
- # exclude some broken headers from the test coverage
 diff --git a/drivers/gpu/drm/i915/spi/intel_spi_drv.c b/drivers/gpu/drm/i915/spi/intel_spi_drv.c
-new file mode 100644
-index 000000000000..23261f35b71f
---- /dev/null
+index 1e8a40339e6d..9de49d00297d 100644
+--- a/drivers/gpu/drm/i915/spi/intel_spi_drv.c
 +++ b/drivers/gpu/drm/i915/spi/intel_spi_drv.c
-@@ -0,0 +1,116 @@
-+// SPDX-License-Identifier: MIT
-+/*
-+ * Copyright(c) 2019-2021, Intel Corporation. All rights reserved.
-+ */
-+#include <linux/module.h>
-+#include <linux/types.h>
-+#include <linux/kernel.h>
-+#include <linux/string.h>
-+#include <linux/io.h>
-+#include <linux/device.h>
-+#include <linux/slab.h>
-+#include <linux/platform_device.h>
-+#include <spi/intel_spi.h>
+@@ -20,6 +20,7 @@
+ 
+ struct i915_spi {
+ 	struct mtd_info mtd;
++	struct mutex lock; /* region access lock */
+ 	void __iomem *base;
+ 	size_t size;
+ 	unsigned int nregions;
+@@ -354,6 +355,7 @@ static int i915_spi_erase(struct mtd_info *mtd, struct erase_info *info)
+ 	loff_t from;
+ 	size_t len;
+ 	size_t total_len;
++	int ret = 0;
+ 
+ 	if (!mtd || !info)
+ 		return -EINVAL;
+@@ -370,18 +372,23 @@ static int i915_spi_erase(struct mtd_info *mtd, struct erase_info *info)
+ 	total_len = info->len;
+ 	addr = info->addr;
+ 
++	if (!mutex_trylock(&spi->lock))
++		return -EBUSY;
 +
-+struct i915_spi {
-+	void __iomem *base;
-+	size_t size;
-+	unsigned int nregions;
-+	struct {
-+		const char *name;
-+		u8 id;
-+		u64 offset;
-+		u64 size;
-+	} regions[];
-+};
+ 	while (total_len > 0) {
+ 		if (!IS_ALIGNED(addr, SZ_4K) || !IS_ALIGNED(total_len, SZ_4K)) {
+ 			dev_err(&mtd->dev, "unaligned erase %llx %zx\n", addr, total_len);
+ 			info->fail_addr = addr;
+-			return -ERANGE;
++			ret = -ERANGE;
++			goto out;
+ 		}
+ 
+ 		idx = spi_get_region(spi, addr);
+ 		if (idx >= spi->nregions) {
+ 			dev_err(&mtd->dev, "out of range");
+ 			info->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+-			return -ERANGE;
++			ret = -ERANGE;
++			goto out;
+ 		}
+ 
+ 		from = addr - spi->regions[idx].offset;
+@@ -397,14 +404,17 @@ static int i915_spi_erase(struct mtd_info *mtd, struct erase_info *info)
+ 		if (bytes < 0) {
+ 			dev_dbg(&mtd->dev, "erase failed with %zd\n", bytes);
+ 			info->fail_addr += spi->regions[idx].offset;
+-			return bytes;
++			ret = bytes;
++			goto out;
+ 		}
+ 
+ 		addr += len;
+ 		total_len -= len;
+ 	}
+ 
+-	return 0;
++out:
++	mutex_unlock(&spi->lock);
++	return ret;
+ }
+ 
+ static int i915_spi_read(struct mtd_info *mtd, loff_t from, size_t len,
+@@ -440,14 +450,19 @@ static int i915_spi_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	if (len > spi->regions[idx].size - from)
+ 		len = spi->regions[idx].size - from;
+ 
++	if (!mutex_trylock(&spi->lock))
++		return -EBUSY;
 +
-+static int i915_spi_probe(struct platform_device *platdev)
-+{
-+	struct resource *bar;
-+	struct device *device;
-+	struct i915_spi *spi;
-+	struct i915_spi_region *regions;
-+	unsigned int nregions;
-+	unsigned int i, n;
-+	size_t size;
-+	char *name;
-+	size_t name_size;
+ 	ret = spi_read(spi, region, from, len, buf);
+ 	if (ret < 0) {
+ 		dev_dbg(&mtd->dev, "read failed with %zd\n", ret);
++		mutex_unlock(&spi->lock);
+ 		return ret;
+ 	}
+ 
+ 	*retlen = ret;
+ 
++	mutex_unlock(&spi->lock);
+ 	return 0;
+ }
+ 
+@@ -484,14 +499,19 @@ static int i915_spi_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	if (len > spi->regions[idx].size - to)
+ 		len = spi->regions[idx].size - to;
+ 
++	if (!mutex_trylock(&spi->lock))
++		return -EBUSY;
 +
-+	device = &platdev->dev;
+ 	ret = spi_write(spi, region, to, len, buf);
+ 	if (ret < 0) {
+ 		dev_dbg(&mtd->dev, "write failed with %zd\n", ret);
++		mutex_unlock(&spi->lock);
+ 		return ret;
+ 	}
+ 
+ 	*retlen = ret;
+ 
++	mutex_unlock(&spi->lock);
+ 	return 0;
+ }
+ 
+@@ -505,6 +525,8 @@ static int i915_spi_init_mtd(struct i915_spi *spi, struct device *device,
+ 
+ 	dev_dbg(device, "registering with mtd\n");
+ 
++	mutex_init(&spi->lock);
 +
-+	regions = dev_get_platdata(&platdev->dev);
-+	if (!regions) {
-+		dev_err(device, "no regions defined\n");
-+		return -ENODEV;
-+	}
+ 	spi->mtd.owner = THIS_MODULE;
+ 	spi->mtd.dev.parent = device;
+ 	spi->mtd.flags = MTD_CAP_NORFLASH | MTD_WRITEABLE;
+@@ -630,6 +652,8 @@ static int i915_spi_remove(struct platform_device *platdev)
+ 
+ 	mtd_device_unregister(&spi->mtd);
+ 
++	mutex_destroy(&spi->lock);
 +
-+	/* count available regions */
-+	for (nregions = 0, i = 0; i < I915_SPI_REGIONS; i++) {
-+		if (regions[i].name)
-+			nregions++;
-+	}
-+
-+	if (!nregions) {
-+		dev_err(device, "no regions defined\n");
-+		return -ENODEV;
-+	}
-+
-+	size = sizeof(*spi) + sizeof(spi->regions[0]) * nregions;
-+	spi = devm_kzalloc(device, size, GFP_KERNEL);
-+	if (!spi)
-+		return -ENOMEM;
-+
-+	spi->nregions = nregions;
-+	for (n = 0, i = 0; i < I915_SPI_REGIONS; i++) {
-+		if (regions[i].name) {
-+			name_size = strlen(dev_name(&platdev->dev)) +
-+				    strlen(regions[i].name) + 2; /* for point */
-+			name = devm_kzalloc(device, name_size, GFP_KERNEL);
-+			if (!name)
-+				continue;
-+			snprintf(name, name_size, "%s.%s",
-+				 dev_name(&platdev->dev), regions[i].name);
-+			spi->regions[n].name = name;
-+			spi->regions[n].id = i;
-+			n++;
-+		}
-+	}
-+
-+	bar = platform_get_resource(platdev, IORESOURCE_MEM, 0);
-+	if (!bar)
-+		return -ENODEV;
-+
-+	spi->base = devm_ioremap_resource(device, bar);
-+	if (IS_ERR(spi->base)) {
-+		dev_err(device, "mmio not mapped\n");
-+		return PTR_ERR(spi->base);
-+	}
-+
-+	platform_set_drvdata(platdev, spi);
-+
-+	dev_dbg(device, "i915-spi is bound\n");
-+
-+	return 0;
-+}
-+
-+static int i915_spi_remove(struct platform_device *platdev)
-+{
-+	platform_set_drvdata(platdev, NULL);
-+
-+	return 0;
-+}
-+
-+MODULE_ALIAS("platform:i915-spi");
-+static struct platform_driver i915_spi_driver = {
-+	.probe  = i915_spi_probe,
-+	.remove = i915_spi_remove,
-+	.driver = {
-+		.name = "i915-spi",
-+	},
-+};
-+
-+module_platform_driver(i915_spi_driver);
-+
-+MODULE_LICENSE("GPL and additional rights");
-+MODULE_AUTHOR("Intel Corporation");
-+MODULE_DESCRIPTION("Intel DGFX SPI driver");
+ 	platform_set_drvdata(platdev, NULL);
+ 
+ 	return 0;
 -- 
 2.26.2
 
