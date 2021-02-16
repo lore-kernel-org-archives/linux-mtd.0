@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5920C433DB
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 18:21:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE87BC433DB
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 18:21:49 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9EACB64E04
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 18:21:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9EACB64E04
+	by mail.kernel.org (Postfix) with ESMTPS id A1C9764DA1
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 18:21:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A1C9764DA1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,48 +23,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=J4MKVg6D8HsMozsA46GEmjpN941HHG+UHoFeBFUhJ/c=; b=17tjtQp7cUnogS/c030D48/JY
-	qGm1rCDqLMz0AIeCu6PgA83POT8iXIY3BcKkCj6UxavkpNJ4FnGXmGxyqLrSGJbHL9FXgbYaHE5Ja
-	KvSRMFknt9pkMcO1JC2UWl5lxjWCBuHTwf0b+HMmlmYTuZrceEX8QZDW0mLo1TooBuPIeI4ZMLve8
-	HLeYGKHHhe/mEZEsPqP2uKoX5W+K2NiZmGwCeFey6rFvoAh/UJTu0Se0mn1qpQK5FZSSXTkxY9N+F
-	ng7bmeVtteIqYsh2B++IuOUxNtMAp1DCPESUAnJMPMsRbBM3fsjua+ugooXm99x/7s2eKYlcSnK7s
-	pzeLIDvZw==;
+	 bh=LEHQg7jEhTSv/ytwyQEPVIhjp6eyyg65pnYVejRK0NU=; b=TF9W6xwIkpvyf15pzIOwrCGPO
+	ZBRMck8KheMWfi15HXVP93s0f3NOgGDPytQSMhp/Fu3waPKZLvK/7EF5yIhmAreMb93pGArmPpOXW
+	eNS9EXf2Riz3mF+S+nDI+QHewt98NbA+pAaQBXgqNOj8tlVFBPMhWcqGg/H7B54KkU8rFerRkoKfp
+	adTChHDnCoeI31iD9agNMhhGNYWxfuDbfanXHz1JHuriP3YP+1nC/iKnjMPV1svL2qDik5rLiEEpQ
+	L7blysF8uI1dZ9Q2ZJT+WOU9peLXOhjVlJ57JoBM+7iThxaTJARWFdyRCVGKIDvuezAKHi4olsfeP
+	G0oBonUBw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lC4xt-0006C9-E2; Tue, 16 Feb 2021 18:20:49 +0000
+	id 1lC4xU-000629-3p; Tue, 16 Feb 2021 18:20:24 +0000
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lC4xN-0005xx-IF
- for linux-mtd@lists.infradead.org; Tue, 16 Feb 2021 18:20:21 +0000
-IronPort-SDR: GNx2rNF8D+dKZXZxRaEC9P3rSMur7mV2pssrYp/P0hTbFpTNIq78W9+BiEeLXN3wcAhMc5ANbI
- ey+9I/jWi5tw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="202169493"
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; d="scan'208";a="202169493"
+ id 1lC4xA-0005tP-QR
+ for linux-mtd@lists.infradead.org; Tue, 16 Feb 2021 18:20:08 +0000
+IronPort-SDR: MPmIRj2pQuiPbuHw1yRjl/x+5f+pwGH++gkVZda9zszm+hLOTZJ8NWppMNjAjkbewFbNtaxEWP
+ XMCM7N7syCmw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="202169434"
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; d="scan'208";a="202169434"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Feb 2021 10:20:16 -0800
-IronPort-SDR: YNQnl7WoJX4IbUBVXJaO1KyEfxdevgmwQ7obhlFNd5UgijBu0/6D1bP3rxkneQ4g3PqyM7XZmd
- 5QnJJQB03Veg==
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; d="scan'208";a="399609286"
+ 16 Feb 2021 10:20:03 -0800
+IronPort-SDR: 7jQhO0+zvQKYUbtQTv+mupz9t9vyFaiANQ8JhKt/gJozJJ+dI3Vz2RZ8tK+rJMIMNUqEycuK04
+ VBhwXAMANBDA==
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; d="scan'208";a="399609163"
 Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Feb 2021 10:20:13 -0800
+ 16 Feb 2021 10:20:00 -0800
 From: Tomas Winkler <tomas.winkler@intel.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Jani Nikula <jani.nikula@linux.intel.com>,
  Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
  Rodrigo Vivi <rodrigo.vivi@intel.com>
-Subject: [RFC PATCH 8/9] drm/i915/spi: serialize spi access
-Date: Tue, 16 Feb 2021 20:19:24 +0200
-Message-Id: <20210216181925.650082-9-tomas.winkler@intel.com>
+Subject: [RFC PATCH 4/9] drm/i915/spi: implement region enumeration
+Date: Tue, 16 Feb 2021 20:19:20 +0200
+Message-Id: <20210216181925.650082-5-tomas.winkler@intel.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210216181925.650082-1-tomas.winkler@intel.com>
 References: <20210216181925.650082-1-tomas.winkler@intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210216_132017_857027_0A1F7853 
-X-CRM114-Status: GOOD (  15.88  )
+X-CRM114-CacheID: sfid-20210216_132006_984832_0CCDAD12 
+X-CRM114-Status: GOOD (  17.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,142 +85,239 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The SPI regions cannot be accessed in parallel because for each
-region the region selector has to be set. Add a mutex to prevent
-parallel access.
+In i915-spi, there is no access to the spi controller,
+all the information has to be extracted form the descriptor region.
 
 Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Cc: Lucas De Marchi <lucas.demarchi@intel.com>
-Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
 Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
 ---
- drivers/gpu/drm/i915/spi/intel_spi_drv.c | 32 +++++++++++++++++++++---
- 1 file changed, 28 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/i915/spi/intel_spi_drv.c | 190 +++++++++++++++++++++++
+ 1 file changed, 190 insertions(+)
 
 diff --git a/drivers/gpu/drm/i915/spi/intel_spi_drv.c b/drivers/gpu/drm/i915/spi/intel_spi_drv.c
-index 1e8a40339e6d..9de49d00297d 100644
+index 23261f35b71f..a1e7171d05db 100644
 --- a/drivers/gpu/drm/i915/spi/intel_spi_drv.c
 +++ b/drivers/gpu/drm/i915/spi/intel_spi_drv.c
-@@ -20,6 +20,7 @@
- 
- struct i915_spi {
- 	struct mtd_info mtd;
-+	struct mutex lock; /* region access lock */
+@@ -16,14 +16,197 @@ struct i915_spi {
  	void __iomem *base;
  	size_t size;
  	unsigned int nregions;
-@@ -354,6 +355,7 @@ static int i915_spi_erase(struct mtd_info *mtd, struct erase_info *info)
- 	loff_t from;
- 	size_t len;
- 	size_t total_len;
-+	int ret = 0;
++	u32 access_map;
+ 	struct {
+ 		const char *name;
+ 		u8 id;
+ 		u64 offset;
+ 		u64 size;
++		unsigned int is_readable:1;
++		unsigned int is_writable:1;
+ 	} regions[];
+ };
  
- 	if (!mtd || !info)
- 		return -EINVAL;
-@@ -370,18 +372,23 @@ static int i915_spi_erase(struct mtd_info *mtd, struct erase_info *info)
- 	total_len = info->len;
- 	addr = info->addr;
- 
-+	if (!mutex_trylock(&spi->lock))
-+		return -EBUSY;
++#define SPI_TRIGGER_REG       0x00000000
++#define SPI_VALSIG_REG        0x00000010
++#define SPI_ADDRESS_REG       0x00000040
++#define SPI_REGION_ID_REG     0x00000044
++/*
++ * [15:0]-Erase size = 0x0010 4K 0x0080 32K 0x0100 64K
++ * [23:16]-Reserved
++ * [31:24]-Erase SPI RegionID
++ */
++#define SPI_ERASE_REG         0x00000048
++#define SPI_ACCESS_ERROR_REG  0x00000070
++#define SPI_ADDRESS_ERROR_REG 0x00000074
 +
- 	while (total_len > 0) {
- 		if (!IS_ALIGNED(addr, SZ_4K) || !IS_ALIGNED(total_len, SZ_4K)) {
- 			dev_err(&mtd->dev, "unaligned erase %llx %zx\n", addr, total_len);
- 			info->fail_addr = addr;
--			return -ERANGE;
-+			ret = -ERANGE;
-+			goto out;
- 		}
++/* Flash Valid Signature */
++#define SPI_FLVALSIG          0x0FF0A55A
++
++#define SPI_MAP_ADDR_MASK     0x000000FF
++#define SPI_MAP_ADDR_SHIFT    0x00000004
++
++#define REGION_ID_DESCRIPTOR  0
++/* Flash Region Base Address */
++#define FRBA      0x40
++/* Flash Region __n - Flash Descriptor Record */
++#define FLREG(__n)  (FRBA + ((__n) * 4))
++/*  Flash Map 1 Register */
++#define FLMAP1_REG  0x18
++#define FLMSTR4_OFFSET 0x00C
++
++#define SPI_ACCESS_ERROR_PCIE_MASK 0x7
++
++static inline void spi_set_region_id(struct i915_spi *spi, u8 region)
++{
++	iowrite32((u32)region, spi->base + SPI_REGION_ID_REG);
++}
++
++static inline u32 spi_error(struct i915_spi *spi)
++{
++	u32 reg = ioread32(spi->base + SPI_ACCESS_ERROR_REG) &
++		  SPI_ACCESS_ERROR_PCIE_MASK;
++
++	/* reset error bits */
++	if (reg)
++		iowrite32(reg, spi->base + SPI_ACCESS_ERROR_REG);
++
++	return reg;
++}
++
++static inline u32 spi_read32(struct i915_spi *spi, u32 address)
++{
++	void __iomem *base = spi->base;
++
++	iowrite32(address, base + SPI_ADDRESS_REG);
++
++	return ioread32(base + SPI_TRIGGER_REG);
++}
++
++static int spi_get_access_map(struct i915_spi *spi)
++{
++	u32 flmap1;
++	u32 fmba;
++	u32 fmstr4;
++	u32 fmstr4_addr;
++
++	spi_set_region_id(spi, REGION_ID_DESCRIPTOR);
++
++	flmap1 = spi_read32(spi, FLMAP1_REG);
++	if (spi_error(spi))
++		return -EIO;
++	/* Get Flash Master Baser Address (FMBA) */
++	fmba = ((flmap1 & SPI_MAP_ADDR_MASK) << SPI_MAP_ADDR_SHIFT);
++	fmstr4_addr = fmba + FLMSTR4_OFFSET;
++
++	fmstr4 = spi_read32(spi, fmstr4_addr);
++	if (spi_error(spi))
++		return -EIO;
++
++	spi->access_map = fmstr4;
++	return 0;
++}
++
++static bool spi_region_readable(struct i915_spi *spi, u8 region)
++{
++	if (region < 12)
++		return spi->access_map & (1 << (region + 8)); /* [19:8] */
++	else
++		return spi->access_map & (1 << (region - 12)); /* [3:0] */
++}
++
++static bool spi_region_writeable(struct i915_spi *spi, u8 region)
++{
++	if (region < 12)
++		return spi->access_map & (1 << (region + 20)); /* [31:20] */
++	else
++		return spi->access_map & (1 << (region - 8)); /* [7:4] */
++}
++
++static int i915_spi_is_valid(struct i915_spi *spi)
++{
++	u32 is_valid;
++
++	spi_set_region_id(spi, REGION_ID_DESCRIPTOR);
++
++	is_valid = spi_read32(spi, SPI_VALSIG_REG);
++	if (spi_error(spi))
++		return -EIO;
++
++	if (is_valid != SPI_FLVALSIG)
++		return -ENODEV;
++
++	return 0;
++}
++
++static int i915_spi_init(struct i915_spi *spi, struct device *device)
++{
++	int ret;
++	unsigned int i, n;
++
++	/* clean error register, previous errors are ignored */
++	spi_error(spi);
++
++	ret = i915_spi_is_valid(spi);
++	if (ret) {
++		dev_err(device, "The SPI is not valid %d\n", ret);
++		return ret;
++	}
++
++	if (spi_get_access_map(spi))
++		return -EIO;
++
++	for (i = 0, n = 0; i < spi->nregions; i++) {
++		u32 address, base, limit, region;
++		u8 id = spi->regions[i].id;
++
++		address = FLREG(id);
++		region = spi_read32(spi, address);
++
++		base = (region & 0x0000FFFF) << 12;
++		limit = (((region & 0xFFFF0000) >> 16) << 12) | 0xFFF;
++
++		dev_dbg(device, "[%d] %s: region: 0x%08X base: 0x%08x limit: 0x%08x\n",
++			id, spi->regions[i].name, region, base, limit);
++
++		if (base >= limit || (i > 0 && limit == 0)) {
++			dev_dbg(device, "[%d] %s: disabled\n",
++				id, spi->regions[i].name);
++			spi->regions[i].is_readable = 0;
++			continue;
++		}
++
++		if (spi->size < limit)
++			spi->size = limit;
++
++		spi->regions[i].offset = base;
++		spi->regions[i].size = limit - base + 1;
++		/* No write access to descriptor; mask it out*/
++		spi->regions[i].is_writable = spi_region_writeable(spi, id);
++
++		spi->regions[i].is_readable = spi_region_readable(spi, id);
++		dev_dbg(device, "Registered, %s id=%d offset=%lld size=%lld rd=%d wr=%d\n",
++			spi->regions[i].name,
++			spi->regions[i].id,
++			spi->regions[i].offset,
++			spi->regions[i].size,
++			spi->regions[i].is_readable,
++			spi->regions[i].is_writable);
++
++		if (spi->regions[i].is_readable)
++			n++;
++	}
++
++	dev_dbg(device, "Registered %d regions\n", n);
++
++	/* Need to add 1 to the amount of memory
++	 * so it is reported as an even block
++	 */
++	spi->size += 1;
++
++	return n;
++}
++
+ static int i915_spi_probe(struct platform_device *platdev)
+ {
+ 	struct resource *bar;
+@@ -35,6 +218,7 @@ static int i915_spi_probe(struct platform_device *platdev)
+ 	size_t size;
+ 	char *name;
+ 	size_t name_size;
++	int ret;
  
- 		idx = spi_get_region(spi, addr);
- 		if (idx >= spi->nregions) {
- 			dev_err(&mtd->dev, "out of range");
- 			info->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
--			return -ERANGE;
-+			ret = -ERANGE;
-+			goto out;
- 		}
+ 	device = &platdev->dev;
  
- 		from = addr - spi->regions[idx].offset;
-@@ -397,14 +404,17 @@ static int i915_spi_erase(struct mtd_info *mtd, struct erase_info *info)
- 		if (bytes < 0) {
- 			dev_dbg(&mtd->dev, "erase failed with %zd\n", bytes);
- 			info->fail_addr += spi->regions[idx].offset;
--			return bytes;
-+			ret = bytes;
-+			goto out;
- 		}
- 
- 		addr += len;
- 		total_len -= len;
+@@ -86,6 +270,12 @@ static int i915_spi_probe(struct platform_device *platdev)
+ 		return PTR_ERR(spi->base);
  	}
  
--	return 0;
-+out:
-+	mutex_unlock(&spi->lock);
-+	return ret;
- }
- 
- static int i915_spi_read(struct mtd_info *mtd, loff_t from, size_t len,
-@@ -440,14 +450,19 @@ static int i915_spi_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	if (len > spi->regions[idx].size - from)
- 		len = spi->regions[idx].size - from;
- 
-+	if (!mutex_trylock(&spi->lock))
-+		return -EBUSY;
++	ret = i915_spi_init(spi, device);
++	if (ret < 0) {
++		dev_err(device, "cannot initialize spi\n");
++		return -ENODEV;
++	}
 +
- 	ret = spi_read(spi, region, from, len, buf);
- 	if (ret < 0) {
- 		dev_dbg(&mtd->dev, "read failed with %zd\n", ret);
-+		mutex_unlock(&spi->lock);
- 		return ret;
- 	}
+ 	platform_set_drvdata(platdev, spi);
  
- 	*retlen = ret;
- 
-+	mutex_unlock(&spi->lock);
- 	return 0;
- }
- 
-@@ -484,14 +499,19 @@ static int i915_spi_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	if (len > spi->regions[idx].size - to)
- 		len = spi->regions[idx].size - to;
- 
-+	if (!mutex_trylock(&spi->lock))
-+		return -EBUSY;
-+
- 	ret = spi_write(spi, region, to, len, buf);
- 	if (ret < 0) {
- 		dev_dbg(&mtd->dev, "write failed with %zd\n", ret);
-+		mutex_unlock(&spi->lock);
- 		return ret;
- 	}
- 
- 	*retlen = ret;
- 
-+	mutex_unlock(&spi->lock);
- 	return 0;
- }
- 
-@@ -505,6 +525,8 @@ static int i915_spi_init_mtd(struct i915_spi *spi, struct device *device,
- 
- 	dev_dbg(device, "registering with mtd\n");
- 
-+	mutex_init(&spi->lock);
-+
- 	spi->mtd.owner = THIS_MODULE;
- 	spi->mtd.dev.parent = device;
- 	spi->mtd.flags = MTD_CAP_NORFLASH | MTD_WRITEABLE;
-@@ -630,6 +652,8 @@ static int i915_spi_remove(struct platform_device *platdev)
- 
- 	mtd_device_unregister(&spi->mtd);
- 
-+	mutex_destroy(&spi->lock);
-+
- 	platform_set_drvdata(platdev, NULL);
- 
- 	return 0;
+ 	dev_dbg(device, "i915-spi is bound\n");
 -- 
 2.26.2
 
