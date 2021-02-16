@@ -2,87 +2,79 @@ Return-Path: <SRS0=UIyM=HS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0999C433E0
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 21:27:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A50E4C433DB
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 23:02:59 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A246064E08
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 21:27:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A246064E08
+	by mail.kernel.org (Postfix) with ESMTPS id 61E3064DAF
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Feb 2021 23:02:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 61E3064DAF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=8ndSUEJOokxGBOuwVyQKM05ymxvllZA7nCbpIowK3h8=; b=Rgd6s5A+vegInqukeYpPOaDle
-	wpTb2p4GSaOgZ98yokY0mOeUwDUYMfVP5YWqy6izTYWlEff8SHgdw3azGIb7VhfK5g43y4R8Avw71
-	/EKsjugFaw+1lJOKdfIbtUHC0QJqQmuEXXKGNxNOTKOndlHvtdhYS5f0ihW3LPFX0Alk/x95ih6/4
-	VbPWf5sAQyVJ65SXtfMid5/7sJQDfiBbgIXj7B3EaWHHUgz1q0virT1+is8yQjfBL1EEL6pUph0HE
-	bdC+gGpPVKq61g41a0CPtXm3NlOU/ebQ5xvr6ITr3vk3g2YZ6sORH+zfLg1/DEfwfjaZI5kJRSrnW
-	DOtzin6zw==;
+	 bh=Mwdl6nZSPx6P8AZ7t6PJdwHMKjJapKje6m/jyVBKp4Q=; b=PmjkSRz9uJe+F2mhDV5q9b4my
+	92gDeYOuMRjj8TqvZBhcDyJMKJiecx15S5sDpeomsDOXxfPzQ+A24faRRclmfKghqHuTEIQkv1Tfo
+	xK9awNUxQT7CLJsU4sgTzM3+6NIt8XzKa24Qmd3js5sgPoeg7hFUNRM0rsTHyiCyGyOHYspzUhpkE
+	FRLes8Vo8iZ/hZFegC+/KHEPcfnpKTJXqUX54I/dfvQ9SpbX2z26m0xy7R+pA2Qu5jtu7aaaLsvZ0
+	MUSPdbRA13nRc0cvASQm2pmUmB1DOF9Z9fEnGMdjsPKR2Si/q7cp1QGmQNwz5Onora2C0iYhC+87k
+	MYMmuw+Qw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lC7sF-0004Zj-Je; Tue, 16 Feb 2021 21:27:11 +0000
-Received: from mail-wr1-x42a.google.com ([2a00:1450:4864:20::42a])
+	id 1lC9M5-00049T-8H; Tue, 16 Feb 2021 23:02:05 +0000
+Received: from mail-qv1-xf34.google.com ([2607:f8b0:4864:20::f34])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lC7sC-0004Yq-Or
- for linux-mtd@lists.infradead.org; Tue, 16 Feb 2021 21:27:10 +0000
-Received: by mail-wr1-x42a.google.com with SMTP id b3so15056559wrj.5
- for <linux-mtd@lists.infradead.org>; Tue, 16 Feb 2021 13:27:08 -0800 (PST)
+ id 1lC9Lz-00048Z-4C
+ for linux-mtd@lists.infradead.org; Tue, 16 Feb 2021 23:02:00 +0000
+Received: by mail-qv1-xf34.google.com with SMTP id f18so5449979qvm.9
+ for <linux-mtd@lists.infradead.org>; Tue, 16 Feb 2021 15:01:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=GDofa5l7P6G0aPshCRUpeDnHopahisIJ3Z8CdpNi7O8=;
- b=EaxJ5CEL06ZrL7LAe9TlR5b7kiHOmU47EzQvPcKa8nlwaykJh4kgBLOjTIto8Tew0W
- pagLkvyl6VZhgjag9+87+Y8R6iT4r8gRzCuBW3o6Vzpft9KaiXAucNkkuZGy+JDZbLSu
- kUn99XJUjerF7D+DzNPnHRjbIizQXwettsJ+CAySvhup+TiQEQhj8AlXHL+ikuDN8ZAC
- JGLKxMpc0UlK1j8yVLDBnaa5CmPqHtDJBgnbQoqM54N2LyMtS5B8dW/4niQWyO6BDKW3
- 1i/r6ShckSkNS+FC9WMI6ab3O0jK2tpVfpDfj6tG+L1eIrOovjWjo1LqBhzJmdgl3J0Y
- KSkw==
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=j1mH25i+5j4AS5RGeOCsMNfIPg+OKcyjjs55ZXJKVEA=;
+ b=j53dJJLXFVcltwxep4/sPJtJgEwrRlGVOVzWzOMamhER9IsJQ9OAsdvw3av7kl+l4v
+ il9t5nshG2w/b4/WSw4WJgai0empDG7c0FiHA39O26H8l4tO16Fo+YteIeMPaYC1SPFk
+ oq+tSqNJOqP1IoEuFEeM5Wv6ja9PRzHaXg6j1QS7v8A40Yyzlt+0ssKY5Hp2hQhxCJVQ
+ d/prFPxoZOKUAeEEIxSu50B1MqrY7uFUBa+V+uG1HjkBgi9YyxMd+HrFnPmII/9uxEDH
+ U0Fi0jEdWYBMyv0F9l0E8RuE9y3xBnFm2YyjHEukQ8cijJ7OsZ4mjoeGFqnboSrVTB6f
+ 9KrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=GDofa5l7P6G0aPshCRUpeDnHopahisIJ3Z8CdpNi7O8=;
- b=pWZE/ZA+CvVS/OTNstb152x5FO4X9GiU1DPz2qpZFGrmRl0daVyxoX2mLZpzkvdkbq
- Js5Q5TKyyZn0pm+rOk+gRYdbN0vQ2Vbv/UlEsF/YLv1OtQNs+lPmNLCtxS5Cnn/NMXvI
- VlL7DhSf+P67b2gWeceg53yFK8hslycNxHvtmexhrGJi9AXVFBV4Pv7h7nP8GpSE1Sbf
- /lkIjoeRAwLUHADJ5K9A6goZ2arHHQkE+W786YPw3ufo3Lqf/oDxfD2tuWwvp/ovR/bA
- 2diPQbK2SZZTY+/pU9Jm8/F8xRTcpp7YlGBWet/k+j4WnJYMv3Icc25Ov4k7Y5Fa2aD/
- 91ww==
-X-Gm-Message-State: AOAM531aLF8EXNO1nYoe4AmmH4pJwp2OrrahUEVrFDgRrO7Ox35zg2DQ
- 4yigmadFRih5Wya+JOhmTj4=
-X-Google-Smtp-Source: ABdhPJxGN5rFGltSfdK4JsTkjNuZGmY97moou1E5YYGCHexloAkgXNVPxE6lGC8yljZHXMBTwjXI8g==
-X-Received: by 2002:adf:bbca:: with SMTP id z10mr25753146wrg.168.1613510827298; 
- Tue, 16 Feb 2021 13:27:07 -0800 (PST)
-Received: from Ansuel-xps.localdomain
- (host-87-6-252-11.retail.telecomitalia.it. [87.6.252.11])
- by smtp.googlemail.com with ESMTPSA id s14sm7132182wmj.23.2021.02.16.13.27.05
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 16 Feb 2021 13:27:07 -0800 (PST)
-From: Ansuel Smith <ansuelsmth@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Subject: [PATCH v2 2/3] mtd: core: add nvmem-partitions compatible to parse
- mtd as nvmem cells
-Date: Tue, 16 Feb 2021 22:26:27 +0100
-Message-Id: <20210216212638.28382-3-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210216212638.28382-1-ansuelsmth@gmail.com>
-References: <20210216212638.28382-1-ansuelsmth@gmail.com>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=j1mH25i+5j4AS5RGeOCsMNfIPg+OKcyjjs55ZXJKVEA=;
+ b=dwh4PGwALpHXbAjGolYuyaYPHBU/tftlUMk2bk9XXakGtK/K9oLBIKaX6NL+5Jaiiv
+ OpZ5lNFXNslpP2QD9J7x9NyarwcCqv1U3QN/OHk7QN+EAcj3Sh+FWDOfgLs+hium2ea+
+ NEFMSML8bBQN3jQ+V2Z0/IJtxLWfamacyy6IL4o94DvNvpKzRviDz0MMNr7zw6TtiZvm
+ /Ra8Kn1/QTIhtK9MUwO5TIExRadDXbyKcjdNot0bskm4i3d9ExDH5ZJ5F80Z02oY4qQc
+ l/htKK3wH6K72CPL+qVAxYPB+MN05+KEF/MWIi87uC1Wch3I/aarK8qK/hskkHno+2B6
+ /JUA==
+X-Gm-Message-State: AOAM533QYLLClGKn1HEJud3U0ujfPGap8Po0g8lFeLo5lSPPupcsdLOQ
+ N6A28FufLaoEyp4nrp66ESvE+NXSO0U0jbBcEqk=
+X-Google-Smtp-Source: ABdhPJyTRThkQBHfeQxXbwJ3vmuF8znKW8qhz/X3H4YttohuY+V+RmPy9O0bK8Vodfy1/UG2Kt5Jmg5AV/xX0caP0sE=
+X-Received: by 2002:ad4:544b:: with SMTP id h11mr22001531qvt.24.1613516514944; 
+ Tue, 16 Feb 2021 15:01:54 -0800 (PST)
 MIME-Version: 1.0
+References: <20210216181925.650082-1-tomas.winkler@intel.com>
+In-Reply-To: <20210216181925.650082-1-tomas.winkler@intel.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Wed, 17 Feb 2021 00:01:43 +0100
+Message-ID: <CAFLxGvwP5-O5DHQ07Fs_GnG12dsK24mer8LJfhz2z2UqW9e5cQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/9] drm/i915/spi: discrete graphics internal spi
+To: Tomas Winkler <tomas.winkler@intel.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210216_162709_254318_3E2EFD0E 
-X-CRM114-Status: GOOD (  14.50  )
+X-CRM114-CacheID: sfid-20210216_180159_216415_009095EF 
+X-CRM114-Status: GOOD (  18.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,48 +86,74 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>, linux-kernel@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>, Ansuel Smith <ansuelsmth@gmail.com>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ intel-gfx@lists.freedesktop.org,
+ Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+ Alexander Usyskin <alexander.usyskin@intel.com>,
+ Jani Nikula <jani.nikula@linux.intel.com>, linux-mtd@lists.infradead.org,
+ Rodrigo Vivi <rodrigo.vivi@intel.com>, Vitaly Lubart <vitaly.lubart@intel.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Partitions that contains the nvmem-partitions compatible will register
-their direct subonodes as nvmem cells and the node will be treated as a
-nvmem provider.
+)On Tue, Feb 16, 2021 at 7:26 PM Tomas Winkler <tomas.winkler@intel.com> wrote:
+> Because the graphic card may undergo reset at any time and basically hot
+> unplug all its child devices, this series also provides a fix to the mtd
+> framework to make the reset graceful.
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- drivers/mtd/mtdcore.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Well, just because MTD does not work as you expect, it is not broken. :-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 2d6423d89a17..29d257678a86 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -531,6 +531,7 @@ static int mtd_nvmem_reg_read(void *priv, unsigned int offset,
- 
- static int mtd_nvmem_add(struct mtd_info *mtd)
- {
-+	struct device_node *node = mtd_get_of_node(mtd);
- 	struct nvmem_config config = {};
- 
- 	config.id = -1;
-@@ -543,7 +544,7 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
- 	config.stride = 1;
- 	config.read_only = true;
- 	config.root_only = true;
--	config.no_of_node = true;
-+	config.no_of_node = !of_device_is_compatible(node, "nvmem-partitions");
- 	config.priv = mtd;
- 
- 	mtd->nvmem = nvmem_register(&config);
+In your case i915_spi_remove() blindly removes the MTD, this is not allowed.
+You may remove the MTD only if there are no more users.
+
+The current model in MTD is that the driver is in charge of all life
+cycle management.
+Using ->_get_device() and ->_put_device() a driver can implement
+refcounting and deny
+new users if the MTD is about to disappear.
+
+In the upcoming MUSE driver that mechanism is used too.
+MUSE allows to implement a MTD in userspace. So the FUSE server can disappear at
+*any* time. Just like in your case. Even worse, it can be hostile.
+In MUSE the MTD life time is tied to the FUSE connection object,
+muse_mtd_get_device()
+increments the FUSE connection refcount, and muse_mtd_put_device()
+decrements it.
+That means if the FUSE server disappears all of a sudden but the MTD
+still has users,
+the MTD will stay. But in this state no new references are allowed and
+all MTD operations
+of existing users will fail with -ENOTCONN (via FUSE).
+As soon the last user is gone (can be userspace via /dev/mtd* or a
+in-kernel user such as UBIFS),
+the MTD will be removed.
+For the full details, please see:
+https://git.kernel.org/pub/scm/linux/kernel/git/rw/misc.git/tree/fs/fuse/muse.c?h=muse_v3#n1034
+
+Is in your case *really* not possible to do it that way?
+
+On the other hand, your last patch moves some part of the life cycle
+management into MTD core.
+The MTD will stay as long it has users.
+But that's only one part. The driver is still in charge to make sure
+that all operations
+fail immediately and that no new users arrive.
+If we want to do all in MTD core we'd have to do it like SCSI disks.
+That means having devices states such as SDEV_RUNNING, SDEV_CANCEL,
+SDEV_OFFLINE, ....
+That way the MTD could be shutdown gracefully, first no new users are
+allowed, then ongoing operations
+will be cancelled, next all operation will fail with -EIO or such,
+then the device is being removed from sysfs
+and finally if the last user is gone, the MTD can be removed.
+
+I'm not sure whether we want to take that path.
+
 -- 
-2.30.0
-
+Thanks,
+//richard
 
 ______________________________________________________
 Linux MTD discussion mailing list
