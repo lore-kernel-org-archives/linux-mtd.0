@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 49B40C433E0
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Feb 2021 10:47:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8252FC433DB
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Feb 2021 10:58:12 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E920364DF3
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Feb 2021 10:47:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E920364DF3
+	by mail.kernel.org (Postfix) with ESMTPS id DC92164E0F
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Feb 2021 10:58:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DC92164E0F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,50 +23,50 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References:In-Reply-To:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=LYQTX/nngxRibCfTQcAFP59tuV1IXNYBY/Hfxef9xnk=; b=dTL/PVnQ9hee4LfA/ma6AIEBE
-	+zmprhQMgBPQ43+TvO3sJWtp7X9Zo4jZ5x/fMbvLYGdAfXK11ofHc40NmqrgiApp+4kCMX8/0V7C6
-	4xPhcGyk8LCd7ffPOhlKw5D9fT6isRO693KduTOAdVy2LB5m0ri4trKROu/beSZDbCRRANL2WgGry
-	kxWMD7V1Gii5xA6o3smcbWQpGfw+dXuoNAnb8IIFiNUqqnQzFu0XFcCOtFgoZmF4c/CP1CzhOCHpY
-	3DHSPqm3dKm50d7aXg8a+jJowfXPZXEzWIDWRZq6gsAfE0pFdRWO2sFeV4JrEXfGu8hzFq7tHNC2v
-	dOFm3floA==;
+	 bh=djbIEFy4vQXKqLC8ZfmAEQeLR8ldf10qpb40qcqea2w=; b=nu4G5LXqRvqraOWf8fZuYGY7O
+	ksUoNhMj0xSnlehO1ws6mvYu2er60z1FZKt/cipudhlxKjKBtkmJRbM56j9bcQtTaSy1BysS2S/3U
+	dRRb+c5PbqmOkQ9maDB0Rk+V+J52pl3Y96yCvWh5gFVcOQUnhfQ/OhCAwC1/AWifRgw0V4/IcFjJw
+	O76iZI4Enn30VqsnkKuWZbbegHIZ+7/tKYh7Dz+MWMIna0t174ip8TKxf8whCWcBo+wZjJWRzvtj0
+	sv/biSeRsTDBMCXOxx5lzNxkrabjDZfzd5n68joNg2kAdG0LzZo5I2evVKRrOQTrH6Nr+vRdbasq9
+	cY0Fbs1oA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lCKLp-0005bo-Nw; Wed, 17 Feb 2021 10:46:33 +0000
-Received: from mga09.intel.com ([134.134.136.24])
+	id 1lCKVh-0006a8-Ld; Wed, 17 Feb 2021 10:56:45 +0000
+Received: from mga18.intel.com ([134.134.136.126])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lCKLm-0005bA-Rp
- for linux-mtd@lists.infradead.org; Wed, 17 Feb 2021 10:46:31 +0000
-IronPort-SDR: Fr/M6zws8W/L4T3M0soq0EmegRTu07nt28GwNm2LF0qL82V6k4OgFRZGnpAcadxbAG3HZQ91cM
- 6y5PC0AmHZQQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="183289206"
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; d="scan'208";a="183289206"
+ id 1lCKVe-0006ZN-LY
+ for linux-mtd@lists.infradead.org; Wed, 17 Feb 2021 10:56:43 +0000
+IronPort-SDR: q5Rgkl6lx67pt6lUXzM5tqJSXqik+hLtgJ8MDK+D6rFUiDeeg0O0XQE36vzblKXf1mVMzWmZB/
+ 7H3iaZsuPsbQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="170822189"
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; d="scan'208";a="170822189"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Feb 2021 02:46:29 -0800
-IronPort-SDR: JMkYgxM+VO7VgaFsA29FBcDFFp3GSQHdzdgy6geCWG+J58g/ErzsDIWSCQqtZChC5uofLycB0H
- hgFqq1Lv7siA==
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; d="scan'208";a="399908969"
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Feb 2021 02:56:39 -0800
+IronPort-SDR: /aOYE4UlPmGiqjJMGLJeLQhvaVEVzN0J0prPAZJzLlr1siHc+k6/trrmj6QlVYtWjWvTLLhFJv
+ 48V19lECbFEg==
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; d="scan'208";a="399910882"
 Received: from mvalka-mobl1.ger.corp.intel.com (HELO localhost)
  ([10.252.39.140])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Feb 2021 02:46:25 -0800
+ 17 Feb 2021 02:56:35 -0800
 From: Jani Nikula <jani.nikula@linux.intel.com>
 To: Tomas Winkler <tomas.winkler@intel.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
  Vignesh Raghavendra <vigneshr@ti.com>,
  Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
  Rodrigo Vivi <rodrigo.vivi@intel.com>
-Subject: Re: [RFC PATCH 2/9] drm/i915/spi: intel_spi_region map
-In-Reply-To: <20210216181925.650082-3-tomas.winkler@intel.com>
+Subject: Re: [RFC PATCH 3/9] drm/i915/spi: add driver for on-die spi device
+In-Reply-To: <20210216181925.650082-4-tomas.winkler@intel.com>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 References: <20210216181925.650082-1-tomas.winkler@intel.com>
- <20210216181925.650082-3-tomas.winkler@intel.com>
-Date: Wed, 17 Feb 2021 12:46:22 +0200
-Message-ID: <87eehfas5d.fsf@intel.com>
+ <20210216181925.650082-4-tomas.winkler@intel.com>
+Date: Wed, 17 Feb 2021 12:56:32 +0200
+Message-ID: <87blcjarof.fsf@intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210217_054631_054905_AC8B22C5 
-X-CRM114-Status: GOOD (  16.76  )
+X-CRM114-CacheID: sfid-20210217_055642_887256_BE7D56BC 
+X-CRM114-Status: GOOD (  23.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,70 +88,184 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On Tue, 16 Feb 2021, Tomas Winkler <tomas.winkler@intel.com> wrote:
-> Add the dGFX spi region map and convey it via mfd cell platform data
-> to the spi child device.
+> Add the platform driver for i915 on-die spi device, exposed via mfd
+> framework.
 >
 > Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
 > Cc: Lucas De Marchi <lucas.demarchi@intel.com>
 > Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
 > ---
->  drivers/gpu/drm/i915/spi/intel_spi.c | 9 +++++++++
->  drivers/gpu/drm/i915/spi/intel_spi.h | 5 +++++
->  2 files changed, 14 insertions(+)
+>  drivers/gpu/drm/i915/Kconfig             |   2 +
+>  drivers/gpu/drm/i915/Makefile            |   3 +
+>  drivers/gpu/drm/i915/spi/intel_spi_drv.c | 116 +++++++++++++++++++++++
+>  3 files changed, 121 insertions(+)
+>  create mode 100644 drivers/gpu/drm/i915/spi/intel_spi_drv.c
 >
-> diff --git a/drivers/gpu/drm/i915/spi/intel_spi.c b/drivers/gpu/drm/i915/spi/intel_spi.c
-> index 07da7197bd5d..6f83f24f7208 100644
-> --- a/drivers/gpu/drm/i915/spi/intel_spi.c
-> +++ b/drivers/gpu/drm/i915/spi/intel_spi.c
-> @@ -14,11 +14,20 @@ static const struct resource spi_resources[] = {
->  	DEFINE_RES_MEM_NAMED(GEN12_GUNIT_SPI_BASE, 0x80, "i915-spi-mmio"),
->  };
->  
-> +static const struct i915_spi_region regions[I915_SPI_REGIONS] = {
-> +	[0] = { .name = "DESCRIPTOR", },
-> +	[2] = { .name = "GSC", },
-> +	[11] = { .name = "OptionROM", },
-> +	[12] = { .name = "DAM", },
-> +};
-> +
->  static const struct mfd_cell intel_spi_cell = {
->  	.id = 2,
->  	.name = "i915-spi",
->  	.num_resources = ARRAY_SIZE(spi_resources),
->  	.resources = spi_resources,
-> +	.platform_data = (void *)regions,
-> +	.pdata_size    = sizeof(regions),
->  };
->  
->  void intel_spi_init(struct intel_spi *spi, struct drm_i915_private *dev_priv)
-> diff --git a/drivers/gpu/drm/i915/spi/intel_spi.h b/drivers/gpu/drm/i915/spi/intel_spi.h
-> index 276551fed993..6b5bf053f7d3 100644
-> --- a/drivers/gpu/drm/i915/spi/intel_spi.h
-> +++ b/drivers/gpu/drm/i915/spi/intel_spi.h
-> @@ -8,6 +8,11 @@
->  
->  struct drm_i915_private;
->  
-> +#define I915_SPI_REGIONS 13
-> +struct i915_spi_region {
-> +	const char *name;
-> +};
+> diff --git a/drivers/gpu/drm/i915/Kconfig b/drivers/gpu/drm/i915/Kconfig
+> index abcaa8da45ac..13c870e5878e 100644
+> --- a/drivers/gpu/drm/i915/Kconfig
+> +++ b/drivers/gpu/drm/i915/Kconfig
+> @@ -27,6 +27,8 @@ config DRM_I915
+>  	select CEC_CORE if CEC_NOTIFIER
+>  	select VMAP_PFN
+>  	select MFD_CORE
+> +	select MTD
 
-Does this need to be exposed to the rest of i915? If we're trying to
-isolate spi/, I'd prefer it if this header was the only header included
-from the rest of i915, and contained the minimum required information.
+Selecting MTD does not seem to be a popular thing to do, which is
+usually a clue it's probably the wrong thing to do.
 
-As the driver has grown bigger, we've tried to minimize the
-interconnections between the modules, and it's slow going. Let's try to
-keep the new parts isolated.
+> +	select MTD_PARTITIONED_MASTER
+>  	help
+>  	  Choose this option if you have a system that has "Intel Graphics
+>  	  Media Accelerator" or "HD Graphics" integrated graphics,
+> diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
+> index 7fa9120feb8d..f209cd541eec 100644
+> --- a/drivers/gpu/drm/i915/Makefile
+> +++ b/drivers/gpu/drm/i915/Makefile
+> @@ -299,6 +299,9 @@ endif
+>  obj-$(CONFIG_DRM_I915) += i915.o
+>  obj-$(CONFIG_DRM_I915_GVT_KVMGT) += gvt/kvmgt.o
+>  
+> +obj-m += i915_spi.o
+
+And literally nobody does this.
+
+> +i915_spi-y := spi/intel_spi_drv.o
+
+Time to add a separate Kconfig and Makefile in spi/?
 
 BR,
 Jani.
 
 > +
->  struct intel_spi {
->  	struct drm_i915_private *i915;
->  };
+>  # header test
+>  
+>  # exclude some broken headers from the test coverage
+> diff --git a/drivers/gpu/drm/i915/spi/intel_spi_drv.c b/drivers/gpu/drm/i915/spi/intel_spi_drv.c
+> new file mode 100644
+> index 000000000000..23261f35b71f
+> --- /dev/null
+> +++ b/drivers/gpu/drm/i915/spi/intel_spi_drv.c
+> @@ -0,0 +1,116 @@
+> +// SPDX-License-Identifier: MIT
+> +/*
+> + * Copyright(c) 2019-2021, Intel Corporation. All rights reserved.
+> + */
+> +#include <linux/module.h>
+> +#include <linux/types.h>
+> +#include <linux/kernel.h>
+> +#include <linux/string.h>
+> +#include <linux/io.h>
+> +#include <linux/device.h>
+> +#include <linux/slab.h>
+> +#include <linux/platform_device.h>
+> +#include <spi/intel_spi.h>
+
+Should this have "" instead of <>?
+
+> +
+> +struct i915_spi {
+> +	void __iomem *base;
+> +	size_t size;
+> +	unsigned int nregions;
+> +	struct {
+> +		const char *name;
+> +		u8 id;
+> +		u64 offset;
+> +		u64 size;
+> +	} regions[];
+> +};
+> +
+> +static int i915_spi_probe(struct platform_device *platdev)
+> +{
+> +	struct resource *bar;
+> +	struct device *device;
+> +	struct i915_spi *spi;
+> +	struct i915_spi_region *regions;
+> +	unsigned int nregions;
+> +	unsigned int i, n;
+> +	size_t size;
+> +	char *name;
+> +	size_t name_size;
+> +
+> +	device = &platdev->dev;
+> +
+> +	regions = dev_get_platdata(&platdev->dev);
+> +	if (!regions) {
+> +		dev_err(device, "no regions defined\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	/* count available regions */
+> +	for (nregions = 0, i = 0; i < I915_SPI_REGIONS; i++) {
+> +		if (regions[i].name)
+> +			nregions++;
+> +	}
+> +
+> +	if (!nregions) {
+> +		dev_err(device, "no regions defined\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	size = sizeof(*spi) + sizeof(spi->regions[0]) * nregions;
+> +	spi = devm_kzalloc(device, size, GFP_KERNEL);
+> +	if (!spi)
+> +		return -ENOMEM;
+> +
+> +	spi->nregions = nregions;
+> +	for (n = 0, i = 0; i < I915_SPI_REGIONS; i++) {
+> +		if (regions[i].name) {
+> +			name_size = strlen(dev_name(&platdev->dev)) +
+> +				    strlen(regions[i].name) + 2; /* for point */
+> +			name = devm_kzalloc(device, name_size, GFP_KERNEL);
+> +			if (!name)
+> +				continue;
+> +			snprintf(name, name_size, "%s.%s",
+> +				 dev_name(&platdev->dev), regions[i].name);
+> +			spi->regions[n].name = name;
+> +			spi->regions[n].id = i;
+> +			n++;
+> +		}
+> +	}
+> +
+> +	bar = platform_get_resource(platdev, IORESOURCE_MEM, 0);
+> +	if (!bar)
+> +		return -ENODEV;
+> +
+> +	spi->base = devm_ioremap_resource(device, bar);
+> +	if (IS_ERR(spi->base)) {
+> +		dev_err(device, "mmio not mapped\n");
+> +		return PTR_ERR(spi->base);
+> +	}
+> +
+> +	platform_set_drvdata(platdev, spi);
+> +
+> +	dev_dbg(device, "i915-spi is bound\n");
+> +
+> +	return 0;
+> +}
+> +
+> +static int i915_spi_remove(struct platform_device *platdev)
+> +{
+> +	platform_set_drvdata(platdev, NULL);
+> +
+> +	return 0;
+> +}
+> +
+> +MODULE_ALIAS("platform:i915-spi");
+> +static struct platform_driver i915_spi_driver = {
+> +	.probe  = i915_spi_probe,
+> +	.remove = i915_spi_remove,
+> +	.driver = {
+> +		.name = "i915-spi",
+> +	},
+> +};
+> +
+> +module_platform_driver(i915_spi_driver);
+> +
+> +MODULE_LICENSE("GPL and additional rights");
+> +MODULE_AUTHOR("Intel Corporation");
+> +MODULE_DESCRIPTION("Intel DGFX SPI driver");
 
 -- 
 Jani Nikula, Intel Open Source Graphics Center
