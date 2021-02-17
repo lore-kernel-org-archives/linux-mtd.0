@@ -2,89 +2,116 @@ Return-Path: <SRS0=e64P=HT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9A8AC433E0
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Feb 2021 20:59:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 440A5C433DB
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Feb 2021 21:20:05 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5ED8264E45
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Feb 2021 20:59:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5ED8264E45
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id D11DD64E58
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Feb 2021 21:20:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D11DD64E58
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nokia.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:Message-ID:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=BAo8akArvLb456Abv/p+V1n2RHtafZzg9QLn37CZzgk=; b=kkQ3KMH8EFs37/aIcVVNqlwfZ
-	klxF96Vaeu1MYX86VHxu/e84ZXq1IXVmRk//UbGIGqRcNt58PoVGYsF9YscvHTQWz3Sgczcy/fbx4
-	FnflQjGXm7UwQ2bnNSvKhOOgrdm/T2XFj7YYpfsiltCth6Pjnvs8PvIX7MXpdxoIqjCSCBLATx0wM
-	34FOwuXXxEH4BAiG6SozHfOjNXUeGXKEptRSnWlzPKIIaTooB6hQHmsAlvgQmByic3idNRr4FMfUQ
-	CZZoNKgia13ND7sJ/MCl5wiDffTOboYKJFsfdB547FzRaLnX/K6zaeXnI16QTHxwnmKAGx3vp4B3H
-	s3ga9lNFw==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=jKaOeBaI6MJ+JPzEda40Qeo39cCUJDg0ljXUmYvcA98=; b=07GEWzRp0YickJUZb+D3UoDqB9
+	E2ZOI0f0tM4/76xeDDIIpakq83VnOH7ABxwKZhOKk/cNp3LxIrDYdLHPm7U0gebizCoH4zFuaa/IF
+	O1wHVjS6cXRKndk5dj0m/y0IufPsKXbFENfmMksrcQhGnI5HxdC07lRFKLTcxaXME44IErCW6ppHE
+	OF46/CHX0nygUAvt3v/P0RfZFD7m+l0z6XtGVflJbKVjbqCHWpcrOa74+BFBxznly/4rsjm/qzqbE
+	YWa2ht5lQH4dwMlxeURBKPgWjsMfuihqETsSXGYhoK1hANOWhYY3ocfpKoYEgii26wNs0pOvPmn7u
+	7odX1bxw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lCTts-0004Aq-9R; Wed, 17 Feb 2021 20:58:20 +0000
-Received: from mga12.intel.com ([192.55.52.136])
+	id 1lCUDt-000620-GI; Wed, 17 Feb 2021 21:19:01 +0000
+Received: from mail-eopbgr120118.outbound.protection.outlook.com
+ ([40.107.12.118] helo=FRA01-PR2-obe.outbound.protection.outlook.com)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lCTtq-0004AM-JO
- for linux-mtd@lists.infradead.org; Wed, 17 Feb 2021 20:58:19 +0000
-IronPort-SDR: yQaeEVAwbTT+z5OOEixJOWwisDPyKdwlql3FZU3HSPNooaYWAcAIuDUZGskDfFVqVcAJDJolhl
- Ht2wgsGapbvw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="162448210"
-X-IronPort-AV: E=Sophos;i="5.81,185,1610438400"; d="scan'208";a="162448210"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Feb 2021 12:58:16 -0800
-IronPort-SDR: nEhGAMcmoJyXxVCgVrv+GmLBBQHMOq/z7sBEi1DCsPwbhMX4ERGcARrQlqCZ4HviWBIFc/2/nG
- UF8MvBAv3WKw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,185,1610438400"; d="scan'208";a="400142037"
-Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
- by orsmga008.jf.intel.com with ESMTP; 17 Feb 2021 12:58:16 -0800
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 17 Feb 2021 12:58:16 -0800
-Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 17 Feb 2021 12:58:14 -0800
-Received: from hasmsx602.ger.corp.intel.com ([10.184.107.142]) by
- HASMSX602.ger.corp.intel.com ([10.184.107.142]) with mapi id 15.01.2106.002;
- Wed, 17 Feb 2021 22:58:13 +0200
-From: "Winkler, Tomas" <tomas.winkler@intel.com>
-To: Jani Nikula <jani.nikula@linux.intel.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, "Vignesh
- Raghavendra" <vigneshr@ti.com>, Joonas Lahtinen
- <joonas.lahtinen@linux.intel.com>, "Vivi, Rodrigo" <rodrigo.vivi@intel.com>
-Subject: RE: [RFC PATCH 3/9] drm/i915/spi: add driver for on-die spi device
-Thread-Topic: [RFC PATCH 3/9] drm/i915/spi: add driver for on-die spi device
-Thread-Index: AQHXBJBcj4Goi4XIwEe9K9Ji08dc+apcDHIAgADGOPA=
-Date: Wed, 17 Feb 2021 20:58:12 +0000
-Message-ID: <b08989f480564bbea5ce187797e9e30b@intel.com>
-References: <20210216181925.650082-1-tomas.winkler@intel.com>
- <20210216181925.650082-4-tomas.winkler@intel.com> <87blcjarof.fsf@intel.com>
-In-Reply-To: <87blcjarof.fsf@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.22.254.132]
+ id 1lCUDq-00060b-4Z
+ for linux-mtd@lists.infradead.org; Wed, 17 Feb 2021 21:18:59 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jRbkLkW/KkIRYYqmFCyLfUCTc+dSmnC0D0ImZNqR5DfE3zkwtmJPA5vSKlIzV55tjmC5oz0sp8I+pclBbhsNAptRWYj0sEnUnp2AkfdygZzRZPGKm34XN1H06dvpLCnSo4M2sW9xpZW26hgMVcBM5638qLk21HsZ7uzFX+vNXrZJZCc4Vahy+2M54b2hQROFDyGtJ8siz4VKMJmg2s/jwip9xusDedforwP71m+v1Ux/P0YT82S5pZxrDieswU6CqDoS/31OT6rm/5hbRDNmuYsQA4U+QzjqtJy7eeZd7nI82g/JrEAeMAg6qAShvFTSRjems5Zu4GtOBqotOHDjlg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LxAfcAgnk1bqo3Q4wvBZu/rd0JUSYgolyLn5d182qIY=;
+ b=LQ9tZFzzjxjrssVESsigo10gXf3uaSZES7eZE92KI6AnbeeVirZ9p7wH7cuL74yo73e417rzvuocoh9lynERdpos9s0QSBDueKNZNVfn1XHLf2QSyU4lgloPtkMEyFd6TMhXuUB9dPdSRS1TFtxUeOyUgZQvEl0/HxhuYPni80ZAKvI2O9OBk5rg7fDFXc4QCK5PvtrXWAzxt1ZhRxtG474ycJ79L7DpMySUwuel45F6yPizrJxuIrzevtZMUdZDgiCYS+PECEifj2YN0WhYt8mTAdKr+Vb7DkDyqmcQ5t+Fc+6CRCf/dH2/G0r5AFQUiARjdoDkhL/LNbx43fNAyA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 131.228.2.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nokia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nokia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com; 
+ s=selector1-nokia-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LxAfcAgnk1bqo3Q4wvBZu/rd0JUSYgolyLn5d182qIY=;
+ b=bK/RO8f2/SihWkn37jlTImoshM9t8v96TcJruDQ8z8GAwrpUyokmmKVysGjAVgHE2O7JXsPm4o1uqDnSvUKfAQ7yyPrlIGlDHqdW/QZ3aQmt2fAKk7jVQVI4J5QYXuEd4hXc5n+1RGjJg25f35gpUchbnYmxE1X6HPVs1CphyM8=
+Received: from MR2P264CA0112.FRAP264.PROD.OUTLOOK.COM (2603:10a6:500:33::28)
+ by PR1PR07MB4858.eurprd07.prod.outlook.com (2603:10a6:102:a::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.11; Wed, 17 Feb
+ 2021 21:18:53 +0000
+Received: from VE1EUR03FT030.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:500:33:cafe::6d) by MR2P264CA0112.outlook.office365.com
+ (2603:10a6:500:33::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.38 via Frontend
+ Transport; Wed, 17 Feb 2021 21:18:53 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 131.228.2.17)
+ smtp.mailfrom=nokia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nokia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nokia.com designates
+ 131.228.2.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=131.228.2.17; helo=fihe3nok0735.emea.nsn-net.net;
+Received: from fihe3nok0735.emea.nsn-net.net (131.228.2.17) by
+ VE1EUR03FT030.mail.protection.outlook.com (10.152.18.66) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3868.27 via Frontend Transport; Wed, 17 Feb 2021 21:18:53 +0000
+Received: from ulegcparamis.emea.nsn-net.net (ulegcparamis.emea.nsn-net.net
+ [10.151.74.146])
+ by fihe3nok0735.emea.nsn-net.net (GMO) with ESMTP id 11HLIoTb020561;
+ Wed, 17 Feb 2021 21:18:50 GMT
+From: Alexander A Sverdlin <alexander.sverdlin@nokia.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/2] mtd: char: Drop mtd_mutex usage from mtdchar_open()
+Date: Wed, 17 Feb 2021 22:18:44 +0100
+Message-Id: <20210217211845.43364-1-alexander.sverdlin@nokia.com>
+X-Mailer: git-send-email 2.10.2
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
 MIME-Version: 1.0
+X-MS-Office365-Filtering-Correlation-Id: 1ce135b1-b4a7-458a-fcb9-08d8d389a097
+X-MS-TrafficTypeDiagnostic: PR1PR07MB4858:
+X-Microsoft-Antispam-PRVS: <PR1PR07MB4858E0FBC85C437BFACB10CF88869@PR1PR07MB4858.eurprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: I8lakeWOsAB8tUADgvIquPKUrg3eBXQHnEV6t3yNDJtI+q0KUnEGPjuM8kzn+Z4zplKAkDFEOadteyB0jzYX/mCqqQ1zztQnHdLJ7v4M86rMHIPgTc+6QMSylcrAXUeW1V/so+8vmmYTgAWbxSRsExjswpWBnpks3Db5iqEWA5IjxkTLRQDEHF9ETdDrCdOTrhaJ5mDnT9UZOyDRWxFk8WulkmHYy8B5c1triGQJ4MCUxOOJdAF2cRTtI4b/be0HxWGWAshhmdPqG2Uz4T3EYZCSJmquN2uUk6jxVtWVPY/Dh1Aj3wGDcOQ7UolNP/wpyFkN8BLn/cnP0A4KbivgI2moS8gK2duDQrg/hVj0BxSpQExh8bj0V27EG7XsqNlhhWdhr5hISXrYYxKE5mJt0bc3T295Lu3S0hjuEcVvL5vWZ38ZurLBGXrw2P7x5+V+Jf68cwxU0KZ3ebvq7s9QcsklnqLJ+GFFBQovlFPB+kkJURVHhNMJGAm+v+iUzErh/1KaswovHPCx5OLTK48VGgPJSX8eDWnqG9itF3BDiLBEuX8w+eGxJIek37T2ljBRoUiDjIs2oKJeSl/jmwSRFMHUv1C7eQKVUw7mMRQPcQeSyQbQ7BQSuwNFeV5ySumfftNyEETysNwfOuc8fV53x3kjxeeH0NV5V1p2VLvSc7b+T3CQKuuk8N4qCR5KoUs9
+X-Forefront-Antispam-Report: CIP:131.228.2.17; CTRY:FI; LANG:en; SCL:1; SRV:;
+ IPV:CAL; SFV:NSPM; H:fihe3nok0735.emea.nsn-net.net; PTR:InfoDomainNonexistent;
+ CAT:NONE;
+ SFS:(4636009)(376002)(346002)(396003)(39860400002)(136003)(46966006)(36840700001)(82310400003)(6916009)(8936002)(8676002)(26005)(2616005)(36860700001)(86362001)(336012)(70586007)(81166007)(478600001)(36756003)(54906003)(82740400003)(186003)(1076003)(83380400001)(2906002)(47076005)(4326008)(70206006)(356005)(6666004)(5660300002)(316002)(36900700001);
+ DIR:OUT; SFP:1102; 
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Feb 2021 21:18:53.0191 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ce135b1-b4a7-458a-fcb9-08d8d389a097
+X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5d471751-9675-428d-917b-70f44f9630b0; Ip=[131.228.2.17];
+ Helo=[fihe3nok0735.emea.nsn-net.net]
+X-MS-Exchange-CrossTenant-AuthSource: VE1EUR03FT030.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR1PR07MB4858
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210217_155818_828895_BE10F132 
-X-CRM114-Status: GOOD (  27.30  )
+X-CRM114-CacheID: sfid-20210217_161858_397566_01D2362A 
+X-CRM114-Status: GOOD (  12.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,202 +123,62 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "De Marchi, Lucas" <lucas.demarchi@intel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Usyskin,
- Alexander" <alexander.usyskin@intel.com>, "Lubart,
- Vitaly" <vitaly.lubart@intel.com>
+Cc: Richard Weinberger <richard@nod.at>,
+ Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-> 
-> On Tue, 16 Feb 2021, Tomas Winkler <tomas.winkler@intel.com> wrote:
-> > Add the platform driver for i915 on-die spi device, exposed via mfd
-> > framework.
-> >
-> > Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
-> > Cc: Lucas De Marchi <lucas.demarchi@intel.com>
-> > Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-> > ---
-> >  drivers/gpu/drm/i915/Kconfig             |   2 +
-> >  drivers/gpu/drm/i915/Makefile            |   3 +
-> >  drivers/gpu/drm/i915/spi/intel_spi_drv.c | 116
-> > +++++++++++++++++++++++
-> >  3 files changed, 121 insertions(+)
-> >  create mode 100644 drivers/gpu/drm/i915/spi/intel_spi_drv.c
-> >
-> > diff --git a/drivers/gpu/drm/i915/Kconfig
-> > b/drivers/gpu/drm/i915/Kconfig index abcaa8da45ac..13c870e5878e 100644
-> > --- a/drivers/gpu/drm/i915/Kconfig
-> > +++ b/drivers/gpu/drm/i915/Kconfig
-> > @@ -27,6 +27,8 @@ config DRM_I915
-> >  	select CEC_CORE if CEC_NOTIFIER
-> >  	select VMAP_PFN
-> >  	select MFD_CORE
-> > +	select MTD
-> 
-> Selecting MTD does not seem to be a popular thing to do, which is usually a
-> clue it's probably the wrong thing to do.
-Depends, if it is not selected you'll end with wrongly configured system. 
+From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 
-> > +	select MTD_PARTITIONED_MASTER
-> >  	help
-> >  	  Choose this option if you have a system that has "Intel Graphics
-> >  	  Media Accelerator" or "HD Graphics" integrated graphics, diff
-> > --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
-> > index 7fa9120feb8d..f209cd541eec 100644
-> > --- a/drivers/gpu/drm/i915/Makefile
-> > +++ b/drivers/gpu/drm/i915/Makefile
-> > @@ -299,6 +299,9 @@ endif
-> >  obj-$(CONFIG_DRM_I915) += i915.o
-> >  obj-$(CONFIG_DRM_I915_GVT_KVMGT) += gvt/kvmgt.o
-> >
-> > +obj-m += i915_spi.o
-> 
-> And literally nobody does this.
-> 
-> > +i915_spi-y := spi/intel_spi_drv.o
-> 
-> Time to add a separate Kconfig and Makefile in spi/?
-Can be done. 
-> 
-> BR,
-> Jani.
-> 
-> > +
-> >  # header test
-> >
-> >  # exclude some broken headers from the test coverage diff --git
-> > a/drivers/gpu/drm/i915/spi/intel_spi_drv.c
-> > b/drivers/gpu/drm/i915/spi/intel_spi_drv.c
-> > new file mode 100644
-> > index 000000000000..23261f35b71f
-> > --- /dev/null
-> > +++ b/drivers/gpu/drm/i915/spi/intel_spi_drv.c
-> > @@ -0,0 +1,116 @@
-> > +// SPDX-License-Identifier: MIT
-> > +/*
-> > + * Copyright(c) 2019-2021, Intel Corporation. All rights reserved.
-> > + */
-> > +#include <linux/module.h>
-> > +#include <linux/types.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/string.h>
-> > +#include <linux/io.h>
-> > +#include <linux/device.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/platform_device.h>
-> > +#include <spi/intel_spi.h>
-> 
-> Should this have "" instead of <>?
-> 
-> > +
-> > +struct i915_spi {
-> > +	void __iomem *base;
-> > +	size_t size;
-> > +	unsigned int nregions;
-> > +	struct {
-> > +		const char *name;
-> > +		u8 id;
-> > +		u64 offset;
-> > +		u64 size;
-> > +	} regions[];
-> > +};
-> > +
-> > +static int i915_spi_probe(struct platform_device *platdev) {
-> > +	struct resource *bar;
-> > +	struct device *device;
-> > +	struct i915_spi *spi;
-> > +	struct i915_spi_region *regions;
-> > +	unsigned int nregions;
-> > +	unsigned int i, n;
-> > +	size_t size;
-> > +	char *name;
-> > +	size_t name_size;
-> > +
-> > +	device = &platdev->dev;
-> > +
-> > +	regions = dev_get_platdata(&platdev->dev);
-> > +	if (!regions) {
-> > +		dev_err(device, "no regions defined\n");
-> > +		return -ENODEV;
-> > +	}
-> > +
-> > +	/* count available regions */
-> > +	for (nregions = 0, i = 0; i < I915_SPI_REGIONS; i++) {
-> > +		if (regions[i].name)
-> > +			nregions++;
-> > +	}
-> > +
-> > +	if (!nregions) {
-> > +		dev_err(device, "no regions defined\n");
-> > +		return -ENODEV;
-> > +	}
-> > +
-> > +	size = sizeof(*spi) + sizeof(spi->regions[0]) * nregions;
-> > +	spi = devm_kzalloc(device, size, GFP_KERNEL);
-> > +	if (!spi)
-> > +		return -ENOMEM;
-> > +
-> > +	spi->nregions = nregions;
-> > +	for (n = 0, i = 0; i < I915_SPI_REGIONS; i++) {
-> > +		if (regions[i].name) {
-> > +			name_size = strlen(dev_name(&platdev->dev)) +
-> > +				    strlen(regions[i].name) + 2; /* for point */
-> > +			name = devm_kzalloc(device, name_size,
-> GFP_KERNEL);
-> > +			if (!name)
-> > +				continue;
-> > +			snprintf(name, name_size, "%s.%s",
-> > +				 dev_name(&platdev->dev),
-> regions[i].name);
-> > +			spi->regions[n].name = name;
-> > +			spi->regions[n].id = i;
-> > +			n++;
-> > +		}
-> > +	}
-> > +
-> > +	bar = platform_get_resource(platdev, IORESOURCE_MEM, 0);
-> > +	if (!bar)
-> > +		return -ENODEV;
-> > +
-> > +	spi->base = devm_ioremap_resource(device, bar);
-> > +	if (IS_ERR(spi->base)) {
-> > +		dev_err(device, "mmio not mapped\n");
-> > +		return PTR_ERR(spi->base);
-> > +	}
-> > +
-> > +	platform_set_drvdata(platdev, spi);
-> > +
-> > +	dev_dbg(device, "i915-spi is bound\n");
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int i915_spi_remove(struct platform_device *platdev) {
-> > +	platform_set_drvdata(platdev, NULL);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +MODULE_ALIAS("platform:i915-spi");
-> > +static struct platform_driver i915_spi_driver = {
-> > +	.probe  = i915_spi_probe,
-> > +	.remove = i915_spi_remove,
-> > +	.driver = {
-> > +		.name = "i915-spi",
-> > +	},
-> > +};
-> > +
-> > +module_platform_driver(i915_spi_driver);
-> > +
-> > +MODULE_LICENSE("GPL and additional rights"); MODULE_AUTHOR("Intel
-> > +Corporation"); MODULE_DESCRIPTION("Intel DGFX SPI driver");
-> 
-> --
-> Jani Nikula, Intel Open Source Graphics Center
+It looks unnecessary in the function, remove it from the function
+having in mind to remove it completely.
+
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+---
+ drivers/mtd/mtdchar.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 323035d..f31390d 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -58,13 +58,10 @@ static int mtdchar_open(struct inode *inode, struct file *file)
+ 	if ((file->f_mode & FMODE_WRITE) && (minor & 1))
+ 		return -EACCES;
+ 
+-	mutex_lock(&mtd_mutex);
+ 	mtd = get_mtd_device(NULL, devnum);
+ 
+-	if (IS_ERR(mtd)) {
+-		ret = PTR_ERR(mtd);
+-		goto out;
+-	}
++	if (IS_ERR(mtd))
++		return PTR_ERR(mtd);
+ 
+ 	if (mtd->type == MTD_ABSENT) {
+ 		ret = -ENODEV;
+@@ -84,13 +81,10 @@ static int mtdchar_open(struct inode *inode, struct file *file)
+ 	}
+ 	mfi->mtd = mtd;
+ 	file->private_data = mfi;
+-	mutex_unlock(&mtd_mutex);
+ 	return 0;
+ 
+ out1:
+ 	put_mtd_device(mtd);
+-out:
+-	mutex_unlock(&mtd_mutex);
+ 	return ret;
+ } /* mtdchar_open */
+ 
+-- 
+2.10.2
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
