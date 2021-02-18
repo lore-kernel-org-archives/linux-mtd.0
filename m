@@ -1,119 +1,69 @@
-Return-Path: <SRS0=e64P=HT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=sGI+=HU=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9A02C433DB
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Feb 2021 21:20:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EEC8C433E0
+	for <linux-mtd@archiver.kernel.org>; Thu, 18 Feb 2021 05:46:41 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6CEE164E79
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Feb 2021 21:20:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6CEE164E79
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nokia.com
+	by mail.kernel.org (Postfix) with ESMTPS id B59CE64DF0
+	for <linux-mtd@archiver.kernel.org>; Thu, 18 Feb 2021 05:46:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B59CE64DF0
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:Subject:To:
+	References:In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=UJ9PoumwL0WPIIhrrbNs3NHdiyotfQGDBfJmiX1v98U=; b=RNDaTh+PQMEUe/d3mjOm1Uo7H
-	2LUQ0ayXzWzN3n+DJQESL20lkRhpG+0RvB9VQZWElIJi8S7c3SIzr3ZZrTG+0fHhPZomCXaVzfqef
-	gLopz8JgtXmolki6mtnfH3wTYUznftqgkCeoYcPV72M4Sn/h8FMKHla6asAduMowU3kOiJFBG1j2Y
-	BiS+SgynwTdDaOu9ytP/g4iGIVpMzbm28jT82biRtAnzYjLv//VJRoIdcFmUjN6ISI84Q3YAWkeN7
-	Adm365dsG/GvJm2sXUyBOXtPl9/JAf9Ub5ZZIHvOGMFYsElKv42GEkQlrcDZZXb2D8sECR5vF7opm
-	NRj2vMRbA==;
+	 bh=IlvHamsmZa9Vmulv54WXKMRz0C4/lLWBJOyLMWgXyUM=; b=thl6qfPLUT+4WLXj/iXcyac5Z
+	qKhnzmDq3JXb+5ZRZGfS/Iot2viV8PxiItPidIFXpXMY/zUo5YWLNHUoWQFkGqELBt0f1xmef1Upv
+	wuwbGeoOf2V5cTtc5/zfvEi3PYmp2tOdT/NvQuvh8WZN8rfwfd2MtqEkIqTcPFy5fE7pthmv6Q9yD
+	K7/2mp6n2sKH4MHJ/z4+xNB4P7655MBDuigEfCNHM3VVIc8SdX1zqTZn6ZxdSpQkwESllhLsDHHFa
+	dd00o2OaoXcB0PIBM/kWY2X/GcnMkD6JX5ruL20efIz+umfA7NXUibPzjZ44wiGjWLclIHMhO8xWX
+	R6MS9KcgA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lCUDu-00062D-Gm; Wed, 17 Feb 2021 21:19:02 +0000
-Received: from mail-eopbgr130119.outbound.protection.outlook.com
- ([40.107.13.119] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
+	id 1lCc88-0003aH-Dn; Thu, 18 Feb 2021 05:45:36 +0000
+Received: from twhmllg4.macronix.com ([211.75.127.132])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lCUDq-00060d-6k
- for linux-mtd@lists.infradead.org; Wed, 17 Feb 2021 21:18:59 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XVFX0bqHLeqXZ4VsrGnnlXR4Cz9Z2k0f1kI+Dj+4O/vEECv4sqdFN/xRE6U09wqCpXoNPrd4+X4mzDjjpiNHIWXZ3C4rUyd9rRhFLOfzNKQ8Qgg249bvMNV4lt+SORRqkmvwd+58iu+wZfF5NFR02IEZAxuveSlnpYhDvrDo67tYOsnBw2IAA13SGw9ugiNx4l5RLIZj1p+yPhZfXQ+O6xxYnHhKn9S2sbKwWYCSv9JgH/OJyzYdgLuqiavXExRfKqj0StIBeVd2XcaRY4FIns4gW8Q2Xsak3z54LRvwPk1Xb8C9z2ri8CbqqKAOah1LZZuMfLY+kmUC9Mzi7UcT8w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NgsHrchjGVk7Ze3KVVMsru3Mt0s7xlwCJsTedi/ISMw=;
- b=RlEZSNeeXOKjx3vjd7bT4txGFBzDz/8JA/iNaiTfZU1g4Dx/PIb0XrDDnyB5YszLQzdMoM2yxhjFjxJogIcJ3fSW8uos/RHU1eV+uI+jtmfMUpZDE4VwVng+motnQkvFUAdKmz5NRAENw/EBm6jWMxL/pZbdlSO/b6gLdGyr4ZU/yIYrc3b8bUwhbXn396RBTXQOFGhPOLCpKfFzych4RV80UxwMZxosmYmScuJv4knfhjzHgps8sk2vFmGkFkkFZV1Az9r0MmBiOAX+I1IZSRb8LYGCApXEXhkc4SJVRk5+HkfujnJJP8UMkmLKoyB0G5V1Kmx6PnDV4owBLSiR0g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 131.228.2.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nokia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nokia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com; 
- s=selector1-nokia-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NgsHrchjGVk7Ze3KVVMsru3Mt0s7xlwCJsTedi/ISMw=;
- b=ETywvuNL2grdwpgoUFsCM12P20gvdHqeqlOTlLDG+0R9tOEkDK7ntgmnLO3mKdJHfdNv1Izk6xjZGAwJq7PTrq3t9nuQ5gKga46U3ujzM+y6kjbD0sXmjUzD/hz3b+82h1x7DZyyFaxvcDjRPu4pmx6tFQhrJis5QJ8PSXkIQWw=
-Received: from AM6P193CA0117.EURP193.PROD.OUTLOOK.COM (2603:10a6:209:85::22)
- by AS8PR07MB7430.eurprd07.prod.outlook.com (2603:10a6:20b:2a8::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.11; Wed, 17 Feb
- 2021 21:18:53 +0000
-Received: from VE1EUR03FT011.eop-EUR03.prod.protection.outlook.com
- (2603:10a6:209:85:cafe::10) by AM6P193CA0117.outlook.office365.com
- (2603:10a6:209:85::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend
- Transport; Wed, 17 Feb 2021 21:18:53 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 131.228.2.17)
- smtp.mailfrom=nokia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nokia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nokia.com designates
- 131.228.2.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=131.228.2.17; helo=fihe3nok0735.emea.nsn-net.net;
-Received: from fihe3nok0735.emea.nsn-net.net (131.228.2.17) by
- VE1EUR03FT011.mail.protection.outlook.com (10.152.18.134) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3868.27 via Frontend Transport; Wed, 17 Feb 2021 21:18:53 +0000
-Received: from ulegcparamis.emea.nsn-net.net (ulegcparamis.emea.nsn-net.net
- [10.151.74.146])
- by fihe3nok0735.emea.nsn-net.net (GMO) with ESMTP id 11HLIoTc020561;
- Wed, 17 Feb 2021 21:18:51 GMT
-From: Alexander A Sverdlin <alexander.sverdlin@nokia.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2] mtd: char: Get rid of Big MTD Lock
-Date: Wed, 17 Feb 2021 22:18:45 +0100
-Message-Id: <20210217211845.43364-2-alexander.sverdlin@nokia.com>
-X-Mailer: git-send-email 2.10.2
-In-Reply-To: <20210217211845.43364-1-alexander.sverdlin@nokia.com>
-References: <20210217211845.43364-1-alexander.sverdlin@nokia.com>
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
+ id 1lCc80-0003YL-Py
+ for linux-mtd@lists.infradead.org; Thu, 18 Feb 2021 05:45:30 +0000
+Received: from twhfm1p2.macronix.com (twhfmlp2.macronix.com [172.17.20.92])
+ by TWHMLLG4.macronix.com with ESMTP id 11I5jAM3067131;
+ Thu, 18 Feb 2021 13:45:10 +0800 (GMT-8)
+ (envelope-from zhengxunli@mxic.com.tw)
+Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
+ by Forcepoint Email with ESMTP id 47C624EBA668210233A1;
+ Thu, 18 Feb 2021 13:45:11 +0800 (CST)
+In-Reply-To: <92b5b932-a672-9fb6-c604-5263a0668eb3@microchip.com>
+References: <CAEyMn7ZEp9f1SuE6umRDWkr8bVT5hdRi-4F3+G-GP9anuGG1Bw@mail.gmail.com>
+ <20210216092743.jkhfjewu3cbnm5zm@ti.com>
+ <d7e81d38064ba59a24ec243cb84a1d97@walle.cc>
+ <92b5b932-a672-9fb6-c604-5263a0668eb3@microchip.com>
+To: <Tudor.Ambarus@microchip.com>
+Subject: Re: spi-nor: maxronix MX25L12835F support
 MIME-Version: 1.0
-X-MS-Office365-Filtering-Correlation-Id: 2e665b0a-8223-4e2d-1ad2-08d8d389a0b3
-X-MS-TrafficTypeDiagnostic: AS8PR07MB7430:
-X-Microsoft-Antispam-PRVS: <AS8PR07MB743063D0ECA4E29EBE150F8788869@AS8PR07MB7430.eurprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:302;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Qa6SS+BSeQborYbTxH+Q5VY1KX8p9n4LelfoQ5zGZdTtoKcn1BEVFLnWX/8QA/xH8VVHwM0VNSiNdOn3pEt5YJEqUFtPC6qac5AlgiI6D+p9N0sCOrM4L9Z9stlqO8Vy71TdKi5OACOQ2lLE3l2LfqQCsx3b7AXa1/pUDlbHq6K9C6sViShBJDnUp7vpfhw80lAIs67vAzMOVZMJ4mXCwRIu92IvUyyTj3QlwZ/Z0W0bSuGx0hPBXoXLLN0i6242/GWYD6RyqBMPKbOc3CAhuV6hcHEaEJeB50xff1rwrpw/kG2rU0zvUpFi6e1A6/2/9AxFlXrJ0nPTbR6vJ+U5TjOnCIikACom8s64NxscZ3d2yG+NUOUvSVOzjRiTuR9SOvF6HKBRnjNr/lLZ51YzFtCv/LaWHw5BIcNRH1r5s4/pnmj5IyXLNsPrXGyhYJTb9xsF9ZCfgbl9Viw/Zx6svFwIJTyutUNXG9pA8A0wYfcYUFipvqNdWqpDwEaptCtoHjDWfRlqbaL1oyjzGbw502/gtUlUq+SgBSxOPchPp5uvBYve1GC1/2sOAaVbRpT7TAmaG4BMfD0C5LW0B0tabQMbbMoKErRLE2hVG70BvXCpCN6vLUS8hlJCR4a5JOS5ysuNeleO3pp3xKdiiAXzECqQipKtzEdoMpJxHmTpiyEYFAviC4vH25OWV7BT70tbHH7+GRZCwMUjACVEF6UmDQ==
-X-Forefront-Antispam-Report: CIP:131.228.2.17; CTRY:FI; LANG:en; SCL:1; SRV:;
- IPV:CAL; SFV:NSPM; H:fihe3nok0735.emea.nsn-net.net; PTR:InfoDomainNonexistent;
- CAT:NONE;
- SFS:(4636009)(376002)(39860400002)(136003)(396003)(346002)(36840700001)(46966006)(4326008)(83380400001)(1076003)(36860700001)(86362001)(2616005)(47076005)(54906003)(356005)(81166007)(82310400003)(82740400003)(186003)(70586007)(26005)(5660300002)(8676002)(316002)(70206006)(6666004)(478600001)(8936002)(336012)(6916009)(2906002)(36756003)(26583001)(36900700001);
- DIR:OUT; SFP:1102; 
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Feb 2021 21:18:53.1978 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e665b0a-8223-4e2d-1ad2-08d8d389a0b3
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5d471751-9675-428d-917b-70f44f9630b0; Ip=[131.228.2.17];
- Helo=[fihe3nok0735.emea.nsn-net.net]
-X-MS-Exchange-CrossTenant-AuthSource: VE1EUR03FT011.eop-EUR03.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR07MB7430
+X-KeepSent: CC984357:9DDA18A5-48258680:001E5476;
+ type=4; name=$KeepSent
+X-Mailer: Lotus Notes Release 8.5.3FP6 SHF907 April 26, 2018
+Message-ID: <OFCC984357.9DDA18A5-ON48258680.001E5476-48258680.001F9A54@mxic.com.tw>
+From: zhengxunli@mxic.com.tw
+Date: Thu, 18 Feb 2021 13:45:11 +0800
+X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
+ HF265|July 25, 2018) at 2021/02/18 PM 01:45:11,
+ Serialize complete at 2021/02/18 PM 01:45:11
+X-MAIL: TWHMLLG4.macronix.com 11I5jAM3067131
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210217_161858_378809_885CB64D 
-X-CRM114-Status: GOOD (  14.33  )
+X-CRM114-CacheID: sfid-20210218_004529_268249_AFB311DB 
+X-CRM114-Status: GOOD (  27.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -125,108 +75,117 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>,
- Alexander Sverdlin <alexander.sverdlin@nokia.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: juliensu@mxic.com.tw, ycllin@mxic.com.tw, michael@walle.cc,
+ linux-mtd@lists.infradead.org, heiko.thiery@gmail.com, p.yadav@ti.com
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-
-Get rid of central chrdev MTD lock, which prevents simultaneous operations
-on completely independent physical MTD chips. Replace it with newly
-introduced per-master mutex.
-
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
----
- drivers/mtd/mtdchar.c   | 14 ++++++++------
- drivers/mtd/mtdcore.c   |  1 +
- include/linux/mtd/mtd.h |  1 +
- 3 files changed, 10 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index f31390d..57c4a2f 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -27,8 +27,6 @@
- 
- #include "mtdcore.h"
- 
--static DEFINE_MUTEX(mtd_mutex);
--
- /*
-  * Data structure to hold the pointer to the mtd device as well
-  * as mode information of various use cases.
-@@ -1020,11 +1018,14 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- 
- static long mtdchar_unlocked_ioctl(struct file *file, u_int cmd, u_long arg)
- {
-+	struct mtd_file_info *mfi = file->private_data;
-+	struct mtd_info *mtd = mfi->mtd;
-+	struct mtd_info *master = mtd_get_master(mtd);
- 	int ret;
- 
--	mutex_lock(&mtd_mutex);
-+	mutex_lock(&master->master.chrdev_lock);
- 	ret = mtdchar_ioctl(file, cmd, arg);
--	mutex_unlock(&mtd_mutex);
-+	mutex_unlock(&master->master.chrdev_lock);
- 
- 	return ret;
- }
-@@ -1045,10 +1046,11 @@ static long mtdchar_compat_ioctl(struct file *file, unsigned int cmd,
- {
- 	struct mtd_file_info *mfi = file->private_data;
- 	struct mtd_info *mtd = mfi->mtd;
-+	struct mtd_info *master = mtd_get_master(mtd);
- 	void __user *argp = compat_ptr(arg);
- 	int ret = 0;
- 
--	mutex_lock(&mtd_mutex);
-+	mutex_lock(&master->master.chrdev_lock);
- 
- 	switch (cmd) {
- 	case MEMWRITEOOB32:
-@@ -1111,7 +1113,7 @@ static long mtdchar_compat_ioctl(struct file *file, unsigned int cmd,
- 		ret = mtdchar_ioctl(file, cmd, (unsigned long)argp);
- 	}
- 
--	mutex_unlock(&mtd_mutex);
-+	mutex_unlock(&master->master.chrdev_lock);
- 
- 	return ret;
- }
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 2d6423d..0b09597 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -773,6 +773,7 @@ static void mtd_set_dev_defaults(struct mtd_info *mtd)
- 
- 	INIT_LIST_HEAD(&mtd->partitions);
- 	mutex_init(&mtd->master.partitions_lock);
-+	mutex_init(&mtd->master.chrdev_lock);
- }
- 
- /**
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 157357e..ceabc2c 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -229,6 +229,7 @@ struct mtd_part {
-  */
- struct mtd_master {
- 	struct mutex partitions_lock;
-+	struct mutex chrdev_lock;
- 	unsigned int suspended : 1;
- };
- 
--- 
-2.10.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGksDQoNCjxUdWRvci5BbWJhcnVzQG1pY3JvY2hpcC5jb20+IHdyb3RlIG9uIDIwMjEvMDIvMTYg
+pFWkyCAwNzoxNTozMzoNCg0KPiA8VHVkb3IuQW1iYXJ1c0BtaWNyb2NoaXAuY29tPiANCj4gMjAy
+MS8wMi8xNiCkVaTIIDA3OjE1DQo+IA0KPiBUbw0KPiANCj4gPG1pY2hhZWxAd2FsbGUuY2M+LCA8
+cC55YWRhdkB0aS5jb20+LCA8eWNsbGluQG14aWMuY29tLnR3PiwgDQo+IDx6aGVuZ3h1bmxpQG14
+aWMuY29tLnR3PiwgPGp1bGllbnN1QG14aWMuY29tLnR3PiwgDQo+IA0KPiBjYw0KPiANCj4gPGhl
+aWtvLnRoaWVyeUBnbWFpbC5jb20+LCA8bGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc+DQo+
+IA0KPiBTdWJqZWN0DQo+IA0KPiBSZTogc3BpLW5vcjogbWF4cm9uaXggTVgyNUwxMjgzNUYgc3Vw
+cG9ydA0KPiANCj4gSGksIGFsbCwNCj4gDQo+ICt6aGVuZ3h1bmxpLCBqdWxpZW5zdSAmIHljbGxp
+bg0KPiANCj4gT24gMi8xNi8yMSAxMTo0OCBBTSwgTWljaGFlbCBXYWxsZSB3cm90ZToNCj4gPiBF
+WFRFUk5BTCBFTUFJTDogRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5s
+ZXNzIHlvdSANCj4ga25vdyB0aGUgY29udGVudCBpcyBzYWZlDQo+ID4gDQo+ID4gQW0gMjAyMS0w
+Mi0xNiAxMDoyNywgc2NocmllYiBQcmF0eXVzaCBZYWRhdjoNCj4gPj4gT24gMTUvMDIvMjEgMTA6
+NTNQTSwgSGVpa28gVGhpZXJ5IHdyb3RlOg0KPiA+Pj4gSGkgYWxsLA0KPiA+Pj4NCj4gPj4+IEkg
+ZmFjZWQgYW4gaXNzdWUgd2l0aCBhIFNQSSBmbGFzaCBvbiBvdXIgYm9hcmQuIFdlIHVzZSBhIG1h
+Y3Jvbml4DQo+ID4+PiBNWDI1TDEyODM1RiBbMV0uIFVuZm9ydHVuYXRlbHkgdGhpcyBmbGFzaCBo
+YXMgdGhlIHNhbWUgSkVERUMgSUQgbGlrZQ0KPiA+Pj4gdGhlIE1YMjVMMTI4MDVEIFsyXS4NCj4g
+Pj4+DQo+ID4+PiBUaGUgbmV3ZXIgTVgyNUwxMjgzNUYgaGFzIHN1cHBvcnQgZm9yIGR1YWwvcXVh
+ZCByZWFkIG1vZGUgYW5kIFJEU0ZEUA0KPiA+Pj4gd2hpbGUgdGhlIG9sZGVyIGRvZXNuJ3QuDQo+
+ID4+Pg0KPiA+Pj4gSSB0aG91Z2h0IHRoYXQgSSBjb3VsZCBkbyBhIGZpeHVwIHdpdGggYSBkZXZp
+Y2Ugc3BlY2lmaWMNCj4gPj4+IHBvc3RfYmZwdF9maXh1cHMoKSBjYWxsIGJ1dCBieSBub3cgdGhp
+cyBzZWVtcyBub3QgcG9zc2libGUuIFRoZSANCm9sZGVyDQo+ID4+PiBNWDI1TDEyODA1RCBoYXMg
+bm8gZmxhZ3Mgc2V0IHRoYXQgYWxsb3dzIGEgY2FsbCB0bw0KPiA+Pj4gc3BpX25vcl9zZmRwX2lu
+aXRfcGFyYW1zKCkgYW5kIGltcGxlbWVudHMgdGhlIGZpeHVwLg0KPiA+Pj4NCj4gPj4+IEhhcyBh
+bnlvbmUgYW4gaWRlYSBob3cgdG8gc29sdmUgdGhpcz8NCj4gDQo+IE1heWJlIG1hY3Jvbml4IGNh
+biBoZWxwIHdpdGggc29tZSBzdWdnZXN0aW9ucyBvbiBob3cgdG8gZGlmZmVyZW50aWF0ZQ0KPiBi
+ZXR3ZWVuIGZsYXNoZXMgYXQgcnVudGltZS4NCg0KSW4gZmFjdCwgdGhlIGR1cGxpY2F0ZSBJRCBh
+bHNvIGNhdXNlZCB1cyB0cm91YmxlLiBNYXliZSB5b3UgY2FuIHJlZmVyIHRvDQpvdXIgY29sbGVh
+Z3VlcycgcGF0Y2hlcyBhbmQgYWRkIGEgbmV3IElEIGJlZm9yZSB0aGUgb2xkIElELg0KDQpodHRw
+czovL3BhdGNod29yay5vemxhYnMub3JnL3Byb2plY3QvbGludXgtbXRkL3BhdGNoLzE1ODc2MzEx
+MjMtMjU0NzQtMi1naXQtc2VuZC1lbWFpbC1tYXNvbmNjeWFuZ0BteGljLmNvbS50dy8NCg0KPiBN
+eSBmaXJzdCB0aG91Z2h0IGlzIHRvIGludHJvZHVjZSBhIFNQSV9OT1JfSEFTX1NGRFAgZmxhZy4g
+Rm9yIHRoZSBmbGFzaA0KPiB0aGF0IGRvZXNuJ3Qgc3VwcG9ydCBTRkRQIHRhYmxlcywgdGhlcmUg
+c2hvdWxkIGJlIG5vIGZ1bmN0aW9uYWwgY2hhbmdlLA0KPiBmb3IgdGhlIG9uZSB0aGF0IHN1cHBv
+cnQgU0ZEUCBpdCBzaG91bGQgZmlsbCB0aGUgcHJvcGVydGllcyBmcm9tIHRoZQ0KPiBTRkRQIHRh
+Ymxlcy4NCj4gDQo+ID4+DQo+ID4+IFRoZSBwb3N0X3NmZHAgZml4dXAgaXMgYWx3YXlzIHJ1biBy
+ZWdhcmRsZXNzIG9mIHdoZXRoZXIgdGhlIGZsYXNoIGhhcw0KPiA+PiBTRkRQIG9yIG5vdC4gWW91
+IGNhbiB0cnkgcHV0dGluZyB5b3VyIGZsYXNoLXNwZWNpZmljIGZpeHVwcyB0aGVyZS4NCj4gPiAN
+Cj4gPiBXZWxsIHRoZSBwcm9ibGVtIGhlcmUgaXMsIHRoYXQgdGhlIFNGRFAgc2V0dXAgaXMgc2tp
+cHBlZCB0aG91Z2ggdGhlDQo+ID4gZmxhc2ggd291bGQgc3VwcG9ydCBTRkRQLiBJZiB0aGUgamVk
+ZWMgaWQgd2Fzbid0IGFscmVhZHkgaW4gdGhlIHRhYmxlLA0KPiA+IHRoZXJlIHdvdWxkIGJlIHRo
+ZSBmbGFnIFNQSV9OT1JfUVVBRF9SRUFEIGFuZCB0aGUgU0ZEUCB3b3VsZCBiZQ0KPiA+IHBhcnNl
+ZC4gQnV0IGJlY2F1c2UgdGhlcmUgaXMgYWxyZWFkeSB0aGUgbGVnYWN5IGRldmljZSAod2hpY2gg
+bGlrZWx5DQo+ID4gZG9lc24ndCBzdXBwb3J0IFNGRFApIGl0IHJlYWxseSBkb2Vzbid0IGZpdC4N
+Cj4gPiANCj4gPiBJdHMgdW5jbGVhciB0byBtZSwgd2h5IHRoZSBTRkRQIGlzIG9ubHkgcGFyc2Vk
+IGlmIG9uZSBvZiB0aGUNCj4gPiBTUElfTk9SXypfUkVBRCBmbGFncyBhcmUgc2V0Lg0KPiANCj4g
+TXkgZ3Vlc3MgaXMgdGhhdCBhIG5ldyBTRkRQIGZsYWcgd2FzIG5vdCBuZWNlc3NhcnkuIFNGRFAg
+ZGVmaW5lcyANCm11bHRpcGxlDQo+IHRhYmxlcywgYnV0IHRoZXJlIGlzIGp1c3Qgb25lIHRoYXQg
+aXMgbWFuZGF0b3J5LCBCRlBULiBCRlBUIGRlZmluZXMgRFVBTA0KPiBhbmQgUVVBRCBwYXJhbWV0
+ZXJzLiBGcm9tIHRoZSBzcGktbm9yIGNvZGUsIGEgQkZQVCB3aXRob3V0IERVQUwgb3IgUVVBRA0K
+PiBzdXBwb3J0IGRvZXNuJ3QgbWFrZSBzZW5zZSwgZXZlbiB0aG91Z2ggRFVBTCBvciBRVUFEIGFy
+ZSBub3QgbWFuZGF0b3J5DQo+IGluIEJGUFQgYXMgSSBzZWUgaW4gdGhlIHN0YW5kYXJkLiBTbyBw
+cm9iYWJseSBpdCB3YXMganVzdCBhIHdheSB0byBhdm9pZA0KPiBhZGRpbmcgYSBleHRyYSBmbGFn
+LiBXZSBoYXZlIHRvIGNoZWNrIHRoZSBnaXQgaGlzdG9yeSBmb3IgYSBtb3JlIA0KYWNjdXJhdGUN
+Cj4gZGVzY3JpcHRpb24sIHRoaXMgd2FzIGp1c3QgYSBndWVzcy4NCj4gDQo+IFRoaW5raW5nIGxv
+dWQsIG5vdyB3ZSBkbyBhIHN0YXRpYyBpbml0aWFsaXphdGlvbiBvZiBmbGFzaCBwYXJhbXMsIHRo
+YXQNCj4gY2FuIGJlIG92ZXJ3cml0dGVuIGR5bmFtaWNhbGx5IGJ5IFNGRFAuIEhvdyBhYm91dCBk
+b2luZyB0aGUgcGFyYW1zIGluaXQNCj4gdGhlIG90aGVyIHdheSBhcm91bmQuIFRyeSBmaXJzdCB0
+byBkeW5hbWljYWxseSBkaXNjb3ZlciB0aGUgcGFyYW1zIHZpYQ0KPiBTRkRQLCBhbmQgaWYgU0ZE
+UCBmYWlscyBvciBpZiBpdCBpcyBub3QgZGVmaW5lZCwgZG8gdGhlIHN0YXRpYyBpbml0IHZpYQ0K
+PiBmbGFncy4gVGhhdCB3b3VsZCBzcGFyZSBzb21lIGNvZGUuIEFuZCBuZXcgZmxhc2ggSURzIHdp
+bGwgaGF2ZSBsZXNzIA0KZmxhZ3MNCj4gZGVjbGFyZWQsIGFuZCB3ZSdsbCBiZXR0ZXIgdHJhY2sg
+ZmF1bHR5IFNGRFAgZmxhc2hlcy4NCj4gDQoNClRoYW5rcywNClpoZW5neHVuDQoNCg0KQ09ORklE
+RU5USUFMSVRZIE5PVEU6DQoNClRoaXMgZS1tYWlsIGFuZCBhbnkgYXR0YWNobWVudHMgbWF5IGNv
+bnRhaW4gY29uZmlkZW50aWFsIGluZm9ybWF0aW9uIA0KYW5kL29yIHBlcnNvbmFsIGRhdGEsIHdo
+aWNoIGlzIHByb3RlY3RlZCBieSBhcHBsaWNhYmxlIGxhd3MuIFBsZWFzZSBiZSANCnJlbWluZGVk
+IHRoYXQgZHVwbGljYXRpb24sIGRpc2Nsb3N1cmUsIGRpc3RyaWJ1dGlvbiwgb3IgdXNlIG9mIHRo
+aXMgZS1tYWlsIA0KKGFuZC9vciBpdHMgYXR0YWNobWVudHMpIG9yIGFueSBwYXJ0IHRoZXJlb2Yg
+aXMgcHJvaGliaXRlZC4gSWYgeW91IHJlY2VpdmUgDQp0aGlzIGUtbWFpbCBpbiBlcnJvciwgcGxl
+YXNlIG5vdGlmeSB1cyBpbW1lZGlhdGVseSBhbmQgZGVsZXRlIHRoaXMgbWFpbCBhcyANCndlbGwg
+YXMgaXRzIGF0dGFjaG1lbnQocykgZnJvbSB5b3VyIHN5c3RlbS4gSW4gYWRkaXRpb24sIHBsZWFz
+ZSBiZSANCmluZm9ybWVkIHRoYXQgY29sbGVjdGlvbiwgcHJvY2Vzc2luZywgYW5kL29yIHVzZSBv
+ZiBwZXJzb25hbCBkYXRhIGlzIA0KcHJvaGliaXRlZCB1bmxlc3MgZXhwcmVzc2x5IHBlcm1pdHRl
+ZCBieSBwZXJzb25hbCBkYXRhIHByb3RlY3Rpb24gbGF3cy4gDQpUaGFuayB5b3UgZm9yIHlvdXIg
+YXR0ZW50aW9uIGFuZCBjb29wZXJhdGlvbi4NCg0KTWFjcm9uaXggSW50ZXJuYXRpb25hbCBDby4s
+IEx0ZC4NCg0KPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09DQoNCg0KQ09ORklERU5USUFMSVRZIE5PVEU6DQoNClRoaXMg
+ZS1tYWlsIGFuZCBhbnkgYXR0YWNobWVudHMgbWF5IGNvbnRhaW4gY29uZmlkZW50aWFsIGluZm9y
+bWF0aW9uIA0KYW5kL29yIHBlcnNvbmFsIGRhdGEsIHdoaWNoIGlzIHByb3RlY3RlZCBieSBhcHBs
+aWNhYmxlIGxhd3MuIFBsZWFzZSBiZSANCnJlbWluZGVkIHRoYXQgZHVwbGljYXRpb24sIGRpc2Ns
+b3N1cmUsIGRpc3RyaWJ1dGlvbiwgb3IgdXNlIG9mIHRoaXMgZS1tYWlsIA0KKGFuZC9vciBpdHMg
+YXR0YWNobWVudHMpIG9yIGFueSBwYXJ0IHRoZXJlb2YgaXMgcHJvaGliaXRlZC4gSWYgeW91IHJl
+Y2VpdmUgDQp0aGlzIGUtbWFpbCBpbiBlcnJvciwgcGxlYXNlIG5vdGlmeSB1cyBpbW1lZGlhdGVs
+eSBhbmQgZGVsZXRlIHRoaXMgbWFpbCBhcyANCndlbGwgYXMgaXRzIGF0dGFjaG1lbnQocykgZnJv
+bSB5b3VyIHN5c3RlbS4gSW4gYWRkaXRpb24sIHBsZWFzZSBiZSANCmluZm9ybWVkIHRoYXQgY29s
+bGVjdGlvbiwgcHJvY2Vzc2luZywgYW5kL29yIHVzZSBvZiBwZXJzb25hbCBkYXRhIGlzIA0KcHJv
+aGliaXRlZCB1bmxlc3MgZXhwcmVzc2x5IHBlcm1pdHRlZCBieSBwZXJzb25hbCBkYXRhIHByb3Rl
+Y3Rpb24gbGF3cy4gDQpUaGFuayB5b3UgZm9yIHlvdXIgYXR0ZW50aW9uIGFuZCBjb29wZXJhdGlv
+bi4NCg0KTWFjcm9uaXggSW50ZXJuYXRpb25hbCBDby4sIEx0ZC4NCg0KPT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQoN
+Cg0KDQo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09DQoNCkNPTkZJREVOVElBTElUWSBOT1RFOg0KDQpUaGlz
+IGUtbWFpbCBhbmQgYW55IGF0dGFjaG1lbnRzIG1heSBjb250YWluIGNvbmZpZGVudGlhbCBpbmZv
+cm1hdGlvbiBhbmQvb3IgcGVyc29uYWwgZGF0YSwgd2hpY2ggaXMgcHJvdGVjdGVkIGJ5IGFwcGxp
+Y2FibGUgbGF3cy4gUGxlYXNlIGJlIHJlbWluZGVkIHRoYXQgZHVwbGljYXRpb24sIGRpc2Nsb3N1
+cmUsIGRpc3RyaWJ1dGlvbiwgb3IgdXNlIG9mIHRoaXMgZS1tYWlsIChhbmQvb3IgaXRzIGF0dGFj
+aG1lbnRzKSBvciBhbnkgcGFydCB0aGVyZW9mIGlzIHByb2hpYml0ZWQuIElmIHlvdSByZWNlaXZl
+IHRoaXMgZS1tYWlsIGluIGVycm9yLCBwbGVhc2Ugbm90aWZ5IHVzIGltbWVkaWF0ZWx5IGFuZCBk
+ZWxldGUgdGhpcyBtYWlsIGFzIHdlbGwgYXMgaXRzIGF0dGFjaG1lbnQocykgZnJvbSB5b3VyIHN5
+c3RlbS4gSW4gYWRkaXRpb24sIHBsZWFzZSBiZSBpbmZvcm1lZCB0aGF0IGNvbGxlY3Rpb24sIHBy
+b2Nlc3NpbmcsIGFuZC9vciB1c2Ugb2YgcGVyc29uYWwgZGF0YSBpcyBwcm9oaWJpdGVkIHVubGVz
+cyBleHByZXNzbHkgcGVybWl0dGVkIGJ5IHBlcnNvbmFsIGRhdGEgcHJvdGVjdGlvbiBsYXdzLiBU
+aGFuayB5b3UgZm9yIHlvdXIgYXR0ZW50aW9uIGFuZCBjb29wZXJhdGlvbi4NCg0KTWFjcm9uaXgg
+SW50ZXJuYXRpb25hbCBDby4sIEx0ZC4NCg0KPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
+b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vbGludXgtbXRkLwo=
