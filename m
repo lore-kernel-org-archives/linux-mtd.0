@@ -2,81 +2,73 @@ Return-Path: <SRS0=dRpU=HV=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 258A5C433DB
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Feb 2021 08:33:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC320C433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Feb 2021 23:00:32 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B776064D9F
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Feb 2021 08:33:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B776064D9F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7991664E2F
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Feb 2021 23:00:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7991664E2F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=dbWbxhMouioST7FFcpwOJLhJZemx+jS276BbiTaRqCc=; b=kAAi4Derbscmn2ee4ea3HKsn5X
-	s40cD4aC1LqOQts1K+xjOTD9M5L8aXODd0wJepw4UXT3IKNW90V2boTMPUCMvJXR6AiS+CZn4dh2X
-	8KHKD5ckrbQdvDR0KlU5y6sZKFe7U1xSyuLvXEj5XSf+gWZ3DZ4oa6lXfMTQX2LPfJ97DH/Y1JyVz
-	bWJnNy/BpMGRbnPH5uqpa1Pmq2LcmCbXJWlQv9ParAAHZBjYv8t7+ecq9tBTALJRCA9wsGh9rIW4Z
-	UiX4BmMxEO7b1WKndYW9rRpw5JGUnUhleC2FdSiDWkSVuLL9T7/riNDO4iI72x9DTIObnM8W1mE4y
-	SnQSqehA==;
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=s+PcIWgmWi16DAyBsGdNDUCgo1DcTsyxjkacr6FPwmU=; b=tCR2vDv0W9puxv73MEzYUp8ue
+	aJON35hlj/TyqwRZcNKkfBkpDBdCpiQFKZAAzb6QyXx9JjfMnFGnP/v/6NL7L8HVbwOyhAVERJDoL
+	wOAIEntmlI7Hjn8T1sJx8YQDmxjwJUOJlzShJP6cjPTi6jraGX/CBbcK46A1TAH5HON+U8dA4v0Qk
+	kSZpsRVgqhU0rnayzS6rlt51ahGcn0+CzQiieOUjEb7/dLylFcoZvmlG6Sayq1S/mjP/maWgt9cJD
+	w/s67m9/v5K5S5g1RKCzkqVrCmrYgrvWhmZw6znh89SIiPqMGyEieDR8JFwhA/urBneLf3gAe+eKK
+	iW84ddk1g==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lD1DH-0007nb-S8; Fri, 19 Feb 2021 08:32:35 +0000
-Received: from mail-pj1-x102e.google.com ([2607:f8b0:4864:20::102e])
+	id 1lDEkJ-0005Ki-Gd; Fri, 19 Feb 2021 22:59:35 +0000
+Received: from mga12.intel.com ([192.55.52.136])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lD1DE-0007mZ-De
- for linux-mtd@lists.infradead.org; Fri, 19 Feb 2021 08:32:33 +0000
-Received: by mail-pj1-x102e.google.com with SMTP id my11so4015860pjb.1
- for <linux-mtd@lists.infradead.org>; Fri, 19 Feb 2021 00:32:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id;
- bh=WSN2nCd7ehopB1fbP9nmBNTf5GDQl/nfkRiUecNb/jY=;
- b=HZbaOBIcwN2pluP8dY3Zqx5Yp0XTf0p81GIPkrxvPQLFrDLesFbFxURo8c5gEvRtq/
- iDBK897oTp/AMbaY/WiPp4h9fg19r6jC9dBH2oKoEbt4PofkuuBr7Sdz5EZdMED2okyR
- iex1IsJ2uZn7CUmj8W64/Vs1vN6saEGItY8e8Zs1nSOsDHra7mGmpgIxMvoIgaWyW92q
- kjFxeV4hWgkA9JwhRXq9jFGUQ5a80CS2HG9e7dmbbAwnwJ4neJt4oscTf7GOHxvhFMGt
- uY1hKlkgQ5qNGfyqjru03YBZqVpRRd7lpmhfTWeoVVEZ23Fz0jKugRigMp3n2fNpTSd3
- N6GA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=WSN2nCd7ehopB1fbP9nmBNTf5GDQl/nfkRiUecNb/jY=;
- b=FnVu9WNM9meNfrW3TjpvUV8SzBhW68KqGmau/18bcaHFggzRXCw44tnVHNLDT7eJ92
- RtdVETn4eSoQyZuw7YvZuYQ7Z3BTTl5rG3A7/bdvlIIQgcFIoHFyGGPkxR77dx8iTg8q
- oDMCvdT6mz1htkUTXORWZBMu479EZWr799sAjFUOiOlqGVCwx2c0IyjU4ZigRpM8QLaI
- NpqGsymzfa/mTyUvRF349IRzyoq+Zt7ICOPIZ2rASq03kfRNS9a1DDJMhntxBc5hxL4g
- zGGK9T1ziRZ3Zy5G20lJCctHRd51TgRCyCZBNiVn5raLBK9dd8Yw7r3OqOLHv3RP+2wb
- 0Oeg==
-X-Gm-Message-State: AOAM531HUXy4106JaclNgigR/UuUrykXXAgrFQgQgOR58mHxwF4VlqUr
- 1nDFXjgQI8xLPB/kAgs9vTg=
-X-Google-Smtp-Source: ABdhPJwyrTjy+j/1QXa9u6klVKgG+xh584WRqYGDEh3LlB+f0CD68WQEasAWtdPy1NA6yf77ERUxng==
-X-Received: by 2002:a17:90a:e7cd:: with SMTP id
- kb13mr8043201pjb.10.1613723549288; 
- Fri, 19 Feb 2021 00:32:29 -0800 (PST)
-Received: from rayare.domain.name ([106.51.141.71])
- by smtp.googlemail.com with ESMTPSA id 4sm7881341pjc.23.2021.02.19.00.32.26
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 19 Feb 2021 00:32:28 -0800 (PST)
-From: chakravarthikulkarni <chakravarthikulkarni2021@gmail.com>
-To: 
-Subject: [PATCH] fs:jffs2: Fixed return statement in if and else statement
-Date: Fri, 19 Feb 2021 14:02:12 +0530
-Message-Id: <20210219083214.11583-1-chakravarthikulkarni2021@gmail.com>
-X-Mailer: git-send-email 2.17.1
+ id 1lDEkG-0005Jt-Uz
+ for linux-mtd@lists.infradead.org; Fri, 19 Feb 2021 22:59:33 +0000
+IronPort-SDR: 3MFKBHlAkNbN2foX3p1xPLBLnHs3kJ/4GRnF0Ho8eKY3H5V1fnTr8ltnZGsb6/J/Jdp2hLpA/n
+ +/7NcMyVR6VA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9900"; a="163137241"
+X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; d="scan'208";a="163137241"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Feb 2021 14:59:27 -0800
+IronPort-SDR: AWDqcz5aNrLMlSfE/jADiJ87e1OB9HgLGeULywBPWsNAYDKLrsPZJ27RPCAOax6TNbUX9KSxBF
+ +5f4vN5edIyQ==
+X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; d="scan'208";a="591048457"
+Received: from anmitta2-mobl2.gar.corp.intel.com (HELO ldmartin-desk1)
+ ([10.209.128.21])
+ by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Feb 2021 14:59:26 -0800
+Date: Fri, 19 Feb 2021 14:59:26 -0800
+From: Lucas De Marchi <lucas.demarchi@intel.com>
+To: "Winkler, Tomas" <tomas.winkler@intel.com>
+Subject: Re: [Intel-gfx] [RFC PATCH 3/9] drm/i915/spi: add driver for on-die
+ spi device
+Message-ID: <20210219225926.ldwxla7b6bppx6dz@ldmartin-desk1>
+X-Patchwork-Hint: comment
+References: <20210216181925.650082-1-tomas.winkler@intel.com>
+ <20210216181925.650082-4-tomas.winkler@intel.com>
+ <87blcjarof.fsf@intel.com>
+ <b08989f480564bbea5ce187797e9e30b@intel.com>
+ <20210218094916.brm7j62if573xu5c@ldmartin-desk1>
+ <23876b68716b4c5085145b54029b90bc@intel.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <23876b68716b4c5085145b54029b90bc@intel.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210219_033232_624105_586E64FF 
-X-CRM114-Status: GOOD (  17.57  )
+X-CRM114-CacheID: sfid-20210219_175933_179288_899A900A 
+X-CRM114-Status: GOOD (  19.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,189 +80,79 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>, chakravarthikulkarni2021@gmail.com,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+ Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, "Usyskin,
+ Alexander" <alexander.usyskin@intel.com>,
+ Jani Nikula <jani.nikula@linux.intel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Vivi,
+ Rodrigo" <rodrigo.vivi@intel.com>, "Lubart, Vitaly" <vitaly.lubart@intel.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Error:  Fixed Error found by checkpath.pl script.
-	switch and case should be at the same indent
-Warning: Fixed Warning found by checkpath.pl script.
+On Thu, Feb 18, 2021 at 10:06:08PM -0800, Winkler, Tomas wrote:
+>
+>>
+>> On Wed, Feb 17, 2021 at 08:58:12PM +0000, Winkler, Tomas wrote:
+>> >>
+>> >> On Tue, 16 Feb 2021, Tomas Winkler <tomas.winkler@intel.com> wrote:
+>> >> > Add the platform driver for i915 on-die spi device, exposed via mfd
+>> >> > framework.
+>> >> >
+>> >> > Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+>> >> > Cc: Lucas De Marchi <lucas.demarchi@intel.com>
+>> >> > Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+>> >> > ---
+>> >> >  drivers/gpu/drm/i915/Kconfig             |   2 +
+>> >> >  drivers/gpu/drm/i915/Makefile            |   3 +
+>> >> >  drivers/gpu/drm/i915/spi/intel_spi_drv.c | 116
+>> >> > +++++++++++++++++++++++
+>> >> >  3 files changed, 121 insertions(+)  create mode 100644
+>> >> > drivers/gpu/drm/i915/spi/intel_spi_drv.c
+>> >> >
+>> >> > diff --git a/drivers/gpu/drm/i915/Kconfig
+>> >> > b/drivers/gpu/drm/i915/Kconfig index abcaa8da45ac..13c870e5878e
+>> >> > 100644
+>> >> > --- a/drivers/gpu/drm/i915/Kconfig
+>> >> > +++ b/drivers/gpu/drm/i915/Kconfig
+>> >> > @@ -27,6 +27,8 @@ config DRM_I915
+>> >> >  	select CEC_CORE if CEC_NOTIFIER
+>> >> >  	select VMAP_PFN
+>> >> >  	select MFD_CORE
+>> >> > +	select MTD
+>> >>
+>> >> Selecting MTD does not seem to be a popular thing to do, which is
+>> >> usually a clue it's probably the wrong thing to do.
+>> >Depends, if it is not selected you'll end with wrongly configured system.
+>>
+>> no. I believe the idea is that having a CONFIG_I915_SPI, you could do
+>>
+>> 	depends on MTD
+>>
+>> like the other drivers doing similar thing:
+>>
+>> 	git grep MTD -- ':(exclude)drivers/mtd' ':(exclude)arch/' '*Kconfig'
+> I know the pattern and it can be done, the issue is that mtd is used mostly in embedded systems so it is not selected by the desktop distros.
+>The intel spi both on PCH and in GFX takes this into different direction and usage.
 
-Signed-off-by: chakravarthikulkarni <chakravarthikulkarni2021@gmail.com>
----
- fs/jffs2/acl.c | 105 ++++++++++++++++++++++++-------------------------
- 1 file changed, 52 insertions(+), 53 deletions(-)
+humn... but then we have a problem here. You're saying most of the
+people won't need it because it's used only for manufacturing*.
+And yet you want it to be force selected on everybody?  That
+doesn't sound like a good plan.
 
-diff --git a/fs/jffs2/acl.c b/fs/jffs2/acl.c
-index 093ffbd82395..e66a1c4eaefd 100644
---- a/fs/jffs2/acl.c
-+++ b/fs/jffs2/acl.c
-@@ -38,18 +38,20 @@ static size_t jffs2_acl_size(int count)
- static int jffs2_acl_count(size_t size)
- {
- 	size_t s;
-+	int ret = 0;
- 
- 	size -= sizeof(struct jffs2_acl_header);
- 	if (size < 4 * sizeof(struct jffs2_acl_entry_short)) {
- 		if (size % sizeof(struct jffs2_acl_entry_short))
- 			return -1;
--		return size / sizeof(struct jffs2_acl_entry_short);
-+		ret =  size / sizeof(struct jffs2_acl_entry_short);
- 	} else {
- 		s = size - 4 * sizeof(struct jffs2_acl_entry_short);
- 		if (s % sizeof(struct jffs2_acl_entry))
- 			return -1;
--		return s / sizeof(struct jffs2_acl_entry) + 4;
-+		ret = s / sizeof(struct jffs2_acl_entry) + 4;
- 	}
-+	return ret;
- }
- 
- static struct posix_acl *jffs2_acl_from_medium(void *value, size_t size)
-@@ -82,39 +84,37 @@ static struct posix_acl *jffs2_acl_from_medium(void *value, size_t size)
- 	if (!acl)
- 		return ERR_PTR(-ENOMEM);
- 
--	for (i=0; i < count; i++) {
-+	for (i = 0; i < count; i++) {
- 		entry = value;
- 		if (value + sizeof(struct jffs2_acl_entry_short) > end)
- 			goto fail;
- 		acl->a_entries[i].e_tag = je16_to_cpu(entry->e_tag);
- 		acl->a_entries[i].e_perm = je16_to_cpu(entry->e_perm);
- 		switch (acl->a_entries[i].e_tag) {
--			case ACL_USER_OBJ:
--			case ACL_GROUP_OBJ:
--			case ACL_MASK:
--			case ACL_OTHER:
--				value += sizeof(struct jffs2_acl_entry_short);
--				break;
--
--			case ACL_USER:
--				value += sizeof(struct jffs2_acl_entry);
--				if (value > end)
--					goto fail;
--				acl->a_entries[i].e_uid =
--					make_kuid(&init_user_ns,
--						  je32_to_cpu(entry->e_id));
--				break;
--			case ACL_GROUP:
--				value += sizeof(struct jffs2_acl_entry);
--				if (value > end)
--					goto fail;
--				acl->a_entries[i].e_gid =
--					make_kgid(&init_user_ns,
--						  je32_to_cpu(entry->e_id));
-+		case ACL_USER_OBJ:
-+		case ACL_GROUP_OBJ:
-+		case ACL_MASK:
-+		case ACL_OTHER:
-+			value += sizeof(struct jffs2_acl_entry_short);
-+			break;
-+		case ACL_USER:
-+			value += sizeof(struct jffs2_acl_entry);
-+			if (value > end)
-+				goto fail;
-+			acl->a_entries[i].e_uid =
-+				make_kuid(&init_user_ns,
-+						je32_to_cpu(entry->e_id));
- 				break;
--
--			default:
-+		case ACL_GROUP:
-+			value += sizeof(struct jffs2_acl_entry);
-+			if (value > end)
- 				goto fail;
-+			acl->a_entries[i].e_gid =
-+				make_kgid(&init_user_ns,
-+						je32_to_cpu(entry->e_id));
-+			break;
-+		default:
-+			goto fail;
- 		}
- 	}
- 	if (value != end)
-@@ -139,32 +139,31 @@ static void *jffs2_acl_to_medium(const struct posix_acl *acl, size_t *size)
- 		return ERR_PTR(-ENOMEM);
- 	header->a_version = cpu_to_je32(JFFS2_ACL_VERSION);
- 	e = header + 1;
--	for (i=0; i < acl->a_count; i++) {
-+	for (i = 0; i < acl->a_count; i++) {
- 		const struct posix_acl_entry *acl_e = &acl->a_entries[i];
-+
- 		entry = e;
- 		entry->e_tag = cpu_to_je16(acl_e->e_tag);
- 		entry->e_perm = cpu_to_je16(acl_e->e_perm);
--		switch(acl_e->e_tag) {
--			case ACL_USER:
--				entry->e_id = cpu_to_je32(
--					from_kuid(&init_user_ns, acl_e->e_uid));
--				e += sizeof(struct jffs2_acl_entry);
--				break;
--			case ACL_GROUP:
--				entry->e_id = cpu_to_je32(
--					from_kgid(&init_user_ns, acl_e->e_gid));
--				e += sizeof(struct jffs2_acl_entry);
--				break;
--
--			case ACL_USER_OBJ:
--			case ACL_GROUP_OBJ:
--			case ACL_MASK:
--			case ACL_OTHER:
--				e += sizeof(struct jffs2_acl_entry_short);
--				break;
--
--			default:
--				goto fail;
-+		switch (acl_e->e_tag) {
-+		case ACL_USER:
-+			entry->e_id = cpu_to_je32(from_kuid(&init_user_ns,
-+						acl_e->e_uid));
-+			e += sizeof(struct jffs2_acl_entry);
-+			break;
-+		case ACL_GROUP:
-+			entry->e_id = cpu_to_je32(
-+				from_kgid(&init_user_ns, acl_e->e_gid));
-+			e += sizeof(struct jffs2_acl_entry);
-+			break;
-+		case ACL_USER_OBJ:
-+		case ACL_GROUP_OBJ:
-+		case ACL_MASK:
-+		case ACL_OTHER:
-+			e += sizeof(struct jffs2_acl_entry_short);
-+			break;
-+		default:
-+			goto fail;
- 		}
- 	}
- 	return header;
-@@ -196,13 +195,13 @@ struct posix_acl *jffs2_get_acl(struct inode *inode, int type)
- 			return ERR_PTR(-ENOMEM);
- 		rc = do_jffs2_getxattr(inode, xprefix, "", value, rc);
- 	}
--	if (rc > 0) {
-+	if (rc > 0)
- 		acl = jffs2_acl_from_medium(value, rc);
--	} else if (rc == -ENODATA || rc == -ENOSYS) {
-+	else if (rc == -ENODATA || rc == -ENOSYS)
- 		acl = NULL;
--	} else {
-+	else
- 		acl = ERR_PTR(rc);
--	}
-+
- 	kfree(value);
- 	return acl;
- }
--- 
-2.17.1
+Lucas De Marchi
 
+
+* it may actually also be useful for kernel developers too, to dump its
+content and validate the parser, help debug other systems, etc.
+
+>
+>Thanks
+>Tomas
+>
 
 ______________________________________________________
 Linux MTD discussion mailing list
