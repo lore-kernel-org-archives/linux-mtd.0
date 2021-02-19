@@ -7,61 +7,85 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BC99C433DB
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Feb 2021 06:00:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6D40C433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Feb 2021 06:07:43 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C0F2F64E90
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Feb 2021 06:00:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C0F2F64E90
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
+	by mail.kernel.org (Postfix) with ESMTPS id 650E064EB2
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Feb 2021 06:07:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 650E064EB2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:Subject:To:
-	References:In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:Message-ID:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=lM8rcl+5B+ISUnIoBe94oB/Hs85PKe9R9BXuwuCp27I=; b=JgplH7RBuj/dMt0OdQPuEvKod
-	p37Aftn87m+Bz3cAR3gwr/qFxt/L7Y4m012XqRoUu/EMeBfWhYUjdeNpzN8M+y26dKivx3f28BYib
-	tFm0hCprcEe0sIlJMi1eNuFM8FF5ZB3oalvhfFdscBiAfoyatKNqJW2+xXHoCrBCeBwkciLSlEtYf
-	9iFUfv/admMdA7+6QJabBdNU2dInlAJteSeP47lkdk1Ocr/UpRb7PkioBBHCjfN4+5fBwZZE6CG9e
-	K9Hs1oX/us5xNBNos1fPOq1exWsRdhOwQHWgjoLJc1QqVMCD2Eru5Q2p7HQpBbn+gUpBLvOfQAdUw
-	kePb4rSLw==;
+	 bh=4N9/nFHnch95wT67jYtUAhUIIvbriUEMP6CZcqQYhUM=; b=1+G6YXPrWmipcol1k1RL0NqUi
+	3QfaMbv7ikZlAkUOMuoJV59MZGBWlZBrIWhhK7PVfyOiSFS9FVvZf8DP9eaOAMvdD37N5zYHAt1qX
+	Oq+2wQn9BTQ/HGx0tYF97aKfwBcOe6HjbmSb6XlSTzMq9zIAeOhE/h5Zw43mnksy5mysGcl2LsBMo
+	dH7uqRxvapCJ2LLBM0NGHcNMQsJEnUiAgu/G8TCT+LHNcPDSwcITfTPBgVo+zswm+RlJpnulJtekP
+	/dgkdVVUhgGcZp/vMjvx2Y+/cOkSVfqirw8ZSOLqKIkiibmvpmtLCzLcvvsu6R/ugWM/bvwhjqN3P
+	TIAUOoenQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lCyos-0007G3-6D; Fri, 19 Feb 2021 05:59:14 +0000
-Received: from twhmllg3.macronix.com ([122.147.135.201])
+	id 1lCyvi-0007i0-L3; Fri, 19 Feb 2021 06:06:18 +0000
+Received: from mga18.intel.com ([134.134.136.126])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lCyol-0007FL-PH
- for linux-mtd@lists.infradead.org; Fri, 19 Feb 2021 05:59:09 +0000
-Received: from twhfmlp1.macronix.com (twhfmlp1.macronix.com [172.17.20.91])
- by TWHMLLG3.macronix.com with ESMTP id 11J5weuK059515;
- Fri, 19 Feb 2021 13:58:40 +0800 (GMT-8)
- (envelope-from zhengxunli@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
- by Forcepoint Email with ESMTP id 88D083DC107C4987CF0E;
- Fri, 19 Feb 2021 13:58:40 +0800 (CST)
-In-Reply-To: <1612517808-10010-3-git-send-email-zhengxunli@mxic.com.tw>
-References: <1612517808-10010-1-git-send-email-zhengxunli@mxic.com.tw>
- <1612517808-10010-3-git-send-email-zhengxunli@mxic.com.tw>
-To: broonie@kernel.org
-Subject: Re: [PATCH v2 2/2] spi: mxic: patch for octal DTR mode support
+ id 1lCyvf-0007hc-Nt
+ for linux-mtd@lists.infradead.org; Fri, 19 Feb 2021 06:06:16 +0000
+IronPort-SDR: CbTWuyYgDq9dbR/P50vcp+PkqHcT/d/jEFEprCeITUOMNBnywFsZ0gA25C/ptUO6AO4kjy7luI
+ 7XMxYlJIZt+Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="171424687"
+X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; d="scan'208";a="171424687"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Feb 2021 22:06:12 -0800
+IronPort-SDR: llnJFfyEqocWfcNAMxYYZ5cN66L+Fpki96CW5085hOOAah9Q2j4iECLIdyBn62w5BWQAGjSeg8
+ n5Iri5ePGS0g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; d="scan'208";a="581571758"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+ by orsmga005.jf.intel.com with ESMTP; 18 Feb 2021 22:06:12 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 18 Feb 2021 22:06:11 -0800
+Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 18 Feb 2021 22:06:10 -0800
+Received: from hasmsx602.ger.corp.intel.com ([10.184.107.142]) by
+ HASMSX602.ger.corp.intel.com ([10.184.107.142]) with mapi id 15.01.2106.002;
+ Fri, 19 Feb 2021 08:06:08 +0200
+From: "Winkler, Tomas" <tomas.winkler@intel.com>
+To: "De Marchi, Lucas" <lucas.demarchi@intel.com>
+Subject: RE: [Intel-gfx] [RFC PATCH 3/9] drm/i915/spi: add driver for on-die
+ spi device
+Thread-Topic: [Intel-gfx] [RFC PATCH 3/9] drm/i915/spi: add driver for on-die
+ spi device
+Thread-Index: AQHXBJBcj4Goi4XIwEe9K9Ji08dc+apcDHIAgADGOPCAALlRAIAAJMVw
+Date: Fri, 19 Feb 2021 06:06:08 +0000
+Message-ID: <23876b68716b4c5085145b54029b90bc@intel.com>
+References: <20210216181925.650082-1-tomas.winkler@intel.com>
+ <20210216181925.650082-4-tomas.winkler@intel.com> <87blcjarof.fsf@intel.com>
+ <b08989f480564bbea5ce187797e9e30b@intel.com>
+ <20210218094916.brm7j62if573xu5c@ldmartin-desk1>
+In-Reply-To: <20210218094916.brm7j62if573xu5c@ldmartin-desk1>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.22.254.132]
 MIME-Version: 1.0
-X-KeepSent: BB82A762:591077E7-48258681:001E4996;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP6 SHF907 April 26, 2018
-Message-ID: <OFBB82A762.591077E7-ON48258681.001E4996-48258681.0020D66E@mxic.com.tw>
-From: zhengxunli@mxic.com.tw
-Date: Fri, 19 Feb 2021 13:58:40 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
- HF265|July 25, 2018) at 2021/02/19 PM 01:58:40,
- Serialize complete at 2021/02/19 PM 01:58:40
-X-MAIL: TWHMLLG3.macronix.com 11J5weuK059515
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210219_005908_268089_4E17177F 
-X-CRM114-Status: GOOD (  18.10  )
+X-CRM114-CacheID: sfid-20210219_010615_967120_FCB6995C 
+X-CRM114-Status: GOOD (  18.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,132 +97,68 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, juliensu@mxic.com.tw, ycllin@mxic.com.tw,
- linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
- miquel.raynal@bootlin.com
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+Cc: Vignesh
+ Raghavendra <vigneshr@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+ Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, "Usyskin,
+ Alexander" <alexander.usyskin@intel.com>,
+ Jani Nikula <jani.nikula@linux.intel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Vivi,
+ Rodrigo" <rodrigo.vivi@intel.com>, "Lubart, Vitaly" <vitaly.lubart@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWFyaywNCg0KSSBzZWUgdGhhdCBQcmF0eXVzaCBwYXRjaCAic3BpOiBzcGktbWVtOiBhZGQg
-c3BpX21lbV9kdHJfc3VwcG9ydHNfb3AoKSINCmhhcyBiZWVuIGFjY2VwdGVkLCBjYW4geW91IGhl
-bHAgcmV2aWV3IHRoaXMgcGF0Y2ggYW5kIG1ha2Ugc29tZSANCnN1Z2dlc3Rpb25zPw0KDQoNCiJ6
-aGVuZ3h1bmxpIiA8emhlbmd4dW5saUBteGljLmNvbS50dz4gd3JvdGUgb24gMjAyMS8wMi8wNSCk
-VaTIIDA1OjM2OjQ4Og0KDQo+ICJ6aGVuZ3h1bmxpIiA8emhlbmd4dW5saUBteGljLmNvbS50dz4g
-DQo+IDIwMjEvMDIvMDUgpFWkyCAwNTo0MA0KPiANCj4gVG8NCj4gDQo+IGxpbnV4LW10ZEBsaXN0
-cy5pbmZyYWRlYWQub3JnLCBsaW51eC1zcGlAdmdlci5rZXJuZWwub3JnLCANCj4gbWlxdWVsLnJh
-eW5hbEBib290bGluLmNvbSwgYnJvb25pZUBrZXJuZWwub3JnLCB2aWduZXNockB0aS5jb20sIA0K
-PiANCj4gY2MNCj4gDQo+IHljbGxpbkBteGljLmNvbS50dywganVsaWVuc3VAbXhpYy5jb20udHcs
-ICJ6aGVuZ3h1bmxpIiANCj4gPHpoZW5neHVubGlAbXhpYy5jb20udHc+DQo+IA0KPiBTdWJqZWN0
-DQo+IA0KPiBbUEFUQ0ggdjIgMi8yXSBzcGk6IG14aWM6IHBhdGNoIGZvciBvY3RhbCBEVFIgbW9k
-ZSBzdXBwb3J0DQo+IA0KPiBEcml2ZXIgcGF0Y2ggZm9yIG9jdGFsIERUUiBtb2RlIHN1cHBvcnQu
-DQo+IA0KPiBPd2luZyB0byB0aGUgc3BpX21lbV9kZWZhdWx0X3N1cHBvcnRzX29wKCkgaXMgbm90
-IHN1cHBvcnQgZHRyDQo+IG9wZXJhdGlvbi4gQmFzZWQgb24gUHJhdHl1c2ggcGF0Y2ggInNwaTog
-c3BpLW1lbTogYWRkIHNwaV9tZW1fZHRyDQo+IF9zdXBwb3J0c19vcCgpIiBhZGQgc3BpX21lbV9k
-dHJfc3VwcG9ydHNfb3AoKSB0byBzdXBwb3J0IGR0ciBhbmQNCj4ga2VlcCBjaGVja2luZyB0aGUg
-YnVzd2lkdGggYW5kIGNvbW1hbmQgYnl0ZXMuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiB6aGVuZ3h1
-bmxpIDx6aGVuZ3h1bmxpQG14aWMuY29tLnR3Pg0KPiAtLS0NCj4gIGRyaXZlcnMvc3BpL3NwaS1t
-eGljLmMgfCA0MSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLQ0KPiAg
-MSBmaWxlIGNoYW5nZWQsIDMwIGluc2VydGlvbnMoKyksIDExIGRlbGV0aW9ucygtKQ0KPiANCj4g
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvc3BpL3NwaS1teGljLmMgYi9kcml2ZXJzL3NwaS9zcGktbXhp
-Yy5jDQo+IGluZGV4IDk2YjQxODIuLjMyZTc1N2EgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvc3Bp
-L3NwaS1teGljLmMNCj4gKysrIGIvZHJpdmVycy9zcGkvc3BpLW14aWMuYw0KPiBAQCAtMzM1LDgg
-KzMzNSwxMCBAQCBzdGF0aWMgaW50IG14aWNfc3BpX2RhdGFfeGZlcihzdHJ1Y3QgbXhpY19zcGkg
-DQo+ICpteGljLCBjb25zdCB2b2lkICp0eGJ1ZiwNCj4gIHN0YXRpYyBib29sIG14aWNfc3BpX21l
-bV9zdXBwb3J0c19vcChzdHJ1Y3Qgc3BpX21lbSAqbWVtLA0KPiAgICAgICAgICAgICAgICAgICBj
-b25zdCBzdHJ1Y3Qgc3BpX21lbV9vcCAqb3ApDQo+ICB7DQo+IC0gICBpZiAob3AtPmRhdGEuYnVz
-d2lkdGggPiA0IHx8IG9wLT5hZGRyLmJ1c3dpZHRoID4gNCB8fA0KPiAtICAgICAgIG9wLT5kdW1t
-eS5idXN3aWR0aCA+IDQgfHwgb3AtPmNtZC5idXN3aWR0aCA+IDQpDQo+ICsgICBib29sIGFsbF9m
-YWxzZTsNCj4gKw0KPiArICAgaWYgKG9wLT5kYXRhLmJ1c3dpZHRoID4gOCB8fCBvcC0+YWRkci5i
-dXN3aWR0aCA+IDggfHwNCj4gKyAgICAgICBvcC0+ZHVtbXkuYnVzd2lkdGggPiA4IHx8IG9wLT5j
-bWQuYnVzd2lkdGggPiA4KQ0KPiAgICAgICAgcmV0dXJuIGZhbHNlOw0KPiANCj4gICAgIGlmIChv
-cC0+ZGF0YS5uYnl0ZXMgJiYgb3AtPmR1bW15Lm5ieXRlcyAmJg0KPiBAQCAtMzQ2LDcgKzM0OCwx
-MyBAQCBzdGF0aWMgYm9vbCBteGljX3NwaV9tZW1fc3VwcG9ydHNfb3Aoc3RydWN0IHNwaV9tZW0g
-DQoqbWVtLA0KPiAgICAgaWYgKG9wLT5hZGRyLm5ieXRlcyA+IDcpDQo+ICAgICAgICByZXR1cm4g
-ZmFsc2U7DQo+IA0KPiAtICAgcmV0dXJuIHNwaV9tZW1fZGVmYXVsdF9zdXBwb3J0c19vcChtZW0s
-IG9wKTsNCj4gKyAgIGFsbF9mYWxzZSA9ICFvcC0+Y21kLmR0ciAmJiAhb3AtPmFkZHIuZHRyICYm
-ICFvcC0+ZHVtbXkuZHRyICYmDQo+ICsgICAgICAgICAgIW9wLT5kYXRhLmR0cjsNCj4gKw0KPiAr
-ICAgaWYgKGFsbF9mYWxzZSkNCj4gKyAgICAgIHJldHVybiBzcGlfbWVtX2RlZmF1bHRfc3VwcG9y
-dHNfb3AobWVtLCBvcCk7DQo+ICsgICBlbHNlDQo+ICsgICAgICByZXR1cm4gc3BpX21lbV9kdHJf
-c3VwcG9ydHNfb3AobWVtLCBvcCk7DQo+ICB9DQo+IA0KPiAgc3RhdGljIGludCBteGljX3NwaV9t
-ZW1fZXhlY19vcChzdHJ1Y3Qgc3BpX21lbSAqbWVtLA0KPiBAQCAtMzU1LDE0ICszNjMsMTUgQEAg
-c3RhdGljIGludCBteGljX3NwaV9tZW1fZXhlY19vcChzdHJ1Y3Qgc3BpX21lbSANCiptZW0sDQo+
-ICAgICBzdHJ1Y3QgbXhpY19zcGkgKm14aWMgPSBzcGlfbWFzdGVyX2dldF9kZXZkYXRhKG1lbS0+
-c3BpLT5tYXN0ZXIpOw0KPiAgICAgaW50IG5pbyA9IDEsIGksIHJldDsNCj4gICAgIHUzMiBzc19j
-dHJsOw0KPiAtICAgdTggYWRkcls4XTsNCj4gLSAgIHU4IG9wY29kZSA9IG9wLT5jbWQub3Bjb2Rl
-Ow0KPiArICAgdTggYWRkcls4XSwgY21kWzJdOw0KPiANCj4gICAgIHJldCA9IG14aWNfc3BpX3Nl
-dF9mcmVxKG14aWMsIG1lbS0+c3BpLT5tYXhfc3BlZWRfaHopOw0KPiAgICAgaWYgKHJldCkNCj4g
-ICAgICAgIHJldHVybiByZXQ7DQo+IA0KPiAtICAgaWYgKG1lbS0+c3BpLT5tb2RlICYgKFNQSV9U
-WF9RVUFEIHwgU1BJX1JYX1FVQUQpKQ0KPiArICAgaWYgKG1lbS0+c3BpLT5tb2RlICYgKFNQSV9U
-WF9PQ1RBTCB8IFNQSV9SWF9PQ1RBTCkpDQo+ICsgICAgICBuaW8gPSA4Ow0KPiArICAgZWxzZSBp
-ZiAobWVtLT5zcGktPm1vZGUgJiAoU1BJX1RYX1FVQUQgfCBTUElfUlhfUVVBRCkpDQo+ICAgICAg
-ICBuaW8gPSA0Ow0KPiAgICAgZWxzZSBpZiAobWVtLT5zcGktPm1vZGUgJiAoU1BJX1RYX0RVQUwg
-fCBTUElfUlhfRFVBTCkpDQo+ICAgICAgICBuaW8gPSAyOw0KPiBAQCAtMzc0LDE5ICszODMsMjUg
-QEAgc3RhdGljIGludCBteGljX3NwaV9tZW1fZXhlY19vcChzdHJ1Y3Qgc3BpX21lbSANCiptZW0s
-DQo+ICAgICAgICAgICAgbXhpYy0+cmVncyArIEhDX0NGRyk7DQo+ICAgICB3cml0ZWwoSENfRU5f
-QklULCBteGljLT5yZWdzICsgSENfRU4pOw0KPiANCj4gLSAgIHNzX2N0cmwgPSBPUF9DTURfQllU
-RVMoMSkgfCBPUF9DTURfQlVTVyhmbHMob3AtPmNtZC5idXN3aWR0aCkgLSAxKTsNCj4gKyAgIHNz
-X2N0cmwgPSBPUF9DTURfQllURVMob3AtPmNtZC5uYnl0ZXMpIHwNCj4gKyAgICAgICAgT1BfQ01E
-X0JVU1coZmxzKG9wLT5jbWQuYnVzd2lkdGgpIC0gMSkgfA0KPiArICAgICAgICAob3AtPmNtZC5k
-dHIgPyBPUF9DTURfRERSIDogMCk7DQo+IA0KPiAgICAgaWYgKG9wLT5hZGRyLm5ieXRlcykNCj4g
-ICAgICAgIHNzX2N0cmwgfD0gT1BfQUREUl9CWVRFUyhvcC0+YWRkci5uYnl0ZXMpIHwNCj4gLSAg
-ICAgICAgICAgIE9QX0FERFJfQlVTVyhmbHMob3AtPmFkZHIuYnVzd2lkdGgpIC0gMSk7DQo+ICsg
-ICAgICAgICAgICBPUF9BRERSX0JVU1coZmxzKG9wLT5hZGRyLmJ1c3dpZHRoKSAtIDEpIHwNCj4g
-KyAgICAgICAgICAgIChvcC0+YWRkci5kdHIgPyBPUF9BRERSX0REUiA6IDApOw0KPiANCj4gICAg
-IGlmIChvcC0+ZHVtbXkubmJ5dGVzKQ0KPiAgICAgICAgc3NfY3RybCB8PSBPUF9EVU1NWV9DWUMo
-b3AtPmR1bW15Lm5ieXRlcyk7DQo+IA0KPiAgICAgaWYgKG9wLT5kYXRhLm5ieXRlcykgew0KPiAt
-ICAgICAgc3NfY3RybCB8PSBPUF9EQVRBX0JVU1coZmxzKG9wLT5kYXRhLmJ1c3dpZHRoKSAtIDEp
-Ow0KPiArICAgICAgc3NfY3RybCB8PSBPUF9EQVRBX0JVU1coZmxzKG9wLT5kYXRhLmJ1c3dpZHRo
-KSAtIDEpIHwNCj4gKyAgICAgICAgICAgIChvcC0+ZGF0YS5kdHIgPyBPUF9EQVRBX0REUiA6IDAp
-Ow0KPiAgICAgICAgaWYgKG9wLT5kYXRhLmRpciA9PSBTUElfTUVNX0RBVEFfSU4pDQo+ICAgICAg
-ICAgICBzc19jdHJsIHw9IE9QX1JFQUQ7DQo+ICsgICAgICAgICBpZiAob3AtPmRhdGEuZHRyKQ0K
-PiArICAgICAgICAgICAgc3NfY3RybCB8PSBPUF9EUVNfRU47DQo+ICAgICB9DQo+IA0KPiAgICAg
-d3JpdGVsKHNzX2N0cmwsIG14aWMtPnJlZ3MgKyBTU19DVFJMKG1lbS0+c3BpLT5jaGlwX3NlbGVj
-dCkpOw0KPiBAQCAtMzk0LDcgKzQwOSwxMCBAQCBzdGF0aWMgaW50IG14aWNfc3BpX21lbV9leGVj
-X29wKHN0cnVjdCBzcGlfbWVtIA0KKm1lbSwNCj4gICAgIHdyaXRlbChyZWFkbChteGljLT5yZWdz
-ICsgSENfQ0ZHKSB8IEhDX0NGR19NQU5fQ1NfQVNTRVJULA0KPiAgICAgICAgICAgIG14aWMtPnJl
-Z3MgKyBIQ19DRkcpOw0KPiANCj4gLSAgIHJldCA9IG14aWNfc3BpX2RhdGFfeGZlcihteGljLCAm
-b3Bjb2RlLCBOVUxMLCAxKTsNCj4gKyAgIGZvciAoaSA9IDA7IGkgPCBvcC0+Y21kLm5ieXRlczsg
-aSsrKQ0KPiArICAgICAgY21kW2ldID0gb3AtPmNtZC5vcGNvZGUgPj4gKDggKiAob3AtPmNtZC5u
-Ynl0ZXMgLSBpIC0gMSkpOw0KPiArDQo+ICsgICByZXQgPSBteGljX3NwaV9kYXRhX3hmZXIobXhp
-YywgY21kLCBOVUxMLCBvcC0+Y21kLm5ieXRlcyk7DQo+ICAgICBpZiAocmV0KQ0KPiAgICAgICAg
-Z290byBvdXQ7DQo+IA0KPiBAQCAtNTY3LDcgKzU4NSw4IEBAIHN0YXRpYyBpbnQgbXhpY19zcGlf
-cHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSANCipwZGV2KQ0KPiAgICAgbWFzdGVyLT5iaXRz
-X3Blcl93b3JkX21hc2sgPSBTUElfQlBXX01BU0soOCk7DQo+ICAgICBtYXN0ZXItPm1vZGVfYml0
-cyA9IFNQSV9DUE9MIHwgU1BJX0NQSEEgfA0KPiAgICAgICAgICAgU1BJX1JYX0RVQUwgfCBTUElf
-VFhfRFVBTCB8DQo+IC0gICAgICAgICBTUElfUlhfUVVBRCB8IFNQSV9UWF9RVUFEOw0KPiArICAg
-ICAgICAgU1BJX1JYX1FVQUQgfCBTUElfVFhfUVVBRCB8DQo+ICsgICAgICAgICBTUElfUlhfT0NU
-QUwgfCBTUElfVFhfT0NUQUw7DQo+IA0KPiAgICAgbXhpY19zcGlfaHdfaW5pdChteGljKTsNCj4g
-DQo+IC0tIA0KPiAxLjkuMQ0KPiANCg0KVGhhbmtzLA0KWmhlbmd4dW4NCg0KDQpDT05GSURFTlRJ
-QUxJVFkgTk9URToNCg0KVGhpcyBlLW1haWwgYW5kIGFueSBhdHRhY2htZW50cyBtYXkgY29udGFp
-biBjb25maWRlbnRpYWwgaW5mb3JtYXRpb24gDQphbmQvb3IgcGVyc29uYWwgZGF0YSwgd2hpY2gg
-aXMgcHJvdGVjdGVkIGJ5IGFwcGxpY2FibGUgbGF3cy4gUGxlYXNlIGJlIA0KcmVtaW5kZWQgdGhh
-dCBkdXBsaWNhdGlvbiwgZGlzY2xvc3VyZSwgZGlzdHJpYnV0aW9uLCBvciB1c2Ugb2YgdGhpcyBl
-LW1haWwgDQooYW5kL29yIGl0cyBhdHRhY2htZW50cykgb3IgYW55IHBhcnQgdGhlcmVvZiBpcyBw
-cm9oaWJpdGVkLiBJZiB5b3UgcmVjZWl2ZSANCnRoaXMgZS1tYWlsIGluIGVycm9yLCBwbGVhc2Ug
-bm90aWZ5IHVzIGltbWVkaWF0ZWx5IGFuZCBkZWxldGUgdGhpcyBtYWlsIGFzIA0Kd2VsbCBhcyBp
-dHMgYXR0YWNobWVudChzKSBmcm9tIHlvdXIgc3lzdGVtLiBJbiBhZGRpdGlvbiwgcGxlYXNlIGJl
-IA0KaW5mb3JtZWQgdGhhdCBjb2xsZWN0aW9uLCBwcm9jZXNzaW5nLCBhbmQvb3IgdXNlIG9mIHBl
-cnNvbmFsIGRhdGEgaXMgDQpwcm9oaWJpdGVkIHVubGVzcyBleHByZXNzbHkgcGVybWl0dGVkIGJ5
-IHBlcnNvbmFsIGRhdGEgcHJvdGVjdGlvbiBsYXdzLiANClRoYW5rIHlvdSBmb3IgeW91ciBhdHRl
-bnRpb24gYW5kIGNvb3BlcmF0aW9uLg0KDQpNYWNyb25peCBJbnRlcm5hdGlvbmFsIENvLiwgTHRk
-Lg0KDQo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT0NCg0KDQoNCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCg0KQ09ORklERU5U
-SUFMSVRZIE5PVEU6DQoNClRoaXMgZS1tYWlsIGFuZCBhbnkgYXR0YWNobWVudHMgbWF5IGNvbnRh
-aW4gY29uZmlkZW50aWFsIGluZm9ybWF0aW9uIGFuZC9vciBwZXJzb25hbCBkYXRhLCB3aGljaCBp
-cyBwcm90ZWN0ZWQgYnkgYXBwbGljYWJsZSBsYXdzLiBQbGVhc2UgYmUgcmVtaW5kZWQgdGhhdCBk
-dXBsaWNhdGlvbiwgZGlzY2xvc3VyZSwgZGlzdHJpYnV0aW9uLCBvciB1c2Ugb2YgdGhpcyBlLW1h
-aWwgKGFuZC9vciBpdHMgYXR0YWNobWVudHMpIG9yIGFueSBwYXJ0IHRoZXJlb2YgaXMgcHJvaGli
-aXRlZC4gSWYgeW91IHJlY2VpdmUgdGhpcyBlLW1haWwgaW4gZXJyb3IsIHBsZWFzZSBub3RpZnkg
-dXMgaW1tZWRpYXRlbHkgYW5kIGRlbGV0ZSB0aGlzIG1haWwgYXMgd2VsbCBhcyBpdHMgYXR0YWNo
-bWVudChzKSBmcm9tIHlvdXIgc3lzdGVtLiBJbiBhZGRpdGlvbiwgcGxlYXNlIGJlIGluZm9ybWVk
-IHRoYXQgY29sbGVjdGlvbiwgcHJvY2Vzc2luZywgYW5kL29yIHVzZSBvZiBwZXJzb25hbCBkYXRh
-IGlzIHByb2hpYml0ZWQgdW5sZXNzIGV4cHJlc3NseSBwZXJtaXR0ZWQgYnkgcGVyc29uYWwgZGF0
-YSBwcm90ZWN0aW9uIGxhd3MuIFRoYW5rIHlvdSBmb3IgeW91ciBhdHRlbnRpb24gYW5kIGNvb3Bl
-cmF0aW9uLg0KDQpNYWNyb25peCBJbnRlcm5hdGlvbmFsIENvLiwgTHRkLg0KDQo9PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT0NCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+
+> 
+> On Wed, Feb 17, 2021 at 08:58:12PM +0000, Winkler, Tomas wrote:
+> >>
+> >> On Tue, 16 Feb 2021, Tomas Winkler <tomas.winkler@intel.com> wrote:
+> >> > Add the platform driver for i915 on-die spi device, exposed via mfd
+> >> > framework.
+> >> >
+> >> > Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+> >> > Cc: Lucas De Marchi <lucas.demarchi@intel.com>
+> >> > Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+> >> > ---
+> >> >  drivers/gpu/drm/i915/Kconfig             |   2 +
+> >> >  drivers/gpu/drm/i915/Makefile            |   3 +
+> >> >  drivers/gpu/drm/i915/spi/intel_spi_drv.c | 116
+> >> > +++++++++++++++++++++++
+> >> >  3 files changed, 121 insertions(+)  create mode 100644
+> >> > drivers/gpu/drm/i915/spi/intel_spi_drv.c
+> >> >
+> >> > diff --git a/drivers/gpu/drm/i915/Kconfig
+> >> > b/drivers/gpu/drm/i915/Kconfig index abcaa8da45ac..13c870e5878e
+> >> > 100644
+> >> > --- a/drivers/gpu/drm/i915/Kconfig
+> >> > +++ b/drivers/gpu/drm/i915/Kconfig
+> >> > @@ -27,6 +27,8 @@ config DRM_I915
+> >> >  	select CEC_CORE if CEC_NOTIFIER
+> >> >  	select VMAP_PFN
+> >> >  	select MFD_CORE
+> >> > +	select MTD
+> >>
+> >> Selecting MTD does not seem to be a popular thing to do, which is
+> >> usually a clue it's probably the wrong thing to do.
+> >Depends, if it is not selected you'll end with wrongly configured system.
+> 
+> no. I believe the idea is that having a CONFIG_I915_SPI, you could do
+> 
+> 	depends on MTD
+> 
+> like the other drivers doing similar thing:
+> 
+> 	git grep MTD -- ':(exclude)drivers/mtd' ':(exclude)arch/' '*Kconfig'
+ I know the pattern and it can be done, the issue is that mtd is used mostly in embedded systems so it is not selected by the desktop distros.
+The intel spi both on PCH and in GFX takes this into different direction and usage.
+
+Thanks
+Tomas
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
