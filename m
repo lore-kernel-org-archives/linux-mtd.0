@@ -2,87 +2,68 @@ Return-Path: <SRS0=BfTn=HX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EA18C433DB
-	for <linux-mtd@archiver.kernel.org>; Sun, 21 Feb 2021 07:12:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F694C433E0
+	for <linux-mtd@archiver.kernel.org>; Sun, 21 Feb 2021 20:03:05 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1857864EB3
-	for <linux-mtd@archiver.kernel.org>; Sun, 21 Feb 2021 07:12:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1857864EB3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 5ED3364E61
+	for <linux-mtd@archiver.kernel.org>; Sun, 21 Feb 2021 20:03:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5ED3364E61
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:Message-ID:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=+tEksMz3v8wqnkbHwe3sLat83AQQZayHFJqrvccqeNY=; b=RJAiquxugN4EjGxeu86jFJFvl
-	INSXYpg/J0GI6JKNYoTp/TskfF3puY5MpzWJtZME4dJcERcZD9Avwv2ef2U5gAXv8NTTXlBTYRQfd
-	Jdy1bgLl+BvoRrKJw//Hpaw0oYD5hCpd6k4mwnwON+/wkRaZhFsAYWO0bTEiIDpK3FU3MbPYbrXP6
-	XaQGbMbpOiBGL7mZHtIuWTDCrI9GJH6WrtsJ+irWbJ3Tm/yeVPsOkDl3pR9ACWfolQV33Zrt+Br5n
-	PgUk2Iyo2j4sFKaC/ia4Oejd6v1v5WjiRvXdqR3dAHrNSZg9YHPnMD7MFGgRjlt0YQpKbYfJcNBTZ
-	74vGq6xlQ==;
+	List-Unsubscribe:List-Id:MIME-Version:Subject:Message-ID:To:From:Date:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=nUi04wXZsi1MPHOeWpGXm3beCFCibpa3H9wWuK7YUGk=; b=Jbw0DV00WChBUKOfKuaIMwTjh8
+	6BY3tMMIKOUlEAgNVENYJxTjAB+HUVg3VDHB4Bm0L6uKq9TZxvi6liapXXuvWZm7+gsGGsGusHKGU
+	iGvqmg9hKN+Cgkn0JTZqQWGGQ2gbZXHJ4mcNkS0r9MGoeLxoPdSkai2YRgiZy9ZAdYH96rgeNyNAp
+	xnpclA7Pqkrq3s0lPGKB2IriTO53p18gMij8+jt9IJR9Zuco0MAP6Fa8mE4HajvjzeunD2pcjRo09
+	0twz2CPQMj0tigZRqHEFHyxNxYQ7ym7/eFYC18mSoCFhMrN56Eo2Ce1Ya5oHpDp0oCmRw0xdPhDMn
+	xY9JE4ug==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lDitb-00084L-FV; Sun, 21 Feb 2021 07:11:11 +0000
-Received: from mga18.intel.com ([134.134.136.126])
+	id 1lDuvt-0006Ql-HR; Sun, 21 Feb 2021 20:02:21 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lDitX-00083n-QM
- for linux-mtd@lists.infradead.org; Sun, 21 Feb 2021 07:11:09 +0000
-IronPort-SDR: NXSyOwd3X2uwYTiyx2BC74oZRO81ErQLpLEFEO2l3cAwkaywm7z6EnHLnxbKlEch8b335xDkXG
- WglUn5YOzz8A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9901"; a="171857478"
-X-IronPort-AV: E=Sophos;i="5.81,194,1610438400"; d="scan'208";a="171857478"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Feb 2021 23:11:01 -0800
-IronPort-SDR: XzXDxqvinnUrz9XmPeC2K2Lj7SyjzKnATVfxeAUe93QnyRo9X8j2XmsSBsicyw+VdojkpN/AVx
- /vvp5SG05thA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,194,1610438400"; d="scan'208";a="582314050"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
- by orsmga005.jf.intel.com with ESMTP; 20 Feb 2021 23:11:00 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Sat, 20 Feb 2021 23:11:00 -0800
-Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Sat, 20 Feb 2021 23:10:59 -0800
-Received: from hasmsx602.ger.corp.intel.com ([10.184.107.142]) by
- HASMSX602.ger.corp.intel.com ([10.184.107.142]) with mapi id 15.01.2106.002;
- Sun, 21 Feb 2021 09:10:57 +0200
-From: "Winkler, Tomas" <tomas.winkler@intel.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Subject: RE: [RFC PATCH 0/9] drm/i915/spi: discrete graphics internal spi
-Thread-Topic: [RFC PATCH 0/9] drm/i915/spi: discrete graphics internal spi
-Thread-Index: AQHXBJBTlGMG4b5GwU+w3NO1EU5QQapbRLqAgAC+HMCABjNiUA==
-Date: Sun, 21 Feb 2021 07:10:57 +0000
-Message-ID: <7601e7f0024c41fb9b454a3c50b02173@intel.com>
-References: <20210216181925.650082-1-tomas.winkler@intel.com>
- <CAFLxGvwP5-O5DHQ07Fs_GnG12dsK24mer8LJfhz2z2UqW9e5cQ@mail.gmail.com>
- <cb20e706d494458a8957252eeacfb1da@intel.com>
-In-Reply-To: <cb20e706d494458a8957252eeacfb1da@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.184.70.1]
+ id 1lDuvn-0006Py-Fo
+ for linux-mtd@lists.infradead.org; Sun, 21 Feb 2021 20:02:16 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 74C7A60A357B;
+ Sun, 21 Feb 2021 21:02:05 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id fjj8azMOkIez; Sun, 21 Feb 2021 21:02:05 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id E987460A3582;
+ Sun, 21 Feb 2021 21:02:04 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id S8tQaMGGhfW2; Sun, 21 Feb 2021 21:02:04 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+ by lithops.sigma-star.at (Postfix) with ESMTP id B8A7160A357B;
+ Sun, 21 Feb 2021 21:02:04 +0100 (CET)
+Date: Sun, 21 Feb 2021 21:02:04 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: torvalds <torvalds@linux-foundation.org>
+Message-ID: <1860844222.14898.1613937724518.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] MTD changes for 5.12
 MIME-Version: 1.0
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Index: 7+C02FdulTyKA9J1LISl0R0IkBqhDg==
+Thread-Topic: MTD changes for 5.12
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210221_021108_061750_B143D216 
-X-CRM114-Status: GOOD (  41.08  )
+X-CRM114-CacheID: sfid-20210221_150215_660802_C2744FB7 
+X-CRM114-Status: GOOD (  11.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,109 +76,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
- "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
- Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, "Usyskin,
- Alexander" <alexander.usyskin@intel.com>,
- Jani Nikula <jani.nikula@linux.intel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Vivi,
- Rodrigo" <rodrigo.vivi@intel.com>, "Lubart, Vitaly" <vitaly.lubart@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-> 
-> 
-> >
-> > )On Tue, Feb 16, 2021 at 7:26 PM Tomas Winkler
-> > <tomas.winkler@intel.com>
-> > wrote:
-> > > Because the graphic card may undergo reset at any time and basically
-> > > hot unplug all its child devices, this series also provides a fix to
-> > > the mtd framework to make the reset graceful.
-> >
-> > Well, just because MTD does not work as you expect, it is not broken.
-> > :-)
-> I'm not saying it's broken by design it just didn't fit this use case.
-> >
-> > In your case i915_spi_remove() blindly removes the MTD, this is not
-> allowed.
-> > You may remove the MTD only if there are no more users.
-> 
-> I'm not sure it's good idea to stall the removal on user space.
-> This is just asking for a deadlock as user space is not getting what it needs and
-> may stall I think it's better the user space will fail gracefully the hw is not
-> accessible in that stage anyway.
-> >
-> > The current model in MTD is that the driver is in charge of all life
-> > cycle management.
-> > Using ->_get_device() and ->_put_device() a driver can implement
-> > refcounting and deny new users if the MTD is about to disappear.
-> 
-> Please note that this use case you are describing is still valid, I haven't
-> removed _get_device() _put_device() handlers, You can still stall the
-> removal of mtd, If this is not that way it's a bug
-> 
-> >
-> > In the upcoming MUSE driver that mechanism is used too.
-> > MUSE allows to implement a MTD in userspace. So the FUSE server can
-> > disappear at
-> > *any* time. Just like in your case. Even worse, it can be hostile.
-> > In MUSE the MTD life time is tied to the FUSE connection object,
-> > muse_mtd_get_device()
-> > increments the FUSE connection refcount, and muse_mtd_put_device()
-> > decrements it.
-> > That means if the FUSE server disappears all of a sudden but the MTD
-> > still has users, the MTD will stay. But in this state no new
-> > references are allowed and all MTD operations of existing users will fail
-> with -ENOTCONN (via FUSE).
-> > As soon the last user is gone (can be userspace via /dev/mtd* or a
-> > in-kernel user such as UBIFS), the MTD will be removed.
-> 
-> But in our case whole i915 is taken hostage, it cannot reset because of
-> misbehaving user space.
-> 
-> > For the full details, please see:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/rw/misc.git/tree/fs/fu
-> > se/m
-> > use.c?h=muse_v3#n1034
-> >
-> > Is in your case *really* not possible to do it that way?
-> 
-> Maybe it's possible but I don't think it's good to stall i915 removal. Also It's
-> very easily to crash the kernel.
-> I've posted a sniped to the mailing list that tried to do that, the kernel still has
-> crashed. Can you looked at?
-> 
-> > On the other hand, your last patch moves some part of the life cycle
-> > management into MTD core.
-> > The MTD will stay as long it has users.
-> > But that's only one part. The driver is still in charge to make sure
-> > that all operations fail immediately and that no new users arrive.
-> 
-> I think that case I would need to validate every HW access to make sure it's
-> still valid.
-> 
-> > If we want to do all in MTD core we'd have to do it like SCSI disks.
-> > That means having devices states such as SDEV_RUNNING, SDEV_CANCEL,
-> > SDEV_OFFLINE, ....
-> > That way the MTD could be shutdown gracefully, first no new users are
-> > allowed, then ongoing operations will be cancelled, next all operation
-> > will fail with -EIO or such, then the device is being removed from
-> > sysfs and finally if the last user is gone, the MTD can be removed.
-> 
-> Isn't that already that way? You cannot open new handler. That I would need
-> more of your insights.
-> >
-> > I'm not sure whether we want to take that path.
-
-Hi Richard is there any way we can try to unclutter this ?
-
-Thanks
-Tomas
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+TGludXMsCgpUaGUgZm9sbG93aW5nIGNoYW5nZXMgc2luY2UgY29tbWl0IDE5YzMyOWY2ODA4OTk1
+YjE0MmIzOTY2MzAxZjIxN2M4MzFlN2NmMzE6CgogIExpbnV4IDUuMTEtcmM0ICgyMDIxLTAxLTE3
+IDE2OjM3OjA1IC0wODAwKQoKYXJlIGF2YWlsYWJsZSBpbiB0aGUgR2l0IHJlcG9zaXRvcnkgYXQ6
+CgogIGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9tdGQvbGlu
+dXguZ2l0IHRhZ3MvbXRkL2Zvci01LjEyCgpmb3IgeW91IHRvIGZldGNoIGNoYW5nZXMgdXAgdG8g
+NmU5ZGZmNmZlM2ZiYzQ1MmYxNjU2NmU0YTdlMjkzYjBkZWNlZmRiYToKCiAgZHQtYmluZGluZ3M6
+IG10ZDogYWRkIGJpbmRpbmcgZm9yIEJDTTQ5MDggcGFydGl0aW9ucyAoMjAyMS0wMi0xMiAyMjoy
+NDo0OCArMDEwMCkKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0KTVREIGNvcmUgY2hhbmdlczoKKiBJbml0aWFsIHN1cHBvcnQg
+Zm9yIEJDTTQ5MDggcGFydGl0aW9ucwoKUmF3IE5BTkQgY29udHJvbGxlciBkcml2ZXJzOgoqIElu
+dGVsOiBGaXggYW4gZXJyb3IgaGFuZGxpbmcgcGF0aCBpbiAnZWJ1X2RtYV9zdGFydCgpJwoqIFRh
+bmdvOiBSZW1vdmUgdGhlIGRyaXZlcgoqIE1hcnZlbGw6IENvbnZlcnQgY29tbWEgdG8gc2VtaWNv
+bG9uCiogTVhDOiBDb252ZXJ0IGNvbW1hIHRvIHNlbWljb2xvbgoqIFFjb206IEFkZCBzdXBwb3J0
+IGZvciBRY29tIFNNRU0gcGFyc2VyCgpSZWxhdGVkIE1URCBjaGFuZ2VzOgoqIHBhcnNlcnM6IEFk
+ZCBRY29tIFNNRU0gcGFyc2VyCgpTUEkgTk9SIGNvcmUgY2hhbmdlczoKKiBBZGQgbm9uLXVuaWZv
+cm0gZXJhc2UgZml4ZXMuCiogQWRkIEdsb2JhbCBCbG9jayBVbmxvY2sgY29tbWFuZC4gSXQgaXMg
+ZGVmaW5lZCBieSBmZXcgZmxhc2gKIHZlbmRvcnMsIGFuZCBpdCBpcyB1c2VkIGZvciBub3cganVz
+dCBieSBzc3QuCgpTUEkgTk9SIGNvbnRyb2xsZXIgZHJpdmVycyBjaGFuZ2VzOgoqIGludGVsLXNw
+aTogQWRkIHN1cHBvcnQgZm9yIEludGVsIEFsZGVyIExha2UtUCBTUEkgc2VyaWFsIGZsYXNoLgoq
+IGhpc2ktc2ZjOiBQdXQgY2hpbGQgbm9kZSBucCBvbiBlcnJvciBwYXRoLgoKLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpBcm5k
+IEJlcmdtYW5uICgxKToKICAgICAgbXRkOiByYXduYW5kOiB0YW5nbzogUmVtb3ZlIHRoZSBkcml2
+ZXIKCkNocmlzdG9waGUgSkFJTExFVCAoMSk6CiAgICAgIG10ZDogcmF3bmFuZDogaW50ZWw6IEZp
+eCBhbiBlcnJvciBoYW5kbGluZyBwYXRoIGluICdlYnVfZG1hX3N0YXJ0KCknCgpDb2xpbiBJYW4g
+S2luZyAoMSk6CiAgICAgIG10ZDogcmVtb3ZlIHJlZHVuZGFudCBhc3NpZ25tZW50IHRvIHBvaW50
+ZXIgZWIKCkRhbiBDYXJwZW50ZXIgKDEpOgogICAgICBtdGQ6IHBhcnNlcjogaW1hZ2V0YWc6IGZp
+eCBlcnJvciBjb2RlcyBpbiBiY205NjN4eF9wYXJzZV9pbWFnZXRhZ19wYXJ0aXRpb25zKCkKCk1h
+bml2YW5uYW4gU2FkaGFzaXZhbSAoNCk6CiAgICAgIGR0LWJpbmRpbmdzOiBtdGQ6IHBhcnRpdGlv
+bnM6IEFkZCBiaW5kaW5nIGZvciBRY29tIFNNRU0gcGFyc2VyCiAgICAgIG10ZDogcGFyc2Vyczog
+QWRkIFFjb20gU01FTSBwYXJzZXIKICAgICAgbXRkOiByYXduYW5kOiBxY29tOiBBZGQgc3VwcG9y
+dCBmb3IgUWNvbSBTTUVNIHBhcnNlcgogICAgICBtdGQ6IHBhcnNlcnM6IGFmczogRml4IGZyZWVp
+bmcgdGhlIHBhcnQgbmFtZSBtZW1vcnkgaW4gZmFpbHVyZQoKTWlrYSBXZXN0ZXJiZXJnICgxKToK
+ICAgICAgbXRkOiBzcGktbm9yOiBpbnRlbC1zcGk6IEFkZCBzdXBwb3J0IGZvciBJbnRlbCBBbGRl
+ciBMYWtlLVAgU1BJIHNlcmlhbCBmbGFzaAoKUGFuIEJpYW4gKDEpOgogICAgICBtdGQ6IHNwaS1u
+b3I6IGhpc2ktc2ZjOiBQdXQgY2hpbGQgbm9kZSBucCBvbiBlcnJvciBwYXRoCgpSYWZhxYIgTWnF
+gmVja2kgKDIpOgogICAgICBkdC1iaW5kaW5nczogbXRkOiBtb3ZlIHBhcnRpdGlvbiBiaW5kaW5n
+IHRvIGl0cyBvd24gZmlsZQogICAgICBkdC1iaW5kaW5nczogbXRkOiBhZGQgYmluZGluZyBmb3Ig
+QkNNNDkwOCBwYXJ0aXRpb25zCgpSaWNoYXJkIFdlaW5iZXJnZXIgKDIpOgogICAgICBNZXJnZSB0
+YWcgJ25hbmQvZm9yLTUuMTInIG9mIGdpdDovL2dpdC5rZXJuZWwub3JnLy4uLi9tdGQvbGludXgg
+aW50byBtdGQvbmV4dAogICAgICBNZXJnZSB0YWcgJ3NwaS1ub3IvZm9yLTUuMTInIG9mIGdpdDov
+L2dpdC5rZXJuZWwub3JnLy4uLi9tdGQvbGludXggaW50byBtdGQvbmV4dAoKVGFrYWhpcm8gS3V3
+YW5vICg0KToKICAgICAgbXRkOiBzcGktbm9yOiBzZmRwOiBGaXggd3JvbmcgZXJhc2UgdHlwZSBi
+aXRtYXNrIGZvciBvdmVybGFpZCByZWdpb24KICAgICAgbXRkOiBzcGktbm9yOiBzZmRwOiBGaXgg
+bGFzdCBlcmFzZSByZWdpb24gbWFya2luZwogICAgICBtdGQ6IHNwaS1ub3I6IGNvcmU6IEZpeCBl
+cmFzZSB0eXBlIGRpc2NvdmVyeSBmb3Igb3ZlcmxhaWQgcmVnaW9uCiAgICAgIG10ZDogc3BpLW5v
+cjogY29yZTogQWRkIGVyYXNlIHNpemUgY2hlY2sgZm9yIGVyYXNlIGNvbW1hbmQgaW5pdGlhbGl6
+YXRpb24KClR1ZG9yIEFtYmFydXMgKDIpOgogICAgICBtdGQ6IHNwaS1ub3I6IEFkZCBHbG9iYWwg
+QmxvY2sgVW5sb2NrIGNvbW1hbmQKICAgICAgbXRkOiBzcGktbm9yOiBzc3Q6IEFkZCBzdXBwb3J0
+IGZvciBHbG9iYWwgVW5sb2NrIG9uIHNzdDI2dmYKClpoZW5nIFlvbmdqdW4gKDQpOgogICAgICBt
+dGQ6IHJhd25hbmQ6IG14YzogQ29udmVydCBjb21tYSB0byBzZW1pY29sb24KICAgICAgbXRkOiBj
+b252ZXJ0IGNvbW1hIHRvIHNlbWljb2xvbgogICAgICBtdGQ6IHN0X3NwaV9mc206IGNvbnZlcnQg
+Y29tbWEgdG8gc2VtaWNvbG9uCiAgICAgIG10ZDogcmF3bmFuZDogbWFydmVsbDogY29udmVydCBj
+b21tYSB0byBzZW1pY29sb24KCnlhbmdlcmt1biAoMSk6CiAgICAgIG10ZDogcGhyYW06IHVzZSBk
+aXZfdTY0X3JlbSB0byBzdG9wIG92ZXJ3cml0ZSBsZW4gaW4gcGhyYW1fc2V0dXAKCiAuLi4vbXRk
+L3BhcnRpdGlvbnMvYnJjbSxiY200OTA4LXBhcnRpdGlvbnMueWFtbCAgICB8ICA3MCArKwogLi4u
+L2JpbmRpbmdzL210ZC9wYXJ0aXRpb25zL2ZpeGVkLXBhcnRpdGlvbnMueWFtbCAgfCAgMzMgKy0K
+IC4uLi9iaW5kaW5ncy9tdGQvcGFydGl0aW9ucy9wYXJ0aXRpb24ueWFtbCAgICAgICAgIHwgIDQ3
+ICsrCiAuLi4vYmluZGluZ3MvbXRkL3BhcnRpdGlvbnMvcWNvbSxzbWVtLXBhcnQueWFtbCAgICB8
+ICAzMyArCiBkcml2ZXJzL210ZC9kZXZpY2VzL3BocmFtLmMgICAgICAgICAgICAgICAgICAgICAg
+ICB8ICAgNiArLQogZHJpdmVycy9tdGQvZGV2aWNlcy9zdF9zcGlfZnNtLmMgICAgICAgICAgICAg
+ICAgICAgfCAgIDIgKy0KIGRyaXZlcnMvbXRkL21hcHMvcGNpLmMgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIHwgICA4ICstCiBkcml2ZXJzL210ZC9tdGRzd2FwLmMgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICB8ICAgMSAtCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9LY29uZmlnICAgICAg
+ICAgICAgICAgICAgICAgICB8ICAgNyAtCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9NYWtlZmlsZSAg
+ICAgICAgICAgICAgICAgICAgICB8ICAgMSAtCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9pbnRlbC1u
+YW5kLWNvbnRyb2xsZXIuYyAgICAgICB8ICAgNiArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvbWFy
+dmVsbF9uYW5kLmMgICAgICAgICAgICAgICAgfCAgIDIgKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3
+L214Y19uYW5kLmMgICAgICAgICAgICAgICAgICAgIHwgICAyICstCiBkcml2ZXJzL210ZC9uYW5k
+L3Jhdy9xY29tX25hbmRjLmMgICAgICAgICAgICAgICAgICB8ICAgNCArLQogZHJpdmVycy9tdGQv
+bmFuZC9yYXcvdGFuZ29fbmFuZC5jICAgICAgICAgICAgICAgICAgfCA3MjcgLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tCiBkcml2ZXJzL210ZC9wYXJzZXJzL0tjb25maWcgICAgICAgICAgICAgICAgICAg
+ICAgICB8ICAgOCArCiBkcml2ZXJzL210ZC9wYXJzZXJzL01ha2VmaWxlICAgICAgICAgICAgICAg
+ICAgICAgICB8ICAgMSArCiBkcml2ZXJzL210ZC9wYXJzZXJzL2Fmcy5jICAgICAgICAgICAgICAg
+ICAgICAgICAgICB8ICAgNCArLQogZHJpdmVycy9tdGQvcGFyc2Vycy9wYXJzZXJfaW1hZ2V0YWcu
+YyAgICAgICAgICAgICAgfCAgIDQgKwogZHJpdmVycy9tdGQvcGFyc2Vycy9xY29tc21lbXBhcnQu
+YyAgICAgICAgICAgICAgICAgfCAxNzAgKysrKysKIGRyaXZlcnMvbXRkL3NwaS1ub3IvY29udHJv
+bGxlcnMvaGlzaS1zZmMuYyAgICAgICAgIHwgICA0ICstCiBkcml2ZXJzL210ZC9zcGktbm9yL2Nv
+bnRyb2xsZXJzL2ludGVsLXNwaS1wY2kuYyAgICB8ICAgMSArCiBkcml2ZXJzL210ZC9zcGktbm9y
+L2NvcmUuYyAgICAgICAgICAgICAgICAgICAgICAgICB8ICA0OSArLQogZHJpdmVycy9tdGQvc3Bp
+LW5vci9jb3JlLmggICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDIgKwogZHJpdmVycy9tdGQv
+c3BpLW5vci9zZmRwLmMgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDUgKy0KIGRyaXZlcnMv
+bXRkL3NwaS1ub3Ivc3N0LmMgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDUyICstCiBpbmNs
+dWRlL2xpbnV4L210ZC9zcGktbm9yLmggICAgICAgICAgICAgICAgICAgICAgICB8ICAgMSArCiAy
+NyBmaWxlcyBjaGFuZ2VkLCA0NTcgaW5zZXJ0aW9ucygrKSwgNzkzIGRlbGV0aW9ucygtKQogY3Jl
+YXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvcGFy
+dGl0aW9ucy9icmNtLGJjbTQ5MDgtcGFydGl0aW9ucy55YW1sCiBjcmVhdGUgbW9kZSAxMDA2NDQg
+RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9wYXJ0aXRpb25zL3BhcnRpdGlv
+bi55YW1sCiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
+bmdzL210ZC9wYXJ0aXRpb25zL3Fjb20sc21lbS1wYXJ0LnlhbWwKIGRlbGV0ZSBtb2RlIDEwMDY0
+NCBkcml2ZXJzL210ZC9uYW5kL3Jhdy90YW5nb19uYW5kLmMKIGNyZWF0ZSBtb2RlIDEwMDY0NCBk
+cml2ZXJzL210ZC9wYXJzZXJzL3Fjb21zbWVtcGFydC5jCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFp
+bGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
+dXgtbXRkLwo=
