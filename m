@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F694C433E0
-	for <linux-mtd@archiver.kernel.org>; Sun, 21 Feb 2021 20:03:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21FE2C433E0
+	for <linux-mtd@archiver.kernel.org>; Sun, 21 Feb 2021 20:03:24 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5ED3364E61
-	for <linux-mtd@archiver.kernel.org>; Sun, 21 Feb 2021 20:03:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5ED3364E61
+	by mail.kernel.org (Postfix) with ESMTPS id D4EF064E76
+	for <linux-mtd@archiver.kernel.org>; Sun, 21 Feb 2021 20:03:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D4EF064E76
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,47 +23,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:Subject:Message-ID:To:From:Date:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=nUi04wXZsi1MPHOeWpGXm3beCFCibpa3H9wWuK7YUGk=; b=Jbw0DV00WChBUKOfKuaIMwTjh8
-	6BY3tMMIKOUlEAgNVENYJxTjAB+HUVg3VDHB4Bm0L6uKq9TZxvi6liapXXuvWZm7+gsGGsGusHKGU
-	iGvqmg9hKN+Cgkn0JTZqQWGGQ2gbZXHJ4mcNkS0r9MGoeLxoPdSkai2YRgiZy9ZAdYH96rgeNyNAp
-	xnpclA7Pqkrq3s0lPGKB2IriTO53p18gMij8+jt9IJR9Zuco0MAP6Fa8mE4HajvjzeunD2pcjRo09
-	0twz2CPQMj0tigZRqHEFHyxNxYQ7ym7/eFYC18mSoCFhMrN56Eo2Ce1Ya5oHpDp0oCmRw0xdPhDMn
-	xY9JE4ug==;
+	bh=Hh9WQjQw72TrKjn8UEgejKx3YRgjuIxgxNZm9gr/ilI=; b=oBKm2OcJLcytaocyQ4dSg8BaOs
+	h7OiAxuSwdDm3IZWIwsAr1NLpof/L7kG35VihGwrwK1K4XSg6Aif2Km97bLlbjUmW2sLVDG5QxO8d
+	uEc4V/arh/xU4pOkF6LUyJXVsoG60MUlFX9ESyI+tVLG0Cr/oXqyoXHHEf9i68/DwNl1ix2PlPg9u
+	asdAvzbNTc6QPuX5nqCZLmh1KNssvwVbQ92YSeFZBTm3Pb/6rFYHOSrAwJL4VO5S4I8tK0/krHjz+
+	sGYbrHd2J+CUPhX3BF2GcNrAzBrXJbeFxJ7AEcKXcbd6jponmxARycHx8yLSAx/lfMVj939l4KJ8u
+	LCisew1Q==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lDuvt-0006Ql-HR; Sun, 21 Feb 2021 20:02:21 +0000
+	id 1lDuvu-0006R1-JK; Sun, 21 Feb 2021 20:02:22 +0000
 Received: from lithops.sigma-star.at ([195.201.40.130])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lDuvn-0006Py-Fo
+ id 1lDuvn-0006Q7-M4
  for linux-mtd@lists.infradead.org; Sun, 21 Feb 2021 20:02:16 +0000
 Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 74C7A60A357B;
- Sun, 21 Feb 2021 21:02:05 +0100 (CET)
+ by lithops.sigma-star.at (Postfix) with ESMTP id DECBB60A3582;
+ Sun, 21 Feb 2021 21:02:14 +0100 (CET)
 Received: from lithops.sigma-star.at ([127.0.0.1])
  by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id fjj8azMOkIez; Sun, 21 Feb 2021 21:02:05 +0100 (CET)
+ with ESMTP id CxQ-5D8vKsRy; Sun, 21 Feb 2021 21:02:14 +0100 (CET)
 Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id E987460A3582;
- Sun, 21 Feb 2021 21:02:04 +0100 (CET)
+ by lithops.sigma-star.at (Postfix) with ESMTP id 9B40660A3587;
+ Sun, 21 Feb 2021 21:02:14 +0100 (CET)
 Received: from lithops.sigma-star.at ([127.0.0.1])
  by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id S8tQaMGGhfW2; Sun, 21 Feb 2021 21:02:04 +0100 (CET)
+ with ESMTP id jVmISwEKIoao; Sun, 21 Feb 2021 21:02:14 +0100 (CET)
 Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
- by lithops.sigma-star.at (Postfix) with ESMTP id B8A7160A357B;
- Sun, 21 Feb 2021 21:02:04 +0100 (CET)
-Date: Sun, 21 Feb 2021 21:02:04 +0100 (CET)
+ by lithops.sigma-star.at (Postfix) with ESMTP id 8270B60A3582;
+ Sun, 21 Feb 2021 21:02:14 +0100 (CET)
+Date: Sun, 21 Feb 2021 21:02:14 +0100 (CET)
 From: Richard Weinberger <richard@nod.at>
 To: torvalds <torvalds@linux-foundation.org>
-Message-ID: <1860844222.14898.1613937724518.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] MTD changes for 5.12
+Message-ID: <2079847149.14899.1613937734472.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] JFFS2/UBIFS and UBI changes for 5.12
 MIME-Version: 1.0
 X-Originating-IP: [195.201.40.130]
 X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Index: 7+C02FdulTyKA9J1LISl0R0IkBqhDg==
-Thread-Topic: MTD changes for 5.12
+Thread-Index: TrGKkieyaZn28el165n92fOXdblJ5w==
+Thread-Topic: JFFS2/UBIFS and UBI changes for 5.12
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210221_150215_660802_C2744FB7 
-X-CRM114-Status: GOOD (  11.46  )
+X-CRM114-CacheID: sfid-20210221_150216_390641_933FF519 
+X-CRM114-Status: UNSURE (   7.22  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,106 +76,78 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-TGludXMsCgpUaGUgZm9sbG93aW5nIGNoYW5nZXMgc2luY2UgY29tbWl0IDE5YzMyOWY2ODA4OTk1
-YjE0MmIzOTY2MzAxZjIxN2M4MzFlN2NmMzE6CgogIExpbnV4IDUuMTEtcmM0ICgyMDIxLTAxLTE3
-IDE2OjM3OjA1IC0wODAwKQoKYXJlIGF2YWlsYWJsZSBpbiB0aGUgR2l0IHJlcG9zaXRvcnkgYXQ6
-CgogIGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9tdGQvbGlu
-dXguZ2l0IHRhZ3MvbXRkL2Zvci01LjEyCgpmb3IgeW91IHRvIGZldGNoIGNoYW5nZXMgdXAgdG8g
-NmU5ZGZmNmZlM2ZiYzQ1MmYxNjU2NmU0YTdlMjkzYjBkZWNlZmRiYToKCiAgZHQtYmluZGluZ3M6
-IG10ZDogYWRkIGJpbmRpbmcgZm9yIEJDTTQ5MDggcGFydGl0aW9ucyAoMjAyMS0wMi0xMiAyMjoy
-NDo0OCArMDEwMCkKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0KTVREIGNvcmUgY2hhbmdlczoKKiBJbml0aWFsIHN1cHBvcnQg
-Zm9yIEJDTTQ5MDggcGFydGl0aW9ucwoKUmF3IE5BTkQgY29udHJvbGxlciBkcml2ZXJzOgoqIElu
-dGVsOiBGaXggYW4gZXJyb3IgaGFuZGxpbmcgcGF0aCBpbiAnZWJ1X2RtYV9zdGFydCgpJwoqIFRh
-bmdvOiBSZW1vdmUgdGhlIGRyaXZlcgoqIE1hcnZlbGw6IENvbnZlcnQgY29tbWEgdG8gc2VtaWNv
-bG9uCiogTVhDOiBDb252ZXJ0IGNvbW1hIHRvIHNlbWljb2xvbgoqIFFjb206IEFkZCBzdXBwb3J0
-IGZvciBRY29tIFNNRU0gcGFyc2VyCgpSZWxhdGVkIE1URCBjaGFuZ2VzOgoqIHBhcnNlcnM6IEFk
-ZCBRY29tIFNNRU0gcGFyc2VyCgpTUEkgTk9SIGNvcmUgY2hhbmdlczoKKiBBZGQgbm9uLXVuaWZv
-cm0gZXJhc2UgZml4ZXMuCiogQWRkIEdsb2JhbCBCbG9jayBVbmxvY2sgY29tbWFuZC4gSXQgaXMg
-ZGVmaW5lZCBieSBmZXcgZmxhc2gKIHZlbmRvcnMsIGFuZCBpdCBpcyB1c2VkIGZvciBub3cganVz
-dCBieSBzc3QuCgpTUEkgTk9SIGNvbnRyb2xsZXIgZHJpdmVycyBjaGFuZ2VzOgoqIGludGVsLXNw
-aTogQWRkIHN1cHBvcnQgZm9yIEludGVsIEFsZGVyIExha2UtUCBTUEkgc2VyaWFsIGZsYXNoLgoq
-IGhpc2ktc2ZjOiBQdXQgY2hpbGQgbm9kZSBucCBvbiBlcnJvciBwYXRoLgoKLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpBcm5k
-IEJlcmdtYW5uICgxKToKICAgICAgbXRkOiByYXduYW5kOiB0YW5nbzogUmVtb3ZlIHRoZSBkcml2
-ZXIKCkNocmlzdG9waGUgSkFJTExFVCAoMSk6CiAgICAgIG10ZDogcmF3bmFuZDogaW50ZWw6IEZp
-eCBhbiBlcnJvciBoYW5kbGluZyBwYXRoIGluICdlYnVfZG1hX3N0YXJ0KCknCgpDb2xpbiBJYW4g
-S2luZyAoMSk6CiAgICAgIG10ZDogcmVtb3ZlIHJlZHVuZGFudCBhc3NpZ25tZW50IHRvIHBvaW50
-ZXIgZWIKCkRhbiBDYXJwZW50ZXIgKDEpOgogICAgICBtdGQ6IHBhcnNlcjogaW1hZ2V0YWc6IGZp
-eCBlcnJvciBjb2RlcyBpbiBiY205NjN4eF9wYXJzZV9pbWFnZXRhZ19wYXJ0aXRpb25zKCkKCk1h
-bml2YW5uYW4gU2FkaGFzaXZhbSAoNCk6CiAgICAgIGR0LWJpbmRpbmdzOiBtdGQ6IHBhcnRpdGlv
-bnM6IEFkZCBiaW5kaW5nIGZvciBRY29tIFNNRU0gcGFyc2VyCiAgICAgIG10ZDogcGFyc2Vyczog
-QWRkIFFjb20gU01FTSBwYXJzZXIKICAgICAgbXRkOiByYXduYW5kOiBxY29tOiBBZGQgc3VwcG9y
-dCBmb3IgUWNvbSBTTUVNIHBhcnNlcgogICAgICBtdGQ6IHBhcnNlcnM6IGFmczogRml4IGZyZWVp
-bmcgdGhlIHBhcnQgbmFtZSBtZW1vcnkgaW4gZmFpbHVyZQoKTWlrYSBXZXN0ZXJiZXJnICgxKToK
-ICAgICAgbXRkOiBzcGktbm9yOiBpbnRlbC1zcGk6IEFkZCBzdXBwb3J0IGZvciBJbnRlbCBBbGRl
-ciBMYWtlLVAgU1BJIHNlcmlhbCBmbGFzaAoKUGFuIEJpYW4gKDEpOgogICAgICBtdGQ6IHNwaS1u
-b3I6IGhpc2ktc2ZjOiBQdXQgY2hpbGQgbm9kZSBucCBvbiBlcnJvciBwYXRoCgpSYWZhxYIgTWnF
-gmVja2kgKDIpOgogICAgICBkdC1iaW5kaW5nczogbXRkOiBtb3ZlIHBhcnRpdGlvbiBiaW5kaW5n
-IHRvIGl0cyBvd24gZmlsZQogICAgICBkdC1iaW5kaW5nczogbXRkOiBhZGQgYmluZGluZyBmb3Ig
-QkNNNDkwOCBwYXJ0aXRpb25zCgpSaWNoYXJkIFdlaW5iZXJnZXIgKDIpOgogICAgICBNZXJnZSB0
-YWcgJ25hbmQvZm9yLTUuMTInIG9mIGdpdDovL2dpdC5rZXJuZWwub3JnLy4uLi9tdGQvbGludXgg
-aW50byBtdGQvbmV4dAogICAgICBNZXJnZSB0YWcgJ3NwaS1ub3IvZm9yLTUuMTInIG9mIGdpdDov
-L2dpdC5rZXJuZWwub3JnLy4uLi9tdGQvbGludXggaW50byBtdGQvbmV4dAoKVGFrYWhpcm8gS3V3
-YW5vICg0KToKICAgICAgbXRkOiBzcGktbm9yOiBzZmRwOiBGaXggd3JvbmcgZXJhc2UgdHlwZSBi
-aXRtYXNrIGZvciBvdmVybGFpZCByZWdpb24KICAgICAgbXRkOiBzcGktbm9yOiBzZmRwOiBGaXgg
-bGFzdCBlcmFzZSByZWdpb24gbWFya2luZwogICAgICBtdGQ6IHNwaS1ub3I6IGNvcmU6IEZpeCBl
-cmFzZSB0eXBlIGRpc2NvdmVyeSBmb3Igb3ZlcmxhaWQgcmVnaW9uCiAgICAgIG10ZDogc3BpLW5v
-cjogY29yZTogQWRkIGVyYXNlIHNpemUgY2hlY2sgZm9yIGVyYXNlIGNvbW1hbmQgaW5pdGlhbGl6
-YXRpb24KClR1ZG9yIEFtYmFydXMgKDIpOgogICAgICBtdGQ6IHNwaS1ub3I6IEFkZCBHbG9iYWwg
-QmxvY2sgVW5sb2NrIGNvbW1hbmQKICAgICAgbXRkOiBzcGktbm9yOiBzc3Q6IEFkZCBzdXBwb3J0
-IGZvciBHbG9iYWwgVW5sb2NrIG9uIHNzdDI2dmYKClpoZW5nIFlvbmdqdW4gKDQpOgogICAgICBt
-dGQ6IHJhd25hbmQ6IG14YzogQ29udmVydCBjb21tYSB0byBzZW1pY29sb24KICAgICAgbXRkOiBj
-b252ZXJ0IGNvbW1hIHRvIHNlbWljb2xvbgogICAgICBtdGQ6IHN0X3NwaV9mc206IGNvbnZlcnQg
-Y29tbWEgdG8gc2VtaWNvbG9uCiAgICAgIG10ZDogcmF3bmFuZDogbWFydmVsbDogY29udmVydCBj
-b21tYSB0byBzZW1pY29sb24KCnlhbmdlcmt1biAoMSk6CiAgICAgIG10ZDogcGhyYW06IHVzZSBk
-aXZfdTY0X3JlbSB0byBzdG9wIG92ZXJ3cml0ZSBsZW4gaW4gcGhyYW1fc2V0dXAKCiAuLi4vbXRk
-L3BhcnRpdGlvbnMvYnJjbSxiY200OTA4LXBhcnRpdGlvbnMueWFtbCAgICB8ICA3MCArKwogLi4u
-L2JpbmRpbmdzL210ZC9wYXJ0aXRpb25zL2ZpeGVkLXBhcnRpdGlvbnMueWFtbCAgfCAgMzMgKy0K
-IC4uLi9iaW5kaW5ncy9tdGQvcGFydGl0aW9ucy9wYXJ0aXRpb24ueWFtbCAgICAgICAgIHwgIDQ3
-ICsrCiAuLi4vYmluZGluZ3MvbXRkL3BhcnRpdGlvbnMvcWNvbSxzbWVtLXBhcnQueWFtbCAgICB8
-ICAzMyArCiBkcml2ZXJzL210ZC9kZXZpY2VzL3BocmFtLmMgICAgICAgICAgICAgICAgICAgICAg
-ICB8ICAgNiArLQogZHJpdmVycy9tdGQvZGV2aWNlcy9zdF9zcGlfZnNtLmMgICAgICAgICAgICAg
-ICAgICAgfCAgIDIgKy0KIGRyaXZlcnMvbXRkL21hcHMvcGNpLmMgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIHwgICA4ICstCiBkcml2ZXJzL210ZC9tdGRzd2FwLmMgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICB8ICAgMSAtCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9LY29uZmlnICAgICAg
-ICAgICAgICAgICAgICAgICB8ICAgNyAtCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9NYWtlZmlsZSAg
-ICAgICAgICAgICAgICAgICAgICB8ICAgMSAtCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9pbnRlbC1u
-YW5kLWNvbnRyb2xsZXIuYyAgICAgICB8ICAgNiArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvbWFy
-dmVsbF9uYW5kLmMgICAgICAgICAgICAgICAgfCAgIDIgKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3
-L214Y19uYW5kLmMgICAgICAgICAgICAgICAgICAgIHwgICAyICstCiBkcml2ZXJzL210ZC9uYW5k
-L3Jhdy9xY29tX25hbmRjLmMgICAgICAgICAgICAgICAgICB8ICAgNCArLQogZHJpdmVycy9tdGQv
-bmFuZC9yYXcvdGFuZ29fbmFuZC5jICAgICAgICAgICAgICAgICAgfCA3MjcgLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tCiBkcml2ZXJzL210ZC9wYXJzZXJzL0tjb25maWcgICAgICAgICAgICAgICAgICAg
-ICAgICB8ICAgOCArCiBkcml2ZXJzL210ZC9wYXJzZXJzL01ha2VmaWxlICAgICAgICAgICAgICAg
-ICAgICAgICB8ICAgMSArCiBkcml2ZXJzL210ZC9wYXJzZXJzL2Fmcy5jICAgICAgICAgICAgICAg
-ICAgICAgICAgICB8ICAgNCArLQogZHJpdmVycy9tdGQvcGFyc2Vycy9wYXJzZXJfaW1hZ2V0YWcu
-YyAgICAgICAgICAgICAgfCAgIDQgKwogZHJpdmVycy9tdGQvcGFyc2Vycy9xY29tc21lbXBhcnQu
-YyAgICAgICAgICAgICAgICAgfCAxNzAgKysrKysKIGRyaXZlcnMvbXRkL3NwaS1ub3IvY29udHJv
-bGxlcnMvaGlzaS1zZmMuYyAgICAgICAgIHwgICA0ICstCiBkcml2ZXJzL210ZC9zcGktbm9yL2Nv
-bnRyb2xsZXJzL2ludGVsLXNwaS1wY2kuYyAgICB8ICAgMSArCiBkcml2ZXJzL210ZC9zcGktbm9y
-L2NvcmUuYyAgICAgICAgICAgICAgICAgICAgICAgICB8ICA0OSArLQogZHJpdmVycy9tdGQvc3Bp
-LW5vci9jb3JlLmggICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDIgKwogZHJpdmVycy9tdGQv
-c3BpLW5vci9zZmRwLmMgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDUgKy0KIGRyaXZlcnMv
-bXRkL3NwaS1ub3Ivc3N0LmMgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDUyICstCiBpbmNs
-dWRlL2xpbnV4L210ZC9zcGktbm9yLmggICAgICAgICAgICAgICAgICAgICAgICB8ICAgMSArCiAy
-NyBmaWxlcyBjaGFuZ2VkLCA0NTcgaW5zZXJ0aW9ucygrKSwgNzkzIGRlbGV0aW9ucygtKQogY3Jl
-YXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvcGFy
-dGl0aW9ucy9icmNtLGJjbTQ5MDgtcGFydGl0aW9ucy55YW1sCiBjcmVhdGUgbW9kZSAxMDA2NDQg
-RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9wYXJ0aXRpb25zL3BhcnRpdGlv
-bi55YW1sCiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
-bmdzL210ZC9wYXJ0aXRpb25zL3Fjb20sc21lbS1wYXJ0LnlhbWwKIGRlbGV0ZSBtb2RlIDEwMDY0
-NCBkcml2ZXJzL210ZC9uYW5kL3Jhdy90YW5nb19uYW5kLmMKIGNyZWF0ZSBtb2RlIDEwMDY0NCBk
-cml2ZXJzL210ZC9wYXJzZXJzL3Fjb21zbWVtcGFydC5jCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFp
-bGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
-dXgtbXRkLwo=
+Linus,
+
+The following changes since commit 92bf22614b21a2706f4993b278017e437f7785b3:
+
+  Linux 5.11-rc7 (2021-02-07 13:57:38 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.12-rc1
+
+for you to fetch changes up to 42119dbe571eb419dae99b81dd20fa42f47464e1:
+
+  ubifs: Fix error return code in alloc_wbufs() (2021-02-13 22:58:44 +0100)
+
+----------------------------------------------------------------
+This pull request contains changes (actually just fixes) for UBIFS
+
+JFFS2:
+- Fix for use-after-free in jffs2_sum_write_data()
+- Fix for out-of-bounds access in jffs2_zlib_compress()
+
+UBI:
+- Remove dead/useless code
+
+UBIFS:
+- Fix for a memory leak in ubifs_init_authentication()
+- Fix for high stack usage
+- Fix for a off-by-one error in xattrs code
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      ubifs: replay: Fix high stack usage, again
+
+Dinghao Liu (1):
+      ubifs: Fix memleak in ubifs_init_authentication
+
+Jubin Zhong (1):
+      ubi: remove dead code in validate_vid_hdr()
+
+Sascha Hauer (1):
+      ubifs: Fix off-by-one error
+
+Tom Rix (1):
+      jffs2: fix use after free in jffs2_sum_write_data()
+
+Wang ShaoBo (1):
+      ubifs: Fix error return code in alloc_wbufs()
+
+Yang Yang (1):
+      jffs2: check the validity of dstlen in jffs2_zlib_compress()
+
+Zheng Yongjun (1):
+      ubi: eba: Delete useless kfree code
+
+ drivers/mtd/ubi/eba.c  | 1 -
+ drivers/mtd/ubi/io.c   | 7 +------
+ fs/jffs2/compr_rtime.c | 3 +++
+ fs/jffs2/summary.c     | 3 +++
+ fs/ubifs/auth.c        | 2 +-
+ fs/ubifs/journal.c     | 2 +-
+ fs/ubifs/replay.c      | 4 +++-
+ fs/ubifs/super.c       | 4 +++-
+ fs/ubifs/xattr.c       | 2 +-
+ 9 files changed, 16 insertions(+), 12 deletions(-)
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
