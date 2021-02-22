@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47446C433DB
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Feb 2021 17:14:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB8C9C433DB
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Feb 2021 17:14:43 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E9F1C64E3F
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Feb 2021 17:14:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E9F1C64E3F
+	by mail.kernel.org (Postfix) with ESMTPS id A4F3D64F06
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Feb 2021 17:14:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A4F3D64F06
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,38 +23,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=nldyWmSzR/f0SxaYT3JWhnKTjW4tfxKTY4ERogMANTM=; b=11tv8C4Xev38j5xHbiH12vmO1
-	OZdYCh9EhDA6vGVq7rNp/jxLnU+0HE+8+H69hy/xFIQZUmDAa9EhdA23+wlY4vtZ3mj35EQ0h1LCa
-	l+P46KIYYFePsRj8c2LMA4DsYE5muwNaRRLslFbxGjVlKmcNxweX04CqBMH+flJP1/2LvaF2RIHsa
-	64yJ+6g3M1uSju7rpeF9bU2Fl3xxciHVkiXn38toMoH17ToASwzk/jiIAuY8BkWfyW8twbYCc4oms
-	lnQnE+HkFQeFMAfyVZgo/ExeVkkjeAF/SlCsH5hy6gmONwG98lmQEN3Jo/rgDiYQ8MbZuo75OWQS/
-	7NMj+eBmw==;
+	 bh=9cxUI9xp8ujaK2UHKROLiNc6C++nHoj/pIHZJMJNQdo=; b=UD5Y/lzrK4PbVWNaooqgHMizs
+	zY1No8pUPslSz8bTHoDjfL7rnKL7zRD9rXwgZXIw4Cm0rQ6iD3SLFMTAMyvibss9eFC4hlw55QetC
+	40u3pXeF+eClH2ck+5upUF7Fb3krIZgppeYM0P82hG90GWUPR2359vpYxPLcywG3reJVSEMemHexK
+	Qe+0Ljq7aRTUoSjxFuAZorpufY8N+UmpM5D2//lEAD/i7yzKL3Q5mbnk27fGv0sgwwogUjUm+SrlB
+	iuBQiBRuaxjYgRrmadS5sZxYd+STd0CAU5HAQYAFlLZt94uSjWWmEK+RkMAGQ2sEmkZ4xerJgEPiW
+	Xf9gxJOtg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lEEm3-0008HM-1q; Mon, 22 Feb 2021 17:13:31 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1lEEmM-0008PC-0o; Mon, 22 Feb 2021 17:13:50 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lEEle-0008Ax-MV; Mon, 22 Feb 2021 17:13:07 +0000
+ id 1lEElg-0008Ai-9X; Mon, 22 Feb 2021 17:13:09 +0000
 Received: from [127.0.0.1] (localhost [127.0.0.1]) (Authenticated sender: sre)
- with ESMTPSA id 6A6A01F451F7
+ with ESMTPSA id C6C1F1F451E7
 Received: by jupiter.universe (Postfix, from userid 1000)
- id 5B0D84800DF; Mon, 22 Feb 2021 18:12:51 +0100 (CET)
+ id 57D6C4800DE; Mon, 22 Feb 2021 18:12:51 +0100 (CET)
 From: Sebastian Reichel <sebastian.reichel@collabora.com>
 To: Sebastian Reichel <sebastian.reichel@collabora.com>,
  Philipp Zabel <p.zabel@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>,
  Sascha Hauer <s.hauer@pengutronix.de>,
  Pengutronix Kernel Team <kernel@pengutronix.de>,
  Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>
-Subject: [PATCHv1 5/6] dt-bindings: mtd: jedec,spi-nor: add sst25vf032b
-Date: Mon, 22 Feb 2021 18:12:46 +0100
-Message-Id: <20210222171247.97609-6-sebastian.reichel@collabora.com>
+Subject: [PATCHv1 4/6] dt-bindings: arm: fsl: add GE B1x5pv2 boards
+Date: Mon, 22 Feb 2021 18:12:45 +0100
+Message-Id: <20210222171247.97609-5-sebastian.reichel@collabora.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210222171247.97609-1-sebastian.reichel@collabora.com>
 References: <20210222171247.97609-1-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210222_121306_873056_34EFDD02 
-X-CRM114-Status: GOOD (  11.41  )
+X-CRM114-CacheID: sfid-20210222_121308_521844_43EEF118 
+X-CRM114-Status: GOOD (  10.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,26 +78,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The binding is already used by the driver. Update documentation
-accordingly.
+Document the compatible for GE B1x5pv2 boards.
 
 Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 ---
- Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/devicetree/bindings/arm/fsl.yaml | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
-index f03be904d3c2..40e626e82ed0 100644
---- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
-+++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
-@@ -31,6 +31,7 @@ Required properties:
-                  s25sl12801
-                  s25fl008k
-                  s25fl064k
-+                 sst25vf032b
-                  sst25vf040b
-                  m25p40
-                  m25p80
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index 34000f7fbe02..dd2b566314a0 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -393,6 +393,17 @@ properties:
+           - const: armadeus,imx6dl-apf6         # APF6 (Solo) SoM
+           - const: fsl,imx6dl
+ 
++      - description: i.MX6DL based congatec QMX6 Boards
++        items:
++          - enum:
++              - ge,imx6dl-b105v2          # General Electric B105v2
++              - ge,imx6dl-b105pv2         # General Electric B105Pv2
++              - ge,imx6dl-b125v2          # General Electric B125v2
++              - ge,imx6dl-b125pv2         # General Electric B125Pv2
++              - ge,imx6dl-b155v2          # General Electric B155v2
++          - const: congatec,qmx6
++          - const: fsl,imx6dl
++
+       - description: i.MX6DL based DFI FS700-M60-6DL Board
+         items:
+           - const: dfi,fs700-m60-6dl
 -- 
 2.30.0
 
