@@ -2,85 +2,88 @@ Return-Path: <SRS0=UneP=HY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DBC80C433DB
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Feb 2021 12:03:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D77CAC433DB
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Feb 2021 12:03:56 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6204E64E2E
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Feb 2021 12:03:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6204E64E2E
+	by mail.kernel.org (Postfix) with ESMTPS id 76A4D64E24
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Feb 2021 12:03:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 76A4D64E24
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=tuG2hn7h9GF9q+vIZINozZaY8X8scS5qFkdODcPeW9Y=; b=R7se5CK2gPxTmWwQQnsLPW7ADb
-	g3axVcvPHASE4l9THzhuDWyWr7+JhoPmT91EW1LgXXdTOp8+ikrLSsEXSI2PTAuc88WCPYILQbRPz
-	vh3eHQ3b/tUkiIkcrXdPA6NKvRKgorajtFP1CZ1kXLvWekcCOYes5upzsHr/lHy5ExvhXsgxiG1HI
-	O6SUyhsuJrOy+QOGBCQyTm9JyeR23q6pAl4itUsHV0uSSTkZT+ot0mEZ7nhV+3epy7VxL5H5KqkQ3
-	zOtW5L53pd1sDd6JbinSj69xvajWCZhHEhCIBZ9TV7zfBKadMc3QXjVm6URl/gxH/BmpOQpLFT1E3
-	QiWVwh0Q==;
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=awExAj0i1QMfiXX22wRnLbO/GtKv41x5KKUSEU2Y/k8=; b=uj/c7TVBZViX4+LGU3R+BuLyr
+	J7wclTlzT7frflcvxfenurYLJ4PvAOtzCbDhvMeDbzdwTr1F6bzBzt1g787I9BB95LJMQFUAlaL+1
+	/88gjgitWmgz7FBbLR8n5YuOX+h96hs2Abveu4dKgdumdU1PpxkvMshN1l9wdNhPYUminSzYALBXu
+	bMsD5XHAzHRISPeuKma7PXWmBTt8NUrrfMB5sYdZJh2DN5VWlGs42vMpbwZ/kZ4rSD/yLC/IwOp2R
+	g/eWqpVMwas/LVBS+nlrils2SvMJ0QyN1mYaJX4e29elSmZ/JYbrpjKKl75QrYHepaVYXVNNCG7pt
+	NtQ9+aBZA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lE9vq-0000iA-JE; Mon, 22 Feb 2021 12:03:18 +0000
-Received: from mail-pl1-x62f.google.com ([2607:f8b0:4864:20::62f])
+	id 1lE9w1-0000ju-FM; Mon, 22 Feb 2021 12:03:29 +0000
+Received: from mail-pj1-x1032.google.com ([2607:f8b0:4864:20::1032])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lE9vo-0000hd-8z
- for linux-mtd@lists.infradead.org; Mon, 22 Feb 2021 12:03:17 +0000
-Received: by mail-pl1-x62f.google.com with SMTP id w18so4450184plc.12
- for <linux-mtd@lists.infradead.org>; Mon, 22 Feb 2021 04:03:13 -0800 (PST)
+ id 1lE9vw-0000io-Lb
+ for linux-mtd@lists.infradead.org; Mon, 22 Feb 2021 12:03:27 +0000
+Received: by mail-pj1-x1032.google.com with SMTP id e9so8901734pjj.0
+ for <linux-mtd@lists.infradead.org>; Mon, 22 Feb 2021 04:03:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=RN+J/cQ3UYA8vDbFfio0gcTzGBY9lrHpdeKD2Fs7CY8=;
- b=dnQirMY5XNWssjV5xFor/9+hdJe4/wfpv97ncukvlQAzGaPfy9ro0xc81E3lQEfqRX
- nb/0G0CQ1GQFisu4YekJ+WITrBoTYF5V6CEXVo7tpB4/fUFxxcpKuHpJQhKoVr/QqoMt
- PCbi01ymtzy4fT7/69m3M8rODxX9INJ+JLQsAkhMMQRBLx3UFXph733iUaJbEaKJaf4a
- DpuUKoEWPcWTB5LMP6q7h2Sr1kOb5dVtP7lBIYy/9Bf+/ykXlmBZdTrh2PoF/7kMHepZ
- 1EbdWAuQ9qPelQQcHoQZ9O3m1p9JvhpqboG9ubF2GldaeFjrlOY9x4HcpSuKmn1Pw5Ih
- Xm0A==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=iOqS3cmQFNPFE5oe5VQB+Nk7w3LubjtRbocEu7F5iiI=;
+ b=vFxVbXKUqZ/PhEhh0tcVrVjqFnWAQDNVgcn43MpfUe4vuLQ1G8UaFfLvQIHe5/qGQw
+ MQz/G0mcLEqEa33/kZXqP2CyYxjWxPjqwHOhf3fQrN/OvnTT83e1tdLUPXZbLjvKN1nt
+ vNHbKLAnUXCdqyMeg72hnk/pS5kpbs949/bNJbXzDcB9U8P67S45nFj0r3dip4n5q8J4
+ ExibsB4a1fiXD0F5IecD2lHsQFre4zikn3FD592AottfLygfpk5frggIz8yMgfK2TKYE
+ 5/t1caj+HICVv17ZEJlMYg03wpmWYNyd4oL8mR0CBr54PWV8GnvPlEp+cy0MCR5bZl72
+ AQ7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=RN+J/cQ3UYA8vDbFfio0gcTzGBY9lrHpdeKD2Fs7CY8=;
- b=Lqfj6gkrfGaaTSjUnN2cjFIPYXwF98yKcqAAORBi1yLb1oRuFqlGGTCEaqJrzvOAiH
- E4jrDJufIc1gpYwKExzD3hxZG4Ra1pWJBXgCD2CDp0JEpT0ON/5nuxL4xGCyEw8HBmDW
- 1MJTkbG+2kKoWeV3OZhlQ8+kx5tVW6sYBqEyJb1nrOV8UdjFiNVmTfZOawlgaOIzFt68
- 3S/80UGJiwV8L6cvbbG3BwdbUCCFD/Kscgc8KirJxGxh0iZXcBQKg6Z5nB6DYBogXK0y
- G4+sz8Mkjn9er3k/J9DCzR+uIIgbd6WePpkieuQzy8h+Sf63F77R3TnXTl03kFLs5Pqz
- d98A==
-X-Gm-Message-State: AOAM532ixYL/5YRRDXr+joZhxVLXW5twaq+NxoRk3iEqFfiyWzOoieGy
- 1bFhHjStiE44lHAPMSAHBYpq
-X-Google-Smtp-Source: ABdhPJxyO+GrVKVH43RmyAk94dqCfrZLr6eaBqYt8ot+9/AYZLVN3rjsFb2r8BHf3f9aIJetks2D1Q==
-X-Received: by 2002:a17:90a:b28a:: with SMTP id
- c10mr23173772pjr.39.1613995391573; 
- Mon, 22 Feb 2021 04:03:11 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=iOqS3cmQFNPFE5oe5VQB+Nk7w3LubjtRbocEu7F5iiI=;
+ b=sRlHXcmEjdWGoP0XYSVSj3SINS665oro7cz7RxuUxy7/42mRylyRoEZ1pUDdfZWNa4
+ K803EgvoCJQn4u7hjBt9CMkR3FeaNIASxx8vFv0xRmPPUjtB6jPRPh0BnBpUa9wbl1+v
+ H2vKddXpFTRktsvG0bolwn5Qq9P/tPOKnBZCLVmEUiEF2VNAO/aVuY1TIWYJ9PdDS9ew
+ Vis4aumVmDmcOPTPPUYPDYH8VElFR22lqJL03JWjEAZUhJOQA4fqLNK2YzeLfZEobi9c
+ JisPJv2SK6zsLtmKEQO+tMhg2whA7EajCzVuZce1VOkv6GJ+BhSmmMWb0t0W0SekvJUB
+ jj3Q==
+X-Gm-Message-State: AOAM533iwim2rV9Bo7+jAsepvygQiPdEKxffxYcSXGcc9kedMg7CU2yR
+ dROkXSCTfJm8U/bpf1rWmHhsS76qbOi0
+X-Google-Smtp-Source: ABdhPJwDxNavOfUSgL+tVcok+qfNwASekjEXEmDMFINM10uJIvTfV9yZKboK8YK7erN+uRsIa3jkVw==
+X-Received: by 2002:a17:90a:3d0d:: with SMTP id
+ h13mr23313246pjc.224.1613995401804; 
+ Mon, 22 Feb 2021 04:03:21 -0800 (PST)
 Received: from localhost.localdomain
  ([2409:4072:6215:cc7b:cb8f:abf4:d1c9:3864])
- by smtp.gmail.com with ESMTPSA id g17sm17017221pfh.14.2021.02.22.04.03.06
+ by smtp.gmail.com with ESMTPSA id g17sm17017221pfh.14.2021.02.22.04.03.17
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 22 Feb 2021 04:03:10 -0800 (PST)
+ Mon, 22 Feb 2021 04:03:21 -0800 (PST)
 From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
  robh+dt@kernel.org
-Subject: [PATCH 0/3] Add support for secure regions in Qcom NANDc driver
-Date: Mon, 22 Feb 2021 17:32:56 +0530
-Message-Id: <20210222120259.94465-1-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 2/3] dt-bindings: mtd: Add a property to declare secure
+ regions in Qcom NANDc
+Date: Mon, 22 Feb 2021 17:32:58 +0530
+Message-Id: <20210222120259.94465-3-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210222120259.94465-1-manivannan.sadhasivam@linaro.org>
+References: <20210222120259.94465-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210222_070316_332572_5D24F6CA 
-X-CRM114-Status: GOOD (  11.33  )
+X-CRM114-CacheID: sfid-20210222_070324_730760_B41BE069 
+X-CRM114-Status: GOOD (  11.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,26 +110,32 @@ The access to those regions will be blocked by a secure element like
 Trustzone. So the normal world software like Linux kernel should not
 touch these regions (including reading).
 
-So this series adds a property for declaring such secure regions in DT
-so that the driver can skip touching them. While at it, the DT binding
-is also converted to YAML format.
+So let's add a property for declaring such secure regions so that the
+driver can skip touching them.
 
-Thanks,
-Mani
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ Documentation/devicetree/bindings/mtd/qcom,nandc.yaml | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Manivannan Sadhasivam (3):
-  dt-bindings: mtd: Convert Qcom NANDc binding to YAML
-  dt-bindings: mtd: Add a property to declare secure regions in Qcom
-    NANDc
-  mtd: rawnand: qcom: Add support for secure regions in NAND memory
-
- .../devicetree/bindings/mtd/qcom,nandc.yaml   | 203 ++++++++++++++++++
- .../devicetree/bindings/mtd/qcom_nandc.txt    | 142 ------------
- drivers/mtd/nand/raw/qcom_nandc.c             |  72 ++++++-
- 3 files changed, 266 insertions(+), 151 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
- delete mode 100644 Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-
+diff --git a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+index 84ad7ff30121..7500e20da9c1 100644
+--- a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
++++ b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+@@ -48,6 +48,13 @@ patternProperties:
+         enum:
+           - 512
+ 
++      qcom,secure-regions:
++        $ref: /schemas/types.yaml#/definitions/uint32-array
++        description:
++          Regions in the NAND memory which are protected using a secure element
++          like Trustzone. This property contains the start address and size of
++          the secure regions present (optional).
++
+ allOf:
+   - $ref: "nand-controller.yaml#"
+ 
 -- 
 2.25.1
 
