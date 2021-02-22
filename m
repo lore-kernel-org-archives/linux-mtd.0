@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35D8EC433DB
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Feb 2021 12:04:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BC7AC433E0
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Feb 2021 12:04:13 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D181364E24
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Feb 2021 12:04:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D181364E24
+	by mail.kernel.org (Postfix) with ESMTPS id CB26764E2E
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Feb 2021 12:04:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB26764E2E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,67 +23,66 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=92zWF3kni4ujUgsOLo6kJ8mGEyGcUbGvuuyu9zXMx5c=; b=mkNGMaYGB2ETWgon0Wc9aqxx2
-	Uty25RLTXb/0F0/xhIjVzkJ+0W4u1ZgJS/gHZlcpYSNLkpowqNdvYu95nyhWc31erDsKbjfcGtCCb
-	mkdM8p/RXuQb73cXu3X/3x5Zu37DG5t6or9yaKSidBKBtCmNXinW54KYl4fIJOZUiJiQrzD6tc5/J
-	NWFFeP4b9qWoN3WIwkWz/LsOBoBJPo0sh6GBPDq9aci+eBujtKrs8kvnHcrbtjohcnEIpqQnBEnQb
-	Fq1A/9rj8sfhf188NuOBMykCzbqTb81/ToY5IPP24rwdeSk1a0ya3wYKuqUca/SIx4oUCI01rN381
-	cFeior9Ug==;
+	 bh=790Y+RU4cgSfLho61f2atoJOlxM9QHxiDrlD4ZVfXWg=; b=mMNh1ZYhpJg+9+BuifnB5Lmp1
+	zUDtZD4rjl0tFZkGwwOe533cwETno7/aWHmZ6IJscyCligxqAf4yteV4pUi5e/89EW6HSmXyk49tf
+	YXv3a8xkAGbN+Lxu5fV207Mot6gObpC8+LY3tBfCzcxakVn8dGY5SObvyu63+TlCAaJJhNtR69nR+
+	7GoAXv/PQICQX9PewyEfCr5i4qPW2HztdZVRP64Erh82goM9Ihtl66a9QvWtifIXA3EmDchU1GSeQ
+	TXa9v5PGKQ10+A9yJ+FSMjXsSh1QY2J4r71tUdDQmu3LLKttL0xJ6+guJRVIFMO/dRb0t/UE2XJ4C
+	Ebvy7Vmsg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lE9w5-0000kX-7t; Mon, 22 Feb 2021 12:03:33 +0000
-Received: from mail-pj1-x102a.google.com ([2607:f8b0:4864:20::102a])
+	id 1lE9vv-0000ip-6e; Mon, 22 Feb 2021 12:03:23 +0000
+Received: from mail-pj1-x102e.google.com ([2607:f8b0:4864:20::102e])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lE9w1-0000jd-MT
- for linux-mtd@lists.infradead.org; Mon, 22 Feb 2021 12:03:31 +0000
-Received: by mail-pj1-x102a.google.com with SMTP id ds5so1084039pjb.2
- for <linux-mtd@lists.infradead.org>; Mon, 22 Feb 2021 04:03:28 -0800 (PST)
+ id 1lE9vr-0000i7-Km
+ for linux-mtd@lists.infradead.org; Mon, 22 Feb 2021 12:03:20 +0000
+Received: by mail-pj1-x102e.google.com with SMTP id t9so3684169pjl.5
+ for <linux-mtd@lists.infradead.org>; Mon, 22 Feb 2021 04:03:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=4Pi4RICUPERxVib7ATa4y6NDrmG0hUUGuXvqZvmv7GM=;
- b=o+nPFFw8gzzkrY7iDoeO2QwCKh/blOWdEOBWVD/YOYH4ghX5PAwMsISWoufTyKVJf3
- POqUMmVv8rB7tFvXcvx4BeD2nfqzqFSpdTvGU0b5z5sOAbAFCjz1YEkA4v/aHguc442B
- wLHcoesQ0nURqp/Y1GilR9kQp2diJUFYQ8OaLU5hhndmBuD9Kd7baQTjaKME0+c3G+RD
- rgAjjmIhvbDdB7wokYzbAILAHGlvnE6NrhWCPD5pc0WN7XAFHV0ZMf9e2T973LfIqaCi
- B74lvGrUcDlPHYghjt4tUGBxEOnpCtGz91Y8D9sUO03cCr0rm38RRD5/IKOcGgwLm2T9
- Refg==
+ bh=bfZTeA+Jde84B+GicbEWi+k/3jsa4kFVqHGVsksw8n4=;
+ b=xX13pPVBHE1S3IpqseDa3UL5xHd8s9ggTbKjQ2G961QjAm6mIRpW6OX2akRooT5buT
+ RvQJpPtJAlRLfIBZZ703B0dzbr6Bs1e/WB3f52FqikZ4Wfb9syDPLIxUvTxgJEGCyOS3
+ yXAspeJvUcBdJv3Oe1jLl9GH6X9uVIE5swdJG4dSl61WEaT9z8Bfasac3J5NkVLGoRoN
+ bB/5dN9DUv5qIc1atatzwyYnsRPj3TIo0prmGZv18GI1D2O7ut1q8j8OKPpOMLvDsYKp
+ cSM7RzCmiN6bSLYnt6Dyihe/e7EiRMdmeiFiXscuIMEV71RrkDgc4f5JeEIk3J1SNU/2
+ sdDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=4Pi4RICUPERxVib7ATa4y6NDrmG0hUUGuXvqZvmv7GM=;
- b=AMlHj4h3fAN8PhqRuHTThL1SfiDaiRnT1TD8RF+81E/OKhZfOWtnkGJp2CUZnxCwDA
- kUk/5xH6IHXaDOjiDBY42aw5x8feqp5JngPZcRAJcTyAkuHTQoXaWs+F3fgRx1vnAhYC
- 5e3myQ9y5wPZihB2s+bRhozeiSs+WqszwCqL1jAg0Udt6/l15MVoQ5jZC3foNrejDokR
- +3Y7GPr/ZiDUoJ48/ifKvQZ8IvGpeShBcB1TAVT/B2BcekAw7piG9GEAUi97+V6k67Bz
- Qhq1iC6XxuqJ1ndn/GJenq5nZEmBtdsacOdlPPG5hDoNkfd54+asDpQDABG1M5tuyLHK
- FIeg==
-X-Gm-Message-State: AOAM531cmHTkSj3pV6lI8tjrxTP/FtXHe2G3njm9/LshD7IQ9fE4EN/b
- 3sytErJoApkChaw7ak4WBELw
-X-Google-Smtp-Source: ABdhPJwN3SoMOeZmOczWxOS1M/sfsSVlHrIE3xm23xgMZfMAhmyMkXPU5OtUOIey8LBvhXl0SUAXRg==
-X-Received: by 2002:a17:90a:1990:: with SMTP id
- 16mr14301715pji.26.1613995406821; 
- Mon, 22 Feb 2021 04:03:26 -0800 (PST)
+ bh=bfZTeA+Jde84B+GicbEWi+k/3jsa4kFVqHGVsksw8n4=;
+ b=OpI/vunzv/esfDcHl16/+Ewh3hj0WlCzmYphCNg4px6iFxh7vND2DHBoOzBqqyhbjq
+ WRiHr2fRWa5wzn3vOl4s8lahe3JpepZ2Ce0EL8gHr04qHjcBGzH4ZzO5/4zhiU1or4S/
+ wXmuvBPr+MMqOtEoShUIWgM5dJKEwCgwDc8STT94ijqESeV5CyeQxDaZDOSt9eLE/3xn
+ fYd42lQ1s4gaQSMiustQHIvsmjc6oif1dznKbipakz0RFCSJHN5vvvARRIFNZZMN+nKj
+ 27fEq57MvA670hkticvU2E3PjEVwZPhYEwGhKJQ3L644hBD81aWxRSDUHLWx5Of3kWGx
+ TyfQ==
+X-Gm-Message-State: AOAM531OxKexnyzgQWcxhZ+s8JCiKOJ0wbI8jik3qWrgY41heasEtWnV
+ /3m61bybo3KmQf0JosAfTPcK
+X-Google-Smtp-Source: ABdhPJw182LwYwQZ0ySOWWOa2L243+OZrXO8bVoORSOgu2R37DuZpYWvCRzucDGi6VAPpwBkGXtjWg==
+X-Received: by 2002:a17:90a:2c9:: with SMTP id
+ d9mr23231254pjd.67.1613995396699; 
+ Mon, 22 Feb 2021 04:03:16 -0800 (PST)
 Received: from localhost.localdomain
  ([2409:4072:6215:cc7b:cb8f:abf4:d1c9:3864])
- by smtp.gmail.com with ESMTPSA id g17sm17017221pfh.14.2021.02.22.04.03.22
+ by smtp.gmail.com with ESMTPSA id g17sm17017221pfh.14.2021.02.22.04.03.12
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 22 Feb 2021 04:03:26 -0800 (PST)
+ Mon, 22 Feb 2021 04:03:16 -0800 (PST)
 From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
  robh+dt@kernel.org
-Subject: [PATCH 3/3] mtd: rawnand: qcom: Add support for secure regions in
- NAND memory
-Date: Mon, 22 Feb 2021 17:32:59 +0530
-Message-Id: <20210222120259.94465-4-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 1/3] dt-bindings: mtd: Convert Qcom NANDc binding to YAML
+Date: Mon, 22 Feb 2021 17:32:57 +0530
+Message-Id: <20210222120259.94465-2-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210222120259.94465-1-manivannan.sadhasivam@linaro.org>
 References: <20210222120259.94465-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210222_070329_798022_6AEDC05A 
-X-CRM114-Status: GOOD (  19.98  )
+X-CRM114-CacheID: sfid-20210222_070319_695165_2C95314D 
+X-CRM114-Status: GOOD (  18.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,193 +103,366 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On a typical end product, a vendor may choose to secure some regions in
-the NAND memory which are supposed to stay intact between FW upgrades.
-The access to those regions will be blocked by a secure element like
-Trustzone. So the normal world software like Linux kernel should not
-touch these regions (including reading).
-
-The regions are declared using a DT property, "qcom,secure-regions".
-So let's make use of this property and skip access to the secure regions
-present in a system.
+Convert Qcom NANDc devicetree binding to YAML.
 
 Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- drivers/mtd/nand/raw/qcom_nandc.c | 72 +++++++++++++++++++++++++++----
- 1 file changed, 63 insertions(+), 9 deletions(-)
+ .../devicetree/bindings/mtd/qcom,nandc.yaml   | 196 ++++++++++++++++++
+ .../devicetree/bindings/mtd/qcom_nandc.txt    | 142 -------------
+ 2 files changed, 196 insertions(+), 142 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mtd/qcom_nandc.txt
 
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index fd4c318b520f..c2dc99c1b2f1 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -431,6 +431,11 @@ struct qcom_nand_controller {
-  * @cfg0, cfg1, cfg0_raw..:	NANDc register configurations needed for
-  *				ecc/non-ecc mode for the current nand flash
-  *				device
-+ *
-+ * @sec_regions:		Array representing the secure regions in the
-+ *				NAND chip
-+ *
-+ * @nr_sec_regions:		Number of secure regions in the NAND chip
-  */
- struct qcom_nand_host {
- 	struct nand_chip chip;
-@@ -453,6 +458,9 @@ struct qcom_nand_host {
- 	u32 ecc_bch_cfg;
- 	u32 clrflashstatus;
- 	u32 clrreadstatus;
+diff --git a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+new file mode 100644
+index 000000000000..84ad7ff30121
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+@@ -0,0 +1,196 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/qcom,nandc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+	u32 *sec_regions;
-+	u8 nr_sec_regions;
- };
- 
- /*
-@@ -662,16 +670,27 @@ static void nandc_set_reg(struct qcom_nand_controller *nandc, int offset,
- }
- 
- /* helper to configure address register values */
--static void set_address(struct qcom_nand_host *host, u16 column, int page)
-+static int set_address(struct qcom_nand_host *host, u16 column, int page)
- {
- 	struct nand_chip *chip = &host->chip;
- 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-+	u32 offs = page << chip->page_shift;
-+	int i, j;
++title: Qualcomm NAND controller
 +
-+	/* Skip touching the secure regions if present */
-+	for (i = 0, j = 0; i < host->nr_sec_regions; i++, j += 2) {
-+		if (offs >= host->sec_regions[j] &&
-+		    (offs <= host->sec_regions[j] + host->sec_regions[j + 1]))
-+			return -EIO;
-+	}
- 
- 	if (chip->options & NAND_BUSWIDTH_16)
- 		column >>= 1;
- 
- 	nandc_set_reg(nandc, NAND_ADDR0, page << 16 | column);
- 	nandc_set_reg(nandc, NAND_ADDR1, page >> 16 & 0xff);
++maintainers:
++  - Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 +
-+	return 0;
- }
- 
- /*
-@@ -1491,13 +1510,13 @@ static void qcom_nandc_command(struct nand_chip *chip, unsigned int command,
- 		WARN_ON(column != 0);
- 
- 		host->use_ecc = true;
--		set_address(host, 0, page_addr);
-+		ret = set_address(host, 0, page_addr);
- 		update_rw_regs(host, ecc->steps, true);
- 		break;
- 
- 	case NAND_CMD_SEQIN:
- 		WARN_ON(column != 0);
--		set_address(host, 0, page_addr);
-+		ret = set_address(host, 0, page_addr);
- 		break;
- 
- 	case NAND_CMD_PAGEPROG:
-@@ -1615,7 +1634,10 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 	host->use_ecc = false;
- 
- 	clear_bam_transaction(nandc);
--	set_address(host, host->cw_size * cw, page);
-+	ret = set_address(host, host->cw_size * cw, page);
-+	if (ret)
-+		return ret;
++properties:
++  compatible:
++    enum:
++      - qcom,ipq806x-nand
++      - qcom,ipq4019-nand
++      - qcom,ipq6018-nand
++      - qcom,ipq8074-nand
++      - qcom,sdx55-nand
 +
- 	update_rw_regs(host, 1, true);
- 	config_nand_page_read(nandc);
- 
-@@ -1943,7 +1965,10 @@ static int copy_last_cw(struct qcom_nand_host *host, int page)
- 	/* prepare a clean read buffer */
- 	memset(nandc->data_buffer, 0xff, size);
- 
--	set_address(host, host->cw_size * (ecc->steps - 1), page);
-+	ret = set_address(host, host->cw_size * (ecc->steps - 1), page);
-+	if (ret)
-+		return ret;
++  reg:
++    maxItems: 1
 +
- 	update_rw_regs(host, 1, true);
- 
- 	config_nand_single_cw_page_read(nandc, host->use_ecc);
-@@ -2005,12 +2030,16 @@ static int qcom_nandc_read_oob(struct nand_chip *chip, int page)
- 	struct qcom_nand_host *host = to_qcom_nand_host(chip);
- 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
-+	int ret;
- 
- 	clear_read_regs(nandc);
- 	clear_bam_transaction(nandc);
- 
- 	host->use_ecc = true;
--	set_address(host, 0, page);
-+	ret = set_address(host, 0, page);
-+	if (ret)
-+		return ret;
++  clocks:
++    items:
++      - description: Core Clock
++      - description: Always ON Clock
 +
- 	update_rw_regs(host, ecc->steps, true);
- 
- 	return read_page_ecc(host, NULL, chip->oob_poi, page);
-@@ -2188,7 +2217,10 @@ static int qcom_nandc_write_oob(struct nand_chip *chip, int page)
- 	mtd_ooblayout_get_databytes(mtd, nandc->data_buffer + data_size, oob,
- 				    0, mtd->oobavail);
- 
--	set_address(host, host->cw_size * (ecc->steps - 1), page);
-+	ret = set_address(host, host->cw_size * (ecc->steps - 1), page);
-+	if (ret)
-+		return ret;
++  clock-names:
++    items:
++      - const: core
++      - const: aon
 +
- 	update_rw_regs(host, 1, false);
- 
- 	config_nand_page_write(nandc);
-@@ -2267,7 +2299,10 @@ static int qcom_nandc_block_markbad(struct nand_chip *chip, loff_t ofs)
- 
- 	/* prepare write */
- 	host->use_ecc = false;
--	set_address(host, host->cw_size * (ecc->steps - 1), page);
-+	ret = set_address(host, host->cw_size * (ecc->steps - 1), page);
-+	if (ret)
-+		return ret;
++  "#address-cells": true
++  "#size-cells": true
 +
- 	update_rw_regs(host, 1, false);
- 
- 	config_nand_page_write(nandc);
-@@ -2830,7 +2865,8 @@ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
- 	struct nand_chip *chip = &host->chip;
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct device *dev = nandc->dev;
--	int ret;
-+	struct property *prop;
-+	int ret, length, nr_elem;
- 
- 	ret = of_property_read_u32(dn, "reg", &host->cs);
- 	if (ret) {
-@@ -2886,6 +2922,24 @@ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
- 		}
- 	}
- 
-+	/*
-+	 * Look for secure regions in the NAND chip. These regions are supposed
-+	 * to be protected by a secure element like Trustzone. So the read/write
-+	 * accesses to these regions will be blocked in the runtime by this
-+	 * driver.
-+	 */
-+	prop = of_find_property(dn, "qcom,secure-regions", &length);
-+	if (prop) {
-+		nr_elem = length / sizeof(u32);
-+		host->nr_sec_regions = nr_elem / 2;
++patternProperties:
++  "^nand@[a-f0-9]$":
++    type: object
++    properties:
++      nand-bus-width:
++        const: 8
 +
-+		host->sec_regions = devm_kcalloc(dev, nr_elem, sizeof(u32), GFP_KERNEL);
-+		if (!host->sec_regions)
-+			return -ENOMEM;
++      nand-ecc-strength:
++        enum: [1, 4, 8]
 +
-+		of_property_read_u32_array(dn, "qcom,secure-regions", host->sec_regions, nr_elem);
-+	}
++      nand-ecc-step-size:
++        enum:
++          - 512
 +
- 	ret = mtd_device_parse_register(mtd, probes, NULL, NULL, 0);
- 	if (ret)
- 		nand_cleanup(chip);
++allOf:
++  - $ref: "nand-controller.yaml#"
++
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: qcom,ipq806x-nand
++    then:
++      properties:
++        dmas:
++          items:
++            - description: rxtx DMA channel
++
++        dma-names:
++          items:
++            - const: rxtx
++
++        qcom,cmd-crci:
++          $ref: /schemas/types.yaml#/definitions/uint32
++          description:
++            Must contain the ADM command type CRCI block instance number
++            specified for the NAND controller on the given platform
++
++        qcom,data-crci:
++          $ref: /schemas/types.yaml#/definitions/uint32
++          description:
++            Must contain the ADM data type CRCI block instance number
++            specified for the NAND controller on the given platform
++
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - qcom,ipq4019-nand
++              - qcom,ipq6018-nand
++              - qcom,ipq8074-nand
++              - qcom,sdx55-nand
++
++    then:
++      properties:
++        dmas:
++          items:
++            - description: tx DMA channel
++            - description: rx DMA channel
++            - description: cmd DMA channel
++
++        dma-names:
++          items:
++            - const: tx
++            - const: rx
++            - const: cmd
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/qcom,gcc-ipq806x.h>
++    nand-controller@1ac00000 {
++      compatible = "qcom,ipq806x-nand";
++      reg = <0x1ac00000 0x800>;
++
++      clocks = <&gcc EBI2_CLK>,
++               <&gcc EBI2_AON_CLK>;
++      clock-names = "core", "aon";
++
++      dmas = <&adm_dma 3>;
++      dma-names = "rxtx";
++      qcom,cmd-crci = <15>;
++      qcom,data-crci = <3>;
++
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      nand@0 {
++        reg = <0>;
++
++        nand-ecc-strength = <4>;
++        nand-bus-width = <8>;
++
++        partitions {
++          compatible = "fixed-partitions";
++          #address-cells = <1>;
++          #size-cells = <1>;
++
++          partition@0 {
++            label = "boot-nand";
++            reg = <0 0x58a0000>;
++          };
++
++          partition@58a0000 {
++            label = "fs-nand";
++            reg = <0x58a0000 0x4000000>;
++          };
++        };
++      };
++    };
++
++    #include <dt-bindings/clock/qcom,gcc-ipq4019.h>
++    nand-controller@79b0000 {
++      compatible = "qcom,ipq4019-nand";
++      reg = <0x79b0000 0x1000>;
++
++      clocks = <&gcc GCC_QPIC_CLK>,
++               <&gcc GCC_QPIC_AHB_CLK>;
++      clock-names = "core", "aon";
++
++      dmas = <&qpicbam 0>,
++             <&qpicbam 1>,
++             <&qpicbam 2>;
++      dma-names = "tx", "rx", "cmd";
++
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      nand@0 {
++        reg = <0>;
++        nand-ecc-strength = <4>;
++        nand-bus-width = <8>;
++
++        partitions {
++          compatible = "fixed-partitions";
++          #address-cells = <1>;
++          #size-cells = <1>;
++
++          partition@0 {
++            label = "boot-nand";
++            reg = <0 0x58a0000>;
++          };
++
++          partition@58a0000 {
++            label = "fs-nand";
++            reg = <0x58a0000 0x4000000>;
++          };
++        };
++      };
++    };
++
++...
+diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+deleted file mode 100644
+index 5647913d8837..000000000000
+--- a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
++++ /dev/null
+@@ -1,142 +0,0 @@
+-* Qualcomm NAND controller
+-
+-Required properties:
+-- compatible:		must be one of the following:
+-    * "qcom,ipq806x-nand" - for EBI2 NAND controller being used in IPQ806x
+-			    SoC and it uses ADM DMA
+-    * "qcom,ipq4019-nand" - for QPIC NAND controller v1.4.0 being used in
+-                            IPQ4019 SoC and it uses BAM DMA
+-    * "qcom,ipq6018-nand" - for QPIC NAND controller v1.5.0 being used in
+-                            IPQ6018 SoC and it uses BAM DMA
+-    * "qcom,ipq8074-nand" - for QPIC NAND controller v1.5.0 being used in
+-                            IPQ8074 SoC and it uses BAM DMA
+-    * "qcom,sdx55-nand"   - for QPIC NAND controller v2.0.0 being used in
+-                            SDX55 SoC and it uses BAM DMA
+-
+-- reg:			MMIO address range
+-- clocks:		must contain core clock and always on clock
+-- clock-names:		must contain "core" for the core clock and "aon" for the
+-			always on clock
+-
+-EBI2 specific properties:
+-- dmas:			DMA specifier, consisting of a phandle to the ADM DMA
+-			controller node and the channel number to be used for
+-			NAND. Refer to dma.txt and qcom_adm.txt for more details
+-- dma-names:		must be "rxtx"
+-- qcom,cmd-crci:	must contain the ADM command type CRCI block instance
+-			number specified for the NAND controller on the given
+-			platform
+-- qcom,data-crci:	must contain the ADM data type CRCI block instance
+-			number specified for the NAND controller on the given
+-			platform
+-
+-QPIC specific properties:
+-- dmas:			DMA specifier, consisting of a phandle to the BAM DMA
+-			and the channel number to be used for NAND. Refer to
+-			dma.txt, qcom_bam_dma.txt for more details
+-- dma-names:		must contain all 3 channel names : "tx", "rx", "cmd"
+-- #address-cells:	<1> - subnodes give the chip-select number
+-- #size-cells:		<0>
+-
+-* NAND chip-select
+-
+-Each controller may contain one or more subnodes to represent enabled
+-chip-selects which (may) contain NAND flash chips. Their properties are as
+-follows.
+-
+-Required properties:
+-- reg:			a single integer representing the chip-select
+-			number (e.g., 0, 1, 2, etc.)
+-- #address-cells:	see partition.txt
+-- #size-cells:		see partition.txt
+-
+-Optional properties:
+-- nand-bus-width:	see nand-controller.yaml
+-- nand-ecc-strength:	see nand-controller.yaml. If not specified, then ECC strength will
+-			be used according to chip requirement and available
+-			OOB size.
+-
+-Each nandcs device node may optionally contain a 'partitions' sub-node, which
+-further contains sub-nodes describing the flash partition mapping. See
+-partition.txt for more detail.
+-
+-Example:
+-
+-nand-controller@1ac00000 {
+-	compatible = "qcom,ipq806x-nand";
+-	reg = <0x1ac00000 0x800>;
+-
+-	clocks = <&gcc EBI2_CLK>,
+-		 <&gcc EBI2_AON_CLK>;
+-	clock-names = "core", "aon";
+-
+-	dmas = <&adm_dma 3>;
+-	dma-names = "rxtx";
+-	qcom,cmd-crci = <15>;
+-	qcom,data-crci = <3>;
+-
+-	#address-cells = <1>;
+-	#size-cells = <0>;
+-
+-	nand@0 {
+-		reg = <0>;
+-
+-		nand-ecc-strength = <4>;
+-		nand-bus-width = <8>;
+-
+-		partitions {
+-			compatible = "fixed-partitions";
+-			#address-cells = <1>;
+-			#size-cells = <1>;
+-
+-			partition@0 {
+-				label = "boot-nand";
+-				reg = <0 0x58a0000>;
+-			};
+-
+-			partition@58a0000 {
+-				label = "fs-nand";
+-				reg = <0x58a0000 0x4000000>;
+-			};
+-		};
+-	};
+-};
+-
+-nand-controller@79b0000 {
+-	compatible = "qcom,ipq4019-nand";
+-	reg = <0x79b0000 0x1000>;
+-
+-	clocks = <&gcc GCC_QPIC_CLK>,
+-		<&gcc GCC_QPIC_AHB_CLK>;
+-	clock-names = "core", "aon";
+-
+-	dmas = <&qpicbam 0>,
+-		<&qpicbam 1>,
+-		<&qpicbam 2>;
+-	dma-names = "tx", "rx", "cmd";
+-
+-	#address-cells = <1>;
+-	#size-cells = <0>;
+-
+-	nand@0 {
+-		reg = <0>;
+-		nand-ecc-strength = <4>;
+-		nand-bus-width = <8>;
+-
+-		partitions {
+-			compatible = "fixed-partitions";
+-			#address-cells = <1>;
+-			#size-cells = <1>;
+-
+-			partition@0 {
+-				label = "boot-nand";
+-				reg = <0 0x58a0000>;
+-			};
+-
+-			partition@58a0000 {
+-				label = "fs-nand";
+-				reg = <0x58a0000 0x4000000>;
+-			};
+-		};
+-	};
+-};
 -- 
 2.25.1
 
