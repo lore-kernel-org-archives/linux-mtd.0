@@ -2,62 +2,67 @@ Return-Path: <SRS0=UneP=HY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_05,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,LOTS_OF_MONEY,
+	MAILING_LIST_MULTI,MONEY_FREEMAIL_REPTO,MONEY_NOHTML,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB50AC433E0
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Feb 2021 15:06:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC35CC433E0
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Feb 2021 15:17:49 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4775F64DAF
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Feb 2021 15:06:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4775F64DAF
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	by mail.kernel.org (Postfix) with ESMTPS id 82EE164DF5
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Feb 2021 15:17:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 82EE164DF5
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=real-ptt.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=oVAVtM7Y6LDQsz540nPXjhnJIosk0L5Q5/iFea5/5fQ=; b=k4mRKBZ/O37/sd6JiRTUt3rQs4
-	wDXKwuN9X4fNeFvBs/lkn0MRPiqr6DP7JPDrtiRjem56Za+3wTTJVF9szvvqzhxgkcj9zCujm5Wu6
-	UJt+JO8vwztSQMRbKdLwJR3F60avBu8SoZ29NurTNvxY0rHQFKdiXNEI8nMq/WdJsLOFR7xsX0iqN
-	bVJ7itID0kq0o/m7SfBQcLqD63iw9OLDJDuJwN2R9k7fzRBBlwPEGrJFeMZgeaJs62k2ZH7OH9aS8
-	kVeXvGMYInC3S5rzvfFEB/59THnoUE6zMfop7rlVdLmShgb9/w9W77qDSlun5ivMG6OAA14EsJxT7
-	qugfmaOw==;
+	d=lists.infradead.org; s=merlin.20170209; h=Message-ID:Sender:
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Date:From:To:Subject:
+	Content-Description:MIME-Version:Cc:Content-ID:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=3nmiVexiwwGHuY14T4kTM0l5pR9hroKNlNNGbpo+Txs=; b=BhRFHodVhaOIjV
+	5ncuS8tGLxHwV8DOySHHuX2RFuL1U4P8cEiBW4uyDzhl1lVCY4nBAi9fVmNkzFSWCqzryELj/bQNY
+	o/Q/w64u1is38elS4VDErdLHlPctdiXKrQbA+xUCqPVkcjI+OAnCuQy0eVc0ELKf/lCy/88jdfxxd
+	rbBKocwm+/6KQtG7YIBdyM/Apf8O6gBh5xfQl8g2VqfpPy71VtJYvOipZeNRszUXqVBjHjN1koP+j
+	SODlQk3xIPNSSNy5Hon+KXIdI16aqS1J0OceJEgSveS53FdEbjtD4/2tZr4F5bCOe7Qjvb3SFvy8F
+	vu20YDRv9UpxhK7KYc3A==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lECmo-0000k0-IT; Mon, 22 Feb 2021 15:06:10 +0000
-Received: from alexa-out.qualcomm.com ([129.46.98.28])
+	id 1lECx9-0001eq-CP; Mon, 22 Feb 2021 15:16:51 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lECmm-0000jc-HX
- for linux-mtd@lists.infradead.org; Mon, 22 Feb 2021 15:06:09 +0000
-Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com)
- ([10.47.202.151])
- by alexa-out.qualcomm.com with ESMTP; 22 Feb 2021 07:06:06 -0800
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
- by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA;
- 22 Feb 2021 07:06:04 -0800
-X-QCInternal: smtphost
-Received: from mdalam-linux.qualcomm.com ([10.201.2.71])
- by ironmsg02-blr.qualcomm.com with ESMTP; 22 Feb 2021 20:35:45 +0530
-Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
- id 7279421DA8; Mon, 22 Feb 2021 20:35:45 +0530 (IST)
-From: Md Sadre Alam <mdalam@codeaurora.org>
-To: miquel.raynal@bootlin.com, mani@kernel.org, boris.brezillon@collabora.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: rawnand: qcom: Add helper to configure location register
-Date: Mon, 22 Feb 2021 20:35:43 +0530
-Message-Id: <1614006343-5947-1-git-send-email-mdalam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+ id 1lECx6-0001dn-3m
+ for linux-mtd@merlin.infradead.org; Mon, 22 Feb 2021 15:16:49 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Reply-To:Date:From:To:Subject:
+ Content-Description:Content-Transfer-Encoding:MIME-Version:Content-Type:
+ Sender:Message-ID:Cc:Content-ID:In-Reply-To:References;
+ bh=pXIgOOxyZp4aE+IYJxOfc37kmQfJ+Fic1R3d+i9deOQ=; b=hAiZhiCU1ep3y5Y+JpUrFWdgkX
+ HmavM0zXlq5Ll+HEj661SFvfYoAefErVXtwhDkk9nCl9WbF0IIxR3hT2BTmr+jwiK1zEZnDrNMhkN
+ mnCZhoLf85DaHowImnIh1RBJ5wHLP8eAj2HoQlgc/vZBfLSYy2ZV6vCK81Qnpv2COfwPkJhgU16wu
+ Z4UW6EBMmTMMe6lI59C0SyTP7eWkZn8xHy5oodPYoF2zSCGRa1i0F2+TRH6mj6RWVhWJ5Ep2vzuiW
+ fPQqHbrwABTBtIwfGT7OGN9opaRPFlHQqwXJClUYLrUf4VdYSb9/Qv7Q9PtEvBP5cEZpayGtURZhf
+ hZ32M9OQ==;
+Received: from [8.211.43.121] (helo=mail.real-ptt.net)
+ by casper.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
+ id 1lECwv-006jB3-Fx
+ for linux-mtd@lists.infradead.org; Mon, 22 Feb 2021 15:16:40 +0000
+Received: from [103.99.1.174] (unknown [103.99.1.174])
+ by mail.real-ptt.net (Postfix) with ESMTPA id 78D67BBE69
+ for <linux-mtd@lists.infradead.org>; Mon, 22 Feb 2021 23:16:32 +0800 (CST)
+MIME-Version: 1.0
+Content-Description: Mail message body
+Subject: Low-Cost Loans for SMEs & Investment Funding.
+To: linux-mtd@lists.infradead.org
+From: "Nicholas Toms" <service@real-ptt.net>
+Date: Mon, 22 Feb 2021 07:16:30 -0800
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210222_100608_732858_52506EA8 
-X-CRM114-Status: GOOD (  12.86  )
+X-CRM114-CacheID: sfid-20210222_151640_181731_1814CDFF 
+X-CRM114-Status: UNSURE (  -4.80  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,120 +74,17 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: mdalam@codeaurora.org, sricharan@codeaurora.org
-MIME-Version: 1.0
+Reply-To: nchlstoms@gmail.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
+Message-ID: <E1lECx9-0001eq-CP@merlin.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This change will add helper nandc_set_read_loc() to configure
-location register value. QPIC V2 on wards there is separate
-location register to read the last code word. This helper
-will use to configure location register for last code word
-as well.
+My name is Nicholas Toms, an investment portfolio manage. We offer the right loan Investment funding with low interest to finance your business or project ranging from US$1M to US$2BIllion. Kindly contact me for more details as I am open to questions. 
 
-Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
----
- drivers/mtd/nand/raw/qcom_nandc.c | 38 ++++++++++++++++++++++++++------------
- 1 file changed, 26 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index bfefb4e..82d083ad 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -181,8 +181,8 @@
- #define	ECC_BCH_4BIT	BIT(2)
- #define	ECC_BCH_8BIT	BIT(3)
- 
--#define nandc_set_read_loc(nandc, reg, cw_offset, read_size, is_last_read_loc)	\
--nandc_set_reg(nandc, NAND_READ_LOCATION_##reg,			\
-+#define nandc_set_read_loc_first(nandc, reg, cw_offset, read_size, is_last_read_loc)	\
-+nandc_set_reg(nandc, reg,			\
- 	      ((cw_offset) << READ_LOCATION_OFFSET) |		\
- 	      ((read_size) << READ_LOCATION_SIZE) |			\
- 	      ((is_last_read_loc) << READ_LOCATION_LAST))
-@@ -667,6 +667,20 @@ static bool qcom_nandc_is_last_cw(struct nand_ecc_ctrl *ecc, int cw)
- 	return cw == (ecc->steps - 1);
- }
- 
-+/* helper to configure location register values */
-+static void nandc_set_read_loc(struct nand_chip *chip, int cw, int reg,
-+			       int cw_offset, int read_size, int is_last_read_loc)
-+{
-+	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-+
-+	int reg_base = NAND_READ_LOCATION_0;
-+
-+	reg_base += reg * 4;
-+
-+	return nandc_set_read_loc_first(nandc, reg_base, cw_offset,
-+			read_size, is_last_read_loc);
-+}
-+
- /* helper to configure address register values */
- static void set_address(struct qcom_nand_host *host, u16 column, int page)
- {
-@@ -726,7 +740,7 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read)
- 	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
- 
- 	if (read)
--		nandc_set_read_loc(nandc, 0, 0, host->use_ecc ?
-+		nandc_set_read_loc(chip, 0, 0, 0, host->use_ecc ?
- 				   host->cw_data : host->cw_size, 1);
- }
- 
-@@ -1221,7 +1235,7 @@ static int nandc_param(struct qcom_nand_host *host)
- 		nandc_set_reg(nandc, NAND_DEV_CMD_VLD_RESTORE, nandc->vld);
- 	}
- 
--	nandc_set_read_loc(nandc, 0, 0, 512, 1);
-+	nandc_set_read_loc(chip, 0, 0, 0, 512, 1);
- 
- 	if (!nandc->props->qpic_v2) {
- 		write_reg_dma(nandc, NAND_DEV_CMD_VLD, 1, 0);
-@@ -1649,16 +1663,16 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 	}
- 
- 	if (nandc->props->is_bam) {
--		nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
-+		nandc_set_read_loc(chip, cw, 0, read_loc, data_size1, 0);
- 		read_loc += data_size1;
- 
--		nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
-+		nandc_set_read_loc(chip, cw, 1, read_loc, oob_size1, 0);
- 		read_loc += oob_size1;
- 
--		nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
-+		nandc_set_read_loc(chip, cw, 2, read_loc, data_size2, 0);
- 		read_loc += data_size2;
- 
--		nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
-+		nandc_set_read_loc(chip, cw, 3, read_loc, oob_size2, 1);
- 	}
- 
- 	config_nand_cw_read(chip, false);
-@@ -1889,13 +1903,13 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
- 
- 		if (nandc->props->is_bam) {
- 			if (data_buf && oob_buf) {
--				nandc_set_read_loc(nandc, 0, 0, data_size, 0);
--				nandc_set_read_loc(nandc, 1, data_size,
-+				nandc_set_read_loc(chip, i, 0, 0, data_size, 0);
-+				nandc_set_read_loc(chip, i, 1, data_size,
- 						   oob_size, 1);
- 			} else if (data_buf) {
--				nandc_set_read_loc(nandc, 0, 0, data_size, 1);
-+				nandc_set_read_loc(chip, i, 0, 0, data_size, 1);
- 			} else {
--				nandc_set_read_loc(nandc, 0, data_size,
-+				nandc_set_read_loc(chip, i, 0, data_size,
- 						   oob_size, 1);
- 			}
- 		}
--- 
-2.7.4
-
+Sincerely, 
+Nicholas Toms
 
 ______________________________________________________
 Linux MTD discussion mailing list
