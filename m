@@ -2,60 +2,70 @@ Return-Path: <SRS0=z1Oh=HZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 254BEC433DB
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Feb 2021 16:50:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31CA5C433DB
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Feb 2021 17:02:22 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 83D9761606
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Feb 2021 16:50:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 83D9761606
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id D57B564E77
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Feb 2021 17:02:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D57B564E77
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=mailfence.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=SnZ6FkVn16GtDBW6vgn2HnO8wkYaQ/J1cWvK0R4Nfw4=; b=Vr+PfxGwQTWhdm2co2uLmbASt
-	BNMMuMvsVNpUGDJ+osc4beulj7P0rOphPDRwlHGUWpUwX/jPIK6c/fOFlsFigH6vLG9D3qSKzCBgS
-	gMStW5Eid0uL2GpC1sOUjilMl3ArhHixHUfrAsIGCShJNgqHgcxZ3tvah2x8yKc1MH7M8o9IjsOPx
-	2CttmN1aNbvQPPoQBEbpPOuFNssKFFPS759952OZpPUHBENtCyPV3hU7eY2UjwFycafG5/+fnSYc5
-	oFKCIqyaOo7R1ESb39St/SsJtB1QCqdfBaOUxvZBthzBFNpeyfj2K82r+wsPs2RqvK9U0I3iF/i5e
-	fdreIOccw==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=TkewCA9Dmz/WVAp+Q/kaAnTR30nzdlbOFu6/VslG+C4=; b=B/gzrmi1M8b4oc2zr94XOSBYHI
+	KEAnne4PsC3tc8K1jC2Lp5u2ft+vz+g5iudg9DdsDcMwiRMu4wN0YqXPmktglq7GOe6EEapWGRE51
+	+kfWckMXlTyjPRkacr36azK68uTRh/d/CmaubHVCHCwFX0ROrdeJ70UFwq+agW5/vIqsqUYY5vm/v
+	2sdWNXqZnVFJLtTp+IdbXOaK9PfBPVbJBKJjbOlTkqdU+bLlvXKvwlszei2B+w4XF/uQ22vE8B3QI
+	huNM/+SD/CQezHDTmaaunowVrit0d8SssElr1PNQpOiimxUvaVv5EWwjMPsS2LlYMmDTaFncM05Mt
+	kjwvJAXQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lEasO-0004md-Ru; Tue, 23 Feb 2021 16:49:32 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1lEb3z-0005xc-W1; Tue, 23 Feb 2021 17:01:32 +0000
+Received: from mail.kapsi.fi ([2001:67c:1be8::25])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lEasL-0004mD-0y
- for linux-mtd@lists.infradead.org; Tue, 23 Feb 2021 16:49:30 +0000
-X-Originating-IP: 86.210.203.113
-Received: from xps13 (lfbn-tou-1-972-113.w86-210.abo.wanadoo.fr
- [86.210.203.113]) (Authenticated sender: miquel.raynal@bootlin.com)
- by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id AEFDBFF808;
- Tue, 23 Feb 2021 16:49:23 +0000 (UTC)
-Date: Tue, 23 Feb 2021 17:49:22 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: Re: [PATCH 2/3] dt-bindings: mtd: Add a property to declare secure
- regions in Qcom NANDc
-Message-ID: <20210223174922.052f9776@xps13>
-In-Reply-To: <20210222120259.94465-3-manivannan.sadhasivam@linaro.org>
-References: <20210222120259.94465-1-manivannan.sadhasivam@linaro.org>
- <20210222120259.94465-3-manivannan.sadhasivam@linaro.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1lEb3w-0005vl-R0
+ for linux-mtd@lists.infradead.org; Tue, 23 Feb 2021 17:01:30 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+ s=20161220; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
+ :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+ Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+ In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+ List-Post:List-Owner:List-Archive;
+ bh=2WJIFDcEDFP9WY83WwiGCFaHX35Xhcf/eXTXQ9sw7no=; b=OlVlY1/WyY215zNC4wUNNm/OnP
+ h71zCxwZvJvl967156IbbGr3mAxc3ZGdCy3m2rXcB7/QRdfzk3dI71tFideO6ZAsIiLaavGXTz+EZ
+ Ta0+Gtyvb59ZCx98KBUPQfZpTG3EX93YlpKCl2zSW3SOXf/YEkPDoYJjpbwYNpmqC93lauH7bR4rg
+ 09LN4gayjOMG7MIaa9chPspf3Wn8kWoEgHV57h0g62/9s0ljNWE7ndrW6rhmELhAvOv8Sza24SjIl
+ FD3QInE0HHqUICbaWiI8E39fNjn5Ta+jIYTsrkfRck0EFqSeBYp8t6799+Oz3ubYkQn5+Rtwnu1R+
+ OHAOmc8A==;
+Received: from 194-168-191-90.dyn.estpak.ee ([90.191.168.194] helo=ubuntu)
+ by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+ (Exim 4.89) (envelope-from <sandberg@mailfence.com>)
+ id 1lEb3q-0005Ac-SS; Tue, 23 Feb 2021 19:01:23 +0200
+Received: by ubuntu (sSMTP sendmail emulation); Tue, 23 Feb 2021 19:01:15 +0200
+From: Mauri Sandberg <sandberg@mailfence.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: chips: AMD chip 0x2201 - write words not buffers
+Date: Tue, 23 Feb 2021 19:00:52 +0200
+Message-Id: <20210223170052.963927-1-sandberg@mailfence.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+X-SA-Exim-Connect-IP: 90.191.168.194
+X-SA-Exim-Mail-From: sandberg@mailfence.com
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210223_114929_739403_74526151 
-X-CRM114-Status: GOOD (  20.25  )
+X-CRM114-CacheID: sfid-20210223_120129_161850_D7A22FD7 
+X-CRM114-Status: GOOD (  13.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,49 +77,70 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, vigneshr@ti.com, richard@nod.at,
- linux-kernel@vger.kernel.org, boris.brezillon@collabora.com,
- robh+dt@kernel.org, linux-mtd@lists.infradead.org,
- linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Mauri Sandberg <sandberg@mailfence.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWFuaXZhbm5hbiwKCk1hbml2YW5uYW4gU2FkaGFzaXZhbSA8bWFuaXZhbm5hbi5zYWRoYXNp
-dmFtQGxpbmFyby5vcmc+IHdyb3RlIG9uIE1vbiwKMjIgRmViIDIwMjEgMTc6MzI6NTggKzA1MzA6
-Cgo+IE9uIGEgdHlwaWNhbCBlbmQgcHJvZHVjdCwgYSB2ZW5kb3IgbWF5IGNob29zZSB0byBzZWN1
-cmUgc29tZSByZWdpb25zIGluCj4gdGhlIE5BTkQgbWVtb3J5IHdoaWNoIGFyZSBzdXBwb3NlZCB0
-byBzdGF5IGludGFjdCBiZXR3ZWVuIEZXIHVwZ3JhZGVzLgo+IFRoZSBhY2Nlc3MgdG8gdGhvc2Ug
-cmVnaW9ucyB3aWxsIGJlIGJsb2NrZWQgYnkgYSBzZWN1cmUgZWxlbWVudCBsaWtlCj4gVHJ1c3R6
-b25lLiBTbyB0aGUgbm9ybWFsIHdvcmxkIHNvZnR3YXJlIGxpa2UgTGludXgga2VybmVsIHNob3Vs
-ZCBub3QKPiB0b3VjaCB0aGVzZSByZWdpb25zIChpbmNsdWRpbmcgcmVhZGluZykuCj4gCj4gU28g
-bGV0J3MgYWRkIGEgcHJvcGVydHkgZm9yIGRlY2xhcmluZyBzdWNoIHNlY3VyZSByZWdpb25zIHNv
-IHRoYXQgdGhlCj4gZHJpdmVyIGNhbiBza2lwIHRvdWNoaW5nIHRoZW0uCj4gCj4gU2lnbmVkLW9m
-Zi1ieTogTWFuaXZhbm5hbiBTYWRoYXNpdmFtIDxtYW5pdmFubmFuLnNhZGhhc2l2YW1AbGluYXJv
-Lm9yZz4KPiAtLS0KPiAgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9xY29t
-LG5hbmRjLnlhbWwgfCA3ICsrKysrKysKPiAgMSBmaWxlIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygr
-KQo+IAo+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRk
-L3Fjb20sbmFuZGMueWFtbCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQv
-cWNvbSxuYW5kYy55YW1sCj4gaW5kZXggODRhZDdmZjMwMTIxLi43NTAwZTIwZGE5YzEgMTAwNjQ0
-Cj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9xY29tLG5hbmRj
-LnlhbWwKPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3Fjb20s
-bmFuZGMueWFtbAo+IEBAIC00OCw2ICs0OCwxMyBAQCBwYXR0ZXJuUHJvcGVydGllczoKPiAgICAg
-ICAgICBlbnVtOgo+ICAgICAgICAgICAgLSA1MTIKPiAgCj4gKyAgICAgIHFjb20sc2VjdXJlLXJl
-Z2lvbnM6Cj4gKyAgICAgICAgJHJlZjogL3NjaGVtYXMvdHlwZXMueWFtbCMvZGVmaW5pdGlvbnMv
-dWludDMyLWFycmF5Cj4gKyAgICAgICAgZGVzY3JpcHRpb246Cj4gKyAgICAgICAgICBSZWdpb25z
-IGluIHRoZSBOQU5EIG1lbW9yeSB3aGljaCBhcmUgcHJvdGVjdGVkIHVzaW5nIGEgc2VjdXJlIGVs
-ZW1lbnQKPiArICAgICAgICAgIGxpa2UgVHJ1c3R6b25lLiBUaGlzIHByb3BlcnR5IGNvbnRhaW5z
-IHRoZSBzdGFydCBhZGRyZXNzIGFuZCBzaXplIG9mCj4gKyAgICAgICAgICB0aGUgc2VjdXJlIHJl
-Z2lvbnMgcHJlc2VudCAob3B0aW9uYWwpLgoKV2hhdCBkb2VzIHRoaXMgIihvcHRpb25hbCkiIG1l
-YW5zPyBJZiB5b3UgbWVhbiB0aGUgcHJvcGVydHkgaXMgb3B0aW9uYWwKdGhlbiBpdCBzaG91bGQg
-YmUgZGVzY3JpYmVkIGFjY29yZGluZ2x5IGluIHRoZSB5YW1sIGZpbGUsIG9yIGFtIEkKbWlzc2lu
-ZyBzb21ldGhpbmc/CgpJIHdvbmRlciBpZiBpdCB3b3VsZG4ndCBiZSBiZXR0ZXIgdG8gbWFrZSB0
-aGlzIGEgTkFORCBjaGlwIG5vZGUKcHJvcGVydHkuIEkgZG9uJ3QgdGhpbmsgYSBxY29tIHByZWZp
-eCBpcyBuZWVkZWQgYXMgcG90ZW50aWFsbHkgbWFueQpvdGhlciBTb0NzIG1pZ2h0IGhhdmUgdGhl
-IHNhbWUgImZlYXR1cmUiLgoKSSdtIGZpbmUgYWRkaW5nIHN1cHBvcnQgZm9yIGl0IGluIHRoZSBx
-Y29tIGRyaXZlciBvbmx5IHRob3VnaC4KCj4gKwo+ICBhbGxPZjoKPiAgICAtICRyZWY6ICJuYW5k
-LWNvbnRyb2xsZXIueWFtbCMiCj4gIAoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
-b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vbGludXgtbXRkLwo=
+CFI flash memory driver cmdset_0002 uses buffers for write operations.
+That does not work with AMD chip with id 0x2201 and we must resort to
+writing word sized chunks only.
+
+This patch creates fixup mechanism that renders a chip to use word sized
+write operation and adds that as the last item in a fixup table, shadowing
+the entry that causes use of buffer writes.
+
+Without the patch kernel logs will be flooded with entries like below:
+
+MTD do_erase_oneblock(): ERASE 0x01fa0000
+MTD do_write_buffer(): WRITE 0x01fa0000(0x00001985)
+MTD do_erase_oneblock(): ERASE 0x01f80000
+MTD do_write_buffer(): WRITE 0x01f80000(0x00001985)
+MTD do_write_buffer_wait(): software timeout, address:0x01f8000a.
+jffs2: Write clean marker to block at 0x01a60000 failed: -5
+MTD do_erase_oneblock(): ERASE 0x01f60000
+MTD do_write_buffer(): WRITE 0x01f60000(0x00001985)
+MTD do_write_buffer_wait(): software timeout, address:0x01f6000a.
+jffs2: Write clean marker to block at 0x01a40000 failed: -5
+
+Signed-off-by: Mauri Sandberg <sandberg@mailfence.com>
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index a1f3e1031c3d..b8b564342062 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -279,6 +279,12 @@ static void fixup_use_write_buffers(struct mtd_info *mtd)
+ }
+ #endif /* !FORCE_WORD_WRITE */
+ 
++static void fixup_use_write_words(struct mtd_info *mtd)
++{
++	pr_debug("Using word write method\n");
++	mtd->_write = cfi_amdstd_write_words;
++}
++
+ /* Atmel chips don't use the same PRI format as AMD chips */
+ static void fixup_convert_atmel_pri(struct mtd_info *mtd)
+ {
+@@ -470,8 +476,10 @@ static struct cfi_fixup cfi_fixup_table[] = {
+ #if !FORCE_WORD_WRITE
+ 	{ CFI_MFR_ANY, CFI_ID_ANY, fixup_use_write_buffers },
+ #endif
++	{ CFI_MFR_AMD, 0x2201, fixup_use_write_words },
+ 	{ 0, 0, NULL }
+ };
++
+ static struct cfi_fixup jedec_fixup_table[] = {
+ 	{ CFI_MFR_SST, SST49LF004B, fixup_use_fwh_lock },
+ 	{ CFI_MFR_SST, SST49LF040B, fixup_use_fwh_lock },
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
