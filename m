@@ -2,60 +2,74 @@ Return-Path: <SRS0=z1Oh=HZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 413EFC433DB
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Feb 2021 17:57:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98A6FC433E0
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Feb 2021 18:08:45 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C0C2464E85
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Feb 2021 17:57:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C0C2464E85
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 54A3A64E4D
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Feb 2021 18:08:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 54A3A64E4D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=7plmYUr6f5EOW+CF22e8ESYQK2JdXwT4mUdhJKCEKGU=; b=MG9vSG94MdWoqsMsvGhAmI8mb
-	1NLUKz3CObfw4wKYnmZoZrRi7jORVtPlh1lpfvf8ikTRSEgAH5CLphsVAMrgBJcptdtHoILzCfIMo
-	k+46O/kzldWCyCRgCSyRZK4E3tDaPw6RzQgzsa+W6lUaDzTDJ16TYQrKp6kA+VnSpdzfnyS03mhkY
-	n2YCBpcib30Y9ziSZ1HaWgD4q8AbbSgcdfFmTP7lS738hbs6nxba8ejT3DEnR563nnJ+8/daC08Ic
-	+5bunyxh9+eMhG/QfMuQ0Sq5uF1TEn6IGRgFXm9OGxgAeStPRwx7XcMqApkUJ9RkhpYMlSDkZCVzg
-	m2vxghf8w==;
+	 bh=R8JZyv72h6CyabqoRN96LtGMAwsBIY25m/basyVSjIU=; b=pcY3DP4/PIN03CrTwG4du1JE1
+	+nvt8QaGCWtHQ5TO7d62rMvDCd62HNTjhPWiapDjVOLtkNgaoDp741Df+GA6BD8YIqEGDUhNNzP1b
+	bWAXfAVlBcBnFE7y7oFZIUI5ugxKh8VSZonV9tycjgwgw36ivIhid5MqlisNqNUvXN+AWc35Jgr5U
+	hHQ5a7+/CP4615DBdRP2KerVRFWZvkD5ju8zqrurxy0leKF3qYE2FWWWK0pBU2g0+8wKWPnJXwGDt
+	NFiMSuHapATHg6Ql3Ll6gsGFJO3a60hep4jpwio2QrNrWHkZ5VIQxZgMu9tmeP98zYW0BCQTKCat0
+	keUteQ6SA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lEbv4-0003Qe-In; Tue, 23 Feb 2021 17:56:22 +0000
-Received: from relay10.mail.gandi.net ([217.70.178.230])
+	id 1lEc6C-0004BC-2Y; Tue, 23 Feb 2021 18:07:52 +0000
+Received: from mail-ot1-f43.google.com ([209.85.210.43])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lEbuz-0003On-As
- for linux-mtd@lists.infradead.org; Tue, 23 Feb 2021 17:56:20 +0000
-Received: from xps13 (lfbn-tou-1-972-113.w86-210.abo.wanadoo.fr
- [86.210.203.113]) (Authenticated sender: miquel.raynal@bootlin.com)
- by relay10.mail.gandi.net (Postfix) with ESMTPSA id 66CD2240006;
- Tue, 23 Feb 2021 17:56:12 +0000 (UTC)
-Date: Tue, 23 Feb 2021 18:56:10 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: Re: [PATCH 2/3] dt-bindings: mtd: Add a property to declare secure
- regions in Qcom NANDc
-Message-ID: <20210223185610.7f495406@xps13>
-In-Reply-To: <20210223174546.GA27945@work>
-References: <20210222120259.94465-1-manivannan.sadhasivam@linaro.org>
- <20210222120259.94465-3-manivannan.sadhasivam@linaro.org>
- <20210223174922.052f9776@xps13> <20210223174546.GA27945@work>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1lEc69-0004An-V6
+ for linux-mtd@lists.infradead.org; Tue, 23 Feb 2021 18:07:50 +0000
+Received: by mail-ot1-f43.google.com with SMTP id s107so16500063otb.8
+ for <linux-mtd@lists.infradead.org>; Tue, 23 Feb 2021 10:07:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=lJC41uj2PpVZYS8ZrypliNOrjVrALIbDACe38HQbpe0=;
+ b=Rhk/p3q6KCPiVqazP8KfNrRaJxjQbNjrgLLzRI5Vlp9LudXhu2wlCkO8/AWm1FH6Hu
+ 7bCpgOgwL7hr2N9kBy5a7egjIKP0A9iyvqEbl6A9j1LPuSBilEiBa9KaGIxEhXBHY53J
+ UWvJQCLd6+lV2WQHmWuKJKBFF7/oVNnKJ/Dg/vR6ke2vqpmC4W3h0seXyAxB7P6UBat7
+ JNTunEY6bYCdwwJKm10Pmlh0kk228q3+wbjdis9Dm0h4pSFesPt2FwhHygMUQO4CFGuD
+ cS0kL4ibTS5LiPz831RZ8/RR6g6Bj4ddjjj7p8vg1bA8foa3H3jRVfRbDVuMwTU+qyjI
+ gvZw==
+X-Gm-Message-State: AOAM530hcSPgrP91sMLSEm6Zanej7iHiHL9tzcd55vIr+oithVMOrv/V
+ A7gEF2eLvyFRnjZWxVD/HoJm8qsAZyLj3Jmh8Xg=
+X-Google-Smtp-Source: ABdhPJy39Q4RNfyXx9Fl6r4sFKRG/1VC3igCpLK13X1CD9+hSAxjZ5QPPeB+USoxzPBCi8FwPi3lUkr6goSzhiRZnNY=
+X-Received: by 2002:a9d:77d6:: with SMTP id w22mr21544277otl.145.1614103668840; 
+ Tue, 23 Feb 2021 10:07:48 -0800 (PST)
 MIME-Version: 1.0
+References: <1612517808-10010-1-git-send-email-zhengxunli@mxic.com.tw>
+ <1612517808-10010-2-git-send-email-zhengxunli@mxic.com.tw>
+ <20210205104736.2771074c@xps13> <20210205133404.esqqeokhlp4askpq@ti.com>
+ <20210223141344.7ad25831@xps13> <20210223133649.GD5116@sirena.org.uk>
+ <20210223152504.jtq4uxfepz7bdxhl@ti.com>
+In-Reply-To: <20210223152504.jtq4uxfepz7bdxhl@ti.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 23 Feb 2021 19:07:37 +0100
+Message-ID: <CAMuHMdVQUCaiBwdU=KdFOu=D71kYbGqoqp9V3pLsXXE0AAdCog@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] mtd: spi-nor: macronix: add support for Macronix
+ octaflash
+To: Pratyush Yadav <p.yadav@ti.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210223_125617_491334_2FCD3CE7 
-X-CRM114-Status: GOOD (  31.04  )
+X-CRM114-CacheID: sfid-20210223_130750_031843_75D3EDE2 
+X-CRM114-Status: GOOD (  20.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,62 +81,60 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, vigneshr@ti.com, richard@nod.at,
- linux-kernel@vger.kernel.org, boris.brezillon@collabora.com,
- robh+dt@kernel.org, linux-mtd@lists.infradead.org,
- linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: "R, Vignesh" <vigneshr@ti.com>, juliensu@mxic.com.tw, ycllin@mxic.com.tw,
+ linux-spi <linux-spi@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, zhengxunli <zhengxunli@mxic.com.tw>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWFuaXZhbm5hbiwKCk1hbml2YW5uYW4gU2FkaGFzaXZhbSA8bWFuaXZhbm5hbi5zYWRoYXNp
-dmFtQGxpbmFyby5vcmc+IHdyb3RlIG9uIFR1ZSwKMjMgRmViIDIwMjEgMjM6MTU6NDYgKzA1MzA6
-Cgo+IEhpIE1pcXVlbCwKPiAKPiBPbiBUdWUsIEZlYiAyMywgMjAyMSBhdCAwNTo0OToyMlBNICsw
-MTAwLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+ID4gSGkgTWFuaXZhbm5hbiwKPiA+IAo+ID4gTWFu
-aXZhbm5hbiBTYWRoYXNpdmFtIDxtYW5pdmFubmFuLnNhZGhhc2l2YW1AbGluYXJvLm9yZz4gd3Jv
-dGUgb24gTW9uLAo+ID4gMjIgRmViIDIwMjEgMTc6MzI6NTggKzA1MzA6Cj4gPiAgIAo+ID4gPiBP
-biBhIHR5cGljYWwgZW5kIHByb2R1Y3QsIGEgdmVuZG9yIG1heSBjaG9vc2UgdG8gc2VjdXJlIHNv
-bWUgcmVnaW9ucyBpbgo+ID4gPiB0aGUgTkFORCBtZW1vcnkgd2hpY2ggYXJlIHN1cHBvc2VkIHRv
-IHN0YXkgaW50YWN0IGJldHdlZW4gRlcgdXBncmFkZXMuCj4gPiA+IFRoZSBhY2Nlc3MgdG8gdGhv
-c2UgcmVnaW9ucyB3aWxsIGJlIGJsb2NrZWQgYnkgYSBzZWN1cmUgZWxlbWVudCBsaWtlCj4gPiA+
-IFRydXN0em9uZS4gU28gdGhlIG5vcm1hbCB3b3JsZCBzb2Z0d2FyZSBsaWtlIExpbnV4IGtlcm5l
-bCBzaG91bGQgbm90Cj4gPiA+IHRvdWNoIHRoZXNlIHJlZ2lvbnMgKGluY2x1ZGluZyByZWFkaW5n
-KS4KPiA+ID4gCj4gPiA+IFNvIGxldCdzIGFkZCBhIHByb3BlcnR5IGZvciBkZWNsYXJpbmcgc3Vj
-aCBzZWN1cmUgcmVnaW9ucyBzbyB0aGF0IHRoZQo+ID4gPiBkcml2ZXIgY2FuIHNraXAgdG91Y2hp
-bmcgdGhlbS4KPiA+ID4gCj4gPiA+IFNpZ25lZC1vZmYtYnk6IE1hbml2YW5uYW4gU2FkaGFzaXZh
-bSA8bWFuaXZhbm5hbi5zYWRoYXNpdmFtQGxpbmFyby5vcmc+Cj4gPiA+IC0tLQo+ID4gPiAgRG9j
-dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9xY29tLG5hbmRjLnlhbWwgfCA3ICsr
-KysrKysKPiA+ID4gIDEgZmlsZSBjaGFuZ2VkLCA3IGluc2VydGlvbnMoKykKPiA+ID4gCj4gPiA+
-IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3Fjb20s
-bmFuZGMueWFtbCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvcWNvbSxu
-YW5kYy55YW1sCj4gPiA+IGluZGV4IDg0YWQ3ZmYzMDEyMS4uNzUwMGUyMGRhOWMxIDEwMDY0NAo+
-ID4gPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3Fjb20sbmFu
-ZGMueWFtbAo+ID4gPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRk
-L3Fjb20sbmFuZGMueWFtbAo+ID4gPiBAQCAtNDgsNiArNDgsMTMgQEAgcGF0dGVyblByb3BlcnRp
-ZXM6Cj4gPiA+ICAgICAgICAgIGVudW06Cj4gPiA+ICAgICAgICAgICAgLSA1MTIKPiA+ID4gIAo+
-ID4gPiArICAgICAgcWNvbSxzZWN1cmUtcmVnaW9uczoKPiA+ID4gKyAgICAgICAgJHJlZjogL3Nj
-aGVtYXMvdHlwZXMueWFtbCMvZGVmaW5pdGlvbnMvdWludDMyLWFycmF5Cj4gPiA+ICsgICAgICAg
-IGRlc2NyaXB0aW9uOgo+ID4gPiArICAgICAgICAgIFJlZ2lvbnMgaW4gdGhlIE5BTkQgbWVtb3J5
-IHdoaWNoIGFyZSBwcm90ZWN0ZWQgdXNpbmcgYSBzZWN1cmUgZWxlbWVudAo+ID4gPiArICAgICAg
-ICAgIGxpa2UgVHJ1c3R6b25lLiBUaGlzIHByb3BlcnR5IGNvbnRhaW5zIHRoZSBzdGFydCBhZGRy
-ZXNzIGFuZCBzaXplIG9mCj4gPiA+ICsgICAgICAgICAgdGhlIHNlY3VyZSByZWdpb25zIHByZXNl
-bnQgKG9wdGlvbmFsKS4gIAo+ID4gCj4gPiBXaGF0IGRvZXMgdGhpcyAiKG9wdGlvbmFsKSIgbWVh
-bnM/IElmIHlvdSBtZWFuIHRoZSBwcm9wZXJ0eSBpcyBvcHRpb25hbAo+ID4gdGhlbiBpdCBzaG91
-bGQgYmUgZGVzY3JpYmVkIGFjY29yZGluZ2x5IGluIHRoZSB5YW1sIGZpbGUsIG9yIGFtIEkKPiA+
-IG1pc3Npbmcgc29tZXRoaW5nPwo+ID4gICAKPiAKPiBJSVVDLCBpZiBhIHByb3BlcnR5IGlzIG5v
-dCBsaXN0ZWQgdW5kZXIgInJlcXVpcmVkIiBzZWN0aW9uIHRoZW4gaXQgaXMKPiBvcHRpb25hbC4g
-QnV0IEkndmUgYWRkZWQgdGhlIHF1b3RlIGhlcmUgdG8ganVzdCBtYWtlIGl0IGV4cGxpY2l0LgoK
-QWJzb2x1dGVseSwgSSB3YXMganVzdCB3b25kZXJpbmcgd2h5IHlvdSBtZW50aW9uZWQgaXQgaGVy
-ZS4gSSBkb24ndAp0aGluayBpdCdzIHVzZWZ1bCwgeW91IGNhbiBkcm9wIGl0LgoKPiAKPiA+IEkg
-d29uZGVyIGlmIGl0IHdvdWxkbid0IGJlIGJldHRlciB0byBtYWtlIHRoaXMgYSBOQU5EIGNoaXAg
-bm9kZQo+ID4gcHJvcGVydHkuIEkgZG9uJ3QgdGhpbmsgYSBxY29tIHByZWZpeCBpcyBuZWVkZWQg
-YXMgcG90ZW50aWFsbHkgbWFueQo+ID4gb3RoZXIgU29DcyBtaWdodCBoYXZlIHRoZSBzYW1lICJm
-ZWF0dXJlIi4KPiA+IAo+ID4gSSdtIGZpbmUgYWRkaW5nIHN1cHBvcnQgZm9yIGl0IGluIHRoZSBx
-Y29tIGRyaXZlciBvbmx5IHRob3VnaC4KPiA+ICAgCj4gCj4gSG1tLCBzb3VuZHMgZ29vZCB0byBt
-ZS4KPiAKPiBUaGFua3MsCj4gTWFuaQo+IAo+ID4gPiArCj4gPiA+ICBhbGxPZjoKPiA+ID4gICAg
-LSAkcmVmOiAibmFuZC1jb250cm9sbGVyLnlhbWwjIgo+ID4gPiAgICAKPiA+IAo+ID4gVGhhbmtz
-LAo+ID4gTWlxdcOobCAgCgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFp
-bGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
-dXgtbXRkLwo=
+Hi Pratyush,
+
+On Tue, Feb 23, 2021 at 4:25 PM Pratyush Yadav <p.yadav@ti.com> wrote:
+> On 23/02/21 01:36PM, Mark Brown wrote:
+> > On Tue, Feb 23, 2021 at 02:13:44PM +0100, Miquel Raynal wrote:
+> > > Pratyush Yadav <p.yadav@ti.com> wrote on Fri, 5 Feb 2021 19:04:04 +0530:
+> >
+> > > > [0] Since SPI NOR has no way of knowing what speed the controller is
+> > > > running at, assume the fastest speed the flash can run at.
+> >
+> > > Ok, I am not entirely clear about what is available/not available from
+> > > the SPI core.
+> >
+> > > If this is true then I guess we can't do better with the current code
+> > > base and this can be improved in the future if needed. So I'm fine with
+> > > the current implementation.
+> >
+> > For normal SPI operations you can set the speed (really, top speed) on a
+> > per transfer basis.
+>
+> To select the optimal number of dummy cycles we need to know what speed
+> the controller is running at, not the other way around. The flash would
+> always set the top speed to its maximum (say 200 MHz). But if the
+> controller is only capable of running at 50 MHz, you will end up wasting
+> dummy cycles. I don't see any API to communicate speed from controller
+> to flash.
+
+spi_transfer.effective_speed_hz?
+
+If the driver has filled this in (after the first transfer), you can optimize
+dummy cycles before doing the next transfer.  Note that effective_speed_hz
+might not always be the same, if e.g. the SPI controller shares its parent
+clock with another component.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
