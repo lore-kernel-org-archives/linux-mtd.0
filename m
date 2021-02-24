@@ -2,91 +2,85 @@ Return-Path: <SRS0=Oqae=H2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CD2FC433DB
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Feb 2021 08:03:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4B5AC433E0
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Feb 2021 14:43:54 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B8D5964DF5
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Feb 2021 08:03:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B8D5964DF5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 30F1164E7A
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Feb 2021 14:43:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 30F1164E7A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=kgt7hbufoD6hLJcpX1KUgB77hurYvLyl2FGThrCEl+0=; b=z/Am6Yn5MHptQNewQRAxblSoz
-	abOF+eJyvGZl1e7FUsP2BR/jtVXu/f/nFTMBnoqi/IG275a8zKTThAFK+kAemuROOrU1wkN3kzLgY
-	Es4Cat7zvjyZnE0ZhtqlMCZzrfseX99bgYGu3N8FB4gHkfAam0NAmb/MUVuNQmOb3m7FQGwND3Llq
-	9E6ZCp0s5zzMZS5lTm6+3ZU2N8GXZjf67PL3IVyoByi8ClEgtd8ryexyutocfjjplXEw0wwQ+NZII
-	RL+eN2M3Rlmx+3e1cboi/qFAk9bnQ0MIxiae9j/pFbRciLVEB53uuLgN1/t7odbxgxPErW6JJQvl7
-	lcfFoo9Lg==;
+	Content-Type:MIME-Version:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:To:
+	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=8v1FauMXqPbKIlIyzT/6TKUwrqMxykydD3eobTNpymw=; b=AI2sG99FrY3OuTb7x5WWNb7z81
+	+bgLNQR0X135CgBZUp+GyTF5zj7+CIPFaui5exxPQ+a8FLvc6GtRp73ff6JIINadqVVh5kZcpARiS
+	/6w23xu9vOzmn3PZMQSNB9xquxNQMKrPK1AqQk8BekkfrPc46Q9MiB4macIUNhDXYZ/JXaVIEOoJF
+	/xw5baXMXtnDYlv13/GomFPcdtF1CT1YM5kOJBp9rYOhoLJHrOUy3H9YYeD7gOASC4VV9YuriT2kS
+	IbIhvaNcXdz/fLQm3/VwfObkyC2pGDsvVZdUsAy2w2c5e8mXOUwSEXxZxTa2ge2qhzw1uWAf2SP6y
+	Pwf9BsgA==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lEp7h-0002Hw-G8; Wed, 24 Feb 2021 08:02:17 +0000
-Received: from mail-wm1-x335.google.com ([2a00:1450:4864:20::335])
+	id 1lEvNS-0004mU-HL; Wed, 24 Feb 2021 14:42:58 +0000
+Received: from mail-wr1-x436.google.com ([2a00:1450:4864:20::436])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lEp7f-0002HK-Gh
- for linux-mtd@lists.infradead.org; Wed, 24 Feb 2021 08:02:16 +0000
-Received: by mail-wm1-x335.google.com with SMTP id m1so985256wml.2
- for <linux-mtd@lists.infradead.org>; Wed, 24 Feb 2021 00:02:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=Z7NDGuuBGpr0KObSoWksVh7Rk18owzLbRpVZKUClVHk=;
- b=phSaXRdNBIcPj+25JdRCrfUfBMQMOTXde8Kv7aE5D7NUM4w/odWQeDNODqpanDm+Ji
- c+tQTl0IERpCPCtIITxwUmaPGU6kJoCZEatltPyS0zhTpVskoTJNXd+PkQWNZCTvisl9
- 8EeMzXJLoFXID2nXlKpAYlPMrgXu4iagh8RIQ1EoGFGVJcoMyV3OZn3D1t3nuWZuEmpn
- Ny41u/6ZoQE90f2SIAaHSqaL9sA8poFnJw0IY80cceDubkCvERoStM/UAZO9Zl5igqL8
- qh48P5Hw2XO55yZJ5h7tU8Aq0FyM+wOXSHGxgbYnQdxSaMibVu5c7NVE9KvdBvtUJuCv
- UxdA==
+ id 1lEvNQ-0004lq-TI
+ for linux-mtd@lists.infradead.org; Wed, 24 Feb 2021 14:42:57 +0000
+Received: by mail-wr1-x436.google.com with SMTP id u14so2141872wri.3
+ for <linux-mtd@lists.infradead.org>; Wed, 24 Feb 2021 06:42:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references;
+ bh=Avv6ZnmbXhgqra1UyQEo1jRqhDV3UEf0fLOb0eDNvQ8=;
+ b=xZoc3hBIVPJJapaC73bDrdlHYiWZTC8Gd5hvzDsj5M/0Gmhz+TXWHtcm5ek2a1poNV
+ ufUQz4YRuGlHWn+djwpPnG9idrsPzvLehgF63M9vJvSXI8aVjU4M97Uy+pXPo2/Us43J
+ pEqwK11wGB8W530jG5HXEptjsuh/Y36OJDe1Dmep04wvfMYezvrwLaQ0al88G8e6zgRU
+ Vr7hrMVjWud3ibSLkxTEMDiQ1mDXzl2/mZCo16DovjoH1aOD0X5nL90um2wcxiB54xyo
+ Pie/uMq/0ZQfO4BXsL8cSZaHcFK29gXfL5l267/39eAo19HMzGdVIRcyqugLzSAV4IhR
+ YPuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=Z7NDGuuBGpr0KObSoWksVh7Rk18owzLbRpVZKUClVHk=;
- b=jqh8y+o5f3hknfmvU4n8mS65vHmeyIZDMAk2tGNBPgKlN35a/GVtt9Oe32aWpPIZQe
- 7Vc0Fzrrtiz6ESClYiFLayjwl2uACoUWL1bC551tF48oYvnNyOI4qPhJ1uCC7WgZiNeo
- dsYJ9zidWTTIlReXXsFDWTXD0iGUNgaIfVUwV7MvOvW3JZcggZNVHqk7SfCTaUnZg8vO
- zfkd+s2z+a9IMzFnFMX7aPY8kD9e4Le9Gb3BIzeOYDkY9ADNidTpoRiwC+UwbTCdBKpj
- aixigdG6d3VTXSMM1rzM1cN3MyMbg0SNI1XBJVRKmFyVrUJltJu0QFyuC8UdounZ28s2
- iwGw==
-X-Gm-Message-State: AOAM531wkT7uUuaEogUNSh2GzVpkYVrpMBv/tJD480pqJGicQvQz0i8C
- 6KGny31j04SfKumucDICIaF8Op4BF0LhNW1J
-X-Google-Smtp-Source: ABdhPJxj2t7kjl3+qt+9micKV54J8dXmVOUHc/fDxjZMccJim1Rw+YD+y4T3p+Lc1UcOzaLYVjee6A==
-X-Received: by 2002:a7b:c20a:: with SMTP id x10mr2486521wmi.137.1614153734148; 
- Wed, 24 Feb 2021 00:02:14 -0800 (PST)
-Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net.
- [88.1.105.170])
- by smtp.gmail.com with ESMTPSA id 2sm2098489wre.24.2021.02.24.00.02.12
+ :references;
+ bh=Avv6ZnmbXhgqra1UyQEo1jRqhDV3UEf0fLOb0eDNvQ8=;
+ b=FU+9CQkyV8PdLWq13/3fR5bQVgdzDaGXnrMkxlV+kbKyURyINw+pFEnYZPSYUFOfyk
+ NDj8OqV19jp/yZI8dzhw+r0uFPSU9oKxUSrWdo/f6yYqYGPiYRVPa0Xq3rNPl5gUiBjy
+ Ck1FgxUkLjDy2Pm4l5ai7bbqfc8py4FuA56caeoyTvHy5sSGhB99ErW849P69WM0Tuc/
+ 9p4PlKy5mGVqzCU3EU7tO5kC9MSaZ/jDQzJz5GkaoDH7b5Q26pCC8dAm1L7trptD77er
+ qrSM/+Tu5AhJQ//hJnbLNbRKVB8nG9IFFRvT0RgYxwQjYCY6GuJ2YesYxNSxL/D7L4FG
+ uHTQ==
+X-Gm-Message-State: AOAM533XsXDJRPaWys79+Enoq31vO4vn/Ja4vqRZERaVcb+Fql9Kf9mK
+ xVeIhtnAQH5OePZN1a5ioz1z1A==
+X-Google-Smtp-Source: ABdhPJxWR8fKAlpBPJGDCmIXiINikw6KX+dWZWtvj338MuerAgimT6gWJKuutkrnfT/iEhLRwvQXkg==
+X-Received: by 2002:a5d:44d2:: with SMTP id z18mr32219677wrr.26.1614177773751; 
+ Wed, 24 Feb 2021 06:42:53 -0800 (PST)
+Received: from localhost.localdomain
+ (lns-bzn-59-82-252-157-252.adsl.proxad.net. [82.252.157.252])
+ by smtp.gmail.com with ESMTPSA id p3sm4170669wro.55.2021.02.24.06.42.52
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 24 Feb 2021 00:02:13 -0800 (PST)
-From: =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= <noltari@gmail.com>
-To: f.fainelli@gmail.com, Brian Norris <computersforpeace@gmail.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, bcm-kernel-feedback-list@broadcom.com,
- linux-kernel@vger.kernel.org
-Subject: [PATCH v2] nand: brcmnand: fix OOB R/W with Hamming ECC
-Date: Wed, 24 Feb 2021 09:02:10 +0100
-Message-Id: <20210224080210.23686-1-noltari@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210222201655.32361-1-noltari@gmail.com>
-References: <20210222201655.32361-1-noltari@gmail.com>
-MIME-Version: 1.0
+ Wed, 24 Feb 2021 06:42:53 -0800 (PST)
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+To: rafael@kernel.org,
+	andriy.shevchenko@linux.intel.com
+Subject: [PATCH v2 8/9] mtd/drivers/nand: Use HZ macros
+Date: Wed, 24 Feb 2021 15:42:18 +0100
+Message-Id: <20210224144222.23762-8-daniel.lezcano@linaro.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210224144222.23762-1-daniel.lezcano@linaro.org>
+References: <20210224144222.23762-1-daniel.lezcano@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210224_030215_607097_8FAAE772 
-X-CRM114-Status: GOOD (  12.51  )
+X-CRM114-CacheID: sfid-20210224_094257_087696_17A0959F 
+X-CRM114-Status: GOOD (  14.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,33 +92,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= <noltari@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>,
+ "open list:NAND FLASH SUBSYSTEM" <linux-mtd@lists.infradead.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGFtbWluZyBFQ0MgZG9lc24ndCBjb3ZlciB0aGUgT09CIGRhdGEsIHNvIHJlYWRpbmcgb3Igd3Jp
-dGluZyBPT0Igc2hhbGwKYWx3YXlzIGJlIGRvbmUgd2l0aG91dCBFQ0MgZW5hYmxlZC4KVGhpcyBp
-cyBhIHByb2JsZW0gd2hlbiBhZGRpbmcgSkZGUzIgY2xlYW5tYXJrZXJzIHRvIGVyYXNlZCBibG9j
-a3MuIElmIEpGRlMyCmNsZW5tYXJrZXJzIGFyZSBhZGRlZCB0byB0aGUgT09CIHdpdGggRUNDIGVu
-YWJsZWQsIE9PQiBieXRlcyB3aWxsIGJlIGNoYW5nZWQKZnJvbSBmZiBmZiBmZiB0byAwMCAwMCAw
-MCwgcmVwb3J0aW5nIGluY29ycmVjdCBFQ0MgZXJyb3JzLgoKRml4ZXM6IDI3YzViMTdjZDFiMSAo
-Im10ZDogbmFuZDogYWRkIE5BTkQgZHJpdmVyICJsaWJyYXJ5IiBmb3IgQnJvYWRjb20gU1RCIE5B
-TkQgY29udHJvbGxlciIpClNpZ25lZC1vZmYtYnk6IMOBbHZhcm8gRmVybsOhbmRleiBSb2phcyA8
-bm9sdGFyaUBnbWFpbC5jb20+Ci0tLQogdjI6IEFkZCBmaXhlZCB0YWcuCgogZHJpdmVycy9tdGQv
-bmFuZC9yYXcvYnJjbW5hbmQvYnJjbW5hbmQuYyB8IDYgKysrKysrCiAxIGZpbGUgY2hhbmdlZCwg
-NiBpbnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJjbW5h
-bmQvYnJjbW5hbmQuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JyY21uYW5kLmMK
-aW5kZXggNjU5ZWFhNmYwOTgwLi41ZmY0MjkxMzgwYzUgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRk
-L25hbmQvcmF3L2JyY21uYW5kL2JyY21uYW5kLmMKKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcv
-YnJjbW5hbmQvYnJjbW5hbmQuYwpAQCAtMjY4OCw2ICsyNjg4LDEyIEBAIHN0YXRpYyBpbnQgYnJj
-bW5hbmRfYXR0YWNoX2NoaXAoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCkKIAogCXJldCA9IGJyY21z
-dGJfY2hvb3NlX2VjY19sYXlvdXQoaG9zdCk7CiAKKwkvKiBJZiBPT0IgaXMgd3JpdHRlbiB3aXRo
-IEVDQyBlbmFibGVkIGl0IHdpbGwgY2F1c2UgRUNDIGVycm9ycyAqLworCWlmIChpc19oYW1taW5n
-X2VjYyhob3N0LT5jdHJsLCAmaG9zdC0+aHdjZmcpKSB7CisJCWNoaXAtPmVjYy53cml0ZV9vb2Ig
-PSBicmNtbmFuZF93cml0ZV9vb2JfcmF3OworCQljaGlwLT5lY2MucmVhZF9vb2IgPSBicmNtbmFu
-ZF9yZWFkX29vYl9yYXc7CisJfQorCiAJcmV0dXJuIHJldDsKIH0KIAotLSAKMi4yMC4xCgoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4
-IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+HZ unit conversion macros are available in units.h, use them and
+remove the duplicate definition.
+
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+---
+ drivers/mtd/nand/raw/intel-nand-controller.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/raw/intel-nand-controller.c b/drivers/mtd/nand/raw/intel-nand-controller.c
+index a304fda5d1fa..8d00191a4815 100644
+--- a/drivers/mtd/nand/raw/intel-nand-controller.c
++++ b/drivers/mtd/nand/raw/intel-nand-controller.c
+@@ -20,6 +20,7 @@
+ #include <linux/sched.h>
+ #include <linux/slab.h>
+ #include <linux/types.h>
++#include <linux/units.h>
+ #include <asm/unaligned.h>
+ 
+ #define EBU_CLC			0x000
+@@ -102,7 +103,6 @@
+ 
+ #define MAX_CS	2
+ 
+-#define HZ_PER_MHZ	1000000L
+ #define USEC_PER_SEC	1000000L
+ 
+ struct ebu_nand_cs {
+-- 
+2.17.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
