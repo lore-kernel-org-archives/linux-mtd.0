@@ -1,83 +1,88 @@
-Return-Path: <SRS0=Oqae=H2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=cHBa=H3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FF5EC433E0
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Feb 2021 21:03:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67117C433DB
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Feb 2021 04:12:52 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 08C2F64E60
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Feb 2021 21:03:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 08C2F64E60
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 073B064E83
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Feb 2021 04:12:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 073B064E83
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=0VtzctfAciePlbADJNMUVhjukusYMQR4Rcy2YsnEYXA=; b=rvjcYG5PMiIZw/Kf3Ecp+7zb0
-	BlQw+Jftx8jxv/SlGYRMVJlMNbQWhYiJvoOESUC6a8YNrwVYpCUAVk1fcFsPKbg2SQdsz0NSdcbU2
-	Ee8yhTbFSKVNQwQ67yHQM3zD06mocmb9+FunEFj81wmTmxGzfyT1Npw8f5y1VRNO8TsAYKgHCs+nn
-	jE2RHYUrG7riJI2GBixwP0c2rEHQF2+QXcQnfQQ4oQjFhxUfSYE0vJhEuy1uqKO59D6Q6tcEP1D+L
-	L4AGS1wdOi2nm8niupK6NTyFVQmavrJQyX/Ud1Ck8YSfnT9BpE7jY0Lz6bGw0++Sl5x3zeg9uX1gz
-	6fRvsVZow==;
+	 bh=hikPmrIcromlEj5SSJ7nlTItLIdnwzoeu174+1lBXyQ=; b=UbXXLYj1j523tsd3pP7C4pxSc
+	bqZbyES/qxdLNulmdVmhyxLnlolqrtd4/DWWH9HlaXsYvi9CXZEveRnraXJZk0CwjDH1LBE+ZgFHb
+	e/oUSQkb0BE3eFMAC6YUbWkuR/sljPgXIM45bAlQ5By6NHq5v5OPuaJcslnBEvQFKn0CoO5wmH1uj
+	kc1tT3p2H7r2KnX+MA7jkM4o7qihvjzzNWYGnfAw8lI8wrtf8RvJFIHe2aWLjoQi+eJ+yQIWQuH3u
+	IsvJUi5VlosCBW4hCcc3rWw4F+/q+jrB7W55Zj/inEIz8pb5+uE3uNN+0c5+d7+HT/RxdKW6rwf3h
+	J0jKw8KnQ==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lF1Hm-00089t-5V; Wed, 24 Feb 2021 21:01:30 +0000
-Received: from mail-yb1-xb35.google.com ([2607:f8b0:4864:20::b35])
+	id 1lF80K-0001Be-8M; Thu, 25 Feb 2021 04:11:56 +0000
+Received: from mail-pl1-x635.google.com ([2607:f8b0:4864:20::635])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lF1Hj-00089U-LN
- for linux-mtd@lists.infradead.org; Wed, 24 Feb 2021 21:01:28 +0000
-Received: by mail-yb1-xb35.google.com with SMTP id l8so3206141ybe.12
- for <linux-mtd@lists.infradead.org>; Wed, 24 Feb 2021 13:01:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=oNOJCv96V2W2oiF3R22dF2MhqbWN/9wIBc5R81MAbG8=;
- b=Oj66rqmFCj1oZG5mcctMLdE8WopD4kxLQzOMCysvpcWagEg/435Upf00UDNpJpepTz
- TKxck5a6VqwGKlDBLhND1QrqqxHD8RHFF8Gzw3SrmKThy/yBtNSowzjAQTDpYGl4XEv1
- ohV/Gt+75AoO7McrARs4e4Foe8DoRodOysovwG23+HRqM/w1UamueJX4gsPdORMeNzDu
- Nw0vCHVdUttZ2u0L3mY/Vze+ZohwTykVT64Fq+J2CFgFI6izKiogt2asRmJFnKzZF2VR
- LQ+cTS+UOCLVxA/QFFTp3Aeg/GySGciOZRwxFvB2TZQJ7mn/tbzCzXUbXU+7UtVR0P3j
- yVXQ==
+ id 1lF80G-0001B4-9M
+ for linux-mtd@lists.infradead.org; Thu, 25 Feb 2021 04:11:53 +0000
+Received: by mail-pl1-x635.google.com with SMTP id u11so2464627plg.13
+ for <linux-mtd@lists.infradead.org>; Wed, 24 Feb 2021 20:11:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=6hU6WGdCR9365lMcGYUik+Qyi/ZAYDHu+MFoj3y6wt4=;
+ b=PLak/fmjN7fnFTz8fRzhp1I+hcyR24BNlkBt5PJNVU8drkHY1J+dcgL9k1ye8PzB4P
+ XgniJRQ2nOYiqNNyhmVcWaxrxhf8nKffy5ArsDIKieuXGcs7Pt+28n/MDmCQVcRdtvCX
+ U4OcK9AbfHpeTyG/tJio6DBDkX64Me6iyH2IWf6mzidlyUiVSec5eZ4N/iHNnpwbmyVn
+ SUD6Xx40S9tRXZQ37zRs+OwPIDxkyYhtAblnvXqDUWdCnJYmzK4y1XwAZ7BZ4ybWaXXF
+ 8GDQNQEe427tSGC7c8qUTdeKx4+k/mok2MRa2gO3bQNoHfY5HCjz8kvmYF1/giAjeoyr
+ V64w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=oNOJCv96V2W2oiF3R22dF2MhqbWN/9wIBc5R81MAbG8=;
- b=HSherOZlQKntKNh5zFXcgANPjcYkFF3qpp/j52ufX5ZipjZquahlL5RL4tnXej7qZH
- xj0QGJnOpigjFOaUnZt/WQXy41YAhmDJZHh9codWDoQq8+cgoNfcWqYQPLycROmeAq/7
- Flmeh22SpqUyX71JbU+Fms80BTw5Cr17sy6H2BWTwOG7794vj9O9qEKCV7dK7wBe1atk
- f34A0/eqhHjA1UMR/5VYonR8hwmnezk761AcxHbvT/Hlh2hFhQh/+oy2raS1VVUM4XLI
- s2x9mE3I9kUc1TKP1xxCVL0PR151FPMvDGhCN15+Q08Pj8RnFhFol6VtWsNprYvGhaky
- LarQ==
-X-Gm-Message-State: AOAM532lh+4zmTV2/t8JYzfhdw/UnJtw5p43eZL7VBSEouIqNXZ7fbjr
- 3GnFE8Fi1bxkTHOceb7Bw3I0IeSQK3RqoVM6zXI=
-X-Google-Smtp-Source: ABdhPJykxKsUxsj58MI1Rbl2fvDXH6b809ZrxV1OH6WJSgCBEfcMBAHGNDV8YUTJBoGOX3RnsxoCjOfPLntOJ95q3Kg=
-X-Received: by 2002:a25:d94b:: with SMTP id q72mr47291810ybg.135.1614200484280; 
- Wed, 24 Feb 2021 13:01:24 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=6hU6WGdCR9365lMcGYUik+Qyi/ZAYDHu+MFoj3y6wt4=;
+ b=MZWODm1krKViDFPmBPvCbxn5LiFZcB4gySDLItDdsX90nhBmct5VsMhVHVt5lCojas
+ yaUd7zL/f7WGa4YvnWZ9CczP+u9YkbI1jyHJC/gTeDGSru+RPUSs5UQZ1eTaLtFhXA9P
+ c+tb2lWUG0w1N1h9mZwpxiZADXaFvoNuJN3P7+hQVdoHClguodEOZAHOyzVcEQHS5/QQ
+ yo1vObkNkErNx++aV5j8qUIyDonB2k2F/GVFsIeQkA3Z1ElAI83lT2FVHELXeTrwe1dK
+ N1WuKoliO/SHqcPsgtP8uR3r9jqPcTNclNbfnfHliui203UYNOCj0QqUsHA5Ih5SfD5Q
+ 6iNw==
+X-Gm-Message-State: AOAM533QUKZ3U12xdMTmpYxmCo0FzvAWVbugNUS7v7oVTrwNKUhDD/rW
+ zE8LIde9FttDxs4+ecOB/K/W
+X-Google-Smtp-Source: ABdhPJzuwcRoiNHqmUzL20tCRghQTkRE9CDlSMQRUYr9GReiIvlfg/rCEryLOScv6WOd2u3ydXxAZg==
+X-Received: by 2002:a17:90a:cc18:: with SMTP id
+ b24mr1304343pju.214.1614226310108; 
+ Wed, 24 Feb 2021 20:11:50 -0800 (PST)
+Received: from localhost.localdomain ([103.66.79.45])
+ by smtp.gmail.com with ESMTPSA id c12sm4155494pjq.48.2021.02.24.20.11.45
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 24 Feb 2021 20:11:49 -0800 (PST)
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ robh+dt@kernel.org
+Subject: [PATCH v2 2/3] dt-bindings: mtd: Add a property to declare secure
+ regions in NAND chips
+Date: Thu, 25 Feb 2021 09:41:28 +0530
+Message-Id: <20210225041129.58576-3-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210225041129.58576-1-manivannan.sadhasivam@linaro.org>
+References: <20210225041129.58576-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
-References: <20210222201655.32361-1-noltari@gmail.com>
- <20210224080210.23686-1-noltari@gmail.com>
-In-Reply-To: <20210224080210.23686-1-noltari@gmail.com>
-From: Brian Norris <computersforpeace@gmail.com>
-Date: Wed, 24 Feb 2021 13:01:13 -0800
-Message-ID: <CAN8TOE_Eg6zYqy8wLtrNcTiCQdcihM7wGM5JHw=bh4=b1CL-_A@mail.gmail.com>
-Subject: Re: [PATCH v2] nand: brcmnand: fix OOB R/W with Hamming ECC
-To: =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210224_160127_718865_BD7D601D 
-X-CRM114-Status: UNSURE (   8.95  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210224_231152_361360_DBDEA43F 
+X-CRM114-Status: GOOD (  12.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,25 +94,52 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Florian Fainelli <f.fainelli@gmail.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- Linux Kernel <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: devicetree@vger.kernel.org, Daniele.Palmas@telit.com,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ linux-kernel@vger.kernel.org, bjorn.andersson@linaro.org,
+ boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkLCBGZWIgMjQsIDIwMjEgYXQgMTI6MDIgQU0gw4FsdmFybyBGZXJuw6FuZGV6IFJvamFz
-Cjxub2x0YXJpQGdtYWlsLmNvbT4gd3JvdGU6Cj4gRml4ZXM6IDI3YzViMTdjZDFiMSAoIm10ZDog
-bmFuZDogYWRkIE5BTkQgZHJpdmVyICJsaWJyYXJ5IiBmb3IgQnJvYWRjb20gU1RCIE5BTkQgY29u
-dHJvbGxlciIpCgpGV0lXLCBJIGNvdWxkIGJlbGlldmUgdGhpcyB3YXMgYnJva2VuLiBXZSB3ZXJl
-bid0IHRlc3RpbmcgSGFtbWluZyBFQ0MKKG5vciBKRkZTMikgYXQgdGhlIHRpbWUsIHNvIGl0IGNv
-dWxkIGVhc2lseSBoYXZlIG9idmlvdXMgYnVncyBsaWtlCnRoaXMuCgpBbmQgc2luY2UgSSBnb3Qg
-dGhpcyBmYXIsIGFuZCBJJ20gc3RpbGwgaW4gTUFJTlRBSU5FUlMsIEkgZ3Vlc3M6CgpBY2tlZC1i
-eTogQnJpYW4gTm9ycmlzIDxjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb20+CgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRp
-c2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vbGludXgtbXRkLwo=
+On a typical end product, a vendor may choose to secure some regions in
+the NAND memory which are supposed to stay intact between FW upgrades.
+The access to those regions will be blocked by a secure element like
+Trustzone. So the normal world software like Linux kernel should not
+touch these regions (including reading).
+
+So let's add a property for declaring such secure regions so that the
+drivers can skip touching them.
+
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ Documentation/devicetree/bindings/mtd/nand-controller.yaml | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+index d0e422f4b3e0..4a528468b90f 100644
+--- a/Documentation/devicetree/bindings/mtd/nand-controller.yaml
++++ b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+@@ -143,6 +143,13 @@ patternProperties:
+           Ready/Busy pins. Active state refers to the NAND ready state and
+           should be set to GPIOD_ACTIVE_HIGH unless the signal is inverted.
+ 
++      nand-secure-regions:
++        $ref: /schemas/types.yaml#/definitions/uint32-array
++        description:
++          Regions in the NAND chip which are protected using a secure element
++          like Trustzone. This property contains the start address and size of
++          the secure regions present.
++
+     required:
+       - reg
+ 
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
