@@ -2,75 +2,82 @@ Return-Path: <SRS0=yHHw=H4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F04AC433E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Feb 2021 15:58:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C123C433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 26 Feb 2021 18:26:47 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A645664EE7
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Feb 2021 15:58:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A645664EE7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8D24864F1F
+	for <linux-mtd@archiver.kernel.org>; Fri, 26 Feb 2021 18:26:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D24864F1F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
-	:List-Id:To:Subject:Message-ID:Date:From:MIME-Version:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=WESyGM8q1WeCjjX7XsDxCV1S8IoGr4/IEbfIEWZW6N0=; b=GHlA5RsKFTgUIGCOxR0JtpFfCZ
-	U23K/UneVHdKkS4XpNDOQdCQfWFEEEvtmikEMQ407GExmku57bdwur43yAfHC7acC/CtVufegMTsz
-	G4rBtfKu0a1URLWoo15bHBAJih7v7rPhQZQ844atvBhybeZ7F5j0x1gzOjLge8WGhL9/E62k3o9MG
-	dCfh4MuFbQy/WAB/YR8epgiUjV+XY1+J/h46+ioqix9OKRe+ND4zvrgajwGHuFxeFbKN5guLrUmGX
-	UFdOp/3bNNT5iBSppZufw9dc5ZM7Al6PXtle2Gr+MIFYKTHCxl/qjMeI5aCMyWCX4cxq0LQivXMpa
-	J2S1ONww==;
+	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
+	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=KWub2i9XBSJq8MpDIxJCBNk5Qk8VW8KPEnbmG2tP/eI=; b=wgtyuSJZtH7yDxedrE+8sGk9J
+	vhuCpMg9z8Dj8O2lwM0RGrvNGlSeP8mXy4i9i9KF/wl4GNmPNuMagfJZ+Y7DBhvgwFgW5C+MGKZP0
+	2LiBKqNSN82MZbFm0octO34mwHgtc28sPm7UncPEkiUO0j47r0bRnhjj6rPs+3wfXBrclXYwk/5lW
+	KgtJlxDKy6JVJo10UGpwEAmsbBpSHv1dWGLSFApxcADn3HXbIPm2r2FlW0QCSGpbzjph2TIYluFle
+	03qYT1lIxoE8AJJtq9l1dm5ZdcsHRSY6GzzjzL0YW4Q7x633o+Nvy2le4o55/7VIyfXzU+/XiwJRB
+	6KQIpnhWg==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lFfUo-0007cz-VN; Fri, 26 Feb 2021 15:57:38 +0000
-Received: from mail-ot1-x332.google.com ([2607:f8b0:4864:20::332])
+	id 1lFhoS-0003M8-Ab; Fri, 26 Feb 2021 18:26:04 +0000
+Received: from m42-2.mailgun.net ([69.72.42.2])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lFfUm-0007cP-Ss
- for linux-mtd@lists.infradead.org; Fri, 26 Feb 2021 15:57:37 +0000
-Received: by mail-ot1-x332.google.com with SMTP id b16so9507557otq.1
- for <linux-mtd@lists.infradead.org>; Fri, 26 Feb 2021 07:57:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:from:date:message-id:subject:to;
- bh=a9auBE5oaJ34tYPM6c7yGkElPdNLKhg8U0XidX9ywd4=;
- b=qGdiz43S7OSfu7mtRPyCXjNWx2NYGpqPRrKBYedI206Vp+fXLdEsSptKdythVhVwO8
- 54sCauhVOsyN8VZELTjEbV9SnmVB7IQpJOycEYDj1XRuS2dLFRgPSdRC+w3Kp21UP2Hk
- qeVLpE091yrcMSt2jh9Mq+Z2QmJNyyiRfsh7xKo4XAMZkEuxuH7MUw2+RcX0UbqVKY3n
- voA+0Ip+gvKg4OZsikW3HibfLlI6FUX2JSqJAclBi7MRgbUmV/S0RcjUNO75xCogPOjv
- qgzbAfkgyHtsFRT+YL/JAtoxwxeS5155if4YLaQ0VeD/aSybl5OmuvBbbPERxFcOxu9j
- UCRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
- bh=a9auBE5oaJ34tYPM6c7yGkElPdNLKhg8U0XidX9ywd4=;
- b=pOZyb5jud3drfbqOGkrGtJhGvRojuSdFt3sFAlJwpYKMZ9gl4Vs4u01GV8ssUS0IRZ
- huWeSCPH7yu0wIW9+qVRcm4hD9LGEcAbXNFhbxMJ+2faC/shEubcuJ86+pERqnHW3yDZ
- 4D90R2akY1pZGhfkd/+y8aRQBi6wGD5dNyf4twAkBk6zMieLBIZtp5gqRGKpZYKd29qq
- B4y60BFvxaM+SbILDIL6avImqVemsuWSozCCFW55MVeUAOYlXXw6QlbxAratxN/ciPm3
- qB7YnWJFG0DxeVcS0vQlzxXnih67MzlIjrANHyuiU1AZYYqM0H2ptvDrrm/AFEkTfE+x
- R89w==
-X-Gm-Message-State: AOAM531DTcPreqveSVN4mlQ8mQJCWtjYZ8DJh6YpSl/UVkxsgXpX/QXQ
- OD+cvbrn1YSXqCLjggTrSb6H2AWDt7/He/zCT3hjv3UboKU=
-X-Google-Smtp-Source: ABdhPJx5nWosP3395iq/2YnGwuRz3WwKC4zkTlzKpPGfZAnLDLxUMwa8QoKCIZXyVsjQ/3BV7xWWY77a8B9UeUNbuV0=
-X-Received: by 2002:a9d:77c6:: with SMTP id w6mr2744835otl.179.1614355055004; 
- Fri, 26 Feb 2021 07:57:35 -0800 (PST)
+ id 1lFhoP-0003LZ-FB
+ for linux-mtd@lists.infradead.org; Fri, 26 Feb 2021 18:26:02 +0000
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1614363959; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=phgrcfweS7Ov1Upp/f1NcxKQ0crVZhRuuofK2pHBaf4=;
+ b=CV7JwtM5iQD9Cy15lOX5aNo6AhmkUQWWg0ZsS8n/N/lanuTK2a4yqz46DYU7jcpk4vv8KHtR
+ j3rjHizSGy9dsDZhyzfb1zar/TGhRVDfAvs2ox2pAmDRJnaqLGFRTJg3XDrduEu+tT9Ll672
+ 35ErfhUXbaR8y7Mzpfi960DMsEo=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyJkZDQ0ZiIsICJsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZyIsICJiZTllNGEiXQ==
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 60393d3322a1e56ef8beb574 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Feb 2021 18:25:55
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id 5C6E1C433C6; Fri, 26 Feb 2021 18:25:54 +0000 (UTC)
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+ (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested) (Authenticated sender: mdalam)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 842A1C433CA;
+ Fri, 26 Feb 2021 18:25:53 +0000 (UTC)
 MIME-Version: 1.0
-From: Alexander Bykov <kozyavk@gmail.com>
-Date: Fri, 26 Feb 2021 18:57:24 +0300
-Message-ID: <CAH+riKsGjQ5wyehExguAq2tY21jqCi3MhXYg3PNRL-n5tTJUdw@mail.gmail.com>
-Subject: MTD partition size limit
-To: linux-mtd@lists.infradead.org
+Date: Fri, 26 Feb 2021 23:55:53 +0530
+From: mdalam@codeaurora.org
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH] mtd: rawnand: qcom: update last code word register
+In-Reply-To: <20210224173644.592e73dc@xps13>
+References: <1614024267-12529-1-git-send-email-mdalam@codeaurora.org>
+ <20210223173449.1a55df1e@xps13>
+ <a5650f33b493b987d45525ea57fdfd8a@codeaurora.org>
+ <38da9d1d4a96f1b42ba0b194da265e6b@codeaurora.org>
+ <20210224074850.0c74154d@xps13>
+ <e0f0282b8552b0225f15a4c45a6894cd@codeaurora.org>
+ <20210224173644.592e73dc@xps13>
+Message-ID: <92fc28e79b5f6f56c8bfc6f229807edb@codeaurora.org>
+X-Sender: mdalam@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210226_105736_982751_C938B1BA 
-X-CRM114-Status: GOOD (  12.32  )
+X-CRM114-CacheID: sfid-20210226_132601_652907_1D68392E 
+X-CRM114-Status: GOOD (  26.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,50 +89,72 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: mani@kernel.org, linux-kernel@vger.kernel.org,
+ mdalam=codeaurora.org@codeaurora.org, linux-mtd@lists.infradead.org,
+ boris.brezillon@collabora.com, sricharan@codeaurora.org
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi.
-Do I understand correctly that If I want to use MTD/UBI/UBIFS on a raw
-NAND device I must partition it in chunks of less than 2GB each?
-I'm trying to install the latest linux kernel on an old Allwinner A10
-tablet which has 8GB NAND attached.
-
-erase_flash works.
-
-ubiformat fails with
-libmtd: error!: cannot seek mtd1 to offset -2147483648
-
-ubiattach fails with error 22 (Invalid argument)
-
-I spent a couple of days trying to figure it out by googling around
-but I couldn't.
-There are  topics on your mailing list which suggest that there was
-such a limitation a decade ago.
-https://linux-mtd.infradead.narkive.com/FZMzDabu/partition-size-limit-of-ubifs
-https://linux-mtd.infradead.narkive.com/zoKaKZMU/3gb-limit-2-gb-limit
-But on the other hand I couldn't find other information about MTD/UBI
-size limitations on your site or on the Internet. And there are a
-couple of examples where 4GB partitions were suggested:
-https://linux-sunxi.org/Mainline_NAND_Howto#Define_NAND_partitions_in_DTS
-https://groups.google.com/g/linux-sunxi/c/PxMmiCe0Deg?pli=1
-
-Before this attempt to install a modern OS I'd been using a prebuilt
-Debian server image made by the other person.
-It uses 3.4-3.6 kernel with MTD driver from Allwinner (AFAIK). This
-driver exposes only the block interface to the NANAD device but it
-works just fine. This tablet has been doing his little work at my home
-24/7 for the last 5 or so years without a single (noticeable) FS
-failure.
-I don't know, maybe it uses some FTL inside?
-Now, with a modern kernel and new MTD driver I can't use a simple
-block device because it has four bad blocks and mkfs.ext4 just fails
-to format it.
-
-Thanks.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMjAyMS0wMi0yNCAyMjowNiwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiBIZWxsbywKPiAKPiBt
+ZGFsYW1AY29kZWF1cm9yYS5vcmcgd3JvdGUgb24gV2VkLCAyNCBGZWIgMjAyMSAyMjowMDowNSAr
+MDUzMDoKPiAKPj4gT24gMjAyMS0wMi0yNCAxMjoxOCwgTWlxdWVsIFJheW5hbCB3cm90ZToKPj4g
+PiBIZWxsbywKPj4gPgo+PiA+IG1kYWxhbUBjb2RlYXVyb3JhLm9yZyB3cm90ZSBvbiBXZWQsIDI0
+IEZlYiAyMDIxIDEwOjA5OjQ4ICswNTMwOgo+PiA+Cj4+ID4+IE9uIDIwMjEtMDItMjQgMDE6MTMs
+IG1kYWxhbUBjb2RlYXVyb3JhLm9yZyB3cm90ZToKPj4gPj4gPiBPbiAyMDIxLTAyLTIzIDIyOjA0
+LCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+PiA+PiA+PiBIZWxsbywKPj4gPj4gPj4gPj4gTWQgU2Fk
+cmUgQWxhbSA8bWRhbGFtQGNvZGVhdXJvcmEub3JnPiB3cm90ZSBvbiBUdWUsIDIzIEZlYiAyMDIx
+Cj4+ID4+ID4+IDAxOjM0OjI3ICswNTMwOgo+PiA+PiA+PiA+Pj4gRnJvbSBRUElDIHZlcnNpb24g
+Mi4wIG9ud2FyZHMgbmV3IHJlZ2lzdGVyIGdvdCBhZGRlZCB0byByZWFkIGxhc3QKPj4gPj4gPj4g
+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGEgbmV3Cj4+ID4+ID4+ID4+PiBjb2Rl
+d29yZC4gVGhpcyBjaGFuZ2Ugd2lsbCBhZGQgdGhlIFJFQURfTE9DQVRJT05fTEFTVF9DV19uIHJl
+Z2lzdGVyLgo+PiA+PiA+PiA+PiAgICAgICAgICAgICBBZGQgc3VwcG9ydCBmb3IgdGhpcyBSRUFE
+X0xPQ0FUSU9OX0xBU1RfQ1dfbiByZWdpc3Rlci4KPj4gPj4gPj4gPj4+ID4+PiBGb3IgZmlyc3Qg
+dGhyZWUgY29kZSB3b3JkIFJFQURfTE9DQVRJT05fbiByZWdpc3RlciB3aWxsIGJlCj4+ID4+ID4+
+PiB1c2UuRm9yIGxhc3QgY29kZSB3b3JkIFJFQURfTE9DQVRJT05fTEFTVF9DV19uIHJlZ2lzdGVy
+IHdpbGwgYmUKPj4gPj4gPj4+IHVzZS4KPj4gPj4gPj4gPj4gIgo+PiA+PiA+PiBJbiB0aGUgY2Fz
+ZSBvZiBRUElDIHYyLCBjb2Rld29yZHMgMCwgMSBhbmQgMiB3aWxsIGJlIGFjY2Vzc2VkIHRocm91
+Z2gKPj4gPj4gPj4gUkVBRF9MT0NBVElPTl9uLCB3aGlsZSBjb2Rld29yZCAzIHdpbGwgYmUgYWNj
+ZXNzZWQgdGhyb3VnaAo+PiA+PiA+PiBSRUFEX0xPQ0FUSU9OX0xBU1RfQ1dfbi4KPj4gPj4gPj4g
+Igo+PiA+PiA+PiA+PiBXaGVuIEkgcmVhZCBteSBvd24gc2VudGVuY2UsIEkgZmVlbCB0aGF0IHRo
+ZXJlIGlzIHNvbWV0aGluZyB3cm9uZy4KPj4gPj4gPj4gSWYgdGhlcmUgYXJlIG9ubHkgNCBjb2Rl
+d29yZHMsIEkgZ3Vlc3MgYSBRUElDIHYyIGlzIGFibGUgdG8gdXNlCj4+ID4+ID4+IFJFQURfTE9D
+QVRJT05fMyBvciBSRUFEX0xPQ0FUSU9OX0xBU1RfQ1dfMCBpbnRlcmNoYW5nZWFibHkuIElzbid0
+IGl0Pwo+PiA+PiA+PiA+PiBJIGd1ZXNzIHRoZSBwb2ludCBvZiBoYXZpbmcgdGhlc2UgImxhc3Rf
+Y3dfbiIgcmVnaXN0ZXJzIGlzIHRvIHN1cHBvcnQKPj4gPj4gPj4gdXAgdG8gOCBjb2Rld29yZHMs
+IGFtIEkgd3Jvbmc/IElmIHRoaXMgdGhlIGNhc2UsIHRoZSBjdXJyZW50IHBhdGNoCj4+ID4+ID4+
+IGNvbXBsZXRlbHkgZmFpbHMgZG9pbmcgdGhhdCBJIGRvbid0IGdldCB0aGUgcG9pbnQgb2Ygc3Vj
+aCBjaGFuZ2UuCj4+ID4+ID4KPj4gPj4gPiBUaGlzIHJlZ2lzdGVyIGlzIG9ubHkgdXNlIHRvIHJl
+YWQgbGFzdCBjb2RlIHdvcmQuCj4+ID4+ID4KPj4gPj4gPiBJIGhhdmUgYWRkcmVzcyBhbGwgdGhl
+IGNvbW1lbnRzIGZyb20gYWxsIHRoZSBwcmV2aW91cyBzdWIgc2VxdWVudAo+PiA+PiA+IHBhdGNo
+ZXMgYW5kIHB1c2hlZAo+PiA+PiA+IGFsbCBwYXRjaGVzIGluIG9ubHkgb25lIHNlcmllcy4KPj4g
+Pj4gPgo+PiA+PiA+IFBsZWFzZSBjaGVjay4KPj4gPj4gPj4gICBUaGUgcmVnaXN0ZXJzIFJFQURf
+TE9DQVRJT04gJiBSRUFEX0xPQ0FUSU9OX0xBU1QgYXJlIG5vdCBhc3NvY2lhdGVkID4+IHdpdGgg
+bnVtYmVyIG9mIGNvZGUgd29yZHMuCj4+ID4+ICAgVGhlc2UgdHdvIHJlZ2lzdGVycyBhcmUgdXNl
+ZCB0byBhY2Nlc3MgdGhlIGxvY2F0aW9uIGluc2lkZSBhIGNvZGUgPj4gd29yZC4KPj4gPgo+PiA+
+IE9rLiBDYW4geW91IHBsZWFzZSBleHBsYWluIHdoYXQgaXMgYSBsb2NhdGlvbiB0aGVuPyBPciBw
+b2ludCBtZSB0byBhCj4+ID4gZGF0YXNoZWV0IHRoYXQgZXhwbGFpbnMgaXQuCj4+IAo+PiAgICBU
+aGUgbG9jYXRpb24gaXMgdGhlIHBvc2l0aW9uIGluc2lkZSBhIGNvZGUgd29yZC4KPj4gCj4+ID4K
+Pj4gPiBCb3R0b20gbGluZSBxdWVzdGlvbjogd2h5IGhhdmluZyBSRUFEX0xPQ0FUSU9OXzAsIF8x
+LC4uLiBhbgo+PiA+IFJFQURfTE9DQVRJT05fTEFTVF8wLCBfMSwgZXRjPwo+PiAKPj4gICBSRUFE
+X0xPQ0FUSU9OXzAsIF8xLC4uLiBhcmUgdXNlZCB0byBleHRyYWN0IG11bHRpcGxlIGNodW5rcyBm
+cm9tIGEgCj4+IGNvZGUgd29yZC4KPj4gCj4+ICAgZS5nIElmIHdlIHdhbnRlZCB0byBleHRyYWN0
+IGZpcnN0IDEwMCBieXRlcyBmcm9tIGEgY29kZSB3b3JkIHRoZW4gCj4+ICgwLi4uOTkpIFJFQURf
+TE9DQVRJT05fMCB3aWxsIGJlIGNvbmZpZ3VyZWQuCj4+ICAgICAgIGlmIHdlIHdhbnRlZCB0byBl
+eHRyYWN0IG5leHQgMTAwIGJ5dGVzICgxMDAuLi4xOTkpIHRoZW4gCj4+IFJFQURfTE9DQVRJT05f
+MSB3aWxsIGJlIGNvbmZpZ3VyZWQuCj4+IAo+PiAgICAgICBzYW1lIHdheSBmb3IgbGFzdCBjb2Rl
+IHdvcmQgUkVBRF9MT0NBVElPTl9MQVNUXzAsIF8xLCB3aWxsIGJlIAo+PiB1c2VkLgo+PiAKPiAK
+PiBOaWNlIGV4cGxhbmF0aW9uLCBhbmQgdGhhbmtzIGZvciB0aGUgYmVsb3cgZmlndXJlcy4gU28g
+SSBndWVzcyB0aGVyZQo+IGlzIHNvbWUga2luZCBvZiAic21hbGwgU1JBTSIgdGhhdCBpcwo+IGRp
+cmVjdGx5IGFkZHJlc3NhYmxlIHBlcmhhcHM/Cj4gCj4gSSB0aGluayBJJ20gZmluZSB3aXRoIHlv
+dXIgc2VyaWVzIG5vdy4gSnVzdCBhIHNtYWxsIG5pdDogbmV4dCB0aW1lIHlvdQo+IHNlbmQgYSBz
+ZXJpZXMsIHBsZWFzZSB1cGRhdGUgdGhlIHZlcnNpb24gbnVtYmVyICJbUEFUQ0ggdjZdIgo+IChh
+dXRvbWF0aWNhbGx5IGFkZGVkIHdpdGggdGhlIC12NiBwYXJhbWV0ZXIgaW4gZ2l0LWZvcm1hdC1w
+YXRjaCkuIEJ1dAo+IG5vIG5lZWQgdG8gcmVzZW5kIGp1c3QgZm9yIHRoYXQuCj4gCgogICBUaGFu
+a3MgTWlxdWVsLiBTbyBub3cgbm8gbmVlZCB0byB0ZXN0IHRoZXNlIHBhdGNoZXMgZnVydGhlci4g
+SSBoYXZlIAphbHJlYWR5IHRlc3RlZCB0aGVzZSBwYXRjaGVzIG9uIElQUTUwMTggU29DIHdpdGgg
+bXRkX3Rlc3QgbW9kdWxlICYgCm5hbmQtdXRpbHMgdG9vbC4KCj4gCj4gVGhhbmtzLAo+IE1pcXXD
+qGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVh
+ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
