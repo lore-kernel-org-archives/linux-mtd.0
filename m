@@ -2,182 +2,138 @@ Return-Path: <SRS0=zfSv=H7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A2F4C433E0
-	for <linux-mtd@archiver.kernel.org>; Mon,  1 Mar 2021 14:10:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83DFCC433E0
+	for <linux-mtd@archiver.kernel.org>; Mon,  1 Mar 2021 14:29:52 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EDF5C601FE
-	for <linux-mtd@archiver.kernel.org>; Mon,  1 Mar 2021 14:10:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EDF5C601FE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
+	by mail.kernel.org (Postfix) with ESMTPS id 2D7C964DF5
+	for <linux-mtd@archiver.kernel.org>; Mon,  1 Mar 2021 14:29:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D7C964DF5
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=windriver.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:References:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=1J8Li7xTx3315p3pajwNy+5ySVgjQqsk2nZ1Uzj9F5k=; b=PaRshd2/VUYcu3qY3emjJLgaw
-	ccFojWL9Hhx6Y/z1dFoNzNpKKcK3s/1GxTOIUik9h/FDKlooQyw9D1sWIG+GDK5TKXfCNrgCBoI7O
-	R9xagglWJ45GTvzQawYq+bss9S392n743+x978qYje093KLiTgM/QYO1tNg2t9QP5cRcUaoi4JMx5
-	HCsW6uUxu28DTrNqiogfh+oJdzfBXSMRrVnRu58QFSWdhcfYq4mmtoS6At4lr1ThWTX6oNa9UEPCO
-	fZbnDj9FXulJ1JxE+A02hCJayWAOtNo2NXVUYUqt1R39LtvWROW5q0/0LEKospihvi1h2nKDDyPSA
-	TAT4M3D5A==;
+	 bh=vAcvvAPEXo8dJDr2JnOKMVhTAJUC7t5Z5h+jVHo7FeM=; b=1F+SrRyYJYp6eoCNAintVpfxq
+	mtc2muTEwam4SPL2ugqWV61al271hpWa+ivAIix6n2kqWOLDJHmyV4Sss4+Ki5fz5Uahnxw2j4yi8
+	W1zvbC4cG9kzvlX3kk+4gWeFgm7ePqTxUzORdsZ/aFeMsxEQZM3+GtNP+VnUGJQ+ZTjaz249UeMdi
+	5ObN5oHen8GHRtWO5NriGe2FSa0JfZDZPRCfxeqWiRPnDcRPhSB7GbOZ5bekCOrWFvO7+sQthSiNV
+	m89f3IzBQk2GDOmkT7tWTivllvPm2M+f6pqAXcdJQQ+GQPJQXTg+rsbmLuyHhCZ1k/Q1NwRiSqBqK
+	Go+/afwJw==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lGjEv-0005TI-2G; Mon, 01 Mar 2021 14:09:37 +0000
-Received: from esa.microchip.iphmx.com ([68.232.154.123])
+	id 1lGjXt-0000MT-Eb; Mon, 01 Mar 2021 14:29:13 +0000
+Received: from mail-mw2nam08on2048.outbound.protection.outlook.com
+ ([40.107.101.48] helo=NAM04-MW2-obe.outbound.protection.outlook.com)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lGjEr-0005S5-RJ
- for linux-mtd@lists.infradead.org; Mon, 01 Mar 2021 14:09:34 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1614607773; x=1646143773;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=t49pLYc3Hei7F24PNKdZhDEWQXx0oPBouVhX+ub7FP8=;
- b=B0wHsf+INYjWH5So4bK3R3OwvzELFwJSjb12D0ELRBEvzgX05lHGtpbE
- XChCWe9rUkeQIHLcK0+R82kfuoHC+52KMeVDiJNlZ98LoQYps9SaWoAYH
- /IR20k5CZUHCPumT3bSZzMSFk2hujrYs4M0BUYzXTgyVkrGv40CSqXYOk
- qSgAOWsqBAoXk+m/CBfEM9WsJ3LUr+oWecEgxjFSXIjjrWXkMoPaojF0Y
- XKsbduK8oq440U+MszxOPZtfMwzcrXMgvPtqYzWYxmtJLDxleypS3xauk
- RnnCpfFkoFt61LQ7jwXk7SG88jLOoft6IpLiJUVIEgVLODdrKORENgMk6 A==;
-IronPort-SDR: aISzTXX/sm/4j1lSc1sQBV48XWyJyxgsBO3zqRAo2G9qB++O4QQc1eJ0uLAV+qJ+giEPGgvIXg
- ZIfnVbcPWnsUBtWtkdvRC4nb+/tSiyCUzNfw5DQP+ZfW6SESj0LMzpFYo0n+ZJ7cIn5how+/Fc
- Wko3TR3rVqk5X/mSWvhZi3LC+qWB3ZFHW3uyLsljZMOlHDSEYzivOtiRz7ZStYclR9nQ19zYPQ
- 1NEuGo19mQc9nyJzodclCHvlrXSWT53qgEAvYr2PBev30fsg0OClTJBbeDFi2VBk5xv31lwFLk
- 2OY=
-X-IronPort-AV: E=Sophos;i="5.81,215,1610434800"; d="scan'208";a="108299354"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 01 Mar 2021 07:09:31 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 1 Mar 2021 07:09:25 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.71) with Microsoft SMTP Server
- (version=TLS1_2, 
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
- Transport; Mon, 1 Mar 2021 07:09:25 -0700
+ id 1lGjXq-0000Ky-6K
+ for linux-mtd@lists.infradead.org; Mon, 01 Mar 2021 14:29:11 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ep5e99Yj6CEKBMkAS+FGSltx4VrSlmKOmR/EdM3dbYeTVd1lel7oM3y9ci6wIERD67DZQktCv0PniKRTi6ghyrtXj7rxXGFkVBohzmdAQx0SpKFxYeQhbGjMWJ3xEzj6jFCy66QpFP1t7yI8vf/oJODrshmU5hLx6FqR6x11LM9TL/iv56wyCCWGXZdn9G8xeNWF+/a4q6dvuCtBxGLqVGSBMRoIKLwJ+/g3f71/UtUN49U1vYWXvaIAG4Gjgpl81hHD4oxwrbAiq9yt+ZPhizWdO+sfpPc8RPwWGUhsJGMrk/5h0j/9vgFDMd8inPk1J87evrxMxQq9Hj2S15DtSQ==
+ b=HOgZl9mZa83WWFR/n5s2UFfqTTcsA9mr32V2TGAl4wALumuGvt7KcArdOc3tKn0kPHJMq62o23nOjbP8o+fkkWRchUSZ7vChNOSWPZJsG5+qqCysRec1IOoZPPRol8wc5JnRHK+AOMjr3EXZlrEvLn/05Doqf6ZYuo8Ed60UbfC5TcU70xV3DVTG0HoAc/QPACArwGSHEekRQmUlhxFUSCg8i77ZSDfJMSEjRkkWuou+jY8nhJGcWQRqjyRnpRiWY0CDG1E4wW3gJK7YiQxPRU/0SQ1lQvMPKGapBvacnY17PlDVvipnccjqOmUbypj5CVzqs1dnK+TNz/2QyomHmQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=t49pLYc3Hei7F24PNKdZhDEWQXx0oPBouVhX+ub7FP8=;
- b=nt/j/GvN/FdNFyFQ5CHlUFJ+p5gcCNcJKh43CBLpeSksdI2Ce8SjU+7d2aJ33ux5OYzqipYmgbLbV0Pjo+h6vvspXLMI8emnygxr9x0bnJGB7udAT7Wss1DVzoS5bcbfgaJwFLc0VnbV1xYBjXW2Q8Weq6wJaBGpvzAawl07gRTyzaYmULnLw783nZRn9Y9h7yurJ0CV9VtOw/4ZUGo1vRsYpzKMvU4DACz3+L8o3HpaEWVoLAzQjHkd8fE3Sfk9SsmRAtKlOzvLo5G/9ohwRH1dJSPMjRLWilVKo+cHqTHCVN7Xd8e+431MsyKQ5uJBG61lCqsTnzIhA38CwYvkvw==
+ bh=/GDWScmAUoZKj9Mpsp7YpLyrh53hMRgiGd0UsYe3XAQ=;
+ b=Y6Mfg9Y9gklCimyU1AqyGzMQwg4bWhj+bnfruAxotkchTGrOCrLyqGLn9sawISRTVsfJ7LlYKYP7xHSbW9FnPSiD6gZ+5w3kGQIcBmpSjgVH8mu7CrZXV0L/tne/MGUFpZBAtQTc8IFJdofzZZ1j1rnwYtmp0GFCHGwnUQqxvg+MgenzBTcbjl9AbF17cVUHzYjKY/8mpn50Jok8J93vLXF5+FW1Tlu6ZGcU6tCALU/SUht9Yt8iaQP/D1qZQgobi4UbWriRYIONmMZF70kH2AY1C+Ri9Fi64g4oHhNp4wkNBRXz18z4iPx0AIOUzYPerIOBWmd70gp71McNs2SvyA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=t49pLYc3Hei7F24PNKdZhDEWQXx0oPBouVhX+ub7FP8=;
- b=NRpStrZTbs6G8c1A2+wmLkxwXdIRjyHCIMvgRpqB+an8HKSQVC0m8MpPw5p1nzp+HdaGGi8makK+ifeOqCoJLnscUi4ziP/Gd5lzXDIpiOGhamxMZO7RgHQsfDxFLuc+a7Dy8JunskosqbL8QXEddS/vjyWFj4hMgbpl+9V7yHQ=
-Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
- by SA2PR11MB5130.namprd11.prod.outlook.com (2603:10b6:806:11d::19)
+ bh=/GDWScmAUoZKj9Mpsp7YpLyrh53hMRgiGd0UsYe3XAQ=;
+ b=XGfJyn7qbEiIWqvxpwPTheTfnRGcEozt1APhoAL6asKxuPf+PUlXrSXmTRlbqDh0jZyQnnXPFuOva+myR56eELzIjDqf6PW4gpQ8rLSbEBGDSONKCUN5AFCWbuwkAi8ChRhAHDNR5w14z7v3aOAPr2i6viIiCYoVsB0VVpelBTI=
+Authentication-Results: microchip.com; dkim=none (message not signed)
+ header.d=none;microchip.com; dmarc=none action=none
+ header.from=windriver.com;
+Received: from SA0PR11MB4766.namprd11.prod.outlook.com (2603:10b6:806:92::20)
+ by SA0PR11MB4655.namprd11.prod.outlook.com (2603:10b6:806:9d::22)
  with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.26; Mon, 1 Mar
- 2021 14:09:22 +0000
-Received: from SA2PR11MB4874.namprd11.prod.outlook.com
- ([fe80::c9e8:9bf4:b08c:c30f]) by SA2PR11MB4874.namprd11.prod.outlook.com
- ([fe80::c9e8:9bf4:b08c:c30f%7]) with mapi id 15.20.3890.028; Mon, 1 Mar 2021
- 14:09:22 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <michael@walle.cc>, <p.yadav@ti.com>
-Subject: Re: spi-nor: maxronix MX25L12835F support
-Thread-Topic: spi-nor: maxronix MX25L12835F support
-Thread-Index: AQHXBFUKEDYf95dZGkCecCm8j19FKg==
-Date: Mon, 1 Mar 2021 14:09:22 +0000
-Message-ID: <beaf17ed-d200-4470-f726-e4a71d9565fb@microchip.com>
-References: <20210216092743.jkhfjewu3cbnm5zm@ti.com>
- <d7e81d38064ba59a24ec243cb84a1d97@walle.cc>
- <92b5b932-a672-9fb6-c604-5263a0668eb3@microchip.com>
- <CAEyMn7aMNjKHXhe_hN15XVczombrTnNqASmva_-MT92+qqV8xA@mail.gmail.com>
- <615749fe-52f5-9e07-db46-41e5e03b55cf@microchip.com>
- <CAEyMn7aXXOS3abS=n_8Y6GtN-xYRYyGT3H-AoavWqCqqM01V9A@mail.gmail.com>
- <fb31d09c-d20a-9a42-6ed2-fd74c7699dfc@microchip.com>
- <CAEyMn7bY9CisxoWcpF=zR+DYJpW+=EeWLGE_gAB3WK9hvkcuJQ@mail.gmail.com>
- <9263ef4d-7944-00bb-8e2f-b7d33e5aab87@ti.com>
- <e1901135-0433-d693-56c9-3a9fdaca1d55@microchip.com>
- <20210301133618.rzs4amh5ujwys277@ti.com>
- <99f92851b9ee95d01564ae01c56085eb@walle.cc>
-In-Reply-To: <99f92851b9ee95d01564ae01c56085eb@walle.cc>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-authentication-results: walle.cc; dkim=none (message not signed)
- header.d=none;walle.cc; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [79.115.63.129]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1f27fee2-7ce5-449b-985a-08d8dcbb9d51
-x-ms-traffictypediagnostic: SA2PR11MB5130:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA2PR11MB5130F97C29F5C7453D859C3EF09A9@SA2PR11MB5130.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: zKMYXE/SwTcwayJLf7RilunTRGgyrDn5YWgqBInz3PJoFDUxxPYruwr3bgByi5TEO7ZwwHL3aVR4cpmhrRBHBxOP8DXmx3AVwQli4VH3tR9y8zhp/DtH7n+hkcKUzEP3twCzU0cOJm3Ubc9PVJDXmyf6rUBA1JX7MhbM7zRXK/HAqaH5PqQxYRj8Pbrbc7ca/6hg45Urh0CKfsE6vBUP8K/wXVbkgTB70jbw6Z251zMrJDOHZaom4BaKXdIstN5X7e+3HE2PtYzxU4nMGSqstaiksmnsy7h4mKElUskFyeuKyq5zu1fKoxBoObHMRThWZjyOgDOXXUB68JI4UQTQycXdrEYQCk4eYvtAEOkbA9oz0aKTMZa+uNHP0EaHpzZPB0If3O8VqG4JPqK/9CaDSKNI96DX0CcUisRAv6eME0b0IdLLCxjsNXIZk0ZL5swC38RYJ6Br0DZleUUT4UBUdgTSkZiGCUzWg1lwvmJAZnSVzQzviwdvLV+9s4y9AMIKLqHi1YNwMRwEtqcSz3ss8GshrhzhBEeAJXiIDbFXLcNYVFzQawAPzERaaBCOlCEIr+8hPomapfxDSFLfcBXUmQ5K5/QsD4JVKc1LqWCnALQ=
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:SA2PR11MB4874.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(39860400002)(396003)(376002)(366004)(346002)(136003)(186003)(36756003)(110136005)(54906003)(4326008)(478600001)(31696002)(71200400001)(86362001)(316002)(26005)(6512007)(31686004)(8936002)(6486002)(5660300002)(66556008)(66476007)(66946007)(91956017)(64756008)(66446008)(76116006)(8676002)(83380400001)(2906002)(53546011)(6506007)(2616005)(45980500001)(43740500002);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata: =?utf-8?B?U3pLLzZmTExZM05URDZrQlNHRGxYbFR0K2NldURvWlJTb2tiN1c4Y3NFZDBO?=
- =?utf-8?B?OU5LcFVjTkxpRXhTc0MxS2VRZmxSUkNQT1JqcGx4dGxCL2RGRVBnc0IwYWJ2?=
- =?utf-8?B?c3IwSkV1SVhuTGN4V2hUVVJXWitPcEZyY05hTFFvS2s1Y0kvOTdSSysvNGRB?=
- =?utf-8?B?QW5BV0ROdWFDZDFFSzVDNUE0ZkdBNjVteW9KaVJzanNHekphRjhqL2pQSzA0?=
- =?utf-8?B?VS9oa1poeW9UR1A3OWsyc2YxdWR4OXV3V2M3b045aXBCMEZPMnRHVllyR3Bq?=
- =?utf-8?B?V0hCRlJxZGp3ajR4TUUyWnZSVE8wZ2JtMEdEMm5LMUl4andCbXVqSURmRzh3?=
- =?utf-8?B?bzYwMGJyTzkvU2VIUDdUTnk2WFRvTGJ5cjYyeVVzcjJCTklLOEtBVUh6MTdI?=
- =?utf-8?B?UU9LQmxnU2lja3JlcDI2eTRrU3U3cVNzMXlXcVBhUk90NXBCVHpOWXF5MWNK?=
- =?utf-8?B?bTBYVWlsLzlidHVGL1dJWFRIdjU4VTJscm8wZzZleU1yQk1LUjhlNzRSblZF?=
- =?utf-8?B?YVpQYTJMclQyWE5BYkNZTWN5M3NOdWdFdVZ0OUJQMEZhd2VEeWVrMTlIbnZG?=
- =?utf-8?B?UVJpQyt1UTU1WkhzaUhyMmtqK2Y1SmwwVkJtUm8xYlE2djNIbFlpR2VjUW1F?=
- =?utf-8?B?VXZaQXB4WU5YNUxPdnBnQW1HeGhEbEkxU1QxODh5R3pSMldqREd0VEpBOVUw?=
- =?utf-8?B?WW8vSlRyNDR2WWNFS1JZUVlWOVV1RDhGSmY3MDU3UWtUei90MndXS2tSSFlG?=
- =?utf-8?B?K0wrRGJHcmdEbTgxazdvbHJCZEtIM0pCR082WjdtK2FnU1luTDJZRER0NmMx?=
- =?utf-8?B?UnZJTUhpdXpNN3p6SkJJMmE5cXB4THRiWHFZQUREZmwvcGpwaldST3BrZzdP?=
- =?utf-8?B?bFY5b2Y1T1NLWnUxZjhpOENuUlNWYTRWM3VEbmIwNnM0djN4dnhBTVhGTEVI?=
- =?utf-8?B?TS9vZVFuQUNjQW1Dci9oTXcrNDVWenhUWU1vdFhSY3BEb1h2WWg5Uk9GK05H?=
- =?utf-8?B?d0VrVC9iYTJPT3FXTWhwM1pLVFMra2xUREZqbzJOaHZuZkFua0o0NTUvSTZN?=
- =?utf-8?B?bjhJS1NnVTNaTldkZFphMmtUY1p6M3pXUjdrWkRQOWxHMW1LQzZwb0wrYjRY?=
- =?utf-8?B?L0plNUErTVpWTVhlaXdrOUM1NThBblp0M0xjRDBoRDVKaVJMSDd0SExWeVBo?=
- =?utf-8?B?cGVjczZSTXd3eDZrdXBtYlF2eU83YmJPN3N6Tmg3dmw5T3RCUEE3OUUxME9p?=
- =?utf-8?B?dURWeEJaZUZkcnNFVU0wUVV3UlNvQTE2WFVGZndqUm9aa3dlSC9TY2IxQjdi?=
- =?utf-8?B?ZnlzOUNuTndIN0tibk9SdHdlUXBITmVsOVRtYjFmNVQ5bmxJSGNIam9oTVpC?=
- =?utf-8?B?OUhlRXlYSjJJdWkybHE4YkJoSjUraURqOGtqU0tMaHY3TXJicGFmWE9iRHdG?=
- =?utf-8?B?R2RnVVpScGZKcndJTnZZWWQ4VWhpUVBMVlV3WWVVN2RLcEc4SVdoT0VNQzlo?=
- =?utf-8?B?L1IwTStSMUVFRjM1V2p2VEU4ODJHSklvLzFaQ3NRSHdSY0hEZ08wd3oyb0U1?=
- =?utf-8?B?ZUlEc0xmakVySjdBWlhMWm5ndHBRUGN1SFFFMG1HQzhjcytTRkNJa2IwVWpp?=
- =?utf-8?B?eUVYSWx4eU5XMkZmdGdoM0k1V29XM2ZJaG5aeUxFMjNlQmJCeHdYL1NLVkxo?=
- =?utf-8?B?RzdwZk9ucURkQVFPaTA3cld2cUxlRC9Zd00vZ1kyc2VmMlR5aVJvQlNmSHgz?=
- =?utf-8?Q?JdKitLBd1WU2IM3glY=3D?=
-Content-ID: <7EF6A766A5A18945A549254FF779D817@namprd11.prod.outlook.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20; Mon, 1 Mar
+ 2021 14:29:08 +0000
+Received: from SA0PR11MB4766.namprd11.prod.outlook.com
+ ([fe80::1402:f204:de5d:c47e]) by SA0PR11MB4766.namprd11.prod.outlook.com
+ ([fe80::1402:f204:de5d:c47e%4]) with mapi id 15.20.3890.028; Mon, 1 Mar 2021
+ 14:29:08 +0000
+From: yaliang.wang@windriver.com
+To: tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com
+Subject: [PATCH 2/2] mtd: spi-nor: spansion: uses CLSR command in
+ S25FL{064|128|256}L chips
+Date: Mon,  1 Mar 2021 22:28:44 +0800
+Message-Id: <20210301142844.1089385-2-yaliang.wang@windriver.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210301142844.1089385-1-yaliang.wang@windriver.com>
+References: <20210301142844.1089385-1-yaliang.wang@windriver.com>
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK0PR03CA0120.apcprd03.prod.outlook.com
+ (2603:1096:203:b0::36) To SA0PR11MB4766.namprd11.prod.outlook.com
+ (2603:10b6:806:92::20)
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-ywang12-u18.wrs.com (60.247.85.82) by
+ HK0PR03CA0120.apcprd03.prod.outlook.com (2603:1096:203:b0::36) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3890.20 via Frontend Transport; Mon, 1 Mar 2021 14:29:06 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: da0c51f1-df98-4ffd-1200-08d8dcbe5fa2
+X-MS-TrafficTypeDiagnostic: SA0PR11MB4655:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR11MB4655FF29D5E86E74554779059F9A9@SA0PR11MB4655.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3qa2fUVRuELxg+8HX88Z7HAlxKPz1Lu9lsC8VPGQJqVT1V1W74rOhjXm2nvGIq9l/Ki3G4XRVFNzyNO12oPiOiJOi2wPhThRP58fVZxtwzVYafN5rlEQdQD0P2T4XHu50dklrcpCDBk8Dl8R/lfyLx2FvU6tYSUmZea28DIWE7hbUQ4awxL2AHzfZ0e9T5ANwf5CuhYeZPJa0puABHaOGOzYsLICGq8K8jcwfuS1NWBD/Ftu689k/CFEPX1UAMze9uIi6GaJnAN7LsEGhVUCY61IiI4VYJN7NBn9XN1gdmmP+TW3UX2dhglloid7Q/Hi9gsbO8SBgEoEs82hj2It3wrxM6Ox8dYvwhEi/fLIWb92wvk8r6uP2W+zztTHtbjySC+5/zvv+aC84ib+XFW5Qac51VooumyitPf4HpEUoCmw204YJyi+4Q4o4Pa5IZqs0lj1paJjnGIF1KhXch4gURqLCsRc+uZ+GiAUgtUr8JeNi5Fmypphv2TrqImBExo7y18aJlwoEtfKpeEWepMKChjsaSgo9+G4AEl0rXhvwlTRK13+iUjqTPXKUxt9Fjns
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:SA0PR11MB4766.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(366004)(346002)(376002)(136003)(39830400003)(396003)(2616005)(8676002)(83380400001)(36756003)(107886003)(316002)(6666004)(478600001)(6486002)(6506007)(6512007)(1076003)(52116002)(956004)(186003)(5660300002)(9686003)(8936002)(66556008)(26005)(2906002)(66946007)(66476007)(86362001)(4326008)(16526019)(83133001);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?9VS60gYlW2ThkgGsvy+mHKcCc1xjq0Pk4pss+9YIS6M4jo6RlzHUQZR04Jmg?=
+ =?us-ascii?Q?98DRfzSp0zZznpw9gakFOJ7UFNGHkFVDN2WfW0yEiPk6tdoVX1qBBVBHQkHy?=
+ =?us-ascii?Q?EqhMg49J88kZG4j0qT+eAjEwD2TEJoYbw2HUrA7dOrtMxitenZ1nD88BnX0u?=
+ =?us-ascii?Q?0dB9NIbJgxxfafQO8ScdTPhOiy5qllhwZp+uFXCiI9ePMqDjJj4VS0NVSr5R?=
+ =?us-ascii?Q?K9rdWeF//oxf50o5wIcTD2AGA4/UKqsnZCEFhOcv/XpD9Nl85xmoAzlDUX6O?=
+ =?us-ascii?Q?bZg4liDhMHXIz0sJ78ZSyoWiUNyQNsaFpn5TRHCGYIB6vQ2naoRkVGkXhpz9?=
+ =?us-ascii?Q?Zy9LwXvwfqCqFB8BxwXX9aFGL0v7k7uiqCYmA2Vqd2LZE4D0bcWOmNVVZIiS?=
+ =?us-ascii?Q?troVtR/NbaTzrKcnd28r48ceV60NAipDOClt6XGNgY7K80AfPB5vw/InSlNQ?=
+ =?us-ascii?Q?mWL3EiZHAHp6eZ7pTcydu5VC+1pejtEuDoTw8YW/4cgJt/vRi5dKFDxei460?=
+ =?us-ascii?Q?sKEB5xpfPROe//Knu64XN+mpvj0dGzvRD9x/gBDqi2ZDMqtAzm56feDVJxPM?=
+ =?us-ascii?Q?BEELiCWbnRPkGa1wMOhfeABxinPUrd74h7An1pZsJuScLdxCldOCAQmqIpVZ?=
+ =?us-ascii?Q?6Iwsnl/wTpl9jetWZ3d93PV89L9FavEuadTIl4d9HJlRoPVwRhSjPU90z1At?=
+ =?us-ascii?Q?Sx5dwgKNwSMraP7YMRB/AzURx0IsPvejPHqnOdRsoKKFis+cteO2lXtHKXi/?=
+ =?us-ascii?Q?y27i7cLWvDsnI8s2BDq7fAoB6Ty4j2R1WR4JbJO+UdQQuDfmXAho/5WBuK/U?=
+ =?us-ascii?Q?/ABIaGRjDaQLIvgCC+y1C9x0Bc1jKFQ7IM46f3f1DTtkJhuhLbd6GhvqOufa?=
+ =?us-ascii?Q?0NYERvUbehUDd6ImRPEEmLLKjGmnwOEw2wHHMVPeOqklKSsiroD1QnxNIIn7?=
+ =?us-ascii?Q?uw5EwArgKPEqIKJ7kuNpdqYS3A5H5zSuGdM+KubBk0KVy2lh8cr1Aa3953fW?=
+ =?us-ascii?Q?4s9aDS1uCCLE+B8akIJ2S9AtXTvlT8TKkMn8MfxeIWK1gaFBEoeiE4RC8wIp?=
+ =?us-ascii?Q?aMe/J28AGpdEBuPhT5D2gf5B6CFo/brIeqVxOrwYPh45jHAkPw/xpnd/fDhl?=
+ =?us-ascii?Q?GPLYLAA90Nqk6zrndEJtsNxLWIQisNlhyxiseNLzHNVAurD/BSpSm0HNGOGf?=
+ =?us-ascii?Q?ycyHte7Dlyb8wZcri9T6YICipiVsx5Uu0ia4osCtGwUtkMbOS06fEFk+4bwr?=
+ =?us-ascii?Q?1MBJ/0MLmPz3yRuaXUSevXDxlt7TIaatD3hjOF2RaDriVD1hjnQBGypmLqCa?=
+ =?us-ascii?Q?2TlbChjhZDUIOZmuXAaG6opg?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: da0c51f1-df98-4ffd-1200-08d8dcbe5fa2
+X-MS-Exchange-CrossTenant-AuthSource: SA0PR11MB4766.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f27fee2-7ce5-449b-985a-08d8dcbb9d51
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Mar 2021 14:09:22.8056 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: lVugJbeYHsJEr3rRMQ6OmHPnDF2eRybjbIwiAYC5rLgXv9XbQd2Lxq/4LVDS0vTP5kny8x9yxXclZ8642l01iMcSlpe3ZaouF8APB2nPquE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5130
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2021 14:29:08.1788 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JUblaY1M4Hy6MrEQoFD3rs4NQd+dooL0tRPCZsS6uUPVICRFmLWzMMiMq0exYivMizqPJidD8abcVn5Bb3lSROcBMOdKDnV3GeCR1FcA4jQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4655
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210301_090934_049159_50AC4C31 
-X-CRM114-Status: GOOD (  16.89  )
+X-CRM114-CacheID: sfid-20210301_092910_278132_E88D7F6E 
+X-CRM114-Status: GOOD (  20.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -189,37 +145,166 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, juliensu@mxic.com.tw, ycllin@mxic.com.tw,
- linux-mtd@lists.infradead.org, heiko.thiery@gmail.com, zhengxunli@mxic.com.tw
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Yaliang Wang <Yaliang.Wang@windriver.com>, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMy8xLzIxIDM6NTAgUE0sIE1pY2hhZWwgV2FsbGUgd3JvdGU6DQo+IEVYVEVSTkFMIEVNQUlM
-OiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3MgeW91IGtub3cg
-dGhlIGNvbnRlbnQgaXMgc2FmZQ0KPiANCj4gQW0gMjAyMS0wMy0wMSAxNDozNiwgc2NocmllYiBQ
-cmF0eXVzaCBZYWRhdjoNCj4+IEkgdGhpbmsgcHJpbnRpbmcgdGhlIGNvcnJlY3QgZmxhc2ggbmFt
-ZSBpcyBzb21ld2hhdCBpbXBvcnRhbnQuIE90aGVyDQo+PiB0aGFuIHRoZSBoYW5kZnVsIG9mIHBl
-b3BsZSB3aG8gYXJlIHJlYWRpbmcgdGhpcyB0aHJlYWQsIGZldyB3b3VsZCBrbm93DQo+PiB0aGF0
-IFNQSSBOT1IgY2FsbHMgbXgyNWwxMjgzNWYgYXMgbXgyNWwxMjgwNWQgb3IgdmljZSB2ZXJzYS4g
-VGhpcyBjYW4NCj4+IGNhdXNlIGEgbG90IG9mIGNvbmZ1c2lvbiBhbW9uZyBwZW9wbGUgdHJ5aW5n
-IHRvIGRlYnVnIGFueSBpc3N1ZXMuDQo+IA0KPiBVbmZvcnR1bmF0ZWx5LCB0aGlzIGlzIGtpbmQg
-b2YgYSBtZXNzLiBJZiBtdWx0aXBsZSBmbGFzaCBkZXZpY2VzDQo+IHNoYXJlIHRoZSBzYW1lIGlk
-LCBpdCBzZWVtcyB0byBiZSBmaXJzdCBjb21lIGZpcnN0IHNlcnZlLiBUaGUga2VybmVsDQo+IHdp
-bGwgcHJpbnQgdGhlIG5hbWUgd2hpY2ggd2FzIGludHJvZHVjZWQgZmlyc3QuDQo+IA0KPiBUaGlz
-IGlzbid0IHRoZSBvbmx5IGZsYXNoIHdoaWNoIGlzIGFmZmVjdGVkLiBIYXZlIGEgbG9vayBhdA0K
-PiDCoCBkcml2ZXJzL210ZC9zcGktbm9yL3dpbmJvbmQuYw0KPiBUaGVyZSBhcmUgYWxsIGtpbmQg
-b2YgZmxhc2ggbmFtZXMsIHNvbWUgb2YgdGhlbSBhcmUgbm90IGV2ZW4gZXhpc3RpbmcNCj4gYXMg
-dGhpcyBwYXJ0aWN1bGFyIHN0cmluZywgZWcuIHRha2UgdzI1cTY0andtLCBpdHMgYWN0dWFsbHkg
-IldpbmJvbmQNCj4gVzI1UTY0SlctSU0gb3IgVzI1UTY0SlctSk0iLg0KPiANCj4gU28geWVzLCBp
-dCB3b3VsZCBiZSBuaWNlIHRvIGhhdmUgc3VjaCBhIHRoaW5nLCBidXQgZm9yIG5vdywgSSB3aWxs
-DQo+IHRha2UgdGhlIGtlcm5lbCBvdXRwdXQgYXMgYSByb3VnaCBlc3RpbWF0aW9uIHdoYXQgbWln
-aHQgcmVhbGx5IGJlDQo+IHVzZWQgb24gdGhlIGJvYXJkLg0KPiANCg0KSG93IGFib3V0IG5hbWlu
-ZyB0aGVtIHNvbWV0aGluZyBsaWtlICJ1cGRhdGVkLWZsYXNoLW5hbWUgfHwgZmlyc3QtbmFtZSIu
-DQpBbnl3YXksIHRoZXNlIGFyZSBqdXN0IHdvcmthcm91bmRzLiBNYW51ZmFjdHVyZXJzIHNob3Vs
-ZG4ndCB1c2UgdGhlIHNhbWUNCkpFREVDIElEIGZvciBuZXcgZmxhc2hlcy4gVGhleSBzaG91bGQg
-YXQgbGVhc3QgYWRkIGFuIGV4dGVuZGVkIElELg0KX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcg
-bGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10
-ZC8K
+From: Yaliang Wang <Yaliang.Wang@windriver.com>
+
+S25FL{064|128|256}L chips can't recover from errors when program error
+or erase error occurs, P_ERR or E_ERR bit will be set to one, WIP bit
+will remain set to one, A Clear Status Register command must be sent to
+return the device to STANDBY state.
+
+First record of the can't recover error is in commit <c4b3eacc1dfe>
+("mtd: spi-nor: Recover from Spansion/Cypress errors"). The error has
+been fixed by the commit, however, S25FL-L chips shifted P_ERR and E_ERR
+bits from SR1 to SR2, which makes the previous fix no longer work.
+
+Signed-off-by: Yaliang Wang <Yaliang.Wang@windriver.com>
+---
+ drivers/mtd/spi-nor/spansion.c | 96 ++++++++++++++++++++++++++++++++--
+ 1 file changed, 93 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+index 67619b64c148..4ed98cb969a5 100644
+--- a/drivers/mtd/spi-nor/spansion.c
++++ b/drivers/mtd/spi-nor/spansion.c
+@@ -19,7 +19,10 @@
+ #define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS	0
+ #define SPINOR_OP_CYPRESS_RD_FAST		0xee
+ #define SPINOR_OP_SPANSION_CLSR			0x30
++#define SPINOR_OP_SPANSION_SR2			0x07
+ 
++#define S25FL_L_SR2_P_ERR BIT(5)
++#define S25FL_L_SR2_E_ERR BIT(6)
+ /**
+  * spi_nor_cypress_octal_dtr_enable() - Enable octal DTR on Cypress flashes.
+  * @nor:		pointer to a 'struct spi_nor'
+@@ -203,6 +206,38 @@ static void spansion_clear_sr(struct spi_nor *nor)
+ 		dev_dbg(nor->dev, "error %d clearing SR\n", ret);
+ }
+ 
++/**
++ * spansion_read_sr2() - Read the Status Register 2 using the
++ * SPINOR_OP_SPANSION_SR2 (07h) command.
++ * @nor:	pointer to 'struct spi_nor'.
++ * @sr2:	pointer to DMA-able buffer where the value of the
++ *		Status Register 2 will be written.
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++static int spansion_read_sr2(struct spi_nor *nor, u8 *sr2)
++{
++	int ret;
++
++	if (nor->spimem) {
++		struct spi_mem_op op =
++			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_SPANSION_SR2, 1),
++				   SPI_MEM_OP_NO_ADDR,
++				   SPI_MEM_OP_NO_DUMMY,
++				   SPI_MEM_OP_DATA_IN(1, sr2, 1));
++
++		ret = spi_mem_exec_op(nor->spimem, &op);
++	} else {
++		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_SPANSION_SR2,
++						    sr2, 1);
++	}
++
++	if (ret)
++		dev_dbg(nor->dev, "error %d reading SR2\n", ret);
++
++	return ret;
++}
++
+ /**
+  * spansion_sr_ready() - Spansion specific method for querying the flash to
+  * see if it is ready for new commands.
+@@ -244,6 +279,55 @@ static int spansion_sr_ready(struct spi_nor *nor)
+ 	return !(sr[0] & SR_WIP);
+ }
+ 
++/**
++ * s25fl_l_sr_ready() - s25fl_l family specific method for querying the flash
++ * to see if it is ready for new commands.
++ * @nor:	pointer to 'struct spi_nor'.
++ *
++ * Return: 1 if ready, 0 if not ready, -errno on errors.
++ */
++static int s25fl_l_sr_ready(struct spi_nor *nor)
++{
++	u8 *sr = nor->bouncebuf;
++	int ret;
++
++	ret = spi_nor_read_sr(nor, sr);
++	if (ret)
++		return ret;
++
++	ret = spansion_read_sr2(nor, &sr[1]);
++	if (ret)
++		return ret;
++
++	if (nor->flags & SNOR_F_USE_CLSR &&
++			sr[1] & (S25FL_L_SR2_E_ERR | S25FL_L_SR2_P_ERR)) {
++		if (sr[1] & S25FL_L_SR2_E_ERR)
++			dev_err(nor->dev, "Erase Error occurred\n");
++		else
++			dev_err(nor->dev, "Programming Error occurred\n");
++
++		spansion_clear_sr(nor);
++
++		/*
++		 * WEL bit remains set to one when an erase or page program
++		 * error occurs. Issue a Write Disable command to protect
++		 * against inadvertent writes that can possibly corrupt the
++		 * contents of the memory.
++		 */
++		ret = spi_nor_write_disable(nor);
++		if (ret)
++			return ret;
++
++		return -EIO;
++	}
++
++	return !(sr[0] & SR_WIP);
++}
++
++static struct spi_nor_fixups s25fl_l_fixups = {
++	.sr_ready = s25fl_l_sr_ready,
++};
++
+ static int
+ s25fs_s_post_bfpt_fixups(struct spi_nor *nor,
+ 			 const struct sfdp_parameter_header *bfpt_header,
+@@ -331,13 +415,19 @@ static const struct flash_info spansion_parts[] = {
+ 			     SECT_4K | SPI_NOR_DUAL_READ) },
+ 	{ "s25fl064l",  INFO(0x016017,      0,  64 * 1024, 128,
+ 			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+-			     SPI_NOR_4B_OPCODES) },
++			     SPI_NOR_4B_OPCODES | USE_CLSR)
++		.fixups = &s25fl_l_fixups,
++	},
+ 	{ "s25fl128l",  INFO(0x016018,      0,  64 * 1024, 256,
+ 			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+-			     SPI_NOR_4B_OPCODES) },
++			     SPI_NOR_4B_OPCODES | USE_CLSR)
++		.fixups = &s25fl_l_fixups,
++	},
+ 	{ "s25fl256l",  INFO(0x016019,      0,  64 * 1024, 512,
+ 			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+-			     SPI_NOR_4B_OPCODES) },
++			     SPI_NOR_4B_OPCODES | USE_CLSR)
++		.fixups = &s25fl_l_fixups,
++	},
+ 	{ "cy15x104q",  INFO6(0x042cc2, 0x7f7f7f, 512 * 1024, 1,
+ 			      SPI_NOR_NO_ERASE) },
+ 	{ "s28hs512t",   INFO(0x345b1a,      0, 256 * 1024, 256,
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
