@@ -3,64 +3,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0F27C433DB
-	for <linux-mtd@archiver.kernel.org>; Mon,  1 Mar 2021 12:14:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 580F9C433E0
+	for <linux-mtd@archiver.kernel.org>; Mon,  1 Mar 2021 12:34:48 +0000 (UTC)
 Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CB26D64E31
-	for <linux-mtd@archiver.kernel.org>; Mon,  1 Mar 2021 12:14:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB26D64E31
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=suse.com
+	by mail.kernel.org (Postfix) with ESMTPS id DFCCB64E31
+	for <linux-mtd@archiver.kernel.org>; Mon,  1 Mar 2021 12:34:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFCCB64E31
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References:In-Reply-To:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=W01NNO6iZcjPPQccsQfhd5Yor2A3ibgtUd5lLy67SYo=; b=FJ37NfvUnZsE+ns14yZpJMl5h
-	WUq8+YqBaqhKP/7AR8cE9zzZpiV+6yWFO7wa8kPiuTM0lC8cFBsfA27bCg02dZ9j8BMFLVwCprB4w
-	fy9OidlHzC/jzkBDQu7HbYw263XKAWx5HYLG2g+hZnY/jLX3s2pxY1C08o4cNBSESy5gwDGjnHfoB
-	PCDRzFyg9nE20T+eYfpwVQua8QnV4uny7frXM9/LxTSxOUFkVleR1URUY9hYV5cm1HR6NmHTdCB7Y
-	KKwkm3uiC1LW9e24amQ270LHO7IsoECWgHRyStti0xigPJ2enlFn3cu+LF4h07LqMQY4pnfIVL1+G
-	kUuNu/r/A==;
+	 bh=NsJekJAXWSzf1Bh4qQ3unts2W7R5a7HAeRVX982+QFA=; b=Z+0O/0zaaI1L4rh/96l6OWBgC
+	zPEMxR58C6N9IauAtqS/Gh59jEgjqTPmIBAzjvKz7Q0We1jeDmPWglzjltG8gDfFTZh6YRaWlbZVV
+	1qgoi+/bI943Dg0SfiT3155F4RVvEWQ/aC0q0V3nGC8uwXwumPegXeYzC0Z1cF/taNeqeHCyA3E2O
+	O1XqJlqvIlD8ka8uVs58h4pLj4qrG0CM1+uzBT5FCYUk87pdvKplMtlMat89b5hdsNLqAN06ynlba
+	UBVx0HDSmmj5tYb/Zgtwz9e4ilf2kd2BPQlkahXds9B7el1nTsNKfIYUSmd0VYADje70NsNzQJ5Xk
+	S6asFG60A==;
 Received: from localhost ([::1] helo=merlin.infradead.org)
 	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lGhQX-0002WL-9b; Mon, 01 Mar 2021 12:13:29 +0000
-Received: from mx2.suse.de ([195.135.220.15])
+	id 1lGhkC-000487-9R; Mon, 01 Mar 2021 12:33:48 +0000
+Received: from mga14.intel.com ([192.55.52.115])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lGhQV-0002Vy-D3
- for linux-mtd@lists.infradead.org; Mon, 01 Mar 2021 12:13:28 +0000
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1614600803; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=LWX81NIq8f0HTlR41F5ulW5ntyY1umPX6Os1jeLcYFM=;
- b=gc7eXgRA/Xx5chcA0AF7OhdTuhhQSZOlXMDwi64gv4faa+qK6VmoTL261F9SMvxlIAeKrw
- dNTT2UM1I3EwF8Z53er9Q3dLXo4UgBlrF9mW7FMazfDGE9CCF+qFe53tGa/526leU//SCT
- 5EdgRfsqvfqwPkp5urITZeZfz/8qr9w=
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 659CEADCA;
- Mon,  1 Mar 2021 12:13:23 +0000 (UTC)
-Date: Mon, 1 Mar 2021 13:13:22 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: John Ogness <john.ogness@linutronix.de>
-Subject: Re: [PATCH next v3 02/15] mtd: mtdoops: synchronize kmsg_dumper
-Message-ID: <YDzaYqrk3Dv37uDa@alley>
-References: <20210225202438.28985-1-john.ogness@linutronix.de>
- <20210225202438.28985-3-john.ogness@linutronix.de>
+ id 1lGhk9-00047L-6q
+ for linux-mtd@lists.infradead.org; Mon, 01 Mar 2021 12:33:47 +0000
+IronPort-SDR: Uhh6lsL0nUPwd8vGRHBsFY3Yh1oVr011u+G3Ywf6Eh5StCmDbdkSjTB1aU6E6yQB4pl2ANxlSD
+ LM5+qcpFaMHg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9909"; a="185769886"
+X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; d="scan'208";a="185769886"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Mar 2021 04:33:35 -0800
+IronPort-SDR: zppyfdXU5QvJl1RJocMEzyXKeStU7c36DtaZ7JYbXq0FqPYgFRBWiBhsmQ4p92q35z+jSxNMvr
+ 7WMXiULCDUtQ==
+X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; d="scan'208";a="406204935"
+Received: from dumser-mobl1.ger.corp.intel.com (HELO localhost)
+ ([10.252.43.117])
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Mar 2021 04:33:31 -0800
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: "Winkler\, Tomas" <tomas.winkler@intel.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, "Vivi\,
+ Rodrigo" <rodrigo.vivi@intel.com>
+Subject: RE: [RFC PATCH 0/9] drm/i915/spi: discrete graphics internal spi
+In-Reply-To: <c430158c27c5460ba13a989c6f9646d7@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210216181925.650082-1-tomas.winkler@intel.com>
+ <878s7narev.fsf@intel.com> <c430158c27c5460ba13a989c6f9646d7@intel.com>
+Date: Mon, 01 Mar 2021 14:33:29 +0200
+Message-ID: <875z2bdpeu.fsf@intel.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210225202438.28985-3-john.ogness@linutronix.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210301_071327_556334_88EA305B 
-X-CRM114-Status: GOOD (  14.30  )
+X-CRM114-CacheID: sfid-20210301_073345_418774_5E020F8D 
+X-CRM114-Status: GOOD (  24.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,40 +78,84 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- Steven Rostedt <rostedt@goodmis.org>,
- Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Thomas Gleixner <tglx@linutronix.de>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Usyskin,
+ Alexander" <alexander.usyskin@intel.com>, "Lubart,
+ Vitaly" <vitaly.lubart@intel.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu 2021-02-25 21:24:25, John Ogness wrote:
-> The kmsg_dumper can be called from any context and CPU, possibly
-> from multiple CPUs simultaneously. Since the writing of the buffer
-> can occur from a later scheduled work queue, the oops buffer must
-> be protected against simultaneous dumping.
-> 
-> Use an atomic bit to mark when the buffer is protected. Release the
-> protection in between setting the buffer and the actual writing in
-> order for a possible panic (immediate write) to be written during
-> the scheduling of a previous oops (delayed write).
+On Wed, 17 Feb 2021, "Winkler, Tomas" <tomas.winkler@intel.com> wrote:
+>> 
+>> On Tue, 16 Feb 2021, Tomas Winkler <tomas.winkler@intel.com> wrote:
+>> > Intel discrete graphic devices have internal spi storage, that holds
+>> > firmware and oprom images. The spi device is exposed to the user space
+>> > via mtd framework to be accessed during manufacturing.
+>> > The device is hardware locked after manufacturing and only read access
+>> > is provided.
+>> >
+>> > The i915 plays role of a multi function device (mfd) and spi device is
+>> > exposed as its child device. i915_spi platform driver binds to this
+>> > device.
+>> >
+>> > Because the graphic card may undergo reset at any time and basically
+>> > hot unplug all its child devices, this series also provides a fix to
+>> > the mtd framework to make the reset graceful.
+>> >
+>> > Tomas Winkler (9):
+>> >   drm/i915/spi: add spi device for discrete graphics
+>> >   drm/i915/spi: intel_spi_region map
+>> >   drm/i915/spi: add driver for on-die spi device
+>> >   drm/i915/spi: implement region enumeration
+>> >   drm/i915/spi: implement spi access functions
+>> >   drm/i915/spi: spi register with mtd
+>> >   drm/i915/spi: mtd: implement access handlers
+>> >   drm/i915/spi: serialize spi access
+>> >   mtd: use refcount to prevent corruption
+>> >
+>> >  drivers/gpu/drm/i915/Kconfig             |   3 +
+>> >  drivers/gpu/drm/i915/Makefile            |   6 +
+>> >  drivers/gpu/drm/i915/i915_drv.c          |   9 +
+>> >  drivers/gpu/drm/i915/i915_drv.h          |   4 +
+>> >  drivers/gpu/drm/i915/i915_reg.h          |   1 +
+>> >  drivers/gpu/drm/i915/spi/intel_spi.c     |  62 +++
+>> >  drivers/gpu/drm/i915/spi/intel_spi.h     |  24 +
+>> 
+>> I'm open to discussion, but after glancing through the series I've got a gut
+>> feeling spi/ subdir should be purely about the separate module, and the
+>> above two files should be in i915/ directory instead.
+>
+> Maybe, I don't have strong feelings about that, it is just a decision from which point you want to look at that.
 
-Just to be sure. You did not use spin lock to prevent problems
-with eventual double unlock in panic(). Do I get it correctly,
-please?
+*shrug*
 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+No strong feelings either, and I don't think the decision is carved in
+stone. We can move them around later if we want.
 
-Anyway, it looks good to me.
+Up to you.
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+BR,
+Jani.
 
-Best Regards,
-Petr
+
+>> 
+>> As it is, I think it's a bit confusing that spi/ is both about the spi kernel module
+>> and a singly .c file that's really part of i915.ko. Perhaps that messes up the
+>> conventional descending to subdirs in the kernel build too?
+>
+> The intention was to make this capsulated from the file system point of view. 
+> In general the spi driver could be somewhere in mtd directory, but it doesn't really fit exactly there either.
+> I don't have a strong opinion about that, if you do I yield. 
+>
+>
+> Thanks
+> Tomas
+>
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
 
 ______________________________________________________
 Linux MTD discussion mailing list
