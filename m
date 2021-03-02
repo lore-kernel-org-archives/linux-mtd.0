@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6B1EC433DB
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 18:03:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C751CC433E0
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 18:04:58 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E76BB64DE8
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 18:03:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E76BB64DE8
+	by mail.kernel.org (Postfix) with ESMTPS id 058AC64EBD
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 18:04:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 058AC64EBD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,57 +23,58 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=iIpn0U8a4ucTvrfKgL195DHYYTwHOI84wrjbzPuhaXA=; b=GcQD+j/fsdzjGyvNleBFtLQh4
-	huowJfM2uzqME6lLsJ6NLCsvtHYbKP7kBq4sauUpSHXQ4Pz1lVmg7qzR22DYKDKBA7KlZs6ppK792
-	/9D3RdysXxuUXQrya2TXPGTxsnwf39MB/M+OVthWRllRqoi1XVYiwLgCWzuZHDmewIiTNxUHfj8JT
-	gzJp4GBBX/BoG35pIxSLvc9s3Os4b1kS7BxhdqRPGRVyF2MVcvNZ8YEsS+UVID25r1OmOIi1TzzRN
-	pyoDlkQZCJM9AP0LDY81/RGY1hmKef8adVjJjszHdntiLy5vB8DykpTjQvQJNVcj6W9kBRUIUGF3T
-	tEloA+/EA==;
+	 bh=Jszz2ZZdq9yUeMhc5hyjvSiM/w8tWiSM48ZLN+fGSb4=; b=EwecXLOqe2eOXZpWq2apCxvSV
+	AkEOfTcA//U0zpGodJDyGMcScAUtL7SRuZ+pm7JEQ/qRyCjiDTT0VcxF5GZJqfLkOPiGmjlebqhGi
+	ncgr+RyuW3HzU71tOOsMenDOBEoxuwgckmnSGjd8vWANM/EXBAOX3hDOXyhVNHIb/DPry3SFbsgCT
+	SObuiKcyvVwXbbxgtHWzfZ3r53hf9wkYPLZ+DHP4xK+kenitIU06YN8/eGGxhjsTjDFF2nBUudKRC
+	5tvQ0JDfHE8f0i2Mw3JyX2AUj7AIKIhzJVrhF0oIRI7Hqd6imKwgn2Lxzb/dKIRruHcF4j75+yONX
+	KLJUbVbbg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lHVon-005vb3-36; Wed, 03 Mar 2021 18:01:53 +0000
+	id 1lHVqe-005w6K-0L; Wed, 03 Mar 2021 18:03:48 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lHSyI-005GLq-Lv
- for linux-mtd@desiato.infradead.org; Wed, 03 Mar 2021 14:59:31 +0000
+ id 1lHSyK-005GMa-8q
+ for linux-mtd@desiato.infradead.org; Wed, 03 Mar 2021 14:59:32 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=ZV+jhD4d+nSm8PTdqLGn5MRmKWGGAEDLEXNgrqLLINY=; b=JsnTeY/SHE3mhvksLsnH0s/hk6
- iUzLAOyBI/hfEgLNhXen88GnbnM97S3nLRNsnZvVCW6WD+HpMbAkwV9weLWIeU21lvPaQQjhuHYLM
- rXr0si0Fj9iypFbMlfj2fdZPiw5z9lEnikrAxWutBuyvXrPhfunYs5wZBCWqDhJaBSevHO9FrZn9O
- 4dF7i/xeR+QKljAO3VOZK3EcolwfeucsUCMfECh38YMzXZrWaU74QbYwtquJ3myjvdI9mngrGb/Cs
- PHlyf4bVor+PyJbtrGMHDen12tO6HubD/I3YspThcBBA2QWZDKh+nORM5UZMAAFUyIB5j71+4Cuob
- 3SOk84VA==;
-Received: from relay4-d.mail.gandi.net ([217.70.183.196])
+ bh=zsEDf8n+Oto4W5djP+FxbB8vrPIP0+Vf3EhfrB7p4+g=; b=b4KA4SWSzxGOM2QlM5noBNakD2
+ UnC6w3E9xlz9oS/GJcmQIMwOwIwHtih3TpCIWFKw1vpjduFa82unU8OJUTuRzqVPl6A1B1Fan/DUq
+ OzycLxqi+08UrS50cmHAqkw19+mkZ50ppewBKG8VghSsbwAxoUsxM/g29CsKzviIW4TSM+EqCnWZ7
+ xCghCLd+WXFgqzpCfH3y8X7Dxu5ETQ5MO/cFRYzLWfPql9vLuUPs08hxFapJzBtFZJcZ9+y+iBhSR
+ c4r6lNgw865EoNIMbNFlDly2UxXtddOo+hhjntKxgjLBPSYxwA483uOCYXG0UGMVi7ZK3QD5YoQoQ
+ DzH32Jxw==;
+Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by casper.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lH8bm-00HWC9-Ga
- for linux-mtd@lists.infradead.org; Tue, 02 Mar 2021 17:15:02 +0000
+ id 1lH7y5-00HSID-NQ
+ for linux-mtd@lists.infradead.org; Tue, 02 Mar 2021 16:33:54 +0000
 X-Originating-IP: 86.206.8.148
 Received: from xps13.stephanxp.local
  (lfbn-tou-1-491-148.w86-206.abo.wanadoo.fr [86.206.8.148])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 8B1F9E0002;
- Tue,  2 Mar 2021 17:14:29 +0000 (UTC)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 7CF3A1C0011;
+ Tue,  2 Mar 2021 16:33:29 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Dejin Zheng <zhengdejin5@gmail.com>, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, nixiaoming@huawei.com
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH mtd/next 4/8] mtd: mtdblock: Use module_mtd_blktrans to
- register driver
-Date: Tue,  2 Mar 2021 18:14:29 +0100
-Message-Id: <20210302171429.1573-1-miquel.raynal@bootlin.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org
+Cc: Boris Brezillon <boris.brezillon@collabora.com>,
+ Adam Ford <aford173@gmail.com>, ladis@triops.cz
+Subject: Re: [PATCH v3 6/9] mtd: rawnand: Try not to use the ECC private
+ structures
+Date: Tue,  2 Mar 2021 17:33:29 +0100
+Message-Id: <20210302163329.23901-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210213164600.409061-5-zhengdejin5@gmail.com>
+In-Reply-To: <20210127203020.9574-7-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 1ac05af53791e72318edec6e7f0878ced688ff84
+X-linux-mtd-patch-commit: e92d8e7bb79fcb8024ea53fd1f5228cefe20f138
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210302_171501_986071_57570F13 
-X-CRM114-Status: UNSURE (   4.36  )
+X-CRM114-CacheID: sfid-20210302_163354_880348_5BFE42C2 
+X-CRM114-Status: UNSURE (   5.84  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -91,13 +92,15 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, 2021-02-13 at 16:45:56 UTC, Dejin Zheng wrote:
-> Removing some boilerplate by using module_mtd_blktrans instead of calling
-> register and unregister in the otherwise empty init/exit functions.
+On Wed, 2021-01-27 at 20:30:17 UTC, Miquel Raynal wrote:
+> Most of the time, there is no need to use the software ECC Hamming and
+> BCH algorithms private context to know their configuration. All the
+> data has been stored by their ->init_ctx() hook in the generic NAND
+> ECC engine structure, so use this one when possible.
 > 
-> Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next.
 
 Miquel
 
