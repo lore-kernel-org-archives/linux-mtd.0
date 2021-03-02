@@ -2,114 +2,78 @@ Return-Path: <SRS0=zJhW=IB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 139CDC4332E
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 19:28:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C24F7C433DB
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 19:40:52 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2A3D364EF4
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 19:28:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2A3D364EF4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linutronix.de
+	by mail.kernel.org (Postfix) with ESMTPS id AC3FE64EDF
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 19:40:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC3FE64EDF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=Nc1xrXj/ry4sGlfOZbPF1eWt2G7+EXj3rOmvDiV4RGM=; b=pe3hZ2Rz9vRaakKrQrnxQAr1n2
-	QcNAHZCj6Tyl+yW73T9BeR/DQyzm4CG+nJLqqYBR1S4uhLCscIGd/Y6mlzLpq4d0m9m1xf+UTWm2c
-	hf0KhtRnaw75roPcd2oHSxInpE3S7IuFDHZMMzs6u5pEAwNVj2T65Jse5m9r/mzPn7mfglPWzDwZr
-	4pOMAlEW/uMXJIi84glzmX4DwciflrWQhCna2eEc0nZYcrCa0zdDm6TsGIUR+//oseSDlSaTGAV3i
-	WuZ6Rsjfq2Yw5ne6qCml0bvYILSMwTJ4JSSIin89dC7dhOrQzmx1QwoOjACYxB303o48Db5AMbW2S
-	rCiMk8rQ==;
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=HIcNQ1fU/giMu/NQDWMZIUji68p4I1J2yO3gxfXYr0s=; b=RkMn1NX7Nwm0jXX363O68hcKl
+	LQh5XbZEJJ8133MiOs64IYMYzAHTc4yzIyrzMCTbfx1vRbB/E/8BHPGYFuZ5NkWyQWyJhROxfWB2L
+	e9Y1a/daaGvzkIolBZ7zcNBtBGJT0dMTdQzjg2WSJNuAj/ELUTeEPChPrrC7hH3cWjRJrOR50ppkD
+	ZVRz1g8IKzRt2zujx3XoDkrCFiI/zRoe9VXwQadRGL9Im/nBXWBM287HnlrrxUfQb26mz6vyB297T
+	dlBExb3CynCbYPazYLSkm+/66N9THbj0Ma6TRG2N7wLPdq5k7S1JR3C5w48hIN0ooISp159Dlxztn
+	Blp3eqSWA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lHX9t-006DLQ-0e; Wed, 03 Mar 2021 19:27:45 +0000
+	id 1lHXLg-006Fw4-3e; Wed, 03 Mar 2021 19:39:56 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lHT3O-005I2P-No; Wed, 03 Mar 2021 15:04:46 +0000
+ id 1lHT3e-005I9X-Mi
+ for linux-mtd@desiato.infradead.org; Wed, 03 Mar 2021 15:05:05 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
- Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
- Content-Description:In-Reply-To:References;
- bh=N/VAkqWLBfS766I7n05L//Xhy4zYhpBosb29O0wTdfI=; b=oLP4vTGx2LheF4ikW05fFJUdXI
- A3U4dJidEN6UVpD70lX43nP16LP5K6j4I7GSe3bgDkvf0KfeTJwXziZAInEfC0MsLnF66/UPsPYSB
- 909511nolGkdNQgwXZ3yonoYd8KY/L9WEJyYxehxcXfk1XbTi/G6aosTxPLJ74jIco0rKwUE4pDSM
- zLht3F7+oGNVxXcfB2R81QL5yfg0rdCrVGhHWeSevLVApGK9418MjlLq0RAn2/erfdMD//sXno1iK
- 0QxvJP7jJ4VV0XFZS7VXbpz0MjUE3z14WxuoB3pL+33VGTCAGkTXf4Bze/pclD8+BxqRLlWQYr4rD
- Jv/CBQYA==;
-Received: from galois.linutronix.de ([193.142.43.55])
+ References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+ Content-Type:Content-ID:Content-Description;
+ bh=KYTUWKidAlpJnE/vNPaGabfrwJXdjMe2nSbdcXJ8F4I=; b=ndwqT6fQlVCCzxjwXn/my9fqxQ
+ VLUL+tLJ+mDiiGErd+7/tjGNrX+CJyrwNUL65XTfLCFmtXKCAIsQ29TdfKG4zu/qFNOz9XGm/fBo3
+ EQtHNLkfG2l1UqYUzTyF1jxv2keTEdCHiFLsnspI72kdEMoljIAGibWYfuov2aBnn0lLpXIw0gIwi
+ nykDQTf36P5L2BfmIrdSYQ9cBSZjK3fzCMXuWpF9/4lVgdLoNU472YflZ6U67wSrz73zoIeId+O1f
+ ah/TvkXNSxu1sx62/YVAaUDETRB3F5iI5004CUtqz6E5lkzGDnTx5xvnUKo0kdstBBbsvxpdkfV+i
+ VXaeQrfA==;
+Received: from relay8-d.mail.gandi.net ([217.70.183.201])
  by casper.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lHOXU-00299v-4R; Wed, 03 Mar 2021 10:15:36 +0000
-From: John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
- s=2020; t=1614766529;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding;
- bh=N/VAkqWLBfS766I7n05L//Xhy4zYhpBosb29O0wTdfI=;
- b=PqRXCroIP1umtmHt8c1ZfO2I6XBiNXbdZol38HcPrbsLXce6jhNCPzL73X+NxuMXd9VicB
- 2GT3tLSfL/RPGsg1xcWreJMLgg7ctu4acVEggflP6m0fWffYMd9g5MMJYZbQSUhV7/BhCl
- kObz+ZwiKqb9Arvy5udqLHUz3XGQeyi3ynwoKTYlr/mBTmlLtXFKolBpnxCqntVZOwFOhw
- jtZVyEPv9Z+rfaHWSPfE1AJbPHUkZwnEIzm3d+WghCeafjzT1gbK+JpBQah2oWq42SpmX6
- 1EVYua2XPXwecaqR+MUsx3IazCaXKtWyRAm/rrlJNOayG6J8ZhCn5m4arNTfaA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
- s=2020e; t=1614766529;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding;
- bh=N/VAkqWLBfS766I7n05L//Xhy4zYhpBosb29O0wTdfI=;
- b=QohrIokyE6gvAlbHH+2ScIj3BnDnIlGTQqJn9ICwNv8CCj3w8J2dv2/UuBk4gUkvEzJngE
- +7ihcslvjpCg8LCQ==
-To: Petr Mladek <pmladek@suse.com>
-Cc: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
- Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>, Thomas Gleixner <tglx@linutronix.de>,
- linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>,
- Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Thomas Meyer <thomas@m3y3r.de>, linux-um@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
- Kees Cook <keescook@chromium.org>,
- Pavel Tatashin <pasha.tatashin@soleen.com>,
- Michael Ellerman <mpe@ellerman.id.au>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- Paul Mackerras <paulus@samba.org>,
- Jason Wessel <jason.wessel@windriver.com>,
- Daniel Thompson <daniel.thompson@linaro.org>,
- Douglas Anderson <dianders@chromium.org>,
- Jordan Niethe <jniethe5@gmail.com>,
- Alistair Popple <alistair@popple.id.au>,
- Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
- Nicholas Piggin <npiggin@gmail.com>,
- Madhavan Srinivasan <maddy@linux.ibm.com>, Mike Rapoport <rppt@kernel.org>,
- Oleg Nesterov <oleg@redhat.com>, Wei Li <liwei391@huawei.com>,
- Davidlohr Bueso <dave@stgolabs.net>, linuxppc-dev@lists.ozlabs.org,
- kgdb-bugreport@lists.sourceforge.net,
- "K. Y. Srinivasan" <kys@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>,
- Stephen Hemminger <sthemmin@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
- Anton Vorontsov <anton@enomsg.org>, Colin Cross <ccross@android.com>,
- Tony Luck <tony.luck@intel.com>,
- Christophe Leroy <christophe.leroy@c-s.fr>,
- Michael Kelley <mikelley@microsoft.com>, linux-hyperv@vger.kernel.org,
- Sumit Garg <sumit.garg@linaro.org>
-Subject: [PATCH next v4 00/15] printk: remove logbuf_lock
-Date: Wed,  3 Mar 2021 11:15:13 +0100
-Message-Id: <20210303101528.29901-1-john.ogness@linutronix.de>
+ id 1lH7ww-00HSBy-Vx
+ for linux-mtd@lists.infradead.org; Tue, 02 Mar 2021 16:32:44 +0000
+X-Originating-IP: 86.206.8.148
+Received: from xps13.stephanxp.local
+ (lfbn-tou-1-491-148.w86-206.abo.wanadoo.fr [86.206.8.148])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id AFD691BF209;
+ Tue,  2 Mar 2021 16:32:20 +0000 (UTC)
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Md Sadre Alam <mdalam@codeaurora.org>, miquel.raynal@bootlin.com,
+ mani@kernel.org, boris.brezillon@collabora.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: sricharan@codeaurora.org
+Subject: Re: [PATCH 4/5] mtd: rawnand: qcom: Add helper to configure location
+ register
+Date: Tue,  2 Mar 2021 17:32:20 +0100
+Message-Id: <20210302163220.23133-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <1614109141-7531-4-git-send-email-mdalam@codeaurora.org>
+References: 
 MIME-Version: 1.0
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: f41e2468e9020cc79fae3e6ccae44fd9c515dcb9
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210303_101536_203001_6E8F0467 
-X-CRM114-Status: UNSURE (   8.80  )
+X-CRM114-CacheID: sfid-20210302_163244_939277_F8741F1F 
+X-CRM114-Status: UNSURE (   7.23  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -127,75 +91,19 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello,
+On Tue, 2021-02-23 at 19:39:00 UTC, Md Sadre Alam wrote:
+> Create a nandc_set_read_loc() helper to abstract the
+> configuration of the location register.
+> 
+> QPIC v2 onwards features a separate location register
+> for the last codeword, so introducing this extra helper
+> which will simplify the addition of QPIC v2 support.
+> 
+> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
 
-Here is v4 of a series to remove @logbuf_lock, exposing the
-ringbuffer locklessly to both readers and writers. v3 is
-here [0].
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
-Since @logbuf_lock was protecting much more than just the
-ringbuffer, this series clarifies and cleans up the various
-protections using comments, lockless accessors, atomic types,
-and a new finer-grained @syslog_lock.
-
-Removing @logbuf_lock required changing the semantics of the
-kmsg_dumper callback in order to work locklessly. This series
-adjusts all kmsg_dumpers and users of the kmsg_dump_get_*()
-functions for the new semantics.
-
-This series is based on next-20210303.
-
-Changes since v3:
-
-- disable interrupts in the arch/um kmsg_dumper
-
-- reduce CONSOLE_LOG_MAX value from 4096 back to 1024 to revert
-  the increasd 3KiB static memory footprint
-
-- change the kmsg_dumper() callback prototype back to how it
-  was because some dumpers need the registered object for
-  container_of() usage
-
-- for kmsg_dump_get_line()/kmsg_dump_get_buffer() restrict the
-  minimal allowed sequence number to the cleared sequence number
-
-John Ogness
-
-[0] https://lore.kernel.org/lkml/20210225202438.28985-1-john.ogness@linutronix.de/
-
-John Ogness (15):
-  um: synchronize kmsg_dumper
-  mtd: mtdoops: synchronize kmsg_dumper
-  printk: limit second loop of syslog_print_all
-  printk: kmsg_dump: remove unused fields
-  printk: refactor kmsg_dump_get_buffer()
-  printk: consolidate kmsg_dump_get_buffer/syslog_print_all code
-  printk: introduce CONSOLE_LOG_MAX
-  printk: use seqcount_latch for clear_seq
-  printk: use atomic64_t for devkmsg_user.seq
-  printk: add syslog_lock
-  printk: kmsg_dumper: remove @active field
-  printk: introduce a kmsg_dump iterator
-  printk: remove logbuf_lock
-  printk: kmsg_dump: remove _nolock() variants
-  printk: console: remove unnecessary safe buffer usage
-
- arch/powerpc/kernel/nvram_64.c |   8 +-
- arch/powerpc/xmon/xmon.c       |   6 +-
- arch/um/kernel/kmsg_dump.c     |  13 +-
- drivers/hv/vmbus_drv.c         |   4 +-
- drivers/mtd/mtdoops.c          |  17 +-
- fs/pstore/platform.c           |   5 +-
- include/linux/kmsg_dump.h      |  47 ++--
- kernel/debug/kdb/kdb_main.c    |  10 +-
- kernel/printk/internal.h       |   4 +-
- kernel/printk/printk.c         | 464 +++++++++++++++++----------------
- kernel/printk/printk_safe.c    |  27 +-
- 11 files changed, 310 insertions(+), 295 deletions(-)
-
--- 
-2.20.1
-
+Miquel
 
 ______________________________________________________
 Linux MTD discussion mailing list
