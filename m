@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17B17C433DB
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 19:02:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2AB9C433DB
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 19:05:00 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3BE8764EEC
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 19:02:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3BE8764EEC
+	by mail.kernel.org (Postfix) with ESMTPS id 5F4BE64EEF
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 19:04:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F4BE64EEF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,59 +23,56 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=wCllLGnrOTdfXzacrPPsurM8EPjPxGvuwvTZDL/MQ3s=; b=DYTVauKaaq/5ngq1H+2SEWApa
-	pu04FDtvuGogseDT9ahe7lH7RKd+6DjTpymY8wr2ZYKvyMVDce/fkTqMmRFFdf0vS78ZhdpIwnDpe
-	YzrTX2BBqrQiWeWJZYUmvuUT3KDzZiexVWkp0XgqZGFsvFzwTMtjopDHQRr2JLklUGQXsxbBRanD9
-	z62NEeiTyfVKMhHdVdi0L7Whi/X6TkKgLdO3bCe8m6zo+JlmL8KUIuFlUklajJnGhHTS5IotnoCxf
-	YRlj68ePde8ey4vhe3zhzwJVQcPZsNikt0ECrFJC//rCvcoOtbwuYeNSAAb5MmKFpPaNyRxhgsiIC
-	OPSYe6SrA==;
+	 bh=+ZLfhb+a+/szNxk4bmsJloO2+vHi9fhaQfHul24YheU=; b=fDs+4xAcJokqa4v03CDY+Teph
+	72T6Ifib+OaXOnTQp/TJxJeEmzQD1rxND/oFnmItQPXQxtG/6YN0p0xzHSlHdKFZT4/pVyUJ5hf0y
+	dN/sb7f3Uj5+81OSVsA9ecbt2JfUR4NrMPh0M/r5giqY666EEaxpGM5uPrGm5NV66K9LINRVqhuge
+	i/kGX+PUmhkLi84vEt4GsdM/ylCkXX7lDx8X3KH9xOkA3UgF3u2dX56qLB0Zo1k7RYkhjjhn8NO/o
+	ZNK68p7wTE4qc1g4sD85xtY48y4EAmVMIDg6iRfIDsmVJx/gZfpV+9VNDlWQkh9fg4kNdbyG/gOrD
+	W4ED6dDIQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lHWl0-0067wt-OR; Wed, 03 Mar 2021 19:02:03 +0000
+	id 1lHWnH-0068Pw-Gf; Wed, 03 Mar 2021 19:04:24 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lHT2F-005Hew-BO
- for linux-mtd@desiato.infradead.org; Wed, 03 Mar 2021 15:03:35 +0000
+ id 1lHT2O-005HiC-Od
+ for linux-mtd@desiato.infradead.org; Wed, 03 Mar 2021 15:03:45 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=msLY/QM4avPQmb66U+rH+1AH9rCFTPPz6pW042FWsDg=; b=ffHzeMT3pIc8bmvAa137t6yAW6
- yS4t99IT95/DW8az6qtKFr/dGBOFWQeKIkyVraa3Nmfp5OSiCRaSPT6kJc2PhO90AcIyZdjXZomtu
- zOTUaa3n9y8Kd4CR0MagzRTP65vwBkdmIh7TWxnnIzSwUq3CMac6fWqNufq5Asdv6fmoCKJZPHIj8
- GGGnpFvsnWYWa6MXBrW77Y73dpcXmYGyBnTCPXxnD7V0uupFKrrUyH+EKnrFIrJTYvdJ2B5jRY1Kt
- 4+okgWZnfCyBjDB+LG3A7XxW/6XdSRWBSRaNytKpy64q7EKas8DUfTMTueHuDHmAnylxTaGXpEmMQ
- xGM5C0Ug==;
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+ bh=swXN01gv7aoifLEHR1eC0Soez628RMO5LGsURtcFFVc=; b=gH5xhr5QALGloTVhdWMk9YuI6Y
+ Oan2clPmICZm6lNcSmR8vJYMNAU0MzbeH/ihE1f1Mjqrvo6p03vq5kGK5UAJPaGueQ7geRihyqP6N
+ nF2v9gWRcKdYkM9rEVSRwoIbS35LZxMXhlm6s77DIWn8hnACqQsiSmgyTGZFsTGkqjITwqy0eVD3r
+ i/37Gy6MhRSWNyzWeL2/JNo2vh+RX8i0EDl3Prm1APfAOoheAeS5KMJ5E4o0NGh4YFI07vMxUf4cn
+ 1j7zTHL1OEMaQecjZvqJO79c0wyYlzoa5rBJkoVs1NHYMiK8Igdl4oR9JJAc3lD3DWlzSKR7yqPbf
+ 6ssBXktg==;
+Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by casper.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lH8c9-00HWJN-CI
- for linux-mtd@lists.infradead.org; Tue, 02 Mar 2021 17:15:20 +0000
+ id 1lH7x6-00HSCh-Jm
+ for linux-mtd@lists.infradead.org; Tue, 02 Mar 2021 16:32:56 +0000
 X-Originating-IP: 86.206.8.148
 Received: from xps13.stephanxp.local
  (lfbn-tou-1-491-148.w86-206.abo.wanadoo.fr [86.206.8.148])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 197F8C0009;
- Tue,  2 Mar 2021 17:14:50 +0000 (UTC)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 8C6641C0008;
+ Tue,  2 Mar 2021 16:32:25 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: linux-hardening@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH] mtd: physmap: physmap-bt1-rom: Fix unintentional stack
- access
-Date: Tue,  2 Mar 2021 18:14:50 +0100
-Message-Id: <20210302171450.1871-1-miquel.raynal@bootlin.com>
+To: Md Sadre Alam <mdalam@codeaurora.org>, miquel.raynal@bootlin.com,
+ mani@kernel.org, boris.brezillon@collabora.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: sricharan@codeaurora.org
+Subject: Re: [PATCH 3/5] mtd: rawnand: qcom: Rename parameter name in macro
+Date: Tue,  2 Mar 2021 17:32:25 +0100
+Message-Id: <20210302163225.23205-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210212104022.GA242669@embeddedor>
+In-Reply-To: <1614109141-7531-3-git-send-email-mdalam@codeaurora.org>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 7b3e9c56e6be29e387c47e94c802736d01df1e9b
+X-linux-mtd-patch-commit: 050d2d43aa8a077c51684a2a76df6ab3b48a9eb4
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210302_171520_809015_505D3540 
-X-CRM114-Status: UNSURE (   7.30  )
+X-CRM114-CacheID: sfid-20210302_163255_972140_F267A3B2 
+X-CRM114-Status: UNSURE (   5.76  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -93,21 +90,15 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2021-02-12 at 10:40:22 UTC, "Gustavo A. R. Silva" wrote:
-> Cast &data to (char *) in order to avoid unintentionally accessing
-> the stack.
+On Tue, 2021-02-23 at 19:38:59 UTC, Md Sadre Alam wrote:
+> Rename the parameters of the nandc_set_read_loc() macro
+> to avoid the confusion between is_last_read_loc which
+> is last location in a read code word and last_cw which
+> is last code word of a page data.
 > 
-> Notice that data is of type u32, so any increment to &data
-> will be in the order of 4-byte chunks, and this piece of code
-> is actually intended to be a byte offset.
-> 
-> Fixes: b3e79e7682e0 ("mtd: physmap: Add Baikal-T1 physically mapped ROM support")
-> Addresses-Coverity-ID: 1497765 ("Out-of-bounds access")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Acked-by: Serge Semin <fancer.lancer@gmail.com>
+> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
 Miquel
 
