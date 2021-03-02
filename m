@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF09FC433DB
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 18:11:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1D7FC433E0
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 18:12:52 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AF97C64EC3
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 18:11:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AF97C64EC3
+	by mail.kernel.org (Postfix) with ESMTPS id 7393864EE6
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 18:12:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7393864EE6
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,56 +23,57 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=ff3U6YeOmVU7aHaMnK0StvGjHxE2R9wwB/0afFisdRU=; b=bM1VyITGxDkOkiQMlfHkU/p/E
-	iYSH74Sj7ExRS7aeOr1ZL8jRwVR4/irvgCAOZtxaEy3WCxS+optlpvx7rblrP9Csp9OySQE/Tm6ae
-	4N3h+ZvZhb9dv+PW/PpExQqZfU5FUrleV19UnB13JDk1TJYz+JEC70TQU90/bI3vHYNPAyz8GOyly
-	SQBwPdy/4qBL/SBsULjWdSicZwPoWKpDD4ZghQeXkuRz30z1qjzJHjsfSDsDn0c1N21sfEAywrsCM
-	t1DBqgZFnBWi0Ayokexr1k+mqVMrZAb91nSuj9DB6yYneUwNn0J4KULyul5TaMu66B0PPLxNHhKJN
-	3Dkdud38Q==;
+	 bh=xq7fmO+MbW8IKsq8b3VMaZCDVJ8lOsAbcN6OgpViF0Y=; b=a2VY/TshcY8G6fCO3k2mt8EBO
+	XZQj6Ldtg+YoX2BGR5yJRTRUkqWAP6r0EUfod5HdLwW1GNGJgNZBwHPIYvt9RRqEuTLlkBBb4GPub
+	BedQRQN/zLI7A4V9O2YMl7RUhWRSwGkWtlWy0XgJA3VKdEoxrrEqUayMiE/gXBJ3fa6IvlXaCpVCQ
+	kNY2Y7g0u1I8cJ6BrlH5TykgVY/E/juNf/fcvvZN51YGmRGw6tXZbpEb6zT6b/EHp1AzE882YM1/G
+	ickQkQrKwkw1Yh6XAXe4/NjcjslNWrjg/EuM5kwr25tFggjkwSVNucSHR7tCrtHDlKOkhOkyW0cqp
+	ekioE3viQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lHVwY-005xUX-AR; Wed, 03 Mar 2021 18:09:54 +0000
+	id 1lHVyH-005xrr-Ua; Wed, 03 Mar 2021 18:11:42 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lHSyo-005GVg-G3
- for linux-mtd@desiato.infradead.org; Wed, 03 Mar 2021 15:00:02 +0000
+ id 1lHSyt-005GXY-8j
+ for linux-mtd@desiato.infradead.org; Wed, 03 Mar 2021 15:00:10 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=URL8xFs6U9sBR7V8Qmh/KlFFxKXg5nRkComul9botDM=; b=pwFWI/2KOUpe84LFJasUpdm+O9
- zj4AqFItqhzigQJq148guP75foVi2iGmj4/rqRuy6Ty8xO991RhJsCej8WlS56OkGgR+zOW3pQ0l0
- Q9Hdy2irCHqbchf/oR6UconYCK2/I0T5Cc/jxVaYn9i0xKIrCA8aitznHuuk6sX2FdXBkITVYL0a0
- ZLaEmjRRmusW+A5ztoPhAApCnQeqIc8gAQMEkHfJ52hTc415WLLUII4ro4s4CDi/JaFL15yhOPDyM
- fNBCcDP/DXqr7/Tv99+4jmxooO5UfbYNSLfrLHPed3EGrmpJWXPxlozautdbIjiqDSr5cJwA2BxMh
- ewBm+bMA==;
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+ bh=ahvgKHdsV6jJMtHtXAG23R5jhjxWP3daYzDqS+Wsq/E=; b=P3yrMl26VPh0Ju2NKwebV6aWky
+ qsUTheqbKFy0XTadTsZsK2rr22xn+vXBHYsS6MC2TgirSbOaZ7ZTfzbyK7NV1rpp/0j46DmQtpMIy
+ yGSZbOMmJVEkvKe8QoT3fjSAAZd+RouGLTaBcot9bU5z/9Fs3/Z3n+RikCY2VyMERCH45XfeYcGaC
+ vjeDIFkP2L8Gkqrh4v4IprkCqb35Z/2A1ItBZytPqLJixbe028TBhUOZBX0e60E1yVQ82NZX1zjS6
+ nMOfbofCkNeyVomzQdsFaYHf8HDbTZ6dpSPha9B1sBlZayAxWRnU3e/MBxWC55HqX2BNxhWL/I5eW
+ 9BT+lcFA==;
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by casper.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lH7x9-00HSCj-DQ
- for linux-mtd@lists.infradead.org; Tue, 02 Mar 2021 16:32:57 +0000
+ id 1lH8bG-00HW8f-Jm
+ for linux-mtd@lists.infradead.org; Tue, 02 Mar 2021 17:14:30 +0000
 X-Originating-IP: 86.206.8.148
 Received: from xps13.stephanxp.local
  (lfbn-tou-1-491-148.w86-206.abo.wanadoo.fr [86.206.8.148])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 33B561BF20C;
- Tue,  2 Mar 2021 16:32:32 +0000 (UTC)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id C646DFF802;
+ Tue,  2 Mar 2021 17:14:00 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Md Sadre Alam <mdalam@codeaurora.org>, miquel.raynal@bootlin.com,
- mani@kernel.org, boris.brezillon@collabora.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: sricharan@codeaurora.org
-Subject: Re: [PATCH 2/5] mtd: rawnand: qcom: Add helper to check last code word
-Date: Tue,  2 Mar 2021 17:32:31 +0100
-Message-Id: <20210302163231.23269-1-miquel.raynal@bootlin.com>
+To: Alexander A Sverdlin <alexander.sverdlin@nokia.com>,
+ linux-mtd@lists.infradead.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mtd: char: Drop mtd_mutex usage from mtdchar_open()
+Date: Tue,  2 Mar 2021 18:14:00 +0100
+Message-Id: <20210302171400.1097-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1614109141-7531-2-git-send-email-mdalam@codeaurora.org>
+In-Reply-To: <20210217211845.43364-1-alexander.sverdlin@nokia.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 3fb2eae8c2cfa3bdb45c388e56ce417145e8f7be
+X-linux-mtd-patch-commit: f820b201e54508f701a99cf45beb3800ff6ef7b4
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210302_163257_716854_D977319E 
-X-CRM114-Status: UNSURE (   5.18  )
+X-CRM114-CacheID: sfid-20210302_171430_573959_43601A8C 
+X-CRM114-Status: UNSURE (   7.03  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -90,13 +91,15 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2021-02-23 at 19:38:58 UTC, Md Sadre Alam wrote:
-> Add the qcom_nandc_is_last_cw() helper which checks if
-> the input cw index is the last one or not.
+On Wed, 2021-02-17 at 21:18:44 UTC, Alexander A Sverdlin wrote:
+> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 > 
-> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+> It looks unnecessary in the function, remove it from the function
+> having in mind to remove it completely.
+> 
+> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
 Miquel
 
