@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44DACC433DB
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 20:32:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E20BFC433DB
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 20:32:56 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C2D6964EFD
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 20:32:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C2D6964EFD
+	by mail.kernel.org (Postfix) with ESMTPS id 02F6B64EFD
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 20:32:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 02F6B64EFD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,59 +23,58 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=eQukJ3VrYZFD3loi9kZsef3PVpBfEsZphmlcFp+pq5o=; b=MfqliePbZINtI3F4mbtH4BSQr
-	hgra6mNqA7UdEq7qy5OS1MsXhFDJtLeIFP2R1tUnD3wMlbu82cCFsAd6hghoCqY55Z02IndZTkxmy
-	xYNEaSAhBR/edTvzvDZaTVub60KDri+M/SfYFg4CkSN5p4+12XGtx3JrLz7k7UEU6FM82pkZVDWjl
-	kmXcxO7uKyzztFbqaQKeSPU0+4ali3xdpkTj60za0cV9h3v+yBGSyCBoX23JbyuJcAE42rX+ZVMGH
-	9TolJT6IM2YvvvaKYpPz+Ph5e26jw9ius0WsimH4VjmR6i9azpfp+zZrTqr8/9keS5qf3d1pC2mkE
-	LXci7uhIg==;
+	 bh=+F4dvWkSB/IuoyFZ4GlH0zPDWQqi1xIMY6jKsjnNfrQ=; b=cL3GxTVpdZihHKsjZDUyfdbb2
+	4uzulB+9RDnxGYhK8w6Wt56mNDPLE2IpT0dv7x0lWmTROOSIuqfsfQ7TVw1XifCcd2Pet/lAFXPmC
+	vOVxAkO0RK8Uuw7BoHRSAnNvFxETfg5ihB+YX3M62tC6iR159TGJj5n8QpzsCL8ntEz4V7Bluss7q
+	mtLPvg2q91ekElJ4dGGaprfuppvueWmY5Q9Pjq7zcVjykS9/Vg8rg57k75nZ8bnpG32HUiFn4f16y
+	pznwHaLsJS+GWHNB/9rolI418V8BCLenL5imB49IV88Y6iX+FxhmhxKaAmH/NeWavj1jpH65/leD4
+	2Mtw4ckng==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lHY8J-006QF2-Qo; Wed, 03 Mar 2021 20:30:12 +0000
+	id 1lHYAI-006Qfa-R4; Wed, 03 Mar 2021 20:32:15 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lHT5f-005IpO-Fj
- for linux-mtd@desiato.infradead.org; Wed, 03 Mar 2021 15:07:07 +0000
+ id 1lHT68-005Ixd-44
+ for linux-mtd@desiato.infradead.org; Wed, 03 Mar 2021 15:07:37 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=QpFfixSfI0IXTUKVxxfkDvRqFlpfOA0zwhqqY5WVyhU=; b=gPMHZbTY9/xJOaIry3AX0FruCK
- P0gKlUjqm8hBvc2nCBuSJZ8wOr++LoONuH4J1OqfzWJEoLolRY8ewp5RhemJYT/ZJFf9OCZbPfUFf
- lch4s/xDHVhbBME9gn7hzArkLRzmMg+QFzYhNSuMDx0P00GtRQ6zVpDmg1Glyqj4c0tX44MBL/trM
- JP072JtCEFKz0FYglmhqF0437pI2W5yNJpl6oGLBiR+1Ut+gJdTl6GDKIwcL0y7+O+Ffq7ES6t0Fs
- IE1LBVzmbsNX+A0z3UYADeTutOOJUj2TI/C+ggYkbpMgSWdxdkXZuEQ3b7RISgiVE3pcrV22kIxaT
- G9jbivXA==;
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+ bh=/pnPr9DNF5EDoiC6kK85Q7fXxPF20+9t3kCql2Uwmdk=; b=iS/H60k4Hk0X0p2XBgwIaSjjfj
+ SJKaNzjE8HpiGAW9twAFKKWsy+CJkoSpDzQb43lHtZkbCThWhYYtnjGBty5YbM+YJJ0aAA/qvvzjC
+ cyEgmirTNhRiExJsVl9o9lej7JG6wMNFYj5cO9SxhUbq/EnXakqkWb2iaDfEVMUgERGmiHN7jXp4V
+ orlIIWmlV5RzQ/PLTLcsYGA4/KYB8BbiA/taDNyaZZ35jGIRTCCsrue280tJgZOB/k13A+eMUuuus
+ i96Ux9ZApaPBMP5SI8m7LGpcxOrLXBw6gJaDRnBVyPvQ+8WTol0/4WcwfKcQVyEsUila2eJtWV8XF
+ MkAFZxtQ==;
+Received: from relay8-d.mail.gandi.net ([217.70.183.201])
  by casper.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lH7xQ-00HSEF-SX
- for linux-mtd@lists.infradead.org; Tue, 02 Mar 2021 16:33:17 +0000
+ id 1lH7yL-00HSJP-BS
+ for linux-mtd@lists.infradead.org; Tue, 02 Mar 2021 16:34:21 +0000
 X-Originating-IP: 86.206.8.148
 Received: from xps13.stephanxp.local
  (lfbn-tou-1-491-148.w86-206.abo.wanadoo.fr [86.206.8.148])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id E999CFF80E;
- Tue,  2 Mar 2021 16:32:42 +0000 (UTC)
+ by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 42C871BF205;
+ Tue,  2 Mar 2021 16:33:45 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Dan Carpenter <dan.carpenter@oracle.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Vipin Kumar <vipin.kumar@st.com>
-Cc: Fenghua Yu <fenghua.yu@intel.com>, Tony Luck <tony.luck@intel.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
- Boris Brezillon <boris.brezillon@collabora.com>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: rawnand: fsmc: Fix error code in fsmc_nand_probe()
-Date: Tue,  2 Mar 2021 17:32:42 +0100
-Message-Id: <20210302163242.23393-1-miquel.raynal@bootlin.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org
+Cc: Boris Brezillon <boris.brezillon@collabora.com>,
+ Adam Ford <aford173@gmail.com>, ladis@triops.cz
+Subject: Re: [PATCH v3 3/9] mtd: nand: ecc-hamming: Populate the public nsteps
+ field
+Date: Tue,  2 Mar 2021 17:33:44 +0100
+Message-Id: <20210302163344.24094-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <YCqaOZ83OvPOzLwh@mwanda>
+In-Reply-To: <20210127203020.9574-4-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: d49ecd70c82d89c7448f5623ae08d0a4a488dc72
+X-linux-mtd-patch-commit: 7e03d3ab7a397dae5db5fbd084cc08ee940a9736
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210302_163317_575514_5E4C95F0 
-X-CRM114-Status: UNSURE (   5.77  )
+X-CRM114-CacheID: sfid-20210302_163421_749977_49B6AF71 
+X-CRM114-Status: UNSURE (   6.14  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -93,14 +92,13 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2021-02-15 at 15:58:49 UTC, Dan Carpenter wrote:
-> If dma_request_channel() fails then the probe fails and it should
-> return a negative error code, but currently it returns success.
+On Wed, 2021-01-27 at 20:30:14 UTC, Miquel Raynal wrote:
+> Advertize the actual number of steps that will actually be used by the
+> driver by populating the public field.
 > 
-> fixes: 4774fb0a48aa ("mtd: nand/fsmc: Add DMA support")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next.
 
 Miquel
 
