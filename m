@@ -2,75 +2,109 @@ Return-Path: <SRS0=zJhW=IB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41CD9C433E0
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 19:09:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4FEEC433DB
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 19:12:24 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C929660295
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 19:09:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C929660295
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=david-bauer.net
+	by mail.kernel.org (Postfix) with ESMTPS id CD0AA64E90
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 19:12:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD0AA64E90
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References:In-Reply-To:
+	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=R6wwoFJTmHO8xseMSR+dc3mAf/AP17AJjeKxXgbrz+M=; b=e1pTvgpad5hpNc7YV4RVebMgR
-	rk0qXUS9hznNUoHr99BdrdZ0uuGT5vjLmTAzh9lMl7gOwta6Mn/DBs5lu+/t+JmJsdWv/YGegVy3d
-	7wBPeix5wGwGE/7YsNlrBcDq5Es6YRX2tXUJMG8alaruYbyIv6n+KTEQxUSEpf63oZdJYFg3tCgIf
-	/9gL+xzHzMu2sfLvmikT/oZOACI14nj72n7+BQz1FWKPKZ2V+WDgmvj/LQBCzTpxIsQS0VLmTp/TV
-	GMJIKmh/9e2C7zk8rE7WSM5uFt0wWyvWnOvWLTMISz/V85uzFtW9XhdSOMWc/QjB7pU4dM0uc5++M
-	EoV9uurPg==;
+	 bh=Fk+KWqaEJR7hLLVp8kZDOceUJwRfT6KScHvMEJFAezI=; b=A5euoSFJ6rTXEOlMLK3daS2tp
+	k7x3JvwZeldggUw/By2l04aGX6BFikmmFJzsJVahSY7cBg1XwcDsUf0NEAiOuVlBtcBRE5maaTaU9
+	OkAIuPG0Lr818x4+hElw3t90mgSi/UM64bsWQQsLERI5XpnUFtsCu6msWp2OoRBGh/4CYtv6PZxQU
+	9J2y3DWixdHvv0Ot8YOSL4xoCPXYDXzc9j5g73mALIuS5lebEzMRkhPCCBlEDVwkdVKnHa+s6PKn7
+	e+Vg89TW3zW72MWA0VO8H8OCNw9yQ/2EX8Tdu90Ucm4N5gmfZCQzP3pcJrYPty7G0lhzG0mZnpBgv
+	MH/UJfYJA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lHWrs-0069L8-Ul; Wed, 03 Mar 2021 19:09:09 +0000
+	id 1lHWu2-0069kS-WB; Wed, 03 Mar 2021 19:11:24 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lHT2Y-005Hl4-4d
- for linux-mtd@desiato.infradead.org; Wed, 03 Mar 2021 15:03:54 +0000
+ id 1lHT2a-005HmA-OO; Wed, 03 Mar 2021 15:03:57 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
- References:In-Reply-To:Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:
- Content-Type:Content-ID:Content-Description;
- bh=1IXW7qDR4UYVjnwKqc5JZkTEM9nloS17Jy1x92Jj1eg=; b=f+lLvRE6FcAynQQQCsdYvQDcTY
- m0UFCIqkc2R/Xt9ym9brC3cPnH7TsY+b5XQ2tPF1wBwv8rjyghJhwS0XLU1MEwEbNWTMxb2noNVJw
- 8DlAYf+oAfO0KsCOTt4wW52R2hzlje5sStvlLKc59GbJXOxGyeaIxGwKV2wh1uK7hFcypDEv7xmos
- dFx3n8UMWKNSrLQ2eoLQ6yu5yAXOoOGWBYOajNP7j2U1Yb+aNZk6gG0u+075s2G2X2Y6enVcSafTS
- vqkwcvUfOp5FIPTCuhFa2mcv/TlNVGODeYNybjHqFJL6XV4KZ4FYdbGWNzNkOmtpynMD5i7i9wCwf
- 0eDghOMQ==;
-Received: from mars.blocktrron.ovh ([2001:41d0:401:3000::cbd]
- helo=mail.blocktrron.ovh)
+ d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
+ Date:References:In-Reply-To:Subject:Cc:To:From:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description;
+ bh=wODTS94r7rT1g5V5X1sVfi31G7C1dx6AeI3koBrFuog=; b=gw8Ef+zlpU3fqd6bjmFWBd7OaY
+ fPaaxtstRhDc3lIVr6MUNhK+KtThPh6pEsp1nzNJaoXBPwASbJ/u5kEVRc3eFtN54y4AlRQ+OcLJP
+ U/gmY0PydWJ1qY+W8WMQbXrL+IWIWfU6JzTZ9GNVcjzrvHgl/Z9kMLysA/HtlqGQqmzEcvSQ+cD7N
+ T5e8NQ3rR7GQJ7qwcbewcEsWsfgyRuZ1RAEa0R4jz8s5+6XZeebKPYH93loJDT8jBLmcn0X0terLA
+ 7o8HHtrvC1gtsb52D9/nw20fCNj1tYs8jn3lgdtBB1mAGQKOaDPVItOr0b9XzYnZ4w6uBHAEGUUGG
+ QW+ArtWA==;
+Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
  by casper.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lHO8U-0023tn-RJ
- for linux-mtd@lists.infradead.org; Wed, 03 Mar 2021 09:49:44 +0000
-Received: from localhost.localdomain
- (p200300e53f06820029112db9632db604.dip0.t-ipconnect.de
- [IPv6:2003:e5:3f06:8200:2911:2db9:632d:b604])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.blocktrron.ovh (Postfix) with ESMTPSA id E38CD2346A;
- Wed,  3 Mar 2021 10:49:07 +0100 (CET)
-From: David Bauer <mail@david-bauer.net>
-To: tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2] mtd: spi-nor: use 4 bit BP for large Macronix flash
-Date: Wed,  3 Mar 2021 10:48:33 +0100
-Message-Id: <20210303094833.139221-2-mail@david-bauer.net>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210303094833.139221-1-mail@david-bauer.net>
-References: <20210303094833.139221-1-mail@david-bauer.net>
+ id 1lH4xU-00HAbD-Q2; Tue, 02 Mar 2021 13:21:16 +0000
+From: John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+ s=2020; t=1614691254;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=wODTS94r7rT1g5V5X1sVfi31G7C1dx6AeI3koBrFuog=;
+ b=pdbP0RvjlLwhT6MGt3O7gZlZ1Q1Vzt4kvyP2jb11vAJTSkByIgWXRKROCs34fG3dE0AwTY
+ opU3gtVisKtnKDi9H9VaqI9P0bhcuxW+ktoNqViJTmLm/vR+nRGAu3kprbB/6g5+VBDeOZ
+ ISR5jMmEubi9pF4n2AWS1K7EJF6nQqOZ7mmnpB1SEorJMS5eXC6YUniwsW+o9YMWNEx/Xj
+ xPN5r8bZzOsf6A9vVjHdFrwNDVoQDh1yYdiMi7tbkNI3fa/NGcpZ+fYwM9XNXow6mIJwhV
+ c6N2wQQqBhJ0Qe4yqQIr91zIX6QAKM27rCmbJHH1uo6HBm2Z4utmX+gBS6ubiw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+ s=2020e; t=1614691254;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=wODTS94r7rT1g5V5X1sVfi31G7C1dx6AeI3koBrFuog=;
+ b=PvCf8UGzPtfD1uoD5xPlqfOPLQKMHyVSQbbcSZy98K9oXrA3licqYHQYy8osgfMblhBHAa
+ hvqSY9FaOO6n64Aw==
+To: Petr Mladek <pmladek@suse.com>
+Cc: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>, Sergey
+ Senozhatsky <sergey.senozhatsky@gmail.com>, Steven Rostedt
+ <rostedt@goodmis.org>, Thomas Gleixner <tglx@linutronix.de>,
+ linux-kernel@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras
+ <paulus@samba.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger
+ <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "K. Y.
+ Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>,
+ Stephen Hemminger <sthemmin@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Kees Cook <keescook@chromium.org>, Anton Vorontsov
+ <anton@enomsg.org>, Colin Cross <ccross@android.com>, Tony Luck
+ <tony.luck@intel.com>, Jason Wessel <jason.wessel@windriver.com>, Daniel
+ Thompson <daniel.thompson@linaro.org>, Douglas Anderson
+ <dianders@chromium.org>, Pavel Tatashin <pasha.tatashin@soleen.com>, Joel
+ Stanley <joel@jms.id.au>, Christophe Leroy <christophe.leroy@c-s.fr>,
+ Jordan Niethe <jniethe5@gmail.com>, Alistair Popple
+ <alistair@popple.id.au>, Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+ Nicholas Piggin <npiggin@gmail.com>, Mike Rapoport <rppt@kernel.org>,
+ Madhavan Srinivasan <maddy@linux.ibm.com>, Thomas Meyer <thomas@m3y3r.de>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Davidlohr Bueso
+ <dave@stgolabs.net>, Oleg Nesterov <oleg@redhat.com>, Wei Li
+ <liwei391@huawei.com>, Michael Kelley <mikelley@microsoft.com>,
+ linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org,
+ linux-hyperv@vger.kernel.org, linux-mtd@lists.infradead.org,
+ kgdb-bugreport@lists.sourceforge.net
+Subject: Re: [PATCH next v3 12/15] printk: introduce a kmsg_dump iterator
+In-Reply-To: <YD0tbVV+hZOFvWyB@alley>
+References: <20210225202438.28985-1-john.ogness@linutronix.de>
+ <20210225202438.28985-13-john.ogness@linutronix.de> <YD0tbVV+hZOFvWyB@alley>
+Date: Tue, 02 Mar 2021 14:20:51 +0100
+Message-ID: <87lfb5pu8c.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210303_094944_224805_AE4D3334 
-X-CRM114-Status: GOOD (  12.03  )
+X-CRM114-CacheID: sfid-20210302_132116_065616_487766FA 
+X-CRM114-Status: GOOD (  24.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,91 +121,122 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Macronix SPI-NOR chips with 128 or more 64k blocks have 4 block
-protection bits in their status register. Add the corresponding
-flag in order to clear these bits when unloking the flash.
+On 2021-03-01, Petr Mladek <pmladek@suse.com> wrote:
+>> diff --git a/arch/powerpc/kernel/nvram_64.c b/arch/powerpc/kernel/nvram_64.c
+>> index 532f22637783..5a64b24a91c2 100644
+>> --- a/arch/powerpc/kernel/nvram_64.c
+>> +++ b/arch/powerpc/kernel/nvram_64.c
+>> @@ -72,8 +72,7 @@ static const char *nvram_os_partitions[] = {
+>>  	NULL
+>>  };
+>>  
+>> -static void oops_to_nvram(struct kmsg_dumper *dumper,
+>> -			  enum kmsg_dump_reason reason);
+>> +static void oops_to_nvram(enum kmsg_dump_reason reason);
+>>  
+>>  static struct kmsg_dumper nvram_kmsg_dumper = {
+>>  	.dump = oops_to_nvram
+>> @@ -642,11 +641,11 @@ void __init nvram_init_oops_partition(int rtas_partition_exists)
+>>   * that we think will compress sufficiently to fit in the lnx,oops-log
+>>   * partition.  If that's too much, go back and capture uncompressed text.
+>>   */
+>> -static void oops_to_nvram(struct kmsg_dumper *dumper,
+>> -			  enum kmsg_dump_reason reason)
+>> +static void oops_to_nvram(enum kmsg_dump_reason reason)
+>>  {
+>>  	struct oops_log_info *oops_hdr = (struct oops_log_info *)oops_buf;
+>>  	static unsigned int oops_count = 0;
+>> +	static struct kmsg_dump_iter iter;
+>>  	static bool panicking = false;
+>>  	static DEFINE_SPINLOCK(lock);
+>>  	unsigned long flags;
+>> @@ -681,13 +680,14 @@ static void oops_to_nvram(struct kmsg_dumper *dumper,
+>>  		return;
+>>  
+>>  	if (big_oops_buf) {
+>> -		kmsg_dump_get_buffer(dumper, false,
+>> +		kmsg_dump_rewind(&iter);
+>
+> It would be nice to get rid of the kmsg_dump_rewind(&iter) calls
+> in all callers.
+>
+> A solution might be to create the following in include/linux/kmsg_dump.h
+>
+> #define KMSG_DUMP_ITER_INIT(iter) {	\
+> 	.cur_seq = 0,			\
+> 	.next_seq = U64_MAX,		\
+> 	}
+>
+> #define DEFINE_KMSG_DUMP_ITER(iter)	\
+> 	struct kmsg_dump_iter iter = KMSG_DUMP_ITER_INIT(iter)
 
-Otherwise, the flash might not be writable depending on the state the
-bootloader left the flash in.
+For this caller (arch/powerpc/kernel/nvram_64.c) and for
+(kernel/debug/kdb/kdb_main.c), kmsg_dump_rewind() is called twice within
+the dumper. So rewind will still be used there.
 
-Fixes commit 62593cf40b23 ("mtd: spi-nor: refactor block protection functions")
+> Then we could do the following at the beginning of both
+> kmsg_dump_get_buffer() and kmsg_dump_get_line():
+>
+> 	u64 clear_seq = latched_seq_read_nolock(&clear_seq);
+>
+> 	if (iter->cur_seq < clear_seq)
+> 		cur_seq = clear_seq;
 
-Signed-off-by: David Bauer <mail@david-bauer.net>
----
- drivers/mtd/spi-nor/macronix.c | 31 ++++++++++++++++++-------------
- 1 file changed, 18 insertions(+), 13 deletions(-)
+I suppose we need to add this part anyway, if we want to enforce that
+records before @clear_seq are not to be available for dumpers.
 
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index 2d39dd32a64e..4f9fa8b8d57f 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -50,8 +50,8 @@ static const struct flash_info macronix_parts[] = {
- 	{ "mx25u4035",   INFO(0xc22533, 0, 64 * 1024,   8, SECT_4K) },
- 	{ "mx25u8035",   INFO(0xc22534, 0, 64 * 1024,  16, SECT_4K) },
- 	{ "mx25u6435f",  INFO(0xc22537, 0, 64 * 1024, 128, SECT_4K) },
--	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, SECT_4K) },
--	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
-+	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, SECT_4K | SPI_NOR_4BIT_BP) },
-+	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, SPI_NOR_4BIT_BP) },
- 	{ "mx25r1635f",  INFO(0xc22815, 0, 64 * 1024,  32,
- 			      SECT_4K | SPI_NOR_DUAL_READ |
- 			      SPI_NOR_QUAD_READ) },
-@@ -60,36 +60,41 @@ static const struct flash_info macronix_parts[] = {
- 			      SPI_NOR_QUAD_READ) },
- 	{ "mx25u12835f", INFO(0xc22538, 0, 64 * 1024, 256,
- 			      SECT_4K | SPI_NOR_DUAL_READ |
--			      SPI_NOR_QUAD_READ) },
-+			      SPI_NOR_QUAD_READ | SPI_NOR_4BIT_BP) },
- 	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512,
--			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-+			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+			      SPI_NOR_4BIT_BP)
- 		.fixups = &mx25l25635_fixups },
- 	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512,
--			      SECT_4K | SPI_NOR_4B_OPCODES) },
-+			      SECT_4K | SPI_NOR_4B_OPCODES |
-+			      SPI_NOR_4BIT_BP) },
- 	{ "mx25u51245g", INFO(0xc2253a, 0, 64 * 1024, 1024,
- 			      SECT_4K | SPI_NOR_DUAL_READ |
--			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-+			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES |
-+			      SPI_NOR_4BIT_BP) },
- 	{ "mx25v8035f",  INFO(0xc22314, 0, 64 * 1024,  16,
- 			      SECT_4K | SPI_NOR_DUAL_READ |
- 			      SPI_NOR_QUAD_READ) },
--	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
-+	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, SPI_NOR_4BIT_BP) },
- 	{ "mx25l51245g", INFO(0xc2201a, 0, 64 * 1024, 1024,
- 			      SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
--			      SPI_NOR_4B_OPCODES) },
-+			      SPI_NOR_4B_OPCODES | SPI_NOR_4BIT_BP) },
- 	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024,
- 			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
--			      SPI_NOR_4B_OPCODES) },
-+			      SPI_NOR_4B_OPCODES | SPI_NOR_4BIT_BP) },
- 	{ "mx66u51235f", INFO(0xc2253a, 0, 64 * 1024, 1024,
- 			      SECT_4K | SPI_NOR_DUAL_READ |
--			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-+			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES |
-+			      SPI_NOR_4BIT_BP) },
- 	{ "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048,
- 			      SECT_4K | SPI_NOR_DUAL_READ |
--			      SPI_NOR_QUAD_READ) },
-+			      SPI_NOR_QUAD_READ | SPI_NOR_4BIT_BP) },
- 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048,
--			      SPI_NOR_QUAD_READ) },
-+			      SPI_NOR_QUAD_READ | SPI_NOR_4BIT_BP) },
- 	{ "mx66u2g45g",	 INFO(0xc2253c, 0, 64 * 1024, 4096,
- 			      SECT_4K | SPI_NOR_DUAL_READ |
--			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-+			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES |
-+			      SPI_NOR_4BIT_BP) },
- };
- 
- static void macronix_default_init(struct spi_nor *nor)
--- 
-2.30.1
+> I am not completely sure about next_seq:
+>
+>    + kmsg_dump_get_buffer() will set it for the next call anyway.
+>      It reads the blocks of messages from the newest.
+>
+>    + kmsg_dump_get_line() wants to read the entire buffer anyway.
+>      But there is a small risk of an infinite loop when new messages
+>      are printed when dumping each line.
+>
+> It might be better to avoid the infinite loop. We could do the following:
+>
+> static void check_and_set_iter(struct kmsg_dump_iter)
+> {
+> 	if (iter->cur_seq == 0 && iter->next_seq == U64_MAX) {
+> 		kmsg_dump_rewind(iter);
+> }
+>
+> and call this at the beginning of both kmsg_dump_get_buffer()
+> and kmsg_dump_get_line()
+>
+> What do you think?
 
+On a technical level, it does not make any difference. It is pure
+cosmetic.
+
+Personally, I prefer the rewind directly before the kmsg_dump_get calls
+because it puts the initializer directly next to the user.
+
+As an example to illustrate my view, I prefer:
+
+    for (i = 0; i < n; i++)
+        ...;
+
+instead of:
+
+    int i = 0;
+
+    ...
+
+    for (; i < n; i++)
+        ...;
+
+Also, I do not really like the special use of 0/U64_MAX to identify
+special actions of the kmsg_dump_get functions.
+
+> Note that I do not resist on it. But it might make the API easier to
+> use from my POV.
+
+Since you do not resist, I will keep the API the same for v4. But I will
+add the @clear_seq check to the kmsg_dump_get functions.
+
+John Ogness
 
 ______________________________________________________
 Linux MTD discussion mailing list
