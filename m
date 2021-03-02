@@ -4,72 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05237C433E0
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 14:08:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06BE5C433DB
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 14:10:13 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 73D3164E89
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 14:08:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73D3164E89
+	by mail.kernel.org (Postfix) with ESMTPS id 5B5CA64E89
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 14:10:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B5CA64E89
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=aehScaExQD8cyqqpgPvcc5uKyZ4TpJ60rUafCp+ndTk=; b=TkzF1x7RDw3RmTeSCIhIL+bp3L
-	Le6HSL8Rng9kA5S382GZbm8F/6J++QFiSJ3CDbTF0Hh9fbLPC1lW7Q3sEL2MAbBSXul2FTGHzoIk6
-	4Mu5yXNvAWxP+v72znw1o9xgOB8oeoMP3iUbPnIPy2KIR0pFKdPKlkTvuAZYGfZNAnQ4mFv7z4Yii
-	uzPZWz8L+2QD2eihNftKRbiK0dJBLS+hsiAH3RflY7DRY6J4ES6Ms7LUEQTBvAR8p89U6t72+mZGt
-	sXUobjIh8TM9+8DdxNEENz2uvLRgEhCUpW6GdiqZLOIjDhbyevWE6SAb61I90nJyjZ9BnO6jKOeIp
-	79hTM+AQ==;
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=b0WVfSZU1g5rZyzOuEaf6cpTBhK9USG33MRk/p3ZtQk=; b=Fcj5rht/F/W9rBIaS1e1Y2cMD
+	wRFAgqbj47PBL8uA68X/ux2KBNemGFJ5Pc2ZSFf8ItSuSkuU5ggkSdOCb0CGRNQ+iE+VCkr/3S9+z
+	UsAqkvn7KT+uUfxDDTQBagnjHxbq6mVquMDAi0eZossr03AWDSVbZzKi3a5qRx+Qa83rzEDik7O3D
+	fM/8qGHbteIItG0cuTwozCsOIaKFiG7nLQaHJpP53VHN1WLq5aZ1ppTIajr7futQMapY9+uc3hwIF
+	Yi33iKj54+IDsyY4ipL3FMeDSVJpCNfjXh+VdxnYka2siqTX0JcREXUgpSv8gp02GuyVHOkxu9xiH
+	I8aeo8DSg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lHSAk-005453-1j; Wed, 03 Mar 2021 14:08:18 +0000
+	id 1lHSBJ-0054KW-N4; Wed, 03 Mar 2021 14:08:53 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lHS56-00527W-Kb
+ id 1lHS56-00527U-P3
  for linux-mtd@desiato.infradead.org; Wed, 03 Mar 2021 14:02:30 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
- MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
- Content-Description:In-Reply-To:References;
- bh=XhkLc2KMm6AJf07rTM/BfswLvd+OYEaih8i94wK2qZk=; b=Fa7+Da/mV10P7G40JPlVdq9D4X
- Lkq9+/BAZl5RLVCIk6I4DekJpyo6FqPDrwrzuQv+NCzj9+I16weiwcyveESF+WVF06WtflOiSQNxc
- 9bZk+QU5IxEhAggOj9VteYmJKsC8p2ffWf42kWGozIs51ruuooIh6B8EAejQeAT7Jzlb+YG0JLWeV
- WT1FLeqPkZ//NaOe4bgccPbpMxBJCzizL7ckKwZNBfgyoIZ3rvr872HL4/2RiG8GCIKc8rTt7KIqP
- 2PYcuZ3m44xmqU6uViX97IqIVahjdrNGY57KScAz+ym4j4b5v1ILixkCpyEQVuz+ztSpxZ0tCfeWN
- S87Ixoog==;
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+ References:In-Reply-To:Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:
+ Content-Type:Content-ID:Content-Description;
+ bh=o6kCqn2MAa0g1QfKp+HWjkjYZ+/o/D18hOA4pvkHpa0=; b=uxj5v8JnqqqqAJ8Hd8uADnc9wa
+ aIuWTUxmiEv4YFQtxT4FJ2Tn6fiWGXyJdKIqAI5sLx7Wn2c0JmQwJ7ykSIszItgqYbiMbbfahIwKN
+ oRciRCnFT2F9RAov9lEKHqGNg1mLRjlHAck/p8yZd/dTY1XOlBznPCRXQj42BNufVaaglNTr2SMnM
+ ldgp32TJJLOdkSUl+wAPW/K6kSYGA5XeRcWUqKU3ynyYDCmCQiDQP/UdyN+ez3uuuGq9aUSfNKB21
+ I653z8GfMV/ciNH1zEU81jPSPIqkHsgSmoVHB6umiDSj0wjPnXXivBQ5WAyN/LGwi/+9cxTRdk9tI
+ DoCGqnlw==;
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by casper.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lHN9o-001tHq-NL
- for linux-mtd@lists.infradead.org; Wed, 03 Mar 2021 08:47:01 +0000
+ id 1lH8bM-00HW8u-Sl
+ for linux-mtd@lists.infradead.org; Tue, 02 Mar 2021 17:14:39 +0000
 X-Originating-IP: 86.206.8.148
-Received: from localhost.localdomain
+Received: from xps13.stephanxp.local
  (lfbn-tou-1-491-148.w86-206.abo.wanadoo.fr [86.206.8.148])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id A2BDE40008;
- Wed,  3 Mar 2021 08:46:34 +0000 (UTC)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 40AF5FF806;
+ Tue,  2 Mar 2021 17:14:05 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- <linux-mtd@lists.infradead.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- kernel test robot <lkp@intel.com>, Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH] mtd: parsers: qcom: Fix error condition
-Date: Wed,  3 Mar 2021 09:46:34 +0100
-Message-Id: <20210303084634.12796-1-miquel.raynal@bootlin.com>
+To: David Bauer <mail@david-bauer.net>, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: don't lock when recursively deleting partitions
+Date: Tue,  2 Mar 2021 18:14:04 +0100
+Message-Id: <20210302171404.1172-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210217195320.893253-1-mail@david-bauer.net>
+References: 
 MIME-Version: 1.0
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: 6f89cd33e45cccf37c3d515aca0f5312e30c0127
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210303_084701_497930_36A89296 
-X-CRM114-Status: GOOD (  11.44  )
+X-CRM114-CacheID: sfid-20210302_171439_122268_62A102F0 
+X-CRM114-Status: UNSURE (   5.53  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,39 +88,18 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-qcom_smem_get() does not return NULL, and even if it did, the NULL
-condition is usually not an error but a success condition and should
-not trigger an error trace.
+On Wed, 2021-02-17 at 19:53:20 UTC, David Bauer wrote:
+> When recursively deleting partitions, don't acquire the masters
+> partition lock twice. Otherwise the process ends up in a deadlocked
+> state.
+> 
+> Fixes commit 46b5889cc2c5 ("mtd: implement proper partition handling")
+> 
+> Signed-off-by: David Bauer <mail@david-bauer.net>
 
-Let's replace IS_ERR_OR_NULL() by IS_ERR().
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
-This fixes the following smatch warning:
-drivers/mtd/parsers/qcomsmempart.c:109 parse_qcomsmem_part() warn: passing zero to 'PTR_ERR'
-
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Fixes: 803eb124e1a6 ("mtd: parsers: Add Qcom SMEM parser")
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/parsers/qcomsmempart.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/parsers/qcomsmempart.c b/drivers/mtd/parsers/qcomsmempart.c
-index 808cb33d71f8..1c8a44d0d6e4 100644
---- a/drivers/mtd/parsers/qcomsmempart.c
-+++ b/drivers/mtd/parsers/qcomsmempart.c
-@@ -104,7 +104,7 @@ static int parse_qcomsmem_part(struct mtd_info *mtd,
- 	 * complete partition table
- 	 */
- 	ptable = qcom_smem_get(SMEM_APPS, SMEM_AARM_PARTITION_TABLE, &len);
--	if (IS_ERR_OR_NULL(ptable)) {
-+	if (IS_ERR(ptable)) {
- 		pr_err("Error reading partition table\n");
- 		return PTR_ERR(ptable);
- 	}
--- 
-2.20.1
-
+Miquel
 
 ______________________________________________________
 Linux MTD discussion mailing list
