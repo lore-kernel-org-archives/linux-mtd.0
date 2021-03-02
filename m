@@ -2,75 +2,111 @@ Return-Path: <SRS0=zJhW=IB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEDDAC433DB
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 14:05:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB86DC433DB
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 14:06:15 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3759164E89
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 14:05:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3759164E89
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id 2ED1A64E89
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 14:06:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2ED1A64E89
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=DqZ7ACnwEOG4P1JaHYB6ZHsXcyFfqcA8LKn7UtWTh3U=; b=F4Rn1hzVfxS+UaKyekXjjwGi/l
-	2BLArKHE38451Ii0VzzqdHEpACp/f/3UAx4X+u8Z4jp9iuu1Gx1cqF33PBhytyjlTWMawRj+keFeH
-	C7DYaBuu8AGRGVuh23iSeNXh/BAtJu55D4Cn4nntFTxG6nZQzc/J2xUNq1hlKbf2nYuEEEZGba3Su
-	TrecX5H/QA0XuEADv3uVV3rENk0IKbJ2SNnY9IbjE9ITt10qRRpgKP4OWMBmcAl7OzW0HyruoRsrn
-	sQSFL4AxVb9rFZA7fjwYIzrwiISy8VFoEMTHP6MIdN8V8/LYcMoPvnIh4y9rHOkmuvS0IEYO0r4HB
-	EHdS540w==;
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=M+oQfwtEpjeZzeFHWOrQhGx/JHMizdJbq+Bl7Dw9aSw=; b=EZqpA5urlmVlisLJf5y1aYAfh
+	nwBvPV4xJRyvUw8I6ilCfFMvxnxaKcPhZ02i9LliPefmvC7dDEZsG7UGpoj9cN8YzsgYnY+8HR4gF
+	SgoguJdovXtiJmxmxXkDT7hZlgAvZkg/lCjiasnPzNbhPjOB5RME2l9ISD2WJ86lrvy4qK0pDK9Al
+	Gax0klAxiP26FeDiqU2+ILjw9u2ztcb7TwGbh7+UIHGkVR5zzA9T1E+L6Ts877gzGEbIviT77UIz1
+	Rx1bTAqbuPTMB96rUshn5k9302FYq9K6yFYeLWax1eZgP7GDfS+2Fg1sqpWHGI8eZtWVD2mZCkMiO
+	HzmMh6tgA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lHS6k-0052YT-He; Wed, 03 Mar 2021 14:04:12 +0000
+	id 1lHS7c-0052qV-TX; Wed, 03 Mar 2021 14:05:05 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lHS3u-0051t1-5d
- for linux-mtd@desiato.infradead.org; Wed, 03 Mar 2021 14:01:14 +0000
+ id 1lHS4I-0051x8-IW; Wed, 03 Mar 2021 14:01:39 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
- MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
- Content-Description:In-Reply-To:References;
- bh=9V1la8w1FGLjhvDOf3id67TUCZu9jyzdWHII7WZ1A5A=; b=AJDxU9a6EnEdFkmrn3SnralwZc
- wnL9WL9HYHxQ38IBTKClTmdpBw07eEIgpZkkoxGWJN7bqm45lzdZetoWTfNbCLb2NmdMaLOUK3DEy
- 5T4k161L4YrieWS8EJsQGcDmq4/nLUJ19n++TWZDu8AqMwCYadCuJmGwp9nFDUKzB2B0OpuCwRa+J
- jff9qkpEWkQtYcqWq0S/ptuJl7vMajHghAbkWcpsoIIUR0M7zo1T3PjtNIQqQEVRfVwlZrnmLudqV
- cpqocpTvbXfgcL4hJpaHV3OemVKbE3NxHV6FdBg1ThGCPndI+cEslu8sXcb/RuFdiZ7MUUS66mjfV
- ol6ScGYw==;
-Received: from youngberry.canonical.com ([91.189.89.112])
+ d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+ References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description;
+ bh=2zHzG0WPsx3xKiPqPnMCcC9JpT/COf8SAqNxgYPDcwI=; b=YzTYTV2sTztlHKhpzj/9UjHqff
+ Ff/t/S5RaEwmIaNPMCtx2srt7smz8fDc97s/f5PT0yxfgncuZMrMaq3tcG9p1xKkAuAKY24YpIVZF
+ laYvRHnm/mr7VwbdMHGNNTm8usaopdidXQ3n5fTvr7SY/tsU6Qj6D2jpLZHNCnoMHGGxx1oDrUK7H
+ luIYje6qg95aBSBbRfTsrx9HwdSJzMDl68zL0QtjyGXMsm3l+awOFHOXsNQUFxUUUyqh/pgFc0+mB
+ 0vkfZzwEqDK1PVXDsx2dSo4Pwb+mvFQgA3fYogoO6bMXDbmnTH4wBXiixfVbw1b5/IuHEbTS7hKE7
+ XARsZkLg==;
+Received: from mx2.suse.de ([195.135.220.15])
  by casper.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lHO1t-0023TQ-30
- for linux-mtd@lists.infradead.org; Wed, 03 Mar 2021 09:42:54 +0000
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
- by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <colin.king@canonical.com>)
- id 1lHO1m-0000ol-IK; Wed, 03 Mar 2021 09:42:46 +0000
-From: Colin King <colin.king@canonical.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] mtd: nand: Fix error handling in nand_prog_page_op
-Date: Wed,  3 Mar 2021 09:42:46 +0000
-Message-Id: <20210303094246.5724-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.0
+ id 1lH5Uo-00HDej-Kp; Tue, 02 Mar 2021 13:55:33 +0000
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1614693328; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=2zHzG0WPsx3xKiPqPnMCcC9JpT/COf8SAqNxgYPDcwI=;
+ b=oL4v99bE7SLyOQloEmxBm5+k/xMRvTkk4pt/OG8qvLA6b9DdiRhtxaD+0nUB4F5N4OQcsj
+ Ic/6CdYJx/OPu8rlCqsNQGpM38HYhSfsHpGptacoyamFaVFqs7/yek3tHvqyg/+qcdd+DL
+ OfjwuhDgZRqJTg+9ADLiziF6AFqEqM8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 5718AAFF5;
+ Tue,  2 Mar 2021 13:55:28 +0000 (UTC)
+Date: Tue, 2 Mar 2021 14:55:26 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+ Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>,
+ Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Paul Mackerras <paulus@samba.org>, Jeff Dike <jdike@addtoit.com>,
+ Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>,
+ Stephen Hemminger <sthemmin@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Kees Cook <keescook@chromium.org>,
+ Anton Vorontsov <anton@enomsg.org>,
+ Colin Cross <ccross@android.com>, Tony Luck <tony.luck@intel.com>,
+ Jason Wessel <jason.wessel@windriver.com>,
+ Daniel Thompson <daniel.thompson@linaro.org>,
+ Douglas Anderson <dianders@chromium.org>,
+ Pavel Tatashin <pasha.tatashin@soleen.com>, Joel Stanley <joel@jms.id.au>,
+ Christophe Leroy <christophe.leroy@c-s.fr>,
+ Jordan Niethe <jniethe5@gmail.com>,
+ Alistair Popple <alistair@popple.id.au>,
+ Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+ Nicholas Piggin <npiggin@gmail.com>, Mike Rapoport <rppt@kernel.org>,
+ Madhavan Srinivasan <maddy@linux.ibm.com>, Thomas Meyer <thomas@m3y3r.de>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Davidlohr Bueso <dave@stgolabs.net>,
+ Oleg Nesterov <oleg@redhat.com>, Wei Li <liwei391@huawei.com>,
+ Michael Kelley <mikelley@microsoft.com>,
+ linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org,
+ linux-hyperv@vger.kernel.org, linux-mtd@lists.infradead.org,
+ kgdb-bugreport@lists.sourceforge.net
+Subject: Re: [PATCH next v3 12/15] printk: introduce a kmsg_dump iterator
+Message-ID: <YD5DzldNpnzuECaA@alley>
+References: <20210225202438.28985-1-john.ogness@linutronix.de>
+ <20210225202438.28985-13-john.ogness@linutronix.de>
+ <YD0tbVV+hZOFvWyB@alley> <87lfb5pu8c.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <87lfb5pu8c.fsf@jogness.linutronix.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210303_094254_225450_FF9C1D29 
-X-CRM114-Status: UNSURE (   9.13  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210302_135533_566360_5F39F0FC 
+X-CRM114-Status: GOOD (  29.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,41 +123,87 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Tue 2021-03-02 14:20:51, John Ogness wrote:
+> On 2021-03-01, Petr Mladek <pmladek@suse.com> wrote:
+> >> diff --git a/arch/powerpc/kernel/nvram_64.c b/arch/powerpc/kernel/nvram_64.c
+> >> index 532f22637783..5a64b24a91c2 100644
+> >> --- a/arch/powerpc/kernel/nvram_64.c
+> >> +++ b/arch/powerpc/kernel/nvram_64.c
+> >> @@ -681,13 +680,14 @@ static void oops_to_nvram(struct kmsg_dumper *dumper,
+> >>  		return;
+> >>  
+> >>  	if (big_oops_buf) {
+> >> -		kmsg_dump_get_buffer(dumper, false,
+> >> +		kmsg_dump_rewind(&iter);
+> >
+> > It would be nice to get rid of the kmsg_dump_rewind(&iter) calls
+> > in all callers.
+> >
+> > A solution might be to create the following in include/linux/kmsg_dump.h
+> >
+> > Then we could do the following at the beginning of both
+> > kmsg_dump_get_buffer() and kmsg_dump_get_line():
+> >
+> > 	u64 clear_seq = latched_seq_read_nolock(&clear_seq);
+> >
+> > 	if (iter->cur_seq < clear_seq)
+> > 		cur_seq = clear_seq;
+> 
+> I suppose we need to add this part anyway, if we want to enforce that
+> records before @clear_seq are not to be available for dumpers.
 
-The less than zero comparison with status is always false because status
-is a u8. Fix this by using ret as the return check for the call to
-chip->legacy.waitfunc() and checking on this and assigning status to ret
-if it is OK.
+Yup.
 
-Addresses-Coverity: ("Unsigned compared against 0")
-Fixes: 52f67def97f1 ("mtd: nand: fix error handling in nand_prog_page_op() #1")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/mtd/nand/raw/nand_base.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+> > It might be better to avoid the infinite loop. We could do the following:
+> >
+> > static void check_and_set_iter(struct kmsg_dump_iter)
+> > {
+> > 	if (iter->cur_seq == 0 && iter->next_seq == U64_MAX) {
+> > 		kmsg_dump_rewind(iter);
+> > }
+> >
+> > and call this at the beginning of both kmsg_dump_get_buffer()
+> > and kmsg_dump_get_line()
+> >
+> > What do you think?
+> 
+> On a technical level, it does not make any difference. It is pure
+> cosmetic.
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 0f6babefaed2..4f263c22c80d 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -1462,9 +1462,10 @@ int nand_prog_page_op(struct nand_chip *chip, unsigned int page,
- 				     page);
- 		chip->legacy.write_buf(chip, buf, len);
- 		chip->legacy.cmdfunc(chip, NAND_CMD_PAGEPROG, -1, -1);
--		status = chip->legacy.waitfunc(chip);
--		if (status < 0)
--			return status;
-+		ret = chip->legacy.waitfunc(chip);
-+		if (ret < 0)
-+			return ret;
-+		status = ret;
- 	}
- 
- 	if (status & NAND_STATUS_FAIL)
--- 
-2.30.0
+Yup.
 
+> Personally, I prefer the rewind directly before the kmsg_dump_get calls
+> because it puts the initializer directly next to the user.
+> 
+> As an example to illustrate my view, I prefer:
+> 
+>     for (i = 0; i < n; i++)
+>         ...;
+> 
+> instead of:
+> 
+>     int i = 0;
+> 
+>     ...
+> 
+>     for (; i < n; i++)
+>         ...;
+> 
+> Also, I do not really like the special use of 0/U64_MAX to identify
+> special actions of the kmsg_dump_get functions.
+
+Fair enough.
+
+> > Note that I do not resist on it. But it might make the API easier to
+> > use from my POV.
+> 
+> Since you do not resist, I will keep the API the same for v4. But I will
+> add the @clear_seq check to the kmsg_dump_get functions.
+
+Go for it.
+
+Best Regards,
+Petr
 
 ______________________________________________________
 Linux MTD discussion mailing list
