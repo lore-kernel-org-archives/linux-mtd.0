@@ -2,76 +2,56 @@ Return-Path: <SRS0=zJhW=IB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4AA5C433DB
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 23:26:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 899F1C433E0
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 23:28:45 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4514364F13
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 23:26:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4514364F13
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+	by mail.kernel.org (Postfix) with ESMTPS id 6FF0064F13
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 23:28:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6FF0064F13
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=tkos.co.il
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Subject:References:In-Reply-To:
-	Message-ID:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wZKOzhGwV2zIx54ee8d+gxJvLvfZK615aLedsRZKZvA=; b=StrDx2nk0Gk/Rv
-	Bi7E4+x0BjGgwKy6mT3r0c3FlXV1uvgdjjgjtUKUU5iYCOUmXbIt1ZRLjqvd5MxjRdHHAzFlvzStZ
-	L3r+fSe//SOTa2Cd6dHtm5x0QfX8HuwP75mO1aw7zkxdFzUE5HZYsSEXwuH6QiBj05dTpRFw0omWr
-	GCGua/hq+Zp5gHokhw6zvXnC1eFioKmdW8fV1mZ1hj0h9BXOhj+Y+k4wvpxFWrxZiY9sXax52qroy
-	TJq3yVbvS1mPZhmwiitipT79151Uz/Ah0rAQOiMCC0veXGMLEnhU1zR4OkyyJa1APYaRktI2+vkH6
-	UsTxzBnePOO1UXkF3tdQ==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=Ax13qjmmZyAuQQe1AUyrNpmqDcg9AaQVwlg2gd7NGSU=; b=ky8tFWFyXpHc2QQBnK3z1+jqur
+	DjTbo6QUfJqCb+nhLrZBhigsiNGPYe9hyPgOr0jqL8U30s2guikRAC+Ko9NqXGj1LY7A1AZ7JTgG2
+	zn0IPLk0cT6vAobz1POzfzJr3GxURAY/yrqvai0mBtXqQLG82MwxrbsYoJU1ERO56MUGGexBE99Ud
+	2X6kvMKXYkyhKybr5gKhvLfPn/GA3GMqqh4eTLpbGfR8bHQ/be4UXKQglZzMrbb/0iJYZNXnG8F7G
+	h6ASpTeTYOyQhD6EbWSvciP1dzZWNl2B6520do1qU7+UzTwdfrjKWvgWxWbH2uweRdoUBX1j4QJAj
+	v0itgAcQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lHarv-006wp6-MQ; Wed, 03 Mar 2021 23:25:28 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1lHauL-006xRN-7b; Wed, 03 Mar 2021 23:27:57 +0000
+Received: from guitar.tcltek.co.il ([192.115.133.116] helo=mx.tkos.co.il)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lHURn-005cgv-9M
- for linux-mtd@lists.infradead.org; Wed, 03 Mar 2021 16:34:05 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 6F9BA6083275;
- Wed,  3 Mar 2021 17:34:02 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id XkqzEhlnOBsv; Wed,  3 Mar 2021 17:34:02 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 214DD6083244;
- Wed,  3 Mar 2021 17:34:02 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id 55hyWb7TB4oV; Wed,  3 Mar 2021 17:34:02 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
- by lithops.sigma-star.at (Postfix) with ESMTP id EEA2A608A38A;
- Wed,  3 Mar 2021 17:34:01 +0100 (CET)
-Date: Wed, 3 Mar 2021 17:34:01 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-To: Michael Walle <michael@walle.cc>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, 
- linux-kernel <linux-kernel@vger.kernel.org>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- Vignesh Raghavendra <vigneshr@ti.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Message-ID: <675291050.42876.1614789241828.JavaMail.zimbra@nod.at>
-In-Reply-To: <040cf2058fe4cf5e63dbff534582881a@walle.cc>
-References: <20210303155735.25887-1-michael@walle.cc>
- <YD+0mAPTMN8AwNBx@kroah.com>
- <689194005.42755.1614788236355.JavaMail.zimbra@nod.at>
- <040cf2058fe4cf5e63dbff534582881a@walle.cc>
-Subject: Re: [PATCH] mtd: require write permissions for locking and badblock
- ioctls
+ id 1lHUg6-005fVX-Ca
+ for linux-mtd@lists.infradead.org; Wed, 03 Mar 2021 16:48:55 +0000
+Received: from tarshish.tkos.co.il (unknown [10.0.8.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mx.tkos.co.il (Postfix) with ESMTPS id 295A744025F;
+ Wed,  3 Mar 2021 18:48:48 +0200 (IST)
+From: Baruch Siach <baruch@tkos.co.il>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ Baruch Siach <baruch@tkos.co.il>
+Subject: [PATCH v2] mtd: parsers: qcom: incompatible with spi-nor 4k sectors
+Date: Wed,  3 Mar 2021 18:48:16 +0200
+Message-Id: <0a2611f885b894274436ded3ca78bc0440fca74a.1614790096.git.baruch@tkos.co.il>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Topic: require write permissions for locking and badblock ioctls
-Thread-Index: xINH3Mpwe4blEkzF/YfzWKJ0Ni21Ug==
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,26 +63,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+Pj4gVGhhbmtzIGZvciBhdWRpdGluZyB0
-aGUgcmVzdCBvZiB0aGVzZSBmcm9tIG15IG9yaWdpbmFsIHBhdGNoLiAgSWYgdGhpcwo+Pj4gaXMg
-b2sgd2l0aCB1c2Vyc3BhY2UgdG9vbHMsIGl0J3MgZmluZSB3aXRoIG1lLCBidXQgSSBkb24ndCBl
-dmVuIGhhdmUKPj4+IHRoaXMgaGFyZHdhcmUgdG8gdGVzdCB3aXRoIDopCj4+IAo+PiBUaGF0J3Mg
-bXkgZmVhci4gTWljaGFlbCwgZGlkIHlvdSB2ZXJpZnk/Cj4gCj4gSSBkb24ndCBrbm93IGFueSB0
-b29scyBleGNlcHQgdGhlIG10ZC11dGlscy4gU28gbm8uCgpvcGVud3J0IGZvbGtzIGhhdmUgdGhl
-aXIgb3duIHRvb2xpbmcsIEFucmRvaWQgdG9vLgogCj4+IEluIGdlbmVyYWwgeW91IG5lZWQgdG8g
-YmUgcm9vdCB0byBvcGVuIHRoZXNlIGRldmljZSBmaWxlcy4KPj4gU28sIEkgZG9uJ3Qgc2VlIGEg
-c2VjdXJpdHkgcHJvYmxlbSBoZXJlLgo+IAo+IFRoZW4gdGhpcyBiZWdzIHRoZSBxdWVzdGlvbiwg
-d2h5IGlzIHRoaXMgY2hlY2sgdGhlcmUgaW4KPiB0aGUgZmlyc3QgcGxhY2U/CgpJIGZlYXIgaGlz
-dG9yaWNhbCByZWFzb25zLgpBcyBzb29uIHlvdSBjYW4gb3BlbiB0aGUgZGV2aWNlIG5vZGUgeW91
-IGNhbiBkbyBldmlsIHRoaW5ncy4KCj4gVGhpcyBjb21lIHVwIGJlY2F1c2UgSSB3YXMgYWRkaW5n
-IGEgT1RQRVJBU0Ugd2hpY2gKPiB3YXMgc3VnZ2VzdGVkIHRoYXQgaXMgd2FzIGEgImRhbmdlcm91
-cyIgY29tbWFuZC4gU28gSQo+IHdhcyBwdXp6bGVkIHdoeSB0aGUgb25lcyBhYm92ZSBhcmUgY29u
-c2lkZXJlZCAic2FmZSIgOykKCjotKQoKVGhhbmtzLAovL3JpY2hhcmQKCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vz
-c2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9saW51eC1tdGQvCg==
+Partition size and offset value are in block size units, which is the
+same as 'erasesize'. But when 4K sectors are enabled erasesize is set to
+4K. Bail out in that case.
+
+Fixes: 803eb124e1a64 ("mtd: parsers: Add Qcom SMEM parser")
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+---
+v2:
+
+  * Improve error message (Manivannan Sadhasivam)
+
+  * Add Fixes tag (Miquel Raynal)
+---
+ drivers/mtd/parsers/qcomsmempart.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/mtd/parsers/qcomsmempart.c b/drivers/mtd/parsers/qcomsmempart.c
+index 808cb33d71f8..73b75a30e0ad 100644
+--- a/drivers/mtd/parsers/qcomsmempart.c
++++ b/drivers/mtd/parsers/qcomsmempart.c
+@@ -65,6 +65,13 @@ static int parse_qcomsmem_part(struct mtd_info *mtd,
+ 	int ret, i, numparts;
+ 	char *name, *c;
+ 
++	if (IS_ENABLED(CONFIG_MTD_SPI_NOR_USE_4K_SECTORS)
++			&& mtd->type == MTD_NORFLASH) {
++		pr_err("%s: SMEM partition parser is incompatible with 4K sectors\n",
++				mtd->name);
++		return -EINVAL;
++	}
++
+ 	pr_debug("Parsing partition table info from SMEM\n");
+ 	ptable = qcom_smem_get(SMEM_APPS, SMEM_AARM_PARTITION_TABLE, &len);
+ 	if (IS_ERR(ptable)) {
+-- 
+2.30.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
