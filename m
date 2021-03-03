@@ -1,21 +1,21 @@
-Return-Path: <SRS0=zJhW=IB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=6kki=IC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 899F1C433E0
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 23:28:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ADABBC433DB
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Mar 2021 01:02:28 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6FF0064F13
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 23:28:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6FF0064F13
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=tkos.co.il
+	by mail.kernel.org (Postfix) with ESMTPS id 5536064EDF
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Mar 2021 01:02:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5536064EDF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
@@ -23,34 +23,45 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=Ax13qjmmZyAuQQe1AUyrNpmqDcg9AaQVwlg2gd7NGSU=; b=ky8tFWFyXpHc2QQBnK3z1+jqur
-	DjTbo6QUfJqCb+nhLrZBhigsiNGPYe9hyPgOr0jqL8U30s2guikRAC+Ko9NqXGj1LY7A1AZ7JTgG2
-	zn0IPLk0cT6vAobz1POzfzJr3GxURAY/yrqvai0mBtXqQLG82MwxrbsYoJU1ERO56MUGGexBE99Ud
-	2X6kvMKXYkyhKybr5gKhvLfPn/GA3GMqqh4eTLpbGfR8bHQ/be4UXKQglZzMrbb/0iJYZNXnG8F7G
-	h6ASpTeTYOyQhD6EbWSvciP1dzZWNl2B6520do1qU7+UzTwdfrjKWvgWxWbH2uweRdoUBX1j4QJAj
-	v0itgAcQ==;
+	bh=GQIevkvlt0m43srAXPQnXa7DRlOCnY2V5H/JgbzCcoo=; b=miBDWHt+Lww4gJBDU6nEq4Gr7M
+	8fT6Q6yg9/icZeb9gVPf900NKY+Cfehz15oQKm8BgL/irFrKvnRavps22Lo5CVSlljNDYDjEA3TS6
+	yUJkim1LprK+b5dZVh+EpwP57+TqmfEgk3x9nIbFsoVxOUjyk1FzQLeHrzAEyZR99UMltB2YjOBVx
+	LCfPyk9bdpdKyejOa1WXwxoQs7K8D4HdCfAGk+Lci/ahkW4HgAjwIkE4WNheheFD3/+3kIPSly6ex
+	ZaGWI1m/iQnI3xCc/7emGEM23HnPGXnowlG7fsF0bYCCHovNW3GWVA58KoTl6BrWFxE2NwlDFL93R
+	C9I9UyPw==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lHauL-006xRN-7b; Wed, 03 Mar 2021 23:27:57 +0000
-Received: from guitar.tcltek.co.il ([192.115.133.116] helo=mx.tkos.co.il)
+	id 1lHcLy-007GWn-Cd; Thu, 04 Mar 2021 01:00:37 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lHUg6-005fVX-Ca
- for linux-mtd@lists.infradead.org; Wed, 03 Mar 2021 16:48:55 +0000
-Received: from tarshish.tkos.co.il (unknown [10.0.8.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mx.tkos.co.il (Postfix) with ESMTPS id 295A744025F;
- Wed,  3 Mar 2021 18:48:48 +0200 (IST)
-From: Baruch Siach <baruch@tkos.co.il>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
- Baruch Siach <baruch@tkos.co.il>
-Subject: [PATCH v2] mtd: parsers: qcom: incompatible with spi-nor 4k sectors
-Date: Wed,  3 Mar 2021 18:48:16 +0200
-Message-Id: <0a2611f885b894274436ded3ca78bc0440fca74a.1614790096.git.baruch@tkos.co.il>
-X-Mailer: git-send-email 2.30.1
+ id 1lHXx2-006ONV-4X
+ for linux-mtd@lists.infradead.org; Wed, 03 Mar 2021 20:18:55 +0000
+Received: from mwalle01.fritz.box (unknown
+ [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
+ SHA256) (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 5A5232223A;
+ Wed,  3 Mar 2021 21:18:29 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1614802710;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=bH5OIkVqJBqAQ09VIrZoFL+fgJq/hfQAqXuKtC2hFko=;
+ b=fzN6MJMnfbZg9AaRVlOKMsI9HmE9rktmpJz+tjAiqpFuwq9dcRJiiQIxzNaMjR6gT1Wr0B
+ 3Lrgl6DybeyDsYNEhQSxe1fPfzh5tbDkF8qifpMPmARkiERM9ZI8icFrSvgTZ56PO6FNkN
+ FBFiw92krw7WR2QOHEMHAMdvruzWhak=
+From: Michael Walle <michael@walle.cc>
+To: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-api@vger.kernel.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor.Ambarus@microchip.com, Michael Walle <michael@walle.cc>
+Subject: [PATCH] mtd: add OTP (one-time-programmable) erase ioctl
+Date: Wed,  3 Mar 2021 21:18:19 +0100
+Message-Id: <20210303201819.2752-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -68,43 +79,116 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Partition size and offset value are in block size units, which is the
-same as 'erasesize'. But when 4K sectors are enabled erasesize is set to
-4K. Bail out in that case.
+This may sound like a contradiction but some SPI-NOR flashes really
+support erasing their OTP region until it is finally locked. Having the
+possibility to erase an OTP region might come in handy during
+development.
 
-Fixes: 803eb124e1a64 ("mtd: parsers: Add Qcom SMEM parser")
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+The ioctl argument follows the OTPLOCK style.
+
+Signed-off-by: Michael Walle <michael@walle.cc>
 ---
-v2:
+Changes since RFC:
+ - check write permissions for OTPERASE
+ - use correct ioctl macro (_IOW)
 
-  * Improve error message (Manivannan Sadhasivam)
+ drivers/mtd/mtdchar.c      |  7 ++++++-
+ drivers/mtd/mtdcore.c      | 12 ++++++++++++
+ include/linux/mtd/mtd.h    |  3 +++
+ include/uapi/mtd/mtd-abi.h |  2 ++
+ 4 files changed, 23 insertions(+), 1 deletion(-)
 
-  * Add Fixes tag (Miquel Raynal)
----
- drivers/mtd/parsers/qcomsmempart.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/drivers/mtd/parsers/qcomsmempart.c b/drivers/mtd/parsers/qcomsmempart.c
-index 808cb33d71f8..73b75a30e0ad 100644
---- a/drivers/mtd/parsers/qcomsmempart.c
-+++ b/drivers/mtd/parsers/qcomsmempart.c
-@@ -65,6 +65,13 @@ static int parse_qcomsmem_part(struct mtd_info *mtd,
- 	int ret, i, numparts;
- 	char *name, *c;
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 57c4a2f0b703..b9b56eb9457e 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -666,6 +666,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+ 	case MEMWRITEOOB:
+ 	case MEMWRITEOOB64:
+ 	case MEMWRITE:
++	case OTPERASE:
+ 		if (!(file->f_mode & FMODE_WRITE))
+ 			return -EPERM;
+ 		break;
+@@ -930,6 +931,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+ 	}
  
-+	if (IS_ENABLED(CONFIG_MTD_SPI_NOR_USE_4K_SECTORS)
-+			&& mtd->type == MTD_NORFLASH) {
-+		pr_err("%s: SMEM partition parser is incompatible with 4K sectors\n",
-+				mtd->name);
-+		return -EINVAL;
-+	}
+ 	case OTPLOCK:
++	case OTPERASE:
+ 	{
+ 		struct otp_info oinfo;
+ 
+@@ -937,7 +939,10 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+ 			return -EINVAL;
+ 		if (copy_from_user(&oinfo, argp, sizeof(oinfo)))
+ 			return -EFAULT;
+-		ret = mtd_lock_user_prot_reg(mtd, oinfo.start, oinfo.length);
++		if (cmd == OTPLOCK)
++			ret = mtd_lock_user_prot_reg(mtd, oinfo.start, oinfo.length);
++		else
++			ret = mtd_erase_user_prot_reg(mtd, oinfo.start, oinfo.length);
+ 		break;
+ 	}
+ 
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 38782ceea1f6..aea58366a94e 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -1919,6 +1919,18 @@ int mtd_lock_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len)
+ }
+ EXPORT_SYMBOL_GPL(mtd_lock_user_prot_reg);
+ 
++int mtd_erase_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len)
++{
++	struct mtd_info *master = mtd_get_master(mtd);
 +
- 	pr_debug("Parsing partition table info from SMEM\n");
- 	ptable = qcom_smem_get(SMEM_APPS, SMEM_AARM_PARTITION_TABLE, &len);
- 	if (IS_ERR(ptable)) {
++	if (!master->_erase_user_prot_reg)
++		return -EOPNOTSUPP;
++	if (!len)
++		return 0;
++	return master->_erase_user_prot_reg(master, from, len);
++}
++EXPORT_SYMBOL_GPL(mtd_erase_user_prot_reg);
++
+ /* Chip-supported device locking */
+ int mtd_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ {
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index ceabc2cae8a4..4aac200ca8b5 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -337,6 +337,8 @@ struct mtd_info {
+ 				     size_t len, size_t *retlen, u_char *buf);
+ 	int (*_lock_user_prot_reg) (struct mtd_info *mtd, loff_t from,
+ 				    size_t len);
++	int (*_erase_user_prot_reg) (struct mtd_info *mtd, loff_t from,
++				     size_t len);
+ 	int (*_writev) (struct mtd_info *mtd, const struct kvec *vecs,
+ 			unsigned long count, loff_t to, size_t *retlen);
+ 	void (*_sync) (struct mtd_info *mtd);
+@@ -518,6 +520,7 @@ int mtd_read_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len,
+ int mtd_write_user_prot_reg(struct mtd_info *mtd, loff_t to, size_t len,
+ 			    size_t *retlen, u_char *buf);
+ int mtd_lock_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len);
++int mtd_erase_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len);
+ 
+ int mtd_writev(struct mtd_info *mtd, const struct kvec *vecs,
+ 	       unsigned long count, loff_t to, size_t *retlen);
+diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
+index 65b9db936557..b869990c2db2 100644
+--- a/include/uapi/mtd/mtd-abi.h
++++ b/include/uapi/mtd/mtd-abi.h
+@@ -205,6 +205,8 @@ struct otp_info {
+  * without OOB, e.g., NOR flash.
+  */
+ #define MEMWRITE		_IOWR('M', 24, struct mtd_write_req)
++/* Erase a given range of user data (must be in mode %MTD_FILE_MODE_OTP_USER) */
++#define OTPERASE		_IOW('M', 25, struct otp_info)
+ 
+ /*
+  * Obsolete legacy interface. Keep it in order not to break userspace
 -- 
-2.30.1
+2.20.1
 
 
 ______________________________________________________
