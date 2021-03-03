@@ -1,85 +1,78 @@
-Return-Path: <SRS0=6g4x=IA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=zJhW=IB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CD81C433DB
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Mar 2021 09:19:52 +0000 (UTC)
-Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DEDDAC433DB
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 14:05:01 +0000 (UTC)
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CB19F64EDC
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Mar 2021 09:19:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB19F64EDC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	by mail.kernel.org (Postfix) with ESMTPS id 3759164E89
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Mar 2021 14:05:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3759164E89
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=esLuS5Ye0WVA6DTzSmr322SXZvNTBnbwxdy/bSTTjqU=; b=GkG4BfXTdraIZ71MchnCYrHi0
-	jEIkhYTskbL5v6Jrfy2i89mbwNr3ECo6BGZu/34Bbj4Wg8y5gkkYaJYCbj2nhPQu3Qx9QgfxEoykV
-	D2Tr268P3y/Ux8rs4XYchjqy19IguMKWDxWuAZJJCgFNjLcFkkwCCiX5Q+hLwBubB44dTWp8Q07Jo
-	MVA/J6kDTRVKVd9EtclgcqqYuJfcPsxA5/2buziUG3Doxm6yAk7BxrK9wLezhoD5xMszfvIHm+hIV
-	lrQV4xBOyU24AYWIWT4Ig8PXECaSMnY5h3WNE/cKGxWxoRLhWWscdmnaDa+s67RS4Ox4wl9gOCEby
-	Kxk0LFacA==;
-Received: from localhost ([::1] helo=merlin.infradead.org)
-	by merlin.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-	id 1lH1B0-00018z-KA; Tue, 02 Mar 2021 09:18:46 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lH1Ax-00017H-28
- for linux-mtd@lists.infradead.org; Tue, 02 Mar 2021 09:18:44 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1229IatD114702;
- Tue, 2 Mar 2021 03:18:36 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1614676716;
- bh=mLVZ2ffM6BC2k+z9eLyA7blmnq0wy1/veNSvN0hvTco=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=iCL857JqyKGh6lWaIXAMsGbHaQhBV8fkYbK+GwxXbNh6Nfm3lhvlLW5bmmQaDNJau
- rYXle1lUpcd/hJlJr7EcNX9TrsuNNMjHlqrx2qVBQotl0lyJEubHoBMXnqW0n73eIO
- WYIhJduZT7htTWjmKqjdjyDG98wqoAwb5vSSVyS8=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1229IafA087431
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 2 Mar 2021 03:18:36 -0600
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 2 Mar
- 2021 03:18:36 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 2 Mar 2021 03:18:36 -0600
-Received: from [10.250.234.120] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1229IX3T036213;
- Tue, 2 Mar 2021 03:18:34 -0600
-Subject: Re: [PATCH 1/2] mtd: spi-nor: core: move Spansion SR ready codes out
- of core
-To: <yaliang.wang@windriver.com>, <tudor.ambarus@microchip.com>,
- <miquel.raynal@bootlin.com>, <richard@nod.at>
-References: <20210301142844.1089385-1-yaliang.wang@windriver.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <aa4aef39-4c3f-7cca-c41b-98a1316b4373@ti.com>
-Date: Tue, 2 Mar 2021 14:48:33 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
+	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=DqZ7ACnwEOG4P1JaHYB6ZHsXcyFfqcA8LKn7UtWTh3U=; b=F4Rn1hzVfxS+UaKyekXjjwGi/l
+	2BLArKHE38451Ii0VzzqdHEpACp/f/3UAx4X+u8Z4jp9iuu1Gx1cqF33PBhytyjlTWMawRj+keFeH
+	C7DYaBuu8AGRGVuh23iSeNXh/BAtJu55D4Cn4nntFTxG6nZQzc/J2xUNq1hlKbf2nYuEEEZGba3Su
+	TrecX5H/QA0XuEADv3uVV3rENk0IKbJ2SNnY9IbjE9ITt10qRRpgKP4OWMBmcAl7OzW0HyruoRsrn
+	sQSFL4AxVb9rFZA7fjwYIzrwiISy8VFoEMTHP6MIdN8V8/LYcMoPvnIh4y9rHOkmuvS0IEYO0r4HB
+	EHdS540w==;
+Received: from localhost ([::1] helo=desiato.infradead.org)
+	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
+	id 1lHS6k-0052YT-He; Wed, 03 Mar 2021 14:04:12 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+ by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
+ id 1lHS3u-0051t1-5d
+ for linux-mtd@desiato.infradead.org; Wed, 03 Mar 2021 14:01:14 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+ MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+ Content-Description:In-Reply-To:References;
+ bh=9V1la8w1FGLjhvDOf3id67TUCZu9jyzdWHII7WZ1A5A=; b=AJDxU9a6EnEdFkmrn3SnralwZc
+ wnL9WL9HYHxQ38IBTKClTmdpBw07eEIgpZkkoxGWJN7bqm45lzdZetoWTfNbCLb2NmdMaLOUK3DEy
+ 5T4k161L4YrieWS8EJsQGcDmq4/nLUJ19n++TWZDu8AqMwCYadCuJmGwp9nFDUKzB2B0OpuCwRa+J
+ jff9qkpEWkQtYcqWq0S/ptuJl7vMajHghAbkWcpsoIIUR0M7zo1T3PjtNIQqQEVRfVwlZrnmLudqV
+ cpqocpTvbXfgcL4hJpaHV3OemVKbE3NxHV6FdBg1ThGCPndI+cEslu8sXcb/RuFdiZ7MUUS66mjfV
+ ol6ScGYw==;
+Received: from youngberry.canonical.com ([91.189.89.112])
+ by casper.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
+ id 1lHO1t-0023TQ-30
+ for linux-mtd@lists.infradead.org; Wed, 03 Mar 2021 09:42:54 +0000
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+ by youngberry.canonical.com with esmtpsa
+ (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
+ (envelope-from <colin.king@canonical.com>)
+ id 1lHO1m-0000ol-IK; Wed, 03 Mar 2021 09:42:46 +0000
+From: Colin King <colin.king@canonical.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] mtd: nand: Fix error handling in nand_prog_page_op
+Date: Wed,  3 Mar 2021 09:42:46 +0000
+Message-Id: <20210303094246.5724-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <20210301142844.1089385-1-yaliang.wang@windriver.com>
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210302_041843_207480_44FE135C 
-X-CRM114-Status: GOOD (  12.63  )
+X-CRM114-CacheID: sfid-20210303_094254_225450_FF9C1D29 
+X-CRM114-Status: UNSURE (   9.13  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
-X-Mailman-Version: 2.1.29
+X-Mailman-Version: 2.1.34
 Precedence: list
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -89,48 +82,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+From: Colin Ian King <colin.king@canonical.com>
 
-On 3/1/21 7:58 PM, yaliang.wang@windriver.com wrote:
-> +/**
-> + * spansion_clear_sr() - Clear the Status Register.
-> + * @nor:	pointer to 'struct spi_nor'.
-> + */
-> +static void spansion_clear_sr(struct spi_nor *nor)
-> +{
-> +	int ret;
-> +
-> +	if (nor->spimem) {
-> +		struct spi_mem_op op =
-> +			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_SPANSION_CLSR, 0),
-> +				   SPI_MEM_OP_NO_ADDR,
-> +				   SPI_MEM_OP_NO_DUMMY,
-> +				   SPI_MEM_OP_NO_DATA);
-> +
-> +		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
-> +
-> +		ret = spi_mem_exec_op(nor->spimem, &op);
-> +	} else {
-> +		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_SPANSION_CLSR,
-> +						       NULL, 0);
-> +	}
-> +
-> +	if (ret)
-> +		dev_dbg(nor->dev, "error %d clearing SR\n", ret);
-> +}
-> +
+The less than zero comparison with status is always false because status
+is a u8. Fix this by using ret as the return check for the call to
+chip->legacy.waitfunc() and checking on this and assigning status to ret
+if it is OK.
 
-No, instead introduce a helper in core.c which can handle both
-spi_mem_exec_op() and spi_nor_controller_ops_write_reg().
+Addresses-Coverity: ("Unsigned compared against 0")
+Fixes: 52f67def97f1 ("mtd: nand: fix error handling in nand_prog_page_op() #1")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/mtd/nand/raw/nand_base.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-Regards
-Vignesh
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 0f6babefaed2..4f263c22c80d 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -1462,9 +1462,10 @@ int nand_prog_page_op(struct nand_chip *chip, unsigned int page,
+ 				     page);
+ 		chip->legacy.write_buf(chip, buf, len);
+ 		chip->legacy.cmdfunc(chip, NAND_CMD_PAGEPROG, -1, -1);
+-		status = chip->legacy.waitfunc(chip);
+-		if (status < 0)
+-			return status;
++		ret = chip->legacy.waitfunc(chip);
++		if (ret < 0)
++			return ret;
++		status = ret;
+ 	}
+ 
+ 	if (status & NAND_STATUS_FAIL)
+-- 
+2.30.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
