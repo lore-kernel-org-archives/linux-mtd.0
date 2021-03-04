@@ -2,67 +2,58 @@ Return-Path: <SRS0=6kki=IC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ADABBC433DB
-	for <linux-mtd@archiver.kernel.org>; Thu,  4 Mar 2021 01:02:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CCDA2C433E0
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Mar 2021 02:52:02 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5536064EDF
-	for <linux-mtd@archiver.kernel.org>; Thu,  4 Mar 2021 01:02:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5536064EDF
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id 1E52A64E7C
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Mar 2021 02:52:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E52A64E7C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=GQIevkvlt0m43srAXPQnXa7DRlOCnY2V5H/JgbzCcoo=; b=miBDWHt+Lww4gJBDU6nEq4Gr7M
-	8fT6Q6yg9/icZeb9gVPf900NKY+Cfehz15oQKm8BgL/irFrKvnRavps22Lo5CVSlljNDYDjEA3TS6
-	yUJkim1LprK+b5dZVh+EpwP57+TqmfEgk3x9nIbFsoVxOUjyk1FzQLeHrzAEyZR99UMltB2YjOBVx
-	LCfPyk9bdpdKyejOa1WXwxoQs7K8D4HdCfAGk+Lci/ahkW4HgAjwIkE4WNheheFD3/+3kIPSly6ex
-	ZaGWI1m/iQnI3xCc/7emGEM23HnPGXnowlG7fsF0bYCCHovNW3GWVA58KoTl6BrWFxE2NwlDFL93R
-	C9I9UyPw==;
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
+	Subject:CC:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=5tAn5erWddzkKQKVi6F6i0XrvdrcVD1235F6rOR16CE=; b=bLOEx7FcseGnK8M/YRJ5sjKRN
+	tdi7cx5ytFRbJCZguIzTWtUGuooe7eLkKU5xum7c+3fPvG7E8ljHbicjc4Gecxq9frzglQLbhit3X
+	/vQOZPmwhttrGURmHWtlIEF8OQ1cp9uSqUnY/R4JxA18vBiM5I7Zpje25CpdHTZ+5JhDdL9Tfsoex
+	ps6Vk5A3NVL51kRbamaXOU63Vjq8H/X7oys7x09VNJFLuocAPayLhngI0iScVthQtMmfQZTj4nBvX
+	nFFsITy3XOLYWYvoECvRnzBfu/HypgZojBxL/IgNiy7+r3kFSyumthW/WdbzZYIhsk9mkrMbAsn36
+	BOUvDDlWg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lHcLy-007GWn-Cd; Thu, 04 Mar 2021 01:00:37 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1lHe4d-007Xde-82; Thu, 04 Mar 2021 02:50:48 +0000
+Received: from szxga04-in.huawei.com ([45.249.212.190])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lHXx2-006ONV-4X
- for linux-mtd@lists.infradead.org; Wed, 03 Mar 2021 20:18:55 +0000
-Received: from mwalle01.fritz.box (unknown
- [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
- SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 5A5232223A;
- Wed,  3 Mar 2021 21:18:29 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1614802710;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding;
- bh=bH5OIkVqJBqAQ09VIrZoFL+fgJq/hfQAqXuKtC2hFko=;
- b=fzN6MJMnfbZg9AaRVlOKMsI9HmE9rktmpJz+tjAiqpFuwq9dcRJiiQIxzNaMjR6gT1Wr0B
- 3Lrgl6DybeyDsYNEhQSxe1fPfzh5tbDkF8qifpMPmARkiERM9ZI8icFrSvgTZ56PO6FNkN
- FBFiw92krw7WR2QOHEMHAMdvruzWhak=
-From: Michael Walle <michael@walle.cc>
-To: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-api@vger.kernel.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor.Ambarus@microchip.com, Michael Walle <michael@walle.cc>
-Subject: [PATCH] mtd: add OTP (one-time-programmable) erase ioctl
-Date: Wed,  3 Mar 2021 21:18:19 +0100
-Message-Id: <20210303201819.2752-1-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
+ id 1lHcqD-007KuE-DJ
+ for linux-mtd@lists.infradead.org; Thu, 04 Mar 2021 01:31:52 +0000
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+ by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DrYFT44lTz16G9T;
+ Thu,  4 Mar 2021 09:29:49 +0800 (CST)
+Received: from DESKTOP-2DH7KI2.china.huawei.com (10.67.102.237) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 4 Mar 2021 09:31:25 +0800
+From: Chengsong Ke <kechengsong@huawei.com>
+To: <richard@nod.at>
+CC: <linux-mtd@lists.infradead.org>, <chengzhihao1@huawei.com>
+Subject: Re: [v2] ubifs: Fix read out-of-bounds in ubifs_jnl_write_inode()
+Date: Thu, 4 Mar 2021 09:31:25 +0800
+Message-ID: <20210304013125.29308-1-kechengsong@huawei.com>
+X-Mailer: git-send-email 2.21.0.windows.1
+In-Reply-To: <20201223121536.6244-1-kechengsong@huawei.com>
+References: <20201223121536.6244-1-kechengsong@huawei.com>
 MIME-Version: 1.0
+X-Originating-IP: [10.67.102.237]
+X-CFilter-Loop: Reflected
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,117 +70,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This may sound like a contradiction but some SPI-NOR flashes really
-support erasing their OTP region until it is finally locked. Having the
-possibility to erase an OTP region might come in handy during
-development.
+ping
 
-The ioctl argument follows the OTPLOCK style.
-
-Signed-off-by: Michael Walle <michael@walle.cc>
----
-Changes since RFC:
- - check write permissions for OTPERASE
- - use correct ioctl macro (_IOW)
-
- drivers/mtd/mtdchar.c      |  7 ++++++-
- drivers/mtd/mtdcore.c      | 12 ++++++++++++
- include/linux/mtd/mtd.h    |  3 +++
- include/uapi/mtd/mtd-abi.h |  2 ++
- 4 files changed, 23 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 57c4a2f0b703..b9b56eb9457e 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -666,6 +666,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- 	case MEMWRITEOOB:
- 	case MEMWRITEOOB64:
- 	case MEMWRITE:
-+	case OTPERASE:
- 		if (!(file->f_mode & FMODE_WRITE))
- 			return -EPERM;
- 		break;
-@@ -930,6 +931,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- 	}
- 
- 	case OTPLOCK:
-+	case OTPERASE:
- 	{
- 		struct otp_info oinfo;
- 
-@@ -937,7 +939,10 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- 			return -EINVAL;
- 		if (copy_from_user(&oinfo, argp, sizeof(oinfo)))
- 			return -EFAULT;
--		ret = mtd_lock_user_prot_reg(mtd, oinfo.start, oinfo.length);
-+		if (cmd == OTPLOCK)
-+			ret = mtd_lock_user_prot_reg(mtd, oinfo.start, oinfo.length);
-+		else
-+			ret = mtd_erase_user_prot_reg(mtd, oinfo.start, oinfo.length);
- 		break;
- 	}
- 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 38782ceea1f6..aea58366a94e 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -1919,6 +1919,18 @@ int mtd_lock_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len)
- }
- EXPORT_SYMBOL_GPL(mtd_lock_user_prot_reg);
- 
-+int mtd_erase_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len)
-+{
-+	struct mtd_info *master = mtd_get_master(mtd);
-+
-+	if (!master->_erase_user_prot_reg)
-+		return -EOPNOTSUPP;
-+	if (!len)
-+		return 0;
-+	return master->_erase_user_prot_reg(master, from, len);
-+}
-+EXPORT_SYMBOL_GPL(mtd_erase_user_prot_reg);
-+
- /* Chip-supported device locking */
- int mtd_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- {
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index ceabc2cae8a4..4aac200ca8b5 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -337,6 +337,8 @@ struct mtd_info {
- 				     size_t len, size_t *retlen, u_char *buf);
- 	int (*_lock_user_prot_reg) (struct mtd_info *mtd, loff_t from,
- 				    size_t len);
-+	int (*_erase_user_prot_reg) (struct mtd_info *mtd, loff_t from,
-+				     size_t len);
- 	int (*_writev) (struct mtd_info *mtd, const struct kvec *vecs,
- 			unsigned long count, loff_t to, size_t *retlen);
- 	void (*_sync) (struct mtd_info *mtd);
-@@ -518,6 +520,7 @@ int mtd_read_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len,
- int mtd_write_user_prot_reg(struct mtd_info *mtd, loff_t to, size_t len,
- 			    size_t *retlen, u_char *buf);
- int mtd_lock_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len);
-+int mtd_erase_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len);
- 
- int mtd_writev(struct mtd_info *mtd, const struct kvec *vecs,
- 	       unsigned long count, loff_t to, size_t *retlen);
-diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
-index 65b9db936557..b869990c2db2 100644
---- a/include/uapi/mtd/mtd-abi.h
-+++ b/include/uapi/mtd/mtd-abi.h
-@@ -205,6 +205,8 @@ struct otp_info {
-  * without OOB, e.g., NOR flash.
-  */
- #define MEMWRITE		_IOWR('M', 24, struct mtd_write_req)
-+/* Erase a given range of user data (must be in mode %MTD_FILE_MODE_OTP_USER) */
-+#define OTPERASE		_IOW('M', 25, struct otp_info)
- 
- /*
-  * Obsolete legacy interface. Keep it in order not to break userspace
--- 
-2.20.1
-
+>> Reproducer:
+>> 0. config KASAN && apply print.patch
+>> 1. mount ubifs on /root/temp
+>> 2. run test.sh
+> 
+> What does test.sh do?
+Go to Link: https://bugzilla.kernel.org/show_bug.cgi?id=210865.
+test.sh creates a very long path file test_file, and then create a 
+symbol link link_file for test_file, so ubifs inode for link_file will 
+be assigned a big value for ui->data_len.
+When we change atime for link_file, ubifs_jnl_write_inode will be 
+executed by wb_writeback. By this way, write_len could be not aligned 
+with 8 bytes.
+> 
+>> 3. cd /root/temp && ls // change atime for link_file
+>> 4. wait 1~2 minutes
+>>
+>> In order to solve the read oob problem in ubifs_wbuf_write_nolock, just align
+>> the write_len to
+>> 8 bytes when alloc the memory. So that this patch will not affect the use of
+>> write_len in other
+>> functions, such as ubifs_jnl_write_inode->make_reservation and
+>> ubifs_jnl_write_inode->ubifs_node_calc_hash.
+> 
+> I gave this a second thought and I'm not so sure anymore what exactly is going on.
+> The problem is real, I fully agree with you but I need to dig deeper into
+> the journal and wbuf code to double check that we really fix the right thing
+> and not just paper other something.
+> 
+> Thanks,
+> //richard
+> .
+>
 
 ______________________________________________________
 Linux MTD discussion mailing list
