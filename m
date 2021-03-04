@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CCDA2C433E0
-	for <linux-mtd@archiver.kernel.org>; Thu,  4 Mar 2021 02:52:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4654C433E0
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Mar 2021 02:57:00 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1E52A64E7C
-	for <linux-mtd@archiver.kernel.org>; Thu,  4 Mar 2021 02:52:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E52A64E7C
+	by mail.kernel.org (Postfix) with ESMTPS id 3B6E464E89
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Mar 2021 02:57:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B6E464E89
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,31 +23,32 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
 	Subject:CC:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=5tAn5erWddzkKQKVi6F6i0XrvdrcVD1235F6rOR16CE=; b=bLOEx7FcseGnK8M/YRJ5sjKRN
-	tdi7cx5ytFRbJCZguIzTWtUGuooe7eLkKU5xum7c+3fPvG7E8ljHbicjc4Gecxq9frzglQLbhit3X
-	/vQOZPmwhttrGURmHWtlIEF8OQ1cp9uSqUnY/R4JxA18vBiM5I7Zpje25CpdHTZ+5JhDdL9Tfsoex
-	ps6Vk5A3NVL51kRbamaXOU63Vjq8H/X7oys7x09VNJFLuocAPayLhngI0iScVthQtMmfQZTj4nBvX
-	nFFsITy3XOLYWYvoECvRnzBfu/HypgZojBxL/IgNiy7+r3kFSyumthW/WdbzZYIhsk9mkrMbAsn36
-	BOUvDDlWg==;
+	 bh=5tAn5erWddzkKQKVi6F6i0XrvdrcVD1235F6rOR16CE=; b=UmgGvOAaFUELpDSasqBFRVtTH
+	8x9nrohgy/tH0Y6o1DgoMhVsh3Bn725Cyltpf5WG03JvifJ7H49+b1ZdpDBtmA9aEpAux0aDr0DMw
+	pwRKH7VZ4wtDCykfURMOuHlwd75Zw48dcpvjCBSeAoCnEUCP0flfApT0jmRuNx1F+4cJvnL2kPez5
+	uv4t9z3k8ZFY5pDw+yS3MUpBXC1TFD6NFJtLb7PP7AJ+s+IbS5wc0l2jadJjI4u4beNA/KksEW00A
+	8yrib66GnwyLpC0MbbG4Ifl2pMJGAWb2J3s2GViEfbkVNJoVjMyh8AB745qS6oLcidnTMAOVoI0T9
+	RvO3Qld/A==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lHe4d-007Xde-82; Thu, 04 Mar 2021 02:50:48 +0000
+	id 1lHe8b-007YIQ-Kx; Thu, 04 Mar 2021 02:54:56 +0000
 Received: from szxga04-in.huawei.com ([45.249.212.190])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lHcqD-007KuE-DJ
- for linux-mtd@lists.infradead.org; Thu, 04 Mar 2021 01:31:52 +0000
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
- by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DrYFT44lTz16G9T;
- Thu,  4 Mar 2021 09:29:49 +0800 (CST)
+ id 1lHd8b-007OUL-IS
+ for linux-mtd@lists.infradead.org; Thu, 04 Mar 2021 01:50:55 +0000
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+ by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DrYgY3pcrz16G7N;
+ Thu,  4 Mar 2021 09:48:57 +0800 (CST)
 Received: from DESKTOP-2DH7KI2.china.huawei.com (10.67.102.237) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 4 Mar 2021 09:31:25 +0800
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 4 Mar 2021 09:50:29 +0800
 From: Chengsong Ke <kechengsong@huawei.com>
 To: <richard@nod.at>
-CC: <linux-mtd@lists.infradead.org>, <chengzhihao1@huawei.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <chengzhihao1@huawei.com>
 Subject: Re: [v2] ubifs: Fix read out-of-bounds in ubifs_jnl_write_inode()
-Date: Thu, 4 Mar 2021 09:31:25 +0800
-Message-ID: <20210304013125.29308-1-kechengsong@huawei.com>
+Date: Thu, 4 Mar 2021 09:50:29 +0800
+Message-ID: <20210304015029.32100-1-kechengsong@huawei.com>
 X-Mailer: git-send-email 2.21.0.windows.1
 In-Reply-To: <20201223121536.6244-1-kechengsong@huawei.com>
 References: <20201223121536.6244-1-kechengsong@huawei.com>
