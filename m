@@ -2,83 +2,71 @@ Return-Path: <SRS0=7c/v=ID=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E5BAC433DB
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Mar 2021 23:38:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EE8DC433DB
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Mar 2021 23:47:23 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8C810650A0
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Mar 2021 23:38:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C810650A0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 765CA650A2
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Mar 2021 23:47:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 765CA650A2
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=c2TkcMOYzgpLrPdMNwBOkoKR32utj1pPVzw2YOZznMU=; b=l+fpMZJT1j53oilfOZSilN9TD
-	xd8Lu7DIOJ2tKJ8vsdUYv+Ic8Av8VPjU71AOkjHi+9PlNcKJzcY/XeTjMSvxMu8YahipOU5L4jSlM
-	gkng9YeYYFnQOxjPsRVcMBimdwDeaYE2Prm2y2e82y6rGAcrbME37qmvs+2DIj3VPaFX2Y4S6gAOQ
-	OzUiZxVnu+uPLa/+OWYNIhYUTDa47u92sCtkgcQqpKRprT5B7kl7VeIx118n9MwOGM2sORlrBBL9h
-	MEUhu+DgujShO44wCEm32c27Xvbnk29g1RiYA0rns213xIP7vfKXBh8BcJmd2ubkGwwzWccCMExsJ
-	yh94+HRRQ==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=AhdCszgNLqYa8gg/VQoITHagfltwvZdZVqraQFkHjWg=; b=qhsx8c92Kqq39X53EfVF5s5huP
+	FY351ZJ2bhEIBCPd7655E6Q/mknHaVInSdgqMyjPpP4y/GLAKM/xwYfew5OGSNLkgZTUTt4tU2OEe
+	S/xnX7hf0OqNH7TcRcHbTsuaTm9FknBaE2UuGXLHJq/vVi7HaPia6/PomiXXGZScQmcwCxtjvlHp7
+	Gu1/hYEkvXN7rOOfbfsp0lvfqBTcM6c853Vl+Ma6wdRrMzek1YtqZZrJNScR4alXhZnOGRyaWkj4J
+	B/LTbI4CFPbc0VQdoYGvEWehlVR5qw0lrXGraVfOGSPo35ArCcjG6N8kZS7Lhh4Zx3TKuxiYoHK8j
+	DBz6oQzw==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lIK0P-00H94e-3I; Fri, 05 Mar 2021 23:37:13 +0000
-Received: from mail-ot1-f45.google.com ([209.85.210.45])
+	id 1lIK9D-00HBXx-0n; Fri, 05 Mar 2021 23:46:19 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lIK0D-00H92S-LD
- for linux-mtd@lists.infradead.org; Fri, 05 Mar 2021 23:37:07 +0000
-Received: by mail-ot1-f45.google.com with SMTP id a17so3479622oto.5
- for <linux-mtd@lists.infradead.org>; Fri, 05 Mar 2021 15:37:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=1tLdHqPjOw0oS3E1Aqx3XDxrDkeAhsjwl8ce7IJGqqI=;
- b=XQBHheQ4fexInWoefmkVlXQ2H3ORpgI1M1L/uhUB9b9zH6YITD8EXtw9vWmBsCm367
- 7JDhg42+sv+FqfEmesUgqz+BIMTeQ/9A2BBI2sdAPjh2Pi3GKPzNCm/tnhrq9Tw3qrbV
- /31S5kPUbOjgkDUyh958PuS5JBbzS3Y/n3BiiIHfOG/xt60O+IVnpvu4g4xjPMz3OFvJ
- WARaTKF9O18h5kiY2NnyGnOQq7GiXuUMHpsTyZxyKFraDQeabR+bqimyIcxnYMXsiOSn
- aPMvl/d7dwqK55pHcSMoXTTIHMaT9qXltvTWKN2oNUA6OnZ4OLvga/0ZZvBOa/djxqej
- fmbw==
-X-Gm-Message-State: AOAM531H96jJWvxlh9skHrnYYPEBTFClhTJMckfB1FTPyPtZAoIAJlle
- J1oiIqYE6F/biCjRCdVwqw==
-X-Google-Smtp-Source: ABdhPJzHIrEx/psMaWb5sExfGryDm/kqhblVrz2IFl77edEGkv1dHe6mbZVPg7UElvfJxzq0E6btvw==
-X-Received: by 2002:a9d:63d1:: with SMTP id e17mr10054802otl.183.1614987420688; 
- Fri, 05 Mar 2021 15:37:00 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id l25sm831240oic.49.2021.03.05.15.36.58
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 05 Mar 2021 15:36:58 -0800 (PST)
-Received: (nullmailer pid 849924 invoked by uid 1000);
- Fri, 05 Mar 2021 23:36:57 -0000
-Date: Fri, 5 Mar 2021 17:36:57 -0600
-From: Rob Herring <robh@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- boris.brezillon@collabora.com
-Subject: Re: [PATCH 2/3] dt-bindings: mtd: Add a property to declare secure
- regions in Qcom NANDc
-Message-ID: <20210305233657.GA839767@robh.at.kernel.org>
-References: <20210222120259.94465-1-manivannan.sadhasivam@linaro.org>
- <20210222120259.94465-3-manivannan.sadhasivam@linaro.org>
+ id 1lIK96-00HBV1-7n
+ for linux-mtd@lists.infradead.org; Fri, 05 Mar 2021 23:46:16 +0000
+Received: from mwalle01.fritz.box (unknown
+ [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
+ SHA256) (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 6C2BD22172;
+ Sat,  6 Mar 2021 00:46:01 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1614987964;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=eN73zw785LDN9Maeb4EKVdz3vl/qy3K7dluHlBvPFMk=;
+ b=C21hvFv5AvHFAKzlLETGUAPy+zSKh7Gbr9wZeOEcMLzMI0wxnGDaurc3hoPxM5dvbsryi/
+ pR9HFxa9aBByDCZBvCIUMWvR+plslxrddbYSMwpBQ4Fypwd2QSlRwU3XapccSQWxyNWX9E
+ KY2TaCucxZXx0wP+pTp0CxN6rsXhNvU=
+From: Michael Walle <michael@walle.cc>
+To: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Michael Walle <michael@walle.cc>
+Subject: [PATCH] mtd: spi-nor: use is_power_of_2()
+Date: Sat,  6 Mar 2021 00:45:52 +0100
+Message-Id: <20210305234552.19204-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210222120259.94465-3-manivannan.sadhasivam@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210305_233702_086725_4618CC20 
-X-CRM114-Status: GOOD (  19.63  )
+X-CRM114-CacheID: sfid-20210305_234612_859201_5772FDC6 
+X-CRM114-Status: GOOD (  13.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,48 +83,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Feb 22, 2021 at 05:32:58PM +0530, Manivannan Sadhasivam wrote:
-> On a typical end product, a vendor may choose to secure some regions in
-> the NAND memory which are supposed to stay intact between FW upgrades.
-> The access to those regions will be blocked by a secure element like
-> Trustzone. So the normal world software like Linux kernel should not
-> touch these regions (including reading).
-> 
-> So let's add a property for declaring such secure regions so that the
-> driver can skip touching them.
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  Documentation/devicetree/bindings/mtd/qcom,nandc.yaml | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-> index 84ad7ff30121..7500e20da9c1 100644
-> --- a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-> @@ -48,6 +48,13 @@ patternProperties:
->          enum:
->            - 512
->  
-> +      qcom,secure-regions:
-> +        $ref: /schemas/types.yaml#/definitions/uint32-array
+There is already a function to check if an integer is a power of 2. Use
+it.
 
-Don't you need 64-bit regions potentially? Though 4GB should be enough 
-for anyone.
+Signed-off-by: Michael Walle <michael@walle.cc>
+---
+ drivers/mtd/spi-nor/core.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-If more than one addr+size, then you need a matrix.
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 0522304f52fa..4a315cb1c4db 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2336,11 +2336,8 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		 * If page_size is a power of two, the offset can be quickly
+ 		 * calculated with an AND operation. On the other cases we
+ 		 * need to do a modulus operation (more expensive).
+-		 * Power of two numbers have only one bit set and we can use
+-		 * the instruction hweight32 to detect if we need to do a
+-		 * modulus (do_div()) or not.
+ 		 */
+-		if (hweight32(nor->page_size) == 1) {
++		if (is_power_of_2(nor->page_size)) {
+ 			page_offset = addr & (nor->page_size - 1);
+ 		} else {
+ 			uint64_t aux = addr;
+-- 
+2.20.1
 
-> +        description:
-> +          Regions in the NAND memory which are protected using a secure element
-> +          like Trustzone. This property contains the start address and size of
-> +          the secure regions present (optional).
-> +
->  allOf:
->    - $ref: "nand-controller.yaml#"
->  
-> -- 
-> 2.25.1
-> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
