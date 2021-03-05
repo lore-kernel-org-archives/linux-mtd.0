@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6B7FC433E0
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Mar 2021 08:10:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6121AC433DB
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Mar 2021 08:17:29 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 656E964F0B
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Mar 2021 08:10:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 656E964F0B
+	by mail.kernel.org (Postfix) with ESMTPS id 09D1B65011
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Mar 2021 08:17:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 09D1B65011
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,48 +23,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:From:Date:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=zN2l7vaqM0O9/6bZjOpm0JfzdqgLjufsAXYB52bqNXs=; b=RBashTA4WWrt825qPkP2AmENPX
-	7XkT1GgcNHJAdzqMvcsXk+HdceUu6EBhov03PMjALVSYlbSAiZWSSJq1+4f7mwzjcMIHDJWMsg1im
-	ITfOwA50gnvtL9FfXFzIZr1rahgTJoFt8f62M2nW/ftuC8CtXablQqfttOCiIFjQL8OPBJLA3iO2i
-	MSBYQwVOiIbinlCj0bjB0I06yDUmfFbnEmSk5xaT8PwR00PHP8Un8G8cz4kmafG33f0ttIy19792u
-	yhDjyCk/qxyFu2S9+iYA7Jct5RWw1i8iIIGib4bAfn6sJ2L6/SFbZ1kbSFPqjdXjP9Mpmtr7YfsC5
-	IH9rDEcQ==;
+	bh=jdNYKkG1X49gJ53tVsVQ9tq/S8ngyNXBgJyZmVDEqa4=; b=EefH/tVqnTTgZQQ4rjU7nMtpg4
+	qjfpqBmfuMa0ymw0mNldQVZ00M8F5QGXrDQuZyCV/dhfY3UAnml/QtVfjZHSM+OfqC0prGNgOdsPC
+	MCdwkMdLmVwlrZI7Zu1lSq6et7Z5/Ej1KAWEJGc2lzIgIRn2rB7fwEqOioneXH1kZsUiIS0Qfb/5J
+	Kz1PPHGyLlWGisQfGSynWi8qsj0qSxkyu76bAG2ErImQUj/lTTEEI+zGtFjbFh7o3CP1caXdbf+1a
+	WRP8/ZsRF8dN3qFGDHXHNHc0tswO0mgJSmBwEAYntydstXnu64H3+mMpL/zTP1iq+NW14243hupQn
+	h0k99bow==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lI5WW-00Duth-NV; Fri, 05 Mar 2021 08:09:25 +0000
+	id 1lI5dL-00Dx3u-VP; Fri, 05 Mar 2021 08:16:28 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lI5WK-00Dun3-98; Fri, 05 Mar 2021 08:09:14 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7755964F4A;
- Fri,  5 Mar 2021 08:09:07 +0000 (UTC)
+ id 1lI5dF-00Dx27-2Y
+ for linux-mtd@lists.infradead.org; Fri, 05 Mar 2021 08:16:23 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4FA965014;
+ Fri,  5 Mar 2021 08:16:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1614931749;
- bh=ByaE4K+EFQRpe4LB98+PQO4TPOClgjHWV54KDajmUqQ=;
+ s=k20201202; t=1614932179;
+ bh=t1cng2jl4iyc5DF35ZB4YuDSPYVo2bYVbHiZ7KKk+OQ=;
  h=Date:From:To:Cc:Subject:From;
- b=J1PrYsHrRDMc6jpbXsjeXIRHSf4HRwUXPm3uezAzYs4tOx3kDH6pQqgYXHO19zo6I
- jAqXQUAXl44TYNMJnRmeKDhYpoaH3Cfr9s9YUTYZgDGEFbtJzJpr9PdZOTC8GUfL2f
- D94gF8Iyf1kQch+uYbhwEdh31KEbEKZQfelZKeE/2g+P8KL93UyDxrv5CovC6FnK7g
- nKH7ZKtJysqp1f9o2gpmX9MVHDePeXgD6HBVMT1xRrCGXYquylyOX+OcUErxsFnrll
- Jw0EeVVL80EzIeu4Vef/Vi9dhjVJtLzQj0oet4o2HieeeGRd1Gz4+fFH8GEhg1D5aR
- n+V0xwaGG74hg==
-Date: Fri, 5 Mar 2021 02:09:05 -0600
+ b=F/YKqPHxRMQ+1zHcBYGg0itcKDEpyLqAjcTMxv8MqjvZuBSCnAskyHmDWupKB1vqT
+ sERqXEvfZHRq5lAjySHIVDYrIOkmRWxHUoinujM/FF+KsZi6P9O38STrSTFT0veGkF
+ ThZPMVmDrfcdH4GT2ElxdTY/ARC3fe2cY9Zf2wBFBNH7Tew0ENZnqTkME9YqQMyUVx
+ S/Ev2A4OJG8XFiJ1WniSjOJejeXfVK0QlTf2Vj8Mte8kvJPA80ST2akU9imbXzjiPf
+ 1GEMQvqmy67cjDBpU9I6csLRwUCuFVuInFDlY72lmSR27DU6K4rPx/BQU9T2J5e3/K
+ uoEsYnp57vgRQ==
+Date: Fri, 5 Mar 2021 02:16:16 -0600
 From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@st.com>
-Cc: linux-mtd@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+To: Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  "Gustavo A. R. Silva" <gustavoars@kernel.org>,
  linux-hardening@vger.kernel.org
-Subject: [PATCH v2][next] mtd: rawnand: stm32_fmc2: Fix fall-through warnings
- for Clang
-Message-ID: <20210305080905.GA135306@embeddedor>
+Subject: [PATCH v2][next] ubi: Fix fall-through warnings for Clang
+Message-ID: <20210305081616.GA136956@embeddedor>
 MIME-Version: 1.0
 Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210305_080912_539098_79A9800C 
-X-CRM114-Status: UNSURE (   7.67  )
+X-CRM114-CacheID: sfid-20210305_081621_654051_5E97BE89 
+X-CRM114-Status: UNSURE (   7.50  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -82,40 +80,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In preparation to enable -Wimplicit-fallthrough for Clang, fix a couple
-of warnings by explicitly adding a couple of fallthrough pseudo-keywords
-instead of letting the code fall through to the next case.
+In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+by explicitly adding a fallthrough pseudo-keyword instead of letting the
+code fall through to the next case.
 
 Link: https://github.com/KSPP/linux/issues/115
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
 Changes in v2:
- Make use of a break statement instead of fallthrough for consistency.
+ Make use of a break statement instead of fallthrough, for consistency.
  Link: https://lore.kernel.org/lkml/20201123093347.719a77cf@xps13/
 
- drivers/mtd/nand/raw/stm32_fmc2_nand.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/mtd/ubi/build.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-index 550bda4d1415..1c277fbb91f2 100644
---- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-+++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-@@ -531,6 +531,7 @@ static int stm32_fmc2_nfc_ham_correct(struct nand_chip *chip, u8 *dat,
- 		switch (b % 4) {
- 		case 2:
- 			bit_position += shifting;
-+			break;
- 		case 1:
- 			break;
- 		default:
-@@ -546,6 +547,7 @@ static int stm32_fmc2_nfc_ham_correct(struct nand_chip *chip, u8 *dat,
- 		switch (b % 4) {
- 		case 2:
- 			byte_addr += shifting;
-+			break;
- 		case 1:
- 			break;
- 		default:
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index f399edc82191..a7e3eb9befb6 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -1350,6 +1350,7 @@ static int bytes_str_to_int(const char *str)
+ 		fallthrough;
+ 	case 'K':
+ 		result *= 1024;
++		break;
+ 	case '\0':
+ 		break;
+ 	default:
 -- 
 2.27.0
 
