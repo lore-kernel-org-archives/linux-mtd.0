@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02C15C433DB
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Mar 2021 08:26:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61968C433DB
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Mar 2021 08:29:07 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 93C8165014
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Mar 2021 08:26:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 93C8165014
+	by mail.kernel.org (Postfix) with ESMTPS id EF3CB64D74
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Mar 2021 08:29:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF3CB64D74
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,46 +23,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:From:Date:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=X+5gsDZP9B9YlbLOwVo/1gc4m9C5c1yBZUHR23wKW5g=; b=AkmAUrcOWAJ99evReqHndIIsCc
-	cDnw246Cu7+Y+ql/4ukJF2aHF6fPeyEHuLR9Hzx5UNF+0BCbK7CJ4M2cCgVM6O3I3F6s+SbMXOah4
-	JpCLTFhTdEBBFb42xtdEZus86sDO2I4ZEmvZzTVnhKB2fZ3NJUnMQzGB9enre63y7f41rLHcVsTvg
-	o1xNm655WjHdVhxn7DrljTXDtHECTcPOaw2y0mmxhFJi1pFMXDXjUOQaB8bsC5DVQ3xFL2MNI5EtE
-	h3SeytFm4EEzAmOfn/QvFuloH0KW2JUofPL91l8ElGVkJpF6/7Ixr0JinjF8AGAb4fiZGOp1IzCb+
-	W4VXuQKA==;
+	bh=aKXO8l4HtbjpxNdMXywJcg1wVJdiBQ+VXe3xKqkUE10=; b=Isu/K5OR+HImcs/FAH7unPze5P
+	BSPO4fTJ3Ih8MIF1S2wNv3jVtShl0C5PnaWsQx+PRXt8E1NH7M6o+f3TBf0yTkodztrW0mPIqL7en
+	ciAZIDLf/AtSOMkB7U64YkZBMySmw3zR51+5LpANrL9XG4sUnFEODwzr2hfT3PE7+KpvEgBer/BLL
+	fa1h1jzxcXiZBAIliysVETWhPkTHAloxfkqRH6Jcpou+w30RelVZNOuIM2etC3lS6VQNwMZ3OHpyq
+	r8NwJqP5P1gnII7nP3n66u8SYs4VNbzXw8bnyXxJSHY8vGwVXxuoADADBlI6FTQEMIke22tfnPJSB
+	wBlP+W7g==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lI5mi-00DzJi-4y; Fri, 05 Mar 2021 08:26:08 +0000
+	id 1lI5pB-00E02b-3B; Fri, 05 Mar 2021 08:28:41 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lI5md-00DzIc-Hi
- for linux-mtd@lists.infradead.org; Fri, 05 Mar 2021 08:26:05 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C09165014;
- Fri,  5 Mar 2021 08:26:01 +0000 (UTC)
+ id 1lI5p6-00E00v-Jg
+ for linux-mtd@lists.infradead.org; Fri, 05 Mar 2021 08:28:39 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61E3D64DCE;
+ Fri,  5 Mar 2021 08:28:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1614932762;
- bh=8kCER71SB1n8leoU2EokvztmF4jGpV7K4ZN1wSNRgdY=;
+ s=k20201202; t=1614932915;
+ bh=d2yIkPOp3EpBCDhbDKuigF1lskG1wpuFHvgwfi1+Olk=;
  h=Date:From:To:Cc:Subject:From;
- b=jATUPn7IhyWdnarY212YsfhDcdb7T5CObxeJPOXvyC1quwn2QrzKatXWTeoyLh1Bo
- 1oXI+VqiVs/cNHaFRuZgwUHsvlRjOm+9efhQFV6HXLgf1kbD09mKeyUv0h4tI2As/D
- 5M41oqOi+RWWO6aiGgeuz3Pk5IPQbCsj2M3rnsULCrJvXmoaG/nyByH4NCZowJGu/F
- C8SPoM7nM9PG/1esGPMcysWFF0HfN1mtXTWtKoV4z3tTwEzc5uJCTbsOF+QOM+uz1L
- niCFLhYyAZAdmg4xSQ+tr8vhCyyM1vb1ZkZtIvlymwfVV3COF0Yq+anFOYo7GCgYVy
- YBvh0OaxI2YCQ==
-Date: Fri, 5 Mar 2021 02:25:59 -0600
+ b=MJ4gEx3OpgHoWnjpm+LLhkQoztvJ4dNQ0FIl4X4IP3p0MxWny0fC52tSsXdF+vzS7
+ 666gt3UNL3qt1sB5lzwGeAkpZiuC9RLgigYfT26qmUS8yAACbR0hqvzIzg2Ja6vbO/
+ HPrKpXSm8Txwg1eqhk1lbg5hrJpSeICFP89uaa7mAZQ9wb/dDxjaqbxKjT3ENzLBXh
+ 5bCxqO8eodYmLA+K3f97Mtt8BxImUj8bdRZnk2KFAy6tdRfGm5v7f52FRrXxANl9KQ
+ HyPu8VDqzKmV8fLgbvcVYS92dIds9KVhTsqer55Rrb9Mk8bSlY3TXsYDTUmn1X0cTe
+ aiawgkA+UICnw==
+Date: Fri, 5 Mar 2021 02:28:32 -0600
 From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+To: Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  "Gustavo A. R. Silva" <gustavoars@kernel.org>,
  linux-hardening@vger.kernel.org
-Subject: [PATCH RESEND][next] mtd: rawnand: fsmc: Fix fall-through warnings
- for Clang
-Message-ID: <20210305082559.GA137646@embeddedor>
+Subject: [PATCH v3][next] ubi: Fix fall-through warnings for Clang
+Message-ID: <20210305082832.GA137724@embeddedor>
 MIME-Version: 1.0
 Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210305_082603_986665_EFAD954E 
-X-CRM114-Status: UNSURE (   7.96  )
+X-CRM114-CacheID: sfid-20210305_082837_368389_284C461C 
+X-CRM114-Status: UNSURE (   8.06  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -87,21 +87,28 @@ through to the next case.
 Link: https://github.com/KSPP/linux/issues/115
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/mtd/nand/raw/fsmc_nand.c | 1 +
+Changes in v3:
+ Update the changelog text according to the actual code change.
+
+Changes in v2:
+ Make use of a break statement instead of fallthrough, for consistency.
+ Link: https://lore.kernel.org/lkml/20201123093347.719a77cf@xps13/
+
+ drivers/mtd/ubi/build.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
-index a24e2f57fa68..bf695255b43a 100644
---- a/drivers/mtd/nand/raw/fsmc_nand.c
-+++ b/drivers/mtd/nand/raw/fsmc_nand.c
-@@ -930,6 +930,7 @@ static int fsmc_nand_attach_chip(struct nand_chip *nand)
- 				 "Using 4-bit SW BCH ECC scheme\n");
- 			break;
- 		}
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index f399edc82191..a7e3eb9befb6 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -1350,6 +1350,7 @@ static int bytes_str_to_int(const char *str)
+ 		fallthrough;
+ 	case 'K':
+ 		result *= 1024;
 +		break;
- 
- 	case NAND_ECC_ENGINE_TYPE_ON_DIE:
+ 	case '\0':
  		break;
+ 	default:
 -- 
 2.27.0
 
