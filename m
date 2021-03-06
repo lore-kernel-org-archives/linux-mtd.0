@@ -5,16 +5,16 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B24A9C433E0
-	for <linux-mtd@archiver.kernel.org>; Sat,  6 Mar 2021 00:06:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13218C433E0
+	for <linux-mtd@archiver.kernel.org>; Sat,  6 Mar 2021 00:07:16 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4D93B650AA
-	for <linux-mtd@archiver.kernel.org>; Sat,  6 Mar 2021 00:06:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D93B650AA
+	by mail.kernel.org (Postfix) with ESMTPS id A396F650AC
+	for <linux-mtd@archiver.kernel.org>; Sat,  6 Mar 2021 00:07:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A396F650AC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,25 +23,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=uSU2TLZNPV3SSGpMQMb4X1cli+gOyq3+4VNdQh4emYM=; b=eljv/ka7Iyqqydj5+p2/MPNOx
-	6WNkAgaa8AK1bcqC62ROsTHh+30DOv5QlD8JMsebpeSuVI51l8uLxGoh8LFWEmb4TjmQ0vpXGKXaI
-	eWXyv/L2iVHoBhsmeNYXt/swSIZptiBKmQS6vZ37wdwSyjarCoAEE3/EM6yQ6UHkv8LfPzzMZHFBz
-	ezT1DwckiN6NJ/vJ+QgiEDIRp1WZoUJi+BcUK/+KLUJBXUzRwEptSAvugNzAjmmZGPWadZPBiDLxz
-	w4IUt612IgS8g1+M9k6PYr5S8lWtwfsHiMo1Y6/46MIydKtxT7CFnjNmNGmRR5CGPc8Fge/r0wKAJ
-	z2dFrjqTg==;
+	 bh=U3c0xUv+rYmb7yHI7FP+AdfYq5fikgBXZDZPbts5F4U=; b=R/yCupsTGOmrOdyPbVdbblwAA
+	GMWF6j6ZdNCqyWTk4/tnIr/N5cgjyJS+SIAfQqG1IynQvq7lNJfMgLuQsTl3LcmDlrTT6LBVOP7Gc
+	8m9c2+4KqWJHUnUm7QbhGzQYwQDg6oTZ+b7MgaONqSyxrAivcltivdMv+hkg4rs3gZT/Cl2sppKP/
+	fHBo79J1bLSZr4X0xmGA3R8DTYTgGjkercYkltxm4JvPxmJ3/23BBfz/SLUjLMBsGdNE8IGXsPoLr
+	jdlVETGp2yT3Yw1OzKmW4VR29MITeZYydI8Aqf+fDWiq2aWn1E3DL7snX+dd78ky0EiFNr0CBSv7N
+	S9bo3PV9A==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lIKSM-00HHN2-CK; Sat, 06 Mar 2021 00:06:06 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1lIKSY-00HHRh-A0; Sat, 06 Mar 2021 00:06:18 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lIKS3-00HHEV-Ni
- for linux-mtd@lists.infradead.org; Sat, 06 Mar 2021 00:05:52 +0000
+ id 1lIKS4-00HHEb-C0
+ for linux-mtd@lists.infradead.org; Sat, 06 Mar 2021 00:05:54 +0000
 Received: from mwalle01.fritz.box (unknown
  [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 2CA2D22234;
+ by ssl.serverraum.org (Postfix) with ESMTPSA id C575122256;
  Sat,  6 Mar 2021 01:05:47 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
  s=mail2016061301; t=1614989147;
@@ -49,10 +49,10 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=YqQNslft2DFJ1qUx8R7Et19hRAFsFtbLVljEtaEmLfc=;
- b=nt90sCNMJ80JTnZVwBwRs8cHJvZXsWAP7niawhXhtsxKl4m5uABSzukCLVwOh4CBzBVo9B
- o5nEEGzI3bSY7e8ElIFOiZqtxsgq+7FdBHeXVJgGs9pEY1rZ1hAkfd00/dH6nRTQ20bKRE
- Y5OUr9ezL+saCVCVvuRzRd4UqR8Toxc=
+ bh=6vYZSKUm8UQgDARDdDwNawTrGlQT/7lLmUbdR2Psfy8=;
+ b=X8rjvKeoQBffC90bVuxRXFqjnppIOCXSNcAHkSKorQb+Bueo9FFku+l8GKpR6tJN/puKyP
+ u0z/5KFbJBE5fUt/ICZcXtZuh/gFZtp9KM6GAwWqSoLgatTij83Vk/Y4z83k7cjPWaRooq
+ tUMA45M/7vC3Hnld7spHywc2sMF0WBs=
 From: Michael Walle <michael@walle.cc>
 To: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
@@ -60,17 +60,17 @@ Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Michael Walle <michael@walle.cc>
-Subject: [PATCH v4 2/4] mtd: spi-nor: implement OTP support for Winbond and
+Subject: [PATCH v4 4/4] mtd: spi-nor: implement OTP erase for Winbond and
  similar flashes
-Date: Sat,  6 Mar 2021 01:05:33 +0100
-Message-Id: <20210306000535.9890-3-michael@walle.cc>
+Date: Sat,  6 Mar 2021 01:05:35 +0100
+Message-Id: <20210306000535.9890-5-michael@walle.cc>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210306000535.9890-1-michael@walle.cc>
 References: <20210306000535.9890-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210306_000548_996045_B9E6789E 
-X-CRM114-Status: GOOD (  22.26  )
+X-CRM114-CacheID: sfid-20210306_000550_697301_B8E6FE2C 
+X-CRM114-Status: GOOD (  21.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,267 +87,198 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use the new OTP ops to implement OTP access on Winbond flashes. Most
-Winbond flashes provides up to four different OTP regions ("Security
-Registers").
+Winbond flashes with OTP support provide a command to erase the OTP
+data. This might come in handy during development.
 
-Winbond devices use a special opcode to read and write to the OTP
-regions, just like the RDSFDP opcode. In fact, it seems that the
-(undocumented) first OTP area of the newer flashes is the actual SFDP
-table.
-
-On a side note, Winbond devices also allow erasing the OTP regions as
-long as the area isn't locked down.
+This was tested with a Winbond W25Q32JW on a LS1028A SoC with the
+NXP FSPI controller.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
 ---
- drivers/mtd/spi-nor/core.c  |   2 +-
- drivers/mtd/spi-nor/core.h  |   6 ++
- drivers/mtd/spi-nor/otp.c   | 164 ++++++++++++++++++++++++++++++++++++
- include/linux/mtd/spi-nor.h |   9 ++
- 4 files changed, 180 insertions(+), 1 deletion(-)
+ drivers/mtd/spi-nor/core.c    |  4 +-
+ drivers/mtd/spi-nor/core.h    |  4 ++
+ drivers/mtd/spi-nor/otp.c     | 74 ++++++++++++++++++++++++++++++++++-
+ drivers/mtd/spi-nor/winbond.c |  1 +
+ 4 files changed, 79 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 0c5c757fa95b..ef7df26896f1 100644
+index ef7df26896f1..21a737804576 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -1034,7 +1034,7 @@ static int spi_nor_write_16bit_sr_and_check(struct spi_nor *nor, u8 sr1)
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
--static int spi_nor_write_16bit_cr_and_check(struct spi_nor *nor, u8 cr)
-+int spi_nor_write_16bit_cr_and_check(struct spi_nor *nor, u8 cr)
+@@ -166,8 +166,8 @@ static int spi_nor_controller_ops_read_reg(struct spi_nor *nor, u8 opcode,
+ 	return nor->controller_ops->read_reg(nor, opcode, buf, len);
+ }
+ 
+-static int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
+-					    const u8 *buf, size_t len)
++int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
++				     const u8 *buf, size_t len)
  {
- 	int ret;
- 	u8 *sr_cr = nor->bouncebuf;
+ 	if (spi_nor_protocol_is_dtr(nor->reg_proto))
+ 		return -EOPNOTSUPP;
 diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index ec8da1243846..dfbf6ba42b57 100644
+index dfbf6ba42b57..ef62ec4625a1 100644
 --- a/drivers/mtd/spi-nor/core.h
 +++ b/drivers/mtd/spi-nor/core.h
-@@ -496,6 +496,7 @@ int spi_nor_read_sr(struct spi_nor *nor, u8 *sr);
- int spi_nor_read_cr(struct spi_nor *nor, u8 *cr);
- int spi_nor_write_sr(struct spi_nor *nor, const u8 *sr, size_t len);
- int spi_nor_write_sr_and_check(struct spi_nor *nor, u8 sr1);
-+int spi_nor_write_16bit_cr_and_check(struct spi_nor *nor, u8 cr);
+@@ -213,6 +213,7 @@ struct spi_nor_otp_ops {
+ 	int (*read)(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
+ 	int (*write)(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
+ 	int (*lock)(struct spi_nor *nor, unsigned int region);
++	int (*erase)(struct spi_nor *nor, loff_t addr);
+ 	int (*is_locked)(struct spi_nor *nor, unsigned int region);
+ };
  
- int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr);
- ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t len,
-@@ -503,6 +504,11 @@ ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t len,
- ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
- 			   const u8 *buf);
+@@ -481,6 +482,8 @@ extern const struct spi_nor_manufacturer spi_nor_xmc;
+ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
+ 			     struct spi_mem_op *op,
+ 			     const enum spi_nor_protocol proto);
++int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
++				     const u8 *buf, size_t len);
+ int spi_nor_write_enable(struct spi_nor *nor);
+ int spi_nor_write_disable(struct spi_nor *nor);
+ int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable);
+@@ -506,6 +509,7 @@ ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
  
-+int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
-+int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
-+int spi_nor_otp_lock_sr2(struct spi_nor *nor, unsigned int region);
-+int spi_nor_otp_is_locked_sr2(struct spi_nor *nor, unsigned int region);
-+
- int spi_nor_hwcaps_read2cmd(u32 hwcaps);
- u8 spi_nor_convert_3to4_read(u8 opcode);
- void spi_nor_set_read_settings(struct spi_nor_read_command *read,
+ int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
+ int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
++int spi_nor_otp_erase_secr(struct spi_nor *nor, loff_t addr);
+ int spi_nor_otp_lock_sr2(struct spi_nor *nor, unsigned int region);
+ int spi_nor_otp_is_locked_sr2(struct spi_nor *nor, unsigned int region);
+ 
 diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
-index 4e301fd5156b..4e8da9108c77 100644
+index 4e8da9108c77..78ec79368c29 100644
 --- a/drivers/mtd/spi-nor/otp.c
 +++ b/drivers/mtd/spi-nor/otp.c
-@@ -15,6 +15,170 @@
- #define spi_nor_otp_region_len(nor) ((nor)->params->otp.org->len)
- #define spi_nor_otp_n_regions(nor) ((nor)->params->otp.org->n_regions)
+@@ -8,6 +8,7 @@
+ #include <linux/log2.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/spi-nor.h>
++#include <linux/spi/spi-mem.h>
+ 
+ #include "core.h"
+ 
+@@ -111,6 +112,50 @@ int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf
+ 	return ret ?: written;
+ }
  
 +/**
-+ * spi_nor_otp_read_secr() - read OTP data
-+ * @nor:	pointer to 'struct spi_nor'
-+ * @from:       offset to read from
-+ * @len:        number of bytes to read
-+ * @buf:        pointer to dst buffer
-+ *
-+ * Read OTP data from one region by using the SPINOR_OP_RSECR commands. This
-+ * method is used on GigaDevice and Winbond flashes.
-+ *
-+ * Return: number of bytes read successfully, -errno otherwise
-+ */
-+int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf)
-+{
-+	u8 addr_width, read_opcode, read_dummy;
-+	struct spi_mem_dirmap_desc *rdesc;
-+	enum spi_nor_protocol read_proto;
-+	int ret;
-+
-+	read_opcode = nor->read_opcode;
-+	addr_width = nor->addr_width;
-+	read_dummy = nor->read_dummy;
-+	read_proto = nor->read_proto;
-+	rdesc = nor->dirmap.rdesc;
-+
-+	nor->read_opcode = SPINOR_OP_RSECR;
-+	nor->addr_width = 3;
-+	nor->read_dummy = 8;
-+	nor->read_proto = SNOR_PROTO_1_1_1;
-+	nor->dirmap.rdesc = NULL;
-+
-+	ret = spi_nor_read_data(nor, addr, len, buf);
-+
-+	nor->read_opcode = read_opcode;
-+	nor->addr_width = addr_width;
-+	nor->read_dummy = read_dummy;
-+	nor->read_proto = read_proto;
-+	nor->dirmap.rdesc = rdesc;
-+
-+	return ret;
-+}
-+
-+/**
-+ * spi_nor_otp_write_secr() - write OTP data
++ * spi_nor_otp_erase_secr() - erase one OTP region
 + * @nor:        pointer to 'struct spi_nor'
 + * @to:         offset to write to
 + * @len:        number of bytes to write
 + * @buf:        pointer to src buffer
 + *
-+ * Write OTP data to one region by using the SPINOR_OP_PSECR commands. This
-+ * method is used on GigaDevice and Winbond flashes.
++ * Erase one OTP region by using the SPINOR_OP_ESECR commands. This method is
++ * used on GigaDevice and Winbond flashes.
 + *
-+ * Please note, the write must not span multiple OTP regions.
-+ *
-+ * Return: number of bytes written successfully, -errno otherwise
++ * Return: 0 on success, -errno otherwise
 + */
-+int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf)
++int spi_nor_otp_erase_secr(struct spi_nor *nor, loff_t addr)
 +{
-+	enum spi_nor_protocol write_proto;
-+	struct spi_mem_dirmap_desc *wdesc;
-+	u8 addr_width, program_opcode;
-+	int ret, written;
++	int ret;
 +
-+	program_opcode = nor->program_opcode;
-+	addr_width = nor->addr_width;
-+	write_proto = nor->write_proto;
-+	wdesc = nor->dirmap.wdesc;
-+
-+	nor->program_opcode = SPINOR_OP_PSECR;
-+	nor->addr_width = 3;
-+	nor->write_proto = SNOR_PROTO_1_1_1;
-+	nor->dirmap.wdesc = NULL;
-+
-+	/*
-+	 * We only support a write to one single page. For now all winbond
-+	 * flashes only have one page per OTP region.
-+	 */
 +	ret = spi_nor_write_enable(nor);
 +	if (ret)
-+		goto out;
++		return ret;
 +
-+	written = spi_nor_write_data(nor, addr, len, buf);
-+	if (written < 0)
-+		goto out;
++	if (nor->spimem) {
++		struct spi_mem_op op =
++			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_ESECR, 0),
++				   SPI_MEM_OP_ADDR(3, addr, 0),
++				   SPI_MEM_OP_NO_DUMMY,
++				   SPI_MEM_OP_NO_DATA);
 +
-+	ret = spi_nor_wait_till_ready(nor);
++		spi_nor_spimem_setup_op(nor, &op, nor->write_proto);
 +
-+out:
-+	nor->program_opcode = program_opcode;
-+	nor->addr_width = addr_width;
-+	nor->write_proto = write_proto;
-+	nor->dirmap.wdesc = wdesc;
++		ret = spi_mem_exec_op(nor->spimem, &op);
++	} else {
++		nor->bouncebuf[2] = addr & 0xff;
++		nor->bouncebuf[1] = (addr >> 8) & 0xff;
++		nor->bouncebuf[0] = (addr >> 16) & 0xff;
 +
-+	return ret ?: written;
-+}
-+
-+static int spi_nor_otp_lock_bit_cr(unsigned int region)
-+{
-+	static const int lock_bits[] = { SR2_LB1, SR2_LB2, SR2_LB3 };
-+
-+	if (region >= ARRAY_SIZE(lock_bits))
-+		return -EINVAL;
-+
-+	return lock_bits[region];
-+}
-+
-+/**
-+ * spi_nor_otp_lock_sr2() - lock the OTP region
-+ * @nor:        pointer to 'struct spi_nor'
-+ * @region:     OTP region
-+ *
-+ * Lock the OTP region by writing the status register-2. This method is used on
-+ * GigaDevice and Winbond flashes.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+int spi_nor_otp_lock_sr2(struct spi_nor *nor, unsigned int region)
-+{
-+	u8 *cr = nor->bouncebuf;
-+	int ret, lock_bit;
-+
-+	lock_bit = spi_nor_otp_lock_bit_cr(region);
-+	if (lock_bit < 0)
-+		return lock_bit;
-+
-+	ret = spi_nor_read_cr(nor, cr);
++		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_ESECR,
++						       nor->bouncebuf, 3);
++	}
 +	if (ret)
 +		return ret;
 +
-+	/* no need to write the register if region is already locked */
-+	if (cr[0] & lock_bit)
-+		return 0;
-+
-+	cr[0] |= lock_bit;
-+
-+	return spi_nor_write_16bit_cr_and_check(nor, cr[0]);
++	return spi_nor_wait_till_ready(nor);
 +}
 +
-+/**
-+ * spi_nor_otp_is_locked_sr2() - get the OTP region lock status
-+ * @nor:        pointer to 'struct spi_nor'
-+ * @region:     OTP region
-+ *
-+ * Retrieve the OTP region lock bit by reading the status register-2. This
-+ * method is used on GigaDevice and Winbond flashes.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+int spi_nor_otp_is_locked_sr2(struct spi_nor *nor, unsigned int region)
-+{
-+	u8 *cr = nor->bouncebuf;
-+	int ret, lock_bit;
-+
-+	lock_bit = spi_nor_otp_lock_bit_cr(region);
-+	if (lock_bit < 0)
-+		return lock_bit;
-+
-+	ret = spi_nor_read_cr(nor, cr);
-+	if (ret)
-+		return ret;
-+
-+	return cr[0] & lock_bit;
-+}
-+
- static loff_t spi_nor_otp_region_start(const struct spi_nor *nor, int region)
+ static int spi_nor_otp_lock_bit_cr(unsigned int region)
  {
- 	const struct spi_nor_otp_organization *org = nor->params->otp.org;
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index a0d572855444..6d1956049e90 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -107,6 +107,11 @@
- #define SPINOR_OP_RD_EVCR      0x65    /* Read EVCR register */
- #define SPINOR_OP_WD_EVCR      0x61    /* Write EVCR register */
+ 	static const int lock_bits[] = { SR2_LB1, SR2_LB2, SR2_LB3 };
+@@ -319,11 +364,13 @@ static int spi_nor_mtd_otp_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	return spi_nor_mtd_otp_read_write(mtd, to, len, retlen, buf, true);
+ }
  
-+/* Used for GigaDevices and Winbond flashes. */
-+#define SPINOR_OP_ESECR		0x44	/* Erase Security registers */
-+#define SPINOR_OP_PSECR		0x42	/* Program Security registers */
-+#define SPINOR_OP_RSECR		0x48	/* Read Security registers */
+-static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
++static int spi_nor_mtd_otp_lock_erase(struct mtd_info *mtd, loff_t from,
++				      size_t len, bool is_erase)
+ {
+ 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+ 	const struct spi_nor_otp_ops *ops = spi_nor_otp_ops(nor);
+ 	unsigned int region;
++	loff_t start;
+ 	int ret;
+ 
+ 	if (from < 0 || (from + len) > spi_nor_otp_size(nor))
+@@ -342,7 +389,12 @@ static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
+ 
+ 	while (len) {
+ 		region = spi_nor_otp_offset_to_region(nor, from);
+-		ret = ops->lock(nor, region);
++		start = spi_nor_otp_region_start(nor, region);
 +
- /* Status Register bits. */
- #define SR_WIP			BIT(0)	/* Write in progress */
- #define SR_WEL			BIT(1)	/* Write enable latch */
-@@ -138,8 +143,12 @@
++		if (is_erase)
++			ret = ops->erase(nor, start);
++		else
++			ret = ops->lock(nor, region);
+ 		if (ret)
+ 			goto out;
  
- /* Status Register 2 bits. */
- #define SR2_QUAD_EN_BIT1	BIT(1)
-+#define SR2_LB1			BIT(3)	/* Security Register Lock Bit 1 */
-+#define SR2_LB2			BIT(4)	/* Security Register Lock Bit 2 */
-+#define SR2_LB3			BIT(5)	/* Security Register Lock Bit 3 */
- #define SR2_QUAD_EN_BIT7	BIT(7)
+@@ -356,6 +408,23 @@ static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
+ 	return ret;
+ }
  
++static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
++{
++	return spi_nor_mtd_otp_lock_erase(mtd, from, len, false);
++}
 +
- /* Supported SPI protocols */
- #define SNOR_PROTO_INST_MASK	GENMASK(23, 16)
- #define SNOR_PROTO_INST_SHIFT	16
++static int spi_nor_mtd_otp_erase(struct mtd_info *mtd, loff_t from, size_t len)
++{
++	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++	const struct spi_nor_otp_ops *ops = spi_nor_otp_ops(nor);
++
++	/* OTP erase is optional */
++	if (!ops->erase)
++		return -EOPNOTSUPP;
++
++	return spi_nor_mtd_otp_lock_erase(mtd, from, len, true);
++}
++
+ void spi_nor_otp_init(struct spi_nor *nor)
+ {
+ 	struct mtd_info *mtd = &nor->mtd;
+@@ -379,4 +448,5 @@ void spi_nor_otp_init(struct spi_nor *nor)
+ 	mtd->_read_user_prot_reg = spi_nor_mtd_otp_read;
+ 	mtd->_write_user_prot_reg = spi_nor_mtd_otp_write;
+ 	mtd->_lock_user_prot_reg = spi_nor_mtd_otp_lock;
++	mtd->_erase_user_prot_reg = spi_nor_mtd_otp_erase;
+ }
+diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+index 9a3f8ff007fd..e04219ac11fd 100644
+--- a/drivers/mtd/spi-nor/winbond.c
++++ b/drivers/mtd/spi-nor/winbond.c
+@@ -138,6 +138,7 @@ static int winbond_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+ static const struct spi_nor_otp_ops winbond_otp_ops = {
+ 	.read = spi_nor_otp_read_secr,
+ 	.write = spi_nor_otp_write_secr,
++	.erase = spi_nor_otp_erase_secr,
+ 	.lock = spi_nor_otp_lock_sr2,
+ 	.is_locked = spi_nor_otp_is_locked_sr2,
+ };
 -- 
 2.20.1
 
