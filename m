@@ -2,57 +2,56 @@ Return-Path: <SRS0=TepB=IE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13218C433E0
-	for <linux-mtd@archiver.kernel.org>; Sat,  6 Mar 2021 00:07:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B30D5C433DB
+	for <linux-mtd@archiver.kernel.org>; Sat,  6 Mar 2021 00:07:29 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A396F650AC
-	for <linux-mtd@archiver.kernel.org>; Sat,  6 Mar 2021 00:07:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A396F650AC
+	by mail.kernel.org (Postfix) with ESMTPS id 557E3650AD
+	for <linux-mtd@archiver.kernel.org>; Sat,  6 Mar 2021 00:07:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 557E3650AD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=U3c0xUv+rYmb7yHI7FP+AdfYq5fikgBXZDZPbts5F4U=; b=R/yCupsTGOmrOdyPbVdbblwAA
-	GMWF6j6ZdNCqyWTk4/tnIr/N5cgjyJS+SIAfQqG1IynQvq7lNJfMgLuQsTl3LcmDlrTT6LBVOP7Gc
-	8m9c2+4KqWJHUnUm7QbhGzQYwQDg6oTZ+b7MgaONqSyxrAivcltivdMv+hkg4rs3gZT/Cl2sppKP/
-	fHBo79J1bLSZr4X0xmGA3R8DTYTgGjkercYkltxm4JvPxmJ3/23BBfz/SLUjLMBsGdNE8IGXsPoLr
-	jdlVETGp2yT3Yw1OzKmW4VR29MITeZYydI8Aqf+fDWiq2aWn1E3DL7snX+dd78ky0EiFNr0CBSv7N
-	S9bo3PV9A==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=d9heV0HO8hdKayGPW/+VsW8yXBZctpfNHQqdU+Gtma4=; b=f/ePWr0ARGlmJMSXtGofUjp9ev
+	TsmHrIpn9wwhPuxxBTCDMM70b+5l2YMo2byy0lNHe6/oQngYQ727xtsp18IP5zx6hc79zycOtXkGH
+	ui4WH8T4N6kbAxp/LbcMzIupqPaDr1nI0uRoKTxrFjKIeE9pBmrbkTPE3HAQpPfhU6rG7GWiP55dv
+	fDjt+35/v4iBe9hvmGP0Ud+qZF1sFWZIIys6V1K0Q+ISuDM/Q+8zegz1NTeY32j0GzNmwCyxRpqzg
+	OIbkHAH+3GU3SMg3CQu4hTuDb7XJsanRidUf1uGkAwccHTF8ZOLg+isbe3n+4MDaLCeOve/UizVDy
+	bCi126Eg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lIKSY-00HHRh-A0; Sat, 06 Mar 2021 00:06:18 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1lIKT8-00HHhv-GX; Sat, 06 Mar 2021 00:06:54 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lIKS4-00HHEb-C0
+ id 1lIKS2-00HHEI-VB
  for linux-mtd@lists.infradead.org; Sat, 06 Mar 2021 00:05:54 +0000
 Received: from mwalle01.fritz.box (unknown
  [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id C575122256;
- Sat,  6 Mar 2021 01:05:47 +0100 (CET)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 144DB22205;
+ Sat,  6 Mar 2021 01:05:46 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1614989147;
+ s=mail2016061301; t=1614989146;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=6vYZSKUm8UQgDARDdDwNawTrGlQT/7lLmUbdR2Psfy8=;
- b=X8rjvKeoQBffC90bVuxRXFqjnppIOCXSNcAHkSKorQb+Bueo9FFku+l8GKpR6tJN/puKyP
- u0z/5KFbJBE5fUt/ICZcXtZuh/gFZtp9KM6GAwWqSoLgatTij83Vk/Y4z83k7cjPWaRooq
- tUMA45M/7vC3Hnld7spHywc2sMF0WBs=
+ content-transfer-encoding:content-transfer-encoding;
+ bh=7Uoux/O1JWx+NLbrxspPKrHa/J//QkiAqvm8Eira3vg=;
+ b=GwWx8WXP9kh/IPmsql821t23VrYqfX66wYLwdOyrg+qz7DB2NKGotL2loKOe1wXbDE7xf5
+ D+GGfapUc3JHlFAvPOQnC92T2T+nkqREhTkYq0DT5Aeps5yizTHtv0hpx9RGCBTHlMu3v/
+ UYYd5V3cisV7bjHsicgXjaWiGVa6z6k=
 From: Michael Walle <michael@walle.cc>
 To: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
@@ -60,17 +59,14 @@ Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Michael Walle <michael@walle.cc>
-Subject: [PATCH v4 4/4] mtd: spi-nor: implement OTP erase for Winbond and
- similar flashes
-Date: Sat,  6 Mar 2021 01:05:35 +0100
-Message-Id: <20210306000535.9890-5-michael@walle.cc>
+Subject: [PATCH v4 0/4] mtd: spi-nor: OTP support
+Date: Sat,  6 Mar 2021 01:05:31 +0100
+Message-Id: <20210306000535.9890-1-michael@walle.cc>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210306000535.9890-1-michael@walle.cc>
-References: <20210306000535.9890-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210306_000550_697301_B8E6FE2C 
-X-CRM114-Status: GOOD (  21.50  )
+X-CRM114-CacheID: sfid-20210306_000548_999102_CA500742 
+X-CRM114-Status: GOOD (  10.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,198 +83,49 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Winbond flashes with OTP support provide a command to erase the OTP
-data. This might come in handy during development.
+This patchset implements the MTD OTP functions to allow access to the SPI
+OTP data. Specific support is added for Winbond flash chips.
 
-This was tested with a Winbond W25Q32JW on a LS1028A SoC with the
-NXP FSPI controller.
+In the past there was already an attempt by Rahul Bedarkar to add this, but
+there was no response. These patches are slightly based on his work.
 
-Signed-off-by: Michael Walle <michael@walle.cc>
----
- drivers/mtd/spi-nor/core.c    |  4 +-
- drivers/mtd/spi-nor/core.h    |  4 ++
- drivers/mtd/spi-nor/otp.c     | 74 ++++++++++++++++++++++++++++++++++-
- drivers/mtd/spi-nor/winbond.c |  1 +
- 4 files changed, 79 insertions(+), 4 deletions(-)
+https://lore.kernel.org/linux-mtd/1489754636-21461-1-git-send-email-rahul.bedarkar@imgtec.com/
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index ef7df26896f1..21a737804576 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -166,8 +166,8 @@ static int spi_nor_controller_ops_read_reg(struct spi_nor *nor, u8 opcode,
- 	return nor->controller_ops->read_reg(nor, opcode, buf, len);
- }
- 
--static int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
--					    const u8 *buf, size_t len)
-+int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
-+				     const u8 *buf, size_t len)
- {
- 	if (spi_nor_protocol_is_dtr(nor->reg_proto))
- 		return -EOPNOTSUPP;
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index dfbf6ba42b57..ef62ec4625a1 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -213,6 +213,7 @@ struct spi_nor_otp_ops {
- 	int (*read)(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
- 	int (*write)(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
- 	int (*lock)(struct spi_nor *nor, unsigned int region);
-+	int (*erase)(struct spi_nor *nor, loff_t addr);
- 	int (*is_locked)(struct spi_nor *nor, unsigned int region);
- };
- 
-@@ -481,6 +482,8 @@ extern const struct spi_nor_manufacturer spi_nor_xmc;
- void spi_nor_spimem_setup_op(const struct spi_nor *nor,
- 			     struct spi_mem_op *op,
- 			     const enum spi_nor_protocol proto);
-+int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
-+				     const u8 *buf, size_t len);
- int spi_nor_write_enable(struct spi_nor *nor);
- int spi_nor_write_disable(struct spi_nor *nor);
- int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable);
-@@ -506,6 +509,7 @@ ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
- 
- int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
- int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
-+int spi_nor_otp_erase_secr(struct spi_nor *nor, loff_t addr);
- int spi_nor_otp_lock_sr2(struct spi_nor *nor, unsigned int region);
- int spi_nor_otp_is_locked_sr2(struct spi_nor *nor, unsigned int region);
- 
-diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
-index 4e8da9108c77..78ec79368c29 100644
---- a/drivers/mtd/spi-nor/otp.c
-+++ b/drivers/mtd/spi-nor/otp.c
-@@ -8,6 +8,7 @@
- #include <linux/log2.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/spi-nor.h>
-+#include <linux/spi/spi-mem.h>
- 
- #include "core.h"
- 
-@@ -111,6 +112,50 @@ int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf
- 	return ret ?: written;
- }
- 
-+/**
-+ * spi_nor_otp_erase_secr() - erase one OTP region
-+ * @nor:        pointer to 'struct spi_nor'
-+ * @to:         offset to write to
-+ * @len:        number of bytes to write
-+ * @buf:        pointer to src buffer
-+ *
-+ * Erase one OTP region by using the SPINOR_OP_ESECR commands. This method is
-+ * used on GigaDevice and Winbond flashes.
-+ *
-+ * Return: 0 on success, -errno otherwise
-+ */
-+int spi_nor_otp_erase_secr(struct spi_nor *nor, loff_t addr)
-+{
-+	int ret;
-+
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		return ret;
-+
-+	if (nor->spimem) {
-+		struct spi_mem_op op =
-+			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_ESECR, 0),
-+				   SPI_MEM_OP_ADDR(3, addr, 0),
-+				   SPI_MEM_OP_NO_DUMMY,
-+				   SPI_MEM_OP_NO_DATA);
-+
-+		spi_nor_spimem_setup_op(nor, &op, nor->write_proto);
-+
-+		ret = spi_mem_exec_op(nor->spimem, &op);
-+	} else {
-+		nor->bouncebuf[2] = addr & 0xff;
-+		nor->bouncebuf[1] = (addr >> 8) & 0xff;
-+		nor->bouncebuf[0] = (addr >> 16) & 0xff;
-+
-+		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_ESECR,
-+						       nor->bouncebuf, 3);
-+	}
-+	if (ret)
-+		return ret;
-+
-+	return spi_nor_wait_till_ready(nor);
-+}
-+
- static int spi_nor_otp_lock_bit_cr(unsigned int region)
- {
- 	static const int lock_bits[] = { SR2_LB1, SR2_LB2, SR2_LB3 };
-@@ -319,11 +364,13 @@ static int spi_nor_mtd_otp_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	return spi_nor_mtd_otp_read_write(mtd, to, len, retlen, buf, true);
- }
- 
--static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
-+static int spi_nor_mtd_otp_lock_erase(struct mtd_info *mtd, loff_t from,
-+				      size_t len, bool is_erase)
- {
- 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
- 	const struct spi_nor_otp_ops *ops = spi_nor_otp_ops(nor);
- 	unsigned int region;
-+	loff_t start;
- 	int ret;
- 
- 	if (from < 0 || (from + len) > spi_nor_otp_size(nor))
-@@ -342,7 +389,12 @@ static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
- 
- 	while (len) {
- 		region = spi_nor_otp_offset_to_region(nor, from);
--		ret = ops->lock(nor, region);
-+		start = spi_nor_otp_region_start(nor, region);
-+
-+		if (is_erase)
-+			ret = ops->erase(nor, start);
-+		else
-+			ret = ops->lock(nor, region);
- 		if (ret)
- 			goto out;
- 
-@@ -356,6 +408,23 @@ static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
- 	return ret;
- }
- 
-+static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
-+{
-+	return spi_nor_mtd_otp_lock_erase(mtd, from, len, false);
-+}
-+
-+static int spi_nor_mtd_otp_erase(struct mtd_info *mtd, loff_t from, size_t len)
-+{
-+	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-+	const struct spi_nor_otp_ops *ops = spi_nor_otp_ops(nor);
-+
-+	/* OTP erase is optional */
-+	if (!ops->erase)
-+		return -EOPNOTSUPP;
-+
-+	return spi_nor_mtd_otp_lock_erase(mtd, from, len, true);
-+}
-+
- void spi_nor_otp_init(struct spi_nor *nor)
- {
- 	struct mtd_info *mtd = &nor->mtd;
-@@ -379,4 +448,5 @@ void spi_nor_otp_init(struct spi_nor *nor)
- 	mtd->_read_user_prot_reg = spi_nor_mtd_otp_read;
- 	mtd->_write_user_prot_reg = spi_nor_mtd_otp_write;
- 	mtd->_lock_user_prot_reg = spi_nor_mtd_otp_lock;
-+	mtd->_erase_user_prot_reg = spi_nor_mtd_otp_erase;
- }
-diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index 9a3f8ff007fd..e04219ac11fd 100644
---- a/drivers/mtd/spi-nor/winbond.c
-+++ b/drivers/mtd/spi-nor/winbond.c
-@@ -138,6 +138,7 @@ static int winbond_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
- static const struct spi_nor_otp_ops winbond_otp_ops = {
- 	.read = spi_nor_otp_read_secr,
- 	.write = spi_nor_otp_write_secr,
-+	.erase = spi_nor_otp_erase_secr,
- 	.lock = spi_nor_otp_lock_sr2,
- 	.is_locked = spi_nor_otp_is_locked_sr2,
- };
+Changes since v3:
+ - remapped the OTP regions to a contiguous area starting at 0. The
+   chips/cfi_cmdset_000[12].c remap the regions, too.
+ - with that in place, read/write/lock/erase spanning multiple OTP
+   regions are possible
+ - picked up Tudors review remarks
+ - added new erase support as RFC because MTD API/ABI is still missing.
+   Feel free to review, but don't apply it.
+
+Changes since v2:
+ - improved commit messages
+ - add buffer size check in spi_nor_mtd_otp_info(). just to be sure, the
+   buffer is hardcoded to 4k by the mtd subsys
+ - moved all code to otp.c
+ - dropped the patches introduced in v2
+
+Changes since v1:
+ - added methods for Macronix and similar flashes
+ - added patch to cleanup/consolidate code in core.c
+
+Michael Walle (4):
+  mtd: spi-nor: add OTP support
+  mtd: spi-nor: implement OTP support for Winbond and similar flashes
+  mtd: spi-nor: winbond: add OTP support to w25q32fw/jw
+  mtd: spi-nor: implement OTP erase for Winbond and similar flashes
+
+ drivers/mtd/spi-nor/Makefile  |   1 +
+ drivers/mtd/spi-nor/core.c    |  11 +-
+ drivers/mtd/spi-nor/core.h    |  64 +++++
+ drivers/mtd/spi-nor/otp.c     | 453 ++++++++++++++++++++++++++++++++++
+ drivers/mtd/spi-nor/winbond.c |  18 +-
+ include/linux/mtd/spi-nor.h   |   9 +
+ 6 files changed, 551 insertions(+), 5 deletions(-)
+ create mode 100644 drivers/mtd/spi-nor/otp.c
+
 -- 
 2.20.1
 
