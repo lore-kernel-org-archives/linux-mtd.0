@@ -2,87 +2,86 @@ Return-Path: <SRS0=qOpI=IG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1A4BC433DB
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Mar 2021 06:40:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 113B8C433DB
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Mar 2021 07:00:14 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 11298651DE
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Mar 2021 06:40:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11298651DE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 552F760201
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Mar 2021 07:00:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 552F760201
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
+	Subject:CC:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=MWf+Ht6F8wZDaAuCTJ0dmZMCA322PcCdxO+yDQmuTIo=; b=MzOABBOZPP2ZiWyUY0j7XbIo6
-	9tkithGFyCQDOA4MPQr3z/oLhoLKpvaWVRZK6b3Jxn+mNsB+ckxAhKeBUdJOQCL++zK+eQfbqGyDc
-	t7p32Sks4LSWELRD1bf9UMM/wttMpEq3X2N72yBJVFaGWDxe5StsdiCd66pu1Y3JU3mW7QEYyEKWn
-	BYemhFNGAOXV8TGaljV5M0p+g6/xRHx9CYk2IdPR8BXOSt2MbIRbGJiflUjAH9/ljgfW0b/rQdDpw
-	HJrNkxs99iMKZ9hUCmIcb+4s25E0UNtuwrjx3x5lxU7dlIxA8jrtjfmTgTvcHi5L4t2WHLQ6de0AB
-	6cRJL0pkg==;
+	 bh=v4x0Vo6TvosHdlLYzSGSdnQ6hnggyLwxQIHjY/EwFeM=; b=SHphK8dWcNWt3ZmNfnqkSjsI1
+	GUyci4HYBtmdYj3KPbmyagh0pl/VCWcVbbMJACr337MJrwPRMb+jsM+MNPKw4ZhxudSpsEQkdGRD1
+	6AivTPlY4nxCtr8TXbBR6SuKSoalv8QKNA3HwtY8xvlT38r7obIVIpNr+G8U0luoJJ4AwKCXNrkDD
+	KgxtWDcdVSPtuJx7ogbvgxAso3UbzoQ3oaFi0+GM8YYgavZ6cFQVNjUI6cxpyWMUJHn5P51hRT4KJ
+	ME6IPHb+38OTotSGd4RaAO6Zajl9ysnKWUzaj9IkePo0ZrfEOE7Rx6Dx4PYOpKiiA/hbJEA56m1ob
+	TH8u2aWGQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lJ9Y1-00FWIf-Ki; Mon, 08 Mar 2021 06:39:23 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1lJ9rV-00FbFZ-BI; Mon, 08 Mar 2021 06:59:29 +0000
+Received: from esa.microchip.iphmx.com ([68.232.153.233])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lJ9QI-00FV0x-B2
- for linux-mtd@desiato.infradead.org; Mon, 08 Mar 2021 06:31:22 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
- References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
- Content-Type:Content-ID:Content-Description;
- bh=jQVVYm9xDa4Kj5RbvXjgg6ArXkkqi7Oqj8EzHKawVGo=; b=HmaJlDdDxa3+SsBnrKLWtXkvAK
- r0AGhilUgPzyBPVgAjQRARqUqxHgDtXx8kvAaWICdOg+KGA4Byc6EBzkDu7qmAUyROGzMQ8hSKNCB
- OVNtJSQK4lNFxavyOEldlGLfM4z3cn7F8mqQXsmXXeIC47IthAoVsGN9/ILM5QOja9tMpdBpAgHPJ
- FcA90cpyl+sNy0jl1qFpDVZs0G07bMV3sYIkP0fBvBOwhC9SV3wqbjN6xY0VLjOVal30APmbbaOVq
- NWrJainXosJmGWOQCt+Xif5Vx+Ilh0P0fqErGYadYJnWgUJw+Vx1eQQcbL45R0x+2tZCpBdcIun6v
- 6sjP1ndQ==;
-Received: from mga09.intel.com ([134.134.136.24])
- by casper.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lJ9Pf-00F8AW-Md
- for linux-mtd@lists.infradead.org; Mon, 08 Mar 2021 06:31:09 +0000
-IronPort-SDR: 9iVEfAJibbZUKhBI+oiWRW7HrVnliOk0qoWimgT02GYpb8PlUP2teZCH15r7wUOnjrgebCxB9D
- nmEgygJ4ThkA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="188084529"
-X-IronPort-AV: E=Sophos;i="5.81,231,1610438400"; d="scan'208";a="188084529"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Mar 2021 22:28:34 -0800
-IronPort-SDR: Z+T8H/+nt6auK0aiH5DmMiNNG5QJqF/6TBXwMiiTcPDEghr1OO/lrpFSWg7ozgEpJ4lR6q7SiT
- bv7qzC2pGVNw==
-X-IronPort-AV: E=Sophos;i="5.81,231,1610438400"; d="scan'208";a="409182028"
-Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Mar 2021 22:28:31 -0800
-From: Tomas Winkler <tomas.winkler@intel.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Jani Nikula <jani.nikula@linux.intel.com>,
- Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc: Alexander Usyskin <alexander.usyskin@intel.com>,
- Vitaly Lubart <vitaly.lubart@intel.com>, linux-mtd@lists.infradead.org,
- intel-gfx@lists.freedesktop.org, Tomas Winkler <tomas.winkler@intel.com>
-Subject: [RFC PATCH 09/10 v2] MAINTAINERS: add Intel i915 spi driver entry
-Date: Mon,  8 Mar 2021 08:27:47 +0200
-Message-Id: <20210308062748.208017-10-tomas.winkler@intel.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210308062748.208017-1-tomas.winkler@intel.com>
-References: <20210308062748.208017-1-tomas.winkler@intel.com>
+ id 1lJ9dM-00FXOO-DH
+ for linux-mtd@lists.infradead.org; Mon, 08 Mar 2021 06:45:01 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1615185892; x=1646721892;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=1PWokqeLlK1wLdbrnNsyo72LALUZ8gy162Bk7d98kqE=;
+ b=B5l7bG+VCDhEmJ9SClE5yCTky1A/Q3n2ubIHjp25ATBgAvq476lBvWAU
+ aR0adEylCgCzO/z/CIp7vF8GubQjOhqIg+SBw+Lxlk3hl/l6KxqWFUGUu
+ m1S/gx01nzZcAxPakxbbceVWTNi52knOFHkBQxm6BVz0lfO0ypOCgDZQt
+ JKVOCHK29pR0G8bevRh7anGUP/5j1LGVLhGbOrfj/GwsSoJdKjFj6UYcC
+ xzn6NxdpoZx2lyJ+byrRVArJ3UAgCsxIzfVrjtLVdy8rSzmr9xDDtJ1a6
+ Zn21Ma22L9OiQlufOSdVqqFvUanUHFLLLI3Qkl8JAyqLjnqqdhquegW+c w==;
+IronPort-SDR: DengQCPIAECU3j2WnDHB3JWU+eHFKML132SiCCEHA59Rtg784uuNi+74a2rZYl4vA49tjFkHEu
+ KAOL8G4J7p8w+r/06FGwzsPomZ6cDToIebqJiELkmvEWafwMoanEAWM0FvjBrsr+aEx2HFJLQF
+ npZ6JX0PSfu865S8vd2WtY6sw2R+hSC4I/5Si6D3n7Nphh2ZNua0m0oH4rx3OTRXRzgvC6r2Bk
+ K8QMlmVQbEzjVtNZ25CJPqLHRklzSq8pHn+bLTxQOe9pBEyYngqYdxMUqGdhELJHswENCjSql7
+ gLg=
+X-IronPort-AV: E=Sophos;i="5.81,231,1610434800"; d="scan'208";a="112311694"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 07 Mar 2021 23:44:48 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sun, 7 Mar 2021 23:44:48 -0700
+Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Sun, 7 Mar 2021 23:44:46 -0700
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC: Tudor Ambarus <tudor.ambarus@microchip.com>, Richard Weinberger
+ <richard@nod.at>, Lee Jones <lee.jones@linaro.org>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH v1 1/1] mtd: spi-nor: intel-spi: Move platform data header
+ to x85 subfolder
+Date: Mon, 8 Mar 2021 08:44:45 +0200
+Message-ID: <161518567740.71282.5118491437409807533.b4-ty@microchip.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210304140820.56692-1-andriy.shevchenko@linux.intel.com>
+References: <20210304140820.56692-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210308_063053_960153_073DA40E 
-X-CRM114-Status: UNSURE (   8.08  )
+X-CRM114-CacheID: sfid-20210308_064453_902257_3BE2658D 
+X-CRM114-Status: UNSURE (   6.34  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -100,41 +99,21 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add entry for Intel i915 spi driver.
+On Thu, 4 Mar 2021 16:08:20 +0200, Andy Shevchenko wrote:
+> In order to group x86 related platform data move intel-spi.h to x85 folder.
+> 
+> While at it, remove duplicate inclusion in C file.
 
-Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
----
-V2:
-1. New in the series.
 
- MAINTAINERS | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+s/x85/x86 in subject and commit description and applied to spi-nor/next. 
+Thanks!
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 23f3c02493a8..dfe46844bbef 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8992,6 +8992,17 @@ L:	platform-driver-x86@vger.kernel.org
- S:	Maintained
- F:	drivers/platform/x86/intel-hid.c
- 
-+INTEL I915 SPI DRIVER
-+M:	Tomas Winkler <tomas.winkler@intel.com>
-+L:	intel-gfx@lists.freedesktop.org
-+S:	Supported
-+W:	https://01.org/linuxgraphics/
-+Q:	http://patchwork.freedesktop.org/project/intel-gfx/
-+B:	https://gitlab.freedesktop.org/drm/intel/-/wikis/How-to-file-i915-bugs
-+C:	irc://chat.freenode.net/intel-gfx
-+T:	git git://anongit.freedesktop.org/drm-intel
-+F:	drivers/gpu/drm/i915/spi/*
-+
- INTEL I/OAT DMA DRIVER
- M:	Dave Jiang <dave.jiang@intel.com>
- R:	Dan Williams <dan.j.williams@intel.com>
+[1/1] mtd: spi-nor: intel-spi: Move platform data header to x85 subfolder
+      https://git.kernel.org/mtd/c/ae2177cf318d
+
+Best regards,
 -- 
-2.26.2
-
+Tudor Ambarus <tudor.ambarus@microchip.com>
 
 ______________________________________________________
 Linux MTD discussion mailing list
