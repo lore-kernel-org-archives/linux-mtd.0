@@ -2,92 +2,99 @@ Return-Path: <SRS0=qOpI=IG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4EE6C433E0
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Mar 2021 15:01:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03C5BC433DB
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Mar 2021 15:10:39 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6CAD16521D
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Mar 2021 15:01:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6CAD16521D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 806A0651D1
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Mar 2021 15:10:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 806A0651D1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=2mTpRYh2a9me6NUSr/7cRHE4RQVtAfTWP1uSEVvpYRY=; b=nxtq/g9P1voegK2U1buRnltyE
-	ceUVZlaT4ogm5c0qGO/WepEaxvLh0CuUAxvil5hz5Z+HrJ39qVd+9UCxe1WEgRmz295je1AR7WGJL
-	m1FYxyS0eCe7SNfpFTeGeTX7USTYELNRE48L1hXvDmjOhHwxFV+pjchrZT3L5fMpmowAZ+vwDjMqB
-	btXh3O9QJvDTri+ZY/eE/GYN0DMuDzd0vrt2mgTKMjoR6QVl4G9VQhO3QounM2fvvBKUv/oaE4zr2
-	T48XNjv+WIjfoJH4Xq/nJhciJmOkfiDryGinRwUiiiFsDX+lln+WC4JTi9gu20wMYCPNV3qOJyTu7
-	GGC7fo3ng==;
+	 bh=iqaAFHsGPxGX9SsUvJLCicooQH7q8+MvQc7WxJFWCEM=; b=oYX9U/4hi/2wUy0etTB6ZhEQ6
+	SVvVyIzAuhEkOzvSPOrttT+tulHNVIeVQZdDfztIir6mNqsiwdpq9MORKAnDY/fTI+oB6mytlv2ue
+	80JFfDpPndlU4U6JVusbfboJn0eI3g+1wWhOPrzdpimcky3QKqGhe90dEeLn3wvQUw8jzXkx9fSry
+	76S8G8k8CbQsL1mNQPydTcmvdS9uj7s45WH9Unbos5C20SDeNgh+RxgQnsS8qP8Y0hIgY+/DJCNvb
+	Cv7JPTygC5ub4P/A254SecdIaCtORwh3JxlF0nYMWGK4k2ypV1DItHv8c9lE65NfBSEtF/Us5Y6CB
+	V+NknvUyQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lJHNB-000Okc-PE; Mon, 08 Mar 2021 15:00:41 +0000
-Received: from mail-ej1-x636.google.com ([2a00:1450:4864:20::636])
+	id 1lJHVn-000RN9-58; Mon, 08 Mar 2021 15:09:35 +0000
+Received: from mx2.suse.de ([195.135.220.15])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lJHN4-000Ohr-3x
- for linux-mtd@lists.infradead.org; Mon, 08 Mar 2021 15:00:36 +0000
-Received: by mail-ej1-x636.google.com with SMTP id p8so20956417ejb.10
- for <linux-mtd@lists.infradead.org>; Mon, 08 Mar 2021 07:00:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=VBV23lr09CUJD6sRdr392J5f1NhLIA2gkIbk4UNm5BQ=;
- b=Ug8zQ4Mf36Y1JnLQ3tteJ2lhEQVFei5ha60BwxAPk2EfUyHV5FshfOHNnSfO76s0zq
- n4biQLXPfO4DY6Do+GuPZwyi8lo/PMdMf4NYJNmlEr4MEk9jbvEXjk0U9RmAgfULhvvy
- 1I9vCB7Urf5FnWTGFiWlyyHNuIRzT4CLj/IUZv/XDmcRKqQ4vA7svj0b+7zje7YE4hvA
- 22xu09PRGqualfIyk1gruApVGvEJ2qX2Fe63TnW3BiKWNbd8EPPjI8qsWUkZOLwg6V03
- 3GsWQIwmsEf5c1hOCZE0vcQuAOKVyTzbAI60CupWfFzg/EEYEp2CtBrPa98yiTe67LZJ
- MuJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=VBV23lr09CUJD6sRdr392J5f1NhLIA2gkIbk4UNm5BQ=;
- b=ArG5IWyzX1CM2wjvJ8O0HytkfPS0LLKEMeIzL2c+kF08AtldAxL/VgpEtiAsmFN6D2
- 7AvY7Xpzg8XSCPglB1ZYsArObmBCYS2DTTkLfzP7hbNO/IXTHAip61V50JIDrtWFYzgT
- yCnP+sicKpSzNseoemxmiBLj00bafJLnJQDUUb9gSk7XTniOqjVevkmHbk4iaKEsJLi8
- tztKpvIqOHJ01oAvcYcUbr3+BylZEBzbQKufIo67oI7b1R+4XfVy4/AMq9bJ4S39Afsn
- adwy3h+SVraM0Np/+ENdeEFV12DCO/h/YuIVF9qVU+RmVcqO5pzcllojnf1AkScXqhkK
- u/8A==
-X-Gm-Message-State: AOAM530OVQc3oRD3f0/N0Z24yc5H6COXgGkwK1me6/9e2b5SJof1TaN8
- NuuzAsq3FsEyO/UOmnGm6LgY+ciIf3UCaw==
-X-Google-Smtp-Source: ABdhPJx2GkSj3IxcoTf3dx1c5ZMlKBzYZFFb3JYTSYY8YiUn3pcjoyKEqcuXGuwBcoAlssj0W6ICTQ==
-X-Received: by 2002:a17:906:c45a:: with SMTP id
- ck26mr15193619ejb.125.1615215626949; 
- Mon, 08 Mar 2021 07:00:26 -0800 (PST)
-Received: from seven.fritz.box
- (p200300d37f017f0052c48f3822e3043d.dip0.t-ipconnect.de.
- [2003:d3:7f01:7f00:52c4:8f38:22e3:43d])
- by smtp.gmail.com with ESMTPSA id i10sm6651415ejv.106.2021.03.08.07.00.26
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 08 Mar 2021 07:00:26 -0800 (PST)
-From: Henri Roosen <henriroosen@gmail.com>
-X-Google-Original-From: Henri Roosen <henri.roosen@ginzinger.com>
-To: linux-mtd@lists.infradead.org
-Cc: richard@nod.at,
-	Henri Roosen <henri.roosen@ginzinger.com>
-Subject: [PATCH v2] mkfs.ubifs: Fix runtime assertions when running without
- crypto
-Date: Mon,  8 Mar 2021 15:57:10 +0100
-Message-Id: <20210308145710.6203-1-henri.roosen@ginzinger.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <358533793.61694.1615208954869.JavaMail.zimbra@nod.at>
-References: <358533793.61694.1615208954869.JavaMail.zimbra@nod.at>
+ id 1lJHVi-000RKp-0H; Mon, 08 Mar 2021 15:09:32 +0000
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1615216168; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=RHCVpD0EOCWBr4CM42VDdFRC20Sv2OvcSQKI4oBR4WQ=;
+ b=SaBGiuJH7cduvyTTcI+RG2JjQktgD14lFw9EnpYlsPN2C7K+17NrvYz5FyASkVVnIgOUYN
+ +kK0dQIfGNaN4EONLEjJGI5netP1nGsyeOX6ULd53kyHRvCliMWlQbMithU17Uqe3j5h0p
+ +r0W3a8FhYIp0uDbypux7b88gkU35xY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 45672AE15;
+ Mon,  8 Mar 2021 15:09:28 +0000 (UTC)
+Date: Mon, 8 Mar 2021 16:09:24 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+ Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>,
+ Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+ Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Thomas Meyer <thomas@m3y3r.de>, linux-um@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, Kees Cook <keescook@chromium.org>,
+ Pavel Tatashin <pasha.tatashin@soleen.com>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Paul Mackerras <paulus@samba.org>,
+ Jason Wessel <jason.wessel@windriver.com>,
+ Daniel Thompson <daniel.thompson@linaro.org>,
+ Douglas Anderson <dianders@chromium.org>,
+ Jordan Niethe <jniethe5@gmail.com>,
+ Alistair Popple <alistair@popple.id.au>,
+ Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+ Nicholas Piggin <npiggin@gmail.com>,
+ Madhavan Srinivasan <maddy@linux.ibm.com>,
+ Mike Rapoport <rppt@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
+ Wei Li <liwei391@huawei.com>, Davidlohr Bueso <dave@stgolabs.net>,
+ linuxppc-dev@lists.ozlabs.org, kgdb-bugreport@lists.sourceforge.net,
+ "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>,
+ Stephen Hemminger <sthemmin@microsoft.com>,
+ Wei Liu <wei.liu@kernel.org>, Anton Vorontsov <anton@enomsg.org>,
+ Colin Cross <ccross@android.com>, Tony Luck <tony.luck@intel.com>,
+ Christophe Leroy <christophe.leroy@c-s.fr>,
+ Michael Kelley <mikelley@microsoft.com>,
+ linux-hyperv@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>
+Subject: Re: [PATCH next v4 00/15] printk: remove logbuf_lock
+Message-ID: <YEY+JBoW6TByix30@alley>
+References: <20210303101528.29901-1-john.ogness@linutronix.de>
+ <YD+seF3dQUoPcZP7@alley>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <YD+seF3dQUoPcZP7@alley>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210308_150034_869076_521C50BA 
-X-CRM114-Status: GOOD (  13.07  )
+X-CRM114-CacheID: sfid-20210308_150930_448931_257206E3 
+X-CRM114-Status: UNSURE (   9.34  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,53 +111,21 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Running mkfs.ubifs which was build without crypto triggered the
-following assertion:
+On Wed 2021-03-03 16:34:19, Petr Mladek wrote:
+> On Wed 2021-03-03 11:15:13, John Ogness wrote:
+> > Hello,
+> > 
+> > Here is v4 of a series to remove @logbuf_lock, exposing the
+> > ringbuffer locklessly to both readers and writers. v3 is
+> > here [0].
+> 
+> The series look ready. I am going to push it into printk/linux.git
+> the following week unless anyone speaks against it in the meantime.
 
-mkfs.ubifs: ubifs-utils/mkfs.ubifs/fscrypt.h:166:
-inherit_fscrypt_context: Assertion `0' failed.
+The series is committed in printk/linux.git, branch printk-rework.
 
-A previous commit-cc4c5e295f54 ("mkfs.ubifs: Enable support for building
-without crypto") added a check for an existing fscrypt context before calling
-functions inherit_fscrypt_context() and free_fscrypt_context(),
-however did not properly do this for each call to these functions.
-
-Fixes: cc4c5e295f54 ("mkfs.ubifs: Enable support for building without crypto")
-Signed-off-by: Henri Roosen <henri.roosen@ginzinger.com>
----
-Changes since v1:
- - instead of patching every call site, allow inline functions
-   inherit_fscrypt_context() and free_fscrypt_context() to be called with NULL
-   fscrypt context.
-
- ubifs-utils/mkfs.ubifs/fscrypt.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/ubifs-utils/mkfs.ubifs/fscrypt.h b/ubifs-utils/mkfs.ubifs/fscrypt.h
-index 34b799c..ff3d326 100644
---- a/ubifs-utils/mkfs.ubifs/fscrypt.h
-+++ b/ubifs-utils/mkfs.ubifs/fscrypt.h
-@@ -131,7 +131,7 @@ static inline void free_fscrypt_context(struct fscrypt_context *fctx)
- {
- 	(void)fctx;
- 
--	assert(0);
-+	assert(!fctx);
- }
- 
- static inline int encrypt_path(void **outbuf, void *data, unsigned int data_len,
-@@ -163,7 +163,7 @@ static inline struct fscrypt_context *inherit_fscrypt_context(struct fscrypt_con
- {
- 	(void)fctx;
- 
--	assert(0);
-+	assert(!fctx);
- 	return NULL;
- }
- #endif /* WITH_CRYPTO */
--- 
-2.20.1
-
+Best Regards,
+Petr
 
 ______________________________________________________
 Linux MTD discussion mailing list
