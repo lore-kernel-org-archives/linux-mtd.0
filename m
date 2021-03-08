@@ -2,78 +2,82 @@ Return-Path: <SRS0=qOpI=IG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D513BC43381
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Mar 2021 14:04:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1941FC433E0
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Mar 2021 14:21:36 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5646D65020
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Mar 2021 14:04:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5646D65020
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id A8090651CC
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Mar 2021 14:21:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A8090651CC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=bGC4nDDaMJwJ3zCt/Wt26chBZ78D92UZxIFJaC+tXIU=; b=pFYH7yVzy/0sK1Ny755KS6K7d
-	lKOcPDJyt4CvBrwO+2AS+kSnIRMDVv4b4jBDgdOw7FoUknV+cczCVyVM7TNBP6y/xc4qDPaWonxEk
-	H7TmYuahuhOylG+TB+KV7ZfVnxr4aEQXFX67kabq2LeAI8VURBieCNvRaRncjpDCJl8mmpURTH5Nd
-	EHgBVwH0AVIFvIqaAmg/kmWeH7+EjoOS5G59UahZAi/Tw3rkVBFbNcis2F4FCTVQ6dcLSGRDO622F
-	ceBug0dVyq4xFgSNO2sNIpuZx3Ytys7p1jACevfKsSpvPtz7+n7kQT4oLfa1eRve6ykaO6UO32GrQ
-	ml7bBIhew==;
+	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
+	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=Nl0Vz4yb/NeTOJMzUmkoedt1wOrQKtcYv2WnwswzwTg=; b=m0iA813yPaDstdywCBEMtFBqR
+	mvG6TfithXxMQWIAI/vRFcoNHDsE4ImIe7NOiL6DSiyCjByZEAq+uyj+rjEEkg5kFJppWYs4ahIi1
+	7gASwK+5cPlfydCMXSQhwvpu/pGdJaGISXuCDziAiUQ9h2Dg8b7f7OYXu8mQKNitqu/r4UJW5cbsV
+	gPl0BY0kBsNruSEBuBlXYzHgleLH0wgoflaeSAd372XNi6W3StcD7auIIgXqEr6/AzrXV1Q1MrWHv
+	Hfx3cMr5vJVcxQi6Guu+DNMN6sWqm59wLCyKT0Vu4ogsPjPWCPhvXo689Hlpx95TrKpfYXJwiJFEm
+	0hRKMDlWQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lJGUa-0005Pt-FI; Mon, 08 Mar 2021 14:04:16 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1lJGkL-000BeW-52; Mon, 08 Mar 2021 14:20:33 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lJGUN-0005HP-VB; Mon, 08 Mar 2021 14:04:06 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8206F64EBC;
- Mon,  8 Mar 2021 14:04:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1615212240;
- bh=E1p7ETbjo4cfMPaI3vXRnRJoJxKJzun0W2n67A7eow4=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=QtR5QVRpLfOz0bim/vdh8qduvyb+P64c5oDctr1Kc1SbnxPiGtubTojmJQbxlNC90
- H9k3ur/telJzc8ORujkgR/jBPqC1JH+5gr6Fp1J4VSmJWF/lP9NxFa8Eo7xTt8WaBh
- Qs1VqnP1n9pCkjh4GkMZOh7thjL78Ti6e2EyC+3lWHpsGqy62xgN7AVkBkLdVcESxl
- vfQ6ljG6XZAWXMV/1oItTkkb6o2HMZaL+Bp+Nhkj6coKuQ3NtQnGgmIlQm/hb/L0tP
- lhwDn9aLAU4T67KRUQv8+eCNfZO9zKNLD4+NosvHIlELW9XqKoqr62yJDGM4uf5L1Y
- KNFuA02Mf8PKQ==
-Received: by earth.universe (Postfix, from userid 1000)
- id 742BE3C0C95; Mon,  8 Mar 2021 15:03:58 +0100 (CET)
-Date: Mon, 8 Mar 2021 15:03:58 +0100
-From: Sebastian Reichel <sre@kernel.org>
-To: Rob Herring <robh@kernel.org>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
- linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
- Philipp Zabel <p.zabel@pengutronix.de>, devicetree@vger.kernel.org,
- David Airlie <airlied@linux.ie>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-mtd@lists.infradead.org,
- NXP Linux Team <linux-imx@nxp.com>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Daniel Vetter <daniel@ffwll.ch>, kernel@collabora.com,
- Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCHv1 1/6] rtc: m41t80: add support for protected clock
-Message-ID: <20210308140358.diolcpbaq7gow3y4@earth.universe>
-References: <20210222171247.97609-1-sebastian.reichel@collabora.com>
- <20210222171247.97609-2-sebastian.reichel@collabora.com>
- <YDQgLTPE0E+/1Cwv@piout.net> <YDQhgkftoW4J9AtY@piout.net>
- <20210223012657.bbp5u65nw4tpcjgd@earth.universe>
- <20210306195645.GA1112592@robh.at.kernel.org>
+ id 1lJGkC-000Bb3-Uo
+ for linux-mtd@lists.infradead.org; Mon, 08 Mar 2021 14:20:29 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 128EKGM1096764;
+ Mon, 8 Mar 2021 08:20:16 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1615213216;
+ bh=o4xwLU0m3JYT8XQh8oDQlP2j3EwelroDUNtQ4HGcQoA=;
+ h=Subject:To:References:From:Date:In-Reply-To;
+ b=AIfyvQSuOi5ZxyMXIXbVVavpBZxxFkElrIjUJwxGk36gpablUMOHsu083zqldQjRS
+ UPdfzpblHZhnUDFBGnfabhOr5OIZiZTKI0ET+eZFqKPMfxHlGAASJ9VQl96B/IPOOE
+ M/+QQ3F0i6bEb9UC12opibwqSDqRb7OdoDRrV7i0=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 128EKFIv113150
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 8 Mar 2021 08:20:15 -0600
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 8 Mar
+ 2021 08:20:15 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 8 Mar 2021 08:20:15 -0600
+Received: from [10.250.234.120] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 128EKDtO120505;
+ Mon, 8 Mar 2021 08:20:13 -0600
+Subject: Re: [PATCH 1/2] mtd: spi-nor: add block protection flags to macronix
+To: David Bauer <mail@david-bauer.net>, <tudor.ambarus@microchip.com>,
+ <miquel.raynal@bootlin.com>, <richard@nod.at>,
+ <linux-mtd@lists.infradead.org>
+References: <20210303094833.139221-1-mail@david-bauer.net>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <9eb05563-70b4-1653-d818-6a039f1c53ff@ti.com>
+Date: Mon, 8 Mar 2021 19:50:12 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210306195645.GA1112592@robh.at.kernel.org>
+In-Reply-To: <20210303094833.139221-1-mail@david-bauer.net>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210308_140404_501516_F9089218 
-X-CRM114-Status: GOOD (  41.80  )
+X-CRM114-CacheID: sfid-20210308_142027_282058_EB315585 
+X-CRM114-Status: GOOD (  18.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,151 +89,51 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7303591322535281479=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
---===============7303591322535281479==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="tz3no5iwp6fmwznd"
-Content-Disposition: inline
+
+On 3/3/21 3:18 PM, David Bauer wrote:
+> Macronix flash chips support block protection by using BP bits in the
+> read status register. Add the corresponding flag to indicate block
+> protection support.
+> 
+> Otherwise, locked blocks are not unlocked when requested.
+> 
+> Signed-off-by: David Bauer <mail@david-bauer.net>
+> ---
+>  drivers/mtd/spi-nor/macronix.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+> index 9203abaac229..2d39dd32a64e 100644
+> --- a/drivers/mtd/spi-nor/macronix.c
+> +++ b/drivers/mtd/spi-nor/macronix.c
+> @@ -94,6 +94,7 @@ static const struct flash_info macronix_parts[] = {
+>  
+>  static void macronix_default_init(struct spi_nor *nor)
+>  {
+> +	nor->flags |= SNOR_F_HAS_LOCK;
+
+We need to take into account the state of TB bit (Config Reg bit3). This
+is an OTP bit and driver should not ideally change it but should
+consider the state of the bit.
+
+Without looking at TB bit, current locking implementation would be
+incomplete.
 
 
---tz3no5iwp6fmwznd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>  	nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
+>  	nor->params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode;
+>  }
+> 
 
-Hi,
-
-On Sat, Mar 06, 2021 at 11:56:45AM -0800, Rob Herring wrote:
-> On Tue, Feb 23, 2021 at 02:26:57AM +0100, Sebastian Reichel wrote:
-> > On Mon, Feb 22, 2021 at 10:26:26PM +0100, Alexandre Belloni wrote:
-> > > On 22/02/2021 22:20:47+0100, Alexandre Belloni wrote:
-> > > > On 22/02/2021 18:12:42+0100, Sebastian Reichel wrote:
-> > > > > Congatec's QMX6 system on module (SoM) uses a m41t62 as RTC. The
-> > > > > modules SQW clock output defaults to 32768 Hz. This behaviour is
-> > > > > used to provide the i.MX6 CKIL clock. Once the RTC driver is prob=
-ed,
-> > > > > the clock is disabled and all i.MX6 functionality depending on
-> > > > > the 32 KHz clock has undefined behaviour. On systems using hardwa=
-re
-> > > > > watchdog it seems to likely trigger a lot earlier than configured.
-> > > > >=20
-> > > > > The proper solution would be to describe this dependency in DT,
-> > > > > but that will result in a deadlock. The kernel will see, that
-> > > > > i.MX6 system clock needs the RTC clock and do probe deferral.
-> > > > > But the i.MX6 I2C module never becomes usable without the i.MX6
-> > > > > CKIL clock and thus the RTC's clock will not be probed. So from
-> > > > > the kernel's perspective this is a chicken-and-egg problem.
-> > > > >=20
-> > > >=20
-> > > > Reading the previous paragraph, I was going to suggest describing t=
-he
-> > > > dependency and wondering whether this would cause a circular depend=
-ency.
-> > > > I guess this will keep being an issue for clocks on an I2C or SPI b=
-us...
-> >=20
-> > Yes, it is a circular dependency on this particular system on
-> > module. It only works because the RTC enables the clock by
-> > default. The i.MX6 CKIL is expected to be always enabled.
->=20
-> I think you should describe the circular clocking and then provide a way=
-=20
-> to break the dependency.
-
-This is very much not trivial. The clock is required during early
-initialization of the i.MX. At this point we are far from probing
-I2C drivers and without the I2C driver the clock is not registered.
-The current i.MX code expects the system clocks to be fixed clocks,
-since they must be enabled before any code is executed (incl.
-bootloader) and must never be disabled. From a HW design point of
-view it does not make sense to have a SW controllable clock for it,
-since it just adds extra cost. I believe for QMX6 it is only SW
-controllable, because that avoids the need for an extra crystal.
-
-So how is the clock framework supposed to know, that it can ignore
-the clock during registration? I see the following options:
-
-1. My solution is the simplest one. Keep i.MX clock code the same
-   (it assumes a fixed-clock being used for CKIL) and avoid
-   registering RTC clock. This basically means the RTC is considered
-   to be a fixed-clock on this system, which is what the HW designers
-   seemed to have in mind (vendor kernel for the QMX6 is old enough
-   (4.9.x) to not to have CLK feature in the RTC driver. Vendor
-   U-Boot also does not touch the RTC. Booting mainline kernel once
-   bricks QMX6 boards until RTC battery is removed, so one could
-   actually argue addition of the CLK feature in 1373e77b4f10 (4.13)
-   is a regression). Currently Qualcomm device uses "protected-clocks"
-   for FW controlled clocks where Linux would crash the system by
-   trying to access them. IMHO the RTC is similar, since disabling
-   or modifying its frequency on QMX6 results in undefined behaviour
-   and possibly system crash.
-
-2. Make i.MX clock code use the RTC as CKIL clock provider, but
-   ignore it somehow. I see three sub-options:
-
-2.1. Add a property 'boot-enabled' to the RTC node, so that the
-     clock framework is aware of clock being enabled. This can
-     be used to satisfy clock dependencies somehow.
-
-2.2. The RTC device is not probed without I2C bus, but the driver
-     could also register a fake clock purely based on DT
-     information by adding some early init hook and take over
-     the clock once the I2C part is being probed. I think this
-     is a bad idea regarding maintainability of the driver.
-     Also for systems not using the RTC clock, the early clock
-     registration is basically wrong: If the kernel disables
-     the RTC it will stay disabled across boots if the RTC has
-     a backup battery. Basically we cannot imply anything from
-     the RTC compatible value alone.
-
-2.3 The i.MX core code could request CKIL with some flag, that
-    it's fine to have an unresolvable clock and just expect it
-    to be boot-enabled. The rationale would be, that CKIL must
-    be always-enabled.
-
-> It's a somewhat common issue.
-
-It is? This only works, because one can treat the RTC's clock
-output like a fixed clock by not messing around with it.
-
--- Sebastian
-
---tz3no5iwp6fmwznd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBGLsQACgkQ2O7X88g7
-+ppYag//VqCs0DzfkeAZpa06OpqMBRfRplqZWf6IlhyET4qXikZHjob95UJcdPuT
-EQ26LP3hKVnN2BE36R2sVifMQ5LixPbWsb/iFw21kIDFdbjhagyI6sotvpd/96N9
-hPEbc8ifVNAr/407a/sW5OzC9seCqW9DO9Xt35IPRyIOPZHj9eUBa1hS+1stC0Q1
-2EqtwU5dkxY/aQDT/50riSszhggjhMS5ITmKXDzQe0dQizYIPIixn1+v6B7CAt8k
-1sWIdZiyt3PPd4fm5F8dvtEirkmG5Wjkv9UQVdi+30RHuJfK5ONIISl2gREbjPL6
-vQSHEfqz6iQYWiwZN4t21opDnloT+wh5ljNghlpnIyeAPcQSfiWN89qUZ3A639+I
-0VxlHLxs0EfLWdNXVxnUW1zXO6EVjhGB8KnSPQic2EFcJNrId8yejK0e6GBsZ6fc
-i6mIonybZnSy7rwnkapkfsJ77CA/Uq3Jvb9PI7WgxA/PljLejUue5Plce2b/iJpZ
-Bus/MtIloeZzBqCTFTa8gCArgYxPB06ROpCM/gvjqmx1/XGVervqJXdChT7Wbk+8
-0KQEkXoz+POcUJemu0OUYsvOW5jTNlkotqrweY4Qdyx/0/VuA1HXEEQQ6J3NBf1x
-qI2tYZkqjU5R2rnSbhvcnxMPnfwL3MwL9gm7iTvf6wUvEz8iP6c=
-=vlxG
------END PGP SIGNATURE-----
-
---tz3no5iwp6fmwznd--
-
-
---===============7303591322535281479==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Regards
+Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============7303591322535281479==--
-
