@@ -2,65 +2,91 @@ Return-Path: <SRS0=qOpI=IG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DATE_IN_PAST_12_24,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 324BAC433E0
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Mar 2021 18:04:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96AFCC433E0
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Mar 2021 20:29:30 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C16EB652AB
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Mar 2021 18:04:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C16EB652AB
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=david-bauer.net
+	by mail.kernel.org (Postfix) with ESMTPS id 3623D60235
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Mar 2021 20:29:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3623D60235
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:Cc:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=WExRyS1rupEFzz5ruEzauqvqrKNDxEBqqACVL3JM1Dg=; b=I4Okk+TB5OzB1qiQNPf7p0IOy
-	+zvV6rBE8VLIHEhpmD0HAUZjV4xZQECi9sktegR2QUr7bWhsZoRMY2MXbudgxMuYX4i2GY6NHXcqu
-	L2dz2vlYUTJVq5FfvMJNSoGyKh/JRzFW/jaGwRyx8O5L06XzopvIAFHnLFBz3Sw23DvErTfSX5/Ai
-	hUJrq4PW7eQ8BD6eb8oFCRa+Vfm4pI+NrNgIifQpLywvUGs2gtIDsxLN70fQDsqsod+k5Xl/Xqp09
-	EdQuWNlUCPgSW/QHCFtS25vazrOy6JspD4TT6pte0Rsf/3q0VhtlWXW6QU/TNzXTDAQ4Je3yB1Lxo
-	+8T6sQUgw==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=zTLUgVPNkwBtbnY2MnLQeIBX0NtdY1pIvQS6NXMgjyM=; b=ImlrtFUnGQxMrWI5bIIsyL/Qcw
+	xDSXI2kAixD0U0Kst1gqjjFJf6DNl1I3+Z8beQiehLHgT2IdRpdYoTz7zAV0vsLYSte5yr9k3JR+g
+	RqzjSXB95jd30OYTA8fm1zBI2pcIkf/sx5cjNyIj6unl0KGCsk7hsftMRqU9QhIBsp/dOGCbVgCS6
+	dNz6MkrZDt5vEEmBSF1R1/JaxNBlHnh0/KC19DDTCWjh7IFmBesoqaeSP4dFtJp1oAZd7okJWdZuf
+	ey+9E5VqurcXGl8EDk3Gs86nrg++LRIMiRhKyiXtmemT/HQwgO8tAvqKU2Vl6ZkpNWJXKEJoyqaf7
+	74Js5LhA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lJKEC-001aIY-AP; Mon, 08 Mar 2021 18:03:36 +0000
-Received: from mars.blocktrron.ovh ([2001:41d0:401:3000::cbd]
- helo=mail.blocktrron.ovh)
+	id 1lJMUR-002cwZ-SO; Mon, 08 Mar 2021 20:28:32 +0000
+Received: from mail-ej1-x62d.google.com ([2a00:1450:4864:20::62d])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lJKE8-001aFp-Dk
- for linux-mtd@lists.infradead.org; Mon, 08 Mar 2021 18:03:34 +0000
-Received: from [IPv6:2003:e5:3f05:2d00:77cc:c84:87e:ce4f]
- (p200300e53f052d0077cc0c84087ece4f.dip0.t-ipconnect.de
- [IPv6:2003:e5:3f05:2d00:77cc:c84:87e:ce4f])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.blocktrron.ovh (Postfix) with ESMTPSA id B6D0526B31;
- Mon,  8 Mar 2021 19:03:30 +0100 (CET)
-Subject: Re: [PATCH] mtd: spi-nor: add support for Winbond W25Q512JV
-To: Tudor.Ambarus@microchip.com, linux-mtd@lists.infradead.org,
- shuhao.mai.1990@gmail.com
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
-References: <20210213151047.11700-1-mail@david-bauer.net>
- <00fdc79c-2a7f-c02f-3398-8102e5a68a53@microchip.com>
-From: David Bauer <mail@david-bauer.net>
-Message-ID: <e9626369-dc44-8f64-606b-88098157bc7a@david-bauer.net>
-Date: Mon, 8 Mar 2021 19:03:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+ id 1lJMUB-002cmB-Kl
+ for linux-mtd@lists.infradead.org; Mon, 08 Mar 2021 20:28:20 +0000
+Received: by mail-ej1-x62d.google.com with SMTP id c10so22943838ejx.9
+ for <linux-mtd@lists.infradead.org>; Mon, 08 Mar 2021 12:28:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=NvadRTyAu2bEatgntz1xTlD/+6CQIU+QXTtOxiL9MKw=;
+ b=R3qxIbr3UgiLtn1YDTg5ZL8C8NoVeG7eQEpYzYraQxiKyZe2CHRiTFdOtgslbKG14I
+ Rc7r70128QSamfdv/gH3JQD3ywkUVtx/0oVjqrIc9yWNGsWnpz5Ro7bxeyKu3IOUhdGC
+ Cz5cqDqK+f+rgF7Fj70uwi6pfNNX9Ha56x6BC21Nh306ahrPzn0X/M1iRwMaTOghIdNU
+ 4dznjLtyuOBDVeQP0Dwy0PDnhrvMwANGp1jYWxviTIsfe1NB8HXxYdIPo3JCWFn0BNMZ
+ pB85XeWez9+7apPn9IzxJoR0FcJpMWZG4OxoJ08QeftPfz7DXyqrzMRcUAcRq5S+k0Ye
+ 6drQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=NvadRTyAu2bEatgntz1xTlD/+6CQIU+QXTtOxiL9MKw=;
+ b=AcNxd2wERmH1W+dwFxffIdJIg2D4pWf6R9k6OIRApkIIeBdV5IQEcpGHt6AedFAKzr
+ SfUa5LsOY2I8aAfMPWSLyhtOVy4eQ+7cpDYdhDQ3ZY98XZHDnT/AOjMf4r5DRX+eruG9
+ IC0z3RsdD+tXbCOk+6lxPgc1hS456MKIONN32d8NEASvttvBlat20cuMn4iiN6sA8vi3
+ HpYNixIg5OaZAdg/CMxCaIWBiTVl9k5oJUDwKWrbjWA4VEtvchSLeST1vEvxJI/KqT+K
+ 5am8IL0IlTSdzcx0ecZWarVATLapp1k4sfo8iA1sT/C2AVsZX0bwqNl10faYhZYWPe5+
+ agfA==
+X-Gm-Message-State: AOAM530+CqhjMX/Of9/mfKX47FGTOH0A4gd3XGpGDEGILcF+PLWu/soH
+ YbM3SRT1R4dGW7Q1lE5rAQ8=
+X-Google-Smtp-Source: ABdhPJxpY0jUBKzaAkFqi8ozlLFtpXzb8704Bf70GDoclXb/s+d9vZUg1OIVmD1Q282elH1zahm1RQ==
+X-Received: by 2002:a17:906:2db2:: with SMTP id
+ g18mr17131388eji.73.1615235294986; 
+ Mon, 08 Mar 2021 12:28:14 -0800 (PST)
+Received: from Ansuel-xps.localdomain
+ (host-95-247-48-130.retail.telecomitalia.it. [95.247.48.130])
+ by smtp.googlemail.com with ESMTPSA id c18sm7624483edu.20.2021.03.08.12.28.13
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 08 Mar 2021 12:28:14 -0800 (PST)
+From: Ansuel Smith <ansuelsmth@gmail.com>
+To: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Ansuel Smith <ansuelsmth@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/2] mtd: core: add nvmem-cells compatible to parse mtd as
+ nvmem cells
+Date: Mon,  8 Mar 2021 02:18:44 +0100
+Message-Id: <20210308011853.19360-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <00fdc79c-2a7f-c02f-3398-8102e5a68a53@microchip.com>
-Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210308_180332_664617_53EBD40E 
-X-CRM114-Status: GOOD (  23.43  )
+X-CRM114-CacheID: sfid-20210308_202817_984028_2A6657A0 
+X-CRM114-Status: GOOD (  12.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,73 +103,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Tudor,
+Partitions that contains the nvmem-cells compatible will register
+their direct subonodes as nvmem cells and the node will be treated as a
+nvmem provider.
 
-On 3/8/21 6:50 AM, Tudor.Ambarus@microchip.com wrote:
-> On 2/13/21 5:10 PM, David Bauer wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> The Winbond W25Q512JV is a 512mb SPI-NOR chip. It supports 4K
->> sectors as well as block protection and Dual-/Quad-read.
->>
->> Tested on: Ubiquiti UniFi 6 LR
->>
->> Signed-off-by: David Bauer <mail@david-bauer.net>
-> 
-> David, I'll take Shuhao's patch because he sent it first:
-> https://patchwork.ozlabs.org/project/linux-mtd/patch/20210208075303.4200-1-shuhao.mai.1990@gmail.com/
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+---
+Depends on [PATCH] mtd: parsers: ofpart: limit parsing of deprecated DT syntax
+---
+ drivers/mtd/mtdcore.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Fine with me, I have not found this patch :)
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 2d6423d89a17..ac1b4f176a17 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -531,6 +531,7 @@ static int mtd_nvmem_reg_read(void *priv, unsigned int offset,
+ 
+ static int mtd_nvmem_add(struct mtd_info *mtd)
+ {
++	struct device_node *node = mtd_get_of_node(mtd);
+ 	struct nvmem_config config = {};
+ 
+ 	config.id = -1;
+@@ -543,7 +544,7 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
+ 	config.stride = 1;
+ 	config.read_only = true;
+ 	config.root_only = true;
+-	config.no_of_node = true;
++	config.no_of_node = !of_device_is_compatible(node, "nvmem-cells");
+ 	config.priv = mtd;
+ 
+ 	mtd->nvmem = nvmem_register(&config);
+-- 
+2.30.0
 
-> 
-> Would you make an incremental patch on top op Shuhao's, to add the
-> locking support?
-
-Sure, It's necessary for the board (UniFi 6 LR), as the bootloader locks the flash on boot.
-
-I'll send a new patch for the lock support.
-
-Best
-David
-
-> 
-> Shuhao, can you please test the locking ops with mtd-utils?
-> 
-> 
->> ---
->>  drivers/mtd/spi-nor/winbond.c | 4 ++++
->>  1 file changed, 4 insertions(+)
->>
->> diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
->> index e5dfa786f190..49d0d7993368 100644
->> --- a/drivers/mtd/spi-nor/winbond.c
->> +++ b/drivers/mtd/spi-nor/winbond.c
->> @@ -95,6 +95,10 @@ static const struct flash_info winbond_parts[] = {
->>                              SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->>         { "w25q256jw", INFO(0xef6019, 0, 64 * 1024, 512,
->>                              SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->> +       { "w25q512jv", INFO(0xef4020, 0, 64 * 1024, 1024,
->> +                           SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_READ |
->> +                           SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 |
->> +                           SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
-> 
-> Looks good. Let's put these flags in some king of order:
-> 
-> SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-> SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 |
-> SPI_NOR_4BIT_BP
-> 
-> Cheers,
-> ta
-> 
-> 
->>         { "w25m512jv", INFO(0xef7119, 0, 64 * 1024, 1024,
->>                             SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_READ) },
->>  };
->> --
->> 2.30.1
->>
-> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
