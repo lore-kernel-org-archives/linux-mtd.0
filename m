@@ -4,82 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25D4CC433E0
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Mar 2021 06:22:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C25A9C433DB
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Mar 2021 06:24:00 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A7804651B7
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Mar 2021 06:22:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7804651B7
+	by mail.kernel.org (Postfix) with ESMTPS id 24D23651EB
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Mar 2021 06:24:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 24D23651EB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=xa5QNcI/G/6BNjGQJHKe3g949K3DymT4hC3L3+dx4kg=; b=p+crm4P/mvv9S6TbD3Ff9pnBp
-	e6ElX610VYWbOhuGtONS4rHfwmoJ7ykADPtlzACOrE3F1kF+OglWbJdFUKWMcQ+gIebJV/SU/J0P8
-	xceaFkV6D2M0ttJeYHINAQXdQgpBQPtgyIuaZx6LllTdp3MT7hZKdrh3RZqqlLEh2D2UrVDq/RCrj
-	I98cjdjhYLqtjoMoumJ5a54n6Fz5M8UCdVLA3P0tNYUt3qGqr+G1GefNYh5SxTTL2TN2lMGbM2/2K
-	9OtR7yBkee+3xehzyvdRLMn/qaq2MRiSL0tVUti05CpQv4ZFPpcl0hJC5zPry4LcI4z/wBJWg97c5
-	SD8o5GsZA==;
+	 bh=PE56CgbFgKiTKyPJnmPi5tnJIkBZd9nxAwDvwcx/0AM=; b=ckjASgB6quQsTK4z+E0rGdwMr
+	LB8cb7xj+5OTg4Phrz+D5W0xzqMhEOS8QlTbIin85rJabKlVM1IMzOGu2KfXgh9LG55RgSsjQ7jG2
+	9H742iKqTqrlyWHFGIu8i6YHPpfjIIpBYOpIAOUp1AlP4FBFFjGhHQP/D760+JSXo3rCZ6TSXEd5f
+	QC8vmJ/F7l0ASN7L769tVQOJk7nbwAghbiCJ1S/Xp/OWE7GfaSAtGt+CdbhcJ9hChoXdUgLh0Qa0S
+	cv9BsaNxsAMfEM2M4ObuYj0JiI2uHgUCBVLIhcqfVj10kMgBvjFiUUenAhx/e8ibKyKch47CM3pNh
+	fWS8qs9dA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lJ9H6-00FSrH-Gf; Mon, 08 Mar 2021 06:21:52 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1lJ9IW-00FTDE-09; Mon, 08 Mar 2021 06:23:20 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lJ9Gy-00FSos-1w
- for linux-mtd@lists.infradead.org; Mon, 08 Mar 2021 06:21:47 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1286LcVH104367;
- Mon, 8 Mar 2021 00:21:38 -0600
+ id 1lJ9IP-00FTAg-9D
+ for linux-mtd@lists.infradead.org; Mon, 08 Mar 2021 06:23:15 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1286N75W051359;
+ Mon, 8 Mar 2021 00:23:07 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1615184498;
- bh=3YivBEiBFMsnIaxDC1OW9wmRCl7kuhqwo1WQbmBUmvk=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=X/s7HgJCIqGKxhB4SsWqVznksB1BZ5ePK2rilZU/35ipm1xeUZwzWqBzxvizG4Ws3
- OIWqhZSZi4yE2GNtnu8Q9dqjsx8Xo6SwyiygomDovOGcQ0vU6keBi1GMe0xEZ06rCN
- nwm4J1VK20A85lN7/Y6t+pDmgTLhceseFBHGCeOU=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1286LcM5056966
+ s=ti-com-17Q1; t=1615184587;
+ bh=QklpySCLOwECbEk2YWP3FRQbNMYZhudGOqMYSRereIc=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=cqMnerDD9HPv1w2NGd/PV60ZTgBBK67KVh3pr6VEJ+JMUkbDEOIchqoz35qbyYdjW
+ hu2T/1vnWyYsEKqcLafb9oFgYapnhcoh7OO8ZQCz2wmXgw/RxljTmR+/67oQc3zEuw
+ ui5fMvC6jLhJhHWVTIAdB8saQtEKtgqEHDlvDUC0=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1286N7Yx026903
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 8 Mar 2021 00:21:38 -0600
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ Mon, 8 Mar 2021 00:23:07 -0600
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 8 Mar
- 2021 00:21:38 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ 2021 00:23:07 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 8 Mar 2021 00:21:38 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1286Lbdp070808;
- Mon, 8 Mar 2021 00:21:38 -0600
-Date: Mon, 8 Mar 2021 11:51:37 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>
-CC: <vigneshr@ti.com>, <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
- <miquel.raynal@bootlin.com>, <richard@nod.at>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/5] mtd: spi-nor: core: Add vdbg msg for
- spi_nor_erase_multi_sectors()
-Message-ID: <20210308062135.g3y5hv6fcnruw7li@ti.com>
-References: <20210306095002.22983-1-tudor.ambarus@microchip.com>
- <20210306095002.22983-3-tudor.ambarus@microchip.com>
+ Frontend Transport; Mon, 8 Mar 2021 00:23:07 -0600
+Received: from [10.250.234.120] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1286N4Od093672;
+ Mon, 8 Mar 2021 00:23:05 -0600
+Subject: Re: [PATCH v1 1/1] mtd: spi-nor: intel-spi: Move platform data header
+ to x85 subfolder
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Lee Jones <lee.jones@linaro.org>
+References: <20210304140820.56692-1-andriy.shevchenko@linux.intel.com>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <a515499d-d91d-117e-8cc9-de1f12912358@ti.com>
+Date: Mon, 8 Mar 2021 11:53:03 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210306095002.22983-3-tudor.ambarus@microchip.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <20210304140820.56692-1-andriy.shevchenko@linux.intel.com>
+Content-Language: en-US
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210308_062144_521992_936F45AE 
-X-CRM114-Status: GOOD (  14.57  )
+X-CRM114-CacheID: sfid-20210308_062313_759720_A6E4FFFA 
+X-CRM114-Status: GOOD (  15.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,48 +97,76 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 06/03/21 11:49AM, Tudor Ambarus wrote:
-> Useful when debugging non-uniform erase.
+
+
+On 3/4/21 7:38 PM, Andy Shevchenko wrote:
+> In order to group x86 related platform data move intel-spi.h to x85 folder.
 > 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> While at it, remove duplicate inclusion in C file.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
-> v2: 
-> - s/dev_dbg/dev_vdb
-> - move vdbg message the first thing in the while
+
+Nit, typo in $subject and commit message: s/x85/x86. Tudor may be able
+to fix it locally while applying.
+
+Apart from that
+
+Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
+
+Regards
+Vignesh
+
+>  drivers/mtd/spi-nor/controllers/intel-spi.c       | 1 -
+>  drivers/mtd/spi-nor/controllers/intel-spi.h       | 2 +-
+>  include/linux/mfd/lpc_ich.h                       | 2 +-
+>  include/linux/platform_data/{ => x86}/intel-spi.h | 0
+>  4 files changed, 2 insertions(+), 3 deletions(-)
+>  rename include/linux/platform_data/{ => x86}/intel-spi.h (100%)
 > 
->  drivers/mtd/spi-nor/core.c | 3 +++
->  1 file changed, 3 insertions(+)
+> diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
+> index b54a56a68100..a413892ff449 100644
+> --- a/drivers/mtd/spi-nor/controllers/intel-spi.c
+> +++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
+> @@ -15,7 +15,6 @@
+>  #include <linux/mtd/mtd.h>
+>  #include <linux/mtd/partitions.h>
+>  #include <linux/mtd/spi-nor.h>
+> -#include <linux/platform_data/intel-spi.h>
+>  
+>  #include "intel-spi.h"
+>  
+> diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.h b/drivers/mtd/spi-nor/controllers/intel-spi.h
+> index e2f41b8827bf..f2871179fd34 100644
+> --- a/drivers/mtd/spi-nor/controllers/intel-spi.h
+> +++ b/drivers/mtd/spi-nor/controllers/intel-spi.h
+> @@ -9,7 +9,7 @@
+>  #ifndef INTEL_SPI_H
+>  #define INTEL_SPI_H
+>  
+> -#include <linux/platform_data/intel-spi.h>
+> +#include <linux/platform_data/x86/intel-spi.h>
+>  
+>  struct intel_spi;
+>  struct resource;
+> diff --git a/include/linux/mfd/lpc_ich.h b/include/linux/mfd/lpc_ich.h
+> index 6ddca2bbb3a8..39967a5eca6d 100644
+> --- a/include/linux/mfd/lpc_ich.h
+> +++ b/include/linux/mfd/lpc_ich.h
+> @@ -8,7 +8,7 @@
+>  #ifndef LPC_ICH_H
+>  #define LPC_ICH_H
+>  
+> -#include <linux/platform_data/intel-spi.h>
+> +#include <linux/platform_data/x86/intel-spi.h>
+>  
+>  /* GPIO resources */
+>  #define ICH_RES_GPIO	0
+> diff --git a/include/linux/platform_data/intel-spi.h b/include/linux/platform_data/x86/intel-spi.h
+> similarity index 100%
+> rename from include/linux/platform_data/intel-spi.h
+> rename to include/linux/platform_data/x86/intel-spi.h
 > 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index bcaa161bc7db..498da1ec3a89 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -1610,6 +1610,9 @@ static int spi_nor_erase_multi_sectors(struct spi_nor *nor, u64 addr, u32 len)
->  	list_for_each_entry_safe(cmd, next, &erase_list, list) {
->  		nor->erase_opcode = cmd->opcode;
->  		while (cmd->count) {
-> +			dev_vdbg(nor->dev, "erase_cmd->size = 0x%08x, erase_cmd->opcode = 0x%02x, erase_cmd->count = %d\n",
-
-erase_cmd->count is an unsigned value (u32) so it should be %u instead 
-of %d.
-
-Other than this,
-
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
-
-> +				 cmd->size, cmd->opcode, cmd->count);
-> +
->  			ret = spi_nor_write_enable(nor);
->  			if (ret)
->  				goto destroy_erase_cmd_list;
-> -- 
-> 2.25.1
-> 
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
