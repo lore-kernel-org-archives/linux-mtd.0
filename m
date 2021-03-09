@@ -2,67 +2,74 @@ Return-Path: <SRS0=cj04=IH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 447EBC433DB
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Mar 2021 07:58:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7834C433DB
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Mar 2021 17:53:35 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AD1B0652A4
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Mar 2021 07:58:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD1B0652A4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	by mail.kernel.org (Postfix) with ESMTPS id EB81B64FBD
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Mar 2021 17:53:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EB81B64FBD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=mailfence.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Y3oEaasjsAyf9XLUL4uDHLqbz00Z4dBXG/Kr7SMhpT4=; b=XKm2mR7wnMBM8D2CZyZ7bTaDs
-	jWB8VLUL33fSWk5l8ZPXAkW+D3yV8URGpSC7ntwpZesehUFI1rxDAoI14vpEaMhVOmA23DcgZWsIF
-	0WHktVKFQ2Fc8L2C6+Sl+bHrJIltpBAI2L0Zc5b9LzfkNs3qVFFuVv8jI429KK2KFibrcfhhp5srz
-	4S1nIpCC4SQblSIPnQMGWebKeRHp/CnhUCnrVecieP+uHerWOGyyrN+6FJ9IOl4RT4uo0iUE1q0pF
-	+FMH1PRGztTNACOS6RCTe/9g5fEEtfNgEo5EcJad6EQQ8dhfF+ybMKov4ra9XpMKKAZxZ8Ucj7hHv
-	9Fl07lngQ==;
+	 bh=EVA7+RcSAkZtFOb12MYtRbsqQzaaaB6znsPGi/csyW4=; b=J4/cRryktiCwyIE69BalW00GY
+	Z5Dme4prqj2TSzQ7oPwQdmWcgGPvlz0lv7wlJ0T5P9+NF18ae8ppT5U0fWLKixMd37pMDrogu005J
+	kDv2Xix0R0y6wpxsd1X2OknAKsooMoIujRMcJt5uLNq4YLfC6Ka7uGlF2rJNnaf0PsI6S4luJa4CP
+	akpzV4lIB8ezJHrmSN+jNdKYffGZRwmyEikp5Ki/MraMxYsvykqL/KALqQvW8Dy3TkOAsI5V3jH5D
+	4cTAuuOVJGWYZZyUY43nQpHjcToBsBG98TwkP2gD7HeYV8P9ppYBUU8kszMBG6EgKfzKWH3QUXEDB
+	myZAPB7FA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lJXF9-003zSn-D1; Tue, 09 Mar 2021 07:57:27 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1lJgWw-005Cye-LQ; Tue, 09 Mar 2021 17:52:26 +0000
+Received: from mail.kapsi.fi ([91.232.154.25])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lJXEs-003zQL-Ac
- for linux-mtd@lists.infradead.org; Tue, 09 Mar 2021 07:57:23 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 85B731F44A74;
- Tue,  9 Mar 2021 07:57:09 +0000 (GMT)
-Date: Tue, 9 Mar 2021 08:57:06 +0100
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: miquel.raynal@bootlin.com, richard@nod.at, robh+dt@kernel.org,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Daniele.Palmas@telit.com, bjorn.andersson@linaro.org
-Subject: Re: [PATCH v4 2/3] dt-bindings: mtd: Add a property to declare
- secure regions in NAND chips
-Message-ID: <20210309085706.2d6bd0f0@collabora.com>
-In-Reply-To: <20210308133134.GC5457@thinkpad>
-References: <20210308054447.28418-1-manivannan.sadhasivam@linaro.org>
- <20210308054447.28418-3-manivannan.sadhasivam@linaro.org>
- <20210308101059.08658fbe@collabora.com>
- <20210308133134.GC5457@thinkpad>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1lJgWs-005CyB-Dj
+ for linux-mtd@lists.infradead.org; Tue, 09 Mar 2021 17:52:24 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+ s=20161220; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+ Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+ Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+ :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+ List-Post:List-Owner:List-Archive;
+ bh=GQOVPudyPpdiWlFDjlgAquGYg7Q0o3D51DgHZAYE4OQ=; b=xsSUR/T3F1MHMG/sjDy2SRSDvM
+ T55GlB9B0lZIqpZ4PhUwGNZPXfVEgwkWEpVJld7C6B2c1KzBoK55+m+abiAQbGlUTwVSUzgIML+IH
+ 3CKbB52MCwNqt+dL2w5qni4Rx11wXqJZ9J0SBmNXQEDPp8KfL6+YbZHdNec7DaOsLkbYc8EzM6o0h
+ QQ63zaCJ9g2LPyxMCuMN7GI6QsYx6Ntk3yPleNqsYjy3Z6b7wyXwIeCygFpKVYHQeqmOFp9+5H46T
+ sbaAg0phisT4LVfbqlmE+nYAI0HdzSwmNH2KQyuQGoXd7UbpKRjfe7jllMhsbsnXZxXOndoTDAxET
+ /CTzIKbA==;
+Received: from 97-173-191-90.dyn.estpak.ee ([90.191.173.97] helo=ubuntu)
+ by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+ (Exim 4.89) (envelope-from <sandberg@mailfence.com>)
+ id 1lJgWk-0007pT-9i; Tue, 09 Mar 2021 19:52:15 +0200
+Received: by ubuntu (sSMTP sendmail emulation); Tue, 09 Mar 2021 19:52:11 +0200
+From: Mauri Sandberg <sandberg@mailfence.com>
+To: linux-mtd@lists.infradead.org
+Cc: vigneshr@ti.com, richard@nod.at, miquel.raynal@bootlin.com,
+ Mauri Sandberg <sandberg@mailfence.com>
+Subject: [PATCH v2] mtd: cfi_cmdset_0002: AMD chip 0x2201 - write words
+Date: Tue,  9 Mar 2021 19:48:59 +0200
+Message-Id: <20210309174859.362060-1-sandberg@mailfence.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210223170052.963927-1-sandberg@mailfence.com>
+References: <20210223170052.963927-1-sandberg@mailfence.com>
 MIME-Version: 1.0
+X-SA-Exim-Connect-IP: 90.191.173.97
+X-SA-Exim-Mail-From: sandberg@mailfence.com
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210309_075710_906662_8EE7EA62 
-X-CRM114-Status: GOOD (  27.07  )
+X-CRM114-CacheID: sfid-20210309_175222_583946_C3CF4F1F 
+X-CRM114-Status: GOOD (  10.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,51 +86,59 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 8 Mar 2021 19:01:34 +0530
-Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
+Buffer writes do not work with AMD chip 0x2201. The chip in question
+is a AMD/Spansion/Cypress Semiconductor S29GL256N and datasheet [1]
+talks about writing buffers being possible. While waiting for a neater
+solution resort to writing word-sized chunks only.
 
-> On Mon, Mar 08, 2021 at 10:10:59AM +0100, Boris Brezillon wrote:
-> > On Mon,  8 Mar 2021 11:14:46 +0530
-> > Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
-> >   
-> > > On a typical end product, a vendor may choose to secure some regions in
-> > > the NAND memory which are supposed to stay intact between FW upgrades.
-> > > The access to those regions will be blocked by a secure element like
-> > > Trustzone. So the normal world software like Linux kernel should not
-> > > touch these regions (including reading).
-> > > 
-> > > So let's add a property for declaring such secure regions so that the
-> > > drivers can skip touching them.
-> > > 
-> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > ---
-> > >  Documentation/devicetree/bindings/mtd/nand-controller.yaml | 7 +++++++
-> > >  1 file changed, 7 insertions(+)
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-> > > index d0e422f4b3e0..15a674bedca3 100644
-> > > --- a/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-> > > +++ b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-> > > @@ -143,6 +143,13 @@ patternProperties:
-> > >            Ready/Busy pins. Active state refers to the NAND ready state and
-> > >            should be set to GPIOD_ACTIVE_HIGH unless the signal is inverted.
-> > >  
-> > > +      secure-regions:
-> > > +        $ref: /schemas/types.yaml#/definitions/uint32-matrix
-> > > +        description:
-> > > +          Regions in the NAND chip which are protected using a secure element
-> > > +          like Trustzone. This property contains the start address and size of
-> > > +          the secure regions present.
-> > > +  
-> > 
-> > Since you declare this as a generic property, I think it'd be simpler
-> > to do the check at the core level.
-> >   
-> 
-> Hmm, so have the parsing logic in qcom driver and check in core or both parsing
-> and check in core?
+Without the patch kernel logs will be flooded with entries like below:
 
-Both in the core.
+jffs2_scan_eraseblock(): End of filesystem marker found at 0x0
+jffs2_build_filesystem(): unlocking the mtd device...
+done.
+jffs2_build_filesystem(): erasing all blocks after the end marker...
+MTD do_write_buffer_wait(): software timeout, address:0x01ec000a.
+jffs2: Write clean marker to block at 0x01920000 failed: -5
+MTD do_write_buffer_wait(): software timeout, address:0x01e2000a.
+jffs2: Write clean marker to block at 0x01880000 failed: -5
+MTD do_write_buffer_wait(): software timeout, address:0x01e0000a.
+jffs2: Write clean marker to block at 0x01860000 failed: -5
+MTD do_write_buffer_wait(): software timeout, address:0x01dc000a.
+jffs2: Write clean marker to block at 0x01820000 failed: -5
+MTD do_write_buffer_wait(): software timeout, address:0x01da000a.
+jffs2: Write clean marker to block at 0x01800000 failed: -5
+...
+
+Tested on a Buffalo wzr-hp-g300nh running kernel 5.10.16.
+
+[1] https://www.cypress.com/file/219941/download
+or  https://datasheetspdf.com/pdf-file/565708/SPANSION/S29GL256N/1
+
+Signed-off-by: Mauri Sandberg <sandberg@mailfence.com>
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index a1f3e1031c3d..28b6f3583f8a 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -272,6 +272,10 @@ static void fixup_use_write_buffers(struct mtd_info *mtd)
+ {
+ 	struct map_info *map = mtd->priv;
+ 	struct cfi_private *cfi = map->fldrv_priv;
++
++	if ((cfi->mfr == CFI_MFR_AMD) && (cfi->id == 0x2201))
++		return;
++
+ 	if (cfi->cfiq->BufWriteTimeoutTyp) {
+ 		pr_debug("Using buffer write method\n");
+ 		mtd->_write = cfi_amdstd_write_buffers;
+
+base-commit: 5de15b610f785f0e188fefb707f0b19de156968a
+-- 
+2.25.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
