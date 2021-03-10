@@ -6,71 +6,70 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
 	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7197C433DB
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BAD29C433E6
 	for <linux-mtd@archiver.kernel.org>; Wed, 10 Mar 2021 21:09:33 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 27BF864FC8
+	by mail.kernel.org (Postfix) with ESMTPS id 24C3264FC4
 	for <linux-mtd@archiver.kernel.org>; Wed, 10 Mar 2021 21:09:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 27BF864FC8
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 24C3264FC4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=VR4LpCg7LR4Bt0d+Jc8kOFoMmf4d07glJya4Aqkc1N8=; b=PKynlrtGlayxKY4BnUIjypMY1B
-	jfZmoTgG6ymWtIhikaiEjEieNHaseflLQgN85F071iUgf/0jve03mdxuK+qWxoLkf/r+Yg7Eg8Ax8
-	uucAri2moP0PKoYDQKcjGIu00uZ1OEfVP3mxNZh6HY0PONTSR9WEE3kACc7KalRBGis3JKGozQvnF
-	wKGEUxZ55vTlDpFKFWvWQ0vSHEbDM1JRGVIMQOkD39a+czpWvg3EgSL2RdewBOwiInpPS6/lvtLJ6
-	hHBVrBJPv0OzYZ5yTlx9VlU6M44ideQ7W3wrIzAqI1OLBsN+LOoxVEKEo1IbpWTnHAmbrNPqDPV1U
-	EeiYMENA==;
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=bBSBz3tPNFcd2f5C3UEFJ6HEx1jDcMxj+ZWABzOmY30=; b=HrXn468a/Kjc7SD4VXYedYb0a
+	AJcW/pQXEfwPLE633W2ald1TWXDGJ7aH5EfxPCAWZCWAJxJOXB/g/qfwQxWD4OUIPVEfHokSTdnuR
+	CHtoYysunc8yyPJ4Te3FFix2Z80y346nU35slgSyVMR/mbAY4e9bVq6A02pGNCv9JlrXnX9rAHLFV
+	RRHsRmeKbUGo0mRPWeCa5Q0kC8V3t5IFryKdtha9bwO187A8cqVuoEnSwyl+dvM1FTJk6OD35a3tZ
+	UqrwpdxyLwr6KjlCAe+k6xE6y8LCiDnHCfaI+SYNGAVuKVdagXc3aAfu61nXTALg+91CAd8xYblMo
+	DNWZtkCNg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lK647-007j1V-7G; Wed, 10 Mar 2021 21:08:23 +0000
-Received: from mail-ed1-x535.google.com ([2a00:1450:4864:20::535])
+	id 1lK64I-007j3U-Ue; Wed, 10 Mar 2021 21:08:35 +0000
+Received: from mail-ej1-x62e.google.com ([2a00:1450:4864:20::62e])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lK642-007j0F-B9
- for linux-mtd@lists.infradead.org; Wed, 10 Mar 2021 21:08:21 +0000
-Received: by mail-ed1-x535.google.com with SMTP id p1so30276183edy.2
- for <linux-mtd@lists.infradead.org>; Wed, 10 Mar 2021 13:08:17 -0800 (PST)
+ id 1lK646-007j1E-8L
+ for linux-mtd@lists.infradead.org; Wed, 10 Mar 2021 21:08:24 +0000
+Received: by mail-ej1-x62e.google.com with SMTP id lr13so41642117ejb.8
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Mar 2021 13:08:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=AIJvF8THgvNIIJY7o0rd8q2CMHcgDSy7Mtu5dW42sFA=;
- b=umQzLk1D4vOPawFEM+6Bx3PxwJApV0E7LygvKxasJpi52Qw3p2EYwicmAlbI0g+Vg3
- y58xizwMSWcaZPHR7g7knAAxcj/hIbCwrJsvi82O+QNAkQMvqftagYxKkVrPrkjmM3PI
- IY+GlG1Dqwhf5kK82lnIIy3iXbbi53PDB+y3jKGmbvlqcYyQcXMgUztJe4gJ1noJymx9
- NuA+6G8211wycYqP8xbhIAZqy4hdzzKPkKmkCoTfmxQy2UxBLPz274sSnfCbqcoPnkdR
- LOD03K8nILIjKsOiLplbth0D7h98pUMLeOM+DbJSzh7CfN2BWVkI/lZ6RJ8Zl+25e3c7
- zR5g==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=xFPq8+0A2tlhUqOfS/rUAsa/NrqBUr4EOZh4j7x/kE8=;
+ b=JbnVyzZa1vdrvsdVaMOgex/cASkTjl1o4wSqdy14c7b1cs35dkpyoTqPxMe1iZ9xIW
+ ozDMZGxem6kIz3SrNxj/XwIj6Oz+YQerhEm1fq7m2uOXwXBbePy7gZB5Yxoyd8/5/9Y9
+ WRGJthxCeqLJNNJYOhHbxxt5qD19bXL7h17RbTDMGo8Mo3L0CGueOfFhhUYFmyidoSS0
+ vpqpXTT4fLoH5li48+5BHthS0qw75PWV+te4UCj1EuPSODlJ6ezWXyMHEsIW8mq5XtIo
+ TV1TMxDIxZrwx0/vXmU6Kfwkt2slS7+cD1JhxiY9CV68Ve4mFC15ddlmWkI4x/BiUrPz
+ US1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=AIJvF8THgvNIIJY7o0rd8q2CMHcgDSy7Mtu5dW42sFA=;
- b=An0Xsozlo4zBwmLNI3SG1q4n83XhYeaWyTz09gFYYwM6d8xt/XOdBKekiN2kzLFTds
- WKbVk6v4YbkKGWDYUywaV48BN1sTDRmwSndn6HnmEU/DVh3qAl5D7dgzGGQjdPal0vDM
- NbmvtUcVPLyENMa+Q+9RZY1m/Bh8CCb2S3vXuBueKUlaKxiC+NIW9Yw8w3fMm7O8eyby
- fZIgONMiFNP252G4mPc49LztyhZQY4L72thY5LhFuEx9WnyBAN0oSK2pIAq5tuPCfl/T
- 9eIYHjPJ7Q9TgQuuKlMDedRBtpk+uiKZtjavbLH02CMege6GxbDDdnlaDATpsf8ebhsT
- BJaA==
-X-Gm-Message-State: AOAM531zkOTGV5S5gT7zrVLA6ocxd59k62cJdghoTKd6H5oK3YoZ/fUA
- azQVSMezPUZ+DGz65d97qoI=
-X-Google-Smtp-Source: ABdhPJzU2FKDHG79f7UQcw8tVg/BBne3N8m2R28TmD5twNF6xyfuOyV9hbeGnPjwNgUSx0tUPGrJzQ==
-X-Received: by 2002:a05:6402:46:: with SMTP id
- f6mr5398960edu.252.1615410496484; 
- Wed, 10 Mar 2021 13:08:16 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=xFPq8+0A2tlhUqOfS/rUAsa/NrqBUr4EOZh4j7x/kE8=;
+ b=steEr9+jXaFQpQcDHU21Oq5f2mJ3b3ybUdRYFngcmrQ2XYbmFvykz/8qupYUvOPKcu
+ JHk/rQ+7i1xbYxjhIU80zdAfCwha3Ht2UE4Kbq9UAxks9GPOeOOQWpAL0DBJnUheROWy
+ 1+3SS7G4Fv+yCYDII9j/L23IeaDxF8BKK0chUsEdS2PWDubrC/nHiGmdgN1iN1jXL3pT
+ dHYV2ByFnpSsLi4WgT05iUjQss3W6b58Xoh+YEyKIwTG5SeGuMh4RwSJ5vm5v5lD9J/g
+ Fh7mzCyhjj32GKSOjnMob+jrjb0vGzXEIx4176gua+EKc+WHoTOzWL7TTS2WVnCxEMan
+ rlDw==
+X-Gm-Message-State: AOAM532NbS1XmdOrISlONP4dhEUVi0VedkxEhTzjz9busVZrjAVnoJvp
+ nrGRAIgR3wFF9JbwPWWm23g=
+X-Google-Smtp-Source: ABdhPJxMhxvqt2uc/XnQM5SDA5v8uHHMAXEtGaa7sBmASydWA4ifJqbigVy0BKUn8EKN7vpqd7KmOQ==
+X-Received: by 2002:a17:906:688:: with SMTP id u8mr360665ejb.38.1615410501645; 
+ Wed, 10 Mar 2021 13:08:21 -0800 (PST)
 Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it.
  [93.35.189.2])
- by smtp.googlemail.com with ESMTPSA id f19sm252947edu.12.2021.03.10.13.08.15
+ by smtp.googlemail.com with ESMTPSA id f19sm252947edu.12.2021.03.10.13.08.20
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 10 Mar 2021 13:08:16 -0800 (PST)
+ Wed, 10 Mar 2021 13:08:21 -0800 (PST)
 From: Ansuel Smith <ansuelsmth@gmail.com>
 To: Rob Herring <robh@kernel.org>
 Cc: Ansuel Smith <ansuelsmth@gmail.com>,
@@ -80,15 +79,17 @@ Cc: Ansuel Smith <ansuelsmth@gmail.com>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v4 1/3] mtd: core: add nvmem-cells compatible to parse mtd as
- nvmem cells
-Date: Wed, 10 Mar 2021 22:08:01 +0100
-Message-Id: <20210310210812.8880-1-ansuelsmth@gmail.com>
+Subject: [PATCH v4 2/3] dt-bindings: mtd: Document use of nvmem-cells
+ compatible
+Date: Wed, 10 Mar 2021 22:08:02 +0100
+Message-Id: <20210310210812.8880-2-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210310210812.8880-1-ansuelsmth@gmail.com>
+References: <20210310210812.8880-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210310_210818_645838_079FA540 
-X-CRM114-Status: GOOD (  12.64  )
+X-CRM114-CacheID: sfid-20210310_210822_500202_A45D7B4A 
+X-CRM114-Status: GOOD (  14.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,36 +106,117 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Partitions that contains the nvmem-cells compatible will register
-their direct subonodes as nvmem cells and the node will be treated as a
+Document nvmem-cells compatible used to treat mtd partitions as a
 nvmem provider.
 
 Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
 ---
- drivers/mtd/mtdcore.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ .../bindings/mtd/partitions/nvmem-cells.yaml  | 96 +++++++++++++++++++
+ 1 file changed, 96 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 2d6423d89a17..ac1b4f176a17 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -531,6 +531,7 @@ static int mtd_nvmem_reg_read(void *priv, unsigned int offset,
- 
- static int mtd_nvmem_add(struct mtd_info *mtd)
- {
-+	struct device_node *node = mtd_get_of_node(mtd);
- 	struct nvmem_config config = {};
- 
- 	config.id = -1;
-@@ -543,7 +544,7 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
- 	config.stride = 1;
- 	config.read_only = true;
- 	config.root_only = true;
--	config.no_of_node = true;
-+	config.no_of_node = !of_device_is_compatible(node, "nvmem-cells");
- 	config.priv = mtd;
- 
- 	mtd->nvmem = nvmem_register(&config);
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml b/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
+new file mode 100644
+index 000000000000..f70d7597a6b0
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
+@@ -0,0 +1,96 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/partitions/nvmem-cells.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Nvmem cells
++
++description: |
++  Any partition containing the compatible "nvmem-cells" will register as a
++  nvmem provider.
++  Each direct subnodes represents a nvmem cell following the nvmem binding.
++  Nvmem binding to declare nvmem-cells can be found in:
++  Documentation/devicetree/bindings/nvmem/nvmem.yaml
++
++maintainers:
++  - Ansuel Smith <ansuelsmth@gmail.com>
++
++properties:
++  compatible:
++    const: nvmem-cells
++
++required:
++  - compatible
++
++additionalProperties: true
++
++examples:
++  - |
++    partitions {
++      compatible = "fixed-partitions";
++      #address-cells = <1>;
++      #size-cells = <1>;
++
++      /* ... */
++
++      };
++      art: art@1200000 {
++        compatible = "nvmem-cells";
++        reg = <0x1200000 0x0140000>;
++        label = "art";
++        read-only;
++        #address-cells = <1>;
++        #size-cells = <1>;
++
++        macaddr_gmac1: macaddr_gmac1@0 {
++          reg = <0x0 0x6>;
++        };
++
++        macaddr_gmac2: macaddr_gmac2@6 {
++          reg = <0x6 0x6>;
++        };
++
++        pre_cal_24g: pre_cal_24g@1000 {
++          reg = <0x1000 0x2f20>;
++        };
++
++        pre_cal_5g: pre_cal_5g@5000{
++          reg = <0x5000 0x2f20>;
++        };
++      };
++  - |
++    partitions {
++        compatible = "fixed-partitions";
++        #address-cells = <1>;
++        #size-cells = <1>;
++
++        partition@0 {
++            label = "bootloader";
++            reg = <0x000000 0x100000>;
++            read-only;
++        };
++
++        firmware@100000 {
++            compatible = "brcm,trx";
++            label = "firmware";
++            reg = <0x100000 0xe00000>;
++        };
++
++        calibration@f00000 {
++            compatible = "nvmem-cells";
++            label = "calibration";
++            reg = <0xf00000 0x100000>;
++            ranges = <0 0xf00000 0x100000>;
++            #address-cells = <1>;
++            #size-cells = <1>;
++
++            wifi0@0 {
++                reg = <0x000000 0x080000>;
++            };
++
++            wifi1@80000 {
++                reg = <0x080000 0x080000>;
++            };
++        };
++    };
 -- 
 2.30.0
 
