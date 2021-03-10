@@ -2,20 +2,20 @@ Return-Path: <SRS0=h6Lp=II=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A814C433DB
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Mar 2021 02:59:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9877EC433E0
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Mar 2021 03:46:36 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A06C264FE8
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Mar 2021 02:59:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A06C264FE8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 3A39D64FEE
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Mar 2021 03:46:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A39D64FEE
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
@@ -23,62 +23,77 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=lOjZzvMzaNiKBXfe9nUd+sbas6Jm43BIXrjUb3qSVso=; b=kMCo65oJpIsHkcZ4q+pYikYJT
-	tFWrRXxSSl5hLmW6Fcwqr9lM5440zJqnHev/9oEMjDxItpWTbSRDhVP1YZd89qBLwKMJXwYUswxrF
-	pXkK+iIVo4XOjAF9C2X5j+LEK/TIfboACmLDAquGIbYU7aMvZyyo0/TDpRSEGy6MAa5yBWD5+CEx+
-	nWN/VexywMt+KTmvZ8/Qd3JfBHSetO1zLTd3vBUTSc68DXIwQ7JMsOMmyyQn6ke5FHzAoT9eeipWY
-	ekaoT5SGgoCe0EzRoaJJ6entrhjPaGIegmosJUl1ZHnVkJlMAtayMjpi8O6SYjAeqDkg1IAqboi9Q
-	HjDI5ublg==;
+	 bh=a5rfllOxt22iyD7sMBdCdnScoXxc2Gmb5/m1AcGpLVg=; b=nICrFqVcIM0Tb6RLv9atGr/RA
+	mMSkIoRrGriP/UifFkRMkl+TIjUwQUU+A9Bmkt4o2dpR2UAUX2X6ZsTjIvaf3Q2zVnDH8oj7Lvuq3
+	rvr5M5D3Dhl+DiVT0Q7kr6fWzKpWJRJrsRO6Ytpv5AylaGdP+YHcb9B7IzbbjyjNZgs+C4OGTBHBU
+	YL9qK0Na6jIKyBmEb6luLZzZUkvN2O3yCIePI2UpVSJg8Ua/MKd+vMisBNl9o/iN++VbOnFLnFWPz
+	14EmHxH0dwvLBr7/GqEDzEXt2tcrYMlYU05SRhSEG+TFuCsNq0nf61ghueVkE32D8WSTqXclMbb4J
+	ldynNOADA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lJp3e-005qnJ-59; Wed, 10 Mar 2021 02:58:46 +0000
-Received: from mail-io1-f49.google.com ([209.85.166.49])
+	id 1lJpnE-005wkQ-FE; Wed, 10 Mar 2021 03:45:52 +0000
+Received: from mail-pj1-x1032.google.com ([2607:f8b0:4864:20::1032])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lJp3V-005qkd-8a
- for linux-mtd@lists.infradead.org; Wed, 10 Mar 2021 02:58:41 +0000
-Received: by mail-io1-f49.google.com with SMTP id n14so16349745iog.3
- for <linux-mtd@lists.infradead.org>; Tue, 09 Mar 2021 18:58:37 -0800 (PST)
+ id 1lJpmj-005wfr-Ly
+ for linux-mtd@lists.infradead.org; Wed, 10 Mar 2021 03:45:47 +0000
+Received: by mail-pj1-x1032.google.com with SMTP id gb6so803924pjb.0
+ for <linux-mtd@lists.infradead.org>; Tue, 09 Mar 2021 19:45:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=DhWQQNXXhBl9V6m34E/2PgUYDDDOUR9yglVAy9KAsHY=;
+ b=wZtFlrFINw2Eair2VU4xp47Y+Zi2XmPCnVs7/PeQQ+qZL4KJz7TIbM4fSs7rkGdkWR
+ Tl0SPi8DxbMK8n35d2WfRZLLZq4vPNMNMHbSFMmDEzlJFbNrHYjyFJSXibqvB6mvIPuD
+ rujaYePPrZWDrQl7ZM7yyKgguW+gm+ZdWMmhJdy5CCVN12yHflTVRMooqqaZjBXgX9Kt
+ cAmLiJrc1A1N7FR0ipezYhyPkO0X/Y7qlZyQlyR8kFhaSqV47S6YisodCt2dGdZPBJfi
+ 7LkD7ptdMN+fdaTf4amIBaL5YBjSVwYLMZjIj0Yz5VYlgXYqGz9aqnewwYhzjiUJKmF8
+ xJZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=NvJfFHHjSXrZPelJXpOGfvsgnRgrEictZAVxjsaxjas=;
- b=l6u9NXhoL/xccY7/KncAMfaM6jxTfBRWC5D1iFAZVg3/rlJZTJQmDy/ygP0xYEALat
- FOLBHM8fvl08yWKyBAutgewNpMTySofGUrvQwNyknyZJmW6i+tmzpB0rm3ntKyyfnCU9
- e1KPlDq6TcrDn6nVKIj9h5VNMtjasKtxWSGQ4E/Em7zeG2YdZ5hvLOwiNGBByfqNLUpn
- chODSNBx7BgeipWGuT5CASC1mZN/f7l7jrw/WGZhtmb3K7Nms69SqMYeC215ZkW0dpGT
- IAl/WJ25FYGWVdZj9muH1iZY74KcPbQYSqZU2VPPcLmFTdExcnnChBk0CxtkUfs9NN4D
- NKMA==
-X-Gm-Message-State: AOAM530Y27QTM8HCt1HkdPov5ZMZyzR8Bwgo7vWbr0i4lgWZeGwm6cup
- GSLaq5axC9BarLcjmsbq5Q==
-X-Google-Smtp-Source: ABdhPJw0dsp1wd3hNPwCczjvlSXXqWBrXy3V0hN2TVom21FlXwsJ7NadVMljd7bSQbl+chvYmUU7Ow==
-X-Received: by 2002:a05:6602:1641:: with SMTP id
- y1mr1016044iow.34.1615345116172; 
- Tue, 09 Mar 2021 18:58:36 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
- by smtp.gmail.com with ESMTPSA id y3sm8341675iot.15.2021.03.09.18.58.34
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 09 Mar 2021 18:58:35 -0800 (PST)
-Received: (nullmailer pid 1660968 invoked by uid 1000);
- Wed, 10 Mar 2021 02:58:33 -0000
-Date: Tue, 9 Mar 2021 19:58:33 -0700
-From: Rob Herring <robh@kernel.org>
-To: Ansuel Smith <ansuelsmth@gmail.com>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] dt-bindings: mtd: Document use of nvmem-cells
- compatible
-Message-ID: <20210310025833.GA1658557@robh.at.kernel.org>
-References: <20210308011853.19360-1-ansuelsmth@gmail.com>
- <20210308011853.19360-2-ansuelsmth@gmail.com>
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=DhWQQNXXhBl9V6m34E/2PgUYDDDOUR9yglVAy9KAsHY=;
+ b=nP4R8n4vZNptrWwJdEa8Hid6owdPNjtYXMRI1NxYp6FVljIK7zhjjYUkz8032OfNI7
+ 7Kuco83lNR029qhrbLD3Vl3wXXFHgim5QFbgs5Z3ttB7udpA9i/FOoVsp1R1l4JBnBPU
+ GKbM6MzVSv4eg6nw90RJJMgnPwZHrMnt+QW6Y2wFpM3YG+IzVKXE5K29FoIGvhd5ojXu
+ sI+o+yUjQpmF7XTvW9DpZqpb6E8vSAyxnrRs+i4FlI6Rt7Z0K9SDu9FxqUEVgpE6vg2y
+ s8zsFy73B65P2dIR3+KskgL7Lu6SkT70h5xYbfk/izbx2eM9UK4xAsnkU+vN+64MNQQW
+ LxVg==
+X-Gm-Message-State: AOAM532C8JNvCi8d0UEQEas/yRWAmqGPuZnGDRkDWryxEC2pMYg6gIUR
+ gVE6NjXOaXZGAv6gPP6kAFaIL1m1HxBs
+X-Google-Smtp-Source: ABdhPJww3LXcQIsgNxaSJHDT5/xWPeMIY19nocTKUL5cDKhnuEj6JBzU0U6CZYxIYaCnJ0FAoncP0w==
+X-Received: by 2002:a17:902:d114:b029:e4:87c7:39f5 with SMTP id
+ w20-20020a170902d114b02900e487c739f5mr988931plw.72.1615347919127; 
+ Tue, 09 Mar 2021 19:45:19 -0800 (PST)
+Received: from work ([103.66.79.59])
+ by smtp.gmail.com with ESMTPSA id l2sm2149788pji.45.2021.03.09.19.45.15
+ (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+ Tue, 09 Mar 2021 19:45:18 -0800 (PST)
+Date: Wed, 10 Mar 2021 09:15:14 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Rob Herring <robh@kernel.org>
+Cc: =?iso-8859-1?Q?Miqu=E8l?= Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh R <vigneshr@ti.com>,
+ linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ devicetree@vger.kernel.org,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Boris Brezillon <boris.brezillon@collabora.com>
+Subject: Re: [PATCH 2/3] dt-bindings: mtd: Add a property to declare secure
+ regions in Qcom NANDc
+Message-ID: <20210310034514.GA11114@work>
+References: <20210222120259.94465-1-manivannan.sadhasivam@linaro.org>
+ <20210222120259.94465-3-manivannan.sadhasivam@linaro.org>
+ <20210305233657.GA839767@robh.at.kernel.org>
+ <20210308053140.GA5457@thinkpad>
+ <CAL_JsqKOfQ8v=Adp_3k64-WW-YXan_1kCG9mab6rE62VkSwmhQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20210308011853.19360-2-ansuelsmth@gmail.com>
+In-Reply-To: <CAL_JsqKOfQ8v=Adp_3k64-WW-YXan_1kCG9mab6rE62VkSwmhQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210310_025839_623120_4C55C4FA 
-X-CRM114-Status: GOOD (  19.87  )
+X-CRM114-CacheID: sfid-20210310_034545_050360_16D37549 
+X-CRM114-Status: GOOD (  25.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,134 +110,55 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Mar 08, 2021 at 02:18:45AM +0100, Ansuel Smith wrote:
-> Document nvmem-cells compatible used to treat mtd partitions as a
-> nvmem provider.
+On Tue, Mar 09, 2021 at 07:32:28PM -0700, Rob Herring wrote:
+> On Sun, Mar 7, 2021 at 10:31 PM Manivannan Sadhasivam
+> <manivannan.sadhasivam@linaro.org> wrote:
+> >
+> > On Fri, Mar 05, 2021 at 05:36:57PM -0600, Rob Herring wrote:
+> > > On Mon, Feb 22, 2021 at 05:32:58PM +0530, Manivannan Sadhasivam wrote:
+> > > > On a typical end product, a vendor may choose to secure some regions in
+> > > > the NAND memory which are supposed to stay intact between FW upgrades.
+> > > > The access to those regions will be blocked by a secure element like
+> > > > Trustzone. So the normal world software like Linux kernel should not
+> > > > touch these regions (including reading).
+> > > >
+> > > > So let's add a property for declaring such secure regions so that the
+> > > > driver can skip touching them.
+> > > >
+> > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > > ---
+> > > >  Documentation/devicetree/bindings/mtd/qcom,nandc.yaml | 7 +++++++
+> > > >  1 file changed, 7 insertions(+)
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+> > > > index 84ad7ff30121..7500e20da9c1 100644
+> > > > --- a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+> > > > +++ b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+> > > > @@ -48,6 +48,13 @@ patternProperties:
+> > > >          enum:
+> > > >            - 512
+> > > >
+> > > > +      qcom,secure-regions:
+> > > > +        $ref: /schemas/types.yaml#/definitions/uint32-array
+> > >
+> > > Don't you need 64-bit regions potentially? Though 4GB should be enough
+> > > for anyone.
+> > >
+> >
+> > Yes, given the size of current NAND based systems around, I thought 32 bit is
+> > enough.
 > 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> ---
->  .../bindings/mtd/partitions/nvmem-cells.yaml  | 105 ++++++++++++++++++
->  1 file changed, 105 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
+> Huh!? I was joking. 4GB is small nowadays. Make this 64-bit.
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml b/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
-> new file mode 100644
-> index 000000000000..4ed246b27985
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
-> @@ -0,0 +1,105 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/partitions/nvmem-cells.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Nvmem cells
-> +
-> +description: |
-> +  This binding can be used to treat the specific partition as a nvmem provider.
-> +  Each direct subnodes represents the nvmem cells and won't be parsed as fixed-partitions.
-> +  Fixed-partitions bindings described in fixed-partitions.yaml apply to the nvmem provider node.
-> +
-> +maintainers:
-> +  - Ansuel Smith <ansuelsmth@gmail.com>
-> +
 
-I think this should reference nvmem.yaml. We can drop the $nodename 
-restrictions in it.
+Well I was speaking in the context of Qcom chipsets making use of NAND. Mostly
+the Qcom modem chipsets have <4GB of memory. But since this property is now not
+specific to Qcom, I agree with you and will make it 64 bit.
 
-> +properties:
-> +  compatible:
-> +    const: nvmem-cells
-> +
-> +  "#address-cells": true
-> +
-> +  "#size-cells": true
-> +
-> +  reg:
-> +    description: partition offset and size within the flash
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +  - reg
-> +
-> +additionalProperties: true
-> +
-> +examples:
-> +  - |
-> +    partitions {
-> +      compatible = "fixed-partitions";
-> +      #address-cells = <1>;
-> +      #size-cells = <1>;
-> +
-> +      /* ... */
-> +
-> +      };
-> +      art: art@1200000 {
-> +        compatible = "nvmem-cells";
-> +        reg = <0x1200000 0x0140000>;
-> +        label = "art";
-> +        read-only;
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +
-> +        macaddr_gmac1: macaddr_gmac1@0 {
-> +          reg = <0x0 0x6>;
-> +        };
-> +
-> +        macaddr_gmac2: macaddr_gmac2@6 {
-> +          reg = <0x6 0x6>;
-> +        };
-> +
-> +        pre_cal_24g: pre_cal_24g@1000 {
-> +          reg = <0x1000 0x2f20>;
-> +        };
-> +
-> +        pre_cal_5g: pre_cal_5g@5000{
-> +          reg = <0x5000 0x2f20>;
-> +        };
-> +      };
-> +  - |
-> +    partitions {
-> +        compatible = "fixed-partitions";
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +
-> +        partition@0 {
-> +            label = "bootloader";
-> +            reg = <0x000000 0x100000>;
-> +            read-only;
-> +        };
-> +
-> +        firmware@100000 {
-> +            compatible = "brcm,trx";
-> +            label = "firmware";
-> +            reg = <0x100000 0xe00000>;
-> +        };
-> +
-> +        calibration@f00000 {
-> +            compatible = "nvmem-cells";
-> +            label = "calibration";
-> +            reg = <0xf00000 0x100000>;
-> +            ranges = <0 0xf00000 0x100000>;
-> +            #address-cells = <1>;
-> +            #size-cells = <1>;
-> +
-> +            wifi0@0 {
-> +                reg = <0x000000 0x080000>;
-> +            };
-> +
-> +            wifi1@80000 {
-> +                reg = <0x080000 0x080000>;
-> +            };
-> +        };
-> +    };
-> -- 
-> 2.30.0
-> 
+Thanks,
+Mani
+
+> Rob
 
 ______________________________________________________
 Linux MTD discussion mailing list
