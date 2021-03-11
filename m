@@ -2,99 +2,81 @@ Return-Path: <SRS0=XuJY=IJ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.2 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16D8EC433E0
-	for <linux-mtd@archiver.kernel.org>; Thu, 11 Mar 2021 12:25:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BCF78C433E0
+	for <linux-mtd@archiver.kernel.org>; Thu, 11 Mar 2021 16:43:01 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 91F0764F2D
-	for <linux-mtd@archiver.kernel.org>; Thu, 11 Mar 2021 12:25:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 91F0764F2D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 447D364F9C
+	for <linux-mtd@archiver.kernel.org>; Thu, 11 Mar 2021 16:43:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 447D364F9C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
-	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=6TC1coml7jElSuQRg5wRxqWRjC2GArcQ+UgynTKfgEU=; b=JX2JClxJSTLTjsXTynLH+zhFH
-	KEgKdj3neZ6PSEyawUw5pIzT+DmQLK8bd/TptLj2ex0enR34C3E+UnkOkSlNisemP1u8YfaKT2I8I
-	db8SJs+u+0D++nz9zzMaL/GOfzL2kk+gFfnEkU3oW2VCZwDN5tXoShvE6dj+hxrjTMGehjvG45iO8
-	tqUK652mRa/GwQ1VBiu26P+Tn3GSDhT4TwusnSnHPjr4xKosa7QvAlqhE63zD3I23IPYvSkKw1t3R
-	jHRR0eX8XpJBT2NcS+/Q87wl4XxsLj/br7URvJu7iREY+MFxruvRyIJBz0NRQqxt3g/jcTGxYqjPz
-	XuCr7i3mA==;
+	:Content-Type:MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-Id:Date:Subject:References:In-Reply-To:Cc:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=bNJnr9AHQhuvdBB4P10sm09AIfmy4m8gCq4fT5HGetY=; b=ZwhKFLJt/MwiLUFr7++n1pFel+
+	6U6tHuza+QpcVI22QcrE4wnjTl3IuRxTrvYXJ6Ys8rkuWf1aFAJYC4K0SAFdpXw/I29cir3xVfa/H
+	YO/MdCKhEQMkrvrTdiB6i5NiLFEBsWFgDg6duZOpiUGnGsSyCYiDPwlJt5h7yLFxZc8lKmNv+4sFU
+	ECcQusNO3w2sA+cFx5snReA+aw7+4E7wGz4IZDKdyn3QmX/BHa76qpXdF50RP0aX85cbrPVAhzYS2
+	gpo33d0NaExEoc3SnZbsCyu4b5koy2Br7liggeXtLkOLpblRNLRmdtyRWIWfmKiSYMDcku6AzoERL
+	pqeD8q7Q==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lKKNC-00959B-0o; Thu, 11 Mar 2021 12:25:02 +0000
-Received: from mail-ej1-x629.google.com ([2a00:1450:4864:20::629])
+	id 1lKONR-009bKY-Cj; Thu, 11 Mar 2021 16:41:33 +0000
+Received: from mail-io1-f41.google.com ([209.85.166.41])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lKKN7-00958P-RP
- for linux-mtd@lists.infradead.org; Thu, 11 Mar 2021 12:25:00 +0000
-Received: by mail-ej1-x629.google.com with SMTP id r17so45784460ejy.13
- for <linux-mtd@lists.infradead.org>; Thu, 11 Mar 2021 04:24:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:content-transfer-encoding:in-reply-to;
- bh=Bj1PrbXn3gHkHJv+RDFaf6IcgjKHh54NejPnGnfyo4k=;
- b=RvXOZn/rNiB27hC5Yi/2SxelMvtpDEApoDTQBbT+pglGgTi+JbxSpw8Pb/v4tDwKFh
- eFOenLKzhtM6DkkKvARdcWjqVLsPidqDmzpNUVvhYHcG14yPWQlr4/teEVU2Vp3MpuzF
- mDkhsiYs6XR+5eXyQI0t4YhAk4aQzXjLfFIIxVjlFaHnceLjyqMaylNXdZudxE0WfIK+
- aUMi8SQTo87wRk/4OS8uwbKm753wCngLvHyyAdYf/biGRUueVAr4VbofxzIWB4mo+8YG
- 5juCLucR6ow+cKJuWhaneZOuFHsjQMtaYgHXNkDn9yGyDQhcexRJJ93fAocOchi8ff3h
- JKPg==
+ id 1lKONO-009bJn-63
+ for linux-mtd@lists.infradead.org; Thu, 11 Mar 2021 16:41:32 +0000
+Received: by mail-io1-f41.google.com with SMTP id n132so22628069iod.0
+ for <linux-mtd@lists.infradead.org>; Thu, 11 Mar 2021 08:41:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to;
- bh=Bj1PrbXn3gHkHJv+RDFaf6IcgjKHh54NejPnGnfyo4k=;
- b=aIiECAXaN8Nw3Hb3mdP1t/UI5PnUkuksYgSmhfkDN1GqCk/u+ygutNMGngLlIMxihd
- WZUllA0ngHKqN6j/2k6Jdz0Gir69e8ruXfsoHpXclkqxDbSZByaZEIlT+inKHxw2WYtm
- Et4r01XyUVT17dtHuIww+JE1C0S7KVIOQCARloCwq0TXuISUBEcYIHoUbz81hsTX8Mrx
- 9yI1rDl/JgVWZL87vjCEnfcXjC3/6nqgqqV1LrojU9zaDbwiu8Bu/SvLf8LkU7DA7/nm
- fCrivueiQxQTcWlTTM0fvjRXp5W9efTgvxB1ay7OE8p5MaS/ZbQbEKoYrCYn5LxAUqBQ
- Gpww==
-X-Gm-Message-State: AOAM5331TBNfgYNUZb6ld9q2kry/gYzfiAZbF5aTyrMNyRzlGPQWBSCo
- nUH/d56wWHgVrlnaC5yuvl8=
-X-Google-Smtp-Source: ABdhPJxP/IiRrbAzwnECNCOgeXFdx6CfLzqL0rTIPUYKwIxQj73jl2cwZsPjGKEHkZVIPbEDcjeBiA==
-X-Received: by 2002:a17:906:8583:: with SMTP id
- v3mr2867228ejx.361.1615465497291; 
- Thu, 11 Mar 2021 04:24:57 -0800 (PST)
-Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it.
- [93.35.189.2])
- by smtp.gmail.com with ESMTPSA id t16sm1238428edi.60.2021.03.11.04.24.56
+ h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+ :message-id;
+ bh=i8xfhIr1HLKCJnIosV9G52CMLBMofdfXZRG6SJhuaFY=;
+ b=TmAmakX4h95K8uBnM/UzI8qKJ/8Ngt4rxneL6QcX9NPhghTYfnXp6NJ+y3uk/BRmOu
+ 5bXsSrxXawFUJZ5afY7l71nvI7XJa+0feFfeOEZ+C1YBsi4DWySm6h5k6r1HBz+kpy2T
+ Q1XPjVYMPUX3yih41atARgnLzMKEvEiy+vlCKr7gWH0wBqjX//LlRP7/IrBm+lHUleSV
+ bRPEXG7Tebv0QtA5OpccNP/g4OEPch8hxQ29XkRsijL1Y3TsFXjWIJEVG39mTSFRO/Or
+ HXdD++jlaJGNLbNDItL2+ERnEkBkh83zUugsUUPQCe60ZkJdRzRz8mF0elwYTbHnvBv6
+ zXRA==
+X-Gm-Message-State: AOAM530IrFtCW4k0KP3JVn11ATZQVpFmmIWF4L7yHeEiL3P98JC7g1QG
+ tiZka5/SmFZoUbY8PYmJkA==
+X-Google-Smtp-Source: ABdhPJyrqwtFe/6yLzfUrLFLJXu5wGkfX/qCwYmYeFMxYMOiwqsjWEhjvtr5J7/dDyzmgV5dkXd+qg==
+X-Received: by 2002:a5e:980e:: with SMTP id s14mr7151701ioj.63.1615480888727; 
+ Thu, 11 Mar 2021 08:41:28 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+ by smtp.gmail.com with ESMTPSA id x2sm1497206ilj.31.2021.03.11.08.41.26
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 11 Mar 2021 04:24:56 -0800 (PST)
-Date: Thu, 11 Mar 2021 06:18:34 +0100
-From: Ansuel Smith <ansuelsmth@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Rob Herring <robh@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>,
+ Thu, 11 Mar 2021 08:41:27 -0800 (PST)
+Received: (nullmailer pid 841931 invoked by uid 1000);
+ Thu, 11 Mar 2021 16:41:02 -0000
+From: Rob Herring <robh@kernel.org>
+To: Ansuel Smith <ansuelsmth@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] dt-bindings: mtd: Document use of nvmem-cells
+ Rob Herring <robh+dt@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-mtd@lists.infradead.org
+In-Reply-To: <20210311051309.16789-2-ansuelsmth@gmail.com>
+References: <20210311051309.16789-1-ansuelsmth@gmail.com>
+ <20210311051309.16789-2-ansuelsmth@gmail.com>
+Subject: Re: [PATCH v5 2/3] dt-bindings: mtd: Document use of nvmem-cells
  compatible
-Message-ID: <YEmoKuL9IyIrUW0N@Ansuel-xps.localdomain>
-References: <20210310210812.8880-1-ansuelsmth@gmail.com>
- <20210310210812.8880-2-ansuelsmth@gmail.com>
- <5d798266-3a18-d50d-9c3e-f91bc2460fe5@gmail.com>
- <YElMjg/AspNSRe0A@Ansuel-xps.localdomain>
- <1d2ad735-ad15-be6a-ad90-9c33f5845a15@gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1d2ad735-ad15-be6a-ad90-9c33f5845a15@gmail.com>
+Date: Thu, 11 Mar 2021 09:41:02 -0700
+Message-Id: <1615480862.520618.841930.nullmailer@robh.at.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210311_122458_183240_EAD44FB7 
-X-CRM114-Status: GOOD (  32.44  )
+X-CRM114-CacheID: sfid-20210311_164130_536528_0C4692DE 
+X-CRM114-Status: GOOD (  11.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,64 +88,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVGh1LCBNYXIgMTEsIDIwMjEgYXQgMDc6Mzc6MTNBTSArMDEwMCwgUmFmYcWCIE1pxYJlY2tp
-IHdyb3RlOgo+IE9uIDEwLjAzLjIwMjEgMjM6NDcsIEFuc3VlbCBTbWl0aCB3cm90ZToKPiA+IE9u
-IFdlZCwgTWFyIDEwLCAyMDIxIGF0IDExOjQxOjI0UE0gKzAxMDAsIFJhZmHFgiBNacWCZWNraSB3
-cm90ZToKPiA+ID4gU2VlIGlubGluZQo+ID4gPiAKPiA+ID4gT24gMTAuMDMuMjAyMSAyMjowOCwg
-QW5zdWVsIFNtaXRoIHdyb3RlOgo+ID4gPiA+IERvY3VtZW50IG52bWVtLWNlbGxzIGNvbXBhdGli
-bGUgdXNlZCB0byB0cmVhdCBtdGQgcGFydGl0aW9ucyBhcyBhCj4gPiA+ID4gbnZtZW0gcHJvdmlk
-ZXIuCj4gPiA+ID4gCj4gPiA+ID4gU2lnbmVkLW9mZi1ieTogQW5zdWVsIFNtaXRoIDxhbnN1ZWxz
-bXRoQGdtYWlsLmNvbT4KPiA+ID4gPiAtLS0KPiA+ID4gPiAgICAuLi4vYmluZGluZ3MvbXRkL3Bh
-cnRpdGlvbnMvbnZtZW0tY2VsbHMueWFtbCAgfCA5NiArKysrKysrKysrKysrKysrKysrCj4gPiA+
-ID4gICAgMSBmaWxlIGNoYW5nZWQsIDk2IGluc2VydGlvbnMoKykKPiA+ID4gPiAgICBjcmVhdGUg
-bW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9wYXJ0aXRp
-b25zL252bWVtLWNlbGxzLnlhbWwKPiA+ID4gPiAKPiA+ID4gPiBkaWZmIC0tZ2l0IGEvRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9wYXJ0aXRpb25zL252bWVtLWNlbGxzLnlh
-bWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3BhcnRpdGlvbnMvbnZt
-ZW0tY2VsbHMueWFtbAo+ID4gPiA+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4gPiA+ID4gaW5kZXgg
-MDAwMDAwMDAwMDAwLi5mNzBkNzU5N2E2YjAKPiA+ID4gPiAtLS0gL2Rldi9udWxsCj4gPiA+ID4g
-KysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9wYXJ0aXRpb25zL252
-bWVtLWNlbGxzLnlhbWwKPiA+ID4gPiBAQCAtMCwwICsxLDk2IEBACj4gPiA+ID4gKyMgU1BEWC1M
-aWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAtb25seSBPUiBCU0QtMi1DbGF1c2UKPiA+ID4gPiAr
-JVlBTUwgMS4yCj4gPiA+ID4gKy0tLQo+ID4gPiA+ICskaWQ6IGh0dHA6Ly9kZXZpY2V0cmVlLm9y
-Zy9zY2hlbWFzL210ZC9wYXJ0aXRpb25zL252bWVtLWNlbGxzLnlhbWwjCj4gPiA+ID4gKyRzY2hl
-bWE6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9tZXRhLXNjaGVtYXMvY29yZS55YW1sIwo+ID4gPiA+
-ICsKPiA+ID4gPiArdGl0bGU6IE52bWVtIGNlbGxzCj4gPiA+ID4gKwo+ID4gPiA+ICtkZXNjcmlw
-dGlvbjogfAo+ID4gPiA+ICsgIEFueSBwYXJ0aXRpb24gY29udGFpbmluZyB0aGUgY29tcGF0aWJs
-ZSAibnZtZW0tY2VsbHMiIHdpbGwgcmVnaXN0ZXIgYXMgYQo+ID4gPiA+ICsgIG52bWVtIHByb3Zp
-ZGVyLgo+ID4gPiA+ICsgIEVhY2ggZGlyZWN0IHN1Ym5vZGVzIHJlcHJlc2VudHMgYSBudm1lbSBj
-ZWxsIGZvbGxvd2luZyB0aGUgbnZtZW0gYmluZGluZy4KPiA+ID4gPiArICBOdm1lbSBiaW5kaW5n
-IHRvIGRlY2xhcmUgbnZtZW0tY2VsbHMgY2FuIGJlIGZvdW5kIGluOgo+ID4gPiA+ICsgIERvY3Vt
-ZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9udm1lbS9udm1lbS55YW1sCj4gPiA+ID4gKwo+
-ID4gPiA+ICttYWludGFpbmVyczoKPiA+ID4gPiArICAtIEFuc3VlbCBTbWl0aCA8YW5zdWVsc210
-aEBnbWFpbC5jb20+Cj4gPiA+IAo+ID4gPiBJIHRoaW5rIHRoYXQgd2hlbiBSb2Igd3JvdGU6Cj4g
-PiA+IAo+ID4gPiBPbiAxMC4wMy4yMDIxIDAzOjU4LCBSb2IgSGVycmluZyB3cm90ZToKPiA+ID4g
-PiBJIHRoaW5rIHRoaXMgc2hvdWxkIHJlZmVyZW5jZSBudm1lbS55YW1sLgo+ID4gPiAKPiA+ID4g
-aGUgbWVhbnQgeW91IHVzaW5nOgo+ID4gPiAKPiA+ID4gYWxsT2Y6Cj4gPiA+ICAgIC0gJHJlZjog
-Im52bWVtLnlhbWwjIgo+ID4gPiAKPiA+ID4gKHlvdSdsbCBuZWVkIHRvIGFkanVzdCBiaW5kaW5n
-IHBhdGgpLgo+ID4gPiAKPiA+ID4gUGxlYXNlIGNoZWNrIGhvdyBpdCdzIGRvbmUgaW4gRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL252bWVtLyoueWFtbCBmaWxlcwo+ID4gPiAKPiA+
-ID4gCj4gPiAKPiA+IEFzaWRlIGZyb20gdGhhdCwgc2hvdWxkIEkgcmVhZGQgdGhlIG9sZCBwcm9w
-ZXJ0aWVzIG9yIEkgY2FuIGtlZXAgdGhlCj4gPiBjb21wYXRpYmxlIGFzIHRoZSBvbmx5IG9uZSBy
-ZXF1aXJlZD8KPiAKPiBXaGF0IG9sZCBwcm9wZXJ0aWVzIGRvIHlvdSBtZWFuPwo+IAo+IFlvdSBz
-aG91bGRuJ3QgbmVlZCB0byBhZGQgYW55dGhpbmcgdG8gdGhlIGxpc3Qgb2YgInJlcXVpcmVkIiBJ
-IHRoaW5rLgo+IAo+IFNvbWUgTlZNRU0gcHJvdmlkZXJzIGFkZCAiI2FkZHJlc3MtY2VsbHMiIGFu
-ZCAiI3NpemUtY2VsbHMiLiBUaGF0IG1ha2VzCj4gc2Vuc2UgaWYgTlZNRU0gcHJvdmlkZXIgbXVz
-dCBwcm92aWRlIGF0IGxlYXN0IDEgY2VsbC4gSSdtIG5vdCBzdXJlIGlmIHdlCj4gbmVlZCB0aGF0
-IGZvciBNVEQuCj4gCj4gRXZlbiAiY29tcGF0aWJsZSIgaXMgYWN0dWFsbHkgcmVkdW5kYW50IGJ1
-dCBtb3N0IFlBTUwgZmlsZXMgbGlzdCBpdCBmb3IKPiBjb252ZW5pZW5jZS4gU291cmNlOgo+CgpU
-aGFua3MgZm9yIHRoZSBjbGFyaWZpY2F0aW9uLCBJIHNlbnQgdGhlIG5ldyB2ZXJzaW9uIGhvcGlu
-ZyB0aGUgeWFtbApkb2N1bWVudGF0aW9uIGlzIG5vdyBjb3JyZWN0LgoKPiBPbiAxMC4xMi4yMDIw
-IDAzOjQ4LCBSb2IgSGVycmluZyB3cm90ZToKPiA+IEFuZCBkcm9wICdjb21wYXRpYmxlJyBhcyBy
-ZXF1aXJlZC4gSXQncyByZWR1bmRhbnQgYW55d2F5cyBiZWNhdXNlIHRoZQo+ID4gc2NoZW1hIHdp
-bGwgb25seSBiZSBhcHBsaWVkIGlmIGNvbXBhdGlibGUgbWF0Y2hlcy4KPiAKPiBodHRwOi8vbGlz
-dHMuaW5mcmFkZWFkLm9yZy9waXBlcm1haWwvbGludXgtbXRkLzIwMjAtRGVjZW1iZXIvMDg0NTc0
-Lmh0bWwKPiBodHRwczovL3BhdGNod29yay5vemxhYnMub3JnL2NvbW1lbnQvMjU5NzMyNi8KCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51
-eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Thu, 11 Mar 2021 06:12:48 +0100, Ansuel Smith wrote:
+> Document nvmem-cells compatible used to treat mtd partitions as a
+> nvmem provider.
+> 
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> ---
+>  .../bindings/mtd/partitions/nvmem-cells.yaml  | 99 +++++++++++++++++++
+>  1 file changed, 99 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
+> 
+
+My bot found errors running 'make dt_binding_check' on your patch:
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.example.dt.yaml: art@1200000: $nodename:0: 'art@1200000' does not match '^(eeprom|efuse|nvram)(@.*|-[0-9a-f])*$'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.example.dt.yaml: calibration@f00000: $nodename:0: 'calibration@f00000' does not match '^(eeprom|efuse|nvram)(@.*|-[0-9a-f])*$'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
+
+See https://patchwork.ozlabs.org/patch/1451109
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
