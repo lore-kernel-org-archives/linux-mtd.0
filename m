@@ -1,98 +1,88 @@
-Return-Path: <SRS0=h6Lp=II=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=XuJY=IJ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DACA1C433E0
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Mar 2021 22:48:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59105C433DB
+	for <linux-mtd@archiver.kernel.org>; Thu, 11 Mar 2021 01:53:31 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6BB7764F60
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Mar 2021 22:48:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6BB7764F60
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id AEEBD64D99
+	for <linux-mtd@archiver.kernel.org>; Thu, 11 Mar 2021 01:53:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AEEBD64D99
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gateworks.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Mc9f6p8XXsQ2nmBDW+8Wj1Flcm4L56YuSuNtjEBmDF4=; b=Zim74j/vvlUpTmT1H/bZpDbZw
-	82DbjBODmcXjnVDxyRhFXBzyxV6+hdruaY6Si8GoB9AQzoDScHQsBeNq/bzgPzYGweEygxvsZ6Xel
-	Uy1fKiWFCcUa+Ny1QpxycdZc4IdskyUnSyrRfd9yDY/AxIgFGDix1YLGjJpXv0q+caPw/tD1ReLn4
-	LD1wxXKXozOMMuMAYo186EwM3tVPlsptXImUr9AgntZu7a7/UUtWkAlz8WafFSi1UNZUgrup3krSN
-	WTsJOF370y8Yg1uLuatLAQSqGmkqUj5cQdfTLGf30dPHO77Gh8Dh8MMDqbiEdPd0ArkH9RiXTpVfE
-	qOD4T3Y+A==;
+	 bh=F0EPQ3e/WVrDnve4g5Mgpv7Dbt1qdWvutX2r/s7AIjw=; b=IL3zoC11Ss+UgyaBW1+HlPVn+
+	iVlkrtplki6Ag2Pyo8cIs/ZjOdPBQGkRO181tSExkIk9GBVGMNc8rjsBJeBhRRb+9cX1jBYExZqfA
+	/ks/ZQz3X76RY9CV6lbjN7ZPInzhMXlofyPrr5T2b0RTtb9MwzrTXMP2xXzDehLs7Ruypw8okvVxE
+	frRyUFa50ef71W3gzAwfEsoMdq2ILociWFEAYXYCf7bfhAG/YFTn26omUOWwXzjQr8Ok6AdKTZNAo
+	ApAzebevXoqflqJsrEfZXqSoI/sBK8/SEDqYMxbSy6VUEa+5N7NDr5HCHeet7mOeFX3NMQd1zwDV7
+	NL8ZMqm7w==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lK7cM-007vzv-C6; Wed, 10 Mar 2021 22:47:50 +0000
-Received: from mail-wm1-x333.google.com ([2a00:1450:4864:20::333])
+	id 1lKAVS-008DKY-KS; Thu, 11 Mar 2021 01:52:54 +0000
+Received: from mail-ej1-x62e.google.com ([2a00:1450:4864:20::62e])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lK7cH-007vzB-3l
- for linux-mtd@lists.infradead.org; Wed, 10 Mar 2021 22:47:47 +0000
-Received: by mail-wm1-x333.google.com with SMTP id g20so149869wmk.3
- for <linux-mtd@lists.infradead.org>; Wed, 10 Mar 2021 14:47:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:content-transfer-encoding:in-reply-to;
- bh=Dp9DInsVMxgWeAboBahDiDPT111NcMpaXY2ilDA9Zo4=;
- b=b31D9MRU1bFKXcV8L7Yf+L1dnbD+tOUfbPMCHx5mO+dPzZE8N7105P4EYquurdH3r/
- nuz5XqMTFB27T9BnsxahsmlmlKLGXpT8ObuVunhx1Za/DguZuVMsp+4UZgCCqdBiUBjh
- OaDbfrHTvCFHKPfRaKmUN/QKkHHCholELtncvq4nWpZnutVNKoCLMb91of7x3ofW2j4e
- IwcJOcQa3buL7iXofPZSFkeYVWeJF9Gz+m+01GWVvQnOZTGkLUmu7+InS4raQglPSOgb
- Wvq/5dbpNgWRkUbK6YlJiRl6RLd8MUp6CCefw+3mYTATjtsrWF1cyK+qQYNAHaxAvJV6
- USPA==
+ id 1lKAVP-008DJy-4b
+ for linux-mtd@lists.infradead.org; Thu, 11 Mar 2021 01:52:53 +0000
+Received: by mail-ej1-x62e.google.com with SMTP id p7so31537845eju.6
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Mar 2021 17:52:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gateworks-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=QB223bp1Em333GDTsTwQxut+5emCQUk41ySuZ8lYHAE=;
+ b=0OYveGf86C+r/sdX0HC+/3/RiOVvrtXNqI+AmOQQ1OK5Upm360KO8UBgkuDumsmE9r
+ qa5zv21/Vj/ZJRbDbvWLRwjxW4KG+81UKLHeQAtQt/K4KBbC1sNvrV0r222i1Nrs5jFb
+ XE2D05GWJ1l0kppMlHgH5KHNFYW15GmSQ8uMNURDFwwkzYKsPQIIKEXPrxBD82Q+cSxC
+ nvgbcf6rGICIe4hGw3DU4I7xwhTqX7HZIRS06uZjK7m5kOkanyyO+S+eZHWbDm8hxNyE
+ u4rVL1geDQdDXlDEfpuv7TU2fBpN47+56frbhNulAxn4hBs7qnIZCjB0te+d0/N0bTtw
+ Lt+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to;
- bh=Dp9DInsVMxgWeAboBahDiDPT111NcMpaXY2ilDA9Zo4=;
- b=PUqJubYxENLviVa+6ERN1Sv4jXjANGLJOMruZTw7z7UWVkYd0yHVQ3b+dRcLJ2x6Gw
- IKZ7ZJE9LqtFXSkXMA8B1fh52c1pAAEGtWf4Mmc9cELOS83OAWrcV0bUCYEvo3DnfSsW
- 5gPxjVlM4gXZTax6Im2XBMp+FVlZ9x3OvdIclIPLDw9WMD9KLmR3mgmPObHjhvUqyzTm
- OjENQXXq85U6oHDgxHDG92r61PFTenfjj3RZjFPs9x12K/E7WSdRGC075UwY/Gi12f/4
- wJ7WK5ZdNlpJ7ycXxnxukokVc96A7YNPxDH9U2VVLTvjSvyU2WQcbBs3hiAJvBkNopRC
- bFlA==
-X-Gm-Message-State: AOAM531LCZB1llZFw7byCL1CjuqahVig5JDt6mQ1NMamFwXjSQgyBxvM
- zDIs51uYalrr4ytKHLxUa/8=
-X-Google-Smtp-Source: ABdhPJyR/gLtCOZzQajU4mg+PApLftgolVO8nNF6Z7DmFi3vssrDLEZaY/scs1tGzbr93bGS/VhZtA==
-X-Received: by 2002:a05:600c:2cd8:: with SMTP id
- l24mr5317774wmc.88.1615416464250; 
- Wed, 10 Mar 2021 14:47:44 -0800 (PST)
-Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it.
- [93.35.189.2])
- by smtp.gmail.com with ESMTPSA id z25sm909099wmi.23.2021.03.10.14.47.43
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 10 Mar 2021 14:47:43 -0800 (PST)
-Date: Wed, 10 Mar 2021 23:47:42 +0100
-From: Ansuel Smith <ansuelsmth@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Rob Herring <robh@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] dt-bindings: mtd: Document use of nvmem-cells
- compatible
-Message-ID: <YElMjg/AspNSRe0A@Ansuel-xps.localdomain>
-References: <20210310210812.8880-1-ansuelsmth@gmail.com>
- <20210310210812.8880-2-ansuelsmth@gmail.com>
- <5d798266-3a18-d50d-9c3e-f91bc2460fe5@gmail.com>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=QB223bp1Em333GDTsTwQxut+5emCQUk41ySuZ8lYHAE=;
+ b=kmGW3YYbKGEpZjwTUyySFDLddxOU6KhVjxzagqNoUR9paVvGiW6GiF/+mGYl9t4gM8
+ q8LpXZx8Bxs2Svh/lyn2lIGEh7MB/SXVYw6XGhkjphz0WbUQMAoScepuhMzJayUIg0V+
+ TYil6ALLFICOgTo4pCo15to5An8AG9ozHjy6bZRFZYkC6RQdI9UN603HCRC/kZHEPQDe
+ k8B+PM3YoEOvZNevca2Jv3TgkdXyyfutPjwC2/S0PYiupHEC2+V2pZ27tkVIprbgtmGx
+ W931ejUBF8et42Z3aZxe6GfOI+7PRN7OJtiXz52tvqz3f+qdNZrPvuzksbjTvvW6QUGj
+ vFHA==
+X-Gm-Message-State: AOAM530TTI6uf0l1TQjUPj5h7mQlD+/QkUgEiwOajbbTeSibO8SKMn4L
+ hHbk3S5GlNtF4ICAUrSARdTEbXVaANxgB4Z6h6oSvceZMzfUQOd7
+X-Google-Smtp-Source: ABdhPJwM9E9CqbfvXxPoIKdz6VLrM5ta6QNyhypWzaZANcUDgeMODn401RQk09cF1Hv4rRhXjiVJoF+GhaPv/kkrIMI=
+X-Received: by 2002:a17:906:789:: with SMTP id l9mr709774ejc.161.1615427570161; 
+ Wed, 10 Mar 2021 17:52:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5d798266-3a18-d50d-9c3e-f91bc2460fe5@gmail.com>
+References: <20210309220014.22205-1-tharvey@gateworks.com>
+ <8ca5c54140d69307f3c08ca85a09f0b5@walle.cc>
+In-Reply-To: <8ca5c54140d69307f3c08ca85a09f0b5@walle.cc>
+From: Tim Harvey <tharvey@gateworks.com>
+Date: Wed, 10 Mar 2021 17:52:38 -0800
+Message-ID: <CAJ+vNU3_q_kmZKrr0V5_1zgDSWrSneL0nBJhch33Ku0xRqC5Ug@mail.gmail.com>
+Subject: Re: [PATCH 1/4] dt-bindings: at25: add Fujitsu MB85RS4MT
+To: Michael Walle <michael@walle.cc>
+Cc: Device Tree Mailing List <devicetree@vger.kernel.org>,
+ NXP Linux Team <linux-imx@nxp.com>, Fabio Estevam <festevam@gmail.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Sascha Hauer <s.hauer@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, 
+ Shawn Guo <shawnguo@kernel.org>, Tudor Ambarus <tudor.ambarus@microchip.com>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, open list <linux-kernel@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210310_224745_226370_1BC4D6DE 
-X-CRM114-Status: GOOD (  22.75  )
+X-CRM114-CacheID: sfid-20210311_015251_296278_B6418D28 
+X-CRM114-Status: GOOD (  18.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,46 +94,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkLCBNYXIgMTAsIDIwMjEgYXQgMTE6NDE6MjRQTSArMDEwMCwgUmFmYcWCIE1pxYJlY2tp
-IHdyb3RlOgo+IFNlZSBpbmxpbmUKPiAKPiBPbiAxMC4wMy4yMDIxIDIyOjA4LCBBbnN1ZWwgU21p
-dGggd3JvdGU6Cj4gPiBEb2N1bWVudCBudm1lbS1jZWxscyBjb21wYXRpYmxlIHVzZWQgdG8gdHJl
-YXQgbXRkIHBhcnRpdGlvbnMgYXMgYQo+ID4gbnZtZW0gcHJvdmlkZXIuCj4gPiAKPiA+IFNpZ25l
-ZC1vZmYtYnk6IEFuc3VlbCBTbWl0aCA8YW5zdWVsc210aEBnbWFpbC5jb20+Cj4gPiAtLS0KPiA+
-ICAgLi4uL2JpbmRpbmdzL210ZC9wYXJ0aXRpb25zL252bWVtLWNlbGxzLnlhbWwgIHwgOTYgKysr
-KysrKysrKysrKysrKysrKwo+ID4gICAxIGZpbGUgY2hhbmdlZCwgOTYgaW5zZXJ0aW9ucygrKQo+
-ID4gICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
-L210ZC9wYXJ0aXRpb25zL252bWVtLWNlbGxzLnlhbWwKPiA+IAo+ID4gZGlmZiAtLWdpdCBhL0Rv
-Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvcGFydGl0aW9ucy9udm1lbS1jZWxs
-cy55YW1sIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9wYXJ0aXRpb25z
-L252bWVtLWNlbGxzLnlhbWwKPiA+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4gPiBpbmRleCAwMDAw
-MDAwMDAwMDAuLmY3MGQ3NTk3YTZiMAo+ID4gLS0tIC9kZXYvbnVsbAo+ID4gKysrIGIvRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9wYXJ0aXRpb25zL252bWVtLWNlbGxzLnlh
-bWwKPiA+IEBAIC0wLDAgKzEsOTYgQEAKPiA+ICsjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBH
-UEwtMi4wLW9ubHkgT1IgQlNELTItQ2xhdXNlCj4gPiArJVlBTUwgMS4yCj4gPiArLS0tCj4gPiAr
-JGlkOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1hcy9tdGQvcGFydGl0aW9ucy9udm1lbS1j
-ZWxscy55YW1sIwo+ID4gKyRzY2hlbWE6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9tZXRhLXNjaGVt
-YXMvY29yZS55YW1sIwo+ID4gKwo+ID4gK3RpdGxlOiBOdm1lbSBjZWxscwo+ID4gKwo+ID4gK2Rl
-c2NyaXB0aW9uOiB8Cj4gPiArICBBbnkgcGFydGl0aW9uIGNvbnRhaW5pbmcgdGhlIGNvbXBhdGli
-bGUgIm52bWVtLWNlbGxzIiB3aWxsIHJlZ2lzdGVyIGFzIGEKPiA+ICsgIG52bWVtIHByb3ZpZGVy
-Lgo+ID4gKyAgRWFjaCBkaXJlY3Qgc3Vibm9kZXMgcmVwcmVzZW50cyBhIG52bWVtIGNlbGwgZm9s
-bG93aW5nIHRoZSBudm1lbSBiaW5kaW5nLgo+ID4gKyAgTnZtZW0gYmluZGluZyB0byBkZWNsYXJl
-IG52bWVtLWNlbGxzIGNhbiBiZSBmb3VuZCBpbjoKPiA+ICsgIERvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9udm1lbS9udm1lbS55YW1sCj4gPiArCj4gPiArbWFpbnRhaW5lcnM6Cj4g
-PiArICAtIEFuc3VlbCBTbWl0aCA8YW5zdWVsc210aEBnbWFpbC5jb20+Cj4gCj4gSSB0aGluayB0
-aGF0IHdoZW4gUm9iIHdyb3RlOgo+IAo+IE9uIDEwLjAzLjIwMjEgMDM6NTgsIFJvYiBIZXJyaW5n
-IHdyb3RlOgo+ID4gSSB0aGluayB0aGlzIHNob3VsZCByZWZlcmVuY2UgbnZtZW0ueWFtbC4KPiAK
-PiBoZSBtZWFudCB5b3UgdXNpbmc6Cj4gCj4gYWxsT2Y6Cj4gICAtICRyZWY6ICJudm1lbS55YW1s
-IyIKPiAKPiAoeW91J2xsIG5lZWQgdG8gYWRqdXN0IGJpbmRpbmcgcGF0aCkuCj4gCj4gUGxlYXNl
-IGNoZWNrIGhvdyBpdCdzIGRvbmUgaW4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
-L252bWVtLyoueWFtbCBmaWxlcwo+IAo+CgpBc2lkZSBmcm9tIHRoYXQsIHNob3VsZCBJIHJlYWRk
-IHRoZSBvbGQgcHJvcGVydGllcyBvciBJIGNhbiBrZWVwIHRoZQpjb21wYXRpYmxlIGFzIHRoZSBv
-bmx5IG9uZSByZXF1aXJlZD8KClRoYW5rcyBmb3IgdGhlIHN1Z2dlc3Rpb24uCgo+ID4gK3Byb3Bl
-cnRpZXM6Cj4gPiArICBjb21wYXRpYmxlOgo+ID4gKyAgICBjb25zdDogbnZtZW0tY2VsbHMKCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51
-eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Tue, Mar 9, 2021 at 2:59 PM Michael Walle <michael@walle.cc> wrote:
+>
+> Hi Tim,
+>
+> Am 2021-03-09 23:00, schrieb Tim Harvey:
+> > Document the compatible value for the Fujitsu MB85RS4MT SPI
+> > FRAM EEPROM device so that it can be used in DTS files.
+> >
+> > This is a 512KiB FRAM EEPROM.
+> >
+> > Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+> > ---
+> >  Documentation/devicetree/bindings/eeprom/at25.yaml | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/eeprom/at25.yaml
+> > b/Documentation/devicetree/bindings/eeprom/at25.yaml
+> > index 6a2dc8b3ed14..f594db72b711 100644
+> > --- a/Documentation/devicetree/bindings/eeprom/at25.yaml
+> > +++ b/Documentation/devicetree/bindings/eeprom/at25.yaml
+> > @@ -26,6 +26,7 @@ properties:
+> >                - anvo,anv32e61w
+> >                - atmel,at25256B
+> >                - fujitsu,mb85rs1mt
+> > +              - fujitsu,mb85rs4mt
+> >                - fujitsu,mb85rs64
+> >                - microchip,at25160bn
+> >                - microchip,25lc040
+>
+> Hm, the driver is spi-nor but this is for the at25 driver. Is
+> this correct? Doesn't it work if you just add the ID to
+> spi-nor/fujitsu.c and use 'compatible = "jedec,spi-nor' ?
+>
+
+Michael,
+
+Yes it works just fine as 'compatible = "jedec,spi-nor"' and that
+makes sense. I'll drop this patch and update my device-tree
+accordingly.
+
+Thanks,
+
+Tim
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
