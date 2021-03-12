@@ -2,19 +2,19 @@ Return-Path: <SRS0=p7xI=IK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DAF51C433E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 10:11:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F09ECC433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 10:19:04 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 28D0964FB9
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 10:11:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 28D0964FB9
+	by mail.kernel.org (Postfix) with ESMTPS id 9D16064FF3
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 10:19:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D16064FF3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,44 +23,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Il7D/A/UNzcLr6BXbRxCEt9YD3V2ouqowlB/k6LdNTQ=; b=m00Rsm4s0IaAqYSEP1cxcXn6f
-	v80wku3Ha6jNq5Q2udk03M/o8QOt8I0zctvcLeH8aKIWP8u4ZitQFOv1MdBtbk8cMqEb+gZ84FPR2
-	RBTNW5m1WEPDLcc4YOEjgVM49Ko/qT6bpfstbXfgwaY9pEAJ/OBejkIVV2PfIhH3yShSho31rJzBP
-	kmTa3c/uRvpjxQaFGqYwVJBlGXwHKkoScS6iOQD1pfEjb7VhYIz6zEmhG7VeExe4MiejlhTGBy4cb
-	V9sJAnrrZPzebT3DA/6zoAOs4vGmcoD+CugbPbCfODd6AibZLA741gfnPYVQOfvyAyCw9kVPRe3YS
-	ZVqhfwcjA==;
+	 bh=EEUiIpjFF2mN716l64EUHshrgrAr9Xs6Xj3XOjw2Xwk=; b=H3yUSjoP5ekZThgvA7C+/IaqZ
+	DiklEI/1YGsACiwQJdIjpxrb9E7gOKWxgEbtcdCFoeJZaSxY85hspJwXXwr/7i9SX6qYpkb+hfaIU
+	QfntpsFHmM5MPcqCZRJ/74KrledbhEslPV1HLIOv66YRiTaqbK5lnem8GD+fp8A4lprUsVUl5Mwno
+	LjM8ioXYOKcjT5gvABGKVFapJdM7O4jCKy1ev/0PMjL+Zd88xVewLuy1aQb8vdby6nL81M/2DyIoz
+	Pliud0mPRE+6wceQT5VL+od093pSnf3NzyjT3YnHMBAaJSHK7xeKn0nqFECZdNGPzyjjtjNDnf4AM
+	2ytRgZqmg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lKel1-00B7l8-DD; Fri, 12 Mar 2021 10:10:59 +0000
+	id 1lKerz-00B8wM-0h; Fri, 12 Mar 2021 10:18:11 +0000
 Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lKeko-00B7jS-7h; Fri, 12 Mar 2021 10:10:54 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12CAAeIR047426;
- Fri, 12 Mar 2021 04:10:40 -0600
+ id 1lKert-00B8vJ-Ji; Fri, 12 Mar 2021 10:18:08 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12CAI0DD050060;
+ Fri, 12 Mar 2021 04:18:00 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1615543840;
- bh=w9BhnOsEXmDnJr92k5Gv+KiRM15+qBMHanC1ChiW5y8=;
+ s=ti-com-17Q1; t=1615544281;
+ bh=MfHMI0fXR00zadLL4T1wsZcvbhBWRv7oQ2OBFrlNjNw=;
  h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=Q1y4mXRmZoDuNdAxSGTuidk/rBcl5zVhXbMMSrben/24a6sldTbhEvz/T84eVCUD9
- Zb/9ylbktvKAocZiKm3aYcervRw2AWWppoMaADkwV+bKFYfb8Db/ZbJ+5WtAgtDIX1
- nSwMa/4tHCDvMbE9QUm9Fh1ITR7/Ey7tThYBVmNU=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12CAAeDF039353
+ b=MXOcBS2aVAK1p98zHHFlckstB1IISDTdfsSWGLIlwWt7drpjXT+cJjlh4Ll4GY+2F
+ bPTBW7zyv8AU8t3T/EnJg3Zscvo7XtLoCV/FcarOSY2n20oqPVIaC5yn297i5XdgWR
+ BAbnrt0N6STmXSIJQLETiNiYX0y6PDq9PIMXSD8g=
+Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12CAI0CB033573
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 12 Mar 2021 04:10:40 -0600
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ Fri, 12 Mar 2021 04:18:00 -0600
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 12
- Mar 2021 04:10:40 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ Mar 2021 04:18:00 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 12 Mar 2021 04:10:40 -0600
+ Frontend Transport; Fri, 12 Mar 2021 04:18:00 -0600
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12CAAdIv038442;
- Fri, 12 Mar 2021 04:10:39 -0600
-Date: Fri, 12 Mar 2021 15:40:38 +0530
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12CAHxaA123485;
+ Fri, 12 Mar 2021 04:18:00 -0600
+Date: Fri, 12 Mar 2021 15:47:59 +0530
 From: Pratyush Yadav <p.yadav@ti.com>
 To: <Tudor.Ambarus@microchip.com>
 CC: <nm@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>, <michael@walle.cc>,
@@ -69,19 +69,20 @@ CC: <nm@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>, <michael@walle.cc>,
  <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
  <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
  <lokeshvutla@ti.com>
-Subject: Re: [RFC PATCH 0/6] spi: Add OSPI PHY calibration support for
- spi-cadence-quadspi
-Message-ID: <20210312101036.jfz2733ssv4nhfey@ti.com>
+Subject: Re: [RFC PATCH 4/6] spi: cadence-qspi: Use PHY for DAC reads if
+ possible
+Message-ID: <20210312101757.sqeyledbwjnpqdoy@ti.com>
 References: <20210311191216.7363-1-p.yadav@ti.com>
- <9c551f56-4c00-b41a-f051-8b7e197fbcdc@microchip.com>
+ <20210311191216.7363-5-p.yadav@ti.com>
+ <2f26456e-59ff-2625-5d65-c1537052839d@microchip.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <9c551f56-4c00-b41a-f051-8b7e197fbcdc@microchip.com>
+In-Reply-To: <2f26456e-59ff-2625-5d65-c1537052839d@microchip.com>
 User-Agent: NeoMutt/20171215
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210312_101046_918829_CDDC0FF1 
-X-CRM114-Status: GOOD (  36.48  )
+X-CRM114-CacheID: sfid-20210312_101805_965252_E44399E1 
+X-CRM114-Status: GOOD (  14.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,107 +99,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 12/03/21 09:09AM, Tudor.Ambarus@microchip.com wrote:
+On 12/03/21 09:13AM, Tudor.Ambarus@microchip.com wrote:
 > On 3/11/21 9:12 PM, Pratyush Yadav wrote:
 > > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 > > 
-> > Hi,
-> > 
-> > This series adds support for OSPI PHY calibration on the Cadence OSPI
-> > controller. This calibration procedure is needed to allow high clock
-> > speeds in 8D-8D-8D mode. The procedure reads some pre-determined pattern
-> > data from the flash and runs a sequence of test reads to find out the
-> > optimal delays for high speed transfer. More details on the calibration
-> > procedure in patch 5/6.
+> > Check if a read is eligible for PHY and if it is, enable PHY and DQS.
 > 
-> Can the calibration sequence be avoided if the controller is informed
-> about the frequency on which the flash operates?
+> DQS as in data strobe? Shouldn't the upper layer inform the QSPI controller
+> whether DS is required or not?
 
-Maybe I don't understand this correctly, but there should not be any 
-frequency on which the flash operates. The controller drives the SPI 
-clock so the frequency is decided by the controller. Sure, there is a 
-max supported frequency for the flash but the controller can run it 
-slower than that if it wishes. The flash has no say in that.
+Yes, DQS as in data strobe. I need to check this again, but IIRC the 
+controller cannot run in PHY mode unless DS is used. Ideally the upper 
+layer should indeed inform the controller whether DS is supported/in-use 
+or not. That can be used to decide whether PHY mode (and consequently 
+the DS line) is to be used or not.
 
-Anyway, the exact frequency at which the flash is running is not it is 
-looking for. More details below.
+Currently there are only two flashes that use 8D-8D-8D mode (S28HS512T 
+and MT35XU512ABA), and both of them drive the DS line.
 
 > 
-> Can you add more details about the optimal delays? Are we talking about
-> flash's AC characteristics? Is the calibration still needed if the upper
-> layer informs the QSPI controller about the needed delays?
-
-There is usually a delay from when the flash drives the data line (IOW, 
-puts a data bit on it) and when the signal reaches the controller. This 
-delay can vary by the flash, board, silicon characteristics, 
-temperature, etc.
-
-At lower speeds (25 MHz for example) this delay is not a problem because 
-the clock period is longer so there is much more time to sample the data 
-line. It is very likely the controller will sample at a time when the 
-data line is valid. At high speeds (166 MHz for example), especially in 
-DDR mode, this delay starts to play a larger role because the time to 
-sample the data line is much smaller. Now unless the delay is accounted 
-for, it is possible that the controller samples the data line too late 
-or too early and sees invalid data.
-
-These delays depend on physical characteristics so it is not possible 
-for any upper layer to inform the controller about it. How will they 
-even know what the required delay is?
-
-In summary, no, there is no way an upper layer can inform the controller 
-about this delay.
-
-> 
-> Cheers,
-> ta
-> 
 > > 
-> > The main problem here is telling the controller where to find the
-> > pattern and how to read it. This RFC uses nvmem cells which point to a
-> > fixed partition containing the data to do the reads. It depends on [0]
-> > and [1].
+> > Since PHY reads only work at an address that is 16-byte aligned and of
+> > size that is a multiple of 16 bytes, read the starting and ending
+> > unaligned portions without PHY, and only enable PHY for the middle part.
 > > 
-> > The obvious problem with this is it won't work when the partitions are
-> > defined via command line. I don't see any good way to add nvmem cells to
-> > command line partitions. I would like some help or ideas here. We don't
-> > necessarily have to use nvmem either. Any way that can cleanly and
-> > consistently let the controller find out where the pattern is stored is
-> > good.
+> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> > ---
+> >  drivers/spi/spi-cadence-quadspi.c | 203 ++++++++++++++++++++++++++----
+> >  1 file changed, 182 insertions(+), 21 deletions(-)
 > > 
-> > The dts patch depends on [2].
-> > 
-> > Tested on TI's J721E EVM.
-> > 
-> > [0] https://patchwork.ozlabs.org/project/linux-mtd/patch/20210302190012.1255-1-zajec5@gmail.com/
-> > [1] https://patchwork.ozlabs.org/project/linux-mtd/patch/20210308011853.19360-1-ansuelsmth@gmail.com/
-> > [2] https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210305153926.3479-2-p.yadav@ti.com/
-> > 
-> > Pratyush Yadav (6):
-> >   spi: spi-mem: Tell controller when device is ready for calibration
-> >   mtd: spi-nor: core: consolidate read op creation
-> >   mtd: spi-nor: core: run calibration when initialization is done
-> >   spi: cadence-qspi: Use PHY for DAC reads if possible
-> >   spi: cadence-qspi: Tune PHY to allow running at higher frequencies
-> >   arm64: dts: ti: k3-j721e-som-p0: Enable PHY calibration
-> > 
-> >  arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi |  55 ++
-> >  drivers/mtd/spi-nor/core.c                  |  74 +-
-> >  drivers/spi/spi-cadence-quadspi.c           | 820 +++++++++++++++++++-
-> >  drivers/spi/spi-mem.c                       |  12 +
-> >  include/linux/spi/spi-mem.h                 |   8 +
-> >  5 files changed, 916 insertions(+), 53 deletions(-)
-> > 
-> > --
-> > 2.30.0
-> > 
-> > 
-> > _______________________________________________
-> > linux-arm-kernel mailing list
-> > linux-arm-kernel@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> > 
-> 
 
 -- 
 Regards,
