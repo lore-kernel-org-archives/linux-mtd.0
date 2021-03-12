@@ -6,89 +6,83 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
 	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37C5AC433DB
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 09:47:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FF26C433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 09:57:48 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B469C64F00
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 09:47:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B469C64F00
+	by mail.kernel.org (Postfix) with ESMTPS id E209F650BE
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 09:57:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E209F650BE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=nJLLz9qkQhGejtmXxMy2IvOEMS9yFqXNJo1XXtYsW8E=; b=py2Wk2FYvgcLezS29w7xeqUsr
-	sElc3Dqgid+x74YDGeNjph9mS36atRITA4KTn/UzB68G9sjSLIs1sTyp0EXUKAAJMmx8AlIXOe6MP
-	/e4GyB3LGwH/dueito22clc+GTQWAu350beVgQaqnD0F2PLY7CcTD/i9S8PJBnnN8asC3vrGymj6b
-	DU2WrHtxvMYgm+wtZAmwD93GEPUItpC+G+f2NsmD5ElVNCSRUof44wDim/9fyvEGqY34LHuYS9USR
-	843RgmpWrTlSbRu+/tvnFWC5lgH9hLAa6EFEsKgbnZoAEW4whmwG0BpbB/SrMz6eB104mCrsZCXqr
-	UJHT9v04Q==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=DlVzGr6YwPoGHJ3o0tDnSevIgDeNbVYvZhSHNYFkSOs=; b=lGfNxskU7I0NzPVkNqXcCytIy6
+	QinQgrbsHKbhWOU50hVCuuSG/u32hCWqLj3M+vZ1BmgqBc8f3Qeioj39Yz8tlQE1KpF6r5XuITcJ9
+	F9NU68XzKl4RKro0VhJiCxbkIcA61aiUUoKChWwB0m7BlO023DYBJ5a8ABg2J4izgt7okipah1GwO
+	p7/YAWL5ruyoITJ01XSQCi9xF5lIBi+w4COxnc8/jciEFZCVqLFWwxH0/vLuq7qll9lKkf3yaGwGI
+	t3F7Eu3VKs4ApQQBLVewAF/DWik8Y2dlpQfbqzOGxfPNdIEmLJOKqYDSdEERcdjqkeBrHJyzucV0J
+	ek/DcneA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lKeN3-00B406-Eb; Fri, 12 Mar 2021 09:46:16 +0000
-Received: from mail-pj1-x102a.google.com ([2607:f8b0:4864:20::102a])
+	id 1lKeXg-00B5rg-2G; Fri, 12 Mar 2021 09:57:12 +0000
+Received: from mail-qk1-x72e.google.com ([2607:f8b0:4864:20::72e])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lKeMT-00B3tC-EH
- for linux-mtd@lists.infradead.org; Fri, 12 Mar 2021 09:45:42 +0000
-Received: by mail-pj1-x102a.google.com with SMTP id
- lr1-20020a17090b4b81b02900ea0a3f38c1so3026628pjb.0
- for <linux-mtd@lists.infradead.org>; Fri, 12 Mar 2021 01:45:36 -0800 (PST)
+ id 1lKeWo-00B5hi-N5
+ for linux-mtd@lists.infradead.org; Fri, 12 Mar 2021 09:56:32 +0000
+Received: by mail-qk1-x72e.google.com with SMTP id 130so23600452qkh.11
+ for <linux-mtd@lists.infradead.org>; Fri, 12 Mar 2021 01:56:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=+3oyb3xUPUE/PB4D67x6atHi/VEp23aG50PmIkSeIBg=;
- b=L4m91WtyaHshFu6tA2m4cXYGRNegL5GMYp4QFQAhuYgDLj4UFqF2OvtV7oSQgjFcZp
- +pm727Zfpl5l69ZhMjvsY48CRP/DKEVUXkF33FXt0A65yrzrIzb0G4pXU6axaEBi37f8
- YdZYRbpSiIqTFxfeR/d3T7Ix61yhLtBGvpgAA0T2KAnTFruStLLnOs8S0oZ4UriaoH5+
- 83P5DAMIfqMXxKePPL9utKG1LYN/H2uDhf+YkVUjWM6zefxnu93VphOyJFUalMdHeY/0
- d6m0QlSxg08FFHYy/afbzfAjS1Wa5+GXD322Ys/9SXoCzQgQ/LhRoa8MTDiA7tEECoiX
- hiVA==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=bEW1hEWBRM4fMNj0JZKfY5sioaWotGdrzXJcIsKNcQI=;
+ b=mo7IUt3K7yGeT9ihyHZ7UxdDum+bcNLfYIll63ctj2rlCeTCYXvHLMEfEprLcs0ZG7
+ PoqU0anbg9cpt9KwsRSTYCgNPBuA3n0EhmLxP/xgGcO31zzWEV9SqTa5P3Uh+93Vqale
+ rfeSW9X6ZWuTmkd79iNzSBU24SqdvQjOLoQpo1ihYuPjwMtmE7HJ4qOGtFTLUHkdmszb
+ cFjcnrgZmMBX11M2th6EE1m+qjfa/FNm1Fj/ewRl/h0mzO27dzugJP9ZYiaq6ouY+z18
+ nJ3wCm1OHup9vtqbNiNn2ChNChpic1+RuTHwNHtbYHAK0AD4SwHtrmmawzQ7AGjaGJx3
+ LkOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=+3oyb3xUPUE/PB4D67x6atHi/VEp23aG50PmIkSeIBg=;
- b=aIA2nC6nXzoadE1B2o+a8/9nka/85BAHCNESsjRBGqP/NfxJfPRGwFrIfD+2c9p7oJ
- KF9xdqmLbAhvuaJHyTgJ4BQIbeTyYdNkxzv21soh1n8S2IfHjceNuya5U7TOIekIj/x9
- xGrz84fJgHlokYKWMBGiJ18h3cmVcvEYkIALnJ3PTzCz5DfK7BrfKz1WTajj3D38qnp9
- JZ6KpEGWFHpZvPx6/vggznULVcnU9b0GFq5ex/3WA1uuc9yakPDZlMw/4SZKK4K3JUSg
- MngcYKdJyWxBm/Ntmr6v2tW2VEYNtaSQHTCHxjU4Xwov/ZGYtrJlKV3aIQX39No4hxuQ
- kPmw==
-X-Gm-Message-State: AOAM532lO3lfO9Yr/mrTx0K9kz9bqTBsPHe7ttsTTMCYDMeQhWO0xgkm
- E0CfJnRLMdL18SVbYK5QFKsvSUHRLWAQTA==
-X-Google-Smtp-Source: ABdhPJwOlRtarU4ybaz43TcoykLogwQEh1K5n2SfpzpwCIq/Si8OhD8J9+8F+b4k+IJQcrmAoPgwjQ==
-X-Received: by 2002:a17:90a:7c4b:: with SMTP id
- e11mr13203074pjl.151.1615542335604; 
- Fri, 12 Mar 2021 01:45:35 -0800 (PST)
-Received: from ISCNPF1JZGWX.tyo.infineon.com
- (zz20174137476F6254EB.userreverse.dion.ne.jp. [111.98.84.235])
- by smtp.gmail.com with ESMTPSA id p17sm1731471pjv.49.2021.03.12.01.45.32
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=bEW1hEWBRM4fMNj0JZKfY5sioaWotGdrzXJcIsKNcQI=;
+ b=uYXuMAljKPnMSiapy51QDTDKNI7alpMqZw9Wf30gUoRQxnVLgbWRec7qrWBv0qnlye
+ ZWJe2Q6jRGH/EfB+NiO/1l4L2cjw8Eemd1YiYPafbmjFSgw37OKzlMyJ8JgTOsBvOwNs
+ BKLBkg+4Px5OLdz8/LOZoUJd79tyxsXNoAVi6r6VYK0gdsoG1sjGAPepZDLWYjelazN6
+ mGQpHRcEPgqWUXx4aTQgPWSBtlzdc5mg3EjnHofWgsMkk7WsMfGQ/w6Xlj/8ja3vwBLX
+ CsvDf6Msq4jWc8MMws087Jv4kOmSslWS2HHstP4zm9Afvc6hu1+CLYgmtJ0m+Exp8pAB
+ wG1w==
+X-Gm-Message-State: AOAM5336Zr8QDC03492ILyTU3Qdj5EM/02vASXKFjoZYpF8LCRr4BGZM
+ JREih93eAXeNtEb336Aj20Wq83eAQl2S
+X-Google-Smtp-Source: ABdhPJx/U3IEDQlKYugWuIsbNkulQob+2Bbm6u4lKguYc8xSZDxJceN7alo+9v5y70NCbaKDDrHhyA==
+X-Received: by 2002:a37:a515:: with SMTP id o21mr11678708qke.307.1615542976615; 
+ Fri, 12 Mar 2021 01:56:16 -0800 (PST)
+Received: from presler.lan (a95-93-120-206.cpe.netcabo.pt. [95.93.120.206])
+ by smtp.gmail.com with ESMTPSA id n136sm3994980qke.123.2021.03.12.01.56.14
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 12 Mar 2021 01:45:35 -0800 (PST)
-From: tkuw584924@gmail.com
-X-Google-Original-From: Takahiro.Kuwano@infineon.com
-To: linux-mtd@lists.infradead.org
-Cc: tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, p.yadav@ti.com, tkuw584924@gmail.com,
- Bacem.Daassi@infineon.com, Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH v3 6/6] mtd: spi-nor: spansion: Add s25hl-t/s25hs-t IDs and
- fixups
-Date: Fri, 12 Mar 2021 18:45:24 +0900
-Message-Id: <b971b6a9378260368b287d64092ec75edc9eb9bb.1615523176.git.Takahiro.Kuwano@infineon.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1615523176.git.Takahiro.Kuwano@infineon.com>
-References: <cover.1615523176.git.Takahiro.Kuwano@infineon.com>
+ Fri, 12 Mar 2021 01:56:16 -0800 (PST)
+From: Rui Salvaterra <rsalvaterra@gmail.com>
+To: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: lizhe67@huawei.com, christian.brauner@ubuntu.com, gustavoars@kernel.org,
+ trix@redhat.com, keescook@chromium.org,
+ Rui Salvaterra <rsalvaterra@gmail.com>
+Subject: [RFC PATCH] jffs2: add support for zstd compression
+Date: Fri, 12 Mar 2021 09:55:46 +0000
+Message-Id: <20210312095545.53765-1-rsalvaterra@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210312_094538_059745_456ACDD7 
-X-CRM114-Status: GOOD (  23.92  )
+X-CRM114-CacheID: sfid-20210312_095619_391172_3203E467 
+X-CRM114-Status: GOOD (  22.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,169 +99,297 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Implement support for zstd compression in jffs2 at the default compression
+level (3).
 
-The S25HL-T/S25HS-T family is the Cypress Semper Flash with Quad SPI.
+Lightly tested in OpenWrt, on a single CPU embedded MIPS32 system (AirGrid M2).
 
-For the single-die package parts (512Mb and 1Gb), only bottom 4KB and
-uniform sector sizes are supported. For the multi-die package parts (2Gb),
-only uniform sector sizes is supprted. This is due to missing or incorrect
-entries in SMPT. Fixup for other sector sizes configurations will be
-followed up as needed.
-
-Tested on Xilinx Zynq-7000 FPGA board.
-
-Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Signed-off-by: Rui Salvaterra <rsalvaterra@gmail.com>
 ---
-Changes in v3:
-  - Remove S25HL256T and S25HS256T
-  - Add S25HL02GT and S25HS02GT 
-  - Add support for multi-die package parts support
-  - Remove erase_map fix for top/split sector layout
-  - Set ECC data unit size (16B) to writesize 
+Sent as RFC, since I have no idea if locking is required (the crypto API
+implementation doesn't do it, at least).
 
- drivers/mtd/spi-nor/spansion.c | 119 +++++++++++++++++++++++++++++++++
- 1 file changed, 119 insertions(+)
+ fs/jffs2/Kconfig           |   9 +++
+ fs/jffs2/Makefile          |   1 +
+ fs/jffs2/compr.c           |  10 +++
+ fs/jffs2/compr.h           |   6 ++
+ fs/jffs2/compr_zstd.c      | 131 +++++++++++++++++++++++++++++++++++++
+ fs/jffs2/super.c           |   7 ++
+ include/uapi/linux/jffs2.h |   1 +
+ 7 files changed, 165 insertions(+)
+ create mode 100644 fs/jffs2/compr_zstd.c
 
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 5742212fde2e..05a4ea00acfc 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -225,6 +225,107 @@ static int spansion_mdp_ready(struct spi_nor *nor, u8 reg_dummy, u32 die_size)
- 	return 1;
- }
+diff --git a/fs/jffs2/Kconfig b/fs/jffs2/Kconfig
+index 7c96bc107218..31308eb7267b 100644
+--- a/fs/jffs2/Kconfig
++++ b/fs/jffs2/Kconfig
+@@ -136,6 +136,15 @@ config JFFS2_LZO
+ 	  This feature was added in July, 2007. Say 'N' if you need
+ 	  compatibility with older bootloaders or kernels.
  
-+static int s25hx_t_quad_enable(struct spi_nor *nor)
++config JFFS2_ZSTD
++	bool "JFFS2 zstd compression support" if JFFS2_COMPRESSION_OPTIONS
++	select ZSTD_COMPRESS
++	select ZSTD_DECOMPRESS
++	depends on JFFS2_FS
++	default n
++	help
++	  Zstd compression.
++
+ config JFFS2_RTIME
+ 	bool "JFFS2 RTIME compression support" if JFFS2_COMPRESSION_OPTIONS
+ 	depends on JFFS2_FS
+diff --git a/fs/jffs2/Makefile b/fs/jffs2/Makefile
+index 5294969d5bf9..75f84b1467c5 100644
+--- a/fs/jffs2/Makefile
++++ b/fs/jffs2/Makefile
+@@ -19,4 +19,5 @@ jffs2-$(CONFIG_JFFS2_RUBIN)	+= compr_rubin.o
+ jffs2-$(CONFIG_JFFS2_RTIME)	+= compr_rtime.o
+ jffs2-$(CONFIG_JFFS2_ZLIB)	+= compr_zlib.o
+ jffs2-$(CONFIG_JFFS2_LZO)	+= compr_lzo.o
++jffs2-$(CONFIG_JFFS2_ZSTD)	+= compr_zstd.o
+ jffs2-$(CONFIG_JFFS2_SUMMARY)   += summary.o
+diff --git a/fs/jffs2/compr.c b/fs/jffs2/compr.c
+index 4849a4c9a0e2..d65e0c39c9c5 100644
+--- a/fs/jffs2/compr.c
++++ b/fs/jffs2/compr.c
+@@ -237,6 +237,10 @@ uint16_t jffs2_compress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
+ 		ret = jffs2_selected_compress(JFFS2_COMPR_ZLIB, data_in,
+ 				cpage_out, datalen, cdatalen);
+ 		break;
++	case JFFS2_COMPR_MODE_FORCEZSTD:
++		ret = jffs2_selected_compress(JFFS2_COMPR_ZSTD, data_in,
++				cpage_out, datalen, cdatalen);
++		break;
+ 	default:
+ 		pr_err("unknown compression mode\n");
+ 	}
+@@ -378,6 +382,9 @@ int __init jffs2_compressors_init(void)
+ #ifdef CONFIG_JFFS2_LZO
+ 	jffs2_lzo_init();
+ #endif
++#ifdef CONFIG_JFFS2_ZSTD
++	jffs2_zstd_init();
++#endif
+ /* Setting default compression mode */
+ #ifdef CONFIG_JFFS2_CMODE_NONE
+ 	jffs2_compression_mode = JFFS2_COMPR_MODE_NONE;
+@@ -413,6 +420,9 @@ int jffs2_compressors_exit(void)
+ #endif
+ #ifdef CONFIG_JFFS2_ZLIB
+ 	jffs2_zlib_exit();
++#endif
++#ifdef CONFIG_JFFS2_ZSTD
++	jffs2_zstd_exit();
+ #endif
+ 	return 0;
+ }
+diff --git a/fs/jffs2/compr.h b/fs/jffs2/compr.h
+index 5e91d578f4ed..8f7032c5ecb2 100644
+--- a/fs/jffs2/compr.h
++++ b/fs/jffs2/compr.h
+@@ -31,6 +31,7 @@
+ #define JFFS2_RTIME_PRIORITY     50
+ #define JFFS2_ZLIB_PRIORITY      60
+ #define JFFS2_LZO_PRIORITY       80
++#define JFFS2_ZSTD_PRIORITY      90
+ 
+ 
+ #define JFFS2_RUBINMIPS_DISABLED /* RUBINs will be used only */
+@@ -42,6 +43,7 @@
+ #define JFFS2_COMPR_MODE_FAVOURLZO  3
+ #define JFFS2_COMPR_MODE_FORCELZO   4
+ #define JFFS2_COMPR_MODE_FORCEZLIB  5
++#define JFFS2_COMPR_MODE_FORCEZSTD  6
+ 
+ #define FAVOUR_LZO_PERCENT 80
+ 
+@@ -101,5 +103,9 @@ void jffs2_zlib_exit(void);
+ int jffs2_lzo_init(void);
+ void jffs2_lzo_exit(void);
+ #endif
++#ifdef CONFIG_JFFS2_ZSTD
++int jffs2_zstd_init(void);
++void jffs2_zstd_exit(void);
++#endif
+ 
+ #endif /* __JFFS2_COMPR_H__ */
+diff --git a/fs/jffs2/compr_zstd.c b/fs/jffs2/compr_zstd.c
+new file mode 100644
+index 000000000000..86b3d28670d7
+--- /dev/null
++++ b/fs/jffs2/compr_zstd.c
+@@ -0,0 +1,131 @@
++
++#include <linux/zstd.h>
++#include "compr.h"
++
++#define ZSTD_DEF_LEVEL	3
++
++static ZSTD_CCtx *cctx;
++static ZSTD_DCtx *dctx;
++static void *cwksp;
++static void *dwksp;
++
++static ZSTD_parameters zstd_params(void)
 +{
-+	return spansion_quad_enable_volatile(nor, 0, SZ_128M);
++	return ZSTD_getParams(ZSTD_DEF_LEVEL, 0, 0);
 +}
 +
-+static int s25hx_t_mdp_ready(struct spi_nor *nor)
++static int zstd_comp_init(void)
 +{
-+	return spansion_mdp_ready(nor, 0, SZ_128M);
-+}
++	int ret = 0;
++	const ZSTD_parameters params = zstd_params();
++	const size_t wksp_size = ZSTD_CCtxWorkspaceBound(params.cParams);
 +
-+static int
-+s25hx_t_post_bfpt_fixups(struct spi_nor *nor,
-+			 const struct sfdp_parameter_header *bfpt_header,
-+			 const struct sfdp_bfpt *bfpt,
-+			 struct spi_nor_flash_parameter *params)
-+{
-+	int ret;
-+	u32 addr;
-+	u8 cfr3v;
-+
-+	ret = spi_nor_set_4byte_addr_mode(nor, true);
-+	if (ret)
-+		return ret;
-+	nor->addr_width = 4;
-+
-+	/* Replace Quad Enable with volatile version */
-+	params->quad_enable = s25hx_t_quad_enable;
-+
-+	/*
-+	 * The page_size is set to 512B from BFPT, but it actually depends on
-+	 * the configuration register. Look up the CFR3V and determine the
-+	 * page_size. For multi-die package parts, use 512B only when the all
-+	 * dies are configured to 512B buffer.
-+	 */
-+	for (addr = 0; addr < params->size; addr += SZ_128M) {
-+		ret = spansion_read_any_reg(nor,
-+					    addr + SPINOR_REG_CYPRESS_CFR3V, 0,
-+					    &cfr3v);
-+		if (ret)
-+			return ret;
-+
-+		if (!(cfr3v & SPINOR_REG_CYPRESS_CFR3V_PGSZ)) {
-+			params->page_size = 256;
-+			return 0;
-+		}
++	cwksp = vzalloc(wksp_size);
++	if (!cwksp) {
++		ret = -ENOMEM;
++		goto out;
 +	}
-+	params->page_size = 512;
++
++	cctx = ZSTD_initCCtx(cwksp, wksp_size);
++	if (cctx) {
++		ret = -EINVAL;
++		goto out_free;
++	}
++out:
++	return ret;
++out_free:
++	vfree(cwksp);
++	goto out;
++}
++
++static int zstd_decomp_init(void)
++{
++	int ret = 0;
++	const size_t wksp_size = ZSTD_DCtxWorkspaceBound();
++
++	dwksp = vzalloc(wksp_size);
++	if (!dwksp) {
++		ret = -ENOMEM;
++		goto out;
++	}
++
++	dctx = ZSTD_initDCtx(dwksp, wksp_size);
++	if (!dctx) {
++		ret = -EINVAL;
++		goto out_free;
++	}
++out:
++	return ret;
++out_free:
++	vfree(dwksp);
++	goto out;
++}
++
++static void zstd_comp_exit(void)
++{
++	vfree(cwksp);
++	cwksp = NULL;
++	cctx = NULL;
++}
++
++static void zstd_decomp_exit(void)
++{
++	vfree(dwksp);
++	dwksp = NULL;
++	dctx = NULL;
++}
++
++static int jffs2_zstd_compress(unsigned char *data_in, unsigned char *cpage_out,
++			      uint32_t *sourcelen, uint32_t *dstlen)
++{
++	size_t out_len;
++	const ZSTD_parameters params = zstd_params();
++
++	out_len = ZSTD_compressCCtx(cctx, cpage_out, *dstlen, data_in, *sourcelen, params);
++	if (ZSTD_isError(out_len) || out_len > *dstlen)
++		return -1;
++	*dstlen = out_len;
++	return 0;
++}
++
++static int jffs2_zstd_decompress(unsigned char *data_in, unsigned char *cpage_out,
++				 uint32_t srclen, uint32_t destlen)
++{
++	size_t out_len;
++
++	out_len = ZSTD_decompressDCtx(dctx, cpage_out, destlen, data_in, srclen);
++	if (ZSTD_isError(out_len) || out_len != destlen)
++		return -1;
 +
 +	return 0;
 +}
 +
-+void s25hx_t_post_sfdp_fixups(struct spi_nor *nor)
-+{
-+	/*
-+	 * For the signle-die package parts (512Mb and 1Gb), bottom 4KB and
-+	 * uniform sector maps are correctly populated in the erase_map
-+	 * structure. The table below shows all possible combinations of related
-+	 * register bits and its availability in SMPT.
-+	 *
-+	 *   CFR3[3] | CFR1[6] | CFR1[2] | Sector Map | Available in SMPT?
-+	 *  -------------------------------------------------------------------
-+	 *      0    |    0    |    0    | Bottom     | YES
-+	 *      0    |    0    |    1    | Top        | NO (decoded as Split)
-+	 *      0    |    1    |    0    | Split      | NO
-+	 *      0    |    1    |    1    | Split      | NO (decoded as Top)
-+	 *      1    |    0    |    0    | Uniform    | YES
-+	 *      1    |    0    |    1    | Uniform    | NO
-+	 *      1    |    1    |    0    | Uniform    | NO
-+	 *      1    |    1    |    1    | Uniform    | NO
-+	 *  -------------------------------------------------------------------
-+	 */
-+
-+	/* Fast Read 4B requires mode cycles */
-+	nor->params->reads[SNOR_CMD_READ_FAST].num_mode_clocks = 8;
-+
-+	/* The writesize should be ECC data unit size */
-+	nor->params->writesize = 16;
-+
-+	/* Fixup for multi-die package parts */
-+	if (nor->params->size > SZ_128M) {
-+		/*
-+		 * For the dual-die package parts (2Gb), SMPT parse fails due to
-+		 * incorrect SMPT entries and the erase map is populated as 4K
-+		 * uniform that does not supported the parts. So it needs to be
-+		 * rolled back to 256K uniform that is the factory default of
-+		 * multi-die package parts.
-+		 */
-+		spi_nor_init_uniform_erase_map(&nor->params->erase_map,
-+					       BIT(SNOR_ERASE_TYPE_MAX - 1),
-+					       nor->params->size);
-+
-+		/* Need to check status of each die via RDAR command */
-+		nor->params->ready = s25hx_t_mdp_ready;
-+	}
-+}
-+
-+static struct spi_nor_fixups s25hx_t_fixups = {
-+	.post_bfpt = s25hx_t_post_bfpt_fixups,
-+	.post_sfdp = s25hx_t_post_sfdp_fixups
++static struct jffs2_compressor jffs2_zstd_comp = {
++	.priority = JFFS2_ZSTD_PRIORITY,
++	.name = "zstd",
++	.compr = JFFS2_COMPR_ZSTD,
++	.compress = &jffs2_zstd_compress,
++	.decompress = &jffs2_zstd_decompress,
++	.disabled = 0,
 +};
 +
- /**
-  * spi_nor_cypress_octal_dtr_enable() - Enable octal DTR on Cypress flashes.
-  * @nor:		pointer to a 'struct spi_nor'
-@@ -475,6 +576,24 @@ static const struct flash_info spansion_parts[] = {
- 	{ "s25fl256l",  INFO(0x016019,      0,  64 * 1024, 512,
- 			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
- 			     SPI_NOR_4B_OPCODES) },
-+	{ "s25hl512t",  INFO6(0x342a1a, 0x0f0390, 256 * 1024, 256,
-+			     SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR)
-+	  .fixups = &s25hx_t_fixups },
-+	{ "s25hl01gt",  INFO6(0x342a1b, 0x0f0390, 256 * 1024, 512,
-+			     SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR)
-+	  .fixups = &s25hx_t_fixups },
-+	{ "s25hl02gt",  INFO6(0x342a1c, 0x0f0090, 256 * 1024, 1024,
-+			     SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR)
-+	  .fixups = &s25hx_t_fixups },
-+	{ "s25hs512t",  INFO6(0x342b1a, 0x0f0390, 256 * 1024, 256,
-+			     SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR)
-+	  .fixups = &s25hx_t_fixups },
-+	{ "s25hs01gt",  INFO6(0x342b1b, 0x0f0390, 256 * 1024, 512,
-+			     SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR)
-+	  .fixups = &s25hx_t_fixups },
-+	{ "s25hs02gt",  INFO6(0x342b1c, 0x0f0090, 256 * 1024, 1024,
-+			     SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR)
-+	  .fixups = &s25hx_t_fixups },
- 	{ "cy15x104q",  INFO6(0x042cc2, 0x7f7f7f, 512 * 1024, 1,
- 			      SPI_NOR_NO_ERASE) },
- 	{ "s28hs512t",   INFO(0x345b1a,      0, 256 * 1024, 256,
++int __init jffs2_zstd_init(void)
++{
++	int ret;
++
++	ret = zstd_comp_init();
++	if (ret)
++		return ret;
++	ret = zstd_decomp_init();
++	if (ret)
++		zstd_comp_exit();
++	ret = jffs2_register_compressor(&jffs2_zstd_comp);
++	return ret;
++}
++
++void jffs2_zstd_exit(void)
++{
++	jffs2_unregister_compressor(&jffs2_zstd_comp);
++	zstd_comp_exit();
++	zstd_decomp_exit();
++}
+diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
+index 81ca58c10b72..ddce95c55dde 100644
+--- a/fs/jffs2/super.c
++++ b/fs/jffs2/super.c
+@@ -73,6 +73,10 @@ static const char *jffs2_compr_name(unsigned int compr)
+ #ifdef CONFIG_JFFS2_ZLIB
+ 	case JFFS2_COMPR_MODE_FORCEZLIB:
+ 		return "zlib";
++#endif
++#ifdef CONFIG_JFFS2_ZSTD
++	case JFFS2_COMPR_MODE_FORCEZSTD:
++		return "zstd";
+ #endif
+ 	default:
+ 		/* should never happen; programmer error */
+@@ -174,6 +178,9 @@ static const struct constant_table jffs2_param_compr[] = {
+ #endif
+ #ifdef CONFIG_JFFS2_ZLIB
+ 	{"zlib",	JFFS2_COMPR_MODE_FORCEZLIB },
++#endif
++#ifdef CONFIG_JFFS2_ZSTD
++	{"zstd",	JFFS2_COMPR_MODE_FORCEZSTD },
+ #endif
+ 	{}
+ };
+diff --git a/include/uapi/linux/jffs2.h b/include/uapi/linux/jffs2.h
+index 784ba0b9690a..af4fb69c8d69 100644
+--- a/include/uapi/linux/jffs2.h
++++ b/include/uapi/linux/jffs2.h
+@@ -46,6 +46,7 @@
+ #define JFFS2_COMPR_DYNRUBIN	0x05
+ #define JFFS2_COMPR_ZLIB	0x06
+ #define JFFS2_COMPR_LZO		0x07
++#define JFFS2_COMPR_ZSTD	0x08
+ /* Compatibility flags. */
+ #define JFFS2_COMPAT_MASK 0xc000      /* What do to if an unknown nodetype is found */
+ #define JFFS2_NODE_ACCURATE 0x2000
 -- 
-2.25.1
+2.30.2
 
 
 ______________________________________________________
