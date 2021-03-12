@@ -2,87 +2,86 @@ Return-Path: <SRS0=p7xI=IK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FF26C433E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 09:57:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAF51C433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 10:11:41 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E209F650BE
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 09:57:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E209F650BE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 28D0964FB9
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 10:11:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 28D0964FB9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=DlVzGr6YwPoGHJ3o0tDnSevIgDeNbVYvZhSHNYFkSOs=; b=lGfNxskU7I0NzPVkNqXcCytIy6
-	QinQgrbsHKbhWOU50hVCuuSG/u32hCWqLj3M+vZ1BmgqBc8f3Qeioj39Yz8tlQE1KpF6r5XuITcJ9
-	F9NU68XzKl4RKro0VhJiCxbkIcA61aiUUoKChWwB0m7BlO023DYBJ5a8ABg2J4izgt7okipah1GwO
-	p7/YAWL5ruyoITJ01XSQCi9xF5lIBi+w4COxnc8/jciEFZCVqLFWwxH0/vLuq7qll9lKkf3yaGwGI
-	t3F7Eu3VKs4ApQQBLVewAF/DWik8Y2dlpQfbqzOGxfPNdIEmLJOKqYDSdEERcdjqkeBrHJyzucV0J
-	ek/DcneA==;
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=Il7D/A/UNzcLr6BXbRxCEt9YD3V2ouqowlB/k6LdNTQ=; b=m00Rsm4s0IaAqYSEP1cxcXn6f
+	v80wku3Ha6jNq5Q2udk03M/o8QOt8I0zctvcLeH8aKIWP8u4ZitQFOv1MdBtbk8cMqEb+gZ84FPR2
+	RBTNW5m1WEPDLcc4YOEjgVM49Ko/qT6bpfstbXfgwaY9pEAJ/OBejkIVV2PfIhH3yShSho31rJzBP
+	kmTa3c/uRvpjxQaFGqYwVJBlGXwHKkoScS6iOQD1pfEjb7VhYIz6zEmhG7VeExe4MiejlhTGBy4cb
+	V9sJAnrrZPzebT3DA/6zoAOs4vGmcoD+CugbPbCfODd6AibZLA741gfnPYVQOfvyAyCw9kVPRe3YS
+	ZVqhfwcjA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lKeXg-00B5rg-2G; Fri, 12 Mar 2021 09:57:12 +0000
-Received: from mail-qk1-x72e.google.com ([2607:f8b0:4864:20::72e])
+	id 1lKel1-00B7l8-DD; Fri, 12 Mar 2021 10:10:59 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lKeWo-00B5hi-N5
- for linux-mtd@lists.infradead.org; Fri, 12 Mar 2021 09:56:32 +0000
-Received: by mail-qk1-x72e.google.com with SMTP id 130so23600452qkh.11
- for <linux-mtd@lists.infradead.org>; Fri, 12 Mar 2021 01:56:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=bEW1hEWBRM4fMNj0JZKfY5sioaWotGdrzXJcIsKNcQI=;
- b=mo7IUt3K7yGeT9ihyHZ7UxdDum+bcNLfYIll63ctj2rlCeTCYXvHLMEfEprLcs0ZG7
- PoqU0anbg9cpt9KwsRSTYCgNPBuA3n0EhmLxP/xgGcO31zzWEV9SqTa5P3Uh+93Vqale
- rfeSW9X6ZWuTmkd79iNzSBU24SqdvQjOLoQpo1ihYuPjwMtmE7HJ4qOGtFTLUHkdmszb
- cFjcnrgZmMBX11M2th6EE1m+qjfa/FNm1Fj/ewRl/h0mzO27dzugJP9ZYiaq6ouY+z18
- nJ3wCm1OHup9vtqbNiNn2ChNChpic1+RuTHwNHtbYHAK0AD4SwHtrmmawzQ7AGjaGJx3
- LkOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=bEW1hEWBRM4fMNj0JZKfY5sioaWotGdrzXJcIsKNcQI=;
- b=uYXuMAljKPnMSiapy51QDTDKNI7alpMqZw9Wf30gUoRQxnVLgbWRec7qrWBv0qnlye
- ZWJe2Q6jRGH/EfB+NiO/1l4L2cjw8Eemd1YiYPafbmjFSgw37OKzlMyJ8JgTOsBvOwNs
- BKLBkg+4Px5OLdz8/LOZoUJd79tyxsXNoAVi6r6VYK0gdsoG1sjGAPepZDLWYjelazN6
- mGQpHRcEPgqWUXx4aTQgPWSBtlzdc5mg3EjnHofWgsMkk7WsMfGQ/w6Xlj/8ja3vwBLX
- CsvDf6Msq4jWc8MMws087Jv4kOmSslWS2HHstP4zm9Afvc6hu1+CLYgmtJ0m+Exp8pAB
- wG1w==
-X-Gm-Message-State: AOAM5336Zr8QDC03492ILyTU3Qdj5EM/02vASXKFjoZYpF8LCRr4BGZM
- JREih93eAXeNtEb336Aj20Wq83eAQl2S
-X-Google-Smtp-Source: ABdhPJx/U3IEDQlKYugWuIsbNkulQob+2Bbm6u4lKguYc8xSZDxJceN7alo+9v5y70NCbaKDDrHhyA==
-X-Received: by 2002:a37:a515:: with SMTP id o21mr11678708qke.307.1615542976615; 
- Fri, 12 Mar 2021 01:56:16 -0800 (PST)
-Received: from presler.lan (a95-93-120-206.cpe.netcabo.pt. [95.93.120.206])
- by smtp.gmail.com with ESMTPSA id n136sm3994980qke.123.2021.03.12.01.56.14
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 12 Mar 2021 01:56:16 -0800 (PST)
-From: Rui Salvaterra <rsalvaterra@gmail.com>
-To: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: lizhe67@huawei.com, christian.brauner@ubuntu.com, gustavoars@kernel.org,
- trix@redhat.com, keescook@chromium.org,
- Rui Salvaterra <rsalvaterra@gmail.com>
-Subject: [RFC PATCH] jffs2: add support for zstd compression
-Date: Fri, 12 Mar 2021 09:55:46 +0000
-Message-Id: <20210312095545.53765-1-rsalvaterra@gmail.com>
-X-Mailer: git-send-email 2.30.2
+ id 1lKeko-00B7jS-7h; Fri, 12 Mar 2021 10:10:54 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12CAAeIR047426;
+ Fri, 12 Mar 2021 04:10:40 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1615543840;
+ bh=w9BhnOsEXmDnJr92k5Gv+KiRM15+qBMHanC1ChiW5y8=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=Q1y4mXRmZoDuNdAxSGTuidk/rBcl5zVhXbMMSrben/24a6sldTbhEvz/T84eVCUD9
+ Zb/9ylbktvKAocZiKm3aYcervRw2AWWppoMaADkwV+bKFYfb8Db/ZbJ+5WtAgtDIX1
+ nSwMa/4tHCDvMbE9QUm9Fh1ITR7/Ey7tThYBVmNU=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12CAAeDF039353
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Fri, 12 Mar 2021 04:10:40 -0600
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 12
+ Mar 2021 04:10:40 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 12 Mar 2021 04:10:40 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12CAAdIv038442;
+ Fri, 12 Mar 2021 04:10:39 -0600
+Date: Fri, 12 Mar 2021 15:40:38 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: <Tudor.Ambarus@microchip.com>
+CC: <nm@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>, <michael@walle.cc>,
+ <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+ <broonie@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
+ <lokeshvutla@ti.com>
+Subject: Re: [RFC PATCH 0/6] spi: Add OSPI PHY calibration support for
+ spi-cadence-quadspi
+Message-ID: <20210312101036.jfz2733ssv4nhfey@ti.com>
+References: <20210311191216.7363-1-p.yadav@ti.com>
+ <9c551f56-4c00-b41a-f051-8b7e197fbcdc@microchip.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <9c551f56-4c00-b41a-f051-8b7e197fbcdc@microchip.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210312_095619_391172_3203E467 
-X-CRM114-Status: GOOD (  22.60  )
+X-CRM114-CacheID: sfid-20210312_101046_918829_CDDC0FF1 
+X-CRM114-Status: GOOD (  36.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,298 +98,112 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Implement support for zstd compression in jffs2 at the default compression
-level (3).
+On 12/03/21 09:09AM, Tudor.Ambarus@microchip.com wrote:
+> On 3/11/21 9:12 PM, Pratyush Yadav wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > Hi,
+> > 
+> > This series adds support for OSPI PHY calibration on the Cadence OSPI
+> > controller. This calibration procedure is needed to allow high clock
+> > speeds in 8D-8D-8D mode. The procedure reads some pre-determined pattern
+> > data from the flash and runs a sequence of test reads to find out the
+> > optimal delays for high speed transfer. More details on the calibration
+> > procedure in patch 5/6.
+> 
+> Can the calibration sequence be avoided if the controller is informed
+> about the frequency on which the flash operates?
 
-Lightly tested in OpenWrt, on a single CPU embedded MIPS32 system (AirGrid M2).
+Maybe I don't understand this correctly, but there should not be any 
+frequency on which the flash operates. The controller drives the SPI 
+clock so the frequency is decided by the controller. Sure, there is a 
+max supported frequency for the flash but the controller can run it 
+slower than that if it wishes. The flash has no say in that.
 
-Signed-off-by: Rui Salvaterra <rsalvaterra@gmail.com>
----
-Sent as RFC, since I have no idea if locking is required (the crypto API
-implementation doesn't do it, at least).
+Anyway, the exact frequency at which the flash is running is not it is 
+looking for. More details below.
 
- fs/jffs2/Kconfig           |   9 +++
- fs/jffs2/Makefile          |   1 +
- fs/jffs2/compr.c           |  10 +++
- fs/jffs2/compr.h           |   6 ++
- fs/jffs2/compr_zstd.c      | 131 +++++++++++++++++++++++++++++++++++++
- fs/jffs2/super.c           |   7 ++
- include/uapi/linux/jffs2.h |   1 +
- 7 files changed, 165 insertions(+)
- create mode 100644 fs/jffs2/compr_zstd.c
+> 
+> Can you add more details about the optimal delays? Are we talking about
+> flash's AC characteristics? Is the calibration still needed if the upper
+> layer informs the QSPI controller about the needed delays?
 
-diff --git a/fs/jffs2/Kconfig b/fs/jffs2/Kconfig
-index 7c96bc107218..31308eb7267b 100644
---- a/fs/jffs2/Kconfig
-+++ b/fs/jffs2/Kconfig
-@@ -136,6 +136,15 @@ config JFFS2_LZO
- 	  This feature was added in July, 2007. Say 'N' if you need
- 	  compatibility with older bootloaders or kernels.
- 
-+config JFFS2_ZSTD
-+	bool "JFFS2 zstd compression support" if JFFS2_COMPRESSION_OPTIONS
-+	select ZSTD_COMPRESS
-+	select ZSTD_DECOMPRESS
-+	depends on JFFS2_FS
-+	default n
-+	help
-+	  Zstd compression.
-+
- config JFFS2_RTIME
- 	bool "JFFS2 RTIME compression support" if JFFS2_COMPRESSION_OPTIONS
- 	depends on JFFS2_FS
-diff --git a/fs/jffs2/Makefile b/fs/jffs2/Makefile
-index 5294969d5bf9..75f84b1467c5 100644
---- a/fs/jffs2/Makefile
-+++ b/fs/jffs2/Makefile
-@@ -19,4 +19,5 @@ jffs2-$(CONFIG_JFFS2_RUBIN)	+= compr_rubin.o
- jffs2-$(CONFIG_JFFS2_RTIME)	+= compr_rtime.o
- jffs2-$(CONFIG_JFFS2_ZLIB)	+= compr_zlib.o
- jffs2-$(CONFIG_JFFS2_LZO)	+= compr_lzo.o
-+jffs2-$(CONFIG_JFFS2_ZSTD)	+= compr_zstd.o
- jffs2-$(CONFIG_JFFS2_SUMMARY)   += summary.o
-diff --git a/fs/jffs2/compr.c b/fs/jffs2/compr.c
-index 4849a4c9a0e2..d65e0c39c9c5 100644
---- a/fs/jffs2/compr.c
-+++ b/fs/jffs2/compr.c
-@@ -237,6 +237,10 @@ uint16_t jffs2_compress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
- 		ret = jffs2_selected_compress(JFFS2_COMPR_ZLIB, data_in,
- 				cpage_out, datalen, cdatalen);
- 		break;
-+	case JFFS2_COMPR_MODE_FORCEZSTD:
-+		ret = jffs2_selected_compress(JFFS2_COMPR_ZSTD, data_in,
-+				cpage_out, datalen, cdatalen);
-+		break;
- 	default:
- 		pr_err("unknown compression mode\n");
- 	}
-@@ -378,6 +382,9 @@ int __init jffs2_compressors_init(void)
- #ifdef CONFIG_JFFS2_LZO
- 	jffs2_lzo_init();
- #endif
-+#ifdef CONFIG_JFFS2_ZSTD
-+	jffs2_zstd_init();
-+#endif
- /* Setting default compression mode */
- #ifdef CONFIG_JFFS2_CMODE_NONE
- 	jffs2_compression_mode = JFFS2_COMPR_MODE_NONE;
-@@ -413,6 +420,9 @@ int jffs2_compressors_exit(void)
- #endif
- #ifdef CONFIG_JFFS2_ZLIB
- 	jffs2_zlib_exit();
-+#endif
-+#ifdef CONFIG_JFFS2_ZSTD
-+	jffs2_zstd_exit();
- #endif
- 	return 0;
- }
-diff --git a/fs/jffs2/compr.h b/fs/jffs2/compr.h
-index 5e91d578f4ed..8f7032c5ecb2 100644
---- a/fs/jffs2/compr.h
-+++ b/fs/jffs2/compr.h
-@@ -31,6 +31,7 @@
- #define JFFS2_RTIME_PRIORITY     50
- #define JFFS2_ZLIB_PRIORITY      60
- #define JFFS2_LZO_PRIORITY       80
-+#define JFFS2_ZSTD_PRIORITY      90
- 
- 
- #define JFFS2_RUBINMIPS_DISABLED /* RUBINs will be used only */
-@@ -42,6 +43,7 @@
- #define JFFS2_COMPR_MODE_FAVOURLZO  3
- #define JFFS2_COMPR_MODE_FORCELZO   4
- #define JFFS2_COMPR_MODE_FORCEZLIB  5
-+#define JFFS2_COMPR_MODE_FORCEZSTD  6
- 
- #define FAVOUR_LZO_PERCENT 80
- 
-@@ -101,5 +103,9 @@ void jffs2_zlib_exit(void);
- int jffs2_lzo_init(void);
- void jffs2_lzo_exit(void);
- #endif
-+#ifdef CONFIG_JFFS2_ZSTD
-+int jffs2_zstd_init(void);
-+void jffs2_zstd_exit(void);
-+#endif
- 
- #endif /* __JFFS2_COMPR_H__ */
-diff --git a/fs/jffs2/compr_zstd.c b/fs/jffs2/compr_zstd.c
-new file mode 100644
-index 000000000000..86b3d28670d7
---- /dev/null
-+++ b/fs/jffs2/compr_zstd.c
-@@ -0,0 +1,131 @@
-+
-+#include <linux/zstd.h>
-+#include "compr.h"
-+
-+#define ZSTD_DEF_LEVEL	3
-+
-+static ZSTD_CCtx *cctx;
-+static ZSTD_DCtx *dctx;
-+static void *cwksp;
-+static void *dwksp;
-+
-+static ZSTD_parameters zstd_params(void)
-+{
-+	return ZSTD_getParams(ZSTD_DEF_LEVEL, 0, 0);
-+}
-+
-+static int zstd_comp_init(void)
-+{
-+	int ret = 0;
-+	const ZSTD_parameters params = zstd_params();
-+	const size_t wksp_size = ZSTD_CCtxWorkspaceBound(params.cParams);
-+
-+	cwksp = vzalloc(wksp_size);
-+	if (!cwksp) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	cctx = ZSTD_initCCtx(cwksp, wksp_size);
-+	if (cctx) {
-+		ret = -EINVAL;
-+		goto out_free;
-+	}
-+out:
-+	return ret;
-+out_free:
-+	vfree(cwksp);
-+	goto out;
-+}
-+
-+static int zstd_decomp_init(void)
-+{
-+	int ret = 0;
-+	const size_t wksp_size = ZSTD_DCtxWorkspaceBound();
-+
-+	dwksp = vzalloc(wksp_size);
-+	if (!dwksp) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	dctx = ZSTD_initDCtx(dwksp, wksp_size);
-+	if (!dctx) {
-+		ret = -EINVAL;
-+		goto out_free;
-+	}
-+out:
-+	return ret;
-+out_free:
-+	vfree(dwksp);
-+	goto out;
-+}
-+
-+static void zstd_comp_exit(void)
-+{
-+	vfree(cwksp);
-+	cwksp = NULL;
-+	cctx = NULL;
-+}
-+
-+static void zstd_decomp_exit(void)
-+{
-+	vfree(dwksp);
-+	dwksp = NULL;
-+	dctx = NULL;
-+}
-+
-+static int jffs2_zstd_compress(unsigned char *data_in, unsigned char *cpage_out,
-+			      uint32_t *sourcelen, uint32_t *dstlen)
-+{
-+	size_t out_len;
-+	const ZSTD_parameters params = zstd_params();
-+
-+	out_len = ZSTD_compressCCtx(cctx, cpage_out, *dstlen, data_in, *sourcelen, params);
-+	if (ZSTD_isError(out_len) || out_len > *dstlen)
-+		return -1;
-+	*dstlen = out_len;
-+	return 0;
-+}
-+
-+static int jffs2_zstd_decompress(unsigned char *data_in, unsigned char *cpage_out,
-+				 uint32_t srclen, uint32_t destlen)
-+{
-+	size_t out_len;
-+
-+	out_len = ZSTD_decompressDCtx(dctx, cpage_out, destlen, data_in, srclen);
-+	if (ZSTD_isError(out_len) || out_len != destlen)
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static struct jffs2_compressor jffs2_zstd_comp = {
-+	.priority = JFFS2_ZSTD_PRIORITY,
-+	.name = "zstd",
-+	.compr = JFFS2_COMPR_ZSTD,
-+	.compress = &jffs2_zstd_compress,
-+	.decompress = &jffs2_zstd_decompress,
-+	.disabled = 0,
-+};
-+
-+int __init jffs2_zstd_init(void)
-+{
-+	int ret;
-+
-+	ret = zstd_comp_init();
-+	if (ret)
-+		return ret;
-+	ret = zstd_decomp_init();
-+	if (ret)
-+		zstd_comp_exit();
-+	ret = jffs2_register_compressor(&jffs2_zstd_comp);
-+	return ret;
-+}
-+
-+void jffs2_zstd_exit(void)
-+{
-+	jffs2_unregister_compressor(&jffs2_zstd_comp);
-+	zstd_comp_exit();
-+	zstd_decomp_exit();
-+}
-diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index 81ca58c10b72..ddce95c55dde 100644
---- a/fs/jffs2/super.c
-+++ b/fs/jffs2/super.c
-@@ -73,6 +73,10 @@ static const char *jffs2_compr_name(unsigned int compr)
- #ifdef CONFIG_JFFS2_ZLIB
- 	case JFFS2_COMPR_MODE_FORCEZLIB:
- 		return "zlib";
-+#endif
-+#ifdef CONFIG_JFFS2_ZSTD
-+	case JFFS2_COMPR_MODE_FORCEZSTD:
-+		return "zstd";
- #endif
- 	default:
- 		/* should never happen; programmer error */
-@@ -174,6 +178,9 @@ static const struct constant_table jffs2_param_compr[] = {
- #endif
- #ifdef CONFIG_JFFS2_ZLIB
- 	{"zlib",	JFFS2_COMPR_MODE_FORCEZLIB },
-+#endif
-+#ifdef CONFIG_JFFS2_ZSTD
-+	{"zstd",	JFFS2_COMPR_MODE_FORCEZSTD },
- #endif
- 	{}
- };
-diff --git a/include/uapi/linux/jffs2.h b/include/uapi/linux/jffs2.h
-index 784ba0b9690a..af4fb69c8d69 100644
---- a/include/uapi/linux/jffs2.h
-+++ b/include/uapi/linux/jffs2.h
-@@ -46,6 +46,7 @@
- #define JFFS2_COMPR_DYNRUBIN	0x05
- #define JFFS2_COMPR_ZLIB	0x06
- #define JFFS2_COMPR_LZO		0x07
-+#define JFFS2_COMPR_ZSTD	0x08
- /* Compatibility flags. */
- #define JFFS2_COMPAT_MASK 0xc000      /* What do to if an unknown nodetype is found */
- #define JFFS2_NODE_ACCURATE 0x2000
+There is usually a delay from when the flash drives the data line (IOW, 
+puts a data bit on it) and when the signal reaches the controller. This 
+delay can vary by the flash, board, silicon characteristics, 
+temperature, etc.
+
+At lower speeds (25 MHz for example) this delay is not a problem because 
+the clock period is longer so there is much more time to sample the data 
+line. It is very likely the controller will sample at a time when the 
+data line is valid. At high speeds (166 MHz for example), especially in 
+DDR mode, this delay starts to play a larger role because the time to 
+sample the data line is much smaller. Now unless the delay is accounted 
+for, it is possible that the controller samples the data line too late 
+or too early and sees invalid data.
+
+These delays depend on physical characteristics so it is not possible 
+for any upper layer to inform the controller about it. How will they 
+even know what the required delay is?
+
+In summary, no, there is no way an upper layer can inform the controller 
+about this delay.
+
+> 
+> Cheers,
+> ta
+> 
+> > 
+> > The main problem here is telling the controller where to find the
+> > pattern and how to read it. This RFC uses nvmem cells which point to a
+> > fixed partition containing the data to do the reads. It depends on [0]
+> > and [1].
+> > 
+> > The obvious problem with this is it won't work when the partitions are
+> > defined via command line. I don't see any good way to add nvmem cells to
+> > command line partitions. I would like some help or ideas here. We don't
+> > necessarily have to use nvmem either. Any way that can cleanly and
+> > consistently let the controller find out where the pattern is stored is
+> > good.
+> > 
+> > The dts patch depends on [2].
+> > 
+> > Tested on TI's J721E EVM.
+> > 
+> > [0] https://patchwork.ozlabs.org/project/linux-mtd/patch/20210302190012.1255-1-zajec5@gmail.com/
+> > [1] https://patchwork.ozlabs.org/project/linux-mtd/patch/20210308011853.19360-1-ansuelsmth@gmail.com/
+> > [2] https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210305153926.3479-2-p.yadav@ti.com/
+> > 
+> > Pratyush Yadav (6):
+> >   spi: spi-mem: Tell controller when device is ready for calibration
+> >   mtd: spi-nor: core: consolidate read op creation
+> >   mtd: spi-nor: core: run calibration when initialization is done
+> >   spi: cadence-qspi: Use PHY for DAC reads if possible
+> >   spi: cadence-qspi: Tune PHY to allow running at higher frequencies
+> >   arm64: dts: ti: k3-j721e-som-p0: Enable PHY calibration
+> > 
+> >  arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi |  55 ++
+> >  drivers/mtd/spi-nor/core.c                  |  74 +-
+> >  drivers/spi/spi-cadence-quadspi.c           | 820 +++++++++++++++++++-
+> >  drivers/spi/spi-mem.c                       |  12 +
+> >  include/linux/spi/spi-mem.h                 |   8 +
+> >  5 files changed, 916 insertions(+), 53 deletions(-)
+> > 
+> > --
+> > 2.30.0
+> > 
+> > 
+> > _______________________________________________
+> > linux-arm-kernel mailing list
+> > linux-arm-kernel@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> > 
+> 
+
 -- 
-2.30.2
-
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
