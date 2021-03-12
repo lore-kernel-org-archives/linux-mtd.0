@@ -2,56 +2,57 @@ Return-Path: <SRS0=p7xI=IK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF445C433E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 19:06:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AAB1C433DB
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 19:06:58 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F38C64F73
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 19:06:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F38C64F73
+	by mail.kernel.org (Postfix) with ESMTPS id 0531364F80
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 19:06:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0531364F80
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=xkrfCvYcyFGm02RCnAQbNJ6YeFIl5HmVbowmGq55lJI=; b=ojM5sXL4QBr/Jhszx12/BpRKhU
-	BKRVW9ERTgw2u18ynCP2oAfJlejkuWVEidvvWsZj5RgEhMMtX2hBn2kw2l0qTXLWoPJV81AnX/QX+
-	L9+5W8tjP1rObZJDOiLFHlPnA3bOXFHSGwTJqoZw3/qVNJ0FgwHv8kBKvqtJtNT/3MRgvJ4zzwJ13
-	vW8DGBDJAJ/iUPqQQJD9jTtL/rdhStCaKyHKlgGwvhjLnFQf6w9jfcsYGvrfuTy3FTHsfdk1+nlrK
-	KmsTYTkawlqYkfZSpF1TCztAt2huviS4VNpqcaIEJU9gECX7dT96t20AQ0hVg/DzE6GesfxymxUqv
-	oMr3mGUA==;
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=znMqrZmE6lmbONbktIWZpPAGhm+l+9Rpm9ssaXXSFII=; b=C/bWxu+5tBtoUmK2nLRFsEbdZ
+	TmPlxd357pEIIv6ZYhlrwEIdLXzm3rtZjQJrGK5e7m5JYUNZy0TuhnTAui5QtbUldqIrPCk/CZZoT
+	YyiuK5uEa0/nXVNP7PuLonl2oh18Dh9cX3l2PleMa+DKROGBosz5a26K7PcJgIR6VRKhAV/udzDFQ
+	Hrz1/uwFiIny+G9gfKdQ2UYbmmZeaamW/ltb5VPJjZoFmH9+l9h4HSj6N/eizzGd8aBOnV6T6bCP2
+	xYjffU2zS8B0cjfkaaIh1r6L38Pxmo5AwskKWoIqf4H0pYwokeCfFIxLdnKoTz+CPHJV4Kan0l0Bv
+	mRmL0sBTQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lKn6u-00CFPJ-UN; Fri, 12 Mar 2021 19:06:09 +0000
+	id 1lKn7F-00CFRl-Kb; Fri, 12 Mar 2021 19:06:29 +0000
 Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lKn6q-00CFNm-R8
- for linux-mtd@lists.infradead.org; Fri, 12 Mar 2021 19:06:07 +0000
+ id 1lKn6r-00CFOH-Ef
+ for linux-mtd@lists.infradead.org; Fri, 12 Mar 2021 19:06:08 +0000
 Received: from mwalle01.fritz.box (unknown
  [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 62A1E22238;
- Fri, 12 Mar 2021 20:06:03 +0100 (CET)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id C0EFD2224E;
+ Fri, 12 Mar 2021 20:06:04 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1615575963;
+ s=mail2016061301; t=1615575964;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding;
- bh=r1NUXsd8CcCDGSgN9MbS4BQVVK/eEe8OH8TuK2TBWdU=;
- b=ftGn2reIyDNiSRy7+ia+andf8S1ds8SvJzrxvkFwFQSaXCjjKQI/9IRiqmBCfT/p/yj6Br
- xdSYqzcSgqh3b5ka6GRW8WUxf7rbHiza67ONaWq8I79FWV+3uWhqHLe8Ch4maVhkdF06is
- 8g+F4nnA7ZmP25uO28N/KfTQYkXhnEs=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=bcjeaOvsIJqEoG91kpU1zOMrmJbEeoZZ6ee1XBJrTMY=;
+ b=JD23R/rpOboZgZkxgVqCjnNqj1tGEG3NOZuTVEW+KhmN3KHYc6/ugNrOh7sB2GNwzp0+p1
+ hQh2Bokb1YOYZTS9FgRcW1oiZu3UxOXAdWnrkaTTUjPM0xmFdgnkXGuJkKZGGeAwyClrkN
+ IMSOxA44zW5FjcGJa4QY4B5PqFmVn38=
 From: Michael Walle <michael@walle.cc>
 To: linux-kernel@vger.kernel.org,
 	linux-mtd@lists.infradead.org
@@ -59,14 +60,17 @@ Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Michael Walle <michael@walle.cc>
-Subject: [RFC PATCH 1/3] mtd: spi-nor: support dumping sfdp tables
-Date: Fri, 12 Mar 2021 20:05:45 +0100
-Message-Id: <20210312190548.6954-1-michael@walle.cc>
+Subject: [RFC PATCH 2/3] mtd: spi-nor: sfdp: fix spi_nor_read_sfdp()
+Date: Fri, 12 Mar 2021 20:05:47 +0100
+Message-Id: <20210312190548.6954-3-michael@walle.cc>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210312190548.6954-1-michael@walle.cc>
+References: <20210312190548.6954-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210312_190604_999183_58F354C4 
-X-CRM114-Status: GOOD (  16.24  )
+X-CRM114-CacheID: sfid-20210312_190605_580273_5D5D7860 
+X-CRM114-Status: UNSURE (   9.10  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,46 +87,46 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add the possibility to dump the SFDP data of a flash device.
+If spi_nor_read_sfdp() is used after probe, we have to set read_proto
+and the read dirmap.
 
-More and more flash devices share the same flash ID and we need per device
-fixups. Usually, these fixups differentiate flashes by looking at
-differences in the SFDP data. Determining the difference is only possible
-if we have the SFDP data for all the flashes which share a flash ID. This
-will lay the foundation to dump the whole SFDP data of a flash device.
+Signed-off-by: Michael Walle <michael@walle.cc>
+---
+ drivers/mtd/spi-nor/sfdp.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-This is even more important, because some datasheets doesn't even contain
-the SFDP data. Fixups for these kind of flashes are nearly impossible to
-do.
-
-I envision having a database of all the SFDP data for the flashes we
-support and make it a requirement to submit it when a new flash is added.
-This might or might not have legal implications. Thus I'd start with having
-that database private to the SPI NOR maintainers.
-
-There are two ways to provide access to the SFDP data:
- (1) We just read the SFDP data once and cache it
- (2) Any userspace access will always read the SFDP data
-
-I choose (2) because it isn't as invasive as (1). The current SFDP code
-reads the SFDP data only partially and only the part which are actually
-used. Using (1) would mean to change that behavior.
-
-Michael Walle (3):
-  mtd: spi-nor: sfdp: remember sfdp_size
-  mtd: spi-nor: sfdp: fix spi_nor_read_sfdp()
-  mtd: spi-nor: add sysfs and SFDP support
-
- drivers/mtd/spi-nor/Makefile |  2 +-
- drivers/mtd/spi-nor/core.c   |  5 +++
- drivers/mtd/spi-nor/core.h   |  3 ++
- drivers/mtd/spi-nor/sfdp.c   | 24 +++++++++++-
- drivers/mtd/spi-nor/sfdp.h   |  2 +
- drivers/mtd/spi-nor/sysfs.c  | 73 ++++++++++++++++++++++++++++++++++++
- include/linux/mtd/spi-nor.h  |  1 +
- 7 files changed, 107 insertions(+), 3 deletions(-)
- create mode 100644 drivers/mtd/spi-nor/sysfs.c
-
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index b1814afefc33..47634ec9b899 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -179,19 +179,27 @@ static int spi_nor_read_sfdp(struct spi_nor *nor, u32 addr,
+ 			     size_t len, void *buf)
+ {
+ 	u8 addr_width, read_opcode, read_dummy;
++	struct spi_mem_dirmap_desc *rdesc;
++	enum spi_nor_protocol read_proto;
+ 	int ret;
+ 
+ 	read_opcode = nor->read_opcode;
++	read_proto = nor->read_proto;
++	rdesc = nor->dirmap.rdesc;
+ 	addr_width = nor->addr_width;
+ 	read_dummy = nor->read_dummy;
+ 
+ 	nor->read_opcode = SPINOR_OP_RDSFDP;
++	nor->read_proto = SNOR_PROTO_1_1_1;
++	nor->dirmap.rdesc = NULL;
+ 	nor->addr_width = 3;
+ 	nor->read_dummy = 8;
+ 
+ 	ret = spi_nor_read_raw(nor, addr, len, buf);
+ 
+ 	nor->read_opcode = read_opcode;
++	nor->read_proto = read_proto;
++	nor->dirmap.rdesc = rdesc;
+ 	nor->addr_width = addr_width;
+ 	nor->read_dummy = read_dummy;
+ 
 -- 
 2.20.1
 
