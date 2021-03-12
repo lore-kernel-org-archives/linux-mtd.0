@@ -2,87 +2,76 @@ Return-Path: <SRS0=p7xI=IK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F09ECC433E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 10:19:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80E56C433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 10:21:45 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9D16064FF3
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 10:19:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D16064FF3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	by mail.kernel.org (Postfix) with ESMTPS id 141D364FE2
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 10:21:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 141D364FE2
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
-	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=EEUiIpjFF2mN716l64EUHshrgrAr9Xs6Xj3XOjw2Xwk=; b=H3yUSjoP5ekZThgvA7C+/IaqZ
-	DiklEI/1YGsACiwQJdIjpxrb9E7gOKWxgEbtcdCFoeJZaSxY85hspJwXXwr/7i9SX6qYpkb+hfaIU
-	QfntpsFHmM5MPcqCZRJ/74KrledbhEslPV1HLIOv66YRiTaqbK5lnem8GD+fp8A4lprUsVUl5Mwno
-	LjM8ioXYOKcjT5gvABGKVFapJdM7O4jCKy1ev/0PMjL+Zd88xVewLuy1aQb8vdby6nL81M/2DyIoz
-	Pliud0mPRE+6wceQT5VL+od093pSnf3NzyjT3YnHMBAaJSHK7xeKn0nqFECZdNGPzyjjtjNDnf4AM
-	2ytRgZqmg==;
+	 bh=wdHHTFPLUTUIK4CxDBnhdndbGQM8vBU4nHbMjwILqFE=; b=lvfa7Strgj9WPEadR8RNSBK9B
+	/oh7BN4YUnYKdbeTycxV6Scj8HPuR63TGPe3t65eO8g7CaUP/9HcBv8XRyx14B/1GCIKJGoDz76H9
+	9qebqxOJxc2V2lBV8bTpHTusLFmFOCeG/vXT6gqx3FmWZOTLvR9IqD90iwf0CYmQJncOIXnSY1quw
+	C0T8RKj0Ztn6SBSAMehGgHxZW3a1lZERY/rE/8wd6jxs+owk+f7AKeRfVnrGgK/JEJ70W34FqDAyp
+	VtC/36ze46Rq3dbRVA4KWjwiNe35FetLPDKc2Bi5CE5jf4oXKheM8SqORfZXPJp/ICYjSX/bNQZWO
+	LHo+a982Q==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lKerz-00B8wM-0h; Fri, 12 Mar 2021 10:18:11 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1lKeuV-00B9Pg-5Z; Fri, 12 Mar 2021 10:20:47 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lKert-00B8vJ-Ji; Fri, 12 Mar 2021 10:18:08 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12CAI0DD050060;
- Fri, 12 Mar 2021 04:18:00 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1615544281;
- bh=MfHMI0fXR00zadLL4T1wsZcvbhBWRv7oQ2OBFrlNjNw=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=MXOcBS2aVAK1p98zHHFlckstB1IISDTdfsSWGLIlwWt7drpjXT+cJjlh4Ll4GY+2F
- bPTBW7zyv8AU8t3T/EnJg3Zscvo7XtLoCV/FcarOSY2n20oqPVIaC5yn297i5XdgWR
- BAbnrt0N6STmXSIJQLETiNiYX0y6PDq9PIMXSD8g=
-Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12CAI0CB033573
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 12 Mar 2021 04:18:00 -0600
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 12
- Mar 2021 04:18:00 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 12 Mar 2021 04:18:00 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12CAHxaA123485;
- Fri, 12 Mar 2021 04:18:00 -0600
-Date: Fri, 12 Mar 2021 15:47:59 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: <Tudor.Ambarus@microchip.com>
-CC: <nm@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>, <michael@walle.cc>,
- <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
- <broonie@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
- <lokeshvutla@ti.com>
-Subject: Re: [RFC PATCH 4/6] spi: cadence-qspi: Use PHY for DAC reads if
- possible
-Message-ID: <20210312101757.sqeyledbwjnpqdoy@ti.com>
-References: <20210311191216.7363-1-p.yadav@ti.com>
- <20210311191216.7363-5-p.yadav@ti.com>
- <2f26456e-59ff-2625-5d65-c1537052839d@microchip.com>
+ id 1lKeu3-00B9Ky-La; Fri, 12 Mar 2021 10:20:24 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 4848322235;
+ Fri, 12 Mar 2021 11:20:15 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1615544415;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=7AwJyDsly/A7V+5RW+umEy+/kfZBbndM17q5qch0pqs=;
+ b=EC0cBBXxN04ASMeKveVSaUo+vYHbtl7LcZarVqKmw9+bat/GbF2Epq/Y9JOx5BwD1X4Tbv
+ 7ViqqBwt3I0tPDVP6DT7D1wrmEoYlT/xT+EiwfRmMmjKFeaympr/GTTRbaHbDfGLxBPU6l
+ WBe87kMZ92vdrhYhqQJIfhbqXkY3n5U=
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <2f26456e-59ff-2625-5d65-c1537052839d@microchip.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Date: Fri, 12 Mar 2021 11:20:15 +0100
+From: Michael Walle <michael@walle.cc>
+To: Pratyush Yadav <p.yadav@ti.com>
+Cc: Tudor.Ambarus@microchip.com, nm@ti.com, kristo@kernel.org,
+ robh+dt@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, broonie@kernel.org, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org, lokeshvutla@ti.com
+Subject: Re: [RFC PATCH 0/6] spi: Add OSPI PHY calibration support for
+ spi-cadence-quadspi
+In-Reply-To: <20210312101036.jfz2733ssv4nhfey@ti.com>
+References: <20210311191216.7363-1-p.yadav@ti.com>
+ <9c551f56-4c00-b41a-f051-8b7e197fbcdc@microchip.com>
+ <20210312101036.jfz2733ssv4nhfey@ti.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <676386736df5e5b22e34b0b5af91c894@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210312_101805_965252_E44399E1 
-X-CRM114-Status: GOOD (  14.60  )
+X-CRM114-CacheID: sfid-20210312_102019_877002_611DE0A5 
+X-CRM114-Status: UNSURE (   7.76  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,46 +83,22 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 12/03/21 09:13AM, Tudor.Ambarus@microchip.com wrote:
-> On 3/11/21 9:12 PM, Pratyush Yadav wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> > Check if a read is eligible for PHY and if it is, enable PHY and DQS.
-> 
-> DQS as in data strobe? Shouldn't the upper layer inform the QSPI controller
-> whether DS is required or not?
-
-Yes, DQS as in data strobe. I need to check this again, but IIRC the 
-controller cannot run in PHY mode unless DS is used. Ideally the upper 
-layer should indeed inform the controller whether DS is supported/in-use 
-or not. That can be used to decide whether PHY mode (and consequently 
-the DS line) is to be used or not.
-
-Currently there are only two flashes that use 8D-8D-8D mode (S28HS512T 
-and MT35XU512ABA), and both of them drive the DS line.
-
-> 
-> > 
-> > Since PHY reads only work at an address that is 16-byte aligned and of
-> > size that is a multiple of 16 bytes, read the starting and ending
-> > unaligned portions without PHY, and only enable PHY for the middle part.
-> > 
-> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> > ---
-> >  drivers/spi/spi-cadence-quadspi.c | 203 ++++++++++++++++++++++++++----
-> >  1 file changed, 182 insertions(+), 21 deletions(-)
-> > 
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+QW0gMjAyMS0wMy0xMiAxMToxMCwgc2NocmllYiBQcmF0eXVzaCBZYWRhdjoKPiBUaGVyZSBpcyB1
+c3VhbGx5IGEgZGVsYXkgZnJvbSB3aGVuIHRoZSBmbGFzaCBkcml2ZXMgdGhlIGRhdGEgbGluZSAo
+SU9XLAo+IHB1dHMgYSBkYXRhIGJpdCBvbiBpdCkgYW5kIHdoZW4gdGhlIHNpZ25hbCByZWFjaGVz
+IHRoZSBjb250cm9sbGVyLiBUaGlzCj4gZGVsYXkgY2FuIHZhcnkgYnkgdGhlIGZsYXNoLCBib2Fy
+ZCwgc2lsaWNvbiBjaGFyYWN0ZXJpc3RpY3MsCj4gdGVtcGVyYXR1cmUsIGV0Yy4KClRlbXBlcmF0
+dXJlIG1pZ2h0IGNoYW5nZSBvdmVyIHRpbWUsIGJ1dCB0aGUgY2FsaWJyYXRpb24gaXMgb25seSBk
+b25lCm9uY2UuIEkgZG9uJ3Qga25vdyBob3cgbXVjaCBpbmZsdWVuY2UgdGhlIHRlbXBlcmF0dXJl
+IGFjdHVhbGx5IGhhcywgYnV0Cm91ciBib2FyZHMgYXJlIHVzdWFsbHkgb3BlcmF0aW5nIGZyb20g
+LTQwwrBDIHRvICs4NcKwQy4gU28gdGhlcmUgbWlnaHQgYmUKYSBwb3NzaWJsZSB0ZW1wZXJhdHVy
+ZSBkaWZmZXJlbmNlIG9mIDEyNUsgYmV0d2VlbiBhY3R1YWwgY2FsaWJyYXRpb24gYW5kCndoZW4g
+dGhlIGZsYXNoIGlzIGFjY2Vzc2VkLgoKLW1pY2hhZWwKCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWls
+aW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
+eC1tdGQvCg==
