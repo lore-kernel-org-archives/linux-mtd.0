@@ -8,89 +8,87 @@ X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12373C433E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 12:47:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A964AC433E6
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 12:47:53 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A360464FEE
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 12:47:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A360464FEE
+	by mail.kernel.org (Postfix) with ESMTPS id 4CB9964FEE
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 12:47:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4CB9964FEE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Xpsal1SQkpMpB9BWtKq2ak4X9SZqhkKP5PyzydQJ2OY=; b=Y2/2pgNVYEmmFlVK4SP9klsFJ
-	2XvbDEr2suqCdPSQkXNCjHPwNQIBfEgogatCYnxWDlJRHQZ9Taz6K88vPMxln762BaZPjp/8xrUB2
-	MTzWIrAMv2FVIw92rj6gwEc2B4jZnQAb+NvAbpRggRyk3DF74T7Vc/V2lfXnzjVPOfFaux/2Of4D6
-	eiheOsNDJLHWYX6B+F9iLgpdweMLhHS7FevS3ZRcg6Vt4c2l6y7oZn2HW+ZT65VGt+DssZdKTDGSm
-	LmRLiBHMMB0l6b7WJgufOCDcwGgpeBykk4URIF/3S57yie72cQ9AaaqNPprRoxNQr8H3mdN7Cqz2Q
-	xIRMIy2zA==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=1EngTf9JEjpQSXfqUbJcYm0paL0e+T3H4XLipBWULQU=; b=ptrFxmwjZmtqwaqDbJIGkHzoxX
+	s61WcaHjREHIjltjFLyUziM/4kheBkb6Q5SF2ccmRf0a5raBIn060DlKthOaPXOf0j7/IkVQ1gTF4
+	5tcIkBDGQjqCkrCHN6aFqNhU8zrECeX/+Xr4/dlwVo/vLNc6jhlcgrF3bdjkoVsXvkt51QBtaiERK
+	c7nx8GZKI90OgE2gtx7NZ75AJJuJ574lvUntSMBjctow/kFh+0b6Q54uEcT254DKPnEvVl5ygSV+W
+	yMusOQyTphYkjf8RLMzQf+LQKW/tjGojjEc+vzRinrG0/UllETmzV9t63LOcXMW0wxc8Z2tsQoZKb
+	YdlIMuDw==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lKhBn-00BSBA-Dn; Fri, 12 Mar 2021 12:46:47 +0000
-Received: from mail-wr1-x431.google.com ([2a00:1450:4864:20::431])
+	id 1lKhBc-00BSAL-4G; Fri, 12 Mar 2021 12:46:36 +0000
+Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lKh9f-00BS6r-OG
- for linux-mtd@lists.infradead.org; Fri, 12 Mar 2021 12:46:37 +0000
-Received: by mail-wr1-x431.google.com with SMTP id e18so1702590wrt.6
- for <linux-mtd@lists.infradead.org>; Fri, 12 Mar 2021 04:44:35 -0800 (PST)
+ id 1lKh9a-00BS6q-SW
+ for linux-mtd@lists.infradead.org; Fri, 12 Mar 2021 12:46:34 +0000
+Received: by mail-wr1-x42c.google.com with SMTP id a18so4705177wrc.13
+ for <linux-mtd@lists.infradead.org>; Fri, 12 Mar 2021 04:44:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=0SX53bYeJpoRn/Rj8EJYnn/yWlrMIeX4TZ6gWcrZofc=;
- b=jKu8KqJ0S9Ti0089FwYbzp6PseVn8UWEuGVbAk2j8DJU7dQ52Xp1Ke51Tb+vGopIWC
- NmGxDUqN4/27ko7EM+tj4gS/Mmahh8EAKL+MV+CI7gKgsgW3LgjefxbPmvX/8rYjE3em
- 2M82od3nx6sLLXzceyi+BgkU2K81kkyyetjgZ185s7zYXZZcvKKOkLz68xyy3LTnjGXK
- wWeg/Gbg1eq7Yd6CzoPgizHJ+KYkusD2V7+KxXslWFXW+t33KR7SS4O6ghqH27gSmH55
- 6lmcaDGKvA5QDHhwQgGKxhrLgfvi3tqnvlLSVkiEIngWKX7VdNmflmqQAAdSrmfEflDO
- fRpQ==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=VI13v7WXCHyV5J1x9UibDqjD7a10mhiWIB5IsHD7pqI=;
+ b=o5XPui/gukKRgc7PwBjmedNbk1silTZsSMBrZFwN59+1UnRqSRTHgMrsho3JGLL21s
+ 1LXij9Esxn7wFm+eYTFhyiQzfwMxisfmrVzm7yr9JrBBVuRni6wuKmkOJ7XcXjCPck99
+ YHpI/i2s0vP5B0FVBlI4umrK9GTH5NW5uOQz2XngcxGQSHfob5nye5O/M7dZAhRk0r3W
+ hf4rDf7trLqUmXy5acCE/3zMaOIbGvzR863EMS2BKJ1DiBGc66CC47HxCaNhGBOtukgw
+ +t1cPmmjvY05uvE/MKWY6E7l/n1qjrSdkY+KHZaGJz0LLMoJ8PJQay5bqGgWCrvJ/kai
+ Dn5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=0SX53bYeJpoRn/Rj8EJYnn/yWlrMIeX4TZ6gWcrZofc=;
- b=BBXMaTA6eQaOVlEE5H7N4FPrW7XciM5qNeUggGMMDCZR9HPLg4y6ddUGumu1zmD67u
- rGvA3lAPeY8W6gRm2p5gSTw9QgmzR9Vw436fLJZUqH0ejWOhSfYYazM011GcvcD/DPAJ
- d1zeu0q3lYhk6MVqwzrmZyRMMSHP/vkLW8Br/iqKX/BQSIDItsvOMyeIjwNw77PEWH3j
- X+IsaMROmylFiS+Jtq+IG96F/FgE5hNw0gQo+ZVl1SayKXRr4yAn+i3I05ZD+SdHFVz8
- tFIwv8oxwE/1r3V67v2O97iYuQUGC4VvgBlG80r8+Q+kX+QzQ+blvPSwjAZ7r1eflFth
- PDWg==
-X-Gm-Message-State: AOAM532LdNPXrWMr16EFT41V5gmEZpnPJ2au7PPis+Ej8sRSk1scn58e
- EQulm8km2nngHWMGDYvz0/4=
-X-Google-Smtp-Source: ABdhPJzrmsxMYLLRKM+pCC+tNbUyIbddF/llb1BgF89xo2TU++Xf8VCyIXJFgdHYoz16BqflKtnbMA==
-X-Received: by 2002:a05:6000:1363:: with SMTP id
- q3mr13859141wrz.74.1615553074983; 
- Fri, 12 Mar 2021 04:44:34 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=VI13v7WXCHyV5J1x9UibDqjD7a10mhiWIB5IsHD7pqI=;
+ b=roIUIG4On+3eGQGke6kbSp7nD2wXfDAOx7zUYILNhOAValRPFDWJZDnaR2x8m72HcD
+ RP9f98+ex3l853AM6K2kool31MQ7IeDOW37mu/zc3vQbVS5UbhJtBfWKJPk0Ix68XBbl
+ GB02HzwvWzA5kId3Ueemhebvgt31juB/338UAw1Us8Tq13p6YMIBdfcxFvgAVfEDjbAE
+ 0YC8z/6m+J0wiD8b4DGFDk9jcWiFr5obkE6VxjWF5+jbj6qA/Ymsa+YNwSckgcMez9NV
+ E4yHkUmLcgnoHx/zrAHkNI0QK++UaqqxF0a5vwwDXBsgtVv4sm3Y0dpeKiLaSMNs1vEy
+ SWsQ==
+X-Gm-Message-State: AOAM53237n97vHuc4QhiOe3S6fWQNK8CaAaV1n+1QRYTGtq4L56nqjRD
+ amaHlrwYzm+1OuCTcfa0KaM=
+X-Google-Smtp-Source: ABdhPJxM6NNpxowCaT6kxszVSN/rPkxCB9XCQ9dzbhnd8x3OlG4E0ebpRadAVgbmMVBfJ6FPU6/siQ==
+X-Received: by 2002:adf:fa08:: with SMTP id m8mr13984426wrr.12.1615553068908; 
+ Fri, 12 Mar 2021 04:44:28 -0800 (PST)
 Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it.
  [93.35.189.2])
- by smtp.googlemail.com with ESMTPSA id 36sm8213414wrh.94.2021.03.12.04.44.33
+ by smtp.googlemail.com with ESMTPSA id 36sm8213414wrh.94.2021.03.12.04.44.27
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 12 Mar 2021 04:44:33 -0800 (PST)
+ Fri, 12 Mar 2021 04:44:28 -0800 (PST)
 From: Ansuel Smith <ansuelsmth@gmail.com>
 To: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 Cc: Ansuel Smith <ansuelsmth@gmail.com>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Rob Herring <robh+dt@kernel.org>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v7 2/3] devicetree: nvmem: nvmem: drop $nodename restriction
-Date: Fri, 12 Mar 2021 07:28:20 +0100
-Message-Id: <20210312062830.20548-2-ansuelsmth@gmail.com>
+Subject: [PATCH v7 1/3] mtd: core: add nvmem-cells compatible to parse mtd as
+ nvmem cells
+Date: Fri, 12 Mar 2021 07:28:19 +0100
+Message-Id: <20210312062830.20548-1-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210312062830.20548-1-ansuelsmth@gmail.com>
-References: <20210312062830.20548-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210312_124636_078334_707B0270 
-X-CRM114-Status: UNSURE (   8.50  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210312_124631_186878_A4753572 
+X-CRM114-Status: GOOD (  12.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,37 +100,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Drop $nodename restriction as now mtd partition can also be used as
-nvmem provider.
-
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- Documentation/devicetree/bindings/nvmem/nvmem.yaml | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/nvmem/nvmem.yaml b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
-index 7481a9e48f19..b8dc3d2b6e92 100644
---- a/Documentation/devicetree/bindings/nvmem/nvmem.yaml
-+++ b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
-@@ -20,9 +20,6 @@ description: |
-   storage device.
- 
- properties:
--  $nodename:
--    pattern: "^(eeprom|efuse|nvram)(@.*|-[0-9a-f])*$"
--
-   "#address-cells":
-     const: 1
- 
--- 
-2.30.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+UGFydGl0aW9ucyB0aGF0IGNvbnRhaW5zIHRoZSBudm1lbS1jZWxscyBjb21wYXRpYmxlIHdpbGwg
+cmVnaXN0ZXIKdGhlaXIgZGlyZWN0IHN1Ym9ub2RlcyBhcyBudm1lbSBjZWxscyBhbmQgdGhlIG5v
+ZGUgd2lsbCBiZSB0cmVhdGVkIGFzIGEKbnZtZW0gcHJvdmlkZXIuCgpTaWduZWQtb2ZmLWJ5OiBB
+bnN1ZWwgU21pdGggPGFuc3VlbHNtdGhAZ21haWwuY29tPgpUZXN0ZWQtYnk6IFJhZmHFgiBNacWC
+ZWNraSA8cmFmYWxAbWlsZWNraS5wbD4KLS0tCiBkcml2ZXJzL210ZC9tdGRjb3JlLmMgfCAzICsr
+LQogMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQoKZGlmZiAt
+LWdpdCBhL2RyaXZlcnMvbXRkL210ZGNvcmUuYyBiL2RyaXZlcnMvbXRkL210ZGNvcmUuYwppbmRl
+eCAyZDY0MjNkODlhMTcuLmFjMWI0ZjE3NmExNyAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvbXRk
+Y29yZS5jCisrKyBiL2RyaXZlcnMvbXRkL210ZGNvcmUuYwpAQCAtNTMxLDYgKzUzMSw3IEBAIHN0
+YXRpYyBpbnQgbXRkX252bWVtX3JlZ19yZWFkKHZvaWQgKnByaXYsIHVuc2lnbmVkIGludCBvZmZz
+ZXQsCiAKIHN0YXRpYyBpbnQgbXRkX252bWVtX2FkZChzdHJ1Y3QgbXRkX2luZm8gKm10ZCkKIHsK
+KwlzdHJ1Y3QgZGV2aWNlX25vZGUgKm5vZGUgPSBtdGRfZ2V0X29mX25vZGUobXRkKTsKIAlzdHJ1
+Y3QgbnZtZW1fY29uZmlnIGNvbmZpZyA9IHt9OwogCiAJY29uZmlnLmlkID0gLTE7CkBAIC01NDMs
+NyArNTQ0LDcgQEAgc3RhdGljIGludCBtdGRfbnZtZW1fYWRkKHN0cnVjdCBtdGRfaW5mbyAqbXRk
+KQogCWNvbmZpZy5zdHJpZGUgPSAxOwogCWNvbmZpZy5yZWFkX29ubHkgPSB0cnVlOwogCWNvbmZp
+Zy5yb290X29ubHkgPSB0cnVlOwotCWNvbmZpZy5ub19vZl9ub2RlID0gdHJ1ZTsKKwljb25maWcu
+bm9fb2Zfbm9kZSA9ICFvZl9kZXZpY2VfaXNfY29tcGF0aWJsZShub2RlLCAibnZtZW0tY2VsbHMi
+KTsKIAljb25maWcucHJpdiA9IG10ZDsKIAogCW10ZC0+bnZtZW0gPSBudm1lbV9yZWdpc3Rlcigm
+Y29uZmlnKTsKLS0gCjIuMzAuMAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0
+cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
