@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C07E4C433E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 19:07:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57ABFC433DB
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 19:07:15 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4CCB664F77
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 19:07:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4CCB664F77
+	by mail.kernel.org (Postfix) with ESMTPS id 057F264F73
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 19:07:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 057F264F73
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,36 +23,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=HTywq2d9UoteJ22k+zSLjApliR6cCtQNtEd+YQgCXoc=; b=coOmUMKXcsZeq4WEGHj1OSJrt
-	avCAMH3HQlLNTvbr+NwecBzOa8YaxEfrNLSG3WWzUv6qJONjOUpVpKWtFh1/wefKE2xigiVfo+/gi
-	+vIWUPbF7awDH8rgUwCVRjZgOkkib3/J5M1GZK+RqvfNpGy/shvmvtJz0wlSxPw/xWzcdrM3Nwf/c
-	047DafZXO9NcB82HC/NozQN7cLD3lRWDHBdXIBwN4uS6+PQ+QrWCGgnZjkuz5hIynvzonvrGWfSzh
-	5vnyH9o8oBzXkDOu114EyAySTqhXqQxfHjq46jzcV7A8G4mNIRLPUj6skUVSLsG1mRipHEYWDup3G
-	WqYBT070w==;
+	 bh=pFTG9zdpq1k5CcPiVNjisU8dryYRLQPlwjs+MqIAHQI=; b=Ff9197v8F5PcpnVd2AfVeLzZZ
+	4/hxmnT9vn7z7x+MAn20eDiKqH/u1Xmjo4zALvZivxhTceQ4meVt8BjV7w4Qgjyp+3uvS6tv357A4
+	ILZ4DWV5JtLIlfO+49GMCw5KYyU0Mi8uZTP7wHDMyWx4yyFUv4WYNQqCFNniBhObExtYZoDyP8j1c
+	8lKAcdh4sX3vWmOAfi3rJv5V8mT++kK/h44n6IsDAGthz1c12NPSbws/g8QgSmeg7CN8gaRiRriJ2
+	4YIcOodM7pU9LYg3HUqykXJbrJQ253DUs+8JQOK2IbPXcg1yXH7iaV3JfvdnB378I+eudUOkMWm0W
+	toPsYCcDw==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lKn74-00CFQM-UA; Fri, 12 Mar 2021 19:06:18 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1lKn7S-00CFUD-Uk; Fri, 12 Mar 2021 19:06:43 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lKn6r-00CFO0-3A
- for linux-mtd@lists.infradead.org; Fri, 12 Mar 2021 19:06:07 +0000
+ id 1lKn6r-00CFOV-UY
+ for linux-mtd@lists.infradead.org; Fri, 12 Mar 2021 19:06:09 +0000
 Received: from mwalle01.fritz.box (unknown
  [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 18E5D22246;
- Fri, 12 Mar 2021 20:06:04 +0100 (CET)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 1A94F2224F;
+ Fri, 12 Mar 2021 20:06:05 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1615575964;
+ s=mail2016061301; t=1615575965;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=6+KxuP01OXn0P4BC96DpLPW6zDJBUCK1si/Mhm3vETY=;
- b=uFdxA+J9wKJe1up+L2tmP70GjgkcwqQqLn6rrQw8tKjaXfNZFxVMRY8Z1PPQepdLHJ6KU7
- M0qeo3lfCOZ22IQpR5UCM606r48VpNrIIVR0CK36y7J18Eik51gNtSQOHhF9uPqyOKDQQQ
- NOKXiEjw0U3gdEq8k8JoVnMrzWpom8w=
+ bh=54WT5odVgY6G1Iibvufmnv/spHyjf85yc0gFnkvJHTs=;
+ b=kfTeiVrDdViU1Arw0rzLvj6wrF5QynbJpS5rxIguvGAUHrXtMocNsXGfyKmfGFCfJo1V7Q
+ svVGpLsksXSFnpuDwTdxgpDtUOghII5mWKK21IunUgoQR635FfOlXUMoW7l7aS+C6RjTeE
+ FyTI8Uxh7MrS7/BXdQhwLOIhBR9FN5s=
 From: Michael Walle <michael@walle.cc>
 To: linux-kernel@vger.kernel.org,
 	linux-mtd@lists.infradead.org
@@ -60,16 +60,16 @@ Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Michael Walle <michael@walle.cc>
-Subject: [RFC PATCH 1/3] mtd: spi-nor: sfdp: remember sfdp_size
-Date: Fri, 12 Mar 2021 20:05:46 +0100
-Message-Id: <20210312190548.6954-2-michael@walle.cc>
+Subject: [RFC PATCH 3/3] mtd: spi-nor: add sysfs and SFDP support
+Date: Fri, 12 Mar 2021 20:05:48 +0100
+Message-Id: <20210312190548.6954-4-michael@walle.cc>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210312190548.6954-1-michael@walle.cc>
 References: <20210312190548.6954-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210312_190605_219648_5DD4B15D 
-X-CRM114-Status: GOOD (  14.56  )
+X-CRM114-CacheID: sfid-20210312_190606_472895_60BD4414 
+X-CRM114-Status: GOOD (  24.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,71 +86,177 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Save the sftp_size in the spi_nor struct so we can use it to dump the
-SFDP table without parsing the headers again.
+Add support to dump the SFDP table. Not all flashes list their SFDP
+table contents in their datasheet. So having that is useful. It might
+also be helpful in bug reports from users.
+
+The idea behind the sysfs module is also to have raw access to the SPI
+NOR flash device registers, which can also be useful for debugging.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
 ---
- drivers/mtd/spi-nor/sfdp.c  | 12 ++++++++++++
- include/linux/mtd/spi-nor.h |  1 +
- 2 files changed, 13 insertions(+)
+ drivers/mtd/spi-nor/Makefile |  2 +-
+ drivers/mtd/spi-nor/core.c   |  5 +++
+ drivers/mtd/spi-nor/core.h   |  3 ++
+ drivers/mtd/spi-nor/sfdp.c   |  4 +-
+ drivers/mtd/spi-nor/sfdp.h   |  2 +
+ drivers/mtd/spi-nor/sysfs.c  | 73 ++++++++++++++++++++++++++++++++++++
+ 6 files changed, 86 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/mtd/spi-nor/sysfs.c
 
+diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+index 653923896205..aff308f75987 100644
+--- a/drivers/mtd/spi-nor/Makefile
++++ b/drivers/mtd/spi-nor/Makefile
+@@ -1,6 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ 
+-spi-nor-objs			:= core.o sfdp.o
++spi-nor-objs			:= core.o sfdp.o sysfs.o
+ spi-nor-objs			+= atmel.o
+ spi-nor-objs			+= catalyst.o
+ spi-nor-objs			+= eon.o
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 4a315cb1c4db..2eaf4ba8c0f3 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3707,6 +3707,10 @@ static int spi_nor_probe(struct spi_mem *spimem)
+ 	if (ret)
+ 		return ret;
+ 
++	ret = spi_nor_sysfs_create(nor);
++	if (ret)
++		return ret;
++
+ 	return mtd_device_register(&nor->mtd, data ? data->parts : NULL,
+ 				   data ? data->nr_parts : 0);
+ }
+@@ -3716,6 +3720,7 @@ static int spi_nor_remove(struct spi_mem *spimem)
+ 	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
+ 
+ 	spi_nor_restore(nor);
++	spi_nor_sysfs_remove(nor);
+ 
+ 	/* Clean up MTD stuff. */
+ 	return mtd_device_unregister(&nor->mtd);
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 4a3f7f150b5d..43c0d6eaf679 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -478,4 +478,7 @@ static struct spi_nor __maybe_unused *mtd_to_spi_nor(struct mtd_info *mtd)
+ 	return mtd->priv;
+ }
+ 
++int spi_nor_sysfs_create(struct spi_nor *nor);
++void spi_nor_sysfs_remove(struct spi_nor *nor);
++
+ #endif /* __LINUX_MTD_SPI_NOR_INTERNAL_H */
 diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index 25142ec4737b..b1814afefc33 100644
+index 47634ec9b899..62e58f14c197 100644
 --- a/drivers/mtd/spi-nor/sfdp.c
 +++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -16,6 +16,7 @@
- 	(((p)->parameter_table_pointer[2] << 16) | \
- 	 ((p)->parameter_table_pointer[1] <<  8) | \
- 	 ((p)->parameter_table_pointer[0] <<  0))
-+#define SFDP_PARAM_HEADER_PARAM_LEN(p) ((p)->length * 4)
+@@ -219,8 +219,8 @@ static int spi_nor_read_sfdp(struct spi_nor *nor, u32 addr,
+  * Return: -ENOMEM if kmalloc() fails, the return code of spi_nor_read_sfdp()
+  *          otherwise.
+  */
+-static int spi_nor_read_sfdp_dma_unsafe(struct spi_nor *nor, u32 addr,
+-					size_t len, void *buf)
++int spi_nor_read_sfdp_dma_unsafe(struct spi_nor *nor, u32 addr,
++				 size_t len, void *buf)
+ {
+ 	void *dma_safe_buf;
+ 	int ret;
+diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
+index 89152ae1cf3e..11ce208e0cd7 100644
+--- a/drivers/mtd/spi-nor/sfdp.h
++++ b/drivers/mtd/spi-nor/sfdp.h
+@@ -109,5 +109,7 @@ struct sfdp_parameter_header {
  
- #define SFDP_BFPT_ID		0xff00	/* Basic Flash Parameter Table */
- #define SFDP_SECTOR_MAP_ID	0xff81	/* Sector Map Table */
-@@ -1263,6 +1264,7 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
- 	struct sfdp_parameter_header *param_headers = NULL;
- 	struct sfdp_header header;
- 	struct device *dev = nor->dev;
-+	size_t param_max_offset;
- 	size_t psize;
- 	int i, err;
+ int spi_nor_parse_sfdp(struct spi_nor *nor,
+ 		       struct spi_nor_flash_parameter *params);
++int spi_nor_read_sfdp_dma_unsafe(struct spi_nor *nor, u32 addr,
++				 size_t len, void *buf);
  
-@@ -1285,6 +1287,9 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
- 	    bfpt_header->major != SFDP_JESD216_MAJOR)
- 		return -EINVAL;
- 
-+	nor->sfdp_size = SFDP_PARAM_HEADER_PTP(bfpt_header) +
-+			 SFDP_PARAM_HEADER_PARAM_LEN(bfpt_header);
+ #endif /* __LINUX_MTD_SFDP_H */
+diff --git a/drivers/mtd/spi-nor/sysfs.c b/drivers/mtd/spi-nor/sysfs.c
+new file mode 100644
+index 000000000000..53641f964a2c
+--- /dev/null
++++ b/drivers/mtd/spi-nor/sysfs.c
+@@ -0,0 +1,73 @@
++// SPDX-License-Identifier: GPL-2.0
 +
- 	/*
- 	 * Allocate memory then read all parameter headers with a single
- 	 * Read SFDP command. These parameter headers will actually be parsed
-@@ -1311,6 +1316,13 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
- 		}
- 	}
- 
-+	for (i = 0; i < header.nph; i++) {
-+		param_header = &param_headers[i];
-+		param_max_offset = SFDP_PARAM_HEADER_PTP(param_header) +
-+				   SFDP_PARAM_HEADER_PARAM_LEN(param_header);
-+		nor->sfdp_size = max(nor->sfdp_size, param_max_offset);
++#include <linux/mtd/spi-nor.h>
++#include <linux/spi/spi.h>
++#include <linux/spi/spi-mem.h>
++#include <linux/sysfs.h>
++
++#include "core.h"
++
++static ssize_t sfdp_read(struct file *filp, struct kobject *kobj,
++			 struct bin_attribute *bin_attr, char *buf,
++			 loff_t off, size_t count)
++{
++	struct spi_device *spi = to_spi_device(kobj_to_dev(kobj));
++	struct spi_mem *spimem = spi_get_drvdata(spi);
++	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
++	int ret;
++
++	ret = spi_nor_lock_and_prep(nor);
++	if (ret)
++		return ret;
++
++	if (off >= nor->sfdp_size) {
++		ret = 0;
++	} else {
++		if (off + count > nor->sfdp_size)
++			count = nor->sfdp_size - off;
++
++		ret = spi_nor_read_sfdp_dma_unsafe(nor, off, count, buf);
++		if (ret < 0)
++			ret = -EIO;
++		else
++			ret = count;
 +	}
 +
- 	/*
- 	 * Check other parameter headers to get the latest revision of
- 	 * the basic flash parameter table.
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index a0d572855444..a58118b8b002 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -404,6 +404,7 @@ struct spi_nor {
- 	bool			sst_write_second;
- 	u32			flags;
- 	enum spi_nor_cmd_ext	cmd_ext_type;
-+	size_t			sfdp_size;
- 
- 	const struct spi_nor_controller_ops *controller_ops;
- 
++	spi_nor_unlock_and_unprep(nor);
++	return ret;
++}
++static BIN_ATTR_RO(sfdp, PAGE_SIZE);
++
++static struct bin_attribute *spi_nor_sysfs_bin_entries[] = {
++	&bin_attr_sfdp,
++	NULL
++};
++
++static umode_t spi_nor_sysfs_is_bin_visible(struct kobject *kobj,
++					    struct bin_attribute *attr, int n)
++{
++	struct spi_device *spi = to_spi_device(kobj_to_dev(kobj));
++	struct spi_mem *spimem = spi_get_drvdata(spi);
++	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
++
++	if (attr == &bin_attr_sfdp && !nor->sfdp_size)
++		return 0;
++
++	return 0400;
++}
++
++static struct attribute_group spi_nor_sysfs_attr_group = {
++	.name		= NULL,
++	.is_bin_visible	= spi_nor_sysfs_is_bin_visible,
++	.bin_attrs	= spi_nor_sysfs_bin_entries,
++};
++
++int spi_nor_sysfs_create(struct spi_nor *nor)
++{
++	return sysfs_create_group(&nor->dev->kobj, &spi_nor_sysfs_attr_group);
++}
++
++void spi_nor_sysfs_remove(struct spi_nor *nor)
++{
++	sysfs_remove_group(&nor->dev->kobj, &spi_nor_sysfs_attr_group);
++}
 -- 
 2.20.1
 
