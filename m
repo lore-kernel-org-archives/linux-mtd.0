@@ -2,88 +2,71 @@ Return-Path: <SRS0=p7xI=IK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB550C433E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 18:15:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF445C433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 19:06:43 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0B71F64F45
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 18:15:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B71F64F45
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8F38C64F73
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Mar 2021 19:06:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F38C64F73
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=K+0vZfYOZHWQrNXMF5X9ShRF+mHLAQoljKd5AJT+dLw=; b=jnM7kXVEFVYUA7dCeBqV82rj0
-	748n3nHbXMpqcnpchvfwSNGna2Yf7qUkNmRe9ttxN3AG7R3Ubh5lC3C1LOa8o88ZabqxYahM6iYlf
-	YQbUeihL23nWtNsSrpjw2r2J6CWIahdZ6BGdNi5VnGEGD/rvWErZ0U9YOX1Ddqo3iS9QiqLfCTvwn
-	m0X0WJje/CT0Dx3Lg2+MgcFPATsKYC9BDuc8Rj90z8sVu5lSBqJWSKSmGbzgDmSnXFVaakHc/WKU4
-	oOoor11DI8+jAfkNMoFbxBDUata7CL2KtrdqP6azvg6o4X178gvnhuDYEfoltVCP/+EtDXo22IQNK
-	5/Q2sDnaQ==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=xkrfCvYcyFGm02RCnAQbNJ6YeFIl5HmVbowmGq55lJI=; b=ojM5sXL4QBr/Jhszx12/BpRKhU
+	BKRVW9ERTgw2u18ynCP2oAfJlejkuWVEidvvWsZj5RgEhMMtX2hBn2kw2l0qTXLWoPJV81AnX/QX+
+	L9+5W8tjP1rObZJDOiLFHlPnA3bOXFHSGwTJqoZw3/qVNJ0FgwHv8kBKvqtJtNT/3MRgvJ4zzwJ13
+	vW8DGBDJAJ/iUPqQQJD9jTtL/rdhStCaKyHKlgGwvhjLnFQf6w9jfcsYGvrfuTy3FTHsfdk1+nlrK
+	KmsTYTkawlqYkfZSpF1TCztAt2huviS4VNpqcaIEJU9gECX7dT96t20AQ0hVg/DzE6GesfxymxUqv
+	oMr3mGUA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lKmJT-00CACl-E1; Fri, 12 Mar 2021 18:15:04 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1lKn6u-00CFPJ-UN; Fri, 12 Mar 2021 19:06:09 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lKmJN-00CAC4-Ui; Fri, 12 Mar 2021 18:15:01 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12CIEpcE097406;
- Fri, 12 Mar 2021 12:14:51 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1615572891;
- bh=9FvlDY8auLWx4dzfrr5UK6RaRkjcfk9u4rYCLK0axw8=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=uijRvY6JeN+lTs1NI5B5KngDr6+ksoV3MPGQEmY5ax5gQZHRf0KUc2JxyGdauH6+0
- vRetIid/1Ggm9ARcDy/fboSkHZbttsFJylV5eG274+UCdjR87zy0HzvWgJhAF4yKOn
- 89KRtXBPrr1/cOqsTRsSPLt7uup345oEEdsxq5bU=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12CIEpoY060898
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 12 Mar 2021 12:14:51 -0600
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 12
- Mar 2021 12:14:51 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 12 Mar 2021 12:14:51 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12CIEoWn094955;
- Fri, 12 Mar 2021 12:14:51 -0600
-Date: Fri, 12 Mar 2021 23:44:49 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: <Tudor.Ambarus@microchip.com>
-CC: <nm@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>, <michael@walle.cc>,
- <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
- <broonie@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
- <lokeshvutla@ti.com>
-Subject: Re: [RFC PATCH 0/6] spi: Add OSPI PHY calibration support for
- spi-cadence-quadspi
-Message-ID: <20210312181447.dlecnw2oed7jtxe7@ti.com>
-References: <20210311191216.7363-1-p.yadav@ti.com>
- <9c551f56-4c00-b41a-f051-8b7e197fbcdc@microchip.com>
- <20210312101036.jfz2733ssv4nhfey@ti.com>
- <25a72752-097e-5669-7087-1cf6da38b3ba@microchip.com>
+ id 1lKn6q-00CFNm-R8
+ for linux-mtd@lists.infradead.org; Fri, 12 Mar 2021 19:06:07 +0000
+Received: from mwalle01.fritz.box (unknown
+ [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
+ SHA256) (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 62A1E22238;
+ Fri, 12 Mar 2021 20:06:03 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1615575963;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=r1NUXsd8CcCDGSgN9MbS4BQVVK/eEe8OH8TuK2TBWdU=;
+ b=ftGn2reIyDNiSRy7+ia+andf8S1ds8SvJzrxvkFwFQSaXCjjKQI/9IRiqmBCfT/p/yj6Br
+ xdSYqzcSgqh3b5ka6GRW8WUxf7rbHiza67ONaWq8I79FWV+3uWhqHLe8Ch4maVhkdF06is
+ 8g+F4nnA7ZmP25uO28N/KfTQYkXhnEs=
+From: Michael Walle <michael@walle.cc>
+To: linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Michael Walle <michael@walle.cc>
+Subject: [RFC PATCH 1/3] mtd: spi-nor: support dumping sfdp tables
+Date: Fri, 12 Mar 2021 20:05:45 +0100
+Message-Id: <20210312190548.6954-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <25a72752-097e-5669-7087-1cf6da38b3ba@microchip.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210312_181458_672374_01F257C2 
-X-CRM114-Status: GOOD (  55.80  )
+X-CRM114-CacheID: sfid-20210312_190604_999183_58F354C4 
+X-CRM114-Status: GOOD (  16.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,182 +83,49 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 12/03/21 11:23AM, Tudor.Ambarus@microchip.com wrote:
-> On 3/12/21 12:10 PM, Pratyush Yadav wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> > On 12/03/21 09:09AM, Tudor.Ambarus@microchip.com wrote:
-> >> On 3/11/21 9:12 PM, Pratyush Yadav wrote:
-> >>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> >>>
-> >>> Hi,
-> >>>
-> >>> This series adds support for OSPI PHY calibration on the Cadence OSPI
-> >>> controller. This calibration procedure is needed to allow high clock
-> >>> speeds in 8D-8D-8D mode. The procedure reads some pre-determined pattern
-> >>> data from the flash and runs a sequence of test reads to find out the
-> >>> optimal delays for high speed transfer. More details on the calibration
-> >>> procedure in patch 5/6.
-> >>
-> >> Can the calibration sequence be avoided if the controller is informed
-> >> about the frequency on which the flash operates?
-> 
-> s/frequency/maximum supported frequency by the flash
+Add the possibility to dump the SFDP data of a flash device.
 
-Again, the max frequency does not matter. If it is fast enough PHY 
-calibration is needed to make sure lines are sampled at the correct 
-time.
+More and more flash devices share the same flash ID and we need per device
+fixups. Usually, these fixups differentiate flashes by looking at
+differences in the SFDP data. Determining the difference is only possible
+if we have the SFDP data for all the flashes which share a flash ID. This
+will lay the foundation to dump the whole SFDP data of a flash device.
 
-> 
-> > 
-> > Maybe I don't understand this correctly, but there should not be any
-> > frequency on which the flash operates. The controller drives the SPI
-> > clock so the frequency is decided by the controller. Sure, there is a
-> > max supported frequency for the flash but the controller can run it
-> > slower than that if it wishes. The flash has no say in that.
-> > 
-> > Anyway, the exact frequency at which the flash is running is not it is
-> > looking for. More details below.
-> 
-> I thought about choosing at the controller side:
-> min(max_frequency_controller, max_frequency_flash)
-> 
-> And there is also the need of changing the frequency on which an op
-> runs, like the READ SFDP cmd, for which it is recommended to be run at
-> 50 MHz, but maybe this is another topic, let's see.
+This is even more important, because some datasheets doesn't even contain
+the SFDP data. Fixups for these kind of flashes are nearly impossible to
+do.
 
-Right. This is not directly related to the need for having the 
-calibration.
+I envision having a database of all the SFDP data for the flashes we
+support and make it a requirement to submit it when a new flash is added.
+This might or might not have legal implications. Thus I'd start with having
+that database private to the SPI NOR maintainers.
 
-Right now calibration is run only after the flash is fully initialized, 
-so there should not be any SFDP commands from that point on. But if we 
-do want to be conservative about it, a field can be added in spi_mem_op 
-that mentions the maximum speed for the op so the controller can decide 
-accordingly.
+There are two ways to provide access to the SFDP data:
+ (1) We just read the SFDP data once and cache it
+ (2) Any userspace access will always read the SFDP data
 
-> 
-> > 
-> >>
-> >> Can you add more details about the optimal delays? Are we talking about
-> >> flash's AC characteristics? Is the calibration still needed if the upper
-> >> layer informs the QSPI controller about the needed delays?
-> > 
-> > There is usually a delay from when the flash drives the data line (IOW,
-> > puts a data bit on it) and when the signal reaches the controller. This
-> > delay can vary by the flash, board, silicon characteristics,
-> > temperature, etc.
-> 
-> I wonder whether the delay advertised by the flash matters the most, while
-> all the other are negligible.
+I choose (2) because it isn't as invasive as (1). The current SFDP code
+reads the SFDP data only partially and only the part which are actually
+used. Using (1) would mean to change that behavior.
 
-The delay advertised by the flash does matter. Specifically, the clock 
-to data output delay. But the IO delay in the host (the delay from the 
-pin to the internal FIFO) matters equally as much. Both are accounted 
-for by the tuning.
+Michael Walle (3):
+  mtd: spi-nor: sfdp: remember sfdp_size
+  mtd: spi-nor: sfdp: fix spi_nor_read_sfdp()
+  mtd: spi-nor: add sysfs and SFDP support
 
-> When I talk about delay, I'm thinking for example at the delay required
-> between two consecutive transfers without removing the chip select, or about
-> the minimum delay needed between the activation or the deactivation of the
-> chip select. These are all described by the flash. Does your controller have
-> such fields in its registers, to set such delays? If yes, is the calibration 
-> sequence still needed if all the delays are set correctly?
-
-The CS related delays are indeed accounted for by a register in the 
-controller. But this is not the delay the calibration is concerned with. 
-The delays the calibration is concerned with are the clock edge to data 
-transition delay (TX delay), and the DS edge to data transition delay 
-(RX delay). The two are totally unrelated.
-
-> 
-> When I hear about "board delays", I think about the impedance of the lines,
-> which should correspond to the impedance of the Flash's IOs (which depends on
-> the frequency on which the flash runs). A mechanism to choose the best
-> frequency and impedance level can be added.
-
-Board delays in this case are caused by the length of the wires/lines. 
-Even if the lines are perfectly impedance matched to the flash's IOs, 
-there will be a small time delay from when the data signal is launched 
-by the flash and when it is received by the device. This causes a small 
-but noticeable difference in the timing and consequently the final 
-calibration values. For example, this is observed when comparing J721E 
-EVM (evaluation module) and SVB (silicon validation board) platforms.
-
-> 
-> Flashes have an interval of temperature on which they are guaranteed to
-> work (I would expect in the same conditions). Information about temperature
-> ranges and associated delays (if measured?) can be passed too.
-
-This would not be sufficient for placing TX and RX delays unless we have 
-a perfect model for both the flash and the host device IO delays. Such a 
-model would have to account for variations in timing caused by 
-variations in the manufacturing process, voltage, and temperature. This 
-is not practically feasible.
-
-> 
-> Cheers,
-> ta
-> > 
-> > At lower speeds (25 MHz for example) this delay is not a problem because
-> > the clock period is longer so there is much more time to sample the data
-> > line. It is very likely the controller will sample at a time when the
-> > data line is valid. At high speeds (166 MHz for example), especially in
-> > DDR mode, this delay starts to play a larger role because the time to
-> > sample the data line is much smaller. Now unless the delay is accounted
-> > for, it is possible that the controller samples the data line too late
-> > or too early and sees invalid data.
-> > 
-> > These delays depend on physical characteristics so it is not possible
-> > for any upper layer to inform the controller about it. How will they
-> > even know what the required delay is?
-> > 
-> > In summary, no, there is no way an upper layer can inform the controller
-> > about this delay.
-> > 
-> >>
-> >> Cheers,
-> >> ta
-> >>
-> >>>
-> >>> The main problem here is telling the controller where to find the
-> >>> pattern and how to read it. This RFC uses nvmem cells which point to a
-> >>> fixed partition containing the data to do the reads. It depends on [0]
-> >>> and [1].
-> >>>
-> >>> The obvious problem with this is it won't work when the partitions are
-> >>> defined via command line. I don't see any good way to add nvmem cells to
-> >>> command line partitions. I would like some help or ideas here. We don't
-> >>> necessarily have to use nvmem either. Any way that can cleanly and
-> >>> consistently let the controller find out where the pattern is stored is
-> >>> good.
-> >>>
-> >>> The dts patch depends on [2].
-> >>>
-> >>> Tested on TI's J721E EVM.
-> >>>
-> >>> [0] https://patchwork.ozlabs.org/project/linux-mtd/patch/20210302190012.1255-1-zajec5@gmail.com/
-> >>> [1] https://patchwork.ozlabs.org/project/linux-mtd/patch/20210308011853.19360-1-ansuelsmth@gmail.com/
-> >>> [2] https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210305153926.3479-2-p.yadav@ti.com/
-> >>>
-> >>> Pratyush Yadav (6):
-> >>>   spi: spi-mem: Tell controller when device is ready for calibration
-> >>>   mtd: spi-nor: core: consolidate read op creation
-> >>>   mtd: spi-nor: core: run calibration when initialization is done
-> >>>   spi: cadence-qspi: Use PHY for DAC reads if possible
-> >>>   spi: cadence-qspi: Tune PHY to allow running at higher frequencies
-> >>>   arm64: dts: ti: k3-j721e-som-p0: Enable PHY calibration
-> >>>
-> >>>  arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi |  55 ++
-> >>>  drivers/mtd/spi-nor/core.c                  |  74 +-
-> >>>  drivers/spi/spi-cadence-quadspi.c           | 820 +++++++++++++++++++-
-> >>>  drivers/spi/spi-mem.c                       |  12 +
-> >>>  include/linux/spi/spi-mem.h                 |   8 +
-> >>>  5 files changed, 916 insertions(+), 53 deletions(-)
-> >>>
+ drivers/mtd/spi-nor/Makefile |  2 +-
+ drivers/mtd/spi-nor/core.c   |  5 +++
+ drivers/mtd/spi-nor/core.h   |  3 ++
+ drivers/mtd/spi-nor/sfdp.c   | 24 +++++++++++-
+ drivers/mtd/spi-nor/sfdp.h   |  2 +
+ drivers/mtd/spi-nor/sysfs.c  | 73 ++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/spi-nor.h  |  1 +
+ 7 files changed, 107 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/mtd/spi-nor/sysfs.c
 
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+2.20.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
