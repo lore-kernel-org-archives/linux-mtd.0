@@ -2,19 +2,19 @@ Return-Path: <SRS0=HQmt=IN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2C92C433E6
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Mar 2021 10:03:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CA9CC433E6
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Mar 2021 10:31:20 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6FD6E64E98
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Mar 2021 10:03:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6FD6E64E98
+	by mail.kernel.org (Postfix) with ESMTPS id A82BD64E64
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Mar 2021 10:31:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A82BD64E64
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,54 +23,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
 	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Ec8n+96sA9Gg9D0SdUlG6GHdBX9xEjsYBGRl+GfTCDY=; b=b/y+YPYxKD6+aKUDTu32W6BmM
-	YJ2C1ginM/vOTO6YlsQBE/3Dr7QhR8r1yiHIGV+3fVzYZbYS/oyhKPhikeJkpIRrgXOMpWLhROYNU
-	aVOlEoDMehZ4fYX3M9Ncgyo329u8rqp4r1z6/XL5J17uvmKUn2Fzg8v9EmzuOH0B9FjmZRDvo5IVc
-	7r769QgGNdpzHMtMayezabNxFDqv2XNRzkXQajoQyi9d/TA91+sUqxXrTd4NbfuoDEYEA37PstekX
-	8LPA/A8CtLUfyZfFj1VnVwh0bjK1i4u13EqiSWA190PgOqMkQwBD6cOrzqpo4qkH0P3VPSfh56U3P
-	y8LKXJZBA==;
+	 bh=+e9KrSOjCWlcgn6PmbmMemMElfgsmOrSTS2CNfFELpk=; b=pNfREH1W/B1AJNs4zzvN4Plv9
+	/3i9sKYqGQh9lLhpKGVo9somsQ9UjAaBdYMBUsH/5VvELoS6Gl3y/RtkQkNJak4ptgujDKCncdtp4
+	K6wyfT4zxkrrRWK/0D4z0NAw2eg4CuFNUidpfUNhxWiCOAlcLOJ2+L4j44SJYoVZxPqeAfwXqTyPN
+	eFpR46zEw+CZFTrZq2u1M3CE1bBDuP8WFbe6DRT6B2ncIdMhF5xi3h/TlVZCvvhdeb66NumxCzdad
+	/dvNzNPr42YzlGrc/lYrN3Da76si98BSdG0c2tBWjx58rwyYvjWx6Dpwzx7O9kDdabZeIieKDXfQ2
+	LM6CkM5Eg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lLk31-00FTMg-87; Mon, 15 Mar 2021 10:02:04 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1lLkU0-00FWbt-HQ; Mon, 15 Mar 2021 10:29:56 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lLk2s-00FTLL-SE
- for linux-mtd@lists.infradead.org; Mon, 15 Mar 2021 10:01:56 +0000
+ id 1lLkTr-00FWbC-H3
+ for linux-mtd@lists.infradead.org; Mon, 15 Mar 2021 10:29:50 +0000
 Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id ADD4F2223A;
- Mon, 15 Mar 2021 11:01:53 +0100 (CET)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 15E532223A;
+ Mon, 15 Mar 2021 11:29:44 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1615802513;
+ s=mail2016061301; t=1615804184;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=FGPd+CT8s79hFeiEpM/nnYfFAxMfPqg60ZHDn0T03J4=;
- b=fGMoLNBJp8Pp/nYl6HtpNFLCX0GQXr4Ri1CbML5wUaQlTuTTaEvXwh23HCkE6qt8f6GC8k
- QkoWMKAdUOQ+JI3xVfpVc0iN7dkMZakL1h1JX3xbstUCopdIWzEisVxJRGP1gjXZ7VDNAp
- LMhpf0eyYmLuaQ6jNZnoJ8Y3kZF37Vc=
+ bh=M+G0aHtxYhQhsAv27r0UhYEFH5PYNNiTmAc6FMMstIQ=;
+ b=aInZ0BfuvttaSH0mW2556X+pvfz9pLyLrfE3jANCutDE71/K2EE5q1wQ57ep8UN/E2WmKu
+ Z5YhD2f+ys713msS7MpBsvrfJXyZTrKqJeVbgZJVdVpmWo6BehpZErRtBFWSTfF1qsYB84
+ 0ol8tXZyG+OJArdoxTXBF/GtW+mfxso=
 MIME-Version: 1.0
-Date: Mon, 15 Mar 2021 11:01:53 +0100
+Date: Mon, 15 Mar 2021 11:29:44 +0100
 From: Michael Walle <michael@walle.cc>
 To: Tudor.Ambarus@microchip.com
-Cc: vigneshr@ti.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, miquel.raynal@bootlin.com, richard@nod.at
-Subject: Re: [PATCH v4 1/4] mtd: spi-nor: add OTP support
-In-Reply-To: <f0ffd9b3-94d1-05ca-7e90-5014bf7a3db4@microchip.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
+Subject: Re: [PATCH v4 2/4] mtd: spi-nor: implement OTP support for Winbond
+ and similar flashes
+In-Reply-To: <b2baa942-6018-16a6-a5b7-76ed61b5eb8b@microchip.com>
 References: <20210306000535.9890-1-michael@walle.cc>
- <20210306000535.9890-2-michael@walle.cc>
- <7dd4bfb0-bb38-20c8-68e1-ece836c847fa@microchip.com>
- <b83dbbcdee6bdeee0d494ba79fd792e4@walle.cc>
- <8b35d8f6-6ff8-9bf3-02bd-434cf46acccb@microchip.com>
- <f0ffd9b3-94d1-05ca-7e90-5014bf7a3db4@microchip.com>
+ <20210306000535.9890-3-michael@walle.cc>
+ <b2baa942-6018-16a6-a5b7-76ed61b5eb8b@microchip.com>
 User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <bbbc6230b7d60a2421520ce7d163be56@walle.cc>
+Message-ID: <81b861a5340fc300293f46e583b412cd@walle.cc>
 X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210315_100155_140341_B2785990 
-X-CRM114-Status: GOOD (  14.70  )
+X-CRM114-CacheID: sfid-20210315_102948_957914_9E833514 
+X-CRM114-Status: GOOD (  22.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,62 +85,134 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2021-03-15 10:44, schrieb Tudor.Ambarus@microchip.com:
-> On 3/15/21 11:39 AM, Tudor Ambarus - M18064 wrote:
->> On 3/15/21 11:23 AM, Michael Walle wrote:
+Am 2021-03-15 09:20, schrieb Tudor.Ambarus@microchip.com:
+> On 3/6/21 2:05 AM, Michael Walle wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know 
+>> the content is safe
 >> 
->> cut
+>> Use the new OTP ops to implement OTP access on Winbond flashes. Most
+>> Winbond flashes provides up to four different OTP regions ("Security
+>> Registers").
 >> 
->>>>> diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
->>>>> new file mode 100644
->>>>> index 000000000000..4e301fd5156b
->>>>> --- /dev/null
->>>>> +++ b/drivers/mtd/spi-nor/otp.c
->>>>> @@ -0,0 +1,218 @@
->>>>> +// SPDX-License-Identifier: GPL-2.0
->>>>> +/*
->>>>> + * OTP support for SPI NOR flashes
->>>>> + *
->>>>> + * Copyright (C) 2021 Michael Walle <michael@walle.cc>> + */
->>>>> +
->>>>> +#include <linux/log2.h>
->>>>> +#include <linux/mtd/mtd.h>
->>>>> +#include <linux/mtd/spi-nor.h>
->>>>> +
->>>>> +#include "core.h"
->>>>> +
->>>>> +#define spi_nor_otp_ops(nor) ((nor)->params->otp.ops)
->>>>> +#define spi_nor_otp_region_len(nor) ((nor)->params->otp.org->len)
->>>>> +#define spi_nor_otp_n_regions(nor)
->>>>> ((nor)->params->otp.org->n_regions)
->>>> 
->>>> I don't like these wrappers because they gratuiously hide what's 
->>>> really
->>>> there.
->>>> I find the code more easier to read without these wrappers, because 
->>>> I
->>>> don't
->>>> have to memorize what these wrappers are doing, and I better see how
->>>> the code
->>>> is organized.
->>> 
->>> TBH I find it easier on the eye and I've never seen so much 
->>> dereferences
->>> as in mtd/spi-nor.
+>> Winbond devices use a special opcode to read and write to the OTP
+>> regions, just like the RDSFDP opcode. In fact, it seems that the
+>> (undocumented) first OTP area of the newer flashes is the actual SFDP
+>> table.
+>> 
+>> On a side note, Winbond devices also allow erasing the OTP regions as
+>> long as the area isn't locked down.
+>> 
+>> Signed-off-by: Michael Walle <michael@walle.cc>
+>> ---
+>>  drivers/mtd/spi-nor/core.c  |   2 +-
+>>  drivers/mtd/spi-nor/core.h  |   6 ++
+>>  drivers/mtd/spi-nor/otp.c   | 164 
+>> ++++++++++++++++++++++++++++++++++++
+>>  include/linux/mtd/spi-nor.h |   9 ++
+>>  4 files changed, 180 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+>> index 0c5c757fa95b..ef7df26896f1 100644
+>> --- a/drivers/mtd/spi-nor/core.c
+>> +++ b/drivers/mtd/spi-nor/core.c
+>> @@ -1034,7 +1034,7 @@ static int 
+>> spi_nor_write_16bit_sr_and_check(struct spi_nor *nor, u8 sr1)
+>>   *
+>>   * Return: 0 on success, -errno otherwise.
+>>   */
+>> -static int spi_nor_write_16bit_cr_and_check(struct spi_nor *nor, u8 
+>> cr)
+>> +int spi_nor_write_16bit_cr_and_check(struct spi_nor *nor, u8 cr)
+>>  {
+>>         int ret;
+>>         u8 *sr_cr = nor->bouncebuf;
+>> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+>> index ec8da1243846..dfbf6ba42b57 100644
+>> --- a/drivers/mtd/spi-nor/core.h
+>> +++ b/drivers/mtd/spi-nor/core.h
+>> @@ -496,6 +496,7 @@ int spi_nor_read_sr(struct spi_nor *nor, u8 *sr);
+>>  int spi_nor_read_cr(struct spi_nor *nor, u8 *cr);
+>>  int spi_nor_write_sr(struct spi_nor *nor, const u8 *sr, size_t len);
+>>  int spi_nor_write_sr_and_check(struct spi_nor *nor, u8 sr1);
+>> +int spi_nor_write_16bit_cr_and_check(struct spi_nor *nor, u8 cr);
+>> 
+>>  int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr);
+>>  ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t 
+>> len,
+>> @@ -503,6 +504,11 @@ ssize_t spi_nor_read_data(struct spi_nor *nor, 
+>> loff_t from, size_t len,
+>>  ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t 
+>> len,
+>>                            const u8 *buf);
+>> 
+>> +int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t 
+>> len, u8 *buf);
+>> +int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t 
+>> len, u8 *buf);
+>> +int spi_nor_otp_lock_sr2(struct spi_nor *nor, unsigned int region);
+>> +int spi_nor_otp_is_locked_sr2(struct spi_nor *nor, unsigned int 
+>> region);
+>> +
+>>  int spi_nor_hwcaps_read2cmd(u32 hwcaps);
+>>  u8 spi_nor_convert_3to4_read(u8 opcode);
+>>  void spi_nor_set_read_settings(struct spi_nor_read_command *read,
+>> diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
+>> index 4e301fd5156b..4e8da9108c77 100644
+>> --- a/drivers/mtd/spi-nor/otp.c
+>> +++ b/drivers/mtd/spi-nor/otp.c
+>> @@ -15,6 +15,170 @@
+>>  #define spi_nor_otp_region_len(nor) ((nor)->params->otp.org->len)
+>>  #define spi_nor_otp_n_regions(nor) 
+>> ((nor)->params->otp.org->n_regions)
+>> 
+>> +/**
+>> + * spi_nor_otp_read_secr() - read OTP data
+>> + * @nor:       pointer to 'struct spi_nor'
+>> + * @from:       offset to read from
+>> + * @len:        number of bytes to read
+>> + * @buf:        pointer to dst buffer
 > 
-> the dereferences will still be there, but will be just hidden by these 
-> wrappers,
-> don't they? Why would one prefer the wrappers?
+> is buf DMA-able?
 
-That's why I wrote "easier on the eye", yes that is subjective. But
-there are also technical aspects, for example, the helpers all
-operate on "struct nor*", so you don't have to use the
-dereference chain or build up local variables. For example, see
-spi_nor_otp_read_write(), it doesn't have to know
-anything about the "struct spi_nor_otp_organization".
+That's actually the same description as spi_nor_read_data().
+Looks like the spimem will provide a DMA-able buffer on
+the fly if necessary. I'm not sure about the the
+spi_nor_controller_ops.
 
-And of course you could change the actual implementation
-without touching the code everywhere,.
+>> + *
+>> + * Read OTP data from one region by using the SPINOR_OP_RSECR 
+>> commands. This
+>> + * method is used on GigaDevice and Winbond flashes.
+>> + *
+>> + * Return: number of bytes read successfully, -errno otherwise
+>> + */
+>> +int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t 
+>> len, u8 *buf)
+>> +{
+>> +       u8 addr_width, read_opcode, read_dummy;
+>> +       struct spi_mem_dirmap_desc *rdesc;
+>> +       enum spi_nor_protocol read_proto;
+>> +       int ret;
+>> +
+>> +       read_opcode = nor->read_opcode;
+>> +       addr_width = nor->addr_width;
+>> +       read_dummy = nor->read_dummy;
+>> +       read_proto = nor->read_proto;
+>> +       rdesc = nor->dirmap.rdesc;
+>> +
+>> +       nor->read_opcode = SPINOR_OP_RSECR;
+>> +       nor->addr_width = 3;
+>> +       nor->read_dummy = 8;
+>> +       nor->read_proto = SNOR_PROTO_1_1_1;
+> 
+> any winbond/gigadevice flashes with octal dtr support? Do they
+> provide SEC Register opcodes for octal dtr?
+
+AFAIK there are no winbond flashes with 8 bit I/O. There are
+4bit/DTR modes, but not for the security registers.
+
+I don't know what you had in mind. But I don't think it is
+worth to read the 3x 256byte data faster than single bit I/O.
 
 -michael
 
