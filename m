@@ -2,18 +2,19 @@ Return-Path: <SRS0=hRrE=IO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ADAE4C433E0
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Mar 2021 21:52:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8F5AC433DB
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Mar 2021 22:24:52 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2BDD864E4D
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Mar 2021 21:52:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2BDD864E4D
+	by mail.kernel.org (Postfix) with ESMTPS id 4927464F01
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Mar 2021 22:24:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4927464F01
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -22,71 +23,64 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Al/DJIMmAgHXCg06lq74l26wxJ25CEcSjOGj2ggTjZ8=; b=WKOzKhFhjbP0n62EQqmPl5To6
-	mDtOhxre5VYoshks4NNl+ADe4t4mjdY2pvF73J0eG4ZQf2zmOPoa+f6G3b354g+jDR9fgAMhUpCmM
-	D++/8eNRAOkq4+4GYkzpDmoxgkfg5fwveOUvDgdnhS1nRTFaLzjcprFKBeuTPE1UcvFwDsv8PauVo
-	lui2ucZo/3zUPzg4UOvfLyEExs9OywoPnaoglFCRZhVTUvakdKDrS1u9YA0U7I7j7+65vzq8nWTYb
-	Qr2OM+BnHwjU1F4qEu2GG0RxFY0w1hiXG8UL9WNoLXHIetwQaP+YRli1qmjhBw/VAhdYiltsf/GC4
-	iEO8D9uZQ==;
+	 bh=5A+1hTHhUY+1WgfNJIm+94gRlYwNBuONl57Q7mCOc+k=; b=WOtlR7it/mO3/Zb0FgIGd5X2T
+	KN4pWOVhFoYekoib5e9eRnjiPU+0cTKV4HVnkLgZ1kucL8F7Z4RMhoxNcJzfEKkb3Q2dCTDTo/cQc
+	TvE/L/Tb4XYj2b7mwHaDwK9a+DbgvRuGAEqilFZVCkMkj8fxYvU1q7W5ew7yJgJFpRMhoel7DBSnc
+	lD/veyH04W7FDrk7IClBY2FyJE7qH4LIBWHAkSeNMv1UVXlZ6wnqDWL34BSpYoBJrOXIO4mpQMEmt
+	8c5o7S7sGMNLdC6U8pcOxlwzQwTqVvRAum64dDSCRO8quNIonvrmNt7zpBLvrFbrJdiwVzAhdGwNa
+	kZeSvhi6w==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lMHbG-001viz-Ks; Tue, 16 Mar 2021 21:51:40 +0000
-Received: from mail-il1-f171.google.com ([209.85.166.171])
+	id 1lMI6M-001xeC-ID; Tue, 16 Mar 2021 22:23:46 +0000
+Received: from mail-il1-f173.google.com ([209.85.166.173])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lMHb8-001vho-Lq; Tue, 16 Mar 2021 21:51:33 +0000
-Received: by mail-il1-f171.google.com with SMTP id d5so14162957iln.6;
- Tue, 16 Mar 2021 14:51:30 -0700 (PDT)
+ id 1lMI6G-001xcn-Tu
+ for linux-mtd@lists.infradead.org; Tue, 16 Mar 2021 22:23:42 +0000
+Received: by mail-il1-f173.google.com with SMTP id p10so14229421ils.9
+ for <linux-mtd@lists.infradead.org>; Tue, 16 Mar 2021 15:23:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to;
- bh=6sggz0cW6S5oWFTZs2rV+TqaEbdoBcz8RBGBjA8S3b8=;
- b=dSeXzHqFz/c5FQaWS4MPfEg6IdU4HGAmqWPW5pDdtWmavTg69Y82B/bsmPrXkGA3Ab
- WkLgfwIZJVpxZouowMpEfwufFT6kxwYeWB5VWBMH73VcTXm4uz4F/7W+kWcHspt2g/aB
- ccYNadcsmv1gd3F4+sve5IoHliyckVU1tnF8CNop7UIgHM67VNPNvEWYtBu503Fs998F
- HTIN4Ex1kK/IBeMHSu148SSV0oWfBQL/E1ZUhPdL+wUBuvFHwU5vhSE5wLDo6yTZKHGt
- tkkAfc04nLoqSYAwIohLt1zwYckOhIV5/1T0rKS1m2rv94Q3M3JDvaMiww8ZMZhDsTKk
- RkEQ==
-X-Gm-Message-State: AOAM530aBeKoA5vfp9U606vNVLTF1kirSAMlTJV5tPeIqmpzQTqfu7YW
- amV+IK9IcYRHpRKMWuWIEQ==
-X-Google-Smtp-Source: ABdhPJwsSv9g0C0LxRsIhgTNLhkUz3c9irY8ZHBA/9wlz76whYv3hXMw4HFmiG/1sHtqi21CBxGXRw==
-X-Received: by 2002:a05:6e02:dce:: with SMTP id
- l14mr5298695ilj.102.1615931488394; 
- Tue, 16 Mar 2021 14:51:28 -0700 (PDT)
+ bh=lcEgacFxEXTOUONKpaBOr7CK/rmW0Nxi28Yhlw7TNto=;
+ b=i9hb03qvw4v8FQ/bKwoLzPRXnlP2ZU9kra0+zW1p5nOKiJw0yE6k9ODlxzKwFNfKH4
+ Wr8sT64eOXVaMhsPGF+RUI6VNFXpQ9VvZZhtdSDfibgqoNa9L2YodJ69SDOgK5TxT2fU
+ imFp8UI+nNs+pO/UINuIwhex1cOGUdWvLXlDQ24pKQRGd0tH817bdANHHl3p9H9jvkNd
+ 4QavYOvMgYlgl0vJnFAjTSy9jS9Q+6ixyLEyjzFGamwQwW3gqMFb+mmQycH8o/WT9nef
+ /R8bgTaJSpkc3+cMEIGgvohK3GPidyQfEml90QrQq2eSDgsqIu3J1IDNW/BV7CAOvujD
+ 2/kg==
+X-Gm-Message-State: AOAM533x8faruPOb+Z2ck/g02lrvsSBpwWBEirY9qa6ZVdyieprXTCrC
+ HpJ70WFpQ8TYYnwnCLFApA==
+X-Google-Smtp-Source: ABdhPJxQlggYieg0A96D07xQPL8UIkwZdQVG3xRj5IAyYzwC6Evtykc7FEXQvQZl3JBs/NaD+ze+qQ==
+X-Received: by 2002:a92:d201:: with SMTP id y1mr5711020ily.129.1615933414864; 
+ Tue, 16 Mar 2021 15:23:34 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.253])
- by smtp.gmail.com with ESMTPSA id b12sm10054845ilr.55.2021.03.16.14.51.24
+ by smtp.gmail.com with ESMTPSA id h2sm8619148ioj.30.2021.03.16.15.23.32
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 16 Mar 2021 14:51:27 -0700 (PDT)
-Received: (nullmailer pid 3739030 invoked by uid 1000);
- Tue, 16 Mar 2021 21:51:23 -0000
-Date: Tue, 16 Mar 2021 15:51:23 -0600
+ Tue, 16 Mar 2021 15:23:34 -0700 (PDT)
+Received: (nullmailer pid 3790746 invoked by uid 1000);
+ Tue, 16 Mar 2021 22:23:31 -0000
+Date: Tue, 16 Mar 2021 16:23:31 -0600
 From: Rob Herring <robh@kernel.org>
-To: Sebastian Reichel <sre@kernel.org>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
- linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
- Philipp Zabel <p.zabel@pengutronix.de>, devicetree@vger.kernel.org,
- David Airlie <airlied@linux.ie>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-mtd@lists.infradead.org,
+To: Tim Harvey <tharvey@gateworks.com>
+Cc: linux-kernel@vger.kernel.org, Tudor Ambarus <tudor.ambarus@microchip.com>,
+ devicetree@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, linux-mtd@lists.infradead.org,
  NXP Linux Team <linux-imx@nxp.com>,
  Pengutronix Kernel Team <kernel@pengutronix.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Daniel Vetter <daniel@ffwll.ch>,
- kernel@collabora.com, Fabio Estevam <festevam@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCHv1 1/6] rtc: m41t80: add support for protected clock
-Message-ID: <20210316215123.GA3712408@robh.at.kernel.org>
-References: <20210222171247.97609-1-sebastian.reichel@collabora.com>
- <20210222171247.97609-2-sebastian.reichel@collabora.com>
- <YDQgLTPE0E+/1Cwv@piout.net> <YDQhgkftoW4J9AtY@piout.net>
- <20210223012657.bbp5u65nw4tpcjgd@earth.universe>
- <20210306195645.GA1112592@robh.at.kernel.org>
- <20210308140358.diolcpbaq7gow3y4@earth.universe>
+ Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH 3/4] dt-bindings: arm: imx: add imx8mm gw7901 support
+Message-ID: <20210316222331.GA3790694@robh.at.kernel.org>
+References: <20210309220014.22205-1-tharvey@gateworks.com>
+ <20210309220014.22205-3-tharvey@gateworks.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20210308140358.diolcpbaq7gow3y4@earth.universe>
+In-Reply-To: <20210309220014.22205-3-tharvey@gateworks.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210316_215131_458855_9304170C 
-X-CRM114-Status: GOOD (  50.27  )
+X-CRM114-CacheID: sfid-20210316_222341_055790_F3A0AD74 
+X-CRM114-Status: UNSURE (   9.98  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,105 +97,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Mar 08, 2021 at 03:03:58PM +0100, Sebastian Reichel wrote:
-> Hi,
+On Tue, 09 Mar 2021 14:00:13 -0800, Tim Harvey wrote:
+> The Gateworks GW7901 is an ARM based single board computer (SBC)
+> featuring:
+>  - i.MX8M Mini SoC
+>  - LPDDR4 DRAM
+>  - eMMC FLASH
+>  - SPI FRAM
+>  - Gateworks System Controller (GSC)
+>  - Atmel ATECC Crypto Authentication
+>  - USB 2.0
+>  - Microchip GbE Switch
+>  - Multiple multi-protocol RS232/RS485/RS422 Serial ports
+>  - onboard 802.11ac WiFi / BT
+>  - microSD socket
+>  - miniPCIe socket with PCIe, USB 2.0 and dual SIM sockets
+>  - Wide range DC power input
+>  - 802.3at PoE
 > 
-> On Sat, Mar 06, 2021 at 11:56:45AM -0800, Rob Herring wrote:
-> > On Tue, Feb 23, 2021 at 02:26:57AM +0100, Sebastian Reichel wrote:
-> > > On Mon, Feb 22, 2021 at 10:26:26PM +0100, Alexandre Belloni wrote:
-> > > > On 22/02/2021 22:20:47+0100, Alexandre Belloni wrote:
-> > > > > On 22/02/2021 18:12:42+0100, Sebastian Reichel wrote:
-> > > > > > Congatec's QMX6 system on module (SoM) uses a m41t62 as RTC. The
-> > > > > > modules SQW clock output defaults to 32768 Hz. This behaviour is
-> > > > > > used to provide the i.MX6 CKIL clock. Once the RTC driver is probed,
-> > > > > > the clock is disabled and all i.MX6 functionality depending on
-> > > > > > the 32 KHz clock has undefined behaviour. On systems using hardware
-> > > > > > watchdog it seems to likely trigger a lot earlier than configured.
-> > > > > > 
-> > > > > > The proper solution would be to describe this dependency in DT,
-> > > > > > but that will result in a deadlock. The kernel will see, that
-> > > > > > i.MX6 system clock needs the RTC clock and do probe deferral.
-> > > > > > But the i.MX6 I2C module never becomes usable without the i.MX6
-> > > > > > CKIL clock and thus the RTC's clock will not be probed. So from
-> > > > > > the kernel's perspective this is a chicken-and-egg problem.
-> > > > > > 
-> > > > > 
-> > > > > Reading the previous paragraph, I was going to suggest describing the
-> > > > > dependency and wondering whether this would cause a circular dependency.
-> > > > > I guess this will keep being an issue for clocks on an I2C or SPI bus...
-> > > 
-> > > Yes, it is a circular dependency on this particular system on
-> > > module. It only works because the RTC enables the clock by
-> > > default. The i.MX6 CKIL is expected to be always enabled.
-> > 
-> > I think you should describe the circular clocking and then provide a way 
-> > to break the dependency.
+> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+> ---
+>  Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> This is very much not trivial. The clock is required during early
-> initialization of the i.MX. At this point we are far from probing
-> I2C drivers and without the I2C driver the clock is not registered.
-> The current i.MX code expects the system clocks to be fixed clocks,
-> since they must be enabled before any code is executed (incl.
-> bootloader) and must never be disabled. From a HW design point of
-> view it does not make sense to have a SW controllable clock for it,
-> since it just adds extra cost. I believe for QMX6 it is only SW
-> controllable, because that avoids the need for an extra crystal.
-> 
-> So how is the clock framework supposed to know, that it can ignore
-> the clock during registration? I see the following options:
-> 
-> 1. My solution is the simplest one. Keep i.MX clock code the same
->    (it assumes a fixed-clock being used for CKIL) and avoid
->    registering RTC clock. This basically means the RTC is considered
->    to be a fixed-clock on this system, which is what the HW designers
->    seemed to have in mind (vendor kernel for the QMX6 is old enough
->    (4.9.x) to not to have CLK feature in the RTC driver. Vendor
->    U-Boot also does not touch the RTC. Booting mainline kernel once
->    bricks QMX6 boards until RTC battery is removed, so one could
->    actually argue addition of the CLK feature in 1373e77b4f10 (4.13)
->    is a regression). Currently Qualcomm device uses "protected-clocks"
->    for FW controlled clocks where Linux would crash the system by
->    trying to access them. IMHO the RTC is similar, since disabling
->    or modifying its frequency on QMX6 results in undefined behaviour
->    and possibly system crash.
-> 
-> 2. Make i.MX clock code use the RTC as CKIL clock provider, but
->    ignore it somehow. I see three sub-options:
-> 
-> 2.1. Add a property 'boot-enabled' to the RTC node, so that the
->      clock framework is aware of clock being enabled. This can
->      be used to satisfy clock dependencies somehow.
-> 
-> 2.2. The RTC device is not probed without I2C bus, but the driver
->      could also register a fake clock purely based on DT
->      information by adding some early init hook and take over
->      the clock once the I2C part is being probed. I think this
->      is a bad idea regarding maintainability of the driver.
->      Also for systems not using the RTC clock, the early clock
->      registration is basically wrong: If the kernel disables
->      the RTC it will stay disabled across boots if the RTC has
->      a backup battery. Basically we cannot imply anything from
->      the RTC compatible value alone.
-> 
-> 2.3 The i.MX core code could request CKIL with some flag, that
->     it's fine to have an unresolvable clock and just expect it
->     to be boot-enabled. The rationale would be, that CKIL must
->     be always-enabled.
 
-I think 2.1 or 2.3 is fine. It boils down to detecting a cycle and then 
-either you have a property or implicitly know to ignore a dependency.
-
-> > It's a somewhat common issue.
-> 
-> It is? This only works, because one can treat the RTC's clock
-> output like a fixed clock by not messing around with it.
-
-Well, it's not the first time I've heard of the issue. Audio clocks are 
-another example, but a bit different in that the clocks aren't needed 
-until later. It's also come up in context of fw_devlinks which I 
-think has some cycle breaking logic already.
-
-Rob
+Acked-by: Rob Herring <robh@kernel.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
