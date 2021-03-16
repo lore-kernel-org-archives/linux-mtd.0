@@ -2,140 +2,77 @@ Return-Path: <SRS0=hRrE=IO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6089DC433DB
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Mar 2021 05:57:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1A89C433DB
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Mar 2021 08:53:56 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B1A3D651A8
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Mar 2021 05:57:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B1A3D651A8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8B89E65006
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Mar 2021 08:53:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B89E65006
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:Message-ID:Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
 	Subject:CC:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=65AXjF98JW+OMPTeQYE9HGRTaRRwM5WQz/6Ypp89Q08=; b=ho3aktq8oliECszq0mH7EF9U6
-	y1G+Le0OuyPrCG558CuiYc4ksTxnoCdKpysJd0bi0BnkZpsY2lLbXk65wVv6KJv5xzVbaZvHPNBYb
-	ATFUQG9rA+z3KGJdxqUl1RG+mhz60Cv0ibpnUpSlIuY1gZR8WsGNvSrFTvKLXDlOEn5WKopdM/u7h
-	kU0XCMpPU1s7qlHfey+MMov2Ua5NH3rPdLT7mScwteirvwhDhI1yHkqNysN/zSoEKMuvbetO258Xf
-	gHxz7gn3Y74kRo3sa13fHZ16cioz6IOOs+9gg9CWfvbMXVTd8gcgiKsnBwAEU5bgkrMpqFp7P0rb5
-	g0gUItoIw==;
+	 bh=GFR9yZwg1Px1uCNj68Uk8m481qFrriETOVYPiVCXYr0=; b=Xxseklqt7+LUzTaVNNswD7hKD
+	lAUz8yq+lmQRkmZGhnpD0seFfqTdpANI3Hij4T9zCfsHacRug78A8IrZQlfENsxsNhrsWRM4l1KoK
+	jhSDF9dbeSTmD2g6TyEfkRP0iG43I5qPcfnQOi7TfvkkcqkLxaw5q+BZnGE4ukagd/pR8XKuh0Bcu
+	c5J+LG22Wv2B/u+GnckD4fnglP5jPs2lIyWwEHUZWf7abDo8WyTQNJdKi7XBEfFdb0V6v8ePuoBst
+	QqSpg9kUEA8uMdKEdV0phi7XM7KMfWABIya0HyseeWQE6Kst2vj9nl6T/swioy8IUI8SNZbA66d+1
+	U5OaQ8HBg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lM2gf-00HUQq-LN; Tue, 16 Mar 2021 05:56:13 +0000
-Received: from mail-vi1eur05on2053.outbound.protection.outlook.com
- ([40.107.21.53] helo=EUR05-VI1-obe.outbound.protection.outlook.com)
+	id 1lM5Rc-000AFB-14; Tue, 16 Mar 2021 08:52:52 +0000
+Received: from mailgw01.mediatek.com ([216.200.240.184])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lM2gX-00HUQH-Fr
- for linux-mtd@lists.infradead.org; Tue, 16 Mar 2021 05:56:09 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TOiUipaB0vRqukzAcWxDX6wI7Zg58bF0Jt4F2Hee9883mrXYgGF+Q5zchwHCA+83i2v/9XoOyzPOvhym1Hi7ix0dL0MJBV55+oVqKYydotM88Kcs4wntBDAUmI2h9m+RskBeCSveFmKjkso/qwdqd0lZVgKNXFhNbNKVdB29LSvO17JwhVYMdzkHmXHpFQKOlzKMEmo6E0reTdpigFy9AyANUiui1sj8g+kLBnlvqVxmAQPSJYNLGhcDHj8qqHxy1KxzbOrZgvhbi66NGTuCN8t7HueViE0OUAt4OCnhF/Fbkb3Vl0C0if5gJPTRzmpb0zxyfXL5k8KP97lHrJ0eVg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GfrZGZ2AD2LLrzUDMvMHTfG0XEqT7tGtoqz1zpltbfU=;
- b=ijpqtuAP9qhiW3tyoBbex12ROIWphnYg9Kk6Sy4T1SSZhl+1EoxtGSNB1Pqw+RKVty4cYM5bhOK5NvgklmnjVCMrcXwF/CjSyZ8MQB7NWndzHn3mrmpSZbnup0dThV7/FZY6KtDsQGbzJcmwoqzy4rWhksliGDE0iRHL/4kHM4HheV2xqjKmXFm6iVauGsYLd2eAE6347z0Sx5wsTYPVrvEhnbADkuZe2EVpCHsCEKP2HIpiTF/27KBETb+N+Lb6AWZeqKo10ly2DZJR7SYM4M+V1xWk2+j69N02kB2Bi02U2wFqLsMtR87ZQ5k/AF2tfRZQg6UC/RA9Y8H7h+5pTg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GfrZGZ2AD2LLrzUDMvMHTfG0XEqT7tGtoqz1zpltbfU=;
- b=QTwZlRsuXhQuywVUTvON39H94HEX7I/ENX6r69NQA7A9v6L4AzIST0J8HlEFPUYa/nuFjR/JRIbByx9igWWK+XIGasWNa8C3uZDJlXl0YOT2TWmZYYFyEUy5g3K0q7haTK9tr5v/H85zwZ1LfjCbhd583jx7o7d2FM2OpkrR+4g=
-Received: from DB6PR0402MB2758.eurprd04.prod.outlook.com (2603:10a6:4:96::7)
- by DB6PR0401MB2534.eurprd04.prod.outlook.com (2603:10a6:4:3c::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Tue, 16 Mar
- 2021 05:56:02 +0000
-Received: from DB6PR0402MB2758.eurprd04.prod.outlook.com
- ([fe80::c99c:dbc3:ed75:e6e8]) by DB6PR0402MB2758.eurprd04.prod.outlook.com
- ([fe80::c99c:dbc3:ed75:e6e8%5]) with mapi id 15.20.3933.032; Tue, 16 Mar 2021
- 05:56:02 +0000
-From: Kuldeep Singh <kuldeep.singh@nxp.com>
-To: Pratyush Yadav <p.yadav@ti.com>
-CC: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown
- <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Vladimir Oltean
- <olteanv@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: RE: [EXT] Re: [PATCH] dt-bindings: spi: Convert Freescale DSPI to
- json schema
-Thread-Topic: [EXT] Re: [PATCH] dt-bindings: spi: Convert Freescale DSPI to
- json schema
-Thread-Index: AQHXGZTp77oN99ywtki2W2/Bm/x6J6qFX34AgAAK43A=
-Date: Tue, 16 Mar 2021 05:56:02 +0000
-Message-ID: <DB6PR0402MB27581D0E1BB152AEF6DA2BF2E06B9@DB6PR0402MB2758.eurprd04.prod.outlook.com>
-References: <20210315121518.3710171-1-kuldeep.singh@nxp.com>
- <20210315183051.ugvmz4zqrvuo6iqq@ti.com>
-In-Reply-To: <20210315183051.ugvmz4zqrvuo6iqq@ti.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: ti.com; dkim=none (message not signed)
- header.d=none;ti.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [223.236.221.34]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 76a88ad7-1f97-4549-e8ba-08d8e8402e38
-x-ms-traffictypediagnostic: DB6PR0401MB2534:
-x-microsoft-antispam-prvs: <DB6PR0401MB2534D6FA4C22C323B462A777E06B9@DB6PR0401MB2534.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Nnwa1Vq5/XZ9JqX6q2nUuUUM2odETdLbvvh0x8HwuenEjhn06IHwgEx17TDcEJH9h9ut2CMgmUW6nfWXweTqeyacpohyMvHAhUo8un37OUHY6uFs5BKVNUlzKkmSsXNTpsxDvRriZQLodVVDs6/4bRQ8Loh1Y/oZtDajuCtbHBPa+bvxR5bvKhGM2QupAjDZ5mvY8Ln3I8aOVTqwviAjk8QHmfDwT6VDn77lc9WFelL09xGL4IyZv3g9Cj9X2E34wtARTMI14TBAdQYbAOzxax0il8r5lmpvhuhvc3wWLX3ICjKZpeHUXTgdVCrneJhvIOJnpt+NxrPkde6LBOSNmFolt6brWejzsMNbpZMNR+v104KjqmydYVr4YbCDvjo0c8fnAvEJaYb5t6LwvN44OTz5zgDbwxrwsEhShjn8N08NOLQqHRChlHJza3jUgcyn1RAqquJF7GBGWGlBTZoBl0nHhKLIV7l7P6mnx4w2WkUm5MV3r2OsPl0BPYBxJXIDb6O26vMRhbJPRiSTs+85PcpodBXEq2XITlLzterdLXe1R3saDWr4N9C4894Wf6U0xcnKlzWuSIYCfqf5ArVr9pRt+otdTNadVvpm8c1DvgVSfJ9uvK1CdzyuRNj0cwvh
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:DB6PR0402MB2758.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(136003)(346002)(39860400002)(396003)(376002)(83380400001)(478600001)(4326008)(76116006)(66476007)(6916009)(33656002)(44832011)(66556008)(66446008)(66946007)(64756008)(71200400001)(9686003)(55016002)(52536014)(186003)(8936002)(2906002)(8676002)(7696005)(26005)(86362001)(54906003)(966005)(53546011)(6506007)(5660300002)(316002);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?/MThq3UhR+d4ai8MFbEYzWhulAYcBedqxR8HJFxEPVSM9uSxHhTVaLWQDCcb?=
- =?us-ascii?Q?xt9N9+ZV+fPDgcdxfMHMPEfdBnIF7m8J/LiaJzbQmd/w1ZGt6OGtnV2ul0j2?=
- =?us-ascii?Q?tydXsWXviexMF9m+ihJe8Jq5CGd5BJD/nOAP5hV9lMr5LySQJrZ+HRK5oHUB?=
- =?us-ascii?Q?mboLludujqhBpYtE1BCUPeMhRvEfgPZXHJ5zTNO1DfTgDI79vIY27QrrnaaS?=
- =?us-ascii?Q?2agyRrsjeVZALbBJ6GGWsGGALEKrylaxuq97RUHwhHREkxcDYLYPpfocH6/+?=
- =?us-ascii?Q?4OwzlKDRgIaERh92prjVk21g/+ZE5R+MO8q7A7XhTGWQefrWZL9XxnAo425x?=
- =?us-ascii?Q?svkq2TCUVV3dWkTWM1TfnmYdubJXJp2XN7OQVMg/rzTBP87VxTG0BqTO7ei4?=
- =?us-ascii?Q?+BfpDT11fDJo8KbfTagN6ZJ4nUbxglM2E8UBu46qRDwhLHEAsHr5hypuB+9Z?=
- =?us-ascii?Q?OCeqh1u1Z1b75tHGLeJ/5teLE0vZtAa2VLKBQ0iyu2qLOXZdd7T8jvO06UNS?=
- =?us-ascii?Q?nQtrc8ZmovOLw0BPtQrWIGDmNKBv3w2vo8VW9fjEYSU50cfhALvsLEk9Tuy9?=
- =?us-ascii?Q?1XaZ1fFh/nNtQcDVoMW/BlrA0zteodHoqMuB81RRjsgCEECFGYdGGd5m+x2P?=
- =?us-ascii?Q?1f5WaXmjPUJjniwdvKt7vy5I3Ycn8oNJIdqXxznmC2IULkUomQoZcy/b0Ho4?=
- =?us-ascii?Q?C+HUEoFJYAti9ASQEeDOvClY+A9IMy0CYNepqJKNC6yn4cn9RnNl4AxEZZ/S?=
- =?us-ascii?Q?3Knba1TDt8v/+3SbHkYlTfp4BrLKDam5v/Xh5890VExCOKGPw7y4kpqh5hY1?=
- =?us-ascii?Q?3Qej4ccDauasLDhOFIq8m4RId+e9ogc/CBwXdkb3BEyOKa7DPb7v5ANHOmo+?=
- =?us-ascii?Q?UWIxUtZB2L5s1jUoETEVfL4jSCQhA5zWZ7EpsIV6gDt2R1C6eq9oyECaAOq8?=
- =?us-ascii?Q?JZuLobKiqtujKlIufxQ7xMoVCjFtgDjNTmRlVzHEaOeQ2ju98hfgFyU15Pv/?=
- =?us-ascii?Q?9iAoC8mbilPwnL/UkFUAsdu8WC02Xw8crYd6v8DY+tcmDv6elbTSHswVRmLG?=
- =?us-ascii?Q?zPtJ/YtjGqcdWhr7v3dlBOnMWVhQgXYnp8op5rs/JsHdCR9j2CQ3zf5lLJZf?=
- =?us-ascii?Q?ReKrAHBKK9M9r8OnRpj21xM7F7q/un4TLFgLmIeizp8lYIDznp9xZDKp0R8W?=
- =?us-ascii?Q?xElhN2aBbjbTpDtLuawL+RXJKMKL0Fw1M6wZMfIVzz/Z6+bjCwFsBQbGFj0v?=
- =?us-ascii?Q?NK5sgUe0qK4EV1R42dLt1TbdCvCdIuIO/73B+5JHSYrxFFwliYuTrCI9jt4/?=
- =?us-ascii?Q?rXo=3D?=
-x-ms-exchange-transport-forked: True
+ id 1lM5RJ-000ACv-Cy; Tue, 16 Mar 2021 08:52:37 +0000
+X-UUID: 944148dc4e04401c8b9ebf3774fe233d-20210316
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
+ s=dk; 
+ h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
+ bh=5twma9nZUqzFNTrgL8ss8uTYHUYGExcxhLK1aMu7FfY=; 
+ b=QneUGezdweL/mrSVlhhDExRB8BNSQQg841yUIaro5zsL45D1YCaYXc3Ico0INFmqNgx1APHYJ5euFY7iTH7HiKDS9U3ivBlJ8PkR2Kqtz5JD+ZSeuOX33FKiY6wTWysmg3Xchx9JB5at9Hl7iThgbYqTedmer50LG8B6GuPx82M=;
+X-UUID: 944148dc4e04401c8b9ebf3774fe233d-20210316
+Received: from mtkcas67.mediatek.inc [(172.29.193.45)] by mailgw01.mediatek.com
+ (envelope-from <guochun.mao@mediatek.com>)
+ (musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 1324742831; Tue, 16 Mar 2021 00:52:20 -0800
+Received: from MTKMBS07N2.mediatek.inc (172.21.101.141) by
+ MTKMBS62N2.mediatek.inc (172.29.193.42) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 16 Mar 2021 01:52:19 -0700
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 16 Mar 2021 16:52:17 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 16 Mar 2021 16:52:17 +0800
+From: <guochun.mao@mediatek.com>
+To: Richard Weinberger <richard@nod.at>
+CC: Matthias Brugger <matthias.bgg@gmail.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>, 
+ <srv_heupstream@mediatek.com>, Guochun Mao <guochun.mao@mediatek.com>
+Subject: [PATCH v1 1/1] ubifs: only check replay with inode type to judge if
+ inode linked
+Date: Tue, 16 Mar 2021 16:52:14 +0800
+Message-ID: <20210316085214.25024-2-guochun.mao@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210316085214.25024-1-guochun.mao@mediatek.com>
+References: <20210316085214.25024-1-guochun.mao@mediatek.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2758.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 76a88ad7-1f97-4549-e8ba-08d8e8402e38
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Mar 2021 05:56:02.2758 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: lSU60ktRDeDatG1LHNTf/97DCKqO4CYS7n4IkYQ36zhFYB98gWRuy08n1uoveIXs7ij+ywx5HRwSU4Uz4ah4sA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0401MB2534
+X-MTK: N
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210316_055605_664361_5880104D 
-X-CRM114-Status: GOOD (  22.04  )
+X-CRM114-CacheID: sfid-20210316_085234_355323_AD481CB5 
+X-CRM114-Status: GOOD (  13.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -152,73 +89,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-> -----Original Message-----
-> From: Pratyush Yadav <p.yadav@ti.com>
-> Sent: Tuesday, March 16, 2021 12:01 AM
-> To: Kuldeep Singh <kuldeep.singh@nxp.com>
-> Cc: linux-spi@vger.kernel.org; devicetree@vger.kernel.org; linux-
-> kernel@vger.kernel.org; Mark Brown <broonie@kernel.org>; Rob Herring
-> <robh+dt@kernel.org>; Vladimir Oltean <olteanv@gmail.com>; linux-
-> mtd@lists.infradead.org
-> Subject: [EXT] Re: [PATCH] dt-bindings: spi: Convert Freescale DSPI to json schema
-> 
-> Caution: EXT Email
-> 
-> +Cc mtd list
-> 
-> Hi,
-> 
-> On 15/03/21 05:45PM, Kuldeep Singh wrote:
-> > Convert the Freescale DSPI binding to DT schema format using json-schema.
-> >
-> > Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
-> > ---
-> > Hi Rob,
-> > This patch is checked with following commands with no warnings observed.
-> > make distclean; make allmodconfig;
-> > make dt_binding_check
-> > DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi
-> > .yaml; make dtbs_check
-> > DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi
-> > .yaml
-> 
-> When I add the "fsl,spi-cs-sck-delay" property under the flash@0 node in the
-> example and run dt_binding_check, I see the below error:
-> 
->   /home/pratyush/src/linux/Documentation/devicetree/bindings/spi/fsl,spi-fsl-
-> dspi.example.dt.yaml: flash@0: 'fsl,spi-cs-sck-delay' does not match any of the
-> regexes: '^partition@', 'pinctrl-[0-9]+'
->      From schema:
-> /home/pratyush/src/lin/Documentation/devicetree/bindings/mtd/jedec,spi-
-> nor.yaml
+From: Guochun Mao <guochun.mao@mediatek.com>
 
-Hi Pratyush,
+Conside the following case, it just write a big file into flash,
+when complete writing, delete the file, and then power off promptly.
+Next time power on, we'll get a replay list like:
+...
+LEB 1105:211344 len 4144 deletion 0 sqnum 428783 key type 1 inode 80
+LEB 15:233544 len 160 deletion 1 sqnum 428785 key type 0 inode 80
+LEB 1105:215488 len 4144 deletion 0 sqnum 428787 key type 1 inode 80
+...
+In the replay list, data nodes' deletion are 0, and the inode node's
+deletion is 1. In current logic, the file's dentry will be removed,
+but inode and the flash space it occupied will be reserved.
+User will see that much free space been disappeared.
 
-Thanks for mentioning, I just noticed the same error after adding fsl,spi-cs-sck-delay property.
-Since my example is not using the property, the error went unnoticed.
+We only need to check the deletion value of the following inode type
+node of the replay entry.
 
-Taking example of nvidia qspi bindings i.e 
-https://lore.kernel.org/linux-devicetree/1608585459-17250-3-git-send-email-skomatineni@nvidia.com/
+Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
+---
+ fs/ubifs/replay.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-I constructed other properties in similar fashion and later noticed that
-example in nvidia bindings uses compatibes as "spi-nor" instead of "jedec,spi-nor"
-and therefore passes "make dt_binding_check".
-
-> I am trying to solve a similar problem for the Cadence QSPI controller binding and
-> I wonder what the best solution for this is. The obvious one would be to add
-> these properties to jedec,spi-nor.yaml. I haven't managed to come up with any
-> other solution to this problem.
-
-I agree with the solution to add properties in jedec,spi-nor.yaml and adding properties
-particular to specific controllers for flashes in generic jedec,spi-nor.yaml may not be
-a good solution though. Please let me know your views.
-
-Other approach is to add these properties in same binding itself (if possible) so as 
-to limit the scope of these properties. Looking forward for more suggestions.
-
-Regards
-Kuldeep
-
+diff --git a/fs/ubifs/replay.c b/fs/ubifs/replay.c
+index 0f8a6a16421b..1929ec63a0cb 100644
+--- a/fs/ubifs/replay.c
++++ b/fs/ubifs/replay.c
+@@ -223,7 +223,8 @@ static bool inode_still_linked(struct ubifs_info *c, struct replay_entry *rino)
+ 	 */
+ 	list_for_each_entry_reverse(r, &c->replay_list, list) {
+ 		ubifs_assert(c, r->sqnum >= rino->sqnum);
+-		if (key_inum(c, &r->key) == key_inum(c, &rino->key))
++		if (key_inum(c, &r->key) == key_inum(c, &rino->key) &&
++		    key_type(c, &r->key) == UBIFS_INO_KEY)
+ 			return r->deletion == 0;
+ 
+ 	}
+-- 
+2.18.0
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
