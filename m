@@ -1,84 +1,87 @@
-Return-Path: <SRS0=HQmt=IN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=hRrE=IO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5768C433DB
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Mar 2021 18:32:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90172C433DB
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Mar 2021 00:02:01 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 59A4064E4D
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Mar 2021 18:32:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 59A4064E4D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	by mail.kernel.org (Postfix) with ESMTPS id 049EB64F69
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Mar 2021 00:02:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 049EB64F69
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=7NhaRjIOyYtycf362C6/sYAs+NlldmA2WegsIDqKZjY=; b=YI1FSi6ZxgE/CnJCQQER9Za6V
-	RnA/8JA2tx5b935SEWYsUSzwTeAZWI/SBl9bD7O7qUZhmC5ukO8854wKLEd8K5CVnUm4GOrodeK3w
-	/M2ls58nbUC4PPZQg+1mCkq/0LweeKfBPyAacju7FFQSXfL/AXl+QD4QgYPxddol+UbqO2zeHBh1V
-	NxsZ+Jh2uTZVAPkhWBuV9GcLQpbC7LDE6ZRq9TEL75I4sZ3Ptkfq2lzQ1wx8UIoaCGok+p9y9G0Hi
-	3HSTZx4/aj6Ji4422YKKAk8kIkpN2IitO5qbSbSDVostfQLiOM6kytw/pqsGySn5gHfBLHolnXi03
-	0y+e6iIhA==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=5TdhrEMLNXHzHlF27R6GeQogE2TPNACFYIQmL4srZN4=; b=Szy8wSc1qUUzgr8UeTng3fsPiN
+	t39FQ1ey45mab/3Zg3LrejXGehQlpmCJXKjRyfZQzzxtABnu6OTkbAandyDyQ8R/jH2qjrIVsTZOn
+	xecZGF0JQbPPXnPgbK2kUhkuLNE8/U8px3F7al9QaZz/dslS0OyLVf2ClN1lqfEfnoTwaA54YUJkW
+	6kGjrNXujSMT7JsI72iCE1+YNOkpUrVs33BILh7LwgSMFZnrT58GQGjhGbavOl69cCMFgKTlDMB9+
+	2S9UjTLSZDtHkVP94WorhqfIBtqENdLPDwzielRpIS+zM9pxqzm7XdhBVw80s8PvH4PazQ/J9Ct+q
+	HG+W3fCg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lLrzc-00GhAO-El; Mon, 15 Mar 2021 18:31:04 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1lLx92-00H7Cb-5y; Tue, 16 Mar 2021 00:01:08 +0000
+Received: from mail-qk1-x733.google.com ([2607:f8b0:4864:20::733])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lLrzV-00Gh9O-0Y
- for linux-mtd@lists.infradead.org; Mon, 15 Mar 2021 18:31:00 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12FIUr9L064091;
- Mon, 15 Mar 2021 13:30:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1615833053;
- bh=qhtin/MvC2vlgohcTw+Zu4C+yVZD1Fpb/7+1ZrE+U0Q=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=empUyjxQ6xGRmHEippJDyLO5Rn+L5VyZNF8sdHxsZNpi7hWrzFc/UxD1OyF7paW3u
- Vru2FklzE2k4esSPtOc/7hejHJcVnpZzY+cg9zydO9EvOG/9POTlx7n008cAaVNcV+
- KCjI5PKCxtljLi855dq/O/F/xUibWtT0h9nJt7iY=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12FIUrGh075840
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 15 Mar 2021 13:30:53 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 15
- Mar 2021 13:30:53 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 15 Mar 2021 13:30:53 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12FIUqiB114948;
- Mon, 15 Mar 2021 13:30:53 -0500
-Date: Tue, 16 Mar 2021 00:00:52 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Kuldeep Singh <kuldeep.singh@nxp.com>
-CC: <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Vladimir Oltean <olteanv@gmail.com>,
- <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] dt-bindings: spi: Convert Freescale DSPI to json schema
-Message-ID: <20210315183051.ugvmz4zqrvuo6iqq@ti.com>
-References: <20210315121518.3710171-1-kuldeep.singh@nxp.com>
+ id 1lLx8r-00H7C1-Ad
+ for linux-mtd@lists.infradead.org; Tue, 16 Mar 2021 00:01:03 +0000
+Received: by mail-qk1-x733.google.com with SMTP id g185so33572675qkf.6
+ for <linux-mtd@lists.infradead.org>; Mon, 15 Mar 2021 17:00:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=DelZjnkdt546DqstJ260uTiTwjDw2JnmnetGYnkSuKU=;
+ b=s77F7oNXaH+SYNtcFk085gbrkdktKzA1YOR3tkJwHgxe3h8ZpDHjUmzLAxZbPtDJWZ
+ 0mv5kzSBLTucDx7kS86J9EV2Y0AR32iYr61xM0lq9Yu5Czd33D6uEncAcdkb/lI7TYW1
+ nLIxg3srEUprxsZyoOnzM0lMEde/cqHAUSbTbQiSdpKXTf6I9o7xUrVwAYDDE5ThxKN5
+ 4HDfSuCVPC1yie0lPrg4Ze3fSUCbBFkBYipZVuaF7NaE3Nk1YCddvnbtDqHK3fAV2nMC
+ do+75GIXYwMzKGJ7pUhbW51PWBeTNu9P+8JdT6Rc99sSjNnPT9td/1FtAPUG6Qbu2DGd
+ CSBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=DelZjnkdt546DqstJ260uTiTwjDw2JnmnetGYnkSuKU=;
+ b=LBYrWcZ5z0LAu4CET7gODbNB3zmIdtFCw5YAMm6BOAyy+cGb9Q5V4GEQl6p138vc15
+ bKv4Rzi1xPwdaRCDh64rFZWBHOArV1quQ/9+FwkkTwT/q6JaHqtFFo3F3VW7ZAkCCDVI
+ nq1AeTyqG/qlnQEuiZGb/Y0k1zhOFLdnmzICGuSHfKjSk9nzBcE70a6AbUqlDVjBB4GI
+ b1oYASlXjIwIG7E2thIjAE9mOC4wH9ojy2qd2xuHzRATNISLarYhOk/tZkQ4lMXdTjyo
+ aFq4drco9KJPKINwwBGGxKrR/BpIZ9zEPXFc8sr5d5dp1DMsuyw/E70YeaVLlap2ADvo
+ pJyw==
+X-Gm-Message-State: AOAM530LH2qNd6OTUfvo4RXSv4wubLTDwBB8oqgxYwVo0EaKmAq4XA1w
+ SscTlEl6B+hW0sffuUcVC5vyntP4c9CHOQ==
+X-Google-Smtp-Source: ABdhPJyjr7SAalnhr2w9ci+FJMsZ3kU8CMahNLwOqoiEtNWEhYm2fLtWOdAz56Y4mg+mZoaESso5Uw==
+X-Received: by 2002:a05:620a:2f8:: with SMTP id
+ a24mr28274441qko.124.1615852853122; 
+ Mon, 15 Mar 2021 17:00:53 -0700 (PDT)
+Received: from localhost.localdomain ([2804:14c:482:919::1000])
+ by smtp.gmail.com with ESMTPSA id c73sm14446241qkg.6.2021.03.15.17.00.50
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 15 Mar 2021 17:00:52 -0700 (PDT)
+From: Fabio Estevam <festevam@gmail.com>
+To: miquel.raynal@bootlin.com
+Cc: linux-mtd@lists.infradead.org,
+	Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] mtd: rawnand: mxc: Remove unneeded of_match_ptr()
+Date: Mon, 15 Mar 2021 21:00:42 -0300
+Message-Id: <20210316000042.200392-1-festevam@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210315121518.3710171-1-kuldeep.singh@nxp.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210315_183057_726269_6751AF87 
-X-CRM114-Status: GOOD (  30.34  )
+X-CRM114-CacheID: sfid-20210316_000101_619857_9D3DC5AF 
+X-CRM114-Status: GOOD (  12.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,271 +98,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-+Cc mtd list
+i.MX is a DT-only platform, so of_match_ptr() can be safely
+removed.
 
-Hi,
+Remove the unneeded of_match_ptr().
 
-On 15/03/21 05:45PM, Kuldeep Singh wrote:
-> Convert the Freescale DSPI binding to DT schema format using json-schema.
-> 
-> Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
-> ---
-> Hi Rob,
-> This patch is checked with following commands with no warnings observed.
-> make distclean; make allmodconfig;
-> make dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml;
-> make dtbs_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+---
+ drivers/mtd/nand/raw/mxc_nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-When I add the "fsl,spi-cs-sck-delay" property under the flash@0 node in 
-the example and run dt_binding_check, I see the below error:
-
-  /home/pratyush/src/linux/Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.example.dt.yaml: flash@0: 'fsl,spi-cs-sck-delay' does not match any of the regexes: '^partition@', 'pinctrl-[0-9]+'
-     From schema: /home/pratyush/src/lin/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-
-I am trying to solve a similar problem for the Cadence QSPI controller 
-binding and I wonder what the best solution for this is. The obvious one 
-would be to add these properties to jedec,spi-nor.yaml. I haven't 
-managed to come up with any other solution to this problem.
-
-Rob, all, any suggestions on how to best model this?
-
-> 
->  .../bindings/spi/fsl,spi-fsl-dspi.yaml        | 131 ++++++++++++++++++
->  .../devicetree/bindings/spi/spi-fsl-dspi.txt  |  65 ---------
->  MAINTAINERS                                   |   2 +-
->  3 files changed, 132 insertions(+), 66 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml
->  delete mode 100644 Documentation/devicetree/bindings/spi/spi-fsl-dspi.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml b/Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml
-> new file mode 100644
-> index 000000000000..15ffc83bdba6
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml
-> @@ -0,0 +1,131 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/spi/fsl,spi-fsl-dspi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Freescale DSPI Controller
-> +
-> +maintainers:
-> +  - Vladimir Oltean <olteanv@gmail.com>
-> +
-> +allOf:
-> +  - $ref: "spi-controller.yaml#"
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - enum:
-> +          - fsl,vf610-dspi
-> +          - fsl,ls1021a-v1.0-dspi
-> +          - fsl,ls1028a-dspi
-> +          - fsl,ls2085a-dspi
-> +          - fsl,lx2160a-dspi
-> +      - items:
-> +          - enum:
-> +              - fsl,ls1012a-dspi
-> +              - fsl,ls1028a-dspi
-> +              - fsl,ls1043a-dspi
-> +              - fsl,ls1046a-dspi
-> +              - fsl,ls1088a-dspi
-> +          - const: fsl,ls1021a-v1.0-dspi
-> +      - items:
-> +          - enum:
-> +              - fsl,ls2080a-dspi
-> +              - fsl,lx2160a-dspi
-> +          - const: fsl,ls2085a-dspi
-> +
-> +  reg:
-> +    maxItems: 1
-> +    description: Offset and length of registers
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: SoC dspi clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: dspi
-> +
-> +  pinctrl-names:
-> +    minItems: 1
-> +    items:
-> +      - const: default
-> +    description:
-> +      Names for the pin configuration must be "default"
-> +
-> +  dmas:
-> +    maxItems: 2
-> +
-> +  dma-names:
-> +    items:
-> +      - const: tx
-> +      - const: rx
-> +
-> +  spi-num-chipselects:
-> +    maxItems: 1
-> +    description: Number of the chipselect signals
-> +
-> +  bus-num:
-> +    items:
-> +      - description: Slave chip chipselect signal number
-> +
-> +patternProperties:
-> +  "@[0-9a-f]+":
-> +    type: object
-> +
-> +    properties:
-> +      fsl,spi-cs-sck-delay:
-> +        description:
-> +          Delay in nanoseconds between activating chip select and the start of
-> +          clock signal, at the start of a transfer.
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +      fsl,spi-sck-cs-delay:
-> +        description:
-> +          Delay in nanoseconds between stopping the clock signal and
-> +          deactivating chip select, at the end of a transfer.
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +  - spi-num-chipselects
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/fsl,qoriq-clockgen.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +
-> +    soc {
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +
-> +        spi@2100000 {
-> +            compatible = "fsl,ls1028a-dspi", "fsl,ls1021a-v1.0-dspi";
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +            reg = <0x0 0x2100000 0x0 0x10000>;
-> +            interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
-> +            clock-names = "dspi";
-> +            clocks = <&clockgen QORIQ_CLK_PLATFORM_PLL QORIQ_CLK_PLL_DIV(2)>;
-> +            dmas = <&edma0 0 62>, <&edma0 0 60>;
-> +            dma-names = "tx", "rx";
-> +            spi-num-chipselects = <4>;
-> +            little-endian;
-> +
-> +            flash@0 {
-> +                compatible = "jedec,spi-nor";
-> +                spi-max-frequency = <10000000>;
-> +                reg = <0>;
-> +            };
-> +        };
-> +    };
-> diff --git a/Documentation/devicetree/bindings/spi/spi-fsl-dspi.txt b/Documentation/devicetree/bindings/spi/spi-fsl-dspi.txt
-> deleted file mode 100644
-> index 30a79da9c039..000000000000
-> --- a/Documentation/devicetree/bindings/spi/spi-fsl-dspi.txt
-> +++ /dev/null
-> @@ -1,65 +0,0 @@
-> -ARM Freescale DSPI controller
-> -
-> -Required properties:
-> -- compatible : must be one of:
-> -	"fsl,vf610-dspi",
-> -	"fsl,ls1021a-v1.0-dspi",
-> -	"fsl,ls1012a-dspi" (optionally followed by "fsl,ls1021a-v1.0-dspi"),
-> -	"fsl,ls1028a-dspi",
-> -	"fsl,ls1043a-dspi" (optionally followed by "fsl,ls1021a-v1.0-dspi"),
-> -	"fsl,ls1046a-dspi" (optionally followed by "fsl,ls1021a-v1.0-dspi"),
-> -	"fsl,ls1088a-dspi" (optionally followed by "fsl,ls1021a-v1.0-dspi"),
-> -	"fsl,ls2080a-dspi" (optionally followed by "fsl,ls2085a-dspi"),
-> -	"fsl,ls2085a-dspi",
-> -	"fsl,lx2160a-dspi",
-> -- reg : Offset and length of the register set for the device
-> -- interrupts : Should contain SPI controller interrupt
-> -- clocks: from common clock binding: handle to dspi clock.
-> -- clock-names: from common clock binding: Shall be "dspi".
-> -- pinctrl-0: pin control group to be used for this controller.
-> -- pinctrl-names: must contain a "default" entry.
-> -- spi-num-chipselects : the number of the chipselect signals.
-> -
-> -Optional property:
-> -- big-endian: If present the dspi device's registers are implemented
-> -  in big endian mode.
-> -- bus-num : the slave chip chipselect signal number.
-> -
-> -Optional SPI slave node properties:
-> -- fsl,spi-cs-sck-delay: a delay in nanoseconds between activating chip
-> -  select and the start of clock signal, at the start of a transfer.
-> -- fsl,spi-sck-cs-delay: a delay in nanoseconds between stopping the clock
-> -  signal and deactivating chip select, at the end of a transfer.
-> -
-> -Example:
-> -
-> -dspi0@4002c000 {
-> -	#address-cells = <1>;
-> -	#size-cells = <0>;
-> -	compatible = "fsl,vf610-dspi";
-> -	reg = <0x4002c000 0x1000>;
-> -	interrupts = <0 67 0x04>;
-> -	clocks = <&clks VF610_CLK_DSPI0>;
-> -	clock-names = "dspi";
-> -	spi-num-chipselects = <5>;
-> -	bus-num = <0>;
-> -	pinctrl-names = "default";
-> -	pinctrl-0 = <&pinctrl_dspi0_1>;
-> -	big-endian;
-> -
-> -	sflash: at26df081a@0 {
-> -		#address-cells = <1>;
-> -		#size-cells = <1>;
-> -		compatible = "atmel,at26df081a";
-> -		spi-max-frequency = <16000000>;
-> -		spi-cpol;
-> -		spi-cpha;
-> -		reg = <0>;
-> -		linux,modalias = "m25p80";
-> -		modal = "at26df081a";
-> -		fsl,spi-cs-sck-delay = <100>;
-> -		fsl,spi-sck-cs-delay = <50>;
-> -	};
-> -};
-> -
-> -
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index d92f85ca831d..e2c5b7367db9 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -7060,7 +7060,7 @@ FREESCALE DSPI DRIVER
->  M:	Vladimir Oltean <olteanv@gmail.com>
->  L:	linux-spi@vger.kernel.org
->  S:	Maintained
-> -F:	Documentation/devicetree/bindings/spi/spi-fsl-dspi.txt
-> +F:	Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml
->  F:	drivers/spi/spi-fsl-dspi.c
->  F:	include/linux/spi/spi-fsl-dspi.h
->  
-> -- 
-> 2.17.1
-> 
-
+diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
+index f78302e16b84..f6c96341b896 100644
+--- a/drivers/mtd/nand/raw/mxc_nand.c
++++ b/drivers/mtd/nand/raw/mxc_nand.c
+@@ -1849,7 +1849,7 @@ static int mxcnd_remove(struct platform_device *pdev)
+ static struct platform_driver mxcnd_driver = {
+ 	.driver = {
+ 		   .name = DRIVER_NAME,
+-		   .of_match_table = of_match_ptr(mxcnd_dt_ids),
++		   .of_match_table = mxcnd_dt_ids,
+ 	},
+ 	.probe = mxcnd_probe,
+ 	.remove = mxcnd_remove,
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+2.25.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
