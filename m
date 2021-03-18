@@ -2,61 +2,95 @@ Return-Path: <SRS0=Kfvc=IQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07B2EC433E0
-	for <linux-mtd@archiver.kernel.org>; Thu, 18 Mar 2021 03:09:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D864CC433DB
+	for <linux-mtd@archiver.kernel.org>; Thu, 18 Mar 2021 06:32:57 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7849864E89
-	for <linux-mtd@archiver.kernel.org>; Thu, 18 Mar 2021 03:09:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7849864E89
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
+	by mail.kernel.org (Postfix) with ESMTPS id 5992C64F04
+	for <linux-mtd@archiver.kernel.org>; Thu, 18 Mar 2021 06:32:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5992C64F04
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=q+5zBsbP4VIU3lNnzORx+W0qbFekk46J/1gflNyIt/8=; b=DL8A/pmfgJccLSeKOFqFmHcHSZ
-	LqC9m60VqieVUBaUKmJ4HABNqenZXiXJrsc6vMjbkvJaf1sqtGXCnbLj3/BvfvmuX4gHrvSXIhA58
-	nEFzg2kdGxPFee2ov9UtBNoHhep6Trrga7FJTK/BlmJPV/5RhlZ2hlRpA2HzInALkHQxC5z7oQUL0
-	G/R/D0pxQVCBNKSSJxKTgq6q3A2rCeyDKAy8Bq4r+TyhSZUblSniTceXJ6w/kv504P1B3fQfS8crI
-	uNetkfTlCT/KMoRXeo3RiXXaHTvp0XJZzevGj/ItVSjc/pwQ1J0x4v3113HeBSLbveN3MrMQD0Bra
-	xmEsSAPg==;
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:Cc:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=MSCPRhXDzediScDEa3phH4O1BAoqZ/f4clgNQxd6xJE=; b=VEtd+Lyfvi2nRY64LiAxHGcr2
+	7lNVcv6jmRxVPpplQDMEvZY4Rec9OCGJViE70scxRnBVEAanH6G2jtaxUKN8IlQgqmeDQAv8qCXfC
+	dSr9kLkR/xNHBj9ne2NhfF3BsPfNgpFeoEwuDortY1ksYlji6meLvc/ykFWCQuGmWfNvHiiZQDlhW
+	Sre4qfdNGYA+YnPLWFukSOkHGWQzWVX3uPJCjwv8uzjDtRYMYur/n5gZzBBy/Ai/JuQEQAZM9aQBF
+	i6g4dnJzkF8NazrBBxOrgFpXyUTS/OIiwdkcpSaC0lepTpF83EyiUWgwPVBBVwKLw4qJpTwgVw0x3
+	KViklpblA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lMj0k-004LJz-FS; Thu, 18 Mar 2021 03:07:46 +0000
-Received: from szxga04-in.huawei.com ([45.249.212.190])
+	id 1lMmC3-004ceK-QH; Thu, 18 Mar 2021 06:31:40 +0000
+Received: from mail-pf1-x429.google.com ([2607:f8b0:4864:20::429])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lMj0L-004LID-BR
- for linux-mtd@lists.infradead.org; Thu, 18 Mar 2021 03:07:44 +0000
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
- by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F1Bj82D5jz17MWh;
- Thu, 18 Mar 2021 11:05:16 +0800 (CST)
-Received: from DESKTOP-FKFNUOQ.china.huawei.com (10.67.101.50) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 18 Mar 2021 11:06:59 +0800
-From: Zhe Li <lizhe67@huawei.com>
-To: <richard@nod.at>, <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>, 
- <linux-kernel@vger.kernel.org>
-CC: <lizhe67@huawei.com>, <wangfangpeng1@huawei.com>, <xukunkun1@huawei.com>, 
- <zhongjubin@huawei.com>, <chenjie6@huawei.com>
-Subject: [PATCH] jffs2: fix kasan slab-out-of-bounds problem
-Date: Thu, 18 Mar 2021 11:06:57 +0800
-Message-ID: <20210318030657.22840-1-lizhe67@huawei.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+ id 1lMmBw-004cdp-2f
+ for linux-mtd@lists.infradead.org; Thu, 18 Mar 2021 06:31:34 +0000
+Received: by mail-pf1-x429.google.com with SMTP id l3so2787841pfc.7
+ for <linux-mtd@lists.infradead.org>; Wed, 17 Mar 2021 23:31:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=wNfktqIsvUH5CzXfC/FU7wHGoxk0XQMngWyyLFZyZnw=;
+ b=em1NGY5XN1gmPCI7ym3cQCKASMfaSgQTyKUKvq22igP38tRwJlNXzDhfisRB5jkwr6
+ cxsyMGEfGfhUMz9rlzoxNaUdoYiXkEgrmLdNxuOdPeLPoDQgmahvKh+BVySG9iZ64o+k
+ /w5CX+wlF/tYoj4nu7eJ8K1da2mRehtgfhB2csd3L0LNExdG0aBfD2hyXHb6Oj3faHmU
+ YEepc+CbDH3R8ApYGjldg9GTDMmEz0enF5YuuQpw92Hhym4AmZFGKUkVW5Jjiqy9jaUt
+ KGxk0Zick10nbBXW/SKDWJsr1mMHfkyYSbSVxyEAAoUyC8fRkOzSxQt43aewSN9F8hF2
+ HYrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=wNfktqIsvUH5CzXfC/FU7wHGoxk0XQMngWyyLFZyZnw=;
+ b=ItEwRYRYW+JoBr/+HKg9dJEj8yR4zhfn2K4hLDbmGu/UertP96AoSmEmVL8hjnWqnm
+ NyguXJvgTjdK91VQiTHAjh3vlTt7wuwvuqKnk1hffqET5p+MalLVTNhZcdcpTp3fzDff
+ xdlBe7CdiShuK2yl7+wRTtMmpvFIkvUNbM7eTDiX6XOtyDaYh71dm7CnrbqtqV88EfUb
+ d4WAjUOCNWFRMa1UBFF+oXNojByFqS7g7uu9XjVWCc244HAYv36x+pKAZHg3cChAkXRf
+ SmngdVrOwekOTvjCcYO+qswFptipXG5LXa3vnMX+YDBikekTgdaoJWCDq4MMk6XZsezn
+ 5s0Q==
+X-Gm-Message-State: AOAM530tqRW/sB1/Db5DNkf3DDKsaRwwrAE3m3eTw0m6KJ/+2e6Aexo2
+ vdqifRB2BkKoxrCLHGTko60=
+X-Google-Smtp-Source: ABdhPJzulWnRF3BYcPm4qCoG1y7FMi3AJwIXdyb0TJc7qg/oRCGyp94ZdJpXsBMiLNbPabXoQiSxDQ==
+X-Received: by 2002:a65:6a0c:: with SMTP id m12mr5588228pgu.161.1616049089552; 
+ Wed, 17 Mar 2021 23:31:29 -0700 (PDT)
+Received: from [192.168.210.40] (zz20174137476F6254EB.userreverse.dion.ne.jp.
+ [111.98.84.235])
+ by smtp.gmail.com with ESMTPSA id 4sm954979pgh.71.2021.03.17.23.31.27
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 17 Mar 2021 23:31:29 -0700 (PDT)
+Subject: Re: [PATCH v3 3/6] mtd: spi-nor: spansion: Add support for Read/Write
+ Any Register
+To: Pratyush Yadav <p.yadav@ti.com>
+Cc: linux-mtd@lists.infradead.org, tudor.ambarus@microchip.com,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ Bacem.Daassi@infineon.com, Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+References: <cover.1615523176.git.Takahiro.Kuwano@infineon.com>
+ <1c8662f53f13c6e40b2383d7e7a1fe74ab1c3335.1615523176.git.Takahiro.Kuwano@infineon.com>
+ <20210315112730.gzo46wyekyudsxto@ti.com>
+From: Takahiro Kuwano <tkuw584924@gmail.com>
+Message-ID: <a30d75f5-da39-0c0f-0d65-065ab31a841f@gmail.com>
+Date: Thu, 18 Mar 2021 15:31:21 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-Originating-IP: [10.67.101.50]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210315112730.gzo46wyekyudsxto@ti.com>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210318_030742_636196_5C42B60C 
-X-CRM114-Status: GOOD (  11.27  )
+X-CRM114-CacheID: sfid-20210318_063132_320229_FD6CDB29 
+X-CRM114-Status: GOOD (  25.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,138 +107,118 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: lizhe <lizhe67@huawei.com>
+On 3/15/2021 8:27 PM, Pratyush Yadav wrote:
+> On 12/03/21 06:44PM, tkuw584924@gmail.com wrote:
+>> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+>>
+>> Some of Spansion/Cypress chips support Read/Write Any Register commands.
+>> These commands are mainly used to write volatile registers and access to
+>> the registers in second and subsequent die for multi-die package parts.
+>>
+>> The Read Any Register instruction (65h) is followed by register address
+>> and dummy cycles, then the selected register byte is returned.
+>>
+>> The Write Any Register instruction (71h) is followed by register address
+>> and register byte to write.
+>>
+>> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+>> ---
+>> Changes in v3:
+>>   - Cleanup implementation
+>>   
+>>  drivers/mtd/spi-nor/spansion.c | 102 +++++++++++++++++++++++++++++++++
+>>  1 file changed, 102 insertions(+)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+>> index b0c5521c1e27..1bce95cb7896 100644
+>> --- a/drivers/mtd/spi-nor/spansion.c
+>> +++ b/drivers/mtd/spi-nor/spansion.c
+>> @@ -19,6 +19,108 @@
+>>  #define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS	0
+>>  #define SPINOR_OP_CYPRESS_RD_FAST		0xee
+>>  
+>> +/**
+>> + * spansion_read_any_reg() - Read Any Register.
+>> + * @nor:	pointer to a 'struct spi_nor'
+>> + * @reg_addr:	register address
+>> + * @reg_dummy:	number of dummy cycles for register read
+>> + * @reg_val:	pointer to a buffer where the register value is copied into
+>> + *
+>> + * Return: 0 on success, -errno otherwise.
+>> + */
+>> +static int spansion_read_any_reg(struct spi_nor *nor, u32 reg_addr,
+>> +				 u8 reg_dummy, u8 *reg_val)
+>> +{
+>> +	ssize_t ret;
+>> +
+>> +	if (nor->spimem) {
+>> +		struct spi_mem_op op =
+>> +			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RD_ANY_REG, 0),
+>> +				   SPI_MEM_OP_ADDR(nor->addr_width, reg_addr, 0),
+>> +				   SPI_MEM_OP_DUMMY((reg_dummy/8), 0),
+> 
+> This is only correct when dummy buswidth is 1. It will lead to some very 
+> nasty and hard-to-catch bugs when someone uses it for a flash that has a 
+> different dummy buswidth. See how dummy nbytes are calculated in 
+> spi_nor_spimem_read_data().
+> 
+Yes, I will fix in v4.
 
-KASAN report a slab-out-of-bounds problem. The logs are listed below.
-It is because in function jffs2_scan_dirent_node, we alloc "checkedlen+1"
-bytes for fd->name and we check crc with length rd->nsize. If checkedlen
-is less than rd->nsize, it will cause the slab-out-of-bounds problem.
+>> +				   SPI_MEM_OP_DATA_IN(1, reg_val, 0));
+>> +
+>> +		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+>> +
+>> +		ret = spi_mem_exec_op(nor->spimem, &op);
+>> +	} else {
+>> +		enum spi_nor_protocol proto = nor->read_proto;
+>> +		u8 opcode = nor->read_opcode;
+>> +		u8 dummy = nor->read_dummy;
+>> +
+>> +		nor->read_opcode = SPINOR_OP_RD_ANY_REG;
+>> +		nor->read_dummy = reg_dummy;
+>> +		nor->read_proto = nor->reg_proto;
+>> +
+>> +		ret = nor->controller_ops->read(nor, reg_addr, 1, reg_val);
+>> +
+>> +		nor->read_opcode = opcode;
+>> +		nor->read_dummy = dummy;
+>> +		nor->read_proto = proto;
+>> +
+>> +		if (ret == 1)
+>> +			return ret;
+>> +		if (ret != 1)
+>> +			return -EIO;
+>> +
+>> +		ret = 0;
+>> +	}
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +/**
+>> + * spansion_write_any_reg() - Write Any Register.
+>> + * @nor:	pointer to a 'struct spi_nor'
+>> + * @reg_addr:	register address
+>> + * @reg_val:	register value to be written
+>> + *
+>> + * Volatile register write will be effective immediately after the operation so
+>> + * this function does not poll the status.
+> 
+> The same opcode can be used to write to non-volatile registers as well, 
+> you just need to change the address passed. It is not recommended to 
+> write to non-volatile registers in SPI NOR though. Maybe add "(should be 
+> a volatile register)" after "register address" above?
+> 
+Yes, it is better to add such comment.
 
-jffs2: Dirent at *** has zeroes in name. Truncating to %d char
-==================================================================
-BUG: KASAN: slab-out-of-bounds in crc32_le+0x1ce/0x260 at addr ffff8800842cf2d1
-Read of size 1 by task test_JFFS2/915
-=============================================================================
-BUG kmalloc-64 (Tainted: G    B      O   ): kasan: bad access detected
------------------------------------------------------------------------------
-INFO: Allocated in jffs2_alloc_full_dirent+0x2a/0x40 age=0 cpu=1 pid=915
-	___slab_alloc+0x580/0x5f0
-	__slab_alloc.isra.24+0x4e/0x64
-	__kmalloc+0x170/0x300
-	jffs2_alloc_full_dirent+0x2a/0x40
-	jffs2_scan_eraseblock+0x1ca4/0x3b64
-	jffs2_scan_medium+0x285/0xfe0
-	jffs2_do_mount_fs+0x5fb/0x1bbc
-	jffs2_do_fill_super+0x245/0x6f0
-	jffs2_fill_super+0x287/0x2e0
-	mount_mtd_aux.isra.0+0x9a/0x144
-	mount_mtd+0x222/0x2f0
-	jffs2_mount+0x41/0x60
-	mount_fs+0x63/0x230
-	vfs_kern_mount.part.6+0x6c/0x1f4
-	do_mount+0xae8/0x1940
-	SyS_mount+0x105/0x1d0
-INFO: Freed in jffs2_free_full_dirent+0x22/0x40 age=27 cpu=1 pid=915
-	__slab_free+0x372/0x4e4
-	kfree+0x1d4/0x20c
-	jffs2_free_full_dirent+0x22/0x40
-	jffs2_build_remove_unlinked_inode+0x17a/0x1e4
-	jffs2_do_mount_fs+0x1646/0x1bbc
-	jffs2_do_fill_super+0x245/0x6f0
-	jffs2_fill_super+0x287/0x2e0
-	mount_mtd_aux.isra.0+0x9a/0x144
-	mount_mtd+0x222/0x2f0
-	jffs2_mount+0x41/0x60
-	mount_fs+0x63/0x230
-	vfs_kern_mount.part.6+0x6c/0x1f4
-	do_mount+0xae8/0x1940
-	SyS_mount+0x105/0x1d0
-	entry_SYSCALL_64_fastpath+0x1e/0x97
-Call Trace:
- [<ffffffff815befef>] dump_stack+0x59/0x7e
- [<ffffffff812d1d65>] print_trailer+0x125/0x1b0
- [<ffffffff812d82c8>] object_err+0x34/0x40
- [<ffffffff812dadef>] kasan_report.part.1+0x21f/0x534
- [<ffffffff81132401>] ? vprintk+0x2d/0x40
- [<ffffffff815f1ee2>] ? crc32_le+0x1ce/0x260
- [<ffffffff812db41a>] kasan_report+0x26/0x30
- [<ffffffff812d9fc1>] __asan_load1+0x3d/0x50
- [<ffffffff815f1ee2>] crc32_le+0x1ce/0x260
- [<ffffffff814764ae>] ? jffs2_alloc_full_dirent+0x2a/0x40
- [<ffffffff81485cec>] jffs2_scan_eraseblock+0x1d0c/0x3b64
- [<ffffffff81488813>] ? jffs2_scan_medium+0xccf/0xfe0
- [<ffffffff81483fe0>] ? jffs2_scan_make_ino_cache+0x14c/0x14c
- [<ffffffff812da3e9>] ? kasan_unpoison_shadow+0x35/0x50
- [<ffffffff812da3e9>] ? kasan_unpoison_shadow+0x35/0x50
- [<ffffffff812da462>] ? kasan_kmalloc+0x5e/0x70
- [<ffffffff812d5d90>] ? kmem_cache_alloc_trace+0x10c/0x2cc
- [<ffffffff818169fb>] ? mtd_point+0xf7/0x130
- [<ffffffff81487dc9>] jffs2_scan_medium+0x285/0xfe0
- [<ffffffff81487b44>] ? jffs2_scan_eraseblock+0x3b64/0x3b64
- [<ffffffff812da3e9>] ? kasan_unpoison_shadow+0x35/0x50
- [<ffffffff812da3e9>] ? kasan_unpoison_shadow+0x35/0x50
- [<ffffffff812da462>] ? kasan_kmalloc+0x5e/0x70
- [<ffffffff812d57df>] ? __kmalloc+0x12b/0x300
- [<ffffffff812da462>] ? kasan_kmalloc+0x5e/0x70
- [<ffffffff814a2753>] ? jffs2_sum_init+0x9f/0x240
- [<ffffffff8148b2ff>] jffs2_do_mount_fs+0x5fb/0x1bbc
- [<ffffffff8148ad04>] ? jffs2_del_noinode_dirent+0x640/0x640
- [<ffffffff812da462>] ? kasan_kmalloc+0x5e/0x70
- [<ffffffff81127c5b>] ? __init_rwsem+0x97/0xac
- [<ffffffff81492349>] jffs2_do_fill_super+0x245/0x6f0
- [<ffffffff81493c5b>] jffs2_fill_super+0x287/0x2e0
- [<ffffffff814939d4>] ? jffs2_parse_options+0x594/0x594
- [<ffffffff81819bea>] mount_mtd_aux.isra.0+0x9a/0x144
- [<ffffffff81819eb6>] mount_mtd+0x222/0x2f0
- [<ffffffff814939d4>] ? jffs2_parse_options+0x594/0x594
- [<ffffffff81819c94>] ? mount_mtd_aux.isra.0+0x144/0x144
- [<ffffffff81258757>] ? free_pages+0x13/0x1c
- [<ffffffff814fa0ac>] ? selinux_sb_copy_data+0x278/0x2e0
- [<ffffffff81492b35>] jffs2_mount+0x41/0x60
- [<ffffffff81302fb7>] mount_fs+0x63/0x230
- [<ffffffff8133755f>] ? alloc_vfsmnt+0x32f/0x3b0
- [<ffffffff81337f2c>] vfs_kern_mount.part.6+0x6c/0x1f4
- [<ffffffff8133ceec>] do_mount+0xae8/0x1940
- [<ffffffff811b94e0>] ? audit_filter_rules.constprop.6+0x1d10/0x1d10
- [<ffffffff8133c404>] ? copy_mount_string+0x40/0x40
- [<ffffffff812cbf78>] ? alloc_pages_current+0xa4/0x1bc
- [<ffffffff81253a89>] ? __get_free_pages+0x25/0x50
- [<ffffffff81338993>] ? copy_mount_options.part.17+0x183/0x264
- [<ffffffff8133e3a9>] SyS_mount+0x105/0x1d0
- [<ffffffff8133e2a4>] ? copy_mnt_ns+0x560/0x560
- [<ffffffff810e8391>] ? msa_space_switch_handler+0x13d/0x190
- [<ffffffff81be184a>] entry_SYSCALL_64_fastpath+0x1e/0x97
- [<ffffffff810e9274>] ? msa_space_switch+0xb0/0xe0
-Memory state around the buggy address:
- ffff8800842cf180: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff8800842cf200: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff8800842cf280: fc fc fc fc fc fc 00 00 00 00 01 fc fc fc fc fc
-                                                 ^
- ffff8800842cf300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff8800842cf380: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
+> As for not polling the status, can a volatile register write cause a 
+> program error? If so, you should check the status to know if any error 
+> bits were set.
+> 
+No, writing to volatile registers does not cause a program error.
 
-Reported-by: Kunkun Xu <xukunkun1@huawei.com>
-Signed-off-by: lizhe <lizhe67@huawei.com>
----
- fs/jffs2/scan.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
-index db72a9d..b676056 100644
---- a/fs/jffs2/scan.c
-+++ b/fs/jffs2/scan.c
-@@ -1079,7 +1079,7 @@ static int jffs2_scan_dirent_node(struct jffs2_sb_info *c, struct jffs2_eraseblo
- 	memcpy(&fd->name, rd->name, checkedlen);
- 	fd->name[checkedlen] = 0;
- 
--	crc = crc32(0, fd->name, rd->nsize);
-+	crc = crc32(0, fd->name, checkedlen);
- 	if (crc != je32_to_cpu(rd->name_crc)) {
- 		pr_notice("%s(): Name CRC failed on node at 0x%08x: Read 0x%08x, calculated 0x%08x\n",
- 			  __func__, ofs, je32_to_cpu(rd->name_crc), crc);
--- 
-2.7.4
+Best Regards,
+Takahiro
 
 
 ______________________________________________________
