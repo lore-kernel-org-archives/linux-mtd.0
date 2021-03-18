@@ -2,92 +2,90 @@ Return-Path: <SRS0=Kfvc=IQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63673C433E0
-	for <linux-mtd@archiver.kernel.org>; Thu, 18 Mar 2021 12:16:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17976C433E0
+	for <linux-mtd@archiver.kernel.org>; Thu, 18 Mar 2021 12:45:03 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0353D64E89
-	for <linux-mtd@archiver.kernel.org>; Thu, 18 Mar 2021 12:16:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0353D64E89
+	by mail.kernel.org (Postfix) with ESMTPS id 821B264F6B
+	for <linux-mtd@archiver.kernel.org>; Thu, 18 Mar 2021 12:45:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 821B264F6B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=vK6eWWJBjRUytHg0V/E+ZJBS56R0P5klIJT5mYbectY=; b=Thox6+Xp8HaqcY7XukOs9IwxD
-	Q8poRKVlT1ferlTMu4GsqD1maMnP+D/+qJYJy/+hWedHnmnCdwEmjO6Jkyxa+kSCxaZlEYHX6d451
-	0/WpK2hh/sdOzHzKmCm9otjVLbv/JIid+MGFo6xgmlP5hPpCAfCUYmu+uuPZhzPdSSFNZU+kGZ5tf
-	/BYdNJRkKJcREGedKE1f77asdLoJqJxXrBm+b0AUAF1DTt+SA25JTNXi6D+YVs8s6G4D6DVOEJabJ
-	0clL9Rx63cpkcofUXE0L7l+oeAzypGqLY7QRLBHMFXEtxtXroScbALHNSlgisf7n8kaj2ZA4mUOhL
-	wbIc3vo+Q==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=MOQ7krPn2a3MIG+ulIBxGVTHQ0MfTRZIzK6OTnTjoqQ=; b=DhAG727v9+wlWQv0lPqpnPNUzO
+	BheUwz6IIzvbzqFtIT6gspNeOqn8dqroM48YZ/Gz1PQPmfkacn7HPCdnd5O9DiJQQFDoUX//S0NXn
+	7j5hs1TorRzTEs4CHyvOBXYJ7fN1n0rZyjwjnP4xM8mx/Vvq6wxOJiluUK6kxzrtv6LL39IvFsZs+
+	o4tIpVi40OWC5HrQ+bTH7TLrYvgxPrGoMCxWVL7zjBUQxDL0/h+lMIbptq6dENef0cqqr5zTLzKTu
+	jvEipWs0XJCHg1B1C8f1gebsjRVH+S+tylkmUkASfR03Xc66PNaFff/RfkmbDy5rllt+zf56MoPFX
+	xj1ye7ww==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lMrZf-005Axq-Aa; Thu, 18 Mar 2021 12:16:23 +0000
-Received: from mail-pl1-x62a.google.com ([2607:f8b0:4864:20::62a])
+	id 1lMs0N-005F6Z-JG; Thu, 18 Mar 2021 12:43:59 +0000
+Received: from mail-pj1-x102b.google.com ([2607:f8b0:4864:20::102b])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lMrZS-005Awb-ML
- for linux-mtd@lists.infradead.org; Thu, 18 Mar 2021 12:16:14 +0000
-Received: by mail-pl1-x62a.google.com with SMTP id l1so1209438plg.12
- for <linux-mtd@lists.infradead.org>; Thu, 18 Mar 2021 05:16:10 -0700 (PDT)
+ id 1lMs0K-005F69-2E
+ for linux-mtd@lists.infradead.org; Thu, 18 Mar 2021 12:43:57 +0000
+Received: by mail-pj1-x102b.google.com with SMTP id s21so2867052pjq.1
+ for <linux-mtd@lists.infradead.org>; Thu, 18 Mar 2021 05:43:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:content-transfer-encoding:in-reply-to;
- bh=mDvN0SgAfdUxvP15FGjlUIyfQkEQU0VmBT3cvhyl4P8=;
- b=J0SCTpSl66AXYFrVZinWF1tdEH2O6BGxsFyMoRYdtxMpYlP0iLTy+DjI2rPZTfQIcU
- p5xmOgENJh77+3sPhSiRMqCzHkPZAS8peVP/IbpKySbcykwSepPjABdApEOXSX02Z4S3
- l4Ixeuc52rWSYU0kUkexKhpyhSRQ+xTSIqM6Gz5ptTsyQno+l9w7qgvgvWQdHQjCk6aD
- Ao+jEHr44f7LoaOWDh4EfambbLt6ePERFM49V9dWx86fx+DE5ekAjey5sa9rXyMRSDBd
- N47WBciaLHNJV1jdQ7ybbgXzHMux3nvRGU4MEy4G2kjjMANbg4zN6qVB7y4h5eZhXs1i
- WUiA==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=4PFxTjdA6OPYv/Z0HQ6IxtumbuUjcIrZvu9tDP9b6fc=;
+ b=hSbnLUfx8+yxJLMol5fTrHmYGhroPthMYISrambq8F0GJ8XtZBcTNTznPi4Cp/HFMa
+ VKNffNvhiiqtFZCxzMyL4JCg11/Gd/tBrcGadlbyc4hjCj2Ta/98ALTlgXiDdEZmUajH
+ /8YGadEFTn33ORLQZCoVMHCaxWEcWqPIOdaEEaxNNBrPWljx9Y7pPEa2wMeJew/DNxIR
+ Bmh7JTsMnx3k/rd+LGZ4dY+p+b+DV6j58puabVoz6tszs//joOUysyDo/YRQEe9vbm0Z
+ mH4tB0c7O20iPs+0LOs2MOUGin453G4QKm9u/GRXFXmwsaKdv4DZxqmsEz5GsPPI4U1f
+ f6uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to;
- bh=mDvN0SgAfdUxvP15FGjlUIyfQkEQU0VmBT3cvhyl4P8=;
- b=rEd3WRKJ9Wc0OHuRbdkQ1v65FHfMxCVy7tjo4+LbNu5byX4Cv2v+uffSbSIo2zDJIx
- vHew/MN5Uy7+56HSXLsXo9BK7nlgsQsPIrW1DAAoicX2bXWcLtE8t/3nMo8qZWRxMzMm
- EV6JLMQ3fNuokJuocT1zWGwzhVm+3XribckTxulFHHjKWnDMVrIL9nvX3eZfufS6L2jj
- yhnr7RO9Y4l2e+WN2bnx9Wpuoq/83IFAYwwpGajHFG/sYlAb3Fpg1axshGXtn/TFDipY
- ypXmhwKKFy/vgtjKmq8Bo89j3GkW1Hxpmruuqkj1EwIsyWVhxfsZ/7zG95eQtEDcc0p+
- uHVw==
-X-Gm-Message-State: AOAM530OorJb0iW7WvQ+++Ak5xDJGKc7uVQLaB+fjLXUHP1IfizHxVOl
- EK1ReXFwXKRPWKwAyY7R/ZzSQ0ungBV/
-X-Google-Smtp-Source: ABdhPJw8gFyVpDkplM9fABTLOzM0jYdB18ReJ2voNFd21l1TQUS6DAIi9n2ngbIujTbCX2OD6xslVQ==
-X-Received: by 2002:a17:90a:5211:: with SMTP id
- v17mr4141106pjh.53.1616069769155; 
- Thu, 18 Mar 2021 05:16:09 -0700 (PDT)
-Received: from thinkpad ([2409:4072:6d00:4737:af26:182c:a57e:1d9e])
- by smtp.gmail.com with ESMTPSA id i7sm2473080pfq.184.2021.03.18.05.16.03
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=4PFxTjdA6OPYv/Z0HQ6IxtumbuUjcIrZvu9tDP9b6fc=;
+ b=LGmJCzB2+u7KtFjEnehI6ttmwbgYjBJynGzBWiDpGzmaus8bESVWIp1cV7pHFqrMo/
+ zf8ewkeWgppp+i5F29wa1NagcDM4gIFyaWwHwhSomkP6m6AbNQ1P8Cb+SCtYExIjlC9P
+ 0OkMAjF7RCL8ZSCqy8wMOiqb2wb+PhhxELcJ4XEXwSX6vWzFyAA0Dlm3QNqLretT6Gnc
+ vdbSqiZglUCAkvUv0cngzIaTEgksKVqTlLpHfp18qQ3ckNFWfh/DyoVlH0K2sIjizCHU
+ 76qQ0f1HXz1i+CrubIYMvFS+hOQotBYkSe/ku9so1zpT4XgG/5iqZfCw2fG+hAXZW0XR
+ Q0aw==
+X-Gm-Message-State: AOAM53106ZCjo0m3NA7mrSSnKmNPBVvcxAfhV8ri29FljTDHUZuTbA9s
+ tpn9997d8aUY9M1cSJDANFzq
+X-Google-Smtp-Source: ABdhPJyhf4LPDsQT+4ddw3OhbIRoLPuRSljfW+N6iK88femJmSTzQG1AFdT6kWzbRA2HE8lUSo/NgQ==
+X-Received: by 2002:a17:90a:8a0f:: with SMTP id
+ w15mr4099347pjn.200.1616071433983; 
+ Thu, 18 Mar 2021 05:43:53 -0700 (PDT)
+Received: from localhost.localdomain
+ ([2409:4072:6d00:4737:af26:182c:a57e:1d9e])
+ by smtp.gmail.com with ESMTPSA id w84sm2530694pfc.142.2021.03.18.05.43.47
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 18 Mar 2021 05:16:08 -0700 (PDT)
-Date: Thu, 18 Mar 2021 17:46:01 +0530
+ Thu, 18 Mar 2021 05:43:53 -0700 (PDT)
 From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ robh+dt@kernel.org
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  boris.brezillon@collabora.com, Daniele.Palmas@telit.com,
- bjorn.andersson@linaro.org
-Subject: Re: [PATCH v5 0/3] Add support for secure regions in NAND
-Message-ID: <20210318121601.GA21610@thinkpad>
-References: <20210317122513.42369-1-manivannan.sadhasivam@linaro.org>
- <20210317155121.19cbb50c@xps13>
+ bjorn.andersson@linaro.org,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v6 0/3] Add support for secure regions in NAND
+Date: Thu, 18 Mar 2021 18:13:39 +0530
+Message-Id: <20210318124342.32745-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210317155121.19cbb50c@xps13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210318_121611_429727_CE2669D3 
-X-CRM114-Status: GOOD (  21.56  )
+X-CRM114-CacheID: sfid-20210318_124356_218605_48F94383 
+X-CRM114-Status: GOOD (  12.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,69 +97,68 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
+On a typical end product, a vendor may choose to secure some regions in
+the NAND memory which are supposed to stay intact between FW upgrades.
+The access to those regions will be blocked by a secure element like
+Trustzone. So the normal world software like Linux kernel should not
+touch these regions (including reading).
 
-On Wed, Mar 17, 2021 at 03:51:21PM +0100, Miquel Raynal wrote:
-> Hi Manivannan,
-> =
-
-> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote on Wed,
-> 17 Mar 2021 17:55:10 +0530:
-> =
-
-> > On a typical end product, a vendor may choose to secure some regions in
-> > the NAND memory which are supposed to stay intact between FW upgrades.
-> > The access to those regions will be blocked by a secure element like
-> > Trustzone. So the normal world software like Linux kernel should not
-> > touch these regions (including reading).
-> > =
-
-> > So this series adds a property for declaring such secure regions in DT
-> > so that the driver can skip touching them. While at it, the Qcom NANDc
-> > DT binding is also converted to YAML format.
-> > =
-
-> > Thanks,
-> > Mani
-> > =
-
-> > Changes in v5:
-> > =
-
-> > * Switched to "uint64-matrix" as suggested by Rob
-> > * Moved the whole logic from qcom driver to nand core as suggested by B=
-oris
-> =
-
-> I'm really thinking about a nand-wide property now. Do you think it
-> makes sense to move the helper to the NAND core (instead of the raw
-> NAND core)? I'm fine only using it in the raw NAND core though.
-> =
-
-
-The reason why I didn't move the helper and checks to NAND core is I haven't
-seen any secure implementations in other NAND interfaces except rawnand. Th=
-is
-change can be done in future if we start seeing implementations.
-
-> Also, can I request a global s/sec/secure/ update? I find the "sec"
-> abbreviation unclear and I think we have more than enough cryptic
-> names :-)
-> =
-
-
-Sure.
+So this series adds a property for declaring such secure regions in DT
+so that the driver can skip touching them. While at it, the Qcom NANDc
+DT binding is also converted to YAML format.
 
 Thanks,
 Mani
 
-> Thanks,
-> Miqu=E8l
+Changes in v6:
+
+* Made use of "size" of the regions for comparision
+* Used "secure" instead of "sec"
+* Fixed the sizeof parameter in of_get_nand_secure_regions()
+
+Changes in v5:
+
+* Switched to "uint64-matrix" as suggested by Rob
+* Moved the whole logic from qcom driver to nand core as suggested by Boris
+
+Changes in v4:
+
+* Used "uint32-matrix" instead of "uint32-array" as per Rob's review.
+* Collected Rob's review tag for binding conversion patch
+
+Changes in v3:
+
+* Removed the nand prefix from DT property and moved the property parsing
+  logic before nand_scan() in driver.
+
+Changes in v2:
+
+* Moved the secure-regions property to generic NAND binding as a NAND
+  chip property and renamed it as "nand-secure-regions".
+
+Manivannan Sadhasivam (3):
+  dt-bindings: mtd: Convert Qcom NANDc binding to YAML
+  dt-bindings: mtd: Add a property to declare secure regions in NAND
+    chips
+  mtd: rawnand: Add support for secure regions in NAND memory
+
+ .../bindings/mtd/nand-controller.yaml         |   7 +
+ .../devicetree/bindings/mtd/qcom,nandc.yaml   | 196 ++++++++++++++++++
+ .../devicetree/bindings/mtd/qcom_nandc.txt    | 142 -------------
+ drivers/mtd/nand/raw/nand_base.c              | 111 ++++++++++
+ include/linux/mtd/rawnand.h                   |   4 +
+ 5 files changed, 318 insertions(+), 142 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+
+-- 
+2.25.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
