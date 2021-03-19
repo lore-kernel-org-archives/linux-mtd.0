@@ -8,14 +8,14 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D493C433E6
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Mar 2021 06:59:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 398EDC433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Mar 2021 06:59:48 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 980DA64F6E
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Mar 2021 06:59:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 980DA64F6E
+	by mail.kernel.org (Postfix) with ESMTPS id A014764F69
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Mar 2021 06:59:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A014764F69
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,68 +24,70 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=uguXxXFhcSJKQkXIJo83lr3WCnlLUEu/2HiYD2qoRdA=; b=DyKpKDkmAhDxqFoUuI74mCd9v
-	iqP0fYtqKUaQtGn8vnMC52D1x390COM+ynzeC+i/YeJ2P/lTb2EVeGtS97MFhZ9i0KNnLIqAmHheP
-	XYYILfTi7YMTxQ6mhDoH/1A3guNJbeISv5kk1qGCQIDTZdwltVp037BMvytMl3NZD+zGBXlon3QWW
-	WIjD4ecB/7xacB+DiBCjipIRAFHdeaxrivcx82m9ncVRG6YlwrWDYpAcWAZVSpLIPNbH9KA3y3uVE
-	oQ0CNrECF1oAkB312FXEXKCbCu4AcCBNSm72OoH7pX87OozhvimjRL6FfibO0Fkg8jaj8sM0SsqfG
-	HXc3psNjw==;
+	 bh=H3FRQuMRuwYnIWzAiBDNKhEbSN4recTNk5dsWsHVWbI=; b=lr7FAOd60/ntlmWIRw3ThCA9p
+	7CrLOA7nTblY4tF/qLTaD4l5CvgE2MwoUBSV2utWztId1uaKqTjZrLSSOLKUhYD/Uu9B+LCXXTXB1
+	50/6J6Lx5qomOzZqJmXUep03O0Bq+z0LxI100mfbnSQPlSFdOhcIiQRdUc7ArdXUFAhKiE231dRPK
+	l7GtPoVGx70D9UylpfRDm1khqsEpfD2Wfi2gIXsCxpf5xGYD0xzyMW9F2kHp9HqIidTXprJpThXOr
+	Bwetm4pd3UfLaVSWQHcMQYLgmwew6cmRpCKH9UhFgJzZMbxGEnxzqgSWrF0YZPw+i1Qam+0igYyOj
+	em8kI9ukQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lN95N-006kCb-82; Fri, 19 Mar 2021 06:58:17 +0000
-Received: from mail-pf1-x42d.google.com ([2607:f8b0:4864:20::42d])
+	id 1lN95v-006kLy-Cb; Fri, 19 Mar 2021 06:58:51 +0000
+Received: from mail-pg1-x534.google.com ([2607:f8b0:4864:20::534])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lN95H-006kBP-M5
- for linux-mtd@lists.infradead.org; Fri, 19 Mar 2021 06:58:14 +0000
-Received: by mail-pf1-x42d.google.com with SMTP id h3so5218886pfr.12
- for <linux-mtd@lists.infradead.org>; Thu, 18 Mar 2021 23:58:11 -0700 (PDT)
+ id 1lN95g-006kHG-F7
+ for linux-mtd@lists.infradead.org; Fri, 19 Mar 2021 06:58:39 +0000
+Received: by mail-pg1-x534.google.com with SMTP id n11so3050608pgm.12
+ for <linux-mtd@lists.infradead.org>; Thu, 18 Mar 2021 23:58:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=OqKaSa2/R0uh8r7F2ABsUnuB/YWHoPmw1b8CwDU3yfE=;
- b=YWmiDECEsVNLVURk42mbFRY7UOnOnOCR/rlrZB7vIR80slo1uq/1Nn3vN3nHmpKLxm
- ZfquPlbupjwWxI1JIdyCbA1wIp78deldEft0eCXsNlS1mo+uQ0Fqo4P1terDmHwck1LD
- /DhPicB9RBjVwtOKcUAFUNWAX48UinzMDvEKqtUAXckH/P4IEyUwD9lEWSZbMhgpiws0
- jziEUMet0fBKM7l4xDIMFWftULXELvTzOETEBTSUvZThulLp5GY9kSV9Buo3KwUs1+C2
- 54KK8LsqZW0s/6O59C3bPIEsarEZitM7n2WecTsnFLEBB2hWXxSMsqS76uIKNWPnoEjP
- AGEg==
+ bh=yHH1vdfwbcRbKBolNPXvtpwqypEwoTjxM2CXH/C+xiY=;
+ b=n3qKLu/sB5fxXLsNKg5H3oE7EAuYwlWkMaVk9r9Vh61UYFXUld30V8BkK8y5tf0TMt
+ IFtV+E0VdJCB99H2qs4/211sC+JTgFELtOBwl8E9Da+AdWc7U3qHMqqF3fnIivy7ExbC
+ CL6k5Sc4mgYsVPMVXJf3p2zfe177PyjIRrv4ApR7Y/2fY16iKlD5qLZTZn2W7cHgwofe
+ 0v0M6yCNCKZyj941BiYug0ZjQQE54sET5wcDISVYlZ8fv5lDPSRu7ILNv1XGVfSk4Suj
+ 16bA87tAfPro7UZV4nXOQkKXd2uJwLHP7tSrbI+USE/dGF//3dLWFxqRG//uwbdPHHVQ
+ 0lKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=OqKaSa2/R0uh8r7F2ABsUnuB/YWHoPmw1b8CwDU3yfE=;
- b=Qe+kyvzxleVLm270nEOFaqSmI66VCyqYRZc8mPNfv3DlW/8oCpqJIf1Iu+EWB92gUI
- joA4q4IfGobT0rwy/V9N4LLn1KiZPPmOGwl9I/prGrJKKp/bNu4bDq6L3mo1/6WvO5L/
- nqJgfTKPwjbTDzP1xcYIYdE4U4VRRuZ2Orw3ZiksXreTpPIOjPk6HUxHaC10MoW91wON
- Cb8T+KIP42mKhpVeh+BSrReMnXDeMXhkhHBTklDvJiwqj9YiLxG6hQiEyUpdDt20mvwU
- 6DhPg/apEGqZvLM+Zn0emeMVh6H1Sb/I5olL7AsmtHnrFw0bcCi/DReiZcWzB6yknlYF
- dMRQ==
-X-Gm-Message-State: AOAM532Q+IHDksK+kVI+EwsMaBUeEzwui1FnPLKz4joKslN3ZJ4pyx9+
- jV0gDT5gJ1/+KFTk+/cYf+KUJ4UEBqEpbA==
-X-Google-Smtp-Source: ABdhPJwX5XeZo6gj6T9YJPWRPk9K7//m+bVwSUaLpoVStg3xpK14Z5jefFd4STgUDAQPbYLmwNbaYw==
-X-Received: by 2002:a63:fa07:: with SMTP id y7mr10400178pgh.213.1616137089832; 
- Thu, 18 Mar 2021 23:58:09 -0700 (PDT)
+ bh=yHH1vdfwbcRbKBolNPXvtpwqypEwoTjxM2CXH/C+xiY=;
+ b=YbVV85RGDuorHszeQG4rdy/RrznW+oegmk74A198S+ADj8nzjX5W+7QAqOEM6dSSHi
+ jufz6DaPO1ihKH089vM5WGuWU550hN1k7APN2l0X2wGHB15kX3qrD0uMbkZHuK4MznXA
+ nyLDOfEC0bpI12aJiWlEx4b6BSpoVZLShcPWcL7mLphHKjVP541BfoDdKEpglIgqntOC
+ 9489DsLTNv+X7wfcRdnSofXcjg8ZyvwzTkxBkrkObyy8qWMMFcSqAGQYCSBDqlN38n1f
+ mX3N47Btm+dSBiBAUdg+uaTYp0TghNLc+qb2VCFMayQDZzq6aukPL7y4h1N7V5H1xQ8W
+ HKBQ==
+X-Gm-Message-State: AOAM533oFj5Ou2n2gepeBRqca2i+99vtN0nubYSfjuBPNDTM1X1Zs+4r
+ lbNYuszgBBg8OqOSHku9aMH38Gz6YsXLgw==
+X-Google-Smtp-Source: ABdhPJw4HFY12k/wN6O+l2d2sF5Lcbe+lEjT8cX9mt4Wt0Udg0bL/+ariMFNX7mN5ORaUXd18yb2VQ==
+X-Received: by 2002:aa7:9804:0:b029:1f1:5340:77c1 with SMTP id
+ e4-20020aa798040000b02901f1534077c1mr7715954pfl.72.1616137114625; 
+ Thu, 18 Mar 2021 23:58:34 -0700 (PDT)
 Received: from ISCNPF1JZGWX.infineon.com
  (zz20174137476F6254EB.userreverse.dion.ne.jp. [111.98.84.235])
- by smtp.gmail.com with ESMTPSA id q95sm4400332pjq.20.2021.03.18.23.58.06
+ by smtp.gmail.com with ESMTPSA id s62sm4399721pfb.148.2021.03.18.23.58.31
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 18 Mar 2021 23:58:09 -0700 (PDT)
+ Thu, 18 Mar 2021 23:58:34 -0700 (PDT)
 From: tkuw584924@gmail.com
 X-Google-Original-From: Takahiro.Kuwano@infineon.com
 To: linux-mtd@lists.infradead.org
 Cc: tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at,
  vigneshr@ti.com, p.yadav@ti.com, tkuw584924@gmail.com,
  Bacem.Daassi@infineon.com, Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH v4 4/6] mtd: spi-nor: spansion: Add support for volatile QE bit
-Date: Fri, 19 Mar 2021 15:57:56 +0900
-Message-Id: <6beb496c47d2521c68f8b4d0867cd77c7f8a2821.1616130675.git.Takahiro.Kuwano@infineon.com>
+Subject: [PATCH v4 5/6] mtd: spi-nor: spansion: Add status check for multi-die
+ parts
+Date: Fri, 19 Mar 2021 15:58:22 +0900
+Message-Id: <11d5b49f3710fa6a753389012d8a2b56d2791e59.1616130675.git.Takahiro.Kuwano@infineon.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1616130675.git.Takahiro.Kuwano@infineon.com>
 References: <cover.1616130675.git.Takahiro.Kuwano@infineon.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210319_065812_002465_73350EF4 
-X-CRM114-Status: GOOD (  17.95  )
+X-CRM114-CacheID: sfid-20210319_065837_791811_0F811C2F 
+X-CRM114-Status: GOOD (  16.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,96 +106,83 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
-Some of Spansion/Cypress chips support volatile version of configuration
-registers and it is recommended to update volatile registers in the field
-application due to a risk of the non-volatile registers corruption by
-power interrupt. This patch adds a function to set Quad Enable bit in CFR1
-volatile. The function supports multi-die package parts that require to
-set the Quad Enable bit in each die.
+The multi-die package parts from Spansion/Cypress require to check
+the status register value in each die to detemine the device is
+ready. This patch adds a helper that queries status of each die by
+Read Any Register command. The device specific ->ready() hook will
+call this helper with the number of dummy cycles and die size.
 
 Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 ---
 Changes in v4:
-  - No change
-  
-Changes in v3:
-  - Add multi-die package parts support
+  - Reword 'legacy' to 'default' in function header comments
 
- drivers/mtd/spi-nor/spansion.c | 58 ++++++++++++++++++++++++++++++++++
- 1 file changed, 58 insertions(+)
+Changes in v3:
+  - New in v3
+
+ drivers/mtd/spi-nor/spansion.c | 46 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
 diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 52a427d0af02..fdbf43bccc21 100644
+index fdbf43bccc21..04ad8f83dae0 100644
 --- a/drivers/mtd/spi-nor/spansion.c
 +++ b/drivers/mtd/spi-nor/spansion.c
-@@ -10,6 +10,8 @@
+@@ -10,6 +10,7 @@
  
  #define SPINOR_OP_RD_ANY_REG			0x65	/* Read any register */
  #define SPINOR_OP_WR_ANY_REG			0x71	/* Write any register */
-+#define SPINOR_REG_CYPRESS_CFR1V		0x00800002
-+#define SPINOR_REG_CYPRESS_CFR1V_QUAD_EN	BIT(1)	/* Quad Enable */
++#define SPINOR_REG_CYPRESS_STR1V		0x00800000
+ #define SPINOR_REG_CYPRESS_CFR1V		0x00800002
+ #define SPINOR_REG_CYPRESS_CFR1V_QUAD_EN	BIT(1)	/* Quad Enable */
  #define SPINOR_REG_CYPRESS_CFR2V		0x00800003
- #define SPINOR_REG_CYPRESS_CFR2V_MEMLAT_11_24	0xb
- #define SPINOR_REG_CYPRESS_CFR3V		0x00800004
-@@ -125,6 +127,62 @@ static int spansion_write_any_reg(struct spi_nor *nor, u32 reg_addr, u8 reg_val)
- 	return ret;
+@@ -183,6 +184,51 @@ static int spansion_quad_enable_volatile(struct spi_nor *nor, u8 reg_dummy,
+ 	return 0;
  }
  
 +/**
-+ * spansion_quad_enable_volatile() - enable Quad I/O mode in volatile register.
-+ * @nor:	pointer to a 'struct spi_nor'
++ * spansion_mdp_ready() - Query the Status Register via Read Any Register
++ *                        command for multi-die package parts that do not
++ *                        support default RDSR(05h)
++ * @nor:	pointer to 'struct spi_nor'.
 + * @reg_dummy:	number of dummy cycles for register read
 + * @die_size:	size of each die to determine the number of dies
 + *
-+ * It is recommended to update volatile registers in the field application due
-+ * to a risk of the non-volatile registers corruption by power interrupt. This
-+ * function sets Quad Enable bit in CFR1 volatile. If users set the Quad Enable
-+ * bit in the CFR1 non-volatile in advance (typically by a Flash programmer
-+ * before mounting Flash on PCB), the Quad Enable bit in the CFR1 volatile is
-+ * also set during Flash power-up. This function supports multi-die package
-+ * parts that require to set the Quad Enable bit in each die.
-+ *
-+ * Return: 0 on success, -errno otherwise.
++ * Return: 1 if ready, 0 if not ready, -errno on errors.
 + */
-+static int spansion_quad_enable_volatile(struct spi_nor *nor, u8 reg_dummy,
-+					 u32 die_size)
++static int spansion_mdp_ready(struct spi_nor *nor, u8 reg_dummy, u32 die_size)
 +{
 +	int ret;
-+	u32 base, reg_addr;
-+	u8 cfr1v, cfr1v_written;
++	u32 base;
++	u8 sr;
 +
 +	for (base = 0; base < nor->params->size; base += die_size) {
-+		reg_addr = base + SPINOR_REG_CYPRESS_CFR1V;
-+
-+		ret = spansion_read_any_reg(nor, reg_addr, reg_dummy, &cfr1v);
++		ret = spansion_read_any_reg(nor,
++					    base + SPINOR_REG_CYPRESS_STR1V,
++					    reg_dummy, &sr);
 +		if (ret)
 +			return ret;
 +
-+		if (cfr1v & SPINOR_REG_CYPRESS_CFR1V_QUAD_EN)
-+			continue;
++		if (sr & (SR_E_ERR | SR_P_ERR)) {
++			if (sr & SR_E_ERR)
++				dev_err(nor->dev, "Erase Error occurred\n");
++			else
++				dev_err(nor->dev, "Programming Error occurred\n");
 +
-+		/* Update the Quad Enable bit. */
-+		cfr1v |= SPINOR_REG_CYPRESS_CFR1V_QUAD_EN;
++			spi_nor_clear_sr(nor);
 +
-+		ret = spansion_write_any_reg(nor, reg_addr, cfr1v);
-+		if (ret)
-+			return ret;
++			ret = spi_nor_write_disable(nor);
++			if (ret)
++				return ret;
 +
-+		cfr1v_written = cfr1v;
-+
-+		/* Read back and check it. */
-+		ret = spansion_read_any_reg(nor, reg_addr, reg_dummy, &cfr1v);
-+		if (ret)
-+			return ret;
-+
-+		if (cfr1v != cfr1v_written) {
-+			dev_err(nor->dev, "CFR1: Read back test failed\n");
 +			return -EIO;
 +		}
++
++		if (sr & SR_WIP)
++			return 0;
 +	}
 +
-+	return 0;
++	return 1;
 +}
 +
  /**
