@@ -2,94 +2,88 @@ Return-Path: <SRS0=vdk9=IR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1CE7C433E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Mar 2021 02:53:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B94FC433E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Mar 2021 06:52:59 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2A98E64E10
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Mar 2021 02:53:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2A98E64E10
+	by mail.kernel.org (Postfix) with ESMTPS id DEE8764F69
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Mar 2021 06:52:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DEE8764F69
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:Cc:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=BLlHAYS7ca+1c+vt8X4boTdpJYhGuu+K3Sj1E6GTma4=; b=P7yfmFYTcAp8pbJv3XfZI+ReN
-	0N1NmShLQRUx7vWDg+ak3Di/S8VGVgWRRjcTyueF0/o7LvLOHsEEnk7jlp6zbhheH/Vruib4C2asr
-	GRHazNq+MgAe5AQ2O9xiOKb9uJ42/d77ivWm0KWdtJ8Lwmj/tTrWn+4AHoEHwtbnKcdGrxAME84Ee
-	ZB168X9Afm0do+XjFFkx43tCUKKER5Arx21MheOISkGwx4c9tV4e6QR057sKyp96fId3kzWFEwBYu
-	zLnr7QYmIXnGv8HfIoJ4m5+0cMTJjkQk0FDssrKqn9qU5+HZF6sYm/xRef4R4VIlQVx+FHHVj1MtR
-	Tnhoo2qKQ==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=B4eTEkwoJgygEEpaQtl1CbORbQrpwMvvMjuHUnrUzVg=; b=V8qqe2qJ3C3d+0oo+laESKfqOE
+	oagmLX7u1DoBL6OhW1XpzqAHXmqmBla2mbZLEmNC71dlZrfSeAiNJwxbAjJZSTW/u5KpgNl7wEepm
+	mYxjB3bl8MoLk6mPsbk2bBkQBt22Vxz+DZD1PEBsI72MQPKgqTatM7Vc8FVSA0fZfcjNsJ80GrKHw
+	oqgZSwz4jNoHOppGo0hDmswb2FxF/NaV7mEGXpX+3We3eUQvu1BlX0sr8MLkMcRI09tUPrbS2imME
+	+C/HGxvBoAI/YNAyl2HKuTDq5h6veVdth6yW+Xqt6n6/r9hdyV7u/jxkNmMc+a8Mzuof82MLFxiYb
+	l5cMryPg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lN5FH-006MfZ-Pm; Fri, 19 Mar 2021 02:52:16 +0000
-Received: from mail-pg1-x52c.google.com ([2607:f8b0:4864:20::52c])
+	id 1lN8zZ-006jOM-2q; Fri, 19 Mar 2021 06:52:17 +0000
+Received: from mail-pg1-x533.google.com ([2607:f8b0:4864:20::533])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lN5FB-006MfC-Pf
- for linux-mtd@lists.infradead.org; Fri, 19 Mar 2021 02:52:12 +0000
-Received: by mail-pg1-x52c.google.com with SMTP id l1so2714832pgb.5
- for <linux-mtd@lists.infradead.org>; Thu, 18 Mar 2021 19:52:09 -0700 (PDT)
+ id 1lN8zN-006jNa-UK
+ for linux-mtd@lists.infradead.org; Fri, 19 Mar 2021 06:52:08 +0000
+Received: by mail-pg1-x533.google.com with SMTP id k24so3037557pgl.6
+ for <linux-mtd@lists.infradead.org>; Thu, 18 Mar 2021 23:52:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=ybpoxwkAG5gmhDbfe7ukACF1NK2ajReqbGeyBVnynbY=;
- b=WE1snQG5nvYAcoqDMh1W0Ff9DBTeyK/iDibmBdOqilAM4PRx3aqwKRyQWFvgdtalAl
- MoeusmT+0IefqrL+M8CblBOsSjVW5brz6QbryDCrNBjIXCjJyWT598J0Z3C1nKYFivX+
- CQ1/aJDbYEPfLAzlHo+YGfc50iqbOpmKaNVNk1VDvdiX4VoQEWTSg+NCJhWqDK7PpiZ5
- 3AxwFM00577YRITfISjn8eHbSJQeAvxlMWZgq5+zkBwOZE2o/BQqNz1w7JI+DJN6VXPV
- j1t6Ddl1f4gUQrjuwREvMKSNV5MZ379CvM/uyCXHTA9/wAVNZ9mQsE3Hih7EhUkGJ0nb
- 1Daw==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=iq172yZLYmkaCfe2U2bYmiD7nZBJ9NqiD1XVKN2K2hc=;
+ b=PGILKpMwR0TXz5g91aRwtXJjg/YXp5E+UkRHJWcsGbELXwRzDdhcrmNn6yWeDLsaXX
+ xtMOSzCd7nM6kRWwTBDQCPCWboanjn2KZR8VutuqVXq/0AbMlq+XDj9zVgNwJJ1WHGo+
+ /uVWtzVyOcfcqT0bVxDQtG3ro8eeOuoRpex421X8/hUsF3jfD4sGK8cgz9e+IqyQJIn0
+ PLYcqvAEEVCI245DcRtXjo0kzzuTJgj1MWTY5aNBTEewnaKg05h102r/yGMK46X9hlzj
+ JnV136fVABjyLKZ6KIHyvyB1Xftcnn586X0/fUWXpxzHG2jbyYLF/C2WnNNyUIclsfdF
+ 1cVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=ybpoxwkAG5gmhDbfe7ukACF1NK2ajReqbGeyBVnynbY=;
- b=jXecZzaSVX9X7SKtEfLD7+hM5jiX8lIo39zuPd39ez8T8FeBmPeys/7X0CbR1EtbQA
- jpx6T1CKp0ElWJ2qLtXfQR9jR3002ARRq1wRvY0Ru9RgPJgMrRt+qlOHPJtb/4DXdIPy
- p3kkparKt6+Fl8+R5Kqsbb2uVJQvVEOSeZddKzsomgKpKIxxvaBYlFvyHalB0GRa7WHI
- Yo+knKu1IcAumxLCqTAk7BZ/mgxM884MI8waMsNXD7bpw3/VGZYCdTfadgas/olHY748
- K4yjcd5OBBk1wdT4dv5IY3HVUZcHXCEFdLY2enPI1FlxXmhFbUahL19SyLuMYio11BCU
- T20A==
-X-Gm-Message-State: AOAM531IuFepunFU7XZkeTo4BZk3SF08C4DXs0M/BTjK1uh7j2V/YOYZ
- LmMorvm31ecTvt//1np0ajI=
-X-Google-Smtp-Source: ABdhPJz8b+hgELGGC6q+6l4ZoktXG/f+VOkGH7Gl/Ao/duzLBlvkPwgWlmkjFsVsJTOEX/fppe0ePQ==
-X-Received: by 2002:a63:e47:: with SMTP id 7mr9373667pgo.17.1616122328073;
- Thu, 18 Mar 2021 19:52:08 -0700 (PDT)
-Received: from [192.168.210.40] (zz20174137476F6254EB.userreverse.dion.ne.jp.
- [111.98.84.235])
- by smtp.gmail.com with ESMTPSA id w5sm3445796pge.55.2021.03.18.19.52.05
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 18 Mar 2021 19:52:07 -0700 (PDT)
-Subject: Re: [PATCH v3 6/6] mtd: spi-nor: spansion: Add s25hl-t/s25hs-t IDs
- and fixups
+ bh=iq172yZLYmkaCfe2U2bYmiD7nZBJ9NqiD1XVKN2K2hc=;
+ b=QD0u6EFCI/hduAwrh52APwUTXxvGFK/kepLFn0AWHxLMbmjYec4hgj5rr0+74+2yy6
+ BMBqhonj9qcvIHyeNKrXBfUX7ULO5RCpbBwL6OtVG2HhXvKOeQRbjCSgaSZsV9EFAQCI
+ YjuaRbgdCLVzcXqlwJiDwlsbw2hpzi4XGUfQNO+Owkd8l97KZcyBKAp06gDpzT1d4D/i
+ 4i/HoqFehoYqnFrylucT7dytOJK81U5pBGgifP0J/QSs1Ri4QwnjbDX17SttgCb6coC5
+ ypmh5EPZye8fcGv9IXjXb1FTJJeQusCUw/QNN+AKJJq7Tb/Fc35I5Yy0EqYpkYPblj0N
+ KY0A==
+X-Gm-Message-State: AOAM533mIFRJsFFAMwTOOoIrgLfHPzX8q4pynd2Fgkekj3bQhH5Fp9D2
+ dD3YB9P0HrjbkhD7wSw5Kf+SFcHKUBFy/g==
+X-Google-Smtp-Source: ABdhPJy0OvJKlnD8SzL9HKfo2/kRumTtr9JrYO4kIo6wBfwN+K++KiA5XEujFpSk77ZIYcEE6Dc31w==
+X-Received: by 2002:a63:c90a:: with SMTP id o10mr10345246pgg.172.1616136723844; 
+ Thu, 18 Mar 2021 23:52:03 -0700 (PDT)
+Received: from ISCNPF1JZGWX.infineon.com
+ (zz20174137476F6254EB.userreverse.dion.ne.jp. [111.98.84.235])
+ by smtp.gmail.com with ESMTPSA id o18sm4072618pji.10.2021.03.18.23.52.00
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 18 Mar 2021 23:52:03 -0700 (PDT)
+From: tkuw584924@gmail.com
+X-Google-Original-From: Takahiro.Kuwano@infineon.com
 To: linux-mtd@lists.infradead.org
 Cc: tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, p.yadav@ti.com, Bacem.Daassi@infineon.com,
- Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-References: <cover.1615523176.git.Takahiro.Kuwano@infineon.com>
- <b971b6a9378260368b287d64092ec75edc9eb9bb.1615523176.git.Takahiro.Kuwano@infineon.com>
-From: Takahiro Kuwano <tkuw584924@gmail.com>
-Message-ID: <75040c2a-66d1-4b0a-9743-ade4aa0d51cb@gmail.com>
-Date: Fri, 19 Mar 2021 11:51:59 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ vigneshr@ti.com, p.yadav@ti.com, tkuw584924@gmail.com,
+ Bacem.Daassi@infineon.com, Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Subject: [PATCH v4 0/6] mtd: spi-nor: Add support for Cypress s25hl-t/s25hs-t
+Date: Fri, 19 Mar 2021 15:51:41 +0900
+Message-Id: <cover.1616130675.git.Takahiro.Kuwano@infineon.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <b971b6a9378260368b287d64092ec75edc9eb9bb.1615523176.git.Takahiro.Kuwano@infineon.com>
-Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210319_025210_830821_11932415 
-X-CRM114-Status: GOOD (  19.30  )
+X-CRM114-CacheID: sfid-20210319_065206_155826_C52B109F 
+X-CRM114-Status: GOOD (  10.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,71 +100,60 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
-On 3/12/2021 6:45 PM, tkuw584924@gmail.com wrote:
-> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-> 
-> The S25HL-T/S25HS-T family is the Cypress Semper Flash with Quad SPI.
-> 
-> For the single-die package parts (512Mb and 1Gb), only bottom 4KB and
-> uniform sector sizes are supported. For the multi-die package parts (2Gb),
-> only uniform sector sizes is supprted. This is due to missing or incorrect
-> entries in SMPT. Fixup for other sector sizes configurations will be
-> followed up as needed.
-> 
-> Tested on Xilinx Zynq-7000 FPGA board.
-> 
-> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-> ---
-> Changes in v3:
->   - Remove S25HL256T and S25HS256T
->   - Add S25HL02GT and S25HS02GT 
->   - Add support for multi-die package parts support
->   - Remove erase_map fix for top/split sector layout
->   - Set ECC data unit size (16B) to writesize 
-> 
->  drivers/mtd/spi-nor/spansion.c | 119 +++++++++++++++++++++++++++++++++
->  1 file changed, 119 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-> index 5742212fde2e..05a4ea00acfc 100644
-> --- a/drivers/mtd/spi-nor/spansion.c
-> +++ b/drivers/mtd/spi-nor/spansion.c
+The S25HL-T/S25HS-T family is the Cypress Semper Flash with Quad SPI.
 
-[...]  
+The summary datasheets can be found in the following links.
+https://www.cypress.com/file/424146/download (256Mb/512Mb/1Gb, single die)
+https://www.cypress.com/file/499246/download (2Gb/4Gb, dual/quad die)
 
->  /**
->   * spi_nor_cypress_octal_dtr_enable() - Enable octal DTR on Cypress flashes.
->   * @nor:		pointer to a 'struct spi_nor'
-> @@ -475,6 +576,24 @@ static const struct flash_info spansion_parts[] = {
->  	{ "s25fl256l",  INFO(0x016019,      0,  64 * 1024, 512,
->  			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
->  			     SPI_NOR_4B_OPCODES) },
-> +	{ "s25hl512t",  INFO6(0x342a1a, 0x0f0390, 256 * 1024, 256,
-> +			     SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR)
-> +	  .fixups = &s25hx_t_fixups },
-> +	{ "s25hl01gt",  INFO6(0x342a1b, 0x0f0390, 256 * 1024, 512,
-> +			     SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR)
-> +	  .fixups = &s25hx_t_fixups },
-> +	{ "s25hl02gt",  INFO6(0x342a1c, 0x0f0090, 256 * 1024, 1024,
-> +			     SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR)
-> +	  .fixups = &s25hx_t_fixups },
-> +	{ "s25hs512t",  INFO6(0x342b1a, 0x0f0390, 256 * 1024, 256,
-> +			     SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR)
-> +	  .fixups = &s25hx_t_fixups },
-> +	{ "s25hs01gt",  INFO6(0x342b1b, 0x0f0390, 256 * 1024, 512,
-> +			     SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR)
-> +	  .fixups = &s25hx_t_fixups },
-> +	{ "s25hs02gt",  INFO6(0x342b1c, 0x0f0090, 256 * 1024, 1024,
-> +			     SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR)
-> +	  .fixups = &s25hx_t_fixups },
+The full version can be found in the following links (registration
+required).
+https://community.cypress.com/t5/Semper-Flash-Access-Program/Datasheet-Semper-Flash-with-Quad-SPI/ta-p/260789?attachment-id=19522
+https://community.cypress.com/t5/Semper-Flash-Access-Program/Datasheet-2Gb-MCP-Semper-Flash-with-Quad-SPI/ta-p/260823?attachment-id=29503
 
-I noticed USE_CLSR is not needed for 2Gb parts since the ->ready() hook
-for multi-die package parts knows about that.
+Tested on Xilinx Zynq-7000 FPGA board.
 
-Thanks,
-Takahiro
+Changes in v4:
+  - Reword 'legacy' to 'default'
+  - Rename spi_nor_read() to spi_nor_default_ready()
+  - Fix dummy cycle calculation in spansion_read_any_reg()
+  - Modify comment for spansion_write_any_reg()
+  - Merge block comments about SMPT in s25hx_t_post_sfdp_fixups()
+  - Remove USE_CLSR flags from S25HL02GT and S25HS02GT
+
+Changes in v3:
+  - Split into multiple patches
+  - Remove S25HL256T and S25HS256T
+  - Add S25HL02GT and S25HS02GT 
+  - Add support for multi-die package parts support
+  - Cleanup Read/Write Any Register implementation
+  - Remove erase_map fix for top/split sector layout
+  - Set ECC data unit size (16B) to writesize 
+
+Changes in v2:
+  - Remove SPI_NOR_SKIP_SFDP flag and clean up related fixups
+  - Check CFR3V[4] to determine page_size instead of force 512B
+  - Depend on the patchset below to support non-uniform sector layout
+    https://lore.kernel.org/linux-mtd/cover.1601612872.git.Takahiro.Kuwano@infineon.com/
+
+Takahiro Kuwano (6):
+  mtd: spi-nor: core: Add the ->ready() hook
+  mtd: spi-nor: core: Expose spi_nor_clear_sr() to manufacturer drivers
+  mtd: spi-nor: spansion: Add support for Read/Write Any  Register
+  mtd: spi-nor: spansion: Add support for volatile QE bit
+  mtd: spi-nor: spansion: Add status check for multi-die parts
+  mtd: spi-nor: spansion: Add s25hl-t/s25hs-t IDs and fixups
+
+ drivers/mtd/spi-nor/core.c     |  10 +-
+ drivers/mtd/spi-nor/core.h     |   3 +
+ drivers/mtd/spi-nor/spansion.c | 325 +++++++++++++++++++++++++++++++++
+ 3 files changed, 334 insertions(+), 4 deletions(-)
+
+-- 
+2.25.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
