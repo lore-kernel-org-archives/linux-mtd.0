@@ -2,76 +2,90 @@ Return-Path: <SRS0=4x3R=IU=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF084C433DB
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 18:22:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4E8AC433DB
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 18:25:16 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4B97661983
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 18:22:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B97661983
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id 5DF5C61924
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 18:25:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5DF5C61924
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
-	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:References:
+	Cc:To:From:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=x1WsiTp4qRhp4Fj9tOAPF16FFX2paaBjYhAnHbx0w38=; b=aCtzSvefxg+WYJdXgNv2KusPT
-	WOYC2VwDuNNPV0I5TVTKHXkgM/heQK+7cOuyzauPRftkXkvgQmPEVJACRzhCcbf7RLPjrei8yZ4LV
-	GzXjpU3NrZP8ONoK4w2bSfFVZqWDF1K0i36/jF/nVmW6PI8QCRfKb+Jae1CKKwCZrOlNl1VXfBX5N
-	E869iLQasNWhx6SgK7JbtckUnVxKKpPaWwm/IVdC2NacobP1YYFHkFIqXuPoYGEPzWqP1zDhiJ4gV
-	+hWcS3EuRTHek2xqXlwOIhioC9BxaXYK2oXhoVHuINTiPJ8scgaOmCTdFXkXGY73ovpe9pWr36b+N
-	xAyZOCkWA==;
+	 bh=XyzJdOSbC5tNSG9cV8jYjFactqWwZcLWgm8/hN+7X4E=; b=pjyzNLQ+wiKiu7UnIIpzaR7Ny
+	gRRX5Z0NMbkMA2LVqQgtoeDo5Sd8DKvECyCSoDF/dB/cSjgxnM9LrO8HFB+n2QTkFml/c00ZmRJ5c
+	WdqMzTm8AvACUGtDN36yluiY5YAOy8XYxcrnd408iwgqZuYj1KozLwBhvK/MlrZCNhhlnOZQVEiNA
+	hpgbUeQ5j6d+3/sFeK6HGSeHqb/b/j4/oSQtTibao0fkR3ri1W3HdvwnKTmdEwiULyvjp9dsDmU9S
+	fRYIzGDv5kwDJvBhu9fcWttdzoxIM/P7hUpHB+EIJqb4XhHAxjbH3wy3s7s9q3rTHt6gSXZbh60+T
+	wLGE55OIQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lOPB4-00CF1L-3i; Mon, 22 Mar 2021 18:21:22 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1lOPDm-00CFZZ-61; Mon, 22 Mar 2021 18:24:10 +0000
+Received: from mail-lf1-x12f.google.com ([2a00:1450:4864:20::12f])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lOP9x-00CEja-Hd
- for linux-mtd@lists.infradead.org; Mon, 22 Mar 2021 18:20:15 +0000
-Received: from mwalle01.fritz.box (unknown
- [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
- SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 58DF322255;
- Mon, 22 Mar 2021 19:20:10 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1616437210;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=9KjLV5Ka9bey5dKJWPzgAenJL/VH5mtWkQstrGXp430=;
- b=G3z7uufUUt2D4bHIAoA4KFcAr3mhdhx0PHU/l3H/v7it49QhCW3A5oNbPGULPE3Xn0vPOl
- D1l926b4w4CZVGDh/qOyWXc3pSs6d3t0QBYW+fXaOOmpxIQV/HOe7RNT9AiGwor5oBwNXs
- G5l1ZAha5g177tWwp/hPEtQdJobYqfg=
-From: Michael Walle <michael@walle.cc>
-To: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
- Michael Walle <michael@walle.cc>
-Subject: [RFC PATCH 4/4] mtd: core: add OTP nvmem provider support
-Date: Mon, 22 Mar 2021 19:19:49 +0100
-Message-Id: <20210322181949.2805-5-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210322181949.2805-1-michael@walle.cc>
-References: <20210322181949.2805-1-michael@walle.cc>
+ id 1lOPDJ-00CFWN-SQ
+ for linux-mtd@lists.infradead.org; Mon, 22 Mar 2021 18:23:44 +0000
+Received: by mail-lf1-x12f.google.com with SMTP id w37so22768084lfu.13
+ for <linux-mtd@lists.infradead.org>; Mon, 22 Mar 2021 11:23:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=subject:from:to:cc:references:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=q6RlBpvSM4KQsvCRX2Pe6voGFi20o2BL3ntCy9+OJUk=;
+ b=E5omZ1uoR6lb58ufBdK0nlTUs0fbsiTglphdfuhYsoksJhaZgva1bP/+NvpAOZKEFn
+ KwpNjXhzuh+K/On0FSD7ct9P0Q7JYTzrMRNH2XbPkPwiHc71bFIMnYNMKb7sRfhE5fVn
+ +7nK9ExfZKfH7ldwNRMJPP51Ej52vRs43GRzam6UFlTK4U04193G3noNwbm8svLO+KpG
+ iv8HVx0U7xXCJTvEhwMS5Jgtq89tNpujiltkfltB1fHVFbzKP+pAPd99GpDAE2Pvw+6/
+ GvHxPtrqy3xnAORjb/WivRGDtruIwrAzxpNMIstiPOmrxpAb45mznTfNQbSDmRAfQZl0
+ lAmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=q6RlBpvSM4KQsvCRX2Pe6voGFi20o2BL3ntCy9+OJUk=;
+ b=rEegww5tiJHMiBA8S2GtKNWSvGJqRpRvj8zxgGp3W9YpjVZJ04xvg7dtNd8E/goSpG
+ al1LtyJyD+4ujcCDL5C0+wMV/soce1/a8BrQOGYvspfnHLqJLvYrUuotHrBVwB3KHGpK
+ oWVNi3fR3/yNSxNhGWwEhYcbUc+9sEMl0+a9pLHi1nSfCstWHboClEMZM6A6u62yniH0
+ jH5gw6uGQ1DLPkyVd6jLKy1DHzBMD4ggSQmuV4oo+6N5wflk48IxXe4HX2IxB50gsyw5
+ /cPYp63OFXfSZ2wr5fGyZpsMqGwNGIUsGVMvTPy9AJXzCp6qBchfaMeg7nXy7kE+ZI5Q
+ mRFQ==
+X-Gm-Message-State: AOAM532D0ZFFQfhltmBgYutRe7B0pS1yMa53PGptdcKozW3/++nRMJ6k
+ /BcEgmEc7QDTKV1AYAioaKihLfdLoaHx2Q==
+X-Google-Smtp-Source: ABdhPJyi37ir3zPanMhxK3gML8E8Fkw6WDn+d+DujJ0QVA2read0WxlbkVyES+ymyvZfW7cdldcJTQ==
+X-Received: by 2002:ac2:5e21:: with SMTP id o1mr337803lfg.435.1616437420625;
+ Mon, 22 Mar 2021 11:23:40 -0700 (PDT)
+Received: from localhost.localdomain
+ (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
+ by smtp.googlemail.com with ESMTPSA id x21sm1635584lfe.193.2021.03.22.11.23.39
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 22 Mar 2021 11:23:39 -0700 (PDT)
+Subject: Re: MTD partitioning & firmware installation on Broadcom devices
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>
+References: <CACna6rzeCFKVRuX++oUbdEvUFCVSD-YrHHDKz+3z7-6Dr4K9FQ@mail.gmail.com>
+Message-ID: <b4dd9b66-764f-7964-d61b-8e2172419365@gmail.com>
+Date: Mon, 22 Mar 2021 19:23:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
+In-Reply-To: <CACna6rzeCFKVRuX++oUbdEvUFCVSD-YrHHDKz+3z7-6Dr4K9FQ@mail.gmail.com>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210322_182013_895341_BD6DF8BF 
-X-CRM114-Status: GOOD (  22.37  )
+X-CRM114-CacheID: sfid-20210322_182342_557876_06F7359C 
+X-CRM114-Status: GOOD (  18.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,216 +97,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Flash OTP regions can already be read via user space. Some boards have
-their serial number or MAC addresses stored in the OTP regions. Add
-support for them being a (read-only) nvmem provider.
-
-The API to read the OTP data is already in place. It distinguishes
-between factory and user OTP, thus there are up to two different
-providers.
-
-Signed-off-by: Michael Walle <michael@walle.cc>
----
- drivers/mtd/mtdcore.c   | 149 ++++++++++++++++++++++++++++++++++++++++
- include/linux/mtd/mtd.h |   2 +
- 2 files changed, 151 insertions(+)
-
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 432769caae04..300340973561 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -776,6 +776,147 @@ static void mtd_set_dev_defaults(struct mtd_info *mtd)
- 	mutex_init(&mtd->master.chrdev_lock);
- }
- 
-+static ssize_t mtd_otp_size(struct mtd_info *mtd, bool is_user)
-+{
-+	struct otp_info *info = kmalloc(PAGE_SIZE, GFP_KERNEL);
-+	ssize_t size = 0;
-+	unsigned int i;
-+	size_t retlen;
-+	int ret;
-+
-+	if (is_user)
-+		ret = mtd_get_user_prot_info(mtd, PAGE_SIZE, &retlen, info);
-+	else
-+		ret = mtd_get_fact_prot_info(mtd, PAGE_SIZE, &retlen, info);
-+	if (ret)
-+		goto err;
-+
-+	for (i = 0; i < retlen / sizeof(*info); i++) {
-+		size += info->length;
-+		info++;
-+	}
-+
-+	kfree(info);
-+	return size;
-+
-+err:
-+	kfree(info);
-+	return ret;
-+}
-+
-+static struct nvmem_device *mtd_otp_nvmem_register(struct mtd_info *mtd,
-+						   const char *name, int size,
-+						   nvmem_reg_read_t reg_read,
-+						   const char *compatible)
-+{
-+	struct nvmem_device *nvmem = NULL;
-+	struct nvmem_config config = {};
-+	struct device_node *np;
-+
-+	/* DT binding is optional */
-+	np = of_get_compatible_child(mtd->dev.of_node, compatible);
-+
-+	/* OTP nvmem will be registered on the physical device */
-+	config.dev = mtd->dev.parent;
-+	config.name = name;
-+	config.id = NVMEM_DEVID_NONE;
-+	config.owner = THIS_MODULE;
-+	config.type = NVMEM_TYPE_OTP;
-+	config.root_only = true;
-+	config.reg_read = reg_read;
-+	config.size = size;
-+	config.of_node = np;
-+	config.priv = mtd;
-+
-+	nvmem = nvmem_register(&config);
-+	/* Just ignore if there is no NVMEM support in the kernel */
-+	if (IS_ERR(nvmem) && PTR_ERR(nvmem) == -EOPNOTSUPP)
-+		nvmem = NULL;
-+
-+	of_node_put(np);
-+
-+	return nvmem;
-+}
-+
-+static int mtd_nvmem_user_otp_reg_read(void *priv, unsigned int offset,
-+				       void *val, size_t bytes)
-+{
-+	struct mtd_info *mtd = priv;
-+	size_t retlen;
-+	int ret;
-+
-+	ret = mtd_read_user_prot_reg(mtd, offset, bytes, &retlen, val);
-+	if (ret)
-+		return ret;
-+
-+	return retlen == bytes ? 0 : -EIO;
-+}
-+
-+static int mtd_nvmem_fact_otp_reg_read(void *priv, unsigned int offset,
-+				       void *val, size_t bytes)
-+{
-+	struct mtd_info *mtd = priv;
-+	size_t retlen;
-+	int ret;
-+
-+	ret = mtd_read_fact_prot_reg(mtd, offset, bytes, &retlen, val);
-+	if (ret)
-+		return ret;
-+
-+	return retlen == bytes ? 0 : -EIO;
-+}
-+
-+static int mtd_otp_nvmem_add(struct mtd_info *mtd)
-+{
-+	struct nvmem_device *nvmem;
-+	ssize_t size;
-+	int err;
-+
-+	if (mtd->_get_user_prot_info && mtd->_read_user_prot_reg) {
-+		size = mtd_otp_size(mtd, true);
-+		if (size < 0)
-+			return size;
-+
-+		if (size > 0) {
-+			nvmem = mtd_otp_nvmem_register(mtd, "user-otp", size,
-+						       mtd_nvmem_user_otp_reg_read,
-+						       "mtd-user-otp");
-+			if (IS_ERR(nvmem)) {
-+				dev_err(&mtd->dev, "Failed to register OTP NVMEM device\n");
-+				return PTR_ERR(nvmem);
-+			}
-+			mtd->otp_user_nvmem = nvmem;
-+		}
-+	}
-+
-+	if (mtd->_get_fact_prot_info && mtd->_read_fact_prot_reg) {
-+		size = mtd_otp_size(mtd, false);
-+		if (size < 0) {
-+			err = size;
-+			goto err;
-+		}
-+
-+		if (size > 0) {
-+			nvmem = mtd_otp_nvmem_register(mtd, "factory-otp", size,
-+						       mtd_nvmem_fact_otp_reg_read,
-+						       "mtd-factory-otp");
-+			if (IS_ERR(nvmem)) {
-+				dev_err(&mtd->dev, "Failed to register OTP NVMEM device\n");
-+				err = PTR_ERR(nvmem);
-+				goto err;
-+			}
-+			mtd->otp_factory_nvmem = nvmem;
-+		}
-+	}
-+
-+	return 0;
-+
-+err:
-+	if (mtd->otp_user_nvmem)
-+		nvmem_unregister(mtd->otp_user_nvmem);
-+	return err;
-+}
-+
- /**
-  * mtd_device_parse_register - parse partitions and register an MTD device.
-  *
-@@ -851,6 +992,8 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
- 		register_reboot_notifier(&mtd->reboot_notifier);
- 	}
- 
-+	ret = mtd_otp_nvmem_add(mtd);
-+
- out:
- 	if (ret && device_is_registered(&mtd->dev))
- 		del_mtd_device(mtd);
-@@ -872,6 +1015,12 @@ int mtd_device_unregister(struct mtd_info *master)
- 	if (master->_reboot)
- 		unregister_reboot_notifier(&master->reboot_notifier);
- 
-+	if (master->otp_user_nvmem)
-+		nvmem_unregister(master->otp_user_nvmem);
-+
-+	if (master->otp_factory_nvmem)
-+		nvmem_unregister(master->otp_factory_nvmem);
-+
- 	err = del_mtd_partitions(master);
- 	if (err)
- 		return err;
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 4aac200ca8b5..71e751d18c22 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -379,6 +379,8 @@ struct mtd_info {
- 	int usecount;
- 	struct mtd_debug_info dbg;
- 	struct nvmem_device *nvmem;
-+	struct nvmem_device *otp_user_nvmem;
-+	struct nvmem_device *otp_factory_nvmem;
- 
- 	/*
- 	 * Parent device from the MTD partition point of view.
--- 
-2.20.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMDguMDMuMjAyMSAxODozNywgUmFmYcWCIE1pxYJlY2tpIHdyb3RlOgo+IFNvbHV0aW9uICMy
+Cj4gRmxhc2hpbmcgZmlybXdhcmUgaW1hZ2UgYXMgaXMgKHdpdGggY2ZlcmFtLjAwMCkgYW5kIGFk
+anVzdGluZyBpdC4KPiBUaGlzIHNob3VsZCBiZSBuaWNlciBhcyBtb3VudGluZyBKRkZTMiBNVEQg
+cGFydGl0aW9uIGlzIHNpbXBsZS4gVGhlCj4gcHJvYmxlbSBpcyBwYXJ0aXRpb25pbmcuCj4gSSdk
+IG5lZWQgdG8gcmVtb3ZlIE1URCBwYXJ0aXRpb25zIGFuZCB0cmlnZ2VyIHJlLXBhcnRpdGlvbmlu
+ZyBvZgo+ICJmaXJtd2FyZSIgcGFydGl0aW9uLiBPbmx5IG9uY2UgSSBoYXZlIExpbnV4IGNyZWF0
+ZSAiYm9vdGZzIiBhbmQgInViaSIKPiBwYXJ0aXRpb25zIGFnYWluIGZvciBtZSBJIGNvdWxkIG1v
+dW50ICJib290ZnMiIGFuZCByZW5hbWUgdGhlIGZpbGUuCj4gVGhlcmUgaXMgbm8gc3VwcG9ydCBm
+b3Igc3VjaCByZXBhcnRpdGlvbmluZyBhdCB0aGlzIHBvaW50IEFGQUlLLgoKSSd2ZSBpbXBsZW1l
+bnRlZCB0aGF0IHNvbHV0aW9uLiBLZXJuZWwgcGFydCB3YXMgdHJpdmlhbCBhY3R1YWxseSwgSSBq
+dXN0CndpcmVkIHVwIEJMS1JSUEFSVCBpb2N0bC4KClRoZSBwcm9ibGVtIGlzIGl0IGRvZXNuJ3Qg
+d29yay4gRG9pbmcgIm12IGNmZXJhbS4wMDAgY2ZlcmFtLjEyMyIgcmVzdWx0cwppbiBtYXJraW5n
+IGNmZXJhbS4wMDAgbm9kZSBhcyBkZWxldGVkIGFuZCBhZGRpbmcgYSBuZXcgY2ZlcmFtLjEyMyBu
+b2RlCmhhcmRsaW5raW5nIHRvIHRoZSBvcmlnaW5hbCBjb250ZW50LiBTb3VuZHMgZ29vZCBidXQg
+Q0ZFIGJvb3Rsb2FkZXIgaXMKdG9vIHN0dXBpZCBmb3IgdGhhdC4gSXQgZG9lc24ndCByZWNvZ25p
+emUgZGVsZXRlZCBmaWxlcyAobm9kZXMpIGFuZApiZWxpZXZlcyBjZmVyYW0uMDAwIGlzIHN0aWxs
+IHRoZXJlLgoKSSBkb24ndCB3YW50IHRvIGltcGxlbWVudCBKRkZTMiBoYWNrcyBjaGFuZ2luZyBp
+dHMgcmVuYW1lIHN1cHBvcnQKaW1wbGVtZW50YXRpb24uIFNvIEkndmUgdG8gcHJvY2VlZCB3aXRo
+IFNvbHV0aW9uICMxIGFuZCBqdXN0IHdyaXRlCnRvb2wgbW9kaWZ5aW5nIEpGRlMyIGltYWdlIGJl
+Zm9yZSBmbGFzaGluZyBpdCB0byB0aGUgTVRELgoKLS0tIGEvZHJpdmVycy9tdGQvbXRkY2hhci5j
+CisrKyBiL2RyaXZlcnMvbXRkL210ZGNoYXIuYwpAQCAtMTAxNSw4ICsxMDE1LDExIEBAIHN0YXRp
+YyBpbnQgbXRkY2hhcl9pb2N0bChzdHJ1Y3QgZmlsZSAqZmkKCiAgCWNhc2UgQkxLUlJQQVJUOgog
+IAl7Ci0JCS8qIE5vIHJlcmVhZCBwYXJ0aXRpb24gZmVhdHVyZS4gSnVzdCByZXR1cm4gb2sgKi8K
+LQkJcmV0ID0gMDsKKwkJaW50IG5yX3BhcnRzOworCisJCWRlbF9tdGRfcGFydGl0aW9ucyhtdGQp
+OworCQlucl9wYXJ0cyA9IHBhcnNlX210ZF9wYXJ0aXRpb25zKG10ZCwgTlVMTCwgTlVMTCk7CisJ
+CXJldCA9IG5yX3BhcnRzIDwgMCA/IG5yX3BhcnRzIDogMDsKICAJCWJyZWFrOwogIAl9CiAgCX0K
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
+aW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
