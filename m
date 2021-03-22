@@ -2,78 +2,74 @@ Return-Path: <SRS0=4x3R=IU=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD809C433C1
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 17:55:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1AEBC433DB
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 18:20:52 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 509F06196F
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 17:55:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 509F06196F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+	by mail.kernel.org (Postfix) with ESMTPS id 768A461994
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 18:20:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 768A461994
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Subject:References:In-Reply-To:
-	Message-ID:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YgHQRe/c284PrcNd+OsLeb90mrvYMTJ7q7RXSdovSXQ=; b=qf9EoAEKiYa/zE
-	5/ThfBtJqUp4P0+XYnD3mDiMCCIm50wzBWlxXBPuXyyQSRVwEv9BX6yfaUp1ewh15t1Wj4wefNfMu
-	0wVf1+dB6gwZd+ELo1L4m3/7PPyjcal9UT894AulelC7PqKjZc6frWj8328LPHD0B42imSBXKk5+Q
-	3Bsm5Iu+HWFPPsGJxaGfq9XSlnKbhuFsvdaEVUJ4eKQGgbdef+mhrx1MyLnbQKedTpi6UPUflJ5KA
-	dTMvauIaEVIOGp5GaQWtk0HcWTNTnPJw1f4Fy1F+z2foNQVGXNGAyaqvgWahM202rPfqIRD5JHB7d
-	aeflu4posoEFaY9UOfEw==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=91pklmD0L+tmUDXTbs0BFrNhx/SVGbkegXARdhDp2JA=; b=j0WcUWblj4X0KaLcOBj3oYfQ4n
+	/5Nn3mUArDo284HuFaK846h4ntxQB1lCuXWL0tvjTMdIsHnUmx1BfBFvOipv9HJ8emZzJvLkfPk89
+	Y+p+lRZL6yQLKouNuu6llfImbcr5OOWBZE7CXS+mW0Ag5xu9MFdXymxlujEWyX4ZJEGjhHT5/Hurc
+	xYamxrtvuRzIJwzQwwSg6bv5nfX+GwSEZYmSX+J6UPwqTWaCZqme0iXbGvAeHTXfrDlUo8MI856Wl
+	2UexqjfO6y7I8cb7GLtbHy5e04vlgPw/8Wjf0mRxtL2Yn36c3Zn+65lL24WUJlSjAnvl5RGqrTWNg
+	dTxMhAHg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lOOku-00CCLM-Tk; Mon, 22 Mar 2021 17:54:21 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1lOP9x-00CEjc-JC; Mon, 22 Mar 2021 18:20:13 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lOOkr-00CCKs-CU
- for linux-mtd@lists.infradead.org; Mon, 22 Mar 2021 17:54:19 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id A714E60A357B;
- Mon, 22 Mar 2021 18:54:15 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id Z28JrLjOa-cP; Mon, 22 Mar 2021 18:54:13 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 0C2A860A357C;
- Mon, 22 Mar 2021 18:54:13 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id rnKQDEnnD768; Mon, 22 Mar 2021 18:54:12 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
- by lithops.sigma-star.at (Postfix) with ESMTP id D97E360A357B;
- Mon, 22 Mar 2021 18:54:12 +0100 (CET)
-Date: Mon, 22 Mar 2021 18:54:12 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-To: =?utf-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
-Cc: Michael Walle <michael@walle.cc>, linux-mtd <linux-mtd@lists.infradead.org>,
- linux-kernel <linux-kernel@vger.kernel.org>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- Vignesh Raghavendra <vigneshr@ti.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Message-ID: <867376179.104878.1616435652773.JavaMail.zimbra@nod.at>
-In-Reply-To: <9fb7a635-75ed-2840-b751-3ab8764f0890@gmail.com>
-References: <20210303155735.25887-1-michael@walle.cc>
- <9fb7a635-75ed-2840-b751-3ab8764f0890@gmail.com>
-Subject: Re: [PATCH] mtd: require write permissions for locking and badblock
- ioctls
+ id 1lOP9r-00CEhS-4R
+ for linux-mtd@lists.infradead.org; Mon, 22 Mar 2021 18:20:10 +0000
+Received: from mwalle01.fritz.box (unknown
+ [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
+ SHA256) (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 3347122235;
+ Mon, 22 Mar 2021 19:19:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1616437203;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=SxpId9qwMWCyRo+nBXdhG1wstwEIVslF9/SHxhhLN5s=;
+ b=KWo0c2fipzhzAxOznyiMV3nndYf9T5pqY15N4oPf5BKWqv3AUM9i/+/bQ2PfJirbqak137
+ gxfK2iQ8CBKDA/w81/XJ6cDmO94ifsGuZ2Ip7eEc8AzZ7qqYTE9aRL1A3jscTjRU+4WaNV
+ ZNot83yCr9OMiYMJcJ0LgiQg9tW9vsQ=
+From: Michael Walle <michael@walle.cc>
+To: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+ Michael Walle <michael@walle.cc>
+Subject: [RFC PATCH 0/4] mtd: core: OTP nvmem provider support
+Date: Mon, 22 Mar 2021 19:19:45 +0100
+Message-Id: <20210322181949.2805-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Topic: require write permissions for locking and badblock ioctls
-Thread-Index: MD3YlBDD0Vk+6pgMtjmJD07E01YdqQ==
+X-Spam: Yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210322_175417_505459_6133100D 
-X-CRM114-Status: UNSURE (   5.36  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210322_182007_320704_3AC542DB 
+X-CRM114-Status: GOOD (  14.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,32 +81,84 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIlJhZmHFgiBNacWCZWNraSIg
-PHphamVjNUBnbWFpbC5jb20+Cj4gQW46ICJNaWNoYWVsIFdhbGxlIiA8bWljaGFlbEB3YWxsZS5j
-Yz4sICJsaW51eC1tdGQiIDxsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZz4sICJsaW51eC1r
-ZXJuZWwiCj4gPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+Cj4gQ0M6ICJNaXF1ZWwgUmF5
-bmFsIiA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4sICJyaWNoYXJkIiA8cmljaGFyZEBub2Qu
-YXQ+LCAiVmlnbmVzaCBSYWdoYXZlbmRyYSIgPHZpZ25lc2hyQHRpLmNvbT4sCj4gIkdyZWcgS3Jv
-YWgtSGFydG1hbiIgPGdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnPgo+IEdlc2VuZGV0OiBNb250
-YWcsIDIyLiBNw6RyeiAyMDIxIDE3OjM5OjQxCj4gQmV0cmVmZjogUmU6IFtQQVRDSF0gbXRkOiBy
-ZXF1aXJlIHdyaXRlIHBlcm1pc3Npb25zIGZvciBsb2NraW5nIGFuZCBiYWRibG9jayBpb2N0bHMK
-Cj4gT24gMDMuMDMuMjAyMSAxNjo1NywgTWljaGFlbCBXYWxsZSB3cm90ZToKPj4gTUVNTE9DSywg
-TUVNVU5MT0NLIGFuZCBPVFBMT0NLIG1vZGlmeSBwcm90ZWN0aW9uIGJpdHMuIFRodXMgcmVxdWly
-ZQo+PiB3cml0ZSBwZXJtaXNzaW9uLiBEZXBlbmRpbmcgb24gdGhlIGhhcmR3YXJlIE1FTUxPQ0sg
-bWlnaHQgZXZlbiBiZQo+PiB3cml0ZS1vbmNlLCBlLmcuIGZvciBTUEktTk9SIGZsYXNoZXMgd2l0
-aCB0aGVpciBXUCMgdGllZCB0byBHTkQuIE9UUExPQ0sKPj4gaXMgYWx3YXlzIHdyaXRlLW9uY2Uu
-Cj4+IAo+PiBNRU1TRVRCQURCTE9DSyBtb2RpZmllcyB0aGUgYmFkIGJsb2NrIHRhYmxlLgo+PiAK
-Pj4gRml4ZXM6IGY3ZTZiMTliYzc2NCAoIm10ZDogcHJvcGVybHkgY2hlY2sgYWxsIHdyaXRlIGlv
-Y3RscyBmb3IgcGVybWlzc2lvbnMiKQo+PiBTaWduZWQtb2ZmLWJ5OiBNaWNoYWVsIFdhbGxlIDxt
-aWNoYWVsQHdhbGxlLmNjPgo+IAo+IFNob3VsZCBiZSBmaW5lIGZvciBPcGVuV3J0IHRvb2xzIHRv
-IG15IGJlc3Qga25vd2xlZGdlIChhbmQgcXVpY2sgdGVzdGluZykuCj4gCj4gQWNrZWQtYnk6IFJh
-ZmHFgiBNacWCZWNraSA8cmFmYWxAbWlsZWNraS5wbD4KCk5pY2UhCgpBY2tlZC1ieTogUmljaGFy
-ZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD4KClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
-IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+The goal is to fetch a (base) MAC address from the OTP region of a SPI NOR
+flash.
+
+This is the first part, where I try to add the nvmem provider support to
+the MTD core.
+
+I'm not sure about the device tree bindings. Consider the following two
+variants:
+
+(1)
+    flash@0 {
+        ..
+
+        otp {
+            compatible = "mtd-user-otp";
+            #address-cells = <1>;
+            #size-cells = <1>;
+
+            serial-number@0 {
+                reg = <0x0 0x8>;
+            };
+        };
+    };
+
+(2)
+    flash@0 {
+        ..
+
+        otp {
+            compatible = "mtd-user-otp";
+            #address-cells = <1>;
+            #size-cells = <1>;
+
+			some-useful-name {
+                compatible = "nvmem-cells";
+
+                serial-number@0 {
+                    reg = <0x0 0x8>;
+                };
+			};
+        };
+    };
+
+Both bindings use a subnode "opt[-N]". We cannot have the nvmem cells as
+children to the flash node because of the legacy partition binding.
+
+(1) seems to be the form which is used almost everywhere in the kernel.
+That is, the nvmem cells are just children of the parent node.
+
+(2) seem to be more natural, because there might also be other properties
+inside the otp subnode and might be more future-proof.
+
+At the moment this patch implements (1).
+
+Michael Walle (4):
+  nvmem: core: allow specifying of_node
+  dt-bindings: mtd: add YAML schema for the generic MTD bindings
+  dt-bindings: mtd: add OTP bindings
+  mtd: core: add OTP nvmem provider support
+
+ .../devicetree/bindings/mtd/common.txt        |  16 +-
+ .../devicetree/bindings/mtd/mtd.yaml          | 110 +++++++++++++
+ drivers/mtd/mtdcore.c                         | 149 ++++++++++++++++++
+ drivers/nvmem/core.c                          |   4 +-
+ include/linux/mtd/mtd.h                       |   2 +
+ include/linux/nvmem-provider.h                |   2 +
+ 6 files changed, 267 insertions(+), 16 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/mtd.yaml
+
+-- 
+2.20.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
