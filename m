@@ -2,64 +2,86 @@ Return-Path: <SRS0=4x3R=IU=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2F43C433DB
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 18:33:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A14C5C433DB
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 18:43:12 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5704961925
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 18:33:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5704961925
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 37ADD6199E
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 18:43:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 37ADD6199E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=3PaLlLGs24ek/3/UU9P/TEYBpqDRDp/sp2Xk2W5I5ww=; b=jy6c+BfiEmg7O5XKcFQ+eGoyd
-	PMXkZG/OqUMSGQoKBH/iu6mMh15H9ETshjF2Tfy9DN+/8iJ62HditQQhuwLiAoO1PKWnsKb01qSTE
-	zX5rWVEhgaOuhxtwfHm/6O7l4EqS0MBFIWq/Mp5ktiJwFIr/tPe4aAu/grTAtdQLMsg71SgijuS3m
-	ngpAq5AtyedFIlgOD18qSg9Xpe8zGiglXkGMRQQP+D6wJSGs6hlerS7xHWv+ElyPbEW3luLKxKiAs
-	n1wehsfWDUe/KnWDQ2O527OkTzv21nxyv2xv/zemrGlgWpY3g/9o7b8aVzPsHnH2SZGQL+NCEMKSB
-	myVaNy7ag==;
+	 bh=Bz3AqDRdpEDky05um6FBwYUqTP7Gs9lvt+0BhCUJ9F4=; b=JM9iwZ2Pyn/TBmd4YnlPQrA+a
+	jKAW9IvxKzjBpS/XUa/l00M+6Y1HVyd5tz/6ruEIm++QmGGUWjiJnIpCbsGdGtB07elBcC3WQPiH9
+	/D0wE4gnD6n5CDF8s+6l7u14jvBH1yziz4eUjIPfb8wxRSK9EZZsGf7ZBExNWuinsrltcclRzX8Mx
+	o8qtF84SCXA3HqJsFlMHXb9E0g/ShchWCDWPY4poE1AolXDtDLeH5gSJRFQsLer5NxpWn3edrApbS
+	a8cosk6U/ffT8KlN9GaYSKo7Df+EN9d0nz+178YKiGVnbh3Ydt1zJ6YN8n5BkFVVRHk5JJw1D2bJZ
+	B0wijUWEw==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lOPLl-00CGTc-5g; Mon, 22 Mar 2021 18:32:25 +0000
-Received: from relay3-d.mail.gandi.net ([217.70.183.195])
+	id 1lOPVV-00CHmB-I7; Mon, 22 Mar 2021 18:42:29 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lOPLe-00CGSg-6T
- for linux-mtd@lists.infradead.org; Mon, 22 Mar 2021 18:32:21 +0000
-X-Originating-IP: 90.89.138.59
-Received: from xps13 (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr [90.89.138.59])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 52ABA60004;
- Mon, 22 Mar 2021 18:32:13 +0000 (UTC)
-Date: Mon, 22 Mar 2021 19:32:13 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Daniel Palmer <daniel@0x0f.com>
-Cc: linux-mtd@lists.infradead.org, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] mtd: spinand: add support for Foresee FS35ND01G-S1Y2
-Message-ID: <20210322193213.18520b9a@xps13>
-In-Reply-To: <CAFr9PXmVehtcm6FjBqi_hmEAj1rgtxMvarisjPmWhgjruVj++Q@mail.gmail.com>
-References: <20210213095724.3411058-1-daniel@0x0f.com>
- <20210215112409.1a755bf0@xps13>
- <CAFr9PXkh+attaCc6C2UxB=qvXksWriWOaaoEndy4k6SGE0QOHQ@mail.gmail.com>
- <20210215121653.4edd86c4@xps13>
- <CAFr9PXmVehtcm6FjBqi_hmEAj1rgtxMvarisjPmWhgjruVj++Q@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1lOPVO-00CHka-6m
+ for linux-mtd@lists.infradead.org; Mon, 22 Mar 2021 18:42:26 +0000
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12MIgHHK038156;
+ Mon, 22 Mar 2021 13:42:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1616438537;
+ bh=KcTRNsBEF0sAAUUv5u7KkbkyDpmWregXhg4o/rObyd0=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=BsDmzNV6+8oYFlPk2L7jr//madH1MPzzbetZn9uocXZLwCFwq5bLnXvfL/ax2vf+p
+ rK69wjBv/TAcDHdibbkieVRKEo50jWI0O0GuynODsLF07Jr78qqJOUwRkv/Mp65W4t
+ oqLTzai03fvTFc4LpgNVEMRMYQ5UdHTX8n9MP87Q=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12MIgHGi088249
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 22 Mar 2021 13:42:17 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 22
+ Mar 2021 13:42:17 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 22 Mar 2021 13:42:17 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12MIgGL0065661;
+ Mon, 22 Mar 2021 13:42:17 -0500
+Date: Tue, 23 Mar 2021 00:12:16 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: Michael Walle <michael@walle.cc>
+CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>, Tudor
+ Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH 1/2] mtd: spi-nor: sfdp: save a copy of the SFDP data
+Message-ID: <20210322184214.ernzjfwfle6dfhpv@ti.com>
+References: <20210318092406.5340-1-michael@walle.cc>
+ <20210318092406.5340-2-michael@walle.cc>
+ <20210322142141.pd7ondg6l76idz7d@ti.com>
+ <0efba47de8737059b4f3c593c26297bf@walle.cc>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <0efba47de8737059b4f3c593c26297bf@walle.cc>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210322_183218_398658_2B446EC8 
-X-CRM114-Status: GOOD (  34.63  )
+X-CRM114-CacheID: sfid-20210322_184222_755983_83E945A6 
+X-CRM114-Status: GOOD (  41.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,97 +93,144 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgRGFuaWVsLAoKRGFuaWVsIFBhbG1lciA8ZGFuaWVsQDB4MGYuY29tPiB3cm90ZSBvbiBNb24s
-IDIyIE1hciAyMDIxIDIxOjQ0OjQwCiswOTAwOgoKPiBIaSBNaXF1ZWwsCj4gCj4gU29ycnkgZm9y
-IHRoZSByZXNlbmQuIEdtYWlsIHJhbmRvbWx5IHN3aXRjaGVkIHRvIEhUTUwgZW1haWwgc28gdGhl
-Cj4gb3JpZ2luYWwgdmVyc2lvbiBzZWVtcyB0byBoYXZlIGJvdW5jZWQuCj4gCj4gT24gTW9uLCAx
-NSBGZWIgMjAyMSBhdCAyMDoxNiwgTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGlu
-LmNvbT4gd3JvdGU6Cj4gPiA+ICIyLiBTcGFyZSBhcmVhIDgwMEggdG8gODNGSCBpcyBhbGwgYXZh
-aWxhYmxlIGZvciB1c2VyLgo+ID4gPiAgRUNDIHBhcml0eSBjb2RlcyBhcmUgcHJvZ3JhbW1lZCBp
-bgo+ID4gPiBhZGRpdGlvbmFsIHNwYWNlIGFuZCBub3QgdXNlciBhY2Nlc3NpYmxlLiIKPiA+ID4K
-PiA+ID4gSXQgd291bGQgc2VlbSB0aGF0IHRoZSBwYWdlcyBhcmUgYWN0dWFsbHkgYmlnZ2VyIHRo
-YW4gMksgKyA2NCBvciB0aGVyZQo+ID4gPiBpcyBzb21lIG90aGVyIHBsYWNlIHRoZXkga2VlcCB0
-aGUgRUNDLgo+ID4gPiBPciBib3RoIGRhdGFzaGVldHMgYXJlIGx5aW5nLiBTb21ld2hlcmUgZWxz
-ZSBpbiB0aGUgZGF0YXNoZWV0cyBpdCBzYXlzCj4gPiA+IHRoYXQgd3JpdGVzIHRvIHRoZSBFQ0Mg
-YXJlYSB3aWxsIGJlIGlnbm9yZWQgYnV0IHRoYXQgZG9lc24ndCBtYWtlIGEKPiA+ID4gbG90IG9m
-IHNlbnNlIGlmIHRoZSBFQ0MgYXJlYSBpc24ndCB1c2VyIGFjY2Vzc2libGUgaW4gdGhlIGZpcnN0
-IHBsYWNlLgo+ID4gPgo+ID4gPiBJIGRpZG4ndCB0aGluayBhYm91dCBpdCBhdCB0aGUgdGltZSBi
-dXQgSSBjYW4gdGFrZSBhIGR1bXAgb2YgdGhlIE9PQgo+ID4gPiBhcmVhIG9mIG15IEZTMzVORDAx
-Ry1TMVkyIHRvIGNvbmZpcm0gaXQncyBhbGwgMHhmZiBleGNlcHQgZm9yIGFueQo+ID4gPiBmYWN0
-b3J5IG1hcmtlZCBiYWQgYmxvY2tzLiAgCj4gPgo+ID4gSSBzZWUuIENhbiB5b3UgcGxlYXNlIHRy
-eSB0aGUgZm9sbG93aW5nOgo+ID4KPiA+IG5hbmR3cml0ZSAtbyAvZGV2L210ZHggL2Rldi96ZXJv
-Cj4gPiBuYW5kZHVtcCAtb2wxIC9kZXYvbXRkeAo+ID4gSWYgdGhlIGVudGlyZSBhcmVhIGlzIGVm
-ZmVjdGl2ZWx5IGZyZWUgdG8gYmUgdXNlZCwgeW91IHNob3VsZCBzZWUgMCdzCj4gPiBldmVyeXdo
-ZXJlLiBPdGhlcndpc2UgeW91IHNob3VsZCBoYXZlIGZmJ3Mgc29tZXdoZXJlLiAgCj4gCj4gU29y
-cnkgSSBkaWRuJ3QgZm9sbG93IHVwIHNvb25lciBvbiB0aGlzLiBJIG5lZWRlZCB0byBvcmRlciBh
-bm90aGVyIG9mCj4gdGhpcyBmbGFzaCBjaGlwIHRvIHRlc3Qgd2l0aCBhcyBJIGNvdWxkbid0IGRl
-c3Ryb3kgdGhlIGRhdGEgb24gdGhlIG9uZQo+IEkgaGF2ZS4KPiAKPiBBbnlob3c6Cj4gCj4gRXJh
-c2VkIHRoZSBwYWdlIHdpdGggZmxhc2ggZXJhc2UgKEknbSBmb3JjaW5nIGl0IHRvIGVyYXNlIGJh
-ZCBibG9ja3MKPiBoZXJlIGFzIEkgbWVzcyB1cCB0aGUgbWFya2VyLCBJIGhhdmUgYSBoYWNrIHRv
-IGFsbG93IGVyYXNpbmcgYmFkCj4gYmxvY2tzLi4pCj4gRXZlcnl0aGluZyBpcyAweEZGIGZvciB0
-aGF0IHBhZ2UuCj4gCj4gIyBmbGFzaF9lcmFzZSAtTiAvZGV2L210ZDEgMCAxCj4gRXJhc2luZyAx
-MjggS2lieXRlIEAgMCAtLSAxMDAgJSBjb21wbGV0ZQo+ICMgbmFuZGR1bXAgLS1iYj1kdW1wYmFk
-IC1uIC1sMjA0OCAtbyAtYyAtcyAweDAgL2Rldi9tdGQxCj4gQmxvY2sgc2l6ZSAxMzEwNzIsIHBh
-Z2Ugc2l6ZSAyMDQ4LCBPT0Igc2l6ZSA2NAo+IER1bXBpbmcgZGF0YSBzdGFydGluZyBhdCAweDAw
-MDAwMDAwIGFuZCBlbmRpbmcgYXQgMHgwMDAwMDgwMC4uLgo+IDB4MDAwMDAwMDA6IGZmIGZmIGZm
-IGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmICB8Li4uLi4uLi4uLi4uLi4u
-LnwKPiAuLi4uCj4gMHgwMDAwMDdmMDogZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYg
-ZmYgZmYgZmYgZmYgZmYgIHwuLi4uLi4uLi4uLi4uLi4ufAo+ICAgT09CIERhdGE6IGZmIGZmIGZm
-IGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmICB8Li4uLi4uLi4uLi4uLi4u
-LnwKPiAgIE9PQiBEYXRhOiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBm
-ZiBmZiBmZiAgfC4uLi4uLi4uLi4uLi4uLi58Cj4gICBPT0IgRGF0YTogZmYgZmYgZmYgZmYgZmYg
-ZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgIHwuLi4uLi4uLi4uLi4uLi4ufAo+ICAg
-T09CIERhdGE6IGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZm
-ICB8Li4uLi4uLi4uLi4uLi4uLnwKPiAKPiBXcml0ZSB6ZXJvcyBpbnRvIHRoZSBwYWdlIGFuZCBP
-T0IuCj4gR2V0IGFsbCB6ZXJvcyBiYWNrIGluY2x1ZGluZyB0aGUgT09CLgo+IAo+ICMgbmFuZHdy
-aXRlIC1vIC9kZXYvbXRkMSAvZGV2L3plcm8KPiBXcml0aW5nIGRhdGEgdG8gYmxvY2sgMCBhdCBv
-ZmZzZXQgMHgwCj4gQmFkIGJsb2NrIGF0IDAsIDEgYmxvY2socykgd2lsbCBiZSBza2lwcGVkCj4g
-V3JpdGluZyBkYXRhIHRvIGJsb2NrIDEgYXQgb2Zmc2V0IDB4MjAwMDAKPiAjIG5hbmR3cml0ZSAt
-TiAtbyAvZGV2L210ZDEgL2Rldi96ZXJvCj4gV3JpdGluZyBkYXRhIHRvIGJsb2NrIDAgYXQgb2Zm
-c2V0IDB4MAo+ICMgbmFuZGR1bXAgLS1iYj1kdW1wYmFkIC1uIC1sMjA0OCAtbyAtYyAtcyAweDAg
-L2Rldi9tdGQxCj4gQmxvY2sgc2l6ZSAxMzEwNzIsIHBhZ2Ugc2l6ZSAyMDQ4LCBPT0Igc2l6ZSA2
-NAo+IER1bXBpbmcgZGF0YSBzdGFydGluZyBhdCAweDAwMDAwMDAwIGFuZCBlbmRpbmcgYXQgMHgw
-MDAwMDgwMC4uLgo+IDB4MDAwMDAwMDA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwICB8Li4uLi4uLi4uLi4uLi4uLnwKPiAuLi4KPiAweDAwMDAwN2YwOiAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgfC4uLi4uLi4u
-Li4uLi4uLi58Cj4gICBPT0IgRGF0YTogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgIHwuLi4uLi4uLi4uLi4uLi4ufAo+ICAgT09CIERhdGE6IDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICB8Li4uLi4uLi4uLi4uLi4u
-LnwKPiAgIE9PQiBEYXRhOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAgfC4uLi4uLi4uLi4uLi4uLi58Cj4gICBPT0IgRGF0YTogMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKPiB8Li4uLi4uLi4uLi4uLi4uLnwKPiAK
-PiBFcmFzZSB0aGUgcGFnZSBhZ2FpbiBhbmQgd3JpdGluZyByYW5kb20ganVuayBpbnRvIGl0Lgo+
-IFNlZWluZyByYW5kb20ganVuayBldmVyeXdoZXJlIGluY2x1ZGluZyB0aGUgT09CLgo+IAo+ICMg
-Zmxhc2hfZXJhc2UgLU4gL2Rldi9tdGQxIDAgMQo+IEVyYXNpbmcgMTI4IEtpYnl0ZSBAIDAgLS0g
-MTAwICUgY29tcGxldGUKPiAjIG5hbmR3cml0ZSAtTiAtbyAvZGV2L210ZDEgL2Rldi91cmFuZG9t
-Cj4gV3JpdGluZyBkYXRhIHRvIFsgIDIzMC41MDYyNjBdIHJhbmRvbTogbmFuZHdyaXRlOiB1bmlu
-aXRpYWxpemVkCj4gdXJhbmRvbSByZWFkICgyMDQ4IGJ5dGVzIHJlYWQpCj4gYmxvY2sgMCBhdCBv
-ZmZzZVsgIDIzMC41MTQ3MDVdIHJhbmRvbTogbmFuZHdyaXRlOiB1bmluaXRpYWxpemVkCj4gdXJh
-bmRvbSByZWFkICg2NCBieXRlcyByZWFkKQo+IHQgMHgwCj4gIyBuYW5kZHVtcCAtLWJiPWR1bXBi
-YWQgLW4gLWwyMDQ4IC1vIC1jIC1zIDB4MCAvZGV2L210ZDEKPiBCbG9jayBzaXplIDEzMTA3Miwg
-cGFnZSBzaXplIDIwNDgsIE9PQiBzaXplIDY0Cj4gRHVtcGluZyBkYXRhIHN0YXJ0aW5nIGF0IDB4
-MDAwMDAwMDAgYW5kIGVuZGluZyBhdCAweDAwMDAwODAwLi4uCj4gMHgwMDAwMDAwMDogNWUgMjQg
-YmQgNWYgZDkgYzYgY2UgYzUgYjEgODUgNTIgNGQgMjcgOTQgYzkgOTggIHxeJC5fLi4uLi4uUk0n
-Li4ufAo+IC4uLgo+IDB4MDAwMDA3ZjA6IGZhIDlmIDdmIDdkIGNlIDk5IDMzIDg4IGQ2IDlmIDk5
-IDdkIDg0IGU3IDBjIDRkICB8Li4ufS4uMy4uLi59Li4uTXwKPiAgIE9PQiBEYXRhOiBiMSA4MSAw
-NyA2YSA4ZCA0NyA4YiBlZCA4OSA4OCBhYyA2MiBlOCBhZSA0OCA1NCAgfC4uLmouRy4uLi4uYi4u
-SFR8Cj4gICBPT0IgRGF0YTogN2QgYjIgZWEgNzMgZjMgMjkgYmEgNjUgZTYgNDUgY2IgOGIgMWEg
-YzYgNWIgZGMgIHx9Li5zLikuZS5FLi4uLlsufAo+ICAgT09CIERhdGE6IGIyIDJlIDc3IDU2IGUw
-IGUxIDA0IDU5IDg2IDMxIDdhIGU1IGJkIDQzIGY5IDQ4ICB8Li53Vi4uLlkuMXouLkMuSHwKPiAg
-IE9PQiBEYXRhOiA1MiAwNSBiMiBmMSA2NSA2NCA1OSAyMiA3OSA1MCBlYyA4OSA1NSA2YiA2ZSAy
-MyAgfFIuLi5lZFkieVAuLlVrbiN8Cj4gCj4gSSB0aGluayB0aGlzIHNob3dzIHRoYXQgdGhlIGRh
-dGFzaGVldCBpcyByaWdodCBpbiB0aGF0IHRoZSBjb21wbGV0ZSA2NAo+IGJ5dGVzIG9mICJzcGFy
-ZSBhcmVhIiBpcyB1c2FibGUuCj4gSSBoYXZlIG5vIGlkZWEgd2hlcmUgaXQgcHV0cyB0aGUgRUND
-IHRob3VnaC4gOikKCkFyZ2gsIEkgZG9uJ3QgbGlrZSB3aGVuIGhhcmR3YXJlIHRyaWVzIHRvIGJl
-IHNtYXJ0LgoKT2sgdGhlbiBsZXQncyBkZWNsYXJlIG5vIEVDQyBieXRlcyBpbiB0aGUgT09CIGxh
-eW91dCwgSSBndWVzcyBpdCdzIHRoZQpiZXN0IHRoaW5nIHRvIGRvLi4uCgpUaGFua3MgZm9yIGNo
-ZWNraW5nIGJ0dyEKCkkgZG9uJ3QgcmVjYWxsIHRoZSBzdGF0ZSBvZiB0aGUgcGF0Y2ggd2hpY2gg
-dHJpZ2dlcmVkIHRoaXMgZGlzY3Vzc2lvbiwKc28gSSBndWVzcyBpdCdzIGEgZ29vZCB0aW1lIHRv
-IHJlc3Bpbi4KCkNoZWVycywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
-dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On 22/03/21 04:32PM, Michael Walle wrote:
+> Am 2021-03-22 15:21, schrieb Pratyush Yadav:
+> > On 18/03/21 10:24AM, Michael Walle wrote:
+[...]
+> > > @@ -1311,6 +1317,49 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
+> > >  		}
+> > >  	}
+> > > 
+> > > +	/*
+> > > +	 * Cache the complete SFDP data. It is not (easily) possible to
+> > > fetch
+> > > +	 * SFDP after probe time and we need it for the sysfs access.
+> > > +	 */
+> > > +	for (i = 0; i < header.nph; i++) {
+> > > +		param_header = &param_headers[i];
+> > > +		sfdp_size = max_t(size_t, sfdp_size,
+> > > +				  SFDP_PARAM_HEADER_PTP(param_header) +
+> > > +				  SFDP_PARAM_HEADER_PARAM_LEN(param_header));
+> > 
+> > *sigh* If BFPT header was not made a part of the main SFDP header, two
+> > "sfdp_size = ..." would not be needed, and we could do it all in one
+> > place.
+> > 
+> > You can do that refactor if you're feeling like it, but I won't insist
+> > on it.
+> 
+> I think that could be refactored when we also use the SFDP cache for
+> the remaining parsing.
+
+Ok.
+
+[...]
+> > 
+> > > +
+> > > +	sfdp->num_dwords = DIV_ROUND_UP(sfdp_size, sizeof(*sfdp->dwords));
+> > 
+> > The SFDP spec says that Parameter Table Pointer should be DWORD aligned
+> > and Parameter Table length is specified in number of DWORDs. So,
+> > sfdp_size should always be a multiple of 4. Any SFDP table where this is
+> > not true is an invalid one.
+> > 
+> > Also, the spec says "Device behavior when the Read SFDP command crosses
+> > the SFDP structure boundary is not defined".
+> > 
+> > So I think this should be a check for alignment instead of a round-up.
+> 
+> Well, that woundn't help for debugging. I.e. you also want the SFDP data
+> in cases like this. IMHO we should try hard enough to actually get a
+> reasonable dump.
+> 
+> OTOH we also rely on the header and the pointers in the header. Any
+> other ideas, but just to chicken out?
+
+Honestly, I don't think reading past the SFDP boundary would be too bad. 
+It probably will just be some garbage data. But if you want to avoid 
+that, you can always round down instead of up. This way you will only 
+miss the last DWORD at most. In either case, a warning should be printed 
+so this problem can be brought to the user's attention.
+
+> 
+> > > +	sfdp->dwords = devm_kcalloc(dev, sfdp->num_dwords,
+> > > +				    sizeof(*sfdp->dwords), GFP_KERNEL);
+> > > +	if (!sfdp->dwords) {
+> > > +		err = -ENOMEM;
+> > 
+> > Free sfdp here since it won't be used any longer.
+> 
+> I see, spi_nor_parse_sfdp() is optional and won't fail the probe.
+> Nice catch.
+> 
+> > 
+> > > +		goto exit;
+> > > +	}
+> > > +
+> > > +	err = spi_nor_read_sfdp_dma_unsafe(nor, 0, sfdp_size, sfdp->dwords);
+> > > +	if (err < 0) {
+> > > +		dev_dbg(dev, "failed to read SFDP data\n");
+> > > +		goto exit;
+> > 
+> > Free sfdp and sfdp->dwords here since they won't be used any longer.
+> > 
+> > > +	}
+> > > +
+> > > +	nor->sfdp = sfdp;
+> > > +
+> > >  	/*
+> > >  	 * Check other parameter headers to get the latest revision of
+> > >  	 * the basic flash parameter table.
+> > > diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> > > index a0d572855444..55c550208949 100644
+> > > --- a/include/linux/mtd/spi-nor.h
+> > > +++ b/include/linux/mtd/spi-nor.h
+> > > @@ -351,6 +351,7 @@ enum spi_nor_cmd_ext {
+> > >  struct flash_info;
+> > >  struct spi_nor_manufacturer;
+> > >  struct spi_nor_flash_parameter;
+> > > +struct sfdp;
+> > 
+> > nor->sfdp is a pointer. This should not be needed.
+> > 
+> > > 
+> > >  /**
+> > >   * struct spi_nor - Structure for defining the SPI NOR layer
+> > > @@ -375,6 +376,7 @@ struct spi_nor_flash_parameter;
+> > >   * @read_proto:		the SPI protocol for read operations
+> > >   * @write_proto:	the SPI protocol for write operations
+> > >   * @reg_proto:		the SPI protocol for read_reg/write_reg/erase
+> > > operations
+> > > + * @sfdp:		the SFDP data of the flash
+> > >   * @controller_ops:	SPI NOR controller driver specific operations.
+> > >   * @params:		[FLASH-SPECIFIC] SPI NOR flash parameters and settings.
+> > >   *                      The structure includes legacy flash
+> > > parameters and
+> > > @@ -404,6 +406,7 @@ struct spi_nor {
+> > >  	bool			sst_write_second;
+> > >  	u32			flags;
+> > >  	enum spi_nor_cmd_ext	cmd_ext_type;
+> > > +	struct sfdp		*sfdp;
+> > > 
+> > >  	const struct spi_nor_controller_ops *controller_ops;
+> > > 
+> > > --
+> > > 2.20.1
+> > > 
+> 
+> -- 
+> -michael
+
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
