@@ -2,74 +2,85 @@ Return-Path: <SRS0=4x3R=IU=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F423AC433DB
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 14:58:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CC16C433C1
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 15:09:01 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 67D626199F
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 14:58:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 67D626199F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id D63F86192B
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 15:09:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D63F86192B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=tB70YGhI00/Jq6cPgiq6rIxblWzKngIbZpKt/NVRv0M=; b=ozvdRXwoHRVrkLw2wxQlyVZ3I
-	GSzSqFavGH5KlKtzn2RK4PZ7P33JwFkomyvueEqa42/XjBIDSw8w3215VD4K2QgLijSDRUuo6qZOd
-	AlxFo8oILxSRb4H11DNBWFF2J3j60AttTJMR3be8NPGM8817oR+wQ3gJ6HqiRoWyWvt3J42Z1HUsR
-	BX/f15sBHpv1Q7qpk8VtIBOl8/bATpUMco2Laj6oPGX37dg28bRuTD9Z21jNLZR4gBLCrYdw7LWxs
-	B/sTVvffTRYHYawdH0E5zI18u1S0t+b+/rcquST8gYuYgop8NSUxCNzXHbxGKxJRPS155HriK7t4V
-	GqdmsQL0Q==;
+	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
+	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=yxZYFHyIEAIbzrWyb/MnNb7jKTTuwsqV7VhTCrpYRuM=; b=CTaxaG53mIbnTrFlM3ijGn7Nh6
+	Aj8YV0oTk+JHqXA7zWfTtgoSwe+E/eTAFOFHGj+PzX79TOMgL5qjpkrwCABBz1la3GTBTyhOCbq0E
+	LEHcn5fYqTXyGukdypUhMHY9KCOHyYnBJSefN/eAN6nNkky85yGRbu0QkcMbmmsaplqzclger372v
+	Tv1o9AnFrXxIM4RxMKBsKHPrhHwrBdahjFdjZR+xvliOuvwNfE5NAsnr2/PMJb5ZRsQUk1U4KT0Bz
+	w2DQNSkx/0UjMhrQwYh2O3VLWKA7RaC8fOew0EY2jHDTZGIZeZNlmP0k8mz4JcqddYicUZNJMQg8x
+	WeKu6ZCA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lOLzi-00Bpyy-U6; Mon, 22 Mar 2021 14:57:27 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1lOM9c-00Bqzx-Ob; Mon, 22 Mar 2021 15:07:41 +0000
+Received: from esa.microchip.iphmx.com ([68.232.153.233])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lOLza-00BpyC-RD
- for linux-mtd@lists.infradead.org; Mon, 22 Mar 2021 14:57:24 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 2A8A422235;
- Mon, 22 Mar 2021 15:57:17 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1616425037;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=X2+WabiOKhG6YXHDZiRtWr20I9Z8MpQUgxE2F5z65rE=;
- b=h2lQkhN8QBVibNYmbDjS/7j0Gzi2IWLyq/3oLvkYuyZq3Hh5MxquOmMwHdkerN6GKrN7FR
- 6GrFfIYQyO08Dt2Jf1Jjgxco76kFM6dqZilSwXRiTgaWNhakPMBDlru5T/h3v2CnQYt3JP
- /rxtU+pZr70FdvHQyRvAPxAPBNQuof0=
+ id 1lOM9R-00BqyD-Vg; Mon, 22 Mar 2021 15:07:34 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1616425648; x=1647961648;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=PKEVxUCgPKYfeTmheletBgau4WWVsW+3puprPtDA3sw=;
+ b=QmH1OO2mkLpXoK+RY2sMrRKqLn45TcJF+QwHpfTfmdssR74dmYlS2XmZ
+ ntROh4rSxX4f09M5XjjyDlTm4WhiXu/z7UIxdazSXhSL3nGZFc240Ik/m
+ YaNw6fDJKNOtVXdDNMikHfM5fEmYFVWnah1WHK/ZwPXPw1tExqcuWqdqH
+ pxuqtLfd/8uxF6sJizeLyC4J4nig2LLMfn1fZBSg9JB2uesHt4ph+N953
+ 0Fa+TLtpX03GJeTr8MOSyHjZlJOoQlm9VHAfeNs0+9DF3Zu4ZjKHJI4QD
+ aiV7n8/bjSBeNqh1z1PM8jvYcSn/RISkhy8K5401/IFADtWHUiw1Vi0yr Q==;
+IronPort-SDR: 2k6wZB5WbX+HIh6DWKmt2jsnNmQ88DYxESFLawyT2CQbVn6VCxREeIZdFanxgafkNYJ/q+FZsM
+ /+35jIGaslhfYDgkHTCwBNmRPN4y5Qs8fv8ambqE4V2sMN7uj90lfz/ULpyHBAwi1bbq5MtF4c
+ 46Xs18xj+5zv9Rk/8t4C6YV/oAryI4PqSJ/pvHsV+z+j/X74hquJOiQNmid6rqGff4Yffi+79D
+ kzvdmqB71j8VIhr7CZ9c52XuCy/2NXC3RZUu9EDsYCoVFdd+Dj402ts/9ZmC7Yi8+3ZA+s3/0D
+ xm0=
+X-IronPort-AV: E=Sophos;i="5.81,269,1610434800"; d="scan'208";a="119923115"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 22 Mar 2021 08:07:18 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 22 Mar 2021 08:07:19 -0700
+Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Mon, 22 Mar 2021 08:07:16 -0700
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
+CC: <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+ <ludovic.desroches@microchip.com>, <bbrezillon@kernel.org>,
+ <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, "Kai Stuhlemmer (ebee Engineering)"
+ <kai.stuhlemmer@ebee.de>, <stable@vger.kernel.org>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>
+Subject: [PATCH] mtd: rawnand: atmel: Update ecc_stats.corrected counter
+Date: Mon, 22 Mar 2021 17:07:14 +0200
+Message-ID: <20210322150714.101585-1-tudor.ambarus@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Date: Mon, 22 Mar 2021 15:57:16 +0100
-From: Michael Walle <michael@walle.cc>
-To: Pratyush Yadav <p.yadav@ti.com>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, Tudor
- Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH 2/2] mtd: spi-nor: add initial sysfs support
-In-Reply-To: <20210322144344.4hys4zs57hnsjyjy@ti.com>
-References: <20210318092406.5340-1-michael@walle.cc>
- <20210318092406.5340-3-michael@walle.cc>
- <20210322144344.4hys4zs57hnsjyjy@ti.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <716b7d6c86a12d30021fbf6b77b8545f@walle.cc>
-X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210322_145722_344788_8538CB3C 
-X-CRM114-Status: GOOD (  29.03  )
+X-CRM114-CacheID: sfid-20210322_150731_497350_AC11DDA0 
+X-CRM114-Status: UNSURE (   8.62  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,213 +92,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Pratyush,
+From: "Kai Stuhlemmer (ebee Engineering)" <kai.stuhlemmer@ebee.de>
 
-Am 2021-03-22 15:43, schrieb Pratyush Yadav:
-> I have not worked with sysfs much so only giving this patch a quick
-> overview.
-> 
-> On 18/03/21 10:24AM, Michael Walle wrote:
->> Add support to show the name and JEDEC identifier as well as to dump 
->> the
->> SFDP table. Not all flashes list their SFDP table contents in their
->> datasheet. So having that is useful. It might also be helpful in bug
->> reports from users.
->> 
->> The idea behind the sysfs module is also to have raw access to the SPI
->> NOR flash device registers, which can also be useful for debugging.
-> 
-> Your current patch does not add this feature. Why do you think it is
-> important enough to mention it?
+Update MTD ECC statistics with the number of corrected bits.
 
-It was part of my first (not submitted) version. I.e. you could also
-read the status register(s). Comes in handy for debugging the locking
-code, for example.
+Fixes: f88fc122cc34 ("mtd: nand: Cleanup/rework the atmel_nand driver")
+Cc: stable@vger.kernel.org
+Signed-off-by: Kai Stuhlemmer (ebee Engineering) <kai.stuhlemmer@ebee.de>
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+---
+ drivers/mtd/nand/raw/atmel/nand-controller.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-I can also remove that paragraph ;)
+diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
+index e6ceec8f50dc..8aab1017b460 100644
+--- a/drivers/mtd/nand/raw/atmel/nand-controller.c
++++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
+@@ -883,10 +883,12 @@ static int atmel_nand_pmecc_correct_data(struct nand_chip *chip, void *buf,
+ 							  NULL, 0,
+ 							  chip->ecc.strength);
+ 
+-		if (ret >= 0)
++		if (ret >= 0) {
++			mtd->ecc_stats.corrected += ret;
+ 			max_bitflips = max(ret, max_bitflips);
+-		else
++		} else {
+ 			mtd->ecc_stats.failed++;
++		}
+ 
+ 		databuf += chip->ecc.size;
+ 		eccbuf += chip->ecc.bytes;
+-- 
+2.25.1
 
->> Signed-off-by: Michael Walle <michael@walle.cc>
->> ---
->>  drivers/mtd/spi-nor/Makefile |  2 +-
->>  drivers/mtd/spi-nor/core.c   |  5 +++
->>  drivers/mtd/spi-nor/core.h   |  3 ++
->>  drivers/mtd/spi-nor/sysfs.c  | 86 
->> ++++++++++++++++++++++++++++++++++++
->>  4 files changed, 95 insertions(+), 1 deletion(-)
->>  create mode 100644 drivers/mtd/spi-nor/sysfs.c
->> 
->> diff --git a/drivers/mtd/spi-nor/Makefile 
->> b/drivers/mtd/spi-nor/Makefile
->> index 653923896205..aff308f75987 100644
->> --- a/drivers/mtd/spi-nor/Makefile
->> +++ b/drivers/mtd/spi-nor/Makefile
->> @@ -1,6 +1,6 @@
->>  # SPDX-License-Identifier: GPL-2.0
->> 
->> -spi-nor-objs			:= core.o sfdp.o
->> +spi-nor-objs			:= core.o sfdp.o sysfs.o
->>  spi-nor-objs			+= atmel.o
->>  spi-nor-objs			+= catalyst.o
->>  spi-nor-objs			+= eon.o
->> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
->> index 4a315cb1c4db..2eaf4ba8c0f3 100644
->> --- a/drivers/mtd/spi-nor/core.c
->> +++ b/drivers/mtd/spi-nor/core.c
->> @@ -3707,6 +3707,10 @@ static int spi_nor_probe(struct spi_mem 
->> *spimem)
->>  	if (ret)
->>  		return ret;
->> 
->> +	ret = spi_nor_sysfs_create(nor);
->> +	if (ret)
->> +		return ret;
->> +
->>  	return mtd_device_register(&nor->mtd, data ? data->parts : NULL,
->>  				   data ? data->nr_parts : 0);
->>  }
->> @@ -3716,6 +3720,7 @@ static int spi_nor_remove(struct spi_mem 
->> *spimem)
->>  	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
->> 
->>  	spi_nor_restore(nor);
->> +	spi_nor_sysfs_remove(nor);
->> 
->>  	/* Clean up MTD stuff. */
->>  	return mtd_device_unregister(&nor->mtd);
->> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
->> index 668f22011b1d..dd592f7b62d1 100644
->> --- a/drivers/mtd/spi-nor/core.h
->> +++ b/drivers/mtd/spi-nor/core.h
->> @@ -488,4 +488,7 @@ static struct spi_nor __maybe_unused 
->> *mtd_to_spi_nor(struct mtd_info *mtd)
->>  	return mtd->priv;
->>  }
->> 
->> +int spi_nor_sysfs_create(struct spi_nor *nor);
->> +void spi_nor_sysfs_remove(struct spi_nor *nor);
->> +
->>  #endif /* __LINUX_MTD_SPI_NOR_INTERNAL_H */
->> diff --git a/drivers/mtd/spi-nor/sysfs.c b/drivers/mtd/spi-nor/sysfs.c
->> new file mode 100644
->> index 000000000000..0de031e246c5
->> --- /dev/null
->> +++ b/drivers/mtd/spi-nor/sysfs.c
->> @@ -0,0 +1,86 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +
->> +#include <linux/mtd/spi-nor.h>
->> +#include <linux/spi/spi.h>
->> +#include <linux/spi/spi-mem.h>
->> +#include <linux/sysfs.h>
->> +
->> +#include "core.h"
->> +
->> +static ssize_t name_show(struct device *dev,
->> +			 struct device_attribute *attr, char *buf)
->> +{
->> +	struct spi_device *spi = to_spi_device(dev);
->> +	struct spi_mem *spimem = spi_get_drvdata(spi);
->> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
->> +
->> +	return sprintf(buf, "%s\n", nor->info->name);
->> +}
->> +static DEVICE_ATTR_RO(name);
->> +
->> +static ssize_t jedec_id_show(struct device *dev,
->> +			     struct device_attribute *attr, char *buf)
->> +{
->> +	struct spi_device *spi = to_spi_device(dev);
->> +	struct spi_mem *spimem = spi_get_drvdata(spi);
->> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
->> +
->> +	return sprintf(buf, "%*phN\n", nor->info->id_len, nor->info->id);
->> +}
->> +static DEVICE_ATTR_RO(jedec_id);
->> +
->> +static struct attribute *spi_nor_sysfs_entries[] = {
->> +	&dev_attr_name.attr,
->> +	&dev_attr_jedec_id.attr,
->> +	NULL
->> +};
->> +
->> +static ssize_t sfdp_read(struct file *filp, struct kobject *kobj,
->> +			 struct bin_attribute *bin_attr, char *buf,
->> +			 loff_t off, size_t count)
->> +{
->> +	struct spi_device *spi = to_spi_device(kobj_to_dev(kobj));
->> +	struct spi_mem *spimem = spi_get_drvdata(spi);
->> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
->> +	struct sfdp *sfdp = nor->sfdp;
->> +	size_t sfdp_size = sfdp->num_dwords * sizeof(*sfdp->dwords);
-> 
-> Is a NULL check needed here? If the flash does not have a SFDP table
-> nor->sfdp will be NULL.
-
-That can't happen because..
-
->> +
->> +	return memory_read_from_buffer(buf, count, &off, nor->sfdp->dwords,
->> +				       sfdp_size);
->> +}
->> +static BIN_ATTR_RO(sfdp, PAGE_SIZE);
->> +
->> +static struct bin_attribute *spi_nor_sysfs_bin_entries[] = {
->> +	&bin_attr_sfdp,
->> +	NULL
->> +};
->> +
->> +static umode_t spi_nor_sysfs_is_bin_visible(struct kobject *kobj,
->> +					    struct bin_attribute *attr, int n)
->> +{
->> +	struct spi_device *spi = to_spi_device(kobj_to_dev(kobj));
->> +	struct spi_mem *spimem = spi_get_drvdata(spi);
->> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
->> +
->> +	if (attr == &bin_attr_sfdp && nor->sfdp)
->> +		return 0444;
-
-.. it is not visible. Maybe I should use
-
-	if (attr == &bin_attr_sfdp && !nor->sfdp)
-		return 0;
-
-	return 0444;
-
->> +
->> +	return 0;
->> +}
->> +
->> +static struct attribute_group spi_nor_sysfs_attr_group = {
->> +	.name		= NULL,
->> +	.is_bin_visible	= spi_nor_sysfs_is_bin_visible,
->> +	.attrs		= spi_nor_sysfs_entries,
->> +	.bin_attrs	= spi_nor_sysfs_bin_entries,
->> +};
->> +
->> +int spi_nor_sysfs_create(struct spi_nor *nor)
->> +{
->> +	return sysfs_create_group(&nor->dev->kobj, 
->> &spi_nor_sysfs_attr_group);
->> +}
->> +
->> +void spi_nor_sysfs_remove(struct spi_nor *nor)
->> +{
->> +	sysfs_remove_group(&nor->dev->kobj, &spi_nor_sysfs_attr_group);
->> +}
->> --
->> 2.20.1
->> 
-> 
-> Rest of it looks good to me.
-
-Thanks for reviewing!
-
--michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
