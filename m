@@ -2,66 +2,80 @@ Return-Path: <SRS0=4x3R=IU=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65F48C433C1
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 11:35:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF07CC433C1
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 12:44:53 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0C8406198B
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 11:35:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C8406198B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 37CB8619D3
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 12:44:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 37CB8619D3
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=Z9qH87YVwkqrTKF045BGjBPt36YWTb1hUoA4NlryVWs=; b=BHVAZm9VU4nMTsDVHqasLqvto9
-	NJh5QgqmBNGv4PalYfkMSvfg+745QpqmOx6AycuK/CbrLIdfz2knfV/8IDhncWEQFZvpc2gIP8iFz
-	17OmLNbMYkGyDAlBExlTD5F2K26R0M4ucuEH3PRmI0tp8B8ga6u/eltQh1lOU9vacqiL7P/ua0KKT
-	si4Wi7aNR0ocuvYxZyhrFQMBDMkJ5nHTV/4vIjef8p+UWSbPND+viv35ew5J1bADwtZAlPd9/PDDR
-	r25AVs5S7mwhZWZLZTafvflWZof3qUwQrthiVFdTqWWWLbGcUOMIEVi6J0jmQoyKoqWyYRirQzXbc
-	FOUs0MMw==;
+	List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=QOWysYU7LecPIcF8L8ZxqhDnmGBPCUzqnJYuOat6T38=; b=IbAjjyxlWevD2ALoiGWn3bMM3
+	UpVYdyiyA+AxENiPFgnO8I1cO89N/AoL+eIxiXUHTEDwgBIzGuHE1519JYFKnpcgAhNa+KhkmoYcn
+	4kO+7Oi4jdWv0RGatFDwqufbWXtjwLrsQXoRiowdSvTZQxKjTKpfzE1TP/x3BbHdSglHIlkHvbU9+
+	Zvuz3R6faPtSwQyPjFMTMXkFN9W5QkYc18iaIwojTw/CxNOfycWvFvBoBxV+6qBFEj2lpdcE8+tiv
+	DPcC6M9L80ECgl5xxJiwPmR9LMZLdu3Yjo6IpoUbhp2nD/mm4ApY3A0RaSlZO5bqZ97T1als1XOBL
+	YjSmOm3Yg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lOIpY-00BTUK-Fo; Mon, 22 Mar 2021 11:34:44 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1lOJu4-00Bc8v-TR; Mon, 22 Mar 2021 12:43:29 +0000
+Received: from mail-qt1-x832.google.com ([2607:f8b0:4864:20::832])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lOIpT-00BTT4-Ax
- for linux-mtd@lists.infradead.org; Mon, 22 Mar 2021 11:34:41 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA9D06198B;
- Mon, 22 Mar 2021 11:34:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1616412878;
- bh=WOJn3MilWpAvLS3chkKdd2cGjmreOdFbGDpQTcekL6k=;
- h=From:To:Cc:Subject:Date:From;
- b=lJSs0aAy+xIkv/NifyM67kYKGfafnVHmdY8oNXXd7mVd7LfBpylUFh7IgFFjgW9AR
- A5MsiQ23qPVM7v7LAMjLCoajVmAd0bPfM7dC9JJSMVnW2uS+xPPCpt9a06Sq+2R041
- xG5ATl8kLn/oMQ/AkDnh9wuN2zE8NoxmIcRMVvykSy9L+BVmDqG2k9XT0xPNcQED1/
- E51Egkp+kICTwFPqZgv13fFb8ckPffG2GxKJCSJXdWDmkd/7fRKcMPqArKBA8lbRoA
- MJI6DdsZ0G9C3/uh7mFTZv+JD7dWANRjZgq5ER1YMdf9ROhEDTaYGx1L9GI1KVGTv5
- Frmnf0XZm0DpQ==
-From: Arnd Bergmann <arnd@kernel.org>
-To: David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>
-Cc: Arnd Bergmann <arnd@arndb.de>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] jffs2: avoid Wempty-body warnings
-Date: Mon, 22 Mar 2021 12:34:29 +0100
-Message-Id: <20210322113434.3068844-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+ id 1lOJty-00Bc86-EU
+ for linux-mtd@lists.infradead.org; Mon, 22 Mar 2021 12:43:26 +0000
+Received: by mail-qt1-x832.google.com with SMTP id m7so12107931qtq.11
+ for <linux-mtd@lists.infradead.org>; Mon, 22 Mar 2021 05:43:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=0x0f.com; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=arydSfNJdOno8g+YOjFb3gBNmyUnmYwfHcSK+u9v6E0=;
+ b=pvfz1nRDKM+5JSmPf5O61eb8JVdXAor769fw2vp17sNl/zTPQqdHlvp9FM/wReYvxT
+ IrFZMfN+HbSqU1k08wYwvc42oC04BNOz21jTf2NAumCQg5gLKZgY6Z7EUGXB4DhoDTmh
+ ubvevCPpw+vY/CWR+di+hulwZRFTje64QOKkE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=arydSfNJdOno8g+YOjFb3gBNmyUnmYwfHcSK+u9v6E0=;
+ b=Mkk/DdJk6DKngqehFVnbEC4NBTQtaE6SPBhg0Faji5nDLFtNTLqVrmOxsGgweebQFO
+ z/w3wYnCPWfXi2hTedaVLQWT2p/FMDk/FgEeF2PXve2hPuJGXNIhBZXLYwBq3BXBWGVN
+ G8VpYsNOAZlNmaaLRaYpso7WN+yhVPaP0Bd+sY95rNMnsw8hPTwRzdy+Z+HYv9ld4VdR
+ tBAeM+8p2N6effijv2Xog4fo4W46GXFBSkgvIo8Ivlmz2whC2ZkhHIN4n2kT68pk3rR1
+ dhJoJgHWPhwU9MvB1Jc6PJlrleUGab51vqNaZy91fPgsOv8jFbCPjphwb2IirV5rLm2X
+ D/gw==
+X-Gm-Message-State: AOAM531uNDrRlDFKSph1QJfhyyMmhIC7GLnQIQiLk1r2bgEwSXfgaxtS
+ 56aIpsapgEprAtMINTt4Tb5F3Frkue36qPeVweG5AQ==
+X-Google-Smtp-Source: ABdhPJyw8gIStBNrRZHMMvHuRzb/Apf44gmOg1kbj31cZd/bXDI+mQRHLdAEkxp7QvDhMsWmZcrEhpSPyTLQSliM8yI=
+X-Received: by 2002:ac8:7f53:: with SMTP id g19mr9464586qtk.249.1616416999595; 
+ Mon, 22 Mar 2021 05:43:19 -0700 (PDT)
 MIME-Version: 1.0
+References: <20210213095724.3411058-1-daniel@0x0f.com>
+ <20210215112409.1a755bf0@xps13>
+ <CAFr9PXkh+attaCc6C2UxB=qvXksWriWOaaoEndy4k6SGE0QOHQ@mail.gmail.com>
+ <20210215121653.4edd86c4@xps13>
+In-Reply-To: <20210215121653.4edd86c4@xps13>
+From: Daniel Palmer <daniel@0x0f.com>
+Date: Mon, 22 Mar 2021 21:44:40 +0900
+Message-ID: <CAFr9PXmVehtcm6FjBqi_hmEAj1rgtxMvarisjPmWhgjruVj++Q@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: spinand: add support for Foresee FS35ND01G-S1Y2
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: linux-mtd@lists.infradead.org, 
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210322_113439_954033_E742F97D 
-X-CRM114-Status: UNSURE (   9.41  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210322_124322_995033_F27D15A9 
+X-CRM114-Status: GOOD (  26.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,65 +92,107 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hi Miquel,
 
-Building with W=1 shows a few warnings for empty macros:
+Sorry for the resend. Gmail randomly switched to HTML email so the
+original version seems to have bounced.
 
-fs/jffs2/scan.c: In function 'jffs2_scan_xattr_node':
-fs/jffs2/scan.c:378:66: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
-  378 |                 jffs2_sum_add_xattr_mem(s, rx, ofs - jeb->offset);
-      |                                                                  ^
-fs/jffs2/scan.c: In function 'jffs2_scan_xref_node':
-fs/jffs2/scan.c:434:65: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
-  434 |                 jffs2_sum_add_xref_mem(s, rr, ofs - jeb->offset);
-      |                                                                 ^
-fs/jffs2/scan.c: In function 'jffs2_scan_eraseblock':
-fs/jffs2/scan.c:893:88: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
-  893 |                                 jffs2_sum_add_padding_mem(s, je32_to_cpu(node->totlen));
-      |                                                                                        ^
+On Mon, 15 Feb 2021 at 20:16, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> > "2. Spare area 800H to 83FH is all available for user.
+> >  ECC parity codes are programmed in
+> > additional space and not user accessible."
+> >
+> > It would seem that the pages are actually bigger than 2K + 64 or there
+> > is some other place they keep the ECC.
+> > Or both datasheets are lying. Somewhere else in the datasheets it says
+> > that writes to the ECC area will be ignored but that doesn't make a
+> > lot of sense if the ECC area isn't user accessible in the first place.
+> >
+> > I didn't think about it at the time but I can take a dump of the OOB
+> > area of my FS35ND01G-S1Y2 to confirm it's all 0xff except for any
+> > factory marked bad blocks.
+>
+> I see. Can you please try the following:
+>
+> nandwrite -o /dev/mtdx /dev/zero
+> nanddump -ol1 /dev/mtdx
+> If the entire area is effectively free to be used, you should see 0's
+> everywhere. Otherwise you should have ff's somewhere.
 
-Change all these macros to 'do { } while (0)' statements to avoid the
-warnings and make the code a little more robust.
+Sorry I didn't follow up sooner on this. I needed to order another of
+this flash chip to test with as I couldn't destroy the data on the one
+I have.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- fs/jffs2/summary.h | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+Anyhow:
 
-diff --git a/fs/jffs2/summary.h b/fs/jffs2/summary.h
-index e4131cb1f1d4..36d9a1280770 100644
---- a/fs/jffs2/summary.h
-+++ b/fs/jffs2/summary.h
-@@ -194,18 +194,18 @@ int jffs2_sum_scan_sumnode(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb
- 
- #define jffs2_sum_active() (0)
- #define jffs2_sum_init(a) (0)
--#define jffs2_sum_exit(a)
-+#define jffs2_sum_exit(a) do { } while (0)
- #define jffs2_sum_disable_collecting(a)
- #define jffs2_sum_is_disabled(a) (0)
--#define jffs2_sum_reset_collected(a)
-+#define jffs2_sum_reset_collected(a) do { } while (0)
- #define jffs2_sum_add_kvec(a,b,c,d) (0)
--#define jffs2_sum_move_collected(a,b)
-+#define jffs2_sum_move_collected(a,b) do { } while (0)
- #define jffs2_sum_write_sumnode(a) (0)
--#define jffs2_sum_add_padding_mem(a,b)
--#define jffs2_sum_add_inode_mem(a,b,c)
--#define jffs2_sum_add_dirent_mem(a,b,c)
--#define jffs2_sum_add_xattr_mem(a,b,c)
--#define jffs2_sum_add_xref_mem(a,b,c)
-+#define jffs2_sum_add_padding_mem(a,b) do { } while (0)
-+#define jffs2_sum_add_inode_mem(a,b,c) do { } while (0)
-+#define jffs2_sum_add_dirent_mem(a,b,c) do { } while (0)
-+#define jffs2_sum_add_xattr_mem(a,b,c) do { } while (0)
-+#define jffs2_sum_add_xref_mem(a,b,c) do { } while (0)
- #define jffs2_sum_scan_sumnode(a,b,c,d,e) (0)
- 
- #endif /* CONFIG_JFFS2_SUMMARY */
--- 
-2.29.2
+Erased the page with flash erase (I'm forcing it to erase bad blocks
+here as I mess up the marker, I have a hack to allow erasing bad
+blocks..)
+Everything is 0xFF for that page.
 
+# flash_erase -N /dev/mtd1 0 1
+Erasing 128 Kibyte @ 0 -- 100 % complete
+# nanddump --bb=dumpbad -n -l2048 -o -c -s 0x0 /dev/mtd1
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x00000000 and ending at 0x00000800...
+0x00000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+....
+0x000007f0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+
+Write zeros into the page and OOB.
+Get all zeros back including the OOB.
+
+# nandwrite -o /dev/mtd1 /dev/zero
+Writing data to block 0 at offset 0x0
+Bad block at 0, 1 block(s) will be skipped
+Writing data to block 1 at offset 0x20000
+# nandwrite -N -o /dev/mtd1 /dev/zero
+Writing data to block 0 at offset 0x0
+# nanddump --bb=dumpbad -n -l2048 -o -c -s 0x0 /dev/mtd1
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x00000000 and ending at 0x00000800...
+0x00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  |................|
+...
+0x000007f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  |................|
+  OOB Data: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  |................|
+  OOB Data: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  |................|
+  OOB Data: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  |................|
+  OOB Data: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+|................|
+
+Erase the page again and writing random junk into it.
+Seeing random junk everywhere including the OOB.
+
+# flash_erase -N /dev/mtd1 0 1
+Erasing 128 Kibyte @ 0 -- 100 % complete
+# nandwrite -N -o /dev/mtd1 /dev/urandom
+Writing data to [  230.506260] random: nandwrite: uninitialized
+urandom read (2048 bytes read)
+block 0 at offse[  230.514705] random: nandwrite: uninitialized
+urandom read (64 bytes read)
+t 0x0
+# nanddump --bb=dumpbad -n -l2048 -o -c -s 0x0 /dev/mtd1
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x00000000 and ending at 0x00000800...
+0x00000000: 5e 24 bd 5f d9 c6 ce c5 b1 85 52 4d 27 94 c9 98  |^$._......RM'...|
+...
+0x000007f0: fa 9f 7f 7d ce 99 33 88 d6 9f 99 7d 84 e7 0c 4d  |...}..3....}...M|
+  OOB Data: b1 81 07 6a 8d 47 8b ed 89 88 ac 62 e8 ae 48 54  |...j.G.....b..HT|
+  OOB Data: 7d b2 ea 73 f3 29 ba 65 e6 45 cb 8b 1a c6 5b dc  |}..s.).e.E....[.|
+  OOB Data: b2 2e 77 56 e0 e1 04 59 86 31 7a e5 bd 43 f9 48  |..wV...Y.1z..C.H|
+  OOB Data: 52 05 b2 f1 65 64 59 22 79 50 ec 89 55 6b 6e 23  |R...edY"yP..Ukn#|
+
+I think this shows that the datasheet is right in that the complete 64
+bytes of "spare area" is usable.
+I have no idea where it puts the ECC though. :)
+
+Thanks,
+
+Daniel
 
 ______________________________________________________
 Linux MTD discussion mailing list
