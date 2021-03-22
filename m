@@ -2,82 +2,84 @@ Return-Path: <SRS0=4x3R=IU=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96A8DC433C1
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 07:53:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EFD08C433DB
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 08:28:37 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1545561973
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 07:53:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1545561973
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
+	by mail.kernel.org (Postfix) with ESMTPS id 73F3761972
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 08:28:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73F3761972
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=Sb7vD2NRPvICJjrWsCAPGo2Ul45g1asjuFcwNTCr/QM=; b=C1vkVMK+w4Hgk5dvQGDUhhpey7
-	7ZSQTO1CnQ608c20lY0rWfqD0X4y0oTxLgZVO53OA2pVhPnCye8Aiy2cPl1BGZ8Rcc1fuyK1QfPbI
-	9rXkJlhuebgpdrG2DvxoSpomQvTD/hgP79p24oBsup20nY207dU0CgF+Ci9i7h/3H8OR+AH1n/rYt
-	4mR6AvqLVOv0dYNqnEGTsZGiUQEBcVfcCBTd4oukrHDm9M7OUwoG/AuWlzvbNEbTMtXEnNeE13BZ/
-	j/TKkl9T/Sf6j1VWQ4A9J/VZE9txdbRKqwT11sfoszeNA0XFVXMGha8l8eBGclAXWTVGy4aqJEd+d
-	GkPL/Ulw==;
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=xew7mjQ5LuNRg9/Nsvpp7G7pIXQyhpsoM1xn5iSeMfU=; b=MBUu08xUAwGDV+7C3mG2q/CZ3
+	qHXDZeYTIQk6KdKfmqq9TxuvIUFfgA49OwVEYBbZdEZhjWJhMpOp2KVGlZUovRT8UvN32mcza2WKJ
+	m2m+2ve4HuEyWjVXK3mXwwInYLRI9sviggeMjRwz6wWLqgyp4aPpzDHcg0KT/721Pm8091ZD2fzEM
+	CTb34gc8kcUX6EgjVF3zbosDQop2m9yXiiAWqm5FWj6w+42pGgB5dwtrfJMHiJhRfehblCyajUKyr
+	AGop+lIF+GTcVUXoNXklA52cntVKC8zaFxNIXD+yhJfNe2sZk8MXbuIBqrPL/cgcTLq+6+CVkqYDS
+	Ki4oiqJ2A==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lOFMm-00B6iS-Ci; Mon, 22 Mar 2021 07:52:48 +0000
-Received: from esa.microchip.iphmx.com ([68.232.153.233])
+	id 1lOFuB-00B9X6-AK; Mon, 22 Mar 2021 08:27:21 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lOFMW-00B6fP-A8
- for linux-mtd@lists.infradead.org; Mon, 22 Mar 2021 07:52:34 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1616399552; x=1647935552;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=GHbviN382mS0WFoielS1QhqNDpObeQ8Ts5XNId4GLX8=;
- b=KSCCD70Br/vJycxWMDFFC2LFcLxO0i4640BvUSquHTXDe9Bjl82Efmvi
- eWowFIkDOoVXA8wJZFnVIUsyQOKwWoLM4Aee6GxNRLmcP2TJsyVF2snKo
- zONkEWpvF34HxPkg1hccvOqtcjTzo+t7N6Yx/NqN4Dugwj7vXGZiG+E49
- E+kKZvo1IB7VpiEBSVKmTP2pE6ItnSNtvomxXD+qJifyo+Zu0aVKEcTIU
- Tyc7tyqT+448TB2T1U3cuoeuAQXLx0H9wVRG9G8cpI7liym70W/h+9YrD
- t2/dGTY5ncXpfnKS16FpyW/7SWjXZxkXxfw8P22UVif/75QoUtSfwBORL g==;
-IronPort-SDR: 9ff6a23kY5W7Z85zPDzRHIKAul0wJWYoclkOlwUKUKIunxCI+MsdKKsxrn7CTrrTiljAjM7lLU
- xt4BIhpsDIEd42bSqEMO6iUCvDpZ1UfAsJHPU6f+RGmpgfM5k5WSkien4R18znfLges0YvUZ2n
- gXEDWVuom+htD+PXBOOUmjUvktzPMhrQCY3fg1ANNkfMebT4oEXOTHtbeLidcrAMXBo4B6Oe15
- Br1s+U75b+Za9A8V2dLyNAY5pxzl/E/0psYcMJ5jVcArQldx22J7qkhOEUrSBUD9hiKdJkYG0s
- 0EA=
-X-IronPort-AV: E=Sophos;i="5.81,268,1610434800"; d="scan'208";a="113597878"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 22 Mar 2021 00:51:35 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 22 Mar 2021 00:51:35 -0700
-Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Mon, 22 Mar 2021 00:51:33 -0700
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
-To: <vigneshr@ti.com>, <michael@walle.cc>, <p.yadav@ti.com>
-CC: <miquel.raynal@bootlin.com>, <richard@nod.at>,
- <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>, "Tudor
- Ambarus" <tudor.ambarus@microchip.com>
-Subject: [PATCH v3 0/2] mtd: spi-nor: Cleanup patches
-Date: Mon, 22 Mar 2021 09:51:29 +0200
-Message-ID: <20210322075131.45093-1-tudor.ambarus@microchip.com>
-X-Mailer: git-send-email 2.25.1
+ id 1lOFtd-00B9Ou-G8
+ for linux-mtd@lists.infradead.org; Mon, 22 Mar 2021 08:26:50 +0000
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12M8Qc2Z130183;
+ Mon, 22 Mar 2021 03:26:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1616401598;
+ bh=6XDm6dbry0r+YwRaSouAqsdbNTu+SUnf4rka7kXFp4s=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=faZMeub+NihFppV8JJFPUIGbk2KZ+Rl3fHm4MhKWziqBDfkrCeFNHDkrQGZxoNKl/
+ 5pezCoXQ7MTwIMbbluCBB0ebDjrOl4XFOEoYSbXg/gE94A1zSfQVark9fItGiRgyJC
+ xBqfZNnexsUGO/zSBwl5YVA8wyJ3eTmY32djiFjg=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12M8Qcgf116234
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 22 Mar 2021 03:26:38 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 22
+ Mar 2021 03:26:37 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 22 Mar 2021 03:26:37 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12M8QbfD038199;
+ Mon, 22 Mar 2021 03:26:37 -0500
+Date: Mon, 22 Mar 2021 13:56:36 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+CC: <vigneshr@ti.com>, <michael@walle.cc>, <miquel.raynal@bootlin.com>,
+ <richard@nod.at>, <linux-kernel@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>, Joe Perches <joe@perches.com>
+Subject: Re: [PATCH v3 2/2] mtd: spi-nor: swp: Improve code around
+ spi_nor_check_lock_status_sr()
+Message-ID: <20210322082634.6bpgsvpofw7o4pml@ti.com>
+References: <20210322075131.45093-1-tudor.ambarus@microchip.com>
+ <20210322075131.45093-3-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20210322075131.45093-3-tudor.ambarus@microchip.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210322_075233_030587_D98D9DDC 
-X-CRM114-Status: UNSURE (   6.12  )
+X-CRM114-CacheID: sfid-20210322_082645_949090_58E404BC 
+X-CRM114-Status: UNSURE (   6.61  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -95,22 +97,20 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Various cleanup patches done while reviewing contributions.
+On 22/03/21 09:51AM, Tudor Ambarus wrote:
+> - bool return value for spi_nor_check_lock_status_sr(), gets rid of
+>   the return 1,
+> - introduce temporary variables for better readability.
+> 
+> Suggested-by: Joe Perches <joe@perches.com>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-Tudor Ambarus (2):
-  mtd: spi-nor: Move Software Write Protection logic out of the core
-  mtd: spi-nor: swp: Improve code around spi_nor_check_lock_status_sr()
-
- drivers/mtd/spi-nor/Makefile |   2 +-
- drivers/mtd/spi-nor/core.c   | 406 +--------------------------------
- drivers/mtd/spi-nor/core.h   |   4 +
- drivers/mtd/spi-nor/swp.c    | 427 +++++++++++++++++++++++++++++++++++
- 4 files changed, 435 insertions(+), 404 deletions(-)
- create mode 100644 drivers/mtd/spi-nor/swp.c
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 
 -- 
-2.25.1
-
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
