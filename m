@@ -2,93 +2,66 @@ Return-Path: <SRS0=4x3R=IU=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-17.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BA60C433C1
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 09:41:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65F48C433C1
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 11:35:28 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8719A61864
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 09:41:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8719A61864
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 0C8406198B
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Mar 2021 11:35:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C8406198B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=C4N0gN7BHgsMEWYkoZ8sAA88ot/A01vAEBPU5dMQVg8=; b=bnFZyt5dja+TzpMQI0h5beTq+
-	ubqDJ1U9Y0X8aPxhL/pwmdreN92ZP69kgKcsHw+ow4xAbTcqLqTo/D4XCJ2lqobt8Zx4P5uiaZplU
-	sqJcDcSsPV6T3wxqsfvfj1a9eVW34ThCwwoGsr1sIC7Rig5j+LB0xp+dLnqcjnf7bhs0aUKgDlsG5
-	OEuaUrxEzUS2ChMg9Wzr1R9F9gYuOHLBeo9Eh43Snlq72c+VKqY0OZDimgiSq75mH3i75GyV/BV/N
-	vckdaN0X0AjOawb/jhiFaIxK2SAuYJGNcWouh72JuYyPk3qvn9c5msnWWaTPrepYuWaWZai4iruu3
-	CBOvHIg8g==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=Z9qH87YVwkqrTKF045BGjBPt36YWTb1hUoA4NlryVWs=; b=BHVAZm9VU4nMTsDVHqasLqvto9
+	NJh5QgqmBNGv4PalYfkMSvfg+745QpqmOx6AycuK/CbrLIdfz2knfV/8IDhncWEQFZvpc2gIP8iFz
+	17OmLNbMYkGyDAlBExlTD5F2K26R0M4ucuEH3PRmI0tp8B8ga6u/eltQh1lOU9vacqiL7P/ua0KKT
+	si4Wi7aNR0ocuvYxZyhrFQMBDMkJ5nHTV/4vIjef8p+UWSbPND+viv35ew5J1bADwtZAlPd9/PDDR
+	r25AVs5S7mwhZWZLZTafvflWZof3qUwQrthiVFdTqWWWLbGcUOMIEVi6J0jmQoyKoqWyYRirQzXbc
+	FOUs0MMw==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lOH3S-00BH3F-V9; Mon, 22 Mar 2021 09:40:59 +0000
-Received: from mail-pj1-x102a.google.com ([2607:f8b0:4864:20::102a])
+	id 1lOIpY-00BTUK-Fo; Mon, 22 Mar 2021 11:34:44 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lOH3L-00BH2E-Uh
- for linux-mtd@lists.infradead.org; Mon, 22 Mar 2021 09:40:54 +0000
-Received: by mail-pj1-x102a.google.com with SMTP id t18so8090704pjs.3
- for <linux-mtd@lists.infradead.org>; Mon, 22 Mar 2021 02:40:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=ADfJ8XxZaIUTO4Shw2feZhZGB3RwS6NXo/0ZVYfJyEI=;
- b=vuCGKMIjlS5UYwQqxhmr8nPtU1ChMMs+B1J5ZbQQJAJvUGi96AXtA7v8UH2UkJdPqR
- kyXJ+beER2DmMnUfKDrE9VkGyp68GHtOUDb1Ax26rtGr92ZVJFj79oq5Xn8yJLtkqJTf
- 1UFshpI3ZPuFpoNsrkOj0SpQyeDf/z4qh3Biu8+B71vrNpRkQqdTJG+4/lCEJVyqS3jN
- dlBKqKJevbrE/8sgOESiZUmU/jTqkmiYV3B4d5UsjPf5VTSN1QZrxELExjKsxbi3HYtN
- vDZzOZyIRiKE/UmclwbDgoxdt5hoNlcHEPyldTSq048iLKvz81kwJfmneW+1IrSZF4Nl
- Ftwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=ADfJ8XxZaIUTO4Shw2feZhZGB3RwS6NXo/0ZVYfJyEI=;
- b=dm0vUUfEhIJHG31vp5kb0SVditSgoENPleOXSNH/PMJpmwmBzw0KsuuEMO6ETCV4jc
- I2FO5LkwfD/QDm5AhYJFAEkP6Eei8ZgvzM10ns3ODBr01pz/sfiEIQVeiVyOCjZ/FH7Y
- K4UmxthxT/pnXwtwBUiiWbjqK2k/zLMMOXmMrnyehhR8B0mu/sM4A357oYj7/0h06P8c
- 9s6kIL+toXJP7vS/6qiM0Ky52VtpooQcSBJZ2P/vHbB02D4Tqcg6kARY7KMrsn3Rq7c8
- Hm/BvZ2+lJmIa0/50swGL0DvLHrazg4Y7ReIcd1aCiMxATqwhjHuzvxWnT7duGUh92lm
- 4VgQ==
-X-Gm-Message-State: AOAM5325dYAC/dOnFicTqJtogycmMdSCiBSupBmB9bl0OVih5MRlEq+B
- nf1+qs65OAf9NvU29iMmzoUk
-X-Google-Smtp-Source: ABdhPJxXYjtqadurjjAFkFFRifdEFnG3qdB33Q8mykdETZt453Mf2F1NvB7ZmqzgOrmLaz2phIhYtg==
-X-Received: by 2002:a17:90a:5284:: with SMTP id
- w4mr12092419pjh.29.1616406050218; 
- Mon, 22 Mar 2021 02:40:50 -0700 (PDT)
-Received: from thinkpad ([2409:4072:88e:ef5e:dccf:398f:4151:2e02])
- by smtp.gmail.com with ESMTPSA id l25sm3616113pgu.72.2021.03.22.02.40.44
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 22 Mar 2021 02:40:49 -0700 (PDT)
-Date: Mon, 22 Mar 2021 15:10:40 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Daniele.Palmas@telit.com,
- bjorn.andersson@linaro.org
-Subject: Re: [PATCH v7 3/3] mtd: rawnand: Add support for secure regions in
- NAND memory
-Message-ID: <20210322094040.GB70634@thinkpad>
-References: <20210319150010.32122-1-manivannan.sadhasivam@linaro.org>
- <20210319150010.32122-4-manivannan.sadhasivam@linaro.org>
- <20210319175659.17c9e8e6@collabora.com>
+ id 1lOIpT-00BTT4-Ax
+ for linux-mtd@lists.infradead.org; Mon, 22 Mar 2021 11:34:41 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA9D06198B;
+ Mon, 22 Mar 2021 11:34:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1616412878;
+ bh=WOJn3MilWpAvLS3chkKdd2cGjmreOdFbGDpQTcekL6k=;
+ h=From:To:Cc:Subject:Date:From;
+ b=lJSs0aAy+xIkv/NifyM67kYKGfafnVHmdY8oNXXd7mVd7LfBpylUFh7IgFFjgW9AR
+ A5MsiQ23qPVM7v7LAMjLCoajVmAd0bPfM7dC9JJSMVnW2uS+xPPCpt9a06Sq+2R041
+ xG5ATl8kLn/oMQ/AkDnh9wuN2zE8NoxmIcRMVvykSy9L+BVmDqG2k9XT0xPNcQED1/
+ E51Egkp+kICTwFPqZgv13fFb8ckPffG2GxKJCSJXdWDmkd/7fRKcMPqArKBA8lbRoA
+ MJI6DdsZ0G9C3/uh7mFTZv+JD7dWANRjZgq5ER1YMdf9ROhEDTaYGx1L9GI1KVGTv5
+ Frmnf0XZm0DpQ==
+From: Arnd Bergmann <arnd@kernel.org>
+To: David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] jffs2: avoid Wempty-body warnings
+Date: Mon, 22 Mar 2021 12:34:29 +0100
+Message-Id: <20210322113434.3068844-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210319175659.17c9e8e6@collabora.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210322_094052_391750_A8DD05F7 
-X-CRM114-Status: GOOD (  15.07  )
+X-CRM114-CacheID: sfid-20210322_113439_954033_E742F97D 
+X-CRM114-Status: UNSURE (   9.41  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,32 +78,65 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Mar 19, 2021 at 05:56:59PM +0100, Boris Brezillon wrote:
-> On Fri, 19 Mar 2021 20:30:10 +0530
-> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
-> 
-> > @@ -2737,6 +2783,11 @@ static int nand_read_page_swecc(struct nand_chip *chip, uint8_t *buf,
-> >  	uint8_t *ecc_code = chip->ecc.code_buf;
-> >  	unsigned int max_bitflips = 0;
-> >  
-> > +	/* Check if the region is secured */
-> > +	ret = nand_check_secure_region(chip, ((loff_t)page << chip->page_shift), 0);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> 
-> I'm lost. Why do you need to do that here if it's already done in
-> nand_do_read_{ops,oob}()?
-> 
+From: Arnd Bergmann <arnd@arndb.de>
 
-I think that's a mistake. Will remove it.
+Building with W=1 shows a few warnings for empty macros:
 
-Thanks,
-Mani
+fs/jffs2/scan.c: In function 'jffs2_scan_xattr_node':
+fs/jffs2/scan.c:378:66: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+  378 |                 jffs2_sum_add_xattr_mem(s, rx, ofs - jeb->offset);
+      |                                                                  ^
+fs/jffs2/scan.c: In function 'jffs2_scan_xref_node':
+fs/jffs2/scan.c:434:65: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+  434 |                 jffs2_sum_add_xref_mem(s, rr, ofs - jeb->offset);
+      |                                                                 ^
+fs/jffs2/scan.c: In function 'jffs2_scan_eraseblock':
+fs/jffs2/scan.c:893:88: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+  893 |                                 jffs2_sum_add_padding_mem(s, je32_to_cpu(node->totlen));
+      |                                                                                        ^
 
-> >  	chip->ecc.read_page_raw(chip, buf, 1, page);
-> >  
-> >  	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize)
+Change all these macros to 'do { } while (0)' statements to avoid the
+warnings and make the code a little more robust.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ fs/jffs2/summary.h | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/fs/jffs2/summary.h b/fs/jffs2/summary.h
+index e4131cb1f1d4..36d9a1280770 100644
+--- a/fs/jffs2/summary.h
++++ b/fs/jffs2/summary.h
+@@ -194,18 +194,18 @@ int jffs2_sum_scan_sumnode(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb
+ 
+ #define jffs2_sum_active() (0)
+ #define jffs2_sum_init(a) (0)
+-#define jffs2_sum_exit(a)
++#define jffs2_sum_exit(a) do { } while (0)
+ #define jffs2_sum_disable_collecting(a)
+ #define jffs2_sum_is_disabled(a) (0)
+-#define jffs2_sum_reset_collected(a)
++#define jffs2_sum_reset_collected(a) do { } while (0)
+ #define jffs2_sum_add_kvec(a,b,c,d) (0)
+-#define jffs2_sum_move_collected(a,b)
++#define jffs2_sum_move_collected(a,b) do { } while (0)
+ #define jffs2_sum_write_sumnode(a) (0)
+-#define jffs2_sum_add_padding_mem(a,b)
+-#define jffs2_sum_add_inode_mem(a,b,c)
+-#define jffs2_sum_add_dirent_mem(a,b,c)
+-#define jffs2_sum_add_xattr_mem(a,b,c)
+-#define jffs2_sum_add_xref_mem(a,b,c)
++#define jffs2_sum_add_padding_mem(a,b) do { } while (0)
++#define jffs2_sum_add_inode_mem(a,b,c) do { } while (0)
++#define jffs2_sum_add_dirent_mem(a,b,c) do { } while (0)
++#define jffs2_sum_add_xattr_mem(a,b,c) do { } while (0)
++#define jffs2_sum_add_xref_mem(a,b,c) do { } while (0)
+ #define jffs2_sum_scan_sumnode(a,b,c,d,e) (0)
+ 
+ #endif /* CONFIG_JFFS2_SUMMARY */
+-- 
+2.29.2
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
