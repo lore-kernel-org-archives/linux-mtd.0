@@ -2,84 +2,76 @@ Return-Path: <SRS0=GnEg=IV=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E905C433E0
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Mar 2021 17:41:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A3E9C433C1
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Mar 2021 18:45:07 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 33DBB619C0
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Mar 2021 17:41:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 33DBB619C0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	by mail.kernel.org (Postfix) with ESMTPS id A358461993
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Mar 2021 18:45:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A358461993
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=391i6AE8XT81lFeD1QJ8lahUzWQ6EGNxog3Vw4KfZsI=; b=DdWgrdDpSvHS6KWboQVG9s/Wl
-	PL+DVvew57mxmlIlyPiFUqVqntrpncXrd7zM3L/lLsBnZK5gL3XacZn2SslL00dnFBJyt46LdRdnB
-	kHXEWCfj+u52RX3wMxzqaGLR3/hGIw2LqS6dUnUB2sPOZaCfJcGoa3FWqkkJ8+/3ZzgQGtzEJZkNc
-	7rQCLmgs4Y5lyvu5Njib+VPBgF3wAGmlf09PMAhthTogGRRxXKAcNfj0LnBNK4W22vGt211XYRxQ7
-	O2RL+DVli+iWAA+1o+tzTvjmMJyUaxhFCM/w7FOVIDeq33IpTDQGA/T9QcczrPz/iuYqFNdE1PgQl
-	z4uXOM0fQ==;
+	List-Unsubscribe:List-Id:Message-ID:From:CC:To:Subject:MIME-Version:
+	References:In-Reply-To:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=uPNstcz+DSxiJGQ0FfJBibove96+zJ/NCUkGOseb2kI=; b=kRn6WM9CuZ8k6D
+	Php+FFTtsZ2HnDhGJoT9y7V2hScKwUkBMf88NB+36mQQB7J+z0QaqYZPBmMbCvQFO37IfmK51TmYG
+	PgF6wB3k3v+YRFKOTbUbwKHYwk4UYGJAfRQSbpE18Yz8/C4lO6LEws1ohbmx59f5BWyVABCJiTrvb
+	13HXSyT9yajzof5hQIC8O+eZqshcyf9/wLAchguxlaNSNHQ1FB7P+qlug8EMha8/+qtUvlJyhukVw
+	xyL+8DZhaqlixlravwqxeXHuNjBysScwpa4lkjktEkBNjwIm8+GbNcBJMKTdHw7uipAMTmVNNHbfB
+	sfFOjLL44BhRZKlPwlkg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lOl16-00FR97-Dh; Tue, 23 Mar 2021 17:40:32 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1lOm0V-00FXXF-0o; Tue, 23 Mar 2021 18:43:59 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lOl12-00FR8F-F2
- for linux-mtd@lists.infradead.org; Tue, 23 Mar 2021 17:40:31 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12NHeOWo030169;
- Tue, 23 Mar 2021 12:40:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1616521224;
- bh=+cFdjSOqih+qi9CCBMvuw/LbRsZ2xPljKLLjT21Dg5s=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=teBPDk7x6r4I/ELayaCMWfjR+jGbjWR9uLpBCPa6RPrADhAhPppLw71SGD4y5ga/3
- PnqCcdG76fNLGCwc8yiyXlkOez8asC4rDkFFyzqLUyvSzUIOmHvBkwJ4MNGF7aGe3+
- AoeyDMh+zyhsx6fJ3shP3Vatf32OdG3GCI9e+AH8=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12NHeOPu091269
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 23 Mar 2021 12:40:24 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 23
- Mar 2021 12:40:24 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 23 Mar 2021 12:40:24 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12NHeNOA016637;
- Tue, 23 Mar 2021 12:40:24 -0500
-Date: Tue, 23 Mar 2021 23:10:23 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Michael Walle <michael@walle.cc>
-CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>, Tudor
- Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH v2 2/2] mtd: spi-nor: add initial sysfs support
-Message-ID: <20210323174021.2tqfi6bbzofonjjh@ti.com>
+ id 1lOm0O-00FXWI-9X
+ for linux-mtd@lists.infradead.org; Tue, 23 Mar 2021 18:43:55 +0000
+Received: from [100.102.24.121] (ip-109-40-128-185.web.vodafone.de
+ [109.40.128.185])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
+ SHA256) (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id C799622234;
+ Tue, 23 Mar 2021 19:43:49 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1616525030;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=nPoOEuwU9+tWbJsFhoeDobxLxpp6c1ZbdIs3ALLogA4=;
+ b=GcG6hOQWuusgG4uW58n59WZyLGPYfGuJdwtAif44qwpEunGfaDGj0lObmSfATcCZbY7Blk
+ EV5RpUc9nkIgny+A1phkBux6ZzB7KYYd22Xk4BKC11xHfqsscJarTTDzteuY47Y8N9HN9K
+ VUXfom/Qs0t9hX90FfPoaye9N1bbXHY=
+Date: Tue, 23 Mar 2021 19:43:47 +0100
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20210323173715.gyozhzbjyfv5osuc@ti.com>
 References: <20210323143144.12730-1-michael@walle.cc>
- <20210323143144.12730-3-michael@walle.cc>
+ <20210323143144.12730-2-michael@walle.cc>
+ <20210323173715.gyozhzbjyfv5osuc@ti.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210323143144.12730-3-michael@walle.cc>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Subject: Re: [PATCH v2 1/2] mtd: spi-nor: sfdp: save a copy of the SFDP data
+To: Pratyush Yadav <p.yadav@ti.com>
+CC: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>
+From: Michael Walle <michael@walle.cc>
+Message-ID: <C88FBBF6-4F5C-43A1-951E-332AEE9E3B3A@walle.cc>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210323_174028_899809_ECC3C6B9 
-X-CRM114-Status: GOOD (  24.77  )
+X-CRM114-CacheID: sfid-20210323_184352_423263_AE08B974 
+X-CRM114-Status: UNSURE (   7.15  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,177 +83,19 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 23/03/21 03:31PM, Michael Walle wrote:
-> Add support to show the name and JEDEC identifier as well as to dump the
-> SFDP table. Not all flashes list their SFDP table contents in their
-> datasheet. So having that is useful. It might also be helpful in bug
-> reports from users.
-
-Acked-by: Pratyush Yadav <p.yadav@ti.com>
-
-> 
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
->  drivers/mtd/spi-nor/Makefile |  2 +-
->  drivers/mtd/spi-nor/core.c   |  5 +++
->  drivers/mtd/spi-nor/core.h   |  3 ++
->  drivers/mtd/spi-nor/sysfs.c  | 86 ++++++++++++++++++++++++++++++++++++
->  4 files changed, 95 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/mtd/spi-nor/sysfs.c
-> 
-> diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-> index 653923896205..aff308f75987 100644
-> --- a/drivers/mtd/spi-nor/Makefile
-> +++ b/drivers/mtd/spi-nor/Makefile
-> @@ -1,6 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0
->  
-> -spi-nor-objs			:= core.o sfdp.o
-> +spi-nor-objs			:= core.o sfdp.o sysfs.o
->  spi-nor-objs			+= atmel.o
->  spi-nor-objs			+= catalyst.o
->  spi-nor-objs			+= eon.o
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index fbc34158a883..02523ddac612 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -3708,6 +3708,10 @@ static int spi_nor_probe(struct spi_mem *spimem)
->  	if (ret)
->  		return ret;
->  
-> +	ret = spi_nor_sysfs_create(nor);
-> +	if (ret)
-> +		return ret;
-> +
->  	return mtd_device_register(&nor->mtd, data ? data->parts : NULL,
->  				   data ? data->nr_parts : 0);
->  }
-> @@ -3717,6 +3721,7 @@ static int spi_nor_remove(struct spi_mem *spimem)
->  	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
->  
->  	spi_nor_restore(nor);
-> +	spi_nor_sysfs_remove(nor);
->  
->  	/* Clean up MTD stuff. */
->  	return mtd_device_unregister(&nor->mtd);
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index 08d2469837da..599035200a03 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -486,4 +486,7 @@ static struct spi_nor __maybe_unused *mtd_to_spi_nor(struct mtd_info *mtd)
->  	return mtd->priv;
->  }
->  
-> +int spi_nor_sysfs_create(struct spi_nor *nor);
-> +void spi_nor_sysfs_remove(struct spi_nor *nor);
-> +
->  #endif /* __LINUX_MTD_SPI_NOR_INTERNAL_H */
-> diff --git a/drivers/mtd/spi-nor/sysfs.c b/drivers/mtd/spi-nor/sysfs.c
-> new file mode 100644
-> index 000000000000..c62cc4d6bce6
-> --- /dev/null
-> +++ b/drivers/mtd/spi-nor/sysfs.c
-> @@ -0,0 +1,86 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <linux/mtd/spi-nor.h>
-> +#include <linux/spi/spi.h>
-> +#include <linux/spi/spi-mem.h>
-> +#include <linux/sysfs.h>
-> +
-> +#include "core.h"
-> +
-> +static ssize_t name_show(struct device *dev,
-> +			 struct device_attribute *attr, char *buf)
-> +{
-> +	struct spi_device *spi = to_spi_device(dev);
-> +	struct spi_mem *spimem = spi_get_drvdata(spi);
-> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-> +
-> +	return sysfs_emit(buf, "%s\n", nor->info->name);
-> +}
-> +static DEVICE_ATTR_RO(name);
-> +
-> +static ssize_t jedec_id_show(struct device *dev,
-> +			     struct device_attribute *attr, char *buf)
-> +{
-> +	struct spi_device *spi = to_spi_device(dev);
-> +	struct spi_mem *spimem = spi_get_drvdata(spi);
-> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-> +
-> +	return sysfs_emit(buf, "%*phN\n", nor->info->id_len, nor->info->id);
-> +}
-> +static DEVICE_ATTR_RO(jedec_id);
-> +
-> +static struct attribute *spi_nor_sysfs_entries[] = {
-> +	&dev_attr_name.attr,
-> +	&dev_attr_jedec_id.attr,
-> +	NULL
-> +};
-> +
-> +static ssize_t sfdp_read(struct file *filp, struct kobject *kobj,
-> +			 struct bin_attribute *bin_attr, char *buf,
-> +			 loff_t off, size_t count)
-> +{
-> +	struct spi_device *spi = to_spi_device(kobj_to_dev(kobj));
-> +	struct spi_mem *spimem = spi_get_drvdata(spi);
-> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-> +	struct sfdp *sfdp = nor->sfdp;
-> +	size_t sfdp_size = sfdp->num_dwords * sizeof(*sfdp->dwords);
-> +
-> +	return memory_read_from_buffer(buf, count, &off, nor->sfdp->dwords,
-> +				       sfdp_size);
-> +}
-> +static BIN_ATTR_RO(sfdp, 0);
-> +
-> +static struct bin_attribute *spi_nor_sysfs_bin_entries[] = {
-> +	&bin_attr_sfdp,
-> +	NULL
-> +};
-> +
-> +static umode_t spi_nor_sysfs_is_bin_visible(struct kobject *kobj,
-> +					    struct bin_attribute *attr, int n)
-> +{
-> +	struct spi_device *spi = to_spi_device(kobj_to_dev(kobj));
-> +	struct spi_mem *spimem = spi_get_drvdata(spi);
-> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-> +
-> +	if (attr == &bin_attr_sfdp && !nor->sfdp)
-> +		return 0;
-> +
-> +	return 0444;
-> +}
-> +
-> +static struct attribute_group spi_nor_sysfs_attr_group = {
-> +	.name		= NULL,
-> +	.is_bin_visible	= spi_nor_sysfs_is_bin_visible,
-> +	.attrs		= spi_nor_sysfs_entries,
-> +	.bin_attrs	= spi_nor_sysfs_bin_entries,
-> +};
-> +
-> +int spi_nor_sysfs_create(struct spi_nor *nor)
-> +{
-> +	return sysfs_create_group(&nor->dev->kobj, &spi_nor_sysfs_attr_group);
-> +}
-> +
-> +void spi_nor_sysfs_remove(struct spi_nor *nor)
-> +{
-> +	sysfs_remove_group(&nor->dev->kobj, &spi_nor_sysfs_attr_group);
-> +}
-> -- 
-> 2.20.1
-> 
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+QW0gMjMuIE3DpHJ6IDIwMjEgMTg6Mzc6MTcgTUVaIHNjaHJpZWIgUHJhdHl1c2ggWWFkYXYgPHAu
+eWFkYXZAdGkuY29tPjoKPk9uIDIzLzAzLzIxIDAzOjMxUE0sIE1pY2hhZWwgV2FsbGUgd3JvdGU6
+Cj4+IER1ZSB0byBwb3NzaWJsZSBtb2RlIHN3aXRjaGluZyB0byA4RC04RC04RCwgaXQgbWlnaHQg
+bm90IGJlIHBvc3NpYmxlCj50bwo+PiByZWFkIHRoZSBTRkRQIGFmdGVyIHRoZSBpbml0aWFsIHBy
+b2JlLiBUbyBiZSBhYmxlIHRvIGR1bXAgdGhlIFNGRFAKPnZpYQo+PiBzeXNmcyBhZnRlcndhcmRz
+LCBtYWtlIGEgY29tcGxldGUgY29weSBvZiBpdC4KPj4gCj4+IFNpZ25lZC1vZmYtYnk6IE1pY2hh
+ZWwgV2FsbGUgPG1pY2hhZWxAd2FsbGUuY2M+Cj4KPlJldmlld2VkLWJ5OiBQcmF0eXVzaCBZYWRh
+diA8cC55YWRhdkB0aS5jb20+Cgp0aGFua3MgZm9yIHJldmlld2luZyEKCi1taWNoYWVsCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
+TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
