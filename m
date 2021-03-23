@@ -2,63 +2,100 @@ Return-Path: <SRS0=GnEg=IV=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66B75C433DB
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Mar 2021 12:26:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C284C433DB
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Mar 2021 13:20:33 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B421C619B1
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Mar 2021 12:26:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B421C619B1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
+	by mail.kernel.org (Postfix) with ESMTPS id 01624619BA
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Mar 2021 13:20:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 01624619BA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC:To:From:
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:From:Date:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=5L7IImRkJV2YEVayOdvMUgCSRHCoGmtl+OzhKA9h2wk=; b=GeyxR/aOX09nGfOJNEJAnMCHEM
-	X/rFD1FvZPvvQCYMSN2bgjoVfPVDXtfYsnqnzGyP9eLVtzIu354sE99jULsp9IlYgu1W3du/LAMqu
-	sDrqYiq9/7kUxkXTPmNBJQcn9B1Z/wG0kMwnh7MZI3p3infQSaKwh/Uah3pSYDd9twNVdhyarzBWu
-	siv1nbVY9w8MLqPwo4pVHTBUQfQfsu2Sto82yAVNqHvlqYWYZA4h1CC8h8BYwibkD4fW7eL40MGWo
-	O06NjKEzAoEcYZOwNn8QqeLasM+kTAf8y9bYQaKlFDO5zf9RfKE3t5mQINzSAojQjnFEDuhlOG4/D
-	svUJl+Kw==;
+	bh=yNZSmNHPi+ecpL3vgJ+b4XFalaPR9iMZ7OWqMHUMOck=; b=Vot2czVTTNHMZSejfHzbwqM9ue
+	i4XJ2ZmpP27BzHbECwLUQ46KS31q2AvtQiWFzuek54xaygW93ck1gKe1NqVZgAKsKc3f9jlSl1AEv
+	MuP+fKIyMF0QyBWtW+2HjxWZU2Mi+Eg4nZcHR9YA8xCKPU/rFwB5KdbdJWczsl7l5jn0h7hJByD3Y
+	sKGosEzhVMQXGGGXMWL/u/AO4J5sG1E/7ytzyIczYpYFhfa85wN1ZrLkhBXvHyTPG4Z41OFJBJ1H3
+	svmx4ykldUXTIVJmEAEfLxx9/sLxrRwXWOpiM55PRJeUvqWCtRCjniGgfmpz3O5NitO+KE8l3+unT
+	4IoIWc7w==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lOg6u-00ExAU-Tq; Tue, 23 Mar 2021 12:26:12 +0000
-Received: from szxga04-in.huawei.com ([45.249.212.190])
+	id 1lOgwa-00F1zp-Il; Tue, 23 Mar 2021 13:19:36 +0000
+Received: from aserp2120.oracle.com ([141.146.126.78])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lOg6i-00Ex8r-Kp; Tue, 23 Mar 2021 12:26:03 +0000
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
- by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F4Vrs0yXHznTsx;
- Tue, 23 Mar 2021 20:23:25 +0800 (CST)
-Received: from hulk-robot-4.huawei.com (10.175.124.27) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 23 Mar 2021 20:25:46 +0800
-From: Zou Wei <zou_wei@huawei.com>
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
- <heiko@sntech.de>
-CC: <yifeng.zhao@rock-chips.com>, <linux-mtd@lists.infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-rockchip@lists.infradead.org>, 
- <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] mtd: rawnand: rockchip: Use flexible-array member
- instead of zero-length array
-Date: Tue, 23 Mar 2021 13:11:37 +0000
-Message-ID: <20210323131137.45552-1-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.17.1
+ id 1lOgwW-00F1yM-3T
+ for linux-mtd@lists.infradead.org; Tue, 23 Mar 2021 13:19:34 +0000
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+ by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12NDJLl5091112;
+ Tue, 23 Mar 2021 13:19:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=6dgzOb3CiJkSySCZ1RJQwzXP6iqC3Xa1CHOUgaq1Sfs=;
+ b=x68fuZoDGFxy7KTLaXZjjHqKFkvcP1MNi0ZPVJjcOC5p7//5jP9YIrfKsTV1FNeeTpvl
+ j8ORf976vy30ygvzg577RRJYqyrbuJ17zaAmzivWm8Yjq/ji4dzWaTSNtB+rRs3Ug6ba
+ RwiPNumWcu7sefP9BmFVcX6gGIK97+pRYIBNO8mF6nsUmHxNvEZFYTsVWQquXzXQAjMY
+ RqV/LNbjD9tiPjgwe+DcPE96z/RJsX9MN08CCyJR0NcL5KwyYL/xxwjCVIxxzRGA1CCA
+ iWZoZ7IB78mvlIAqVBkCsmE1ojauSW+3L26rc0BItl8E4mVWKHWQrLJWV+RjjAkmBTPd mQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+ by aserp2120.oracle.com with ESMTP id 37d90mex1b-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 23 Mar 2021 13:19:21 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+ by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12NDEjGt133981;
+ Tue, 23 Mar 2021 13:19:16 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+ by userp3030.oracle.com with ESMTP id 37dtyxe4ph-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 23 Mar 2021 13:19:16 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+ by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 12NDJEKh026480;
+ Tue, 23 Mar 2021 13:19:15 GMT
+Received: from mwanda (/102.36.221.92) by default (Oracle Beehive Gateway v4.0)
+ with ESMTP ; Tue, 23 Mar 2021 13:19:14 +0000
+Date: Tue, 23 Mar 2021 16:19:06 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Andreas Noever <andreas.noever@gmail.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: Michael Jamet <michael.jamet@intel.com>,
+ Yehezkel Bernat <YehezkelShB@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-usb@vger.kernel.org,
+ linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] thunderbolt: unlock on error path in tb_domain_add()
+Message-ID: <YFnqyqDzSHenVN9O@mwanda>
 MIME-Version: 1.0
-X-Originating-IP: [10.175.124.27]
-X-CFilter-Loop: Reflected
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9931
+ signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0
+ bulkscore=0 phishscore=0
+ mlxlogscore=999 suspectscore=0 spamscore=0 malwarescore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103230097
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9931
+ signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0
+ malwarescore=0 mlxscore=0
+ priorityscore=1501 bulkscore=0 impostorscore=0 lowpriorityscore=0
+ phishscore=0 mlxlogscore=999 suspectscore=0 clxscore=1011 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103230098
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210323_122601_158614_04D31DBF 
-X-CRM114-Status: UNSURE (   8.06  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210323_131932_472329_BE9BE8AC 
+X-CRM114-Status: GOOD (  13.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,31 +112,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Suppresses the following coccinelle warning:
+We accidentally deleted this unlock on the error path.  Undelete it.
 
-drivers/mtd/nand/raw/rockchip-nand-controller.c:162:4-8: WARNING use flexible-array member instead
-
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Fixes: 7f0a34d7900b ("thunderbolt: Decrease control channel timeout for software connection manager")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
- drivers/mtd/nand/raw/rockchip-nand-controller.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/thunderbolt/domain.c | 1 +
+ 1 files changed, 1 insertions(+), 0 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/rockchip-nand-controller.c b/drivers/mtd/nand/raw/rockchip-nand-controller.c
-index 796b678cb108..b5405bc7ca3a 100644
---- a/drivers/mtd/nand/raw/rockchip-nand-controller.c
-+++ b/drivers/mtd/nand/raw/rockchip-nand-controller.c
-@@ -159,7 +159,7 @@ struct rk_nfc_nand_chip {
- 	u32 timing;
+diff --git a/drivers/thunderbolt/domain.c b/drivers/thunderbolt/domain.c
+index a7d83eec3d15..98f4056f89ff 100644
+--- a/drivers/thunderbolt/domain.c
++++ b/drivers/thunderbolt/domain.c
+@@ -493,6 +493,7 @@ int tb_domain_add(struct tb *tb)
+ 	device_del(&tb->dev);
+ err_ctl_stop:
+ 	tb_ctl_stop(tb->ctl);
++	mutex_unlock(&tb->lock);
  
- 	u8 nsels;
--	u8 sels[0];
-+	u8 sels[];
- 	/* Nothing after this field. */
- };
- 
--- 
-2.17.1
-
+ 	return ret;
+ }
 
 ______________________________________________________
 Linux MTD discussion mailing list
