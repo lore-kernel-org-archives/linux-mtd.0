@@ -2,83 +2,62 @@ Return-Path: <SRS0=GnEg=IV=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FE66C433C1
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Mar 2021 11:52:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66B75C433DB
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Mar 2021 12:26:44 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9459C61920
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Mar 2021 11:52:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9459C61920
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
+	by mail.kernel.org (Postfix) with ESMTPS id B421C619B1
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Mar 2021 12:26:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B421C619B1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=9GMsZBKqh2UeVN3eqVmBCVqyQcy/uytgglUk4uLeoAg=; b=RdqzelKa0bYXqR6BVX/NthFdX
-	G8sm3l36IKLct42iNoj0gBVmB9nFNFyooAPZEdhz7Xq+zhf2RU+ScfJS755bbWijDOBTB6kiUPF52
-	PTcYh2IomGrCy7qBfGWAHxzeS/NJc6/xEJLaq/ckUHAcjo5OKI2AGLBYnav+lbOfoDmWadiSwj5I2
-	dfh8IDYnkgXA54Kk1EzZlN8H7imFdV1n4kca+rnr75dfA4f7I7GrZvh3q2Oypi0PuJPGtbvo2vo4s
-	IIm84eP9Z+/QuirCDG2SmG7Y3pW03GvYmjlGumBEzdz0ODlHHW9E/+rbt3opF99JbyKYn845+Zlfm
-	JY113MS3A==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=5L7IImRkJV2YEVayOdvMUgCSRHCoGmtl+OzhKA9h2wk=; b=GeyxR/aOX09nGfOJNEJAnMCHEM
+	X/rFD1FvZPvvQCYMSN2bgjoVfPVDXtfYsnqnzGyP9eLVtzIu354sE99jULsp9IlYgu1W3du/LAMqu
+	sDrqYiq9/7kUxkXTPmNBJQcn9B1Z/wG0kMwnh7MZI3p3infQSaKwh/Uah3pSYDd9twNVdhyarzBWu
+	siv1nbVY9w8MLqPwo4pVHTBUQfQfsu2Sto82yAVNqHvlqYWYZA4h1CC8h8BYwibkD4fW7eL40MGWo
+	O06NjKEzAoEcYZOwNn8QqeLasM+kTAf8y9bYQaKlFDO5zf9RfKE3t5mQINzSAojQjnFEDuhlOG4/D
+	svUJl+Kw==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lOfYl-00Eopu-5g; Tue, 23 Mar 2021 11:50:55 +0000
-Received: from mail-qt1-x82b.google.com ([2607:f8b0:4864:20::82b])
+	id 1lOg6u-00ExAU-Tq; Tue, 23 Mar 2021 12:26:12 +0000
+Received: from szxga04-in.huawei.com ([45.249.212.190])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lOfVL-00Emrc-F2
- for linux-mtd@lists.infradead.org; Tue, 23 Mar 2021 11:47:26 +0000
-Received: by mail-qt1-x82b.google.com with SMTP id u7so14608790qtq.12
- for <linux-mtd@lists.infradead.org>; Tue, 23 Mar 2021 04:47:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=0x0f.com; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=F419BnJhxixFSvZMAKXs4tvDppivStl9M/Uz5fVRylI=;
- b=Wy1rSrxIYeID7CuQYaMS0MZRvHoWezSWSA2aD+o8OrBl8/dVc6qlnLFUuRe+cIiWVt
- lCwdLHNDmrodLM92ArNQMJP9p+EhZSMga5iNEhfXsMUM0LYG1drnVmbUt7ZH/qDHVyRT
- 9uh8/1gAsQSryCHTjufM8BCuLbB8XjfhmVwG0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=F419BnJhxixFSvZMAKXs4tvDppivStl9M/Uz5fVRylI=;
- b=g/kpyiW+3YFzxbQ7DMCY4JLSqEbYZAtMdduS3f7/CoBiypEkTmpfuuheCyd8u0MHBh
- PgjdShM+v2uvPUv89Qcqf8iF4oCrPatLpYwx1ude6tAkIjWQHmOr11cYXs70SyExZhRg
- aGTsG623J01hsmXshTHgpcLZdVqKx1nx/ShsUiTUTJhLCAOfChBIpbtexl/U2tStLDPK
- RiYtbr6cT9g0kaOV1tGQ9YMTVrLU29w5BMyVKojSwK96Ug1XXNkgoToqz1aWmSGVkQ4X
- 9KeSKzKup4dK24ngLUaYgR+zUen+2Y5SHLACIoLgtv2yl6MNvuQm/ZtKbiVB2yZIo15v
- Ms8Q==
-X-Gm-Message-State: AOAM530Rz/4EWcxxFPTU679KyaIahuH4N2GexAnpNgs1bkiAMUrjMj97
- BImMCG7LjWdbYx6bhQxhtLNa/5FSKFgd2P2a8E97bg==
-X-Google-Smtp-Source: ABdhPJxb4rk2yYkFLAj4LkiXAJ0uAXqAM0jCN+3GxM5jbVeWvshwoR4hcoZ9d+U2rKSvsZlRIakjbREIeEeJIVUVbJM=
-X-Received: by 2002:ac8:7f53:: with SMTP id g19mr3907305qtk.249.1616500041105; 
- Tue, 23 Mar 2021 04:47:21 -0700 (PDT)
+ id 1lOg6i-00Ex8r-Kp; Tue, 23 Mar 2021 12:26:03 +0000
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+ by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F4Vrs0yXHznTsx;
+ Tue, 23 Mar 2021 20:23:25 +0800 (CST)
+Received: from hulk-robot-4.huawei.com (10.175.124.27) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 23 Mar 2021 20:25:46 +0800
+From: Zou Wei <zou_wei@huawei.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+ <heiko@sntech.de>
+CC: <yifeng.zhao@rock-chips.com>, <linux-mtd@lists.infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-rockchip@lists.infradead.org>, 
+ <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] mtd: rawnand: rockchip: Use flexible-array member
+ instead of zero-length array
+Date: Tue, 23 Mar 2021 13:11:37 +0000
+Message-ID: <20210323131137.45552-1-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210213095724.3411058-1-daniel@0x0f.com>
- <20210215112409.1a755bf0@xps13>
- <CAFr9PXkh+attaCc6C2UxB=qvXksWriWOaaoEndy4k6SGE0QOHQ@mail.gmail.com>
- <20210215121653.4edd86c4@xps13>
- <CAFr9PXmVehtcm6FjBqi_hmEAj1rgtxMvarisjPmWhgjruVj++Q@mail.gmail.com>
- <20210322193213.18520b9a@xps13>
- <CAFr9PX=mL9UWcr-yWbYa5NXS-R=yHeGgM+hd_MKOa2XiBUAJOQ@mail.gmail.com>
- <20210323113233.3523d66b@xps13>
-In-Reply-To: <20210323113233.3523d66b@xps13>
-From: Daniel Palmer <daniel@0x0f.com>
-Date: Tue, 23 Mar 2021 20:47:10 +0900
-Message-ID: <CAFr9PX=KMZuzp61Hq=2WdHyEzE=6J7HEPWZxPs7FEqiH-G8wFw@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd: spinand: add support for Foresee FS35ND01G-S1Y2
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: linux-mtd@lists.infradead.org, 
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210323_114724_165400_923BE7FB 
-X-CRM114-Status: UNSURE (   8.91  )
+X-CRM114-CacheID: sfid-20210323_122601_158614_04D31DBF 
+X-CRM114-Status: UNSURE (   8.06  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -96,37 +75,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
+Suppresses the following coccinelle warning:
 
-On Tue, 23 Mar 2021 at 19:32, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> You can run nandbiterrs -i /dev/mtdX
->
-> You'll see if there is ECC correction or not (and its level).
+drivers/mtd/nand/raw/rockchip-nand-controller.c:162:4-8: WARNING use flexible-array member instead
 
-These are results I get for both of the nandbiterrs tests.
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/mtd/nand/raw/rockchip-nand-controller.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-# nandbiterrs -i /dev/mtd1
-incremental biterrors test
-Successfully corrected 0 bit errors per subpage
-Inserted biterror @ 0/5
-Read reported 4 corrected bit errors
-ECC failure, invalid data despite read success
+diff --git a/drivers/mtd/nand/raw/rockchip-nand-controller.c b/drivers/mtd/nand/raw/rockchip-nand-controller.c
+index 796b678cb108..b5405bc7ca3a 100644
+--- a/drivers/mtd/nand/raw/rockchip-nand-controller.c
++++ b/drivers/mtd/nand/raw/rockchip-nand-controller.c
+@@ -159,7 +159,7 @@ struct rk_nfc_nand_chip {
+ 	u32 timing;
+ 
+ 	u8 nsels;
+-	u8 sels[0];
++	u8 sels[];
+ 	/* Nothing after this field. */
+ };
+ 
+-- 
+2.17.1
 
-# nandbiterrs -o /dev/mtd1
-overwrite biterrors test
-Read reported 4 corrected bit errors
-Failed to recover 1 bitflips
-Bit error histogram (883 operations total):
-Page reads with   0 corrected bit errors: 845
-Page reads with   1 corrected bit errors: 0
-Page reads with   2 corrected bit errors: 0
-Page reads with   3 corrected bit errors: 0
-
-I guess this means ECC is there and it's working.
-
-Thanks,
-
-Daniel
 
 ______________________________________________________
 Linux MTD discussion mailing list
