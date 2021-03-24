@@ -2,18 +2,18 @@ Return-Path: <SRS0=a/jC=IW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5292DC433DB
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Mar 2021 17:52:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0E1AC433DB
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Mar 2021 18:11:43 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E5DE761A1D
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Mar 2021 17:52:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E5DE761A1D
+	by mail.kernel.org (Postfix) with ESMTPS id 4614E61A24
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Mar 2021 18:11:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4614E61A24
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -22,63 +22,60 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=+PU001Iym1f+8aZ/9IC89s13+74FEKTHMz1gyJBk/wM=; b=kdpHrfWA4sSvPrS39B/qJe+cU
-	4bQvmLAN+oyAFfLZyL+KF/xXnqliSomqjQUgSJ4NtyyjBiNAUj6lqMNwxM/hd7N2fdD9WW1PDSeec
-	7S8jI6CKunPrrmWzraHKBmZc+ltFiUdO/KvtcdSf2K9yRbuhS/3E2tgJkZfnBUehkm875OpRghDoN
-	7LCFD2mRhCLOufANUb438yACi3yo96J/vxY6+V1QxeQ9R3AD1pMCUXntZSY8rXoT/0Q5vEM5JZ7C8
-	xHM+7dJikojBB4G+xw7f4SSxSlHnhzPRnKGm6uHVqiKMTa5X2ARnbgRvpca7Xlxxj+GebV5IzDs0l
-	oTjCG6lbg==;
+	 bh=hHPXs5n2xDbWEY/q6/V8xLFJmsTS0MyPSXBob5HxZqg=; b=c8TaIyuBqptSj/KEryfGuHmVA
+	iU89M8i0jgSAH/y2+xhxrqcbAIJ5vhpEbw/i3C6mQOaY6gBsMYD0eYLOeAPElSwDClJ5gD9uB8gm+
+	V+jQzUfQeBkLoSN/O3+IdkhEJqehDLpj1UdQ9Zt/V+/kf6crGEgkFHwFbXMYgUoVeHlr1XmQsy/9m
+	vq30YpqSk/Ou869805vQLtorPREPRuMBF/b8eDOEkyxDN8buVgB0t6ao3UJ4VIDhMBq3RLfx25eTY
+	IDBmOywP/8ztCNvpvDfPPfJ0lG+U+Cr5GC/fDMufKuZ/42YrCV6pF7yLGgW4SkCSe8mt9RWy90YBp
+	kc9eGOpEA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lP7fj-00Hapb-Bq; Wed, 24 Mar 2021 17:51:59 +0000
-Received: from mail-io1-f48.google.com ([209.85.166.48])
+	id 1lP7xs-0001IK-SK; Wed, 24 Mar 2021 18:10:45 +0000
+Received: from mail-il1-f170.google.com ([209.85.166.170])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lP7fe-00Hap8-VP
- for linux-mtd@lists.infradead.org; Wed, 24 Mar 2021 17:51:56 +0000
-Received: by mail-io1-f48.google.com with SMTP id r193so22411898ior.9
- for <linux-mtd@lists.infradead.org>; Wed, 24 Mar 2021 10:51:54 -0700 (PDT)
+ id 1lP7xp-0001He-DE
+ for linux-mtd@lists.infradead.org; Wed, 24 Mar 2021 18:10:43 +0000
+Received: by mail-il1-f170.google.com with SMTP id c17so22227404ilj.7
+ for <linux-mtd@lists.infradead.org>; Wed, 24 Mar 2021 11:10:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to;
- bh=17TKIF0QgDUzTxJGnuM465tbTrl6KEfcXDq37nKfdvc=;
- b=Xb/6Qt/y/bFtt3b1ISOLV/P8DuJKzaFzPNMQXMGW2ysm9h/EcvjLg4yhy6/xyeT6MJ
- g7NPFeSrJXy5nGsESsH+xvqOMwpmkyo7SLpl8z9zJJl35YE2NoduP5LNXmDla3eadkoO
- MTcXTrzLbSfRGUCH3FNSrOcs09VirrZb6BmskDF87iK60htRoPJgA0V3i9rPf0yOZu6M
- sFh4HHk0do67hl7Gv7u1a3JlxGUZC80yoQLa83EGnknEKNYMsLbHlqWdoebC0l7jURiK
- Wm5tBlLqqAfMp/Ow0kupFkNUqKpA0pHu7EfeB7ThPI7IG5EEdt8elU6GHZ/AlbCFyMzi
- 1S5g==
-X-Gm-Message-State: AOAM532niibE2LdaBCZKoHiRO1zPgz70kvpj8ntD+A0Adg6V1IdAmZnh
- daPRtzLk1dJuVTGIhzEdRA==
-X-Google-Smtp-Source: ABdhPJx7hPRAeDLMlQ3t6S4EyGJIm+TvC3ilVZW8FSTOnuKiHnkj+ZxNsVYm6pnIJjby7DwcY3TeQA==
-X-Received: by 2002:a02:a90f:: with SMTP id n15mr4000419jam.110.1616608312821; 
- Wed, 24 Mar 2021 10:51:52 -0700 (PDT)
+ bh=RdLddjC+iEoz4u6jK63hDy1PT64QJ2geKnpXuxhai+o=;
+ b=t75CXfYWnEnY8xp5qQv1dQAlLgSE+cplCIbjzaAtYutQOBhe1Kwy3PqYsN+X7y9WGG
+ P40mr6Qei3VgwqY6FCFSLiglg8yg7XjCtVAg4cz/Un1fvcdtHVvgbZ6eCyc54S0WYRuK
+ Ho02hFFKEbA/hbuk2/RpCX/hw945wawCvg5W+3b13N5PfuUBXcJrHArQMmteczTOaBWs
+ cTyN9rUyoqU3QFOxsxC3FWr2R2jWMRUmrfpsdd55DmUGjPa7cDx1dTqp/Ku2bI/nOled
+ 2/s9vaiVpqmGKgOLI6rPPaspmJJuxpGebrXfFk/uXx6Wf4y4BR1esUdxd4p1+a/8hn9f
+ C8mg==
+X-Gm-Message-State: AOAM531QFsMIRzOLIOj+c2sy/6sSykWpmrSRFPMs78Seonr+ngsgtjJo
+ ekgrdbRAfheTw76tYDIU3g==
+X-Google-Smtp-Source: ABdhPJwm0lu4eHHZUt2iJVbAnUdqjkeCxMGA0KTL4TLAcSjo5jjJ4hxUEVPPY6roCmHkoYeekofWyg==
+X-Received: by 2002:a92:c748:: with SMTP id y8mr1842248ilp.37.1616609440259;
+ Wed, 24 Mar 2021 11:10:40 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.253])
- by smtp.gmail.com with ESMTPSA id v17sm1361275ios.46.2021.03.24.10.51.50
+ by smtp.gmail.com with ESMTPSA id b9sm1443474iof.54.2021.03.24.11.10.38
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 24 Mar 2021 10:51:52 -0700 (PDT)
-Received: (nullmailer pid 3326340 invoked by uid 1000);
- Wed, 24 Mar 2021 17:51:49 -0000
-Date: Wed, 24 Mar 2021 11:51:49 -0600
+ Wed, 24 Mar 2021 11:10:39 -0700 (PDT)
+Received: (nullmailer pid 3355529 invoked by uid 1000);
+ Wed, 24 Mar 2021 18:10:37 -0000
+Date: Wed, 24 Mar 2021 12:10:37 -0600
 From: Rob Herring <robh@kernel.org>
-To: Michael Walle <michael@walle.cc>
-Cc: Pratyush Yadav <p.yadav@ti.com>, Kuldeep Singh <kuldeep.singh@nxp.com>,
- linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Vladimir Oltean <olteanv@gmail.com>, linux-mtd@lists.infradead.org
+To: Pratyush Yadav <p.yadav@ti.com>
+Cc: Kuldeep Singh <kuldeep.singh@nxp.com>, linux-spi@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, Vladimir Oltean <olteanv@gmail.com>,
+ linux-mtd@lists.infradead.org
 Subject: Re: [PATCH] dt-bindings: spi: Convert Freescale DSPI to json schema
-Message-ID: <20210324175149.GA3320002@robh.at.kernel.org>
+Message-ID: <20210324181037.GB3320002@robh.at.kernel.org>
 References: <20210315121518.3710171-1-kuldeep.singh@nxp.com>
  <20210315183051.ugvmz4zqrvuo6iqq@ti.com>
- <067c42f3726578ebe60d201a141dfdb6@walle.cc>
- <20210316180655.6oidvffum7yuwknr@ti.com>
- <97410b24785492f9e80999dd7a1ffdea@walle.cc>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <97410b24785492f9e80999dd7a1ffdea@walle.cc>
+In-Reply-To: <20210315183051.ugvmz4zqrvuo6iqq@ti.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210324_175155_101193_E5E0A606 
-X-CRM114-Status: GOOD (  12.47  )
+X-CRM114-CacheID: sfid-20210324_181041_576832_E75B013D 
+X-CRM114-Status: GOOD (  20.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,24 +92,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Mar 16, 2021 at 07:22:56PM +0100, Michael Walle wrote:
-> Am 2021-03-16 19:06, schrieb Pratyush Yadav:
-> > On 16/03/21 06:45PM, Michael Walle wrote:
-> > > Am 2021-03-15 19:30, schrieb Pratyush Yadav:
-> > > 
-> > > ..
-> > > > > +patternProperties:
-> > > > > +  "@[0-9a-f]+":
-> > > 
-> > > Shouldn't this be "^.*@[0-9a-f]+$"?
-> > 
-> > The pattern has to match _anywhere_ in the string so both should match
-> > the flash node. Your pattern is more "strict" or "precise". See the note
-> > at [0].
+On Tue, Mar 16, 2021 at 12:00:52AM +0530, Pratyush Yadav wrote:
+> +Cc mtd list
 > 
-> I know, but specifying the whole line is widely used in the bindings.
+> Hi,
+> 
+> On 15/03/21 05:45PM, Kuldeep Singh wrote:
+> > Convert the Freescale DSPI binding to DT schema format using json-schema.
+> > 
+> > Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
+> > ---
+> > Hi Rob,
+> > This patch is checked with following commands with no warnings observed.
+> > make distclean; make allmodconfig;
+> > make dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml;
+> > make dtbs_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml
+> 
+> When I add the "fsl,spi-cs-sck-delay" property under the flash@0 node in 
+> the example and run dt_binding_check, I see the below error:
+> 
+>   /home/pratyush/src/linux/Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.example.dt.yaml: flash@0: 'fsl,spi-cs-sck-delay' does not match any of the regexes: '^partition@', 'pinctrl-[0-9]+'
+>      From schema: /home/pratyush/src/lin/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> 
+> I am trying to solve a similar problem for the Cadence QSPI controller 
+> binding and I wonder what the best solution for this is. The obvious one 
+> would be to add these properties to jedec,spi-nor.yaml. I haven't 
+> managed to come up with any other solution to this problem.
+> 
+> Rob, all, any suggestions on how to best model this?
 
-It should be '@[0-9a-f]+$' which is equivalent to Michael's suggestion.
+I'm aware of the issue, but I don't have a solution for this situation. 
+It's a problem anywhere we have a parent or bus binding defining 
+properties for child nodes. For now, I'd just avoid it in the examples 
+and we'll figure out how to deal with actual dts files later.
+
+For this one in particular, CS to clock timing isn't any FSL or 
+controller specific, but is device specific. So this probably should 
+have been a generic spi bus property (if not implicit). That's somewhat 
+easier to work-around than potentially adding controller specific 
+properties to every slave device schema.
 
 Rob
 
