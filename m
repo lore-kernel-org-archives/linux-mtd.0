@@ -1,87 +1,86 @@
-Return-Path: <SRS0=+z9G=IY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=NuEk=IZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9077DC433DB
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Mar 2021 14:10:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F854C433DB
+	for <linux-mtd@archiver.kernel.org>; Sat, 27 Mar 2021 17:05:38 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 17FC861A02
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Mar 2021 14:10:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 17FC861A02
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7D844619A3
+	for <linux-mtd@archiver.kernel.org>; Sat, 27 Mar 2021 17:05:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D844619A3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=oATUQwx2Qp0er46E6X7Vs5L5gRF4SXIkZyP/a00ko5Q=; b=YuwO4YkKcSE4fsZ1zHs/gbbmY
-	VkGTQhAyOr+RiRdgLSp1EsMd4EY9pDvkD4gwsfLHEO0bgLFF104kP/9cCuMj61y9J65LxyRBoH64b
-	LSYPBOGF9Kyt40PwwCMmcyKj7/hRFiaponFD9YfhNkohQKG4xuuqG3Imy5Juk6uwJbN8toncFQulT
-	N2Y8m9E8MgPPxk9z4sTCHBUlDjzAptMCqioCsnwZWIt1wtbX7dL757LpYBNn1VmFF/Gh8cuNQgoBf
-	AzOyY6jHjFkmDZmalLjMAbvYxARinTB8RC4RjackeBje1cuBQwMgjZhQDIRZeI0MisUTb6MNRNNKA
-	5afHYY0hQ==;
+	 bh=kw1jgUNZzRUIIEG6SAVH/gccpcQ4/R5K/J0t6LTy18k=; b=fBpVLL4AEHl3DhDwf6PNpDCf+
+	D+7CN9WgGYcOZJL8HWN5VfXE9GJbqahTLwE7yfgEaW/EJ/wlSrhQe6qCs1i53+s4zQtnJslU/2Hik
+	i4gmetBX1krkiEUPjRMVQK45iH6G+lUlKTaIjtR/P3G/OO1XEfcMpZYI7bNShWNwugkcaPKtNwFZN
+	W6+o3dzb+CGDt+wqFgRX0cwYTRoY7vvif5m4U5kNFgb3T/rv7QPEZsIDXQ0ssYbPgUaTOjLQbKoPZ
+	VOdQJLzZeiym8bwjzqmvPxdQOUFsNAxHDAzfptkiLRS8Ecax2MBMRDm4bpnQt9TqolTGHdDr38bRi
+	rUMVSxWiw==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lPn9o-003jvd-I0; Fri, 26 Mar 2021 14:09:48 +0000
-Received: from mail-qk1-x731.google.com ([2607:f8b0:4864:20::731])
+	id 1lQCMK-005KDX-7l; Sat, 27 Mar 2021 17:04:24 +0000
+Received: from mail-ot1-f52.google.com ([209.85.210.52])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lPn9h-003jul-Db
- for linux-mtd@lists.infradead.org; Fri, 26 Mar 2021 14:09:44 +0000
-Received: by mail-qk1-x731.google.com with SMTP id o5so5342598qkb.0
- for <linux-mtd@lists.infradead.org>; Fri, 26 Mar 2021 07:09:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=0x0f.com; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=ZzjZseiEUmTZfFHAmjQMrOVkpZ6x0+tzMj08xpQ6yq0=;
- b=KVheVgeJgZecx/FFd5VWNdrlusRUfZqjFCSCFNU+yEWLfZDDkzrUQw4D5mfROjl+cJ
- VAtacQfxoWUP4cQIHd4CH8zpMIlRrg0p/ciswCFtEFfHL3Ftcp5vad+NiXJ/dWBLJU0k
- 9DVjbh+S2Oa/rBKWybpZ2Ec+hCvJ9U2M46q/M=
+ id 1lQCME-005KDB-63
+ for linux-mtd@lists.infradead.org; Sat, 27 Mar 2021 17:04:19 +0000
+Received: by mail-ot1-f52.google.com with SMTP id
+ 68-20020a9d0f4a0000b02901b663e6258dso8204605ott.13
+ for <linux-mtd@lists.infradead.org>; Sat, 27 Mar 2021 10:04:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=ZzjZseiEUmTZfFHAmjQMrOVkpZ6x0+tzMj08xpQ6yq0=;
- b=TksiBEq8l6ZFwPlWPtdy9HEZ0pDo2LEBwwBVkvvf0YaP7nXZjtjarKxRD67RkjqHJC
- abFomdkrf0BTeA3sclCZvI9RG0lzSn9iB6ADYvDx+UAG+Vcai87sYh/h4GPKmMtwjz5z
- SrxVTCTj/ZU7zgNOkdvgRW/l7QHmV80GTfdSZCUGuQ5ft1jw9zGnKZgmJWSAe8/cZhtH
- m5X4Hmk6Fo4hP8BMhtES+F9KhbrwRZcXAa0e0oc7peFFARa+m/tIDFcZtvhJu/yFGbQQ
- MKhaZLu6Q7LY7KLMeFb3dwuYD8b+CCEAF5OL5WVxVPsHjXcTqipgdlUdQX3t/XMtZdzz
- teRA==
-X-Gm-Message-State: AOAM530qaUrpsGAVlXRk/HmP/BTFdpFdcxlsL/yz1JvRV/mfcjQNyZxP
- SSXpFooL8Z2+Fg86Jv5/MoIrfidiioMDvJXduUVwZg==
-X-Google-Smtp-Source: ABdhPJwaf4OTlnKY7d9JSvR8Dg8uARN8GSBpSDdvSTiGtYqRE3barT8RBbOhXjke/03Ligvu08fyH3kHIc4T84rqaZI=
-X-Received: by 2002:ae9:f70a:: with SMTP id s10mr13328039qkg.468.1616767779533; 
- Fri, 26 Mar 2021 07:09:39 -0700 (PDT)
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=5QMzMCD0TfleB/wF3Fq0kYULJqD6sNthBOgcL7cz5zI=;
+ b=kbojBxlRZ0lcy0btHfIE9OEwTQbZvSWWuprqT3KKxXwjsG5f2UclFk3CcoWopgZIc+
+ 51KRP46wm9X282MW5x2dlxCmwcT1oowLGG8mY84Qc1+M6/FnFWkDGVYhP5oPYhVI95TW
+ Yirpt7WDqZt6HXcLtRNbDxCl5Fa+uOvBWvyXKAsulGAAWB8WkR5oQDjGztXZ5/TcbOMx
+ P65zbr9F4F4yzIfnGqGFxvgnU1YkdJMQQRY/Mvy7ichJQosn2XvkPH+jQQX7UDFe6ENB
+ DXwiiTjBygYXi02STs3qQdqDvB7vKS6rkqlcg+H3KZHkqSuzp10sf5VMLOeX4P/86w+e
+ 40iw==
+X-Gm-Message-State: AOAM533a6tTKyFgj+LAnKWLUXy+ogUUPayveHPxFizsuZyhPgOhIJlGe
+ uACoeSoFMdFdaefxwNEa0g==
+X-Google-Smtp-Source: ABdhPJx89xF40rCPZdk+uFfBNPZfmZp4Lxp9fKzlVfPyAeBfideUde4GPIVUtdo4G9vJsPphbpX/+w==
+X-Received: by 2002:a9d:5e94:: with SMTP id f20mr9756895otl.150.1616864656986; 
+ Sat, 27 Mar 2021 10:04:16 -0700 (PDT)
+Received: from robh.at.kernel.org ([172.58.107.88])
+ by smtp.gmail.com with ESMTPSA id a15sm2711590otd.57.2021.03.27.10.04.14
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 27 Mar 2021 10:04:15 -0700 (PDT)
+Received: (nullmailer pid 249165 invoked by uid 1000);
+ Sat, 27 Mar 2021 17:04:13 -0000
+Date: Sat, 27 Mar 2021 11:04:13 -0600
+From: Rob Herring <robh@kernel.org>
+To: Michael Walle <michael@walle.cc>
+Cc: devicetree@vger.kernel.org,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ linux-mtd@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/4] dt-bindings: mtd: add YAML schema for the
+ generic MTD bindings
+Message-ID: <20210327170413.GA249072@robh.at.kernel.org>
+References: <20210322181949.2805-1-michael@walle.cc>
+ <20210322181949.2805-3-michael@walle.cc>
 MIME-Version: 1.0
-References: <20210213095724.3411058-1-daniel@0x0f.com>
- <20210215112409.1a755bf0@xps13>
- <CAFr9PXkh+attaCc6C2UxB=qvXksWriWOaaoEndy4k6SGE0QOHQ@mail.gmail.com>
- <20210215121653.4edd86c4@xps13>
- <CAFr9PXmVehtcm6FjBqi_hmEAj1rgtxMvarisjPmWhgjruVj++Q@mail.gmail.com>
- <20210322193213.18520b9a@xps13>
- <CAFr9PX=mL9UWcr-yWbYa5NXS-R=yHeGgM+hd_MKOa2XiBUAJOQ@mail.gmail.com>
- <20210323113233.3523d66b@xps13>
- <CAFr9PX=KMZuzp61Hq=2WdHyEzE=6J7HEPWZxPs7FEqiH-G8wFw@mail.gmail.com>
- <20210323150603.6b942a60@xps13>
-In-Reply-To: <20210323150603.6b942a60@xps13>
-From: Daniel Palmer <daniel@0x0f.com>
-Date: Fri, 26 Mar 2021 23:09:28 +0900
-Message-ID: <CAFr9PXntCmdrmg+i3BB1j-aY4VbE=2iqyLcoSr9cX2090jGiGQ@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd: spinand: add support for Foresee FS35ND01G-S1Y2
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: linux-mtd@lists.infradead.org, 
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20210322181949.2805-3-michael@walle.cc>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210326_140941_832245_1DB5AB7B 
-X-CRM114-Status: GOOD (  15.62  )
+X-CRM114-CacheID: sfid-20210327_170418_363270_1941F5AD 
+X-CRM114-Status: GOOD (  11.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,56 +97,20 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
+On Mon, 22 Mar 2021 19:19:47 +0100, Michael Walle wrote:
+> Convert MTD's common.txt to mtd.yaml.
+> 
+> Signed-off-by: Michael Walle <michael@walle.cc>
+> ---
+> Btw, I've asked Miquel if I can add it as the maintainer.
+> 
+>  .../devicetree/bindings/mtd/common.txt        | 16 +-------
+>  .../devicetree/bindings/mtd/mtd.yaml          | 39 +++++++++++++++++++
+>  2 files changed, 40 insertions(+), 15 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/mtd.yaml
+> 
 
-Sorry for the constant pestering on this..
-
-On Tue, 23 Mar 2021 at 23:06, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > # nandbiterrs -i /dev/mtd1
-> > incremental biterrors test
-> > Successfully corrected 0 bit errors per subpage
-> > Inserted biterror @ 0/5
-> > Read reported 4 corrected bit errors
-> > ECC failure, invalid data despite read success
->
-> This is not a valid behavior. There is something wrong with the way ECC
-> status is read/retrieved. The read should indeed report 4 corrected bit
-> errors, but then the data should be valid. Here it means that the
-> introduced error appears corrected but in fact is not.
-> We need to understand what status are available and write the
-> appropriate vendor code.
-
-I looked at the datasheet again and the encoding for ecc status seems
-a bit funky.
-The chip seems to have only two bits for ECC status with this encoding:
-0 - Read success with 0-3 flipped bits.
-1 - Read success with 4 flipped bits.
-2 - Uncorrectable.
-3 - Reserved.
-
-This looks almost the same as the Winbond chips with 0 and 1 being successes
-but with no totally error free status.
-
-Anyhow, if 4 bits were corrected is returned for 1 then nandbiterrs
-reports "ECC failure, invalid data despite read success".
-If I return 3 bit errors for 0 and -EBADMSG for anything else
-nandbiterrs doesn't complain anymore but is this right?:
-
-# nandbiterrs -i /dev/mtd1
-incremental biterrors test
-Read reported 3 corrected bit errors
-Successfully corrected 0 bit errors per subpage
-biterror @ 0/5
-Failed to recover 1 bitflips
-Read error after 1 bit errors per page
-
-When running nandbiterrs the status is always 0 before injecting the
-error and then sometimes 1 and sometimes 2 after the error is
-injected.
-
-Thanks,
-
-Daniel
+Reviewed-by: Rob Herring <robh@kernel.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
