@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F295C433C1
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Mar 2021 07:06:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E335EC433E4
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Mar 2021 07:06:31 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 00FD160C3E
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Mar 2021 07:06:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 00FD160C3E
+	by mail.kernel.org (Postfix) with ESMTPS id 7606060C3E
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Mar 2021 07:06:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7606060C3E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=vivo.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,22 +23,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:Cc:To
 	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=y++bFMZiLJhuaEUFgpYD8tgaocMuZ5ooiJlXx18TLc4=; b=gNyWJen/ZN6nSKWsPLAFTxklHC
-	QAwG5paSKz9VbvrVi2PD+ruFvl95IKl1YTJiqz08lyuoaL+Qbv5f9o5I5sJNRCXgnCr0YqdYoEXzf
-	az50Y9qeqhKo4uPAd0fb91oEjGx+KeLdTBQ+U1o3cbE9IvykyzOV4wFQEXWTAA/t5XGSLxMy5kBoz
-	lSBP0KodeYJLMTlYq85B3//i9SpX5FvpCqbemDS1aTk30gQh92HyfIjB5o6F80NCP7iKMbPVq5EQK
-	bUHGM/W7jXcxF30G0Bf7GvalZJeegUzPbuaUWX0E/OSuyKIlc9ZEKu7sXARBcr0hpchhH976C2Xq7
-	Oe2KZ4uA==;
+	bh=fhWj9rWHw9hbsrNaNvHfucngrdviN3x5PlOxN3+C9SU=; b=HEwQ2jVfgW4kp5jG59RjaIl602
+	ZCknOE8U3a4VJh9DdUeFrRA0FBPdAPM/2ZKmGdAVKAVdr40l1YFeclar9N73tXauAJsFgl4e0md8d
+	/rMeluOML7WPrZMia4zvGnR2WpgdB5rr9TaX9limRIOIKI7BHxHPUy1crM86hcon4hanaiXHb072b
+	1aTEx68Bgo1m5DEOT3So6xLjT2Wi8uzNztTjwInR/D5OKw98hjnpZqeaHJ5mWq9V3S7+e0P+1tkwD
+	22u/+aDf3i+R5k400QplvYzx2QUodOI8O9U0WS1gc8K2TXI3bgp4kAklFHoUJTswQjzvlA0IsXZ5J
+	Q1BEpQ0w==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lR8RZ-002t3a-D9; Tue, 30 Mar 2021 07:05:41 +0000
+	id 1lR8RL-002t0Z-8H; Tue, 30 Mar 2021 07:05:27 +0000
 Received: from mail-m118208.qiye.163.com ([115.236.118.208])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lR8RH-002szC-R3
- for linux-mtd@lists.infradead.org; Tue, 30 Mar 2021 07:05:26 +0000
+ id 1lR8R9-002sxs-Et
+ for linux-mtd@lists.infradead.org; Tue, 30 Mar 2021 07:05:17 +0000
 Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.232])
- by mail-m118208.qiye.163.com (Hmail) with ESMTPA id B2F54E02FC;
- Tue, 30 Mar 2021 15:05:19 +0800 (CST)
+ by mail-m118208.qiye.163.com (Hmail) with ESMTPA id C3FCEE03F2;
+ Tue, 30 Mar 2021 15:05:11 +0800 (CST)
 From: Wang Qing <wangqing@vivo.com>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
  Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
@@ -53,22 +53,22 @@ To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
  linux-mtd@lists.infradead.org, linux-hams@vger.kernel.org,
  netdev@vger.kernel.org, linux-decnet-user@lists.sourceforge.net
 Cc: gregkh@linuxfoundation.org
-Subject: [PATCH 4/6] fs/jffs2: Delete obsolete TODO file
-Date: Tue, 30 Mar 2021 15:02:47 +0800
-Message-Id: <1617087773-7183-5-git-send-email-wangqing@vivo.com>
+Subject: [PATCH 3/6] fs/befs: Delete obsolete TODO file
+Date: Tue, 30 Mar 2021 15:02:46 +0800
+Message-Id: <1617087773-7183-4-git-send-email-wangqing@vivo.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1617087773-7183-1-git-send-email-wangqing@vivo.com>
 References: <1617087773-7183-1-git-send-email-wangqing@vivo.com>
 X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
- oVCBIfWUFZTBkfQ0wZQ0lCSUNNVkpNSkxLQ0xCSUtNSk9VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
- FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NhQ6CSo*AT8cQzcyEB5KTiEu
- IwsaCk5VSlVKTUpMS0NMQklLQkhNVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
- SU5KVUxPVUlISVlXWQgBWUFPTEhLNwY+
-X-HM-Tid: 0a7881f3797d2c17kusnb2f54e02fc
+ oVCBIfWUFZTk9LTxhPHx8aGUxOVkpNSkxLQ0xCSklDQ01VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+ FZT0tIVUpKS09ISFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Pxg6Qyo*Oj8JDjcJEB02TjEO
+ OjdPFElVSlVKTUpMS0NMQkpIT0pJVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+ SU5KVUxPVUlISVlXWQgBWUFISktLNwY+
+X-HM-Tid: 0a7881f35b5c2c17kusnc3fcee03f2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210330_080524_449736_AB5F4915 
-X-CRM114-Status: GOOD (  16.46  )
+X-CRM114-CacheID: sfid-20210330_080515_797236_6FEE223F 
+X-CRM114-Status: GOOD (  10.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,60 +86,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The TODO file here has not been updated for 14 years, and the function 
+The TODO file here has not been updated from 2005, and the function 
 development described in the file have been implemented or abandoned.
 
 Its existence will mislead developers seeking to view outdated information.
 
 Signed-off-by: Wang Qing <wangqing@vivo.com>
 ---
- fs/jffs2/TODO | 37 -------------------------------------
- 1 file changed, 37 deletions(-)
- delete mode 100644 fs/jffs2/TODO
+ fs/befs/TODO | 14 --------------
+ 1 file changed, 14 deletions(-)
+ delete mode 100644 fs/befs/TODO
 
-diff --git a/fs/jffs2/TODO b/fs/jffs2/TODO
+diff --git a/fs/befs/TODO b/fs/befs/TODO
 deleted file mode 100644
-index ca28964..0000000
---- a/fs/jffs2/TODO
+index 3250921..0000000
+--- a/fs/befs/TODO
 +++ /dev/null
-@@ -1,37 +0,0 @@
+@@ -1,14 +0,0 @@
+-TODO
+-==========
 -
-- - support asynchronous operation -- add a per-fs 'reserved_space' count,
--   let each outstanding write reserve the _maximum_ amount of physical
--   space it could take. Let GC flush the outstanding writes because the
--   reservations will necessarily be pessimistic. With this we could even
--   do shared writable mmap, if we can have a fs hook for do_wp_page() to
--   make the reservation.
-- - disable compression in commit_write()?
-- - fine-tune the allocation / GC thresholds
-- - chattr support - turning on/off and tuning compression per-inode
-- - checkpointing (do we need this? scan is quite fast)
-- - make the scan code populate real inodes so read_inode just after 
--	mount doesn't have to read the flash twice for large files.
--	Make this a per-inode option, changeable with chattr, so you can
--	decide which inodes should be in-core immediately after mount.
-- - test, test, test
+-* Convert comments to the Kernel-Doc format.
 -
-- - NAND flash support:
--	- almost done :)
--	- use bad block check instead of the hardwired byte check
+-* Befs_fs.h has gotten big and messy. No reason not to break it up into 
+-	smaller peices.
 -
-- - Optimisations:
--   - Split writes so they go to two separate blocks rather than just c->nextblock.
--	By writing _new_ nodes to one block, and garbage-collected REF_PRISTINE
--	nodes to a different one, we can separate clean nodes from those which
--	are likely to become dirty, and end up with blocks which are each far
--	closer to 100% or 0% clean, hence speeding up later GC progress dramatically.
--   - Stop keeping name in-core with struct jffs2_full_dirent. If we keep the hash in 
--     the full dirent, we only need to go to the flash in lookup() when we think we've
--     got a match, and in readdir(). 
--   - Doubly-linked next_in_ino list to allow us to free obsoleted raw_node_refs immediately?
--   - Remove size from jffs2_raw_node_frag. 
+-* See if Alexander Viro's option parser made it into the kernel tree. 
+-	Use that if we can. (include/linux/parser.h)
 -
--dedekind:
--1. __jffs2_flush_wbuf() has a strange 'pad' parameter. Eliminate.
--2. get_sb()->build_fs()->scan() path... Why get_sb() removes scan()'s crap in
--   case of failure? scan() does not clean everything. Fix.
+-* See if we really need separate types for on-disk and in-memory 
+-	representations of the superblock and inode.
+-
 -- 
 2.7.4
 
