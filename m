@@ -2,61 +2,70 @@ Return-Path: <SRS0=LUPw=I4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 734DCC433DB
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Mar 2021 16:18:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 362B6C433DB
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Mar 2021 18:13:55 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 06A5E619D0
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Mar 2021 16:18:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 06A5E619D0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+	by mail.kernel.org (Postfix) with ESMTPS id ACDFA614A7
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Mar 2021 18:13:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ACDFA614A7
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Date:Cc:To:From:
+	Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=YMMEOm8/ALbyL+dk6mRO2Hu7e7t5Kh69xX5GkLAqeng=; b=dPzW1S3GtKj6sI6yzmJn+e0aD
-	ezDVkStsxr9DPqCkoboYC+H84e4sXHUZ+4w+UFTwXO7SUGKNjCIyXFOR3mFPs8y5HW0qxDjJDRJjn
-	3xt+BQKdl0agX7EsIRpzkfzwEXaOJ2pGL0m4DFo0KBKSsrUQRv+NC1o2K4wvPcm/XhoMfnr1DgAxh
-	yMF0LB8Ocm1Zp45+uTV4jjMpcY5nCfKsRrJiWWL9PM3fdcXZGHP/5dQWYHtobbhpukH0KvIDbqLrT
-	0g887Av1f87FYH7/UU4jkfPUgY2+Jd2P2pyOStDq8H7+5QLyFUzkOhgKnc+WvkG7eb6wR8ZANKRae
-	bp+WQxYHQ==;
+	 bh=nZk5P5qGYAV5pF9pCoTH5aFguGEv/6ZNJ1YjIVLb1Mk=; b=dJd6gV37RV6pw9KtGxuEsOos8
+	P1zw/EQg84TvkH1xuVYNI5i26pQeysNO8iT3V0p6v1a5yUVgZt+2D5Og/fI5y1VI/dwR7WfHtxuED
+	ePnwcvgoAEfEilnkC/NdENmhAfuDw8u1BWhQ1gh2ORiiIsQWHqLdd5BwMNPC9/S0YcJ6Sh9LJiSkp
+	7pHgiiNumzJ0EMMto47esLoHjt+oLCL9iVeC5uue8T0+BCZUad4tQ3mJiI+88k/4nqGQ7UcvT0SgR
+	FcE/jThuqPOg9O6yVh8OxGAKuyb1mqoHDHuJhbYc3xOa+BhndcoYAAemfzYjg2O1WKJgLGFDrtJh1
+	3ibsW41hA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lRH3Z-004KDl-PW; Tue, 30 Mar 2021 16:17:30 +0000
-Received: from verein.lst.de ([213.95.11.211])
+	id 1lRIrK-004YQ4-QM; Tue, 30 Mar 2021 18:12:58 +0000
+Received: from smtprelay0164.hostedemail.com ([216.40.44.164]
+ helo=smtprelay.hostedemail.com)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lRH3P-004KCV-3e
- for linux-mtd@lists.infradead.org; Tue, 30 Mar 2021 16:17:21 +0000
-Received: by verein.lst.de (Postfix, from userid 2407)
- id 4252368B05; Tue, 30 Mar 2021 18:17:15 +0200 (CEST)
-Date: Tue, 30 Mar 2021 18:17:15 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: Joel Stanley <joel@jms.id.au>
-Cc: David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>,
- Al Viro <viro@zeniv.linux.org.uk>,
- Kees Cook <keescook@chromium.org>, Christoph Hellwig <hch@lst.de>,
- "William A . Kennington III" <wak@google.com>,
- Lei YU <mine260309@gmail.com>, linux-mtd@lists.infradead.org,
+ id 1lRIrD-004YOF-2U
+ for linux-mtd@lists.infradead.org; Tue, 30 Mar 2021 18:12:53 +0000
+Received: from omf20.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+ by smtprelay04.hostedemail.com (Postfix) with ESMTP id 3AC15180355C1;
+ Tue, 30 Mar 2021 18:12:46 +0000 (UTC)
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+ (Authenticated sender: joe@perches.com)
+ by omf20.hostedemail.com (Postfix) with ESMTPA id AF43D18A614;
+ Tue, 30 Mar 2021 18:12:44 +0000 (UTC)
+Message-ID: <703d46e209b0e7163e46b807aba761c93b4a90c9.camel@perches.com>
+Subject: Re: [PATCH] mtd: intel-spi: add is_protected and is_bios_locked knobs
+From: Joe Perches <joe@perches.com>
+To: Tomas Winkler <tomas.winkler@intel.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] jffs2: Hook up splice_write callback
-Message-ID: <20210330161715.GA12783@lst.de>
-References: <20210330134537.423447-1-joel@jms.id.au>
+Cc: Tamar Mashiah <tamar.mashiah@intel.com>, Mika Westerberg
+ <mika.westerberg@linux.intel.com>
+Date: Tue, 30 Mar 2021 11:12:43 -0700
+In-Reply-To: <20210330155414.58343-1-tomas.winkler@intel.com>
+References: <20210330155414.58343-1-tomas.winkler@intel.com>
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210330134537.423447-1-joel@jms.id.au>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Stat-Signature: gpcomsfuenzpb86i8o6mfuisqwfphgw8
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: AF43D18A614
+X-HE-Tag: 1617127964-882415
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210330_171719_277888_3751D3AD 
-X-CRM114-Status: GOOD (  15.97  )
+X-CRM114-CacheID: sfid-20210330_191251_445927_26437B67 
+X-CRM114-Status: UNSURE (   9.20  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,25 +82,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Mar 31, 2021 at 12:15:37AM +1030, Joel Stanley wrote:
-> overlayfs using jffs2 as the upper filesystem would fail in some cases
-> since moving to v5.10. The test case used was to run 'touch' on a file
-> that exists in the lower fs, causing the modification time to be
-> updated. It returns EINVAL when the bug is triggered.
-> 
-> A bisection showed this was introduced in v5.9-rc1, with commit
-> 36e2c7421f02 ("fs: don't allow splice read/write without explicit ops").
-> Reverting that commit restores the expected behaviour.
-> 
-> Some digging showed that this was due to jffs2 lacking an implementation
-> of splice_write. (For unknown reasons the warn_unsupported that should
-> trigger was not displaying any output).
-> 
-> Adding this patch resolved the issue and the test now passes.
+On Tue, 2021-03-30 at 18:54 +0300, Tomas Winkler wrote:
+> From: Tamar Mashiah <tamar.mashiah@intel.com>
+[]
+> the region protection status is exposed via sysfs file
+> as the manufacturing will need the both files in order to validate
+> that the device is properly sealed.
+[]
+> diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
+[]
+> +static ssize_t intel_spi_is_protected_show(struct device *dev,
+> +					   struct device_attribute *attr, char *buf)
+> +{
+> +	struct intel_spi *ispi = dev_get_drvdata(dev);
+> +
+> +	return sysfs_emit(buf, "%d", ispi->is_protected);
 
-Looks good:
+These should also include a newline in the format.  i.e.:
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+	return sysfs_emit(buf, "%d\n", ispi->is_protected);
+
+
+> +static ssize_t intel_spi_bios_lock_show(struct device *dev,
+> +					struct device_attribute *attr, char *buf)
+> +{
+> +	struct intel_spi *ispi = dev_get_drvdata(dev);
+> +
+> +	return sysfs_emit(buf, "%d", ispi->is_bios_locked);
+
+etc...
+
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
