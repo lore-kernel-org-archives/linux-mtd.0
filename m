@@ -2,96 +2,67 @@ Return-Path: <SRS0=LUPw=I4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45FA0C433C1
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Mar 2021 10:36:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96D62C433C1
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Mar 2021 10:45:05 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A9AC761969
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Mar 2021 10:36:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A9AC761969
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 074E161874
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Mar 2021 10:45:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 074E161874
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:Cc:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
+	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=uakFe2jFNK2W780R71eJyJ7PGgKaKcm63oU2UkW3JSk=; b=QYGxKgJUdHMpMv0YqfG2lse/c
-	RF9SjBKDaEHyLCn1FWxcCdKuIgSfiEAisNuhm9Z8ufz8lTycT9b/Hpo37tj2cl4/PXp7PuXbgjaxa
-	+2FJ9sMEOoTYND4Lu0KTpH9geS6W1jCL0ZurfEIHLJXZmy7t0Qg/rDKQkR89pTyetteajnEeawdUv
-	M4pmRpDGwRy7BEi7wtSjYsT7qVF1OBCehBatcUJ8eFcEUH+OB1QC/+ihMSnh8V2r1oDoGYeP5lE+P
-	v+9lfpKm2TXSq8+sgA5zFIa0H2ZGOTQB/iyzwYDo9RYrW9t3lFWxuoomZEaROKm/yweYGpeEfP9YC
-	sCyafSeRw==;
+	 bh=QNkRdAM+JSw5O0trRB912MwTyyVnTpYsNZgzcIlxYL0=; b=XzB18yjO6yfgJI/XNkL3XG3vb
+	c2ijOTId1ZC7U2ZEFQiaLmELkrO5ciX4F/auG37JTKP3OK0K7qWwk+0fpr33QqSeSF+Fhnm0OZVng
+	Dczy6k5lLkqAaS+3ZGwf2QIKAkaKOUT4ggnK9if70U0NPKf4EatEogOvgZU/tHEJGR8ww2T+s+jF0
+	46dVmoTDeYwzIFwYha6Mv04zZrtBUiDqU1gZcNkwXbj20Wu7JBErQ6n4gpJvNIOZ21VjvM4IQ44av
+	Da7WQ71tiFIlozYAg0kKzcBZEzpeg38+0468nMSHbceORw5tyOGmHpvgLlv/MdMSdMPViAeAzbRJ7
+	PJERuTr4w==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lRBiZ-003Pn1-B4; Tue, 30 Mar 2021 10:35:27 +0000
-Received: from mail-ed1-x52a.google.com ([2a00:1450:4864:20::52a])
+	id 1lRBr1-003REg-Bv; Tue, 30 Mar 2021 10:44:11 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lRBiK-003Pkd-NJ
- for linux-mtd@lists.infradead.org; Tue, 30 Mar 2021 10:35:15 +0000
-Received: by mail-ed1-x52a.google.com with SMTP id o19so17610683edc.3
- for <linux-mtd@lists.infradead.org>; Tue, 30 Mar 2021 03:35:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=6Y9LMyDk4b0iimwt+wvW5tEwZ7sVo50tBsIS9q6O8BE=;
- b=mZZGYOlELnuyff8io3XcjGwmLOyC17x2BAEPKr7y0IH98IQ+7PnkjC3tLHSYxSNBmb
- SHfyzcEYurFach/EVbZOaP1doU2i0smxrXCJf/HxgvwasQViz5cvsXRkZBNvGu25zEc4
- iZMz4JbXHv7CMhieBG5whgaQ9PdaS7OrISzXThreOaLB/0uoZmmEfMKGcpN++pfUukjW
- nqGAFYNlJPpgXvRsMgRURIZMV2qBv1tTGihVbnU/LBiupbnRUOR/cv3gQB6Syqoh7JlL
- 1NxWhxPmM88JeAniqmre6Lhzr+2dZ/ibQP51m9qUiRrkFc724BlwLFrQfNKwXvjMzZFL
- hc9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=6Y9LMyDk4b0iimwt+wvW5tEwZ7sVo50tBsIS9q6O8BE=;
- b=Ipn/+I40sUKRUPv9qWsOAUoJWahqJjfRmFoq9n2i/HEkXfXZbPIDoIgqPcP4cHFDLH
- 1qhPHNgrF1srIgm/UCX1K0pVoZDDdDB7ANxIQrCS9SCkF8DVph8vJp5GQNNtAAGdKtFG
- xAnnuj3JdgR7UqvJOni0ctWDe/ROg6jPUrpyEIpMrcNQERPNxeMj08vt0wLXx8uoQGeU
- MIry6gQZ7uTZ8XQRFt53Y+NhNovS1U+LVFeAyj2+dFyBgJmOQn+SmozWIBMrGsQC5iq0
- idOZ7GF//qOibblRfNdSo/tGAycWKf9X4xMDnp3XJrXj+RJgqv99ydR+TYt3Nnxulnlo
- fYUA==
-X-Gm-Message-State: AOAM530hN0FdDzA8eHKxjYdmXv86Uvmi3pSrTX4wdfjxaCC8h4JFNdrY
- Ve5IAbgT6TvUq3m7QiVtSskcZA==
-X-Google-Smtp-Source: ABdhPJzXribJX90G+5FtWdp57MiNA+X1KsdT7xNJEXdMj5f+GQHExjbyYMmfMNWYg4Y19YzzhQvKyA==
-X-Received: by 2002:a05:6402:13ca:: with SMTP id
- a10mr32840223edx.320.1617100512170; 
- Tue, 30 Mar 2021 03:35:12 -0700 (PDT)
-Received: from [192.168.86.34]
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.googlemail.com with ESMTPSA id u24sm10775642edt.85.2021.03.30.03.35.11
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 30 Mar 2021 03:35:11 -0700 (PDT)
-Subject: Re: [RFC PATCH 1/4] nvmem: core: allow specifying of_node
-To: Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>
-References: <20210322181949.2805-1-michael@walle.cc>
- <20210322181949.2805-2-michael@walle.cc>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <835a8124-0a22-e885-0bd4-c7493520558e@linaro.org>
-Date: Tue, 30 Mar 2021 11:35:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ id 1lRBqv-003RCM-Mi
+ for linux-mtd@lists.infradead.org; Tue, 30 Mar 2021 10:44:07 +0000
+Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1lRBqu-0006SJ-NO; Tue, 30 Mar 2021 12:44:04 +0200
+Received: from sha by dude02.hi.pengutronix.de with local (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1lRBqt-0006Oc-Qy; Tue, 30 Mar 2021 12:44:03 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Cc: kernel@pengutronix.de, Jan Kara <jack@suse.com>,
+ Richard Weinberger <richard@nod.at>, Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH 2/7] ubifs: Add support for FS_IOC_FS[SG]ETXATTR ioctls
+Date: Tue, 30 Mar 2021 12:43:46 +0200
+Message-Id: <20210330104351.21328-3-s.hauer@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210330104351.21328-1-s.hauer@pengutronix.de>
+References: <20210330104351.21328-1-s.hauer@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210322181949.2805-2-michael@walle.cc>
-Content-Language: en-US
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::28
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210330_113513_482046_B4C5765F 
-X-CRM114-Status: GOOD (  26.05  )
+X-CRM114-CacheID: sfid-20210330_114405_826470_23CEBFDA 
+X-CRM114-Status: GOOD (  19.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,104 +74,180 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+The FS_IOC_FS[SG]ETXATTR ioctls are an alternative to FS_IOC_[GS]ETFLAGS
+with additional features. This patch adds support for these ioctls.
 
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ fs/ubifs/ioctl.c | 107 ++++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 102 insertions(+), 5 deletions(-)
 
-On 22/03/2021 18:19, Michael Walle wrote:
-> Until now, the of_node of the parent device is used. Some devices
-> provide more than just the nvmem provider. To avoid name space clashes,
-> add a way to allow specifying the nvmem cells in subnodes. Consider the
-> following example:
-> 
->      flash@0 {
->          compatible = "jedec,spi-nor";
-> 
->          partitions {
->              compatible = "fixed-partitions";
->              #address-cells = <1>;
->              #size-cells = <1>;
-> 
->              partition@0 {
->                  reg = <0x000000 0x010000>;
->              };
->          };
-> 
->          otp {
->              compatible = "mtd-user-otp";
+diff --git a/fs/ubifs/ioctl.c b/fs/ubifs/ioctl.c
+index 89533f92b356..34bcd47083e4 100644
+--- a/fs/ubifs/ioctl.c
++++ b/fs/ubifs/ioctl.c
+@@ -101,9 +101,46 @@ static int ubifs2ioctl(int ubifs_flags)
+ 	return ioctl_flags;
+ }
+ 
+-static int setflags(struct file *file, int flags)
++/* Transfer xflags flags to internal */
++static unsigned long ubifs_xflags_to_iflags(__u32 xflags)
+ {
+-	int oldflags, err, release;
++	unsigned long iflags = 0;
++
++	if (xflags & FS_XFLAG_SYNC)
++		iflags |= UBIFS_SYNC_FL;
++	if (xflags & FS_XFLAG_IMMUTABLE)
++		iflags |= UBIFS_IMMUTABLE_FL;
++	if (xflags & FS_XFLAG_APPEND)
++		iflags |= UBIFS_APPEND_FL;
++
++	return iflags;
++}
++
++/* Transfer internal flags to xflags */
++static __u32 ubifs_iflags_to_xflags(unsigned long flags)
++{
++	__u32 xflags = 0;
++
++	if (flags & UBIFS_SYNC_FL)
++		xflags |= FS_XFLAG_SYNC;
++	if (flags & UBIFS_IMMUTABLE_FL)
++		xflags |= FS_XFLAG_IMMUTABLE;
++	if (flags & UBIFS_APPEND_FL)
++		xflags |= FS_XFLAG_APPEND;
++
++	return xflags;
++}
++
++static void ubifs_fill_fsxattr(struct inode *inode, struct fsxattr *fa)
++{
++	struct ubifs_inode *ui = ubifs_inode(inode);
++
++	simple_fill_fsxattr(fa, ubifs_iflags_to_xflags(ui->flags));
++}
++
++static int setflags(struct file *file, int flags, struct fsxattr *fa)
++{
++	int ubi_flags, oldflags, err, release;
+ 	struct inode *inode = file_inode(file);
+ 	struct ubifs_inode *ui = ubifs_inode(inode);
+ 	struct ubifs_info *c = inode->i_sb->s_fs_info;
+@@ -116,6 +153,13 @@ static int setflags(struct file *file, int flags)
+ 	if (!inode_owner_or_capable(&init_user_ns, inode))
+ 		return -EACCES;
+ 
++	ubifs_assert(c, !(flags && fa));
++
++	if (fa)
++		ubi_flags = ubifs_xflags_to_iflags(fa->fsx_xflags);
++	else
++		ubi_flags = ioctl2ubifs(flags);
++
+ 	/*
+ 	 * Make sure the file-system is read-write and make sure it
+ 	 * will not become read-only while we are changing the flags.
+@@ -132,12 +176,24 @@ static int setflags(struct file *file, int flags)
+ 
+ 	mutex_lock(&ui->ui_mutex);
+ 	oldflags = ubifs2ioctl(ui->flags);
+-	err = vfs_ioc_setflags_prepare(inode, oldflags, flags);
++	err = vfs_ioc_setflags_prepare(inode, oldflags, ubifs2ioctl(ubi_flags));
+ 	if (err)
+ 		goto out_unlock;
+ 
+ 	ui->flags &= ~ioctl2ubifs(UBIFS_SETTABLE_IOCTL_FLAGS);
+-	ui->flags |= ioctl2ubifs(flags);
++
++	if (fa) {
++		struct fsxattr old_fa;
++
++		ubifs_fill_fsxattr(inode, &old_fa);
++
++		err = vfs_ioc_fssetxattr_check(inode, &old_fa, fa);
++		if (err)
++			goto out_unlock;
++	}
++
++	ui->flags |= ubi_flags;
++
+ 	ubifs_set_inode_flags(inode);
+ 	inode->i_ctime = current_time(inode);
+ 	release = ui->dirty;
+@@ -162,6 +218,41 @@ static int setflags(struct file *file, int flags)
+ 	return err;
+ }
+ 
++static int ubifs_ioc_fsgetxattr(struct file *file, void __user *arg)
++{
++	struct inode *inode = file_inode(file);
++	struct fsxattr fa;
++
++	ubifs_fill_fsxattr(inode, &fa);
++
++	if (copy_to_user(arg, &fa, sizeof(fa)))
++		return -EFAULT;
++
++	return 0;
++}
++
++static int check_xflags(unsigned int flags)
++{
++	if (flags & ~(FS_XFLAG_SYNC | FS_XFLAG_IMMUTABLE | FS_XFLAG_APPEND))
++		return -EOPNOTSUPP;
++	return 0;
++}
++
++static int ubifs_ioc_fssetxattr(struct file *file, const void __user *arg)
++{
++	struct fsxattr fa;
++	int err;
++
++	if (copy_from_user(&fa, (struct fsxattr __user *)arg, sizeof(fa)))
++		return -EFAULT;
++
++	err = check_xflags(fa.fsx_xflags);
++	if (err)
++		return err;
++
++	return setflags(file, 0, &fa);
++}
++
+ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ {
+ 	int flags, err;
+@@ -186,7 +277,7 @@ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 			flags &= ~FS_DIRSYNC_FL;
+ 
+ 
+-		return setflags(file, flags);
++		return setflags(file, flags, NULL);
+ 	}
+ 	case FS_IOC_SET_ENCRYPTION_POLICY: {
+ 		struct ubifs_info *c = inode->i_sb->s_fs_info;
+@@ -218,6 +309,12 @@ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	case FS_IOC_GET_ENCRYPTION_NONCE:
+ 		return fscrypt_ioctl_get_nonce(file, (void __user *)arg);
+ 
++	case FS_IOC_FSGETXATTR:
++		return ubifs_ioc_fsgetxattr(file, (void __user *)arg);
++
++	case FS_IOC_FSSETXATTR:
++		return ubifs_ioc_fssetxattr(file, (const void __user *)arg);
++
+ 	default:
+ 		return -ENOTTY;
+ 	}
+-- 
+2.29.2
 
-I would have expected this to come up as a proper device, but am not 
-100% sure how MTD handles flashes and its partitions.
-
->              #address-cells = <1>;
->              #size-cells = <1>;
-> 
->              serial-number@0 {
->                  reg = <0x0 0x8>;
->              };
->          };
->      };
-> 
-> There the nvmem provider might be the MTD partition or the OTP region of
-> the flash.
-> 
-> Add a new config->of_node parameter, which if set, will be used instead
-> of the parent's of_node.
-> 
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
-
-Patch is fine as it its.
-If you plan to take this via mtd tree here is my Ack
-
-Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-
-
---srini
-
->   drivers/nvmem/core.c           | 4 +++-
->   include/linux/nvmem-provider.h | 2 ++
->   2 files changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-> index bca671ff4e54..62d363a399d3 100644
-> --- a/drivers/nvmem/core.c
-> +++ b/drivers/nvmem/core.c
-> @@ -789,7 +789,9 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
->   	nvmem->reg_write = config->reg_write;
->   	nvmem->keepout = config->keepout;
->   	nvmem->nkeepout = config->nkeepout;
-> -	if (!config->no_of_node)
-> +	if (config->of_node)
-> +		nvmem->dev.of_node = config->of_node;
-> +	else if (!config->no_of_node)
->   		nvmem->dev.of_node = config->dev->of_node;
->   
->   	switch (config->id) {
-> diff --git a/include/linux/nvmem-provider.h b/include/linux/nvmem-provider.h
-> index e162b757b6d5..471cb7b9e896 100644
-> --- a/include/linux/nvmem-provider.h
-> +++ b/include/linux/nvmem-provider.h
-> @@ -57,6 +57,7 @@ struct nvmem_keepout {
->    * @type:	Type of the nvmem storage
->    * @read_only:	Device is read-only.
->    * @root_only:	Device is accessibly to root only.
-> + * @of_node:	If given, this will be used instead of the parent's of_node.
->    * @no_of_node:	Device should not use the parent's of_node even if it's !NULL.
->    * @reg_read:	Callback to read data.
->    * @reg_write:	Callback to write data.
-> @@ -86,6 +87,7 @@ struct nvmem_config {
->   	enum nvmem_type		type;
->   	bool			read_only;
->   	bool			root_only;
-> +	struct device_node	*of_node;
->   	bool			no_of_node;
->   	nvmem_reg_read_t	reg_read;
->   	nvmem_reg_write_t	reg_write;
-> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
