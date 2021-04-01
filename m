@@ -2,73 +2,73 @@ Return-Path: <SRS0=GKVC=I6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15ADFC433B4
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Apr 2021 15:17:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D11ACC433ED
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Apr 2021 15:20:44 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A008061367
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Apr 2021 15:17:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A008061367
+	by mail.kernel.org (Postfix) with ESMTPS id 36424610CF
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Apr 2021 15:20:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 36424610CF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=5Ib6tvKLVT5OFYvHdMzx5cdtwfAJTJzvfy+jH0blGuA=; b=E+ibjptTLD7R5xVpKl1010EpZ
-	A5g++A8wmVswSxC2cgIOE0x4DG9UyVysYJYFiUci9/fAZMnqZBQSorjghFOmVq/PQHhrBNS54fvbi
-	pnJquuqiPnb+voWigp2Qshdzoe9G47ECG+NO+vfvEKbWVxIHHa6LGn76ekmSC+93K5q2PyLxsQ4RK
-	sobXV1nUZcmb8A2Ex8vEiEgK5dWvLUNJXPfkVfGVKORano2agWSY/ICbtDGfbEFFx97nr61BVCTin
-	3bwslKmR+7JQXm5DrOocHVQK4tYjVuoz78ua2DgR9tg6AUDeanN6Ro24KRuVXtM/sj/cl3X0J0Xav
-	7m2guAvtQ==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=77bptBbe1a+hnHrNSugJvHd2usHfqffJJCq1jqr2d68=; b=Ai0tUYwLK+KKNvWcBzqKoGgxjv
+	rWAsf8/LiQFyIcWowqn/I1Pr51MRCsfl4Pqztx+j6h5w/1YB/ZNIJ69KhO0UEIbh3wxLzYcJ9+TsN
+	IuaFl0nt2f0MRfeZ8WST8Wf/AFcEHJwQ++3WEoTXtUkkPxNzPSTlLoPUUoqzWSGDPf7MfIVb5yV1C
+	lYr5EsKfAqG/N9N34yuXa9z7YvPJGvoDKgas91HrYcXn1OQPikPnxVJXR/EKExKiinNJ4LvwlkSMI
+	HEYaVZQ58JeoLperPxUXT/UaziqFbZQ7/jJbh4ssEHPeg9EH8mzzlm8y8adRhjuvhZ5xeCI/LVI9/
+	8wgGOnbA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lRz3g-009yo9-B1; Thu, 01 Apr 2021 15:16:32 +0000
-Received: from mail-pf1-x42a.google.com ([2607:f8b0:4864:20::42a])
+	id 1lRz7F-009zUr-NY; Thu, 01 Apr 2021 15:20:14 +0000
+Received: from mail-pj1-x1031.google.com ([2607:f8b0:4864:20::1031])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lRz2s-009yb1-C1
- for linux-mtd@lists.infradead.org; Thu, 01 Apr 2021 15:15:44 +0000
-Received: by mail-pf1-x42a.google.com with SMTP id l123so179107pfl.8
- for <linux-mtd@lists.infradead.org>; Thu, 01 Apr 2021 08:15:41 -0700 (PDT)
+ id 1lRz78-009zTU-G9
+ for linux-mtd@lists.infradead.org; Thu, 01 Apr 2021 15:20:09 +0000
+Received: by mail-pj1-x1031.google.com with SMTP id s21so1337081pjq.1
+ for <linux-mtd@lists.infradead.org>; Thu, 01 Apr 2021 08:20:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=Ww076wtEw/l52B1eQC1HZmnMQQ8Ebtr9JfK+3ViX3so=;
- b=tF+Bf0zSHiNRZEzbvax45HKx5XasDVc4mTeR8Z3f5KOhpxLF17YeyipN6Mnk2MEho2
- dIy2iXo7LwjVg0CYNSwMxpVJMpz0INw6mgFNFWDKvTcXRhEiv6IaE/tgrRyuLuuHakLr
- 9mxUK0wM+O4SVQOusVcdbIoRK689kFxwmzBSTqZmkR6XL0O/dqF0j9iga4Xh67Vj2s86
- /xsy6fLZg+0LuawDYPkxWkh0BiCSHlUhcKuW82dbBmgjOMHhjPChWXn9q7xh49G6l+ch
- aDHeoIzlmBCObxHRlsK5dxeeV4nlRtEdxcC60DDZc+FRNUAy4Bh1U67sZnjTAGYQ7YQ3
- z4dw==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=CbD76d1dqB6q8MXTffec9yNB90qyRTdmg3kpNe3oDsE=;
+ b=k2pOlXXTM8fN/cGpPVsybsAWGnSRAxRRm3W4WVLToLIMzwK3lbEwCM3TqPfxodbE2J
+ r3yY+owOLk5EKoeGbmrxxDhUfzBbuf4Dyqk8lW32hi1asrJHmsaLzF3A9fCIg6kaFsiW
+ UgKWaBS38yhD1nMukXSa8ISpqQPu1OuFjigUcw3DwYUDyUSVm5JoD8Sk/RPpwQ+PD1o4
+ 5F5/Xk6u5S+kvieTgpnAQVD0mSaVpAcRxwy80OmiP1q9gSVKNhPG4ohY/YOwpScuGq3h
+ LhFbNBilA+bftoqCAsuB8Vw+YFdVt9fEkxF1+2fzpZnuPnd4kJDYC9U5PgS5ftL2u3ZK
+ pVrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=Ww076wtEw/l52B1eQC1HZmnMQQ8Ebtr9JfK+3ViX3so=;
- b=YACRVKSpGp6a2eWTjlE2GHLAv4mcWaP4W+rvBaHUDvJA5vz6ctZ3YJM/Y8MEf4vuCZ
- YFMBYwkri9vGf/11bXGwdijJ+Bar1NEnOawzpZuPajTyZfPLmv+NGw+vJp5VRWhhwIqd
- NY5pFM75LVOJHBLquaObR0b+5Fbl+qQgNdzXAJdljt7Trh7ejavFx+qrxLFOPEYMvdXJ
- TI4o1FISPv35qZf38a31oWNBPctPQsi1k0lUfT8XxK08RA+EooCUm9SDPTGKNUGh9e39
- 8XrzdEuuodB1OIWcw4Xhvlf6jjpBPOG3V5uAMyXiMpKRaxH/KcPSGkcjUAv+Y7uVBXGa
- bfTg==
-X-Gm-Message-State: AOAM532NkMNnhGnITDdI5EL7Z6tcXPHvc243Gy0IQSXPIWPG2ruERUzm
- uhLmCPU+PMRx3f4HV6SMjuiY
-X-Google-Smtp-Source: ABdhPJy3tSsSELJHLBsot1ilaqec0UUD358hycDfpgPt8GVfk7MyEPHq1NQy/QE8vIhIyquNpGL4vw==
-X-Received: by 2002:a62:27c7:0:b029:204:7b11:3222 with SMTP id
- n190-20020a6227c70000b02902047b113222mr7788418pfn.34.1617290140491; 
- Thu, 01 Apr 2021 08:15:40 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=CbD76d1dqB6q8MXTffec9yNB90qyRTdmg3kpNe3oDsE=;
+ b=oy5fRAM+p8nlCq6OOI5k2tKYvLTHpmzrtFv0BFi05+GsMfsqMkahcCL5Uhzd6RoWtY
+ GIy/xDL09xpOtaqypKnZglra+8aKQHxVRnRF/TleAuO29lk015TedTjevn7u5aSGE+2p
+ oFjqwXnxiK/VVMO8awIjh2PSV9itQOb/XPDJGitEgTgYc60q9pVeJupaSR18EQiwvqQH
+ Z8ONZPVEkjNhvmlvtZbGKhahrXtXZmXXIhcJdiq5mL+Ityk25E8DC0KUE1GdYxZgGUSq
+ GuBXW3WIx6iuVi6A1BbI7/PnCgCecNFFzdEBtT929RcxuThiEldCSDqGVWnNXKuonIGq
+ WY0A==
+X-Gm-Message-State: AOAM531XYYaXt/srH3HzyLkDzVrS5rkJdvoBykLu2yfQlD6Uht6Ustnm
+ FT8Lw3uDMo8mkO3TBlg9oUFj/0mGdpkr
+X-Google-Smtp-Source: ABdhPJzfS/Kx1OAi9bjnKkHmQhTNDY6Cc4WwA375CsZZiIXoudnNb14Aqnx3JfGBo5ydSI+5HBVZHg==
+X-Received: by 2002:a17:902:ec84:b029:e5:bd05:4a98 with SMTP id
+ x4-20020a170902ec84b02900e5bd054a98mr8340208plg.76.1617290404772; 
+ Thu, 01 Apr 2021 08:20:04 -0700 (PDT)
 Received: from localhost.localdomain ([103.77.37.138])
- by smtp.gmail.com with ESMTPSA id 35sm5652769pgr.14.2021.04.01.08.15.35
+ by smtp.gmail.com with ESMTPSA id l22sm6500919pjl.14.2021.04.01.08.19.59
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 01 Apr 2021 08:15:40 -0700 (PDT)
+ Thu, 01 Apr 2021 08:20:03 -0700 (PDT)
 From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
  robh+dt@kernel.org
@@ -77,18 +77,14 @@ Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
  boris.brezillon@collabora.com, Daniele.Palmas@telit.com,
  bjorn.andersson@linaro.org,
  Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v9 4/4] mtd: rawnand: qcom: Add missing nand_cleanup() in
- error path
-Date: Thu,  1 Apr 2021 20:45:08 +0530
-Message-Id: <20210401151508.143075-5-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v10 0/4] Add support for secure regions in NAND
+Date: Thu,  1 Apr 2021 20:49:51 +0530
+Message-Id: <20210401151955.143817-1-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210401151508.143075-1-manivannan.sadhasivam@linaro.org>
-References: <20210401151508.143075-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210401_161542_464750_B57947B3 
-X-CRM114-Status: UNSURE (   9.51  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210401_162006_936174_3A09D99C 
+X-CRM114-Status: GOOD (  14.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,26 +101,85 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add missing nand_cleanup() in the alloc_bam_transaction() error path
-to cleanup the resources properly.
+On a typical end product, a vendor may choose to secure some regions in
+the NAND memory which are supposed to stay intact between FW upgrades.
+The access to those regions will be blocked by a secure element like
+Trustzone. So the normal world software like Linux kernel should not
+touch these regions (including reading).
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/mtd/nand/raw/qcom_nandc.c | 1 +
- 1 file changed, 1 insertion(+)
+So this series adds a property for declaring such secure regions in DT
+so that the driver can skip touching them. While at it, the Qcom NANDc
+DT binding is also converted to YAML format.
 
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 87c23bb320bf..fe74cf3aece5 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -2882,6 +2882,7 @@ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
- 		if (!nandc->bam_txn) {
- 			dev_err(nandc->dev,
- 				"failed to allocate bam transaction\n");
-+			nand_cleanup(chip);
- 			return -ENOMEM;
- 		}
- 	}
+Thanks,
+Mani
+
+Changes in v10:
+
+* Added Rob's review tag for binding
+
+Changes in v9:
+
+Based on review comments from Miquel:
+
+* Fixed the secure-regions check
+* Renamed the function to nand_region_is_secured() and used bool return
+* Moved the parsing function to nand_scan()
+
+* Added a patch to fix nand_cleanup in qcom driver
+
+Changes in v8:
+
+* Reworked the secure region check logic based on input from Boris
+* Removed the check where unnecessary in rawnand core.
+
+Changes in v7:
+
+* Made "size" u64 and fixed a warning reported by Kernel test bot
+
+Changes in v6:
+
+* Made use of "size" of the regions for comparision
+* Used "secure" instead of "sec"
+* Fixed the sizeof parameter in of_get_nand_secure_regions()
+
+Changes in v5:
+
+* Switched to "uint64-matrix" as suggested by Rob
+* Moved the whole logic from qcom driver to nand core as suggested by Boris
+
+Changes in v4:
+
+* Used "uint32-matrix" instead of "uint32-array" as per Rob's review.
+* Collected Rob's review tag for binding conversion patch
+
+Changes in v3:
+
+* Removed the nand prefix from DT property and moved the property parsing
+  logic before nand_scan() in driver.
+
+Changes in v2:
+
+* Moved the secure-regions property to generic NAND binding as a NAND
+  chip property and renamed it as "nand-secure-regions".
+
+Manivannan Sadhasivam (4):
+  dt-bindings: mtd: Convert Qcom NANDc binding to YAML
+  dt-bindings: mtd: Add a property to declare secure regions in NAND
+    chips
+  mtd: rawnand: Add support for secure regions in NAND memory
+  mtd: rawnand: qcom: Add missing nand_cleanup() in error path
+
+ .../bindings/mtd/nand-controller.yaml         |   7 +
+ .../devicetree/bindings/mtd/qcom,nandc.yaml   | 196 ++++++++++++++++++
+ .../devicetree/bindings/mtd/qcom_nandc.txt    | 142 -------------
+ drivers/mtd/nand/raw/nand_base.c              | 107 +++++++++-
+ drivers/mtd/nand/raw/qcom_nandc.c             |   1 +
+ include/linux/mtd/rawnand.h                   |  14 ++
+ 6 files changed, 324 insertions(+), 143 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+
 -- 
 2.25.1
 
