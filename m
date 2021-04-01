@@ -2,93 +2,67 @@ Return-Path: <SRS0=GKVC=I6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E48E0C433B4
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Apr 2021 15:25:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81460C433B4
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Apr 2021 16:04:55 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4727661365
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Apr 2021 15:25:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4727661365
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 1822061366
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Apr 2021 16:04:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1822061366
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=5Ib6tvKLVT5OFYvHdMzx5cdtwfAJTJzvfy+jH0blGuA=; b=HQjdk83noGqP1J7L60jUKyNQL
-	ANEKyfbjUIgRWHpoPfbgjvUA/clg9nyRLVlSu8kx8wcUoNzSgKoc0DmM8TjCL8s6otTW44FWt+yOS
-	I1dzSGGpbZO9p3peHRBfZsGAVl7gKX/JcGROgUnhsuERvyaJIzemqp/nDsZH0wZ9FxQGBH56e/ekO
-	k1u/Df08BoLpLy/5YqqGj5AThX9ZmEphNi7qT+BXKzHfnoCGq0RW4u68UcmsrRoPBdneSXIlSLgZA
-	K3neIm2iBZpXO2SnO1Wlnu3RCfHrlvaFnr18dzcMzW3xIo4KWJaYOr6cwMeoyipuG9brZyzK1ooJW
-	FwW051Tzw==;
+	 bh=+ovV8iHWaR6HzVbeLTMhvXR/SDetiO4zZNpijVVDLVs=; b=VJywXIfAIKr7kktAY6515VI8h
+	wQs+NXPMoGnjyd8NAQxBxq3JkdMbIPfIfk4IvJWxS9QLP3qGAbMischNq/Q2GCuSe5hVeagIR2m6L
+	HioATPHVgb+1H+J9V34AkhJNULdN8BICb7MBaR2rLaXVrlsPv9Xkqgxkp4/aLyTpTVGCL4PtGahRx
+	957rOZDFssDVu0X2JiGwzdJtlgodV0kjuQajsVAFwJJO3gqHjfg0ohPLAsYMfo9GrkanQUcUKsNe4
+	dBIByC3exou8T/q9xv+05QQNzRNRUeS7TwfJeYoBG3NZ+bIF4WXxtaPs4BVYnE2h/AkMsziL4lcgr
+	1GoO3NT8Q==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lRzBa-00A0QS-IC; Thu, 01 Apr 2021 15:24:42 +0000
-Received: from mail-pl1-x62a.google.com ([2607:f8b0:4864:20::62a])
+	id 1lRznZ-00A9DK-P8; Thu, 01 Apr 2021 16:03:57 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lRz7T-009zYJ-Ug
- for linux-mtd@lists.infradead.org; Thu, 01 Apr 2021 15:20:31 +0000
-Received: by mail-pl1-x62a.google.com with SMTP id v8so1173068plz.10
- for <linux-mtd@lists.infradead.org>; Thu, 01 Apr 2021 08:20:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=Ww076wtEw/l52B1eQC1HZmnMQQ8Ebtr9JfK+3ViX3so=;
- b=KiGvVnSH66DmF8HdRytw6CJzuJoS03Rgw4NS/QOUBG/qyDfowjfjPJb4Uk9rl3tzSl
- FrtcqDfXNAt03yv2ZbMWSkUtZVxgRqCp/FxjadzOmk0LdPRI0xK8SS0cmsm50tBLUV8D
- LT2bSRIZNrc7c9mY8GZxdhUIy6Sv/F6+JsIxaTreMmGzoIVgcnJMnqibzvnhl7vEeCSS
- l+h74kxjQjZ+K2aItGMz6rzYzSTuvOU31WEx5Tonk1xxdAIDZpUuj/fNFiz29q66gypd
- vbgOy/k/jbxvAJwSS59FAbQ0k7tPzSO6eZoOEiGcRgHuJj++WFr95/LbkGkaTmvTBXB+
- F9IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=Ww076wtEw/l52B1eQC1HZmnMQQ8Ebtr9JfK+3ViX3so=;
- b=IgV4EFSjncSptPT/oQD0kv8s2NMk8bwhESD+pwcSb+lrlhYNdaqQGoVHho18k+mgDf
- srq8wQ0YZ3lkbMqG8pKODW0hVnYqf2qvGEv+tPSrLaJIFCtk6378CcjeTaBTwmtggSKY
- WtXgYaVyqQQNSQJlfS6kAU1xsEKzIp4LPuZ60guOW/OhhBs+WEJyjBISy+Purf58cHT3
- i7YP+ldiSq9B1ZaU1CYSHW7g4cq8/YrT7nw4OXALTHXT7cLawaE/LIpC9SBmyLQkp2fe
- qT+JygveQSiAEylReFz1DJ7IIW6kLo1Q07q710cbEDTzrltaWFDuYmUJCWdWS78SMB5/
- Io4Q==
-X-Gm-Message-State: AOAM531Lvwnb4tzO5Yg499Wo+FtNd43s3sUytWRK2NbGwYvVvC/qrUmw
- LoRIlZbzOUUvbTSSYOLA/AZHdKwZEKYv
-X-Google-Smtp-Source: ABdhPJxAqh+RohpPAzLbk35v/zOJ3CC1I1F2tWRwN3E0X6lfjAeYaDbNp7Smee2wXabf5ZYkF4rWoQ==
-X-Received: by 2002:a17:902:c14c:b029:e5:cd82:a0b with SMTP id
- 12-20020a170902c14cb02900e5cd820a0bmr8410255plj.34.1617290426225; 
- Thu, 01 Apr 2021 08:20:26 -0700 (PDT)
-Received: from localhost.localdomain ([103.77.37.138])
- by smtp.gmail.com with ESMTPSA id l22sm6500919pjl.14.2021.04.01.08.20.21
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 01 Apr 2021 08:20:25 -0700 (PDT)
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- robh+dt@kernel.org
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- boris.brezillon@collabora.com, Daniele.Palmas@telit.com,
- bjorn.andersson@linaro.org,
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v10 4/4] mtd: rawnand: qcom: Add missing nand_cleanup() in
- error path
-Date: Thu,  1 Apr 2021 20:49:55 +0530
-Message-Id: <20210401151955.143817-5-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210401151955.143817-1-manivannan.sadhasivam@linaro.org>
-References: <20210401151955.143817-1-manivannan.sadhasivam@linaro.org>
+ id 1lRzaz-00A5SU-5y
+ for linux-mtd@lists.infradead.org; Thu, 01 Apr 2021 15:51:41 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 45ACE1F4687C;
+ Thu,  1 Apr 2021 16:50:55 +0100 (BST)
+Date: Thu, 1 Apr 2021 17:50:52 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, richard@nod.at,
+ vigneshr@ti.com, robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Daniele.Palmas@telit.com,
+ bjorn.andersson@linaro.org
+Subject: Re: [PATCH v8 3/3] mtd: rawnand: Add support for secure regions in
+ NAND memory
+Message-ID: <20210401175052.1ff2bad2@collabora.com>
+In-Reply-To: <20210401101812.GE14052@work>
+References: <20210323073930.89754-1-manivannan.sadhasivam@linaro.org>
+ <20210323073930.89754-4-manivannan.sadhasivam@linaro.org>
+ <20210323175715.38b4740a@xps13> <20210401101812.GE14052@work>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210401_162028_323140_4D4B86CA 
-X-CRM114-Status: UNSURE (   9.51  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210401_165057_919041_E7617801 
+X-CRM114-Status: GOOD (  11.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,29 +79,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add missing nand_cleanup() in the alloc_bam_transaction() error path
-to cleanup the resources properly.
+On Thu, 1 Apr 2021 15:48:12 +0530
+Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/mtd/nand/raw/qcom_nandc.c | 1 +
- 1 file changed, 1 insertion(+)
+>  static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
+>  {
+> +       struct mtd_info *mtd = nand_to_mtd(chip);
+> +       int last_page = ((mtd->erasesize - mtd->writesize) >>
+> +                        chip->page_shift) & chip->pagemask;
+>         int ret;
+>  
+>         if (chip->options & NAND_NO_BBM_QUIRK)
+>                 return 0;
+>  
+>         /* Check if the region is secured */
+> -       ret = nand_check_secure_region(chip, ofs, 0);
+> +       ret = nand_check_secure_region(chip, ofs, last_page);
 
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 87c23bb320bf..fe74cf3aece5 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -2882,6 +2882,7 @@ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
- 		if (!nandc->bam_txn) {
- 			dev_err(nandc->dev,
- 				"failed to allocate bam transaction\n");
-+			nand_cleanup(chip);
- 			return -ENOMEM;
- 		}
- 	}
--- 
-2.25.1
+or just:
 
+	ret = nand_check_secure_region(chip, ofs, mtd->erasesize);
+
+
+>         if (ret)
+>                 return ret;
+> 
+> > 		*/
+> > 
 
 ______________________________________________________
 Linux MTD discussion mailing list
