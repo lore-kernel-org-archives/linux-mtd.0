@@ -8,14 +8,14 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 146DEC433ED
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Apr 2021 19:54:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C757C433B4
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Apr 2021 19:54:40 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 77DA960C41
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Apr 2021 19:54:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 77DA960C41
+	by mail.kernel.org (Postfix) with ESMTPS id D5945610CA
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Apr 2021 19:54:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D5945610CA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=windriver.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,27 +24,27 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Kbn62FP83uglVcAtyGHT3KP2+WzrkE6d0HD0NRQEydM=; b=QhJfV8lXlZNVLtrXcTOxCS9cL
-	k36pXqpiCdmBW+4KN3KjWmIZST/7wd79T2P9uE9tjzByleTxlCFSH9fioIklrnVpg8mmUfnda3ZPN
-	BPCfSNCssRkwy/zcPQoQFrwS0yJyCVd8cKmrSBE5rRneAQHf4z0fFwQyEC5MwTZRuWW6/jLsxVrj1
-	AE+mrBy3FxUJu5ZBXGGfeDGMJFPlJUuUQdyhvImWp00oQ5Kwa4l2KfXI2juhd8aVxFOqGBDwM5ryT
-	gxg04JGGZV1LFT9dMmSDiz7fMYUQiGtVWAUNwrRqfasYDJOnxSvdKbpN0yNSmU8Dv1ursgrnKW+vl
-	rfGEZcKtQ==;
+	 bh=+f48shzWLpDsGJTtoaf3e+5EFcooqzQbs47Aqff4/Pw=; b=YZF5eo29hNFst7XREskFPYmqp
+	alf3FZpjej3KNrB3NXdAdLLh1X1X7IdQyVvPeS1YMob+5BMhYPwC8O9nGwVDccZxp25lJ9BRorRB6
+	82V+w3ELAt73hL4g6sKNHFtQwQO1U15OsEoHB/szGuw1Irt4CRK+Xi1vR0Knnf1nhScC4EvPkU5S1
+	fbOWYsda8lqZRmJ1y1c6Z4uvTz9D7ott6VhexIZ7FzGVq9PYtXaMFzDqOcFgNpejzScTBdGRSJXYL
+	CXFBsDxUnauiklABwQrR0P8zm665MyyI5Xs1hPUWWK+/2jiCCaPnivHsH4rPQZwkNjlsKntg+muBy
+	/mAYT3Ypg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lS3NR-00AqUW-Lh; Thu, 01 Apr 2021 19:53:13 +0000
+	id 1lS3Nk-00AqYO-Lq; Thu, 01 Apr 2021 19:53:33 +0000
 Received: from mail-mw2nam10on2075.outbound.protection.outlook.com
  ([40.107.94.75] helo=NAM10-MW2-obe.outbound.protection.outlook.com)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lS3L7-00AqKx-Ga
- for linux-mtd@lists.infradead.org; Thu, 01 Apr 2021 19:50:51 +0000
+ id 1lS3LK-00AqKx-RC
+ for linux-mtd@lists.infradead.org; Thu, 01 Apr 2021 19:51:11 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g5t2djkucNgNrj4mcWUlghS4W2G64I+ptf85kS4P6WkmnHsprmNFAHmt0no48vuMPpMUNsRdK7aEkWtnUiF/xDAm1ShhJyL8swbLwje4Ye7ZoH5Hzuj4IBqKvUQDpDfZuB7vV65AARpvfsr+I2sjCaEPco1KgBvd/LTmN2T1ZvqP8qYzoftc0IiczdJBOsRtxEXwk8tGMx8lm654GopCkFSq6S+x/w84voYVwr0N49zA+qysSzIBZ75aSNa53p4fzLNSaMnN6zLWQom4v/pA8LEVMCYtOlFQLqbAqnU+K40b1mwjYN0umGdsUrZ+OQDXvTrlNbqbBagxGJ8tXI2URQ==
+ b=og7RJ6WAJDbJksgS0AC11du2lM8H/ZOJFKoytvFTIrbL47arGoiLopCKBxR39Mmug90vGkYJ1+Zz27BTr+/rlQ1hLOREOxWb1VfdgL1f2+Sgq9E+wxKA51kBNJCmviYa9F9UpoCh7UtbzZU2bmHY8tH0L8ukiBIaqis1pvNK980plgpNg+OLm82YBy+fFs2bXCHz8GxQuIcIz/y1QRR7Nqv9u/5aV0P5frcJpbxzCo+KsF4t907azYJzs2g0DsfszFxVLTQWA2qA6yF9DoUEj65vqY6hCSwLTKQ+Gru2NMr7IQQa4y4p/GdHX2UVOUBQm/2l+MfSccWWXX/LGLTkcw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nWTkG51LnAEhpez3qhpS+EyZvHSAqefQOkotEkpr1sM=;
- b=UiezCB8gSeZokxbZtzGvX0cDJupnO/uVremSHirH+s3mHk7GPM/SdNrcx/VUCO2fKp2TZEFD6j0yucKkvzhyjvMJ9DU6DINH4lbQTsoZT7PgTLWNPIOURHJh9f3wI6TRA+KGpAZ9dPU/gjgRCSeDSpNbNoWwDf7zA/lMYIK0DVlttTegBBtrDAFYUcv1OYAmTImwBuMXZJ9OnJky7ucuFDjnivx2sNw7kTXCNTKIF709x0lGDX0gEC4C9d7lR96zeH/VsXzAnr1UfESsyETkMc7eoTGJyPOxQ40m6FNS0JKC8OmIksgQaHkzwwluRwimVlUVvl9nMOYKpqL+Kll6xg==
+ bh=tck0PUsOkuIcySO5/0J8nI7zsPOxx9JnYIWOjamzFnk=;
+ b=TrVXnxLEu5T8Pf5xdMRt6t+MXNGuXyWJFFWgQE3q1ber3xH2Y9eY7ew1Bs2PhkvjHuBGOzEiYO6oPfMlgX4m4H5Hm+6U2kSVUUzU6WbLZui4JgPjqTMTvFLhwljD9hCupd451dM735epEPwoklaL8nHiaqZCiFsgtxdlvF1aYnNWB/24utFf3Iw+Wczg9bDlIdsjgHRzs9Kt7/qk19d66WfvxEcYqC71bNcxwDHFLZkyZxA9ZkJa/7U2PY2CNPHFqHEjc3PNpeD0MIvIvYs1nDxTdL7SbNFTkuEACgJix4XJL05/+dkNw0xo7j9dwYh+BP1mlyyG6wzAN/dW4jy5Ug==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=windriver.com; dmarc=pass action=none
  header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
@@ -52,8 +52,8 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=windriversystems.onmicrosoft.com;
  s=selector2-windriversystems-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nWTkG51LnAEhpez3qhpS+EyZvHSAqefQOkotEkpr1sM=;
- b=HTaPapvVNRsPrgBo4vhn/sqOvyC7xz2cIRpyKnJGi0twyeqCdWICfv5iRN5P57rJoVJtw+/+1cOp8ez+iQRdNj4YTxgWYlB9VSMAST+Js4lcsNaLA8XdI8KESD05ektSxDNYYSDl7+U23fJm97nPeOpV4e3MhymYFBT90JAl+i8=
+ bh=tck0PUsOkuIcySO5/0J8nI7zsPOxx9JnYIWOjamzFnk=;
+ b=iXCcvR+tPrh8ZIIx0mkESqB3frOnR9KvBI6IZIi5PSKzYz3z4FTMfvxHkWGYR0dqO8193yyFCo9lKhevJt8laROlB8rmSXeXiBWvbA1YycauWkdtAQN6gqGDoUQEnDBKr/xT7TQflvomuUGfpps7A64xF1fgQzKmWzJedY6pUuY=
 Authentication-Results: microchip.com; dkim=none (message not signed)
  header.d=none;microchip.com; dmarc=none action=none
  header.from=windriver.com;
@@ -61,19 +61,20 @@ Received: from SA0PR11MB4766.namprd11.prod.outlook.com (2603:10b6:806:92::20)
  by SA0PR11MB4766.namprd11.prod.outlook.com (2603:10b6:806:92::20)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.26; Thu, 1 Apr
- 2021 19:50:33 +0000
+ 2021 19:50:35 +0000
 Received: from SA0PR11MB4766.namprd11.prod.outlook.com
  ([fe80::618e:7a26:8bb6:4c1d]) by SA0PR11MB4766.namprd11.prod.outlook.com
  ([fe80::618e:7a26:8bb6:4c1d%2]) with mapi id 15.20.3977.033; Thu, 1 Apr 2021
- 19:50:33 +0000
+ 19:50:35 +0000
 From: yaliang.wang@windriver.com
 To: tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at,
  vigneshr@ti.com
 Cc: linux-mtd@lists.infradead.org, tkuw584924@gmail.com,
  Yaliang Wang <Yaliang.Wang@windriver.com>
-Subject: [PATCH 2/3] mtd: spi-nor: core: reuse spi_nor_clear_sr function
-Date: Fri,  2 Apr 2021 03:50:11 +0800
-Message-Id: <20210401195012.4009166-2-yaliang.wang@windriver.com>
+Subject: [PATCH 3/3] mtd: spi-nor: core: move Spansion checking ready codes
+ into spansion.c
+Date: Fri,  2 Apr 2021 03:50:12 +0800
+Message-Id: <20210401195012.4009166-3-yaliang.wang@windriver.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210401195012.4009166-1-yaliang.wang@windriver.com>
 References: <20210401195012.4009166-1-yaliang.wang@windriver.com>
@@ -86,56 +87,56 @@ X-MS-Exchange-MessageSentRepresentingType: 1
 Received: from pek-ywang12-u18.wrs.com (60.247.85.82) by
  HK0PR03CA0099.apcprd03.prod.outlook.com (2603:1096:203:b0::15) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3999.26 via Frontend Transport; Thu, 1 Apr 2021 19:50:30 +0000
+ 15.20.3999.26 via Frontend Transport; Thu, 1 Apr 2021 19:50:33 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ccb9c58c-5245-4fed-11c8-08d8f5476924
+X-MS-Office365-Filtering-Correlation-Id: 1f206944-77a3-4731-8c05-08d8f5476aad
 X-MS-TrafficTypeDiagnostic: SA0PR11MB4766:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR11MB4766C01714BEBBA1310F4FB59F7B9@SA0PR11MB4766.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-Microsoft-Antispam-PRVS: <SA0PR11MB476658491A127014B96BF84F9F7B9@SA0PR11MB4766.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2887;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UTVTZ6JjAkpbAbGBc1TuH/BYP5TDTfEIYdt6xV+ttgW+tJY7cB4sVTLox51hcLk9fYD0SEMqd8M0TuSjMX98GsOvRfvFbDHvLh6MOSSoDPE7HAAd7A/ZpuYb2O2jIy/xH3K+KUaJmAasodr0cf6ZtdIQmqJXk6INeq91dAJN7GJw31fy3EdHNBKPi+xG2a5oNAyd3HZ4f6TUVlo0D+SJtl2xdZGZaFVj/R1YANgzWUWGUJlMI2AhVNN/agJfdAPD1/pr/INFyPLCiX06o88EHQCEOCetDbKarqCQAO8cPGNm4jJBRv2JnbVALxwlROSrEC29cBXmQarKByic3X4vKYQj0j/7Zx2Ivgm9ef6yrQU2xvpl2JYGxpM9vVqloM7FtZIIMT4yUkqQAfnfjUhEQvxvwIJaMb73JW41QXAQMoP44UK062NzQmFHYhjVbueEn08uA/H1MlsZsYp5FZUJ+PT9oJAz7sj/VPIJO/LC0wYhoeblohXZeLjTVwDgxoERzmsRZ2ORWVzZ9aNroaqhbEFZgtJ82e25jOGCgw2QNXuQPsH3VyoN12+fH4lTfvis848LjeUfdRpyJhJ+7VizaZkLW199UdR6/TXywv5Veef/bmPQOu0p4zy34AmJyV/hyMeWxFdO3I0FSQvKbLFzeg==
+X-Microsoft-Antispam-Message-Info: 2lindFvpFDj6D+kqcKbf5OzrFmRNHFoFq6EqTd4kVfCTuLkcobBj6iAzppGWkWOKNSwsTBTJOpKxiMPjoqUPjW1pGzydF3RbfLwZcEHuWhpf5rYnNG1dp+SFaJmPxR4Ck+Kz0GdCk8SG5jL5nN3cfPEF61Rm1lqZR4kKh5IBVezpCGrkLiv0OX2AQTaSiDzo9IC/+rrdp6FE5Yroj+sRwmgjQXWojC/8QxD1E2rI06lPiV8hnE2gafOmjBoEQc4ohN3mKfxKbt1Wpo2GKbwGzjxXC7gEt3I3634hpYIMG4d3ruMflvE2j/wSbDznodoQALHxKAK0NsqXIgPV8NlpBv4WJr/cumxMF9yBja5jsV40FsdYWSz99Yuc2eaQzok4l3bNyx8CwrynuW/+3Dt8Y5UNSKYlz9baDspEunv4gBdH7vMnMUrwawzufmkgVuwy8ZQ+Qdi7oZraiuByPHdOeh02nzUeBUMiyRWMWX0rgDh4/9G/tXefJX8G0vIEZPvmIumZ9US7wO6f0iMHtXjtWgWYPoZyraJ2mg8Jub05A/uSxn967ASL3R1Q/62Jp8q+6/GUqsJXFFuSqvmja3OHJUucWzGGuYoGnZuK++eBM0ISPY2Kx0nV3xjiVGp3iT/P5AAmQ+EMz9XSSJVp4IDxoQ==
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:SA0PR11MB4766.namprd11.prod.outlook.com; PTR:; CAT:NONE;
  SFS:(4636009)(39850400004)(376002)(366004)(396003)(136003)(346002)(316002)(478600001)(186003)(6666004)(2616005)(83380400001)(52116002)(2906002)(6486002)(5660300002)(38100700001)(4326008)(1076003)(107886003)(8676002)(6506007)(86362001)(36756003)(8936002)(26005)(66476007)(66556008)(66946007)(956004)(9686003)(6512007)(16526019);
  DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?oztvnCCPxJ++1QSZxU0kDIhPhsw3ShnF8F/GHJpso8Fl8cTIRo8eXVtTJ1Us?=
- =?us-ascii?Q?eGo4o0uy1BesNHXS2r+pHF8MWFJDkn1oWlmlsOp+IuQlDINhKuQTLvQ0TWQJ?=
- =?us-ascii?Q?spMMZmXIKaLYB8d8tavPSoXSBLIbCFUj07om1VpCJg2/kOvQ1YfLoBVCytRx?=
- =?us-ascii?Q?gbaMUuk9fU0yEr6YjrI9jH+wORC8bKhe0WOhefWNjitH1gTyYFSnag6lKzeG?=
- =?us-ascii?Q?rVIlQ99PnyoqnYw3oUiWzTz+357efL0ZJZvVOF6UcP87aYnlpZMKQGw+1+pF?=
- =?us-ascii?Q?5TGiwKvrGq7CubDFEZBeMm1dt/42GzmlD9vEMkbnWIR+zdFWrM9khZvpYpk6?=
- =?us-ascii?Q?l9MSOzhgpY+tyeE75dF5ru5Tvbvr+B3JktmCOERO/OX8AWxKqu+7VJc0snct?=
- =?us-ascii?Q?M+0ug1prM8I4C9iUN8aSf0ibGjvKAJ54046s4DBOosMiFXfEtt7ZOQQhXgbO?=
- =?us-ascii?Q?agAKL9hDQtWmGcAsVy5NwrLTA3VrVTnVcGVOMLHT6lsSotfkSlSkiG6+tRmd?=
- =?us-ascii?Q?fksDzQI9tD/G3l2H+7TiGH3xncL+jmbsl+yE8BHNV+vG8Ju4/dEcvnAzbuyI?=
- =?us-ascii?Q?bG/JUWSvmUbT8FFYkkuKEaeF9sbTGFWDuIGSZk93vMebJnW4yRDhWFEm/q5a?=
- =?us-ascii?Q?7tsGGg/dUExYApaIX33rCwD/cPJ8UKUuMM/JvEPU91Bbo9vfIrv4vo6C/yyZ?=
- =?us-ascii?Q?yF94H1h7pUakhfMYSlJsX6phqBx3eEao12UsNrLKssI8/dtmXBrroXIAQO9U?=
- =?us-ascii?Q?E15Rn1wmBW+nU8xg5DrjhMBxhmTzWR5HY1GDHeVd+DzKsaarSNdPE4FdluAf?=
- =?us-ascii?Q?P+eD+Lb2mYQKhk5coJaQCcGad0kO/ijcmuHPU8VV5A0oRSvWo0dQx+KuudiV?=
- =?us-ascii?Q?7FN3aueObP2CCPfIe02VXXu3QrTVu1i6ly4M81rb8h9dZt9TMBJ3lQXG/Z9V?=
- =?us-ascii?Q?hqoUvN6/ICycOxNs2qUk6X7uibAh2tFBnLOmu/YDPT7qzUncTjymhfw0LBCK?=
- =?us-ascii?Q?V9rN0DnFCJiBnBmOvqgvGhGhdGr5FO/wCKVbRPED9UYa3NAET1qmDUvirUE2?=
- =?us-ascii?Q?ZETtzECo2Z9CMC6Ffs7VzgAdFZV4iocccFSvdOGsfkbUr0h8asSvbbM0gmAM?=
- =?us-ascii?Q?asxTTZIGksIffomeTYeRFHxTwgjbmezy4X6eY7G0nWr3zIO/gV6Zg6kN7EiS?=
- =?us-ascii?Q?OM5EpYkHF9yuTjNgb4w1eJTe5Uspm9C+5SUls0B1lhtdjp2vZUBx1svVQ6XQ?=
- =?us-ascii?Q?x3iHBlX5ID9hM9BDhKRPpOvf5Nhk4zg6xx0kYMil9z50hooxywcByI6xcd9H?=
- =?us-ascii?Q?gfEh1QJgEuJxsXAEh1Je6onM?=
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?9FKMAKy2Y03HFkgA5k7wkJvGAhLCMP3j6e81PWPemiFtgiVh4pxsW/yfRDXe?=
+ =?us-ascii?Q?EOyvg5SsEyfDcfBoEH+OJGg34KC625mhIiW94iNJxArlSO4sHX8ag5qpTO8j?=
+ =?us-ascii?Q?BQAaXi5rdCqhRytXAmcZhp+sgNwt35lPDfdfLm0plDsWgeTrjaOl8BXWi3ZK?=
+ =?us-ascii?Q?2mJiohTeP04Vlw9pZhjFk4glFy4m+VrHYYlv9ivZAahpJ1nDyMV+O9PcBBk9?=
+ =?us-ascii?Q?RyKfE9Cc07iDndHVOPsWae/u7P0ans/JdUJkPyShGtU43XOZCmKgc73lUKFS?=
+ =?us-ascii?Q?RwL/5oBAW8JceocsKNkxEgKrxOtBZuHYf/ohGMg0mqAGB6lg1anncEVPy55p?=
+ =?us-ascii?Q?OOOIDaMNx89JJRNtwRVpe/g/mf+WOxwqhy7VUQp4JDb+K04D/P8OuOPXMl0a?=
+ =?us-ascii?Q?Kh2WsAvXhcH7WoUTuj9YZrFOUQOZUvCpI++1cKzG+81K/8jws5J1bG9s1yXZ?=
+ =?us-ascii?Q?JLp0jTM38YLEpiJehgJxLVo0grAX3lqbQjXDwdwO2Sd5pCMf1PF+otBpsJl1?=
+ =?us-ascii?Q?Bd3UGLBD2NWV+J9EDbztCEHabtUxF65hlrouORwuikwj5zymrzGeRNCaGErF?=
+ =?us-ascii?Q?lfTCTfEcFZFl3WGvnDbLuKaz9FfVqq6rWpnNDlK1Rdj49Y/OCUhVrhHdFuGp?=
+ =?us-ascii?Q?0Nb2bYk26/wsO19fMYU39XgABe+jH45G7eynKGmRVMKcLvKy87y4HaW2MRS+?=
+ =?us-ascii?Q?wxEkjD4jNeTIBmV4tFWkXYB85Q7fTg28dRE+dSdzDKurPMBdPzn372vZh08O?=
+ =?us-ascii?Q?cK1k7w4FiTlf52s9ecPkLETA4f8FYRf8MzFb95mxPvjizXEhx/0Xd3vf46eF?=
+ =?us-ascii?Q?99QmpSRY8ogqCH2yV2DyxWVhqH1QLnhkZijIxWxMcWjh8Z+ppd25TZ415f6P?=
+ =?us-ascii?Q?tn3hv/jCyTydvQ2F3mnvoRQNV/fCdO01EOBUHObmQAP05mPukLhohzRsZbrD?=
+ =?us-ascii?Q?BxHvC7P8yRJuhLkmUfPdZR2Rgv1ghOT9tx+TJvq9aNQTBYTcq0uvOebPdCyX?=
+ =?us-ascii?Q?KBVXog6L3oPPUcOKwNOlxZXMiCUbLUYxlwONvWVw/SQzJy2DEGGKYrZnumeh?=
+ =?us-ascii?Q?nC6YxFB1tDe4afo/pSMZOKWv/xMNuAQ3JemifZt5ygiHch85R3o8nE3N3Hrj?=
+ =?us-ascii?Q?HfxFiMTQ8hRCzu9td3LcZDVKPbbEsZH851/fgIY0IGpUq3GYOmu/l0gakyAf?=
+ =?us-ascii?Q?O7QK6C3ONlMZ0WKFvXpmjIJAKd168uJ80r7+bb04h/RDIwTtyKwcH3kbnELU?=
+ =?us-ascii?Q?Pnow34OKEdujvot3wAQVKICakPdKHmEVSuPyJBX5b476ACrwunmMAN3wlh13?=
+ =?us-ascii?Q?ZjS6EQxG2aSo+QlDQJ//pnrO?=
 X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ccb9c58c-5245-4fed-11c8-08d8f5476924
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1f206944-77a3-4731-8c05-08d8f5476aad
 X-MS-Exchange-CrossTenant-AuthSource: SA0PR11MB4766.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2021 19:50:33.0560 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2021 19:50:35.6317 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RopUFf42ouix7u5GKfkNxtpu3UFo5LTIJ76iawCWXSM2fzZE8+UZY7MxPvNWO+Vchsq3pZxYkyI6nzNx7CAp63cRro1e7wxpyxAt+6ggtAk=
+X-MS-Exchange-CrossTenant-UserPrincipalName: CoD435wkSSYQmTrLPcY4B2FtMQ4ZXY4SACJMvLuJU7lZgiMyS+S4EWDad+y40D+w0KRVBYdYcX9PzV0K/lLuOozmBfbMm96kEe1NYvQ7ATY=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4766
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210401_205049_685263_2CE9A488 
-X-CRM114-Status: GOOD (  10.78  )
+X-CRM114-CacheID: sfid-20210401_205109_913580_0911AA01 
+X-CRM114-Status: GOOD (  19.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -154,104 +155,169 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Yaliang Wang <Yaliang.Wang@windriver.com>
 
-spi_nor_clear_fsr() and spi_nor_clear_sr() are almost the same, except
-the opcode they used, the codes can be easily reused without much
-changing.
+For historical reasons, Many manufacturer codes exist in the core, to
+make the core a more dedicated place, this commit clear the
+Spansion-specific checking SR ready codes out of the core.
 
 Signed-off-by: Yaliang Wang <Yaliang.Wang@windriver.com>
 ---
- drivers/mtd/spi-nor/core.c | 40 +++++++-------------------------------
- 1 file changed, 7 insertions(+), 33 deletions(-)
+ drivers/mtd/spi-nor/core.c     | 26 +-----------------
+ drivers/mtd/spi-nor/core.h     |  2 +-
+ drivers/mtd/spi-nor/spansion.c | 48 ++++++++++++++++++++++++++++++++++
+ include/linux/mtd/spi-nor.h    |  1 -
+ 4 files changed, 50 insertions(+), 27 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 6dc8bd0a6bd4..dbd6adb6aa0b 100644
+index dbd6adb6aa0b..4e22aa3884db 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -652,14 +652,15 @@ static int spi_nor_xsr_ready(struct spi_nor *nor)
- /**
-  * spi_nor_clear_sr() - Clear the Status Register.
+@@ -654,7 +654,7 @@ static int spi_nor_xsr_ready(struct spi_nor *nor)
   * @nor:	pointer to 'struct spi_nor'.
-+ * @opcode:	the SPI command op code to clear status register.
+  * @opcode:	the SPI command op code to clear status register.
   */
--static void spi_nor_clear_sr(struct spi_nor *nor)
-+static void spi_nor_clear_sr(struct spi_nor *nor, u8 opcode)
+-static void spi_nor_clear_sr(struct spi_nor *nor, u8 opcode)
++void spi_nor_clear_sr(struct spi_nor *nor, u8 opcode)
  {
  	int ret;
  
- 	if (nor->spimem) {
- 		struct spi_mem_op op =
--			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_CLSR, 0),
-+			SPI_MEM_OP(SPI_MEM_OP_CMD(opcode, 0),
- 				   SPI_MEM_OP_NO_ADDR,
- 				   SPI_MEM_OP_NO_DUMMY,
- 				   SPI_MEM_OP_NO_DATA);
-@@ -668,12 +669,12 @@ static void spi_nor_clear_sr(struct spi_nor *nor)
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
- 	} else {
--		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_CLSR,
-+		ret = spi_nor_controller_ops_write_reg(nor, opcode,
- 						       NULL, 0);
- 	}
- 
+@@ -691,28 +691,6 @@ static int spi_nor_sr_ready(struct spi_nor *nor)
  	if (ret)
--		dev_dbg(nor->dev, "error %d clearing SR\n", ret);
-+		dev_dbg(nor->dev, "error %d clearing status\n", ret);
- }
+ 		return ret;
  
- /**
-@@ -697,7 +698,7 @@ static int spi_nor_sr_ready(struct spi_nor *nor)
- 		else
- 			dev_err(nor->dev, "Programming Error occurred\n");
- 
--		spi_nor_clear_sr(nor);
-+		spi_nor_clear_sr(nor, SPINOR_OP_CLSR);
- 
- 		/*
- 		 * WEL bit remains set to one when an erase or page program
-@@ -715,33 +716,6 @@ static int spi_nor_sr_ready(struct spi_nor *nor)
+-	if (nor->flags & SNOR_F_USE_CLSR &&
+-	    nor->bouncebuf[0] & (SR_E_ERR | SR_P_ERR)) {
+-		if (nor->bouncebuf[0] & SR_E_ERR)
+-			dev_err(nor->dev, "Erase Error occurred\n");
+-		else
+-			dev_err(nor->dev, "Programming Error occurred\n");
+-
+-		spi_nor_clear_sr(nor, SPINOR_OP_CLSR);
+-
+-		/*
+-		 * WEL bit remains set to one when an erase or page program
+-		 * error occurs. Issue a Write Disable command to protect
+-		 * against inadvertent writes that can possibly corrupt the
+-		 * contents of the memory.
+-		 */
+-		ret = spi_nor_write_disable(nor);
+-		if (ret)
+-			return ret;
+-
+-		return -EIO;
+-	}
+-
  	return !(nor->bouncebuf[0] & SR_WIP);
  }
  
--/**
-- * spi_nor_clear_fsr() - Clear the Flag Status Register.
-- * @nor:	pointer to 'struct spi_nor'.
-- */
--static void spi_nor_clear_fsr(struct spi_nor *nor)
--{
--	int ret;
--
--	if (nor->spimem) {
--		struct spi_mem_op op =
--			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_CLFSR, 0),
--				   SPI_MEM_OP_NO_ADDR,
--				   SPI_MEM_OP_NO_DUMMY,
--				   SPI_MEM_OP_NO_DATA);
--
--		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
--
--		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_CLFSR,
--						       NULL, 0);
--	}
--
--	if (ret)
--		dev_dbg(nor->dev, "error %d clearing FSR\n", ret);
--}
--
+@@ -3488,8 +3466,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 
+ 	if (info->flags & NO_CHIP_ERASE)
+ 		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
+-	if (info->flags & USE_CLSR)
+-		nor->flags |= SNOR_F_USE_CLSR;
+ 	if (info->flags & SPI_NOR_SWP_IS_VOLATILE)
+ 		nor->flags |= SNOR_F_SWP_IS_VOLATILE;
+ 
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index bc042a0ef94e..b60585950288 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -16,7 +16,6 @@ enum spi_nor_option_flags {
+ 	SNOR_F_HAS_SR_TB	= BIT(1),
+ 	SNOR_F_NO_OP_CHIP_ERASE	= BIT(2),
+ 	SNOR_F_READY_XSR_RDY	= BIT(3),
+-	SNOR_F_USE_CLSR		= BIT(4),
+ 	SNOR_F_BROKEN_RESET	= BIT(5),
+ 	SNOR_F_4B_OPCODES	= BIT(6),
+ 	SNOR_F_HAS_4BAIT	= BIT(7),
+@@ -453,6 +452,7 @@ int spi_nor_read_sr(struct spi_nor *nor, u8 *sr);
+ int spi_nor_read_cr(struct spi_nor *nor, u8 *cr);
+ int spi_nor_write_sr(struct spi_nor *nor, const u8 *sr, size_t len);
+ int spi_nor_write_sr_and_check(struct spi_nor *nor, u8 sr1);
++void spi_nor_clear_sr(struct spi_nor *nor, u8 opcode);
+ 
+ int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr);
+ ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t len,
+diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+index b0c5521c1e27..f90e0d8f9361 100644
+--- a/drivers/mtd/spi-nor/spansion.c
++++ b/drivers/mtd/spi-nor/spansion.c
+@@ -18,6 +18,48 @@
+ #define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN	0x3
+ #define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS	0
+ #define SPINOR_OP_CYPRESS_RD_FAST		0xee
++#define SPINOR_OP_SPANSION_CLSR			0x30
++
++/**
++ * spansion_sr_ready() - Spansion specific method for querying the flash to
++ * see if it is ready for new commands.
++ * @nor:   pointer to 'struct spi_nor'.
++ *
++ * Return: 1 if ready, 0 if not ready, -errno on errors.
++ */
++static int spansion_sr_ready(struct spi_nor *nor)
++{
++	u8 *sr = nor->bouncebuf;
++	int ret;
++
++	ret = spi_nor_read_sr(nor, sr);
++	if (ret)
++		return ret;
++
++	if (nor->info->flags & USE_CLSR &&
++	    nor->bouncebuf[0] & (SR_E_ERR | SR_P_ERR)) {
++		if (nor->bouncebuf[0] & SR_E_ERR)
++			dev_err(nor->dev, "Erase Error occurred\n");
++		else
++			dev_err(nor->dev, "Programming Error occurred\n");
++
++		spi_nor_clear_sr(nor, SPINOR_OP_SPANSION_CLSR);
++
++		/*
++		 * WEL bit remains set to one when an erase or page program
++		 * error occurs. Issue a Write Disable command to protect
++		 * against inadvertent writes that can possibly corrupt the
++		 * contents of the memory.
++		 */
++		ret = spi_nor_write_disable(nor);
++		if (ret)
++			return ret;
++
++		return -EIO;
++	}
++
++	return !(sr[0] & SR_WIP);
++}
+ 
  /**
-  * spi_nor_fsr_ready() - Query the Flag Status Register to see if the flash is
-  * ready for new commands.
-@@ -766,7 +740,7 @@ static int spi_nor_fsr_ready(struct spi_nor *nor)
- 			dev_err(nor->dev,
- 			"Attempted to modify a protected sector.\n");
+  * spi_nor_cypress_octal_dtr_enable() - Enable octal DTR on Cypress flashes.
+@@ -289,8 +331,14 @@ static void spansion_post_sfdp_fixups(struct spi_nor *nor)
+ 	nor->mtd.erasesize = nor->info->sector_size;
+ }
  
--		spi_nor_clear_fsr(nor);
-+		spi_nor_clear_sr(nor, SPINOR_OP_CLFSR);
++static void spansion_default_init(struct spi_nor *nor)
++{
++	nor->params->ops.ready = spansion_sr_ready;
++}
++
+ static const struct spi_nor_fixups spansion_fixups = {
+ 	.post_sfdp = spansion_post_sfdp_fixups,
++	.default_init = spansion_default_init,
+ };
  
- 		/*
- 		 * WEL bit remains set to one when an erase or page program
+ const struct spi_nor_manufacturer spi_nor_spansion = {
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index a0d572855444..87e03943ba94 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -101,7 +101,6 @@
+ 
+ /* Used for Spansion flashes only. */
+ #define SPINOR_OP_BRWR		0x17	/* Bank register write */
+-#define SPINOR_OP_CLSR		0x30	/* Clear status register 1 */
+ 
+ /* Used for Micron flashes only. */
+ #define SPINOR_OP_RD_EVCR      0x65    /* Read EVCR register */
 -- 
 2.25.1
 
