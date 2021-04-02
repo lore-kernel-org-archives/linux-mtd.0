@@ -2,63 +2,93 @@ Return-Path: <SRS0=9wI6=I7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B35BCC433ED
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Apr 2021 06:51:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DB6BC433ED
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Apr 2021 07:14:31 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 36EF96108F
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Apr 2021 06:51:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 36EF96108F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 25E4D610E7
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Apr 2021 07:14:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 25E4D610E7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:References:
+	Cc:To:Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=ZQ7Nl2SMRa37Z24xiyUZN4XOQo/o7530rW03WWG7NYQ=; b=EPLjsVU6EMbfWS51UK4QuGDMG
-	eY/DgxLvFHgV4n2THMPylRqdtiQYh7AQ8qjFVBxDKBJd4uqLKCCA2dvI+IYn/i9YGqQUcpmgQcgnb
-	IhqT0/4FABYy0UWlOhoEbNjMa+ROfy4S9pR4kHOGcln5WyImJpd43wsr6V58uRUBx5n/I7nnWJcD3
-	IB0e2zP3v6eQaR2AhS3EmltKZ08efwJaeHfYgztw3Eo8aW2e3mHx6X7lJ0m3BNoaLsR0OwGpRsgt0
-	SAs76u9CdUoV682hjOYwFlOzx9pRfh8jcaad2YOfkwXHnMk5WvAAFx1pJzecvglobeZru5UJdLUt4
-	fLbuadeRw==;
+	 bh=4ppiCYA2x76jAqKjOF1UXAu6pc33af15e6syuQzxxJU=; b=NQ/Bu+veD6k6+7DDYNT8cfyRi
+	XPZXQhGJrxL2VcDtDmlvq8PPUAti1qalyY3cBZI8K1E0A8+NVa084NBiOEu7W/dgvBW4Hyn7R/3AR
+	vu+jdMhUmJi5bkMBeIjWfRF8cCyvCW5Ksj2iAVE67NDjRyoKDgEARuxefi0o+10sRSIP6zBC6iqKR
+	2+mb/nmiGQOCgF43ZnT37oSJLk3DZuaajndxfTpULSUUBOjA93kqyc73S+Ecwu2VxRTAtJ7IYDwXB
+	vH0YjV28J5Sp2YIVKMSr8EMSNWhcqbpFY4zJnvRbLbsGM+JOqCRgQMt3EzZHBSz0i+r8rWJQUVDq+
+	5z6IxT+qA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lSDdo-00C9Lx-JT; Fri, 02 Apr 2021 06:50:48 +0000
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+	id 1lSE0B-00CBPR-EJ; Fri, 02 Apr 2021 07:13:55 +0000
+Received: from mail-pl1-x62a.google.com ([2607:f8b0:4864:20::62a])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lSDcT-00C94V-Cb
- for linux-mtd@lists.infradead.org; Fri, 02 Apr 2021 06:49:27 +0000
-X-Originating-IP: 90.89.138.59
-Received: from xps13.home (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr
- [90.89.138.59]) (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 2F459C0007;
- Fri,  2 Apr 2021 06:49:24 +0000 (UTC)
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- <linux-mtd@lists.infradead.org>
-Cc: Naga Sureshkumar Relli <nagasure@xilinx.com>,
- Michal Simek <monstr@monstr.eu>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 5/5] mtd: rawnand: arasan: Leverage additional GPIO CS
-Date: Fri,  2 Apr 2021 08:49:15 +0200
-Message-Id: <20210402064915.220781-6-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210402064915.220781-1-miquel.raynal@bootlin.com>
-References: <20210402064915.220781-1-miquel.raynal@bootlin.com>
+ id 1lSE06-00CBOl-97
+ for linux-mtd@lists.infradead.org; Fri, 02 Apr 2021 07:13:52 +0000
+Received: by mail-pl1-x62a.google.com with SMTP id y2so2158112plg.5
+ for <linux-mtd@lists.infradead.org>; Fri, 02 Apr 2021 00:13:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:subject:to:cc:references:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=cWS70xvkSyW7S/sD0/DSRbtT9gX+jEgnyfKeJJIEDpA=;
+ b=oDmTJKmB+BdO1k3uoFAXr9Q30YHl+lLqMT+WJ5pH39o0n0V3AMCzxBgC3Mau8RRxSo
+ l6avN+L/+bJmNLcyKqIIsX+tZiFkDhTzcLNq2FA7MVmN1CB/7gt+4rj0gr6h2UF9gvjh
+ vigeVju8sJ6/p43+50zk+YF7G0Dmqj4Y0DR5iHFAfvpgYlTswafjtIiHdBv/u2r5el1u
+ sip0SHT/l+AYadzfXrfjB/S02c91OZ/TrE++i9u3hDxtQdnRxTTZNUOvhF0A6cETx0xm
+ Gt3cdHcoKzPF6L725WKXYd9i+km4FxRWCznQcUclIfLUes3rSfHclYIEI5ZS9RxbS4/j
+ gfAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=cWS70xvkSyW7S/sD0/DSRbtT9gX+jEgnyfKeJJIEDpA=;
+ b=h/KHFiwTd6Rif7uGZ3ZfuAkrs+7lU5kufFCGUbkLWuM1YsFTzDByzOiZpaL64PucgH
+ ii+xE8n56rN0melUplX98Qp3XrV5A89P6T6Vg6DOSY0imrPrvEIANseQsm0LtK0/z2O7
+ Ix+6VqvpbHdC26gRYfIxyZG3RqqEWKbzR3gvjMBzCTPp71HJR3xXpTqjsQ7mqy+R6IOt
+ Tu/9+KJgETGv25hIzuzBzR17PD5tIRRTA1m4PpDgGYJy1dwn0bdVKB3LUWLja5QzjkPa
+ 3FEJLtJDUx67MIirwY43kyptzxV/OKsrSkawxq7bbFyRF06YNSvuNhqpicqWW9nZKMyR
+ 1QJQ==
+X-Gm-Message-State: AOAM532H7a9iByEDHO9pAwhZrQxx5bUWcP2yetx+Bkie8aWYxcIVI6xL
+ 5Wzti4t7bHCWHuYY8PTcJ5U=
+X-Google-Smtp-Source: ABdhPJyMXchi4TZKlOQDwsIEeK2tE/nkGlwz39zaknX5k2mDPq3kTNKJxseQjsNvfxhCSsvLJwieFg==
+X-Received: by 2002:a17:90a:db01:: with SMTP id
+ g1mr12724832pjv.127.1617347628065; 
+ Fri, 02 Apr 2021 00:13:48 -0700 (PDT)
+Received: from [192.168.210.40] (zz20174137476F6254EB.userreverse.dion.ne.jp.
+ [111.98.84.235])
+ by smtp.gmail.com with ESMTPSA id e6sm800106pgm.92.2021.04.02.00.13.46
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 02 Apr 2021 00:13:47 -0700 (PDT)
+From: Takahiro Kuwano <tkuw584924@gmail.com>
+Subject: Re: [PATCH v4 0/6] mtd: spi-nor: Add support for Cypress
+ s25hl-t/s25hs-t
+To: Tudor.Ambarus@microchip.com, linux-mtd@lists.infradead.org
+Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ p.yadav@ti.com, Bacem.Daassi@infineon.com, Takahiro.Kuwano@infineon.com
+References: <cover.1616130675.git.Takahiro.Kuwano@infineon.com>
+ <561ec6a4-5e64-8a82-043e-9e825aa00a3f@microchip.com>
+Message-ID: <50b9d6c9-c501-bc08-7f39-5e49b9e76782@gmail.com>
+Date: Fri, 2 Apr 2021 16:13:32 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
+In-Reply-To: <561ec6a4-5e64-8a82-043e-9e825aa00a3f@microchip.com>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210402_074925_618850_99BBF7DB 
-X-CRM114-Status: GOOD (  31.82  )
+X-CRM114-CacheID: sfid-20210402_081350_517851_F91EFB33 
+X-CRM114-Status: GOOD (  14.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,327 +105,51 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Make use of the cs-gpios DT property as well as the core helper to parse
-it so that the Arasan controller driver can now assert many more chips
-than natively.
+Hi Tudor,
 
-The Arasan controller has an internal limitation: RB0 is tied to CS0 and
-RB1 is tied to CS1. Hence, it is possible to use external GPIOs as long
-as one or the other native CS is not used (or configured to be driven as
-a GPIO) and that all additional CS are physically wired on its
-corresponding RB line. Eg. CS0 is used as a native CS, CS1 is not used
-as native CS and may be used as a GPIO CS, CS2 is an additional GPIO
-CS. Then the target asserted by CS0 should also be wired to RB0, while
-the targets asserted by CS1 and CS2 should be wired to RB1.
+On 4/1/2021 3:09 PM, Tudor.Ambarus@microchip.com wrote:
+> Hi,
+> 
+> On 3/19/21 8:51 AM, tkuw584924@gmail.com wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>>
+>> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+>>
+>> The S25HL-T/S25HS-T family is the Cypress Semper Flash with Quad SPI.
+>>
+>> The summary datasheets can be found in the following links.
+>> https://www.cypress.com/file/424146/download (256Mb/512Mb/1Gb, single die)
+>> https://www.cypress.com/file/499246/download (2Gb/4Gb, dual/quad die)
+>>
+>> The full version can be found in the following links (registration
+>> required).
+>> https://community.cypress.com/t5/Semper-Flash-Access-Program/Datasheet-Semper-Flash-with-Quad-SPI/ta-p/260789?attachment-id=19522
+>> https://community.cypress.com/t5/Semper-Flash-Access-Program/Datasheet-2Gb-MCP-Semper-Flash-with-Quad-SPI/ta-p/260823?attachment-id=29503
+> 
+> Takahiro, looks like I can't access the dual/quad die full datasheet, not enough rights,
+> even after creating an account.
+> 
+My colleague helped on this. I hope you could access the datasheet.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/nand/raw/arasan-nand-controller.c | 148 +++++++++++++++---
- 1 file changed, 125 insertions(+), 23 deletions(-)
+> How are multi die ops handled when crossing a die boundary?
+> 
+The existing erase/write ops are done by sector/page size alignment and
+never cross a die boundary. The read ops does not care about die boundary
+but still works because the Semper dual/quad die parts continue to output
+data from next die when crossing a die boundary.
 
-diff --git a/drivers/mtd/nand/raw/arasan-nand-controller.c b/drivers/mtd/nand/raw/arasan-nand-controller.c
-index 390f8d719c25..fb72e83595b4 100644
---- a/drivers/mtd/nand/raw/arasan-nand-controller.c
-+++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
-@@ -15,6 +15,7 @@
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/dma-mapping.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/interrupt.h>
- #include <linux/iopoll.h>
- #include <linux/module.h>
-@@ -107,6 +108,8 @@
- #define ANFC_XLNX_SDR_DFLT_CORE_CLK	100000000
- #define ANFC_XLNX_SDR_HS_CORE_CLK	80000000
- 
-+static struct gpio_desc *anfc_default_cs_array[2] = {NULL, NULL};
-+
- /**
-  * struct anfc_op - Defines how to execute an operation
-  * @pkt_reg: Packet register
-@@ -137,7 +140,6 @@ struct anfc_op {
-  * struct anand - Defines the NAND chip related information
-  * @node:		Used to store NAND chips into a list
-  * @chip:		NAND chip information structure
-- * @cs:			Chip select line
-  * @rb:			Ready-busy line
-  * @page_sz:		Register value of the page_sz field to use
-  * @clk:		Expected clock frequency to use
-@@ -151,11 +153,13 @@ struct anfc_op {
-  * @errloc:		Array of errors located with soft BCH
-  * @hw_ecc:		Buffer to store syndromes computed by hardware
-  * @bch:		BCH structure
-+ * @cs_idx:		Array of chip-select for this device, values are indexes
-+ *			of the controller structure @gpio_cs array
-+ * @ncs_idx:		Size of the @cs_idx array
-  */
- struct anand {
- 	struct list_head node;
- 	struct nand_chip chip;
--	unsigned int cs;
- 	unsigned int rb;
- 	unsigned int page_sz;
- 	unsigned long clk;
-@@ -169,6 +173,8 @@ struct anand {
- 	unsigned int *errloc;
- 	u8 *hw_ecc;
- 	struct bch_control *bch;
-+	int *cs_idx;
-+	int ncs_idx;
- };
- 
- /**
-@@ -179,8 +185,14 @@ struct anand {
-  * @bus_clk:		Pointer to the flash clock
-  * @controller:		Base controller structure
-  * @chips:		List of all NAND chips attached to the controller
-- * @assigned_cs:	Bitmask describing already assigned CS lines
-  * @cur_clk:		Current clock rate
-+ * @cs_array:		CS array. Native CS are left empty, the other cells are
-+ *			populated with their corresponding GPIO descriptor.
-+ * @ncs:		Size of @cs_array
-+ * @cur_cs:		Index in @cs_array of the currently in use CS
-+ * @native_cs:		Currently selected native CS
-+ * @spare_cs:		Native CS that is not wired (may be selected when a GPIO
-+ *			CS is in use)
-  */
- struct arasan_nfc {
- 	struct device *dev;
-@@ -189,8 +201,12 @@ struct arasan_nfc {
- 	struct clk *bus_clk;
- 	struct nand_controller controller;
- 	struct list_head chips;
--	unsigned long assigned_cs;
- 	unsigned int cur_clk;
-+	struct gpio_desc **cs_array;
-+	unsigned int ncs;
-+	int cur_cs;
-+	unsigned int native_cs;
-+	unsigned int spare_cs;
- };
- 
- static struct anand *to_anand(struct nand_chip *nand)
-@@ -273,12 +289,46 @@ static int anfc_pkt_len_config(unsigned int len, unsigned int *steps,
- 	return 0;
- }
- 
-+static bool anfc_is_gpio_cs(struct arasan_nfc *nfc, int nfc_cs)
-+{
-+	return nfc_cs >= 0 && nfc->cs_array[nfc_cs];
-+}
-+
-+static int anfc_relative_to_absolute_cs(struct anand *anand, int num)
-+{
-+	return anand->cs_idx[num];
-+}
-+
-+static void anfc_assert_cs(struct arasan_nfc *nfc, unsigned int nfc_cs_idx)
-+{
-+	/* CS did not change: do nothing */
-+	if (nfc->cur_cs == nfc_cs_idx)
-+		return;
-+
-+	/* Deassert the previous CS if it was a GPIO */
-+	if (anfc_is_gpio_cs(nfc, nfc->cur_cs))
-+		gpiod_set_value_cansleep(nfc->cs_array[nfc->cur_cs], 1);
-+
-+	/* Assert the new one */
-+	if (anfc_is_gpio_cs(nfc, nfc_cs_idx)) {
-+		nfc->native_cs = nfc->spare_cs;
-+		gpiod_set_value_cansleep(nfc->cs_array[nfc_cs_idx], 0);
-+	} else {
-+		nfc->native_cs = nfc_cs_idx;
-+	}
-+
-+	nfc->cur_cs = nfc_cs_idx;
-+}
-+
- static int anfc_select_target(struct nand_chip *chip, int target)
- {
- 	struct anand *anand = to_anand(chip);
- 	struct arasan_nfc *nfc = to_anfc(chip->controller);
-+	unsigned int nfc_cs_idx = anfc_relative_to_absolute_cs(anand, target);
- 	int ret;
- 
-+	anfc_assert_cs(nfc, nfc_cs_idx);
-+
- 	/* Update the controller timings and the potential ECC configuration */
- 	writel_relaxed(anand->timings, nfc->base + DATA_INTERFACE_REG);
- 
-@@ -346,7 +396,7 @@ static int anfc_read_page_hw_ecc(struct nand_chip *chip, u8 *buf,
- 		.addr2_reg =
- 			((page >> 16) & 0xFF) |
- 			ADDR2_STRENGTH(anand->strength) |
--			ADDR2_CS(anand->cs),
-+			ADDR2_CS(nfc->native_cs),
- 		.cmd_reg =
- 			CMD_1(NAND_CMD_READ0) |
- 			CMD_2(NAND_CMD_READSTART) |
-@@ -463,7 +513,7 @@ static int anfc_write_page_hw_ecc(struct nand_chip *chip, const u8 *buf,
- 		.addr2_reg =
- 			((page >> 16) & 0xFF) |
- 			ADDR2_STRENGTH(anand->strength) |
--			ADDR2_CS(anand->cs),
-+			ADDR2_CS(nfc->native_cs),
- 		.cmd_reg =
- 			CMD_1(NAND_CMD_SEQIN) |
- 			CMD_2(NAND_CMD_PAGEPROG) |
-@@ -521,6 +571,7 @@ static int anfc_parse_instructions(struct nand_chip *chip,
- 				   const struct nand_subop *subop,
- 				   struct anfc_op *nfc_op)
- {
-+	struct arasan_nfc *nfc = to_anfc(chip->controller);
- 	struct anand *anand = to_anand(chip);
- 	const struct nand_op_instr *instr = NULL;
- 	bool first_cmd = true;
-@@ -528,7 +579,7 @@ static int anfc_parse_instructions(struct nand_chip *chip,
- 	int ret, i;
- 
- 	memset(nfc_op, 0, sizeof(*nfc_op));
--	nfc_op->addr2_reg = ADDR2_CS(anand->cs);
-+	nfc_op->addr2_reg = ADDR2_CS(nfc->native_cs);
- 	nfc_op->cmd_reg = CMD_PAGE_SIZE(anand->page_sz);
- 
- 	for (op_id = 0; op_id < subop->ninstrs; op_id++) {
-@@ -1118,37 +1169,43 @@ static int anfc_chip_init(struct arasan_nfc *nfc, struct device_node *np)
- 	struct anand *anand;
- 	struct nand_chip *chip;
- 	struct mtd_info *mtd;
--	int cs, rb, ret;
-+	int rb, ret, i;
- 
- 	anand = devm_kzalloc(nfc->dev, sizeof(*anand), GFP_KERNEL);
- 	if (!anand)
- 		return -ENOMEM;
- 
--	/* We do not support multiple CS per chip yet */
--	if (of_property_count_elems_of_size(np, "reg", sizeof(u32)) != 1) {
-+	/* Chip-select init */
-+	anand->ncs_idx = of_property_count_elems_of_size(np, "reg", sizeof(u32));
-+	if (anand->ncs_idx <= 0 || anand->ncs_idx > nfc->ncs) {
- 		dev_err(nfc->dev, "Invalid reg property\n");
- 		return -EINVAL;
- 	}
- 
--	ret = of_property_read_u32(np, "reg", &cs);
--	if (ret)
--		return ret;
-+	anand->cs_idx = devm_kcalloc(nfc->dev, anand->ncs_idx,
-+				     sizeof(*anand->cs_idx), GFP_KERNEL);
-+	if (!anand->cs_idx)
-+		return -ENOMEM;
- 
-+	for (i = 0; i < anand->ncs_idx; i++) {
-+		ret = of_property_read_u32_index(np, "reg", i,
-+						 &anand->cs_idx[i]);
-+		if (ret) {
-+			dev_err(nfc->dev, "invalid CS property: %d\n", ret);
-+			return ret;
-+		}
-+	}
-+
-+	/* Ready-busy init */
- 	ret = of_property_read_u32(np, "nand-rb", &rb);
- 	if (ret)
- 		return ret;
- 
--	if (cs >= ANFC_MAX_CS || rb >= ANFC_MAX_CS) {
--		dev_err(nfc->dev, "Wrong CS %d or RB %d\n", cs, rb);
-+	if (rb >= ANFC_MAX_CS) {
-+		dev_err(nfc->dev, "Wrong RB %d\n", rb);
- 		return -EINVAL;
- 	}
- 
--	if (test_and_set_bit(cs, &nfc->assigned_cs)) {
--		dev_err(nfc->dev, "Already assigned CS %d\n", cs);
--		return -EINVAL;
--	}
--
--	anand->cs = cs;
- 	anand->rb = rb;
- 
- 	chip = &anand->chip;
-@@ -1164,7 +1221,7 @@ static int anfc_chip_init(struct arasan_nfc *nfc, struct device_node *np)
- 		return -EINVAL;
- 	}
- 
--	ret = nand_scan(chip, 1);
-+	ret = nand_scan(chip, anand->ncs_idx);
- 	if (ret) {
- 		dev_err(nfc->dev, "Scan operation failed\n");
- 		return ret;
-@@ -1202,7 +1259,7 @@ static int anfc_chips_init(struct arasan_nfc *nfc)
- 	int nchips = of_get_child_count(np);
- 	int ret;
- 
--	if (!nchips || nchips > ANFC_MAX_CS) {
-+	if (!nchips) {
- 		dev_err(nfc->dev, "Incorrect number of NAND chips (%d)\n",
- 			nchips);
- 		return -EINVAL;
-@@ -1227,6 +1284,47 @@ static void anfc_reset(struct arasan_nfc *nfc)
- 
- 	/* Enable interrupt status */
- 	writel_relaxed(EVENT_MASK, nfc->base + INTR_STS_EN_REG);
-+
-+	nfc->cur_cs = -1;
-+}
-+
-+static int anfc_parse_cs(struct arasan_nfc *nfc)
-+{
-+	int ret;
-+
-+	/* Check the gpio-cs property */
-+	ret = rawnand_dt_parse_gpio_cs(nfc->dev, &nfc->cs_array, &nfc->ncs);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * The controller native CS cannot be both disabled at the same time.
-+	 * Hence, only one native CS can be used if GPIO CS are needed, so that
-+	 * the other is selected when a non-native CS must be asserted (not
-+	 * wired physically or configured as GPIO instead of NAND CS). In this
-+	 * case, the "not" chosen CS is assigned to nfc->spare_cs and selected
-+	 * whenever a GPIO CS must be asserted.
-+	 */
-+	if (nfc->cs_array && nfc->ncs > 2) {
-+		if (!nfc->cs_array[0] && !nfc->cs_array[1]) {
-+			dev_err(nfc->dev,
-+				"Assign a single native CS when using GPIOs\n");
-+			return -EINVAL;
-+		}
-+
-+		if (nfc->cs_array[0])
-+			nfc->spare_cs = 0;
-+		else
-+			nfc->spare_cs = 1;
-+	}
-+
-+	if (!nfc->cs_array) {
-+		nfc->cs_array = anfc_default_cs_array;
-+		nfc->ncs = ANFC_MAX_CS;
-+		return 0;
-+	}
-+
-+	return 0;
- }
- 
- static int anfc_probe(struct platform_device *pdev)
-@@ -1265,6 +1363,10 @@ static int anfc_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto disable_controller_clk;
- 
-+	ret = anfc_parse_cs(nfc);
-+	if (ret)
-+		goto disable_bus_clk;
-+
- 	ret = anfc_chips_init(nfc);
- 	if (ret)
- 		goto disable_bus_clk;
--- 
-2.27.0
+>>
+>> Tested on Xilinx Zynq-7000 FPGA board.
+> 
+> Have you tried to erase/read/write multiple dies with a single request?
+> 
+Yes, I did 'mtd_debug erase/write/read' with address ranges that involve
+two dies. You can find errata info in the datasheet about cross-die read.
+My test does not cover the trigger condition of the failure actually.
+I will submit another patch that work around the issue as needed.
 
+Best Regards,
+Takahiro
 
 ______________________________________________________
 Linux MTD discussion mailing list
