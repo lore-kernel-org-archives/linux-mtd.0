@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DF2DC433B4
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Apr 2021 06:51:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B35BCC433ED
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Apr 2021 06:51:47 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 22AAC6108F
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Apr 2021 06:51:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 22AAC6108F
+	by mail.kernel.org (Postfix) with ESMTPS id 36EF96108F
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Apr 2021 06:51:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 36EF96108F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,24 +23,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=VJ3SEo4VtYkpv3TQlDff9OjLZNUPWJdF5BNl4XhKM/M=; b=HCCFEfSGUG3n/f4/16S8121cD
-	cqTJY6fyNTe9JdL7XwBHgnHYQ+h+q9NFuzRsE6QEB2UpqUgUSl+QT/vtLrSpO0w84Ns4uYUkSIaAp
-	nqBjcFhA17JSR3J2LeQyMXhmHTrfo27FqcuCwy1eIFpIB74Oi+5bZJgeXViXK2vxhPR5O6eJc5cBx
-	DoEp3QPUrbmQi4imUp7FzzG9RDICGt9UNn06DaxwGBHpshsU6x/VZ7CggkdE2YZrzzwN3TM/led1E
-	7Ad6m5m8p/uq8aJh2vVCWIRh9OEh4i1Rsq/chBFM72FQ24cPDNDUXaUSPZf5kOKAOsswbqy2OYx4K
-	lohDI9uYQ==;
+	 bh=ZQ7Nl2SMRa37Z24xiyUZN4XOQo/o7530rW03WWG7NYQ=; b=EPLjsVU6EMbfWS51UK4QuGDMG
+	eY/DgxLvFHgV4n2THMPylRqdtiQYh7AQ8qjFVBxDKBJd4uqLKCCA2dvI+IYn/i9YGqQUcpmgQcgnb
+	IhqT0/4FABYy0UWlOhoEbNjMa+ROfy4S9pR4kHOGcln5WyImJpd43wsr6V58uRUBx5n/I7nnWJcD3
+	IB0e2zP3v6eQaR2AhS3EmltKZ08efwJaeHfYgztw3Eo8aW2e3mHx6X7lJ0m3BNoaLsR0OwGpRsgt0
+	SAs76u9CdUoV682hjOYwFlOzx9pRfh8jcaad2YOfkwXHnMk5WvAAFx1pJzecvglobeZru5UJdLUt4
+	fLbuadeRw==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lSDdP-00C9FV-8j; Fri, 02 Apr 2021 06:50:23 +0000
+	id 1lSDdo-00C9Lx-JT; Fri, 02 Apr 2021 06:50:48 +0000
 Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lSDcS-00C94A-AD
- for linux-mtd@lists.infradead.org; Fri, 02 Apr 2021 06:49:26 +0000
+ id 1lSDcT-00C94V-Cb
+ for linux-mtd@lists.infradead.org; Fri, 02 Apr 2021 06:49:27 +0000
 X-Originating-IP: 90.89.138.59
 Received: from xps13.home (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr
  [90.89.138.59]) (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 33D64C0006;
- Fri,  2 Apr 2021 06:49:23 +0000 (UTC)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 2F459C0007;
+ Fri,  2 Apr 2021 06:49:24 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
@@ -49,17 +49,16 @@ Cc: Naga Sureshkumar Relli <nagasure@xilinx.com>,
  Michal Simek <monstr@monstr.eu>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 4/5] mtd: rawnand: arasan: Ensure proper configuration for the
- asserted target
-Date: Fri,  2 Apr 2021 08:49:14 +0200
-Message-Id: <20210402064915.220781-5-miquel.raynal@bootlin.com>
+Subject: [PATCH 5/5] mtd: rawnand: arasan: Leverage additional GPIO CS
+Date: Fri,  2 Apr 2021 08:49:15 +0200
+Message-Id: <20210402064915.220781-6-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210402064915.220781-1-miquel.raynal@bootlin.com>
 References: <20210402064915.220781-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210402_074924_655985_516D488D 
-X-CRM114-Status: GOOD (  17.30  )
+X-CRM114-CacheID: sfid-20210402_074925_618850_99BBF7DB 
+X-CRM114-Status: GOOD (  31.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,151 +75,324 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The controller being always asserting one CS or the other, there is no
-need to actually select the right target before doing a page read/write.
-However, the anfc_select_target() helper actually also changes the
-timing configuration and clock in the case were two different NAND chips
-with different timing requirements would be used. In this situation, we
-must ensure proper configuration of the controller by calling it.
+Make use of the cs-gpios DT property as well as the core helper to parse
+it so that the Arasan controller driver can now assert many more chips
+than natively.
 
-As a consequence of this change, the anfc_select_target() helper is
-being moved earlier in the driver.
+The Arasan controller has an internal limitation: RB0 is tied to CS0 and
+RB1 is tied to CS1. Hence, it is possible to use external GPIOs as long
+as one or the other native CS is not used (or configured to be driven as
+a GPIO) and that all additional CS are physically wired on its
+corresponding RB line. Eg. CS0 is used as a native CS, CS1 is not used
+as native CS and may be used as a GPIO CS, CS2 is an additional GPIO
+CS. Then the target asserted by CS0 should also be wired to RB0, while
+the targets asserted by CS1 and CS2 should be wired to RB1.
 
-Fixes: 88ffef1b65cf ("mtd: rawnand: arasan: Support the hardware BCH ECC engine")
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/arasan-nand-controller.c | 90 ++++++++++++-------
- 1 file changed, 57 insertions(+), 33 deletions(-)
+ drivers/mtd/nand/raw/arasan-nand-controller.c | 148 +++++++++++++++---
+ 1 file changed, 125 insertions(+), 23 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/arasan-nand-controller.c b/drivers/mtd/nand/raw/arasan-nand-controller.c
-index 549aac00228e..390f8d719c25 100644
+index 390f8d719c25..fb72e83595b4 100644
 --- a/drivers/mtd/nand/raw/arasan-nand-controller.c
 +++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
-@@ -273,6 +273,37 @@ static int anfc_pkt_len_config(unsigned int len, unsigned int *steps,
+@@ -15,6 +15,7 @@
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/dma-mapping.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/interrupt.h>
+ #include <linux/iopoll.h>
+ #include <linux/module.h>
+@@ -107,6 +108,8 @@
+ #define ANFC_XLNX_SDR_DFLT_CORE_CLK	100000000
+ #define ANFC_XLNX_SDR_HS_CORE_CLK	80000000
+ 
++static struct gpio_desc *anfc_default_cs_array[2] = {NULL, NULL};
++
+ /**
+  * struct anfc_op - Defines how to execute an operation
+  * @pkt_reg: Packet register
+@@ -137,7 +140,6 @@ struct anfc_op {
+  * struct anand - Defines the NAND chip related information
+  * @node:		Used to store NAND chips into a list
+  * @chip:		NAND chip information structure
+- * @cs:			Chip select line
+  * @rb:			Ready-busy line
+  * @page_sz:		Register value of the page_sz field to use
+  * @clk:		Expected clock frequency to use
+@@ -151,11 +153,13 @@ struct anfc_op {
+  * @errloc:		Array of errors located with soft BCH
+  * @hw_ecc:		Buffer to store syndromes computed by hardware
+  * @bch:		BCH structure
++ * @cs_idx:		Array of chip-select for this device, values are indexes
++ *			of the controller structure @gpio_cs array
++ * @ncs_idx:		Size of the @cs_idx array
+  */
+ struct anand {
+ 	struct list_head node;
+ 	struct nand_chip chip;
+-	unsigned int cs;
+ 	unsigned int rb;
+ 	unsigned int page_sz;
+ 	unsigned long clk;
+@@ -169,6 +173,8 @@ struct anand {
+ 	unsigned int *errloc;
+ 	u8 *hw_ecc;
+ 	struct bch_control *bch;
++	int *cs_idx;
++	int ncs_idx;
+ };
+ 
+ /**
+@@ -179,8 +185,14 @@ struct anand {
+  * @bus_clk:		Pointer to the flash clock
+  * @controller:		Base controller structure
+  * @chips:		List of all NAND chips attached to the controller
+- * @assigned_cs:	Bitmask describing already assigned CS lines
+  * @cur_clk:		Current clock rate
++ * @cs_array:		CS array. Native CS are left empty, the other cells are
++ *			populated with their corresponding GPIO descriptor.
++ * @ncs:		Size of @cs_array
++ * @cur_cs:		Index in @cs_array of the currently in use CS
++ * @native_cs:		Currently selected native CS
++ * @spare_cs:		Native CS that is not wired (may be selected when a GPIO
++ *			CS is in use)
+  */
+ struct arasan_nfc {
+ 	struct device *dev;
+@@ -189,8 +201,12 @@ struct arasan_nfc {
+ 	struct clk *bus_clk;
+ 	struct nand_controller controller;
+ 	struct list_head chips;
+-	unsigned long assigned_cs;
+ 	unsigned int cur_clk;
++	struct gpio_desc **cs_array;
++	unsigned int ncs;
++	int cur_cs;
++	unsigned int native_cs;
++	unsigned int spare_cs;
+ };
+ 
+ static struct anand *to_anand(struct nand_chip *nand)
+@@ -273,12 +289,46 @@ static int anfc_pkt_len_config(unsigned int len, unsigned int *steps,
  	return 0;
  }
  
-+static int anfc_select_target(struct nand_chip *chip, int target)
++static bool anfc_is_gpio_cs(struct arasan_nfc *nfc, int nfc_cs)
 +{
-+	struct anand *anand = to_anand(chip);
++	return nfc_cs >= 0 && nfc->cs_array[nfc_cs];
++}
++
++static int anfc_relative_to_absolute_cs(struct anand *anand, int num)
++{
++	return anand->cs_idx[num];
++}
++
++static void anfc_assert_cs(struct arasan_nfc *nfc, unsigned int nfc_cs_idx)
++{
++	/* CS did not change: do nothing */
++	if (nfc->cur_cs == nfc_cs_idx)
++		return;
++
++	/* Deassert the previous CS if it was a GPIO */
++	if (anfc_is_gpio_cs(nfc, nfc->cur_cs))
++		gpiod_set_value_cansleep(nfc->cs_array[nfc->cur_cs], 1);
++
++	/* Assert the new one */
++	if (anfc_is_gpio_cs(nfc, nfc_cs_idx)) {
++		nfc->native_cs = nfc->spare_cs;
++		gpiod_set_value_cansleep(nfc->cs_array[nfc_cs_idx], 0);
++	} else {
++		nfc->native_cs = nfc_cs_idx;
++	}
++
++	nfc->cur_cs = nfc_cs_idx;
++}
++
+ static int anfc_select_target(struct nand_chip *chip, int target)
+ {
+ 	struct anand *anand = to_anand(chip);
+ 	struct arasan_nfc *nfc = to_anfc(chip->controller);
++	unsigned int nfc_cs_idx = anfc_relative_to_absolute_cs(anand, target);
+ 	int ret;
+ 
++	anfc_assert_cs(nfc, nfc_cs_idx);
++
+ 	/* Update the controller timings and the potential ECC configuration */
+ 	writel_relaxed(anand->timings, nfc->base + DATA_INTERFACE_REG);
+ 
+@@ -346,7 +396,7 @@ static int anfc_read_page_hw_ecc(struct nand_chip *chip, u8 *buf,
+ 		.addr2_reg =
+ 			((page >> 16) & 0xFF) |
+ 			ADDR2_STRENGTH(anand->strength) |
+-			ADDR2_CS(anand->cs),
++			ADDR2_CS(nfc->native_cs),
+ 		.cmd_reg =
+ 			CMD_1(NAND_CMD_READ0) |
+ 			CMD_2(NAND_CMD_READSTART) |
+@@ -463,7 +513,7 @@ static int anfc_write_page_hw_ecc(struct nand_chip *chip, const u8 *buf,
+ 		.addr2_reg =
+ 			((page >> 16) & 0xFF) |
+ 			ADDR2_STRENGTH(anand->strength) |
+-			ADDR2_CS(anand->cs),
++			ADDR2_CS(nfc->native_cs),
+ 		.cmd_reg =
+ 			CMD_1(NAND_CMD_SEQIN) |
+ 			CMD_2(NAND_CMD_PAGEPROG) |
+@@ -521,6 +571,7 @@ static int anfc_parse_instructions(struct nand_chip *chip,
+ 				   const struct nand_subop *subop,
+ 				   struct anfc_op *nfc_op)
+ {
 +	struct arasan_nfc *nfc = to_anfc(chip->controller);
+ 	struct anand *anand = to_anand(chip);
+ 	const struct nand_op_instr *instr = NULL;
+ 	bool first_cmd = true;
+@@ -528,7 +579,7 @@ static int anfc_parse_instructions(struct nand_chip *chip,
+ 	int ret, i;
+ 
+ 	memset(nfc_op, 0, sizeof(*nfc_op));
+-	nfc_op->addr2_reg = ADDR2_CS(anand->cs);
++	nfc_op->addr2_reg = ADDR2_CS(nfc->native_cs);
+ 	nfc_op->cmd_reg = CMD_PAGE_SIZE(anand->page_sz);
+ 
+ 	for (op_id = 0; op_id < subop->ninstrs; op_id++) {
+@@ -1118,37 +1169,43 @@ static int anfc_chip_init(struct arasan_nfc *nfc, struct device_node *np)
+ 	struct anand *anand;
+ 	struct nand_chip *chip;
+ 	struct mtd_info *mtd;
+-	int cs, rb, ret;
++	int rb, ret, i;
+ 
+ 	anand = devm_kzalloc(nfc->dev, sizeof(*anand), GFP_KERNEL);
+ 	if (!anand)
+ 		return -ENOMEM;
+ 
+-	/* We do not support multiple CS per chip yet */
+-	if (of_property_count_elems_of_size(np, "reg", sizeof(u32)) != 1) {
++	/* Chip-select init */
++	anand->ncs_idx = of_property_count_elems_of_size(np, "reg", sizeof(u32));
++	if (anand->ncs_idx <= 0 || anand->ncs_idx > nfc->ncs) {
+ 		dev_err(nfc->dev, "Invalid reg property\n");
+ 		return -EINVAL;
+ 	}
+ 
+-	ret = of_property_read_u32(np, "reg", &cs);
+-	if (ret)
+-		return ret;
++	anand->cs_idx = devm_kcalloc(nfc->dev, anand->ncs_idx,
++				     sizeof(*anand->cs_idx), GFP_KERNEL);
++	if (!anand->cs_idx)
++		return -ENOMEM;
+ 
++	for (i = 0; i < anand->ncs_idx; i++) {
++		ret = of_property_read_u32_index(np, "reg", i,
++						 &anand->cs_idx[i]);
++		if (ret) {
++			dev_err(nfc->dev, "invalid CS property: %d\n", ret);
++			return ret;
++		}
++	}
++
++	/* Ready-busy init */
+ 	ret = of_property_read_u32(np, "nand-rb", &rb);
+ 	if (ret)
+ 		return ret;
+ 
+-	if (cs >= ANFC_MAX_CS || rb >= ANFC_MAX_CS) {
+-		dev_err(nfc->dev, "Wrong CS %d or RB %d\n", cs, rb);
++	if (rb >= ANFC_MAX_CS) {
++		dev_err(nfc->dev, "Wrong RB %d\n", rb);
+ 		return -EINVAL;
+ 	}
+ 
+-	if (test_and_set_bit(cs, &nfc->assigned_cs)) {
+-		dev_err(nfc->dev, "Already assigned CS %d\n", cs);
+-		return -EINVAL;
+-	}
+-
+-	anand->cs = cs;
+ 	anand->rb = rb;
+ 
+ 	chip = &anand->chip;
+@@ -1164,7 +1221,7 @@ static int anfc_chip_init(struct arasan_nfc *nfc, struct device_node *np)
+ 		return -EINVAL;
+ 	}
+ 
+-	ret = nand_scan(chip, 1);
++	ret = nand_scan(chip, anand->ncs_idx);
+ 	if (ret) {
+ 		dev_err(nfc->dev, "Scan operation failed\n");
+ 		return ret;
+@@ -1202,7 +1259,7 @@ static int anfc_chips_init(struct arasan_nfc *nfc)
+ 	int nchips = of_get_child_count(np);
+ 	int ret;
+ 
+-	if (!nchips || nchips > ANFC_MAX_CS) {
++	if (!nchips) {
+ 		dev_err(nfc->dev, "Incorrect number of NAND chips (%d)\n",
+ 			nchips);
+ 		return -EINVAL;
+@@ -1227,6 +1284,47 @@ static void anfc_reset(struct arasan_nfc *nfc)
+ 
+ 	/* Enable interrupt status */
+ 	writel_relaxed(EVENT_MASK, nfc->base + INTR_STS_EN_REG);
++
++	nfc->cur_cs = -1;
++}
++
++static int anfc_parse_cs(struct arasan_nfc *nfc)
++{
 +	int ret;
 +
-+	/* Update the controller timings and the potential ECC configuration */
-+	writel_relaxed(anand->timings, nfc->base + DATA_INTERFACE_REG);
++	/* Check the gpio-cs property */
++	ret = rawnand_dt_parse_gpio_cs(nfc->dev, &nfc->cs_array, &nfc->ncs);
++	if (ret)
++		return ret;
 +
-+	/* Update clock frequency */
-+	if (nfc->cur_clk != anand->clk) {
-+		clk_disable_unprepare(nfc->controller_clk);
-+		ret = clk_set_rate(nfc->controller_clk, anand->clk);
-+		if (ret) {
-+			dev_err(nfc->dev, "Failed to change clock rate\n");
-+			return ret;
-+		}
-+
-+		ret = clk_prepare_enable(nfc->controller_clk);
-+		if (ret) {
++	/*
++	 * The controller native CS cannot be both disabled at the same time.
++	 * Hence, only one native CS can be used if GPIO CS are needed, so that
++	 * the other is selected when a non-native CS must be asserted (not
++	 * wired physically or configured as GPIO instead of NAND CS). In this
++	 * case, the "not" chosen CS is assigned to nfc->spare_cs and selected
++	 * whenever a GPIO CS must be asserted.
++	 */
++	if (nfc->cs_array && nfc->ncs > 2) {
++		if (!nfc->cs_array[0] && !nfc->cs_array[1]) {
 +			dev_err(nfc->dev,
-+				"Failed to re-enable the controller clock\n");
-+			return ret;
++				"Assign a single native CS when using GPIOs\n");
++			return -EINVAL;
 +		}
 +
-+		nfc->cur_clk = anand->clk;
++		if (nfc->cs_array[0])
++			nfc->spare_cs = 0;
++		else
++			nfc->spare_cs = 1;
++	}
++
++	if (!nfc->cs_array) {
++		nfc->cs_array = anfc_default_cs_array;
++		nfc->ncs = ANFC_MAX_CS;
++		return 0;
 +	}
 +
 +	return 0;
-+}
-+
- /*
-  * When using the embedded hardware ECC engine, the controller is in charge of
-  * feeding the engine with, first, the ECC residue present in the data array.
-@@ -401,6 +432,18 @@ static int anfc_read_page_hw_ecc(struct nand_chip *chip, u8 *buf,
- 	return 0;
  }
  
-+static int anfc_sel_read_page_hw_ecc(struct nand_chip *chip, u8 *buf,
-+				     int oob_required, int page)
-+{
-+	int ret;
-+
-+	ret = anfc_select_target(chip, chip->cur_cs);
+ static int anfc_probe(struct platform_device *pdev)
+@@ -1265,6 +1363,10 @@ static int anfc_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto disable_controller_clk;
+ 
++	ret = anfc_parse_cs(nfc);
 +	if (ret)
-+		return ret;
++		goto disable_bus_clk;
 +
-+	return anfc_read_page_hw_ecc(chip, buf, oob_required, page);
-+};
-+
- static int anfc_write_page_hw_ecc(struct nand_chip *chip, const u8 *buf,
- 				  int oob_required, int page)
- {
-@@ -461,6 +504,18 @@ static int anfc_write_page_hw_ecc(struct nand_chip *chip, const u8 *buf,
- 	return ret;
- }
- 
-+static int anfc_sel_write_page_hw_ecc(struct nand_chip *chip, const u8 *buf,
-+				      int oob_required, int page)
-+{
-+	int ret;
-+
-+	ret = anfc_select_target(chip, chip->cur_cs);
-+	if (ret)
-+		return ret;
-+
-+	return anfc_write_page_hw_ecc(chip, buf, oob_required, page);
-+};
-+
- /* NAND framework ->exec_op() hooks and related helpers */
- static int anfc_parse_instructions(struct nand_chip *chip,
- 				   const struct nand_subop *subop,
-@@ -753,37 +808,6 @@ static const struct nand_op_parser anfc_op_parser = NAND_OP_PARSER(
- 		NAND_OP_PARSER_PAT_WAITRDY_ELEM(false)),
- 	);
- 
--static int anfc_select_target(struct nand_chip *chip, int target)
--{
--	struct anand *anand = to_anand(chip);
--	struct arasan_nfc *nfc = to_anfc(chip->controller);
--	int ret;
--
--	/* Update the controller timings and the potential ECC configuration */
--	writel_relaxed(anand->timings, nfc->base + DATA_INTERFACE_REG);
--
--	/* Update clock frequency */
--	if (nfc->cur_clk != anand->clk) {
--		clk_disable_unprepare(nfc->controller_clk);
--		ret = clk_set_rate(nfc->controller_clk, anand->clk);
--		if (ret) {
--			dev_err(nfc->dev, "Failed to change clock rate\n");
--			return ret;
--		}
--
--		ret = clk_prepare_enable(nfc->controller_clk);
--		if (ret) {
--			dev_err(nfc->dev,
--				"Failed to re-enable the controller clock\n");
--			return ret;
--		}
--
--		nfc->cur_clk = anand->clk;
--	}
--
--	return 0;
--}
--
- static int anfc_check_op(struct nand_chip *chip,
- 			 const struct nand_operation *op)
- {
-@@ -1007,8 +1031,8 @@ static int anfc_init_hw_ecc_controller(struct arasan_nfc *nfc,
- 	if (!anand->bch)
- 		return -EINVAL;
- 
--	ecc->read_page = anfc_read_page_hw_ecc;
--	ecc->write_page = anfc_write_page_hw_ecc;
-+	ecc->read_page = anfc_sel_read_page_hw_ecc;
-+	ecc->write_page = anfc_sel_write_page_hw_ecc;
- 
- 	return 0;
- }
+ 	ret = anfc_chips_init(nfc);
+ 	if (ret)
+ 		goto disable_bus_clk;
 -- 
 2.27.0
 
