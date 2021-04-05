@@ -2,72 +2,86 @@ Return-Path: <SRS0=p7/t=JC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D88AC433ED
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Apr 2021 15:08:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EE5EC433ED
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Apr 2021 15:30:21 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8E71C61398
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Apr 2021 15:08:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8E71C61398
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id DD0636127A
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Apr 2021 15:30:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DD0636127A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=mDi5kC0kAAXwl3GcPBX7ODgJiDzy/WsZEl/ZXlgGuOA=; b=XGaRKjqSf7mDzVYGHfX78PdVW
-	vt4yRYbMmLR/n4OreSsr+Zwfdi6TV3kuEEbPHPD2v0MbgfjeDugZ7c6wEYvtUell1KRRNkl9L23ev
-	3W5G3Ut7G/X+4YuS7FloUXQjNqV/r4Psbx2MAEDVSCOMrYh4KVtFHnyGkRiXyZk0XO7VhM0zuQ/hl
-	td7I/YgCS5XsbevhflLu0opZFjDCR3O5RoHgvx5BCZWkxQKVcDcPwaiMZaX7Ftbqk0q2s23rZBw7m
-	YTBs+aJyF5G7J3+H+YJ/otedPFHcmj8XbM5RSsNPiMjnfNYBLoIisY8ERulXBL2H+otf+7mImkSTE
-	DnJm7kRmg==;
+	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
+	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=S+7FXPj1vuY7QgA2oRkCo9tEiRVo6Y6AAATmrcmxtKQ=; b=T+suzZGZo0BD+WphJuJZKzRwVO
+	s1ezfDHiw5Pm3655hZXaOqfbFwggNgMYsAzkR3Ac5byeJirJs9hKcN7OlAtiUSxnUszy9WPCcSF/Q
+	uAX56UbFoXI/L88VE9Xx5j2FdaEYZR2EE0y4/VoA008Bf9BoLyFyyGIAun07rbLFWAg7+lvKofmtO
+	iYJM0cX1+7KeRoF4fjkYk+a6z4OXvq/Sa2I4B5Ho/vowpH0fWY9NXh3RpoV1isbIkPHQCR59LzDTV
+	9nbc4U4Hyb0vuxChq6mN0BVkGbQXX4UpE9t2c4AxqRtuP90jdtVp9zy8yhgr4vZIz2uF/pXytpYL3
+	xcXhTmsQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lTQpX-00HRuL-IQ; Mon, 05 Apr 2021 15:07:55 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1lTRAg-00HUi1-67; Mon, 05 Apr 2021 15:29:46 +0000
+Received: from mail-il1-x12a.google.com ([2607:f8b0:4864:20::12a])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lTQpS-00HRtj-KC
- for linux-mtd@lists.infradead.org; Mon, 05 Apr 2021 15:07:53 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 2431722205;
- Mon,  5 Apr 2021 17:07:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1617635263;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Dkzk/XuxAoT4NuqBOZKEIzbWMyV0vN0c27tlDqeS7k4=;
- b=UGXUJ9DWxlscAmuyflJXLDFekQainDg/YiAD84/cT4fpWR9Ps+mrcjUMpwAjk0iKEjmAkb
- EBd/SVKXee7My08W37WEd1UuT3jrDwjbey/p9BVQOTqePbj3VzYyssdqcHg44Vrp/JpuQE
- yK33FyyJ1NcmlY8jvN3BpqV8I/qHoJI=
+ id 1lTRAd-00HUhg-2F
+ for linux-mtd@lists.infradead.org; Mon, 05 Apr 2021 15:29:44 +0000
+Received: by mail-il1-x12a.google.com with SMTP id r17so2679576ilt.0
+ for <linux-mtd@lists.infradead.org>; Mon, 05 Apr 2021 08:29:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=Jd9OzSMlCehKGcZL/iMnRfIpVLKcWrqMxSKE53yLOE4=;
+ b=L9zmJategCEBK4GCaOWGftMb7KWEY/q2Fs1KzBmVyL2SsShx5IEXvQPGJbGXhfz+vZ
+ /VlhcaWT08ru5UVMda+luKoVPRqwVY3Os5rC0TFM8Aoa5ISR28zF7mkkuXnulFo29ADD
+ FlMTJNQieLH3Y6oLcdMJzxQorr0BeOOf14A3v28Pbo4RFqzYf3FE7vki+6jy6WUF0iPy
+ F62NS6RUqWNhvEqk+n6aRorCK0Bra9M+eEB6qtUAne58iwSTE+1Zy2BuVC+1GgajE2ig
+ j2I+5jfqeSNoT3x052esbHNU4cPVB/fHSm5gp1FeMpqbXxbWg5m9+tmRlxNGJPqlf1ow
+ oGng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=Jd9OzSMlCehKGcZL/iMnRfIpVLKcWrqMxSKE53yLOE4=;
+ b=lVz4tJs6ZutnUB+2DbrY4WosT9eEO4xmCymoMTfmZ1mpAqJ5c9WRtekwkgpGJkKXuh
+ eBajsrAWk+F0tCGeH0U1VXA9gPSvet1orofKE906YlEWXifeHrwXcpheU2RLjmKjwsCM
+ bL3KnR61bBEzT00MvHtiOlVvvlpYMq+822GoAkIfRxRrUlIPXyIkHxhweuY3r3SniDrF
+ iHbslSi/LpvYNqMVVkUWVWYldTzK6W3Be1sGBtCfS9URO0bCkbXGdVKi/oZzYs6HnE3i
+ +R12Me01ChHgwTiti56gjhgEWxL4M+R6xrQzJ3FDYZF1JKoIuEH5Ssqz59uWSC3KKXWv
+ S4iQ==
+X-Gm-Message-State: AOAM532ENSbjqbOINwTH+xkQUHn5oeA4YmZ6rWpPMamVqRnqAhXd1bVK
+ lmXJDYp6TJzI1U8JmDuYYA==
+X-Google-Smtp-Source: ABdhPJw9+lT1tYJ3D+2NkeZPzKRwHID7z8tB0e8FQMpLiGQS7ytRRhla+ZF6wRnHxFhks7F6Whz+RA==
+X-Received: by 2002:a92:d70c:: with SMTP id m12mr20768410iln.216.1617636581325; 
+ Mon, 05 Apr 2021 08:29:41 -0700 (PDT)
+Received: from mallard.lan (a95-94-147-174.cpe.netcabo.pt. [95.94.147.174])
+ by smtp.gmail.com with ESMTPSA id l1sm10930554ilv.34.2021.04.05.08.29.39
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 05 Apr 2021 08:29:40 -0700 (PDT)
+From: Rui Salvaterra <rsalvaterra@gmail.com>
+To: richard@nod.at
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Rui Salvaterra <rsalvaterra@gmail.com>
+Subject: [PATCH] ubifs: default to zstd compression
+Date: Mon,  5 Apr 2021 16:29:35 +0100
+Message-Id: <20210405152935.148129-1-rsalvaterra@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Date: Mon, 05 Apr 2021 17:07:42 +0200
-From: Michael Walle <michael@walle.cc>
-To: Tudor.Ambarus@microchip.com
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- p.yadav@ti.com, miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
-Subject: Re: [PATCH 1/2] mtd: spi-nor: sfdp: save a copy of the SFDP data
-In-Reply-To: <e28e7cd3-9728-3428-1bae-9cda258174bc@microchip.com>
-References: <20210318092406.5340-1-michael@walle.cc>
- <20210318092406.5340-2-michael@walle.cc>
- <e28e7cd3-9728-3428-1bae-9cda258174bc@microchip.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <5359aa6ade80ff6d39e969c3be2957dd@walle.cc>
-X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210405_160750_888727_278A5310 
-X-CRM114-Status: GOOD (  28.10  )
+X-CRM114-CacheID: sfid-20210405_162943_208891_56F41FFF 
+X-CRM114-Status: UNSURE (   9.37  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,133 +93,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Compared to lzo and zlib, zstd is the best all-around performer, both in terms
+of speed and compression ratio. Set it as the default, if available.
 
-Am 2021-04-05 15:11, schrieb Tudor.Ambarus@microchip.com:
-> On 3/18/21 11:24 AM, Michael Walle wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know 
->> the content is safe
->> 
->> Due to possible mode switching to 8D-8D-8D, it might not be possible 
->> to
->> read the SFDP after the initial probe. To be able to dump the SFDP via
->> sysfs afterwards, make a complete copy of it.
->> 
->> Signed-off-by: Michael Walle <michael@walle.cc>
->> ---
->>  drivers/mtd/spi-nor/core.h  | 10 ++++++++
->>  drivers/mtd/spi-nor/sfdp.c  | 49 
->> +++++++++++++++++++++++++++++++++++++
->>  include/linux/mtd/spi-nor.h |  3 +++
->>  3 files changed, 62 insertions(+)
->> 
->> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
->> index 4a3f7f150b5d..668f22011b1d 100644
->> --- a/drivers/mtd/spi-nor/core.h
->> +++ b/drivers/mtd/spi-nor/core.h
->> @@ -407,6 +407,16 @@ struct spi_nor_manufacturer {
->>         const struct spi_nor_fixups *fixups;
->>  };
->> 
->> +/**
->> + * struct sfdp - SFDP data
->> + * @num_dwords: number of entries in the dwords array
->> + * @dwords: array of double words of the SFDP data
->> + */
->> +struct sfdp {
->> +       size_t  num_dwords;
->> +       u32     *dwords;
->> +};
->> +
->>  /* Manufacturer drivers. */
->>  extern const struct spi_nor_manufacturer spi_nor_atmel;
->>  extern const struct spi_nor_manufacturer spi_nor_catalyst;
->> diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
->> index 25142ec4737b..2b6c96e02532 100644
->> --- a/drivers/mtd/spi-nor/sfdp.c
->> +++ b/drivers/mtd/spi-nor/sfdp.c
->> @@ -16,6 +16,7 @@
->>         (((p)->parameter_table_pointer[2] << 16) | \
->>          ((p)->parameter_table_pointer[1] <<  8) | \
->>          ((p)->parameter_table_pointer[0] <<  0))
->> +#define SFDP_PARAM_HEADER_PARAM_LEN(p) ((p)->length * 4)
->> 
->>  #define SFDP_BFPT_ID           0xff00  /* Basic Flash Parameter Table 
->> */
->>  #define SFDP_SECTOR_MAP_ID     0xff81  /* Sector Map Table */
->> @@ -1263,6 +1264,8 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
->>         struct sfdp_parameter_header *param_headers = NULL;
->>         struct sfdp_header header;
->>         struct device *dev = nor->dev;
->> +       struct sfdp *sfdp;
->> +       size_t sfdp_size;
->>         size_t psize;
->>         int i, err;
->> 
->> @@ -1285,6 +1288,9 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
->>             bfpt_header->major != SFDP_JESD216_MAJOR)
->>                 return -EINVAL;
->> 
->> +       sfdp_size = SFDP_PARAM_HEADER_PTP(bfpt_header) +
->> +                   SFDP_PARAM_HEADER_PARAM_LEN(bfpt_header);
->> +
->>         /*
->>          * Allocate memory then read all parameter headers with a 
->> single
->>          * Read SFDP command. These parameter headers will actually be 
->> parsed
->> @@ -1311,6 +1317,49 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
->>                 }
->>         }
->> 
->> +       /*
->> +        * Cache the complete SFDP data. It is not (easily) possible 
->> to fetch
->> +        * SFDP after probe time and we need it for the sysfs access.
->> +        */
->> +       for (i = 0; i < header.nph; i++) {
->> +               param_header = &param_headers[i];
->> +               sfdp_size = max_t(size_t, sfdp_size,
->> +                                 SFDP_PARAM_HEADER_PTP(param_header) 
->> +
->> +                                 
->> SFDP_PARAM_HEADER_PARAM_LEN(param_header));
->> +       }
-> 
-> Michael, I like the idea of saving the SFDP data, but I think this can 
-> be
-> improved a little. For example, it is not mandatory for the tables to 
-> be
-> continuous in memory, there can be some gaps between BFPT and SMPT for 
-> example,
-> thus we can improve the memory allocation logic.
+Signed-off-by: Rui Salvaterra <rsalvaterra@gmail.com>
+---
+ fs/ubifs/sb.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-I want to parse the SFDP as little as possible. Keep in mind, that this 
-should
-help to debug SFDP (errors). Therefore, I don't want to rely on the SFDP 
-saying
-"hey there is a hole, please skip it". Who knows if there is some useful 
-data?
+diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
+index c160f718c288..e7693b94e5b5 100644
+--- a/fs/ubifs/sb.c
++++ b/fs/ubifs/sb.c
+@@ -53,6 +53,9 @@
+ 
+ static int get_default_compressor(struct ubifs_info *c)
+ {
++	if (ubifs_compr_present(c, UBIFS_COMPR_ZSTD))
++		return UBIFS_COMPR_ZSTD;
++
+ 	if (ubifs_compr_present(c, UBIFS_COMPR_LZO))
+ 		return UBIFS_COMPR_LZO;
+ 
+-- 
+2.31.1
 
-> Also, we can make the saved sfdp
-> data table-agnostic so that we don't duplicate the reads in
-> parse_bfpt/smpt/4bait.
-
-This falls into the same category as above. While it might be reused, 
-the
-primary use case is to have the SFDP data available to a developer/user. 
-Eg.
-what will you do with some holes in the sysfs read()? Return zeros?
-
-FWIW I'm planning to refactor the read code so the cached values are 
-used.
-
--michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
