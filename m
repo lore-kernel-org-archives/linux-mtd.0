@@ -1,83 +1,183 @@
-Return-Path: <SRS0=kPH0=JA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=p7/t=JC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03936C43460
-	for <linux-mtd@archiver.kernel.org>; Sat,  3 Apr 2021 06:11:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C6BCC433B4
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Apr 2021 04:43:23 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6DD15600D4
-	for <linux-mtd@archiver.kernel.org>; Sat,  3 Apr 2021 06:10:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6DD15600D4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=mail.ustc.edu.cn
+	by mail.kernel.org (Postfix) with ESMTPS id 22C57611BE
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Apr 2021 04:43:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 22C57611BE
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=r/SutdYZlwvNBcTx+p93k+h7NlPR3eyxCZUvfZ0+OU0=; b=OUpQIM9/ObSXu7sdiXQo2prlO/
-	Zu1F5hTZz8HIjW4qhl6GrodSuRhohr+tsTRbvp6isXBPoZtAFK9ILe8amKdboWKUw3L51oPEiYgmp
-	E42c/ttgXBJcTaWzW/o1E9aAnUnvi1OqBCqOfQgTupJhefv04m1Yvf5X5fzwr7XyzxUvnUzALw5d3
-	gC74lTwcwDm5KAy1Dt4aByEuNKE1IsjdyKAdnDQ5HEAbzjXTJDRakE4qYcKn9y9KnruS1Xo8eLLmT
-	Fp8b1k0dk2NNeDNv4n65HlDJE5mvvR2nTXbna9naRMAaZJ7QbPZoAvk9yOp+6Jzn5vbYk3SDs7RQK
-	MquhHKkw==;
+	List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=8EY63XPFtICcZGEcTj6+GJBMq7dGtRcSvrkdqoFlB6Q=; b=HUohatdShU2Mt9JMiKhEW1t3G
+	e+YkMEr85w6ldQCHOW/lXpql8ARBBru7bxCG8xs5MA4FX5sqd6/LKXAHmcxga6V6oymE14rvKJpHd
+	IFDFWMsDRGcTNwY4rdngIJ3DouhNvCA0iBBX/1YwOy7a6Ah6y2ZI3YnpgGTmkjAC1OJfPcKp6rsAu
+	Awe3jpooGPzKLtRoUGR2R4Abf369plmef53w5qT8hshnHlzIGyKgseSGxRB5Uvw6z+t84KC31dvRE
+	gBAVxrtQzTC3jBzKDS1znIPEXbrxsXQk5A0HXRIG4+V9W4PTu0C55hVRi+faOba0MngYEVgvUsVeY
+	BVAuK61Gg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lSZTM-00ELDT-Kf; Sat, 03 Apr 2021 06:09:28 +0000
-Received: from email6.ustc.edu.cn ([2001:da8:d800::8] helo=ustc.edu.cn)
- by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
- id 1lSZTH-00ELCo-1r
- for linux-mtd@lists.infradead.org; Sat, 03 Apr 2021 06:09:26 +0000
+	id 1lTH3w-00GfqU-Gy; Mon, 05 Apr 2021 04:42:08 +0000
+Received: from esa.microchip.iphmx.com ([68.232.153.233])
+ by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
+ id 1lTH3l-00Gfnd-L1
+ for linux-mtd@lists.infradead.org; Mon, 05 Apr 2021 04:42:02 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1617597717; x=1649133717;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=WnXtELp3D7a6PQDpl1K2Creclu/+jz/xdyRrxXRo1AU=;
+ b=K9pj1t906loHxYEBRxGKkKHEvJkYcPiRa1V0Mfyq5/5DbcWvm1ol2l8Q
+ fCq0q+VyPMZCeYkS3FPZvgDm+2/J9zRIZZcCeCrZZulsZQqb2/dzO9nrd
+ JsRdob3dRLWqyh2ZmpVAR7/fX7AVsH8QTmixblRT5AYGj12x1R+WNYDqf
+ 6u98nOErwYWsQC3Vx4AlIwzOfFvRjeygf53aOVLIhswZFxOT/nZLCfU5V
+ zbstUcsaF8mVQV70cq5JNkGvtDh1CwKjP/CRAI6Qn+8UBsDNZJWv6fUk1
+ GtDFB5uCOsMpLLF55stmx8MTPJCNiRY8OwHoL3nmY1iut9dpDUTpC5l1V Q==;
+IronPort-SDR: Idu0odK4ONUGgf2oJoaY+BPL4aC6fsMD9XFjXARPPUiqJsMYDhTHpKNtUfzMAKSXLtHITFC+Hi
+ w9PWpYHc3ZHdBnXycXYLAQoZowOZUxlXB+OGxnhqSAumSCJRpqv6kUO70CcLOPGwss8AF3Rd5H
+ pFPEyaSHM57h7Tcsvq5cxuMQyPvsPs30Gki/6+zeqy/T2p9j3ggxQ4oNoUX/t7v6hCLLmJMetm
+ ym6dWAw6x/pAg8TdhSvGojeL7RmRoQLGk+CDbixpXrYqxr0lqo9zhutTY6WQQfAlBX7nBB6V7P
+ Whk=
+X-IronPort-AV: E=Sophos;i="5.81,305,1610434800"; d="scan'208";a="115809604"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 04 Apr 2021 21:41:48 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sun, 4 Apr 2021 21:41:48 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2
+ via Frontend Transport; Sun, 4 Apr 2021 21:41:48 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KFaZ4E+uiHMyMeVB6n4gvaMMrp/6/XWgECUuoJ1+TWxH50Dgnq9N9IHKepOs2NYbbnSvjF4O7qu4F6u+aS9D0hxjq8bwZvYrgz3dtz4Ff+R7JcvAq7/PE60haUbvFj5akMKpvZQsWDDSi4pbTDMgBkAvLYC3mhScQGZ7lFedt1sgEe5VvJ9VdhPWS8s38KyzGs4jmmvbI55bk+SmFPqUKavy9Ezyb3NP3C7YiYqmoDyrQkDHexrIpH1I8CV4p2lIWRLDcdkvBCRAWe/v3YvlldtkG7yyU1GaStAko4SqwyKnaIkdY1V2ZK+VbFGHPfvUWRU6YUO44oJyuyILHAWxnQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WnXtELp3D7a6PQDpl1K2Creclu/+jz/xdyRrxXRo1AU=;
+ b=mYzrD+56ZIScGiCtWgrTSCZ3Y3/RaFNkEx2f8jVPbIy0LXBaQQxOy/aSlaY4nomhnt5yZR38fYgCt/mJgtN2zJIildh5IT9VJk/21U2b5XLF5j8Os5OUeV6x9xlGtueCDyV19ER9zO+kRF31u4P1Q77uU74JCP3QvZ9PWI7jyRtWPck3Ep9/vVAyGEyDFbyZBJktQoeyKLG3+wBIIWsYgLwDqgcqVvEdAw685IfiA4JMANuge3d4RcJUYoxuppRhjS7lG0ScqbZbKvpJxlzqY+0UKMjJez11T41nSf+12mgRvvefNdqfhFxAYG3kHCJx5cL9QmQ8LhDtwYAe+5e6Sw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
- Message-Id:MIME-Version:Content-Transfer-Encoding; bh=qvyDwjK3gB
- UMTEGBVUtjhKDw8xoAbkmOgHLuEiQzyI0=; b=aDf5WqUXQcYzjU906LFwIrXNti
- 1V7A3eKqAQARjHrDn5lS745f2rvKBm01WsvzQJLaug4CmPMdnYZ7CAQ3X0RBWaqh
- 6I8R+hzb6yDq6iWYtVA4R9tMYZ7g+NY4hXwN78R7jjrZaCKXpdPyGZ10WwpNs9F0
- A6IFLP1/41Q5HysZo=
-Received: from ubuntu.localdomain (unknown [202.38.69.14])
- by newmailweb.ustc.edu.cn (Coremail) with SMTP id
- LkAmygC3vn6DBmhg3HGPAA--.1127S4; 
- Sat, 03 Apr 2021 14:09:07 +0800 (CST)
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To: han.xu@nxp.com, miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- bbrezillon@kernel.org
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] mtd: nand: gpmi: Fix a double free in gpmi_nand_init
-Date: Fri,  2 Apr 2021 23:09:05 -0700
-Message-Id: <20210403060905.5251-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WnXtELp3D7a6PQDpl1K2Creclu/+jz/xdyRrxXRo1AU=;
+ b=rtVtThMzwvmAWrfP0VnLqx+34EMsveeJynbzla9b2UQp5bTAiOkInUt5yqe9wK6Y2o5oXoT/Cm9LjGBmZN1/0wKCaZbkMFMKy8yAf1lbpB5wlaCoVfP4jlVNSRhHB3QUMUPVHqSxuViybvTBW6xz+cUezBSxrWsJixzDTWw/5Z4=
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
+ by SN6PR11MB3197.namprd11.prod.outlook.com (2603:10b6:805:c5::23)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.29; Mon, 5 Apr
+ 2021 04:41:44 +0000
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::49e5:8be7:95d:b6a9]) by SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::49e5:8be7:95d:b6a9%4]) with mapi id 15.20.3999.032; Mon, 5 Apr 2021
+ 04:41:44 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <zhengxunli@mxic.com.tw>
+CC: <geert@linux-m68k.org>, <linux-mtd@lists.infradead.org>,
+ <linux-spi@vger.kernel.org>, <miquel.raynal@bootlin.com>, <p.yadav@ti.com>,
+ <vigneshr@ti.com>, <broonie@kernel.org>, <juliensu@mxic.com.tw>
+Subject: Re: [PATCH v2 1/2] mtd: spi-nor: macronix: add support for Macronix
+ octaflash
+Thread-Topic: [PATCH v2 1/2] mtd: spi-nor: macronix: add support for Macronix
+ octaflash
+Thread-Index: AQHXKdX6WnvagKwi3Uiv46ipns2iGw==
+Date: Mon, 5 Apr 2021 04:41:44 +0000
+Message-ID: <4e8cf363-827d-8a29-29a4-af85e7ca0fd9@microchip.com>
+References: <1612517808-10010-1-git-send-email-zhengxunli@mxic.com.tw>
+ <1612517808-10010-2-git-send-email-zhengxunli@mxic.com.tw>
+ <20210205104736.2771074c@xps13> <20210205133404.esqqeokhlp4askpq@ti.com>
+ <20210223141344.7ad25831@xps13> <20210223133649.GD5116@sirena.org.uk>
+ <20210223152504.jtq4uxfepz7bdxhl@ti.com>
+ <CAMuHMdVQUCaiBwdU=KdFOu=D71kYbGqoqp9V3pLsXXE0AAdCog@mail.gmail.com>
+ <20210223181424.GJ5116@sirena.org.uk>
+ <OF5890F10B.27BC3B4B-ON482586A7.001FE05B-482586A7.0024305D@mxic.com.tw>
+In-Reply-To: <OF5890F10B.27BC3B4B-ON482586A7.001FE05B-482586A7.0024305D@mxic.com.tw>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: mxic.com.tw; dkim=none (message not signed)
+ header.d=none;mxic.com.tw; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [79.115.63.1]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b01590a4-26a7-4539-fdfe-08d8f7ed1d85
+x-ms-traffictypediagnostic: SN6PR11MB3197:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN6PR11MB31972E5E6C6F312397284DF3F0779@SN6PR11MB3197.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1107;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: hjM94sMBQff/b739VSU7N0VnZhuBwm6jqcGudJUoAkPL44AkjuV/XU0HCqeAXt/IMPgVbbH0lM/AdE/rMj+oeN4Aa4rggTH6TerSX5oiBv0aDZ7JQ+/WTuR6le8TJr/XGN9N5NLxZy2LFbPfz700BIJOGNccFn7Yli1FDv1PWkfubAis7VeDVsdsPDTkkU0uy81OLm3I1kRKy+Nm0XlLcDzqWIWe6aJGYKJKXbZAWK6/1k3gOn5VNNUt0LepaelmX9a/hFPjLVjLDXDAeUDaunEr9lUJGnecFCASfE5RHc110B2TyymLuf5F+1kXwI7jB2AO9LF3oU0RUCx9OulzjoICYQ2uzrJIVm+0bVp3ekWSDtN+M5+eE3AXO/TCb9R2TJ788SPw+cpThrQ3yY0wvHIfa6nlm+gKoISCg5Ul9shx9OCxwUcqx5Va5I1hW88uTfLMaXhP8UpgSWkYvNoJdoVcpl6KmemyCdOHzVOCWSlFFfq3wPIce+yluhqQLf22EIBRQsVAUO3QHp0NzM3OvBQPu8ufbVwSzI/AO+1AHD1j/J95LVOHY0sHJ7nfx/f2i5vl/WTZPvEZyrGBEkaUa5R0SfAOlucJrEHoNacNs0zfvdNRBo8M86XZ8KRma8dh6hdzgx2tQNcrk2npIDxaGe2VipSUdMEJDsheQ45Q+nnP/6fKy4Zkl9hOVdPCFLqyvMhosv2Ic3ictvRgXgAALF5D7FFTod3GUUb7HWZ8EAY=
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:SA2PR11MB4874.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(366004)(396003)(39850400004)(376002)(136003)(346002)(4326008)(8936002)(5660300002)(6916009)(2616005)(6512007)(38100700001)(316002)(91956017)(66556008)(478600001)(31686004)(66476007)(54906003)(76116006)(6486002)(86362001)(31696002)(66446008)(26005)(53546011)(6506007)(36756003)(558084003)(84040400003)(186003)(71200400001)(2906002)(8676002)(64756008)(66946007)(43740500002)(45980500001);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata: =?utf-8?B?SjBacmhMUjFnRUdEWE5vcEp4SzNZRlVkdzQrdjN0R3YyWVZmVm1Zd2xBT25B?=
+ =?utf-8?B?TSsxWWtuMGdrcVcveEhrM2M3MkFCSlFsMlh6Y1dpaTcwbytHTUZvOURZQ2NH?=
+ =?utf-8?B?UnlDRlZzSnFDM01rNllveTBFck9EdVlCUDgrMGwxNXZDUjlXREJneUNLSEQv?=
+ =?utf-8?B?U1BhbGEreVdnUFd6bUNlekdOeldSL0lPRTQwN2dXUnYvUWFnSk9NV0hpTHFh?=
+ =?utf-8?B?b0xXSk5DZHhlUkI4U2pKTEZlVnhsMkhoK0VmN1Y1MnFPZk5yZU9IbklSU2kx?=
+ =?utf-8?B?RjltUk92SkRIMUdQOWZ3dyt2aUNpQTlRdUZ0d2tvdVZ2SG56RlJaZW9naWxu?=
+ =?utf-8?B?WDdaU2xUbFlybGVkUStoSlhCcU5jeWVLYVhuTnh5NlJNNVFjYW5lcVlXYTFI?=
+ =?utf-8?B?SVJCZzE4SWxCcHpnTHd3VUtLdkdoV3BxSjgyMy80a0hCb1pUcCtOaVY1NWV0?=
+ =?utf-8?B?NlFrK3BVR2VGNy8xcFgrTG1xbUs3ODhvaEVrbGFwdXVXRFFGVHN2eEt3eXFD?=
+ =?utf-8?B?UGpIVWlPUWNWZ0dieC9KTGdDWlZwWlFWUmRpVkx0Uk9sbXJJcE9zOXFHbENl?=
+ =?utf-8?B?ZGxIeEVhTVpZeFFWdC9NOEtCU010REw2b1BJRkRTbG9Ra1l3ZzAxU2tWSXVp?=
+ =?utf-8?B?N2k5U3ZBQnYzSnB0WU5rdTVUbGhtRXN6SG45MHNwcFROR2UrZnhoQm9jc3VX?=
+ =?utf-8?B?akRoVUhobTMwdHRZcHAxU0ZWY25jRVN0ekM4czdtcjFwWll0RnFsU3ROOWIw?=
+ =?utf-8?B?NklrQk14MEVXMDZqYUpMOG9HdUVBeUZtTDhEazN2eC90S2thUG16WUlLK3lX?=
+ =?utf-8?B?MFhsZ2JwOGlSVkZXd0l0bmpHbE1UVk95Y1NHVEhacWtrNm9XSXhYVTV3dmxM?=
+ =?utf-8?B?bjRPT0xzckdwbVFrT3IyYXR6QWRqWnZQcTZhT3E4VXBJK1Y1U0xRM3E1MUdx?=
+ =?utf-8?B?OEhjcjVxR3NUbHVBdzNxQ2pyM1Irc29SajJHd1FNZlhCNTZlL1B3TkVYR2l2?=
+ =?utf-8?B?NHVuWWF0WEthbll1aGp6akpKSkdoWHZ2Uk5pZXA5T3JCRzlJem00UE9acTRV?=
+ =?utf-8?B?S0VwVUZpK096eHY2NDUxa0JHZ1ZmR3ZGQXFtVXljREdCMWhsTHdYblZGa2JS?=
+ =?utf-8?B?YlNNd2RDcmxaQWhRYW9EN1lKOTExUTBHZFpKdzRDTkRmaTZsL2JvVENSV2tM?=
+ =?utf-8?B?eUdxTFhaNXhIRnM3akp5c0dzSEJoMndjNE1qOXFMbXRXT3MvbFVTQThBbUFM?=
+ =?utf-8?B?SEtjR3FHSjVlS3hyTXpIOXR2NUx0YnVHV2VDdE1xMTlyNzgvQlJONCs0cVNQ?=
+ =?utf-8?B?TzRZWXk0V3NoaDhkT1lLY2tsRG5yeEFqTTZkQk1kSXEwYnd1REdlVW1naXUx?=
+ =?utf-8?B?R016V2phMGtPUHBHem1WenkrcitHdkxHd01KclNyOVcvVENhT25JRnBPOEpG?=
+ =?utf-8?B?b2l0UWh5U3FyY3doSmtWYlhsaHdoSGp2MzJmRUVzVklSZnVqakpmeFZ0YlR2?=
+ =?utf-8?B?bGYrVmcrbWZMenlvaHF6L1pUTEZoWEs4OUh2aGl4V2RVd0M3bEFVd3ZmNEVM?=
+ =?utf-8?B?U0VoQmdpTGJEb2xjVjZ6eHh3T3NzQWpMdVd2V2lXbGhFWGNCNDZYcDlxdFVy?=
+ =?utf-8?B?cVdBUFVPVm5xeE96eG9Nazd4T3hhSWJEbDFrQ0xBVTBHK3A2L0tEZjFacEVW?=
+ =?utf-8?B?Uy8zak1Wdm4vd0UzbEt6bUJqdVlWZUk3Wml6YSt1QTRDamJpOW4rd08rZkM4?=
+ =?utf-8?Q?zIuRLM/444/6vhbcsk=3D?=
+Content-ID: <2A6F9EBFF306D141AFB89EF86B4D6D00@namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-CM-TRANSID: LkAmygC3vn6DBmhg3HGPAA--.1127S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7KrWDGF45Wry7WFy7WF4fGrg_yoW8GrWDpr
- Wa9anrGF4qqrWkt3ZrZa1rZr15Aan5Wry8GFW5W34rZFnIqr4j9F9rtF12vF47uF4UtF4x
- Xrn8Wwn8Ar4UAFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
- 9KBjDU0xBIdaVrnRJUUUvC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
- rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
- 1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
- 6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
- 0_GcWlnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
- F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
- 4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
- 648v4I1lc2xSY4AK67AK6r47MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
- 4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
- 67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
- x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAI
- cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
- nxnUUI43ZEXa7VUjylk7UUUUU==
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b01590a4-26a7-4539-fdfe-08d8f7ed1d85
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Apr 2021 04:41:44.6460 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: IcaglJpgTD3mr/gy/J4E8MAwJMkEGDswaJqc0RsUV6BJ1QH5Tz/loPXbo6b7dt0d2lBmbz83DqnE0DiLMiG8g9EM/8d43NBr5UspVxP8uhs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB3197
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210403_070924_498748_5E57D88F 
-X-CRM114-Status: UNSURE (   9.38  )
+X-CRM114-CacheID: sfid-20210405_054158_254014_CB9B3945 
+X-CRM114-Status: UNSURE (   9.40  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -95,43 +195,20 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-If the callee gpmi_alloc_dma_buffer() failed to alloc memory for
-this->raw_buffer, gpmi_free_dma_buffer() will be called to free
-this->auxiliary_virt. But this->auxiliary_virt is still a non-NULL
-and valid ptr.
+On 3/29/21 9:35 AM, zhengxunli@mxic.com.tw wrote:
+> Hi Tudor,
 
-Then gpmi_alloc_dma_buffer() returns err and gpmi_free_dma_buffer()
-is called again to free this->auxiliary_virt in err_out. This causes
-a double free.
+Hi,
 
-As gpmi_free_dma_buffer() has already called in gpmi_alloc_dma_buffer's
-error path, so it should return err directly instead of releasing the dma
-buffer again.
+> 
+> We are discussing flash dummy cycle and SPI speed settings, but there
+> are no new comments. Can you help comment on this series and provide
+> some suggestions?
 
-Fixes: 4d02423e9afe6 ("mtd: nand: gpmi: Fix gpmi_nand_init() error path")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
----
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sure, I'll probably be able to look at this next week.
 
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index 3fa8c22d3f36..4d08e4ab5c1b 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -2449,7 +2449,7 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
- 	this->bch_geometry.auxiliary_size = 128;
- 	ret = gpmi_alloc_dma_buffer(this);
- 	if (ret)
--		goto err_out;
-+		return ret;
- 
- 	nand_controller_init(&this->base);
- 	this->base.ops = &gpmi_nand_controller_ops;
--- 
-2.25.1
-
-
-
+Cheers,
+ta
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
