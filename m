@@ -2,87 +2,57 @@ Return-Path: <SRS0=eMUk=JE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E8BBC433B4
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Apr 2021 20:25:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB073C433B4
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Apr 2021 21:56:44 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 273C961184
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Apr 2021 20:25:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 273C961184
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 6A652611C1
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Apr 2021 21:56:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A652611C1
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=OCOFxquHAdfH1DOTreQSMpOIAEkyx3vNnkEN7fryxiQ=; b=Mq0HZm4O30eaeuHBAJbc9eBl4
-	RTxxbPfvM2MtdShtbgvrXDmMWihOUAAxpqFShN/ycAwLEY4ThUqKi0FvDCsb7jyWWnmcukgMIe00c
-	LnQNKNBwHo1Ts7GBElCQgSnpNha0i/4j6T/tBHcjT/jKi3Y7V1WRRmESvhB2DLwrrf4FpgBpy6bZk
-	Jp1j7I+IFcO15+/dmcuVnT731XWd2listmVLgqFEeJBkuz8JeY6Zpp15r7N35KKu5X5OZNyHrYZHE
-	HOfGLVwzqcVg/Zhsf6+Oi4L+Z5SAkQWQXcthdXMeHWf/x/VpWXfw81lx8vwQT95xJ18D1byJGrira
-	LpW/wJQHA==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=LIdbdkMfgwLn1XCDjn7yJZ+2QfLFH6uT09iRbGkFT5k=; b=TE9STZ1tKjjIK23Ah9f1yYd96I
+	Hy7IUTsdDRVuQXnDxCv95G+V8q5U5vnFkInb6r4DqjxvM/l/zpcSXr+Dl/fAdWRUC9JDcs3RqQUYa
+	KOTYX+BR7qfUthO+YfC7a27C1/2PuD+2GvTFHrnYuiIfaee5zFYrWqF6iBTQX/3M2bl83Gr42LNQ4
+	+IFx3BXpLRkUuBklJ35tP9tO282CinSyPIRRKkw9shm1uWMEGKVgnf9THptgyzYc4b00NjYTpBjfA
+	khsa6muEVBE7oR7Ic/pbRaWfvtarUkKKoDONt+E8T0qfydlFhQcaE2cligIrnJrWJxF+NAvwcs9mn
+	EwOmlKDg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lUEig-005w8i-2D; Wed, 07 Apr 2021 20:24:10 +0000
-Received: from mail-qk1-x72a.google.com ([2607:f8b0:4864:20::72a])
+	id 1lUG9W-00675F-JL; Wed, 07 Apr 2021 21:55:58 +0000
+Received: from fudo.makrotopia.org ([2a07:2ec0:3002::71])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lUEia-005w7S-UO
- for linux-mtd@lists.infradead.org; Wed, 07 Apr 2021 20:24:07 +0000
-Received: by mail-qk1-x72a.google.com with SMTP id i9so20186557qka.2
- for <linux-mtd@lists.infradead.org>; Wed, 07 Apr 2021 13:23:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=E0wSeHZSQBhpuihXiudgZD7Plu1K1NSw3C4np40YpM0=;
- b=RrDy9ishi8rqz0bNYU+bxDmoDV3cA8r44IwL07dayB5eSLEgBIXN0S/mom5AivKofk
- C4yFl0tOSCOtW+rlQDohUlEYWXXcYYA8Dwl9JqVcUlxyWVVxJ7BKssCm5R5jU2ZauhBg
- VOVRZiVFv2SnOv/NLvFBHONzIaV5QDJMAZm85bkx1jroEXskS5FpkTjjDUZIt6VW+CZM
- VfP35KhdTBdVHxj44bRpOF4fhZSvnb4RcEM3gJEs9N0xcE5DRp+ZABXM3dxFEX0dzuLG
- h/TKrGiED6iDlDY/3zLPo2dJZs6YsJ9xnH3i2A6r1emF4Lo4bupDHJn4UDaTgrQ/hW28
- O53Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=E0wSeHZSQBhpuihXiudgZD7Plu1K1NSw3C4np40YpM0=;
- b=ZMtn8gi8rcyjs/wADJhPcxLgV/UyrO/iXPdigXNj0F6j1LKPpdm7pGk6xah3DD9s7a
- kx/GzqqITiLw8lnXkHsqddN460fkwaBznGrXHumqnAke7YRLAyZ1RVZpYHPRBobip/Y7
- 6oSn0SyJ4JlDtzTBkewJyUtdJeGJbTESgr+kM6WIhXMh1PoGJpKQDkBo6VTEqbg1MfYy
- VEUvSorQ1RlRJ5lQr1NtKvcdQouWUrVzT9evOBbE5MsRWaXCBNTXdD0UA/DfBBYGkezA
- EATfpabI1qqMKP+XKZRN2nR6KS89/smB8Yzh4a2rNE3viiNwksE2qq7XBV9b/Q/qAW+N
- 43HQ==
-X-Gm-Message-State: AOAM533Em+rYmDPETl57zZwKNrPaNLSx/hAH97ciGhW3qlIAp6VCUrAi
- Ls6/nigfyPaIFgeUP4LQRe4OJHS4DLU=
-X-Google-Smtp-Source: ABdhPJyySnen8Z1lXSpXciPPeLqx/wBAjBoK8hXduPjK1VnNUvfjErMWaODlM7NfrLQeUiy71G4c3Q==
-X-Received: by 2002:a37:bc43:: with SMTP id m64mr5088884qkf.186.1617827038494; 
- Wed, 07 Apr 2021 13:23:58 -0700 (PDT)
-Received: from localhost (pppoe-209-91-167-254.vianet.ca. [209.91.167.254])
- by smtp.gmail.com with ESMTPSA id d2sm16480417qte.84.2021.04.07.13.23.57
- for <linux-mtd@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 07 Apr 2021 13:23:58 -0700 (PDT)
-Date: Wed, 7 Apr 2021 16:23:56 -0400
-From: Trevor Woerner <twoerner@gmail.com>
+ id 1lUG9R-00673T-BW
+ for linux-mtd@lists.infradead.org; Wed, 07 Apr 2021 21:55:56 +0000
+Received: from local
+ by fudo.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+ (Exim 4.93.0.4) (envelope-from <daniel@makrotopia.org>)
+ id 1lUG9M-0004ui-MP; Wed, 07 Apr 2021 23:55:48 +0200
+Date: Wed, 7 Apr 2021 22:55:32 +0100
+From: Daniel Golle <daniel@makrotopia.org>
 To: linux-mtd@lists.infradead.org
-Subject: Re: UBI issues with linux-stable 5.11.11
-Message-ID: <20210407202356.GA31407@localhost>
-References: <20210407190302.GA12280@localhost>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd: super: don't reply on mtdblock device minor
+Message-ID: <YG4qVPz68WAwPtB+@makrotopia.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20210407190302.GA12280@localhost>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210407_212405_149265_BAA1356B 
-X-CRM114-Status: UNSURE (   6.60  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210407_225553_469855_397159B4 
+X-CRM114-Status: GOOD (  13.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,9 +69,86 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-I forgot to note that my filesystem/flash/UBI works perfectly fine with
-linux-stable kernels 5.0.19 to 5.10.27. The problem only shows up, suddenly,
-when trying to use 5.11.11 (everything else being the same).
+For mtdblock devices with partitions (ie. part_bits != 0) the
+assumption that the minor number of the mtdblock device matches
+the mtdnum doesn't hold true.
+Properly resolve mtd device from blktrans layer instead.
+
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+---
+ drivers/mtd/mtdsuper.c | 33 ++++++++++++++++++++++++++-------
+ 1 file changed, 26 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/mtd/mtdsuper.c b/drivers/mtd/mtdsuper.c
+index c3e2098372f2e..dc52f9929c8fb 100644
+--- a/drivers/mtd/mtdsuper.c
++++ b/drivers/mtd/mtdsuper.c
+@@ -9,6 +9,7 @@
+  */
+ 
+ #include <linux/mtd/super.h>
++#include <linux/mtd/blktrans.h>
+ #include <linux/namei.h>
+ #include <linux/export.h>
+ #include <linux/ctype.h>
+@@ -121,7 +122,8 @@ int get_tree_mtd(struct fs_context *fc,
+ {
+ #ifdef CONFIG_BLOCK
+ 	struct block_device *bdev;
+-	int ret, major;
++	struct mtd_blktrans_dev *blktrans_dev;
++	int ret, major, part_bits;
+ #endif
+ 	int mtdnr;
+ 
+@@ -169,21 +171,38 @@ int get_tree_mtd(struct fs_context *fc,
+ 	/* try the old way - the hack where we allowed users to mount
+ 	 * /dev/mtdblock$(n) but didn't actually _use_ the blockdev
+ 	 */
+-	bdev = lookup_bdev(fc->source);
++	bdev = blkdev_get_by_path(fc->source, FMODE_READ, NULL);
+ 	if (IS_ERR(bdev)) {
+ 		ret = PTR_ERR(bdev);
+ 		errorf(fc, "MTD: Couldn't look up '%s': %d", fc->source, ret);
+ 		return ret;
+ 	}
+-	pr_debug("MTDSB: lookup_bdev() returned 0\n");
++	pr_debug("MTDSB: blkdev_get_by_path() returned 0\n");
+ 
+ 	major = MAJOR(bdev->bd_dev);
+-	mtdnr = MINOR(bdev->bd_dev);
+-	bdput(bdev);
+ 
+-	if (major == MTD_BLOCK_MAJOR)
+-		return mtd_get_sb_by_nr(fc, mtdnr, fill_super);
++	if (major == MTD_BLOCK_MAJOR) {
++		if (!bdev->bd_disk) {
++			blkdev_put(bdev, FMODE_READ);
++			BUG();
++			return -EINVAL;
++		}
++
++		blktrans_dev = (struct mtd_blktrans_dev *)(bdev->bd_disk->private_data);
++		if (!blktrans_dev || !blktrans_dev->tr) {
++			blkdev_put(bdev, FMODE_READ);
++			BUG();
++			return -EINVAL;
++		}
++		mtdnr = blktrans_dev->devnum;
++		part_bits = blktrans_dev->tr->part_bits;
++		blkdev_put(bdev, FMODE_READ);
++		if (MINOR(bdev->bd_dev) != (mtdnr << part_bits))
++			return -EINVAL;
+ 
++		return mtd_get_sb_by_nr(fc, mtdnr, fill_super);
++	}
++	blkdev_put(bdev, FMODE_READ);
+ #endif /* CONFIG_BLOCK */
+ 
+ 	if (!(fc->sb_flags & SB_SILENT))
+-- 
+2.31.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
