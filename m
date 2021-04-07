@@ -2,72 +2,85 @@ Return-Path: <SRS0=eMUk=JE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BEC7C433B4
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Apr 2021 17:20:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5D95C433B4
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Apr 2021 19:04:12 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 29E1A61242
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Apr 2021 17:20:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 29E1A61242
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id 3A6F561260
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Apr 2021 19:04:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A6F561260
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=MMz1Cb39ZUsdokkLXZthZTH71nGvGUx/RslsP4syJCs=; b=bLnG7mE6m1M+5ojFCYwdyVyvQl
-	dC+NO88u331bSDvpFPOx5JyMC2wyG1ArGAKeE5bVqzgYE0oh3uTjo9NMSEk+fftiNPxNbbrszvc3I
-	51v/TG0nwQxmMlxCFgiap9FC3qeB38psneEqhch3w2KXGc9gWO/SbntUELhi1fqj+JuPeb5C17Roz
-	QANr2j+UK6RiTRBWMMPnBAQ0TH0+tbO0v82rZ9hvv9NDRCqeTzkExYVku+E0x14fLGOXSuMsObVCK
-	gQrZzPNggreIAnXFAdlp6/o02LN2LFE5IdJL2+gtLGuXaTx2qXJrrnD95aSTBUo2uRpaUoeDrfbSM
-	Gry1HWfA==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From:Date:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=232E0gMtmM/6mDGVAv6rEkNkcrpqfLzjU1c7dFT89tg=; b=oudX/igiOtSRSS
+	HLYO+R/9FD2O0jQW2K180B0ngcYjKvLprQBraXYQkhN51737BuMDbM33rQoL49v/eytf+Q5wU58Q6
+	BeIOfAsLwdHb5Ak4bbscywf5GpIKxHfVjB4b9J74D4RcSchApDGx1OFOfLk7vQ26hChhuQQ6l44g2
+	dusog2sSZ+oWVX5FgmxkzSznX7EC37GxWZX0tlKS6X/lWDQIPeJ4u9IWYfSIsDxbfZwjPQ5Or1z9s
+	vAMFtpt7bUKDORyu2WLJ9ETVnKMI01mQfWGqBOYAP/IalzCbUIgCm26tyRW5IGeE8wcusF542Kb74
+	Zr37OxMvJHgLuACVZdew==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lUBpg-005dDr-J4; Wed, 07 Apr 2021 17:19:12 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1lUDSM-005o1C-Vo; Wed, 07 Apr 2021 19:03:15 +0000
+Received: from mail-qv1-xf29.google.com ([2607:f8b0:4864:20::f29])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lUBpa-005dD7-AN
- for linux-mtd@lists.infradead.org; Wed, 07 Apr 2021 17:19:09 +0000
-Received: from mwalle01.fritz.box (unknown
- [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
- SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 20CA322236;
- Wed,  7 Apr 2021 19:19:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1617815944;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding;
- bh=m8JRbP+4VYEd0x+gmI9QGB89o+sA1dMj7BYXwPIjfiU=;
- b=HpK6b27l8ZTf3aRY0bw5+e5CfWg0cxK57LBY+PTXDz1BZbYBulc7ua5Dys/1fKxYK1B2Ag
- VsYgTCAJd/RXsLzzv+KHuyzDkD4O9D0XhfVp6MHohmKYstxD85PxVa0rhtr/SH6InBe6Fe
- hG9UnHWWNVFq5SGrzlxmSj4UPGkbQoQ=
-From: Michael Walle <michael@walle.cc>
-To: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Michael Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH] mtd: spi-nor: implement OTP erase for Winbond and similar
- flashes
-Date: Wed,  7 Apr 2021 19:18:58 +0200
-Message-Id: <20210407171858.8132-1-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
+ id 1lUDSF-005o0P-C9
+ for linux-mtd@lists.infradead.org; Wed, 07 Apr 2021 19:03:12 +0000
+Received: by mail-qv1-xf29.google.com with SMTP id n44so4542539qvg.12
+ for <linux-mtd@lists.infradead.org>; Wed, 07 Apr 2021 12:03:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:subject:message-id:mime-version:content-disposition
+ :content-transfer-encoding:user-agent;
+ bh=LKkABtDIwzP1/Cx6QFH6WBVeI6EJW62tI8ha5XnwGeI=;
+ b=aL/3bAHK7Afa3Vsz4BVgSNEDCODUp1Lo+/dUYI+qjPIIapGOUBFnCRwQKeUip+fpQX
+ 6srcK5zhk1pOR+peTEeKJ28pzGEmlQQVmABOy7YLUsJQUYbP6bHlg2sSLW8I4EImRcCH
+ ipS5VpFpp4mJAoAI7SvxdUp2cHF7TEnV8teLhQ5Ape1QknL+wOxPhfuL/eqMJ76GXXsE
+ 7wfjIw2wrJJp27LGAwqD3BwOZt3X0Fs7ton9rkJk4Qq/9eLet80VecAPSVAyfUsm7fwL
+ NyWfVxh/AMzF92lvEuAKf9jdBud4FZo0wTUuUJi/QLsXxF1pfVlVzQd71zMrX7M6o2U+
+ MLeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+ :content-disposition:content-transfer-encoding:user-agent;
+ bh=LKkABtDIwzP1/Cx6QFH6WBVeI6EJW62tI8ha5XnwGeI=;
+ b=OjFsruBbdvj9HST4y30cVOAvl8cfO24jdgqQPtk7ggzAodXzafT6Qc9xZMQpJiB5Yg
+ p9sYIGrHW/Zv+FnDqJ2EcOlpV7dAlF6JWJfFWwmjgmYBmrdfih8tkMwE59kYFPnSWUIq
+ mvnoGij8TuDzcZqzh3r8ITUeCKi9lFCmTd/74jlLWHdJ/mF3cixkowbSiKw1Tn4JEiW8
+ N7a7R3Yqb5soQ3WM6YG45Ij9NnX0ED1eCSIk+xygRQbVU/6vCZ6NBhkSjXejL+NzqY7W
+ joPQj4/ICx2a51+4fgtRy4hK/lGFzfkj4HgfU8Wn3h4EExaIGNHuU8yLEfbpmvW1TuAO
+ nvXw==
+X-Gm-Message-State: AOAM53013s0vFLPtunhPEnpgVSDr9YxkzDvdcskqSo/f4/+pWnX2TOSl
+ Q0wM9uUgoEvD4HRkKk8uUIXSvHg53no=
+X-Google-Smtp-Source: ABdhPJxfOO5vx/0yakMn0sKydpf0SoWLjku3vOvM2CP/hXTlCA+6q93XQWyE5MM7R6EtXNLx6nNIyA==
+X-Received: by 2002:a05:6214:10c7:: with SMTP id
+ r7mr4817812qvs.3.1617822184806; 
+ Wed, 07 Apr 2021 12:03:04 -0700 (PDT)
+Received: from localhost (pppoe-209-91-167-254.vianet.ca. [209.91.167.254])
+ by smtp.gmail.com with ESMTPSA id f136sm19244055qke.24.2021.04.07.12.03.03
+ for <linux-mtd@lists.infradead.org>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 07 Apr 2021 12:03:03 -0700 (PDT)
+Date: Wed, 7 Apr 2021 15:03:02 -0400
+From: Trevor Woerner <twoerner@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: UBI issues with linux-stable 5.11.11
+Message-ID: <20210407190302.GA12280@localhost>
 MIME-Version: 1.0
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210407_181907_896288_1EB0B007 
-X-CRM114-Status: GOOD (  20.45  )
+X-CRM114-CacheID: sfid-20210407_200307_642698_9FAC7E82 
+X-CRM114-Status: GOOD (  12.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,209 +92,95 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Winbond flashes with OTP support provide a command to erase the OTP
-data. This might come in handy during development.
-
-This was tested with a Winbond W25Q32JW on a LS1028A SoC with the
-NXP FSPI controller.
-
-Signed-off-by: Michael Walle <michael@walle.cc>
----
- drivers/mtd/spi-nor/core.c    |  4 +-
- drivers/mtd/spi-nor/core.h    |  4 ++
- drivers/mtd/spi-nor/otp.c     | 75 ++++++++++++++++++++++++++++++++++-
- drivers/mtd/spi-nor/winbond.c |  1 +
- 4 files changed, 80 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 8cf3cf92129e..3f726a87e5a9 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -166,8 +166,8 @@ static int spi_nor_controller_ops_read_reg(struct spi_nor *nor, u8 opcode,
- 	return nor->controller_ops->read_reg(nor, opcode, buf, len);
- }
- 
--static int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
--					    const u8 *buf, size_t len)
-+int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
-+				     const u8 *buf, size_t len)
- {
- 	if (spi_nor_protocol_is_dtr(nor->reg_proto))
- 		return -EOPNOTSUPP;
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index e9b6b2e76cdb..648e67bea0b2 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -213,6 +213,7 @@ struct spi_nor_otp_ops {
- 	int (*read)(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
- 	int (*write)(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
- 	int (*lock)(struct spi_nor *nor, unsigned int region);
-+	int (*erase)(struct spi_nor *nor, loff_t addr);
- 	int (*is_locked)(struct spi_nor *nor, unsigned int region);
- };
- 
-@@ -480,6 +481,8 @@ extern const struct spi_nor_manufacturer spi_nor_xmc;
- void spi_nor_spimem_setup_op(const struct spi_nor *nor,
- 			     struct spi_mem_op *op,
- 			     const enum spi_nor_protocol proto);
-+int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
-+				     const u8 *buf, size_t len);
- int spi_nor_write_enable(struct spi_nor *nor);
- int spi_nor_write_disable(struct spi_nor *nor);
- int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable);
-@@ -505,6 +508,7 @@ ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
- 
- int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
- int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
-+int spi_nor_otp_erase_secr(struct spi_nor *nor, loff_t addr);
- int spi_nor_otp_lock_sr2(struct spi_nor *nor, unsigned int region);
- int spi_nor_otp_is_locked_sr2(struct spi_nor *nor, unsigned int region);
- 
-diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
-index 5021d40dffbf..ea7db4b354f7 100644
---- a/drivers/mtd/spi-nor/otp.c
-+++ b/drivers/mtd/spi-nor/otp.c
-@@ -8,6 +8,7 @@
- #include <linux/log2.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/spi-nor.h>
-+#include <linux/spi/spi-mem.h>
- 
- #include "core.h"
- 
-@@ -110,6 +111,50 @@ int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf
- 	return ret ?: written;
- }
- 
-+/**
-+ * spi_nor_otp_erase_secr() - erase one OTP region
-+ * @nor:        pointer to 'struct spi_nor'
-+ * @to:         offset to write to
-+ * @len:        number of bytes to write
-+ * @buf:        pointer to src buffer
-+ *
-+ * Erase one OTP region by using the SPINOR_OP_ESECR commands. This method is
-+ * used on GigaDevice and Winbond flashes.
-+ *
-+ * Return: 0 on success, -errno otherwise
-+ */
-+int spi_nor_otp_erase_secr(struct spi_nor *nor, loff_t addr)
-+{
-+	int ret;
-+
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		return ret;
-+
-+	if (nor->spimem) {
-+		struct spi_mem_op op =
-+			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_ESECR, 0),
-+				   SPI_MEM_OP_ADDR(3, addr, 0),
-+				   SPI_MEM_OP_NO_DUMMY,
-+				   SPI_MEM_OP_NO_DATA);
-+
-+		spi_nor_spimem_setup_op(nor, &op, nor->write_proto);
-+
-+		ret = spi_mem_exec_op(nor->spimem, &op);
-+	} else {
-+		nor->bouncebuf[2] = addr & 0xff;
-+		nor->bouncebuf[1] = (addr >> 8) & 0xff;
-+		nor->bouncebuf[0] = (addr >> 16) & 0xff;
-+
-+		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_ESECR,
-+						       nor->bouncebuf, 3);
-+	}
-+	if (ret)
-+		return ret;
-+
-+	return spi_nor_wait_till_ready(nor);
-+}
-+
- static int spi_nor_otp_lock_bit_cr(unsigned int region)
- {
- 	static const int lock_bits[] = { SR2_LB1, SR2_LB2, SR2_LB3 };
-@@ -315,12 +360,14 @@ static int spi_nor_mtd_otp_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	return spi_nor_mtd_otp_read_write(mtd, to, len, retlen, buf, true);
- }
- 
--static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
-+static int spi_nor_mtd_otp_lock_erase(struct mtd_info *mtd, loff_t from,
-+				      size_t len, bool is_erase)
- {
- 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
- 	const struct spi_nor_otp_ops *ops = nor->params->otp.ops;
- 	const size_t rlen = spi_nor_otp_region_len(nor);
- 	unsigned int region;
-+	loff_t rstart;
- 	int ret;
- 
- 	if (from < 0 || (from + len) > spi_nor_otp_size(nor))
-@@ -336,7 +383,13 @@ static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
- 
- 	while (len) {
- 		region = spi_nor_otp_offset_to_region(nor, from);
--		ret = ops->lock(nor, region);
-+
-+		if (is_erase) {
-+			rstart = spi_nor_otp_region_start(nor, region);
-+			ret = ops->erase(nor, rstart);
-+		} else {
-+			ret = ops->lock(nor, region);
-+		}
- 		if (ret)
- 			goto out;
- 
-@@ -350,6 +403,23 @@ static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
- 	return ret;
- }
- 
-+static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
-+{
-+	return spi_nor_mtd_otp_lock_erase(mtd, from, len, false);
-+}
-+
-+static int spi_nor_mtd_otp_erase(struct mtd_info *mtd, loff_t from, size_t len)
-+{
-+	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-+	const struct spi_nor_otp_ops *ops = nor->params->otp.ops;
-+
-+	/* OTP erase is optional */
-+	if (!ops->erase)
-+		return -EOPNOTSUPP;
-+
-+	return spi_nor_mtd_otp_lock_erase(mtd, from, len, true);
-+}
-+
- void spi_nor_otp_init(struct spi_nor *nor)
- {
- 	struct mtd_info *mtd = &nor->mtd;
-@@ -373,4 +443,5 @@ void spi_nor_otp_init(struct spi_nor *nor)
- 	mtd->_read_user_prot_reg = spi_nor_mtd_otp_read;
- 	mtd->_write_user_prot_reg = spi_nor_mtd_otp_write;
- 	mtd->_lock_user_prot_reg = spi_nor_mtd_otp_lock;
-+	mtd->_erase_user_prot_reg = spi_nor_mtd_otp_erase;
- }
-diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index 9a81c67a60c6..96573f61caf5 100644
---- a/drivers/mtd/spi-nor/winbond.c
-+++ b/drivers/mtd/spi-nor/winbond.c
-@@ -139,6 +139,7 @@ static int winbond_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
- static const struct spi_nor_otp_ops winbond_otp_ops = {
- 	.read = spi_nor_otp_read_secr,
- 	.write = spi_nor_otp_write_secr,
-+	.erase = spi_nor_otp_erase_secr,
- 	.lock = spi_nor_otp_lock_sr2,
- 	.is_locked = spi_nor_otp_is_locked_sr2,
- };
--- 
-2.20.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGksCgpJJ3ZlIGJlZW4gdGVzdGluZyBvdXQgc29tZSBuZXdlciBrZXJuZWxzIG9uIG15IGxwYzMy
+eHggYm9hcmQgYW5kIGZvdW5kIHNvbWUKaXNzdWVzLiBNeSBjdXJyZW50IHN0YWJsZSBidWlsZCBp
+cyBydW5uaW5nIDUuMC4xOSBhbmQgaXQgaXMgZmluZSwgYW5kIEkgaGF2ZSBhCnRlc3QgYnVpbGQg
+cnVubmluZyA1LjQuNzggYW5kIGl0IHJ1bnMgZmluZSB0b28uCgpNeSBib2FyZCBoYXMgYW4gUzM0
+TUwwNEcxIFNMQyBOQU5EOgoJbmFuZDogZGV2aWNlIGZvdW5kLCBNYW51ZmFjdHVyZXIgSUQ6IDB4
+MDEsIENoaXAgSUQ6IDB4ZGMKCW5hbmQ6IEFNRC9TcGFuc2lvbiBTMzRNTDA0RzEKCW5hbmQ6IDUx
+MiBNaUIsIFNMQywgZXJhc2Ugc2l6ZTogMTI4IEtpQiwgcGFnZSBzaXplOiAyMDQ4LCBPT0Igc2l6
+ZTogNjQKClRoZSBTTEMgcG9ydGlvbiBvZiBteSBkZXZpY2UgdHJlZSBsb29rcyBsaWtlOgoJLyog
+NTEyTUIgRmxhc2ggdmlhIFNMQyBOQU5EIGNvbnRyb2xsZXIgKi8KCSZzbGMgewoJICAgICAgIHN0
+YXR1cyA9ICJva2F5IjsKCgkgICAgICAgbnhwLHdkci1jbGtzID0gPDE0PjsKCSAgICAgICBueHAs
+d3dpZHRoID0gPDcwMjUwMDAwPjsKCSAgICAgICBueHAsd2hvbGQgPSA8MjgxMDAwMDAwPjsKCSAg
+ICAgICBueHAsd3NldHVwID0gPDEwMDAwMDAwMD47CgkgICAgICAgbnhwLHJkci1jbGtzID0gPDE0
+PjsKCSAgICAgICBueHAscndpZHRoID0gPDkzNjY2NjY2PjsKCSAgICAgICBueHAscmhvbGQgPSA8
+MjgxMDAwMDAwPjsKCSAgICAgICBueHAscnNldHVwID0gPDEwMDAwMDAwMD47CgkgICAgICAgbmFu
+ZC1vbi1mbGFzaC1iYnQ7CgkgICAgICAgZ3Bpb3MgPSA8JmdwaW8gNSAxOSAxPjsgLyogR1BPX1Az
+IDE5LCBhY3RpdmUgbG93ICovCgoJICAgICAgIHBhcnRpdGlvbnMgewoJCSAgICAgICBjb21wYXRp
+YmxlID0gImZpeGVkLXBhcnRpdGlvbnMiOwoJCSAgICAgICAjYWRkcmVzcy1jZWxscyA9IDwxPjsK
+CQkgICAgICAgI3NpemUtY2VsbHMgPSA8MT47CgoJCSAgICAgICBtdGQwQDAgICAgICAgeyBsYWJl
+bCA9ICJib290cm9tIjsgICByZWcgPSA8MHgwMDAwMDAwMCAweDAwMDIwMDAwPjsgfTsKCQkgICAg
+ICAgbXRkMUAyMDAwMCAgIHsgbGFiZWwgPSAidWJvb3QiOyAgICAgcmVnID0gPDB4MDAwMjAwMDAg
+MHgwMDA2MDAwMD47IH07CgkJICAgICAgIG10ZDJAODAwMDAgICB7IGxhYmVsID0gImZia2VybmVs
+IjsgIHJlZyA9IDwweDAwMDgwMDAwIDB4MDAzYzAwMDA+OyB9OwoJCSAgICAgICBtdGQzQDQ0MDAw
+MCAgeyBsYWJlbCA9ICJmYnJvb3RmcyI7ICByZWcgPSA8MHgwMDQ0MDAwMCAweDAwNGUwMDAwPjsg
+fTsKCQkgICAgICAgbXRkNEA5MjAwMDAgIHsgbGFiZWwgPSAiY19rZXJuZWwiOyAgcmVnID0gPDB4
+MDA5MjAwMDAgMHgwMDNjMDAwMD47IH07CgkJICAgICAgIG10ZDVAY2UwMDAwICB7IGxhYmVsID0g
+ImNfX2F0YWdzIjsgIHJlZyA9IDwweDAwY2UwMDAwIDB4MDAwMjAwMDA+OyB9OwoJCSAgICAgICBt
+dGQ2QGQwMDAwMCAgeyBsYWJlbCA9ICJjX3Jvb3RmcyI7ICByZWcgPSA8MHgwMGQwMDAwMCAweDAw
+MzAwMDAwPjsgfTsKCQkgICAgICAgbXRkN0AxMDAwMDAwIHsgbGFiZWwgPSAibWVuZGVyIjsgICAg
+cmVnID0gPDB4MDEwMDAwMDAgMHgxZjAwMDAwMD47IH07CgkgICAgICAgfTsKCX07CgpBbmQgbXkg
+a2VybmVsIHBhcmFtZXRlcnMgYXJlOgoJdWJpLm10ZD03LDUxMiByb290ZnN0eXBlPXViaWZzIHJv
+b3Q9dWJpMAoKV2hlbiBydW5uaW5nIGxpbnV4LXN0YWJsZSA1LjExLjExIChhYTcyNThmOGYzZDQ4
+YTI5YmMwMjRlYThjNTE0NWJkYzRhOTgwZTRkCmZyb20gYnJhbmNoIGxpbnV4LTUuMTEueSkgSSBn
+ZXQgdGhlIGZvbGxvd2luZyBvbiBib290dXA6CgnigKYKCW5hbmQ6IGRldmljZSBmb3VuZCwgTWFu
+dWZhY3R1cmVyIElEOiAweDAxLCBDaGlwIElEOiAweGRjCgluYW5kOiBBTUQvU3BhbnNpb24gUzM0
+TUwwNEcxCgluYW5kOiA1MTIgTWlCLCBTTEMsIGVyYXNlIHNpemU6IDEyOCBLaUIsIHBhZ2Ugc2l6
+ZTogMjA0OCwgT09CIHNpemU6IDY0CglCYWQgYmxvY2sgdGFibGUgZm91bmQgYXQgcGFnZSAyNjIw
+ODAsIHZlcnNpb24gMHgwMQoJQmFkIGJsb2NrIHRhYmxlIGZvdW5kIGF0IHBhZ2UgMjYyMDE2LCB2
+ZXJzaW9uIDB4MDEKCXJhbmRvbTogZmFzdCBpbml0IGRvbmUKCW5hbmRfYmJ0OiBFQ0MgZXJyb3Ig
+aW4gQkJUIGF0IDB4MDAwMDFmZmUwMDAwCgluYW5kX2JidDogRUNDIGVycm9yIGluIEJCVCBhdCAw
+eDAwMDAxZmZjMDAwMAoJU2Nhbm5pbmcgZGV2aWNlIGZvciBiYWQgYmxvY2tzCglCYWQgYmxvY2sg
+dGFibGUgd3JpdHRlbiB0byAweDAwMDAxZmZlMDAwMCwgdmVyc2lvbiAweDAxCglCYWQgYmxvY2sg
+dGFibGUgd3JpdHRlbiB0byAweDAwMDAxZmZjMDAwMCwgdmVyc2lvbiAweDAxCgk4IGZpeGVkLXBh
+cnRpdGlvbnMgcGFydGl0aW9ucyBmb3VuZCBvbiBNVEQgZGV2aWNlIG54cF9scGMzMjIwX3NsYwoJ
+Q3JlYXRpbmcgOCBNVEQgcGFydGl0aW9ucyBvbiAibnhwX2xwYzMyMjBfc2xjIjoKCTB4MDAwMDAw
+MDAwMDAwLTB4MDAwMDAwMDIwMDAwIDogImJvb3Ryb20iCgkweDAwMDAwMDAyMDAwMC0weDAwMDAw
+MDA4MDAwMCA6ICJ1Ym9vdCIKCTB4MDAwMDAwMDgwMDAwLTB4MDAwMDAwNDQwMDAwIDogImZia2Vy
+bmVsIgoJMHgwMDAwMDA0NDAwMDAtMHgwMDAwMDA5MjAwMDAgOiAiZmJyb290ZnMiCgkweDAwMDAw
+MDkyMDAwMC0weDAwMDAwMGNlMDAwMCA6ICJjX2tlcm5lbCIKCTB4MDAwMDAwY2UwMDAwLTB4MDAw
+MDAwZDAwMDAwIDogImNfX2F0YWdzIgoJMHgwMDAwMDBkMDAwMDAtMHgwMDAwMDEwMDAwMDAgOiAi
+Y19yb290ZnMiCgkweDAwMDAwMTAwMDAwMC0weDAwMDAyMDAwMDAwMCA6ICJtZW5kZXIiCgnigKYK
+CXViaTA6IGF0dGFjaGluZyBtdGQ3Cgl1YmkwIHdhcm5pbmc6IHViaV9pb19yZWFkOiBlcnJvciAt
+NzQgKEVDQyBlcnJvcikgd2hpbGUgcmVhZGluZyA2NCBieXRlcyBmcm9tIFBFQiAwOjAsIHJlYWQg
+b25seSA2NCBieXRlcywgcmV0cnkKCXViaTAgd2FybmluZzogdWJpX2lvX3JlYWQ6IGVycm9yIC03
+NCAoRUNDIGVycm9yKSB3aGlsZSByZWFkaW5nIDY0IGJ5dGVzIGZyb20gUEVCIDA6MCwgcmVhZCBv
+bmx5IDY0IGJ5dGVzLCByZXRyeQoJdWJpMCB3YXJuaW5nOiB1YmlfaW9fcmVhZDogZXJyb3IgLTc0
+IChFQ0MgZXJyb3IpIHdoaWxlIHJlYWRpbmcgNjQgYnl0ZXMgZnJvbSBQRUIgMDowLCByZWFkIG9u
+bHkgNjQgYnl0ZXMsIHJldHJ5Cgl1YmkwIGVycm9yOiB1YmlfaW9fcmVhZDogZXJyb3IgLTc0IChF
+Q0MgZXJyb3IpIHdoaWxlIHJlYWRpbmcgNjQgYnl0ZXMgZnJvbSBQRUIgMDowLCByZWFkIDY0IGJ5
+dGVzCglDUFU6IDAgUElEOiAxIENvbW06IHN3YXBwZXIgTm90IHRhaW50ZWQgNS4xMS4xMS15b2N0
+by1zdGFuZGFyZCAjMQoJSGFyZHdhcmUgbmFtZTogTFBDMzJYWCBTb0MgKEZsYXR0ZW5lZCBEZXZp
+Y2UgVHJlZSkKCVs8YzAwMTFhYzQ+XSAodW53aW5kX2JhY2t0cmFjZSkgZnJvbSBbPGMwMDEwOWM4
+Pl0gKHNob3dfc3RhY2srMHgxMC8weDE0KQoJWzxjMDAxMDljOD5dIChzaG93X3N0YWNrKSBmcm9t
+IFs8YzAzMDBlMDA+XSAodWJpX2lvX3JlYWQrMHgyMGMvMHgyZDgpCglbPGMwMzAwZTAwPl0gKHVi
+aV9pb19yZWFkKSBmcm9tIFs8YzAzMDExMGM+XSAodWJpX2lvX3JlYWRfZWNfaGRyKzB4NjgvMHgy
+MGMpCglbPGMwMzAxMTBjPl0gKHViaV9pb19yZWFkX2VjX2hkcikgZnJvbSBbPGMwMzA2NGRjPl0g
+KHViaV9hdHRhY2grMHgyZDgvMHgxMWRjKQoJWzxjMDMwNjRkYz5dICh1YmlfYXR0YWNoKSBmcm9t
+IFs8YzAyZmI3Njg+XSAodWJpX2F0dGFjaF9tdGRfZGV2KzB4NTg0LzB4YTEwKQoJWzxjMDJmYjc2
+OD5dICh1YmlfYXR0YWNoX210ZF9kZXYpIGZyb20gWzxjMDZiZjczMD5dICh1YmlfaW5pdCsweDFh
+OC8weDIxNCkKCVs8YzA2YmY3MzA+XSAodWJpX2luaXQpIGZyb20gWzxjMDZhOGY0ND5dIChkb19v
+bmVfaW5pdGNhbGwrMHg3NC8weDE4OCkKCVs8YzA2YThmNDQ+XSAoZG9fb25lX2luaXRjYWxsKSBm
+cm9tIFs8YzA2YTkyMWM+XSAoa2VybmVsX2luaXRfZnJlZWFibGUrMHgxNzAvMHgxYmMpCglbPGMw
+NmE5MjFjPl0gKGtlcm5lbF9pbml0X2ZyZWVhYmxlKSBmcm9tIFs8YzA1NTdjNTQ+XSAoa2VybmVs
+X2luaXQrMHg4LzB4ZjgpCglbPGMwNTU3YzU0Pl0gKGtlcm5lbF9pbml0KSBmcm9tIFs8YzAwMDg1
+Mjg+XSAocmV0X2Zyb21fZm9yaysweDE0LzB4MmMpCglFeGNlcHRpb24gc3RhY2soMHhjMDgyNWZi
+MCB0byAweGMwODI1ZmY4KQoJNWZhMDogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAKCTVmYzA6IDAwMDAwMDAwIDAw
+MDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAw
+MDAwCgk1ZmUwOiAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAxMyAw
+MDAwMDAwMAoJ4oCmCgpUaGUgcHJlY2VlZGluZyByZXBlYXRzIG92ZXIgYW5kIG92ZXIsIHRoZSBv
+bmx5IGRpZmZlcmVuY2UgYmVpbmcgdGhlIFBFQiBudW1iZXIKY2hhbmdpbmcuCgpJIGZvdW5kIHRo
+aXMgd2hpY2ggbG9va3MgcmVsZXZhbnQ6IGh0dHBzOi8vbGludXgtc3VueGkub3JnL01haW5saW5l
+X05BTkRfSG93dG8jTWFueV9iYWRfYmxvY2tzCkkgcmVhbGl6ZSBpdCdzIGZvciBhIGRpZmZlcmVu
+dCBTb0MgYW5kIE5BTkQgY2hpcCwgYnV0IHdvdWxkIGl0IGJlIHdvcnRoCnRyeWluZyB0aGlzIHBy
+b2NlZHVyZSBvbiBteSBzeXN0ZW0/CgpCZXN0IHJlZ2FyZHMsCglUcmV2b3IKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
+Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9saW51eC1tdGQvCg==
