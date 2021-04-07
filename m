@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B49F2C433ED
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Apr 2021 09:07:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05704C433ED
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Apr 2021 09:08:39 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2DC65611CC
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Apr 2021 09:07:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DC65611CC
+	by mail.kernel.org (Postfix) with ESMTPS id 97375611CC
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Apr 2021 09:08:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 97375611CC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,24 +23,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=9dEJTnyDMuT4MggSRkBzhcwCFAzLahv3dadpwMTHzfI=; b=HSnfP/ruwx3vx9GFNdqgMnyPp
-	+DymljNCSWml32YQYWjVhm65XiRyUfU9bkuNCfanxzNUjgHAKeKXF/6fFb6BNGTTVbRzplPyANhUI
-	vH+tREt1dBJ3PXfouJAsf811qGZUDFLLgRqDULhcReCvwqDq8ImdbJzvWuho/5PycnHnvXEkXZJrs
-	hhHjFyMWoZ4TRZsEFS4ob1VgRrSQkukaVDeI841EzUv6lOpcfhTmC0scVmJAYzN9Q8ojhG+c/njey
-	QqyZhc73GOLIW6nRi3Zw9gDYPSY1rb3iGQifQuQx4NoFK/pM31G4dJDKa9a+8GGc4CUZZejZGDbAz
-	YNFQH7EYA==;
+	 bh=jPpoziFW3LFdKmi8MLraZkj6twc+w/Azz+UsA8KNX3Q=; b=GNIOncV4hTTb3M7BxmiCQHbtA
+	MkB8XjmYboItUitNhCBD4CeYr3pwUNO/EwlO5VTra6DRHOQ7QYn0TmaAG4RaA5/j3Bx1CTwLmTNpY
+	JskW2+buZlaaLK6y8i19nJx2g7qt2Wvs0+08yl6RvojSgfDnFaI1NX/6gZ3K5AtKQzXb1U7Nx2i97
+	pGfbPDbQrusecjo5jWcr+E9M7G8+BlEBSxeKAXySqeipFRhp5GAbaul/hwCWjDuxZD+OB6CUOnJ93
+	8q5mLLZ5i3ghriS50uHDmBPYmnZ7SJcRh/djrJVVpySB8Dd5+mq8lmzay5a5Ndo4nDYGbur4UM2ZX
+	1xPN3oCPg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lU49T-004Y4m-0y; Wed, 07 Apr 2021 09:07:07 +0000
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	id 1lU49o-004Y8r-FY; Wed, 07 Apr 2021 09:07:28 +0000
+Received: from relay11.mail.gandi.net ([217.70.178.231])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lU495-004Y0G-Dk
- for linux-mtd@lists.infradead.org; Wed, 07 Apr 2021 09:06:49 +0000
-X-Originating-IP: 90.89.138.59
+ id 1lU49B-004Y1F-8m
+ for linux-mtd@lists.infradead.org; Wed, 07 Apr 2021 09:06:51 +0000
 Received: from xps13.home (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr
  [90.89.138.59]) (Authenticated sender: miquel.raynal@bootlin.com)
- by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 107064000E;
- Wed,  7 Apr 2021 09:06:39 +0000 (UTC)
+ by relay11.mail.gandi.net (Postfix) with ESMTPSA id 202A5100004;
+ Wed,  7 Apr 2021 09:06:45 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
  miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
@@ -49,19 +48,19 @@ Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  boris.brezillon@collabora.com, Daniele.Palmas@telit.com,
  bjorn.andersson@linaro.org
-Subject: Re: [PATCH v11 4/4] mtd: rawnand: qcom: Add missing nand_cleanup() in
- error path
-Date: Wed,  7 Apr 2021 11:06:39 +0200
-Message-Id: <20210407090639.45457-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v11 3/4] mtd: rawnand: Add support for secure regions in
+ NAND memory
+Date: Wed,  7 Apr 2021 11:06:45 +0200
+Message-Id: <20210407090645.45522-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210402150128.29128-5-manivannan.sadhasivam@linaro.org>
+In-Reply-To: <20210402150128.29128-4-manivannan.sadhasivam@linaro.org>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'ab2c8d3ef9b828a1eb1a7d448185bf4242bb0afd'
+X-linux-mtd-patch-commit: b'13b89768275d6ca9764bf91449e4cafe46ba706b'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210407_100648_067916_9801A6A6 
-X-CRM114-Status: UNSURE (   4.10  )
+X-CRM114-CacheID: sfid-20210407_100649_968071_AD768D36 
+X-CRM114-Status: UNSURE (   8.65  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -79,9 +78,16 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2021-04-02 at 15:01:28 UTC, Manivannan Sadhasivam wrote:
-> Add missing nand_cleanup() in the alloc_bam_transaction() error path
-> to cleanup the resources properly.
+On Fri, 2021-04-02 at 15:01:27 UTC, Manivannan Sadhasivam wrote:
+> On a typical end product, a vendor may choose to secure some regions in
+> the NAND memory which are supposed to stay intact between FW upgrades.
+> The access to those regions will be blocked by a secure element like
+> Trustzone. So the normal world software like Linux kernel should not
+> touch these regions (including reading).
+> 
+> The regions are declared using a NAND chip DT property,
+> "secure-regions". So let's make use of this property in the raw NAND
+> core and skip access to the secure regions present in a system.
 > 
 > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
