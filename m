@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CCFB7C433B4
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Apr 2021 09:09:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 108D2C433ED
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Apr 2021 10:03:43 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 629B4611CC
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Apr 2021 09:09:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 629B4611CC
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7AC1961382
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Apr 2021 10:03:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7AC1961382
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=qdv8AjcQGRO1RY/myeIJTBUv7j2Z30kknJkIDY1kp/s=; b=aFw6/P+ajdaASzQgE+eXH58+0
-	5KKJgCPw8jdF04KcsBgM16Pxy/p0MnHk1eh1ADONVLADBE759prYkY8O6Vp5wm3PbO2khDaJjBIxZ
-	L2SsOXwuQ+u7YBKEN48lCDarklmKsQahS7mkUSfSM/rEnzjufebVmDEd4Zn7PHP8nCRxspVBoPgHw
-	KY/xFU7RROeI8j9lvh/ZcJHzrGLTo0Ki7zo+ez8Rc0uX/bzzZC6g3zsPHe8SGLKF/ULh3ICZtdDFX
-	PjFxzQYxQGef8V2KFwCwNzwkNr84H+OBtjde/f1HZw82b9tAEDSEy0Njea4Y4x8FDnGK4LyVfnQVL
-	0mU79wXxw==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=dSjVbY0vqqreG/AfmZci0j0T6jy4Fv5/16p/wnmiM74=; b=P10zwdc5G4ULNKbjSrcxnnahNq
+	0Q9JD3LFRxk/6JzNZXpUjity9676qqpnLLrU1yIa2yQwSPtRUZ1e78M0E/X9xy0cDn/B2yBVmbwO5
+	U+nud2VpFI/CyPG9PoxFNkzaJXS7OzUI8FxDnrMYO5pGRBIoK9Z6kCeJsHAgpWsGuojcCE2GP2/k0
+	dS5tyHJj8n4yzJ6AeTu6e+47Wc9rEsOeBhv8WpzAmMf/V3CP0NF1QZfGwoXsAL11MROxUu+bNgOmc
+	zBNBlS8j2BpmkYrBaCUvBwMyyyGTEFecVcsI72weVyAdtzGFE3Ik04MiHtPhRL4AixAXfDUeJnrpz
+	tHzoJJJw==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lU4B4-004YRE-IN; Wed, 07 Apr 2021 09:08:46 +0000
-Received: from relay11.mail.gandi.net ([217.70.178.231])
+	id 1lU517-004gAQ-S4; Wed, 07 Apr 2021 10:02:34 +0000
+Received: from szxga06-in.huawei.com ([45.249.212.32])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lU49K-004Y38-KN
- for linux-mtd@lists.infradead.org; Wed, 07 Apr 2021 09:07:01 +0000
-Received: from xps13.home (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr
- [90.89.138.59]) (Authenticated sender: miquel.raynal@bootlin.com)
- by relay11.mail.gandi.net (Postfix) with ESMTPSA id BC2FD10000C;
- Wed,  7 Apr 2021 09:06:56 +0000 (UTC)
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- robh+dt@kernel.org
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- boris.brezillon@collabora.com, Daniele.Palmas@telit.com,
- bjorn.andersson@linaro.org, Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v11 1/4] dt-bindings: mtd: Convert Qcom NANDc binding to
- YAML
-Date: Wed,  7 Apr 2021 11:06:56 +0200
-Message-Id: <20210407090656.45651-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210402150128.29128-2-manivannan.sadhasivam@linaro.org>
-References: 
+ id 1lU50y-004g8a-JH
+ for linux-mtd@lists.infradead.org; Wed, 07 Apr 2021 10:02:27 +0000
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+ by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FFfz22YkhzjYZ1;
+ Wed,  7 Apr 2021 18:00:30 +0800 (CST)
+Received: from localhost.localdomain (10.175.103.91) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 7 Apr 2021 18:02:10 +0800
+From: Wei Li <liwei391@huawei.com>
+To: <huawei.libin@huawei.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>, Wei Li
+ <liwei391@huawei.com>
+Subject: [PATCH RESEND -next] mtd: rawnand: Remove redundant dev_err call in
+ hisi_nfc_probe()
+Date: Wed, 7 Apr 2021 18:05:26 +0800
+Message-ID: <20210407100526.3278741-1-liwei391@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'da386f7f233327ce763b0d2c2ae4b0626a3d9517'
+X-Originating-IP: [10.175.103.91]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210407_100659_384065_460D3A31 
-X-CRM114-Status: UNSURE (   3.93  )
+X-CRM114-CacheID: sfid-20210407_110225_116774_486226E5 
+X-CRM114-Status: UNSURE (   8.29  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,15 +77,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2021-04-02 at 15:01:25 UTC, Manivannan Sadhasivam wrote:
-> Convert Qcom NANDc devicetree binding to YAML.
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
+There is a error message within devm_ioremap_resource
+already, so remove the dev_err call to avoid redundant
+error message.
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Li <liwei391@huawei.com>
+---
+ drivers/mtd/nand/raw/hisi504_nand.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Miquel
+diff --git a/drivers/mtd/nand/raw/hisi504_nand.c b/drivers/mtd/nand/raw/hisi504_nand.c
+index 8b2122ce6ec3..78c4e05434e2 100644
+--- a/drivers/mtd/nand/raw/hisi504_nand.c
++++ b/drivers/mtd/nand/raw/hisi504_nand.c
+@@ -761,10 +761,8 @@ static int hisi_nfc_probe(struct platform_device *pdev)
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+ 	host->mmio = devm_ioremap_resource(dev, res);
+-	if (IS_ERR(host->mmio)) {
+-		dev_err(dev, "devm_ioremap_resource[1] fail\n");
++	if (IS_ERR(host->mmio))
+ 		return PTR_ERR(host->mmio);
+-	}
+ 
+ 	mtd->name		= "hisi_nand";
+ 	mtd->dev.parent         = &pdev->dev;
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
