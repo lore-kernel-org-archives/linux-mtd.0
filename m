@@ -2,65 +2,88 @@ Return-Path: <SRS0=eMUk=JE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 108D2C433ED
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Apr 2021 10:03:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D21B7C433B4
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Apr 2021 12:00:56 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7AC1961382
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Apr 2021 10:03:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7AC1961382
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7B2E861139
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Apr 2021 12:00:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B2E861139
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=dSjVbY0vqqreG/AfmZci0j0T6jy4Fv5/16p/wnmiM74=; b=P10zwdc5G4ULNKbjSrcxnnahNq
-	0Q9JD3LFRxk/6JzNZXpUjity9676qqpnLLrU1yIa2yQwSPtRUZ1e78M0E/X9xy0cDn/B2yBVmbwO5
-	U+nud2VpFI/CyPG9PoxFNkzaJXS7OzUI8FxDnrMYO5pGRBIoK9Z6kCeJsHAgpWsGuojcCE2GP2/k0
-	dS5tyHJj8n4yzJ6AeTu6e+47Wc9rEsOeBhv8WpzAmMf/V3CP0NF1QZfGwoXsAL11MROxUu+bNgOmc
-	zBNBlS8j2BpmkYrBaCUvBwMyyyGTEFecVcsI72weVyAdtzGFE3Ik04MiHtPhRL4AixAXfDUeJnrpz
-	tHzoJJJw==;
+	List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=+jr1dTL4uSuAY9KRO6YVD2ZlDoVJkoUXGF+z3nseDKI=; b=rPoCwZt0o4CcfDBgSHmWv/Q51
+	2vHD2jSQGydKtCacRLWmK6ff4s9GiDwKr95gZdca/oWy8lMMOkoi8j0q+C4XWuaZ8XgLtnD7tNvaR
+	4cf+JPU1dbGKhaNseil1XldwKiinWufXcMIqVS42aMTd3aMSAWh7Bh/M7iEVrZmwxnW5j3LKQ/db2
+	Se6TnRfWx++6szldomTx5V+siFUOBkbbnbrqZpnshWeElBp8fccKsVO0zhWCys5Ij+dqFrLbaW9KZ
+	G4W0EglahQu43UUTIvle1UJaogL37zi0pGtcgXCxxtqGpROAJGvEH5e8E49GxcvmfCHf8uEKoUbvq
+	/ILEv+frg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lU517-004gAQ-S4; Wed, 07 Apr 2021 10:02:34 +0000
-Received: from szxga06-in.huawei.com ([45.249.212.32])
+	id 1lU6qf-004voe-3L; Wed, 07 Apr 2021 11:59:53 +0000
+Received: from mail-qk1-x734.google.com ([2607:f8b0:4864:20::734])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lU50y-004g8a-JH
- for linux-mtd@lists.infradead.org; Wed, 07 Apr 2021 10:02:27 +0000
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
- by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FFfz22YkhzjYZ1;
- Wed,  7 Apr 2021 18:00:30 +0800 (CST)
-Received: from localhost.localdomain (10.175.103.91) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 7 Apr 2021 18:02:10 +0800
-From: Wei Li <liwei391@huawei.com>
-To: <huawei.libin@huawei.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <boris.brezillon@collabora.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>, Wei Li
- <liwei391@huawei.com>
-Subject: [PATCH RESEND -next] mtd: rawnand: Remove redundant dev_err call in
- hisi_nfc_probe()
-Date: Wed, 7 Apr 2021 18:05:26 +0800
-Message-ID: <20210407100526.3278741-1-liwei391@huawei.com>
-X-Mailer: git-send-email 2.25.1
+ id 1lU6qX-004vnR-FP
+ for linux-mtd@lists.infradead.org; Wed, 07 Apr 2021 11:59:47 +0000
+Received: by mail-qk1-x734.google.com with SMTP id i9so18335258qka.2
+ for <linux-mtd@lists.infradead.org>; Wed, 07 Apr 2021 04:59:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=0x0f.com; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=wD+7QjxW8Yy8u2YJJtpm9de9zmFgNbvMAMPJpbXhd3s=;
+ b=RithvaeISWOYFMKOs+4g/yzDzcC1QR5HGBFNusZbLRrcUOYrNhj5Iv6cvmCYM00LDj
+ HYWg2/ulQV4CwT8We2hte5vfPOY6QOFgQnEvGnIl4zx2OPts88+FM89qm82iyJlz1url
+ r3BggoDlxf7mJd0/sO+tRA9OpxRyxDqbl9JuE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=wD+7QjxW8Yy8u2YJJtpm9de9zmFgNbvMAMPJpbXhd3s=;
+ b=jomPANOOIrLFkLiadFaVXOV8GyWwMz7qdEPHqnZdOilwQZGxTESzyqQrFIBUg3dAva
+ rBQR6pzysgvnDz65GNdBpXA4nZEG35Jps6t95eI/ZC1piHURq10jmTO0jbt5FFNv+M2c
+ Usb+KyxdiRQBAykb0YMCAgm5fj7IVulIAQAU052s9DpBQLY5znMpcjPFXHxu6M0daoAF
+ b0mV1RHyZDsj8wBBe06I2AbaMxI8UNZDFdHJBOLlyPGon6eHe5d9Ig3X1D81dsZebX2h
+ eFR8XGbz5DTrbJwIDz2M94lFkitAR5XV3LV7Jx7sXqGJOa2ZqNMwX1GZZD0Mw/4ch5kc
+ MICQ==
+X-Gm-Message-State: AOAM531sw1A/ScdhVbkRVUM6doJop5+61lDI2Jm6wJbfcre9AF4YWGgk
+ 83ZLfGnNS1Wu12ZKTZvoTZVe171OSMb7sRGyC7yILc9rnko=
+X-Google-Smtp-Source: ABdhPJz5ySbfYXXZwpf33xxO36joDp/Mzky80FMCiS4DEuWAntYABJySYm1p3wPpOyinS8r/oOgTBoLnXTuzBQ2PnaI=
+X-Received: by 2002:ae9:f70a:: with SMTP id s10mr2795952qkg.468.1617796782806; 
+ Wed, 07 Apr 2021 04:59:42 -0700 (PDT)
 MIME-Version: 1.0
-X-Originating-IP: [10.175.103.91]
-X-CFilter-Loop: Reflected
+References: <20210213095724.3411058-1-daniel@0x0f.com>
+ <20210215112409.1a755bf0@xps13>
+ <CAFr9PXkh+attaCc6C2UxB=qvXksWriWOaaoEndy4k6SGE0QOHQ@mail.gmail.com>
+ <20210215121653.4edd86c4@xps13>
+ <CAFr9PXmVehtcm6FjBqi_hmEAj1rgtxMvarisjPmWhgjruVj++Q@mail.gmail.com>
+ <20210322193213.18520b9a@xps13>
+ <CAFr9PX=mL9UWcr-yWbYa5NXS-R=yHeGgM+hd_MKOa2XiBUAJOQ@mail.gmail.com>
+ <20210323113233.3523d66b@xps13>
+ <CAFr9PX=KMZuzp61Hq=2WdHyEzE=6J7HEPWZxPs7FEqiH-G8wFw@mail.gmail.com>
+ <20210323150603.6b942a60@xps13>
+ <CAFr9PXntCmdrmg+i3BB1j-aY4VbE=2iqyLcoSr9cX2090jGiGQ@mail.gmail.com>
+ <20210407100204.08d894ca@xps13>
+In-Reply-To: <20210407100204.08d894ca@xps13>
+From: Daniel Palmer <daniel@0x0f.com>
+Date: Wed, 7 Apr 2021 21:01:01 +0900
+Message-ID: <CAFr9PXk-PNWBa9VPriP3nLUqdhtm6uPnbG3n4_rRCdF5YvS7OQ@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: spinand: add support for Foresee FS35ND01G-S1Y2
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: linux-mtd@lists.infradead.org, 
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210407_110225_116774_486226E5 
-X-CRM114-Status: UNSURE (   8.29  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210407_125945_879133_1FF4D58D 
+X-CRM114-Status: GOOD (  13.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,33 +100,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There is a error message within devm_ioremap_resource
-already, so remove the dev_err call to avoid redundant
-error message.
+Hi Miquel,
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Li <liwei391@huawei.com>
----
- drivers/mtd/nand/raw/hisi504_nand.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+On Wed, 7 Apr 2021 at 17:02, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> You may look at micron_8_ecc_get_status() helper to guide you. But
+> IMHO, if there are 0-3 bf, you should probably assume there were 3 bf
+> and return 3, if there were 4, return 4, if it's uncorrectable return
+> -EBADMSG otherwise -EINVAL.
 
-diff --git a/drivers/mtd/nand/raw/hisi504_nand.c b/drivers/mtd/nand/raw/hisi504_nand.c
-index 8b2122ce6ec3..78c4e05434e2 100644
---- a/drivers/mtd/nand/raw/hisi504_nand.c
-+++ b/drivers/mtd/nand/raw/hisi504_nand.c
-@@ -761,10 +761,8 @@ static int hisi_nfc_probe(struct platform_device *pdev)
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
- 	host->mmio = devm_ioremap_resource(dev, res);
--	if (IS_ERR(host->mmio)) {
--		dev_err(dev, "devm_ioremap_resource[1] fail\n");
-+	if (IS_ERR(host->mmio))
- 		return PTR_ERR(host->mmio);
--	}
- 
- 	mtd->name		= "hisi_nand";
- 	mtd->dev.parent         = &pdev->dev;
+Understood.
 
+> We should verify that this does not mess with UBI wear leveling
+> though. Please check that returning 3-bit errors no matter the
+> actual number of flipped bits does not lead UBI to move the data away
+> (I think it's fine but we need to be sure otherwise the implementation
+> proposal is not valid).
+
+Ok. I'm not sure how to check that yet but I'll look into it.
+
+Thanks for all of the help on this.
+
+Cheers,
+
+Daniel
 
 ______________________________________________________
 Linux MTD discussion mailing list
