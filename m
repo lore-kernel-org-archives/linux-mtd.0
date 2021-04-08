@@ -2,63 +2,80 @@ Return-Path: <SRS0=gt70=JF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A6DCC433ED
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Apr 2021 07:07:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13ED8C433ED
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Apr 2021 07:28:22 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 439CE61157
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Apr 2021 07:07:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 439CE61157
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 6CA1D60FF1
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Apr 2021 07:28:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6CA1D60FF1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=TVm0ayt6w/J19Xyx4PCXwSVZb2V+ZdukG5zbUtE50ig=; b=Ygc2FJ3xmuCd20wpsUHv43KPd
-	frxbQ7C9imJLy9qIWFd8hoFg68Yl78af1G1xDlwkoZBGXW10veH+i1rlClpN+WWqReNpUyTTTVc0i
-	E/TOhzo66s1PUz/bgVTX13dGXCz9wP25VMKQDjk1z2w3pxRwkPg/3Oc6mrI+3pQJFCIeIZ6i+rkiU
-	gCk2ndWRrAZ+qbS0reD+37dOOdBFdphhcy2Xfpv730o1wHyserQVqW0PqrStP0it6DL5T+BPlzADA
-	n4DeJ9OJUGrouQCZvBjCa7MMRPeHRoMY7S1Wk2Ou3t+y+gaLFAWSljYruLBm7LfWnWtLRLQF4q9EY
-	f699+U1zQ==;
+	 bh=xVhQsPzVZy5L1WmPRcG4IVPyGnysgydSyNiy17/X4fA=; b=UOxLNW+mGG25wNQW3cKwKofpc
+	iXJ7PWY2hdsT9LqhthC5G0uZuA/MTwvU4J3NUDSZw9sMHquYrFUviWvMtPkkbccVaxCzDkuviUW4s
+	VhogyZsLZGKKnnk/AzkqjD8adtw+ygYW1UDzdussNrKdPpQPWF4PaBAil+Ca0g1BGV/nCc0ZxMR6x
+	jwRzWVaAuxTTyKXkIlnBSgMORt/+2gS4EU5xPP8J2sc9eOEpEm7114xBC3gPFwIO2bT9a0XSTGUim
+	CdtNmBNgaRMA0Zvab9iZiszDI0DzeoM0JHM9AUc8E+YE0TcIb2ifQLzoZ8/bXykJ9j9kGy7+Ln2qO
+	yL4bMNMzA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lUOkS-0079Hg-Lr; Thu, 08 Apr 2021 07:06:40 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1lUP4T-007Daa-GR; Thu, 08 Apr 2021 07:27:21 +0000
+Received: from mail-qv1-xf2b.google.com ([2607:f8b0:4864:20::f2b])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lUOkO-0079Gd-By
- for linux-mtd@lists.infradead.org; Thu, 08 Apr 2021 07:06:39 +0000
-X-Originating-IP: 90.89.138.59
-Received: from xps13 (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr [90.89.138.59])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 39717FF807;
- Thu,  8 Apr 2021 07:06:33 +0000 (UTC)
-Date: Thu, 8 Apr 2021 09:06:32 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Michael Walle <michael@walle.cc>
-Cc: Tudor.Ambarus@microchip.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-api@vger.kernel.org, richard@nod.at,
- vigneshr@ti.com
-Subject: Re: [PATCH] mtd: add OTP (one-time-programmable) erase ioctl
-Message-ID: <20210408090632.62fb6dbc@xps13>
-In-Reply-To: <904d986fbd6f718cf8b7b9fc54b339d4@walle.cc>
-References: <20210303201819.2752-1-michael@walle.cc>
- <c8f6bd61-528e-0353-aa23-aaec2be2b3ff@microchip.com>
- <904d986fbd6f718cf8b7b9fc54b339d4@walle.cc>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1lUP4F-007DVl-Mf
+ for linux-mtd@lists.infradead.org; Thu, 08 Apr 2021 07:27:11 +0000
+Received: by mail-qv1-xf2b.google.com with SMTP id t13so419198qvs.7
+ for <linux-mtd@lists.infradead.org>; Thu, 08 Apr 2021 00:27:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=7EjFr0PvXCimeRN9CqmVjSUUdOG+//MfhWL1w/fQOwA=;
+ b=chqErVHX75l1vvdNCuYtisaHUToXrG/ZzbvD5p7yI7mEotk+EbjK12GGBd4NpnRzBq
+ As78YRhnOOy+SG/+qDxRtD5GBodGdz4sKIykBakh4XqiBHyNWTqFJaKhHAxvQEiGw0AK
+ U/EON+d2k4oxkb8W6+aJGuSTuhImTUZOu8Zvsp47nnpVdEkm+C3XwyH6Oqwgp8VsNphP
+ aFdbySx9upgSxIlpMf+qmgIBXJEV0JYZ/h7kVwQlMIvkQZNWDhHA6pavaKv2lIL7wHvi
+ gi0JaDJiS2glYW/j4a+20aKZAFfkZXGiNcdHqVh2gT3addwt6R1zsG8n40jtQhXrlJWW
+ 8kww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=7EjFr0PvXCimeRN9CqmVjSUUdOG+//MfhWL1w/fQOwA=;
+ b=e6jD/aloSRM1gZW4ynI80ApIeYOeodyc7GwC6BLdwAYctZ7Yfc4pBRKYLlaycexMuJ
+ vlWsXBchs7PmznsGPf+HEz0MuRRlT8ecG9fAe3dPp1Qb9f2OLIuzCCLuJz2DszVh0XEY
+ o7G1byJIAMzZK0D0+eLIFk2diQJsqXwlq2Fn19eaRNSAdCkMLFqjaBE7zQfH0kC/u4pu
+ JbyWC2b+uNoJFmHK9DXlupipW1oQihVWnW563ITqHqyMSciNuYNYXVGW1IU9un7q0nXp
+ jy2f97HKFqa+Gnm12AN2omo3CAcGZX2ND70u3h6A0NEO2ttj0oyvVl7OT9XMSmzKQN1d
+ IcvQ==
+X-Gm-Message-State: AOAM530LCwvWGyLuoPsaGog3qLDp3Qz/51Rb8gzdETa72hQ698cF1bag
+ 580J9TBo2etMlp2JgOuLsDOaqScjR0BFi60iaM0=
+X-Google-Smtp-Source: ABdhPJyBdNG1ftuob+yI8bN8G5e80uY3S6iEoCXWbovAPwvdTcg82yM9zwMt9E7cIZzupqpS8MfM4d57XrYFPkYYcl0=
+X-Received: by 2002:a0c:f1c9:: with SMTP id u9mr7626980qvl.17.1617866826260;
+ Thu, 08 Apr 2021 00:27:06 -0700 (PDT)
 MIME-Version: 1.0
+References: <34544eb22f7661f6fb64af3ed99b1c2092b99a31.camel@gmail.com>
+In-Reply-To: <34544eb22f7661f6fb64af3ed99b1c2092b99a31.camel@gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Thu, 8 Apr 2021 09:26:54 +0200
+Message-ID: <CAFLxGvzRWYTMsh0-476k_zBnkeTHDUJox2u82+qfdUpO9-fBZw@mail.gmail.com>
+Subject: Re: mtdblock is slow compared to mtd device
+To: Claus Stovgaard <claus.stovgaard@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Edgar Lakis <ela@phaseone.com>, 
+ Martin Egholm <meg@phaseone.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210408_080636_723560_6489E666 
-X-CRM114-Status: GOOD (  15.72  )
+X-CRM114-CacheID: sfid-20210408_082708_569752_924B0B83 
+X-CRM114-Status: GOOD (  17.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,37 +87,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpNaWNoYWVsIFdhbGxlIDxtaWNoYWVsQHdhbGxlLmNjPiB3cm90ZSBvbiBUaHUsIDA4
-IEFwciAyMDIxIDA4OjU1OjQyCiswMjAwOgoKPiBIaSBUdWRvciwKPiAKPiBBbSAyMDIxLTA0LTA4
-IDA3OjUxLCBzY2hyaWViIFR1ZG9yLkFtYmFydXNAbWljcm9jaGlwLmNvbToKPiA+IFdvdWxkIHlv
-dSBwbGVhc2UgcmVzZW5kIHRoaXMgcGF0Y2gsIHRvZ2V0aGVyIHdpdGggdGhlIG10ZC11dGlscwo+
-ID4gYW5kIHRoZSBTUEkgTk9SIHBhdGNoIGluIGEgc2luZ2xlIHBhdGNoIHNldD8gWW91J2xsIGhl
-bHAgdXMgYWxsCj4gPiBoYXZpbmcgYWxsIGluIGEgc2luZ2xlIHBsYWNlLiAgCj4gCj4gVGhpcyBo
-YXMgYWxyZWFkeSBiZWVuIHBpY2tlZC11cDoKPiBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9z
-Y20vbGludXgva2VybmVsL2dpdC9tdGQvbGludXguZ2l0L2NvbW1pdC8/aD1tdGQvbmV4dCZpZD1l
-M2MxZjFjOTJkNmVkZTNjZmEwOWQ2YTEwM2QzZDFjMWVmNjQ1ZTM1Cj4gCj4gQWx0aG91Z2gsIEkg
-ZGlkbid0IHJlY2VpdmUgYW4gZW1haWwgbm90aWNlLgo+IAo+IC1taWNoYWVsCgpTb21ldGltZXMg
-dGhlIG5vdGlmaWNhdGlvbnMgYXJlIG5vdCB0cmlnZ2VyZWQgd2hlbiB0aGVyZSBpcyBhIGNvbmZs
-aWN0CndoZW4gYXBwbHlpbmcgdGhlIHBhdGNoIGZyb20gcGF0Y2h3b3JrIGRpcmVjdGx5LiBJIHVz
-dWFsbHkgYW5zd2VyCm1hbnVhbGx5IGluIHRoaXMgY2FzZSBidXQgSSBtaWdodCBoYXZlIGZvcmdv
-dHRlbi4KCkFib3V0IHRoZSBwYXRjaCwgSSBmZWx0IGl0IHdhcyBnb29kIGVub3VnaCBmb3IgbWVy
-Z2luZywgYW5kIEkgd2FudCB0bwphdm9pZCBhcHBseWluZyBzdWNoIHBhdGNoZXMgcmlnaHQgYmVm
-b3JlIGZyZWV6aW5nIG91ciBicmFuY2hlcy4gSGVuY2UsCkkgdGVuZCB0byBiZSBtb3JlIGFnZ3Jl
-c3NpdmUgZWFybGllciBpbiB0aGUgcmVsZWFzZSBjeWNsZXMgYmVjYXVzZSBJCmhhdGUgd2hlbiBt
-eSBwYXRjaGVzIGdldCBkZWxheWVkIGluZmluaXRlbHkuIFRoZSBvdGhlciBzaWRlIGlzIGEgbW9y
-ZQpjYXJlZnVsIGFwcHJvYWNoIHdoZW4gLXJjNiBnZXRzIHRhZ2dlZCBzbyB0aGF0IEkgY2FuIGRy
-b3AgYW55dGhpbmcgd2hpY2gKd291bGQgYmUgY3JhemlseSBicm9rZW4gYmVmb3JlIG91ciAtbmV4
-dCBicmFuY2hlcyBhcmUgc3RhbGxlZCwgbGVhZGluZwpmb3IgYW4gdXNlbGVzcyBwdWJsaWMgcmV2
-ZXJ0LiBPZiBjb3Vyc2UsIEkgYW0gZnVsbHkgb3BlbiB0byByZW1vdmluZwp0aGlzIHBhdGNoIGZy
-b20gLW5leHQgaWYgeW91IGV2ZXIgZmVlbCBpdCB3YXMgdG9vIGVhcmx5IGFuZCB3aWxsCmhhcHBp
-bHkgZ2V0IHJpZCBvZiBpdCBmb3IgdGhpcyByZWxlYXNlOiB3ZSBjYW4gbW92ZSB0aGUgcGF0Y2gg
-Zm9yIHRoZQpuZXh0IHJlbGVhc2UgaWYgeW91IGFncmVlIG9uIHRoaXMgKGVzcGVjaWFsbHkgc2lu
-Y2UgaXQgdG91Y2hlcyB0aGUKQUJJKS4KCkNoZWVycywKTWlxdcOobAoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
-aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2xpbnV4LW10ZC8K
+Claus,
+
+On Tue, Apr 6, 2021 at 2:12 PM Claus Stovgaard
+<claus.stovgaard@gmail.com> wrote:
+> The 512 bytes sector size is for me kind of oldschool where all
+> filesystems where working on this. Has there been any work in making a
+> translation layer for filesystems block sizes in the 128k or 1024k
+> range, like I would create the squashfs?
+
+In MTD we more or less gave up on FTLs, they are toxic (patents).
+
+> Alternative as I already using UBI for parts of the flash, I am
+> wondering about using this together with ubiblock. The question is
+> though if it is faster, and for the second part how it handle locked
+> flash?
+
+ubiblock will read up to LEB size'ed chunks. So, it should be faster.
+If not, I'm all open for improvements. :-)
+
+> One of the reason I am looking into the squashfs is the readonly
+> nature, where it fits with the locking capability on the flash chip.
+> The plan is to write the data as part of production, and afterwards
+> lock the flash for any other writes. How would UBI handle it, if the
+> flash is physically locked for writing?
+
+UBI can operate in read-only mode when the MTD is write protected.
+See MTD_WRITEABLE flag.
+
+> Any comments regarding storing some data (preferable files) in locked
+> norflash, where the read bandwidth much be close to the bandwidth of
+> the mtd device is very much welcome.
+
+I'd start with ubiblock plus squashfs or erofs.
+There is surly room for improvement, but it should be doable.
+
+-- 
+Thanks,
+//richard
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
