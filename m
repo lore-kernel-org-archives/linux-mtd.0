@@ -2,76 +2,65 @@ Return-Path: <SRS0=gt70=JF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67062C433ED
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Apr 2021 12:49:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AF61C433ED
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Apr 2021 13:27:33 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DAA8261105
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Apr 2021 12:49:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DAA8261105
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id 0951261107
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Apr 2021 13:27:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0951261107
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=IL/K8OBSJHgRCUPZFc5eOcAnw1R3t/fNNou5B0oM3/U=; b=QIctpwtDz+FLNFsMjUtBgal9n
-	LOithwWrlTY/NAk2sJKRqRnE59TO2vai8k5zWV/SdusAFV9RiCZskMVrCbYKKKmWx7so6bz6uXvmk
-	C6OLNUA0He9zPFQN0CbeB1/KbIkNPuEfRPSQ/NDRvHuNzTboLIExxXXQjqbvb1kN6xwoJ1XgkI1/j
-	Ne0KRV3LunK5qi1/l9NOu13coWD3VCBU0gTM+ccZS5L9FCWZ4EYfifFc82eKHOhhZakAdAz9C3Bcj
-	Qka9u1aovCMwSiAogItG+tOS87xEHhNiuaq97suaSwGhuLceqmtcJS80rld+XxAm4gCfg2nDPVQcn
-	cxM0fGG5w==;
+	 bh=5ja2foakADKnmgLZmBn2OlUE0QlTL36JJT23o6SeYXU=; b=Pbya59BezDTFpw/wHphRx/78i
+	/p4okBtRKa3uGZXfz10unseefLNLuVtH9LhLsFq6kiTMlD9CS4nofrnNpkOAZJUV/tZnNsMxn9FnR
+	fP5WDmEosgyx6tzk6zozkyQOUBxVZyUmyhR7wZXbcdF3V+Sk0ebQABePm8shrNa4ifh2rS55Ug5R0
+	GkmSSyyjK1+sqgVFUY1PkHbMPG8g7nr+vmxnGZE7VvY6l4c+r37LOzLndo2iYQQvuDmu2i+LAiCpW
+	clsHvuaxKMFcreuHqYm5BK8QTS/JmgWlPxFQVyN17PKYINBG3+UXrmoW8vzM0tvuapQHHUv715ZLf
+	7MlJQP8yw==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lUU5L-0082Us-6Y; Thu, 08 Apr 2021 12:48:35 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1lUUgA-0087WA-6R; Thu, 08 Apr 2021 13:26:38 +0000
+Received: from szxga04-in.huawei.com ([45.249.212.190])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lUU57-0082TA-Vi; Thu, 08 Apr 2021 12:48:23 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id A213E22234;
- Thu,  8 Apr 2021 14:48:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1617886097;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=yyglUwoXCuz0ysTDi3YJvq4eALpeWh9ZYLQqhbUo0lE=;
- b=eGMCh33PKQSr1IcC4SXPqEI87EmqQVMRbunXLG1RTcr9lRiR5UaXoGdiZKuegxfHu/1OCt
- JcX6cLF9kglN4YtT4ev96AzJ9Xdo6IpwuVpf5bCWaGk9jVYqLYi43qbI+LFUlpTWhUlITL
- HhV0t0QsGEoNoOGaWgBWjBZpm4FTYVU=
+ id 1lUUfv-0087Sq-Mm; Thu, 08 Apr 2021 13:26:25 +0000
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+ by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGMQp1WjJzpWXF;
+ Thu,  8 Apr 2021 21:23:30 +0800 (CST)
+Received: from [10.174.179.129] (10.174.179.129) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 8 Apr 2021 21:26:10 +0800
+Subject: Re: [PATCH 3/3] mtd: phram: Fix error return code in phram_setup()
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: <joern@lazybastard.org>, <richard@nod.at>, <vigneshr@ti.com>,
+ <matthias.bgg@gmail.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, <yi.zhang@huawei.com>
+References: <20210408111514.1011020-1-yukuai3@huawei.com>
+ <20210408111514.1011020-4-yukuai3@huawei.com> <20210408144610.0c0686ae@xps13>
+From: "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <cc02de9c-6315-3fa6-4b0a-4287b2713484@huawei.com>
+Date: Thu, 8 Apr 2021 21:26:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Date: Thu, 08 Apr 2021 14:48:16 +0200
-From: Michael Walle <michael@walle.cc>
-To: Pratyush Yadav <p.yadav@ti.com>
-Cc: Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>, Rob Herring
- <robh+dt@kernel.org>, Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel
- Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, Mark Brown <broonie@kernel.org>,
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-spi@vger.kernel.org, Lokesh Vutla <lokeshvutla@ti.com>
-Subject: Re: [RFC PATCH 2/6] mtd: spi-nor: core: consolidate read op creation
-In-Reply-To: <20210311191216.7363-3-p.yadav@ti.com>
-References: <20210311191216.7363-1-p.yadav@ti.com>
- <20210311191216.7363-3-p.yadav@ti.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <22d1042e061e355b0ddd122ef1228535@walle.cc>
-X-Sender: michael@walle.cc
+In-Reply-To: <20210408144610.0c0686ae@xps13>
+X-Originating-IP: [10.174.179.129]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210408_134822_252140_D7A1F90F 
-X-CRM114-Status: UNSURE (   8.13  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210408_142624_027895_A9D69353 
+X-CRM114-Status: GOOD (  12.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,24 +72,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2021-03-11 20:12, schrieb Pratyush Yadav:
-> Currently the spi_mem_op to read from the flash is used in two places:
-> spi_nor_create_read_dirmap() and spi_nor_spimem_read_data(). In a later
-> commit this number will increase to three. Instead of repeating the 
-> same
-> code thrice, add a function that returns a template of the read op. The
-> callers can then fill in the details like address, data length, data
-> buffer location.
-> 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-
-Reviewed-by: Michael Walle <michael@walle.cc>
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMjAyMS8wNC8wOCAyMDo0NiwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiBIaSBZdSwKPiAKPiBZ
+dSBLdWFpIDx5dWt1YWkzQGh1YXdlaS5jb20+IHdyb3RlIG9uIFRodSwgOCBBcHIgMjAyMSAxOTox
+NToxNCArMDgwMDoKPiAKPj4gRml4IHRvIHJldHVybiBhIG5lZ2F0aXZlIGVycm9yIGNvZGUgZnJv
+bSB0aGUgZXJyb3IgaGFuZGxpbmcKPj4gY2FzZSBpbnN0ZWFkIG9mIDAsIGFzIGRvbmUgZWxzZXdo
+ZXJlIGluIHRoaXMgZnVuY3Rpb24uCj4+Cj4+IFJlcG9ydGVkLWJ5OiBIdWxrIFJvYm90IDxodWxr
+Y2lAaHVhd2VpLmNvbT4KPj4gU2lnbmVkLW9mZi1ieTogWXUgS3VhaSA8eXVrdWFpM0BodWF3ZWku
+Y29tPgo+PiAtLS0KPj4gICBkcml2ZXJzL210ZC9kZXZpY2VzL3BocmFtLmMgfCAxICsKPj4gICAx
+IGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykKPj4KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+bXRkL2RldmljZXMvcGhyYW0uYyBiL2RyaXZlcnMvbXRkL2RldmljZXMvcGhyYW0uYwo+PiBpbmRl
+eCA1YjA0YWU2YzMwNTcuLjZlZDZjNTFmYWM2OSAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9tdGQv
+ZGV2aWNlcy9waHJhbS5jCj4+ICsrKyBiL2RyaXZlcnMvbXRkL2RldmljZXMvcGhyYW0uYwo+PiBA
+QCAtMjcwLDYgKzI3MCw3IEBAIHN0YXRpYyBpbnQgcGhyYW1fc2V0dXAoY29uc3QgY2hhciAqdmFs
+KQo+PiAgIAlpZiAobGVuID09IDAgfHwgZXJhc2VzaXplID09IDAgfHwgZXJhc2VzaXplID4gbGVu
+Cj4+ICAgCSAgICB8fCBlcmFzZXNpemUgPiBVSU5UX01BWCB8fCByZW0pIHsKPj4gICAJCXBhcnNl
+X2VycigiaWxsZWdhbCBlcmFzZXNpemUgb3IgbGVuXG4iKTsKPj4gKwkJcmV0ID0gLUVJTlZBTDsK
+Pj4gICAJCWdvdG8gZXJyb3I7Cj4+ICAgCX0KPj4gICAKPiAKPiBJdCBsb29rcyBsaWtlIHlvdSdy
+ZSBkb2luZyB0aGUgb3Bwb3NpdGUgb2Ygd2hhdCB5b3Ugc2F5Lgo+IApIaSwKCnNvcnJ5IGFib3V0
+IHRoYXQsIEkgbWlzdW5kZXJzdG9vZCAnZml4IHRvJy4KClRoYW5rcwpZdSBLdWFpCj4gVGhhbmtz
+LAo+IE1pcXXDqGwKPiAuCj4gCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6
+Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
