@@ -2,61 +2,82 @@ Return-Path: <SRS0=gt70=JF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1120C433B4
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Apr 2021 14:19:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC3F9C433B4
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Apr 2021 14:24:03 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 66A1A6024A
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Apr 2021 14:19:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 66A1A6024A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
+	by mail.kernel.org (Postfix) with ESMTPS id 46EEB61074
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Apr 2021 14:24:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 46EEB61074
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To:From:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Q6Q+9torZgGN8XLx6ce5gdRYOhvrmlEt7EtMy45HUB0=; b=KBi4H7ScIGEGy8
-	4/y1biF0wyh1amgBG94VDo6AdvmgmY1+CmwAYogqAxYoTotwXR8I2ud6m8xTcDFBNqVLcVj51DH37
-	Qdsk5kRekRsm4YmhmSyNH2g22GgmCWx4xOb3nvNI+m8A8GfFpJiQKD/DMTCt5RNWvuT+8iDv48OFM
-	4Tml8sYK2lIhHBMxnOyMOQORa9xSXMRn4vB+3zWC6Rn5ji6qL9vIaUjenv4bvEPoH8OKB9S3NBbcp
-	oOikkMUWI4EUCdutjANXqRtj1aJdXT6hABpZTvdbxJHHIM2U/iEXA5j2loiD0DozpCZ/lAc3v4YQ9
-	K4srm7qBBxVlRVbuKDKw==;
+	List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=q7CcSLI3UAtFbxqQF0qbOB/dYHd8FDmWPASQ8omBBKQ=; b=Z8bq7qCSahvo9da50f44J2hq9
+	M8ZsFq5NrHDCjP3S5YmRLkTjCqh7gfcz54lwg1ZmXkX/LbToUMPn562BfQxk71ADSBT7buy9qlIk6
+	NuRWzstJyKkSlyjdb036X3w2KCAkxGoG5yjySaQoRQqy12tzYthXY8meHPa9W8yEL8qTxP3nd7EAk
+	6b+qDRJ5+xYeqAjAPPZZzIuJc5rn/Y5PQ52X9cr/eMsLGdabviC9sAJ99eduo28FZLnF2YBZOTEWv
+	dVni+mUbSQeT5wApha1+0ma0jlEKkUxZot6E766g/QpNlRSXXp00y6+G4wczSMVkNWQK2FbTrEAus
+	1yTlYSLFg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lUVV7-008Ebv-3h; Thu, 08 Apr 2021 14:19:17 +0000
-Received: from szxga07-in.huawei.com ([45.249.212.35])
+	id 1lUVYv-008FG4-Qq; Thu, 08 Apr 2021 14:23:14 +0000
+Received: from mail-ej1-x633.google.com ([2a00:1450:4864:20::633])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lUVUt-008EZ4-4u
- for linux-mtd@lists.infradead.org; Thu, 08 Apr 2021 14:19:05 +0000
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
- by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FGNc22wz5z9wy8;
- Thu,  8 Apr 2021 22:16:34 +0800 (CST)
-Received: from localhost.localdomain (10.175.101.6) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 8 Apr 2021 22:18:37 +0800
-From: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
-To: <zhangxiaoxu5@huawei.com>, <yukuai3@huawei.com>,
- <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
- <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: mtd_oobtest: fix error return code in mtd_oobtest_init()
-Date: Thu, 8 Apr 2021 10:24:13 -0400
-Message-ID: <20210408142413.748040-1-zhangxiaoxu5@huawei.com>
-X-Mailer: git-send-email 2.25.4
+ id 1lUVYs-008FFY-Du
+ for linux-mtd@lists.infradead.org; Thu, 08 Apr 2021 14:23:12 +0000
+Received: by mail-ej1-x633.google.com with SMTP id u21so3324437ejo.13
+ for <linux-mtd@lists.infradead.org>; Thu, 08 Apr 2021 07:23:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=vwtK80T1DcvdQa1FAI2jtGEjdTtfVkLM2SIvSNWaLIk=;
+ b=ACNfgd1QArqPlTQktYH1Ex1bCfKfu8UZXKId8OgiiQeobA5J1XUDpA19Ak3FHyE+d/
+ pWruGOAtodhnbVZeFRykcWUlbYBAH5/YrralglWc3fn4yq49cApM+z4nur0dTHBPQ2iI
+ Csx8LMKGC6ulwXz5wMufV1e1VZJB+0ardOxINsrcl0nlLyTXm4nMe/f3kudT8WJ0oSjv
+ YZFAqeXIs9wjZkn11lvVmi1wnUR4GOjtfLXDh1SqjztwPVFHl7Nyupe6uKhZhKA1NeOL
+ +KqqLIxNWfYOe3KEhs5UbM0Uod0S8LZB1VDzb54TJbr16x9l/b5XEUVZ90aWG7pyVjPx
+ 5WRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=vwtK80T1DcvdQa1FAI2jtGEjdTtfVkLM2SIvSNWaLIk=;
+ b=dyMeb4s6mttGIfH+SMSSuCdC83yU7PVZ18YAhBGXSNr5jL9F44CaDtR2CFQkMI3Gta
+ yMqiX0p9ts+oedJJDHB245p883CCoLJW2u6f2FmiJOTm4LU3WSFAReWITW1Ru9Jtfph4
+ SOClR6oX/EXzIxV2tYu4ezYZegobST+Bue8Eb3dhSaAy2nK+ZBYAlXcC6R1OLou7RB0D
+ jEFqztKEAPAjSenR09aCKZ81QAYjbDVnC1b2t94OsCih1ZMqta/weFOKE1gz6y0oXg/q
+ ex4c7hffgToxvcT2TZN9PJjJBFrJYcWrYFfbJvb0KnydrkXxrhQYman2dHI4mFIZoq+q
+ 9STQ==
+X-Gm-Message-State: AOAM531ITv+uhg8UVC42KqSrhE/pdxOLAXh/FpSpOsbr8hZVQ6cEOz75
+ JvYRG67efR/4E7ANGGfZPgD0Tj/T9qcMOKM2lw==
+X-Google-Smtp-Source: ABdhPJxMq2t3j6t2QcS2dptIWdOfv1qy4Wta+x7KAGHEg0FEAvg7HWG8a1JiK/VOehoscBFHrKfJHN0Lf709gBcFqBI=
+X-Received: by 2002:a17:907:935:: with SMTP id
+ au21mr10494140ejc.362.1617891788931; 
+ Thu, 08 Apr 2021 07:23:08 -0700 (PDT)
 MIME-Version: 1.0
-X-Originating-IP: [10.175.101.6]
-X-CFilter-Loop: Reflected
+References: <20210405152935.148129-1-rsalvaterra@gmail.com>
+ <CAFLxGvwhtRY-6kT-sN=AgjvyssHb5qdTS6WQHkhKu3YrPuTkdw@mail.gmail.com>
+In-Reply-To: <CAFLxGvwhtRY-6kT-sN=AgjvyssHb5qdTS6WQHkhKu3YrPuTkdw@mail.gmail.com>
+From: Rui Salvaterra <rsalvaterra@gmail.com>
+Date: Thu, 8 Apr 2021 15:22:57 +0100
+Message-ID: <CALjTZvZrn=yngbEcS8JCKaF_yW8Sn00vvy6cAODkr46UJvD7gA@mail.gmail.com>
+Subject: Re: [PATCH] ubifs: default to zstd compression
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, 
+ LKML <linux-kernel@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210408_151903_844556_05BDA920 
-X-CRM114-Status: UNSURE (   7.86  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210408_152310_513944_C720E960 
+X-CRM114-Status: GOOD (  11.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,30 +94,23 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+Hi, Richard,
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: zhangxiaoxu 00467499 <zhangxiaoxu5@huawei.com>
----
- drivers/mtd/tests/oobtest.c | 1 +
- 1 file changed, 1 insertion(+)
+On Thu, 8 Apr 2021 at 12:00, Richard Weinberger
+<richard.weinberger@gmail.com> wrote:
+>
+> I was about to NACK this patch but by looking at the diff I realized
+> that you change
+> the default compressor only for the default filesystem as created by
+> UBIFS itself.
 
-diff --git a/drivers/mtd/tests/oobtest.c b/drivers/mtd/tests/oobtest.c
-index c71daa89bfce..590d619d2760 100644
---- a/drivers/mtd/tests/oobtest.c
-+++ b/drivers/mtd/tests/oobtest.c
-@@ -701,6 +701,7 @@ static int __init mtd_oobtest_init(void)
- 			       (long long)addr);
- 			errcnt += 1;
- 			if (errcnt > 1000) {
-+				err = -EINVAL;
- 				pr_err("error: too many errors\n");
- 				goto out;
- 			}
--- 
-2.25.4
+Yes, that was the idea. :)
 
+> Queued for the merge window. :-)
+
+Thanks a lot!
+
+Rui
 
 ______________________________________________________
 Linux MTD discussion mailing list
