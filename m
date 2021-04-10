@@ -1,97 +1,104 @@
-Return-Path: <SRS0=Kp2M=JG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=+XBZ=JH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4949EC433B4
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Apr 2021 08:51:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B78E3C433ED
+	for <linux-mtd@archiver.kernel.org>; Sat, 10 Apr 2021 18:01:52 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C769A611AF
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Apr 2021 08:51:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C769A611AF
+	by mail.kernel.org (Postfix) with ESMTPS id 44FC7610A4
+	for <linux-mtd@archiver.kernel.org>; Sat, 10 Apr 2021 18:01:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 44FC7610A4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:References:
-	Cc:To:Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Date:Cc:To:From:
+	Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Ekl4aQb5/zXYrxymfnsDu8k+vMGDu3TuUDrXiK5SzvI=; b=XLTxo7XXkiOm+rXiJ1FGKJzhn
-	MUz9MZWO25FJJQG10nZTvtRDxi5w0T0VKV1MG+tpbEWaQK9cYvUFeBjgX6OteR5GX38NxeupLCiLL
-	/KClZDhrIG62EVTfD9bnB2MZVuGpDUQKaoXguCtDhAlxKvd5n/MXDl/Np1TmHWX467XMGd3olfdAV
-	frLdty1ShGCdwW94PZTruHhZBN40XPMpqRMTFeknaVUY4Tas9BJWUIimgpm5aJeUAdqyeJWeVfs3h
-	xr+llmnO/sKeU82L/DD2ssA1e4HnGaLWK6IEgNzNrH3BY84xurAsojXv9LkXjHiKr360Av8pyefWj
-	s/H0+L8rA==;
+	 bh=H4wKiVy+sFAPT5yDQnxuVzr+UpUOP2RIORGBNEuMlMI=; b=ptjugBcQDJArHFG1+5wcQNihL
+	utGWfgDYse432aX4g7Mj0jVsIgYgCB4Ye5mK2AaC6NNC9YT3Zl1LSEj5HRhw+d47rBDyKk5xkV0EZ
+	ae2IDof9flyWHOax7tet5d1Ft7svw63zIEpEaZruOxSVJXbhMBg190IwPCo5a5kea6KiFuhShF2PJ
+	sfn3SvkF9zVORz61XYyNRxbCxn9zBl3Tihqj8ONyhZngl/S3eBg7WZ9m9Y/3HmzwYMbR8hzTzIDTc
+	dXArFoPJGmw44Pi5rYE6Qmp4lTChXhK9suZw3ScZbwaID6CX0ERS6t1kbeDovKWyZSZu/6nh/hhOz
+	YyNhSENKw==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lUmqB-0006aI-RM; Fri, 09 Apr 2021 08:50:12 +0000
-Received: from mail-pg1-x535.google.com ([2607:f8b0:4864:20::535])
+	id 1lVHuE-003E5m-FX; Sat, 10 Apr 2021 18:00:26 +0000
+Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lUmq6-0006ZY-B6
- for linux-mtd@lists.infradead.org; Fri, 09 Apr 2021 08:50:08 +0000
-Received: by mail-pg1-x535.google.com with SMTP id w10so3387876pgh.5
- for <linux-mtd@lists.infradead.org>; Fri, 09 Apr 2021 01:50:05 -0700 (PDT)
+ id 1lVHu6-003E5a-JG
+ for linux-mtd@desiato.infradead.org; Sat, 10 Apr 2021 18:00:18 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+ MIME-Version:Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:
+ Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+ bh=hIiOdg7nNs+J2rKDJaRQDPMiKhpx3QV+QbhoM+oW0vA=; b=XsicEAyLvpqc6ZX2jzIIBYOmSz
+ FGqnRU47+OScvG3Dha5IXE6uBmCAyV1I5PtqQ941LtHSTAvi4xH8b8as59FFKTvskasoAu6b8ZX5G
+ FhMuY7avayfk/b55UYSRUJJSJOMLjlEBaH2F5XdnNm1tkpXHAuar6/R8v51+66nGEfGjS+kd5nqD7
+ +E2CL3JjZ8WrIMAabKB6LN57ITkwAUm+hqBZqELq+T/jnemOR4O96nQiyksz6jLkl41AnOPb/Q3Z5
+ zbWcJAEJ+dqmPwVMA7BLpa979feFPqe318x4ISD1M463zgcX7ADqvbtrZDCFUAyMz6wgSB0CkbAZc
+ SIQOSGzg==;
+Received: from mail-ed1-x536.google.com ([2a00:1450:4864:20::536])
+ by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
+ id 1lVHu2-005Cec-S4
+ for linux-mtd@lists.infradead.org; Sat, 10 Apr 2021 18:00:16 +0000
+Received: by mail-ed1-x536.google.com with SMTP id s15so10192301edd.4
+ for <linux-mtd@lists.infradead.org>; Sat, 10 Apr 2021 11:00:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:subject:to:cc:references:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=ebGfCJ3Uwy7H2YKlGcVfw+Q4GO6pMAusKNByNozcMcE=;
- b=pfMZXo9d/wlhJZyrphY0s5EOeI4YrMPYYz4NpRNUBAJzY/7olXSzNbtsQzFk4sKchy
- 4NvA20RhCzAl8JkoPzQpCjisq7L7bbyNcx9nbVZxroQFnP8w0JvMsPaWum1sVCOFzsBZ
- SO/4cdlea+Lrgf/pZUUOi0fkyGaTLfOABUmdrxNKjzu2M953SKZNm+stpL+EXnoV0OcT
- dlnC0UvlFrB4K9ePCPIUHiO66PRue78lQN+PgO6zJ030g5m01TqxtZc1MGurV98prxoa
- MoSEL6vsaL9i6nbXYpB8lqZx21WKgn2k5CX5OAwkwpDewEQ0X9wPCukvgExDghYEg4EI
- FPEg==
+ h=message-id:subject:from:to:cc:date:in-reply-to:references
+ :user-agent:mime-version:content-transfer-encoding;
+ bh=hIiOdg7nNs+J2rKDJaRQDPMiKhpx3QV+QbhoM+oW0vA=;
+ b=Z9X6Je1dF+wK/BkEun8YXo4eHIW2tfXteXzN6XqHU1rdtTi7ilN5LkGI8HuqI3T0S2
+ TnohwA+eZiXBp8EDn+s+DvUQh+qZmzSfS8pdfjjK9Hff//5ckGNUjPLMyYqWG4lLqe62
+ W1aM4xHs49N/Dim0BQjdKog9BlSW86+FP4X6QldE/bAfBVrU1WfIfLV49k/AJiX3UuWK
+ jaS3eEcvrPoB03mpRKPU57gvZuA+P4X++RNt35kMi7el5ylo+OJBu5IcGEBADpp9y6kd
+ h21Bu1nNmhmsPmSEbhNvo4vzskl678b7Nt7+xKnZzGXpowkU12/YvOU125ObuCspnUUf
+ zUEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:subject:to:cc:references:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=ebGfCJ3Uwy7H2YKlGcVfw+Q4GO6pMAusKNByNozcMcE=;
- b=JplM6LZSqILWl3SauHKoXyNY/UZucyHY7sJH+M7qKScze/xidgDijQwONuQ0yVV6rz
- CQKuUz5TzLTrl1jZNadjtyRVOU+agxC7vtBtvo/Dexw5qc7FPV7lUgziFUw/rhVf/3Iz
- KzCIAZWDnjANEfoa1bFtgFJtTPR+rLmgsnX7hsZ5IEMKIthrhOHMu5b1V6MkFnzhRWyK
- KD0pl3JFv3DLdhgpaUKtfgAfBNz6uyu3avtmAjcLEkD/SEY/gt/fU6cnHF0/5iyyiELw
- TpsArmqx3FMA/6LXl0UMUy9AxDpwrNv/cyutSEFFXUpG42He0F0qswy7HQbthdoYafSu
- +1gA==
-X-Gm-Message-State: AOAM531yBRa+1wVAFoaA1Om9vl5yc2nduS1qbl2vLv0qhLx657j2Mv0S
- QqQLVR2VrLi62lqoPII0W0I=
-X-Google-Smtp-Source: ABdhPJzvmZpwE6SsQkhznBTwYyFXd65RjhURIvg6p4SRbPKYfj9Xs3VyM/x5DrBMN09np7ZB/H35Kw==
-X-Received: by 2002:aa7:990d:0:b029:21d:7aef:c545 with SMTP id
- z13-20020aa7990d0000b029021d7aefc545mr11457969pff.77.1617958204143; 
- Fri, 09 Apr 2021 01:50:04 -0700 (PDT)
-Received: from [192.168.210.40] (zz20174137476F6254EB.userreverse.dion.ne.jp.
- [111.98.84.235])
- by smtp.gmail.com with ESMTPSA id l2sm1627786pji.45.2021.04.09.01.50.01
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 09 Apr 2021 01:50:03 -0700 (PDT)
-From: Takahiro Kuwano <tkuw584924@gmail.com>
-Subject: Re: [PATCH v4 0/6] mtd: spi-nor: Add support for Cypress
- s25hl-t/s25hs-t
-To: Tudor.Ambarus@microchip.com, linux-mtd@lists.infradead.org
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- p.yadav@ti.com, Bacem.Daassi@infineon.com, Takahiro.Kuwano@infineon.com
-References: <cover.1616130675.git.Takahiro.Kuwano@infineon.com>
- <561ec6a4-5e64-8a82-043e-9e825aa00a3f@microchip.com>
- <50b9d6c9-c501-bc08-7f39-5e49b9e76782@gmail.com>
- <b7e1a323-ab9d-5892-ae6e-7cf420e2885b@microchip.com>
-Message-ID: <909e592f-40be-d644-e311-e9c0eb6d35a1@gmail.com>
-Date: Fri, 9 Apr 2021 17:50:00 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+ h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+ :references:user-agent:mime-version:content-transfer-encoding;
+ bh=hIiOdg7nNs+J2rKDJaRQDPMiKhpx3QV+QbhoM+oW0vA=;
+ b=E5cZGxqvZWrKfpzYCIMKtymNTAuOMOnLyHFlJzOYFJkup5dOT/dJb0Q7gCp/wpB0rK
+ ZMcgYYx3DN2NzzOE1rD8lBVa2+F815sPkZqVTqYh0Tz1Wp0P0elmxSfvOBKl124L9V8z
+ P/UsTRDl0qQc7R5IyvOJS2mBgVOCotYiYREmss+76iR61/YuRAYq5Gu8cBcRdl0ueOVf
+ VEgHUYEooQ85GRoPez8bi4FCI3GabZtX8pVEpreIjtYJRw87I1vIuxNkGBRerTx0O8g3
+ ioslO3aakFTCspO9DqOgyWCglT7tNTr/gQBNN/yo/NZCpLQsN3IzhdqDw7vdjoWaGcxG
+ 9k1g==
+X-Gm-Message-State: AOAM5336ioS6oPAem/x66pPtBv0x2XnBAT8W9X/pL6dm0k6MWaAgFnz0
+ mHdRcjpSSAyrO9KQ+TsAvE0=
+X-Google-Smtp-Source: ABdhPJy92DhlnvniLwdyTlLTyUDv+RmIu1KX1x9C6/hDAjUBR8hxxIxU+bjEhuzNIQmEz3x2LIH8+w==
+X-Received: by 2002:a05:6402:22f9:: with SMTP id
+ dn25mr8109096edb.171.1618077612769; 
+ Sat, 10 Apr 2021 11:00:12 -0700 (PDT)
+Received: from [192.168.1.70] (2-108-107-206-static.dk.customer.tdc.net.
+ [2.108.107.206])
+ by smtp.gmail.com with ESMTPSA id lk12sm2977061ejb.14.2021.04.10.11.00.12
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 10 Apr 2021 11:00:12 -0700 (PDT)
+Message-ID: <508a60edab64db925d042581add513704c3b677e.camel@gmail.com>
+Subject: Re: mtdblock is slow compared to mtd device
+From: Claus Stovgaard <claus.stovgaard@gmail.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Edgar Lakis <ela@phaseone.com>, Martin
+ Egholm <meg@phaseone.com>
+Date: Sat, 10 Apr 2021 20:00:11 +0200
+In-Reply-To: <CAFLxGvzRWYTMsh0-476k_zBnkeTHDUJox2u82+qfdUpO9-fBZw@mail.gmail.com>
+References: <34544eb22f7661f6fb64af3ed99b1c2092b99a31.camel@gmail.com>
+ <CAFLxGvzRWYTMsh0-476k_zBnkeTHDUJox2u82+qfdUpO9-fBZw@mail.gmail.com>
+User-Agent: Evolution 3.38.4 
 MIME-Version: 1.0
-In-Reply-To: <b7e1a323-ab9d-5892-ae6e-7cf420e2885b@microchip.com>
-Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210409_095006_446981_A0C7686E 
-X-CRM114-Status: GOOD (  26.97  )
+X-CRM114-CacheID: sfid-20210410_110014_930963_EEEDDB5B 
+X-CRM114-Status: GOOD (  27.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,95 +115,63 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 4/8/2021 2:35 PM, Tudor.Ambarus@microchip.com wrote:
-> On 4/2/21 10:13 AM, Takahiro Kuwano wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> Hi Tudor,
+On Thu, 2021-04-08 at 09:26 +0200, Richard Weinberger wrote:
+> Claus,
 > 
-> Hi!
+> On Tue, Apr 6, 2021 at 2:12 PM Claus Stovgaard
+> <claus.stovgaard@gmail.com> wrote:
+> > The 512 bytes sector size is for me kind of oldschool where all
+> > filesystems where working on this. Has there been any work in
+> > making a
+> > translation layer for filesystems block sizes in the 128k or 1024k
+> > range, like I would create the squashfs?
 > 
->>
->> On 4/1/2021 3:09 PM, Tudor.Ambarus@microchip.com wrote:
->>> Hi,
->>>
->>> On 3/19/21 8:51 AM, tkuw584924@gmail.com wrote:
->>>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>>>
->>>> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
->>>>
->>>> The S25HL-T/S25HS-T family is the Cypress Semper Flash with Quad SPI.
->>>>
->>>> The summary datasheets can be found in the following links.
->>>> https://www.cypress.com/file/424146/download (256Mb/512Mb/1Gb, single die)
->>>> https://www.cypress.com/file/499246/download (2Gb/4Gb, dual/quad die)
->>>>
->>>> The full version can be found in the following links (registration
->>>> required).
->>>> https://community.cypress.com/t5/Semper-Flash-Access-Program/Datasheet-Semper-Flash-with-Quad-SPI/ta-p/260789?attachment-id=19522
->>>> https://community.cypress.com/t5/Semper-Flash-Access-Program/Datasheet-2Gb-MCP-Semper-Flash-with-Quad-SPI/ta-p/260823?attachment-id=29503
->>>
->>> Takahiro, looks like I can't access the dual/quad die full datasheet, not enough rights,
->>> even after creating an account.
->>>
->> My colleague helped on this. I hope you could access the datasheet.
-> 
-> Takahiro, I can now access the datasheet, thanks! I see that Erase Chip
-> requires an address. Is the erase chip with address common to other
-> manufacturers? We'll have to update the core so that these flashe
-> benefit of the erase chip opcode. Otherwise we'll have to set
-> SNOR_F_NO_OP_CHIP_ERASE at flash declaration, which I don't really favor.
-> 
-I overlooked the erase chip for multi-die package parts. Thank you for
-pointing this out. I checked Micron MT25QL02GCBB datasheet and found the
-part supports DIE ERASE (C4h) instead of standard CHIP ERASE.
-https://media-www.micron.com/-/media/client/global/documents/products/data-sheet/nor-flash/serial-nor/mt25q/die-rev-b/mt25q_qlkt_l_02g_cbb_0.pdf?rev=43f7f66fc8da4d7d901b35fa51284c8f
+> In MTD we more or less gave up on FTLs, they are toxic (patents).
 
-To support die erase, the core needs to know die size. That will initiate
-a discussion about overall support for multi-die package devices. I think
-it's better to create another series of patches for that. In this series,
-I would set SNOR_F_NO_OP_CHIP_ERASE as a temporary solution.
+Nice information. This means that it is not with FTLs one need to work.
+Just FYI, my coworker Edgar did a quick test of mtdblock with changing
+the 512 block size to page size of 4k (above the page size it did not
+work) resulting in an improvement from around 4.2 MB/s to 33.2 MB/s for
+our flash
 
->>
->>> How are multi die ops handled when crossing a die boundary?
->>>
->> The existing erase/write ops are done by sector/page size alignment and
->> never cross a die boundary. The read ops does not care about die boundary
 > 
-> What do you mean? What will happen if I request to erase 512K starting from
-> offset (die0 - 256K)?
+> > Alternative as I already using UBI for parts of the flash, I am
+> > wondering about using this together with ubiblock. The question is
+> > though if it is faster, and for the second part how it handle
+> > locked
+> > flash?
 > 
-I meant the erase and write requests are split into multiple ops based on
-sector or page size. So, if you request to erase 512K starting from there,
-two erase ops will be performed. One is for the last sector in die0 and
-another is for the first sector in die1.
+> ubiblock will read up to LEB size'ed chunks. So, it should be faster.
+> If not, I'm all open for improvements. :-)
+> 
+> > ...
+> 
+> UBI can operate in read-only mode when the MTD is write protected.
+> See MTD_WRITEABLE flag.
+> 
+> > ....
+> 
+> I'd start with ubiblock plus squashfs or erofs.
+> There is surly room for improvement, but it should be doable.
+> 
 
->> but still works because the Semper dual/quad die parts continue to output
->> data from next die when crossing a die boundary.
-> 
-> cool
-> 
->>
->>>>
->>>> Tested on Xilinx Zynq-7000 FPGA board.
->>>
->>> Have you tried to erase/read/write multiple dies with a single request?
->>>
->> Yes, I did 'mtd_debug erase/write/read' with address ranges that involve
->> two dies. You can find errata info in the datasheet about cross-die read.
->> My test does not cover the trigger condition of the failure actually.
->> I will submit another patch that work around the issue as needed.
->>
-> 
-> How will you differentiate between silicon revisions?
-> 
-No way to differentiate. So, if I apply a workaround like splitting a read
-request into two read ops, that is performed for newer silicon even though
-it is not needed. I would like to implement the workaround once I find it
-is a real issue on many systems.
+Thanks for all your help. I did a test with ubiblock together with a
+squashfs. This improved the performance significant. A quick dd on the
+ubiblock device resulted in around 70 to 80 MB/s for 1Mb blocksize
+depending on the amount of data.
+I will look into the MTD_WRITABLE flag later. As I am currently forced
+to use an older kernel in the form of version 4.19, I will wait and
+hope that I can get it upgraded to 5.10 later this year. Therefrom it
+would be easier if I could get time to improve the performance in the
+code, so it is more upstream friendly. At least I can always hope that
+I can have the time for it.
 
-Best Regards,
-Takahiro
+Thanks again Richard.
+
+/Claus
+
+
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
