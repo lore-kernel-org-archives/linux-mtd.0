@@ -2,186 +2,83 @@ Return-Path: <SRS0=VhFc=JI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-20.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 771D4C433ED
-	for <linux-mtd@archiver.kernel.org>; Sun, 11 Apr 2021 08:07:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE9B3C433B4
+	for <linux-mtd@archiver.kernel.org>; Sun, 11 Apr 2021 14:34:01 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E78BA611C9
-	for <linux-mtd@archiver.kernel.org>; Sun, 11 Apr 2021 08:07:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E78BA611C9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
+	by mail.kernel.org (Postfix) with ESMTPS id 394AF610CA
+	for <linux-mtd@archiver.kernel.org>; Sun, 11 Apr 2021 14:34:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 394AF610CA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Content-ID:Message-ID:Date:Subject:CC:
-	To:From:Reply-To:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=lF7wKvnyidJK50djlnNEUbWHVC4ZxzPOJQkJ/ygciRA=; b=mkmleumqQifdYGdQDpQtj1KcCt
-	qUKmlGjblXRYaO/ED4P4/aJ7/f+kOcHWdRUvBfqh0hMrysy9lGJfG200VanA6/LpA3JYE+m2wKIzH
-	gqiCJLQdRM9mm6GjhkpwoqJSE7KRyMme20GbUI7dtlSmGSAX9UYhFXJrlQz8gT1fetFxCX5J7AXGP
-	VcKeXhZ1bq6FGhjfvoNZiVRhR2wbhOwHZ1Rhakwi3N7Su09w/AhxZ84zI8C23ENEAdAr9AFE1t8cF
-	uKz87XZHkpQK5iKAZz+6fq9BIOuLawXXTnozssSMabiTo2tBrp3h5x7JjD6H3y4rGxf2SnwP+DVKO
-	QxY/SedA==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=1RKA8LOahKb5BSkxcRuaFwrDS/TF6+k5kOAHbio6DBs=; b=pVAezbz9t3oAdgmtY2ibcNGE14
+	wO60WN99c/XygiGWEbhxXO67S+QBTBV/8OxZdEc5fJq5Lwizju8XGBI79+oDSAcW1RDNVU5kUk09y
+	5tyymeIaSL9cPQn1GqJm3lkxbGwVcKCQQo685Lb3oKz7+O6b7qcWw2sNyBZxdE0kBr7MMb3k9m2aM
+	95Fdiiqs5G3k7H/3OpcbUY5uAyaRxhPSOHxYIfn5cqYm6YSJGiXS5SVjMElvKfeswWi4xljDUPgvV
+	AsVM4FvrgBcqj2jCg4bJ+4EBaE8BSbwJ8As7AUMEd8OSfkFlNKX9iZVjDWGtAlhZgTXqqN2kuQ9Yh
+	EvcdhD9w==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lVV7C-004963-N1; Sun, 11 Apr 2021 08:06:42 +0000
+	id 1lVb9E-004ZmG-RB; Sun, 11 Apr 2021 14:33:12 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lVV79-00495u-AY
- for linux-mtd@desiato.infradead.org; Sun, 11 Apr 2021 08:06:39 +0000
+ id 1lVb9D-004ZmB-JS
+ for linux-mtd@desiato.infradead.org; Sun, 11 Apr 2021 14:33:11 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=MIME-Version:
- Content-Transfer-Encoding:Content-ID:Content-Type:Message-ID:Date:Subject:CC:
- To:From:Sender:Reply-To:Content-Description:In-Reply-To:References;
- bh=vey7Qw7lZQaJnLCW7BtCR41rqeA8SaumoeJafgeSavI=; b=Q32pPJveb8r+fQI7/c4UYVpnkk
- UDneYQW7a5oke3gWDRB17c7gaukRKiay1O6PMQiHvkCpdBWZqsYjhhf+H0noXq/at2pksMAF2r1fT
- 309k57q8TMTrgl09Clh5Tsy895oUN0ptddVd6jRSJ27tkooAQgEpSvBkKmKegapcEObbXyl3vbYiZ
- GvSnhoOCih5VTmJqsFXHvfcLt9LlfZltwYdLnZV8kfmduERHghZYbq1cAUjLcdpcKZeyLipeck+DQ
- xFDilEjKZZYTnMaEUMF9cKxep3vtGA/o438F+ICKvSPQ4VVAfIXRfT8NpfTExCEW/xrX6vcTFG5J3
- zjREJeng==;
-Received: from esa.microchip.iphmx.com ([68.232.153.233])
+ d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+ MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+ Content-ID:Content-Description:In-Reply-To:References;
+ bh=B/5t1SxxF6rSHEeTttiOctJcoCH6tFA5IgHWiuwXN9s=; b=Xz9PIg9KQfIDMu9rRBPwDThzx7
+ k6J2SE/Xzgk10MQ5UYsaDQH9CVgsBEDCGcW26cvqL+ay+75UNtlZ7euaTI93I1lbEwf4OvRysHDD5
+ EmUoToBU5MY4JgDLA79Z3w7PUat/PDBS8UT2aTH363fJ0vxmiZMMI+94oSoq10/xokTr07lu/7D7z
+ Re1nxBUVI2yN0XTAP9j67C1fVyQSkuOnNUC7hHmveDbtUzJNIYwCa2AgAx+eR1oXdqpPuawaYCJYJ
+ Tjcsi4F/BnzEniepsejXfFAVOfLcYayCSL/THJGmuC9mhCtE8ra6lNapHtAsiV4ss61cgatYXx9uQ
+ kwRWjYAg==;
+Received: from mga14.intel.com ([192.55.52.115])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lVV76-005PDP-HL
- for linux-mtd@lists.infradead.org; Sun, 11 Apr 2021 08:06:38 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1618128396; x=1649664396;
- h=from:to:cc:subject:date:message-id:content-id:
- content-transfer-encoding:mime-version;
- bh=vey7Qw7lZQaJnLCW7BtCR41rqeA8SaumoeJafgeSavI=;
- b=1Ts9/IXkg2fhMO0TKQC/QMjHRxPLjo6O9n3Mkdx85Zd/rWbsQ8iGd1/N
- qvWd3MCQB3DathsHy9TNYXDfRUlm0RLOPmYZRvNietVuWdFE3XdIuKACM
- /+KCV7XroQRwNqVl8COHGcuKC0FS2o31KgCXcdbMs5T9oB9onYFm9rjkD
- OKZm2I54EDCMlwEgYJYOYcW4pTObM4TLD8RJ1l8qnaeM6qK9FQHrRyDu8
- zbhsMbVADscRXfMQai4d7Qwp/6pfPxaU6Bs9ND7KZ9DFl31Gh1UD8yMCm
- Sy5QAJTugcd46lwYg6N4gqn5Dp1EKYGadbq/nNsoZ4EbMMha0gpCAbjSO A==;
-IronPort-SDR: zu9znHBpXecN3bzjXeVtFIeuqwsP537F13rADwrsglk4cyBBQZ9N9BmWQ2EP6KOVKS1e7qkS01
- bqnVx5rrEWNI39x9BDuU5q3QbDDc2F8UE3Fd6zk72qXTIG36Rq0HfGY+xRldOG2c3Al5CuQsc8
- 6DE12y7GjS+b4sPQsOh00ddB+Gi7xgu+E8JVE31pjle2dHQMh00JH2KUh+kyVNoeNc7j3nf7+Y
- GKVwzHF6fJ2ocTakpqK+pgb+oF5y+CIMDqYEZ3nV2xIBEq9bK4RdW5g4qtbk2UxbTuZ8ChJmQR
- nqo=
-X-IronPort-AV: E=Sophos;i="5.82,213,1613458800"; d="scan'208";a="122580553"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 11 Apr 2021 01:06:35 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sun, 11 Apr 2021 01:06:35 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.71) with Microsoft SMTP Server
- (version=TLS1_2, 
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2 via Frontend
- Transport; Sun, 11 Apr 2021 01:06:35 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ac2ukAJtk77Qw/Id1PiQxOl2oCL6VLVGOzIIU9zbQwM3VV62C49n/WrZZMmLXPSva+Z+qQ0bHsl91RZ8Yyx4xecDRfOGW8k59nbKYZoc2+nw/C400bhpfRA55zYEl4L4QpQRXrvxhXOkIZW7YuhcpNmDvg5b8TcZvYH9yyjAddcB9WZZDVDnrrO9mggyDb0R1RxhR4iPlKLEVpEF8pX4borLqSKAvPdDHpbSoqkUARoHWKl+tXC0hvEXdOLFxNXI/d2vZDRJWf0qa8XOx+Iqez3rOn4oiOI2KUrPl6zYDhwOdpRVWG3Ov8HtRJ0sDdLdg87iM/NaMlTdM8LuM0PKZw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vey7Qw7lZQaJnLCW7BtCR41rqeA8SaumoeJafgeSavI=;
- b=YySt0Trdl2h1/utvcN6imqdSmKvdvQyWAxHvptGV/l8HMtmYwN5ukAaWxNlzkTVG3J/YH+927ESPHbSWyYxECM+wW8rzfS9VoYhk3LDRr4N0eDtWtdljvzjL4XOWu0HTmNaVnQgEOi4b3X+IrlZiZxMGC8yHR4IRkfVpbb27cq5p7V7AP44bNETMPp9EhkTir+/xX/4H8HeXGwRG4nB7DCUkZ7VprfAvuDp8Nm9qeyJDqZRp5vlg+kYmnIxF9y0/wIWKJVowonZMDKsyzwszeodyJbro9tXN2nBw91LXdSxxDQ39WvnsG7vJvOD4fcYqWNhnvDNTnjPiMGX1IYaj1A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vey7Qw7lZQaJnLCW7BtCR41rqeA8SaumoeJafgeSavI=;
- b=J2OdHvCHyO+WI1557wt41GIaG8AIQMZDigLYJIe5sGDp0dWIcPFqiP9lJnjd63zH7FebIzeNhZvxkV4M3WndHxL/NtADchvTnUHsGehjZdF7tPNaxMp9FLwBCPEtRbO9PZdJSEQ06m1fJCwlCFkwmglFo5TgrMwb3fL2UsJN3Io=
-Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
- by SN6PR11MB3023.namprd11.prod.outlook.com (2603:10b6:805:d3::14)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17; Sun, 11 Apr
- 2021 08:06:32 +0000
-Received: from SA2PR11MB4874.namprd11.prod.outlook.com
- ([fe80::49e5:8be7:95d:b6a9]) by SA2PR11MB4874.namprd11.prod.outlook.com
- ([fe80::49e5:8be7:95d:b6a9%4]) with mapi id 15.20.4020.022; Sun, 11 Apr 2021
- 08:06:32 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <michael@walle.cc>,
- <p.yadav@ti.com>
-CC: <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>
-Subject: [GIT PULL] mtd: spi-nor: Changes for v5.13
-Thread-Topic: [GIT PULL] mtd: spi-nor: Changes for v5.13
-Thread-Index: AQHXLqmVUAVlGMGTpUqZbVaRuM3mGQ==
-Date: Sun, 11 Apr 2021 08:06:31 +0000
-Message-ID: <796d9f27-5408-eca7-a6c8-b6131e824837@microchip.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-authentication-results: nod.at; dkim=none (message not signed)
- header.d=none;nod.at; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [79.115.63.1]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f6d5bd3c-31f0-49c5-4ffd-08d8fcc0b7cf
-x-ms-traffictypediagnostic: SN6PR11MB3023:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SN6PR11MB3023052BDFECED8233F82E3AF0719@SN6PR11MB3023.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3631;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: KyhOgxAY8gtUBOmCQ/iXNNLh939U/1E59nNdgeiV62RxMyp3d1tl/mOw8eCSdeTD/gs76oi19FQmkhziGl8J+ZoJ3PN7kYd3TJXzvstxCYbENoCIoScuNLviNVTd00F7XMtq8b+Q65TpLjnQyl/31Cvjv4ZqTL8bA9+E0wFnkuO90JrqOHv+y7YHX6aEpHbr8/atFFf69+WdvKxCCiqXdgHDuCSws3vhzyBr2zbyr72MR6Qaq90xPTZrJSggArAAEyrDsJSA+74vGTZHmqUW0/rYFFztlR350AAbb6TAbMp8lvOqRDiobdPWIpVWoT/K4lyJPq1pMNiT5GqH1Y7LcytYvHyXfVYLMyIsZZ/Ib7aHP8tZN5c8OzYNLZeJGRGPUjh4h0fWitjvoxD6GhYbDaR3aCRRi4l7NQ/cJszCGV5k61eF9bNVhFMKkoVE9Xt3flqY1uPoQgG0GC2fY8Fj1kYPJtcWz34EhXV8pOE4XC+gUMgGWOpHOIKPRoIh6GPZlcGX7SiqNUn00FOWoQwmVcR2wNtgBmMIbe/XpVficyz0JtTfTMCIAD1WUjZcdZVwV3hslPiv0egUUVetOXgGINBS9/EWGSUMR56TyxuNZj8m6MOtNoXNd0fSxukQxNJFyi54jE8BcZ9bx5nW6JmAMjxmTe0m1diE5T28GffSgLB5APYQj3Fz2EHwJgwUAnuB
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:SA2PR11MB4874.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(39850400004)(376002)(396003)(366004)(346002)(136003)(31686004)(66556008)(66476007)(2616005)(31696002)(66446008)(478600001)(26005)(91956017)(38100700002)(186003)(2906002)(71200400001)(64756008)(6512007)(66946007)(8676002)(83380400001)(4326008)(6506007)(76116006)(36756003)(86362001)(316002)(110136005)(6486002)(8936002)(5660300002)(54906003)(43740500002)(45980500001);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata: =?utf-8?B?eWZ5M1hkb1dDNzZROWdKVnRSV2J5bDFybXBjY3o1TlhGYS9vaFBweHk4elRy?=
- =?utf-8?B?Q3pQSmw4T0RRZW5DU3lsbVltNlV3V0JFS0pKWnhybm03cGhDME9ab1dmVXNX?=
- =?utf-8?B?QjlyWngxWUx6VEJUNTRmcDhSSlZoVE5uNDlYVkJVVmFUdk5GVldqNXBsWHNC?=
- =?utf-8?B?ZElFZzZRT29wekhlSjVvaDE1N2FQMno4ZkNtTFRwNkl2RjM0Ykc2MGQvc2gz?=
- =?utf-8?B?a3pDeVYzdlhmcUFUZ3B3NGdNbGNYWDVWR0hkV3JyL1N4bnB4VUhMMGMvYlA5?=
- =?utf-8?B?c2lrVkhIWS9QY0w2RU1oZ21NaFozYjIySVdpRVdmZ0NnN3JPTy9OWkNyakl1?=
- =?utf-8?B?RkFIMjVhSXRoZ044ZjlRVWtqTGZFQkNqTHpNQTlqa04wYnpBS29lTHlDMHQ1?=
- =?utf-8?B?c0hKWnNIVjVWczJadmZtbkhkTklKeno0VDUzcTdKUCtQNTQreE9VQU5Eam92?=
- =?utf-8?B?R1k2OFVvb09UVlpBV0g0TXZENExabmVPTU0rZ1FQbEVIZ2tQTU9TdXFrL1la?=
- =?utf-8?B?ejVoSHl5THBIR2lJcnpyc3ZYRUkza1QrMXpQU0tGSDR0YnROd1RqaGt2WjNa?=
- =?utf-8?B?c3hmVHBiWEcvMHVEY2hpbmpsTDJjVHRuVHpMcFJ6Y3FnUkVzbVR0YzNhYzR6?=
- =?utf-8?B?VTZ5NmpVQlR3bmpKSWlFcGxLdnNGN2gwNmV5MmF2eHFyT0tvcW0yY0ErRXRu?=
- =?utf-8?B?UWpPTE1jQllHVGozWU9QK083WkJjRktENmc0WGVmVDdyRm4vRVpITThTVEhV?=
- =?utf-8?B?Wi9va0JscmwxckZkWThhNEtkSUQ4eWJFZ0lKVDBKRVFHN0hJbVBnWFNscUVz?=
- =?utf-8?B?RlRMc2dDQ0h4M2EzM3l4QzViNHRaWjRtUlJQcjRCd1JSeGJpS2c0dVZmbVhY?=
- =?utf-8?B?TndIMlQrQXlwTmJQeFhJSDB0bFBrUmw0enpLWWNqRkZqR1cvN1orK3dZQ3pZ?=
- =?utf-8?B?V1haU1BXQzlEdjBKdFlzLzNOMitzTUpvdDE3MjA5cmJUSWxyVnQyb1lobEtB?=
- =?utf-8?B?T0w3cmdYY2d6ZWdBYnMxdnIwdStNVEc2bisyKzRtSldqQnd2clZyWnpkTXBD?=
- =?utf-8?B?R2FEWHhPc1U0RkdwSVR0QlhOTis0UXlkZ1d2VjA4RUFPdk01eVljRW1BNSsw?=
- =?utf-8?B?aS8rODdNdDRJSnhSQVllM0tFV2pvR2RrOEdRR1UxQ285RkoyTjdkMTZqQnN2?=
- =?utf-8?B?MFkwRWl4RkI4bFBXZ3ZRbW9vRStIQVp5OUJTMVIwdEFJd2RjYTV0MGNwRkhM?=
- =?utf-8?B?ZFljZ0pDNnhqQmwxOEk2cE9NbVU2UGFHQVl2R25LWDBXR2FKS3l0M3pSZVBQ?=
- =?utf-8?B?NzFnOTdKQTNyS0N2Ny84dyszR3pqbHpMdXU2TFlWUUtXUGFzRkw0QTNVZEJT?=
- =?utf-8?B?Yjd3QmgyNkJUeTU1TkpLL0pUUzlSY3MxcWJwMkFrdVlDNndrV1NYb0xCWVVP?=
- =?utf-8?B?UWk0R0c1WmZrYmloTE1QSWtPVGplVHpybXkvbHBxb2RPcTc1NHJqOFp6dDho?=
- =?utf-8?B?RHIrZ21aV1N1SzMraEp4WENBOW1YUW9jbU8yMUNPNUw3QUEwY0Y5Q3RzU29a?=
- =?utf-8?B?TXZtRkZmcStDdzBwRHJsYUxCSHpVV2tFSlVLOWZsaFZsbkQ0Z05FSFk4M2ZY?=
- =?utf-8?B?NUR6UlBpUnE1VUd6KzhQWUFkeHZUQU9ObkxwZiswOTYraVhGUVQ5c0hCUTln?=
- =?utf-8?B?bUkrdDJzSHhURjhKMUlJT2hYRWY0VWZyMHZVWER1dktObmFic2ZZTjgrcmMx?=
- =?utf-8?Q?bkYGNSOZBPDx9+5yFQ=3D?=
-Content-ID: <ACD0A7A37E8BF645BCE9757744003C8D@namprd11.prod.outlook.com>
+ id 1lVb98-005Yey-Mo
+ for linux-mtd@lists.infradead.org; Sun, 11 Apr 2021 14:33:09 +0000
+IronPort-SDR: VjxYToyTaqShdRh0Q4TpO+CcMv7ymGWtxZ2d5ycoAcW+2hKdqWOKGp+ITc+jvU5HnTmQjWGX1B
+ 0ZCE6YGEYyQA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9951"; a="193599260"
+X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; d="scan'208";a="193599260"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Apr 2021 07:32:58 -0700
+IronPort-SDR: ohNW9i3LM7rZ5ytBBsueE5ay8k5WuTXq/6MqYHCWppmepcfIdUvyhy63u5XkkwfiMRxYGioIUP
+ mu1kQl5+BW1w==
+X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; d="scan'208";a="423444936"
+Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Apr 2021 07:32:56 -0700
+From: Tomas Winkler <tomas.winkler@intel.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: Tamar Mashiah <tamar.mashiah@intel.com>, Joe Perches <joe@perches.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Tomas Winkler <tomas.winkler@intel.com>
+Subject: [PATCH v3] mtd: intel-spi: add is_protected and is_bios_locked knobs
+Date: Sun, 11 Apr 2021 17:32:47 +0300
+Message-Id: <20210411143247.3045467-1-tomas.winkler@intel.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f6d5bd3c-31f0-49c5-4ffd-08d8fcc0b7cf
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Apr 2021 08:06:31.8223 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: n1oKiKramQx6nRPXOFQcuc6nkUUaXzZLFIXRKF8B/Lvz5GxhpM5ZS7NoDH9JumUhJ8WLBoBqdp+Gw0aZwnTYl9FD2DERG7rP0vHAKU+/xBg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB3023
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210411_010636_692180_401D3E09 
-X-CRM114-Status: GOOD (  13.92  )
+X-CRM114-CacheID: sfid-20210411_073306_821221_C15CD800 
+X-CRM114-Status: GOOD (  31.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -198,84 +95,405 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+From: Tamar Mashiah <tamar.mashiah@intel.com>
 
-This is the SPI NOR PR for v5.13.
-I would like to thank Michael and Pratyush for accepting to take more
-responsibilities in the SPI NOR subsystem. Your efforts are much
-appreciated. Welcome and good luck!
+The manufacturing access to the PCH/SOC SPI device is traditionally
+performed via user space driver accessing registers via /dev/mem
+but due to security concerns /dev/mem access is being much restricted,
+hence the reason for utilizing dedicated Intel PCH/SOC SPI controller
+driver, which is already implemented in the Linux kernel.
 
-Cheers,
-ta
+Intel PCH/SOC SPI controller protects the flash storage via two
+mechanisms one is the via region protection registers and second
+via BIOS lock.
 
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+The device always boots with bios lock set, but during manufacturing
+the bios lock has to be lifted in order to enable the write access.
+So we add sysfs file (spi_bios_lock) to be able to do it on demand.
+The bios lock is automatically attempted to be lifted by the driver
+during initialization, this part is dropped.
 
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+Second, also the region protection status is exposed via sysfs file
+as the manufacturing will need the both files in order to validate
+that the device is properly sealed.
 
-are available in the Git repository at:
+Cc: Joe Perches <joe@perches.com>
+Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
+Signed-off-by: Tamar Mashiah <tamar.mashiah@intel.com>
+Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+---
+V2: Add a newline to the string format in sysfs_emit() (Joe Perches <joe@perches.com>)
+V3: Resend adding new  MTD SPI-NOR maintainers
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/spi-nor/for-5.13
+ .../ABI/testing/sysfs-devices-intel-spi       | 16 ++++
+ MAINTAINERS                                   |  1 +
+ drivers/mfd/lpc_ich.c                         | 37 ++++++-
+ .../mtd/spi-nor/controllers/intel-spi-pci.c   | 38 ++++++--
+ drivers/mtd/spi-nor/controllers/intel-spi.c   | 96 ++++++++++++++++---
+ include/linux/platform_data/x86/intel-spi.h   |  6 +-
+ 6 files changed, 167 insertions(+), 27 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-devices-intel-spi
 
-for you to fetch changes up to 46094049a49be777f12a9589798f7c70b90cd03f:
+diff --git a/Documentation/ABI/testing/sysfs-devices-intel-spi b/Documentation/ABI/testing/sysfs-devices-intel-spi
+new file mode 100644
+index 000000000000..515c36f8b5cf
+--- /dev/null
++++ b/Documentation/ABI/testing/sysfs-devices-intel-spi
+@@ -0,0 +1,16 @@
++What:		/sys/devices/.../is_protected
++Date:		April 2021
++Contact:	Tomas Winkler <tomas.winkler@intel.com>
++Description:
++		The /sys/devices/.../is_protected attribute allows the user
++		space to check if the intel spi controller is write protected
++		from the host.
++
++What:		/sys/devices/.../bios_lock
++Date:		April 2021
++Contact:	Tomas Winkler <tomas.winkler@intel.com>
++Description:
++		The /sys/devices/.../bios_lock attribute allows the user
++		space to check if the intel spi controller is locked by bios
++		for writes. It is possible to unlock the bios lock by writing
++		"unlock" to the file.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index ba561e5bc6f0..37c934f34ed7 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11571,6 +11571,7 @@ Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
+ C:	irc://irc.oftc.net/mtd
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next
++F:	Documentation/ABI/testing/sysfs-devices-intel-spi
+ F:	Documentation/devicetree/bindings/mtd/
+ F:	drivers/mtd/
+ F:	include/linux/mtd/
+diff --git a/drivers/mfd/lpc_ich.c b/drivers/mfd/lpc_ich.c
+index 3bbb29a7e7a5..eceaf11bec93 100644
+--- a/drivers/mfd/lpc_ich.c
++++ b/drivers/mfd/lpc_ich.c
+@@ -1083,12 +1083,39 @@ static int lpc_ich_init_wdt(struct pci_dev *dev)
+ 	return ret;
+ }
+ 
++static int lcp_ich_bios_unlock(struct device *dev)
++{
++	struct pci_dev *pdev = to_pci_dev(dev);
++	u32 bcr = 0;
++
++	pci_read_config_dword(pdev, BCR, &bcr);
++	if (!(bcr & BCR_WPD)) {
++		bcr |= BCR_WPD;
++		pci_write_config_dword(pdev, BCR, bcr);
++		pci_read_config_dword(pdev, BCR, &bcr);
++	}
++
++	if (!(bcr & BCR_WPD))
++		return -EIO;
++
++	return 0;
++}
++
++static bool lcp_ich_is_bios_locked(struct device *dev)
++{
++	struct pci_dev *pdev = to_pci_dev(dev);
++	u32 bcr = 0;
++
++	pci_read_config_dword(pdev, BCR, &bcr);
++	return !(bcr & BCR_WPD);
++}
++
+ static int lpc_ich_init_spi(struct pci_dev *dev)
+ {
+ 	struct lpc_ich_priv *priv = pci_get_drvdata(dev);
+ 	struct resource *res = &intel_spi_res[0];
+ 	struct intel_spi_boardinfo *info;
+-	u32 spi_base, rcba, bcr;
++	u32 spi_base, rcba;
+ 
+ 	info = devm_kzalloc(&dev->dev, sizeof(*info), GFP_KERNEL);
+ 	if (!info)
+@@ -1112,8 +1139,8 @@ static int lpc_ich_init_spi(struct pci_dev *dev)
+ 			res->start = spi_base + SPIBASE_LPT;
+ 			res->end = res->start + SPIBASE_LPT_SZ - 1;
+ 
+-			pci_read_config_dword(dev, BCR, &bcr);
+-			info->writeable = !!(bcr & BCR_WPD);
++			info->is_bios_locked = lcp_ich_is_bios_locked;
++			info->bios_unlock = lcp_ich_bios_unlock;
+ 		}
+ 		break;
+ 
+@@ -1134,8 +1161,8 @@ static int lpc_ich_init_spi(struct pci_dev *dev)
+ 			res->start = spi_base & 0xfffffff0;
+ 			res->end = res->start + SPIBASE_APL_SZ - 1;
+ 
+-			pci_bus_read_config_dword(bus, spi, BCR, &bcr);
+-			info->writeable = !!(bcr & BCR_WPD);
++			info->is_bios_locked = lcp_ich_is_bios_locked;
++			info->bios_unlock = lcp_ich_bios_unlock;
+ 		}
+ 
+ 		pci_bus_write_config_byte(bus, p2sb, 0xe1, 0x1);
+diff --git a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
+index 825610a2e9dc..f83f352f874d 100644
+--- a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
++++ b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
+@@ -24,12 +24,38 @@ static const struct intel_spi_boardinfo cnl_info = {
+ 	.type = INTEL_SPI_CNL,
+ };
+ 
++static int intel_spi_pci_bios_unlock(struct device *dev)
++{
++	struct pci_dev *pdev = to_pci_dev(dev);
++	u32 bcr = 0;
++
++	pci_read_config_dword(pdev, BCR, &bcr);
++	if (!(bcr & BCR_WPD)) {
++		bcr |= BCR_WPD;
++		pci_write_config_dword(pdev, BCR, bcr);
++		pci_read_config_dword(pdev, BCR, &bcr);
++	}
++
++	if (!(bcr & BCR_WPD))
++		return -EIO;
++
++	return 0;
++}
++
++static bool intel_spi_pci_is_bios_locked(struct device *dev)
++{
++	struct pci_dev *pdev = to_pci_dev(dev);
++	u32 bcr = 0;
++
++	pci_read_config_dword(pdev, BCR, &bcr);
++	return !(bcr & BCR_WPD);
++}
++
+ static int intel_spi_pci_probe(struct pci_dev *pdev,
+ 			       const struct pci_device_id *id)
+ {
+ 	struct intel_spi_boardinfo *info;
+ 	struct intel_spi *ispi;
+-	u32 bcr;
+ 	int ret;
+ 
+ 	ret = pcim_enable_device(pdev);
+@@ -41,14 +67,8 @@ static int intel_spi_pci_probe(struct pci_dev *pdev,
+ 	if (!info)
+ 		return -ENOMEM;
+ 
+-	/* Try to make the chip read/write */
+-	pci_read_config_dword(pdev, BCR, &bcr);
+-	if (!(bcr & BCR_WPD)) {
+-		bcr |= BCR_WPD;
+-		pci_write_config_dword(pdev, BCR, bcr);
+-		pci_read_config_dword(pdev, BCR, &bcr);
+-	}
+-	info->writeable = !!(bcr & BCR_WPD);
++	info->is_bios_locked = intel_spi_pci_is_bios_locked;
++	info->bios_unlock = intel_spi_pci_bios_unlock;
+ 
+ 	ispi = intel_spi_probe(&pdev->dev, &pdev->resource[0], info);
+ 	if (IS_ERR(ispi))
+diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
+index a413892ff449..bbe0639de702 100644
+--- a/drivers/mtd/spi-nor/controllers/intel-spi.c
++++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
+@@ -131,7 +131,8 @@
+  * @sregs: Start of software sequencer registers
+  * @nregions: Maximum number of regions
+  * @pr_num: Maximum number of protected range registers
+- * @writeable: Is the chip writeable
++ * @is_protected: Whether the regions are write protected
++ * @is_bios_locked: Whether the spi is locked by BIOS
+  * @locked: Is SPI setting locked
+  * @swseq_reg: Use SW sequencer in register reads/writes
+  * @swseq_erase: Use SW sequencer in erase operation
+@@ -149,7 +150,8 @@ struct intel_spi {
+ 	void __iomem *sregs;
+ 	size_t nregions;
+ 	size_t pr_num;
+-	bool writeable;
++	bool is_protected;
++	bool is_bios_locked;
+ 	bool locked;
+ 	bool swseq_reg;
+ 	bool swseq_erase;
+@@ -326,7 +328,7 @@ static int intel_spi_init(struct intel_spi *ispi)
+ 				val = readl(ispi->base + BYT_BCR);
+ 			}
+ 
+-			ispi->writeable = !!(val & BYT_BCR_WPD);
++			ispi->is_bios_locked = !(val & BYT_BCR_WPD);
+ 		}
+ 
+ 		break;
+@@ -862,6 +864,7 @@ static void intel_spi_fill_partition(struct intel_spi *ispi,
+ 	int i;
+ 
+ 	memset(part, 0, sizeof(*part));
++	ispi->is_protected = false;
+ 
+ 	/* Start from the mandatory descriptor region */
+ 	part->size = 4096;
+@@ -886,7 +889,7 @@ static void intel_spi_fill_partition(struct intel_spi *ispi,
+ 		 * whole partition read-only to be on the safe side.
+ 		 */
+ 		if (intel_spi_is_protected(ispi, base, limit))
+-			ispi->writeable = false;
++			ispi->is_protected = true;
+ 
+ 		end = (limit << 12) + 4096;
+ 		if (end > part->size)
+@@ -894,6 +897,60 @@ static void intel_spi_fill_partition(struct intel_spi *ispi,
+ 	}
+ }
+ 
++static ssize_t intel_spi_is_protected_show(struct device *dev,
++					   struct device_attribute *attr, char *buf)
++{
++	struct intel_spi *ispi = dev_get_drvdata(dev);
++
++	return sysfs_emit(buf, "%d\n", ispi->is_protected);
++}
++static DEVICE_ATTR_ADMIN_RO(intel_spi_is_protected);
++
++static ssize_t intel_spi_bios_lock_show(struct device *dev,
++					struct device_attribute *attr, char *buf)
++{
++	struct intel_spi *ispi = dev_get_drvdata(dev);
++
++	return sysfs_emit(buf, "%d\n", ispi->is_bios_locked);
++}
++
++static ssize_t intel_spi_bios_lock_store(struct device *dev,
++					 struct device_attribute *attr,
++					 const char *buf, size_t len)
++{
++	struct intel_spi *ispi = dev_get_drvdata(dev);
++	struct mtd_info *child, *master = mtd_get_master(&ispi->nor.mtd);
++	int err;
++
++	if (!ispi->info->is_bios_locked)
++		return -EOPNOTSUPP;
++
++	if (strcmp(buf, "unlock") != 0)
++		return -EINVAL;
++
++	if (ispi->info->is_bios_locked(dev)) {
++		err = ispi->info->bios_unlock(dev);
++		if (err)
++			return err;
++	}
++
++	ispi->is_bios_locked = false;
++
++	if (ispi->is_protected || !writeable)
++		return -EPERM;
++
++	/* Device is now writable */
++	ispi->nor.mtd.flags |= MTD_WRITEABLE;
++
++	mutex_lock(&master->master.partitions_lock);
++	list_for_each_entry(child, &ispi->nor.mtd.partitions, part.node)
++		child->flags |= MTD_WRITEABLE;
++	mutex_unlock(&master->master.partitions_lock);
++
++	return len;
++}
++static DEVICE_ATTR_ADMIN_RW(intel_spi_bios_lock);
++
+ static const struct spi_nor_controller_ops intel_spi_controller_ops = {
+ 	.read_reg = intel_spi_read_reg,
+ 	.write_reg = intel_spi_write_reg,
+@@ -902,6 +959,15 @@ static const struct spi_nor_controller_ops intel_spi_controller_ops = {
+ 	.erase = intel_spi_erase,
+ };
+ 
++int intel_spi_remove(struct intel_spi *ispi)
++{
++	device_remove_file(ispi->dev, &dev_attr_intel_spi_is_protected);
++	device_remove_file(ispi->dev, &dev_attr_intel_spi_bios_lock);
++
++	return mtd_device_unregister(&ispi->nor.mtd);
++}
++EXPORT_SYMBOL_GPL(intel_spi_remove);
++
+ struct intel_spi *intel_spi_probe(struct device *dev,
+ 	struct resource *mem, const struct intel_spi_boardinfo *info)
+ {
+@@ -927,7 +993,9 @@ struct intel_spi *intel_spi_probe(struct device *dev,
+ 
+ 	ispi->dev = dev;
+ 	ispi->info = info;
+-	ispi->writeable = info->writeable;
++	ispi->is_bios_locked = info->is_bios_locked(dev);
++	dev_dbg(ispi->dev, "is_bios_locked: %d writeable: %d\n",
++		ispi->is_bios_locked, writeable);
+ 
+ 	ret = intel_spi_init(ispi);
+ 	if (ret)
+@@ -946,22 +1014,28 @@ struct intel_spi *intel_spi_probe(struct device *dev,
+ 	intel_spi_fill_partition(ispi, &part);
+ 
+ 	/* Prevent writes if not explicitly enabled */
+-	if (!ispi->writeable || !writeable)
++	if (ispi->is_protected || ispi->is_bios_locked || !writeable)
+ 		ispi->nor.mtd.flags &= ~MTD_WRITEABLE;
+ 
+ 	ret = mtd_device_register(&ispi->nor.mtd, &part, 1);
+ 	if (ret)
+ 		return ERR_PTR(ret);
+ 
++	ret = device_create_file(ispi->dev, &dev_attr_intel_spi_is_protected);
++	if (ret)
++		goto err;
++	ret = device_create_file(ispi->dev, &dev_attr_intel_spi_bios_lock);
++	if (ret)
++		goto err;
++
+ 	return ispi;
++
++err:
++	intel_spi_remove(ispi);
++	return ERR_PTR(ret);
+ }
+ EXPORT_SYMBOL_GPL(intel_spi_probe);
+ 
+-int intel_spi_remove(struct intel_spi *ispi)
+-{
+-	return mtd_device_unregister(&ispi->nor.mtd);
+-}
+-EXPORT_SYMBOL_GPL(intel_spi_remove);
+ 
+ MODULE_DESCRIPTION("Intel PCH/PCU SPI flash core driver");
+ MODULE_AUTHOR("Mika Westerberg <mika.westerberg@linux.intel.com>");
+diff --git a/include/linux/platform_data/x86/intel-spi.h b/include/linux/platform_data/x86/intel-spi.h
+index 7f53a5c6f35e..335dbb40620f 100644
+--- a/include/linux/platform_data/x86/intel-spi.h
++++ b/include/linux/platform_data/x86/intel-spi.h
+@@ -19,11 +19,13 @@ enum intel_spi_type {
+ /**
+  * struct intel_spi_boardinfo - Board specific data for Intel SPI driver
+  * @type: Type which this controller is compatible with
+- * @writeable: The chip is writeable
++ * @is_bios_locked: report if the device is locked by BIOS
++ * @bios_unlock: handler to unlock the bios
+  */
+ struct intel_spi_boardinfo {
+ 	enum intel_spi_type type;
+-	bool writeable;
++	bool (*is_bios_locked)(struct device *dev);
++	int (*bios_unlock)(struct device *dev);
+ };
+ 
+ #endif /* INTEL_SPI_PDATA_H */
+-- 
+2.26.3
 
-  Revert "mtd: spi-nor: macronix: Add support for mx25l51245g" (2021-04-11 10:36:35 +0300)
 
-----------------------------------------------------------------
-SPI NOR core changes:
-- Add OTP support
-- Fix module unload while an op in progress
-- Add various cleanup patches
-
-SPI NOR controller drivers changes:
-- intel-spi: Move platform data header to x86 subfolder
-
-----------------------------------------------------------------
-Andy Shevchenko (1):
-      mtd: spi-nor: intel-spi: Move platform data header to x86 subfolder
-
-Michael Walle (4):
-      mtd: spi-nor: use is_power_of_2()
-      mtd: spi-nor: add OTP support
-      mtd: spi-nor: implement OTP support for Winbond and similar flashes
-      mtd: spi-nor: winbond: add OTP support to w25q32fw/jw
-
-Shuhao Mai (1):
-      mtd: spi-nor: winbond: Add support for w25q512jvq
-
-Tudor Ambarus (8):
-      MAINTAINERS: Add Michael and Pratyush as designated reviewers for SPI NOR
-      mtd: spi-nor: core: Advance erase after the erase cmd has been completed
-      mtd: spi-nor: core: Add vdbg msg for spi_nor_erase_multi_sectors()
-      mtd: spi-nor: Get rid of duplicated argument in spi_nor_parse_sfdp()
-      mtd: spi-nor: core: Update comment about the default flash parameters
-      mtd: spi-nor: Move Software Write Protection logic out of the core
-      mtd: spi-nor: swp: Improve code around spi_nor_check_lock_status_sr()
-      Revert "mtd: spi-nor: macronix: Add support for mx25l51245g"
-
-Xiang Chen (1):
-      mtd: spi-nor: core: Fix an issue of releasing resources during read/write
-
- MAINTAINERS                                       |   2 +
- drivers/mtd/spi-nor/Makefile                      |   2 +-
- drivers/mtd/spi-nor/controllers/intel-spi.c       |   1 -
- drivers/mtd/spi-nor/controllers/intel-spi.h       |   2 +-
- drivers/mtd/spi-nor/core.c                        | 478 ++++++-------------------------------------
- drivers/mtd/spi-nor/core.h                        |  69 ++++++-
- drivers/mtd/spi-nor/issi.c                        |   3 +-
- drivers/mtd/spi-nor/macronix.c                    |   6 +-
- drivers/mtd/spi-nor/otp.c                         | 376 ++++++++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/sfdp.c                        |  72 +++----
- drivers/mtd/spi-nor/sfdp.h                        |   3 +-
- drivers/mtd/spi-nor/spansion.c                    |  12 +-
- drivers/mtd/spi-nor/swp.c                         | 427 ++++++++++++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/winbond.c                     |  22 +-
- include/linux/mfd/lpc_ich.h                       |   2 +-
- include/linux/mtd/spi-nor.h                       |   8 +
- include/linux/platform_data/{ => x86}/intel-spi.h |   0
- 17 files changed, 991 insertions(+), 494 deletions(-)
- create mode 100644 drivers/mtd/spi-nor/otp.c
- create mode 100644 drivers/mtd/spi-nor/swp.c
- rename include/linux/platform_data/{ => x86}/intel-spi.h (100%)
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
