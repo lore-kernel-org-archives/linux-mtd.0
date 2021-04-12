@@ -2,73 +2,87 @@ Return-Path: <SRS0=MywH=JJ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6EC1C433B4
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Apr 2021 06:45:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BF01C433ED
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Apr 2021 06:50:26 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 41BC16101B
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Apr 2021 06:45:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 41BC16101B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=hisilicon.com
+	by mail.kernel.org (Postfix) with ESMTPS id ADCB76121D
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Apr 2021 06:50:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ADCB76121D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=oDpCxtSN+SdFacfssMeWdH40iGgXS5Etz7YJnEMmmlg=; b=oa3CaQhyhvT0LymN4XiSQ/dXx4
-	RpweaKXPHhvJUugHDUPiZJLugxWUyOuB1n+VM6W9O1UAmMk8uxISIot4WcUz6jPuisKF02oOP5ZR7
-	EGzFCkFFmcBYtaNyhhq0ytp0QH5F6XwILEhuUbzaU+1pg9iDUUDguZK/dkuk4cPLcC93rJlZpfhaY
-	WKcG2ZjlNdxe4RLvdtQpTm91A3rbor5ON/rJ4dyUfHB9zeybBxovC/0zxk0isIvWJKIDcoiaW02jX
-	N7o/zvSo/jPeqyPyd0hhTGltnIGrBy242Ht4MByX4Kx2SQFHG8M42YC/QTsfoX5szZJAbucFK61t3
-	w/nTM1fw==;
+	List-Unsubscribe:List-Id:MIME-Version:Subject:References:In-Reply-To:
+	Message-ID:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=usFI6xbEebMN3c8x2mTKNP+5y9T5i44MmeK1is0DlW0=; b=UVZd/ND2LJaoy+
+	hOr91BLpyXYAAbs+xrW3jGIJVQkKpRwHESx/3oyI7SZUqDq3q19nrPoC3KOGCX8RsEVMyu5RFg3PW
+	uz/NDn6ARKal2k4ox9BD+3IXtxMfN3eXWVuqQpQF0dPM1RVWu40diM3yP+OFj92RXXYgE0ktMn9Mf
+	qrX8gj6SzMBGZ79aaXy8HJgk0Ug41LCM54Dr3SzF/KJk92MeHKfWIG60xGv+OFeqdC0z/EcmJy1MQ
+	bTGn/ghcuoXDxeRteGzW8HTD7THgIBcMC9AHPjamst+In3/BqpUnJW5XzYijyblpUjcIyyDR96Y8B
+	O6/gI4z8WFzzMJLh8yhQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lVqJJ-005qXu-G8; Mon, 12 Apr 2021 06:44:38 +0000
+	id 1lVqNz-005rGs-V4; Mon, 12 Apr 2021 06:49:28 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lVqJG-005qWj-H9
- for linux-mtd@desiato.infradead.org; Mon, 12 Apr 2021 06:44:34 +0000
+ id 1lVqNp-005rFH-Gi
+ for linux-mtd@desiato.infradead.org; Mon, 12 Apr 2021 06:49:17 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Content-Type:MIME-Version:Message-ID:
- Date:Subject:CC:To:From:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
- Content-Description:In-Reply-To:References;
- bh=620uV2LffOu4HBZTk+eIZzQMMXwLpkNEPzrfVKxd86c=; b=f8yAwWMacnjZ5teuwZWFFTfnCq
- hchU0dDvpsuzRHybQnbOQ02ls74PikFtYdlK6pR6+yn3feGxx/SQHlpHW56U0TJrUYBFvuBWUT+Vj
- mSaU9tpWaQokgKm8VeO/DK3nzxQnYq8MS4dZ7RfshNzQqRK7S/RmLZN1j0e02skF2QA97RkPM4Bce
- bvhUYd4R2ko5nQyhCxaaYwRrorULpDQyvWSvg5T6+xjIO84nTAVEbbO2Cc9pEZkqCNK7Tfn5w/CEj
- /8JPtRN05gyxVypmMD4P/LPvJ0wemdGr4VdhsHccLT8BKMR6+3a6Sj+WwSY+D6EzIb/llIbgkA871
- 7kq1SC+w==;
-Received: from szxga04-in.huawei.com ([45.249.212.190])
+ d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+ Content-Type:MIME-Version:Subject:References:In-Reply-To:Message-ID:Cc:To:
+ From:Date:Sender:Reply-To:Content-ID:Content-Description;
+ bh=grI+EVEo5XZwJtWBPdfa9Y6OtBgH1zGpKP+CRqhSS3M=; b=Xb9qw4FEvVomlWugwi+Maexvwq
+ zO3bWKniXFGaCSFHP0AneaAKr7ob6P1qegmxMgFZ5rwC0aaX8anyB6F2HJGxgchgkmPnVQtrXdP9r
+ WeK1DzVnIzjBi4SRIaa6vgZGsGyR9c99dfwAZdviOZB44HWfpkJEz4blQblJnVqzv4YB1EKNFyGF1
+ 6lkqVG1J75TQfSn3fK+O8kOpw7qXivR1LxK2fYo8unEMjveBLEmOCpppDNtSuM1hlzxaSKrZDu3fY
+ nwzSYzodQWI8gYRYSh79I859wwg4VLUKH1gDbCUbT35ZwIomOIW+Ha/tEJ2k+7UconHwUyMc1hc2R
+ lsF2y2Dg==;
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lVqJD-005uOz-0j
- for linux-mtd@lists.infradead.org; Mon, 12 Apr 2021 06:44:33 +0000
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
- by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FJfKm3d4yz1BGhB;
- Mon, 12 Apr 2021 14:42:04 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 12 Apr 2021 14:44:09 +0800
-From: Tian Tao <tiantao6@hisilicon.com>
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
-CC: <linux-mtd@lists.infradead.org>, Tian Tao <tiantao6@hisilicon.com>
-Subject: [PATCH] mtd: core: Convert sysfs sprintf/snprintf family to sysfs_emit
-Date: Mon, 12 Apr 2021 14:44:32 +0800
-Message-ID: <1618209872-20034-1-git-send-email-tiantao6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+ id 1lVqNm-005uTe-81
+ for linux-mtd@lists.infradead.org; Mon, 12 Apr 2021 06:49:16 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id B42E06122D74;
+ Mon, 12 Apr 2021 08:49:02 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id 6FNPy8Bzq4vH; Mon, 12 Apr 2021 08:49:00 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id BB8416122D72;
+ Mon, 12 Apr 2021 08:49:00 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id lMqV7nKKnHlx; Mon, 12 Apr 2021 08:49:00 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 997D76122D59;
+ Mon, 12 Apr 2021 08:49:00 +0200 (CEST)
+Date: Mon, 12 Apr 2021 08:49:00 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: Tian Tao <tiantao6@hisilicon.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, 
+ linux-mtd <linux-mtd@lists.infradead.org>
+Message-ID: <614928182.172774.1618210140227.JavaMail.zimbra@nod.at>
+In-Reply-To: <1618209872-20034-1-git-send-email-tiantao6@hisilicon.com>
+References: <1618209872-20034-1-git-send-email-tiantao6@hisilicon.com>
+Subject: Re: [PATCH] mtd: core: Convert sysfs sprintf/snprintf family to
+ sysfs_emit
 MIME-Version: 1.0
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Topic: core: Convert sysfs sprintf/snprintf family to sysfs_emit
+Thread-Index: Ti7cLZt2tlFu9NiEvwK1Dak/niesdg==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210411_234431_427788_49836EC7 
-X-CRM114-Status: UNSURE (   8.11  )
+X-CRM114-CacheID: sfid-20210411_234914_452595_134B5FD2 
+X-CRM114-Status: UNSURE (   3.64  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -81,197 +95,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Fix the following coccicheck warning:
-drivers/mtd/mtdcore.c:296:8-16: WARNING: use scnprintf or sprintf
-drivers/mtd/mtdcore.c:306:8-16: WARNING: use scnprintf or sprintf
-drivers/mtd/mtdcore.c:237:8-16: WARNING: use scnprintf or sprintf
-drivers/mtd/mtdcore.c:275:8-16: WARNING: use scnprintf or sprintf
-drivers/mtd/mtdcore.c:286:8-16: WARNING: use scnprintf or sprintf
-drivers/mtd/mtdcore.c:264:8-16: WARNING: use scnprintf or sprintf
-drivers/mtd/mtdcore.c:227:8-16: WARNING: use scnprintf or sprintf
-drivers/mtd/mtdcore.c:162:8-16: WARNING: use scnprintf or sprintf
-drivers/mtd/mtdcore.c:143:8-16: WARNING: use scnprintf or sprintf
-drivers/mtd/mtdcore.c:218:8-16: WARNING: use scnprintf or sprintf
-drivers/mtd/mtdcore.c:208:8-16: WARNING: use scnprintf or sprintf
-drivers/mtd/mtdcore.c:199:8-16: WARNING: use scnprintf or sprintf
-drivers/mtd/mtdcore.c:190:8-16: WARNING: use scnprintf or sprintf
-drivers/mtd/mtdcore.c:152:8-16: WARNING: use scnprintf or sprintf
-drivers/mtd/mtdcore.c:181:8-16: WARNING: use scnprintf or sprintf
-drivers/mtd/mtdcore.c:134:8-16: WARNING: use scnprintf or sprintf
-drivers/mtd/mtdcore.c:171:8-16: WARNING: use scnprintf or sprintf
-
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
----
- drivers/mtd/mtdcore.c | 35 +++++++++++++++++------------------
- 1 file changed, 17 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 0bc6871..5449f79 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -131,7 +131,7 @@ static ssize_t mtd_type_show(struct device *dev,
- 		type = "unknown";
- 	}
- 
--	return snprintf(buf, PAGE_SIZE, "%s\n", type);
-+	return sysfs_emit(buf, "%s\n", type);
- }
- static DEVICE_ATTR(type, S_IRUGO, mtd_type_show, NULL);
- 
-@@ -140,7 +140,7 @@ static ssize_t mtd_flags_show(struct device *dev,
- {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "0x%lx\n", (unsigned long)mtd->flags);
-+	return sysfs_emit(buf, "0x%lx\n", (unsigned long)mtd->flags);
- }
- static DEVICE_ATTR(flags, S_IRUGO, mtd_flags_show, NULL);
- 
-@@ -149,8 +149,7 @@ static ssize_t mtd_size_show(struct device *dev,
- {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%llu\n",
--		(unsigned long long)mtd->size);
-+	return sysfs_emit(buf, "%llu\n", (unsigned long long)mtd->size);
- }
- static DEVICE_ATTR(size, S_IRUGO, mtd_size_show, NULL);
- 
-@@ -159,7 +158,7 @@ static ssize_t mtd_erasesize_show(struct device *dev,
- {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%lu\n", (unsigned long)mtd->erasesize);
-+	return sysfs_emit(buf, "%lu\n", (unsigned long)mtd->erasesize);
- }
- static DEVICE_ATTR(erasesize, S_IRUGO, mtd_erasesize_show, NULL);
- 
-@@ -168,7 +167,7 @@ static ssize_t mtd_writesize_show(struct device *dev,
- {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%lu\n", (unsigned long)mtd->writesize);
-+	return sysfs_emit(buf, "%lu\n", (unsigned long)mtd->writesize);
- }
- static DEVICE_ATTR(writesize, S_IRUGO, mtd_writesize_show, NULL);
- 
-@@ -178,7 +177,7 @@ static ssize_t mtd_subpagesize_show(struct device *dev,
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 	unsigned int subpagesize = mtd->writesize >> mtd->subpage_sft;
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", subpagesize);
-+	return sysfs_emit(buf, "%u\n", subpagesize);
- }
- static DEVICE_ATTR(subpagesize, S_IRUGO, mtd_subpagesize_show, NULL);
- 
-@@ -187,7 +186,7 @@ static ssize_t mtd_oobsize_show(struct device *dev,
- {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%lu\n", (unsigned long)mtd->oobsize);
-+	return sysfs_emit(buf, "%lu\n", (unsigned long)mtd->oobsize);
- }
- static DEVICE_ATTR(oobsize, S_IRUGO, mtd_oobsize_show, NULL);
- 
-@@ -196,7 +195,7 @@ static ssize_t mtd_oobavail_show(struct device *dev,
- {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", mtd->oobavail);
-+	return sysfs_emit(buf, "%u\n", mtd->oobavail);
- }
- static DEVICE_ATTR(oobavail, S_IRUGO, mtd_oobavail_show, NULL);
- 
-@@ -205,7 +204,7 @@ static ssize_t mtd_numeraseregions_show(struct device *dev,
- {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", mtd->numeraseregions);
-+	return sysfs_emit(buf, "%u\n", mtd->numeraseregions);
- }
- static DEVICE_ATTR(numeraseregions, S_IRUGO, mtd_numeraseregions_show,
- 	NULL);
-@@ -215,7 +214,7 @@ static ssize_t mtd_name_show(struct device *dev,
- {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%s\n", mtd->name);
-+	return sysfs_emit(buf, "%s\n", mtd->name);
- }
- static DEVICE_ATTR(name, S_IRUGO, mtd_name_show, NULL);
- 
-@@ -224,7 +223,7 @@ static ssize_t mtd_ecc_strength_show(struct device *dev,
- {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", mtd->ecc_strength);
-+	return sysfs_emit(buf, "%u\n", mtd->ecc_strength);
- }
- static DEVICE_ATTR(ecc_strength, S_IRUGO, mtd_ecc_strength_show, NULL);
- 
-@@ -234,7 +233,7 @@ static ssize_t mtd_bitflip_threshold_show(struct device *dev,
- {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", mtd->bitflip_threshold);
-+	return sysfs_emit(buf, "%u\n", mtd->bitflip_threshold);
- }
- 
- static ssize_t mtd_bitflip_threshold_store(struct device *dev,
-@@ -261,7 +260,7 @@ static ssize_t mtd_ecc_step_size_show(struct device *dev,
- {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", mtd->ecc_step_size);
-+	return sysfs_emit(buf, "%u\n", mtd->ecc_step_size);
- 
- }
- static DEVICE_ATTR(ecc_step_size, S_IRUGO, mtd_ecc_step_size_show, NULL);
-@@ -272,7 +271,7 @@ static ssize_t mtd_ecc_stats_corrected_show(struct device *dev,
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 	struct mtd_ecc_stats *ecc_stats = &mtd->ecc_stats;
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", ecc_stats->corrected);
-+	return sysfs_emit(buf, "%u\n", ecc_stats->corrected);
- }
- static DEVICE_ATTR(corrected_bits, S_IRUGO,
- 		   mtd_ecc_stats_corrected_show, NULL);
-@@ -283,7 +282,7 @@ static ssize_t mtd_ecc_stats_errors_show(struct device *dev,
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 	struct mtd_ecc_stats *ecc_stats = &mtd->ecc_stats;
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", ecc_stats->failed);
-+	return sysfs_emit(buf, "%u\n", ecc_stats->failed);
- }
- static DEVICE_ATTR(ecc_failures, S_IRUGO, mtd_ecc_stats_errors_show, NULL);
- 
-@@ -293,7 +292,7 @@ static ssize_t mtd_badblocks_show(struct device *dev,
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 	struct mtd_ecc_stats *ecc_stats = &mtd->ecc_stats;
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", ecc_stats->badblocks);
-+	return sysfs_emit(buf, "%u\n", ecc_stats->badblocks);
- }
- static DEVICE_ATTR(bad_blocks, S_IRUGO, mtd_badblocks_show, NULL);
- 
-@@ -303,7 +302,7 @@ static ssize_t mtd_bbtblocks_show(struct device *dev,
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 	struct mtd_ecc_stats *ecc_stats = &mtd->ecc_stats;
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", ecc_stats->bbtblocks);
-+	return sysfs_emit(buf, "%u\n", ecc_stats->bbtblocks);
- }
- static DEVICE_ATTR(bbt_blocks, S_IRUGO, mtd_bbtblocks_show, NULL);
- 
--- 
-2.7.4
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGlhbiBUYW8sCgotLS0tLSBVcnNwcsO8bmdsaWNoZSBNYWlsIC0tLS0tCj4gVm9uOiAiVGlhbiBU
+YW8iIDx0aWFudGFvNkBoaXNpbGljb24uY29tPgo+IEFuOiAiTWlxdWVsIFJheW5hbCIgPG1pcXVl
+bC5yYXluYWxAYm9vdGxpbi5jb20+LCAicmljaGFyZCIgPHJpY2hhcmRAbm9kLmF0PiwgIlZpZ25l
+c2ggUmFnaGF2ZW5kcmEiIDx2aWduZXNockB0aS5jb20+Cj4gQ0M6ICJsaW51eC1tdGQiIDxsaW51
+eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZz4sICJUaWFuIFRhbyIgPHRpYW50YW82QGhpc2lsaWNv
+bi5jb20+Cj4gR2VzZW5kZXQ6IE1vbnRhZywgMTIuIEFwcmlsIDIwMjEgMDg6NDQ6MzIKPiBCZXRy
+ZWZmOiBbUEFUQ0hdIG10ZDogY29yZTogQ29udmVydCBzeXNmcyBzcHJpbnRmL3NucHJpbnRmIGZh
+bWlseSB0byBzeXNmc19lbWl0Cgo+IEZpeCB0aGUgZm9sbG93aW5nIGNvY2NpY2hlY2sgd2Fybmlu
+ZzoKPiBkcml2ZXJzL210ZC9tdGRjb3JlLmM6Mjk2OjgtMTY6IFdBUk5JTkc6IHVzZSBzY25wcmlu
+dGYgb3Igc3ByaW50Zgo+IGRyaXZlcnMvbXRkL210ZGNvcmUuYzozMDY6OC0xNjogV0FSTklORzog
+dXNlIHNjbnByaW50ZiBvciBzcHJpbnRmCj4gZHJpdmVycy9tdGQvbXRkY29yZS5jOjIzNzo4LTE2
+OiBXQVJOSU5HOiB1c2Ugc2NucHJpbnRmIG9yIHNwcmludGYKPiBkcml2ZXJzL210ZC9tdGRjb3Jl
+LmM6Mjc1OjgtMTY6IFdBUk5JTkc6IHVzZSBzY25wcmludGYgb3Igc3ByaW50Zgo+IGRyaXZlcnMv
+bXRkL210ZGNvcmUuYzoyODY6OC0xNjogV0FSTklORzogdXNlIHNjbnByaW50ZiBvciBzcHJpbnRm
+Cj4gZHJpdmVycy9tdGQvbXRkY29yZS5jOjI2NDo4LTE2OiBXQVJOSU5HOiB1c2Ugc2NucHJpbnRm
+IG9yIHNwcmludGYKPiBkcml2ZXJzL210ZC9tdGRjb3JlLmM6MjI3OjgtMTY6IFdBUk5JTkc6IHVz
+ZSBzY25wcmludGYgb3Igc3ByaW50Zgo+IGRyaXZlcnMvbXRkL210ZGNvcmUuYzoxNjI6OC0xNjog
+V0FSTklORzogdXNlIHNjbnByaW50ZiBvciBzcHJpbnRmCj4gZHJpdmVycy9tdGQvbXRkY29yZS5j
+OjE0Mzo4LTE2OiBXQVJOSU5HOiB1c2Ugc2NucHJpbnRmIG9yIHNwcmludGYKPiBkcml2ZXJzL210
+ZC9tdGRjb3JlLmM6MjE4OjgtMTY6IFdBUk5JTkc6IHVzZSBzY25wcmludGYgb3Igc3ByaW50Zgo+
+IGRyaXZlcnMvbXRkL210ZGNvcmUuYzoyMDg6OC0xNjogV0FSTklORzogdXNlIHNjbnByaW50ZiBv
+ciBzcHJpbnRmCj4gZHJpdmVycy9tdGQvbXRkY29yZS5jOjE5OTo4LTE2OiBXQVJOSU5HOiB1c2Ug
+c2NucHJpbnRmIG9yIHNwcmludGYKPiBkcml2ZXJzL210ZC9tdGRjb3JlLmM6MTkwOjgtMTY6IFdB
+Uk5JTkc6IHVzZSBzY25wcmludGYgb3Igc3ByaW50Zgo+IGRyaXZlcnMvbXRkL210ZGNvcmUuYzox
+NTI6OC0xNjogV0FSTklORzogdXNlIHNjbnByaW50ZiBvciBzcHJpbnRmCj4gZHJpdmVycy9tdGQv
+bXRkY29yZS5jOjE4MTo4LTE2OiBXQVJOSU5HOiB1c2Ugc2NucHJpbnRmIG9yIHNwcmludGYKPiBk
+cml2ZXJzL210ZC9tdGRjb3JlLmM6MTM0OjgtMTY6IFdBUk5JTkc6IHVzZSBzY25wcmludGYgb3Ig
+c3ByaW50Zgo+IGRyaXZlcnMvbXRkL210ZGNvcmUuYzoxNzE6OC0xNjogV0FSTklORzogdXNlIHNj
+bnByaW50ZiBvciBzcHJpbnRmCgpzZWU6Cmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LW10
+ZC9DQUZMeEd2eEM0S3R2dFUycnphX2FHeDJSUE9OeHI3WHlnVXdYQ0RyaVlpQ3I4cU4zcWdAbWFp
+bC5nbWFpbC5jb20vCgpQbGVhc2UgZXhwbGFpbiB3aHkgYSBwYXRjaCBpcyBuZWVkZWQgYW5kIHdo
+YXQgaXQgZml4ZXMuCgpUaGFua3MsCi8vcmljaGFyZAoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxp
+bmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
+LW10ZC8K
