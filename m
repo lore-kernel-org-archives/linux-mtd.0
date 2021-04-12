@@ -1,84 +1,104 @@
-Return-Path: <SRS0=VhFc=JI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=MywH=JJ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE9B3C433B4
-	for <linux-mtd@archiver.kernel.org>; Sun, 11 Apr 2021 14:34:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76887C433B4
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Apr 2021 02:31:07 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 394AF610CA
-	for <linux-mtd@archiver.kernel.org>; Sun, 11 Apr 2021 14:34:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 394AF610CA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id E453360698
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Apr 2021 02:31:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E453360698
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=1RKA8LOahKb5BSkxcRuaFwrDS/TF6+k5kOAHbio6DBs=; b=pVAezbz9t3oAdgmtY2ibcNGE14
-	wO60WN99c/XygiGWEbhxXO67S+QBTBV/8OxZdEc5fJq5Lwizju8XGBI79+oDSAcW1RDNVU5kUk09y
-	5tyymeIaSL9cPQn1GqJm3lkxbGwVcKCQQo685Lb3oKz7+O6b7qcWw2sNyBZxdE0kBr7MMb3k9m2aM
-	95Fdiiqs5G3k7H/3OpcbUY5uAyaRxhPSOHxYIfn5cqYm6YSJGiXS5SVjMElvKfeswWi4xljDUPgvV
-	AsVM4FvrgBcqj2jCg4bJ+4EBaE8BSbwJ8As7AUMEd8OSfkFlNKX9iZVjDWGtAlhZgTXqqN2kuQ9Yh
-	EvcdhD9w==;
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=1LQXdRtba+qNDNEuqRZYeOKFI1zd5OLb/DPJ3TLLOvw=; b=G9MUiWilbcW2UuTBFzksj9q+s
+	fnfsJdbJ8PQcx2DBpoHzLZ++0VKFsJPcachsRjqSfxFtCsYVVdAzXZ183R+W3cDP4hO4DvwcjcdQW
+	8FYoz8lWqzF3qgA9ew3ik6D4jv7v09fJrBCLOJJAt7HBD4fooEKeYu8Kxv3NjWy96gJ/Cy8fBnbdT
+	KteqyQJb4ep8k/1kuBNdRZgKt58WOge9yNCYHfIAD66R4g6prH8v65AFs0+q9fijq0vLjLqd308BN
+	DR9q2blVpc9ft8RhnJuMc1LA0vOrdlQNbbFsWJqBtFLq9hBsuB5+2sP9aYXpVzA4sY+e+4Jl5pEqA
+	SajMGGSaA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lVb9E-004ZmG-RB; Sun, 11 Apr 2021 14:33:12 +0000
+	id 1lVmKv-005Waz-EK; Mon, 12 Apr 2021 02:30:04 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lVb9D-004ZmB-JS
- for linux-mtd@desiato.infradead.org; Sun, 11 Apr 2021 14:33:11 +0000
+ id 1lVmKo-005Wad-UN
+ for linux-mtd@desiato.infradead.org; Mon, 12 Apr 2021 02:29:55 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
- MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
- Content-ID:Content-Description:In-Reply-To:References;
- bh=B/5t1SxxF6rSHEeTttiOctJcoCH6tFA5IgHWiuwXN9s=; b=Xz9PIg9KQfIDMu9rRBPwDThzx7
- k6J2SE/Xzgk10MQ5UYsaDQH9CVgsBEDCGcW26cvqL+ay+75UNtlZ7euaTI93I1lbEwf4OvRysHDD5
- EmUoToBU5MY4JgDLA79Z3w7PUat/PDBS8UT2aTH363fJ0vxmiZMMI+94oSoq10/xokTr07lu/7D7z
- Re1nxBUVI2yN0XTAP9j67C1fVyQSkuOnNUC7hHmveDbtUzJNIYwCa2AgAx+eR1oXdqpPuawaYCJYJ
- Tjcsi4F/BnzEniepsejXfFAVOfLcYayCSL/THJGmuC9mhCtE8ra6lNapHtAsiV4ss61cgatYXx9uQ
- kwRWjYAg==;
-Received: from mga14.intel.com ([192.55.52.115])
+ d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Transfer-Encoding
+ :Content-Type:MIME-Version:References:Message-ID:Subject:To:From:Date:Sender:
+ Reply-To:Cc:Content-ID:Content-Description;
+ bh=ggjiDYJPWklL1DS8nb1W1M54GaRi0XIShYnVk+x70zs=; b=3rvB1H3zhwEn2hqPm5n4QA+S2s
+ 4H+l1hjnpkxPDOf3jzaiRMdecfBBl+OtH3lNaVR1/2NiFC4H6cOZicgehq2KaYPjx19EOKmN99DPq
+ OxmgRZVVboS4u6PVOBo+TYuifo64sbs6etBjDEAMuOml9DLnvFaxqOOdcfmzivdzNJNTTcBTklgvy
+ uX+eksXXait9Lz6eVbU4iH61PJxnILAQrsWiFPPmGYfA3/tcJf9TJBA54Q0W5mTTWxRvAhfEO/yvL
+ PXp9ohp/haOY6/0Nx385qUvJJRg2BRGH4+G3z2TTthPBm49SjJKc1N4vxzGmWwBtS1ShfMb0OD5mP
+ 2MI3q88w==;
+Received: from mail-qt1-x82d.google.com ([2607:f8b0:4864:20::82d])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lVb98-005Yey-Mo
- for linux-mtd@lists.infradead.org; Sun, 11 Apr 2021 14:33:09 +0000
-IronPort-SDR: VjxYToyTaqShdRh0Q4TpO+CcMv7ymGWtxZ2d5ycoAcW+2hKdqWOKGp+ITc+jvU5HnTmQjWGX1B
- 0ZCE6YGEYyQA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9951"; a="193599260"
-X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; d="scan'208";a="193599260"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Apr 2021 07:32:58 -0700
-IronPort-SDR: ohNW9i3LM7rZ5ytBBsueE5ay8k5WuTXq/6MqYHCWppmepcfIdUvyhy63u5XkkwfiMRxYGioIUP
- mu1kQl5+BW1w==
-X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; d="scan'208";a="423444936"
-Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Apr 2021 07:32:56 -0700
-From: Tomas Winkler <tomas.winkler@intel.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: Tamar Mashiah <tamar.mashiah@intel.com>, Joe Perches <joe@perches.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Tomas Winkler <tomas.winkler@intel.com>
-Subject: [PATCH v3] mtd: intel-spi: add is_protected and is_bios_locked knobs
-Date: Sun, 11 Apr 2021 17:32:47 +0300
-Message-Id: <20210411143247.3045467-1-tomas.winkler@intel.com>
-X-Mailer: git-send-email 2.26.3
+ id 1lVmKl-005qNa-JB
+ for linux-mtd@lists.infradead.org; Mon, 12 Apr 2021 02:29:53 +0000
+Received: by mail-qt1-x82d.google.com with SMTP id u8so8830070qtq.12
+ for <linux-mtd@lists.infradead.org>; Sun, 11 Apr 2021 19:29:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:subject:message-id:references:mime-version
+ :content-disposition:content-transfer-encoding:in-reply-to
+ :user-agent; bh=ggjiDYJPWklL1DS8nb1W1M54GaRi0XIShYnVk+x70zs=;
+ b=aPow25ulJ1w3UUg/jpbprBy7FVeekA8wBsjW3w3LLlS55zAzPi6q9p65LTB4ys3trF
+ v9ZfqtHnFISm5GPHGV6UzbQcvjSsK9rVL8RC0yF77yKzcWhz9kp7IHivevg9p4poREue
+ 4K7I4ggjZVopqeD+hOiQXikgQ+SDwcwbBTOL/zdNsZM/K+vkVLHr/ExcSL46OI0Jkrh2
+ spmwKk3TYYhW0VTm0ye4Qa4ZPKVSFi7wW5Ij4b+UQ8C8tZsXGFoKyze5GN38cdIxf+c9
+ eEzoVukJ2S4G17SW+k2rWhfd465Vgt9wLEn0Ams0jydk11BgxgRZqTL1NV0Wc6dxpSTn
+ bTlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:subject:message-id:references
+ :mime-version:content-disposition:content-transfer-encoding
+ :in-reply-to:user-agent;
+ bh=ggjiDYJPWklL1DS8nb1W1M54GaRi0XIShYnVk+x70zs=;
+ b=t6GnmZ54hmtyiu3TRUpEQ1m30figuAlomRLPSXYloHM0+zti/Xk8RGRwqkQsUry9sM
+ miDcHCzEn7q/fHPoIfgxmGJlgD3J21dM+Cqeug/uxOQGIH0tWAVBRBhGzY0CTBli5Mkp
+ mHwwA3JOyQV+X4udkp07R8aML5Zibybg2JaY6Ijn1bzhENRVqdO0e/WpBT9ZWa3KlfzQ
+ fGphZqRW2SdpbaCj/OED6f49zj5KYoFjO8J6XM6TAFr1TyCDewnv1HphMmjpO5XYF7ZH
+ 2/jiEYWZAVIL27ONtAi2q5PCAxrqAU4vKMArcaBkLKUJmsJH/ZZpbSVAC/t+SpHcoIB5
+ 508Q==
+X-Gm-Message-State: AOAM532Mf5eNdp0YfMzQYmPTPFSnGJR299NteRpXDVhvwv1pLjgzDfNs
+ nymRtwKLYs4yjWXNzkTgTDSli13nfF4=
+X-Google-Smtp-Source: ABdhPJyTO6OhMIuyvWhEngsbn6w+e4RA70DGjyoswWtlVGF7yNOh7UNiNctcr1L86JowoXlew0RQVw==
+X-Received: by 2002:ac8:7651:: with SMTP id i17mr505614qtr.111.1618194589642; 
+ Sun, 11 Apr 2021 19:29:49 -0700 (PDT)
+Received: from localhost (pppoe-209-91-167-254.vianet.ca. [209.91.167.254])
+ by smtp.gmail.com with ESMTPSA id b83sm1380177qkc.97.2021.04.11.19.29.48
+ for <linux-mtd@lists.infradead.org>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 11 Apr 2021 19:29:48 -0700 (PDT)
+Date: Sun, 11 Apr 2021 22:29:47 -0400
+From: Trevor Woerner <twoerner@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: UBI issues with lpc32xx  Was: UBI issues with 5.11.11
+Message-ID: <20210412022946.GA38534@localhost>
+References: <20210407190302.GA12280@localhost>
+ <20210407202356.GA31407@localhost>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20210407202356.GA31407@localhost>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210411_073306_821221_C15CD800 
-X-CRM114-Status: GOOD (  31.84  )
+X-CRM114-CacheID: sfid-20210411_192951_682115_88232159 
+X-CRM114-Status: GOOD (  14.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,410 +110,148 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Tamar Mashiah <tamar.mashiah@intel.com>
-
-The manufacturing access to the PCH/SOC SPI device is traditionally
-performed via user space driver accessing registers via /dev/mem
-but due to security concerns /dev/mem access is being much restricted,
-hence the reason for utilizing dedicated Intel PCH/SOC SPI controller
-driver, which is already implemented in the Linux kernel.
-
-Intel PCH/SOC SPI controller protects the flash storage via two
-mechanisms one is the via region protection registers and second
-via BIOS lock.
-
-The device always boots with bios lock set, but during manufacturing
-the bios lock has to be lifted in order to enable the write access.
-So we add sysfs file (spi_bios_lock) to be able to do it on demand.
-The bios lock is automatically attempted to be lifted by the driver
-during initialization, this part is dropped.
-
-Second, also the region protection status is exposed via sysfs file
-as the manufacturing will need the both files in order to validate
-that the device is properly sealed.
-
-Cc: Joe Perches <joe@perches.com>
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
-Signed-off-by: Tamar Mashiah <tamar.mashiah@intel.com>
-Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
----
-V2: Add a newline to the string format in sysfs_emit() (Joe Perches <joe@perches.com>)
-V3: Resend adding new  MTD SPI-NOR maintainers
-
- .../ABI/testing/sysfs-devices-intel-spi       | 16 ++++
- MAINTAINERS                                   |  1 +
- drivers/mfd/lpc_ich.c                         | 37 ++++++-
- .../mtd/spi-nor/controllers/intel-spi-pci.c   | 38 ++++++--
- drivers/mtd/spi-nor/controllers/intel-spi.c   | 96 ++++++++++++++++---
- include/linux/platform_data/x86/intel-spi.h   |  6 +-
- 6 files changed, 167 insertions(+), 27 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-devices-intel-spi
-
-diff --git a/Documentation/ABI/testing/sysfs-devices-intel-spi b/Documentation/ABI/testing/sysfs-devices-intel-spi
-new file mode 100644
-index 000000000000..515c36f8b5cf
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-devices-intel-spi
-@@ -0,0 +1,16 @@
-+What:		/sys/devices/.../is_protected
-+Date:		April 2021
-+Contact:	Tomas Winkler <tomas.winkler@intel.com>
-+Description:
-+		The /sys/devices/.../is_protected attribute allows the user
-+		space to check if the intel spi controller is write protected
-+		from the host.
-+
-+What:		/sys/devices/.../bios_lock
-+Date:		April 2021
-+Contact:	Tomas Winkler <tomas.winkler@intel.com>
-+Description:
-+		The /sys/devices/.../bios_lock attribute allows the user
-+		space to check if the intel spi controller is locked by bios
-+		for writes. It is possible to unlock the bios lock by writing
-+		"unlock" to the file.
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ba561e5bc6f0..37c934f34ed7 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11571,6 +11571,7 @@ Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
- C:	irc://irc.oftc.net/mtd
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next
-+F:	Documentation/ABI/testing/sysfs-devices-intel-spi
- F:	Documentation/devicetree/bindings/mtd/
- F:	drivers/mtd/
- F:	include/linux/mtd/
-diff --git a/drivers/mfd/lpc_ich.c b/drivers/mfd/lpc_ich.c
-index 3bbb29a7e7a5..eceaf11bec93 100644
---- a/drivers/mfd/lpc_ich.c
-+++ b/drivers/mfd/lpc_ich.c
-@@ -1083,12 +1083,39 @@ static int lpc_ich_init_wdt(struct pci_dev *dev)
- 	return ret;
- }
- 
-+static int lcp_ich_bios_unlock(struct device *dev)
-+{
-+	struct pci_dev *pdev = to_pci_dev(dev);
-+	u32 bcr = 0;
-+
-+	pci_read_config_dword(pdev, BCR, &bcr);
-+	if (!(bcr & BCR_WPD)) {
-+		bcr |= BCR_WPD;
-+		pci_write_config_dword(pdev, BCR, bcr);
-+		pci_read_config_dword(pdev, BCR, &bcr);
-+	}
-+
-+	if (!(bcr & BCR_WPD))
-+		return -EIO;
-+
-+	return 0;
-+}
-+
-+static bool lcp_ich_is_bios_locked(struct device *dev)
-+{
-+	struct pci_dev *pdev = to_pci_dev(dev);
-+	u32 bcr = 0;
-+
-+	pci_read_config_dword(pdev, BCR, &bcr);
-+	return !(bcr & BCR_WPD);
-+}
-+
- static int lpc_ich_init_spi(struct pci_dev *dev)
- {
- 	struct lpc_ich_priv *priv = pci_get_drvdata(dev);
- 	struct resource *res = &intel_spi_res[0];
- 	struct intel_spi_boardinfo *info;
--	u32 spi_base, rcba, bcr;
-+	u32 spi_base, rcba;
- 
- 	info = devm_kzalloc(&dev->dev, sizeof(*info), GFP_KERNEL);
- 	if (!info)
-@@ -1112,8 +1139,8 @@ static int lpc_ich_init_spi(struct pci_dev *dev)
- 			res->start = spi_base + SPIBASE_LPT;
- 			res->end = res->start + SPIBASE_LPT_SZ - 1;
- 
--			pci_read_config_dword(dev, BCR, &bcr);
--			info->writeable = !!(bcr & BCR_WPD);
-+			info->is_bios_locked = lcp_ich_is_bios_locked;
-+			info->bios_unlock = lcp_ich_bios_unlock;
- 		}
- 		break;
- 
-@@ -1134,8 +1161,8 @@ static int lpc_ich_init_spi(struct pci_dev *dev)
- 			res->start = spi_base & 0xfffffff0;
- 			res->end = res->start + SPIBASE_APL_SZ - 1;
- 
--			pci_bus_read_config_dword(bus, spi, BCR, &bcr);
--			info->writeable = !!(bcr & BCR_WPD);
-+			info->is_bios_locked = lcp_ich_is_bios_locked;
-+			info->bios_unlock = lcp_ich_bios_unlock;
- 		}
- 
- 		pci_bus_write_config_byte(bus, p2sb, 0xe1, 0x1);
-diff --git a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
-index 825610a2e9dc..f83f352f874d 100644
---- a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
-+++ b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
-@@ -24,12 +24,38 @@ static const struct intel_spi_boardinfo cnl_info = {
- 	.type = INTEL_SPI_CNL,
- };
- 
-+static int intel_spi_pci_bios_unlock(struct device *dev)
-+{
-+	struct pci_dev *pdev = to_pci_dev(dev);
-+	u32 bcr = 0;
-+
-+	pci_read_config_dword(pdev, BCR, &bcr);
-+	if (!(bcr & BCR_WPD)) {
-+		bcr |= BCR_WPD;
-+		pci_write_config_dword(pdev, BCR, bcr);
-+		pci_read_config_dword(pdev, BCR, &bcr);
-+	}
-+
-+	if (!(bcr & BCR_WPD))
-+		return -EIO;
-+
-+	return 0;
-+}
-+
-+static bool intel_spi_pci_is_bios_locked(struct device *dev)
-+{
-+	struct pci_dev *pdev = to_pci_dev(dev);
-+	u32 bcr = 0;
-+
-+	pci_read_config_dword(pdev, BCR, &bcr);
-+	return !(bcr & BCR_WPD);
-+}
-+
- static int intel_spi_pci_probe(struct pci_dev *pdev,
- 			       const struct pci_device_id *id)
- {
- 	struct intel_spi_boardinfo *info;
- 	struct intel_spi *ispi;
--	u32 bcr;
- 	int ret;
- 
- 	ret = pcim_enable_device(pdev);
-@@ -41,14 +67,8 @@ static int intel_spi_pci_probe(struct pci_dev *pdev,
- 	if (!info)
- 		return -ENOMEM;
- 
--	/* Try to make the chip read/write */
--	pci_read_config_dword(pdev, BCR, &bcr);
--	if (!(bcr & BCR_WPD)) {
--		bcr |= BCR_WPD;
--		pci_write_config_dword(pdev, BCR, bcr);
--		pci_read_config_dword(pdev, BCR, &bcr);
--	}
--	info->writeable = !!(bcr & BCR_WPD);
-+	info->is_bios_locked = intel_spi_pci_is_bios_locked;
-+	info->bios_unlock = intel_spi_pci_bios_unlock;
- 
- 	ispi = intel_spi_probe(&pdev->dev, &pdev->resource[0], info);
- 	if (IS_ERR(ispi))
-diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
-index a413892ff449..bbe0639de702 100644
---- a/drivers/mtd/spi-nor/controllers/intel-spi.c
-+++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
-@@ -131,7 +131,8 @@
-  * @sregs: Start of software sequencer registers
-  * @nregions: Maximum number of regions
-  * @pr_num: Maximum number of protected range registers
-- * @writeable: Is the chip writeable
-+ * @is_protected: Whether the regions are write protected
-+ * @is_bios_locked: Whether the spi is locked by BIOS
-  * @locked: Is SPI setting locked
-  * @swseq_reg: Use SW sequencer in register reads/writes
-  * @swseq_erase: Use SW sequencer in erase operation
-@@ -149,7 +150,8 @@ struct intel_spi {
- 	void __iomem *sregs;
- 	size_t nregions;
- 	size_t pr_num;
--	bool writeable;
-+	bool is_protected;
-+	bool is_bios_locked;
- 	bool locked;
- 	bool swseq_reg;
- 	bool swseq_erase;
-@@ -326,7 +328,7 @@ static int intel_spi_init(struct intel_spi *ispi)
- 				val = readl(ispi->base + BYT_BCR);
- 			}
- 
--			ispi->writeable = !!(val & BYT_BCR_WPD);
-+			ispi->is_bios_locked = !(val & BYT_BCR_WPD);
- 		}
- 
- 		break;
-@@ -862,6 +864,7 @@ static void intel_spi_fill_partition(struct intel_spi *ispi,
- 	int i;
- 
- 	memset(part, 0, sizeof(*part));
-+	ispi->is_protected = false;
- 
- 	/* Start from the mandatory descriptor region */
- 	part->size = 4096;
-@@ -886,7 +889,7 @@ static void intel_spi_fill_partition(struct intel_spi *ispi,
- 		 * whole partition read-only to be on the safe side.
- 		 */
- 		if (intel_spi_is_protected(ispi, base, limit))
--			ispi->writeable = false;
-+			ispi->is_protected = true;
- 
- 		end = (limit << 12) + 4096;
- 		if (end > part->size)
-@@ -894,6 +897,60 @@ static void intel_spi_fill_partition(struct intel_spi *ispi,
- 	}
- }
- 
-+static ssize_t intel_spi_is_protected_show(struct device *dev,
-+					   struct device_attribute *attr, char *buf)
-+{
-+	struct intel_spi *ispi = dev_get_drvdata(dev);
-+
-+	return sysfs_emit(buf, "%d\n", ispi->is_protected);
-+}
-+static DEVICE_ATTR_ADMIN_RO(intel_spi_is_protected);
-+
-+static ssize_t intel_spi_bios_lock_show(struct device *dev,
-+					struct device_attribute *attr, char *buf)
-+{
-+	struct intel_spi *ispi = dev_get_drvdata(dev);
-+
-+	return sysfs_emit(buf, "%d\n", ispi->is_bios_locked);
-+}
-+
-+static ssize_t intel_spi_bios_lock_store(struct device *dev,
-+					 struct device_attribute *attr,
-+					 const char *buf, size_t len)
-+{
-+	struct intel_spi *ispi = dev_get_drvdata(dev);
-+	struct mtd_info *child, *master = mtd_get_master(&ispi->nor.mtd);
-+	int err;
-+
-+	if (!ispi->info->is_bios_locked)
-+		return -EOPNOTSUPP;
-+
-+	if (strcmp(buf, "unlock") != 0)
-+		return -EINVAL;
-+
-+	if (ispi->info->is_bios_locked(dev)) {
-+		err = ispi->info->bios_unlock(dev);
-+		if (err)
-+			return err;
-+	}
-+
-+	ispi->is_bios_locked = false;
-+
-+	if (ispi->is_protected || !writeable)
-+		return -EPERM;
-+
-+	/* Device is now writable */
-+	ispi->nor.mtd.flags |= MTD_WRITEABLE;
-+
-+	mutex_lock(&master->master.partitions_lock);
-+	list_for_each_entry(child, &ispi->nor.mtd.partitions, part.node)
-+		child->flags |= MTD_WRITEABLE;
-+	mutex_unlock(&master->master.partitions_lock);
-+
-+	return len;
-+}
-+static DEVICE_ATTR_ADMIN_RW(intel_spi_bios_lock);
-+
- static const struct spi_nor_controller_ops intel_spi_controller_ops = {
- 	.read_reg = intel_spi_read_reg,
- 	.write_reg = intel_spi_write_reg,
-@@ -902,6 +959,15 @@ static const struct spi_nor_controller_ops intel_spi_controller_ops = {
- 	.erase = intel_spi_erase,
- };
- 
-+int intel_spi_remove(struct intel_spi *ispi)
-+{
-+	device_remove_file(ispi->dev, &dev_attr_intel_spi_is_protected);
-+	device_remove_file(ispi->dev, &dev_attr_intel_spi_bios_lock);
-+
-+	return mtd_device_unregister(&ispi->nor.mtd);
-+}
-+EXPORT_SYMBOL_GPL(intel_spi_remove);
-+
- struct intel_spi *intel_spi_probe(struct device *dev,
- 	struct resource *mem, const struct intel_spi_boardinfo *info)
- {
-@@ -927,7 +993,9 @@ struct intel_spi *intel_spi_probe(struct device *dev,
- 
- 	ispi->dev = dev;
- 	ispi->info = info;
--	ispi->writeable = info->writeable;
-+	ispi->is_bios_locked = info->is_bios_locked(dev);
-+	dev_dbg(ispi->dev, "is_bios_locked: %d writeable: %d\n",
-+		ispi->is_bios_locked, writeable);
- 
- 	ret = intel_spi_init(ispi);
- 	if (ret)
-@@ -946,22 +1014,28 @@ struct intel_spi *intel_spi_probe(struct device *dev,
- 	intel_spi_fill_partition(ispi, &part);
- 
- 	/* Prevent writes if not explicitly enabled */
--	if (!ispi->writeable || !writeable)
-+	if (ispi->is_protected || ispi->is_bios_locked || !writeable)
- 		ispi->nor.mtd.flags &= ~MTD_WRITEABLE;
- 
- 	ret = mtd_device_register(&ispi->nor.mtd, &part, 1);
- 	if (ret)
- 		return ERR_PTR(ret);
- 
-+	ret = device_create_file(ispi->dev, &dev_attr_intel_spi_is_protected);
-+	if (ret)
-+		goto err;
-+	ret = device_create_file(ispi->dev, &dev_attr_intel_spi_bios_lock);
-+	if (ret)
-+		goto err;
-+
- 	return ispi;
-+
-+err:
-+	intel_spi_remove(ispi);
-+	return ERR_PTR(ret);
- }
- EXPORT_SYMBOL_GPL(intel_spi_probe);
- 
--int intel_spi_remove(struct intel_spi *ispi)
--{
--	return mtd_device_unregister(&ispi->nor.mtd);
--}
--EXPORT_SYMBOL_GPL(intel_spi_remove);
- 
- MODULE_DESCRIPTION("Intel PCH/PCU SPI flash core driver");
- MODULE_AUTHOR("Mika Westerberg <mika.westerberg@linux.intel.com>");
-diff --git a/include/linux/platform_data/x86/intel-spi.h b/include/linux/platform_data/x86/intel-spi.h
-index 7f53a5c6f35e..335dbb40620f 100644
---- a/include/linux/platform_data/x86/intel-spi.h
-+++ b/include/linux/platform_data/x86/intel-spi.h
-@@ -19,11 +19,13 @@ enum intel_spi_type {
- /**
-  * struct intel_spi_boardinfo - Board specific data for Intel SPI driver
-  * @type: Type which this controller is compatible with
-- * @writeable: The chip is writeable
-+ * @is_bios_locked: report if the device is locked by BIOS
-+ * @bios_unlock: handler to unlock the bios
-  */
- struct intel_spi_boardinfo {
- 	enum intel_spi_type type;
--	bool writeable;
-+	bool (*is_bios_locked)(struct device *dev);
-+	int (*bios_unlock)(struct device *dev);
- };
- 
- #endif /* INTEL_SPI_PDATA_H */
--- 
-2.26.3
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+U29ycnkgZm9yIHRha2luZyBzbyBsb25nLiBCaXNlY3RpbmcgZnJvbSA1LjQuNzggdG8gNS4xMS4x
+MSByZXZlYWxlZCBhIGJ1bmNoIG9mCmRpZmZlcmVudCBpc3N1ZXMuCgpJbiBteSBvcmlnaW5hbCBl
+bWFpbCBJIGp1bXBlZCAidG8gdGhlIGVuZCIgb2YgdGhlIHN0YWJsZSByZWxlYXNlcyBhbmQgZm91
+bmQgYW4KaXNzdWUgd2l0aCA1LjExLjExLCBidXQgd2hpbGUgYmlzZWN0aW5nIEkgZm91bmQgdGhp
+bmdzIGFsb25nIHRoZSB3YXkuCkhvcGVmdWxseSBJJ3ZlIGlzb2xhdGVkIHRoZSBmaXJzdCBwcm9i
+bGVtLiBJIGFsc28gZGVjaWRlZCB0byBiaXNlY3QgYWxvbmcgdGhlClRvcnZhbGRzIHJlcG9zaXRv
+cnksIGhvcGVmdWxseSB0aGF0J3MgdGhlIHByZWZlcnJlZCB3YXkuCgpUaGlzIGlzIHRoZSBpc3N1
+ZSwgYSBOVUxMIGRlcmVmZXJlbmNlOgoKCUJvb3RpbmcgTGludXggb24gcGh5c2ljYWwgQ1BVIDB4
+MAoJTGludXggdmVyc2lvbiA1LjEwLjAtcmM2LXlvY3RvLXN0YW5kYXJkIChvZS11c2VyQG9lLWhv
+c3QpIChhcm0tb2UtbGludXgtZ251ZWFiaS1nY2MgKEdDQykgMTAuMi4wLCBHTlUgbGQgKEdOVSBC
+aW51dGlscykgMi4zNi4xLjIwMjEwMjA5KSAjMSBQUkVFTVBUIE1vbiBBcHIgMTIgMDE6NTI6NTUg
+VVRDIDIwMjEKCUNQVTogQVJNOTI2RUotUyBbNDEwNjkyNjRdIHJldmlzaW9uIDQgKEFSTXY1VEVK
+KSwgY3I9MDAwNTMxN2YKCeKApgoJbmFuZDogZGV2aWNlIGZvdW5kLCBNYW51ZmFjdHVyZXIgSUQ6
+IDB4MDEsIENoaXAgSUQ6IDB4ZGMKCW5hbmQ6IEFNRC9TcGFuc2lvbiBTMzRNTDA0RzEKCW5hbmQ6
+IDUxMiBNaUIsIFNMQywgZXJhc2Ugc2l6ZTogMTI4IEtpQiwgcGFnZSBzaXplOiAyMDQ4LCBPT0Ig
+c2l6ZTogNjQKCTg8LS0tIGN1dCBoZXJlIC0tLQoJVW5hYmxlIHRvIGhhbmRsZSBrZXJuZWwgTlVM
+TCBwb2ludGVyIGRlcmVmZXJlbmNlIGF0IHZpcnR1YWwgYWRkcmVzcyAwMDAwMDAxOAoJcGdkID0g
+KHB0cnZhbCkKCVswMDAwMDAxOF0gKnBnZD0wMDAwMDAwMAoJSW50ZXJuYWwgZXJyb3I6IE9vcHM6
+IDUgWyMxXSBQUkVFTVBUIEFSTQoJQ1BVOiAwIFBJRDogMSBDb21tOiBzd2FwcGVyIE5vdCB0YWlu
+dGVkIDUuMTAuMC1yYzYteW9jdG8tc3RhbmRhcmQgIzEKCUhhcmR3YXJlIG5hbWU6IExQQzMyWFgg
+U29DIChGbGF0dGVuZWQgRGV2aWNlIFRyZWUpCglQQyBpcyBhdCBuYW5kX2VjY19zd19oYW1taW5n
+X2NvcnJlY3QrMHgxOC8weDNjCglMUiBpcyBhdCBscGMzMnh4X25hbmRfcmVhZF9wYWdlX3N5bmRy
+b21lKzB4ZGMvMHgxMzAKCXBjIDogWzxjMDJkMzc2Yz5dICAgIGxyIDogWzxjMDJlMDQ4Yz5dICAg
+IHBzcjogMjAwMDAwNTMKCXNwIDogYzA4MjdiNzggIGlwIDogYzA5ZDU4MjAgIGZwIDogMDAwMDAw
+MDAKCXIxMDogYzA4MjdjY2MgIHI5IDogYzAyZDNlZjggIHI4IDogMDAwMDAwMDAKCXI3IDogYzA4
+ZTA4MjggIHI2IDogYzQ4NTAwMDAgIHI1IDogMDAwMDAwMDAgIHI0IDogYzA5ZDU4MjAKCXIzIDog
+MDAwMDAwMDAgIHIyIDogYzA4MjdiOWMgIHIxIDogYzA4ZTA4MjggIHIwIDogYzQ4NTAwMDAKCUZs
+YWdzOiBuekN2ICBJUlFzIG9uICBGSVFzIG9mZiAgTW9kZSBTVkNfMzIgIElTQSBBUk0gIFNlZ21l
+bnQgbm9uZQoJQ29udHJvbDogMDAwNTMxN2YgIFRhYmxlOiA4MDAwNDAwMCAgREFDOiAwMDAwMDA1
+MwoJUHJvY2VzcyBzd2FwcGVyIChwaWQ6IDEsIHN0YWNrIGxpbWl0ID0gMHgocHRydmFsKSkKCVN0
+YWNrOiAoMHhjMDgyN2I3OCB0byAweGMwODI4MDAwKQoJN2I2MDogICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYzA5ZDU4MjAgYzQ4NTAwMDAKCTdi
+ODA6IGMwOGUwODI4IGMwMmUwNDhjIDAwMDAwMDAwIGMwMDM5NDgwIGMwNmMzNzYwIDAwMDAwMDI4
+IDAwMDAwMDE4IGZmZmZmZmZmCgk3YmEwOiBmZmZmZmZmZiBmZmZmZmZmZiBmZmZmZmZmZiBmZmZm
+ZmZmZiBmZmZmZmZmZiBmZmZmZmZmZiBjMDcyMTcwYyAwMDAwMDAwYQoJN2JjMDogYzA2ZmFjNDAg
+YzAwMDk1ZjggMDAwMDAwMDEgYzA4MGYwZTAgYzA4MGIwMDAgMDAyMDAxNDAgZmZmZjhiOTAgYzA2
+YjcyMDgKCTdiZTA6IGMwODI3YzEwIGMwOWQ1ODIwIGM0ODUwODAwIGM0ODUwMDAwIDAwMDAwODAw
+IGM0ODUwMDAwIGMwMmUwM2IwIGMwMmQ0YTE0Cgk3YzAwOiAwMDAwMDAwMCBjMDA0YmI1MCBjMDgy
+N2NhMCAwMDAwMDAwMCAwMDAzZmZjMCAwMDAwMDgwMCAwMDAwMDA0MCAwMDAwMDA0MAoJN2MyMDog
+MDAwMDAwMDAgMDAwMDAwMDAgMDAwM2ZmYzAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDA4MDAgMDAw
+MDAwMDAgMDAwMDAwMDEKCTdjNDA6IDAwMDAwMDAxIDAwMDAwMDAwIGM0ODUwMDAwIGMwOWQ1OGY4
+IDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwCgk3YzYwOiAwMDAzZmZjMCBjMDlk
+NTgyMCAwMDAwMDAwMCBjMDlkNTgyMCBjMDgyN2NjYyAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAw
+MAoJN2M4MDogMWZmZTAwMDAgYzAyYzU4ZjAgYzA4MjdjY2MgYzQ4NTAwMDAgMWZmZTAwMDAgYzA5
+ZDU4MjAgYzQ4NTAwMDAgMWZmZTAwMDAKCTdjYTA6IDAwMDAwMDAwIDAwMDAwODAwIGMwODI3Y2Nj
+IDAwMDAwMDAwIGMwNzBkNDg0IGMwMmRiNjQ0IGMwODI3Y2NjIDAwMDAwZGMwCgk3Y2MwOiBjNDg1
+MDAwMCBjMDBiZDFmNCAwMDAwMDBkYyAwMDAwMDAwMCAwMDAwMDgwMCAwMDAwMDAwMCAwMDAwMDA0
+MCAwMDAwMDAwMAoJN2NlMDogMDAwMDAwMDAgYzQ4NTAwMDAgYzQ4NTA4MDAgYzA2YjcyMDggYzA3
+MGQ0NTggYzA5ZDU4MjAgMDAwMDBmZmYgMDAwMDBmZmYKCTdkMDA6IGM0ODUwMDAwIDAwMDAwMDAw
+IDAwMDAwMDAxIGMwMmRjMmNjIDAwMDAwODAwIGMwNzBkNDU4IDAwMDAwMDAxIDAwMDAwMDAwCgk3
+ZDIwOiBmZmZmZmZmZiAwMDAwMDAwMSAyMDAwMDAwMCBjMDcwZDQ4NCAwMDAwMDAwNiAwMDAwMDI0
+ZiAwMDAwMDAwMCBjMDlkNTgyMAoJN2Q0MDogMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDEgYzQ4
+NTAwMDAgMDAwMDAwZGMgYzA3MGQ0OWMgMDAwMDAwZGMgYzAyZGM3ZTAKCTdkNjA6IDAwMDAwMGRj
+IDAwMDAwMDAxIGMwNzBkNDU4IGMwMGNmYjIwIGMwYTRkNmMwIGMwOWQ1ODIwIGMwMmM0ODA0IGMw
+OWQ1MDAwCgk3ZDgwOiAwMDAwMDAwMCBjMDlkNTgyMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAw
+MSAwMDAwMDAwMSAwMDAwMDBkYyAwMDAwMDAwMQoJN2RhMDogMDAwMDAwZGMgYzAyZGE2MTggMDAw
+MDA4MDAgMDAwMDAwNDAgMDAwMDAwMDEgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDEKCTdkYzA6
+IDAwMDAwMDAwIDA3YmZhNDgwIDEwYmZiODQwIDA1OTUzZDZhIGMwNjE2YTg5IGMwNjE2YmMzIGMw
+NjJjZjhmIGMwNjJjZjk4Cgk3ZGUwOiBjMDYyY2Y5YiBjMDYyY2ZhNyBjMDcwN2QzOCBjMDZiNzIw
+OCBjMDcwN2Q0YyBjMDlkNTgyMCAwMDAwMDAwMCBjMDhmYWMxMAoJN2UwMDogYzA4ZmFjMDAgMDdi
+ZmE0ODAgMTBiZmI4NDAgMDU5NTNkNmEgZTEwMWUxMDEgYzAyZTBiOTggYzBhZjI1MjggYzA4MjVi
+MjAKCTdlMjA6IGMwNzAxYTA4IGUxMDBlMDAxIDEwYmZiODQwIDA0MmZlZTEwIDAwMDAwNDAwIGMw
+NmI3MjA4IDAwMDAwMDAxIGMwOGZhYzEwCgk3ZTQwOiBjMDcwZTFhOCAwMDAwMDAwMCBjMDc0MzBl
+YyBjMDcwZTFhOCAwMDAwMDAwMCBjMDY1Mzg0MCAwMDAwMDAwMCBjMDJhMGI5OAoJN2U2MDogYzA4
+ZmFjMTAgMDAwMDAwMDAgMDAwMDAwMDAgYzAyOWY2MTQgMDAwMDAwMDAgYzA4ZmFjMTAgYzA3MGUx
+YTggYzA3MGJmMTgKCTdlODA6IGMwNmFhODM4IGMwNzIxMDAwIGMwNjUzODQwIGMwMjlmYmI0IDAw
+MDAwMDAwIGMwOGZhYzEwIGMwNzBlMWE4IGMwMjlmYzc4Cgk3ZWEwOiBjMDhmYWMxMCBjMDcwZTFh
+OCBjMDI5ZmJjYyBjMDI5ZGRlMCBjMDcwYmYxOCBjMDgwZjM2YyBjMDgxMDIzMCBjMDZiNzIwOAoJ
+N2VjMDogYzA3MGUxYTggYzBhNGQ3ODAgMDAwMDAwMDAgYzAyOWU1MmMgYzA2MmU2MzUgYzA2MmU2
+M2QgMDAwMDAwMDAgYzA3MGUxYTgKCTdlZTA6IGZmZmZlMDAwIDAwMDAwMDAwIGMwNzIxMDAwIGMw
+MmEwMmE0IGMwNjk5ZTc0IGZmZmZlMDAwIDAwMDAwMDAwIGMwNjgzZWZjCgk3ZjAwOiBjMDgxOTFl
+YyBjMDYxOGQ1MSAwMDAwMDAwMCBjMDAzMmYwMCAwMDAwMDAwMSBjMDY1Mzg0MCBjMDY4MzNkOCAw
+MDAwMDQyNAoJN2YyMDogMDAwMDAwMDYgMDAwMDAwMDYgMDAwMDAwMDAgMDAwMDA0MWYgMDAwMDAw
+MDAgYzA4MTkxZDUgYzA4MTkxZGQgYzA2YjcyMDgKCTdmNDA6IDAwMDAwMDAwIDAwMDAwMDA2IDAw
+MDAwMGQ0IGMwNmI3MjA4IGMwNmFhODU0IDAwMDAwMDA3IDAwMDAwMGQ0IGMwODE5MWEwCgk3ZjYw
+OiBjMDZhYTg1OCBjMDY4NDFkOCAwMDAwMDAwNiAwMDAwMDAwNiAwMDAwMDAwMCBjMDY4MzNkOCAw
+MDAwMDAwMCBjMDZiMzJmOAoJN2Y4MDogMDAwMDAwMDAgMDAwMDAwMDAgYzA1M2I4MWMgMDAwMDAw
+MDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAKCTdmYTA6IDAwMDAwMDAwIGMw
+NTNiODI0IDAwMDAwMDAwIGMwMDA4NTIwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAw
+MDAwCgk3ZmMwOiAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAw
+MDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMAoJN2ZlMDogMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAw
+MDAgMDAwMDAwMDAgMDAwMDAwMTMgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAKCVs8YzAyZDM3
+NmM+XSAobmFuZF9lY2Nfc3dfaGFtbWluZ19jb3JyZWN0KSBmcm9tIFs8YzAyZTA0OGM+XSAobHBj
+MzJ4eF9uYW5kX3JlYWRfcGFnZV9zeW5kcm9tZSsweGRjLzB4MTMwKQoJWzxjMDJlMDQ4Yz5dIChs
+cGMzMnh4X25hbmRfcmVhZF9wYWdlX3N5bmRyb21lKSBmcm9tIFs8YzAyZDRhMTQ+XSAobmFuZF9y
+ZWFkX29vYisweDNmMC8weDYxMCkKCVs8YzAyZDRhMTQ+XSAobmFuZF9yZWFkX29vYikgZnJvbSBb
+PGMwMmM1OGYwPl0gKG10ZF9yZWFkX29vYisweGM4LzB4MTM4KQoJWzxjMDJjNThmMD5dIChtdGRf
+cmVhZF9vb2IpIGZyb20gWzxjMDJkYjY0ND5dIChzY2FuX3JlYWQrMHhjYy8weDEzMCkKCVs8YzAy
+ZGI2NDQ+XSAoc2Nhbl9yZWFkKSBmcm9tIFs8YzAyZGMyY2M+XSAoc2VhcmNoX2JidCsweDE2OC8w
+eDI2YykKCVs8YzAyZGMyY2M+XSAoc2VhcmNoX2JidCkgZnJvbSBbPGMwMmRjN2UwPl0gKG5hbmRf
+Y3JlYXRlX2JidCsweDMxMC8weDVjNCkKCVs8YzAyZGM3ZTA+XSAobmFuZF9jcmVhdGVfYmJ0KSBm
+cm9tIFs8YzAyZGE2MTg+XSAobmFuZF9zY2FuX3dpdGhfaWRzKzB4MTI1NC8weDEzNmMpCglbPGMw
+MmRhNjE4Pl0gKG5hbmRfc2Nhbl93aXRoX2lkcykgZnJvbSBbPGMwMmUwYjk4Pl0gKGxwYzMyeHhf
+bmFuZF9wcm9iZSsweDUzMC8weDYwMCkKCVs8YzAyZTBiOTg+XSAobHBjMzJ4eF9uYW5kX3Byb2Jl
+KSBmcm9tIFs8YzAyYTBiOTg+XSAocGxhdGZvcm1fZHJ2X3Byb2JlKzB4MzgvMHg2YykKCVs8YzAy
+YTBiOTg+XSAocGxhdGZvcm1fZHJ2X3Byb2JlKSBmcm9tIFs8YzAyOWY2MTQ+XSAocmVhbGx5X3By
+b2JlKzB4MjA4LzB4MzVjKQoJWzxjMDI5ZjYxND5dIChyZWFsbHlfcHJvYmUpIGZyb20gWzxjMDI5
+ZmJiND5dIChkZXZpY2VfZHJpdmVyX2F0dGFjaCsweDQ0LzB4NWMpCglbPGMwMjlmYmI0Pl0gKGRl
+dmljZV9kcml2ZXJfYXR0YWNoKSBmcm9tIFs8YzAyOWZjNzg+XSAoX19kcml2ZXJfYXR0YWNoKzB4
+YWMvMHhiNCkKCVs8YzAyOWZjNzg+XSAoX19kcml2ZXJfYXR0YWNoKSBmcm9tIFs8YzAyOWRkZTA+
+XSAoYnVzX2Zvcl9lYWNoX2RldisweDY0LzB4YTQpCglbPGMwMjlkZGUwPl0gKGJ1c19mb3JfZWFj
+aF9kZXYpIGZyb20gWzxjMDI5ZTUyYz5dIChidXNfYWRkX2RyaXZlcisweDE0NC8weDFhNCkKCVs8
+YzAyOWU1MmM+XSAoYnVzX2FkZF9kcml2ZXIpIGZyb20gWzxjMDJhMDJhND5dIChkcml2ZXJfcmVn
+aXN0ZXIrMHhhYy8weGYwKQoJWzxjMDJhMDJhND5dIChkcml2ZXJfcmVnaXN0ZXIpIGZyb20gWzxj
+MDY4M2VmYz5dIChkb19vbmVfaW5pdGNhbGwrMHg3NC8weDE5NCkKCVs8YzA2ODNlZmM+XSAoZG9f
+b25lX2luaXRjYWxsKSBmcm9tIFs8YzA2ODQxZDg+XSAoa2VybmVsX2luaXRfZnJlZWFibGUrMHgx
+NjgvMHgxYjQpCglbPGMwNjg0MWQ4Pl0gKGtlcm5lbF9pbml0X2ZyZWVhYmxlKSBmcm9tIFs8YzA1
+M2I4MjQ+XSAoa2VybmVsX2luaXQrMHg4LzB4ZjgpCglbPGMwNTNiODI0Pl0gKGtlcm5lbF9pbml0
+KSBmcm9tIFs8YzAwMDg1MjA+XSAocmV0X2Zyb21fZm9yaysweDE0LzB4MzQpCglFeGNlcHRpb24g
+c3RhY2soMHhjMDgyN2ZiMCB0byAweGMwODI3ZmY4KQoJN2ZhMDogICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAKCTdm
+YzA6IDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAw
+IDAwMDAwMDAwIDAwMDAwMDAwCgk3ZmUwOiAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAw
+MDAwMCAwMDAwMDAxMyAwMDAwMDAwMAoJQ29kZTogZTFhMDAwMDEgZTFhMDEwMDIgZTFhMDIwMDMg
+ZTU5YzMyYjggKGU1OTMzMDE4KSAKCS0tLVsgZW5kIHRyYWNlIDYzMDVkZjZmOGMxZTNmMDAgXS0t
+LQoJS2VybmVsIHBhbmljIC0gbm90IHN5bmNpbmc6IEF0dGVtcHRlZCB0byBraWxsIGluaXQhIGV4
+aXRjb2RlPTB4MDAwMDAwMGIKCS0tLVsgZW5kIEtlcm5lbCBwYW5pYyAtIG5vdCBzeW5jaW5nOiBB
+dHRlbXB0ZWQgdG8ga2lsbCBpbml0ISBleGl0Y29kZT0weDAwMDAwMDBiIF0tLS0KCkhlcmUncyB0
+aGUgY29tbWl0IHZpYSBiaXNlY3Rpb246CgoJJCBnaXQgYmlzZWN0IGJhZAoJMTliMmNlMTg0Yjlm
+NDA0ZDY2MjBhZGY2NjdhOTAxOWU2YWJjYWU1MSBpcyB0aGUgZmlyc3QgYmFkIGNvbW1pdAoJY29t
+bWl0IDE5YjJjZTE4NGI5ZjQwNGQ2NjIwYWRmNjY3YTkwMTllNmFiY2FlNTEKCUF1dGhvcjogTWlx
+dWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4KCURhdGU6ICAgV2VkIFNlcCAz
+MCAwMTowMToyMCAyMDIwICswMjAwCgoJICAgIG10ZDogbmFuZDogZWNjLWhhbW1pbmc6IFN0b3Ag
+dXNpbmcgcmF3IE5BTkQgc3RydWN0dXJlcwoJICAgIAoJICAgIFRoaXMgY29kZSBpcyBtZWFudCB0
+byBiZSByZXVzZWQgYnkgdGhlIFNQSS1OQU5EIGNvcmUuIE5vdyB0aGF0IHRoZQoJICAgIGRyaXZl
+ciBoYXMgYmVlbiBjbGVhbmVkIGFuZCByZW9yZ2FuaXplZCwgdXNlIGEgZ2VuZXJpYyBFQ0MgZW5n
+aW5lCgkgICAgb2JqZWN0IHRvIHN0b3JlIHRoZSBkcml2ZXIncyBkYXRhIGluc3RlYWQgb2YgYWNj
+ZXNzaW5nIG1lbWJlcnMgb2YgdGhlCgkgICAgbmFuZF9jaGlwIHN0cnVjdHVyZS4gVGhpcyBtZWFu
+cyBhZGRpbmcgcHJvcGVyIGluaXQvY2xlYW51cCBoZWxwZXJzLgoJICAgIAoJICAgIFNpZ25lZC1v
+ZmYtYnk6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+CgkgICAgTGlu
+azogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtbXRkLzIwMjAwOTI5MjMwMTI0LjMxNDkx
+LTE3LW1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20KCgkgZHJpdmVycy9tdGQvbmFuZC9lY2Mtc3ct
+aGFtbWluZy5jICAgICAgIHwgMTcgKysrKystLS0tCgkgZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFu
+ZF9iYXNlLmMgICAgICAgIHwgNjMgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tCgkg
+aW5jbHVkZS9saW51eC9tdGQvbmFuZC1lY2Mtc3ctaGFtbWluZy5oIHwgMjAgKysrKysrKysrKysK
+CSBpbmNsdWRlL2xpbnV4L210ZC9yYXduYW5kLmggICAgICAgICAgICAgfCAgMiArKwoJIDQgZmls
+ZXMgY2hhbmdlZCwgOTAgaW5zZXJ0aW9ucygrKSwgMTIgZGVsZXRpb25zKC0pCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRp
+c2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vbGludXgtbXRkLwo=
