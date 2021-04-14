@@ -6,91 +6,85 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
 	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B9F5C433B4
-	for <linux-mtd@archiver.kernel.org>; Wed, 14 Apr 2021 06:54:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A31AC433B4
+	for <linux-mtd@archiver.kernel.org>; Wed, 14 Apr 2021 10:54:57 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A0E0C6105A
-	for <linux-mtd@archiver.kernel.org>; Wed, 14 Apr 2021 06:54:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A0E0C6105A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	by mail.kernel.org (Postfix) with ESMTPS id 60A0D613C3
+	for <linux-mtd@archiver.kernel.org>; Wed, 14 Apr 2021 10:54:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 60A0D613C3
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
-	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=UOf2RygdD/b7OP/uj3q2HbIOpmKcUCZfZKZLy/df0bY=; b=gVJhmAqS+fiYVG4xa9OxQfyyg
-	xNec74zksWvk7K08Wmn9HMEO9ymIiSeYNem7E22PHnOWawkR0T2FzwP3S+GFDnyfwu/1sQkp0c7Y2
-	FOIrq2l+LpXElb07KqTO9dyI0ku9WhunBYPx10TC/zQWeVc503xABq1hlhpx8JQqHnt22rk4elSUJ
-	ITyWbyP0dcg8beQnq3Q6FFWtwYYBar5fYhKdGYxEviGsVmBOXixl4tz3Jz6gCIXch15wr0cD3oOZo
-	ZCTu1NSUA3d53b4y/cOL18RzPRhhF1gQfyqSuMR9tezf+Njf75u+/B70YJCRYK396F7Wi9/uQ0p7l
-	VJpvfKMoA==;
+	 bh=YdOjdaLYZXgUkHlDb1MNQuhDWz1o7j8VW786gEBhpy4=; b=geNynkHREAzFpptetAE5zkROP
+	63Wr4dQXkX/y9F7g8vyf6p5G+LclrhcPjrgv3RY/gslmiX1n2KIzQbBuCqdbblFpjNi7y/3s+eeNA
+	mlNqEBb7x7tRC3+VNCAtRIeFgwhBMgMrv6NFjqTUOaPKWEnwve+CsRiSE+Yijhaej4vMiAoYnQZxd
+	d9fYt/YjPBNgzknZS4cvHPq3V6ofW4mzrHeifoIL5nzkEoP+w+gXhDKCIGX6EdnGp/npl+vmAkSWl
+	gGoNW+SJBVIqBw5LcB+qXANf6UwaETBGb40K50SdRE98hvYfc0ntCagTMIcXBFJLJjQSzamV+si3y
+	ZKyr3Nwgg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lWZPU-00Bk4d-GT; Wed, 14 Apr 2021 06:54:00 +0000
+	id 1lWd9X-00CKjC-LZ; Wed, 14 Apr 2021 10:53:48 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lWZOz-00Bjr7-W4
- for linux-mtd@desiato.infradead.org; Wed, 14 Apr 2021 06:53:30 +0000
+ id 1lWd9O-00CKhY-9X
+ for linux-mtd@desiato.infradead.org; Wed, 14 Apr 2021 10:53:39 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Content-Type:Cc:To:Subject:Message-ID
- :Date:From:In-Reply-To:References:MIME-Version:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=5FpXG6BxL1eix7ZuvEbTaKFw6E4r9hjxDvOS4dYSkAY=; b=QeB3Qv5ipPcfJlhlrJLFLLjlzU
- CtUIcX7gzZMxhCAYmRXchjtFwQmOQSj56OsOc5sqm6HKan2uyRNqDoDeEcTvY1NY5QOZJmx6Kw9Sv
- 5SoBy8zXB9KSG1+plWAmoJ7MILWi2+LoXgvadfnfGUYPF/nlbUQwosmS+eqdwuGBEX9lrL+sUUmKS
- 2PTDItOKfw6HN5lau1IqU0vvBneXVP1Y6Lu/w8BbG4ImbOWFHaL7bz1njchq3gV8m9WIOofmrhEGT
- rNWNqh5jCAClDg1yyHBSWObrqRvWZM3dIvwjyhRpwjfHxpMhFE2g6NXT7UMvESSXRn0yFi0aCZTMd
- UfTIgT9A==;
-Received: from mail-pg1-x533.google.com ([2607:f8b0:4864:20::533])
+ d=infradead.org; s=bombadil.20210309; h=Message-ID:References:In-Reply-To:
+ Subject:Cc:To:From:Date:Content-Transfer-Encoding:Content-Type:MIME-Version:
+ Sender:Reply-To:Content-ID:Content-Description;
+ bh=L12OIt8faTtdsv0KBp9p7wm1ybDfWS+RvgRsDf4XGCM=; b=HrT26hcg4Ysbp/Hc+KSlZhdhtu
+ rIaV85xoP03zTIkpd2lQ0dRtSyHeyIhFudAIythTR7xqmnywAuWZyil9C9Ujn5Ap9yjD50Q29sQ3T
+ KmIXRu79VGBnwNh5F2n88b2Riv96Wxh8UnC6+KculSA97AWQYTpuTtISyN1mD4kCbUjf7HL1RSU4x
+ FIEevIDjfvT7+62UyxTNkFgjElp4XGLSxA9unpMLM3UTSgXk2KyFb9cn9XRXGX7kCYmPpezMXT9Ky
+ 8OqC0O7lFwQnNlqgT1kI+b9CYyhbR8sf8Zt3Pn698NcK3zIpgZptFcdaqL0zXdUepX24bhC+ZN1T9
+ K5LwDoEw==;
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lWZOx-007Y04-7y
- for linux-mtd@lists.infradead.org; Wed, 14 Apr 2021 06:53:28 +0000
-Received: by mail-pg1-x533.google.com with SMTP id l76so13720219pga.6
- for <linux-mtd@lists.infradead.org>; Tue, 13 Apr 2021 23:53:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=5FpXG6BxL1eix7ZuvEbTaKFw6E4r9hjxDvOS4dYSkAY=;
- b=ZrC/mbRqviwCrp5s59OqqAyhvEdMRY3USfk7e6ubgSvZVNx2+4IzlpYBZnp6NjL6nJ
- EQAbg1Wrn0hW8AwBhkp8kJbeWwvXuo8eLX5AA66ahZgvxqh/xIPVYbYadIMrumBClMOg
- t5OxvcggD/+s7eVHhjKwCFsyK0Iutbox1Fco8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=5FpXG6BxL1eix7ZuvEbTaKFw6E4r9hjxDvOS4dYSkAY=;
- b=DDF0a3CgCwKqsCWm+sg5ELfB730fPcD0+MRhUA6Zjjoooq2hlQ+GKoAGm1oFCS+hdn
- DuP1gAfVU+Z7CFqYL0RjPL6uy/5EpeViWYIl33mP//GU9WEVlva96PL3Uvt1krtyEfpZ
- XVwKtHGQs+rotmnaD56xkcxRK/mkJBWQ1xU+SNlGTHlAPNPYbdYy8+31ye52z0Kg6IE9
- 1vVechmWVO7Qj/vi6OLfGlOul2dUl+h46caaYVW4+1VKC9MlQYBln5zKELcpB88hQqAE
- 1zgsWevl60NTHnITXPfh45laIdvmWmSqFQtv2uWivn8qf4uqwFXWG5zU/IuudrDczE/D
- E/jw==
-X-Gm-Message-State: AOAM532LK7yAIlrOS/gnHu5YzsUujSRX6I/a2jN4WTOnHI6UGv9Ld18G
- t2FVuw/aBXhOcPkZhd/Ed7cUUWiVgr6UlUNW7kdybw==
-X-Google-Smtp-Source: ABdhPJwv5wFKRCqUakt5uMuQOtM3jnC4w4KH5JJ4cnCysJqWAMdTHJUlU295rpEldhiJ0+2ZGtABHZuVwB4BTv7H190=
-X-Received: by 2002:a63:525c:: with SMTP id s28mr35660389pgl.317.1618383206183; 
- Tue, 13 Apr 2021 23:53:26 -0700 (PDT)
+ id 1lWd9J-007h1l-OS
+ for linux-mtd@lists.infradead.org; Wed, 14 Apr 2021 10:53:36 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 7FA4022236;
+ Wed, 14 Apr 2021 12:53:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1618397605;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=L12OIt8faTtdsv0KBp9p7wm1ybDfWS+RvgRsDf4XGCM=;
+ b=RqzM4M2eO8ZJhmk441yK9ehFa5PBvQCO0zSg1P6d3psTOFaqN9v6xN4pHz7YFiVt7mrGTG
+ i4pPm1E3KXa7KM0PYbnZyZywco0iy+/rytm8IaXnOjE7M6ODqZuk+6pePPSrcbRKU+QDh2
+ m90ct6flthNBhnjSlCvL18I9D7dPF8I=
 MIME-Version: 1.0
-References: <20210413120210.3671536-1-ikjn@chromium.org>
- <51761f1db840c51bad17f5f275b4ce1a@walle.cc>
-In-Reply-To: <51761f1db840c51bad17f5f275b4ce1a@walle.cc>
-From: Ikjoon Jang <ikjn@chromium.org>
-Date: Wed, 14 Apr 2021 14:53:15 +0800
-Message-ID: <CAATdQgCYoeEKfvQPNUxzMA+o4Xwtt80SoMmfweTAB1MCijyC6A@mail.gmail.com>
+Date: Wed, 14 Apr 2021 12:53:24 +0200
+From: Michael Walle <michael@walle.cc>
+To: Ikjoon Jang <ikjn@chromium.org>
+Cc: linux-mtd@lists.infradead.org, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Pratyush Yadav <p.yadav@ti.com>, Richard
+ Weinberger <richard@nod.at>, Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>, open list
+ <linux-kernel@vger.kernel.org>
 Subject: Re: [PATCH] mtd: spi-nor: macronix: Add block protection support to
  mx25u6435f
-To: Michael Walle <michael@walle.cc>
-Cc: linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>, 
- Pratyush Yadav <p.yadav@ti.com>, Richard Weinberger <richard@nod.at>, 
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, 
- open list <linux-kernel@vger.kernel.org>
+In-Reply-To: <CAATdQgCYoeEKfvQPNUxzMA+o4Xwtt80SoMmfweTAB1MCijyC6A@mail.gmail.com>
+References: <20210413120210.3671536-1-ikjn@chromium.org>
+ <51761f1db840c51bad17f5f275b4ce1a@walle.cc>
+ <CAATdQgCYoeEKfvQPNUxzMA+o4Xwtt80SoMmfweTAB1MCijyC6A@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <a74478aa6fa248f6b6243366055ddd52@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210413_235327_326300_9AC1B91D 
-X-CRM114-Status: GOOD (  23.78  )
+X-CRM114-CacheID: sfid-20210414_035334_142919_7DF0A8D0 
+X-CRM114-Status: GOOD (  34.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,95 +96,122 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-HI Michael, thanks for the review.
+Hi,
 
-On Tue, Apr 13, 2021 at 8:26 PM Michael Walle <michael@walle.cc> wrote:
->
-> Hi Ikjoon,
->
-> Am 2021-04-13 14:02, schrieb Ikjoon Jang:
-> > This patch adds block protection support to Macronix mx25u6432f and
-> > mx25u6435f. Two different chips share the same JEDEC ID while only
-> > mx25u6423f support section protections. And two chips have slightly
-> > different definitions of BP bits than generic (ST Micro)
-> > implementation.
->
-> What is different compared to the current implementation? Could you give
-> an example?
+Am 2021-04-14 08:53, schrieb Ikjoon Jang:
+> On Tue, Apr 13, 2021 at 8:26 PM Michael Walle <michael@walle.cc> wrote:
+>> Am 2021-04-13 14:02, schrieb Ikjoon Jang:
+>> > This patch adds block protection support to Macronix mx25u6432f and
+>> > mx25u6435f. Two different chips share the same JEDEC ID while only
+>> > mx25u6423f support section protections. And two chips have slightly
+>> > different definitions of BP bits than generic (ST Micro)
+>> > implementation.
+>> 
+>> What is different compared to the current implementation? Could you 
+>> give
+>> an example?
+> 
+> Two chips have different definitions on BP and  T/B bits.
+> - 35f has 4 BPs without T/B, BP3 behaves like T/B bit.
 
-Two chips have different definitions on BP and  T/B bits.
-- 35f has 4 BPs without T/B, BP3 behaves like T/B bit.
-- 32f has 4 BPs plus T/B on CR.
+See below.
 
-# MX25U6435F
+> - 32f has 4 BPs plus T/B on CR.
 
- BPs | BP3=0 | BP3=1
----------------------
- 000 | None  | 1/2
- 001 | 1/128 | 3/4
- 010 | 1/64  | 7/8
- 011 | 1/32  | 15/16
- 100 | 1/16  | 31/32
- 101 | 1/8   | 63/64
- 110 | 1/4   | 127/128
- 111 | 1/2   | All
+Ok, so this scheme looks like what we have right now, only that the
+TB bit is OTP and at a different place, right?
 
-# MX25U6432F
+> 
+> # MX25U6435F
+> 
+>  BPs | BP3=0 | BP3=1
+> ---------------------
+>  000 | None  | 1/2
+>  001 | 1/128 | 3/4
+>  010 | 1/64  | 7/8
+>  011 | 1/32  | 15/16
+>  100 | 1/16  | 31/32
+>  101 | 1/8   | 63/64
+>  110 | 1/4   | 127/128
+>  111 | 1/2   | All
+> 
+> # MX25U6432F
+> 
+>   BPs | T/B=0 | T/B=1
+> ---------------------
+>  0000 | None  | None
+>  0001 | 1/128 | 1/128
+>  0010 | 1/64  | 1/64
+>  0011 | 1/32  | 1/32
+>  0100 | 1/16  | 1/16
+>  0101 | 1/8   | 1/8
+>  0110 | 1/4   | 1/4
+>  0111 | 1/2   | 1/2
+>  1xxx | All   | All
+> 
+> It seems that 35f has a unique definition on bottom protections than 
+> others.
 
-  BPs | T/B=0 | T/B=1
----------------------
- 0000 | None  | None
- 0001 | 1/128 | 1/128
- 0010 | 1/64  | 1/64
- 0011 | 1/32  | 1/32
- 0100 | 1/16  | 1/16
- 0101 | 1/8   | 1/8
- 0110 | 1/4   | 1/4
- 0111 | 1/2   | 1/2
- 1xxx | All   | All
+Oh my.. That looks more like an invert and the top protection is also
+different. That is, if you'd treat BP3 as T/B, then BP[2:0] = 111
+should be "lock all", but it is rather lock half.. I just looked at
+the mx25u3235f back then. There it looked correct. But now it looks
+like the top protection scheme clips on the lower end (i.e. always
+starts with 1 block), where on the current supported scheme, we clip
+on the upper end (i.e. we start with protect all and walk backwards).
 
-It seems that 35f has a unique definition on bottom protections than others.
-Assuming there's no way to distinguish between mx25u6435f and 32f,
-This patch simply takes the common parts only - BP[2:0]
-without using T/B or BP3 at all.
+> Assuming there's no way to distinguish between mx25u6435f and 32f,
+> This patch simply takes the common parts only - BP[2:0]
+> without using T/B or BP3 at all.
 
-But the current swp implementation implies that "BP with all ones"
-is to be 'all' protection while in this approach it's 1/2,
-A hidden BP3 should be involved for 'all' protection.
+You could look for differences in the SFDP and then distiguish them
+during probe and set the corresponding flags. Where the flags would
+need to be implemented first. I wouldn't have a problem with saying
+we just support top protection for the MX25U6435F but then we'd need
+to make sure the BP3 is set to 0.
 
->
-> > So this patch defines a new spi_nor_locking_ops only for macronix
-> > until this could be merged into a generic swp implementation.
->
-> TBH, I don't really like the code duplication and I'd presume that it
-> won't ever be merged with the generic code.
+If you want to read out the SFDP, see here:
+https://patchwork.ozlabs.org/project/linux-mtd/list/?series=235475
 
-Agree, I hope I could make a more generalized version into swp.c.
+> But the current swp implementation implies that "BP with all ones"
+> is to be 'all' protection while in this approach it's 1/2,
+> A hidden BP3 should be involved for 'all' protection.
 
-Honestly I expected that I just needed to add one line of SPI_NOR_HAS_LOCK
-to flash_info to support mx256432f (this was the main purpose of my patch)
-before I read the datasheets. :)
+Yes, so the MX25U6432F needs to have the 4bit BP flag set and the
+MX25U6435F seems to be completely different. Doh..
 
->
-> You also assume that both the WPSEL and T/B bit are 0, which might not
-> be true. Please note that both are write-once, thus should only be read.
+>> > So this patch defines a new spi_nor_locking_ops only for macronix
+>> > until this could be merged into a generic swp implementation.
+>> 
+>> TBH, I don't really like the code duplication and I'd presume that it
+>> won't ever be merged with the generic code.
+> 
+> Agree, I hope I could make a more generalized version into swp.c.
+> 
+> Honestly I expected that I just needed to add one line of 
+> SPI_NOR_HAS_LOCK
+> to flash_info to support mx256432f (this was the main purpose of my 
+> patch)
+> before I read the datasheets. :)
+> 
+>> 
+>> You also assume that both the WPSEL and T/B bit are 0, which might not
+>> be true. Please note that both are write-once, thus should only be 
+>> read.
+> 
+> yep, that also should be considered,
+> I'm thinking just not to support WPSEL=1 case for now.
 
-yep, that also should be considered,
-I'm thinking just not to support WPSEL=1 case for now.
+which is ok, but we should make sure it is not set at all. Now the
+question is what do we do if it is set? I'd say just don't register the
+locking ops and log a message.
 
->
-> See also:
-> https://lore.kernel.org/linux-mtd/346332bf6ab0dd92b9ffd9e126b6b97c@walle.cc/
->
-
-Thanks, let me try it.
-
-> -michael
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
