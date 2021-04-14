@@ -2,117 +2,96 @@ Return-Path: <SRS0=WaUJ=JL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-20.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37684C43460
-	for <linux-mtd@archiver.kernel.org>; Wed, 14 Apr 2021 05:58:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FCA1C433B4
+	for <linux-mtd@archiver.kernel.org>; Wed, 14 Apr 2021 06:05:59 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A8F07610E8
-	for <linux-mtd@archiver.kernel.org>; Wed, 14 Apr 2021 05:58:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A8F07610E8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	by mail.kernel.org (Postfix) with ESMTPS id B772A611C9
+	for <linux-mtd@archiver.kernel.org>; Wed, 14 Apr 2021 06:05:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B772A611C9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:From:Date:
+	List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:From:CC:To:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=Yhba95461HARJhDlURHOed7h8ruqQqFtqzPTYH6yJcE=; b=BYCeujRj00/43Dpac8cZhZLk/t
-	H2Y7LoH69ocWsF2x4L2RKLsshHW8XKZvkU2QINw2MCYiny8xhMJQjhJpxMeUI0L2WW3OFWZ3me7ff
-	o+DNthVfdrzcQkqefEajefaabESFYvHX3IBQnon8nI2+S5azyVmZ7ZCKxUJYXefNt00v9V/+PcNx3
-	9Z+dKnLoIYX1/d+1jMqs99ljbcOdiIO/JGASTL2qM4/goZRU0J22d9vvNuwl6H6R9UJekUfxH54xd
-	HUc/9YRo5aEohQdqmN72bCTOZWG/XgJnKzX4dcm6AHv1xmGT60vLvanIPZKyRGhaSWajkmrnWRjVu
-	BZlm+Fog==;
+	bh=0kUeS2OS9V7LEEsVMNM2ZrkTzwVmLfy7/Cxt1Ag7jcw=; b=JIUNMdPG39zAKd6ZbnHIju3D7R
+	YZNp6OM6Ivgk4o2r9cCImrF9SXdoDqv0yxpeSXtAmBYYs7jOtUVJ01ok8T8JriG9817WKe4mB5u6b
+	acb5ydCSqWNftLsYMpB2YcdfAYsyxEcR/MnRtlJVorq8kIPsd7DaI0xYWmpY5TxEqNfTGwhePrTBu
+	wD36QZZS5+ANiEn1SIuw45x6GiCkn4CZW22McB3cF3hGc6TGxd2+a+fac8bTT8YSLnn+p8nUIXgr8
+	UHtqj5i5gIMVC+DrozJ/NGyj8p54eMY40k0ZYnVrLQkXwgQHevArfC6M/Q7dCpl72gW9CsfzY7vKg
+	EwQkvRTQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lWYWP-00Bb15-R3; Wed, 14 Apr 2021 05:57:06 +0000
+	id 1lWYdm-00Bc2j-QS; Wed, 14 Apr 2021 06:04:45 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lWYWL-00Bb0i-IB
- for linux-mtd@desiato.infradead.org; Wed, 14 Apr 2021 05:57:02 +0000
+ id 1lWYdj-00Bc2H-GE
+ for linux-mtd@desiato.infradead.org; Wed, 14 Apr 2021 06:04:39 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Content-Type:MIME-Version:Message-ID:
- Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
- Content-Description:In-Reply-To:References;
- bh=P/i1vmHNJnjFbfOoldRB68MAgV3STMB5j+k2o9a8Suk=; b=EMNqM5DliMz0Qffp4ebbrFPZ90
- tbK7GjytCy7fBky1nWyetwYSQvthDmrSF1viH+qM57PPzlv6kUZhUHQlhOU+uRzzILndxnmcMq+5T
- HJxIVZxdNybmBpRyEc6eV99hvdeVgJQMv8ncNmY9Y0q+jm6lglbxmnKeVkhagDrvR/Wat6LopjSQ7
- t/qdUWLIKJV/9qpinVNAYN1dw4JUN6MJRex3Vtg8Z6TgVnh+0zIpIYOM6p9qH8jvAhguXEHua1Adg
- yuqHUR75nvntDIR47GoOHzptxOEdFd1RhbQm5+IChsr7TIccHavrGa2JT3BCpoWIdSl4HjBQ3zufX
- HrmhgKMQ==;
-Received: from aserp2120.oracle.com ([141.146.126.78])
+ d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+ Content-Type:MIME-Version:Date:Message-ID:Subject:From:CC:To:Sender:Reply-To:
+ Content-ID:Content-Description:In-Reply-To:References;
+ bh=HCeVkDQkRNrxMxazo/umoU63nCa2sOF/0awevh8PLw0=; b=h9xlY6wrHQxErUoOHIEpTmbq3R
+ kQMjvyh1MJNF+ekvUhuxOZBQmbBst2/WRS/1PFsZbbLiIv3zX83V7wJW0MH2mrNF/si0KI7dLusNG
+ DUqp7Xvx2/GN1urx3F0e3JXtJmAw5SUDGNhaNFIhOmbpeBGYDptmQxJpin8teqFaxGu/BieOQH2dE
+ Wi4d6V6L2BqPi4FEbndiqC/2kBL/1jI1+GfslBOF5kq2vei36vnhZ74HlputEhCQdPvLyBuIUoeo8
+ ucl699wSWcC09vAaYa7/IJEIPWcnASFe2RuOi7JfXJOfoUsGThwXWDBEVBFAK8QLuC4fr46hKp3AG
+ 3Kx0U4jw==;
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lWYWJ-007Veq-5B
- for linux-mtd@lists.infradead.org; Wed, 14 Apr 2021 05:57:00 +0000
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
- by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13E5sZoh110755;
- Wed, 14 Apr 2021 05:56:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=P/i1vmHNJnjFbfOoldRB68MAgV3STMB5j+k2o9a8Suk=;
- b=QVb8laRID4mbAeilrue4sdNdmU4Zl8xBvYMs3NXRac6+RMyUyI9WUeP82gyu4BQUS177
- SQnDd79xDBu1AgzdZ/pHBL5q0yPeEzSel91UFXRb2OTX/y5/Qsoc8Dr1ajuVFryb3Yw3
- Q6+uoTGRdS1MUl3BGHDeLX46AbyFadKmqdSqEyIkmOUvkABdyg6LHINgp7HME9Qeq4wC
- Cgv7I8m3/ska3u7lcTzelDSdmrvmWwRbxpx8RSqfG5/2ICY6zwZIc4Iq7X1N0og12b7S
- fU8MepCS5JCy94as/pPByLiFZNaeKZAI17ZUWa/nNuLh5JWRB+34lpISPruGOidnN46d 9A== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
- by aserp2120.oracle.com with ESMTP id 37u3ymh4rb-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 14 Apr 2021 05:56:46 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
- by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13E5uVjd077636;
- Wed, 14 Apr 2021 05:56:45 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
- by aserp3030.oracle.com with ESMTP id 37unkqj5su-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 14 Apr 2021 05:56:45 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
- by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13E5ueng003657;
- Wed, 14 Apr 2021 05:56:40 GMT
-Received: from mwanda (/10.175.166.128)
- by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Wed, 14 Apr 2021 05:56:40 +0000
-Date: Wed, 14 Apr 2021 08:56:33 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Manivannan Sadhasivam <mani@kernel.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] mtd: rawnand: fix an error code in nand_setup_interface()
-Message-ID: <YHaEEYg2DUFwnxSo@mwanda>
+ id 1lWYdg-007Vvr-PA
+ for linux-mtd@lists.infradead.org; Wed, 14 Apr 2021 06:04:38 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13E64Vp8079349;
+ Wed, 14 Apr 2021 01:04:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1618380271;
+ bh=HCeVkDQkRNrxMxazo/umoU63nCa2sOF/0awevh8PLw0=;
+ h=To:CC:From:Subject:Date;
+ b=k+3qZ1AOljWB5v02V31sIJOBLd9cW2pZKHvGHO74L5lTP0/V2vhWryWmCAAu9t2+o
+ zoicYk+qQl1YtbJhMOxV5CtxkSJuoE/z49uOhFCPHCJjEr0+QmpsyrLaTWl/2dBknt
+ maOw6kaDfmbj89OiSBJTvcZcU9gZJBcfF8f6+JuI=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13E64VwW079584
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Wed, 14 Apr 2021 01:04:31 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 14
+ Apr 2021 01:04:30 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 14 Apr 2021 01:04:30 -0500
+Received: from [10.250.234.120] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13E64SpO046226;
+ Wed, 14 Apr 2021 01:04:29 -0500
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Subject: =?UTF-8?Q?=5bGIT_PULL=5d_CFI_and_HyperFlash_changes_for_v5=2e13-rc1?=
+ =?UTF-8?B?4oCL?=
+Message-ID: <76cae1e2-a1f4-ad3a-3c21-64f4dbd945c1@ti.com>
+Date: Wed, 14 Apr 2021 11:34:28 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953
- signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0
- mlxlogscore=999
- adultscore=0 phishscore=0 malwarescore=0 mlxscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104140041
-X-Proofpoint-GUID: r7lz9uowWJzlA_c7QnSMVcENprQihhwG
-X-Proofpoint-ORIG-GUID: r7lz9uowWJzlA_c7QnSMVcENprQihhwG
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953
- signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0
- mlxlogscore=999 spamscore=0
- impostorscore=0 priorityscore=1501 lowpriorityscore=0 adultscore=0
- bulkscore=0 phishscore=0 suspectscore=0 malwarescore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104140041
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210413_225659_305510_524D4590 
-X-CRM114-Status: GOOD (  14.73  )
+X-CRM114-CacheID: sfid-20210413_230436_955590_86BAB15B 
+X-CRM114-Status: UNSURE (   8.76  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -129,32 +108,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-We should return an error code if the timing mode is not acknowledged
-by the NAND chip.
+Hi  Miquel, Richard,
 
-Fixes: 415ae78ffb5d ("mtd: rawnand: check ONFI timings have been acked by the chip")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-From static analysis.  Not tested.
+Here is the CFI and HyperFlash related PR for v5.13-rc1. Thanks!
 
- drivers/mtd/nand/raw/nand_base.c | 1 +
- 1 file changed, 1 insertion(+)
+Regards
+Vignesh
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index fb072c444495..d83c0503f96f 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -880,6 +880,7 @@ static int nand_setup_interface(struct nand_chip *chip, int chipnr)
- 	if (tmode_param[0] != chip->best_interface_config->timings.mode) {
- 		pr_warn("timing mode %d not acknowledged by the NAND chip\n",
- 			chip->best_interface_config->timings.mode);
-+		ret = -EINVAL;
- 		goto err_reset_chip;
- 	}
- 
--- 
-2.30.2
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
 
+  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git cfi/for-5.13
+
+for you to fetch changes up to f3907773d60229afa8e6c0a3ee5085715192a9cb:
+
+  mtd: cfi_cmdset_0002: remove redundant assignment to variable timeo (2021-04-08 00:13:19 +0530)
+
+----------------------------------------------------------------
+CFI changes
+
+Just a couple of fixes for v5.13-rc1
+* Disable broken buffered writes for CFI chips within ID 0x2201
+* Address a Coverity report for unused value
+
+----------------------------------------------------------------
+Colin Ian King (1):
+      mtd: cfi_cmdset_0002: remove redundant assignment to variable timeo
+
+Mauri Sandberg (1):
+      mtd: cfi_cmdset_0002: Disable buffered writes for AMD chip 0x2201
+
+ drivers/mtd/chips/cfi_cmdset_0002.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
