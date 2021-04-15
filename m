@@ -8,14 +8,14 @@ X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD24EC433ED
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Apr 2021 19:15:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 60432C433B4
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Apr 2021 19:15:53 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 54C59610CD
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Apr 2021 19:15:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 54C59610CD
+	by mail.kernel.org (Postfix) with ESMTPS id 0DECE610FB
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Apr 2021 19:15:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0DECE610FB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,77 +24,75 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:
 	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=yAczoRbvIOotwWrqFhKCXYutfun1n9+qX+Pevnqde14=; b=gqnVnq64z0iWoCu8SUY4ub1CY
-	eMEqLwD3K4nD9DGU96zCJw8UrR+ieT2nYDriz2ZUtvEv7kVGRgA2k4zjdjPkv9e0AlhnNQBPHKRBZ
-	67VoVcIymR2mhO/1Zx4G/O6VHRooTdxKLpJk2osBInswrL1nR5iVZGxLuc0wfcE92HZESb2PNsFi7
-	jU0Yq2B5WNny8E+IsaceRNbwvJk0dL+fWfsz6BKgsQoU2fppJr6tpoFqIEf+kQxuq167EJ/R5aAfr
-	KGQ2SOsW/SZqJ8BkbtpbvvFvwFs3tyDLzlcnAzLConLp1IiH8GwyZGNtiGIz9ErtK2R/9uHt1+Swt
-	paCF01dmw==;
+	 bh=IDEtZzqBx4llihFPJ+J/aZEPgUiXWJY/3fHZN+cDTKc=; b=megYxntDZXj53HZ4UZW7RLEo2
+	oY4TFqGUJD1FxxZ+OM9f8maLYgVlUMmhAomkAg6l7xDEVhy3IJ9eSSeyfLVMvsIupvUn7afLLVwZi
+	l+lYHA/68fBLauTCIBAR6+tCximEUHm4xioQkti3FG6hgAQ48ozmo/T5eILAH8UTIrYr7T8mhmEqv
+	XxIyuhtsWw7OdHJ97yF7VA7FBW6UKC3eXUvdUX9KmjSqoIhx6UXcY0uBLRwGDJ38zoHLhWDjFFvmD
+	TAmAFJiWGFJ5iP4KG3YRVMTfuhrUxuE8rIPHD8g0U2+fdZlPZjqSQIzcTJ75U/ute6R6KOgfp6UzT
+	WH+obYFxg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lX7R5-00H5gz-5b; Thu, 15 Apr 2021 19:13:55 +0000
+	id 1lX7S0-00H5rz-IO; Thu, 15 Apr 2021 19:14:52 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lX7Qt-00H5fR-E3
- for linux-mtd@desiato.infradead.org; Thu, 15 Apr 2021 19:13:46 +0000
+ id 1lX7Ry-00H5rJ-6h
+ for linux-mtd@desiato.infradead.org; Thu, 15 Apr 2021 19:14:50 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Type:Cc:To:Subject:Message-ID
  :Date:From:In-Reply-To:References:MIME-Version:Sender:Reply-To:
  Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=cyVMhza7QHyz2otLIKmAiJdFbZ/RATa3Op0jBBlYAqY=; b=jYxyAWRKzmqTeFYqCzC+O3SUG9
- Rd5yOFqKomVD7EweV0DOjyVeeDrjYtHbacZk932rG9BorRUwTENaNgDgdrvSGuntIE287cZSq1fIG
- 21wdCwQ5LWKg+DitAv9IGtCZYeQ6IFCy2VdUgFuoyUbPo/HR00zJsqk5rYXGeW1Y0v9MP1lrcsj3H
- ukl7mFv7aRu5ru3FwyVDgy7zrgPIXpo/oyDhFQP33G3Sv4vO+JmLbBwt/Swg5Q66ewXeeBicWEqh1
- WOjYVWzNrWLKPzgy1FcJrqlrkjn1JNuKIXMRm9lF/kJIhT1XTteUdtuSRK1UYvZvivywjCpfHccZZ
- 2WJ5YnZA==;
-Received: from mail-qt1-x82e.google.com ([2607:f8b0:4864:20::82e])
+ bh=J+i8x2/gEGoWo6ipQ2boigJct7rq7QS+7K9unXLqRvg=; b=G8vAdaOcYRvnmL973U7mftxzVu
+ tKmkBCd94DMWtuZqPsSec5yN3++Psagf5FQD5UncPHfPvIMIfLBOcDXPkB/2t6Cqh63z5s4bgpNCL
+ 6k7u5omTgZsqxu+3MG9bqTGvRpmjdSfnFuVRLAqcZZRAzfy7OgUt4F50CdZLYLZ1WqeggnOK/yRwv
+ B88POIzc+6LZa5VWQOJSOTAGCehTEr0erORLM20kgZjICgvVWfVD9gn60Ir7FQxnMIEGIb0SQL8dy
+ Q5gop/QTXdS2e+KBKNdQMvc5BWkRRakP+F2971y8fcItwgieyNA78r7tGgRzjdnm6vDatDBthC07f
+ Xi6qWHFg==;
+Received: from mail-qt1-x82c.google.com ([2607:f8b0:4864:20::82c])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lX7Qq-008pzI-RZ
- for linux-mtd@lists.infradead.org; Thu, 15 Apr 2021 19:13:42 +0000
-Received: by mail-qt1-x82e.google.com with SMTP id t11so10471785qtr.8
- for <linux-mtd@lists.infradead.org>; Thu, 15 Apr 2021 12:13:39 -0700 (PDT)
+ id 1lX7Rv-008q1t-Ku
+ for linux-mtd@lists.infradead.org; Thu, 15 Apr 2021 19:14:48 +0000
+Received: by mail-qt1-x82c.google.com with SMTP id m16so18403746qtx.9
+ for <linux-mtd@lists.infradead.org>; Thu, 15 Apr 2021 12:14:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=cyVMhza7QHyz2otLIKmAiJdFbZ/RATa3Op0jBBlYAqY=;
- b=kTia0ZHpyWR+hfRw6/MGA2XmR1/bo/RXFMNGyUPrVvlRrzAn9kOxhOKfgfYolZ7bTN
- oKVLgbHrhYCU1244KvJXl/SJ3dy3Mx1IBdIZPLz954zYh7TKL6crDP1T9Khf8ZHRbdy0
- xqcmctlu7GyQMSjtfRyGH2fqvnPcXXDmxPYJK5Ewea9fXRaX4yihlxAW1/ykevyBOspO
- Rd+j5apdwbnnL5XQzVyZA1odqmfI78YiQ1roVB4Yz1VTCML97ZRriWh+qmHYZJ6qmXVq
- q3hdLbch/jZA/hNOcvOar0L0KWrEYElH44PdCrJ8fJO/VLrAvHgxdcGzoSWIam33SAh3
- nvqg==
+ :cc; bh=J+i8x2/gEGoWo6ipQ2boigJct7rq7QS+7K9unXLqRvg=;
+ b=Syw/7thnSFkYEW6RTzvZHAJQIwBOEgQddwfFN1Ky6/Mq/v+y3XsanH1KRa1kQfFQuS
+ wkNuL4OCdUdWLBNMChEhTJbjmsBWHgg5UpdOXoGt/IzSp9PzYNhz3EYdOpRKjwfYOiMR
+ iX40nlVPxOa6TXj+kUU7Dfq5BhSHg+ouCiiZg9dCe1E985vHs9Uoff9yObfo1/qANmrA
+ 3/AHNJltLbKequ+Lma54yj85AT6LUVolDEoi7OWFxJ5b6gsf0zfn79Z60uWV9e4x376T
+ WKYOlv8eblrW3O/BSyuD40mqZ1d7XMEsoESryvPdLzwJYMSzbxjr4HJfnqC1ZPBu2MDk
+ BdcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=cyVMhza7QHyz2otLIKmAiJdFbZ/RATa3Op0jBBlYAqY=;
- b=R132fuEGmg8hUsv8TbLBny6Jqy749ue4ijLPtGoN+wNy+tGjWudDcZRxstnXcrL8Kf
- 5FNBV84L74qyy/nNwAZzcQbhNkLpMfN5tm9DSz2OBkp3muT88szIFutBMZIg/dAVbH2M
- qWbajpI9Tf8BiMBwy/EtwUIIRcM8CakAoIKsS5+rSto2LbSTBLesvyuBJsIn78iEdFeL
- 8jfMyOq1+c2QxLWWznlPB7Oy9yHO9I5ITVU8iSom65xShP2T2PPbplZM6qisFZtgBN2W
- Xp12FVK1rdFOHIsHt4Wdapq/nWV0ZYRum8//E3KGhMTak3Mg9tSg/joZTQ53iIlMcuyz
- 2vQA==
-X-Gm-Message-State: AOAM530xlTbxyfJWW68Km3LP+fIoDy6eFkeAioCrZWZ3FnXM66cyKSSt
- 9VJjb4LTNy0NHmrM9SVf/EUx0Rocb/if3ZltGxI=
-X-Google-Smtp-Source: ABdhPJyIuuiKs6ZqpT2DHKMnfYllIWkbNYaFktRkZ6bExgba9BTC664e3e2cSOO1EJ3B9L6VEDjP2YjcCTw6kutc+yQ=
-X-Received: by 2002:a05:622a:10f:: with SMTP id
- u15mr4203659qtw.285.1618514018861; 
- Thu, 15 Apr 2021 12:13:38 -0700 (PDT)
+ bh=J+i8x2/gEGoWo6ipQ2boigJct7rq7QS+7K9unXLqRvg=;
+ b=n96XDTKM+Z3oL99ZxDUTkq+1yDMM/dgsco9vobZv+UW8dMdUd7Dnb03tp9j78CVzpm
+ b2CmrqibK3w04vs/OQ/Qza/2hJlmIiyPjRW8RdWiEPU0NxO8U4xEc3IMLFvCjtk13rzG
+ Uf7eh86tvbF+EIQJ99xcizFuf6ymIXWm4ghXRuV5KycRBMLxG4VPOD+lyYT3RfpUlhCl
+ klX2r6A2kF0npriWHc9Kf+bw/Bd6MK2nDT8zJRUdVZa7berH8lrqRWeSS18WLsjJypaf
+ M7Amhp4dolpuTfPKDbjnLn9O73TvmAIWej8T4qIYydz/4KAayLj3Mjz9bEy8BxfZloOb
+ 54UQ==
+X-Gm-Message-State: AOAM532WzvZTFv32gm/83q0LENMrmLNeKk60QmOS1oM1ja3UGLI+1+eR
+ QfsY6FYplPaphvTM7ULa6y98BMtgNGiS1HDvrSs=
+X-Google-Smtp-Source: ABdhPJxqw5MtgSKN0oXi0husBdWldduwvxYs6EzHUsCTexIqg/1e4xdCCdYtmOaLQ1U0/qbrliv/HSp3riWkRlrpqIE=
+X-Received: by 2002:ac8:768a:: with SMTP id g10mr4337696qtr.245.1618514086605; 
+ Thu, 15 Apr 2021 12:14:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <76cae1e2-a1f4-ad3a-3c21-64f4dbd945c1@ti.com>
-In-Reply-To: <76cae1e2-a1f4-ad3a-3c21-64f4dbd945c1@ti.com>
+References: <796d9f27-5408-eca7-a6c8-b6131e824837@microchip.com>
+In-Reply-To: <796d9f27-5408-eca7-a6c8-b6131e824837@microchip.com>
 From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Thu, 15 Apr 2021 21:13:27 +0200
-Message-ID: <CAFLxGvwLjp-tNKGO1TstHLmHKzQst81Bg=E9sw9n9bUAD949Xg@mail.gmail.com>
-Subject: =?UTF-8?Q?Re=3A_=5BGIT_PULL=5D_CFI_and_HyperFlash_changes_for_v5=2E13=2D?=
- =?UTF-8?Q?rc1=E2=80=8B?=
-To: Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, 
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Thu, 15 Apr 2021 21:14:35 +0200
+Message-ID: <CAFLxGvwTMwjhUDEaKMw=M5EE-0+idcAX9A79=QLK-=J07NLp_g@mail.gmail.com>
+Subject: Re: [GIT PULL] mtd: spi-nor: Changes for v5.13
+To: Tudor Ambarus <Tudor.Ambarus@microchip.com>
+Cc: Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, michael@walle.cc, 
+ Pratyush Yadav <p.yadav@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210415_121340_929665_78220DEB 
-X-CRM114-Status: UNSURE (   9.85  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210415_121447_703614_E0C283B9 
+X-CRM114-Status: GOOD (  13.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,14 +109,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Apr 14, 2021 at 8:12 AM Vignesh Raghavendra <vigneshr@ti.com> wrote:
+On Sun, Apr 11, 2021 at 10:16 AM <Tudor.Ambarus@microchip.com> wrote:
 >
-> Hi  Miquel, Richard,
+> Hi,
 >
-> Here is the CFI and HyperFlash related PR for v5.13-rc1. Thanks!
+> This is the SPI NOR PR for v5.13.
+> I would like to thank Michael and Pratyush for accepting to take more
+> responsibilities in the SPI NOR subsystem. Your efforts are much
+> appreciated. Welcome and good luck!
 >
-> Regards
-> Vignesh
+> Cheers,
+> ta
 >
 > The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
 >
@@ -126,7 +127,7 @@ On Wed, Apr 14, 2021 at 8:12 AM Vignesh Raghavendra <vigneshr@ti.com> wrote:
 >
 > are available in the Git repository at:
 >
->   git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git cfi/for-5.13
+>   git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/spi-nor/for-5.13
 
 Pulled, thanks!
 
