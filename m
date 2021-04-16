@@ -2,77 +2,87 @@ Return-Path: <SRS0=ZSp+=JN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C1FFC433B4
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Apr 2021 19:25:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0EEBC433B4
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Apr 2021 19:26:50 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7252C6137D
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Apr 2021 19:25:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7252C6137D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=david-bauer.net
+	by mail.kernel.org (Postfix) with ESMTPS id 1C3A760FF1
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Apr 2021 19:26:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C3A760FF1
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
-	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:Cc:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Ug6TvVv9RrYpmRvpUJA8fYGIa4iz5ILgZ/vMW8VJlgg=; b=kk3NlvjeiLRhqROIs/hyke2EJ
-	Kb1E4q/Xx+S5MXewOL+6bPK462UkKcF5R5B4GIhP1WWJcBAO2ruZgBQlYl/jrwohoV2tBgtRwxfWq
-	1kzIyhc6hACJpKy8Zxnx2AxtlQZMeQcQG7oluYqHsDOYKgHBLoAD0QRTz1SAYG8RfY2UJIMxDmCdZ
-	wkppb1WjK4jjxjIPSTt6NTKa9eEYGEz2SBRWlhues6S5MazljewS6E1OAdwE8fwRy5wYd1P8WTxhr
-	f0P/Q1/akG9O0isI4CapbAOxWQn2vjtjuS1+okSg7KGtbUjeu4Fdt/v9x6eyA2aASo4x2QmpTliUv
-	srVx7JRpA==;
+	 bh=qZQywMpq5gZFqYKBL42LVp6brvKifasuXvPQrnXBCPE=; b=PNHLSy4/K/yEAgzLOuBsBwpSk
+	KBglhvk4UPRAembgHVuCAv9zkXWhI6oNTDq/AusMxOZ05cM92/UOZVhI8RIjHZ6yqqbmtXT4BQf9+
+	kQfZS9FfYjpenGX6O/7DwClb7EMHEc38W4XWUMWEfMlxPftm76E541wwmsBQVotiIwO4Zn0XCr+1k
+	PraZzFJi6MlrDLWuJlVRpUOUyIWqL+QCrk8C3jB1Y8cw8+7rY96F74c8fY/cZlzTIRtwhQ36LAWT1
+	edVbUvRFvipNELwXz0Y05O9NXG07FhVnEqPTI1xituCTK6DSEROUBRXjgVYJxdSGo34aBSHz4BuLs
+	C52AQts+w==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lXU5E-003DGH-LW; Fri, 16 Apr 2021 19:24:52 +0000
+	id 1lXU6d-003DaO-KL; Fri, 16 Apr 2021 19:26:19 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lXU5A-003DFU-G6
- for linux-mtd@desiato.infradead.org; Fri, 16 Apr 2021 19:24:48 +0000
+ id 1lXU6b-003DZn-5G
+ for linux-mtd@desiato.infradead.org; Fri, 16 Apr 2021 19:26:17 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
- Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
- Subject:Sender:Reply-To:Content-ID:Content-Description;
- bh=aMd+6+9MMrGmG4X5oLYCGyWRjcD5xm/Dh3GUccZsGT8=; b=niGfMXspNYJrUDEDhxPzN9CmJY
- I7kStDA6h2hhUpnb9ini62yKiDCFlXX8L0vzC4oNbVuvOA5BAL3lSICspbrJqyPjRPRYsQJrsUxxl
- MqcPSaPjqafWkWrGm4eZ6Y0eE0l7RNHPYJi/asIulb4YAajUpTYzxuf1ESk3AvhIYyGt0Vm4ZKNiS
- sq+x+PetMe7/GGtcDRvPjMHLEgrDmqnas7W/7k16i07Qqff+8h9fOmHLCsonJIMcix/olKyVRqzLK
- eX3IkPxfalkiDkQI4fsHgXSrDQeQ948oNDSSoripXj+C/h87nr6EKPRtZPZxMG993gjlqmZs6nT7P
- Jx0EWH7A==;
-Received: from perseus.uberspace.de ([95.143.172.134])
+ d=infradead.org; s=bombadil.20210309; h=Message-ID:References:In-Reply-To:
+ Subject:Cc:To:From:Date:Content-Transfer-Encoding:Content-Type:MIME-Version:
+ Sender:Reply-To:Content-ID:Content-Description;
+ bh=iOKsLNHAvUNt6FOKX0n36qA6s7ZucezMgWOSW4v76s8=; b=NyLTLXz4cfEkYyLTms1n1sX59S
+ r8rZi3jdT8s/FrvpB/i5Jck/9vs5FLHMilpgqcsgpuBs/Y4Fuaunbw89/HuxDMKNjtprRYvXv8vQH
+ E14GJ4Oo9P1Tz3au3Wemnd5aE8Cg5fG3TuSoNiu7rLNVXC8IxGoyACGKcIIooaBQwVl5SfpNDZiUM
+ 32uqqv4NpYC74q2aIduez9deGfn8E3cWpRs2ClSgVg6SxWVM/OdgvfmNk/PHVHHZUWY61adzTLmYI
+ PGmm4ZUrtgmSu7aBOg7ibuhJSsK6SCc1fPtt54PYlnPhH8cZEXWiqDW025hqfDBSpIodkbhOQjCQM
+ RTR1EzLw==;
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lXU56-009edw-PJ
- for linux-mtd@lists.infradead.org; Fri, 16 Apr 2021 19:24:47 +0000
-Received: (qmail 24772 invoked from network); 16 Apr 2021 19:24:41 -0000
-Received: from localhost (HELO localhost) (127.0.0.1)
- by perseus.uberspace.de with SMTP; 16 Apr 2021 19:24:41 -0000
-Subject: Re: [PATCH] mtd: spi-nor: add support for Winbond W25Q512JV
-To: Shuhao Mai <shuhao.mai.1990@gmail.com>, Tudor.Ambarus@microchip.com
-Cc: linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com, richard@nod.at, 
- vigneshr@ti.com
-References: <20210213151047.11700-1-mail@david-bauer.net>
- <00fdc79c-2a7f-c02f-3398-8102e5a68a53@microchip.com>
- <e9626369-dc44-8f64-606b-88098157bc7a@david-bauer.net>
- <8833cce1-a843-9b56-53ed-e9a2fd42d990@microchip.com>
- <20210310074120.GA63@an990131127.quanta.corp>
-From: David Bauer <mail@david-bauer.net>
-Message-ID: <9150b806-17bb-cdfe-277b-0ca473a41e21@david-bauer.net>
-Date: Fri, 16 Apr 2021 21:24:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+ id 1lXU6V-009ehu-Pk
+ for linux-mtd@lists.infradead.org; Fri, 16 Apr 2021 19:26:15 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 01C1022253;
+ Fri, 16 Apr 2021 21:26:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1618601164;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=iOKsLNHAvUNt6FOKX0n36qA6s7ZucezMgWOSW4v76s8=;
+ b=Hb1xtI/WzADiaRibdpmonxBtIdj9F1hpRIoWgSNvarzwJvNlayCeXjwOHk4k/q5vapGRy0
+ mZ4MWe8zwkie5eb66+W6rIaiyGkCEb3cCFQga8gMElsiMmwCxqHLmjmrU3+LW7L9M/xtGG
+ VEhMEaxzSx5188bB+2nPXjtvkdJNma0=
 MIME-Version: 1.0
-In-Reply-To: <20210310074120.GA63@an990131127.quanta.corp>
-Content-Language: en-US
+Date: Fri, 16 Apr 2021 21:26:03 +0200
+From: Michael Walle <michael@walle.cc>
+To: Rob Herring <robh@kernel.org>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH 0/5] mtd: core: OTP nvmem provider support
+In-Reply-To: <20210416184423.GA3715339@robh.at.kernel.org>
+References: <20210416114928.27758-1-michael@walle.cc>
+ <20210416184423.GA3715339@robh.at.kernel.org>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <9f33229a8fe83b49210289fc93a8554e@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210416_122445_143615_1A00EE14 
-X-CRM114-Status: GOOD (  18.31  )
+X-CRM114-CacheID: sfid-20210416_122612_024899_2834A1D2 
+X-CRM114-Status: GOOD (  17.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,82 +94,94 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Shuhao,
+Hi Rob,
 
-Sorry for coming back late to this.
+Am 2021-04-16 20:44, schrieb Rob Herring:
+> On Fri, Apr 16, 2021 at 01:49:23PM +0200, Michael Walle wrote:
+>> The goal is to fetch a (base) MAC address from the OTP region of a SPI 
+>> NOR
+>> flash.
+>> 
+>> This is the first part, where I try to add the nvmem provider support 
+>> to
+>> the MTD core.
+>> 
+>> I'm not sure about the device tree bindings. Consider the following 
+>> two
+>> variants:
+>> 
+>> (1)
+>>     flash@0 {
+>>         ..
+>> 
+>>         otp {
+>>             compatible = "mtd-user-otp";
+> 
+> mtd is a linuxism. Why not just 'nvmem-cells' here or as a fallback if
+> we come up with a better name?
 
-On 3/10/21 8:41 AM, Shuhao Mai wrote:
-> On Tue, Mar 09, 2021 at 07:53:59AM +0000, Tudor.Ambarus@microchip.com wrote:
->> On 3/8/21 8:03 PM, David Bauer wrote:
->>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>>
->>> Hi Tudor,
->>>
->>> On 3/8/21 6:50 AM, Tudor.Ambarus@microchip.com wrote:
->>>> On 2/13/21 5:10 PM, David Bauer wrote:
->>>>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>>>>
->>>>> The Winbond W25Q512JV is a 512mb SPI-NOR chip. It supports 4K
->>>>> sectors as well as block protection and Dual-/Quad-read.
->>>>>
->>>>> Tested on: Ubiquiti UniFi 6 LR
->>>>>
->>>>> Signed-off-by: David Bauer <mail@david-bauer.net>
->>>>
->>>> David, I'll take Shuhao's patch because he sent it first:
->>>> https://patchwork.ozlabs.org/project/linux-mtd/patch/20210208075303.4200-1-shuhao.mai.1990@gmail.com/
->>>
->>> Fine with me, I have not found this patch :)
->>>
->>>>
->>>> Would you make an incremental patch on top op Shuhao's, to add the
->>>> locking support?
->>>
->>> Sure, It's necessary for the board (UniFi 6 LR), as the bootloader locks the flash on boot.
->>
->> Is it necessary to unlock the flash at boot time?
->> You can unlock the flash from user-space, using mtd-utils.
->>
->> Have you tried to lock/unlock portions of the flash using mtd-utils,
->> and check if what was locked corresponds to what the datasheet indicates?
->>
->>>
->>> I'll send a new patch for the lock support.
->>>
->> Great, thanks!
->> ta
-> 
-> Hi Tudor and David,
-> 
-> 
-> I made a quick test on flash_lock with kernel 5.8.18 and mtd-utils
-> v2.1.2. It returns "could not lock device: /dev/mtd0" and "error 22
-> (Invalid argument)".
-> 
-> Could be the error caused by my test environment, if it's functional on
-> UniFi 6 LR.
-Were these partitions starting with the first / ending with the last block on the flash chip?
-Locking / unlocking mtd partitions not aligned at the beginning / end of the chip sound will
-return invalid argument.
+There are two different compatibles: "mtd-user-otp" and 
+"mtd-factory-otp"
+to differentiate what kind of OTP should be used (and both are possible
+at the same time). Thus nvmem-cells alone won't be enough. We could drop
+the "mtd-" prefix though.
 
-For the UniFi 6 LR, these flags are required, as otherwise the lower half of the flash
-remains write protected (the bootloader actively enables this protection for whatever reason).
+Is there a benefit of having the following?
+   compatible = "user-otp", "nvmem-cells";
 
-I'll send a rebased patch adding the required flags shortly.
 
-Best wishes
-David
+>>             #address-cells = <1>;
+>>             #size-cells = <1>;
+>> 
+>>             serial-number@0 {
+>>                 reg = <0x0 0x8>;
+>>             };
+>>         };
+>>     };
+>> 
+>> (2)
+>>     flash@0 {
+>>         ..
+>> 
+>>         otp {
+>>             compatible = "mtd-user-otp";
+>>             #address-cells = <1>;
+>>             #size-cells = <1>;
+>> 
+>> 			some-useful-name {
+>>                 compatible = "nvmem-cells";
+>> 
+>>                 serial-number@0 {
+>>                     reg = <0x0 0x8>;
+>>                 };
+>> 			};
+>>         };
+>>     };
+>> 
+>> Both bindings use a subnode "opt[-N]". We cannot have the nvmem cells 
+>> as
+>> children to the flash node because of the legacy partition binding.
+>> 
+>> (1) seems to be the form which is used almost everywhere in the 
+>> kernel.
+>> That is, the nvmem cells are just children of the parent node.
+>> 
+>> (2) seem to be more natural, because there might also be other 
+>> properties
+>> inside the otp subnode and might be more future-proof.
+>> 
+>> At the moment this patch implements (1).
+> 
+> I think approach (1) seems fine.
 
-> 
-> 
-> Sincerely
-> Shuhao
-> 
+ok
+
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
