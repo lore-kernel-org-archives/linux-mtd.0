@@ -2,96 +2,76 @@ Return-Path: <SRS0=ZSp+=JN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48CD4C433ED
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Apr 2021 18:31:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F4A6C433ED
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Apr 2021 18:34:50 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B3777610FB
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Apr 2021 18:31:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B3777610FB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 13ACA610FB
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Apr 2021 18:34:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 13ACA610FB
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
-	:Content-Type:MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-Id:Date:Subject:References:In-Reply-To:Cc:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=wLOoTVc2f9H7OREmzOPdkRQzaLZb/OyByUZJbIewi8Q=; b=m8Vtsgh0k3BSiB6lL1DEp8yeHA
-	aIbwn4dBVn4G7rN3nkq0dO0lNwyJZ0tveTRuX+5JAGQlVUUIb1sZvG0bCkPAzjY78/PddCalayRlz
-	FfR28oo7+Ou4drISoPCQ0JcZSrRJdDLuW4UDtEKccZ4GiB1AXgH0kwL2dzj866kH2MkR9gyfztnTk
-	RuJgaGyae59UJWJ0fVnn8SJ6ZEACI2R4Ycbp68Uzr948GE/pcoh89Mx9zNf+5/VDZtt0hLMQec2V4
-	ttSndRmk1nbokR/1rsLQb7GZtQ1vGp8fS1qsRDLG2iB7sGFnWkCoJzENnBpCrvRtF9ppPPj2KAyAI
-	ZMhLFMfw==;
+	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=C7YAN3lK9MPn+gR5wqmzP71K9D7lpAl60BdAOeF1hpo=; b=NZWQQh3BaHyxgBU+LOKXMVbMZ
+	l3lM5YFWEtEQISu6G9sqp/IbwYUv5lu9NpmXThW3C0Ircxu+7ZNP6bsPsiK2eEK02tY1wrzHb6IS6
+	jW4Rzitibi71TguA1umLQwNfUNwGNxD4xV6aG9DPeayV/pbw6bvc1sWXbFz+ZSrHFkIzHO4b01lQO
+	D/9y01+SYYgGpcsb5gJ6X3eo3qQQfm8LoujAo7DTPDY06xtV+CzhkwgodZxyUkGywC4HXrg6/1RYA
+	zvWp8ud1oj3gaOshyPpmBsWHeSnSqrQ2RMGqN+JGdPKM56tEfCDq0rXSVMIBuViiUX07Jc9AZfsVQ
+	o7vetTsiQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lXTEL-0034zg-3z; Fri, 16 Apr 2021 18:30:13 +0000
+	id 1lXTHr-0035hU-Fb; Fri, 16 Apr 2021 18:33:51 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lXTEH-0034z5-Ky
- for linux-mtd@desiato.infradead.org; Fri, 16 Apr 2021 18:30:09 +0000
+ id 1lXTHp-0035gu-20
+ for linux-mtd@desiato.infradead.org; Fri, 16 Apr 2021 18:33:49 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Message-Id:Date:Subject:References:
- In-Reply-To:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=7ik3lAidwtHhkf3Xyj/o6l3nqO/bT8lkQxD5nRQd/OU=; b=j8Nfr3jW6crkTxapnz3PdHNuNw
- cmI60zy8Qw945OQkEHZbQhr/yyhBNlQz5NrkTtum4/+swOl4ndUVUquf0slCT1xxntdmI8z8L/+zV
- J4KA/yNfb1VyDq9mjatDg8DuFTwlZhMUuhjRdwiqU5oVCTlge2E/T7sT5IJpG/mVH24PS+kt9GTpP
- R4UYIIabK8lnzLlR1D+xM7WuHf3qPiRIIkLQjJwY+eU01sqIQdrWCdoQKywMakKRQU9JcBa0yBKBD
- ZtELIlOxenzFh5wycfh3oTDFujAUkWDSbrytfrhr9ofb6rY8QgZ1vYDz44ck6hk7ebCQj3ErllJ65
- cUk1m+rg==;
-Received: from mail-ot1-f52.google.com ([209.85.210.52])
+ d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+ Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
+ From:Date:Sender:Reply-To:Content-ID:Content-Description;
+ bh=6ikbN2NdFFCJT9hJ5tzlDv6fXutu8Fq487AzrSQelE8=; b=ksgFaMJKnRJPKGqs5MEGQTluEo
+ R2TNVzPu1SdlvtUAJd0JU0KCQT1PP7r+OxW3J+pl/+eQVs8N+TJ7yJJmRSzuCZd6ktHimcZO/F35a
+ clo36EzVBJA3+7T0RU9Npxeb/SykRa3H5Uvy3rb4C0vyY7SyCnIv5a6GzcaiqJVFREDIAc9FdSYpM
+ iWXBO1y+EtYJBBYHeqbVBOfdmtDqFRxtCDptyky9779CZO+unqISLFJIZ1V2USoEPO5dwPpknrJ8q
+ yzMFQo2uTAUh1i0iG7VwGti/mbIuo+W0HU6aMr9dC645zzfrEWFxjRzCictQUrAlhd0dMqoof0+SV
+ KdDY0rTA==;
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lXTEC-009cs0-H1
- for linux-mtd@lists.infradead.org; Fri, 16 Apr 2021 18:30:08 +0000
-Received: by mail-ot1-f52.google.com with SMTP id
- 5-20020a9d09050000b029029432d8d8c5so641675otp.11
- for <linux-mtd@lists.infradead.org>; Fri, 16 Apr 2021 11:30:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
- :message-id;
- bh=7ik3lAidwtHhkf3Xyj/o6l3nqO/bT8lkQxD5nRQd/OU=;
- b=lz0ujpGsvHm3VRkCUjsuhi1eZjefanq4cGl7CS/Sqy33r/tWoDaFhmQcXBe54GqgNV
- F0g29ORS8xUKU5He5LrI+hp++myrZRp5MfNeIhoPyZNwZ2+/fYsDn1itqD/G4bZUfMZm
- eNM5zG/1I67E/8CdUlrKmFjmoidq4XJhMe9BOTxzZiAxKntp26fbp6APgMi7VYgxIuN0
- M/4dzyEDwe2fArKhCP1ISSz4HCWj//iWeeiXxgRS7cbp1YCKVCId5OZjNyM2oJMams9m
- +jZ6v7uQb/C3OKoAm2ulYODjI6H5sWEDdv8E6SHZ040Y7qFvDXSTnhjsY2twRrbbSeH8
- p36Q==
-X-Gm-Message-State: AOAM5332wavUPBr4lg5KoNuTWwtONWeNcRWzo1kBiYJIDeLYDjAVXZQr
- Nb7XNNcIDVyUdevM1pRIiQ==
-X-Google-Smtp-Source: ABdhPJyaDUF531HINEkRNssuyylOYZJ7EjNyx/ySlLTGLQp/KWESkd5iadSSQJqG3VD/Utr1tGu1xw==
-X-Received: by 2002:a9d:30c6:: with SMTP id r6mr4697946otg.270.1618597803154; 
- Fri, 16 Apr 2021 11:30:03 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id s131sm1480363oib.14.2021.04.16.11.30.02
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 16 Apr 2021 11:30:02 -0700 (PDT)
-Received: (nullmailer pid 3708339 invoked by uid 1000);
- Fri, 16 Apr 2021 18:30:01 -0000
-From: Rob Herring <robh@kernel.org>
-To: Michael Walle <michael@walle.cc>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, Richard Weinberger <richard@nod.at>
-In-Reply-To: <20210416114928.27758-4-michael@walle.cc>
-References: <20210416114928.27758-1-michael@walle.cc>
- <20210416114928.27758-4-michael@walle.cc>
-Subject: Re: [PATCH 3/5] dt-bindings: mtd: add OTP bindings
-Date: Fri, 16 Apr 2021 13:30:01 -0500
-Message-Id: <1618597801.604723.3708338.nullmailer@robh.at.kernel.org>
+ id 1lXTHl-009d3Y-3e
+ for linux-mtd@lists.infradead.org; Fri, 16 Apr 2021 18:33:47 +0000
+X-Originating-IP: 90.89.138.59
+Received: from xps13 (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr [90.89.138.59])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 8C4C7C0003;
+ Fri, 16 Apr 2021 18:33:37 +0000 (UTC)
+Date: Fri, 16 Apr 2021 20:33:36 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc: <richard@nod.at>, <vigneshr@ti.com>, <kyungmin.park@samsung.com>,
+ <michael@walle.cc>, <p.yadav@ti.com>, <jean-philippe@linaro.org>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: core: Constify buf in mtd_write_user_prot_reg()
+Message-ID: <20210416203336.388878ad@xps13>
+In-Reply-To: <20210403060931.7119-1-tudor.ambarus@microchip.com>
+References: <20210403060931.7119-1-tudor.ambarus@microchip.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210416_113004_588681_49A16393 
-X-CRM114-Status: GOOD (  15.21  )
+X-CRM114-CacheID: sfid-20210416_113345_304027_DB20D7FC 
+X-CRM114-Status: UNSURE (   8.25  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,54 +83,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 16 Apr 2021 13:49:26 +0200, Michael Walle wrote:
-> Flash devices can have one-time-programmable regions. Add a nvmem
-> binding so they can be used as a nvmem provider.
-> 
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
-> Changes since RFC:
->  - added missing "$"
->  - dropped first example
->  - use real device compatibles
-> 
->    Please note, that this will lead to an error without patch 4/5, which
->    introduces that property for the jedec,spi-nor. Should I keep it
->    seperate or should I squash that patch into this one?
-> 
->  .../devicetree/bindings/mtd/mtd.yaml          | 50 +++++++++++++++++++
->  1 file changed, 50 insertions(+)
-> 
-
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/mtd.example.dt.yaml: flash@0: 'otp-1', 'otp-2' do not match any of the regexes: '^partition@', 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-
-See https://patchwork.ozlabs.org/patch/1467024
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgVHVkb3IsCgpUdWRvciBBbWJhcnVzIDx0dWRvci5hbWJhcnVzQG1pY3JvY2hpcC5jb20+IHdy
+b3RlIG9uIFNhdCwgMyBBcHIgMjAyMQowOTowOTozMSArMDMwMDoKCj4gVGhlIHdyaXRlIGJ1ZmZl
+ciBjb21lcyBmcm9tIHVzZXIgYW5kIHNob3VsZCBiZSBjb25zdC4KPiBDb25zdGlmeSB3cml0ZSBi
+dWZmZXIgaW4gbXRkIGNvcmUgYW5kIGFjcm9zcyBhbGwgX3dyaXRlX3VzZXJfcHJvdF9yZWcoKQo+
+IHVzZXJzLiBjZmlfY21kc2V0X3swMDAxLCAwMDAyfSBhbmQgb25lbmFuZF9iYXNlIHdpbGwgcGF5
+IHRoZSBjb3N0IG9mIGFuCj4gZXhwbGljaXQgY2FzdCB0byBkaXNjYXJkIHRoZSBjb25zdCBxdWFs
+aWZpZXIgc2luY2UgdGhlIGJlZ2lubmluZywgc2luY2UKPiB0aGV5IGFyZSB1c2luZyBhbiBvdHBf
+b3BfdCBmdW5jdGlvbiBwcm90b3R5cGUgdGhhdCBpcyB1c2VkIGZvciBib3RoIHJlYWRzCj4gYW5k
+IHdyaXRlcy4gbXRkX2RhdGFmbGFzaCBhbmQgU1BJIE5PUiB3aWxsIGJlbmVmaXQgb2YgdGhlIGNv
+bnN0IGJ1ZmZlcgo+IGJlY2F1c2UgdGhleSBhcmUgdXNpbmcgZGlmZmVyZW50IHBhdGhzIGZvciB3
+cml0ZXMgYW5kIHJlYWRzLgo+IAo+IFNpZ25lZC1vZmYtYnk6IFR1ZG9yIEFtYmFydXMgPHR1ZG9y
+LmFtYmFydXNAbWljcm9jaGlwLmNvbT4KCkFwcGxpZWQgb24gdG9wIG9mIG10ZC9uZXh0IGFmdGVy
+IHRoZSBtZXJnZSBvZiBhbGwgb3VyIGludGVybmFsIFBSJ3MuCgpUaGFua3MsCk1pcXXDqGwKCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51
+eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
