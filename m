@@ -2,70 +2,71 @@ Return-Path: <SRS0=ZSp+=JN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76D66C433ED
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Apr 2021 11:56:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA962C433B4
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Apr 2021 11:56:39 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CD21761103
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Apr 2021 11:55:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD21761103
+	by mail.kernel.org (Postfix) with ESMTPS id 314FE60FF1
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Apr 2021 11:56:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 314FE60FF1
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=iBw2cgT0A57J4SuMAf2LHrRxaRYhSpoqcEONpQ1N98g=; b=gSyYfB7tpFizkGf4cvvERcTeH6
-	kbbsSKYn7520/zpzyL9zXfYceKadH7BPixbrBpEKNxpGihkEA9w1O7WHdFC0y7dPv70WnCXhLdwga
-	j7/1dFQWl5VUsTPkhRxucJ7KTjL/JLf8auAZIv77JCEmtK5ZigsEbsu0PNM/AUhaykBi70G1D6QrM
-	8dpv2w4tRAZhYk2UfVj0Y8Apn8rsY0LfojY2FJ+A9+URXsqF04MCq0d6mpwAsXUFV1ErtmfV0RyX6
-	W1p5dx2r8IfPr1VOzAwXCck9LC4a0evLcQSBLBgGQzq5SuUBFfxP/RSRK1FrkKUB6oPEuFIMGpZWd
-	hcj2v1XA==;
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=OcdOf1PNVpb7Q9LxA1fALF0xc4YKBMCGhNYjPRReQ20=; b=gPsiFOG1oK/231bE0XlAjLlPG
+	o8pwXpQ8ri9/tZnPOozufdGwoS6F8quN5/fybD4WaUgbO+jNaBBsk7EI4actyGb/1V4Kyjl3BoAps
+	TKqKtPxq4BbDPsu1gQVB8xNZYyC7efedJWLEqZmzYn7nO28O4Og4Lmn8VWqMR3Tr+/75Lg0y8//Ep
+	VX+XTwJuAZ8ExwA8jrpHnYOxk4XzyI+oAgylHB6hwkwIq87b92pyc87E0p+u2kS71XFW0Nhf6TuXE
+	CO1yqqeKqAwIhr9LkYPV/Pc6wrUcqv3IiUqaTyktVvsmlMxMXKGnmML9667sKUYxLqC1PJI4T7SEI
+	klbuOdnzw==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lXN3x-001zf9-Py; Fri, 16 Apr 2021 11:55:13 +0000
+	id 1lXN4o-001zn0-Vu; Fri, 16 Apr 2021 11:55:59 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lXMyk-001yeq-Ei
+ id 1lXMyk-001yeu-MW
  for linux-mtd@desiato.infradead.org; Fri, 16 Apr 2021 11:49:47 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
- MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
- Content-ID:Content-Description:In-Reply-To:References;
- bh=oB/Ab68gOO29EsC3+FTgow2Hyng5ZQUfAUylQq2Zats=; b=n43zCyw7bHyHDntOEC++hdoCKx
- 8X2zTNi4gPfNICFKGEUoKV2sUKaiCXF2I6nuzSg9P86HbEksf1H+JErnyRDwjki13AXgnk1MHwZWO
- a+adSzsYfsXU9/hBTQD5e8bFEMNftOGcaN/YwgndzaVGOeROlXNwp3pds94ZMsKRDec+FM1YdQvjT
- G9OvW7r6BgLYYU5NGAcRwpWhaso5iuKrlLyGcJetlAMPb/qg0wQeYMLNvPwoPYO3wrYntB933HlJz
- s5OPVxFkYmLB4CMJ2tVTJzfXVfMJV1t4vQhBMVaqZLn2xEGhl/gqgbsd5TyTP7lbGcF/Z9q7MONUC
- ZgLAHNag==;
+ MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+ :Reply-To:Content-Type:Content-ID:Content-Description;
+ bh=q5mlW+sn5FZ7Xj6idRbO0XplNjAvnEg7p0BfoTeHt+k=; b=h2UdJJ2p4QmpZTlpGhzMuWdtnK
+ gVR95UDXlYYAJjxT8VfACEXghgnZjB1wuADEbHQGe1RMzzm6uEzmjWP9lZm9nePJIpxbiQlx4Lgqn
+ thoeqmAHWQVaJZYesSzF9fLA03ikSyjc66eX7EVsyEP+DKK0khzaG8T2N17RvslVX+gbiBv1FvFj/
+ jqTeTjB6NyV3A/8bOWW0QFFFmjcBRqUC4yfCsFjBjMd04hP5yCAHUgaklS12jYOmgfKYvPPsFBCsn
+ nCkniB3KNYwkrHZmP9r5A0lqKyrSOYdJrfxf5hj36pYONfSAfe+ZY6wYoylkKUEcW6Q4ESz0rrDFZ
+ AvjGwM6g==;
 Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lXMyg-009KfT-GF
+ id 1lXMyg-009KfV-GE
  for linux-mtd@lists.infradead.org; Fri, 16 Apr 2021 11:49:41 +0000
 Received: from mwalle01.fritz.box (unknown
  [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 388732224A;
- Fri, 16 Apr 2021 13:49:33 +0200 (CEST)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 2C0C022255;
+ Fri, 16 Apr 2021 13:49:35 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1618573773;
+ s=mail2016061301; t=1618573775;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding;
- bh=oB/Ab68gOO29EsC3+FTgow2Hyng5ZQUfAUylQq2Zats=;
- b=BmPdDcxQB1Eapv8iuzLFQUGQJMmkEWLN+iC1WMgLX9XgvYdC/LdpG1VQHmIoaQCbC19VmY
- NWGIbrbdzKftuXcqOst+rDVo+Mp3du3fr/lvnI1M54iPJFGVMbFvugME+g8iNlFrRHp6uG
- JPT8OMRC8O5Ao/yeO+TrCDZN0X5cwjs=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=q5mlW+sn5FZ7Xj6idRbO0XplNjAvnEg7p0BfoTeHt+k=;
+ b=ek3NUy1sL9NBd33wOCAtZVgnMywkWLXFHPDBBdjkWZGBMwSGCTGAcP6VN0GG4ymmPezY+F
+ pZ9CuQ3KaZfM1h5rYsEXZhrHpvRamgy66ZRMpJpLEl84VMpzBosVgUnSQW8pmij9VnshiO
+ wXQR4RElNFyebJb+xD2Z9cG34POGTj0=
 From: Michael Walle <michael@walle.cc>
 To: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org
@@ -73,16 +74,18 @@ Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Rob Herring <robh+dt@kernel.org>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Michael Walle <michael@walle.cc>
-Subject: [PATCH 0/5] mtd: core: OTP nvmem provider support
-Date: Fri, 16 Apr 2021 13:49:23 +0200
-Message-Id: <20210416114928.27758-1-michael@walle.cc>
+ Michael Walle <michael@walle.cc>, Rob Herring <robh@kernel.org>
+Subject: [PATCH 2/5] dt-bindings: mtd: add YAML schema for the generic MTD
+ bindings
+Date: Fri, 16 Apr 2021 13:49:25 +0200
+Message-Id: <20210416114928.27758-3-michael@walle.cc>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210416114928.27758-1-michael@walle.cc>
+References: <20210416114928.27758-1-michael@walle.cc>
 MIME-Version: 1.0
-X-Spam: Yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210416_044938_750191_D28A53B3 
-X-CRM114-Status: GOOD (  13.56  )
+X-CRM114-CacheID: sfid-20210416_044938_783612_E6F3EE73 
+X-CRM114-Status: GOOD (  14.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,77 +102,85 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The goal is to fetch a (base) MAC address from the OTP region of a SPI NOR
-flash.
+Convert MTD's common.txt to mtd.yaml.
 
-This is the first part, where I try to add the nvmem provider support to
-the MTD core.
+Signed-off-by: Michael Walle <michael@walle.cc>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+Changes since RFC:
+ - use real device compatibles
 
-I'm not sure about the device tree bindings. Consider the following two
-variants:
-
-(1)
-    flash@0 {
-        ..
-
-        otp {
-            compatible = "mtd-user-otp";
-            #address-cells = <1>;
-            #size-cells = <1>;
-
-            serial-number@0 {
-                reg = <0x0 0x8>;
-            };
-        };
-    };
-
-(2)
-    flash@0 {
-        ..
-
-        otp {
-            compatible = "mtd-user-otp";
-            #address-cells = <1>;
-            #size-cells = <1>;
-
-			some-useful-name {
-                compatible = "nvmem-cells";
-
-                serial-number@0 {
-                    reg = <0x0 0x8>;
-                };
-			};
-        };
-    };
-
-Both bindings use a subnode "opt[-N]". We cannot have the nvmem cells as
-children to the flash node because of the legacy partition binding.
-
-(1) seems to be the form which is used almost everywhere in the kernel.
-That is, the nvmem cells are just children of the parent node.
-
-(2) seem to be more natural, because there might also be other properties
-inside the otp subnode and might be more future-proof.
-
-At the moment this patch implements (1).
-
-Michael Walle (5):
-  nvmem: core: allow specifying of_node
-  dt-bindings: mtd: add YAML schema for the generic MTD bindings
-  dt-bindings: mtd: add OTP bindings
-  dt-bindings: mtd: spi-nor: add otp property
-  mtd: core: add OTP nvmem provider support
-
- .../devicetree/bindings/mtd/common.txt        |  16 +-
- .../bindings/mtd/jedec,spi-nor.yaml           |   6 +
- .../devicetree/bindings/mtd/mtd.yaml          |  89 +++++++++++
- drivers/mtd/mtdcore.c                         | 149 ++++++++++++++++++
- drivers/nvmem/core.c                          |   4 +-
- include/linux/mtd/mtd.h                       |   2 +
- include/linux/nvmem-provider.h                |   2 +
- 7 files changed, 252 insertions(+), 16 deletions(-)
+ .../devicetree/bindings/mtd/common.txt        | 16 +-------
+ .../devicetree/bindings/mtd/mtd.yaml          | 39 +++++++++++++++++++
+ 2 files changed, 40 insertions(+), 15 deletions(-)
  create mode 100644 Documentation/devicetree/bindings/mtd/mtd.yaml
 
+diff --git a/Documentation/devicetree/bindings/mtd/common.txt b/Documentation/devicetree/bindings/mtd/common.txt
+index fc068b923d7a..ae16f9ea8606 100644
+--- a/Documentation/devicetree/bindings/mtd/common.txt
++++ b/Documentation/devicetree/bindings/mtd/common.txt
+@@ -1,15 +1 @@
+-* Common properties of all MTD devices
+-
+-Optional properties:
+-- label: user-defined MTD device name. Can be used to assign user
+-  friendly names to MTD devices (instead of the flash model or flash
+-  controller based name) in order to ease flash device identification
+-  and/or describe what they are used for.
+-
+-Example:
+-
+-	flash@0 {
+-		label = "System-firmware";
+-
+-		/* flash type specific properties */
+-	};
++This file has been moved to mtd.yaml.
+diff --git a/Documentation/devicetree/bindings/mtd/mtd.yaml b/Documentation/devicetree/bindings/mtd/mtd.yaml
+new file mode 100644
+index 000000000000..086b0ecd1604
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/mtd.yaml
+@@ -0,0 +1,39 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/mtd.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: MTD (Memory Technology Device) Device Tree Bindings
++
++maintainers:
++  - Miquel Raynal <miquel.raynal@bootlin.com>
++  - Richard Weinberger <richard@nod.at>
++
++properties:
++  $nodename:
++    pattern: "^flash(@.*)?$"
++
++  label:
++    description:
++      User-defined MTD device name. Can be used to assign user friendly
++      names to MTD devices (instead of the flash model or flash controller
++      based name) in order to ease flash device identification and/or
++      describe what they are used for.
++
++additionalProperties: true
++
++examples:
++  - |
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        flash@0 {
++            reg = <0>;
++            compatible = "jedec,spi-nor";
++            label = "System-firmware";
++        };
++    };
++
++...
 -- 
 2.20.1
 
