@@ -2,18 +2,19 @@ Return-Path: <SRS0=ZSp+=JN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB877C433ED
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Apr 2021 18:45:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13CEEC433B4
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Apr 2021 18:47:01 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1C77C6137D
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Apr 2021 18:45:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C77C6137D
+	by mail.kernel.org (Postfix) with ESMTPS id 72237611AF
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Apr 2021 18:47:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72237611AF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -22,75 +23,77 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=1aRjY7MELVh7+2xPSCLjWB6YD0AuAXuuDAcoBFNo9JI=; b=k/cplYe9vptWwCizguhYmE/Pm
-	rLw+A8APUzagoNKmfxKiDQr/OVsUzA3wXoPM5cG8G4+AhibZ+Z/fkXqLF5/8U3A8nyemX84i5Witv
-	NOex7OFyuHXS0S6Gj5msBQSgVWdRAXBe93wqFCEBQUleKlyXtk17F+ITFacynwIdXKEaz1hjW3cxn
-	CN+DvBeL9H9ly/lxQ5vFRrQtgmSqtCSf/0ct90h1pNGiEdW7sS6qRMR8KKjSjV382IJP4VWkVCrI2
-	HFjSrdMTC26FIU2EFj0Ywu2lAo2cB4BmxCzvEFbve3YVWGwBrLBWI9CA6iojFLj784s1UeV550ECN
-	NvAy4PUIQ==;
+	 bh=OVZNBWcOFoC/xM5X96YQtIT4ny8QBhjl9SUbGC6pYso=; b=NNbJhMoTlx06B+i3Iih+9bGdr
+	J/oMreqTOlTi+QvnOFVSjVf19yP9J0my1JLImwKSn4xAiuKb87gPozoSghJiKI8R/bNmCX1+8mE6N
+	B1IcSpFXj+P1G6lZ03bBZCfgZ2PdX0BGiTOL9K++K1EO2IFpd44RXGux6z0kHnP0o4BquGawJuqCB
+	3eWwg0Hzpfj+zbqoQnvJVwYVSKLkTXz0dsVTj4pTS+LW4bs7x6Gv7m6uy3WE5zOsjfdXpkWUdMULJ
+	HkK28jYAkjGLdyMupiNh7NX1GTp6eof6urI8tWJu2+xndQQF8QqbeSKWv1v/eg3L1SqypRCJSGc3Y
+	3dGnUKvFw==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lXTSC-0037U9-4b; Fri, 16 Apr 2021 18:44:32 +0000
+	id 1lXTU1-0037kH-5x; Fri, 16 Apr 2021 18:46:25 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lXTS8-0037Tp-UQ
- for linux-mtd@desiato.infradead.org; Fri, 16 Apr 2021 18:44:29 +0000
+ id 1lXTTz-0037jl-B8
+ for linux-mtd@desiato.infradead.org; Fri, 16 Apr 2021 18:46:23 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
  :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
  Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=ue4U2hx4gZY/OfTJKPiXwVwHVj/Jmgf89NK50uKXHBU=; b=VMGdH1liaqjB45+itT1vrxD8P1
- ztHK6Om8bBH1cunJEL+a2N5KoBEZE/Krl/FkBwiPq4GJzDnZRQNjTDT2lbQfeJQEtrzU8oox31f1K
- TrfLroxAZC9DGtlN/r4ybOhToM3p6zVFuNtFfxVVQpPGedJU63a3TqCqL3rExWqNfWMn17RfgvFFl
- /rBzoaTuLsppQ8sCYUu1a5f7qRyBxnvOlT2jz5YgT8kTvyHceD1kKsPjn0AqbX9awhN143DQhMHX4
- PHu5tQg8gCWOe9HqyHjeED3Fg6uGlgeOBLiTbqrcY9WVY7woEt0u/TaDL/qEhNEwqZxZwAQcgL1yE
- 7kPxuixw==;
-Received: from mail-ot1-f45.google.com ([209.85.210.45])
+ bh=etRLZlwfrAw/ObAL86CRzvNdPZ4wzFCSG0hWaLZVyQQ=; b=lLa0DZBIvEsZrA5faocl8jkFoZ
+ odPrlkFotHwW7in0/AJsnhVslSSy2cdAXmyYced8Y332WxqKO4RYAqM9+NM8PO2yw+GOZwx8tuY+f
+ P+coZuNPScLDeN8DSrfoYHP1VaUp9wHc1yhbn9VkD28MXLMBN1btA2GORJT+6OGzL4y4ucxo7pnrF
+ MthOGAeG7BoGwHoLwFPJnaRyg8eKrV3uVAIG/bmIG9M0WOwEHTig1Vv/VskphI+9ATUeTv8iAOlzR
+ XyjMj3r38U+KAu8tFa4aRUsj57yMPgi4xI2CY4wifti6elkz9nDE4PfpaBzhEfQObIFdxRXYXbVYp
+ wFOo0XMw==;
+Received: from mail-oo1-f53.google.com ([209.85.161.53])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lXTS6-009dNJ-FT
- for linux-mtd@lists.infradead.org; Fri, 16 Apr 2021 18:44:27 +0000
-Received: by mail-ot1-f45.google.com with SMTP id
- d3-20020a9d29030000b029027e8019067fso24693213otb.13
- for <linux-mtd@lists.infradead.org>; Fri, 16 Apr 2021 11:44:26 -0700 (PDT)
+ id 1lXTTt-009dQ9-G3
+ for linux-mtd@lists.infradead.org; Fri, 16 Apr 2021 18:46:22 +0000
+Received: by mail-oo1-f53.google.com with SMTP id
+ y23-20020a4ade170000b02901e6250b3be6so3853051oot.5
+ for <linux-mtd@lists.infradead.org>; Fri, 16 Apr 2021 11:46:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to;
- bh=ue4U2hx4gZY/OfTJKPiXwVwHVj/Jmgf89NK50uKXHBU=;
- b=XB4j+6XVZgbId+iJ1qEmufCUjdz7w87XCSSsrY6RUXFCb00cKvMvOjoIk9LTSfo8KA
- Oz7bO7FQ+jSKglQr6BWAucxpXOo7O8ras8F2y1W4zMt6JNJdbsc6XOL7bERDqD7CmTTP
- KZxlbURL/yS3slZVW8ycDKPbXhAvz5skayIWak2sNs1wyzmW87VsXr9MCJsBtPLmjTuZ
- mP43RkaNSDOZHGZC3DySIHsTT/F5vhGfSXFpzoJlC96LbK1quXjafAxNedZEs6rJ9/Kn
- cGrQ/HDvgI3GyHBdf1MKa8yuPhqsyTmNPQW2ZBshwVw7sB6d7Mb3pVoGWUFjPXxG3Ccd
- nAMA==
-X-Gm-Message-State: AOAM530MHJZTihNJvyOyB3pYjEeAIU6s3XGKUrtDQfIErZ8jx0brxqKt
- pDiMhd8p7pCrEZ7rPS2+Dw==
-X-Google-Smtp-Source: ABdhPJxNPTL5ESroEEmdFOQGYr1QURmiCb9UHAC1h/YFKMa6RSflMjttW9oHM1p5jnwbn/9BkOgxFg==
-X-Received: by 2002:a9d:4d01:: with SMTP id n1mr4821124otf.336.1618598665577; 
- Fri, 16 Apr 2021 11:44:25 -0700 (PDT)
+ bh=etRLZlwfrAw/ObAL86CRzvNdPZ4wzFCSG0hWaLZVyQQ=;
+ b=sUkSTXVIMMwcrcbpOIwKDNIQQBlQY9ZCSd2hIigYFHcMVslkhfKY2drPMu36/4RKeY
+ w0TC1To1BunE2YJsi08gXoGutLpaTcMMTwjD/sn46ZYAalkyuRfDHIwgLNSrKbK6WyA9
+ iEPNxlg9hqF8dIKPYBSFKDXAr5vKx0lbR5X/5GZhS/0J/H3kD/MZ1ITJ53mhGj6SAZ1z
+ Rsh7eHfRL73UutVq8JgGjjzerWDhgIx2snvkywW6AduZZOCVVFW1UUYd8zYLnCZn1O4h
+ c9WR8qUQ8XmZUZQUyVIRi4nG/WVa+rr8bteANLbidVGIFO8AjPs2cx1ImX7Lg+XBQzBJ
+ OCxw==
+X-Gm-Message-State: AOAM530jo1zaIzuS4CSOauPVfn0TvJR5bb96g8OYOYky/ZFNynPmFua/
+ UbBJmxEhApXkxQROVCO/aQ==
+X-Google-Smtp-Source: ABdhPJzM+rTbpoSYC8X7T8dgCSFTM86qBDJb19n9iGSJidvKf3L/X2rk0r8MR/j+ieTN7E1NrqOfkA==
+X-Received: by 2002:a4a:8c4f:: with SMTP id v15mr4358271ooj.25.1618598776489; 
+ Fri, 16 Apr 2021 11:46:16 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net.
  [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id l5sm911863otr.72.2021.04.16.11.44.24
+ by smtp.gmail.com with ESMTPSA id m133sm1539286oia.22.2021.04.16.11.46.14
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 16 Apr 2021 11:44:24 -0700 (PDT)
-Received: (nullmailer pid 3730968 invoked by uid 1000);
- Fri, 16 Apr 2021 18:44:23 -0000
-Date: Fri, 16 Apr 2021 13:44:23 -0500
+ Fri, 16 Apr 2021 11:46:14 -0700 (PDT)
+Received: (nullmailer pid 3733903 invoked by uid 1000);
+ Fri, 16 Apr 2021 18:46:13 -0000
+Date: Fri, 16 Apr 2021 13:46:13 -0500
 From: Rob Herring <robh@kernel.org>
 To: Michael Walle <michael@walle.cc>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 0/5] mtd: core: OTP nvmem provider support
-Message-ID: <20210416184423.GA3715339@robh.at.kernel.org>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH 3/5] dt-bindings: mtd: add OTP bindings
+Message-ID: <20210416184613.GA3731279@robh.at.kernel.org>
 References: <20210416114928.27758-1-michael@walle.cc>
+ <20210416114928.27758-4-michael@walle.cc>
+ <1618597801.604723.3708338.nullmailer@robh.at.kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20210416114928.27758-1-michael@walle.cc>
+In-Reply-To: <1618597801.604723.3708338.nullmailer@robh.at.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210416_114426_544643_AA136B0C 
-X-CRM114-Status: GOOD (  17.56  )
+X-CRM114-CacheID: sfid-20210416_114617_579611_54FD94AC 
+X-CRM114-Status: GOOD (  18.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,66 +110,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Apr 16, 2021 at 01:49:23PM +0200, Michael Walle wrote:
-> The goal is to fetch a (base) MAC address from the OTP region of a SPI NOR
-> flash.
+On Fri, Apr 16, 2021 at 01:30:01PM -0500, Rob Herring wrote:
+> On Fri, 16 Apr 2021 13:49:26 +0200, Michael Walle wrote:
+> > Flash devices can have one-time-programmable regions. Add a nvmem
+> > binding so they can be used as a nvmem provider.
+> > 
+> > Signed-off-by: Michael Walle <michael@walle.cc>
+> > ---
+> > Changes since RFC:
+> >  - added missing "$"
+> >  - dropped first example
+> >  - use real device compatibles
+> > 
+> >    Please note, that this will lead to an error without patch 4/5, which
+> >    introduces that property for the jedec,spi-nor. Should I keep it
+> >    seperate or should I squash that patch into this one?
+> > 
+> >  .../devicetree/bindings/mtd/mtd.yaml          | 50 +++++++++++++++++++
+> >  1 file changed, 50 insertions(+)
+> > 
 > 
-> This is the first part, where I try to add the nvmem provider support to
-> the MTD core.
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
 > 
-> I'm not sure about the device tree bindings. Consider the following two
-> variants:
+> yamllint warnings/errors:
 > 
-> (1)
->     flash@0 {
->         ..
-> 
->         otp {
->             compatible = "mtd-user-otp";
+> dtschema/dtc warnings/errors:
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/mtd.example.dt.yaml: flash@0: 'otp-1', 'otp-2' do not match any of the regexes: '^partition@', 'pinctrl-[0-9]+'
+> 	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
 
-mtd is a linuxism. Why not just 'nvmem-cells' here or as a fallback if 
-we come up with a better name? 
-
->             #address-cells = <1>;
->             #size-cells = <1>;
-> 
->             serial-number@0 {
->                 reg = <0x0 0x8>;
->             };
->         };
->     };
-> 
-> (2)
->     flash@0 {
->         ..
-> 
->         otp {
->             compatible = "mtd-user-otp";
->             #address-cells = <1>;
->             #size-cells = <1>;
-> 
-> 			some-useful-name {
->                 compatible = "nvmem-cells";
-> 
->                 serial-number@0 {
->                     reg = <0x0 0x8>;
->                 };
-> 			};
->         };
->     };
-> 
-> Both bindings use a subnode "opt[-N]". We cannot have the nvmem cells as
-> children to the flash node because of the legacy partition binding.
-> 
-> (1) seems to be the form which is used almost everywhere in the kernel.
-> That is, the nvmem cells are just children of the parent node.
-> 
-> (2) seem to be more natural, because there might also be other properties
-> inside the otp subnode and might be more future-proof.
-> 
-> At the moment this patch implements (1).
-
-I think approach (1) seems fine.
+Don't worry about this one if the series passes. There's not really a 
+good way to avoid it other than moving the example.
 
 Rob
 
