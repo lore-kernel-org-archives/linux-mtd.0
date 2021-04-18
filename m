@@ -7,95 +7,92 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 309F5C433ED
-	for <linux-mtd@archiver.kernel.org>; Sun, 18 Apr 2021 17:04:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E705EC433ED
+	for <linux-mtd@archiver.kernel.org>; Sun, 18 Apr 2021 21:47:30 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 64B9C61278
-	for <linux-mtd@archiver.kernel.org>; Sun, 18 Apr 2021 17:04:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 64B9C61278
+	by mail.kernel.org (Postfix) with ESMTPS id 57BC5610C7
+	for <linux-mtd@archiver.kernel.org>; Sun, 18 Apr 2021 21:47:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 57BC5610C7
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=hauke-m.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:Cc:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
+	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=5AXh2tIVVLR5LkARnrmn5lR0O+4hDoOQmSstWAV1Ckc=; b=ZvpCWrRFQQhXJSkWsE0srQGkA
-	ojzIq7/DzkoE4WWxW5CuKW3iNQzGg+6A5og0IjZkM5yCHnOh5PmtfgrFv8+sM1Vh8uEk49mp5FD5m
-	/s/J4HXn9DZZWtWiY9hAL1igZ4t/BQw65E7iII28anU72pf+SwP1j4cmt3NdRMNZaje1FOYkLoNOU
-	W6/txomm7aT8FhFQfPUZKYAKf9udYNPZ+WpXOtTfIYb3I+OzdOWDSfZtmC6P+NJo+RG78A5khfXse
-	wW1JmVMgMX+cNU7rfAPv41G8hkzSs5GC0xO3QEVW7kDRrRR1q4z4AynBBNo+QA1BTdyU6RXNpIzKw
-	OghSo+ILg==;
+	 bh=UFwd7n6uAs/QamRQlooxYxsEiVXRiLJMk2xztIxR1RQ=; b=Bp4DYAFECmFfyfClIMYRAkqdn
+	dDqtlfPafrOrpCmZwmAHekm50nuQ4Hs1UTAxHRby/QdiHFshQuL+cRJ7bGoCqSzez+tWUcLV9FaGO
+	f3R/BWPqVpYWMfbEMrFyAnD4FCXk1CErUIZouFk3QQ3tAEzNKmyOWGQY3Ir+6czgEfI9HbKj7APgZ
+	b5B1IROmBSqLJM26CPvax5CA3wWfeh9cwwVGJ2XXpG9Tvn+k0sm3a0P/nXcM4rtN8vQ/HCTu9SZEr
+	Vp3aObSk1TIpIsfGivcoCnbtU1FrJxy/qcnna1SbEM9NyUVyDHQCCnKsxrGtWw21onKm3iqE+4lKU
+	4hYqpk4HQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lYApl-008L6q-9N; Sun, 18 Apr 2021 17:03:45 +0000
+	id 1lYFFj-008eIJ-B1; Sun, 18 Apr 2021 21:46:51 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lYApi-008L6a-Q9
- for linux-mtd@desiato.infradead.org; Sun, 18 Apr 2021 17:03:42 +0000
+ id 1lYFFW-008eH2-V8
+ for linux-mtd@desiato.infradead.org; Sun, 18 Apr 2021 21:46:39 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
- Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
- Subject:Sender:Reply-To:Content-ID:Content-Description;
- bh=wZjHDFyIJwgltzOPYwo/FQpuqb63UKhAO+gnpdgNwac=; b=32zyVUuk1H8+FOfGlEECr4xg2o
- opfv92MLSIDoIyHHWJJDjPk6x0qJeZyGF34kY50MpPqYs2balviTzuEKeN4e+V742xLLSjMhMnZFv
- AsVcgD7CVkIqj5J0bQKoLmrQ4vTJbMlTv4q9Y86Vtn+XnOy9Jh4tHYxuyN878i12HXxCXz6mu0m35
- Gw3UqH79wVEnvPVUIzhrzeTz/Cx3+5ngxAzth9JSiC6ORqCzT2wonYq+wArfnu2HPiJxkNZHBbHk+
- 6KUCC2NIyI+JFC+f/UpaIswooVb/lIoEtPj/RiC9jjfirJhvUcnv5pDRuffb5f6W90h33tHdDgVnm
- EjfsYLBQ==;
-Received: from mout-p-201.mailbox.org ([80.241.56.171])
+ MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+ :Reply-To:Content-Type:Content-ID:Content-Description;
+ bh=Bcn7lcMwbPSmuEHOqgikUEV4OWQ7ML3Pg1Ad6Brw2y4=; b=yG/GyKssIINqmF5/aV2ZizwpYJ
+ P6gfysTGY9lfcQwB0flu08npC8eW83xpV3Fh9LW67bnrIE2X1OiNf9kJPXM6Qy2HLMUB6DMCkkLXs
+ cvedLNr/n5kVgQihAURPTWIT4qhsGBdK4be2IRcKyMXtvROUTNR4yWet5LJNupePJhIGmd1eSxDIA
+ QudjGUnSrTNtpUY7SVPJWumAWOI//pBdZcYZTRL6JMaONozp7K+27Og+838mlBTmC1sjb7oBK21ES
+ GblpvjWPh8WOGaPBAgNHCYr32pifZsr8V6b19RnZKteuvtSU43GDxV13Pq6tLEJhgwz4mW2cLCxic
+ byw644CQ==;
+Received: from mout-p-201.mailbox.org ([2001:67c:2050::465:201])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lYApe-00AWwl-Co
- for linux-mtd@lists.infradead.org; Sun, 18 Apr 2021 17:03:41 +0000
+ id 1lYFFT-00Ai3h-34
+ for linux-mtd@lists.infradead.org; Sun, 18 Apr 2021 21:46:37 +0000
 Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest
  SHA256) (No client certificate requested)
- by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4FNbr90xVMzQjxV;
- Sun, 18 Apr 2021 19:03:37 +0200 (CEST)
+ by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4FNk6X3p7jzQjx6;
+ Sun, 18 Apr 2021 23:46:28 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at heinlein-support.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hauke-m.de; s=MBO0001; 
- t=1618765415;
+ t=1618782386;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=wZjHDFyIJwgltzOPYwo/FQpuqb63UKhAO+gnpdgNwac=;
- b=nrMgmySGBZWGZd56v0v0t9f7GMdCdQNMtPTyJpsjCyIyb2JHx6Qi/9cQGuTt6ZKvXvpfkA
- 1gHnFw2RX1zZPihkTmYizerNRlFOc8IOBptVZL1HEBXnZ4uXYrEksW8+0avUYKga6wdtwm
- 0BMY1bZ0e2zPYeoMOaZpPuMDA8z92csfQw6kMFiVT6FqtTJXdcyEKBPmh8T48keak1cruS
- J5Uwr3wKsAd8MtuyQNmDiSi8EggZfako8wZddMBtkTBKBOONF2twABTWIuHtGRHdPp28O5
- jfGSGszF6zkfniMyXwmH6ONvuxbQY3bQgz8/S8pBb2P0VZip4KIbTksEFTvJqg==
+ bh=Bcn7lcMwbPSmuEHOqgikUEV4OWQ7ML3Pg1Ad6Brw2y4=;
+ b=GzASEr/wcqCUeqfPEi7Fo5GYIrBX79Ix7gqjNs19DCxD8+YCDJzpak3QaB58J4Ja9hWx+e
+ Y+oVvM00b8GRiu3v4iUnzZ6ZkhNdVgujGLYvNXG6Fy7ysgt1M5/qeFiamK1lzk2Ri7OaBV
+ IHtxzvLFu78saNK5jkrI3IRXsC6XohT7cNNE2hTA6qNJTIUfhJMiQorhIcJX2I36W53yj0
+ uBHIEVhX4J4qtgt8BU0VwfxARdQGfTCNRRwd5nzKz+hXMbtgYDjOp233NIwRAlmZMUfqJN
+ PS/Yy9/q2hVKl0hedEnp+Cc043yknCetBSaTdX01UpNb09wAjlIgAkaBcN5wXA==
 Received: from smtp2.mailbox.org ([80.241.60.241])
- by spamfilter01.heinlein-hosting.de (spamfilter01.heinlein-hosting.de
- [80.241.56.115]) (amavisd-new, port 10030)
- with ESMTP id FzsY7P3jsSOD; Sun, 18 Apr 2021 19:03:33 +0200 (CEST)
-Subject: Re: [PATCH 2/2] mtd: parsers: trx: Remove dependency to BRCM
- architectures
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ by spamfilter03.heinlein-hosting.de (spamfilter03.heinlein-hosting.de
+ [80.241.56.117]) (amavisd-new, port 10030)
+ with ESMTP id uGXNupek66Fi; Sun, 18 Apr 2021 23:46:25 +0200 (CEST)
+From: Hauke Mehrtens <hauke@hauke-m.de>
+To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
  robh+dt@kernel.org
 Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- rafal@milecki.pl, musashino.open@gmail.com
-References: <20210315170711.567358-1-hauke@hauke-m.de>
- <20210315170711.567358-3-hauke@hauke-m.de>
- <16aba7dd-63ca-e68c-469f-f21cff75b32e@gmail.com>
-From: Hauke Mehrtens <hauke@hauke-m.de>
-Message-ID: <83e82a6f-f579-ec7b-e6fd-2fe47fbdd08b@hauke-m.de>
-Date: Sun, 18 Apr 2021 19:03:32 +0200
+ rafal@milecki.pl, musashino.open@gmail.com,
+ Hauke Mehrtens <hauke@hauke-m.de>
+Subject: [PATCH v2 2/3] mtd: parsers: trx: Allow to specify brcm,
+ trx-magic in DT
+Date: Sun, 18 Apr 2021 23:46:15 +0200
+Message-Id: <20210418214616.239574-3-hauke@hauke-m.de>
+In-Reply-To: <20210418214616.239574-1-hauke@hauke-m.de>
+References: <20210418214616.239574-1-hauke@hauke-m.de>
 MIME-Version: 1.0
-In-Reply-To: <16aba7dd-63ca-e68c-469f-f21cff75b32e@gmail.com>
-Content-Language: en-US
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -2.41 / 15.00 / 15.00
-X-Rspamd-Queue-Id: DCC1517E5
-X-Rspamd-UID: f9beb5
+X-MBO-SPAM-Probability: **
+X-Rspamd-Score: 2.57 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 8398817E5
+X-Rspamd-UID: 9cac81
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210418_100338_612628_54D6C1AB 
-X-CRM114-Status: GOOD (  15.61  )
+X-CRM114-CacheID: sfid-20210418_144635_302811_A8A51321 
+X-CRM114-Status: GOOD (  12.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,34 +104,60 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMy8xOC8yMSA3OjQ1IEFNLCBSYWZhxYIgTWnFgmVja2kgd3JvdGU6Cj4gT24gMTUuMDMuMjAy
-MSAxODowNywgSGF1a2UgTWVocnRlbnMgd3JvdGU6Cj4+IEJ1ZmZhbG8gdXNlcyB0aGUgVFJYIHBh
-cnRpdGlvbiBmb3JtYXQgYWxzbyBvbiBNZWRpYXRlayBTb0NzLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5
-OiBIYXVrZSBNZWhydGVucyA8aGF1a2VAaGF1a2UtbS5kZT4KPj4gLS0tCj4+IMKgIGRyaXZlcnMv
-bXRkL3BhcnNlcnMvS2NvbmZpZyB8IDIgKy0KPj4gwqAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0
-aW9uKCspLCAxIGRlbGV0aW9uKC0pCj4+Cj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9wYXJz
-ZXJzL0tjb25maWcgYi9kcml2ZXJzL210ZC9wYXJzZXJzL0tjb25maWcKPj4gaW5kZXggZDkwYzMw
-MjI5MDUyLi42MjQyOTAzZDg4NDQgMTAwNjQ0Cj4+IC0tLSBhL2RyaXZlcnMvbXRkL3BhcnNlcnMv
-S2NvbmZpZwo+PiArKysgYi9kcml2ZXJzL210ZC9wYXJzZXJzL0tjb25maWcKPj4gQEAgLTk2LDcg
-Kzk2LDcgQEAgY29uZmlnIE1URF9BRlNfUEFSVFMKPj4gwqAgY29uZmlnIE1URF9QQVJTRVJfVFJY
-Cj4+IMKgwqDCoMKgwqAgdHJpc3RhdGUgIlBhcnNlciBmb3IgVFJYIGZvcm1hdCBwYXJ0aXRpb25z
-Igo+PiAtwqDCoMKgIGRlcGVuZHMgb24gTVREICYmIChCQ000N1hYIHx8IEFSQ0hfQkNNXzUzMDFY
-IHx8IENPTVBJTEVfVEVTVCkKPj4gK8KgwqDCoCBkZXBlbmRzIG9uIE1URAo+PiDCoMKgwqDCoMKg
-IGhlbHAKPj4gwqDCoMKgwqDCoMKgwqAgVFJYIGlzIGEgZmlybXdhcmUgZm9ybWF0IHVzZWQgYnkg
-QnJvYWRjb20gb24gdGhlaXIgZGV2aWNlcy4gSXQKPj4gwqDCoMKgwqDCoMKgwqAgbWF5IGNvbnRh
-aW4gdXAgdG8gMy80IHBhcnRpdGlvbnMgKGRlcGVuZGluZyBvbiB0aGUgdmVyc2lvbikuCj4+Cj4g
-Cj4gUGxlYXNlIGNoZWNrIERvY3VtZW50YXRpb24va2J1aWxkL2tjb25maWctbGFuZ3VhZ2UucnN0
-IGFuZCBjb21taXQKPiAxODA4NGU0MzVmZjYgKCJEb2N1bWVudGF0aW9uL2tidWlsZDogRG9jdW1l
-bnQgcGxhdGZvcm0gZGVwZW5kZW5jeQo+IHByYWN0aXNlcyIpCj4gCj4gSSB0aGluayB5b3Ugc2hv
-dWxkIHJhdGhlciBhZGQgcGxhdGZvcm0gdG8gREVQRU5EUy4KCk9rIEkgd2lsbCBhZGQgYSBkZXBl
-bmRlbmN5IHRvIEFSQ0hfTUVESUFURUsuIEkgdGhpbmsgQnVmZmFsbyBhbHNvIHVzZWQgCnRoaXMg
-b24gc29tZSBNZWRpYXRlay9yYWxpbmsgTUlQUyBkZXZpY2VzLCBidXQgdGhleSBhcmUgbm90IHN1
-cHBvcnRlZCAKdXBzdHJlYW0geWV0LgoKSGF1a2UKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
-IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
-dGQvCg==
+Buffalo uses a different TRX magic for every device, to be able to use
+this trx parser, make it possible to specify the TRX magic in device
+tree. If no TRX magic is specified in device tree, the standard value
+will be used. This value should only be specified if a vendor chooses to
+use a non standard TRX magic.
+
+Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+---
+ drivers/mtd/parsers/parser_trx.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/parsers/parser_trx.c b/drivers/mtd/parsers/parser_trx.c
+index 8541182134d4..4814cf218e17 100644
+--- a/drivers/mtd/parsers/parser_trx.c
++++ b/drivers/mtd/parsers/parser_trx.c
+@@ -51,13 +51,20 @@ static int parser_trx_parse(struct mtd_info *mtd,
+ 			    const struct mtd_partition **pparts,
+ 			    struct mtd_part_parser_data *data)
+ {
++	struct device_node *np = mtd_get_of_node(mtd);
+ 	struct mtd_partition *parts;
+ 	struct mtd_partition *part;
+ 	struct trx_header trx;
+ 	size_t bytes_read;
+ 	uint8_t curr_part = 0, i = 0;
++	uint32_t trx_magic = TRX_MAGIC;
+ 	int err;
+ 
++	/* Get different magic from device tree if specified */
++	err = of_property_read_u32(np, "brcm,trx-magic", &trx_magic);
++	if (err != 0 && err != -EINVAL)
++		pr_err("failed to parse \"brcm,trx-magic\" DT attribute, using default: %d\n", err);
++
+ 	parts = kcalloc(TRX_PARSER_MAX_PARTS, sizeof(struct mtd_partition),
+ 			GFP_KERNEL);
+ 	if (!parts)
+@@ -70,7 +77,7 @@ static int parser_trx_parse(struct mtd_info *mtd,
+ 		return err;
+ 	}
+ 
+-	if (trx.magic != TRX_MAGIC) {
++	if (trx.magic != trx_magic) {
+ 		kfree(parts);
+ 		return -ENOENT;
+ 	}
+-- 
+2.30.2
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
