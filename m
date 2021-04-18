@@ -1,93 +1,99 @@
-Return-Path: <SRS0=Xxtu=JO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=Qvgb=JP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DA34C433ED
-	for <linux-mtd@archiver.kernel.org>; Sat, 17 Apr 2021 16:01:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4369CC433ED
+	for <linux-mtd@archiver.kernel.org>; Sun, 18 Apr 2021 16:54:52 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 76757610C7
-	for <linux-mtd@archiver.kernel.org>; Sat, 17 Apr 2021 16:01:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 76757610C7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7B35260FF1
+	for <linux-mtd@archiver.kernel.org>; Sun, 18 Apr 2021 16:54:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B35260FF1
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=hauke-m.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
-	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:MIME-Version:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=qR2Q8QaxCEKGfiK6P40rqvU5puEDQUkEecAenieOyf0=; b=bD3mndzvscX6Vo
-	HVEyJep22kEcid1iOkH0yG7GfHeU5e901VAayeqkGCfXUi9f1OY3joQSgAaMlJQHfSpR6bJzfejfN
-	JFOmQijL7yktD8eqr+DA3eA2xRR8ApGt/V8n2AxvLNzxTEaN+Z4+nmC/21J1GB0bI9uFC/wOpr/nI
-	Up5N1rLt6p4DqUkG0cb6Hi/b5C8U1skD7uPpkY2ndIFFRZbwwSyciOqxkX6VILCGTAMP4kwIHmrwX
-	YZxsAR8yZlqxRaED4HJ1sMNA/Kb5tWnKWKmq2JK2XMuLhUm4c7QSX5NaDesnh8OpVSKljWBr4+J4d
-	Jt/fOcHFR9sPkleEUFbA==;
+	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:Cc:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=YlfAOREw5AJ3sLLdqhNqd2v4oj+ZNtEpMJ3Oq7zk7ZE=; b=ZP/GKsG56wRkAyto7Jdaq6h5m
+	HwvsJvZp64uqYTyyVaCU7XV6EdLSTi9ZHCYSwAtTaDHMaIvLAZeppEKfopnblpiOCw+04Rm6QT07F
+	zxHGTtYQNiyqqMt09ka2Id7/4ZigHLk0dfr6RygxSF7E6SKX8Bj8O2TCMPgqPxBjwgIEF6jlUfKbx
+	PuCOIsiHxju0VFVcWroquIBtgowJDyo2K3itmYXZxkvwho345aFNgG+zRr+P4VTznlBAgrR0zzM5H
+	dEkvGc0pCpw58b1wV7ueJLNoM/oMQM+Z0MAVkwxHaZl3lVWHP8ndvZUGr9xH8e6AbzyRjx1T80WHr
+	/BtkmgyLg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lXnMF-005hhz-39; Sat, 17 Apr 2021 15:59:43 +0000
+	id 1lYAgB-008Kap-7c; Sun, 18 Apr 2021 16:53:51 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lXnMD-005hhG-7Z
- for linux-mtd@desiato.infradead.org; Sat, 17 Apr 2021 15:59:41 +0000
+ id 1lYAg7-008Kak-C9
+ for linux-mtd@desiato.infradead.org; Sun, 18 Apr 2021 16:53:47 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Content-Type:To:Subject:Message-ID:
- Date:From:MIME-Version:Sender:Reply-To:Cc:Content-Transfer-Encoding:
- Content-ID:Content-Description:In-Reply-To:References;
- bh=zmG39T7u3LOz/c3TVGnCm9OWR4eQ+yWIpj7LUL0mTtY=; b=Y6i1/FImX0aY6caJeojx7KiiLk
- Ty9y6gNAlGA+GnFL1JxkqGRuyzptojUBPTEpn+smTRqYYsnp1MAprOfIBCEWvYF/nyj2YoxqUx+3n
- yo/KAUMnbdyR4HMYU2LX0EQSt8h3wKn2Jdqh3JX+2MtOTTaUG+ANOkHuVFhodRoO7aTk355LPT4BN
- qMvVnweh5ikjWq6ZR/BlUCMFNCyCT4aU5mv/VMOpj7VIWHrd1A5Bry9xBwVo+GQXMZ2SldGP375LP
- /aDcvgxmGg+co9tK6Lrs4YJ1xa+9vZpVvSy/K1MVD6211zWPLNc33FA6yu71Q+W4rHkzJBHiYoPGh
- A8/ri9Pg==;
-Received: from mail-lj1-x22a.google.com ([2a00:1450:4864:20::22a])
+ d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+ Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+ Subject:Sender:Reply-To:Content-ID:Content-Description;
+ bh=6lPwZCh2gDrqCBlpGB5V+6FrhCa0rgJFX0WJJvDlyY8=; b=XHimTHOH6JgfFXHYJuXbugj69m
+ 4LWOsi++bqkGd+rd7QskxzlBb9W24K6oEPfDaCxzmaqCIj5vmHEAM/pCFOLAuPjdbH9v5GxxhIg9z
+ 2b4U1DDIyxblxl8DPyQKBujIQIdo40JvrZGZEKRDTisVUma36F/NA4GuIRqFDYbtj3Cj/Revp2rV7
+ Nuz36EO0E2pQpAxGx8jyPtMtrfOHhDSxSNX1IenifiKT5QkHpk/yZUQD0443rsx/U2Ngw5GBiuITe
+ Eme8i6g3E7FN4MS55gsbNoVeS29o4L1rEQXtdrMRqMlDAYBJEdU8MDv8//DBpdB0fBrdDKX16XQl+
+ aCpFiWUQ==;
+Received: from mout-p-202.mailbox.org ([2001:67c:2050::465:202])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lXnM8-00A67b-ED
- for linux-mtd@lists.infradead.org; Sat, 17 Apr 2021 15:59:39 +0000
-Received: by mail-lj1-x22a.google.com with SMTP id a25so21102979ljm.11
- for <linux-mtd@lists.infradead.org>; Sat, 17 Apr 2021 08:59:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:from:date:message-id:subject:to;
- bh=zmG39T7u3LOz/c3TVGnCm9OWR4eQ+yWIpj7LUL0mTtY=;
- b=PFXx6cFn97KrslrEAzw8FuLjsmfPvOyaM1iKKOh/DjepzZ+9+3VllocIqC+OgeDMve
- FDQJ5ksHVVYrYpWy488FqeyiGMGJ7nC7QkxLgoGKLXp9RagNvDxn+wvebE4RjyFOrW1v
- 4vTI7uEK7g58+zWXQNVEMUrq/NDgJC3muExjypPkvkl+fhJExbUglEpXdC0UUrcgtOf8
- qFSKlblDDBM3nq76RTT4faDFk792otk355NyIW89W0U/TJ0x6z5IJQg+Z8j9HoTBOGoV
- K6iIv+NpyavNo8abPQKq3On6AppR/+B00G3n5FTTznSEsgm2KA5p6KbRQrA1/c7Xw1Td
- t05Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
- bh=zmG39T7u3LOz/c3TVGnCm9OWR4eQ+yWIpj7LUL0mTtY=;
- b=HzEqSPiMRQy0Rf8/M2oMYJpsgavxR0CeIuJ1jTcPl/BVuZQPDtbXHl4HvRbZgipc/c
- vKFbh1ZfejhRDaAHwP9GHUpNE5OfT7EVHwtVUN73zbYc1kyzjQRhqsx70IK7VR65ivvZ
- JMmBOvsgUPM4Jnl7fluK/9rypnPmSp1DBYEt07Cg81vJN6WzCgVb4yd7//MaIyjxgbmC
- oOSVMaec54yfpBTdQPiJVBId+BerZhTC8HYZ1YSPhg3+NVArXVcEO3GOUugY5iRUCSLN
- OBlbRMCaGPSw8i3D9B2hS0ug0Adqg0+kgWeL53XDEsp42H5VJH/rRI1nyRCZFkbxVRka
- INCg==
-X-Gm-Message-State: AOAM533WErb46TlGAiwQMfEdCOyzB/i54GL4W1XK19NPILXNYZbvNatI
- d71T5GCXKD2UolyZpJ0lSW0duGMoe1dOMiwxhpPOwShia5o=
-X-Google-Smtp-Source: ABdhPJxthKGKvr4MWj7Di6th+syBD/edLff2btuL6fV63L66SK9S7+emoxacF9rf/OJ37cPdmuJmLsonulpL4/YzJjA=
-X-Received: by 2002:a2e:701:: with SMTP id 1mr5849991ljh.264.1618675174043;
- Sat, 17 Apr 2021 08:59:34 -0700 (PDT)
+ id 1lYAg1-00AWVv-QK
+ for linux-mtd@lists.infradead.org; Sun, 18 Apr 2021 16:53:45 +0000
+Received: from smtp2.mailbox.org (smtp2.mailbox.org
+ [IPv6:2001:67c:2050:105:465:1:2:0])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest
+ SHA256) (No client certificate requested)
+ by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4FNbcW00twzQk1r;
+ Sun, 18 Apr 2021 18:53:31 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hauke-m.de; s=MBO0001; 
+ t=1618764809;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=6lPwZCh2gDrqCBlpGB5V+6FrhCa0rgJFX0WJJvDlyY8=;
+ b=lOSI2w8PRGRgIh+RT5YGCfIkO8n/lQ/utmBMre7Vl7Lz0d75ytz8dQ5x78P3Numr31SHZt
+ xWYOqEHY2iQ28Y6kQELFmct5UNsncgjJYrVPLGlNVDlKvQ3NDqQ4OomDi1r9ETcbiQhQqY
+ 6El/V8rUxbG5b4WEsODdgxoDC9uJtkbtqyCsWh7EL56RiBbj1Kq22rmElVYDGqDBgDBGxK
+ DYN1nlp/rl4xRGTv/DQWICBPbczYDQJNWf32JFbj5vKvy/cmKJOtkFRdXioXYn/e7Mri5i
+ yJifBpVqXB+WOjt83bhbohqGThFQoNVL6gpoCS8Xjv0ReCURhYoQTmw5MIdufQ==
+Received: from smtp2.mailbox.org ([80.241.60.241])
+ by spamfilter06.heinlein-hosting.de (spamfilter06.heinlein-hosting.de
+ [80.241.56.125]) (amavisd-new, port 10030)
+ with ESMTP id y0yDlwiINpdG; Sun, 18 Apr 2021 18:53:26 +0200 (CEST)
+Subject: Re: [PATCH 1/2] mtd: parsers: trx: Allow to specify trx-magic in DT
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, rafal@milecki.pl,
+ musashino.open@gmail.com
+References: <20210315170711.567358-1-hauke@hauke-m.de>
+ <20210315170711.567358-2-hauke@hauke-m.de> <20210317102556.68b76e96@xps13>
+From: Hauke Mehrtens <hauke@hauke-m.de>
+Message-ID: <0934457e-5f8e-dd9b-bd14-de93c5eb06ec@hauke-m.de>
+Date: Sun, 18 Apr 2021 18:53:25 +0200
 MIME-Version: 1.0
-From: Fabio Estevam <festevam@gmail.com>
-Date: Sat, 17 Apr 2021 12:59:22 -0300
-Message-ID: <CAOMZO5DufVR=+EzCa1-MPUc+ZefZVTXb5Kgu3Wxms7cxw9GmGg@mail.gmail.com>
-Subject: imx27: No space left to write bad block table
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Sascha Hauer <kernel@pengutronix.de>, 
- linux-mtd <linux-mtd@lists.infradead.org>
+In-Reply-To: <20210317102556.68b76e96@xps13>
+Content-Language: en-US
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -2.40 / 15.00 / 15.00
+X-Rspamd-Queue-Id: DD9F517F6
+X-Rspamd-UID: bbd099
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210417_085936_518378_447150BC 
-X-CRM114-Status: UNSURE (   6.93  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210418_095342_154497_D72B3C2F 
+X-CRM114-Status: GOOD (  13.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,56 +105,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On 3/17/21 10:25 AM, Miquel Raynal wrote:
+> Hi Hauke,
+> 
+> Hauke Mehrtens <hauke@hauke-m.de> wrote on Mon, 15 Mar 2021 18:07:10
+> +0100:
+> 
+>> Buffalo uses a different TRX magic for every device, to be able to use
+>> this trx parser, make it possible to specify the TRX magic in device
+>> tree. If no TRX magic is specified in device tree, the standard value
+>> will be used. This value should only be specified if a vendor chooses to
+>> use a non standard TRX magic.
+>>
+>> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+>> ---
+>>   .../bindings/mtd/partitions/brcm,trx.txt      |  5 +++++
+>>   drivers/mtd/parsers/parser_trx.c              | 21 ++++++++++++++++++-
+> 
+> Can you please split this patch:
+> 1- dt-binding update
+> 2- driver update
+> 
+> This way we can collect Rob's ack for the binding patch.
+> 
 Hi,
 
-I noticed this error recently on a imx27-phytec-phycard-s-rdk reported
-on kernelci:
+Sorry for answering so late.
 
-nand: device found, Manufacturer ID: 0x20, Chip ID: 0xa1
-nand: ST Micro NAND01GR3B2CZA6
-nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-Bad block table not found for chip 0
-Bad block table not found for chip 0
-Scanning device for bad blocks
-random: fast init done
-Bad eraseblock 329 at 0x000002920000
-Bad eraseblock 330 at 0x000002940000
-Bad eraseblock 331 at 0x000002960000
-Bad eraseblock 332 at 0x000002980000
-Bad eraseblock 333 at 0x0000029a0000
-Bad eraseblock 334 at 0x0000029c0000
-Bad eraseblock 335 at 0x0000029e0000
-Bad eraseblock 336 at 0x000002a00000
-Bad eraseblock 337 at 0x000002a20000
-Bad eraseblock 338 at 0x000002a40000
-Bad eraseblock 339 at 0x000002a60000
-Bad eraseblock 340 at 0x000002a80000
-Bad eraseblock 341 at 0x000002aa0000
-Bad eraseblock 342 at 0x000002ac0000
-Bad eraseblock 343 at 0x000002ae0000
-Bad eraseblock 344 at 0x000002b00000
-Bad eraseblock 345 at 0x000002b20000
-Bad eraseblock 1020 at 0x000007f80000
-Bad eraseblock 1021 at 0x000007fa0000
-Bad eraseblock 1022 at 0x000007fc0000
-Bad eraseblock 1023 at 0x000007fe0000
-No space left to write bad block table
-nand_bbt: error while writing bad block table -28
-mxc_nand: probe of d8000000.nand-controller failed with error -28
+I will split this into two patches.
 
-Full log:
-https://storage.kernelci.org/next/master/next-20210416/arm/imx_v4_v5_defconfig/gcc-8/lab-pengutronix/baseline-imx27-phytec-phycard-s-rdk.html
-
-I don't have access to this board but just wanted to report it.
-
-Regards,
-
-Fabio Estevam
+Hauke
 
 ______________________________________________________
 Linux MTD discussion mailing list
