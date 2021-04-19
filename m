@@ -4,17 +4,17 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,URIBL_BLOCKED
-	autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C26EBC433ED
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Apr 2021 11:45:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0349EC433ED
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Apr 2021 11:48:55 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4520261166
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Apr 2021 11:45:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4520261166
+	by mail.kernel.org (Postfix) with ESMTPS id 570DE6101D
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Apr 2021 11:48:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 570DE6101D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,77 +23,75 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:
 	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=p0QpCU0+POJNtAuYqrf3h44rBtdDroEZnazoccDNtug=; b=nkVXT0DeAi9PGtWWTQlAVaX6p
-	4DlokjA2ulu+8CWrntUwW3w3JePvJBJ2Bb1RHVwUbXchVFah/qcZoFKtZuFi56KCVgtSna/XnWJ/J
-	GfdqveKThQu0uUv2ceWPsumHnR0zsky6hLfQcvhTgGi/PFCaCl4f/ybaaeB9rwSOYpDS8DCKoNbId
-	sOAFGmH14QHv9LXB+OfBcrqLjUsG+MBwUs6EDNEnRAHBmRThysqDg2+f7KPC09SciC0iDbIv4XcyM
-	Xv0ScjS+DsASr2N0afEwmxDq7mQCxibiwPQIIqBjPGjgcgoxEHw1LK1i42OWhUiwx0PsrcMk/WSyU
-	cXROaRiVw==;
+	 bh=0ulgyNXY32gjrsJJGWP2njxRz3UiCL15DmzSAFLROIs=; b=GsCqyVYTwUuotHgc4OF/749K8
+	b/bbvaS4vn3pS0GVZNyMH+D3EGVV5VGh/3WP8Y4MK4S6/jV1inxwvC0Z2qF2rQ4ngA8z+BcC4ivyD
+	CjPc7fRqEuS0DRaJSwOPJ76JhT45k2RU2WtZU1Nhrv7GvcqPgDVZQpwllrZzIwlQ/0QU9mDT3dj0c
+	LNTZb005W887glFjvLiOG1elNo2MR5LtfCUlMw+SxJXPaw43vpq/ZlkPNDIYZ4B4XF5hkQM+7/XzV
+	A55GlzEZpNHkV/ywe+qiMMPz7m8+6+kKMHXR8c29TsPnD/TpFO8nmtwNhrlS+nUGzWCt1VVdyIsxm
+	TRtYUQLKw==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lYSKx-009nup-KS; Mon, 19 Apr 2021 11:45:07 +0000
+	id 1lYSO1-009oDQ-Oe; Mon, 19 Apr 2021 11:48:17 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lYSKu-009nuG-SP
- for linux-mtd@desiato.infradead.org; Mon, 19 Apr 2021 11:45:05 +0000
+ id 1lYSNz-009oDF-Jw
+ for linux-mtd@desiato.infradead.org; Mon, 19 Apr 2021 11:48:15 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Type:Cc:To:Subject:Message-ID
  :Date:From:In-Reply-To:References:MIME-Version:Sender:Reply-To:
  Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=SYX5gkZRjrpsYOJbGnnG3O3r7V3ElN39fbI1O5590C4=; b=N0mKabt2Tl/9JmFy/GmK+/wQYZ
- 8dj7O4VOP3H3hbCEu7kcA9v9y9T6sYUqICnMSYev3RzZAsn2UwP+iM2rV1jfqRRbY2BupIk2Svafq
- EufMYiKexQDeadmOiExPKecylYaL4ktj4sm76HPrja4beHZjgi0dGGtnFBeufPXiamHqVse/bV1RZ
- EFYDDhgJUg5vbz9h6P9Q6CSQIaT5snnO6IqhRKBHD9NH2n/FbslIeZMqV0MM+bB0Co4+2cXWLdSmJ
- vCVKr+kGdiMPudS/NOLtlHYgNRUEYXN3B5mgBu5l5yp4GAmZ6KHESnkXDJb/hTdV7zflbnx+l2po+
- tCdnNrYw==;
-Received: from mail-lf1-x133.google.com ([2a00:1450:4864:20::133])
+ bh=c8mJsm8GaeXtWDHzV27HcKcUv25VPqwek08DmDlzIxw=; b=dz4zDawGhxUYZ0hsAigaN4nvTG
+ vweeMwpHprpcuhn65k/NQhOn+C+80UBkNBVi0G+Lj3SWDK45ksmo0tcd9ph5jC6Jx5KeSjsDOGbm0
+ 8yUrPOa7bfXKxXnVlIcr8dVoLsB8bbx33c/QFJ/kq/6iiCJFDUNJzsPielrG3Uy/EDdFP/OhIIV7q
+ 5sU/ET/0q6VRICubuH7SkKHPME2VSu2Gq8nUUC/CTlQQ6FEeVZaVV2aw/VMPdcvvBUpQQZ6PrBmwV
+ +6Rlh6yXYUt0ea9j6BB4wlKZdlh+jDMK+6koj9P0nCsrh9FnfyaTS8nSpGuN9jP7q1Zq/pZLjOrts
+ ZS/lkPDw==;
+Received: from mail-lj1-x229.google.com ([2a00:1450:4864:20::229])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lYSKp-00BJnk-4v
- for linux-mtd@lists.infradead.org; Mon, 19 Apr 2021 11:45:03 +0000
-Received: by mail-lf1-x133.google.com with SMTP id j4so15934518lfp.0
- for <linux-mtd@lists.infradead.org>; Mon, 19 Apr 2021 04:44:57 -0700 (PDT)
+ id 1lYSNv-00BK2e-2I
+ for linux-mtd@lists.infradead.org; Mon, 19 Apr 2021 11:48:14 +0000
+Received: by mail-lj1-x229.google.com with SMTP id a36so28137454ljq.8
+ for <linux-mtd@lists.infradead.org>; Mon, 19 Apr 2021 04:48:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=SYX5gkZRjrpsYOJbGnnG3O3r7V3ElN39fbI1O5590C4=;
- b=oDi4SR3voPo7ojpx0lp1jkTilivWUwzVScFi4fTXHGS16Z1IzWY/MPoDHpMHvOmeM5
- e7Mhubg8asKk0kzAdG+WuCDd61QI5AeARPk1UhLj55U9Ian7+ZhMOxrXBT6lw0i1BQ2D
- tmzUlbMCWQJl0IYiRrFSFKHg+I8umdt4gE7MEp9FozMToLTgK0lMK8VpcQ/QtHY3lV+C
- mldhLJb27TdCnxVjfCTNGajKoi+HBaj3BGuORKvwgu8oWNpy8+96DE/+EEfwKeM2Ksl2
- vAjbSNaZQnLbfb3D2r5/q46zyxINb9DfvZHy5eYGqqrkyTh7egIoFypV3mQKubwoZf64
- nAMA==
+ :cc; bh=c8mJsm8GaeXtWDHzV27HcKcUv25VPqwek08DmDlzIxw=;
+ b=tHoOzB6NaHlEnYW+ajgF3xH48ZC2DKpJILsLJje/ufBw5g/xvnw7rfP4Y5YWk0T4j1
+ UCR1uq/+1q1Uwhls+qh56NxAwZnljZOkJeF5zpwnS+qs4nNhrsMh+uJx4bZhwjV2JVct
+ Ix3SM05Ix2lSyjVPB/FAsXwG4WKjP1tQ4MlSvZdxfQCuGTKCCoqVgzMHQOaUYthoOV0k
+ OnKQAc2RvOo9e91miON8GRGYH/F8vZ+RcyKt+2X7rBmBpDO155oY48udoPZU558zasB8
+ X76Q0M/5pmr+iWdIF3hkwXG8zOYJVv9StXEPkBZZmHUXncYItNSgznJFcB+nHbrsuGE1
+ GwVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=SYX5gkZRjrpsYOJbGnnG3O3r7V3ElN39fbI1O5590C4=;
- b=tE9qniBvVucprS5i1mPUy4YRRNh9G39Bc4upn0jQuTTWhd8+hejO2LA52hMsrwwniY
- meiGsEKrkibg/FqxiArFXvUIYtq4071AXzdXRc66m4wAORHYhb7laNZCfpA3f/3Rdb8g
- N5TvYeWZHmQWx8Hg5dOQpOkCITC3BdxaDK+9zdN+qLP0xJsj+nynM3fSZ2o/oWe1P8We
- JjQSJAH/NkzmcBVOK7jX80VZeWk4FIoT1bbU4BUB2GD788lhX2dS4gPKTH7HxshAHYK+
- bqA8o1bbHu6Yfhn1WND3sFM7Xy2Dkkxc7kehKLKtkA0v/OrNu65gzqDpF+fNkFtItmyq
- 3JqA==
-X-Gm-Message-State: AOAM533JII2wr4CqGGydIsA5/2iw02ZRnZfUU2rZkVt61McY0X2vwN4Z
- DnvlB19eYr6fIe6MgeeTavYipQPavZ2ezLXL7lY=
-X-Google-Smtp-Source: ABdhPJx2b4DvT968JawvAVnMpZvHXfo27WMpcg2WBwXXKNAVcPnAVKjQKpTa7taBed6DNQIzc2N152fsy6bf9gtUYWs=
-X-Received: by 2002:a05:6512:1050:: with SMTP id
- c16mr12926964lfb.295.1618832696557; 
- Mon, 19 Apr 2021 04:44:56 -0700 (PDT)
+ bh=c8mJsm8GaeXtWDHzV27HcKcUv25VPqwek08DmDlzIxw=;
+ b=Ld1daLpJxATE6Rv3ZPSvI6l8slcyN1htbutpw+23LrB7rRyN0D7OPsgPemT3kcX6Bb
+ 4R+WcpI2FgBFMFK+I4yFCx1+U7CPiC0QKSjdjXfOedZj/v/HKaZOYXtkyxKb+2tMQzPw
+ sfnx2nhuSXOHpGltl6MIVt9Ti+JrWagFmeWZ2cGobxyoMpFB9e8UHLgA5eHgDwy3OVoh
+ uk9l9f3r5xWdGD2+xI6KG361ors+bIGcwiswCcVOZ1MBC8c1f6V26+GBYtrIW/lQ7u/u
+ Q465lMXTIVaYsdIe1ozNsasz28wNYQL0SgxVgr9Txl9Nm5vKpteTXjOCchmJmUqq0j54
+ oUqA==
+X-Gm-Message-State: AOAM531pEvOtThCMmwJWmzaTzug0PgzOReRsDzplwD8sRwMet/KGxNA4
+ 8o8bZXxHs0V31vrC6P/HsdWS9h+prnREfV4MY0Q=
+X-Google-Smtp-Source: ABdhPJwiSsYcOu1Lx9fAJJrv8h2Q/uqtt7Xs+q/QkxqQvpEi7Z6UmihENIWXaFW3a5x8ZSLkSZ5c2hVoKPgNDGer0ng=
+X-Received: by 2002:a2e:88c6:: with SMTP id a6mr9876907ljk.116.1618832888199; 
+ Mon, 19 Apr 2021 04:48:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <a066668f-852e-b3fe-0e91-23f0187d6c20@geanix.com>
- <20210419093244.1f27cb48@xps13>
- <f82932ce-ef3d-519b-c9db-2f49b81f8a22@geanix.com>
-In-Reply-To: <f82932ce-ef3d-519b-c9db-2f49b81f8a22@geanix.com>
+References: <CAOMZO5DufVR=+EzCa1-MPUc+ZefZVTXb5Kgu3Wxms7cxw9GmGg@mail.gmail.com>
+ <20210419083738.07a28a20@xps13>
+In-Reply-To: <20210419083738.07a28a20@xps13>
 From: Fabio Estevam <festevam@gmail.com>
-Date: Mon, 19 Apr 2021 08:44:44 -0300
-Message-ID: <CAOMZO5B=VBfjo2+vYq4HjT8USUdnvf3Gi3hjz1+_gWA1w3meEw@mail.gmail.com>
-Subject: Re: gpmi-nand ecc
-To: Sean Nyekjaer <sean@geanix.com>, Ye Li <ye.li@nxp.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-mtd <linux-mtd@lists.infradead.org>, 
- U-Boot-Denx <u-boot@lists.denx.de>
+Date: Mon, 19 Apr 2021 08:47:56 -0300
+Message-ID: <CAOMZO5CpzojN1U9HfSA8Vi8uEzrn=0cqo4tMd_qi52F0Q6kObg@mail.gmail.com>
+Subject: Re: imx27: No space left to write bad block table
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc: Sascha Hauer <kernel@pengutronix.de>,
+ linux-mtd <linux-mtd@lists.infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210419_044459_230358_122BA2BC 
-X-CRM114-Status: GOOD (  29.10  )
+X-CRM114-CacheID: sfid-20210419_044811_129920_6E65B8BE 
+X-CRM114-Status: GOOD (  24.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,72 +108,78 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Adding Ye Li as the author of such commit.
+Hi Miquel,
 
-On Mon, Apr 19, 2021 at 6:34 AM Sean Nyekjaer <sean@geanix.com> wrote:
+On Mon, Apr 19, 2021 at 3:37 AM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 >
+> Hi Fabio,
 >
+> Fabio Estevam <festevam@gmail.com> wrote on Sat, 17 Apr 2021 12:59:22
+> -0300:
 >
-> On 19/04/2021 09.32, Miquel Raynal wrote:
-> > Hi Sean,
+> > Hi,
 > >
-> > + u-boot ML
+> > I noticed this error recently on a imx27-phytec-phycard-s-rdk reported
+> > on kernelci:
 > >
-> > Sean Nyekjaer <sean@geanix.com> wrote on Wed, 14 Apr 2021 15:13:39
-> > +0200:
+> > nand: device found, Manufacturer ID: 0x20, Chip ID: 0xa1
+> > nand: ST Micro NAND01GR3B2CZA6
+> > nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+> > Bad block table not found for chip 0
+> > Bad block table not found for chip 0
+> > Scanning device for bad blocks
+> > random: fast init done
+> > Bad eraseblock 329 at 0x000002920000
+> > Bad eraseblock 330 at 0x000002940000
+> > Bad eraseblock 331 at 0x000002960000
+> > Bad eraseblock 332 at 0x000002980000
+> > Bad eraseblock 333 at 0x0000029a0000
+> > Bad eraseblock 334 at 0x0000029c0000
+> > Bad eraseblock 335 at 0x0000029e0000
+> > Bad eraseblock 336 at 0x000002a00000
+> > Bad eraseblock 337 at 0x000002a20000
+> > Bad eraseblock 338 at 0x000002a40000
+> > Bad eraseblock 339 at 0x000002a60000
+> > Bad eraseblock 340 at 0x000002a80000
+> > Bad eraseblock 341 at 0x000002aa0000
+> > Bad eraseblock 342 at 0x000002ac0000
+> > Bad eraseblock 343 at 0x000002ae0000
+> > Bad eraseblock 344 at 0x000002b00000
+> > Bad eraseblock 345 at 0x000002b20000
+> > Bad eraseblock 1020 at 0x000007f80000
+> > Bad eraseblock 1021 at 0x000007fa0000
+> > Bad eraseblock 1022 at 0x000007fc0000
+> > Bad eraseblock 1023 at 0x000007fe0000
+> > No space left to write bad block table
+> > nand_bbt: error while writing bad block table -28
+> > mxc_nand: probe of d8000000.nand-controller failed with error -28
 > >
-> >> Hi,
-> >>
-> >> I have two boards with a iMX6ULL SoC one attached to a Micron NAND flash (MT29F4G08ABAFAWP) and one a Toshiba (TC58BVG2S0HTAI0).
-> >>
-> >> After updating the boards from u-boot 2018.07 -> 2020.01, the Micron fitted boards is having ECC problems(in u-boot).
-> >> U-boot 2018.07 selects ecc_strength to 18.
-> >> U-boot 2020.01 selects ecc_strength to 8, but if I hardcode u-boot to run the mxs_nand_legacy_calc_ecc_layout() it selects 18 bits.
-> >>
-> >> The Toshiba boards always selects 8 bit ecc_strength so they have no issues.
-> >>
-> >> The kernel driver (gpmi-nand.c) seems to also use the legacy method (Resulting 18 bits in ecc strength for the Micron NAND).
-> >> In common_nfc_set_geometry(): Both chip->ecc.strength and chip->ecc.size are 0.
-> >>
-> >> I would expect ecc.strength to be set to 8, earlier but cannot find the spot where it should be set.
-> >> Is the gpmi-nand driver missing a call to nand_ecc_choose_conf()?
-> >> Maybe we need a legacy option for the kernel like u-boot.
-> >>
-> >> We have +10K boards deployed so it's not so easy to switch from 18 -> 8 bits.
-> >> I can explicit fix this in U-boot by forcing the legacy mode via a dt flag, but the gut feeling says this will come back to haunt us :)
-> >>
-> >> /Sean
-> > I honestly don't know about such issue on U-Boot side, maybe you can
-> > try to be more specific on what commit broke the logic for you as there
-> > are not so many of them between the two versions:
+> > Full log:
+> > https://storage.kernelci.org/next/master/next-20210416/arm/imx_v4_v5_defconfig/gcc-8/lab-pengutronix/baseline-imx27-phytec-phycard-s-rdk.html
 > >
-> > $ git l v2018.07..v2020.01 -- drivers/mtd/nand/raw/mxs_nand.c
-> > 1eb69ae4985 common: Move ARM cache operations out of common.h
-> > 9ab5f221a5e nand: mxs_nand: add API for switching different BCH layouts
-> > 1d43e24b946 i.MX6: nand: add nandbcb command for imx
-> > 1001502545f CONFIG_SPL_SYS_[DI]CACHE_OFF: add
-> > 04568bd0b6d MTD: nand: mxs_nand: Allow driver to auto setup ECC in SPL
-> > 5645df9e00a MTD: NAND: mxs_nand_init_dma: Make mxs_nand_init_dma static
-> > 5ae585ba3a8 MTD: mxs_nand: Fix BCH read timeout error on boards requiring ECC
-> > a430fa06a4a mtd: move NAND files into a raw/ subdirectory
+> > I don't have access to this board but just wanted to report it.
 >
-> Hi Miquel,
+> Thanks for the report!
 >
-> Thanks for CC'ing the u-boot list :)
->
-> commit 616f03dabacb6c500e8a7ceb920cd08554c9fcae
-> Author: Ye Li <ye.li@nxp.com>
-> Date:   Mon May 4 22:08:50 2020 +0800
->
->      mtd: gpmi: change the BCH layout setting for large oob NAND
->
-> This commit  ^^ introduced the legacy function that was the "primary"
-> before.
->
-> Guess we can say, that u-boot broke compatibility with the kernel.
-> I have fixed my setup by enabling the legacy option via dt, in u-boot.
->
-> /Sean
+> Indeed that's a misbehavior, this happens when *something* is not
+> happening correctly and the board boots over and over, each time
+> decrementing the block supposed to contain the BBT until there are none
+> available anymore. However I'm not sure this has been caused by a
+> recent issue as there have not been major changes in the core nor in
+> this driver since your last fix. Maybe this is a leftover of the
+> previous situation. Would this be possible? Do you have a mean to find
+> out the day/kernel version which started failing?
+
+I know it does not happen on master, only on linux-next.
+
+The oldest linux-next log I see listed for the
+imx27-phytec-phycard-s-rdk board that I see on kernelci is 20210401,
+which is also affected.
+
+Adding Guillaume in case kernelci could help to find the commit that
+causes the "No space left to write bad block table" message to appear.
+
+Thanks
 
 ______________________________________________________
 Linux MTD discussion mailing list
