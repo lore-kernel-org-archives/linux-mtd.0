@@ -2,77 +2,100 @@ Return-Path: <SRS0=PDg9=JQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0164BC433ED
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Apr 2021 12:27:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C743DC433B4
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Apr 2021 12:41:55 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 63A28611F0
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Apr 2021 12:27:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 63A28611F0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4150061003
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Apr 2021 12:41:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4150061003
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:
+	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=5AdSQpCVEdtXTyFEFR2HfYfSoGrxed1XnTpNG0rzQ4Q=; b=UYKhwxrAtKCL0u3H8eIn0YsEA
-	i2A4jpBsImeS0Ydo7EoOQ6KwonqaQO1wvpwGiox7/tlCSPPFTXjiTOj6/FQKnXMXhDYa82h7+G6kI
-	4LD1MwCvyn3bG0NuWkHe44n357lCCDbYfZTUoKhdgcKoz0hMnZ93AztLOsEeat6BJEJ7elpzmOgOY
-	Zs2X7sRcdJU8zMYnOl0VyktLfklxIoxHkafIDOXzS0BU2uothO5FPE4Ip2v0Zx0XzCJcMODOMQIK+
-	3iNH52IMvmQUkPL0g1c4EvzAdV08ZI9bJpvaLJuIbMcS+dkAnSPh3IIvioudr3PkSZ7mWoXXFhv4Z
-	t4hhR9XOw==;
+	 bh=RJc+afLoL9BxG5ebcF4yoShZzaCSSjE7fH2qSOgzgTE=; b=bXI7p6Zb9ihmCxpPUoy6CGNa8
+	uaC6uGrGmEGhjRzwT3kNANVhzNYYnducMOiseotMYZWzs4+FJJncp3fKfKTXmmVMSo+9m6yVwwRRa
+	kxuPGB8nJ3AkpIS1YTExUs/7Hgr0ICkfdc3Nb9cf6VqdwGIORNoXFq8/UNfWxsL5dphaCeJLpjmny
+	CNv2/eIXHx+5TpiC6q++EoRZ4yLjcYKtvRrk2d/K4EHUxpmNIgliyDHPQ4r3YQd+NJqfJ7xhQo3Ts
+	CUyJ0+8apT/zngLlhxIic+PNijosjrFDvC0yYVeXZHQ327uZdk9U0SSipa8Mq1ibeTV/5L5xqKo0/
+	DGuAxjwAw==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lYSzr-009r63-59; Mon, 19 Apr 2021 12:27:23 +0000
+	id 1lYTDM-009sAm-IU; Mon, 19 Apr 2021 12:41:20 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lYSzo-009r5v-66
- for linux-mtd@desiato.infradead.org; Mon, 19 Apr 2021 12:27:20 +0000
+ id 1lYTDK-009sAd-A3
+ for linux-mtd@desiato.infradead.org; Mon, 19 Apr 2021 12:41:18 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
- Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
- From:Date:Sender:Reply-To:Content-ID:Content-Description;
- bh=6eT7x173rNb8RfzjQjy2XghcgnH/RudCQI3afRxPqH8=; b=LgZP3N58Hzsq4x7yN3KJOeYzBS
- jhk9JEBS+a1Ox6nH1BuT1tuDJhoy5H+XgNmBPRGJFSudP3dCsA0xVPNjj4qVAWPmzsASu/JA8+Sjy
- cnnH1tlOjs7qFkHHuMQqNpm3uVaA0inZLvdPEemJ6I59a06i9CkW5m+4zmSih71LC2Af+YP4yKE9e
- yZm4hAJOKYgQUSQ0uJmm4s+EQ7gZYyu8rCc2H50kQ1zLJ2zamIcEBbXGI/a4QtwhhU8MhT4yJUwgy
- Pa8IvUcaX4zQpCLTV9V9bbooSMiccmRYUmcx2pZXELGHcvOnDMBp/BxHSnW3ouQ1dSz+sUaAW4O55
- F19hRxCA==;
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+ d=infradead.org; s=bombadil.20210309; h=Content-Type:Cc:To:Subject:Message-ID
+ :Date:From:In-Reply-To:References:MIME-Version:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description;
+ bh=p/HWSWWoTTPHevw2L6cq7eVaLH/qmZtDMWKo5gA5XUU=; b=3W8Brq72A1+b74UrZZFtQHb3GL
+ 27mYOmL8Xn8/U0DRjCOhYoxoxKWGqHFT053BdGEddUpZMjD+Wt7KoYAuNkS4bze2R5kugKNX7L7nv
+ kZSQmkyl8f5rpuhPRkGQKRhQUFbDODlm+weDFDuJnPVC7vXNY19DpEgNf3annJ8GQDi2VpZax+bZB
+ 7mi0H/mFYBlsEowI5lBaTzJKBQ0A+VwFH/Wk+TFGAmE0IP1C1VSNBQ9SgQwZr/DmyGdLrKWM7RFUh
+ AH5fC3brnBLlEgXyiNgIOY1o01wK7nytnrCqJmOevZOAr9/w+5esRYIN/PpXJjbIY8QXL0VrZM6L8
+ cuJQZfPQ==;
+Received: from mail-lf1-x134.google.com ([2a00:1450:4864:20::134])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lYSzk-00BLra-L5
- for linux-mtd@lists.infradead.org; Mon, 19 Apr 2021 12:27:18 +0000
-X-Originating-IP: 92.184.110.210
-Received: from xps13 (pop.92-184-110-210.mobile.abo.orange.fr [92.184.110.210])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id D699F1BF20C;
- Mon, 19 Apr 2021 12:27:09 +0000 (UTC)
-Date: Mon, 19 Apr 2021 14:27:08 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Guillaume Tucker <guillaume.tucker@collabora.com>, Sascha Hauer
- <kernel@pengutronix.de>, linux-mtd <linux-mtd@lists.infradead.org>, Stefan
- Riedmueller <s.riedmueller@phytec.de>
-Subject: Re: imx27: No space left to write bad block table
-Message-ID: <20210419135833.3ee22f58@xps13>
-In-Reply-To: <CAOMZO5CpzojN1U9HfSA8Vi8uEzrn=0cqo4tMd_qi52F0Q6kObg@mail.gmail.com>
+ id 1lYTDF-00BMPP-7E
+ for linux-mtd@lists.infradead.org; Mon, 19 Apr 2021 12:41:17 +0000
+Received: by mail-lf1-x134.google.com with SMTP id j18so55751053lfg.5
+ for <linux-mtd@lists.infradead.org>; Mon, 19 Apr 2021 05:41:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=p/HWSWWoTTPHevw2L6cq7eVaLH/qmZtDMWKo5gA5XUU=;
+ b=tXbQ8r18e9ZyCNfArxHRgnI4urGuTeI/hNZYvNx6TOffYgKQu5bu4oaAu+Dymksffu
+ FgftLknwUB7XNzXbretiaIPwWAOg9NNmfkOIgv3otD8kWrAgDqIsi+gvqlmAtyYuYvy1
+ gEdzU0EznjCl7g+NLxm2cYo1LrmLBtIILFXPbqqijmpd4J2CCve/l9+9WOwzT3+pqWfO
+ pFuGi+SVEAd/37DLrQhOmpga60ux1QvY8JwjeJ0cIzWdQIGt52GG3ST6zBYJuaAh7cdK
+ 37eDiAQks2SoNcNnMYK2pjsQVvTAm0eS7CYlpY7C+QpMb3YO/+A6KB0X886a1nHJ8C4o
+ f0fQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=p/HWSWWoTTPHevw2L6cq7eVaLH/qmZtDMWKo5gA5XUU=;
+ b=bvI3rGEPxBcOGLgDvBtnuH6Cc/Oae3okaEGru4IbEOGbPiSjgHrJNbXVDKK+zXuBgN
+ /FQSgfcTL8xn1upRkq88HMV85ktpgHwZNLaN20cOMppYeTDd31J0vQsrJtfEGVAQswml
+ GWXSwAylU0dazyHgUYWcr8ogYLHjR8rBzH2vc+RRdfjoCZ21R5hSqskH1QkDU2YkRlOi
+ LMkiJyfj4qlK9WWeNFT6qWzRG7aAKxpzIGHe8o5qbOcegjfpMw5Lp/ukN6jxvvYsBw0P
+ 59LbN6TKuMGNbmeL3P+noQQJTSJPD5Vtt5aVO6TK0An8GEuE+6KEWTijr6uOaLMj+C/u
+ IsLA==
+X-Gm-Message-State: AOAM533p3qEPELg03rkvzeh7iP3A0gwlw+TNrhL5KICw5orxoI7TSMZB
+ FgElrT0gCGL5VG3pDh7Tt821yC06esIEHNzxd7M=
+X-Google-Smtp-Source: ABdhPJw+lLNU71Li+Ai77Nrl0ej2RZ5MkPEn9XmgbDXVvr/H5pUDUyWFDj7xXUnURI+32wiRC6QrsSKISfPaSN7yAtw=
+X-Received: by 2002:a19:50d:: with SMTP id 13mr11673676lff.443.1618836071602; 
+ Mon, 19 Apr 2021 05:41:11 -0700 (PDT)
+MIME-Version: 1.0
 References: <CAOMZO5DufVR=+EzCa1-MPUc+ZefZVTXb5Kgu3Wxms7cxw9GmGg@mail.gmail.com>
  <20210419083738.07a28a20@xps13>
  <CAOMZO5CpzojN1U9HfSA8Vi8uEzrn=0cqo4tMd_qi52F0Q6kObg@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+ <20210419135833.3ee22f58@xps13>
+In-Reply-To: <20210419135833.3ee22f58@xps13>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Mon, 19 Apr 2021 09:41:00 -0300
+Message-ID: <CAOMZO5CS03F9dDeaUus4WRBv9z_1svx7BqHM=b6PkxeUthGdzQ@mail.gmail.com>
+Subject: Re: imx27: No space left to write bad block table
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Guillaume Tucker <guillaume.tucker@collabora.com>,
+ Sascha Hauer <kernel@pengutronix.de>, 
+ linux-mtd <linux-mtd@lists.infradead.org>, 
+ Stefan Riedmueller <s.riedmueller@phytec.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210419_052716_985222_6B20F79E 
-X-CRM114-Status: GOOD (  33.67  )
+X-CRM114-CacheID: sfid-20210419_054113_283826_6EA70784 
+X-CRM114-Status: GOOD (  12.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,104 +107,44 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgRmFiaW8sIEd1aWxsYXVtZSwKCitTdGVwaGFuCgpGYWJpbyBFc3RldmFtIDxmZXN0ZXZhbUBn
-bWFpbC5jb20+IHdyb3RlIG9uIE1vbiwgMTkgQXByIDIwMjEgMDg6NDc6NTYKLTAzMDA6Cgo+IEhp
-IE1pcXVlbCwKPiAKPiBPbiBNb24sIEFwciAxOSwgMjAyMSBhdCAzOjM3IEFNIE1pcXVlbCBSYXlu
-YWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+IHdyb3RlOgo+ID4KPiA+IEhpIEZhYmlvLAo+
-ID4KPiA+IEZhYmlvIEVzdGV2YW0gPGZlc3RldmFtQGdtYWlsLmNvbT4gd3JvdGUgb24gU2F0LCAx
-NyBBcHIgMjAyMSAxMjo1OToyMgo+ID4gLTAzMDA6Cj4gPiAgCj4gPiA+IEhpLAo+ID4gPgo+ID4g
-PiBJIG5vdGljZWQgdGhpcyBlcnJvciByZWNlbnRseSBvbiBhIGlteDI3LXBoeXRlYy1waHljYXJk
-LXMtcmRrIHJlcG9ydGVkCj4gPiA+IG9uIGtlcm5lbGNpOgo+ID4gPgo+ID4gPiBuYW5kOiBkZXZp
-Y2UgZm91bmQsIE1hbnVmYWN0dXJlciBJRDogMHgyMCwgQ2hpcCBJRDogMHhhMQo+ID4gPiBuYW5k
-OiBTVCBNaWNybyBOQU5EMDFHUjNCMkNaQTYKPiA+ID4gbmFuZDogMTI4IE1pQiwgU0xDLCBlcmFz
-ZSBzaXplOiAxMjggS2lCLCBwYWdlIHNpemU6IDIwNDgsIE9PQiBzaXplOiA2NAo+ID4gPiBCYWQg
-YmxvY2sgdGFibGUgbm90IGZvdW5kIGZvciBjaGlwIDAKPiA+ID4gQmFkIGJsb2NrIHRhYmxlIG5v
-dCBmb3VuZCBmb3IgY2hpcCAwCj4gPiA+IFNjYW5uaW5nIGRldmljZSBmb3IgYmFkIGJsb2Nrcwo+
-ID4gPiByYW5kb206IGZhc3QgaW5pdCBkb25lCj4gPiA+IEJhZCBlcmFzZWJsb2NrIDMyOSBhdCAw
-eDAwMDAwMjkyMDAwMAo+ID4gPiBCYWQgZXJhc2VibG9jayAzMzAgYXQgMHgwMDAwMDI5NDAwMDAK
-PiA+ID4gQmFkIGVyYXNlYmxvY2sgMzMxIGF0IDB4MDAwMDAyOTYwMDAwCj4gPiA+IEJhZCBlcmFz
-ZWJsb2NrIDMzMiBhdCAweDAwMDAwMjk4MDAwMAo+ID4gPiBCYWQgZXJhc2VibG9jayAzMzMgYXQg
-MHgwMDAwMDI5YTAwMDAKPiA+ID4gQmFkIGVyYXNlYmxvY2sgMzM0IGF0IDB4MDAwMDAyOWMwMDAw
-Cj4gPiA+IEJhZCBlcmFzZWJsb2NrIDMzNSBhdCAweDAwMDAwMjllMDAwMAo+ID4gPiBCYWQgZXJh
-c2VibG9jayAzMzYgYXQgMHgwMDAwMDJhMDAwMDAKPiA+ID4gQmFkIGVyYXNlYmxvY2sgMzM3IGF0
-IDB4MDAwMDAyYTIwMDAwCj4gPiA+IEJhZCBlcmFzZWJsb2NrIDMzOCBhdCAweDAwMDAwMmE0MDAw
-MAo+ID4gPiBCYWQgZXJhc2VibG9jayAzMzkgYXQgMHgwMDAwMDJhNjAwMDAKPiA+ID4gQmFkIGVy
-YXNlYmxvY2sgMzQwIGF0IDB4MDAwMDAyYTgwMDAwCj4gPiA+IEJhZCBlcmFzZWJsb2NrIDM0MSBh
-dCAweDAwMDAwMmFhMDAwMAo+ID4gPiBCYWQgZXJhc2VibG9jayAzNDIgYXQgMHgwMDAwMDJhYzAw
-MDAKPiA+ID4gQmFkIGVyYXNlYmxvY2sgMzQzIGF0IDB4MDAwMDAyYWUwMDAwCj4gPiA+IEJhZCBl
-cmFzZWJsb2NrIDM0NCBhdCAweDAwMDAwMmIwMDAwMAo+ID4gPiBCYWQgZXJhc2VibG9jayAzNDUg
-YXQgMHgwMDAwMDJiMjAwMDAKPiA+ID4gQmFkIGVyYXNlYmxvY2sgMTAyMCBhdCAweDAwMDAwN2Y4
-MDAwMAo+ID4gPiBCYWQgZXJhc2VibG9jayAxMDIxIGF0IDB4MDAwMDA3ZmEwMDAwCj4gPiA+IEJh
-ZCBlcmFzZWJsb2NrIDEwMjIgYXQgMHgwMDAwMDdmYzAwMDAKPiA+ID4gQmFkIGVyYXNlYmxvY2sg
-MTAyMyBhdCAweDAwMDAwN2ZlMDAwMAo+ID4gPiBObyBzcGFjZSBsZWZ0IHRvIHdyaXRlIGJhZCBi
-bG9jayB0YWJsZQo+ID4gPiBuYW5kX2JidDogZXJyb3Igd2hpbGUgd3JpdGluZyBiYWQgYmxvY2sg
-dGFibGUgLTI4Cj4gPiA+IG14Y19uYW5kOiBwcm9iZSBvZiBkODAwMDAwMC5uYW5kLWNvbnRyb2xs
-ZXIgZmFpbGVkIHdpdGggZXJyb3IgLTI4Cj4gPiA+Cj4gPiA+IEZ1bGwgbG9nOgo+ID4gPiBodHRw
-czovL3N0b3JhZ2Uua2VybmVsY2kub3JnL25leHQvbWFzdGVyL25leHQtMjAyMTA0MTYvYXJtL2lt
-eF92NF92NV9kZWZjb25maWcvZ2NjLTgvbGFiLXBlbmd1dHJvbml4L2Jhc2VsaW5lLWlteDI3LXBo
-eXRlYy1waHljYXJkLXMtcmRrLmh0bWwKPiA+ID4KPiA+ID4gSSBkb24ndCBoYXZlIGFjY2VzcyB0
-byB0aGlzIGJvYXJkIGJ1dCBqdXN0IHdhbnRlZCB0byByZXBvcnQgaXQuICAKPiA+Cj4gPiBUaGFu
-a3MgZm9yIHRoZSByZXBvcnQhCj4gPgo+ID4gSW5kZWVkIHRoYXQncyBhIG1pc2JlaGF2aW9yLCB0
-aGlzIGhhcHBlbnMgd2hlbiAqc29tZXRoaW5nKiBpcyBub3QKPiA+IGhhcHBlbmluZyBjb3JyZWN0
-bHkgYW5kIHRoZSBib2FyZCBib290cyBvdmVyIGFuZCBvdmVyLCBlYWNoIHRpbWUKPiA+IGRlY3Jl
-bWVudGluZyB0aGUgYmxvY2sgc3VwcG9zZWQgdG8gY29udGFpbiB0aGUgQkJUIHVudGlsIHRoZXJl
-IGFyZSBub25lCj4gPiBhdmFpbGFibGUgYW55bW9yZS4gSG93ZXZlciBJJ20gbm90IHN1cmUgdGhp
-cyBoYXMgYmVlbiBjYXVzZWQgYnkgYQo+ID4gcmVjZW50IGlzc3VlIGFzIHRoZXJlIGhhdmUgbm90
-IGJlZW4gbWFqb3IgY2hhbmdlcyBpbiB0aGUgY29yZSBub3IgaW4KPiA+IHRoaXMgZHJpdmVyIHNp
-bmNlIHlvdXIgbGFzdCBmaXguIE1heWJlIHRoaXMgaXMgYSBsZWZ0b3ZlciBvZiB0aGUKPiA+IHBy
-ZXZpb3VzIHNpdHVhdGlvbi4gV291bGQgdGhpcyBiZSBwb3NzaWJsZT8gRG8geW91IGhhdmUgYSBt
-ZWFuIHRvIGZpbmQKPiA+IG91dCB0aGUgZGF5L2tlcm5lbCB2ZXJzaW9uIHdoaWNoIHN0YXJ0ZWQg
-ZmFpbGluZz8gIAo+IAo+IEkga25vdyBpdCBkb2VzIG5vdCBoYXBwZW4gb24gbWFzdGVyLCBvbmx5
-IG9uIGxpbnV4LW5leHQuCj4gCj4gVGhlIG9sZGVzdCBsaW51eC1uZXh0IGxvZyBJIHNlZSBsaXN0
-ZWQgZm9yIHRoZQo+IGlteDI3LXBoeXRlYy1waHljYXJkLXMtcmRrIGJvYXJkIHRoYXQgSSBzZWUg
-b24ga2VybmVsY2kgaXMgMjAyMTA0MDEsCj4gd2hpY2ggaXMgYWxzbyBhZmZlY3RlZC4KPiAKPiBB
-ZGRpbmcgR3VpbGxhdW1lIGluIGNhc2Uga2VybmVsY2kgY291bGQgaGVscCB0byBmaW5kIHRoZSBj
-b21taXQgdGhhdAo+IGNhdXNlcyB0aGUgIk5vIHNwYWNlIGxlZnQgdG8gd3JpdGUgYmFkIGJsb2Nr
-IHRhYmxlIiBtZXNzYWdlIHRvIGFwcGVhci4KCkludGVyZXN0aW5nLiBNYXliZSBJIG92ZXJsb29r
-ZWQgdGhlIGJlbG93IGNvbW1pdCB3aGVuIGFwcGx5aW5nLiBJbmRlZWQsCkJCVCBtYXkgYmUgY29u
-c2lkZXJlZCBhcyBiYWQgYmxvY2tzLCBzbyBJIHdvbmRlciBpZiB0aGUgYmVsb3cgY2hhbmdlIGlz
-CnZhbGlkIG5vdy4uLgoKR3VpbGxhdW1lLCB3b3VsZCB5b3UgaGF2ZSBhIHdheSB0byByZXZlcnQg
-dGhpcyBwYXRjaCBvbiB0b3Agb2YKbGludXgtbmV4dD8gU3RlZmFuLCB3b3VsZCB5b3UgbWluZCBn
-aXZpbmcgbW9yZSBkZXRhaWxzIG9uIHRoZSB0ZXN0aW5nCnByb2NlZHVyZT8KCi0tLTg8LS0tCgpj
-b21taXQgYmQ5YzlmZTJhZDA0NTQ2OTQwZjRhOTk3OWQ2NzllNjJjYWU2YWE1MQpBdXRob3I6IFN0
-ZWZhbiBSaWVkbXVlbGxlciA8cy5yaWVkbXVlbGxlckBwaHl0ZWMuZGU+CkRhdGU6ICAgVGh1IE1h
-ciAyNSAxMToyMzozNyAyMDIxICswMTAwCgogICAgbXRkOiByYXduYW5kOiBiYnQ6IFNraXAgYmFk
-IGJsb2NrcyB3aGVuIHNlYXJjaGluZyBmb3IgdGhlIEJCVCBpbiBOQU5ECiAgICAKICAgIFRoZSBi
-bG9ja3MgY29udGFpbmluZyB0aGUgYmFkIGJsb2NrIHRhYmxlIGNhbiBiZWNvbWUgYmFkIGFzIHdl
-bGwuIFNvCiAgICBtYWtlIHN1cmUgdG8gc2tpcCBhbnkgYmxvY2tzIHRoYXQgYXJlIG1hcmtlZCBi
-YWQgd2hlbiBzZWFyY2hpbmcgZm9yIHRoZQogICAgYmFkIGJsb2NrIHRhYmxlLgogICAgCiAgICBP
-dGhlcndpc2UgaW4gdmVyeSByYXJlIGNhc2VzIHdoZXJlIHR3byBCQlQgYmxvY2tzIHdlYXIgb3V0
-IGl0IG1pZ2h0CiAgICBoYXBwZW4gdGhhdCBhbiBvYnNvbGV0ZSBCQlQgaXMgdXNlZCBpbnN0ZWFk
-IG9mIGEgbmV3ZXIgYXZhaWxhYmxlCiAgICB2ZXJzaW9uLgogICAgCiAgICBTaWduZWQtb2ZmLWJ5
-OiBTdGVmYW4gUmllZG11ZWxsZXIgPHMucmllZG11ZWxsZXJAcGh5dGVjLmRlPgogICAgU2lnbmVk
-LW9mZi1ieTogTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4KICAgIExp
-bms6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LW10ZC8yMDIxMDMyNTEwMjMzNy40ODEx
-NzItMS1zLnJpZWRtdWVsbGVyQHBoeXRlYy5kZQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25h
-bmQvcmF3L25hbmRfYmJ0LmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2JidC5jCmluZGV4
-IGRjZWQzMmExMjZkOS4uNmUyNWE1Y2U1YmE5IDEwMDY0NAotLS0gYS9kcml2ZXJzL210ZC9uYW5k
-L3Jhdy9uYW5kX2JidC5jCisrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfYmJ0LmMKQEAg
-LTUyNSw2ICs1MjUsNyBAQCBzdGF0aWMgaW50IHNlYXJjaF9iYnQoc3RydWN0IG5hbmRfY2hpcCAq
-dGhpcywgdWludDhfdCAqYnVmLAogewogICAgICAgIHU2NCB0YXJnZXRzaXplID0gbmFuZGRldl90
-YXJnZXRfc2l6ZSgmdGhpcy0+YmFzZSk7CiAgICAgICAgc3RydWN0IG10ZF9pbmZvICptdGQgPSBu
-YW5kX3RvX210ZCh0aGlzKTsKKyAgICAgICBzdHJ1Y3QgbmFuZF9iYnRfZGVzY3IgKmJkID0gdGhp
-cy0+YmFkYmxvY2tfcGF0dGVybjsKICAgICAgICBpbnQgaSwgY2hpcHM7CiAgICAgICAgaW50IHN0
-YXJ0YmxvY2ssIGJsb2NrLCBkaXI7CiAgICAgICAgaW50IHNjYW5sZW4gPSBtdGQtPndyaXRlc2l6
-ZSArIG10ZC0+b29ic2l6ZTsKQEAgLTU2MCw2ICs1NjEsMTAgQEAgc3RhdGljIGludCBzZWFyY2hf
-YmJ0KHN0cnVjdCBuYW5kX2NoaXAgKnRoaXMsIHVpbnQ4X3QgKmJ1ZiwKICAgICAgICAgICAgICAg
-ICAgICAgICAgaW50IGFjdGJsb2NrID0gc3RhcnRibG9jayArIGRpciAqIGJsb2NrOwogICAgICAg
-ICAgICAgICAgICAgICAgICBsb2ZmX3Qgb2ZmcyA9IChsb2ZmX3QpYWN0YmxvY2sgPDwgdGhpcy0+
-YmJ0X2VyYXNlX3NoaWZ0OwogCisgICAgICAgICAgICAgICAgICAgICAgIC8qIENoZWNrIGlmIGJs
-b2NrIGlzIG1hcmtlZCBiYWQgKi8KKyAgICAgICAgICAgICAgICAgICAgICAgaWYgKHNjYW5fYmxv
-Y2tfZmFzdCh0aGlzLCBiZCwgb2ZmcywgYnVmKSkKKyAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICBjb250aW51ZTsKKwogICAgICAgICAgICAgICAgICAgICAgICAvKiBSZWFkIGZpcnN0IHBh
-Z2UgKi8KICAgICAgICAgICAgICAgICAgICAgICAgc2Nhbl9yZWFkKHRoaXMsIGJ1Ziwgb2Zmcywg
-bXRkLT53cml0ZXNpemUsIHRkKTsKICAgICAgICAgICAgICAgICAgICAgICAgaWYgKCFjaGVja19w
-YXR0ZXJuKGJ1Ziwgc2NhbmxlbiwgbXRkLT53cml0ZXNpemUsIHRkKSkgewoKClRoYW5rcywKTWlx
-dcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hi Miquel,
+
+On Mon, Apr 19, 2021 at 9:27 AM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+
+> commit bd9c9fe2ad04546940f4a9979d679e62cae6aa51
+> Author: Stefan Riedmueller <s.riedmueller@phytec.de>
+> Date:   Thu Mar 25 11:23:37 2021 +0100
+>
+>     mtd: rawnand: bbt: Skip bad blocks when searching for the BBT in NAND
+>
+>     The blocks containing the bad block table can become bad as well. So
+>     make sure to skip any blocks that are marked bad when searching for the
+>     bad block table.
+>
+>     Otherwise in very rare cases where two BBT blocks wear out it might
+>     happen that an obsolete BBT is used instead of a newer available
+>     version.
+>
+>     Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+>     Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+>     Link: https://lore.kernel.org/linux-mtd/20210325102337.481172-1-s.riedmueller@phytec.de
+
+This commit landed in linux-next 20210329. I was able to find the
+kernelci log for this version and NAND is correctly probed:
+https://storage.kernelci.org/next/master/next-20210329/arm/imx_v4_v5_defconfig/gcc-8/lab-pengutronix/baseline-imx27-phytec-phycard-s-rdk.html
+
+The first NAND error starts with 20210330:
+https://storage.kernelci.org/next/master/next-20210330/arm/imx_v4_v5_defconfig/gcc-8/lab-pengutronix/baseline-imx27-phytec-phycard-s-rdk.html
+
+Regards,
+
+Fabio Estevam
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
