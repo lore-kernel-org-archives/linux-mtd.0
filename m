@@ -2,72 +2,116 @@ Return-Path: <SRS0=BLSt=JR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A19DC433B4
-	for <linux-mtd@archiver.kernel.org>; Tue, 20 Apr 2021 06:32:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB7B9C433B4
+	for <linux-mtd@archiver.kernel.org>; Tue, 20 Apr 2021 08:46:38 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 85E9B610CC
-	for <linux-mtd@archiver.kernel.org>; Tue, 20 Apr 2021 06:32:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 85E9B610CC
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
+	by mail.kernel.org (Postfix) with ESMTPS id 13DA560FEE
+	for <linux-mtd@archiver.kernel.org>; Tue, 20 Apr 2021 08:46:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 13DA560FEE
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
-	:Content-Type:MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:References:In-Reply-To:Message-Id:Date:Subject:Cc:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=dKSWLyDB6D9540jAmuAr2oZTg+WPMByaONb4BZpooqQ=; b=Nf3EUp1emvFkIfHecXeHZ5yS7x
-	+kGaSFKM9dYKVzieFp/Aw/oyyox6fOACI98hCYICZPuMB7vUNG9xc4fNZ94jZlVX/9Nnt/U/XDTtd
-	+EnRHa68PMY9AJYJyHBA5zpFQ/GmRW1HPb7CuT8NhMBq2PDoKK4xW5fSDnJNp6Uhet0PKOBRQavAF
-	gMaXABUoDhrxlMSV9QmcmnJ6IwzWJfA9W9+f85fR1qGLHNXzzWu+Rykk0o44O2SbiculJsrjwCe7+
-	s9PkY17ATLlJJyvIC82S5G0tGGlVmggxEv+bdm/0J7LLq+Cvwz7PRRiVDP1D/V3ZpuOerjUJfGcVg
-	cyiWvoNg==;
+	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=TTVyYf6zWjDU4uNKLouGqjWecLTag8wWIKnz9xxivJM=; b=CPEwgcmX3SJskuwqMzi/bOuGfx
+	gECkUhdNKeZtO3TBzRfEUx9SK8Cx73GHttTDpN5TF3CCfbD0VH498cjQuahuBgcUnb1D1Tm4NezIt
+	clX1vo92jqtZP3dn8JSE5IjEH25G7mJWJ5YdwLTA92Fs4Hy+7PMiV7nuQ8ViNBpCYXc98hBXxj+Kd
+	hfJ+4TKyfQkrvdNc0e/rYOFx2ScCiYzO83fmLorM8RrkMyIWHxqFJ0VgK5vTkGvxA6tX2KwZrb6v9
+	H/2DtzZ5nIh6sxe7K/QYciPC9OF7hHEJ1PEUYLosNjv65lvRQAXTLlJoeHuPPmkZiJDOJ/ogjXs79
+	VsB87pzg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lYjvi-00BMaJ-DU; Tue, 20 Apr 2021 06:32:14 +0000
+	id 1lYm0f-00Bcl3-3w; Tue, 20 Apr 2021 08:45:29 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lYjuW-00BMGY-JQ
- for linux-mtd@desiato.infradead.org; Tue, 20 Apr 2021 06:31:00 +0000
+ id 1lYm0b-00Bcjj-V8
+ for linux-mtd@desiato.infradead.org; Tue, 20 Apr 2021 08:45:26 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=References:In-Reply-To:Message-Id:
- Date:Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=zvruZHn2zmJSpkiHgXkR8SUNBMHY/XbIljGK8dNgW88=; b=IWHiJOBLX3zGwrlTb5fUoXhgxr
- s34mR0Y1R1AtsZdnR+zP0RdpYRdGqJ9BsqksT6lMsu3xdCyhlzbXTRE/9oTwZjf3xAwRYJtjC97CE
- 28HD9lCRQDMQqV4J44tQHMyOlknoJN4rY5GPvPKxHyWWcIzvls8mr/8T1LD5ThFhhHVmWBguR9wm7
- v0i8GC9KG2DDmFxljEwJ5/TX9dI0YFkPpYK433f708iyndXhst+3FNvkz0tsraEna127Y1s791I4b
- 7EQGudrDB4+g5PUz/O63/+D7tJORayp7Gfn/yX2rJ3woWzOvo7nyMKH7iC4w9uzZk043h5OWvFDI9
- eaUofkzg==;
-Received: from twhmllg3.macronix.com ([122.147.135.201])
+ d=infradead.org; s=bombadil.20210309; h=Content-Type:MIME-Version:Message-ID:
+ Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+ Content-Description:In-Reply-To:References;
+ bh=lRi5+pXSkvGHuYVuTVlpgKCbheDLoFERK+hwvLGTTm4=; b=r4m4VyNqmdLAfBcAwO8o51SYJw
+ kH/DWeo1TEuGRWYCSy+Gh0TqqeZy1zAPNagi9AD6FhyuPuq5GfLO0DNhAzVaKAPINaE79V/VGpOJK
+ sIau0AAdFkI/KzZyaQlhVyqC+9ryBXcag34KXh1CbJpfr3JfIBuX4lxgPxArlwtNlGb3T8xa8Byup
+ asEGXKOE+W+yD2GrOFa+B2TuFfxZ6QJ+fmirnl7YkMGvgQzI3Ud+8HrWsBalhF/qJ/6VV6qchAQ8D
+ HwmyvOYS9srKB+jVUNjAVl1R/IGwLIVb+FnjSa3jZYn29sfsumyrKm2WxfS79OyIGjg6/rqRBDScW
+ hsGEt1yw==;
+Received: from aserp2120.oracle.com ([141.146.126.78])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lYjuT-00BqhT-Jd
- for linux-mtd@lists.infradead.org; Tue, 20 Apr 2021 06:30:59 +0000
-Received: from localhost.localdomain ([172.17.195.94])
- by TWHMLLG3.macronix.com with ESMTP id 13K6UM7e083760;
- Tue, 20 Apr 2021 14:30:39 +0800 (GMT-8)
- (envelope-from zhengxunli@mxic.com.tw)
-From: Zhengxun Li <zhengxunli@mxic.com.tw>
-To: linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
-Cc: tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, broonie@kernel.org,
- jaimeliao@mxic.com.tw, Zhengxun Li <zhengxunli@mxic.com.tw>
-Subject: [PATCH v3 3/3] spi: mxic: patch for octal DTR mode support
-Date: Tue, 20 Apr 2021 14:29:39 +0800
-Message-Id: <1618900179-14546-4-git-send-email-zhengxunli@mxic.com.tw>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1618900179-14546-1-git-send-email-zhengxunli@mxic.com.tw>
-References: <1618900179-14546-1-git-send-email-zhengxunli@mxic.com.tw>
-X-MAIL: TWHMLLG3.macronix.com 13K6UM7e083760
+ id 1lYm0W-00BwAc-Js
+ for linux-mtd@lists.infradead.org; Tue, 20 Apr 2021 08:45:24 +0000
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+ by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13K8j6lp025053;
+ Tue, 20 Apr 2021 08:45:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=lRi5+pXSkvGHuYVuTVlpgKCbheDLoFERK+hwvLGTTm4=;
+ b=rPGDywR2n/XgUYKjKiZzArVQCXQq7aQte3E1qE3AiRrvViVCuX/9lJ7ApStjxoQWtK3X
+ fAaxJEriwG9CBx99zm1I3agaBwpAS1BPkaiDkuTNyXOxjX7bqSkrOn8Z0/J1Z99rE9Or
+ 5rg8u49KnQkJmyyK1GVvlimhCFldSi+3Ek8GcynT+L50vQ+RkyyCRMgpisU6bT8AUnz6
+ r5jN+lIdohK8WdXh/kHV4QyOASbvjYXTnVa2byr2LleY7UUUsvJXcPi8qt6sLjSwWlQI
+ sqHHH8mb/lZgT4OVgDL0W5XPcnl/pe+iXZDu/Asmr06GLM2WS73j5+LXDm2G3y9/ei5O KQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+ by aserp2120.oracle.com with ESMTP id 37yqmnebth-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 20 Apr 2021 08:45:06 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+ by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13K8bScF008096;
+ Tue, 20 Apr 2021 08:45:05 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+ by userp3020.oracle.com with ESMTP id 3809es9jrn-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 20 Apr 2021 08:45:05 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+ by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13K8fX8q021403;
+ Tue, 20 Apr 2021 08:45:05 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+ by userp3020.oracle.com with ESMTP id 3809es9jq5-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 20 Apr 2021 08:45:05 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+ by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13K8ixFD000725;
+ Tue, 20 Apr 2021 08:45:00 GMT
+Received: from mwanda (/102.36.221.92) by default (Oracle Beehive Gateway v4.0)
+ with ESMTP ; Tue, 20 Apr 2021 01:44:59 -0700
+Date: Tue, 20 Apr 2021 11:44:51 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Manivannan Sadhasivam <mani@kernel.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] mtd: rawnand: silence static checker warning in
+ nand_setup_interface()
+Message-ID: <YH6Ugwz3gcga+q8X@mwanda>
+MIME-Version: 1.0
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-ORIG-GUID: FWLbufaOYH_RWGtVqbl2ylxaOcmejjKG
+X-Proofpoint-GUID: FWLbufaOYH_RWGtVqbl2ylxaOcmejjKG
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9959
+ signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0
+ mlxscore=0 adultscore=0
+ impostorscore=0 spamscore=0 malwarescore=0 clxscore=1015
+ lowpriorityscore=0 priorityscore=1501 suspectscore=0 mlxlogscore=999
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104200065
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210419_233057_943618_6752C5D4 
-X-CRM114-Status: GOOD (  16.20  )
+X-CRM114-CacheID: sfid-20210420_014520_770238_4AC515B6 
+X-CRM114-Status: GOOD (  16.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,128 +123,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Driver patch for octal DTR mode support.
+Smatch complains that the error code is not set on this error path:
 
-Owing to the spi_mem_default_supports_op() is not support dtr
-operation. Based on Pratyush patch "spi: spi-mem: add spi_mem_dtr
-_supports_op()" add spi_mem_dtr_supports_op() to support dtr and
-keep checking the buswidth and command bytes.
+    drivers/mtd/nand/raw/nand_base.c:842 nand_setup_interface()
+    warn: missing error code 'ret'
 
-Signed-off-by: Zhengxun Li <zhengxunli@mxic.com.tw>
+But actually returning success is intentional because the NAND chip will
+still work in mode 0.  This patch adds a "ret = 0;" assignment to make
+the intent more clear and to silence the static checker warning.  It
+doesn't affect the compiled code because GCC optimises the assignment
+away.
+
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
- drivers/spi/spi-mxic.c | 41 ++++++++++++++++++++++++++++++-----------
- 1 file changed, 30 insertions(+), 11 deletions(-)
+ drivers/mtd/nand/raw/nand_base.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/spi/spi-mxic.c b/drivers/spi/spi-mxic.c
-index 96b4182..32e757a 100644
---- a/drivers/spi/spi-mxic.c
-+++ b/drivers/spi/spi-mxic.c
-@@ -335,8 +335,10 @@ static int mxic_spi_data_xfer(struct mxic_spi *mxic, const void *txbuf,
- static bool mxic_spi_mem_supports_op(struct spi_mem *mem,
- 				     const struct spi_mem_op *op)
- {
--	if (op->data.buswidth > 4 || op->addr.buswidth > 4 ||
--	    op->dummy.buswidth > 4 || op->cmd.buswidth > 4)
-+	bool all_false;
-+
-+	if (op->data.buswidth > 8 || op->addr.buswidth > 8 ||
-+	    op->dummy.buswidth > 8 || op->cmd.buswidth > 8)
- 		return false;
- 
- 	if (op->data.nbytes && op->dummy.nbytes &&
-@@ -346,7 +348,13 @@ static bool mxic_spi_mem_supports_op(struct spi_mem *mem,
- 	if (op->addr.nbytes > 7)
- 		return false;
- 
--	return spi_mem_default_supports_op(mem, op);
-+	all_false = !op->cmd.dtr && !op->addr.dtr && !op->dummy.dtr &&
-+		    !op->data.dtr;
-+
-+	if (all_false)
-+		return spi_mem_default_supports_op(mem, op);
-+	else
-+		return spi_mem_dtr_supports_op(mem, op);
- }
- 
- static int mxic_spi_mem_exec_op(struct spi_mem *mem,
-@@ -355,14 +363,15 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
- 	struct mxic_spi *mxic = spi_master_get_devdata(mem->spi->master);
- 	int nio = 1, i, ret;
- 	u32 ss_ctrl;
--	u8 addr[8];
--	u8 opcode = op->cmd.opcode;
-+	u8 addr[8], cmd[2];
- 
- 	ret = mxic_spi_set_freq(mxic, mem->spi->max_speed_hz);
- 	if (ret)
- 		return ret;
- 
--	if (mem->spi->mode & (SPI_TX_QUAD | SPI_RX_QUAD))
-+	if (mem->spi->mode & (SPI_TX_OCTAL | SPI_RX_OCTAL))
-+		nio = 8;
-+	else if (mem->spi->mode & (SPI_TX_QUAD | SPI_RX_QUAD))
- 		nio = 4;
- 	else if (mem->spi->mode & (SPI_TX_DUAL | SPI_RX_DUAL))
- 		nio = 2;
-@@ -374,19 +383,25 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
- 	       mxic->regs + HC_CFG);
- 	writel(HC_EN_BIT, mxic->regs + HC_EN);
- 
--	ss_ctrl = OP_CMD_BYTES(1) | OP_CMD_BUSW(fls(op->cmd.buswidth) - 1);
-+	ss_ctrl = OP_CMD_BYTES(op->cmd.nbytes) |
-+		  OP_CMD_BUSW(fls(op->cmd.buswidth) - 1) |
-+		  (op->cmd.dtr ? OP_CMD_DDR : 0);
- 
- 	if (op->addr.nbytes)
- 		ss_ctrl |= OP_ADDR_BYTES(op->addr.nbytes) |
--			   OP_ADDR_BUSW(fls(op->addr.buswidth) - 1);
-+			   OP_ADDR_BUSW(fls(op->addr.buswidth) - 1) |
-+			   (op->addr.dtr ? OP_ADDR_DDR : 0);
- 
- 	if (op->dummy.nbytes)
- 		ss_ctrl |= OP_DUMMY_CYC(op->dummy.nbytes);
- 
- 	if (op->data.nbytes) {
--		ss_ctrl |= OP_DATA_BUSW(fls(op->data.buswidth) - 1);
-+		ss_ctrl |= OP_DATA_BUSW(fls(op->data.buswidth) - 1) |
-+			   (op->data.dtr ? OP_DATA_DDR : 0);
- 		if (op->data.dir == SPI_MEM_DATA_IN)
- 			ss_ctrl |= OP_READ;
-+			if (op->data.dtr)
-+				ss_ctrl |= OP_DQS_EN;
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index fb072c444495..e29e5b3d31bf 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -880,6 +880,7 @@ static int nand_setup_interface(struct nand_chip *chip, int chipnr)
+ 	if (tmode_param[0] != chip->best_interface_config->timings.mode) {
+ 		pr_warn("timing mode %d not acknowledged by the NAND chip\n",
+ 			chip->best_interface_config->timings.mode);
++		ret = 0;
+ 		goto err_reset_chip;
  	}
  
- 	writel(ss_ctrl, mxic->regs + SS_CTRL(mem->spi->chip_select));
-@@ -394,7 +409,10 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
- 	writel(readl(mxic->regs + HC_CFG) | HC_CFG_MAN_CS_ASSERT,
- 	       mxic->regs + HC_CFG);
- 
--	ret = mxic_spi_data_xfer(mxic, &opcode, NULL, 1);
-+	for (i = 0; i < op->cmd.nbytes; i++)
-+		cmd[i] = op->cmd.opcode >> (8 * (op->cmd.nbytes - i - 1));
-+
-+	ret = mxic_spi_data_xfer(mxic, cmd, NULL, op->cmd.nbytes);
- 	if (ret)
- 		goto out;
- 
-@@ -567,7 +585,8 @@ static int mxic_spi_probe(struct platform_device *pdev)
- 	master->bits_per_word_mask = SPI_BPW_MASK(8);
- 	master->mode_bits = SPI_CPOL | SPI_CPHA |
- 			SPI_RX_DUAL | SPI_TX_DUAL |
--			SPI_RX_QUAD | SPI_TX_QUAD;
-+			SPI_RX_QUAD | SPI_TX_QUAD |
-+			SPI_RX_OCTAL | SPI_TX_OCTAL;
- 
- 	mxic_spi_hw_init(mxic);
- 
 -- 
-1.9.1
+2.30.2
 
 
 ______________________________________________________
