@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA950C433ED
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Apr 2021 14:42:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E108C433ED
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Apr 2021 14:44:33 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2616C60C40
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Apr 2021 14:42:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2616C60C40
+	by mail.kernel.org (Postfix) with ESMTPS id 553586115B
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Apr 2021 14:44:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 553586115B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=foss.st.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,57 +23,57 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
 	Subject:CC:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=ZZtIhkb6XLuKTtkyYsu5WnsyvdBSplhywFitnNtzr5Y=; b=ia+NeGY/W9hLIjxJjDZonDtZ8
-	FstZm3qfY0EnYlae0+4kerCOfDVpTwthDyYL1vybcT8GWnBb7UnYFdP018ZSizW3qbWKTrtoq2ILX
-	1+LvWcUvHu1gKk9E34Dl+mZbPcz1qLcENgQVEr7yVLUCiRag7Ljlw7tyeOERp+aoaJLLdixnHtL25
-	T62O6PKr02i58OlP+LqTYysqpv5TMc+BYBCIRakM6qrDz/ALlBwyNb9R0jquZQ/QCt41+MpTfkVFV
-	E0IDYqCLQwFZ/FZFZgkJR2q3s+1afii+y2DVw3UuXHydVmD69mlnwYYh3Vx4DMta5+diqEsG+4Yym
-	iRz9QUAug==;
+	 bh=E7cdfz+j6/viRMt3uuXTIquNxSTMKvVOTSDJaH2iQqY=; b=ObSDq6Aqmew3KfvGyg8tw31YI
+	Lq9/TKKYrwg11IaY7jX6Z4r6AEKk1p+DseW75aLW1bTzFLvHx3lJi78wzWagdQ9DjC2aiK0aRjHJ2
+	cJpheBJFEmbrLBv2silKzYW21gckovOh/+zRcvdHY4E7HbevX5SF9z6vnSb/etxYNC9Igm+fCsZW1
+	motcQjJ9eHhJuuhP9oiQNLmSgMw5OmTRqO7BYBezrj2FKxZXR8X5AjTDLt8qjDrogMNbEArdPheFP
+	zbLzw6cjXIfsUrlmhKri92xG3LmfiON1NvIkTdTGeL2d0ZfuOVB/AcEhpG03bHBf8wyehSIfDud5p
+	QPsGiSTNw==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lb2QY-007rnY-3z; Mon, 26 Apr 2021 14:41:34 +0000
+	id 1lb2SS-007sBZ-LI; Mon, 26 Apr 2021 14:43:33 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lb2Or-007rYA-Oy; Mon, 26 Apr 2021 14:39:49 +0000
+ id 1lb2Os-007rYD-5Z; Mon, 26 Apr 2021 14:39:50 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Type:MIME-Version:References:
  In-Reply-To:Message-ID:Date:Subject:CC:To:From:Sender:Reply-To:
  Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=rKQByYKh9iwatTFVoAH76g3JFEZTY9btSBhtfNq13Vo=; b=VUXdp1K8A/+kFaZ7zN3IeAxX1O
- iYPCX0g02WAD+vl8UCTuQN4oXmghN9v/t2P6uA5UCz9cZd+y1hAbBuCcg6MkVdWnbp1D/KtofnGeF
- KXbk3f/B9B9VRcGtfreIvCgJM/BEAsmu2TNN+4EHVhT8yf4CGFlgRgd9n/2fdQj42P8Yem2wUWk4S
- u6t/FRZ2T0ye+jBnx1Yyg5O98tEX1twlCUWRweKCjLqg7sc5SUJhJiPgnDwnkzFB2fsH+gbDUimIB
- Qik4lOA5ZqHGox90Oc0LLUjNVbWjisoulHeiR3nBFT/T2DLulPjvgB6c2l8cl4ptUE20sUhrtJlZo
- qMgA1bZQ==;
+ bh=bcdYYQwvr2r0d2E9osN7jHyNAUjPEwKXDZR3CqWi2xw=; b=f5enWG3QA9cbhZfEdv7px+JWJG
+ tWXdt/WoIx+F780F+WXyESkk05Cgv1HiBlvuEw1OEhVuVg5Ft/uFNbZQcTUZNMxntUj0+lfCjwvjY
+ V0XDSNyKrZLpEFfCPaNsaGDKZ1m3PzfpIESyPrT/kp/bJq/R/kaR2D+wczufLyzdBEnlfLa79QvBq
+ Dj9Axrc7PkF0CD8/xjYQhbxl8esGWjAl6t29Lck2Q1xlE4aZygb2qg0oqJ+V7Ze3IO8U6/3zQ42w0
+ Je9UmprvzEFKp9BZO7oOD/gdFx7v2St0ew3pR/+xhOkfLEC1zblK81N9yG+miYD9p+43JWtdSUbWJ
+ J63m4jMg==;
 Received: from mx08-00178001.pphosted.com ([91.207.212.93]
  helo=mx07-00178001.pphosted.com)
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lb2On-00G1BC-HY; Mon, 26 Apr 2021 14:39:48 +0000
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+ id 1lb2On-00G1BG-HX; Mon, 26 Apr 2021 14:39:48 +0000
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
  by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 13QEcPVN015854; Mon, 26 Apr 2021 16:39:39 +0200
+ 13QEbOUt011724; Mon, 26 Apr 2021 16:39:40 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=selector1;
- bh=rKQByYKh9iwatTFVoAH76g3JFEZTY9btSBhtfNq13Vo=;
- b=foxLr38u1jcgz51POaRlVdw6CYaK4m8E91UnNy7i74BUxY2noOnxMQmKCR1gMBwrHB6C
- dEOwIREZwGAxV0F9vdjFDzbVwvNTAgVBZ4olLYK8erdd6DZtReaq4zvCftzfDJyWnMKA
- 0vNQeMgtsx/TRQ6jl/9RnuqBz37dG/DE99YPXlaiXPWZw1ltt8KY+KnjvOQtbuZa6L2x
- jHlxQ6ZBQmH0bfXMmc6Y2EIIuboc9Hp/GGR7q6c45c6FlD4zNFkg0lUaLqxZK6GdsAxz
- d9LNBabwdq0mALpHntag/e45f4GQR1upRH4aA8zwOVf5UVO+4RjMUL9W/DCT7cdQu59m UA== 
+ bh=bcdYYQwvr2r0d2E9osN7jHyNAUjPEwKXDZR3CqWi2xw=;
+ b=ISikXhL9RptDDXeO6zGb0+38JoUcQtqrlJrDyPFnln/d8BLXOJy3ymTlHZ+hv2EQeV7o
+ j9iifgH3LCw3yeadw3yuNmWZUE+/qWGB5yyIVK7Fr9GDce2NEs2hv/4KgOpjGgR1Wzqm
+ RAjcT7K0MmDevUpqg6zVobxopfoMdLovtOkZEE0359HIajlsGfQlXD4VfF+HPO2m3H1a
+ QMxqem3g8k9SsWZxx3FV8JnWbHDyno4yL6r/cps1QWfnVM8YJsaAw9os/yyVbAfTf6d6
+ iDFWa5L6vT4JATRG7GgGg/5h6hCJhXkGRf0GZvEnGt5lGeCd0r7xc9TusG+mEuqeZOIh SA== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com with ESMTP id 385b0xx7d0-1
+ by mx07-00178001.pphosted.com with ESMTP id 385xu887wm-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 26 Apr 2021 16:39:39 +0200
+ Mon, 26 Apr 2021 16:39:40 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EBDD2100034;
- Mon, 26 Apr 2021 16:39:38 +0200 (CEST)
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 09D6C10002A;
+ Mon, 26 Apr 2021 16:39:40 +0200 (CEST)
 Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D54332178E6;
- Mon, 26 Apr 2021 16:39:38 +0200 (CEST)
-Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 26 Apr 2021 16:39:38
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id EA6812178E6;
+ Mon, 26 Apr 2021 16:39:39 +0200 (CEST)
+Received: from localhost (10.75.127.50) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 26 Apr 2021 16:39:39
  +0200
 From: <patrice.chotard@foss.st.com>
 To: Mark Brown <broonie@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -83,22 +83,22 @@ To: Mark Brown <broonie@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
  <linux-spi@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
  <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
 CC: <patrice.chotard@foss.st.com>, <christophe.kerello@foss.st.com>
-Subject: [PATCH 1/3] spi: spi-mem: add automatic poll status functions
-Date: Mon, 26 Apr 2021 16:39:32 +0200
-Message-ID: <20210426143934.25275-2-patrice.chotard@foss.st.com>
+Subject: [PATCH 3/3] spi: stm32-qspi: add automatic poll status feature
+Date: Mon, 26 Apr 2021 16:39:34 +0200
+Message-ID: <20210426143934.25275-4-patrice.chotard@foss.st.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210426143934.25275-1-patrice.chotard@foss.st.com>
 References: <20210426143934.25275-1-patrice.chotard@foss.st.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
  (10.75.127.6)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391, 18.0.761
  definitions=2021-04-26_07:2021-04-26,
  2021-04-26 signatures=0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210426_073946_049176_EEE894EC 
-X-CRM114-Status: GOOD (  22.41  )
+X-CRM114-CacheID: sfid-20210426_073946_053452_F9D6757D 
+X-CRM114-Status: GOOD (  27.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -117,97 +117,203 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Christophe Kerello <christophe.kerello@foss.st.com>
 
-With STM32 QSPI, it is possible to poll the status register of the device.
-This could be done to offload the CPU during an operation (erase or
-program a SPI NAND for example).
+STM32 QSPI is able to automatically poll a specified register inside the
+memory and relieve the CPU from this task.
 
-spi_mem_poll_status API has been added to handle this feature.
+As example, when erasing a large memory area, we got cpu load
+equal to 50%. This patch allows to perform the same operation
+with a cpu load around 2%.
 
 Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
 Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
 ---
- drivers/spi/spi-mem.c       | 34 ++++++++++++++++++++++++++++++++++
- include/linux/spi/spi-mem.h |  8 ++++++++
- 2 files changed, 42 insertions(+)
+ drivers/spi/spi-stm32-qspi.c | 80 ++++++++++++++++++++++++++++++++----
+ 1 file changed, 72 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-index 1513553e4080..43dce4b0efa4 100644
---- a/drivers/spi/spi-mem.c
-+++ b/drivers/spi/spi-mem.c
-@@ -743,6 +743,40 @@ static inline struct spi_mem_driver *to_spi_mem_drv(struct device_driver *drv)
- 	return container_of(drv, struct spi_mem_driver, spidrv.driver);
+diff --git a/drivers/spi/spi-stm32-qspi.c b/drivers/spi/spi-stm32-qspi.c
+index 7e640ccc7e77..2f9e5941f14f 100644
+--- a/drivers/spi/spi-stm32-qspi.c
++++ b/drivers/spi/spi-stm32-qspi.c
+@@ -36,6 +36,7 @@
+ #define CR_FTIE			BIT(18)
+ #define CR_SMIE			BIT(19)
+ #define CR_TOIE			BIT(20)
++#define CR_APMS			BIT(22)
+ #define CR_PRESC_MASK		GENMASK(31, 24)
+ 
+ #define QSPI_DCR		0x04
+@@ -53,6 +54,7 @@
+ #define QSPI_FCR		0x0c
+ #define FCR_CTEF		BIT(0)
+ #define FCR_CTCF		BIT(1)
++#define FCR_CSMF		BIT(3)
+ 
+ #define QSPI_DLR		0x10
+ 
+@@ -107,6 +109,7 @@ struct stm32_qspi {
+ 	u32 clk_rate;
+ 	struct stm32_qspi_flash flash[STM32_QSPI_MAX_NORCHIP];
+ 	struct completion data_completion;
++	struct completion match_completion;
+ 	u32 fmode;
+ 
+ 	struct dma_chan *dma_chtx;
+@@ -115,6 +118,7 @@ struct stm32_qspi {
+ 
+ 	u32 cr_reg;
+ 	u32 dcr_reg;
++	u16 status_timeout;
+ 
+ 	/*
+ 	 * to protect device configuration, could be different between
+@@ -128,11 +132,20 @@ static irqreturn_t stm32_qspi_irq(int irq, void *dev_id)
+ 	struct stm32_qspi *qspi = (struct stm32_qspi *)dev_id;
+ 	u32 cr, sr;
+ 
++	cr = readl_relaxed(qspi->io_base + QSPI_CR);
+ 	sr = readl_relaxed(qspi->io_base + QSPI_SR);
+ 
++	if (cr & CR_SMIE && sr & SR_SMF) {
++		/* disable irq */
++		cr &= ~CR_SMIE;
++		writel_relaxed(cr, qspi->io_base + QSPI_CR);
++		complete(&qspi->match_completion);
++
++		return IRQ_HANDLED;
++	}
++
+ 	if (sr & (SR_TEF | SR_TCF)) {
+ 		/* disable irq */
+-		cr = readl_relaxed(qspi->io_base + QSPI_CR);
+ 		cr &= ~CR_TCIE & ~CR_TEIE;
+ 		writel_relaxed(cr, qspi->io_base + QSPI_CR);
+ 		complete(&qspi->data_completion);
+@@ -319,6 +332,24 @@ static int stm32_qspi_wait_cmd(struct stm32_qspi *qspi,
+ 	return err;
  }
  
-+/**
-+ * spi_mem_poll_status() - Poll memory device status
-+ * @mem: SPI memory device
-+ * @op: the memory operation to execute
-+ * @mask: status bitmask to ckeck
-+ * @match: status expected value
-+ * @timeout: timeout
-+ *
-+ * This function send a polling status request to the controller driver
-+ *
-+ * Return: 0 in case of success, -ETIMEDOUT in case of error,
-+ *         -EOPNOTSUPP if not supported.
-+ */
-+int spi_mem_poll_status(struct spi_mem *mem,
-+			const struct spi_mem_op *op,
-+			u8 mask, u8 match, u16 timeout)
++static int stm32_qspi_wait_poll_status(struct stm32_qspi *qspi,
++				       const struct spi_mem_op *op)
 +{
-+	struct spi_controller *ctlr = mem->spi->controller;
-+	int ret = -EOPNOTSUPP;
++	u32 cr;
 +
-+	if (ctlr->mem_ops && ctlr->mem_ops->poll_status) {
-+		ret = spi_mem_access_start(mem);
-+		if (ret)
-+			return ret;
++	reinit_completion(&qspi->match_completion);
++	cr = readl_relaxed(qspi->io_base + QSPI_CR);
++	writel_relaxed(cr | CR_SMIE, qspi->io_base + QSPI_CR);
 +
-+		ret = ctlr->mem_ops->poll_status(mem, op, mask, match, timeout);
++	if (!wait_for_completion_timeout(&qspi->match_completion,
++				msecs_to_jiffies(qspi->status_timeout)))
++		return -ETIMEDOUT;
 +
-+		spi_mem_access_end(mem);
++	writel_relaxed(FCR_CSMF, qspi->io_base + QSPI_FCR);
++
++	return 0;
++}
++
+ static int stm32_qspi_get_mode(struct stm32_qspi *qspi, u8 buswidth)
+ {
+ 	if (buswidth == 4)
+@@ -332,7 +363,7 @@ static int stm32_qspi_send(struct spi_mem *mem, const struct spi_mem_op *op)
+ 	struct stm32_qspi *qspi = spi_controller_get_devdata(mem->spi->master);
+ 	struct stm32_qspi_flash *flash = &qspi->flash[mem->spi->chip_select];
+ 	u32 ccr, cr;
+-	int timeout, err = 0;
++	int timeout, err = 0, err_poll_status = 0;
+ 
+ 	dev_dbg(qspi->dev, "cmd:%#x mode:%d.%d.%d.%d addr:%#llx len:%#x\n",
+ 		op->cmd.opcode, op->cmd.buswidth, op->addr.buswidth,
+@@ -378,6 +409,9 @@ static int stm32_qspi_send(struct spi_mem *mem, const struct spi_mem_op *op)
+ 	if (op->addr.nbytes && qspi->fmode != CCR_FMODE_MM)
+ 		writel_relaxed(op->addr.val, qspi->io_base + QSPI_AR);
+ 
++	if (qspi->fmode == CCR_FMODE_APM)
++		err_poll_status = stm32_qspi_wait_poll_status(qspi, op);
++
+ 	err = stm32_qspi_tx(qspi, op);
+ 
+ 	/*
+@@ -387,7 +421,7 @@ static int stm32_qspi_send(struct spi_mem *mem, const struct spi_mem_op *op)
+ 	 *  byte of device (device size - fifo size). like device size is not
+ 	 *  knows, the prefetching is always stop.
+ 	 */
+-	if (err || qspi->fmode == CCR_FMODE_MM)
++	if (err || err_poll_status || qspi->fmode == CCR_FMODE_MM)
+ 		goto abort;
+ 
+ 	/* wait end of tx in indirect mode */
+@@ -406,15 +440,43 @@ static int stm32_qspi_send(struct spi_mem *mem, const struct spi_mem_op *op)
+ 						    cr, !(cr & CR_ABORT), 1,
+ 						    STM32_ABT_TIMEOUT_US);
+ 
+-	writel_relaxed(FCR_CTCF, qspi->io_base + QSPI_FCR);
++	writel_relaxed(FCR_CTCF | FCR_CSMF, qspi->io_base + QSPI_FCR);
+ 
+-	if (err || timeout)
+-		dev_err(qspi->dev, "%s err:%d abort timeout:%d\n",
+-			__func__, err, timeout);
++	if (err || err_poll_status || timeout)
++		dev_err(qspi->dev, "%s err:%d err_poll_status:%d abort timeout:%d\n",
++			__func__, err, err_poll_status, timeout);
+ 
+ 	return err;
+ }
+ 
++static int stm32_qspi_poll_status(struct spi_mem *mem, const struct spi_mem_op *op,
++				  u8 mask, u8 match, u16 timeout_ms)
++{
++	struct stm32_qspi *qspi = spi_controller_get_devdata(mem->spi->master);
++	int ret;
++
++	ret = pm_runtime_get_sync(qspi->dev);
++	if (ret < 0) {
++		pm_runtime_put_noidle(qspi->dev);
++		return ret;
 +	}
++
++	mutex_lock(&qspi->lock);
++
++	writel_relaxed(mask, qspi->io_base + QSPI_PSMKR);
++	writel_relaxed(match, qspi->io_base + QSPI_PSMAR);
++	qspi->fmode = CCR_FMODE_APM;
++	qspi->status_timeout = timeout_ms;
++
++	ret = stm32_qspi_send(mem, op);
++	mutex_unlock(&qspi->lock);
++
++	pm_runtime_mark_last_busy(qspi->dev);
++	pm_runtime_put_autosuspend(qspi->dev);
 +
 +	return ret;
 +}
-+EXPORT_SYMBOL_GPL(spi_mem_poll_status);
 +
- static int spi_mem_probe(struct spi_device *spi)
+ static int stm32_qspi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
  {
- 	struct spi_mem_driver *memdrv = to_spi_mem_drv(spi->dev.driver);
-diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
-index 2b65c9edc34e..5f78917c0f68 100644
---- a/include/linux/spi/spi-mem.h
-+++ b/include/linux/spi/spi-mem.h
-@@ -250,6 +250,7 @@ static inline void *spi_mem_get_drvdata(struct spi_mem *mem)
-  *		  the currently mapped area), and the caller of
-  *		  spi_mem_dirmap_write() is responsible for calling it again in
-  *		  this case.
-+ * @poll_status: poll memory device status
-  *
-  * This interface should be implemented by SPI controllers providing an
-  * high-level interface to execute SPI memory operation, which is usually the
-@@ -274,6 +275,9 @@ struct spi_controller_mem_ops {
- 			       u64 offs, size_t len, void *buf);
- 	ssize_t (*dirmap_write)(struct spi_mem_dirmap_desc *desc,
- 				u64 offs, size_t len, const void *buf);
-+	int (*poll_status)(struct spi_mem *mem,
-+			   const struct spi_mem_op *op,
-+			   u8 mask, u8 match, u16 timeout);
+ 	struct stm32_qspi *qspi = spi_controller_get_devdata(mem->spi->master);
+@@ -527,7 +589,7 @@ static int stm32_qspi_setup(struct spi_device *spi)
+ 	flash->presc = presc;
+ 
+ 	mutex_lock(&qspi->lock);
+-	qspi->cr_reg = 3 << CR_FTHRES_SHIFT | CR_SSHIFT | CR_EN;
++	qspi->cr_reg = CR_APMS | 3 << CR_FTHRES_SHIFT | CR_SSHIFT | CR_EN;
+ 	writel_relaxed(qspi->cr_reg, qspi->io_base + QSPI_CR);
+ 
+ 	/* set dcr fsize to max address */
+@@ -607,6 +669,7 @@ static const struct spi_controller_mem_ops stm32_qspi_mem_ops = {
+ 	.exec_op	= stm32_qspi_exec_op,
+ 	.dirmap_create	= stm32_qspi_dirmap_create,
+ 	.dirmap_read	= stm32_qspi_dirmap_read,
++	.poll_status	= stm32_qspi_poll_status,
  };
  
- /**
-@@ -369,6 +373,10 @@ devm_spi_mem_dirmap_create(struct device *dev, struct spi_mem *mem,
- void devm_spi_mem_dirmap_destroy(struct device *dev,
- 				 struct spi_mem_dirmap_desc *desc);
+ static int stm32_qspi_probe(struct platform_device *pdev)
+@@ -661,6 +724,7 @@ static int stm32_qspi_probe(struct platform_device *pdev)
+ 	}
  
-+int spi_mem_poll_status(struct spi_mem *mem,
-+			const struct spi_mem_op *op,
-+			u8 mask, u8 match, u16 timeout);
-+
- int spi_mem_driver_register_with_owner(struct spi_mem_driver *drv,
- 				       struct module *owner);
+ 	init_completion(&qspi->data_completion);
++	init_completion(&qspi->match_completion);
  
+ 	qspi->clk = devm_clk_get(dev, NULL);
+ 	if (IS_ERR(qspi->clk)) {
 -- 
 2.17.1
 
