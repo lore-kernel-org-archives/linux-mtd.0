@@ -1,106 +1,101 @@
-Return-Path: <SRS0=EgaJ=JY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=MQGH=JZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53F8FC433B4
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Apr 2021 07:18:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC98AC433B4
+	for <linux-mtd@archiver.kernel.org>; Wed, 28 Apr 2021 05:29:50 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AE31961076
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Apr 2021 07:18:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE31961076
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 415CC61420
+	for <linux-mtd@archiver.kernel.org>; Wed, 28 Apr 2021 05:29:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 415CC61420
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=XYZPQLGsCvEUL9oLJGVPkkkv+jiVdaVo3GcBLuV9xRs=; b=HNImj98oLxmLqPDLbnPuluOF0
-	WqSOZfIKP1SkfX+p3CrgOCPOeU7wiNNsOwp/CuKtH0FC2uyEaZvv2YOovrJxiizV9xwRujupHo3+d
-	TyBpcMIJKpnVUokL28TwiVk6VRGgIHVwl8gwyovIPeWWk1seCxs5aci2/Np0UUNUxtqOEJhDRbdyR
-	a3E9EaUkYZw519GXuJ2qLkRfXESR6jIr9wRJyvtHw568wHRyQ7DvlsTSkDzbpFQlyjuBrlP7vKV/T
-	6tuAy75wbuHoQ09bcvtFeshYmwlqGEBSdQ3DIFwJ0aAS4qMcOvlvmE/uGxi/5ZVn5eJOV1OUT/8Jf
-	Nrkz/XItg==;
+	List-Unsubscribe:List-Id:Cc:To:From:Subject:Mime-Version:Message-Id:Date:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=+FaZAvQ5u9E8IIEH1ebCZWqOywneXE6u16yLDVJEs7k=; b=hIPqKF3ysDrbFPlJ5NqybJEfjK
+	TTfDoIH6aa/Ca8sIlvBMjOW9FKoyTgj81cEfxLG9odtZIXrdTLqgT3nP/l7rLkt7HsXhGp2jkUc6s
+	i2A3ZUPgrEkpvVVsRX5QiZcm00sxr5LcQnH/TXgaU7IYox+X1HdoI4xygtjBFyo/2ju0my8reqstF
+	El3Eqytnb7iBlEgvNn/ddrDTazCVS5xfCjoAktB0Y129ZFrHAoGbzajM19a7vVcYZVFE64KgE80Qa
+	cF/Dm0ufj0XU4yDlzMJvF6CAXg9d3x5OU5x9FicXBqmrRwGwmMIPKDYxVKK/1KeAbjD5Vk+oN3FQ9
+	/kDjmPiQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lbHy3-000wYv-3x; Tue, 27 Apr 2021 07:17:12 +0000
+	id 1lbckq-002pDB-AN; Wed, 28 Apr 2021 05:28:56 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lbHqn-000vV6-CV
- for linux-mtd@desiato.infradead.org; Tue, 27 Apr 2021 07:09:44 +0000
+ id 1lbcki-002pD2-4s
+ for linux-mtd@desiato.infradead.org; Wed, 28 Apr 2021 05:28:48 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
- MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
- :Reply-To:Content-Type:Content-ID:Content-Description;
- bh=1c9USNyud8PJeEJI49mh7QL/r1WaYoN5sOTMDFWn1zM=; b=S/VQ3CcBSu1XxWgTmlpb2L75j1
- Pj72SvYZC8JigWN04yFJVfKY0c4k44ormigCN/QssLy/xPMvvE2JwESNdrWlAaOtLUvAsJq9JnlpE
- NRbI2Y+spbWyLOSRVz/9YbhrKhrz7+UA7JdG91xYcmA3S2AJoGD3ZDPnSD940mJhIVVtWGYvUuICi
- 1lfd8YcLGpGb0mTqndhBmi2lqKD00lWx6sdaCbOUQ1ncfZPKBWQFa8rQqGZGCTCoKfHVtSB4b/g8g
- jvudHkQy5xzjK2hrvCvC43+nVzReo133xk1/6HpkRvTlgNV6JzR4xDc3zuVOfQCwUE+1GFoK2o2yK
- 73i4bA0Q==;
-Received: from mail-pg1-x532.google.com ([2607:f8b0:4864:20::532])
+ d=infradead.org; s=bombadil.20210309; h=Content-Type:Cc:To:From:Subject:
+ Mime-Version:Message-Id:Date:Sender:Reply-To:Content-Transfer-Encoding:
+ Content-ID:Content-Description:In-Reply-To:References;
+ bh=fx7vPqk/u89PVg1T4cJ8wHcLfNDs90uQPpODd7f8SmI=; b=ZTefLXH1XKYgBnhyF2+n8VkkdI
+ cQNPb0xTTw3RkyGoJUyyWO3I2gC063xyfGK7NxbQJVJY3ZcjffJi3qwgLhAmX7kZ1+T+KLs3z8Nxf
+ 4N4s7Usu+9z6hW0+GqX1y7TT77uRKi/pIlA566udc8iMWTClBzqev2Qdw/hRK4IW70CYvtN1TMfMq
+ p1FCu4rM111ONWeluHuwxQYrk/BFK69L/Ox28Q4XQuduGEM4fmAENNrN9//ClbiclmDY9RDri+qQb
+ gU4Wm2S0AsdB8u0bNUWmgfnMn8TbiQhn6ZwyCferSMb1uw8e8SkFUyYU7wchCyQC09Q3bN6C9pZFz
+ p2kaOfvQ==;
+Received: from mail-yb1-xb4a.google.com ([2607:f8b0:4864:20::b4a])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lbHqk-00GUhO-K2
- for linux-mtd@lists.infradead.org; Tue, 27 Apr 2021 07:09:40 +0000
-Received: by mail-pg1-x532.google.com with SMTP id d10so3342598pgf.12
- for <linux-mtd@lists.infradead.org>; Tue, 27 Apr 2021 00:09:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=1c9USNyud8PJeEJI49mh7QL/r1WaYoN5sOTMDFWn1zM=;
- b=m6W2L3WalvuzzwUycUn8J7jRR5UAh+JO8xHPy3AOmNDpv7NAy/jus4AdMWsd/NiXyU
- Jj22Sh+H5y79w4uBCBM7bOdxHiLLiJRFGgWNrkhcWYQlXzZ7P5upWSBjG8rTP7nCMSo5
- Rk4oW2xv+svNPiqMSXtvCqWvr1o4rwCLPA0dt5s5ubhD6mgt+h25VUHxHAiHWPjp8tle
- Rs4pkXTwdleCcExhpfIIERo9RhQ7wPQsA3C2Ho9ht6NuTgpSG2rgBtHBb+xn7p2yLzKP
- hRShpBlLR+FRf/8uFk7yLvd669gSD6fuaqdSOKDPLXBhXhuigQcF/4fNcjhXUh8rnTyN
- oF0g==
+ id 1lbckf-00HBbA-6R
+ for linux-mtd@lists.infradead.org; Wed, 28 Apr 2021 05:28:46 +0000
+Received: by mail-yb1-xb4a.google.com with SMTP id
+ q132-20020a25d98a0000b02904ee0668e15bso7605884ybg.4
+ for <linux-mtd@lists.infradead.org>; Tue, 27 Apr 2021 22:28:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=date:message-id:mime-version:subject:from:to:cc;
+ bh=fx7vPqk/u89PVg1T4cJ8wHcLfNDs90uQPpODd7f8SmI=;
+ b=WI/UfsWtCK2MyrZgzlYnMET5R+hL1DkqbfeRyxi+2yNGTOplf7gIiZ+KXxP4KwoDT5
+ iXUzZEY+AevdWksG/0UWjiC3AnkZ0wRKE7Lb7urhi1/b/wDQaLkJD4llZQH4geQILdBe
+ T5Y0nep3OZVSzpjd3jelbK+TkYeFiPiUnpNP9a1RkxDMY4z8O5fUKjAX2eQPvN053uMG
+ QqE4V2pCyuqcT6COgnx4npbKTo/uqNGCq2hhwHWEbOUhZJ6VWW40bQhju8k5jXXwnENa
+ ryE6QMOIUFU/5TnWwY9GKL7H3uuprsGSakQb4RQeDmSdSeTCm63ibeZwjlCGD1D6byaL
+ Y+hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=1c9USNyud8PJeEJI49mh7QL/r1WaYoN5sOTMDFWn1zM=;
- b=QVJrYREYVmmmMmazZsr8Mj4YmFmcFmC7g2xShYWNd9Oal+umRPHi7M0wO8DtSyY9aL
- BDUxqDq4x0WeYFACu+RRQehc1KL3YfqumFIc0Jlkuj6kS/0Q9MJgvAJrFtIjrmSgALnq
- IvqW6q4BMs1VPuqfGI3+PkE41DD9u4dM9FRGQv59Zdbd03uD0TGGzK1aGHeWSY99e6er
- cJ0bQpGMqZzaKXswS+CVQzCTWCLQ6oVFy9ccdSIqkFMfHMvCK3V88rniN7Js2bO1D5bC
- ULwdNfp4P5MBoITPykk3Cl5FbUaz5FxcEwkUltydmNng0GzzqvN3gbZAWqfkexBaN4ML
- Wv5w==
-X-Gm-Message-State: AOAM530VqoGw473Y0ELdiA1tuODdwnXMLuNPxHRsFnr5k4s2ERMdLewv
- 4m372vAHof4vHiaAPu7/j4y3Qi3z4BQ=
-X-Google-Smtp-Source: ABdhPJy+w373HkVYWADbiiB7QH9HOqtOm05ZoNTveV1qbc5JatqRm6EvBmDQMO6U5PWZ6R6f1BkU+A==
-X-Received: by 2002:a63:be08:: with SMTP id l8mr9478205pgf.438.1619507377342; 
- Tue, 27 Apr 2021 00:09:37 -0700 (PDT)
-Received: from ISCNPF1JZGWX.infineon.com
- (zz20174137476F6254EB.userreverse.dion.ne.jp. [111.98.84.235])
- by smtp.gmail.com with ESMTPSA id u189sm1589803pfb.151.2021.04.27.00.09.34
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 27 Apr 2021 00:09:37 -0700 (PDT)
-From: tkuw584924@gmail.com
-X-Google-Original-From: Takahiro.Kuwano@infineon.com
-To: linux-mtd@lists.infradead.org
-Cc: tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, p.yadav@ti.com, tkuw584924@gmail.com,
- Bacem.Daassi@infineon.com, Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH v5 6/6] mtd: spi-nor: spansion: Add s25hl-t/s25hs-t IDs and
- fixups
-Date: Tue, 27 Apr 2021 16:09:01 +0900
-Message-Id: <28d1a4015f37156a8bebe88959ea643e64b030f8.1619504535.git.Takahiro.Kuwano@infineon.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1619504535.git.Takahiro.Kuwano@infineon.com>
-References: <cover.1619504535.git.Takahiro.Kuwano@infineon.com>
-MIME-Version: 1.0
+ h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+ bh=fx7vPqk/u89PVg1T4cJ8wHcLfNDs90uQPpODd7f8SmI=;
+ b=JhYESurclgnVLFFnY19cZDPemV40QEAarvHwBhI15dvi9xe7h28VXwm5QohIlQz5O5
+ 0mFeIkJPkeGLY4DOavf0Svm4L6B6ifePO+kqX7JZr0LksMLQJztEJiFJ2dGisTbKMR9b
+ tDbOBGy1R24/iNxXwytbGry4p6vgTsDmizounfNyHQV56IF+3Nanegt6n45fIzEF83g5
+ 7sHnSDnZuVtrAdgDz6LJTyFdATvWIPuFqj2zeAR7C7LuCDsMcRTLc+NXz5sm7qaynd6o
+ xZVERpL6otMzxpOGKsD4/5op3GIso/RWvZPOTP7uTW/QSk/4ZkkQmXmHJiyf/ZrA3Qct
+ blow==
+X-Gm-Message-State: AOAM531j7NbQ0CE1+F0ecLFS/QN1VWoEx7bptKjTSqyPze4KrYFpCCid
+ 3jF1xf3ArEzvANNEAxI0nRSMsUvy6w==
+X-Google-Smtp-Source: ABdhPJwLCfun3+Cpls2Ncq0PflIJ5DGzWXDHMSBpoht8YFI4VKrO3BWrLCODE/Aaub22hLjkZM7MGpVKKQ==
+X-Received: from peanut.svl.corp.google.com
+ ([2620:15c:2c5:1:db71:d573:45a1:86c9])
+ (user=awill job=sendgmr) by 2002:a25:ab83:: with SMTP id
+ v3mr8868507ybi.400.1619587722204; 
+ Tue, 27 Apr 2021 22:28:42 -0700 (PDT)
+Date: Tue, 27 Apr 2021 22:27:25 -0700
+Message-Id: <20210428052725.530939-1-awill@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
+Subject: [PATCH 1/3] mtd: spi-nor: Export SFDP access to sysfs
+From: Alexander Williams <awill@google.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, 
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc: Michael Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>,
+ linux-mtd@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, Alexander Williams <awill@google.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210427_000938_686126_D7CBB0D5 
-X-CRM114-Status: GOOD (  24.97  )
+X-CRM114-CacheID: sfid-20210427_222845_296669_968D87E1 
+X-CRM114-Status: GOOD (  23.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -117,175 +112,211 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Add the ability to specify a technology-specific attribute_group, and
+expose the SFDP through spi-nor's private group. This enables user space
+to have full access to the contents of the SFDP, so all information is
+available without regard for whether the kernel supports parsing it.
 
-The S25HL-T/S25HS-T family is the Cypress Semper Flash with Quad SPI.
-
-For the single-die package parts (512Mb and 1Gb), only bottom 4KB and
-uniform sector sizes are supported. For the multi-die package parts (2Gb),
-only uniform sector sizes is supprted. This is due to missing or incorrect
-entries in SMPT. Fixup for other sector sizes configurations will be
-followed up as needed.
-
-Tested on Xilinx Zynq-7000 FPGA board.
-
-Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+Signed-off-by: Alexander Williams <awill@google.com>
 ---
-Changes in v5:
-  - Add NO_CHIP_ERASE flag to S25HL02GT and S25HS02GT
+ drivers/mtd/mtdcore.c      | 17 ++++++++++++++++-
+ drivers/mtd/spi-nor/core.c | 39 ++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/spi-nor/core.h |  2 ++
+ drivers/mtd/spi-nor/sfdp.c | 10 ++++++++--
+ drivers/mtd/spi-nor/sfdp.h |  2 ++
+ include/linux/mtd/mtd.h    |  1 +
+ 6 files changed, 68 insertions(+), 3 deletions(-)
 
-Changes in v4:
-  - Merge block comments about SMPT in s25hx_t_post_sfdp_fixups()
-  - Remove USE_CLSR flags from S25HL02GT and S25HS02GT
-
-Changes in v3:
-  - Remove S25HL256T and S25HS256T
-  - Add S25HL02GT and S25HS02GT 
-  - Add support for multi-die package parts support
-  - Remove erase_map fix for top/split sector layout
-  - Set ECC data unit size (16B) to writesize 
-
- drivers/mtd/spi-nor/spansion.c | 117 +++++++++++++++++++++++++++++++++
- 1 file changed, 117 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 79d3249ed0aa..b3b006874b4f 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -229,6 +229,103 @@ static int spansion_mdp_ready(struct spi_nor *nor, u8 reg_dummy, u32 die_size)
- 	return 1;
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 9aaeadd53eb4..65dc956e7d47 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -667,10 +667,20 @@ int add_mtd_device(struct mtd_info *mtd)
+ 	dev_set_name(&mtd->dev, "mtd%d", i);
+ 	dev_set_drvdata(&mtd->dev, mtd);
+ 	of_node_get(mtd_get_of_node(mtd));
+-	error = device_register(&mtd->dev);
++	device_initialize(&mtd->dev);
++	dev_set_uevent_suppress(&mtd->dev, 1);
++	error = device_add(&mtd->dev);
+ 	if (error)
+ 		goto fail_added;
+ 
++	if (master->priv_attr_group) {
++		error = devm_device_add_group(&mtd->dev, master->priv_attr_group);
++		WARN_ON(error);
++		error = 0;
++	}
++	dev_set_uevent_suppress(&mtd->dev, 0);
++	kobject_uevent(&mtd->dev.kobj, KOBJ_ADD);
++
+ 	/* Add the nvmem provider */
+ 	error = mtd_nvmem_add(mtd);
+ 	if (error)
+@@ -719,6 +729,7 @@ int del_mtd_device(struct mtd_info *mtd)
+ {
+ 	int ret;
+ 	struct mtd_notifier *not;
++	struct mtd_info *master = mtd_get_master(mtd);
+ 
+ 	mutex_lock(&mtd_table_mutex);
+ 
+@@ -743,6 +754,10 @@ int del_mtd_device(struct mtd_info *mtd)
+ 		if (mtd->nvmem)
+ 			nvmem_unregister(mtd->nvmem);
+ 
++		if (master->priv_attr_group) {
++			devm_device_remove_group(&mtd->dev,
++						 master->priv_attr_group);
++		}
+ 		device_unregister(&mtd->dev);
+ 
+ 		idr_remove(&mtd_idr, mtd->index);
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index bd2c7717eb10..1eec1ce44882 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3058,6 +3058,44 @@ static const struct flash_info *spi_nor_get_flash_info(struct spi_nor *nor,
+ 	return info;
  }
  
-+static int s25hx_t_quad_enable(struct spi_nor *nor)
-+{
-+	return spansion_quad_enable_volatile(nor, 0, SZ_128M);
-+}
-+
-+static int s25hx_t_mdp_ready(struct spi_nor *nor)
-+{
-+	return spansion_mdp_ready(nor, 0, SZ_128M);
-+}
-+
-+static int
-+s25hx_t_post_bfpt_fixups(struct spi_nor *nor,
-+			 const struct sfdp_parameter_header *bfpt_header,
-+			 const struct sfdp_bfpt *bfpt,
-+			 struct spi_nor_flash_parameter *params)
++static ssize_t sfdp_read(struct file *file, struct kobject *kobj,
++			 struct bin_attribute *attr, char *buf, loff_t offset,
++			 size_t len)
 +{
 +	int ret;
-+	u32 addr;
-+	u8 cfr3v;
++	struct spi_nor *nor;
++	struct device *dev = kobj_to_dev(kobj);
++	struct mtd_info *mtd = container_of(dev, struct mtd_info, dev);
 +
-+	ret = spi_nor_set_4byte_addr_mode(nor, true);
++	mtd = mtd_get_master(mtd);
++	nor = mtd_to_spi_nor(mtd);
++
++	if (nor->params->sfdp_size == 0)
++		return 0;
++
++	if (nor->info->flags & SPI_NOR_SKIP_SFDP)
++		return -EOPNOTSUPP;
++
++	len = min_t(size_t, len, nor->params->sfdp_size - offset);
++	ret = spi_nor_read_sfdp_dma_unsafe(nor, offset, len, buf);
++
 +	if (ret)
 +		return ret;
-+	nor->addr_width = 4;
-+
-+	/* Replace Quad Enable with volatile version */
-+	params->quad_enable = s25hx_t_quad_enable;
-+
-+	/*
-+	 * The page_size is set to 512B from BFPT, but it actually depends on
-+	 * the configuration register. Look up the CFR3V and determine the
-+	 * page_size. For multi-die package parts, use 512B only when the all
-+	 * dies are configured to 512B buffer.
-+	 */
-+	for (addr = 0; addr < params->size; addr += SZ_128M) {
-+		ret = spansion_read_any_reg(nor,
-+					    addr + SPINOR_REG_CYPRESS_CFR3V, 0,
-+					    &cfr3v);
-+		if (ret)
-+			return ret;
-+
-+		if (!(cfr3v & SPINOR_REG_CYPRESS_CFR3V_PGSZ)) {
-+			params->page_size = 256;
-+			return 0;
-+		}
-+	}
-+	params->page_size = 512;
-+
-+	return 0;
++	return len;
 +}
 +
-+void s25hx_t_post_sfdp_fixups(struct spi_nor *nor)
-+{
-+	/* Fast Read 4B requires mode cycles */
-+	nor->params->reads[SNOR_CMD_READ_FAST].num_mode_clocks = 8;
++static BIN_ATTR_RO(sfdp, 0);
 +
-+	/* The writesize should be ECC data unit size */
-+	nor->params->writesize = 16;
-+
-+	/*
-+	 * For the single-die package parts (512Mb and 1Gb), bottom 4KB and
-+	 * uniform sector maps are correctly populated in the erase_map
-+	 * structure. The table below shows all possible combinations of related
-+	 * register bits and its availability in SMPT.
-+	 *
-+	 *   CFR3[3] | CFR1[6] | CFR1[2] | Sector Map | Available in SMPT?
-+	 *  -------------------------------------------------------------------
-+	 *      0    |    0    |    0    | Bottom     | YES
-+	 *      0    |    0    |    1    | Top        | NO (decoded as Split)
-+	 *      0    |    1    |    0    | Split      | NO
-+	 *      0    |    1    |    1    | Split      | NO (decoded as Top)
-+	 *      1    |    0    |    0    | Uniform    | YES
-+	 *      1    |    0    |    1    | Uniform    | NO
-+	 *      1    |    1    |    0    | Uniform    | NO
-+	 *      1    |    1    |    1    | Uniform    | NO
-+	 *  -------------------------------------------------------------------
-+	 *
-+	 * For the dual-die package parts (2Gb), SMPT parse fails due to
-+	 * incorrect SMPT entries and the erase map is populated as 4K uniform
-+	 * that does not supported the parts. So it needs to be rolled back to
-+	 * 256K uniform that is the factory default of multi-die package parts.
-+	 */
-+	if (nor->params->size > SZ_128M) {
-+		spi_nor_init_uniform_erase_map(&nor->params->erase_map,
-+					       BIT(SNOR_ERASE_TYPE_MAX - 1),
-+					       nor->params->size);
-+
-+		/* Need to check status of each die via RDAR command */
-+		nor->params->ready = s25hx_t_mdp_ready;
-+	}
-+}
-+
-+static struct spi_nor_fixups s25hx_t_fixups = {
-+	.post_bfpt = s25hx_t_post_bfpt_fixups,
-+	.post_sfdp = s25hx_t_post_sfdp_fixups
++static struct bin_attribute *spi_nor_bin_attrs[] = {
++	&bin_attr_sfdp,
++	NULL,
 +};
 +
- /**
-  * spi_nor_cypress_octal_dtr_enable() - Enable octal DTR on Cypress flashes.
-  * @nor:		pointer to a 'struct spi_nor'
-@@ -479,6 +576,26 @@ static const struct flash_info spansion_parts[] = {
- 	{ "s25fl256l",  INFO(0x016019,      0,  64 * 1024, 512,
- 			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
- 			     SPI_NOR_4B_OPCODES) },
-+	{ "s25hl512t",  INFO6(0x342a1a, 0x0f0390, 256 * 1024, 256,
-+			     SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR)
-+	  .fixups = &s25hx_t_fixups },
-+	{ "s25hl01gt",  INFO6(0x342a1b, 0x0f0390, 256 * 1024, 512,
-+			     SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR)
-+	  .fixups = &s25hx_t_fixups },
-+	{ "s25hl02gt",  INFO6(0x342a1c, 0x0f0090, 256 * 1024, 1024,
-+			     SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+			     NO_CHIP_ERASE)
-+	  .fixups = &s25hx_t_fixups },
-+	{ "s25hs512t",  INFO6(0x342b1a, 0x0f0390, 256 * 1024, 256,
-+			     SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR)
-+	  .fixups = &s25hx_t_fixups },
-+	{ "s25hs01gt",  INFO6(0x342b1b, 0x0f0390, 256 * 1024, 512,
-+			     SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR)
-+	  .fixups = &s25hx_t_fixups },
-+	{ "s25hs02gt",  INFO6(0x342b1c, 0x0f0090, 256 * 1024, 1024,
-+			     SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+			     NO_CHIP_ERASE)
-+	  .fixups = &s25hx_t_fixups },
- 	{ "cy15x104q",  INFO6(0x042cc2, 0x7f7f7f, 512 * 1024, 1,
- 			      SPI_NOR_NO_ERASE) },
- 	{ "s28hs512t",   INFO(0x345b1a,      0, 256 * 1024, 256,
++static struct attribute_group spi_nor_group = {
++	.name		= "spi-nor",
++	.bin_attrs	= spi_nor_bin_attrs,
++};
++
+ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 		 const struct spi_nor_hwcaps *hwcaps)
+ {
+@@ -3122,6 +3160,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 	if (!mtd->name)
+ 		mtd->name = dev_name(dev);
+ 	mtd->priv = nor;
++	mtd->priv_attr_group = &spi_nor_group;
+ 	mtd->type = MTD_NORFLASH;
+ 	mtd->writesize = nor->params->writesize;
+ 	mtd->flags = MTD_CAP_NORFLASH;
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 28a2e0be97a3..18e27725fafb 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -240,6 +240,7 @@ struct spi_nor_otp {
+  * @rdsr_dummy:		dummy cycles needed for Read Status Register command.
+  * @rdsr_addr_nbytes:	dummy address bytes needed for Read Status Register
+  *			command.
++ * @sfdp_size		discovered size of the SFDP.
+  * @hwcaps:		describes the read and page program hardware
+  *			capabilities.
+  * @reads:		read capabilities ordered by priority: the higher index
+@@ -268,6 +269,7 @@ struct spi_nor_flash_parameter {
+ 	u32				page_size;
+ 	u8				rdsr_dummy;
+ 	u8				rdsr_addr_nbytes;
++	u32				sfdp_size;
+ 
+ 	struct spi_nor_hwcaps		hwcaps;
+ 	struct spi_nor_read_command	reads[SNOR_CMD_READ_MAX];
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index 23c28e91f698..221c7dc1aee1 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -210,8 +210,8 @@ static int spi_nor_read_sfdp(struct spi_nor *nor, u32 addr,
+  * Return: -ENOMEM if kmalloc() fails, the return code of spi_nor_read_sfdp()
+  *          otherwise.
+  */
+-static int spi_nor_read_sfdp_dma_unsafe(struct spi_nor *nor, u32 addr,
+-					size_t len, void *buf)
++int spi_nor_read_sfdp_dma_unsafe(struct spi_nor *nor, u32 addr, size_t len,
++				 void *buf)
+ {
+ 	void *dma_safe_buf;
+ 	int ret;
+@@ -1247,6 +1247,7 @@ int spi_nor_parse_sfdp(struct spi_nor *nor)
+ 	struct device *dev = nor->dev;
+ 	size_t psize;
+ 	int i, err;
++	u32 param_limit;
+ 
+ 	/* Get the SFDP header. */
+ 	err = spi_nor_read_sfdp_dma_unsafe(nor, 0, sizeof(header), &header);
+@@ -1266,6 +1267,7 @@ int spi_nor_parse_sfdp(struct spi_nor *nor)
+ 	if (SFDP_PARAM_HEADER_ID(bfpt_header) != SFDP_BFPT_ID ||
+ 	    bfpt_header->major != SFDP_JESD216_MAJOR)
+ 		return -EINVAL;
++	nor->params->sfdp_size = sizeof(header);
+ 
+ 	/*
+ 	 * Allocate memory then read all parameter headers with a single
+@@ -1299,6 +1301,10 @@ int spi_nor_parse_sfdp(struct spi_nor *nor)
+ 	 */
+ 	for (i = 0; i < header.nph; i++) {
+ 		param_header = &param_headers[i];
++		param_limit = SFDP_PARAM_HEADER_PTP(param_header)
++				+ param_header->length * 4;
++		nor->params->sfdp_size = max(param_limit,
++					     nor->params->sfdp_size);
+ 
+ 		if (SFDP_PARAM_HEADER_ID(param_header) == SFDP_BFPT_ID &&
+ 		    param_header->major == SFDP_JESD216_MAJOR &&
+diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
+index bbf80d2990ab..17548b320397 100644
+--- a/drivers/mtd/spi-nor/sfdp.h
++++ b/drivers/mtd/spi-nor/sfdp.h
+@@ -108,5 +108,7 @@ struct sfdp_parameter_header {
+ };
+ 
+ int spi_nor_parse_sfdp(struct spi_nor *nor);
++int spi_nor_read_sfdp_dma_unsafe(struct spi_nor *nor, u32 addr, size_t len,
++				 void *buf);
+ 
+ #endif /* __LINUX_MTD_SFDP_H */
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index a89955f3cbc8..2ef1f7e2db76 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -374,6 +374,7 @@ struct mtd_info {
+ 	int subpage_sft;
+ 
+ 	void *priv;
++	struct attribute_group *priv_attr_group;
+ 
+ 	struct module *owner;
+ 	struct device dev;
 -- 
-2.25.1
+2.31.1.527.g47e6f16901-goog
 
 
 ______________________________________________________
