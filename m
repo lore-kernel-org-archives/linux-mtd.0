@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64CCBC433ED
-	for <linux-mtd@archiver.kernel.org>; Wed, 28 Apr 2021 22:32:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12839C433ED
+	for <linux-mtd@archiver.kernel.org>; Wed, 28 Apr 2021 22:32:52 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0162161434
-	for <linux-mtd@archiver.kernel.org>; Wed, 28 Apr 2021 22:32:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0162161434
+	by mail.kernel.org (Postfix) with ESMTPS id A6F386143A
+	for <linux-mtd@archiver.kernel.org>; Wed, 28 Apr 2021 22:32:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A6F386143A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,35 +23,35 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Dm8O9olY9L1Q8Aapqh7gjz3OuPICmB4M/qEgXmM9LDY=; b=Q5W3wK+nsy6t39rUlqSvvMBsC
-	q0o0XbPb+iO4OAJiuOZbPY9myWzwoS0epZYaH1MfY5nvSDSiN1sjbFvwbSLie94sOayyEuH0MZctR
-	RmGcmZrvXUn8l4DVPtvjomPMZLkAkX5upfIbDHHdGj1cwNeQJLZrWYR7U4ujuH6QDNvEEOPTfsYVi
-	aNGkEOpLJ1jyjb9FhNMqla5nbHjQFxvIaEg1Niagcxy/7P7U4F43gLfzK7WM99lHh6E26qOBFayRC
-	3BNJ/Da7eT5iLXBJhGBugwKH7FYobzZzTvzJLqSkBk3r0TTXdfFYtLEfkEHMW7AZft4R6LkT2Uu5Z
-	xXNOTX2vw==;
+	 bh=oQF1slCYU3gs4tAD093w6o0Cx5A3q3taHDLGh13p+bQ=; b=hz5zS0wKEfUSBKOeZA16Qs5IH
+	CbtOyCgm3yXXZwuYusBC6KFsPHIDbSIN7qDp5sHaW538v3oUnkE+a7y2emWVBxiS+uQN3CxHj2CSK
+	E7gqYk7+Msg5YtRaWM2xWbbrSM11JbTbXhyoEHBvRqzi3KGP3enLyDrA7d1R06Rkze50iM7ka2qho
+	oLGxrIDZgvzhieUCbQwqQZ/xOWNO0kVuokGZhwjmkim0Z3sgfpuSkldCPxKtQaQBgqTgwSKXasqpC
+	5nuNfK9Vk94Q43hEEfkKQnF+NUAFkTr7VEKWIqC3uqi7A0G9vw2FIt5jofx90seHWQBsFWZkYRnDp
+	XmFPsCDLw==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lbshY-004NnR-SU; Wed, 28 Apr 2021 22:30:37 +0000
+	id 1lbsig-004NzM-Ou; Wed, 28 Apr 2021 22:31:47 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lbsh0-004NkS-QF; Wed, 28 Apr 2021 22:30:03 +0000
+ id 1lbsh1-004Nkf-W4; Wed, 28 Apr 2021 22:30:04 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
  MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
  :Reply-To:Content-Type:Content-ID:Content-Description;
- bh=Bp7c+tX7VYf0yWKatEojI07w/K09SAC+imw6TqDGNH4=; b=T6Oo2T4Rjq1j3TSkeOeMWN3QJY
- 3/YcWlBOn4rkILICI6YGaRqVhJrUHq62bZtY55ZwkDv7nnMnMVNXXJlsZVqDAWTnUempHO06wn6Dh
- DKilBL33fjfe3Nf2FIsYGUVJL65XeQYDc4C/KiBgZ8yIu+5ON9mw7ZR559KfN7N0e0D4M737t8LeN
- l3c95FKSIJIj3RxnsWbLm8ynfxpFeUsGuVMgkw9eyegObH2ckEPxMZtLhka5L9Ia4VlyjD/2scnS5
- 6zwNqi0D94jg0MeTPJeJuZdcCJkxCYWHdVcVUgN3pRfrX4A8RZoo/SwNY+tEcZ/chmXZn3jZxZAfT
- 4nEeHcqw==;
+ bh=/N0HVk0t3uzPL3BGFxeqMxiszRR79/oNr0jso/7nr5E=; b=WZKQtwKN8xIM54ka0pvrV4Nokr
+ 1MD/Bzkemfcs6iAsWDeUzl0nrCdpHE8/6OwbT6yTZ7DjurAXkcbm2cLYZLmDo4iEzwmWElhOG+L1D
+ vBdJAME2pIczIfUsWKF5TOnYDuAaZOV0KcQp/0nHDOmm2KpFsqX//wWGN2j2KPLpinP+/3Jt5WvjB
+ lBMC/19rs2ARj4cbp+AAudoLsEy05ebG3ZxpIsfwgH+ddTMoUv1BrPZQwINeGcIjfmTWwOk9bVt9M
+ 9vTv2mqodt75mePfjMo72LzSMKQf+nvuNYKLgmvBt1iShUng/Xp2dJWfVo1v6O611XtAOKTNO7uwg
+ 92B/38zg==;
 Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lbsgy-000EAK-3r; Wed, 28 Apr 2021 22:30:01 +0000
+ id 1lbsgy-000EAH-5L; Wed, 28 Apr 2021 22:30:02 +0000
 Received: from [127.0.0.1] (localhost [127.0.0.1]) (Authenticated sender: sre)
- with ESMTPSA id D38341F42CAA
+ with ESMTPSA id B5C2F1F42CA7
 Received: by jupiter.universe (Postfix, from userid 1000)
- id AECB64800C7; Thu, 29 Apr 2021 00:29:53 +0200 (CEST)
+ id B1DF34800C8; Thu, 29 Apr 2021 00:29:53 +0200 (CEST)
 From: Sebastian Reichel <sebastian.reichel@collabora.com>
 To: Sebastian Reichel <sebastian.reichel@collabora.com>,
  Philipp Zabel <p.zabel@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>,
@@ -66,16 +66,16 @@ Cc: Rob Herring <robh+dt@kernel.org>,
  dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
  linux-mtd@lists.infradead.org, kernel@collabora.com
-Subject: [PATCHv2 3/5] dt-bindings: vendor-prefixes: add congatec
-Date: Thu, 29 Apr 2021 00:29:51 +0200
-Message-Id: <20210428222953.235280-4-sebastian.reichel@collabora.com>
+Subject: [PATCHv2 4/5] dt-bindings: arm: fsl: add GE B1x5pv2 boards
+Date: Thu, 29 Apr 2021 00:29:52 +0200
+Message-Id: <20210428222953.235280-5-sebastian.reichel@collabora.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210428222953.235280-1-sebastian.reichel@collabora.com>
 References: <20210428222953.235280-1-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210428_153000_306133_25815EB3 
-X-CRM114-Status: UNSURE (   8.52  )
+X-CRM114-CacheID: sfid-20210428_153000_366188_3938FA3F 
+X-CRM114-Status: UNSURE (   8.35  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -93,26 +93,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Document binding for congatec.
+Document the compatible for GE B1x5pv2 boards.
 
 Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/devicetree/bindings/arm/fsl.yaml | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index c88b1cfb52cb..10e3ce8a29c5 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -247,6 +247,8 @@ patternProperties:
-     description: Colorful GRP, Shenzhen Xueyushi Technology Ltd.
-   "^compulab,.*":
-     description: CompuLab Ltd.
-+  "^congatec,.*":
-+    description: congatec GmbH
-   "^coreriver,.*":
-     description: CORERIVER Semiconductor Co.,Ltd.
-   "^corpro,.*":
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index e3c50f231d71..6e5b14c75325 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -400,6 +400,17 @@ properties:
+           - const: armadeus,imx6dl-apf6         # APF6 (Solo) SoM
+           - const: fsl,imx6dl
+ 
++      - description: i.MX6DL based congatec QMX6 Boards
++        items:
++          - enum:
++              - ge,imx6dl-b105v2          # General Electric B105v2
++              - ge,imx6dl-b105pv2         # General Electric B105Pv2
++              - ge,imx6dl-b125v2          # General Electric B125v2
++              - ge,imx6dl-b125pv2         # General Electric B125Pv2
++              - ge,imx6dl-b155v2          # General Electric B155v2
++          - const: congatec,qmx6
++          - const: fsl,imx6dl
++
+       - description: i.MX6DL based DFI FS700-M60-6DL Board
+         items:
+           - const: dfi,fs700-m60-6dl
 -- 
 2.30.2
 
