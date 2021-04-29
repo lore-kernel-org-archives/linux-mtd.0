@@ -2,70 +2,71 @@ Return-Path: <SRS0=3Xy9=J2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DD10C433B4
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Apr 2021 15:58:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EFCDC433ED
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Apr 2021 15:58:32 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BBB8A6143E
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Apr 2021 15:58:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BBB8A6143E
+	by mail.kernel.org (Postfix) with ESMTPS id D0F1F6143E
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Apr 2021 15:58:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D0F1F6143E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=DJtaQJusggOHOeWzlqehTRsi0SkjLwY6pXo0EZqtJcw=; b=OYgqmawpbT3dC7OyOrZm2AoUtV
-	Cm1inIy7vII4mn5ZJZhjuMhpheiVVf2R6HJ4H0xCD9XO0L6SEGs/2iJabknFs+uSnpujpfpe3oG1m
-	mGgCPAqcYm1n5pAg0ppnbl/dQLKbwQGj+MEa2CWUEJ0WDg7NXvqi83CQnBt+Nyt5LO8O57YFre56V
-	SBjCICX7bGCR+YdB2P4J1xfhExprwO5oMnbhI9B7ytDf6eWYTe0wXAyWey2GtQMZ+g4gFaGWZydI0
-	RZYkL1g7cG8eqT6wHTRWNYim7CDMZA/bctw/WYtnPpj0H7FzogZ1Mjn6Bjy2VaNpWtHFW0FNRGc3M
-	M2ftdkXg==;
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
+	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=Tsm8zk5O4/p6H/evnxcz4svhPdB4+k0nNcpqH6kpWwo=; b=cYh2HmP5EREG3yj9hx4lVev6H
+	msBv1LGQdKJDBu2iNDLdL5x33N5T/e994bmbWsytqW0dqvPBaQkqxoy4Z0wGiRDT7bY0xMTMYaQMh
+	kzkkRqxy30rZW9PMNb3DB/QsUXlRVcGiTv/CuUxdhmDcUb0CV42CxLKeilDxBaE2/NYT06VmrhJsT
+	WmNO10ux5FwKS6l1Dh5Mt2oVl2FuhXk00l3Bz9C3bQUmKOngdSFZsSpQ8hjcj7izxrO+Pr6ksgeJU
+	2tVuKoQvr6eQUeqw343bgDIbZer869PDdzU7pwSQG0Mlbikctbua2YX0z7JjmydYNt0S2ZI18zG2o
+	BzATi5O8g==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lc92m-0060xf-Lx; Thu, 29 Apr 2021 15:57:36 +0000
+	id 1lc92z-0060yI-7b; Thu, 29 Apr 2021 15:57:49 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lc92j-0060x8-2y
- for linux-mtd@desiato.infradead.org; Thu, 29 Apr 2021 15:57:33 +0000
+ id 1lc92j-0060xB-Ab
+ for linux-mtd@desiato.infradead.org; Thu, 29 Apr 2021 15:57:34 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
- MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
- Content-ID:Content-Description:In-Reply-To:References;
- bh=HpaxG8rm84ZVuaYd7aNZxfINyI92WQzUWLGtZtmfac8=; b=QtdB5H9ri8j+rDHl67VXH6WPct
- uyHZmDG/PMz+xWwwpUYFsocFunREJPnI8Q7ZNH4XfugcLmp6t3DirU6Y3dFoSshN4IDcLQ/mJXuPD
- e+rGfLqLolxQb6YJqpgdQheB3F5ZHhuw0p53k319dlss108DwPPJce9OSY1TrLQqvP49fXLT+Rncq
- BaG4D68FNJuMPsMqFfh5LbRK0Tk9mbgFm35Gj3kjMP5PETH5z6ZLUQmB7qhWAd8tA7pb++6yTDOqK
- rys2Xb98yt/sSCbWiDb87nv4od7IVGXJGw/PXdBpaz0mNYNcrSoetbNRgljBs+x4JYueDA+ATns3X
- ygmFHvoA==;
-Received: from ssl.serverraum.org ([176.9.125.105])
+ MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+ :Reply-To:Content-Type:Content-ID:Content-Description;
+ bh=V2X21HuGTUdM2Io/0bU9GiSkqESjo7sAPKicVUL4PXc=; b=SI7FIRKB01nE2dPQiZZV/1mZyz
+ KIIOSktAuDck1Fu4u6OOpLQcuA8PNnKbRsH1pdYh0TeAI03d0ilcEeKZFLgBB7kWllwJwf6heIoQK
+ +um/7GrzAzq8LtL3Ira/NiRDe61Pw0sbHPvbVVjSVZDQnl+CaW5IlqNnsv7/eWPUQHZZ6cx5k4V2q
+ toAFTYvrlK2XNFFacQRGouYKK/vhMR8LLW6psOQmMHuef5S9fYPI7RknZtIgYAtT9UBiY1s6mqvBZ
+ H7SqkcV8yGGU+4wVuaRV2zMXIN/9aoS/pPpBrjzMitUbPn3AzdrQXg7hqMgI7z6a37rd+UoDJanM6
+ s0OepwOg==;
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lc92g-000k0Z-5a
- for linux-mtd@lists.infradead.org; Thu, 29 Apr 2021 15:57:31 +0000
+ id 1lc92g-000k0a-CJ
+ for linux-mtd@lists.infradead.org; Thu, 29 Apr 2021 15:57:32 +0000
 Received: from mwalle01.fritz.box (unknown
  [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 14E4F22173;
- Thu, 29 Apr 2021 17:57:26 +0200 (CEST)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 5B26722205;
+ Thu, 29 Apr 2021 17:57:28 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
  s=mail2016061301; t=1619711848;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding;
- bh=HpaxG8rm84ZVuaYd7aNZxfINyI92WQzUWLGtZtmfac8=;
- b=gJZKOFRG8OKB8slf+vsoR1ECI/6/hpvbWhABptC0NI6f5mYWP5cvSDzBwG2yFRsIsJkjA+
- R+M05qxI2IaYvO3ox4VrS4bKoxuBWh7NrFvHe0mHOqmtYT6w2o4sDk9r8InyaLP254EmS9
- 7gUQqsndTdpv3XGzRYBjgPmciTEDEGo=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=V2X21HuGTUdM2Io/0bU9GiSkqESjo7sAPKicVUL4PXc=;
+ b=DEi0YjIuJ+6zAcZ5cWsl7X3q3FEr/uPq7P93r6xhv89BNHRA9DFZHZ4gt2yK3sgBl6KH0V
+ G7st/STC0MFp3OYwfJZMAVLNzJBNn4YfIeA0y0umjIOQ+mSUiDFMxJ5hsBtzYJVlds1NmU
+ qThHZQpcSZt+s9Pq0iDHNHWOiEo/bM8=
 From: Michael Walle <michael@walle.cc>
 To: linux-kernel@vger.kernel.org,
 	linux-mtd@lists.infradead.org
@@ -75,15 +76,16 @@ Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Alexander Williams <awill@google.com>,
  Yicong Yang <yangyicong@hisilicon.com>,
  Heiko Thiery <heiko.thiery@gmail.com>, Michael Walle <michael@walle.cc>
-Subject: [PATCH v3 0/2] mtd: spi-nor: support dumping sfdp tables
-Date: Thu, 29 Apr 2021 17:57:11 +0200
-Message-Id: <20210429155713.28808-1-michael@walle.cc>
+Subject: [PATCH v3 1/2] mtd: spi-nor: sfdp: save a copy of the SFDP data
+Date: Thu, 29 Apr 2021 17:57:12 +0200
+Message-Id: <20210429155713.28808-2-michael@walle.cc>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210429155713.28808-1-michael@walle.cc>
+References: <20210429155713.28808-1-michael@walle.cc>
 MIME-Version: 1.0
-X-Spam: Yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210429_085730_381977_CC950B49 
-X-CRM114-Status: GOOD (  18.24  )
+X-CRM114-CacheID: sfid-20210429_085730_754838_59C89687 
+X-CRM114-Status: GOOD (  22.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,58 +102,150 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add the possibility to dump the SFDP data of a flash device.
+Due to possible mode switching to 8D-8D-8D, it might not be possible to
+read the SFDP after the initial probe. To be able to dump the SFDP via
+sysfs afterwards, make a complete copy of it.
 
-More and more flash devices share the same flash ID and we need per device
-fixups. Usually, these fixups differentiate flashes by looking at
-differences in the SFDP data. Determining the difference is only possible
-if we have the SFDP data for all the flashes which share a flash ID. This
-will lay the foundation to dump the whole SFDP data of a flash device.
+Signed-off-by: Michael Walle <michael@walle.cc>
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+Tested-by: Heiko Thiery <heiko.thiery@gmail.com>
+---
+ drivers/mtd/spi-nor/core.h  | 10 +++++++
+ drivers/mtd/spi-nor/sfdp.c  | 58 +++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/spi-nor.h |  2 ++
+ 3 files changed, 70 insertions(+)
 
-This is even more important, because some datasheets doesn't even contain
-the SFDP data. Fixups for these kind of flashes are nearly impossible to
-do.
-
-I envision having a database of all the SFDP data for the flashes we
-support and make it a requirement to submit it when a new flash is added.
-This might or might not have legal implications. Thus I'd start with having
-that database private to the SPI NOR maintainers.
-
-Changes since v2:
- - use .dev_groups of the driver to attach the attributes
- - add manufacturer attribue
- - rename attribute name to partname
- - add ABI documentation
-
-Changes since v1:
- - use sysfs_emit()
- - add comment about the allocation of the sfdp dwords
- - free SFDP memory in the error path
- - use BIN_ATTR_RO(sfdp, 0)
- - use spi_nor_read_sfdp()
-
-Changes since RFC:
- - Don't read SFDP data after probe. The flash might already be switched to
-   8D-8D-8D mode. Instead, cache the SFDP data
- - add two sysfs files: jedec-id and name
- - change the file mode of the sfdp file from 0400 to 0444. There is no
-   hardware access anymore.
-
-Michael Walle (2):
-  mtd: spi-nor: sfdp: save a copy of the SFDP data
-  mtd: spi-nor: add initial sysfs support
-
- .../ABI/testing/sysfs-bus-spi-devices-spi-nor | 31 +++++++
- drivers/mtd/spi-nor/Makefile                  |  2 +-
- drivers/mtd/spi-nor/core.c                    |  1 +
- drivers/mtd/spi-nor/core.h                    | 12 +++
- drivers/mtd/spi-nor/sfdp.c                    | 58 ++++++++++++
- drivers/mtd/spi-nor/sysfs.c                   | 92 +++++++++++++++++++
- include/linux/mtd/spi-nor.h                   |  2 +
- 7 files changed, 197 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
- create mode 100644 drivers/mtd/spi-nor/sysfs.c
-
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index b410e4eec2fb..92ee2f6551b3 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -460,6 +460,16 @@ struct spi_nor_manufacturer {
+ 	const struct spi_nor_fixups *fixups;
+ };
+ 
++/**
++ * struct sfdp - SFDP data
++ * @num_dwords: number of entries in the dwords array
++ * @dwords: array of double words of the SFDP data
++ */
++struct sfdp {
++	size_t	num_dwords;
++	u32	*dwords;
++};
++
+ /* Manufacturer drivers. */
+ extern const struct spi_nor_manufacturer spi_nor_atmel;
+ extern const struct spi_nor_manufacturer spi_nor_catalyst;
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index 23c28e91f698..c500c2118a5d 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -16,6 +16,7 @@
+ 	(((p)->parameter_table_pointer[2] << 16) | \
+ 	 ((p)->parameter_table_pointer[1] <<  8) | \
+ 	 ((p)->parameter_table_pointer[0] <<  0))
++#define SFDP_PARAM_HEADER_PARAM_LEN(p) ((p)->length * 4)
+ 
+ #define SFDP_BFPT_ID		0xff00	/* Basic Flash Parameter Table */
+ #define SFDP_SECTOR_MAP_ID	0xff81	/* Sector Map Table */
+@@ -1245,6 +1246,8 @@ int spi_nor_parse_sfdp(struct spi_nor *nor)
+ 	struct sfdp_parameter_header *param_headers = NULL;
+ 	struct sfdp_header header;
+ 	struct device *dev = nor->dev;
++	struct sfdp *sfdp;
++	size_t sfdp_size;
+ 	size_t psize;
+ 	int i, err;
+ 
+@@ -1267,6 +1270,9 @@ int spi_nor_parse_sfdp(struct spi_nor *nor)
+ 	    bfpt_header->major != SFDP_JESD216_MAJOR)
+ 		return -EINVAL;
+ 
++	sfdp_size = SFDP_PARAM_HEADER_PTP(bfpt_header) +
++		    SFDP_PARAM_HEADER_PARAM_LEN(bfpt_header);
++
+ 	/*
+ 	 * Allocate memory then read all parameter headers with a single
+ 	 * Read SFDP command. These parameter headers will actually be parsed
+@@ -1293,6 +1299,58 @@ int spi_nor_parse_sfdp(struct spi_nor *nor)
+ 		}
+ 	}
+ 
++	/*
++	 * Cache the complete SFDP data. It is not (easily) possible to fetch
++	 * SFDP after probe time and we need it for the sysfs access.
++	 */
++	for (i = 0; i < header.nph; i++) {
++		param_header = &param_headers[i];
++		sfdp_size = max_t(size_t, sfdp_size,
++				  SFDP_PARAM_HEADER_PTP(param_header) +
++				  SFDP_PARAM_HEADER_PARAM_LEN(param_header));
++	}
++
++	/*
++	 * Limit the total size to a reasonable value to avoid allocating too
++	 * much memory just of because the flash returned some insane values.
++	 */
++	if (sfdp_size > PAGE_SIZE) {
++		dev_dbg(dev, "SFDP data (%zu) too big, truncating\n",
++			sfdp_size);
++		sfdp_size = PAGE_SIZE;
++	}
++
++	sfdp = devm_kzalloc(dev, sizeof(*sfdp), GFP_KERNEL);
++	if (!sfdp) {
++		err = -ENOMEM;
++		goto exit;
++	}
++
++	/*
++	 * The SFDP is organized in chunks of DWORDs. Thus, in theory, the
++	 * sfdp_size should be a multiple of DWORDs. But in case a flash
++	 * is not spec compliant, make sure that we have enough space to store
++	 * the complete SFDP data.
++	 */
++	sfdp->num_dwords = DIV_ROUND_UP(sfdp_size, sizeof(*sfdp->dwords));
++	sfdp->dwords = devm_kcalloc(dev, sfdp->num_dwords,
++				    sizeof(*sfdp->dwords), GFP_KERNEL);
++	if (!sfdp->dwords) {
++		err = -ENOMEM;
++		devm_kfree(dev, sfdp);
++		goto exit;
++	}
++
++	err = spi_nor_read_sfdp(nor, 0, sfdp_size, sfdp->dwords);
++	if (err < 0) {
++		dev_dbg(dev, "failed to read SFDP data\n");
++		devm_kfree(dev, sfdp->dwords);
++		devm_kfree(dev, sfdp);
++		goto exit;
++	}
++
++	nor->sfdp = sfdp;
++
+ 	/*
+ 	 * Check other parameter headers to get the latest revision of
+ 	 * the basic flash parameter table.
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index 98ed91b529ea..f67457748ed8 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -383,6 +383,7 @@ struct spi_nor_flash_parameter;
+  * @read_proto:		the SPI protocol for read operations
+  * @write_proto:	the SPI protocol for write operations
+  * @reg_proto:		the SPI protocol for read_reg/write_reg/erase operations
++ * @sfdp:		the SFDP data of the flash
+  * @controller_ops:	SPI NOR controller driver specific operations.
+  * @params:		[FLASH-SPECIFIC] SPI NOR flash parameters and settings.
+  *                      The structure includes legacy flash parameters and
+@@ -412,6 +413,7 @@ struct spi_nor {
+ 	bool			sst_write_second;
+ 	u32			flags;
+ 	enum spi_nor_cmd_ext	cmd_ext_type;
++	struct sfdp		*sfdp;
+ 
+ 	const struct spi_nor_controller_ops *controller_ops;
+ 
 -- 
 2.20.1
 
