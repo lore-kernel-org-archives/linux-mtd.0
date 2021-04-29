@@ -2,86 +2,88 @@ Return-Path: <SRS0=3Xy9=J2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F26ACC433B4
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Apr 2021 15:47:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DD10C433B4
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Apr 2021 15:58:24 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 43A4E611BE
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Apr 2021 15:47:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 43A4E611BE
+	by mail.kernel.org (Postfix) with ESMTPS id BBB8A6143E
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Apr 2021 15:58:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BBB8A6143E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=CWHdjQgtKZDn6h8VJwzXrsNFPFrL0AAagNzfxec+uSw=; b=E6u1GLDVxjILA6QrunPZRr49l
-	f5aIRB3bXZpVdqqFQI+0z35t9HkDgGJ+g2dVZjx5oDRvETw6bez6ulIZj8JjvkKHWag2zdkuPjxc9
-	75qyEauTJLbjfArhMBFuGNlTX2qmRcpC6GvHKaKt/W3GxHn7pxXqURn3fIeoECNhp2pjCiSAU4sj3
-	y5ohXkW0xJU6K/3UGAlq+jYGBzmD0AnCfeAWWvI5B/DL7BrJtiEn2pVkh9HMj2MQAFB9FIeczmygj
-	ifiR/o25rptSEy5fS00wAvZXWHmgksOzugC2Y0m41n5sA8g3bv8iUNTi5/0/HR35LQr+SCjLWSF+d
-	AtW/VfZZw==;
+	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
+	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=DJtaQJusggOHOeWzlqehTRsi0SkjLwY6pXo0EZqtJcw=; b=OYgqmawpbT3dC7OyOrZm2AoUtV
+	Cm1inIy7vII4mn5ZJZhjuMhpheiVVf2R6HJ4H0xCD9XO0L6SEGs/2iJabknFs+uSnpujpfpe3oG1m
+	mGgCPAqcYm1n5pAg0ppnbl/dQLKbwQGj+MEa2CWUEJ0WDg7NXvqi83CQnBt+Nyt5LO8O57YFre56V
+	SBjCICX7bGCR+YdB2P4J1xfhExprwO5oMnbhI9B7ytDf6eWYTe0wXAyWey2GtQMZ+g4gFaGWZydI0
+	RZYkL1g7cG8eqT6wHTRWNYim7CDMZA/bctw/WYtnPpj0H7FzogZ1Mjn6Bjy2VaNpWtHFW0FNRGc3M
+	M2ftdkXg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lc8sI-0060Kz-Sm; Thu, 29 Apr 2021 15:46:46 +0000
+	id 1lc92m-0060xf-Lx; Thu, 29 Apr 2021 15:57:36 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lc8sF-0060Ks-U1
- for linux-mtd@desiato.infradead.org; Thu, 29 Apr 2021 15:46:44 +0000
+ id 1lc92j-0060x8-2y
+ for linux-mtd@desiato.infradead.org; Thu, 29 Apr 2021 15:57:33 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Message-ID:References:In-Reply-To:
- Subject:Cc:To:From:Date:Content-Transfer-Encoding:Content-Type:MIME-Version:
- Sender:Reply-To:Content-ID:Content-Description;
- bh=apqOvtdROCdFE2hHJqMrA9fP9E6tUl9T38xewx2r7fM=; b=R2XVSa2f/5VzNvVuooc1N9WQdw
- S5Q66LwevGnrxr2USO2dUQ4FKCTepYRgfkLOMk3QyGk6c30FN8cmszLqP+AWHCWgrRv6uW2Ciwa0J
- IE+6Ae075THcsp4ZCZBhINojGC9CxyXKDi0+HGnzy9AadfDMov/Z9lRYGbsUfN4pyfH6RZikcLznb
- dpVumn0MhO8sE8bRks5Gfku4yRzEAF8BFXrSIJ3hpWuG8HoHKtVaP7JLL2Tk/0JCl1e/tKlLkyjhj
- g9vUOny7spdCcgdKMgPKzW8blJb6InbS/Vsn+BJszhjsnczwcSMPfonjFtIhVAAUWcPOn2PF/7L0U
- zp51kJZw==;
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+ d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+ MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+ Content-ID:Content-Description:In-Reply-To:References;
+ bh=HpaxG8rm84ZVuaYd7aNZxfINyI92WQzUWLGtZtmfac8=; b=QtdB5H9ri8j+rDHl67VXH6WPct
+ uyHZmDG/PMz+xWwwpUYFsocFunREJPnI8Q7ZNH4XfugcLmp6t3DirU6Y3dFoSshN4IDcLQ/mJXuPD
+ e+rGfLqLolxQb6YJqpgdQheB3F5ZHhuw0p53k319dlss108DwPPJce9OSY1TrLQqvP49fXLT+Rncq
+ BaG4D68FNJuMPsMqFfh5LbRK0Tk9mbgFm35Gj3kjMP5PETH5z6ZLUQmB7qhWAd8tA7pb++6yTDOqK
+ rys2Xb98yt/sSCbWiDb87nv4od7IVGXJGw/PXdBpaz0mNYNcrSoetbNRgljBs+x4JYueDA+ATns3X
+ ygmFHvoA==;
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lc8sB-000jXr-9V
- for linux-mtd@lists.infradead.org; Thu, 29 Apr 2021 15:46:42 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 380082226E;
- Thu, 29 Apr 2021 17:46:36 +0200 (CEST)
+ id 1lc92g-000k0Z-5a
+ for linux-mtd@lists.infradead.org; Thu, 29 Apr 2021 15:57:31 +0000
+Received: from mwalle01.fritz.box (unknown
+ [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
+ SHA256) (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 14E4F22173;
+ Thu, 29 Apr 2021 17:57:26 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1619711196;
+ s=mail2016061301; t=1619711848;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=apqOvtdROCdFE2hHJqMrA9fP9E6tUl9T38xewx2r7fM=;
- b=bNt571yoyNSvca/gE7YzhRaW01w4kAD1V7xNQdxnuVVrswjahXtxkVh9w0R2YHcIfwUJHy
- SnAuDRRHMgkz5LzcW+lvuaWfNbD2iykg5cuPqWls87Nuq+n5NOb8m7yu3x9KJroV91ngYa
- YRMJkDiGJSRq/7IFp1SnpJSpo4v9qHg=
-MIME-Version: 1.0
-Date: Thu, 29 Apr 2021 17:46:36 +0200
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=HpaxG8rm84ZVuaYd7aNZxfINyI92WQzUWLGtZtmfac8=;
+ b=gJZKOFRG8OKB8slf+vsoR1ECI/6/hpvbWhABptC0NI6f5mYWP5cvSDzBwG2yFRsIsJkjA+
+ R+M05qxI2IaYvO3ox4VrS4bKoxuBWh7NrFvHe0mHOqmtYT6w2o4sDk9r8InyaLP254EmS9
+ 7gUQqsndTdpv3XGzRYBjgPmciTEDEGo=
 From: Michael Walle <michael@walle.cc>
-To: Alexander Williams <awill@google.com>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- miquel.raynal@bootlin.com, p.yadav@ti.com, richard@nod.at,
- tudor.ambarus@microchip.com, vigneshr@ti.com
-Subject: Re: [PATCH 2/2] mtd: spi-nor: add initial sysfs support
-In-Reply-To: <20210429153725.15970-1-awill@google.com>
-References: <20210318092406.5340-3-michael@walle.cc>
- <20210429153725.15970-1-awill@google.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <9b0f13aba55e1a25054303dd1dc719eb@walle.cc>
-X-Sender: michael@walle.cc
+To: linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Alexander Williams <awill@google.com>,
+ Yicong Yang <yangyicong@hisilicon.com>,
+ Heiko Thiery <heiko.thiery@gmail.com>, Michael Walle <michael@walle.cc>
+Subject: [PATCH v3 0/2] mtd: spi-nor: support dumping sfdp tables
+Date: Thu, 29 Apr 2021 17:57:11 +0200
+Message-Id: <20210429155713.28808-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+X-Spam: Yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210429_084639_950056_E6D21F79 
-X-CRM114-Status: GOOD (  26.44  )
+X-CRM114-CacheID: sfid-20210429_085730_381977_CC950B49 
+X-CRM114-Status: GOOD (  18.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,93 +95,66 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Alex,
+Add the possibility to dump the SFDP data of a flash device.
 
-Am 2021-04-29 17:37, schrieb Alexander Williams:
-> Hi Michael,
-> 
->> On Thu, Mar 18, 2021 at 10:24 AM Michael Walle <michael@walle.cc>
->> wrote:
->> Add support to show the name and JEDEC identifier as well as to dump 
->> the
->> SFDP table. Not all flashes list their SFDP table contents in their
->> datasheet. So having that is useful. It might also be helpful in bug
->> reports from users.
->> 
->> The idea behind the sysfs module is also to have raw access to the SPI
->> NOR flash device registers, which can also be useful for debugging.
->> 
->> Signed-off-by: Michael Walle <michael@walle.cc>
->> ---
->>  drivers/mtd/spi-nor/Makefile |  2 +-
->>  drivers/mtd/spi-nor/core.c   |  5 +++
->>  drivers/mtd/spi-nor/core.h   |  3 ++
->>  drivers/mtd/spi-nor/sysfs.c  | 86 
->> ++++++++++++++++++++++++++++++++++++
->>  4 files changed, 95 insertions(+), 1 deletion(-)
->>  create mode 100644 drivers/mtd/spi-nor/sysfs.c
->> 
->> diff --git a/drivers/mtd/spi-nor/Makefile 
->> b/drivers/mtd/spi-nor/Makefile
->> index 653923896205..aff308f75987 100644
->> --- a/drivers/mtd/spi-nor/Makefile
->> +++ b/drivers/mtd/spi-nor/Makefile
->> @@ -1,6 +1,6 @@
->>  # SPDX-License-Identifier: GPL-2.0
->> 
->> -spi-nor-objs			:= core.o sfdp.o
->> +spi-nor-objs			:= core.o sfdp.o sysfs.o
->>  spi-nor-objs			+= atmel.o
->>  spi-nor-objs			+= catalyst.o
->>  spi-nor-objs			+= eon.o
->> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
->> index 4a315cb1c4db..2eaf4ba8c0f3 100644
->> --- a/drivers/mtd/spi-nor/core.c
->> +++ b/drivers/mtd/spi-nor/core.c
->> @@ -3707,6 +3707,10 @@ static int spi_nor_probe(struct spi_mem 
->> *spimem)
->>  	if (ret)
->>  		return ret;
->> 
->> +	ret = spi_nor_sysfs_create(nor);
-> 
-> This appears to be racing with user space. By the time we reach 
-> probe(), the
-> device embedded in the spi_device has already been registered, with the 
-> uevent
-> sent out, right? udev may not see the new attributes created here.
-> 
-> Since we reuse a preexisting device throughout spi-nor, it seems 
-> awfully
-> challenging to be able to safely add sysfs attributes. Would it make 
-> sense to
-> create a spi-nor-specific device/class? Or perhaps attach these 
-> attributes to
-> the device in mtd_info like I've done in
-> https://lore.kernel.org/linux-mtd/20210428052725.530939-1-awill@google.com/ 
-> ?
+More and more flash devices share the same flash ID and we need per device
+fixups. Usually, these fixups differentiate flashes by looking at
+differences in the SFDP data. Determining the difference is only possible
+if we have the SFDP data for all the flashes which share a flash ID. This
+will lay the foundation to dump the whole SFDP data of a flash device.
 
-Do you encounter this problem? I'm currently working on this and dropped
-the sysfs_create() and use dev_groups of the driver spi nor driver.
+This is even more important, because some datasheets doesn't even contain
+the SFDP data. Fixups for these kind of flashes are nearly impossible to
+do.
 
-But I'm not sure how it will be handled anyway. Because we know the
-content/size SFDP only after the probe and in any case the probe could
-also fail. So I don't really understand how that is handled.
+I envision having a database of all the SFDP data for the flashes we
+support and make it a requirement to submit it when a new flash is added.
+This might or might not have legal implications. Thus I'd start with having
+that database private to the SPI NOR maintainers.
 
-I've looked at your patch and it seems that the surpress_uevent() is
-rarely used in the kernel.
+Changes since v2:
+ - use .dev_groups of the driver to attach the attributes
+ - add manufacturer attribue
+ - rename attribute name to partname
+ - add ABI documentation
 
-I don't want to attach it to an MTD device because you might have
-multiple ones which has the same SPI flash device as parent. The
-SFDP is really a property of the flash device and not one of the
-MTD partition.
+Changes since v1:
+ - use sysfs_emit()
+ - add comment about the allocation of the sfdp dwords
+ - free SFDP memory in the error path
+ - use BIN_ATTR_RO(sfdp, 0)
+ - use spi_nor_read_sfdp()
 
--michael
+Changes since RFC:
+ - Don't read SFDP data after probe. The flash might already be switched to
+   8D-8D-8D mode. Instead, cache the SFDP data
+ - add two sysfs files: jedec-id and name
+ - change the file mode of the sfdp file from 0400 to 0444. There is no
+   hardware access anymore.
+
+Michael Walle (2):
+  mtd: spi-nor: sfdp: save a copy of the SFDP data
+  mtd: spi-nor: add initial sysfs support
+
+ .../ABI/testing/sysfs-bus-spi-devices-spi-nor | 31 +++++++
+ drivers/mtd/spi-nor/Makefile                  |  2 +-
+ drivers/mtd/spi-nor/core.c                    |  1 +
+ drivers/mtd/spi-nor/core.h                    | 12 +++
+ drivers/mtd/spi-nor/sfdp.c                    | 58 ++++++++++++
+ drivers/mtd/spi-nor/sysfs.c                   | 92 +++++++++++++++++++
+ include/linux/mtd/spi-nor.h                   |  2 +
+ 7 files changed, 197 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
+ create mode 100644 drivers/mtd/spi-nor/sysfs.c
+
+-- 
+2.20.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
