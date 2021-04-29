@@ -2,19 +2,19 @@ Return-Path: <SRS0=3Xy9=J2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38C48C433ED
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Apr 2021 18:20:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EEFFCC433ED
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Apr 2021 18:42:06 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8DB2261441
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Apr 2021 18:20:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8DB2261441
+	by mail.kernel.org (Postfix) with ESMTPS id 4034B6143B
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Apr 2021 18:42:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4034B6143B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,81 +23,82 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=aIcHMdRerR/hIkpz1LwPWs+yWoe3B/yaEcZiYiMc+D8=; b=LK+NAKy1J2bc5ZfYAq3aeMP2D
-	abfVubmPf+yvXVz2r9wmxvKbKS5QkIlNmw+ojR+fQxjY05Qh2yOIgx/16ttfNmi/GbJtG3oLqC+YF
-	UFyFJbeBxrcztLDYiiQI1+/ezCmMj0Wov5jT4qMHHmR8Ezn53ujBRGJO51IG7qMGK3aBdeqQp1+tQ
-	AQmLLL5e3Mclbh9m2g33UqPhM2BJVcb6jdNhx4dmkuDvagEvpMHvT/yb6nnZuMdIOJiE0jH1+9GE0
-	Mzjf8QS56boGoflOMEOaRRqpiXd2aqTPpOcIDiasUJ/0Vx8orVLzcH1ytoK7Hl5A9GaLoM5rCVSd6
-	W5+yytzuQ==;
+	 bh=gqQyE3fQYM8tHBDvXOJbTEtTmh9UZbyK+qmWlFqLDQA=; b=DDL3YbbhsExX4TzZoHwpbeTsH
+	tSTE7UxJvsQc9vh3+1I4mgCIZejKkSaszRJHd6nMGmqemod2ERlRCvc7qITozfFGA3B5xXCuDvZkB
+	su0eonDPOETVAGe41A5x3sN/HXHHV2oL5T76DmdVFnx1K4o1+Z10OsTR4wD3wOJORkr50dI3sIo4O
+	5lMcyLF4rxKBpoVDZ2Kzd9MPwroIIR1gkvez8m3u5U7t4OhvewzslmKTEg4DNEQJaYilD34X03B2U
+	dkIzRY0fe/GLTrX1XwxRydY3Jyq9nscFLzKx/5EhV+6fNRTpmA6FKpar/GGon3UUbMeWjXx6DP/oh
+	4eS3pnBpQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lcBG0-006AW3-Rk; Thu, 29 Apr 2021 18:19:24 +0000
+	id 1lcBbH-006C7X-8i; Thu, 29 Apr 2021 18:41:23 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lcBFy-006AVr-Q8; Thu, 29 Apr 2021 18:19:23 +0000
+ id 1lcBbE-006C7K-Rv; Thu, 29 Apr 2021 18:41:21 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
  :References:Message-ID:Subject:CC:To:From:Date:Sender:Reply-To:
  Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=qn9kzRdRLypsLGuwsWHINLPGN27LGJ4D1oTG14gSrhQ=; b=VgJZFQGnYH3EHA4m2oZeKUsSEr
- cM3EXn0I2iasx4m/Y78AQ2B5WBMYH4DjQ6mZfIif2ND3pqybdXwzJGVz8DbYOaJFXwRviNE+X3Mdb
- ftVf/sW1I3GdVposx79GBSaCejd5WjY/sCFQB3VkyBOZ/XIPH4f+yRz0gdd4hakOZfCeIs0sBQPZJ
- C2rZAGKasgYPfEdTvPXOIL0ZMxq1s9RkPPPtxS1R15vaqI5JAEVJ+mHPBHhaAZQ/ayyIIEurulPlS
- yC0+FfpOBv6cyqjnZUXo6JQEkrvR9OtgA5Je9v1VlmPMGDNfWIw+FoQbT6rB777QTiMgCEFa3Oa4L
- 0NlUuyZA==;
+ bh=lFtIIpno6eT8m/+zS7Csg1jBvtJUiRsjbPFVq89uUHs=; b=BFPhw/xY8YT/8YHhdaYW6fPQST
+ gBzb0AQloRdmgIu0napHIWVqeg6XJaCzVNegGBNvhjFTt+5SHTU0GG7+ZGrLzSytRoaYDXWYSY5RB
+ WKGwVh6FHbWY6g/j4vcxOrbhxfdTO/5CUXdy9lmX9OB3YJg8IMwqdeUqp2/KctAgIbcW8DQYYyJyb
+ AsZNXMxtuAsfL6JdAakYYXoa4eeK9Qy6xGNhUCFjv4GUpmZhVssTzaYJmTVGEtPxFRZXMRpN0VVGx
+ 468WyBIIwFoAdQqARbBopImhrVchffaMcEGF2zsWhoG6JAvUkGAim2GyKtnnUv0YrTnwur/SpoBDt
+ +HEMamAA==;
 Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lcBFv-000qYn-Jr; Thu, 29 Apr 2021 18:19:21 +0000
+ id 1lcBbB-000rFO-Hy; Thu, 29 Apr 2021 18:41:19 +0000
 Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13TIJB2E064801;
- Thu, 29 Apr 2021 13:19:11 -0500
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13TIfD4o074410;
+ Thu, 29 Apr 2021 13:41:13 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1619720351;
- bh=qn9kzRdRLypsLGuwsWHINLPGN27LGJ4D1oTG14gSrhQ=;
+ s=ti-com-17Q1; t=1619721673;
+ bh=lFtIIpno6eT8m/+zS7Csg1jBvtJUiRsjbPFVq89uUHs=;
  h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=XxMhfy7DhE9uwt78+5kErww92qqIjMvt17+diJMmsltgv+9LOtJwyenI4lwnJy9SL
- DBcZyt75V1rWchPr+n4ecd8EbenekLHTf8Qg1CY7jTIT9c2zbhAvCIxF2tIahtcjQ0
- 2CGHGv6FbOa4ql+DcvCpP53SmH2zY5TTOYS9Wh9o=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13TIJBdB131020
+ b=vtGkLHU0CpJZP8babNKIpua2SXJvzN40x7SrRoSMffHa0UhWI4ULMZeAPtQifTUu+
+ 9VnSplFizkLu1v9Ri/NxjL7JDB7d8y1eEMlhWMK1Q5Fjs7e0Ho5VYDRBpjgWdAShXC
+ u7horZfZnbsZ9vbpFCAIjUqmaibxcDL6XtHqzE3o=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13TIfDkE029334
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 29 Apr 2021 13:19:11 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ Thu, 29 Apr 2021 13:41:13 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 29
- Apr 2021 13:19:11 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ Apr 2021 13:41:12 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 29 Apr 2021 13:19:11 -0500
+ Frontend Transport; Thu, 29 Apr 2021 13:41:12 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13TIJAWs025236;
- Thu, 29 Apr 2021 13:19:11 -0500
-Date: Thu, 29 Apr 2021 23:49:10 +0530
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13TIfBKu063474;
+ Thu, 29 Apr 2021 13:41:12 -0500
+Date: Fri, 30 Apr 2021 00:11:11 +0530
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Michael Walle <michael@walle.cc>
-CC: <Tudor.Ambarus@microchip.com>, <nm@ti.com>, <kristo@kernel.org>,
- <robh+dt@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
- <vigneshr@ti.com>, <broonie@kernel.org>,
+CC: Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>, Rob Herring
+ <robh+dt@kernel.org>, Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel
+ Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Mark Brown <broonie@kernel.org>,
  <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
  <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- <linux-spi@vger.kernel.org>, <lokeshvutla@ti.com>
-Subject: Re: [RFC PATCH 4/6] spi: cadence-qspi: Use PHY for DAC reads if
- possible
-Message-ID: <20210429181908.bwb45eljn5nxscf6@ti.com>
+ <linux-spi@vger.kernel.org>, Lokesh Vutla <lokeshvutla@ti.com>
+Subject: Re: [RFC PATCH 1/6] spi: spi-mem: Tell controller when device is
+ ready for calibration
+Message-ID: <20210429184109.f2pf3iyaiylumoyp@ti.com>
 References: <20210311191216.7363-1-p.yadav@ti.com>
- <20210311191216.7363-5-p.yadav@ti.com>
- <2f26456e-59ff-2625-5d65-c1537052839d@microchip.com>
- <20210312101757.sqeyledbwjnpqdoy@ti.com>
- <ee2b753b16e76ecbede4c1373b6f2d77@walle.cc>
+ <20210311191216.7363-2-p.yadav@ti.com>
+ <934c8c6f7bb71729bfdaefd39c63a262@walle.cc>
+ <20210324080804.x7oemmpt2khi72mp@ti.com>
+ <6dfbb3e4107887dc9ee3e19e4940e87c@walle.cc>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ee2b753b16e76ecbede4c1373b6f2d77@walle.cc>
+In-Reply-To: <6dfbb3e4107887dc9ee3e19e4940e87c@walle.cc>
 User-Agent: NeoMutt/20171215
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210429_111919_946986_9CD46CB4 
-X-CRM114-Status: GOOD (  20.65  )
+X-CRM114-CacheID: sfid-20210429_114117_707071_26C6E90D 
+X-CRM114-Status: GOOD (  56.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,42 +115,151 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 29/04/21 06:28PM, Michael Walle wrote:
-> Am 2021-03-12 11:17, schrieb Pratyush Yadav:
-> > On 12/03/21 09:13AM, Tudor.Ambarus@microchip.com wrote:
-> > > On 3/11/21 9:12 PM, Pratyush Yadav wrote:
-> > > > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > > >
-> > > > Check if a read is eligible for PHY and if it is, enable PHY and DQS.
-> > > 
-> > > DQS as in data strobe? Shouldn't the upper layer inform the QSPI
-> > > controller
-> > > whether DS is required or not?
-> > 
-> > Yes, DQS as in data strobe. I need to check this again, but IIRC the
-> > controller cannot run in PHY mode unless DS is used. Ideally the upper
-> > layer should indeed inform the controller whether DS is supported/in-use
-> > or not. That can be used to decide whether PHY mode (and consequently
-> > the DS line) is to be used or not.
-> > 
-> > Currently there are only two flashes that use 8D-8D-8D mode (S28HS512T
-> > and MT35XU512ABA), and both of them drive the DS line.
+On 29/04/21 06:23PM, Michael Walle wrote:
+> Hi Pratyush,
 > 
-> The LS1028A datasheet explicitly states that the calibration is only
-> used for non-DQS flashes. Which makes sense, because it just determine at
-> which point the input data is sampled. And if the flash provides a data
-> strobe, it already know when to sample it. What I am missing here?
+> I've had a look at the LS1028A FlexSPI calibration feature. The
+> reference manual is very sparse on details, though. What you need to
+> do there is to program a special read command sequence (the whole
+> controller is made of these lookup table entries, where you can
+> have a short sequence of operations for read/write/program and so
+> on). Therefore, for data learning you'll take the read operation
+> and insert a LEARN op in between and read a specific data pattern.
+> Then the hardware will automatically figure out the correct sample
+> phase for the read data pins.
+> 
+> Unfortunately, it does not mention how often you have to do it. It
+> might be the case that is has to be calibrated more than once.
 
-If there was 0 delay in transferring the signals from flash to 
-SoC/controller, you would be right. But in practice there is a small but 
-noticeable delay from when the flash launches the signal and when it is 
-received by the device. So by the time the DQS signal reaches the SoC it 
-might already be too late and the data lines might not be valid any 
-more. The calibration accounts for these (and some others) delays.
+I haven't read the datasheet, I wonder how long this calibration takes. 
+If it is too long then the overhead might not even be worth the extra 
+read throughput. Especially when using a file system on top which 
+generally don't do very large reads in one go.
 
-See [0] for a somewhat similar discussion I had with Tudor.
+Anyway, when the do_calibration() is called the controller can save the 
+calibration op and use it later as needed. It knows when an exec_op() 
+will result in a read since it has access to the whole op.
 
-[0] https://lore.kernel.org/linux-mtd/20210312181447.dlecnw2oed7jtxe7@ti.com/
+> 
+> I'm just mentioning this so it won't be lost. If needed, it can
+> be added later.
+> 
+> Am 2021-03-24 09:08, schrieb Pratyush Yadav:
+> > On 24/03/21 12:07AM, Michael Walle wrote:
+> > > Am 2021-03-11 20:12, schrieb Pratyush Yadav:
+> > > > Some controllers like the Cadence OSPI controller need to perform a
+> > > > calibration sequence to operate at high clock speeds. This calibration
+> > > > should happen after the flash is fully initialized otherwise the
+> > > > calibration might happen in a different SPI mode from the one the flash
+> > > > is finally set to. Add a hook that can be used to tell the controller
+> > > > when the flash is ready for calibration. Whether calibration is needed
+> > > > depends on the controller.
+> > > >
+> > > > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> > > > ---
+> > > >  drivers/spi/spi-mem.c       | 12 ++++++++++++
+> > > >  include/linux/spi/spi-mem.h |  8 ++++++++
+> > > >  2 files changed, 20 insertions(+)
+> > > >
+> > > > diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+> > > > index dc713b0c3c4d..e2f05ad3f4dc 100644
+> > > > --- a/drivers/spi/spi-mem.c
+> > > > +++ b/drivers/spi/spi-mem.c
+> > > > @@ -464,6 +464,18 @@ int spi_mem_adjust_op_size(struct spi_mem *mem,
+> > > > struct spi_mem_op *op)
+> > > >  }
+> > > >  EXPORT_SYMBOL_GPL(spi_mem_adjust_op_size);
+> > > >
+> > > > +int spi_mem_do_calibration(struct spi_mem *mem, struct spi_mem_op *op)
+> > > > +{
+> > > > +	struct spi_controller *ctlr = mem->spi->controller;
+> > > > +
+> > > > +	if (!ctlr->mem_ops || !ctlr->mem_ops->do_calibration)
+> > > > +		return -EOPNOTSUPP;
+> > > > +
+> > > > +	ctlr->mem_ops->do_calibration(mem, op);
+> > > 
+> > > Can't a calibration fail?
+> > 
+> > It can. If it does, the controller falls back to lower speed transfers.
+> > There is not much the upper layer can do about this. That's why it is
+> > not informed whether it succeeded or not.
+> 
+> Ok, if needed, that should be an easy change.
+> 
+> op is there to decide if we need a calibration at all, correct?
+
+Yes. It can also be used to choose which calibration algorithm to use. 
+For example on the Cadence controller, there are different algorithms 
+for 8S and 8D operations.
+
+> What if there are different factors, like frequency? For example
+> on the LS1028A its just a matter of the SCK frequency. It seems
+> that this parameter is tailored to the OPHY.
+
+As of now there is no way in SPI MEM to tell the controller the expected 
+speed of the operation. AFAIK most controllers get the speed via device 
+tree. So in the current case, the controller already knows the speed it 
+should run at, and can decide if calibration is needed or not.
+
+But if operation speed is eventually added to SPI MEM, I would assume it 
+would be part of struct spi_mem_op. The op passed in would have this 
+information filled, and the controller can use that information to 
+decide if it needs to perform the calibration or not.
+
+I am all for making this API flexible, but with very few controllers 
+supporting this feature in the wild, it is difficult to predict all the 
+information that might be needed. In the current state, I think the API 
+provides a fair bit of information to the controller about how a read 
+operation would look like.
+
+> 
+> -michael
+> 
+> > > > +	return 0;
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(spi_mem_do_calibration);
+> > > > +
+> > > >  static ssize_t spi_mem_no_dirmap_read(struct spi_mem_dirmap_desc *desc,
+> > > >  				      u64 offs, size_t len, void *buf)
+> > > >  {
+> > > > diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+> > > > index 2b65c9edc34e..97a2d280f2d0 100644
+> > > > --- a/include/linux/spi/spi-mem.h
+> > > > +++ b/include/linux/spi/spi-mem.h
+> > > > @@ -250,6 +250,12 @@ static inline void *spi_mem_get_drvdata(struct
+> > > > spi_mem *mem)
+> > > >   *		  the currently mapped area), and the caller of
+> > > >   *		  spi_mem_dirmap_write() is responsible for calling it again in
+> > > >   *		  this case.
+> > > > + * @do_calibration: perform calibration needed for high SPI clock speed
+> > > > + *		    operation. Should be called after the SPI memory device has
+> > > > + *		    been completely initialized. The op passed should contain
+> > > > + *		    a template for the read operation used for the device so
+> > > > + *		    the controller can decide what type of calibration is
+> > > > + *		    required for this type of read.
+> > > >   *
+> > > >   * This interface should be implemented by SPI controllers providing an
+> > > >   * high-level interface to execute SPI memory operation, which is
+> > > > usually the
+> > > > @@ -274,6 +280,7 @@ struct spi_controller_mem_ops {
+> > > >  			       u64 offs, size_t len, void *buf);
+> > > >  	ssize_t (*dirmap_write)(struct spi_mem_dirmap_desc *desc,
+> > > >  				u64 offs, size_t len, const void *buf);
+> > > > +	void (*do_calibration)(struct spi_mem *mem, struct spi_mem_op *op);
+> > > >  };
+> > > >
+> > > >  /**
+> > > > @@ -346,6 +353,7 @@ bool spi_mem_dtr_supports_op(struct spi_mem *mem,
+> > > >  #endif /* CONFIG_SPI_MEM */
+> > > >
+> > > >  int spi_mem_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op);
+> > > > +int spi_mem_do_calibration(struct spi_mem *mem, struct spi_mem_op *op);
+> > > >
+> > > >  bool spi_mem_supports_op(struct spi_mem *mem,
+> > > >  			 const struct spi_mem_op *op);
+> > > 
+> 
 
 -- 
 Regards,
