@@ -2,19 +2,19 @@ Return-Path: <SRS0=3Xy9=J2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4932AC43460
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Apr 2021 16:29:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA0EFC433ED
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Apr 2021 16:45:27 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D2E0C6140C
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Apr 2021 16:29:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D2E0C6140C
+	by mail.kernel.org (Postfix) with ESMTPS id 1FECF6140C
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Apr 2021 16:45:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1FECF6140C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,68 +23,68 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
 	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=4GIIX8aqjCaqDwxSb9XgDVglExyhXZSDxq5lGgFTXBE=; b=RzNvGn1NMih2rNH+RRxT1RsPW
-	WQTuZT13+R7J7i9F6aeo6/Xj1sGSZSy5IJLgdf/DFifoe5wTy64YnumFu3kBGSLGbsDguOqtTu4fx
-	ZbZapbOw31QVpOrI5bSGMQyNzX6Ps1RrQx2/Y22Lg3gcCBDfoizo7ljnqo97mUMLebNi4kE3hdyxk
-	ZemaiYm9DuLob6Gdgw0XxC3Wg88UZjzCx6dF3LncZWCpoVONWhnSPncaR7MT/Df09g7/hgZHKreav
-	j7U8ebKdiWFaK0uN7Kf4cXrZ1ERyToSRJsGloS/68Z4hbJUh4i8Jp6FkN3PQB0H64SHru2Fvvo3JH
-	E7hojWu8w==;
+	 bh=Kxmc0HJaLdio92H+LNiOnxiPs5nZlrYAZrghElC/EGI=; b=dLEBkgZin9sbbQANXiCw4vuRn
+	aqfhkafXvUq4z1OaOl5EaF4g4yCpOOeLuFCUljA4uChfG3p16f2SGl5ryz3ZsQnPvxsPI4zLbS2ym
+	SKUD8ELudXMhc/OJE1t+EiD8WbhYsUbIZR1AypevYghcoC3Q240XwmeG/krNnNMX76L5bDG+0g0Gx
+	hlf9QjWpQAuN+FSbW13DnFy2lGFeVqAWQjVxs5JBXUwnKikVEL7GydTlYKcZA0vYiDG/am9PhdBJo
+	C0k1L7Cg4YcN8om+mnyD7U80htqLJZe5VjfrejBSPvNBre+mJFZOyw6otZoGJtQ8byx2iaOPwXy/t
+	G0uYhDokQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lc9Wk-00637I-HF; Thu, 29 Apr 2021 16:28:35 +0000
+	id 1lc9mP-0064fu-R4; Thu, 29 Apr 2021 16:44:45 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lc9WU-00635n-7u; Thu, 29 Apr 2021 16:28:18 +0000
+ id 1lc9mN-0064fe-KH
+ for linux-mtd@desiato.infradead.org; Thu, 29 Apr 2021 16:44:43 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Message-ID:References:In-Reply-To:
  Subject:Cc:To:From:Date:Content-Transfer-Encoding:Content-Type:MIME-Version:
  Sender:Reply-To:Content-ID:Content-Description;
- bh=KgbDNNHtI08G/Bd19jixZ4ooSityYmie7rX0EBgQRDk=; b=hQRdzd3vhj0sjUj/Aphrgvuh28
- VrA5nvJBvQy0QksRaAsgMnbPPdcK//rdKnL/o1cywDt0FgnicaoA7CEwTM0SYcviqJO01cCfVIz4G
- XCws+XwIKUTf3fCFestgCGt5SAAXhRW8lGG1kLQfJ6Li+o48swsNI/8+s6ZwqZXSgFdbcTpPSDMKv
- U2C3pBustmns8Y5HGj3NgugzvNyEN+ZtCTlIHSxeRz2OYvYD5sytuQ422taumIxr00x/aUU3sr/CB
- O7G20MmLU0dl99t5pnkQ75a1eEfxIqIGsVRd/+4ttTP1IbUGf9ukH4oHvtZ1oenWliRHpcjCLdjli
- JEQ+sazQ==;
+ bh=lOnX55mTU7vLL2DHd0LKX5pk2bsXFmUc1Ibom8J1lfI=; b=rggIhjcQ8jNcnX1ct+sJTpxUdx
+ YByPKK9x3E0xPSDdjDnHpwl9rNKGQfZEIT8T8WuBqAvR3/x6aN9sSdrMA5V1sZK8pxoZJ+XDv4STx
+ jwc9fSAWnPC75LslyGjDJBxlOGQDj+1SVR0IEkhdeCR0HKRDpTSD0IGaxa1wyPJxsh79QolM/UH2G
+ ldkv+p3LhEkG/XJa9hgCmpj2MaeHciW72bSQveQDmBqoKNmstj0OYlC5Z8Q8HEHopXtJiHv333d2E
+ NhzSSepeqx1xmQy5FZAlDtZl3Z/WlErKzbQKe+y4OkB2x9M7O05f1GF2atJgqdJ7dU7Us1QaKM+Ni
+ pmzN/c3Q==;
 Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lc9WR-000lOD-8b; Thu, 29 Apr 2021 16:28:16 +0000
+ id 1lc9mK-000mRB-JW
+ for linux-mtd@lists.infradead.org; Thu, 29 Apr 2021 16:44:42 +0000
 Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 9968222173;
- Thu, 29 Apr 2021 18:28:13 +0200 (CEST)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 70FBA2224D;
+ Thu, 29 Apr 2021 18:44:38 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1619713693;
+ s=mail2016061301; t=1619714678;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=KgbDNNHtI08G/Bd19jixZ4ooSityYmie7rX0EBgQRDk=;
- b=kBkA5zcgkuCUSwxygLw883KezMw5l+6jZDLjPTXG4h5DhGO07rPZzP9g/4/bneXr4TwxYe
- mvYjvRkrqAnBgc/4zpAKv5h0/QMnaAMzLaXx48OhAYsI8+wfbSrjNd38WkpQm+rB2ig2Jj
- Yh/d9aXzSJqDTANxVBEMIobGc119c3Q=
+ bh=lOnX55mTU7vLL2DHd0LKX5pk2bsXFmUc1Ibom8J1lfI=;
+ b=CcpbZ/rOaxtfl/zF/iR0A5KY0G00xotJ3hiJn2IKgCBkyUcrmgaaZxVR6FJ7GQW0C5hulI
+ bqMwT4kRo4D6psH4UBHaTNJjCSEc/S/QoDcF4er8GB0dyYpOh23BS5PmouFvUWdWi7jgpN
+ TxF/ft3NxxNRxZKXdNmKLQve6HB1Npk=
 MIME-Version: 1.0
-Date: Thu, 29 Apr 2021 18:28:13 +0200
+Date: Thu, 29 Apr 2021 18:44:38 +0200
 From: Michael Walle <michael@walle.cc>
-To: Pratyush Yadav <p.yadav@ti.com>
-Cc: Tudor.Ambarus@microchip.com, nm@ti.com, kristo@kernel.org,
- robh+dt@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, broonie@kernel.org, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org, lokeshvutla@ti.com
-Subject: Re: [RFC PATCH 4/6] spi: cadence-qspi: Use PHY for DAC reads if
- possible
-In-Reply-To: <20210312101757.sqeyledbwjnpqdoy@ti.com>
-References: <20210311191216.7363-1-p.yadav@ti.com>
- <20210311191216.7363-5-p.yadav@ti.com>
- <2f26456e-59ff-2625-5d65-c1537052839d@microchip.com>
- <20210312101757.sqeyledbwjnpqdoy@ti.com>
+To: Alexander Williams <awill@google.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, Tudor
+ Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Yicong Yang
+ <yangyicong@hisilicon.com>, Heiko Thiery <heiko.thiery@gmail.com>
+Subject: Re: [PATCH v3 2/2] mtd: spi-nor: add initial sysfs support
+In-Reply-To: <CACqsJN8mrHUB9Ls3PG5R_B84+xUjf-2VakA=09mP_bodWnUgmw@mail.gmail.com>
+References: <20210429155713.28808-1-michael@walle.cc>
+ <20210429155713.28808-3-michael@walle.cc>
+ <CACqsJN8mrHUB9Ls3PG5R_B84+xUjf-2VakA=09mP_bodWnUgmw@mail.gmail.com>
 User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <ee2b753b16e76ecbede4c1373b6f2d77@walle.cc>
+Message-ID: <04bc3eda0fa5a84ffff4b2f05721e2ac@walle.cc>
 X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210429_092815_661391_66883740 
-X-CRM114-Status: GOOD (  12.88  )
+X-CRM114-CacheID: sfid-20210429_094440_973547_148BBF3F 
+X-CRM114-Status: GOOD (  24.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,32 +101,109 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2021-03-12 11:17, schrieb Pratyush Yadav:
-> On 12/03/21 09:13AM, Tudor.Ambarus@microchip.com wrote:
->> On 3/11/21 9:12 PM, Pratyush Yadav wrote:
->> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->> >
->> > Check if a read is eligible for PHY and if it is, enable PHY and DQS.
->> 
->> DQS as in data strobe? Shouldn't the upper layer inform the QSPI 
->> controller
->> whether DS is required or not?
-> 
-> Yes, DQS as in data strobe. I need to check this again, but IIRC the
-> controller cannot run in PHY mode unless DS is used. Ideally the upper
-> layer should indeed inform the controller whether DS is 
-> supported/in-use
-> or not. That can be used to decide whether PHY mode (and consequently
-> the DS line) is to be used or not.
-> 
-> Currently there are only two flashes that use 8D-8D-8D mode (S28HS512T
-> and MT35XU512ABA), and both of them drive the DS line.
+Hi Alex,
 
-The LS1028A datasheet explicitly states that the calibration is only
-used for non-DQS flashes. Which makes sense, because it just determine 
-at
-which point the input data is sampled. And if the flash provides a data
-strobe, it already know when to sample it. What I am missing here?
+Am 2021-04-29 18:23, schrieb Alexander Williams:
+> On Thu, Apr 29, 2021 at 8:57 AM Michael Walle <michael@walle.cc> wrote:
+>> 
+>> Add support to show the manufacturer, the partname and JEDEC 
+>> identifier
+>> as well as to dump the SFDP table. Not all flashes list their SFDP 
+>> table
+>> contents in their datasheet. So having that is useful. It might also 
+>> be
+>> helpful in bug reports from users.
+>> 
+>> Signed-off-by: Michael Walle <michael@walle.cc>
+>> ---
+>> Pratyush, Heiko, I've dropped your Acked and Tested-by because there
+>> were some changes.
+>> 
+>>  .../ABI/testing/sysfs-bus-spi-devices-spi-nor | 31 +++++++
+>>  drivers/mtd/spi-nor/Makefile                  |  2 +-
+>>  drivers/mtd/spi-nor/core.c                    |  1 +
+>>  drivers/mtd/spi-nor/core.h                    |  2 +
+>>  drivers/mtd/spi-nor/sysfs.c                   | 92 
+>> +++++++++++++++++++
+>>  5 files changed, 127 insertions(+), 1 deletion(-)
+>>  create mode 100644 
+>> Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
+>>  create mode 100644 drivers/mtd/spi-nor/sysfs.c
+>> 
+>> diff --git a/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor 
+>> b/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
+>> new file mode 100644
+>> index 000000000000..4c88307759e2
+>> --- /dev/null
+>> +++ b/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
+>> @@ -0,0 +1,31 @@
+>> +What:          /sys/bus/spi/devices/.../jedec_id
+>> +Date:          April 2021
+>> +KernelVersion: 5.14
+>> +Contact:       linux-mtd@lists.infradead.org
+>> +Description:   (RO) The JEDEC ID of the SPI NOR flash as reported by 
+>> the
+>> +               flash device.
+>> +
+>> +
+>> +What:          /sys/bus/spi/devices/.../manufacturer
+>> +Date:          April 2021
+>> +KernelVersion: 5.14
+>> +Contact:       linux-mtd@lists.infradead.org
+>> +Description:   (RO) Manufacturer of the SPI NOR flash.
+>> +
+>> +
+>> +What:          /sys/bus/spi/devices/.../partname
+>> +Date:          April 2021
+>> +KernelVersion: 5.14
+>> +Contact:       linux-mtd@lists.infradead.org
+>> +Description:   (RO) Part name of the SPI NOR flash.
+>> +
+>> +
+>> +What:          /sys/bus/spi/devices/.../sfdp
+>> +Date:          April 2021
+>> +KernelVersion: 5.14
+>> +Contact:       linux-mtd@lists.infradead.org
+>> +Description:   (RO) This attribute is only present if the SPI NOR 
+>> flash
+>> +               device supports the "Read SFDP" command (5Ah).
+>> +
+>> +               If present, it contains the complete SFDP (serial 
+>> flash
+>> +               discoverable parameters) binary data of the flash.
+>> diff --git a/drivers/mtd/spi-nor/Makefile 
+>> b/drivers/mtd/spi-nor/Makefile
+>> index 136f245c91dc..6b904e439372 100644
+>> --- a/drivers/mtd/spi-nor/Makefile
+>> +++ b/drivers/mtd/spi-nor/Makefile
+>> @@ -1,6 +1,6 @@
+>>  # SPDX-License-Identifier: GPL-2.0
+>> 
+>> -spi-nor-objs                   := core.o sfdp.o swp.o otp.o
+>> +spi-nor-objs                   := core.o sfdp.o swp.o otp.o sysfs.o
+>>  spi-nor-objs                   += atmel.o
+>>  spi-nor-objs                   += catalyst.o
+>>  spi-nor-objs                   += eon.o
+>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+>> index 20c7ee604731..57d8a4dae5fd 100644
+>> --- a/drivers/mtd/spi-nor/core.c
+>> +++ b/drivers/mtd/spi-nor/core.c
+>> @@ -3349,6 +3349,7 @@ static struct spi_mem_driver spi_nor_driver = {
+>>                 .driver = {
+>>                         .name = "spi-nor",
+>>                         .of_match_table = spi_nor_of_table,
+>> +                       .dev_groups = spi_nor_sysfs_groups,
+> 
+> Putting these in the driver's dev_groups does create a divergence 
+> between
+> different spi-nor controllers. For all the controllers supported in
+> drivers/mtd/spi-nor/controllers/, would their drivers need to add the 
+> same sysfs
+> groups to get the same support?
+
+Well, one supports it and one does not, no? If support is added later,
+we should keep an eye on it. Unfortunately, I don't have any hardware
+to see if just adding the .dev_groups to another driver will just work.
 
 -michael
 
