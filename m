@@ -3,98 +3,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FEE3C433ED
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Apr 2021 16:24:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 23794C433ED
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Apr 2021 16:25:12 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CA841613F1
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Apr 2021 16:24:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA841613F1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	by mail.kernel.org (Postfix) with ESMTPS id 6681461407
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Apr 2021 16:25:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6681461407
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
-	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:
-	References:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Nczbt0/PCC+mjweAYWG/flk6merN0MHozhtZlUC79IM=; b=bfsdnL3y31RjbEgrnnyP1rPKD
-	hdRJ5xBAGdpSekKGikBdpHmbU2osds6IwqsKKGffVpsY1W4QsWYpTgsCcOftOdE+3YjhGKIx9jcCf
-	p/t1tTZIWpkdAC2bbQG8ph16f1hHL1YzWbJCzIEGCLztaaM+gXjXhSC1D7TdBceJpSyb0vfC1hsft
-	ZMnnHP0v+7wxO0b7GD5zL4tBMR81gkNAvBwJrhZHGFV+gswJxRCA9PjWBtsMwfR6UVtbjFXTXbv5X
-	zXAkNP42XonuWLDxzfqwZtHiqc8eZtdJxzQNTQ3SvbXeRzVZZi98gH0f1NtmyX/ODRTbrh1f7907y
-	Q0DpS3EEw==;
+	 bh=rP5pzhyASbbnDMUvUwPvc9EI3EuFYaqnVGDBRCwWzuo=; b=ge5o6do0Izq5URFCoJaqEjn2I
+	4Eo6isKu2Vyl2R4o+pxPyPenq4e5Y5CGG5F9BUwQZMtOwmx0/XQ1Vmk+77vb/2DQK3tXiA0koedea
+	usBAyxLmiaUqZjBDd3F6ieBZHZWQ1WZvaLOwH9dW5gPZnBAf5uSjGZ12H7WYs0027Oxbo4kmUxz5M
+	zCNgen1GsTIutroSywTLo+6DQY/+K8s4k1Dwphbg5b5Mn908IAc4ySMz35G3EtqA96hvyDnZeuRMf
+	ZsvG8wZhOh9tA64VbTEa3+kbzmeeo8rgj9xJiycXwzLdddmCYW0qNLjAyVQxyXaidwoFbb2Z3q24R
+	xricubIvQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lc9S5-0062dO-GF; Thu, 29 Apr 2021 16:23:45 +0000
+	id 1lc9SV-0062em-Gc; Thu, 29 Apr 2021 16:24:11 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lc9S3-0062dH-20
- for linux-mtd@desiato.infradead.org; Thu, 29 Apr 2021 16:23:43 +0000
+ id 1lc9SG-0062do-Ch; Thu, 29 Apr 2021 16:23:56 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Content-Type:Cc:To:Subject:Message-ID
- :Date:From:In-Reply-To:References:MIME-Version:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=A8kA1nA6ez8GVSpcYT5oYjc8axAEtsKpaYmy0o7ewtQ=; b=QPK2LfWMBIn5Ni4OiDlTZLNQ47
- dSTYK+nuTw0QwBxaf6EKLHYmA41FblId6B2gvmn6B1QfJyjXP3YeaP75Qp16G7BmKphHmgrwSnofj
- W9C2iPw67IOFL241iQHD+jO00589DT+v6g30Jaq/qckGMR55R77WtwgUYVmcwvJdA7i9F4YD/oh5o
- W2/OoZUneMm0oGXF+9vBn1H08GZinNnf1nk5TilJyFVO9eYhIqSKk9St/zrW87drmWMPVrfzcuS63
- 9FykxL/znvEFzDRmtIpk9aKVY6jNLtXTv1L8zMBSMxBc+GiHuHakwA9R644I3IBQ3CQP2L3jRao72
- 51ep59gg==;
-Received: from mail-ot1-x334.google.com ([2607:f8b0:4864:20::334])
+ d=infradead.org; s=bombadil.20210309; h=Message-ID:References:In-Reply-To:
+ Subject:Cc:To:From:Date:Content-Transfer-Encoding:Content-Type:MIME-Version:
+ Sender:Reply-To:Content-ID:Content-Description;
+ bh=bWL3CNDjMb7nz1cZKkLAw3O1cGMY+QoFR9KqySt0db8=; b=C6KfelM+XkhP+/Rz/Ms/GKo3zS
+ UvmfeY5YVmXL4TNm4iiLLlPR8zIR2YzDwSUTH2W3KUsb66t+WF0IMwKFpjSv2LTatjVpLoEsahUkB
+ cHfKpoiypTDZawtdQ26FeZPAG97xkGOnwRZgkw54tPUv5mSMmH2mTrNIwWoVFVg31leIdduUtTJyb
+ xVQVRb2MsqfkOAf3le6qo+B2POWIhdKH9TWmCYX/gzL616MKuThoMjyN7mZIVSqVUMTh4Z4Ypj6Cg
+ o+Q2J7q7nayvBxtNNkImLAGlf4u5hdWxxq/ofev2rGgvgWLKCDgYEjO6xZrCZOeV22msGoxs1WyrB
+ Q0Y0Ow7w==;
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lc9S0-000lCp-DZ
- for linux-mtd@lists.infradead.org; Thu, 29 Apr 2021 16:23:41 +0000
-Received: by mail-ot1-x334.google.com with SMTP id
- 92-20020a9d02e50000b029028fcc3d2c9eso39374787otl.0
- for <linux-mtd@lists.infradead.org>; Thu, 29 Apr 2021 09:23:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=A8kA1nA6ez8GVSpcYT5oYjc8axAEtsKpaYmy0o7ewtQ=;
- b=UemxAc3nBUhoStCY+5eaTBJdKaNUQuiJnDiJLkTnfwXM00EwLQoXe1kiBv9U81LRI3
- TV9h8nxmy+TEACZY7eDK3efcOgpl6ZRO/p5yQrq29yu55NjWtOpBcU2vkx+eK3qktRLC
- t7xtu0tp0aFGXnyAQqlw43DryH7aSlI9S6wjrXiiBd2yoBHS+SG3c4LQTmrcnJat6gVy
- QrcsOXHi+U4DT0w4sfmL/NVJqpOF5X6gehC+ZcoxeLbje4Q7n2ShtF9tBnjyrQc335al
- h14a2E5vGmzbMplyYl1O7fAFpaLMfXSsVVWiwrH7MA+wlqDmcynG2YYlzuMZhZHKuZfp
- pCBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=A8kA1nA6ez8GVSpcYT5oYjc8axAEtsKpaYmy0o7ewtQ=;
- b=pli5/nNprT3XbSPKYLrCxlqM8hcA/7t5XZOcsJnZmj3UWUHOUi7yV8R0mAFZoyZloB
- t3onpSc3GbLeyfdWxyhVlRN16tfBxZy3i7rlsk6v/vKixaQIvW+tVPFhWuA1JL5czdyg
- hEmBwkExaAZBUnyoZ1BS+VzvtOVPan6ZwzpANcu9/G9y0xlKxdEz/iSrQQnxjVkIfxzz
- GrIvrglWdlZVWGFIPOzwc0Jnn4aFOJ4sM2op5ycNcb+gUKVLXMifK9fXg9cuO4tvAdga
- CsXP9rsQMnYvKXvnOMj7BKSUUTS9vXCfLsPI38KgDVzdyZ+NNmZ3DKuQAPY7wUVYpQ3O
- msVA==
-X-Gm-Message-State: AOAM533QWlCPAZ+2lNieALEgI8niGZsOOYmy9ZvsoTd/oIddNU4miio5
- Kcs90OkcRtTC1TYXUAiVbxqqLv7oVwAIIZAa70EYAg==
-X-Google-Smtp-Source: ABdhPJxVwwWkxsw6FKByqMz8rfOcZyIFcq+eCWSSVPh4iq7muettmAZQdnhXaqnsF4dT0Etk89a1R2E7+whZMQeJ/OI=
-X-Received: by 2002:a9d:6b0e:: with SMTP id g14mr181079otp.214.1619713418279; 
- Thu, 29 Apr 2021 09:23:38 -0700 (PDT)
+ id 1lc9SD-000lDt-DB; Thu, 29 Apr 2021 16:23:55 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 6767C22173;
+ Thu, 29 Apr 2021 18:23:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1619713430;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=bWL3CNDjMb7nz1cZKkLAw3O1cGMY+QoFR9KqySt0db8=;
+ b=ZD1lH0+lsVqZBevm1a4HCNgWdi/+b3VWuzjXso1qeVDK1xIiSBdD19MS6uDfMSYXcJHkBn
+ ZUkrBkmAaZwUY8TmZD6hD4jq+CBOpuh/Jeorn853kpal/Ubsu6U6yj3GK0TY7B/8A+dHZQ
+ EVXT/eZ/PGxjCQe2WgU26b0pKqzjQA0=
 MIME-Version: 1.0
-References: <20210429155713.28808-1-michael@walle.cc>
- <20210429155713.28808-3-michael@walle.cc>
-In-Reply-To: <20210429155713.28808-3-michael@walle.cc>
-From: Alexander Williams <awill@google.com>
-Date: Thu, 29 Apr 2021 09:23:26 -0700
-Message-ID: <CACqsJN8mrHUB9Ls3PG5R_B84+xUjf-2VakA=09mP_bodWnUgmw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] mtd: spi-nor: add initial sysfs support
-To: Michael Walle <michael@walle.cc>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
- Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, Yicong Yang <yangyicong@hisilicon.com>, 
- Heiko Thiery <heiko.thiery@gmail.com>
+Date: Thu, 29 Apr 2021 18:23:50 +0200
+From: Michael Walle <michael@walle.cc>
+To: Pratyush Yadav <p.yadav@ti.com>
+Cc: Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>, Rob Herring
+ <robh+dt@kernel.org>, Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel
+ Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Mark Brown <broonie@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-spi@vger.kernel.org, Lokesh Vutla <lokeshvutla@ti.com>
+Subject: Re: [RFC PATCH 1/6] spi: spi-mem: Tell controller when device is
+ ready for calibration
+In-Reply-To: <20210324080804.x7oemmpt2khi72mp@ti.com>
+References: <20210311191216.7363-1-p.yadav@ti.com>
+ <20210311191216.7363-2-p.yadav@ti.com>
+ <934c8c6f7bb71729bfdaefd39c63a262@walle.cc>
+ <20210324080804.x7oemmpt2khi72mp@ti.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <6dfbb3e4107887dc9ee3e19e4940e87c@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210429_092340_498614_F7C6E926 
-X-CRM114-Status: GOOD (  26.90  )
+X-CRM114-CacheID: sfid-20210429_092353_797387_4C366052 
+X-CRM114-Status: GOOD (  35.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,99 +98,123 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Michael,
+Hi Pratyush,
 
-On Thu, Apr 29, 2021 at 8:57 AM Michael Walle <michael@walle.cc> wrote:
->
-> Add support to show the manufacturer, the partname and JEDEC identifier
-> as well as to dump the SFDP table. Not all flashes list their SFDP table
-> contents in their datasheet. So having that is useful. It might also be
-> helpful in bug reports from users.
->
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
-> Pratyush, Heiko, I've dropped your Acked and Tested-by because there
-> were some changes.
->
->  .../ABI/testing/sysfs-bus-spi-devices-spi-nor | 31 +++++++
->  drivers/mtd/spi-nor/Makefile                  |  2 +-
->  drivers/mtd/spi-nor/core.c                    |  1 +
->  drivers/mtd/spi-nor/core.h                    |  2 +
->  drivers/mtd/spi-nor/sysfs.c                   | 92 +++++++++++++++++++
->  5 files changed, 127 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
->  create mode 100644 drivers/mtd/spi-nor/sysfs.c
->
-> diff --git a/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor b/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
-> new file mode 100644
-> index 000000000000..4c88307759e2
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
-> @@ -0,0 +1,31 @@
-> +What:          /sys/bus/spi/devices/.../jedec_id
-> +Date:          April 2021
-> +KernelVersion: 5.14
-> +Contact:       linux-mtd@lists.infradead.org
-> +Description:   (RO) The JEDEC ID of the SPI NOR flash as reported by the
-> +               flash device.
-> +
-> +
-> +What:          /sys/bus/spi/devices/.../manufacturer
-> +Date:          April 2021
-> +KernelVersion: 5.14
-> +Contact:       linux-mtd@lists.infradead.org
-> +Description:   (RO) Manufacturer of the SPI NOR flash.
-> +
-> +
-> +What:          /sys/bus/spi/devices/.../partname
-> +Date:          April 2021
-> +KernelVersion: 5.14
-> +Contact:       linux-mtd@lists.infradead.org
-> +Description:   (RO) Part name of the SPI NOR flash.
-> +
-> +
-> +What:          /sys/bus/spi/devices/.../sfdp
-> +Date:          April 2021
-> +KernelVersion: 5.14
-> +Contact:       linux-mtd@lists.infradead.org
-> +Description:   (RO) This attribute is only present if the SPI NOR flash
-> +               device supports the "Read SFDP" command (5Ah).
-> +
-> +               If present, it contains the complete SFDP (serial flash
-> +               discoverable parameters) binary data of the flash.
-> diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-> index 136f245c91dc..6b904e439372 100644
-> --- a/drivers/mtd/spi-nor/Makefile
-> +++ b/drivers/mtd/spi-nor/Makefile
-> @@ -1,6 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0
->
-> -spi-nor-objs                   := core.o sfdp.o swp.o otp.o
-> +spi-nor-objs                   := core.o sfdp.o swp.o otp.o sysfs.o
->  spi-nor-objs                   += atmel.o
->  spi-nor-objs                   += catalyst.o
->  spi-nor-objs                   += eon.o
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 20c7ee604731..57d8a4dae5fd 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -3349,6 +3349,7 @@ static struct spi_mem_driver spi_nor_driver = {
->                 .driver = {
->                         .name = "spi-nor",
->                         .of_match_table = spi_nor_of_table,
-> +                       .dev_groups = spi_nor_sysfs_groups,
+I've had a look at the LS1028A FlexSPI calibration feature. The
+reference manual is very sparse on details, though. What you need to
+do there is to program a special read command sequence (the whole
+controller is made of these lookup table entries, where you can
+have a short sequence of operations for read/write/program and so
+on). Therefore, for data learning you'll take the read operation
+and insert a LEARN op in between and read a specific data pattern.
+Then the hardware will automatically figure out the correct sample
+phase for the read data pins.
 
-Putting these in the driver's dev_groups does create a divergence between
-different spi-nor controllers. For all the controllers supported in
-drivers/mtd/spi-nor/controllers/, would their drivers need to add the same sysfs
-groups to get the same support?
+Unfortunately, it does not mention how often you have to do it. It
+might be the case that is has to be calibrated more than once.
 
-- Alex
+I'm just mentioning this so it won't be lost. If needed, it can
+be added later.
+
+Am 2021-03-24 09:08, schrieb Pratyush Yadav:
+> On 24/03/21 12:07AM, Michael Walle wrote:
+>> Am 2021-03-11 20:12, schrieb Pratyush Yadav:
+>> > Some controllers like the Cadence OSPI controller need to perform a
+>> > calibration sequence to operate at high clock speeds. This calibration
+>> > should happen after the flash is fully initialized otherwise the
+>> > calibration might happen in a different SPI mode from the one the flash
+>> > is finally set to. Add a hook that can be used to tell the controller
+>> > when the flash is ready for calibration. Whether calibration is needed
+>> > depends on the controller.
+>> >
+>> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+>> > ---
+>> >  drivers/spi/spi-mem.c       | 12 ++++++++++++
+>> >  include/linux/spi/spi-mem.h |  8 ++++++++
+>> >  2 files changed, 20 insertions(+)
+>> >
+>> > diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+>> > index dc713b0c3c4d..e2f05ad3f4dc 100644
+>> > --- a/drivers/spi/spi-mem.c
+>> > +++ b/drivers/spi/spi-mem.c
+>> > @@ -464,6 +464,18 @@ int spi_mem_adjust_op_size(struct spi_mem *mem,
+>> > struct spi_mem_op *op)
+>> >  }
+>> >  EXPORT_SYMBOL_GPL(spi_mem_adjust_op_size);
+>> >
+>> > +int spi_mem_do_calibration(struct spi_mem *mem, struct spi_mem_op *op)
+>> > +{
+>> > +	struct spi_controller *ctlr = mem->spi->controller;
+>> > +
+>> > +	if (!ctlr->mem_ops || !ctlr->mem_ops->do_calibration)
+>> > +		return -EOPNOTSUPP;
+>> > +
+>> > +	ctlr->mem_ops->do_calibration(mem, op);
+>> 
+>> Can't a calibration fail?
+> 
+> It can. If it does, the controller falls back to lower speed transfers.
+> There is not much the upper layer can do about this. That's why it is
+> not informed whether it succeeded or not.
+
+Ok, if needed, that should be an easy change.
+
+op is there to decide if we need a calibration at all, correct?
+What if there are different factors, like frequency? For example
+on the LS1028A its just a matter of the SCK frequency. It seems
+that this parameter is tailored to the OPHY.
+
+-michael
+
+>> > +	return 0;
+>> > +}
+>> > +EXPORT_SYMBOL_GPL(spi_mem_do_calibration);
+>> > +
+>> >  static ssize_t spi_mem_no_dirmap_read(struct spi_mem_dirmap_desc *desc,
+>> >  				      u64 offs, size_t len, void *buf)
+>> >  {
+>> > diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+>> > index 2b65c9edc34e..97a2d280f2d0 100644
+>> > --- a/include/linux/spi/spi-mem.h
+>> > +++ b/include/linux/spi/spi-mem.h
+>> > @@ -250,6 +250,12 @@ static inline void *spi_mem_get_drvdata(struct
+>> > spi_mem *mem)
+>> >   *		  the currently mapped area), and the caller of
+>> >   *		  spi_mem_dirmap_write() is responsible for calling it again in
+>> >   *		  this case.
+>> > + * @do_calibration: perform calibration needed for high SPI clock speed
+>> > + *		    operation. Should be called after the SPI memory device has
+>> > + *		    been completely initialized. The op passed should contain
+>> > + *		    a template for the read operation used for the device so
+>> > + *		    the controller can decide what type of calibration is
+>> > + *		    required for this type of read.
+>> >   *
+>> >   * This interface should be implemented by SPI controllers providing an
+>> >   * high-level interface to execute SPI memory operation, which is
+>> > usually the
+>> > @@ -274,6 +280,7 @@ struct spi_controller_mem_ops {
+>> >  			       u64 offs, size_t len, void *buf);
+>> >  	ssize_t (*dirmap_write)(struct spi_mem_dirmap_desc *desc,
+>> >  				u64 offs, size_t len, const void *buf);
+>> > +	void (*do_calibration)(struct spi_mem *mem, struct spi_mem_op *op);
+>> >  };
+>> >
+>> >  /**
+>> > @@ -346,6 +353,7 @@ bool spi_mem_dtr_supports_op(struct spi_mem *mem,
+>> >  #endif /* CONFIG_SPI_MEM */
+>> >
+>> >  int spi_mem_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op);
+>> > +int spi_mem_do_calibration(struct spi_mem *mem, struct spi_mem_op *op);
+>> >
+>> >  bool spi_mem_supports_op(struct spi_mem *mem,
+>> >  			 const struct spi_mem_op *op);
+>> 
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
