@@ -2,20 +2,20 @@ Return-Path: <SRS0=4jNj=J3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_2 autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB191C433ED
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Apr 2021 16:55:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98C5DC433ED
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Apr 2021 19:50:09 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 689B06145A
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Apr 2021 16:55:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 689B06145A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	by mail.kernel.org (Postfix) with ESMTPS id 5519E61459
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Apr 2021 19:50:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5519E61459
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
@@ -23,58 +23,57 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
 	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=1ksodHwaAeq2YxhL5Xt9cIdrRAaBS3TCZSc4QsxMGnk=; b=OfNFvzWgHlCVrdk949kv+y2xT
-	6ddoBiIAxgE2C5HoC6QZa7Hd1EcwO1ZvYk6sjPC0hJ9lALlNpyG5ruyrQ4as34g9/5oNTcraSOcfe
-	pjnDJpPd87280bZ8ERxqwPun72YkGyeWdE3K5HwS2PTi1pYJmosPS68v+PGNwYKnpHDF16Nj8vcMb
-	2WlW2c6iEq6G2L7TjEK2jAFlIKKXbJXkM4uYV8At/IveJzxD3OUvw5uXYGiphSiY4ep2CwoRJbTX5
-	f+SOZAKKJXrZbKcYyuZXSE4azB8s4zKxIOfphrAzx8WkBY3Va+7/YWdIe7aQ6ah1V17XpaNwPXOsf
-	zbtnQ4A5A==;
+	 bh=xDoV1g79mzvvfzOfFp/VvvtulOuq5G8f+UhCOL1VMuo=; b=O7h3LYSqjz3VdDo4LoJifbmwZ
+	W4ElCh6n2rw2XYtaJ3nJ+oOG/rmQz0hlH3ZAS63hbdEgN3rzjMmc9PdzT7LEkIA6SwwYmHxC3Bu5i
+	ABlpTPjiS6LJ8kiCcjaXwcIvQRCyqxN7B/XRVqvTd3pYdMFrgIxuA2MI9aOU1vMJDirZRzyXDlCOD
+	JjxssqZSApwHDvr2C8B8RjYgDJgONITOZhSpzCCqebX1xE1Cgl71XQ6cAxv9aEljqlW9phxxaVUo+
+	sWst6VKShnLl4ftBGJZtmR08A4ErjC2+8szPr7Jj+C5GZL0IQQfn60z6cra9ibn1mBAYX46zRXuyX
+	Y5MttMogg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lcWPQ-008FDD-Sx; Fri, 30 Apr 2021 16:54:32 +0000
+	id 1lcZ7B-008S7D-GQ; Fri, 30 Apr 2021 19:47:53 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lcWP0-008F8c-18; Fri, 30 Apr 2021 16:54:06 +0000
+ id 1lcZ42-008Rnw-JN
+ for linux-mtd@desiato.infradead.org; Fri, 30 Apr 2021 19:44:45 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
  Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
  From:Date:Sender:Reply-To:Content-ID:Content-Description;
- bh=bk6fG4TwUizxgbH3CVOLBL+3a7GjlRbZdrp+rdA5l0Q=; b=bRaIgXIVe3wSwjVUMSzPPJm4Gr
- 4RdJGcPVG8cTdnWjcX8x/d91Inb/oBwWTJbMdJtTqBqZrzC8/xFhcQAEaYqqGrs90vX4Wr5VTxSvj
- er6vTmbXxRlMV0NqoDItnrY4BhC7mBgIRP2S2pyqJ9ridBnO44VRZgrFppQMrgaOTjVgHgXbnMEds
- bYErKhzhSKOfK/hAU7jDs4kMK8FzBLgnrZAI2Z5qMJl1LqcSO3pWRI9Kn1iiOM9Dvm1xjwpU5yYZu
- IZhkkJ7Ha738LiMShAAnYSVL9ovzsbXMNpxqZIZVB72VHjd/rIdJaazDeogSfU3+DfR/SzRD+3pC7
- A1sM0+6Q==;
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+ bh=0d9JT26JL+oYvTFFjcN1t8r8ZVYIzhjqz63qULyFUTw=; b=OXR/klNgQNUqPLSPXCfOVJQPpC
+ MYcQVuw/Mkb4ssvFTEbwAa/GIRZ8S5OPhZNbcpOV1VztJ2lMpsT4+lqLAd0V5m98V9aIEYvejpXTw
+ zZMhsLizykGjRlsbndgM0NnQKEe4bkewl/uHTHa4FvUC5J8YEfNmxYfxYgUh0YnKukOBeqOGReHRm
+ 8w4oDiDB9I1xGqAALUEplA8neNzSaf+Ky+P97LHP0Y7SWwmhn0LIhiVDh7jZofoTV6zuih9aGBqZj
+ P9llB0zFENkBkHbkU8TJiVYTkfFdtjBEDLIE/KlePHzIvnLmEypmjKQABfab7lx/Bb53PG8ifqAC0
+ WwPWYQTQ==;
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lcWOw-001XHI-RF; Fri, 30 Apr 2021 16:54:04 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 498EC1F43BD0;
- Fri, 30 Apr 2021 17:54:01 +0100 (BST)
-Date: Fri, 30 Apr 2021 18:53:58 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: <patrice.chotard@foss.st.com>
-Cc: Mark Brown <broonie@kernel.org>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- <linux-mtd@lists.infradead.org>, Alexandre Torgue
- <alexandre.torgue@foss.st.com>, <linux-spi@vger.kernel.org>,
- <linux-stm32@st-md-mailman.stormreply.com>,
- <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <christophe.kerello@foss.st.com>
-Subject: Re: [PATCH 3/3] spi: stm32-qspi: add automatic poll status feature
-Message-ID: <20210430185358.137c85ab@collabora.com>
-In-Reply-To: <20210426143934.25275-4-patrice.chotard@foss.st.com>
-References: <20210426143934.25275-1-patrice.chotard@foss.st.com>
- <20210426143934.25275-4-patrice.chotard@foss.st.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1lcZ3z-001cWc-JI
+ for linux-mtd@lists.infradead.org; Fri, 30 Apr 2021 19:44:37 +0000
+X-Originating-IP: 92.184.110.200
+Received: from xps13 (pop.92-184-110-200.mobile.abo.orange.fr [92.184.110.200])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id C60AEC0004;
+ Fri, 30 Apr 2021 19:44:26 +0000 (UTC)
+Date: Fri, 30 Apr 2021 21:44:24 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Rob Herring <robh@kernel.org>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Arnd Bergmann
+ <arnd@arndb.de>, Marc Gonzalez <marc.w.gonzalez@free.fr>, Richard
+ Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Bjorn
+ Helgaas <bhelgaas@google.com>, linux-mtd@lists.infradead.org,
+ linux-pci@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: Remove unused Sigma Designs Tango bindings
+Message-ID: <20210430214424.1987dc0b@xps13>
+In-Reply-To: <20210430153225.3366000-1-robh@kernel.org>
+References: <20210430153225.3366000-1-robh@kernel.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210430_095403_185622_640705EB 
-X-CRM114-Status: GOOD (  33.71  )
+X-CRM114-CacheID: sfid-20210430_124435_797602_AB7660B9 
+X-CRM114-Status: UNSURE (   8.46  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,221 +85,23 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 26 Apr 2021 16:39:34 +0200
-<patrice.chotard@foss.st.com> wrote:
-
-> From: Christophe Kerello <christophe.kerello@foss.st.com>
-> 
-> STM32 QSPI is able to automatically poll a specified register inside the
-> memory and relieve the CPU from this task.
-> 
-> As example, when erasing a large memory area, we got cpu load
-> equal to 50%.
-
-Ouch! I feel like this should be fixed at the core level too so we
-don't poll the status so frequently, or at least wait a bit before
-polling the status (especially for erase/write operations).
-
-> This patch allows to perform the same operation
-> with a cpu load around 2%.
-> 
-> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
-> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
-> ---
->  drivers/spi/spi-stm32-qspi.c | 80 ++++++++++++++++++++++++++++++++----
->  1 file changed, 72 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/spi/spi-stm32-qspi.c b/drivers/spi/spi-stm32-qspi.c
-> index 7e640ccc7e77..2f9e5941f14f 100644
-> --- a/drivers/spi/spi-stm32-qspi.c
-> +++ b/drivers/spi/spi-stm32-qspi.c
-> @@ -36,6 +36,7 @@
->  #define CR_FTIE			BIT(18)
->  #define CR_SMIE			BIT(19)
->  #define CR_TOIE			BIT(20)
-> +#define CR_APMS			BIT(22)
->  #define CR_PRESC_MASK		GENMASK(31, 24)
->  
->  #define QSPI_DCR		0x04
-> @@ -53,6 +54,7 @@
->  #define QSPI_FCR		0x0c
->  #define FCR_CTEF		BIT(0)
->  #define FCR_CTCF		BIT(1)
-> +#define FCR_CSMF		BIT(3)
->  
->  #define QSPI_DLR		0x10
->  
-> @@ -107,6 +109,7 @@ struct stm32_qspi {
->  	u32 clk_rate;
->  	struct stm32_qspi_flash flash[STM32_QSPI_MAX_NORCHIP];
->  	struct completion data_completion;
-> +	struct completion match_completion;
->  	u32 fmode;
->  
->  	struct dma_chan *dma_chtx;
-> @@ -115,6 +118,7 @@ struct stm32_qspi {
->  
->  	u32 cr_reg;
->  	u32 dcr_reg;
-> +	u16 status_timeout;
->  
->  	/*
->  	 * to protect device configuration, could be different between
-> @@ -128,11 +132,20 @@ static irqreturn_t stm32_qspi_irq(int irq, void *dev_id)
->  	struct stm32_qspi *qspi = (struct stm32_qspi *)dev_id;
->  	u32 cr, sr;
->  
-> +	cr = readl_relaxed(qspi->io_base + QSPI_CR);
->  	sr = readl_relaxed(qspi->io_base + QSPI_SR);
->  
-> +	if (cr & CR_SMIE && sr & SR_SMF) {
-> +		/* disable irq */
-> +		cr &= ~CR_SMIE;
-> +		writel_relaxed(cr, qspi->io_base + QSPI_CR);
-> +		complete(&qspi->match_completion);
-> +
-> +		return IRQ_HANDLED;
-> +	}
-> +
->  	if (sr & (SR_TEF | SR_TCF)) {
->  		/* disable irq */
-> -		cr = readl_relaxed(qspi->io_base + QSPI_CR);
->  		cr &= ~CR_TCIE & ~CR_TEIE;
->  		writel_relaxed(cr, qspi->io_base + QSPI_CR);
->  		complete(&qspi->data_completion);
-> @@ -319,6 +332,24 @@ static int stm32_qspi_wait_cmd(struct stm32_qspi *qspi,
->  	return err;
->  }
->  
-> +static int stm32_qspi_wait_poll_status(struct stm32_qspi *qspi,
-> +				       const struct spi_mem_op *op)
-> +{
-> +	u32 cr;
-> +
-> +	reinit_completion(&qspi->match_completion);
-> +	cr = readl_relaxed(qspi->io_base + QSPI_CR);
-> +	writel_relaxed(cr | CR_SMIE, qspi->io_base + QSPI_CR);
-> +
-> +	if (!wait_for_completion_timeout(&qspi->match_completion,
-> +				msecs_to_jiffies(qspi->status_timeout)))
-> +		return -ETIMEDOUT;
-> +
-> +	writel_relaxed(FCR_CSMF, qspi->io_base + QSPI_FCR);
-> +
-> +	return 0;
-> +}
-> +
->  static int stm32_qspi_get_mode(struct stm32_qspi *qspi, u8 buswidth)
->  {
->  	if (buswidth == 4)
-> @@ -332,7 +363,7 @@ static int stm32_qspi_send(struct spi_mem *mem, const struct spi_mem_op *op)
->  	struct stm32_qspi *qspi = spi_controller_get_devdata(mem->spi->master);
->  	struct stm32_qspi_flash *flash = &qspi->flash[mem->spi->chip_select];
->  	u32 ccr, cr;
-> -	int timeout, err = 0;
-> +	int timeout, err = 0, err_poll_status = 0;
->  
->  	dev_dbg(qspi->dev, "cmd:%#x mode:%d.%d.%d.%d addr:%#llx len:%#x\n",
->  		op->cmd.opcode, op->cmd.buswidth, op->addr.buswidth,
-> @@ -378,6 +409,9 @@ static int stm32_qspi_send(struct spi_mem *mem, const struct spi_mem_op *op)
->  	if (op->addr.nbytes && qspi->fmode != CCR_FMODE_MM)
->  		writel_relaxed(op->addr.val, qspi->io_base + QSPI_AR);
->  
-> +	if (qspi->fmode == CCR_FMODE_APM)
-> +		err_poll_status = stm32_qspi_wait_poll_status(qspi, op);
-> +
->  	err = stm32_qspi_tx(qspi, op);
->  
->  	/*
-> @@ -387,7 +421,7 @@ static int stm32_qspi_send(struct spi_mem *mem, const struct spi_mem_op *op)
->  	 *  byte of device (device size - fifo size). like device size is not
->  	 *  knows, the prefetching is always stop.
->  	 */
-> -	if (err || qspi->fmode == CCR_FMODE_MM)
-> +	if (err || err_poll_status || qspi->fmode == CCR_FMODE_MM)
->  		goto abort;
->  
->  	/* wait end of tx in indirect mode */
-> @@ -406,15 +440,43 @@ static int stm32_qspi_send(struct spi_mem *mem, const struct spi_mem_op *op)
->  						    cr, !(cr & CR_ABORT), 1,
->  						    STM32_ABT_TIMEOUT_US);
->  
-> -	writel_relaxed(FCR_CTCF, qspi->io_base + QSPI_FCR);
-> +	writel_relaxed(FCR_CTCF | FCR_CSMF, qspi->io_base + QSPI_FCR);
->  
-> -	if (err || timeout)
-> -		dev_err(qspi->dev, "%s err:%d abort timeout:%d\n",
-> -			__func__, err, timeout);
-> +	if (err || err_poll_status || timeout)
-> +		dev_err(qspi->dev, "%s err:%d err_poll_status:%d abort timeout:%d\n",
-> +			__func__, err, err_poll_status, timeout);
->  
->  	return err;
->  }
->  
-> +static int stm32_qspi_poll_status(struct spi_mem *mem, const struct spi_mem_op *op,
-> +				  u8 mask, u8 match, u16 timeout_ms)
-> +{
-> +	struct stm32_qspi *qspi = spi_controller_get_devdata(mem->spi->master);
-> +	int ret;
-> +
-> +	ret = pm_runtime_get_sync(qspi->dev);
-> +	if (ret < 0) {
-> +		pm_runtime_put_noidle(qspi->dev);
-> +		return ret;
-> +	}
-> +
-> +	mutex_lock(&qspi->lock);
-> +
-> +	writel_relaxed(mask, qspi->io_base + QSPI_PSMKR);
-> +	writel_relaxed(match, qspi->io_base + QSPI_PSMAR);
-> +	qspi->fmode = CCR_FMODE_APM;
-> +	qspi->status_timeout = timeout_ms;
-> +
-> +	ret = stm32_qspi_send(mem, op);
-> +	mutex_unlock(&qspi->lock);
-> +
-> +	pm_runtime_mark_last_busy(qspi->dev);
-> +	pm_runtime_put_autosuspend(qspi->dev);
-> +
-> +	return ret;
-> +}
-> +
->  static int stm32_qspi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
->  {
->  	struct stm32_qspi *qspi = spi_controller_get_devdata(mem->spi->master);
-> @@ -527,7 +589,7 @@ static int stm32_qspi_setup(struct spi_device *spi)
->  	flash->presc = presc;
->  
->  	mutex_lock(&qspi->lock);
-> -	qspi->cr_reg = 3 << CR_FTHRES_SHIFT | CR_SSHIFT | CR_EN;
-> +	qspi->cr_reg = CR_APMS | 3 << CR_FTHRES_SHIFT | CR_SSHIFT | CR_EN;
->  	writel_relaxed(qspi->cr_reg, qspi->io_base + QSPI_CR);
->  
->  	/* set dcr fsize to max address */
-> @@ -607,6 +669,7 @@ static const struct spi_controller_mem_ops stm32_qspi_mem_ops = {
->  	.exec_op	= stm32_qspi_exec_op,
->  	.dirmap_create	= stm32_qspi_dirmap_create,
->  	.dirmap_read	= stm32_qspi_dirmap_read,
-> +	.poll_status	= stm32_qspi_poll_status,
->  };
->  
->  static int stm32_qspi_probe(struct platform_device *pdev)
-> @@ -661,6 +724,7 @@ static int stm32_qspi_probe(struct platform_device *pdev)
->  	}
->  
->  	init_completion(&qspi->data_completion);
-> +	init_completion(&qspi->match_completion);
->  
->  	qspi->clk = devm_clk_get(dev, NULL);
->  	if (IS_ERR(qspi->clk)) {
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgUm9iLAoKUm9iIEhlcnJpbmcgPHJvYmhAa2VybmVsLm9yZz4gd3JvdGUgb24gRnJpLCAzMCBB
+cHIgMjAyMSAxMDozMjoyNSAtMDUwMDoKCj4gVGhlIFNpZ21hIERlc2lnbnMgVGFuZ28gc3VwcG9y
+dCBoYXMgYmVlbiByZW1vdmVkLCBidXQgMiBiaW5kaW5nIGRvY3MKPiBmb3IgTkFORCBhbmQgUENJ
+ZSB3ZXJlIG1pc3NlZC4gUmVtb3ZlIHRoZW0uCj4gCj4gQ2M6IEFybmQgQmVyZ21hbm4gPGFybmRA
+YXJuZGIuZGU+Cj4gQ2M6IE1hcmMgR29uemFsZXogPG1hcmMudy5nb256YWxlekBmcmVlLmZyPgo+
+IENjOiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPgo+IENjOiBSaWNo
+YXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0Pgo+IENjOiBWaWduZXNoIFJhZ2hhdmVuZHJh
+IDx2aWduZXNockB0aS5jb20+Cj4gQ2M6IEJqb3JuIEhlbGdhYXMgPGJoZWxnYWFzQGdvb2dsZS5j
+b20+Cj4gQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnCj4gQ2M6IGxpbnV4LXBjaUB2
+Z2VyLmtlcm5lbC5vcmcKPiBTaWduZWQtb2ZmLWJ5OiBSb2IgSGVycmluZyA8cm9iaEBrZXJuZWwu
+b3JnPgo+IC0tLQoKRm9yIHRoZSBOQU5EIGJpbmRpbmcgZG9jOgpBY2tlZC1ieTogTWlxdWVsIFJh
+eW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4KClRoYW5rcywKTWlxdcOobAoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1U
+RCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
