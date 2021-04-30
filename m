@@ -2,108 +2,108 @@ Return-Path: <SRS0=4jNj=J3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33210C433ED
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Apr 2021 14:17:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97BD7C433B4
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Apr 2021 14:23:30 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8CE93613A9
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Apr 2021 14:17:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8CE93613A9
+	by mail.kernel.org (Postfix) with ESMTPS id 0A7966128C
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Apr 2021 14:23:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A7966128C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=foss.st.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:References:
+	CC:To:Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=D/KJIB375D/A1HZgi3GVFHkZqj1jYN7zhja+ZIFznI8=; b=mhseGR5ZEgVh8OSTV7UZrcgcG
-	KJZBE2i6J+dKrPNtObTaC+BfNGrghcSMdmjunYYNtie0rEA/k1ZhXSk9uudRK5xmgT+HclJHdm0ys
-	czvenrDDsotqkCxQL3l9FtZMuB2kbD1HAoJp3SLmrNqARjpXJSNE/Fijj4P3i4v5CAKv5LUwoMHvN
-	PZKVsSY6N04TyiHz92UwkCfSKOZ5Ijtt6+dKeCliG8oeMfUq4VnaYTsNqcSPyvvLfhu2tCWGtrPMS
-	NZWJVwvjcUG8qZLfr1ruYCcJy5edJzzULuzXHTmSv2apfgafTG16XJkk//T7IRlyy7Y+qWfW6yEZM
-	0anRM4Ygw==;
+	 bh=N7okcv3KThbKQJmDtIq6UyDju4T1yVW88xbTU/GB4/k=; b=BwCvELojCf0amD18I2M2hWMPf
+	qoEWoAa7ZcgKzOkTCwkLGU2W2CvF4Pl/Vnl6WfGTOUCOzJ/Hq8cn/mkT+S+KmaR8upbEtoRZxhiee
+	b0swyT4IEGy8gqA0CSlRxmmaOWbTBncljxr3dPsKVbgsuBROnKA7xSLe36tHKJRlNv5m8Je06N70P
+	wA5SasR0A9MWNltYdbH5Qduny9pPjDIV1EDvuj8gtIvidoNExHiQPUsxrAhesZsEqSfdGq0daezLg
+	ohzx+cxHee5ZBBZ1zMwnCkDd4hkG46wL5YHnTof6Wxps1JxM2nStpNS89hxTolO9CIkFy/oF/gn+y
+	TdfLRBKaA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lcTx8-007xyP-Ul; Fri, 30 Apr 2021 14:17:11 +0000
+	id 1lcU2g-007yMY-R1; Fri, 30 Apr 2021 14:22:54 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lcTx6-007xyB-6T; Fri, 30 Apr 2021 14:17:08 +0000
+ id 1lcU2d-007yMH-MW; Fri, 30 Apr 2021 14:22:51 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
- Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:CC:To:
- Subject:Sender:Reply-To:Content-ID:Content-Description;
- bh=QAuQWsXL4argYFY9yUQByCWSho5tktvwT0Nzfzz7Aps=; b=zia+0ShBTzSmkJkAoW4MYLjge3
- vKybdzKJp6Y37WgjRjhZBFp+ZD7UvgZrPlrRNmxJMKOTb3SaK2H6NkiJdd+CnViVVevO+jk6CEu6y
- rVaAWhdfVOgw70EXY2MGfM93/WdJc++ZaSCy1GGsmCWPWWgyicEYgnPxsgCu7CG/dJriarQe8wBYQ
- Kj0+yU1hAtgCF0Xt6tkecQ6nEZ7dv1GtJaCGcg2IbwoAvKyujS3uYs3VrMRVHgpXAvt5WgBV6ZqsM
- Z4T+l9iFGTHRxwJevJWjXk0UzbiI95eBgfSjilw58NTXhLQO1Egm2luGpi815qOy/E3NR2i5vQTth
- Sl+tVgXw==;
+ Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:References:CC:To:
+ Subject:From:Sender:Reply-To:Content-ID:Content-Description;
+ bh=J4APUBnnwkt4C4FWB9LU9doGK2aOwOIh3hIas7b7Xrc=; b=q5amWi/eOjtd8aznv+O4RKK1Hw
+ UwYCSf7P+d0N9s1TcUVC922gYSTJaGxTr+vLT8W1CdAkMK/8PNofGg5Zvnuvci5smOgko53r6z3+9
+ k5M/rPWDz/5LvCSdM294AOpYfCc3qqtEm8vCOtL+TgAjYdf8/tgOCcfyJgXogmXjOQXQNcv0kSZTb
+ +5qBswpOmp26PdOKTynU+yBjQkis/yqE34TH6z+VGqN/iCvbbPTDF4znVGuk9fY2nOEp1ryv2HFCy
+ kdA5biBGFXQzf5yeFQwdbAj2YlYAovLpmuBZ8TP8NWWHGpkJGpIj8zhAnHWiGBzFI6yyRhuW5oUrG
+ JxDBlzoA==;
 Received: from mx07-00178001.pphosted.com ([185.132.182.106])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lcTx2-001Qpa-4U; Fri, 30 Apr 2021 14:17:06 +0000
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+ id 1lcU2a-001R5y-8p; Fri, 30 Apr 2021 14:22:49 +0000
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
  by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 13UECb57024111; Fri, 30 Apr 2021 16:16:54 +0200
+ 13UEBMcd003318; Fri, 30 Apr 2021 16:22:43 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
- h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
+ h=from : subject : to
+ : cc : references : message-id : date : mime-version : in-reply-to :
  content-type : content-transfer-encoding; s=selector1;
- bh=QAuQWsXL4argYFY9yUQByCWSho5tktvwT0Nzfzz7Aps=;
- b=xrcUWPXUPAdkSR/TDFoG08aiFRGU0V3z/lzu3qOwMUWfnFNYC/x0lxM8Q25cG4wcU+yA
- 7z5e3O/yDzjnVuFrfPG4bUFZPfERzqqefWwzRrCE3iYwpvacktC8X8kt9egnG8O0zYYv
- 2zaW3I6oJRb+U27twnmQipGQFNSKCn+Eb/yD/IP3978LLG2HMlX+3g5s6s8aWdSVNBGc
- ja8YgGDLV64xVrAKeUfuDiJJoWO1lTUEi9UREWeHOcRXoNJoZoNitfpWBDTKE8/iXdKx
- K+dl0J9zCV9pGB6q6aPpNxdosj8vLceWuWg6i6RzbXlZmN8Pd6XV1wnQs3vCLel2iOcn 3A== 
+ bh=J4APUBnnwkt4C4FWB9LU9doGK2aOwOIh3hIas7b7Xrc=;
+ b=JB0YRl6+Q+CFdExdWWPYFQ/dwxPqRJPGfOT4HIBG1ynFWVYAb2rDWvzJ5ftT2G6zSsZd
+ YWEzLNWPSX9ANwzMCcZPuA/2mFLPzZWZjJyaZJXxIFqJvc6cIfYaA/CP2YCnAdHaJj6C
+ ZTqC0dlCpPo0r9q1uauC9O4GRHTxcyXSQpSofuYyoVNOr58TGPy7lVw3V0Dp8Z7aaSuv
+ Ho0F8CUzE2qENrlbHc8diStjMEWxrsN8w+j90hKdB8FOJQf1BmPWTbO7sm7pmmwGK75d
+ RmCQXwp2peMaw7mBe3TPnNRvBy6iFYu+dwI/XaDh0Y2Y+cfNIDoLHol6X1t7pwEkOXkV Cg== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com with ESMTP id 387wnpy0ne-1
+ by mx07-00178001.pphosted.com with ESMTP id 388emrsvt4-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 30 Apr 2021 16:16:54 +0200
+ Fri, 30 Apr 2021 16:22:43 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D515D10002A;
- Fri, 30 Apr 2021 16:16:52 +0200 (CEST)
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7539810002A;
+ Fri, 30 Apr 2021 16:22:42 +0200 (CEST)
 Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B1FFD241842;
- Fri, 30 Apr 2021 16:16:52 +0200 (CEST)
-Received: from lmecxl0573.lme.st.com (10.75.127.48) by SFHDAG2NODE3.st.com
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5BBCC24185E;
+ Fri, 30 Apr 2021 16:22:42 +0200 (CEST)
+Received: from lmecxl0573.lme.st.com (10.75.127.49) by SFHDAG2NODE3.st.com
  (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 30 Apr
- 2021 16:16:51 +0200
+ 2021 16:22:35 +0200
+From: Patrice CHOTARD <patrice.chotard@foss.st.com>
 Subject: Re: [PATCH 1/3] spi: spi-mem: add automatic poll status functions
-To: Pratyush Yadav <p.yadav@ti.com>
-CC: Mark Brown <broonie@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Boris
- Brezillon <boris.brezillon@collabora.com>, <linux-mtd@lists.infradead.org>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- <linux-spi@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
+To: Mark Brown <broonie@kernel.org>, Pratyush Yadav <p.yadav@ti.com>
+CC: Miquel Raynal <miquel.raynal@bootlin.com>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Boris Brezillon <boris.brezillon@collabora.com>,
+ <linux-mtd@lists.infradead.org>, Alexandre Torgue
+ <alexandre.torgue@foss.st.com>, <linux-spi@vger.kernel.org>,
+ <linux-stm32@st-md-mailman.stormreply.com>,
  <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <christophe.kerello@foss.st.com>
 References: <20210426143934.25275-1-patrice.chotard@foss.st.com>
  <20210426143934.25275-2-patrice.chotard@foss.st.com>
  <20210426162610.erpt5ubeddx7paeq@ti.com>
-From: Patrice CHOTARD <patrice.chotard@foss.st.com>
-Message-ID: <0ccafbbf-194d-d523-34b0-a5c7c9bc95c1@foss.st.com>
-Date: Fri, 30 Apr 2021 16:16:51 +0200
+ <20210426165118.GH4590@sirena.org.uk>
+Message-ID: <28acedfd-6cd5-a8ad-0182-e61c3c30c27d@foss.st.com>
+Date: Fri, 30 Apr 2021 16:22:34 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210426162610.erpt5ubeddx7paeq@ti.com>
+In-Reply-To: <20210426165118.GH4590@sirena.org.uk>
 Content-Language: en-US
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
  (10.75.127.6)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391, 18.0.761
  definitions=2021-04-30_08:2021-04-30,
  2021-04-30 signatures=0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210430_071704_592535_D380258A 
-X-CRM114-Status: GOOD (  34.94  )
+X-CRM114-CacheID: sfid-20210430_072248_641075_38A57E45 
+X-CRM114-Status: GOOD (  32.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,132 +120,65 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Pratyush
+Hi Mark, Pratyush
 
-On 4/26/21 6:26 PM, Pratyush Yadav wrote:
-> Hi,
+On 4/26/21 6:51 PM, Mark Brown wrote:
+> On Mon, Apr 26, 2021 at 09:56:12PM +0530, Pratyush Yadav wrote:
+>> On 26/04/21 04:39PM, patrice.chotard@foss.st.com wrote:
 > 
-> On 26/04/21 04:39PM, patrice.chotard@foss.st.com wrote:
->> From: Christophe Kerello <christophe.kerello@foss.st.com>
->>
->> With STM32 QSPI, it is possible to poll the status register of the device.
->> This could be done to offload the CPU during an operation (erase or
->> program a SPI NAND for example).
->>
->> spi_mem_poll_status API has been added to handle this feature.
->>
->> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
->> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
->> ---
->>  drivers/spi/spi-mem.c       | 34 ++++++++++++++++++++++++++++++++++
->>  include/linux/spi/spi-mem.h |  8 ++++++++
->>  2 files changed, 42 insertions(+)
->>
->> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
->> index 1513553e4080..43dce4b0efa4 100644
->> --- a/drivers/spi/spi-mem.c
->> +++ b/drivers/spi/spi-mem.c
->> @@ -743,6 +743,40 @@ static inline struct spi_mem_driver *to_spi_mem_drv(struct device_driver *drv)
->>  	return container_of(drv, struct spi_mem_driver, spidrv.driver);
->>  }
->>  
->> +/**
->> + * spi_mem_poll_status() - Poll memory device status
->> + * @mem: SPI memory device
->> + * @op: the memory operation to execute
->> + * @mask: status bitmask to ckeck
->> + * @match: status expected value
+>>> + * spi_mem_poll_status() - Poll memory device status
+>>> + * @mem: SPI memory device
+>>> + * @op: the memory operation to execute
+>>> + * @mask: status bitmask to ckeck
+>>> + * @match: status expected value
 > 
-> Technically, (status & mask) expected value. Dunno if that is obvious 
-> enough to not spell out explicitly.
-
-Yes, match = (status & mask)
-I will update the comment accordingly.
-
+>> Technically, (status & mask) expected value. Dunno if that is obvious 
+>> enough to not spell out explicitly.
 > 
->> + * @timeout: timeout
->> + *
->> + * This function send a polling status request to the controller driver
->> + *
->> + * Return: 0 in case of success, -ETIMEDOUT in case of error,
->> + *         -EOPNOTSUPP if not supported.
->> + */
->> +int spi_mem_poll_status(struct spi_mem *mem,
->> +			const struct spi_mem_op *op,
->> +			u8 mask, u8 match, u16 timeout)
->> +{
->> +	struct spi_controller *ctlr = mem->spi->controller;
->> +	int ret = -EOPNOTSUPP;
->> +
->> +	if (ctlr->mem_ops && ctlr->mem_ops->poll_status) {
+> Is it possible there's some situation where you're waiting for some bits
+> to clear as well?
 > 
-> You should call spi_mem_supports_op() before sending any ops to the 
-> controller. Invalid/unsupported ops can cause unexpected behavior.
+Yes, we are waiting STATUS_BUSY bit to be cleared, see patch 2 which is making 
+usage of this API.
 
-Ok i will add it.
+>>> +		ret = ctlr->mem_ops->poll_status(mem, op, mask, match, timeout);
+> 
+> I'm not sure I like this name since it makes me think the driver is
+> going to poll when really it's offloaded to the hardware, but I can't
+> think of any better ideas either and it *is* what the hardware is going
+> to be doing so meh.
+> 
+>> I wonder if it is better to let spi-mem core take care of the timeout 
+>> part. On one hand it reduces code duplication on the driver side a 
+>> little bit. Plus it makes sure drivers don't mess anything up with bad 
+>> (or no) handling of the timeout. But on the other hand the interface 
+>> becomes a bit awkward since you'd have to pass a struct completion 
+>> around, and it isn't something particularly hard to get right either. 
+>> What do you think?
+> 
+> We already have the core handling other timeouts.  We don't pass around
+> completions but rather have an API function that the driver has to call
+> when the operation completes, a similar pattern might work here.  Part
 
-Thanks
+So, if i correctly understood, you make allusion to what is already done
+in SPI core framework with spi_finalize_current_transfer() right ?
+
+> of the thing with those APIs which I'm missing here is that this will
+> just return -EOPNOTSUPP if the driver can't do the delay in hardware, I
+> think it would be cleaner if this API were similar and the core dealt
+> with doing the delay/poll on the CPU.  That way the users don't need to
+> repeat the handling for the offload/non-offload cases.
+
+Sorry, i didn't catch what you mean here. In PATCH 2, that's the case,
+if spi_mem_poll_status() is not supported, the core is dealing with 
+the delay/poll on the CPU in spinand_wait().
+
 Patrice
+Thanks
+
 
 > 
->> +		ret = spi_mem_access_start(mem);
->> +		if (ret)
->> +			return ret;
->> +
->> +		ret = ctlr->mem_ops->poll_status(mem, op, mask, match, timeout);
-> 
-> I wonder if it is better to let spi-mem core take care of the timeout 
-> part. On one hand it reduces code duplication on the driver side a 
-> little bit. Plus it makes sure drivers don't mess anything up with bad 
-> (or no) handling of the timeout. But on the other hand the interface 
-> becomes a bit awkward since you'd have to pass a struct completion 
-> around, and it isn't something particularly hard to get right either. 
-> What do you think?
-> 
->> +
->> +		spi_mem_access_end(mem);
->> +	}
->> +
->> +	return ret;
->> +}
->> +EXPORT_SYMBOL_GPL(spi_mem_poll_status);
->> +
->>  static int spi_mem_probe(struct spi_device *spi)
->>  {
->>  	struct spi_mem_driver *memdrv = to_spi_mem_drv(spi->dev.driver);
->> diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
->> index 2b65c9edc34e..5f78917c0f68 100644
->> --- a/include/linux/spi/spi-mem.h
->> +++ b/include/linux/spi/spi-mem.h
->> @@ -250,6 +250,7 @@ static inline void *spi_mem_get_drvdata(struct spi_mem *mem)
->>   *		  the currently mapped area), and the caller of
->>   *		  spi_mem_dirmap_write() is responsible for calling it again in
->>   *		  this case.
->> + * @poll_status: poll memory device status
->>   *
->>   * This interface should be implemented by SPI controllers providing an
->>   * high-level interface to execute SPI memory operation, which is usually the
->> @@ -274,6 +275,9 @@ struct spi_controller_mem_ops {
->>  			       u64 offs, size_t len, void *buf);
->>  	ssize_t (*dirmap_write)(struct spi_mem_dirmap_desc *desc,
->>  				u64 offs, size_t len, const void *buf);
->> +	int (*poll_status)(struct spi_mem *mem,
->> +			   const struct spi_mem_op *op,
->> +			   u8 mask, u8 match, u16 timeout);
->>  };
->>  
->>  /**
->> @@ -369,6 +373,10 @@ devm_spi_mem_dirmap_create(struct device *dev, struct spi_mem *mem,
->>  void devm_spi_mem_dirmap_destroy(struct device *dev,
->>  				 struct spi_mem_dirmap_desc *desc);
->>  
->> +int spi_mem_poll_status(struct spi_mem *mem,
->> +			const struct spi_mem_op *op,
->> +			u8 mask, u8 match, u16 timeout);
->> +
->>  int spi_mem_driver_register_with_owner(struct spi_mem_driver *drv,
->>  				       struct module *owner);
-> 
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
