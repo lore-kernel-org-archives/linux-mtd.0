@@ -2,88 +2,79 @@ Return-Path: <SRS0=4jNj=J3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MISSING_HEADERS,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9535DC433ED
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Apr 2021 15:58:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C018C433B4
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Apr 2021 16:52:47 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E0F46613ED
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Apr 2021 15:58:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E0F46613ED
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 847376145A
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Apr 2021 16:52:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 847376145A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=ozlsbo57eHJRqjhtwGivi8fTOVM6PtnP60QTc4wKK4k=; b=G8EcF4SQifcFjRQ2PQBCCGhxp
-	yRco2gTl84M6MZLEsBf3ViYbH6+bZRf2XZQkc6yhfyxZBGHwqhSV+/lTGWLDJgoGqt8rOXC/XoN3E
-	mzO3hl9DQz8SG0/PjFPaTnnLaBI6fYIdWQHky6vdZuDgsUX7hrrn8TG46twFtHY60u6SYxSjJAWWk
-	+61Qz2f0H+Gnj053NLj83GR+TFm1tpwMnIiSvxa64DdOVCHKoyNcF+RELO6+2O3Fpdsy84V/lZlYD
-	hBRnCaii24liaQFPC7fmINpo5SJ1vyyv//hBIjOZ8MeQDFoJQXPpMpssQQjVGOfTqfUcFdQbtRamg
-	2jgJF4oug==;
+	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
+	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
+	Subject:Cc:From:Date:Reply-To:To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=LySnKc6pf+l13wgBVuKZNp/HdNDuBLv6xmCaXaJZN4w=; b=K/Jquv9wKbhC/DCP+/Duwops2
+	Z5ehWSPZsH1Nk5PWlcHJQcwOPD7B79sAlOPvH2fN0SdL9lFEvhZ8i8s/rbh8EUZnPkP6xKcRTR8g1
+	318aKlkWW0heiacCuj2Oa1leT83kEfIFgl78U/fCkq0kGytwtfi6/BTtmn7JdpugenNvIrBe4A3Pa
+	0pz+BCKLfI79yLAkFAXRKCs5T2xJ9qfwKRMrrolQBjrk0nIq+FiLEuVCaNQzq35DO0KBixdfnIBJj
+	9f3AAV74EoPPgJccFLNxE0LYIi7eOnw6edZEG2QARqy6w3J3W4ZOCG+6A7DUpz2Apd7Nk5ayGN5bv
+	Z2jdCBCxQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lcVVz-00887Y-0f; Fri, 30 Apr 2021 15:57:15 +0000
+	id 1lcWMc-008Ea7-GN; Fri, 30 Apr 2021 16:51:38 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lcVVj-00886R-6M; Fri, 30 Apr 2021 15:56:59 +0000
+ id 1lcWMO-008EXy-8t; Fri, 30 Apr 2021 16:51:24 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
- :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=OWDOKLuluZpl4epmSDuGAVv8IdZftXOzn6Q89awu0V8=; b=WtDbhPhSlRT3bZzJcf2o+v3b9u
- aTlIVq9uD8dmz5Qs2gTXtUTl1BZrGeDsnXLzP6wGc1C6gPO3WC6SofQOseqc4K9IS8OkDbwoOGce2
- og931XTxL+tRtMa9mAx74HVtgVYEsgr1UeZQ0NuORugNlidCKcc8RArQIXIJqI64yCKhACKB0hcFG
- LMWPKYfrh6p8qmvPfcxd0IcreTrVGqgMIzTCcUvSs84UOWzQtC10dXN2I1VSOHvwCSn33Vc1I3UJ+
- d53+GoQjf+SLhA3r1jQtIx2JdYiaRNAE+I2mXSefV1Dm5q229cYLJC3YmIHCKWdaO3uuk91oTrsoB
- MhGWcO5Q==;
-Received: from mail.kernel.org ([198.145.29.99])
+ d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+ Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:From:
+ Date:Sender:Reply-To:To:Content-ID:Content-Description;
+ bh=aqmiX22cwLflROHsnVcqxijJogv57RMpMBONHTHW/VE=; b=w3/Ridb5BVPxISTEOr9K6DCsG9
+ nLbyQ7PFLyQbZs3ODzrdNeZ6VSN/QKxL7SgzJb0Rg6vacfx57flwZ2Hl/MXILVOYTb1G3ZCyTpxm+
+ eakzL+Te2GIEQ9UFirNBe4LGq+3rvFBbtF+yrOMTmrzRB/7j8wgYMMXf8TsqO9ByRuz1BkkCcWSZZ
+ 5vTY/Gspr9D1O5usCt9tHz/Tsdogh/6VYnLFnWz6NsGU+xYwv7H+VHObAJLguXkuC9dxIJqStHsrB
+ y2DAwBv4umSkHDWjUwEbLakb/0nHANYi3TaUl3AtfhM23hYugiUSI1GbL1hwHwjTnAvlTfxKOpiVD
+ v8R6OZKA==;
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lcVVg-001V0A-L8; Fri, 30 Apr 2021 15:56:57 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9813D61107;
- Fri, 30 Apr 2021 15:56:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1619798216;
- bh=Nfc0HJne/30VyMJlu8UUpYSryGNC1CXdu+AlSzucchs=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=OaGQZ0Ro2H0wftqmIEXleFYY8xSr+hKdEkdmhsD7o5/6XuyRCWHMev7yqsI0tvkpP
- zOuk+6ytcNNBqFm6bwbGr2yl3/J5+BmzLhNpJn0sACPor6pHKb+th5XftBM0E79JxM
- prAIvFme4r1VAlhjwyQnBrC32hQHchixUv2ud5OCDYyYD3fUUxr7BnAYJg7Ad9frvH
- 1Y1qn/Xh2G7+fllViqaeDTL5iuh4NsOqgVU2yJSqXCynTnaYiImVjgviqX39Hwde/G
- sftiD/trHVBKKVmjODEjnFWfDJDvfiSZF2itubKZ+8W0xTHs5hq9CiECOtG6z83lHx
- OxhYM0MrJh02A==
-Date: Fri, 30 Apr 2021 16:56:23 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Patrice CHOTARD <patrice.chotard@foss.st.com>
-Cc: Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- linux-mtd@lists.infradead.org,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- linux-spi@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- christophe.kerello@foss.st.com
+ id 1lcWML-001XBt-AX; Fri, 30 Apr 2021 16:51:23 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id BD3CF1F43BCF;
+ Fri, 30 Apr 2021 17:51:17 +0100 (BST)
+Date: Fri, 30 Apr 2021 18:51:04 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+Cc: <patrice.chotard@foss.st.com>, Mark Brown <broonie@kernel.org>, Miquel
+ Raynal <miquel.raynal@bootlin.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+ <linux-mtd@lists.infradead.org>, Alexandre Torgue
+ <alexandre.torgue@foss.st.com>, <linux-spi@vger.kernel.org>,
+ <linux-stm32@st-md-mailman.stormreply.com>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <christophe.kerello@foss.st.com>
 Subject: Re: [PATCH 1/3] spi: spi-mem: add automatic poll status functions
-Message-ID: <20210430155623.GD5981@sirena.org.uk>
+Message-ID: <20210430185104.377d1bc6@collabora.com>
+In-Reply-To: <20210426143934.25275-2-patrice.chotard@foss.st.com>
 References: <20210426143934.25275-1-patrice.chotard@foss.st.com>
  <20210426143934.25275-2-patrice.chotard@foss.st.com>
- <20210426162610.erpt5ubeddx7paeq@ti.com>
- <20210426165118.GH4590@sirena.org.uk>
- <28acedfd-6cd5-a8ad-0182-e61c3c30c27d@foss.st.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <28acedfd-6cd5-a8ad-0182-e61c3c30c27d@foss.st.com>
-X-Cookie: QOTD:
-User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210430_085656_774789_D4476320 
-X-CRM114-Status: GOOD (  22.62  )
+X-CRM114-CacheID: sfid-20210430_095121_549652_226F4369 
+X-CRM114-Status: GOOD (  31.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,85 +86,120 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7198968156433662027=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Mon, 26 Apr 2021 16:39:32 +0200
+<patrice.chotard@foss.st.com> wrote:
 
---===============7198968156433662027==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="GpGaEY17fSl8rd50"
-Content-Disposition: inline
+> From: Christophe Kerello <christophe.kerello@foss.st.com>
+> 
+> With STM32 QSPI, it is possible to poll the status register of the device.
+> This could be done to offload the CPU during an operation (erase or
+> program a SPI NAND for example).
+> 
+> spi_mem_poll_status API has been added to handle this feature.
+> 
+> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+> ---
+>  drivers/spi/spi-mem.c       | 34 ++++++++++++++++++++++++++++++++++
+>  include/linux/spi/spi-mem.h |  8 ++++++++
+>  2 files changed, 42 insertions(+)
+> 
+> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+> index 1513553e4080..43dce4b0efa4 100644
+> --- a/drivers/spi/spi-mem.c
+> +++ b/drivers/spi/spi-mem.c
+> @@ -743,6 +743,40 @@ static inline struct spi_mem_driver *to_spi_mem_drv(struct device_driver *drv)
+>  	return container_of(drv, struct spi_mem_driver, spidrv.driver);
+>  }
+>  
+> +/**
+> + * spi_mem_poll_status() - Poll memory device status
+> + * @mem: SPI memory device
+> + * @op: the memory operation to execute
+> + * @mask: status bitmask to ckeck
+> + * @match: status expected value
+> + * @timeout: timeout
+> + *
+> + * This function send a polling status request to the controller driver
+> + *
+> + * Return: 0 in case of success, -ETIMEDOUT in case of error,
+> + *         -EOPNOTSUPP if not supported.
+> + */
+> +int spi_mem_poll_status(struct spi_mem *mem,
+> +			const struct spi_mem_op *op,
+> +			u8 mask, u8 match, u16 timeout)
+> +{
+> +	struct spi_controller *ctlr = mem->spi->controller;
+> +	int ret = -EOPNOTSUPP;
+> +
+> +	if (ctlr->mem_ops && ctlr->mem_ops->poll_status) {
+> +		ret = spi_mem_access_start(mem);
 
+You should probably check that op is a single byte read before
+accepting the command.
 
---GpGaEY17fSl8rd50
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> +		if (ret)
+> +			return ret;
+> +
+> +		ret = ctlr->mem_ops->poll_status(mem, op, mask, match, timeout);
 
-On Fri, Apr 30, 2021 at 04:22:34PM +0200, Patrice CHOTARD wrote:
-> On 4/26/21 6:51 PM, Mark Brown wrote:
-> > On Mon, Apr 26, 2021 at 09:56:12PM +0530, Pratyush Yadav wrote:
+You also need some sort of ->poll_status_is_supported() to validate
+that the controller supports the status polling for this specific op (I
+can imagine some controllers having a limit on the number of dummy
+cycles/address bytes). I guess you could just fall back on SW-based
+status polling if ctlr->mem_ops->poll_status() returns -ENOTSUPP.
 
-> > Is it possible there's some situation where you're waiting for some bits
-> > to clear as well?
+> +
+> +		spi_mem_access_end(mem);
+> +	}
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(spi_mem_poll_status);
+> +
+>  static int spi_mem_probe(struct spi_device *spi)
+>  {
+>  	struct spi_mem_driver *memdrv = to_spi_mem_drv(spi->dev.driver);
+> diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+> index 2b65c9edc34e..5f78917c0f68 100644
+> --- a/include/linux/spi/spi-mem.h
+> +++ b/include/linux/spi/spi-mem.h
+> @@ -250,6 +250,7 @@ static inline void *spi_mem_get_drvdata(struct spi_mem *mem)
+>   *		  the currently mapped area), and the caller of
+>   *		  spi_mem_dirmap_write() is responsible for calling it again in
+>   *		  this case.
+> + * @poll_status: poll memory device status
+>   *
+>   * This interface should be implemented by SPI controllers providing an
+>   * high-level interface to execute SPI memory operation, which is usually the
+> @@ -274,6 +275,9 @@ struct spi_controller_mem_ops {
+>  			       u64 offs, size_t len, void *buf);
+>  	ssize_t (*dirmap_write)(struct spi_mem_dirmap_desc *desc,
+>  				u64 offs, size_t len, const void *buf);
+> +	int (*poll_status)(struct spi_mem *mem,
+> +			   const struct spi_mem_op *op,
+> +			   u8 mask, u8 match, u16 timeout);
+>  };
+>  
+>  /**
+> @@ -369,6 +373,10 @@ devm_spi_mem_dirmap_create(struct device *dev, struct spi_mem *mem,
+>  void devm_spi_mem_dirmap_destroy(struct device *dev,
+>  				 struct spi_mem_dirmap_desc *desc);
+>  
+> +int spi_mem_poll_status(struct spi_mem *mem,
+> +			const struct spi_mem_op *op,
+> +			u8 mask, u8 match, u16 timeout);
+> +
+>  int spi_mem_driver_register_with_owner(struct spi_mem_driver *drv,
+>  				       struct module *owner);
+>  
 
-> Yes, we are waiting STATUS_BUSY bit to be cleared, see patch 2 which is m=
-aking=20
-> usage of this API.
-
-Then the inverse question applies - is there no circumstance where we
-might be waiting for a bit to be set?
-
-> > We already have the core handling other timeouts.  We don't pass around
-> > completions but rather have an API function that the driver has to call
-> > when the operation completes, a similar pattern might work here.  Part
-
-> So, if i correctly understood, you make allusion to what is already done
-> in SPI core framework with spi_finalize_current_transfer() right ?
-
-Yes, and _current_message().
-
-> > of the thing with those APIs which I'm missing here is that this will
-> > just return -EOPNOTSUPP if the driver can't do the delay in hardware, I
-> > think it would be cleaner if this API were similar and the core dealt
-> > with doing the delay/poll on the CPU.  That way the users don't need to
-> > repeat the handling for the offload/non-offload cases.
-
-> Sorry, i didn't catch what you mean here. In PATCH 2, that's the case,
-> if spi_mem_poll_status() is not supported, the core is dealing with=20
-> the delay/poll on the CPU in spinand_wait().
-
-That's in the NAND core, not in spi-mem.  Any other users of spi-mem
-will also need to open code stuff.
-
---GpGaEY17fSl8rd50
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCMKKcACgkQJNaLcl1U
-h9BnTgf9GjZoUqirpCoBPIQR86s2iqmzPr65s1+q3eChglLC4wjowsyrHWAGwVtq
-nBgwxYF73lOPoum2okii05Jr8l5eSY/DVeUQApdLAVpZ68p2zdqx30NY5oxm1SeX
-znj8hwmDKd6gabz9J5vBZ1mJr6OnIU/0noPe33s7sq3TdMa+0efV9v/uIG5Z+y/N
-OW6ot8IyF8bhrg1E7I9YijsqeFcHuLlswP3w/vs8x8IbkIhfoVZi2EVmmdDKa7ni
-e5rqCNafXMHwSRKe2qxaE/wv5NWYcxCVdcObqvvrfDinOvhbSw0kUQt4XjrEfcOP
-o1Du7yptlLeUxurvc9FvZfTlWfffpQ==
-=I/xG
------END PGP SIGNATURE-----
-
---GpGaEY17fSl8rd50--
-
-
---===============7198968156433662027==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============7198968156433662027==--
-
