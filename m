@@ -2,86 +2,108 @@ Return-Path: <SRS0=4jNj=J3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E0B7C43460
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Apr 2021 07:03:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33210C433ED
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Apr 2021 14:17:53 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D006F61423
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Apr 2021 07:03:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D006F61423
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id 8CE93613A9
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Apr 2021 14:17:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8CE93613A9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=foss.st.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
+	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=+G+n2nOjQnxCyJ9qzINiE5Dn+5cG376nPx+gvuVROWY=; b=RoZuyCIR7zfOJBVo6dmecuOkg
-	MHtaE7y8UhFNkcxSIpN8LEs4tLzD2Ywr1Q94P8UJldge6bOB0zU8i0+/fm6IRsCdm2vd8VLz8P3OZ
-	wIz9q/z6MP2ZO1/RVMxDz+YqSO4e0rAhauIzcEgAta0jhzlm6SYUR+8xbK9OidLiVl3t6SCCoRsYb
-	rSs0KMM/QmS+Z3iIyVmACy+Qtz3avHb6/HJ6HTimel93ofm7NC5CrwnI8bMdtphKEZehe633T4pF2
-	j7zisVp6WQDXaHcY6bnJXx8ejCMBaD+qxtSowqgGcbtiwzm/IDKSdSdaYq1a/BC3fzHylsIXzx+e/
-	qoYyhmyjw==;
+	 bh=D/KJIB375D/A1HZgi3GVFHkZqj1jYN7zhja+ZIFznI8=; b=mhseGR5ZEgVh8OSTV7UZrcgcG
+	KJZBE2i6J+dKrPNtObTaC+BfNGrghcSMdmjunYYNtie0rEA/k1ZhXSk9uudRK5xmgT+HclJHdm0ys
+	czvenrDDsotqkCxQL3l9FtZMuB2kbD1HAoJp3SLmrNqARjpXJSNE/Fijj4P3i4v5CAKv5LUwoMHvN
+	PZKVsSY6N04TyiHz92UwkCfSKOZ5Ijtt6+dKeCliG8oeMfUq4VnaYTsNqcSPyvvLfhu2tCWGtrPMS
+	NZWJVwvjcUG8qZLfr1ruYCcJy5edJzzULuzXHTmSv2apfgafTG16XJkk//T7IRlyy7Y+qWfW6yEZM
+	0anRM4Ygw==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lcNAR-007OhL-IT; Fri, 30 Apr 2021 07:02:27 +0000
+	id 1lcTx8-007xyP-Ul; Fri, 30 Apr 2021 14:17:11 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lcNAO-007OhE-3o
- for linux-mtd@desiato.infradead.org; Fri, 30 Apr 2021 07:02:24 +0000
+ id 1lcTx6-007xyB-6T; Fri, 30 Apr 2021 14:17:08 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Message-ID:References:In-Reply-To:
- Subject:Cc:To:From:Date:Content-Transfer-Encoding:Content-Type:MIME-Version:
- Sender:Reply-To:Content-ID:Content-Description;
- bh=2DCITNn+x2MH0Gn9mGX5H2TLa9RW8pHg/Gp9BeikUBw=; b=IB6h0j1dhDCDvLqrezNMMSh7OF
- xMUh3uvoOylWndloW01qih7LuqPFOOoV27EPYBhXEysMitG6Nq0wxGx4n816Mf2RZBr82+CucVczv
- pWsKOczgRyCO6tmSyk5pwny6VMNHKW4JICf3BG4oedhjTQKKsis93IPtctppw5vWCIyJpH+UGwjW7
- P3mfsLhech6Px7yU5ie0U6JoAPOV2oAvn01RnkkhZd8qqJuNny3y3ekUwnw1drP4sZt0dIRmh9bFx
- vl/EhvlyBTDP+N+GupiMCQLqAkxD0hp+ZBeq+o+lrWKR/g9adFBVGsRMIzapc1HtDsK5/Mldg9LhU
- g4BAEk3w==;
-Received: from ssl.serverraum.org ([176.9.125.105])
+ d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+ Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:CC:To:
+ Subject:Sender:Reply-To:Content-ID:Content-Description;
+ bh=QAuQWsXL4argYFY9yUQByCWSho5tktvwT0Nzfzz7Aps=; b=zia+0ShBTzSmkJkAoW4MYLjge3
+ vKybdzKJp6Y37WgjRjhZBFp+ZD7UvgZrPlrRNmxJMKOTb3SaK2H6NkiJdd+CnViVVevO+jk6CEu6y
+ rVaAWhdfVOgw70EXY2MGfM93/WdJc++ZaSCy1GGsmCWPWWgyicEYgnPxsgCu7CG/dJriarQe8wBYQ
+ Kj0+yU1hAtgCF0Xt6tkecQ6nEZ7dv1GtJaCGcg2IbwoAvKyujS3uYs3VrMRVHgpXAvt5WgBV6ZqsM
+ Z4T+l9iFGTHRxwJevJWjXk0UzbiI95eBgfSjilw58NTXhLQO1Egm2luGpi815qOy/E3NR2i5vQTth
+ Sl+tVgXw==;
+Received: from mx07-00178001.pphosted.com ([185.132.182.106])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lcNAL-001Bg7-1K
- for linux-mtd@lists.infradead.org; Fri, 30 Apr 2021 07:02:22 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 7733C22236;
- Fri, 30 Apr 2021 09:02:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1619766136;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=2DCITNn+x2MH0Gn9mGX5H2TLa9RW8pHg/Gp9BeikUBw=;
- b=uRxj57wgK6mm+pDqvsseG9YPzK20uDfasiHMNLV6jHkvUdMaOjXtnyzqVVVAFyLuQKzbCB
- MqQqrbP1DGrzG2kDqOEugR5gjMziTrSbBnhDSCAb5WijYUgM4QLixwuBlijJoFYJI4SW28
- gJ4IADSrg5HcqUZAyM+IxA3SYPDhUKI=
+ id 1lcTx2-001Qpa-4U; Fri, 30 Apr 2021 14:17:06 +0000
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+ by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
+ 13UECb57024111; Fri, 30 Apr 2021 16:16:54 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
+ h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=QAuQWsXL4argYFY9yUQByCWSho5tktvwT0Nzfzz7Aps=;
+ b=xrcUWPXUPAdkSR/TDFoG08aiFRGU0V3z/lzu3qOwMUWfnFNYC/x0lxM8Q25cG4wcU+yA
+ 7z5e3O/yDzjnVuFrfPG4bUFZPfERzqqefWwzRrCE3iYwpvacktC8X8kt9egnG8O0zYYv
+ 2zaW3I6oJRb+U27twnmQipGQFNSKCn+Eb/yD/IP3978LLG2HMlX+3g5s6s8aWdSVNBGc
+ ja8YgGDLV64xVrAKeUfuDiJJoWO1lTUEi9UREWeHOcRXoNJoZoNitfpWBDTKE8/iXdKx
+ K+dl0J9zCV9pGB6q6aPpNxdosj8vLceWuWg6i6RzbXlZmN8Pd6XV1wnQs3vCLel2iOcn 3A== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+ by mx07-00178001.pphosted.com with ESMTP id 387wnpy0ne-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 30 Apr 2021 16:16:54 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D515D10002A;
+ Fri, 30 Apr 2021 16:16:52 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B1FFD241842;
+ Fri, 30 Apr 2021 16:16:52 +0200 (CEST)
+Received: from lmecxl0573.lme.st.com (10.75.127.48) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 30 Apr
+ 2021 16:16:51 +0200
+Subject: Re: [PATCH 1/3] spi: spi-mem: add automatic poll status functions
+To: Pratyush Yadav <p.yadav@ti.com>
+CC: Mark Brown <broonie@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Boris
+ Brezillon <boris.brezillon@collabora.com>, <linux-mtd@lists.infradead.org>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ <linux-spi@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <christophe.kerello@foss.st.com>
+References: <20210426143934.25275-1-patrice.chotard@foss.st.com>
+ <20210426143934.25275-2-patrice.chotard@foss.st.com>
+ <20210426162610.erpt5ubeddx7paeq@ti.com>
+From: Patrice CHOTARD <patrice.chotard@foss.st.com>
+Message-ID: <0ccafbbf-194d-d523-34b0-a5c7c9bc95c1@foss.st.com>
+Date: Fri, 30 Apr 2021 16:16:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Date: Fri, 30 Apr 2021 09:02:14 +0200
-From: Michael Walle <michael@walle.cc>
-To: Petr Malat <oss@malat.biz>
-Cc: linux-mtd@lists.infradead.org, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH] mtd: Create partname and partid debug files for child MTDs
-In-Reply-To: <20210430065057.32018-1-oss@malat.biz>
-References: <20210430065057.32018-1-oss@malat.biz>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <dc9d00dd84d4fa1f4219cd769922312e@walle.cc>
-X-Sender: michael@walle.cc
+In-Reply-To: <20210426162610.erpt5ubeddx7paeq@ti.com>
+Content-Language: en-US
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391, 18.0.761
+ definitions=2021-04-30_08:2021-04-30,
+ 2021-04-30 signatures=0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210430_000221_259497_0DBE71F4 
-X-CRM114-Status: UNSURE (   8.53  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210430_071704_592535_D380258A 
+X-CRM114-Status: GOOD (  34.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,26 +115,137 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Petr,
+Hi Pratyush
 
-Am 2021-04-30 08:50, schrieb Petr Malat:
-> Partname and partid are set by the upper driver (spi-nor) on the master
-> MTD. If this MTD is partitioned and CONFIG_MTD_PARTITIONED_MASTER is
-> disabled, the master MTD is not instantiated and partname and partid
-> aren't available to the userspace.
+On 4/26/21 6:26 PM, Pratyush Yadav wrote:
+> Hi,
+> 
+> On 26/04/21 04:39PM, patrice.chotard@foss.st.com wrote:
+>> From: Christophe Kerello <christophe.kerello@foss.st.com>
+>>
+>> With STM32 QSPI, it is possible to poll the status register of the device.
+>> This could be done to offload the CPU during an operation (erase or
+>> program a SPI NAND for example).
+>>
+>> spi_mem_poll_status API has been added to handle this feature.
+>>
+>> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+>> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+>> ---
+>>  drivers/spi/spi-mem.c       | 34 ++++++++++++++++++++++++++++++++++
+>>  include/linux/spi/spi-mem.h |  8 ++++++++
+>>  2 files changed, 42 insertions(+)
+>>
+>> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+>> index 1513553e4080..43dce4b0efa4 100644
+>> --- a/drivers/spi/spi-mem.c
+>> +++ b/drivers/spi/spi-mem.c
+>> @@ -743,6 +743,40 @@ static inline struct spi_mem_driver *to_spi_mem_drv(struct device_driver *drv)
+>>  	return container_of(drv, struct spi_mem_driver, spidrv.driver);
+>>  }
+>>  
+>> +/**
+>> + * spi_mem_poll_status() - Poll memory device status
+>> + * @mem: SPI memory device
+>> + * @op: the memory operation to execute
+>> + * @mask: status bitmask to ckeck
+>> + * @match: status expected value
+> 
+> Technically, (status & mask) expected value. Dunno if that is obvious 
+> enough to not spell out explicitly.
 
-You might have a look at:
-https://lore.kernel.org/linux-mtd/20210429155713.28808-1-michael@walle.cc/
+Yes, match = (status & mask)
+I will update the comment accordingly.
 
-This is just for spi-nor though, but attaches the properties to the
-flash device instead of the mtd device.
+> 
+>> + * @timeout: timeout
+>> + *
+>> + * This function send a polling status request to the controller driver
+>> + *
+>> + * Return: 0 in case of success, -ETIMEDOUT in case of error,
+>> + *         -EOPNOTSUPP if not supported.
+>> + */
+>> +int spi_mem_poll_status(struct spi_mem *mem,
+>> +			const struct spi_mem_op *op,
+>> +			u8 mask, u8 match, u16 timeout)
+>> +{
+>> +	struct spi_controller *ctlr = mem->spi->controller;
+>> +	int ret = -EOPNOTSUPP;
+>> +
+>> +	if (ctlr->mem_ops && ctlr->mem_ops->poll_status) {
+> 
+> You should call spi_mem_supports_op() before sending any ops to the 
+> controller. Invalid/unsupported ops can cause unexpected behavior.
 
--michael
+Ok i will add it.
+
+Thanks
+Patrice
+
+> 
+>> +		ret = spi_mem_access_start(mem);
+>> +		if (ret)
+>> +			return ret;
+>> +
+>> +		ret = ctlr->mem_ops->poll_status(mem, op, mask, match, timeout);
+> 
+> I wonder if it is better to let spi-mem core take care of the timeout 
+> part. On one hand it reduces code duplication on the driver side a 
+> little bit. Plus it makes sure drivers don't mess anything up with bad 
+> (or no) handling of the timeout. But on the other hand the interface 
+> becomes a bit awkward since you'd have to pass a struct completion 
+> around, and it isn't something particularly hard to get right either. 
+> What do you think?
+> 
+>> +
+>> +		spi_mem_access_end(mem);
+>> +	}
+>> +
+>> +	return ret;
+>> +}
+>> +EXPORT_SYMBOL_GPL(spi_mem_poll_status);
+>> +
+>>  static int spi_mem_probe(struct spi_device *spi)
+>>  {
+>>  	struct spi_mem_driver *memdrv = to_spi_mem_drv(spi->dev.driver);
+>> diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+>> index 2b65c9edc34e..5f78917c0f68 100644
+>> --- a/include/linux/spi/spi-mem.h
+>> +++ b/include/linux/spi/spi-mem.h
+>> @@ -250,6 +250,7 @@ static inline void *spi_mem_get_drvdata(struct spi_mem *mem)
+>>   *		  the currently mapped area), and the caller of
+>>   *		  spi_mem_dirmap_write() is responsible for calling it again in
+>>   *		  this case.
+>> + * @poll_status: poll memory device status
+>>   *
+>>   * This interface should be implemented by SPI controllers providing an
+>>   * high-level interface to execute SPI memory operation, which is usually the
+>> @@ -274,6 +275,9 @@ struct spi_controller_mem_ops {
+>>  			       u64 offs, size_t len, void *buf);
+>>  	ssize_t (*dirmap_write)(struct spi_mem_dirmap_desc *desc,
+>>  				u64 offs, size_t len, const void *buf);
+>> +	int (*poll_status)(struct spi_mem *mem,
+>> +			   const struct spi_mem_op *op,
+>> +			   u8 mask, u8 match, u16 timeout);
+>>  };
+>>  
+>>  /**
+>> @@ -369,6 +373,10 @@ devm_spi_mem_dirmap_create(struct device *dev, struct spi_mem *mem,
+>>  void devm_spi_mem_dirmap_destroy(struct device *dev,
+>>  				 struct spi_mem_dirmap_desc *desc);
+>>  
+>> +int spi_mem_poll_status(struct spi_mem *mem,
+>> +			const struct spi_mem_op *op,
+>> +			u8 mask, u8 match, u16 timeout);
+>> +
+>>  int spi_mem_driver_register_with_owner(struct spi_mem_driver *drv,
+>>  				       struct module *owner);
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
