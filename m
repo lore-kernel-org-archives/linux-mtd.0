@@ -2,90 +2,80 @@ Return-Path: <SRS0=b+Mj=J6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FB0FC433ED
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 May 2021 15:59:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83743C433ED
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 May 2021 16:48:38 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 958CC61183
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 May 2021 15:59:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 958CC61183
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id D96E561283
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 May 2021 16:48:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D96E561283
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=EGV+dxocFXsqSl08a2XaxTWEYpMGKZeDtMOwEQIf5D0=; b=IGjfqGMmX1BJjO+gclAFmwJLF
-	EiH32A1fkU2OfFJoSa5tgH+TWXNI6UWp8amvd1BZ6ZF7M+opfOsF8UAqebigpJlhDgEVb7NpOpJUT
-	BjaMZmtNXTwgPehLXgJvrCZgABmQKELX0lGj+F7mfaDtXBpSraEoXsFJOHjiCPWV6YSAjrcCMad6l
-	2JBSTll0cvqsRh1sPHoEldYVXnEN9lpVrCTe3ldsD2bDuxjeXs5U3hW00QiyRAWzAF/HIQ42BkWGW
-	K6OXqrpjlP/dAIkiimwKDABnwuuSsBZp+snq9dVm5JjWgiz3L1VOtRbOp+rfRntGj2Lbda2UjCGo/
-	qaz3xgeww==;
+	 bh=kLps7MITJL+I2h5M7jF2wbrSr7IWjaIQGAIOv1cyHJo=; b=Jg5Lidhfzp6VxVU57oH2guNoc
+	MvZK/YWU9WIJg0J931O6C/gsYqCUFH2Cd3EVR13TY5vP25unfghK8abIjDE9qsuYvaOwxal5n34+0
+	wVBLYK5/mlUqDo3mWvAZ1/Bl5i3+vWUIS/cvOzq12jAYPAVdH/DPoXS3TG50iPdqpkq7VmWT16pL7
+	oB8w9cUcy0TxXNN0uO5waOkyDgAcbBJqICdiuwK7m7xyE5qALNfsVfa9clYbbwRFoAguqYMYdfC/t
+	CQshytcVppcbC2v5QwtJIAlJghQ3SJKW1jf8AJTl3yzQDNWf8+rNC0BfD5oa6U3PER6D+CUhmFIP2
+	nm48d3/cw==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1ldaxb-00EJho-IQ; Mon, 03 May 2021 15:58:16 +0000
+	id 1ldbj8-00ERLz-4A; Mon, 03 May 2021 16:47:22 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1ldawY-00EJaj-9z
- for linux-mtd@desiato.infradead.org; Mon, 03 May 2021 15:57:10 +0000
+ id 1ldbit-00ERJR-7j
+ for linux-mtd@desiato.infradead.org; Mon, 03 May 2021 16:47:07 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
- MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
- :Reply-To:Content-Type:Content-ID:Content-Description;
- bh=rn6h3XU4qpU2xLKnq1zA5PvaNO0j68Bcov48KV6nNm4=; b=4i+ZnSYKvAJ4Zo/UKEmlZ24zUo
- 3I6nZXg47q7WE2HIbN4GY+jRB4TfOx7WX7lnwcCMQ0hvYVY1pk8ZZRvzWXQCHTnvhSGxdOg39yc5F
- avaAXBlMedOiyeA9tVMiYCPrUQxaBIhAc1YNCAeB/QchfnG4IP4B6DAvOaH9z9I7isW5CC023Wqc5
- 29aFMCOj8vmk1lPI2iRdaY1Iwhltaf94HyPvHs+luR8K+qwk02Yg/owVpM9wB2g4PWk/pOOr6HGJ9
- kFZZV8lMXtFLJBXDMvY6bezD50d0IoUq1s9jflxFqQddaYvVHE2z1V+LbAlkQSFggMe0lbTHZczJO
- uHiGW+tA==;
-Received: from ssl.serverraum.org ([176.9.125.105])
+ d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+ :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description;
+ bh=3qpXgYIm46vBwOOqXb9lQCRxOj66aYjBIfpsDo7bLHk=; b=iIZkVniuLW1eM/4LnwJcUUGOua
+ hrh59Xd/ya1/ob4NoVWxr/Tw48FtVP1EvnyTVVuECyQpSWL0lTP3cVey4R0ufeq7BpgNq5bm9llgb
+ 5yfL6ttLBZVylgZiAfxKw5Xfb+nz+5rs22GTP6Fm8h+6dpG1fm+kp70CJtxpckfld+xPPFfL7Ckt9
+ Rb14OfOho/nvOcf//wUSyHB4Yz3J2SmH7bOJE0dY4/v4virBw/fxyZ/53fhA9zqT+ZlJOQQgTFU+b
+ 0a8LTGvye0gsOJxu19+eXyRdiY43X+Xm0B5OMS52glQmu5OGY2EkUcI3xOZVoMNvDUKVXQ2Ap4p/Y
+ 962UgMPw==;
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1ldawU-003Cuz-CN
- for linux-mtd@lists.infradead.org; Mon, 03 May 2021 15:57:09 +0000
-Received: from mwalle01.fritz.box (unknown
- [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
- SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 2BF5D22235;
- Mon,  3 May 2021 17:57:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1620057420;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=rn6h3XU4qpU2xLKnq1zA5PvaNO0j68Bcov48KV6nNm4=;
- b=KU3eDts2m6XWnJHOhUs7szr9IGo2SCU0WIFLKGLfvF4PLAhBx1d3AXP0myCwFPnyFq9Upb
- LwLbMQhZi3XRGAIm1kjqeQo/ZBLYjWHwKN5CRd9Lr8UpDtz++4QeE8Ax70MISv+kfd+Sfc
- rlUZ9hCVchECzoHlZM+14sDXl3HJaag=
-From: Michael Walle <michael@walle.cc>
-To: linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Alexander Williams <awill@google.com>,
- Yicong Yang <yangyicong@hisilicon.com>,
- Heiko Thiery <heiko.thiery@gmail.com>, Michael Walle <michael@walle.cc>
-Subject: [PATCH v4 2/2] mtd: spi-nor: add initial sysfs support
-Date: Mon,  3 May 2021 17:56:51 +0200
-Message-Id: <20210503155651.30889-3-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210503155651.30889-1-michael@walle.cc>
-References: <20210503155651.30889-1-michael@walle.cc>
+ id 1ldbip-003IIc-Q7
+ for linux-mtd@lists.infradead.org; Mon, 03 May 2021 16:47:05 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB66C613E9;
+ Mon,  3 May 2021 16:46:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1620060422;
+ bh=iPg8jBVzACvtxro+PBWxTxGIHPUG4kFtNrGMH6DiwJY=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=X6bk8ZsFhhQnP1duUqTJt0hZF54ljp486uPCGNeL0MT7W6jOUKWSRsNJtO7wbCj3T
+ svRBALzjohPxD8LNmZeXXfqVHXx73HrvEkmC93VfVNHOx0gK0zEjev2RMAIXwm6g+z
+ 9ecG17e4R2uSO6d443q8S2AkEdxZkxcrocjBHjQE4zCrL+UnJMNPvs0ervWSDTBLt8
+ CaHeMLbUMIhTxag8XALWXha/eJZhqzbXToRoPrK+MZIno8XYa5KaIOUlo5vIs4CuKu
+ rH+YIZawB+qooG3HCyzufMa2Es0Eq3eS4/+Jty/jxtJO9QU7dssxFIlYkklrr5PAtX
+ LgeVDcBbRhVUQ==
+Date: Mon, 3 May 2021 22:16:52 +0530
+From: Manivannan Sadhasivam <mani@kernel.org>
+To: Md Sadre Alam <mdalam@codeaurora.org>
+Cc: miquel.raynal@bootlin.com, boris.brezillon@collabora.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ sricharan@codeaurora.org
+Subject: Re: [PATCH] mtd: rawnand: qcom: avoid write to obsolete register
+Message-ID: <20210503164652.GA3958@thinkpad>
+References: <1619205694-25645-1-git-send-email-mdalam@codeaurora.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1619205694-25645-1-git-send-email-mdalam@codeaurora.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210503_085706_748059_9DBF1E89 
-X-CRM114-Status: GOOD (  21.31  )
+X-CRM114-CacheID: sfid-20210503_094703_972245_D145D88A 
+X-CRM114-Status: GOOD (  15.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,201 +92,80 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support to show the manufacturer, the partname and JEDEC identifier
-as well as to dump the SFDP table. Not all flashes list their SFDP table
-contents in their datasheet. So having that is useful. It might also be
-helpful in bug reports from users.
+On Sat, Apr 24, 2021 at 12:51:34AM +0530, Md Sadre Alam wrote:
+> QPIC_EBI2_ECC_BUF_CFG register got obsolete from QPIC V2.0 onwards.
+> Avoid writing this register if QPIC version is V2.0 or newer.
+> 
+> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
 
-Signed-off-by: Michael Walle <michael@walle.cc>
----
-Pratyush, Heiko, I've dropped your Acked and Tested-by because there
-were some changes.
+Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
 
- .../ABI/testing/sysfs-bus-spi-devices-spi-nor | 31 +++++++
- drivers/mtd/spi-nor/Makefile                  |  2 +-
- drivers/mtd/spi-nor/core.c                    |  1 +
- drivers/mtd/spi-nor/core.h                    |  2 +
- drivers/mtd/spi-nor/sysfs.c                   | 93 +++++++++++++++++++
- 5 files changed, 128 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
- create mode 100644 drivers/mtd/spi-nor/sysfs.c
+Thanks,
+Mani
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor b/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
-new file mode 100644
-index 000000000000..d76cd3946434
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
-@@ -0,0 +1,31 @@
-+What:		/sys/bus/spi/devices/.../spi-nor/jedec_id
-+Date:		April 2021
-+KernelVersion:	5.14
-+Contact:	linux-mtd@lists.infradead.org
-+Description:	(RO) The JEDEC ID of the SPI NOR flash as reported by the
-+		flash device.
-+
-+
-+What:		/sys/bus/spi/devices/.../spi-nor/manufacturer
-+Date:		April 2021
-+KernelVersion:	5.14
-+Contact:	linux-mtd@lists.infradead.org
-+Description:	(RO) Manufacturer of the SPI NOR flash.
-+
-+
-+What:		/sys/bus/spi/devices/.../spi-nor/partname
-+Date:		April 2021
-+KernelVersion:	5.14
-+Contact:	linux-mtd@lists.infradead.org
-+Description:	(RO) Part name of the SPI NOR flash.
-+
-+
-+What:		/sys/bus/spi/devices/.../spi-nor/sfdp
-+Date:		April 2021
-+KernelVersion:	5.14
-+Contact:	linux-mtd@lists.infradead.org
-+Description:	(RO) This attribute is only present if the SPI NOR flash
-+		device supports the "Read SFDP" command (5Ah).
-+
-+		If present, it contains the complete SFDP (serial flash
-+		discoverable parameters) binary data of the flash.
-diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index 136f245c91dc..6b904e439372 100644
---- a/drivers/mtd/spi-nor/Makefile
-+++ b/drivers/mtd/spi-nor/Makefile
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- 
--spi-nor-objs			:= core.o sfdp.o swp.o otp.o
-+spi-nor-objs			:= core.o sfdp.o swp.o otp.o sysfs.o
- spi-nor-objs			+= atmel.o
- spi-nor-objs			+= catalyst.o
- spi-nor-objs			+= eon.o
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 20c7ee604731..57d8a4dae5fd 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -3349,6 +3349,7 @@ static struct spi_mem_driver spi_nor_driver = {
- 		.driver = {
- 			.name = "spi-nor",
- 			.of_match_table = spi_nor_of_table,
-+			.dev_groups = spi_nor_sysfs_groups,
- 		},
- 		.id_table = spi_nor_dev_ids,
- 	},
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 92ee2f6551b3..b988e5e64b2d 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -489,6 +489,8 @@ extern const struct spi_nor_manufacturer spi_nor_winbond;
- extern const struct spi_nor_manufacturer spi_nor_xilinx;
- extern const struct spi_nor_manufacturer spi_nor_xmc;
- 
-+extern const struct attribute_group *spi_nor_sysfs_groups[];
-+
- void spi_nor_spimem_setup_op(const struct spi_nor *nor,
- 			     struct spi_mem_op *op,
- 			     const enum spi_nor_protocol proto);
-diff --git a/drivers/mtd/spi-nor/sysfs.c b/drivers/mtd/spi-nor/sysfs.c
-new file mode 100644
-index 000000000000..9aec9d8a98ad
---- /dev/null
-+++ b/drivers/mtd/spi-nor/sysfs.c
-@@ -0,0 +1,93 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/mtd/spi-nor.h>
-+#include <linux/spi/spi.h>
-+#include <linux/spi/spi-mem.h>
-+#include <linux/sysfs.h>
-+
-+#include "core.h"
-+
-+static ssize_t manufacturer_show(struct device *dev,
-+				 struct device_attribute *attr, char *buf)
-+{
-+	struct spi_device *spi = to_spi_device(dev);
-+	struct spi_mem *spimem = spi_get_drvdata(spi);
-+	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-+
-+	return sysfs_emit(buf, "%s\n", nor->manufacturer->name);
-+}
-+static DEVICE_ATTR_RO(manufacturer);
-+
-+static ssize_t partname_show(struct device *dev,
-+			     struct device_attribute *attr, char *buf)
-+{
-+	struct spi_device *spi = to_spi_device(dev);
-+	struct spi_mem *spimem = spi_get_drvdata(spi);
-+	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-+
-+	return sysfs_emit(buf, "%s\n", nor->info->name);
-+}
-+static DEVICE_ATTR_RO(partname);
-+
-+static ssize_t jedec_id_show(struct device *dev,
-+			     struct device_attribute *attr, char *buf)
-+{
-+	struct spi_device *spi = to_spi_device(dev);
-+	struct spi_mem *spimem = spi_get_drvdata(spi);
-+	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-+
-+	return sysfs_emit(buf, "%*phN\n", nor->info->id_len, nor->info->id);
-+}
-+static DEVICE_ATTR_RO(jedec_id);
-+
-+static struct attribute *spi_nor_sysfs_entries[] = {
-+	&dev_attr_manufacturer.attr,
-+	&dev_attr_partname.attr,
-+	&dev_attr_jedec_id.attr,
-+	NULL
-+};
-+
-+static ssize_t sfdp_read(struct file *filp, struct kobject *kobj,
-+			 struct bin_attribute *bin_attr, char *buf,
-+			 loff_t off, size_t count)
-+{
-+	struct spi_device *spi = to_spi_device(kobj_to_dev(kobj));
-+	struct spi_mem *spimem = spi_get_drvdata(spi);
-+	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-+	struct sfdp *sfdp = nor->sfdp;
-+	size_t sfdp_size = sfdp->num_dwords * sizeof(*sfdp->dwords);
-+
-+	return memory_read_from_buffer(buf, count, &off, nor->sfdp->dwords,
-+				       sfdp_size);
-+}
-+static BIN_ATTR_RO(sfdp, 0);
-+
-+static struct bin_attribute *spi_nor_sysfs_bin_entries[] = {
-+	&bin_attr_sfdp,
-+	NULL
-+};
-+
-+static umode_t spi_nor_sysfs_is_bin_visible(struct kobject *kobj,
-+					    struct bin_attribute *attr, int n)
-+{
-+	struct spi_device *spi = to_spi_device(kobj_to_dev(kobj));
-+	struct spi_mem *spimem = spi_get_drvdata(spi);
-+	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-+
-+	if (attr == &bin_attr_sfdp && nor->sfdp)
-+		return 0444;
-+
-+	return 0;
-+}
-+
-+static const struct attribute_group spi_nor_sysfs_group = {
-+	.name		= "spi-nor",
-+	.is_bin_visible	= spi_nor_sysfs_is_bin_visible,
-+	.attrs		= spi_nor_sysfs_entries,
-+	.bin_attrs	= spi_nor_sysfs_bin_entries,
-+};
-+
-+const struct attribute_group *spi_nor_sysfs_groups[] = {
-+	&spi_nor_sysfs_group,
-+	NULL
-+};
--- 
-2.20.1
-
+> ---
+>  drivers/mtd/nand/raw/qcom_nandc.c | 17 +++++++++++------
+>  1 file changed, 11 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+> index fd4c318..8c5205c 100644
+> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+> @@ -714,7 +714,8 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read)
+>  	nandc_set_reg(nandc, NAND_DEV0_CFG0, cfg0);
+>  	nandc_set_reg(nandc, NAND_DEV0_CFG1, cfg1);
+>  	nandc_set_reg(nandc, NAND_DEV0_ECC_CFG, ecc_bch_cfg);
+> -	nandc_set_reg(nandc, NAND_EBI2_ECC_BUF_CFG, host->ecc_buf_cfg);
+> +	if (!nandc->props->qpic_v2)
+> +		nandc_set_reg(nandc, NAND_EBI2_ECC_BUF_CFG, host->ecc_buf_cfg);
+>  	nandc_set_reg(nandc, NAND_FLASH_STATUS, host->clrflashstatus);
+>  	nandc_set_reg(nandc, NAND_READ_STATUS, host->clrreadstatus);
+>  	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
+> @@ -1083,7 +1084,8 @@ static void config_nand_page_read(struct qcom_nand_controller *nandc)
+>  {
+>  	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
+>  	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
+> -	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
+> +	if (!nandc->props->qpic_v2)
+> +		write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
+>  	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1, 0);
+>  	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1,
+>  		      NAND_ERASED_CW_SET | NAND_BAM_NEXT_SGL);
+> @@ -1132,8 +1134,9 @@ static void config_nand_page_write(struct qcom_nand_controller *nandc)
+>  {
+>  	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
+>  	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
+> -	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1,
+> -		      NAND_BAM_NEXT_SGL);
+> +	if (!nandc->props->qpic_v2)
+> +		write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1,
+> +			      NAND_BAM_NEXT_SGL);
+>  }
+>  
+>  /*
+> @@ -1187,7 +1190,8 @@ static int nandc_param(struct qcom_nand_host *host)
+>  					| 2 << WR_RD_BSY_GAP
+>  					| 0 << WIDE_FLASH
+>  					| 1 << DEV0_CFG1_ECC_DISABLE);
+> -	nandc_set_reg(nandc, NAND_EBI2_ECC_BUF_CFG, 1 << ECC_CFG_ECC_DISABLE);
+> +	if (!nandc->props->qpic_v2)
+> +		nandc_set_reg(nandc, NAND_EBI2_ECC_BUF_CFG, 1 << ECC_CFG_ECC_DISABLE);
+>  
+>  	/* configure CMD1 and VLD for ONFI param probing in QPIC v1 */
+>  	if (!nandc->props->qpic_v2) {
+> @@ -2628,7 +2632,8 @@ static int qcom_nand_attach_chip(struct nand_chip *chip)
+>  				| ecc_mode << ECC_MODE
+>  				| host->ecc_bytes_hw << ECC_PARITY_SIZE_BYTES_BCH;
+>  
+> -	host->ecc_buf_cfg = 0x203 << NUM_STEPS;
+> +	if (!nandc->props->qpic_v2)
+> +		host->ecc_buf_cfg = 0x203 << NUM_STEPS;
+>  
+>  	host->clrflashstatus = FS_READY_BSY_N;
+>  	host->clrreadstatus = 0xc0;
+> -- 
+> 2.7.4
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
