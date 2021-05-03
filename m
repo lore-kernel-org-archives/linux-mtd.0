@@ -2,93 +2,88 @@ Return-Path: <SRS0=b+Mj=J6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+X-Spam-Status: No, score=-12.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39029C433ED
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 May 2021 14:56:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69978C43461
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 May 2021 15:58:55 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8C1FC611EE
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 May 2021 14:56:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C1FC611EE
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	by mail.kernel.org (Postfix) with ESMTPS id A0FC4610C8
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 May 2021 15:58:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A0FC4610C8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=8ILgsxet8A3uxGIouv016wjxksZ/N1rO+Vd5koYqkDg=; b=OgN7hZhLN5TdzD69RitWf05h+
-	Ct0pzPV+fBKLc3DOMwLhvBX6TdgsmpA4xBIR0cC+FywwW8yHKfScq0HPjTmIslClAe3IgQQFT3xXg
-	Ocjv3GLZppnmzkVprPkFyMPRhF03k+fqwHqm7qTUNO6Q0853jbPDwJ0xfB3gnS3jT5IYKex9mLKZC
-	lGzD/+6Qxwh4dXtDWxY+nQ46pgwAZrl3D4xpyd9echSf3gLIvh+pjtKY3z+fHzVltty09jzkwkYZr
-	otWMIMPS+gdXcEwwg+UOzKB24BYQtQPaYvTFCvifrbX7JenVMMtqqhHFEdtgE+NmAEXf0jwfZGCWk
-	ZSkESk2JA==;
+	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
+	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=DVBid/yHym9ZuIBiHWp6bvCx9MS3dirdT/lygw+olgM=; b=py70s0Ukz5Y7NrYC1RrIUo83Wv
+	XEf52VynTRBLQZE5MZWZm34p12ECIFqqmnATo3YMwv1gasr4xVMIRUpUZEU/7H6UFmVTn8mlWliKy
+	cff26dX2av0gxitW+XGtsSH1FWPbDOn4hWFWqWdNp/ucxfkS7yDeRaPnGeKpiKgu8/23FsLOTla5U
+	XZj8txjnTufS1t++0SiQix724kGpYHMpsVvrJqKfsS0V3aNWyxwz6pFym4tIFRmPVtm5GZs56VGQv
+	H7u2HzsVp5wSbPgk6AABobHjzP7BS6571s5NjXkZd6/GMz4Fuem5T0I0hGtWo8QZGVAwVMOBS3bzl
+	RFIjaeAg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1ldZyW-00E8P6-Fp; Mon, 03 May 2021 14:55:08 +0000
+	id 1ldax2-00EJdG-EK; Mon, 03 May 2021 15:57:41 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1ldZyT-00E8O8-Cb
- for linux-mtd@desiato.infradead.org; Mon, 03 May 2021 14:55:06 +0000
+ id 1ldawX-00EJae-35
+ for linux-mtd@desiato.infradead.org; Mon, 03 May 2021 15:57:10 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Message-ID:References:In-Reply-To:
- Subject:Cc:To:From:Date:Content-Transfer-Encoding:Content-Type:MIME-Version:
- Sender:Reply-To:Content-ID:Content-Description;
- bh=3Fk+kDMYxkaBQhIOQ4tkY93cPnBbUwngSdDbYFdBEWY=; b=niXFcuZNdY6EIQlDb5EoIdhxlB
- mrYyYDK7j9oOI2mLAatp31NsGDFUDnqW+RYkewZvD/WgSEUjjcegNkU9FU6/HIfAhIdQxKk8SIOV2
- TAbnQsGlYedfqzTUOiFD1Ag7FvlrhbrEaa23GTqcS3PvR7VQ1sNhEdwJYHxkqM7GaxVd0jpXyELXl
- Sd6kDe+q83BaC407sjZw601H1oBorrioC0ROzJQxPC5j88u0lYkkLcwcszRKP402qxUWsAw2gewvW
- 2M20oO0UEJJYt+AR838+lrk656yV0YjsMfSPqqVNdtEWvOZ5nCcm7GcaCyNH41Cn4jRKC0NgXfP7X
- VeIYLgzg==;
-Received: from m43-7.mailgun.net ([69.72.43.7])
+ d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+ MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+ Content-ID:Content-Description:In-Reply-To:References;
+ bh=9KttZtarF6opM3O8v0iI0WEtIdwrMkc9FPFepsHdxOY=; b=oFl5msXZIIRbbKuw7axPEwzr2T
+ Wp73wwQpzvZ8EcnVaWapzgoH33u0WAUTEmCOUc3sP2hq4+LHzJQvuYVdUw6gBupNVlx1EpWNYNbaj
+ DfVLsX6cA9x/EoMkVqiSwtRfOd9NwqzcLt74VqsRMKumH97ttHu99KG8iuAcFav98Bqqn1/k31Qe9
+ GZyKs/D10vnkjaaorRZ9q3SuZ50zjQoLnSJzOWB6NQvH9ePdwvYLiZZ5pCadNX8NBzRhfTyzvPUtY
+ QEoma9Dkfz2kGZcwy7lUc5djNrBrdkb6rfSXY8HhE6blDnwDSnLZyXhuSZziO15mrHzqe8L1iuLOj
+ bLaOHQig==;
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1ldZyQ-00393Y-5B
- for linux-mtd@lists.infradead.org; Mon, 03 May 2021 14:55:04 +0000
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1620053702; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=3Fk+kDMYxkaBQhIOQ4tkY93cPnBbUwngSdDbYFdBEWY=;
- b=OeLblfo47TiqQmwmHXM3jSJUkK/GJ5k+T9Ni0XEMbCFmouxkwX4hOyO+jsVK2XlddCmIcJBb
- aoKhabmAGlUgTAO83fsgavTgBk1SeKu1aDMMLP3+4a3ZUtoJbq4Wa/TkcWDs9C6bDJAtgmAR
- 4gbQPJFI6vEhvbDCTrnMxbGJHPg=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyJkZDQ0ZiIsICJsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZyIsICJiZTllNGEiXQ==
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 60900ec179b6f9e57b034309 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 03 May 2021 14:54:57
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id E66ECC43143; Mon,  3 May 2021 14:54:56 +0000 (UTC)
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
- (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
- (No client certificate requested) (Authenticated sender: mdalam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 7D322C433F1;
- Mon,  3 May 2021 14:54:54 +0000 (UTC)
+ id 1ldawU-003Cuv-CO
+ for linux-mtd@lists.infradead.org; Mon, 03 May 2021 15:57:07 +0000
+Received: from mwalle01.fritz.box (unknown
+ [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
+ SHA256) (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 1042922172;
+ Mon,  3 May 2021 17:56:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1620057418;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=9KttZtarF6opM3O8v0iI0WEtIdwrMkc9FPFepsHdxOY=;
+ b=GhVjVlD1Oh6MBSGhe/qvjJf2yBNKe75GP9hK5cQ/Rwp/vH15ZlpiSqL5WXnpQkXh9eHiZG
+ jMNI5juEHaEb9XSJdnQQkCzeH3ngoaDvXJPIJRVUpDONgHTVitUENolLboJFg9p6ewF+er
+ JqMF44rwkm6tLEubus1K+2Lqe1SjIa4=
+From: Michael Walle <michael@walle.cc>
+To: linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Alexander Williams <awill@google.com>,
+ Yicong Yang <yangyicong@hisilicon.com>,
+ Heiko Thiery <heiko.thiery@gmail.com>, Michael Walle <michael@walle.cc>
+Subject: [PATCH v4 0/2] mtd: spi-nor: support dumping sfdp tables
+Date: Mon,  3 May 2021 17:56:49 +0200
+Message-Id: <20210503155651.30889-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Date: Mon, 03 May 2021 20:24:54 +0530
-From: mdalam@codeaurora.org
-To: miquel.raynal@bootlin.com, mani@kernel.org,
- boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Cc: sricharan@codeaurora.org
-Subject: Re: [PATCH] mtd: rawnand: qcom: avoid write to obsolete register
-In-Reply-To: <1619205694-25645-1-git-send-email-mdalam@codeaurora.org>
-References: <1619205694-25645-1-git-send-email-mdalam@codeaurora.org>
-Message-ID: <2667b47434a8f2892ea3d5f304380960@codeaurora.org>
-X-Sender: mdalam@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-Spam: Yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210503_075502_856229_2A925EB8 
-X-CRM114-Status: GOOD (  17.53  )
+X-CRM114-CacheID: sfid-20210503_085706_594061_08E88125 
+X-CRM114-Status: GOOD (  18.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,88 +95,71 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 2021-04-24 00:51, Md Sadre Alam wrote:
-> QPIC_EBI2_ECC_BUF_CFG register got obsolete from QPIC V2.0 onwards.
-> Avoid writing this register if QPIC version is V2.0 or newer.
-> 
-> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
-> ---
->  drivers/mtd/nand/raw/qcom_nandc.c | 17 +++++++++++------
->  1 file changed, 11 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c
-> b/drivers/mtd/nand/raw/qcom_nandc.c
-> index fd4c318..8c5205c 100644
-> --- a/drivers/mtd/nand/raw/qcom_nandc.c
-> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-> @@ -714,7 +714,8 @@ static void update_rw_regs(struct qcom_nand_host
-> *host, int num_cw, bool read)
->  	nandc_set_reg(nandc, NAND_DEV0_CFG0, cfg0);
->  	nandc_set_reg(nandc, NAND_DEV0_CFG1, cfg1);
->  	nandc_set_reg(nandc, NAND_DEV0_ECC_CFG, ecc_bch_cfg);
-> -	nandc_set_reg(nandc, NAND_EBI2_ECC_BUF_CFG, host->ecc_buf_cfg);
-> +	if (!nandc->props->qpic_v2)
-> +		nandc_set_reg(nandc, NAND_EBI2_ECC_BUF_CFG, host->ecc_buf_cfg);
->  	nandc_set_reg(nandc, NAND_FLASH_STATUS, host->clrflashstatus);
->  	nandc_set_reg(nandc, NAND_READ_STATUS, host->clrreadstatus);
->  	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
-> @@ -1083,7 +1084,8 @@ static void config_nand_page_read(struct
-> qcom_nand_controller *nandc)
->  {
->  	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
->  	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
-> -	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
-> +	if (!nandc->props->qpic_v2)
-> +		write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
->  	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1, 0);
->  	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1,
->  		      NAND_ERASED_CW_SET | NAND_BAM_NEXT_SGL);
-> @@ -1132,8 +1134,9 @@ static void config_nand_page_write(struct
-> qcom_nand_controller *nandc)
->  {
->  	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
->  	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
-> -	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1,
-> -		      NAND_BAM_NEXT_SGL);
-> +	if (!nandc->props->qpic_v2)
-> +		write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1,
-> +			      NAND_BAM_NEXT_SGL);
->  }
-> 
->  /*
-> @@ -1187,7 +1190,8 @@ static int nandc_param(struct qcom_nand_host 
-> *host)
->  					| 2 << WR_RD_BSY_GAP
->  					| 0 << WIDE_FLASH
->  					| 1 << DEV0_CFG1_ECC_DISABLE);
-> -	nandc_set_reg(nandc, NAND_EBI2_ECC_BUF_CFG, 1 << 
-> ECC_CFG_ECC_DISABLE);
-> +	if (!nandc->props->qpic_v2)
-> +		nandc_set_reg(nandc, NAND_EBI2_ECC_BUF_CFG, 1 << 
-> ECC_CFG_ECC_DISABLE);
-> 
->  	/* configure CMD1 and VLD for ONFI param probing in QPIC v1 */
->  	if (!nandc->props->qpic_v2) {
-> @@ -2628,7 +2632,8 @@ static int qcom_nand_attach_chip(struct nand_chip 
-> *chip)
->  				| ecc_mode << ECC_MODE
->  				| host->ecc_bytes_hw << ECC_PARITY_SIZE_BYTES_BCH;
-> 
-> -	host->ecc_buf_cfg = 0x203 << NUM_STEPS;
-> +	if (!nandc->props->qpic_v2)
-> +		host->ecc_buf_cfg = 0x203 << NUM_STEPS;
-> 
->  	host->clrflashstatus = FS_READY_BSY_N;
->  	host->clrreadstatus = 0xc0;
+Add the possibility to dump the SFDP data of a flash device.
+
+More and more flash devices share the same flash ID and we need per device
+fixups. Usually, these fixups differentiate flashes by looking at
+differences in the SFDP data. Determining the difference is only possible
+if we have the SFDP data for all the flashes which share a flash ID. This
+will lay the foundation to dump the whole SFDP data of a flash device.
+
+This is even more important, because some datasheets doesn't even contain
+the SFDP data. Fixups for these kind of flashes are nearly impossible to
+do.
+
+I envision having a database of all the SFDP data for the flashes we
+support and make it a requirement to submit it when a new flash is added.
+This might or might not have legal implications. Thus I'd start with having
+that database private to the SPI NOR maintainers.
+
+Changes since v3:
+ - move spi-nor attributes into spi-nor/ subdirectory, suggested by
+   Alexander Williams.
+
+Changes since v2:
+ - use .dev_groups of the driver to attach the attributes
+ - add manufacturer attribute
+ - rename attribute name to partname
+ - add ABI documentation
+
+Changes since v1:
+ - use sysfs_emit()
+ - add comment about the allocation of the sfdp dwords
+ - free SFDP memory in the error path
+ - use BIN_ATTR_RO(sfdp, 0)
+ - use spi_nor_read_sfdp()
+
+Changes since RFC:
+ - Don't read SFDP data after probe. The flash might already be switched to
+   8D-8D-8D mode. Instead, cache the SFDP data
+ - add two sysfs files: jedec-id and name
+ - change the file mode of the sfdp file from 0400 to 0444. There is no
+   hardware access anymore.
 
 
-ping! Hi Miquel could you review this change and let me know if more 
-info needed.
+Michael Walle (2):
+  mtd: spi-nor: sfdp: save a copy of the SFDP data
+  mtd: spi-nor: add initial sysfs support
+
+ .../ABI/testing/sysfs-bus-spi-devices-spi-nor | 31 +++++++
+ drivers/mtd/spi-nor/Makefile                  |  2 +-
+ drivers/mtd/spi-nor/core.c                    |  1 +
+ drivers/mtd/spi-nor/core.h                    | 12 +++
+ drivers/mtd/spi-nor/sfdp.c                    | 58 ++++++++++++
+ drivers/mtd/spi-nor/sysfs.c                   | 93 +++++++++++++++++++
+ include/linux/mtd/spi-nor.h                   |  2 +
+ 7 files changed, 198 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
+ create mode 100644 drivers/mtd/spi-nor/sysfs.c
+
+-- 
+2.20.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
