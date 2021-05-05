@@ -2,113 +2,87 @@ Return-Path: <SRS0=4OT8=KA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-4.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D4BDC433ED
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 May 2021 07:28:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F3BAC433B4
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 May 2021 08:33:11 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DA58F613C1
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 May 2021 07:28:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA58F613C1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=foss.st.com
+	by mail.kernel.org (Postfix) with ESMTPS id 2F4FA61155
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 May 2021 08:33:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F4FA61155
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:Subject:Cc:To:
+	References:In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=oUf3mssT6lS2p1EGy44fTqTOWxSwKypGc8PG5BjPjg0=; b=iiD1DF4tIGFb9r2QTmx+LksSy
-	rkT68hpKjgYXaIU7R3BfuoVkXsZYSIjhKtcDxIfUZv9Dlg2Irn7PherIVw/MUCGjOfkVZe15MQUXT
-	D4knfUv7171soZfgUiEqJFlUD1/3GOT0bR0xcA1nVHlhyEoNq34R0gwitTt4/9rKxr1Xn02T1vr0T
-	64i4DPE1JirramvIP99XhyabYuX26A+/oXx6sreKjNc+6c7XHjzIiyUck9k/wNBj/yTeY63YG28jN
-	ZI+5nxNMVC8rWxODvkFkQOaWzQDtn54hGrQVRyQ+RUCsnRrKYw9/2dhwgzIcaXyzsluIqySphCvsm
-	oD6TtoJhQ==;
+	 bh=miS4BjDhqp5lLYIHsNyPglyCuy4hgDbsqUfdkYTHi1k=; b=S4EXGhlYXJmEZlq1Vi9YSNh9I
+	xKOZ/tC2cLOTCoQI36ArKVBvoRRyyOBkzXFoScgLRdemccj7VDfp0nsSbpi1zKtF8lL4C8aGEZs7q
+	pblaV4zQwCWxVig0u6m/hXHEn/BzrUzyueAbLNmmr/Prm5QE2sbB1lTh3gLIFxs7CFC9Icx1b/k2g
+	WOh1va3B+opjGToApiU5xxppqM22fYEYkTrA19fEsnUd8CEom351nIHW2cFf63mFouKsYG2ltTYX+
+	ClLFkZk6SgqUYsRknG4GYId3xKf0c7yY+qeHYQzTjBtYVhKl8EQrzMwToAzt2Pt81UVCw2jOK7s9Q
+	40Cdi238A==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1leBwg-000Stq-8c; Wed, 05 May 2021 07:27:46 +0000
+	id 1leCwj-000drj-0Q; Wed, 05 May 2021 08:31:53 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1leBvt-000SgM-8w; Wed, 05 May 2021 07:26:57 +0000
+ id 1leCwf-000drE-2b
+ for linux-mtd@desiato.infradead.org; Wed, 05 May 2021 08:31:49 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
- Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:CC:To:
- Subject:Sender:Reply-To:Content-ID:Content-Description;
- bh=pRlWT5qcExpAJYwywO80VV4wmOR+KAWKEfT8LL3UiPw=; b=SBxorRzjMQywbHbk9yusn9Znjx
- fXnZiBHf07oFUK66hwlvoSnVfQcI0gndVqx5zyYqNBXrbjSCuN7Qizm4OvMtLIuHfIcv1Es7ke+9s
- yCV13q0+ZvoFBqO07LzcRlk3/ffeQxM+TusCWTFRqiLk6oA1h7kUHfd82kuZJzbreZmyWVmoqrx7K
- dif/s0DWkIk4uXyGPFT7el8o0HWOv/+moPKBi3uGvC6QYUygSilJQXI9PEAAQ8BZquxB9CNxGU7RA
- Sx1ZmFwTIRm3wTiXvnraIRn6mT0Cr9ttSGaaos9/Yio+t4Vy8GmqixfXuzcH9ZzCf7aP8PJwxS+cD
- jUD8eDxA==;
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]
- helo=mx07-00178001.pphosted.com)
+ Content-Type:Date:From:Message-ID:MIME-Version:Subject:Cc:To:References:
+ In-Reply-To:Sender:Reply-To:Content-ID:Content-Description;
+ bh=cgoCpIyPz0oe7nvFBL8swL99ScJzJcoaQRulvBoEOCw=; b=skMkkSABIAsZ36+0JuO4dTVyh5
+ Iwh53EmjGhdTEk2OBjSvPdZAvCBRrpKnrr+6wqst9tMKNC4XcmVfb/um2eihEAEC2Y1s0yxknZie0
+ Uvr21zTRTkdskIlZzNcchECTfDpb8llxpKVlScr0QlaG2VyQHtLd4QtJvqXnEyPZk2gr11tBnRCFs
+ J7wBmlfkcRQMGck0Z+bGQiuQGImm+6bCey+Y/VerAbf7n/14oz3lOjSBWeIF5PQW7V4eX9Pda0MW8
+ 9xwkO+vj4BrsLq5izS28s7WNSdRC0qszVx4NZgFpekEC8Jv7xlSO7ztn3vsFyAsccKxr7SI+IFmEJ
+ 9lQUJ87Q==;
+Received: from twhmllg4.macronix.com ([211.75.127.132])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1leBvp-004WuJ-MZ; Wed, 05 May 2021 07:26:55 +0000
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 1457QiO3032463; Wed, 5 May 2021 09:26:48 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
- h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=pRlWT5qcExpAJYwywO80VV4wmOR+KAWKEfT8LL3UiPw=;
- b=2CJmUexHPWDCfYqyXHrM+Dq9FX5rnioitZX17Nt1HDfaLRCqXCcrgBQ+7o+WwDS0QCYX
- Ngwnhebuo9FURp27FrflMMhExepCYcuRgslw57XoPWnNOpT/UNUwouBtLUsKrGgoeURv
- SpQOvhWwJKfYjc7f2/9HRqyB6rTjCXO5rZnZYU766ZFAMCBW6FS/AI71CTkqO5Yp94lO
- zM+CwAONyuSslko0K+kOyoCcVKAO+YaZh4CR5I1QzjB+pWc3MKJEA5bt88GZ8ezI31Tm
- +o8HQq87mrPSN8fxg8uBGxDuhrAfVbm/ywb8CCdEOBDCGUmuQXY8J912lTNQVOKt3FW3 7w== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com with ESMTP id 38be9ste8r-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 05 May 2021 09:26:48 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 60F9010002A;
- Wed,  5 May 2021 09:26:48 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4B79B20F491;
- Wed,  5 May 2021 09:26:48 +0200 (CEST)
-Received: from lmecxl0573.lme.st.com (10.75.127.51) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 5 May
- 2021 09:26:47 +0200
-Subject: Re: [PATCH 1/3] spi: spi-mem: add automatic poll status functions
-To: Boris Brezillon <boris.brezillon@collabora.com>, Pratyush Yadav
- <p.yadav@ti.com>
-CC: Mark Brown <broonie@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- <linux-spi@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
- <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <christophe.kerello@foss.st.com>
-References: <20210426143934.25275-1-patrice.chotard@foss.st.com>
- <20210426143934.25275-2-patrice.chotard@foss.st.com>
- <20210430185104.377d1bc6@collabora.com>
- <20210503084742.7cp77snyohkdwwvv@ti.com>
- <20210503111114.26b64e25@collabora.com>
- <20210503092935.vjitc7mc47wttn77@ti.com>
- <20210503115252.08af412c@collabora.com>
-From: Patrice CHOTARD <patrice.chotard@foss.st.com>
-Message-ID: <1357fd09-62e6-3ac8-903d-7b87b29fce23@foss.st.com>
-Date: Wed, 5 May 2021 09:26:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ id 1leCwb-004Zdm-5q
+ for linux-mtd@lists.infradead.org; Wed, 05 May 2021 08:31:46 +0000
+Received: from twhfm1p2.macronix.com (twhfmlp2.macronix.com [172.17.20.92])
+ by TWHMLLG4.macronix.com with ESMTP id 1458TQZv060006;
+ Wed, 5 May 2021 16:29:26 +0800 (GMT-8)
+ (envelope-from zhengxunli@mxic.com.tw)
+Received: from MXML06C.mxic.com.tw (mxml06c.mxic.com.tw [172.17.14.55])
+ by Forcepoint Email with ESMTP id 3AE9B92CFAD2F84EF8D3;
+ Wed,  5 May 2021 16:29:26 +0800 (CST)
+In-Reply-To: <20210504074218.s2zezkt3imaanfmr@ti.com>
+References: <1618900179-14546-1-git-send-email-zhengxunli@mxic.com.tw>
+ <1618900179-14546-2-git-send-email-zhengxunli@mxic.com.tw>
+ <20210427023604.vamgepl4myrhpiwu@ti.com>
+ <OF2365AB9C.87E8927D-ON482586CA.0029B8EB-482586CB.001E5C1A@mxic.com.tw>
+ <20210504074218.s2zezkt3imaanfmr@ti.com>
+To: "Pratyush Yadav" <p.yadav@ti.com>
+Cc: broonie@kernel.org, jaimeliao@mxic.com.tw, linux-mtd@lists.infradead.org, 
+ linux-spi@vger.kernel.org, miquel.raynal@bootlin.com,
+ tudor.ambarus@microchip.com
+Subject: Re: [PATCH v3 1/3] mtd: spi-nor: macronix: add support for Macronix
+ octal dtr operation
 MIME-Version: 1.0
-In-Reply-To: <20210503115252.08af412c@collabora.com>
-Content-Language: en-US
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391, 18.0.761
- definitions=2021-05-05_02:2021-05-05,
- 2021-05-05 signatures=0
+X-KeepSent: 69D02F1B:FA69BF23-482586CC:002C871B;
+ type=4; name=$KeepSent
+X-Mailer: Lotus Notes Release 8.5.3FP6 SHF907 April 26, 2018
+Message-ID: <OF69D02F1B.FA69BF23-ON482586CC.002C871B-482586CC.002EA3E6@mxic.com.tw>
+From: zhengxunli@mxic.com.tw
+Date: Wed, 5 May 2021 16:29:26 +0800
+X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
+ HF265|July 25, 2018) at 2021/05/05 PM 04:29:26,
+ Serialize complete at 2021/05/05 PM 04:29:26
+X-MAIL: TWHMLLG4.macronix.com 1458TQZv060006
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210505_002654_060458_7545BA63 
-X-CRM114-Status: GOOD (  47.83  )
+X-CRM114-CacheID: sfid-20210505_013145_502683_3448225B 
+X-CRM114-Status: GOOD (  30.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,161 +94,89 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Boris, Pratyush
-
-On 5/3/21 11:52 AM, Boris Brezillon wrote:
-> On Mon, 3 May 2021 14:59:37 +0530
-> Pratyush Yadav <p.yadav@ti.com> wrote:
-> 
->> On 03/05/21 11:11AM, Boris Brezillon wrote:
->>> On Mon, 3 May 2021 14:17:44 +0530
->>> Pratyush Yadav <p.yadav@ti.com> wrote:
->>>   
->>>> On 30/04/21 06:51PM, Boris Brezillon wrote:  
->>>>> On Mon, 26 Apr 2021 16:39:32 +0200
->>>>> <patrice.chotard@foss.st.com> wrote:
->>>>>     
->>>>>> From: Christophe Kerello <christophe.kerello@foss.st.com>
->>>>>>
->>>>>> With STM32 QSPI, it is possible to poll the status register of the device.
->>>>>> This could be done to offload the CPU during an operation (erase or
->>>>>> program a SPI NAND for example).
->>>>>>
->>>>>> spi_mem_poll_status API has been added to handle this feature.
->>>>>>
->>>>>> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
->>>>>> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
->>>>>> ---
->>>>>>  drivers/spi/spi-mem.c       | 34 ++++++++++++++++++++++++++++++++++
->>>>>>  include/linux/spi/spi-mem.h |  8 ++++++++
->>>>>>  2 files changed, 42 insertions(+)
->>>>>>
->>>>>> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
->>>>>> index 1513553e4080..43dce4b0efa4 100644
->>>>>> --- a/drivers/spi/spi-mem.c
->>>>>> +++ b/drivers/spi/spi-mem.c
->>>>>> @@ -743,6 +743,40 @@ static inline struct spi_mem_driver *to_spi_mem_drv(struct device_driver *drv)
->>>>>>  	return container_of(drv, struct spi_mem_driver, spidrv.driver);
->>>>>>  }
->>>>>>  
->>>>>> +/**
->>>>>> + * spi_mem_poll_status() - Poll memory device status
->>>>>> + * @mem: SPI memory device
->>>>>> + * @op: the memory operation to execute
->>>>>> + * @mask: status bitmask to ckeck
->>>>>> + * @match: status expected value
->>>>>> + * @timeout: timeout
->>>>>> + *
->>>>>> + * This function send a polling status request to the controller driver
->>>>>> + *
->>>>>> + * Return: 0 in case of success, -ETIMEDOUT in case of error,
->>>>>> + *         -EOPNOTSUPP if not supported.
->>>>>> + */
->>>>>> +int spi_mem_poll_status(struct spi_mem *mem,
->>>>>> +			const struct spi_mem_op *op,
->>>>>> +			u8 mask, u8 match, u16 timeout)
->>>>>> +{
->>>>>> +	struct spi_controller *ctlr = mem->spi->controller;
->>>>>> +	int ret = -EOPNOTSUPP;
->>>>>> +
->>>>>> +	if (ctlr->mem_ops && ctlr->mem_ops->poll_status) {
->>>>>> +		ret = spi_mem_access_start(mem);    
->>>>>
->>>>> You should probably check that op is a single byte read before
->>>>> accepting the command.    
->>>>
->>>> Please do not discriminate against 8D-8D-8D flashes ;-).  
->>>
->>> Then mask and match should probably be u16 :P. And the check as it is
->>> seems a bit lax to me. Drivers will of course be able to reject the op
->>> when there's more than one byte (or 16bit word in case of 8D) to read,
->>> but it feels like the core could automate that a bit.  
->>
->> The two 8D flashes that are currently supported in SPI NOR both have a 
->> 1-byte status register. But to read it, the read op should be 2-byte 
->> long to avoid partial cycles at the end. The second byte is simply 
->> discarded.
->>
->> 2-byte wide registers might show up in the future, but for now at least 
->> we don't have to worry about them.
-> 
-> Well, I guess it doesn't hurt to take it into account now. I mean,
-> what's happening on the bus in that case is a 2byte transfer, with the
-> second byte being ignored, which you can describe with a 16bit mask
-> of 0xMM00 (assuming big endian transfers here, as done for other ops).
-
-OK, i will take the 2 byte case into account.
-
-I will grab all remarks done and come back with an updated proposal in a few days.
-
-Thanks
-Patrice
-
-> 
->>
->>>   
->>>>   
->>>>>     
->>>>>> +		if (ret)
->>>>>> +			return ret;
->>>>>> +
->>>>>> +		ret = ctlr->mem_ops->poll_status(mem, op, mask, match, timeout);    
->>>>>
->>>>> You also need some sort of ->poll_status_is_supported() to validate
->>>>> that the controller supports the status polling for this specific op (I    
->>>>
->>>> I don't think a separate function is needed for checking if the poll 
->>>> status op is supported. Return value of -EOPNOTSUPP should be able to 
->>>> signal that. This can also be used to check if Octal DDR capable 
->>>> controllers are able to poll using 2-byte reads.  
->>>
->>> Yeah, I had something more complex in mind to avoid doing this 'try
->>> native mode and fall back on sw-based more if not supported' dance
->>> every time a status poll is requested (something similar to what we do
->>> for dirmaps, with a status poll desc), but I guess that's a bit
->>> premature (and probably uneeded).  
->>
->> I think Mark also suggested something similar. Make the CPU/non-CPU case 
->> transparent to the caller. I agree with with this direction. Makes the 
->> caller simpler.
-> 
-> It's kind of orthogonal to what I was suggesting, but yes, that's
-> definitely a good idea. We certainly don't want the spi-nor layer to
-> open code the same logic if the spi-mem layer can do it for us.
-> 
->>
->> I also mentioned in a reply to this patch that supports_op() should be 
->> called before the op is executed. That should take care of "base" 
->> support for the op. The poll-specific checks can go in the poll_status() 
->> function itself. If either of those say the op is not supported, it 
->> should fall back to CPU based polling. That's the design that makes the 
->> most sense to me.
-> 
-> What I had in mind was more:
-> 
-> 1/ create a poll desc with spi_mem_create_poll_status_desc(). The
->    "operation supported" check is done here. The controller can store
->    all its HW-specific state in there. If the operation is not natively
->    supported, a SW-based poll descriptor (similar to the SW-based
->    dirmap) is created
-> 2/ poll the status with spi_mem_poll_status(). This function is passed
->    a poll descriptor which helps select the path that should be taken
->    without having to check every time whether the hardware supports a
->    specific status polling op. I can also imagine some preparation
->    being done during the desc creation if that makes sense (preparing
->    reg values to be written when a status poll request is issued for
->    instance)
-> 
-> Anyway, as I said, this sort of optimization might be a bit premature.
-> 
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGksDQoNCiJQcmF0eXVzaCBZYWRhdiIgPHAueWFkYXZAdGkuY29tPiB3cm90ZSBvbiAyMDIxLzA1
+LzA0IKRVpMggMDM6NDI6MjA6DQoNCj4gIlByYXR5dXNoIFlhZGF2IiA8cC55YWRhdkB0aS5jb20+
+IA0KPiAyMDIxLzA1LzA0IKRVpMggMDM6NDINCj4gDQo+IFRvDQo+IA0KPiA8emhlbmd4dW5saUBt
+eGljLmNvbS50dz4sIA0KPiANCj4gY2MNCj4gDQo+IDxicm9vbmllQGtlcm5lbC5vcmc+LCA8amFp
+bWVsaWFvQG14aWMuY29tLnR3PiwgPGxpbnV4LQ0KPiBtdGRAbGlzdHMuaW5mcmFkZWFkLm9yZz4s
+IDxsaW51eC1zcGlAdmdlci5rZXJuZWwub3JnPiwgDQo+IDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4u
+Y29tPiwgPHR1ZG9yLmFtYmFydXNAbWljcm9jaGlwLmNvbT4NCj4gDQo+IFN1YmplY3QNCj4gDQo+
+IFJlOiBbUEFUQ0ggdjMgMS8zXSBtdGQ6IHNwaS1ub3I6IG1hY3Jvbml4OiBhZGQgc3VwcG9ydCBm
+b3IgTWFjcm9uaXggDQo+IG9jdGFsIGR0ciBvcGVyYXRpb24NCj4gDQo+IE9uIDA0LzA1LzIxIDAx
+OjMxUE0sIHpoZW5neHVubGlAbXhpYy5jb20udHcgd3JvdGU6DQo+ID4gSGkgUHJhdHl1c2gsDQo+
+ID4gDQo+ID4gVGhhbmtzIGZvciB5b3VyIGNvbW1lbnQgb24gdGhpcyBwYXRjaC4NCj4gPiANCj4g
+PiAiUHJhdHl1c2ggWWFkYXYiIDxwLnlhZGF2QHRpLmNvbT4gd3JvdGUgb24gMjAyMS8wNC8yNyCk
+V6TIIDEwOjM2OjA2Og0KPiA+IA0KPiBbLi4uXQ0KPiA+ID4gPiArICAgaWYgKCFlbmFibGUpDQo+
+ID4gPiA+ICsgICAgICBzcGlfbm9yX3NwaW1lbV9zZXR1cF9vcChub3IsICZvcCwgU05PUl9QUk9U
+T184XzhfOF9EVFIpOw0KPiA+ID4gDQo+ID4gPiBXaGVuIGRpc2FibGluZywgdGhlIG9wIHdvdWxk
+IGJlIGluIDhELThELThEIG1vZGUgc28gaGF2aW5nIGEgZGF0YSANCmxlbmd0aCANCj4gPiANCj4g
+PiA+IG9mIDEgd291bGQgYmUgaW52YWxpZC4gVGhpcyBpcyBjdXJyZW50bHkgdGhlIGNhc2UgZXZl
+biBpbiB0aGUgDQpwYXRjaGVzIA0KPiA+ID4gdGhhdCBJIHNlbnQgZm9yIE1pY3JvbiBhbmQgQ3lw
+cmVzcy4NCj4gPiA+IA0KPiA+ID4gSSBhbSBub3Qgc3VyZSB3aGF0IHRoZSBjb3JyZWN0IGZpeCBm
+b3IgdGhpcyBpcyB0aG91Z2guIE9uZSBvcHRpb24gaXMgDQp0byANCj4gPiA+IHNlbmQgdGhlIHNh
+bWUgYnl0ZSB0d2ljZSwgYnV0IEkgcmVtZW1iZXIgdGhhdCBvbiB0aGUgQ3lwcmVzcyBmbGFzaCAN
+CnRoZSANCj4gPiA+IHNlY29uZCBieXRlIG92ZXItd3JpdGVzIHRoZSByZWdpc3RlciBhdCB0aGUg
+bmV4dCBhZGRyZXNzLiBJJ20gbm90IA0Kc3VyZSANCj4gPiA+IGhvdyBNYWNyb25peCBmbGFzaGVz
+IGhhbmRsZSB0aGUgc2Vjb25kIGJ5dGUuIENhbiB5b3UgY2hlY2sgd2hhdCB0aGUgDQo+ID4gPiBi
+ZWhhdmlvciBmb3IgeW91ciBmbGFzaCBpcyB3aGVuIHlvdSB3cml0ZSAyIGJ5dGVzIHRvIHRoZSBy
+ZWdpc3Rlcj8NCj4gPiANCj4gPiBJIGNoZWNrZWQgdGhlIGJlaGF2aW9yIG9mIE1hY3Jvbml4IGFu
+ZCB0aGUgc2Vjb25kIGJ5dGUgd2lsbCBvdmVyd3JpdGVzIA0KdGhlIA0KPiA+IHJlZ2lzdGVyLg0K
+PiANCj4gWWVzLCBJIHNlZSB0aGUgc2FtZSBiZWhhdmlvdXIgb24gTWljcm9uIGFuZCBDeXByZXNz
+IGZsYXNoZXMuIENhbiB5b3VyIA0KPiBjb250cm9sbGVyIHNlbmQgYSAxLWJ5dGUgd3JpdGUgaW4g
+OEQgbW9kZT8gSSBhbSBjdXJpb3VzIGlmIHRoaXMgaXMgDQo+IHBvc3NpYmxlIGFuZCBob3cgZmxh
+c2hlcyByZWFjdCB0byBpdC4NCg0KT3VyIFNQSSBjb250cm9sbGVyIGNhbiBub3Qgc2VuZCAxIGJ5
+dGUgY29ycmVjdGx5IGluIDhEIG1vZGUuIEhvd2V2ZXIsIGlmIA0Kd2UNCnNlbmQgMiBieXRlcyBp
+biA4RCBtb2RlLCB0aGUgc2Vjb25kIGJ5dGUgd2lsbCBvdmVyd3JpdGUgdGhlIGZpcnN0IGJ5dGUu
+DQoNCj4gTXkgdGhlb3J5IGlzIHRoYXQgZXZlbiBpZiB5b3UgYXNrIHRoZSBjb250cm9sbGVyIHRv
+IHNlbmQgMSBieXRlIGluIDhEIA0KPiBtb2RlLCBpdCB3b24ndCBkZWFzc2VydCB0aGUgQ1MgdGls
+bCB0aGUgZW5kIG9mIHRoZSBjeWNsZS4gVGhpcyB3b3VsZCANCj4gcmVzdWx0IHRoZSBmbGFzaCBp
+biB0YWtpbmcgdGhlIGRlZmF1bHQgdmFsdWUgb2YgdGhlIGxpbmVzIGFzIHRoZSBzZWNvbmQgDQo+
+IGJ5dGUuDQo+IA0KPiA+IERvIHdlIG5lZWQgdG8gc2VuZCB0aGUgc2FtZSBieXRlcyB0byByZXNv
+bHZlIHRoaXMgZXJyb3I/DQo+IA0KPiBJIHRoaW5rIHRoaXMgaXMgYSBkZXNpZ24gb3ZlcnNpZ2h0
+IGJ5IGZsYXNoIG1hbnVmYWN0dXJlcnMuIEhhdmluZyB0d28gDQo+IHJlZ2lzdGVycyBhdCBjb25z
+ZWN1dGl2ZSBhZGRyZXNzZXMgaXMgcHJvYmxlbWF0aWMgaW4gOEQtOEQtOEQgbW9kZS4gVGhlIA0K
+PiBvbmx5IHNvbHV0aW9uIEkgc2VlIGlzIHRvIHJlYWQgdGhlIHJlZ2lzdGVyIGF0IHRoZSBuZXh0
+IGFkZHJlc3MsIGFuZCBzZXQgDQoNCj4gaXRzIHZhbHVlIGFzIHRoZSBzZWNvbmQgYnl0ZSBpbiB0
+aGUgdHJhbnNhY3Rpb24uIFRoaXMgd2F5IGl0cyB2YWx1ZSB3aWxsIA0KDQo+IHN0YXkgdGhlIHNh
+bWUgYXQgdGhlIGVuZCBvZiB0aGUgdHJhbnNhY3Rpb24uDQo+IA0KPiBQUzogSWYgcG9zc2libGUs
+IHBsZWFzZSB0cnkgdG8gcmVsYXkgdGhpcyBpc3N1ZSB0byB5b3VyIGhhcmR3YXJlIGRlc2lnbiAN
+Cj4gdGVhbS4gSG9wZWZ1bGx5IHRoZXkgY2FuIGNvbWUgdXAgd2l0aCBhIGNsZXZlciBzb2x1dGlv
+biBmb3IgZnV0dXJlIA0KPiBkZXZpY2VzIGFuZCBtYWtlIG91ciBsaXZlcyBlYXNpZXIgOy0pDQoN
+Ckkgd2lsbCB0cnkgdG8gYWR2aXNlIG91ciBkZXNpZ24gdGVhbS4gOj0pDQoNClRoYW5rcywNClpo
+ZW5neHVuDQoNCg0KDQpDT05GSURFTlRJQUxJVFkgTk9URToNCg0KVGhpcyBlLW1haWwgYW5kIGFu
+eSBhdHRhY2htZW50cyBtYXkgY29udGFpbiBjb25maWRlbnRpYWwgaW5mb3JtYXRpb24gDQphbmQv
+b3IgcGVyc29uYWwgZGF0YSwgd2hpY2ggaXMgcHJvdGVjdGVkIGJ5IGFwcGxpY2FibGUgbGF3cy4g
+UGxlYXNlIGJlIA0KcmVtaW5kZWQgdGhhdCBkdXBsaWNhdGlvbiwgZGlzY2xvc3VyZSwgZGlzdHJp
+YnV0aW9uLCBvciB1c2Ugb2YgdGhpcyBlLW1haWwgDQooYW5kL29yIGl0cyBhdHRhY2htZW50cykg
+b3IgYW55IHBhcnQgdGhlcmVvZiBpcyBwcm9oaWJpdGVkLiBJZiB5b3UgcmVjZWl2ZSANCnRoaXMg
+ZS1tYWlsIGluIGVycm9yLCBwbGVhc2Ugbm90aWZ5IHVzIGltbWVkaWF0ZWx5IGFuZCBkZWxldGUg
+dGhpcyBtYWlsIGFzIA0Kd2VsbCBhcyBpdHMgYXR0YWNobWVudChzKSBmcm9tIHlvdXIgc3lzdGVt
+LiBJbiBhZGRpdGlvbiwgcGxlYXNlIGJlIA0KaW5mb3JtZWQgdGhhdCBjb2xsZWN0aW9uLCBwcm9j
+ZXNzaW5nLCBhbmQvb3IgdXNlIG9mIHBlcnNvbmFsIGRhdGEgaXMgDQpwcm9oaWJpdGVkIHVubGVz
+cyBleHByZXNzbHkgcGVybWl0dGVkIGJ5IHBlcnNvbmFsIGRhdGEgcHJvdGVjdGlvbiBsYXdzLiAN
+ClRoYW5rIHlvdSBmb3IgeW91ciBhdHRlbnRpb24gYW5kIGNvb3BlcmF0aW9uLg0KDQpNYWNyb25p
+eCBJbnRlcm5hdGlvbmFsIENvLiwgTHRkLg0KDQo9PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCg0KDQoNCj09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT0NCg0KQ09ORklERU5USUFMSVRZIE5PVEU6DQoNClRoaXMgZS1tYWlsIGFuZCBh
+bnkgYXR0YWNobWVudHMgbWF5IGNvbnRhaW4gY29uZmlkZW50aWFsIGluZm9ybWF0aW9uIGFuZC9v
+ciBwZXJzb25hbCBkYXRhLCB3aGljaCBpcyBwcm90ZWN0ZWQgYnkgYXBwbGljYWJsZSBsYXdzLiBQ
+bGVhc2UgYmUgcmVtaW5kZWQgdGhhdCBkdXBsaWNhdGlvbiwgZGlzY2xvc3VyZSwgZGlzdHJpYnV0
+aW9uLCBvciB1c2Ugb2YgdGhpcyBlLW1haWwgKGFuZC9vciBpdHMgYXR0YWNobWVudHMpIG9yIGFu
+eSBwYXJ0IHRoZXJlb2YgaXMgcHJvaGliaXRlZC4gSWYgeW91IHJlY2VpdmUgdGhpcyBlLW1haWwg
+aW4gZXJyb3IsIHBsZWFzZSBub3RpZnkgdXMgaW1tZWRpYXRlbHkgYW5kIGRlbGV0ZSB0aGlzIG1h
+aWwgYXMgd2VsbCBhcyBpdHMgYXR0YWNobWVudChzKSBmcm9tIHlvdXIgc3lzdGVtLiBJbiBhZGRp
+dGlvbiwgcGxlYXNlIGJlIGluZm9ybWVkIHRoYXQgY29sbGVjdGlvbiwgcHJvY2Vzc2luZywgYW5k
+L29yIHVzZSBvZiBwZXJzb25hbCBkYXRhIGlzIHByb2hpYml0ZWQgdW5sZXNzIGV4cHJlc3NseSBw
+ZXJtaXR0ZWQgYnkgcGVyc29uYWwgZGF0YSBwcm90ZWN0aW9uIGxhd3MuIFRoYW5rIHlvdSBmb3Ig
+eW91ciBhdHRlbnRpb24gYW5kIGNvb3BlcmF0aW9uLg0KDQpNYWNyb25peCBJbnRlcm5hdGlvbmFs
+IENvLiwgTHRkLg0KDQo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT0NCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
+c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
+Cg==
