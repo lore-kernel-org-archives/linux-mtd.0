@@ -2,59 +2,59 @@ Return-Path: <SRS0=4OT8=KA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DE7CC433B4
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 May 2021 21:39:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E697EC433ED
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 May 2021 21:40:10 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7A284613D6
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 May 2021 21:39:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A284613D6
+	by mail.kernel.org (Postfix) with ESMTPS id 61EE4613D6
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 May 2021 21:40:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 61EE4613D6
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
-	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=+l2z6BshRAJLRyPZv10ItIc4bJP7O9qRwzkVDablfVA=; b=gxJQ3d4xyAVMEB6TzeejzvgiP
-	CDmEJSA5KAmY3o+L7tW15AVYhg1h4K2cPgAlPTk9pMTUCUjqNFAg1IkPHiBxj7Ri1cI6tyd9G0nCg
-	UvSJVYD41FuVFA7twGxsee0tzhTBz6t3eqc4bXvKS2MS2J/2ymT5ktlYb/GYfGRaWSKkTs4PLLYYV
-	fYZz70+GGSbK/YSc7tvJncyBZHUNdiT4dbyMmI+RsHs9gxceKIXW95LLwk0rrAUNImfMNQT+mbA0g
-	eVS0ZlKvtpwCv1huePZHi4rj3SHiPdW/Wl+BZtlPr703qYWjc/7DCa+7+S1/iRF578fj430pjmWww
-	iiMG5n5zQ==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=e2P4CiDKrryxYWbcO5H+tdXdczG5t3UHyrp4vnI06Zw=; b=K/IJk/ZYaJH68sHV/cHxaQ/roi
+	To+ZFz7dQjoA6a8RlQkMD7JDFR9XbjvQKDhNSD3HUXK1qemOv0Mo+roZ/qneYi6DnkrNQS/rbGwVt
+	xQChGFp3zj2yLtGyEI5VnW9UucNfy8pHWJR3FcN2sg3PHWonkYaAaYu78Ji23N3uUT5QSbfh6bQCn
+	b+TGfLVzj6Th0ROb827zb55EquvS30Uya5y8g/3DiVMDaBdZPYw7/vfPJYn7P9mBugarLANRTz+Zc
+	26+Gzi+1d1k1565yX1vB/pm78/Fs9jMe96no8O7MVI2Qsh6c7re9E07vk1SCbs0SPjl+OC0FuZKPi
+	Lj5rCNHA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lePEb-002Ozd-Fr; Wed, 05 May 2021 21:39:09 +0000
+	id 1lePEI-002OuS-5Q; Wed, 05 May 2021 21:38:50 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lePDY-002OmA-BS
+ id 1lePDY-002Om9-86
  for linux-mtd@desiato.infradead.org; Wed, 05 May 2021 21:38:04 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
- Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
- To:From:Sender:Reply-To:Content-ID:Content-Description;
- bh=7DaBd+wzw6DtVvAVRbKib0Fa06GmxV/9NB2x51FA4+0=; b=2hpUnp7KfoY41WYCY4rW0fFQlP
- 3NZM7wzgujLHtyAEHw3HGrB0vjPXoAYybXyXXlYAiQz2qaafjeztFWFLu60m2JrzJ6fWNoFHZvKoR
- TqgaYMSIi5RqvAKTYEruAEvn0dc/9IqjD1YDh8HcJnc9dcJfQe9rRnhF6G3JidLeEPDRDoMBd9gsa
- eoDnBEhW8ZKNYroTd3bGj1KWHU+X37gQyeB3lqXWK4vbkofqaVns489F5z0DXs1KSIydaJliLvfP9
- 6wc3txT8uk1osDipaIn+l2e9WV6YN6otExGXX72zCBSMi8wvPfsbhqrkXgzT5iFC5Fsou898J4e7s
- 9yH7jXXQ==;
+ Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+ Content-ID:Content-Description:In-Reply-To:References;
+ bh=gEwsnb+jlL+TIFMYv0VJV2EvaCYQI0wfrzxTcBddf1c=; b=g1Qnd41qfiaCOoQlaYg9oBe/0r
+ AuoCkKhRpcH5/yoAZpl8/0G3I1LGyUirxHAgp/oJsi9OiMRteJdKA/d78yq0zjxNCLkf1mtZarzP7
+ iOegmJO7krgvHzwuc/cWweXUiYfD+fDrjMau9Lp1HbNUpsw/jf2pvgBZYOLobd5HZTV93aWr5sfaw
+ 5jzAJ4VPxaAr2B8VH3sPj8PGdeIkZWCE8Unga01+GgfaXBGpU2ksp7EUN4LUcr9fImblcfqbv8frj
+ G5Hal3oYv+P+Ugh1VohrBRxWMhuMsw9YpDOsGX8Q4ptk1k1+bqKXwRGJidstv5xpqdWJFVtg8hY9l
+ Dk+L3Hig==;
 Received: from relay8-d.mail.gandi.net ([217.70.183.201])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lePDU-005Icu-4I
+ id 1lePDU-005Ico-DB
  for linux-mtd@lists.infradead.org; Wed, 05 May 2021 21:38:03 +0000
 X-Originating-IP: 90.89.138.59
 Received: from xps13.stephanxp.local (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr
  [90.89.138.59]) (Authenticated sender: miquel.raynal@bootlin.com)
- by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id CB7341BF20A;
- Wed,  5 May 2021 21:37:57 +0000 (UTC)
+ by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id EC0AD1BF206;
+ Wed,  5 May 2021 21:37:50 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
@@ -64,16 +64,14 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Naga Sureshkumar Relli <nagasure@xilinx.com>,
  Amit Kumar Mahapatra <akumarma@xilinx.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 06/22] mtd: rawnand: Use more recent ONFI specification wording
-Date: Wed,  5 May 2021 23:37:34 +0200
-Message-Id: <20210505213750.257417-7-miquel.raynal@bootlin.com>
+Subject: [PATCH 00/22] mtd: rawnand: NV-DDR support
+Date: Wed,  5 May 2021 23:37:28 +0200
+Message-Id: <20210505213750.257417-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210505213750.257417-1-miquel.raynal@bootlin.com>
-References: <20210505213750.257417-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210505_143800_485283_8D8E176A 
-X-CRM114-Status: GOOD (  13.09  )
+X-CRM114-CacheID: sfid-20210505_143800_745969_E087347C 
+X-CRM114-Status: GOOD (  15.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,116 +83,66 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In particular, first ONFI specifications referred to SDR modes as
-asynchronous modes, which is not the term we usually have in mind. The
-spec has then been updated, so do the same here in the NAND subsystem to
-avoid any possible confusion.
-
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/nand/raw/cadence-nand-controller.c | 6 +++---
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h     | 2 +-
- drivers/mtd/nand/raw/nand_base.c               | 2 +-
- drivers/mtd/nand/raw/nand_onfi.c               | 2 +-
- include/linux/mtd/onfi.h                       | 6 +++---
- 5 files changed, 9 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/cadence-nand-controller.c b/drivers/mtd/nand/raw/cadence-nand-controller.c
-index b46786cd53e0..7eec60ea9056 100644
---- a/drivers/mtd/nand/raw/cadence-nand-controller.c
-+++ b/drivers/mtd/nand/raw/cadence-nand-controller.c
-@@ -2348,9 +2348,9 @@ cadence_nand_setup_interface(struct nand_chip *chip, int chipnr,
- 	 * for tRP and tRH timings. If it is NOT possible to sample data
- 	 * with optimal tRP/tRH settings, the parameters will be extended.
- 	 * If clk_period is 50ns (the lowest value) this condition is met
--	 * for asynchronous timing modes 1, 2, 3, 4 and 5.
--	 * If clk_period is 20ns the condition is met only
--	 * for asynchronous timing mode 5.
-+	 * for SDR timing modes 1, 2, 3, 4 and 5.
-+	 * If clk_period is 20ns the condition is met only for SDR timing
-+	 * mode 5.
- 	 */
- 	if (sdr->tRC_min <= clk_period &&
- 	    sdr->tRP_min <= (clk_period / 2) &&
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
-index fdc5ed7de083..5e1c3ddae5f8 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
-@@ -79,7 +79,7 @@ enum gpmi_type {
- struct gpmi_devdata {
- 	enum gpmi_type type;
- 	int bch_max_ecc_strength;
--	int max_chain_delay; /* See the async EDO mode */
-+	int max_chain_delay; /* See the SDR EDO mode */
- 	const char * const *clks;
- 	const int clks_count;
- };
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index fb072c444495..366327ceefd9 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -935,7 +935,7 @@ int nand_choose_best_sdr_timings(struct nand_chip *chip,
- 		/* Fallback to slower modes */
- 		best_mode = iface->timings.mode;
- 	} else if (chip->parameters.onfi) {
--		best_mode = fls(chip->parameters.onfi->async_timing_mode) - 1;
-+		best_mode = fls(chip->parameters.onfi->sdr_timing_modes) - 1;
- 	}
- 
- 	for (mode = best_mode; mode >= 0; mode--) {
-diff --git a/drivers/mtd/nand/raw/nand_onfi.c b/drivers/mtd/nand/raw/nand_onfi.c
-index 45649e03797d..02303455c34f 100644
---- a/drivers/mtd/nand/raw/nand_onfi.c
-+++ b/drivers/mtd/nand/raw/nand_onfi.c
-@@ -315,7 +315,7 @@ int nand_onfi_detect(struct nand_chip *chip)
- 	onfi->tBERS = le16_to_cpu(p->t_bers);
- 	onfi->tR = le16_to_cpu(p->t_r);
- 	onfi->tCCS = le16_to_cpu(p->t_ccs);
--	onfi->async_timing_mode = le16_to_cpu(p->async_timing_mode);
-+	onfi->sdr_timing_modes = le16_to_cpu(p->sdr_timing_modes);
- 	onfi->vendor_revision = le16_to_cpu(p->vendor_revision);
- 	memcpy(onfi->vendor, p->vendor, sizeof(p->vendor));
- 	chip->parameters.onfi = onfi;
-diff --git a/include/linux/mtd/onfi.h b/include/linux/mtd/onfi.h
-index cf14474bc454..2ade5632dc5b 100644
---- a/include/linux/mtd/onfi.h
-+++ b/include/linux/mtd/onfi.h
-@@ -93,7 +93,7 @@ struct nand_onfi_params {
- 
- 	/* electrical parameter block */
- 	u8 io_pin_capacitance_max;
--	__le16 async_timing_mode;
-+	__le16 sdr_timing_modes;
- 	__le16 program_cache_timing_mode;
- 	__le16 t_prog;
- 	__le16 t_bers;
-@@ -160,7 +160,7 @@ struct onfi_ext_param_page {
-  * @tBERS: Block erase time
-  * @tR: Page read time
-  * @tCCS: Change column setup time
-- * @async_timing_mode: Supported asynchronous timing mode
-+ * @sdr_timing_modes: Supported asynchronous/SDR timing modes
-  * @vendor_revision: Vendor specific revision number
-  * @vendor: Vendor specific data
-  */
-@@ -170,7 +170,7 @@ struct onfi_params {
- 	u16 tBERS;
- 	u16 tR;
- 	u16 tCCS;
--	u16 async_timing_mode;
-+	u16 sdr_timing_modes;
- 	u16 vendor_revision;
- 	u8 vendor[88];
- };
--- 
-2.27.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgpBZnRlciBhbG1vc3QgMjAgeWVhcnMgb2YgZXhjbHVzaXZlIFNEUiBzdXBwb3J0IGlu
+IHRoZSBMaW51eCBrZXJuZWwgYW5kCnRoYW5rcyB0byB0aGUgbWFqb3IgdXBkYXRlcyByZWNlbnRs
+eSBkb25lIGluIHRoZSBOQU5EIHN1YnN5c3RlbSwgaGVyZSBpcwp0aGUgZmluYWwgc2VyaWVzIGF0
+dGVtcHRpbmcgdG8gYnJpbmcgTlYtRERSIHN1cHBvcnQgdG8gcmF3IE5BTkQKZGV2aWNlcy4KCkFz
+IGFsd2F5cywgZmlyc3QgcGF0Y2hlcyBhcmUgaGVyZSB0byBwcmVwYXJlIHRoZSBmaWVsZCBmb3Ig
+dGhlIHNlY29uZApoYWxmIHdoaWNoIGFjdHVhbGx5IGJyaW5ncyBOVi1ERFIgc3VwcG9ydCBiaXRz
+IHBlciBiaXRzIHRvIG1ha2UgaXQgbW9yZQpyZWFkYWJsZSBhbmQgZWFzaWVyIHRvIHJldmlldy4K
+CkZpbmFsbHksIHRoZSBBcmFzYW4gTkFORCBjb250cm9sbGVyIGRyaXZlciBpcyBiZWluZyB1cGRh
+dGVkIHRvIHN1cHBvcnQgdGhlCk5WLUREUiBpbnRlcmZhY2UuIE9uIGEgMTZraUItcGFnZSBOQU5E
+IGRldmljZSBoZXJlIGFyZSB0aGUgbWVhc3VyZWQgcmVzdWx0czoKKiBTRFIgbW9kZSA1OgogID4g
+ODA5NCBraUIvcyByZWFkcwogID4gNzAxMyBraUIvcyB3cml0ZXMKKiBOVi1ERFIgbW9kZSA1Ogog
+ID4gMTYwNjIga2lCL3MgcmVhZHMKICA+IDI0ODI0IGtpQi9zIHdyaXRlcwpIb3dldmVyLCB0aGVz
+ZSB2YWx1ZXMgYXJlIG11Y2ggbG93ZXIgdGhhbiB3aGF0IHRoZSBjb250cm9sbGVyIGlzIGFibGUg
+dG8gZG8KYmVjYXVzZSBvZiB0aGUgZmxha3kgZGVzaWduIG9mIHRoZSBBcmFzYW4gRUNDIGVuZ2lu
+ZSB3aGljaCBuZWVkcyBhIGNvc3RseQpzb2Z0d2FyZSB3b3JrYXJvdW5kLiBXaGVuIHRoaXMgd29y
+a2Fyb3VuZCBpcyBkaXNhYmxlZCwgdGhlIGJhcmUgdGhyb3VnaHB1dCwKc3RpbGwgd2l0aCBFQ0Mg
+Y29ycmVjdGlvbiwgZXZlbiB0aG91Z2ggaXQgY2Fubm90IGJlIDEwMCUgdHJ1c3RlZCwgaXM6CiAg
+PiAxMTM3Nzcga2lCL3MgcmVhZHMKICA+IDMxNzUxIGtpQi9zIHdyaXRlcwoKQ2hlZXJzLApNaXF1
+w6hsCgpNaXF1ZWwgUmF5bmFsICgyMik6CiAgbXRkOiByYXduYW5kOiBBZGQgYSBoZWxwZXIgdG8g
+Y2xhcmlmeSB0aGUgaW50ZXJmYWNlIGNvbmZpZ3VyYXRpb24KICBtdGQ6IHJhd25hbmQ6IGFyYXNh
+bjogQ2hlY2sgdGhlIHByb3Bvc2VkIGRhdGEgaW50ZXJmYWNlIGlzIHN1cHBvcnRlZAogIG10ZDog
+cmF3bmFuZDogYXRtZWw6IENoZWNrIHRoZSBwcm9wb3NlZCBkYXRhIGludGVyZmFjZSBpcyBzdXBw
+b3J0ZWQKICBtdGQ6IHJhd25hbmQ6IG9uZmk6IFVzZSB0aGUgQklUKCkgbWFjcm8gd2hlbiBwb3Nz
+aWJsZQogIG10ZDogcmF3bmFuZDogVXBkYXRlIGRlYWQgVVJMCiAgbXRkOiByYXduYW5kOiBVc2Ug
+bW9yZSByZWNlbnQgT05GSSBzcGVjaWZpY2F0aW9uIHdvcmRpbmcKICBtdGQ6IHJhd25hbmQ6IENs
+YXJpZnkgdGhlIE5WLUREUiBlbnRyaWVzIGluIHRoZSBPTkZJIHN0cnVjdHVyZQogIG10ZDogcmF3
+bmFuZDogQWRkIE5WLUREUiB0aW1pbmdzCiAgbXRkOiByYXduYW5kOiBSZXRyaWV2ZSBOVi1ERFIg
+dGltaW5nIG1vZGVzIGZyb20gdGhlIE9ORkkgcGFyYW1ldGVyCiAgICBwYWdlCiAgbXRkOiByYXdu
+YW5kOiBBZGQgYW4gaW5kaXJlY3Rpb24gb24gb25maV9maWxsX2ludGVyZmFjZV9jb25maWcoKQog
+IG10ZDogcmF3bmFuZDogQWRkIG9uZmlfZmlsbF9udmRkcl9pbnRlcmZhY2VfY29uZmlnKCkgaGVs
+cGVyCiAgbXRkOiByYXduYW5kOiBBdm9pZCBhY2Nlc3NpbmcgTlYtRERSIHRpbWluZ3MgZnJvbSBs
+ZWdhY3kgY29kZQogIG10ZDogcmF3bmFuZDogQWNjZXNzIFNEUiBhbmQgTlYtRERSIHRpbWluZ3Mg
+dGhyb3VnaCBhIGNvbW1vbiBtYWNybwogIG10ZDogcmF3bmFuZDogSGFuZGxlIHRoZSBkb3VibGUg
+Ynl0ZXMgaW4gTlYtRERSIG1vZGUKICBtdGQ6IHJhd25hbmQ6IEFkZCBhIGhlbHBlciB0byBmaW5k
+IHRoZSBjbG9zZXN0IE9ORkkgTlYtRERSIG1vZGUKICBtdGQ6IHJhd25hbmQ6IFN1cHBvcnQgZW5h
+YmxpbmcgTlYtRERSIHRocm91Z2ggU0VUX0ZFQVRVUkVTCiAgbXRkOiByYXduYW5kOiBBbGxvdyBT
+RFIgdGltaW5ncyB0byBiZSBuYWNrZWQKICBtdGQ6IHJhd25hbmQ6IENob29zZSB0aGUgYmVzdCB0
+aW1pbmdzLCBOVi1ERFIgaW5jbHVkZWQKICBNQUlOVEFJTkVSUzogQWRkIG15c2VsZiBhcyBjby1t
+YWludGFpbmVyIG9mIHRoZSBBcmFzYW4gTkFORCBjb250cm9sbGVyCiAgICBkcml2ZXIKICBtdGQ6
+IHJhd25hbmQ6IGFyYXNhbjogRml4IGEgbWFjcm8gcGFyYW1ldGVyCiAgbXRkOiByYXduYW5kOiBh
+cmFzYW46IFdvcmthcm91bmQgYSBtaXNiZWhhdmluZyBwcm9nIHR5cGUgd2l0aCBOVi1ERFIKICBt
+dGQ6IHJhd25hbmQ6IGFyYXNhbjogU3VwcG9ydCBOVi1ERFIgaW50ZXJmYWNlCgogTUFJTlRBSU5F
+UlMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAxICsKIGRyaXZlcnMvbXRk
+L25hbmQvcmF3L2FyYXNhbi1uYW5kLWNvbnRyb2xsZXIuYyB8ICA0NSArLQogZHJpdmVycy9tdGQv
+bmFuZC9yYXcvYXRtZWwvbmFuZC1jb250cm9sbGVyLmMgIHwgICA3ICstCiAuLi4vbXRkL25hbmQv
+cmF3L2NhZGVuY2UtbmFuZC1jb250cm9sbGVyLmMgICAgfCAgIDYgKy0KIGRyaXZlcnMvbXRkL25h
+bmQvcmF3L2dwbWktbmFuZC9ncG1pLW5hbmQuaCAgICB8ICAgMiArLQogZHJpdmVycy9tdGQvbmFu
+ZC9yYXcvaW50ZXJuYWxzLmggICAgICAgICAgICAgIHwgICA1ICsKIGRyaXZlcnMvbXRkL25hbmQv
+cmF3L25hbmRfYmFzZS5jICAgICAgICAgICAgICB8IDMyNSArKysrKysrKysrLS0tLQogZHJpdmVy
+cy9tdGQvbmFuZC9yYXcvbmFuZF9sZWdhY3kuYyAgICAgICAgICAgIHwgICAyICstCiBkcml2ZXJz
+L210ZC9uYW5kL3Jhdy9uYW5kX29uZmkuYyAgICAgICAgICAgICAgfCAgIDUgKy0KIGRyaXZlcnMv
+bXRkL25hbmQvcmF3L25hbmRfdGltaW5ncy5jICAgICAgICAgICB8IDQwMiArKysrKysrKysrKysr
+KysrLS0KIGluY2x1ZGUvbGludXgvbXRkL29uZmkuaCAgICAgICAgICAgICAgICAgICAgICB8ICA0
+MCArLQogaW5jbHVkZS9saW51eC9tdGQvcmF3bmFuZC5oICAgICAgICAgICAgICAgICAgIHwgMTU1
+ICsrKysrKy0KIDEyIGZpbGVzIGNoYW5nZWQsIDg2MiBpbnNlcnRpb25zKCspLCAxMzMgZGVsZXRp
+b25zKC0pCgotLSAKMi4yNy4wCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
