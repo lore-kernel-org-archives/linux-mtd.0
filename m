@@ -1,85 +1,88 @@
-Return-Path: <SRS0=rMW0=J7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=4OT8=KA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,
-	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC680C433ED
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 May 2021 20:17:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 556D7C433B4
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 May 2021 01:18:39 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7063361003
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 May 2021 20:17:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7063361003
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+	by mail.kernel.org (Postfix) with ESMTPS id 038FD600D1
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 May 2021 01:18:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 038FD600D1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
-	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Subject:Message-ID:Cc:To:From:Date:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=1cVR0IHJ+RHQs0Ci7cR3flEuaqst6do98p+HoiKpIMY=; b=X3fw0HFfFn5X3WsKW4eJB2W+NI
-	lxbPVGsKikgodBg2rNEGWdpTKTQ5lfUv7yHh2RSNI3IVPX7kbWNEMCAdiBJpK20y/MFJLj2qOlu1q
-	DC+GuHnW49nui+HWh3occ2BB3/lqoBW4YcP4N9p6CVc9n1CGd7wNVv+753C2CJqMqim+TH5VDaeXW
-	QB25sMowMxjxFvH2rdbNQHELrJ+XG4CwLcuJDx6hPfB7Aje6b2a3Bo0+vb2cWKc6+ZuD3P5awVRFn
-	28fTcgcj/HiUa1TVb+RXScRh4CAlWv1988SwBw8F+yxhi0V1ogUEIce4iSoeyFcwJgoIJvKOhWROo
-	7HI5CF7Q==;
+	:Content-Type:MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:References:In-Reply-To:From:
+	Subject:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=LgZ/BT2MphpuCMjmTWgI3pngTEVxzrXJ5bIybEQz034=; b=KZ4x9CeUTD+kl3w3ehz/Qnwl94
+	E82/rqhhIMrOFSjSIC/X/5+JsjBv7j+jO07Ft29sR+Yofd7KL1D4s/2O66IAR5T+eOhd1gMlgKmV/
+	mmRNfK7z9rY3j40q4Rhe6aBl2bXyOaAEBUAqceDClsrRm7zvf20AuoAWVLu9RmN8uNLvf4YXyys7m
+	lrbY8q1cjeQYEd0QBtHyOeiqnd2jt1ImPhxJCVD/0dl1nzMFs5foZadrGE7A0BbYS4F5vzuQu88dK
+	lfWQJajUgSUUdFcH914Ta7xfz9Iwfqx0ZQW/uIbHNmcw6JVqUe6s6bPf/D8xCpIjUnw1ov9qcgo32
+	0Ur60alA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1le1Su-00H09u-Og; Tue, 04 May 2021 20:16:20 +0000
+	id 1le6A6-00HVy6-3v; Wed, 05 May 2021 01:17:14 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1le1Sr-00H09j-DV
- for linux-mtd@desiato.infradead.org; Tue, 04 May 2021 20:16:17 +0000
+ id 1le6A3-00HVxy-Ln
+ for linux-mtd@desiato.infradead.org; Wed, 05 May 2021 01:17:11 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
- Content-Type:MIME-Version:Subject:Message-ID:Cc:To:From:Date:Sender:Reply-To:
- Content-ID:Content-Description:In-Reply-To:References;
- bh=jHBfGTqd+3CfDEvqADdJnId8bOnLKjsIwDCNhXWK48Y=; b=zchGsJzsoMYmM4976EQ0dgoLq2
- eMdFFCgigwc0QYKG0NsvmkTSAUqto/myyA7vg184RdG/LHhKTSDKCH+K9beWSPm/eS+rupGx4m7Vz
- Bv8Tnzs5sLbiHNwtl7vzYDsav3EMobPQYA9ULbGaxj5WhBAHqTVko4qA1eUFxRoHefJOs/0i9P6Ew
- qJ7iZIR2As4BEesaCvfTdAjzKlsdwGwLrQ4sRGhtetBR5YRLVd0JGyyawuovDj4A81RDMRuuFaX0i
- Wg8bbcAWZxggmovupeoMDKfyul7SVpFFloi5bFFp1i1z4herRWt3FcoaHND9XfFlKp4hAn5ORR+Ej
- JaGZDGOg==;
-Received: from lithops.sigma-star.at ([195.201.40.130])
+ d=infradead.org; s=bombadil.20210309; h=Cc:To:Date:Message-Id:References:
+ In-Reply-To:From:Subject:Sender:Reply-To:MIME-Version:Content-Type:
+ Content-Transfer-Encoding:Content-ID:Content-Description;
+ bh=wfFhZjh0CixniazcTAsaXmXlJThFs4bjN73+Gsn/IXA=; b=b9AbjXRPCkskLQEsEkgteOIJLf
+ 4Ytt9h7qyAWrHTqC4uvz/qlLho9DwtkO0YsAJj6kbTZd0MOHmWqD2CPLc081NaYlW8PO6YrME6FwL
+ fAVhA9m4GMXjtPRrj4ispDmZ9OGDazCnCgu2UgvzqWPXjnxB2SMIJsPaL9XYLg1cv62eMOcnWqk4O
+ Bdd/udL8kl0aesAm7MXcZ6t9tdXadtoS1g/KFUEZ3N5Au5F0APDEZlkxxHCz8+FT3A1giu2o1OaVJ
+ nYNtUZ6ILCw14Rmsp+4Ogp2h6kj8zCdXCXKlyccQ2fdEXCtmbPyutFuAlLHK3mDkg7JbrugV6rGl+
+ YDNCTAaQ==;
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1le1So-004FIy-E9
- for linux-mtd@lists.infradead.org; Tue, 04 May 2021 20:16:16 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id E636E616B584;
- Tue,  4 May 2021 22:16:02 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id nF_cEsHtKrhB; Tue,  4 May 2021 22:16:02 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 7E19F616B581;
- Tue,  4 May 2021 22:16:02 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id h1XM32xtwEee; Tue,  4 May 2021 22:16:02 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
- by lithops.sigma-star.at (Postfix) with ESMTP id 486B7608A38A;
- Tue,  4 May 2021 22:16:02 +0200 (CEST)
-Date: Tue, 4 May 2021 22:16:02 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, 
+ id 1le6A1-004NHK-0Z
+ for linux-mtd@lists.infradead.org; Wed, 05 May 2021 01:17:10 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPS id AF557600D1;
+ Wed,  5 May 2021 01:17:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1620177428;
+ bh=tOvpORL4pZCL/85TtD6K9Nbq4340ZVvyD3mf9i3tQcw=;
+ h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+ b=aTKnCJYUdKHY6B9G6Qe4vttFNmvUT8BBMtxBtoAf9N7LOzJyalkXSb9hTA1aahw5J
+ n6zdiCpi7G0NhUNhtNTiR0ZER4gSGgWPxw+Np+hVQIKvSy6o+QQXxDRn2kCeq/t5T/
+ UBwHeXbOyK5QQJMmqlA/aOIaHbORV2AdhGSN5KUyJmuV15J+1RNjWQtrCNWP/wadjF
+ 4e25Si6T88dvQJHSYQ0qxpxMIgSfT3Y6IhSQ7fZ108IcrIA7xfM000PHwEAuWJzgAY
+ /9vwfccJho+yx7cdOmBx35Z4AFOhen2vd7v4wi+SIiMNFgfccUB/VdVz0H3zEM4hwp
+ Rxvj/1fLAW+Zw==
+Subject: Re: [GIT PULL] JFFS2, UBI and UBIFS changes for 5.13
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <1258125270.55580.1620159361990.JavaMail.zimbra@nod.at>
+References: <1258125270.55580.1620159361990.JavaMail.zimbra@nod.at>
+X-PR-Tracked-List-Id: Linux MTD discussion mailing list
+ <linux-mtd.lists.infradead.org>
+X-PR-Tracked-Message-Id: <1258125270.55580.1620159361990.JavaMail.zimbra@nod.at>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git
+ tags/for-linus-5.13-rc1
+X-PR-Tracked-Commit-Id: 9a29f7f020e06f14eb126bcb84a7f0d166415824
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 51f629446cd172e324deb0146741888cac5dedca
+Message-Id: <162017742858.16566.6652519615271581325.pr-tracker-bot@kernel.org>
+Date: Wed, 05 May 2021 01:17:08 +0000
+To: Richard Weinberger <richard@nod.at>
+Cc: torvalds <torvalds@linux-foundation.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>,
  linux-mtd <linux-mtd@lists.infradead.org>
-Message-ID: <1258125270.55580.1620159361990.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] JFFS2, UBI and UBIFS changes for 5.13
-MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Index: e8eii+QRwXewm5Jz3riefse6I71Cfg==
-Thread-Topic: JFFS2, UBI and UBIFS changes for 5.13
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210504_131614_663312_43952ACE 
-X-CRM114-Status: UNSURE (   6.92  )
+X-CRM114-CacheID: sfid-20210504_181709_098671_4C506704 
+X-CRM114-Status: UNSURE (   4.20  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -92,78 +95,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Linus,
+The pull request you sent on Tue, 4 May 2021 22:16:02 +0200 (CEST):
 
-The following changes since commit d434405aaab7d0ebc516b68a8fc4100922d7f5ef:
+> git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.13-rc1
 
-  Linux 5.12-rc7 (2021-04-11 15:16:13 -0700)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/51f629446cd172e324deb0146741888cac5dedca
 
-are available in the Git repository at:
+Thank you!
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.13-rc1
-
-for you to fetch changes up to 9a29f7f020e06f14eb126bcb84a7f0d166415824:
-
-  ubi: Remove unnecessary struct declaration (2021-04-15 22:01:25 +0200)
-
-----------------------------------------------------------------
-This pull request contains changes for JFFS2, UBI and UBIFS
-
-JFFS2:
-- Use splice_write()
-- Fix for a slab-out-of-bounds bug
-
-UBI:
-- Fix for clang related warnings
-- Code cleanup
-
-UBIFS:
-- Fix for inode rebirth at replay
-- Set s_uuid
-- Use zstd for default filesystem
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      jffs2: avoid Wempty-body warnings
-
-Guochun Mao (1):
-      ubifs: Only check replay with inode type to judge if inode linked
-
-Gustavo A. R. Silva (1):
-      ubi: Fix fall-through warnings for Clang
-
-Joel Stanley (1):
-      jffs2: Hook up splice_write callback
-
-Martin Devera (1):
-      ubifs: Report max LEB count at mount time
-
-Rui Salvaterra (1):
-      ubifs: Default to zstd compression
-
-Steffen Trumtrar (1):
-      ubifs: Set s_uuid in super block to support ima/evm uuid options
-
-Wan Jiabing (1):
-      ubi: Remove unnecessary struct declaration
-
-lizhe (1):
-      jffs2: Fix kasan slab-out-of-bounds problem
-
- drivers/mtd/ubi/build.c |  1 +
- drivers/mtd/ubi/ubi.h   |  2 --
- fs/jffs2/file.c         |  1 +
- fs/jffs2/scan.c         |  2 +-
- fs/jffs2/summary.h      | 16 ++++++++--------
- fs/ubifs/replay.c       |  3 ++-
- fs/ubifs/sb.c           |  3 +++
- fs/ubifs/super.c        |  6 ++++--
- 8 files changed, 20 insertions(+), 14 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
 ______________________________________________________
 Linux MTD discussion mailing list
