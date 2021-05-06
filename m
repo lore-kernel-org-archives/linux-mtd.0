@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42295C433ED
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 May 2021 19:21:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36E56C433B4
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 May 2021 19:22:17 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B66B961164
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 May 2021 19:21:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B66B961164
+	by mail.kernel.org (Postfix) with ESMTPS id AD58460724
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 May 2021 19:22:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD58460724
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,59 +23,59 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
 	Subject:CC:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=c9de7FqOA3c4jeRCeof8CQUGnnQYFsSYz5WBe4it3M0=; b=foPobJFvlj7o+R9DCJ62EJ5An
-	qwRbzS8ScBa/ttHSKTkV3UcI1LkNDlFhCD4kR4oJqBWbjG5p5OepfoBfvdXEYnuaEhXpwd5t9/xHd
-	fCXL6mAPrpA5cYmU45Sn1Rh5Lg4xpgXB0oWKzssySNE62L0zCC1qIHuJY2x5mtDyps2oMHvrjE/nT
-	A6K24Tb6OJ7QTO7PUuQMbOo82IwbaukYdpi6EKpdDV1GgKttFWVUDmBWjauljUF6FexjqdjxIDIvg
-	jbeiLgVzpLp8eNbTF9yf9kG10z+l/AiQr3FyLFHr9yP//hF/pM8nZfAaJQPxENgYsegn/a00A/1RV
-	oMRc7A67Q==;
+	 bh=PIZR/XG8D2P+ZYAq8uy/CxeuqidmLs8wC/44e58ka8g=; b=elulkz2IiVqczmxBWcyX665O1
+	nC8naagwCfllwpBWuXU0Usi4tbLja51UO28SfkIrnWizcW3Fz+Wq2CC3N2YU73sxj6MvyXAEUA+Je
+	I/P1QcSwHCTukVQ64LGbw3Pqe8wh+44G+CMxt5E9VkNrVYKU50/BTRJKCIyEYWUib5CaFAZdM4N3/
+	+QQnaC90ZZtZntIxqTjzuYiJUb5LraTTz8i7cStnGQfIl53a8E3meUsBm8377C4QXEodIqa32vHn4
+	owdPsAMEdgf+qkx4yMlf8lxP4sI54hmT7xunAKK03l1Gsp15Wdv2K4hzwWiwx31XtlymA9m/LBDUM
+	OGAvwixCw==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lejXy-00580N-7h; Thu, 06 May 2021 19:20:30 +0000
+	id 1lejZ5-0058Hv-Jx; Thu, 06 May 2021 19:21:39 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lejWS-0057aQ-Rs
- for linux-mtd@desiato.infradead.org; Thu, 06 May 2021 19:18:57 +0000
+ id 1lejWV-0057b9-Pk
+ for linux-mtd@desiato.infradead.org; Thu, 06 May 2021 19:19:00 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Type:
  Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
  :Subject:CC:To:From:Sender:Reply-To:Content-ID:Content-Description;
- bh=Qre2cxW/qPaINYaX2pXLttHC55Q98kYeS5PJg5R0I7E=; b=e7FtcL4YzGcd5azgqSmmENwvr2
- eHFjhFIF9FpepogGyWIG6yYvXPHU9h8b+bZr1gXX+XWwkKd1CgbpixGVs5H4ujtO8S29P9jw0Ckqc
- 3kUBGAD5gwz1VoL9a5lShSqqz6MqjL0V9eFqzm1IaQaFGX/n1nI/8yiSw8x0n/mVrvFpAciclDXH6
- 65bAW5nkBUoraOQ6TW5X8x2tsqscATc5m3utiE0bY2QLKaGuhmFj5uj8Y6nVmu3HLlj9wviMbCvDb
- 8ggHDC/E3pR/YJgMcSOiw6xEMQSZvz4FT3dAMwvj/2dVq6do/GF67ze/HGjEDbQ5GO9uRJl3YcJHu
- e6ZItN2A==;
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+ bh=8be/0Af1IpsSbPbMx0rjRmaqUa0F13Ayu7NXc7jIJ5U=; b=wH0e1u8W6iGU4oPZ7vLgYJXwR6
+ xJ4myjF1jPP2eMcNOgqxsFy2GTaK2MTsmBLZWUPQ3j2tPA9ZoA751y8vcYOOhLJ6RNX19f4Q9OBfx
+ 2Jolc+F5x6FWixLCf1vAB8Hl5izTG9iPQAyQklgj8Xu7FZJM9m3/tCDvI+6WZl4qzMpothvK33FvN
+ ELsC4xRApcwGpAslVpytfaYUrgtdB0AecZfvK0SGUEQHyyfQufNzPy4PQrPDSG3ysTGxVAbzYQ/pc
+ 1rXdLyv2lcsu3FWM72a9PGkcxIqnFJdxim1/ArEXgUQNn1yxBP2l7BqQOelP9uRlQpGwZKqv0bldc
+ IJJ2xh1A==;
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lejWQ-006Kim-5a
- for linux-mtd@lists.infradead.org; Thu, 06 May 2021 19:18:55 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 146JIoJc080712;
- Thu, 6 May 2021 14:18:50 -0500
+ id 1lejWT-006KjC-2U
+ for linux-mtd@lists.infradead.org; Thu, 06 May 2021 19:18:58 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 146JIrtm095439;
+ Thu, 6 May 2021 14:18:53 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1620328730;
- bh=Qre2cxW/qPaINYaX2pXLttHC55Q98kYeS5PJg5R0I7E=;
+ s=ti-com-17Q1; t=1620328733;
+ bh=8be/0Af1IpsSbPbMx0rjRmaqUa0F13Ayu7NXc7jIJ5U=;
  h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=H3IEfePsq9U2n/1+gEs0wa6wQm0l8EnmgBr62hCtKxHK6Pnm9uiKZMRwEsG2VkqWB
- 2GvtvHuYkb47SgcXlr7ftlL3djux7EEBrAgvFN/O4zhHFySIRVxO+yPcbbKh/bIzuB
- WRhQ9sG3yCvy5Cwl2Z5saFGlNGXXaYbcttFUW1II=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 146JIopp122924
+ b=fXEfgEIO/PaTEximsML7s0b3WQLojA5BosbU+/BmtezABdJ1Bd68BZJTkenl6BMWy
+ +Tqiu8duTAJpOimBls2YKZ07yUUP7yS1+Fmr5hrdJp3VGU+Fsd7E4pgkdaG/3ieQQT
+ 2ElzA1nVflaK+EEM7lt78lVe1xXw0vwuwE/rWpIY=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 146JIre1016678
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 6 May 2021 14:18:50 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ Thu, 6 May 2021 14:18:53 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 6 May
- 2021 14:18:50 -0500
+ 2021 14:18:53 -0500
 Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE110.ent.ti.com
  (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 6 May 2021 14:18:50 -0500
+ Frontend Transport; Thu, 6 May 2021 14:18:53 -0500
 Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com
  [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 146JIUNH026052;
- Thu, 6 May 2021 14:18:47 -0500
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 146JIUNI026052;
+ Thu, 6 May 2021 14:18:50 -0500
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>, Michael Walle
  <michael@walle.cc>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
@@ -83,18 +83,18 @@ To: Tudor Ambarus <tudor.ambarus@microchip.com>, Michael Walle
  Brown <broonie@kernel.org>, <linux-mtd@lists.infradead.org>,
  <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>
 CC: Pratyush Yadav <p.yadav@ti.com>
-Subject: [PATCH 5/6] mtd: spi-nor: core;
- avoid odd length/address reads on 8D-8D-8D mode
-Date: Fri, 7 May 2021 00:48:28 +0530
-Message-ID: <20210506191829.8271-6-p.yadav@ti.com>
+Subject: [PATCH 6/6] mtd: spi-nor: core;
+ avoid odd length/address writes in 8D-8D-8D mode
+Date: Fri, 7 May 2021 00:48:29 +0530
+Message-ID: <20210506191829.8271-7-p.yadav@ti.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210506191829.8271-1-p.yadav@ti.com>
 References: <20210506191829.8271-1-p.yadav@ti.com>
 MIME-Version: 1.0
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210506_121854_313595_18A2A5ED 
-X-CRM114-Status: GOOD (  20.60  )
+X-CRM114-CacheID: sfid-20210506_121857_218100_B960EEC7 
+X-CRM114-Status: GOOD (  19.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,69 +111,58 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Octal DTR capable flashes like Micron Xcella reads cannot start or
-end at an odd address in Octal DTR mode. Extra bytes need to be read at
-the start or end to make sure both the start address and length remain
-even.
-
-To avoid allocating too much extra memory, thereby putting unnecessary
-memory pressure on the system, the temporary buffer containing the extra
-padding bytes is capped at PAGE_SIZE bytes. The rest of the 2-byte
-aligned part should be read directly in the main buffer.
+On Octal DTR capable flashes like Micron Xcella the writes cannot start
+or end at an odd address in Octal DTR mode. Extra 0xff bytes need to be
+appended or prepended to make sure the start address and end address are
+even. 0xff is used because on NOR flashes a program operation can only
+flip bits from 1 to 0, not the other way round. 0 to 1 flip needs to
+happen via erases.
 
 Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+
 ---
 
- drivers/mtd/spi-nor/core.c | 81 +++++++++++++++++++++++++++++++++++++-
- 1 file changed, 80 insertions(+), 1 deletion(-)
+ drivers/mtd/spi-nor/core.c | 72 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 71 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 5cc206b8bbf3..3d66cc34af4d 100644
+index 3d66cc34af4d..265d8b25fc7f 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -1904,6 +1904,82 @@ static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
- 	return ERR_PTR(-ENODEV);
+@@ -2022,6 +2022,71 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	return ret;
  }
  
 +/*
-+ * On Octal DTR capable flashes like Micron Xcella reads cannot start or
-+ * end at an odd address in Octal DTR mode. Extra bytes need to be read
-+ * at the start or end to make sure both the start address and length
-+ * remain even.
++ * On Octal DTR capable flashes like Micron Xcella the writes cannot start or
++ * end at an odd address in Octal DTR mode. Extra 0xff bytes need to be appended
++ * or prepended to make sure the start address and end address are even. 0xff is
++ * used because on NOR flashes a program operation can only flip bits from 1 to
++ * 0, not the other way round. 0 to 1 flip needs to happen via erases.
 + */
-+static int spi_nor_octal_dtr_read(struct spi_nor *nor, loff_t from, size_t len,
-+				  u_char *buf)
++static int spi_nor_octal_dtr_write(struct spi_nor *nor, loff_t to, size_t len,
++				   const u8 *buf)
 +{
-+	u_char *tmp_buf;
-+	size_t tmp_len;
++	u8 *tmp_buf;
++	size_t bytes_written;
 +	loff_t start, end;
-+	int ret, bytes_read;
++	int ret;
 +
-+	if (IS_ALIGNED(from, 2) && IS_ALIGNED(len, 2))
-+		return spi_nor_read_data(nor, from, len, buf);
-+	else if (IS_ALIGNED(from, 2) && len > PAGE_SIZE)
-+		return spi_nor_read_data(nor, from, round_down(len, PAGE_SIZE),
-+					 buf);
++	if (IS_ALIGNED(to, 2) && IS_ALIGNED(len, 2))
++		return spi_nor_write_data(nor, to, len, buf);
 +
-+	tmp_buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
++	tmp_buf = kmalloc(nor->page_size, GFP_KERNEL);
 +	if (!tmp_buf)
 +		return -ENOMEM;
 +
-+	start = round_down(from, 2);
-+	end = round_up(from + len, 2);
++	memset(tmp_buf, 0xff, nor->page_size);
 +
-+	/*
-+	 * Avoid allocating too much memory. The requested read length might be
-+	 * quite large. Allocating a buffer just as large (slightly bigger, in
-+	 * fact) would put unnecessary memory pressure on the system.
-+	 *
-+	 * For example if the read is from 3 to 1M, then this will read from 2
-+	 * to 4098. The reads from 4098 to 1M will then not need a temporary
-+	 * buffer so they can proceed as normal.
-+	 */
-+	tmp_len = min_t(size_t, end - start, PAGE_SIZE);
++	start = round_down(to, 2);
++	end = round_up(to + len, 2);
 +
-+	ret = spi_nor_read_data(nor, start, tmp_len, tmp_buf);
++	memcpy(tmp_buf + (to - start), buf, len);
++
++	ret = spi_nor_write_data(nor, start, end - start, tmp_buf);
 +	if (ret == 0) {
 +		ret = -EIO;
 +		goto out;
@@ -182,50 +171,50 @@ index 5cc206b8bbf3..3d66cc34af4d 100644
 +		goto out;
 +
 +	/*
-+	 * More bytes are read than actually requested, but that number can't be
-+	 * reported to the calling function or it will confuse its calculations.
-+	 * Calculate how many of the _requested_ bytes were read.
++	 * More bytes are written than actually requested, but that number can't
++	 * be reported to the calling function or it will confuse its
++	 * calculations. Calculate how many of the _requested_ bytes were
++	 * written.
 +	 */
-+	bytes_read = ret;
++	bytes_written = ret;
 +
-+	if (from != start)
-+		ret -= from - start;
++	if (to != start)
++		ret -= to - start;
 +
 +	/*
-+	 * Only account for extra bytes at the end if they were actually read.
-+	 * For example, if the total length was truncated because of temporary
-+	 * buffer size limit then the adjustment for the extra bytes at the end
-+	 * is not needed.
++	 * Only account for extra bytes at the end if they were actually
++	 * written. For example, if for some reason the controller could only
++	 * complete a partial write then the adjustment for the extra bytes at
++	 * the end is not needed.
 +	 */
-+	if (start + bytes_read == end)
-+		ret -= end - (from + len);
++	if (start + bytes_written == end)
++		ret -= end - (to + len);
 +
-+	if (ret < 0) {
++	if (ret < 0)
 +		ret = -EIO;
-+		goto out;
-+	}
 +
-+	memcpy(buf, tmp_buf + (from - start), ret);
 +out:
 +	kfree(tmp_buf);
 +	return ret;
 +}
 +
- static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
- 			size_t *retlen, u_char *buf)
- {
-@@ -1921,7 +1997,10 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
+ /*
+  * Write an address range to the nor chip.  Data must be written in
+  * FLASH_PAGESIZE chunks.  The address range may be any size provided
+@@ -2066,7 +2131,12 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		if (ret)
+ 			goto write_err;
  
- 		addr = spi_nor_convert_addr(nor, addr);
- 
--		ret = spi_nor_read_data(nor, addr, len, buf);
-+		if (nor->read_proto == SNOR_PROTO_8_8_8_DTR)
-+			ret = spi_nor_octal_dtr_read(nor, addr, len, buf);
+-		ret = spi_nor_write_data(nor, addr, page_remain, buf + i);
++		if (nor->write_proto == SNOR_PROTO_8_8_8_DTR)
++			ret = spi_nor_octal_dtr_write(nor, addr, page_remain,
++						      buf + i);
 +		else
-+			ret = spi_nor_read_data(nor, addr, len, buf);
- 		if (ret == 0) {
- 			/* We shouldn't see 0-length reads */
- 			ret = -EIO;
++			ret = spi_nor_write_data(nor, addr, page_remain,
++						 buf + i);
+ 		if (ret < 0)
+ 			goto write_err;
+ 		written = ret;
 -- 
 2.30.0
 
