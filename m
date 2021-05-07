@@ -6,14 +6,14 @@ X-Spam-Status: No, score=-6.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CFC4EC433ED
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 May 2021 15:32:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A740AC433ED
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 May 2021 15:50:02 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 26CD061469
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 May 2021 15:32:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26CD061469
+	by mail.kernel.org (Postfix) with ESMTPS id 577256101B
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 May 2021 15:50:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 577256101B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -22,46 +22,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=5gV8VS/78L3cdoMnlPZ5OM1N2dzTx0iYopaDsfXCTEk=; b=WYgc/8HnXGUwI6v27U4LS/vmy
-	G24w0r4BNqHr8jdLCl9AOU/W56i2yBFHEv5Rjl6gEKabAXZoqwtqWYoQ0T4JzO9QgcGL9XravRcoc
-	2bqBp2XHzKT0WISwwjY5ho5EhgtQdbYMAim9BBJd9Cknk/2r+Xp+hMheGkNd7MrCAZUnrh/q/2azl
-	T3wDHAekKJtN2JoH108ATdYWWtTOK/z0RJZAKohpNesoMy9M9sbFc1ZNxA5G4Q4V01dXFdenbBKmL
-	6EBa3mb3FzbLglmOXSGhf9qTqF8EBdSCoYxH6/3iwMPMAEk3hutuzsYiCIKoyatYgEAadbWNutYlK
-	3vRq78f0Q==;
+	 bh=iAmCQ70Unrgw4Q0mDU0Cmv9EV1Je75RHXEGJ2aUeZs0=; b=HX/YryfkmZxKrrsCOOOGNpIJ3
+	mSTQ/0wP+zFgtXsNN15vbI93c6vsmLJGCvuVT72268pSNOtUUVLHy/fdEaWV6h4fgovgwVmmRW0DL
+	8q6ETqh5UKpoSQndJvT0fpnGY41cs6t0+ILK6oSDLwO5fyUjcRH+fidtTzcoc/58KObCIQFSG3ynY
+	yMK8gnFVYVw9SsX/hHL7q9TUwDfDszlA0CBO2McbKydQgN2ElGx21P/kD4jzwMSDKZaNXeenKfbnx
+	LteN7vBISg1kBgJsGSLwrNKVPoieBnitdSvmUUriAZ3lPnm0Ek1ksNcmhUs4eda/rOln4GwSOSNfK
+	P1Hv+Wx5Q==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lf2Sd-007QhQ-Fa; Fri, 07 May 2021 15:32:15 +0000
+	id 1lf2iz-007T0L-4N; Fri, 07 May 2021 15:49:09 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lf2Sb-007Qh3-LC
- for linux-mtd@desiato.infradead.org; Fri, 07 May 2021 15:32:13 +0000
+ id 1lf2iw-007T0E-Dw
+ for linux-mtd@desiato.infradead.org; Fri, 07 May 2021 15:49:06 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
  :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
  Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=O3zHx8gGy8AU49D+Cnr2TBWRAoXneuMN59DU/Ks3vhs=; b=kmuzNOQo86QZuONmxWVJTCgytY
- Ox/J0y/Cy20ja8npwmOE8P2SFF6tpizqcqDi6t/PZEHnMBI4Q3zw/SEpqR+ENI6/DjGJfpodHBpZF
- uYwQY6tWSUo2B8s21gDMdhpE9o+LPbxnLz8V2NITE1CqCAp3l1nBBF+WMiNeSDVUxVOneFaqScBzL
- 0R1pl/DNze36Zmr9DJxzmQM3LbQ6bOgRp0tt4DpPSyeCD/oIrrkr3hohyRBzcuyODjGwRABVmAjeS
- RvDAOE4Egu3cM7Mc7upowLpk572bq6Lokv1+Xkhea+eKIX1thZnFSVDZ7PT8KtKMBkHaOcEjb4QJs
- qWphOE/Q==;
+ bh=zo5ZaLSYcdR5moJLPq+dp/uSFCyN6+28ysDvX0t73as=; b=4KkPhEmiUy23kgeGWmnyMloYHQ
+ r4kiCe2qiu9hQiOGX8gEl4P9HGqVG9ZGSikQZUczQcS0XWiNI1woGqHqLZkMIGTQRT1tqAeWnp2qk
+ +0SbtJJREfSltjrnw4/EGjJmSRKzaUMnKTA7HgR06IojlIAmCELCdEP0HWzv0J7z/EA1JNPE9hrWu
+ a38SCo9KrPOhHOujHxzU7s1pEsYc0WuTg9o4fpNca8NclnQ9918O+vTBCfHW3FuFlykuohir7MUna
+ otf6dBcBN582ZJHRnixJY6uY7i6voWiCqNaPFNVLMGv/yRdZ7wmRK3zaVlv3n4HmTnDBQ67SN18B8
+ 3TnISLZg==;
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lf2SZ-006xut-2S
- for linux-mtd@lists.infradead.org; Fri, 07 May 2021 15:32:12 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3F4B61460;
- Fri,  7 May 2021 15:32:09 +0000 (UTC)
+ id 1lf2it-006yiP-TX
+ for linux-mtd@lists.infradead.org; Fri, 07 May 2021 15:49:05 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35869610E7;
+ Fri,  7 May 2021 15:49:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1620401530;
- bh=O3zHx8gGy8AU49D+Cnr2TBWRAoXneuMN59DU/Ks3vhs=;
+ s=k20201202; t=1620402542;
+ bh=zo5ZaLSYcdR5moJLPq+dp/uSFCyN6+28ysDvX0t73as=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=RjOYIsvAC5gLtDgOeipF0F06gxKKV6y4oHApV4eIapZor+2Jwj5gHQ1ya1MhHIyme
- bn61u5vsDc+ZcuMPSOH8v51zHMySSD8emcgVya6okdgrrzXFEwxxa//ImRHWGV1gJl
- sHauyc5dg4V1lXYoUc+almVuAt38m/6XSH8ERigfRMQ7VQWrj8BibB6n8Q5FsVZ/cm
- kvZ+evUd1a3JB8VP9Zh54XD9EHXQxm4XwVvCPMJ7P1rOOdwGkb7AAM04G8tAH2OFlK
- 0eu0oPZlAUEz/mqY+wnHxXUmeLJj3RCmP9mID3ZsScJvArFw7MoNkFYFTMyEy+EEP3
- QZZHlc+e1zE9A==
-Date: Fri, 7 May 2021 16:31:32 +0100
+ b=HYH4zmKqXK7asr2NCrAehDy7TJy4roOiA59dsBYIB3Y1rS3DLCAPQ1EIfdXmJlmIG
+ Lt31BDaF66DRiGb7F59boyJ6YvUqskTClejh8D9H+trDNsjE0g2pnHIwp9in4wZTvv
+ TggzLHr2yvnEYtCjj+6IxiB2fL8ladoShAtn4iuUwgGcxZ2xFOszRLhGbKVl0s4Fdi
+ F9Ld2SS6TAFQJr7WBBIyO0jBXXkcPIxN71xl5G1XF1YwdjrpT1zodVRK0QbSfb1uoT
+ hooQlM3yoTtHQsb5WQI/PIsTGEmPPRwcKQ/pcsNuRwjfnOf/h8VWNC193S5rfTPCJy
+ aG20rwLR+AOBg==
+Date: Fri, 7 May 2021 16:48:25 +0100
 From: Mark Brown <broonie@kernel.org>
 To: Pratyush Yadav <p.yadav@ti.com>
 Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
@@ -72,18 +72,17 @@ Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
  linux-spi@vger.kernel.org
 Subject: Re: [PATCH 4/6] spi: spi-mem: reject partial cycle transfers in
  8D-8D-8D mode
-Message-ID: <20210507153132.GC6383@sirena.org.uk>
+Message-ID: <20210507154825.GE6383@sirena.org.uk>
 References: <20210506191829.8271-1-p.yadav@ti.com>
  <20210506191829.8271-5-p.yadav@ti.com>
- <20210507125533.GA6383@sirena.org.uk>
- <20210507135631.maue7gorfzsv4qpk@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20210507135631.maue7gorfzsv4qpk@ti.com>
+In-Reply-To: <20210506191829.8271-5-p.yadav@ti.com>
 X-Cookie: Postage will be paid by addressee.
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210507_083211_176038_D4C48A93 
-X-CRM114-Status: GOOD (  10.11  )
+X-CRM114-CacheID: sfid-20210507_084904_006630_D20EEEC9 
+X-CRM114-Status: UNSURE (   7.17  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,59 +94,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6424216153090011107=="
+Content-Type: multipart/mixed; boundary="===============8254607957322452951=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
---===============6424216153090011107==
+--===============8254607957322452951==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="/e2eDi0V/xtL+Mc8"
+	protocol="application/pgp-signature"; boundary="Ns7jmDPpOpCD+GE/"
 Content-Disposition: inline
 
 
---/e2eDi0V/xtL+Mc8
+--Ns7jmDPpOpCD+GE/
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 07, 2021 at 07:26:33PM +0530, Pratyush Yadav wrote:
+On Fri, May 07, 2021 at 12:48:27AM +0530, Pratyush Yadav wrote:
+> In 8D-8D-8D mode two bytes are transferred per cycle. So an odd number
+> of bytes cannot be transferred because it would leave a residual half
+> cycle at the end. Consider such a transfer invalid and reject it.
 
-> Patches 2 and 3 are a slightly different matter. They add an extra=20
-> register write. But most controllers I've come across don't support=20
-> 1-byte writes in 8D mode. It is likely that they are sending=20
-> bogus/undefined values in the second byte and deasserting CS only after=
-=20
-> the cycle is done. So they should _in theory_ change undefined behaviour=
-=20
-> to defined behaviour.
+Reviwed-by: Mark Brown <broonie@kernel.org>
 
-> Still, they introduce an extra register write. I'm not sure how=20
-> risk-tolerant you want to be for stable backports. I will leave the=20
-> judgement to you or Tudor or Vignesh.
-
-Ah, given that if nobody's seeing any issues I'd probably just hold off
-there TBH.
-
---/e2eDi0V/xtL+Mc8
+--Ns7jmDPpOpCD+GE/
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCVXVQACgkQJNaLcl1U
-h9B8HAf9GZh6wXoQyIjqchDq4kgwLgCdMTMAnT1LjmrcRaeTiLr30MVfyjO+eLan
-tCZYatA9w4eVKm2NbXI1G0JqZ+ZlmuGlgFEb1kRrSdWn/A6rUF0fHlCjygq6wQTR
-GBqZ4wWImXKcry+Wc8GsZWggtV7XCkQYE3bp4l2QfXkhFtASgPkSYtLfYbOOKjOP
-1Xpc4kqpfpaZIRDPJKqwTykeJaeTxY+T3Lfz/IUjFUa9mtr0RC6FjnA5+ekboY4C
-pEMICHbnrt2WDRAk6HXqypb5N+HJ2V84XLi3Q/uMjFlgC4+2lLe/OEIkgzGDJns3
-8/2LTp0aNJ+CgvTMYbnSmdorhvF2wA==
-=+ofb
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCVYUgACgkQJNaLcl1U
+h9D6iAf/X83wkW3EXwEG5bkyXGYvMLHjg2mUnr/2c7Sz3BjRF3mdrCLzBrI4He6j
+ndjUdq1s6d+AHEc34fMt1bamADb8ZeIlb8UNoJn/RpyZdtDIpNjnBey1jEGBsKBA
+a7gOkAiauV+IsanHu1ams3Ox8kcc3FLTsGF3DKc9RAo0HvjnWaxbdAG5Ygck+5GJ
+IsbAlJ2PxbIDI4wQwwJxRzUUZpCbPkMAQmG9H2KhyVcLZPXDDyrz81+eLlwBvhlp
+qJYYtL6RU5UNpMWEDMFPyMOHoKSNOihKZ4LUItsEMH91DYxcJDmbJncFy8Fh4hJg
+ey6Urvm1TTwaQfCxkaIPjVimR84ODQ==
+=nP+B
 -----END PGP SIGNATURE-----
 
---/e2eDi0V/xtL+Mc8--
+--Ns7jmDPpOpCD+GE/--
 
 
---===============6424216153090011107==
+--===============8254607957322452951==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -157,5 +144,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============6424216153090011107==--
+--===============8254607957322452951==--
 
