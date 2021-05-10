@@ -5,17 +5,17 @@ X-Spam-Level:
 X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8CADC433ED
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 May 2021 17:19:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 406ACC433B4
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 May 2021 20:15:03 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 45D3361458
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 May 2021 17:19:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 45D3361458
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 38752610F8
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 May 2021 20:15:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 38752610F8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
@@ -23,56 +23,64 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=dFLRcxTHmQjKaFrPVFP2CM55KLcTYc01oYHCRCt7reg=; b=AZOVq7qlcF3vlBaul0wFkrNkRg
-	ci9Djw84k0sLJNjZGRO5T/rmI2oIY2376Fb/DHhk6PmJOgLLR4BdBwmLf8l6Xql6ow97Dd3/YjfJu
-	dQHKYglAGfDZBSg8sLK6XCQvtkUubM5u47nlDzLJjn8DicRcQ0ZqR8Dvh9LuUy7u6AOlnilgqt/Dh
-	AhRn7Njc6OO4r+kqLHJL20MFllRXUYPXXVkdIO4yqt6ijFgIb5EH450k2icO0CJ83yEn44n1kc8VR
-	y28/PLjZ6AkALCDCbSt9rGFaDho6JlzxlIahrItGYu+Pd+6P2HoIes1nASMhAgkhwxlbJTQjVd/UU
-	iL6ZN0yA==;
+	bh=sFjR6LHuO50Wb3GwCy2R3NcyE1ovaZR2JKwx5II2yNg=; b=POfFhimGTLqbGCtyZbeBXSLiCH
+	qGQrPm+yL/tDY8eqb6P4O4AHsvknihuey0tCJdRBlUKSvN9udml72zT8IJOJDkkComDiHhyDuTmkV
+	apPRo5L0I6fyefgLzhIZARFxUxEWeX/07LlVCoo6c7MHSbkfpZtVneGB6Ccz09K6Xh1yZTYGUYWVH
+	82gvGYd6HMUEL9EXrj2BKkoBgK84hzt395K6589TgC51uh6RlEt1GEn+r4prt87tFlqozgs2BoQWX
+	3GqhW/SkzSt/+QtK/belGTtd32PoOHdwD8cZa0FuPU8LvAye6WQafVAd2BFbgMr7SO3skVggwgLoc
+	J5H6mwWA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lg9Xq-00F7cL-KY; Mon, 10 May 2021 17:18:15 +0000
+	id 1lgCHZ-00Fdg0-W5; Mon, 10 May 2021 20:13:41 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lg9Xl-00F7au-CN
- for linux-mtd@desiato.infradead.org; Mon, 10 May 2021 17:18:11 +0000
+ id 1lgCHX-00Fdfg-SE
+ for linux-mtd@desiato.infradead.org; Mon, 10 May 2021 20:13:35 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
- Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+ MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
  Content-ID:Content-Description:In-Reply-To:References;
- bh=samvVKfx8ORhRsVDJpQjT4pMtkzy9hW5DrKZrybhle4=; b=GLKZKNOlyfLtE9pP6dCtFZeu+G
- f4KlBDVdE2agh1bUT+Qg0aBkwepHmEcVu3f0Y3D7QODeYaATI1sxaHP6YrHynLQdkfFSyCTQZvr+m
- 8HyfdeSpbkqPFfN8xSJHx8I5z/9Pl1SdoxXXBUU1vsOmQWKzkNiEpE5Ndr6bdIX8ni9Z2B8YVucdU
- /AUu4SWJlDw7D1L5AWYq6KEqOcWlwP0bHAH9SAxrEQOjDnEIKuxmCqiAnRPA7bSlmzLcDkGOB6Imh
- hTJu2XT9zaKOiq3MYsQ/b2Jr+5AxQ9U0BKcR/XC/f1rh8Ty+4eE6YLOBVvcVbEcC3Ln4BZnSsWQUZ
- 6QgMjj8A==;
-Received: from relay3-d.mail.gandi.net ([217.70.183.195])
+ bh=gLW0OXoqIOZ6toVulnU7Q7dm9QXk59VCJ9ndTYAOOEo=; b=yr/w4PC+OjWK+5FkLPZinwJdI4
+ qFwXMPbwZKW+Z+r595YtoS0hBAE0MnW39YZBeF6zd83Ax1ZVITLyl8gO7WxArs5GG8vaBv5OM4dn7
+ NVqQlFAoeT3DLTaewu5AcdCepew1rixsEfL9PFPziJpqPFA56AJAQFkJO64I+Iu2ag2Why3AYQ8F0
+ 55efdBCQW3n2eZI+GL8Tn/0C8jn/YYScGAcUXSUyRkTBrzLtzVjPGL9ew652Cb/WV012Juju+Nv+G
+ X89st98uuKbEtngT3GkeLiiwtlWTifo5fw265hDK5M9nAHp7P1FjH4rTzYaA6/SqS0t6eErrEr2Fu
+ ndvcXdhA==;
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lg9Xi-008y0k-E8
- for linux-mtd@lists.infradead.org; Mon, 10 May 2021 17:18:07 +0000
-X-Originating-IP: 90.89.138.59
-Received: from xps13.home (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr
- [90.89.138.59]) (Authenticated sender: miquel.raynal@bootlin.com)
- by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 9C4ED60036;
- Mon, 10 May 2021 17:18:00 +0000 (UTC)
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Rob Herring <robh+dt@kernel.org>,
-	<devicetree@vger.kernel.org>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- <linux-mtd@lists.infradead.org>,
- Naga Sureshkumar Relli <nagasure@xilinx.com>,
- Michal Simek <monstr@monstr.eu>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v4] dt-binding: mtd: nand: Document the cs-gpios property
-Date: Mon, 10 May 2021 19:18:00 +0200
-Message-Id: <20210510171800.27225-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.27.0
+ id 1lgCHU-0096A5-Qb
+ for linux-mtd@lists.infradead.org; Mon, 10 May 2021 20:13:34 +0000
+Received: from mwalle01.fritz.box (unknown
+ [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
+ SHA256) (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 81EB92222E;
+ Mon, 10 May 2021 22:13:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1620677609;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=gLW0OXoqIOZ6toVulnU7Q7dm9QXk59VCJ9ndTYAOOEo=;
+ b=YfrYHKh1fL228QbNfJWXE68EzKYMy9dGkS16uUjWE1DPj8EfKnDbkuhOAmLW6NQudF0sSk
+ 99dGPdUAQTtv3yfmM+nMZORzeQnkStUNGOCJiLG5skS5AV4P8AdNEWK3AIpBLUQOOsa+9N
+ 4Gmd0OgT6bQbkUDtA5WRv/iBFHnUYjY=
+From: Michael Walle <michael@walle.cc>
+To: linux-mtd@lists.infradead.org
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ David Oberhollenzer <david.oberhollenzer@sigma-star.at>,
+ Michael Walle <michael@walle.cc>
+Subject: [PATCH] mtd-utils: Add flash_otp_erase
+Date: Mon, 10 May 2021 22:13:19 +0200
+Message-Id: <20210510201319.25975-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210510_101806_632902_3E80DB85 
-X-CRM114-Status: GOOD (  14.66  )
+X-CRM114-CacheID: sfid-20210510_131333_036401_489D320D 
+X-CRM114-Status: GOOD (  16.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,72 +97,140 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-To reach higher capacities, arrays of chips are now pretty common.
-Unfortunately, most of the controllers have been designed a decade ago
-and did not all anticipate the need for several chip-selects. The new
-cs-gpios property allows to workaround this limitation by adding as many
-GPIO chip-select as needed.
+On some SPI NOR flashes you can actually erase the OTP region until its
+fully locked. Add a small utility for that.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Signed-off-by: Michael Walle <michael@walle.cc>
 ---
+The ioctl was merged in linux commit e3c1f1c92d6e ("mtd: add OTP
+(one-time-programmable) erase ioctl").
 
-Resending only the binding patch of the series, with the following
-changes requested by Rob:
-* Fixed the coherency between cs-gpios and gpios-cs
-* Added maxItems: 8 (this is a good enough value for most of the cases I
-  guess, this can be increased later if needed).
-* Adding maxItems: 8 lead to an error when checking the example,
-  minItems: 8 had to be added as well to the schema to fix it, not sure
-  this was expected or not.
+ .gitignore                   |  1 +
+ include/mtd/mtd-abi.h        |  2 ++
+ misc-utils/Makemodule.am     |  4 ++-
+ misc-utils/flash_otp_erase.c | 64 ++++++++++++++++++++++++++++++++++++
+ 4 files changed, 70 insertions(+), 1 deletion(-)
+ create mode 100644 misc-utils/flash_otp_erase.c
 
- .../bindings/mtd/nand-controller.yaml          | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-index 678b39952502..bd217e6f5018 100644
---- a/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-+++ b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-@@ -38,6 +38,17 @@ properties:
+diff --git a/.gitignore b/.gitignore
+index 4c04c1a..1644ef0 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -24,6 +24,7 @@ fectest
+ flash_erase
+ flash_lock
+ flash_otp_dump
++flash_otp_erase
+ flash_otp_info
+ flash_otp_lock
+ flash_otp_write
+diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
+index bcd7496..a54c386 100644
+--- a/include/mtd/mtd-abi.h
++++ b/include/mtd/mtd-abi.h
+@@ -201,6 +201,8 @@ struct otp_info {
+  * modes (see "struct mtd_write_req")
+  */
+ #define MEMWRITE		_IOWR('M', 24, struct mtd_write_req)
++/* Erase a given range of user data (must be in mode %MTD_FILE_MODE_OTP_USER) */
++#define OTPERASE		_IOW('M', 25, struct otp_info)
  
-   ranges: true
+ /*
+  * Obsolete legacy interface. Keep it in order not to break userspace
+diff --git a/misc-utils/Makemodule.am b/misc-utils/Makemodule.am
+index b15c119..bc69b1c 100644
+--- a/misc-utils/Makemodule.am
++++ b/misc-utils/Makemodule.am
+@@ -32,6 +32,8 @@ flash_otp_dump_SOURCES = misc-utils/flash_otp_dump.c
  
-+  cs-gpios:
-+    minItems: 1
-+    maxItems: 8
-+    description:
-+      Array of chip-select available to the controller. The first
-+      entries are a 1:1 mapping of the available chip-select on the
-+      NAND controller (even if they are not used). As many additional
-+      chip-select as needed may follow and should be phandles of GPIO
-+      lines. 'reg' entries of the NAND chip subnodes become indexes of
-+      this array when this property is present.
+ flash_otp_lock_SOURCES = misc-utils/flash_otp_lock.c
+ 
++flash_otp_erase_SOURCES = misc-utils/flash_otp_erase.c
 +
- patternProperties:
-   "^nand@[a-f0-9]$":
-     type: object
-@@ -164,14 +175,19 @@ examples:
-     nand-controller {
-       #address-cells = <1>;
-       #size-cells = <0>;
-+      cs-gpios = <0>, <&gpioA 1>; /* A single native CS is available */
+ flash_otp_write_SOURCES = misc-utils/flash_otp_write.c
  
-       /* controller specific properties */
+ flashcp_SOURCES = misc-utils/flashcp.c
+@@ -43,7 +45,7 @@ sbin_PROGRAMS += \
+ 	ftl_format doc_loadbios ftl_check mtd_debug docfdisk \
+ 	serve_image recv_image fectest flash_erase flash_lock \
+ 	flash_unlock flash_otp_info flash_otp_dump flash_otp_lock \
+-	flash_otp_write flashcp mtdpart
++	flash_otp_erase flash_otp_write flashcp mtdpart
  
-       nand@0 {
--        reg = <0>;
-+        reg = <0>; /* Native CS */
-         nand-use-soft-ecc-engine;
-         nand-ecc-algo = "bch";
- 
-         /* controller specific properties */
-       };
+ MISC_SH = \
+ 	misc-utils/flash_eraseall
+diff --git a/misc-utils/flash_otp_erase.c b/misc-utils/flash_otp_erase.c
+new file mode 100644
+index 0000000..771e230
+--- /dev/null
++++ b/misc-utils/flash_otp_erase.c
+@@ -0,0 +1,64 @@
++/*
++ * flash_otp_erase.c -- erase area of One-Time-Program data
++ */
 +
-+      nand@1 {
-+        reg = <1>; /* GPIO CS */
-+      };
-     };
++#define PROGRAM_NAME "flash_otp_erase"
++
++#include <stdio.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include <string.h>
++#include <stdlib.h>
++#include <errno.h>
++#include <sys/ioctl.h>
++
++#include <mtd/mtd-user.h>
++#include "common.h"
++
++int main(int argc,char *argv[])
++{
++	int fd, val, ret, offset, size;
++	struct otp_info info;
++	char *p;
++
++	if (argc != 5 || strcmp(argv[1], "-u")) {
++		fprintf(stderr, "Usage: %s -u <device> <offset> <size>\n", PROGRAM_NAME);
++		fprintf(stderr, "offset and size must match on OTP region boundaries\n");
++		return EINVAL;
++	}
++
++	fd = open(argv[2], O_WRONLY);
++	if (fd < 0) {
++		perror(argv[2]);
++		return errno;
++	}
++
++	val = MTD_OTP_USER;
++	ret = ioctl(fd, OTPSELECT, &val);
++	if (ret < 0) {
++		perror("OTPSELECT");
++		return errno;
++	}
++
++	offset = strtoul(argv[3], &p, 0);
++	if (argv[3][0] == 0 || *p != 0) {
++		fprintf(stderr, "%s: bad offset value\n", PROGRAM_NAME);
++		return ERANGE;
++	}
++
++	size = strtoul(argv[4], &p, 0);
++	if (argv[4][0] == 0 || *p != 0) {
++		fprintf(stderr, "%s: bad size value\n", PROGRAM_NAME);
++		return ERANGE;
++	}
++
++	info.start = offset;
++	info.length = size;
++	ret = ioctl(fd, OTPERASE, &info);
++	if (ret	< 0) {
++		perror("OTPERASE");
++		return errno;
++	}
++
++	return 0;
++}
 -- 
-2.27.0
+2.20.1
 
 
 ______________________________________________________
