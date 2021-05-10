@@ -2,118 +2,107 @@ Return-Path: <SRS0=B2Jc=KF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B6D1C433ED
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 May 2021 08:39:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7556FC433B4
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 May 2021 08:47:50 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0A4DC610CB
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 May 2021 08:39:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A4DC610CB
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.de
+	by mail.kernel.org (Postfix) with ESMTPS id C2BC161042
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 May 2021 08:47:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C2BC161042
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=foss.st.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:References:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=BLeqgS1CyQjpXnwjpjzbL9XCVV7TrBThzBKdQvuuxYc=; b=A0uaGdOty5PfAxXyHheZC7PnW
-	7ZIQD8FpBiabboBXPtSedJHyDjayg+UbvnGRlVXWL9BU4SD1TSVQs3CB0mix2WSlNhIcKE1Nm5O/q
-	Zzk8424m8wpUeayAwRn+2qOtXbL7D75VD5m6jjZl1Tf4SnnTDlzKQTKCov11/RB6nIFCBj+ceZtHH
-	zHW4zLtZ6/7I1anfgYLeJL8L5EICfCn3ecArzfFkiDB7L1wx736fKMZVFC0LpqzH4vQn2LuXD2tO0
-	GCSqQkOgIXUA0dHXMpAZBwcOga4pVx0ChKWdsvLqEH+w1JYb1OW/UmCK/ram9IAF+3H2LR3YuypYs
-	oYCq/PfTg==;
+	 bh=aVdvmoWJwy2jPL7OeFaEBJZW57Fv2Ucx1usN7HIcvcU=; b=kC3gLXBlajU3dluVoZJxJ3rei
+	5TBGNjmAF8xW0JKFbkVLVciQ46Y9W/v3GDs2ORSosdRI0NHSDXyvziQ5Aq/551rSAKYez9sZ8XxHI
+	teBOlCSGpPzzX8SxiVVQgIZ6uwEJVOiZ7znCk9B+U9qVvboAwTVhCnc7uM63SAOs9fy4D0YDIA47L
+	Yu+L9yPHOLEk2ziMa1kobgzolK0GuiF5PLkqMjXVv1igZPMqUrHvc0XJJy7OOGXfBqmKD5BU6XVGx
+	O/EjG2Mp1eVLIrsoWwqZTVeh+cHghWdLPD7bhlol0dw51zvmRJ0KwB9XDxbH18XEZwKIOh/q7UpAj
+	K0PZH833Q==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lg1RD-00DeZC-AG; Mon, 10 May 2021 08:38:51 +0000
+	id 1lg1ZB-00Dfto-IA; Mon, 10 May 2021 08:47:05 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lg1R9-00DeYo-B4
- for linux-mtd@desiato.infradead.org; Mon, 10 May 2021 08:38:47 +0000
+ id 1lg1Z9-00DftC-P6; Mon, 10 May 2021 08:47:03 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=MIME-Version:
- Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:
- Message-ID:Date:Subject:CC:To:From:Sender:Reply-To:Content-Description;
- bh=WTHTqt+uRiMyCszgfRFM0dD2IBAxoApAODKIfyGWRjo=; b=pfP+kld/79OnfTaw5ZaCLENePs
- DKNjD6OWQXmzc2jxVO12qy8lss9eBjU3crUQy9CAphmHv+sr/+ZO+JvivKw7Z76vRwB3/TYaJWcP3
- oPHysZf08dWNpEHa+AyOlML+aFYQ8gsouECgItDlQvGTbWZ4+MVqVaNYXvn9QCWf7fV6PMKSO5zf8
- klzz/7EYlkp/209KirMnFFNYGZxiC9/vQxWn4X9AfE6qehN09iAweV1HPBFjNMO+2nvHhlt4ng0VT
- TwDr2YwhGOu9WjGYZJmAcIglh8ZKDMJSCeEtUSFmBUuQPpW8U6fAqlHpt1NLJaxavCR63oym6/vN2
- YMC5HmAw==;
-Received: from mickerik.phytec.de ([195.145.39.210])
+ d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+ Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:CC:To:
+ Subject:Sender:Reply-To:Content-ID:Content-Description;
+ bh=gLZ7mE45GX+/Rue6eF9SDZtTt1uYV8yCxcdR3gjYKwY=; b=KwDElauKHG9gb6UN17iiSXwFq0
+ r94XZUPrQxUrkoH/mNx1F6yfftSeXsujzqjym2GTj+piC6ZD9nBUSPQwkirrOFnCwMWAwy83KEp8q
+ VJAors1Cc56o26wW29R5AnZc3nWwRxs1EHyQ/myEMXSKFBRi1muywX9SZx+QSE+8S7CXQMXq5RuDv
+ ihsylLP7MIPW34ATNxPggEhYANNC2PAE7SGg72ewjMWawcTV9Qf4zUEE4Zp5OHdvg7m9aSLBpaaYE
+ K9l/FFAZZhWRdHqIzPENdFmOodhJCeH7/ww3NbdLppDnnVzEPMXxOyUEF9EneOUFkRmCzW+5P1cI3
+ 4t3XjN5A==;
+Received: from mx07-00178001.pphosted.com ([185.132.182.106])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lg1R5-008QDw-JV
- for linux-mtd@lists.infradead.org; Mon, 10 May 2021 08:38:46 +0000
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
- q=dns/txt; i=@phytec.de; t=1620635903; x=1623227903;
- h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
- Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=WTHTqt+uRiMyCszgfRFM0dD2IBAxoApAODKIfyGWRjo=;
- b=cgj1fZDbgCCwH/3FS2p/U2KxgmGqTpz13uyxqrOVb+1WfeT6l5DcBLxPUuGVH/A5
- mwahq9YE2uxEtSfPS5QBPD9MH3UFW8rziW/M1Yv+xE8Yg0XDEnEc3g7WyBq8z/ji
- 0DSVL/erHRnh6A+u66dfPRSkXEG4tNXkRV3UirT/7P4=;
-X-AuditID: c39127d2-324b870000001c53-0b-6098f0ff2dfe
-Received: from florix.phytec.de (florix.phytec.de [172.16.0.118])
- (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (Client did not present a certificate)
- by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id D0.ED.07251.FF0F8906;
- Mon, 10 May 2021 10:38:23 +0200 (CEST)
-Received: from Berlix.phytec.de (172.16.0.117) by Florix.phytec.de
- (172.16.0.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 10 May
- 2021 10:38:23 +0200
-Received: from Berlix.phytec.de ([fe80::343f:7618:c7ce:97c9]) by
- berlix.phytec.de ([fe80::343f:7618:c7ce:97c9%3]) with mapi id 15.01.2176.009; 
- Mon, 10 May 2021 10:38:23 +0200
-From: =?utf-8?B?U3RlZmFuIFJpZWRtw7xsbGVy?= <S.Riedmueller@phytec.de>
-To: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>
-CC: "festevam@gmail.com" <festevam@gmail.com>,
- "guillaume.tucker@collabora.com" <guillaume.tucker@collabora.com>,
- "kernel@pengutronix.de" <kernel@pengutronix.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: imx27: No space left to write bad block table
-Thread-Topic: imx27: No space left to write bad block table
-Thread-Index: AQHXM6LunontHq9bc0Oo8H4U64SrGaq7RC0AgABWswCAAArzAIAAClOAgAAqfACACwU1AIAMGBGAgAlu9gA=
-Date: Mon, 10 May 2021 08:38:23 +0000
-Message-ID: <c18118e0c5e568f7fb7dc89d612c6e6e8187ac00.camel@phytec.de>
-References: <CAOMZO5DufVR=+EzCa1-MPUc+ZefZVTXb5Kgu3Wxms7cxw9GmGg@mail.gmail.com>
- <20210419083738.07a28a20@xps13>
- <CAOMZO5CpzojN1U9HfSA8Vi8uEzrn=0cqo4tMd_qi52F0Q6kObg@mail.gmail.com>
- <20210419135833.3ee22f58@xps13>
- <b6c62efc5b24bc0e04f222095573285f0c977216.camel@phytec.de>
- <20210419173608.434f4b8d@xps13>
- <50c7f5d96dd4faaabfcf1e8cbf9248a7646d4f9a.camel@phytec.de>
- <20210504103453.15786c69@xps13>
-In-Reply-To: <20210504103453.15786c69@xps13>
-Accept-Language: en-US, de-DE
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.16.0.116]
-Content-ID: <20FE8A5D5EA1F7419B080A7E314FE5B0@phytec.de>
+ id 1lg1Z5-008Qch-U6; Mon, 10 May 2021 08:47:02 +0000
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+ by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
+ 14A8edQx012608; Mon, 10 May 2021 10:46:50 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
+ h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=gLZ7mE45GX+/Rue6eF9SDZtTt1uYV8yCxcdR3gjYKwY=;
+ b=0xJnnIjwplGjY7owfr01KNyeoEVs5/VMkC4q5UO9gmD9C4uyWHm+9Miyc8vs+yliOabv
+ 8Z55kiXcNEW2qhuLtuO+6SHA2joXda7x3ZmBjlDO3q+eWyZO+0RKWnwAZFIpRsvas20K
+ 6IYxeaId0IG/46Zkvqg+SLHHTMzM7lX5Lw1JHc4exquStqh70VD5Rcu/QUVb4qLEWEzh
+ unxEYQpY5Wyuwa+iD63960+NUgvObr4+lc4eEIqi6KYRQMd5Ie8rkmDAJzbcPu+m/URs
+ B9A5IE7lit8EL6mzJeVGjTu7rrkSLzytjKxFjEjN8eo9/g6Oc05ByUryA08H+s3XLFeH Ag== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+ by mx07-00178001.pphosted.com with ESMTP id 38ekxj3709-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 10 May 2021 10:46:50 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 10A2E10002A;
+ Mon, 10 May 2021 10:46:50 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E44A421E673;
+ Mon, 10 May 2021 10:46:49 +0200 (CEST)
+Received: from lmecxl0573.lme.st.com (10.75.127.44) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 10 May
+ 2021 10:46:48 +0200
+Subject: Re: [PATCH v2 1/3] spi: spi-mem: add automatic poll status functions
+To: Boris Brezillon <boris.brezillon@collabora.com>, Mark Brown
+ <broonie@kernel.org>
+CC: Miquel Raynal <miquel.raynal@bootlin.com>, Vignesh Raghavendra
+ <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>, Alexandre Torgue
+ <alexandre.torgue@foss.st.com>, <linux-spi@vger.kernel.org>,
+ <linux-stm32@st-md-mailman.stormreply.com>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <christophe.kerello@foss.st.com>
+References: <20210507131756.17028-1-patrice.chotard@foss.st.com>
+ <20210507131756.17028-2-patrice.chotard@foss.st.com>
+ <20210508095506.4d0d628a@collabora.com>
+From: Patrice CHOTARD <patrice.chotard@foss.st.com>
+Message-ID: <542000b4-1a65-5090-72f9-441c75ee1098@foss.st.com>
+Date: Mon, 10 May 2021 10:46:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrFIsWRmVeSWpSXmKPExsWyRoChTPf/hxkJBldvalo8vOpv8ebTYmaL
- VVN3sljsblrGbnG4fR+rA6vHvDXVHjvuLmH02DnrLrvH5iX1Hv1/DQJYo7hsUlJzMstSi/Tt
- ErgyXn7by17wJbPi9jLDBsYZ6V2MnBwSAiYSnZMWsXcxcnEICSxnkti+9DYjhPOQUWJv33E2
- CGcTo8TCs89YQFrYBFwkPrd9YwOxRQSsJe5s2csKUsQs8IJR4sTxL4wgCWEBK4mbW9YwwhQd
- //eHGcJOkjh29TVYnEVAVWLy77tgNq+Am8T/I/egVi9glnh/6S7YNk4BHYkp2yaB2YwCshKd
- De+YQGxmAXGJTc++s0I8ISCxZM95ZghbVOLl439QcQWJtp5OoHoOoHpNifW79CFaLSQ6vt1n
- g7AVJaZ0P2SHuEFQ4uTMJywTGMVnIdkwC6F7FpLuWUi6ZyHpXsDIuopRKDczOTu1KDNbryCj
- siQ1WS8ldRMjMD4PT1S/tIOxb47HIUYmDsZDjBIczEoivKId0xKEeFMSK6tSi/Lji0pzUosP
- MUpzsCiJ827gLQkTEkhPLEnNTk0tSC2CyTJxcEo1MBZf3lU+Ieym14YHze5q1y1P6uU8mHxm
- Vtv9HW1fDF4vWfvvtzTXV0/F6557TjRp/2XuEogtNd52qN5Rcka4J/NNQcf7VzImXXP/7/v8
- 6qs1U/9da41PO9xYs/+RxfRPr84Znp05d4+IlFa9id75c9lFoY3TDNNvc21unTAtKvzlPPVV
- tmmPWwyVWIozEg21mIuKEwHDm6BcvQIAAA==
+In-Reply-To: <20210508095506.4d0d628a@collabora.com>
+Content-Language: en-US
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391, 18.0.761
+ definitions=2021-05-10_04:2021-05-10,
+ 2021-05-10 signatures=0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210510_013844_112488_B00E993C 
-X-CRM114-Status: GOOD (  55.24  )
+X-CRM114-CacheID: sfid-20210510_014700_311549_160C1C3C 
+X-CRM114-Status: GOOD (  44.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -125,185 +114,274 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWlxdWVsLA0KDQpPbiBUdWUsIDIwMjEtMDUtMDQgYXQgMTA6MzQgKzAyMDAsIE1pcXVlbCBS
-YXluYWwgd3JvdGU6DQo+IEhpIFN0ZWZhbiwNCj4gDQo+IFN0ZWZhbiBSaWVkbcO8bGxlciA8Uy5S
-aWVkbXVlbGxlckBwaHl0ZWMuZGU+IHdyb3RlIG9uIE1vbiwgMjYgQXByIDIwMjENCj4gMTU6NTM6
-MzkgKzAwMDA6DQo+IA0KPiA+IEhpIE1pcXVlbCwNCj4gPiANCj4gPiBPbiBNb24sIDIwMjEtMDQt
-MTkgYXQgMTc6MzYgKzAyMDAsIE1pcXVlbCBSYXluYWwgd3JvdGU6DQo+ID4gPiBIaSBTdGVmYW4s
-DQo+ID4gPiAgIA0KPiA+ID4gPiA+IEludGVyZXN0aW5nLiBNYXliZSBJIG92ZXJsb29rZWQgdGhl
-IGJlbG93IGNvbW1pdCB3aGVuIGFwcGx5aW5nLg0KPiA+ID4gPiA+IEluZGVlZCwNCj4gPiA+ID4g
-PiBCQlQgbWF5IGJlIGNvbnNpZGVyZWQgYXMgYmFkIGJsb2Nrcywgc28gSSB3b25kZXIgaWYgdGhl
-IGJlbG93IGNoYW5nZQ0KPiA+ID4gPiA+IGlzDQo+ID4gPiA+ID4gdmFsaWQgbm93Li4uDQo+ID4g
-PiA+ID4gDQo+ID4gPiA+ID4gR3VpbGxhdW1lLCB3b3VsZCB5b3UgaGF2ZSBhIHdheSB0byByZXZl
-cnQgdGhpcyBwYXRjaCBvbiB0b3Agb2YNCj4gPiA+ID4gPiBsaW51eC1uZXh0PyBTdGVmYW4sIHdv
-dWxkIHlvdSBtaW5kIGdpdmluZyBtb3JlIGRldGFpbHMgb24gdGhlDQo+ID4gPiA+ID4gdGVzdGlu
-Zw0KPiA+ID4gPiA+IHByb2NlZHVyZT8gICAgDQo+ID4gPiA+IA0KPiA+ID4gPiBJIGhhdmUgdGVz
-dGVkIHRoaXMgb24gYW4gaS5NWCA2IGJ5IHNpbXVsYXRpbmcgdHdvIGJhZCBCQlQgYmxvY2tzIGJ5
-DQo+ID4gPiA+IHNpbXBseQ0KPiA+ID4gPiByZXR1cm5pbmcgLUVJTyBpbiBuYW5kX2VyYXNlX25h
-bmQgd2hlbiB0aGUgYmxvY2sgdG8gYmUgZXJhc2VkIGlzIG9uZQ0KPiA+ID4gPiBvZg0KPiA+ID4g
-PiB0aGUNCj4gPiA+ID4gZmlyc3QgdHdvIEJCVCBibG9ja3MuDQo+ID4gPiA+IA0KPiA+ID4gPiBJ
-IGhhdmUgc2VlbiB0aGlzIG9uY2Ugb24gYSBjdXN0b21lciBib2FyZCBidXQgd2VyZSBub3QgYWJs
-ZSB0bw0KPiA+ID4gPiByZXByb2R1Y2UNCj4gPiA+ID4gaXQNCj4gPiA+ID4gYW55bW9yZSwgdGh1
-cyB0aGUgc2ltdWxhdGlvbiBvZiB0aGUgdHdvIGJhZCBibG9ja3MuDQo+ID4gPiA+IA0KPiA+ID4g
-PiBXaXRob3V0IHRoZSBwYXRjaCBiZWxvdyBuZXcgdmVyc2lvbnMgb2YgdGhlIEJCVCBjYW4gbm8g
-bG9uZ2VyIGJlDQo+ID4gPiA+IHdyaXR0ZW4NCj4gPiA+ID4gdG8NCj4gPiA+ID4gdGhlIGZpcnN0
-IHR3byBibG9ja3MgcmVzZXJ2ZWQgZm9yIHRoZSBCQlQgYnV0IHRoZXkgYXJlIHN0aWxsIGV2YWx1
-YXRlZA0KPiA+ID4gPiB0bw0KPiA+ID4gPiByZWFkDQo+ID4gPiA+IHRoZSBCQlQgZnJvbSBkdXJp
-bmcgYm9vdCBkdWUgdGhlIGxhY2sgb2YgYSB0ZXN0IGlmIHRoZXNlIGJsb2NrcyBhcmUNCj4gPiA+
-ID4gYmFkLg0KPiA+ID4gPiBTbw0KPiA+ID4gPiBjaGFuZ2VzIHRvIHRoZSBCQlQgYWZ0ZXIgdGhl
-c2UgdHdvIGJsb2NrcyB0dXJuIGJhZCBhcmUgb25seSBrZXB0IGFuZA0KPiA+ID4gPiB1c2VkDQo+
-ID4gPiA+IHVudGlsIHRoZSBuZXh0IHJlYm9vdCB3aGVyZSBhZ2FpbiB0aGUgb2xkIHZlcnNpb24g
-b2YgdGhlIHR3byB3b3JuDQo+ID4gPiA+IGJsb2Nrcw0KPiA+ID4gPiBpcw0KPiA+ID4gPiB1c2Vk
-IGFzIGEgYmFzaXMuDQo+ID4gPiA+IA0KPiA+ID4gPiBJIHRyaWVkIHRvIHVzZSB0aGUgc2FtZSBt
-ZWNoYW5pc20gdGhhdCBpcyB1c2VkIHRvIGlkZW50aWZ5IGJhZCBibG9ja3MNCj4gPiA+ID4gZHVy
-aW5nIGENCj4gPiA+ID4gc2NhbiBmb3IgYmFkIGJsb2Nrcy4gQnV0IG1heWJlIEkgbWlzc2VkIHNv
-bWV0aGluZyB0aGVyZT8gT3Igd2VyZSBteQ0KPiA+ID4gPiBhc3N1bXB0aW9ucyB3cm9uZyBpbiB0
-aGUgZmlyc3QgcGxhY2U/ICANCj4gPiA+IA0KPiA+ID4gSG9uZXN0bHkgSSBkb24ndCBrbm93IHdo
-YXQgaXMgd3JvbmcgZXhhY3RseSBpbiB0aGlzIHBhdGNoLg0KPiA+ID4gDQo+ID4gPiBXZSB3aWxs
-IHJldmVydCB0aGUgY29tbWl0IGFzIGl0IGNsZWFybHkgYnJlYWtzIHNvbWV0aGluZyBmdW5kYW1l
-bnRhbA0KPiA+ID4gYW5kIHRoZSBtZXJnZSB3aW5kb3cgaXMgdG9vIGNsb3NlIHRvIGFkb3B0IGEg
-aGFja2lzaCBhdHRpdHVkZS4NCj4gPiA+IA0KPiA+ID4gSSB3b3VsZCBwcm9wb3NlIHRoZSBmb2xs
-b3dpbmcgdGVzdHMgd2l0aCB5b3VyIGJvYXJkOg0KPiA+ID4gLSBIYWNrIHRoZSBjb3JlIHRvIGFs
-bG93IHlvdXJzZWxmIHRvIGFjY2VzcyBiYWQgYmxvY2tzIGZyb20gdXNlcnNwYWNlDQo+ID4gPiAg
-IGZvciB0ZXN0aW5nIHB1cnBvc2VzLg0KPiA+ID4gLSBXaXRoIHRoZSBiZWxvdyBjb21taXQsIHlv
-dSBzaG91bGQgaGF2ZSB0aGUgc2FtZSBiZWhhdmlvciB0aGFuDQo+ID4gPiAgIHJlcG9ydGVkIGJ5
-IEZhYmlvLiAgDQo+ID4gDQo+ID4gT24gbXkgaW14NiBib2FyZCB0aGUgcGF0Y2ggZG9lcyBub3Qg
-bGVhZCB0byB0aGUgYmVoYXZpb3IgcmVwb3J0ZWQgYnkNCj4gPiBGYWJpby4NCj4gPiBUaGUgQkJU
-IGlzIGZvdW5kIGFuZCBjYW4gYmUgcmVhZDoNCj4gPiANCj4gPiBbICAgIDEuNTIwNTAxXSBuYW5k
-OiBkZXZpY2UgZm91bmQsIE1hbnVmYWN0dXJlciBJRDogMHhjMiwgQ2hpcCBJRDogMHhkMw0KPiA+
-IFsgICAgMS41MjY5NDRdIG5hbmQ6IE1hY3Jvbml4IE1YNjBMRjhHMThBQw0KPiA+IFsgICAgMS41
-MzA4MDNdIG5hbmQ6IDEwMjQgTWlCLCBTTEMsIGVyYXNlIHNpemU6IDEyOCBLaUIsIHBhZ2Ugc2l6
-ZTogMjA0OCwNCj4gPiBPT0INCj4gPiBzaXplOiA2NA0KPiA+IFsgICAgMS41Mzk0MTJdIEJhZCBi
-bG9jayB0YWJsZSBmb3VuZCBhdCBwYWdlIDUyNDIyNCwgdmVyc2lvbiAweDAxDQo+ID4gWyAgICAx
-LjU0NTc5MF0gQmFkIGJsb2NrIHRhYmxlIGZvdW5kIGF0IHBhZ2UgNTI0MTYwLCB2ZXJzaW9uIDB4
-MDENCj4gPiBbICAgIDEuNTUxNzk2XSBuYW5kX3JlYWRfYmJ0OiBiYWQgYmxvY2sgYXQgMHgwMDAw
-MDFiNjAwMDANCj4gPiBbICAgIDEuNTU3MDMyXSBuYW5kX3JlYWRfYmJ0OiBiYWQgYmxvY2sgYXQg
-MHgwMDAwMDhjYzAwMDANCj4gPiBbICAgIDEuNTYyMjA0XSBuYW5kX3JlYWRfYmJ0OiBiYWQgYmxv
-Y2sgYXQgMHgwMDAwMGY0ODAwMDANCj4gPiBbICAgIDEuNTY3Mzk1XSBuYW5kX3JlYWRfYmJ0OiBi
-YWQgYmxvY2sgYXQgMHgwMDAwMTExYzAwMDANCj4gPiBbICAgIDEuNTcyNTg4XSBuYW5kX3JlYWRf
-YmJ0OiBiYWQgYmxvY2sgYXQgMHgwMDAwMjA1YzAwMDANCj4gPiBbICAgIDEuNTc3ODAyXSBuYW5k
-X3JlYWRfYmJ0OiBiYWQgYmxvY2sgYXQgMHgwMDAwMmRmYzAwMDANCj4gPiANCj4gPiBJIGR1ZyBh
-IGxpdHRsZSBkZWVwZXIgYW5kIEkgdGhpbmsgSSBmb3VuZCB0aGUgY2F1c2UgZm9yIHRoZSBmYWls
-dXJlIG9uIHRoZQ0KPiA+IGlteDI3IGJvYXJkLg0KPiA+IA0KPiA+IFRoZSBteGNfbmFuZCBkcml2
-ZXIgKHVzZWQgYnkgdGhlIGlteDI3KSB1c2VzIGl0cyBvd24gbmFuZF9iYnRfZGVzY3Igd2l0aA0K
-PiA+IGFuDQo+ID4gb2Zmc2V0IG9mIDAgaW4gdGhlIE9PQiBhcmVhLiBUaGlzIGlzIHRoZSBzYW1l
-IHBsYWNlIHRoZSBiYWQgYmxvY2sgbWFya2VyDQo+ID4gaXMNCj4gPiBsb2NhdGVkIG9uIHdvcm4g
-b3IgZmFjdG9yeSBiYWQgYmxvY2tzLg0KPiA+IA0KPiA+IFRoaXMgZXhwbGFpbnMgd2h5IHRoZSBC
-QlQgaXMgbm8gbG9uZ2VyIGZvdW5kIHdpdGggbXkgcGF0Y2guDQo+ID4gc2Nhbl9ibG9ja19mYXN0
-DQo+ID4gY2hlY2tzIGlmIHRoZXJlIGlzIGFueXRoaW5nIGVsc2UgdGhhbiAweGZmIGluIHRoZSBi
-YWQgYmxvY2sgbWFya2VyIGFuZA0KPiA+IGZpbmRzDQo+ID4gdGhlICdCJyBmcm9tICdCYnQwJy4g
-VGhlIHNhbWUgb2NjdXJzIGZvciB0aGUgbWlycm9yZWQgdmVyc2lvbiB3aGVyZSBpdA0KPiA+IGZp
-bmRzDQo+ID4gdGhlICcxJyBmcm9tICcxdGJCJy4gDQo+IA0KPiBPaywgdGhhdCdzIHRoZSByZWFz
-b24gd2h5IHRoZSBvcmlnaW5hbCBsb2dpYyBmYWlsZWQsIHRoYW5rcyBmb3IgbG9va2luZw0KPiBm
-b3IgaXQuDQo+IA0KPiA+IFRoaXMgYWxzbyBleHBsYWlucyB3aHkgdGhlIG9yaWdpbmFsIEJCVCBp
-cyBkZXRlY3RlZCBhcyBiYWQgYmxvY2tzIGluIHRoZQ0KPiA+IHNjYW4NCj4gPiBhZnRlciB0aGUg
-QkJUIHdhcyBub3QgZm91bmQsIHdoaWNoIHJlc3VsdHMgaW4gdGhlIEJCVCBiZWluZyB3cml0dGVu
-IHRvIHRoZQ0KPiA+IHJlbWFpbmluZyB0d28gYmxvY2tzIHJlc2VydmVkIGZvciB0aGUgQkJULg0K
-PiA+IA0KPiA+IDE5OjM4OjIzLjAwMTM4NSAgbmFuZDogZGV2aWNlIGZvdW5kLCBNYW51ZmFjdHVy
-ZXIgSUQ6IDB4MjAsIENoaXAgSUQ6IDB4YTENCj4gPiAxOTozODoyMy4wMDI2MzUgIG5hbmQ6IFNU
-IE1pY3JvIE5BTkQwMUdSM0IyQ1pBNg0KPiA+IDE5OjM4OjIzLjAwNjY2NiAgbmFuZDogMTI4IE1p
-QiwgU0xDLCBlcmFzZSBzaXplOiAxMjggS2lCLCBwYWdlIHNpemU6IDIwNDgsDQo+ID4gT09CDQo+
-ID4gc2l6ZTogNjQNCj4gPiAxOTozODoyMy4wMjg0MTMgIEJhZCBibG9jayB0YWJsZSBub3QgZm91
-bmQgZm9yIGNoaXAgMA0KPiA+IDE5OjM4OjIzLjAzNTYyNSAgcmFuZG9tOiBmYXN0IGluaXQgZG9u
-ZQ0KPiA+IDE5OjM4OjIzLjA0OTE0NCAgQmFkIGJsb2NrIHRhYmxlIG5vdCBmb3VuZCBmb3IgY2hp
-cCAwDQo+ID4gMTk6Mzg6MjMuMDUwMDI0ICBTY2FubmluZyBkZXZpY2UgZm9yIGJhZCBibG9ja3MN
-Cj4gPiAxOTozODoyMy4zMzA5OTkgIEJhZCBlcmFzZWJsb2NrIDMyOSBhdCAweDAwMDAwMjkyMDAw
-MA0KPiA+IDE5OjM4OjIzLjM0NTk1OCAgQmFkIGVyYXNlYmxvY2sgMzMwIGF0IDB4MDAwMDAyOTQw
-MDAwDQo+ID4gMTk6Mzg6MjMuMzU2MDI0ICBCYWQgZXJhc2VibG9jayAzMzEgYXQgMHgwMDAwMDI5
-NjAwMDANCj4gPiAxOTozODoyMy4zNjU3MzggIEJhZCBlcmFzZWJsb2NrIDMzMiBhdCAweDAwMDAw
-Mjk4MDAwMA0KPiA+IDE5OjM4OjIzLjM3NTU5MCAgQmFkIGVyYXNlYmxvY2sgMzMzIGF0IDB4MDAw
-MDAyOWEwMDAwDQo+ID4gMTk6Mzg6MjMuMzg1NTA1ICBCYWQgZXJhc2VibG9jayAzMzQgYXQgMHgw
-MDAwMDI5YzAwMDANCj4gPiAxOTozODoyMy4zOTU1NDggIEJhZCBlcmFzZWJsb2NrIDMzNSBhdCAw
-eDAwMDAwMjllMDAwMA0KPiA+IDE5OjM4OjIzLjQwNTUwMSAgQmFkIGVyYXNlYmxvY2sgMzM2IGF0
-IDB4MDAwMDAyYTAwMDAwDQo+ID4gMTk6Mzg6MjMuNDE1NTUxICBCYWQgZXJhc2VibG9jayAzMzcg
-YXQgMHgwMDAwMDJhMjAwMDANCj4gPiAxOTozODoyMy40MjU5MzcgIEJhZCBlcmFzZWJsb2NrIDMz
-OCBhdCAweDAwMDAwMmE0MDAwMA0KPiA+IDE5OjM4OjIzLjQzNjAyOCAgQmFkIGVyYXNlYmxvY2sg
-MzM5IGF0IDB4MDAwMDAyYTYwMDAwDQo+ID4gMTk6Mzg6MjMuNDQ1OTU5ICBCYWQgZXJhc2VibG9j
-ayAzNDAgYXQgMHgwMDAwMDJhODAwMDANCj4gPiAxOTozODoyMy40NTYwMDggIEJhZCBlcmFzZWJs
-b2NrIDM0MSBhdCAweDAwMDAwMmFhMDAwMA0KPiA+IDE5OjM4OjIzLjQ2NjAwNiAgQmFkIGVyYXNl
-YmxvY2sgMzQyIGF0IDB4MDAwMDAyYWMwMDAwDQo+ID4gMTk6Mzg6MjMuNDc1OTEyICBCYWQgZXJh
-c2VibG9jayAzNDMgYXQgMHgwMDAwMDJhZTAwMDANCj4gPiAxOTozODoyMy40ODYwNjQgIEJhZCBl
-cmFzZWJsb2NrIDM0NCBhdCAweDAwMDAwMmIwMDAwMA0KPiA+IDE5OjM4OjIzLjQ5NTkyNSAgQmFk
-IGVyYXNlYmxvY2sgMzQ1IGF0IDB4MDAwMDAyYjIwMDAwDQo+ID4gMTk6Mzg6MjQuMDQ4MDUzICBC
-YWQgZXJhc2VibG9jayAxMDIyIGF0IDB4MDAwMDA3ZmMwMDAwDQo+ID4gMTk6Mzg6MjQuMDU2MTE3
-ICBCYWQgZXJhc2VibG9jayAxMDIzIGF0IDB4MDAwMDA3ZmUwMDAwDQo+ID4gMTk6Mzg6MjQuMDY3
-OTUzICBCYWQgYmxvY2sgdGFibGUgd3JpdHRlbiB0byAweDAwMDAwN2ZhMDAwMCwgdmVyc2lvbiAw
-eDAxDQo+ID4gMTk6Mzg6MjQuMDg3NjM3ICBCYWQgYmxvY2sgdGFibGUgd3JpdHRlbiB0byAweDAw
-MDAwN2Y4MDAwMCwgdmVyc2lvbiAweDAxDQo+ID4gDQo+ID4gDQo+ID4gT24gdGhlIG5leHQgYm9v
-dCBhbGwgZm91ciBCQlQgdmVyc2lvbiBpbiBmbGFzaCBhcmUgc2tpcHBlZCBmb3IgdGhlIHNhbWUN
-Cj4gPiByZWFzb24NCj4gPiBhcyBiZWZvcmUgYW5kIHRoZSB0d28gYmxvY2tzIGNvbnRhaW5pbmcg
-dGhlIGxhdGVzdCBCQlQgYXJlIGFsc28gZGV0ZWN0ZWQNCj4gPiBhcw0KPiA+IGJhZCBibG9ja3Mu
-IFRoZSByZXN1bHQgaXMgbm8gbW9yZSByZW1haW5pbmcgYmxvY2tzIHRvIHdyaXRlIHRoZSBCQlQg
-dG8uDQo+ID4gDQo+ID4gDQo+ID4gMjE6MjI6NTUuMDMyNTk1ICBuYW5kOiBkZXZpY2UgZm91bmQs
-IE1hbnVmYWN0dXJlciBJRDogMHgyMCwgQ2hpcCBJRDogMHhhMQ0KPiA+IDIxOjIyOjU1LjAzMzMz
-MyAgbmFuZDogU1QgTWljcm8gTkFORDAxR1IzQjJDWkE2DQo+ID4gMjE6MjI6NTUuMDM3ODA0ICBu
-YW5kOiAxMjggTWlCLCBTTEMsIGVyYXNlIHNpemU6IDEyOCBLaUIsIHBhZ2Ugc2l6ZTogMjA0OCwN
-Cj4gPiBPT0INCj4gPiBzaXplOiA2NA0KPiA+IDIxOjIyOjU1LjA4ODQ3NSAgQmFkIGJsb2NrIHRh
-YmxlIG5vdCBmb3VuZCBmb3IgY2hpcCAwDQo+ID4gMjE6MjI6NTUuMDkzODA3ICBCYWQgYmxvY2sg
-dGFibGUgbm90IGZvdW5kIGZvciBjaGlwIDANCj4gPiAyMToyMjo1NS4xMDU5OTUgIFNjYW5uaW5n
-IGRldmljZSBmb3IgYmFkIGJsb2Nrcw0KPiA+IDIxOjIyOjU1LjEwOTA0OSAgcmFuZG9tOiBmYXN0
-IGluaXQgZG9uZQ0KPiA+IDIxOjIyOjU1LjM5NTQ4OCAgQmFkIGVyYXNlYmxvY2sgMzI5IGF0IDB4
-MDAwMDAyOTIwMDAwDQo+ID4gMjE6MjI6NTUuNDA2ODMyICBCYWQgZXJhc2VibG9jayAzMzAgYXQg
-MHgwMDAwMDI5NDAwMDANCj4gPiAyMToyMjo1NS40MTY4ODUgIEJhZCBlcmFzZWJsb2NrIDMzMSBh
-dCAweDAwMDAwMjk2MDAwMA0KPiA+IDIxOjIyOjU1LjQyNjczNiAgQmFkIGVyYXNlYmxvY2sgMzMy
-IGF0IDB4MDAwMDAyOTgwMDAwDQo+ID4gMjE6MjI6NTUuNDM2NzMyICBCYWQgZXJhc2VibG9jayAz
-MzMgYXQgMHgwMDAwMDI5YTAwMDANCj4gPiAyMToyMjo1NS40NDY4NjQgIEJhZCBlcmFzZWJsb2Nr
-IDMzNCBhdCAweDAwMDAwMjljMDAwMA0KPiA+IDIxOjIyOjU1LjQ1NjY2MiAgQmFkIGVyYXNlYmxv
-Y2sgMzM1IGF0IDB4MDAwMDAyOWUwMDAwDQo+ID4gMjE6MjI6NTUuNDY2Nzg1ICBCYWQgZXJhc2Vi
-bG9jayAzMzYgYXQgMHgwMDAwMDJhMDAwMDANCj4gPiAyMToyMjo1NS40NzY4MDEgIEJhZCBlcmFz
-ZWJsb2NrIDMzNyBhdCAweDAwMDAwMmEyMDAwMA0KPiA+IDIxOjIyOjU1LjQ4Njc3MiAgQmFkIGVy
-YXNlYmxvY2sgMzM4IGF0IDB4MDAwMDAyYTQwMDAwDQo+ID4gMjE6MjI6NTUuNDk2NzY4ICBCYWQg
-ZXJhc2VibG9jayAzMzkgYXQgMHgwMDAwMDJhNjAwMDANCj4gPiAyMToyMjo1NS41MDY2MDcgIEJh
-ZCBlcmFzZWJsb2NrIDM0MCBhdCAweDAwMDAwMmE4MDAwMA0KPiA+IDIxOjIyOjU1LjUxNjk2NSAg
-QmFkIGVyYXNlYmxvY2sgMzQxIGF0IDB4MDAwMDAyYWEwMDAwDQo+ID4gMjE6MjI6NTUuNTI2NjIx
-ICBCYWQgZXJhc2VibG9jayAzNDIgYXQgMHgwMDAwMDJhYzAwMDANCj4gPiAyMToyMjo1NS41MzY3
-MDIgIEJhZCBlcmFzZWJsb2NrIDM0MyBhdCAweDAwMDAwMmFlMDAwMA0KPiA+IDIxOjIyOjU1LjU0
-NjY2MCAgQmFkIGVyYXNlYmxvY2sgMzQ0IGF0IDB4MDAwMDAyYjAwMDAwDQo+ID4gMjE6MjI6NTUu
-NTU2NzQ1ICBCYWQgZXJhc2VibG9jayAzNDUgYXQgMHgwMDAwMDJiMjAwMDANCj4gPiAyMToyMjo1
-Ni4xNzI5MjggIEJhZCBlcmFzZWJsb2NrIDEwMjAgYXQgMHgwMDAwMDdmODAwMDANCj4gPiAyMToy
-Mjo1Ni4xODcwNDMgIEJhZCBlcmFzZWJsb2NrIDEwMjEgYXQgMHgwMDAwMDdmYTAwMDANCj4gPiAy
-MToyMjo1Ni4xOTc0MzcgIEJhZCBlcmFzZWJsb2NrIDEwMjIgYXQgMHgwMDAwMDdmYzAwMDANCj4g
-PiAyMToyMjo1Ni4yMTI2NjUgIEJhZCBlcmFzZWJsb2NrIDEwMjMgYXQgMHgwMDAwMDdmZTAwMDAN
-Cj4gPiAyMToyMjo1Ni4yMTMzNTYgIE5vIHNwYWNlIGxlZnQgdG8gd3JpdGUgYmFkIGJsb2NrIHRh
-YmxlDQo+ID4gMjE6MjI6NTYuMjE1MDEyICBuYW5kX2JidDogZXJyb3Igd2hpbGUgd3JpdGluZyBi
-YWQgYmxvY2sgdGFibGUgLTI4DQo+ID4gMjE6MjI6NTYuMjM5MzUzICBteGNfbmFuZDogcHJvYmUg
-b2YgZDgwMDAwMDAubmFuZC1jb250cm9sbGVyIGZhaWxlZCB3aXRoDQo+ID4gZXJyb3INCj4gPiAt
-MjgNCj4gPiANCj4gPiBJJ20gbm90IHN1cmUgb2YgdGhlIGJlc3Qgd2F5IHRvIGFkZHJlc3MgdGhp
-cyBpc3N1ZS4gQSBmZXcgaWRlYXMgY2FtZSBpbnRvDQo+ID4gbXkNCj4gPiBtaW5kOg0KPiA+IA0K
-PiA+IC0gU2hpZnQgdGhlIG9mZnNldCBvZiB0aGUgbmFuZF9iYnRfZGVzY3Igb2YgbXhjX25hbmQg
-dG8gbWFrZSByb29tIGZvciB0aGUNCj4gPiBiYWQNCj4gPiBibG9jayBtYXJrZXIuIEJ1dCBJJ20g
-bm90IHN1cmUgaWYgdGhpcyB3b3VsZCBhbHJlYWR5IGNvbmZsaWN0IHdpdGggdGhlIEVDQw0KPiA+
-IGhhcmR3YXJlIGJ1dCB0aGUgb29ibGF5b3V0IGZ1bmN0aW9ucyB3b3VsZCBzdWdnZXN0IHRoYXQg
-aXQgY291bGQgd29yay4gDQo+IA0KPiBUaGVyZSBhcmUgdGhvdXNhbmRzIG9mIGJvYXJkcyBvdXQg
-dGhlcmUgdGhhdCB3b3VsZCBiZSBicm9rZW4gd2l0aCBzdWNoDQo+IGNoYW5nZTogaXQncyB0b28g
-bGF0ZSB0byBkbyBjaGFuZ2VzIGluIHRoaXMgZHJpdmVyLCB1bmZvcnR1bmF0ZWx5Lg0KPiANCj4g
-PiBVbmZvcnR1bmF0ZWx5IEkgZG9uJ3QgaGF2ZSBhbnkgaGFyZHdhcmUgYXQgaGFuZCBhdCB0aGUg
-bW9tZW50IHRvIHRlc3QgaXQuDQo+ID4gSQ0KPiA+IHRoaW5rIHRoZSBkaXN0aW5jdGlvbiBiZXR3
-ZWVuIHNtYWxsIGFuZCBsYXJnZSBwYWdlc2l6ZXMgbmVlZHMgdG8gYmUNCj4gPiByZWZsZWN0ZWQN
-Cj4gPiBvbiB0aGUgYmJ0X2Rlc2NyIGFzIHdlbGwuDQo+ID4gDQo+ID4gLSBVc2UgTkFORF9CQlRf
-Tk9fT09CIHdpdGggdGhlIG14Y19uYW5kIGRyaXZlciBzaW5jZSB0aGVyZSBpcyBhIGNvbW1lbnQN
-Cj4gPiBzYXlpbmcNCj4gPiB0aGVyZSBpcyBhbiBvdmVybGFwIGJldHdlZW4gdGhlIGdlbmVyaWMg
-YmJ0IGRlc2NyaXB0b3JzIGFuZCB0aGUgRUNDDQo+ID4gaGFyZHdhcmUuDQo+ID4gSSdtIG5vdCBz
-dXJlIHdoYXQgb3RoZXIgZWZmZWN0cyBpdCBtaWdodCBoYXZlIHRvIHNldCBOQU5EX0JCVF9OT19P
-T0IuDQo+IA0KPiBTYW1lIGhlcmU6IHRoYXQncyBub3QgYW4gb3B0aW9uLg0KPiANCj4gPiAtIEV4
-cGxpY2l0bHkgY2hlY2sgZm9yIHRoZSBiYWQgYmxvY2sgbWFya2VyIGR1cmluZyBhIHNlYXJjaCBm
-b3IgdGhlIEJCVA0KPiA+IGluc3RlYWQgb2YgdXNpbmcgc2Nhbl9ibG9ja19mYXN0DQo+IA0KPiBU
-aGlzIGxvb2sgbW9yZSByZWFzb25hYmxlLiBZb3UgY2FuIGNyZWF0ZSBhIGhlbHBlciB3aGljaCBk
-b2VzIHRoZQ0KPiBzY2FuX2Jsb2NrX2Zhc3QoKSwgdGhlbiBldmVudHVhbGx5IGNoZWNrcyB0aGUg
-YmVnaW5uaW5nIG9mIHRoZSBPT0INCj4gYnVmZmVyIGFuZCB0cmllcyB0byBtYXRjaCB3aXRoIHRo
-ZSAtPnRkIGFuZCAtPm1kIGRlc2NyaXB0b3JzLiBUaGlzDQo+IHNob3VsZCB3b3JrIHdpdGggYWxs
-IHRoZSBsZWdhY3kgZHJpdmVycyBpbXBsZW1lbnRpbmcgdGhlaXIgb3duDQo+IGRlc2NyaXB0b3Jz
-IC0gaG9wZWZ1bGx5Lg0KDQpUaGFua3MgZm9yIHlvdXIgaW5wdXQuIEkgd2lsbCB0YWtlIGFub3Ro
-ZXIgc3BpbiBhdCBpdC4NCg0KPiANCj4gT3RoZXIgZHJpdmVycyBhcmUgaW1wYWN0ZWQgYXMgd2Vs
-bCwgc28gbWF5YmUgeW91J2xsIGZpbmQgYSBib2FyZCBmb3INCj4gdGVzdGluZyAob3Igc29tZW9u
-ZSBnZW50bGUgZW5vdWdoIHRoYXQgd2lsbCB0ZXN0IGl0IGZvciB5b3UpLg0KDQpJIGhvcGUgSSds
-bCBnZXQgbXkgaGFuZHMgYXQgbGVhc3Qgb24gb25lIG9mIHRoZSBpbXgyNyBib2FyZHMuDQoNClRo
-YW5rcywNClN0ZWZhbg0KDQo+IA0KPiBUaGFua3MsDQo+IE1pcXXDqGwNCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vz
-c2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9saW51eC1tdGQvCg==
+Hi Boris
+
+On 5/8/21 9:55 AM, Boris Brezillon wrote:
+> On Fri, 7 May 2021 15:17:54 +0200
+> <patrice.chotard@foss.st.com> wrote:
+> 
+>> From: Patrice Chotard <patrice.chotard@foss.st.com>
+>>
+>> With STM32 QSPI, it is possible to poll the status register of the device.
+>> This could be done to offload the CPU during an operation (erase or
+>> program a SPI NAND for example).
+>>
+>> spi_mem_poll_status API has been added to handle this feature.
+>> This new function take care of the offload/non-offload cases.
+>>
+>> For the non-offload case, use read_poll_timeout() to poll the status in
+>> order to release CPU during this phase.
+>>
+>> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+>> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+>> ---
+>> Changes in v2:
+>>   - Indicates the spi_mem_poll_status() timeout unit
+>>   - Use 2-byte wide status register
+>>   - Add spi_mem_supports_op() call in spi_mem_poll_status()
+>>   - Add completion management in spi_mem_poll_status()
+>>   - Add offload/non-offload case mangement in spi_mem_poll_status()
+>>   - Optimize the non-offload case by using read_poll_timeout()
+>>
+>>  drivers/spi/spi-mem.c       | 71 +++++++++++++++++++++++++++++++++++++
+>>  include/linux/spi/spi-mem.h | 10 ++++++
+>>  2 files changed, 81 insertions(+)
+>>
+>> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+>> index 1513553e4080..3f29c604df7d 100644
+>> --- a/drivers/spi/spi-mem.c
+>> +++ b/drivers/spi/spi-mem.c
+>> @@ -6,6 +6,7 @@
+>>   * Author: Boris Brezillon <boris.brezillon@bootlin.com>
+>>   */
+>>  #include <linux/dmaengine.h>
+>> +#include <linux/iopoll.h>
+>>  #include <linux/pm_runtime.h>
+>>  #include <linux/spi/spi.h>
+>>  #include <linux/spi/spi-mem.h>
+>> @@ -743,6 +744,75 @@ static inline struct spi_mem_driver *to_spi_mem_drv(struct device_driver *drv)
+>>  	return container_of(drv, struct spi_mem_driver, spidrv.driver);
+>>  }
+>>  
+>> +/**
+>> + * spi_mem_finalize_op - report completion of spi_mem_op
+>> + * @ctlr: the controller reporting completion
+>> + *
+>> + * Called by SPI drivers using the spi-mem spi_mem_poll_status()
+>> + * implementation to notify it that the current spi_mem_op has
+>> + * finished.
+>> + */
+>> +void spi_mem_finalize_op(struct spi_controller *ctlr)
+>> +{
+>> +	complete(&ctlr->xfer_completion);
+>> +}
+>> +EXPORT_SYMBOL_GPL(spi_mem_finalize_op);
+>> +
+>> +/**
+>> + * spi_mem_poll_status() - Poll memory device status
+>> + * @mem: SPI memory device
+>> + * @op: the memory operation to execute
+>> + * @mask: status bitmask to ckeck
+>> + * @match: (status & mask) expected value
+>> + * @timeout_ms: timeout in milliseconds
+>> + *
+>> + * This function send a polling status request to the controller driver
+>> + *
+>> + * Return: 0 in case of success, -ETIMEDOUT in case of error,
+>> + *         -EOPNOTSUPP if not supported.
+>> + */
+>> +int spi_mem_poll_status(struct spi_mem *mem,
+>> +			const struct spi_mem_op *op,
+>> +			u16 mask, u16 match, u16 timeout_ms)
+>> +{
+>> +	struct spi_controller *ctlr = mem->spi->controller;
+>> +	unsigned long ms;
+>> +	int ret = -EOPNOTSUPP;
+>> +	int exec_op_ret;
+>> +	u16 *status;
+>> +
+>> +	if (!spi_mem_supports_op(mem, op))
+>> +		return ret;
+> 
+> You should only test that in the SW-based polling path. The driver
+> ->poll_status() method is expected to check the operation and
+> return -EOPNOTSUPP if HW-based polling doesn't work for this op,
+> no need to check things twice.
+
+Ok, i will fix this.
+
+> 
+>> +
+>> +	if (ctlr->mem_ops && ctlr->mem_ops->poll_status) {
+>> +		ret = spi_mem_access_start(mem);
+>> +		if (ret)
+>> +			return ret;
+>> +
+>> +		reinit_completion(&ctlr->xfer_completion);
+>> +
+>> +		ret = ctlr->mem_ops->poll_status(mem, op, mask, match,
+>> +						 timeout_ms);
+>> +
+>> +		ms = wait_for_completion_timeout(&ctlr->xfer_completion,
+>> +						 msecs_to_jiffies(timeout_ms));
+> 
+> Why do you need to wait here? I'd expect the poll_status to take care
+> of this wait.
+
+It was a request from Mark Brown [1]. The idea is to implement
+similar mechanism already used in SPI framework.
+
+[1] https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210426143934.25275-2-patrice.chotard@foss.st.com/#24140527
+
+> 
+>> +
+>> +		spi_mem_access_end(mem);
+>> +		if (!ms)
+>> +			return -ETIMEDOUT;
+>> +	} else {
+>> +		status = (u16 *)op->data.buf.in;
+> 
+> Hm, I don't think it's safe, for 2 reasons:
+> 
+> 1/ op->data.buf.in might be a 1byte buffer, but you're doing a 2byte check
+> 2/ data is in big endian in the SPI buffer, which means your check
+>    won't work on LE architectures.
+> 
+> You really need a dedicated spi_mem_read_status() function that's passed
+> an u16 pointer:
+
+Yes, agree
+
+> 
+> int spi_mem_read_status(struct spi_mem *mem,
+> 			const struct spi_mem_op *op,
+> 			u16 *status)
+> {
+> 	const u8 *bytes = (u8 *)op->data.buf.in;
+> 	int ret;
+> 
+> 	ret = spi_mem_exec_op(mem, op);
+> 	if (ret)
+> 		return ret;
+> 
+> 	if (op->data.nbytes > 1)
+> 		*status = ((u16)bytes[0] << 8) | bytes[1];
+> 	else
+> 		*status = bytes[0];
+> 
+> 	return 0;
+> }
+> 
+>> +		ret = read_poll_timeout(spi_mem_exec_op, exec_op_ret,
+>> +					((*status) & mask) == match, 20,
+>> +					timeout_ms * 1000, false, mem, op);
+>> +		if (exec_op_ret)
+>> +			return exec_op_ret;
+>> +	}
+>> +
+> 
+> I would do something like this instead:
+> 
+> int spi_mem_poll_status(struct spi_mem *mem,
+> 			const struct spi_mem_op *op,
+> 			u16 mask, u16 match, u16 timeout_ms)
+> {
+> 	struct spi_controller *ctlr = mem->spi->controller;
+> 	int ret = -EOPNOTSUPP;
+> 
+> 	if (op->data.nbytes < 1 || op->data.nbytes > 2)
+> 		return -EINVAL;
+> 
+> 	if (ctlr->mem_ops && ctlr->mem_ops->poll_status) {
+> 		ret = spi_mem_access_start(mem);
+> 		if (ret)
+> 			return ret;
+> 
+> 		ret = ctlr->mem_ops->poll_status(mem, op, mask, match,
+> 						 timeout_ms);
+> 
+> 		spi_mem_access_end(mem);
+> 	}
+> 
+> 
+> 	if (ret == -EOPNOTSUPP) {
+>                 u16 status;
+> 		int read_status_ret;
+> 
+> 		if (!spi_mem_supports_op(mem, op))
+> 			return -EOPNOTSUPP;
+> 
+> 		ret = read_poll_timeout(spi_mem_read_status, exec_op_ret,
+> 					(read_status_ret || ((status & mask) == match), 20,
+> 					timeout_ms * 1000, false, mem, op, &status);
+> 
+> 		if (read_status_ret)
+> 			return read_status_ret;
+> 	}
+> 
+> 	return ret;
+> }
+> 
+>> +	return ret;
+>> +}
+>> +EXPORT_SYMBOL_GPL(spi_mem_poll_status);
+>> +
+>>  static int spi_mem_probe(struct spi_device *spi)
+>>  {
+>>  	struct spi_mem_driver *memdrv = to_spi_mem_drv(spi->dev.driver);
+>> @@ -763,6 +833,7 @@ static int spi_mem_probe(struct spi_device *spi)
+>>  	if (IS_ERR_OR_NULL(mem->name))
+>>  		return PTR_ERR_OR_ZERO(mem->name);
+>>  
+>> +	init_completion(&ctlr->xfer_completion);
+>>  	spi_set_drvdata(spi, mem);
+>>  
+>>  	return memdrv->probe(mem);
+>> diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+>> index 2b65c9edc34e..0fbf5d0a3d31 100644
+>> --- a/include/linux/spi/spi-mem.h
+>> +++ b/include/linux/spi/spi-mem.h
+>> @@ -250,6 +250,7 @@ static inline void *spi_mem_get_drvdata(struct spi_mem *mem)
+>>   *		  the currently mapped area), and the caller of
+>>   *		  spi_mem_dirmap_write() is responsible for calling it again in
+>>   *		  this case.
+>> + * @poll_status: poll memory device status
+>>   *
+>>   * This interface should be implemented by SPI controllers providing an
+>>   * high-level interface to execute SPI memory operation, which is usually the
+>> @@ -274,6 +275,9 @@ struct spi_controller_mem_ops {
+>>  			       u64 offs, size_t len, void *buf);
+>>  	ssize_t (*dirmap_write)(struct spi_mem_dirmap_desc *desc,
+>>  				u64 offs, size_t len, const void *buf);
+>> +	int (*poll_status)(struct spi_mem *mem,
+>> +			   const struct spi_mem_op *op,
+>> +			   u16 mask, u16 match, unsigned long timeout);
+>>  };
+>>  
+>>  /**
+>> @@ -369,6 +373,12 @@ devm_spi_mem_dirmap_create(struct device *dev, struct spi_mem *mem,
+>>  void devm_spi_mem_dirmap_destroy(struct device *dev,
+>>  				 struct spi_mem_dirmap_desc *desc);
+>>  
+>> +void spi_mem_finalize_op(struct spi_controller *ctlr);
+>> +
+>> +int spi_mem_poll_status(struct spi_mem *mem,
+>> +			const struct spi_mem_op *op,
+>> +			u16 mask, u16 match, u16 timeout);
+>> +
+>>  int spi_mem_driver_register_with_owner(struct spi_mem_driver *drv,
+>>  				       struct module *owner);
+>>  
+> 
+Thanks
+
+Patrice
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
