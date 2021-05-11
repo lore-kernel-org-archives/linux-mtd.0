@@ -2,90 +2,82 @@ Return-Path: <SRS0=SBmy=KG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-4.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 736FBC433B4
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 May 2021 11:35:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E10EC433B4
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 May 2021 11:59:19 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AB02961207
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 May 2021 11:35:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AB02961207
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=geanix.com
+	by mail.kernel.org (Postfix) with ESMTPS id 6F8D261448
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 May 2021 11:59:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F8D261448
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:Cc:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=2C53TQqihlRHQu23QWAxV6BCLkv2yPitH5mNp1tsea8=; b=FWp7gfFYkSIGW0CZy2+Vjx1HA
-	PG/DpsziFQijXj5QRPGSQES6ySHRpcCtq7b4acGKHnhv5fEEUJICEW6JUG/NEYUGvSwsyFCPFP2Ru
-	jtMZQIS3N6fNN+k7Io0r/yRVd6Jdh26dU2Skm6iL3RHkOCRzhviGBF6nUc2XXsALyxg89nV7lpBnt
-	NZAv/30/fS5zVKcoAxaRL/Q94fHCMKcGYZ2H0J4Ig4rdzhTNwMQtC+qy1lxjd1NmYOOoyySwcZqjL
-	Mx4C1Lp0f7hUZXTgTA20ujm3zdSqmZyk5KMOayhIwap1NhuY88FEOaoSnfabM+Sh+N4FJ+t6Aj0zN
-	2p9EauOpA==;
+	 bh=kIEzwKmoh4gvWNf1PkI+cDgbcBGwvtX3e9VuBvNLC7c=; b=jLSXMhKZcS+E/jdMMl/PgjlaO
+	aJkkqeWu4JFpmxkX96PdI/1HhNpaox1kda0R8QzuNDwXPVlNtHUjr/wtnP/zYEggu0lTDZg81f0SV
+	9bHZNIW1gFLhxguwp4fuDpjZOzOsOIF6n/kSl3c57i+ImeD0Y7PX4bYBCUo48XQe9COslUDHjhBAR
+	iSDM7zJ18+Zkuuqmi0+cnggn3jsZIIE6d94eDiF6+/7f5Cbt/26TZuBNuaXSDBSEkMGdZ8P3ZtdpB
+	FutYotYR6PpWW3A0LVjOBZ0LqZac996yU8ZUirgRXkkUT9DlW2o3zxz0APlcNW8pQMojm0jhBihPI
+	0xKOuqmHg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lgQeh-00H9Lf-Fz; Tue, 11 May 2021 11:34:27 +0000
+	id 1lgR20-00HG0V-0N; Tue, 11 May 2021 11:58:32 +0000
 Received: from [2607:7c80:54:e::133] (helo=bombadil.infradead.org)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lgKdk-00GJak-1e
- for linux-mtd@desiato.infradead.org; Tue, 11 May 2021 05:09:05 +0000
+ id 1lgNGs-00GYHb-Se
+ for linux-mtd@desiato.infradead.org; Tue, 11 May 2021 07:57:44 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
- Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
- Subject:Sender:Reply-To:Content-ID:Content-Description;
- bh=QLE3o90E49U7T7E2EaAiVQzI6e3pwpnYjQ4vmP3po24=; b=oucO4RJ8IbIzw201xcFpnh971I
- 1oOopnIT9i4hiGXYLFy/jYqrzr93nwnpdBnL0rJXeeZFJUNp+S55VLPi2mrA0BsGccEo2yzM3PLKt
- owC1tNy45VprWAUIOB/P4SPYE7wWkyBA7K74mmlB0e0Su+ADmT0tJHpsK0u2/IIuSs51naVi0uiol
- SvksDlAmjH8QP7N3H2jNDblkeKTY9BcOjvckvGh3QTiy6rPUiO/1xRjYbUBIXXueA/xJQUl2J/TrV
- YcIItUaYdpK2h7NCQMD9mBtk4wUKBfh9HZo/+x2/5BMsQZeUzxWSQhHMOiRDdoIsOQQgbBHQxptaX
- tKy9HgRg==;
-Received: from first.geanix.com ([116.203.34.67])
+ d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+ :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description;
+ bh=5s+UmRMVAm00GZBYKXOhBogliyhTL9wRc6BIE16Ioko=; b=fqvFrsAD2x2tL8cvJ2BpNHJwQE
+ 6pbWx/SxqFxxxBVO8cdSOhKYVzq2qGAg1iaBcNnYLwPTDR5AKCpeco/zOaH5U7Zub/gQw25JSdsmy
+ RudOPKW81//IpW2IJF4d10w3bCSNK/w/XgAaxAjBXtf3KiuZ0Qh+/2kQdsPeRryN6SmN+hXNb3iVG
+ s5zXrkFMIvHCQsLM3z4DA/Ysb52vFa6R42e3W9pmigFEdR4ksWNGPGK+7bgJ/9UFBU7s4ZMcRo7nv
+ WAm6wmzkGuActl+aniRQ6zBxD4yfMSv05QuhvCr4Fd3+YN9C3SBM789khReo3JWdqCaZgu84Lf6zY
+ rHp6A0qg==;
+Received: from fudo.makrotopia.org ([2a07:2ec0:3002::71])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lgKde-009JHt-L1
- for linux-mtd@lists.infradead.org; Tue, 11 May 2021 05:09:00 +0000
-Received: from [192.168.100.10] (unknown [185.233.254.173])
- by first.geanix.com (Postfix) with ESMTPSA id C5864468C80;
- Tue, 11 May 2021 05:08:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
- t=1620709731; bh=dnaY5G48mDPZXiZy0gnBZfDsipVpKdX9HOupqxOgRf4=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To;
- b=F7gRkd/F0caTrO8bPt0wmMfEleGb6g+ZNd/w8BlZMLpxnmxJW+8a22SdlO5X0FU1s
- Zat4XRZf+AlILAPkJvPo4/vyxTyQEiLtklOWsBGD62aCR5xGFaQF76UssHKS5mIkQd
- h6+QBh72sHSb+lzFFFznhiCjm7Aq6Z/c31qun6UQ0Tu0YwbhFr54x2PPuRYD1coC7y
- 0gm5XyaMSJEtD1Q9Mbq+BCbUj1sQAq+NM5G6PGyB2nPxB6tFUq7HWOBAsvHcQqGYGC
- XkWWrX3lRLHcyNlOiNt8/MtWCgbWt+nirHO5xHXckRONrbTCd/zItFOFPe03gWF7O6
- LM05cOZSYlD/A==
-Subject: Re: [EXT] [PATCH] mtd: mxs_nand: default to legacy bch and rename to
- modern bch option
-To: "han.xu" <han.xu@nxp.com>
-Cc: peng.fan@nxp.com, ye.li@nxp.com, alice.guo@nxp.com, sjg@chromium.org,
- seanga2@gmail.com, u-boot@lists.denx.de, miquel.raynal@bootlin.com,
- linux-mtd <linux-mtd@lists.infradead.org>
-References: <20210510100043.449294-1-sean@geanix.com>
- <20210511024926.t6kunesknbwe7k2x@umbrella>
-From: Sean Nyekjaer <sean@geanix.com>
-Message-ID: <a33cac1f-7988-08ea-7d9d-c9b76b80cc3e@geanix.com>
-Date: Tue, 11 May 2021 07:08:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ id 1lgNGp-009NR6-Up
+ for linux-mtd@lists.infradead.org; Tue, 11 May 2021 07:57:37 +0000
+Received: from local
+ by fudo.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+ (Exim 4.94.2) (envelope-from <daniel@makrotopia.org>)
+ id 1lgNGj-0004aV-1v; Tue, 11 May 2021 09:57:29 +0200
+Date: Tue, 11 May 2021 08:57:15 +0100
+From: Daniel Golle <daniel@makrotopia.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+ Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>, Jan Kara <jack@suse.cz>,
+ Hannes Reinecke <hare@suse.de>
+Subject: Re: [PATCH v4] mtd: super: don't rely on mtdblock device minor
+Message-ID: <YJo42y+lP9peFlkd@makrotopia.org>
+References: <20210510121837.14274d4f@xps13> <YG9qzC/SaD7SNWVm@makrotopia.org>
+ <YHRj5MUb5MGdPQqw@makrotopia.org> <YJmx3Ru/5oyq6Y1a@makrotopia.org>
+ <20210511054955.GA6542@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <20210511024926.t6kunesknbwe7k2x@umbrella>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <20210511054955.GA6542@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210510_220859_329752_773429A1 
-X-CRM114-Status: UNSURE (   9.80  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210511_005736_017940_EA61F339 
+X-CRM114-Status: GOOD (  19.92  )
+/bin/ln: failed to access
+ 'reaver_cache/texts/20210511_005736_017940_EA61F339': No such file or
+ directory
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210510_220859_329752_773429A1 
-X-CRM114-Status: UNSURE (   7.92  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210511_005736_017940_EA61F339 
+X-CRM114-Status: GOOD (  16.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,45 +94,56 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 11/05/2021 04.49, han.xu wrote:
-> On 21/05/10 12:00PM, Sean Nyekjaer wrote:
->> Caution: EXT Email
->>
->> Linux kernel defaults to use legacy bch setting, this was creating a
->> mismatch between U-boot and Linux default settings.
-> Kernel uses the NAND chip specified minimum ecc strength and steps by default
-> not the legacy bch setting, unless users enable it in DT file.
+Hi Christoph,
+
+thank you for the review!
+
+On Tue, May 11, 2021 at 07:49:55AM +0200, Christoph Hellwig wrote:
+> On Mon, May 10, 2021 at 11:21:17PM +0100, Daniel Golle wrote:
+> > For blktrans devices with partitions (ie. part_bits != 0) the
+> > assumption that the minor number of the mtdblock device matches
+> > the mtdnum doesn't hold true.
+> > Properly resolve mtd device from blktrans layer instead.
 > 
+> Why are you changing the legacy lookup method that is clearly deprecated
+> in favor of the mdt* syntax?
 
-Hi,
+Because it breaks if part_bits != 1 and despite being legacy, it should
+not break (it would open the wrong MTD device).
 
-Adding, mtd-list and Miquel
+> 
+> > +
+> > +	if (MAJOR(bdev->bd_dev) == MTD_BLOCK_MAJOR) {
+> > +		if (!bdev->bd_disk)
+> > +			goto error_mtdblock;
+> 
+> bdev->bd_disk can't be NULL.
 
-With u-boot dtb:
-&gpmi {
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_gpmi_nand1>;
-	compatible = "fsl,imx7d-gpmi-nand";
-	nand-on-flash-bbt;
-	status = "okay";
-};
+Better safe than sorry, I thought, especially as this is not a hot
+path. But good, I'll remove the extra check.
 
-With linux dtb (mainline 5.10):
-&gpmi {
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_gpmi_nand1>;
-	nand-on-flash-bbt;
-	status = "okay";
-};
+> 
+> >  
+> > +		blktrans_dev = (struct mtd_blktrans_dev *)(bdev->bd_disk->private_data);
+> 
+> Overly long line due to the not actually required cast.
+> 
+> But more importantly you can't just look at the private data of a random
+> block device that you just opened.  There is absolutely no guarantee that
+> it actually points to a specific private data.
 
-U-boot prior to commit 51cdf83eea selected 18 bit ECC, after that commit it selects 8 bits.
-With legacy option it selects 18.
-Linux is selecting 18 bits ;) So now we have a mismatch.
+I do check the major number above to be MTD_BLOCK_MAJOR, and in that
+case I assume that my expectations towards private structure will hold
+true. If not, please enlighten me.
+The previous assumption of the device MINOR number being equal to the
+MTD number obviously also only holds true for mtdblock devices (if at
+all).
 
-I have been searching for the legacy option in the mainline kernel can't find it ;)
-Please show me where it is (is it in the NXP fork?)
 
-/Sean
+Cheers
+
+
+Daniel
 
 ______________________________________________________
 Linux MTD discussion mailing list
