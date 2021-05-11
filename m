@@ -2,82 +2,80 @@ Return-Path: <SRS0=SBmy=KG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-15.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E10EC433B4
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 May 2021 11:59:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DACDC433ED
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 May 2021 12:25:14 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6F8D261448
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 May 2021 11:59:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F8D261448
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
+	by mail.kernel.org (Postfix) with ESMTPS id 60A2061919
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 May 2021 12:25:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 60A2061919
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
 	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=kIEzwKmoh4gvWNf1PkI+cDgbcBGwvtX3e9VuBvNLC7c=; b=jLSXMhKZcS+E/jdMMl/PgjlaO
-	aJkkqeWu4JFpmxkX96PdI/1HhNpaox1kda0R8QzuNDwXPVlNtHUjr/wtnP/zYEggu0lTDZg81f0SV
-	9bHZNIW1gFLhxguwp4fuDpjZOzOsOIF6n/kSl3c57i+ImeD0Y7PX4bYBCUo48XQe9COslUDHjhBAR
-	iSDM7zJ18+Zkuuqmi0+cnggn3jsZIIE6d94eDiF6+/7f5Cbt/26TZuBNuaXSDBSEkMGdZ8P3ZtdpB
-	FutYotYR6PpWW3A0LVjOBZ0LqZac996yU8ZUirgRXkkUT9DlW2o3zxz0APlcNW8pQMojm0jhBihPI
-	0xKOuqmHg==;
+	 bh=EYA4VoV+yz4k0fSZvvT6PIt6PTWSwSvtbgc68BX7vkA=; b=WiL62LYLfsXqZgBd7+Kcb5MZS
+	mGWtt8/Ks2ENLzlxsjfOwJS0gclpnuQI6YrgYokhTdDAKlRhysUDnXdFQcuAR6WwhV8L4OVjzdcw6
+	XAk9e542eQJEJA+o8rcZNaEF/ksaoPtF55Kkpbhtjlr57atZyYzwKW+s0O18KnZ8AqKlVeB1f6aEr
+	VnH2Wb0moy/h2yqWf17/8iSJzWGodex96a3+mtuZFiDai2kisDvvZAPsMNSsWVkirkSRCsp2+SOYY
+	3/Vfnhuf1NoirPb9/aHp/Poz1OQ/F5K+KumqnZ85oYcwZAx+N/DHMmrP8USetKr/acVgaIMj6eJgj
+	dJWFJsqSg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lgR20-00HG0V-0N; Tue, 11 May 2021 11:58:32 +0000
+	id 1lgRRG-00HMxt-IB; Tue, 11 May 2021 12:24:38 +0000
 Received: from [2607:7c80:54:e::133] (helo=bombadil.infradead.org)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lgNGs-00GYHb-Se
- for linux-mtd@desiato.infradead.org; Tue, 11 May 2021 07:57:44 +0000
+ id 1lgO90-00Gdad-BX
+ for linux-mtd@desiato.infradead.org; Tue, 11 May 2021 08:53:37 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
- :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=5s+UmRMVAm00GZBYKXOhBogliyhTL9wRc6BIE16Ioko=; b=fqvFrsAD2x2tL8cvJ2BpNHJwQE
- 6pbWx/SxqFxxxBVO8cdSOhKYVzq2qGAg1iaBcNnYLwPTDR5AKCpeco/zOaH5U7Zub/gQw25JSdsmy
- RudOPKW81//IpW2IJF4d10w3bCSNK/w/XgAaxAjBXtf3KiuZ0Qh+/2kQdsPeRryN6SmN+hXNb3iVG
- s5zXrkFMIvHCQsLM3z4DA/Ysb52vFa6R42e3W9pmigFEdR4ksWNGPGK+7bgJ/9UFBU7s4ZMcRo7nv
- WAm6wmzkGuActl+aniRQ6zBxD4yfMSv05QuhvCr4Fd3+YN9C3SBM789khReo3JWdqCaZgu84Lf6zY
- rHp6A0qg==;
-Received: from fudo.makrotopia.org ([2a07:2ec0:3002::71])
+ d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+ Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
+ From:Date:Sender:Reply-To:Content-ID:Content-Description;
+ bh=vqtdwZZ6jICg7HK3uro65+AMnqut71M3Fqw92oxhYrI=; b=VGKIrIT/GuG36syB77j0to9pfr
+ ym08gT810jn6hTjqs9OpsujMkcJS4wRxKJhwJ06FqdZKwYXqVOFs4ytYTEvZN4I8awkL7oU15vUoS
+ Hyn39o9HljaylDxqS10XTfkcnz2ARcIcIWR7vLZeDdzSeOKKNKmSEI+Ql8hUaMjxu+1Q6/if4EeGs
+ 8NXm6EQhq2q74U32rn59b0EdMt0v1GrLwsPRvlLuAaGSv1nUDXXLH0ObsvTsKWotxADpJ8D5vNrWJ
+ vrA9tj75WFO8vP0yMEv6x0N3DMRbybAdXJyXxHagDKu9/2GuJp4sIk3ZZuEBLL5QtZ37W/a1Psci2
+ +xcPbw2A==;
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lgNGp-009NR6-Up
- for linux-mtd@lists.infradead.org; Tue, 11 May 2021 07:57:37 +0000
-Received: from local
- by fudo.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
- (Exim 4.94.2) (envelope-from <daniel@makrotopia.org>)
- id 1lgNGj-0004aV-1v; Tue, 11 May 2021 09:57:29 +0200
-Date: Tue, 11 May 2021 08:57:15 +0100
-From: Daniel Golle <daniel@makrotopia.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
- Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>, Jan Kara <jack@suse.cz>,
- Hannes Reinecke <hare@suse.de>
-Subject: Re: [PATCH v4] mtd: super: don't rely on mtdblock device minor
-Message-ID: <YJo42y+lP9peFlkd@makrotopia.org>
-References: <20210510121837.14274d4f@xps13> <YG9qzC/SaD7SNWVm@makrotopia.org>
- <YHRj5MUb5MGdPQqw@makrotopia.org> <YJmx3Ru/5oyq6Y1a@makrotopia.org>
- <20210511054955.GA6542@lst.de>
+ id 1lgO8v-009PZc-UW
+ for linux-mtd@lists.infradead.org; Tue, 11 May 2021 08:53:31 +0000
+X-Originating-IP: 90.89.138.59
+Received: from xps13 (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr [90.89.138.59])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id B0AE32000D;
+ Tue, 11 May 2021 08:53:20 +0000 (UTC)
+Date: Tue, 11 May 2021 10:53:19 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: YouChing Lin <ycllin@mxic.com.tw>
+Cc: richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, juliensu@mxic.com.tw
+Subject: Re: [PATCH 0/2] Fix double counting of S/W ECC engines' ECC stat
+Message-ID: <20210511105319.0c077fd5@xps13>
+In-Reply-To: <1620697235-7829-1-git-send-email-ycllin@mxic.com.tw>
+References: <1620697235-7829-1-git-send-email-ycllin@mxic.com.tw>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210511054955.GA6542@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210511_005736_017940_EA61F339 
-X-CRM114-Status: GOOD (  19.92  )
+X-CRM114-CacheID: sfid-20210511_015330_282722_C0382016 
+X-CRM114-Status: GOOD (  22.73  )
 /bin/ln: failed to access
- 'reaver_cache/texts/20210511_005736_017940_EA61F339': No such file or
+ 'reaver_cache/texts/20210511_015330_282722_C0382016': No such file or
  directory
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210511_005736_017940_EA61F339 
-X-CRM114-Status: GOOD (  16.56  )
+X-CRM114-CacheID: sfid-20210511_015330_282722_C0382016 
+X-CRM114-Status: GOOD (  18.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,62 +87,80 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Christoph,
-
-thank you for the review!
-
-On Tue, May 11, 2021 at 07:49:55AM +0200, Christoph Hellwig wrote:
-> On Mon, May 10, 2021 at 11:21:17PM +0100, Daniel Golle wrote:
-> > For blktrans devices with partitions (ie. part_bits != 0) the
-> > assumption that the minor number of the mtdblock device matches
-> > the mtdnum doesn't hold true.
-> > Properly resolve mtd device from blktrans layer instead.
-> 
-> Why are you changing the legacy lookup method that is clearly deprecated
-> in favor of the mdt* syntax?
-
-Because it breaks if part_bits != 1 and despite being legacy, it should
-not break (it would open the wrong MTD device).
-
-> 
-> > +
-> > +	if (MAJOR(bdev->bd_dev) == MTD_BLOCK_MAJOR) {
-> > +		if (!bdev->bd_disk)
-> > +			goto error_mtdblock;
-> 
-> bdev->bd_disk can't be NULL.
-
-Better safe than sorry, I thought, especially as this is not a hot
-path. But good, I'll remove the extra check.
-
-> 
-> >  
-> > +		blktrans_dev = (struct mtd_blktrans_dev *)(bdev->bd_disk->private_data);
-> 
-> Overly long line due to the not actually required cast.
-> 
-> But more importantly you can't just look at the private data of a random
-> block device that you just opened.  There is absolutely no guarantee that
-> it actually points to a specific private data.
-
-I do check the major number above to be MTD_BLOCK_MAJOR, and in that
-case I assume that my expectations towards private structure will hold
-true. If not, please enlighten me.
-The previous assumption of the device MINOR number being equal to the
-MTD number obviously also only holds true for mtdblock devices (if at
-all).
-
-
-Cheers
-
-
-Daniel
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgWW91Q2hpbmcsCgpZb3VDaGluZyBMaW4gPHljbGxpbkBteGljLmNvbS50dz4gd3JvdGUgb24g
+VHVlLCAxMSBNYXkgMjAyMSAwOTo0MDozMworMDgwMDoKCj4gSGVsbG8sCj4gCj4gVGhpcyBzZXJp
+ZXMgZml4IHRoZSBkb3VibGUgY291bnRpbmcgb2YgUy9XIEVDQyBlbmdpbmVzJyBFQ0Mgc3RhdCAK
+PiAKPiBJZiB5b3UgdXNlIFNQSS1OQU5EIHdpdGggU1ctRUNDIGVuZ2luZSwgdGhlIEVDQyByZWxh
+dGVkIHN0YXRpc3RpY3MKPiAoZWNjX3N0YXRzLmZhaWxlZCAmIGVjY19zdGF0cy5jb3JyZWN0ZWQp
+IHdpbGwgYmUgZG91YmxlZCwgYmVjYXVzZQo+IHRob3NlIG51bWJlcnMgd2lsbCBiZSBkb3VibGUt
+Y291bnRlZCBpbiBlY2Mtc3ctW2JjaC9oYW1taW5nXS5jIGFuZAo+IGRyaXZlcnMvbXRkL25hbmQv
+c3BpL2NvcmUuYy4KPiAgICAgCj4gVGhpcyBjYW4gYmUgZm91bmQgYnkgdXNpbmcgbmFuZHRlc3Qv
+bmFuZGJpdGVycnMgdmFsaWRhdGlvbi4KCkdvb2QgY2F0Y2ghCgpIb3dldmVyIEkgZG9uJ3QgdGhp
+bmsgdGhlIGN1cnJlbnQgZml4IGlzIHZhbGlkIGJlY2F1c2UgdGhlc2UgZW5naW5lcwphcmUgbWVh
+bnQgdG8gYmUgdXNlZCBieSB0aGUgcmF3IE5BTkQgY29yZSBhcyB3ZWxsLCBJIHByb3Bvc2Ugc29t
+ZXRoaW5nCmxpa2UgdGhlIGJlbG93LCBjYW4geW91IHBsZWFzZSB0ZWxsIG1lIGlmIGl0IHdvcmtz
+IGFzIGV4cGVjdGVkPyAobm90CmV2ZW4gYnVpbGQgdGVzdGVkKQoKVGhhbmtzLApNaXF1w6hsCgoK
+LS0tLTg8LS0tLQoKQXV0aG9yOiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4u
+Y29tPgpEYXRlOiAgIFR1ZSBNYXkgMTEgMTA6NDE6NTYgMjAyMSArMDIwMAoKICAgIG10ZDogc3Bp
+bmFuZDogRml4IGRvdWJsZSBjb3VudGluZyBvZiBFQ0Mgc3RhdHMKICAgIAogICAgSW4gdGhlIHJh
+dyBOQU5EIHdvcmxkLCBFQ0MgZW5naW5lcyBpbmNyZW1lbnQgZWNjX3N0YXRzIGFuZCB0aGUgZmlu
+YWwKICAgIGNhbGxlciBpcyByZXNwb25zaWJsZSBmb3IgcmV0dXJuaW5nIC1FQkFETVNHIGlmIHRo
+ZSB2ZXJpZmljYXRpb24KICAgIGZhaWxlZC4KICAgIAogICAgSW4gdGhlIFNQSS1OQU5EIHdvcmxk
+IGl0IHdhcyBhIGJpdCBkaWZmZXJlbnQgdW50aWwgbm93IGJlY2F1c2UgdGhlcmUgd2FzCiAgICBv
+bmx5IG9uZSBwb3NzaWJsZSBFQ0MgZW5naW5lOiB0aGUgb24tZGllIG9uZS4gSW5kZWVkLCB0aGUK
+ICAgIHNwaW5hbmRfbXRkX3JlYWQoKSBjYWxsIHdhcyBpbmNyZW1lbnRpbmcgdGhlIGVjY19zdGF0
+cyBjb3VudGVycwogICAgZGVwZW5kaW5nIG9uIHRoZSBvdXRjb21lIG9mIHNwaW5hbmRfY2hlY2tf
+ZWNjX3N0YXR1cygpIGRpcmVjdGx5LgogICAgCiAgICBTbyBub3cgbGV0J3Mgc3BsaXQgdGhlIGxv
+Z2ljIGxpa2UgdGhpczoKICAgIC0gc3BpbmFuZF9jaGVja19lY2Nfc3RhdHVzKCkgaXMgc3BlY2lm
+aWMgdG8gdGhlIFNQSS1OQU5EIG9uLWRpZSBlbmdpbmUKICAgICAgYW5kIGlzIGtlcHQgdmVyeSBz
+aW1wbGU6IGl0IGp1c3QgcmV0dXJucyB0aGUgRUNDIHN0YXR1cyAoYm9udXMgcG9pbnQ6CiAgICAg
+IHRoZSBjb250ZW50IG9mIHRoaXMgaGVscGVyIGNhbiBiZSBvdmVybG9hZGVkKS4KICAgIC0gc3Bp
+bmFuZF9vbmRpZV9lY2NfZmluaXNoX2lvX3JlcSgpIGlzIHRoZSBjYWxsZXIgb2YKICAgICAgc3Bp
+bmFuZF9jaGVja19lY2Nfc3RhdHVzKCkgYW5kIHdpbGwgaW5jcmVtZW50IHRoZSBjb3VudGVycyBh
+bmQKICAgICAgZXZlbnR1YWxseSByZXR1cm4gLUVCQURNU0cuCiAgICAtIHNwaW5hbmRfbXRkX3Jl
+YWQoKSBpcyBub3QgdGllZCB0byB0aGUgb24tZGllIEVDQyBpbXBsZW1lbnRhdGlvbiBhbmQKICAg
+ICAgc2hvdWxkIGJlIGFibGUgdG8gaGFuZGxlIHJlc3VsdHMgY29taW5nIGZyb20gb3RoZXIgRUND
+IGVuZ2luZXM6IGl0IGhhcwogICAgICB0aGUgcmVzcG9uc2liaWxpdHkgb2YgcmV0dXJuaW5nIHRo
+ZSBtYXhpbXVtIG51bWJlciBvZiBiaXRmbGlwcyB3aGljaAogICAgICBoYXBwZW5lZCBkdXJpbmcg
+dGhlIGVudGlyZSBvcGVyYXRpb24gYXMgdGhpcyBpcyB0aGUgb25seSBoZWxwZXIgdGhhdAogICAg
+ICBpcyBhd2FyZSB0aGF0IHNldmVyYWwgcGFnZXMgbWF5IGJlIHJlYWQgaW4gYSByb3cuCiAgICAK
+ICAgIFNpZ25lZC1vZmYtYnk6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5j
+b20+CgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9zcGkvY29yZS5jIGIvZHJpdmVycy9t
+dGQvbmFuZC9zcGkvY29yZS5jCmluZGV4IDYxZDkzMmMxYjcxOC4uZGYxMzRjNjE4NTNlIDEwMDY0
+NAotLS0gYS9kcml2ZXJzL210ZC9uYW5kL3NwaS9jb3JlLmMKKysrIGIvZHJpdmVycy9tdGQvbmFu
+ZC9zcGkvY29yZS5jCkBAIC0yOTAsNiArMjkwLDggQEAgc3RhdGljIGludCBzcGluYW5kX29uZGll
+X2VjY19maW5pc2hfaW9fcmVxKHN0cnVjdCBuYW5kX2RldmljZSAqbmFuZCwKIHsKICAgICAgICBz
+dHJ1Y3Qgc3BpbmFuZF9vbmRpZV9lY2NfY29uZiAqZW5naW5lX2NvbmYgPSBuYW5kLT5lY2MuY3R4
+LnByaXY7CiAgICAgICAgc3RydWN0IHNwaW5hbmRfZGV2aWNlICpzcGluYW5kID0gbmFuZF90b19z
+cGluYW5kKG5hbmQpOworICAgICAgIHN0cnVjdCBtdGRfaW5mbyAqbXRkID0gc3BpbmFuZF90b19t
+dGQoc3BpbmFuZCk7CisgICAgICAgaW50IHJldDsKIAogICAgICAgIGlmIChyZXEtPm1vZGUgPT0g
+TVREX09QU19SQVcpCiAgICAgICAgICAgICAgICByZXR1cm4gMDsKQEAgLTI5OSw3ICszMDEsMTMg
+QEAgc3RhdGljIGludCBzcGluYW5kX29uZGllX2VjY19maW5pc2hfaW9fcmVxKHN0cnVjdCBuYW5k
+X2RldmljZSAqbmFuZCwKICAgICAgICAgICAgICAgIHJldHVybiAwOwogCiAgICAgICAgLyogRmlu
+aXNoIGEgcGFnZSB3cml0ZTogY2hlY2sgdGhlIHN0YXR1cywgcmVwb3J0IGVycm9ycy9iaXRmbGlw
+cyAqLwotICAgICAgIHJldHVybiBzcGluYW5kX2NoZWNrX2VjY19zdGF0dXMoc3BpbmFuZCwgZW5n
+aW5lX2NvbmYtPnN0YXR1cyk7CisgICAgICAgcmV0ID0gc3BpbmFuZF9jaGVja19lY2Nfc3RhdHVz
+KHNwaW5hbmQsIGVuZ2luZV9jb25mLT5zdGF0dXMpOworICAgICAgIGlmIChyZXQgPT0gLUVCQURN
+U0cpCisgICAgICAgICAgICAgICBtdGQtPmVjY19zdGF0cy5mYWlsZWQrKzsKKyAgICAgICBlbHNl
+IGlmIChyZXQgPiAwKQorICAgICAgICAgICAgICAgbXRkLT5lY2Nfc3RhdHMuY29ycmVjdGVkICs9
+IHJldDsKKworICAgICAgIHJldHVybiByZXQ7CiB9CiAKIHN0YXRpYyBzdHJ1Y3QgbmFuZF9lY2Nf
+ZW5naW5lX29wcyBzcGluYW5kX29uZGllX2VjY19lbmdpbmVfb3BzID0gewpAQCAtNjIwLDEzICs2
+MjgsMTAgQEAgc3RhdGljIGludCBzcGluYW5kX210ZF9yZWFkKHN0cnVjdCBtdGRfaW5mbyAqbXRk
+LCBsb2ZmX3QgZnJvbSwKICAgICAgICAgICAgICAgIGlmIChyZXQgPCAwICYmIHJldCAhPSAtRUJB
+RE1TRykKICAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7CiAKLSAgICAgICAgICAgICAgIGlm
+IChyZXQgPT0gLUVCQURNU0cpIHsKKyAgICAgICAgICAgICAgIGlmIChyZXQgPT0gLUVCQURNU0cp
+CiAgICAgICAgICAgICAgICAgICAgICAgIGVjY19mYWlsZWQgPSB0cnVlOwotICAgICAgICAgICAg
+ICAgICAgICAgICBtdGQtPmVjY19zdGF0cy5mYWlsZWQrKzsKLSAgICAgICAgICAgICAgIH0gZWxz
+ZSB7Ci0gICAgICAgICAgICAgICAgICAgICAgIG10ZC0+ZWNjX3N0YXRzLmNvcnJlY3RlZCArPSBy
+ZXQ7CisgICAgICAgICAgICAgICBlbHNlCiAgICAgICAgICAgICAgICAgICAgICAgIG1heF9iaXRm
+bGlwcyA9IG1heF90KHVuc2lnbmVkIGludCwgbWF4X2JpdGZsaXBzLCByZXQpOwotICAgICAgICAg
+ICAgICAgfQogCiAgICAgICAgICAgICAgICByZXQgPSAwOwogICAgICAgICAgICAgICAgb3BzLT5y
+ZXRsZW4gKz0gaXRlci5yZXEuZGF0YWxlbjsKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
+c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
+Cg==
