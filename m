@@ -2,88 +2,98 @@ Return-Path: <SRS0=fEar=KH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-15.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3D92C433ED
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 May 2021 08:23:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E12A0C433B4
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 May 2021 18:25:29 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 29CD2613BE
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 May 2021 08:23:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 29CD2613BE
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=thorsis.com
+	by mail.kernel.org (Postfix) with ESMTPS id 9C563613BD
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 May 2021 18:25:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C563613BD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
-	:Content-Type:MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:References:Message-ID:Subject:Cc:To:From
-	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=sCDeC/UcGzE6NGyX3RjO1au5KPyYZEVIrWsQNIjqDFw=; b=gX/kI1GcxDWEV6AVHBkWLEnaQ3
-	85qb+c3O3jqLSmJ1oRPssmNIBMqB0ggSGogkBYXK5KbBm1ImQ1p0s5G4KYvw0C4rlQdhHaDCqDnPe
-	rHWOj902XjbJlV2S6AsxXfidcSUDy/Jhnq/koFJDUDOeY8T7ftyyYTqF0iqpq05N3Vo/BoprQAUSn
-	y0LLhoCcAyjK771M52i3dwcVfGjiyQHTUcI1pjf/nuwBUb6QmUv8MVHTTTn5KThMDnhykzXZTl+Mg
-	ogiPHkIFFCu18mCtw1NPZ9AjggDc500+5JlzcnSxRwWMhfNflI+5Gh0BQVkNoQOiHMRLohNkvlNCQ
-	aOp2NJrg==;
+	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=QSs0taMGVvU+6FyS4ydgf2yLAUuGYKIT2VHrg0q37zo=; b=I23loGU16C1taBhap8AHwajYF
+	1UIMHaNwzGWRAereTqJWwjesUBTehO6GFh5+/vGEG9qfh5r+YX1E49oDebGeHOJJW/qI+rXteFc3R
+	Ue8LCR9AWOiUcdxuUe/HUJFbNJAiGg39kNC3YSDVWMyQFT9MaLvAqu507d4JrZP1eaeQB8QzFixqu
+	9t00bu7odgAp/vmAIo1J860h9wiZVOWOZgJBYgdaV92LViXtVLoCuzKQ9PeoMpxkcUILu7LdDaKVV
+	WijyKffiVdGALLHCw3Xfob6H9BAfmVbH4gXWgTynNTmcAxEL8IRzTZSH7Jl3kdLXP6Rm29yqR5d3t
+	EYADTWJYA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lgk8j-002JRZ-NU; Wed, 12 May 2021 08:22:45 +0000
+	id 1lgtWy-003dL4-35; Wed, 12 May 2021 18:24:24 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lgk8h-002JRT-B1
- for linux-mtd@desiato.infradead.org; Wed, 12 May 2021 08:22:43 +0000
+ id 1lgtO9-003Zv4-UD
+ for linux-mtd@desiato.infradead.org; Wed, 12 May 2021 18:15:18 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:References:
- Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:MIME-Version:
+ d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+ :References:Message-ID:Subject:CC:To:From:Date:Sender:Reply-To:
  Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=I5qtAiVxMVodVbP506gkYgQcJAvjhgmkh61/eYDsyFQ=; b=4TbkHGIVnG5FyWgtuDRm7ccFVV
- h4L6YxpdlB48VTbmerjrXS7eX/V8gPcUnNskXbegnhgi0Bd01Pg5D0//PdXDF66R+APfqwSrgKG0Q
- otjCHBq5Zg035Y1ts30qKRRgS1vfF3B5Ws2jdiTVRwgv109m5aKsYDJqCcX9YaREqWz/ZYh5RnBhR
- 6517TAPjqDDcMeKFQVxeWkcqviJ6UP9ZOBMb/afGEul+Dj60Xj69MuS1cOpKxCsM+Ir2XqF7tVhpg
- PG0Y5vo0ma8zkVOdc6Yik5uG4mY9/1WwrrgZzzudXiELG4WBzl/KvEzifPf+NvZNnQ3189ToeJyCm
- aYXJC/5A==;
-Received: from mail.thorsis.com ([92.198.35.195])
+ bh=FsEv88/8/UTVetcMYrNgOhBSultjjTeZkT50z0PO73g=; b=08wWkYICA9WKlyRaj5BRUM1++f
+ rgn6Y0DzY15jHTtEHLj0NpwX5bS3w63VYEB5nQq9WDHLTdR0kMdmTmHLEtr5qZax+7jTL6ugFv1JR
+ fLBejmxx4ma3bWcsn7I2TL1T1wP2ha4v4kUaQcxEHynWqJh+TZ5bqZJMkhumNfS3palV7YBsDLWJb
+ dTOVqPBTdxe5PGrQrklO2OBQ+NiVBUp7pjddrnLfvXdfrh+yF9C9Q6Wkq+VfxOY/hm+aqNNbfQBJW
+ GT2nXEdpI5NXIjJsRw+gbGgID7IxBZj/g7/mFYGzJRkBRyn8uwmc050aX8iSBCEODmJklreUIn8B4
+ AP40rAMA==;
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lgk8e-00ACuK-Ha
- for linux-mtd@lists.infradead.org; Wed, 12 May 2021 08:22:41 +0000
-Received: from localhost (localhost [127.0.0.1])
- by mail.thorsis.com (Postfix) with ESMTP id 52467293F
- for <linux-mtd@lists.infradead.org>; Wed, 12 May 2021 10:22:34 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
-Received: from mail.thorsis.com ([127.0.0.1])
- by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id 3sJnQxRDWDRu for <linux-mtd@lists.infradead.org>;
- Wed, 12 May 2021 10:22:30 +0200 (CEST)
-Received: by mail.thorsis.com (Postfix, from userid 109)
- id 015001CB9; Wed, 12 May 2021 10:22:29 +0200 (CEST)
-Date: Wed, 12 May 2021 10:22:22 +0200
-From: Alexander Dahl <ada@thorsis.com>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] ubifs: fix snprintf() checking
-Message-ID: <YJuQPqyKYJZQbHqJ@ada-deb-carambola.ifak-system.com>
-Mail-Followup-To: Dan Carpenter <dan.carpenter@oracle.com>,
- Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-References: <YJouQKMQZe1I2kkg@mwanda>
+ id 1lgtO5-00Ah9U-LU
+ for linux-mtd@lists.infradead.org; Wed, 12 May 2021 18:15:16 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14CIF6dD074881;
+ Wed, 12 May 2021 13:15:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1620843306;
+ bh=FsEv88/8/UTVetcMYrNgOhBSultjjTeZkT50z0PO73g=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=oMKwY5YsO13iIsJ6jNC+0EPCRUySY5/JDvYoF7mLaSeVpLLrwloXDjMk83xZohf+4
+ 0DfrlkyhDM/U/756kRpdwfcvFD2UOeT7ivB8Vxeb6M1IzXuyiXTYgdvPnkoDw+FrVk
+ D6IPCVDHKC0ClvPWyrV0d7DNHgUToF7wloOasQ4U=
+Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14CIF6vN042400
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Wed, 12 May 2021 13:15:06 -0500
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 12
+ May 2021 13:15:05 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 12 May 2021 13:15:05 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14CIF4QK070120;
+ Wed, 12 May 2021 13:15:05 -0500
+Date: Wed, 12 May 2021 23:45:04 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: Zhengxun Li <zhengxunli@mxic.com.tw>
+CC: <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
+ <tudor.ambarus@microchip.com>, <miquel.raynal@bootlin.com>,
+ <broonie@kernel.org>, <jaimeliao@mxic.com.tw>
+Subject: Re: [PATCH v4 1/2] mtd: spi-nor: macronix: add support for Macronix
+ octaflash
+Message-ID: <20210512181502.gktrfbezxrw25snz@ti.com>
+References: <1620634836-13181-1-git-send-email-zhengxunli@mxic.com.tw>
+ <1620634836-13181-2-git-send-email-zhengxunli@mxic.com.tw>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <YJouQKMQZe1I2kkg@mwanda>
+In-Reply-To: <1620634836-13181-2-git-send-email-zhengxunli@mxic.com.tw>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210512_012240_772547_F63FDCF5 
-X-CRM114-Status: GOOD (  20.48  )
+X-CRM114-CacheID: sfid-20210512_111513_915346_82BDDBF0 
+X-CRM114-Status: GOOD (  34.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,65 +105,273 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello,
-
-Am Tue, May 11, 2021 at 10:12:00AM +0300 schrieb Dan Carpenter:
-> The snprintf() function returns the number of characters (not
-> counting the NUL terminator) that it would have printed if we
-> had space.
+On 10/05/21 04:20PM, Zhengxun Li wrote:
+> The octaflash is an xSPI compliant octal DTR flash. Add support
+> for using it in octal DTR mode.
 > 
-> This buffer has UBIFS_DFS_DIR_LEN characters plus one extra for
-> the terminator.  Printing UBIFS_DFS_DIR_LEN is okay but anything
-> higher will result in truncation.  Thus the comparison needs to be
-> change from == to >.
+> Try to verify the flash ID to check whether the flash memory in octal
+> DTR mode is correct. When reading ID in OCTAL DTR mode, ID will appear
+> in a repeated manner. ex: ID[0] = 0xc2, ID[1] = 0xc2, ID[2] = 0x94,
+> ID[3] = 0x94... Rearrange the order so that the ID can pass.
 > 
-> These strings are compile time constants so this patch doesn't
-> affect runtime.
+> The octaflash series can be divided into the following types:
 > 
-> Fixes: ae380ce04731 ("UBIFS: lessen the size of debugging info data structure")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> MX25 series : Serial NOR Flash.
+> MX66 series : Serial NOR Flash with stacked die.(Size larger than 1Gb)
+> LM/UM series : Up to 250MHz clock frequency with both DTR/STR operation.
+> LW/UW series : Support simultaneous Read-while-Write operation in multiple
+> 	       bank architecture. Read-while-write feature which means read
+> 	       data one bank while another bank is programing or erasing.
+> 
+> MX25LM : 3.0V Octal I/O
+>  -https://www.mxic.com.tw/Lists/Datasheet/Attachments/7841/MX25LM51245G,%203V,%20512Mb,%20v1.1.pdf
+> 
+> MX25UM : 1.8V Octal I/O
+>  -https://www.mxic.com.tw/Lists/Datasheet/Attachments/7525/MX25UM51245G%20Extreme%20Speed,%201.8V,%20512Mb,%20v1.0.pdf
+> 
+> MX66LM : 3.0V Octal I/O with stacked die
+>  -https://www.mxic.com.tw/Lists/Datasheet/Attachments/7929/MX66LM1G45G,%203V,%201Gb,%20v1.1.pdf
+> 
+> MX66UM : 1.8V Octal I/O with stacked die
+>  -https://www.mxic.com.tw/Lists/Datasheet/Attachments/7721/MX66UM1G45G,%201.8V,%201Gb,%20v1.1.pdf
+> 
+> MX25LW : 3.0V Octal I/O with Read-while-Write
+> MX25UW : 1.8V Octal I/O with Read-while-Write
+> MX66LW : 3.0V Octal I/O with Read-while-Write and stack die
+> MX66UW : 1.8V Octal I/O with Read-while-Write and stack die
+> 
+> About LW/UW series, please contact us freely if you have any
+> questions. For adding Octal NOR Flash IDs, we have validated
+> each Flash on plateform zynq-picozed.
+> 
+> Signed-off-by: Zhengxun Li <zhengxunli@mxic.com.tw>
 > ---
->  drivers/mtd/ubi/debug.c | 2 +-
->  fs/ubifs/debug.c        | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+>  drivers/mtd/spi-nor/macronix.c | 172 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 172 insertions(+)
 > 
-> diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
-> index ac2bdba8bb1a..3c0c8eca4d51 100644
-> --- a/drivers/mtd/ubi/debug.c
-> +++ b/drivers/mtd/ubi/debug.c
-> @@ -511,7 +511,7 @@ int ubi_debugfs_init_dev(struct ubi_device *ubi)
+> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+> index 42c2cf3..00ddecc 100644
+> --- a/drivers/mtd/spi-nor/macronix.c
+> +++ b/drivers/mtd/spi-nor/macronix.c
+> @@ -8,6 +8,12 @@
 >  
->  	n = snprintf(d->dfs_dir_name, UBI_DFS_DIR_LEN + 1, UBI_DFS_DIR_NAME,
->  		     ubi->ubi_num);
-> -	if (n == UBI_DFS_DIR_LEN) {
-> +	if (n > UBI_DFS_DIR_LEN) {
->  		/* The array size is too small */
->  		return -EINVAL;
->  	}
-> diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
-> index 1bbb9fe661b1..fc718f6178f2 100644
-> --- a/fs/ubifs/debug.c
-> +++ b/fs/ubifs/debug.c
-> @@ -2824,7 +2824,7 @@ void dbg_debugfs_init_fs(struct ubifs_info *c)
+>  #include "core.h"
 >  
->  	n = snprintf(d->dfs_dir_name, UBIFS_DFS_DIR_LEN + 1, UBIFS_DFS_DIR_NAME,
->  		     c->vi.ubi_num, c->vi.vol_id);
-> -	if (n == UBIFS_DFS_DIR_LEN) {
-> +	if (n > UBIFS_DFS_DIR_LEN) {
->  		/* The array size is too small */
->  		return;
->  	}
+> +#define SPINOR_OP_RD_CR2		0x71		/* Read configuration register 2 */
+> +#define SPINOR_OP_WR_CR2		0x72		/* Write configuration register 2 */
+> +#define SPINOR_REG_MXIC_CR2_MODE	0x00000000	/* For setting octal DTR mode */
+> +#define SPINOR_REG_MXIC_OPI_DTR_EN	0x2		/* Enable Octal DTR */
+> +#define SPINOR_REG_MXIC_SPI_EN		0x0		/* Enable SPI */
+> +
+>  static int
+>  mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
+>  			    const struct sfdp_parameter_header *bfpt_header,
+> @@ -32,6 +38,72 @@
+>  	.post_bfpt = mx25l25635_post_bfpt_fixups,
+>  };
+>  
+> +/**
+> + * spi_nor_macronix_octal_dtr_enable() - Enable octal DTR on Macronix flashes.
+> + * @nor:		pointer to a 'struct spi_nor'
+> + * @enable:		whether to enable Octal DTR or switch back to SPI
+> + *
+> + * Return: 0 on success, -errno otherwise.
+> + */
+> +static int spi_nor_macronix_octal_dtr_enable(struct spi_nor *nor, bool enable)
+> +{
+> +	struct spi_mem_op op;
+> +	u8 *buf = nor->bouncebuf, i;
+> +	int ret;
+> +
+> +	/* Set/unset the octal and DTR enable bits. */
+> +	ret = spi_nor_write_enable(nor);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (enable)
+> +		*buf = SPINOR_REG_MXIC_OPI_DTR_EN;
+> +	else
+> +		*buf = SPINOR_REG_MXIC_SPI_EN;
+> +
+> +	op = (struct spi_mem_op)
+> +		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_CR2, 1),
+> +			   SPI_MEM_OP_ADDR(4, SPINOR_REG_MXIC_CR2_MODE, 1),
+> +			   SPI_MEM_OP_NO_DUMMY,
+> +			   SPI_MEM_OP_DATA_OUT(1, buf, 1));
 
-Reviewed-by: Alexander Dahl <ada@thorsis.com>
+This would fail to disable 8D mode after my patch [0] is applied. See 
+patch 1/6 and 2/6 on how I solved the problem for Micron and Cypress 
+flashes.
 
-Greets
-Alex
+> +
+> +	if (!enable)
+> +		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
+> +
+> +	ret = spi_mem_exec_op(nor->spimem, &op);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Read flash ID to make sure the switch was successful. */
+> +	op = (struct spi_mem_op)
+> +		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDID, 1),
+> +			   SPI_MEM_OP_ADDR(enable ? 4 : 0, 0, 1),
+> +			   SPI_MEM_OP_DUMMY(enable ? 4 : 0, 1),
+> +			   SPI_MEM_OP_DATA_IN(SPI_NOR_MAX_ID_LEN, buf, 1));
+> +
+> +	if (enable)
+> +		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
+> +
+> +	ret = spi_mem_exec_op(nor->spimem, &op);
+> +	if (ret)
+> +		return ret;
+> +
+> +	for (i = 0; i < nor->info->id_len; i++)
+> +		if (buf[i * 2] != nor->info->id[i])
+> +			return -EINVAL;
+> +
+> +	return 0;
+> +}
+> +
+> +static void octaflash_default_init(struct spi_nor *nor)
+> +{
+> +	nor->params->octal_dtr_enable = spi_nor_macronix_octal_dtr_enable;
+> +}
+> +
+> +static struct spi_nor_fixups octaflash_fixups = {
+> +	.default_init = octaflash_default_init,
+
+So the post-sfdp fixup was not needed at all. Nice!
+
+> +};
+> +
+>  static const struct flash_info macronix_parts[] = {
+>  	/* Macronix */
+>  	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
+> @@ -86,6 +158,106 @@
+>  	{ "mx66u2g45g",	 INFO(0xc2253c, 0, 64 * 1024, 4096,
+>  			      SECT_4K | SPI_NOR_DUAL_READ |
+>  			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+> +	{ "mx66lm2g45g", INFO(0xc2853c, 0, 64 * 1024, 4096,
+> +			      SECT_4K | SPI_NOR_OCTAL_DTR_READ |
+> +			      SPI_NOR_OCTAL_DTR_PP | SPI_NOR_4B_OPCODES)
+> +		.fixups = &octaflash_fixups },
+> +	{ "mx66lm1g45g", INFO(0xc2853b, 0, 32 * 1024, 4096,
+> +			      SECT_4K | SPI_NOR_OCTAL_DTR_READ |
+> +			      SPI_NOR_OCTAL_DTR_PP | SPI_NOR_4B_OPCODES)
+> +		.fixups = &octaflash_fixups },
+> +	{ "mx66lw1g45g", INFO(0xc2863b, 0, 32 * 1024, 4096,
+> +			      SECT_4K | SPI_NOR_OCTAL_DTR_READ |
+> +			      SPI_NOR_OCTAL_DTR_PP | SPI_NOR_4B_OPCODES)
+> +		.fixups = &octaflash_fixups },
+> +	{ "mx25lm51245g", INFO(0xc2853a, 0, 16 * 1024, 4096,
+> +			       SECT_4K | SPI_NOR_OCTAL_DTR_READ |
+> +			       SPI_NOR_OCTAL_DTR_PP | SPI_NOR_4B_OPCODES)
+> +		.fixups = &octaflash_fixups },
+> +	{ "mx25lw51245g", INFO(0xc2863a, 0, 16 * 1024, 4096,
+> +			       SECT_4K | SPI_NOR_OCTAL_DTR_READ |
+> +			       SPI_NOR_OCTAL_DTR_PP | SPI_NOR_4B_OPCODES)
+> +		.fixups = &octaflash_fixups },
+> +	{ "mx25lm25645g", INFO(0xc28539, 0, 8 * 1024, 4096,
+> +			       SECT_4K | SPI_NOR_OCTAL_DTR_READ |
+> +			       SPI_NOR_OCTAL_DTR_PP | SPI_NOR_4B_OPCODES)
+> +		.fixups = &octaflash_fixups },
+> +	{ "mx25lw25645g", INFO(0xc28639, 0, 8 * 1024, 4096,
+> +			       SECT_4K | SPI_NOR_OCTAL_DTR_READ |
+> +			       SPI_NOR_OCTAL_DTR_PP | SPI_NOR_4B_OPCODES)
+> +		.fixups = &octaflash_fixups },
+> +	{ "mx66um2g45g", INFO(0xc2803c, 0, 64 * 1024, 4096,
+> +			      SECT_4K | SPI_NOR_OCTAL_DTR_READ |
+> +			      SPI_NOR_OCTAL_DTR_PP | SPI_NOR_4B_OPCODES)
+> +		.fixups = &octaflash_fixups },
+> +	{ "mx66uw2g345g", INFO(0xc2843c, 0, 64 * 1024, 4096,
+> +			       SECT_4K | SPI_NOR_OCTAL_DTR_READ |
+> +			       SPI_NOR_OCTAL_DTR_PP | SPI_NOR_4B_OPCODES)
+> +		.fixups = &octaflash_fixups },
+> +	{ "mx66uw2g345gx0", INFO(0xc2943c, 0, 64 * 1024, 4096,
+> +				 SECT_4K | SPI_NOR_OCTAL_DTR_READ |
+> +				 SPI_NOR_OCTAL_DTR_PP | SPI_NOR_4B_OPCODES)
+> +		.fixups = &octaflash_fixups },
+> +	{ "mx66um1g45g", INFO(0xc2803b, 0, 32 * 1024, 4096,
+> +			      SECT_4K | SPI_NOR_OCTAL_DTR_READ |
+> +			      SPI_NOR_OCTAL_DTR_PP | SPI_NOR_4B_OPCODES)
+> +		.fixups = &octaflash_fixups },
+> +	{ "mx66um1g45g40", INFO(0xc2808b, 0, 32 * 1024, 4096,
+> +				SECT_4K | SPI_NOR_OCTAL_DTR_READ |
+> +				SPI_NOR_OCTAL_DTR_PP | SPI_NOR_4B_OPCODES)
+> +		.fixups = &octaflash_fixups },
+> +	{ "mx66uw1g45g", INFO(0xc2813b, 0, 32 * 1024, 4096,
+> +			      SECT_4K | SPI_NOR_OCTAL_DTR_READ |
+> +			      SPI_NOR_OCTAL_DTR_PP | SPI_NOR_4B_OPCODES)
+> +		.fixups = &octaflash_fixups },
+> +	{ "mx25um51245g", INFO(0xc2803a, 0, 16 * 1024, 4096,
+> +			       SECT_4K | SPI_NOR_OCTAL_DTR_READ |
+> +			       SPI_NOR_OCTAL_DTR_PP | SPI_NOR_4B_OPCODES)
+> +		.fixups = &octaflash_fixups },
+> +	{ "mx25uw51245g", INFO(0xc2813a, 0, 16 * 1024, 4096,
+> +			       SECT_4K | SPI_NOR_OCTAL_DTR_READ |
+> +			       SPI_NOR_OCTAL_DTR_PP | SPI_NOR_4B_OPCODES)
+> +		.fixups = &octaflash_fixups },
+> +	{ "mx25uw51345g", INFO(0xc2843a, 0, 16 * 1024, 4096,
+> +			       SECT_4K | SPI_NOR_OCTAL_DTR_READ |
+> +			       SPI_NOR_OCTAL_DTR_PP | SPI_NOR_4B_OPCODES)
+> +		.fixups = &octaflash_fixups },
+> +	{ "mx25um25645g", INFO(0xc28039, 0, 8 * 1024, 4096,
+> +			       SECT_4K | SPI_NOR_OCTAL_DTR_READ |
+> +			       SPI_NOR_OCTAL_DTR_PP | SPI_NOR_4B_OPCODES)
+> +		.fixups = &octaflash_fixups },
+> +	{ "mx25uw25645g", INFO(0xc28139, 0, 8 * 1024, 4096,
+> +			       SECT_4K | SPI_NOR_OCTAL_DTR_READ |
+> +			       SPI_NOR_OCTAL_DTR_PP | SPI_NOR_4B_OPCODES)
+> +		.fixups = &octaflash_fixups },
+> +	{ "mx25um25345g", INFO(0xc28339, 0, 8 * 1024, 4096,
+> +			       SECT_4K | SPI_NOR_OCTAL_DTR_READ |
+> +			       SPI_NOR_OCTAL_DTR_PP | SPI_NOR_4B_OPCODES)
+> +		.fixups = &octaflash_fixups },
+> +	{ "mx25uw25345g", INFO(0xc28439, 0, 8 * 1024, 4096,
+> +			       SECT_4K | SPI_NOR_OCTAL_DTR_READ |
+> +			       SPI_NOR_OCTAL_DTR_PP | SPI_NOR_4B_OPCODES)
+> +		.fixups = &octaflash_fixups },
+> +	{ "mx25uw12845g", INFO(0xc28138, 0, 4 * 1024, 4096,
+> +			       SECT_4K | SPI_NOR_OCTAL_DTR_READ |
+> +			       SPI_NOR_OCTAL_DTR_PP | SPI_NOR_4B_OPCODES)
+> +		.fixups = &octaflash_fixups },
+> +	{ "mx25uw12a45g", INFO(0xc28938, 0, 4 * 1024, 4096,
+> +			       SECT_4K | SPI_NOR_OCTAL_DTR_READ |
+> +			       SPI_NOR_OCTAL_DTR_PP | SPI_NOR_4B_OPCODES)
+> +		.fixups = &octaflash_fixups },
+> +	{ "mx25uw12345g", INFO(0xc28438, 0, 4 * 1024, 4096,
+> +			       SECT_4K | SPI_NOR_OCTAL_DTR_READ |
+> +			       SPI_NOR_OCTAL_DTR_PP | SPI_NOR_4B_OPCODES)
+> +		.fixups = &octaflash_fixups },
+> +	{ "mx25uw6445g", INFO(0xc28137, 0, 2 * 1024, 4096,
+> +			      SECT_4K | SPI_NOR_OCTAL_DTR_READ |
+> +			      SPI_NOR_OCTAL_DTR_PP | SPI_NOR_4B_OPCODES)
+> +		.fixups = &octaflash_fixups },
+> +	{ "mx25uw6345g", INFO(0xc28437, 0, 2 * 1024, 4096,
+> +			      SECT_4K | SPI_NOR_OCTAL_DTR_READ |
+> +			      SPI_NOR_OCTAL_DTR_PP | SPI_NOR_4B_OPCODES)
+> +		.fixups = &octaflash_fixups },
+
+I don't see any ID collisions here, so all good.
+
+>  };
+>  
+>  static void macronix_default_init(struct spi_nor *nor)
+
+Apart from the 8D-8D-8D register write comment above, the patch looks 
+good to me.
+
+[0] https://lore.kernel.org/linux-mtd/20210506191829.8271-5-p.yadav@ti.com/
+
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
