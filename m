@@ -2,83 +2,77 @@ Return-Path: <SRS0=otIu=KI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-6.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9572CC433ED
-	for <linux-mtd@archiver.kernel.org>; Thu, 13 May 2021 02:12:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B8EDC433B4
+	for <linux-mtd@archiver.kernel.org>; Thu, 13 May 2021 06:46:50 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 07D4C61108
-	for <linux-mtd@archiver.kernel.org>; Thu, 13 May 2021 02:12:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 07D4C61108
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
+	by mail.kernel.org (Postfix) with ESMTPS id DBB2C61433
+	for <linux-mtd@archiver.kernel.org>; Thu, 13 May 2021 06:46:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DBB2C61433
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:Subject:Cc:To:
-	References:In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=9tMQAXQUCjQqbSx+fvKaQOYKqhoHbrdoYWauLj/E904=; b=cP6ojk0LjAS+REWCul9aeFUZD
-	3ht9GPzulFCl0QLq155SHgFAjnJjlWutzP/CCB2UNJDYS6jHQkcru2Ajb+YIzyq2Znjxs/QQRG8X/
-	+qcK5/JwNDEMwnoMlSQmOh3uva9rgxJAPiBD9x10kaQVNPcZGDE9Uct6dEAQT94gaYvRVH09V3OlH
-	hR5QDwcD96uHCSprROXg+g/BOkhZwwZ2Q4QBoiCzU8N6+a9fAu7oZsvPPWeH2MGKYa10qSgb3NUeO
-	bbARyXFGgzmvus1T97lhLpoHLxBkfeML0DPRJabBkJQa4PCYIWOd0h631rbuRKaWpobudu8xZzgOA
-	TWwD/AWrw==;
+	 bh=1tWEjvwuPs+2T8SOaSp5EBqCjdNg0YuqaA9Yuu2s0c4=; b=Yec7okGyIBqGQ2tMNeQqPgG5B
+	xb5SgqqDjuYh1zLHDQhyOQxMlalh1run8R8VBGcrkRIiTcr95MIfpxizRNm92qf/UbZ+v5fYT9SXB
+	NJxo/YE0hjWCgwrWE85mNAkbJeSaoJRvzC0iV1aKj/rv2TBLCg0ZWg6FPpYY0KZmbGPyZNuNojats
+	/vD2sK5PlIF+GLSgd4jV1W/E8y9xthgR9r33hR5S5kJA6V1x8g/0AcnihVa2fTOoeb5JW7tdzB3V4
+	8+RT5523xL26+WQ0rdPLM2nsssJ34amy0Xyw7IuZrFoFEPHrKalDPsqoKGSQ/aQlSmiA5/Cn5w8ps
+	JlXW5tyrA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lh0p0-004SmY-FQ; Thu, 13 May 2021 02:11:30 +0000
+	id 1lh56H-004wU3-3a; Thu, 13 May 2021 06:45:37 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lh0ox-004SmD-DV
- for linux-mtd@desiato.infradead.org; Thu, 13 May 2021 02:11:27 +0000
+ id 1lh56F-004wTu-GR
+ for linux-mtd@desiato.infradead.org; Thu, 13 May 2021 06:45:35 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
- Content-Type:Date:From:Message-ID:MIME-Version:Subject:Cc:To:References:
- In-Reply-To:Sender:Reply-To:Content-ID:Content-Description;
- bh=bZs6h0J+I/mrKZ0U8NQrj2fn2ppkCk/5PWw5ubfYTGM=; b=ngF7ur8Yt6+8DeNIyOX5B8X4QH
- jb1la0qI7auA1ourC2jXRZpktPfU50iEVv1c9jAt5bgtmqSIEfdBXUUyMRV5lArwL5MOeddPp50hd
- +Q6QNuFXpuP1qyZdPL/HAsoVfRsRsdjKSXh6ruXDxbbDO/hVtv3qG50tGjZVnmAYxRSZcIsGPMMSN
- m5wyAwPi1uVejX9rqkR7JIHBtN54/xy5MzPceX0i2qHmY8wDyQvMUjKJYTbIoQALivZcjPZeHts4Z
- w97Te3B2b6qoBLcjIUa8S5R8T9oAgSjUcUzOQwMdsmEoyjolHvtu11lLsGXjbO0+EJgJUdYx0+7XV
- ex72hL/w==;
-Received: from twhmllg4.macronix.com ([211.75.127.132])
+ Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
+ From:Date:Sender:Reply-To:Content-ID:Content-Description;
+ bh=OCmbCiwDmiOymU9SqcxTs+ZRGerlHCo/Z9EQe/46bE4=; b=nSvJPYo6TrAlFGxoMm+wJiSJYI
+ sNtojcCAcoE8Eya4R4YPB0JlVOwFvUaiajx//KN2GB3CZPbWk9l84bQ+K3sivFkdGOb7a8S/bv416
+ chl5SGAJLzHsf1IxmLzl5+wOGyrQglf0GAvc+GMBsqzSV5mwFaYM9XjQCzX99wFw1vMKIn7E4BjbB
+ ybVHpP/0g/x3WF2iQsqFnTQV4Slzd0KVxyxHDyOQMUY1R1+Lg1QTTF06eSUOdCDLStBukgHoSlsay
+ qT5OQczQ0Eb+PJQMPYbrOyM1Dtw/WU9vqYlGbOBjDD2MXaXcxRfPsS3e+dlChpBgCXIy8litJWDkB
+ 4GqT2lYg==;
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lh0ot-00Axz9-7m
- for linux-mtd@lists.infradead.org; Thu, 13 May 2021 02:11:24 +0000
-Received: from twhfm1p2.macronix.com (twhfmlp2.macronix.com [172.17.20.92])
- by TWHMLLG4.macronix.com with ESMTP id 14D2B2YG014974;
- Thu, 13 May 2021 10:11:02 +0800 (GMT-8)
- (envelope-from ycllin@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
- by Forcepoint Email with ESMTP id E8A4283D3192A84A1029;
- Thu, 13 May 2021 10:11:02 +0800 (CST)
-In-Reply-To: <20210511105319.0c077fd5@xps13>
+ id 1lh56C-00B3Lx-3l
+ for linux-mtd@lists.infradead.org; Thu, 13 May 2021 06:45:34 +0000
+X-Originating-IP: 90.89.138.59
+Received: from xps13 (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr [90.89.138.59])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 0FED220004;
+ Thu, 13 May 2021 06:45:24 +0000 (UTC)
+Date: Thu, 13 May 2021 08:45:23 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: ycllin@mxic.com.tw
+Cc: juliensu@mxic.com.tw, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, richard@nod.at, vigneshr@ti.com, Thomas
+ Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 0/2] Fix double counting of S/W ECC engines' ECC stat
+Message-ID: <20210513084523.41d1cdd6@xps13>
+In-Reply-To: <OFAD6CC9BD.1F0CDB53-ON482586D4.000A51D2-482586D4.000BFF66@mxic.com.tw>
 References: <1620697235-7829-1-git-send-email-ycllin@mxic.com.tw>
  <20210511105319.0c077fd5@xps13>
-To: "Miquel Raynal" <miquel.raynal@bootlin.com>
-Cc: juliensu@mxic.com.tw, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, richard@nod.at, vigneshr@ti.com
-Subject: Re: [PATCH 0/2] Fix double counting of S/W ECC engines' ECC stat
+ <OFAD6CC9BD.1F0CDB53-ON482586D4.000A51D2-482586D4.000BFF66@mxic.com.tw>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-KeepSent: AD6CC9BD:1F0CDB53-482586D4:000A51D2;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP6 SHF907 April 26, 2018
-Message-ID: <OFAD6CC9BD.1F0CDB53-ON482586D4.000A51D2-482586D4.000BFF66@mxic.com.tw>
-From: ycllin@mxic.com.tw
-Date: Thu, 13 May 2021 10:11:02 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
- HF265|July 25, 2018) at 2021/05/13 AM 10:11:02,
- Serialize complete at 2021/05/13 AM 10:11:02
-X-MAIL: TWHMLLG4.macronix.com 14D2B2YG014974
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210512_191123_570930_0BD4D50C 
-X-CRM114-Status: UNSURE (   3.18  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210512_234532_329875_37312B56 
+X-CRM114-Status: GOOD (  19.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,111 +84,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-> "Miquel Raynal" <miquel.raynal@bootlin.com> =
-
-<deleted>
-> =
-
-> Good catch!
-> =
-
-> However I don't think the current fix is valid because these engines
-> are meant to be used by the raw NAND core as well, I propose something
-> like the below, can you please tell me if it works as expected? (not
-> even build tested)
-> =
-
-> Thanks,
-> Miqu=E8l
-> =
-
-> =
-
-<deleted>
-
-Thanks for your work.
-
-I tested the two patches(yours and mine) separately in our environment: =
-
-1) MXIC NFC(&raw NAND),2) MXIC SPI host(&SPI-NAND) with S/W BCH engine. =
-
-Both patches are valid(using nandtest/nandbiterrs, values of ecc_stats are =
-
-normal).
-
-This seems to be because the function(nand_ecc_sw_bch_finish_io_req() =
-
-in ecc-sw-bch.c) that would increase the ecc_stats counter is not used =
-
-in the raw NAND world. Am I misunderstanding or is it platform dependency?
-
-BTW, I think your modification should be more in line with the design =
-
-spirit =
-
-of generic ECC engine framework.
-
-Thanks,
-YouChing
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information =
-
-and/or personal data, which is protected by applicable laws. Please be =
-
-reminded that duplication, disclosure, distribution, or use of this e-mail =
-
-(and/or its attachments) or any part thereof is prohibited. If you receive =
-
-this e-mail in error, please notify us immediately and delete this mail as =
-
-well as its attachment(s) from your system. In addition, please be =
-
-informed that collection, processing, and/or use of personal data is =
-
-prohibited unless expressly permitted by personal data protection laws. =
-
-Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information and/or=
- personal data, which is protected by applicable laws. Please be reminded t=
-hat duplication, disclosure, distribution, or use of this e-mail (and/or it=
-s attachments) or any part thereof is prohibited. If you receive this e-mai=
-l in error, please notify us immediately and delete this mail as well as it=
-s attachment(s) from your system. In addition, please be informed that coll=
-ection, processing, and/or use of personal data is prohibited unless expres=
-sly permitted by personal data protection laws. Thank you for your attentio=
-n and cooperation.
-
-Macronix International Co., Ltd.
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgWW91Q2hpbmcsCgp5Y2xsaW5AbXhpYy5jb20udHcgd3JvdGUgb24gVGh1LCAxMyBNYXkgMjAy
+MSAxMDoxMTowMiArMDgwMDoKCj4gPiAiTWlxdWVsIFJheW5hbCIgPG1pcXVlbC5yYXluYWxAYm9v
+dGxpbi5jb20+ICAgCj4gPGRlbGV0ZWQ+Cj4gPiAKPiA+IEdvb2QgY2F0Y2ghCj4gPiAKPiA+IEhv
+d2V2ZXIgSSBkb24ndCB0aGluayB0aGUgY3VycmVudCBmaXggaXMgdmFsaWQgYmVjYXVzZSB0aGVz
+ZSBlbmdpbmVzCj4gPiBhcmUgbWVhbnQgdG8gYmUgdXNlZCBieSB0aGUgcmF3IE5BTkQgY29yZSBh
+cyB3ZWxsLCBJIHByb3Bvc2Ugc29tZXRoaW5nCj4gPiBsaWtlIHRoZSBiZWxvdywgY2FuIHlvdSBw
+bGVhc2UgdGVsbCBtZSBpZiBpdCB3b3JrcyBhcyBleHBlY3RlZD8gKG5vdAo+ID4gZXZlbiBidWls
+ZCB0ZXN0ZWQpCj4gPiAKPiA+IFRoYW5rcywKPiA+IE1pcXXDqGwKPiA+IAo+ID4gICAKPiA8ZGVs
+ZXRlZD4KPiAKPiBUaGFua3MgZm9yIHlvdXIgd29yay4KPiAKPiBJIHRlc3RlZCB0aGUgdHdvIHBh
+dGNoZXMoeW91cnMgYW5kIG1pbmUpIHNlcGFyYXRlbHkgaW4gb3VyIGVudmlyb25tZW50OiAKPiAx
+KSBNWElDIE5GQygmcmF3IE5BTkQpLDIpIE1YSUMgU1BJIGhvc3QoJlNQSS1OQU5EKSB3aXRoIFMv
+VyBCQ0ggZW5naW5lLiAKPiBCb3RoIHBhdGNoZXMgYXJlIHZhbGlkKHVzaW5nIG5hbmR0ZXN0L25h
+bmRiaXRlcnJzLCB2YWx1ZXMgb2YgZWNjX3N0YXRzIGFyZSAKPiBub3JtYWwpLgo+IAo+IFRoaXMg
+c2VlbXMgdG8gYmUgYmVjYXVzZSB0aGUgZnVuY3Rpb24obmFuZF9lY2Nfc3dfYmNoX2ZpbmlzaF9p
+b19yZXEoKSAKPiBpbiBlY2Mtc3ctYmNoLmMpIHRoYXQgd291bGQgaW5jcmVhc2UgdGhlIGVjY19z
+dGF0cyBjb3VudGVyIGlzIG5vdCB1c2VkIAo+IGluIHRoZSByYXcgTkFORCB3b3JsZC4gQW0gSSBt
+aXN1bmRlcnN0YW5kaW5nIG9yIGlzIGl0IHBsYXRmb3JtIGRlcGVuZGVuY3k/CgpJIGRvbid0IHRo
+aW5rIGl0IGNhbiBiZSBjYWxsZWQgYSBwbGF0Zm9ybSBkZXBlbmRlbmN5LCBpdCdzIG1vcmUgbGlr
+ZQpsZWdhY3kgZnJvbSB0aGUgcmF3IE5BTkQgd29ybGQgd2hpY2ggbWFrZXMgdGhlIHVzZSBvZiB0
+aGUgZ2VuZXJpYyBFQ0MKZnJhbWV3b3JrIGhhcmQgYW5kIHRodXMgaXMgbGltaXRlZCB0byBhIGdp
+dmVuIHNldCBvZiBmdW5jdGlvbnMuCgo+IEJUVywgSSB0aGluayB5b3VyIG1vZGlmaWNhdGlvbiBz
+aG91bGQgYmUgbW9yZSBpbiBsaW5lIHdpdGggdGhlIGRlc2lnbiAKPiBzcGlyaXQgCj4gb2YgZ2Vu
+ZXJpYyBFQ0MgZW5naW5lIGZyYW1ld29yay4KClllcywgaWRlYWxseSByYXcgTkFORCBzaG91bGQg
+ZnVsbHkgY29tcGx5IHRvIHRoaXMgZnJhbWV3b3JrIGJ1dCB0aGlzCndvdWxkIHJlcXVpcmUgYSBo
+dW5kcmVkIGRheXMgb2Ygd29yayBhbmQgZG96ZW5zIG9mIGF2YWlsYWJsZSBib2FyZHMgdG8KdGVz
+dC4gRHVyaW5nIHRoZSBwYXN0IDIwIHllYXJzIHBlb3BsZSBhc3N1bWVkIE5BTkQgY29udHJvbGxl
+ciBhbmQgRUNDCmVuZ2luZSB3ZXJlIGEgc2luZ2xlIGVudGl0eSB3aGljaCBtYWtlcyB0aGUgdXNl
+IG9mIHRoZSBnZW5lcmljIEVDQwpmcmFtZXdvcmsgaGFyZCB0byBpbXBsZW1lbnRlZCBpbiB0aGUg
+cmF3IE5BTkQuIFNvIEkgZGVjaWRlZCBub3QgdG8gcHV0CmFsbCBteSBlbmVyZ3kgdGhlcmUgaW4g
+b3JkZXIgdG8gZmlyc3QgZ2V0IHRoaXMgZnJhbWV3b3JrIGF2YWlsYWJsZSB0bwpTUEktTkFORCBk
+ZXZpY2VzLgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
+Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
