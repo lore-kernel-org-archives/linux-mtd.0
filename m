@@ -2,76 +2,78 @@ Return-Path: <SRS0=79EA=KN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68080C433B4
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 May 2021 09:43:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A381BC433B4
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 May 2021 09:45:00 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DC0E261184
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 May 2021 09:43:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DC0E261184
+	by mail.kernel.org (Postfix) with ESMTPS id 3893E61184
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 May 2021 09:45:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3893E61184
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=foss.st.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=lDDE5MRT+1RfoSf1baI5/k8e8hjz6hWeuOPDvthFh14=; b=nR069TTnWDV+gJLC5sUv0mypMK
-	BWszxWUdQxlM4LVW4aN1MzdIa8aY7WiBfL+aShxIfPGbmrf5Jjnofc8nUaocMWDJReYGxktEqJ5ns
-	j8SQDO/+L1VxufpaYhIwKxMvOTzbEnvQxrMQVYJkYKjNleeg3+4ILrKCyfvKGORrSN5V203ByCjNU
-	t2bj4gwpi69yl300uww/NPv2FuSsK2zlaJEoLvG3ky1v8fAqZXRCBsBJMXUjc45Se9vkonO7E3HnL
-	h7UOiR4aUDSjPMRtSXWld3m6FmHU2K8XP8+L2mmsmq+4fEVj5yrwXMIhgEmeTDqc/8fuKjMZMPqI2
-	583ka/mw==;
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
+	Subject:CC:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=nVL0Ea34A6yXMS9nsLM/0HJG3E0GJS2eOWiDnU+uVaU=; b=QV7mTxaFa8b/px+HfckmyluQk
+	a7nPSTaEM9lDihT2iweEftixDWazh7+ilo4+ii7T3+Fn35vJt+WZtEcyiz7vFSQkM0mkx8lyMt40s
+	sJWkEeYtfoJA7ATDQQuZqZB/j6h0nStgiR2Gm2QJ3M3j+pkivlPK+64PyYlE7uzUCYOeCl4vywdj9
+	ELJmS6pisRUPi6If+4cDBX7lMaLjmWPZlpMxTlCvVEux6R8FF9Xz+Di/m/o+NDDuqKP9rrNjVhhPz
+	RroPjaoBAFos8n6P2REw2bfbl2l9GGMz+wdUlUaH2f43kAxUB57E5lD6GoWZ7UlSy4bPU1eqTyU2p
+	vLUVgafuQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1liwFE-000CJZ-DE; Tue, 18 May 2021 09:42:32 +0000
+	id 1liwGa-000Cgc-PO; Tue, 18 May 2021 09:43:56 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1liwF9-000CIP-CD; Tue, 18 May 2021 09:42:27 +0000
+ id 1liwFA-000CIz-Jg; Tue, 18 May 2021 09:42:28 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Content-Type:MIME-Version:Message-ID:
- Date:Subject:CC:To:From:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
- Content-Description:In-Reply-To:References;
- bh=NYkCFyg/J9YK0KU90WHGnXm9+RztNvxNW7BXV5KdyXw=; b=Hzw6UMFlRZFeac/ml33u27YDIw
- EiyEvVRYOZiwZvUOET4hUP9viRMqJAG703JQl9SffNmDAe7s0/T+8R76ZX4fPHGLPmr5Q4HladQfC
- th+jJTj7hYo6I/5zeA3zyHxOp4t1G1cZIXxDybYgYPbizmPkgOmCj4sV3q0idkAJTNW/057wzegMx
- PVhenbWgGC8HHzns+vxZaUtdKy+x4dM54Im9CYJ6vIt84i+VIO2Gro0ZSJsm+bfBuxwgVszVQuQNJ
- 7keZ7RH7kkUFgxZTQEtIc+5vB6lp+h8uW4iZB/ztgLoouYqalxbPa9rSlZIbXqq5GtyGrm2mlRzHu
- j0VFlncA==;
-Received: from mx07-00178001.pphosted.com ([185.132.182.106])
+ d=infradead.org; s=bombadil.20210309; h=Content-Type:MIME-Version:References:
+ In-Reply-To:Message-ID:Date:Subject:CC:To:From:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description;
+ bh=4HoG+z1yNsklnJ8rWxCMVJvcO7V/MllQemPej9i9gvE=; b=pop6TypY7aZ5M1W68zp6FaAsuH
+ TTwWvZgUMKbfzPymsg8Kxk4pmogwooDgvO4KfSR6FQoRTvGyHpatzRyAcFifOTjYHPmEeJQXAnqsn
+ OwhhgvP/kHhkjADm2ApcAy0lgxvsCBokiSFYTCL8MoART6LkkOTQa6ct4NscZdrAIPVgTKqeNQLaU
+ GqBBoSvBPTXJvlsYC3qVpoiPj4GtTjmagfq4lS8P1d6dBTJZXaPTtd4ihtN1EjovKSEi0dfKLfKBg
+ EGpbNwDHf2ymGOCm/9bo5Hzs183R+phOiSSkE3eJb6DEi0xgErxgzKMzkzMCRoBwLUoSuDQApXw/Y
+ eEdloBsQ==;
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]
+ helo=mx07-00178001.pphosted.com)
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1liwF6-00EWJJ-9j; Tue, 18 May 2021 09:42:25 +0000
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+ id 1liwF6-00EWJL-I6; Tue, 18 May 2021 09:42:27 +0000
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
  by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 14I9MvPl010142; Tue, 18 May 2021 11:42:14 +0200
+ 14I9ftj3002253; Tue, 18 May 2021 11:42:14 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
  h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=selector1;
- bh=NYkCFyg/J9YK0KU90WHGnXm9+RztNvxNW7BXV5KdyXw=;
- b=pjiD3jJOvymNxQYw/Edc/CTtVfMDjIcZz4m1827GZIN8N+4UEXar3/yFLhN/CKtVor8T
- +qjVpMcgaqfFvPMgLtP3lUwuRcOI+m9klihgOXZ6hD3WiUHGEd8zI7HF0wBFrl5lbwNy
- hEGYbrA3gIQ1AgMu6+r7C8TXSuY/YH9VGL8k2vifSZmcDD8wLdveGcdLnA//+sNmmMgT
- uX7bQ1GR9qDTRHCx7/IfmLd9LldYPAXZbz2DvpozKW3JvxJm/q3HsgihuZrAxsLSddmb
- 569x5b9sjitsvxieJ1LVc5jRyLk6thZVOid6UUtBXrjJ+bSE0YH12xzBvtBCECC0/mft 4A== 
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=selector1;
+ bh=4HoG+z1yNsklnJ8rWxCMVJvcO7V/MllQemPej9i9gvE=;
+ b=JZZn8cGOvtocFsS78d6nWlLgiHP5YQlknaS0+5ZetibNnv5/1yvOakF6eYeV0xvKuW1v
+ lpRtcfmteMEYXD9RuNZn0LYvMJHxO8j88eeUTRdCOpyiVcYkG4z6EG0FsOq3dPf+EQto
+ 4GuHSitrKWXiRBMKbql8foTRcypdVcjGUTpMeOK6n91CmFbADCBYBAs6YgcGSdGQnCQp
+ b8UxWu83FJtLI6vZtYKYIsQ47HwqxMDo9D3AC+z9QGf4xCnD16elDZN7kFmJkK1Ty5i+
+ JPUWliYrL46FFGUZybM4ukUZKnWYWKA9pf2E4zSmegc65u2aTixdKLKUGfQZeUr9bzcf BA== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com with ESMTP id 38maunr4mw-1
+ by mx07-00178001.pphosted.com with ESMTP id 38km706pwn-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
  Tue, 18 May 2021 11:42:14 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2228510002A;
- Tue, 18 May 2021 11:42:12 +0200 (CEST)
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 72D44100038;
+ Tue, 18 May 2021 11:42:13 +0200 (CEST)
 Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 09E1921CA62;
- Tue, 18 May 2021 11:42:12 +0200 (CEST)
-Received: from localhost (10.75.127.45) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 18 May 2021 11:42:11
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 62F0D21CA64;
+ Tue, 18 May 2021 11:42:13 +0200 (CEST)
+Received: from localhost (10.75.127.46) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 18 May 2021 11:42:12
  +0200
 From: <patrice.chotard@foss.st.com>
 To: Mark Brown <broonie@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -81,20 +83,22 @@ To: Mark Brown <broonie@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
  <linux-spi@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
  <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
 CC: <patrice.chotard@foss.st.com>, <christophe.kerello@foss.st.com>
-Subject: [PATCH v3 0/3] MTD: spinand: Add spi_mem_poll_status() support 
-Date: Tue, 18 May 2021 11:39:48 +0200
-Message-ID: <20210518093951.23136-1-patrice.chotard@foss.st.com>
+Subject: [PATCH v3 2/3] mtd: spinand: use the spi-mem poll status APIs
+Date: Tue, 18 May 2021 11:39:50 +0200
+Message-ID: <20210518093951.23136-3-patrice.chotard@foss.st.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210518093951.23136-1-patrice.chotard@foss.st.com>
+References: <20210518093951.23136-1-patrice.chotard@foss.st.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG2NODE3.st.com
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG2NODE3.st.com
  (10.75.127.6)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391, 18.0.761
  definitions=2021-05-18_04:2021-05-17,
  2021-05-18 signatures=0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210518_024224_725444_AC93C68E 
-X-CRM114-Status: GOOD (  15.40  )
+X-CRM114-CacheID: sfid-20210518_024224_912419_97550634 
+X-CRM114-Status: GOOD (  18.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -113,49 +117,135 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Patrice Chotard <patrice.chotard@foss.st.com>
 
-This series adds support for the spi_mem_poll_status() spinand
-interface.
-Some QSPI controllers allows to poll automatically memory 
-status during operations (erase, read or write). This allows to 
-offload the CPU for this task.
-STM32 QSPI is supporting this feature, driver update are also
-part of this series.
+Make use of spi-mem poll status APIs to let advanced controllers
+optimize wait operations.
 
-Chnages in v3:
-  - Add spi_mem_read_status() which allows to read 8 or 16 bits status.
-  - Add initial_delay_us and polling_delay_us parameters to spi_mem_poll_status().
-    and also to poll_status() callback.
-  - Move spi_mem_supports_op() in SW-based polling case.
-  - Add delay before invoquing read_poll_timeout().
-  - Remove the reinit/wait_for_completion() added in v2.
-  - Add initial_delay_us and polling_delay_us parameters to spinand_wait().
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+---
+Changes in v3:
+  - Add initial_delay_us and polling_delay_us parameters to spinand_wait()
   - Add SPINAND_READ/WRITE/ERASE/RESET_INITIAL_DELAY_US and
     SPINAND_READ/WRITE/ERASE/RESET_POLL_DELAY_US defines.
-  - Remove spi_mem_finalize_op() API added in v2.
 
 Changes in v2:
-  - Indicates the spi_mem_poll_status() timeout unit
-  - Use 2-byte wide status register
-  - Add spi_mem_supports_op() call in spi_mem_poll_status()
-  - Add completion management in spi_mem_poll_status()
-  - Add offload/non-offload case management in spi_mem_poll_status()
-  - Optimize the non-offload case by using read_poll_timeout()
-  - mask and match stm32_qspi_poll_status()'s parameters are 2-byte wide
-  - Make usage of new spi_mem_finalize_op() API in
-    stm32_qspi_wait_poll_status()
+  - non-offload case is now managed by spi_mem_poll_status()
 
-Patrice Chotard (3):
-  spi: spi-mem: add automatic poll status functions
-  mtd: spinand: use the spi-mem poll status APIs
-  spi: stm32-qspi: add automatic poll status feature
+ drivers/mtd/nand/spi/core.c | 45 ++++++++++++++++++++++++++-----------
+ include/linux/mtd/spinand.h | 11 ++++++++-
+ 2 files changed, 42 insertions(+), 14 deletions(-)
 
- drivers/mtd/nand/spi/core.c  | 45 +++++++++++++------
- drivers/spi/spi-mem.c        | 85 ++++++++++++++++++++++++++++++++++++
- drivers/spi/spi-stm32-qspi.c | 83 +++++++++++++++++++++++++++++++----
- include/linux/mtd/spinand.h  | 11 ++++-
- include/linux/spi/spi-mem.h  | 14 ++++++
- 5 files changed, 216 insertions(+), 22 deletions(-)
-
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 17f63f95f4a2..ef2a692ab5b6 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -473,20 +473,26 @@ static int spinand_erase_op(struct spinand_device *spinand,
+ 	return spi_mem_exec_op(spinand->spimem, &op);
+ }
+ 
+-static int spinand_wait(struct spinand_device *spinand, u8 *s)
++static int spinand_wait(struct spinand_device *spinand,
++			unsigned long initial_delay_us,
++			unsigned long poll_delay_us,
++			u8 *s)
+ {
+-	unsigned long timeo =  jiffies + msecs_to_jiffies(400);
++	struct spi_mem_op op = SPINAND_GET_FEATURE_OP(REG_STATUS,
++						      spinand->scratchbuf);
+ 	u8 status;
+ 	int ret;
+ 
+-	do {
+-		ret = spinand_read_status(spinand, &status);
+-		if (ret)
+-			return ret;
++	ret = spi_mem_poll_status(spinand->spimem, &op, STATUS_BUSY, 0,
++				  initial_delay_us,
++				  poll_delay_us,
++				  SPINAND_STATUS_TIMEOUT_MS);
++	if (ret)
++		return ret;
+ 
+-		if (!(status & STATUS_BUSY))
+-			goto out;
+-	} while (time_before(jiffies, timeo));
++	status = *spinand->scratchbuf;
++	if (!(status & STATUS_BUSY))
++		goto out;
+ 
+ 	/*
+ 	 * Extra read, just in case the STATUS_READY bit has changed
+@@ -526,7 +532,10 @@ static int spinand_reset_op(struct spinand_device *spinand)
+ 	if (ret)
+ 		return ret;
+ 
+-	return spinand_wait(spinand, NULL);
++	return spinand_wait(spinand,
++			    SPINAND_RESET_INITIAL_DELAY_US,
++			    SPINAND_RESET_POLL_DELAY_US,
++			    NULL);
+ }
+ 
+ static int spinand_lock_block(struct spinand_device *spinand, u8 lock)
+@@ -549,7 +558,10 @@ static int spinand_read_page(struct spinand_device *spinand,
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = spinand_wait(spinand, &status);
++	ret = spinand_wait(spinand,
++			   SPINAND_READ_INITIAL_DELAY_US,
++			   SPINAND_READ_POLL_DELAY_US,
++			   &status);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -585,7 +597,10 @@ static int spinand_write_page(struct spinand_device *spinand,
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = spinand_wait(spinand, &status);
++	ret = spinand_wait(spinand,
++			   SPINAND_WRITE_INITIAL_DELAY_US,
++			   SPINAND_WRITE_POLL_DELAY_US,
++			   &status);
+ 	if (!ret && (status & STATUS_PROG_FAILED))
+ 		return -EIO;
+ 
+@@ -768,7 +783,11 @@ static int spinand_erase(struct nand_device *nand, const struct nand_pos *pos)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = spinand_wait(spinand, &status);
++	ret = spinand_wait(spinand,
++			   SPINAND_ERASE_INITIAL_DELAY_US,
++			   SPINAND_ERASE_POLL_DELAY_US,
++			   &status);
++
+ 	if (!ret && (status & STATUS_ERASE_FAILED))
+ 		ret = -EIO;
+ 
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 6bb92f26833e..180c1fa64e62 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -169,7 +169,16 @@
+ struct spinand_op;
+ struct spinand_device;
+ 
+-#define SPINAND_MAX_ID_LEN	4
++#define SPINAND_MAX_ID_LEN		4
++#define SPINAND_READ_INITIAL_DELAY_US	6
++#define SPINAND_READ_POLL_DELAY_US	5
++#define SPINAND_RESET_INITIAL_DELAY_US	5
++#define SPINAND_RESET_POLL_DELAY_US	5
++#define SPINAND_WRITE_INITIAL_DELAY_US	75
++#define SPINAND_WRITE_POLL_DELAY_US	15
++#define SPINAND_ERASE_INITIAL_DELAY_US	250
++#define SPINAND_ERASE_POLL_DELAY_US	50
++#define SPINAND_STATUS_TIMEOUT_MS	400
+ 
+ /**
+  * struct spinand_id - SPI NAND id structure
 -- 
 2.17.1
 
