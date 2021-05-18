@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-15.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09B4EC433B4
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 May 2021 14:13:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71361C433ED
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 May 2021 14:19:41 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7D43A611CC
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 May 2021 14:13:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D43A611CC
+	by mail.kernel.org (Postfix) with ESMTPS id E1D9861209
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 May 2021 14:19:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E1D9861209
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,38 +23,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
 	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=RFxMXa3arFD9rpmf5QjnRoJqzIbDED7QEDLF1jpnQ2I=; b=jmOd/peWOFJhgGgkzLBPJTlf+
-	nI+764y1h9Pqxj+mpeTlhQEyJ5vlwhqyvmVF1QuIkcNu4P2eCdKz/9sfyXLfCpLqD1+XQiCufIz/b
-	i8lNXMpEgUfJjMXtTiS+ckjAZ5BQsLvBiF7G49fXvLn1nds0jFo/4zwVhwheccC3v4b1kjeiWuoRm
-	mgL28pbPQVQfuvMrFuXfEuAVu0qOEVlmKt4UYspG51akfWYrUlXVQAxdkIh9+WQMyXftkdRw0B/SR
-	tJ5T0KsVTawH153qH1LMVRK7Sc6DuBY3YSk2jSowjzBo3IVJoTdfcJ/EvQflmF/XPbfwc9EdLbOgE
-	9VcGXCrsQ==;
+	 bh=0bp3yhy2itM7Vl42x5c+4ZE7g2WYeM1fAusinVJZfqg=; b=iivzwn1sTnTwfjJoPuZ8omqmb
+	2BeIuHuMxif28ITCCuVLyFEPzSqlD+zm8dSDVn4cX8qZDR84L0S486hkM/dDzg8+oS8Dz7D3v/mkJ
+	FOsrwLsVJN+FzbTEN9foDwsWZO9LEVxSH7MlNVn7zp1/rCUlrlv1Oeztk9mfaKrx3RbzgeOzBW0NV
+	BgkIYjNviMWwIuL0uP6nK0DX3Ho/LZsqVYuN/fm38Lgj6ICGEVLTXo57TJ2/OmMZ+vMf7vIZjGi0p
+	4CxWeDlzKznFcSgCplsjCiCo2Br9PvO56dMOXlsInlrDcGkbgVgrPGk5f0Dx1axlNfckjrvMnHh7C
+	IS3ecFb3A==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lj0TC-000yQR-CA; Tue, 18 May 2021 14:13:14 +0000
+	id 1lj0Ym-000ziA-CC; Tue, 18 May 2021 14:19:00 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lj0T0-000yOD-57; Tue, 18 May 2021 14:13:02 +0000
+ id 1lj0YW-000zf0-9y; Tue, 18 May 2021 14:18:44 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
  Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
  From:Date:Sender:Reply-To:Content-ID:Content-Description;
- bh=QR3bulwhcNL/4G5zimw0bUV+9IfdAQ9KqpRN6bmNc+Q=; b=u5iIg3WClwFhslGxe9MKlmCval
- V1KizmRLNmZ35wuS5T7R9k5yH0DHZnJKMhF6jB06cfkODbKKJqTpAw8/pgnpTvoyIZXMtf4asHLLa
- Q0xHl/Hnx+f985bwL8rUAx5Ax/gazRdYPWgxGTBd5heHnAZR4a8FV4cvk5MTLmVS9bAQFALLqjacO
- l5nNVM8QTF5etNCMmCkC6AQWpzYbv6SKaOogBD7bctP+sHx5tr+BGIfKRWUzpWXwyJ0SnSTJuKhXl
- 28y0NSA2gb3cfZkTvkweZcCHAayOtBcy/l6gH0eQizEUCHU9jQiBxuucu0WZijGnZi0YxNYHH/gj2
- nSU87A0w==;
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+ bh=LUJP81xKDcHx4LK8QGSM2Trtx3zgLPswOpeVotjPQqA=; b=MFmvD4PTPU2FIvF4sS/l9vowm9
+ +WN1NNIabKg0TnBqYQvbLShfgEFXzH0jQH1NruPLG2+eBBF1WrnEd4vD3bekb5SSM3Ekytvl/4lXj
+ YauoteyRmy6M8CoBMDrYKPJBXCK4gzFGN2fNo/meK0UXvz9s6z7oKYgM0MeOgKsH/v4gthW8IisqJ
+ d+m26OXS6CrbAqQYuaCA6HeUwlkg4ZUW5ib+wRaIQjAKJlnN+p6714TDNDcnPnEgWZCf9GFeyINMe
+ xWUZv7ZX4V0qyTeYehb5XH+mX+xtCaUvfZ7zOOSGliX9kjeyJivCHpUAV2Rb3Deo9N19aS/AsKymk
+ W2QbsnOg==;
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lj0Sw-00EiRG-Rj; Tue, 18 May 2021 14:13:00 +0000
+ id 1lj0YT-00EigL-4x; Tue, 18 May 2021 14:18:42 +0000
 Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
  (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 58D541F42A10;
- Tue, 18 May 2021 15:12:56 +0100 (BST)
-Date: Tue, 18 May 2021 16:12:52 +0200
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 46DF61F4238F;
+ Tue, 18 May 2021 15:18:37 +0100 (BST)
+Date: Tue, 18 May 2021 16:18:34 +0200
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: <patrice.chotard@foss.st.com>
 Cc: Mark Brown <broonie@kernel.org>, Miquel Raynal
@@ -64,17 +64,17 @@ Cc: Mark Brown <broonie@kernel.org>, Miquel Raynal
  <linux-stm32@st-md-mailman.stormreply.com>,
  <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <christophe.kerello@foss.st.com>
-Subject: Re: [PATCH v4 1/3] spi: spi-mem: add automatic poll status functions
-Message-ID: <20210518161252.3e4f2999@collabora.com>
-In-Reply-To: <20210518134332.17826-2-patrice.chotard@foss.st.com>
+Subject: Re: [PATCH v4 2/3] mtd: spinand: use the spi-mem poll status APIs
+Message-ID: <20210518161834.6860c310@collabora.com>
+In-Reply-To: <20210518134332.17826-3-patrice.chotard@foss.st.com>
 References: <20210518134332.17826-1-patrice.chotard@foss.st.com>
- <20210518134332.17826-2-patrice.chotard@foss.st.com>
+ <20210518134332.17826-3-patrice.chotard@foss.st.com>
 Organization: Collabora
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210518_071259_203183_CE86D4CB 
-X-CRM114-Status: GOOD (  32.37  )
+X-CRM114-CacheID: sfid-20210518_071841_492418_E8833978 
+X-CRM114-Status: GOOD (  30.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,150 +91,162 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 18 May 2021 15:43:30 +0200
+On Tue, 18 May 2021 15:43:31 +0200
 <patrice.chotard@foss.st.com> wrote:
 
 > From: Patrice Chotard <patrice.chotard@foss.st.com>
 > 
-> With STM32 QSPI, it is possible to poll the status register of the device.
-> This could be done to offload the CPU during an operation (erase or
-> program a SPI NAND for example).
-> 
-> spi_mem_poll_status API has been added to handle this feature.
-> This new function take care of the offload/non-offload cases.
-> 
-> For the non-offload case, use read_poll_timeout() to poll the status in
-> order to release CPU during this phase.
-> For example, previously, when erasing large area, in non-offload case,
-> CPU load can reach ~50%, now it decrease to ~35%.
+> Make use of spi-mem poll status APIs to let advanced controllers
+> optimize wait operations.
+> This should also fix the high CPU usage for system that don't have
+> a dedicated STATUS poll block logic.
 > 
 > Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
 > Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
 > ---
 > Changes in v4:
->   - Remove init_completion() from spi_mem_probe() added in v2.
->   - Add missing static for spi_mem_read_status().
->   - Check if operation in spi_mem_poll_status() is a READ.
+>   - Update commit message.
+>   - Add comment which explains how delays has been calculated.
+>   - Rename SPINAND_STATUS_TIMEOUT_MS to SPINAND_WAITRDY_TIMEOUT_MS.
 > 
 > Changes in v3:
->   - Add spi_mem_read_status() which allows to read 8 or 16 bits status.
->   - Add initial_delay_us and polling_delay_us parameters to spi_mem_poll_status()
->     and also to poll_status() callback.
->   - Move spi_mem_supports_op() in SW-based polling case.
->   - Add delay before invoking read_poll_timeout().
->   - Remove the reinit/wait_for_completion() added in v2.
+>   - Add initial_delay_us and polling_delay_us parameters to spinand_wait()
+>   - Add SPINAND_READ/WRITE/ERASE/RESET_INITIAL_DELAY_US and
+>     SPINAND_READ/WRITE/ERASE/RESET_POLL_DELAY_US defines.
 > 
 > Changes in v2:
->   - Indicates the spi_mem_poll_status() timeout unit
->   - Use 2-byte wide status register
->   - Add spi_mem_supports_op() call in spi_mem_poll_status()
->   - Add completion management in spi_mem_poll_status()
->   - Add offload/non-offload case management in spi_mem_poll_status()
->   - Optimize the non-offload case by using read_poll_timeout()
+>   - non-offload case is now managed by spi_mem_poll_status()
 > 
->  drivers/spi/spi-mem.c       | 85 +++++++++++++++++++++++++++++++++++++
->  include/linux/spi/spi-mem.h | 14 ++++++
->  2 files changed, 99 insertions(+)
+>  drivers/mtd/nand/spi/core.c | 45 ++++++++++++++++++++++++++-----------
+>  include/linux/mtd/spinand.h | 22 ++++++++++++++++++
+>  2 files changed, 54 insertions(+), 13 deletions(-)
 > 
-> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-> index 1513553e4080..97c7a83686c7 100644
-> --- a/drivers/spi/spi-mem.c
-> +++ b/drivers/spi/spi-mem.c
-> @@ -6,6 +6,7 @@
->   * Author: Boris Brezillon <boris.brezillon@bootlin.com>
->   */
->  #include <linux/dmaengine.h>
-> +#include <linux/iopoll.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/spi/spi.h>
->  #include <linux/spi/spi-mem.h>
-> @@ -743,6 +744,90 @@ static inline struct spi_mem_driver *to_spi_mem_drv(struct device_driver *drv)
->  	return container_of(drv, struct spi_mem_driver, spidrv.driver);
+> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+> index 17f63f95f4a2..3131fae0c715 100644
+> --- a/drivers/mtd/nand/spi/core.c
+> +++ b/drivers/mtd/nand/spi/core.c
+> @@ -473,20 +473,26 @@ static int spinand_erase_op(struct spinand_device *spinand,
+>  	return spi_mem_exec_op(spinand->spimem, &op);
 >  }
 >  
-> +static int spi_mem_read_status(struct spi_mem *mem,
-> +			       const struct spi_mem_op *op,
-> +			       u16 *status)
-> +{
-> +	const u8 *bytes = (u8 *)op->data.buf.in;
-> +	int ret;
-> +
-> +	ret = spi_mem_exec_op(mem, op);
+> -static int spinand_wait(struct spinand_device *spinand, u8 *s)
+> +static int spinand_wait(struct spinand_device *spinand,
+> +			unsigned long initial_delay_us,
+> +			unsigned long poll_delay_us,
+> +			u8 *s)
+>  {
+> -	unsigned long timeo =  jiffies + msecs_to_jiffies(400);
+> +	struct spi_mem_op op = SPINAND_GET_FEATURE_OP(REG_STATUS,
+> +						      spinand->scratchbuf);
+>  	u8 status;
+>  	int ret;
+>  
+> -	do {
+> -		ret = spinand_read_status(spinand, &status);
+> -		if (ret)
+> -			return ret;
+> +	ret = spi_mem_poll_status(spinand->spimem, &op, STATUS_BUSY, 0,
+> +				  initial_delay_us,
+> +				  poll_delay_us,
+> +				  SPINAND_WAITRDY_TIMEOUT_MS);
 > +	if (ret)
 > +		return ret;
-> +
-> +	if (op->data.nbytes > 1)
-> +		*status = ((u16)bytes[0] << 8) | bytes[1];
-> +	else
-> +		*status = bytes[0];
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * spi_mem_poll_status() - Poll memory device status
-> + * @mem: SPI memory device
-> + * @op: the memory operation to execute
-> + * @mask: status bitmask to ckeck
-> + * @match: (status & mask) expected value
-> + * @initial_delay_us: delay in us before starting to poll
-> + * @polling_delay_us: time to sleep between reads in us
-> + * @timeout_ms: timeout in milliseconds
-> + *
-> + * This function send a polling status request to the controller driver
+>  
+> -		if (!(status & STATUS_BUSY))
+> -			goto out;
+> -	} while (time_before(jiffies, timeo));
+> +	status = *spinand->scratchbuf;
+> +	if (!(status & STATUS_BUSY))
+> +		goto out;
 
-"
-This function polls a status register and returns when
-(status & mask) == match or when the timeout has expired.
-"
+Looks like you expect the driver to not only wait for a status change
+but also fill the data buffer with the last status value. I think that
+should be documented in the SPI mem API.
 
-> + *
-> + * Return: 0 in case of success, -ETIMEDOUT in case of error,
-> + *         -EOPNOTSUPP if not supported.
+>  	/*
+>  	 * Extra read, just in case the STATUS_READY bit has changed
+> @@ -526,7 +532,10 @@ static int spinand_reset_op(struct spinand_device *spinand)
+>  	if (ret)
+>  		return ret;
+>  
+> -	return spinand_wait(spinand, NULL);
+> +	return spinand_wait(spinand,
+> +			    SPINAND_RESET_INITIAL_DELAY_US,
+> +			    SPINAND_RESET_POLL_DELAY_US,
+> +			    NULL);
+>  }
+>  
+>  static int spinand_lock_block(struct spinand_device *spinand, u8 lock)
+> @@ -549,7 +558,10 @@ static int spinand_read_page(struct spinand_device *spinand,
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = spinand_wait(spinand, &status);
+> +	ret = spinand_wait(spinand,
+> +			   SPINAND_READ_INITIAL_DELAY_US,
+> +			   SPINAND_READ_POLL_DELAY_US,
+> +			   &status);
+>  	if (ret < 0)
+>  		return ret;
+>  
+> @@ -585,7 +597,10 @@ static int spinand_write_page(struct spinand_device *spinand,
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = spinand_wait(spinand, &status);
+> +	ret = spinand_wait(spinand,
+> +			   SPINAND_WRITE_INITIAL_DELAY_US,
+> +			   SPINAND_WRITE_POLL_DELAY_US,
+> +			   &status);
+>  	if (!ret && (status & STATUS_PROG_FAILED))
+>  		return -EIO;
+>  
+> @@ -768,7 +783,11 @@ static int spinand_erase(struct nand_device *nand, const struct nand_pos *pos)
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = spinand_wait(spinand, &status);
+> +	ret = spinand_wait(spinand,
+> +			   SPINAND_ERASE_INITIAL_DELAY_US,
+> +			   SPINAND_ERASE_POLL_DELAY_US,
+> +			   &status);
+> +
+>  	if (!ret && (status & STATUS_ERASE_FAILED))
+>  		ret = -EIO;
+>  
+> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+> index 6bb92f26833e..6988956b8492 100644
+> --- a/include/linux/mtd/spinand.h
+> +++ b/include/linux/mtd/spinand.h
+> @@ -170,6 +170,28 @@ struct spinand_op;
+>  struct spinand_device;
+>  
+>  #define SPINAND_MAX_ID_LEN	4
+> +/*
+> + * For erase, write and read operation, we got the following timings :
+> + * tBERS (erase) 1ms to 4ms
+> + * tPROG 300us to 400us
+> + * tREAD 25us to 100us
+> + * In order to minimize latency, the min value is divided by 4 for the
+> + * initial delay, and dividing by 20 for the poll delay.
+> + * For reset, 5us/10us/500us if the device is respectively
+> + * reading/programming/erasing when the RESET occurs. Since we always
+> + * issue a RESET when the device is IDLE, 5us is selected for both initial
+> + * and poll delay.
 > + */
-> +int spi_mem_poll_status(struct spi_mem *mem,
-> +			const struct spi_mem_op *op,
-> +			u16 mask, u16 match,
-> +			unsigned long initial_delay_us,
-> +			unsigned long polling_delay_us,
-> +			u16 timeout_ms)
-> +{
-> +	struct spi_controller *ctlr = mem->spi->controller;
-> +	int ret = -EOPNOTSUPP;
-> +	int read_status_ret;
-> +	u16 status;
+> +#define SPINAND_READ_INITIAL_DELAY_US	6
+> +#define SPINAND_READ_POLL_DELAY_US	5
+> +#define SPINAND_RESET_INITIAL_DELAY_US	5
+> +#define SPINAND_RESET_POLL_DELAY_US	5
+> +#define SPINAND_WRITE_INITIAL_DELAY_US	75
+> +#define SPINAND_WRITE_POLL_DELAY_US	15
+> +#define SPINAND_ERASE_INITIAL_DELAY_US	250
+> +#define SPINAND_ERASE_POLL_DELAY_US	50
 > +
-> +	if (op->data.nbytes < 1 || op->data.nbytes > 2 ||
-> +	    op->data.dir != SPI_MEM_DATA_IN)
-> +		return (-EINVAL);
-
-s/return (-EINVAL);/return -EINVAL;/
-
-
-[...]
-
+> +#define SPINAND_WAITRDY_TIMEOUT_MS	400
+>  
 >  /**
-> @@ -369,6 +376,13 @@ devm_spi_mem_dirmap_create(struct device *dev, struct spi_mem *mem,
->  void devm_spi_mem_dirmap_destroy(struct device *dev,
->  				 struct spi_mem_dirmap_desc *desc);
->  
-> +int spi_mem_poll_status(struct spi_mem *mem,
-> +			const struct spi_mem_op *op,
-> +			u16 mask, u16 match,
-> +			unsigned long initial_delay_us,
-> +			unsigned long polling_delay_us,
-> +			u16 timeout);
-
-s/timeout/timeout_ms/.
-
-With those minor things fixed
-
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-
-> +
->  int spi_mem_driver_register_with_owner(struct spi_mem_driver *drv,
->  				       struct module *owner);
->  
+>   * struct spinand_id - SPI NAND id structure
 
 
 ______________________________________________________
