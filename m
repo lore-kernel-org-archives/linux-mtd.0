@@ -1,21 +1,21 @@
-Return-Path: <SRS0=TxUZ=KP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=79EA=KN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E373C433ED
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 May 2021 16:10:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 848C1C433B4
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 May 2021 11:41:49 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E00C561163
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 May 2021 16:10:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E00C561163
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4A268610A2
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 May 2021 11:41:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A268610A2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
@@ -23,57 +23,57 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
 	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=yyaqAOuyNRCKCQ65AJcLAPOrqyiALlzOaiXw2EhHZKA=; b=Kz8wvJPbdCKmMW1qoT/YNdcn7d
-	13pt6QeoNDEmjBCD1wAyDWwzlzInsrazF6GWi0G8ICBAWRril1sUtJCesMdUokxFZi6kw6HZ7Y+Cf
-	wjPAJuN9LfJw/PAFNhCReujhuyVoVUQ4jVoWq8g+PN99jKkvqZYBk15hHIsoIo6t/eLRUapsEr/kq
-	a5wESJP/h5b8lTdYPl2daJi1BCkx2k7sExj4rPj4hUxB1f01YzNk/CJ6IPfn1DqMAO71cv1oJLiOq
-	8oyA59LkgcBrM54cUT8nox8eLgsMf55tnxN6a61etc+3le4aCRAOWZSQ6cfQVv2KCCGpC9l+lVqL+
-	2EwWCqoA==;
+	 bh=gzSBggH7Y94BW/Y/24Oqbi+avCpUOCbwIN83r1nwfEY=; b=LdQ0JRV7hbpQyAJsrX5CMDHWF
+	bROVDlmOzbttKXrz7UvBgXY+hyLD8wvt98NsWETZ7j66H6a7ubAWX5SwtWOfaAc/H1NvZoDAz8WGW
+	r5QDSwcKTC0I+Kr1Wcxz5Amk0cT63vIpQkWAtb3b04swwjQZBxQjyCiAsTzHHcqoDPNetSDly5GVO
+	4tfIaBoX0DXktnP2SC6n9MbmRQoT0HpREY+2pctAh1LEGa7/WlGV9W8IztatLpuXTLUJai68g++HB
+	cGr6x/fYan0LSkMKm+r5s1355JZfviwCQWLWUEj9MJFnACfia0yRS+WWlQwIF/WOtfUodmvfZBbRy
+	BhAlSa11A==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
-	by desiato.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ljlEt-001sb7-BZ; Thu, 20 May 2021 16:09:37 +0000
+	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
+	id 1liy5v-000bZM-6T; Tue, 18 May 2021 11:41:03 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
- by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ljlDG-001rx1-Gc
- for linux-mtd@desiato.infradead.org; Thu, 20 May 2021 16:07:55 +0000
+ by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
+ id 1liy5d-000bVz-Mx; Tue, 18 May 2021 11:40:45 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
  Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
  From:Date:Sender:Reply-To:Content-ID:Content-Description;
- bh=dqQqf+xwNr5+tc7iMkdvF7M5CEpc+53jAEhWc1nWGf4=; b=O4fvE56+bQ+CC4wW6ftDbaBYM8
- T0OKZdrEHahkm3Oyi7sQM8LNWElLo2T+7ggMhc1q0vdq1bejT/9sRbI6IkS65fYyBOxfcqCmTgKMW
- 9r0XyY3utbUb40el6Orkn08zfvbzniGG1MRri5JEfvrHeMAEd2Tnrw8zV4P6DoVPjZL1zEhmi6ECX
- +5S1RERcG/pLLj5EveDcksMqvBALNXC1RxrLryafkj5wm02S1P2g92QHcJk/YMyY8g8ITfRDwRwqj
- azR4tasFoN7GvnOaEAnm5FHdQOfxIkXx6HGuoWoq/9YAWw+z6doSK0SBqb4m8gS8pHWWmsf5w+ewY
- oTRFrhWA==;
-Received: from relay3-d.mail.gandi.net ([217.70.183.195])
+ bh=WWBEoYzugaTrnU8hDN3B22Le21dJzKYPbeNi3V5Idvc=; b=dD23tYW5JK48QxLykNPgdWJG0y
+ hhlZRg66R/8nEdv2+2DIvhq7aSUbbJ1yMlDnW2FfgDpp0bBHggMkA2bLLD0utVn+lSk/xhj2Ut2C5
+ oFRuXDfaRnRYEKauJwCE/cSBCjs98ERi2QOlES7bvM74GqSS4u1rKZzR+vysyQ4c2u+6DQm3kJ8ei
+ +6ROp3mzddrDq1SykLgzvM3XC2yQixsFQzWTwf3HoKu+3Jg3bR8TG58Fnc94uXpDuKoItN8CKPJrN
+ IH4g5Tn+weEcDvr8f9JQ5kMRuFWWkcIMBKvWQFpLiMSpB4zYdZC/tPcXGLqGjfK9PhG5mSa8wYXe1
+ dKZ9hJMA==;
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1ljlDD-00GUnw-If
- for linux-mtd@lists.infradead.org; Thu, 20 May 2021 16:07:53 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 49F5C6000F;
- Thu, 20 May 2021 16:07:48 +0000 (UTC)
-Date: Thu, 20 May 2021 18:07:47 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Corentin Labbe <clabbe@baylibre.com>, Boris Brezillon
- <boris.brezillon@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- R <vigneshr@ti.com>, linux-kernel <linux-kernel@vger.kernel.org>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 2/2] mtd: partitions: redboot: fix style issues
-Message-ID: <20210520180747.03fd60b8@xps13>
-In-Reply-To: <CACRpkdZhhNQupN_4Oh759bKL7sEM9M=yOW1y-mT69ugEkjRMZw@mail.gmail.com>
-References: <20210520114851.1274609-1-clabbe@baylibre.com>
- <20210520114851.1274609-2-clabbe@baylibre.com>
- <CACRpkda6ou1SJZzBwHXN_kWofnFw8w7XAkr7VcFO2NrqbQug_Q@mail.gmail.com>
- <20210520173619.26870bc8@xps13>
- <CACRpkdZhhNQupN_4Oh759bKL7sEM9M=yOW1y-mT69ugEkjRMZw@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1liy5b-00Ebso-4m; Tue, 18 May 2021 11:40:44 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 9B4561F42F6C;
+ Tue, 18 May 2021 12:40:41 +0100 (BST)
+Date: Tue, 18 May 2021 13:40:37 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: <patrice.chotard@foss.st.com>
+Cc: Mark Brown <broonie@kernel.org>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ <linux-spi@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <christophe.kerello@foss.st.com>
+Subject: Re: [PATCH v3 1/3] spi: spi-mem: add automatic poll status functions
+Message-ID: <20210518134037.0e5839b0@collabora.com>
+In-Reply-To: <20210518093951.23136-2-patrice.chotard@foss.st.com>
+References: <20210518093951.23136-1-patrice.chotard@foss.st.com>
+ <20210518093951.23136-2-patrice.chotard@foss.st.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210520_090751_782379_036D8422 
-X-CRM114-Status: GOOD (  16.08  )
+X-CRM114-CacheID: sfid-20210518_044043_349547_EF4B4471 
+X-CRM114-Status: GOOD (  16.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,37 +90,74 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Tue, 18 May 2021 11:39:49 +0200
+<patrice.chotard@foss.st.com> wrote:
 
-Linus Walleij <linus.walleij@linaro.org> wrote on Thu, 20 May 2021
-18:00:04 +0200:
+> +/**
+> + * spi_mem_poll_status() - Poll memory device status
+> + * @mem: SPI memory device
+> + * @op: the memory operation to execute
+> + * @mask: status bitmask to ckeck
+> + * @match: (status & mask) expected value
+> + * @initial_delay_us: delay in us before starting to poll
+> + * @polling_delay_us: time to sleep between reads in us
+> + * @timeout_ms: timeout in milliseconds
+> + *
+> + * This function send a polling status request to the controller driver
+> + *
+> + * Return: 0 in case of success, -ETIMEDOUT in case of error,
+> + *         -EOPNOTSUPP if not supported.
+> + */
+> +int spi_mem_poll_status(struct spi_mem *mem,
+> +			const struct spi_mem_op *op,
+> +			u16 mask, u16 match,
+> +			unsigned long initial_delay_us,
+> +			unsigned long polling_delay_us,
+> +			u16 timeout_ms)
+> +{
+> +	struct spi_controller *ctlr = mem->spi->controller;
+> +	int ret = -EOPNOTSUPP;
+> +	int read_status_ret;
+> +	u16 status;
+> +
+> +	if (op->data.nbytes < 1 || op->data.nbytes > 2)
+> +		return -EINVAL;
 
-> On Thu, May 20, 2021 at 5:36 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > Linus Walleij <linus.walleij@linaro.org> wrote on Thu, 20 May 2021
-> > 17:24:26 +0200:  
-> > > On Thu, May 20, 2021 at 1:49 PM Corentin Labbe <clabbe@baylibre.com> wrote:
-> > >  
-> > > > This patch fixes easy checkpatch issues.
-> > > >
-> > > > Signed-off-by: Corentin Labbe <clabbe@baylibre.com>  
-> > > (...)  
-> > > > -    uint32_t     flash_base;    // Address within FLASH of image  
-> > > (...)  
-> > > > +       u32       flash_base;    // Address within FLASH of image  
-> > >
-> > > Does checkpatch complain about this? At one point the MTD maintainer
-> > > disliked the u32/u16/u8 types and explicitly wanted to use the C
-> > > standard library types, and it's the kind of eccentric maintainer
-> > > deviations we accommodate for.  
-> >
-> > I suppose this happened quite some time ago? :)
-> >
-> > I've never heard Richard nor Boris complaining about it, nor will I.  
-> 
-> Yes that was a specific David Woodhouse preference.
-> I'm too old!
+We should also make sure this is a read operation.
 
-Don't be sad, the new trend is to be sleek. In the dark I worship
-variables declaration in a reverse Christmas tree order ;-)
+> +
+> +	if (ctlr->mem_ops && ctlr->mem_ops->poll_status) {
+> +		ret = spi_mem_access_start(mem);
+> +		if (ret)
+> +			return ret;
+> +
+> +		ret = ctlr->mem_ops->poll_status(mem, op, mask, match,
+> +						 initial_delay_us, polling_delay_us,
+> +						 timeout_ms);
+> +
+> +		spi_mem_access_end(mem);
+> +	}
+> +
+> +	if (ret == -EOPNOTSUPP) {
+> +		if (!spi_mem_supports_op(mem, op))
+> +			return ret;
+> +
+> +		if (initial_delay_us < 10)
+> +			udelay(initial_delay_us);
+> +		else
+> +			usleep_range((initial_delay_us >> 2) + 1,
+> +				     initial_delay_us);
+> +
+> +		ret = read_poll_timeout(spi_mem_read_status, read_status_ret,
+> +					(read_status_ret || ((status) & mask) == match),
+> +					polling_delay_us, timeout_ms * 1000, false, mem,
+> +					op, &status);
+> +		if (read_status_ret)
+> +			return read_status_ret;
+> +	}
+> +
+> +	return ret;
+> +}
 
 ______________________________________________________
 Linux MTD discussion mailing list
