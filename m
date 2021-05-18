@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-15.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71361C433ED
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 May 2021 14:19:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8EE5C433B4
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 May 2021 14:21:17 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E1D9861209
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 May 2021 14:19:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E1D9861209
+	by mail.kernel.org (Postfix) with ESMTPS id 3698B61209
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 May 2021 14:21:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3698B61209
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,38 +23,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:
 	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=0bp3yhy2itM7Vl42x5c+4ZE7g2WYeM1fAusinVJZfqg=; b=iivzwn1sTnTwfjJoPuZ8omqmb
-	2BeIuHuMxif28ITCCuVLyFEPzSqlD+zm8dSDVn4cX8qZDR84L0S486hkM/dDzg8+oS8Dz7D3v/mkJ
-	FOsrwLsVJN+FzbTEN9foDwsWZO9LEVxSH7MlNVn7zp1/rCUlrlv1Oeztk9mfaKrx3RbzgeOzBW0NV
-	BgkIYjNviMWwIuL0uP6nK0DX3Ho/LZsqVYuN/fm38Lgj6ICGEVLTXo57TJ2/OmMZ+vMf7vIZjGi0p
-	4CxWeDlzKznFcSgCplsjCiCo2Br9PvO56dMOXlsInlrDcGkbgVgrPGk5f0Dx1axlNfckjrvMnHh7C
-	IS3ecFb3A==;
+	 bh=9vZ3Qyp9Zcgfg/1HOq9HBlldwTcTLJal6jB3gKXy9Nw=; b=Ylj3SWhvHCKxQdOEIqy3F2/+b
+	X7w303z4lkuXPFNqsQ2EIxrHp1xTjEdQNBIF447KtZ+lvRGxatedPSS4Nv46lmgBHZPc4BWRxaBwg
+	riyOyEBNrvR+RaBMk20BRyTRr6wR55bWDfxsVBBCL4D3DITmORdWpdr7541Es8nz1i0fQiXfaR1od
+	h7sVKkxPCIniIFYSXA3ZDh3ISv8hUjg2KPKGZmMhkQOlQdDTh/2Sk0JObGnPLrNaTsHsBLH5MbBsP
+	S97fgmrU5NXjL3u8RUJARNVZl6teVAou2uQY3H3hs7lEMFQ8yCRxH6kyALnWEqsr4utpYrx0eoK7L
+	6RiGMU2sA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lj0Ym-000ziA-CC; Tue, 18 May 2021 14:19:00 +0000
+	id 1lj0aO-001087-BO; Tue, 18 May 2021 14:20:40 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lj0YW-000zf0-9y; Tue, 18 May 2021 14:18:44 +0000
+ id 1lj0ZG-000zoH-RE; Tue, 18 May 2021 14:19:31 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
  Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
  From:Date:Sender:Reply-To:Content-ID:Content-Description;
- bh=LUJP81xKDcHx4LK8QGSM2Trtx3zgLPswOpeVotjPQqA=; b=MFmvD4PTPU2FIvF4sS/l9vowm9
- +WN1NNIabKg0TnBqYQvbLShfgEFXzH0jQH1NruPLG2+eBBF1WrnEd4vD3bekb5SSM3Ekytvl/4lXj
- YauoteyRmy6M8CoBMDrYKPJBXCK4gzFGN2fNo/meK0UXvz9s6z7oKYgM0MeOgKsH/v4gthW8IisqJ
- d+m26OXS6CrbAqQYuaCA6HeUwlkg4ZUW5ib+wRaIQjAKJlnN+p6714TDNDcnPnEgWZCf9GFeyINMe
- xWUZv7ZX4V0qyTeYehb5XH+mX+xtCaUvfZ7zOOSGliX9kjeyJivCHpUAV2Rb3Deo9N19aS/AsKymk
- W2QbsnOg==;
+ bh=SMXfLYG6Qf4hKKnI/SEzkpcqiaGM7M+QTnwnG9aje1s=; b=bCDo9MVhcH+6AXDpLpc/jn5ahb
+ lyYX52KZ18jLgiQoQCoejhdBneGL4FG8o9I+dgJrKy0Kp/5exxdb5O7rvxhzgO0XNpmmsVNG7Qo4a
+ 8e/NNqyPxRrsAGA2V6/x74qUnPmtY4pFGWK9aXfuXFLbfvMPqHD9onw6724P3HraGybxbTSZh4Ecx
+ sBArj1UozqMUYR04IAh8M3Irqe32wAtj3Zow1ndCNzBvhlS/y39VpXJs2JbMtyiUS+A7wWSbs/Y4/
+ HcEmEGGLSzjU7J4TV08U4lpB+HxZQ3uhmKcSh8whizJ9Mfs/R6ueki0R9tVn4WxyKqloUDgv5dZjq
+ zaeuFT1A==;
 Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lj0YT-00EigL-4x; Tue, 18 May 2021 14:18:42 +0000
+ id 1lj0ZD-00Eij6-Qb; Tue, 18 May 2021 14:19:29 +0000
 Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
  (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 46DF61F4238F;
- Tue, 18 May 2021 15:18:37 +0100 (BST)
-Date: Tue, 18 May 2021 16:18:34 +0200
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 57F1B1F42B04;
+ Tue, 18 May 2021 15:19:26 +0100 (BST)
+Date: Tue, 18 May 2021 16:19:23 +0200
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: <patrice.chotard@foss.st.com>
 Cc: Mark Brown <broonie@kernel.org>, Miquel Raynal
@@ -65,7 +65,7 @@ Cc: Mark Brown <broonie@kernel.org>, Miquel Raynal
  <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <christophe.kerello@foss.st.com>
 Subject: Re: [PATCH v4 2/3] mtd: spinand: use the spi-mem poll status APIs
-Message-ID: <20210518161834.6860c310@collabora.com>
+Message-ID: <20210518161923.3bf75a25@collabora.com>
 In-Reply-To: <20210518134332.17826-3-patrice.chotard@foss.st.com>
 References: <20210518134332.17826-1-patrice.chotard@foss.st.com>
  <20210518134332.17826-3-patrice.chotard@foss.st.com>
@@ -73,8 +73,8 @@ Organization: Collabora
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210518_071841_492418_E8833978 
-X-CRM114-Status: GOOD (  30.65  )
+X-CRM114-CacheID: sfid-20210518_071928_164245_72533ED0 
+X-CRM114-Status: GOOD (  29.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,6 +103,9 @@ On Tue, 18 May 2021 15:43:31 +0200
 > 
 > Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
 > Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+
 > ---
 > Changes in v4:
 >   - Update commit message.
@@ -158,11 +161,7 @@ On Tue, 18 May 2021 15:43:31 +0200
 > +	status = *spinand->scratchbuf;
 > +	if (!(status & STATUS_BUSY))
 > +		goto out;
-
-Looks like you expect the driver to not only wait for a status change
-but also fill the data buffer with the last status value. I think that
-should be documented in the SPI mem API.
-
+>  
 >  	/*
 >  	 * Extra read, just in case the STATUS_READY bit has changed
 > @@ -526,7 +532,10 @@ static int spinand_reset_op(struct spinand_device *spinand)
