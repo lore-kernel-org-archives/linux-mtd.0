@@ -7,15 +7,15 @@ X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66259C433ED
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 May 2021 16:30:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CDB07C433B4
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 May 2021 18:56:28 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DE8F1611CE
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 May 2021 16:30:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE8F1611CE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=foss.st.com
+	by mail.kernel.org (Postfix) with ESMTPS id 5C10961261
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 May 2021 18:56:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5C10961261
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
@@ -23,82 +23,117 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-ID:Date:
 	Subject:CC:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=ST4WHmEtpbGbKv5+/qikRbatRqkxhaLJxtol4TX2e6U=; b=hmuFgZY9/Szx6B6KEuG6hYPF5
-	D84B2YGAlqhVsOKm2jOfEfTYSI7hhTWIbhUwc5enk6Gp0TiXW3MgLKOU/hiVrN/faKv0sAPhM1NhY
-	PEe4rTc9sDfDElqnhvYBZ6yw+YUZ8xy/lDnfYNCE+Zc/r4gX8B09wm5cnGyNJFLR+zU909Db7HtXo
-	vsnn0WAFNHfGtF3dPiL8ot9QzPWm/wDOAVpUti93UGdZovf9yssCSK8Kt1m3Z+duzIEOb+UbrZXWO
-	z0KCQK76MxJsmoCWHB2mIJ90Nczpf4wih/xG+E+ps2c1SdEFbF5IvclKgh5ovQwQ3ASYB+UjUPf14
-	FHj+s1slw==;
+	 bh=WcbfKkfXpJT2nkzy/j7syZNUxF/dcqJHf3XBxF+6gRk=; b=TRwOGzid7ThHN04Ct1C/K7C4X
+	0X2cteqQobH7OZ1MD3COV84Oiq+JhbXmTb/+/7CPHOiSxGaV/QuauZQ0Hva9TlWWDKFVM8B8jeLWb
+	0ojBSQTnfrkU3ZzOFZV4iaUgFxsgzEeS1d9C9coXyfZbaYFGZDoOHGU25fNCZILKrSSvEEcUcim55
+	cjAGbQRfLWZDXZpy/4iSN/GH5UqiAf1eK9uvL+SoT9+JZXf/rFy/pyjTb6FtA+i0eRxMexmFOtruc
+	+SxRIFmMEuHDyO7dtqRVJh5iUIhk7MiEEBxrjnjtWIPdFpdr5Q8OAsZhjs5dgDg6ljqInCMbQqAX4
+	HQdeV5NBQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1lj2b4-001K7A-Hv; Tue, 18 May 2021 16:29:32 +0000
+	id 1lj4sA-001fDN-Gu; Tue, 18 May 2021 18:55:18 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lj2Zj-001JuI-HB; Tue, 18 May 2021 16:28:07 +0000
+ id 1lj4s7-001fD5-OI
+ for linux-mtd@desiato.infradead.org; Tue, 18 May 2021 18:55:16 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Content-Type:MIME-Version:References:
- In-Reply-To:Message-ID:Date:Subject:CC:To:From:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=0bHg0ARHkdCFC1flU57WX7u1lRnnB5XX9tbgb0TFL7c=; b=IoVoapxwq0HoZxB1Y+VyjStnf+
- CgXJ0PCSfRyqXdlSqSpneLr0IikTa38iorMPexuWtAYLgpn8GjdGtK93cwp3EjWMgQwi85pLXA5sL
- u3O4Ptv54/Wik7ew8YdtWC2EMfCYfL7y2RNMXeApuLxrD4MqnOAlrdtPm4y2/sEYvZe8tpx4Ua64q
- aVxKACdYJqPEAyeMF1rtwwJmm+lyAPSu+taR2HYmOolX/AAlOkPK1m/yeiLodtaOTmSILklH5MBkj
- 5rUPjepmE0la4wXi5jEet3VKWCFTjNIjrGo0/Yez6ogQkEi2kgy6+z842u7U6Mm7Z91v2SvAu/67s
- TzDrIN+A==;
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]
- helo=mx07-00178001.pphosted.com)
+ d=infradead.org; s=bombadil.20210309; h=Content-Type:
+ Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
+ :Subject:CC:To:From:Sender:Reply-To:Content-ID:Content-Description;
+ bh=NFPfzftfgom4LKiDxQpPgFr8fNpeT49MFz683MiwM/c=; b=roKKiZuTPDTBbCflFERKUEWh14
+ UOv+N3NN/AVQVE0Wb9DL2BPtPNHf7ypL4l/0N160xGRhP9JONpio4fWkNSPS1WcoWIAmbeZPSjRgW
+ QRICc1kYwveSHDfxa31yp0v58dIrK0jUWt3Vn3dAaDR3DEvmBdYesR49smR0qFlkIcWyBLLLabkmx
+ HPC70T2jfANcCdfwR5F2uD9ViVRb+hB4d3JKjwL7RObS2Na7cXkqZLmaseIJM0WB39+iKPx0U1BSQ
+ 19SnSD/qRexHdc0sJiykumVsxOwXudof5asHi8HXADWuxpYOFVl+OaTqU6XOnvTb5cNyQm7PJbqwV
+ wLIEOzqg==;
+Received: from mail-dm6nam08on2044.outbound.protection.outlook.com
+ ([40.107.102.44] helo=NAM04-DM6-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lj2Zf-00Enhx-Df; Tue, 18 May 2021 16:28:06 +0000
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 14IGLm4w023140; Tue, 18 May 2021 18:27:57 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=0bHg0ARHkdCFC1flU57WX7u1lRnnB5XX9tbgb0TFL7c=;
- b=sZfuDR4Fs030jFiaYA2JrwUeEipTWD3UJpYSC53fZ0KCudE8DwBCWYW0Qvw63QR/LHEP
- zbWID4KUHLMePbWr1DyorEVWls3ujhyVjTAhWJXl5WTDL0QBdFw71v79fBeja17XEMOG
- 0MR/CggrUSlMynJjm159OLie2SK3sv7mNEbd6kaWbY39I3SP6ey7cOs0ZiKWtn2EwTi9
- mhnFsO2PIlyOfxCnWfGLr7H1GghiXGvwLmncvoaeeRH9/6PnFwkpfg/vE8cllgesSL/N
- 7a4KL47DD0s7bqUpUq0AyK9yIc3aI1vXZhWgL9oP4kYBPwgUW/mZbMvyDv3K+Umo9miv +A== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com with ESMTP id 38mekkrvjg-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 18 May 2021 18:27:57 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 293FC100034;
- Tue, 18 May 2021 18:27:57 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1C34E23FE73;
- Tue, 18 May 2021 18:27:57 +0200 (CEST)
-Received: from localhost (10.75.127.49) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 18 May 2021 18:27:56
- +0200
-From: <patrice.chotard@foss.st.com>
-To: Mark Brown <broonie@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Boris
- Brezillon <boris.brezillon@collabora.com>, <linux-mtd@lists.infradead.org>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- <linux-spi@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
- <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC: <patrice.chotard@foss.st.com>, <christophe.kerello@foss.st.com>
-Subject: [PATCH v5 1/3] spi: spi-mem: add automatic poll status functions
-Date: Tue, 18 May 2021 18:27:52 +0200
-Message-ID: <20210518162754.15940-2-patrice.chotard@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210518162754.15940-1-patrice.chotard@foss.st.com>
-References: <20210518162754.15940-1-patrice.chotard@foss.st.com>
+ id 1lj4s4-00EtVv-IC
+ for linux-mtd@lists.infradead.org; Tue, 18 May 2021 18:55:14 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aJncXj1CEyf3pASzZth5TJ4w8Oy1pw9ggCACsKSmotQTEMmnpJn4A/fVWKEXE9GaVFU1MtQm5hgkoV5wvpFuQSkrcOihA2ZM1o5BmzWG5pT0zPSxncycelO5jjly3litkAn95xVrIUHqXnjYPFg7Yb97TdvXlUpEsr1hDQ58kohBObhGGCo/GSD1p6paaZaLbdItEFDcwg+xZaKaWOc3HLUcoWxT1czOp5Je3YzWafQUjZmqjBS9V1hbRuZOWeuNXkmq7L7HRTNFfyBvBQ/MVcYJhRNkBQU32U26Szwjc29rtnAILDEzPpvS8JFDQfm6UGM67nRpBWGQtV8vOrac0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NFPfzftfgom4LKiDxQpPgFr8fNpeT49MFz683MiwM/c=;
+ b=F4BeG3X+G4ybFnePbx88+UTtxDJs5Vs2IP8q92lGubZt51zB9yjpZi0JLTjU0oCAPaF7KbBNvy9vEOhiEifl8Mnar9wGMzMh3eszLGhZSYRdysXzCkomN0Gj5W8BdCzDmZYpyK/OOwMPNBE6OfFw8GEW8t/T8AtF8WsjqIfDqz2yLqmUqziDbDkjn/9qg3hYxih5FR3OzlYYeRBBzyk6Tbb9X6bg3VLxUSEoW6sT/ZEiPvsNzafTmUOE4913+xwWpqwmgYNsjMxccls5mmLLBcleO3WU71MZQjSg/J/QIIiEiIGuxlOVzegarxdZM9zKPfix+dhEF7L9/a62RSonwA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.32) smtp.rcpttodomain=lists.infradead.org
+ smtp.mailfrom=nvidia.com; dmarc=pass (p=none sp=none pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NFPfzftfgom4LKiDxQpPgFr8fNpeT49MFz683MiwM/c=;
+ b=nK005fhelR01WQGDZSKuCzi71iTcBxx3td7c9EIRH7RnXxHvD2/G29sYnXw5dLM+lu9yPG8aSmpQFjs7TD7UEneeOJJM0ddZ/s/o3oXbQzyWZkzq7vF4nuhFuJOsV159/uRsenLi+AThYxx/YMJAzwl71/v9bG9Y7fddqAYXO6axwQupVoeZt6rB9/2IbeOZ6eC0XNuGPyhvxu60Lo/ayVyOZPvP1LeAgN9gX62jnfgPB1pMql47hfp3EKN9Q2/N9aPgwe8i6INPUpyOnBy8LkaGzKHgRhcSD8s3hBPhEymAgjqnXtSRBZzVS+liLhBxoiGkeUrmTHKAMZ+xZbQAyQ==
+Received: from DM6PR03CA0077.namprd03.prod.outlook.com (2603:10b6:5:333::10)
+ by CH2PR12MB4906.namprd12.prod.outlook.com (2603:10b6:610:6a::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.31; Tue, 18 May
+ 2021 18:55:09 +0000
+Received: from DM6NAM11FT011.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:333:cafe::d5) by DM6PR03CA0077.outlook.office365.com
+ (2603:10b6:5:333::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25 via Frontend
+ Transport; Tue, 18 May 2021 18:55:09 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
+ smtp.mailfrom=nvidia.com; lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=pass action=none
+ header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.32; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.32) by
+ DM6NAM11FT011.mail.protection.outlook.com (10.13.172.108) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4129.25 via Frontend Transport; Tue, 18 May 2021 18:55:08 +0000
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 18 May
+ 2021 11:55:08 -0700
+Received: from moonraker.nvidia.com (172.20.145.6) by mail.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 18 May 2021 11:55:06 -0700
+From: Jon Hunter <jonathanh@nvidia.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Michael Walle
+ <michael@walle.cc>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <linux-tegra@vger.kernel.org>, Jon Hunter <jonathanh@nvidia.com>
+Subject: [PATCH] mtd: core: Fix freeing of otp_info buffer
+Date: Tue, 18 May 2021 19:55:03 +0100
+Message-ID: <20210518185503.162787-1-jonathanh@nvidia.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210424110608.15748-6-michael@walle.cc>
+References: <20210424110608.15748-6-michael@walle.cc>
 MIME-Version: 1.0
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391, 18.0.761
- definitions=2021-05-18_08:2021-05-18,
- 2021-05-18 signatures=0
+X-NVConfidentiality: public
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6332e9ca-b442-493c-b83f-08d91a2e7563
+X-MS-TrafficTypeDiagnostic: CH2PR12MB4906:
+X-Microsoft-Antispam-PRVS: <CH2PR12MB49063C86F7044C6DE93634B4D92C9@CH2PR12MB4906.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Ng/XUosqEKEc2dbnSQ1blk0L11ttwj7mogkaafONt9Fx1+lmpZh4JAzH2gXmtnyMKoO45Ru/P+I41zhuqxYF5JWK9k57tA7VeuzkO/hkqh2Ndd8UfDCVANijdwEihWnudEU2qOKtnZDD0d7kpNT4AYkLa12qLAuRBPPqbJTuRHPxSTs8Z0FHz8FGpTKJz/UJkQ5SA2EnY15nWPpV0Dx3UBn51ePoIprd/FhQ5Iwn3JOQWdpUs8esHnp29u4Xb2I1FALp5ewix3k5AiTDoC7H4IONcnMtCj8qBBn219qoh8Kfby2HHvvUlvf/wJHaEA6NqSHRh2S8WmtnPDaOaotSL0BLfqG1XkPQpSsu+qBFhisOAN8u7QedeDRBmydHC4KAMHWlu917xdNQ+iuot073GNMBviDXWG7olkWCe+kaz9hAS7nfbPlRCJ12BnydPwBVbY92X4v6JV120R9m3/X3ggpXjqfPmY30NkrIq61Ddy+lSkEsJ8SgtfNZsMPFTRmD1PDG/8jiY7unIgKSLiriXUxRS/s6M3JlRSDoTg2ocdX1FnfWG4Og7a1TZvHwLouUFO0ffuPWuiVIJIQODmnfetv2+m2aHCorRPNORgGWYraD5WHYJ+WpFtnzS2vWv8mSaOyICZ7feqaaYsiczRicpfMezPTumk5UOmAyqVRFIvg=
+X-Forefront-Antispam-Report: CIP:216.228.112.32; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:mail.nvidia.com; PTR:schybrid01.nvidia.com; CAT:NONE;
+ SFS:(4636009)(39860400002)(346002)(376002)(396003)(136003)(36840700001)(46966006)(316002)(36756003)(336012)(2616005)(26005)(478600001)(45080400002)(426003)(47076005)(2906002)(186003)(107886003)(5660300002)(82740400003)(36860700001)(110136005)(1076003)(54906003)(8936002)(83380400001)(82310400003)(70206006)(4326008)(7636003)(70586007)(8676002)(356005)(7696005)(6666004)(86362001);
+ DIR:OUT; SFP:1101; 
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2021 18:55:08.8893 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6332e9ca-b442-493c-b83f-08d91a2e7563
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[216.228.112.32];
+ Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT011.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4906
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210518_092803_780150_5F1284A7 
-X-CRM114-Status: GOOD (  28.55  )
+X-CRM114-CacheID: sfid-20210518_115512_793563_D0840757 
+X-CRM114-Status: GOOD (  14.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -115,204 +150,81 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Patrice Chotard <patrice.chotard@foss.st.com>
+Commit 4b361cfa8624 ("mtd: core: add OTP nvmem provider support") is
+causing the following panic ...
 
-With STM32 QSPI, it is possible to poll the status register of the device.
-This could be done to offload the CPU during an operation (erase or
-program a SPI NAND for example).
+ ------------[ cut here ]------------
+ kernel BUG at /local/workdir/tegra/linux_next/kernel/mm/slab.c:2730!
+ Internal error: Oops - BUG: 0 [#1] PREEMPT SMP ARM
+ Modules linked in:
+ CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.13.0-rc2-next-20210518 #1
+ Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
+ PC is at ___cache_free+0x3f8/0x51c
+ ...
+ [<c029bb1c>] (___cache_free) from [<c029c658>] (kfree+0xac/0x1bc)
+ [<c029c658>] (kfree) from [<c06da094>] (mtd_otp_size+0xc4/0x108)
+ [<c06da094>] (mtd_otp_size) from [<c06dc864>] (mtd_device_parse_register+0xe4/0x2b4)
+ [<c06dc864>] (mtd_device_parse_register) from [<c06e3ccc>] (spi_nor_probe+0x210/0x2c0)
+ [<c06e3ccc>] (spi_nor_probe) from [<c06e9578>] (spi_probe+0x88/0xac)
+ [<c06e9578>] (spi_probe) from [<c066891c>] (really_probe+0x214/0x3a4)
+ [<c066891c>] (really_probe) from [<c0668b14>] (driver_probe_device+0x68/0xc0)
+ [<c0668b14>] (driver_probe_device) from [<c0666cf8>] (bus_for_each_drv+0x5c/0xbc)
+ [<c0666cf8>] (bus_for_each_drv) from [<c0668694>] (__device_attach+0xe4/0x150)
+ [<c0668694>] (__device_attach) from [<c06679e0>] (bus_probe_device+0x84/0x8c)
+ [<c06679e0>] (bus_probe_device) from [<c06657f8>] (device_add+0x48c/0x868)
+ [<c06657f8>] (device_add) from [<c06eb784>] (spi_add_device+0xa0/0x168)
+ [<c06eb784>] (spi_add_device) from [<c06ec9a8>] (spi_register_controller+0x8b8/0xb38)
+ [<c06ec9a8>] (spi_register_controller) from [<c06ecc3c>] (devm_spi_register_controller+0x14/0x50)
+ [<c06ecc3c>] (devm_spi_register_controller) from [<c06f0510>] (tegra_spi_probe+0x33c/0x450)
+ [<c06f0510>] (tegra_spi_probe) from [<c066abec>] (platform_probe+0x5c/0xb8)
+ [<c066abec>] (platform_probe) from [<c066891c>] (really_probe+0x214/0x3a4)
+ [<c066891c>] (really_probe) from [<c0668b14>] (driver_probe_device+0x68/0xc0)
+ [<c0668b14>] (driver_probe_device) from [<c0668e30>] (device_driver_attach+0x58/0x60)
+ [<c0668e30>] (device_driver_attach) from [<c0668eb8>] (__driver_attach+0x80/0xc8)
+ [<c0668eb8>] (__driver_attach) from [<c0666c48>] (bus_for_each_dev+0x78/0xb8)
+ [<c0666c48>] (bus_for_each_dev) from [<c0667c44>] (bus_add_driver+0x164/0x1e8)
+ [<c0667c44>] (bus_add_driver) from [<c066997c>] (driver_register+0x7c/0x114)
+ [<c066997c>] (driver_register) from [<c010223c>] (do_one_initcall+0x50/0x2b0)
+ [<c010223c>] (do_one_initcall) from [<c11011f0>] (kernel_init_freeable+0x1a8/0x1fc)
+ [<c11011f0>] (kernel_init_freeable) from [<c0c09190>] (kernel_init+0x8/0x118)
+ [<c0c09190>] (kernel_init) from [<c01001b0>] (ret_from_fork+0x14/0x24)
+ ...
+ ---[ end trace 0f652dd222de75d7 ]---
 
-spi_mem_poll_status API has been added to handle this feature.
-This new function take care of the offload/non-offload cases.
+In the function mtd_otp_size() a buffer is allocated by calling
+kmalloc() and a pointer to the buffer is stored in a variable 'info'.
+The pointer 'info' may then be incremented depending on the length
+returned from mtd_get_user/fact_prot_info(). If 'info' is incremented,
+when kfree() is called to free the buffer the above panic occurs because
+we are no longer passing the original address of the buffer allocated.
+Fix this by indexing through the buffer allocated to avoid incrementing
+the pointer.
 
-For the non-offload case, use read_poll_timeout() to poll the status in
-order to release CPU during this phase.
-For example, previously, when erasing large area, in non-offload case,
-CPU load can reach ~50%, now it decrease to ~35%.
-
-Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
-Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+Fixes: 4b361cfa8624 ("mtd: core: add OTP nvmem provider support")
+Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
 ---
-Changes in v5:
-  - Update spi_mem_read_status() description.
-  - Update poll_status() description API by indicating that data buffer is
-    filled with last status value.
-  - Update timeout parameter by timeout_ms in spi_mem_poll_status() prototype.
-  - Remove parenthesys arount -EINVAL in spi_mem_poll_status().
-  - Add Boris Reviewed-by.
+ drivers/mtd/mtdcore.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Changes in v4:
-  - Remove init_completion() from spi_mem_probe() added in v2.
-  - Add missing static for spi_mem_read_status().
-  - Check if operation in spi_mem_poll_status() is a READ.
-
-Changes in v3:
-  - Add spi_mem_read_status() which allows to read 8 or 16 bits status.
-  - Add initial_delay_us and polling_delay_us parameters to spi_mem_poll_status()
-    and also to poll_status() callback.
-  - Move spi_mem_supports_op() in SW-based polling case.
-  - Add delay before invoking read_poll_timeout().
-  - Remove the reinit/wait_for_completion() added in v2.
-
-Changes in v2:
-  - Indicates the spi_mem_poll_status() timeout unit
-  - Use 2-byte wide status register
-  - Add spi_mem_supports_op() call in spi_mem_poll_status()
-  - Add completion management in spi_mem_poll_status()
-  - Add offload/non-offload case management in spi_mem_poll_status()
-  - Optimize the non-offload case by using read_poll_timeout()
-
- drivers/spi/spi-mem.c       | 86 +++++++++++++++++++++++++++++++++++++
- include/linux/spi/spi-mem.h | 16 +++++++
- 2 files changed, 102 insertions(+)
-
-diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-index 1513553e4080..177b3e21febf 100644
---- a/drivers/spi/spi-mem.c
-+++ b/drivers/spi/spi-mem.c
-@@ -6,6 +6,7 @@
-  * Author: Boris Brezillon <boris.brezillon@bootlin.com>
-  */
- #include <linux/dmaengine.h>
-+#include <linux/iopoll.h>
- #include <linux/pm_runtime.h>
- #include <linux/spi/spi.h>
- #include <linux/spi/spi-mem.h>
-@@ -743,6 +744,91 @@ static inline struct spi_mem_driver *to_spi_mem_drv(struct device_driver *drv)
- 	return container_of(drv, struct spi_mem_driver, spidrv.driver);
- }
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 3ae261661eea..ffa46ccea0cf 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -792,10 +792,8 @@ static ssize_t mtd_otp_size(struct mtd_info *mtd, bool is_user)
+ 	if (ret)
+ 		goto err;
  
-+static int spi_mem_read_status(struct spi_mem *mem,
-+			       const struct spi_mem_op *op,
-+			       u16 *status)
-+{
-+	const u8 *bytes = (u8 *)op->data.buf.in;
-+	int ret;
-+
-+	ret = spi_mem_exec_op(mem, op);
-+	if (ret)
-+		return ret;
-+
-+	if (op->data.nbytes > 1)
-+		*status = ((u16)bytes[0] << 8) | bytes[1];
-+	else
-+		*status = bytes[0];
-+
-+	return 0;
-+}
-+
-+/**
-+ * spi_mem_poll_status() - Poll memory device status
-+ * @mem: SPI memory device
-+ * @op: the memory operation to execute
-+ * @mask: status bitmask to ckeck
-+ * @match: (status & mask) expected value
-+ * @initial_delay_us: delay in us before starting to poll
-+ * @polling_delay_us: time to sleep between reads in us
-+ * @timeout_ms: timeout in milliseconds
-+ *
-+ * This function polls a status register and returns when
-+ * (status & mask) == match or when the timeout has expired.
-+ *
-+ * Return: 0 in case of success, -ETIMEDOUT in case of error,
-+ *         -EOPNOTSUPP if not supported.
-+ */
-+int spi_mem_poll_status(struct spi_mem *mem,
-+			const struct spi_mem_op *op,
-+			u16 mask, u16 match,
-+			unsigned long initial_delay_us,
-+			unsigned long polling_delay_us,
-+			u16 timeout_ms)
-+{
-+	struct spi_controller *ctlr = mem->spi->controller;
-+	int ret = -EOPNOTSUPP;
-+	int read_status_ret;
-+	u16 status;
-+
-+	if (op->data.nbytes < 1 || op->data.nbytes > 2 ||
-+	    op->data.dir != SPI_MEM_DATA_IN)
-+		return -EINVAL;
-+
-+	if (ctlr->mem_ops && ctlr->mem_ops->poll_status) {
-+		ret = spi_mem_access_start(mem);
-+		if (ret)
-+			return ret;
-+
-+		ret = ctlr->mem_ops->poll_status(mem, op, mask, match,
-+						 initial_delay_us, polling_delay_us,
-+						 timeout_ms);
-+
-+		spi_mem_access_end(mem);
-+	}
-+
-+	if (ret == -EOPNOTSUPP) {
-+		if (!spi_mem_supports_op(mem, op))
-+			return ret;
-+
-+		if (initial_delay_us < 10)
-+			udelay(initial_delay_us);
-+		else
-+			usleep_range((initial_delay_us >> 2) + 1,
-+				     initial_delay_us);
-+
-+		ret = read_poll_timeout(spi_mem_read_status, read_status_ret,
-+					(read_status_ret || ((status) & mask) == match),
-+					polling_delay_us, timeout_ms * 1000, false, mem,
-+					op, &status);
-+		if (read_status_ret)
-+			return read_status_ret;
-+	}
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(spi_mem_poll_status);
-+
- static int spi_mem_probe(struct spi_device *spi)
- {
- 	struct spi_mem_driver *memdrv = to_spi_mem_drv(spi->dev.driver);
-diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
-index 2b65c9edc34e..85e2ff7b840d 100644
---- a/include/linux/spi/spi-mem.h
-+++ b/include/linux/spi/spi-mem.h
-@@ -250,6 +250,9 @@ static inline void *spi_mem_get_drvdata(struct spi_mem *mem)
-  *		  the currently mapped area), and the caller of
-  *		  spi_mem_dirmap_write() is responsible for calling it again in
-  *		  this case.
-+ * @poll_status: poll memory device status until (status & mask) == match or
-+ *               when the timeout has expired. It fills the data buffer with
-+ *               the last status value.
-  *
-  * This interface should be implemented by SPI controllers providing an
-  * high-level interface to execute SPI memory operation, which is usually the
-@@ -274,6 +277,12 @@ struct spi_controller_mem_ops {
- 			       u64 offs, size_t len, void *buf);
- 	ssize_t (*dirmap_write)(struct spi_mem_dirmap_desc *desc,
- 				u64 offs, size_t len, const void *buf);
-+	int (*poll_status)(struct spi_mem *mem,
-+			   const struct spi_mem_op *op,
-+			   u16 mask, u16 match,
-+			   unsigned long initial_delay_us,
-+			   unsigned long polling_rate_us,
-+			   unsigned long timeout_ms);
- };
+-	for (i = 0; i < retlen / sizeof(*info); i++) {
+-		size += info->length;
+-		info++;
+-	}
++	for (i = 0; i < retlen / sizeof(*info); i++)
++		size += info[i].length;
  
- /**
-@@ -369,6 +378,13 @@ devm_spi_mem_dirmap_create(struct device *dev, struct spi_mem *mem,
- void devm_spi_mem_dirmap_destroy(struct device *dev,
- 				 struct spi_mem_dirmap_desc *desc);
- 
-+int spi_mem_poll_status(struct spi_mem *mem,
-+			const struct spi_mem_op *op,
-+			u16 mask, u16 match,
-+			unsigned long initial_delay_us,
-+			unsigned long polling_delay_us,
-+			u16 timeout_ms);
-+
- int spi_mem_driver_register_with_owner(struct spi_mem_driver *drv,
- 				       struct module *owner);
- 
+ 	kfree(info);
+ 	return size;
 -- 
-2.17.1
+2.7.4
 
 
 ______________________________________________________
