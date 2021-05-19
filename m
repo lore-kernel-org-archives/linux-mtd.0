@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3436C433B4
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 May 2021 18:59:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DACF1C433B4
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 May 2021 19:02:15 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6924E6109F
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 May 2021 18:59:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6924E6109F
+	by mail.kernel.org (Postfix) with ESMTPS id 9FBB36108D
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 May 2021 19:02:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9FBB36108D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,36 +23,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=peFC/+dJlx5pGW1wPS3UARXGH25bDFRopP8JKbj0EIk=; b=YIvl+24+XymFPTOVHvoCoP6mn
-	Ei9RyXa5QsZ2Gh4oa2IbotxWLG2YGzG7DAzqpbAjY+pUx5gR8T/RZLkg63HR+6EM83M37OyOH6r9P
-	wEUcYJ6OZQniipBL3KK7PuoTAAydPpYiKyIktXLFcKuEiWE6+sfsCo3EyfH+efcpVFb+mh6/599dX
-	N0bfcEEeIgEbmDL1VZxIuoHFs6ksxDo7AyRvh4MmBC3nAEQzUrV/uS1QmYGnwRnf/y4qxKeRhWcDL
-	7ZI7k6n3+1d6JpTEJoN9DJptjMtzxKZq0+n/+9UPkqxESZ0NJJK7Bmr9cNkNWera+3PR7ehAX+p6/
-	DXg3jRj0g==;
+	 bh=5NDUSDWS2eQZD457RyJemwIVGh2wPf0ShSMf16ktX20=; b=epjPqsy2Mib36tkfShrchcLjf
+	o5eSdLy9KPX7tjrmshte8zGKPWwdeAe4hEbwMAwxceVSvxrB28/DvuT7ySUM2FOVZoDBVbfDpnIoa
+	GKdQdEYjWgMxk7iCFiiNMcFZXq7gXVQCNuMpAiSw/7cpZVEoAvwz7r2Q77SwLa51eVGVShLTjbfuw
+	mqwHjufL6oZqukLeUieoZWhEUi61OpzrQLjj8DUYl/V6u0bOYXLSjFfthDrmL8UidPiRMhEhj2wFD
+	mw6D9pws4kavX7APygGMtEmAJYG0KrOJvCyjwN0EcmzSpmtMLUGe7QzC+e6kE457/h19/SOmHd+6X
+	pwPMPeCzQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1ljROU-004omx-5i; Wed, 19 May 2021 18:58:10 +0000
+	id 1ljRRW-004p6c-Jp; Wed, 19 May 2021 19:01:19 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1ljQuW-004lPb-Er
- for linux-mtd@desiato.infradead.org; Wed, 19 May 2021 18:27:12 +0000
+ id 1ljQuY-004lPr-3f
+ for linux-mtd@desiato.infradead.org; Wed, 19 May 2021 18:27:14 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
  Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
  To:From:Sender:Reply-To:Content-ID:Content-Description;
- bh=hA+IQjaltnzujCxyw9yr6ihAwu1BdjlVta8SFsB/F6A=; b=UWLWY/yycYLxY/rMltHep/I4xZ
- UXEUuLNaYbtzIgeRrQRDfx1irlCBlPjiVOqgMb+6ES9P6XsSALVpRH2hD7FxXGCwVc7muTCOCOC6c
- GHVoTpODohORzQJN+BGpqDZFbfu9xPf3XuKQUX+GTn19yLOnbjf21DjjoUVDkwlRczFG437rdDV5s
- vYWzUmGdmjCc612CueLO8MTFTTVE6lpZyT74oHyNO0NNN5gaRm7v7JJDNVrFUs2E5VK1+KLd1spv1
- fvgz81l1Em4SsoSCejZGBPckiN95x1JTnEYVHo1HFkxrw/XRhhIvmCxwSDdzSHb4wXyqAB+eyogJe
- fmp1bXLQ==;
+ bh=CM1gHgaHCy2AZOjy1K/+eQQxEKqr07KSgG7p+tEF7/s=; b=FQERFOv1ATIgmFAFL15iCnubZf
+ 7jziy8SIQW2zQ+snBaZ78BUef9b9h0w6wbLlrvWS9wc3Wm2J2rGz0aif1pQqT74Kx+ZN4//T+pjQI
+ cqksDhfaVZJSGIfREG3rvHk2jx3YjUnt7CuD0pdSyXvrPP+WNw5U3oSlMgr+VUzStLypuQB4vY5yi
+ 8GeMPA9HnnBl6sOfMJ5Gj/loRST7aabZDv69DjnRI884+pyfQ/plq3B4KjUs2VxrJUrPEJH1Dmj1T
+ qb5QyWTj7sv/V0VTwig0VFIrsf5Aa3R2lIVR/RZgsab4cB5CkU7Unrjhz3PAxBljgvKpnC/31I3Xn
+ kWJjvamg==;
 Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1ljQuT-00Fh9j-Vb
- for linux-mtd@lists.infradead.org; Wed, 19 May 2021 18:27:11 +0000
+ id 1ljQuV-00FhA7-EO
+ for linux-mtd@lists.infradead.org; Wed, 19 May 2021 18:27:12 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 65816C0008;
- Wed, 19 May 2021 18:27:07 +0000 (UTC)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id B83C8C0007;
+ Wed, 19 May 2021 18:27:08 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Helmut Grohne <helmut.grohne@intenta.de>
 Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -66,17 +66,17 @@ Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Srinivas Goud <sgoud@xilinx.com>,
  Siva Durga Prasad Paladugu <sivadur@xilinx.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v20 17/19] MAINTAINERS: Add PL353 NAND controller entry
-Date: Wed, 19 May 2021 20:26:34 +0200
-Message-Id: <20210519182636.1110080-18-miquel.raynal@bootlin.com>
+Subject: [PATCH v20 18/19] dt-bindings: mtd: pl353-nand: Describe this
+ hardware controller
+Date: Wed, 19 May 2021 20:26:35 +0200
+Message-Id: <20210519182636.1110080-19-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210519182636.1110080-1-miquel.raynal@bootlin.com>
 References: <20210519182636.1110080-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210519_112710_170940_A8385665 
-X-CRM114-Status: UNSURE (   8.85  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210519_112711_639769_9D16DC98 
+X-CRM114-Status: GOOD (  12.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,32 +93,66 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add myself and Naga from Xilinx responsible of this driver.
+Add a yaml description of this NAND controller which is described as a
+subnode of the SMC bus.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ .../bindings/mtd/arm,pl353-nand-r2p1.yaml     | 45 +++++++++++++++++++
+ 1 file changed, 45 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b4315b76645a..a36fb919e913 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1452,6 +1452,14 @@ S:	Odd Fixes
- F:	drivers/amba/
- F:	include/linux/amba/bus.h
- 
-+ARM PRIMECELL PL35X NAND CONTROLLER DRIVER
-+M:	Miquel Raynal <miquel.raynal@bootlin.com@bootlin.com>
-+M:	Naga Sureshkumar Relli <nagasure@xilinx.com>
-+L:	linux-mtd@lists.infradead.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
-+F:	drivers/mtd/nand/raw/pl35x-nand-controller.c
+diff --git a/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml b/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
+new file mode 100644
+index 000000000000..609726ed72de
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
+@@ -0,0 +1,45 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/arm,pl353-nand-r2p1.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- ARM PRIMECELL PL35X SMC DRIVER
- M:	Miquel Raynal <miquel.raynal@bootlin.com@bootlin.com>
- M:	Naga Sureshkumar Relli <nagasure@xilinx.com>
++title: PL353 NAND Controller device tree bindings
++
++allOf:
++  - $ref: "nand-controller.yaml"
++
++maintainers:
++  - Miquel Raynal <miquel.raynal@bootlin.com>
++  - Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - arm,pl353-nand-r2p1
++
++  reg:
++    items:
++      - items:
++        - description: CS with regard to the parent ranges property
++        - description: Offset of the memory region requested by the device
++        - description: Length of the memory region requested by the device
++
++  "#address-cells": true
++  "#size-cells": true
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: true
++
++examples:
++  - |
++    nand0: nand-controller@0,0 {
++      compatible = "arm,pl353-nand-r2p1";
++      reg = <0 0 0x1000000>;
++      #address-cells = <1>;
++      #size-cells = <0>;
++    };
 -- 
 2.27.0
 
