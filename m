@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CCC7EC433ED
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 May 2021 18:48:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF7E2C433B4
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 May 2021 18:52:05 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 97EBF6135A
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 May 2021 18:48:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 97EBF6135A
+	by mail.kernel.org (Postfix) with ESMTPS id A10FE611AE
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 May 2021 18:52:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A10FE611AE
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,36 +23,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=AdvngGtRcqBKgpDNS1lVsMae+Dm51WLVzEBPQSqtNy8=; b=YXlYLwz85sfZUrZ2hXdcy+8xi
-	fdT6Ze+2GOhbKGrdgz4zSoJhkBs2dXdP54Ss5fqgQzQVHqbBL7diFYgqGqrsJ7Db68PwqVkIIXEsK
-	LZ2ADHKZP8s/d+Ltnuuqk3VaXKzmA2XjH/iK6aMdaQXm/Gl4DcZt8OTDmkW/CoV1PXhDwpgoauHv7
-	x95MH/rgQOhuLFyhLaxAuJaQ3cC076yUAFfW7KJZhVySqAviT8MQpRa4P8DwvzUHNaAgo+HinA/XA
-	6XGVnz/fiP0orN8scE0F0elpRtpSWqEU+7Xm8GvpD5YA3cqtV+jV8hOVGY5kNAra3Hk9NzGMZcnJu
-	dmTJfb7ww==;
+	 bh=VB5xtD0BhOFAnvI9zNrtOB1TXBv3+KzLUZrNI5U+hKE=; b=b6wgndrLSwIudTwo8wV5DVbQo
+	hwAXm0I1q8OG91LorKCumimjRZTph8FGoGSA1RQihvZzApXXHYY57lk9R8eFMOAyv/wMlqIgeRe4d
+	aGXUgM1nOiA4LmmKHWJs5PkeQc3IH9Cozy8Zg1mBfhiFIgm/1e8Co0sbXLb3HgKwMfrfSqgW+Cgf1
+	tOsclt9giQ+SdjB3ZP9SpuBHZqphLzUIFpsOKwfDIHJAkNSPJp1ET1nHkI1uKOc88zuoa7UE2jyI4
+	p+8AUcx0j6/yMvgINuhzERifN/oJcFqF27QLZxPzpBANaIaYBi+6fFSvgZrk9RWXGvfmf/IDf1dRX
+	PQzIHUetQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1ljRE5-004nmS-Kt; Wed, 19 May 2021 18:47:26 +0000
+	id 1ljRHe-004o7q-9W; Wed, 19 May 2021 18:51:06 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1ljQuS-004lP9-G3
- for linux-mtd@desiato.infradead.org; Wed, 19 May 2021 18:27:08 +0000
+ id 1ljQuT-004lPP-NC
+ for linux-mtd@desiato.infradead.org; Wed, 19 May 2021 18:27:10 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
  Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
  To:From:Sender:Reply-To:Content-ID:Content-Description;
- bh=pRyhPcsaqL4bzl64iPaqApmnyxI3hW5BFin/BUM1MMw=; b=TZYqN+xjjjRhaMcEvMaWAggQQA
- O3WALmT859ckUrbmjlu348lTkr+qrHWYyBbCZTTEhDbZSX1TTy+2K9QpOSUe8kqhpB4QAEcMXrWwy
- B7RxTLwQV/87JZhme2cyj13pTOmwbG0wF9DnK2WU+qiWNkLHXMfRgF5WNl6ZBdsoNb69D7fBYd5iN
- RvGep8q9CEsj3qa5/bYYQeY5epJeU8P+md+u/tzE7Wj5Tn7HWfG0J8AbKH6jATkSZzJVzgOBCIIox
- CExRkbYY3XbnaF3C7HRTmSzPptBogFhSmCuOPtZKaq/kS9eGbcTQTHNJOpkUjhnrpiEMDn3CRQ3OX
- 5pGBxvTw==;
+ bh=yMFys2zolvsG4xGEnBC8VDqjzcfuFJiltGwSIcelqJg=; b=eTa75qP7zwR8wVh8fseQsPlV0H
+ hLHYg6mUs+WFfGDvDbdaCMVl2imZ03nzpQTxqlt+tPojkrQhpVfrMrC56Is/KLVF6grsjbnIctwW8
+ 9pLGIRErQiR4Ipw+q0f8ha/tRcsgYGcEQmT9DnBN+Nr/47yvzYSqUsuULg24wnKx7cxqKM+fSmVXI
+ 3lw+2/W3nkl+bpS86CDQpY3BxfhvjtXVoaf6oDXXd93USLouezF0r5KDei8v/3Xs/45V3JJjUZVrt
+ lNA8RTA/GHYnNxSruqoISdvUg433sBSMScN+uQMExeXOgbQoNZHQB/fgzmr1n1d4hHl+PYBrlUFF/
+ 9Rbh57iA==;
 Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1ljQuP-00Fh8t-Rx
- for linux-mtd@lists.infradead.org; Wed, 19 May 2021 18:27:07 +0000
+ id 1ljQuR-00Fh9L-8B
+ for linux-mtd@lists.infradead.org; Wed, 19 May 2021 18:27:08 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 3FCB0C0005;
- Wed, 19 May 2021 18:27:03 +0000 (UTC)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 9C27EC0011;
+ Wed, 19 May 2021 18:27:04 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Helmut Grohne <helmut.grohne@intenta.de>
 Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -66,17 +66,17 @@ Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Srinivas Goud <sgoud@xilinx.com>,
  Siva Durga Prasad Paladugu <sivadur@xilinx.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v20 14/19] memory: pl353-smc: Avoid useless acronyms in
- descriptions
-Date: Wed, 19 May 2021 20:26:31 +0200
-Message-Id: <20210519182636.1110080-15-miquel.raynal@bootlin.com>
+Subject: [PATCH v20 15/19] memory: pl353-smc: Declare variables following a
+ reverse christmas tree order
+Date: Wed, 19 May 2021 20:26:32 +0200
+Message-Id: <20210519182636.1110080-16-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210519182636.1110080-1-miquel.raynal@bootlin.com>
 References: <20210519182636.1110080-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210519_112706_058349_73A51F19 
-X-CRM114-Status: GOOD (  11.66  )
+X-CRM114-CacheID: sfid-20210519_112707_445779_167192B8 
+X-CRM114-Status: GOOD (  11.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,27 +93,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-APER does not mean anything, while it seems legitimate to call this
-clock the AXI peripheral clock.
+This is a purely cosmetic change.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/memory/pl353-smc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/memory/pl353-smc.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/memory/pl353-smc.c b/drivers/memory/pl353-smc.c
-index 5b57926461a0..b913d68a7a41 100644
+index b913d68a7a41..925d856663ac 100644
 --- a/drivers/memory/pl353-smc.c
 +++ b/drivers/memory/pl353-smc.c
-@@ -17,7 +17,7 @@
- /**
-  * struct pl353_smc_data - Private smc driver structure
-  * @memclk:		Pointer to the peripheral clock
-- * @aclk:		Pointer to the APER clock
-+ * @aclk:		Pointer to the AXI peripheral clock
-  */
- struct pl353_smc_data {
- 	struct clk		*memclk;
+@@ -36,8 +36,8 @@ static int __maybe_unused pl353_smc_suspend(struct device *dev)
+ 
+ static int __maybe_unused pl353_smc_resume(struct device *dev)
+ {
++	struct pl353_smc_data *pl353_smc = dev_get_drvdata(dev);
+ 	int ret;
+-	struct pl353_smc_data *pl353_smc = dev_get_drvdata(dev);
+ 
+ 	ret = clk_enable(pl353_smc->aclk);
+ 	if (ret) {
+@@ -70,11 +70,11 @@ static const struct of_device_id pl353_smc_supported_children[] = {
+ 
+ static int pl353_smc_probe(struct amba_device *adev, const struct amba_id *id)
+ {
++	struct device_node *of_node = adev->dev.of_node;
++	const struct of_device_id *match = NULL;
+ 	struct pl353_smc_data *pl353_smc;
+ 	struct device_node *child;
+ 	int err;
+-	struct device_node *of_node = adev->dev.of_node;
+-	const struct of_device_id *match = NULL;
+ 
+ 	pl353_smc = devm_kzalloc(&adev->dev, sizeof(*pl353_smc), GFP_KERNEL);
+ 	if (!pl353_smc)
 -- 
 2.27.0
 
