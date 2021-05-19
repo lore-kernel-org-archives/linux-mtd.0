@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED407C433B4
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 May 2021 18:32:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B4D4C433ED
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 May 2021 18:34:09 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A8D3C6124C
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 May 2021 18:32:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A8D3C6124C
+	by mail.kernel.org (Postfix) with ESMTPS id 3F0F961244
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 May 2021 18:34:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F0F961244
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,36 +23,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Date:
 	Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=LjrCyQANMI5iQO7bmRihjCqXGX5G+thB7Ua6cnMrj3A=; b=W+2LlOW7gpEAQJ86yRXLogj7s
-	lpUIbEy3siwsUFdadIozApowviEjhmgcro1mCEtnKjvBfYpAk/2rUwOL+kyEm1kKwvo56iqtuNlhM
-	jl4ARGkjx2UDNpQtNw7BeeBlTeR8XadwlJDFnCtJ53yGZeQm6wHsHjzRmaSxWFbw1R9NR0B5aChqb
-	0ymIA1x7DiCEv7zwp4eZxLDMGRrbPS8Z7u2/jnHlcgRL3Nh+dQUVYn3Pm3+2OF72U2Wj62VQqikht
-	2iVzYVDmuc08tVNPcohHNjMRPxF4g/QBAKG2oIDi8ZbkjdleX/ozfpPBdfN1rKGDVsTNjudIRqV4S
-	Ks5IVwf5g==;
+	 bh=nwa29vr4tsGBk+HMtJKjsqTCX5W6x/pImprnVajIlGs=; b=j3E49/b4vr3tTRVUyjpzbsYKk
+	gbX82Qb+I4RF8N3Lg7Cif68tb1UcWTf73GLskHIp2lej9HLCQhbGVm6f7QmtExp+uw5UvOHYR6zT5
+	aAbsFUuOu8LKX67Lth5Xy3ILOUQhKXi691NhPx6ZuCVjm/7BWXyIXgmUWGtcTmb5gCDMN+SnJ1l9W
+	kssse1kQVw7YBmQ/XXmnUHdJW0WabATonyzdvDSL/nk79ku33u3DgDmf8CPXI417PR9FF1YZyXkc0
+	BYjILjmfcK0Bj1rcSO+nSIMn8CpGSH7mym5NOy48G/LSTYxz0l0bpNKdKCwRu8WtUqXlmWsKlWbTp
+	wGPeHfLVQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1ljQyl-004mBu-7P; Wed, 19 May 2021 18:31:36 +0000
+	id 1ljR0c-004mOX-Ph; Wed, 19 May 2021 18:33:30 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1ljQuJ-004lO6-1j
+ id 1ljQuK-004lOB-GF
  for linux-mtd@desiato.infradead.org; Wed, 19 May 2021 18:27:00 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
  Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
  To:From:Sender:Reply-To:Content-ID:Content-Description;
- bh=b89znMrhKzTZKPOAZu/EDa+Q/XdaF3C05k+eNLtL7LA=; b=wD9bLay7Y9qKnM78nZaxf/DsG3
- 3krSMjKyhhBBzGQD360N9/mgQecAtMJDbfGHPRLExDif6dObtd3HDFBP6HskpXdTIh7vrEWHPaIu+
- jbHk+qd0aiOecKGYnU8Fywb5jQqogcH7OPlg2YnlTVRMNqbOy/c2TJZG8b/KiME79DwlD+iqPnnJu
- N5LheV9BYLKimA9weFm+CqDwSPX0+oDhcagsgvV7lPiINeq7O5csywDuKDhtV58QLFiN4rXkT7tTP
- Vt50ns4BkYNlJEwRc9WRBggb35EksQKZPWP1nYSDRkZczXgPwzpreTOpBf3RT3pY+5rohanjF8u3q
- bbM3KYCw==;
+ bh=jhEOTvL3V9Nbjw9w+1jc2vZScI1EeBvAk8amsPDh7Ls=; b=IaOt9GNUrR/D4hhCWrudmT0vb4
+ r1bvmRaFULorqqkLllv0E0kpnxGKFfQRPRCne7UNCAIgrBosp0A0m+f0fROM19kUPlO4vTZQXM4tg
+ fPhTtUonvV5xv6JXoeIamtsyOXf1up2tPFHp7JN6msOgtjZjaDUi5h4LcyktvtjyGusBygQdqmheO
+ CmlvkgjBjfFG9JsIwJQSn26TS1ipIaIYbw45TmAeDd5VUGkOn9YIjwELY+6DMI/SLHG09/tPYDLFA
+ o9WhD3UxccvCb9UsFNM18WwkOacQZLtqFjXwhIoOBDhFpg/iz0sUnVltXb6tYjsk1gn+6wxaiwJuG
+ PuJKhOVA==;
 Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1ljQuG-00Fh7X-Ip
- for linux-mtd@lists.infradead.org; Wed, 19 May 2021 18:26:57 +0000
+ id 1ljQuH-00Fh7n-Vz
+ for linux-mtd@lists.infradead.org; Wed, 19 May 2021 18:26:59 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id C84ECC0004;
- Wed, 19 May 2021 18:26:53 +0000 (UTC)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 5BF4AC000F;
+ Wed, 19 May 2021 18:26:55 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Helmut Grohne <helmut.grohne@intenta.de>
 Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -66,17 +66,18 @@ Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Srinivas Goud <sgoud@xilinx.com>,
  Siva Durga Prasad Paladugu <sivadur@xilinx.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v20 08/19] dt-binding: memory: pl353-smc: Fix the reg property
- in the example
-Date: Wed, 19 May 2021 20:26:25 +0200
-Message-Id: <20210519182636.1110080-9-miquel.raynal@bootlin.com>
+Subject: [PATCH v20 09/19] dt-binding: memory: pl353-smc: Detail the main reg
+ property content
+Date: Wed, 19 May 2021 20:26:26 +0200
+Message-Id: <20210519182636.1110080-10-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210519182636.1110080-1-miquel.raynal@bootlin.com>
 References: <20210519182636.1110080-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210519_112656_774680_939ECDC6 
-X-CRM114-Status: GOOD (  10.55  )
+X-CRM114-CacheID: sfid-20210519_112658_185320_22C5A615 
+X-CRM114-Status: UNSURE (   9.99  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,29 +94,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The reg property should describe the entire accessible zone, not only
-the one the driver wants to access. With this in mind, the example
-should map two regions instead of one to be entirely accurate.
+Describe the two reg entries: the first one will receive the
+subcontroller configuration, the second one is for the regular cycles on
+the memory bus (eg. CMD, ADDR, DATA for a NAND device).
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- .../devicetree/bindings/memory-controllers/pl353-smc.txt       | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ .../devicetree/bindings/memory-controllers/pl353-smc.txt        | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt b/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
-index 1335b94291ad..9d220d4cb39d 100644
+index 9d220d4cb39d..d388bb87365f 100644
 --- a/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
 +++ b/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
-@@ -27,7 +27,8 @@ Example:
- 		compatible = "arm,pl353-smc-r2p1", "arm,primecell";
- 		clock-names = "memclk", "apb_pclk";
- 		clocks = <&clkc 11>, <&clkc 44>;
--		reg = <0xe000e000 0x1000>;
-+		reg = <0xe000e000 0x0001000>,
-+		      <0xe1000000 0x5000000>;
- 		#address-cells = <2>;
- 		#size-cells = <1>;
- 		ranges = <0x0 0x0 0xe1000000 0x1000000 /* Nand CS region */
+@@ -6,6 +6,8 @@ of memory interfaces: NAND and memory mapped interfaces (such as SRAM or NOR).
+ Required properties:
+ - compatible		: Should be "arm,pl353-smc-r2p1", "arm,primecell".
+ - reg			: Controller registers map and length.
++			  First entry is for the configuration registers,
++			  second entry covers the memory bus transfers.
+ - clock-names		: List of input clock names - "memclk", "apb_pclk"
+ 			  (See clock bindings for details).
+ - clocks		: Clock phandles (see clock bindings for details).
 -- 
 2.27.0
 
