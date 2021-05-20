@@ -5,16 +5,16 @@ X-Spam-Level:
 X-Spam-Status: No, score=-15.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2353EC433B4
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 May 2021 17:40:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6B46C433B4
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 May 2021 17:41:36 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8DE786100A
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 May 2021 17:40:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8DE786100A
+	by mail.kernel.org (Postfix) with ESMTPS id 6672D60FE8
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 May 2021 17:41:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6672D60FE8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,77 +23,78 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=yGeUSXS1hkmvuXah5X/rodaHzS8lBIgQhp5L0GAzOg8=; b=JKgxz4wSIC2VnMN8jfDdDEZ1j3
-	2n2f4Pktg8e+yrD0q4j54pNhi0K+xrx7z0r1554NE+Qa7Sl9X69/Xf4QM1ipWwE+aI2C2fuXtyzVN
-	CAVd1sW81RvPqobhmZOXCcBpgqCr7LjpqyDIEkLLk+Iu/yZu1gMgxZcrJOAy3z/gSqa7GMp51hsNM
-	Zpt9qObDY6DYNEFDkBSQmQwRZdLUaY4ayCp6prnNidYCwf86eI3clB9EmF3Y9xlh4N/pfaZMdAc1h
-	W7rTRE4E8tVSVqygtwewfFBwNvLaWYJGIo4QHO3WOaVuqw158hocMcK09s5Q1TW8wprWM9Bb/bwec
-	uNTgj2Ow==;
+	bh=O/GPvQ6FMmIdvSuALKB5Bcvqa7IlA37Wh89ZPJN8YPA=; b=hF641qcl8M45xUrcWaAmTceh3v
+	VkcTaz+RafSAFU/IP1QyRrsWKqXoVlTDqNOjk2pQIEEDsci6HtMHEAyo5yDx9rKbsilSIbYiBJL2q
+	5Xp4bqsk8zD0JFB1r1TmCOwag6rhURXfHWv8QpN0Dh55ahljjACHcofQ9pQJagxJLVkCKe9ZXUdvQ
+	MQIqtF+GiL+UGrUr7OmtEK9UOQZrqjUnu+evTM9hP1q18kkH53T4mKmstzEcQHCll/plZwRHZJmo7
+	vZ+CxjpDjgdDibxYXZAhYMQgnu0r/mjyZ/13wzyvClvI0NwXk1H9mehPcSa5syBNeCxiyJi9WozxS
+	1hSRoLxQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ljmdj-0027Lf-HT; Thu, 20 May 2021 17:39:19 +0000
+	id 1ljmfK-0027jA-Vn; Thu, 20 May 2021 17:40:59 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ljmdh-0027LW-7d
- for linux-mtd@desiato.infradead.org; Thu, 20 May 2021 17:39:17 +0000
+ id 1ljmfI-0027is-W8
+ for linux-mtd@desiato.infradead.org; Thu, 20 May 2021 17:40:57 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
  :References:Message-ID:Subject:CC:To:From:Date:Sender:Reply-To:
  Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=YsFqlXZ/Hajwge5aNHpzS6T/LhRAspSHg6EuVrihBzE=; b=FYH62DsFID93AXNSEOPwDKPnIn
- WljAikxgWn95S4fD/O5qz55MAY9uk1F303VJ6khmtRVWqR7NnCEaFFu0zevB/Q+fX8pnvOmavW+6t
- 0cqjV8ZmNzikQ69IvANa8j4ibc6gGT1r/829BgsIRDvkVVNgY2G8IcoMuF7+FnQwdQCrPCNKr9X3g
- XI8+kXpF0cSCZ314wIGNr9LYreLgT0XLXbyOMwkxjF+s/Rk3sj57ySa/KgOIrWyKUV3RpFqQFIF24
- 5coWs5yJGkCAn1Ltbn8399wgKplK1xAD6/U4omd7AqMeccZp2SA/KBm56gPu1zOe9r7nqxUPQBg0p
- IszIN1jw==;
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+ bh=As/rsp/ZN/WjQohJMlHsJic0S5FeRBqChGR/2ESLt+0=; b=3XUK14ilLLahY2qdEsQQXqGSS8
+ SdnF8mbzz8OSYNqWjS2MskJvPv/u8vK/UgEsE2R0Oj4O6otWVZKIxDMy5oAnlDzYpjjPmaxN+1Mic
+ imkSqxwuX+u3AjaqYgl1StFYT+KKloSwwovQs238A8cyx8pbVqx4hhrf+BL0AoGkgBqMKoZ6/ZdH0
+ sX8OJSnSYH8mFFi3337AHeSKZQvwzGyHeRR1Nbs/jSUPVUd+ikk/Ro1lEoRLIBKs6daKAuGBFx+Ip
+ 8kTcYk2zTF3qoR2yQWVO1tbSll6UKZqLTU64zdXCZqkbbOQIiRPqfygrwiXlcQi9c5tYtf+AeEz8Z
+ Z5DcoWqQ==;
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1ljmdd-00GXtm-FK
- for linux-mtd@lists.infradead.org; Thu, 20 May 2021 17:39:15 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14KHdAwa008305;
- Thu, 20 May 2021 12:39:10 -0500
+ id 1ljmfG-00GXxH-Cy
+ for linux-mtd@lists.infradead.org; Thu, 20 May 2021 17:40:55 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14KHemLf076201;
+ Thu, 20 May 2021 12:40:48 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1621532350;
- bh=YsFqlXZ/Hajwge5aNHpzS6T/LhRAspSHg6EuVrihBzE=;
+ s=ti-com-17Q1; t=1621532448;
+ bh=As/rsp/ZN/WjQohJMlHsJic0S5FeRBqChGR/2ESLt+0=;
  h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=uqhVOJUZwiQhO6gcTqnqVlg9kvhMPYwHL7+LyeiCS/YNaFcN863OBBp/0ufzHp36k
- gwhiXr7rKFBLN0nIwTbt8YRxku9JMW5tpOSJ8pceOnD/MHpyuyyPDhAll+hlckt0CW
- qQ3QrWxaCfYrs4iihC0l7WUafn7YtZL8Pi3LVlZo=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14KHdAZd105531
+ b=aNgEF4wDBo/rtV0c6nfaxHn8+0YkXO2ILT6DIB3GA+B2QiPVFDkIBt2uMeG9B8Ixy
+ dJjMKWRQkI7k6/TnrgMUsKc+c3jaNfUmpYg0oQ2jiOGArIlWTgZ+1QNBAZ4lumssAc
+ BWfs7xji/9OBLQtcqiQIF9ieXIiSMFx6fC2xOvIA=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14KHemGl065082
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 20 May 2021 12:39:10 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ Thu, 20 May 2021 12:40:48 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 20
- May 2021 12:39:09 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ May 2021 12:40:48 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 20 May 2021 12:39:09 -0500
+ Frontend Transport; Thu, 20 May 2021 12:40:48 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14KHd8rm001846;
- Thu, 20 May 2021 12:39:09 -0500
-Date: Thu, 20 May 2021 23:09:08 +0530
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14KHelTr014229;
+ Thu, 20 May 2021 12:40:48 -0500
+Date: Thu, 20 May 2021 23:10:47 +0530
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Michael Walle <michael@walle.cc>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, Tudor
  Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
  <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
  Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH v3 2/3] mtd: spi-nor: otp: use more consistent wording
-Message-ID: <20210520173906.3h3m6lykfpnmznkx@ti.com>
+Subject: Re: [PATCH v3 1/3] mtd: spi-nor: otp: fix access to security
+ registers in 4 byte mode
+Message-ID: <20210520174045.sxbffwia7mec24rt@ti.com>
 References: <20210520155854.16547-1-michael@walle.cc>
- <20210520155854.16547-3-michael@walle.cc>
+ <20210520155854.16547-2-michael@walle.cc>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20210520155854.16547-3-michael@walle.cc>
+In-Reply-To: <20210520155854.16547-2-michael@walle.cc>
 User-Agent: NeoMutt/20171215
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210520_103913_621377_502BEEAF 
-X-CRM114-Status: GOOD (  24.15  )
+X-CRM114-CacheID: sfid-20210520_104054_542573_5E3C8041 
+X-CRM114-Status: GOOD (  14.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,82 +112,42 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 20/05/21 05:58PM, Michael Walle wrote:
-> Use the wording as used in the datasheet to describe the access methods
-> of the security registers (aka OTP storage). This will also match the
-> function names.
+> The security registers either take a 3 byte or a 4 byte address offset,
+> depending on the address mode of the flash. Thus just leave the
+> nor->addr_width as is.
 > 
+> Fixes: cad3193fe9d1 ("mtd: spi-nor: implement OTP support for Winbond and similar flashes")
 > Signed-off-by: Michael Walle <michael@walle.cc>
+
+I have not done due diligence in researching this topic. But the premise 
+sounds good to me. So,
+
+Acked-by: Pratyush Yadav <p.yadav@ti.com>
+
 > ---
->  drivers/mtd/spi-nor/otp.c | 18 ++++++++++--------
->  1 file changed, 10 insertions(+), 8 deletions(-)
+>  drivers/mtd/spi-nor/otp.c | 2 --
+>  1 file changed, 2 deletions(-)
 > 
 > diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
-> index 91a4c510ed51..ec0c1b33f7cc 100644
+> index 61036c716abb..91a4c510ed51 100644
 > --- a/drivers/mtd/spi-nor/otp.c
 > +++ b/drivers/mtd/spi-nor/otp.c
-> @@ -15,14 +15,16 @@
->  #define spi_nor_otp_n_regions(nor) ((nor)->params->otp.org->n_regions)
+> @@ -40,7 +40,6 @@ int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf)
+>  	rdesc = nor->dirmap.rdesc;
 >  
->  /**
-> - * spi_nor_otp_read_secr() - read OTP data
-> + * spi_nor_otp_read_secr() - read security register
->   * @nor:	pointer to 'struct spi_nor'
->   * @addr:       offset to read from
->   * @len:        number of bytes to read
->   * @buf:        pointer to dst buffer
->   *
-> - * Read OTP data from one region by using the SPINOR_OP_RSECR commands. This
-> - * method is used on GigaDevice and Winbond flashes.
-> + * Read a security register by using the SPINOR_OP_RSECR commands. This method
-> + * is used on GigaDevice and Winbond flashes to access OTP data.
-> + *
-> + * Please note, the read must not span multiple registers.
-
-Security register is a very vague term. It in no way tells you that it 
-means OTP data unless you already know. If I read this for the first 
-time, I would think it is some sort of password or access enable/disable 
-type of register, and not OTP data region.
-
-Please add a note to clarify this. Same for the write and erase 
-functions.
-
-With this fixed,
-
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
-
->   *
->   * Return: number of bytes read successfully, -errno otherwise
->   */
-> @@ -56,16 +58,16 @@ int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf)
->  }
+>  	nor->read_opcode = SPINOR_OP_RSECR;
+> -	nor->addr_width = 3;
+>  	nor->read_dummy = 8;
+>  	nor->read_proto = SNOR_PROTO_1_1_1;
+>  	nor->dirmap.rdesc = NULL;
+> @@ -84,7 +83,6 @@ int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len,
+>  	wdesc = nor->dirmap.wdesc;
 >  
->  /**
-> - * spi_nor_otp_write_secr() - write OTP data
-> + * spi_nor_otp_write_secr() - write security register
->   * @nor:        pointer to 'struct spi_nor'
->   * @addr:       offset to write to
->   * @len:        number of bytes to write
->   * @buf:        pointer to src buffer
->   *
-> - * Write OTP data to one region by using the SPINOR_OP_PSECR commands. This
-> - * method is used on GigaDevice and Winbond flashes.
-> + * Write a security register by using the SPINOR_OP_PSECR commands. This method
-> + * is used on GigaDevice and Winbond flashes to access OTP data.
->   *
-> - * Please note, the write must not span multiple OTP regions.
-> + * Please note, the write must not span multiple registers.
->   *
->   * Return: number of bytes written successfully, -errno otherwise
->   */
-> @@ -88,7 +90,7 @@ int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len,
+>  	nor->program_opcode = SPINOR_OP_PSECR;
+> -	nor->addr_width = 3;
+>  	nor->write_proto = SNOR_PROTO_1_1_1;
+>  	nor->dirmap.wdesc = NULL;
 >  
->  	/*
->  	 * We only support a write to one single page. For now all winbond
-> -	 * flashes only have one page per OTP region.
-> +	 * flashes only have one page per security register.
->  	 */
->  	ret = spi_nor_write_enable(nor);
->  	if (ret)
 > -- 
 > 2.20.1
 > 
