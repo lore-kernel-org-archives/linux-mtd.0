@@ -2,84 +2,90 @@ Return-Path: <SRS0=TxUZ=KP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54D72C433ED
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 May 2021 10:58:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A41ADC433ED
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 May 2021 11:10:31 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BF2FF610A1
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 May 2021 10:58:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BF2FF610A1
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
+	by mail.kernel.org (Postfix) with ESMTPS id 08FEC60BD3
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 May 2021 11:10:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 08FEC60BD3
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
-	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:Subject:Cc:To:
-	References:In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:
+	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=IBCnJUnnHpZ9li4mvia/es3uaPQOSwScsJ54Y4NnBRQ=; b=rffiWN/j8bb7WgIHgGF5DC+AqF
-	cdzIjmX9hXeZmU4HBMg36VG++VQuP+0fqORYAAtN4buZpVTRVx1hQ6uX7nuJbATUHO9gBm190tWa8
-	oavQhDOcdcrA0jLu1wYgST4n1MyGTnKjkm9NAMTmUqHgtAWViPaAq+3MMQ9nNpC8FeXvUTLhWNhVF
-	v7dhmodmFcSNKR/S8mzzSbacbnP+WRMY9nEbfpWEuv9MV2nYrYizbsRp5Sfnti1gjrTQZ0g/RtmLp
-	+0F3wBXbDPHb+pmKQteejMdFUPz2vO4bywwoxf0mNfOj++vKGvPvtz5/jUoAsduk/9XRJmjzojsV2
-	hQcC7dXA==;
+	bh=1ZcARve5obfpp+XUbh1aC6KfCOZbT5hApUDBRdjmkZg=; b=Sj0MaIPy19PnJP5I8bNFgty+Qh
+	N0qzEYBWnjbjIBAz2CH3EBJjZ2GLNaZbsL/mpjRtC8OChD886jHSVjLW/+WV9zPpnL0p96BrRxaJQ
+	oYGjIDatPWd0wWq0QjTHf4nK9GjwE+VZ/QQh8ozXUU/cP6n83KYF/PJny0LhLCrgirqX49xaqNqKu
+	DBEXV81RYBwjKr3htwj40SjK4VmB2tZMwauSmpDCaUsGZ2wQqDvIKxIqFolU15zlX0bxD4Yzq/Nf3
+	MUhRJpZNudoVWJb3kYNvHnEaHtK/PP4EY4rE9UAiVHUowUpnUUjU40AhGiponITBBPP+aWxpCayua
+	LCcxAP3w==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ljgMm-000I3B-19; Thu, 20 May 2021 10:57:24 +0000
+	id 1ljgYL-000Lkt-JB; Thu, 20 May 2021 11:09:21 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ljgMi-000I25-Jj
- for linux-mtd@desiato.infradead.org; Thu, 20 May 2021 10:57:20 +0000
+ id 1ljgYG-000Lha-Cg
+ for linux-mtd@desiato.infradead.org; Thu, 20 May 2021 11:09:17 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
- Content-Type:Date:From:Message-ID:MIME-Version:Subject:Cc:To:References:
- In-Reply-To:Sender:Reply-To:Content-ID:Content-Description;
- bh=Xp+HQ3QyUBu82GlxQdMOIW1QjabkLPf7FRAQvZJkDkU=; b=o+8CHlA8ShJqumxJpinVicPMzV
- yT5UhlCS5qX+GLpXNsGton+s2TJP8bLE/A1ia3bVxfx4pcC5P2oeQ27hO+rvtqyPfpikfFtmxnkPZ
- q1wQgxWwurXG8vEE5N+Y8pIrUchvxpapifjrk0b6KBdygO6+/8h/9PZHhECVDP2M45aWw76r4l7gg
- ts9qSqSQPL83RJMOflGz11VEnrWnqQdZEDvwADrey6hC1CXA1p4MJ8R7txypqogmQIV7bqESpXcFe
- mYOtwx2qQOKy3VMGv0lUuh+TtbCXB4Kk56SZpaNVVtd55ReHfu5HU+p+I4NN2RyLzHBknPHHmAUVs
- lJgZPWRg==;
-Received: from [122.147.135.201] (helo=TWHMLLG3.macronix.com)
+ d=infradead.org; s=bombadil.20210309; h=Message-ID:References:In-Reply-To:
+ Subject:Cc:To:From:Date:Content-Transfer-Encoding:Content-Type:MIME-Version:
+ Sender:Reply-To:Content-ID:Content-Description;
+ bh=eVUJgs1p5fe+9QkISwzxw/EsNFv7YD+zOveSV6XjbtA=; b=duJ4WFhWnD68da5KR6VMzAEv6+
+ hzmyRSEk9nKdgAeKDuqHssnO+1VXGyAHy8mEwgp9TzJ4nBcTIi0KqGqr9cwM21jZRwu6HnfrMC0Bu
+ tkwPz1TCsqH9GzgsxxTWPB6GFnvFisOX/G/zsIZK0HjzFyQHvT/0tD9XPylBMn/g7//1F3h6j2Etg
+ QDCZcvnjkcePkBhkisHyeL/W38WTQOOyucd5y0xGuV79l0QLKVS4F8Rov3sbWw4uwqTKnCWgrZVZx
+ HMqRQ1CItxUkTCRagwKDWvVHg72E9YgcCUnOV5mnL34PM2Y+1pjuzrH6Q5I1JDUf3MDgNlTkviJdz
+ p+OTyRHg==;
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1ljgMe-00GCla-3g
- for linux-mtd@lists.infradead.org; Thu, 20 May 2021 10:57:17 +0000
-Received: from twhfmlp1.macronix.com (twhfmlp1.macronix.com [172.17.20.91])
- by TWHMLLG3.macronix.com with ESMTP id 14KAurMl003795;
- Thu, 20 May 2021 18:56:53 +0800 (GMT-8)
- (envelope-from ycllin@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
- by Forcepoint Email with ESMTP id 8F2DFEB31973D2233DFB;
- Thu, 20 May 2021 18:56:54 +0800 (CST)
-In-Reply-To: <20210513084523.41d1cdd6@xps13>
-References: <1620697235-7829-1-git-send-email-ycllin@mxic.com.tw>	<20210511105319.0c077fd5@xps13>
- <OFAD6CC9BD.1F0CDB53-ON482586D4.000A51D2-482586D4.000BFF66@mxic.com.tw>
- <20210513084523.41d1cdd6@xps13>
-To: "Miquel Raynal" <miquel.raynal@bootlin.com>
-Cc: juliensu@mxic.com.tw, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, richard@nod.at,
- "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>, vigneshr@ti.com
-Subject: Re: [PATCH 0/2] Fix double counting of S/W ECC engines' ECC stat
+ id 1ljgYC-00GDtr-As
+ for linux-mtd@lists.infradead.org; Thu, 20 May 2021 11:09:15 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id A4BA42224A;
+ Thu, 20 May 2021 13:09:05 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1621508946;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=eVUJgs1p5fe+9QkISwzxw/EsNFv7YD+zOveSV6XjbtA=;
+ b=oMQeWSoU8mWLMhI/HsaMHaO6dZSrEZ2GheRwV6dVGHEwwXeRRNWbxZc7uZAz+Pk+gFXbaT
+ krA80e6rDICmt7OZXFPlZCmGAJRXRClTH4Z16N2fdkCv5u7xw+Y4QBdDr/SKRNke+6eRLV
+ QySU/N4cSv8Y1rvVzf7dcdMvhNWW3eU=
 MIME-Version: 1.0
-X-KeepSent: 12EB0BE9:7879DE49-482586DB:0039FC49;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP6 SHF907 April 26, 2018
-Message-ID: <OF12EB0BE9.7879DE49-ON482586DB.0039FC49-482586DB.003C2449@mxic.com.tw>
-From: ycllin@mxic.com.tw
-Date: Thu, 20 May 2021 18:56:54 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
- HF265|July 25, 2018) at 2021/05/20 PM 06:56:54,
- Serialize complete at 2021/05/20 PM 06:56:54
-X-MAIL: TWHMLLG3.macronix.com 14KAurMl003795
+Date: Thu, 20 May 2021 13:09:05 +0200
+From: Michael Walle <michael@walle.cc>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Helmut Grohne <helmut.grohne@intenta.de>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Tudor Ambarus
+ <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org, Rob Herring
+ <robh+dt@kernel.org>, devicetree@vger.kernel.org, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, Naga Sureshkumar Relli
+ <nagasure@xilinx.com>, Michal Simek <monstr@monstr.eu>, Amit Kumar Mahapatra
+ <akumarma@xilinx.com>, Srinivas Goud <sgoud@xilinx.com>, Siva Durga Prasad
+ Paladugu <sivadur@xilinx.com>
+Subject: Re: [PATCH v20 10/19] dt-binding: memory: pl353-smc: Convert to yaml
+In-Reply-To: <20210519182636.1110080-11-miquel.raynal@bootlin.com>
+References: <20210519182636.1110080-1-miquel.raynal@bootlin.com>
+ <20210519182636.1110080-11-miquel.raynal@bootlin.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <fd29436201e8e5932a8a027472f1064a@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210520_035716_479485_F5926AEB 
-X-CRM114-Status: UNSURE (   3.56  )
+X-CRM114-CacheID: sfid-20210520_040912_962757_F83DE36A 
+X-CRM114-Status: UNSURE (   6.86  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -92,158 +98,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Am 2021-05-19 20:26, schrieb Miquel Raynal:
+[..]
 
-Hi Miqu=E8l,
+> +examples:
+> +  - |
+> +    smcc: memory-controller@e000e000 {
+> +      compatible = "arm,pl353-smc-r2p1", "arm,primecell";
+> +      reg = <0xe000e000 0x0001000>,
+> +            <0xe1000000 0x5000000>;
+> +      clock-names = "memclk", "apb_pclk";
+> +      clocks = <&clkc 11>, <&clkc 44>;
+> +      ranges = <0x0 0x0 0xe1000000 0x1000000 /* Nand CS region */
+> +                0x1 0x0 0xe2000000 0x2000000 /* SRAM/NOR CS0 region */
+> +                0x2 0x0 0xe4000000 0x2000000>; /* SRAM/NOR CS1 region 
+> */
+> +      #address-cells = <2>;
+> +      #size-cells = <1>;
+> +
+> +      nand0: nand-controller@0,0 {
 
-> "Miquel Raynal" <miquel.raynal@bootlin.com> =
+what about nfc (or nfc0) here? If I use this reference on my board it
+looks kinda odd:
 
-> Re: [PATCH 0/2] Fix double counting of S/W ECC engines' ECC stat
-> =
+&nand {
+        status = "okay";
 
-> Hi YouChing,
-> =
+        nand@0 {
+                reg = <0>;
+                nand-use-soft-ecc-engine;
+                nand-ecc-algo = "bch";
+        };
+};
 
-> ycllin@mxic.com.tw wrote on Thu, 13 May 2021 10:11:02 +0800:
-> =
-
-> > > "Miquel Raynal" <miquel.raynal@bootlin.com> =
-
-> > <deleted>
-> > > =
-
-> > > Good catch!
-> > > =
-
-> > > However I don't think the current fix is valid because these engines
-> > > are meant to be used by the raw NAND core as well, I propose =
-
-something
-> > > like the below, can you please tell me if it works as expected? (not
-> > > even build tested)
-> > > =
-
-> > > Thanks,
-> > > Miqu=E8l
-> > > =
-
-> > > =
-
-> > <deleted>
-> > =
-
-> > Thanks for your work.
-> > =
-
-> > I tested the two patches(yours and mine) separately in our =
-
-environment: =
-
-> > 1) MXIC NFC(&raw NAND),2) MXIC SPI host(&SPI-NAND) with S/W BCH =
-
-engine. =
-
-> > Both patches are valid(using nandtest/nandbiterrs, values of ecc_stats =
-
-are =
-
-> > normal).
-> > =
-
-> > This seems to be because the function(nand_ecc_sw_bch_finish_io_req() =
-
-> > in ecc-sw-bch.c) that would increase the ecc_stats counter is not used =
-
-
-> > in the raw NAND world. Am I misunderstanding or is it platform =
-
-dependency?
-> =
-
-> I don't think it can be called a platform dependency, it's more like
-> legacy from the raw NAND world which makes the use of the generic ECC
-> framework hard and thus is limited to a given set of functions.
-> =
-
-> > BTW, I think your modification should be more in line with the design =
-
-> > spirit =
-
-> > of generic ECC engine framework.
-> =
-
-> Yes, ideally raw NAND should fully comply to this framework but this
-> would require a hundred days of work and dozens of available boards to
-> test. During the past 20 years people assumed NAND controller and ECC
-> engine were a single entity which makes the use of the generic ECC
-> framework hard to implemented in the raw NAND. So I decided not to put
-> all my energy there in order to first get this framework available to
-> SPI-NAND devices.
-
-Thanks for your detailed explanation. =
-
-I agree with your change and it works fine in SPI-NAND world =
-
-(with on-die or S/W ECC engines) and raw NAND world(with S/W ECC engines).
-
-Tested-by: YouChing Lin <ycllin@mxic.com.tw>
-
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information =
-
-and/or personal data, which is protected by applicable laws. Please be =
-
-reminded that duplication, disclosure, distribution, or use of this e-mail =
-
-(and/or its attachments) or any part thereof is prohibited. If you receive =
-
-this e-mail in error, please notify us immediately and delete this mail as =
-
-well as its attachment(s) from your system. In addition, please be =
-
-informed that collection, processing, and/or use of personal data is =
-
-prohibited unless expressly permitted by personal data protection laws. =
-
-Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information and/or=
- personal data, which is protected by applicable laws. Please be reminded t=
-hat duplication, disclosure, distribution, or use of this e-mail (and/or it=
-s attachments) or any part thereof is prohibited. If you receive this e-mai=
-l in error, please notify us immediately and delete this mail as well as it=
-s attachment(s) from your system. In addition, please be informed that coll=
-ection, processing, and/or use of personal data is prohibited unless expres=
-sly permitted by personal data protection laws. Thank you for your attentio=
-n and cooperation.
-
-Macronix International Co., Ltd.
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
