@@ -2,99 +2,71 @@ Return-Path: <SRS0=TxUZ=KP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC9B9C433B4
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 May 2021 00:19:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FB4AC433ED
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 May 2021 01:44:53 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 66E36610E9
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 May 2021 00:19:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 66E36610E9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id C0192611AD
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 May 2021 01:44:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C0192611AD
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-Id:Date:Subject:References:In-Reply-To:Cc:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=EMXe3WZ1C5i0KOgEyVNgmv4SsKjO/02T5Ib0lVB/Wfk=; b=LFe6UOup6YSyIH28OdpX61tp1B
-	G5ZY+iOSu9pskM6akX/swML2mtz8RVDzV4gFamYhEi38n+KE1DBMtxoMFnf0syJq29XHEtasaOfLL
-	wEBqVUJx+dQ4y0RIc7So9cYuSlMkOBPvcfxk5PZr1QwLzBcCzxoQ5VLYlhpymw304+1pjxSk2w+hP
-	f9eEBR1mBTl0zpSPUizktJf6q5TV/hTaTvf15iqma7RG5XyygcwH6HZ0ryg53d75rRVxA4mTT79zj
-	6ynwHOTwZjZjXB+tAA2A5E54ISQ6aWY6WytZkfdHHp2bXPBlH0TBI8CZSHGlBOc3b8zPkqLg+oIY/
-	90P3mM9A==;
+	List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To:From:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=rAlpJU+3RB0JByiyLQWYiEAZxiQr3KPtX+5PUDYLdHM=; b=J6dVoijsLh0/wrsZJsLFWXvPfL
+	Rpz7/mQygDJJOfh/1PRyCqciVfsIjs5qbNUS3CXVsscOaHqowGxjELa1hSxejQqOA0JJIJ+O755JO
+	VU+sU5qnSZ0YuZWKEqRdGwKHAfM8ZW0yfLjL9qCrZ4xd3mk+jKirSYu9dTKEJetinFuhixQQOcUTd
+	KGVTMkflIhy71gNhlUCt28KXgn9W6cATH6xhfebTdkXVnidGz5+Wnw6r2Ty7//EalAepPS2zZrGbQ
+	EEvhZ1uooE4NjOb0KRe4acX5lg7jdGh2m3DyK+KCQBBfOuEXeGsUDgN66fzbBMmhHxMPq6eiJAgKM
+	YqQDF0aQ==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1ljWOP-005R88-91; Thu, 20 May 2021 00:18:25 +0000
+	id 1ljXim-005aGh-Ig; Thu, 20 May 2021 01:43:32 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1ljWOL-005R7p-D9
- for linux-mtd@desiato.infradead.org; Thu, 20 May 2021 00:18:21 +0000
+ id 1ljXig-005aGN-W8
+ for linux-mtd@desiato.infradead.org; Thu, 20 May 2021 01:43:27 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Message-Id:Date:Subject:References:
- In-Reply-To:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=rfubOJno7rnZfcmxfaq9FuY544FZq7RPYg4byIShu/0=; b=ee9e19hty5CJ56OLJj0C+yxBgj
- 1+egfegtTil5k/z14MqAjP+z0t2XUxnEgs8EZkB5aNtLR2P6kTu33XmQs9QKp9hHlT3Lq/tcplvre
- w9/4ovXz+XRbg2gjMMH/OOrPse/plf1xjmUErar0PBs4NVFf28MLQPjYL242c+zMGFXlqX1gq3sY3
- 5aqxQidi2DS/cdOWVWVyyKKpzllbprSIbAXvWUNPmV3J4Sx0G4iKWdDjN1F2hTxa/8DG2f4X5hSn/
- IQe5fJLZ6p0zTdLoASJzzJpms7UE/lhVYVA6JXF3MfvyUUOKnGRzdbUvfRzCTucuHXy0p75a7zkYt
- gXylqpgg==;
-Received: from mail-ot1-f47.google.com ([209.85.210.47])
+ d=infradead.org; s=bombadil.20210309; h=Message-Id:Date:Subject:Cc:To:From:
+ Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+ Content-ID:Content-Description:In-Reply-To:References;
+ bh=9e86LseijqL9Da17wUglznxkt3jUBuUGN/RJ6v5wN8w=; b=MXn+XTQWeyKAHNfhamu9HjtGuh
+ ZLG+n04p4CPHnDv2ajb/FpdqdWXovxBlt6q3jQ5bfWiDkztw+YQ4RX/GMMdkOFBrhMAVUcapMuVEQ
+ HsBFafeOD2DsyPALWS0Spf2XPxhVnZ9VNbSLkCRJYFGpPGVtELJv6lDPmAmaXfGGRVokpwmRnh9RT
+ 6XNaNsZYzSev5mahf02+Zmz1OdiWd24iv3Fp/kZ1zmMeCkBtBw19whQaZ4g/sPVrn9Ygcd4MY5p0W
+ 1oWQ5roJ86O69GNgXOYEvzzDbrSah7czQXLIFJd0FlH217ALEffTZK7Tfr4qd+srCgXH1woZ8nq03
+ Tt1vT1qA==;
+Received: from twhmllg3.macronix.com ([211.75.127.131])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1ljWOI-00Frc5-Lt
- for linux-mtd@lists.infradead.org; Thu, 20 May 2021 00:18:20 +0000
-Received: by mail-ot1-f47.google.com with SMTP id
- i23-20020a9d68d70000b02902dc19ed4c15so13413095oto.0
- for <linux-mtd@lists.infradead.org>; Wed, 19 May 2021 17:18:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
- :message-id;
- bh=rfubOJno7rnZfcmxfaq9FuY544FZq7RPYg4byIShu/0=;
- b=EqdxFx7LyTS0g3eDFt3d2hmbM/NVZwyMOmzs1S4vnXuDPVb25wBekweJCIQUORlpdf
- 8L86cKNooH72+IX6b+AYPioGQ+Y6w4hdAUDShLNKYhcsTNrf3T0kb7CfoGvue87aMx1S
- Z2cCC8v93nBHjpOrjRRUh0z/oAMZs7dyhXu2E6guXkSEIQgmUkPZ71duLc3nqmUl864L
- dC3h/ZT3cXbYcfd8nETg5IJ0j5cg8GrymGdCMHzYoYg6p4t7KjU9APF7l5rc5B1YLE3O
- WPFLUyLPeHeO1V3r1V+3uYUHdgzClkI9BMZhJGLnV5lV3Ra+dggf443jBQE44xzYto8A
- LccQ==
-X-Gm-Message-State: AOAM532FP561cnxWfOLMJycn+NzLiZiSByyar+VqSEQqeOE7xSoEt7Yh
- vr8U8t3SHPWKyS9QXfM1KA==
-X-Google-Smtp-Source: ABdhPJxu55tlzcQrYvvI4bjUSD6P1xiUDlsnE6S5OnHx79RcXdAUwKLhS+8UaUzMldWkvNVqWYzmSw==
-X-Received: by 2002:a9d:269:: with SMTP id 96mr1764305otb.222.1621469892748;
- Wed, 19 May 2021 17:18:12 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id d19sm213284oop.26.2021.05.19.17.18.11
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 19 May 2021 17:18:12 -0700 (PDT)
-Received: (nullmailer pid 3946397 invoked by uid 1000);
- Thu, 20 May 2021 00:18:10 -0000
-From: Rob Herring <robh@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Amit Kumar Mahapatra <akumarma@xilinx.com>, Rob Herring <robh+dt@kernel.org>,
- Naga Sureshkumar Relli <nagasure@xilinx.com>, linux-mtd@lists.infradead.org,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, Michal Simek <monstr@monstr.eu>,
- Richard Weinberger <richard@nod.at>, Srinivas Goud <sgoud@xilinx.com>,
- Siva Durga Prasad Paladugu <sivadur@xilinx.com>, devicetree@vger.kernel.org,
- Helmut Grohne <helmut.grohne@intenta.de>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-In-Reply-To: <20210519182636.1110080-19-miquel.raynal@bootlin.com>
-References: <20210519182636.1110080-1-miquel.raynal@bootlin.com>
- <20210519182636.1110080-19-miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v20 18/19] dt-bindings: mtd: pl353-nand: Describe this
- hardware controller
-Date: Wed, 19 May 2021 19:18:10 -0500
-Message-Id: <1621469890.766281.3946396.nullmailer@robh.at.kernel.org>
+ id 1ljXic-00Fsut-WC
+ for linux-mtd@lists.infradead.org; Thu, 20 May 2021 01:43:24 +0000
+Received: from localhost.localdomain ([172.17.195.97])
+ by TWHMLLG3.macronix.com with ESMTP id 14K1h6xM006958;
+ Thu, 20 May 2021 09:43:06 +0800 (GMT-8)
+ (envelope-from jaimeliao@mxic.com.tw)
+From: jaimeliao@mxic.com.tw
+To: linux-mtd@lists.infradead.org
+Cc: miquel.raynal@bootlin.com, zhengxunli@mxic.com.tw, ycllin@mxic.com.tw,
+ Jaime Liao <jaimeliao@mxic.com.tw>
+Subject: [PATCH] mtd: spinand: macronix: Add support for serial NAND flash
+Date: Thu, 20 May 2021 09:45:08 +0800
+Message-Id: <1621475108-22523-1-git-send-email-jaimeliao@mxic.com.tw>
+X-Mailer: git-send-email 1.9.1
+X-MAIL: TWHMLLG3.macronix.com 14K1h6xM006958
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210519_171818_733394_35471B81 
-X-CRM114-Status: GOOD (  11.66  )
+X-CRM114-CacheID: sfid-20210519_184323_330488_23C5FF50 
+X-CRM114-Status: UNSURE (   7.96  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,45 +84,173 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 19 May 2021 20:26:35 +0200, Miquel Raynal wrote:
-> Add a yaml description of this NAND controller which is described as a
-> subnode of the SMC bus.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  .../bindings/mtd/arm,pl353-nand-r2p1.yaml     | 45 +++++++++++++++++++
->  1 file changed, 45 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
-> 
+From: Jaime Liao <jaimeliao@mxic.com.tw>
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Macronix NAND Flash devices are available in different configurations
+and densities.
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml:25:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+MX"35" means SPI NAND
+MX35"LF"/"UF" , LF means 3V and UF meands 1.8V
+MX35LF"2G" , 2G means 2Gbits
+MX35LF2G"E4"/"24"/"14",
+E4 means internal ECC and Quad I/O(x4)
+24 means 8-bit ecc requirement and Quad I/O(x4)
+14 means 4-bit ecc requirement and Quad I/O(x4)
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.example.dts:21.11-33: Warning (reg_format): /example-0/nand-controller@0,0:reg: property has invalid length (12 bytes) (#address-cells == 1, #size-cells == 1)
-Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.example.dt.yaml: Warning (pci_device_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.example.dt.yaml: Warning (pci_device_bus_num): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.example.dt.yaml: Warning (simple_bus_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.example.dt.yaml: Warning (i2c_bus_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.example.dt.yaml: Warning (spi_bus_reg): Failed prerequisite 'reg_format'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.example.dt.yaml: example-0: nand-controller@0,0:reg:0: [0, 0, 16777216] is too long
-	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+MX35LF2G14AC is 3V 2Gbit serial NAND flash device
+(without on-die ECC)
+https://www.mxic.com.tw/Lists/Datasheet/Attachments/7926/MX35LF2G14AC,%203V,%202Gb,%20v1.1.pdf
 
-See https://patchwork.ozlabs.org/patch/1481118
+MX35UF4G24AD is 1.8V 4Gbit serial NAND flash device
+(without on-die ECC)
+https://www.mxic.com.tw/Lists/Datasheet/Attachments/7980/MX35UF4G24AD,%201.8V,%204Gb,%20v0.00.pdf
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+MX35UF4GE4AD/MX35UF2GE4AD are 1.8V 4G/2Gbit serial
+NAND flash device with 8-bit on-die ECC
+https://www.mxic.com.tw/Lists/Datasheet/Attachments/7983/MX35UF4GE4AD,%201.8V,%204Gb,%20v0.00.pdf
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+MX35UF2GE4AC/MX35UF1GE4AC are 1.8V 2G/1Gbit serial
+NAND flash device with 8-bit on-die ECC
+https://www.mxic.com.tw/Lists/Datasheet/Attachments/7974/MX35UF2GE4AC,%201.8V,%202Gb,%20v1.0.pdf
 
-pip3 install dtschema --upgrade
+MX35UF2G14AC/MX35UF1G14AC are 1.8V 2G/1Gbit serial
+NAND flash device (without on-die ECC)
+https://www.mxic.com.tw/Lists/Datasheet/Attachments/7931/MX35UF2G14AC,%201.8V,%202Gb,%20v1.1.pdf
 
-Please check and re-submit.
+Validated via normal(default) and QUAD mode by read, erase, read back,
+on Xilinx Zynq PicoZed FPGA board which included Macronix
+SPI Host(drivers/spi/spi-mxic.c).
+
+Signed-off-by: Jaime Liao <jaimeliao@mxic.com.tw>
+---
+ drivers/mtd/nand/spi/macronix.c | 112 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 112 insertions(+)
+
+diff --git a/drivers/mtd/nand/spi/macronix.c b/drivers/mtd/nand/spi/macronix.c
+index 6701aaa..a989035 100644
+--- a/drivers/mtd/nand/spi/macronix.c
++++ b/drivers/mtd/nand/spi/macronix.c
+@@ -186,6 +186,118 @@ static int mx35lf1ge4ab_ecc_get_status(struct spinand_device *spinand,
+ 		     0 /*SPINAND_HAS_QE_BIT*/,
+ 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
+ 				     mx35lf1ge4ab_ecc_get_status)),
++
++	SPINAND_INFO("MX35LF2G14AC",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x20),
++		     NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 2, 1, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
++				     mx35lf1ge4ab_ecc_get_status)),
++	SPINAND_INFO("MX35UF4G24AD",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xb5),
++		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 2, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
++				     mx35lf1ge4ab_ecc_get_status)),
++	SPINAND_INFO("MX35UF4GE4AD",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xb7),
++		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
++				     mx35lf1ge4ab_ecc_get_status)),
++	SPINAND_INFO("MX35UF2G14AC",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xa0),
++		     NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 2, 1, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
++				     mx35lf1ge4ab_ecc_get_status)),
++	SPINAND_INFO("MX35UF2G24AD",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xa4),
++		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 2, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
++				     mx35lf1ge4ab_ecc_get_status)),
++	SPINAND_INFO("MX35UF2GE4AD",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xa6),
++		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
++				     mx35lf1ge4ab_ecc_get_status)),
++	SPINAND_INFO("MX35UF2GE4AC",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xa2),
++		     NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
++				     mx35lf1ge4ab_ecc_get_status)),
++	SPINAND_INFO("MX35UF1G14AC",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x90),
++		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
++				     mx35lf1ge4ab_ecc_get_status)),
++	SPINAND_INFO("MX35UF1G24AD",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x94),
++		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
++				     mx35lf1ge4ab_ecc_get_status)),
++	SPINAND_INFO("MX35UF1GE4AD",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x96),
++		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
++				     mx35lf1ge4ab_ecc_get_status)),
++	SPINAND_INFO("MX35UF1GE4AC",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x92),
++		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
++				     mx35lf1ge4ab_ecc_get_status)),
++
+ };
+ 
+ static const struct spinand_manufacturer_ops macronix_spinand_manuf_ops = {
+-- 
+1.9.1
 
 
 ______________________________________________________
