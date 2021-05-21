@@ -2,106 +2,85 @@ Return-Path: <SRS0=4Ctu=KQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D725AC433ED
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 May 2021 11:54:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A059C4707A
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 May 2021 19:42:10 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 19704613D0
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 May 2021 11:54:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 19704613D0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=malat.biz
+	by mail.kernel.org (Postfix) with ESMTPS id 1CC5B613D8
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 May 2021 19:42:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1CC5B613D8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=NDntGv9s3fwjB3x5Mv29Xc8RbZmSf345pqeiCrrIXig=; b=gDixgy74G1P+hcg6no/HQ/9vzv
-	P+X2z8WgGrRPx0KK34Cd3yFJhVHbhzJ3naeRgyn2HJVXNexc+EhO2etx5U+D7vWar2mip/NlSgsOW
-	sQaguBsY7SiAiL6C0ks8g1X/3ZdLZ/4yrev63sQ9UD+MCPyFbloQfpd25pfKgPaB3Hwvv/2X5DCD5
-	jHb+8wwvG6aoqiQNJ/UVhjQ3aMPFIOMIuw/Ls1AxbwHuJUUW2uOg9PTdlbeGnOw9nAJjdUVHN9WS3
-	PVXO4GzQhJq2LWgEBJuIWN24EjvO5nk856qcTHEp/ho389nhN3YF/4cmNthZwJJ7qIoT9mbLeYSH7
-	Fv6kvsjQ==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=jfqbbC0ccrUXLX0lsx0XnuxQaWs9rMR+fNoLHdNiK+c=; b=e7/8QHo07wQGrlNfvTqYjnFKO+
+	WnD6u8ed+Tm+72joKEsHkd6XQVgPs4U5J75Iw0oL3UKJJpljDdnrZlYOudUbuo19WRpoI5NjK3l7Q
+	3AUR0TGfGpnjcJ2KmzR5ix0Uylamc9yBM1pHT1VLe9ooltRe/Fvq82M+8ZffPt5yhxTVJMqmYOFyJ
+	YmT88xCrqMxgxI9daZ0D5r1ahELttnV6Tu/Q3+MlNu6VciYfkn9ozH/Q1Vaizf6HYGl1VY9CjCt0e
+	uEKoxGyHSydtg6GT0AgWPztwrYfnRyQpaWlGVWD+U9umH6CHdWRqfFs2v6TXh/qRLry1Yyib9MpDw
+	U+K8CJyg==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lk3jC-005EG3-6I; Fri, 21 May 2021 11:54:06 +0000
+	id 1lkB1R-000u4u-KM; Fri, 21 May 2021 19:41:26 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lk3jA-005EFf-4W
- for linux-mtd@desiato.infradead.org; Fri, 21 May 2021 11:54:04 +0000
+ id 1lkB0q-000twi-PU
+ for linux-mtd@desiato.infradead.org; Fri, 21 May 2021 19:40:48 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
- :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=DvQ7SKabV/R8glu4bqGCCk9ngXCX7lDLYLAo8j+61y0=; b=0r3zYAxa9EpaIyyeGpKZAsW68g
- 9wgkEVGuwRbzQCdzXWRoj7klSPBQb9TuNJ7Pn4IM2MP3gJiNZv0WVSWUwnHZOBTfFtNmCi0X++Zsh
- ZnRmWC7/14JRkbPAHWGArAYBw7KJjfaLNrKPgy1FQ/b4d2Gfp88Uf6z8mDor9rwbFvU6dDzDqDRv7
- j5W105MT32Yd1nfl8mnjhUd1j202PR9INUuommrG9IY88xAHb2cW3UP//bFnaCKOYMfbJ4001kfkt
- TktIrnUdxzOJ+Rwq5fKFO9BPA3OugSIpmymiMxJzPEnVjhgkjvrrHx7bO2HYTvM1/6EEHdS5uKBuZ
- Rqhht1Ww==;
-Received: from mail-wr1-x42f.google.com ([2a00:1450:4864:20::42f])
+ d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+ MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+ Content-ID:Content-Description:In-Reply-To:References;
+ bh=Ch0oeM7u6L9lGRpSIbUwFd8++Tm676K1qFj/hRHd8Zw=; b=nWCm6AmnQcXBoswJk6G6cYpCKb
+ DNrgADLSCZ01BGHpBHecEf9mHvMYcC024BCYpKLhIZDwJLPE2l4GB/Hp9h76CVCn22+UhJmgkFIJe
+ 9cewgMX+J3Poi6OrBh/7DOujQiCBZmck3uUOyVCuWlGXkCGIWH3WucWB6T8mkPRQfzWsaJ0hQQJIq
+ z50N4JGQEhXI15cbn4ZTfygj2lVPTuVyoqvFq3IO97Mx1goNstFf5yaLfGDPNQ5BAn61Yb0AyNK+4
+ oBkO569tPt3ETHny/AovVSyR3qndt3zmGNmqBivbdzKEalgyGaWy5mggzkmgu8P7Jptqi8qhJTtBZ
+ dF95XDLQ==;
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lk3j7-00H4yw-46
- for linux-mtd@lists.infradead.org; Fri, 21 May 2021 11:54:02 +0000
-Received: by mail-wr1-x42f.google.com with SMTP id r12so20804842wrp.1
- for <linux-mtd@lists.infradead.org>; Fri, 21 May 2021 04:54:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=malat-biz.20150623.gappssmtp.com; s=20150623;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=DvQ7SKabV/R8glu4bqGCCk9ngXCX7lDLYLAo8j+61y0=;
- b=cCNZ4MjiwhRppRwUO/inCngfg/IMLdqXDSLO8xzit9uuKdvF436WDunosINL8QYGJo
- RPAWX671m6G2Skuf59FB1sKYTXe66NxhIlh1uYPt9x2/ZoYAHiYnUqSmjwH4ER1bAtVj
- R2tOXmQcpcfup659k4i88EmPltTw2XicTdLkhlXP/oUjf/UpKAJG2CoEvZUJmZGVwhM2
- 3aYAO5jP04/blW/nDbl1TH53XGhFiaXwEu63Y2GHO7Z/iU/O4KGn0fnh937x/6iMt6H7
- B3zDQKi9IJJ2bB2fFx80BTzHxjcueSIPYPqBXLEB6WvqXQgH2RnFiaF/tRhQDW7zTNc8
- 4ZjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=DvQ7SKabV/R8glu4bqGCCk9ngXCX7lDLYLAo8j+61y0=;
- b=qNXbWbBufxLzkOn2b6Rp4iVqUyIecpcr7tJ43fd1GTy80T4w+25ab9tDJG1dcm35gZ
- i4ctmC5BPDn4rzWu/nrdPnZmHLpag4LEoPbXvTBConxmUuEwIz0Plq0gQxGos9kMoMyQ
- T0p3B3H4AIqrHC347UBCEfN4h2bYihDI5rleppsi4wyktNXI4UymbfkVr8x9lrPkMXjp
- KMleny3BLYoJWIZwuwWvSiB9z0qVOE9C22IFIWO1dGREgSJQgPLOCD/Ntx03hJ8Jz88K
- S4Q3I+NzHdY+hy7EStmUTA8r+pN7WmnP3KLCOo5SDt8fcJKxOEaLt+DhBXaDcqrjTtPv
- WQjQ==
-X-Gm-Message-State: AOAM533M+317MyCdX2UC/UkWmeMwQmBbZJX9BnWMUYza+fT1Yt5SPbPP
- IcG2JTBQ9bOo+wlUUQq3+nmqhA==
-X-Google-Smtp-Source: ABdhPJzts29baPG1no9Hywg2wjet+xDmTPIijEIUhwvu6JXk9YEBcLDwLzhvwNU5Pm67gr1jLympFw==
-X-Received: by 2002:a5d:4843:: with SMTP id n3mr8962117wrs.411.1621598039287; 
- Fri, 21 May 2021 04:53:59 -0700 (PDT)
-Received: from ntb.petris.klfree.czf (snat2.klfree.cz. [81.201.48.25])
- by smtp.gmail.com with ESMTPSA id u16sm1346976wrn.61.2021.05.21.04.53.58
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 21 May 2021 04:53:58 -0700 (PDT)
-Date: Fri, 21 May 2021 13:53:50 +0200
-From: Petr Malat <oss@malat.biz>
-To: Pratyush Yadav <p.yadav@ti.com>
-Cc: linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>,
- Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: Re: [PATCH] spi-nor: sfdp: Allow configuring unknown flashes using
- SFDP
-Message-ID: <20210521115350.GA7908@ntb.petris.klfree.czf>
-References: <20210520160701.28176-1-oss@malat.biz>
- <20210521095503.qw3aivg4zklupwcj@ti.com>
+ id 1lkB0n-00HNxL-0o
+ for linux-mtd@lists.infradead.org; Fri, 21 May 2021 19:40:47 +0000
+Received: from mwalle01.fritz.box (ip4d17858c.dynamic.kabel-deutschland.de
+ [77.23.133.140])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
+ SHA256) (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 16EEA22173;
+ Fri, 21 May 2021 21:40:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1621626039;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Ch0oeM7u6L9lGRpSIbUwFd8++Tm676K1qFj/hRHd8Zw=;
+ b=GdHyknkAzN+F6JjT5oN/3C4A0H85WBXUV8F9YpDJUjhU2mgAKEUrp2KUrBVcywbZbNTHO7
+ WGsqmgmxrfgCZl9XP8piX9pkaT8C9Ou8JcH6mBZeceAyeoAv28uFcvR0q7oOY1V1KvlAdR
+ 7VzeuS+8e5Isq6r0GQ2bCX/0pT28hwg=
+From: Michael Walle <michael@walle.cc>
+To: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Michael Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH v4 0/4] mtd: spi-nor: otp: 4 byte mode fix and erase support
+Date: Fri, 21 May 2021 21:40:30 +0200
+Message-Id: <20210521194034.15249-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210521095503.qw3aivg4zklupwcj@ti.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210521_045401_249449_E2822F86 
-X-CRM114-Status: GOOD (  31.45  )
+X-CRM114-CacheID: sfid-20210521_124045_244563_5013F1AD 
+X-CRM114-Status: GOOD (  10.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -118,50 +97,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi!
-On Fri, May 21, 2021 at 03:25:05PM +0530, Pratyush Yadav wrote:
-> On 20/05/21 06:07PM, Petr Malat wrote:
-> > This change allows adding a support for flashes with correct SFDP
-> > without recompilation of the kernel by setting sfdp-compatible property
-> > in their node. Alternatively, sfdp_compatible module option can be used
-> > to list JEDEC IDs of flashes, whose SFDP can be trusted. Star "*" can
-> > be used to match all JEDEC IDs.
-> 
-> I have skimmed through the patch. Before I look at it more closely, I 
-> want to understand the use case for this patch. Why would you not want 
-> to recompile the kernel when adding support for new hardware? Do you 
-> want the ability to support flashes on devices that have already been 
-> deployed in the field? Is it something that comes up frequently?
-In my case the kernel is loaded from a USB mass storage device, which
-can be preproduced and on stock (with the kernel already on it). With
-my patch I can change the flash vendor without the need of updating
-the image on already existing USB mass storage devices.
+This series is the follow up on the single patch
+mtd: spi-nor: implement OTP erase for Winbond and similar flashes
 
-The patch is also useful for people who use distribution kernel as they
-will not have to wait until (and if) the distribution updates it.
+Pratyush Yadav discovered a likely problem with bigger flashes, the address
+to access the security registers is either 3 or 4 byte (at least for
+winbond flashes).
 
-> Then comes the question of how do you get the flash to probe if it is 
-> not present in device tree? And if you are able to update the device 
-> tree then you should also be able to update the kernel.
-If one sets sfdp-compatible flag in the device tree and replaces one
-flash with another, he doesn't need to update the device tree. It
-extends what is already possible now - if I make "jedec,spi-nor" node
-and the JEDEC ID is known to the driver I can replace the flash with
-a different one whose JEDEC ID is known as well and it will work
-without touching the device tree.
+Changes since v3:
+ - new patch to check for read-only OTP regions before writing
+ - clarify term "security register"
+ - don't combine lock and erase functions anymore. there are now
+   more difference than similarities.
 
-> Have you tested this with any flash? If so, with which one?
-I have tested it with n25q128a11 by removing it from the driver.
+Changes since v2:
+ - fix 3/4 byte mode access
+ - use spi_nor_erase_sector() by swapping the nor->erase_opcode
+ - use more consistent wording regarding the security registers
 
-> > 
-> > Signed-off-by: Petr Malat <oss@malat.biz>
-> > ---
-> >  .../devicetree/bindings/mtd/jedec,spi-nor.txt |  3 +
-> 
-> This file has been converted to yaml since at least 5.12-rc1. Please 
-> update your kernel sources and rebase your patches.
-OK, I will rebase.
-  Petr
+Changes since v1:
+- fixed kernel doc
+
+Michael Walle (4):
+  mtd: spi-nor: otp: fix access to security registers in 4 byte mode
+  mtd: spi-nor: otp: use more consistent wording
+  mtd: spi-nor: otp: return -EROFS if region is read-only
+  mtd: spi-nor: otp: implement erase for Winbond and similar flashes
+
+ drivers/mtd/spi-nor/core.c    |   2 +-
+ drivers/mtd/spi-nor/core.h    |   4 +
+ drivers/mtd/spi-nor/otp.c     | 147 +++++++++++++++++++++++++++++++---
+ drivers/mtd/spi-nor/winbond.c |   1 +
+ 4 files changed, 143 insertions(+), 11 deletions(-)
+
+-- 
+2.20.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
