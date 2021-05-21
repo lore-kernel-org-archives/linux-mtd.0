@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EB74C433ED
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 May 2021 02:01:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07087C433B4
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 May 2021 02:02:55 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 07A426135B
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 May 2021 02:01:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 07A426135B
+	by mail.kernel.org (Postfix) with ESMTPS id 524E361363
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 May 2021 02:02:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 524E361363
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,82 +23,83 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
 	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=oRHUpB1HMmfSpRIgt5ZkpZWBwetUKbpYmjl5uiIGLn0=; b=lNtpqpZ/5qLwWLp8lhjzi5XqEC
-	ER+boijiP9rrQYhAcfLurDTHw1LgEhsWOuWjClUVeLhprDEoXbQVkBRCMnRE+yK3sl5uBv0rMlMrO
-	vC/wGwri2Ot8v91XLLjuY3WjyQW3Yr436WSfWEZ3ZXASHjU70jOnCaF1t7Ob3X9QXkdV7epm3m/yD
-	DKXWAKZ8JXAbzoqg76xlCY41zGPt6xdaeb1F/MxKKnSTufkHAeG9SKdU5S4mwUvovYbUgSo/0H6OF
-	KJNqID1lp/1ChyOcS7afPXFimPu4oj+XodomzxVN+IZ9g1MmqxKrmWpDpapiWUA+QYRjpVDgJp8U5
-	8yoYxnYw==;
+	bh=uEpd/IWxJts7VagsrfZIAyAVmw/lvvIjJzJHI1N0FH0=; b=J7/VvcGs3/g5//HiYARl/tCkDk
+	qtVRvQrCJtPeFy2IyLCY1ejoMZ70aDB7FI3W2WUZpFQUdGFzQSZwDpiXzKWjTFlTFwjsT/YqMAkN7
+	8EE6NF/gPQxfz5YP/vVDiuZ3Q58lnXEUe1pZmE/PFwQqHVuJJYzFT1GoZAYtg/zpb9LIjfINRb+RZ
+	gpFE0jmKC2YcKmfAJ6RDouMPHgbY8HzMbTxFoVBMY+DD4X08XMVM3nkWduC+2DepWIRAz5Sy1nflW
+	qUWpLKCMjowShLOoH/ghyGXTX+5ivgFbxsPe33Af4kaljkf9+6EVmpC0YrAivUtb4zRl+BcNLzQpr
+	YEIXJgjA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ljuSo-003Pn6-Fj; Fri, 21 May 2021 02:00:34 +0000
+	id 1ljuTx-003Q3M-Et; Fri, 21 May 2021 02:01:45 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ljuQl-003P6Y-95
- for linux-mtd@desiato.infradead.org; Fri, 21 May 2021 01:58:27 +0000
+ id 1ljuQx-003PBP-Kr
+ for linux-mtd@desiato.infradead.org; Fri, 21 May 2021 01:58:39 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
  :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
  Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=UvcU4EeUaIjV+Ny7V91j+mXar+CTc1dWe9HkTz10n94=; b=IB3Cg0Z9aj3Do4cLzImhXOynW1
- zKnYCwkXuQHE28ytYI8Onw6MO3IEPUEuyGGWvYVKfAuj/au12s31x4Lre8BRSNSZlFOW0Cao1248a
- EIEfdChlXEYnB/fCdAnHUOG4RfHB61A+kE+oxdPflGN26iCS3rnYEvIkOTjALFQat83r0vYBIW1e8
- wm0mdFVm5/yx88Q0iejRUbvz7SeNX8JSlw39cPNJPsE1PvjyP7sgGGaxGXRZmV5PC5/MzV1LEqTm6
- qTLs8JgzuWL1BM/l6zUDLmvnirPPN0PE2Z2ZQRuV7OgA5UYnRqTLbv0qVQkoGlMQXl8kuEoUuCedX
- Vm4725dw==;
-Received: from mail-oi1-f174.google.com ([209.85.167.174])
+ bh=vvC4Y8CR9bI+JUYqRL1jBowD94kwSZdRtPupkAiyU5s=; b=2z3Wp6t+YYJyiCazO847HS3FSL
+ 3JtyAUQc13WkF9wyuKi7ByRFg7Wzq1TPqgSqiFCb2UoGfRaYeklle7XYodOuqfEd/DtoH/WZuf6HE
+ KVpKvYXNYSskjIw3Jzt0cXcYxRjY7fuLCrSHLTnkyQx7ohVhdJWbANMjx0htQZNnHHKXaMksdJy0k
+ iT/364X6dMG7oEyW4li7k+CMJptpSAKInfHbRuaXjsHFf3omC611HjWB96pJ8b7GiGC2sncE7a0TB
+ fbQuBwfBX3IwHzS0/wI/pZ/kCf+TGSyE10VbDJAQUoJ42DSQaClnaPOvEw9sFTqVuh/Q2s7Jtij8o
+ y0FMWN5g==;
+Received: from mail-ot1-f50.google.com ([209.85.210.50])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1ljuQi-00GlCR-Qr
- for linux-mtd@lists.infradead.org; Fri, 21 May 2021 01:58:25 +0000
-Received: by mail-oi1-f174.google.com with SMTP id u11so18279760oiv.1
- for <linux-mtd@lists.infradead.org>; Thu, 20 May 2021 18:58:24 -0700 (PDT)
+ id 1ljuQv-00GlDb-13
+ for linux-mtd@lists.infradead.org; Fri, 21 May 2021 01:58:38 +0000
+Received: by mail-ot1-f50.google.com with SMTP id
+ u25-20020a0568302319b02902ac3d54c25eso16710726ote.1
+ for <linux-mtd@lists.infradead.org>; Thu, 20 May 2021 18:58:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to;
- bh=UvcU4EeUaIjV+Ny7V91j+mXar+CTc1dWe9HkTz10n94=;
- b=NJxl3tyBjOkfYZRtfi5TfZesDNKfUeoKPx5u+Fk0opjH+K0c7ouv7gYGdo466rRGR9
- 6cL+XXIMN2L/w+EwJ74xzL52j2Yfj4mKcarMACFyvl1gJFTcIBasCEsDdY30HOP1woDP
- /G+c9fqFDBRB8C0ny97ZDdw9bDkqojl4kjilGcJZsy8yZ9ePTDQnECFYgf769ZzplQat
- I9QCMfCSG1Y6cXcdbSLjOHjrbbHPngzpqjQ769QYAdo/11aD9R6FP2vJf3jAWJ2ZfULC
- k98o/LxxtcvV6g5IZrfPuErKMxBoBNvIYXOrWpLlWIvSa0O2u0n9SoVRuIu6MODjqW+M
- p/5g==
-X-Gm-Message-State: AOAM533wzuyslEUQyqKGBDTFBf0Rrq4sbdtStzUUGrFo/lxgtO0oV7js
- HEdGPA6XLMFoJobGqNkweZmUc9OwyQ==
-X-Google-Smtp-Source: ABdhPJyh2Y2kbzs7se4ZbLfeXy4GL9pyfcBP9KvUd+7br3OFbQ8gORAMzZAnc0R/8RK4ctVbaMrGGA==
-X-Received: by 2002:aca:4a8b:: with SMTP id x133mr338546oia.124.1621562303797; 
- Thu, 20 May 2021 18:58:23 -0700 (PDT)
+ bh=vvC4Y8CR9bI+JUYqRL1jBowD94kwSZdRtPupkAiyU5s=;
+ b=hti2h6V0OfWsfuyaTwt/L9aEJSmh3eCX8zSP5byyd58lqVX7MVXu0Vn82LNGzWw4nO
+ FdRBo8l8Fr+KSEO0xLzsoDQ7mOl/FLH2Thtbl0+y0Hq3uqG+aXZyq9RJ5DNGQMGU3Kbc
+ 68xgVngoLifGEv62/SKpbwVEV9HJzS8qgMlA29VcEzdswU1JpGYTmEl0OH14aTg/dlbY
+ 1mNp2zc7CFoM0y2jWSpQMPOYKvwK1aFY6T8UtKQkUC/WEUER9jVOJGDd7NMO1Y5GcyJf
+ ZJzits2oI+JtM15ySN/c9w4h17rg7Tn7oNJ1vnC4CR03NXDOQqOg7YR6HGUZ+iUZU55A
+ YB+A==
+X-Gm-Message-State: AOAM531EFxqnLWcQm/LBkQuq3HYK5g1xW2UGJ8vDsJpnBsEXFwQYdzDc
+ VOkpMVUV49/W8Lno7N+P0A==
+X-Google-Smtp-Source: ABdhPJyAx6OTiaug8hpl/Ku5ud6j2Rhov9Ij5B1x90Qa5sT7b+rPzq86IuC4/9eZlCjqNDcA0pfM2g==
+X-Received: by 2002:a9d:7610:: with SMTP id k16mr3917154otl.32.1621562316433; 
+ Thu, 20 May 2021 18:58:36 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net.
  [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id f13sm1061181ote.46.2021.05.20.18.58.22
+ by smtp.gmail.com with ESMTPSA id o18sm1018873otp.61.2021.05.20.18.58.35
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 20 May 2021 18:58:23 -0700 (PDT)
-Received: (nullmailer pid 2495659 invoked by uid 1000);
- Fri, 21 May 2021 01:58:22 -0000
-Date: Thu, 20 May 2021 20:58:22 -0500
+ Thu, 20 May 2021 18:58:35 -0700 (PDT)
+Received: (nullmailer pid 2496157 invoked by uid 1000);
+ Fri, 21 May 2021 01:58:34 -0000
+Date: Thu, 20 May 2021 20:58:34 -0500
 From: Rob Herring <robh@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Amit Kumar Mahapatra <akumarma@xilinx.com>,
+Cc: Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Amit Kumar Mahapatra <akumarma@xilinx.com>,
+ Richard Weinberger <richard@nod.at>, devicetree@vger.kernel.org,
  Helmut Grohne <helmut.grohne@intenta.de>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, Srinivas Goud <sgoud@xilinx.com>,
- Siva Durga Prasad Paladugu <sivadur@xilinx.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Michal Simek <monstr@monstr.eu>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Naga Sureshkumar Relli <nagasure@xilinx.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v20 05/19] dt-binding: memory: pl353-smc: Fix the example
- syntax and style
-Message-ID: <20210521015822.GA2495628@robh.at.kernel.org>
+ Siva Durga Prasad Paladugu <sivadur@xilinx.com>,
+ Rob Herring <robh+dt@kernel.org>, Michal Simek <monstr@monstr.eu>,
+ Srinivas Goud <sgoud@xilinx.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH v20 06/19] dt-binding: memory: pl353-smc: Drop
+ unsupported nodes from the example
+Message-ID: <20210521015834.GA2496096@robh.at.kernel.org>
 References: <20210519182636.1110080-1-miquel.raynal@bootlin.com>
- <20210519182636.1110080-6-miquel.raynal@bootlin.com>
+ <20210519182636.1110080-7-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20210519182636.1110080-6-miquel.raynal@bootlin.com>
+In-Reply-To: <20210519182636.1110080-7-miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210520_185824_888724_8B6F2E63 
-X-CRM114-Status: UNSURE (   9.03  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210520_185837_088515_EE4CB465 
+X-CRM114-Status: GOOD (  12.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -115,13 +116,20 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 19 May 2021 20:26:22 +0200, Miquel Raynal wrote:
-> Enhance the spacing, the comment style, add { }, remove (...).
+On Wed, 19 May 2021 20:26:23 +0200, Miquel Raynal wrote:
+> These nodes are given as examples and are not described nor used
+> anywhere else. There is also no hardware of my knowledge compatible with
+> these yet. If we want to be backward compatible, then we should avoid
+> partially describing nodes and their content while there are no users.
+> Plus, the examples are wrong (the addresses should be updated) so
+> let's drop them before converting this file to yaml (only the NAND node,
+> which will be fixed in the example and described somewhere else is
+> kept).
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > ---
->  .../bindings/memory-controllers/pl353-smc.txt | 48 ++++++++++---------
->  1 file changed, 25 insertions(+), 23 deletions(-)
+>  .../bindings/memory-controllers/pl353-smc.txt          | 10 ----------
+>  1 file changed, 10 deletions(-)
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
