@@ -2,102 +2,98 @@ Return-Path: <SRS0=4Ctu=KQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-15.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19EC8C433ED
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 May 2021 02:04:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E45EFC433B4
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 May 2021 09:57:04 +0000 (UTC)
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D713861363
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 May 2021 02:04:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D713861363
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 6A658613CB
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 May 2021 09:57:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A658613CB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding
 	:Content-Type:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=a6+k1rAWV3DX5WVh+b3tqJ0LTR380TCdVR+FOBtt2p0=; b=FAviAuq8ymOb/75orJALArgWku
-	XzTxT4+wPQrv2NCXFobV2wtjFYoCNnWOqlJZwtXNxvFpAcDirYjil6MP63ubE/+4Ldmj542Y7GyGB
-	Zv6mBIgr9+pPtMMA8KrkaQnDFr4pAIr4cqQ02fEoX6mHmNkKQqfScx+A4QYlII2JC16tWCHtHTG1f
-	nJy9qP1Dh1nKSG4RtXEI5s3EKFjnmlov7gKxNhMmSokZGhSMMWlkOYqdevWwW6nFlM9Kry6prCLGJ
-	mPdRAC4T1NjYky/CcHR2YG+QLRCS9UF5edQVyu7c9vSGeEAti6n6/aOQ1oml/sn2jWw6CAYZWAC7O
-	QTE20mIQ==;
+	bh=4oXgqjvdEECCYh+fSm1GAXQcDKn5IGgzNa9groOt33k=; b=NR1RHN6ZkDYRHUqr9eLjMwsldD
+	vunCB876q6nlUs8Y2xmco2qLKNg1RyB97RIq5oL5V9UwmQKhQmMKQyxf4+plfmfMwvih+7bZTei/r
+	igAeuttYFiZFEPNH69IeWa2yVVkwwErL/iSpBlEKFiDjeXA1bBu8r229zitxhx197cbsecEt8THuq
+	P1UydgnBVmea5c1JtAeaJ+jf+qR6Riawvi1+LZ1a4sRAuLOtfnZ5U5r8blpzdi4YFnNgTEZxRzotX
+	HLS/hJxdDVfLqlN1aXM/tQPHFJXpsd0CgjGD37QwTFr14dlLGFIYp7y/0HpGNjPfo/OV+TQ5Vzl7Z
+	G6w/5lUA==;
 Received: from localhost ([::1] helo=desiato.infradead.org)
 	by desiato.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ljuVe-003QOi-6X; Fri, 21 May 2021 02:03:30 +0000
+	id 1lk1sI-004pN5-5P; Fri, 21 May 2021 09:55:22 +0000
 Received: from bombadil.infradead.org ([2607:7c80:54:e::133])
  by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ljuR9-003PEl-UJ
- for linux-mtd@desiato.infradead.org; Fri, 21 May 2021 01:58:52 +0000
+ id 1lk1sD-004pLA-Fh
+ for linux-mtd@desiato.infradead.org; Fri, 21 May 2021 09:55:18 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
- :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ :References:Message-ID:Subject:CC:To:From:Date:Sender:Reply-To:
  Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=8E3lx0LtnmXkn4zmw+kmVk+CeXLZmUSlDecTRGiMrEU=; b=K4v5RqPLZsQ0sV0LHL9Awj+hIA
- N4MKQHtCM8lfpgTlt1EVVi0wyFpT72AETULF1OVYyrHuxx9D2OFV36jkrSRo9hKOWUU4gskTbtNT0
- mLS/whBJrwozELOmYWgr64W2J1a6e/e0jjV/RXCcMl1HyEfbBBv/KEBD+c+5Sp3y7KRvq5dcANrLv
- oAkMxS8+DJjFdCBGpEU9yz+dC45dr2Z57oWoFJU5P2ZjFpthA01AxqIJzLDSU5WmO2mNNilRGOikW
- YI2CA4Q6QJhphPj7947XUkFK9E4nvOgCb20O590JXhxtZtDoAjWOEpIbhh6XvV+aWmvbCW42CSyK/
- Dr3ojh1A==;
-Received: from mail-ot1-f52.google.com ([209.85.210.52])
+ bh=zcdSUALsAgVoPEUXX928KRQZXwv6SENqMPSsey5/4VU=; b=1riAXRtqqFkXPp0q2P9y+eSmTm
+ N16j0zHr7BX6vSYpNAUzS7+pQZtsecmBxbsl3WYSV7CmsJhDvwMsAjXoVJE7w5GdkiBTGohYdOIpb
+ BlgEay7GiV7Qg0W5/an4IkKK6dPxOJ0qAgZtgRmJv8zlHN756gJQPWU2JVFRJUMuXLcPx6xbGLwLf
+ sOvdzfZVPSuIkrEZjQLz7uWa9Q2d+3ruwLsJr/xNoAsQi8jPfbjqk5hr/f6TfivvZTdYCf/N9UX0X
+ 749owPWZN/SumgPJ6SfgjUA2gpcnaWQhC3CUuO6Mw5UDuuBIGDiFzXX/PDSFDNEpr9xqMI4adY5e2
+ kgSSswjQ==;
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1ljuR7-00GlDv-HN
- for linux-mtd@lists.infradead.org; Fri, 21 May 2021 01:58:50 +0000
-Received: by mail-ot1-f52.google.com with SMTP id
- d3-20020a9d29030000b029027e8019067fso16628612otb.13
- for <linux-mtd@lists.infradead.org>; Thu, 20 May 2021 18:58:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=8E3lx0LtnmXkn4zmw+kmVk+CeXLZmUSlDecTRGiMrEU=;
- b=caO7wwKHUO5rRGyWzRz9KgwbJRafX3C6TnnSCPsCDDHniEE37YnjT0EwEaDxlzMk6o
- JJu5EyCOBfKzuEw6G9j4z3106gDETZovq1Fn9zIpiQj2T/6pTPHQXGdlCgvYtbZfMP3D
- p8DP1H7MXWHWBcB/rf94gZiIUb+ITfZsiRLiZSIN1xGoND0w9Ij6Wo77ROIVmq6kUvGl
- 8VchzYmvoUm1i6/5Dlf+BgHXs3tPG0+pNcv70lwY7W5DhMYkGrTK6laX7KzOfGPZoW+P
- 5X0pm7uB60HJVCFgDPa5pQ6rHFWzHGxyoEau+78O08cU9jPep5vjJQW6p4KHZPgiuC2C
- VAXg==
-X-Gm-Message-State: AOAM532dSGRDDJUfp7PNuyAINRklQbdZKTqvwCFDwudkH6776Y/o/kgh
- pwg/cANaS8FgausxXoBG2w==
-X-Google-Smtp-Source: ABdhPJznIlvVhog9VmvyTBs+XWtmbCFcpljzvpaYjzBLXyIS6rKxyqFFbDTryMIBOUOn9a5QCE3W3A==
-X-Received: by 2002:a05:6830:4da:: with SMTP id
- s26mr5961025otd.77.1621562327848; 
- Thu, 20 May 2021 18:58:47 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id t26sm1016521otc.23.2021.05.20.18.58.46
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 20 May 2021 18:58:47 -0700 (PDT)
-Received: (nullmailer pid 2496601 invoked by uid 1000);
- Fri, 21 May 2021 01:58:46 -0000
-Date: Thu, 20 May 2021 20:58:46 -0500
-From: Rob Herring <robh@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Michal Simek <monstr@monstr.eu>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, devicetree@vger.kernel.org,
- Amit Kumar Mahapatra <akumarma@xilinx.com>, Rob Herring <robh+dt@kernel.org>,
- Siva Durga Prasad Paladugu <sivadur@xilinx.com>, linux-mtd@lists.infradead.org,
- Richard Weinberger <richard@nod.at>, Helmut Grohne <helmut.grohne@intenta.de>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Naga Sureshkumar Relli <nagasure@xilinx.com>, Srinivas Goud <sgoud@xilinx.com>
-Subject: Re: [PATCH v20 07/19] dt-binding: memory: pl353-smc: Fix the NAND
- controller node in the example
-Message-ID: <20210521015846.GA2496572@robh.at.kernel.org>
-References: <20210519182636.1110080-1-miquel.raynal@bootlin.com>
- <20210519182636.1110080-8-miquel.raynal@bootlin.com>
+ id 1lk1sA-00H0od-MC
+ for linux-mtd@lists.infradead.org; Fri, 21 May 2021 09:55:16 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14L9t7vY088535;
+ Fri, 21 May 2021 04:55:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1621590907;
+ bh=zcdSUALsAgVoPEUXX928KRQZXwv6SENqMPSsey5/4VU=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=YusESYABMlWYPmVJ2HxI6Y/Z7bHbewSYcZVS5XnnsCsO4Qi6KpXf7ubnOctDf3Bzb
+ UOwuryTMZ3tFbNkswitStj3y2995Gl1ZqAhuMDtmHrgPwcTj1k0VmDg+9/voRMNpmr
+ QD0drypwoQiR3UJoEp7PWstfam19jLk3MI4BAcf8=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14L9t7ss070706
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Fri, 21 May 2021 04:55:07 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 21
+ May 2021 04:55:07 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 21 May 2021 04:55:06 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14L9t6LO066914;
+ Fri, 21 May 2021 04:55:06 -0500
+Date: Fri, 21 May 2021 15:25:05 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: Petr Malat <oss@malat.biz>
+CC: <linux-mtd@lists.infradead.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh+dt@kernel.org>, Tudor
+ Ambarus <tudor.ambarus@microchip.com>
+Subject: Re: [PATCH] spi-nor: sfdp: Allow configuring unknown flashes using
+ SFDP
+Message-ID: <20210521095503.qw3aivg4zklupwcj@ti.com>
+References: <20210520160701.28176-1-oss@malat.biz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20210519182636.1110080-8-miquel.raynal@bootlin.com>
+In-Reply-To: <20210520160701.28176-1-oss@malat.biz>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210520_185849_591752_5D480764 
-X-CRM114-Status: GOOD (  12.41  )
+X-CRM114-CacheID: sfid-20210521_025514_852961_CD238937 
+X-CRM114-Status: GOOD (  19.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,18 +110,43 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 19 May 2021 20:26:24 +0200, Miquel Raynal wrote:
-> To be fully valid, the NAND controller node in the example should be
-> named nand-controller instead of flash, should be at the address @0,0
-> instead of @e1000000 and should have a couple of #address-cells and
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  .../devicetree/bindings/memory-controllers/pl353-smc.txt      | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
+On 20/05/21 06:07PM, Petr Malat wrote:
+> This change allows adding a support for flashes with correct SFDP
+> without recompilation of the kernel by setting sfdp-compatible property
+> in their node. Alternatively, sfdp_compatible module option can be used
+> to list JEDEC IDs of flashes, whose SFDP can be trusted. Star "*" can
+> be used to match all JEDEC IDs.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+I have skimmed through the patch. Before I look at it more closely, I 
+want to understand the use case for this patch. Why would you not want 
+to recompile the kernel when adding support for new hardware? Do you 
+want the ability to support flashes on devices that have already been 
+deployed in the field? Is it something that comes up frequently?
+
+Then comes the question of how do you get the flash to probe if it is 
+not present in device tree? And if you are able to update the device 
+tree then you should also be able to update the kernel.
+
+Have you tested this with any flash? If so, with which one?
+
+> 
+> Signed-off-by: Petr Malat <oss@malat.biz>
+> ---
+>  .../devicetree/bindings/mtd/jedec,spi-nor.txt |  3 +
+
+This file has been converted to yaml since at least 5.12-rc1. Please 
+update your kernel sources and rebase your patches.
+
+>  drivers/mtd/spi-nor/core.c                    | 86 +++++++++++--------
+>  drivers/mtd/spi-nor/core.h                    |  4 +
+>  drivers/mtd/spi-nor/sfdp.c                    | 66 ++++++++++++++
+>  drivers/mtd/spi-nor/sfdp.h                    |  2 +
+>  5 files changed, 126 insertions(+), 35 deletions(-)
+
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
