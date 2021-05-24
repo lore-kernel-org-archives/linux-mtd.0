@@ -1,90 +1,67 @@
-Return-Path: <SRS0=Em5B=KT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=nVbp=KU=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-7.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1480AC04FF3
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 May 2021 17:45:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E774DC2B9F7
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 May 2021 02:44:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A5EAE613EA
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 May 2021 17:45:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A5EAE613EA
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=squashfs.org.uk
+	by mail.kernel.org (Postfix) with ESMTPS id A5A9F6141F
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 May 2021 02:44:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A5A9F6141F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=bfkiLQt1fBWZv9oRZBK7ovoolapKhRfuCtlAbN6N7uo=; b=x5Tdrfc6WPHyDLgUeN/+HaNHte
-	jYtTVLF+vvkHoyW2F4agXsQzqb/6lvUFdSEUqvlUZ84hVQS9ozBiwckV9VxMpQme8JjzcRW8r5APe
-	IALXgNNBANc8uZOWzsDVtMRq0TUAXRVt84pdqqHHrytkJU8YYcQ4f7iEmxUTdmitz7pU1j320V8Nj
-	VY7pi7y1X6cQdEGoJxZAzK6af+0QRMTwgdohZHnXX9RGw81nr4CMH5IwOWjL/Y0AVyWq/oquo9DR6
-	VgdQXYN6MUhK7SmSspSMQpRjI7rgJaZzSSAQdicmI0VtvzzEW6TOUHjIGILxK/RXCvV5ggdTmGZDx
-	bsEB1KoQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=QedO4YQJCmZWhu+ZBv9/yQ8XHe1GIctwBndZLi/r9ys=; b=ocXFGPjJXRZsUr
+	8IeKeqeP1RNAhy/7SZ9bOliZxj/f6E4nN/0MXCG4/dyWz/eoZqIRLTehdNBDrNOs/LAhQB4raYpML
+	uU7luHHjSZDahS232Jtob8TYywPaPMIDWn2M9r4Hz1zPSvyXJw1EnrftpQZ4pTXVj+wVWAbTztvFN
+	Qjvlb+dJXCSGBPsMZ+1DbBa3jxwyAfJmq0W6inXsuWpLNh4J50Z3os2aBFJytPyLkmVzAr2TXHb99
+	Jdxuv0SLn0xKPLFUcBYEIBx66vGiMUVfmOUEEUCmOIDyjGha/ayzyRQbgeKFrcnZZt3OCTDJ94Pvq
+	n00Hjq2Adn96z9DNSxzw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94 #2 (Red Hat Linux))
-	id 1llEcG-001KKh-Cb; Mon, 24 May 2021 17:43:49 +0000
-Received: from p3plsmtp27-06-2.prod.phx3.secureserver.net ([216.69.139.56]
- helo=p3plwbeout27-06.prod.phx3.secureserver.net)
+	id 1llN2k-002yTo-Qi; Tue, 25 May 2021 02:43:43 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1ll4gX-000jeh-0a
- for linux-mtd@lists.infradead.org; Mon, 24 May 2021 07:07:34 +0000
-Received: from outbound-gw.openxchange.ahost.me ([94.136.40.163])
- by :WBEOUT: with ESMTP
- id l4gQl9HSt0UQrl4gRl8d6y; Mon, 24 May 2021 00:07:27 -0700
-X-CMAE-Analysis: v=2.4 cv=Ydl4Wydf c=1 sm=1 tr=0 ts=60ab50b0
- a=ExpeE9u7wY9QIRtJzA+xFA==:117 a=ExpeE9u7wY9QIRtJzA+xFA==:17
- a=ggZhUymU-5wA:10 a=IkcTkHD0fZMA:10 a=5FLXtPjwQuUA:10 a=S_-2Y0Uh84wA:10
- a=pGLkceISAAAA:8 a=ilKATfAMAAAA:8 a=GNDy42jkh3YXtMofuRQA:9 a=QEXdDO2ut3YA:10
- a=73awMTU50e6eLoBjGbzZ:22
-X-SECURESERVER-ACCT: phillip@squashfs.org.uk
-X-SID: l4gQl9HSt0UQr
-Received: from localhost ([127.0.0.1] helo=outbound-gw.openxchange.ahost.me)
- by outbound-gw.openxchange.ahost.me with esmtps (TLS1.2) tls
- TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384 (Exim 4.94)
- (envelope-from <phillip@squashfs.org.uk>)
- id 1ll4gQ-0008Pe-O3; Mon, 24 May 2021 08:07:26 +0100
-Date: Mon, 24 May 2021 08:07:26 +0100 (BST)
-From: Phillip Lougher <phillip@squashfs.org.uk>
-To: Pintu Agarwal <pintu.ping@gmail.com>, Sean Nyekjaer <sean@geanix.com>
-Cc: open list <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org
-Message-ID: <877196209.4648525.1621840046695@webmail.123-reg.co.uk>
-In-Reply-To: <CAOuPNLiMnHJJNFBbOrMOLmnxU86ROMBaLaeFxviPENCkuKfUVg@mail.gmail.com>
-References: <CAOuPNLjgpkBh9dnfNTdDcfk5HiL=HjjiB9o_=fjrm+0vP7Re2Q@mail.gmail.com>
- <CAOuPNLh_0Q9w96GKT-ogC0BBcEHgo=Hv3+c=JBcas2VgqDiyaw@mail.gmail.com>
- <CAOuPNLjmJ0YufFktJzjkyvdxwFTOpxVj5AW5gANAGSG=_yT=mQ@mail.gmail.com>
- <1762403920.6716767.1621029029246@webmail.123-reg.co.uk>
- <CAOuPNLhn90z9i6jt0-Vv4e9hjsxwYUT2Su-7SQrxy+N=HDe_xA@mail.gmail.com>
- <486335206.6969995.1621485014357@webmail.123-reg.co.uk>
- <CAOuPNLjBsm9YLtcb4SnqLYYaHPnscYq4captvCmsR7DthiWGsQ@mail.gmail.com>
- <1339b24a-b5a5-5c73-7de0-9541455b66af@geanix.com>
- <CAOuPNLiMnHJJNFBbOrMOLmnxU86ROMBaLaeFxviPENCkuKfUVg@mail.gmail.com>
-Subject: Re: [RESEND]: Kernel 4.14: UBIFS+SQUASHFS: Device fails to boot
- after flashing rootfs volume
+ id 1llJ56-0028S4-ST; Mon, 24 May 2021 22:29:54 +0000
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 84AD5FF802;
+ Mon, 24 May 2021 22:29:45 +0000 (UTC)
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: Fabio Estevam <festevam@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ NXP Linux Team <linux-imx@nxp.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Sebastian Reichel <sebastian.reichel@collabora.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
+ kernel@collabora.com, Alessandro Zummo <a.zummo@towertech.it>,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mtd@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
+ linux-rtc@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Saravana Kannan <saravanak@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: (subset) [PATCHv2 0/5] Support for GE B1x5v2 and B1x5Pv2
+Date: Tue, 25 May 2021 00:29:43 +0200
+Message-Id: <162189535932.209674.9024031320724831491.b4-ty@bootlin.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210428222953.235280-1-sebastian.reichel@collabora.com>
+References: <20210428222953.235280-1-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v7.10.3-Rev22
-X-Originating-IP: 82.69.79.175
-X-Originating-Client: com.openexchange.ox.gui.dhtml
-X-Authenticated-As: phillip@squashfs.org.uk
-X-122-reg-Authenticated: phillip@squashfs.org.uk
-X-CMAE-Envelope: MS4xfAIJw/tWoJLDfWJ9YR/cKUv3pJZbJj1z063OWN8NiR+81r2cVao4r0+HQcyCvcdvxAdvOyDPY25xO7HDqnooF11NGQKoRI/1m0appWOUViNo3ghH9onv
- m6xcXr3s526MTaMqlg2Lsm/sWxjG+i5NlKizPoU6KTooVopCzq4oEDpxgXy3IOnUF9w7Kcu74Z4TCFZyZShd5MYsF9y4YP4gaAOi9RK92ROs9ZpFfzq7iuFL
- nTbQAIQjAp3lMP1GqiKqiDLLHDtWeZ6ejV2r0d9URe+CbU6EjHZkr3iqFyuG3EPoef6rv6fId/ubyZQ6mI/T9O6COHMnRQce0M/HoF7clP2CxA0Sy5iKAsP3
- hv61ArqPw2rlFzA9763ZPXsG5ysHXA==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210524_000733_130880_AE9958EE 
-X-CRM114-Status: GOOD (  44.59  )
+X-CRM114-CacheID: sfid-20210524_152953_102424_E04AD711 
+X-CRM114-Status: UNSURE (   9.66  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,160 +78,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Thu, 29 Apr 2021 00:29:48 +0200, Sebastian Reichel wrote:
+> This series adds support for another General Electric patient
+> monitor series (similar to existing Bx50v3), which is based on
+> i.MX6DL using Congatec's QMX6 module.
+> 
+> The module uses an I2C RTC to provide the i.MX6 32768 Hz clock,
+> so it's important to keep it enabled. Not doing so results in
+> incorrect timings of watchdog and i.MX6 RTC. The bootloader
+> enables the watchdog, so disabling the clock results in system
+> reboot. [0]
+> 
+> [...]
 
-> On 24/05/2021 07:12 Pintu Agarwal <pintu.ping@gmail.com> wrote:
-> 
->  
-> On Sun, 23 May 2021 at 23:01, Sean Nyekjaer <sean@geanix.com> wrote:
-> >
-> 
-> > > I have also tried that and it seems the checksum exactly matches.
-> > > $ md5sum system.squash
-> > > d301016207cc5782d1634259a5c597f9  ./system.squash
-> > >
-> > > On the device:
-> > > /data/pintu # dd if=/dev/ubi0_0 of=squash_rootfs.img bs=1K count=48476
-> > > 48476+0 records in
-> > > 48476+0 records out
-> > > 49639424 bytes (47.3MB) copied, 26.406276 seconds, 1.8MB/s
-> > > [12001.375255] dd (2392) used greatest stack depth: 4208 bytes left
-> > >
-> > > /data/pintu # md5sum squash_rootfs.img
-> > > d301016207cc5782d1634259a5c597f9  squash_rootfs.img
-> > >
-> > > So, it seems there is no problem with either the original image
-> > > (unsquashfs) as well as the checksum.
-> > >
-> > > Then what else could be the suspect/issue ?
-> > > If you have any further inputs please share your thoughts.
-> > >
-> > > This is the kernel command line we are using:
-> > > [    0.000000] Kernel command line: ro rootwait
-> > > console=ttyMSM0,115200,n8 androidboot.hardware=qcom
-> > > msm_rtb.filter=0x237 androidboot.console=ttyMSM0
-> > > lpm_levels.sleep_disabled=1 firmware_class.path=/lib/firmware/updates
-> > > service_locator.enable=1 net.ifnames=0 rootfstype=squashfs
-> > > root=/dev/ubiblock0_0 ubi.mtd=30 ubi.block=0,0
-> > >
-> > > These are few more points to be noted:
-> > > a) With squashfs we are getting below error:
-> > > [    4.603156] squashfs: SQUASHFS error: unable to read xattr id index table
-> > > [...]
-> > > [    4.980519] Kernel panic - not syncing: VFS: Unable to mount root
-> > > fs on unknown-block(254,0)
-> > >
-> > > b) With ubifs (without squashfs) we are getting below error:
-> > > [    4.712458] UBIFS (ubi0:0): UBIFS: mounted UBI device 0, volume 0,
-> > > name "rootfs", R/O mode
-> > > [...]
-> > > UBIFS error (ubi0:0 pid 1): ubifs_read_node: bad node type (255 but expected 9)
-> > > UBIFS error (ubi0:0 pid 1): ubifs_read_node: bad node at LEB
-> > > 336:250560, LEB mapping status 1
-> > > Not a node, first 24 bytes:
-> > > 00000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-> > > ff ff ff ff
-> > >
-> > > c) While flashing "usrfs" volume (ubi0_1) there is no issue and device
-> > > boots successfully.
-> > >
-> > > d) This issue is happening only after flashing rootfs volume (ubi0_0)
-> > > and rebooting the device.
-> > >
-> > > e) We are using "uefi" and fastboot mechanism to flash the volumes.
-> > Are you writing the squashfs into the ubi block device with uefi/fastboot?
-> > >
-> > > f) Next I wanted to check the read-only UBI volume flashing mechanism
-> > > within the Kernel itself.
-> > > Is there a way to try a read-only "rootfs" (squashfs type) ubi volume
-> > > flashing mechanism from the Linux command prompt ?
-> > > Or, what are the other ways to verify UBI volume flashing in Linux ?
-> > >
-> > > g) I wanted to root-cause, if there is any problem in our UBI flashing
-> > > logic, or there's something missing on the Linux/Kernel side (squashfs
-> > > or ubifs) or the way we configure the system.
-> 
-> >
-> > Have you had it to work? Or is this a new project?
-> > If you had it to work, i would start bisecting...
-> >
-> 
-> No, this is still experimental.
-> Currently we are only able to write to ubi volumes but after that
-> device is not booting (with rootfs volume update).
-> However, with "userdata" it is working fine.
-> 
-> I have few more questions to clarify.
-> 
-> a) Is there a way in kernel to do the ubi volume update while the
-> device is running ?
->     I tried "ubiupdatevol" but it does not seem to work.
->     I guess it is only to update the empty volume ?
->     Or, maybe I don't know how to use it to update the live "rootfs" volume
-> 
-> b) How to verify the volume checksum as soon as we finish writing the
-> content, since the device is not booting ?
->      Is there a way to verify the rootfs checksum at the bootloader or
-> kernel level before mounting ?
-> 
-> c) We are configuring the ubi volumes in this way. Is it fine ?
-> [rootfs_volume]
-> mode=ubi
-> image=.<path>/system.squash
-> vol_id=0
-> vol_type=dynamic
-> vol_name=rootfs
-> vol_size=62980096  ==> 60.0625 MiB
-> 
-> Few more info:
-> ----------------------
-> Our actual squashfs image size:
-> $ ls -l ./system.squash
-> rw-rr- 1 pintu users 49639424 ../system.squash
-> 
-> after earse_volume: page-size: 4096, block-size-bytes: 262144,
-> vtbl-count: 2, used-blk: 38, leb-size: 253952, leb-blk-size: 62
-> Thus:
-> 49639424 / 253952 = 195.46 blocks
-> 
-> This then round-off to 196 blocks which does not match exactly.
-> Is there any issue with this ?
-> 
-> If you have any suggestions to debug further please help us...
-> 
-> 
-> Thanks,
-> Pintu
+Applied, thanks!
 
-Three perhaps obvious questions here:
+[1/5] rtc: m41t80: add support for fixed clock
+      commit: f765e349c3e1f2e676ad4bd61197216b26976022
 
-1. As an experimental system, are you using a vanilla (unmodified)
-   Linux kernel, or have you made modifications.  If so, how is it
-   modified?
-
-2. What is the difference between "rootfs" and "userdata"?
-   Have you written exactly the same Squashfs image to "rootfs"
-   and "userdata", and has it worked with "userdata" and not
-   worked with "rootfs".
-
-   So far it is unclear whether "userdata" has worked because
-   you've written different images/data to it.
-
-   In other words tell us exactly what you're writing to "userdata"
-   and what you're writing to "rootfs".  The difference or non-difference
-   may be significant.
-
-3. The rounding up to a whole 196 blocks should not be a problem.
-   The problem is, obviously, if it is rounding down to 195 blocks,
-   where the tail end of the Squashfs image will be lost.
-
-   Remember this is exactly what the Squashfs error is saying, the image
-   has been truncated.
-
-   You could try adding a lot of padding to the end of the Squashfs image
-   (Squashfs won't care), so it is more than the effective block size,
-   and then writing that, to prevent any rounding down or truncation.
-
-Phillip
+Best regards,
+-- 
+Alexandre Belloni <alexandre.belloni@bootlin.com>
 
 ______________________________________________________
 Linux MTD discussion mailing list
