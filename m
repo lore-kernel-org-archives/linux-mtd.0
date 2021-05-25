@@ -2,86 +2,91 @@ Return-Path: <SRS0=nVbp=KU=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA02EC2B9F8
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 May 2021 19:39:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16937C47086
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 May 2021 23:10:58 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 75AB1613F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 May 2021 19:39:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 75AB1613F5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	by mail.kernel.org (Postfix) with ESMTPS id CD656613E1
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 May 2021 23:10:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD656613E1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7UQGMTuHLwaqunoKzJLBFo46ramctFG5FlrdSaZJmgU=; b=Icxm7jfU0+PRsG
-	p3FaFi01TM1654sEVVJTXr8zwV3WLlzQQm2guHw83OVzGjubxonrx5KFZ05aOjpbWe3AjnZJ5zWh1
-	3yzU63+vUCwKU5KD1F6PkaxAjndr8sa83O8/Gv/xARn6SbMCtoyURaGdTMPulJ62vEz6MdIuc2VKg
-	Ad8wr5yYmwKXj5JcPjsoZ56o88jvLAy9u8CPTMD2QRuLSXIratuQPyRRzOftreO3ZhePN1s8sqcmT
-	uOiO6T913iKazuRMaY5jNHAXAC07y50Plf2w+fSCLI5NKeoNO0ATwZt+5+Xr6Dl0XCxqgciwj6xzM
-	ywTfMMmMIj1r+phGpT2g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=/rQnGqAyB+hlth/fj9k05jYvuZ6bBMYmlLHO6RNGl7U=; b=A8QK9C/r6pA4iB
+	nFSs7Tyr1y1qLAA2you/UM1U9yAPSjtiwCW1yf3cI9wovM6tAoL5ZHGqAyQTaE2XlFwZz1E1CQe/k
+	2dYwWNjnbjOzDDQNUWaVxiIaPHg77O71pYSG33a3WOIg7atQ+YlCTjkwVAXaGe89lpUO7a1tKouiz
+	4yhg7ZqATyVD1ZrwuoUS0dEYxjhverVY+O/szpkXqVxR5omjabw2wpfJpJKKBsyUzPkhCCiAa0s+B
+	W1/23gRSjUPRzBMj2q5y23PtnNbvd3KAwi1iROYl3k69Q63InRMhn2XozxOg7xnSsX5M6qKmRuVh/
+	3oedHX1kPb3GahGaQNAg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1llctF-007nay-F6; Tue, 25 May 2021 19:38:58 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1llgBG-0095Lx-1m; Tue, 25 May 2021 23:09:46 +0000
+Received: from mail-ed1-x52b.google.com ([2a00:1450:4864:20::52b])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1llcrX-007msA-IK
- for linux-mtd@lists.infradead.org; Tue, 25 May 2021 19:37:12 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14PJb7lI121159;
- Tue, 25 May 2021 14:37:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1621971427;
- bh=DolYArbp0HZumY7mM3GVvqW3O6bsRZdINLR+TTJqqwI=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=AZwzdG1krYGOD7pJjvCS2DgjWaneeZQnZcsH6ARcf8Wd7DHRDVLE32CLg8tnntPbz
- /XfFnm7MXEy46g6NvQ1EO/xdA/82N1YpEGKN5EHMEY78o2GeQByqc8IcZnukCBNCP4
- G8JqvqkrJD/cZxHzWdzCMrFGhKDPvz4/digf/hNQ=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14PJb7tG084075
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 25 May 2021 14:37:07 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 25
- May 2021 14:37:07 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 25 May 2021 14:37:07 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14PJb6LB069660;
- Tue, 25 May 2021 14:37:07 -0500
-Date: Wed, 26 May 2021 01:07:06 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Michael Walle <michael@walle.cc>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, Tudor
- Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH v4 4/4] mtd: spi-nor: otp: implement erase for Winbond
- and similar flashes
-Message-ID: <20210525193704.d2eeum4p4gbkkwuf@ti.com>
-References: <20210521194034.15249-1-michael@walle.cc>
- <20210521194034.15249-5-michael@walle.cc>
+ id 1llgBD-0095Jk-3k
+ for linux-mtd@lists.infradead.org; Tue, 25 May 2021 23:09:44 +0000
+Received: by mail-ed1-x52b.google.com with SMTP id y7so20682039eda.2
+ for <linux-mtd@lists.infradead.org>; Tue, 25 May 2021 16:09:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=X1MvS/6mSvBdfpSbPfN/7JJWpwiBa9tcmoBU0a7X3Cs=;
+ b=JbhzrHYWbaZWQbBevPTwVRlDDqmSjaoc6umPdR/hxegRe9Wus8j9yoSRWUje/zaqLq
+ 3umESW2EMLgRPhGH7uyEKu2uAog1EajMO+ic8Zg1ZsQ1eTm7ufI+810GUOC4FiDMzwDf
+ /dtNNsK8zDDjTHEqOJQrtVH0lq/PSXzRu7cTi16xjya4EGHj1zXxjooZzwYE/nYGSI97
+ KDXn+XksNlQMSB9ppfUuCHnNQPjpX/TI/hrvwh0BalEqePmhY69Y4nMqktargP1hzacm
+ rwrlv74ASPp1xk1f9gIz3V9/+keZs1a7QuRpmrMG/1uwuFdwH8TGo4RyrMkHPkNHU5wa
+ Eq/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=X1MvS/6mSvBdfpSbPfN/7JJWpwiBa9tcmoBU0a7X3Cs=;
+ b=Zcjpv4JD+fMiVlNRx0PJCHHQJFria7CxaUBoC7TY7XjdAVHu0Uc1DdcdZSBRnntYlv
+ KjWPaCazJVujKpFPGuJ7K+J14X2Scw3NIIBYOPovTbNVVx6Th78MMMg/92TLGrcZaomo
+ GYXQcWqH60xo8rcMX0/r6cBO2nHTt2dE3uHCA5kfMYl55RAA+qupeDJN2v8sETs4EVkm
+ sji2e6HcUQstCti2XHYUvvZKXLZn+YREzJIMHCwvqSjW9OPE1T6syYwPwXzXq32D43JH
+ mvPAH/034quQ+oWGA73MXxx8W2x8z8uhyCoETmpuS6GZw/cIHNeADjxEV9xf1Z4CkvG9
+ O8Kg==
+X-Gm-Message-State: AOAM530qe5pGdwkYjAdTnmXSu29+AxzNOzSqBx74pyyF7cRbO//9kulA
+ ThK45auST0tluuJTSJtgtX8=
+X-Google-Smtp-Source: ABdhPJwnbSMs/DuokhZnqXONkMqw5YfOqzsLuKAGmGEdRxIfWoTRgG7a7HUlXByMrbcZgyAQkbWcCg==
+X-Received: by 2002:a05:6402:2706:: with SMTP id
+ y6mr6247878edd.355.1621984179869; 
+ Tue, 25 May 2021 16:09:39 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it.
+ [93.35.189.2])
+ by smtp.googlemail.com with ESMTPSA id zg18sm9503105ejb.41.2021.05.25.16.09.38
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 25 May 2021 16:09:39 -0700 (PDT)
+From: Ansuel Smith <ansuelsmth@gmail.com>
+To: Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Manivannan Sadhasivam <mani@kernel.org>, linux-arm-msm@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: Ansuel Smith <ansuelsmth@gmail.com>
+Subject: [PATCH v2] mtd: parsers: qcom: Fix leaking of partition name
+Date: Wed, 26 May 2021 01:09:31 +0200
+Message-Id: <20210525230931.30013-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210521194034.15249-5-michael@walle.cc>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210525_123711_736505_86E6CA3B 
-X-CRM114-Status: UNSURE (   9.91  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210525_160943_197081_1AF830C9 
+X-CRM114-Status: GOOD (  14.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,21 +103,49 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 21/05/21 09:40PM, Michael Walle wrote:
-> Winbond flashes with OTP support provide a command to erase the OTP
-> data. This might come in handy during development.
-> 
-> This was tested with a Winbond W25Q32JW on a LS1028A SoC with the
-> NXP FSPI controller.
-> 
-> Signed-off-by: Michael Walle <michael@walle.cc>
+Add cleanup function as the name variable for the partition name was
+allocaed but never freed after the use as the add mtd function
+duplicate the name and free the pparts struct as the partition name is
+assumed to be static.
+The leak was found using kmemleak.
 
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+Fixes: 803eb124e1a6 ("mtd: parsers: Add Qcom SMEM parser")
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+---
+ drivers/mtd/parsers/qcomsmempart.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
+diff --git a/drivers/mtd/parsers/qcomsmempart.c b/drivers/mtd/parsers/qcomsmempart.c
+index d9083308f6ba..06a818cd2433 100644
+--- a/drivers/mtd/parsers/qcomsmempart.c
++++ b/drivers/mtd/parsers/qcomsmempart.c
+@@ -159,6 +159,15 @@ static int parse_qcomsmem_part(struct mtd_info *mtd,
+ 	return ret;
+ }
+ 
++static void parse_qcomsmem_cleanup(const struct mtd_partition *pparts,
++				   int nr_parts)
++{
++	int i;
++
++	for (i = 0; i < nr_parts; i++)
++		kfree(pparts[i].name);
++}
++
+ static const struct of_device_id qcomsmem_of_match_table[] = {
+ 	{ .compatible = "qcom,smem-part" },
+ 	{},
+@@ -167,6 +176,7 @@ MODULE_DEVICE_TABLE(of, qcomsmem_of_match_table);
+ 
+ static struct mtd_part_parser mtd_parser_qcomsmem = {
+ 	.parse_fn = parse_qcomsmem_part,
++	.cleanup = parse_qcomsmem_cleanup,
+ 	.name = "qcomsmem",
+ 	.of_match_table = qcomsmem_of_match_table,
+ };
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+2.31.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
