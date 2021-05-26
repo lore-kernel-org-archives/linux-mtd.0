@@ -2,63 +2,63 @@ Return-Path: <SRS0=Fb5G=KV=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 410F5C2B9F7
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 08:34:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0C6AC2B9F7
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 09:19:30 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0711A613B0
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 08:34:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0711A613B0
+	by mail.kernel.org (Postfix) with ESMTPS id 77E8661248
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 09:19:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 77E8661248
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HK4AKnmSqntjpUH4XaXeJOZ9zO+/YpGSHVA3P/odiIs=; b=q57A8s6Y9u5AdE
-	vVOddbsDlowlOJ4HmNaCE31HYjC3FFccBleX1BjIdPgFJ5mIhna5AJ97H8bx2C88OYgxD5fpp/rAO
-	12PQkFk5wQqKqGYce5mnLdgachpB4oIQir54Z6NeHhYUqDAbJNQHwsYr/oP+Zvf8KMjnOJlW5DsyO
-	bJINTyIlYmQX7HoHblAoPgUA2Iok3LI84aTLvcKz8Yj3sY2NbFkhb1c1PvfsCB19WG+u5KK8Pb5XS
-	6QG0dnuMVTrtd8EpG1OYz5meMeaCdVejACE8kZ/gwCCiE+jNsUa9BIM0wKBDQtuOZpWtrUDvz0/KA
-	rO+IDR6T+CvAoMNx865A==;
+	List-Owner; bh=kGib6RKNAGAlh72dYp9CWKHB75gT84bGsxJ+/RiOUnQ=; b=xCNUohMujPfft0
+	NR1zEC3yZ7X/uK901KqOLBAIp7WRbRP7IlDhb8lmTIYLFYt+XZTruuPjpErVy66RLNjYz2NkCyS8p
+	G82oEMDccCCQzZlf/a8MimaRLC5L+zsW6W4IJncHCyIOR+PmuSQ3X44jTZpt1S4s5g9GxjY8H1go1
+	ZiFpz2qhvROHb3zvftyKKMbJZ1+PC+D+ur2RyIO4Un+nl8zw5O0CXK6UBSEZAczkgzQw4kh5H4av+
+	WrfXhZ6vOsKr5sRhvI4ps2CGPDyYfhZKu66gwpOVmqil0IECanTC/47jf4PGQisGgYdttjRZPSrrz
+	BbwvNSURZxxBQwB38bjw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lloye-00CTEh-Uo; Wed, 26 May 2021 08:33:21 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1llpgS-00CoCq-1N; Wed, 26 May 2021 09:18:36 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lloy6-00CSyn-UC; Wed, 26 May 2021 08:32:48 +0000
+ id 1llpR3-00Chjg-UE
+ for linux-mtd@lists.infradead.org; Wed, 26 May 2021 09:02:43 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id CE013FF80D;
- Wed, 26 May 2021 08:32:41 +0000 (UTC)
-Date: Wed, 26 May 2021 10:32:40 +0200
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id F096AC000C;
+ Wed, 26 May 2021 09:02:37 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: patrice.chotard@foss.st.com, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- linux-mtd@lists.infradead.org, Alexandre Torgue
- <alexandre.torgue@foss.st.com>, linux-spi@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- christophe.kerello@foss.st.com
-Subject: Re: [PATCH v5 0/3] MTD: spinand: Add spi_mem_poll_status() support
-Message-ID: <20210526103240.1c71002c@xps13>
-In-Reply-To: <20210519191836.GH4224@sirena.org.uk>
-References: <20210518162754.15940-1-patrice.chotard@foss.st.com>
- <20210519191836.GH4224@sirena.org.uk>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+To: Ansuel Smith <ansuelsmth@gmail.com>, Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Manivannan Sadhasivam <mani@kernel.org>, linux-arm-msm@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: parsers: qcom: Fix leaking of partition name
+Date: Wed, 26 May 2021 11:02:37 +0200
+Message-Id: <20210526090237.180505-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210525230931.30013-1-ansuelsmth@gmail.com>
+References: 
 MIME-Version: 1.0
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'10f3b4d79958d6f9f71588c6fa862159c83fa80f'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210526_013247_148224_B4BE2130 
-X-CRM114-Status: GOOD (  13.26  )
+X-CRM114-CacheID: sfid-20210526_020242_146330_8B19824E 
+X-CRM114-Status: UNSURE (   7.59  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,25 +70,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWFyaywKCk1hcmsgQnJvd24gPGJyb29uaWVAa2VybmVsLm9yZz4gd3JvdGUgb24gV2VkLCAx
-OSBNYXkgMjAyMSAyMDoxODozNgorMDEwMDoKCj4gT24gVHVlLCBNYXkgMTgsIDIwMjEgYXQgMDY6
-Mjc6NTFQTSArMDIwMCwgcGF0cmljZS5jaG90YXJkQGZvc3Muc3QuY29tIHdyb3RlOgo+ID4gRnJv
-bTogUGF0cmljZSBDaG90YXJkIDxwYXRyaWNlLmNob3RhcmRAZm9zcy5zdC5jb20+Cj4gPiAKPiA+
-IFRoaXMgc2VyaWVzIGFkZHMgc3VwcG9ydCBmb3IgdGhlIHNwaV9tZW1fcG9sbF9zdGF0dXMoKSBz
-cGluYW5kCj4gPiBpbnRlcmZhY2UuCj4gPiBTb21lIFFTUEkgY29udHJvbGxlcnMgYWxsb3dzIHRv
-IHBvbGwgYXV0b21hdGljYWxseSBtZW1vcnkgCj4gPiBzdGF0dXMgZHVyaW5nIG9wZXJhdGlvbnMg
-KGVyYXNlLCByZWFkIG9yIHdyaXRlKS4gVGhpcyBhbGxvd3MgdG8gCj4gPiBvZmZsb2FkIHRoZSBD
-UFUgZm9yIHRoaXMgdGFzay4KPiA+IFNUTTMyIFFTUEkgaXMgc3VwcG9ydGluZyB0aGlzIGZlYXR1
-cmUsIGRyaXZlciB1cGRhdGUgYXJlIGFsc28KPiA+IHBhcnQgb2YgdGhpcyBzZXJpZXMuICAKPiAK
-PiBUaGUgU1BJIGJpdHMgbG9vayBnb29kIHRvIG1lIC0gc2hvdWxkIHdlIG1lcmdlIHZpYSBNVEQg
-b3IgU1BJPwoKSSBkb24ndCBleHBlY3QgYW55IGNvbmZsaWN0cyB3aXRoIHRoZSBjdXJyZW50IGNo
-YW5nZXMgaW4gTVRELCBJIGp1c3QKYWNrZWQgdGhlIFNQSS1OQU5EIHBhdGNoLCB5b3UgbWF5IHRh
-a2UgaXQgdGhyb3VnaCBTUEkuCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBt
-YWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
-aW51eC1tdGQvCg==
+On Tue, 2021-05-25 at 23:09:31 UTC, Ansuel Smith wrote:
+> Add cleanup function as the name variable for the partition name was
+> allocaed but never freed after the use as the add mtd function
+> duplicate the name and free the pparts struct as the partition name is
+> assumed to be static.
+> The leak was found using kmemleak.
+> 
+> Fixes: 803eb124e1a6 ("mtd: parsers: Add Qcom SMEM parser")
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
+
+Miquel
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
