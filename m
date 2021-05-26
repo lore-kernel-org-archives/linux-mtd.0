@@ -2,62 +2,89 @@ Return-Path: <SRS0=Fb5G=KV=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2251C47089
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 17:51:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1A2DC47088
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 19:17:59 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 52EEE6139A
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 17:51:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 52EEE6139A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 9A66860FE9
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 19:17:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A66860FE9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BzqRX1GsrTCIWEg+8gP8WJEF1W+52AvZHWnMdRMPUq0=; b=yfsSvm9XWdhUiW
-	y681IFRXEXYKifqMaF1IohAeKd6qPOz3zO/pAj0PLhF5YqeSN2Dd/NimJyqQB3KsBsw/WQPFRkAUb
-	LKCKc4AuqD0wqObJ+sZ6sULbF4cN/X0Us/lXN4ZGTp+u9OXyD5RLiohEzkzCQmJRaJWmNa3wiztcz
-	nD5TpAuekKbVZBWXE5TuqNC4aS1ZpdEUU8C+0UvwiSc9ru+4GJClf9viQQ4MT2KTfIrveMTlRqkWt
-	RszaowvsJaQWbwtJ+zxs4ZTngKW8UzJkXv438sb8Dxj1GZXqjEuVh2lP0sOxF7/dRKW1kqbMzjlZy
-	DerbpC+pRVvgm6O5EQIQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=+awvYQkUdj488NiDzKmgKYvv9pqCWzzekRrfJg3dnGo=; b=Ia8KlE4nN6Bsjn
+	Y9GlQK066L7N9OVlxQT2OBZXHp79zU++F0oh+SarRaikiyb/AMZAYSWAfpVthLy/9Fku0o1cF7Smt
+	UWEoyesmOWX9CwpUOqcehnAdq2KIqhNtQ+w9jmfA8QCz1U9Jq63lTSGXM+QlazKH/2nGHayM8Sw+N
+	jRKUFKFbflIqRNE8IrYbEOz4sdB2WSOIq2LIbFt6siHhN6S6GlaSNjhkwsNkHPOrbYUZnOQvE/KnU
+	Oixv+Nh88zqwbRDocF5oigrcFCwZg3VwEd0kLE9GBs0jyKgrvaie7RyYrU2kyRWZrfLoJ8/P6puLl
+	NW6LY7VL+gMn6RFrboYg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1llxfM-00GG32-6U; Wed, 26 May 2021 17:50:00 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1llz1M-00GslN-PU; Wed, 26 May 2021 19:16:49 +0000
+Received: from mail-ot1-x330.google.com ([2607:f8b0:4864:20::330])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1llwfi-00FqcB-0K
- for linux-mtd@lists.infradead.org; Wed, 26 May 2021 16:46:19 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id B2DD620002;
- Wed, 26 May 2021 16:46:13 +0000 (UTC)
-Date: Wed, 26 May 2021 18:46:12 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, Richard Weinberger
- <richard@nod.at>, Tudor Ambarus <Tudor.Ambarus@microchip.com>, Vignesh
- Raghavendra <vigneshr@ti.com>, Frieder Schrempf
- <frieder.schrempf@kontron.de>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] mtd: Changes for v5.13-rc4
-Message-ID: <20210526184612.751e7e5c@xps13>
-In-Reply-To: <CAHk-=wh_ZHF685Fni8V9is17mj=pFisUaZ_0=gq6nbK+ZcyQmg@mail.gmail.com>
-References: <20210526175924.4f9ab124@xps13>
- <CAHk-=wh_ZHF685Fni8V9is17mj=pFisUaZ_0=gq6nbK+ZcyQmg@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1lly5K-00GRJv-7Y; Wed, 26 May 2021 18:16:51 +0000
+Received: by mail-ot1-x330.google.com with SMTP id
+ 80-20020a9d08560000b0290333e9d2b247so1882258oty.7; 
+ Wed, 26 May 2021 11:16:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=o1e+2IIjlGxptaH7YBAsoGKlpTSpcg1yqw57SuGkSKU=;
+ b=fyKwOFbIF/BlXTzrKlyGP95eoT0JsMhDGzqX0NuS5ZwqBhS0lelhAwYCuv6j2hOGmS
+ xG63pjpNHN0zLqjR0zRQYeGrpDmEA7EBaLeNn4e1rkvQXOronL5K5MzFet2uJX35nNtk
+ JRwsN1zqz79dqajnyGoxpDoLAXsi+qxzwOsXSjigDhntSlTBuzF8qN7/w45SkBBNiXUg
+ S+wbHIxNVDkDHfAMS7gCUzerbc9o4lERLozGZ8lY+GarsyEMnG0V6Ex7Nsh38zW0ZePo
+ aPElKvIi5WycpASUGMxfENfT1dAM3nxp4Woz+M5WikGZ/iSmO+bpJZd1RBdPpS3HbE6r
+ tbKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=o1e+2IIjlGxptaH7YBAsoGKlpTSpcg1yqw57SuGkSKU=;
+ b=mti/5V0QJ06lS9u7KBkpj2p/K0m0bFt4Lj8uQieCtQmDnKQWOGsPtdl3BSCw+n7GZN
+ 0TP5Idjr82LVnMIr0hOvc+MLK4BWaa96DX0zZDHFtFcsKKHNNMfxxtCM4evVovirBNei
+ DwGPF8CCR4JcKYXpHSrAsrg0J3JpIPVhcIAO9zgUYEUf6r++aWOYXtqaIRc38vtzFFl8
+ 8tnRTiiuDcrUrY+KMM1/hwz5hv6F3YiHPYMV6iTZGZSgmeMjGlYSAkJO+sAtlf3o8YJu
+ sCkIvqsgpORw9/oYVausT1Zo3tvkfj9+rZ2kmtcAlkJatKLMy1MTtmh9T0i5Z7UXkMDV
+ gynw==
+X-Gm-Message-State: AOAM531oHHT1vQRj5EXZXxNDgPYFPWGQJru5DsUQ5aqxyGZMNPISAUeg
+ sNelYyUVWU6fzoyYp4V3Eu1jijtc5g4=
+X-Google-Smtp-Source: ABdhPJx43qmjdM+zoKHDfOljWPhtZmRDSX+RICJPj5F/gE8NQ1MWqBPR/NCSZzMH3LdqwOtBAs7Jog==
+X-Received: by 2002:a05:6830:1594:: with SMTP id
+ i20mr3334029otr.279.1622053007920; 
+ Wed, 26 May 2021 11:16:47 -0700 (PDT)
+Received: from wintermute.localdomain (cpe-76-183-134-35.tx.res.rr.com.
+ [76.183.134.35])
+ by smtp.gmail.com with ESMTPSA id j20sm4148311oot.29.2021.05.26.11.16.46
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 26 May 2021 11:16:47 -0700 (PDT)
+From: Chris Morgan <macroalpha82@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: linux-rockchip@lists.infradead.org, andy.yan@rock-chips.com,
+ yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
+ tudor.ambarus@microchip.com, michael@walle.cc, p.yadav@ti.com,
+ heiko@sntech.de, robh+dt@kernel.org, vigneshr@ti.com, richard@nod.at,
+ miquel.raynal@bootlin.com, Chris Morgan <macromorgan@hotmail.com>
+Subject: [PATCH 0/3] Add Rockchip SFC(serial flash controller) support
+Date: Wed, 26 May 2021 13:16:33 -0500
+Message-Id: <20210526181636.1130-1-macroalpha82@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210526_094618_222096_A3878271 
-X-CRM114-Status: GOOD (  20.33  )
+X-CRM114-CacheID: sfid-20210526_111650_320464_55B09431 
+X-CRM114-Status: GOOD (  15.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,52 +96,51 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTGludXMsCgpMaW51cyBUb3J2YWxkcyA8dG9ydmFsZHNAbGludXgtZm91bmRhdGlvbi5vcmc+
-IHdyb3RlIG9uIFdlZCwgMjYgTWF5CjIwMjEgMDY6MjA6MzUgLTEwMDA6Cgo+IE9uIFdlZCwgTWF5
-IDI2LCAyMDIxIGF0IDU6NTkgQU0gTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGlu
-LmNvbT4gd3JvdGU6Cj4gPgo+ID4gUmF3IE5BTkQ6Cj4gPiAqIHR4eDluZGZtYywgdG1pbywgc2hh
-cnBzbCwgbmRmYywgbHBjMzJ4eF9zbGMsIGZzbWMsIGNzNTUzeDoKPiA+ICAgLSBGaXggZXh0ZXJu
-YWwgdXNlIG9mIFNXIEhhbW1pbmcgRUNDIGhlbHBlciAgCj4gCj4gV2h5IGFyZSB0aGVzZSBndXlz
-IGFsbCBwb2ludGxlc3NseSBkdXBsaWNhdGluZyB0aGUgZWNjIHdyYXBwZXIKPiBmdW5jdGlvbnMg
-Zm9yIHRoZWlyIGVjYyAnY29ycmVjdCcgZnVuY3Rpb25zPwo+IAo+IFRoZSB3aG9sZSAidGhlIEhh
-bW1pbmcgc29mdHdhcmUgRUNDIGVuZ2luZSBoYXMgYmVlbiB1cGRhdGVkIHRvIGJlY29tZQo+IGEg
-cHJvcGVyIGFuZCBpbmRlcGVuZGVudCBFQ0MgZW5naW5lIiBleGN1c2UgbWFrZXMgbm8gc2Vuc2Uu
-IElmCj4gbXVsdGlwbGUgY2hpcHMganVzdCB3YW50IGEgYmFzaWMgc3cgaGFtbWluZyBoZWxwZXIs
-IHRoZW4gdGhleSBzaG91bGQKPiBoYXZlIG9uZS4gTm90IGhhdmUgdG8gYmUgZm9yY2VkIHRvIGVh
-Y2ggd3JpdGUgdGhlaXIgb3duIHBvaW50bGVzcwo+IHdyYXBwZXIgbGlrZSB0aGlzLgo+IAo+IFRo
-ZXNlIGNoaXAgZHJpdmVycyBqdXN0IHdhbnQgJ2VjY19zd19oYW1taW5nX2NvcnJlY3QoKScgd2l0
-aCB0aGUKPiBwcm9wZXIgYXJndW1lbnRzLCBhbmQgaXQgc2VlbXMgZW50aXJlbHkgd3JvbmcgdG8g
-ZHVwbGljYXRlIHRoZSBoZWxwZXIKPiBmaXZlIHRpbWVzIG9yIHdoYXRldmVyLiBUaGVyZSBzaG91
-bGQganVzdCBiZSBhIGdlbmVyaWMgaGVscGVyIC0gdGhlCj4gd2F5IHRoZXJlIHVzZWQgdG8gYmUu
-Cj4gCj4gSW4gZmFjdCwgSSB3b3VsZCBnZW5lcmFsbHkgc3Ryb25nbHkgcmVjb21tZW5kIHRoYXQg
-aWYgdGhlcmUgdXNlZCB0byBiZQo+IGEgZ2VuZXJpYyBoZWxwZXIgdGhhdCBkaWZmZXJlbnQgY2hp
-cCBkcml2ZXJzIHVzZWQgKGllIHRoZSBvbGQKPiByYXduYW5kX3N3X2hhbW1pbmdfY29ycmVjdCgp
-KSwgdGhlbiBzdWNoIGEgaGVscGVyIHNob3VsZCBiZSBsZWZ0IGFsb25lCj4gYW5kIG5vdCBjaGFu
-Z2UgdGhlIHNlbWFudGljcyBvZiBpdC4KCkkgYW0gbm90IGhhcHB5IG5laXRoZXIgd2l0aCB0aGUg
-Zml4ICh3aGljaCBJIHdyb3RlIG15c2VsZikgYXMgbXkgZmlyc3QKZ29hbCB3YXMgdG8gdW5pZm9y
-bWl6ZSB0aGUgd2F5IHRoZSBIYW1taW5nIGhlbHBlcnMgYXJlIGJlaW5nIGNhbGxlZCAoYXMKcGFy
-dCBvZiBhIG11Y2ggYmlnZ2VyIHdvcmspLiBJIGFzc3VtZWQgdGhhdCBhbGwgZHJpdmVycyBlaXRo
-ZXIgdXNlZCB0aGUKSGFtbWluZyBzb2Z0d2FyZSBlbmdpbmUgb3Igc2ltcGx5IGRpZG4ndCwgd2l0
-aG91dCB0aGlua2luZyBhYm91dCB0aGUKImludGVybWVkaWF0ZSIgc2l0dWF0aW9ucyB3aGVyZSBh
-IHBhcnRpY3VsYXIgZHJpdmVyIHdvdWxkIGp1c3Qgd2FudCB0bwpjYWxsIGEgcGFydGljdWxhciBI
-YW1taW5nIGhlbHBlciB0byB3b3JrYXJvdW5kIGl0cyAibWlzc2luZyIgaGFyZHdhcmUKY2FwYWJp
-bGl0aWVzLgoKVW5mb3J0dW5hdGVseSB3aGVuIEkgc3BvdHRlZCB0aGF0IG1hbnkgZHJpdmVycyB3
-ZXJlIGJyb2tlbiBieSBteSByZXdvcmsKSSBkZWNpZGVkIHRvIHByb3ZpZGUgcGVyLWRyaXZlciBm
-aXhlcywgd2hpbGUsIGFzIHlvdSBzdWdnZXN0LCBJIHNob3VsZApwcm9iYWJseSBoYXZlIGRlY2xh
-cmVkIGEgZ2VuZXJpYyAnaGFtbWluZyBjb3JyZWN0JyBjb3JlIGhlbHBlciBhbmQgdXNlCnRoYXQg
-ZGlyZWN0bHkgaW5zdGVhZCBvZiBkdXBsaWNhdGluZyB0aGUgbG9naWMgaW4gZWFjaCBicm9rZW4g
-ZHJpdmVyLgoKPiBUaGUgbmV3ICJwcm9wZXIgaW5kZXBlbmRlbnQgRUNDIGVuZ2luZSIgdGhhdCBo
-YWQgbmV3IHNlbWFudGljcyBzaG91bGQKPiBoYXZlIGJlZW4gdGhlIG9uZSB0aGF0IGdvdCBhIG5l
-dyBuYW1lLCByYXRoZXIgdGhhbiBicmVha2luZyBhbiBvbGQgYW5kCj4gZXhpc3RpbmcgaGVscGVy
-IGZ1bmN0aW9uIGFuZCB0aGVuIG1ha2luZyB0aGUgY2hpcCBkcml2ZXJzIHBvaW50bGVzc2x5Cj4g
-d3JpdGUgdGhlaXIgb3duIG5ldyBoZWxwZXIgZnVuY3Rpb25zLgo+IAo+IEkndmUgcHVsbGVkIHRo
-aXMsIGJ1dCB1bmRlciBwcm90ZXN0LiBUaGUgcGF0Y2ggaG9uZXN0bHkganVzdCBsb29rcwo+IGxp
-a2UgbWluZGxlc3MgZHVwbGljYXRpb24uCgpUaGFua3MuCgpNaXF1w6hsCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
-c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vbGludXgtbXRkLwo=
+From: Chris Morgan <macromorgan@hotmail.com>
+
+I'm trying to revive an abandoned patch series for the Rockchip serial
+flash controller (SFC) found on the Rockchip PX30 SOC, as well as other
+SOCs by Rockchip. I'm picking this up from version 8 of the patch
+series located from here:
+
+http://patchwork.ozlabs.org/project/linux-mtd/cover/1518091958-3672-1-git-send-email-andy.yan@rock-chips.com/
+
+Changes made in this new series versus the v8 of the old series:
+ - Added function to read spi-rx-bus-width from device tree, in the
+   event that the SPI chip supports 4x mode but only has 2 pins
+   wired (such as the Odroid Go Advance).
+ - Changed device tree documentation from txt to yaml format.
+ - Made "reset" message a dev_dbg from a dev_info.
+ - Changed read and write fifo functions to remove redundant checks.
+ - Changed the write and read from relaxed to non-relaxed when
+   starting the DMA transfer or reading the DMA IRQ.
+ - Changed from dma_coerce_mask_and_coherent to just
+   dma_set_mask_and_coherent.
+ - Changed name of get_if_type to rockchip_sfc_get_if_type.
+
+Chris Morgan (3):
+  mtd: spi-nor: add rockchip serial flash controller driver
+  mtd: spi-nor: Bindings for Rockchip serial flash controller
+  arm64: dts: rockchip: Add SFC to PX30
+
+ .../mtd/rockchip,serialflash-controller.yaml  | 100 ++
+ arch/arm64/boot/dts/rockchip/px30.dtsi        |  38 +
+ drivers/mtd/spi-nor/controllers/Kconfig       |   7 +
+ drivers/mtd/spi-nor/controllers/Makefile      |   1 +
+ .../mtd/spi-nor/controllers/rockchip-sfc.c    | 944 ++++++++++++++++++
+ 5 files changed, 1090 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/rockchip,serialflash-controller.yaml
+ create mode 100644 drivers/mtd/spi-nor/controllers/rockchip-sfc.c
+
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
