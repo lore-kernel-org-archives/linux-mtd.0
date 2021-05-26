@@ -1,21 +1,21 @@
-Return-Path: <SRS0=nVbp=KU=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=Fb5G=KV=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88F1EC4707F
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 May 2021 23:17:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76035C2B9F7
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 06:04:13 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 38EFE61042
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 May 2021 23:17:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 38EFE61042
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 31F17613CC
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 06:04:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 31F17613CC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -23,70 +23,50 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=h/LDkAMTgmaFPcCM+hJVLZho9VSqeSTfslfPZwl9xd0=; b=IaPQFYixMbJ1Vb
-	rEr9YiogyzZsRsqV/ZF76ZVNvQH+n/b2HrtJuqTfjlUvhtpFfaMNYoR2xBiNO6JLa9lnAULimEwwE
-	q31oKRugFudtzeqnVLz8GPywhCo08pKLhPzR5T16a4SfReGL7XiCMlEAWsp7P8KlYAoHMghpFaNEG
-	/tFrAP5jteaeZlewpFH12I4ldEfSbCGeBp4zWI57yCZZ7McxXoi9rouuUffUsqgq3HNIFeBLgvQCQ
-	dcYZ1mV6Zdb6kqkugX4aV1+qVZFIDB7QCRywF0Qf5lsLC/W0mV7Kia2qQwOhUZ5HYUorYsJqJBgQM
-	QV4O3vCFJXgux0J0EboQ==;
+	List-Owner; bh=UhAk5iuj8HicQ6KVRqpPr5DJMQK/TATteKmoMbsRCII=; b=Jfb3SZ85ZAgX+5
+	/nW3WWLR1w9CK0NeUu8SHyz808g4ylhNZePMLSNMUl0N7xorISl7S+jrF/m0oRoejN906qXXiLRvq
+	hMO/khOux3jDiFuzLxZBtwfkRMOB6N5G4hqQfq8j3sP3Y2bJmSuvo/ZvDlyx7TQc5urrVwHBcAlNJ
+	rkk1draClYe1gb3+n4AgpyuztQ4ZLLS0bQ0P+QLPtzPlcX7Cc3xrp37IOIkesiKIJ7pDSFLnWuNdQ
+	88Sy/s9tkDsH9ZexH1f/vLVJiL7pHZWcp6iq/Mu8fhuFN1id+Rnn0A7fabn1kyzqLfom3iQHCzHAj
+	ESQjAtmXpRADViYiosIA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1llgHn-0097a1-Mr; Tue, 25 May 2021 23:16:31 +0000
-Received: from mail-ot1-x329.google.com ([2607:f8b0:4864:20::329])
+	id 1llmd9-00BQ0t-9P; Wed, 26 May 2021 06:02:59 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1llgHk-0097Yy-Qg
- for linux-mtd@lists.infradead.org; Tue, 25 May 2021 23:16:30 +0000
-Received: by mail-ot1-x329.google.com with SMTP id
- i14-20020a9d624e0000b029033683c71999so19075145otk.5
- for <linux-mtd@lists.infradead.org>; Tue, 25 May 2021 16:16:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=kRJQsbr4UUik0+tRstjeKX41a8OCpXExPGyFvaZBojo=;
- b=S6AlfPL+fzQsW5ZhJXqX6HilwyQpM0VVd4UGRsd4EWTTxINvJTxex+kdlEBu5CBzG0
- +RBWxaHB9Py9EK54p3ps7VTypiJ6pHMwQYh7BmaylgxU8ZABz9+D65de+m3xN1nscyrK
- HJ/+vT70ggO8bet/hswCbgsbyKw6B1NftmW5ZSdGbonrGR5Wie8cpKaXwZ+fwGDd/fGA
- OMECgWdd4S94g23go+HyKqjV/hL5lzgMNfZPTvvj2sAaanAm8skW31heVNujm4w8Vuh1
- 1nmJQ5mPfD0EKlBHJeydrnKSBci/2AwD0Z1+EFR43V3pLT48sGCSOJI1uxfg4RUmkaBz
- gOww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=kRJQsbr4UUik0+tRstjeKX41a8OCpXExPGyFvaZBojo=;
- b=O6JjD+Pn/1Ao0CKd/A5rLnn/BgITe3oD5mIDGuJEkgaXme9f/flDAYCU8akkvRyp5L
- Iw6GUC8CiKXzt9fuTPAPPi1EQfqgTu6+kW+OKbP7BWD8O0ZRToSdOrEXnXRUO8NNWZxi
- 7frIp+7aDM4I1F9un6KPsFp2YKHHMbYLIPCz4yq8ngFzj+btQ2Nf5sl69biwdsX44lEH
- wVxoGsVIajKyTp2eC5gMniEcMAfNnSbv213NldiMtsdehXkrZBzl206XWlzE53L8erUx
- JpIY4cbz1dncamK7UeydAvTWmTwTVXRZf25ZbICFu9Nah/2igESy7ZBV7pCpbSicUR5G
- Uulg==
-X-Gm-Message-State: AOAM532tZ6PgogsIid8X1V9Z+ddrf7lQlyqncZZU3gENFvfLcJ7YbGyf
- Pdipxzj3dJn7J7IrJSREh2LsQA==
-X-Google-Smtp-Source: ABdhPJw9o+Oklb8frPMTtU40dTfwPoeGJOz2hCTCxQw/e0eWfUHbRnHaeS2PfEOGSn57ftpNNrXmBg==
-X-Received: by 2002:a9d:728b:: with SMTP id t11mr73613otj.230.1621984587274;
- Tue, 25 May 2021 16:16:27 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net.
- [104.57.184.186])
- by smtp.gmail.com with ESMTPSA id i17sm1237661oou.37.2021.05.25.16.16.26
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 25 May 2021 16:16:26 -0700 (PDT)
-Date: Tue, 25 May 2021 18:16:24 -0500
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
+ id 1llmd6-00BPzB-E5
+ for linux-mtd@lists.infradead.org; Wed, 26 May 2021 06:02:57 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46290613CC;
+ Wed, 26 May 2021 06:02:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1622008975;
+ bh=Px4RLhRm+fl/7hIdMPYO+uGgtTr0sXe6bUIxzTzzwQw=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=WEMmgUWHwEVFXB1PkX1xij4Xz97EIBpu0xIngzEIpiwZHJnUjowxHp89dkSv2XWjb
+ MmkiK+rlLYmsOAxSP3apdMVwmzIgg96RbtgglKWkyJlwWUdQwa/3BwSr6OHGcpUCaO
+ NzvWwdpz/qq6EnGNgjAaBIRAijjRmb2Fv8Cb8z9cpjqhRusb+5K691cC6+G0b+8FHn
+ Y1iPRtsE0wXkW/W4O0gNvcsdsDHQV3wY/uIWi5BUd0Hnx++c3vEj9Tv0WJ4anolKry
+ Eiq4AtxxfbAheIHtW9j0yatm+C6ZovTgbvm2Ydq5w2620YSY1lFXecaom6+x0L2vfj
+ sFJQOiVWckFvw==
+Date: Wed, 26 May 2021 11:32:46 +0530
+From: Manivannan Sadhasivam <mani@kernel.org>
 To: Ansuel Smith <ansuelsmth@gmail.com>
-Cc: Andy Gross <agross@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+Cc: Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Manivannan Sadhasivam <mani@kernel.org>,
  linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v2] mtd: parsers: qcom: Fix leaking of partition name
-Message-ID: <YK2FSM5UDZhGQN0n@yoga>
+Message-ID: <20210526060246.GA10723@work>
 References: <20210525230931.30013-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <20210525230931.30013-1-ansuelsmth@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210525_161628_929154_FEB4C09C 
-X-CRM114-Status: GOOD (  21.41  )
+X-CRM114-CacheID: sfid-20210525_230256_538870_88123E22 
+X-CRM114-Status: GOOD (  20.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,22 +83,21 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue 25 May 18:09 CDT 2021, Ansuel Smith wrote:
-
+On Wed, May 26, 2021 at 01:09:31AM +0200, Ansuel Smith wrote:
 > Add cleanup function as the name variable for the partition name was
 > allocaed but never freed after the use as the add mtd function
 > duplicate the name and free the pparts struct as the partition name is
 > assumed to be static.
 > The leak was found using kmemleak.
 > 
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Regards,
-Bjorn
-
 > Fixes: 803eb124e1a6 ("mtd: parsers: Add Qcom SMEM parser")
 > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+Thanks,
+Mani
+
 > ---
 >  drivers/mtd/parsers/qcomsmempart.c | 10 ++++++++++
 >  1 file changed, 10 insertions(+)
