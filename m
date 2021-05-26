@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51254C2B9F7
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 09:27:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6587BC47088
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 09:28:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0B3B36023D
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 09:27:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B3B36023D
+	by mail.kernel.org (Postfix) with ESMTPS id C06A2613D6
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 09:28:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C06A2613D6
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,39 +23,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1/OK0ke2zmVFixtsOpCRrE6DUPaEdXY5TtimlfJJNQc=; b=kVFwpD1eSkq3W5
-	1HQTbj4gGPomkh+n+6ZRBuSX34WrPTCfMWFuYrfCwChoFxLX7hPQ72tpugN/EW0jn8014XdWngsHr
-	cLlBamakpql5jWJZT1VEQ9F43QmiKdOsMwLkqgzD4OmFJE9cyDSaIGTmuGtoxwtPIpUK+OcGRfc4q
-	PC4FzAToEXVVgLsPJgYxABrDoHDSDj9cCwp53V3SOm1r5AGIoClFoAAFP+CKCgsbGgTjX/L4Efd0e
-	XzK0lsfq1wUVQ5qwgLw1/DhEP9ZDkUlXWM1D0eH7WXBlCcavmioTcyOwOJqD1jeEvfa8XxGoldUQ+
-	gO8kIiJSWGaM1vGR5t4A==;
+	List-Owner; bh=6nIO5vp/xQvjQhKpQSwtAr8GX4QJZW//w08wLWv2g3w=; b=UGEoeIPvXcP91u
+	An7lnkb24mspLA/t4jS2SPsU8qda5v7iBkOBrNBEchqW7wH7QYVZ84RRnffrvKEoiQUbhrgjnYEH7
+	Zvq6OErz0FhDxplF8/WgaSsoQuBGQOFruiGlpnI5B5YiUBaCilPVcxPGUiguHL3Mhz7gObs0cvTmD
+	prChWiQG7wL2TsnqJxu7hpav2E1XyL4BhI4N8/Y79KaYbh0A3RXYH4wtEM9EywskzCSbZxTz2ymip
+	oOgw11jpxb6oVT6uIpMa/gbOREOqnfR+RK6Dk4hGwWteGkhb3vPSrot7D7hHM3i8B3qQzzg5YGoeI
+	N38An0x8dqwYhkbfkXvA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1llpnm-00CrNX-9q; Wed, 26 May 2021 09:26:10 +0000
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	id 1llppM-00Crxh-Vq; Wed, 26 May 2021 09:27:49 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1llpRK-00Chu1-LU
- for linux-mtd@lists.infradead.org; Wed, 26 May 2021 09:03:00 +0000
+ id 1llpRQ-00ChwO-Us
+ for linux-mtd@lists.infradead.org; Wed, 26 May 2021 09:03:06 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 1BC544001D;
- Wed, 26 May 2021 09:02:53 +0000 (UTC)
+ by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 5516B60014;
+ Wed, 26 May 2021 09:03:00 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: dingsenjie@163.com, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Ding Senjie <dingsenjie@yulong.com>
-Subject: Re: [PATCH v3] mtd: devices: Remove superfluous "break"
-Date: Wed, 26 May 2021 11:02:53 +0200
-Message-Id: <20210526090253.180708-1-miquel.raynal@bootlin.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Michael Walle <michael@walle.cc>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] mtd: core: Potential NULL dereference in mtd_otp_size()
+Date: Wed, 26 May 2021 11:02:59 +0200
+Message-Id: <20210526090259.180775-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210514124451.20352-1-dingsenjie@163.com>
+In-Reply-To: <YJ6Iw3iNvGycAWV6@mwanda>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'5c1ce1fb8a2d434a485175d6ae38aea40ebd5de4'
+X-linux-mtd-patch-commit: b'c3c8c051df3ee5042dd91593593a8b0e008f4c85'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210526_020258_877375_A6485467 
-X-CRM114-Status: UNSURE (   5.72  )
+X-CRM114-CacheID: sfid-20210526_020305_173835_F829BD7D 
+X-CRM114-Status: UNSURE (   6.02  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -73,12 +73,13 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2021-05-14 at 12:44:51 UTC, dingsenjie@163.com wrote:
-> From: Ding Senjie <dingsenjie@yulong.com>
+On Fri, 2021-05-14 at 14:27:15 UTC, Dan Carpenter wrote:
+> If kmalloc() fails then it could lead to a NULL dereference.  Check and
+> return -ENOMEM on error.
 > 
-> Remove superfluous "break", as there is a "return" before it.
-> 
-> Signed-off-by: Ding Senjie <dingsenjie@yulong.com>
+> Fixes: 4b361cfa8624 ("mtd: core: add OTP nvmem provider support")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Reviewed-by: Michael Walle <michael@walle.cc>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
