@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C066DC2B9F7
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 09:44:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E05DC47082
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 09:46:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 82C1661417
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 09:44:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 82C1661417
+	by mail.kernel.org (Postfix) with ESMTPS id 310AB610A8
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 09:46:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 310AB610A8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,22 +23,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=epyL3StI5YElbpLoycr8NVTj8qshsucYui3K6Kcda9o=; b=SOdlZZm1/CQj0T
-	4H8Sc2IO9ZqTbvrQBYVUKvkgqbHrVgTAZem1Djvl6+4DcDgylMq3OmigRkJkRTj9jFGN9cvp+VQcT
-	j6fDFudiPIV4SKjg7ejvw/0IOq1ORRuqqcWNQXWoLX72dfkWs4vRlUBdK6KZVaga8x3uVL0diIAil
-	gkTKcv9BUy6IjsQMdMU5nSiYd5xzZkG28v11EK1G7vx2odgskGYHbHi2RliE2fzM5dK3tOyBXzHQ5
-	OWb+tQIr5eRHF2R7IFOw/mwa4Fp06Sv61kKb8Ruxs41M5ug4mOHyJop4isNERpC7K/6FtV0l4cP1i
-	HMRRBW4Z0mbnFcHNkmMQ==;
+	List-Owner; bh=MS1RXIOzraGjQDDI8Wql/16OczpZwz7dz3/ASGjaDg4=; b=BZ6NpOPcl7hx2T
+	9FMaU26ASwXuvIqVRFXTc5fj+Eug6at7Vr7UKf1xrl1H0iLPPhjbNVL0vAi2jG+9NcasE3nCT+Gwc
+	sy5AImIWjDsUhr89V4aWJlVrrojXRmk0VQ4WYLey3ZsVqKhk0B4H5rr7YFnTpXiXkUJVKKcS3/HQq
+	R6UGpXcXPm9GGF5zB588n8Vz462fWs9tN0jUGpME4BZma7R/EkotkXiv+0w3DCHFjKNSnmYBqw/7+
+	Ki2EBi8WaEcuRS05ySeHraLoXPhIP5WmdD2kE9dfxASZsqfb6MIIly8wNJBJfAIa9HnXVShUolrSn
+	XjUDCl0ZjLxATY8tbNgA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1llq4a-00CyBn-TR; Wed, 26 May 2021 09:43:33 +0000
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+	id 1llq77-00Cz7Q-Cz; Wed, 26 May 2021 09:46:09 +0000
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1llpRx-00Ci9u-AQ
- for linux-mtd@lists.infradead.org; Wed, 26 May 2021 09:03:38 +0000
+ id 1llpS3-00CiCX-Og
+ for linux-mtd@lists.infradead.org; Wed, 26 May 2021 09:03:45 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id E75A6C0003;
- Wed, 26 May 2021 09:03:34 +0000 (UTC)
+ by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 8CC824000C;
+ Wed, 26 May 2021 09:03:39 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
@@ -47,19 +47,18 @@ Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Naga Sureshkumar Relli <nagasure@xilinx.com>,
  Michal Simek <monstr@monstr.eu>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 2/5] mtd: rawnand: Move struct gpio_desc declaration to
- the top
-Date: Wed, 26 May 2021 11:03:34 +0200
-Message-Id: <20210526090334.181225-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v4] dt-binding: mtd: nand: Document the cs-gpios property
+Date: Wed, 26 May 2021 11:03:39 +0200
+Message-Id: <20210526090339.181290-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210510104051.9701-3-miquel.raynal@bootlin.com>
+In-Reply-To: <20210510171800.27225-1-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'31df6381cfad18fef295e8cb2997d02d037c1d73'
+X-linux-mtd-patch-commit: b'6b562738a22cfdbfedaaac7db5f83c11700ebb15'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210526_020337_530380_A4FAB9C1 
-X-CRM114-Status: UNSURE (   8.14  )
+X-CRM114-CacheID: sfid-20210526_020343_973167_2D7794F3 
+X-CRM114-Status: UNSURE (   7.31  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -77,13 +76,15 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2021-05-10 at 10:40:48 UTC, Miquel Raynal wrote:
-> The struct gpio_desc is declared in the middle of the rawnand.h header,
-> right before the first function using it (nand_gpio_waitrdy). Before
-> adding a new function and to make it clear: move the declaration to the
-> top of the file.
+On Mon, 2021-05-10 at 17:18:00 UTC, Miquel Raynal wrote:
+> To reach higher capacities, arrays of chips are now pretty common.
+> Unfortunately, most of the controllers have been designed a decade ago
+> and did not all anticipate the need for several chip-selects. The new
+> cs-gpios property allows to workaround this limitation by adding as many
+> GPIO chip-select as needed.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next.
 
