@@ -2,64 +2,75 @@ Return-Path: <SRS0=Fb5G=KV=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0980DC2B9F7
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 11:42:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C01F6C47082
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 12:43:49 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BAE3A61248
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 11:42:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BAE3A61248
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 85CB86101E
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 12:43:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 85CB86101E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VuFAsj7M/USwsTj87NDRWmYhFRcGxLSFQqnYXiWrw2k=; b=s8b5aK2URGGSdw
-	eHTbbSTQZOUmwKkNNuRBcprzXq8S9Ad9buoywBjR7KXL8fCkdxaL6RR3s8OUzA6AK8jv99K5B432A
-	+/sNjstqlsiOkG1bPwja007njx/W73QutNsZ8+IN84swiHe1+F+Aih+W4eLNjWtl0HBIhfKHZLOYF
-	n5DPx4Q3UVU/yW6qaBa4kdXXZxb41lOeHKDP7b4lq4IdSD8kvosIzFOo1T9kKVLSM8OFOMiP3r11U
-	HTMe3GERbk5see30ek9dhV5Pz9SNfWBLpZ6O2h4BXayrLD6ahVM5YHy/KVEGnvQF884smN4wHq0f2
-	XvGWFyv1yVq/KD3g0tMw==;
+	List-Owner; bh=iHDdjXDN4pHkKaAFmIq53meOdnb4r9sNxa0ihuWYGi4=; b=vcYhd2DmdhUV5M
+	LwViMMruLPiZzMDvMYOJxL/ycZqeuSvl/8KrbD6oCPM4AZKtCFDkQAuJG7ObtP5KFKztURsjgRb2X
+	/8Wt393y618xXj40CRxgwK2wMOVBKLjg6F4z/zjghlL1HMRU59TJ3m6PXnwT8IpDbAlC1mO1g2lN+
+	lC1NaO47gtLZn6tYHPKq9m4v1PN3dzJZxyVXOTfAaqVw+wzf7/g31wKDEUMgUdZ9sGKEfexR1CLpj
+	p5O4AnYTGdwxd75pM4FN4MpIJ7ZJ+jEKpQcyY7hkpAazC/eAh57z0fLAQaB0oRbL2WVlLF6K8Ukz/
+	s+gUIQZSlVF+9053967w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1llrvU-00De2R-Lk; Wed, 26 May 2021 11:42:16 +0000
-Received: from relay3-d.mail.gandi.net ([217.70.183.195])
+	id 1llssG-00E6f8-72; Wed, 26 May 2021 12:43:00 +0000
+Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1llpvr-00CvLr-Lp
- for linux-mtd@lists.infradead.org; Wed, 26 May 2021 09:34:33 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 66EA96000D;
- Wed, 26 May 2021 09:34:28 +0000 (UTC)
-Date: Wed, 26 May 2021 11:34:27 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Rob Herring
- <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- linux-mtd@lists.infradead.org, Naga Sureshkumar Relli
- <nagasure@xilinx.com>, Michal Simek <monstr@monstr.eu>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 2/5] mtd: rawnand: Move struct gpio_desc declaration
- to the top
-Message-ID: <20210526113427.77533069@xps13>
-In-Reply-To: <20210526090334.181225-1-miquel.raynal@bootlin.com>
-References: <20210510104051.9701-3-miquel.raynal@bootlin.com>
- <20210526090334.181225-1-miquel.raynal@bootlin.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1llqly-00DCSW-3P
+ for linux-mtd@lists.infradead.org; Wed, 26 May 2021 10:28:23 +0000
+IronPort-SDR: 8A6Zby+8j75atWEDdKQMoQ2//xMQP/XV+pVSDUK7/hGa7iXH9X+3zxzp96YHf89vxPf9jy/BS3
+ 6PnPXuxnQaVg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="223616095"
+X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; d="scan'208";a="223616095"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 May 2021 03:28:16 -0700
+IronPort-SDR: kqC0WeuoTRf4bbkUD3C8oUlHLJlMInJFGWIhk+MHul7sEjj7ExCmaUOMKACntpqYBwXwSHuOla
+ jAAJJEXzW4HA==
+X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; d="scan'208";a="547146093"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+ by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 May 2021 03:28:13 -0700
+Received: by lahna (sSMTP sendmail emulation); Wed, 26 May 2021 13:28:11 +0300
+Date: Wed, 26 May 2021 13:28:10 +0300
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Michael Walle <michael@walle.cc>
+Cc: Pratyush Yadav <p.yadav@ti.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: spi-nor: intel-spi: Add support for second flash chip
+Message-ID: <20210526102810.GB291593@lahna.fi.intel.com>
+References: <20210525160318.35802-1-mika.westerberg@linux.intel.com>
+ <20210525191414.dc45h27rzqen4dce@ti.com>
+ <20210526091250.GY291593@lahna.fi.intel.com>
+ <20210526092417.GA291593@lahna.fi.intel.com>
+ <e82f44552d0d4284fc5ed22ee0bee85a@walle.cc>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <e82f44552d0d4284fc5ed22ee0bee85a@walle.cc>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210526_023431_918626_F71E6EA9 
-X-CRM114-Status: GOOD (  12.66  )
+X-CRM114-CacheID: sfid-20210526_032822_209594_46E4CE0C 
+X-CRM114-Status: GOOD (  22.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,25 +82,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWlxdWVsLAoKTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4gd3Jv
-dGUgb24gV2VkLCAyNiBNYXkgMjAyMQoxMTowMzozNCArMDIwMDoKCj4gT24gTW9uLCAyMDIxLTA1
-LTEwIGF0IDEwOjQwOjQ4IFVUQywgTWlxdWVsIFJheW5hbCB3cm90ZToKPiA+IFRoZSBzdHJ1Y3Qg
-Z3Bpb19kZXNjIGlzIGRlY2xhcmVkIGluIHRoZSBtaWRkbGUgb2YgdGhlIHJhd25hbmQuaCBoZWFk
-ZXIsCj4gPiByaWdodCBiZWZvcmUgdGhlIGZpcnN0IGZ1bmN0aW9uIHVzaW5nIGl0IChuYW5kX2dw
-aW9fd2FpdHJkeSkuIEJlZm9yZQo+ID4gYWRkaW5nIGEgbmV3IGZ1bmN0aW9uIGFuZCB0byBtYWtl
-IGl0IGNsZWFyOiBtb3ZlIHRoZSBkZWNsYXJhdGlvbiB0byB0aGUKPiA+IHRvcCBvZiB0aGUgZmls
-ZS4KPiA+IAo+ID4gU2lnbmVkLW9mZi1ieTogTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBi
-b290bGluLmNvbT4gIAo+IAo+IEFwcGxpZWQgdG8gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIv
-c2NtL2xpbnV4L2tlcm5lbC9naXQvbXRkL2xpbnV4LmdpdCBuYW5kL25leHQuCj4gCj4gTWlxdWVs
-CgpGWUksIGR1ZSB0byBhbiBlcnJvciBpbiB0aGUgaGVhZGVycyBvZiB0aGlzIHNlcmllcywgcGF0
-Y2h3b3JrL2xvcmUgZ290CmNvbmZ1c2VkIGJldHdlZW4gdjIgYW5kIHYzLiBUaGlzIHZlcnNpb25z
-IGlzIG5vdCB0aGUgb25lIEkgc2hvdWxkIGhhdmUKYXBwbGllZC4gSSBqdXN0IGRyb3BwZWQgaXQs
-IHdpbGwgcmVzZW5kIHYzIGFuZCBhcHBseSBpdCBpbW1lZGlhdGVseS4KClRoYW5rcywKTWlxdcOo
-bAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hi,
+
+On Wed, May 26, 2021 at 11:31:58AM +0200, Michael Walle wrote:
+> > Oh, I see now this commit:
+> > 
+> > a314f6367787 ("mtd: spi-nor: Convert cadence-quadspi to use spi-mem
+> > framework")
+> > 
+> > So "SPI MEM" means generic SPI subsystem for memory mapped devices.
+> > Unfortunately Intel controller at least is not capable of running
+> > generic SPI transactions. It only supports accessing SPI-NOR flashes and
+> > for those there is small set of commands that supports. I don't think it
+> > is even possible to convert the driver to generic SPI subsystem.
+> 
+> AFAIK it stands for SPI memory device (memory mapped is not a requirement).
+> Eg. spi-nxp-fspi doesn't support generic SPI devices either, but just SPI
+> flashes. So I'd guess SPI MEM is exactly what you are looking for.
+
+OK, I see that there is ->mem_ops that can be used to implement
+different higher level commands. What I'm not seeing is that how the
+child SPI flash is created using this scheme? DeviceTree and ACPI are
+supported fine but what about scanning? I mean the intel_spi driver has
+this:
+
+  spi_nor_scan(&ispi->nor, NULL, &hwcaps);
+
+But if the driver is to be moved under drivers/spi/* you can't really
+call these functions anymore or can you? Or the point is to keep the
+driver under controllers/ and just call spi_nor_scan(), and in addition
+implement the new mem_ops?
+
+Thanks in advance and sorry about many questions but there does not seem
+to be a conversion guide nor any (non-DT/ACPI) examples that I can take
+a look. :-)
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
