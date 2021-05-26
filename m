@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5134BC2B9F7
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 09:52:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1789AC47088
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 09:54:58 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1B4E861432
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 09:52:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B4E861432
+	by mail.kernel.org (Postfix) with ESMTPS id 7BCFC61442
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 May 2021 09:54:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7BCFC61442
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,22 +23,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=a0YjXbLrxg4p6kvdwRS4nuQVs88GeiXaifg2hvsF+ns=; b=0H5wRkA8TSd3+m
-	tenPoLY8q5VS08ifrArX60U0o0mNfTmLGUjBBIzuH4zO6AHH+usVduGEaVCDRRHC87ZngvHjZDzU1
-	4qWokwbbWJSp0dastCSrmnbAHRm26K3azOEuz2s7nkXn6eqUeSRrnRdO2B7fKT82LupO66BwY8nSn
-	UDJyiq+buY2El293zPZkE6NYdeUdwOkD1CUMhI9iDz1ZWkjb4f5kipLGDSY27p+vNPOnnBt4cvF90
-	vpOZhSOgxDN4ebSxOkngnWEKH+IrcuueRBPqmX9CXPzF01a/Wp2swJPo2BpXmlg5i5rTWPwLNU7Ls
-	SL4fwCfhKPOAp/GVrjDQ==;
+	List-Owner; bh=isZ10M32nF3CM3OSqbsDfZnh3fXns5ap8PqCo4XNLZc=; b=oqlnkGHU+tgHwd
+	4M+0DPPrKXT19ni7Col58aNPFHG2LSHPYM/lEW0vNn6J4/Y5q979XYWAHulbNUnh4WdC3NWg2zyJ7
+	fBncn4F1YLdJGJkLaV8xsmVVDyrDehApGYDJpuvu5A/lHdYygYuxog0jyN0ra89zS+PvWnKg96dIa
+	mWJuZgnKz4kxAE6TShoNM+ukgWhzbsbGUtsFdmGz7zutaNasr48LVyoNzxFzRr0jjroXqLzzDWn7k
+	ATtkjnAJqoAA3w2b5fKGBHD2k3r3PdCMFT53sFf722EiASSjq9wJqPRxRVclp/6LlGIVffzz7Nhqg
+	qQ0yEZ3ABE0zaOzqjRXA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1llqCE-00D0kP-4s; Wed, 26 May 2021 09:51:26 +0000
+	id 1llqEx-00D1ag-1h; Wed, 26 May 2021 09:54:15 +0000
 Received: from relay3-d.mail.gandi.net ([217.70.183.195])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1llpSF-00CiHe-Pc
- for linux-mtd@lists.infradead.org; Wed, 26 May 2021 09:03:57 +0000
+ id 1llpSK-00CiJb-Vo
+ for linux-mtd@lists.infradead.org; Wed, 26 May 2021 09:04:02 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id CAF8F6000C;
- Wed, 26 May 2021 09:03:52 +0000 (UTC)
+ by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 57B036001F;
+ Wed, 26 May 2021 09:03:58 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -47,19 +47,19 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Michal Simek <monstr@monstr.eu>,
  Naga Sureshkumar Relli <nagasure@xilinx.com>,
  Amit Kumar Mahapatra <akumarma@xilinx.com>
-Subject: Re: [PATCH 21/22] mtd: rawnand: arasan: Workaround a misbehaving prog
- type with NV-DDR
-Date: Wed, 26 May 2021 11:03:52 +0200
-Message-Id: <20210526090352.181423-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 20/22] mtd: rawnand: arasan: Fix a macro parameter
+Date: Wed, 26 May 2021 11:03:57 +0200
+Message-Id: <20210526090357.181487-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210505213750.257417-22-miquel.raynal@bootlin.com>
+In-Reply-To: <20210505213750.257417-21-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'10938a08fc4055667da7518685fbd8ea7d09de1b'
+X-linux-mtd-patch-commit: b'698ddeb89e01840dec05ffdb538468782e641a56'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210526_020356_014551_B7E1797E 
-X-CRM114-Status: GOOD (  15.98  )
+X-CRM114-CacheID: sfid-20210526_020401_212883_EEF8C584 
+X-CRM114-Status: UNSURE (   7.25  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,26 +76,11 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2021-05-05 at 21:37:49 UTC, Miquel Raynal wrote:
-> As explained in the comment introduced above the fix, the Arasan
-> controller driver starts an operation when the prog register is being
-> written with a "type" specific to the action to perform.
+On Wed, 2021-05-05 at 21:37:48 UTC, Miquel Raynal wrote:
+> This macro is not yet being used so the compilers never complained
+> about it.
 > 
-> The prog type used until now to perform a CHANGE READ COLUMN with an SDR
-> interface was the PAGE READ type (CMD + ADDR + CMD +
-> DATA). Unfortunately, for an unknown reason (let's call this a silicon
-> bug) any CHANGE READ COLUMN performed this way in NV-DDR mode will fail:
-> the data ready flag will never be triggered, nor will be the transfer
-> complete flag. Forcefully, this leads to a timeout situation which is
-> not easy to handle.
-> 
-> Fortunately, it was spotted that sending the same commands through a
-> different prog register "type", CHANGE READ COLUMN ENHANCED, would work
-> all the time (even though this particular command is not supported by
-> the core and is only available in a limited set of devices - we only
-> care about the controller configuration and not the actual command which
-> is sent to the device). So let's use this type instead when a CHANGE
-> READ COLUMN is requested.
+> Fix the macro before using it.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
