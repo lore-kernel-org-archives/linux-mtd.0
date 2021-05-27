@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-12.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 272C0C4707F
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 May 2021 14:39:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE39EC47089
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 May 2021 14:41:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E08C6613DC
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 May 2021 14:39:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E08C6613DC
+	by mail.kernel.org (Postfix) with ESMTPS id 8069961181
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 May 2021 14:41:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8069961181
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,64 +23,62 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WUrzDmGfTM3zkhJ25vOV2uIQL3WvP0iV5mqDxH+YYuc=; b=0bFHpq5oyMGOTO
-	vb5I1NuiISrjt5JXbx1DxZ4qvYSdI/b9EWA+89BFJOjd7YzTx0ZHaqD7rDPSNGFuejmWpkvwUaDt4
-	DuUW2mDQs1CIfSB2WjQmSFO8rpPhxzILIhb0TD9A4WHO15gaFY9Hmh5gAMENHlp0QXl2Wvwx6B9gv
-	wy68QRbhrvaMBMyFDy40pM07FX48+GwILl9E3nw9R8pcbkjdJUGQF5uyiGc9xOUDFdrFyRa72sYYN
-	FxxY2QJv0ezliyX4/0xBrvCAC/M9L868XjzwG6Sn08dlqxtBOHS0oWaP5iLpI2TamnmWakUJ4pEiz
-	om/rJg+XKTIfrs+azJUA==;
+	List-Owner; bh=PDgEy/cc7JjpIIbcr4gyB36x/5nnfF/StJPkkkAffoA=; b=hOlwBPLD7ONUl2
+	D4l5qHueOonCcMWSJKIpR/bEuS+cHix95nOEfAQwhh/NzbCNyD+0Nh1ni/Fe3odFsFdwkeP3NxYNA
+	THlDMCuZXfbG86TZrfR1yEy1CQKGA/LFJF+BXLCRusC1mnG9LlVW5KX98FG0vo8AuHqImAR5fre0Y
+	F7QsKrUfC0i9cDOWWpz/TL+bB5Kr6xkWmAZ95fPaPbDAbepROdVlQPgTfeAGZQUpwuWuGTsoYbm/R
+	2jED1pmavzA/XdI9YRjx4Rv+J88eTVLc4I4CY8UqvmUInJLOPdC646scbWosxsFSJbajypn2MoqA1
+	lf/tOQHazLBkF6aRSo2w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lmH9Y-006qa9-NR; Thu, 27 May 2021 14:38:29 +0000
+	id 1lmHC2-006rec-AG; Thu, 27 May 2021 14:41:02 +0000
 Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lmGfn-006aOc-37; Thu, 27 May 2021 14:07:44 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14RE7cZa025987;
- Thu, 27 May 2021 09:07:38 -0500
+ id 1lmGg3-006aVb-L4
+ for linux-mtd@lists.infradead.org; Thu, 27 May 2021 14:08:01 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14RE7ujt026122;
+ Thu, 27 May 2021 09:07:56 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1622124458;
- bh=W5zWcl19RViZmcBzfL24u2KssqK+v83PJP5qli8LjAw=;
+ s=ti-com-17Q1; t=1622124476;
+ bh=mN4S682wd8UcedJoUsd+cmh9EgUisPUpdvR5ONvh+AY=;
  h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=Y+yRUYzdKwXgrd5iYsIihVTHg1eNKIA5nlZoCwzY4/UNa6pme5kiMOQa37TB1lym0
- b6UKwr7/GJxzA3noxfmKcNR7LBoJhr2xUa2SNiXluPrI9oBQafA99jxNWUCuFTzA27
- 4BqGV+uSrgHpc7iqs156uw5QiwjLzlhZbyzCh2fU=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14RE7cex070668
+ b=C3lian4TP/MYaHLhA31LEUdif9/I45E0UFl/5JjzQ+brSS0Zn/KOcLL+ARNyN1YGW
+ r+b6m4i7vLAHf7wRlTusN7CQBJDtOMdGic6PDVD37nwyZQP3QOZSHAGEJ1HfR0D8PI
+ DHl4rm5rqFyzPYM/FzsNAwBYlaPBj93sEKiEzMI4=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14RE7umh045458
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 27 May 2021 09:07:38 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ Thu, 27 May 2021 09:07:56 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 27
- May 2021 09:07:37 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ May 2021 09:07:56 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 27 May 2021 09:07:37 -0500
+ Frontend Transport; Thu, 27 May 2021 09:07:56 -0500
 Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14RE7ImN079307;
- Thu, 27 May 2021 09:07:18 -0500
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14RE7qi9099432;
+ Thu, 27 May 2021 09:07:53 -0500
 From: Vignesh Raghavendra <vigneshr@ti.com>
-To: <linux-kernel@vger.kernel.org>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, <linux-mtd@lists.infradead.org>,
- <linux-arm-kernel@lists.infradead.org>
-CC: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- Vladimir Zapolskiy <vz@mleia.com>, Tudor Ambarus
- <tudor.ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v1 1/1] mtd: spi-nor: Use SPI_MODE_X_MASK
-Date: Thu, 27 May 2021 19:36:52 +0530
-Message-ID: <162212417121.9400.7341872419015074097.b4-ty@ti.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
+ <p.yadav@ti.com>
+CC: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger
+ <richard@nod.at>, <linux-kernel@vger.kernel.org>, Michael Walle
+ <michael@walle.cc>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] mtd: spi-nor: Add documentation for spi_nor_soft_reset()
+Date: Thu, 27 May 2021 19:37:44 +0530
+Message-ID: <162212417122.9400.10979239903864354902.b4-ty@ti.com>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510141343.56805-1-andriy.shevchenko@linux.intel.com>
-References: <20210510141343.56805-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210511093958.17258-1-p.yadav@ti.com>
+References: <20210511093958.17258-1-p.yadav@ti.com>
 MIME-Version: 1.0
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210527_070743_248027_D5D677B3 
-X-CRM114-Status: UNSURE (   5.41  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210527_070759_841314_786DE6B5 
+X-CRM114-Status: GOOD (  10.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,15 +95,15 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 10 May 2021 17:13:43 +0300, Andy Shevchenko wrote:
-> Use SPI_MODE_X_MASK instead of open coded variant.
-
-Updated $subject to:
- "mtd: spi-nor: nxp-spifi: Use SPI_MODE_X_MASK"
+On Tue, 11 May 2021 15:09:58 +0530, Pratyush Yadav wrote:
+> Document what the function does and that it should only be used when it
+> is known that the device supports it. This will avoid unaware
+> programmers thinking that they can arbitrarily use it to reset the
+> device.
 
 Applied to spi-nor/next, thanks!
-[1/1] mtd: spi-nor: Use SPI_MODE_X_MASK
-      https://git.kernel.org/mtd/c/5c26d52c9e
+[1/1] mtd: spi-nor: Add documentation for spi_nor_soft_reset()
+      https://git.kernel.org/mtd/c/ccfb7cf18f
 
 --
 Regards
