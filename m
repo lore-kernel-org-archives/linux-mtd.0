@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C03FC47089
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 May 2021 08:50:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 501CCC4708A
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 May 2021 08:50:59 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E822261222
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 May 2021 08:50:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E822261222
+	by mail.kernel.org (Postfix) with ESMTPS id 1C7DE6128D
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 May 2021 08:50:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C7DE6128D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,22 +23,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=3OY+BztR1ewANCOEmqawAaeNVwtIvESyPSc2Hw90ktw=; b=MbL3j/kj6e5gPh
-	ZmzhcU4nbFv331gyP+kwN4HTVoLIoPKo1zS/XOSu7kp/J9eESlszDx69C4Y97m1RIJshlcqwYMJKx
-	bK2UDjKdXdyjiNBv3aN8XJVIosFc27lRc44N7wD5ilmaq1sY6vKhvgaGI+6KWJB1VMV5jIHUt6jX1
-	iwR/vhe1CWsEaPwva0sefwM3NpF+aRZbZkbR0M4mWI5Ah9A81tip9/Hzdad1mynGJgs0/4r5/F0Ff
-	DNyi6zWRfvsNel4cII4x3c2/U0cbRRoVwig/rQJPLKvSIs/J2wZ6JiZhJwpDaCFpa3KRSxGCcI1YN
-	4YchRwTsX1FsmAo7i1eg==;
+	List-Owner; bh=YQfFPfg5ZBHffEEWc8QSebdbBo2qHQpbCFDDHqLaE/w=; b=2HnxislgA1jasE
+	pvPiEFXo3u7VlEreHE4VONRliHGrcmVyPYH6gq7bkMP+2h4JjzHLJfUn6EMmvCqWhb71fihVrYX6F
+	+iFI7p9lWrM9PZ7BNH3B4eWqRo8UaMAjBoAV7iblF8FmqDBnRcUR8wnKg7KL4qbr8wLPZzsWK9BR8
+	7yD7RlttKqg4kGZGwzf122E/5qh1oQvr5SJ/6/Wk1kmhowAJRR5AwxfhNFY2E5vm31IIAEIM2VFU5
+	ikYce7Q4aYk2yT1fcwPUAORjD2tLZTwoM7LMD9KohP1PrcwHWUegM9p2B0rwKuss2K3JmhzdI2Y+c
+	6PT9i9FCXZtfKSKzzU6A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lmBhf-0040hR-Lc; Thu, 27 May 2021 08:49:19 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1lmBiR-0041CX-KM; Thu, 27 May 2021 08:50:07 +0000
+Received: from relay11.mail.gandi.net ([217.70.178.231])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lmBhc-0040f3-Ly
- for linux-mtd@lists.infradead.org; Thu, 27 May 2021 08:49:18 +0000
+ id 1lmBiN-00418I-GU
+ for linux-mtd@lists.infradead.org; Thu, 27 May 2021 08:50:05 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id F3300FF804;
- Thu, 27 May 2021 08:49:13 +0000 (UTC)
+ by relay11.mail.gandi.net (Postfix) with ESMTPSA id 7F33E100014;
+ Thu, 27 May 2021 08:50:00 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
@@ -47,17 +47,15 @@ Cc: Michal Simek <monstr@monstr.eu>,
  Naga Sureshkumar Relli <nagasure@xilinx.com>,
  Amit Kumar Mahapatra <akumarma@xilinx.com>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- kernel test robot <lkp@intel.com>
-Subject: [PATCH] mtd: rawnand: onfi: Fix endianness when reading NV-DDR values
-Date: Thu, 27 May 2021 10:49:13 +0200
-Message-Id: <20210527084913.208635-1-miquel.raynal@bootlin.com>
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 1/2] mtd: rawnand: arasan: Rename the data interface register
+Date: Thu, 27 May 2021 10:49:58 +0200
+Message-Id: <20210527084959.208804-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210527_014916_885319_7DCF9409 
-X-CRM114-Status: UNSURE (   8.83  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210527_015003_721733_CFE66101 
+X-CRM114-Status: GOOD (  10.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,35 +72,66 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Without the use of le16_to_cpu(), these accesses would have been wrong
-on a big-endian machine.
+There are 2 timing registers:
+- "data interface"
+- "timings"
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: 45606518f961 ("mtd: rawnand: Add onfi_fill_nvddr_interface_config() helper")
-Fixes: 9310668fb60a ("mtd: rawnand: Retrieve NV-DDR timing modes from the ONFI parameter page")
+So far, the "data interface" register was named "timings" which begins
+misleading when bringing support for the "timings" register. Rename it
+to "data_iface".
+
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/nand_onfi.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/raw/arasan-nand-controller.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/nand_onfi.c b/drivers/mtd/nand/raw/nand_onfi.c
-index 8e4677f2ba76..7586befce7f9 100644
---- a/drivers/mtd/nand/raw/nand_onfi.c
-+++ b/drivers/mtd/nand/raw/nand_onfi.c
-@@ -315,10 +315,10 @@ int nand_onfi_detect(struct nand_chip *chip)
- 	onfi->tBERS = le16_to_cpu(p->t_bers);
- 	onfi->tR = le16_to_cpu(p->t_r);
- 	onfi->tCCS = le16_to_cpu(p->t_ccs);
--	onfi->fast_tCAD = p->nvddr_nvddr2_features & BIT(0);
-+	onfi->fast_tCAD = le16_to_cpu(p->nvddr_nvddr2_features) & BIT(0);
- 	onfi->sdr_timing_modes = le16_to_cpu(p->sdr_timing_modes);
--	if (p->features & ONFI_FEATURE_NV_DDR)
--		onfi->nvddr_timing_modes = p->nvddr_timing_modes;
-+	if (le16_to_cpu(p->features) & ONFI_FEATURE_NV_DDR)
-+		onfi->nvddr_timing_modes = le16_to_cpu(p->nvddr_timing_modes);
- 	onfi->vendor_revision = le16_to_cpu(p->vendor_revision);
- 	memcpy(onfi->vendor, p->vendor, sizeof(p->vendor));
- 	chip->parameters.onfi = onfi;
+diff --git a/drivers/mtd/nand/raw/arasan-nand-controller.c b/drivers/mtd/nand/raw/arasan-nand-controller.c
+index 6e8d33173c6b..2bb62d193b78 100644
+--- a/drivers/mtd/nand/raw/arasan-nand-controller.c
++++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
+@@ -144,7 +144,7 @@ struct anfc_op {
+  * @rb:			Ready-busy line
+  * @page_sz:		Register value of the page_sz field to use
+  * @clk:		Expected clock frequency to use
+- * @timings:		Data interface timing mode to use
++ * @data_iface:		Data interface timing mode to use
+  * @ecc_conf:		Hardware ECC configuration value
+  * @strength:		Register value of the ECC strength
+  * @raddr_cycles:	Row address cycle information
+@@ -164,7 +164,7 @@ struct anand {
+ 	unsigned int rb;
+ 	unsigned int page_sz;
+ 	unsigned long clk;
+-	u32 timings;
++	u32 data_iface;
+ 	u32 ecc_conf;
+ 	u32 strength;
+ 	u16 raddr_cycles;
+@@ -331,7 +331,7 @@ static int anfc_select_target(struct nand_chip *chip, int target)
+ 	anfc_assert_cs(nfc, nfc_cs_idx);
+ 
+ 	/* Update the controller timings and the potential ECC configuration */
+-	writel_relaxed(anand->timings, nfc->base + DATA_INTERFACE_REG);
++	writel_relaxed(anand->data_iface, nfc->base + DATA_INTERFACE_REG);
+ 
+ 	/* Update clock frequency */
+ 	if (nfc->cur_clk != anand->clk) {
+@@ -970,11 +970,11 @@ static int anfc_setup_interface(struct nand_chip *chip, int target,
+ 		return 0;
+ 
+ 	if (nand_interface_is_sdr(conf))
+-		anand->timings = DIFACE_SDR |
+-				 DIFACE_SDR_MODE(conf->timings.mode);
++		anand->data_iface = DIFACE_SDR |
++				    DIFACE_SDR_MODE(conf->timings.mode);
+ 	else
+-		anand->timings = DIFACE_NVDDR |
+-				 DIFACE_DDR_MODE(conf->timings.mode);
++		anand->data_iface = DIFACE_NVDDR |
++				    DIFACE_DDR_MODE(conf->timings.mode);
+ 
+ 	anand->clk = ANFC_XLNX_SDR_DFLT_CORE_CLK;
+ 
 -- 
 2.27.0
 
