@@ -2,86 +2,84 @@ Return-Path: <SRS0=eog2=KW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 236FCC4707F
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 May 2021 11:08:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35080C4707F
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 May 2021 13:02:02 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E050C61028
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 May 2021 11:08:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E050C61028
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	by mail.kernel.org (Postfix) with ESMTPS id DC2A861132
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 May 2021 13:02:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DC2A861132
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:CC:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=IgY553xIWMtVla9MTWanKNl6Gc8VXbGwiz/ARMEcYiA=; b=LK6alc6+gvfWr74f+JJthrPQkI
-	DFtymhbQDHivWUobOqCB3KG38aj7t3WqYRiFAJ33SDFAy3n3KJX1W/sDR2WH5vbbIW4RJsZ5w5BKO
-	Ibg3cNt7XY4JE0sd6N8oZ/SRlgJuNeI9/fPJcGf6MqLXfwESiKCbjmLv5HkEJso2KeZAo/yRa8xip
-	6CGzKxYMN6PF+H+NI/KoP5Cz9NSM7DoF6TYiTZc4QBD8E9SENBYrEvBg5rTBTnz7SOO1/1LvttJaY
-	wP9bBjshiCzQjrYefXHgY4ZTosPC1yH2NRdoU7FAhfuv6GvbrvGKwDvcdn6McL7OrK5b0d9Rfdq4+
-	WrEMEYsg==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=4OrFMiMgbgy5oPsR+UQTQUJwGw6SKCuEk8RM9QjQd64=; b=hobtP2HtO4pgek
+	1VIsQCX4j2rlQPpUT2sFv6pLWbqaiY77LgQ7llACfu3vi9mt0zTHZ8zAFPywAurdJtcz4LDqgWVbK
+	2BTlJZIAkUAvG+V+S5JIQR1Fvy3j+0n+ZPbKDMyBh3yMaSAeQnjLPaPLlwj0shd8O0RoNRFAWAKXz
+	gdCnQLCNka0FAmHhn8CQOrqRZNta32NQ7ZhKjM4EEEudsPgJu3YGOM1p65V6gYcjW+fFYYv9To02t
+	8FZgO5OPfq0QN2MYPW9fu4smOmbhTeGg7+HWoghCQAjvdjpycKy9Ee9iZEgrLlyJZAxDCnxfKUCAd
+	LZsZN9kSi5Qw0fCShdCw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lmDqy-0055bj-Mp; Thu, 27 May 2021 11:07:04 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1lmFdE-005yvS-5s; Thu, 27 May 2021 13:01:00 +0000
+Received: from mail-wr1-x432.google.com ([2a00:1450:4864:20::432])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lmDqa-0055KG-5d
- for linux-mtd@lists.infradead.org; Thu, 27 May 2021 11:06:42 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14RB6Rj5073201;
- Thu, 27 May 2021 06:06:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1622113587;
- bh=MfrRac4mtVSD8QT/fa+ZLUbYoVYY1fgGCoBpxzq96hQ=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=GRm1tsAQG0iAfSLuH1jx7/lnr9FjzsZHN3BCCy3Z+WRFT3m1gD8z36y9ktwrFV1nr
- WEjerWGHUihWNO8u8SCYMHo21H7MNC7FCodX112957fiRcvSlKb8XD30tuVixa34eP
- os6jskwg/Eh/S7rvK/nDq9s+/SwdQzVGusddDkMY=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14RB6RqP090457
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 27 May 2021 06:06:27 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 27
- May 2021 06:06:27 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 27 May 2021 06:06:27 -0500
-Received: from [10.250.234.148] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14RB6NKd081760;
- Thu, 27 May 2021 06:06:24 -0500
-Subject: Re: [PATCH v5 3/6] mtd: spi-nor: spansion: Add support for Read/Write
- Any Register
-To: <tkuw584924@gmail.com>, <linux-mtd@lists.infradead.org>
-CC: <tudor.ambarus@microchip.com>, <miquel.raynal@bootlin.com>,
- <richard@nod.at>, <p.yadav@ti.com>, <Bacem.Daassi@infineon.com>, Takahiro
- Kuwano <Takahiro.Kuwano@infineon.com>
-References: <cover.1619504535.git.Takahiro.Kuwano@infineon.com>
- <55919d6bce07a5b534edef10b56a6c1b3fecae9d.1619504535.git.Takahiro.Kuwano@infineon.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <a5736c3f-d49e-2130-44e5-7dd8b4db21f4@ti.com>
-Date: Thu, 27 May 2021 16:36:22 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ id 1lmFcj-005ye0-Nf
+ for linux-mtd@lists.infradead.org; Thu, 27 May 2021 13:00:31 +0000
+Received: by mail-wr1-x432.google.com with SMTP id n2so4718613wrm.0
+ for <linux-mtd@lists.infradead.org>; Thu, 27 May 2021 06:00:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=TjqCwbCng4BjXEIHwnyVQf1iUW1kcxhloifFxwiPLg8=;
+ b=ADyYWhMX2cKs1hfBEzE9Hz+6NBGszX0pWieIJHlSnZ7Gb3rVW8AiJZuZRzwQ+7Dnv/
+ s3Oy1sLCFVe1B+E/aTy2JCfkcKI4VfaSrZBT5tdNYPmdBEQUMUA0kiKRWX8+FXtQ/Qrm
+ ZuGyTazGwNrDbfyJqSGO4gM5IwOrIHvaZaKrabuajpDI8f/Zy24eUsP6wxElWyxn6OTj
+ 5vPukCsq5N4+oBUcmiZunvJkFmqHcDCYK92gtnLrjvwxpjZks7BjGWndF5tI5dGRE55T
+ 1leBKdwVphDbWEGoOyIu+umWXiBFHTk9A7+GfgTpxzsfgZrj5jXswYAPeFWuZNDKIcKb
+ 8wxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=TjqCwbCng4BjXEIHwnyVQf1iUW1kcxhloifFxwiPLg8=;
+ b=uh0j70rDfdOHyCrjHAnzVQMApNtvi+iE7Xwmc2W7dnREMCrmXDfhec8X2JnkWNs92r
+ olWTau9QhYA9PapyuTeDp8fe1d7Um3fEjRsil31aoTLY6/RQjzpofpUdR9bR9erWIC0b
+ pfQoqYE0mZj3xpgMCrA424BE6uEi85YtGXqxR21YrAz08WVvcYkjBAgJOQEaOXAUDpPZ
+ 5OJhSATRNcjjU1nnsJottYzHBaaJcF7gMTIqU0aJALKYG1PGi8q3nyj/Ymz7/07vWd9s
+ sSwWkE1hQBdXTIEKAHInTY2WHlgk6WOQYhNxQ756YS+hyiu9W5vI1K8OQ4pTjnPh6p4w
+ JS9g==
+X-Gm-Message-State: AOAM533gMEDCAH62Mox8nGe8lKPyx/RmKzz0zZgeTWYEa8y/u2MAMtz8
+ REK/Z75XSUpZ9+2xfwqd9vZutUoWv0tKrYwT2fbUj2HQNnv7jNWA
+X-Google-Smtp-Source: ABdhPJzSb9oL45zpWnB8l9ivXXNKad8DeBEuQDtzE2zfZSvYwrZlgpkmHhG2No9ghmGvBe7Xa5CsqaIIeJWBUBQrh80=
+X-Received: by 2002:adf:f751:: with SMTP id z17mr3236441wrp.150.1622120427803; 
+ Thu, 27 May 2021 06:00:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <55919d6bce07a5b534edef10b56a6c1b3fecae9d.1619504535.git.Takahiro.Kuwano@infineon.com>
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210527084548.208429-1-miquel.raynal@bootlin.com>
+In-Reply-To: <20210527084548.208429-1-miquel.raynal@bootlin.com>
+From: jorge courett <jorge.courett@gmail.com>
+Date: Thu, 27 May 2021 10:00:16 -0300
+Message-ID: <CAFh6nDCXu-Sc65X8XZRzLdB28iFQQWkiCvZaTtvB8PFyVWC5yg@mail.gmail.com>
+Subject: Re: [PATCH] mtd: rawnand: arasan: Use the right DMA mask
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org, 
+ Michal Simek <monstr@monstr.eu>, Naga Sureshkumar Relli <nagasure@xilinx.com>, 
+ Amit Kumar Mahapatra <akumarma@xilinx.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210527_040640_393390_DF59A1AF 
-X-CRM114-Status: GOOD (  28.17  )
+X-CRM114-CacheID: sfid-20210527_060029_846551_E735AA09 
+X-CRM114-Status: GOOD (  16.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,190 +96,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+On Thu, May 27, 2021 at 5:45 AM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+>
+> Xilinx ZynqMP SoC and the Arasan controller support 64-bit DMA
+> addressing. Define the right mask otherwise the default is 32
+> and some accesses may overflow the default mask.
+>
+> Reported-by: Jorge Courett <jorge.courett@gmail.com>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-On 4/27/21 12:38 PM, tkuw584924@gmail.com wrote:
-> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-> 
-> Some of Spansion/Cypress chips support Read/Write Any Register commands.
-> These commands are mainly used to write volatile registers and access to
-> the registers in second and subsequent die for multi-die package parts.
-> 
-> The Read Any Register instruction (65h) is followed by register address
-> and dummy cycles, then the selected register byte is returned.
-> 
-> The Write Any Register instruction (71h) is followed by register address
-> and register byte to write.
-> 
-> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-> Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+Tested-by: Jorge Courett <jorge.courett@gmail.com>
+>
 > ---
-> Changes in v5:
->   - Fix 'if (ret == 1)' to 'if (ret < 0)' in spansion_read_any_reg()
-> 
-> Changes in v4:
->   - Fix dummy cycle calculation in spansion_read_any_reg()
->   - Modify comment for spansion_write_any_reg()
->   
-> Changes in v3:
->   - Cleanup implementation
-> 
->  drivers/mtd/spi-nor/spansion.c | 106 +++++++++++++++++++++++++++++++++
->  1 file changed, 106 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-> index b0c5521c1e27..436db8933dcf 100644
-> --- a/drivers/mtd/spi-nor/spansion.c
-> +++ b/drivers/mtd/spi-nor/spansion.c
-> @@ -19,6 +19,112 @@
->  #define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS	0
->  #define SPINOR_OP_CYPRESS_RD_FAST		0xee
->  
-> +/**
-> + * spansion_read_any_reg() - Read Any Register.
-> + * @nor:	pointer to a 'struct spi_nor'
-> + * @reg_addr:	register address
-> + * @reg_dummy:	number of dummy cycles for register read
-> + * @reg_val:	pointer to a buffer where the register value is copied into
-> + *
-> + * Return: 0 on success, -errno otherwise.
-> + */
-> +static int spansion_read_any_reg(struct spi_nor *nor, u32 reg_addr,
-> +				 u8 reg_dummy, u8 *reg_val)
-> +{
-> +	ssize_t ret;
+>  drivers/mtd/nand/raw/arasan-nand-controller.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/drivers/mtd/nand/raw/arasan-nand-controller.c b/drivers/mtd/nand/raw/arasan-nand-controller.c
+> index 97e5a336a760..6e8d33173c6b 100644
+> --- a/drivers/mtd/nand/raw/arasan-nand-controller.c
+> +++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
+> @@ -1398,6 +1398,10 @@ static int anfc_probe(struct platform_device *pdev)
+>         if (ret)
+>                 goto disable_controller_clk;
+>
+> +       ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(64));
+> +       if (ret)
+> +               return ret;
 > +
-> +	if (nor->spimem) {
-> +		struct spi_mem_op op =
-> +			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RD_ANY_REG, 0),
-> +				   SPI_MEM_OP_ADDR(nor->addr_width, reg_addr, 0),
-> +				   SPI_MEM_OP_DUMMY(reg_dummy, 0),
-> +				   SPI_MEM_OP_DATA_IN(1, reg_val, 0));
-
-This isn't compatible with DDR mode. We should able to use
-spansion_read_any_reg() helper in place of some of the open coding being
-done today in spi_nor_cypress_octal_dtr_enable(). Same applies for
-spansion_write_any_reg().
-
-> +
-> +		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
-> +
-
-
-> +		op.dummy.nbytes = (reg_dummy * op.dummy.buswidth) / 8;
-> +		if (spi_nor_protocol_is_dtr(nor->reg_proto))
-> +			op.dummy.nbytes *= 2;
-
-spi_nor_spimem_setup_op() should care of above right?
-
-> +
-> +		ret = spi_mem_exec_op(nor->spimem, &op);
-
-		return spi_mem_exec_op(nor->spimem, &op);
-
-Thus avoid extra level indentation below.
-
-> +	} else {
-> +		enum spi_nor_protocol proto = nor->read_proto;
-> +		u8 opcode = nor->read_opcode;
-> +		u8 dummy = nor->read_dummy;
-> +
-> +		nor->read_opcode = SPINOR_OP_RD_ANY_REG;
-> +		nor->read_dummy = reg_dummy;
-> +		nor->read_proto = nor->reg_proto;
-> +
-> +		ret = nor->controller_ops->read(nor, reg_addr, 1, reg_val);
-> +
-> +		nor->read_opcode = opcode;
-> +		nor->read_dummy = dummy;
-> +		nor->read_proto = proto;
-> +
-> +		if (ret < 0)
-> +			return ret;
-> +		if (ret != 1)
-> +			return -EIO;
-> +
-
-
-> +		ret = 0;
-
-		return 0;
-
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +/**
-> + * spansion_write_any_reg() - Write Any Register.
-> + * @nor:	pointer to a 'struct spi_nor'
-> + * @reg_addr:	register address (should be a volatile register)
-
-
-To be safe, lets explicitly reject writes to non-volatile register
-addresses.
-
-> + * @reg_val:	register value to be written
-> + *
-> + * Volatile register write will be effective immediately after the operation so
-> + * this function does not poll the status.
-> + *
-> + * Return: 0 on success, -errno otherwise.
-> + */
-> +static int spansion_write_any_reg(struct spi_nor *nor, u32 reg_addr, u8 reg_val)
-> +{
-> +	ssize_t ret;
-> +
-> +	ret = spi_nor_write_enable(nor);
-> +	if (ret)
-> +		return ret;
-
-
-Hmm, I don't see spi_nor_write_disable().
-
-Either both spi_nor_write_enable() and spi_nor_write_disable() should be
-responsibility of caller or both needs to be taken care of here.
-
-And the same needs to be documented in the function description
-
-> +
-> +	if (nor->spimem) {
-> +		struct spi_mem_op op =
-> +			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 0),
-> +				   SPI_MEM_OP_ADDR(nor->addr_width, reg_addr, 0),
-> +				   SPI_MEM_OP_NO_DUMMY,
-> +				   SPI_MEM_OP_DATA_OUT(1, &reg_val, 0));
-> +
-> +		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
-> +
-> +		ret = spi_mem_exec_op(nor->spimem, &op);
-> +	} else {
-> +		enum spi_nor_protocol proto = nor->write_proto;
-> +		u8 opcode = nor->program_opcode;
-> +
-> +		nor->program_opcode = SPINOR_OP_WR_ANY_REG;
-> +		nor->write_proto = nor->reg_proto;
-> +
-> +		ret = nor->controller_ops->write(nor, reg_addr, 1, &reg_val);
-> +
-> +		nor->program_opcode = opcode;
-> +		nor->write_proto = proto;
-> +
-> +		if (ret < 0)
-> +			return ret;
-> +		if (ret != 1)
-> +			return -EIO;
-> +
-> +		ret = 0;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
->  /**
->   * spi_nor_cypress_octal_dtr_enable() - Enable octal DTR on Cypress flashes.
->   * @nor:		pointer to a 'struct spi_nor'
-> 
+>         ret = anfc_parse_cs(nfc);
+>         if (ret)
+>                 goto disable_bus_clk;
+> --
+> 2.27.0
+>
 
 ______________________________________________________
 Linux MTD discussion mailing list
