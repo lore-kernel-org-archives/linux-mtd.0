@@ -2,84 +2,86 @@ Return-Path: <SRS0=eog2=KW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35080C4707F
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 May 2021 13:02:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D31AC4707F
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 May 2021 13:32:02 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DC2A861132
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 May 2021 13:02:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DC2A861132
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 40B9661059
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 May 2021 13:32:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 40B9661059
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4OrFMiMgbgy5oPsR+UQTQUJwGw6SKCuEk8RM9QjQd64=; b=hobtP2HtO4pgek
-	1VIsQCX4j2rlQPpUT2sFv6pLWbqaiY77LgQ7llACfu3vi9mt0zTHZ8zAFPywAurdJtcz4LDqgWVbK
-	2BTlJZIAkUAvG+V+S5JIQR1Fvy3j+0n+ZPbKDMyBh3yMaSAeQnjLPaPLlwj0shd8O0RoNRFAWAKXz
-	gdCnQLCNka0FAmHhn8CQOrqRZNta32NQ7ZhKjM4EEEudsPgJu3YGOM1p65V6gYcjW+fFYYv9To02t
-	8FZgO5OPfq0QN2MYPW9fu4smOmbhTeGg7+HWoghCQAjvdjpycKy9Ee9iZEgrLlyJZAxDCnxfKUCAd
-	LZsZN9kSi5Qw0fCShdCw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:CC:To:Subject:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=ZI74UoHNqAXtNAgJsia3FDXjARs+OdF5pjZSCzM9QCI=; b=lR3c1gv+HhQhWQ2b5WaIY3EqXg
+	S4+S7VqHXIo8bwXYxO7nfuknbpXL2JTjiGz64CIzShNuiyvEhigYOOMAsS9rFIm6GZ/pwx67TgqpW
+	bcUluU227P1wFSb/t2CR2GeNk2ERX4+q+db+d8b1Zjpyl/v/RXcJa8V7vOQdy9JWYla+ORyTPpg5o
+	Bq6459qzuUHr6zUIa0bQV0j/82Pb5GlnDBhviA0ex2GYvFw1fSPxLM3vIpv/LE/SKWhKdFCJp/jtD
+	ixmGQPR62WIlYlGCqXjWMMQGpogNq2vQom3UQvNy5KlGD6q27GHK35oPFf41iIicSCKUagWs8ca0H
+	b61xu8DA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lmFdE-005yvS-5s; Thu, 27 May 2021 13:01:00 +0000
-Received: from mail-wr1-x432.google.com ([2a00:1450:4864:20::432])
+	id 1lmG69-006Hvy-Ie; Thu, 27 May 2021 13:30:54 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lmFcj-005ye0-Nf
- for linux-mtd@lists.infradead.org; Thu, 27 May 2021 13:00:31 +0000
-Received: by mail-wr1-x432.google.com with SMTP id n2so4718613wrm.0
- for <linux-mtd@lists.infradead.org>; Thu, 27 May 2021 06:00:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=TjqCwbCng4BjXEIHwnyVQf1iUW1kcxhloifFxwiPLg8=;
- b=ADyYWhMX2cKs1hfBEzE9Hz+6NBGszX0pWieIJHlSnZ7Gb3rVW8AiJZuZRzwQ+7Dnv/
- s3Oy1sLCFVe1B+E/aTy2JCfkcKI4VfaSrZBT5tdNYPmdBEQUMUA0kiKRWX8+FXtQ/Qrm
- ZuGyTazGwNrDbfyJqSGO4gM5IwOrIHvaZaKrabuajpDI8f/Zy24eUsP6wxElWyxn6OTj
- 5vPukCsq5N4+oBUcmiZunvJkFmqHcDCYK92gtnLrjvwxpjZks7BjGWndF5tI5dGRE55T
- 1leBKdwVphDbWEGoOyIu+umWXiBFHTk9A7+GfgTpxzsfgZrj5jXswYAPeFWuZNDKIcKb
- 8wxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=TjqCwbCng4BjXEIHwnyVQf1iUW1kcxhloifFxwiPLg8=;
- b=uh0j70rDfdOHyCrjHAnzVQMApNtvi+iE7Xwmc2W7dnREMCrmXDfhec8X2JnkWNs92r
- olWTau9QhYA9PapyuTeDp8fe1d7Um3fEjRsil31aoTLY6/RQjzpofpUdR9bR9erWIC0b
- pfQoqYE0mZj3xpgMCrA424BE6uEi85YtGXqxR21YrAz08WVvcYkjBAgJOQEaOXAUDpPZ
- 5OJhSATRNcjjU1nnsJottYzHBaaJcF7gMTIqU0aJALKYG1PGi8q3nyj/Ymz7/07vWd9s
- sSwWkE1hQBdXTIEKAHInTY2WHlgk6WOQYhNxQ756YS+hyiu9W5vI1K8OQ4pTjnPh6p4w
- JS9g==
-X-Gm-Message-State: AOAM533gMEDCAH62Mox8nGe8lKPyx/RmKzz0zZgeTWYEa8y/u2MAMtz8
- REK/Z75XSUpZ9+2xfwqd9vZutUoWv0tKrYwT2fbUj2HQNnv7jNWA
-X-Google-Smtp-Source: ABdhPJzSb9oL45zpWnB8l9ivXXNKad8DeBEuQDtzE2zfZSvYwrZlgpkmHhG2No9ghmGvBe7Xa5CsqaIIeJWBUBQrh80=
-X-Received: by 2002:adf:f751:: with SMTP id z17mr3236441wrp.150.1622120427803; 
- Thu, 27 May 2021 06:00:27 -0700 (PDT)
+ id 1lmFwi-006CtP-VJ
+ for linux-mtd@lists.infradead.org; Thu, 27 May 2021 13:21:10 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14RDL1KK075748;
+ Thu, 27 May 2021 08:21:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1622121661;
+ bh=PlOJYf/dA5U5QB+68fwfBVApJMfsFzevQvhmOuhgpcw=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=rZsH+2BHKexWmpAy2glgeFQUZKHp6B6NuqmUSuinYFvyEHzZixCdnK0Vo5r98n5ez
+ SIx0cKjVQep7S8PKiRIvbdx6fPGSHOtL5ZyQLU2Ns6+CuXz5ihz47Ak5QxQn0Zf91a
+ aAEg78zhyayZkqzjBXZ8pnxwfKzs0jvgZ7viUJuM=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14RDL18e002666
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Thu, 27 May 2021 08:21:01 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 27
+ May 2021 08:21:00 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 27 May 2021 08:21:01 -0500
+Received: from [10.250.234.148] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14RDKvbN055454;
+ Thu, 27 May 2021 08:20:58 -0500
+Subject: Re: [PATCH v5 6/6] mtd: spi-nor: spansion: Add s25hl-t/s25hs-t IDs
+ and fixups
+To: <tkuw584924@gmail.com>, <linux-mtd@lists.infradead.org>
+CC: <tudor.ambarus@microchip.com>, <miquel.raynal@bootlin.com>,
+ <richard@nod.at>, <p.yadav@ti.com>, <Bacem.Daassi@infineon.com>, Takahiro
+ Kuwano <Takahiro.Kuwano@infineon.com>
+References: <cover.1619504535.git.Takahiro.Kuwano@infineon.com>
+ <28d1a4015f37156a8bebe88959ea643e64b030f8.1619504535.git.Takahiro.Kuwano@infineon.com>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <6b329250-93f4-bbbe-048f-696de9436342@ti.com>
+Date: Thu, 27 May 2021 18:50:57 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210527084548.208429-1-miquel.raynal@bootlin.com>
-In-Reply-To: <20210527084548.208429-1-miquel.raynal@bootlin.com>
-From: jorge courett <jorge.courett@gmail.com>
-Date: Thu, 27 May 2021 10:00:16 -0300
-Message-ID: <CAFh6nDCXu-Sc65X8XZRzLdB28iFQQWkiCvZaTtvB8PFyVWC5yg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: rawnand: arasan: Use the right DMA mask
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org, 
- Michal Simek <monstr@monstr.eu>, Naga Sureshkumar Relli <nagasure@xilinx.com>, 
- Amit Kumar Mahapatra <akumarma@xilinx.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+In-Reply-To: <28d1a4015f37156a8bebe88959ea643e64b030f8.1619504535.git.Takahiro.Kuwano@infineon.com>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210527_060029_846551_E735AA09 
-X-CRM114-Status: GOOD (  16.49  )
+X-CRM114-CacheID: sfid-20210527_062109_169277_E6FD6EE4 
+X-CRM114-Status: GOOD (  29.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,39 +98,121 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, May 27, 2021 at 5:45 AM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->
-> Xilinx ZynqMP SoC and the Arasan controller support 64-bit DMA
-> addressing. Define the right mask otherwise the default is 32
-> and some accesses may overflow the default mask.
->
-> Reported-by: Jorge Courett <jorge.courett@gmail.com>
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-Tested-by: Jorge Courett <jorge.courett@gmail.com>
->
+
+On 4/27/21 12:39 PM, tkuw584924@gmail.com wrote:
+> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+> 
+> The S25HL-T/S25HS-T family is the Cypress Semper Flash with Quad SPI.
+> 
+> For the single-die package parts (512Mb and 1Gb), only bottom 4KB and
+> uniform sector sizes are supported. For the multi-die package parts (2Gb),
+> only uniform sector sizes is supprted. This is due to missing or incorrect
+> entries in SMPT. Fixup for other sector sizes configurations will be
+> followed up as needed.
+> 
+> Tested on Xilinx Zynq-7000 FPGA board.
+> 
+> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+> Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 > ---
->  drivers/mtd/nand/raw/arasan-nand-controller.c | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/drivers/mtd/nand/raw/arasan-nand-controller.c b/drivers/mtd/nand/raw/arasan-nand-controller.c
-> index 97e5a336a760..6e8d33173c6b 100644
-> --- a/drivers/mtd/nand/raw/arasan-nand-controller.c
-> +++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
-> @@ -1398,6 +1398,10 @@ static int anfc_probe(struct platform_device *pdev)
->         if (ret)
->                 goto disable_controller_clk;
->
-> +       ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(64));
-> +       if (ret)
-> +               return ret;
+> Changes in v5:
+>   - Add NO_CHIP_ERASE flag to S25HL02GT and S25HS02GT
+> 
+> Changes in v4:
+>   - Merge block comments about SMPT in s25hx_t_post_sfdp_fixups()
+>   - Remove USE_CLSR flags from S25HL02GT and S25HS02GT
+> 
+> Changes in v3:
+>   - Remove S25HL256T and S25HS256T
+>   - Add S25HL02GT and S25HS02GT 
+>   - Add support for multi-die package parts support
+>   - Remove erase_map fix for top/split sector layout
+>   - Set ECC data unit size (16B) to writesize 
+> 
+>  drivers/mtd/spi-nor/spansion.c | 117 +++++++++++++++++++++++++++++++++
+>  1 file changed, 117 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+> index 79d3249ed0aa..b3b006874b4f 100644
+> --- a/drivers/mtd/spi-nor/spansion.c
+> +++ b/drivers/mtd/spi-nor/spansion.c
+> @@ -229,6 +229,103 @@ static int spansion_mdp_ready(struct spi_nor *nor, u8 reg_dummy, u32 die_size)
+>  	return 1;
+>  }
+>  
+> +static int s25hx_t_quad_enable(struct spi_nor *nor)
+> +{
+> +	return spansion_quad_enable_volatile(nor, 0, SZ_128M);
+
+Number of dies should be part of struct flash_info
+Die size can then be derived from total_size / die_num
+
+
+> +}
 > +
->         ret = anfc_parse_cs(nfc);
->         if (ret)
->                 goto disable_bus_clk;
-> --
-> 2.27.0
->
+> +static int s25hx_t_mdp_ready(struct spi_nor *nor)
+> +{
+> +	return spansion_mdp_ready(nor, 0, SZ_128M);
+
+Hmm, is it necessary to poll second die if writes/erases were targeted
+to first die only?
+
+Please split multi die support into a separate series. SPI NOR core
+should be aware of multiple dies and thus call poll on each of the dies
+separately.
+
+This will also allow base S25hx support to be accepted faster.
+
+> +}
+> +
+> +static int
+> +s25hx_t_post_bfpt_fixups(struct spi_nor *nor,
+> +			 const struct sfdp_parameter_header *bfpt_header,
+> +			 const struct sfdp_bfpt *bfpt,
+> +			 struct spi_nor_flash_parameter *params)
+> +{
+> +	int ret;
+> +	u32 addr;
+> +	u8 cfr3v;
+> +
+> +	ret = spi_nor_set_4byte_addr_mode(nor, true);
+> +	if (ret)
+> +		return ret;
+> +	nor->addr_width = 4;
+
+Don't we need to check if flash size is actual >16M before enabling 4
+byte addressing?
+
+> +
+> +	/* Replace Quad Enable with volatile version */
+> +	params->quad_enable = s25hx_t_quad_enable;
+> +
+> +	/*
+> +	 * The page_size is set to 512B from BFPT, but it actually depends on
+> +	 * the configuration register. Look up the CFR3V and determine the
+> +	 * page_size. For multi-die package parts, use 512B only when the all
+> +	 * dies are configured to 512B buffer.
+> +	 */
+> +	for (addr = 0; addr < params->size; addr += SZ_128M) {
+> +		ret = spansion_read_any_reg(nor,
+> +					    addr + SPINOR_REG_CYPRESS_CFR3V, 0,
+> +					    &cfr3v);
+> +		if (ret)
+> +			return ret;
+> +
+> +		if (!(cfr3v & SPINOR_REG_CYPRESS_CFR3V_PGSZ)) {
+> +			params->page_size = 256;
+> +			return 0;
+> +		}
+> +	}
+> +	params->page_size = 512;
+> +
+> +	return 0;
+> +}
+> +
+Regards
+Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
