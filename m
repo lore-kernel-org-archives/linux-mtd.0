@@ -2,21 +2,20 @@ Return-Path: <SRS0=eog2=KW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38840C4707F
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 May 2021 13:59:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD32DC47089
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 May 2021 14:06:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 01F08610A0
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 May 2021 13:59:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 01F08610A0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=foss.st.com
+	by mail.kernel.org (Postfix) with ESMTPS id 72596613CA
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 May 2021 14:06:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72596613CA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -25,73 +24,65 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:From:References:CC:To:Subject:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=fVQkxEHlB3Of/9y1xycFvapCpxs0OswL45H+7Dgxva8=; b=lcQV3jursXF14qu2EL2kygYHBo
-	58XS8m/XqeUDe1QlBna8wLZEt6VaRB3gczBJlFzs1wbYtAiV5Y/Eo8KUYS/0nBwlPd45H3OSviSJ6
-	sN5P5Hx7B7U58Gc51dDhWziYecpYWIDHaZfETQADU+4PJy4LoIlnnUcHC0S7BVopl/mgDT2Akv4qk
-	v6rA25DwG49vOy2XZkLYosLwcSv76UjXZbUwV2RDklt5l8KJ/Xn4v2vTaJBLZM4aVHOMCaCaWba2d
-	AvAymCwMSdKdSvbV2GqXvG0eMmRJPGnm+uQbJcQBbwk5oS5+FAXIHMeDgkoKRqAnQJKNizxTgC8/m
-	UkcC/UPw==;
+	bh=kHGY3cO0U18DcFmBfqwxyssDZm2SUUL/tsO8+3A3IXo=; b=VX/RI0CvY5FK86DdTHq156UUIN
+	u4poBYxlNoiBXWQo/oO55gTIMJKfsbFOBxsWqKV5g8IvGhy0yOeX6Ls95UMBjehTqrzBkJGP/f+Ev
+	0sGoQRlge7vhoulK1kDvjp79Gd9ngOuH7BKuMPlx8X2Sb6UhIUNX9krn0md2daIHl7vg5Ze2yW7hY
+	3vGPZDtRMUO9K3kwgg8dxmO2Ywjf7qaXFfJFo4Mhb+9x/SvAnin7k1rl7OfON40+MtwJxiLGNhgKJ
+	hT5tOwixGiUKwY4S7KUNv47nI7ObsU4GhBxjyzXT3qnYA/VaeeCvSbtVODcDe5cNkTayPmZ7uSyw7
+	uItx8S7w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lmGWa-006V8L-Ma; Thu, 27 May 2021 13:58:13 +0000
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]
- helo=mx07-00178001.pphosted.com)
+	id 1lmGdP-006ZIT-Nk; Thu, 27 May 2021 14:05:16 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lmGP9-006R97-7j; Thu, 27 May 2021 13:50:33 +0000
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 14RDgLGR013480; Thu, 27 May 2021 15:50:26 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
- h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=Vvo4lmC0J+8Th7Lx+/tE/cI6WkohGoJEOy5+1hxoZ54=;
- b=2w7kU1wz6fEl5jbBTPmB5FhF0/iaP7K3N3mjGQ+m7HOIXNR0T1nhW6ytDEcYIdY9E5Bk
- ijMaU/XmQggmuR86nlIqgorOKd9tn1lKGvnRe1m1xENWs2DRbTrBfFyhpvdQ7KjpHKOh
- nodb//LT0fuTYVNz5RxGE3lIgLH3TsysHJOjWT8nBj52AOKNZeEuUIlkNtTseVUBp6q9
- 4POBk4pmR+xb6CXkcZk9ylgLCNj43XaFPQiI7j04WBFYdVKkxgA8mBmzcpPjNUt8Pt2y
- 11jbwWynch5DHZa08VDD4fHY0k15AKIRY9mRmvHLUJU/zsLEp0/E+V5sbbLS8tIMBufE uw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com with ESMTP id 38t0fr49qf-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 27 May 2021 15:50:26 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C4473100034;
- Thu, 27 May 2021 15:50:25 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A73EA228134;
- Thu, 27 May 2021 15:50:25 +0200 (CEST)
-Received: from lmecxl0573.lme.st.com (10.75.127.46) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 27 May
- 2021 15:50:24 +0200
-Subject: Re: mtd: spinand: add spi nand mtd resume handler
-To: Pratyush Yadav <p.yadav@ti.com>
-CC: Mark Brown <broonie@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Boris
- Brezillon <boris.brezillon@collabora.com>, <linux-mtd@lists.infradead.org>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- <linux-spi@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
- <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <christophe.kerello@foss.st.com>
-References: <20210526153016.32653-1-patrice.chotard@foss.st.com>
- <20210527100015.abxcroi23zyvcyzk@ti.com>
-From: Patrice CHOTARD <patrice.chotard@foss.st.com>
-Message-ID: <3baf8f02-f290-91d1-af56-62181651c61a@foss.st.com>
-Date: Thu, 27 May 2021 15:50:23 +0200
+ id 1lmGR1-006S4T-9w
+ for linux-mtd@lists.infradead.org; Thu, 27 May 2021 13:52:30 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14RDqMJ5090178;
+ Thu, 27 May 2021 08:52:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1622123542;
+ bh=XTZmP9tEveqM8Auq+PNXMuEcTQxDTgVtmt0dNu3wGBc=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=CputvJPEvDuAuhaIuhYdBlnRuBiNQWbxki8bHDZU+99KiXwYmXhgJ3MKMCn0xOiAN
+ K1FceqvxwWRXFYeOvZh2s6i174TiJv/GMwiR8zEM3nriwtSMklQGCkFbzNlF/snwEi
+ GiQm2rPpVIeDvH3DQgj7Hq8tawWN8CD31PLF0KN4=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14RDqMVA047756
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Thu, 27 May 2021 08:52:22 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 27
+ May 2021 08:52:22 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 27 May 2021 08:52:22 -0500
+Received: from [10.250.234.148] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14RDqJDg124767;
+ Thu, 27 May 2021 08:52:20 -0500
+Subject: Re: [PATCH] spi-nor: sfdp: Allow configuring unknown flashes using
+ SFDP
+To: Petr Malat <oss@malat.biz>, Pratyush Yadav <p.yadav@ti.com>
+CC: <linux-mtd@lists.infradead.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>
+References: <20210520160701.28176-1-oss@malat.biz>
+ <20210521095503.qw3aivg4zklupwcj@ti.com>
+ <20210521115350.GA7908@ntb.petris.klfree.czf>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <64dd1df6-0ace-702b-f205-a7c7d4d12697@ti.com>
+Date: Thu, 27 May 2021 19:22:19 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210527100015.abxcroi23zyvcyzk@ti.com>
+In-Reply-To: <20210521115350.GA7908@ntb.petris.klfree.czf>
 Content-Language: en-US
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391, 18.0.761
- definitions=2021-05-27_06:2021-05-26,
- 2021-05-27 signatures=0
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210527_065031_636177_BCA451CB 
-X-CRM114-Status: GOOD (  32.08  )
+X-CRM114-CacheID: sfid-20210527_065227_479087_015001AF 
+X-CRM114-Status: GOOD (  22.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,133 +99,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Pratyush
 
-On 5/27/21 12:00 PM, Pratyush Yadav wrote:
-> On 26/05/21 05:30PM, patrice.chotard@foss.st.com wrote:
->> From: Christophe Kerello <christophe.kerello@foss.st.com>
+
+On 5/21/21 5:23 PM, Petr Malat wrote:
+> Hi!
+> On Fri, May 21, 2021 at 03:25:05PM +0530, Pratyush Yadav wrote:
+>> On 20/05/21 06:07PM, Petr Malat wrote:
+>>> This change allows adding a support for flashes with correct SFDP
+>>> without recompilation of the kernel by setting sfdp-compatible property
+>>> in their node. Alternatively, sfdp_compatible module option can be used
+>>> to list JEDEC IDs of flashes, whose SFDP can be trusted. Star "*" can
+>>> be used to match all JEDEC IDs.
 >>
->> After power up, all SPI NAND's blocks are locked. Only read operations
->> are allowed, write and erase operations are forbidden.
->> The SPI NAND framework unlocks all the blocks during its initialization.
->>
->> During a standby low power, the memory is powered down, losing its
->> configuration.
->> During the resume, the QSPI driver state is restored but the SPI NAND
->> framework does not reconfigured the memory.
->>
->> This patch adds spi nand mtd PM handlers for resume ops.
->> SPI NAND resume op re-initializes SPI NAND flash to its probed state.
->>
->> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
->> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
->> ---
->>  drivers/mtd/nand/spi/core.c | 56 +++++++++++++++++++++++++++++++++++++
->>  1 file changed, 56 insertions(+)
->>
->> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
->> index 17f63f95f4a2..6abaf874eb3f 100644
->> --- a/drivers/mtd/nand/spi/core.c
->> +++ b/drivers/mtd/nand/spi/core.c
->> @@ -1074,6 +1074,61 @@ static int spinand_detect(struct spinand_device *spinand)
->>  	return 0;
->>  }
->>  
->> +static void spinand_mtd_resume(struct mtd_info *mtd)
->> +{
->> +	struct spinand_device *spinand = mtd_to_spinand(mtd);
->> +	struct nand_device *nand = mtd_to_nanddev(mtd);
->> +	struct device *dev = &spinand->spimem->spi->dev;
->> +	int ret, i;
->> +
->> +	ret = spinand_reset_op(spinand);
->> +	if (ret)
->> +		return;
->> +
->> +	ret = spinand_init_quad_enable(spinand);
->> +	if (ret) {
->> +		dev_err(dev,
->> +			"Failed to initialize the quad part (err = %d)\n",
->> +			ret);
->> +		return;
->> +	}
->> +
->> +	ret = spinand_upd_cfg(spinand, CFG_OTP_ENABLE, 0);
->> +	if (ret) {
->> +		dev_err(dev,
->> +			"Failed to updtae the OTP (err = %d)\n",
->> +			ret);
->> +		return;
->> +	}
+>> I have skimmed through the patch. Before I look at it more closely, I 
+>> want to understand the use case for this patch. Why would you not want 
+>> to recompile the kernel when adding support for new hardware? Do you 
+>> want the ability to support flashes on devices that have already been 
+>> deployed in the field? Is it something that comes up frequently?
+> In my case the kernel is loaded from a USB mass storage device, which
+> can be preproduced and on stock (with the kernel already on it). With
+> my patch I can change the flash vendor without the need of updating
+> the image on already existing USB mass storage devices.
 > 
-> Since you have reset the flash, this cache is invalid. You should reset 
-> the cache and re-populate it before using it in any way.
+> The patch is also useful for people who use distribution kernel as they
+> will not have to wait until (and if) the distribution updates it.
 
-I got your point, i will take it in account in v3 (v2 has already been send but need rework)
+Don't need separate DT property or cmdline argument. There is no way to
+know if the SFDP tables are 100% valid when kernel is working with a
+"generic flash".
+Flashes are often replaced with newer revisions of the part that may/may
+not have valid SFDP tables.
 
-> 
->> +
->> +	ret = spinand_manufacturer_init(spinand);
->> +	if (ret) {
->> +		dev_err(dev,
->> +			"Failed to initialize the SPI NAND chip (err = %d)\n",
->> +			ret);
->> +		return;
->> +	}
->> +
->> +	/* After power up, all blocks are locked, so unlock them here. */
->> +	for (i = 0; i < nand->memorg.ntargets; i++) {
->> +		ret = spinand_select_target(spinand, i);
->> +		if (ret) {
->> +			dev_err(dev,
->> +				"Failed to select the target (err = %d)\n",
->> +				ret);
->> +			return;
->> +		}
->> +
->> +		ret = spinand_lock_block(spinand, BL_ALL_UNLOCKED);
->> +		if (ret) {
->> +			dev_err(dev,
->> +				"Failed to unlock block (err = %d)\n",
->> +				ret);
->> +			return;
->> +		}
->> +	}
->> +}
->> +
-> 
-> Most of these seem to be copied from spinand_init(). I think it is 
-> better to create a common function that can be called from both 
-> spinand_init() and spinand_mtd_resume(). This way when someone adds 
-> something new to the init procedure, like support for some other modes, 
-> they won't have to remember to update it in two places.
+So just rely on SFDP, when no valid entry is found in the manufacturer's
+flash_info[] while printing out a warning to user that this is just best
+effort support.
 
-Agree, it was already part of the v2
+Regards
+Vignesh
 
-> 
->>  static int spinand_init(struct spinand_device *spinand)
->>  {
->>  	struct device *dev = &spinand->spimem->spi->dev;
->> @@ -1167,6 +1222,7 @@ static int spinand_init(struct spinand_device *spinand)
->>  	mtd->_block_isreserved = spinand_mtd_block_isreserved;
->>  	mtd->_erase = spinand_mtd_erase;
->>  	mtd->_max_bad_blocks = nanddev_mtd_max_bad_blocks;
->> +	mtd->_resume = spinand_mtd_resume;
-> 
-> Is it possible that the userspace can use this mtd device before the 
-> resume is finished? Is there a way to temporarily "pause" or unregister 
-> an mtd device?
 
-Honestly, i don't know.
-
-Thanks
-Patrice
-
-> 
->>  
->>  	if (nand->ecc.engine) {
->>  		ret = mtd_ooblayout_count_freebytes(mtd);
-> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
