@@ -2,64 +2,95 @@ Return-Path: <SRS0=eog2=KW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DD1EC47089
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 May 2021 16:42:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DE19C47089
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 May 2021 17:03:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 30C6F61184
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 May 2021 16:42:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 30C6F61184
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8B45B61028
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 May 2021 17:03:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B45B61028
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=malat.biz
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=1QpM5xK0WHYYegse4giNdGZPTRWMAIgFP5MumweBVd4=; b=IQtTtxNBVw+lEC23qap2hyHgzz
-	xEQ1RhDVAO5HiCG7yPaeRJnWvKX+Vgyt/Cne/VHw/45G40CDeatI5l/I+gClnhh6kAxu2Q83GTmuO
-	HcPIeFmZ0EFVUpjVc4Dh2WLzrT7NPM1fJ/hTxjSylDetcdlk0c42lZYPEnXlVSa+lNApoAmjDvu0R
-	AsWS9nEEYvfvqx359JGWnOkpW3M/0RqQbU9Q719J6Eirt5zYqOgCnjBgcrtvstVsHeFLBNQB0jfKa
-	jLUg9LfTL9o6e93VbOt25oDkDJXY+TBQU3QBULV0Q4nYttW830mKKSGGpfWkYr/atvhkc/k/l0N0u
-	TQcQahRQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=3+DBkpRNQkJ1T1oGmErEiC35BLcrHZRxRoF6djzoo+U=; b=2p4FGyUF6LMeId
+	GVVZmd/KhTpOsG4beQG2Upf5TEon7pKjWAN2zQBnZJOANbdjTu5HyPc8TeaXDXmhgdB9xeSXGjeeq
+	T13ij3o1tllNNkieU4DwP3vctSEiLcc3veKI/M75UoQjhHjY8E+HcyPBViVaFwKpYDIG91dkdCcXb
+	IPNyLpx5OSmtrN9viJAMThZNfFmqPPeVyy41T3YMtufdnSPgHs7YGgaQYwdyLpI6y6Dfj3Qln1GPz
+	olEyAqAu+9U3KVi0OeLJZ0fCXWR+Q8ztjEC3OrvBgO83i1r4PoB+4dtPvG12i7qGlpQijI6GAfcGp
+	lDOr2ruM63rndPuke80A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lmJ4N-007iaw-F4; Thu, 27 May 2021 16:41:15 +0000
-Received: from youngberry.canonical.com ([91.189.89.112])
+	id 1lmJPY-007toc-Lq; Thu, 27 May 2021 17:03:09 +0000
+Received: from mail-wm1-x32f.google.com ([2a00:1450:4864:20::32f])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lmHqV-007BS0-7c
- for linux-mtd@lists.infradead.org; Thu, 27 May 2021 15:22:52 +0000
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
- by youngberry.canonical.com with esmtpsa (TLS1.2) tls
- TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.93)
- (envelope-from <colin.king@canonical.com>)
- id 1lmHqT-0007O9-9F; Thu, 27 May 2021 15:22:49 +0000
-Subject: Re: [PATCH][next] mtd: rawnand: ensure return variable is initialized
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
- kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210527145048.795954-1-colin.king@canonical.com>
- <20210527170309.4d99bc31@xps13>
-From: Colin Ian King <colin.king@canonical.com>
-Message-ID: <06e72a95-1f01-f9b7-d172-51f22224a2a7@canonical.com>
-Date: Thu, 27 May 2021 16:22:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ id 1lmICE-007KGn-N3
+ for linux-mtd@lists.infradead.org; Thu, 27 May 2021 15:45:20 +0000
+Received: by mail-wm1-x32f.google.com with SMTP id
+ s5-20020a7bc0c50000b0290147d0c21c51so748207wmh.4
+ for <linux-mtd@lists.infradead.org>; Thu, 27 May 2021 08:45:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=malat-biz.20150623.gappssmtp.com; s=20150623;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=EqB3YzXc6NucoBaGbpaC1BiOPCwAoJHin9yTSAd+PX8=;
+ b=mCBrOwkzREeq3KXF/XyWX3gq5mP+iuLJYIR6+a4vicZTgS7pwklbtuviUUdtJXctIR
+ LU+I/gXxJSyohhQWJhITbcw1VcgK8JZ/0SmIkXd7Dpnn02kfaB3aW60GRnwukanjimUr
+ rnoHD8kgffXUw9XPiq+yGG74Ov3JEDgOddFcLJ+kFZsxh4AbNnAV9nuMGUcpeRgDduj6
+ to8rJAX7D19L9P9UpI2fp40SwuAebzIwEZGkxdsIy3f6Y4fJaHXQDbjknzel92/oVAQJ
+ FpX7kqPnmySSW3S6edX+19Bf+HMlmmSBGAvxEdiXFDQUdIrDfrHpPX2mvVU7JjTaVQfo
+ aC0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=EqB3YzXc6NucoBaGbpaC1BiOPCwAoJHin9yTSAd+PX8=;
+ b=ARTJiSBGxRtGdOOsRNAFeeTtZfsv3Xr8q9h22xStP2N7tWCkI35anTbTtHdEeh+C1H
+ XB+hCCNffcUl6cxvK42R+56MvzJq4/kEHtexGGclqtMBeYdqjEV3H+qWwXy33f/6kUpt
+ iEvcfAFSSRuHz8y2Uzt+k8/hD6yxA+nOh6te+OJ13macXJnUYI04CUu+K3DzNjip3qK1
+ +L7kr5N3OpmxJuez20ozhh/RqF444r1sDNFbTqbJUfLNfVkz3vEF58CTN2+qNl8fEO/2
+ sq6ZG+sLzFHI9sOYz3G/z+0WQWCNtSBUY0YJQeJ3D5az8FVcG/4F9u/yqkt/COOkw1fY
+ 69TA==
+X-Gm-Message-State: AOAM533sbIwRwFqxMFG7RGexUeqB+XZ0aB2WjZMNODsWROFPAwc1NDBe
+ vEUndK0IWJh724LDW7H3TSXPMQ==
+X-Google-Smtp-Source: ABdhPJwvE2UbFePXyarYXLaWMVK+xb89KVNNSB74DjxmigzJBh0bH3A/Kpd82bIFnesv6XiUdT8pmg==
+X-Received: by 2002:a7b:cf23:: with SMTP id m3mr9354498wmg.24.1622130315599;
+ Thu, 27 May 2021 08:45:15 -0700 (PDT)
+Received: from ntb.petris.klfree.czf (snat2.klfree.cz. [81.201.48.25])
+ by smtp.gmail.com with ESMTPSA id v3sm3948131wrr.19.2021.05.27.08.45.14
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 27 May 2021 08:45:14 -0700 (PDT)
+Date: Thu, 27 May 2021 17:45:08 +0200
+From: Petr Malat <oss@malat.biz>
+To: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Pratyush Yadav <p.yadav@ti.com>, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: Re: [PATCH] spi-nor: sfdp: Allow configuring unknown flashes using
+ SFDP
+Message-ID: <20210527151702.GA4807@ntb.petris.klfree.czf>
+References: <20210520160701.28176-1-oss@malat.biz>
+ <20210521095503.qw3aivg4zklupwcj@ti.com>
+ <20210521115350.GA7908@ntb.petris.klfree.czf>
+ <64dd1df6-0ace-702b-f205-a7c7d4d12697@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20210527170309.4d99bc31@xps13>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <64dd1df6-0ace-702b-f205-a7c7d4d12697@ti.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210527_082251_313162_28B5274B 
-X-CRM114-Status: GOOD (  22.49  )
+X-CRM114-CacheID: sfid-20210527_084518_869749_2C3A4DA8 
+X-CRM114-Status: GOOD (  29.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,50 +102,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMjcvMDUvMjAyMSAxNjowMywgTWlxdWVsIFJheW5hbCB3cm90ZToKPiBIaSBDb2xpbiwKPiAK
-PiBDb2xpbiBLaW5nIDxjb2xpbi5raW5nQGNhbm9uaWNhbC5jb20+IHdyb3RlIG9uIFRodSwgMjcg
-TWF5IDIwMjEKPiAxNTo1MDo0OCArMDEwMDoKPiAKPj4gRnJvbTogQ29saW4gSWFuIEtpbmcgPGNv
-bGluLmtpbmdAY2Fub25pY2FsLmNvbT4KPj4KPj4gQ3VycmVudGx5IHRoZXJlIGFyZSBjb3JuZXIg
-Y2FzZXMgd2hlcmUgc3BlY190aW1lcyBpcyBOVUxMIGFuZAo+PiBjaGlwLT5wYXJhbWV0ZXJzLm9u
-Zmkgb3Igd2hlbiBiZXN0X21vZGUgaXMgemVybyB3aGVyZSByZXQgaXMKPiAKPiAgICAgICAgICAg
-ICAgICAgICAgICAgIF4KPiBzb21ldGhpbmcgaXMgbWlzc2luZyBoZXJlLCB0aGUgc2VudGVuY2Ug
-aXMgbm90IGNsZWFyCj4gCj4+IG5vdCBhc3NpZ25lZCBhIHZhbHVlIGFuZCBhbiB1bmluaXRpYWxp
-emVkIHJldHVybiB2YWx1ZSBjYW4gYmUKPj4gcmV0dXJuZWQuIEZpeCB0aGlzIGJ5IGVuc3VyaW5n
-IHJldCBpcyBpbml0aWFsaXplZCB0byAtRUlOVkFMLgo+IAo+IEkgZG9uJ3Qgc2VlIGhvdyB0aGlz
-IHNpdHVhdGlvbiBjYW4gaGFwcGVuLgo+IAo+IEluIGJvdGggY2FzZXMsIG5vIG1hdHRlciB0aGUg
-dmFsdWUgb2YgYmVzdF9tb2RlLCB0aGUgZm9yIGxvb3Agd2lsbAo+IGFsd2F5cyBleGVjdXRlIGF0
-IGxlYXN0IG9uZSB0aW1lIChtb2RlIDApIHNvIHJldCB3aWxsIGJlIHBvcHVsYXRlZC4KPiAKPiBN
-YXliZSB0aGUgcm9ib3QgZG9lcyBub3Qga25vdyB0aGF0IGJlc3RfbW9kZSBjYW5ub3QgYmUgbmVn
-YXRpdmUgYW5kCj4gc2hvdWxkIGJlIGRlZmluZWQgdW5zaWduZWQsIGJ1dCB0aGUgY3VycmVudCBw
-YXRjaCBpcyBpbnZhbGlkLgoKWWVwLCBJJ3ZlIGxvb2tlZCBhdCB0aGlzIGFnYWluIGFuZCBpdCBk
-b2VzIHNlZW0gbGlrZSBhIGZhbHNlIHBvc2l0aXZlLgpBcG9sb2dpZXMgZm9yIHRoZSBub2lzZS4K
-Cj4gCj4+IEFkZHJlc3Nlcy1Db3Zlcml0eTogKCJVbmluaXRpYWxpemVkIHNjYWxhciB2YXJpYWJs
-ZSIpCj4+IEZpeGVzOiA5ZDMxOTRiZjJhZWYgKCJtdGQ6IHJhd25hbmQ6IEFsbG93IFNEUiB0aW1p
-bmdzIHRvIGJlIG5hY2tlZCIpCj4+IEZpeGVzOiBhOWVjYzhjODE0ZTkgKCJtdGQ6IHJhd25hbmQ6
-IENob29zZSB0aGUgYmVzdCB0aW1pbmdzLCBOVi1ERFIgaW5jbHVkZWQiKQo+PiBTaWduZWQtb2Zm
-LWJ5OiBDb2xpbiBJYW4gS2luZyA8Y29saW4ua2luZ0BjYW5vbmljYWwuY29tPgo+PiAtLS0KPj4g
-IGRyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfYmFzZS5jIHwgNCArKy0tCj4+ICAxIGZpbGUgY2hh
-bmdlZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEv
-ZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9u
-YW5kX2Jhc2UuYwo+PiBpbmRleCA1N2E1ODMxNDljYzAuLjE4ZGI3NDJmNjUwYyAxMDA2NDQKPj4g
-LS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMKPj4gKysrIGIvZHJpdmVycy9t
-dGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMKPj4gQEAgLTkyNiw3ICs5MjYsNyBAQCBpbnQgbmFuZF9j
-aG9vc2VfYmVzdF9zZHJfdGltaW5ncyhzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLAo+PiAgCQkJCSBz
-dHJ1Y3QgbmFuZF9zZHJfdGltaW5ncyAqc3BlY190aW1pbmdzKQo+PiAgewo+PiAgCWNvbnN0IHN0
-cnVjdCBuYW5kX2NvbnRyb2xsZXJfb3BzICpvcHMgPSBjaGlwLT5jb250cm9sbGVyLT5vcHM7Cj4+
-IC0JaW50IGJlc3RfbW9kZSA9IDAsIG1vZGUsIHJldDsKPj4gKwlpbnQgYmVzdF9tb2RlID0gMCwg
-bW9kZSwgcmV0ID0gLUVJTlZBTDsKPj4gIAo+PiAgCWlmYWNlLT50eXBlID0gTkFORF9TRFJfSUZB
-Q0U7Cj4+ICAKPj4gQEAgLTk3Nyw3ICs5NzcsNyBAQCBpbnQgbmFuZF9jaG9vc2VfYmVzdF9udmRk
-cl90aW1pbmdzKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsCj4+ICAJCQkJICAgc3RydWN0IG5hbmRf
-bnZkZHJfdGltaW5ncyAqc3BlY190aW1pbmdzKQo+PiAgewo+PiAgCWNvbnN0IHN0cnVjdCBuYW5k
-X2NvbnRyb2xsZXJfb3BzICpvcHMgPSBjaGlwLT5jb250cm9sbGVyLT5vcHM7Cj4+IC0JaW50IGJl
-c3RfbW9kZSA9IDAsIG1vZGUsIHJldDsKPj4gKwlpbnQgYmVzdF9tb2RlID0gMCwgbW9kZSwgcmV0
-ID0gMDsKPj4gIAo+PiAgCWlmYWNlLT50eXBlID0gTkFORF9OVkREUl9JRkFDRTsKPj4gIAo+IAo+
-IFRoYW5rcywKPiBNaXF1w6hsCj4gCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Thu, May 27, 2021 at 07:22:19PM +0530, Vignesh Raghavendra wrote:
+> >>> This change allows adding a support for flashes with correct SFDP
+> >>> without recompilation of the kernel by setting sfdp-compatible property
+> >>> in their node. Alternatively, sfdp_compatible module option can be used
+> >>> to list JEDEC IDs of flashes, whose SFDP can be trusted. Star "*" can
+> >>> be used to match all JEDEC IDs.
+> >>
+> >> I have skimmed through the patch. Before I look at it more closely, I 
+> >> want to understand the use case for this patch. Why would you not want 
+> >> to recompile the kernel when adding support for new hardware? Do you 
+> >> want the ability to support flashes on devices that have already been 
+> >> deployed in the field? Is it something that comes up frequently?
+> > In my case the kernel is loaded from a USB mass storage device, which
+> > can be preproduced and on stock (with the kernel already on it). With
+> > my patch I can change the flash vendor without the need of updating
+> > the image on already existing USB mass storage devices.
+> > 
+> > The patch is also useful for people who use distribution kernel as they
+> > will not have to wait until (and if) the distribution updates it.
+> 
+> Don't need separate DT property or cmdline argument. There is no way to
+> know if the SFDP tables are 100% valid when kernel is working with a
+> "generic flash".
+> Flashes are often replaced with newer revisions of the part that may/may
+> not have valid SFDP tables.
+> 
+> So just rely on SFDP, when no valid entry is found in the manufacturer's
+> flash_info[] while printing out a warning to user that this is just best
+> effort support.
+
+OK, I will rework it to fallback to SFDP by default. I put the safeguard
+there to avoid a case when one has a flash requiring workarounds and then
+does a kernel downgrade to a release where the flash is not known and uses
+it. Should I make an opposite flag sfdp-incompatible or do we consider this
+a theoretical scenario not worth of addressing in the code?
+  Petr
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
