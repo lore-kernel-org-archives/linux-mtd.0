@@ -2,98 +2,81 @@ Return-Path: <SRS0=UlXy=KX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AA1FC2B9F7
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 May 2021 14:33:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2B21C4708C
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 May 2021 16:22:58 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F337B613B4
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 May 2021 14:33:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F337B613B4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=foss.st.com
+	by mail.kernel.org (Postfix) with ESMTPS id 81313613D4
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 May 2021 16:22:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 81313613D4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:CC:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=LXEVNRuIaH+EV7eniQuOFBWBcKT4a8ureYaLdpWjJT0=; b=Ycpl637U+SHFq16FRknkqSD5ZC
-	jmR15Mhykn4MKk2oAZ+CY00Kzh97b+6BYWzzwOORDsDmj8WKTSRbNYH8p8ANTdNTN1LTXBC3p0/ai
-	YXtdlqKd/Ucwrd0M9h9QDhUE0ZbGfvWGWT/Qn4EO1EfEcdkRqRzerDLn5hzolX5lchVuVPiJM6zZS
-	RzVGZuAcyPOO/AZR4tw0a1OvoNMhcAUnYW8ai/XNzyt27GwbzBqzCgn9CxL9j27UVHqvgQfvs4B0Q
-	OdNRH+nPcsywFvbWyQzTBTQ1i2M5wr6uSamXjof2mlrl0GB7QttWoXw9rskOlCM+n+Xw7Pb9n9BdB
-	TCPGxu6A==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:
+	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Z16TYf/e8DMFgCJSD4sGPp4DkQwj0IHblDwRitdDfOY=; b=4UyzkUIWeFU1G8
+	pDTrP1LMt1yzTXezLXdyXbMz4IKjcurbOlhbKTbb8Pl58lOeqXFzDUtu4GoTXbzxvYWgDIILd16kE
+	Rg18LGY6dW3jtr+vigo5xVM9+biVGS+M/vm7zR4DSo5BAM3+NXhayxKW77eXfV0LWXR69ZpZaXf0Y
+	04ARikT/4J0f3hfollhqDIH1DYN9RiKVHiJK5uOK7cB5dE4pS8SW3THiWAVriey7SA5za4w0qgrIr
+	g3SI4fDs6tbA3sd0ku8yMVOy6htRGyUC1aRR7Iuqe+2wM3Gu2OsdQalbFNS6Awqfk9ETKJVk9YQjN
+	HT6Dul9zRQCKk58EOmZA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lmdXQ-00GChI-5M; Fri, 28 May 2021 14:32:36 +0000
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]
- helo=mx07-00178001.pphosted.com)
+	id 1lmfFI-00GxFO-Fo; Fri, 28 May 2021 16:22:00 +0000
+Received: from mail-oo1-f43.google.com ([209.85.161.43])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lmdWy-00GCXP-9M; Fri, 28 May 2021 14:32:10 +0000
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 14SESRuC008721; Fri, 28 May 2021 16:32:03 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
- h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=EGkmMWf1vadEwpWO9vA2GhG54Ky8HvNXDTV2YDYsik0=;
- b=SvxKJ/mwYsoK5Gmp2wXbDnlTgrrrTpci50dfQ9DAI9ocglfSru2xAlRWzWPHD8f5Tefi
- mcbU/dIQaLZBtEl2lNEusGYzibr7tAG44EmFCQRy4CyKwdiHLcXHi1yC0OZwalitFgnY
- 8Cn8Y3WwBWIIZ+AFMXIP2pdbXsjXajvRLB52Is66e6JQMUx1XV/vAyb+IEzsRPWJAYKh
- IPHtDNAVP1Ce3DK4XPsYeuYW2wAg3/hfFOqElHeUqGpN5ZvqtVd+/Gq++5WxCsJh8qRk
- aOPkRVz3RATUIihHHqsfpVCeLdDHB4/Oh3vEHMJ7CcHjUmakWGzWCymsGTJA07Jaejos 0g== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com with ESMTP id 38u03c0ppb-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 28 May 2021 16:32:03 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 609D910002A;
- Fri, 28 May 2021 16:32:01 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 48B142335B3;
- Fri, 28 May 2021 16:32:01 +0200 (CEST)
-Received: from lmecxl0573.lme.st.com (10.75.127.44) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 28 May
- 2021 16:32:00 +0200
-Subject: Re: [PATCH v3 3/3] mtd: spinand: add SPI-NAND MTD resume handler
-To: Pratyush Yadav <p.yadav@ti.com>
-CC: Mark Brown <broonie@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Boris
- Brezillon <boris.brezillon@collabora.com>, <linux-mtd@lists.infradead.org>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- <linux-spi@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
- <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <christophe.kerello@foss.st.com>
-References: <20210527161252.16620-1-patrice.chotard@foss.st.com>
- <20210527161252.16620-4-patrice.chotard@foss.st.com>
- <20210528120508.f6viglv3gkzgweqq@ti.com>
- <3238725c-d7ff-c000-23d1-f18298e1556f@foss.st.com>
- <20210528131658.jtveyvdtxrwj2lgx@ti.com>
-From: Patrice CHOTARD <patrice.chotard@foss.st.com>
-Message-ID: <e4722cab-ab76-137b-9224-43d4c68d013a@foss.st.com>
-Date: Fri, 28 May 2021 16:31:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210528131658.jtveyvdtxrwj2lgx@ti.com>
-Content-Language: en-US
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391, 18.0.761
- definitions=2021-05-28_05:2021-05-27,
- 2021-05-28 signatures=0
+ id 1lmfFE-00GxAx-NK
+ for linux-mtd@lists.infradead.org; Fri, 28 May 2021 16:21:58 +0000
+Received: by mail-oo1-f43.google.com with SMTP id
+ i8-20020a4aa1080000b0290201edd785e7so1059145ool.1
+ for <linux-mtd@lists.infradead.org>; Fri, 28 May 2021 09:21:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+ :message-id;
+ bh=eOXPQ48/DXVLMOpoDbToX5Y11nDnIWdQtOvWb3iJBV8=;
+ b=GBO2VbuPC0aYQqf4VB2yGqwW9GHNacgoS8YpIeOQyMGqPLXh/oT+LQFck/aDf5MFJR
+ JlasP3rumUu9HRO5UFYXRnWJCACXj2uO++bFLntABjZ4IYfL+kpBzO2vV82vhW89vYEY
+ mc+gBogOlhShRjddjgJXJyiQVS+ILpOwQHynD3JkMIl6T2upc1c37dnT7zmNJvxu8L7R
+ PGdJemKpJPO28LlhchlA3XI6ULacQVTbXRGfpvpm2gJnuf/XXnStepwRiJhodFdzx/m7
+ Cf74l5rjQq/jzeuDsk4V2wsltS4bPH/L4C11XVbkY4UEP1jRBqGu1VshQ+gwHL7r7Gwq
+ A6lA==
+X-Gm-Message-State: AOAM530Clpu9RGsZwe1vHpwHjSsstejCQojDuBE6kvW2msC1Elu5s65p
+ vPwUQ9iSbMokNPGCwiBjoJcMJ7SxlA==
+X-Google-Smtp-Source: ABdhPJyPlDwwdt8cwOPHjYqDx51qPFnU39rXzfFZt4NHP1klQ0MpX6ssBEjK1u5zsW02weskmbzdmQ==
+X-Received: by 2002:a4a:b4cd:: with SMTP id g13mr7530007ooo.4.1622218913320;
+ Fri, 28 May 2021 09:21:53 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net.
+ [24.155.109.49])
+ by smtp.gmail.com with ESMTPSA id l23sm1202791oie.52.2021.05.28.09.21.51
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 28 May 2021 09:21:51 -0700 (PDT)
+Received: (nullmailer pid 3720613 invoked by uid 1000);
+ Fri, 28 May 2021 16:21:50 -0000
+From: Rob Herring <robh@kernel.org>
+To: Heiko Schocher <hs@denx.de>
+Cc: linux-kernel@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Rob Herring <robh+dt@kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
+ devicetree@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org
+In-Reply-To: <20210528072351.1639575-2-hs@denx.de>
+References: <20210528072351.1639575-1-hs@denx.de>
+ <20210528072351.1639575-2-hs@denx.de>
+Subject: Re: [PATCH v1 1/2] mtd: devices: add devicetree documentation for
+ microchip 48l640
+Date: Fri, 28 May 2021 11:21:50 -0500
+Message-Id: <1622218910.743539.3720612.nullmailer@robh.at.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210528_073208_678826_97CC0DE6 
-X-CRM114-Status: GOOD (  28.62  )
+X-CRM114-CacheID: sfid-20210528_092156_802345_F044E481 
+X-CRM114-Status: GOOD (  14.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,206 +88,72 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 5/28/21 3:17 PM, Pratyush Yadav wrote:
-> On 28/05/21 02:51PM, Patrice CHOTARD wrote:
->> Hi Pratyush
->>
->> On 5/28/21 2:05 PM, Pratyush Yadav wrote:
->>> On 27/05/21 06:12PM, patrice.chotard@foss.st.com wrote:
->>>> From: Patrice Chotard <patrice.chotard@foss.st.com>
->>>>
->>>> After power up, all SPI NAND's blocks are locked. Only read operations
->>>> are allowed, write and erase operations are forbidden.
->>>> The SPI NAND framework unlocks all the blocks during its initialization.
->>>>
->>>> During a standby low power, the memory is powered down, losing its
->>>> configuration.
->>>> During the resume, the QSPI driver state is restored but the SPI NAND
->>>> framework does not reconfigured the memory.
->>>>
->>>> This patch adds SPI-NAND MTD PM handlers for resume ops.
->>>> SPI NAND resume op re-initializes SPI NAND flash to its probed state.
->>>>
->>>> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
->>>> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
->>>> ---
->>>> Changes in v3:
->>>>   - Add spinand_read_cfg() call to repopulate cache
->>>>
->>>> Changes in v2:
->>>>   - Add helper spinand_block_unlock().
->>>>   - Add spinand_ecc_enable() call.
->>>>   - Remove some dev_err().
->>>>   - Fix commit's title and message.
->>>>
->>>>  drivers/mtd/nand/spi/core.c | 33 +++++++++++++++++++++++++++++++++
->>>>  1 file changed, 33 insertions(+)
->>>>
->>>> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
->>>> index 1f699ad84f1b..e3fcbcf381c3 100644
->>>> --- a/drivers/mtd/nand/spi/core.c
->>>> +++ b/drivers/mtd/nand/spi/core.c
->>>> @@ -1099,6 +1099,38 @@ static int spinand_block_unlock(struct spinand_device *spinand)
->>>>  	return ret;
->>>>  }
->>>>  
->>>> +static void spinand_mtd_resume(struct mtd_info *mtd)
->>>> +{
->>>> +	struct spinand_device *spinand = mtd_to_spinand(mtd);
->>>> +	int ret;
->>>> +
->>>> +	ret = spinand_reset_op(spinand);
->>>> +	if (ret)
->>>> +		return;
->>>> +
->>>> +	ret = spinand_read_cfg(spinand);
->>>> +	if (ret)
->>>> +		return;
->>>> +
->>>> +	ret = spinand_init_quad_enable(spinand);
->>>> +	if (ret)
->>>> +		return;
->>>> +
->>>> +	ret = spinand_upd_cfg(spinand, CFG_OTP_ENABLE, 0);
->>>> +	if (ret)
->>>> +		return;
->>>> +
->>>> +	ret = spinand_manufacturer_init(spinand);
->>>> +	if (ret)
->>>> +		return;
->>>> +
->>>> +	ret = spinand_block_unlock(spinand);
->>>> +	if (ret)
->>>> +		return;
->>>> +
->>>> +	spinand_ecc_enable(spinand, false);
->>>> +}
->>>> +
->>>
->>> I don't think you quite get what me and Miquel are suggesting.
->>>
->>> The helper should call all these functions like read_cfg() 
->>> quad_enable(), etc. So it should look something like:
->>
->> Yes, this series was sent too quickly on my side, and i misunderstood 
->> what you suggested, sorry for that.
+On Fri, 28 May 2021 09:23:50 +0200, Heiko Schocher wrote:
+> The Microchip 48l640 is a 8KByte EERAM connected via SPI.
+> Add devicetree bindings documentation.
 > 
-> Ah, I thought this was the v4. I see Miquel clarified already in reply 
-> to this patch.
+> Signed-off-by: Heiko Schocher <hs@denx.de>
+> ---
+> I must admit that I created the file
 > 
->>
->>>
->>> int spinand_init_flash()
->>> {
->>> 	ret = spinand_read_cfg(spinand);
->>> 	if (ret)
->>> 		return;
->>>
->>
->> The new helper spinand_read_cfg() must not be called in spinand_init_flash()
->> but directly in spinand_resume().
->> This because spinand_read_cfg() only performs a REG_CFG read without doing the
->> memory allocation of spinand->cfg_cache.
->>
->> In spinand_init(), spinand_init_cfg_cache() must be called as previously as it does spinand->cfg_cache
->> memory allocation and call the new helper spinand_read_cfg(). 
->> Then after, spinand_init_flash() can be called.
+> Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml
 > 
-> I think it would be simpler for spinand_init_cfg_cache() to just 
-> allocate the spinand->cfg_cache array and then for spinand_init_flash() 
-> to call spinand_read_cfg().
+> by hand, looking into other yaml files...
+> 
+> Is there a way to check such a file to its correctness?
+> 
+>  .../bindings/mtd/microchip,mchp48l640.yaml    | 40 +++++++++++++++++++
+>  1 file changed, 40 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml
+> 
 
-Argh, i just send the v5 ;-) .... i will wait the full v5 review and will follow your proposal 
-regarding spinand_init_cfg_cache().
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Patrice
+yamllint warnings/errors:
 
-> 
->>
->>> 	ret = spinand_init_quad_enable(spinand);
->>> 	if (ret)
->>> 		return;
->>>
->>> 	ret = spinand_upd_cfg(spinand, CFG_OTP_ENABLE, 0);
->>> 	if (ret)
->>> 		return;
->>>
->>> 	ret = spinand_manufacturer_init(spinand);
->>> 	if (ret)
->>> 		return;
->>>
->>> 	ret = spinand_block_unlock(spinand);
->>> 	if (ret)
->>> 		return;
->>>
->>> 	spinand_ecc_enable(spinand, false);
->>> }
->>>
->>> Then spinand_mtd_resume should look something like:
->>>
->>> int spinand_mtd_resume()
->>> {
->>> 	ret = spinand_reset_op(spinand);
->>> 	if (ret)
->>> 		return;
->>>
->>> 	return spinand_init_flash();
->>> }
->>>
->>> And spinand_init() should look something like:
->>>
->>> int spinand_init()
->>> {
->>> 	...
->>> 	spinand->oobbuf = ...
->>>
->>> 	spinand_init_flash();
->>>
->>> 	spinand_create_dirmaps();
->>>
->>> 	...
->>
->> As explained just above, spinand_init() will look like :
->>
->> int spinand_init()
->> {
->> 	...
->> 	spinand->oobbuf = ...
->>
->> 	spinand_init_cfg_cache();     => perform cfg cache memory allocation and read the REG_CFG
->>
->> 	spinand_init_flash();
->>
->> 	spinand_create_dirmaps();
->>
->>> }
->>>
->>>
->>>>  static int spinand_init(struct spinand_device *spinand)
->>>>  {
->>>>  	struct device *dev = &spinand->spimem->spi->dev;
->>>> @@ -1186,6 +1218,7 @@ static int spinand_init(struct spinand_device *spinand)
->>>>  	mtd->_block_isreserved = spinand_mtd_block_isreserved;
->>>>  	mtd->_erase = spinand_mtd_erase;
->>>>  	mtd->_max_bad_blocks = nanddev_mtd_max_bad_blocks;
->>>> +	mtd->_resume = spinand_mtd_resume;
->>>>  
->>>>  	if (nand->ecc.engine) {
->>>>  		ret = mtd_ooblayout_count_freebytes(mtd);
->>>> -- 
->>>> 2.17.1
->>>
->>
->> Thanks
->> Patrice
-> 
+dtschema/dtc warnings/errors:
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-doc-validate", line 67, in <module>
+    ret = check_doc(f)
+  File "/usr/local/bin/dt-doc-validate", line 33, in check_doc
+    for error in sorted(dtschema.DTValidator.iter_schema_errors(testtree), key=lambda e: e.linecol):
+  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 723, in iter_schema_errors
+    meta_schema = cls.resolver.resolve_from_url(schema['$schema'])
+KeyError: '$schema'
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/processed-schema-examples.json'
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-mk-schema", line 38, in <module>
+    schemas = dtschema.process_schemas(args.schemas, core_schema=(not args.useronly))
+  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 587, in process_schemas
+    sch = process_schema(os.path.abspath(filename))
+  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 568, in process_schema
+    DTValidator.check_schema(schema)
+  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 738, in check_schema
+    meta_schema = cls.resolver.resolve_from_url(schema['$schema'])
+KeyError: '$schema'
+make[1]: *** [Documentation/devicetree/bindings/Makefile:62: Documentation/devicetree/bindings/processed-schema-examples.json] Error 1
+make: *** [Makefile:1416: dt_binding_check] Error 2
+
+See https://patchwork.ozlabs.org/patch/1485038
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
