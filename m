@@ -8,14 +8,14 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86302C47087
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 May 2021 17:01:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06003C2B9F7
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 May 2021 17:01:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 46A8C6117A
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 May 2021 17:01:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 46A8C6117A
+	by mail.kernel.org (Postfix) with ESMTPS id BE28F61163
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 May 2021 17:01:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE28F61163
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,53 +24,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=d6Af7nxEC1bEkYBoffy2GpMB0EtBnHG0q3XwjvumIFM=; b=dKxp9ApuNsodYF
-	vrFCg96fCccN84Cck3NyefyszjOnihrz+rehFzkM3U/OwAq1IZzmEmhJgLh3cWBS3syFHvEwWQyEZ
-	e1xRJEfz3tXECHX/3obWnfhPlhHYCywDAi4yBpE6Xk7bJzk7j0OSJ8r52Va95ohFpYr+rmjhHGOdm
-	HBV8TKj8M03tOkVxNl8VOCs1ZJNVKLYOjGB/mi1U/P5BsJzlYwBbjKQDUGR/8djp7GGXyO29V976m
-	XohBRG84fJ7dkuyXPF7CML6ZZ//r929suFLNtWE3rAVd5VucXqdmLq234XkmL3iMbfZVbalyeGx5n
-	eToio5tTndcML0cH/Omg==;
+	List-Owner; bh=lS1Y2QXYq1Fwf8n4q5KcR0SubGVDbynfPJL7SF8Tm0M=; b=JtctDseDTz9pX3
+	5Ob9WTyZWS56tFMm+nqrbFP4eZFmRwMYmIlyDUd6XAbo0Gjvwt+y2uOD9L09mnvSTGYvh6YPHY+4Y
+	XayficoKbbhjzACphhI6TpLJuvXOXx790x7/UCndIKNGuwtrIeb+F1+fBoXAAyYycAuvDqeWgRBq1
+	wDqk6LzP+NFAjZ/TxQaxQjixy2i5Skt3gL19d6XGZkJlIAAm8a9ZCeyGTt+tieR5TSr3CxP01R3kh
+	TWW96OJ/A8X9dvNS7Jtbq+5m73f52xwqoa2zNCsZteTuY+DEovJixMGPDKCdHwKcH6AdPEiHPpqGn
+	iaktBvlBsACJowCAqC5g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lmfr0-00HEyO-Lk; Fri, 28 May 2021 17:00:58 +0000
-Received: from mail-ot1-x32f.google.com ([2607:f8b0:4864:20::32f])
+	id 1lmfrJ-00HF8u-NM; Fri, 28 May 2021 17:01:18 +0000
+Received: from mail-oi1-x231.google.com ([2607:f8b0:4864:20::231])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lmfqa-00HEmH-CS; Fri, 28 May 2021 17:00:34 +0000
-Received: by mail-ot1-x32f.google.com with SMTP id
- 80-20020a9d08560000b0290333e9d2b247so4083889oty.7; 
- Fri, 28 May 2021 10:00:32 -0700 (PDT)
+ id 1lmfqZ-00HElt-Me; Fri, 28 May 2021 17:00:34 +0000
+Received: by mail-oi1-x231.google.com with SMTP id s19so4883821oic.7;
+ Fri, 28 May 2021 10:00:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=3nMVI5Y69EcmK0LI72hJ/BBAtaO979N8B0RdSo6Pvyk=;
- b=kjZHfTkfICRcLQBVk9cecErbnSVKP25ZQ+smIyWcsU3tFlGz1S1zaYYonpL79EjU3C
- EI8dDHC54+NpqDZiWic05h5uRbcO25p/MpKa4AcxmGhRXu+62VaUcdlJsejU8uuOd4G5
- S7hWMXjYW2v1fIzTAWQc17nwZ3q/8JA5fHPTAF7OAwGpPwtQJjLIoW3FfiQIU3zminQr
- FvNWKJMD0cppk/W/xDxPnFn2jNdmiTA9dMk14cTM/4hhuxdsCZRpzwehU1HV1F75HH2O
- yqbLjg8dws7U0uo9tJOly7SxaVYMHfNW8ewOagriROpmtx1/fUvq/tQev7wCBpwHwaEn
- Nt2Q==
+ bh=zDuMJ3Q1cLEyCkWY9SQIwVG23fmvVXENAqTzV55WSyE=;
+ b=rCt3+gzye3X38lQKkSr4r8S2mrwNfDR47ilxG4e0DnuDQlLB2mqcPjh0YrcXB2u6EF
+ rfwzIdUsU25S+E7IADwwDMD26sk1tqmRaIdijCH5oz7yf8a3RP/y+X0W9WmZrh30lf5y
+ Xf7VFxNldvNADJIGLWCQHE415vw8rgWeEbDEsTipcAVdQ9TbH4rgIXxlsts+szn8G3Q2
+ 7MS87pRypNkZp+K2Vu9IBP91w+s7UNfWQxosg8jmNEvtpoNZ90GuE3sXdfMdoaFYIThc
+ +njGgFGF4GP+Kn/J1PflRhUccEBoE2uAIwqGHWYDb2V7t5NOIM9bdhuWIewijxSL7SI8
+ 4liw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=3nMVI5Y69EcmK0LI72hJ/BBAtaO979N8B0RdSo6Pvyk=;
- b=H7u+Vcx0AFBoJbS9JPEbxAev36WgtYfe/RgqVj3lLEB+xq+xuEYp4n/h7FZ/Bknxyh
- bIT8kTVi7yD8gOU/UjqppxfNWad6iwQciiSwmY64LOe1dExFPjk+RdD5y2jbjbDe2cCW
- nYgfl1zncThpmt1vBgDPMWF2QM0aqr3cXm6gA0u+Evyt9zHEgZABeL5rQhXGpkrx8cg8
- 3/4+Taq8v5GfV4qOlvOx+8CiGcFQuej/T6BE7RlGXs57hEJAnA6Jsyk2aduXmIsJmeCp
- HMnvEX/ZJQjtkP+TxG7tl7VoD0xD/P/eVm9w8FYm3Ft4ZNK99UJDv4IKfjDyeBAotwWI
- lTSQ==
-X-Gm-Message-State: AOAM5320u7k16/iXKhz+E7pD7+rcZhQV7B3KD/CTZSm+J730HPYO8oAl
- leRIvPDF7WYGrnKlnpywOqaIZuFqUTE=
-X-Google-Smtp-Source: ABdhPJwOA9kKYaSlfOXzhJpHiPsQaRY44y5Lrk25RROkiHhJj1rFlZtQN/3V03HLrAnAgKNNxscwWw==
-X-Received: by 2002:a05:6830:1c31:: with SMTP id
- f17mr7935920ote.332.1622221231190; 
- Fri, 28 May 2021 10:00:31 -0700 (PDT)
+ bh=zDuMJ3Q1cLEyCkWY9SQIwVG23fmvVXENAqTzV55WSyE=;
+ b=H9ubuDy6mVFMgyPGJNIMTsU9Z7cBv8eqSOgMIEZV0srbI2n66STL2gVs/bTw32xHF0
+ LpuM39XH5E+/1xTpydq2HZCsZGmwGn6b8bzEBeX+ez8y+9l00fLEouopdjGytz8XxTZc
+ uoMkqAKcRm1JuKLAeHL6wDcSNV/HE5JLNZvdRBSw5ovdWUgNI9ZAMlEuJnLOUtSYU514
+ 2ccCQ6v99u95Y/XGGm7r6cVL69MximBAtiqd58ytsznlUdJ6vGJIj+5IPZk7WeTy6L/V
+ z6i0nfuTrqTp72UV5Hl82xoA4qLBlBImu5KIIWRJeRQYW5eNFsUEdxKK6H3QGUkygxnP
+ z47g==
+X-Gm-Message-State: AOAM531RyUfNxzK/JWO9k4qxPmVrxDcYdGtmpOBdtq9MILrfO7IBkvZw
+ kSR4omSeCJOycYLZ0cd9fne3wtAIb9Q=
+X-Google-Smtp-Source: ABdhPJzC4a4TNLVBd8noFder6gjVQgp3//39s+cuHXE6cujlYxqoqn0RX8bNX72zOPYHn4UnRJ2eOg==
+X-Received: by 2002:a05:6808:1281:: with SMTP id
+ a1mr6555785oiw.143.1622221229933; 
+ Fri, 28 May 2021 10:00:29 -0700 (PDT)
 Received: from wintermute.localdomain (cpe-76-183-134-35.tx.res.rr.com.
  [76.183.134.35])
- by smtp.gmail.com with ESMTPSA id r7sm1219084oom.46.2021.05.28.10.00.30
+ by smtp.gmail.com with ESMTPSA id r7sm1219084oom.46.2021.05.28.10.00.28
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 28 May 2021 10:00:30 -0700 (PDT)
+ Fri, 28 May 2021 10:00:29 -0700 (PDT)
 From: Chris Morgan <macroalpha82@gmail.com>
 To: linux-mtd@lists.infradead.org
 Cc: linux-rockchip@lists.infradead.org, andy.yan@rock-chips.com,
@@ -78,17 +77,17 @@ Cc: linux-rockchip@lists.infradead.org, andy.yan@rock-chips.com,
  tudor.ambarus@microchip.com, michael@walle.cc, p.yadav@ti.com,
  heiko@sntech.de, robh+dt@kernel.org, vigneshr@ti.com, richard@nod.at,
  miquel.raynal@bootlin.com, Chris Morgan <macromorgan@hotmail.com>
-Subject: [PATCH v2 2/4] spi: rockchip-sfc: Bindings for Rockchip serial flash
- controller
-Date: Fri, 28 May 2021 12:00:18 -0500
-Message-Id: <20210528170020.26219-3-macroalpha82@gmail.com>
+Subject: [PATCH v2 1/4] spi: rockchip-sfc: add rockchip serial flash
+ controller driver
+Date: Fri, 28 May 2021 12:00:17 -0500
+Message-Id: <20210528170020.26219-2-macroalpha82@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210528170020.26219-1-macroalpha82@gmail.com>
 References: <20210528170020.26219-1-macroalpha82@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210528_100032_482461_2E480B72 
-X-CRM114-Status: GOOD (  12.69  )
+X-CRM114-CacheID: sfid-20210528_100031_794203_104D40E7 
+X-CRM114-Status: GOOD (  26.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,129 +106,910 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Chris Morgan <macromorgan@hotmail.com>
 
-Add binding document for the Rockchip serial flash controller.
-New device specific parameter of rockchip,sfc-no-dma included in
-documentation.
+Add the rockchip serial flash controller (SFC) driver.
 
 Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
 ---
- .../spi/rockchip,serialflash-controller.yaml  | 107 ++++++++++++++++++
- 1 file changed, 107 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/spi/rockchip,serialflash-controller.yaml
+ drivers/spi/Kconfig            |   9 +
+ drivers/spi/Makefile           |   1 +
+ drivers/spi/spi-rockchip-sfc.c | 856 +++++++++++++++++++++++++++++++++
+ 3 files changed, 866 insertions(+)
+ create mode 100644 drivers/spi/spi-rockchip-sfc.c
 
-diff --git a/Documentation/devicetree/bindings/spi/rockchip,serialflash-controller.yaml b/Documentation/devicetree/bindings/spi/rockchip,serialflash-controller.yaml
+diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
+index f4481fe48bf0..4d81ba7841e2 100644
+--- a/drivers/spi/Kconfig
++++ b/drivers/spi/Kconfig
+@@ -658,6 +658,15 @@ config SPI_ROCKCHIP
+ 	  The main usecase of this controller is to use spi flash as boot
+ 	  device.
+ 
++config SPI_ROCKCHIP_SFC
++	tristate "Rockchip Serial Flash Controller (SFC)"
++	depends on ARCH_ROCKCHIP || COMPILE_TEST
++	depends on HAS_IOMEM && HAS_DMA
++	help
++	  This enables support for Rockchip serial flash controller. This
++	  is a specialized controller used to access SPI flash on some
++	  Rockchip SOCs.
++
+ config SPI_RB4XX
+ 	tristate "Mikrotik RB4XX SPI master"
+ 	depends on SPI_MASTER && ATH79
+diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
+index 13e54c45e9df..699db95c8441 100644
+--- a/drivers/spi/Makefile
++++ b/drivers/spi/Makefile
+@@ -95,6 +95,7 @@ obj-$(CONFIG_SPI_QCOM_GENI)		+= spi-geni-qcom.o
+ obj-$(CONFIG_SPI_QCOM_QSPI)		+= spi-qcom-qspi.o
+ obj-$(CONFIG_SPI_QUP)			+= spi-qup.o
+ obj-$(CONFIG_SPI_ROCKCHIP)		+= spi-rockchip.o
++obj-$(CONFIG_SPI_ROCKCHIP_SFC)		+= spi-rockchip-sfc.o
+ obj-$(CONFIG_SPI_RB4XX)			+= spi-rb4xx.o
+ obj-$(CONFIG_MACH_REALTEK_RTL)		+= spi-realtek-rtl.o
+ obj-$(CONFIG_SPI_RPCIF)			+= spi-rpc-if.o
+diff --git a/drivers/spi/spi-rockchip-sfc.c b/drivers/spi/spi-rockchip-sfc.c
 new file mode 100644
-index 000000000000..eb073130e82a
+index 000000000000..a547f8e73691
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/spi/rockchip,serialflash-controller.yaml
-@@ -0,0 +1,107 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/spi/rockchip,serialflash-controller.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/drivers/spi/spi-rockchip-sfc.c
+@@ -0,0 +1,856 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Rockchip Serial Flash Controller Driver
++ *
++ * Copyright (c) 2017, Rockchip Inc.
++ * Author: Shawn Lin <shawn.lin@rock-chips.com>
++ */
 +
-+title: Rockchip SoCs Serial FLASH Controller (SFC)
++#include <linux/bitops.h>
++#include <linux/clk.h>
++#include <linux/completion.h>
++#include <linux/dma-mapping.h>
++#include <linux/iopoll.h>
++#include <linux/mm.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <linux/interrupt.h>
++#include <linux/spi/spi-mem.h>
 +
-+maintainers:
-+  - Andy Yan <andy.yan@rock-chips.com>
++/* System control */
++#define SFC_CTRL			0x0
++#define  SFC_CTRL_COMMON_BITS_1		0x0
++#define  SFC_CTRL_COMMON_BITS_2		0x1
++#define  SFC_CTRL_COMMON_BITS_4		0x2
++#define  SFC_CTRL_DATA_BITS_SHIFT	12
++#define  SFC_CTRL_ADDR_BITS_SHIFT	10
++#define  SFC_CTRL_CMD_BITS_SHIFT	8
++#define  SFC_CTRL_PHASE_SEL_NEGETIVE	BIT(1)
 +
-+allOf:
-+  - $ref: spi-controller.yaml#
++/* Interrupt mask */
++#define SFC_IMR				0x4
++#define  SFC_IMR_RX_FULL		BIT(0)
++#define  SFC_IMR_RX_UFLOW		BIT(1)
++#define  SFC_IMR_TX_OFLOW		BIT(2)
++#define  SFC_IMR_TX_EMPTY		BIT(3)
++#define  SFC_IMR_TRAN_FINISH		BIT(4)
++#define  SFC_IMR_BUS_ERR		BIT(5)
++#define  SFC_IMR_NSPI_ERR		BIT(6)
++#define  SFC_IMR_DMA			BIT(7)
 +
-+properties:
-+  compatible:
-+    oneOf:
-+      - const: rockchip,px30-sfc
-+      - const: rockchip,rv1108-sfc
-+      - items:
-+        - const: rockchip,sfc
++/* Interrupt clear */
++#define SFC_ICLR			0x8
++#define  SFC_ICLR_RX_FULL		BIT(0)
++#define  SFC_ICLR_RX_UFLOW		BIT(1)
++#define  SFC_ICLR_TX_OFLOW		BIT(2)
++#define  SFC_ICLR_TX_EMPTY		BIT(3)
++#define  SFC_ICLR_TRAN_FINISH		BIT(4)
++#define  SFC_ICLR_BUS_ERR		BIT(5)
++#define  SFC_ICLR_NSPI_ERR		BIT(6)
++#define  SFC_ICLR_DMA			BIT(7)
 +
-+  reg:
-+    maxItems: 1
++/* FIFO threshold level */
++#define SFC_FTLR			0xc
++#define  SFC_FTLR_TX_SHIFT		0
++#define  SFC_FTLR_TX_MASK		0x1f
++#define  SFC_FTLR_RX_SHIFT		8
++#define  SFC_FTLR_RX_MASK		0x1f
 +
-+  interrupts:
-+    maxItems: 1
++/* Reset FSM and FIFO */
++#define SFC_RCVR			0x10
++#define  SFC_RCVR_RESET			BIT(0)
 +
-+  clocks:
-+    minItems: 2
-+    items:
-+      - description: Module Clock
-+      - description: Bus Clock
++/* Enhanced mode */
++#define SFC_AX				0x14
 +
-+  clock-names:
-+    minItems: 2
-+    items:
-+      - const: clk-sfc
-+      - const: clk-hsfc
++/* Address Bit number */
++#define SFC_ABIT			0x18
 +
-+  power-domains:
-+    maxItems: 1
++/* Interrupt status */
++#define SFC_ISR				0x1c
++#define  SFC_ISR_RX_FULL_SHIFT		BIT(0)
++#define  SFC_ISR_RX_UFLOW_SHIFT		BIT(1)
++#define  SFC_ISR_TX_OFLOW_SHIFT		BIT(2)
++#define  SFC_ISR_TX_EMPTY_SHIFT		BIT(3)
++#define  SFC_ISR_TX_FINISH_SHIFT	BIT(4)
++#define  SFC_ISR_BUS_ERR_SHIFT		BIT(5)
++#define  SFC_ISR_NSPI_ERR_SHIFT		BIT(6)
++#define  SFC_ISR_DMA_SHIFT		BIT(7)
 +
-+  rockchip,sfc-no-dma:
-+    - descrption: Boolean value for disabling DMA
++/* FIFO status */
++#define SFC_FSR				0x20
++#define  SFC_FSR_TX_IS_FULL		BIT(0)
++#define  SFC_FSR_TX_IS_EMPTY		BIT(1)
++#define  SFC_FSR_RX_IS_EMPTY		BIT(2)
++#define  SFC_FSR_RX_IS_FULL		BIT(3)
++#define  SFC_FSR_TXLV_MASK		GENMASK(12, 8)
++#define  SFC_FSR_TXLV_SHIFT		8
++#define  SFC_FSR_RXLV_MASK		GENMASK(20, 16)
++#define  SFC_FSR_RXLV_SHIFT		16
 +
-+patternProperties:
-+  "^spi-nor@[0-3]$":
-+    type: object
-+    properties:
-+      reg:
-+        minimum: 0
-+        maximum: 3
++/* FSM status */
++#define SFC_SR				0x24
++#define  SFC_SR_IS_IDLE			0x0
++#define  SFC_SR_IS_BUSY			0x1
 +
-+      spi-max-frequency:
-+        maxItems: 1
-+	  - description: Maximum frequency for SPI Flash
++/* Raw interrupt status */
++#define SFC_RISR			0x28
++#define  SFC_RISR_RX_FULL		BIT(0)
++#define  SFC_RISR_RX_UNDERFLOW		BIT(1)
++#define  SFC_RISR_TX_OVERFLOW		BIT(2)
++#define  SFC_RISR_TX_EMPTY		BIT(3)
++#define  SFC_RISR_TRAN_FINISH		BIT(4)
++#define  SFC_RISR_BUS_ERR		BIT(5)
++#define  SFC_RISR_NSPI_ERR		BIT(6)
++#define  SFC_RISR_DMA			BIT(7)
 +
-+      compatible:
-+        oneOf:
-+          - const: jedec,spi-nor
++/* Master trigger */
++#define SFC_DMA_TRIGGER			0x80
 +
-+      spi-rx-bus-width:
-+        maxItems: 1
-+          - description: RX Bus Width (1x, 2x, or 4x mode)
++/* Src or Dst addr for master */
++#define SFC_DMA_ADDR			0x84
 +
-+      spi-tx-bus-width:
-+        maxItems: 1
-+          - description: TX Bus Width (1x, 2x, or 4x mode)
++/* Command */
++#define SFC_CMD				0x100
++#define  SFC_CMD_IDX_SHIFT		0
++#define  SFC_CMD_DUMMY_SHIFT		8
++#define  SFC_CMD_DIR_RD			0
++#define  SFC_CMD_DIR_WR			1
++#define  SFC_CMD_DIR_SHIFT		12
++#define  SFC_CMD_ADDR_ZERO		(0x0 << 14)
++#define  SFC_CMD_ADDR_24BITS		(0x1 << 14)
++#define  SFC_CMD_ADDR_32BITS		(0x2 << 14)
++#define  SFC_CMD_ADDR_FRS		(0x3 << 14)
++#define  SFC_CMD_TRAN_BYTES_SHIFT	16
++#define  SFC_CMD_CS_SHIFT		30
 +
++/* Address */
++#define SFC_ADDR			0x104
 +
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
++/* Data */
++#define SFC_DATA			0x108
 +
-+unevaluatedProperties: false
++#define SFC_MAX_CHIPSELECT_NUM		4
 +
-+examples:
-+  - |
-+    #include <dt-bindings/clock/px30-cru.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
++/* The SFC can transfer max 16KB - 1 at one time
++ * we set it to 15.5KB here for alignment.
++ */
++#define SFC_MAX_TRANS_BYTES		(512 * 31)
 +
-+sfc: spi@ff3a0000 {
-+	compatible = "rockchip,px30-sfc","rockchip,sfc";
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	reg = <0x0 0xff3a0000 0x0 0x4000>;
-+	interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
-+	clocks = <&cru SCLK_SFC>, <&cru HCLK_SFC>;
-+	clock-names = "sfc", "hsfc";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&sfc_clk &sfc_cs &sfc_bus2>;
-+	power-domains = <&power PX30_PD_MMC_NAND>;
++/* Maximum clock values from datasheet suggest keeping clock value under 150MHz.
++ * No minimum or average value is suggested, but the U-boot BSP driver has a minimum
++ * of 10MHz and a default of 80MHz which seems reasonable.
++ */
++#define SFC_MIN_SPEED_HZ		(10 * 1000 * 1000)
++#define	SFC_DEFAULT_SPEED_HZ		(80 * 1000 * 1000)
++#define SFC_MAX_SPEED_HZ		(150 * 1000 * 1000)
 +
-+	nor_flash: spi-nor@0 {
-+		reg = <0>;
-+		compatible = "xtx,xt25f128b","jedec,spi-nor";
-+		spi-rx-bus-width = <2>;
-+		spi-tx-bus-width = <2>;
-+		spi-max-frequency = <108000000>;
-+	};
++#define SFC_CMD_DUMMY(x) \
++	((x) << SFC_CMD_DUMMY_SHIFT)
++
++enum rockchip_sfc_iftype {
++	IF_TYPE_STD,
++	IF_TYPE_DUAL,
++	IF_TYPE_QUAD,
 +};
 +
-+...
++struct rockchip_sfc;
++struct rockchip_sfc_chip_priv {
++	u8 cs;
++	u32 clk_rate;
++	struct rockchip_sfc *sfc;
++};
++
++struct rockchip_sfc {
++	struct device *dev;
++	void __iomem *regbase;
++	struct clk *hclk;
++	struct clk *clk;
++	/* virtual mapped addr for dma_buffer */
++	void *buffer;
++	dma_addr_t dma_buffer;
++	struct completion cp;
++	struct rockchip_sfc_chip_priv flash[SFC_MAX_CHIPSELECT_NUM];
++	u8 num_chip;
++	bool use_dma;
++};
++
++static int rockchip_sfc_get_if_type(const struct spi_mem_op *op,
++				    struct rockchip_sfc *sfc)
++{
++	if (op->data.buswidth == 2)
++		return IF_TYPE_DUAL;
++	else if (op->data.buswidth == 4)
++		return IF_TYPE_QUAD;
++	else if (op->data.buswidth == 1)
++		return IF_TYPE_STD;
++
++	dev_err(sfc->dev, "unsupported SPI read mode\n");
++
++	return -EINVAL;
++}
++
++static int rockchip_sfc_reset(struct rockchip_sfc *sfc)
++{
++	int err;
++	u32 status;
++
++	writel_relaxed(SFC_RCVR_RESET, sfc->regbase + SFC_RCVR);
++
++	err = readl_poll_timeout(sfc->regbase + SFC_RCVR, status,
++				 !(status & SFC_RCVR_RESET), 20,
++				 jiffies_to_usecs(HZ));
++	if (err)
++		dev_err(sfc->dev, "SFC reset never finished\n");
++
++	/* Still need to clear the masked interrupt from RISR */
++	writel_relaxed(SFC_ICLR_RX_FULL | SFC_ICLR_RX_UFLOW |
++		       SFC_ICLR_TX_OFLOW | SFC_ICLR_TX_EMPTY |
++		       SFC_ICLR_TRAN_FINISH | SFC_ICLR_BUS_ERR |
++		       SFC_ICLR_NSPI_ERR | SFC_ICLR_DMA,
++		       sfc->regbase + SFC_ICLR);
++
++	dev_dbg(sfc->dev, "reset\n");
++
++	return err;
++}
++
++static int rockchip_sfc_init(struct rockchip_sfc *sfc)
++{
++	int err;
++
++	err = clk_set_rate(sfc->clk, SFC_DEFAULT_SPEED_HZ);
++	if (err)
++		return err;
++
++	err = rockchip_sfc_reset(sfc);
++	if (err)
++		return err;
++
++	/* Mask all eight interrupts */
++	writel_relaxed(0xff, sfc->regbase + SFC_IMR);
++
++	writel_relaxed(SFC_CTRL_PHASE_SEL_NEGETIVE, sfc->regbase + SFC_CTRL);
++
++	return 0;
++}
++
++static inline int rockchip_sfc_get_fifo_level(struct rockchip_sfc *sfc, int wr)
++{
++	u32 fsr = readl_relaxed(sfc->regbase + SFC_FSR);
++	int level;
++
++	if (wr)
++		level = (fsr & SFC_FSR_TXLV_MASK) >> SFC_FSR_TXLV_SHIFT;
++	else
++		level = (fsr & SFC_FSR_RXLV_MASK) >> SFC_FSR_RXLV_SHIFT;
++
++	return level;
++}
++
++static int rockchip_sfc_wait_fifo_ready(struct rockchip_sfc *sfc, int wr, u32 timeout)
++{
++	unsigned long deadline = jiffies + timeout;
++	int level;
++
++	while (!(level = rockchip_sfc_get_fifo_level(sfc, wr))) {
++		if (time_after_eq(jiffies, deadline)) {
++			dev_warn(sfc->dev, "%s fifo timeout\n", wr ? "write" : "read");
++			return -ETIMEDOUT;
++		}
++		udelay(1);
++	}
++
++	return level;
++}
++
++/* The SFC_CTRL register is a global control register,
++ * when the controller is in busy state(SFC_SR),
++ * SFC_CTRL cannot be set.
++ */
++static void rockchip_sfc_wait_idle(struct rockchip_sfc *sfc, u32 timeout_us)
++{
++	u32 status;
++	int ret;
++
++	ret = readl_poll_timeout(sfc->regbase + SFC_SR, status,
++				!(status & SFC_SR_IS_BUSY),
++				20, timeout_us);
++	if (ret) {
++		dev_err(sfc->dev, "wait sfc idle timeout\n");
++		rockchip_sfc_reset(sfc);
++	}
++}
++
++static void rockchip_sfc_setup_ctrl(struct rockchip_sfc *sfc)
++{
++	u32 reg;
++
++	reg = IF_TYPE_STD << SFC_CTRL_DATA_BITS_SHIFT;
++	reg |= IF_TYPE_STD << SFC_CTRL_ADDR_BITS_SHIFT;
++	reg |= IF_TYPE_STD << SFC_CTRL_CMD_BITS_SHIFT;
++	reg |= SFC_CTRL_PHASE_SEL_NEGETIVE;
++
++	rockchip_sfc_wait_idle(sfc, 10000);
++
++	writel_relaxed(reg, sfc->regbase + SFC_CTRL);
++}
++static int rockchip_sfc_op_reg(struct rockchip_sfc_chip_priv *priv,
++			       u8 opcode, int len, u8 optype)
++{
++	struct rockchip_sfc *sfc = priv->sfc;
++	u32 reg;
++
++	rockchip_sfc_setup_ctrl(sfc);
++
++	reg = opcode << SFC_CMD_IDX_SHIFT;
++	reg |= len << SFC_CMD_TRAN_BYTES_SHIFT;
++	reg |= priv->cs << SFC_CMD_CS_SHIFT;
++	reg |= optype << SFC_CMD_DIR_SHIFT;
++	writel_relaxed(reg, sfc->regbase + SFC_CMD);
++
++	return 0;
++}
++
++static int rockchip_sfc_write_fifo(struct rockchip_sfc *sfc, const u8 *buf, int len)
++{
++	u8 bytes = len & 0x3;
++	u32 dwords;
++	int tx_level;
++	u32 write_words;
++	u32 tmp = 0;
++
++	dwords = len >> 2;
++	while (dwords) {
++		tx_level = rockchip_sfc_wait_fifo_ready(sfc, SFC_CMD_DIR_WR, HZ);
++		if (tx_level < 0)
++			return tx_level;
++		write_words = min_t(u32, tx_level, dwords);
++		iowrite32_rep(sfc->regbase + SFC_DATA, buf, write_words);
++		buf += write_words << 2;
++		dwords -= write_words;
++		}
++
++	/* write the rest non word aligned bytes */
++	if (bytes) {
++		tx_level = rockchip_sfc_wait_fifo_ready(sfc, SFC_CMD_DIR_WR, HZ);
++		if (tx_level < 0)
++			return tx_level;
++		memcpy(&tmp, buf, bytes);
++		writel_relaxed(tmp, sfc->regbase + SFC_DATA);
++	}
++
++	return len;
++}
++
++static int rockchip_sfc_read_fifo(struct rockchip_sfc *sfc, u8 *buf, int len)
++{
++	u8 bytes = len & 0x3;
++	u32 dwords;
++	u8 read_words;
++	int rx_level;
++	int tmp;
++
++	/* word aligned access only */
++	dwords = len >> 2;
++	while (dwords) {
++		rx_level = rockchip_sfc_wait_fifo_ready(sfc, SFC_CMD_DIR_RD, HZ);
++		if (rx_level < 0)
++			return rx_level;
++		read_words = min_t(u32, rx_level, dwords);
++		ioread32_rep(sfc->regbase + SFC_DATA, buf, read_words);
++		buf += read_words << 2;
++		dwords -= read_words;
++		}
++
++	/* read the rest non word aligned bytes */
++	if (bytes) {
++		rx_level = rockchip_sfc_wait_fifo_ready(sfc, SFC_CMD_DIR_RD, HZ);
++		if (rx_level < 0)
++			return rx_level;
++		tmp = readl_relaxed(sfc->regbase + SFC_DATA);
++		memcpy(buf, &tmp, bytes);
++	}
++
++	return len;
++}
++
++static int rockchip_sfc_read_reg(struct rockchip_sfc_chip_priv *priv,
++				 const struct spi_mem_op *op)
++{
++	struct rockchip_sfc *sfc = priv->sfc;
++	int ret;
++	int trans;
++	size_t n_rx = op->data.nbytes;
++	u8 opcode = op->cmd.opcode;
++	u8 *rxbuf = op->data.buf.in;
++
++	trans = min_t(int, n_rx, SFC_MAX_TRANS_BYTES);
++	ret = rockchip_sfc_op_reg(priv, opcode, trans, SFC_CMD_DIR_RD);
++	if (ret)
++		return ret;
++
++	ret = rockchip_sfc_read_fifo(sfc, rxbuf, trans);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
++static int rockchip_sfc_write_reg(struct rockchip_sfc_chip_priv *priv,
++				  const struct spi_mem_op *op)
++{
++	struct rockchip_sfc *sfc = priv->sfc;
++	int ret;
++	size_t n_tx = op->data.nbytes;
++	u8 opcode = op->cmd.opcode;
++	const u8 *txbuf = op->data.buf.out;
++
++	ret = rockchip_sfc_op_reg(priv, opcode, n_tx, SFC_CMD_DIR_WR);
++	if (ret)
++		return ret;
++	ret = rockchip_sfc_write_fifo(sfc, txbuf, n_tx);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
++static int rockchip_sfc_setup_transfer(struct rockchip_sfc_chip_priv *priv,
++				       const struct spi_mem_op *op,
++				       loff_t from_to, size_t len, u8 op_type)
++{
++	struct rockchip_sfc *sfc = priv->sfc;
++	u8 if_type = IF_TYPE_STD;
++	u8 addr_width = op->addr.nbytes;
++	u8 read_dummy_bits = op->dummy.nbytes << 3;
++	u32 reg;
++
++	if (op_type == SFC_CMD_DIR_RD)
++		if_type = rockchip_sfc_get_if_type(op, sfc);
++
++	rockchip_sfc_wait_idle(sfc, 10000);
++
++	writel_relaxed((if_type << SFC_CTRL_DATA_BITS_SHIFT) |
++		       (IF_TYPE_STD << SFC_CTRL_ADDR_BITS_SHIFT) |
++		       (IF_TYPE_STD << SFC_CTRL_CMD_BITS_SHIFT) |
++		       SFC_CTRL_PHASE_SEL_NEGETIVE,
++		       sfc->regbase + SFC_CTRL);
++
++	reg = op->cmd.opcode << SFC_CMD_IDX_SHIFT;
++
++	reg |= op_type << SFC_CMD_DIR_SHIFT;
++	reg |= (addr_width == 4) ?
++		SFC_CMD_ADDR_32BITS : SFC_CMD_ADDR_24BITS;
++
++	reg |= priv->cs << SFC_CMD_CS_SHIFT;
++	reg |= len << SFC_CMD_TRAN_BYTES_SHIFT;
++
++	if (op_type == SFC_CMD_DIR_RD)
++		reg |= SFC_CMD_DUMMY(read_dummy_bits);
++
++	writel_relaxed(reg, sfc->regbase + SFC_CMD);
++	writel_relaxed(from_to, sfc->regbase + SFC_ADDR);
++
++	return 0;
++}
++
++static int rockchip_sfc_do_dma_transfer(struct rockchip_sfc_chip_priv *priv,
++					const struct spi_mem_op *op, loff_t from_to,
++					dma_addr_t dma_buf, size_t len, u8 op_type)
++{
++	struct rockchip_sfc *sfc = priv->sfc;
++	u32 reg;
++	int err = 0;
++
++	init_completion(&sfc->cp);
++
++	writel_relaxed(SFC_ICLR_RX_FULL | SFC_ICLR_RX_UFLOW |
++		       SFC_ICLR_TX_OFLOW | SFC_ICLR_TX_EMPTY |
++		       SFC_ICLR_TRAN_FINISH | SFC_ICLR_BUS_ERR |
++		       SFC_ICLR_NSPI_ERR | SFC_ICLR_DMA,
++		       sfc->regbase + SFC_ICLR);
++
++	/* Enable transfer complete interrupt */
++	reg = readl_relaxed(sfc->regbase + SFC_IMR);
++	reg &= ~SFC_IMR_TRAN_FINISH;
++	writel_relaxed(reg, sfc->regbase + SFC_IMR);
++
++	err = rockchip_sfc_setup_transfer(priv, op, from_to, len, op_type);
++	if (err < 0)
++		return err;
++
++	writel_relaxed(dma_buf, sfc->regbase + SFC_DMA_ADDR);
++
++	/*
++	 * Start dma but note that the sfc->dma_buffer is derived from
++	 * dmam_alloc_coherent so we don't actually need any sync operations
++	 * for coherent dma memory.
++	 */
++	writel(0x1, sfc->regbase + SFC_DMA_TRIGGER);
++
++	/* Wait for the interrupt. */
++	if (!wait_for_completion_timeout(&sfc->cp, msecs_to_jiffies(2000))) {
++		dev_err(sfc->dev, "DMA wait for transfer finish timeout\n");
++		err = -ETIMEDOUT;
++	}
++
++	writel_relaxed(SFC_ICLR_RX_FULL | SFC_ICLR_RX_UFLOW |
++		       SFC_ICLR_TX_OFLOW | SFC_ICLR_TX_EMPTY |
++		       SFC_ICLR_TRAN_FINISH | SFC_ICLR_BUS_ERR |
++		       SFC_ICLR_NSPI_ERR | SFC_ICLR_DMA,
++		       sfc->regbase + SFC_ICLR);
++	/* Disable transfer finish interrupt */
++	reg = readl_relaxed(sfc->regbase + SFC_IMR);
++	reg |= SFC_IMR_TRAN_FINISH;
++	writel_relaxed(reg, sfc->regbase + SFC_IMR);
++
++	if (err) {
++		rockchip_sfc_reset(sfc);
++		return err;
++	}
++
++	return 0;
++}
++
++static inline int rockchip_sfc_pio_write(struct rockchip_sfc *sfc, u_char *buf,
++					 size_t len)
++{
++	return rockchip_sfc_write_fifo(sfc, buf, len);
++}
++
++static inline int rockchip_sfc_pio_read(struct rockchip_sfc *sfc, u_char *buf,
++					size_t len)
++{
++	return rockchip_sfc_read_fifo(sfc, buf, len);
++}
++
++static int rockchip_sfc_pio_transfer(struct rockchip_sfc_chip_priv *priv,
++				     const struct spi_mem_op *op, loff_t from_to, size_t len,
++				     u_char *buf, u8 op_type)
++{
++	struct rockchip_sfc *sfc = priv->sfc;
++	size_t trans;
++	int ret;
++
++	trans = min_t(size_t, SFC_MAX_TRANS_BYTES, len);
++	ret = rockchip_sfc_setup_transfer(priv, op, from_to, trans, op_type);
++	if (ret < 0)
++		return ret;
++
++	if (op_type == SFC_CMD_DIR_WR)
++		ret = rockchip_sfc_pio_write(sfc, buf, trans);
++	else
++		ret = rockchip_sfc_pio_read(sfc, buf, trans);
++
++	return ret;
++}
++
++static int rockchip_sfc_dma_transfer(struct rockchip_sfc_chip_priv *priv,
++				     const struct spi_mem_op *op, loff_t from_to, size_t len,
++				     u_char *buf, u8 op_type)
++{
++	struct rockchip_sfc *sfc = priv->sfc;
++	size_t trans;
++	int ret;
++
++	trans = min_t(size_t, SFC_MAX_TRANS_BYTES, len);
++
++	if (op_type == SFC_CMD_DIR_WR)
++		memcpy(sfc->buffer, buf, trans);
++
++	ret = rockchip_sfc_do_dma_transfer(priv, op, from_to, sfc->dma_buffer,
++					   trans, op_type);
++	if (ret) {
++		dev_warn(sfc->dev, "DMA timeout\n");
++		return ret;
++	}
++
++	if (op_type == SFC_CMD_DIR_RD)
++		memcpy(buf, sfc->buffer, trans);
++
++	return trans;
++}
++
++static ssize_t rockchip_sfc_do_rd_wr(struct rockchip_sfc_chip_priv *priv,
++				     const struct spi_mem_op *op, loff_t from_to, size_t len,
++				     u_char *buf, u32 op_type)
++{
++	struct rockchip_sfc *sfc = priv->sfc;
++
++	/* DMA can only handle word aligned transfer chunks */
++	if (likely(sfc->use_dma) && !(len & 0x3))
++		return rockchip_sfc_dma_transfer(priv, op, from_to, len, buf, op_type);
++	else
++		return rockchip_sfc_pio_transfer(priv, op, from_to, len, buf, op_type);
++}
++
++static ssize_t rockchip_sfc_read(struct rockchip_sfc_chip_priv *priv,
++				 const struct spi_mem_op *op)
++{
++	loff_t from = op->addr.val;
++	size_t len = op->data.nbytes;
++	u_char *read_buf = op->data.buf.in;
++
++	return rockchip_sfc_do_rd_wr(priv, op, from, len, read_buf, SFC_CMD_DIR_RD);
++}
++
++static ssize_t rockchip_sfc_write(struct rockchip_sfc_chip_priv *priv,
++				  const struct spi_mem_op *op)
++{
++	loff_t to = op->addr.val;
++	size_t len = op->data.nbytes;
++	const u_char *write_buf = op->data.buf.out;
++
++	return rockchip_sfc_do_rd_wr(priv, op, to, len, (u_char *)write_buf, SFC_CMD_DIR_WR);
++}
++
++static int rockchip_sfc_mem_process(struct spi_mem *mem, const struct spi_mem_op *op)
++{
++	struct rockchip_sfc *sfc = spi_master_get_devdata(mem->spi->master);
++	struct rockchip_sfc_chip_priv *priv = &sfc->flash[mem->spi->chip_select];
++
++	if (op->data.dir == SPI_MEM_DATA_IN && op->data.buf.in) {
++		if (!op->addr.nbytes)
++			return rockchip_sfc_read_reg(priv, op);
++
++		return rockchip_sfc_read(priv, op);
++	}
++
++	if (!op->addr.nbytes || !op->data.buf.out)
++		return rockchip_sfc_write_reg(priv, op);
++
++	return rockchip_sfc_write(priv, op);
++}
++
++static int rockchip_sfc_exec_mem_op(struct spi_mem *mem, const struct spi_mem_op *op)
++{
++	struct rockchip_sfc *sfc = spi_master_get_devdata(mem->spi->master);
++	struct rockchip_sfc_chip_priv *priv = &sfc->flash[mem->spi->chip_select];
++	int ret;
++
++	ret = clk_set_rate(sfc->clk, priv->clk_rate);
++	if (ret)
++		return ret;
++
++	ret = rockchip_sfc_mem_process(mem, op);
++	if (ret < 0) {
++		dev_err(&mem->spi->dev, "operation failed with %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static const char *rockchip_sfc_get_name(struct spi_mem *mem)
++{
++	struct rockchip_sfc *sfc = spi_master_get_devdata(mem->spi->master);
++	struct device *dev = sfc->dev;
++
++	return devm_kasprintf(dev, GFP_KERNEL, "%s.%d", dev_name(dev), mem->spi->chip_select);
++}
++
++static const struct spi_controller_mem_ops rockchip_sfc_mem_ops = {
++	.exec_op = rockchip_sfc_exec_mem_op,
++	.get_name = rockchip_sfc_get_name,
++};
++
++static int rockchip_sfc_register(struct device_node *np,
++				 struct rockchip_sfc *sfc)
++{
++	struct device *dev = sfc->dev;
++	int ret;
++
++	ret = of_property_read_u8(np, "reg", &sfc->flash[sfc->num_chip].cs);
++	if (ret) {
++		dev_err(dev, "No reg property for %s\n",
++			np->full_name);
++		return ret;
++	}
++
++	ret = of_property_read_u32(np, "spi-max-frequency",
++				   &sfc->flash[sfc->num_chip].clk_rate);
++	if (ret) {
++		dev_err(dev, "No spi-max-frequency property for %s\n",
++			np->full_name);
++		return ret;
++	}
++
++	sfc->flash[sfc->num_chip].sfc = sfc;
++	sfc->num_chip++;
++	return 0;
++}
++
++static int rockchip_sfc_register_all(struct rockchip_sfc *sfc)
++{
++	struct device *dev = sfc->dev;
++	struct device_node *np;
++	int ret;
++
++	for_each_available_child_of_node(dev->of_node, np) {
++		ret = rockchip_sfc_register(np, sfc);
++		if (ret)
++			dev_err(dev, "Failed to register all chips\n");
++			return ret;
++
++		if (sfc->num_chip >= SFC_MAX_CHIPSELECT_NUM) {
++			dev_warn(dev, "Exceeds the max cs limitation\n");
++			break;
++		}
++	}
++
++	return 0;
++}
++
++static irqreturn_t rockchip_sfc_irq_handler(int irq, void *dev_id)
++{
++	struct rockchip_sfc *sfc = dev_id;
++	u32 reg;
++
++	reg = readl(sfc->regbase + SFC_RISR);
++
++	/* Clear interrupt */
++	writel_relaxed(reg, sfc->regbase + SFC_ICLR);
++
++	if (reg & SFC_RISR_TRAN_FINISH)
++		complete(&sfc->cp);
++
++	return IRQ_HANDLED;
++}
++
++static int rockchip_sfc_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct spi_master *master;
++	struct resource *res;
++	struct rockchip_sfc *sfc;
++	int ret;
++
++	master = spi_alloc_master(&pdev->dev, sizeof(*sfc));
++	if (!master) {
++		dev_err(&pdev->dev, "spi_alloc_master failed\n");
++		return -ENOMEM;
++	}
++
++	master->mem_ops = &rockchip_sfc_mem_ops;
++	master->dev.of_node = pdev->dev.of_node;
++	master->mode_bits = SPI_RX_QUAD | SPI_RX_DUAL;
++	master->min_speed_hz = SFC_MIN_SPEED_HZ;
++	master->max_speed_hz = SFC_MAX_SPEED_HZ;
++
++	sfc = spi_master_get_devdata(master);
++	sfc->dev = dev;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	sfc->regbase = devm_ioremap_resource(dev, res);
++	if (IS_ERR(sfc->regbase))
++		return PTR_ERR(sfc->regbase);
++
++	sfc->clk = devm_clk_get(&pdev->dev, "clk-sfc");
++	if (IS_ERR(sfc->clk)) {
++		dev_err(&pdev->dev, "Failed to get sfc interface clk\n");
++		return PTR_ERR(sfc->clk);
++	}
++
++	sfc->hclk = devm_clk_get(&pdev->dev, "clk-hsfc");
++	if (IS_ERR(sfc->hclk)) {
++		dev_err(&pdev->dev, "Failed to get sfc ahp clk\n");
++		return PTR_ERR(sfc->hclk);
++	}
++
++	sfc->use_dma = !of_property_read_bool(sfc->dev->of_node,
++					      "rockchip,sfc-no-dma");
++
++	if (sfc->use_dma) {
++		ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
++		if (ret) {
++			dev_warn(dev, "Unable to set dma mask\n");
++			return ret;
++		}
++
++		sfc->buffer = dmam_alloc_coherent(dev, SFC_MAX_TRANS_BYTES,
++						  &sfc->dma_buffer,
++						  GFP_KERNEL);
++		if (!sfc->buffer)
++			return -ENOMEM;
++	}
++
++	ret = clk_prepare_enable(sfc->hclk);
++	if (ret) {
++		dev_err(&pdev->dev, "Failed to enable hclk\n");
++		goto err_hclk;
++	}
++
++	ret = clk_prepare_enable(sfc->clk);
++	if (ret) {
++		dev_err(&pdev->dev, "Failed to enable clk\n");
++		goto err_clk;
++	}
++
++	/* Find the irq */
++	ret = platform_get_irq(pdev, 0);
++	if (ret < 0) {
++		dev_err(dev, "Failed to get the irq\n");
++		goto err_irq;
++	}
++
++	ret = devm_request_irq(dev, ret, rockchip_sfc_irq_handler,
++			       0, pdev->name, sfc);
++	if (ret) {
++		dev_err(dev, "Failed to request irq\n");
++		goto err_irq;
++	}
++
++	sfc->num_chip = 0;
++	ret = rockchip_sfc_init(sfc);
++	if (ret)
++		goto err_irq;
++
++	ret = rockchip_sfc_register_all(sfc);
++	if (ret)
++		goto err_irq;
++
++	ret = devm_spi_register_master(dev, master);
++	if (ret)
++		goto err_irq;
++
++	return 0;
++
++err_irq:
++	clk_disable_unprepare(sfc->clk);
++err_clk:
++	clk_disable_unprepare(sfc->hclk);
++err_hclk:
++	return ret;
++}
++
++static int rockchip_sfc_remove(struct platform_device *pdev)
++{
++	struct rockchip_sfc *sfc = platform_get_drvdata(pdev);
++
++	clk_disable_unprepare(sfc->clk);
++	clk_disable_unprepare(sfc->hclk);
++	return 0;
++}
++
++static const struct of_device_id rockchip_sfc_dt_ids[] = {
++	{ .compatible = "rockchip,sfc"},
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, rockchip_sfc_dt_ids);
++
++static struct platform_driver rockchip_sfc_driver = {
++	.driver = {
++		.name	= "rockchip-sfc",
++		.of_match_table = rockchip_sfc_dt_ids,
++	},
++	.probe	= rockchip_sfc_probe,
++	.remove	= rockchip_sfc_remove,
++};
++module_platform_driver(rockchip_sfc_driver);
++
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("Rockchip Serial Flash Controller Driver");
++MODULE_AUTHOR("Shawn Lin <shawn.lin@rock-chips.com>");
 -- 
 2.25.1
 
