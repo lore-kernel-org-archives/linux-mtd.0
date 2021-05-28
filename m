@@ -2,78 +2,78 @@ Return-Path: <SRS0=UlXy=KX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9A99C4708C
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 May 2021 07:25:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19A36C4708D
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 May 2021 07:25:42 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 94AD1611C9
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 May 2021 07:25:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94AD1611C9
+	by mail.kernel.org (Postfix) with ESMTPS id D3149611C9
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 May 2021 07:25:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D3149611C9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=denx.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=VrzoArdNFVoDQqEyQ0Ov/y07EkYe8ybD9GFlRNt9XTw=; b=k+u7daL32Rvg2x
-	5DlvrEFgOYHxDR5Y+S+TL2YaqV548axAceEqBHAnDLcqgF0r7fVYMJO1sBtLl7lFf04ZKR4eTn+0b
-	SoAd9zyu5M41rruuxzAXXuXGwFXWG0vur8I7lJPOxYAkaZRO1OkmxyGcP1HXQH+0QTcwLNkP0hY2E
-	imUjJL63XDbUD72/qt/QUxqyLIlTR09BxAg40cYAwpJzR1MuALGtxv6qUfdtseF6vJlEFcuKUY8hQ
-	GLoCdfoEhm/iNLH6TpLpahuuPNDKwcc42mzgo7CjOt5lxwySx+oGoQRt1Zb+FnRU9akdr3o4IHNDP
-	36Lbc50t7ONSYa3Xn0dA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=XhQEDAoNDKN6gU5ScZwQkau/lyNvr457QRpf/DHOhjg=; b=huu9GcvIqJp3tI
+	IXoYkak49DS0xPsLOYQQZZNM7nUPHA7Q1IvceG+4ZPNX608qsshjZ7wxCqpRpgiiok1Vux1mpgYqj
+	o9MVOzwYB53ljsWHik1lhId66cBCRjn7GS4Ec7M7uvmUxq2DcGOMJvEeWPKjOZATrc8loeVOPh3CJ
+	CzPVl1KgBXdDLXe0694vtBqEBtSSwNnPCPoDud6n6QRqLnRf/Ww44h7bCQuTJOrK2dNRUG1GJU+zk
+	q67ly/Z5/p6lS1wzPfITw+VtG9Wjy014PmI9SQBLowg/quH8dhCTWYOXA20lEuflvpmYWzmuNswz0
+	nXb9ATMl5/1DCuyeDeAA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lmWqo-00CxoW-K9; Fri, 28 May 2021 07:24:10 +0000
+	id 1lmWrI-00Cy4o-Ir; Fri, 28 May 2021 07:24:40 +0000
 Received: from phobos.denx.de ([2a01:238:438b:c500:173d:9f52:ddab:ee01])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lmWqh-00CxlE-Ap
- for linux-mtd@lists.infradead.org; Fri, 28 May 2021 07:24:05 +0000
+ id 1lmWr0-00Cxut-TL
+ for linux-mtd@lists.infradead.org; Fri, 28 May 2021 07:24:25 +0000
 Received: from mail-internal.denx.de (p578adb1c.dip0.t-ipconnect.de
  [87.138.219.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: noc@denx.de)
- by phobos.denx.de (Postfix) with ESMTPSA id 3E35682CAC;
- Fri, 28 May 2021 09:24:00 +0200 (CEST)
+ by phobos.denx.de (Postfix) with ESMTPSA id 88ACD82E3F;
+ Fri, 28 May 2021 09:24:21 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
- s=phobos-20191101; t=1622186640;
- bh=NfjgOcSAiOExjKOX7ld2ADzJG7qdNwxiZWM1VBqYt9E=;
- h=From:To:Cc:Subject:Date:From;
- b=o6zo5DDxNTFdf/fgKJmQMvNkeb32LFTkr7UqaQiF+06lPL0IF4HidUepuIklIFIND
- mBx54zWoayzCp24D+NKnVDOjh1ZIHQ3PK8ra+8Ofg5gpd5uvgLC/N6tjYqYbYe6Ix3
- AHk5Q84ZcYSUkA5RtJ0dIRl0DUMuDVopyuIoE1Uk56LfV0cYhz9DnM8NipRwkl3X71
- 4WGQ0RLFTiLzVI/VMa4kzNP4nVemikoLJ2aSBod5UenzNjmUfJUPbOcYUUK1XU+10n
- MK5s1A+VDZHMI75klVayk8lACIMhse4ozEc+75McCn9dnvCdf1shUAv8VexDqUMkSD
- aIsHlPk1q/qNw==
+ s=phobos-20191101; t=1622186661;
+ bh=Nt97Z/GOJkfSLv5MLbWR0aroFd6JEF3i21v6xM1XO/c=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=wlU7HiMXKLy30uJTgixtxOjlGozppEYAAUWCU8DOVRKerKREIHbcMXV6WDzCM9vbO
+ edPhe0wrl1Q4yiLrsU8IPeiYoJvGfSxUul69NMMyWxLzG3jAIZv/alIqlcIvomf0eo
+ ZUv+aE5eiL6I9y1ZhbXXa9nqfAl3IPSYJ/fXf1eQNPuIcO8st1X3i0ipLRtZlsofxt
+ 3DJVSCnyUryOcbebPQylNI6jLPmwXwoc+kFPvzPD1IbgTDFof/ytGsLuz2rRp0bLFK
+ mpHmjQIZU8SVig/IcFKiNYmmZ9Emm06tU5h4/80KX7TeGkhVEx8+e/BkOSfbMhc5od
+ IOSug1uvkscUQ==
 Received: from pollux.denx.de (pollux [192.168.1.1])
- by mail-internal.denx.de (Postfix) with ESMTP id 8CB1F182B99;
- Fri, 28 May 2021 09:23:53 +0200 (CEST)
+ by mail-internal.denx.de (Postfix) with ESMTP id 98F6D182BA2;
+ Fri, 28 May 2021 09:23:55 +0200 (CEST)
 Received: by pollux.denx.de (Postfix, from userid 515)
- id 63FAC1A8BC5; Fri, 28 May 2021 09:23:53 +0200 (CEST)
+ id A74A21A8BC5; Fri, 28 May 2021 09:23:53 +0200 (CEST)
 From: Heiko Schocher <hs@denx.de>
 To: linux-mtd@lists.infradead.org
 Cc: Heiko Schocher <hs@denx.de>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
- Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH v1 0/2] mtd: devices: add support for microchip 48l640 EERAM
-Date: Fri, 28 May 2021 09:23:49 +0200
-Message-Id: <20210528072351.1639575-1-hs@denx.de>
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1 2/2] mtd: devices: add support for microchip 48l640 EERAM
+Date: Fri, 28 May 2021 09:23:51 +0200
+Message-Id: <20210528072351.1639575-3-hs@denx.de>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210528072351.1639575-1-hs@denx.de>
+References: <20210528072351.1639575-1-hs@denx.de>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at phobos.denx.de
 X-Virus-Status: Clean
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210528_002403_709303_B920CAA7 
-X-CRM114-Status: UNSURE (   8.44  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210528_002423_301801_1D5A30B9 
+X-CRM114-Status: GOOD (  29.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,25 +90,450 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+The Microchip 48l640 is a 8KByte EERAM connected via SPI.
 
-add support for microchip 48l640 eeram connected via
-SPI. Patch 1 introduces devicetree documentation
-and patch 2 the driver.
+Signed-off-by: Heiko Schocher <hs@denx.de>
+---
+I tried to use drivers/mtd/devices/mchp23k256.c but this
+driver does not use any status register and there seems
+slight differences in registers (no write enable register
+for example), so I decided to make a new driver.
 
+This driver sets the continuous mode bit in Status register,
+which states you can write continuous ... but after writting
+32 bytes the chip goes into an undefined state, so driver now
+writes data in 32 byte chunks.
 
+I also tried to use regmap, but it leads in a lot of more code,
+and as this chip has only spi interface it makes no sense, or?
 
-Heiko Schocher (2):
-  mtd: devices: add devicetree documentation for microchip 48l640
-  mtd: devices: add support for microchip 48l640 EERAM
+Tested  this driver on board imx8mp-phyboard-pollux-rdk
+board, which is already in mainline.
 
- .../bindings/mtd/microchip,mchp48l640.yaml    |  40 ++
- drivers/mtd/devices/Kconfig                   |   6 +
- drivers/mtd/devices/Makefile                  |   1 +
- drivers/mtd/devices/mchp48l640.c              | 379 ++++++++++++++++++
- 4 files changed, 426 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml
+Made some tbot tests, which write at random offset random
+length bytes with dd and and random content. Reread the data
+after a reboot and compare with the written data. Works fine.
+
+ drivers/mtd/devices/Kconfig      |   6 +
+ drivers/mtd/devices/Makefile     |   1 +
+ drivers/mtd/devices/mchp48l640.c | 379 +++++++++++++++++++++++++++++++
+ 3 files changed, 386 insertions(+)
  create mode 100644 drivers/mtd/devices/mchp48l640.c
 
+diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
+index 0f4c2d823de84..79cb981ececc9 100644
+--- a/drivers/mtd/devices/Kconfig
++++ b/drivers/mtd/devices/Kconfig
+@@ -89,6 +89,12 @@ config MTD_MCHP23K256
+ 	  platform data, or a device tree description if you want to
+ 	  specify device partitioning
+ 
++config MTD_MCHP48L640
++	tristate "Microchip 48L640 EERAM"
++	depends on SPI_MASTER
++	help
++	  This enables access to Microchip 48L640 EERAM chips, using SPI.
++
+ config MTD_SPEAR_SMI
+ 	tristate "SPEAR MTD NOR Support through SMI controller"
+ 	depends on PLAT_SPEAR || COMPILE_TEST
+diff --git a/drivers/mtd/devices/Makefile b/drivers/mtd/devices/Makefile
+index 991c8d12c0160..0362cf6bdc67f 100644
+--- a/drivers/mtd/devices/Makefile
++++ b/drivers/mtd/devices/Makefile
+@@ -13,6 +13,7 @@ obj-$(CONFIG_MTD_LART)		+= lart.o
+ obj-$(CONFIG_MTD_BLOCK2MTD)	+= block2mtd.o
+ obj-$(CONFIG_MTD_DATAFLASH)	+= mtd_dataflash.o
+ obj-$(CONFIG_MTD_MCHP23K256)	+= mchp23k256.o
++obj-$(CONFIG_MTD_MCHP48L640)	+= mchp48l640.o
+ obj-$(CONFIG_MTD_SPEAR_SMI)	+= spear_smi.o
+ obj-$(CONFIG_MTD_SST25L)	+= sst25l.o
+ obj-$(CONFIG_MTD_BCM47XXSFLASH)	+= bcm47xxsflash.o
+diff --git a/drivers/mtd/devices/mchp48l640.c b/drivers/mtd/devices/mchp48l640.c
+new file mode 100644
+index 0000000000000..e70a7cd2292bb
+--- /dev/null
++++ b/drivers/mtd/devices/mchp48l640.c
+@@ -0,0 +1,379 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Driver for Microchip 48L640 64 Kb SPI Serial EERAM
++ *
++ * Copyright Heiko Schocher <hs@denx.de>
++ *
++ * datasheet: http://ww1.microchip.com/downloads/en/DeviceDoc/20006055B.pdf
++ *
++ * we set continuous mode but reading/writing more bytes than
++ * pagesize seems to bring chip into state where readden values
++ * are wrong ... no idea why.
++ *
++ */
++#include <linux/delay.h>
++#include <linux/device.h>
++#include <linux/jiffies.h>
++#include <linux/module.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/partitions.h>
++#include <linux/mutex.h>
++#include <linux/sched.h>
++#include <linux/sizes.h>
++#include <linux/spi/flash.h>
++#include <linux/spi/spi.h>
++#include <linux/of_device.h>
++
++struct mchp48_caps {
++	unsigned int size;
++	unsigned int page_size;
++};
++
++struct mchp48l640_flash {
++	struct spi_device	*spi;
++	struct mutex		lock;
++	struct mtd_info		mtd;
++	const struct mchp48_caps	*caps;
++};
++
++#define MCHP48L640_CMD_WREN		0x06
++#define MCHP48L640_CMD_WRDI		0x04
++#define MCHP48L640_CMD_WRITE		0x02
++#define MCHP48L640_CMD_READ		0x03
++#define MCHP48L640_CMD_WRSR		0x01
++#define MCHP48L640_CMD_RDSR		0x05
++
++#define MCHP48L640_STATUS_RDY		0x01
++#define MCHP48L640_STATUS_WEL		0x02
++#define MCHP48L640_STATUS_BP0		0x04
++#define MCHP48L640_STATUS_BP1		0x08
++#define MCHP48L640_STATUS_SWM		0x10
++#define MCHP48L640_STATUS_PRO		0x20
++#define MCHP48L640_STATUS_ASE		0x40
++
++#define MCHP48L640_TIMEOUT		100
++
++#define MAX_CMD_SIZE			0x10
++
++#define to_mchp48l640_flash(x) container_of(x, struct mchp48l640_flash, mtd)
++
++static int mchp48l640_mkcmd(struct mchp48l640_flash *flash, u8 cmd, loff_t addr, char *buf)
++{
++	int i;
++
++	buf[0] = cmd;
++	buf[1] = addr >> 8;
++	buf[2] = addr;
++
++	return 3;
++}
++
++static int mchp48l640_read_status(struct mchp48l640_flash *flash, int *status)
++{
++	unsigned char cmd[2];
++	int ret;
++
++	cmd[0] = MCHP48L640_CMD_RDSR;
++	cmd[1] = 0x00;
++	mutex_lock(&flash->lock);
++	ret = spi_write_then_read(flash->spi, &cmd[0], 1, &cmd[1], 1);
++	mutex_unlock(&flash->lock);
++	if (!ret)
++		*status = cmd[1];
++	dev_dbg(&flash->spi->dev, "read status ret: %d status: %x", ret, *status);
++
++	return ret;
++}
++
++static int mchp48l640_waitforbit(struct mchp48l640_flash *flash, int bit, bool set)
++{
++	int ret, status;
++	unsigned long deadline;
++
++	deadline = jiffies + msecs_to_jiffies(MCHP48L640_TIMEOUT);
++	do {
++		ret = mchp48l640_read_status(flash, &status);
++		dev_dbg(&flash->spi->dev, "read status ret: %d bit: %x %sset status: %x",
++			ret, bit, (set ? "" : "not"), status);
++		if (ret)
++			return ret;
++
++		if (set) {
++			if ((status & bit) == bit)
++				return 0;
++		} else {
++			if ((status & bit) == 0)
++				return 0;
++		}
++
++		usleep_range(1000, 2000);
++	} while (!time_after_eq(jiffies, deadline));
++
++	dev_err(&flash->spi->dev, "Timeout waiting for bit %x %s set in status register.",
++		bit, (set ? "" : "not"));
++	return -ETIMEDOUT;
++}
++
++static int mchp48l640_write_prepare(struct mchp48l640_flash *flash, bool enable)
++{
++	unsigned char cmd[2];
++	int ret;
++
++	if (enable)
++		cmd[0] = MCHP48L640_CMD_WREN;
++	else
++		cmd[0] = MCHP48L640_CMD_WRDI;
++
++	mutex_lock(&flash->lock);
++	ret = spi_write(flash->spi, cmd, 1);
++	mutex_unlock(&flash->lock);
++
++	if (ret)
++		dev_err(&flash->spi->dev, "write %sable failed ret: %d",
++			(enable ? "en" : "dis"), ret);
++
++	dev_dbg(&flash->spi->dev, "write %sable success ret: %d",
++		(enable ? "en" : "dis"), ret);
++	if (enable)
++		return mchp48l640_waitforbit(flash, MCHP48L640_STATUS_WEL, true);
++
++	return ret;
++}
++
++static int mchp48l640_set_mode(struct mchp48l640_flash *flash)
++{
++	unsigned char cmd[2];
++	int status;
++	int ret;
++
++	ret = mchp48l640_write_prepare(flash, true);
++	if (ret)
++		return ret;
++
++	cmd[0] = MCHP48L640_CMD_WRSR;
++	cmd[1] = MCHP48L640_STATUS_PRO;
++
++	mutex_lock(&flash->lock);
++	ret = spi_write(flash->spi, cmd, 2);
++	mutex_unlock(&flash->lock);
++	if (ret)
++		dev_err(&flash->spi->dev, "Could not set continuous mode ret: %d", ret);
++
++	return mchp48l640_waitforbit(flash, MCHP48L640_STATUS_PRO, true);
++}
++
++static int mchp48l640_wait_rdy(struct mchp48l640_flash *flash)
++{
++	return mchp48l640_waitforbit(flash, MCHP48L640_STATUS_RDY, false);
++};
++
++static int mchp48l640_write_page(struct mtd_info *mtd, loff_t to, size_t len,
++			    size_t *retlen, const unsigned char *buf)
++{
++	struct mchp48l640_flash *flash = to_mchp48l640_flash(mtd);
++	unsigned char *cmd;
++	int ret;
++	int cmdlen;
++
++	cmd = kmalloc((3 + len), GFP_KERNEL | GFP_DMA);
++	if (!cmd)
++		return -ENOMEM;
++
++	ret = mchp48l640_wait_rdy(flash);
++	if (ret)
++		goto fail;
++
++	ret = mchp48l640_write_prepare(flash, true);
++	if (ret)
++		goto fail;
++
++	mutex_lock(&flash->lock);
++	cmdlen = mchp48l640_mkcmd(flash, MCHP48L640_CMD_WRITE, to, cmd);
++	memcpy(&cmd[cmdlen], buf, len);
++	ret = spi_write(flash->spi, cmd, cmdlen + len);
++	mutex_unlock(&flash->lock);
++	if (!ret)
++		*retlen += len;
++	else
++		goto fail;
++
++	ret = mchp48l640_waitforbit(flash, MCHP48L640_STATUS_WEL, false);
++	if (ret)
++		goto fail;
++
++	kfree(cmd);
++	return 0;
++fail:
++	kfree(cmd);
++	dev_err(&flash->spi->dev, "write fail with: %d", ret);
++	return ret;
++};
++
++static int mchp48l640_write(struct mtd_info *mtd, loff_t to, size_t len,
++			    size_t *retlen, const unsigned char *buf)
++{
++	struct mchp48l640_flash *flash = to_mchp48l640_flash(mtd);
++	int ret;
++	size_t wlen = 0;
++	loff_t woff = to;
++	size_t ws;
++	int i;
++	int page_sz = flash->caps->page_size;
++
++	/*
++	 * we set PRO bit (page rollover), but writing length > page size
++	 * does result in total chaos, so write in 32 byte chunks.
++	 */
++	while (wlen < len) {
++		ws = min((len - wlen), page_sz);
++		ret = mchp48l640_write_page(mtd, woff, ws, retlen, &buf[wlen]);
++		if (ret)
++			return ret;
++		wlen += ws;
++		woff += ws;
++	}
++
++	return ret;
++}
++
++static int mchp48l640_read_page(struct mtd_info *mtd, loff_t from, size_t len,
++			   size_t *retlen, unsigned char *buf)
++{
++	struct mchp48l640_flash *flash = to_mchp48l640_flash(mtd);
++	unsigned char *cmd;
++	int ret;
++	int cmdlen;
++
++	cmd = kmalloc((3 + len), GFP_KERNEL | GFP_DMA);
++	if (!cmd)
++		return -ENOMEM;
++
++	ret = mchp48l640_wait_rdy(flash);
++	if (ret)
++		goto fail;
++
++	mutex_lock(&flash->lock);
++	cmdlen = mchp48l640_mkcmd(flash, MCHP48L640_CMD_READ, from, cmd);
++	ret = spi_write_then_read(flash->spi, cmd, cmdlen, buf, len);
++	mutex_unlock(&flash->lock);
++	if (!ret)
++		*retlen += len;
++
++	return ret;
++
++fail:
++	kfree(cmd);
++	dev_err(&flash->spi->dev, "read fail with: %d", ret);
++	return ret;
++}
++
++static int mchp48l640_read(struct mtd_info *mtd, loff_t from, size_t len,
++			   size_t *retlen, unsigned char *buf)
++{
++	struct mchp48l640_flash *flash = to_mchp48l640_flash(mtd);
++	int ret;
++	size_t wlen = 0;
++	loff_t woff = from;
++	size_t ws;
++	int i;
++	int page_sz = flash->caps->page_size;
++
++	/*
++	 * we set PRO bit (page rollover), but if read length > page size
++	 * does result in total chaos in result ...
++	 */
++	dev_dbg(&flash->spi->dev, "read len: %d from: %llx", len, from);
++	while (wlen < len) {
++		ws = min((len - wlen), page_sz);
++		ret = mchp48l640_read_page(mtd, woff, ws, retlen, &buf[wlen]);
++		if (ret)
++			return ret;
++		wlen += ws;
++		woff += ws;
++	}
++
++	return ret;
++};
++
++static const struct mchp48_caps mchp48l640_caps = {
++	.size = SZ_8K,
++	.page_size = 32,
++};
++
++static int mchp48l640_probe(struct spi_device *spi)
++{
++	struct mchp48l640_flash *flash;
++	struct flash_platform_data *data;
++	int err;
++	int status;
++
++	flash = devm_kzalloc(&spi->dev, sizeof(*flash), GFP_KERNEL);
++	if (!flash)
++		return -ENOMEM;
++
++	flash->spi = spi;
++	mutex_init(&flash->lock);
++	spi_set_drvdata(spi, flash);
++
++	err = mchp48l640_read_status(flash, &status);
++	if (err)
++		return err;
++
++	err = mchp48l640_set_mode(flash);
++	if (err)
++		return err;
++
++	data = dev_get_platdata(&spi->dev);
++
++	flash->caps = of_device_get_match_data(&spi->dev);
++	if (!flash->caps)
++		flash->caps = &mchp48l640_caps;
++
++	mtd_set_of_node(&flash->mtd, spi->dev.of_node);
++	flash->mtd.dev.parent	= &spi->dev;
++	flash->mtd.type		= MTD_RAM;
++	flash->mtd.flags	= MTD_CAP_RAM;
++	flash->mtd.writesize	= flash->caps->page_size;
++	flash->mtd.size		= flash->caps->size;
++	flash->mtd._read	= mchp48l640_read;
++	flash->mtd._write	= mchp48l640_write;
++
++	err = mtd_device_register(&flash->mtd, data ? data->parts : NULL,
++				  data ? data->nr_parts : 0);
++	if (err)
++		return err;
++
++	return 0;
++}
++
++static int mchp48l640_remove(struct spi_device *spi)
++{
++	struct mchp48l640_flash *flash = spi_get_drvdata(spi);
++
++	return mtd_device_unregister(&flash->mtd);
++}
++
++static const struct of_device_id mchp48l640_of_table[] = {
++	{
++		.compatible = "microchip,48l640",
++		.data = &mchp48l640_caps,
++	},
++	{}
++};
++MODULE_DEVICE_TABLE(of, mchp48l640_of_table);
++
++static struct spi_driver mchp48l640_driver = {
++	.driver = {
++		.name	= "mchp48l640",
++		.of_match_table = of_match_ptr(mchp48l640_of_table),
++	},
++	.probe		= mchp48l640_probe,
++	.remove		= mchp48l640_remove,
++};
++
++module_spi_driver(mchp48l640_driver);
++
++MODULE_DESCRIPTION("MTD SPI driver for Microchip 48l640 EERAM chips");
++MODULE_AUTHOR("Heiko Schocher <hs@denx.de>");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("spi:mchp48l640");
 -- 
 2.30.2
 
