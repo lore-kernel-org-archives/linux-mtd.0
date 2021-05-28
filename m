@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 771ACC47087
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 May 2021 10:04:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 984F0C4708D
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 May 2021 10:04:54 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2790261358
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 May 2021 10:04:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2790261358
+	by mail.kernel.org (Postfix) with ESMTPS id 6541F61358
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 May 2021 10:04:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6541F61358
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,22 +23,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=H6IXJVVcMp5DhK6GC5YOKfHYvRsO1YNGKYVfzaAZ5K4=; b=FdbsOEA8oYY0CS
-	JqZyic4Sq8W16Fx0d+w/fQuB7ybz6HLpjV88lfQJ5pwp8YQINJI/02VvNHPNuEkG1yGCluWM/Gk2P
-	j2fRfDyIovLt5hbFMo4UZFi5CJbMZN+6oDUDJl2ix7B0oTstpvZdfjhUsLi0cdwQM6ORti8e4LKP1
-	NHkLXj0LR2vLvyuD+d6u0Z7H+agxR77ycjJ8landusvMBJ3iINQPXwEGvoLRhwxD8pm4npWmPLjdC
-	5K/gjX8IhT/jNWGoPdHTlpACB7NVXGqSRDW+KRV3xMC7MJXBE2jHK+Xp+dzGgbA3McnNQdjL1ckGP
-	nT2NuuDivSmyFmTjDJQQ==;
+	List-Owner; bh=nu50rSV6fRK+nyEczFHYfKoEopZw4TkVhrw1qa28JJY=; b=guOrE1QU/xVQAh
+	Sx3u0SacaXeJTc2cHaHRs+VeI0qrFUUdtJfKzyGmK+OY+HTXY7B2DWRjcBVzdhiRwBhkw0q456FtC
+	KZbhETjjN9PbMNbnXENevbkcPzncv16tb9/wJqm2BWmw7ypCUjhjy4CIiiSBugm+ZCZH7CeYIudvI
+	ZwkgdvxNXl6x1FBvYq1AnUgVYlLT+PiVGevm/r6lTMvbl+619NvNCNAesm4nCcMSeKkk+vetj/a4D
+	D7s4VtyQ9S3XXfI+AfswH6awXPcrQblJb3IY7CgxnTpoXdoT5GzM4Q7uQG3tYifuuujVP+pcV79Fg
+	Sfxwoz/ugRCqivmS135Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lmZL2-00EDIa-W6; Fri, 28 May 2021 10:03:33 +0000
+	id 1lmZLm-00EDjj-AO; Fri, 28 May 2021 10:04:18 +0000
 Received: from relay8-d.mail.gandi.net ([217.70.183.201])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lmZJY-00ECVS-K3
+ id 1lmZJb-00ECY6-Is
  for linux-mtd@lists.infradead.org; Fri, 28 May 2021 10:02:05 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 677F51BF211;
- Fri, 28 May 2021 10:01:56 +0000 (UTC)
+ by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id BD51A1BF208;
+ Fri, 28 May 2021 10:02:00 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
@@ -50,17 +50,17 @@ Cc: Michal Simek <monstr@monstr.eu>,
  Srinivas Goud <sgoud@xilinx.com>,
  Siva Durga Prasad Paladugu <sivadur@xilinx.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>, Rob Herring <robh@kernel.org>
-Subject: [PATCH v21 02/18] dt-binding: memory: pl353-smc: Document the range
- property
-Date: Fri, 28 May 2021 12:01:35 +0200
-Message-Id: <20210528100151.286662-3-miquel.raynal@bootlin.com>
+Subject: [PATCH v21 05/18] dt-binding: memory: pl353-smc: Fix the example
+ syntax and style
+Date: Fri, 28 May 2021 12:01:38 +0200
+Message-Id: <20210528100151.286662-6-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210528100151.286662-1-miquel.raynal@bootlin.com>
 References: <20210528100151.286662-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210528_030200_822571_8FD2B7D3 
-X-CRM114-Status: UNSURE (   8.26  )
+X-CRM114-CacheID: sfid-20210528_030203_806866_87804822 
+X-CRM114-Status: UNSURE (   7.86  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,28 +78,71 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The ranges property is missing in the description while actually used in
-the example. This property is actually needed, so mention it.
+Enhance the spacing, the comment style, add { }, remove (...).
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- .../devicetree/bindings/memory-controllers/pl353-smc.txt        | 2 ++
- 1 file changed, 2 insertions(+)
+ .../bindings/memory-controllers/pl353-smc.txt | 48 ++++++++++---------
+ 1 file changed, 25 insertions(+), 23 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt b/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
-index f0b7fe173668..4210acf46a55 100644
+index 105160c795a1..46e17f5bc45b 100644
 --- a/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
 +++ b/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
-@@ -11,6 +11,8 @@ Required properties:
- - clocks		: Clock phandles (see clock bindings for details).
- - address-cells		: Must be 2.
- - size-cells		: Must be 1.
-+- ranges		: Memory bus areas for interacting with the devices.
-+			  Encodes CS to memory region association.
+@@ -24,27 +24,29 @@ Required device node properties:
+ 			of the memory region requested by the device.
  
- The child device node represents the controller connected to the SMC
- bus. Only one between: NAND controller, NOR controller and SRAM controller
+ Example:
+-	smcc: memory-controller@e000e000
+-			compatible = "arm,pl353-smc-r2p1", "arm,primecell";
+-			clock-names = "memclk", "apb_pclk";
+-			clocks = <&clkc 11>, <&clkc 44>;
+-			reg = <0xe000e000 0x1000>;
+-			#address-cells = <2>;
+-			#size-cells = <1>;
+-			ranges = <0x0 0x0 0xe1000000 0x1000000 //Nand CS Region
+-				  0x1 0x0 0xe2000000 0x2000000 //SRAM/NOR CS Region
+-				  0x2 0x0 0xe4000000 0x2000000>; //SRAM/NOR CS Region
+-			nand_0: flash@e1000000 {
+-				compatible = "arm,pl353-nand-r2p1"
+-				reg = <0 0 0x1000000>;
+-				(...)
+-			};
+-			nor0: flash@e2000000 {
+-				compatible = "cfi-flash";
+-				reg = <1 0 0x2000000>;
+-			};
+-			nor1: flash@e4000000 {
+-				compatible = "cfi-flash";
+-				reg = <2 0 0x2000000>;
+-			};
++	smcc: memory-controller@e000e000 {
++		compatible = "arm,pl353-smc-r2p1", "arm,primecell";
++		clock-names = "memclk", "apb_pclk";
++		clocks = <&clkc 11>, <&clkc 44>;
++		reg = <0xe000e000 0x1000>;
++		#address-cells = <2>;
++		#size-cells = <1>;
++		ranges = <0x0 0x0 0xe1000000 0x1000000 /* Nand CS region */
++			  0x1 0x0 0xe2000000 0x2000000 /* SRAM/NOR CS0 region */
++			  0x2 0x0 0xe4000000 0x2000000>; /* SRAM/NOR CS1 region */
++
++		nand_0: flash@e1000000 {
++			compatible = "arm,pl353-nand-r2p1";
++			reg = <0 0 0x1000000>;
++		};
++
++		nor0: flash@e2000000 {
++			compatible = "cfi-flash";
++			reg = <1 0 0x2000000>;
++		};
++
++		nor1: flash@e4000000 {
++			compatible = "cfi-flash";
++			reg = <2 0 0x2000000>;
++		};
+ 	};
 -- 
 2.27.0
 
