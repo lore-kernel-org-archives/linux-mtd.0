@@ -2,77 +2,69 @@ Return-Path: <SRS0=sw+G=K2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3E26C47080
-	for <linux-mtd@archiver.kernel.org>; Mon, 31 May 2021 11:31:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27CBAC47082
+	for <linux-mtd@archiver.kernel.org>; Mon, 31 May 2021 12:44:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 63C75610C8
-	for <linux-mtd@archiver.kernel.org>; Mon, 31 May 2021 11:31:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 63C75610C8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id DF58161279
+	for <linux-mtd@archiver.kernel.org>; Mon, 31 May 2021 12:44:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF58161279
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PZE//dIDVZ9w7bDoCfNluH2BWXJIxdoC82/LUIRRPRI=; b=ANsI8Z/yhSB0xG
-	9g/qc6wHoQURBXgPn/60smFGiGPPzDigjhrn7upuS+JruaP0lqBSjY82EWMtYcqU2vbhCPozhL2Dk
-	jHh/8KEHG1+cvjndjRqRmqRS/VenZRDuKFpptp75kso5IqHiSu/0+U3HsU6Hd66YvkwOpmKYgIxVx
-	V9HE5iiV65HQqc55EZoLZcVyUzn54S5I2gwAekV5iixkiL81kJpu7UsQdHkPN9tFsySDP2eNDwMqy
-	BW40kEw537qT/L//4bJPVaxQ9D0aSwCGAOZzRvO/JoEU68wAzYg+Lodvs9q48g+vPs+dzmq1JsDl6
-	J8koqd1NTY8fGD4oh/Tw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=iZ9uktJEv1Yd+CGbcvkEDeDWCkoNY3958xdlAmc9xiU=; b=gKeZlAVxF6+tM6
+	kJAJ4zUjJyERCFuYSyJx/Dbq0d2mTaENg/k57oZx99S7QxLg7eSJ+nTygldgMRk2OnJUO+szXrLuc
+	VmRJsc9u8hbBAOA4d103ymuuUwFlakCMn0ska5y5lue51PG7D+fN/V8zVMFt+xW/EEoh5svesIWHb
+	OM58h343qeRe+WKA8rLSjvGcvCnF7la2qTlqimI3F/6mMBpAfa582xjuOW4bVvwiCA8ZlVKTY4S9r
+	j7lrcqqru/kQDmbZIwNO6sKAfNn0MSpia3e/pamn+k3ibuM7Hmtg2d+ioDwyvzOHSJEXs9IyS6/Oy
+	aJhJKT8tot2yMzNqhhow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lng7P-00C0Cz-00; Mon, 31 May 2021 11:30:03 +0000
-Received: from mga12.intel.com ([192.55.52.136])
+	id 1lnhG2-00CClR-KD; Mon, 31 May 2021 12:43:02 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lng7M-00C0Bv-4B
- for linux-mtd@lists.infradead.org; Mon, 31 May 2021 11:30:01 +0000
-IronPort-SDR: 0/WbR2jsz7+K+PgJGENTJbwX2jP8YUd7ocUff+a6zmrnSH/8blU7FjkS8t7LcfMYv2PwUkYwla
- kPE3KvuZRE9g==
-X-IronPort-AV: E=McAfee;i="6200,9189,10000"; a="183022110"
-X-IronPort-AV: E=Sophos;i="5.83,237,1616482800"; d="scan'208";a="183022110"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 May 2021 04:29:58 -0700
-IronPort-SDR: PKaWed0PluNBvEuVgtNbJqkOgb+/nftxvtmF34myWchZAqtMN/SuwHkpr2Te+DSxq256hSBWX+
- QzEN/xLa3Bhg==
-X-IronPort-AV: E=Sophos;i="5.83,237,1616482800"; d="scan'208";a="632543415"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
- by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 May 2021 04:29:56 -0700
-Received: by lahna (sSMTP sendmail emulation); Mon, 31 May 2021 14:27:41 +0300
-Date: Mon, 31 May 2021 14:27:41 +0300
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Michael Walle <michael@walle.cc>
-Cc: Pratyush Yadav <p.yadav@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: spi-nor: intel-spi: Add support for second flash chip
-Message-ID: <YLTILUh+bPhZ4ToR@lahna.fi.intel.com>
-References: <20210525160318.35802-1-mika.westerberg@linux.intel.com>
- <20210525191414.dc45h27rzqen4dce@ti.com>
- <20210526091250.GY291593@lahna.fi.intel.com>
- <20210526092417.GA291593@lahna.fi.intel.com>
- <e82f44552d0d4284fc5ed22ee0bee85a@walle.cc>
- <20210526102810.GB291593@lahna.fi.intel.com>
+ id 1lnhFz-00CCjz-JS
+ for linux-mtd@lists.infradead.org; Mon, 31 May 2021 12:43:01 +0000
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Ftvy36PLvz67W2;
+ Mon, 31 May 2021 20:39:55 +0800 (CST)
+Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 31 May 2021 20:42:52 +0800
+Received: from huawei.com (10.175.127.227) by dggema761-chm.china.huawei.com
+ (10.1.198.203) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 31
+ May 2021 20:42:51 +0800
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+To: <richard@nod.at>, <yangds.fnst@cn.fujitsu.com>, <s.hauer@pengutronix.de>
+CC: <yi.zhang@huawei.com>, <houtao1@huawei.com>, <yukuai3@huawei.com>,
+ <chengzhihao1@huawei.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/2] ubifs: Fixes for xattr concurrent operations
+Date: Mon, 31 May 2021 20:52:08 +0800
+Message-ID: <20210531125210.1173922-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210526102810.GB291593@lahna.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema761-chm.china.huawei.com (10.1.198.203)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210531_043000_195862_E3EC0E0C 
-X-CRM114-Status: GOOD (  28.60  )
+X-CRM114-CacheID: sfid-20210531_054259_830264_9D0313F1 
+X-CRM114-Status: UNSURE (   6.04  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,51 +81,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi guys,
+UBIFS may occur some problems with concurrent xattr_{set|get} and
+listxattr operations, such as assertion failure, memory corruption,
+stale xattr value[1].
 
-On Wed, May 26, 2021 at 01:28:16PM +0300, Mika Westerberg wrote:
-> Hi,
-> 
-> On Wed, May 26, 2021 at 11:31:58AM +0200, Michael Walle wrote:
-> > > Oh, I see now this commit:
-> > > 
-> > > a314f6367787 ("mtd: spi-nor: Convert cadence-quadspi to use spi-mem
-> > > framework")
-> > > 
-> > > So "SPI MEM" means generic SPI subsystem for memory mapped devices.
-> > > Unfortunately Intel controller at least is not capable of running
-> > > generic SPI transactions. It only supports accessing SPI-NOR flashes and
-> > > for those there is small set of commands that supports. I don't think it
-> > > is even possible to convert the driver to generic SPI subsystem.
-> > 
-> > AFAIK it stands for SPI memory device (memory mapped is not a requirement).
-> > Eg. spi-nxp-fspi doesn't support generic SPI devices either, but just SPI
-> > flashes. So I'd guess SPI MEM is exactly what you are looking for.
-> 
-> OK, I see that there is ->mem_ops that can be used to implement
-> different higher level commands. What I'm not seeing is that how the
-> child SPI flash is created using this scheme? DeviceTree and ACPI are
-> supported fine but what about scanning? I mean the intel_spi driver has
-> this:
-> 
->   spi_nor_scan(&ispi->nor, NULL, &hwcaps);
-> 
-> But if the driver is to be moved under drivers/spi/* you can't really
-> call these functions anymore or can you? Or the point is to keep the
-> driver under controllers/ and just call spi_nor_scan(), and in addition
-> implement the new mem_ops?
-> 
-> Thanks in advance and sorry about many questions but there does not seem
-> to be a conversion guide nor any (non-DT/ACPI) examples that I can take
-> a look. :-)
+Patch 1: Import a new rw-lock in @ubifs_inode to serilize write
+	 operations on xattr
+Patch 2: Remove unnecessary ui_mutex in ubifs_xattr_get and change_xattr
 
-Can you provide some guidance here? So in order to use the generic SPI
-subsystem with "SPI MEM" parts of it, I would need to be able to create
-the child SPI-NOR flash device without using ACPI or DT (as these
-systems do not have any ACPI/DT description), or use spi_nor_scan() but
-none of the driver under drivers/spi are calling it.
+BTW changing @host->ui_mutex to a rw lock to adapting xattr operations
+is a risky method, since @host->ui_mutex acts as too many roles:
+* serializes inode write-back with the rest of VFS operations(such as
+  rename, mkdir, rmdir, create, eg.)
+* serializes "clean <-> dirty" state changes, serializes bulk-read
+* protects @dirty, @bulk_read, @ui_size, and @xattr_size
 
-Thanks!
+Besides, if xattr operations and io/vfs operations share same rw-lock,
+xattr operations may effect UBIFS performance more or less.
+
+[1] https://lore.kernel.org/linux-mtd/20200630130438.141649-1-houtao1@huawei.com
+
+Zhihao Cheng (2):
+  ubifs: Fix races between xattr_{set|get} and listxattr operations
+  ubifs: Remove ui_mutex in ubifs_xattr_get and change_xattr
+
+ fs/ubifs/super.c |  1 +
+ fs/ubifs/ubifs.h |  2 ++
+ fs/ubifs/xattr.c | 48 +++++++++++++++++++++++++++++++++---------------
+ 3 files changed, 36 insertions(+), 15 deletions(-)
+
+-- 
+2.25.4
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
