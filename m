@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0386C47080
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Jun 2021 12:37:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF116C4708F
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Jun 2021 12:45:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6F0ED61396
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Jun 2021 12:37:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F0ED61396
+	by mail.kernel.org (Postfix) with ESMTPS id 73BB760234
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Jun 2021 12:45:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73BB760234
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,36 +23,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
 	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=JgYT7z0gtu7fe/MprjTr9WUl0iBrSO21m4HneJ19a3A=; b=ptnN9jUsuWPDdziXKSyQxQ/gTC
-	WjIRTbTWxPoX5Duefp7o1EXFmYFvJwfAMgxnQn11moKke7go1NI1IQUyRrAWnwS5o68cgrik4mXdj
-	G7ohp6l47iPcWUY3k7jDQbd52es2i+wT2mwwvUEXT1m0i37xsSnSFqNomOGYJyKsatopJqBbITxZQ
-	HviDucUytvXnRroBV+RYxSWwp4EZ0zRJnFlvMqdlqO9BCp2VC3vk7bhXT3zn68/ODRzELlW9PqWsw
-	ZHEQ/sh+l/Ll5CyyUWgv4Zdcrj4ZigiXiCO+Gebg7JmQ1AUjX9kFcqWhDzP3NRENFjfJ3HS4cLM7L
-	XK6MlEow==;
+	bh=FuKS7Tmvz93NghcIlx3IBXlvtnOooJHT7v0Wtf/0OK0=; b=4kG5oOZ+hT36sWEBUinA9ovJ8R
+	OKlT7JFsj2QMjJaRIIOdqXkVN0onTD1qxv3y4ZTuLT6lyT6ho+MtkbKZINytxDqP/z7F0Bwx3XYr6
+	9cQHdDJPckRIdxpAbt5hqD3N1DQeWLNYhc2w680SQWu8MhRnZnMSmmhy14gmqW4OyksIKce3v1Lg1
+	DYJ+dE17JiRoPiH+/jxwUotBzRrLQr8dw2I3/JA494hNSQvUYBvEu6ozOJLtKUWL9dU5fTU3JvtMb
+	fffi8d0BluO0xZw18xagRSQ+QeCI3a9p+Eq95EeIH6AsGS1kflBKuCVK1n3eXvWF5eGE3VvzoigcV
+	JAL8bhdA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lo3dO-00GXtz-3M; Tue, 01 Jun 2021 12:36:38 +0000
+	id 1lo3lX-00GZhR-1V; Tue, 01 Jun 2021 12:45:03 +0000
 Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lo3dK-00GXsP-39
- for linux-mtd@lists.infradead.org; Tue, 01 Jun 2021 12:36:35 +0000
+ id 1lo3lU-00GZg8-01
+ for linux-mtd@lists.infradead.org; Tue, 01 Jun 2021 12:45:01 +0000
 Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 7214222236;
- Tue,  1 Jun 2021 14:36:28 +0200 (CEST)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 8735722236;
+ Tue,  1 Jun 2021 14:44:57 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1622550988;
+ s=mail2016061301; t=1622551498;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=KbCr62UBWzd91uPGhP19/e09ZyrN+lS6g3DQdq64C/A=;
- b=DN6N48S0t7BUy1ObG3XMDfSA+JSidH0Pet1iGzTVl/ITZ1mOik8TV+mZvxe5mw9NlrHi5r
- JyZ882Z4uCKn5v1ZFBnQVfLUehdWVE5GZOS0Z35Lz999CanT3O3Yw8dSz36x4N1Z7xba70
- l2zgKKY6GjVHld5Sj00fW0xdwNRH7vI=
+ bh=b43l9JwGMojnvxR7u6rb4bHE+y8B1xgeuP6UyhnRg5c=;
+ b=rNrxYXXV2kN3d7v6g8tdreG6grSr43AMWyyJiXRAN9wHYI7ylyOnvcu3RMCODE/vVAQgxk
+ Hibh6sxO6fBla+TpjAkb4hR658JUgaTvrByCl2UMuJxUp4jeiyZ2ngu/tk0Z7wyDTdNIYh
+ 0fF8pYRGkd4I7NJq9uFUwXwFw3Ab4oc=
 MIME-Version: 1.0
-Date: Tue, 01 Jun 2021 14:36:28 +0200
+Date: Tue, 01 Jun 2021 14:44:57 +0200
 From: Michael Walle <michael@walle.cc>
 To: Pratyush Yadav <p.yadav@ti.com>
 Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
@@ -60,17 +60,18 @@ Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
  Raghavendra <vigneshr@ti.com>, Mark Brown <broonie@kernel.org>,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-spi@vger.kernel.org
-Subject: Re: [PATCH v2 1/6] mtd: spi-nor: core: use 2 data bytes for template
- ops
-In-Reply-To: <20210531181757.19458-2-p.yadav@ti.com>
+Subject: Re: [PATCH v2 6/6] mtd: spi-nor: core: avoid odd length/address
+ writes in 8D-8D-8D mode
+In-Reply-To: <20210531181757.19458-7-p.yadav@ti.com>
 References: <20210531181757.19458-1-p.yadav@ti.com>
- <20210531181757.19458-2-p.yadav@ti.com>
+ <20210531181757.19458-7-p.yadav@ti.com>
 User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <543350e0bc25f84a0ba9f464dcfa15bf@walle.cc>
+Message-ID: <6fb69565f7b27eb7e8ee3321624ad624@walle.cc>
 X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210601_053634_322488_6BDAC26D 
-X-CRM114-Status: GOOD (  13.66  )
+X-CRM114-CacheID: sfid-20210601_054500_218924_562BBA92 
+X-CRM114-Status: UNSURE (   8.66  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,22 +89,15 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Am 2021-05-31 20:17, schrieb Pratyush Yadav:
-> The template ops used in spi_nor_spimem_check_pp() and
-> spi_nor_spimem_check_readop() currently set the data phase to 1 byte
-> long. This is problematic for 8D-8D-8D protocol where odd length data
-> phase is invalid since one cycle transfers 2 bytes and odd number of
-> bytes would mean half a cycle is left over. This could result in a
-> controller rejecting the op as "not supported" even though it actually
-> supports the protocol.
-> 
-> Change the data length to 2 bytes in these templates. One might argue
-> that this should only be done for 8D-8D-8D operations but when talking
-> about these templates, there is no functional difference between one 
-> and
-> two bytes, even in STR modes.
+> On Octal DTR capable flashes like Micron Xcella the writes cannot start
+> or end at an odd address in Octal DTR mode. Extra 0xff bytes need to be
+> appended or prepended to make sure the start address and end address 
+> are
+> even. 0xff is used because on NOR flashes a program operation can only
+> flip bits from 1 to 0, not the other way round. 0 to 1 flip needs to
+> happen via erases.
 > 
 > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> ---
 
 Reviewed-by: Michael Walle <michael@walle.cc>
 
