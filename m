@@ -2,81 +2,81 @@ Return-Path: <SRS0=rnzE=K3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CEA1BC47093
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Jun 2021 04:37:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B504BC4708F
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Jun 2021 06:53:24 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 962BC61027
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Jun 2021 04:37:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 962BC61027
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=denx.de
+	by mail.kernel.org (Postfix) with ESMTPS id 5667B61159
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Jun 2021 06:53:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5667B61159
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=geanix.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qssU7g04vPaCt2kPeUrAeqxKdhZx99VBo7jUtu3YDMk=; b=D4VGEGN7/RMRrs
-	UCilDVTY+4ekojrnTeVDDgm3g1o2OOHxQBgZcZ6bR0fFyCj6NAmVLWVFQi3v9UoG8Ej+zhVeOOcpd
-	x5LjbOuA7rWiDyyMzFI0mQSiKQfDFS9INptHlaZj1/D0+jidSEYukitvzMg164i64n9WqI7nGUs89
-	Zhr2jABkYHlfkyX4htWdI3DBwNhlG7Mj+vEqtgrKpC6kAPkRPiX/FUShMgUZ7CtKFfyPpC1kmBPTW
-	Oj9HMf+6RcSgbggmwU8ZJYs5j/7HJatsn8lclV46bhlzkA/GKARpjktLNYtVXVEOCFFjxZ++kRhzv
-	dBG/ans33iFAJW1flRbQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=xWoWzHSlA6EipZnewYh+IgA1CV3G88TJc883PS5gBWs=; b=NUk6cj3KVf4VfeOjqIDOt9O27J
+	9t5OhBx2VyBeCarGsENptM7xWnPPZR6MdR//xfeGYSoHqGgcsqEi3Kbrg09D02huwhihnT+LmofZv
+	zUKznP9DjEDVEVv10kF8aJqIS12i5umWiRcmehFxNGKNygXPC22FRDfU0E8Xg4t787maJjc3Y8sYh
+	f963cAA0Darskr7di8mOxdpLLFCiulYluFJrZpoUhCDCfBXUb6uoWqjtT7M/0QKH826RvAajZvgzq
+	mg/xfdUxphK2Nc7bECdZhURvcXjx+WzVkvoXHEMjKjyL0jLeY8cjKVH+xkOUc7vNePM5CkzEZ92om
+	JF0HOEMw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lnw8o-00EaDt-LJ; Tue, 01 Jun 2021 04:36:34 +0000
-Received: from phobos.denx.de ([2a01:238:438b:c500:173d:9f52:ddab:ee01])
+	id 1lnyGE-00F0Mu-T5; Tue, 01 Jun 2021 06:52:22 +0000
+Received: from first.geanix.com ([116.203.34.67])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lnw8O-00Ea9T-Vb
- for linux-mtd@lists.infradead.org; Tue, 01 Jun 2021 04:36:10 +0000
-Received: from mail-internal.denx.de (p578adb1c.dip0.t-ipconnect.de
- [87.138.219.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
- (No client certificate requested) (Authenticated sender: noc@denx.de)
- by phobos.denx.de (Postfix) with ESMTPSA id A2EF282EA6;
- Tue,  1 Jun 2021 06:36:07 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
- s=phobos-20191101; t=1622522167;
- bh=EHsCHku6r+HkI5oirppWFnWhJBUYvp8UUKRBFQGYFto=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ca3Ch74nlW1ouy7rMPk6QGB231YU7fqP2O9axYcsJXpnhlCx3f0rNa0P5KN8Dz3YQ
- 0wy/3SI/OEjKnhyHxAFV6Gon12annVOem8ymMZj0W1PMCva8BpE8GtgH90V8N4Iii7
- 9EKClanz9BXpf9WuWT76Eri2I0iQtg9v+Z5pgWJYXHl7MYpWXXJCzg/J1uJg/+XseU
- LglM0yG1iDUjZXqaNoalvgQW29g8cYBxZWwI1MKzfTLzQjV5d0aU/LFkrjsT2DHEHB
- btX4w3bna4EKi2JYrreD+wMuhoF+WyWLBX+gVicTRtA4q7nQVzNBLK5OY/QjQk4Idz
- 9TKfX3Bby0/aw==
-Received: from pollux.denx.de (pollux [192.168.1.1])
- by mail-internal.denx.de (Postfix) with ESMTP id 5EA4A184CD1;
- Tue,  1 Jun 2021 06:35:50 +0200 (CEST)
-Received: by pollux.denx.de (Postfix, from userid 515)
- id 2CFDD1A8BC6; Tue,  1 Jun 2021 06:35:48 +0200 (CEST)
-From: Heiko Schocher <hs@denx.de>
-To: linux-mtd@lists.infradead.org
-Cc: Heiko Schocher <hs@denx.de>, Fabio Estevam <festevam@denx.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
- Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/2] mtd: devices: add devicetree documentation for
- microchip 48l640
-Date: Tue,  1 Jun 2021 06:35:45 +0200
-Message-Id: <20210601043546.1345704-2-hs@denx.de>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210601043546.1345704-1-hs@denx.de>
-References: <20210601043546.1345704-1-hs@denx.de>
+ id 1lnyGB-00F0Jw-TJ
+ for linux-mtd@lists.infradead.org; Tue, 01 Jun 2021 06:52:21 +0000
+Received: from [192.168.100.10] (unknown [185.233.254.173])
+ by first.geanix.com (Postfix) with ESMTPSA id A7038464038;
+ Tue,  1 Jun 2021 06:52:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+ t=1622530333; bh=iIMAOcEHY6wDQ53OPlW7P0eoOlrFgGJqpSGMuFvKKUo=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To;
+ b=YAk5/lco7wGrtaO2GbCJlrB9nzY0aUQv3nfMxhBCNoU9VT4YRZ3bcm7P1b4zQBJ7y
+ EmPJ7tIOZ9FclgB6OSWsWsGBKUAdfwQSA9NmQn1fnul2vAVc3r8agOTwwLSevnZv1t
+ kJaZ6Hjn3TqgrFh36Xxe/be3J6UZGm61AHi4nN0ioFUrNvsVZLgz/jEIjxehX3ua/J
+ bkYUXsWHLL7L+jhfAI32oCBGW1ZhpqAF0b3Mh7ryXNZOfcdbzqi5meNqhdJ9XwyDO5
+ cbLsC6Yz2rIpBdQ0Uzep+3axEEs91Mt1BVK4t+cUPvotXX2HzJtAuzSFCCrYStHuDL
+ 7oyK+l1xvqg0g==
+Subject: Re: [RESEND]: Kernel 4.14: UBIFS+SQUASHFS: Device fails to boot after
+ flashing rootfs volume
+To: Pintu Agarwal <pintu.ping@gmail.com>
+Cc: Phillip Lougher <phillip@squashfs.org.uk>,
+ open list <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org
+References: <CAOuPNLjgpkBh9dnfNTdDcfk5HiL=HjjiB9o_=fjrm+0vP7Re2Q@mail.gmail.com>
+ <CAOuPNLh_0Q9w96GKT-ogC0BBcEHgo=Hv3+c=JBcas2VgqDiyaw@mail.gmail.com>
+ <CAOuPNLjmJ0YufFktJzjkyvdxwFTOpxVj5AW5gANAGSG=_yT=mQ@mail.gmail.com>
+ <1762403920.6716767.1621029029246@webmail.123-reg.co.uk>
+ <CAOuPNLhn90z9i6jt0-Vv4e9hjsxwYUT2Su-7SQrxy+N=HDe_xA@mail.gmail.com>
+ <486335206.6969995.1621485014357@webmail.123-reg.co.uk>
+ <CAOuPNLjBsm9YLtcb4SnqLYYaHPnscYq4captvCmsR7DthiWGsQ@mail.gmail.com>
+ <1339b24a-b5a5-5c73-7de0-9541455b66af@geanix.com>
+ <CAOuPNLiMnHJJNFBbOrMOLmnxU86ROMBaLaeFxviPENCkuKfUVg@mail.gmail.com>
+ <4304c082-6fc5-7389-f883-d0adfc95ee86@geanix.com>
+ <CAOuPNLigHdbu_OTpsFr7gq+nFK2Pv+4MUSrC6A6PfKfF1H1X3Q@mail.gmail.com>
+From: Sean Nyekjaer <sean@geanix.com>
+Message-ID: <8b488dbf-9a2b-4c26-b377-1c150826051e@geanix.com>
+Date: Tue, 1 Jun 2021 08:52:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at phobos.denx.de
-X-Virus-Status: Clean
+In-Reply-To: <CAOuPNLigHdbu_OTpsFr7gq+nFK2Pv+4MUSrC6A6PfKfF1H1X3Q@mail.gmail.com>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210531_213609_191836_4568ECD6 
-X-CRM114-Status: GOOD (  12.77  )
+X-CRM114-CacheID: sfid-20210531_235220_130937_91C733CC 
+X-CRM114-Status: GOOD (  22.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,77 +93,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The Microchip 48l640 is a 8KByte EERAM connected via SPI.
-Add devicetree bindings documentation.
+On 31/05/2021 04.54, Pintu Agarwal wrote:
+> On Tue, 25 May 2021 at 11:07, Sean Nyekjaer <sean@geanix.com> wrote:
+>> We are writing our rootfs with this command:
+>> ubiupdatevol /dev/ubi0_4 rootfs.squashfs
+>>
+>> Please understand the differences between the UBI and UBIFS. UBI(unsorted block image) and UBIFS(UBI File System).
+>> I think you want to write the squashfs to the UBI(unsorted block image).
+>>
+>> Can you try to boot with a initramfs, and then use ubiupdatevol to write the rootfs.squshfs.
+>>
+> Dear Sean, thank you so much for this suggestion.
+> Just a final help I need here.
+> 
+> For future experiment purposes, I am trying to setup my qemu-arm
+> environment using ubifs/squashfs and "nandsim" module.
+> I already have a working setup for qemu-arm with busybox/initramfs.
+> Now I wanted to prepare ubifs/squashfs based busybox rootfs which I
+> can use for booting the mainline kernel.
+> Is it possible ?> Are there already some pre-built ubifs images available which I can
+> use for my qemu-arm ?
+> Or, please guide me how to do it ?
+> 
+> I think it is more convenient to do all experiments with "nandsim"
+> instead of corrupting the actual NAND hardware.
+> If you have any other suggestions please let me know.
+> 
+> 
+> Thanks,
+> Pintu
+> 
+Hi,
 
-Signed-off-by: Heiko Schocher <hs@denx.de>
----
 
-Changes in v3:
-Add Fabio to cc
+I have not used qemu with nandsim :(
+I would prefer testing on the actual hardware.
 
-Changes in v2:
-as Rob helped, fix warnings from running command
-'make DT_CHECKER_FLAGS=-m dt_binding_check'
+We have used Labgrid in the past for that.
 
- .../bindings/mtd/microchip,mchp48l640.yaml    | 45 +++++++++++++++++++
- 1 file changed, 45 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml
-
-diff --git a/Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml b/Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml
-new file mode 100644
-index 0000000000000..08089f2db0761
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml
-@@ -0,0 +1,45 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/mtd/microchip,mchp48l640.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: MTD SPI driver for Microchip 48l640 (and similar) serial EERAM
-+
-+maintainers:
-+  - Heiko Schocher <hs@denx.de>
-+
-+description: |
-+  The Microchip 48l640 is a 8KByte EERAM connected via SPI.
-+
-+  datasheet: http://ww1.microchip.com/downloads/en/DeviceDoc/20006055B.pdf
-+
-+properties:
-+  compatible:
-+    items:
-+      - const: microchip,48l640
-+
-+  reg:
-+    maxItems: 1
-+
-+  spi-max-frequency: true
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    spi {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      spi-eeram@0 {
-+        compatible = "microchip,48l640";
-+        reg = <0>;
-+        spi-max-frequency = <20000000>;
-+      };
-+    };
-+...
--- 
-2.31.1
-
+/Sean
 
 ______________________________________________________
 Linux MTD discussion mailing list
