@@ -1,87 +1,79 @@
-Return-Path: <SRS0=sw+G=K2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=rnzE=K3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41884C47082
-	for <linux-mtd@archiver.kernel.org>; Mon, 31 May 2021 18:24:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C24FC47080
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Jun 2021 04:37:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0102860720
-	for <linux-mtd@archiver.kernel.org>; Mon, 31 May 2021 18:24:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0102860720
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	by mail.kernel.org (Postfix) with ESMTPS id 328C661186
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Jun 2021 04:37:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 328C661186
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=denx.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yVvfPUrzYjkDH1J2mxr7rhYfR7ueyuR85jMcqrURjKw=; b=HbvZPgXm18+ki1
-	fIi2LjVfD5wQlr01sKQ5RBGFAlkk6cDriOB/PlrSFCCL4QLPFoky6vijUoe5S0qwbsTJnpM1kbl/F
-	f3gxB7GLukwk9tYInjxyt9CMUINnvcrSe5udiigzPwXngvdsJHoVCOjJGVBNwj/VJTeGef4rY65HX
-	fNJgrprC2NtzuecbgADCQH1jUhKM67uB6BWBm7dZXeKOx244u3Frwk2J2jPWsjqdEBTYTPUnUenCM
-	sv5XR86voYmyTyhzc8GGkwj9Cc8o4WREkiXE68JxmsY19jo60hccASYO0lgDXSSC5GJQawbcivo8h
-	k3sl8lPSB9lwKlo1i3bA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ar38L4btk6niw84Yh/zAYqqwdRlmV7CS4h0uTdfj1Us=; b=nxJvzzjwPZ6wdf
+	9J+SH4iUky1VRhFgmMsNBbtsIY9pe/knViw9g6gvavDYvIMMzX1AKvr4j4d05bkiboteQNcWkNNSv
+	LgisTNQ4mBul9+r1johD/0/ji2tgDSqj3m48aJTfvPbbz21p5ojGh4nUy4WLyMuaIhGkVZqGP/KLD
+	sKT0uEUh362nMh+eLTyKpNgHqnISXGkkNrS9C8Vcwf45v8ITu+T+HYS79gM9MRlnpecLWj72cfC+3
+	18UX4k8yp1PgL7QTkWo4mK4rnu5Y3rBe45U4cHQ0Fl+ooDNzI4xKuDSgqCJ+CkhXZ5wWCglVDh78w
+	EJNfcDJk9Ux3Q078RjTA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lnmaJ-00D74y-7e; Mon, 31 May 2021 18:24:19 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1lnw8N-00Ea8n-4O; Tue, 01 Jun 2021 04:36:07 +0000
+Received: from phobos.denx.de ([2a01:238:438b:c500:173d:9f52:ddab:ee01])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lnmaC-00D73l-BZ; Mon, 31 May 2021 18:24:15 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14VIO6E6080994;
- Mon, 31 May 2021 13:24:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1622485446;
- bh=O2iM25f5/x+rzwqtq3QA51hSxyfErqRC1hDB5orHtWk=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=Arnzg5elhcOvLisPL5lrM63jLS3E1rl+Jh1x3rVB64L557HjcBDt+hCWFFFpdEt5b
- yw3RAeeAACNCZy+lOyF9eLOqbrYJ/EElmY+hyXSC7orhhHLYZMSALLFQIJKC/hGVG0
- qCM0nUFBcQQs9TgtxxbHmtpHIOqTxTtE33EdH41U=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14VIO6mq110522
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 31 May 2021 13:24:06 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 31
- May 2021 13:24:06 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 31 May 2021 13:24:06 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14VIO44b058721;
- Mon, 31 May 2021 13:24:05 -0500
-Date: Mon, 31 May 2021 23:54:04 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Chris Morgan <macroalpha82@gmail.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-rockchip@lists.infradead.org>,
- <andy.yan@rock-chips.com>, <yifeng.zhao@rock-chips.com>,
- <sugar.zhang@rock-chips.com>, <tudor.ambarus@microchip.com>,
- <michael@walle.cc>, <heiko@sntech.de>, <robh+dt@kernel.org>,
- <vigneshr@ti.com>, <richard@nod.at>, <miquel.raynal@bootlin.com>, Chris
- Morgan <macromorgan@hotmail.com>
-Subject: Re: [PATCH v2 4/4] arm64: dts: rockchip: Enable SFC for Odroid Go
- Advance
-Message-ID: <20210531182402.7qdhubb2objdspz6@ti.com>
-References: <20210528170020.26219-1-macroalpha82@gmail.com>
- <20210528170020.26219-5-macroalpha82@gmail.com>
+ id 1lnw8G-00Ea7D-3V
+ for linux-mtd@lists.infradead.org; Tue, 01 Jun 2021 04:36:02 +0000
+Received: from mail-internal.denx.de (p578adb1c.dip0.t-ipconnect.de
+ [87.138.219.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+ (No client certificate requested) (Authenticated sender: noc@denx.de)
+ by phobos.denx.de (Postfix) with ESMTPSA id B90C982E9B;
+ Tue,  1 Jun 2021 06:35:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+ s=phobos-20191101; t=1622522153;
+ bh=kfecTcZ55k+F78gu75sr1/SnMlo5gwjDU5bO0qrbXRo=;
+ h=From:To:Cc:Subject:Date:From;
+ b=DhXVroVpP7Lrs5C6ee+sfFkfLpZXoE58uNccqzaHcvHByTd66iqnzAtAdhnO1UJpz
+ p9vTDGcCeHebjBNxDEEGJlWIN6UHKxVvbCt68artTtqtBkdsn6myRXTAQlCbL8plg4
+ oQiPknJmWhEkkv5hetNz2ZnHhTUrYn5ChHvpXPFQk/OR2ETi7PveinGsWrA1empXBT
+ o+bTLvIJdAbUZ9vJP+zIo8ZYwS2EebKR0+Xm6hXeydG5CAgwJqXy7e6tojPEM+ml37
+ 4+FRkG+tbcVuQv+v2GZtDI7TiABEqxImNzw+WkOIw5WdAHHEFKEXW2gk9HeXveN0Gg
+ V9vslnNkYl6Ig==
+Received: from pollux.denx.de (pollux [192.168.1.1])
+ by mail-internal.denx.de (Postfix) with ESMTP id 3221C184CCD;
+ Tue,  1 Jun 2021 06:35:48 +0200 (CEST)
+Received: by pollux.denx.de (Postfix, from userid 515)
+ id 0BF1C1A8BB4; Tue,  1 Jun 2021 06:35:48 +0200 (CEST)
+From: Heiko Schocher <hs@denx.de>
+To: linux-mtd@lists.infradead.org
+Cc: Heiko Schocher <hs@denx.de>, Fabio Estevam <festevam@denx.de>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
+ Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/2] mtd: devices: add support for microchip 48l640 EERAM
+Date: Tue,  1 Jun 2021 06:35:44 +0200
+Message-Id: <20210601043546.1345704-1-hs@denx.de>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210528170020.26219-5-macroalpha82@gmail.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Virus-Scanned: clamav-milter 0.102.4 at phobos.denx.de
+X-Virus-Status: Clean
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210531_112412_521764_BF76E80F 
-X-CRM114-Status: GOOD (  17.80  )
+X-CRM114-CacheID: sfid-20210531_213600_318576_8514304A 
+X-CRM114-Status: GOOD (  11.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,60 +90,43 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 28/05/21 12:00PM, Chris Morgan wrote:
-> From: Chris Morgan <macromorgan@hotmail.com>
-> 
-> This enables the Rockchip Serial Flash Controller for the Odroid Go
-> Advance. Note that while the attached SPI NOR flash and the controller
-> both support quad read mode, only 2 of the required 4 pins are present.
-> The rx and tx bus width is set to 2 for this reason.
-> 
-> Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
-> ---
->  .../boot/dts/rockchip/rk3326-odroid-go2.dts      | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-> index 49c97f76df77..a72506d7c6ee 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-> +++ b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-> @@ -484,6 +484,22 @@ &sdmmc {
->  	status = "okay";
->  };
->  
-> +&sfc {
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&sfc_clk &sfc_cs &sfc_bus2>;
-> +	status = "okay";
-> +
-> +	nor_flash: xt25f128b@0 {
-> +		reg = <0>;
-> +		compatible = "xtx,xt25f128b","jedec,spi-nor";
 
-Is the generic "jedec,spi-nor" compatible not enough? I think these 
-flash manufacturer specific compatibles are there because of legacy 
-reasons and should be avoided. Try to see if just "jedec,spi-nor" does 
-the trick.
+add support for microchip 48l640 eeram connected via
+SPI. Patch 1 introduces devicetree documentation
+and patch 2 the driver.
 
-> +		spi-rx-bus-width = <2>;
-> +		spi-tx-bus-width = <2>;
-> +		spi-max-frequency = <108000000>;
-> +	};
-> +};
-> +
->  &tsadc {
->  	status = "okay";
->  };
-> -- 
-> 2.25.1
-> 
+
+Changes in v3:
+Add Fabio to cc
+drop dev_dbg() in mchp48l640_read() as not really needed to
+fix warning which kernel test robot found for
+config: arc-allyesconfig (attached as .config)
+compiler: arceb-elf-gcc (GCC) 9.3.0
+reproduce (this is a W=1 build):
+add Reported-by: kernel test robot <lkp@intel.com>
+add Fabio to cc
+
+Changes in v2:
+as Rob helped, fix warnings from running command
+'make DT_CHECKER_FLAGS=-m dt_binding_check'
+- fix build warnings
+- add Fabios Tested-by
+
+Heiko Schocher (2):
+  mtd: devices: add devicetree documentation for microchip 48l640
+  mtd: devices: add support for microchip 48l640 EERAM
+
+ .../bindings/mtd/microchip,mchp48l640.yaml    |  45 +++
+ drivers/mtd/devices/Kconfig                   |   6 +
+ drivers/mtd/devices/Makefile                  |   1 +
+ drivers/mtd/devices/mchp48l640.c              | 373 ++++++++++++++++++
+ 4 files changed, 425 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml
+ create mode 100644 drivers/mtd/devices/mchp48l640.c
 
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+2.31.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
