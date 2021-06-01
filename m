@@ -2,79 +2,103 @@ Return-Path: <SRS0=rnzE=K3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95597C47080
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Jun 2021 09:54:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D1BCC47080
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Jun 2021 12:15:32 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5132861008
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Jun 2021 09:54:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5132861008
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=asem.it
+	by mail.kernel.org (Postfix) with ESMTPS id E4330613AE
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Jun 2021 12:15:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E4330613AE
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SW3oip/we+ZEN+d54zRnFfFXtniyiWz0nxbLLPFO9Jw=; b=oyWsZOc5E9Prpv
-	7UAN8Y8gME0aLnTgEr1BGLQGbOFjRqGxosCLoOpb5WHZh9ZTk2cF8KURSh56phyrTmzLLZI3gzqmw
-	xr0S+9Dlxz5wNk5oHvzs0n6Y5xlfRkrICnkDbB/bcewdm4eFujw/t+lSdLKN8tYzYhEi7HPjbq0MH
-	3QvgQ6hNvZlQdlUgyhYsE4Zdp0+XoJeLe7LxkeCYMB63mZnhBl4nnTUPFrdx+vG4coLXt6F82S91r
-	rQmcLNVC581beGZ0rS6m1hJjD3+g/YFIDLjcEXFXDNNkLMH+tmylKgx8Q06+piwlQLokb2ieTq8Ri
-	0b9GG0ve9803A8LWguwg==;
+	List-Owner; bh=mv1NWg3mszTS/gpn+NVLkx46k3P1rqVPNLytjb8cHQs=; b=Fzsg08Jo7apObL
+	qhUDFbx2BabZw4RDXOYwQ8un9pu6j/LqQjyNmpmrgZodQR4mR89gtH/AWBweqg04St5lneBku+20v
+	uSuNOcEzVJg6o/MP2qU3v15HupTZep5I3QGIRsTDpVaZd8slVGg8ZF5VlMBt6QcZTELFp5BPwM1A1
+	nfdt6zcCnTzZPDHShNvptTYMMvTZM2Fn4xjYjfL/lNg3gdnMGIPj4NJ5E3yF7peDECkspuM1Tt6nn
+	YayqyJbSr0F4TRLKa8HVSI2NHHqwcS3MGir/Ud/Ldyru4pejRsy2YEWbOvAnrYPRgkzp8+EIdkGas
+	A2WRsX1rG6EtjK0i626A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lo159-00FjAG-S6; Tue, 01 Jun 2021 09:53:07 +0000
-Received: from smtp.asem.it ([151.1.184.197])
+	id 1lo3I0-00GU8u-OG; Tue, 01 Jun 2021 12:14:32 +0000
+Received: from aserp2130.oracle.com ([141.146.126.79])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lo156-00Fj92-4O
- for linux-mtd@lists.infradead.org; Tue, 01 Jun 2021 09:53:06 +0000
-Received: from webmail.asem.it by asem.it (smtp.asem.it)
- (SecurityGateway 8.0.0)
- with ESMTP id 83bc53ab63c74599b705a2029c7a2fe7.MSG
- for <linux-mtd@lists.infradead.org>; Tue, 01 Jun 2021 11:52:55 +0200S
-Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 1 Jun
- 2021 11:52:55 +0200
-Received: from ASAS044.asem.intra ([::1]) by ASAS044.asem.intra ([::1]) with
- mapi id 15.01.2176.009; Tue, 1 Jun 2021 11:52:55 +0200
-From: Flavio Suligoi <f.suligoi@asem.it>
-To: Michael Walle <michael@walle.cc>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
- <richard@nod.at>, "tudor.ambarus@microchip.com"
- <tudor.ambarus@microchip.com>, "vigneshr@ti.com" <vigneshr@ti.com>, "Pratyush
- Yadav" <p.yadav@ti.com>
-Subject: RE: [PATCH v1] mtd: spi-nor: add ACPI support for non-JEDEC SPI-NOR
-Thread-Topic: [PATCH v1] mtd: spi-nor: add ACPI support for non-JEDEC SPI-NOR
-Thread-Index: AQHW8/DSQFilXQ1vXUSgmqjMFBEDbqr92CQAgAHUbcA=
-Date: Tue, 1 Jun 2021 09:52:55 +0000
-Message-ID: <67ad7c365fa749209eab5ddae7f8ce80@asem.it>
-References: <20210126143748.1546187-1-f.suligoi@asem.it>
- <20210531074424.16086-1-michael@walle.cc>
-In-Reply-To: <20210531074424.16086-1-michael@walle.cc>
-Accept-Language: it-IT, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.16.17.208]
+ id 1lo3Hy-00GU7Z-Ps
+ for linux-mtd@lists.infradead.org; Tue, 01 Jun 2021 12:14:32 +0000
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+ by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 151C8wY8157385;
+ Tue, 1 Jun 2021 12:14:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=TY/l/e9NEFH9rioskKiN8eW/uAap6wHenLerhBZ8eeQ=;
+ b=I2F0TiHqQwTnfOVMqOsbxFYnaKsT39+yZBMC9vNjJt0xHkOl48hBgetbPuqNqEH9/5Vd
+ jIqTiGWNH3XSTzV1JlowUFmBaCZOIuW8ytwDL3xOSejejrtoz0X+kTiZ7HS+aJQ7PE4M
+ SvfQnxi/1zXoLaYJghwYRr/dYBsP9kgwluE6OctZtQrqSooIAMwngf7gC8Vu3LazMfq+
+ zw8Se3I83SlwWCh1M8jMN+/RCPp0Wh9bku76o4vFF6mI0X/nIf9JGZcrEU/OFOz5oQK8
+ H96Dj1ZlApxGUP+au2bFi2Pps39j5FISabWdyY+aAsBUCYuZWycJmvZGJXt4gF+4AYJk fA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+ by aserp2130.oracle.com with ESMTP id 38ub4cnb60-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 01 Jun 2021 12:14:20 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+ by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 151CAbv3049882;
+ Tue, 1 Jun 2021 12:14:19 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+ by userp3020.oracle.com with ESMTP id 38uycr8b7w-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 01 Jun 2021 12:14:19 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+ by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 151CEI8U065031;
+ Tue, 1 Jun 2021 12:14:18 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+ by userp3020.oracle.com with ESMTP id 38uycr8b7k-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 01 Jun 2021 12:14:18 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+ by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 151CECxS013783;
+ Tue, 1 Jun 2021 12:14:13 GMT
+Received: from kadam (/41.212.42.34) by default (Oracle Beehive Gateway v4.0)
+ with ESMTP ; Tue, 01 Jun 2021 05:14:12 -0700
+Date: Tue, 1 Jun 2021 15:14:02 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Colin King <colin.king@canonical.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
+ kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] mtd: rawnand: ensure return variable is initialized
+Message-ID: <20210601121401.GY1955@kadam>
+References: <20210527145048.795954-1-colin.king@canonical.com>
+ <20210527170309.4d99bc31@xps13>
 MIME-Version: 1.0
-X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
-X-SGSPF-Result: none (smtp.asem.it)
-X-SGOP-RefID: str=0001.0A782F24.60B60377.0096, ss=1, re=0.000, recu=0.000,
- reip=0.000, cl=1, cld=1, fgs=0 (_st=1 _vt=0 _iwf=0)
+Content-Disposition: inline
+In-Reply-To: <20210527170309.4d99bc31@xps13>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: W5IuRZZzOTQyTDaouT9Db3Ml8C9ASZZ7
+X-Proofpoint-ORIG-GUID: W5IuRZZzOTQyTDaouT9Db3Ml8C9ASZZ7
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10001
+ signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ priorityscore=1501 mlxscore=0
+ mlxlogscore=854 malwarescore=0 bulkscore=0 phishscore=0 lowpriorityscore=0
+ clxscore=1015 impostorscore=0 adultscore=0 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106010083
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210601_025304_388838_FB7A4DDE 
-X-CRM114-Status: GOOD (  27.70  )
+X-CRM114-CacheID: sfid-20210601_051430_954459_5CEA9E87 
+X-CRM114-Status: GOOD (  24.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,117 +115,48 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Michael,
+On Thu, May 27, 2021 at 05:03:09PM +0200, Miquel Raynal wrote:
+> Hi Colin,
+> 
+> Colin King <colin.king@canonical.com> wrote on Thu, 27 May 2021
+> 15:50:48 +0100:
+> 
+> > From: Colin Ian King <colin.king@canonical.com>
+> > 
+> > Currently there are corner cases where spec_times is NULL and
+> > chip->parameters.onfi or when best_mode is zero where ret is
+> 
+>                        ^
+> something is missing here, the sentence is not clear
+> 
+> > not assigned a value and an uninitialized return value can be
+> > returned. Fix this by ensuring ret is initialized to -EINVAL.
+> 
+> I don't see how this situation can happen.
+> 
+> In both cases, no matter the value of best_mode, the for loop will
+> always execute at least one time (mode 0) so ret will be populated.
+> 
+> Maybe the robot does not know that best_mode cannot be negative and
+> should be defined unsigned, but the current patch is invalid.
+>
 
-...
-> 
-> > In a x86 machine, an additional device can be described
-> > inside the BIOS ACPI tables.
-> > For example, an I2C GPIO expander, a LED, etc.,
-> > can be successfully declared in ACPI, so that the related
-> > device driver can start automatically at the boot.
-> >
-> > But for the SPI NOR devices, the ACPI description works
-> > for JEDEC-compatible devices only.
-> >
-> > For example, an Everspin MR25H40 MRAM device (non-JEDEC
-> > compatible), declared using the following table,
-> > does not work:
-> >
-> >     Scope (\_SB.SPI1)
-> >     {
-> >         Device (NVR0)
-> >         {
-> >             Name (_HID, "PRP0001")
-> >             Name (_DDN, "Everspin MR25H40 MRAM")
-> >             Name (_CRS, ResourceTemplate () {
-> >                 SpiSerialBus (
-> >                 1,                      // Chip select
-> >                 PolarityLow,            // Chip select is active low
-> >                 FourWireMode,           // Full duplex
-> >                 8,                      // Bits per word is 8 (byte)
-> >                 ControllerInitiated,    // Don't care
-> >                 10000000,               // 10 MHz
-> >                 ClockPolarityLow,       // SPI mode 0 ClockPolarityLow
-> >                 ClockPhaseFirst,        // SPI mode 0 ClockPhaseFirst
-> >                 "\\_SB.SPI1",           // SPI host controller
-> >                 0,                      // Must be 0
-> >                 ResourceConsumer,
-> >                 ,
-> >                 )
-> >             })
-> >
-> >             Name (_DSD, Package () {
-> >                 ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
-> >                 Package () {
-> >                     Package () {"compatible", "mr25h40"},
-> >                 }
-> >             })
-> >         }
-> >     }
-> 
-> This isn't the correct compatible string, according to the devicetree
-> binding [1], there is no compatible = "mr25h40" binding. The correct entry
-> would be
->  compatible = "everspin,mr25h40", "jedec,spi-nor";
-> 
-> I'm not familiar with ACPI and don't know wether you can specify a list,
-> nor am I convinced that it will work then. But it should be worth a try.
+People think list counter unsigned is a good idea, but it's a terrible
+idea and has caused hundreds of bugs for me to fix/report over the
+years.  *grumble*.
 
-It works on our board with our custom BIOS.
-I'm currently use this patch for the kernel of our x86 machines.
-And that's is the only way I've found to describe the mr25h40 MRAM
-presence in our BIOS.
-Obviously, it works because of the above ACPI description is built-in
-inside the custom BIOS of our boards.
-Note that the mr25h40 is NOT jedec compatible.
+Anyway, I was revisiting this code because it showed up as a Smatch
+warning and the bug appears to be real.
 
-> 
-> [1] Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> 
-> >
-> > To enable the detection of a non-JEDEC device described
-> > in a BIOS ACPI table, it is necessary to add its id name
-> > in the spi_nor_of_table structure.
-> > With this change, all the SPI NOR devices (JEDEC and
-> > non-JEDEC) can be detected by the kernel (and the above
-> > example of ACPI table finally works).
-> >
-> > Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
-> > ---
-> >  drivers/mtd/spi-nor/core.c | 13 +++++++++++++
-> >  1 file changed, 13 insertions(+)
-> >
-> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> > index 6ae7d4c2d2b6..b6fb8b15c439 100644
-> > --- a/drivers/mtd/spi-nor/core.c
-> > +++ b/drivers/mtd/spi-nor/core.c
-> > @@ -3755,6 +3755,19 @@ static const struct of_device_id
-> spi_nor_of_table[] = {
-> >  	 * JEDEC READ ID opcode (0x9F). Use this, if possible.
-> >  	 */
-> >  	{ .compatible = "jedec,spi-nor" },
-> > +	{ .compatible = "m25p05-nonjedec" },
-> > +	{ .compatible = "m25p10-nonjedec" },
-> > +	{ .compatible = "m25p20-nonjedec" },
-> > +	{ .compatible = "m25p40-nonjedec" },
-> > +	{ .compatible = "m25p80-nonjedec" },
-> > +	{ .compatible = "m25p16-nonjedec" },
-> > +	{ .compatible = "m25p32-nonjedec" },
-> > +	{ .compatible = "m25p64-nonjedec" },
-> > +	{ .compatible = "m25p128-nonjedec" },
-> > +	{ .compatible = "mr25h128" },
-> > +	{ .compatible = "mr25h256" },
-> > +	{ .compatible = "mr25h10" },
-> > +	{ .compatible = "mr25h40" },
-> >  	{ /* sentinel */ },
-> >  };
-> >  MODULE_DEVICE_TABLE(of, spi_nor_of_table);
-> > --
-> > 2.25.1
+	best_mode = fls(chip->parameters.onfi->sdr_timing_modes) - 1;
 
-Thank you very much for your suggestions,
-Flavio
+The "onfi->sdr_timing_modes" comes from the hardware in nand_onfi_detect()
+and nothing checks that it is non-zero so "best_mode = fls(0) - 1;" is
+negative and "ret" is uninitialized.
+
+regards,
+dan carpenter
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
