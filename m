@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79D6BC4708F
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 07:08:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 281A8C4708F
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 07:10:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 40ED1601FF
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 07:08:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 40ED1601FF
+	by mail.kernel.org (Postfix) with ESMTPS id E9095601FF
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 07:10:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E9095601FF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,18 +23,18 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lkF7W5fIsSOeDY29JjtVhXG3p99f8vX+uYXkpnkNQ84=; b=lDETcHE7e3kaQe
-	S6LUv/aRZs170sotHjKit/+LM2zKtpztuVnXPW3A/i4uQEUdMOCArKYfB7aKKUnlSRjuO8xdJe61E
-	57UVPOciP+o3Nndb67WYFs8/ROegbbq+FWhaYfXxyKqe0yk047iFEzVNKfXb9Y0XjyQs99qJptwmy
-	edwbKMgK7anyvAlkkLeeXlDs+RNSyLRcSRW2lynpDlyflgIlY3jrC0WKKTNP5DPbeyRwNhe0zYRHz
-	pwHFveQVN92e9D2t5Sv4agu6rOwXyrFM+sAKhLSqnnqZajf4dlF/8OFf2OzAdLJGnUCW3B2Gji0EN
-	GWS9yxaAQlYBa1Q5g9dA==;
+	List-Owner; bh=yD2PiZfUhqAHojpzvlXlX7KM9t1dE8Q/XjQXDPu+RvY=; b=tmHoYObkjS2+K1
+	FQInkqL304DmzdeL/5sLAEb7kfZfVnqoBqoASPYJSiGFEbUrn5pYFWaX+qCa22FdYHAxN343cJHd8
+	XqZHep0YdG0KC8X/2OiE0WVcbZxClymauDSsqsFBP0mEp/9YF2X6DR0R2J0O4Mu5+lProgHy/0F9z
+	BL6WIznHq0qd+NgguRQXlIrSXrYkeTsW5Sg9yvhVquyqLiH2ivqMCGORDeY8zoSn/020jCq5M8X0n
+	RtognXxG9ZwQuJrKu7hOtdexmzbVX/JUzSyJF/wqtcgJgHXFIHcJSZd8h4B7PNpuLppP9lCDmVpn3
+	evmQRGN85TlTdOLi4Fng==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1loKy9-002BkY-0q; Wed, 02 Jun 2021 07:07:13 +0000
+	id 1loL03-002CJA-99; Wed, 02 Jun 2021 07:09:11 +0000
 Received: from shol69.static.otenet.gr ([83.235.170.67] helo=localhost)
  by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1loKly-0025TX-SP; Wed, 02 Jun 2021 06:54:39 +0000
+ id 1loKm2-0025WN-Lj; Wed, 02 Jun 2021 06:54:43 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Justin Sanders <justin@coraid.com>, Denis Efremov <efremov@linux.com>,
@@ -56,9 +56,9 @@ Cc: Justin Sanders <justin@coraid.com>, Denis Efremov <efremov@linux.com>,
  virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org,
  linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-s390@vger.kernel.org
-Subject: [PATCH 09/30] mtd_blkdevs: use blk_mq_alloc_disk
-Date: Wed,  2 Jun 2021 09:53:24 +0300
-Message-Id: <20210602065345.355274-10-hch@lst.de>
+Subject: [PATCH 10/30] ps3disk: use blk_mq_alloc_disk
+Date: Wed,  2 Jun 2021 09:53:25 +0300
+Message-Id: <20210602065345.355274-11-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210602065345.355274-1-hch@lst.de>
 References: <20210602065345.355274-1-hch@lst.de>
@@ -84,110 +84,100 @@ allocation.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/mtd/mtd_blkdevs.c | 48 ++++++++++++++++++---------------------
- 1 file changed, 22 insertions(+), 26 deletions(-)
+ drivers/block/ps3disk.c | 36 ++++++++++++++----------------------
+ 1 file changed, 14 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index fb8e12d590a1..5dc4c966ea73 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -30,11 +30,9 @@ static void blktrans_dev_release(struct kref *kref)
- 	struct mtd_blktrans_dev *dev =
- 		container_of(kref, struct mtd_blktrans_dev, ref);
+diff --git a/drivers/block/ps3disk.c b/drivers/block/ps3disk.c
+index ba3ece56cbb3..f374ea2c67ce 100644
+--- a/drivers/block/ps3disk.c
++++ b/drivers/block/ps3disk.c
+@@ -29,7 +29,6 @@
  
--	dev->disk->private_data = NULL;
--	blk_cleanup_queue(dev->rq);
-+	blk_cleanup_disk(dev->disk);
- 	blk_mq_free_tag_set(dev->tag_set);
- 	kfree(dev->tag_set);
--	put_disk(dev->disk);
- 	list_del(&dev->list);
- 	kfree(dev);
+ struct ps3disk_private {
+ 	spinlock_t lock;		/* Request queue spinlock */
+-	struct request_queue *queue;
+ 	struct blk_mq_tag_set tag_set;
+ 	struct gendisk *gendisk;
+ 	unsigned int blocking_factor;
+@@ -267,7 +266,7 @@ static irqreturn_t ps3disk_interrupt(int irq, void *data)
+ 	blk_mq_end_request(req, error);
+ 	spin_unlock(&priv->lock);
+ 
+-	blk_mq_run_hw_queues(priv->queue, true);
++	blk_mq_run_hw_queues(priv->gendisk->queue, true);
+ 	return IRQ_HANDLED;
  }
-@@ -354,7 +352,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
- 	if (new->devnum > (MINORMASK >> tr->part_bits) ||
- 	    (tr->part_bits && new->devnum >= 27 * 26)) {
- 		mutex_unlock(&blktrans_ref_mutex);
--		goto error1;
-+		return ret;
+ 
+@@ -441,17 +440,20 @@ static int ps3disk_probe(struct ps3_system_bus_device *_dev)
+ 
+ 	ps3disk_identify(dev);
+ 
+-	queue = blk_mq_init_sq_queue(&priv->tag_set, &ps3disk_mq_ops, 1,
++	error = blk_mq_alloc_sq_tag_set(&priv->tag_set, &ps3disk_mq_ops, 1,
+ 					BLK_MQ_F_SHOULD_MERGE);
+-	if (IS_ERR(queue)) {
+-		dev_err(&dev->sbd.core, "%s:%u: blk_mq_init_queue failed\n",
+-			__func__, __LINE__);
+-		error = PTR_ERR(queue);
++	if (error)
+ 		goto fail_teardown;
++
++	gendisk = blk_mq_alloc_disk(&priv->tag_set, dev);
++	if (IS_ERR(gendisk)) {
++		dev_err(&dev->sbd.core, "%s:%u: blk_mq_alloc_disk failed\n",
++			__func__, __LINE__);
++		error = PTR_ERR(gendisk);
++		goto fail_free_tag_set;
  	}
  
- 	list_add_tail(&new->list, &tr->devs);
-@@ -366,17 +364,28 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
- 	if (!tr->writesect)
- 		new->readonly = 1;
+-	priv->queue = queue;
+-	queue->queuedata = dev;
++	queue = gendisk->queue;
  
--	/* Create gendisk */
- 	ret = -ENOMEM;
--	gd = alloc_disk(1 << tr->part_bits);
-+	new->tag_set = kzalloc(sizeof(*new->tag_set), GFP_KERNEL);
-+	if (!new->tag_set)
-+		goto out_list_del;
+ 	blk_queue_max_hw_sectors(queue, dev->bounce_size >> 9);
+ 	blk_queue_dma_alignment(queue, dev->blk_size-1);
+@@ -462,19 +464,11 @@ static int ps3disk_probe(struct ps3_system_bus_device *_dev)
+ 	blk_queue_max_segments(queue, -1);
+ 	blk_queue_max_segment_size(queue, dev->bounce_size);
  
--	if (!gd)
--		goto error2;
-+	ret = blk_mq_alloc_sq_tag_set(new->tag_set, &mtd_mq_ops, 2,
-+			BLK_MQ_F_SHOULD_MERGE | BLK_MQ_F_BLOCKING);
-+	if (ret)
-+		goto out_kfree_tag_set;
-+
-+	/* Create gendisk */
-+	gd = blk_mq_alloc_disk(new->tag_set, new);
-+	if (IS_ERR(gd)) {
-+		ret = PTR_ERR(gd);
-+		goto out_free_tag_set;
-+	}
- 
- 	new->disk = gd;
- 	gd->private_data = new;
- 	gd->major = tr->major;
- 	gd->first_minor = (new->devnum) << tr->part_bits;
-+	gd->minors = 1 << tr->part_bits;
- 	gd->fops = &mtd_block_ops;
- 
- 	if (tr->part_bits)
-@@ -398,22 +407,9 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
- 	spin_lock_init(&new->queue_lock);
- 	INIT_LIST_HEAD(&new->rq_list);
- 
--	new->tag_set = kzalloc(sizeof(*new->tag_set), GFP_KERNEL);
--	if (!new->tag_set)
--		goto error3;
--
--	new->rq = blk_mq_init_sq_queue(new->tag_set, &mtd_mq_ops, 2,
--				BLK_MQ_F_SHOULD_MERGE | BLK_MQ_F_BLOCKING);
--	if (IS_ERR(new->rq)) {
--		ret = PTR_ERR(new->rq);
--		new->rq = NULL;
--		goto error4;
+-	gendisk = alloc_disk(PS3DISK_MINORS);
+-	if (!gendisk) {
+-		dev_err(&dev->sbd.core, "%s:%u: alloc_disk failed\n", __func__,
+-			__LINE__);
+-		error = -ENOMEM;
+-		goto fail_cleanup_queue;
 -	}
 -
- 	if (tr->flush)
- 		blk_queue_write_cache(new->rq, true, false);
- 
--	new->rq->queuedata = new;
- 	blk_queue_logical_block_size(new->rq, tr->blksize);
- 
- 	blk_queue_flag_set(QUEUE_FLAG_NONROT, new->rq);
-@@ -437,13 +433,13 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
- 		WARN_ON(ret);
- 	}
+ 	priv->gendisk = gendisk;
+ 	gendisk->major = ps3disk_major;
+ 	gendisk->first_minor = devidx * PS3DISK_MINORS;
++	gendisk->minors = PS3DISK_MINORS;
+ 	gendisk->fops = &ps3disk_fops;
+-	gendisk->queue = queue;
+ 	gendisk->private_data = dev;
+ 	snprintf(gendisk->disk_name, sizeof(gendisk->disk_name), PS3DISK_NAME,
+ 		 devidx+'a');
+@@ -490,8 +484,7 @@ static int ps3disk_probe(struct ps3_system_bus_device *_dev)
+ 	device_add_disk(&dev->sbd.core, gendisk, NULL);
  	return 0;
--error4:
-+
-+out_free_tag_set:
-+	blk_mq_free_tag_set(new->tag_set);
-+out_kfree_tag_set:
- 	kfree(new->tag_set);
--error3:
--	put_disk(new->disk);
--error2:
-+out_list_del:
- 	list_del(&new->list);
--error1:
- 	return ret;
- }
  
+-fail_cleanup_queue:
+-	blk_cleanup_queue(queue);
++fail_free_tag_set:
+ 	blk_mq_free_tag_set(&priv->tag_set);
+ fail_teardown:
+ 	ps3stor_teardown(dev);
+@@ -517,9 +510,8 @@ static void ps3disk_remove(struct ps3_system_bus_device *_dev)
+ 		    &ps3disk_mask);
+ 	mutex_unlock(&ps3disk_mask_mutex);
+ 	del_gendisk(priv->gendisk);
+-	blk_cleanup_queue(priv->queue);
++	blk_cleanup_disk(priv->gendisk);
+ 	blk_mq_free_tag_set(&priv->tag_set);
+-	put_disk(priv->gendisk);
+ 	dev_notice(&dev->sbd.core, "Synchronizing disk cache\n");
+ 	ps3disk_sync_cache(dev);
+ 	ps3stor_teardown(dev);
 -- 
 2.30.2
 
