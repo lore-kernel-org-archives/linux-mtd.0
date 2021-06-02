@@ -5,16 +5,16 @@ X-Spam-Level:
 X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C92ABC4708F
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 07:23:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E051DC4708F
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 07:25:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F6D76101B
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 07:23:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F6D76101B
+	by mail.kernel.org (Postfix) with ESMTPS id A52BD61396
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 07:25:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A52BD61396
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,18 +23,18 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=x7ym2ChQfbE0mMGpwN8otT/fzKXWsFJeQM7o0h0UKWA=; b=xLHf3HHD2+NYRW
-	+msUzlCY/uEe7XSXCiu9d2CIMnbDhUupY3bD8lwkTtXW3/OwiY7mRqpzykAB2afaylJfmMFHAEwo2
-	/glZY6BOj17KYJmLO7f+wyBPpf6mGTRazQzYo0SmUeVpdRXStFIm4p9Vxp7xd83ftcOSRtN4O2Tcd
-	il3858WK8Ge3x2Dt7z/JHahsRyFgm3dexddCIKY5aZWwIXCbe8+y6vfv4L8+2wp16l/SAb79qzLNY
-	FrMianMgy0fhHq3feH/zDYQfZYIQNirZ3ZIT0QypTeJmEFx8KiejuKMb1oUX4xXe3WzFWw2tewm9N
-	cX+7u1CZhohTVRTbRnNw==;
+	List-Owner; bh=lptuqnUK9/zLBBDVSTc9YaAmTz6/Nmz2e7XciAwlPtc=; b=ucfAuRmDXgmt0P
+	8YlEz9oOV+tnYVOVy3KdO4tPdITXn0aPNCftlHfHFD6fkGJZdgN6e2AzZXXSFXZ32KzOVy1Pwew3M
+	tWXFIWb3F0Wignsl9Yhaw8kCelTaZxjDI/UZk3V4nJrbVbIwZriAARPoeHjBY9DaJOZXqaww+NorM
+	mJ5ISQgfGCcsuHlOVK20VbYiP1G0+tZLJF7pSdfM8RXpjkGunbVT/7cXOfX1egELdOAOEnot/3Rdq
+	bLXU84+8X75fox5xu2x0dhxLm0VfGl6G/sCbNET3bA9xZXQHL264yy7Dwvr1H6KPGyCJzMGsXLaEn
+	Jl+33wbCtSjDHZfXHeDw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1loLD3-002H6Z-To; Wed, 02 Jun 2021 07:22:38 +0000
+	id 1loLEz-002HYs-CA; Wed, 02 Jun 2021 07:24:37 +0000
 Received: from shol69.static.otenet.gr ([83.235.170.67] helo=localhost)
  by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1loKmR-0025lm-Ax; Wed, 02 Jun 2021 06:55:08 +0000
+ id 1loKmW-0025pH-8N; Wed, 02 Jun 2021 06:55:12 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Justin Sanders <justin@coraid.com>, Denis Efremov <efremov@linux.com>,
@@ -56,9 +56,9 @@ Cc: Justin Sanders <justin@coraid.com>, Denis Efremov <efremov@linux.com>,
  virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org,
  linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-s390@vger.kernel.org
-Subject: [PATCH 16/30] aoe: use blk_mq_alloc_disk and blk_cleanup_disk
-Date: Wed,  2 Jun 2021 09:53:31 +0300
-Message-Id: <20210602065345.355274-17-hch@lst.de>
+Subject: [PATCH 17/30] floppy: use blk_mq_alloc_disk and blk_cleanup_disk
+Date: Wed,  2 Jun 2021 09:53:32 +0300
+Message-Id: <20210602065345.355274-18-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210602065345.355274-1-hch@lst.de>
 References: <20210602065345.355274-1-hch@lst.de>
@@ -84,117 +84,53 @@ request_queue allocation.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/block/aoe/aoeblk.c | 33 ++++++++++++---------------------
- drivers/block/aoe/aoedev.c |  3 +--
- 2 files changed, 13 insertions(+), 23 deletions(-)
+ drivers/block/floppy.c | 20 +++++---------------
+ 1 file changed, 5 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/block/aoe/aoeblk.c b/drivers/block/aoe/aoeblk.c
-index c34e71b0c4a9..06b360f7123a 100644
---- a/drivers/block/aoe/aoeblk.c
-+++ b/drivers/block/aoe/aoeblk.c
-@@ -338,14 +338,13 @@ static const struct blk_mq_ops aoeblk_mq_ops = {
- 	.queue_rq	= aoeblk_queue_rq,
- };
- 
--/* alloc_disk and add_disk can sleep */
-+/* blk_mq_alloc_disk and add_disk can sleep */
- void
- aoeblk_gdalloc(void *vp)
+diff --git a/drivers/block/floppy.c b/drivers/block/floppy.c
+index 8a9d22207c59..cbed9776f285 100644
+--- a/drivers/block/floppy.c
++++ b/drivers/block/floppy.c
+@@ -4491,23 +4491,15 @@ static bool floppy_available(int drive)
+ static int floppy_alloc_disk(unsigned int drive, unsigned int type)
  {
- 	struct aoedev *d = vp;
- 	struct gendisk *gd;
- 	mempool_t *mp;
--	struct request_queue *q;
- 	struct blk_mq_tag_set *set;
- 	ulong flags;
- 	int late = 0;
-@@ -362,19 +361,12 @@ aoeblk_gdalloc(void *vp)
- 	if (late)
- 		return;
- 
--	gd = alloc_disk(AOE_PARTITIONS);
--	if (gd == NULL) {
--		pr_err("aoe: cannot allocate disk structure for %ld.%d\n",
--			d->aoemajor, d->aoeminor);
--		goto err;
--	}
+ 	struct gendisk *disk;
+-	int err;
 -
- 	mp = mempool_create(MIN_BUFS, mempool_alloc_slab, mempool_free_slab,
- 		buf_pool_cache);
- 	if (mp == NULL) {
- 		printk(KERN_ERR "aoe: cannot allocate bufpool for %ld.%d\n",
- 			d->aoemajor, d->aoeminor);
--		goto err_disk;
-+		goto err;
- 	}
+-	disk = alloc_disk(1);
+-	if (!disk)
+-		return -ENOMEM;
  
- 	set = &d->tag_set;
-@@ -391,12 +383,11 @@ aoeblk_gdalloc(void *vp)
- 		goto err_mempool;
- 	}
+-	disk->queue = blk_mq_init_queue(&tag_sets[drive]);
+-	if (IS_ERR(disk->queue)) {
+-		err = PTR_ERR(disk->queue);
+-		disk->queue = NULL;
+-		put_disk(disk);
+-		return err;
+-	}
++	disk = blk_mq_alloc_disk(&tag_sets[drive], NULL);
++	if (IS_ERR(disk))
++		return PTR_ERR(disk);
  
--	q = blk_mq_init_queue(set);
--	if (IS_ERR(q)) {
-+	gd = blk_mq_alloc_disk(set, d);
-+	if (IS_ERR(gd)) {
- 		pr_err("aoe: cannot allocate block queue for %ld.%d\n",
- 			d->aoemajor, d->aoeminor);
--		blk_mq_free_tag_set(set);
--		goto err_mempool;
-+		goto err_tagset;
+ 	blk_queue_max_hw_sectors(disk->queue, 64);
+ 	disk->major = FLOPPY_MAJOR;
+ 	disk->first_minor = TOMINOR(drive) | (type << 2);
++	disk->minors = 1;
+ 	disk->fops = &floppy_fops;
+ 	disk->events = DISK_EVENT_MEDIA_CHANGE;
+ 	if (type)
+@@ -4727,10 +4719,8 @@ static int __init do_floppy_init(void)
+ 		if (!disks[drive][0])
+ 			break;
+ 		del_timer_sync(&motor_off_timer[drive]);
+-		blk_cleanup_queue(disks[drive][0]->queue);
+-		disks[drive][0]->queue = NULL;
++		blk_cleanup_disk(disks[drive][0]);
+ 		blk_mq_free_tag_set(&tag_sets[drive]);
+-		put_disk(disks[drive][0]);
  	}
- 
- 	spin_lock_irqsave(&d->lock, flags);
-@@ -405,16 +396,16 @@ aoeblk_gdalloc(void *vp)
- 	WARN_ON(d->flags & DEVFL_TKILL);
- 	WARN_ON(d->gd);
- 	WARN_ON(d->flags & DEVFL_UP);
--	blk_queue_max_hw_sectors(q, BLK_DEF_MAX_SECTORS);
--	blk_queue_io_opt(q, SZ_2M);
-+	blk_queue_max_hw_sectors(gd->queue, BLK_DEF_MAX_SECTORS);
-+	blk_queue_io_opt(gd->queue, SZ_2M);
- 	d->bufpool = mp;
--	d->blkq = gd->queue = q;
--	q->queuedata = d;
-+	d->blkq = gd->queue;
- 	d->gd = gd;
- 	if (aoe_maxsectors)
--		blk_queue_max_hw_sectors(q, aoe_maxsectors);
-+		blk_queue_max_hw_sectors(gd->queue, aoe_maxsectors);
- 	gd->major = AOE_MAJOR;
- 	gd->first_minor = d->sysminor;
-+	gd->minors = AOE_PARTITIONS;
- 	gd->fops = &aoe_bdops;
- 	gd->private_data = d;
- 	set_capacity(gd, d->ssize);
-@@ -435,10 +426,10 @@ aoeblk_gdalloc(void *vp)
- 	spin_unlock_irqrestore(&d->lock, flags);
- 	return;
- 
-+err_tagset:
-+	blk_mq_free_tag_set(set);
- err_mempool:
- 	mempool_destroy(mp);
--err_disk:
--	put_disk(gd);
- err:
- 	spin_lock_irqsave(&d->lock, flags);
- 	d->flags &= ~DEVFL_GD_NOW;
-diff --git a/drivers/block/aoe/aoedev.c b/drivers/block/aoe/aoedev.c
-index e2ea2356da06..c5753c6bfe80 100644
---- a/drivers/block/aoe/aoedev.c
-+++ b/drivers/block/aoe/aoedev.c
-@@ -277,9 +277,8 @@ freedev(struct aoedev *d)
- 	if (d->gd) {
- 		aoedisk_rm_debugfs(d);
- 		del_gendisk(d->gd);
--		put_disk(d->gd);
-+		blk_cleanup_disk(d->gd);
- 		blk_mq_free_tag_set(&d->tag_set);
--		blk_cleanup_queue(d->blkq);
- 	}
- 	t = d->targets;
- 	e = t + d->ntargets;
+ 	return err;
+ }
 -- 
 2.30.2
 
