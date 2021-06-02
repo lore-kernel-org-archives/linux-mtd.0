@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 072F5C47083
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 07:02:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8F62C4708F
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 07:02:29 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C5B1A60FDA
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 07:02:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C5B1A60FDA
+	by mail.kernel.org (Postfix) with ESMTPS id BBCF76135D
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 07:02:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BBCF76135D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,18 +23,18 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TF1aYSQflu7wA0JZujQcBbyFSPSw+mHg/l+TDu7t19c=; b=cTvFMgz8U9oQ/V
-	SYZ74bPZqnkXNV+korPnE0/pagMqnPLzuOT4RrBJS+QHUCwERRqwQl7adE1WbtrV9wdIHrJFM+3Hi
-	BkfhcfIbvTQ0wXXyH9C8rtrPhY6E61OxW3/eD7Rt+XNRLRMK6GyyZxr/PtnXtbjezeVl/Ssdi3pX1
-	xbe96EQppuvsMQgwp3CXdttO4uYFgL2gikjFzSGmwppg/B6J8DATbm/K9jyVKsarKQzVGJfQc67yk
-	Ku2iJEsAdimrBtJt6fNQ8WVlLZYavs+fdFs9SZLJKj5C1XbD3mJaG4XLPJsi1DnAmRQDZmqoMD35v
-	gFPlU2vX2dC03tWiYkeQ==;
+	List-Owner; bh=BqmdEe11FfC5Ahhy+10/FP5zBuLgBjzbG3EkqYmro2M=; b=wALikeHuWL+Hr3
+	SVNU4JQ1e3UPVmLb+eNuKTlpMbvMHYmQ1g3vTBRoMK+n4LSbCiMAFnIWCyGf/EJRHbnKjWRjqd9t4
+	a+WWgbc2fthrMTsSfBh6lZN37hv9llSnJ5wGJpdjjz6QGcsIUnMiO9VyRKDgLERqeG0BnSZgHOltm
+	csRiZIaS+2wv7sv/JfyS5g+QlMPa4yGDapn8VFExo3i3CWpc9K8gyfqxBvZmuek5y5ZjqxCXpi8Yc
+	mp/AjWQ9EyRLy17k2QATChCrAyy6k4cV1l+cHgnS67lRpKLMZeqR4W6u2qDQW1QdnH1W5KVXLgerg
+	FgpFsXNZExNVBAbMSn0Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1loKsB-002986-N4; Wed, 02 Jun 2021 07:01:03 +0000
+	id 1loKt2-0029UT-Qo; Wed, 02 Jun 2021 07:01:56 +0000
 Received: from shol69.static.otenet.gr ([83.235.170.67] helo=localhost)
  by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1loKlc-0025MH-2X; Wed, 02 Jun 2021 06:54:16 +0000
+ id 1loKlg-0025NX-RE; Wed, 02 Jun 2021 06:54:21 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Justin Sanders <justin@coraid.com>, Denis Efremov <efremov@linux.com>,
@@ -56,9 +56,9 @@ Cc: Justin Sanders <justin@coraid.com>, Denis Efremov <efremov@linux.com>,
  virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org,
  linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-s390@vger.kernel.org
-Subject: [PATCH 05/30] pcd: use blk_mq_alloc_disk
-Date: Wed,  2 Jun 2021 09:53:20 +0300
-Message-Id: <20210602065345.355274-6-hch@lst.de>
+Subject: [PATCH 06/30] pf: use blk_mq_alloc_disk
+Date: Wed,  2 Jun 2021 09:53:21 +0300
+Message-Id: <20210602065345.355274-7-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210602065345.355274-1-hch@lst.de>
 References: <20210602065345.355274-1-hch@lst.de>
@@ -84,58 +84,56 @@ allocation.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/block/paride/pcd.c | 19 ++++++++-----------
- 1 file changed, 8 insertions(+), 11 deletions(-)
+ drivers/block/paride/pf.c | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/block/paride/pcd.c b/drivers/block/paride/pcd.c
-index 70da8b86ce58..f9cdd11f02f5 100644
---- a/drivers/block/paride/pcd.c
-+++ b/drivers/block/paride/pcd.c
-@@ -309,21 +309,19 @@ static void pcd_init_units(void)
+diff --git a/drivers/block/paride/pf.c b/drivers/block/paride/pf.c
+index bb09f21ce21a..d5b9c88ba76f 100644
+--- a/drivers/block/paride/pf.c
++++ b/drivers/block/paride/pf.c
+@@ -294,20 +294,17 @@ static void __init pf_init_units(void)
+ 	for (unit = 0, pf = units; unit < PF_UNITS; unit++, pf++) {
+ 		struct gendisk *disk;
  
- 	pcd_drive_count = 0;
- 	for (unit = 0, cd = pcd; unit < PCD_UNITS; unit++, cd++) {
--		struct gendisk *disk = alloc_disk(1);
-+		struct gendisk *disk;
- 
+-		disk = alloc_disk(1);
 -		if (!disk)
-+		if (blk_mq_alloc_sq_tag_set(&cd->tag_set, &pcd_mq_ops, 1,
++		if (blk_mq_alloc_sq_tag_set(&pf->tag_set, &pf_mq_ops, 1,
 +				BLK_MQ_F_SHOULD_MERGE))
  			continue;
  
--		disk->queue = blk_mq_init_sq_queue(&cd->tag_set, &pcd_mq_ops,
--						   1, BLK_MQ_F_SHOULD_MERGE);
+-		disk->queue = blk_mq_init_sq_queue(&pf->tag_set, &pf_mq_ops,
+-							1, BLK_MQ_F_SHOULD_MERGE);
 -		if (IS_ERR(disk->queue)) {
 -			disk->queue = NULL;
 -			put_disk(disk);
-+		disk = blk_mq_alloc_disk(&cd->tag_set, cd);
++		disk = blk_mq_alloc_disk(&pf->tag_set, pf);
 +		if (IS_ERR(disk)) {
-+			blk_mq_free_tag_set(&cd->tag_set);
++			blk_mq_free_tag_set(&pf->tag_set);
  			continue;
  		}
  
- 		INIT_LIST_HEAD(&cd->rq_list);
--		disk->queue->queuedata = cd;
+ 		INIT_LIST_HEAD(&pf->rq_list);
+-		disk->queue->queuedata = pf;
+ 		blk_queue_max_segments(disk->queue, cluster);
  		blk_queue_bounce_limit(disk->queue, BLK_BOUNCE_HIGH);
- 		cd->disk = disk;
- 		cd->pi = &cd->pia;
-@@ -343,6 +341,7 @@ static void pcd_init_units(void)
- 		cd->info.mask = 0;
+ 		pf->disk = disk;
+@@ -318,6 +315,7 @@ static void __init pf_init_units(void)
+ 		snprintf(pf->name, PF_NAMELEN, "%s%d", name, unit);
  		disk->major = major;
  		disk->first_minor = unit;
 +		disk->minors = 1;
- 		strcpy(disk->disk_name, cd->name);	/* umm... */
- 		disk->fops = &pcd_bdops;
- 		disk->flags = GENHD_FL_BLOCK_EVENTS_ON_EXCL_WRITE;
-@@ -759,10 +758,8 @@ static int pcd_detect(void)
- 	for (unit = 0, cd = pcd; unit < PCD_UNITS; unit++, cd++) {
- 		if (!cd->disk)
+ 		strcpy(disk->disk_name, pf->name);
+ 		disk->fops = &pf_fops;
+ 		disk->events = DISK_EVENT_MEDIA_CHANGE;
+@@ -766,10 +764,8 @@ static int pf_detect(void)
+ 	for (pf = units, unit = 0; unit < PF_UNITS; pf++, unit++) {
+ 		if (!pf->disk)
  			continue;
--		blk_cleanup_queue(cd->disk->queue);
--		cd->disk->queue = NULL;
-+		blk_cleanup_disk(cd->disk);
- 		blk_mq_free_tag_set(&cd->tag_set);
--		put_disk(cd->disk);
+-		blk_cleanup_queue(pf->disk->queue);
+-		pf->disk->queue = NULL;
++		blk_cleanup_disk(pf->disk);
+ 		blk_mq_free_tag_set(&pf->tag_set);
+-		put_disk(pf->disk);
  	}
  	pi_unregister_driver(par_drv);
  	return -1;
