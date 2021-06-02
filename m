@@ -2,90 +2,130 @@ Return-Path: <SRS0=DONg=K4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-15.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_SANE_2 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F3EEC47083
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 09:56:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6860EC4708F
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 12:27:01 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E2805601FE
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 09:56:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E2805601FE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=foss.st.com
+	by mail.kernel.org (Postfix) with ESMTPS id 362076135D
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 12:27:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 362076135D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Mime-Version:References:In-Reply-To:
+	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Cn1KKNlrufPLfnoxJkPB3aX9+8Q4IBx+Xu0xcxUIXXw=; b=FsDKyD5obfwWQA
-	fRPFTSY3dfINs2DfLMG/vnq+71R67RfMqFKfzw4ZfzM8WkHbEPCD6JHYkt1SGL0mla9Eke6PJsjp0
-	1YmSj0CM/AZgyQcgDwZfSZQyEqwX2N3FntZk3cGeiKWMFw4nUYMeEDcCBxf8gUheIBNa+/8CVYSEA
-	XhnfT1jyZJMUvd1U4YGzskALUAepH2x03NkMOkticntEnREc8wPACNjv1Gc1agqMWaLX1c7OITy06
-	3Wx7M3uKIWEdtfMislzxJXrvuJLGki3RF4oks18h6azcG3XKeUht504bAWRFNCg0nwKTsE3ygqzSr
-	ryq3wo8ZH2R6vVW0ERvQ==;
+	List-Owner; bh=bX4IsKIe0p9agHMNaJlTzd9jcAwbPP7/BLZKhK8tQH0=; b=kcvzzcw1aOhg6C
+	3vnf9IlqOXZuFnaPgOJO6VJRNEpPbm4g4PFkJm2l7CfFpAc9aapajJ4AmyHccrzEpI0Rs252Avp42
+	p4BRZGFIIWodAF/R3R+ZZcS5kXRvy2R2IECaj7JiJ32cgaB3nWuK9M/Bsv8sQGDADLTniZgRwVGUB
+	zWELZ0E7zRhdaGHqLT8BhVK/t5r5DQj1vh6Bgo6rzcF9XrQMV2OdavBwpEEzN3TUbxUdxi2PalQnT
+	rLUA3b2l8+lkP9eGzyTb6qMrYZ1xNJRxyg1M/rc6Nh/x5brvfyOwB0Dc3RFCKQkx9U/P52vyu9x8E
+	yEUJQrUJKssOFA2pjcQQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1loNbK-0036Tr-R7; Wed, 02 Jun 2021 09:55:51 +0000
-Received: from mx07-00178001.pphosted.com ([185.132.182.106])
+	id 1loPuj-0041iW-KK; Wed, 02 Jun 2021 12:24:01 +0000
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1loNVl-0034cA-Ie; Wed, 02 Jun 2021 09:50:13 +0000
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 1529n5Jp004208; Wed, 2 Jun 2021 11:49:56 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=+JE4eDYsaaeQPfaLLpxMMJhdocMLBplab8kjM60wCU0=;
- b=gP6SV2WWMmq8O5HCkpo/QrVJ+c31OYK7gAqlB5zxL46QHGtw7BOQPA0DKnbqec19oh++
- L2i3b0WcQXyK1hAB8ypogESY61Cf+upd6E6k7EcLP6J78c93HOA+9t2qVd5gc4p61zcw
- V+vr/+YIOnTCda4W8+/iU2yner0KuXJOS2cDeQLUfShVd0IVSM4dBUJEYCX6nlU34yW1
- bWLrzVqHoOFo4ZGdUTswg4twtJiZPXOC5UMxRU5kmKo/eAtiwKzTj3YoLwuSYfAsLp0O
- tqb7M3a6iA/dzPShSTs6XqUJYLYE8bNV6xufnfbvNu8oepEZMqnPnv4A2GO3kwBMRr8A Eg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com with ESMTP id 38x3gxmkpu-1
+ id 1loPau-003t7t-32
+ for linux-mtd@lists.infradead.org; Wed, 02 Jun 2021 12:03:33 +0000
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
+ 152C2cPO189409; Wed, 2 Jun 2021 08:03:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=7wC8Y59HiMIthB9xfz5dL+I0HD65zOwRPB4cvu5JQYY=;
+ b=QRLGyPounpLaRIZgsSUK1LazhFSMWWWVFIpjfvUyvXqdSXI7p94FVQMtSFG3bMtHNL86
+ rLVrJ3SvpT994x2pe7o0yL3iXXDeNBst8Q4A8KEa89vx85ZQSTDkkYsEjLQaMo+eb8VZ
+ +GFr8IfErHwDLNlYl+L0v9/qNIinOxFcyNlMJhpRMjSZcskv/o9bM0Y0jNVwjZETIKG0
+ IXpmjsLB5CkqOhxt84ImzKiTyn/t0QZlZGbbzTco4+M0nPgqtd7mDQbl31t9d+7DOxJc
+ iYhombbX7dZq4eRMaB6F1ITduKcVH4H0X0f5lSV3QvlOH2CDPoe61GoP3QIOjHTOkYh/ DA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com with ESMTP id 38x7kr3h5n-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 02 Jun 2021 11:49:56 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 163E4100038;
- Wed,  2 Jun 2021 11:49:56 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 08076216ED9;
- Wed,  2 Jun 2021 11:49:56 +0200 (CEST)
-Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 2 Jun 2021 11:49:55
- +0200
-From: <patrice.chotard@foss.st.com>
-To: Mark Brown <broonie@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Boris
- Brezillon <boris.brezillon@collabora.com>, <linux-mtd@lists.infradead.org>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- <linux-spi@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
- <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- Pratyush Yadav <p.yadav@ti.com>
-CC: <patrice.chotard@foss.st.com>, <christophe.kerello@foss.st.com>
-Subject: [PATCH v5 2/3] mtd: spinand: Add spinand_init_flash() helper
-Date: Wed, 2 Jun 2021 11:49:12 +0200
-Message-ID: <20210602094913.26472-3-patrice.chotard@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210602094913.26472-1-patrice.chotard@foss.st.com>
-References: <20210602094913.26472-1-patrice.chotard@foss.st.com>
-MIME-Version: 1.0
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
- (10.75.127.6)
+ Wed, 02 Jun 2021 08:03:00 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+ by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 152C2cNZ189527;
+ Wed, 2 Jun 2021 08:02:59 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com
+ [149.81.74.108])
+ by mx0a-001b2d01.pphosted.com with ESMTP id 38x7kr3h4k-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 02 Jun 2021 08:02:59 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+ by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 152BwHfr023191;
+ Wed, 2 Jun 2021 12:02:57 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com
+ (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+ by ppma05fra.de.ibm.com with ESMTP id 38ud87s9cx-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 02 Jun 2021 12:02:56 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com
+ [9.149.105.59])
+ by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 152C2r4H26280248
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 2 Jun 2021 12:02:53 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id A0364A405F;
+ Wed,  2 Jun 2021 12:02:53 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 479C3A4040;
+ Wed,  2 Jun 2021 12:02:52 +0000 (GMT)
+Received: from sig-9-145-17-43.uk.ibm.com (unknown [9.145.17.43])
+ by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+ Wed,  2 Jun 2021 12:02:52 +0000 (GMT)
+Message-ID: <e4891689c7651611020bdf3b4db9895819da345a.camel@linux.ibm.com>
+Subject: Re: [PATCH 27/30] scm_blk: use blk_mq_alloc_disk and blk_cleanup_disk
+From: Niklas Schnelle <schnelle@linux.ibm.com>
+To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc: Justin Sanders <justin@coraid.com>, Denis Efremov <efremov@linux.com>,
+ Josef Bacik <josef@toxicpanda.com>, Tim Waugh <tim@cyberelk.net>, Geoff
+ Levand <geoff@infradead.org>, Ilya Dryomov <idryomov@gmail.com>, "Md.
+ Haris Iqbal" <haris.iqbal@ionos.com>, Jack Wang <jinpu.wang@ionos.com>,
+ "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+ Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, Roger Pau
+ =?ISO-8859-1?Q?Monn=E9?= <roger.pau@citrix.com>, Mike Snitzer
+ <snitzer@redhat.com>, Maxim Levitsky <maximlevitsky@gmail.com>, Alex Dubov
+ <oakad@yahoo.com>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
+ Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Heiko
+ Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian
+ Borntraeger <borntraeger@de.ibm.com>, dm-devel@redhat.com,
+ linux-block@vger.kernel.org, nbd@other.debian.org,
+ linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org,
+ virtualization@lists.linux-foundation.org,
+ xen-devel@lists.xenproject.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org
+Date: Wed, 02 Jun 2021 14:02:51 +0200
+In-Reply-To: <20210602065345.355274-28-hch@lst.de>
+References: <20210602065345.355274-1-hch@lst.de>
+ <20210602065345.355274-28-hch@lst.de>
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 9Pi9MTQ_S8CJ1ewvOnGa4xYgtn5KH1ib
+X-Proofpoint-ORIG-GUID: -LAzjZA1VGIxMM3aVX5RPubiT3GLOjUz
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391, 18.0.761
- definitions=2021-06-02_05:2021-06-02,
+ definitions=2021-06-02_06:2021-06-02,
  2021-06-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ mlxscore=0 malwarescore=0
+ priorityscore=1501 lowpriorityscore=0 adultscore=0 bulkscore=0
+ mlxlogscore=999 spamscore=0 clxscore=1011 suspectscore=0 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106020078
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210602_025005_988098_A7D05AD2 
-X-CRM114-Status: GOOD (  21.40  )
+X-CRM114-CacheID: sfid-20210602_050332_279480_2A1887BA 
+X-CRM114-Status: GOOD (  26.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,131 +142,82 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Patrice Chotard <patrice.chotard@foss.st.com>
+On Wed, 2021-06-02 at 09:53 +0300, Christoph Hellwig wrote:
+> Use blk_mq_alloc_disk and blk_cleanup_disk to simplify the gendisk and
+> request_queue allocation.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/s390/block/scm_blk.c | 21 ++++++---------------
+>  1 file changed, 6 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/s390/block/scm_blk.c b/drivers/s390/block/scm_blk.c
+> index a4f6f2e62b1d..88cba6212ee2 100644
+> --- a/drivers/s390/block/scm_blk.c
+> +++ b/drivers/s390/block/scm_blk.c
+> @@ -462,12 +462,12 @@ int scm_blk_dev_setup(struct scm_blk_dev *bdev, struct scm_device *scmdev)
+>  	if (ret)
+>  		goto out;
+>  
+> -	rq = blk_mq_init_queue(&bdev->tag_set);
+> -	if (IS_ERR(rq)) {
+> -		ret = PTR_ERR(rq);
+> +	bdev->gendisk = blk_mq_alloc_disk(&bdev->tag_set, scmdev);
+> +	if (IS_ERR(bdev->gendisk)) {
+> +		ret = PTR_ERR(bdev->gendisk);
+>  		goto out_tag;
+>  	}
+> -	bdev->rq = rq;
+> +	rq = bdev->rq = bdev->gendisk->queue;
+>  	nr_max_blk = min(scmdev->nr_max_block,
+>  			 (unsigned int) (PAGE_SIZE / sizeof(struct aidaw)));
+>  
+> @@ -477,17 +477,11 @@ int scm_blk_dev_setup(struct scm_blk_dev *bdev, struct scm_device *scmdev)
+>  	blk_queue_flag_set(QUEUE_FLAG_NONROT, rq);
+>  	blk_queue_flag_clear(QUEUE_FLAG_ADD_RANDOM, rq);
+>  
+> -	bdev->gendisk = alloc_disk(SCM_NR_PARTS);
+> -	if (!bdev->gendisk) {
+> -		ret = -ENOMEM;
+> -		goto out_queue;
+> -	}
+> -	rq->queuedata = scmdev;
+>  	bdev->gendisk->private_data = scmdev;
+>  	bdev->gendisk->fops = &scm_blk_devops;
+> -	bdev->gendisk->queue = rq;
+>  	bdev->gendisk->major = scm_major;
+>  	bdev->gendisk->first_minor = devindex * SCM_NR_PARTS;
+> +	bdev->gendisk->minors = SCM_NR_PARTS;
+>  
+>  	len = snprintf(bdev->gendisk->disk_name, DISK_NAME_LEN, "scm");
+>  	if (devindex > 25) {
+> @@ -504,8 +498,6 @@ int scm_blk_dev_setup(struct scm_blk_dev *bdev, struct scm_device *scmdev)
+>  	device_add_disk(&scmdev->dev, bdev->gendisk, NULL);
+>  	return 0;
+>  
+> -out_queue:
+> -	blk_cleanup_queue(rq);
+>  out_tag:
+>  	blk_mq_free_tag_set(&bdev->tag_set);
+>  out:
+> @@ -516,9 +508,8 @@ int scm_blk_dev_setup(struct scm_blk_dev *bdev, struct scm_device *scmdev)
+>  void scm_blk_dev_cleanup(struct scm_blk_dev *bdev)
+>  {
+>  	del_gendisk(bdev->gendisk);
+> -	blk_cleanup_queue(bdev->gendisk->queue);
+> +	blk_cleanup_disk(bdev->gendisk);
+>  	blk_mq_free_tag_set(&bdev->tag_set);
+> -	put_disk(bdev->gendisk);
+>  }
+>  
+>  void scm_blk_set_available(struct scm_blk_dev *bdev)
 
-Add spinand_init_flash() helper which implement
-all needed init for future SPI-NAND resume ops.
+Not an expert on SCM or this code but I gave this a quick test and it
+seems to work fine.
 
-Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
----
-Changes in v5:
-  - Add spinand_read_cfg() call in spinand_init_flash()
+Tested-by: Niklas Schnelle <schnelle@linux.ibm.com>
 
-Changes in v4:
-  - None
 
- drivers/mtd/nand/spi/core.c | 74 ++++++++++++++++++++++---------------
- 1 file changed, 45 insertions(+), 29 deletions(-)
-
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index ab0fff6feaa7..12dfa75eec28 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -1081,12 +1081,55 @@ static int spinand_detect(struct spinand_device *spinand)
- 	return 0;
- }
- 
-+static int spinand_init_flash(struct spinand_device *spinand)
-+{
-+	struct device *dev = &spinand->spimem->spi->dev;
-+	struct nand_device *nand = spinand_to_nand(spinand);
-+	int ret, i;
-+
-+	ret = spinand_read_cfg(spinand);
-+	if (ret)
-+		return ret;
-+
-+	ret = spinand_init_quad_enable(spinand);
-+	if (ret)
-+		return ret;
-+
-+	ret = spinand_upd_cfg(spinand, CFG_OTP_ENABLE, 0);
-+	if (ret)
-+		return ret;
-+
-+	ret = spinand_manufacturer_init(spinand);
-+	if (ret) {
-+		dev_err(dev,
-+		"Failed to initialize the SPI NAND chip (err = %d)\n",
-+		ret);
-+		return ret;
-+	}
-+
-+	/* After power up, all blocks are locked, so unlock them here. */
-+	for (i = 0; i < nand->memorg.ntargets; i++) {
-+		ret = spinand_select_target(spinand, i);
-+		if (ret)
-+			break;
-+
-+		ret = spinand_lock_block(spinand, BL_ALL_UNLOCKED);
-+		if (ret)
-+			break;
-+	}
-+
-+	if (ret)
-+		spinand_manufacturer_cleanup(spinand);
-+
-+	return ret;
-+}
-+
- static int spinand_init(struct spinand_device *spinand)
- {
- 	struct device *dev = &spinand->spimem->spi->dev;
- 	struct mtd_info *mtd = spinand_to_mtd(spinand);
- 	struct nand_device *nand = mtd_to_nanddev(mtd);
--	int ret, i;
-+	int ret;
- 
- 	/*
- 	 * We need a scratch buffer because the spi_mem interface requires that
-@@ -1119,26 +1162,10 @@ static int spinand_init(struct spinand_device *spinand)
- 	if (ret)
- 		goto err_free_bufs;
- 
--	ret = spinand_read_cfg(spinand);
--	if (ret)
--		goto err_free_bufs;
--
--	ret = spinand_init_quad_enable(spinand);
--	if (ret)
--		goto err_free_bufs;
--
--	ret = spinand_upd_cfg(spinand, CFG_OTP_ENABLE, 0);
-+	ret = spinand_init_flash(spinand);
- 	if (ret)
- 		goto err_free_bufs;
- 
--	ret = spinand_manufacturer_init(spinand);
--	if (ret) {
--		dev_err(dev,
--			"Failed to initialize the SPI NAND chip (err = %d)\n",
--			ret);
--		goto err_free_bufs;
--	}
--
- 	ret = spinand_create_dirmaps(spinand);
- 	if (ret) {
- 		dev_err(dev,
-@@ -1147,17 +1174,6 @@ static int spinand_init(struct spinand_device *spinand)
- 		goto err_manuf_cleanup;
- 	}
- 
--	/* After power up, all blocks are locked, so unlock them here. */
--	for (i = 0; i < nand->memorg.ntargets; i++) {
--		ret = spinand_select_target(spinand, i);
--		if (ret)
--			goto err_manuf_cleanup;
--
--		ret = spinand_lock_block(spinand, BL_ALL_UNLOCKED);
--		if (ret)
--			goto err_manuf_cleanup;
--	}
--
- 	ret = nanddev_init(nand, &spinand_ops, THIS_MODULE);
- 	if (ret)
- 		goto err_manuf_cleanup;
--- 
-2.17.1
 
 
 ______________________________________________________
