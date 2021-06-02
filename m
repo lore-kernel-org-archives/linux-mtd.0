@@ -2,19 +2,19 @@ Return-Path: <SRS0=DONg=K4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EB85C47083
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 07:41:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF567C47083
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 07:43:02 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6DB126138C
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 07:41:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6DB126138C
+	by mail.kernel.org (Postfix) with ESMTPS id AEE4B6138C
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 07:43:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AEE4B6138C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,18 +23,18 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=y+p3VfT303CT1YzEjUAjlZafV8oagx+N3PRBk0TNHQw=; b=JyKT0G47OnPYCO
-	B2wt6SDJ7R54aRsf9rRMCERc4QS9ttWzpMOTPsOR4+wfQL3Y2zLrXlC8IfpfEE2Y1uPXAPJiwBt9q
-	R9+cjC8Oc6wYQWWY1BQsPd9PqdbDQ+E9rycPA/+9oVV7oAgSJaEeHWS9a91Sp2qsTxkwZryrU9GuQ
-	eAmyg4S81ew9x1URPM9P7Qp6Y6jg53vHyAjAYmwntZsnVXC+aivFQ2WfJmvk2PgzLnCOhI/UwQFxV
-	xZ/uwOq5+geJQElD7AIZv4r2A7N18C+rIpCJLa89zF6gFx69J6oAFVLQBTL2hVCvXDQQlIw+fRyQQ
-	INliPoQ1Wuw4W0NpFBew==;
+	List-Owner; bh=e1wd8Ty53TLpDDfsEpv7Ao9VESwz7cXpCCT1px0QMQk=; b=pN6BvYNz7fF03c
+	bX9J520mV0DEFjlMxtyaQtoB3iVN05/8qlzQm7ZTGzIMcPuN8PQObh4rcqeKTzJ1c1sx6IcD8wPsP
+	w5dvnyunQfnij7zCJ4UuhoMv8rSsHZFkPJ1sXLFML3u+cvLWV4sKMzkhkVolHShR4pL9ynrQ1vS47
+	9fyIHrrZlSNyCUm3Lmc7dPst++l/mpq4qXFLVqSYY83/TI56IT6DZ1ZJoeAEQ9Ok28pRp6+AN1IXD
+	715ONFftCL6nZic80tNXzRiBUDCo3ufF/dKW5iqoGTUOCakFGKbSmK9c16mhSIzJlKJqGfgmMDSTV
+	d9s45HgbvxZpR/h9gqIw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1loLUK-002NE9-Uc; Wed, 02 Jun 2021 07:40:29 +0000
+	id 1loLVy-002NgA-As; Wed, 02 Jun 2021 07:42:10 +0000
 Received: from shol69.static.otenet.gr ([83.235.170.67] helo=localhost)
  by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1loKn5-0026La-Sd; Wed, 02 Jun 2021 06:55:48 +0000
+ id 1loKnA-0026PT-6J; Wed, 02 Jun 2021 06:55:53 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Justin Sanders <justin@coraid.com>, Denis Efremov <efremov@linux.com>,
@@ -56,9 +56,9 @@ Cc: Justin Sanders <justin@coraid.com>, Denis Efremov <efremov@linux.com>,
  virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org,
  linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-s390@vger.kernel.org
-Subject: [PATCH 25/30] xen-blkfront: use blk_mq_alloc_disk and blk_cleanup_disk
-Date: Wed,  2 Jun 2021 09:53:40 +0300
-Message-Id: <20210602065345.355274-26-hch@lst.de>
+Subject: [PATCH 26/30] ubi: use blk_mq_alloc_disk and blk_cleanup_disk
+Date: Wed,  2 Jun 2021 09:53:41 +0300
+Message-Id: <20210602065345.355274-27-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210602065345.355274-1-hch@lst.de>
 References: <20210602065345.355274-1-hch@lst.de>
@@ -84,152 +84,131 @@ request_queue allocation.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/block/xen-blkfront.c | 96 +++++++++++++++---------------------
- 1 file changed, 39 insertions(+), 57 deletions(-)
+ drivers/mtd/ubi/block.c | 68 ++++++++++++++++++-----------------------
+ 1 file changed, 29 insertions(+), 39 deletions(-)
 
-diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
-index f2c1aedcdf5a..8d49f8fa98bb 100644
---- a/drivers/block/xen-blkfront.c
-+++ b/drivers/block/xen-blkfront.c
-@@ -968,48 +968,6 @@ static void blkif_set_queue_limits(struct blkfront_info *info)
- 	blk_queue_dma_alignment(rq, 511);
- }
+diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+index e1a2ae21dfd3..e003b4b44ffa 100644
+--- a/drivers/mtd/ubi/block.c
++++ b/drivers/mtd/ubi/block.c
+@@ -394,53 +394,46 @@ int ubiblock_create(struct ubi_volume_info *vi)
+ 	dev->vol_id = vi->vol_id;
+ 	dev->leb_size = vi->usable_leb_size;
  
--static int xlvbd_init_blk_queue(struct gendisk *gd, u16 sector_size,
--				unsigned int physical_sector_size)
--{
--	struct request_queue *rq;
--	struct blkfront_info *info = gd->private_data;
--
--	memset(&info->tag_set, 0, sizeof(info->tag_set));
--	info->tag_set.ops = &blkfront_mq_ops;
--	info->tag_set.nr_hw_queues = info->nr_rings;
--	if (HAS_EXTRA_REQ && info->max_indirect_segments == 0) {
--		/*
--		 * When indirect descriptior is not supported, the I/O request
--		 * will be split between multiple request in the ring.
--		 * To avoid problems when sending the request, divide by
--		 * 2 the depth of the queue.
--		 */
--		info->tag_set.queue_depth =  BLK_RING_SIZE(info) / 2;
--	} else
--		info->tag_set.queue_depth = BLK_RING_SIZE(info);
--	info->tag_set.numa_node = NUMA_NO_NODE;
--	info->tag_set.flags = BLK_MQ_F_SHOULD_MERGE;
--	info->tag_set.cmd_size = sizeof(struct blkif_req);
--	info->tag_set.driver_data = info;
--
--	if (blk_mq_alloc_tag_set(&info->tag_set))
--		return -EINVAL;
--	rq = blk_mq_init_queue(&info->tag_set);
--	if (IS_ERR(rq)) {
--		blk_mq_free_tag_set(&info->tag_set);
--		return PTR_ERR(rq);
--	}
--
--	rq->queuedata = info;
--	info->rq = gd->queue = rq;
--	info->gd = gd;
--	info->sector_size = sector_size;
--	info->physical_sector_size = physical_sector_size;
--	blkif_set_queue_limits(info);
--
--	return 0;
--}
--
- static const char *flush_info(struct blkfront_info *info)
- {
- 	if (info->feature_flush && info->feature_fua)
-@@ -1146,12 +1104,36 @@ static int xlvbd_alloc_gendisk(blkif_sector_t capacity,
- 
- 	err = xlbd_reserve_minors(minor, nr_minors);
- 	if (err)
--		goto out;
-+		return err;
- 	err = -ENODEV;
- 
--	gd = alloc_disk(nr_minors);
--	if (gd == NULL)
--		goto release;
-+	memset(&info->tag_set, 0, sizeof(info->tag_set));
-+	info->tag_set.ops = &blkfront_mq_ops;
-+	info->tag_set.nr_hw_queues = info->nr_rings;
-+	if (HAS_EXTRA_REQ && info->max_indirect_segments == 0) {
-+		/*
-+		 * When indirect descriptior is not supported, the I/O request
-+		 * will be split between multiple request in the ring.
-+		 * To avoid problems when sending the request, divide by
-+		 * 2 the depth of the queue.
-+		 */
-+		info->tag_set.queue_depth =  BLK_RING_SIZE(info) / 2;
-+	} else
-+		info->tag_set.queue_depth = BLK_RING_SIZE(info);
-+	info->tag_set.numa_node = NUMA_NO_NODE;
-+	info->tag_set.flags = BLK_MQ_F_SHOULD_MERGE;
-+	info->tag_set.cmd_size = sizeof(struct blkif_req);
-+	info->tag_set.driver_data = info;
++	dev->tag_set.ops = &ubiblock_mq_ops;
++	dev->tag_set.queue_depth = 64;
++	dev->tag_set.numa_node = NUMA_NO_NODE;
++	dev->tag_set.flags = BLK_MQ_F_SHOULD_MERGE;
++	dev->tag_set.cmd_size = sizeof(struct ubiblock_pdu);
++	dev->tag_set.driver_data = dev;
++	dev->tag_set.nr_hw_queues = 1;
 +
-+	err = blk_mq_alloc_tag_set(&info->tag_set);
-+	if (err)
-+		goto out_release_minors;
-+
-+	gd = blk_mq_alloc_disk(&info->tag_set, info);
-+	if (IS_ERR(gd)) {
-+		err = PTR_ERR(gd);
-+		goto out_free_tag_set;
++	ret = blk_mq_alloc_tag_set(&dev->tag_set);
++	if (ret) {
++		dev_err(disk_to_dev(dev->gd), "blk_mq_alloc_tag_set failed");
++		goto out_free_dev;;
 +	}
++
++
+ 	/* Initialize the gendisk of this ubiblock device */
+-	gd = alloc_disk(1);
+-	if (!gd) {
+-		pr_err("UBI: block: alloc_disk failed\n");
+-		ret = -ENODEV;
+-		goto out_free_dev;
++	gd = blk_mq_alloc_disk(&dev->tag_set, dev);
++	if (IS_ERR(gd)) {
++		ret = PTR_ERR(gd);
++		goto out_free_tags;
+ 	}
  
- 	strcpy(gd->disk_name, DEV_NAME);
- 	ptr = encode_disk_name(gd->disk_name + sizeof(DEV_NAME) - 1, offset);
-@@ -1164,14 +1146,16 @@ static int xlvbd_alloc_gendisk(blkif_sector_t capacity,
+ 	gd->fops = &ubiblock_ops;
+ 	gd->major = ubiblock_major;
++	gd->minors = 1;
+ 	gd->first_minor = idr_alloc(&ubiblock_minor_idr, dev, 0, 0, GFP_KERNEL);
+ 	if (gd->first_minor < 0) {
+ 		dev_err(disk_to_dev(gd),
+ 			"block: dynamic minor allocation failed");
+ 		ret = -ENODEV;
+-		goto out_put_disk;
++		goto out_cleanup_disk;
+ 	}
+ 	gd->private_data = dev;
+ 	sprintf(gd->disk_name, "ubiblock%d_%d", dev->ubi_num, dev->vol_id);
+ 	set_capacity(gd, disk_capacity);
+ 	dev->gd = gd;
  
- 	gd->major = XENVBD_MAJOR;
- 	gd->first_minor = minor;
-+	gd->minors = nr_minors;
- 	gd->fops = &xlvbd_block_fops;
- 	gd->private_data = info;
- 	set_capacity(gd, capacity);
- 
--	if (xlvbd_init_blk_queue(gd, sector_size, physical_sector_size)) {
--		del_gendisk(gd);
--		goto release;
+-	dev->tag_set.ops = &ubiblock_mq_ops;
+-	dev->tag_set.queue_depth = 64;
+-	dev->tag_set.numa_node = NUMA_NO_NODE;
+-	dev->tag_set.flags = BLK_MQ_F_SHOULD_MERGE;
+-	dev->tag_set.cmd_size = sizeof(struct ubiblock_pdu);
+-	dev->tag_set.driver_data = dev;
+-	dev->tag_set.nr_hw_queues = 1;
+-
+-	ret = blk_mq_alloc_tag_set(&dev->tag_set);
+-	if (ret) {
+-		dev_err(disk_to_dev(dev->gd), "blk_mq_alloc_tag_set failed");
+-		goto out_remove_minor;
 -	}
-+	info->rq = gd->queue;
-+	info->gd = gd;
-+	info->sector_size = sector_size;
-+	info->physical_sector_size = physical_sector_size;
-+	blkif_set_queue_limits(info);
+-
+-	dev->rq = blk_mq_init_queue(&dev->tag_set);
+-	if (IS_ERR(dev->rq)) {
+-		dev_err(disk_to_dev(gd), "blk_mq_init_queue failed");
+-		ret = PTR_ERR(dev->rq);
+-		goto out_free_tags;
+-	}
++	dev->rq = gd->queue;
+ 	blk_queue_max_segments(dev->rq, UBI_MAX_SG_COUNT);
  
- 	xlvbd_flush(info);
+-	dev->rq->queuedata = dev;
+-	dev->gd->queue = dev->rq;
+-
+ 	/*
+ 	 * Create one workqueue per volume (per registered block device).
+ 	 * Rembember workqueues are cheap, they're not threads.
+@@ -448,7 +441,7 @@ int ubiblock_create(struct ubi_volume_info *vi)
+ 	dev->wq = alloc_workqueue("%s", 0, 0, gd->disk_name);
+ 	if (!dev->wq) {
+ 		ret = -ENOMEM;
+-		goto out_free_queue;
++		goto out_remove_minor;
+ 	}
  
-@@ -1186,9 +1170,10 @@ static int xlvbd_alloc_gendisk(blkif_sector_t capacity,
- 
+ 	list_add_tail(&dev->list, &ubiblock_devices);
+@@ -460,14 +453,12 @@ int ubiblock_create(struct ubi_volume_info *vi)
+ 	mutex_unlock(&devices_mutex);
  	return 0;
  
-- release:
-+out_free_tag_set:
-+	blk_mq_free_tag_set(&info->tag_set);
-+out_release_minors:
- 	xlbd_release_minors(minor, nr_minors);
-- out:
- 	return err;
+-out_free_queue:
+-	blk_cleanup_queue(dev->rq);
+-out_free_tags:
+-	blk_mq_free_tag_set(&dev->tag_set);
+ out_remove_minor:
+ 	idr_remove(&ubiblock_minor_idr, gd->first_minor);
+-out_put_disk:
+-	put_disk(dev->gd);
++out_cleanup_disk:
++	blk_cleanup_disk(dev->gd);
++out_free_tags:
++	blk_mq_free_tag_set(&dev->tag_set);
+ out_free_dev:
+ 	kfree(dev);
+ out_unlock:
+@@ -483,11 +474,10 @@ static void ubiblock_cleanup(struct ubiblock *dev)
+ 	/* Flush pending work */
+ 	destroy_workqueue(dev->wq);
+ 	/* Finally destroy the blk queue */
+-	blk_cleanup_queue(dev->rq);
+-	blk_mq_free_tag_set(&dev->tag_set);
+ 	dev_info(disk_to_dev(dev->gd), "released");
++	blk_cleanup_disk(dev->gd);
++	blk_mq_free_tag_set(&dev->tag_set);
+ 	idr_remove(&ubiblock_minor_idr, dev->gd->first_minor);
+-	put_disk(dev->gd);
  }
  
-@@ -1217,12 +1202,9 @@ static void xlvbd_release_gendisk(struct blkfront_info *info)
- 	nr_minors = info->gd->minors;
- 	xlbd_release_minors(minor, nr_minors);
- 
--	blk_cleanup_queue(info->rq);
--	blk_mq_free_tag_set(&info->tag_set);
--	info->rq = NULL;
--
--	put_disk(info->gd);
-+	blk_cleanup_disk(info->gd);
- 	info->gd = NULL;
-+	blk_mq_free_tag_set(&info->tag_set);
- }
- 
- /* Already hold rinfo->ring_lock. */
+ int ubiblock_remove(struct ubi_volume_info *vi)
 -- 
 2.30.2
 
