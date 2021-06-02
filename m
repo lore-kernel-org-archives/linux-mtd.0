@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95871C47083
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 07:06:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79D6BC4708F
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 07:08:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 64268610CB
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 07:06:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 64268610CB
+	by mail.kernel.org (Postfix) with ESMTPS id 40ED1601FF
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 07:08:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 40ED1601FF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,18 +23,18 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jRo7gYoZQ8+Wst5aW0MXlyY1JODxdnWAJzxXmdtSDxc=; b=ilff/ChaL9VYAX
-	un8VDajUUTAiNsi55Tuy0HiDdNe6lNYzqMhZTyEW/76cIBCC/Neyk98AlYxK6HWp5Ua/C5K48p1Lm
-	Jn0VvDAsVCqqqA3fOPS1mZ1rY2ru33IfjkP8RcLFCjIpsecEfo8PW/ASSYaU7nRBxO5EydXJvFAgo
-	HiYJQFEb46ssGvx2vX+ZQoh510l/veMBmezl3s2wZ5lCR4a1ON0GRr+PBv1huSsTvQgkctCvn8B45
-	3rsLrzEEouXQs9sZrCATym5+nMuiIdiOE3qpPmvGhjRYvBnHLBjdG5yO/kBMgYCbcxcuJh2j3yTVb
-	ifqztS2JVGtScpPenUHQ==;
+	List-Owner; bh=lkF7W5fIsSOeDY29JjtVhXG3p99f8vX+uYXkpnkNQ84=; b=lDETcHE7e3kaQe
+	S6LUv/aRZs170sotHjKit/+LM2zKtpztuVnXPW3A/i4uQEUdMOCArKYfB7aKKUnlSRjuO8xdJe61E
+	57UVPOciP+o3Nndb67WYFs8/ROegbbq+FWhaYfXxyKqe0yk047iFEzVNKfXb9Y0XjyQs99qJptwmy
+	edwbKMgK7anyvAlkkLeeXlDs+RNSyLRcSRW2lynpDlyflgIlY3jrC0WKKTNP5DPbeyRwNhe0zYRHz
+	pwHFveQVN92e9D2t5Sv4agu6rOwXyrFM+sAKhLSqnnqZajf4dlF/8OFf2OzAdLJGnUCW3B2Gji0EN
+	GWS9yxaAQlYBa1Q5g9dA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1loKwQ-002Ar5-4v; Wed, 02 Jun 2021 07:05:26 +0000
+	id 1loKy9-002BkY-0q; Wed, 02 Jun 2021 07:07:13 +0000
 Received: from shol69.static.otenet.gr ([83.235.170.67] helo=localhost)
  by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1loKls-0025R4-W9; Wed, 02 Jun 2021 06:54:33 +0000
+ id 1loKly-0025TX-SP; Wed, 02 Jun 2021 06:54:39 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Justin Sanders <justin@coraid.com>, Denis Efremov <efremov@linux.com>,
@@ -56,9 +56,9 @@ Cc: Justin Sanders <justin@coraid.com>, Denis Efremov <efremov@linux.com>,
  virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org,
  linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-s390@vger.kernel.org
-Subject: [PATCH 08/30] mspro: use blk_mq_alloc_disk
-Date: Wed,  2 Jun 2021 09:53:23 +0300
-Message-Id: <20210602065345.355274-9-hch@lst.de>
+Subject: [PATCH 09/30] mtd_blkdevs: use blk_mq_alloc_disk
+Date: Wed,  2 Jun 2021 09:53:24 +0300
+Message-Id: <20210602065345.355274-10-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210602065345.355274-1-hch@lst.de>
 References: <20210602065345.355274-1-hch@lst.de>
@@ -84,66 +84,110 @@ allocation.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/memstick/core/mspro_block.c | 26 +++++++++++---------------
- 1 file changed, 11 insertions(+), 15 deletions(-)
+ drivers/mtd/mtd_blkdevs.c | 48 ++++++++++++++++++---------------------
+ 1 file changed, 22 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/memstick/core/mspro_block.c b/drivers/memstick/core/mspro_block.c
-index cf7fe0d58ee7..22778d0e24f5 100644
---- a/drivers/memstick/core/mspro_block.c
-+++ b/drivers/memstick/core/mspro_block.c
-@@ -1205,21 +1205,17 @@ static int mspro_block_init_disk(struct memstick_dev *card)
- 	if (disk_id < 0)
- 		return disk_id;
+diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+index fb8e12d590a1..5dc4c966ea73 100644
+--- a/drivers/mtd/mtd_blkdevs.c
++++ b/drivers/mtd/mtd_blkdevs.c
+@@ -30,11 +30,9 @@ static void blktrans_dev_release(struct kref *kref)
+ 	struct mtd_blktrans_dev *dev =
+ 		container_of(kref, struct mtd_blktrans_dev, ref);
  
--	msb->disk = alloc_disk(1 << MSPRO_BLOCK_PART_SHIFT);
--	if (!msb->disk) {
--		rc = -ENOMEM;
-+	rc = blk_mq_alloc_sq_tag_set(&msb->tag_set, &mspro_mq_ops, 2,
-+				     BLK_MQ_F_SHOULD_MERGE);
-+	if (rc)
- 		goto out_release_id;
--	}
- 
--	msb->queue = blk_mq_init_sq_queue(&msb->tag_set, &mspro_mq_ops, 2,
--						BLK_MQ_F_SHOULD_MERGE);
--	if (IS_ERR(msb->queue)) {
--		rc = PTR_ERR(msb->queue);
--		msb->queue = NULL;
--		goto out_put_disk;
-+	msb->disk = blk_mq_alloc_disk(&msb->tag_set, card);
-+	if (IS_ERR(msb->disk)) {
-+		rc = PTR_ERR(msb->disk);
-+		goto out_free_tag_set;
+-	dev->disk->private_data = NULL;
+-	blk_cleanup_queue(dev->rq);
++	blk_cleanup_disk(dev->disk);
+ 	blk_mq_free_tag_set(dev->tag_set);
+ 	kfree(dev->tag_set);
+-	put_disk(dev->disk);
+ 	list_del(&dev->list);
+ 	kfree(dev);
+ }
+@@ -354,7 +352,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 	if (new->devnum > (MINORMASK >> tr->part_bits) ||
+ 	    (tr->part_bits && new->devnum >= 27 * 26)) {
+ 		mutex_unlock(&blktrans_ref_mutex);
+-		goto error1;
++		return ret;
  	}
+ 
+ 	list_add_tail(&new->list, &tr->devs);
+@@ -366,17 +364,28 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 	if (!tr->writesect)
+ 		new->readonly = 1;
+ 
+-	/* Create gendisk */
+ 	ret = -ENOMEM;
+-	gd = alloc_disk(1 << tr->part_bits);
++	new->tag_set = kzalloc(sizeof(*new->tag_set), GFP_KERNEL);
++	if (!new->tag_set)
++		goto out_list_del;
+ 
+-	if (!gd)
+-		goto error2;
++	ret = blk_mq_alloc_sq_tag_set(new->tag_set, &mtd_mq_ops, 2,
++			BLK_MQ_F_SHOULD_MERGE | BLK_MQ_F_BLOCKING);
++	if (ret)
++		goto out_kfree_tag_set;
++
++	/* Create gendisk */
++	gd = blk_mq_alloc_disk(new->tag_set, new);
++	if (IS_ERR(gd)) {
++		ret = PTR_ERR(gd);
++		goto out_free_tag_set;
++	}
+ 
+ 	new->disk = gd;
+ 	gd->private_data = new;
+ 	gd->major = tr->major;
+ 	gd->first_minor = (new->devnum) << tr->part_bits;
++	gd->minors = 1 << tr->part_bits;
+ 	gd->fops = &mtd_block_ops;
+ 
+ 	if (tr->part_bits)
+@@ -398,22 +407,9 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 	spin_lock_init(&new->queue_lock);
+ 	INIT_LIST_HEAD(&new->rq_list);
+ 
+-	new->tag_set = kzalloc(sizeof(*new->tag_set), GFP_KERNEL);
+-	if (!new->tag_set)
+-		goto error3;
 -
--	msb->queue->queuedata = card;
-+	msb->queue = msb->disk->queue;
+-	new->rq = blk_mq_init_sq_queue(new->tag_set, &mtd_mq_ops, 2,
+-				BLK_MQ_F_SHOULD_MERGE | BLK_MQ_F_BLOCKING);
+-	if (IS_ERR(new->rq)) {
+-		ret = PTR_ERR(new->rq);
+-		new->rq = NULL;
+-		goto error4;
+-	}
+-
+ 	if (tr->flush)
+ 		blk_queue_write_cache(new->rq, true, false);
  
- 	blk_queue_max_hw_sectors(msb->queue, MSPRO_BLOCK_MAX_PAGES);
- 	blk_queue_max_segments(msb->queue, MSPRO_BLOCK_MAX_SEGS);
-@@ -1228,10 +1224,10 @@ static int mspro_block_init_disk(struct memstick_dev *card)
+-	new->rq->queuedata = new;
+ 	blk_queue_logical_block_size(new->rq, tr->blksize);
  
- 	msb->disk->major = major;
- 	msb->disk->first_minor = disk_id << MSPRO_BLOCK_PART_SHIFT;
-+	msb->disk->minors = 1 << MSPRO_BLOCK_PART_SHIFT;
- 	msb->disk->fops = &ms_block_bdops;
- 	msb->usage_count = 1;
- 	msb->disk->private_data = msb;
--	msb->disk->queue = msb->queue;
- 
- 	sprintf(msb->disk->disk_name, "mspblk%d", disk_id);
- 
-@@ -1247,8 +1243,8 @@ static int mspro_block_init_disk(struct memstick_dev *card)
- 	msb->active = 1;
+ 	blk_queue_flag_set(QUEUE_FLAG_NONROT, new->rq);
+@@ -437,13 +433,13 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 		WARN_ON(ret);
+ 	}
  	return 0;
- 
--out_put_disk:
--	put_disk(msb->disk);
+-error4:
++
 +out_free_tag_set:
-+	blk_mq_free_tag_set(&msb->tag_set);
- out_release_id:
- 	mutex_lock(&mspro_block_disk_lock);
- 	idr_remove(&mspro_block_disk_idr, disk_id);
++	blk_mq_free_tag_set(new->tag_set);
++out_kfree_tag_set:
+ 	kfree(new->tag_set);
+-error3:
+-	put_disk(new->disk);
+-error2:
++out_list_del:
+ 	list_del(&new->list);
+-error1:
+ 	return ret;
+ }
+ 
 -- 
 2.30.2
 
