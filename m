@@ -5,16 +5,16 @@ X-Spam-Level:
 X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23D41C47083
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 07:32:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F7F6C4708F
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 07:33:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DB8B66121D
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 07:32:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB8B66121D
+	by mail.kernel.org (Postfix) with ESMTPS id 466AD61376
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Jun 2021 07:33:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 466AD61376
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,18 +23,18 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1hQSGhmCq5gyFPLFIJAlstXwivMxPJFOKaG5f86eHiY=; b=GaCEXu6nh/Ur5O
-	NQZtU+KJFO7l9Bg911f9YzFcdWJvxHW1air8Hnr7fhT6DAVhTF4p7tDn9A88/wmg2/e1W/CdwtVvU
-	LzoO22y9FGPa7W6VUxO6v18GYS/jjrNApAexld0CQLebuWIRVWXVWwCTVoouy1R2ciu2Qe0IZoQK6
-	aDiQPdLldsetZ4p3Xf6HKzUeo6P5ypdxYdSCJ6zcfxIo7+qcXIdjBQ6aBL52ZnjDLpdZHBYGpY6vR
-	TJiq/2NvAfCGWZ3g0E+Mv2PfJqZePBuAe8ufkdqdeez8XhmliNXqZNyik7TC65RRwB6qxHPbcA+jw
-	qLKTkh3oL6SV4VyM89dg==;
+	List-Owner; bh=KdfhlAs0OxHtFKcgAqScx8v8hC0t4nGy2e2kQXFa7VA=; b=c4n+yTnCBuXdhX
+	7k7KfAvINlrYXGfK4AcpJDMyBOB2U5iPeBCVvUgf0049MGsofGbjr4CYmHvyPUOrsdaMmnqUrJcVD
+	q4Bi2SMsJYysGpq0LAesTmMpRqMuJp6l/XccmAFoBj1609PffSQQ6HZBqrl96uHkORa6BtLlIGQHl
+	f5TAG/kjomb+i5psHN08lnHlySD098JFZj6zFnvqFRjgAZdTvdCKfUSrFQNXFPXj8mZ83T+OLF6s3
+	iNG+pLU78cI6EsjH583/jQRwkDZKiG9XaSZlw0RKLEhyfCWZW84+ZHI7jLwy5yIDGVVgTEtcTEazD
+	1rXEFfa4GC/aJiW0rASg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1loLLk-002JUv-5d; Wed, 02 Jun 2021 07:31:36 +0000
+	id 1loLNK-002KDY-Bd; Wed, 02 Jun 2021 07:33:14 +0000
 Received: from shol69.static.otenet.gr ([83.235.170.67] helo=localhost)
  by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1loKmo-002647-90; Wed, 02 Jun 2021 06:55:31 +0000
+ id 1loKms-00269K-Qr; Wed, 02 Jun 2021 06:55:35 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Justin Sanders <justin@coraid.com>, Denis Efremov <efremov@linux.com>,
@@ -56,9 +56,9 @@ Cc: Justin Sanders <justin@coraid.com>, Denis Efremov <efremov@linux.com>,
  virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org,
  linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-s390@vger.kernel.org
-Subject: [PATCH 21/30] pd: use blk_mq_alloc_disk and blk_cleanup_disk
-Date: Wed,  2 Jun 2021 09:53:36 +0300
-Message-Id: <20210602065345.355274-22-hch@lst.de>
+Subject: [PATCH 22/30] rbd: use blk_mq_alloc_disk and blk_cleanup_disk
+Date: Wed,  2 Jun 2021 09:53:37 +0300
+Message-Id: <20210602065345.355274-23-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210602065345.355274-1-hch@lst.de>
 References: <20210602065345.355274-1-hch@lst.de>
@@ -84,69 +84,109 @@ request_queue allocation.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/block/paride/pd.c | 30 ++++++++++++------------------
- 1 file changed, 12 insertions(+), 18 deletions(-)
+ drivers/block/rbd.c | 52 ++++++++++++++++-----------------------------
+ 1 file changed, 18 insertions(+), 34 deletions(-)
 
-diff --git a/drivers/block/paride/pd.c b/drivers/block/paride/pd.c
-index 828a45ffe0e7..3b2b8e872beb 100644
---- a/drivers/block/paride/pd.c
-+++ b/drivers/block/paride/pd.c
-@@ -879,18 +879,6 @@ static void pd_probe_drive(struct pd_unit *disk)
+diff --git a/drivers/block/rbd.c b/drivers/block/rbd.c
+index bbb88eb009e0..531d390902dd 100644
+--- a/drivers/block/rbd.c
++++ b/drivers/block/rbd.c
+@@ -4750,9 +4750,8 @@ static blk_status_t rbd_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 
+ static void rbd_free_disk(struct rbd_device *rbd_dev)
  {
- 	struct gendisk *p;
+-	blk_cleanup_queue(rbd_dev->disk->queue);
++	blk_cleanup_disk(rbd_dev->disk);
+ 	blk_mq_free_tag_set(&rbd_dev->tag_set);
+-	put_disk(rbd_dev->disk);
+ 	rbd_dev->disk = NULL;
+ }
  
--	p = alloc_disk(1 << PD_BITS);
--	if (!p)
--		return;
--
--	strcpy(p->disk_name, disk->name);
--	p->fops = &pd_fops;
--	p->major = major;
--	p->first_minor = (disk - pd) << PD_BITS;
--	p->events = DISK_EVENT_MEDIA_CHANGE;
--	disk->gd = p;
--	p->private_data = disk;
--
- 	memset(&disk->tag_set, 0, sizeof(disk->tag_set));
- 	disk->tag_set.ops = &pd_mq_ops;
- 	disk->tag_set.cmd_size = sizeof(struct pd_req);
-@@ -903,14 +891,21 @@ static void pd_probe_drive(struct pd_unit *disk)
- 	if (blk_mq_alloc_tag_set(&disk->tag_set))
- 		return;
+@@ -4922,22 +4921,6 @@ static int rbd_init_disk(struct rbd_device *rbd_dev)
+ 	    rbd_dev->layout.object_size * rbd_dev->layout.stripe_count;
+ 	int err;
  
--	p->queue = blk_mq_init_queue(&disk->tag_set);
--	if (IS_ERR(p->queue)) {
-+	p = blk_mq_alloc_disk(&disk->tag_set, disk);
-+	if (!p) {
- 		blk_mq_free_tag_set(&disk->tag_set);
--		p->queue = NULL;
- 		return;
+-	/* create gendisk info */
+-	disk = alloc_disk(single_major ?
+-			  (1 << RBD_SINGLE_MAJOR_PART_SHIFT) :
+-			  RBD_MINORS_PER_MAJOR);
+-	if (!disk)
+-		return -ENOMEM;
+-
+-	snprintf(disk->disk_name, sizeof(disk->disk_name), RBD_DRV_NAME "%d",
+-		 rbd_dev->dev_id);
+-	disk->major = rbd_dev->major;
+-	disk->first_minor = rbd_dev->minor;
+-	if (single_major)
+-		disk->flags |= GENHD_FL_EXT_DEVT;
+-	disk->fops = &rbd_bd_ops;
+-	disk->private_data = rbd_dev;
+-
+ 	memset(&rbd_dev->tag_set, 0, sizeof(rbd_dev->tag_set));
+ 	rbd_dev->tag_set.ops = &rbd_mq_ops;
+ 	rbd_dev->tag_set.queue_depth = rbd_dev->opts->queue_depth;
+@@ -4948,13 +4931,26 @@ static int rbd_init_disk(struct rbd_device *rbd_dev)
+ 
+ 	err = blk_mq_alloc_tag_set(&rbd_dev->tag_set);
+ 	if (err)
+-		goto out_disk;
++		return err;
+ 
+-	q = blk_mq_init_queue(&rbd_dev->tag_set);
+-	if (IS_ERR(q)) {
+-		err = PTR_ERR(q);
++	disk = blk_mq_alloc_disk(&rbd_dev->tag_set, rbd_dev);
++	if (IS_ERR(disk)) {
++		err = PTR_ERR(disk);
+ 		goto out_tag_set;
  	}
-+	disk->gd = p;
++	q = disk->queue;
 +
-+	strcpy(p->disk_name, disk->name);
-+	p->fops = &pd_fops;
-+	p->major = major;
-+	p->first_minor = (disk - pd) << PD_BITS;
-+	p->minors = 1 << PD_BITS;
-+	p->events = DISK_EVENT_MEDIA_CHANGE;
-+	p->private_data = disk;
++	snprintf(disk->disk_name, sizeof(disk->disk_name), RBD_DRV_NAME "%d",
++		 rbd_dev->dev_id);
++	disk->major = rbd_dev->major;
++	disk->first_minor = rbd_dev->minor;
++	if (single_major) {
++		disk->minors = (1 << RBD_SINGLE_MAJOR_PART_SHIFT);
++		disk->flags |= GENHD_FL_EXT_DEVT;
++	} else {
++		disk->minors = RBD_MINORS_PER_MAJOR;
++	}
++	disk->fops = &rbd_bd_ops;
  
--	p->queue->queuedata = disk;
- 	blk_queue_max_hw_sectors(p->queue, cluster);
- 	blk_queue_bounce_limit(p->queue, BLK_BOUNCE_HIGH);
+ 	blk_queue_flag_set(QUEUE_FLAG_NONROT, q);
+ 	/* QUEUE_FLAG_ADD_RANDOM is off by default for blk-mq */
+@@ -4976,21 +4972,11 @@ static int rbd_init_disk(struct rbd_device *rbd_dev)
+ 	if (!ceph_test_opt(rbd_dev->rbd_client->client, NOCRC))
+ 		blk_queue_flag_set(QUEUE_FLAG_STABLE_WRITES, q);
  
-@@ -1019,9 +1014,8 @@ static void __exit pd_exit(void)
- 		if (p) {
- 			disk->gd = NULL;
- 			del_gendisk(p);
--			blk_cleanup_queue(p->queue);
- 			blk_mq_free_tag_set(&disk->tag_set);
--			put_disk(p);
-+			blk_cleanup_disk(p);
- 			pi_release(disk->pi);
- 		}
- 	}
+-	/*
+-	 * disk_release() expects a queue ref from add_disk() and will
+-	 * put it.  Hold an extra ref until add_disk() is called.
+-	 */
+-	WARN_ON(!blk_get_queue(q));
+-	disk->queue = q;
+-	q->queuedata = rbd_dev;
+-
+ 	rbd_dev->disk = disk;
+ 
+ 	return 0;
+ out_tag_set:
+ 	blk_mq_free_tag_set(&rbd_dev->tag_set);
+-out_disk:
+-	put_disk(disk);
+ 	return err;
+ }
+ 
+@@ -7088,8 +7074,6 @@ static ssize_t do_rbd_add(struct bus_type *bus,
+ 		goto err_out_image_lock;
+ 
+ 	device_add_disk(&rbd_dev->dev, rbd_dev->disk, NULL);
+-	/* see rbd_init_disk() */
+-	blk_put_queue(rbd_dev->disk->queue);
+ 
+ 	spin_lock(&rbd_dev_list_lock);
+ 	list_add_tail(&rbd_dev->node, &rbd_dev_list);
 -- 
 2.30.2
 
