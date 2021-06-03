@@ -2,91 +2,71 @@ Return-Path: <SRS0=SghU=K5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BB68C47096
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Jun 2021 18:09:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5388C47082
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Jun 2021 18:43:30 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3680D60FE7
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Jun 2021 18:09:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3680D60FE7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8A051613EE
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Jun 2021 18:43:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8A051613EE
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6WrbMIOJZgh271JL0vx4rbTaXIZtrxoUUA1xTmFdBhQ=; b=e1l7+dfzL1uAj2
-	klxEmAgD1F5gUJo8VnYwifP7kWQ6vnp1fWn/MYcBSzSY0zzSte2jTfeyU1glYpZcJVUmPjRuZqGTU
-	HmimJGGh1koBYLs7wGMhVELIYuYF0OM7ZU54Kc+SqP9dxQCosydDJh/pX1WrS/enml0TxIH1A6ZVB
-	yII5cP+Mti0YMgz9VIincguirPyDvsWhcRgV01QeIJIyei6vUesmmW9i/zZn2Qkdgs7D/wXclqWxN
-	GTyk9WH4k7IOysihq/JHSQsdaX/hxVM/EN2hdTnXI0i6BRu0XaE4dAhNKIQLxUPXiapEf4YHTk7eE
-	obEwFCRej4YU9a9s/bGw==;
+	List-Owner; bh=YQJBfX0ymOx8Frlw2jnNcQTBYmnQH8C1M2FW73JEI7k=; b=CL1FkNJ7KC7l87
+	UcbngDnaDKnWfJszOOh3gU4dUuLYzzl7tnCLbSkWZu//idFLay/GtweHWlEnpF4PbnaPJkHDoGsR3
+	l3t/BTPi3k6Q55xgvJgohZYw8bA11BXNOmU6Hm7qOYwVvy16gWzlmdhvB93a8cBdvL+lbYb60nw9n
+	QZ9ZAqQMhFWgkXsVe5tiA24MzP4XaMWPWfNMj1xUzciRdO71Olbop0GeQvIx3wZkLOBdjQVpkCOHN
+	lUTaBkXE1kkKtfN0U0xWDVWTuh+fY11TmKCyzgMQiz3z2c4hPEugEckdPAZ85aOwqigb35HYh0s3d
+	Z42m0lpKMS5KpJJr3jZA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lorm6-00A3dj-Gt; Thu, 03 Jun 2021 18:08:58 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1losIZ-00AEME-0k; Thu, 03 Jun 2021 18:42:31 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lorm2-00A3c4-41
- for linux-mtd@lists.infradead.org; Thu, 03 Jun 2021 18:08:56 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 153I8lYL099709;
- Thu, 3 Jun 2021 13:08:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1622743727;
- bh=a6woUSiRPwVmYHSHy6o5MrXffOKGnDS3P4j3dK8UANk=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=xg3OPg6rNtFCU9Pc5KdgP9ZM8Ebzq7sPtK9q+4OSIqeE8li2Wq9UQrrlxhLiFxDRX
- C/+Gzdk+hulinYs5zbO6T4A3g+mKKRF71yyBz/BIPAMZTyNcY39LpOXHk1ThaKMT64
- NCEZToQFaxLqTa6cgQQVSlrK62qzqftCUj+MlSuw=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 153I8lac092999
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 3 Jun 2021 13:08:47 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 3 Jun
- 2021 13:08:47 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 3 Jun 2021 13:08:47 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 153I8kUq050570;
- Thu, 3 Jun 2021 13:08:46 -0500
-Date: Thu, 3 Jun 2021 23:38:45 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Mika Westerberg <mika.westerberg@linux.intel.com>
-CC: Michael Walle <michael@walle.cc>, Tudor Ambarus
- <tudor.ambarus@microchip.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, Mark Brown <broonie@kernel.org>,
- <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: intel-spi: Add support for second flash chip
-Message-ID: <20210603180843.hjzynysgby3d3e5r@ti.com>
-References: <20210525160318.35802-1-mika.westerberg@linux.intel.com>
- <20210525191414.dc45h27rzqen4dce@ti.com>
- <20210526091250.GY291593@lahna.fi.intel.com>
- <20210526092417.GA291593@lahna.fi.intel.com>
- <e82f44552d0d4284fc5ed22ee0bee85a@walle.cc>
- <20210526102810.GB291593@lahna.fi.intel.com>
- <YLTILUh+bPhZ4ToR@lahna.fi.intel.com>
- <YLi3/DRqGzdlosNf@lahna.fi.intel.com>
+ id 1losIK-00AEHp-Rt; Thu, 03 Jun 2021 18:42:18 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07DA5613EE;
+ Thu,  3 Jun 2021 18:42:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1622745736;
+ bh=WQrPHRQ4Uy6mv7zGw5EJ9wsQksZq35+9fQzYLsvFDgg=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=e1XTFevauO+76U45l2+gkVxOyE8b+lA2ZEG8V1VwuxLFozPpkdsltBw1qcnFjAa1e
+ wQCDGKOq7A4slp3QfctGw+BtbnHJQ8Zt/OQtLNvLTMBUKf+D5VcSdmgo+uj3nqUKFu
+ mtiKfwRoDljhf1UoAIZN0F0cA4ehR2K4VvAXd7PJXP3l3ETy9+SYIfd2Em2DCtIHU5
+ bfEsyYei9fe7c8ckUkMZQSXsFg+XukcLIFyj1K74uBQXdwUtvkp2tEgs/nFtNEQGTc
+ 68oIJq2uFpnlgjM4/x80vHZMoDxsDGchA4javhUp0yRGrHyXrohc0lrLEpvy2h8IrV
+ C+VC2hnmQi7Aw==
+From: Mark Brown <broonie@kernel.org>
+To: linux-spi@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+ patrice.chotard@foss.st.com,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ linux-mtd@lists.infradead.org
+Cc: Mark Brown <broonie@kernel.org>,
+	christophe.kerello@foss.st.com
+Subject: Re: [PATCH v5 0/3] MTD: spinand: Add spi_mem_poll_status() support
+Date: Thu,  3 Jun 2021 19:41:44 +0100
+Message-Id: <162274571326.15050.6494166618231849468.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210518162754.15940-1-patrice.chotard@foss.st.com>
+References: <20210518162754.15940-1-patrice.chotard@foss.st.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <YLi3/DRqGzdlosNf@lahna.fi.intel.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210603_110854_340499_5CAE846E 
-X-CRM114-Status: GOOD (  37.77  )
+X-CRM114-CacheID: sfid-20210603_114216_940469_7C9BD21B 
+X-CRM114-Status: GOOD (  13.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,72 +83,48 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-+Mark, linux-spi list,
-
-On 03/06/21 02:07PM, Mika Westerberg wrote:
-> Hi Tudor,
+On Tue, 18 May 2021 18:27:51 +0200, patrice.chotard@foss.st.com wrote:
+> This series adds support for the spi_mem_poll_status() spinand
+> interface.
+> Some QSPI controllers allows to poll automatically memory
+> status during operations (erase, read or write). This allows to
+> offload the CPU for this task.
+> STM32 QSPI is supporting this feature, driver update are also
+> part of this series.
 > 
-> On Mon, May 31, 2021 at 02:29:59PM +0300, Mika Westerberg wrote:
-> > Hi guys,
-> > 
-> > On Wed, May 26, 2021 at 01:28:16PM +0300, Mika Westerberg wrote:
-> > > Hi,
-> > > 
-> > > On Wed, May 26, 2021 at 11:31:58AM +0200, Michael Walle wrote:
-> > > > > Oh, I see now this commit:
-> > > > > 
-> > > > > a314f6367787 ("mtd: spi-nor: Convert cadence-quadspi to use spi-mem
-> > > > > framework")
-> > > > > 
-> > > > > So "SPI MEM" means generic SPI subsystem for memory mapped devices.
-> > > > > Unfortunately Intel controller at least is not capable of running
-> > > > > generic SPI transactions. It only supports accessing SPI-NOR flashes and
-> > > > > for those there is small set of commands that supports. I don't think it
-> > > > > is even possible to convert the driver to generic SPI subsystem.
-> > > > 
-> > > > AFAIK it stands for SPI memory device (memory mapped is not a requirement).
-> > > > Eg. spi-nxp-fspi doesn't support generic SPI devices either, but just SPI
-> > > > flashes. So I'd guess SPI MEM is exactly what you are looking for.
-> > > 
-> > > OK, I see that there is ->mem_ops that can be used to implement
-> > > different higher level commands. What I'm not seeing is that how the
-> > > child SPI flash is created using this scheme? DeviceTree and ACPI are
-> > > supported fine but what about scanning? I mean the intel_spi driver has
-> > > this:
-> > > 
-> > >   spi_nor_scan(&ispi->nor, NULL, &hwcaps);
-> > > 
-> > > But if the driver is to be moved under drivers/spi/* you can't really
-> > > call these functions anymore or can you? Or the point is to keep the
-> > > driver under controllers/ and just call spi_nor_scan(), and in addition
-> > > implement the new mem_ops?
-> > > 
-> > > Thanks in advance and sorry about many questions but there does not seem
-> > > to be a conversion guide nor any (non-DT/ACPI) examples that I can take
-> > > a look. :-)
-> > 
-> > Can you provide some guidance here? So in order to use the generic SPI
-> > subsystem with "SPI MEM" parts of it, I would need to be able to create
-> > the child SPI-NOR flash device without using ACPI or DT (as these
-> > systems do not have any ACPI/DT description), or use spi_nor_scan() but
-> > none of the driver under drivers/spi are calling it.
-> 
-> As the main SPI-NOR maintainer, what's your take on this?
+> [...]
 
-I think this is more of a SPI or SPI MEM question, and less of a SPI NOR 
-question. SPI MEM would call spi_nor_probe() which in turn calls 
-spi_nor_scan().
+Applied to
 
-So the question that needs to be answered is how to probe SPI MEM based
-drivers without ACPI/DT.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-> 
-> Thanks!
+Thanks!
 
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+[1/3] spi: spi-mem: add automatic poll status functions
+      commit: c955a0cc8a286e5da1ebb88c19201e9bab8c2422
+[2/3] mtd: spinand: use the spi-mem poll status APIs
+      commit: 8941cd8d295e40f8ea1c0a5045d6d068b8e33eec
+[3/3] spi: stm32-qspi: add automatic poll status feature
+      commit: 86d1c6bbae32122c5f703b2d8acccf5d4258f2bb
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
 ______________________________________________________
 Linux MTD discussion mailing list
