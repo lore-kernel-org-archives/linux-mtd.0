@@ -2,100 +2,71 @@ Return-Path: <SRS0=SghU=K5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FF94C47082
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Jun 2021 12:36:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6243FC47082
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Jun 2021 12:54:25 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6460261242
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Jun 2021 12:36:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6460261242
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	by mail.kernel.org (Postfix) with ESMTPS id 35D74601FA
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Jun 2021 12:54:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 35D74601FA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=3SjqcQ9Cl+fvdKz/VZcd2p3hkzVbSL/JwQCvnHYdlHg=; b=C7XbtcvpnmStYa
-	19Ph5lpdj/XgoALAUpGu+HbFeylEuhYWO9BdEkcAbrx9rRdIdKUiwP/ukyPhW+CwieSY7/t0nch/0
-	UnVFrN8I+FKLwgRJtTst5EhLSUyn6/ab3xbwXgP3q6QTAfrtMYi4CKhB2BXqnuMKzZH6+RxwMiCH0
-	X5RvhUPx2EsHzbZ8FYUMk8YUQjo/Ha0kIb1Bx+zZcejY/Sr8v/kbr8hTIszWAVhlysq/xPqTwveE/
-	gSmnohmj8ymchlVnpT9wFdO/kaAMEd/IDjAy/mo7c//dF2s206FLP0kZX2LivD7JCHSOQcx5L9I4b
-	ci9jVg9JoKXsomXyGYvg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=/0HjSuITf38xes/U258OFCoMHtEogubmxuzRR1dEIQM=; b=Kf0A0/ZqGGuqQy
+	Qh4MPVF7Em4AEZMc9YZFGQJEYZnnKH8+NwHv6p8H07NVqHgEVHZwKpedSUEXvfVpczZ0OSR8Z15td
+	wpwTJcISsgnMCij9cRsUMOBjUV9nCNHT3q1iGzcZl/A2dp2PD8YPn1aL0KHRG+HktEofAR6Fzk0NH
+	u50o9uw/IdU9a6zzVpWvhO2EjZak5yb6CEKN47zaleOhjQ2hWA7Osa+d40RZlTkonCavZErLlZCD4
+	U+cGM4DEvTBFCgHwtCLsnF2sS1xF+fyNF8iXOnPU05HQF2Jc7E+/DeRZbc2WNlc7WoGR8PFIcMhae
+	83MO/s+8j5HEm+W+t/fw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lomYy-008exQ-Ed; Thu, 03 Jun 2021 12:35:04 +0000
-Received: from aserp2130.oracle.com ([141.146.126.79])
+	id 1lomr6-008lrV-Dd; Thu, 03 Jun 2021 12:53:48 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lomYs-008ets-Qw
- for linux-mtd@lists.infradead.org; Thu, 03 Jun 2021 12:35:01 +0000
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
- by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 153CUv3S088402;
- Thu, 3 Jun 2021 12:34:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=umhuKUbm8gjwABm6opsKffTVYqL1p4//Cl+iUJGjF40=;
- b=oDRjLsIwUsnhPRd89rA8XCd6AFnRJ1HdwWCBtljjvA6/svAgCjaEmwKOkk1MWK/Vvwu6
- ri2EjvIZWVsboOtt+6Xu/mk/CXbj1wKsKcDKzGH/aXLqxY9lERGB/zBNlvAV2HabZpIC
- oWRoRKsWKgzsbfy1uYGos22n2AEXwlioGbQwgKWv+EjMIrvJDYN1ud9r3f/PGSALRyUE
- S6PJ50PYml3exfTslXESedPtWhcTf2qo42ZdNpG6LUaqAr9d6VQ4wvyj5SBOwx+lOLy4
- IapCzZJZL+ER+zOGasHxvG1F81piMtZVOcoR+hCkRo+ZRqx3h/Dud68vCpkyxEIcwdTx 2A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
- by aserp2130.oracle.com with ESMTP id 38ub4cu953-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 03 Jun 2021 12:34:53 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
- by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 153CVpxK114924;
- Thu, 3 Jun 2021 12:34:53 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
- by aserp3020.oracle.com with ESMTP id 38udeevu57-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 03 Jun 2021 12:34:53 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
- by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 153CY0XV128340;
- Thu, 3 Jun 2021 12:34:52 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
- by aserp3020.oracle.com with ESMTP id 38udeevu3d-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 03 Jun 2021 12:34:52 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
- by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 153CYorj003418;
- Thu, 3 Jun 2021 12:34:51 GMT
-Received: from mwanda (/10.175.206.145)
- by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Thu, 03 Jun 2021 12:34:49 +0000
-Date: Thu, 3 Jun 2021 15:34:43 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
- Adrian Hunter <ext-adrian.hunter@nokia.com>,
- linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] ubifs: fix an IS_ERR() vs NULL check
-Message-ID: <YLjMYy9E6U2/flhP@mwanda>
+ id 1lomqp-008lkC-P4
+ for linux-mtd@lists.infradead.org; Thu, 03 Jun 2021 12:53:33 +0000
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fwm371kcLzYpZ3;
+ Thu,  3 Jun 2021 20:50:43 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 3 Jun 2021 20:53:28 +0800
+Received: from thunder-town.china.huawei.com (10.174.177.72) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 3 Jun 2021 20:53:28 +0800
+From: Zhen Lei <thunder.leizhen@huawei.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd
+ <linux-mtd@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
+CC: Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/2] mtd: core: add MTD_DEVICE_ATTR_RO/RW() helper macros
+Date: Thu, 3 Jun 2021 20:53:22 +0800
+Message-ID: <20210603125323.12142-2-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
+In-Reply-To: <20210603125323.12142-1-thunder.leizhen@huawei.com>
+References: <20210603125323.12142-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-GUID: oiKughyiwmpH2gMde8IxRVk0DRcxAxMM
-X-Proofpoint-ORIG-GUID: oiKughyiwmpH2gMde8IxRVk0DRcxAxMM
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10003
- signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
- priorityscore=1501 mlxscore=0
- mlxlogscore=999 malwarescore=0 bulkscore=0 phishscore=0 lowpriorityscore=0
- clxscore=1011 impostorscore=0 adultscore=0 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106030085
+X-Originating-IP: [10.174.177.72]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210603_053459_007790_CBB0D3FA 
-X-CRM114-Status: GOOD (  15.07  )
+X-CRM114-CacheID: sfid-20210603_055332_138150_9152320A 
+X-CRM114-Status: UNSURE (   7.37  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,32 +83,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The ubifs_fast_find_frdi_idx() function returns NULL on error, it
-doesn't return error pointers.  Update the check accordingly.
+Compared with the definition of DEVICE_ATTR_RO/RW(), the read and write
+function names of the sysfs attribute have an additional "mtd_" prefix.
 
-Fixes: 1e51764a3c2a ("UBIFS: add new flash file system")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
- fs/ubifs/gc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/mtdcore.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
-index dc3e26e9ed7b..7cc22d7317ea 100644
---- a/fs/ubifs/gc.c
-+++ b/fs/ubifs/gc.c
-@@ -895,8 +895,8 @@ int ubifs_gc_start_commit(struct ubifs_info *c)
- 	/* Record index freeable LEBs for unmapping after commit */
- 	while (1) {
- 		lp = ubifs_fast_find_frdi_idx(c);
--		if (IS_ERR(lp)) {
--			err = PTR_ERR(lp);
-+		if (!lp) {
-+			err = -ENOMEM;
- 			goto out;
- 		}
- 		if (!lp)
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index ce514305f8f756e..770f64d6701567a 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -96,6 +96,12 @@ static void mtd_release(struct device *dev)
+ 	device_destroy(&mtd_class, index + 1);
+ }
+ 
++#define MTD_DEVICE_ATTR_RO(name) \
++static DEVICE_ATTR(name, 0444, mtd_##name##_show, NULL)
++
++#define MTD_DEVICE_ATTR_RW(name) \
++static DEVICE_ATTR(name, 0644, mtd_##name##_show, mtd_##name##_store)
++
+ static ssize_t mtd_type_show(struct device *dev,
+ 		struct device_attribute *attr, char *buf)
+ {
 -- 
-2.30.2
+2.26.0.106.g9fadedd
+
 
 
 ______________________________________________________
