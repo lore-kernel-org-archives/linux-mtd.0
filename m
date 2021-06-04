@@ -2,59 +2,81 @@ Return-Path: <SRS0=b8TW=K6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36BB5C07E94
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Jun 2021 10:27:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8D2DC07E94
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Jun 2021 11:30:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0559E61009
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Jun 2021 10:27:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0559E61009
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.alibaba.com
+	by mail.kernel.org (Postfix) with ESMTPS id 6A90C613FF
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Jun 2021 11:30:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A90C613FF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=cpgySLKOkL4TuO55Hyv62xzsUfWzOLoOhsUSbqL/eE8=; b=1qEkIIe0+xql3P
-	09YR7bWnfN9YKn2S7DkjihU9mY6FRFyfXvQhkvBVcHM0czyXvCR2qxWnVvxJ3tz4HhDvnGQhchLfG
-	LLa1OK5wzrWyUfqAkx3iJuqOrZ+GEiUWdUxbNhtCni1yuYnky8uxu/UQEP8Mbp9+2ZyX+vgkYQlad
-	R+BwivBnZ5a6thZHe7Mf8UAg+MB2MKFfD1L+cAvERqzBDsls7wj0nmxbXLspqgqf4Ww5wBtRroSXW
-	nQNkMpLGx5tPJeBiY0u0oZ55EwnQKrN6T7Ly9rWM5HwKwqR039K+relOZ7B+vv9rnXRHERteZGltB
-	+xhSs+oA1S7yC7BEZP+g==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=LrlKAVV19d5TgljyxBJZZw72BmAbWXVd01vdNuJfh+Y=; b=lb8+4Dy8S/0TZJ
+	zWH6oq4bGdfUzg+DJs2VZwSrbhoDLlt59mQDPiLZuWC3e3v10UXvBBqBwBBkI4MPWIcWuVKXCkINV
+	TYcktagxSJipPwOSinOoEcsndWn8tQz5EblKfJr6soIYTE1rB8M+DGFL2NS+JxmAlinfvXWiqPedL
+	MNYBDpncN0Bq0OfAbqeYbFKszTRQCP4AKtdB4/KL9I+sb85czVo/anZsIpcyq31H7bUVeWw9ZZGUs
+	mY8a3L5UkEJnYrGOwcw5hQGs2vw5txNz8pV8rnT9zAW5JyBNUsB0g/TpdEyypyXnYgyx0E2rqkjQh
+	uinmaTIy27kcuBaRuDVQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lp72c-00Cx8A-Qz; Fri, 04 Jun 2021 10:27:03 +0000
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36])
+	id 1lp80L-00DIui-Pu; Fri, 04 Jun 2021 11:28:46 +0000
+Received: from mga12.intel.com ([192.55.52.136])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lp6oL-00CrEs-0V
- for linux-mtd@lists.infradead.org; Fri, 04 Jun 2021 10:12:18 +0000
-X-Alimail-AntiSpam: AC=PASS; BC=-1|-1; BR=01201311R121e4; CH=green; DM=||false|;
- DS=||; FP=0|-1|-1|-1|0|-1|-1|-1; HT=e01e04423; MF=yang.lee@linux.alibaba.com;
- NM=1; PH=DS; RN=4; SR=0; TI=SMTPD_---0UbFI391_1622801520; 
-Received: from
- j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com
- fp:SMTPD_---0UbFI391_1622801520) by smtp.aliyun-inc.com(127.0.0.1);
- Fri, 04 Jun 2021 18:12:01 +0800
-From: Yang Li <yang.lee@linux.alibaba.com>
-To: richard@nod.at
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] ubifs: Fix an error code in ubifs_jnl_write_inode()
-Date: Fri,  4 Jun 2021 18:11:54 +0800
-Message-Id: <1622801514-38016-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+ id 1lp7zr-00DIld-Pv
+ for linux-mtd@lists.infradead.org; Fri, 04 Jun 2021 11:28:17 +0000
+IronPort-SDR: 6WRrss39+SqTviXSbRjmU0X3wt857ts79sZ49JSv/iijbzbIFsXAIFOfQVAmpZX+2eX4xL+OgQ
+ wlQxS6FhZljQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="183955201"
+X-IronPort-AV: E=Sophos;i="5.83,248,1616482800"; d="scan'208";a="183955201"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Jun 2021 04:28:13 -0700
+IronPort-SDR: GsoL7S40iTOxvAVj62EE10SEu7FOG7583ynSch6fVy9+ICOAyKD/ZiV6/D+AqPWF1WSO2c8zCE
+ cPY2osG/PjYg==
+X-IronPort-AV: E=Sophos;i="5.83,248,1616482800"; d="scan'208";a="446661891"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Jun 2021 04:28:10 -0700
+Received: by lahna (sSMTP sendmail emulation); Fri, 04 Jun 2021 14:28:08 +0300
+Date: Fri, 4 Jun 2021 14:28:08 +0300
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Pratyush Yadav <p.yadav@ti.com>
+Cc: Michael Walle <michael@walle.cc>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
+ linux-spi@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: intel-spi: Add support for second flash chip
+Message-ID: <YLoOSMxeGXP07Tfw@lahna.fi.intel.com>
+References: <20210525160318.35802-1-mika.westerberg@linux.intel.com>
+ <20210525191414.dc45h27rzqen4dce@ti.com>
+ <20210526091250.GY291593@lahna.fi.intel.com>
+ <20210526092417.GA291593@lahna.fi.intel.com>
+ <e82f44552d0d4284fc5ed22ee0bee85a@walle.cc>
+ <20210526102810.GB291593@lahna.fi.intel.com>
+ <YLTILUh+bPhZ4ToR@lahna.fi.intel.com>
+ <YLi3/DRqGzdlosNf@lahna.fi.intel.com>
+ <20210603180843.hjzynysgby3d3e5r@ti.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20210603180843.hjzynysgby3d3e5r@ti.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210604_031217_227001_9BED4F4D 
-X-CRM114-Status: UNSURE (   8.71  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210604_042815_897578_AC301E26 
+X-CRM114-Status: GOOD (  40.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,42 +88,77 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-When the code executes if (ui->xattr_cnt > ubifs_xattr_max_cnt(c)),
-the value of err is 0. However, we can see from the ubifs_err log
-that the value of err should be -EPERM.
+On Thu, Jun 03, 2021 at 11:38:45PM +0530, Pratyush Yadav wrote:
+> +Mark, linux-spi list,
+> 
+> On 03/06/21 02:07PM, Mika Westerberg wrote:
+> > Hi Tudor,
+> > 
+> > On Mon, May 31, 2021 at 02:29:59PM +0300, Mika Westerberg wrote:
+> > > Hi guys,
+> > > 
+> > > On Wed, May 26, 2021 at 01:28:16PM +0300, Mika Westerberg wrote:
+> > > > Hi,
+> > > > 
+> > > > On Wed, May 26, 2021 at 11:31:58AM +0200, Michael Walle wrote:
+> > > > > > Oh, I see now this commit:
+> > > > > > 
+> > > > > > a314f6367787 ("mtd: spi-nor: Convert cadence-quadspi to use spi-mem
+> > > > > > framework")
+> > > > > > 
+> > > > > > So "SPI MEM" means generic SPI subsystem for memory mapped devices.
+> > > > > > Unfortunately Intel controller at least is not capable of running
+> > > > > > generic SPI transactions. It only supports accessing SPI-NOR flashes and
+> > > > > > for those there is small set of commands that supports. I don't think it
+> > > > > > is even possible to convert the driver to generic SPI subsystem.
+> > > > > 
+> > > > > AFAIK it stands for SPI memory device (memory mapped is not a requirement).
+> > > > > Eg. spi-nxp-fspi doesn't support generic SPI devices either, but just SPI
+> > > > > flashes. So I'd guess SPI MEM is exactly what you are looking for.
+> > > > 
+> > > > OK, I see that there is ->mem_ops that can be used to implement
+> > > > different higher level commands. What I'm not seeing is that how the
+> > > > child SPI flash is created using this scheme? DeviceTree and ACPI are
+> > > > supported fine but what about scanning? I mean the intel_spi driver has
+> > > > this:
+> > > > 
+> > > >   spi_nor_scan(&ispi->nor, NULL, &hwcaps);
+> > > > 
+> > > > But if the driver is to be moved under drivers/spi/* you can't really
+> > > > call these functions anymore or can you? Or the point is to keep the
+> > > > driver under controllers/ and just call spi_nor_scan(), and in addition
+> > > > implement the new mem_ops?
+> > > > 
+> > > > Thanks in advance and sorry about many questions but there does not seem
+> > > > to be a conversion guide nor any (non-DT/ACPI) examples that I can take
+> > > > a look. :-)
+> > > 
+> > > Can you provide some guidance here? So in order to use the generic SPI
+> > > subsystem with "SPI MEM" parts of it, I would need to be able to create
+> > > the child SPI-NOR flash device without using ACPI or DT (as these
+> > > systems do not have any ACPI/DT description), or use spi_nor_scan() but
+> > > none of the driver under drivers/spi are calling it.
+> > 
+> > As the main SPI-NOR maintainer, what's your take on this?
+> 
+> I think this is more of a SPI or SPI MEM question, and less of a SPI NOR 
+> question. SPI MEM would call spi_nor_probe() which in turn calls 
+> spi_nor_scan().
+> 
+> So the question that needs to be answered is how to probe SPI MEM based
+> drivers without ACPI/DT.
 
-Clean up smatch warning:
-fs/ubifs/journal.c:886 ubifs_jnl_write_inode() warn: missing error code
-'err'.
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Fixes: 9ca2d7326444 ("ubifs: Limit number of xattrs per inode")
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- fs/ubifs/journal.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index 2857e64..2307173 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -882,6 +882,7 @@ int ubifs_jnl_write_inode(struct ubifs_info *c, const struct inode *inode)
- 		struct ubifs_dent_node *xent, *pxent = NULL;
- 
- 		if (ui->xattr_cnt > ubifs_xattr_max_cnt(c)) {
-+			err = -EPERM;
- 			ubifs_err(c, "Cannot delete inode, it has too much xattrs!");
- 			goto out_release;
- 		}
--- 
-1.8.3.1
-
+Yes, exactly. With ACPI/DT the SPI core handles this after the SPI
+master device is registered and that would result spi_nor_probe() to be
+called for the children. However, with this one there is no ACPI node
+for the controller (it is PCI enumerated) so there would need to be some
+way to create that child device. In the old days that would be "platform
+data" but that's pretty much frowned upon these days ;-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
