@@ -4,73 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DEDCC07E94
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Jun 2021 10:22:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36BB5C07E94
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Jun 2021 10:27:42 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DAB6E611ED
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Jun 2021 10:22:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DAB6E611ED
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id 0559E61009
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Jun 2021 10:27:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0559E61009
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zuQmiaKjmcT4WRiNnwg+X82VMLzU/v6/dAZ1MR8tBPY=; b=zXWnoBHZljhHxC
-	jgZvG/+ApGk6Vd6gdFQ/4oEIZPOmmvB5ZNbU+/iF19VKYAxk2lsLKXXD6VMNFi8u+tt/Y4MlUjkxR
-	rCm6dXQjxyB7wvGv8gFIIceitwL1P56dFvCf8/dPgHOs3H2x/DkniFd3d9nK5Aan/qvFpMqG9f9z4
-	TMNME34L2KKrKSadqoIgrdzBlOP/+E/eUtHWkpriCTETMx/zM55YUmct800JaSjGndQfoMztzWRhD
-	KacoMkCeZrYSdg+FEqoyiV8K0NRHE1/OEVK2XDQlECyAuixIiqRsqTDRqyjhfMsIeFaTh63+5BrhF
-	2V/ibPqxB7+Yu1WjoYVA==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=cpgySLKOkL4TuO55Hyv62xzsUfWzOLoOhsUSbqL/eE8=; b=1qEkIIe0+xql3P
+	09YR7bWnfN9YKn2S7DkjihU9mY6FRFyfXvQhkvBVcHM0czyXvCR2qxWnVvxJ3tz4HhDvnGQhchLfG
+	LLa1OK5wzrWyUfqAkx3iJuqOrZ+GEiUWdUxbNhtCni1yuYnky8uxu/UQEP8Mbp9+2ZyX+vgkYQlad
+	R+BwivBnZ5a6thZHe7Mf8UAg+MB2MKFfD1L+cAvERqzBDsls7wj0nmxbXLspqgqf4Ww5wBtRroSXW
+	nQNkMpLGx5tPJeBiY0u0oZ55EwnQKrN6T7Ly9rWM5HwKwqR039K+relOZ7B+vv9rnXRHERteZGltB
+	+xhSs+oA1S7yC7BEZP+g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lp6xI-00Cvdk-VJ; Fri, 04 Jun 2021 10:21:33 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1lp72c-00Cx8A-Qz; Fri, 04 Jun 2021 10:27:03 +0000
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lp6fa-00Cn4f-9d
- for linux-mtd@lists.infradead.org; Fri, 04 Jun 2021 10:03:19 +0000
-Received: from mwalle01.fritz.box (ip4d17858c.dynamic.kabel-deutschland.de
- [77.23.133.140])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
- SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 9712222255;
- Fri,  4 Jun 2021 12:03:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1622800984;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=uM1/nmjuYT7cRimE8mpuFxX4fwkHppVAM2lc/Ep/T6I=;
- b=jvliice8rMkk4pgO3AC8MUAJ7iTju/6EQI/eiB4Lbe4P1eReoUU17ahKjz4lUuP+R213bT
- GbWatj9BBMXtmXoY1wsKU9DS9CGKTPt8/2ZmnlB6KwM6ColP5EyIH0YKA2kYzCZevy8RBa
- XQd34J6pDnj1VisFDMSu7/CCiQmCJHo=
-From: Michael Walle <michael@walle.cc>
-To: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Michael Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH v5 5/5] mtd: spi-nor: otp: implement erase for Winbond and
- similar flashes
-Date: Fri,  4 Jun 2021 12:02:52 +0200
-Message-Id: <20210604100252.9975-6-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210604100252.9975-1-michael@walle.cc>
-References: <20210604100252.9975-1-michael@walle.cc>
-MIME-Version: 1.0
+ id 1lp6oL-00CrEs-0V
+ for linux-mtd@lists.infradead.org; Fri, 04 Jun 2021 10:12:18 +0000
+X-Alimail-AntiSpam: AC=PASS; BC=-1|-1; BR=01201311R121e4; CH=green; DM=||false|;
+ DS=||; FP=0|-1|-1|-1|0|-1|-1|-1; HT=e01e04423; MF=yang.lee@linux.alibaba.com;
+ NM=1; PH=DS; RN=4; SR=0; TI=SMTPD_---0UbFI391_1622801520; 
+Received: from
+ j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com
+ fp:SMTPD_---0UbFI391_1622801520) by smtp.aliyun-inc.com(127.0.0.1);
+ Fri, 04 Jun 2021 18:12:01 +0800
+From: Yang Li <yang.lee@linux.alibaba.com>
+To: richard@nod.at
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] ubifs: Fix an error code in ubifs_jnl_write_inode()
+Date: Fri,  4 Jun 2021 18:11:54 +0800
+Message-Id: <1622801514-38016-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210604_030314_696086_BEE9D337 
-X-CRM114-Status: GOOD (  22.28  )
+X-CRM114-CacheID: sfid-20210604_031217_227001_9BED4F4D 
+X-CRM114-Status: UNSURE (   8.71  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,195 +66,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Winbond flashes with OTP support provide a command to erase the OTP
-data. This might come in handy during development.
+When the code executes if (ui->xattr_cnt > ubifs_xattr_max_cnt(c)),
+the value of err is 0. However, we can see from the ubifs_err log
+that the value of err should be -EPERM.
 
-This was tested with a Winbond W25Q32JW on a LS1028A SoC with the
-NXP FSPI controller.
+Clean up smatch warning:
+fs/ubifs/journal.c:886 ubifs_jnl_write_inode() warn: missing error code
+'err'.
 
-Signed-off-by: Michael Walle <michael@walle.cc>
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Fixes: 9ca2d7326444 ("ubifs: Limit number of xattrs per inode")
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 ---
- drivers/mtd/spi-nor/core.c    |  2 +-
- drivers/mtd/spi-nor/core.h    |  4 ++
- drivers/mtd/spi-nor/otp.c     | 86 +++++++++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/winbond.c |  1 +
- 4 files changed, 92 insertions(+), 1 deletion(-)
+ fs/ubifs/journal.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index f6a6ef2d8bd8..a21b0085de05 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -1318,7 +1318,7 @@ static u32 spi_nor_convert_addr(struct spi_nor *nor, loff_t addr)
- /*
-  * Initiate the erasure of a single sector
-  */
--static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
-+int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
- {
- 	int i;
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index 2857e64..2307173 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -882,6 +882,7 @@ int ubifs_jnl_write_inode(struct ubifs_info *c, const struct inode *inode)
+ 		struct ubifs_dent_node *xent, *pxent = NULL;
  
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 28a2e0be97a3..9398a8738857 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -207,6 +207,7 @@ struct spi_nor_otp_organization {
-  * @read:	read from the SPI NOR OTP area.
-  * @write:	write to the SPI NOR OTP area.
-  * @lock:	lock an OTP region.
-+ * @erase:	erase an OTP region.
-  * @is_locked:	check if an OTP region of the SPI NOR is locked.
-  */
- struct spi_nor_otp_ops {
-@@ -214,6 +215,7 @@ struct spi_nor_otp_ops {
- 	int (*write)(struct spi_nor *nor, loff_t addr, size_t len,
- 		     const u8 *buf);
- 	int (*lock)(struct spi_nor *nor, unsigned int region);
-+	int (*erase)(struct spi_nor *nor, loff_t addr);
- 	int (*is_locked)(struct spi_nor *nor, unsigned int region);
- };
- 
-@@ -503,10 +505,12 @@ ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t len,
- 			  u8 *buf);
- ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
- 			   const u8 *buf);
-+int spi_nor_erase_sector(struct spi_nor *nor, u32 addr);
- 
- int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
- int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len,
- 			   const u8 *buf);
-+int spi_nor_otp_erase_secr(struct spi_nor *nor, loff_t addr);
- int spi_nor_otp_lock_sr2(struct spi_nor *nor, unsigned int region);
- int spi_nor_otp_is_locked_sr2(struct spi_nor *nor, unsigned int region);
- 
-diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
-index 89fe52e3851a..983e40b19134 100644
---- a/drivers/mtd/spi-nor/otp.c
-+++ b/drivers/mtd/spi-nor/otp.c
-@@ -120,6 +120,38 @@ int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len,
- 	return ret ?: written;
- }
- 
-+/**
-+ * spi_nor_otp_erase_secr() - erase a security register
-+ * @nor:        pointer to 'struct spi_nor'
-+ * @addr:       offset of the security register to be erased
-+ *
-+ * Erase a security register by using the SPINOR_OP_ESECR command.
-+ *
-+ * For more information on the term "security register", see the documentation
-+ * of spi_nor_otp_read_secr().
-+ *
-+ * This method is used on GigaDevice and Winbond flashes.
-+ *
-+ * Return: 0 on success, -errno otherwise
-+ */
-+int spi_nor_otp_erase_secr(struct spi_nor *nor, loff_t addr)
-+{
-+	u8 erase_opcode = nor->erase_opcode;
-+	int ret;
-+
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		return ret;
-+
-+	nor->erase_opcode = SPINOR_OP_ESECR;
-+	ret = spi_nor_erase_sector(nor, addr);
-+	nor->erase_opcode = erase_opcode;
-+	if (ret)
-+		return ret;
-+
-+	return spi_nor_wait_till_ready(nor);
-+}
-+
- static int spi_nor_otp_lock_bit_cr(unsigned int region)
- {
- 	static const int lock_bits[] = { SR2_LB1, SR2_LB2, SR2_LB3 };
-@@ -360,6 +392,59 @@ static int spi_nor_mtd_otp_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	return spi_nor_mtd_otp_read_write(mtd, to, len, retlen, buf, true);
- }
- 
-+static int spi_nor_mtd_otp_erase(struct mtd_info *mtd, loff_t from, size_t len)
-+{
-+	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-+	const struct spi_nor_otp_ops *ops = nor->params->otp.ops;
-+	const size_t rlen = spi_nor_otp_region_len(nor);
-+	unsigned int region;
-+	loff_t rstart;
-+	int ret;
-+
-+	/* OTP erase is optional */
-+	if (!ops->erase)
-+		return -EOPNOTSUPP;
-+
-+	if (!len)
-+		return 0;
-+
-+	if (from < 0 || (from + len) > spi_nor_otp_size(nor))
-+		return -EINVAL;
-+
-+	/* the user has to explicitly ask for whole regions */
-+	if (!IS_ALIGNED(len, rlen) || !IS_ALIGNED(from, rlen))
-+		return -EINVAL;
-+
-+	ret = spi_nor_lock_and_prep(nor);
-+	if (ret)
-+		return ret;
-+
-+	ret = spi_nor_mtd_otp_range_is_locked(nor, from, len);
-+	if (ret < 0) {
-+		goto out;
-+	} else if (ret) {
-+		ret = -EROFS;
-+		goto out;
-+	}
-+
-+	while (len) {
-+		region = spi_nor_otp_offset_to_region(nor, from);
-+		rstart = spi_nor_otp_region_start(nor, region);
-+
-+		ret = ops->erase(nor, rstart);
-+		if (ret)
-+			goto out;
-+
-+		len -= rlen;
-+		from += rlen;
-+	}
-+
-+out:
-+	spi_nor_unlock_and_unprep(nor);
-+
-+	return ret;
-+}
-+
- static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
- {
- 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-@@ -418,4 +503,5 @@ void spi_nor_otp_init(struct spi_nor *nor)
- 	mtd->_read_user_prot_reg = spi_nor_mtd_otp_read;
- 	mtd->_write_user_prot_reg = spi_nor_mtd_otp_write;
- 	mtd->_lock_user_prot_reg = spi_nor_mtd_otp_lock;
-+	mtd->_erase_user_prot_reg = spi_nor_mtd_otp_erase;
- }
-diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index 9a81c67a60c6..96573f61caf5 100644
---- a/drivers/mtd/spi-nor/winbond.c
-+++ b/drivers/mtd/spi-nor/winbond.c
-@@ -139,6 +139,7 @@ static int winbond_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
- static const struct spi_nor_otp_ops winbond_otp_ops = {
- 	.read = spi_nor_otp_read_secr,
- 	.write = spi_nor_otp_write_secr,
-+	.erase = spi_nor_otp_erase_secr,
- 	.lock = spi_nor_otp_lock_sr2,
- 	.is_locked = spi_nor_otp_is_locked_sr2,
- };
+ 		if (ui->xattr_cnt > ubifs_xattr_max_cnt(c)) {
++			err = -EPERM;
+ 			ubifs_err(c, "Cannot delete inode, it has too much xattrs!");
+ 			goto out_release;
+ 		}
 -- 
-2.20.1
+1.8.3.1
 
 
 ______________________________________________________
