@@ -2,74 +2,73 @@ Return-Path: <SRS0=b8TW=K6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E119C47083
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Jun 2021 15:12:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BDFEC07E94
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Jun 2021 15:12:08 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0B5B4613BF
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Jun 2021 15:12:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B5B4613BF
+	by mail.kernel.org (Postfix) with ESMTPS id CCE6C613BF
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Jun 2021 15:12:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CCE6C613BF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=6pvdyuoYY0TIsLWlvyuLfcPTD3NBr5ys3lP/M6Qtgaw=; b=44LUJq3p222Csq
-	5oTGpJqdZ/cmC5kD0QbdviEAtQu6b0y1RVc3e/QaKoc72cMWkPCu4zcr8BWkNExmUMD/4uJQTBdzQ
-	9eUAtEePcaKAz8KUtRY11jHbe8iuelBgxkT/ArH5YvcRLLiCVgBRgxKtcnDucedT1GgRfvVMgaY5g
-	5dLqPo9TX5vFWnUZWpPIxP91ei7+VfB970GNUEkRcWQNQ2MvHPGA133I8vW4kB00/iNTyC+wSmxaK
-	X3pzw6TW3fO9cHDKKWEBZt4sdTui5VjQQ5C/SHlBrZ2ai6aFsFT8PwNUWQ7he184syaPNMXI6rhcy
-	KgGkKePx1Oheazt2ksCg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=BwCH/jYEq813rubPhSTyiF9EizTt8u1mV3Pt+i9yFIM=; b=awImPcFmBgBYK4
+	c4Y0Y97qOt/CmD1V4PqaFMKnijH68opRwi3ko7T/fxkn02TcjjQmQNdEY2BL+lilzvt87eIp9iwcb
+	KpW2pDN+S57gAJaNAR5Nb0Dl+UjUOY7r+xEEyN0cIw8ZX+k9VS/A4XYkYkYnuyxo8OhtUEfDwEwul
+	pRgEsmW2ihZDuqFCGR/1OeTabT0kqcjwdWetsvrrueD2X+UOjwKqNZtAvomrc733Oa775GDFhcqho
+	XyFNb52XsKSFtu9kllDuzKN0BTvwGnmmBvCkyaioJql9WmiNB/taPcl/SOkAfsWAYL2INSuWi+BgN
+	MzebdK8uYgOxNPjvoQBg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lpBTh-00E5Dt-Dn; Fri, 04 Jun 2021 15:11:17 +0000
-Received: from mail-ot1-x332.google.com ([2607:f8b0:4864:20::332])
+	id 1lpBTv-00E5GQ-J2; Fri, 04 Jun 2021 15:11:31 +0000
+Received: from mail-oi1-x22a.google.com ([2607:f8b0:4864:20::22a])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lpBTb-00E5Bm-4y; Fri, 04 Jun 2021 15:11:15 +0000
-Received: by mail-ot1-x332.google.com with SMTP id
- r26-20020a056830121ab02902a5ff1c9b81so9353869otp.11; 
- Fri, 04 Jun 2021 08:11:09 -0700 (PDT)
+ id 1lpBTb-00E5Bp-VV; Fri, 04 Jun 2021 15:11:16 +0000
+Received: by mail-oi1-x22a.google.com with SMTP id w127so10033454oig.12;
+ Fri, 04 Jun 2021 08:11:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=ppRRLB38UTuWhGEhKC3SY9qyf2rsvmW+MM1dUDebls0=;
- b=hOgna6zkVU4wXH8jevecj0q5+QxsEnJtw9WkBZHLVhAkxPBoZI1j49RRi5V1e2IcnR
- yNAeMKRLRa8Aq6RiNPPMJB3C2IsVWjkNS6d3VM9ErYAnX+OMkaYgB+tHKF99//Exb4K2
- GN6iCsXSAwU0W1t4f5iwIHsKdnff28EU/ZjhPpD5VPZ23dyRWz2AaTRP7tQWN4VY+uCs
- 6sSGTFhq4LXjwuhWzCXhC1xLPQ6EvAP7NuzxWKFD8ED1PFdnhrdsciIHKsQKFw0R6Onv
- xXGyRaaqeO9SYmznskY7P+B0TvsaNvHyFv9jU3VTB0TpF4ZM+cAfbLD/p3+HPQ/9BzYW
- X92Q==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=fyE+h/cPVeiDZzU3fvDlw6KyVLKd3NiXe8H5PkVg15I=;
+ b=vKHxm3nDA3HVgshFrx1/hhHLEgSBLpZ/a8rMX8R/SMFZ/6mb4BWlAyLaPY+8x13FQH
+ KZN0fJ54yVLWkLiLB279AhZbFpfqGJ3vsYZ6j21GkwcanpYszEy2S5P1cxzTbqad5uhf
+ 37BhcVPJg7h1Gi4kGzaUwGjrlG26Cnkls9QrXL3+8FmtxD7Qv14XtGVsx0ggW0ZEkwuk
+ Mm1oOt+/BPOKPL23O3IPcenLud2AhUI0/ApeGumZx/AYS65p3b55Lzqi9hmkZ1HVqvl6
+ mjuiUQSr1q1XyKNvaHQeoYYWXY3272HQzpb75zzmt/Og9aKpXsc3AbDz1mdDIY8ha/ap
+ XpAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=ppRRLB38UTuWhGEhKC3SY9qyf2rsvmW+MM1dUDebls0=;
- b=RiaqKiOASp7KRMP9s7827PYu4ERTinuIP7Jl4zqw6b3z2Ky2knK4zvOkLhZp1U85CL
- aJ078v6Y6spjTk+pm4NDZzJPEtG7wK7QmfoSQSH3PH3K+Xi5vI2CJMCckndMRvrObHGI
- 8CRMo9EcqO4mhbDXtSpIC7Kcmjn6scPWOzveS+FR0n+IGbDKyx02wHz9VM1MbKtnvJCF
- v5RrXY6zPZ48DDw4oaBYcrcqdvGAldfm/R6w2FDAqUrcswYHGaDAd4dhh4HJxtrB3NIT
- BoNQGeu805sna6zlmu/QmgLdtGfhzQ4niapl7xcv97jWBK5H1+IvvBCmcHre+99KRaMU
- lLyA==
-X-Gm-Message-State: AOAM530JXDt3albLIWprAaqaXSA6uK4YtzK+9iqXnVVlHi2GWOPY2Tsq
- M+hBFymLLPQ4gPuYFiDGh7U=
-X-Google-Smtp-Source: ABdhPJz01kpqvBNgZxfHoPu+Z0Ul/ll7ydKxV2Tuebpp5JjQPpb3Nu1amkxRwSQaIRPqMlgM6SRnmw==
-X-Received: by 2002:a9d:6457:: with SMTP id m23mr4036429otl.11.1622819468676; 
- Fri, 04 Jun 2021 08:11:08 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=fyE+h/cPVeiDZzU3fvDlw6KyVLKd3NiXe8H5PkVg15I=;
+ b=nIDvzkzRs/MRY7618HNUiSffkKvdlMueFBJny1qTA4VmRI4EfJYRt/Zk5TAPg27cHt
+ kLJ5lLWKa9G7GRwtH/G7a2doXLcHcRB9KipHc0nNghkx/a0WRVfYonxrs15gCWqupum2
+ 7isyF6cJALWyhgaiKV7LQrpE4ZftB8b+4W7SHD1C/i1oo0R0zx/OZPyOUpXgx11meN6R
+ vITAl4b7qujRoWbNUjV4aHjtFzSNdmzpulZF+bD5gD37jasbgS9EwfON5ch3gy40u+ms
+ qzvlJa74apw4KpUrk5XV7Vbys3IuIEYnhPubku7ecaUwTJAxKw5171zL/pYVQE6RGUsz
+ JyTg==
+X-Gm-Message-State: AOAM531G+UygFEiRSDE/0LRl+vZ2kdxBqU0xw0uVr7lE025ZTirVKCFi
+ i/sYPWmnfYIZTVtQTEpsAmw=
+X-Google-Smtp-Source: ABdhPJzZdxeEirRNyoyGsUZEOKwOCHATO6aDYXZqOvnkcmLmlkJEcZJvjrUuZqPb1nDaLCDEQViN5Q==
+X-Received: by 2002:aca:b443:: with SMTP id d64mr3231279oif.68.1622819469820; 
+ Fri, 04 Jun 2021 08:11:09 -0700 (PDT)
 Received: from wintermute.localdomain (cpe-76-183-134-35.tx.res.rr.com.
  [76.183.134.35])
- by smtp.gmail.com with ESMTPSA id k16sm523440otp.19.2021.06.04.08.11.07
+ by smtp.gmail.com with ESMTPSA id k16sm523440otp.19.2021.06.04.08.11.08
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 04 Jun 2021 08:11:08 -0700 (PDT)
+ Fri, 04 Jun 2021 08:11:09 -0700 (PDT)
 From: Chris Morgan <macroalpha82@gmail.com>
 To: linux-spi@vger.kernel.org
 Cc: jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
@@ -77,14 +76,17 @@ Cc: jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
  yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
  linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
  p.yadav@ti.com, Chris Morgan <macromorgan@hotmail.com>
-Subject: [RFC v4 0/8] Add Rockchip SFC(serial flash controller) support
-Date: Fri,  4 Jun 2021 10:10:47 -0500
-Message-Id: <20210604151055.28636-1-macroalpha82@gmail.com>
+Subject: [RFC v4 1/8] dt-bindings: rockchip-sfc: Bindings for Rockchip serial
+ flash controller
+Date: Fri,  4 Jun 2021 10:10:48 -0500
+Message-Id: <20210604151055.28636-2-macroalpha82@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210604151055.28636-1-macroalpha82@gmail.com>
+References: <20210604151055.28636-1-macroalpha82@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210604_081111_223170_B6FD4B0A 
-X-CRM114-Status: GOOD (  24.92  )
+X-CRM114-CacheID: sfid-20210604_081112_041926_711BEE9C 
+X-CRM114-Status: GOOD (  11.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,89 +105,106 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Chris Morgan <macromorgan@hotmail.com>
 
-I'm trying to revive an abandoned patch series for the Rockchip serial
-flash controller (SFC) found on the Rockchip PX30 SOC, as well as other
-SOCs by Rockchip. I'm picking this up from version 8 of the patch
-series located from here:
+Add bindings for the Rockchip serial flash controller. New device
+specific parameter of rockchip,sfc-no-dma included in documentation.
 
-http://patchwork.ozlabs.org/project/linux-mtd/cover/1518091958-3672-1-git-send-email-andy.yan@rock-chips.com/
-
-Changes made in v4:
- - Changing patch back to an "RFC". An engineer from Rockchip
-   reached out to me to let me know they are working on this patch for
-   upstream, I am submitting this v4 for the community to see however
-   I expect Jon Lin (jon.lin@rock-chips.com) will submit new patches
-   soon and these are the ones we should pursue for mainlining. Jon's
-   patch series should include support for more hardware than this
-   series.
- - Clean up documentation more and ensure it is correct per
-   make dt_binding_check.
- - Add support in device trees for rk3036, rk3308, and rv1108.
- - Add ahb clock (hclk_sfc) support for rk3036.
- - Change rockchip_sfc_wait_fifo_ready() to use a switch statement.
- - Change IRQ code to only mark IRQ as handled if it handles the
-   specific IRQ (DMA transfer finish) it is supposed to handle.
-
-Changes made in v3:
- - Changed the name of the clocks to sfc/ahb (from clk-sfc/clk-hsfc).
- - Changed the compatible string from rockchip,sfc to
-   rockchip,rk3036-sfc. A quick glance at the datasheets suggests this
-   driver should work for the PX30, RK180x, RK3036, RK312x, RK3308 and
-   RV1108 SoCs, and possibly more. However, I am currently only able
-   to test this on a PX30 (an RK3326). The technical reference manuals
-   appear to list the same registers for each device.
- - Corrected devicetree documentation for formatting and to note these
-   changes.
- - Replaced the maintainer with Heiko Stuebner and myself, as we will
-   take ownership of this going forward.
- - Noted that the device (per the reference manual) supports 4 CS, but
-   I am only able to test a single CS (CS 0).
- - Reordered patches to comply with upstream rules.
-
-Changes made in v2:
- - Reimplemented driver using spi-mem subsystem.
- - Removed power management code as I couldn't get it working properly.
- - Added device tree bindings for Odroid Go Advance.
-
-Changes made in this new series versus the v8 of the old series:
- - Added function to read spi-rx-bus-width from device tree, in the
-   event that the SPI chip supports 4x mode but only has 2 pins
-   wired (such as the Odroid Go Advance).
- - Changed device tree documentation from txt to yaml format.
- - Made "reset" message a dev_dbg from a dev_info.
- - Changed read and write fifo functions to remove redundant checks.
- - Changed the write and read from relaxed to non-relaxed when
-   starting the DMA transfer or reading the DMA IRQ.
- - Changed from dma_coerce_mask_and_coherent to just
-   dma_set_mask_and_coherent.
- - Changed name of get_if_type to rockchip_sfc_get_if_type.
-
-Chris Morgan (8):
-  dt-bindings: rockchip-sfc: Bindings for Rockchip serial flash
-    controller
-  spi: rockchip-sfc: add rockchip serial flash controller
-  arm64: dts: rockchip: Add SFC to PX30
-  clk: rockchip: Add support for hclk_sfc on rk3036
-  arm: dts: rockchip: Add SFC to RK3036
-  arm: dts: rockchip: Add SFC to RV1108
-  arm64: dts: rockchip: Add SFC to RK3308
-  arm64: dts: rockchip: Enable SFC for Odroid Go Advance
-
- .../devicetree/bindings/spi/rockchip-sfc.yaml |  85 ++
- arch/arm/boot/dts/rk3036.dtsi                 |  42 +
- arch/arm/boot/dts/rv1108.dtsi                 |  37 +
- arch/arm64/boot/dts/rockchip/px30.dtsi        |  38 +
- arch/arm64/boot/dts/rockchip/rk3308.dtsi      |  37 +
- .../boot/dts/rockchip/rk3326-odroid-go2.dts   |  16 +
- drivers/clk/rockchip/clk-rk3036.c             |   2 +-
- drivers/spi/Kconfig                           |   9 +
- drivers/spi/Makefile                          |   1 +
- drivers/spi/spi-rockchip-sfc.c                | 863 ++++++++++++++++++
- include/dt-bindings/clock/rk3036-cru.h        |   1 +
- 11 files changed, 1130 insertions(+), 1 deletion(-)
+Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+---
+ .../devicetree/bindings/spi/rockchip-sfc.yaml | 85 +++++++++++++++++++
+ 1 file changed, 85 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
- create mode 100644 drivers/spi/spi-rockchip-sfc.c
 
+diff --git a/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml b/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+new file mode 100644
+index 000000000000..05728de52921
+--- /dev/null
++++ b/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+@@ -0,0 +1,85 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/spi/rockchip-sfc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Rockchip Serial Flash Controller (SFC)
++
++maintainers:
++  - Heiko Stuebner <heiko@sntech.de>
++  - Chris Morgan <macromorgan@hotmail.com>
++
++allOf:
++  - $ref: spi-controller.yaml#
++
++properties:
++  compatible:
++    oneOf:
++      - items:
++          - enum:
++              - rockchip,px30-sfc
++              - rockchip,rk3308-sfc
++              - rockchip,rv1108-sfc
++          - const: rockchip,rk3036-sfc
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: Bus Clock
++      - description: Module Clock
++
++  clock-names:
++    items:
++      - const: ahb
++      - const: sfc
++
++  power-domains:
++    maxItems: 1
++
++  rockchip,sfc-no-dma:
++    description: Disable DMA and utilize FIFO mode only
++    type: boolean
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/px30-cru.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/power/px30-power.h>
++
++    sfc: spi@ff3a0000 {
++        compatible = "rockchip,px30-sfc","rockchip,rk3036-sfc";
++        reg = <0xff3a0000 0x4000>;
++        interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
++        clocks = <&cru HCLK_SFC>, <&cru SCLK_SFC>;
++        clock-names = "ahb", "sfc";
++        pinctrl-0 = <&sfc_clk &sfc_cs &sfc_bus2>;
++        pinctrl-names = "default";
++        power-domains = <&power PX30_PD_MMC_NAND>;
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        flash@0 {
++            compatible = "jedec,spi-nor";
++            reg = <0>;
++            spi-max-frequency = <108000000>;
++            spi-rx-bus-width = <2>;
++            spi-tx-bus-width = <2>;
++        };
++    };
++
++...
 -- 
 2.25.1
 
