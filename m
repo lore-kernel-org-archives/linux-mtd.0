@@ -2,56 +2,57 @@ Return-Path: <SRS0=b8TW=K6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF542C07E94
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Jun 2021 10:21:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DEDCC07E94
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Jun 2021 10:22:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AEAB1613E9
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Jun 2021 10:21:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AEAB1613E9
+	by mail.kernel.org (Postfix) with ESMTPS id DAB6E611ED
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Jun 2021 10:22:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DAB6E611ED
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=to1irc5ZL7fLb99YVKV31R5sD62RRgvKRBH9pzvbxXo=; b=rUhWbJrZuG90Xa
-	EIaqX83d7iZ4reTW8CEUGuSP6IYwvdISvlZORACxbxRtag048tR5T6GHxF4FoTBk+xNm1uqDKRs5I
-	HqJKGu054TMZBcJaGo4TZ0LblYOj5UMXfU/bBF7U/k0b72rq4cW2wgzTi3BSZkMypipFe72fbqjWT
-	m2sW9jdt7ypmrmxSJvxgI3emN9vL2V5Cvoj7pI1k2wGrqvv92exgTrdywPZ5V5HSf+GKwcUYBTfl1
-	lS0EVyB8kOjA22nt5FjThOwiaPp+LXUMEAOSuL39ABNp8e71G8So3d3P1iS2lmxNqG5rP41SLDmTi
-	1jaFl/lhLfZAM7rLwAwQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=zuQmiaKjmcT4WRiNnwg+X82VMLzU/v6/dAZ1MR8tBPY=; b=zXWnoBHZljhHxC
+	jgZvG/+ApGk6Vd6gdFQ/4oEIZPOmmvB5ZNbU+/iF19VKYAxk2lsLKXXD6VMNFi8u+tt/Y4MlUjkxR
+	rCm6dXQjxyB7wvGv8gFIIceitwL1P56dFvCf8/dPgHOs3H2x/DkniFd3d9nK5Aan/qvFpMqG9f9z4
+	TMNME34L2KKrKSadqoIgrdzBlOP/+E/eUtHWkpriCTETMx/zM55YUmct800JaSjGndQfoMztzWRhD
+	KacoMkCeZrYSdg+FEqoyiV8K0NRHE1/OEVK2XDQlECyAuixIiqRsqTDRqyjhfMsIeFaTh63+5BrhF
+	2V/ibPqxB7+Yu1WjoYVA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lp6vz-00CvJq-Gx; Fri, 04 Jun 2021 10:20:11 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1lp6xI-00Cvdk-VJ; Fri, 04 Jun 2021 10:21:33 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lp6fW-00Cn0z-Fd
- for linux-mtd@lists.infradead.org; Fri, 04 Jun 2021 10:03:18 +0000
+ id 1lp6fa-00Cn4f-9d
+ for linux-mtd@lists.infradead.org; Fri, 04 Jun 2021 10:03:19 +0000
 Received: from mwalle01.fritz.box (ip4d17858c.dynamic.kabel-deutschland.de
  [77.23.133.140])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 801D422236;
- Fri,  4 Jun 2021 12:02:57 +0200 (CEST)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 9712222255;
+ Fri,  4 Jun 2021 12:03:04 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1622800982;
+ s=mail2016061301; t=1622800984;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding;
- bh=+grMGDMGZ79scJrCW3uqGV/ZG1Sr0b0POF0whRXi/0E=;
- b=YkoS4E3hcQgBAn5a/mktyvGPADJSTSVchzxyJZfh8bNNDFAQ7T/VMxKYUceA2/AljLeNhx
- 7X5aHyiStXx/lIgWfUU101l6er09rYp3sGiqgKDgrnuol9J6/cHABiBRPQiGV2aH2FjdWV
- w5oGNR0GQDxjCx9hpRyGsgn2dP3F3Uw=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=uM1/nmjuYT7cRimE8mpuFxX4fwkHppVAM2lc/Ep/T6I=;
+ b=jvliice8rMkk4pgO3AC8MUAJ7iTju/6EQI/eiB4Lbe4P1eReoUU17ahKjz4lUuP+R213bT
+ GbWatj9BBMXtmXoY1wsKU9DS9CGKTPt8/2ZmnlB6KwM6ColP5EyIH0YKA2kYzCZevy8RBa
+ XQd34J6pDnj1VisFDMSu7/CCiQmCJHo=
 From: Michael Walle <michael@walle.cc>
 To: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
@@ -59,14 +60,17 @@ Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Michael Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH v5 0/5] mtd: spi-nor: otp: 4 byte mode fix and erase support
-Date: Fri,  4 Jun 2021 12:02:47 +0200
-Message-Id: <20210604100252.9975-1-michael@walle.cc>
+Subject: [PATCH v5 5/5] mtd: spi-nor: otp: implement erase for Winbond and
+ similar flashes
+Date: Fri,  4 Jun 2021 12:02:52 +0200
+Message-Id: <20210604100252.9975-6-michael@walle.cc>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210604100252.9975-1-michael@walle.cc>
+References: <20210604100252.9975-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210604_030310_724589_2718E0BC 
-X-CRM114-Status: GOOD (  12.42  )
+X-CRM114-CacheID: sfid-20210604_030314_696086_BEE9D337 
+X-CRM114-Status: GOOD (  22.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,50 +87,188 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This series is the follow up on the single patch
-mtd: spi-nor: implement OTP erase for Winbond and similar flashes
+Winbond flashes with OTP support provide a command to erase the OTP
+data. This might come in handy during development.
 
-Pratyush Yadav discovered a likely problem with bigger flashes, the address
-to access the security registers is either 3 or 4 byte (at least for
-winbond flashes).
+This was tested with a Winbond W25Q32JW on a LS1028A SoC with the
+NXP FSPI controller.
 
-Changes since v4:
- - add new patch to get rid taking the spi lock if length is zero. Please
-   note, that I didn't squash this into the "Fixes:" patch because it is
-   unrelated to the actual bug.
- - add comment which explains that we could also branch on an error in
-   spi_nor_mtd_otp_range_is_locked()
- - check zero length in spi_nor_mtd_otp_erase() and return early before
-   taking the lock
+Signed-off-by: Michael Walle <michael@walle.cc>
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+---
+ drivers/mtd/spi-nor/core.c    |  2 +-
+ drivers/mtd/spi-nor/core.h    |  4 ++
+ drivers/mtd/spi-nor/otp.c     | 86 +++++++++++++++++++++++++++++++++++
+ drivers/mtd/spi-nor/winbond.c |  1 +
+ 4 files changed, 92 insertions(+), 1 deletion(-)
 
-Changes since v3:
- - new patch to check for read-only OTP regions before writing
- - clarify term "security register"
- - don't combine lock and erase functions anymore. there are now
-   more difference than similarities.
-
-Changes since v2:
- - fix 3/4 byte mode access
- - use spi_nor_erase_sector() by swapping the nor->erase_opcode
- - use more consistent wording regarding the security registers
-
-Changes since v1:
-- fixed kernel doc
-
-
-Michael Walle (5):
-  mtd: spi-nor: otp: fix access to security registers in 4 byte mode
-  mtd: spi-nor: otp: use more consistent wording
-  mtd: spi-nor: otp: return -EROFS if region is read-only
-  mtd: spi-nor: otp: simplify length check
-  mtd: spi-nor: otp: implement erase for Winbond and similar flashes
-
- drivers/mtd/spi-nor/core.c    |   2 +-
- drivers/mtd/spi-nor/core.h    |   4 +
- drivers/mtd/spi-nor/otp.c     | 156 +++++++++++++++++++++++++++++++---
- drivers/mtd/spi-nor/winbond.c |   1 +
- 4 files changed, 149 insertions(+), 14 deletions(-)
-
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index f6a6ef2d8bd8..a21b0085de05 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -1318,7 +1318,7 @@ static u32 spi_nor_convert_addr(struct spi_nor *nor, loff_t addr)
+ /*
+  * Initiate the erasure of a single sector
+  */
+-static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
++int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
+ {
+ 	int i;
+ 
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 28a2e0be97a3..9398a8738857 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -207,6 +207,7 @@ struct spi_nor_otp_organization {
+  * @read:	read from the SPI NOR OTP area.
+  * @write:	write to the SPI NOR OTP area.
+  * @lock:	lock an OTP region.
++ * @erase:	erase an OTP region.
+  * @is_locked:	check if an OTP region of the SPI NOR is locked.
+  */
+ struct spi_nor_otp_ops {
+@@ -214,6 +215,7 @@ struct spi_nor_otp_ops {
+ 	int (*write)(struct spi_nor *nor, loff_t addr, size_t len,
+ 		     const u8 *buf);
+ 	int (*lock)(struct spi_nor *nor, unsigned int region);
++	int (*erase)(struct spi_nor *nor, loff_t addr);
+ 	int (*is_locked)(struct spi_nor *nor, unsigned int region);
+ };
+ 
+@@ -503,10 +505,12 @@ ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t len,
+ 			  u8 *buf);
+ ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
+ 			   const u8 *buf);
++int spi_nor_erase_sector(struct spi_nor *nor, u32 addr);
+ 
+ int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
+ int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len,
+ 			   const u8 *buf);
++int spi_nor_otp_erase_secr(struct spi_nor *nor, loff_t addr);
+ int spi_nor_otp_lock_sr2(struct spi_nor *nor, unsigned int region);
+ int spi_nor_otp_is_locked_sr2(struct spi_nor *nor, unsigned int region);
+ 
+diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
+index 89fe52e3851a..983e40b19134 100644
+--- a/drivers/mtd/spi-nor/otp.c
++++ b/drivers/mtd/spi-nor/otp.c
+@@ -120,6 +120,38 @@ int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len,
+ 	return ret ?: written;
+ }
+ 
++/**
++ * spi_nor_otp_erase_secr() - erase a security register
++ * @nor:        pointer to 'struct spi_nor'
++ * @addr:       offset of the security register to be erased
++ *
++ * Erase a security register by using the SPINOR_OP_ESECR command.
++ *
++ * For more information on the term "security register", see the documentation
++ * of spi_nor_otp_read_secr().
++ *
++ * This method is used on GigaDevice and Winbond flashes.
++ *
++ * Return: 0 on success, -errno otherwise
++ */
++int spi_nor_otp_erase_secr(struct spi_nor *nor, loff_t addr)
++{
++	u8 erase_opcode = nor->erase_opcode;
++	int ret;
++
++	ret = spi_nor_write_enable(nor);
++	if (ret)
++		return ret;
++
++	nor->erase_opcode = SPINOR_OP_ESECR;
++	ret = spi_nor_erase_sector(nor, addr);
++	nor->erase_opcode = erase_opcode;
++	if (ret)
++		return ret;
++
++	return spi_nor_wait_till_ready(nor);
++}
++
+ static int spi_nor_otp_lock_bit_cr(unsigned int region)
+ {
+ 	static const int lock_bits[] = { SR2_LB1, SR2_LB2, SR2_LB3 };
+@@ -360,6 +392,59 @@ static int spi_nor_mtd_otp_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	return spi_nor_mtd_otp_read_write(mtd, to, len, retlen, buf, true);
+ }
+ 
++static int spi_nor_mtd_otp_erase(struct mtd_info *mtd, loff_t from, size_t len)
++{
++	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++	const struct spi_nor_otp_ops *ops = nor->params->otp.ops;
++	const size_t rlen = spi_nor_otp_region_len(nor);
++	unsigned int region;
++	loff_t rstart;
++	int ret;
++
++	/* OTP erase is optional */
++	if (!ops->erase)
++		return -EOPNOTSUPP;
++
++	if (!len)
++		return 0;
++
++	if (from < 0 || (from + len) > spi_nor_otp_size(nor))
++		return -EINVAL;
++
++	/* the user has to explicitly ask for whole regions */
++	if (!IS_ALIGNED(len, rlen) || !IS_ALIGNED(from, rlen))
++		return -EINVAL;
++
++	ret = spi_nor_lock_and_prep(nor);
++	if (ret)
++		return ret;
++
++	ret = spi_nor_mtd_otp_range_is_locked(nor, from, len);
++	if (ret < 0) {
++		goto out;
++	} else if (ret) {
++		ret = -EROFS;
++		goto out;
++	}
++
++	while (len) {
++		region = spi_nor_otp_offset_to_region(nor, from);
++		rstart = spi_nor_otp_region_start(nor, region);
++
++		ret = ops->erase(nor, rstart);
++		if (ret)
++			goto out;
++
++		len -= rlen;
++		from += rlen;
++	}
++
++out:
++	spi_nor_unlock_and_unprep(nor);
++
++	return ret;
++}
++
+ static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
+ {
+ 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+@@ -418,4 +503,5 @@ void spi_nor_otp_init(struct spi_nor *nor)
+ 	mtd->_read_user_prot_reg = spi_nor_mtd_otp_read;
+ 	mtd->_write_user_prot_reg = spi_nor_mtd_otp_write;
+ 	mtd->_lock_user_prot_reg = spi_nor_mtd_otp_lock;
++	mtd->_erase_user_prot_reg = spi_nor_mtd_otp_erase;
+ }
+diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+index 9a81c67a60c6..96573f61caf5 100644
+--- a/drivers/mtd/spi-nor/winbond.c
++++ b/drivers/mtd/spi-nor/winbond.c
+@@ -139,6 +139,7 @@ static int winbond_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+ static const struct spi_nor_otp_ops winbond_otp_ops = {
+ 	.read = spi_nor_otp_read_secr,
+ 	.write = spi_nor_otp_write_secr,
++	.erase = spi_nor_otp_erase_secr,
+ 	.lock = spi_nor_otp_lock_sr2,
+ 	.is_locked = spi_nor_otp_is_locked_sr2,
+ };
 -- 
 2.20.1
 
