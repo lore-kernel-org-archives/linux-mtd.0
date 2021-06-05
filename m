@@ -2,19 +2,20 @@ Return-Path: <SRS0=reHH=K7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 545B4C47082
-	for <linux-mtd@archiver.kernel.org>; Sat,  5 Jun 2021 07:29:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85447C47082
+	for <linux-mtd@archiver.kernel.org>; Sat,  5 Jun 2021 14:04:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 005C16121D
-	for <linux-mtd@archiver.kernel.org>; Sat,  5 Jun 2021 07:29:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 005C16121D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 2182D611AE
+	for <linux-mtd@archiver.kernel.org>; Sat,  5 Jun 2021 14:04:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2182D611AE
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -22,45 +23,57 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wdF190+wH8KhqQafvsX/tOABz3qUavsJj0sDCy4oQY4=; b=c+ne5e7scbqwXg
-	8H+0TBYCco7OHwHjS9ivnnAHDpwqVf5zfIvEeNpyIZT0XqywHFctQySnXURQBLN2uCRiYxcBmwu+o
-	h96EjPW8sCw1SqUAil/ETuxxGQbVdePfvK0m9lGLapD56UNekQvb1jytmcGfJvU8Gvq0I7Pc1b4Jb
-	+e/QeKHpdvpnbkcrgyngY4/QdZE0BHQB6bK4Xb081C3dR7uUA8zD0zMdvVZtMeRkzYXV2Fu0AzXlV
-	6Ii6XdRdesPjLSzozyfdx3kNjuKVphWyzMtdyJzTUvQMp52GqqInDH6GsoiwLftIYjDJT/X1xH8x+
-	BJlxor+fl08X8Mfhm6Wg==;
+	List-Owner; bh=UsiLpuhMI/XfoPSPMTutqv9HOWkRSq4m2yqWBE6pgr0=; b=jVVaYpuDQaMqeV
+	eq9d6Y0f8c2s4m0yx/3/aVxkriFhBKM4iuO+fnrtkYRMBXY94U+oC1dgHUC+RdSPbDKkeGNUsb8vp
+	FYUVEaj+pyJEjYcvTBjmcwxiO7R9TOb8hhshUFEupC3WRsGDpahFINVKa4f+IV/mvFIzn25kZp1sD
+	etgg7zk4jeeYY2rFY2LWx5zRbKbfr1UsoQeaTuXxL/lMX6+D3CwvrUoKDsC/RhPRKrZp2t69XnNaz
+	0vhHzSHjHJIrTvwLCI7H9ixa9906fM7RbvO9Qe6MY+hp+m5dypAi0pMgHGwnnXXRC9Dp8DXg2es3N
+	Hdp5kyD2J1449OV/t+zw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lpQjF-00GD1P-Q3; Sat, 05 Jun 2021 07:28:21 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1lpWtS-00Ge7C-Fs; Sat, 05 Jun 2021 14:03:18 +0000
+Received: from verein.lst.de ([213.95.11.211])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lpQjC-00GD0o-RL
- for linux-mtd@lists.infradead.org; Sat, 05 Jun 2021 07:28:20 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E95D61205;
- Sat,  5 Jun 2021 07:28:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1622878097;
- bh=5g/aAviMny/1FbdkPtEqxlinD1zUu0BX5Eg+Gjxof9w=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=ecqtWV5+MliS+73h1GUVDr/6Is2BagPyHqHOLAWXmLeEsp+nor4Oi0a57xaWOWcRf
- 7Hni68QjXNX+9wxpVa6eZcO3hIXX3fdRQKfSctMxfWq+j4FJ9ca0z1MgjUFgSr3JsZ
- NDBdYEwmgz9BhUYAxFFSJdpfG7blR0pt87qQbIqRmV7dw4tb4WoppJV7LCZ+xzA/k6
- vqUGV1OOmqn1570/9AAFVvw0H/iGCkOrcGqldrsAovanOxS9cDp33wMGneSDJA3nLt
- YXiAK/xIZxtdksDZYYPE2+GIrmYwQW+XY9Bje6oDYMUYvv0oQ3QbyUU3lOxzuJmXAa
- zILBDus1uZYhg==
-Date: Sat, 5 Jun 2021 00:28:15 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-fscrypt@vger.kernel.org
-Cc: linux-ext4@vger.kernel.org, linux-mtd@lists.infradead.org,
- stable@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH] fscrypt: don't ignore minor_hash when hash is 0
-Message-ID: <YLsnjxXpe+agF6nj@sol.localdomain>
-References: <20210527235236.2376556-1-ebiggers@kernel.org>
+ id 1lpWtI-00Ge60-4z
+ for linux-mtd@lists.infradead.org; Sat, 05 Jun 2021 14:03:12 +0000
+Received: by verein.lst.de (Postfix, from userid 2407)
+ id 8575C6736F; Sat,  5 Jun 2021 16:02:57 +0200 (CEST)
+Date: Sat, 5 Jun 2021 16:02:57 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc: Christoph Hellwig <hch@lst.de>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>, jgross@suse.com,
+ Jens Axboe <axboe@kernel.dk>, Justin Sanders <justin@coraid.com>,
+ Denis Efremov <efremov@linux.com>,
+ Josef Bacik <josef@toxicpanda.com>, Tim Waugh <tim@cyberelk.net>,
+ Geoff Levand <geoff@infradead.org>, Ilya Dryomov <idryomov@gmail.com>,
+ "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+ Jack Wang <jinpu.wang@ionos.com>, "Michael S. Tsirkin" <mst@redhat.com>,
+ Jason Wang <jasowang@redhat.com>,
+ Roger Pau =?iso-8859-1?Q?Monn=E9?= <roger.pau@citrix.com>,
+ Mike Snitzer <snitzer@redhat.com>,
+ Maxim Levitsky <maximlevitsky@gmail.com>, Alex Dubov <oakad@yahoo.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@de.ibm.com>, dm-devel@redhat.com,
+ linux-block@vger.kernel.org, nbd@other.debian.org,
+ linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org,
+ virtualization@lists.linux-foundation.org,
+ xen-devel@lists.xenproject.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org
+Subject: Re: simplify gendisk and request_queue allocation for blk-mq based
+ drivers
+Message-ID: <20210605140257.GA13166@lst.de>
+References: <20210602065345.355274-1-hch@lst.de>
+ <YLpNqiw0LMkYWUyN@0xbeefdead.lan>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20210527235236.2376556-1-ebiggers@kernel.org>
+In-Reply-To: <YLpNqiw0LMkYWUyN@0xbeefdead.lan>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210605_002818_937245_E4221159 
-X-CRM114-Status: GOOD (  19.61  )
+X-CRM114-CacheID: sfid-20210605_070308_363335_15931C8A 
+X-CRM114-Status: GOOD (  12.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,42 +90,15 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, May 27, 2021 at 04:52:36PM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Fri, Jun 04, 2021 at 11:58:34AM -0400, Konrad Rzeszutek Wilk wrote:
+> On Wed, Jun 02, 2021 at 09:53:15AM +0300, Christoph Hellwig wrote:
+> > Hi all,
 > 
-> When initializing a no-key name, fscrypt_fname_disk_to_usr() sets the
-> minor_hash to 0 if the (major) hash is 0.
+> Hi!
 > 
-> This doesn't make sense because 0 is a valid hash code, so we shouldn't
-> ignore the filesystem-provided minor_hash in that case.  Fix this by
-> removing the special case for 'hash == 0'.
-> 
-> This is an old bug that appears to have originated when the encryption
-> code in ext4 and f2fs was moved into fs/crypto/.  The original ext4 and
-> f2fs code passed the hash by pointer instead of by value.  So
-> 'if (hash)' actually made sense then, as it was checking whether a
-> pointer was NULL.  But now the hashes are passed by value, and
-> filesystems just pass 0 for any hashes they don't have.  There is no
-> need to handle this any differently from the hashes actually being 0.
-> 
-> It is difficult to reproduce this bug, as it only made a difference in
-> the case where a filename's 32-bit major hash happened to be 0.
-> However, it probably had the largest chance of causing problems on
-> ubifs, since ubifs uses minor_hash to do lookups of no-key names, in
-> addition to using it as a readdir cookie.  ext4 only uses minor_hash as
-> a readdir cookie, and f2fs doesn't use minor_hash at all.
-> 
-> Fixes: 0b81d0779072 ("fs crypto: move per-file encryption from f2fs tree to fs/crypto")
-> Cc: <stable@vger.kernel.org> # v4.6+
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->  fs/crypto/fname.c | 10 +++-------
->  1 file changed, 3 insertions(+), 7 deletions(-)
-> 
+> You wouldn't have a nice git repo to pull so one can test it easily?
 
-Applied to fscrypt.git#master for 5.14.
-
-- Eric
+git://git.infradead.org/users/hch/block.git alloc_disk-part2
 
 ______________________________________________________
 Linux MTD discussion mailing list
