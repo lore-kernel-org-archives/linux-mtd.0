@@ -2,64 +2,58 @@ Return-Path: <SRS0=QmfO=LB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5284EC47082
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Jun 2021 09:57:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DECBC47082
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Jun 2021 10:30:26 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 115626023B
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Jun 2021 09:57:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 115626023B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	by mail.kernel.org (Postfix) with ESMTPS id 38D576108E
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Jun 2021 10:30:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 38D576108E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=1kbPuLp33SHGWN1xfzRCTjyvFs7vM8AxeyiepTgWviw=; b=D+Y6VmkIastQd8
-	PzTgsZO0g5d/6hB4EKgEEzft8QqC5FCFs8AdiUqNqkegM8jRnq5sYTPiUUc2dl0BNQDXgqsiWsQsp
-	EwZ2a9u01hKKkdx0AClmu8y6rgtK73/RcAtIRPwdw0PpZouQUxRC4qeQKzK4JZSB0q6i1tuLv6ia+
-	P6DBEJuwSA7ZErzdBIUTL7HwH4iws54P36imGQM/cZIzwPGVpvbPvEHBplniCapsdXNVnVhBI3sTA
-	F2kMrAfjJZzCtR2BqVkGq6cxv7wAlrsEJWn9TF5A08HYQm1JN3+s0vY29m5iTUd2D4d72Z+H2Jnju
-	Bvp6xxfE0ygQs+LLgO0w==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=fuivaN09ncSlc9q1p7BtCi7B8qvTNXjJxNksX8MeLBc=; b=Nnk+RPZYImz9BT
+	WY1KIswAc3utKUrVCiuAsAWU5BLH49WkFuz1ot76FHKy0N2Fe/RFUr3ZF180AEZe2PAiNrJV2YLTQ
+	x6mGkbJqot7gmMFVNEocue3sc2kNal+osH986Krj/9iSmfV4Arsr/s8V/fw4lSGBytW7VKa36Qr1v
+	ZfhSLSCjrtFlqVfywgQXsX53xcaLT5HtCSjugLeO8knPxrfjP8laoqg67yz05o4DpxgPlE9McgYU/
+	AgEPmaLDqwq5cBt1HNYlLNfeJsTSwCzzfCQ4JScqTMu0e+iBeR1ymAHMCOMok6j285bQ3X8YjUZ/x
+	Pwf4d6pvApGZVPRTS8wQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lqBzf-002kLy-AE; Mon, 07 Jun 2021 09:56:27 +0000
-Received: from alexa-out.qualcomm.com ([129.46.98.28])
+	id 1lqCVv-002v9p-Ut; Mon, 07 Jun 2021 10:29:48 +0000
+Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lqBne-002gLl-1I
- for linux-mtd@lists.infradead.org; Mon, 07 Jun 2021 09:44:03 +0000
-Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
- by alexa-out.qualcomm.com with ESMTP; 07 Jun 2021 02:43:57 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
- by ironmsg07-lv.qualcomm.com with ESMTP/TLS/AES256-SHA;
- 07 Jun 2021 02:43:55 -0700
-X-QCInternal: smtphost
-Received: from mdalam-linux.qualcomm.com ([10.201.2.71])
- by ironmsg02-blr.qualcomm.com with ESMTP; 07 Jun 2021 15:13:41 +0530
-Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
- id 93E78220D9; Mon,  7 Jun 2021 15:13:39 +0530 (IST)
-From: Md Sadre Alam <mdalam@codeaurora.org>
-To: miquel.raynal@bootlin.com, mani@kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Cc: mdalam@codeaurora.org,
-	sricharan@codeaurora.org
-Subject: [PATCH V3] mtd: rawnand: qcom: avoid writing to obsolete register
-Date: Mon,  7 Jun 2021 15:13:37 +0530
-Message-Id: <1623059017-5058-1-git-send-email-mdalam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+ id 1lqBuA-002iRk-5q
+ for linux-mtd@lists.infradead.org; Mon, 07 Jun 2021 09:50:48 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 3CA3624000B;
+ Mon,  7 Jun 2021 09:50:42 +0000 (UTC)
+Date: Mon, 7 Jun 2021 11:50:41 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Md Sadre Alam <mdalam@codeaurora.org>
+Cc: mani@kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, sricharan@codeaurora.org
+Subject: Re: [PATCH V3] mtd: rawnand: qcom: avoid writing to obsolete register
+Message-ID: <20210607115041.21e21e19@xps13>
+In-Reply-To: <1623059017-5058-1-git-send-email-mdalam@codeaurora.org>
+References: <1623059017-5058-1-git-send-email-mdalam@codeaurora.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210607_024402_177728_9DD2E5B8 
-X-CRM114-Status: UNSURE (   9.41  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210607_025046_524474_E21B0171 
+X-CRM114-Status: GOOD (  16.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,93 +65,73 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-QPIC_EBI2_ECC_BUF_CFG register got obsolete from QPIC V2.0 onwards.
-Avoid writing this register if QPIC version is V2.0 or newer.
-
-Also fixed nandc undeclared issue reported by,
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
----
-[V3]
- * Fixed nandc undeclared issue.
- drivers/mtd/nand/raw/qcom_nandc.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index a64fb6c..ee5985d 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -734,6 +734,7 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read, i
- {
- 	struct nand_chip *chip = &host->chip;
- 	u32 cmd, cfg0, cfg1, ecc_bch_cfg;
-+	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
- 
- 	if (read) {
- 		if (host->use_ecc)
-@@ -762,7 +763,8 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read, i
- 	nandc_set_reg(chip, NAND_DEV0_CFG0, cfg0);
- 	nandc_set_reg(chip, NAND_DEV0_CFG1, cfg1);
- 	nandc_set_reg(chip, NAND_DEV0_ECC_CFG, ecc_bch_cfg);
--	nandc_set_reg(chip, NAND_EBI2_ECC_BUF_CFG, host->ecc_buf_cfg);
-+	if (!nandc->props->qpic_v2)
-+		nandc_set_reg(chip, NAND_EBI2_ECC_BUF_CFG, host->ecc_buf_cfg);
- 	nandc_set_reg(chip, NAND_FLASH_STATUS, host->clrflashstatus);
- 	nandc_set_reg(chip, NAND_READ_STATUS, host->clrreadstatus);
- 	nandc_set_reg(chip, NAND_EXEC_CMD, 1);
-@@ -1133,7 +1135,8 @@ static void config_nand_page_read(struct nand_chip *chip)
- 
- 	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
- 	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
--	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
-+	if (!nandc->props->qpic_v2)
-+		write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
- 	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1, 0);
- 	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1,
- 		      NAND_ERASED_CW_SET | NAND_BAM_NEXT_SGL);
-@@ -1191,8 +1194,9 @@ static void config_nand_page_write(struct nand_chip *chip)
- 
- 	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
- 	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
--	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1,
--		      NAND_BAM_NEXT_SGL);
-+	if (!nandc->props->qpic_v2)
-+		write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1,
-+			      NAND_BAM_NEXT_SGL);
- }
- 
- /*
-@@ -1248,7 +1252,8 @@ static int nandc_param(struct qcom_nand_host *host)
- 					| 2 << WR_RD_BSY_GAP
- 					| 0 << WIDE_FLASH
- 					| 1 << DEV0_CFG1_ECC_DISABLE);
--	nandc_set_reg(chip, NAND_EBI2_ECC_BUF_CFG, 1 << ECC_CFG_ECC_DISABLE);
-+	if (!nandc->props->qpic_v2)
-+		nandc_set_reg(chip, NAND_EBI2_ECC_BUF_CFG, 1 << ECC_CFG_ECC_DISABLE);
- 
- 	/* configure CMD1 and VLD for ONFI param probing in QPIC v1 */
- 	if (!nandc->props->qpic_v2) {
-@@ -2689,7 +2694,8 @@ static int qcom_nand_attach_chip(struct nand_chip *chip)
- 				| ecc_mode << ECC_MODE
- 				| host->ecc_bytes_hw << ECC_PARITY_SIZE_BYTES_BCH;
- 
--	host->ecc_buf_cfg = 0x203 << NUM_STEPS;
-+	if (!nandc->props->qpic_v2)
-+		host->ecc_buf_cfg = 0x203 << NUM_STEPS;
- 
- 	host->clrflashstatus = FS_READY_BSY_N;
- 	host->clrreadstatus = 0xc0;
--- 
-2.7.4
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgpNZCBTYWRyZSBBbGFtIDxtZGFsYW1AY29kZWF1cm9yYS5vcmc+IHdyb3RlIG9uIE1v
+biwgIDcgSnVuIDIwMjEKMTU6MTM6MzcgKzA1MzA6Cgo+IFFQSUNfRUJJMl9FQ0NfQlVGX0NGRyBy
+ZWdpc3RlciBnb3Qgb2Jzb2xldGUgZnJvbSBRUElDIFYyLjAgb253YXJkcy4KPiBBdm9pZCB3cml0
+aW5nIHRoaXMgcmVnaXN0ZXIgaWYgUVBJQyB2ZXJzaW9uIGlzIFYyLjAgb3IgbmV3ZXIuCj4gCj4g
+QWxzbyBmaXhlZCBuYW5kYyB1bmRlY2xhcmVkIGlzc3VlIHJlcG9ydGVkIGJ5LAo+IAo+IFJlcG9y
+dGVkLWJ5OiBrZXJuZWwgdGVzdCByb2JvdCA8bGtwQGludGVsLmNvbT4KClRoaXMgdGFnIHNob3Vs
+ZCBvbmx5IGJlIGFkZGVkIHdoZW4geW91IGZpeCBzb21ldGhpbmcgdGhhdCBpcyBhbHJlYWR5IGlu
+Cm1haW5saW5lLiBUaGUgUmVwb3J0ZWQtYnkgaGVyZSBwb2ludHMgdG8gdjIsIHdoaWNoIG1ha2Vz
+IG5vIHNlbnNlLgpQbGVhc2UgZHJvcCBpdC4KCj4gU2lnbmVkLW9mZi1ieTogTWQgU2FkcmUgQWxh
+bSA8bWRhbGFtQGNvZGVhdXJvcmEub3JnPgo+IC0tLQo+IFtWM10KPiAgKiBGaXhlZCBuYW5kYyB1
+bmRlY2xhcmVkIGlzc3VlLgo+ICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9xY29tX25hbmRjLmMgfCAx
+OCArKysrKysrKysrKystLS0tLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDEyIGluc2VydGlvbnMoKyks
+IDYgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L3Fj
+b21fbmFuZGMuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L3Fjb21fbmFuZGMuYwo+IGluZGV4IGE2
+NGZiNmMuLmVlNTk4NWQgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvcWNvbV9u
+YW5kYy5jCj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvcWNvbV9uYW5kYy5jCj4gQEAgLTcz
+NCw2ICs3MzQsNyBAQCBzdGF0aWMgdm9pZCB1cGRhdGVfcndfcmVncyhzdHJ1Y3QgcWNvbV9uYW5k
+X2hvc3QgKmhvc3QsIGludCBudW1fY3csIGJvb2wgcmVhZCwgaQo+ICB7Cj4gIAlzdHJ1Y3QgbmFu
+ZF9jaGlwICpjaGlwID0gJmhvc3QtPmNoaXA7Cj4gIAl1MzIgY21kLCBjZmcwLCBjZmcxLCBlY2Nf
+YmNoX2NmZzsKPiArCXN0cnVjdCBxY29tX25hbmRfY29udHJvbGxlciAqbmFuZGMgPSBnZXRfcWNv
+bV9uYW5kX2NvbnRyb2xsZXIoY2hpcCk7Cj4gIAo+ICAJaWYgKHJlYWQpIHsKPiAgCQlpZiAoaG9z
+dC0+dXNlX2VjYykKPiBAQCAtNzYyLDcgKzc2Myw4IEBAIHN0YXRpYyB2b2lkIHVwZGF0ZV9yd19y
+ZWdzKHN0cnVjdCBxY29tX25hbmRfaG9zdCAqaG9zdCwgaW50IG51bV9jdywgYm9vbCByZWFkLCBp
+Cj4gIAluYW5kY19zZXRfcmVnKGNoaXAsIE5BTkRfREVWMF9DRkcwLCBjZmcwKTsKPiAgCW5hbmRj
+X3NldF9yZWcoY2hpcCwgTkFORF9ERVYwX0NGRzEsIGNmZzEpOwo+ICAJbmFuZGNfc2V0X3JlZyhj
+aGlwLCBOQU5EX0RFVjBfRUNDX0NGRywgZWNjX2JjaF9jZmcpOwo+IC0JbmFuZGNfc2V0X3JlZyhj
+aGlwLCBOQU5EX0VCSTJfRUNDX0JVRl9DRkcsIGhvc3QtPmVjY19idWZfY2ZnKTsKPiArCWlmICgh
+bmFuZGMtPnByb3BzLT5xcGljX3YyKQo+ICsJCW5hbmRjX3NldF9yZWcoY2hpcCwgTkFORF9FQkky
+X0VDQ19CVUZfQ0ZHLCBob3N0LT5lY2NfYnVmX2NmZyk7Cj4gIAluYW5kY19zZXRfcmVnKGNoaXAs
+IE5BTkRfRkxBU0hfU1RBVFVTLCBob3N0LT5jbHJmbGFzaHN0YXR1cyk7Cj4gIAluYW5kY19zZXRf
+cmVnKGNoaXAsIE5BTkRfUkVBRF9TVEFUVVMsIGhvc3QtPmNscnJlYWRzdGF0dXMpOwo+ICAJbmFu
+ZGNfc2V0X3JlZyhjaGlwLCBOQU5EX0VYRUNfQ01ELCAxKTsKPiBAQCAtMTEzMyw3ICsxMTM1LDgg
+QEAgc3RhdGljIHZvaWQgY29uZmlnX25hbmRfcGFnZV9yZWFkKHN0cnVjdCBuYW5kX2NoaXAgKmNo
+aXApCj4gIAo+ICAJd3JpdGVfcmVnX2RtYShuYW5kYywgTkFORF9BRERSMCwgMiwgMCk7Cj4gIAl3
+cml0ZV9yZWdfZG1hKG5hbmRjLCBOQU5EX0RFVjBfQ0ZHMCwgMywgMCk7Cj4gLQl3cml0ZV9yZWdf
+ZG1hKG5hbmRjLCBOQU5EX0VCSTJfRUNDX0JVRl9DRkcsIDEsIDApOwo+ICsJaWYgKCFuYW5kYy0+
+cHJvcHMtPnFwaWNfdjIpCj4gKwkJd3JpdGVfcmVnX2RtYShuYW5kYywgTkFORF9FQkkyX0VDQ19C
+VUZfQ0ZHLCAxLCAwKTsKPiAgCXdyaXRlX3JlZ19kbWEobmFuZGMsIE5BTkRfRVJBU0VEX0NXX0RF
+VEVDVF9DRkcsIDEsIDApOwo+ICAJd3JpdGVfcmVnX2RtYShuYW5kYywgTkFORF9FUkFTRURfQ1df
+REVURUNUX0NGRywgMSwKPiAgCQkgICAgICBOQU5EX0VSQVNFRF9DV19TRVQgfCBOQU5EX0JBTV9O
+RVhUX1NHTCk7Cj4gQEAgLTExOTEsOCArMTE5NCw5IEBAIHN0YXRpYyB2b2lkIGNvbmZpZ19uYW5k
+X3BhZ2Vfd3JpdGUoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCkKPiAgCj4gIAl3cml0ZV9yZWdfZG1h
+KG5hbmRjLCBOQU5EX0FERFIwLCAyLCAwKTsKPiAgCXdyaXRlX3JlZ19kbWEobmFuZGMsIE5BTkRf
+REVWMF9DRkcwLCAzLCAwKTsKPiAtCXdyaXRlX3JlZ19kbWEobmFuZGMsIE5BTkRfRUJJMl9FQ0Nf
+QlVGX0NGRywgMSwKPiAtCQkgICAgICBOQU5EX0JBTV9ORVhUX1NHTCk7Cj4gKwlpZiAoIW5hbmRj
+LT5wcm9wcy0+cXBpY192MikKPiArCQl3cml0ZV9yZWdfZG1hKG5hbmRjLCBOQU5EX0VCSTJfRUND
+X0JVRl9DRkcsIDEsCj4gKwkJCSAgICAgIE5BTkRfQkFNX05FWFRfU0dMKTsKPiAgfQo+ICAKPiAg
+LyoKPiBAQCAtMTI0OCw3ICsxMjUyLDggQEAgc3RhdGljIGludCBuYW5kY19wYXJhbShzdHJ1Y3Qg
+cWNvbV9uYW5kX2hvc3QgKmhvc3QpCj4gIAkJCQkJfCAyIDw8IFdSX1JEX0JTWV9HQVAKPiAgCQkJ
+CQl8IDAgPDwgV0lERV9GTEFTSAo+ICAJCQkJCXwgMSA8PCBERVYwX0NGRzFfRUNDX0RJU0FCTEUp
+Owo+IC0JbmFuZGNfc2V0X3JlZyhjaGlwLCBOQU5EX0VCSTJfRUNDX0JVRl9DRkcsIDEgPDwgRUND
+X0NGR19FQ0NfRElTQUJMRSk7Cj4gKwlpZiAoIW5hbmRjLT5wcm9wcy0+cXBpY192MikKPiArCQlu
+YW5kY19zZXRfcmVnKGNoaXAsIE5BTkRfRUJJMl9FQ0NfQlVGX0NGRywgMSA8PCBFQ0NfQ0ZHX0VD
+Q19ESVNBQkxFKTsKPiAgCj4gIAkvKiBjb25maWd1cmUgQ01EMSBhbmQgVkxEIGZvciBPTkZJIHBh
+cmFtIHByb2JpbmcgaW4gUVBJQyB2MSAqLwo+ICAJaWYgKCFuYW5kYy0+cHJvcHMtPnFwaWNfdjIp
+IHsKPiBAQCAtMjY4OSw3ICsyNjk0LDggQEAgc3RhdGljIGludCBxY29tX25hbmRfYXR0YWNoX2No
+aXAoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCkKPiAgCQkJCXwgZWNjX21vZGUgPDwgRUNDX01PREUK
+PiAgCQkJCXwgaG9zdC0+ZWNjX2J5dGVzX2h3IDw8IEVDQ19QQVJJVFlfU0laRV9CWVRFU19CQ0g7
+Cj4gIAo+IC0JaG9zdC0+ZWNjX2J1Zl9jZmcgPSAweDIwMyA8PCBOVU1fU1RFUFM7Cj4gKwlpZiAo
+IW5hbmRjLT5wcm9wcy0+cXBpY192MikKPiArCQlob3N0LT5lY2NfYnVmX2NmZyA9IDB4MjAzIDw8
+IE5VTV9TVEVQUzsKPiAgCj4gIAlob3N0LT5jbHJmbGFzaHN0YXR1cyA9IEZTX1JFQURZX0JTWV9O
+Owo+ICAJaG9zdC0+Y2xycmVhZHN0YXR1cyA9IDB4YzA7CgoKVGhhbmtzLApNaXF1w6hsCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
+TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
