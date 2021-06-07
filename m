@@ -7,70 +7,75 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48A5CC47095
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Jun 2021 11:31:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E83C2C47094
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Jun 2021 12:44:19 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1C19160FDC
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Jun 2021 11:31:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C19160FDC
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id B7C486108C
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Jun 2021 12:44:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B7C486108C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rock-chips.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=joSlSUsZ1kirOPGYGcuKxucmOaIpDn5D2fuLL5KriUU=; b=PyoBUA/5tK5p8X
-	zsYqm4K/FrLHsnqjQwib/rCpF/oeWwYPDKjhPPo8Kt2HlkW6lwNjWu6XP5YUKFZ97oK0a2RW7Wnbi
-	qWY3m4xRiKbyNidDu+Rj51HwksWkmR/1MD6HpUeI1ctnWGb1M3kmPkh8FVo7BOH+7jAN0wSXAl71K
-	B6CBljRPkrb7Y0kxPbdCwtkBKiC887UPasN/5hDa00/ZIJkvuSKU8ZSpH7DT+29hg9udkLCWT3MP5
-	aY0N29IwKgRsHVCjTm6OJ5dWKEmnOFs+Ny/pDcumyKSSjl82y6ix350kOIYe4Y7LhSYZNgA46LrrK
-	J35MvZDr38C/04pPHWCA==;
+	List-Owner; bh=2+OOz8ATPGT59n1LOJog1PAMExRsPwkn1QMcvnqQkqk=; b=LUHH0MuMKIpJCj
+	4Nd6zpab/R75AR8fEPxCG1fkyEdR6Ij+3U1QtNVJplfrPepk/Qx5Q0aWSjzt6n1MgJwZ2IArqgysm
+	41wQ8lS8PQcIxeygJx9lK1Kymo53Wl4HsVt0uJu4zPGYwI5BubyieeFDKulEQCBKVTA40rVUZmww9
+	ZME8Co0gr+2YrqNZyU+TS9ZX9rifkEHhyvoy+zB2v5Ax3WpReWCXS7hK3O1DUNIbS2/SrChp4Za6u
+	CXRPTwr7tAl8cReefQNMzbaDWwGEdApZzSTOo8TWwKMuone4rA7VzvZFXCcnTUsPiRJr8G0jFHxKv
+	PK80f1KsOrx2MHMKFoUQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lqDSg-003MUK-NR; Mon, 07 Jun 2021 11:30:30 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1lqEbM-003ZLg-Gm; Mon, 07 Jun 2021 12:43:32 +0000
+Received: from lucky1.263xmail.com ([211.157.147.134])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lqDQ9-003LVr-Jy
- for linux-mtd@lists.infradead.org; Mon, 07 Jun 2021 11:27:59 +0000
-Received: from mwalle01.fritz.box (ip4d17858c.dynamic.kabel-deutschland.de
- [77.23.133.140])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
- SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 738762224E;
- Mon,  7 Jun 2021 13:27:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1623065271;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=mPi/dR2O+k1SrhEMMvygBlbL838zZ9pjuXid0cUHEMc=;
- b=UGywphRy+ADH5vTn1uDRFAHx25oQ6ZjiN4op0R10aHYnBfkSBfdnZIs6qfNcxvj8EP+Tnt
- pqX6Ut8Wnkol2AZK2KTJwKCwXJmcWNGoHEfbdB5st+5R8JYW9bT8+isrV4Y5MAzxsI2cfN
- hmntR1Ki6YBXhvRvV10qWqjuu6bFmto=
-From: Michael Walle <michael@walle.cc>
-To: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Michael Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH v6 4/4] mtd: spi-nor: otp: implement erase for Winbond and
- similar flashes
-Date: Mon,  7 Jun 2021 13:27:44 +0200
-Message-Id: <20210607112744.21587-5-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210607112744.21587-1-michael@walle.cc>
-References: <20210607112744.21587-1-michael@walle.cc>
-MIME-Version: 1.0
+ id 1lqEb4-003ZHE-Ke; Mon, 07 Jun 2021 12:43:18 +0000
+Received: from localhost (unknown [192.168.167.16])
+ by lucky1.263xmail.com (Postfix) with ESMTP id D53F7C8534;
+ Mon,  7 Jun 2021 20:43:07 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+ by smtp.263.net (postfix) whith ESMTP id
+ P32529T140357073352448S1623069785962833_; 
+ Mon, 07 Jun 2021 20:43:09 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <abb16e3c5ced31347a6c9c9c2c6fe692>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: linux-spi@vger.kernel.org
+X-RCPT-COUNT: 17
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From: Jon Lin <jon.lin@rock-chips.com>
+To: linux-spi@vger.kernel.org
+Cc: jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
+ heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
+ yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
+ linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+ p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Chris Morgan <macromorgan@hotmail.com>
+Subject: [PATCH v5 1/8] dt-bindings: rockchip-sfc: Bindings for Rockchip
+ serial flash controller
+Date: Mon,  7 Jun 2021 20:42:56 +0800
+Message-Id: <20210607124303.22393-2-jon.lin@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210607124303.22393-1-jon.lin@rock-chips.com>
+References: <20210607124303.22393-1-jon.lin@rock-chips.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210607_042753_997317_E7B433EA 
-X-CRM114-Status: GOOD (  22.40  )
+X-CRM114-CacheID: sfid-20210607_054315_120114_9A609986 
+X-CRM114-Status: GOOD (  27.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,196 +87,178 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Winbond flashes with OTP support provide a command to erase the OTP
-data. This might come in handy during development.
+From: Chris Morgan <macromorgan@hotmail.com>
 
-This was tested with a Winbond W25Q32JW on a LS1028A SoC with the
-NXP FSPI controller.
+Add bindings for the Rockchip serial flash controller. New device
+specific parameter of rockchip,sfc-no-dma included in documentation.
 
-Signed-off-by: Michael Walle <michael@walle.cc>
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
 ---
- drivers/mtd/spi-nor/core.c    |  2 +-
- drivers/mtd/spi-nor/core.h    |  4 ++
- drivers/mtd/spi-nor/otp.c     | 86 +++++++++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/winbond.c |  1 +
- 4 files changed, 92 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index f6a6ef2d8bd8..a21b0085de05 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -1318,7 +1318,7 @@ static u32 spi_nor_convert_addr(struct spi_nor *nor, loff_t addr)
- /*
-  * Initiate the erasure of a single sector
-  */
--static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
-+int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
- {
- 	int i;
- 
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 28a2e0be97a3..9398a8738857 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -207,6 +207,7 @@ struct spi_nor_otp_organization {
-  * @read:	read from the SPI NOR OTP area.
-  * @write:	write to the SPI NOR OTP area.
-  * @lock:	lock an OTP region.
-+ * @erase:	erase an OTP region.
-  * @is_locked:	check if an OTP region of the SPI NOR is locked.
-  */
- struct spi_nor_otp_ops {
-@@ -214,6 +215,7 @@ struct spi_nor_otp_ops {
- 	int (*write)(struct spi_nor *nor, loff_t addr, size_t len,
- 		     const u8 *buf);
- 	int (*lock)(struct spi_nor *nor, unsigned int region);
-+	int (*erase)(struct spi_nor *nor, loff_t addr);
- 	int (*is_locked)(struct spi_nor *nor, unsigned int region);
- };
- 
-@@ -503,10 +505,12 @@ ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t len,
- 			  u8 *buf);
- ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
- 			   const u8 *buf);
-+int spi_nor_erase_sector(struct spi_nor *nor, u32 addr);
- 
- int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
- int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len,
- 			   const u8 *buf);
-+int spi_nor_otp_erase_secr(struct spi_nor *nor, loff_t addr);
- int spi_nor_otp_lock_sr2(struct spi_nor *nor, unsigned int region);
- int spi_nor_otp_is_locked_sr2(struct spi_nor *nor, unsigned int region);
- 
-diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
-index 89fe52e3851a..983e40b19134 100644
---- a/drivers/mtd/spi-nor/otp.c
-+++ b/drivers/mtd/spi-nor/otp.c
-@@ -120,6 +120,38 @@ int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len,
- 	return ret ?: written;
- }
- 
-+/**
-+ * spi_nor_otp_erase_secr() - erase a security register
-+ * @nor:        pointer to 'struct spi_nor'
-+ * @addr:       offset of the security register to be erased
-+ *
-+ * Erase a security register by using the SPINOR_OP_ESECR command.
-+ *
-+ * For more information on the term "security register", see the documentation
-+ * of spi_nor_otp_read_secr().
-+ *
-+ * This method is used on GigaDevice and Winbond flashes.
-+ *
-+ * Return: 0 on success, -errno otherwise
-+ */
-+int spi_nor_otp_erase_secr(struct spi_nor *nor, loff_t addr)
-+{
-+	u8 erase_opcode = nor->erase_opcode;
-+	int ret;
+Changes in v5:
+- Add support in device trees for rv1126
+- Support sfc tx_dual, tx_quad
+- Simplify the code, such as remove "rockchip_sfc_register_all"
+- Support SFC ver4 ver5
+
+Changes in v4:
+- Changing patch back to an "RFC". An engineer from Rockchip
+  reached out to me to let me know they are working on this patch for
+  upstream, I am submitting this v4 for the community to see however
+  I expect Jon Lin (jon.lin@rock-chips.com) will submit new patches
+  soon and these are the ones we should pursue for mainlining. Jon's
+  patch series should include support for more hardware than this
+  series.
+- Clean up documentation more and ensure it is correct per
+  make dt_binding_check.
+- Add support in device trees for rk3036, rk3308, and rv1108.
+- Add ahb clock (hclk_sfc) support for rk3036.
+- Change rockchip_sfc_wait_fifo_ready() to use a switch statement.
+- Change IRQ code to only mark IRQ as handled if it handles the
+  specific IRQ (DMA transfer finish) it is supposed to handle.
+
+Changes in v3:
+- Changed the name of the clocks to sfc/ahb (from clk-sfc/clk-hsfc).
+- Changed the compatible string from rockchip,sfc to
+  rockchip,rk3036-sfc. A quick glance at the datasheets suggests this
+  driver should work for the PX30, RK180x, RK3036, RK312x, RK3308 and
+  RV1108 SoCs, and possibly more. However, I am currently only able
+  to test this on a PX30 (an RK3326). The technical reference manuals
+  appear to list the same registers for each device.
+- Corrected devicetree documentation for formatting and to note these
+  changes.
+- Replaced the maintainer with Heiko Stuebner and myself, as we will
+  take ownership of this going forward.
+- Noted that the device (per the reference manual) supports 4 CS, but
+  I am only able to test a single CS (CS 0).
+- Reordered patches to comply with upstream rules.
+
+Changes in v2:
+- Reimplemented driver using spi-mem subsystem.
+- Removed power management code as I couldn't get it working properly.
+- Added device tree bindings for Odroid Go Advance.
+
+Changes in v1:
+hanges made in this new series versus the v8 of the old series:
+- Added function to read spi-rx-bus-width from device tree, in the
+  event that the SPI chip supports 4x mode but only has 2 pins
+  wired (such as the Odroid Go Advance).
+- Changed device tree documentation from txt to yaml format.
+- Made "reset" message a dev_dbg from a dev_info.
+- Changed read and write fifo functions to remove redundant checks.
+- Changed the write and read from relaxed to non-relaxed when
+  starting the DMA transfer or reading the DMA IRQ.
+- Changed from dma_coerce_mask_and_coherent to just
+  dma_set_mask_and_coherent.
+- Changed name of get_if_type to rockchip_sfc_get_if_type.
+
+ .../devicetree/bindings/spi/rockchip-sfc.yaml | 86 +++++++++++++++++++
+ 1 file changed, 86 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+
+diff --git a/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml b/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+new file mode 100644
+index 000000000000..120c06f86a28
+--- /dev/null
++++ b/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+@@ -0,0 +1,86 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/spi/rockchip-sfc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		return ret;
++title: Rockchip Serial Flash Controller (SFC)
 +
-+	nor->erase_opcode = SPINOR_OP_ESECR;
-+	ret = spi_nor_erase_sector(nor, addr);
-+	nor->erase_opcode = erase_opcode;
-+	if (ret)
-+		return ret;
++maintainers:
++  - Heiko Stuebner <heiko@sntech.de>
++  - Chris Morgan <macromorgan@hotmail.com>
 +
-+	return spi_nor_wait_till_ready(nor);
-+}
++allOf:
++  - $ref: spi-controller.yaml#
 +
- static int spi_nor_otp_lock_bit_cr(unsigned int region)
- {
- 	static const int lock_bits[] = { SR2_LB1, SR2_LB2, SR2_LB3 };
-@@ -360,6 +392,59 @@ static int spi_nor_mtd_otp_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	return spi_nor_mtd_otp_read_write(mtd, to, len, retlen, buf, true);
- }
- 
-+static int spi_nor_mtd_otp_erase(struct mtd_info *mtd, loff_t from, size_t len)
-+{
-+	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-+	const struct spi_nor_otp_ops *ops = nor->params->otp.ops;
-+	const size_t rlen = spi_nor_otp_region_len(nor);
-+	unsigned int region;
-+	loff_t rstart;
-+	int ret;
++properties:
++  compatible:
++    oneOf:
++      - const: rockchip,rk3036-sfc
++      - items:
++          - enum:
++              - rockchip,px30-sfc
++              - rockchip,rk3308-sfc
++              - rockchip,rv1108-sfc
++          - const: rockchip,rk3036-sfc
 +
-+	/* OTP erase is optional */
-+	if (!ops->erase)
-+		return -EOPNOTSUPP;
++  reg:
++    maxItems: 1
 +
-+	if (!len)
-+		return 0;
++  interrupts:
++    maxItems: 1
 +
-+	if (from < 0 || (from + len) > spi_nor_otp_size(nor))
-+		return -EINVAL;
++  clocks:
++    items:
++      - description: Bus Clock
++      - description: Module Clock
 +
-+	/* the user has to explicitly ask for whole regions */
-+	if (!IS_ALIGNED(len, rlen) || !IS_ALIGNED(from, rlen))
-+		return -EINVAL;
++  clock-names:
++    items:
++      - const: ahb
++      - const: sfc
 +
-+	ret = spi_nor_lock_and_prep(nor);
-+	if (ret)
-+		return ret;
++  power-domains:
++    maxItems: 1
 +
-+	ret = spi_nor_mtd_otp_range_is_locked(nor, from, len);
-+	if (ret < 0) {
-+		goto out;
-+	} else if (ret) {
-+		ret = -EROFS;
-+		goto out;
-+	}
++  rockchip,sfc-no-dma:
++    description: Disable DMA and utilize FIFO mode only
++    type: boolean
 +
-+	while (len) {
-+		region = spi_nor_otp_offset_to_region(nor, from);
-+		rstart = spi_nor_otp_region_start(nor, region);
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
 +
-+		ret = ops->erase(nor, rstart);
-+		if (ret)
-+			goto out;
++unevaluatedProperties: false
 +
-+		len -= rlen;
-+		from += rlen;
-+	}
++examples:
++  - |
++    #include <dt-bindings/clock/px30-cru.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/power/px30-power.h>
 +
-+out:
-+	spi_nor_unlock_and_unprep(nor);
++    sfc: spi@ff3a0000 {
++        compatible = "rockchip,px30-sfc","rockchip,rk3036-sfc";
++        reg = <0xff3a0000 0x4000>;
++        interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
++        clocks = <&cru HCLK_SFC>, <&cru SCLK_SFC>;
++        clock-names = "ahb", "sfc";
++        pinctrl-0 = <&sfc_clk &sfc_cs &sfc_bus2>;
++        pinctrl-names = "default";
++        power-domains = <&power PX30_PD_MMC_NAND>;
++        #address-cells = <1>;
++        #size-cells = <0>;
 +
-+	return ret;
-+}
++        flash@0 {
++            compatible = "jedec,spi-nor";
++            reg = <0>;
++            spi-max-frequency = <108000000>;
++            spi-rx-bus-width = <2>;
++            spi-tx-bus-width = <2>;
++        };
++    };
 +
- static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
- {
- 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-@@ -418,4 +503,5 @@ void spi_nor_otp_init(struct spi_nor *nor)
- 	mtd->_read_user_prot_reg = spi_nor_mtd_otp_read;
- 	mtd->_write_user_prot_reg = spi_nor_mtd_otp_write;
- 	mtd->_lock_user_prot_reg = spi_nor_mtd_otp_lock;
-+	mtd->_erase_user_prot_reg = spi_nor_mtd_otp_erase;
- }
-diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index 9a81c67a60c6..96573f61caf5 100644
---- a/drivers/mtd/spi-nor/winbond.c
-+++ b/drivers/mtd/spi-nor/winbond.c
-@@ -139,6 +139,7 @@ static int winbond_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
- static const struct spi_nor_otp_ops winbond_otp_ops = {
- 	.read = spi_nor_otp_read_secr,
- 	.write = spi_nor_otp_write_secr,
-+	.erase = spi_nor_otp_erase_secr,
- 	.lock = spi_nor_otp_lock_sr2,
- 	.is_locked = spi_nor_otp_is_locked_sr2,
- };
++...
 -- 
-2.20.1
+2.17.1
+
+
 
 
 ______________________________________________________
