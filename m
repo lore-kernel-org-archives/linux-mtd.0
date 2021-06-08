@@ -7,74 +7,95 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6634AC47094
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Jun 2021 02:43:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53416C4743E
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Jun 2021 04:09:26 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2B47461182
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Jun 2021 02:43:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B47461182
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rock-chips.com
+	by mail.kernel.org (Postfix) with ESMTPS id 0D8E261249
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Jun 2021 04:09:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D8E261249
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=johnthomson.fastmail.com.au
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Hm3ybfxtRy9wCFywHyEUEgN0BxxjS+9fcYHw1l+eAuw=; b=pqI1YCZ3beOyHf
-	Y3FiuyLiE1x/Hw1YIEyp2LWVTHyTIFJlZB6Lu1EJg6YLcJclA1nnxIf8W7aGZs6xGfkxfAVYPvcpM
-	OgT5SlbYJwhqZKURNvNF2qvyC/63q/9ru+lKUEK11JR1osY6eSNLgLNM834lvcMecRI1FcbZWxy0o
-	C7IXR43XiPTKLcDZTrkIDcos7wRm97I0JZNmLZafA5q5vfI+W9/VVQNu+G8vnZm2cfhebJu3+zOWP
-	iDsLF0T7DSuqykghMikAScvzL+4Zz85ypFegGlRAUW8jl60atyyLyC07hA58saDUIVGtFqGBeg1QM
-	uqjhpocZPfXM338wBu1A==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=6mUWQd71FwsINycGYY1qOhKz+ecWJVNtwDkTebG3XkA=; b=EMabhVoRE3ad89
+	o3L2AgyKrs+blSofUC3hoSsQe7gi3m4si8S9HW8Z+8SsS5TufUsvGwDl80qSYGlQOytQF+1yRUWvE
+	6FJ/+bqv+TwjqZFibgJ6+9OVsQN9dZ/no1R0bBXIpmrf8ORUmv58QK4ZQquaFKbyXKpFeWOC2MSv4
+	H2MAhyhTU8a3gtooH6G8+KvsJEfVgh6C+aDbwxyh2UY3chHKuw1kvL6AktbfUE2xl4zxi3x3kc70B
+	Wi3LiJBFokxVdgnROXxTU5tI0XboWYkQV64gLuQNV4XKClcuhVpzloDK8Iok6NTd7b32a7TdEFlCS
+	lGKsEKmxtUlW2FpfoduA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lqRhZ-0065g5-Ew; Tue, 08 Jun 2021 02:42:50 +0000
-Received: from lucky1.263xmail.com ([211.157.147.135])
+	id 1lqT1r-006OAW-DX; Tue, 08 Jun 2021 04:07:51 +0000
+Received: from new1-smtp.messagingengine.com ([66.111.4.221])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lqRab-0063cx-Un; Tue, 08 Jun 2021 02:35:39 +0000
-Received: from localhost (unknown [192.168.167.16])
- by lucky1.263xmail.com (Postfix) with ESMTP id 637CFAD36C;
- Tue,  8 Jun 2021 10:33:10 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [58.22.7.114])
- by smtp.263.net (postfix) whith ESMTP id
- P32529T140357266978560S1623119587131429_; 
- Tue, 08 Jun 2021 10:33:09 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <fa2afddb2bd67b25ab2e689da87b1f4f>
-X-RL-SENDER: jon.lin@rock-chips.com
-X-SENDER: jon.lin@rock-chips.com
-X-LOGIN-NAME: jon.lin@rock-chips.com
-X-FST-TO: linux-spi@vger.kernel.org
-X-RCPT-COUNT: 17
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From: Jon Lin <jon.lin@rock-chips.com>
-To: linux-spi@vger.kernel.org
-Cc: jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
- heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
- yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
- linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
- p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Chris Morgan <macromorgan@hotmail.com>
-Subject: [PATCH v6 5/8] arm: dts: rockchip: Add SFC to RK3036
-Date: Tue,  8 Jun 2021 10:33:02 +0800
-Message-Id: <20210608023305.25371-1-jon.lin@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210608022644.21074-1-jon.lin@rock-chips.com>
-References: <20210608022644.21074-1-jon.lin@rock-chips.com>
+ id 1lqT1l-006O9b-Fq
+ for linux-mtd@lists.infradead.org; Tue, 08 Jun 2021 04:07:50 +0000
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+ by mailnew.nyi.internal (Postfix) with ESMTP id 4456B580622;
+ Tue,  8 Jun 2021 00:07:42 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+ by compute2.internal (MEProxy); Tue, 08 Jun 2021 00:07:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com.au;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding; s=fm3; bh=ZXRH+YluM1mHCS1EWUiCY/Sg8O
+ LccfHe1oW5iAay6y8=; b=dLzuZ6dBYf7ZA8tWLOBFZYLi7ERsGe/4vnMXG+ovvb
+ dNBO0+SaFGwoqYSFrfq/TeyHfKyvxrA7+LCdopIuT4abpLHxtRwtRiafQcDYCPat
+ qJIqOZO+wCZC5S9Jc1OP7+t1FviGpgevqIMotci37P+RWc5u3AweMzFljZk90E8C
+ uorV6rXagD+OssJQzllRnAIK88+rOAC9ZyXv2gWxy4d1HSCwSWgzx2vnV9CNp918
+ YC/3tiHas9krbrPIaAsdBROr7Bvoe/ShRRzruKRuvZVgg5NN90vX+/5ZjI8u04GM
+ p2bWCbC62CP6wlcgDaz+c/Sgr5ITd2GPENJsHfqmLRBA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-transfer-encoding:date:from
+ :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+ :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=ZXRH+YluM1mHCS1EW
+ UiCY/Sg8OLccfHe1oW5iAay6y8=; b=nSRGsW+CQ2Zx1RVpIUu8W/VD/k5P+32BW
+ 5k2ltd+UhI3dfldBPzHrYiOP/IJqGkNW+V+rHASacW/vFygnaZoxNjRYKnOsu+26
+ wb2yK3jpl6lsNTg3N1Z4XJrYY2lf9H29DMFbhC67l0PTc050rcZk4XsKTLAlv14Q
+ VA4WREYSaX/4IN4O+ES4TMq0a/3gKZh6nvbbJXbsXfK0WlSHTGZtZmW3fyrqvbXa
+ t+R7L8vvqWvwls0pV+Sn8LeQqb7+A69w0UOnuznjkcA3sCc2YehcHbxcUEnMH+9N
+ bxOjmIDeg9/4X/829tUWUJiLhE5SFmQZ1P6oFtmbWoLrDz0ZJIVBw==
+X-ME-Sender: <xms:C-2-YD2uka4HsA6gcdsV2Ia7vebY4Yjp9E8q7KBMb54jnAzGL7-67Q>
+ <xme:C-2-YCEaxASy5VlcrvNO_jLFpMDGkFCRsuVNuZGEQsiRZygk8jPHWq7unPjeT6uYS
+ 2pUP6PrTQ2rggjEIg>
+X-ME-Received: <xmr:C-2-YD4exeK49N_YZWWf2BWDhVyCbCY3wwvjTyDOFxeugx7Jg08pzMUToo9oJjrBpcVTaA3kbfk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtkedgjeduucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeflohhhnhcuvfhh
+ ohhmshhonhcuoehgihhtsehjohhhnhhthhhomhhsohhnrdhfrghsthhmrghilhdrtghomh
+ drrghuqeenucggtffrrghtthgvrhhnpefffeeihfdukedtuedufeetieeuudfhhefhkefh
+ tefgtdeuffekffelleetveduieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+ epmhgrihhlfhhrohhmpehgihhtsehjohhhnhhthhhomhhsohhnrdhfrghsthhmrghilhdr
+ tghomhdrrghu
+X-ME-Proxy: <xmx:C-2-YI0AJZGjcB3wIbI9BoC9X8VNl4i9A7cQnBkvwZ25czWJlkKCLw>
+ <xmx:C-2-YGGufw99T-O81-FeiSyEruv6_Pr0IHFhspQdxjv5k1VFTZ0lzQ>
+ <xmx:C-2-YJ8BW7DhSDSCEAPSJWrwh_hHP79qreTZtWh_kOUwSh1c0MMlAg>
+ <xmx:Du2-YJBeX2Fg9oFZVXGwEJ1ZrZnXHiAqNON8tbpzquYgcm2o_LM48g>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 8 Jun 2021 00:07:35 -0400 (EDT)
+From: John Thomson <git@johnthomson.fastmail.com.au>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Michael Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>,
+ linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org,
+ John Thomson <git@johnthomson.fastmail.com.au>,
+ kernel test robot <lkp@intel.com>, Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] mtd: spi-nor: write support for minor aligned partitions
+Date: Tue,  8 Jun 2021 14:07:19 +1000
+Message-Id: <20210608040719.14431-1-git@johnthomson.fastmail.com.au>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210607_193538_186430_D1C7A8AE 
-X-CRM114-Status: GOOD (  10.69  )
+X-CRM114-CacheID: sfid-20210607_210745_712053_67A7D864 
+X-CRM114-Status: GOOD (  26.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,94 +107,253 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Chris Morgan <macromorgan@hotmail.com>
+Do not prevent writing to mtd partitions where a partition boundary sits
+on a minor erasesize boundary.
+This addresses a FIXME that has been present since the start of the
+linux git history:
+/* Doesn't start on a boundary of major erase size */
+/* FIXME: Let it be writable if it is on a boundary of
+ * _minor_ erase size though */
 
-Add a devicetree entry for the Rockchip SFC for the RK3036 SOC.
+Allow a uniform erase region spi-nor device to be configured
+to use the non-uniform erase regions code path for an erase with:
+CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE=y
 
-Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
-Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
+On supporting hardware (SECT_4K: majority of current SPI-NOR device)
+provide the facility for an erase to use the least number
+of SPI-NOR operations, as well as access to 4K erase without
+requiring CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
+
+Introduce erasesize_minor to the mtd struct,
+the smallest erasesize supported by the device
+
+On existing devices, this is useful where write support is wanted
+for data on a 4K partition, such as some u-boot-env partitions,
+or RouterBoot soft_config, while still netting the performance
+benefits of using 64K sectors
+
+Performance:
+time mtd erase firmware
+OpenWrt 5.10 ramips MT7621 w25q128jv 0xfc0000 partition length
+
+Without this patch
+MTD_SPI_NOR_USE_4K_SECTORS=y	|n
+real    2m 11.66s		|0m 50.86s
+user    0m 0.00s		|0m 0.00s
+sys     1m 56.20s		|0m 50.80s
+
+With this patch
+MTD_SPI_NOR_USE_VARIABLE_ERASE=n|y		|4K_SECTORS=y
+real    0m 51.68s		|0m 50.85s	|2m 12.89s
+user    0m 0.00s		|0m 0.00s	|0m 0.01s
+sys     0m 46.94s		|0m 50.38s	|2m 12.46s
+
+Signed-off-by: John Thomson <git@johnthomson.fastmail.com.au>
 ---
+Have not tested on variable erase regions device.
 
-Changes in v6: None
-Changes in v5: None
-Changes in v4: None
-Changes in v3: None
-Changes in v2: None
-Changes in v1: None
+checkpatch does not like the printk(KERN_WARNING
+these should be changed separately beforehand?
 
- arch/arm/boot/dts/rk3036.dtsi | 42 +++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+Changes RFC -> v1:
+Fix uninitialized variable smatch warning
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/mtd/mtdpart.c       | 52 ++++++++++++++++++++++++++++---------
+ drivers/mtd/spi-nor/Kconfig | 10 +++++++
+ drivers/mtd/spi-nor/core.c  | 10 +++++--
+ include/linux/mtd/mtd.h     |  2 ++
+ 4 files changed, 60 insertions(+), 14 deletions(-)
 
-diff --git a/arch/arm/boot/dts/rk3036.dtsi b/arch/arm/boot/dts/rk3036.dtsi
-index e24230d50a78..e7faf815ca74 100644
---- a/arch/arm/boot/dts/rk3036.dtsi
-+++ b/arch/arm/boot/dts/rk3036.dtsi
-@@ -206,6 +206,17 @@
- 		status = "disabled";
- 	};
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 665fd9020b76..fe7626b5020e 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -38,10 +38,11 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
+ 	struct mtd_info *master = mtd_get_master(parent);
+ 	int wr_alignment = (parent->flags & MTD_NO_ERASE) ?
+ 			   master->writesize : master->erasesize;
++	int wr_alignment_minor = 0;
+ 	u64 parent_size = mtd_is_partition(parent) ?
+ 			  parent->part.size : parent->size;
+ 	struct mtd_info *child;
+-	u32 remainder;
++	u32 remainder, remainder_minor;
+ 	char *name;
+ 	u64 tmp;
  
-+	sfc: spi@10208000 {
-+		compatible = "rockchip,rk3036-sfc";
-+		reg = <0x10208000 0x4000>;
-+		interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru HCLK_SFC>, <&cru SCLK_SFC>;
-+		clock-names = "hclk_sfc", "clk_sfc";
-+		pinctrl-0 = <&sfc_clk &sfc_cs0 &sfc_bus4>;
-+		pinctrl-names = "default";
-+		status = "disabled";
-+	};
-+
- 	sdmmc: mmc@10214000 {
- 		compatible = "rockchip,rk3036-dw-mshc", "rockchip,rk3288-dw-mshc";
- 		reg = <0x10214000 0x4000>;
-@@ -684,6 +695,37 @@
- 			};
- 		};
+@@ -143,6 +144,7 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
+ 		int i, max = parent->numeraseregions;
+ 		u64 end = child->part.offset + child->part.size;
+ 		struct mtd_erase_region_info *regions = parent->eraseregions;
++		uint32_t erasesize_minor = child->erasesize;
  
-+		serial_flash {
-+			sfc_bus4: sfc-bus4 {
-+				rockchip,pins =
-+					<1 RK_PD0 3 &pcfg_pull_none>,
-+					<1 RK_PD1 3 &pcfg_pull_none>,
-+					<1 RK_PD2 3 &pcfg_pull_none>,
-+					<1 RK_PD3 3 &pcfg_pull_none>;
-+			};
+ 		/* Find the first erase regions which is part of this
+ 		 * partition. */
+@@ -153,15 +155,24 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
+ 		if (i > 0)
+ 			i--;
+ 
+-		/* Pick biggest erasesize */
+ 		for (; i < max && regions[i].offset < end; i++) {
++			/* Pick biggest erasesize */
+ 			if (child->erasesize < regions[i].erasesize)
+ 				child->erasesize = regions[i].erasesize;
++			/* Pick smallest non-zero erasesize */
++			if ((erasesize_minor > regions[i].erasesize) && (regions[i].erasesize > 0))
++				erasesize_minor = regions[i].erasesize;
+ 		}
 +
-+			sfc_bus2: sfc-bus2 {
-+				rockchip,pins =
-+					<1 RK_PD0 3 &pcfg_pull_none>,
-+					<1 RK_PD1 3 &pcfg_pull_none>;
-+			};
++		if (erasesize_minor < child->erasesize)
++			child->erasesize_minor = erasesize_minor;
 +
-+			sfc_cs0: sfc-cs0 {
-+				rockchip,pins =
-+					<2 RK_PA2 3 &pcfg_pull_none>;
-+			};
+ 		BUG_ON(child->erasesize == 0);
+ 	} else {
+ 		/* Single erase size */
+ 		child->erasesize = master->erasesize;
++		if (master->erasesize_minor)
++			child->erasesize_minor = master->erasesize_minor;
+ 	}
+ 
+ 	/*
+@@ -169,26 +180,43 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
+ 	 * exposes several regions with different erasesize. Adjust
+ 	 * wr_alignment accordingly.
+ 	 */
+-	if (!(child->flags & MTD_NO_ERASE))
++	if (!(child->flags & MTD_NO_ERASE)) {
+ 		wr_alignment = child->erasesize;
++		if (IS_ENABLED(CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE) && child->erasesize_minor)
++			wr_alignment_minor = child->erasesize_minor;
++	}
+ 
+ 	tmp = mtd_get_master_ofs(child, 0);
+ 	remainder = do_div(tmp, wr_alignment);
+ 	if ((child->flags & MTD_WRITEABLE) && remainder) {
+-		/* Doesn't start on a boundary of major erase size */
+-		/* FIXME: Let it be writable if it is on a boundary of
+-		 * _minor_ erase size though */
+-		child->flags &= ~MTD_WRITEABLE;
+-		printk(KERN_WARNING"mtd: partition \"%s\" doesn't start on an erase/write block boundary -- force read-only\n",
+-			part->name);
++		if (wr_alignment_minor) {
++			tmp = mtd_get_master_ofs(child, 0);
++			remainder_minor = do_div(tmp, wr_alignment_minor);
++			if (remainder_minor == 0)
++				child->erasesize = child->erasesize_minor;
++		}
 +
-+			sfc_cs1: sfc-cs1 {
-+				rockchip,pins =
-+					<2 RK_PA3 3 &pcfg_pull_none>;
-+			};
++		if ((!wr_alignment_minor) || (wr_alignment_minor && remainder_minor != 0)) {
++			child->flags &= ~MTD_WRITEABLE;
++			printk(KERN_WARNING"mtd: partition \"%s\" doesn't start on an erase/write block boundary -- force read-only\n",
++				part->name);
++		}
+ 	}
+ 
+ 	tmp = mtd_get_master_ofs(child, 0) + child->part.size;
+ 	remainder = do_div(tmp, wr_alignment);
+ 	if ((child->flags & MTD_WRITEABLE) && remainder) {
+-		child->flags &= ~MTD_WRITEABLE;
+-		printk(KERN_WARNING"mtd: partition \"%s\" doesn't end on an erase/write block -- force read-only\n",
+-			part->name);
++		if (wr_alignment_minor) {
++			tmp = mtd_get_master_ofs(child, 0) + child->part.size;
++			remainder_minor = do_div(tmp, wr_alignment_minor);
++			if (remainder_minor == 0)
++				child->erasesize = child->erasesize_minor;
++		}
++		if ((!wr_alignment_minor) || (wr_alignment_minor && remainder_minor != 0)) {
++			child->flags &= ~MTD_WRITEABLE;
++			printk(KERN_WARNING"mtd: partition \"%s\" doesn't end on an erase/write block -- force read-only\n",
++				part->name);
++		}
+ 	}
+ 
+ 	child->size = child->part.size;
+diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+index 24cd25de2b8b..09df9f1a8127 100644
+--- a/drivers/mtd/spi-nor/Kconfig
++++ b/drivers/mtd/spi-nor/Kconfig
+@@ -10,6 +10,16 @@ menuconfig MTD_SPI_NOR
+ 
+ if MTD_SPI_NOR
+ 
++config MTD_SPI_NOR_USE_VARIABLE_ERASE
++	bool "Disable uniform_erase to allow use of all hardware supported erasesizes"
++	depends on !MTD_SPI_NOR_USE_4K_SECTORS
++	default n
++	help
++	  Allow mixed use of all hardware supported erasesizes,
++	  by forcing spi_nor to use the multiple eraseregions code path.
++	  For example: A 68K erase will use one 64K erase, and one 4K erase
++	  on supporting hardware.
 +
-+			sfc_clk: sfc-clk {
-+				rockchip,pins =
-+					<2 RK_PA4 3 &pcfg_pull_none>;
-+			};
-+		};
-+
- 		emac {
- 			emac_xfer: emac-xfer {
- 				rockchip,pins = <2 RK_PB2 1 &pcfg_pull_default>, /* crs_dvalid */
+ config MTD_SPI_NOR_USE_4K_SECTORS
+ 	bool "Use small 4096 B erase sectors"
+ 	default y
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index bd2c7717eb10..43d9b54e7edd 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -1262,6 +1262,8 @@ static u8 spi_nor_convert_3to4_erase(u8 opcode)
+ 
+ static bool spi_nor_has_uniform_erase(const struct spi_nor *nor)
+ {
++	if (IS_ENABLED(CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE))
++		return false;
+ 	return !!nor->params->erase_map.uniform_erase_type;
+ }
+ 
+@@ -2381,6 +2383,7 @@ static int spi_nor_select_erase(struct spi_nor *nor)
+ {
+ 	struct spi_nor_erase_map *map = &nor->params->erase_map;
+ 	const struct spi_nor_erase_type *erase = NULL;
++	const struct spi_nor_erase_type *erase_minor = NULL;
+ 	struct mtd_info *mtd = &nor->mtd;
+ 	u32 wanted_size = nor->info->sector_size;
+ 	int i;
+@@ -2413,8 +2416,9 @@ static int spi_nor_select_erase(struct spi_nor *nor)
+ 	 */
+ 	for (i = SNOR_ERASE_TYPE_MAX - 1; i >= 0; i--) {
+ 		if (map->erase_type[i].size) {
+-			erase = &map->erase_type[i];
+-			break;
++			if (!erase)
++				erase = &map->erase_type[i];
++			erase_minor = &map->erase_type[i];
+ 		}
+ 	}
+ 
+@@ -2422,6 +2426,8 @@ static int spi_nor_select_erase(struct spi_nor *nor)
+ 		return -EINVAL;
+ 
+ 	mtd->erasesize = erase->size;
++	if (erase_minor && erase_minor->size < erase->size)
++		mtd->erasesize_minor = erase_minor->size;
+ 	return 0;
+ }
+ 
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index a89955f3cbc8..33eafa27da50 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -243,6 +243,8 @@ struct mtd_info {
+ 	 * information below if they desire
+ 	 */
+ 	uint32_t erasesize;
++	/* "Minor" (smallest) erase size supported by the whole device */
++	uint32_t erasesize_minor;
+ 	/* Minimal writable flash unit size. In case of NOR flash it is 1 (even
+ 	 * though individual bits can be cleared), in case of NAND flash it is
+ 	 * one NAND page (or half, or one-fourths of it), in case of ECC-ed NOR
 -- 
-2.17.1
-
-
+2.31.1
 
 
 ______________________________________________________
