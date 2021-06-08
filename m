@@ -2,100 +2,83 @@ Return-Path: <SRS0=i2dy=LC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53416C4743E
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Jun 2021 04:09:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49A24C47082
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Jun 2021 05:40:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0D8E261249
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Jun 2021 04:09:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D8E261249
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=johnthomson.fastmail.com.au
+	by mail.kernel.org (Postfix) with ESMTPS id 104E760FF4
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Jun 2021 05:40:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 104E760FF4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=6mUWQd71FwsINycGYY1qOhKz+ecWJVNtwDkTebG3XkA=; b=EMabhVoRE3ad89
-	o3L2AgyKrs+blSofUC3hoSsQe7gi3m4si8S9HW8Z+8SsS5TufUsvGwDl80qSYGlQOytQF+1yRUWvE
-	6FJ/+bqv+TwjqZFibgJ6+9OVsQN9dZ/no1R0bBXIpmrf8ORUmv58QK4ZQquaFKbyXKpFeWOC2MSv4
-	H2MAhyhTU8a3gtooH6G8+KvsJEfVgh6C+aDbwxyh2UY3chHKuw1kvL6AktbfUE2xl4zxi3x3kc70B
-	Wi3LiJBFokxVdgnROXxTU5tI0XboWYkQV64gLuQNV4XKClcuhVpzloDK8Iok6NTd7b32a7TdEFlCS
-	lGKsEKmxtUlW2FpfoduA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ZH34MabEpso2tzwRpIvrVYNlCNDyD6HJidrIzoUfAnI=; b=oE7NndPF2vsD+Y
+	anxfpznjOtM5sRdwvD0ttMlCjzZgdta0aeLyO97VHjwioD6LjWI37tf98UnmvlzMqZN3u5hTLBlQK
+	0e2cqIuDubF6B2yVDOewsa8c7x4e2jUu8P295DrZOi0N9rYd73UoKHmYsuXQOS1WucnTK+H9vk5wx
+	d1WeA43XO10XleQilGIlrJ4XLFJruATuWj0sIGOlV6M06K2J/nroUQ4TvQwMf2oDP1QJXP3aJj3x3
+	U51H55wS6BgX4BITwJcDylMyP/f1SmeVUOwdYesZ0bzHFToKfKCP4i+TUK//RpLwLAoEJ51aJk3D+
+	cHi0vcb/jxQ1q0xMYspQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lqT1r-006OAW-DX; Tue, 08 Jun 2021 04:07:51 +0000
-Received: from new1-smtp.messagingengine.com ([66.111.4.221])
+	id 1lqUSF-006ZLK-Ve; Tue, 08 Jun 2021 05:39:12 +0000
+Received: from verein.lst.de ([213.95.11.211])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lqT1l-006O9b-Fq
- for linux-mtd@lists.infradead.org; Tue, 08 Jun 2021 04:07:50 +0000
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
- by mailnew.nyi.internal (Postfix) with ESMTP id 4456B580622;
- Tue,  8 Jun 2021 00:07:42 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute2.internal (MEProxy); Tue, 08 Jun 2021 00:07:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com.au;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding; s=fm3; bh=ZXRH+YluM1mHCS1EWUiCY/Sg8O
- LccfHe1oW5iAay6y8=; b=dLzuZ6dBYf7ZA8tWLOBFZYLi7ERsGe/4vnMXG+ovvb
- dNBO0+SaFGwoqYSFrfq/TeyHfKyvxrA7+LCdopIuT4abpLHxtRwtRiafQcDYCPat
- qJIqOZO+wCZC5S9Jc1OP7+t1FviGpgevqIMotci37P+RWc5u3AweMzFljZk90E8C
- uorV6rXagD+OssJQzllRnAIK88+rOAC9ZyXv2gWxy4d1HSCwSWgzx2vnV9CNp918
- YC/3tiHas9krbrPIaAsdBROr7Bvoe/ShRRzruKRuvZVgg5NN90vX+/5ZjI8u04GM
- p2bWCbC62CP6wlcgDaz+c/Sgr5ITd2GPENJsHfqmLRBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-transfer-encoding:date:from
- :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
- :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=ZXRH+YluM1mHCS1EW
- UiCY/Sg8OLccfHe1oW5iAay6y8=; b=nSRGsW+CQ2Zx1RVpIUu8W/VD/k5P+32BW
- 5k2ltd+UhI3dfldBPzHrYiOP/IJqGkNW+V+rHASacW/vFygnaZoxNjRYKnOsu+26
- wb2yK3jpl6lsNTg3N1Z4XJrYY2lf9H29DMFbhC67l0PTc050rcZk4XsKTLAlv14Q
- VA4WREYSaX/4IN4O+ES4TMq0a/3gKZh6nvbbJXbsXfK0WlSHTGZtZmW3fyrqvbXa
- t+R7L8vvqWvwls0pV+Sn8LeQqb7+A69w0UOnuznjkcA3sCc2YehcHbxcUEnMH+9N
- bxOjmIDeg9/4X/829tUWUJiLhE5SFmQZ1P6oFtmbWoLrDz0ZJIVBw==
-X-ME-Sender: <xms:C-2-YD2uka4HsA6gcdsV2Ia7vebY4Yjp9E8q7KBMb54jnAzGL7-67Q>
- <xme:C-2-YCEaxASy5VlcrvNO_jLFpMDGkFCRsuVNuZGEQsiRZygk8jPHWq7unPjeT6uYS
- 2pUP6PrTQ2rggjEIg>
-X-ME-Received: <xmr:C-2-YD4exeK49N_YZWWf2BWDhVyCbCY3wwvjTyDOFxeugx7Jg08pzMUToo9oJjrBpcVTaA3kbfk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtkedgjeduucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
- cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeflohhhnhcuvfhh
- ohhmshhonhcuoehgihhtsehjohhhnhhthhhomhhsohhnrdhfrghsthhmrghilhdrtghomh
- drrghuqeenucggtffrrghtthgvrhhnpefffeeihfdukedtuedufeetieeuudfhhefhkefh
- tefgtdeuffekffelleetveduieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
- epmhgrihhlfhhrohhmpehgihhtsehjohhhnhhthhhomhhsohhnrdhfrghsthhmrghilhdr
- tghomhdrrghu
-X-ME-Proxy: <xmx:C-2-YI0AJZGjcB3wIbI9BoC9X8VNl4i9A7cQnBkvwZ25czWJlkKCLw>
- <xmx:C-2-YGGufw99T-O81-FeiSyEruv6_Pr0IHFhspQdxjv5k1VFTZ0lzQ>
- <xmx:C-2-YJ8BW7DhSDSCEAPSJWrwh_hHP79qreTZtWh_kOUwSh1c0MMlAg>
- <xmx:Du2-YJBeX2Fg9oFZVXGwEJ1ZrZnXHiAqNON8tbpzquYgcm2o_LM48g>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 8 Jun 2021 00:07:35 -0400 (EDT)
-From: John Thomson <git@johnthomson.fastmail.com.au>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ id 1lqUSE-006ZKk-15
+ for linux-mtd@lists.infradead.org; Tue, 08 Jun 2021 05:39:11 +0000
+Received: by verein.lst.de (Postfix, from userid 2407)
+ id 2EEDF67373; Tue,  8 Jun 2021 07:39:06 +0200 (CEST)
+Date: Tue, 8 Jun 2021 07:39:05 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
+Cc: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+ Justin Sanders <justin@coraid.com>, Denis Efremov <efremov@linux.com>,
+ Josef Bacik <josef@toxicpanda.com>, Tim Waugh <tim@cyberelk.net>,
+ Geoff Levand <geoff@infradead.org>, Ilya Dryomov <idryomov@gmail.com>,
+ "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+ Jack Wang <jinpu.wang@ionos.com>, "Michael S. Tsirkin" <mst@redhat.com>,
+ Jason Wang <jasowang@redhat.com>,
+ Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+ Roger Pau =?iso-8859-1?Q?Monn=E9?= <roger.pau@citrix.com>,
+ Mike Snitzer <snitzer@redhat.com>,
+ Maxim Levitsky <maximlevitsky@gmail.com>, Alex Dubov <oakad@yahoo.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Michael Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>,
- linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org,
- John Thomson <git@johnthomson.fastmail.com.au>,
- kernel test robot <lkp@intel.com>, Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH] mtd: spi-nor: write support for minor aligned partitions
-Date: Tue,  8 Jun 2021 14:07:19 +1000
-Message-Id: <20210608040719.14431-1-git@johnthomson.fastmail.com.au>
-X-Mailer: git-send-email 2.31.1
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@de.ibm.com>,
+ "dm-devel@redhat.com" <dm-devel@redhat.com>,
+ "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+ "nbd@other.debian.org" <nbd@other.debian.org>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
+ "virtualization@lists.linux-foundation.org"
+ <virtualization@lists.linux-foundation.org>, 
+ "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>
+Subject: Re: [PATCH 20/30] nullb: use blk_mq_alloc_disk
+Message-ID: <20210608053905.GA14183@lst.de>
+References: <20210602065345.355274-1-hch@lst.de>
+ <20210602065345.355274-21-hch@lst.de>
+ <BYAPR04MB4965DDD0F4479F5B492A30D2863C9@BYAPR04MB4965.namprd04.prod.outlook.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <BYAPR04MB4965DDD0F4479F5B492A30D2863C9@BYAPR04MB4965.namprd04.prod.outlook.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210607_210745_712053_67A7D864 
-X-CRM114-Status: GOOD (  26.99  )
+X-CRM114-CacheID: sfid-20210607_223910_246693_CD8B17BD 
+X-CRM114-Status: GOOD (  12.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,249 +95,18 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Do not prevent writing to mtd partitions where a partition boundary sits
-on a minor erasesize boundary.
-This addresses a FIXME that has been present since the start of the
-linux git history:
-/* Doesn't start on a boundary of major erase size */
-/* FIXME: Let it be writable if it is on a boundary of
- * _minor_ erase size though */
+On Thu, Jun 03, 2021 at 12:10:09AM +0000, Chaitanya Kulkarni wrote:
+> > diff --git a/drivers/block/null_blk/main.c b/drivers/block/null_blk/main.c
+> > index d8e098f1e5b5..74fb2ec63219 100644
+> > --- a/drivers/block/null_blk/main.c
+> > +++ b/drivers/block/null_blk/main.c
+> > @@ -1851,13 +1851,12 @@ static int null_add_dev(struct nullb_device *dev)
+> >  
+> >  		rv = -ENOMEM;
+> 
+> Is above initialization needed ?
 
-Allow a uniform erase region spi-nor device to be configured
-to use the non-uniform erase regions code path for an erase with:
-CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE=y
-
-On supporting hardware (SECT_4K: majority of current SPI-NOR device)
-provide the facility for an erase to use the least number
-of SPI-NOR operations, as well as access to 4K erase without
-requiring CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
-
-Introduce erasesize_minor to the mtd struct,
-the smallest erasesize supported by the device
-
-On existing devices, this is useful where write support is wanted
-for data on a 4K partition, such as some u-boot-env partitions,
-or RouterBoot soft_config, while still netting the performance
-benefits of using 64K sectors
-
-Performance:
-time mtd erase firmware
-OpenWrt 5.10 ramips MT7621 w25q128jv 0xfc0000 partition length
-
-Without this patch
-MTD_SPI_NOR_USE_4K_SECTORS=y	|n
-real    2m 11.66s		|0m 50.86s
-user    0m 0.00s		|0m 0.00s
-sys     1m 56.20s		|0m 50.80s
-
-With this patch
-MTD_SPI_NOR_USE_VARIABLE_ERASE=n|y		|4K_SECTORS=y
-real    0m 51.68s		|0m 50.85s	|2m 12.89s
-user    0m 0.00s		|0m 0.00s	|0m 0.01s
-sys     0m 46.94s		|0m 50.38s	|2m 12.46s
-
-Signed-off-by: John Thomson <git@johnthomson.fastmail.com.au>
----
-Have not tested on variable erase regions device.
-
-checkpatch does not like the printk(KERN_WARNING
-these should be changed separately beforehand?
-
-Changes RFC -> v1:
-Fix uninitialized variable smatch warning
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/mtd/mtdpart.c       | 52 ++++++++++++++++++++++++++++---------
- drivers/mtd/spi-nor/Kconfig | 10 +++++++
- drivers/mtd/spi-nor/core.c  | 10 +++++--
- include/linux/mtd/mtd.h     |  2 ++
- 4 files changed, 60 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 665fd9020b76..fe7626b5020e 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -38,10 +38,11 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
- 	struct mtd_info *master = mtd_get_master(parent);
- 	int wr_alignment = (parent->flags & MTD_NO_ERASE) ?
- 			   master->writesize : master->erasesize;
-+	int wr_alignment_minor = 0;
- 	u64 parent_size = mtd_is_partition(parent) ?
- 			  parent->part.size : parent->size;
- 	struct mtd_info *child;
--	u32 remainder;
-+	u32 remainder, remainder_minor;
- 	char *name;
- 	u64 tmp;
- 
-@@ -143,6 +144,7 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
- 		int i, max = parent->numeraseregions;
- 		u64 end = child->part.offset + child->part.size;
- 		struct mtd_erase_region_info *regions = parent->eraseregions;
-+		uint32_t erasesize_minor = child->erasesize;
- 
- 		/* Find the first erase regions which is part of this
- 		 * partition. */
-@@ -153,15 +155,24 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
- 		if (i > 0)
- 			i--;
- 
--		/* Pick biggest erasesize */
- 		for (; i < max && regions[i].offset < end; i++) {
-+			/* Pick biggest erasesize */
- 			if (child->erasesize < regions[i].erasesize)
- 				child->erasesize = regions[i].erasesize;
-+			/* Pick smallest non-zero erasesize */
-+			if ((erasesize_minor > regions[i].erasesize) && (regions[i].erasesize > 0))
-+				erasesize_minor = regions[i].erasesize;
- 		}
-+
-+		if (erasesize_minor < child->erasesize)
-+			child->erasesize_minor = erasesize_minor;
-+
- 		BUG_ON(child->erasesize == 0);
- 	} else {
- 		/* Single erase size */
- 		child->erasesize = master->erasesize;
-+		if (master->erasesize_minor)
-+			child->erasesize_minor = master->erasesize_minor;
- 	}
- 
- 	/*
-@@ -169,26 +180,43 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
- 	 * exposes several regions with different erasesize. Adjust
- 	 * wr_alignment accordingly.
- 	 */
--	if (!(child->flags & MTD_NO_ERASE))
-+	if (!(child->flags & MTD_NO_ERASE)) {
- 		wr_alignment = child->erasesize;
-+		if (IS_ENABLED(CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE) && child->erasesize_minor)
-+			wr_alignment_minor = child->erasesize_minor;
-+	}
- 
- 	tmp = mtd_get_master_ofs(child, 0);
- 	remainder = do_div(tmp, wr_alignment);
- 	if ((child->flags & MTD_WRITEABLE) && remainder) {
--		/* Doesn't start on a boundary of major erase size */
--		/* FIXME: Let it be writable if it is on a boundary of
--		 * _minor_ erase size though */
--		child->flags &= ~MTD_WRITEABLE;
--		printk(KERN_WARNING"mtd: partition \"%s\" doesn't start on an erase/write block boundary -- force read-only\n",
--			part->name);
-+		if (wr_alignment_minor) {
-+			tmp = mtd_get_master_ofs(child, 0);
-+			remainder_minor = do_div(tmp, wr_alignment_minor);
-+			if (remainder_minor == 0)
-+				child->erasesize = child->erasesize_minor;
-+		}
-+
-+		if ((!wr_alignment_minor) || (wr_alignment_minor && remainder_minor != 0)) {
-+			child->flags &= ~MTD_WRITEABLE;
-+			printk(KERN_WARNING"mtd: partition \"%s\" doesn't start on an erase/write block boundary -- force read-only\n",
-+				part->name);
-+		}
- 	}
- 
- 	tmp = mtd_get_master_ofs(child, 0) + child->part.size;
- 	remainder = do_div(tmp, wr_alignment);
- 	if ((child->flags & MTD_WRITEABLE) && remainder) {
--		child->flags &= ~MTD_WRITEABLE;
--		printk(KERN_WARNING"mtd: partition \"%s\" doesn't end on an erase/write block -- force read-only\n",
--			part->name);
-+		if (wr_alignment_minor) {
-+			tmp = mtd_get_master_ofs(child, 0) + child->part.size;
-+			remainder_minor = do_div(tmp, wr_alignment_minor);
-+			if (remainder_minor == 0)
-+				child->erasesize = child->erasesize_minor;
-+		}
-+		if ((!wr_alignment_minor) || (wr_alignment_minor && remainder_minor != 0)) {
-+			child->flags &= ~MTD_WRITEABLE;
-+			printk(KERN_WARNING"mtd: partition \"%s\" doesn't end on an erase/write block -- force read-only\n",
-+				part->name);
-+		}
- 	}
- 
- 	child->size = child->part.size;
-diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-index 24cd25de2b8b..09df9f1a8127 100644
---- a/drivers/mtd/spi-nor/Kconfig
-+++ b/drivers/mtd/spi-nor/Kconfig
-@@ -10,6 +10,16 @@ menuconfig MTD_SPI_NOR
- 
- if MTD_SPI_NOR
- 
-+config MTD_SPI_NOR_USE_VARIABLE_ERASE
-+	bool "Disable uniform_erase to allow use of all hardware supported erasesizes"
-+	depends on !MTD_SPI_NOR_USE_4K_SECTORS
-+	default n
-+	help
-+	  Allow mixed use of all hardware supported erasesizes,
-+	  by forcing spi_nor to use the multiple eraseregions code path.
-+	  For example: A 68K erase will use one 64K erase, and one 4K erase
-+	  on supporting hardware.
-+
- config MTD_SPI_NOR_USE_4K_SECTORS
- 	bool "Use small 4096 B erase sectors"
- 	default y
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index bd2c7717eb10..43d9b54e7edd 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -1262,6 +1262,8 @@ static u8 spi_nor_convert_3to4_erase(u8 opcode)
- 
- static bool spi_nor_has_uniform_erase(const struct spi_nor *nor)
- {
-+	if (IS_ENABLED(CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE))
-+		return false;
- 	return !!nor->params->erase_map.uniform_erase_type;
- }
- 
-@@ -2381,6 +2383,7 @@ static int spi_nor_select_erase(struct spi_nor *nor)
- {
- 	struct spi_nor_erase_map *map = &nor->params->erase_map;
- 	const struct spi_nor_erase_type *erase = NULL;
-+	const struct spi_nor_erase_type *erase_minor = NULL;
- 	struct mtd_info *mtd = &nor->mtd;
- 	u32 wanted_size = nor->info->sector_size;
- 	int i;
-@@ -2413,8 +2416,9 @@ static int spi_nor_select_erase(struct spi_nor *nor)
- 	 */
- 	for (i = SNOR_ERASE_TYPE_MAX - 1; i >= 0; i--) {
- 		if (map->erase_type[i].size) {
--			erase = &map->erase_type[i];
--			break;
-+			if (!erase)
-+				erase = &map->erase_type[i];
-+			erase_minor = &map->erase_type[i];
- 		}
- 	}
- 
-@@ -2422,6 +2426,8 @@ static int spi_nor_select_erase(struct spi_nor *nor)
- 		return -EINVAL;
- 
- 	mtd->erasesize = erase->size;
-+	if (erase_minor && erase_minor->size < erase->size)
-+		mtd->erasesize_minor = erase_minor->size;
- 	return 0;
- }
- 
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index a89955f3cbc8..33eafa27da50 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -243,6 +243,8 @@ struct mtd_info {
- 	 * information below if they desire
- 	 */
- 	uint32_t erasesize;
-+	/* "Minor" (smallest) erase size supported by the whole device */
-+	uint32_t erasesize_minor;
- 	/* Minimal writable flash unit size. In case of NOR flash it is 1 (even
- 	 * though individual bits can be cleared), in case of NAND flash it is
- 	 * one NAND page (or half, or one-fourths of it), in case of ECC-ed NOR
--- 
-2.31.1
-
+It isn't strictly required any more.
 
 ______________________________________________________
 Linux MTD discussion mailing list
