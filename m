@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2291C47095
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Jun 2021 08:39:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E464DC47095
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Jun 2021 08:43:22 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 62F2861285
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Jun 2021 08:39:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 62F2861285
+	by mail.kernel.org (Postfix) with ESMTPS id A54CD61375
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Jun 2021 08:43:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A54CD61375
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,21 +23,21 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=z1AQRi1WePva+gkqlBh+/gzwtcPC3W1fy93Rec601QY=; b=SmrlzCRj50TGIo
-	AnGnXg6dlnLBoPqB9c38XmnnScXWhsOMV+qseMXteFBzhXVZmqQZvhU+1gxJsICEOhlj1KiTbWtX4
-	iXuH7VOO5Alq2YYmE6NMiCrYXv7qd1mZxy1agLPW+Dsxq7d/GspQ3x1lRd7dN+MU6lv5KrgS12pzB
-	JgfCzFkNp0eppX7fc0qU4PejE3HZc4MU1y57n3e/u8RFYFQwlLFIF7UeTHO/YGtF88qSzhz7aQr6o
-	68GmJvdmmBral4vVfb7S+7vgTefeqePUEklUtj03gdFiESafbWKpDBpTRyh4blLaikWWzQ7nKB+jR
-	tGEoWbMs3cu3sFd0cWlQ==;
+	List-Owner; bh=4ZTKePukLMS2r2F8a4YlyRGPMUqWxSy11LUcjYZJASc=; b=SdBEj/rmVSd2nB
+	h5EFZuJcS/eWbPiyda09Tbg/nKkbPXt4EQ1kcTB7+/orqwAg8uw2okmq0MkgL+WdZVVsXCPmDSv/E
+	FWF8OoNQJkNMw7FS6ox3+YrJ8vLxJVL5nlzbaiVndtowezn1fPoWrUwprr2Nfi5wgc093gQ0ufTYl
+	BzEe2UOUEz/b2BB7hzsw4NXvAOjsA9O/qZKT/moTjrFAUIBnObTnTCP6gXNmwuR5oVHGfue/8GsHq
+	SFWVOWSE8l/f/qJ2yVaTvdN88g/79VzYca84FSvVItzi1bBEM1eRIUtPBckLAGqQjErklBebRVqdV
+	5bdvlUG3EAo3XB63yDjA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lqtjK-00CPWg-TO; Wed, 09 Jun 2021 08:38:31 +0000
+	id 1lqtnS-00CQUE-JJ; Wed, 09 Jun 2021 08:42:46 +0000
 Received: from relay12.mail.gandi.net ([217.70.178.232])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lqt9p-00CF8X-P4; Wed, 09 Jun 2021 08:01:51 +0000
+ id 1lqt9r-00CF9c-Kc; Wed, 09 Jun 2021 08:01:52 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id AF65420000C;
- Wed,  9 Jun 2021 08:01:46 +0000 (UTC)
+ by relay12.mail.gandi.net (Postfix) with ESMTPSA id 5DE9A20000B;
+ Wed,  9 Jun 2021 08:01:48 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
@@ -52,16 +52,16 @@ Cc: Michal Simek <monstr@monstr.eu>,
  helmut.grohne@intenta.de, Srinivas Goud <sgoud@xilinx.com>,
  Siva Durga Prasad Paladugu <sivadur@xilinx.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v22 15/18] MAINTAINERS: Add PL353 SMC entry
-Date: Wed,  9 Jun 2021 10:01:09 +0200
-Message-Id: <20210609080112.1753221-16-miquel.raynal@bootlin.com>
+Subject: [PATCH v22 16/18] MAINTAINERS: Add PL353 NAND controller entry
+Date: Wed,  9 Jun 2021 10:01:10 +0200
+Message-Id: <20210609080112.1753221-17-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210609080112.1753221-1-miquel.raynal@bootlin.com>
 References: <20210609080112.1753221-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210609_010150_007889_5CFA375E 
-X-CRM114-Status: UNSURE (   7.33  )
+X-CRM114-CacheID: sfid-20210609_010151_868150_8941F867 
+X-CRM114-Status: UNSURE (   7.20  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -87,24 +87,24 @@ Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
  1 file changed, 8 insertions(+)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index bd7aff0c120f..b4315b76645a 100644
+index b4315b76645a..a36fb919e913 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -1452,6 +1452,14 @@ S:	Odd Fixes
  F:	drivers/amba/
  F:	include/linux/amba/bus.h
  
-+ARM PRIMECELL PL35X SMC DRIVER
++ARM PRIMECELL PL35X NAND CONTROLLER DRIVER
 +M:	Miquel Raynal <miquel.raynal@bootlin.com@bootlin.com>
 +M:	Naga Sureshkumar Relli <nagasure@xilinx.com>
-+L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
++L:	linux-mtd@lists.infradead.org
 +S:	Maintained
-+F:	Documentation/devicetree/bindings/mtd/arm,pl353-smc.yaml
-+F:	drivers/memory/pl353-smc.c
++F:	Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
++F:	drivers/mtd/nand/raw/pl35x-nand-controller.c
 +
- ARM PRIMECELL CLCD PL110 DRIVER
- M:	Russell King <linux@armlinux.org.uk>
- S:	Odd Fixes
+ ARM PRIMECELL PL35X SMC DRIVER
+ M:	Miquel Raynal <miquel.raynal@bootlin.com@bootlin.com>
+ M:	Naga Sureshkumar Relli <nagasure@xilinx.com>
 -- 
 2.27.0
 
