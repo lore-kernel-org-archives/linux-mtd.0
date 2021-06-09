@@ -2,97 +2,79 @@ Return-Path: <SRS0=Gl3N=LD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F486C48BCD
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Jun 2021 17:37:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2450CC48BCD
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Jun 2021 18:09:16 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D7C8C61246
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Jun 2021 17:37:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7C8C61246
+	by mail.kernel.org (Postfix) with ESMTPS id D29F761359
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Jun 2021 18:09:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D29F761359
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Nv2wYF6Wbz4vcQtMi7eREL7Fd2FRCBCBQZy2wUhsIP0=; b=Y4Ax4EsUJd/eHQ
-	zSUbXT44rjtJpI3RnIgTlEdDhmnuPi6TBAQmHb3she+l/VftlbPa9n65Avl9iyZZ2D+85YsM+XREP
-	ClKLpAMnqeMyR0uQxEj0Ou02BX507jW8PawualEB02uFb1427/YNKTnYNSWaRwBWtxA2UHO2K9QcF
-	JO3OXZHVg9wDTYf9Z2Klb9/tmLsCgnGQvMkqrrFYan0mXlT+e/IopP5SELvaPHF1tatXxV2RRPGdw
-	13I8qpC3ztukuBgSKdKrJB7LB12dQQuG65yMoCJPdnKw2IFXkBka0ZOyx+sXMYQ5cTdyqy42m1qdN
-	2qrcuaN2HiHeV0VJDDeA==;
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=02P+hXlk48ztz0m+Il7mn8RQ79IFOU8UhAmbGvGOK84=; b=X3l
+	wL/HQDRDqB2MQXMChYHcm6z4DIH2FneL5FIpXa35VyNUqQQGPTJZ1HZizhCm6P4cWitR2x5lXc8D8
+	yA20LK7rmR6NP5SjYgKQwKhTcXY8P0vyF63Mr7i2tnlDPkkStqhV8dmOo/SzpEAm3tfltuePruJMD
+	AoF/tWNBHgZFY00tCXAHS8EaBRqHx6yGZwf5b4A8REgrXMmY3VqNkB+XLX2/rBXc3eeJEh/fUkOqC
+	ALxG4rjWg6rDJFqn4ShDqYV9388A5c1m6BHwFBXItUOPsx1T/iGS4v+hXaKD/oUh5lgsBn98bpIt3
+	QgKxL0hbW7smTbO0cz9GexRjN+8Wcjg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lr285-00FLOJ-Dg; Wed, 09 Jun 2021 17:36:37 +0000
-Received: from mail-ot1-f50.google.com ([209.85.210.50])
+	id 1lr2cy-00FW5K-Q7; Wed, 09 Jun 2021 18:08:32 +0000
+Received: from mail-ej1-x631.google.com ([2a00:1450:4864:20::631])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lr1X5-00F7Bk-BI; Wed, 09 Jun 2021 16:58:27 +0000
-Received: by mail-ot1-f50.google.com with SMTP id
- 66-20020a9d02c80000b02903615edf7c1aso24541025otl.13; 
- Wed, 09 Jun 2021 09:58:22 -0700 (PDT)
+ id 1lr2cu-00FW4o-OY
+ for linux-mtd@lists.infradead.org; Wed, 09 Jun 2021 18:08:30 +0000
+Received: by mail-ej1-x631.google.com with SMTP id og14so34475308ejc.5
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Jun 2021 11:08:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=6YQqLx0AmKWj7K8MoXd/nRVeCxVpUG+Y8uZQpig/8go=;
- b=dIq0PlxV7oYQfyEJjUI0DVxeIa0Yw2iRSoOpuhpxjDOOIuBnIEokvlDmF8CldsBV6P
- zm3TIFn6KTMeN8YQ4joZ6qN81H9rKkB8MDt8QkECi+djLb5YDYoUDqmKQdSbXS0c4I5+
- hWyZvzU+FE7JqFJ46nbG+VIG65OubqGxIWJBlSd/KNWbxd5vRaNxkokObsn5wsS1tiK1
- GMWOmvaFFVkgGRtgTeazdfdlCU5CsXat+NNG1CfDqi1i2+Vke6VhaefW3r0rWa6v8VJy
- jkhdRsyTh8AefSwMJL2yMPxIxXzRJ6d5lWRRXbkO4tPOg5yFIPG/q0qZ4U8f1GPbXyEk
- UWXw==
+ h=mime-version:from:date:message-id:subject:to
+ :content-transfer-encoding;
+ bh=FjY0ZveY0BlQM+MQuFHufo1r7Pl0Y1a4o9Zmnw9z0Xw=;
+ b=ji9KxGGVUCLhYDqEVjkpmoH9HTCI1SYGab9CJZVynhXoPmnUkh9+CwHABDq3zg7PU/
+ bRaJMYpalcvBPfkeGWD51+P79M76SsL2kYanI+I6Orlj1zrKuzfH7KIf+L237+/AJTEk
+ ffNulI9MK66r1ejhCv9Sr3cOWOJzVE1zjcezhg8gMWLBNWuj3K76kDwt5dZdoKzhxWu0
+ gJK9LNWPBVW7ilJ4tVDv7Q9LIr2umkNKN57jEfsOX2eFIQi6mVNNVJ/3IEXWdMDqSexC
+ FeAwHF4cKOJ4Eu8umtTF20VWEjmHWjpSrWJ+lkBJD++Rh3JS5ERlWuHMWuE/bY+nUh0k
+ W9dQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=6YQqLx0AmKWj7K8MoXd/nRVeCxVpUG+Y8uZQpig/8go=;
- b=YM6bkGvtQGN5J6IC+oEdqvBFwQLrTX9GvOcqAmGcrrnbOlkHXkIWtAjnPN/y0Qk59C
- q5BEkinEKbq73BYCfM416/rDWVVX4xJyThpUfA0gmo8THdpqzhHfK5AaW57e7C83xoWW
- 09E+c1aq72Qxao2FnsAb2F+zw8LnTmSRuFrOsiq+HL8MGLFdZldMyJEZTgi08QwlQF70
- /9wTqmRKJhuFIjUVrT0jWdc84cxoqIGGVYsIJa4x6l2bQEkIZFsFdhA0n2u2tklV/v7d
- 8VqXm56DaaDEwxdmNYA3Ph7dfLEQ7E5LhLiIu2hlmeHvH5LuPjMCT1Mev9JOA2RCkr6J
- Tw+A==
-X-Gm-Message-State: AOAM531rwqh61JdTY8GyWpeEq8QLP1o23svJXsLg4ZzFUWak43SIRHMr
- F4Gs4AYTkIJpQDiCCZYR0+E=
-X-Google-Smtp-Source: ABdhPJwp1DE7VY9E3hRyiE5XvOpUTiNc1AAmFZCHMXRS4z8dE8Vmz5xRo2pmxF1EWSIBdcL3VVjzaQ==
-X-Received: by 2002:a9d:5e8c:: with SMTP id f12mr346795otl.18.1623257842042;
- Wed, 09 Jun 2021 09:57:22 -0700 (PDT)
-Received: from wintermute.localdomain (cpe-76-183-134-35.tx.res.rr.com.
- [76.183.134.35])
- by smtp.gmail.com with ESMTPSA id s2sm50377oom.17.2021.06.09.09.57.20
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 09 Jun 2021 09:57:21 -0700 (PDT)
-Date: Wed, 9 Jun 2021 11:57:20 -0500
-From: Chris Morgan <macroalpha82@gmail.com>
-To: Jon Lin <jon.lin@rock-chips.com>
-Cc: linux-spi@vger.kernel.org, broonie@kernel.org, robh+dt@kernel.org,
- heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
- yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
- linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
- p.yadav@ti.com, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Chris Morgan <macromorgan@hotmail.com>
-Subject: Re: [PATCH v6 2/8] spi: rockchip-sfc: add rockchip serial flash
- controller
-Message-ID: <20210609165720.GA24790@wintermute.localdomain>
-References: <20210608022644.21074-1-jon.lin@rock-chips.com>
- <20210608022644.21074-3-jon.lin@rock-chips.com>
- <20210609023619.GA1191@wintermute.localdomain>
- <3e5f3d37-2810-4585-1513-3e8588637d77@rock-chips.com>
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+ :content-transfer-encoding;
+ bh=FjY0ZveY0BlQM+MQuFHufo1r7Pl0Y1a4o9Zmnw9z0Xw=;
+ b=sDllVEtks83b5UH0lcyDprSIj2i3Ya5cydBYuEyZcYGG3+Wgdy8PcFHcmZc1rEP+Ee
+ Nlva9ffeJrR0bcPoCD062wQi/CqhgNDPCnq9Umu9Pup3wDmP4T2IgLTry9IDEz1XKKLY
+ 3HeT6msKt7VE+T4SIDbULn77Pl8yIOEKoqPmI7M/GD4eCl48jLg+79Hyg4jxfJnBU3fi
+ 6wBtDY6yWHmHNLgEIBb9h0hZfvIaKh9IuI8fS55Nz9F5+/J+iAr1y1jvs4q5IaI4LoVD
+ 8wwjp2O/w993lbFAwhPsMyCl4IrU5YwDcMSx9l9rHRiGkiVeWptERD+vpojfTk/bgRe1
+ sJaA==
+X-Gm-Message-State: AOAM533JpXxyp399QkNynNxEQaT/nhnge3hCWBqZ6eziu+Q9EeF7ESCe
+ anKlX90UnYa/iHd5D2F8RzmD+rsbHaBjefpJ5Yk=
+X-Google-Smtp-Source: ABdhPJy8xXTJdet5a08AqT0UOBYU1szH9dLaCcYWtJVJoZQrmczsiIv5LAJW3bQomOYrGwaYIj0edeoHvAC13Ju3tG8=
+X-Received: by 2002:a17:906:a0d3:: with SMTP id
+ bh19mr1050997ejb.205.1623262105735; 
+ Wed, 09 Jun 2021 11:08:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <3e5f3d37-2810-4585-1513-3e8588637d77@rock-chips.com>
+From: Pintu Agarwal <pintu.ping@gmail.com>
+Date: Wed, 9 Jun 2021 23:38:14 +0530
+Message-ID: <CAOuPNLiRDZ9M4n3uh=i6FpHXoVEWMHpt0At8YaydrOM=LvSvdg@mail.gmail.com>
+Subject: qemu: arm: mounting ubifs using nandsim on busybox
+To: open list <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org, 
+ linux-fsdevel@vger.kernel.org, miquel.raynal@bootlin.com, richard@nod.at
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210609_095823_582710_7C79B2B4 
-X-CRM114-Status: GOOD (  61.36  )
+X-CRM114-CacheID: sfid-20210609_110828_835287_A19022B7 
+X-CRM114-Status: GOOD (  24.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,872 +86,225 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jun 09, 2021 at 09:48:50PM +0800, Jon Lin wrote:
-> 
-> On 6/9/21 10:36 AM, Chris Morgan wrote:
-> > On Tue, Jun 08, 2021 at 10:26:38AM +0800, Jon Lin wrote:
-> > > From: Chris Morgan <macromorgan@hotmail.com>
-> > > 
-> > > Add the rockchip serial flash controller (SFC) driver.
-> > > 
-> > > Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
-> > > Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
-> > I think I hit "reply" earlier when I meant to hit "reply-all". Whoops.
-> > 
-> > I wanted to say that for now this driver is not working for me on the
-> > v3 hardware. There appears to be something wrong with alternating
-> > between page programs and erase. I can consistently reproduce this by
-> > writing a 4MB image of random data to my SPI flash chip at offset
-> > c00000 using dd to mtdblock0. I've dumped the contents of what is
-> > written to the controller and it appears at some point it goes from
-> > doing a page program (02) to a dual io read (bb) to a sector erase
-> > (20), then it repeatedly reads the status register (05) and I assume
-> > the register never changes. As a result it just keeps looping over
-> > the status register then eventually times out. I'm still debugging
-> > to try and figure out exactly what is going on though.
-> > 
-> > I also noticed that reading does not work consistently using dd
-> > from the mtd0 device, however I have a proposed fix for that which
-> > I list below at the appropriate section.
-> > 
-> Can you enable dev_dbg in rockchip_sfc_xfer_setup, then send me log.
-
-I can confirm that on the v7 patch I still get some "weirdness" when
-I use mtdblock, but when I use flashrom things work entirely as
-expected. I will still send you a log, but at this point I wonder if
-it's related to an mtdblock issue rather than an issue with this
-driver. In retrospect I don't recall testing things this extensively
-earlier.
-
-You can reproduce the issue by doing the following:
-
-Create a random 4MB file (dd if=/dev/urandom of=rand.img bs=4M count=1)
-
-Write the 4MB random file to the device using MTD Block drivers
-(dd if=rand.img of=/dev/mtdblock0 bs=4096 seek=3072)
-
-Read back the data (dd if=/dev/mtd0 of=rand1.img bs=4096 skip=3072)
-
-Compare checksums (md5sum *.img)
-When I do this I get different checksums for the random files. However
-when I use flashrom to write instead of MTD Block, it works.
-
-Read the ROM - I can confirm after extensive testing reads seem to work
-just fine (dd if=/dev/mtd0 of=rom.img bs=8192)
-
-Copy the random data to the image file
-(dd if=rand.img of=rom.img bs=4096 seek=3072)
-
-Flash the file with flashrom (flashrom -p linux_mtd -w rom.img)
-
-Read back the random data
-(dd if=/dev/mtd0 of=rand1.img bs=4096 skip=3072)
-
-Compare checksums (md5sum *.img)
-At this point the rand.img and rand1.img files have identical
-checksums.
-
-
-As for testing the reading bugs I found on v6 and below, it was a
-matter of reading with dd using a block size bigger than the max_iosize
-value, but with the addition of the adjust_op_size that seems to be
-resolved now completely.
-
-Test case:
-Read flash image with varying block sizes
-(dd if=/dev/mtd0 of=test1.img bs=4096)
-(dd if=/dev/mtd0 of=test2.img bs=8192)
-(dd if=/dev/mtd0 of=test3.img bs=16384)
-
-Compare checksums (md5sum *.img)
-
-Prior to v7 the checksum for test3.img would be different than the
-other two. v7 now returns the same checksum for all 3 files.
-
-> 
-> I successfully mount and test spinor jffs2 to confirm read/write/erase work
-> work. I'll try more cases further.
-> 
-> > > ---
-> > > 
-> > > Changes in v6: None
-> > > Changes in v5: None
-> > > Changes in v4: None
-> > > Changes in v3: None
-> > > Changes in v2: None
-> > > Changes in v1: None
-> > > 
-> > >   drivers/spi/Kconfig            |   9 +
-> > >   drivers/spi/Makefile           |   1 +
-> > >   drivers/spi/spi-rockchip-sfc.c | 660 +++++++++++++++++++++++++++++++++
-> > >   3 files changed, 670 insertions(+)
-> > >   create mode 100644 drivers/spi/spi-rockchip-sfc.c
-> > > 
-> > > diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-> > > index e71a4c514f7b..d89e5f3c9107 100644
-> > > --- a/drivers/spi/Kconfig
-> > > +++ b/drivers/spi/Kconfig
-> > > @@ -658,6 +658,15 @@ config SPI_ROCKCHIP
-> > >   	  The main usecase of this controller is to use spi flash as boot
-> > >   	  device.
-> > > +config SPI_ROCKCHIP_SFC
-> > > +	tristate "Rockchip Serial Flash Controller (SFC)"
-> > > +	depends on ARCH_ROCKCHIP || COMPILE_TEST
-> > > +	depends on HAS_IOMEM && HAS_DMA
-> > > +	help
-> > > +	  This enables support for Rockchip serial flash controller. This
-> > > +	  is a specialized controller used to access SPI flash on some
-> > > +	  Rockchip SOCs.
-> > > +
-> > >   config SPI_RB4XX
-> > >   	tristate "Mikrotik RB4XX SPI master"
-> > >   	depends on SPI_MASTER && ATH79
-> > > diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
-> > > index 13e54c45e9df..699db95c8441 100644
-> > > --- a/drivers/spi/Makefile
-> > > +++ b/drivers/spi/Makefile
-> > > @@ -95,6 +95,7 @@ obj-$(CONFIG_SPI_QCOM_GENI)		+= spi-geni-qcom.o
-> > >   obj-$(CONFIG_SPI_QCOM_QSPI)		+= spi-qcom-qspi.o
-> > >   obj-$(CONFIG_SPI_QUP)			+= spi-qup.o
-> > >   obj-$(CONFIG_SPI_ROCKCHIP)		+= spi-rockchip.o
-> > > +obj-$(CONFIG_SPI_ROCKCHIP_SFC)		+= spi-rockchip-sfc.o
-> > >   obj-$(CONFIG_SPI_RB4XX)			+= spi-rb4xx.o
-> > >   obj-$(CONFIG_MACH_REALTEK_RTL)		+= spi-realtek-rtl.o
-> > >   obj-$(CONFIG_SPI_RPCIF)			+= spi-rpc-if.o
-> > > diff --git a/drivers/spi/spi-rockchip-sfc.c b/drivers/spi/spi-rockchip-sfc.c
-> > > new file mode 100644
-> > > index 000000000000..ec25ad278096
-> > > --- /dev/null
-> > > +++ b/drivers/spi/spi-rockchip-sfc.c
-> > > @@ -0,0 +1,660 @@
-> > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > +/*
-> > > + * Rockchip Serial Flash Controller Driver
-> > > + *
-> > > + * Copyright (c) 2017-2021, Rockchip Inc.
-> > > + * Author: Shawn Lin <shawn.lin@rock-chips.com>
-> > > + *	   Chris Morgan <macroalpha82@gmail.com>
-> > > + *	   Jon Lin <Jon.lin@rock-chips.com>
-> > > + */
-> > > +
-> > > +#include <linux/bitops.h>
-> > > +#include <linux/clk.h>
-> > > +#include <linux/completion.h>
-> > > +#include <linux/dma-mapping.h>
-> > > +#include <linux/iopoll.h>
-> > > +#include <linux/mm.h>
-> > > +#include <linux/module.h>
-> > > +#include <linux/of.h>
-> > > +#include <linux/platform_device.h>
-> > > +#include <linux/slab.h>
-> > > +#include <linux/interrupt.h>
-> > > +#include <linux/spi/spi-mem.h>
-> > > +
-> > > +/* System control */
-> > > +#define SFC_CTRL			0x0
-> > > +#define  SFC_CTRL_PHASE_SEL_NEGETIVE	BIT(1)
-> > > +#define  SFC_CTRL_CMD_BITS_SHIFT	8
-> > > +#define  SFC_CTRL_ADDR_BITS_SHIFT	10
-> > > +#define  SFC_CTRL_DATA_BITS_SHIFT	12
-> > > +
-> > > +/* Interrupt mask */
-> > > +#define SFC_IMR				0x4
-> > > +#define  SFC_IMR_RX_FULL		BIT(0)
-> > > +#define  SFC_IMR_RX_UFLOW		BIT(1)
-> > > +#define  SFC_IMR_TX_OFLOW		BIT(2)
-> > > +#define  SFC_IMR_TX_EMPTY		BIT(3)
-> > > +#define  SFC_IMR_TRAN_FINISH		BIT(4)
-> > > +#define  SFC_IMR_BUS_ERR		BIT(5)
-> > > +#define  SFC_IMR_NSPI_ERR		BIT(6)
-> > > +#define  SFC_IMR_DMA			BIT(7)
-> > > +
-> > > +/* Interrupt clear */
-> > > +#define SFC_ICLR			0x8
-> > > +#define  SFC_ICLR_RX_FULL		BIT(0)
-> > > +#define  SFC_ICLR_RX_UFLOW		BIT(1)
-> > > +#define  SFC_ICLR_TX_OFLOW		BIT(2)
-> > > +#define  SFC_ICLR_TX_EMPTY		BIT(3)
-> > > +#define  SFC_ICLR_TRAN_FINISH		BIT(4)
-> > > +#define  SFC_ICLR_BUS_ERR		BIT(5)
-> > > +#define  SFC_ICLR_NSPI_ERR		BIT(6)
-> > > +#define  SFC_ICLR_DMA			BIT(7)
-> > > +
-> > > +/* FIFO threshold level */
-> > > +#define SFC_FTLR			0xc
-> > > +#define  SFC_FTLR_TX_SHIFT		0
-> > > +#define  SFC_FTLR_TX_MASK		0x1f
-> > > +#define  SFC_FTLR_RX_SHIFT		8
-> > > +#define  SFC_FTLR_RX_MASK		0x1f
-> > > +
-> > > +/* Reset FSM and FIFO */
-> > > +#define SFC_RCVR			0x10
-> > > +#define  SFC_RCVR_RESET			BIT(0)
-> > > +
-> > > +/* Enhanced mode */
-> > > +#define SFC_AX				0x14
-> > > +
-> > > +/* Address Bit number */
-> > > +#define SFC_ABIT			0x18
-> > > +
-> > > +/* Interrupt status */
-> > > +#define SFC_ISR				0x1c
-> > > +#define  SFC_ISR_RX_FULL_SHIFT		BIT(0)
-> > > +#define  SFC_ISR_RX_UFLOW_SHIFT		BIT(1)
-> > > +#define  SFC_ISR_TX_OFLOW_SHIFT		BIT(2)
-> > > +#define  SFC_ISR_TX_EMPTY_SHIFT		BIT(3)
-> > > +#define  SFC_ISR_TX_FINISH_SHIFT	BIT(4)
-> > > +#define  SFC_ISR_BUS_ERR_SHIFT		BIT(5)
-> > > +#define  SFC_ISR_NSPI_ERR_SHIFT		BIT(6)
-> > > +#define  SFC_ISR_DMA_SHIFT		BIT(7)
-> > > +
-> > > +/* FIFO status */
-> > > +#define SFC_FSR				0x20
-> > > +#define  SFC_FSR_TX_IS_FULL		BIT(0)
-> > > +#define  SFC_FSR_TX_IS_EMPTY		BIT(1)
-> > > +#define  SFC_FSR_RX_IS_EMPTY		BIT(2)
-> > > +#define  SFC_FSR_RX_IS_FULL		BIT(3)
-> > > +#define  SFC_FSR_TXLV_MASK		GENMASK(12, 8)
-> > > +#define  SFC_FSR_TXLV_SHIFT		8
-> > > +#define  SFC_FSR_RXLV_MASK		GENMASK(20, 16)
-> > > +#define  SFC_FSR_RXLV_SHIFT		16
-> > > +
-> > > +/* FSM status */
-> > > +#define SFC_SR				0x24
-> > > +#define  SFC_SR_IS_IDLE			0x0
-> > > +#define  SFC_SR_IS_BUSY			0x1
-> > > +
-> > > +/* Raw interrupt status */
-> > > +#define SFC_RISR			0x28
-> > > +#define  SFC_RISR_RX_FULL		BIT(0)
-> > > +#define  SFC_RISR_RX_UNDERFLOW		BIT(1)
-> > > +#define  SFC_RISR_TX_OVERFLOW		BIT(2)
-> > > +#define  SFC_RISR_TX_EMPTY		BIT(3)
-> > > +#define  SFC_RISR_TRAN_FINISH		BIT(4)
-> > > +#define  SFC_RISR_BUS_ERR		BIT(5)
-> > > +#define  SFC_RISR_NSPI_ERR		BIT(6)
-> > > +#define  SFC_RISR_DMA			BIT(7)
-> > > +
-> > > +/* Version */
-> > > +#define SFC_VER				0x2C
-> > > +#define  SFC_VER_3			0x3
-> > > +#define  SFC_VER_4			0x4
-> > > +#define  SFC_VER_5			0x5
-> > > +
-> > > +/* Master trigger */
-> > > +#define SFC_DMA_TRIGGER			0x80
-> > > +
-> > > +/* Src or Dst addr for master */
-> > > +#define SFC_DMA_ADDR			0x84
-> > > +
-> > > +/* Length control register extension 32GB */
-> > > +#define SFC_LEN_CTRL			0x88
-> > > +#define SFC_LEN_CTRL_TRB_SEL		1
-> > > +#define SFC_LEN_EXT			0x8C
-> > > +
-> > > +/* Command */
-> > > +#define SFC_CMD				0x100
-> > > +#define  SFC_CMD_IDX_SHIFT		0
-> > > +#define  SFC_CMD_DUMMY_SHIFT		8
-> > > +#define  SFC_CMD_DIR_SHIFT		12
-> > > +#define  SFC_CMD_DIR_RD			0
-> > > +#define  SFC_CMD_DIR_WR			1
-> > > +#define  SFC_CMD_ADDR_SHIFT		14
-> > > +#define  SFC_CMD_ADDR_0BITS		0
-> > > +#define  SFC_CMD_ADDR_24BITS		1
-> > > +#define  SFC_CMD_ADDR_32BITS		2
-> > > +#define  SFC_CMD_ADDR_XBITS		3
-> > > +#define  SFC_CMD_TRAN_BYTES_SHIFT	16
-> > > +#define  SFC_CMD_CS_SHIFT		30
-> > > +
-> > > +/* Address */
-> > > +#define SFC_ADDR			0x104
-> > > +
-> > > +/* Data */
-> > > +#define SFC_DATA			0x108
-> > > +
-> > > +/* The controller and documentation reports that it supports up to 4 CS
-> > > + * devices (0-3), however I have only been able to test a single CS (CS 0)
-> > > + * due to the configuration of my device.
-> > > + */
-> > > +#define SFC_MAX_CHIPSELECT_NUM		4
-> > > +
-> > > +/* The SFC can transfer max 16KB - 1 at one time
-> > > + * we set it to 15.5KB here for alignment.
-> > > + */
-> > > +#define SFC_MAX_IOSIZE_VER3		(512 * 31)
-> > > +
-> > > +#define SFC_MAX_IOSIZE_VER4		(0xFFFFFFFF)
-> > > +
-> > > +/* DMA is only enabled for large data transmission */
-> > > +#define SFC_DMA_TRANS_THRETHOLD		(0x40)
-> > > +
-> > > +/* Maximum clock values from datasheet suggest keeping clock value under
-> > > + * 150MHz. No minimum or average value is suggested, but the U-boot BSP driver
-> > > + * has a minimum of 10MHz and a default of 80MHz which seems reasonable.
-> > > + */
-> > > +#define SFC_MIN_SPEED_HZ		(10 * 1000 * 1000)
-> > > +#define SFC_DEFAULT_SPEED_HZ		(80 * 1000 * 1000)
-> > > +#define SFC_MAX_SPEED_HZ		(150 * 1000 * 1000)
-> > > +
-> > > +struct rockchip_sfc {
-> > > +	struct device *dev;
-> > > +	void __iomem *regbase;
-> > > +	struct clk *hclk;
-> > > +	struct clk *clk;
-> > > +	u32 frequency;
-> > > +	/* virtual mapped addr for dma_buffer */
-> > > +	void *buffer;
-> > > +	dma_addr_t dma_buffer;
-> > > +	struct completion cp;
-> > > +	bool use_dma;
-> > > +	u32 max_iosize;
-> > > +};
-> > > +
-> > > +static int rockchip_sfc_reset(struct rockchip_sfc *sfc)
-> > > +{
-> > > +	int err;
-> > > +	u32 status;
-> > > +
-> > > +	writel_relaxed(SFC_RCVR_RESET, sfc->regbase + SFC_RCVR);
-> > > +
-> > > +	err = readl_poll_timeout(sfc->regbase + SFC_RCVR, status,
-> > > +				 !(status & SFC_RCVR_RESET), 20,
-> > > +				 jiffies_to_usecs(HZ));
-> > > +	if (err)
-> > > +		dev_err(sfc->dev, "SFC reset never finished\n");
-> > > +
-> > > +	/* Still need to clear the masked interrupt from RISR */
-> > > +	writel_relaxed(0xFFFFFFFF, sfc->regbase + SFC_ICLR);
-> > > +
-> > > +	dev_dbg(sfc->dev, "reset\n");
-> > > +
-> > > +	return err;
-> > > +}
-> > > +
-> > > +static u16 rockchip_sfc_get_version(struct rockchip_sfc *sfc)
-> > > +{
-> > > +	return  (u16)(readl(sfc->regbase + SFC_VER) & 0xffff);
-> > > +}
-> > > +
-> > > +static u32 rockchip_sfc_get_max_iosize(struct rockchip_sfc *sfc)
-> > > +{
-> > > +	if (rockchip_sfc_get_version(sfc) >= SFC_VER_4)
-> > > +		return SFC_MAX_IOSIZE_VER4;
-> > > +	else
-> > > +		return SFC_MAX_IOSIZE_VER3;
-> > > +}
-> > > +
-> > > +static int rockchip_sfc_init(struct rockchip_sfc *sfc)
-> > > +{
-> > > +	writel(0, sfc->regbase + SFC_CTRL);
-> > > +	if (rockchip_sfc_get_version(sfc) >= SFC_VER_4)
-> > > +		writel(SFC_LEN_CTRL_TRB_SEL, sfc->regbase + SFC_LEN_CTRL);
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static inline int rockchip_sfc_get_fifo_level(struct rockchip_sfc *sfc, int wr)
-> > > +{
-> > > +	u32 fsr = readl_relaxed(sfc->regbase + SFC_FSR);
-> > > +	int level;
-> > > +
-> > > +	if (wr)
-> > > +		level = (fsr & SFC_FSR_TXLV_MASK) >> SFC_FSR_TXLV_SHIFT;
-> > > +	else
-> > > +		level = (fsr & SFC_FSR_RXLV_MASK) >> SFC_FSR_RXLV_SHIFT;
-> > > +
-> > > +	return level;
-> > > +}
-> > > +
-> > > +static int rockchip_sfc_wait_fifo_ready(struct rockchip_sfc *sfc, int wr, u32 timeout)
-> > > +{
-> > > +	unsigned long deadline = jiffies + timeout;
-> > > +	int level;
-> > > +
-> > > +	while (!(level = rockchip_sfc_get_fifo_level(sfc, wr))) {
-> > > +		if (time_after_eq(jiffies, deadline)) {
-> > > +			dev_warn(sfc->dev, "%s fifo timeout\n", wr ? "write" : "read");
-> > > +			return -ETIMEDOUT;
-> > > +		}
-> > > +		udelay(1);
-> > > +	}
-> > > +
-> > > +	return level;
-> > > +}
-> > > +
-> > > +static int rockchip_sfc_xfer_setup(struct rockchip_sfc *sfc,
-> > > +				   struct spi_mem *mem,
-> > > +				   const struct spi_mem_op *op,
-> > > +				   u32 len)
-> > > +{
-> > > +	u32 ctrl = 0, cmd = 0;
-> > > +
-> > > +	/* set CMD */
-> > > +	cmd = op->cmd.opcode;
-> > > +	ctrl |= ((op->cmd.buswidth >> 1) << SFC_CTRL_CMD_BITS_SHIFT);
-> > > +
-> > > +	/* set ADDR */
-> > > +	if (op->addr.nbytes) {
-> > > +		if (op->addr.nbytes == 4) {
-> > > +			cmd |= SFC_CMD_ADDR_32BITS << SFC_CMD_ADDR_SHIFT;
-> > > +		} else if (op->addr.nbytes == 3) {
-> > > +			cmd |= SFC_CMD_ADDR_24BITS << SFC_CMD_ADDR_SHIFT;
-> > > +		} else {
-> > > +			cmd |= SFC_CMD_ADDR_XBITS << SFC_CMD_ADDR_SHIFT;
-> > > +			writel_relaxed(op->addr.nbytes * 8 - 1, sfc->regbase + SFC_ABIT);
-> > > +		}
-> > > +
-> > > +		ctrl |= ((op->addr.buswidth >> 1) << SFC_CTRL_ADDR_BITS_SHIFT);
-> > > +	}
-> > > +
-> > > +	/* set DUMMY */
-> > > +	if (op->dummy.nbytes) {
-> > > +		if (op->dummy.buswidth == 4)
-> > > +			cmd |= op->dummy.nbytes * 2 << SFC_CMD_DUMMY_SHIFT;
-> > > +		else if (op->dummy.buswidth == 2)
-> > > +			cmd |= op->dummy.nbytes * 4 << SFC_CMD_DUMMY_SHIFT;
-> > > +		else
-> > > +			cmd |= op->dummy.nbytes * 8 << SFC_CMD_DUMMY_SHIFT;
-> > > +	}
-> > > +
-> > I have no experience optimizing code or anything, but would it help
-> > here to read the output of rockchip_sfc_get_version() to a variable
-> > in the driver data, and then check that each time we hit this?
-> > I don't know if there is any real-world difference in reading a
-> > variable versus reading a register, so I'm just asking. It's not like
-> > the sfc_version will change once the device is probed. :-)
-> 
-> done.
-> 
-> > > +	/* set DATA */
-> > > +	if (rockchip_sfc_get_version(sfc) >= SFC_VER_4) /* Clear it if no data to transfer */
-> > > +		writel(len, sfc->regbase + SFC_LEN_EXT);
-> > > +	else
-> > > +		cmd |= len << SFC_CMD_TRAN_BYTES_SHIFT;
-> > > +	if (len) {
-> > > +		if (op->data.dir == SPI_MEM_DATA_OUT)
-> > > +			cmd |= SFC_CMD_DIR_WR << SFC_CMD_DIR_SHIFT;
-> > > +
-> > > +		ctrl |= ((op->data.buswidth >> 1) << SFC_CTRL_DATA_BITS_SHIFT);
-> > > +	}
-> > > +	if (!len && op->addr.nbytes)
-> > > +		cmd |= SFC_CMD_DIR_WR << SFC_CMD_DIR_SHIFT;
-> > > +
-> > > +	/* set the Controller */
-> > > +	ctrl |= SFC_CTRL_PHASE_SEL_NEGETIVE;
-> > > +	cmd |= mem->spi->chip_select << SFC_CMD_CS_SHIFT;
-> > > +
-> > > +	dev_dbg(sfc->dev, "addr.nbytes=%x(x%d) dummy.nbytes=%x(x%d)\n",
-> > > +		op->addr.nbytes, op->addr.buswidth,
-> > > +		op->dummy.nbytes, op->dummy.buswidth);
-> > > +	dev_dbg(sfc->dev, "ctrl=%x cmd=%x addr=%llx len=%x\n",
-> > > +		ctrl, cmd, op->addr.val, len);
-> > > +
-> > > +	writel(ctrl, sfc->regbase + SFC_CTRL);
-> > > +	writel(cmd, sfc->regbase + SFC_CMD);
-> > > +	if (op->addr.nbytes)
-> > > +		writel(op->addr.val, sfc->regbase + SFC_ADDR);
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static int rockchip_sfc_write_fifo(struct rockchip_sfc *sfc, const u8 *buf, int len)
-> > > +{
-> > > +	u8 bytes = len & 0x3;
-> > > +	u32 dwords;
-> > > +	int tx_level;
-> > > +	u32 write_words;
-> > > +	u32 tmp = 0;
-> > > +
-> > > +	dwords = len >> 2;
-> > > +	while (dwords) {
-> > > +		tx_level = rockchip_sfc_wait_fifo_ready(sfc, SFC_CMD_DIR_WR, HZ);
-> > > +		if (tx_level < 0)
-> > > +			return tx_level;
-> > > +		write_words = min_t(u32, tx_level, dwords);
-> > > +		iowrite32_rep(sfc->regbase + SFC_DATA, buf, write_words);
-> > > +		buf += write_words << 2;
-> > > +		dwords -= write_words;
-> > > +	}
-> > > +
-> > > +	/* write the rest non word aligned bytes */
-> > > +	if (bytes) {
-> > > +		tx_level = rockchip_sfc_wait_fifo_ready(sfc, SFC_CMD_DIR_WR, HZ);
-> > > +		if (tx_level < 0)
-> > > +			return tx_level;
-> > > +		memcpy(&tmp, buf, bytes);
-> > > +		writel(tmp, sfc->regbase + SFC_DATA);
-> > > +	}
-> > > +
-> > > +	return len;
-> > > +}
-> > > +
-> > > +static int rockchip_sfc_read_fifo(struct rockchip_sfc *sfc, u8 *buf, int len)
-> > > +{
-> > > +	u8 bytes = len & 0x3;
-> > > +	u32 dwords;
-> > > +	u8 read_words;
-> > > +	int rx_level;
-> > > +	int tmp;
-> > > +
-> > > +	/* word aligned access only */
-> > > +	dwords = len >> 2;
-> > > +	while (dwords) {
-> > > +		rx_level = rockchip_sfc_wait_fifo_ready(sfc, SFC_CMD_DIR_RD, HZ);
-> > > +		if (rx_level < 0)
-> > > +			return rx_level;
-> > > +		read_words = min_t(u32, rx_level, dwords);
-> > > +		ioread32_rep(sfc->regbase + SFC_DATA, buf, read_words);
-> > > +		buf += read_words << 2;
-> > > +		dwords -= read_words;
-> > > +	}
-> > > +
-> > > +	/* read the rest non word aligned bytes */
-> > > +	if (bytes) {
-> > > +		rx_level = rockchip_sfc_wait_fifo_ready(sfc, SFC_CMD_DIR_RD, HZ);
-> > > +		if (rx_level < 0)
-> > > +			return rx_level;
-> > > +		tmp = readl_relaxed(sfc->regbase + SFC_DATA);
-> > > +		memcpy(buf, &tmp, bytes);
-> > > +	}
-> > > +
-> > > +	return len;
-> > > +}
-> > > +
-> > > +static int rockchip_sfc_fifo_transfer_dma(struct rockchip_sfc *sfc, dma_addr_t dma_buf, size_t len)
-> > > +{
-> > > +	u32 reg;
-> > > +	int err = 0;
-> > > +
-> > > +	init_completion(&sfc->cp);
-> > > +
-> > > +	writel(0xFFFFFFFF, sfc->regbase + SFC_ICLR);
-> > > +
-> > > +	/* Enable transfer complete interrupt */
-> > > +	reg = readl(sfc->regbase + SFC_IMR);
-> > > +	reg &= ~SFC_IMR_DMA;
-> > > +	writel(reg, sfc->regbase + SFC_IMR);
-> > > +	writel((u32)dma_buf, sfc->regbase + SFC_DMA_ADDR);
-> > > +	writel(0x1, sfc->regbase + SFC_DMA_TRIGGER);
-> > > +
-> > > +	/* Wait for the interrupt. */
-> > > +	if (!wait_for_completion_timeout(&sfc->cp, msecs_to_jiffies(2000))) {
-> > > +		dev_err(sfc->dev, "DMA wait for transfer finish timeout\n");
-> > > +		err = -ETIMEDOUT;
-> > > +	}
-> > > +
-> > > +	writel(0xFFFFFFFF, sfc->regbase + SFC_ICLR);
-> > > +	/* Disable transfer finish interrupt */
-> > > +	reg = readl(sfc->regbase + SFC_IMR);
-> > > +	reg |= SFC_IMR_DMA;
-> > > +	writel(reg, sfc->regbase + SFC_IMR);
-> > > +
-> > > +	return len;
-> > > +}
-> > > +
-> > > +static int rockchip_sfc_xfer_data_poll(struct rockchip_sfc *sfc,
-> > > +				       const struct spi_mem_op *op, u32 len)
-> > > +{
-> > > +	dev_dbg(sfc->dev, "xfer_poll len=%x\n", len);
-> > > +
-> > > +	if (op->data.dir == SPI_MEM_DATA_OUT)
-> > > +		return rockchip_sfc_write_fifo(sfc, op->data.buf.out, len);
-> > > +	else
-> > > +		return rockchip_sfc_read_fifo(sfc, op->data.buf.in, len);
-> > > +}
-> > > +
-> > > +static int rockchip_sfc_xfer_data_dma(struct rockchip_sfc *sfc,
-> > > +				      const struct spi_mem_op *op, u32 len)
-> > > +{
-> > > +	int ret;
-> > > +
-> > > +	dev_dbg(sfc->dev, "xfer_dma len=%x\n", len);
-> > > +
-> > > +	if (op->data.dir == SPI_MEM_DATA_OUT) {
-> > > +		memcpy_toio(sfc->buffer, op->data.buf.out, len);
-> > > +		ret = rockchip_sfc_fifo_transfer_dma(sfc, sfc->dma_buffer, len);
-> > > +	} else {
-> > > +		ret = rockchip_sfc_fifo_transfer_dma(sfc, sfc->dma_buffer, len);
-> > > +		memcpy_fromio(op->data.buf.in, sfc->buffer, len);
-> > > +	}
-> > > +
-> > > +	return ret;
-> > > +}
-> > > +
-> > > +static int rockchip_sfc_xfer_done(struct rockchip_sfc *sfc, u32 timeout_us)
-> > > +{
-> > > +	int ret = 0;
-> > > +	u32 status;
-> > > +
-> > > +	ret = readl_poll_timeout(sfc->regbase + SFC_SR, status,
-> > > +				 !(status & SFC_SR_IS_BUSY),
-> > > +				 20, timeout_us);
-> > > +	if (ret) {
-> > > +		dev_err(sfc->dev, "wait sfc idle timeout\n");
-> > > +		rockchip_sfc_reset(sfc);
-> > > +
-> > > +		ret = -EIO;
-> > > +	}
-> > > +
-> > > +	return ret;
-> > > +}
-> > > +
-> > > +static int rockchip_sfc_exec_mem_op(struct spi_mem *mem, const struct spi_mem_op *op)
-> > > +{
-> > > +	struct rockchip_sfc *sfc = spi_master_get_devdata(mem->spi->master);
-> > > +	u32 len = min_t(u32, op->data.nbytes, sfc->max_iosize);
-> > Is it necessary to use the minimum of these 2 values if we use an
-> > adjust_op_size which I propose below?
-> it necessary if use adjust_op_size, done.
-> > > +	int ret;
-> > > +
-> > Again I'm asking this as someone with no experience optimizing code
-> > or with compilers, but would it help to add an unlikely() here? It's
-> > all but guaranteed the first time this code path is called the clock
-> > will need to be set, but each subsequent call should not really have
-> > to care since the clock likely won't be changing (as long as we're on
-> > the same CS). We can also then set the sfc->frequency to what the
-> > max_speed_hz was after successfully setting the rate so we can hit the
-> > faster path after the first run (it looks like it's checking the
-> > uninitalized value but never updating it after it's changed, so it's
-> > always doing the clk_set_rate()).
-> > 
-> > Also, should we clamp the clock speed between the min and max values?
-> done.
-> > > +	if (mem->spi->max_speed_hz != sfc->frequency) {
-> > > +		if (clk_set_rate(sfc->clk, mem->spi->max_speed_hz))
-> > > +			return ret;
-> > > +		dev_dbg(sfc->dev, "set_freq=%dHz real_freq=%ldHz\n",
-> > > +			sfc->frequency, clk_get_rate(sfc->clk));
-> > > +	}
-> > > +
-> > > +	rockchip_sfc_xfer_setup(sfc, mem, op, len);
-> > > +	if (len) {
-> > > +		if (likely(sfc->use_dma) && !(len & 0x3) && len >= SFC_DMA_TRANS_THRETHOLD)
-> > > +			ret = rockchip_sfc_xfer_data_dma(sfc, op, len);
-> > > +		else
-> > > +			ret = rockchip_sfc_xfer_data_poll(sfc, op, len);
-> > > +
-> > > +		if (ret != len) {
-> > > +			dev_err(sfc->dev, "xfer data failed ret %d dir %d\n", ret, op->data.dir);
-> > > +
-> > > +			return -EIO;
-> > > +		}
-> > > +	}
-> > > +
-> > > +	return rockchip_sfc_xfer_done(sfc, 100000);
-> > > +}
-> > > +
-> > I'll be honest with you, I had no idea if I needed this function or
-> > not (the rockchip_sfc_get_name() function). I'm pretty sure it's not
-> > needed though, so I assume it can be safely removed.
-> > 
-> > > +static const char *rockchip_sfc_get_name(struct spi_mem *mem)
-> > > +{
-> > > +	return devm_kasprintf(&mem->spi->dev, GFP_KERNEL, "%s.%d",
-> > > +			      dev_name(&mem->spi->dev), mem->spi->chip_select);
-> > > +}
-> > > +
-> > I had an issue with doing dd as mentioned above reading against mtd0,
-> > and was able to fix it by adding a mem_op of adjust_op_size like this.
-> > Not sure if it works for the v4/v5 hardware though.
-> > 
-> > static int rockchip_sfc_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
-> > {
-> > 	struct rockchip_sfc *sfc = spi_master_get_devdata(mem->spi->master);
-> > 
-> > 	op->data.nbytes = min(op->data.nbytes, sfc->max_iosize);
-> > 	return 0;
-> > }
-> 
-> good idea.
-> 
-> > > +static const struct spi_controller_mem_ops rockchip_sfc_mem_ops = {
-> > > +	.exec_op = rockchip_sfc_exec_mem_op,
-> > > +	.get_name = rockchip_sfc_get_name,
-> > > +};
-> > > +
-> > > +static irqreturn_t rockchip_sfc_irq_handler(int irq, void *dev_id)
-> > > +{
-> > > +	struct rockchip_sfc *sfc = dev_id;
-> > > +	u32 reg;
-> > > +
-> > > +	reg = readl(sfc->regbase + SFC_RISR);
-> > > +
-> > > +	/* Clear interrupt */
-> > > +	writel_relaxed(reg, sfc->regbase + SFC_ICLR);
-> > > +
-> > > +	if (reg & SFC_RISR_DMA)
-> > > +		complete(&sfc->cp);
-> > > +
-> > >From a previous comment, we should only clear the interrupt if we
-> > handle the specific one in question.
-> > 
-> Compare with drivers/spi/spi-cadence-quadspi.c, I think the former code work
-> well. Can explain more for the reason.
-> 
-> > > +	return IRQ_HANDLED;
-> > > +}
-> > > +
-> > > +static int rockchip_sfc_probe(struct platform_device *pdev)
-> > > +{
-> > > +	struct device *dev = &pdev->dev;
-> > > +	struct spi_master *master;
-> > > +	struct resource *res;
-> > > +	struct rockchip_sfc *sfc;
-> > > +	int ret;
-> > > +
-> > > +	master = devm_spi_alloc_master(&pdev->dev, sizeof(*sfc));
-> > > +	if (!master)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	master->mem_ops = &rockchip_sfc_mem_ops;
-> > > +	master->dev.of_node = pdev->dev.of_node;
-> > > +	master->mode_bits = SPI_TX_QUAD | SPI_TX_DUAL | SPI_RX_QUAD | SPI_RX_DUAL;
-> > > +	master->min_speed_hz = SFC_MIN_SPEED_HZ;
-> > > +	master->max_speed_hz = SFC_MAX_SPEED_HZ;
-> > > +	master->num_chipselect = SFC_MAX_CHIPSELECT_NUM;
-> > > +
-> > > +	sfc = spi_master_get_devdata(master);
-> > > +	sfc->dev = dev;
-> > > +
-> > > +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > > +	sfc->regbase = devm_ioremap_resource(dev, res);
-> > > +	if (IS_ERR(sfc->regbase))
-> > > +		return PTR_ERR(sfc->regbase);
-> > > +
-> > > +	sfc->clk = devm_clk_get(&pdev->dev, "clk_sfc");
-> > > +	if (IS_ERR(sfc->clk)) {
-> > > +		dev_err(&pdev->dev, "Failed to get sfc interface clk\n");
-> > > +		return PTR_ERR(sfc->clk);
-> > > +	}
-> > > +
-> > > +	sfc->hclk = devm_clk_get(&pdev->dev, "hclk_sfc");
-> > > +	if (IS_ERR(sfc->hclk)) {
-> > > +		dev_err(&pdev->dev, "Failed to get sfc ahb clk\n");
-> > > +		return PTR_ERR(sfc->hclk);
-> > > +	}
-> > > +
-> > > +	sfc->use_dma = !of_property_read_bool(sfc->dev->of_node,
-> > > +					      "rockchip,sfc-no-dma");
-> > > +
-> > > +	if (sfc->use_dma) {
-> > > +		ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
-> > > +		if (ret) {
-> > > +			dev_warn(dev, "Unable to set dma mask\n");
-> > > +			return ret;
-> > > +		}
-> > > +
-> > > +		sfc->buffer = dmam_alloc_coherent(dev, SFC_MAX_IOSIZE_VER3,
-> > > +						  &sfc->dma_buffer,
-> > > +						  GFP_KERNEL);
-> > > +		if (!sfc->buffer)
-> > > +			return -ENOMEM;
-> > > +	}
-> > > +
-> > > +	ret = clk_prepare_enable(sfc->hclk);
-> > > +	if (ret) {
-> > > +		dev_err(&pdev->dev, "Failed to enable ahb clk\n");
-> > > +		goto err_hclk;
-> > > +	}
-> > > +
-> > > +	ret = clk_prepare_enable(sfc->clk);
-> > > +	if (ret) {
-> > > +		dev_err(&pdev->dev, "Failed to enable interface clk\n");
-> > > +		goto err_clk;
-> > > +	}
-> > > +
-> > > +	/* Find the irq */
-> > > +	ret = platform_get_irq(pdev, 0);
-> > > +	if (ret < 0) {
-> > > +		dev_err(dev, "Failed to get the irq\n");
-> > > +		goto err_irq;
-> > > +	}
-> > > +
-> > > +	ret = devm_request_irq(dev, ret, rockchip_sfc_irq_handler,
-> > > +			       0, pdev->name, sfc);
-> > > +	if (ret) {
-> > > +		dev_err(dev, "Failed to request irq\n");
-> > > +
-> > > +		return ret;
-> > > +	}
-> > > +
-> > > +	ret = rockchip_sfc_init(sfc);
-> > > +	if (ret)
-> > > +		goto err_irq;
-> > > +
-> > > +	sfc->max_iosize = rockchip_sfc_get_max_iosize(sfc);
-> > > +
-> > > +	ret = spi_register_master(master);
-> > > +	if (ret)
-> > > +		goto err_irq;
-> > > +
-> > > +	return 0;
-> > > +
-> > > +err_irq:
-> > > +	clk_disable_unprepare(sfc->clk);
-> > > +err_clk:
-> > > +	clk_disable_unprepare(sfc->hclk);
-> > > +err_hclk:
-> > > +	return ret;
-> > > +}
-> > > +
-> > > +static int rockchip_sfc_remove(struct platform_device *pdev)
-> > > +{
-> > > +	struct spi_master *master = platform_get_drvdata(pdev);
-> > > +	struct rockchip_sfc *sfc = platform_get_drvdata(pdev);
-> > > +
-> > > +	spi_unregister_master(master);
-> > > +
-> > > +	clk_disable_unprepare(sfc->clk);
-> > > +	clk_disable_unprepare(sfc->hclk);
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static const struct of_device_id rockchip_sfc_dt_ids[] = {
-> > > +	{ .compatible = "rockchip,px30-sfc"},
-> > > +	{ .compatible = "rockchip,rk3036-sfc"},
-> > > +	{ .compatible = "rockchip,rk3308-sfc"},
-> > > +	{ .compatible = "rockchip,rv1126-sfc"},
-> > > +	{ /* sentinel */ }
-> > > +};
-> > > +MODULE_DEVICE_TABLE(of, rockchip_sfc_dt_ids);
-> > > +
-> > > +static struct platform_driver rockchip_sfc_driver = {
-> > > +	.driver = {
-> > > +		.name	= "rockchip-sfc",
-> > > +		.of_match_table = rockchip_sfc_dt_ids,
-> > > +	},
-> > > +	.probe	= rockchip_sfc_probe,
-> > > +	.remove	= rockchip_sfc_remove,
-> > > +};
-> > > +module_platform_driver(rockchip_sfc_driver);
-> > > +
-> > > +MODULE_LICENSE("GPL v2");
-> > > +MODULE_DESCRIPTION("Rockchip Serial Flash Controller Driver");
-> > > +MODULE_AUTHOR("Shawn Lin <shawn.lin@rock-chips.com>");
-> > > +MODULE_AUTHOR("Chris Morgan <macroalpha82@gmail.com>");
-> > I know folks will hate on me for this (and for good reason given it
-> > messes up IDs and stuff), but I prefer macromorgan@hotmail.com if my
-> > email is in here, as that's the one I've been using for decades...
-> ok.
-> > > +MODULE_AUTHOR("Jon Lin <Jon.lin@rock-chips.com>");
-> > > -- 
-> > > 2.17.1
-> > > 
-> > > 
-> > > 
-> > 
-> > 
-> 
-> 
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQWxsLAoKSSBhbSB0cnlpbmcgdG8gZW11bGF0ZSB1YmlmcyB1c2luZyBuYW5kc2ltIChidWls
+dC1pbiksIHFlbXUtYXJtLApidXN5Ym94IGFuZCBrZXJuZWwtNS40LgpJIGhvcGUgdGhhdCB0aGlz
+IGNvbWJpbmF0aW9uIGFscmVhZHkgd29ya3MsIHNvIEkgYW0gaGVyZSB0byBzb3J0IG91dApteSBi
+b290aW5nIGlzc3VlcyB3aXRoIHRoZXNlLgpGZXcgZGV0YWlscyBiZWZvcmUgSSBkZXNjcmliZSBt
+eSBpc3N1ZToKYSkgSSBoYXZlIGFscmVhZHkgY3JlYXRlZCBhIHdvcmtpbmcgYnVzeWJveCBpbWFn
+ZSBmb3IgYXJtMzIgKF9pbnN0YWxsIGZvbGRlcikuCmIpIFVzaW5nIHRoaXMgSSBoYXZlIGNyZWF0
+ZWQgdGhlIHViaWZzIGltYWdlIHVzaW5nIG1rZnMudWJpZnMuCmMpIFRoZW4gSSBoYXZlIGFsc28g
+Y3JlYXRlZCB0aGUgZmluYWwgdWJpZnMtcm9vdCBpbWFnZSB1c2luZyB0aGUKdWJpbml6ZSBjb21t
+YW5kLgpkKSBJIGhhdmUgYWxzbyBidWlsdCB0aGUga2VybmVsLTUuNCBmb3IgYXJtIHZleHByZXNz
+CmUpIFRoaXMga2VybmVsIGlzIHdvcmtpbmcgZmluZSB3aXRoIHRoZSBzYW1lIGJ1c3lib3ggaW5p
+dHJhbWZzIGltYWdlLgpmKSBOb3cgSSB3YW50IHRvIHVzZSBuYW5kc2ltIHRvIGVtdWxhdGUgdWJp
+ZnMgaW4gdGhlIHNhbWUgZW52aXJvbm1lbnQuCgpGb3IgKGYpIEkgaGF2ZSB1c2VkIHRoZSBiZWxv
+dyBjb21tYW5kOgokIHFlbXUtc3lzdGVtLWFybSAtTSB2aXJ0IC1tIDUxMk0gLWtlcm5lbCBsaW51
+eC9hcmNoL2FybS9ib290L3pJbWFnZQotYXBwZW5kICJ1YmkubXRkPTEgcm9vdD0vZGV2L210ZGJs
+b2NrMCByb290dHlwZT11Ymlmcwpjb25zb2xlPXR0eUFNQTAsMTE1MjAwIiAtZHJpdmUKaWY9bXRk
+LGRyaXZlcj1yYXcsY2FjaGU9d3JpdGViYWNrLGZpbGU9Li91YmktYm9vdC5pbWcsaWQ9bXRkMSAt
+ZGV2aWNlCm5hbmQsY2hpcF9pZD0weDM5LG1hbnVmYWN0dXJlcl9pZD0weDk4LGRyaXZlPW10ZDEg
+IC1ub2dyYXBoaWMgLXNtcCA0CgpCdXQgSSBnZXQgdGhlc2UgZXJyb3JzIGR1cmluZyBib290Lgot
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KdWJpMDogYmFja2dyb3VuZCB0aHJlYWQgInViaV9i
+Z3QwZCIgc3RhcnRlZCwgUElEIDU1Ckxpc3Qgb2YgYWxsIHBhcnRpdGlvbnM6CjFmMDAgICAgICAg
+ICAgMTMxMDcyIG10ZGJsb2NrMAogKGRyaXZlcj8pCjFmMDEgICAgICAgICAgMTMxMDcyIG10ZGJs
+b2NrMQogKGRyaXZlcj8pCk5vIGZpbGVzeXN0ZW0gY291bGQgbW91bnQgcm9vdCwgdHJpZWQ6CiBl
+eHQzCiBleHQ0CiBleHQyCiBjcmFtZnMKIHNxdWFzaGZzCiB2ZmF0CgpLZXJuZWwgcGFuaWMgLSBu
+b3Qgc3luY2luZzogVkZTOiBVbmFibGUgdG8gbW91bnQgcm9vdCBmcyBvbiB1bmtub3duLWJsb2Nr
+KDMxLDApCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KSSBhbHNvIHRyaWVkIHRvIHJlcGxh
+Y2UgdGhlIHViaWZzIHdpdGggc3F1YXNoZnMgYnV0IGl0cyB0aGUgc2FtZSByZXN1bHQuCgpIZXJl
+IGlzIHRoZSBjb21wbGV0ZSBsb2dzOgo9PT09PT09PT09PT09PT09PT09PQpCb290aW5nIExpbnV4
+IG9uIHBoeXNpY2FsIENQVSAweDAKTGludXggdmVyc2lvbiA1LjQuMTI0IChwaW50dUBibHItdWJ1
+bnR1LTQ5OCkgKGdjYyB2ZXJzaW9uIDUuNC4wCjIwMTYwNjA5IChVYnVudHUvTGluYXJvIDUuNC4w
+LTZ1YnVudHUxfjE2LjA0LjkpKSAjNSBTTVAgV2VkIEp1biA5CjE4OjE0OjUwIElTVCAyMDIxCkNQ
+VTogQVJNdjcgUHJvY2Vzc29yIFs0MTJmYzBmMV0gcmV2aXNpb24gMSAoQVJNdjcpLCBjcj0xMGM1
+Mzg3ZApDUFU6IGRpdiBpbnN0cnVjdGlvbnMgYXZhaWxhYmxlOiBwYXRjaGluZyBkaXZpc2lvbiBj
+b2RlCkNQVTogUElQVCAvIFZJUFQgbm9uYWxpYXNpbmcgZGF0YSBjYWNoZSwgUElQVCBpbnN0cnVj
+dGlvbiBjYWNoZQpPRjogZmR0OiBNYWNoaW5lIG1vZGVsOiBsaW51eCxkdW1teS12aXJ0Ck1lbW9y
+eSBwb2xpY3k6IERhdGEgY2FjaGUgd3JpdGVhbGxvYwpjbWE6IFJlc2VydmVkIDE2IE1pQiBhdCAw
+eDVmMDAwMDAwCnBzY2k6IHByb2JpbmcgZm9yIGNvbmR1aXQgbWV0aG9kIGZyb20gRFQuCnBzY2k6
+IFBTQ0l2MC4yIGRldGVjdGVkIGluIGZpcm13YXJlLgpwc2NpOiBVc2luZyBzdGFuZGFyZCBQU0NJ
+IHYwLjIgZnVuY3Rpb24gSURzCnBzY2k6IFRydXN0ZWQgT1MgbWlncmF0aW9uIG5vdCByZXF1aXJl
+ZApwZXJjcHU6IEVtYmVkZGVkIDE5IHBhZ2VzL2NwdSBzNDU1MTYgcjgxOTIgZDI0MTE2IHU3Nzgy
+NApCdWlsdCAxIHpvbmVsaXN0cywgbW9iaWxpdHkgZ3JvdXBpbmcgb24uICBUb3RhbCBwYWdlczog
+MTMwMDQ4Cktlcm5lbCBjb21tYW5kIGxpbmU6IHViaS5tdGQ9MSByb290PS9kZXYvbXRkYmxvY2sw
+IHJvb3R0eXBlPXViaWZzCmNvbnNvbGU9dHR5QU1BMCwxMTUyMDAKcHJpbnRrOiBsb2dfYnVmX2xl
+biBpbmRpdmlkdWFsIG1heCBjcHUgY29udHJpYnV0aW9uOiA0MDk2IGJ5dGVzCnByaW50azogbG9n
+X2J1Zl9sZW4gdG90YWwgY3B1X2V4dHJhIGNvbnRyaWJ1dGlvbnM6IDEyMjg4IGJ5dGVzCnByaW50
+azogbG9nX2J1Zl9sZW4gbWluIHNpemU6IDE2Mzg0IGJ5dGVzCnByaW50azogbG9nX2J1Zl9sZW46
+IDMyNzY4IGJ5dGVzCnByaW50azogZWFybHkgbG9nIGJ1ZiBmcmVlOiAxNDc0MCg4OSUpCkRlbnRy
+eSBjYWNoZSBoYXNoIHRhYmxlIGVudHJpZXM6IDY1NTM2IChvcmRlcjogNiwgMjYyMTQ0IGJ5dGVz
+LCBsaW5lYXIpCklub2RlLWNhY2hlIGhhc2ggdGFibGUgZW50cmllczogMzI3NjggKG9yZGVyOiA1
+LCAxMzEwNzIgYnl0ZXMsIGxpbmVhcikKbWVtIGF1dG8taW5pdDogc3RhY2s6b2ZmLCBoZWFwIGFs
+bG9jOm9mZiwgaGVhcCBmcmVlOm9mZgpNZW1vcnk6IDQ5MjEwMEsvNTI0Mjg4SyBhdmFpbGFibGUg
+KDcxNjhLIGtlcm5lbCBjb2RlLCA0MzNLIHJ3ZGF0YSwKMTc5Nksgcm9kYXRhLCAxMDI0SyBpbml0
+LCAxNTlLIGJzcywgMTU4MDRLIHJlc2VydmVkLCAxNjM4NEsKY21hLXJlc2VydmVkKQpTTFVCOiBI
+V2FsaWduPTY0LCBPcmRlcj0wLTMsIE1pbk9iamVjdHM9MCwgQ1BVcz00LCBOb2Rlcz0xCnJjdTog
+SGllcmFyY2hpY2FsIFJDVSBpbXBsZW1lbnRhdGlvbi4KcmN1OiAgICBSQ1UgZXZlbnQgdHJhY2lu
+ZyBpcyBlbmFibGVkLgpyY3U6ICAgIFJDVSByZXN0cmljdGluZyBDUFVzIGZyb20gTlJfQ1BVUz04
+IHRvIG5yX2NwdV9pZHM9NC4KcmN1OiBSQ1UgY2FsY3VsYXRlZCB2YWx1ZSBvZiBzY2hlZHVsZXIt
+ZW5saXN0bWVudCBkZWxheSBpcyAxMCBqaWZmaWVzLgpyY3U6IEFkanVzdGluZyBnZW9tZXRyeSBm
+b3IgcmN1X2Zhbm91dF9sZWFmPTE2LCBucl9jcHVfaWRzPTQKTlJfSVJRUzogMTYsIG5yX2lycXM6
+IDE2LCBwcmVhbGxvY2F0ZWQgaXJxczogMTYKcmFuZG9tOiBnZXRfcmFuZG9tX2J5dGVzIGNhbGxl
+ZCBmcm9tIHN0YXJ0X2tlcm5lbCsweDMxMC8weDRiNCB3aXRoIGNybmdfaW5pdD0wCmFyY2hfdGlt
+ZXI6IFdBUk5JTkc6IEludmFsaWQgdHJpZ2dlciBmb3IgSVJRMTgsIGFzc3VtaW5nIGxldmVsIGxv
+dwphcmNoX3RpbWVyOiBXQVJOSU5HOiBQbGVhc2UgZml4IHlvdXIgZmlybXdhcmUKYXJjaF90aW1l
+cjogY3AxNSB0aW1lcihzKSBydW5uaW5nIGF0IDYyLjUwTUh6ICh2aXJ0KS4KY2xvY2tzb3VyY2U6
+IGFyY2hfc3lzX2NvdW50ZXI6IG1hc2s6IDB4ZmZmZmZmZmZmZmZmZmYgbWF4X2N5Y2xlczoKMHgx
+Y2Q0MmUyMDhjLCBtYXhfaWRsZV9uczogODgxNTkwNDA1MzE0IG5zCnNjaGVkX2Nsb2NrOiA1NiBi
+aXRzIGF0IDYyTUh6LCByZXNvbHV0aW9uIDE2bnMsIHdyYXBzIGV2ZXJ5IDQzOTgwNDY1MTEwOTZu
+cwpTd2l0Y2hpbmcgdG8gdGltZXItYmFzZWQgZGVsYXkgbG9vcCwgcmVzb2x1dGlvbiAxNm5zCkNv
+bnNvbGU6IGNvbG91ciBkdW1teSBkZXZpY2UgODB4MzAKQ2FsaWJyYXRpbmcgZGVsYXkgbG9vcCAo
+c2tpcHBlZCksIHZhbHVlIGNhbGN1bGF0ZWQgdXNpbmcgdGltZXIKZnJlcXVlbmN5Li4gMTI1LjAw
+IEJvZ29NSVBTIChscGo9NjI1MDAwKQpwaWRfbWF4OiBkZWZhdWx0OiAzMjc2OCBtaW5pbXVtOiAz
+MDEKTW91bnQtY2FjaGUgaGFzaCB0YWJsZSBlbnRyaWVzOiAxMDI0IChvcmRlcjogMCwgNDA5NiBi
+eXRlcywgbGluZWFyKQpNb3VudHBvaW50LWNhY2hlIGhhc2ggdGFibGUgZW50cmllczogMTAyNCAo
+b3JkZXI6IDAsIDQwOTYgYnl0ZXMsIGxpbmVhcikKQ1BVOiBUZXN0aW5nIHdyaXRlIGJ1ZmZlciBj
+b2hlcmVuY3k6IG9rCkNQVTA6IFNwZWN0cmUgdjI6IGZpcm13YXJlIGRpZCBub3Qgc2V0IGF1eGls
+aWFyeSBjb250cm9sIHJlZ2lzdGVyIElCRQpiaXQsIHN5c3RlbSB2dWxuZXJhYmxlCi9jcHVzL2Nw
+dUAwIG1pc3NpbmcgY2xvY2stZnJlcXVlbmN5IHByb3BlcnR5Ci9jcHVzL2NwdUAxIG1pc3Npbmcg
+Y2xvY2stZnJlcXVlbmN5IHByb3BlcnR5Ci9jcHVzL2NwdUAyIG1pc3NpbmcgY2xvY2stZnJlcXVl
+bmN5IHByb3BlcnR5Ci9jcHVzL2NwdUAzIG1pc3NpbmcgY2xvY2stZnJlcXVlbmN5IHByb3BlcnR5
+CkNQVTA6IHRocmVhZCAtMSwgY3B1IDAsIHNvY2tldCAwLCBtcGlkciA4MDAwMDAwMApTZXR0aW5n
+IHVwIHN0YXRpYyBpZGVudGl0eSBtYXAgZm9yIDB4NDAxMDAwMDAgLSAweDQwMTAwMDYwCnJjdTog
+SGllcmFyY2hpY2FsIFNSQ1UgaW1wbGVtZW50YXRpb24uCnNtcDogQnJpbmdpbmcgdXAgc2Vjb25k
+YXJ5IENQVXMgLi4uCkNQVTE6IHRocmVhZCAtMSwgY3B1IDEsIHNvY2tldCAwLCBtcGlkciA4MDAw
+MDAwMQpDUFUxOiBTcGVjdHJlIHYyOiBmaXJtd2FyZSBkaWQgbm90IHNldCBhdXhpbGlhcnkgY29u
+dHJvbCByZWdpc3RlciBJQkUKYml0LCBzeXN0ZW0gdnVsbmVyYWJsZQpDUFUyOiB0aHJlYWQgLTEs
+IGNwdSAyLCBzb2NrZXQgMCwgbXBpZHIgODAwMDAwMDIKQ1BVMjogU3BlY3RyZSB2MjogZmlybXdh
+cmUgZGlkIG5vdCBzZXQgYXV4aWxpYXJ5IGNvbnRyb2wgcmVnaXN0ZXIgSUJFCmJpdCwgc3lzdGVt
+IHZ1bG5lcmFibGUKQ1BVMzogdGhyZWFkIC0xLCBjcHUgMywgc29ja2V0IDAsIG1waWRyIDgwMDAw
+MDAzCkNQVTM6IFNwZWN0cmUgdjI6IGZpcm13YXJlIGRpZCBub3Qgc2V0IGF1eGlsaWFyeSBjb250
+cm9sIHJlZ2lzdGVyIElCRQpiaXQsIHN5c3RlbSB2dWxuZXJhYmxlCnNtcDogQnJvdWdodCB1cCAx
+IG5vZGUsIDQgQ1BVcwpTTVA6IFRvdGFsIG9mIDQgcHJvY2Vzc29ycyBhY3RpdmF0ZWQgKDUwMC4w
+MCBCb2dvTUlQUykuCkNQVTogQWxsIENQVShzKSBzdGFydGVkIGluIFNWQyBtb2RlLgpkZXZ0bXBm
+czogaW5pdGlhbGl6ZWQKVkZQIHN1cHBvcnQgdjAuMzogaW1wbGVtZW50b3IgNDEgYXJjaGl0ZWN0
+dXJlIDQgcGFydCAzMCB2YXJpYW50IGYgcmV2IDAKY2xvY2tzb3VyY2U6IGppZmZpZXM6IG1hc2s6
+IDB4ZmZmZmZmZmYgbWF4X2N5Y2xlczogMHhmZmZmZmZmZiwKbWF4X2lkbGVfbnM6IDE5MTEyNjA0
+NDYyNzUwMDAwIG5zCmZ1dGV4IGhhc2ggdGFibGUgZW50cmllczogMTAyNCAob3JkZXI6IDQsIDY1
+NTM2IGJ5dGVzLCBsaW5lYXIpCk5FVDogUmVnaXN0ZXJlZCBwcm90b2NvbCBmYW1pbHkgMTYKRE1B
+OiBwcmVhbGxvY2F0ZWQgMjU2IEtpQiBwb29sIGZvciBhdG9taWMgY29oZXJlbnQgYWxsb2NhdGlv
+bnMKY3B1aWRsZTogdXNpbmcgZ292ZXJub3IgbGFkZGVyCmh3LWJyZWFrcG9pbnQ6IGZvdW5kIDUg
+KCsxIHJlc2VydmVkKSBicmVha3BvaW50IGFuZCA0IHdhdGNocG9pbnQgcmVnaXN0ZXJzLgpody1i
+cmVha3BvaW50OiBtYXhpbXVtIHdhdGNocG9pbnQgc2l6ZSBpcyA4IGJ5dGVzLgpTZXJpYWw6IEFN
+QkEgUEwwMTEgVUFSVCBkcml2ZXIKOTAwMDAwMC5wbDAxMTogdHR5QU1BMCBhdCBNTUlPIDB4OTAw
+MDAwMCAoaXJxID0gNTMsIGJhc2VfYmF1ZCA9IDApIGlzCmEgUEwwMTEgcmV2MQpwcmludGs6IGNv
+bnNvbGUgW3R0eUFNQTBdIGVuYWJsZWQKaXJxOiB0eXBlIG1pc21hdGNoLCBmYWlsZWQgdG8gbWFw
+IGh3aXJxLTI3IGZvciBpbnRjIQp2Z2FhcmI6IGxvYWRlZApTQ1NJIHN1YnN5c3RlbSBpbml0aWFs
+aXplZAp1c2Jjb3JlOiByZWdpc3RlcmVkIG5ldyBpbnRlcmZhY2UgZHJpdmVyIHVzYmZzCnVzYmNv
+cmU6IHJlZ2lzdGVyZWQgbmV3IGludGVyZmFjZSBkcml2ZXIgaHViCnVzYmNvcmU6IHJlZ2lzdGVy
+ZWQgbmV3IGRldmljZSBkcml2ZXIgdXNiCkFkdmFuY2VkIExpbnV4IFNvdW5kIEFyY2hpdGVjdHVy
+ZSBEcml2ZXIgSW5pdGlhbGl6ZWQuCmNsb2Nrc291cmNlOiBTd2l0Y2hlZCB0byBjbG9ja3NvdXJj
+ZSBhcmNoX3N5c19jb3VudGVyCk5FVDogUmVnaXN0ZXJlZCBwcm90b2NvbCBmYW1pbHkgMgpJUCBp
+ZGVudHMgaGFzaCB0YWJsZSBlbnRyaWVzOiA4MTkyIChvcmRlcjogNCwgNjU1MzYgYnl0ZXMsIGxp
+bmVhcikKdGNwX2xpc3Rlbl9wb3J0YWRkcl9oYXNoIGhhc2ggdGFibGUgZW50cmllczogNTEyIChv
+cmRlcjogMCwgNjE0NCBieXRlcywgbGluZWFyKQpUQ1AgZXN0YWJsaXNoZWQgaGFzaCB0YWJsZSBl
+bnRyaWVzOiA0MDk2IChvcmRlcjogMiwgMTYzODQgYnl0ZXMsIGxpbmVhcikKVENQIGJpbmQgaGFz
+aCB0YWJsZSBlbnRyaWVzOiA0MDk2IChvcmRlcjogMywgMzI3NjggYnl0ZXMsIGxpbmVhcikKVENQ
+OiBIYXNoIHRhYmxlcyBjb25maWd1cmVkIChlc3RhYmxpc2hlZCA0MDk2IGJpbmQgNDA5NikKVURQ
+IGhhc2ggdGFibGUgZW50cmllczogMjU2IChvcmRlcjogMSwgODE5MiBieXRlcywgbGluZWFyKQpV
+RFAtTGl0ZSBoYXNoIHRhYmxlIGVudHJpZXM6IDI1NiAob3JkZXI6IDEsIDgxOTIgYnl0ZXMsIGxp
+bmVhcikKTkVUOiBSZWdpc3RlcmVkIHByb3RvY29sIGZhbWlseSAxClJQQzogUmVnaXN0ZXJlZCBu
+YW1lZCBVTklYIHNvY2tldCB0cmFuc3BvcnQgbW9kdWxlLgpSUEM6IFJlZ2lzdGVyZWQgdWRwIHRy
+YW5zcG9ydCBtb2R1bGUuClJQQzogUmVnaXN0ZXJlZCB0Y3AgdHJhbnNwb3J0IG1vZHVsZS4KUlBD
+OiBSZWdpc3RlcmVkIHRjcCBORlN2NC4xIGJhY2tjaGFubmVsIHRyYW5zcG9ydCBtb2R1bGUuClBD
+STogQ0xTIDAgYnl0ZXMsIGRlZmF1bHQgNjQKd29ya2luZ3NldDogdGltZXN0YW1wX2JpdHM9MzAg
+bWF4X29yZGVyPTE3IGJ1Y2tldF9vcmRlcj0wCnNxdWFzaGZzOiB2ZXJzaW9uIDQuMCAoMjAwOS8w
+MS8zMSkgUGhpbGxpcCBMb3VnaGVyCmpmZnMyOiB2ZXJzaW9uIDIuMi4gKE5BTkQpIMKpIDIwMDEt
+MjAwNiBSZWQgSGF0LCBJbmMuCjlwOiBJbnN0YWxsaW5nIHY5ZnMgOXAyMDAwIGZpbGUgc3lzdGVt
+IHN1cHBvcnQKaW8gc2NoZWR1bGVyIG1xLWRlYWRsaW5lIHJlZ2lzdGVyZWQKaW8gc2NoZWR1bGVy
+IGt5YmVyIHJlZ2lzdGVyZWQKcGNpLWhvc3QtZ2VuZXJpYyAzZjAwMDAwMC5wY2llOiBob3N0IGJy
+aWRnZSAvcGNpZUAxMDAwMDAwMCByYW5nZXM6CnBjaS1ob3N0LWdlbmVyaWMgM2YwMDAwMDAucGNp
+ZTogICAgSU8gMHgzZWZmMDAwMC4uMHgzZWZmZmZmZiAtPiAweDAwMDAwMDAwCnBjaS1ob3N0LWdl
+bmVyaWMgM2YwMDAwMDAucGNpZTogICBNRU0gMHgxMDAwMDAwMC4uMHgzZWZlZmZmZiAtPiAweDEw
+MDAwMDAwCnBjaS1ob3N0LWdlbmVyaWMgM2YwMDAwMDAucGNpZTogICBNRU0gMHg4MDAwMDAwMDAw
+Li4weGZmZmZmZmZmZmYgLT4gMHg4MDAwMDAwMDAwCnBjaS1ob3N0LWdlbmVyaWMgM2YwMDAwMDAu
+cGNpZTogRUNBTSBhdCBbbWVtIDB4M2YwMDAwMDAtMHgzZmZmZmZmZl0KZm9yIFtidXMgMDAtMGZd
+CnBjaS1ob3N0LWdlbmVyaWMgM2YwMDAwMDAucGNpZTogUENJIGhvc3QgYnJpZGdlIHRvIGJ1cyAw
+MDAwOjAwCnBjaV9idXMgMDAwMDowMDogcm9vdCBidXMgcmVzb3VyY2UgW2J1cyAwMC0wZl0KcGNp
+X2J1cyAwMDAwOjAwOiByb290IGJ1cyByZXNvdXJjZSBbaW8gIDB4MDAwMC0weGZmZmZdCnBjaV9i
+dXMgMDAwMDowMDogcm9vdCBidXMgcmVzb3VyY2UgW21lbSAweDEwMDAwMDAwLTB4M2VmZWZmZmZd
+CnBjaSAwMDAwOjAwOjAwLjA6IFsxYjM2OjAwMDhdIHR5cGUgMDAgY2xhc3MgMHgwNjAwMDAKUENJ
+OiBidXMwOiBGYXN0IGJhY2sgdG8gYmFjayB0cmFuc2ZlcnMgZGlzYWJsZWQKcGh5c21hcC1mbGFz
+aCAwLmZsYXNoOiBwaHlzbWFwIHBsYXRmb3JtIGZsYXNoIGRldmljZTogW21lbQoweDAwMDAwMDAw
+LTB4MDNmZmZmZmZdCjAuZmxhc2g6IEZvdW5kIDIgeDE2IGRldmljZXMgYXQgMHgwIGluIDMyLWJp
+dCBiYW5rLiBNYW51ZmFjdHVyZXIgSUQKMHgwMDAwMDAgQ2hpcCBJRCAweDAwMDAwMApJbnRlbC9T
+aGFycCBFeHRlbmRlZCBRdWVyeSBUYWJsZSBhdCAweDAwMzEKVXNpbmcgYnVmZmVyIHdyaXRlIG1l
+dGhvZApwaHlzbWFwLWZsYXNoIDAuZmxhc2g6IHBoeXNtYXAgcGxhdGZvcm0gZmxhc2ggZGV2aWNl
+OiBbbWVtCjB4MDQwMDAwMDAtMHgwN2ZmZmZmZl0KMC5mbGFzaDogRm91bmQgMiB4MTYgZGV2aWNl
+cyBhdCAweDAgaW4gMzItYml0IGJhbmsuIE1hbnVmYWN0dXJlciBJRAoweDAwMDAwMCBDaGlwIElE
+IDB4MDAwMDAwCkludGVsL1NoYXJwIEV4dGVuZGVkIFF1ZXJ5IFRhYmxlIGF0IDB4MDAzMQpVc2lu
+ZyBidWZmZXIgd3JpdGUgbWV0aG9kCkNvbmNhdGVuYXRpbmcgTVREIGRldmljZXM6CigwKTogIjAu
+Zmxhc2giCigxKTogIjAuZmxhc2giCmludG8gZGV2aWNlICIwLmZsYXNoIgpbbmFuZHNpbV0gd2Fy
+bmluZzogcmVhZF9ieXRlOiB1bmV4cGVjdGVkIGRhdGEgb3V0cHV0IGN5Y2xlLCBzdGF0ZSBpcwpT
+VEFURV9SRUFEWSByZXR1cm4gMHgwCltuYW5kc2ltXSB3YXJuaW5nOiByZWFkX2J5dGU6IHVuZXhw
+ZWN0ZWQgZGF0YSBvdXRwdXQgY3ljbGUsIHN0YXRlIGlzClNUQVRFX1JFQURZIHJldHVybiAweDAK
+W25hbmRzaW1dIHdhcm5pbmc6IHJlYWRfYnl0ZTogdW5leHBlY3RlZCBkYXRhIG91dHB1dCBjeWNs
+ZSwgc3RhdGUgaXMKU1RBVEVfUkVBRFkgcmV0dXJuIDB4MApbbmFuZHNpbV0gd2FybmluZzogcmVh
+ZF9ieXRlOiB1bmV4cGVjdGVkIGRhdGEgb3V0cHV0IGN5Y2xlLCBzdGF0ZSBpcwpTVEFURV9SRUFE
+WSByZXR1cm4gMHgwCltuYW5kc2ltXSB3YXJuaW5nOiByZWFkX2J5dGU6IHVuZXhwZWN0ZWQgZGF0
+YSBvdXRwdXQgY3ljbGUsIHN0YXRlIGlzClNUQVRFX1JFQURZIHJldHVybiAweDAKW25hbmRzaW1d
+IHdhcm5pbmc6IHJlYWRfYnl0ZTogdW5leHBlY3RlZCBkYXRhIG91dHB1dCBjeWNsZSwgc3RhdGUg
+aXMKU1RBVEVfUkVBRFkgcmV0dXJuIDB4MApuYW5kOiBkZXZpY2UgZm91bmQsIE1hbnVmYWN0dXJl
+ciBJRDogMHg5OCwgQ2hpcCBJRDogMHgzOQpuYW5kOiBUb3NoaWJhIE5BTkQgMTI4TWlCIDEsOFYg
+OC1iaXQKbmFuZDogMTI4IE1pQiwgU0xDLCBlcmFzZSBzaXplOiAxNiBLaUIsIHBhZ2Ugc2l6ZTog
+NTEyLCBPT0Igc2l6ZTogMTYKZmxhc2ggc2l6ZTogMTI4IE1pQgpwYWdlIHNpemU6IDUxMiBieXRl
+cwpPT0IgYXJlYSBzaXplOiAxNiBieXRlcwpzZWN0b3Igc2l6ZTogMTYgS2lCCnBhZ2VzIG51bWJl
+cjogMjYyMTQ0CnBhZ2VzIHBlciBzZWN0b3I6IDMyCmJ1cyB3aWR0aDogOApiaXRzIGluIHNlY3Rv
+ciBzaXplOiAxNApiaXRzIGluIHBhZ2Ugc2l6ZTogOQpiaXRzIGluIE9PQiBzaXplOiA0CmZsYXNo
+IHNpemUgd2l0aCBPT0I6IDEzNTE2OCBLaUIKcGFnZSBhZGRyZXNzIGJ5dGVzOiA0CnNlY3RvciBh
+ZGRyZXNzIGJ5dGVzOiAzCm9wdGlvbnM6IDB4NDIKU2Nhbm5pbmcgZGV2aWNlIGZvciBiYWQgYmxv
+Y2tzCkNyZWF0aW5nIDEgTVREIHBhcnRpdGlvbnMgb24gIk5BTkQgMTI4TWlCIDEsOFYgOC1iaXQi
+OgoweDAwMDAwMDAwMDAwMC0weDAwMDAwODAwMDAwMCA6ICJOQU5EIHNpbXVsYXRvciBwYXJ0aXRp
+b24gMCIKW25hbmRzaW1dIHdhcm5pbmc6IENPTkZJR19NVERfUEFSVElUSU9ORURfTUFTVEVSIG11
+c3QgYmUgZW5hYmxlZCB0bwpleHBvc2UgZGVidWdmcyBzdHVmZgpsaWJwaHk6IEZpeGVkIE1ESU8g
+QnVzOiBwcm9iZWQKdXNiY29yZTogcmVnaXN0ZXJlZCBuZXcgaW50ZXJmYWNlIGRyaXZlciB1c2It
+c3RvcmFnZQpydGMtcGwwMzEgOTAxMDAwMC5wbDAzMTogcmVnaXN0ZXJlZCBhcyBydGMwCmxlZHRy
+aWctY3B1OiByZWdpc3RlcmVkIHRvIGluZGljYXRlIGFjdGl2aXR5IG9uIENQVXMKdXNiY29yZTog
+cmVnaXN0ZXJlZCBuZXcgaW50ZXJmYWNlIGRyaXZlciB1c2JoaWQKdXNiaGlkOiBVU0IgSElEIGNv
+cmUgZHJpdmVyCm9wcm9maWxlOiBubyBwZXJmb3JtYW5jZSBjb3VudGVycwpvcHJvZmlsZTogdXNp
+bmcgdGltZXIgaW50ZXJydXB0LgpORVQ6IFJlZ2lzdGVyZWQgcHJvdG9jb2wgZmFtaWx5IDE3Cjlw
+bmV0OiBJbnN0YWxsaW5nIDlQMjAwMCBzdXBwb3J0ClJlZ2lzdGVyaW5nIFNXUC9TV1BCIGVtdWxh
+dGlvbiBoYW5kbGVyCnViaTA6IGF0dGFjaGluZyBtdGQxCnViaTA6IHNjYW5uaW5nIGlzIGZpbmlz
+aGVkCnViaTA6IGVtcHR5IE1URCBkZXZpY2UgZGV0ZWN0ZWQKdWJpMDogYXR0YWNoZWQgbXRkMSAo
+bmFtZSAiTkFORCBzaW11bGF0b3IgcGFydGl0aW9uIDAiLCBzaXplIDEyOCBNaUIpCnViaTA6IFBF
+QiBzaXplOiAxNjM4NCBieXRlcyAoMTYgS2lCKSwgTEVCIHNpemU6IDE1ODcyIGJ5dGVzCnViaTA6
+IG1pbi4vbWF4LiBJL08gdW5pdCBzaXplczogNTEyLzUxMiwgc3ViLXBhZ2Ugc2l6ZSAyNTYKdWJp
+MDogVklEIGhlYWRlciBvZmZzZXQ6IDI1NiAoYWxpZ25lZCAyNTYpLCBkYXRhIG9mZnNldDogNTEy
+CnViaTA6IGdvb2QgUEVCczogODE5MiwgYmFkIFBFQnM6IDAsIGNvcnJ1cHRlZCBQRUJzOiAwCnVi
+aTA6IHVzZXIgdm9sdW1lOiAwLCBpbnRlcm5hbCB2b2x1bWVzOiAxLCBtYXguIHZvbHVtZXMgY291
+bnQ6IDkyCnViaTA6IG1heC9tZWFuIGVyYXNlIGNvdW50ZXI6IDAvMCwgV0wgdGhyZXNob2xkOiA0
+MDk2LCBpbWFnZSBzZXF1ZW5jZQpudW1iZXI6IDEyODk1ODI1MDkKdWJpMDogYXZhaWxhYmxlIFBF
+QnM6IDgwMjgsIHRvdGFsIHJlc2VydmVkIFBFQnM6IDE2NCwgUEVCcyByZXNlcnZlZApmb3IgYmFk
+IFBFQiBoYW5kbGluZzogMTYwCnJ0Yy1wbDAzMSA5MDEwMDAwLnBsMDMxOiBzZXR0aW5nIHN5c3Rl
+bSBjbG9jayB0byAyMDIxLTA2LTA5VDE3OjUyOjQ3ClVUQyAoMTYyMzI2MTE2NykKQUxTQSBkZXZp
+Y2UgbGlzdDoKICBObyBzb3VuZGNhcmRzIGZvdW5kLgp1YmkwOiBiYWNrZ3JvdW5kIHRocmVhZCAi
+dWJpX2JndDBkIiBzdGFydGVkLCBQSUQgNTUKTGlzdCBvZiBhbGwgcGFydGl0aW9uczoKMWYwMCAg
+ICAgICAgICAxMzEwNzIgbXRkYmxvY2swCiAoZHJpdmVyPykKMWYwMSAgICAgICAgICAxMzEwNzIg
+bXRkYmxvY2sxCiAoZHJpdmVyPykKTm8gZmlsZXN5c3RlbSBjb3VsZCBtb3VudCByb290LCB0cmll
+ZDoKIGV4dDMKIGV4dDQKIGV4dDIKIGNyYW1mcwogc3F1YXNoZnMKIHZmYXQKCktlcm5lbCBwYW5p
+YyAtIG5vdCBzeW5jaW5nOiBWRlM6IFVuYWJsZSB0byBtb3VudCByb290IGZzIG9uIHVua25vd24t
+YmxvY2soMzEsMCkKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KCklmIGFueSBvbmUgaGFz
+IHVzZWQgbmFuZHNpbSBvbiBxZW11IGJlZm9yZSwgcGxlYXNlIGxldCB1cyBrbm93IHRoZSBleGFj
+dCBzdGVwcy4KCkkgZXZlbiB0cmllZCB0byB1c2UgdGhlIG1hY2hpbmUgdHlwZSBhcyB2ZXhwcmVz
+cy1hOSBidXQgaXRzIGFsbW9zdCB0aGUKc2FtZSBpc3N1ZS4KCiQgcWVtdS1zeXN0ZW0tYXJtIC1N
+IHZleHByZXNzLWE5IC1tIDUxMk0gLWtlcm5lbApsaW51eC9hcmNoL2FybS9ib290L3pJbWFnZSAt
+ZHRiCmxpbnV4L2FyY2gvYXJtL2Jvb3QvZHRzL3ZleHByZXNzLXYycC1jYTkuZHRiIC1hcHBlbmQK
+ImNvbnNvbGU9dHR5QU1BMCwxMTUyMDAgdWJpLm10ZD0yIHJvb3Q9L2Rldi9tdGRibG9jazIgcm9v
+dGZzdHlwZT11YmlmcwptdGRwYXJ0cz09bmFuZDotKHJvb3RmcykiIC1kZXZpY2UgbmFuZCxjaGlw
+X2lkPTB4MzksaWQ9bXRkMiAtZHJpdmUKaWY9bXRkLGRyaXZlcj1yYXcsY2FjaGU9d3JpdGViYWNr
+LGZpbGU9Li91YmktYm9vdC5pbWcsaWQ9bXRkMgotbm9ncmFwaGljIC1zbXAgNAoKQnV0IHdpdGgg
+dGhpcyBhbHNvIEkgZ2V0IHRoZXNlIGVycm9yczoKWy4uLl0KV2FybmluZzogT3JwaGFuZWQgZHJp
+dmUgd2l0aG91dCBkZXZpY2U6CmlkPW10ZDIsZmlsZT0uL3ViaS1ib290LmltZyxpZj1tdGQsYnVz
+PTAsdW5pdD0wClsuLi5dCkxpc3Qgb2YgYWxsIHBhcnRpdGlvbnM6CjFmMDAgICAgICAgICAgMTMx
+MDcyIG10ZGJsb2NrMAogKGRyaXZlcj8pCjFmMDEgICAgICAgICAgIDMyNzY4IG10ZGJsb2NrMQog
+KGRyaXZlcj8pCjFmMDIgICAgICAgICAgMTMxMDcyIG10ZGJsb2NrMgogKGRyaXZlcj8pCk5vIGZp
+bGVzeXN0ZW0gY291bGQgbW91bnQgcm9vdCwgdHJpZWQ6CiB1YmlmcwoKS2VybmVsIHBhbmljIC0g
+bm90IHN5bmNpbmc6IFZGUzogVW5hYmxlIHRvIG1vdW50IHJvb3QgZnMgb24gdW5rbm93bi1ibG9j
+aygzMSwwKQoKClRoYW5rcywKUGludHUKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QK
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
