@@ -2,99 +2,95 @@ Return-Path: <SRS0=9fF3=LE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-6.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC768C47094
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jun 2021 15:22:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92F64C47094
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jun 2021 15:25:33 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 64B5060231
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jun 2021 15:22:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 64B5060231
+	by mail.kernel.org (Postfix) with ESMTPS id 51DFE60231
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jun 2021 15:25:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51DFE60231
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=uuSG5Dn54Zn0xNU5vDeKjkfBfsYcg0Vc7dRk183YBg4=; b=y6GvVo7NMGvWi0fp1kLJst6LIw
-	+Q1FCbi3U9Y50S+vMo+LPhi2TFzUmbZDC/zxp2hXYZS0RYM5cJdCXDwXf7/TCAl24yWWzf1StSSlT
-	0FBPjBKvrtv3kKE3YvBZiZaXnFNR/q0rZ3p18lxGD7/ztgns2iWOfYZuulN8o+pAfJA/dZ+dONE+4
-	wJyZiKcY8xFO3GUjgWhAygk74Q3ZG0+x1KxD8SKiLmnN8FUW1k8g3pa5E8MwVASYCMojbRxLBr92x
-	D7iw96gm5ca91Poq6GJRS84QCongFQUzAn8vVPwiD4+haLvmix/8PomQ3tL8T/5kIYLHx+RnfT8N/
-	ep4PMmcw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=JXycJIigDn9ppf4kJDmTSFH7eS2hsdmtZxm9HpUUCaw=; b=HnKsk1fB0xKUXs
+	iavOVXsX9eNg0BTEAbB+L8jLobsAx/IbL6wSx7juoN35AQ4xGuc+nGJq8AZ7lTILmD7GexCwiFR7O
+	r2vdLMgkR+i40W6KwjuuIZJE9DtdADkxgBK77zmMaTsVucmui0zt6r5AQ8vMd+XPN8+Ve+1bcdbrs
+	FVhF3gG5U44oMDjtUTo8kIQN5dTb7Jv9luiYyCfc7e4d81+Msw84wNYzlYE+O8ryutDPdBBKXzwd3
+	uBJv8qvZk7OWTW1Prh61Els+MaL1WTTHMO4P+yp0QVn/StRwJrKyYTB08uz3XUwTGbiwWYe9jaFIQ
+	zTw8WhE8rXmV4va/Sd5g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lrMVW-001LCV-I9; Thu, 10 Jun 2021 15:22:10 +0000
+	id 1lrMYD-001LZm-MA; Thu, 10 Jun 2021 15:24:57 +0000
 Received: from youngberry.canonical.com ([91.189.89.112])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lrMVI-001LAJ-Uh
- for linux-mtd@lists.infradead.org; Thu, 10 Jun 2021 15:21:58 +0000
-Received: from mail-wm1-f69.google.com ([209.85.128.69])
+ id 1lrMY1-001LXh-Ey
+ for linux-mtd@lists.infradead.org; Thu, 10 Jun 2021 15:24:46 +0000
+Received: from mail-wr1-f72.google.com ([209.85.221.72])
  by youngberry.canonical.com with esmtps (TLS1.2) tls
  TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.93)
  (envelope-from <krzysztof.kozlowski@canonical.com>)
- id 1lrMVH-000726-5C
- for linux-mtd@lists.infradead.org; Thu, 10 Jun 2021 15:21:55 +0000
-Received: by mail-wm1-f69.google.com with SMTP id
- v20-20020a05600c2154b029019a6368bfe4so3121871wml.2
- for <linux-mtd@lists.infradead.org>; Thu, 10 Jun 2021 08:21:55 -0700 (PDT)
+ id 1lrMY0-0007fD-80
+ for linux-mtd@lists.infradead.org; Thu, 10 Jun 2021 15:24:44 +0000
+Received: by mail-wr1-f72.google.com with SMTP id
+ x9-20020adfffc90000b02901178add5f60so1048894wrs.5
+ for <linux-mtd@lists.infradead.org>; Thu, 10 Jun 2021 08:24:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=EWTjDquQxTbWQL7tao6uaX3QOuXXhjaN5XNi3DDASoE=;
- b=tDCbikJi8aHpU/Kl46qU31RFkbZOynF5yCDRGP9F5EyYY3vq53BYUNPLS0/Zz2sAvQ
- qUv63ArTtZOZ6Xu4725LHt3R/jDh+ou2dA8eOICyAbK6dKWxx4mRhVC6YjtG96XsfrR+
- XigzXuTlsFQ9MWCbEBj9/iNZ1mXsrtt7pGwJxI53fNgIi/PPkMrypejQCP7wO6WrFr6/
- ra3Mj/ktBzO2DmUEkzIoGAOtsdHGXKH+ATjKa66okWmHOHkrb8O2zTLsEj8XOUc+gSfY
- ZG6SJmL6JfTiidgZnU52KvRbMVtLFNYP/Z99mFn70sc3KYKWUN8WD3x4mEODy8un3mVr
- SeNg==
-X-Gm-Message-State: AOAM531QTrGktjknefc2J0EgW+ucT3MpxmI+YhMX4IfFSVlU3NN59js0
- qmJcHIpBjP2MD6ML2TyVRndfKPQy+SuvbC8E6gyRPBJjvaczknpPd3/nAUYw+SqnZm5PQnpgqxm
- 8wkWfWsyZ9Ri8w+Rrg3Sr4bnm8Hha6f6ynMBIilbKeys=
-X-Received: by 2002:adf:f94c:: with SMTP id q12mr5943521wrr.417.1623338514782; 
- Thu, 10 Jun 2021 08:21:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJykUgbl4Jm24V1lZxkiY74VTRt613BlK2Ms3DFn4TvvhbYNYSqz3rV2y9063jE43MgGZjez1w==
-X-Received: by 2002:adf:f94c:: with SMTP id q12mr5943499wrr.417.1623338514584; 
- Thu, 10 Jun 2021 08:21:54 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch.
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=ukUXcmzHV6X8b0Xkgch2TG03nCCj+8pCGUVjUc6wzSA=;
+ b=nd/z9oc9iAp9zHc1SI5xE7xGC8bEicZ3UI/tqzb6ZFKWxwNfquJBId9+XsYFK4qYHO
+ nghMFZem2zGeRHFx/UTVWIuoIBrrMRjQTfbuvDqHM4g6QEEJlpuNKes4isroXgd8+aYT
+ MucNvt/gOnGWv8emi3dK/T6roh+RG5dRSbXL3wrLGTcmM3ebhMaMVKZn0Q8h91NI8IEo
+ 3rZ1SBjPplSt3z42lQdB6GXmjdffwBDY0AaGID0KChp+u0M17cFGKYK56ayBdulmU9e/
+ tozz8TezwEFNinJKwNnJ4C5dfJcvWjZAve07/vrmF2bIT7oX1Do7jQgUc1FGQf/aFGFR
+ 9dkg==
+X-Gm-Message-State: AOAM530D9rGLBhpYZvjvUasUHprMf+/nyG0OjcPx/dnIPBvx9gfpP7/o
+ 2GYlqbk+BCtWgoaq8Nu9GYY8UVEHqpzKbp3E+vdcJD5py6w8tbmK4g5AICbLAEFGSPVbJh9zDSc
+ oQDsv0MZ5Oc5INFmfXqAHN/nT7BIhbQyogdpYzqykta8=
+X-Received: by 2002:adf:ee82:: with SMTP id b2mr2209839wro.360.1623338681366; 
+ Thu, 10 Jun 2021 08:24:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxOTv9fulnnwFGbr5bRzeYNUhZzzKxbm+dl148j35vdYWfC9AdIoXBPeqdl9MytPfXH6/lBxQ==
+X-Received: by 2002:adf:ee82:: with SMTP id b2mr2209818wro.360.1623338681234; 
+ Thu, 10 Jun 2021 08:24:41 -0700 (PDT)
+Received: from localhost.localdomain (xdsl-188-155-177-222.adslplus.ch.
  [188.155.177.222])
- by smtp.gmail.com with ESMTPSA id l13sm4200303wrz.34.2021.06.10.08.21.51
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 10 Jun 2021 08:21:52 -0700 (PDT)
-Subject: Re: [PATCH v23 00/18] ARM Primecell PL35x support
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ by smtp.gmail.com with ESMTPSA id d15sm3717637wri.58.2021.06.10.08.24.40
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 10 Jun 2021 08:24:40 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To: Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org,
- Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Cc: Michal Simek <monstr@monstr.eu>,
- Naga Sureshkumar Relli <nagasure@xilinx.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+ Siva Durga Prasad Paladugu <sivadur@xilinx.com>,
  Amit Kumar Mahapatra <akumarma@xilinx.com>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- helmut.grohne@intenta.de, Srinivas Goud <sgoud@xilinx.com>,
- Siva Durga Prasad Paladugu <sivadur@xilinx.com>
-References: <20210610082040.2075611-1-miquel.raynal@bootlin.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <5639e973-c5a0-abbc-6a9d-212d33dd28bf@canonical.com>
-Date: Thu, 10 Jun 2021 17:21:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
+ linux-kernel@vger.kernel.org, Naga Sureshkumar Relli <nagasure@xilinx.com>,
+ helmut.grohne@intenta.de, Michal Simek <monstr@monstr.eu>,
+ Srinivas Goud <sgoud@xilinx.com>, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v23 00/18] ARM Primecell PL35x support
+Date: Thu, 10 Jun 2021 17:24:31 +0200
+Message-Id: <162333862777.77538.13169948771709140035.b4-ty@canonical.com>
+X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210610082040.2075611-1-miquel.raynal@bootlin.com>
-Content-Language: en-US
+References: <20210610082040.2075611-1-miquel.raynal@bootlin.com>
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210610_082157_020327_58853122 
-X-CRM114-Status: GOOD (  15.77  )
+X-CRM114-CacheID: sfid-20210610_082445_509463_2BF11E7B 
+X-CRM114-Status: GOOD (  10.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,33 +102,59 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMTAvMDYvMjAyMSAxMDoyMCwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiBIZWxsbywKPiAKPiBJ
-IGFtIHRha2luZyBvdmVyIE5hZ2EncyBzZXJpZXMsIGhlcmUgYXJlIHRoZSBtYWpvciBjaGFuZ2Vz
-Ogo+ICogQ2xlYW5pbmcgb2YgdGhlIFNNQyBidXMgYmluZGluZyBmaWxlIChhbmQgeWFtbCBjb252
-ZXJzaW9uKQo+ICogU3VwZXJmaWNpYWwgY2xlYW5pbmcgYW5kIGdyZWF0IHNpbXBsaWZpY2F0aW9u
-IG9mIHRoZSBTTUMgYnVzIGRyaXZlcgo+ICogQWRkaXRpb24gb2YgYSB5YW1sIGZpbGUgZGVzY3Jp
-YmluZyB0aGUgTkFORCBjb250cm9sbGVyCj4gKiBGdWxsIHJld29yayBvZiB0aGUgTkFORCBjb250
-cm9sbGVyIGRyaXZlci4gSkZGUzIgYW5kIFVCSUZTIG5vdCB0ZXN0ZWQKPiAgIHlldCwgb25seSBi
-YXJlIHRlc3QgdG9vbHMgaGF2ZSBiZWVuIHVzZWQgdG8gcHJvb3ZlIGJhc2ljIGNvcnJlY3RuZXNz
-Cj4gICBvZiB0aGUgaGVscGVycy4KPiAqIEFkZGl0aW9uIG9mIGEgY291cGxlIG9mIE1BSU5UQUlO
-RVJTIGVudHJpZXMuCj4gCj4gQSBHaXRodWIgYnJhbmNoIG5hbWVkIHBsMzUzIGlzIGF2YWlsYWJs
-ZSBvbiBteSByZXBvc2l0b3J5Ogo+IGh0dHBzOi8vZ2l0aHViLmNvbS9taXF1ZWxyYXluYWwvbGlu
-dXgvCj4gCj4gVGhhbmtzLAo+IE1pcXXDqGwKPiAKPiBDaGFuZ2VzIGluIHYyMzoKPiAtIENvbGxl
-Y3RlZCBOYWdhIEFja2VkLWJ5J3MuCj4gLSBVc2VkIGNvbnN0IGluc3RlYWQgb2Ygc2luZ2xlIGVu
-dW0gZW50cmllcyBpbiB0aGUgYmluZGluZ3MuCj4gLSBEcm9wcGVkIHRoZSBhZGRyZXNzLWNlbGxz
-L3NpemUtY2VsbHMgc3VwZXJmbHVvdXMgZGVmaW5pdGlvbnMgb3V0IG9mCj4gICB0aGUgTkFORCBj
-b250cm9sbGVyIGJpbmRpbmcuCj4gLSBFbmhhbmNlZCB0aGUgU01DIHJlZyBwcm9wZXJ0eSBkZXNj
-cmlwdGlvbiB0byBtZW50aW9uIHRoYXQgdGhlIHZhcmlvdXMKPiAgIENTIGFyZSBkZXNjcmliZWQg
-aW4gdGhlIHJhbmdlcyBwcm9wZXJ0eS4KPiAtIEZpeGVkIHRoZSBTTUMgY2hpbGQgbm9kZXMgcmVn
-ZXggdG8gbWF0Y2ggUm9iJ3MgcmVxdWlyZW1lbnRzLgo+IAoKSSdsbCBhcHBseSB0aGUgbWVtb3J5
-IHBhdGNoZXMgaGVyZSAtIGR0LWJpbmRpbmdzIHdoaWNoIGhhcyBSb2IncyBhY2sgYW5kCmRyaXZl
-ciBjaGFuZ2VzLiBJdCdzIGdldHRpbmcgdG9vIGxhdGUgaW4gdGhlIGN5Y2xlIGFuZCBzb29uIGFy
-bS1zb2MKd29uJ3QgYWNjZXB0IHN1Y2ggYmlnIHBhdGNoc2V0LgoKCkJlc3QgcmVnYXJkcywKS3J6
-eXN6dG9mCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Thu, 10 Jun 2021 10:20:22 +0200, Miquel Raynal wrote:
+> I am taking over Naga's series, here are the major changes:
+> * Cleaning of the SMC bus binding file (and yaml conversion)
+> * Superficial cleaning and great simplification of the SMC bus driver
+> * Addition of a yaml file describing the NAND controller
+> * Full rework of the NAND controller driver. JFFS2 and UBIFS not tested
+>   yet, only bare test tools have been used to proove basic correctness
+>   of the helpers.
+> * Addition of a couple of MAINTAINERS entries.
+> 
+> [...]
+
+Applied, thanks!
+
+[01/18] dt-binding: memory: pl353-smc: Rephrase the binding
+        commit: a70eb9165e2a0f2867f0eb78f12665893d135ee1
+[02/18] dt-binding: memory: pl353-smc: Document the range property
+        commit: 386783ea6d9f21374cb11e0e8b8b4bd9770ef485
+[03/18] dt-binding: memory: pl353-smc: Drop the partitioning section
+        commit: f1d19f7400132b45cab4ee60e974150699fe28b5
+[04/18] dt-binding: memory: pl353-smc: Describe the child reg property
+        commit: 6c74a55e1d791be9758d9f23b1c5375854949188
+[05/18] dt-binding: memory: pl353-smc: Fix the example syntax and style
+        commit: 540148ce3455f0dc4fac9414ac12337ae0ab7cf2
+[06/18] dt-binding: memory: pl353-smc: Drop unsupported nodes from the example
+        commit: 29c6d09f39591eb3ea5e8e64ed42b28b9ae31f99
+[07/18] dt-binding: memory: pl353-smc: Fix the NAND controller node in the example
+        commit: 9af22e1169dd6b0f498fa8f9bff7c44f721b1b20
+
+8-9: still acks needed
+
+[10/18] memory: pl353-smc: Fix style
+        commit: 62584c870cba9c84f08dadc083c6359dc41df678
+[11/18] memory: pl353-smc: Rename goto labels
+        commit: edd84c4256e2a2c756a241728b8c31e14bbed2f7
+[12/18] memory: pl353-smc: Let lower level controller drivers handle inits
+        commit: 493db2b05d9217da5889840ee31121856627e3c6
+[13/18] memory: pl353-smc: Avoid useless acronyms in descriptions
+        commit: 9d7bb4493acfb7a131230e7785e7416de50b28b6
+[14/18] memory: pl353-smc: Declare variables following a reverse christmas tree order
+        commit: df6c2646d0e459ea6aa1d2caff683cc75df63b31
+[15/18] MAINTAINERS: Add PL353 SMC entry
+        commit: 813d52799ad28579da3ed5a88c1bacd8069dd172
+
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
