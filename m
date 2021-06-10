@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CBE48C48BE6
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jun 2021 08:30:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21726C47094
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jun 2021 08:33:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 94190610C7
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jun 2021 08:30:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94190610C7
+	by mail.kernel.org (Postfix) with ESMTPS id DA9CB611CC
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jun 2021 08:33:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA9CB611CC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,21 +23,21 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=t9aUVXtLC+89NqDUQDSHejv8vRObhKMgdeUC9egk2xM=; b=NSpGZYvfTX3YKY
-	d1MakIRYJqqxn85IEwRajColk0Y3wOmIf/hmn7fDWr0ztZVXQNbkq9sbRF/oxvanIKrwApchJVR8z
-	rA8g4uY+2UGfKnFphslJWN9/DSx478MxVOFo78s6+WDPmkgH3Y1s78+FkSeiVj4dA6oN3A2TFq/qc
-	p5XpZKx1XbC63aFyHEYjZoa2ohYmbv0b84fpdum1Iqr/YCQMH0oIMDaXgoHk9rxyiJqqYMq68/GII
-	U+RPvwq+OTPPCjPQDr/CqSCB5Uq95ER/iAqygUYmRog8LCi0FALU4UJNcKNwXjCIpWrj9ZJnunAop
-	PG4Zi8VGxOp/DTTwetIA==;
+	List-Owner; bh=OpOr5OfNputugwh8AZcMat+61304HavOQ4SNf26Oivc=; b=HCmXq8T8EOWR5F
+	uF+R6cWOsbDmzkT6yFNejQpyMzRV69oNhQoTv98Tgmub9u2kG4OIK95+8L5Wmec27D6W18ergjR6t
+	91FT9nuYNzcPzndrKKPt0Z3M+eSCUypuBJeOkCqU9eXFRRVQ1kv3iKZEI/C1NYMETd6d7f8yFkRbG
+	lH9LvZO/IiVzjAhUs3A+cs0Rm/RhW7ZVbZiI/7lyScAbBEcPhdhTFCkLMjsNSWqC52ErZwbZJH9Xm
+	YQQpY5hqaokFV/ss57EYaR4WFnoeeHA6bNgBAQQqiv45H5QeikjyidMXaChn2Nl3xp7jdq/VfOgpC
+	2BkGc1JEX7JMt2WpfgHw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lrG4n-00HVVo-Gu; Thu, 10 Jun 2021 08:30:09 +0000
+	id 1lrG7Y-00HWN4-02; Thu, 10 Jun 2021 08:33:00 +0000
 Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lrFvv-00HS05-Ix; Thu, 10 Jun 2021 08:21:00 +0000
+ id 1lrFvx-00HS0p-6g; Thu, 10 Jun 2021 08:21:02 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 2E3BE20013;
- Thu, 10 Jun 2021 08:20:56 +0000 (UTC)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 343A220006;
+ Thu, 10 Jun 2021 08:20:58 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
@@ -51,18 +51,19 @@ Cc: Michal Simek <monstr@monstr.eu>,
  <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  helmut.grohne@intenta.de, Srinivas Goud <sgoud@xilinx.com>,
  Siva Durga Prasad Paladugu <sivadur@xilinx.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Rob Herring <robh@kernel.org>
-Subject: [PATCH v23 07/18] dt-binding: memory: pl353-smc: Fix the NAND
- controller node in the example
-Date: Thu, 10 Jun 2021 10:20:29 +0200
-Message-Id: <20210610082040.2075611-8-miquel.raynal@bootlin.com>
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v23 08/18] dt-binding: memory: pl353-smc: Enhance the
+ description of the reg property
+Date: Thu, 10 Jun 2021 10:20:30 +0200
+Message-Id: <20210610082040.2075611-9-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210610082040.2075611-1-miquel.raynal@bootlin.com>
 References: <20210610082040.2075611-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210610_012059_795587_925DA638 
-X-CRM114-Status: GOOD (  10.15  )
+X-CRM114-CacheID: sfid-20210610_012101_407035_0A9187BB 
+X-CRM114-Status: UNSURE (   9.76  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,37 +80,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-To be fully valid, the NAND controller node in the example should be
-named nand-controller instead of flash, should be at the address @0,0
-instead of @e1000000 and should have a couple of:
-- #address-cells
-- #size-cells
-properties.
-
-The label is being renamed nfc0 as well which is more usual than nand_0.
+The SMC bus controller features several register sets. The one pointed
+by the reg property is for the SMC configuration (impacts the
+sub-controllers configuration), while the others are meant to be used to
+send regular cycles on the memory bus (eg. CMD, ADDR, DATA for a NAND
+device). Detail this a little bit for the sake of clarity.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- .../devicetree/bindings/memory-controllers/pl353-smc.txt      | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ .../devicetree/bindings/memory-controllers/pl353-smc.txt       | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt b/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
-index 3ff6a4a49302..ecd46856f139 100644
+index ecd46856f139..ba6a5426f62b 100644
 --- a/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
 +++ b/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
-@@ -35,8 +35,10 @@ Example:
- 			  0x1 0x0 0xe2000000 0x2000000 /* SRAM/NOR CS0 region */
- 			  0x2 0x0 0xe4000000 0x2000000>; /* SRAM/NOR CS1 region */
+@@ -5,7 +5,8 @@ of memory interfaces: NAND and memory mapped interfaces (such as SRAM or NOR).
  
--		nand_0: flash@e1000000 {
-+		nfc0: nand-controller@0,0 {
- 			compatible = "arm,pl353-nand-r2p1";
- 			reg = <0 0 0x1000000>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
- 		};
- 	};
+ Required properties:
+ - compatible		: Should be "arm,pl353-smc-r2p1", "arm,primecell".
+-- reg			: Controller registers map and length.
++- reg			: SMC controller and sub-controllers configuration
++			  registers.
+ - clock-names		: List of input clock names - "memclk", "apb_pclk"
+ 			  (See clock bindings for details).
+ - clocks		: Clock phandles (see clock bindings for details).
 -- 
 2.27.0
 
