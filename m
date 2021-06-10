@@ -2,69 +2,93 @@ Return-Path: <SRS0=9fF3=LE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98CCDC48BCF
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jun 2021 02:30:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF692C48BCD
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jun 2021 02:35:38 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 50A6661407
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jun 2021 02:30:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 50A6661407
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
+	by mail.kernel.org (Postfix) with ESMTPS id 83BCD613FE
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jun 2021 02:35:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 83BCD613FE
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ArG1Caf/03NhQlt3g8gOewSnHd26jlgkMnJRYxP936g=; b=46El9u/fZb4dvS
-	+qY7obyqJRpHU2NvEypwFUl6m92fWaUgMzYMxiYv4eqkN7R3IGso7r16snknro+8IZwNiTziOXCcx
-	kWgz0UyWyRJMarff1nYfee6pnT5rTIcWHt5VONJ6E4sdhNYgzLLlkPM6DgRNUO9y99PM+1P4X15Qw
-	PAWvBcM/YjsxZWttGUI4FeePVxu+6KeUyAlvi14GXQD2j0iPBD4FsZEJmg+MzWeVeD00gbJ6V6SqR
-	egHa0Nb7f6OxS7tXx0w/k3ZFKW76G5vAH4bURunknIU2gw2P5TKmqhuIw2C1RThIdTS+J2on0fht6
-	d6jxwLUhClrAytvBrQng==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=LieAkNw84xa5TcY6cdWbeUqPeK4QaU/fhKlXt4AdBJQ=; b=SCp1e6kW5Fp+CK
+	w4dusnP53R/0RviqxoHhVr3zwFx8cPT4Lxn6VKvFOe+BE0d37OK7M0q3GANpmE8OJuncXNydAVdet
+	KjuVqjT5UKsaxuPy7/t2gvpqD8WrPovR5q7vy8TDnHDfz5vzCc/DaMp9flHhZGNLkKo1FZ2xEHVm5
+	sPr6pQmQ77KsN6UgeSVrNeHvsXdO+pvEE6OxPmevR2pn5lse7MDRJnD4284HjZlu7c2NClD8PCHL9
+	9P6PmlBPp+CEzLXpdm5j9objQvOUiUJVRCONUdQOhfsPrS5UgxwiqdlKe9IOQDGui0Qvw3X/GFicd
+	1S7XPmVa9uXx6c3cE7Sw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lrARa-00GRpy-Es; Thu, 10 Jun 2021 02:29:18 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1lrAX4-00GSpU-UF; Thu, 10 Jun 2021 02:34:58 +0000
+Received: from mail-ot1-f44.google.com ([209.85.210.44])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lrARW-00GRoa-Vh
- for linux-mtd@lists.infradead.org; Thu, 10 Jun 2021 02:29:16 +0000
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
- by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G0nq72vLszWtkk;
- Thu, 10 Jun 2021 10:24:19 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 10 Jun 2021 10:28:57 +0800
-Received: from thunder-town.china.huawei.com (10.174.177.72) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 10 Jun 2021 10:28:57 +0800
-From: Zhen Lei <thunder.leizhen@huawei.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd
- <linux-mtd@lists.infradead.org>
-CC: Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] mtd: inftl: remove unnecessary oom message
-Date: Thu, 10 Jun 2021 10:28:50 +0800
-Message-ID: <20210610022850.15397-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+ id 1lrAX2-00GSUS-CS; Thu, 10 Jun 2021 02:34:57 +0000
+Received: by mail-ot1-f44.google.com with SMTP id
+ o17-20020a9d76510000b02903eabfc221a9so12316973otl.0; 
+ Wed, 09 Jun 2021 19:32:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=w3Qk3mDaHVdG6iOni8nUWBguXf5d+3DBDCqBEu56Bpg=;
+ b=T8eKqtQDuZV23ePWNCAKMRTxLOhpFeu+MkXi/wtyAblnUJUICAW/EYnvSopWvbp6LE
+ fZmavmEAcNRnkJodjUkLa40DqUFQzGYYVHbS49pmZY68BychSi5inG9XNDcWlDypNNhs
+ VrxW/5VvYnG4MgOPNsUI4M31J5VEtMvaldKxQJ7VD1g9Si+bAkCM1zHJfGJESbUnj8pB
+ kbOJO5O1zKv6tttBlwH0nvMGg2s7LyhjP7beWBEa+jSg9KoLuxWvD5tBW9CptQ6Uaf7E
+ ciEl9mUg32jFFa7fLJ8RPTPxCuAZseuvXwQxLLkWnyGCmga770Xa2yQR+fakqupm20un
+ AIgw==
+X-Gm-Message-State: AOAM531j7K6Kk7sGckXyGZuQPItzXUHTMVfIeatQu8CT8ExUKLD3taXM
+ K5mHVz0rbCDQNYI1SZAByw==
+X-Google-Smtp-Source: ABdhPJz5Fm5SOTjq59+89tCBY1vEuqORfUL+b3CCToeDK1+/IClyQhAK5cM1UmY8xOZaiA5MX01xGQ==
+X-Received: by 2002:a05:6830:22ec:: with SMTP id
+ t12mr540593otc.243.1623292373914; 
+ Wed, 09 Jun 2021 19:32:53 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net.
+ [24.155.109.49])
+ by smtp.gmail.com with ESMTPSA id w186sm319636oib.58.2021.06.09.19.32.52
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 09 Jun 2021 19:32:53 -0700 (PDT)
+Received: (nullmailer pid 672655 invoked by uid 1000);
+ Thu, 10 Jun 2021 02:32:51 -0000
+Date: Wed, 9 Jun 2021 21:32:51 -0500
+From: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
+ Naga Sureshkumar Relli <nagasure@xilinx.com>,
+ Amit Kumar Mahapatra <akumarma@xilinx.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ helmut.grohne@intenta.de, Srinivas Goud <sgoud@xilinx.com>,
+ Siva Durga Prasad Paladugu <sivadur@xilinx.com>
+Subject: Re: [PATCH v22 17/18] dt-bindings: mtd: pl353-nand: Describe this
+ hardware controller
+Message-ID: <20210610023251.GA648931@robh.at.kernel.org>
+References: <20210609080112.1753221-1-miquel.raynal@bootlin.com>
+ <20210609080112.1753221-18-miquel.raynal@bootlin.com>
+ <57ef16cd-33e7-6c16-3a24-9634f47831b3@canonical.com>
+ <20210609153621.1303bc4d@xps13>
+ <6fb9c0e4-43cb-d224-0ebe-568f62ac35b1@canonical.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Disposition: inline
+In-Reply-To: <6fb9c0e4-43cb-d224-0ebe-568f62ac35b1@canonical.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210609_192915_229977_B044D7F7 
-X-CRM114-Status: UNSURE (   8.43  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210609_193456_448612_69D7C1C8 
+X-CRM114-Status: GOOD (  22.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,60 +105,80 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Fixes scripts/checkpatch.pl warning:
-WARNING: Possible unnecessary 'out of memory' message
+On Wed, Jun 09, 2021 at 03:57:05PM +0200, Krzysztof Kozlowski wrote:
+> On 09/06/2021 15:36, Miquel Raynal wrote:
+> > Hi Krzysztof,
+> > 
+> > Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> wrote on Wed, 9
+> > Jun 2021 14:01:10 +0200:
+> > 
+> >> On 09/06/2021 10:01, Miquel Raynal wrote:
+> >>> Add a yaml description of this NAND controller which is described as a
+> >>> subnode of the SMC bus.
+> >>>
+> >>> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> >>> ---
+> >>>  .../bindings/mtd/arm,pl353-nand-r2p1.yaml     | 57 +++++++++++++++++++
+> >>>  1 file changed, 57 insertions(+)
+> >>>  create mode 100644 Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
+> >>>
+> >>> diff --git a/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml b/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
+> >>> new file mode 100644
+> >>> index 000000000000..e72fa14b4385
+> >>> --- /dev/null
+> >>> +++ b/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
+> >>> @@ -0,0 +1,57 @@
+> >>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> >>> +%YAML 1.2
+> >>> +---
+> >>> +$id: http://devicetree.org/schemas/mtd/arm,pl353-nand-r2p1.yaml#
+> >>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> >>> +
+> >>> +title: PL353 NAND Controller device tree bindings
+> >>> +
+> >>> +allOf:
+> >>> +  - $ref: "nand-controller.yaml"
+> >>> +
+> >>> +maintainers:
+> >>> +  - Miquel Raynal <miquel.raynal@bootlin.com>
+> >>> +  - Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+> >>> +
+> >>> +properties:
+> >>> +  compatible:
+> >>> +    items:
+> >>> +      - enum:  
+> >>
+> >> That's not an enum, but simple const without items.
+> > 
+> > Ok.
+> > 
+> >>
+> >>> +          - arm,pl353-nand-r2p1
+> >>> +
+> >>> +  reg:
+> >>> +    items:
+> >>> +      - items:
+> >>> +          - description: CS with regard to the parent ranges property
+> >>> +          - description: Offset of the memory region requested by the device
+> >>> +          - description: Length of the memory region requested by the device  
+> >>
+> >> Doesn't it depend on parent's address/size cells?
+> > 
+> > Yes, but as the child nodes are not defined in the parent's binding
+> > (ie. the SMC) I think it's interesting to have them defined here, no?
+> 
+> The trouble is if parent decides to have different address/size cells.
+> The schema will stop matching. I am actually not that sure if such case
+> is real since the pl353 NAND part will usually be connected to pl353
+> SMC. However the schema now hard-codes specific dependency against
+> parent schema/node.
+> 
+> Rob,
+> Maybe you have here some thoughts?
 
-Remove it can help us save a bit of memory.
+I think it is fine given the parent child coupling.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/mtd/inftlmount.c | 15 ++-------------
- 1 file changed, 2 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
-index 39d024118610264..6276daa296dab62 100644
---- a/drivers/mtd/inftlmount.c
-+++ b/drivers/mtd/inftlmount.c
-@@ -259,20 +259,13 @@ static int find_boot_record(struct INFTLrecord *inftl)
- 		/* Memory alloc */
- 		inftl->PUtable = kmalloc_array(inftl->nb_blocks, sizeof(u16),
- 					       GFP_KERNEL);
--		if (!inftl->PUtable) {
--			printk(KERN_WARNING "INFTL: allocation of PUtable "
--				"failed (%zd bytes)\n",
--				inftl->nb_blocks * sizeof(u16));
-+		if (!inftl->PUtable)
- 			return -ENOMEM;
--		}
- 
- 		inftl->VUtable = kmalloc_array(inftl->nb_blocks, sizeof(u16),
- 					       GFP_KERNEL);
- 		if (!inftl->VUtable) {
- 			kfree(inftl->PUtable);
--			printk(KERN_WARNING "INFTL: allocation of VUtable "
--				"failed (%zd bytes)\n",
--				inftl->nb_blocks * sizeof(u16));
- 			return -ENOMEM;
- 		}
- 
-@@ -558,12 +551,8 @@ int INFTL_mount(struct INFTLrecord *s)
- 
- 	/* Temporary buffer to store ANAC numbers. */
- 	ANACtable = kcalloc(s->nb_blocks, sizeof(u8), GFP_KERNEL);
--	if (!ANACtable) {
--		printk(KERN_WARNING "INFTL: allocation of ANACtable "
--				"failed (%zd bytes)\n",
--				s->nb_blocks * sizeof(u8));
-+	if (!ANACtable)
- 		return -ENOMEM;
--	}
- 
- 	/*
- 	 * First pass is to explore each physical unit, and construct the
--- 
-2.26.0.106.g9fadedd
-
-
+Rob
 
 ______________________________________________________
 Linux MTD discussion mailing list
