@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E45D9C47094
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jun 2021 08:54:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B22D7C47094
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jun 2021 08:58:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A3B01613F1
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jun 2021 08:54:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A3B01613F1
+	by mail.kernel.org (Postfix) with ESMTPS id 79C40613FE
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jun 2021 08:58:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 79C40613FE
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,21 +23,21 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VB5xtD0BhOFAnvI9zNrtOB1TXBv3+KzLUZrNI5U+hKE=; b=tz3vGNGIIWLFNl
-	C/K4d38A7xDr9hSYDqX0NTStPLYlorNWjouSsiCQWjsNgMI1VDZzO07Bg2HVCWs/uz7aJYP83ZYKU
-	M6G9cTzw7ppO07GwUr0Hz8yHZDEEm3vsx0bBUFClv9JFocdyeXoK30wDfffbNWqQcRrGdxXPXZHDA
-	RxZwRS0UZiHFr866Ni1x3O+DYDRk2hRCbC9SIeKi5SOUnSaGiwrKxW2Lxm2PB/o0yCR0Glpyz2YQE
-	kiel+kcHukFWAhYHhy278Ihx1qyBhiGDh7PucXZ4UQGeXc3UVvxNuD6FKkhzrC4KAjoFcXdAH/j8x
-	t4AYlI/uM5gC8wT/rU9Q==;
+	List-Owner; bh=2jxhptAABVT9MTfZH11edqoZ9dt955YsFsgMm+5x7tI=; b=LgQG5oFBW/wQY+
+	COUfBxtHNFcJYV3hmSSxl3yeslt8SlwVffxIWlkyX4SAkXgWF4clBUMZbZ6XSDAj01/lz24tEOSmB
+	We/S9RJwM78PfIberfsRqMdbRYPVJn1lQHvur1+IYmc+ySub8gdPVHuUDUc/FreCpLS1O83ApgASi
+	iZ8r9nLTyyX2yBgq9OJ5F3AKnio891+IMMHfJ8VXn87Qnjr6hpr2oKkm/nEqvcQrYfZ9HSElc9gt4
+	q6E//M4bh9JgKLXzB3+XivgtRU0KgTbpBOuPyO+c199mJ9zgfJqaaFAuPINN+DqsFTVvbN2UqgiYd
+	2h/tmv8wrsXXU/LIG2Tw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lrGRt-0001Fw-7t; Thu, 10 Jun 2021 08:54:01 +0000
+	id 1lrGVB-0002jc-T2; Thu, 10 Jun 2021 08:57:26 +0000
 Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lrFw9-00HS58-B2; Thu, 10 Jun 2021 08:21:14 +0000
+ id 1lrFwB-00HS6D-Pb; Thu, 10 Jun 2021 08:21:17 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 007F020004;
- Thu, 10 Jun 2021 08:21:09 +0000 (UTC)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id EE57420009;
+ Thu, 10 Jun 2021 08:21:11 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
@@ -51,18 +51,18 @@ Cc: Michal Simek <monstr@monstr.eu>,
  <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  helmut.grohne@intenta.de, Srinivas Goud <sgoud@xilinx.com>,
  Siva Durga Prasad Paladugu <sivadur@xilinx.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v23 14/18] memory: pl353-smc: Declare variables following a
- reverse christmas tree order
-Date: Thu, 10 Jun 2021 10:20:36 +0200
-Message-Id: <20210610082040.2075611-15-miquel.raynal@bootlin.com>
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+Subject: [PATCH v23 15/18] MAINTAINERS: Add PL353 SMC entry
+Date: Thu, 10 Jun 2021 10:20:37 +0200
+Message-Id: <20210610082040.2075611-16-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210610082040.2075611-1-miquel.raynal@bootlin.com>
 References: <20210610082040.2075611-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210610_012113_560640_CF5B079C 
-X-CRM114-Status: UNSURE (   9.96  )
+X-CRM114-CacheID: sfid-20210610_012115_988238_068C17B2 
+X-CRM114-Status: UNSURE (   7.13  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -80,41 +80,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is a purely cosmetic change.
+Add Naga from Xilinx and myself responsible of this driver.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Acked-by: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
 ---
- drivers/memory/pl353-smc.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ MAINTAINERS | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/memory/pl353-smc.c b/drivers/memory/pl353-smc.c
-index b913d68a7a41..925d856663ac 100644
---- a/drivers/memory/pl353-smc.c
-+++ b/drivers/memory/pl353-smc.c
-@@ -36,8 +36,8 @@ static int __maybe_unused pl353_smc_suspend(struct device *dev)
+diff --git a/MAINTAINERS b/MAINTAINERS
+index bd7aff0c120f..b4315b76645a 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1452,6 +1452,14 @@ S:	Odd Fixes
+ F:	drivers/amba/
+ F:	include/linux/amba/bus.h
  
- static int __maybe_unused pl353_smc_resume(struct device *dev)
- {
-+	struct pl353_smc_data *pl353_smc = dev_get_drvdata(dev);
- 	int ret;
--	struct pl353_smc_data *pl353_smc = dev_get_drvdata(dev);
- 
- 	ret = clk_enable(pl353_smc->aclk);
- 	if (ret) {
-@@ -70,11 +70,11 @@ static const struct of_device_id pl353_smc_supported_children[] = {
- 
- static int pl353_smc_probe(struct amba_device *adev, const struct amba_id *id)
- {
-+	struct device_node *of_node = adev->dev.of_node;
-+	const struct of_device_id *match = NULL;
- 	struct pl353_smc_data *pl353_smc;
- 	struct device_node *child;
- 	int err;
--	struct device_node *of_node = adev->dev.of_node;
--	const struct of_device_id *match = NULL;
- 
- 	pl353_smc = devm_kzalloc(&adev->dev, sizeof(*pl353_smc), GFP_KERNEL);
- 	if (!pl353_smc)
++ARM PRIMECELL PL35X SMC DRIVER
++M:	Miquel Raynal <miquel.raynal@bootlin.com@bootlin.com>
++M:	Naga Sureshkumar Relli <nagasure@xilinx.com>
++L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
++S:	Maintained
++F:	Documentation/devicetree/bindings/mtd/arm,pl353-smc.yaml
++F:	drivers/memory/pl353-smc.c
++
+ ARM PRIMECELL CLCD PL110 DRIVER
+ M:	Russell King <linux@armlinux.org.uk>
+ S:	Odd Fixes
 -- 
 2.27.0
 
