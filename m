@@ -1,81 +1,70 @@
-Return-Path: <SRS0=Gl3N=LD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=9fF3=LE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BC3CC48BCD
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Jun 2021 20:53:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7E83C48BCD
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jun 2021 02:03:13 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5AFF4613C7
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Jun 2021 20:53:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5AFF4613C7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id ACF1E613BC
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jun 2021 02:03:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ACF1E613BC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fAeGsTr0eVVF3kCg6EQBjbCYQAqUJkV+ITwF7vNurZA=; b=oZNiz2b8A5uahY
-	1dbZZgz7rWxyZ9vGFJm9oPgJAKdxOcxhakAcyW+v6JqQPLPkLnmYc0meeldNll5eZSR5ORXKYa9gt
-	0ok+zIvBqOK65LdtTjsnijGVRIEIJbyZwYVW5v64+KIvGjPxMK+7MRxHSRAT4jR9qiuTt/wz3pwYy
-	gaZPT7zH9lP9orlhh1sv12Iqi1RkY+s9Y8qCG5ih3xTCrWBnu0u2TB0NPS3hykE5Sd32z3hpCrd98
-	VCx67vfCavWgVl1UmoxBXb4ChK3kWWl6PGd7YR6CPZbATgMi/NJ4BbahxmOPPer+HDPcsEeUz2v84
-	DDwHIs9FnkYs77+sZkqg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=y7A6suSbtDmubahGH8Q5qoX6p2YXsGfPtLHXxZ160AU=; b=CI7x2JZzGdkqfR
+	gQjWNozr8yK4tHkz83GWyBkE1yo+Wu/oaktn+ew58aImIuQUhv11g9CBq7rce9AChjm25a6pKlPOy
+	8Z3GxAShEo7w/6q0XqFnG0FremKnDkA4f5RrPFL907SNJAoincaY6vZAFG5H91eH4pGBX4IrY84U3
+	pkj38tsFn4nta/oo8GwCFv+y9xb79r7kBDRPrLl3IWXE7+tCl0yuCNCnXeV3FoSZaA+jE1+Y4TDCs
+	dCZJVKdMHNPkp1Nc1kIQI8jnb5Lxufn7vQKvaD3xjF2Ne1pD7XX+5DOjc645vHE+JViz+ffQK+1jo
+	TG7k4cF271M5a48FLIrg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lr5BU-00FqSs-92; Wed, 09 Jun 2021 20:52:20 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1lrA19-00GMWP-KL; Thu, 10 Jun 2021 02:01:59 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lr5BL-00FqRj-IY
- for linux-mtd@lists.infradead.org; Wed, 09 Jun 2021 20:52:14 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BFEF613F0
- for <linux-mtd@lists.infradead.org>; Wed,  9 Jun 2021 20:52:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1623271931;
- bh=2xJm8+K9K3yMMtA6Yx9r/pcA3AR2W+Issga14oVL+C4=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=AbzkJununfgwbAGwE3AtUtr2nA57hzQFqDq6jZfslDbmgZ7UrZM38e7a6e/0NNLZE
- kVc3hq9v0BcJ1eyKCYiQoot0UDEP/qBq6yvZMYEQADfOBt5arC55BWrzX37JFASnQq
- ytRoTFR6PFv+kdilSubISa8kwUShrPT3z+c3k96e8hgX5t+ZQqroG0FFSpdYL+Z8d0
- IxC7L/72/i3QqRgPh5Qunwl4fH2RI7PrmSCRDrOUMx7ynM92sYwkLHCvfB0zddTPzZ
- e/AEFrfu9KIY6E+UyAtnOe1Gv3X0i+V556FJg2YI3fSwIN8JR/38riT1T/VrJgdGic
- XyySS5HyLbZ9g==
-Received: by mail-ed1-f41.google.com with SMTP id b11so30117556edy.4
- for <linux-mtd@lists.infradead.org>; Wed, 09 Jun 2021 13:52:10 -0700 (PDT)
-X-Gm-Message-State: AOAM530RrhpzWyzskgiOt1jnhjREEPbaZb+C4ZoAL0S+7TOmtVyXxZav
- JgWqF98nwJ/utF4Qd4FVJXucDqyrjkG0lvdjYw==
-X-Google-Smtp-Source: ABdhPJzrK1tDX4o4Uy/uplvx+4AlBnNvKFj8nYmtpy43TZKhYfrjC8V5LdESsaQIeFWnDzy8sshEhj8QPP1doC80iXs=
-X-Received: by 2002:aa7:cd83:: with SMTP id x3mr1187447edv.373.1623271929496; 
- Wed, 09 Jun 2021 13:52:09 -0700 (PDT)
+ id 1lrA16-00GMVW-IT
+ for linux-mtd@lists.infradead.org; Thu, 10 Jun 2021 02:01:58 +0000
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G0nFv3qrVzYrjX;
+ Thu, 10 Jun 2021 09:58:59 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 10 Jun 2021 10:01:49 +0800
+Received: from thunder-town.china.huawei.com (10.174.177.72) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 10 Jun 2021 10:01:49 +0800
+From: Zhen Lei <thunder.leizhen@huawei.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd
+ <linux-mtd@lists.infradead.org>
+CC: Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] mtd: nftl: remove unnecessary oom message
+Date: Thu, 10 Jun 2021 10:01:30 +0800
+Message-ID: <20210610020130.14917-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-References: <20210609111707.9555-1-p.yadav@ti.com>
- <20210609111707.9555-2-p.yadav@ti.com>
-In-Reply-To: <20210609111707.9555-2-p.yadav@ti.com>
-From: Rob Herring <robh+dt@kernel.org>
-Date: Wed, 9 Jun 2021 15:51:58 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqK5hu6NSVxiTpPvH_jHA97WTj3=DyJhDf5g1hwXXZ8MZA@mail.gmail.com>
-Message-ID: <CAL_JsqK5hu6NSVxiTpPvH_jHA97WTj3=DyJhDf5g1hwXXZ8MZA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] spi: dt-bindings: add schema listing slave-specific
- properties
-To: Pratyush Yadav <p.yadav@ti.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, 
- Vignesh Raghavendra <vigneshr@ti.com>, Mark Brown <broonie@kernel.org>, 
- MTD Maling List <linux-mtd@lists.infradead.org>, devicetree@vger.kernel.org, 
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>, 
- Nishanth Menon <nm@ti.com>, Michael Walle <michael@walle.cc>, 
- Tudor Ambarus <tudor.ambarus@microchip.com>
+X-Originating-IP: [10.174.177.72]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210609_135211_669409_DCC57CC3 
-X-CRM114-Status: GOOD (  36.48  )
+X-CRM114-CacheID: sfid-20210609_190156_808907_1AF582A7 
+X-CRM114-Status: UNSURE (   8.33  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,163 +81,43 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jun 9, 2021 at 6:17 AM Pratyush Yadav <p.yadav@ti.com> wrote:
->
-> Many SPI controllers need to add properties to slave devices. This could
-> be the delay in clock or data lines, etc. These properties are
-> controller specific but need to be defined in the slave node because
-> they are per-slave and there can be multiple slaves attached to a
-> controller.
->
-> If these properties are not added to the slave binding, then the dtbs
-> check emits a warning. But these properties do not make much sense in
-> the slave binding because they are controller-specific and they will
-> just pollute every slave binding. So this binding is added to collect
-> all such properties from all such controllers. Slave bindings should
-> simply refer to this binding and they should be rid of the warnings.
+Fixes scripts/checkpatch.pl warning:
+WARNING: Possible unnecessary 'out of memory' message
 
-Thanks for working on this. I haven't thought of any better solution
-than this approach.
+Remove it can help us save a bit of memory.
 
-> There are some limitations with this approach. Firstly, there is no way
-> to specify required properties. The schema contains properties for all
-> controllers and there is no way to know which controller is being used.
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ drivers/mtd/nftlmount.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-If required properties are a function of the controller and not the
-controller+device, then the controller schema can list required
-properties for child nodes.
+diff --git a/drivers/mtd/nftlmount.c b/drivers/mtd/nftlmount.c
+index fd331bc15871f69..75e86ed3e6789b2 100644
+--- a/drivers/mtd/nftlmount.c
++++ b/drivers/mtd/nftlmount.c
+@@ -188,17 +188,14 @@ device is already correct.
+ 		/* memory alloc */
+ 		nftl->EUNtable = kmalloc_array(nftl->nb_blocks, sizeof(u16),
+ 					       GFP_KERNEL);
+-		if (!nftl->EUNtable) {
+-			printk(KERN_NOTICE "NFTL: allocation of EUNtable failed\n");
++		if (!nftl->EUNtable)
+ 			return -ENOMEM;
+-		}
+ 
+ 		nftl->ReplUnitTable = kmalloc_array(nftl->nb_blocks,
+ 						    sizeof(u16),
+ 						    GFP_KERNEL);
+ 		if (!nftl->ReplUnitTable) {
+ 			kfree(nftl->EUNtable);
+-			printk(KERN_NOTICE "NFTL: allocation of ReplUnitTable failed\n");
+ 			return -ENOMEM;
+ 		}
+ 
+-- 
+2.26.0.106.g9fadedd
 
-> Secondly, there is no way to restrict additional properties. Since this
-> schema will be used with an allOf operator, additionalProperties needs
-> to be true. In addition, the slave schema will have to set
-> unevaluatedProperties: false.
 
-No issue there other than unevaluatedProperties is currently not implemented.
-
-> Despite these limitations, this appears to be the best solution to this
-> problem that doesn't involve modifying existing tools or schema specs.
->
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> ---
->
->  .../bindings/spi/cdns,qspi-nor.yaml           | 33 ------------
->  .../bindings/spi/spi-slave-props.yaml         | 52 +++++++++++++++++++
-
-I think you need 2+ files here. A common one that's just an 'allOf' of
-all the controller specific schemas and then controller specific child
-node schemas.
-
->  2 files changed, 52 insertions(+), 33 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/spi/spi-slave-props.yaml
->
-> diff --git a/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
-> index 0e7087cc8bf9..0730e6a8dc4a 100644
-> --- a/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
-> +++ b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
-> @@ -74,39 +74,6 @@ properties:
->      items:
->        enum: [ qspi, qspi-ocp ]
->
-> -# subnode's properties
-> -patternProperties:
-> -  "@[0-9a-f]+$":
-> -    type: object
-> -    description:
-> -      Flash device uses the below defined properties in the subnode.
-> -
-> -    properties:
-> -      cdns,read-delay:
-> -        $ref: /schemas/types.yaml#/definitions/uint32
-> -        description:
-> -          Delay for read capture logic, in clock cycles.
-> -
-> -      cdns,tshsl-ns:
-> -        description:
-> -          Delay in nanoseconds for the length that the master mode chip select
-> -          outputs are de-asserted between transactions.
-> -
-> -      cdns,tsd2d-ns:
-> -        description:
-> -          Delay in nanoseconds between one chip select being de-activated
-> -          and the activation of another.
-> -
-> -      cdns,tchsh-ns:
-> -        description:
-> -          Delay in nanoseconds between last bit of current transaction and
-> -          deasserting the device chip select (qspi_n_ss_out).
-> -
-> -      cdns,tslch-ns:
-> -        description:
-> -          Delay in nanoseconds between setting qspi_n_ss_out low and
-> -          first bit transfer.
-> -
->  required:
->    - compatible
->    - reg
-> diff --git a/Documentation/devicetree/bindings/spi/spi-slave-props.yaml b/Documentation/devicetree/bindings/spi/spi-slave-props.yaml
-> new file mode 100644
-> index 000000000000..b2248e01dc43
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/spi-slave-props.yaml
-> @@ -0,0 +1,52 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/spi/spi-slave-props.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Slave-specific properties for a SPI bus.
-> +
-> +description: |
-> +  Many SPI controllers need to add properties to slave devices. This could be
-> +  the delay in clock or data lines, etc. These properties are controller
-> +  specific but need to be defined in the slave node because they are per-slave
-> +  and there can be multiple slaves attached to a controller.
-> +
-> +  If these properties are not added to the slave binding, then the dtbs check
-> +  emits a warning. But these properties do not make much sense in the slave
-> +  binding because they are controller-specific and they will just pollute every
-> +  slave binding. So this binding is added to collect all such properties from
-> +  all such controllers. Slave bindings should simply refer to this binding and
-> +  they should be rid of the warnings.
-
-I don't think this paragraph belongs in the schema.
-
-> +
-> +maintainers:
-> +  - Pratyush Yadav <p.yadav@ti.com>
-> +
-> +properties:
-> +  # cdns,qspi-nor.yaml
-> +  cdns,read-delay:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      Delay for read capture logic, in clock cycles.
-> +
-> +  cdns,tshsl-ns:
-> +    description:
-> +      Delay in nanoseconds for the length that the master mode chip select
-> +      outputs are de-asserted between transactions.
-> +
-> +  cdns,tsd2d-ns:
-> +    description:
-> +      Delay in nanoseconds between one chip select being de-activated
-> +      and the activation of another.
-> +
-> +  cdns,tchsh-ns:
-> +    description:
-> +      Delay in nanoseconds between last bit of current transaction and
-> +      deasserting the device chip select (qspi_n_ss_out).
-> +
-> +  cdns,tslch-ns:
-> +    description:
-> +      Delay in nanoseconds between setting qspi_n_ss_out low and
-> +      first bit transfer.
-> +
-> +additionalProperties: true
-> --
-> 2.30.0
->
 
 ______________________________________________________
 Linux MTD discussion mailing list
