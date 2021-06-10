@@ -2,68 +2,66 @@ Return-Path: <SRS0=9fF3=LE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AEC45C48BCD
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jun 2021 02:45:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 60EDBC48BCF
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jun 2021 03:04:08 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 784E0613E4
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jun 2021 02:45:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 784E0613E4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 2FBA861418
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jun 2021 03:04:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2FBA861418
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rock-chips.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tLznkqu17AyLd31dRPPZ/9NTnfZFrKjEyoqcQ1lvH1Y=; b=uKg1w/CW8isGNz
-	jbZIeRXPilE9p/QoPhHJGtLN8CAAH73Au9776R4qeAe/NXuNCIgaYOQGtTgBixUVVLT/wT3KXRlcU
-	k98EP1zjySmM9fF3Uv+E7tuG2Nx13Qe3x6mtJYCoxwDSwp/fPh602LBMM5C/DTvrVNHrz+MqBNFeu
-	/YA3FNQce3ubqt7gun8ZAC9G++FF8cdhYhInbps0yiZYJy3Pmzgl/Vcim8v0F/4jeXIBOay/RGxZj
-	Zgl6T9EsqnFB3LXz2z3ZLIPAnHuYsaswAvonGma4x8nkERMGLHMY5eX08KwTN3Ws/UPHy9ldLfXz1
-	E5ONmveqjFYQ8bgMQEBw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:Cc:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=d4GSzosVbW13oOtacjFkeEujlMsRiaGwaOF8ZHhPbUM=; b=BvBYXYFjgIzCEplhELtAa/1WA/
+	3joku2HPCsb0FPREzNTyuClXJUTjXi1IZotb2sK9MolL3eP8K2xDjmd3iWoDRuqX+18LMuKGrrylM
+	wYE3mszfaXWh7oG/MvytpfmL3acNQ53RR9Gqtw1bGObXg5Ca8RKm9ivvkAVY4h2bsGd/ezRxuwshM
+	MKXu4dGhH3kh+mgIikjHkKwPeqTsvIQ5kBk1NBgPzqQi4J35jIkZsQS8XV97haRy4Sy/eAkSJw/yC
+	E5TKctFoL+Lir0iq9A83DHlQZiFRnYNYymY2jaN/LaWWzlTZrB3+oOcJi87dNdX45WAd70AHUxBm9
+	j7uyHzhg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lrAfl-00GVMt-Iv; Thu, 10 Jun 2021 02:43:57 +0000
-Received: from mail-ot1-f46.google.com ([209.85.210.46])
+	id 1lrAye-00Gb2B-6l; Thu, 10 Jun 2021 03:03:28 +0000
+Received: from regular1.263xmail.com ([211.150.70.201])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lrAfh-00GVL7-Jc; Thu, 10 Jun 2021 02:43:55 +0000
-Received: by mail-ot1-f46.google.com with SMTP id
- 69-20020a9d0a4b0000b02902ed42f141e1so26089862otg.2; 
- Wed, 09 Jun 2021 19:43:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=dImUtuZhYj/XM6SXnOoPdWYPwbVVRclZFlt4djv5m4I=;
- b=fvBuWPM8ffu++zSFeYLkGisqDjcNxr1dgXMKq5FHw1Zz36WIhKskqlKrEWFy97mGCX
- 2VHoc2HdwsdVScjl/GORkG1tU4LspQpxGunKz1YrA4dNUQsyWCcqA5Kh9kCqfjhLWqIk
- Bp7Y6JENp/mho9RSv9VdxrkbbDUmYVhdzYMwDRWQhnTrzsEZbmZZ1N1qD9r3DVJZS9SK
- OMWHdV/mxY/aVxSMT134HMpbYSyqckiOAzC/CTOQaTxJY9d7iU9/sErmBiu9VIHt8HyY
- JoMOIxAttsZ75WDyPlAPz770bkkRlVc5yXdMrYWFCQbdrznw2JvY7m7IpX2cRORVQS7V
- 6cdw==
-X-Gm-Message-State: AOAM533rdRS1VRWiERQtfpzKmWBb4mm6/HdsllBNQilYg1oi4StxxdWv
- 3ah9aeFCHAGi33zo/JWPCw==
-X-Google-Smtp-Source: ABdhPJyBbya+zcm+FNUz27ZCbnnVovIW8rnlJgE1oiJjPoTI61rtVEt6hV/gGWqmvF9ZFn0ASOJC/w==
-X-Received: by 2002:a9d:554f:: with SMTP id h15mr534270oti.237.1623293032608; 
- Wed, 09 Jun 2021 19:43:52 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id q6sm316972oot.40.2021.06.09.19.43.50
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 09 Jun 2021 19:43:51 -0700 (PDT)
-Received: (nullmailer pid 706007 invoked by uid 1000);
- Thu, 10 Jun 2021 02:43:50 -0000
-Date: Wed, 9 Jun 2021 21:43:50 -0500
-From: Rob Herring <robh@kernel.org>
-To: Jon Lin <jon.lin@rock-chips.com>
+ id 1lrAyJ-00Gavi-7w; Thu, 10 Jun 2021 03:03:09 +0000
+Received: from localhost (unknown [192.168.167.235])
+ by regular1.263xmail.com (Postfix) with ESMTP id 1678EDB7;
+ Thu, 10 Jun 2021 11:02:58 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from [172.16.12.120] (unknown [58.22.7.114])
+ by smtp.263.net (postfix) whith ESMTP id
+ P31748T140095269566208S1623294176463381_; 
+ Thu, 10 Jun 2021 11:02:57 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <f169abf99f2fb9edc960ac85d7124b56>
+X-RL-SENDER: kever.yang@rock-chips.com
+X-SENDER: yk@rock-chips.com
+X-LOGIN-NAME: kever.yang@rock-chips.com
+X-FST-TO: macromorgan@hotmail.com
+X-RCPT-COUNT: 20
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+Subject: Re: [PATCH v7 1/9] dt-bindings: rockchip-sfc: Bindings for Rockchip
+ serial flash controller
+To: Rob Herring <robh@kernel.org>, Jon Lin <jon.lin@rock-chips.com>
 Cc: linux-spi@vger.kernel.org, broonie@kernel.org, heiko@sntech.de,
  jbx6244@gmail.com, hjc@rock-chips.com, yifeng.zhao@rock-chips.com,
  sugar.zhang@rock-chips.com, linux-rockchip@lists.infradead.org,
@@ -71,17 +69,20 @@ Cc: linux-spi@vger.kernel.org, broonie@kernel.org, heiko@sntech.de,
  devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org, mturquette@baylibre.com, sboyd@kernel.org,
  linux-clk@vger.kernel.org, Chris Morgan <macromorgan@hotmail.com>
-Subject: Re: [PATCH v7 1/9] dt-bindings: rockchip-sfc: Bindings for Rockchip
- serial flash controller
-Message-ID: <20210610024350.GA697147@robh.at.kernel.org>
 References: <20210609140412.16058-1-jon.lin@rock-chips.com>
  <20210609140412.16058-2-jon.lin@rock-chips.com>
+ <20210610024350.GA697147@robh.at.kernel.org>
+From: Kever Yang <kever.yang@rock-chips.com>
+Message-ID: <e8e7c8c1-4f71-538c-a8e1-b61a894bd4a8@rock-chips.com>
+Date: Thu, 10 Jun 2021 11:02:56 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210609140412.16058-2-jon.lin@rock-chips.com>
+In-Reply-To: <20210610024350.GA697147@robh.at.kernel.org>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210609_194353_710737_7BFB97CA 
-X-CRM114-Status: GOOD (  43.38  )
+X-CRM114-CacheID: sfid-20210609_200307_631338_6D1B5301 
+X-CRM114-Status: GOOD (  34.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,211 +94,113 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jun 09, 2021 at 10:04:04PM +0800, Jon Lin wrote:
-> From: Chris Morgan <macromorgan@hotmail.com>
-> 
-> Add bindings for the Rockchip serial flash controller. New device
-> specific parameter of rockchip,sfc-no-dma included in documentation.
-> 
-> Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
-> Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
-> ---
-> 
-> Changes in v7:
-> - Fix up the sclk_sfc parent error in rk3036
-> - Unify to "rockchip,sfc" compatible id because all the feature update
->   will have a new IP version, so the driver is used for the SFC IP in
->   all SoCs
-> - Change to use node "sfc" to name the SFC pinctrl group
-> - Add subnode reg property check
-> - Add rockchip_sfc_adjust_op_size to workaround in CMD + DUMMY case
-> - Limit max_iosize to 32KB
-> 
-> Changes in v6:
-> - Add support in device trees for rv1126(Declared in series 5 but not
->   submitted)
-> - Change to use "clk_sfc" "hclk_sfc" as clock lable, since it does not
->   affect interpretation and has been widely used
-> - Support sfc tx_dual, tx_quad(Declared in series 5 but not submitted)
-> - Simplify the code, such as remove "rockchip_sfc_register_all"(Declared
->   in series 5 but not submitted)
-> - Support SFC ver4 ver5(Declared in series 5 but not submitted)
-> - Add author Chris Morgan and Jon Lin to spi-rockchip-sfc.c
-> - Change to use devm_spi_alloc_master and spi_unregister_master
-> 
-> Changes in v5:
-> - Add support in device trees for rv1126
-> - Support sfc tx_dual, tx_quad
-> - Simplify the code, such as remove "rockchip_sfc_register_all"
-> - Support SFC ver4 ver5
-> 
-> Changes in v4:
-> - Changing patch back to an "RFC". An engineer from Rockchip
->   reached out to me to let me know they are working on this patch for
->   upstream, I am submitting this v4 for the community to see however
->   I expect Jon Lin (jon.lin@rock-chips.com) will submit new patches
->   soon and these are the ones we should pursue for mainlining. Jon's
->   patch series should include support for more hardware than this
->   series.
-> - Clean up documentation more and ensure it is correct per
->   make dt_binding_check.
-> - Add support in device trees for rk3036, rk3308, and rv1108.
-> - Add ahb clock (hclk_sfc) support for rk3036.
-> - Change rockchip_sfc_wait_fifo_ready() to use a switch statement.
-> - Change IRQ code to only mark IRQ as handled if it handles the
->   specific IRQ (DMA transfer finish) it is supposed to handle.
-> 
-> Changes in v3:
-> - Changed the name of the clocks to sfc/ahb (from clk-sfc/clk-hsfc).
-> - Changed the compatible string from rockchip,sfc to
->   rockchip,rk3036-sfc. A quick glance at the datasheets suggests this
->   driver should work for the PX30, RK180x, RK3036, RK312x, RK3308 and
->   RV1108 SoCs, and possibly more. However, I am currently only able
->   to test this on a PX30 (an RK3326). The technical reference manuals
->   appear to list the same registers for each device.
-> - Corrected devicetree documentation for formatting and to note these
->   changes.
-> - Replaced the maintainer with Heiko Stuebner and myself, as we will
->   take ownership of this going forward.
-> - Noted that the device (per the reference manual) supports 4 CS, but
->   I am only able to test a single CS (CS 0).
-> - Reordered patches to comply with upstream rules.
-> 
-> Changes in v2:
-> - Reimplemented driver using spi-mem subsystem.
-> - Removed power management code as I couldn't get it working properly.
-> - Added device tree bindings for Odroid Go Advance.
-> 
-> Changes in v1:
-> hanges made in this new series versus the v8 of the old series:
-> - Added function to read spi-rx-bus-width from device tree, in the
->   event that the SPI chip supports 4x mode but only has 2 pins
->   wired (such as the Odroid Go Advance).
-> - Changed device tree documentation from txt to yaml format.
-> - Made "reset" message a dev_dbg from a dev_info.
-> - Changed read and write fifo functions to remove redundant checks.
-> - Changed the write and read from relaxed to non-relaxed when
->   starting the DMA transfer or reading the DMA IRQ.
-> - Changed from dma_coerce_mask_and_coherent to just
->   dma_set_mask_and_coherent.
-> - Changed name of get_if_type to rockchip_sfc_get_if_type.
-> 
->  .../devicetree/bindings/spi/rockchip-sfc.yaml | 88 +++++++++++++++++++
->  1 file changed, 88 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml b/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
-> new file mode 100644
-> index 000000000000..42e4198e92af
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
-> @@ -0,0 +1,88 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/spi/rockchip-sfc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Rockchip Serial Flash Controller (SFC)
-> +
-> +maintainers:
-> +  - Heiko Stuebner <heiko@sntech.de>
-> +  - Chris Morgan <macromorgan@hotmail.com>
-> +
-> +allOf:
-> +  - $ref: spi-controller.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - const: rockchip,sfc
-
-Use 'enum' instead of oneOf+const.
-
-You need an SoC specific compatible.
-
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: Bus Clock
-> +      - description: Module Clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: clk_sfc
-> +      - const: hclk_sfc
-
-Do you have these backwards? 'hclk' is usually an AHB bus clock.
-
-Also, '_sfc' is redundant.
-
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  rockchip,sfc-no-dma:
-> +    description: Disable DMA and utilize FIFO mode only
-> +    type: boolean
-> +
-> +patternProperties:
-> +    "^flash@[0-3]$":
-> +      type: object
-> +      properties:
-> +        reg:
-> +          minimum: 0
-> +          maximum: 3
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/px30-cru.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/power/px30-power.h>
-> +
-> +    sfc: spi@ff3a0000 {
-> +        compatible = "rockchip,sfc";
-> +        reg = <0xff3a0000 0x4000>;
-> +        interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
-> +        clocks = <&cru SCLK_SFC>, <&cru HCLK_SFC>;
-> +        clock-names = "clk_sfc", "hclk_sfc";
-> +        pinctrl-0 = <&sfc_clk &sfc_cs &sfc_bus2>;
-> +        pinctrl-names = "default";
-> +        power-domains = <&power PX30_PD_MMC_NAND>;
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        flash@0 {
-> +            compatible = "jedec,spi-nor";
-> +            reg = <0>;
-> +            spi-max-frequency = <108000000>;
-> +            spi-rx-bus-width = <2>;
-> +            spi-tx-bus-width = <2>;
-> +        };
-> +    };
-> +
-> +...
-> -- 
-> 2.17.1
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgUm9iLAoKT24gMjAyMS82LzEwIOS4iuWNiDEwOjQzLCBSb2IgSGVycmluZyB3cm90ZToKPiBP
+biBXZWQsIEp1biAwOSwgMjAyMSBhdCAxMDowNDowNFBNICswODAwLCBKb24gTGluIHdyb3RlOgo+
+PiBGcm9tOiBDaHJpcyBNb3JnYW4gPG1hY3JvbW9yZ2FuQGhvdG1haWwuY29tPgo+Pgo+PiBBZGQg
+YmluZGluZ3MgZm9yIHRoZSBSb2NrY2hpcCBzZXJpYWwgZmxhc2ggY29udHJvbGxlci4gTmV3IGRl
+dmljZQo+PiBzcGVjaWZpYyBwYXJhbWV0ZXIgb2Ygcm9ja2NoaXAsc2ZjLW5vLWRtYSBpbmNsdWRl
+ZCBpbiBkb2N1bWVudGF0aW9uLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBDaHJpcyBNb3JnYW4gPG1h
+Y3JvbW9yZ2FuQGhvdG1haWwuY29tPgo+PiBTaWduZWQtb2ZmLWJ5OiBKb24gTGluIDxqb24ubGlu
+QHJvY2stY2hpcHMuY29tPgo+PiAtLS0KPj4KPj4gQ2hhbmdlcyBpbiB2NzoKPj4gLSBGaXggdXAg
+dGhlIHNjbGtfc2ZjIHBhcmVudCBlcnJvciBpbiByazMwMzYKPj4gLSBVbmlmeSB0byAicm9ja2No
+aXAsc2ZjIiBjb21wYXRpYmxlIGlkIGJlY2F1c2UgYWxsIHRoZSBmZWF0dXJlIHVwZGF0ZQo+PiAg
+ICB3aWxsIGhhdmUgYSBuZXcgSVAgdmVyc2lvbiwgc28gdGhlIGRyaXZlciBpcyB1c2VkIGZvciB0
+aGUgU0ZDIElQIGluCj4+ICAgIGFsbCBTb0NzCj4+IC0gQ2hhbmdlIHRvIHVzZSBub2RlICJzZmMi
+IHRvIG5hbWUgdGhlIFNGQyBwaW5jdHJsIGdyb3VwCj4+IC0gQWRkIHN1Ym5vZGUgcmVnIHByb3Bl
+cnR5IGNoZWNrCj4+IC0gQWRkIHJvY2tjaGlwX3NmY19hZGp1c3Rfb3Bfc2l6ZSB0byB3b3JrYXJv
+dW5kIGluIENNRCArIERVTU1ZIGNhc2UKPj4gLSBMaW1pdCBtYXhfaW9zaXplIHRvIDMyS0IKPj4K
+Pj4gQ2hhbmdlcyBpbiB2NjoKPj4gLSBBZGQgc3VwcG9ydCBpbiBkZXZpY2UgdHJlZXMgZm9yIHJ2
+MTEyNihEZWNsYXJlZCBpbiBzZXJpZXMgNSBidXQgbm90Cj4+ICAgIHN1Ym1pdHRlZCkKPj4gLSBD
+aGFuZ2UgdG8gdXNlICJjbGtfc2ZjIiAiaGNsa19zZmMiIGFzIGNsb2NrIGxhYmxlLCBzaW5jZSBp
+dCBkb2VzIG5vdAo+PiAgICBhZmZlY3QgaW50ZXJwcmV0YXRpb24gYW5kIGhhcyBiZWVuIHdpZGVs
+eSB1c2VkCj4+IC0gU3VwcG9ydCBzZmMgdHhfZHVhbCwgdHhfcXVhZChEZWNsYXJlZCBpbiBzZXJp
+ZXMgNSBidXQgbm90IHN1Ym1pdHRlZCkKPj4gLSBTaW1wbGlmeSB0aGUgY29kZSwgc3VjaCBhcyBy
+ZW1vdmUgInJvY2tjaGlwX3NmY19yZWdpc3Rlcl9hbGwiKERlY2xhcmVkCj4+ICAgIGluIHNlcmll
+cyA1IGJ1dCBub3Qgc3VibWl0dGVkKQo+PiAtIFN1cHBvcnQgU0ZDIHZlcjQgdmVyNShEZWNsYXJl
+ZCBpbiBzZXJpZXMgNSBidXQgbm90IHN1Ym1pdHRlZCkKPj4gLSBBZGQgYXV0aG9yIENocmlzIE1v
+cmdhbiBhbmQgSm9uIExpbiB0byBzcGktcm9ja2NoaXAtc2ZjLmMKPj4gLSBDaGFuZ2UgdG8gdXNl
+IGRldm1fc3BpX2FsbG9jX21hc3RlciBhbmQgc3BpX3VucmVnaXN0ZXJfbWFzdGVyCj4+Cj4+IENo
+YW5nZXMgaW4gdjU6Cj4+IC0gQWRkIHN1cHBvcnQgaW4gZGV2aWNlIHRyZWVzIGZvciBydjExMjYK
+Pj4gLSBTdXBwb3J0IHNmYyB0eF9kdWFsLCB0eF9xdWFkCj4+IC0gU2ltcGxpZnkgdGhlIGNvZGUs
+IHN1Y2ggYXMgcmVtb3ZlICJyb2NrY2hpcF9zZmNfcmVnaXN0ZXJfYWxsIgo+PiAtIFN1cHBvcnQg
+U0ZDIHZlcjQgdmVyNQo+Pgo+PiBDaGFuZ2VzIGluIHY0Ogo+PiAtIENoYW5naW5nIHBhdGNoIGJh
+Y2sgdG8gYW4gIlJGQyIuIEFuIGVuZ2luZWVyIGZyb20gUm9ja2NoaXAKPj4gICAgcmVhY2hlZCBv
+dXQgdG8gbWUgdG8gbGV0IG1lIGtub3cgdGhleSBhcmUgd29ya2luZyBvbiB0aGlzIHBhdGNoIGZv
+cgo+PiAgICB1cHN0cmVhbSwgSSBhbSBzdWJtaXR0aW5nIHRoaXMgdjQgZm9yIHRoZSBjb21tdW5p
+dHkgdG8gc2VlIGhvd2V2ZXIKPj4gICAgSSBleHBlY3QgSm9uIExpbiAoam9uLmxpbkByb2NrLWNo
+aXBzLmNvbSkgd2lsbCBzdWJtaXQgbmV3IHBhdGNoZXMKPj4gICAgc29vbiBhbmQgdGhlc2UgYXJl
+IHRoZSBvbmVzIHdlIHNob3VsZCBwdXJzdWUgZm9yIG1haW5saW5pbmcuIEpvbidzCj4+ICAgIHBh
+dGNoIHNlcmllcyBzaG91bGQgaW5jbHVkZSBzdXBwb3J0IGZvciBtb3JlIGhhcmR3YXJlIHRoYW4g
+dGhpcwo+PiAgICBzZXJpZXMuCj4+IC0gQ2xlYW4gdXAgZG9jdW1lbnRhdGlvbiBtb3JlIGFuZCBl
+bnN1cmUgaXQgaXMgY29ycmVjdCBwZXIKPj4gICAgbWFrZSBkdF9iaW5kaW5nX2NoZWNrLgo+PiAt
+IEFkZCBzdXBwb3J0IGluIGRldmljZSB0cmVlcyBmb3IgcmszMDM2LCByazMzMDgsIGFuZCBydjEx
+MDguCj4+IC0gQWRkIGFoYiBjbG9jayAoaGNsa19zZmMpIHN1cHBvcnQgZm9yIHJrMzAzNi4KPj4g
+LSBDaGFuZ2Ugcm9ja2NoaXBfc2ZjX3dhaXRfZmlmb19yZWFkeSgpIHRvIHVzZSBhIHN3aXRjaCBz
+dGF0ZW1lbnQuCj4+IC0gQ2hhbmdlIElSUSBjb2RlIHRvIG9ubHkgbWFyayBJUlEgYXMgaGFuZGxl
+ZCBpZiBpdCBoYW5kbGVzIHRoZQo+PiAgICBzcGVjaWZpYyBJUlEgKERNQSB0cmFuc2ZlciBmaW5p
+c2gpIGl0IGlzIHN1cHBvc2VkIHRvIGhhbmRsZS4KPj4KPj4gQ2hhbmdlcyBpbiB2MzoKPj4gLSBD
+aGFuZ2VkIHRoZSBuYW1lIG9mIHRoZSBjbG9ja3MgdG8gc2ZjL2FoYiAoZnJvbSBjbGstc2ZjL2Ns
+ay1oc2ZjKS4KPj4gLSBDaGFuZ2VkIHRoZSBjb21wYXRpYmxlIHN0cmluZyBmcm9tIHJvY2tjaGlw
+LHNmYyB0bwo+PiAgICByb2NrY2hpcCxyazMwMzYtc2ZjLiBBIHF1aWNrIGdsYW5jZSBhdCB0aGUg
+ZGF0YXNoZWV0cyBzdWdnZXN0cyB0aGlzCj4+ICAgIGRyaXZlciBzaG91bGQgd29yayBmb3IgdGhl
+IFBYMzAsIFJLMTgweCwgUkszMDM2LCBSSzMxMngsIFJLMzMwOCBhbmQKPj4gICAgUlYxMTA4IFNv
+Q3MsIGFuZCBwb3NzaWJseSBtb3JlLiBIb3dldmVyLCBJIGFtIGN1cnJlbnRseSBvbmx5IGFibGUK
+Pj4gICAgdG8gdGVzdCB0aGlzIG9uIGEgUFgzMCAoYW4gUkszMzI2KS4gVGhlIHRlY2huaWNhbCBy
+ZWZlcmVuY2UgbWFudWFscwo+PiAgICBhcHBlYXIgdG8gbGlzdCB0aGUgc2FtZSByZWdpc3RlcnMg
+Zm9yIGVhY2ggZGV2aWNlLgo+PiAtIENvcnJlY3RlZCBkZXZpY2V0cmVlIGRvY3VtZW50YXRpb24g
+Zm9yIGZvcm1hdHRpbmcgYW5kIHRvIG5vdGUgdGhlc2UKPj4gICAgY2hhbmdlcy4KPj4gLSBSZXBs
+YWNlZCB0aGUgbWFpbnRhaW5lciB3aXRoIEhlaWtvIFN0dWVibmVyIGFuZCBteXNlbGYsIGFzIHdl
+IHdpbGwKPj4gICAgdGFrZSBvd25lcnNoaXAgb2YgdGhpcyBnb2luZyBmb3J3YXJkLgo+PiAtIE5v
+dGVkIHRoYXQgdGhlIGRldmljZSAocGVyIHRoZSByZWZlcmVuY2UgbWFudWFsKSBzdXBwb3J0cyA0
+IENTLCBidXQKPj4gICAgSSBhbSBvbmx5IGFibGUgdG8gdGVzdCBhIHNpbmdsZSBDUyAoQ1MgMCku
+Cj4+IC0gUmVvcmRlcmVkIHBhdGNoZXMgdG8gY29tcGx5IHdpdGggdXBzdHJlYW0gcnVsZXMuCj4+
+Cj4+IENoYW5nZXMgaW4gdjI6Cj4+IC0gUmVpbXBsZW1lbnRlZCBkcml2ZXIgdXNpbmcgc3BpLW1l
+bSBzdWJzeXN0ZW0uCj4+IC0gUmVtb3ZlZCBwb3dlciBtYW5hZ2VtZW50IGNvZGUgYXMgSSBjb3Vs
+ZG4ndCBnZXQgaXQgd29ya2luZyBwcm9wZXJseS4KPj4gLSBBZGRlZCBkZXZpY2UgdHJlZSBiaW5k
+aW5ncyBmb3IgT2Ryb2lkIEdvIEFkdmFuY2UuCj4+Cj4+IENoYW5nZXMgaW4gdjE6Cj4+IGhhbmdl
+cyBtYWRlIGluIHRoaXMgbmV3IHNlcmllcyB2ZXJzdXMgdGhlIHY4IG9mIHRoZSBvbGQgc2VyaWVz
+Ogo+PiAtIEFkZGVkIGZ1bmN0aW9uIHRvIHJlYWQgc3BpLXJ4LWJ1cy13aWR0aCBmcm9tIGRldmlj
+ZSB0cmVlLCBpbiB0aGUKPj4gICAgZXZlbnQgdGhhdCB0aGUgU1BJIGNoaXAgc3VwcG9ydHMgNHgg
+bW9kZSBidXQgb25seSBoYXMgMiBwaW5zCj4+ICAgIHdpcmVkIChzdWNoIGFzIHRoZSBPZHJvaWQg
+R28gQWR2YW5jZSkuCj4+IC0gQ2hhbmdlZCBkZXZpY2UgdHJlZSBkb2N1bWVudGF0aW9uIGZyb20g
+dHh0IHRvIHlhbWwgZm9ybWF0Lgo+PiAtIE1hZGUgInJlc2V0IiBtZXNzYWdlIGEgZGV2X2RiZyBm
+cm9tIGEgZGV2X2luZm8uCj4+IC0gQ2hhbmdlZCByZWFkIGFuZCB3cml0ZSBmaWZvIGZ1bmN0aW9u
+cyB0byByZW1vdmUgcmVkdW5kYW50IGNoZWNrcy4KPj4gLSBDaGFuZ2VkIHRoZSB3cml0ZSBhbmQg
+cmVhZCBmcm9tIHJlbGF4ZWQgdG8gbm9uLXJlbGF4ZWQgd2hlbgo+PiAgICBzdGFydGluZyB0aGUg
+RE1BIHRyYW5zZmVyIG9yIHJlYWRpbmcgdGhlIERNQSBJUlEuCj4+IC0gQ2hhbmdlZCBmcm9tIGRt
+YV9jb2VyY2VfbWFza19hbmRfY29oZXJlbnQgdG8ganVzdAo+PiAgICBkbWFfc2V0X21hc2tfYW5k
+X2NvaGVyZW50Lgo+PiAtIENoYW5nZWQgbmFtZSBvZiBnZXRfaWZfdHlwZSB0byByb2NrY2hpcF9z
+ZmNfZ2V0X2lmX3R5cGUuCj4+Cj4+ICAgLi4uL2RldmljZXRyZWUvYmluZGluZ3Mvc3BpL3JvY2tj
+aGlwLXNmYy55YW1sIHwgODggKysrKysrKysrKysrKysrKysrKwo+PiAgIDEgZmlsZSBjaGFuZ2Vk
+LCA4OCBpbnNlcnRpb25zKCspCj4+ICAgY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24v
+ZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkvcm9ja2NoaXAtc2ZjLnlhbWwKPj4KPj4gZGlmZiAtLWdp
+dCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkvcm9ja2NoaXAtc2ZjLnlh
+bWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc3BpL3JvY2tjaGlwLXNmYy55
+YW1sCj4+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4+IGluZGV4IDAwMDAwMDAwMDAwMC4uNDJlNDE5
+OGU5MmFmCj4+IC0tLSAvZGV2L251bGwKPj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVl
+L2JpbmRpbmdzL3NwaS9yb2NrY2hpcC1zZmMueWFtbAo+PiBAQCAtMCwwICsxLDg4IEBACj4+ICsj
+IFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiAoR1BMLTIuMC1vbmx5IE9SIEJTRC0yLUNsYXVzZSkK
+Pj4gKyVZQU1MIDEuMgo+PiArLS0tCj4+ICskaWQ6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9zY2hl
+bWFzL3NwaS9yb2NrY2hpcC1zZmMueWFtbCMKPj4gKyRzY2hlbWE6IGh0dHA6Ly9kZXZpY2V0cmVl
+Lm9yZy9tZXRhLXNjaGVtYXMvY29yZS55YW1sIwo+PiArCj4+ICt0aXRsZTogUm9ja2NoaXAgU2Vy
+aWFsIEZsYXNoIENvbnRyb2xsZXIgKFNGQykKPj4gKwo+PiArbWFpbnRhaW5lcnM6Cj4+ICsgIC0g
+SGVpa28gU3R1ZWJuZXIgPGhlaWtvQHNudGVjaC5kZT4KPj4gKyAgLSBDaHJpcyBNb3JnYW4gPG1h
+Y3JvbW9yZ2FuQGhvdG1haWwuY29tPgo+PiArCj4+ICthbGxPZjoKPj4gKyAgLSAkcmVmOiBzcGkt
+Y29udHJvbGxlci55YW1sIwo+PiArCj4+ICtwcm9wZXJ0aWVzOgo+PiArICBjb21wYXRpYmxlOgo+
+PiArICAgIG9uZU9mOgo+PiArICAgICAgLSBjb25zdDogcm9ja2NoaXAsc2ZjCj4gVXNlICdlbnVt
+JyBpbnN0ZWFkIG9mIG9uZU9mK2NvbnN0Lgo+Cj4gWW91IG5lZWQgYW4gU29DIHNwZWNpZmljIGNv
+bXBhdGlibGUuCgoKVGhlIHJvY2tjaGlwIHNmYyBjb250cm9sbGVyIGlzIGEgc3RhbmRhbG9uZSBJ
+UCB3aXRoIHZlcnNpb24gcmVnaXN0ZXIsIAphbmQgdGhlIGRyaXZlciBjYW4KCmhhbmRsZSBhbGwg
+dGhlIGZlYXR1cmUgZGlmZmVyZW5jZSBpbnNpZGUgdGhlIElQLCBzbyB3ZSB3b3VsZCBsaWtlIHRv
+IHVzZSAKYSBtb3JlIGdlbmVyaWMKCmNvbXBhdGlibGUgbmFtZSBpbnN0ZWFkIG9mIGJpbmQgdG8g
+YW55IG9mIFNvQyBuYW1lLiBTbyBjYW4gd2UgdXNlIAoicm9ja2NoaXAsc2ZjIgoKbGlrZSAic25w
+cyxkZXNpZ253YXJlLXNwaSIsIHdoaWNoIGlzIGEgZ2VuZXJpYyBvbmUsIGluc3RlYWQgb2YgYW4g
+U29DIApzcGVjaWZpYyBjb21wYXRpYmxlPwoKClRoYW5rcywKCi0gS2V2ZXIKCgoKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQg
+ZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9saW51eC1tdGQvCg==
