@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69CE5C48BE5
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 20:24:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26ACFC49360
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 20:24:11 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 387BD613DD
+	by mail.kernel.org (Postfix) with ESMTPS id DD942610F8
 	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 20:24:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 387BD613DD
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DD942610F8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,22 +23,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=paa9OwgYHP+/7NUrYA2awTdHLI1IgEhPaV0AehY01vA=; b=QwSrD6K3pcPxeC
-	RwIW/4LmLwe2pLKEA2fv3roDjmm1yRqg3cUl4CKB2o1y+O8DMDwhmprDWyzOCLMBlt54XxuQO9DmZ
-	eDB4wRqdtf2Q9kHoQUuCjoAZ3VrGH6QjmmKKol5ZyCjvqD3PPVuzsxLGJx4qahX9M2/nifVZ5vvFn
-	COWe7/QMAWIBxMArWFgBT9PeNeiVao6b1+Z9CNoAhjOH5Ut8EVwo31VqwkhbTY0yn0B2N0Ot13tUK
-	T/rwROi9peIWPfT9kFUPBapmZIc7m3KfW7OsQD0dsPlf2diTEv8z2p5LxJyGZ2QqU8u0BowWwoAn1
-	MyoFs8R0jcZsLckvbR+w==;
+	List-Owner; bh=6nr5tO9ZFyhmjkZ7bvwLMRTvfG/WFyZhSarharBEVDA=; b=KiAGds0takIeUv
+	x84JO8vTmpQOi9Dzh7EkmCt4oDCxGoe9K4wXw3VZ8X532ev9fYIXwkmYMvsBEbh6ifdW+K2/YokTr
+	TRlcYJG+N4diaZfqIHwrRXOKNZ1zecaq53bSIXln2rSdcy1wnDVWWMsRO8zlc16/WsszfJH7AicLT
+	zXPiMnBxGnI6vftyLvBTCk4QSaop/sDBAQZcHuS534mDxLo2Pj+jM4NmV1FPKib+N3om6Zd8z4gNz
+	6mwe4/iOG8bpDd9vBNN2vlNIzCPEf0nHtXrkJlR24ciR1vysDHT/2kDjbD8i9NrSDB7dcQX5GpuZE
+	KgCqykm6zsm+2KqcGJPg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lrnVg-006qFk-6q; Fri, 11 Jun 2021 20:12:08 +0000
-Received: from relay11.mail.gandi.net ([217.70.178.231])
+	id 1lrnTc-006phS-H0; Fri, 11 Jun 2021 20:10:00 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lrmRR-006Z6W-4n
- for linux-mtd@lists.infradead.org; Fri, 11 Jun 2021 19:03:42 +0000
+ id 1lrmRK-006Z4e-Mm
+ for linux-mtd@lists.infradead.org; Fri, 11 Jun 2021 19:03:36 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay11.mail.gandi.net (Postfix) with ESMTPSA id EF031100009;
- Fri, 11 Jun 2021 19:03:37 +0000 (UTC)
+ by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 4B13A60005;
+ Fri, 11 Jun 2021 19:03:25 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -46,21 +46,20 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
 Cc: Michal Simek <monstr@monstr.eu>,
  Naga Sureshkumar Relli <nagasure@xilinx.com>,
  Amit Kumar Mahapatra <akumarma@xilinx.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] mtd: rawnand: onfi: Fix endianness when reading NV-DDR
- values
-Date: Fri, 11 Jun 2021 21:03:37 +0200
-Message-Id: <20210611190337.226837-1-miquel.raynal@bootlin.com>
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 1/2] mtd: rawnand: arasan: Rename the data interface
+ register
+Date: Fri, 11 Jun 2021 21:03:24 +0200
+Message-Id: <20210611190324.226771-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210527084913.208635-1-miquel.raynal@bootlin.com>
+In-Reply-To: <20210527084959.208804-1-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'f632e9882223c8d0eefcfcc780bbe1ac4e0d0fb2'
+X-linux-mtd-patch-commit: b'0fb89a2f1a32f151578d6b53896555d23e7bd50b'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210611_120341_372992_67D64C0A 
-X-CRM114-Status: UNSURE (   5.53  )
+X-CRM114-CacheID: sfid-20210611_120334_914031_D1411C8E 
+X-CRM114-Status: UNSURE (   6.58  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,13 +77,15 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2021-05-27 at 08:49:13 UTC, Miquel Raynal wrote:
-> Without the use of le16_to_cpu(), these accesses would have been wrong
-> on a big-endian machine.
+On Thu, 2021-05-27 at 08:49:58 UTC, Miquel Raynal wrote:
+> There are 2 timing registers:
+> - "data interface"
+> - "timings"
 > 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Fixes: 45606518f961 ("mtd: rawnand: Add onfi_fill_nvddr_interface_config() helper")
-> Fixes: 9310668fb60a ("mtd: rawnand: Retrieve NV-DDR timing modes from the ONFI parameter page")
+> So far, the "data interface" register was named "timings" which begins
+> misleading when bringing support for the "timings" register. Rename it
+> to "data_iface".
+> 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next.
