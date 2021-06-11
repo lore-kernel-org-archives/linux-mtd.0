@@ -4,78 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-11.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5BD1C4743D
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 05:38:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14B75C4743D
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 06:12:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7BA536008E
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 05:38:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7BA536008E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	by mail.kernel.org (Postfix) with ESMTPS id D796361357
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 06:12:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D796361357
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rock-chips.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=zhGA64Z1IasNbeJKVadJ1laLbubeVKkxcFw2N59ttqU=; b=TEDmEl1BrgN44i
-	vrr8CIv5VpfSgpRt7FyExfEXzZuOH2CxILSSPusm9UDHQ3N41QnEQ4dnJ9C7TyPk7uePErExm7VlZ
-	ZdmNMegM/ZsjHfd2wadI+f9FTz6SJSS5k7Gfiu/EzZ/n28mL/tu51LQFJWXxVculdzqTynLAGay2p
-	97E8Dg3WSVsDPfPULwXMay02PVfWpjojkRdGNG9kEDjmek6ge0mJrxqE+GgfMjmcr8rQxIRPqPhq2
-	gppCFbJRP2vBCxH6jY+hztIm2CdVsDxrupZqQRgxvUGSlKyHgi1R8FsbDUzqQxB2CMQMqpEuy5Sas
-	Qx1Ru50vSc/7WYFQIARg==;
+	List-Owner; bh=cnjQWxBPkVMiwV1VUVjfkJ4st6jNIR7ccCYXV0fwOeg=; b=D8aYNLJlisW53P
+	AbihW+DTtlnLiMQCAnA7QsYLENelQSx0rs+bbhaQzZuu46sU6x/fkgee/cezgRwraRUbpjSprkxeN
+	wVi8wMGpjvHhpNRtP/ppPKNt6mzRfA44veWUIG0ZedekgTmYGX9MH6w/K3fOJZkHB1CAhK8sOgT1a
+	EfY7Q4Q/qmv9BsObgyv76HEmqgW9JRK12bFeI4PVtTVX0WmYcThAwdQvW4e9F9I40JarUgGYmc9ym
+	8mMqp1hROMCfsX1N8ve1FjMReIAhyYhoomqY48M4C8AxfKvaK/yxK8Te+R1kAIqnzv9T+t/D/rl8N
+	iZAAedlgLnwt1a6K44/Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lrZpp-003efC-Cq; Fri, 11 Jun 2021 05:36:01 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1lraOt-003lwI-Uv; Fri, 11 Jun 2021 06:12:16 +0000
+Received: from lucky1.263xmail.com ([211.157.147.133])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lrZpa-003ech-31; Fri, 11 Jun 2021 05:35:48 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15B5ZfGB052845;
- Fri, 11 Jun 2021 00:35:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1623389741;
- bh=DbDCv+8NMzl0I0UoaABgajwTXe8lWjZIzi2WXrI+iAs=;
- h=From:To:CC:Subject:Date;
- b=qQYT5RhBIamx+/2YiS5dlpdXuXgvqD3OA8uw0KdYmNmcnaXgqcDLhYpLB9kBr+T0V
- fnMy++rCNC3kSSiV91SEEoSO3JgzQSuMRP1AiVi6rAr9uoiGkUBLMh9IFhsAng6ryd
- OBjZnddU8z+mqskvH7m7AgkX1kx6Yg95QucnItUg=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15B5ZfWl033061
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 11 Jun 2021 00:35:41 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 11
- Jun 2021 00:35:40 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 11 Jun 2021 00:35:41 -0500
-Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15B5ZbTK088083;
- Fri, 11 Jun 2021 00:35:38 -0500
-From: Vignesh Raghavendra <vigneshr@ti.com>
-To: Vignesh Raghavendra <vigneshr@ti.com>
-CC: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
- <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>, Linux ARM
- Mailing List <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH 0/2] mtd: Convert hyperflash/hyperbus bindings to YAML schema
-Date: Fri, 11 Jun 2021 11:05:31 +0530
-Message-ID: <20210611053533.16701-1-vigneshr@ti.com>
-X-Mailer: git-send-email 2.32.0
-MIME-Version: 1.0
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+ id 1lraOM-003lfr-97; Fri, 11 Jun 2021 06:11:44 +0000
+Received: from localhost (unknown [192.168.167.16])
+ by lucky1.263xmail.com (Postfix) with ESMTP id E586FCD8AF;
+ Fri, 11 Jun 2021 14:11:37 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.22.7.114])
+ by smtp.263.net (postfix) whith ESMTP id
+ P16485T139919133304576S1623391896460797_; 
+ Fri, 11 Jun 2021 14:11:38 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <40bc6dc8c98316e58bc91f50ef9d625a>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: linux-spi@vger.kernel.org
+X-RCPT-COUNT: 19
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From: Jon Lin <jon.lin@rock-chips.com>
+To: linux-spi@vger.kernel.org
+Cc: jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
+ heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
+ yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
+ linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+ p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ mturquette@baylibre.com, sboyd@kernel.org, linux-clk@vger.kernel.org
+Subject: [PATCH v8 0/9] Add Rockchip SFC(serial flash controller) support
+Date: Fri, 11 Jun 2021 14:11:25 +0800
+Message-Id: <20210611061134.31369-1-jon.lin@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210610_223546_256291_64EC4FDD 
-X-CRM114-Status: UNSURE (   8.16  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210610_231142_684162_DDDDB7A6 
+X-CRM114-Status: GOOD (  27.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,28 +84,129 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This series converts Cypress hyperflash and TI AM654 HyperBus Controller
-bindings to YAML schema.
 
-Vignesh Raghavendra (2):
-  dt-bindings: mtd: Convert cypress,hyperflash to YAML schema
-  dt-bindings: mtd: Convert ti,am654-hbmc.txt to YAML schema
 
- .../bindings/mtd/cypress,hyperflash.yaml      | 51 ++++++++++++++
- .../devicetree/bindings/mtd/ti,am654-hbmc.txt | 51 --------------
- .../bindings/mtd/ti,am654-hbmc.yaml           | 69 +++++++++++++++++++
- 3 files changed, 120 insertions(+), 51 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/cypress,hyperflash.yaml
- delete mode 100644 Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
- create mode 100644 Documentation/devicetree/bindings/mtd/ti,am654-hbmc.yaml
+Changes in v8:
+- Fix indent 4 to 2 in yaml
+
+Changes in v7:
+- Fix up the sclk_sfc parent error in rk3036
+- Unify to "rockchip,sfc" compatible id because all the feature update
+  will have a new IP version, so the driver is used for the SFC IP in
+  all SoCs
+- Change to use node "sfc" to name the SFC pinctrl group
+- Add subnode reg property check
+- Add rockchip_sfc_adjust_op_size to workaround in CMD + DUMMY case
+- Limit max_iosize to 32KB
+
+Changes in v6:
+- Add support in device trees for rv1126(Declared in series 5 but not
+  submitted)
+- Change to use "clk_sfc" "hclk_sfc" as clock lable, since it does not
+  affect interpretation and has been widely used
+- Support sfc tx_dual, tx_quad(Declared in series 5 but not submitted)
+- Simplify the code, such as remove "rockchip_sfc_register_all"(Declared
+  in series 5 but not submitted)
+- Support SFC ver4 ver5(Declared in series 5 but not submitted)
+- Add author Chris Morgan and Jon Lin to spi-rockchip-sfc.c
+- Change to use devm_spi_alloc_master and spi_unregister_master
+
+Changes in v5:
+- Add support in device trees for rv1126
+- Support sfc tx_dual, tx_quad
+- Simplify the code, such as remove "rockchip_sfc_register_all"
+- Support SFC ver4 ver5
+
+Changes in v4:
+- Changing patch back to an "RFC". An engineer from Rockchip
+  reached out to me to let me know they are working on this patch for
+  upstream, I am submitting this v4 for the community to see however
+  I expect Jon Lin (jon.lin@rock-chips.com) will submit new patches
+  soon and these are the ones we should pursue for mainlining. Jon's
+  patch series should include support for more hardware than this
+  series.
+- Clean up documentation more and ensure it is correct per
+  make dt_binding_check.
+- Add support in device trees for rk3036, rk3308, and rv1108.
+- Add ahb clock (hclk_sfc) support for rk3036.
+- Change rockchip_sfc_wait_fifo_ready() to use a switch statement.
+- Change IRQ code to only mark IRQ as handled if it handles the
+  specific IRQ (DMA transfer finish) it is supposed to handle.
+
+Changes in v3:
+- Changed the name of the clocks to sfc/ahb (from clk-sfc/clk-hsfc).
+- Changed the compatible string from rockchip,sfc to
+  rockchip,rk3036-sfc. A quick glance at the datasheets suggests this
+  driver should work for the PX30, RK180x, RK3036, RK312x, RK3308 and
+  RV1108 SoCs, and possibly more. However, I am currently only able
+  to test this on a PX30 (an RK3326). The technical reference manuals
+  appear to list the same registers for each device.
+- Corrected devicetree documentation for formatting and to note these
+  changes.
+- Replaced the maintainer with Heiko Stuebner and myself, as we will
+  take ownership of this going forward.
+- Noted that the device (per the reference manual) supports 4 CS, but
+  I am only able to test a single CS (CS 0).
+- Reordered patches to comply with upstream rules.
+
+Changes in v2:
+- Reimplemented driver using spi-mem subsystem.
+- Removed power management code as I couldn't get it working properly.
+- Added device tree bindings for Odroid Go Advance.
+
+Changes in v1:
+hanges made in this new series versus the v8 of the old series:
+- Added function to read spi-rx-bus-width from device tree, in the
+  event that the SPI chip supports 4x mode but only has 2 pins
+  wired (such as the Odroid Go Advance).
+- Changed device tree documentation from txt to yaml format.
+- Made "reset" message a dev_dbg from a dev_info.
+- Changed read and write fifo functions to remove redundant checks.
+- Changed the write and read from relaxed to non-relaxed when
+  starting the DMA transfer or reading the DMA IRQ.
+- Changed from dma_coerce_mask_and_coherent to just
+  dma_set_mask_and_coherent.
+- Changed name of get_if_type to rockchip_sfc_get_if_type.
+
+Chris Morgan (8):
+  dt-bindings: rockchip-sfc: Bindings for Rockchip serial flash
+    controller
+  spi: rockchip-sfc: add rockchip serial flash controller
+  arm64: dts: rockchip: Add SFC to PX30
+  clk: rockchip: Add support for hclk_sfc on rk3036
+  arm: dts: rockchip: Add SFC to RK3036
+  arm: dts: rockchip: Add SFC to RV1108
+  arm64: dts: rockchip: Add SFC to RK3308
+  arm64: dts: rockchip: Enable SFC for Odroid Go Advance
+
+Jon Lin (1):
+  clk: rockchip: rk3036: fix up the sclk_sfc parent error
+
+ .../devicetree/bindings/spi/rockchip-sfc.yaml |  88 +++
+ arch/arm/boot/dts/rk3036.dtsi                 |  42 ++
+ arch/arm/boot/dts/rv1108.dtsi                 |  37 +
+ arch/arm64/boot/dts/rockchip/px30.dtsi        |  38 +
+ arch/arm64/boot/dts/rockchip/rk3308.dtsi      |  37 +
+ .../boot/dts/rockchip/rk3326-odroid-go2.dts   |  16 +
+ drivers/clk/rockchip/clk-rk3036.c             |   5 +-
+ drivers/spi/Kconfig                           |   9 +
+ drivers/spi/Makefile                          |   1 +
+ drivers/spi/spi-rockchip-sfc.c                | 676 ++++++++++++++++++
+ include/dt-bindings/clock/rk3036-cru.h        |   1 +
+ 11 files changed, 948 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+ create mode 100644 drivers/spi/spi-rockchip-sfc.c
 
 -- 
-2.32.0
+2.17.1
+
+
 
 
 ______________________________________________________
