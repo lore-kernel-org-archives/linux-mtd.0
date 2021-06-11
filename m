@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB0ACC48BD1
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 19:07:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7332AC48BD1
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 19:08:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 866FB61364
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 19:07:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 866FB61364
+	by mail.kernel.org (Postfix) with ESMTPS id 3BC5961364
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 19:08:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3BC5961364
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,38 +23,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5Y1Gi9aboanZj4UJcq1gem7sykrnXf6fJdXJy5SZhhA=; b=lKI2hPMuwZR/yb
-	dmIO9dQ/yZPbRiJUqTM2Bklk+T+WlFftqWW7n/g00gaVht4/1R+Lu5pNuy8MVE/KcWbOdsE+DrBrz
-	LRZUhwBRfwahjJ/cKwBuHGBlG0PVN/7g0ZIZ/SARmiLQetoC0rSc5Tt8S8BAtOnoXW/cgb/0s+Ds7
-	jSaOHLI4srD0RShsCENQe0CRRM9KhjZTdTyqEbdWSM3ADFp6H4I+q8Ve06+oZ+efLtc3gn+fSnFpy
-	8xCyZYTJO7UBp5C3IuZigGVa8PJIaY60yubrVeHPtDSkcJnvUnK0C1dht8cS0C54B4KumT2Gg4fX1
-	SQUyplbJ5Va5o1ZwQI6A==;
+	List-Owner; bh=KjRcJjJe62TdZbTAyMam0CFXQ2wwugqhJT/NgsooTEY=; b=BinQX6U1yk6myP
+	iSLjTSmiOLH7gb/WBAEzI4IPVjdzfZ2I1TtGzfmGYZ5eAiQvHei7vhfx0dRhRMU6iypvvv5CtjpGX
+	CUBXmF7f/hI3LFPIiA+tiLqIUIZJCUpat23CYxGahrSwgXewaB4d74IA1mjyM8OluSOLdJ0/znwbM
+	473HMVc44RAqJ/FppvvStZdkq7XJHE+ByvWrAhpUTTam/xGdACswefmQmmTsS/1Jiei6c9SJ2R/x+
+	3/1T+hd8vGL+j26XsGiZ/TeEObShUHYp1qu+jMkAsNhI/TZ52lLn6Cs1JTVJ4NIq0MTB8NNWSnHqu
+	GFXbKpzvmna34z9CZE/w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lrmUT-006a1W-S0; Fri, 11 Jun 2021 19:06:50 +0000
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	id 1lrmVo-006aNg-3D; Fri, 11 Jun 2021 19:08:12 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lrmNk-006XpM-Gr
- for linux-mtd@lists.infradead.org; Fri, 11 Jun 2021 18:59:54 +0000
+ id 1lrmNp-006XrK-L0
+ for linux-mtd@lists.infradead.org; Fri, 11 Jun 2021 18:59:59 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 6D95A40002;
- Fri, 11 Jun 2021 18:59:50 +0000 (UTC)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 86A9EC0005;
+ Fri, 11 Jun 2021 18:59:55 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Zhen Lei <thunder.leizhen@huawei.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 1/1] mtd: nftl: remove unnecessary oom message
-Date: Fri, 11 Jun 2021 20:59:49 +0200
-Message-Id: <20210611185949.225126-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 1/1] mtd: rfd_ftl: remove unnecessary oom message
+Date: Fri, 11 Jun 2021 20:59:54 +0200
+Message-Id: <20210611185954.225192-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210610020130.14917-1-thunder.leizhen@huawei.com>
+In-Reply-To: <20210610015052.14864-1-thunder.leizhen@huawei.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'8ef029135c7b4e1ed4c424efe5cbd8d0088fe8ba'
+X-linux-mtd-patch-commit: b'cba8b3bc4ac210b46cfc13afbbcaabdf17e51de2'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210611_115952_751340_665DF101 
+X-CRM114-CacheID: sfid-20210611_115957_850506_0678335A 
 X-CRM114-Status: UNSURE (   5.72  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
@@ -73,7 +73,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2021-06-10 at 02:01:30 UTC, Zhen Lei wrote:
+On Thu, 2021-06-10 at 01:50:52 UTC, Zhen Lei wrote:
 > Fixes scripts/checkpatch.pl warning:
 > WARNING: Possible unnecessary 'out of memory' message
 > 
