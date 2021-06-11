@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8DD0C48BE0
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 19:25:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E540C48BD1
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 19:30:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 78A20613CC
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 19:25:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 78A20613CC
+	by mail.kernel.org (Postfix) with ESMTPS id CFB66613CA
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 19:30:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFB66613CA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,39 +23,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=D2Z+6Y3QRIcwrQiyqYHhLg1avdNrG/Wc3XcYP1pv+sg=; b=KzotzuC8DG7SsU
-	YPjgtGjC+E9t1E72kg6PF7bxcz2IQxF/89CLWBjOEGSduvFACWqYd9n6/FeEmy3GJoiGdEUiQVuQt
-	69Ud9L/vEu83aGrkiXgektkVG1E363Yg5eBZ6kUXMAS/eSxyA0O5m9tfK3U8wt8EIcW1d0vnap/Bv
-	YnlM/rRYU6KgvnUgqKZ6YKRr5FsAzQn0Zlo+8+J77jUJTbVwI///LM8sAhWiXvouqn8qtzQB+DtPl
-	gZJBmbKK3w1SSEGTKdTubypMPKbZdAqvF3SYmcu2NG4oOQ1QGfDTsP2MUmLtmLhk3K2hokXKQQKd4
-	p7WIfKCBug7aB0KjwNJQ==;
+	List-Owner; bh=OlKhMtJoMb4++2KGo9Fpba+Q8pwaZlhY1NLBxbVm65w=; b=n4i1vv/KoTxDKN
+	Kc8NUV/e6+pE0aCVq70TO/pStVPncgik7ahO4gKP7T6YH3G0ylU7O7jZww77rvhVz5Z0tlWm8WKs0
+	SmBLilYw0VlAfXk/5pLAjOFg5CCdIlzpnQJMuFs+y7TgCWHmO5pdAcq6LIt3+k/OAo77ZcLsECKIt
+	h+w2kHGUQzaSJ/AinR1nlAKrVgGpwgDXIqQlkkLW9Dl5+bGpS28S7+tL+u7adb5F1MAM9mZ/eZKNh
+	H9JBuduUXkwNuiMh/IVROGO7vUr5WVhC+bKCNsXziPwG4TVo99flGZe1VKf8tHxGGRVbDMaUKhBRo
+	GulZKLR2/oLnSf98+rNA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lrmmM-006e0c-J9; Fri, 11 Jun 2021 19:25:18 +0000
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+	id 1lrmqd-006eqy-1G; Fri, 11 Jun 2021 19:29:43 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lrmPA-006YL9-19
- for linux-mtd@lists.infradead.org; Fri, 11 Jun 2021 19:01:21 +0000
+ id 1lrmPG-006YNT-1R
+ for linux-mtd@lists.infradead.org; Fri, 11 Jun 2021 19:01:27 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 13B2AC0008;
- Fri, 11 Jun 2021 19:01:16 +0000 (UTC)
+ by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 307DA60003;
+ Fri, 11 Jun 2021 19:01:23 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org
 Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, ryan.barnett@collins.com
-Subject: Re: [PATCH 5/5] mtd: rawnand: omap: Add larger page NAND chips support
-Date: Fri, 11 Jun 2021 21:01:16 +0200
-Message-Id: <20210611190116.225731-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 4/5] mtd: rawnand: omap: Various style fixes
+Date: Fri, 11 Jun 2021 21:01:22 +0200
+Message-Id: <20210611190122.225797-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210610134906.3503303-6-miquel.raynal@bootlin.com>
+In-Reply-To: <20210610134906.3503303-5-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'c9723c7da546702cb6af2979db4203c9a012d08a'
+X-linux-mtd-patch-commit: b'b1b408dd368955ae1149c3d4abafce0cf8eb8870'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210611_120120_249450_A3218C0A 
-X-CRM114-Status: UNSURE (   8.84  )
+X-CRM114-CacheID: sfid-20210611_120126_254652_FB90380D 
+X-CRM114-Status: UNSURE (   5.82  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -73,16 +73,11 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2021-06-10 at 13:49:06 UTC, Miquel Raynal wrote:
-> There is no reason to be limited to 4kiB page NAND chips just because
-> this is the maximum length the ELM is able to handle in one go. Just
-> call the ELM several times and it will process as many data as needed.
-> 
-> Here we introduce the concept of ECC page (which is at most 4kiB). The
-> ELM will be sought as many times as there are ECC pages.
+On Thu, 2021-06-10 at 13:49:05 UTC, Miquel Raynal wrote:
+> Fix the comments style, declare the variables in a reverse Christmas
+> tree order, add an upper case character at the beginning of a sentence.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Tested-by: Ryan Barnett <ryan.barnett@collins.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next.
 
