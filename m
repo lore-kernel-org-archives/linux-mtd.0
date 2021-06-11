@@ -1,102 +1,104 @@
-Return-Path: <SRS0=9fF3=LE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=BpRd=LF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BC41C48BD1
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jun 2021 21:13:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2591C48BD1
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 01:20:22 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3A06D613E9
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jun 2021 21:13:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A06D613E9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id 583F46136D
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 01:20:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 583F46136D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=johnthomson.fastmail.com.au
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=uktkzZBJj5rK+Ln9+Q9K54mI3sgPN32IqaTFEcVx6pA=; b=shV3iJNgzIhXy3DdpDn22MOnpV
-	R7ivCVOq8fv2aj7Xgxi2ASZ5ESL1Ac0Yu7tNe5MeXnNtktcZPkLGCd62vyEulTufQDrD0a2Ac5hg5
-	ZyL4RoZkoJL4fO06bSvkuLQUYe28t/bPo0Y4DiYL1azxOfDH8GSFXp6p4myBdm0W89/9hG1XyTN/W
-	JZXiFcBeQI75bprbWwldzV5rbY3kep4eW/zcI9Mm3aKrEWU+LmyJPGbvthSWeph8eatVvCeloMMD4
-	sgLvDlbYQKOvbGagb8bEjAG917tNzVjNcY6pvhEY8JFivoUSUc1Nz0kREggs+NJcspwQ5l0R/BNqi
-	wbUfqUOQ==;
+	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Date:References:
+	In-Reply-To:Message-Id:Mime-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=mczPbJVn+iHDFGaONYL3hvm+u3FVvB8KBidk1DXF+kM=; b=DIBtnUlgZcU0q7
+	SNnyHjnhpy5ce2sLiRIydhgq8bHFbvvlM7XVDYtARFUZyjhQ7YUE9eAtikohgDx8BAbOCdFn8WTNM
+	h6u0PDuUtp/iTmnzcIYaw3ADLZCIqZJgtmDs9qPaBXKk2DG7rmmOhH66RJF09qQAfKO9iXk5Xxg5+
+	Lftx/ZzqkBr//O5wSCmkHavnIgYrLtz7x2xdcbgsdKOt7ftlzHqatFO9qZ+46XqdamGF83fvYyaiN
+	NRQY1iNbRS31ASQgJFV8gneiOLbYjKywUzrs2gStZcg6csajmf9so4HUVXLXpmSquBtRgMpGUIyvT
+	3Iz6MaV7pABNtSXLjKYA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lrRyo-002WSV-3F; Thu, 10 Jun 2021 21:12:46 +0000
-Received: from youngberry.canonical.com ([91.189.89.112])
+	id 1lrVnP-0036f8-94; Fri, 11 Jun 2021 01:17:15 +0000
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lrRyM-002WGh-94
- for linux-mtd@lists.infradead.org; Thu, 10 Jun 2021 21:12:19 +0000
-Received: from mail-wr1-f72.google.com ([209.85.221.72])
- by youngberry.canonical.com with esmtps (TLS1.2) tls
- TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.93)
- (envelope-from <krzysztof.kozlowski@canonical.com>)
- id 1lrRyK-0006Oq-GV
- for linux-mtd@lists.infradead.org; Thu, 10 Jun 2021 21:12:16 +0000
-Received: by mail-wr1-f72.google.com with SMTP id
- e11-20020a056000178bb0290119c11bd29eso1559794wrg.2
- for <linux-mtd@lists.infradead.org>; Thu, 10 Jun 2021 14:12:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=DYrEI1CPfZmySk6cY9J0ohXCN4+Mz5LA/y5DlhALlNg=;
- b=AUr/VWm4vW8PP5cGHesW3n64HdodJBoh8nyd/MzwUIHtc9IhB7k+Rw5qa3cDn9FEWN
- +vy+yfou/KsZxyO4RwrlqOmyAItmnioih/o3lEdcJ2+tzVbelaHwQdkS8rBArRqbFiL5
- cpIhOm/t4LrcgijgaD4VF59r2sRuLK3NNfKiejpi4OXvhZQuuUTTIiGPoncpF8qKsRcH
- 7XgcUB78xqzoDmHgQoXsBGrfZXCT/k3rYSr1eXSws3JUPhbcWY8xpR2k24NNS20PchK7
- VPNg8m4XpzEH4SG2Ei6aOSquzyWv0xf0rc8iQXc617O2skpUzgOGWec4P4M3e8KYTJD/
- 6gkA==
-X-Gm-Message-State: AOAM531NhFGXKpIZ8FXi8WfBZeTlJonm8JIJsANP3NpbnAV8Nd8EsRJq
- dOAqUH7axsN3GFVnFlhJ81/0/kuBG7y5IzqzAkF7tCOcnTOWa+Ie+jEzINdKHejoSalWF7cUj9I
- zK80yLI4PCXXLqAnOnhi1IqEOXIk/rIrBmOsEqsmzQIY=
-X-Received: by 2002:a5d:64c7:: with SMTP id f7mr419986wri.36.1623359536258;
- Thu, 10 Jun 2021 14:12:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx688A9cV+dEt1NvDmIjm1lap6cMqZBXZgUyNwhXCx9GAk5LyRDHaiwPttV7/4KtyMfj0W9sQ==
-X-Received: by 2002:a5d:64c7:: with SMTP id f7mr419956wri.36.1623359535971;
- Thu, 10 Jun 2021 14:12:15 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch.
- [188.155.177.222])
- by smtp.gmail.com with ESMTPSA id t66sm4005724wma.41.2021.06.10.14.12.13
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 10 Jun 2021 14:12:13 -0700 (PDT)
-Subject: Re: [PATCH v23 08/18] dt-binding: memory: pl353-smc: Enhance the
- description of the reg property
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Rob Herring <robh@kernel.org>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- Michal Simek <monstr@monstr.eu>, Naga Sureshkumar Relli
- <nagasure@xilinx.com>, Amit Kumar Mahapatra <akumarma@xilinx.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- helmut.grohne@intenta.de, Srinivas Goud <sgoud@xilinx.com>,
- Siva Durga Prasad Paladugu <sivadur@xilinx.com>
-References: <20210610082040.2075611-1-miquel.raynal@bootlin.com>
- <20210610082040.2075611-9-miquel.raynal@bootlin.com>
- <20210610155345.GA1873816@robh.at.kernel.org> <20210610180107.1cc889f3@xps13>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <76a94eb1-170a-307d-e1ce-1080a7af6a0a@canonical.com>
-Date: Thu, 10 Jun 2021 23:12:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210610180107.1cc889f3@xps13>
-Content-Language: en-US
+ id 1lrVnM-0036eL-S0
+ for linux-mtd@lists.infradead.org; Fri, 11 Jun 2021 01:17:14 +0000
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+ by mailout.west.internal (Postfix) with ESMTP id DDE8D1DF6;
+ Thu, 10 Jun 2021 21:17:05 -0400 (EDT)
+Received: from imap4 ([10.202.2.54])
+ by compute4.internal (MEProxy); Thu, 10 Jun 2021 21:17:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com.au;
+ h=mime-version:message-id:in-reply-to:references:date:from:to
+ :cc:subject:content-type; s=fm3; bh=4sxdG4q+15yHQGW5lRuvgFSziTf+
+ hurlcQZJNxGSOEQ=; b=Jq9FWY4M1upTIJVLDh/s1xWjGgFyjmLU4seS8WY7qxiz
+ FfAgm02+WnN/rGcHACnas4Tdb3e4rBVwZiECoFd1+fNNGgo1uuNLU4AAfVcHwPSa
+ Y+l6Rz+zBSuXfWJ3KEcDmq8haQUpYdu7Yci4Jr4Ljg7BeBByMNCSF+xK6zMhg7uk
+ tZKvwtansddJ5yoxpDC33wkPm9oP4qCSyeY1kPn8kX1UcC7ADy1GEI+++fwwpR/C
+ xNpFVZPoNPDZKMCAOhBgPuyxPPQJYJ/ro5AQGE+u0F7J0BUoXpMrdruSjaOXJBZ9
+ nsPi5pb4I3yf4RsFTrp0OkhA2QpDxd2WXqH4Q5GXRA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=4sxdG4
+ q+15yHQGW5lRuvgFSziTf+hurlcQZJNxGSOEQ=; b=jltkaWtXugPkCc4ZCtw/I3
+ PygpJ4nHPCt07sKPUc8nOXZqPbCoqqlL9ld/Tldk+qbVjrXwoT+Aqa20VpyeVEfm
+ ioTTRlDvbS0KMu0U8XmURcnCl0m7VXsMwP8TMpCy9rqKOJPhIYLFhy2dlEvTuW9Y
+ h80pYvsyGdE6TNhLCS+MC9vitkITdCNZHHjtnpZMB6/kLxixdLdWo6K6mE3NUOQS
+ GXF/1XekotziUHo4I7UhtgtEJWoi8lAVFGnHPvv+uSIvmhSEdZEeDdalnHOJs7vf
+ jNi9YI3PD5Whi/dAcDrilWYLfwvQQgmEixoTvcJeqyCvbXKcJ168F2a8ixSEaekQ
+ ==
+X-ME-Sender: <xms:j7nCYGld4ZhBGsnjBMMPs2oMiw0WhM9DDJyA-VfKlB440VgHLCB3cA>
+ <xme:j7nCYN03owRzIJroWUsLilaS1Wfwfeff9W1HaOpV5S2raqT0P0wayzY2_IB8wpWgS
+ BIyz7wiTuoMIgd0EA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeduiedggeefucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdflohhh
+ nhcuvfhhohhmshhonhdfuceoghhithesjhhohhhnthhhohhmshhonhdrfhgrshhtmhgrih
+ hlrdgtohhmrdgruheqnecuggftrfgrthhtvghrnhepffduudeffeegfffghfdvleevudei
+ leelfeegffefgeeileekieeftddvueehffdtnecuvehluhhsthgvrhfuihiivgeptdenuc
+ frrghrrghmpehmrghilhhfrhhomhepghhithesjhhohhhnthhhohhmshhonhdrfhgrshht
+ mhgrihhlrdgtohhmrdgruh
+X-ME-Proxy: <xmx:j7nCYEqvy7pxgnAHuPLeaQkRsRWurvAUlt1ImN-0NvEpF7iwMViOEQ>
+ <xmx:j7nCYKmKUZHzv1XcJlXcxuTmyAZUm8RUkP5ozGd8QON8b1Mk2jfQgA>
+ <xmx:j7nCYE2kW8DLjL5WwkkNwKA2sjQdBhG1iojmwk7k5c54ZNVCnT-k7w>
+ <xmx:kbnCYFlzbpZ9FKjCFM3ZHpspgzBNDPyyYJcZ6Ol7wF6rGT8xm_KRVA>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+ id BBEA816013E; Thu, 10 Jun 2021 21:17:03 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
+Mime-Version: 1.0
+Message-Id: <55d28fea-c20e-4e60-8b5b-b5a03ccea0cf@www.fastmail.com>
+In-Reply-To: <20210610100759.v57c5wa46ky33waj@ti.com>
+References: <20210608040719.14431-1-git@johnthomson.fastmail.com.au>
+ <20210610100759.v57c5wa46ky33waj@ti.com>
+Date: Fri, 11 Jun 2021 01:15:24 +0000
+From: "John Thomson" <git@johnthomson.fastmail.com.au>
+To: "Pratyush Yadav" <p.yadav@ti.com>
+Cc: "Miquel Raynal" <miquel.raynal@bootlin.com>,
+ "Richard Weinberger" <richard@nod.at>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>,
+ "Tudor Ambarus" <tudor.ambarus@microchip.com>,
+ "Michael Walle" <michael@walle.cc>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, "kernel test robot" <lkp@intel.com>,
+ "Dan Carpenter" <dan.carpenter@oracle.com>
+Subject: Re: [PATCH] mtd: spi-nor: write support for minor aligned partitions
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210610_141218_344446_51A8F998 
-X-CRM114-Status: GOOD (  20.15  )
+X-CRM114-CacheID: sfid-20210610_181712_953599_0ED24D56 
+X-CRM114-Status: GOOD (  20.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -113,49 +115,50 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 10/06/2021 18:01, Miquel Raynal wrote:
-> Hi Rob, Krzysztof,
+On Thu, 10 Jun 2021, at 10:08, Pratyush Yadav wrote:
+> On 08/06/21 02:07PM, John Thomson wrote:
+> > Do not prevent writing to mtd partitions where a partition boundary sits
+> > on a minor erasesize boundary.
+> > This addresses a FIXME that has been present since the start of the
+> > linux git history:
+> > /* Doesn't start on a boundary of major erase size */
+> > /* FIXME: Let it be writable if it is on a boundary of
+> >  * _minor_ erase size though */
+> > 
+> > Allow a uniform erase region spi-nor device to be configured
+> > to use the non-uniform erase regions code path for an erase with:
+> > CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE=y
+> > 
+> > On supporting hardware (SECT_4K: majority of current SPI-NOR device)
+> > provide the facility for an erase to use the least number
+> > of SPI-NOR operations, as well as access to 4K erase without
+> > requiring CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
+> > 
+> > Introduce erasesize_minor to the mtd struct,
+> > the smallest erasesize supported by the device
 > 
-> Rob Herring <robh@kernel.org> wrote on Thu, 10 Jun 2021 10:53:45 -0500:
+> Instead of having just a major and minor erase size, wouldn't it make 
+> more sense to have a list of all supported erases on a sector? That is, 
+> instead of hard coding two erase size instead of one, how about 
+> generalizing the erase machinery to allow any number of erase sizes on a 
+> sector and then choosing the most efficient one on run time?
 > 
->> On Thu, Jun 10, 2021 at 10:20:30AM +0200, Miquel Raynal wrote:
->>> The SMC bus controller features several register sets. The one pointed
->>> by the reg property is for the SMC configuration (impacts the
->>> sub-controllers configuration), while the others are meant to be used to
->>> send regular cycles on the memory bus (eg. CMD, ADDR, DATA for a NAND
->>> device). Detail this a little bit for the sake of clarity.
->>>
->>> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
->>> ---
->>>  .../devicetree/bindings/memory-controllers/pl353-smc.txt       | 3 ++-
->>>  1 file changed, 2 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt b/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
->>> index ecd46856f139..ba6a5426f62b 100644
->>> --- a/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
->>> +++ b/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
->>> @@ -5,7 +5,8 @@ of memory interfaces: NAND and memory mapped interfaces (such as SRAM or NOR).
->>>  
->>>  Required properties:
->>>  - compatible		: Should be "arm,pl353-smc-r2p1", "arm,primecell".
->>> -- reg			: Controller registers map and length.
->>> +- reg			: SMC controller and sub-controllers configuration
->>> +			  registers.  
->>
->> I think you could just drop this patch. Otherwise, this doesn't match 
->> what's now in the yaml file.
-> 
-> Fine.
-> 
-> Krzysztof, if it's still time you can just take patch 9 which Rob
-> just acked and forget about this one. I think we'll be good. Otherwise
-> that will be for the next MW ;)
+> For example, imagine a device can support 4K, 64K, and 256K erases on 
+> each sector. Then you should be able to use 2 x 4K erases if you want to 
+> erase 8K, 2 x 64K + 1 x 4K erases for 132K and so on.
 
-I skipped this one but took dtschema (9/18) so it should be in
-tomorrow's linux-next.
+Thank for you the feedback Pratyush,
 
-Best regards,
-Krzysztof
+Yes, this is what I am attempting to do.
+mtdpart only sets if the partition can be writeable, it does not do the erasing.
+Due to this, I thought that only the smallest erasesize should matter to mtdpart.
+The erase is carried out by the mtd device, so for an SPI-NOR device,
+spi_nor_erase_multi_sectors can be used to select and action the best combination of erases.
+This is done by this patch when CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE=y
+
+Cheers,
+-- 
+  John Thomson
 
 ______________________________________________________
 Linux MTD discussion mailing list
