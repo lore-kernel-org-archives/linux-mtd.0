@@ -4,107 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B85FDC48BE0
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 17:56:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F23B3C48BD1
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 18:44:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7A15A61078
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 17:56:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A15A61078
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+	by mail.kernel.org (Postfix) with ESMTPS id AEAB961002
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 18:44:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AEAB961002
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=Lp5KMIbbuNN0dHsjSPEp5zzgH9h2K6Z5laOcg1ipUHA=; b=MIwiyyolo39pLi5pw7aZTqfYIo
-	hGzhU74y3TIE+Xv/ufrpQxzf0gIw0FoKdYhYMbA5Okw0/hZ1GqjjBkx+SaPdHQhIzPgM2opsks+0Z
-	K+dW0AUGzBx5+jhgQHuQTuPF2hNcxF66HJrXa5ut58B7y4bfcaJ7MZigcMFLFPA6+a17NpImUldzo
-	sHrqsuEQ0QV7pA021T766paGqjcFwmQng1ABIbULkSkbdQXfwu+kHy2WqsNBQlHiSeYPS2V67+5hS
-	10Xtrsax5x+U9eFwP5eTjwaEA0R+K5fTf8IF3y0h7d0r+p5qyOaNzngtda+NWhfB2/5sM3YQMT/qb
-	MRxOhYtQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=kzi9o3De0F2DGm12uKQdaPpMjLpguIZQvAW2E3funmM=; b=IlGDMrzfNtFQzc
+	xkSHkELL8kLAc0jU6HrkoajDXaiClAARYO61PpVkZXZbyGi4UkXd+gQShF+wx9YoArZ1V10VnhGdc
+	64ZeVVDg74/1dP5pILrtMzDvpNTI517UpkoSRQVuQahc2uOKazmKK8MLkDniO37Q3GfN7uHk8KlWN
+	oopHkFfHoPcXmE1syVoBL5R8GhI+nLl+8ce1KdPRCHeGAiW9h7KJySSi4Z53Xuo/KHQLCHJ5Tejez
+	RCGJ974dzpLhtyRNuW8Q+g9Q1TJ4fOHEf31ofP+kfWb+8hoiUsIbvSvkcORkzUOAVkzKM/hTUSHos
+	dKRMgcmCi2E6GFrA7UWA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lrlOC-006Nhv-DS; Fri, 11 Jun 2021 17:56:16 +0000
-Received: from mail-pl1-f181.google.com ([209.85.214.181])
+	id 1lrm8f-006Ulm-Cb; Fri, 11 Jun 2021 18:44:17 +0000
+Received: from relay8-d.mail.gandi.net ([217.70.183.201])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lrlO9-006NgT-Gq
- for linux-mtd@lists.infradead.org; Fri, 11 Jun 2021 17:56:14 +0000
-Received: by mail-pl1-f181.google.com with SMTP id v11so3208581ply.6
- for <linux-mtd@lists.infradead.org>; Fri, 11 Jun 2021 10:56:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=kernel-dk.20150623.gappssmtp.com; s=20150623;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=FiCqgV8kjys+3xuqiyCwJtcf1Wj53LQ5ch2SqyLytgY=;
- b=SD6IZ6g/PQccK+DJj47BNWbjBcu51Hoxg75XX8W0NsqQBg0ABF+hnuOUc/UFnpm8im
- oNVX3uykvZuuO5Y8ikPd3y+WsvzDFhqLGs4yWHQFnc8RzIYufWCIOXqn3AApkjH4Q2eg
- xQaVfA+BsocsKdfD6NHf1Rfl2fMGnqoxNR3DdZP0eXDcQ/vjXZbD88x8d17C79EnssGA
- MaA3XiWo9+AFyaOrA1MdfYif3vi99movLQHJefeIj5rihTG1TSe1D2qp8+37dXVxo+jK
- juNRW5LpLgfCfOOUxjWz+2zHY1TAZQqD4FUpZkK9KYz4TPA/VoJTiiPZCp8OQM00GFzi
- g76Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=FiCqgV8kjys+3xuqiyCwJtcf1Wj53LQ5ch2SqyLytgY=;
- b=srR8y3rKIZj1VvA5XF47KNPIqT50LvbJc+1X3frwtriMHbCDR5VDNhHEpqq3DSYPYG
- huRocZfsbmWr4a7krZMKrPR7SkVJU/kbR/4979SE0E5QQt8wMmUBWGbYP10Lzn5KC0ps
- Yjrxixomy91tnvxfDkqv/Le29cdd8UNr4Zc4zjQEBi+ZZ4rHuzMqFoZxaye20w8D/DAn
- kCThm+ZwPOn3d5jpkRDsIanQiOd6kWezOJICXIgSvPnwk8r4U6bSXl/BuJGZBZl4nQ7Q
- inAYldmg+XghOpYQrFomr/yKHCsZOZsi4Ueq/N8hObfXbBlzh6AfKdALtAATpZ5C3M9w
- g9zA==
-X-Gm-Message-State: AOAM5308xNQgZV8qsy6eH1SOLMH+Wd2jYZuzCEZwU80PUOfnZ+NXcC+6
- deLL6g6L1LGHPg/xHfRm7CN8DQ==
-X-Google-Smtp-Source: ABdhPJxMGSnZ9kJAsN6p7k0McSncvftPUJip5kVUuOxTF3REguFHe02Lgz4i9/8fJhn7M2nOfjp+aA==
-X-Received: by 2002:a17:90a:9481:: with SMTP id
- s1mr5656508pjo.48.1623434110978; 
- Fri, 11 Jun 2021 10:55:10 -0700 (PDT)
-Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
- by smtp.gmail.com with ESMTPSA id
- x3sm6384950pgx.8.2021.06.11.10.55.07
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 11 Jun 2021 10:55:10 -0700 (PDT)
-Subject: Re: simplify gendisk and request_queue allocation for blk-mq based
- drivers
-To: Christoph Hellwig <hch@lst.de>
-Cc: Justin Sanders <justin@coraid.com>, Denis Efremov <efremov@linux.com>,
- Josef Bacik <josef@toxicpanda.com>, Tim Waugh <tim@cyberelk.net>,
- Geoff Levand <geoff@infradead.org>, Ilya Dryomov <idryomov@gmail.com>,
- "Md. Haris Iqbal" <haris.iqbal@ionos.com>, Jack Wang <jinpu.wang@ionos.com>,
- "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
- Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
- =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
- Mike Snitzer <snitzer@redhat.com>, Maxim Levitsky <maximlevitsky@gmail.com>,
- Alex Dubov <oakad@yahoo.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Christian Borntraeger <borntraeger@de.ibm.com>, dm-devel@redhat.com,
- linux-block@vger.kernel.org, nbd@other.debian.org,
- linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org,
- virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org,
- linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-s390@vger.kernel.org
-References: <20210602065345.355274-1-hch@lst.de>
-From: Jens Axboe <axboe@kernel.dk>
-Message-ID: <fa9590e3-20eb-5215-d2f7-6489169c232c@kernel.dk>
-Date: Fri, 11 Jun 2021 11:55:09 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ id 1lrm8c-006UlE-Dd
+ for linux-mtd@lists.infradead.org; Fri, 11 Jun 2021 18:44:16 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id EF4E01BF207;
+ Fri, 11 Jun 2021 18:43:50 +0000 (UTC)
+Date: Fri, 11 Jun 2021 20:43:25 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+List-Id: <soc.lore.kernel.org>
+Cc: Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+ arm@kernel.org, soc@kernel.org, linux-kernel@vger.kernel.org, Krzysztof
+ Kozlowski <krzk@kernel.org>, linux-mtd@lists.infradead.org, Richard
+ Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [GIT PULL 2/2] memory: pl353-smc for v5.14
+Message-ID: <20210611204325.192ad206@xps13>
+In-Reply-To: <20210611140659.61980-2-krzysztof.kozlowski@canonical.com>
+References: <20210611140659.61980-1-krzysztof.kozlowski@canonical.com>
+ <20210611140659.61980-2-krzysztof.kozlowski@canonical.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210602065345.355274-1-hch@lst.de>
-Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210611_105613_570658_5FB4CA6D 
-X-CRM114-Status: GOOD (  13.28  )
+X-CRM114-CacheID: sfid-20210611_114414_613763_316366CD 
+X-CRM114-Status: UNSURE (   6.34  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -116,26 +70,16 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 6/2/21 12:53 AM, Christoph Hellwig wrote:
-> Hi all,
-> 
-> this series is the scond part of cleaning up lifetimes and allocation of
-> the gendisk and request_queue structure.  It adds a new interface to
-> allocate the disk and queue together for blk based drivers, and uses that
-> in all drivers that do not have any caveats in their gendisk and
-> request_queue lifetime rules.
-
-Applied, thanks.
-
--- 
-Jens Axboe
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgS3J6eXN6dG9mLAoKS3J6eXN6dG9mIEtvemxvd3NraSA8a3J6eXN6dG9mLmtvemxvd3NraUBj
+YW5vbmljYWwuY29tPiB3cm90ZSBvbiBGcmksCjExIEp1biAyMDIxIDE2OjA2OjU5ICswMjAwOgoK
+PiBIaSwKPiAKPiBEZWRpY2F0ZWQgYnJhbmNoIGZvciBwbDM1My1zbWMgZHJpdmVyIGNoYW5nZXMu
+CgpUaGFua3MgZm9yIHRoZSBicmFuY2gsIEknbGwgaW5jbHVkZSBpdCBhbmQgYWRkIHRoZSBsYXN0
+IE5BTkQgcGF0Y2hlcyBvbgp0b3Agb2YgaXQuCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
+Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9saW51eC1tdGQvCg==
