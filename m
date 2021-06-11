@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B310CC48BD1
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 19:59:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8BCCC48BD1
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 20:02:16 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7FB82613DE
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 19:59:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7FB82613DE
+	by mail.kernel.org (Postfix) with ESMTPS id 75C16613A9
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 20:02:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 75C16613A9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,21 +23,21 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lZQ5wws+zne/J0+WCLnx5vx5inOH/p58W6D38TvdzAU=; b=Qsh/6spyDOqDyk
-	me3MHrh1hRVVpP+FLV6ENI/Zvka27EX3O+UPR2UwY3Nd7gc9dlOKRfsHhOZC6UClyXXrACb4pGKQ+
-	4nCR1z0LEFD3ZF0eerl5VU/ObPGJVoL25B4rQ6cY3fVONERDewxRw+k+cDR5QQSCdJRvg3lJyAfe1
-	kpKSwUukr/g4PgfIOOnEIAs1uAIZN1lEFK4yLi62ZJ7Vsi+uzCyXtftsMoOzDsv7177pmnNey4aIU
-	bSxviCIOee8Z+p/TAe2ODQmStZRCDRcsYAfHG3YZMmK5QQZgEWUZBjIBLfUzBW2Qp4uUQ5ug/8MzK
-	JMn11lqyeQdXTNdnISgg==;
+	List-Owner; bh=v/D8paC5qHYVl+icc3WTArrFsrb2fgYq7uGNuZhmJ7w=; b=jxqxaviCpUl/8h
+	X4qNPH57eaQUSgXR0ZRRN5a/xra36m3wvZT8x+S8X62FkIv9NixuhE0vSsQFNHm2MGzysUo+AjLIP
+	s07/6ITDlnve0LtPEy4XLrCrYBmTaD+ly3XlddgV9Z7PmTJfpjV655f0bCae1dVZNNQFUYx6AdL9u
+	DoTLI54UMtydY+xWEfBQFGRU3N/mkwdlbOSEIdfOdc9qzWBP2N3KUdGPUpU5GpJbldg5GKOPVe1Jg
+	6tuC6U2BHP7rYFYPrCPXg7fotxjmOs7qilr0ZND0W/gog66lvoJ6cx3549HfmWIGp244GHZGewqXc
+	2KlGR3o/U7NdkNYLhXyw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lrnIm-006mTj-4R; Fri, 11 Jun 2021 19:58:48 +0000
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	id 1lrnLX-006nb3-V0; Fri, 11 Jun 2021 20:01:40 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lrmQj-006Ytq-6c; Fri, 11 Jun 2021 19:02:58 +0000
+ id 1lrmQp-006Yvh-Qt; Fri, 11 Jun 2021 19:03:05 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 77FEA40003;
- Fri, 11 Jun 2021 19:02:53 +0000 (UTC)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 33B39C0002;
+ Fri, 11 Jun 2021 19:02:59 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: patrice.chotard@foss.st.com, Mark Brown <broonie@kernel.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -49,18 +49,18 @@ To: patrice.chotard@foss.st.com, Mark Brown <broonie@kernel.org>,
  linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  Pratyush Yadav <p.yadav@ti.com>
 Cc: christophe.kerello@foss.st.com
-Subject: Re: [PATCH v5 2/3] mtd: spinand: Add spinand_init_flash() helper
-Date: Fri, 11 Jun 2021 21:02:52 +0200
-Message-Id: <20210611190252.226505-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v5 1/3] mtd: spinand: add spinand_read_cfg() helper
+Date: Fri, 11 Jun 2021 21:02:59 +0200
+Message-Id: <20210611190259.226571-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210602094913.26472-3-patrice.chotard@foss.st.com>
+In-Reply-To: <20210602094913.26472-2-patrice.chotard@foss.st.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'bd50dc4befae732f7fb827eccddb2219f9745b91'
+X-linux-mtd-patch-commit: b'0c3d87eae33adca609edac1b16c34f2ea52c8e8a'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210611_120257_487712_9F62AC56 
-X-CRM114-Status: UNSURE (   4.49  )
+X-CRM114-CacheID: sfid-20210611_120304_049241_F3ADBBBF 
+X-CRM114-Status: UNSURE (   5.35  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,11 +78,11 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2021-06-02 at 09:49:12 UTC,  wrote:
+On Wed, 2021-06-02 at 09:49:11 UTC,  wrote:
 > From: Patrice Chotard <patrice.chotard@foss.st.com>
 > 
-> Add spinand_init_flash() helper which implement
-> all needed init for future SPI-NAND resume ops.
+> Put REG_CFG reading code in spinand_read_cfg().
+> This function will be needed by the future SPI-NAND resume ops.
 > 
 > Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
 
