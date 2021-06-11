@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8BCCC48BD1
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 20:02:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FCE3C48BE0
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 20:05:16 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 75C16613A9
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 20:02:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 75C16613A9
+	by mail.kernel.org (Postfix) with ESMTPS id 42A3C613CC
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jun 2021 20:05:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 42A3C613CC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,44 +23,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=v/D8paC5qHYVl+icc3WTArrFsrb2fgYq7uGNuZhmJ7w=; b=jxqxaviCpUl/8h
-	X4qNPH57eaQUSgXR0ZRRN5a/xra36m3wvZT8x+S8X62FkIv9NixuhE0vSsQFNHm2MGzysUo+AjLIP
-	s07/6ITDlnve0LtPEy4XLrCrYBmTaD+ly3XlddgV9Z7PmTJfpjV655f0bCae1dVZNNQFUYx6AdL9u
-	DoTLI54UMtydY+xWEfBQFGRU3N/mkwdlbOSEIdfOdc9qzWBP2N3KUdGPUpU5GpJbldg5GKOPVe1Jg
-	6tuC6U2BHP7rYFYPrCPXg7fotxjmOs7qilr0ZND0W/gog66lvoJ6cx3549HfmWIGp244GHZGewqXc
-	2KlGR3o/U7NdkNYLhXyw==;
+	List-Owner; bh=Cap1g25ps1OnXlK4ekGfcLKuTGMXrhLENytt0BXZ0nw=; b=gz/yQVZWMzimFz
+	SX9ZzkpQibI3fyR1H1Z3u5V4n9OWpLKcRMVCN0FzMmLxkWs2XK9Q1Ibb9DV37H1dLYo4y24WXenXX
+	JNYYZamUjVMwkDflJtV74O7MPc8oayAMByAoCnZGdCtdLG9XE4mklMXmgcSSS64jPRqvBB3EX6rc0
+	6LgohOq1hRNDrlUYfqGqgoic91I+ZINfvP9uSuA9o4swtenmIO3L+ps6ZcnXNTV3Cvv+/Is33JxWa
+	cTNSNrKdZq0cVjfMLMw2ZY9QnbddJpejobhT1b/eOHB0+yGZtOq2cmD+I7exG9wHD80YI4y5pJxKN
+	X1/ER5L4dsvC6CrsijlA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lrnLX-006nb3-V0; Fri, 11 Jun 2021 20:01:40 +0000
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+	id 1lrnOU-006oPB-Dg; Fri, 11 Jun 2021 20:04:42 +0000
+Received: from relay10.mail.gandi.net ([217.70.178.230])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lrmQp-006Yvh-Qt; Fri, 11 Jun 2021 19:03:05 +0000
+ id 1lrmQx-006Yxd-Pw
+ for linux-mtd@lists.infradead.org; Fri, 11 Jun 2021 19:03:13 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 33B39C0002;
- Fri, 11 Jun 2021 19:02:59 +0000 (UTC)
+ by relay10.mail.gandi.net (Postfix) with ESMTPSA id 157E6240006;
+ Fri, 11 Jun 2021 19:03:06 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: patrice.chotard@foss.st.com, Mark Brown <broonie@kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- linux-mtd@lists.infradead.org,
- Alexandre Torgue <alexandre.torgue@foss.st.com>, linux-spi@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Pratyush Yadav <p.yadav@ti.com>
-Cc: christophe.kerello@foss.st.com
-Subject: Re: [PATCH v5 1/3] mtd: spinand: add spinand_read_cfg() helper
-Date: Fri, 11 Jun 2021 21:02:59 +0200
-Message-Id: <20210611190259.226571-1-miquel.raynal@bootlin.com>
+To: Yang Yingliang <yangyingliang@huawei.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	daniel@zonque.org
+Subject: Re: [PATCH -next] mtd: rawnand: marvell: add missing
+ clk_disable_unprepare() on error in marvell_nfc_resume()
+Date: Fri, 11 Jun 2021 21:03:05 +0200
+Message-Id: <20210611190305.226637-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210602094913.26472-2-patrice.chotard@foss.st.com>
+In-Reply-To: <20210601125814.3260364-1-yangyingliang@huawei.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'0c3d87eae33adca609edac1b16c34f2ea52c8e8a'
+X-linux-mtd-patch-commit: b'b6cc0d1e3ee3545c86024f57519c0d165424595c'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210611_120304_049241_F3ADBBBF 
-X-CRM114-Status: UNSURE (   5.35  )
+X-CRM114-CacheID: sfid-20210611_120312_026897_A1FD2CFF 
+X-CRM114-Status: UNSURE (   4.39  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,13 +74,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2021-06-02 at 09:49:11 UTC,  wrote:
-> From: Patrice Chotard <patrice.chotard@foss.st.com>
+On Tue, 2021-06-01 at 12:58:14 UTC, Yang Yingliang wrote:
+> Add clk_disable_unprepare() on error path in marvell_nfc_resume().
 > 
-> Put REG_CFG reading code in spinand_read_cfg().
-> This function will be needed by the future SPI-NAND resume ops.
-> 
-> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+> Fixes: bd9c3f9b3c00 ("mtd: rawnand: marvell: add suspend and resume hooks")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
