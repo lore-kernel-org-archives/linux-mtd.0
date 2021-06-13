@@ -2,19 +2,19 @@ Return-Path: <SRS0=Sdmk=LH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D887DC48BDF
-	for <linux-mtd@archiver.kernel.org>; Sun, 13 Jun 2021 11:24:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D611C48BDF
+	for <linux-mtd@archiver.kernel.org>; Sun, 13 Jun 2021 11:24:48 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 91E6E61279
-	for <linux-mtd@archiver.kernel.org>; Sun, 13 Jun 2021 11:24:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 91E6E61279
+	by mail.kernel.org (Postfix) with ESMTPS id D2A646100B
+	for <linux-mtd@archiver.kernel.org>; Sun, 13 Jun 2021 11:24:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D2A646100B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,38 +23,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CjcmgqNfAHd0DSxuDd8JQwS6r7D8D7gCZmpv9M28VMk=; b=hyyQWtNQURP2ul
-	3GlEjhFsRwftg7xv64at+49ytQkkW3B36U2/+hiwtDNfGQlFeJ6asXSc7+OBx86NbQFePlhL2Wn47
-	yTwmAxshpgDFtZFt+4eCPDiAqOfjwW9Sdc0xIpSvT15D1HEaPXLFCAhXp6QZCQq3S1+TLhNipZyik
-	u+ySoUBnHYzS5TjxU/oD01/O/uWSKGnOlpAurCJUSrjKhDJLS+YxM2q5sezg4PgohKtoWrJaPSkpo
-	4CtlcOgSRJ/PM0+fGhL+p86n+bXMqWB6OSrtwdm1gVNG9OH/H7Q7/qPExB9odQcRr7dnZgWsZL2dT
-	BZncHb2ILY0yh9wlGEAQ==;
+	List-Owner; bh=mg4R78vsaZuVHPBP8bf/mHTrVK+xOLXO5Nv/AO+B3OQ=; b=Jg8SOno2raMaXc
+	Lgdh+ixyEZL5jLG0JQFhcL2z7N4fAUfHAeuLbfc1UmbLxGaUFJBS2iyR6D/DYteMFLe25tXuzgjnA
+	0yaUfh+FTXk79tGtPbRnJ3Il9j8NMHhoNgHkIVS8JAHr3PtmwHp59uvnm+e3VkZGUy7PrsWiHKeTh
+	+SQj57QxaU1Z5uwslQZvoLoYS9udPZIo7H7X9LC54VO6wlDQeW9/0RJrcDrtsiRTxzrWgVWTN51/R
+	/bh/hiDOjVOw3t2fIq/poEJFKiovpqMSYlISZGI+JQF/CZTk5SCEiEylnreKwJooZSdHJf5x/UjZr
+	yheRpMYBmgT9UADIQ0ng==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lsODR-00AIsp-Dm; Sun, 13 Jun 2021 11:23:45 +0000
+	id 1lsODx-00AJ3M-5N; Sun, 13 Jun 2021 11:24:17 +0000
 Received: from szxga02-in.huawei.com ([45.249.212.188])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lsOC1-00AIS8-9Y
+ id 1lsOC1-00AIS9-9X
  for linux-mtd@lists.infradead.org; Sun, 13 Jun 2021 11:22:20 +0000
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G2sXn1GGbz6yD1;
- Sun, 13 Jun 2021 19:19:05 +0800 (CST)
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G2sXq2Yn0z6wKG;
+ Sun, 13 Jun 2021 19:19:07 +0800 (CST)
 Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sun, 13 Jun 2021 19:22:12 +0800
+ 15.1.2176.2; Sun, 13 Jun 2021 19:22:14 +0800
 Received: from huawei.com (10.175.127.227) by dggema761-chm.china.huawei.com
  (10.1.198.203) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sun, 13
- Jun 2021 19:22:11 +0800
+ Jun 2021 19:22:13 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
-Subject: [PATCH 1/6] Revert "mtd: blkdevs: fix potential deadlock + lockdep
- warnings"
-Date: Sun, 13 Jun 2021 19:30:30 +0800
-Message-ID: <20210613113035.2329421-2-chengzhihao1@huawei.com>
+Subject: [PATCH 6/6] Revert "mtd: allow to unload the mtdtrans module if its
+ block devices aren't open"
+Date: Sun, 13 Jun 2021 19:30:35 +0800
+Message-ID: <20210613113035.2329421-7-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210613113035.2329421-1-chengzhihao1@huawei.com>
 References: <20210613113035.2329421-1-chengzhihao1@huawei.com>
@@ -64,9 +64,8 @@ X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  dggema761-chm.china.huawei.com (10.1.198.203)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210613_042217_634001_067C17E9 
-X-CRM114-Status: UNSURE (   7.82  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210613_042217_747909_CD8AC3CB 
+X-CRM114-Status: GOOD (  15.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,65 +82,109 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This reverts commit f3c63795e90f0c6238306883b6c72f14d5355721.
+This reverts commit 008c751ec78587dd9b48bb62d4b10d616554fea2.
+
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- drivers/mtd/mtd_blkdevs.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/mtd/mtd_blkdevs.c | 49 ++++++++++++++++++++-------------------
+ 1 file changed, 25 insertions(+), 24 deletions(-)
 
 diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index fb8e12d590a1..16ccce3e7fdb 100644
+index e8a77f10ae24..4d386617fd8a 100644
 --- a/drivers/mtd/mtd_blkdevs.c
 +++ b/drivers/mtd/mtd_blkdevs.c
-@@ -209,8 +209,8 @@ static int blktrans_open(struct block_device *bdev, fmode_t mode)
+@@ -205,7 +205,7 @@ static blk_status_t mtd_queue_rq(struct blk_mq_hw_ctx *hctx,
+ static int blktrans_open(struct block_device *bdev, fmode_t mode)
+ {
+ 	struct mtd_blktrans_dev *dev = blktrans_dev_get(bdev->bd_disk);
+-	int ret = 0;
++	int ret;
+ 
  	if (!dev)
  		return -ERESTARTSYS; /* FIXME: busy loop! -arnd*/
- 
--	mutex_lock(&mtd_table_mutex);
+@@ -213,17 +213,17 @@ static int blktrans_open(struct block_device *bdev, fmode_t mode)
+ 	mutex_lock(&mtd_blkdevs_mutex);
  	mutex_lock(&dev->lock);
-+	mutex_lock(&mtd_table_mutex);
  
- 	if (dev->open)
+-	if (dev->open++)
++	if (!dev->mtd) {
++		ret = -ENXIO;
  		goto unlock;
-@@ -234,8 +234,8 @@ static int blktrans_open(struct block_device *bdev, fmode_t mode)
- 
- unlock:
- 	dev->open++;
--	mutex_unlock(&dev->lock);
- 	mutex_unlock(&mtd_table_mutex);
-+	mutex_unlock(&dev->lock);
- 	blktrans_dev_put(dev);
- 	return ret;
- 
-@@ -245,8 +245,8 @@ static int blktrans_open(struct block_device *bdev, fmode_t mode)
- error_put:
- 	module_put(dev->tr->owner);
- 	kref_put(&dev->ref, blktrans_dev_release);
--	mutex_unlock(&dev->lock);
- 	mutex_unlock(&mtd_table_mutex);
-+	mutex_unlock(&dev->lock);
- 	blktrans_dev_put(dev);
- 	return ret;
- }
-@@ -258,8 +258,8 @@ static void blktrans_release(struct gendisk *disk, fmode_t mode)
- 	if (!dev)
- 		return;
- 
--	mutex_lock(&mtd_table_mutex);
- 	mutex_lock(&dev->lock);
-+	mutex_lock(&mtd_table_mutex);
- 
- 	if (--dev->open)
- 		goto unlock;
-@@ -273,8 +273,8 @@ static void blktrans_release(struct gendisk *disk, fmode_t mode)
- 		__put_mtd_device(dev->mtd);
+-
+-	kref_get(&dev->ref);
+-	__module_get(dev->tr->owner);
+-
+-	if (dev->mtd) {
+-		ret = dev->tr->open ? dev->tr->open(dev) : 0;
+-		__get_mtd_device(dev->mtd);
  	}
- unlock:
--	mutex_unlock(&dev->lock);
- 	mutex_unlock(&mtd_table_mutex);
-+	mutex_unlock(&dev->lock);
- 	blktrans_dev_put(dev);
- }
  
++	ret = !dev->open++ && dev->tr->open ? dev->tr->open(dev) : 0;
++	/* Take another reference on the device so it won't go away till
++	 * last release */
++	if (!ret)
++		kref_get(&dev->ref);
++
+ 	dev->file_mode = mode;
+ 
+ unlock:
+@@ -243,17 +243,14 @@ static void blktrans_release(struct gendisk *disk, fmode_t mode)
+ 	mutex_lock(&mtd_blkdevs_mutex);
+ 	mutex_lock(&dev->lock);
+ 
+-	if (--dev->open)
+-		goto unlock;
+-
++	/* Release one reference, we sure its not the last one here*/
+ 	kref_put(&dev->ref, blktrans_dev_release);
+-	module_put(dev->tr->owner);
+ 
+-	if (dev->mtd) {
+-		if (dev->tr->release)
+-			dev->tr->release(dev);
+-		__put_mtd_device(dev->mtd);
+-	}
++	if (!dev->mtd)
++		goto unlock;
++
++	if (!--dev->open && dev->tr->release)
++		dev->tr->release(dev);
+ unlock:
+ 	mutex_unlock(&dev->lock);
+ 	blktrans_dev_put(dev);
+@@ -408,6 +405,9 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 
+ 	gd->queue = new->rq;
+ 
++	__get_mtd_device(new->mtd);
++	__module_get(tr->owner);
++
+ 	if (new->readonly)
+ 		set_disk_ro(gd, 1);
+ 
+@@ -456,15 +456,16 @@ int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
+ 	blk_mq_unquiesce_queue(old->rq);
+ 	blk_mq_unfreeze_queue(old->rq);
+ 
+-	/* If the device is currently open, tell trans driver to close it,
+-		then put mtd device, and don't touch it again */
++	/* Ask trans driver for release to the mtd device */
+ 	mutex_lock(&old->lock);
+-	if (old->open) {
+-		if (old->tr->release)
+-			old->tr->release(old);
+-		__put_mtd_device(old->mtd);
++	if (old->open && old->tr->release) {
++		old->tr->release(old);
++		old->open = 0;
+ 	}
++	__put_mtd_device(old->mtd);
++	module_put(old->tr->owner);
+ 
++	/* At that point, we don't touch the mtd anymore */
+ 	old->mtd = NULL;
+ 
+ 	mutex_unlock(&old->lock);
 -- 
 2.31.1
 
