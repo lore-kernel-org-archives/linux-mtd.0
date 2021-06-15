@@ -2,100 +2,86 @@ Return-Path: <SRS0=11ri=LJ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4638BC48BE5
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Jun 2021 17:37:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57866C48BDF
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Jun 2021 18:08:16 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F2474611CE
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Jun 2021 17:37:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F2474611CE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id E8140610A1
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Jun 2021 18:08:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E8140610A1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LXeYhWBdkfDpr8kNmRnEyEj1qqjUWeruc0iQSfbo6HY=; b=I7Gjo7OZl1MtIL
-	gRwiyCTNl1shQ0xkXmXpp2aUt4nT0k7UGMWyH/STnMkrJcuj+GRg8595e2awGLhmp2mGk/HmugQ47
-	SJPLCBNnpYvB+svzkI1O8Se/bLBbBBe2B3RQ2ziHAZcFJ+UuhLpdGKFY3UbtiFPLkm+ZdBkmCDqgc
-	AoJcUwWx1NMucFOENn7c8fhbdWgWYHJ9AXHO0n441/sqSUn/mTCSR0OwYKHKHfq2GxjuGpgpw2YwN
-	KElw3wbgW6h8HbWzRN0ApWO5opS+4c7FBRiKdE79NEgqQmPDKGYT7XK3K1c780idWhae6gybfAfMQ
-	tY81w38exNxoCVqBS7Tw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Iz180Lh+WtBXo5AySOT7xU3AO+npMpI8vNsLpppwFdk=; b=HZg61g0oYStObYaErLyuYyu17c
+	ZDYkj/3d1k+g3KCdOzDeZnGoRBiUbfSp2G5W/A78GhfHt7RPMvlPV8qZ2c/ptPxT9M5k68kZ9RKRI
+	p2mMenL0J/m3fjex8IGxfJ6+Pi4w2Dbqk9tMSaI4LQm/SLcWAUJxdfDFaSWqtZxlyX03hN/S5xi5Y
+	h6cFdFeZch8cnzYD5u3bb5md6El/3kDkg8H6KOhiOITLKJ2l689oCnpqfLK0/8zDlVEo5oh5qY11y
+	bwWg0/xCGglqv6eon05mcFKG55orP1zoeLkdZ9V+U/AZAP2b2cT+tscKDv+3Z1j9M1IwwZwT+KM/x
+	EN24rFQA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ltCzI-001mok-8g; Tue, 15 Jun 2021 17:36:32 +0000
+	id 1ltDTK-00209G-2t; Tue, 15 Jun 2021 18:07:34 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lt9H6-000DEY-R2
- for linux-mtd@bombadil.infradead.org; Tue, 15 Jun 2021 13:38:41 +0000
+ id 1lt9IO-000DwX-UO
+ for linux-mtd@bombadil.infradead.org; Tue, 15 Jun 2021 13:40:01 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=desiato.20200630; h=Content-Type:Cc:To:Subject:Message-ID:
- Date:From:In-Reply-To:References:MIME-Version:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=6z4408/6oQsiDbv7fByF9r7biAOY0o4N+GInpU23pkI=; b=OFQA6sUkk81quYfnYbJM2dRlkl
- 4x6h+2NsgflhpQQOIgxccKZLOXDVbjHIfjq8wE+JIVBNGTQkGAy/yB3QsRVsTgcbgTGvtA2Zr1nSt
- zqVO19u0HajlN5BFXm9pGFuhI5UXtRP72esg6e7LzocbHlaqwkTTII9vM8DYMbiPgLSl7azKPEUfK
- Wut9C5A+Ra82QvQKFB5Qm6M/gegf49aiZNLmTaI+H/v6x9AKjXLtFmeXJgYJ5EnReLhvUiPHeNB6x
- NJlORz+AUd6l9O2CExMGI8l61vp+D9bMNFl1TZAm/oZSlJM3xwFbsXcVTpkI+wYUzod7m02gagdEU
- MewuGusg==;
-Received: from mail-ej1-x62a.google.com ([2a00:1450:4864:20::62a])
+ d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+ :In-Reply-To:MIME-Version:Date:Message-ID:From:References:CC:To:Subject:
+ Sender:Reply-To:Content-ID:Content-Description;
+ bh=8c2t7H3ry71d7xmZQlvVSaIB3tgUpNjjIcgIdWVEVtw=; b=GlD6c2X/ko0pnnf7RrggQrlHMU
+ hBM6p3XcDQwDsm59mtlhMOzYgIvrkN9YtnQBb+Dbln1GxBU2t0Q4bNy8pWDpt6/M10bllFvjgU8Gv
+ 3hK3YifLfda3g2jlyGBooIngDdvAcB6OYbqST92NrVrId5FhFlZqzEhvDrHSLNlUbJnLlkg6p599w
+ gNdOqEA6BpL9J6sJZeu4or5zf/sL6EjYLBwphuJOCRSDEIhi5hQPUD1SI3pA4/E/8VcoYTcAbuDgb
+ w/Rns36/tjdkUiyTfnlFAcjO6VILdpRP+ra8OFaQ+npCo2gRZkZBSyTdXRonFX7JonHvOfVhZUziA
+ BxE4l8MA==;
+Received: from szxga08-in.huawei.com ([45.249.212.255])
  by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lt5sZ-007gnc-Qf
- for linux-mtd@lists.infradead.org; Tue, 15 Jun 2021 10:01:16 +0000
-Received: by mail-ej1-x62a.google.com with SMTP id gt18so3084932ejc.11
- for <linux-mtd@lists.infradead.org>; Tue, 15 Jun 2021 03:01:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=6z4408/6oQsiDbv7fByF9r7biAOY0o4N+GInpU23pkI=;
- b=H06GhBmxY91XwIBiT6QAmQpAftMWvSYiSkZ1ikjQiL/ABWIc6qzGO96hKW2gZMGb8i
- LPGM6p3HrLH5zBeTr2aFA0tc7/l3iZL3/+l4qB8ZwulLOQD6sIaU1oJA8GKcNaMWsbws
- lFSjtNYGjK63ptwBFN6XZPDIMY0jwp+KT/8bJMylNwfW3yTyqtzDS4rgcNqti4cqu8hF
- 8F/XzvIhvRLhlw0Jw9BjtkyUHnGGJaIToVlmnZ7F3q3QjBRHXYnfJW4kOUCUtrc4W3nd
- GZRDASpUW3UpxKzXgTBfVY7kj4UzzdGgjJq/j3NKG1CqGI9Zg0Ql29g3cC7NLxBnJp/+
- JdPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=6z4408/6oQsiDbv7fByF9r7biAOY0o4N+GInpU23pkI=;
- b=ieocXpwTDnQbsYSFKzuFT8MM8aJVcP0gqVqoBq4CsP9xaYE73Oq5gU5+jvYG47ffjD
- EJZit+F3R3UBuaSb/dWA3cDQWAW0i9khtSmSE9v9AIzA/amaD0y28X9u+gigN1H8pbw+
- A1gM/DpqloBG0ycO/ZkyPQJtANu9u96gAqQHBPMs6Y042n4RmY9ByUWv71obCjHS7SiY
- c+k2D71R/k3qZ75CeTCWOqPcGDtB2q8jqVcdmJa3N9IPC1vKH5k+1vK8Ba0JB+A1CXbz
- vfRtk0ABq6KNTO2XpNG0PjWuEijR8V47W4LnnosOauBeDPHzAhp45DbVw8rsIjF/zsMh
- RZNg==
-X-Gm-Message-State: AOAM531AOe6cei9mNeSBNvyt4pVnfQBNgyqEZM518saK/OYy+claK6oZ
- fVcg7t6YiI3Bdj+XZYX+thbZ3do6vehC/l3II50=
-X-Google-Smtp-Source: ABdhPJw8+LEtoar+pUf2dCxfuXnKoD7N5HCuiqVYRWxj5aO6xnN+gaJI4iET9GPlCrNM0Q0X32v18zP6Ztg1Aywjybk=
-X-Received: by 2002:a17:906:c293:: with SMTP id
- r19mr20197055ejz.252.1623751273558; 
- Tue, 15 Jun 2021 03:01:13 -0700 (PDT)
+ id 1lt53o-007Xs0-TU
+ for linux-mtd@lists.infradead.org; Tue, 15 Jun 2021 09:08:49 +0000
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+ by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G42RX0qWMz1BMYF;
+ Tue, 15 Jun 2021 17:03:36 +0800 (CST)
+Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 17:08:35 +0800
+Received: from [10.174.178.46] (10.174.178.46) by
+ dggema761-chm.china.huawei.com (10.1.198.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 17:08:35 +0800
+Subject: Re: [PATCH 0/6] Fix deadlock in ftl formating on mtd
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: <richard@nod.at>, <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>
+References: <20210613113035.2329421-1-chengzhihao1@huawei.com>
+ <20210613171208.64395d32@xps13>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <13b42e51-d176-ad54-e3a1-353284bb2d2e@huawei.com>
+Date: Tue, 15 Jun 2021 17:08:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <CAOuPNLi8_PDyxtt+=j8AsX9pwLWcT4LmVWKj+UcyFOnj4RDBzg@mail.gmail.com>
- <dacd3fd3-faf5-9795-1bf9-92b1a237626b@gmail.com>
- <CAOuPNLjCB2m7+b9CJxqTr-THggs-kTPp=0AX727QJ5CTs5OC0w@mail.gmail.com>
-In-Reply-To: <CAOuPNLjCB2m7+b9CJxqTr-THggs-kTPp=0AX727QJ5CTs5OC0w@mail.gmail.com>
-From: Pintu Agarwal <pintu.ping@gmail.com>
-Date: Tue, 15 Jun 2021 15:31:01 +0530
-Message-ID: <CAOuPNLio33vrJ_1am-hbgMunUJereC5GOy3QVU6PDDk-3QeneA@mail.gmail.com>
-Subject: Re: Kernel 4.14: SQUASHFS error: xz decompression failed, data
- probably corrupt
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: open list <linux-kernel@vger.kernel.org>, 
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>, 
- Phillip Lougher <phillip@squashfs.org.uk>, Sean Nyekjaer <sean@geanix.com>
+In-Reply-To: <20210613171208.64395d32@xps13>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggema761-chm.china.huawei.com (10.1.198.203)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210615_110114_858118_9A9F9755 
-X-CRM114-Status: GOOD (  23.95  )
+X-CRM114-CacheID: sfid-20210615_100848_137702_60B6868D 
+X-CRM114-Status: UNSURE (   9.36  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,62 +93,31 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 15 Jun 2021 at 10:42, Pintu Agarwal <pintu.ping@gmail.com> wrote:
->
-> On Tue, 15 Jun 2021 at 03:53, Florian Fainelli <f.fainelli@gmail.com> wrote:
-> >
-> >
-> >
-> > On 6/14/2021 3:39 AM, Pintu Agarwal wrote:
-> > > Hi All,
-> > >
-> > > With Kernel 4.14 we are getting squashfs error during bootup resulting
-> > > in kernel panic.
-> > > The details are below:
-> > > Device: ARM-32 board with Cortex-A7 (Single Core)
-> > > Storage: NAND Flash 512MiB
-> > > Kernel Version: 4.14.170 (maybe with some Linaro updates)
-> > > File system: Simple busybox with systemd (without Android)
-> > > File system type: UBIFS + SQUASHFS
-> > > UBI Volumes supported: rootfs (ro), others (rw)
-> > > -------------------
-> > >
-> > > When we try to flash the UBI images and then try to boot the device,
-> > > we observe the below errors:
-> >
-> > Someone in The OpenWrt community seems to have run into this problem,
-> > possibly on the exact same QCOM SoC than you and came up with the following:
-> >
-> > https://forum.openwrt.org/t/patch-squashfs-data-probably-corrupt/70480
-> >
-> Thanks!
-> Yes I have already seen this and even one more.
-> https://www.programmersought.com/article/31513579159/
->
-> But I think these changes are not yet in the mainline right ?
->
-> So, I wanted to know which are the exact patches which are already
-> accepted in mainline ?
-> Or, is it already mainlined ?
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/log/fs/squashfs?h=next-20210611
-> From here, I see that we are only till this:
-> ==> 2018-08-02: Squashfs: Compute expected length from inode size
-> rather than block length
->
-@Phillip Lougher, do you have any suggestions/comments on these errors ?
-Why do you think these errors occur ?
-Also, I noticed that even if these errors occur, the device may boot normally.
-However, for some people it does not boot at all.
-
-Thanks,
-Pintu
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+5ZyoIDIwMjEvNi8xMyAyMzoxMiwgTWlxdWVsIFJheW5hbCDlhpnpgZM6Cj4gSGkgWmhpaGFvLAo+
+IAo+IFpoaWhhbyBDaGVuZyA8Y2hlbmd6aGloYW8xQGh1YXdlaS5jb20+IHdyb3RlIG9uIFN1biwg
+MTMgSnVuIDIwMjEKPiAxOTozMDoyOSArMDgwMDoKPiAKCj4gCj4gSSB1bmRlcnN0YW5kIHRoYXQg
+c29tZSBmaXhlcyBuZWVkIHRvIHJldmVydCBhIGNvdXBsZSBvZiBwYXRjaGVzLCBidXQKPiBpc24n
+dCByZXZlcnRpbmcgNiBjb21taXRzIGZyb20gdGhlIHYyLjYuMzIga2VybmVsIGEgYml0IG9kZCBm
+b3IgdGhhdD8KPiBBdCBsZWFzdCwgY2FuIHlvdSBqdXN0aWZ5IHRoaXMgY2hvaWNlPyBBcmUgYWxs
+IHRoZXNlIGNvbW1pdHMgdXNlbGVzcwo+IGFuZCBidWdneT8KCkhpIE1pcXVlbCwKClRoaXMgc2Vy
+aWVzIG9mIHJldmVydCBwYXRjaGVzIGNhbWUgZnJvbSBoaXN0b3J5IGNvbW1pdHMgd2hpY2ggcmVs
+YXRlZCAKd2l0aCAibXRkOiBhbGxvdyB0byB1bmxvYWQgdGhlIG10ZHRyYW5zIG1vZHVsZSBpZiBp
+dHMgYmxvY2sgZGV2aWNlcyAKYXJlbid0IG9wZW4iLiBJIGFkbWluIGl0J3MgYSB3ZWlyZCBtZXRo
+b2QgYW5kIGxldCdzIGZvcmdldCBpdC4KQWZ0ZXIgc29tZSBsb2NhbCB0ZXN0cywgSSB0aGluayB3
+ZSdkIGJldHRlciByZXNlcnZlICJtdGQ6IGFsbG93IHRvIAp1bmxvYWQgdGhlIG10ZHRyYW5zIG1v
+ZHVsZSBpZiBpdHMgYmxvY2sgZGV2aWNlcyBhcmVuJ3Qgb3BlbiIgdG8gc3VwcG9ydCAKcmVtb3Zp
+bmcgbXRkYmxvY2sgbW9kdWxlIGlmIG5vIG9uZSB0YWtlcyBpdC4gQnV0IHdlIG1heSBtb3ZlIGdl
+dHxwdXQgCm10ZF9kZXZpY2UgaW50byBhZGR8ZGVsX210ZF9ibGt0cmFucyB0byBzb2x2ZSBkZWFk
+bG9jayBwcm9ibGVtLCBtYXliZSB3ZSAKZG9uJ3QgaGF2ZSB0byBnZXRfbXRkX2RldmljZSBlYWNo
+IHRpbWUgb3BlbiBtdGQgYmxvY2sgZGV2aWNlIGluIApibGt0cmFuc19vcGVuIGlmIHdlIGhhdmUg
+Y2FsbGVkIGdldF9tdGRfZGV2aWNlKCkgaW4gCmFkZF9tdGRfYmxrdHJhbnNfZGV2KCkuIFNlZSB2
+MiAibXRkOiBtdGRfYmxrZGV2czogR2V0fFB1dCBtdGRfZGV2aWNlIGluIAphZGR8ZGVsX210ZF9i
+bGt0cmFucyIuCgo+Pgo+IAo+IFRoYW5rcywKPiBNaXF1w6hsCj4gLgo+IAoKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
+Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9saW51eC1tdGQvCg==
