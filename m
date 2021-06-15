@@ -2,86 +2,84 @@ Return-Path: <SRS0=11ri=LJ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57866C48BDF
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Jun 2021 18:08:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E916FC48BDF
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Jun 2021 18:23:01 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E8140610A1
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Jun 2021 18:08:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E8140610A1
+	by mail.kernel.org (Postfix) with ESMTPS id B903F610CD
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Jun 2021 18:23:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B903F610CD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Iz180Lh+WtBXo5AySOT7xU3AO+npMpI8vNsLpppwFdk=; b=HZg61g0oYStObYaErLyuYyu17c
-	ZDYkj/3d1k+g3KCdOzDeZnGoRBiUbfSp2G5W/A78GhfHt7RPMvlPV8qZ2c/ptPxT9M5k68kZ9RKRI
-	p2mMenL0J/m3fjex8IGxfJ6+Pi4w2Dbqk9tMSaI4LQm/SLcWAUJxdfDFaSWqtZxlyX03hN/S5xi5Y
-	h6cFdFeZch8cnzYD5u3bb5md6El/3kDkg8H6KOhiOITLKJ2l689oCnpqfLK0/8zDlVEo5oh5qY11y
-	bwWg0/xCGglqv6eon05mcFKG55orP1zoeLkdZ9V+U/AZAP2b2cT+tscKDv+3Z1j9M1IwwZwT+KM/x
-	EN24rFQA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=1g9t/ELcj5VjoAg11ZpIAvD9bm/2O+HZlTGGBIHzzpU=; b=Ar21wW13r/vPP/
+	hWJ1CfdVOO1QgiJT6IwLKIYEL0Q54nJHxzi95zBp1W4hBnD+aGRhoCl0xIC0BaIj85lBHLKhLtaXn
+	uiEX67+3AeuO8PjMdibEoDRsggG+Hs1Ozs6ORKhSkQAR/TTnVPpGcKqelFsTsHkzBYhP3ArPo+OIe
+	PEMOlcZQ9nlRs9ytLCHNPhERQ35ebAKyRg9PObDSS4YKvMYa7zyw5PoziuQ7pz4mP7LADTuiqFxTI
+	ktm/0VNg1dza1zazElYMO8+TjmIP2t3biCnKof9yFrTja8jwvA4nRfvt8yC56xZcdsjRk+ctbRgOF
+	QtF0vZW7AT+Sb6zLcS8Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ltDTK-00209G-2t; Tue, 15 Jun 2021 18:07:34 +0000
+	id 1ltDhh-00252A-61; Tue, 15 Jun 2021 18:22:25 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lt9IO-000DwX-UO
- for linux-mtd@bombadil.infradead.org; Tue, 15 Jun 2021 13:40:01 +0000
+ id 1lt9IU-000DEY-Qg
+ for linux-mtd@bombadil.infradead.org; Tue, 15 Jun 2021 13:40:08 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
- :In-Reply-To:MIME-Version:Date:Message-ID:From:References:CC:To:Subject:
- Sender:Reply-To:Content-ID:Content-Description;
- bh=8c2t7H3ry71d7xmZQlvVSaIB3tgUpNjjIcgIdWVEVtw=; b=GlD6c2X/ko0pnnf7RrggQrlHMU
- hBM6p3XcDQwDsm59mtlhMOzYgIvrkN9YtnQBb+Dbln1GxBU2t0Q4bNy8pWDpt6/M10bllFvjgU8Gv
- 3hK3YifLfda3g2jlyGBooIngDdvAcB6OYbqST92NrVrId5FhFlZqzEhvDrHSLNlUbJnLlkg6p599w
- gNdOqEA6BpL9J6sJZeu4or5zf/sL6EjYLBwphuJOCRSDEIhi5hQPUD1SI3pA4/E/8VcoYTcAbuDgb
- w/Rns36/tjdkUiyTfnlFAcjO6VILdpRP+ra8OFaQ+npCo2gRZkZBSyTdXRonFX7JonHvOfVhZUziA
- BxE4l8MA==;
-Received: from szxga08-in.huawei.com ([45.249.212.255])
+ d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
+ :MIME-Version:Message-ID:Date:Subject:CC:To:From:Sender:Reply-To:Content-ID:
+ Content-Description:In-Reply-To:References;
+ bh=P+3MD2BAdmiEd9AzZlfnvDozzFTWApf3GbiqIUUDOws=; b=VkQukmIRAzlCL5XAVBYnNbX2gr
+ WDBahAsO3omsewvxe0cMlXmLILl4FPIU7mbGmUe5JmNO5iqZH25p5J9jF5ahjelFvFj+abFPzYfUr
+ w3xnynbcRPI6plAldQdVdYWO6j1MkJhS9Qw+gZdTGP5LiyhykqugMvrNBenQCkhXBIfXKHcrVmb8k
+ MJsKvBwc5BngRWHTFxiHSKIAAoc+YmlkQYeYkC88ja/7qUZFhdPHsSkhT+nznGXMELf8zrO5x/u4R
+ +2K4aD8M83i0Vr4ufpU3CPuNF8DuqzU3xjLri5t47QSHpRfQL72CjXFmOvu+XgF78L8DoVJlkSXNo
+ wQzJiZ3A==;
+Received: from szxga03-in.huawei.com ([45.249.212.189])
  by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lt53o-007Xs0-TU
- for linux-mtd@lists.infradead.org; Tue, 15 Jun 2021 09:08:49 +0000
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
- by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G42RX0qWMz1BMYF;
- Tue, 15 Jun 2021 17:03:36 +0800 (CST)
+ id 1lt4zb-007XeI-BO
+ for linux-mtd@lists.infradead.org; Tue, 15 Jun 2021 09:04:28 +0000
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+ by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G42Mn2QStz63VN;
+ Tue, 15 Jun 2021 17:00:21 +0800 (CST)
 Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 15 Jun 2021 17:08:35 +0800
-Received: from [10.174.178.46] (10.174.178.46) by
- dggema761-chm.china.huawei.com (10.1.198.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 15 Jun 2021 17:08:35 +0800
-Subject: Re: [PATCH 0/6] Fix deadlock in ftl formating on mtd
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: <richard@nod.at>, <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>
-References: <20210613113035.2329421-1-chengzhihao1@huawei.com>
- <20210613171208.64395d32@xps13>
+ 15.1.2176.2; Tue, 15 Jun 2021 17:04:07 +0800
+Received: from huawei.com (10.175.127.227) by dggema761-chm.china.huawei.com
+ (10.1.198.203) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 15
+ Jun 2021 17:04:06 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <13b42e51-d176-ad54-e3a1-353284bb2d2e@huawei.com>
-Date: Tue, 15 Jun 2021 17:08:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+ <alexander.sverdlin@nokia.com>, <computersforpeace@gmail.com>,
+ <maximlevitsky@gmail.com>, <David.Woodhouse@intel.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
+Subject: [PATCH v2] mtd: mtd_blkdevs: Get|Put mtd_device in
+ add|del_mtd_blktrans
+Date: Tue, 15 Jun 2021 17:13:02 +0800
+Message-ID: <20210615091302.3428611-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210613171208.64395d32@xps13>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  dggema761-chm.china.huawei.com (10.1.198.203)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210615_100848_137702_60B6868D 
-X-CRM114-Status: UNSURE (   9.36  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210615_100426_880518_723E7D2A 
+X-CRM114-Status: GOOD (  12.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,31 +91,157 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-5ZyoIDIwMjEvNi8xMyAyMzoxMiwgTWlxdWVsIFJheW5hbCDlhpnpgZM6Cj4gSGkgWmhpaGFvLAo+
-IAo+IFpoaWhhbyBDaGVuZyA8Y2hlbmd6aGloYW8xQGh1YXdlaS5jb20+IHdyb3RlIG9uIFN1biwg
-MTMgSnVuIDIwMjEKPiAxOTozMDoyOSArMDgwMDoKPiAKCj4gCj4gSSB1bmRlcnN0YW5kIHRoYXQg
-c29tZSBmaXhlcyBuZWVkIHRvIHJldmVydCBhIGNvdXBsZSBvZiBwYXRjaGVzLCBidXQKPiBpc24n
-dCByZXZlcnRpbmcgNiBjb21taXRzIGZyb20gdGhlIHYyLjYuMzIga2VybmVsIGEgYml0IG9kZCBm
-b3IgdGhhdD8KPiBBdCBsZWFzdCwgY2FuIHlvdSBqdXN0aWZ5IHRoaXMgY2hvaWNlPyBBcmUgYWxs
-IHRoZXNlIGNvbW1pdHMgdXNlbGVzcwo+IGFuZCBidWdneT8KCkhpIE1pcXVlbCwKClRoaXMgc2Vy
-aWVzIG9mIHJldmVydCBwYXRjaGVzIGNhbWUgZnJvbSBoaXN0b3J5IGNvbW1pdHMgd2hpY2ggcmVs
-YXRlZCAKd2l0aCAibXRkOiBhbGxvdyB0byB1bmxvYWQgdGhlIG10ZHRyYW5zIG1vZHVsZSBpZiBp
-dHMgYmxvY2sgZGV2aWNlcyAKYXJlbid0IG9wZW4iLiBJIGFkbWluIGl0J3MgYSB3ZWlyZCBtZXRo
-b2QgYW5kIGxldCdzIGZvcmdldCBpdC4KQWZ0ZXIgc29tZSBsb2NhbCB0ZXN0cywgSSB0aGluayB3
-ZSdkIGJldHRlciByZXNlcnZlICJtdGQ6IGFsbG93IHRvIAp1bmxvYWQgdGhlIG10ZHRyYW5zIG1v
-ZHVsZSBpZiBpdHMgYmxvY2sgZGV2aWNlcyBhcmVuJ3Qgb3BlbiIgdG8gc3VwcG9ydCAKcmVtb3Zp
-bmcgbXRkYmxvY2sgbW9kdWxlIGlmIG5vIG9uZSB0YWtlcyBpdC4gQnV0IHdlIG1heSBtb3ZlIGdl
-dHxwdXQgCm10ZF9kZXZpY2UgaW50byBhZGR8ZGVsX210ZF9ibGt0cmFucyB0byBzb2x2ZSBkZWFk
-bG9jayBwcm9ibGVtLCBtYXliZSB3ZSAKZG9uJ3QgaGF2ZSB0byBnZXRfbXRkX2RldmljZSBlYWNo
-IHRpbWUgb3BlbiBtdGQgYmxvY2sgZGV2aWNlIGluIApibGt0cmFuc19vcGVuIGlmIHdlIGhhdmUg
-Y2FsbGVkIGdldF9tdGRfZGV2aWNlKCkgaW4gCmFkZF9tdGRfYmxrdHJhbnNfZGV2KCkuIFNlZSB2
-MiAibXRkOiBtdGRfYmxrZGV2czogR2V0fFB1dCBtdGRfZGV2aWNlIGluIAphZGR8ZGVsX210ZF9i
-bGt0cmFucyIuCgo+Pgo+IAo+IFRoYW5rcywKPiBNaXF1w6hsCj4gLgo+IAoKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
-Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9saW51eC1tdGQvCg==
+There are two reasons to move mtd_device get|put operations into mtd
+blktrans adding/deleting:
+
+* Solve an AA-deadlock problem while formating mtd device to generate
+  a ftl device.
+  [<0>] blktrans_open+0x47/0x340            LOCK(mtd_table_mutex)
+  [<0>] __blkdev_get+0x5b/0x3e0
+  [<0>] blkdev_get_by_dev+0x18f/0x370
+  [<0>] __device_add_disk+0x2db/0x700
+  [<0>] device_add_disk+0x17/0x20
+  [<0>] add_mtd_blktrans_dev+0x39e/0x6d0
+  [<0>] ftl_add_mtd+0x792/0x908 [ftl]
+  [<0>] register_mtd_blktrans+0xfb/0x170    LOCK(mtd_table_mutex)
+  [<0>] ftl_tr_init+0x18/0x1000 [ftl]
+  [<0>] do_one_initcall+0x71/0x330
+  [<0>] do_init_module+0xa6/0x350
+
+* Hold refcount of mtd device's module if mtd blktrans still exists.
+  Module                  Size  Used by
+  mtdblock               20480  0
+  mtdram                 20480  0
+  $ lsblk
+  mtdblock0  31:0    0  64M  0 disk
+  $ rmmod mtdram
+  # mtd device is removed unexpectedly when mtdblock exists!
+  $ lsmod
+  Module                  Size  Used by
+  mtdblock               20480  0
+  $ lsblk
+  // No mtdblock found !
+
+Patched:
+  Module                  Size  Used by
+  mtdblock               20480  0
+  mtdram                 20480  1
+  $ lsblk
+  mtdblock0  31:0    0  64M  0 disk
+  $ rmmod mtdram        # EBUSY, and /dev/mtdblock0 still exists
+
+, which works just like ubi/mtd:
+  Module                  Size  Used by
+  ubi                   380928  0
+  mtdram                 20480  1
+
+Fixes: 073db4a51ee43c ("mtd: fix: avoid race condition when ...")
+Fixes: 008c751ec78587 ("mtd: allow to unload the mtdtrans module if ...")
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ drivers/mtd/mtd_blkdevs.c | 25 ++++++-------------------
+ 1 file changed, 6 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+index fb8e12d590a1..19a2870a097a 100644
+--- a/drivers/mtd/mtd_blkdevs.c
++++ b/drivers/mtd/mtd_blkdevs.c
+@@ -209,7 +209,6 @@ static int blktrans_open(struct block_device *bdev, fmode_t mode)
+ 	if (!dev)
+ 		return -ERESTARTSYS; /* FIXME: busy loop! -arnd*/
+ 
+-	mutex_lock(&mtd_table_mutex);
+ 	mutex_lock(&dev->lock);
+ 
+ 	if (dev->open)
+@@ -227,26 +226,18 @@ static int blktrans_open(struct block_device *bdev, fmode_t mode)
+ 			goto error_put;
+ 	}
+ 
+-	ret = __get_mtd_device(dev->mtd);
+-	if (ret)
+-		goto error_release;
+ 	dev->file_mode = mode;
+ 
+ unlock:
+ 	dev->open++;
+ 	mutex_unlock(&dev->lock);
+-	mutex_unlock(&mtd_table_mutex);
+ 	blktrans_dev_put(dev);
+ 	return ret;
+ 
+-error_release:
+-	if (dev->tr->release)
+-		dev->tr->release(dev);
+ error_put:
+ 	module_put(dev->tr->owner);
+ 	kref_put(&dev->ref, blktrans_dev_release);
+ 	mutex_unlock(&dev->lock);
+-	mutex_unlock(&mtd_table_mutex);
+ 	blktrans_dev_put(dev);
+ 	return ret;
+ }
+@@ -258,7 +249,6 @@ static void blktrans_release(struct gendisk *disk, fmode_t mode)
+ 	if (!dev)
+ 		return;
+ 
+-	mutex_lock(&mtd_table_mutex);
+ 	mutex_lock(&dev->lock);
+ 
+ 	if (--dev->open)
+@@ -267,14 +257,10 @@ static void blktrans_release(struct gendisk *disk, fmode_t mode)
+ 	kref_put(&dev->ref, blktrans_dev_release);
+ 	module_put(dev->tr->owner);
+ 
+-	if (dev->mtd) {
+-		if (dev->tr->release)
+-			dev->tr->release(dev);
+-		__put_mtd_device(dev->mtd);
+-	}
++	if (dev->mtd && dev->tr->release)
++		dev->tr->release(dev);
+ unlock:
+ 	mutex_unlock(&dev->lock);
+-	mutex_unlock(&mtd_table_mutex);
+ 	blktrans_dev_put(dev);
+ }
+ 
+@@ -425,6 +411,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 	}
+ 
+ 	gd->queue = new->rq;
++	__get_mtd_device(new->mtd);
+ 
+ 	if (new->readonly)
+ 		set_disk_ro(gd, 1);
+@@ -474,15 +461,15 @@ int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
+ 	blk_mq_unquiesce_queue(old->rq);
+ 	blk_mq_unfreeze_queue(old->rq);
+ 
+-	/* If the device is currently open, tell trans driver to close it,
+-		then put mtd device, and don't touch it again */
++	/* If the device is currently open, tell trans driver to close it */
+ 	mutex_lock(&old->lock);
+ 	if (old->open) {
+ 		if (old->tr->release)
+ 			old->tr->release(old);
+-		__put_mtd_device(old->mtd);
+ 	}
++	__put_mtd_device(old->mtd);
+ 
++	/* At that point, we don't touch the mtd anymore */
+ 	old->mtd = NULL;
+ 
+ 	mutex_unlock(&old->lock);
+-- 
+2.31.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
