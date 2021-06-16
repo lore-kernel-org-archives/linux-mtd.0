@@ -1,106 +1,71 @@
-Return-Path: <SRS0=11ri=LJ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=4SWJ=LK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CDABC48BE5
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Jun 2021 22:54:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 432AEC48BE5
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Jun 2021 03:49:18 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 52AB961040
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Jun 2021 22:54:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 52AB961040
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	by mail.kernel.org (Postfix) with ESMTPS id A219661075
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Jun 2021 03:49:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A219661075
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kjawmYUetCgB6a3Jh6OiIQErNEH6fuh/ZHjrd9PYW14=; b=2SdBHCcOVZpPu6
-	0yuMsAL600po7EruLndcw2lLhBkQxf7bh+9v2rkIkqYNmz7mqziVVL2SD+3wOcBDobvmF+eZSF3cC
-	MlzVca4lznYlBNAbszwh6QKn1DDOJZMZFyc+XfBgiYeR2CzGUqe01JIoaIFfNGFLaVHNv/RLIfq8c
-	B1NGM+OYrH3ilMEFc0UY8b5wLxVIAgMlxQudnNQPDvWyr32HDvW6Qtr1g+2W8C5oKsXG8EVFHW9iU
-	ICyERMgD6oFh7JW1s/R88xCNj3iV0xDcDagVzPC36J09v7Sv7iHXzNXxeRRnpcejf2dZyP8R3Fnph
-	4NIa9TRRBbuVbgx5QS6w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=0fdMAgN7joC81pxqhRPZCwvmIr27VXduxzDgZMt/MQU=; b=UsWbBrjA8NgeNL
+	dqw4+Ks5pwnfCi82/0zPzeR6FgkUsmwzX4o2fldL4VYVuSy8DHwCCsJahuKRrRRGZCjWZUO/8fSLn
+	oO+sgvPNev1yfkvpvgodvtjr9Lp0yloJBtsu00OWK5vqoppk8kEpbIIUlWm4e0T0OlxcebgtIuwRI
+	ChYGHpSjPxfnynMj2dM5ZIMqFh6AmN4Xp5nHsy2GGSOcgOTPp1TeSIC4jetL/SHbpooIGzTeS1w3X
+	EJWVgowy2GnmYpKcXbwHnnQZmTj2iUKNRrlIl2BR20482+19bkGjnY7oBuKX3TCuakKGbBNiD12KU
+	V8NX4V5ebGJlWNAbIZUQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ltHvv-003i1s-UO; Tue, 15 Jun 2021 22:53:24 +0000
-Received: from mail-pf1-x431.google.com ([2607:f8b0:4864:20::431])
+	id 1ltMXR-004d5n-Uy; Wed, 16 Jun 2021 03:48:25 +0000
+Received: from szxga08-in.huawei.com ([45.249.212.255])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ltGUy-0036k4-Qr
- for linux-mtd@lists.infradead.org; Tue, 15 Jun 2021 21:21:31 +0000
-Received: by mail-pf1-x431.google.com with SMTP id g6so482487pfq.1
- for <linux-mtd@lists.infradead.org>; Tue, 15 Jun 2021 14:21:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=QQuWk5oOmzR3+MBzf1Y5kFtlcef8MqT/01wlIDqw2YU=;
- b=jfbWOCBe3bM+wLUiepl7fnkaZ7873RB/BpyhovaXZ2WAZQb3+OGqRyDYmeF37wFdHU
- NiC9boMyt6rH6Rb86kZvnRgNf09xNKUphZp7AkEj2AQqxLUOl/dmINLIyGWxzj8YnMSl
- Lqppveg+hKw6RjZjHiqVDh1ubHorR9blT/v+c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=QQuWk5oOmzR3+MBzf1Y5kFtlcef8MqT/01wlIDqw2YU=;
- b=AM/N9FOhksAgNgwDZ2QS+u6tJNRe0pv4eIL0ED3cn62cPIHzH/Bkyodxtp0Kt6dUAa
- sjfSo3BjoaHJyPm/jFrk4L1R4tVQDux1YyzK/0mC2LWKAUzYjVl4bcraAO+L507ugPeu
- P7zO4AEm+cgGH56aevpGWzVGTl8ZMSH1jQAAupICkWfsZHAyYnqdl1OYRQ7T/+gVsqpI
- Mr1P20AEmDoeK8yjJKHRrBj09n/KAF9C9NoIdeC+POZrl8kfv4fLq9FHGc0/BmfOIfq9
- 9ygYvPOSpdwxMDroEfDeu3iNM/CBk2k1Ras44BUsXE64JkKlx2zhrNDduUkdlTjIlsHc
- QWuA==
-X-Gm-Message-State: AOAM532OXfJtr60rslcRsbmeBOG0HZ1Yi6UqtdcbPKgd6U5dY65UciLA
- etA+MQ0H1+2q3h6a9+C5BFGAvw==
-X-Google-Smtp-Source: ABdhPJxv08gD1iooT16I/J+jl8d/hEyuNoj/rHWFbvF7fv81s1D9NiTfgIfzuGLGnJM5scYGinwOZQ==
-X-Received: by 2002:a62:34c7:0:b029:28e:addf:f17a with SMTP id
- b190-20020a6234c70000b029028eaddff17amr6603010pfa.62.1623792086251; 
- Tue, 15 Jun 2021 14:21:26 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
- by smtp.gmail.com with ESMTPSA id n72sm97432pfd.8.2021.06.15.14.21.24
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 15 Jun 2021 14:21:24 -0700 (PDT)
-From: Kees Cook <keescook@chromium.org>
-To: linux-kernel@vger.kernel.org
-Cc: Kees Cook <keescook@chromium.org>, Christoph Hellwig <hch@lst.de>,
- Al Viro <viro@zeniv.linux.org.uk>, gmpy.liaowx@gmail.com,
- Anton Vorontsov <anton@enomsg.org>, Colin Cross <ccross@android.com>,
- Tony Luck <tony.luck@intel.com>, Jonathan Corbet <corbet@lwn.net>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-doc@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH v2 3/4] pstore/blk: Include zone in pstore_device_info
-Date: Tue, 15 Jun 2021 14:21:20 -0700
-Message-Id: <20210615212121.1200820-4-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210615212121.1200820-1-keescook@chromium.org>
-References: <20210615212121.1200820-1-keescook@chromium.org>
+ id 1ltMXP-004d4Q-19
+ for linux-mtd@lists.infradead.org; Wed, 16 Jun 2021 03:48:24 +0000
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+ by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G4WHP2vCNz1BN1k;
+ Wed, 16 Jun 2021 11:43:13 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 16 Jun 2021 11:48:14 +0800
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 16 Jun 2021 11:48:13 +0800
+From: Zou Wei <zou_wei@huawei.com>
+To: <miquel.raynal@bootlin.com>, <nagasure@xilinx.com>, <richard@nod.at>,
+ <vigneshr@ti.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, Zou Wei
+ <zou_wei@huawei.com>
+Subject: [PATCH -next] mtd: rawnand: arasan: Fix missing
+ clk_disable_unprepare() on error in anfc_probe()
+Date: Wed, 16 Jun 2021 12:06:44 +0800
+Message-ID: <1623816404-66213-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; g=efcf5526fe13766bd98acae29e0115d24b07d210;
- i=OzHp+/X5c8B1qT+xdnUXKoWwSY89uY95adXbT6Ztj74=;
- m=WOqt0d4utZlTaiUKpB0qyaFAJBWPe3VuJCNaOBLEDLw=;
- p=GZLcj+Pw6pTB7TcSUO0TjvUzZzwmL6Y5LQQOOEKli3E=
-X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026;
- b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmDJGdAACgkQiXL039xtwCYcLQ/9Fvd
- Nj3Ll/zeOLGt4PGGxze7JbJepy6cH2wDJQu1BGatCL+4bWg4QpvEe+csymzkSrAQMNFJ0AQdds7V4
- T03C0ur2CxGfQHjbXlsbY3fy+kXqQrpPhsy9lacKCIgVqyhHsneOQy5xinFCW8zAetopb+NA+1Z7E
- P3nl32yC7gccP3/r1ssROCOI2WECYoalwccWeJrVgPgqmf35b0DrGeLWQEQo5t4SwS4B70WW4vcRM
- E/Po3vNo9kJuV97hOWqHZD+XTyZY9/CQ0uODLRHOJbKUoLHAa3FJhLuLJm+uymdKNBhJsC8pQhltX
- fMK5pC1nt7djnQSf/HgiqoOYrv5xGyu10iNJodPdzqZ23txGygAOzNQlrguzMD3g7p1YZSBgtJSSL
- vl6D1uJiwOk4eaoAmciNSJRJc5K6zuLkpYj8zVoz5iOtLixKuI+EZtWC9GF2Zeru4MmoGSNNx6qow
- Qxeu2bjjjP5W9oWn6Nh0zUmf+foxqIeO9adkx2Eyzr83Uo6hgDyABe99QNrsIaOXg+T6nY7AWIC1V
- ysKqB+ppSsmq2R5RNUMk/neYiE5hDXOatnAVEqcDpBsqVQis/TYgYa0BB9kNEoLMuQ8gng+8q2M8g
- 1b2AifpUOmoQQsNqq8F71g3E7qFwMgIRNhi+csIJIkMJB42qKu6bwaxYjG5CWsBM=
+X-Originating-IP: [10.175.103.112]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210615_142128_968134_8E5BF983 
-X-CRM114-Status: GOOD (  28.86  )
+X-CRM114-CacheID: sfid-20210615_204823_289298_14FDC7B1 
+X-CRM114-Status: UNSURE (   9.67  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -117,319 +82,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Information was redundant between struct pstore_zone_info and struct
-pstore_device_info. Use struct pstore_zone_info, with member name "zone".
+Fix the missing clk_disable_unprepare() before return
+from anfc_probe() in the error handling case.
 
-Additionally untangle the logic for the "best effort" block device
-instance.
-
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Fixes: 61622f6791a1 ("mtd: rawnand: arasan: Use the right DMA mask")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
 ---
- drivers/mtd/mtdpstore.c    |  10 +--
- fs/pstore/blk.c            | 141 ++++++++++++++++++-------------------
- include/linux/pstore_blk.h |  27 +------
- 3 files changed, 75 insertions(+), 103 deletions(-)
+ drivers/mtd/nand/raw/arasan-nand-controller.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/mtdpstore.c b/drivers/mtd/mtdpstore.c
-index a3ae8778f6a9..e13d42c0acb0 100644
---- a/drivers/mtd/mtdpstore.c
-+++ b/drivers/mtd/mtdpstore.c
-@@ -423,13 +423,13 @@ static void mtdpstore_notify_add(struct mtd_info *mtd)
- 	longcnt = BITS_TO_LONGS(div_u64(mtd->size, mtd->erasesize));
- 	cxt->badmap = kcalloc(longcnt, sizeof(long), GFP_KERNEL);
+diff --git a/drivers/mtd/nand/raw/arasan-nand-controller.c b/drivers/mtd/nand/raw/arasan-nand-controller.c
+index 8317d97..9cbcc69 100644
+--- a/drivers/mtd/nand/raw/arasan-nand-controller.c
++++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
+@@ -1452,7 +1452,7 @@ static int anfc_probe(struct platform_device *pdev)
  
--	cxt->dev.total_size = mtd->size;
- 	/* just support dmesg right now */
- 	cxt->dev.flags = PSTORE_FLAGS_DMESG;
--	cxt->dev.read = mtdpstore_read;
--	cxt->dev.write = mtdpstore_write;
--	cxt->dev.erase = mtdpstore_erase;
--	cxt->dev.panic_write = mtdpstore_panic_write;
-+	cxt->dev.zone.read = mtdpstore_read;
-+	cxt->dev.zone.write = mtdpstore_write;
-+	cxt->dev.zone.erase = mtdpstore_erase;
-+	cxt->dev.zone.panic_write = mtdpstore_panic_write;
-+	cxt->dev.zone.total_size = mtd->size;
- 
- 	ret = register_pstore_device(&cxt->dev);
- 	if (ret) {
-diff --git a/fs/pstore/blk.c b/fs/pstore/blk.c
-index 8f5bd656cc2d..e5ed118683b1 100644
---- a/fs/pstore/blk.c
-+++ b/fs/pstore/blk.c
-@@ -92,7 +92,7 @@ MODULE_PARM_DESC(blkdev, "block device for pstore storage");
-  */
- static DEFINE_MUTEX(pstore_blk_lock);
- static struct file *psblk_file;
--static struct pstore_zone_info *pstore_zone_info;
-+static struct pstore_device_info *pstore_device_info;
- 
- #define check_size(name, alignsize) ({				\
- 	long _##name_ = (name);					\
-@@ -105,68 +105,60 @@ static struct pstore_zone_info *pstore_zone_info;
- 	_##name_;						\
- })
- 
-+#define verify_size(name, alignsize, enabled) {				\
-+		long _##name_;						\
-+		if (enabled)						\
-+			_##name_ = check_size(name, alignsize);		\
-+		else							\
-+			_##name_ = 0;					\
-+		/* synchronize visible module parameters to result. */	\
-+		name = _##name_ / 1024;					\
-+		dev->zone.name = _##name_;				\
-+	}
-+
- static int __register_pstore_device(struct pstore_device_info *dev)
- {
- 	int ret;
- 
- 	lockdep_assert_held(&pstore_blk_lock);
- 
--	if (!dev || !dev->total_size || !dev->read || !dev->write) {
-+	if (!dev || !dev->zone.total_size || !dev->zone.read || !dev->zone.write) {
- 		if (!dev)
--			pr_err("NULL device info\n");
-+			pr_err("NULL pstore_device_info\n");
- 		else {
--			if (!dev->total_size)
-+			if (!dev->zone.total_size)
- 				pr_err("zero sized device\n");
--			if (!dev->read)
-+			if (!dev->zone.read)
- 				pr_err("no read handler for device\n");
--			if (!dev->write)
-+			if (!dev->zone.write)
- 				pr_err("no write handler for device\n");
- 		}
- 		return -EINVAL;
- 	}
- 
- 	/* someone already registered before */
--	if (pstore_zone_info)
-+	if (pstore_device_info)
- 		return -EBUSY;
- 
--	pstore_zone_info = kzalloc(sizeof(struct pstore_zone_info), GFP_KERNEL);
--	if (!pstore_zone_info)
--		return -ENOMEM;
--
- 	/* zero means not limit on which backends to attempt to store. */
- 	if (!dev->flags)
- 		dev->flags = UINT_MAX;
- 
--#define verify_size(name, alignsize, enabled) {				\
--		long _##name_;						\
--		if (enabled)						\
--			_##name_ = check_size(name, alignsize);		\
--		else							\
--			_##name_ = 0;					\
--		name = _##name_ / 1024;					\
--		pstore_zone_info->name = _##name_;			\
--	}
--
-+	/* Copy in module parameters. */
- 	verify_size(kmsg_size, 4096, dev->flags & PSTORE_FLAGS_DMESG);
- 	verify_size(pmsg_size, 4096, dev->flags & PSTORE_FLAGS_PMSG);
- 	verify_size(console_size, 4096, dev->flags & PSTORE_FLAGS_CONSOLE);
- 	verify_size(ftrace_size, 4096, dev->flags & PSTORE_FLAGS_FTRACE);
--#undef verify_size
--
--	pstore_zone_info->total_size = dev->total_size;
--	pstore_zone_info->max_reason = max_reason;
--	pstore_zone_info->read = dev->read;
--	pstore_zone_info->write = dev->write;
--	pstore_zone_info->erase = dev->erase;
--	pstore_zone_info->panic_write = dev->panic_write;
--	pstore_zone_info->name = KBUILD_MODNAME;
--	pstore_zone_info->owner = THIS_MODULE;
--
--	ret = register_pstore_zone(pstore_zone_info);
--	if (ret) {
--		kfree(pstore_zone_info);
--		pstore_zone_info = NULL;
--	}
-+	dev->zone.max_reason = max_reason;
-+
-+	/* Initialize required zone ownership details. */
-+	dev->zone.name = KBUILD_MODNAME;
-+	dev->zone.owner = THIS_MODULE;
-+
-+	ret = register_pstore_zone(&dev->zone);
-+	if (ret == 0)
-+		pstore_device_info = dev;
-+
- 	return ret;
- }
- /**
-@@ -193,10 +185,9 @@ EXPORT_SYMBOL_GPL(register_pstore_device);
- static void __unregister_pstore_device(struct pstore_device_info *dev)
- {
- 	lockdep_assert_held(&pstore_blk_lock);
--	if (pstore_zone_info && pstore_zone_info->read == dev->read) {
--		unregister_pstore_zone(pstore_zone_info);
--		kfree(pstore_zone_info);
--		pstore_zone_info = NULL;
-+	if (pstore_device_info && pstore_device_info == dev) {
-+		unregister_pstore_zone(&dev->zone);
-+		pstore_device_info = NULL;
- 	}
- }
- 
-@@ -230,12 +221,9 @@ static ssize_t psblk_generic_blk_write(const char *buf, size_t bytes,
- /*
-  * This takes its configuration only from the module parameters now.
-  */
--static int __register_pstore_blk(const char *devpath)
-+static int __register_pstore_blk(struct pstore_device_info *dev,
-+				 const char *devpath)
- {
--	struct pstore_device_info dev = {
--		.read = psblk_generic_blk_read,
--		.write = psblk_generic_blk_write,
--	};
- 	int ret = -ENODEV;
- 
- 	lockdep_assert_held(&pstore_blk_lock);
-@@ -252,9 +240,9 @@ static int __register_pstore_blk(const char *devpath)
- 		goto err_fput;
- 	}
- 
--	dev.total_size = i_size_read(I_BDEV(psblk_file->f_mapping->host)->bd_inode);
-+	dev->zone.total_size = i_size_read(I_BDEV(psblk_file->f_mapping->host)->bd_inode);
- 
--	ret = __register_pstore_device(&dev);
-+	ret = __register_pstore_device(dev);
+ 	ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(64));
  	if (ret)
- 		goto err_fput;
+-		return ret;
++		goto disable_bus_clk;
  
-@@ -268,18 +256,6 @@ static int __register_pstore_blk(const char *devpath)
- 	return ret;
- }
- 
--static void __unregister_pstore_blk(struct file *device)
--{
--	struct pstore_device_info dev = { .read = psblk_generic_blk_read };
--
--	lockdep_assert_held(&pstore_blk_lock);
--	if (psblk_file && psblk_file == device) {
--		__unregister_pstore_device(&dev);
--		fput(psblk_file);
--		psblk_file = NULL;
--	}
--}
--
- /* get information of pstore/blk */
- int pstore_blk_get_config(struct pstore_blk_config *info)
- {
-@@ -329,13 +305,27 @@ static int __init pstore_blk_init(void)
- 	int ret = 0;
- 
- 	mutex_lock(&pstore_blk_lock);
--	if (!pstore_zone_info && best_effort && blkdev[0]) {
--		ret = __register_pstore_blk(early_boot_devpath(blkdev));
--		if (ret == 0 && pstore_zone_info)
--			pr_info("attached %s:%s (%zu) (no dedicated panic_write!)\n",
--				pstore_zone_info->name, blkdev,
--				pstore_zone_info->total_size);
-+	if (!pstore_device_info && best_effort && blkdev[0]) {
-+		struct pstore_device_info *best_effort_dev;
-+
-+		best_effort_dev = kzalloc(sizeof(*best_effort_dev), GFP_KERNEL);
-+		if (!best_effort) {
-+			ret = -ENOMEM;
-+			goto unlock;
-+		}
-+		best_effort_dev->zone.read = psblk_generic_blk_read;
-+		best_effort_dev->zone.write = psblk_generic_blk_write;
-+
-+		ret = __register_pstore_blk(best_effort_dev,
-+					    early_boot_devpath(blkdev));
-+		if (ret)
-+			kfree(best_effort_dev);
-+		else
-+			pr_info("attached %s (%zu) (no dedicated panic_write!)\n",
-+				blkdev, best_effort_dev->zone.total_size);
- 	}
-+
-+unlock:
- 	mutex_unlock(&pstore_blk_lock);
- 
- 	return ret;
-@@ -345,15 +335,18 @@ late_initcall(pstore_blk_init);
- static void __exit pstore_blk_exit(void)
- {
- 	mutex_lock(&pstore_blk_lock);
--	if (psblk_file)
--		__unregister_pstore_blk(psblk_file);
--	else {
--		struct pstore_device_info dev = { };
--
--		if (pstore_zone_info)
--			dev.read = pstore_zone_info->read;
--		__unregister_pstore_device(&dev);
-+	/* Unregister and free the best_effort device. */
-+	if (psblk_file) {
-+		struct pstore_device_info *dev = pstore_device_info;
-+
-+		__unregister_pstore_device(dev);
-+		kfree(dev);
-+		fput(psblk_file);
-+		psblk_file = NULL;
- 	}
-+	/* If we've been asked to unload, unregister any registered device. */
-+	if (pstore_device_info)
-+		__unregister_pstore_device(pstore_device_info);
- 	mutex_unlock(&pstore_blk_lock);
- }
- module_exit(pstore_blk_exit);
-diff --git a/include/linux/pstore_blk.h b/include/linux/pstore_blk.h
-index 99564f93d774..924ca07aafbd 100644
---- a/include/linux/pstore_blk.h
-+++ b/include/linux/pstore_blk.h
-@@ -10,36 +10,15 @@
- /**
-  * struct pstore_device_info - back-end pstore/blk driver structure.
-  *
-- * @total_size: The total size in bytes pstore/blk can use. It must be greater
-- *		than 4096 and be multiple of 4096.
-  * @flags:	Refer to macro starting with PSTORE_FLAGS defined in
-  *		linux/pstore.h. It means what front-ends this device support.
-  *		Zero means all backends for compatible.
-- * @read:	The general read operation. Both of the function parameters
-- *		@size and @offset are relative value to bock device (not the
-- *		whole disk).
-- *		On success, the number of bytes should be returned, others
-- *		means error.
-- * @write:	The same as @read, but the following error number:
-- *		-EBUSY means try to write again later.
-- *		-ENOMSG means to try next zone.
-- * @erase:	The general erase operation for device with special removing
-- *		job. Both of the function parameters @size and @offset are
-- *		relative value to storage.
-- *		Return 0 on success and others on failure.
-- * @panic_write:The write operation only used for panic case. It's optional
-- *		if you do not care panic log. The parameters are relative
-- *		value to storage.
-- *		On success, the number of bytes should be returned, others
-- *		excluding -ENOMSG mean error. -ENOMSG means to try next zone.
-+ * @zone:	The struct pstore_zone_info details.
-+ *
-  */
- struct pstore_device_info {
--	unsigned long total_size;
- 	unsigned int flags;
--	pstore_zone_read_op read;
--	pstore_zone_write_op write;
--	pstore_zone_erase_op erase;
--	pstore_zone_write_op panic_write;
-+	struct pstore_zone_info zone;
- };
- 
- int  register_pstore_device(struct pstore_device_info *dev);
+ 	ret = anfc_parse_cs(nfc);
+ 	if (ret)
 -- 
-2.25.1
+2.6.2
 
 
 ______________________________________________________
