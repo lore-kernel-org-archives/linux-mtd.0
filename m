@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9D71C48BE6
-	for <linux-mtd@archiver.kernel.org>; Wed, 16 Jun 2021 16:42:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73C7DC48BE6
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Jun 2021 16:42:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9F0F661245
-	for <linux-mtd@archiver.kernel.org>; Wed, 16 Jun 2021 16:42:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9F0F661245
+	by mail.kernel.org (Postfix) with ESMTPS id 40FED61245
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Jun 2021 16:42:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 40FED61245
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,47 +23,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pcfYWsZVlEv/zUSKJIdvWb/AgaofjuvMsglNWTRlx3g=; b=qs2ICcwl4501jN
-	S7uK6orQi0fWiAwRYZ4QxuOd8eiyHYln6dOgDMOZzZ/md6Hxd/t3bl9g2TTqDZl5p1WkZpUvLvXW9
-	lJ79J5dJFZJjrsFSV9T7cdtqZcNDkhZiF8SpBlD2sIuAdHJ/rWhOqn32FC79SWP6IXo0Zb2ZswdSo
-	9vMjMxlv/WMKiZUaBbCM+9hTd/dJti5Aul5sF93UJSGNbDjlhrjYnVyU1hFAo1lJDqgYzg8ZM6zRw
-	aCVTlyfsnd60eNeQNibk+tczMkASsgHiKxvSDOb9tDBEMf7HplrGDDapXLaU+qhU2t294JKT39J7Z
-	M3ku8YuOhEyCkPnIj+3w==;
+	List-Owner; bh=DT+IBOl10+2onbDgGB7weMbWVHaB5qM1nzUMztzEnZQ=; b=02tx5qjl7HtvFT
+	RuMWTz/t+mADRRg0PdE55E171zHP7n4fzll9HXs0TbF5cEC/KbLQhB1C2in2+udDdy+6BsQHZX0Uj
+	wFLJT5kh1RnUvz4I6lqu/tzn6LDTc3YzJxCbDFCvM1ti4ZkTazZJ4jEzPD1rDH/SSLua4Yqx5ono8
+	leCz/yafPnjzjthCwF7UdkNvGrRjZsTAB3W8ALmjWsMn9UlGVdnbuHdwBHe/bL6MHcuTMY6pSiArP
+	fMeKjR42mjNgDWHHd8hJOa72v2rvpewO1ImNjZvivadEK1kDNzlyOzU4sxckTCdzU7nz3Xel7f1S2
+	wepXah+jUPuD+azmV3jQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ltYbf-007C58-5P; Wed, 16 Jun 2021 16:41:35 +0000
-Received: from mail-pg1-x536.google.com ([2607:f8b0:4864:20::536])
+	id 1ltYc2-007CDY-8Y; Wed, 16 Jun 2021 16:41:58 +0000
+Received: from mail-pl1-x634.google.com ([2607:f8b0:4864:20::634])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ltYav-007Btu-Rc
+ id 1ltYaw-007BuS-7g
  for linux-mtd@lists.infradead.org; Wed, 16 Jun 2021 16:40:53 +0000
-Received: by mail-pg1-x536.google.com with SMTP id l184so2439463pgd.8
+Received: by mail-pl1-x634.google.com with SMTP id 11so1387772plk.12
  for <linux-mtd@lists.infradead.org>; Wed, 16 Jun 2021 09:40:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=eSj7QMM867fTBuxD4WinDi+YMzIWmxuOMcHgu40wLvE=;
- b=DyQz5l7fpg7DJHxBpx+gaUleysT7fIha1KRTi2aysMIVFvhjDQdRTUQTtOQGIJSrO1
- lsZEUc349QhacNULCXDdTjNE7YPtFtNAJ3AjHV9zZWcr8Pu8c65/NaQtOlsrvg6bV12h
- lgZaKPCey7DRAYpFzufgp1ZgG7SfxtZxAopKQ=
+ bh=j7QUDwC2EPEuD6DlH3pxmHwtJHgqhkfKbQUcKenskMw=;
+ b=ZCdfrphV3dB5zlbDHKiuVpwdDt4sMlvzJGQQgBMXUFaiHwTCmZmt4J3GpvydjFySW3
+ w2jlhZ5/mPyplNuRD6XksvWXobmt51zj5N4jefTeXM6zui8q9W+4Q80tV+MCb//CH7PP
+ I92j114VJ2U9Bo/YnE3m3AXq7DhUqJqL7NBC8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=eSj7QMM867fTBuxD4WinDi+YMzIWmxuOMcHgu40wLvE=;
- b=cZexzrO6Ddm6usQmQj3V98xBKB53vrd84C1qQKh0QIznW0lMSPPWo5Q0sloOpNcjZW
- 7u8HNdcaLDVQG9QNk1KMHJduYq+BIWb5J2KxBpevvMJfrAJ7uL+zIsjI0fLr9LFyb3jg
- M84dzHWoYGGmztk6RebT12yfzO53kO0u4q5Q7c7cmNzhVcNJWGG7wh2jmAuLoKQkbmM4
- LUFDy7gX1dNmJHmuEshQFh8pqsJrh3rfq+s8fVhSuJfDDxZxgbasYom4PfrYM4knbsip
- XWg9q67+rFWQmTY5vNiqHswXnhLDvRE0w06X16o3TO2sP0/qJdcVOMNoIe5MIlBWG7P0
- WgIg==
-X-Gm-Message-State: AOAM530nN4B32eLWozghXBm9/mM9STi8g/7GrU1KGrS2IIYcInRrM1wK
- bI45Y6EyEkbUfK97+zELG4vAjA==
-X-Google-Smtp-Source: ABdhPJy3MA/bMpIrn8612O4lt2YxXA4tGPu4lGhMOvCNonn/0H42hZku6Xg6BUsLLwaushFAC8dGtw==
-X-Received: by 2002:a05:6a00:b8a:b029:2ec:761e:33e3 with SMTP id
- g10-20020a056a000b8ab02902ec761e33e3mr555954pfj.35.1623861648707; 
- Wed, 16 Jun 2021 09:40:48 -0700 (PDT)
+ bh=j7QUDwC2EPEuD6DlH3pxmHwtJHgqhkfKbQUcKenskMw=;
+ b=hWZ7ugbc8LyKLfyX8LlqbI9+g33MiUQrcTvGH9EdNxW64PGA5DXVXWtPludgbIi0c8
+ qigs3aNr0UeN+C+pSFgofFhXOXgWw4udJBgQdNOfoMpOLLngC0JOvs9D9q8hIrkhgAHr
+ GISoOuO4lYy6VVRuAPMsX+itF260EfEy/Hdon2TA91oT+7MRdvrfDfM1jaYzyit0/4YW
+ Mc41ncokbtDaj2yIGo1jr7IgJATvwdjDk+BozCkAEkSuE0TNAbhocDm3sKjk5rkgt5yQ
+ grlCdpd2nD0iu0J99AcQsfJOR3X+iDi3KNtPH8t1LLw/WFOHvkxk7vNoTzergtOwaLPy
+ rXIg==
+X-Gm-Message-State: AOAM531g54w6N88GuBuKuKmfPayPX/M/6ur2GTkMYS2DmkTbKMH99UvP
+ p3iDDFnlUO66xAYRBx2JnZdJDw==
+X-Google-Smtp-Source: ABdhPJxEdmwP8K6Xh2thladeJiDTTJl9AykTfJtSWOWgDzFWoDz5+ZlvIOjmVNrUtl5sto5e2q1FNw==
+X-Received: by 2002:a17:902:b288:b029:f8:fb4f:f8d3 with SMTP id
+ u8-20020a170902b288b02900f8fb4ff8d3mr340757plr.25.1623861649012; 
+ Wed, 16 Jun 2021 09:40:49 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
- by smtp.gmail.com with ESMTPSA id b21sm2773113pfp.134.2021.06.16.09.40.45
+ by smtp.gmail.com with ESMTPSA id g204sm2655813pfb.107.2021.06.16.09.40.45
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
  Wed, 16 Jun 2021 09:40:46 -0700 (PDT)
 From: Kees Cook <keescook@chromium.org>
@@ -76,31 +76,31 @@ Cc: Kees Cook <keescook@chromium.org>, Christoph Hellwig <hch@lst.de>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  linux-doc@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH v3 4/5] pstore/blk: Fix kerndoc and redundancy on blkdev param
-Date: Wed, 16 Jun 2021 09:40:42 -0700
-Message-Id: <20210616164043.1221861-5-keescook@chromium.org>
+Subject: [PATCH v3 3/5] pstore/blk: Use the normal block device I/O path
+Date: Wed, 16 Jun 2021 09:40:41 -0700
+Message-Id: <20210616164043.1221861-4-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210616164043.1221861-1-keescook@chromium.org>
 References: <20210616164043.1221861-1-keescook@chromium.org>
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; g=0cec17aa50667cf776ad33debd4d5d780669e07f;
- i=yTEuvN+d2QlI+CgetW2A/mnEULnwbC3Uy5kOoKgmB9Q=;
- m=nv3cX+zCGZ64OKaS6k3hCuIb776pM3aoPeSdwsW4l+g=;
- p=USoGnLZwk4a402OJka3HYldDNWjTYcaDbaDrZ+4qeFA=
+X-Patch-Hashes: v=1; h=sha256; g=d7a0d1871c46c87d312fa072b281fc2f84918c5c;
+ i=SsOtgEq5qb4nZxhHBpq4SPkuFKirt6TdeGDEanJT//k=;
+ m=oAlwYgOPy6cUOJBMN2N65cQmVA0MlO3aACbBT/7A9mM=;
+ p=3go9GHfcbfGGvGSkn9vIl/DGa7s9OrV3LPAmJf69dw4=
 X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026;
- b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmDKKYoACgkQiXL039xtwCbD5g//WUB
- YueFZ8I0eRHi1rVMlUFvST6Tou0jUWvjup1L9XYSQ7CObRFMf5whc9+7yjyAXu6d73aH4FI9Hu/6X
- T7Hyx7yu3/yh08A94+EGmCw3x3tG+u2+YsaXC61syZ655r2Y/5srYaFS3JTBDHr8secOyxNrvqtW7
- JacflvvLmBnr/UYiHn65oAFthh8XAzyj1e6eNek3bCJZwYhmf/E2C8yNY6Rns7jD894FG3ce2tVAD
- 2h+wILUbWcrLNZRoHHosY8ma7rye5JHBtf2/2dhr3zJRHx7CtaMwNn8f8v4B8BdbHN4O039E10Tzi
- hD7DvJPoow6zrMy39jrThL/RccFIMlzc8EdlmZgcJaixxuIeVgy9TKO4Qzz2Rg/HvCypEKrE2xoal
- 04ktdhkwTCH7uOI25jkm8dPaDzmrZ5nRLaOW7iT+dMtWYiGnEq1hkqVnV9aQFBzTIE7P7cY1fmqEj
- Q2kdlcSwWGJRIk9hvj2E1fuM1nvf116U7ERdLjtpHA92XvKoFHEjFNF39MWQJXG3VU5LN3AuuHKc5
- nlBMBAlWsbRbQs1Wlj1vv0L+9vIsZ/jHBrc4FAPdsFXMXFzZbD4EDDoDn1e3OEUkqKnd8Dk0QECDY
- bDtz72/3myeeQVCpSCVqY4O3Glf3Q3SN/eTwLvh2RovIV6uIgkpOHtayxGaGP6GY=
+ b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmDKKYoACgkQiXL039xtwCb8SQ//Xf+
+ HUDAQKsgP4bL0ObAPGjY+vBfBxjRE9P2d8uUVBb3nSr5/g7hPjDPR/LjxCOaNZ9lIvzApH+Q/rb3h
+ cIGjbX6H9H68GfGJ03QY97NISnoHDUK1wa9SHcgm2pBMeuy3j971itguPkjDjNsCI7023WMxnOyIM
+ cIQxfpgwCD/E2reQZujVgJLMjk2iVM1KS+UI0ynJxIw9q8CzHaAeA+XV27jn6QQUwRRa4tcUUGTln
+ 0AVb3gwRaTIKZOp00Y/CnuUNDoAuIJVoIhvzGZYHz7gBRiZkWFjhVFGPQiKX0KlE/MPL0ovk5xBTV
+ vBWcUNmhnjNOyLZOX1Kn4e06pTMxKPkOgAlIHahPkBFw1Y/lzk8S706rmjiFYqyoeh/vkpYf+sKXV
+ 7aIyy1JW5WfSU3d5bmN6Y2bEod9NLcQe53Mr20A9M7XstziS+PP6BypaplpDbDikVEBve/ZwxqagO
+ O+l9jBf/wqEm1irOBX1gEjHGe+crc92fJuHYpkVVjhS37lUae+YnP+ODd2tLlf8J3zFrbGej/w8Py
+ Yu+uOGMHZwZ2L99cW9uCpy4rISaaa4RPmGkNHM3BckbKDThV9w2gIe7678VH7foP6vYA/Axv8SLbx
+ iYlUb00oXYvUddm8kWd9mdJTw1BJLaVSAYCYeLCJv7vBU8rziN/eBa6UrxgBvveo=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210616_094049_932392_E91DED9E 
-X-CRM114-Status: GOOD (  16.10  )
+X-CRM114-CacheID: sfid-20210616_094050_336666_6BECD879 
+X-CRM114-Status: GOOD (  31.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -117,77 +117,405 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Remove redundant details of blkdev and fix up resulting kerndoc.
+Stop poking into block layer internals and just open the block device
+file an use kernel_read and kernel_write on it. Note that this means
+the transformation from name_to_dev_t can't be used anymore when
+pstore_blk is loaded as a module: a full filesystem device path name
+must be used instead. Additionally removes ":internal:" kerndoc link,
+since no such documentation remains.
 
+Co-developed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- Documentation/admin-guide/pstore-blk.rst | 11 +++++++----
- fs/pstore/blk.c                          | 24 +-----------------------
- 2 files changed, 8 insertions(+), 27 deletions(-)
+ Documentation/admin-guide/pstore-blk.rst |   3 -
+ fs/pstore/blk.c                          | 264 +++++++----------------
+ 2 files changed, 83 insertions(+), 184 deletions(-)
 
 diff --git a/Documentation/admin-guide/pstore-blk.rst b/Documentation/admin-guide/pstore-blk.rst
-index 79f6d23e8cda..2d22ead9520e 100644
+index 49d8149f8d32..79f6d23e8cda 100644
 --- a/Documentation/admin-guide/pstore-blk.rst
 +++ b/Documentation/admin-guide/pstore-blk.rst
-@@ -45,15 +45,18 @@ blkdev
- The block device to use. Most of the time, it is a partition of block device.
- It's required for pstore/blk. It is also used for MTD device.
+@@ -227,8 +227,5 @@ For developer reference, here are all the important structures and APIs:
+ .. kernel-doc:: include/linux/pstore_zone.h
+    :internal:
  
--It accepts the following variants for block device:
-+When pstore/blk is built as a module, "blkdev" accepts the following variants:
- 
--1. <hex_major><hex_minor> device number in hexadecimal represents itself; no
--   leading 0x, for example b302.
--#. /dev/<disk_name> represents the device number of disk
-+1. /dev/<disk_name> represents the device number of disk
- #. /dev/<disk_name><decimal> represents the device number of partition - device
-    number of disk plus the partition number
- #. /dev/<disk_name>p<decimal> - same as the above; this form is used when disk
-    name of partitioned disk ends with a digit.
-+
-+When pstore/blk is built into the kernel, "blkdev" accepts the following variants:
-+
-+#. <hex_major><hex_minor> device number in hexadecimal representation,
-+   with no leading 0x, for example b302.
- #. PARTUUID=00112233-4455-6677-8899-AABBCCDDEEFF represents the unique id of
-    a partition if the partition table provides it. The UUID may be either an
-    EFI/GPT UUID, or refer to an MSDOS partition using the format SSSSSSSS-PP,
+-.. kernel-doc:: fs/pstore/blk.c
+-   :internal:
+-
+ .. kernel-doc:: include/linux/pstore_blk.h
+    :internal:
 diff --git a/fs/pstore/blk.c b/fs/pstore/blk.c
-index dc5ff763d414..c373e0d73e6c 100644
+index 7d8e5a1ddd5b..dc5ff763d414 100644
 --- a/fs/pstore/blk.c
 +++ b/fs/pstore/blk.c
-@@ -58,29 +58,7 @@ MODULE_PARM_DESC(best_effort, "use best effort to write (i.e. do not require sto
+@@ -8,15 +8,16 @@
  
- /*
-  * blkdev - the block device to use for pstore storage
-- *
-- * Usually, this will be a partition of a block device.
-- *
-- * blkdev accepts the following variants, when built as a module:
-- * 1) /dev/<disk_name> represents the device number of disk
-- * 2) /dev/<disk_name><decimal> represents the device number
-- *    of partition - device number of disk plus the partition number
-- * 3) /dev/<disk_name>p<decimal> - same as the above, that form is
-- *    used when disk name of partitioned disk ends on a digit.
-- *
-- * blkdev accepts the following variants when built into the kernel:
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+-#include "../../block/blk.h"
+ #include <linux/blkdev.h>
+ #include <linux/string.h>
+ #include <linux/of.h>
+ #include <linux/of_address.h>
+ #include <linux/platform_device.h>
+ #include <linux/pstore_blk.h>
++#include <linux/fs.h>
++#include <linux/file.h>
++#include <linux/init_syscalls.h>
+ #include <linux/mount.h>
+-#include <linux/uio.h>
+ 
+ static long kmsg_size = CONFIG_PSTORE_BLK_KMSG_SIZE;
+ module_param(kmsg_size, long, 0400);
+@@ -60,23 +61,25 @@ MODULE_PARM_DESC(best_effort, "use best effort to write (i.e. do not require sto
+  *
+  * Usually, this will be a partition of a block device.
+  *
+- * blkdev accepts the following variants:
 - * 1) <hex_major><hex_minor> device number in hexadecimal representation,
 - *    with no leading 0x, for example b302.
-- * 2) PARTUUID=00112233-4455-6677-8899-AABBCCDDEEFF representing the
-- *    unique id of a partition if the partition table provides it.
-- *    The UUID may be either an EFI/GPT UUID, or refer to an MSDOS
-- *    partition using the format SSSSSSSS-PP, where SSSSSSSS is a zero-
-- *    filled hex representation of the 32-bit "NT disk signature", and PP
-- *    is a zero-filled hex representation of the 1-based partition number.
-- * 3) PARTUUID=<UUID>/PARTNROFF=<int> to select a partition in relation to
-- *    a partition with a known unique id.
-- * 4) <major>:<minor> major and minor number of the device separated by
-- *    a colon.
-+ * See Documentation/admin-guide/pstore-blk.rst for details.
+- * 2) /dev/<disk_name> represents the device number of disk
+- * 3) /dev/<disk_name><decimal> represents the device number
++ * blkdev accepts the following variants, when built as a module:
++ * 1) /dev/<disk_name> represents the device number of disk
++ * 2) /dev/<disk_name><decimal> represents the device number
+  *    of partition - device number of disk plus the partition number
+- * 4) /dev/<disk_name>p<decimal> - same as the above, that form is
++ * 3) /dev/<disk_name>p<decimal> - same as the above, that form is
+  *    used when disk name of partitioned disk ends on a digit.
+- * 5) PARTUUID=00112233-4455-6677-8899-AABBCCDDEEFF representing the
++ *
++ * blkdev accepts the following variants when built into the kernel:
++ * 1) <hex_major><hex_minor> device number in hexadecimal representation,
++ *    with no leading 0x, for example b302.
++ * 2) PARTUUID=00112233-4455-6677-8899-AABBCCDDEEFF representing the
+  *    unique id of a partition if the partition table provides it.
+  *    The UUID may be either an EFI/GPT UUID, or refer to an MSDOS
+  *    partition using the format SSSSSSSS-PP, where SSSSSSSS is a zero-
+  *    filled hex representation of the 32-bit "NT disk signature", and PP
+  *    is a zero-filled hex representation of the 1-based partition number.
+- * 6) PARTUUID=<UUID>/PARTNROFF=<int> to select a partition in relation to
++ * 3) PARTUUID=<UUID>/PARTNROFF=<int> to select a partition in relation to
+  *    a partition with a known unique id.
+- * 7) <major>:<minor> major and minor number of the device separated by
++ * 4) <major>:<minor> major and minor number of the device separated by
+  *    a colon.
   */
  static char blkdev[80] = CONFIG_PSTORE_BLK_BLKDEV;
- module_param_string(blkdev, blkdev, 80, 0400);
+@@ -88,15 +91,9 @@ MODULE_PARM_DESC(blkdev, "block device for pstore storage");
+  * during the register/unregister functions.
+  */
+ static DEFINE_MUTEX(pstore_blk_lock);
+-static struct block_device *psblk_bdev;
++static struct file *psblk_file;
+ static struct pstore_zone_info *pstore_zone_info;
+ 
+-struct bdev_info {
+-	dev_t devt;
+-	sector_t nr_sects;
+-	sector_t start_sect;
+-};
+-
+ #define check_size(name, alignsize) ({				\
+ 	long _##name_ = (name);					\
+ 	_##name_ = _##name_ <= 0 ? 0 : (_##name_ * 1024);	\
+@@ -219,203 +216,73 @@ void unregister_pstore_device(struct pstore_device_info *dev)
+ }
+ EXPORT_SYMBOL_GPL(unregister_pstore_device);
+ 
+-/**
+- * psblk_get_bdev() - open block device
+- *
+- * @holder:	Exclusive holder identifier
+- * @info:	Information about bdev to fill in
+- *
+- * Return: pointer to block device on success and others on error.
+- *
+- * On success, the returned block_device has reference count of one.
+- */
+-static struct block_device *psblk_get_bdev(void *holder,
+-					   struct bdev_info *info)
+-{
+-	struct block_device *bdev = ERR_PTR(-ENODEV);
+-	fmode_t mode = FMODE_READ | FMODE_WRITE;
+-	sector_t nr_sects;
+-
+-	lockdep_assert_held(&pstore_blk_lock);
+-
+-	if (pstore_zone_info)
+-		return ERR_PTR(-EBUSY);
+-
+-	if (!blkdev[0])
+-		return ERR_PTR(-ENODEV);
+-
+-	if (holder)
+-		mode |= FMODE_EXCL;
+-	bdev = blkdev_get_by_path(blkdev, mode, holder);
+-	if (IS_ERR(bdev)) {
+-		dev_t devt;
+-
+-		devt = name_to_dev_t(blkdev);
+-		if (devt == 0)
+-			return ERR_PTR(-ENODEV);
+-		bdev = blkdev_get_by_dev(devt, mode, holder);
+-		if (IS_ERR(bdev))
+-			return bdev;
+-	}
+-
+-	nr_sects = bdev_nr_sectors(bdev);
+-	if (!nr_sects) {
+-		pr_err("not enough space for '%s'\n", blkdev);
+-		blkdev_put(bdev, mode);
+-		return ERR_PTR(-ENOSPC);
+-	}
+-
+-	if (info) {
+-		info->devt = bdev->bd_dev;
+-		info->nr_sects = nr_sects;
+-		info->start_sect = get_start_sect(bdev);
+-	}
+-
+-	return bdev;
+-}
+-
+-static void psblk_put_bdev(struct block_device *bdev, void *holder)
+-{
+-	fmode_t mode = FMODE_READ | FMODE_WRITE;
+-
+-	lockdep_assert_held(&pstore_blk_lock);
+-
+-	if (!bdev)
+-		return;
+-
+-	if (holder)
+-		mode |= FMODE_EXCL;
+-	blkdev_put(bdev, mode);
+-}
+-
+ static ssize_t psblk_generic_blk_read(char *buf, size_t bytes, loff_t pos)
+ {
+-	struct block_device *bdev = psblk_bdev;
+-	struct file file;
+-	struct kiocb kiocb;
+-	struct iov_iter iter;
+-	struct kvec iov = {.iov_base = buf, .iov_len = bytes};
+-
+-	if (!bdev)
+-		return -ENODEV;
+-
+-	memset(&file, 0, sizeof(struct file));
+-	file.f_mapping = bdev->bd_inode->i_mapping;
+-	file.f_flags = O_DSYNC | __O_SYNC | O_NOATIME;
+-	file.f_inode = bdev->bd_inode;
+-	file_ra_state_init(&file.f_ra, file.f_mapping);
+-
+-	init_sync_kiocb(&kiocb, &file);
+-	kiocb.ki_pos = pos;
+-	iov_iter_kvec(&iter, READ, &iov, 1, bytes);
+-
+-	return generic_file_read_iter(&kiocb, &iter);
++	return kernel_read(psblk_file, buf, bytes, &pos);
+ }
+ 
+ static ssize_t psblk_generic_blk_write(const char *buf, size_t bytes,
+ 		loff_t pos)
+ {
+-	struct block_device *bdev = psblk_bdev;
+-	struct iov_iter iter;
+-	struct kiocb kiocb;
+-	struct file file;
+-	ssize_t ret;
+-	struct kvec iov = {.iov_base = (void *)buf, .iov_len = bytes};
+-
+-	if (!bdev)
+-		return -ENODEV;
+-
+ 	/* Console/Ftrace backend may handle buffer until flush dirty zones */
+ 	if (in_interrupt() || irqs_disabled())
+ 		return -EBUSY;
+-
+-	memset(&file, 0, sizeof(struct file));
+-	file.f_mapping = bdev->bd_inode->i_mapping;
+-	file.f_flags = O_DSYNC | __O_SYNC | O_NOATIME;
+-	file.f_inode = bdev->bd_inode;
+-
+-	init_sync_kiocb(&kiocb, &file);
+-	kiocb.ki_pos = pos;
+-	iov_iter_kvec(&iter, WRITE, &iov, 1, bytes);
+-
+-	inode_lock(bdev->bd_inode);
+-	ret = generic_write_checks(&kiocb, &iter);
+-	if (ret > 0)
+-		ret = generic_perform_write(&file, &iter, pos);
+-	inode_unlock(bdev->bd_inode);
+-
+-	if (likely(ret > 0)) {
+-		const struct file_operations f_op = {.fsync = blkdev_fsync};
+-
+-		file.f_op = &f_op;
+-		kiocb.ki_pos += ret;
+-		ret = generic_write_sync(&kiocb, ret);
+-	}
+-	return ret;
++	return kernel_write(psblk_file, buf, bytes, &pos);
+ }
+ 
+ /*
+  * This takes its configuration only from the module parameters now.
+- * See psblk_get_bdev() and blkdev.
+  */
+-static int __register_pstore_blk(void)
++static int __register_pstore_blk(const char *devpath)
+ {
+-	char bdev_name[BDEVNAME_SIZE];
+-	struct block_device *bdev;
+-	struct pstore_device_info dev;
+-	struct bdev_info binfo;
+-	void *holder = blkdev;
++	struct pstore_device_info dev = {
++		.read = psblk_generic_blk_read,
++		.write = psblk_generic_blk_write,
++	};
++	struct inode *inode;
+ 	int ret = -ENODEV;
+ 
+ 	lockdep_assert_held(&pstore_blk_lock);
+ 
+-	/* hold bdev exclusively */
+-	memset(&binfo, 0, sizeof(binfo));
+-	bdev = psblk_get_bdev(holder, &binfo);
+-	if (IS_ERR(bdev)) {
+-		pr_err("failed to open '%s'!\n", blkdev);
+-		return PTR_ERR(bdev);
++	psblk_file = filp_open(devpath, O_RDWR | O_DSYNC | O_NOATIME | O_EXCL, 0);
++	if (IS_ERR(psblk_file)) {
++		ret = PTR_ERR(psblk_file);
++		pr_err("failed to open '%s': %d!\n", devpath, ret);
++		goto err;
+ 	}
+ 
+-	/* only allow driver matching the @blkdev */
+-	if (!binfo.devt) {
+-		pr_debug("no major\n");
+-		ret = -ENODEV;
+-		goto err_put_bdev;
++	inode = file_inode(psblk_file);
++	if (!S_ISBLK(inode->i_mode)) {
++		pr_err("'%s' is not block device!\n", devpath);
++		goto err_fput;
+ 	}
+ 
+-	/* psblk_bdev must be assigned before register to pstore/blk */
+-	psblk_bdev = bdev;
+-
+-	memset(&dev, 0, sizeof(dev));
+-	dev.total_size = binfo.nr_sects << SECTOR_SHIFT;
+-	dev.read = psblk_generic_blk_read;
+-	dev.write = psblk_generic_blk_write;
++	inode = I_BDEV(psblk_file->f_mapping->host)->bd_inode;
++	dev.total_size = i_size_read(inode);
+ 
+ 	ret = __register_pstore_device(&dev);
+ 	if (ret)
+-		goto err_put_bdev;
++		goto err_fput;
+ 
+-	bdevname(bdev, bdev_name);
+-	pr_info("attached %s (no dedicated panic_write!)\n", bdev_name);
+ 	return 0;
+ 
+-err_put_bdev:
+-	psblk_bdev = NULL;
+-	psblk_put_bdev(bdev, holder);
++err_fput:
++	fput(psblk_file);
++err:
++	psblk_file = NULL;
++
+ 	return ret;
+ }
+ 
+-static void __unregister_pstore_blk(unsigned int major)
++static void __unregister_pstore_blk(struct file *device)
+ {
+ 	struct pstore_device_info dev = { .read = psblk_generic_blk_read };
+-	void *holder = blkdev;
+ 
+ 	lockdep_assert_held(&pstore_blk_lock);
+-	if (psblk_bdev && MAJOR(psblk_bdev->bd_dev) == major) {
++	if (psblk_file && psblk_file == device) {
+ 		__unregister_pstore_device(&dev);
+-		psblk_put_bdev(psblk_bdev, holder);
+-		psblk_bdev = NULL;
++		fput(psblk_file);
++		psblk_file = NULL;
+ 	}
+ }
+ 
+@@ -433,13 +300,48 @@ int pstore_blk_get_config(struct pstore_blk_config *info)
+ }
+ EXPORT_SYMBOL_GPL(pstore_blk_get_config);
+ 
++
++#ifndef MODULE
++static const char devname[] = "/dev/pstore-blk";
++static __init const char *early_boot_devpath(const char *initial_devname)
++{
++	/*
++	 * During early boot the real root file system hasn't been
++	 * mounted yet, and no device nodes are present yet. Use the
++	 * same scheme to find the device that we use for mounting
++	 * the root file system.
++	 */
++	dev_t dev = name_to_dev_t(initial_devname);
++
++	if (!dev) {
++		pr_err("failed to resolve '%s'!\n", initial_devname);
++		return initial_devname;
++	}
++
++	init_unlink(devname);
++	init_mknod(devname, S_IFBLK | 0600, new_encode_dev(dev));
++
++	return devname;
++}
++#else
++static inline const char *early_boot_devpath(const char *initial_devname)
++{
++	return initial_devname;
++}
++#endif
++
+ static int __init pstore_blk_init(void)
+ {
+ 	int ret = 0;
+ 
+ 	mutex_lock(&pstore_blk_lock);
+-	if (!pstore_zone_info && best_effort && blkdev[0])
+-		ret = __register_pstore_blk();
++	if (!pstore_zone_info && best_effort && blkdev[0]) {
++		ret = __register_pstore_blk(early_boot_devpath(blkdev));
++		if (ret == 0 && pstore_zone_info)
++			pr_info("attached %s:%s (%zu) (no dedicated panic_write!)\n",
++				pstore_zone_info->name, blkdev,
++				pstore_zone_info->total_size);
++	}
+ 	mutex_unlock(&pstore_blk_lock);
+ 
+ 	return ret;
+@@ -449,8 +351,8 @@ late_initcall(pstore_blk_init);
+ static void __exit pstore_blk_exit(void)
+ {
+ 	mutex_lock(&pstore_blk_lock);
+-	if (psblk_bdev)
+-		__unregister_pstore_blk(MAJOR(psblk_bdev->bd_dev));
++	if (psblk_file)
++		__unregister_pstore_blk(psblk_file);
+ 	else {
+ 		struct pstore_device_info dev = { };
+ 
 -- 
 2.25.1
 
