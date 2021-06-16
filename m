@@ -8,14 +8,14 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C445C48BE5
-	for <linux-mtd@archiver.kernel.org>; Wed, 16 Jun 2021 08:50:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7189EC48BE6
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Jun 2021 08:51:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 27CDC6115B
-	for <linux-mtd@archiver.kernel.org>; Wed, 16 Jun 2021 08:50:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 27CDC6115B
+	by mail.kernel.org (Postfix) with ESMTPS id 4517F6115B
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Jun 2021 08:51:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4517F6115B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,68 +24,69 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EQqq8/P2Zf1mrqpeJD2ijU35myQH9jGjxtnz6IUCXF8=; b=1OCmyv8OYw0xQb
-	9gtqS8xzS8TLocTkxkz/MuE6qWcTh1ke3f9bEum9C6RmSB2bBmZ9vz89gRjbl28f7GdIhfy0drAzO
-	5lQiS6ZYlFSe/9zLUzaoQqynprBQfb5g7whjOBJWrpkdSmEz1KfoV9GYJ+p+0N1HMgUOzKCEsH8Vz
-	0Mdp+31D7/H59z3kduieGi8m4cYj2k/+gs+u8zwelcKvCyCAlbldgEPG5hpUUBi1rD0hHToreCuag
-	qMyOTv2DXFQ6H9g72yxN0CzWTOD962sRH/mROJF4iehtYsjMpiJAoA696wxqMQ27vn+PuXNnzNEQy
-	XYa1PKy9rFUuZ4oW/1gA==;
+	List-Owner; bh=1hxJaz/WF28yzm/YzsWnk8vGVC+BQBdvLEmQvfdb8x8=; b=3/60sem4iCPCee
+	jUWnPAsMGYpkvWRXSp4F68Nh++jq41vIPzs8LAPB1SUnecZ2b30mYu8Xsn61q7/QNVBWnZ7PiiTPV
+	jWjpwwNNcblLVav2l1rGol3/Gxf1ZKVbrl9wNVHB4DbN42eW+bLxpLd7CrS6aLI2M3vFjbkV569kp
+	T97bS6sC/Y2dsqbTPyo39YfpjyQb8x2dCrDipn4wglxsrqjRV9dLtSHNM20IjGOvlPyqt2RJ/1Qdq
+	zpKkJpnfGZ34eZu8GDN8FXgD405wdOlLyjiqFQhfLW3ycqGHFjPY7nyvi4GNdnNYVxX9+/JN79fRB
+	xZEizwvKjFVmp4LrkGQw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ltRFV-005RJo-RW; Wed, 16 Jun 2021 08:50:13 +0000
-Received: from mail-oi1-x232.google.com ([2607:f8b0:4864:20::232])
+	id 1ltRFr-005RSG-Dd; Wed, 16 Jun 2021 08:50:35 +0000
+Received: from mail-oi1-x235.google.com ([2607:f8b0:4864:20::235])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ltREz-005RE2-Uo
- for linux-mtd@lists.infradead.org; Wed, 16 Jun 2021 08:49:44 +0000
-Received: by mail-oi1-x232.google.com with SMTP id c13so1722750oib.13
- for <linux-mtd@lists.infradead.org>; Wed, 16 Jun 2021 01:49:41 -0700 (PDT)
+ id 1ltRF1-005REg-V5
+ for linux-mtd@lists.infradead.org; Wed, 16 Jun 2021 08:49:45 +0000
+Received: by mail-oi1-x235.google.com with SMTP id m137so1765755oig.6
+ for <linux-mtd@lists.infradead.org>; Wed, 16 Jun 2021 01:49:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=6t9z+8g9VYoKkGO+X+p7zMaJ+xGsaNtlDaja1yl3gWM=;
- b=g2JCZoL5uBhXUdxrHuT36ZX6dVjQm08z7SvtA+N1oCLkj8xW+qctyQYNxLGeIK54Zc
- Wpt9laUu+ukB+qgnnPnTSQjRDIBWFpNLD7Tlra5G+rSXh3LoM5A31TJgJTi6hrF1/jah
- 83+XOvkv+msJYWy9c7KEiwluYaR6OGyeYzGNAyVHH7UVFQ/w8vsAAWusMHJVo7uA7gC+
- nt5pViR0Hzt6SWeaH+AhjhXFGT0lmiTB7tlOkNrMlV3rTaOVmkVjBP17VtKvYRs63pCp
- 2+3WlBdbOi5Z5gP9TsLQLyWKoWZ4Qyg+E1Z2QJgNS0anM5TG3WxgfgNsi6DAt3KGnPgR
- J6dQ==
+ bh=mZRhfUzzX1zas0ups/S9IRAx5abdei+IY7pnMKbKUhI=;
+ b=NUaGISUdQ6oahila/jOLio0Gl8XIqaCmmH4ktXS7/rhK7f2GnlzOo7WsOjc3BiGlXg
+ fb2sVD5GrjG2y5pCpESptiRGG4MrkkanqiSP1ug9rgnjbYHnR7Jdrc193gJxLY6gI0op
+ agiI41nCWHUiiBRRFm21pss3V6jiNK3yjlQhAGTYKXnjIbKv0Yv/iucUSOob28zOQeOB
+ zLZvDhIgnDhcGKc9TysuO3sHlhidR3TwtIihLUxBSJ9scgFMbBZPcUUnJlDlslj0oQIZ
+ OSAYsZzUiQHP6WDSCPb+yGx1a7b57fCniytTsZq9qGvoyqo4DMHMoV6FxjaPk8Dp4orB
+ r7fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=6t9z+8g9VYoKkGO+X+p7zMaJ+xGsaNtlDaja1yl3gWM=;
- b=JZ9NI0yZW5DGr+wwTsEEY0Zx7zSaOFL17HGJcLQ0d7K+2ZMutCDJ9Ka1NCP9rmudMm
- T3pSFQqZH4fpqxGRuNL/VgfzzJtUn5xqcofnIrcUxO+J1Jh+73tLd7DyrRaYjD8SyWzD
- 5HUx3c5UQV+8R4sAYgSVgIZOvFmq0cEvb+rm7sguigPPEEgyougJozQ9POvjmkSJBn4l
- 0kuBJ4uqcP7+VODN+CVmIYMB+YKYoKZazz9H7Dv+LwvjMqzDYS2u335hngUQZaWiiKxf
- gXd33xxD81nq0InTSm4IFjBuErOddnDSK+2kQgUASfRGXLQUltegrx0SX3MLR0tcQwNH
- 4Cfw==
-X-Gm-Message-State: AOAM531oqzQ7/Z/DDTSUmM87HsBjH1w32rALqTn+j17oSkIQfOlvlL88
- jrkIFgJTa2kf/luJkIXe6wWQM85uKn4=
-X-Google-Smtp-Source: ABdhPJzU1eZvMZBpd9r/irPk/xkZV2r5hh3yNX+d1vbXCroSBm10hK4gxkjtSWANJ7fb17Jun6mvSw==
-X-Received: by 2002:aca:b443:: with SMTP id d64mr2339179oif.68.1623833380825; 
- Wed, 16 Jun 2021 01:49:40 -0700 (PDT)
+ bh=mZRhfUzzX1zas0ups/S9IRAx5abdei+IY7pnMKbKUhI=;
+ b=DOySHqvFbVJnhjdiE3JuT689l76zTAGSfnqUjzwRCKnlhfTQcp2ClMrRD6NnQU/R9a
+ SwDa6JX90dvr6NHHvisEDdLRaOUqU/4Fq513sOKYIa5XeM7fWEYnKmjUfYIYUTFGmGMO
+ XGGSI2aFJqDo9jTnYsadxlOUhG1u2x5+A5CmpkI5h5aZO/9qoTDJIgEI21VWOhsjwlc7
+ pFF6OD7yZ8cgG2LcUBZASpnOgeQs49jvS27+xBpm9GeCl8duSt3mdezsYC6q/Pfb+MNy
+ qbR5cpQR6ffM18aBdK0XN/itwARiXuVprUupBl4A0+QZyTFwBw5X9VBdNBb27jngfdAy
+ irlQ==
+X-Gm-Message-State: AOAM530Jijce5pmLK71AFrGS/lC0/pjw+k2fg+6X34esMgrc4nTQBW55
+ l5+vQ52sHJYTKwmV26rTRBHDYdebuis=
+X-Google-Smtp-Source: ABdhPJyQzwoyCPrAxrYuyEEKoZAaQsUMBUMBcCMfMqgwEapxSXQyjZ6S3Lm3ItFfNMpT1jaX0TyDZw==
+X-Received: by 2002:aca:ed09:: with SMTP id l9mr2418355oih.151.1623833382847; 
+ Wed, 16 Jun 2021 01:49:42 -0700 (PDT)
 Received: from ISCNPF1JZGWX.infineon.com
  (zz20174137476F6254EB.userreverse.dion.ne.jp. [111.98.84.235])
- by smtp.gmail.com with ESMTPSA id e15sm325272oow.38.2021.06.16.01.49.38
+ by smtp.gmail.com with ESMTPSA id e15sm325272oow.38.2021.06.16.01.49.41
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 16 Jun 2021 01:49:40 -0700 (PDT)
+ Wed, 16 Jun 2021 01:49:42 -0700 (PDT)
 From: tkuw584924@gmail.com
 X-Google-Original-From: Takahiro.Kuwano@infineon.com
 To: linux-mtd@lists.infradead.org
 Cc: tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at,
  vigneshr@ti.com, p.yadav@ti.com, Bacem.Daassi@infineon.com,
  Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH v6 2/3] mtd: spi-nor: spansion: Add support for volatile QE bit
-Date: Wed, 16 Jun 2021 17:44:54 +0900
-Message-Id: <26c05c5f3169f66bb389c825cac1a36dc68008da.1623831222.git.Takahiro.Kuwano@infineon.com>
+Subject: [PATCH v6 3/3] mtd: spi-nor: spansion: Add s25hl-t/s25hs-t IDs and
+ fixups
+Date: Wed, 16 Jun 2021 17:44:55 +0900
+Message-Id: <259dab867faae2ea41b0cbda98057bf37948ca0a.1623831222.git.Takahiro.Kuwano@infineon.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1623831222.git.Takahiro.Kuwano@infineon.com>
 References: <cover.1623831222.git.Takahiro.Kuwano@infineon.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210616_014942_035462_2D75CAA3 
-X-CRM114-Status: GOOD (  15.17  )
+X-CRM114-CacheID: sfid-20210616_014944_054397_ABBC55BA 
+X-CRM114-Status: GOOD (  19.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,92 +105,123 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
-Some of Spansion/Cypress chips support volatile version of configuration
-registers and it is recommended to update volatile registers in the field
-application due to a risk of the non-volatile registers corruption by
-power interrupt.
+The S25HL-T/S25HS-T family is the Cypress Semper Flash with Quad SPI.
+
+For the single-die package parts (512Mb and 1Gb), only bottom 4KB and
+uniform sector sizes are supported. This is due to missing or incorrect
+entries in SMPT. Fixup for other sector sizes configurations will be
+followed up as needed.
+
+Tested on Xilinx Zynq-7000 FPGA board.
 
 Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 ---
 Changes in v6:
-  - Remove multi die package support
+  - Remove 2Gb multi die pacakge support
 
 Changes in v5:
-  - No change
-  
-Changes in v4:
-  - No change
-  
-Changes in v3:
-  - Add multi-die package parts support
+  - Add NO_CHIP_ERASE flag to S25HL02GT and S25HS02GT
 
- drivers/mtd/spi-nor/spansion.c | 57 ++++++++++++++++++++++++++++++++++
- 1 file changed, 57 insertions(+)
+Changes in v4:
+  - Merge block comments about SMPT in s25hx_t_post_sfdp_fixups()
+  - Remove USE_CLSR flags from S25HL02GT and S25HS02GT
+
+Changes in v3:
+  - Remove S25HL256T and S25HS256T
+  - Add S25HL02GT and S25HS02GT 
+  - Add support for multi-die package parts support
+  - Remove erase_map fix for top/split sector layout
+  - Set ECC data unit size (16B) to writesize
+
+ drivers/mtd/spi-nor/spansion.c | 79 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 79 insertions(+)
 
 diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 2dd692a7ff24..73ed587c5ee4 100644
+index 73ed587c5ee4..6a9048ed7f0c 100644
 --- a/drivers/mtd/spi-nor/spansion.c
 +++ b/drivers/mtd/spi-nor/spansion.c
-@@ -161,6 +161,63 @@ static int spansion_write_any_reg(struct spi_nor *nor, u32 reg_addr,
- 					    reg_val);
+@@ -218,6 +218,85 @@ static int spansion_quad_enable_volatile(struct spi_nor *nor, u8 reg_dummy)
+ 	return 0;
  }
  
-+/**
-+ * spansion_quad_enable_volatile() - enable Quad I/O mode in volatile register.
-+ * @nor:	pointer to a 'struct spi_nor'
-+ * @reg_dummy:	number of dummy cycles for register read
-+ *
-+ * It is recommended to update volatile registers in the field application due
-+ * to a risk of the non-volatile registers corruption by power interrupt. This
-+ * function sets Quad Enable bit in CFR1 volatile. If users set the Quad Enable
-+ * bit in the CFR1 non-volatile in advance (typically by a Flash programmer
-+ * before mounting Flash on PCB), the Quad Enable bit in the CFR1 volatile is
-+ * also set during Flash power-up. This function supports multi-die package
-+ * parts that require to set the Quad Enable bit in each die.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int spansion_quad_enable_volatile(struct spi_nor *nor, u8 reg_dummy)
++static int s25hx_t_quad_enable(struct spi_nor *nor)
 +{
-+	u32 reg_addr = SPINOR_REG_CYPRESS_CFR1V;
-+	u8 cfr1v, cfr1v_written;
++	int ret = spansion_quad_enable_volatile(nor, 0);
++
++	/* Reset WEL bit in any error cases */
++	spi_nor_write_disable(nor);
++
++	return ret;
++}
++
++static int
++s25hx_t_post_bfpt_fixups(struct spi_nor *nor,
++			 const struct sfdp_parameter_header *bfpt_header,
++			 const struct sfdp_bfpt *bfpt,
++			 struct spi_nor_flash_parameter *params)
++{
 +	int ret;
++	u32 addr;
++	u8 cfr3v;
 +
-+	ret = spansion_read_any_reg(nor, reg_addr, nor->addr_width, reg_dummy,
-+				    &cfr1v);
++	ret = spi_nor_set_4byte_addr_mode(nor, true);
++	if (ret)
++		return ret;
++	nor->addr_width = 4;
++
++	/* Replace Quad Enable with volatile version */
++	params->quad_enable = s25hx_t_quad_enable;
++
++	/*
++	 * The page_size is set to 512B from BFPT, but it actually depends on
++	 * the configuration register. Look up the CFR3V and determine the
++	 * page_size.
++	 */
++	ret = spansion_read_any_reg(nor, addr + SPINOR_REG_CYPRESS_CFR3V,
++				    nor->addr_width, 0, &cfr3v);
 +	if (ret)
 +		return ret;
 +
-+	if (cfr1v & SPINOR_REG_CYPRESS_CFR1V_QUAD_EN)
-+		return 0;
-+
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		return ret;
-+
-+	/* Update the Quad Enable bit. */
-+	cfr1v |= SPINOR_REG_CYPRESS_CFR1V_QUAD_EN;
-+
-+	ret = spansion_write_any_reg(nor, reg_addr, nor->addr_width, cfr1v);
-+
-+	if (ret)
-+		return ret;
-+
-+	cfr1v_written = cfr1v;
-+
-+	/* Read back and check it. */
-+	ret = spansion_read_any_reg(nor, reg_addr, nor->addr_width, reg_dummy,
-+				    &cfr1v);
-+	if (ret)
-+		return ret;
-+
-+	if (cfr1v != cfr1v_written) {
-+		dev_err(nor->dev, "CFR1: Read back test failed\n");
-+		return -EIO;
-+	}
++	if (!(cfr3v & SPINOR_REG_CYPRESS_CFR3V_PGSZ))
++		params->page_size = 256;
++	else
++		params->page_size = 512;
 +
 +	return 0;
 +}
++
++void s25hx_t_post_sfdp_fixups(struct spi_nor *nor)
++{
++	/* Fast Read 4B requires mode cycles */
++	nor->params->reads[SNOR_CMD_READ_FAST].num_mode_clocks = 8;
++
++	/* The writesize should be ECC data unit size */
++	nor->params->writesize = 16;
++
++	/*
++	 * For the single-die package parts (512Mb and 1Gb), bottom 4KB and
++	 * uniform sector maps are correctly populated in the erase_map
++	 * structure. The table below shows all possible combinations of related
++	 * register bits and its availability in SMPT.
++	 *
++	 *   CFR3[3] | CFR1[6] | CFR1[2] | Sector Map | Available in SMPT?
++	 *  -------------------------------------------------------------------
++	 *      0    |    0    |    0    | Bottom     | YES
++	 *      0    |    0    |    1    | Top        | NO (decoded as Split)
++	 *      0    |    1    |    0    | Split      | NO
++	 *      0    |    1    |    1    | Split      | NO (decoded as Top)
++	 *      1    |    0    |    0    | Uniform    | YES
++	 *      1    |    0    |    1    | Uniform    | NO
++	 *      1    |    1    |    0    | Uniform    | NO
++	 *      1    |    1    |    1    | Uniform    | NO
++	 *  -------------------------------------------------------------------
++	 */
++}
++
++static struct spi_nor_fixups s25hx_t_fixups = {
++	.post_bfpt = s25hx_t_post_bfpt_fixups,
++	.post_sfdp = s25hx_t_post_sfdp_fixups
++};
 +
  /**
   * spi_nor_cypress_octal_dtr_enable() - Enable octal DTR on Cypress flashes.
