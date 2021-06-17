@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-10.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AF91C49EA4
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Jun 2021 07:56:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B406C2B9F4
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Jun 2021 07:56:58 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0A8ED61076
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Jun 2021 07:56:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A8ED61076
+	by mail.kernel.org (Postfix) with ESMTPS id D403F61076
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Jun 2021 07:56:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D403F61076
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,22 +23,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=m6LyfGRemM0WKRkhNK+aqnTsun2gddSIJelReRKKdjk=; b=VjefpqpTtiG0SP
-	5qOYx0nsDIgc5m7HbQKCg1HnD2VP/q0JLJJAvoO6ZOsqTFME6FlBPaiYGiCeocTidHu1B2HIMnnnf
-	35/KAuC2SvDBJV1RlN6Vz9mNfGXvPHrKBqXffBZ7XDi2dTlnmXqio3j335zM4rVu5HzZH5WhpZCYm
-	O2kkKZAhz+5Nspz9oXmTL1mpw4lmfcDWjxTSSpZxWwPITNKwaxDp+IacC4yQ2kLF84tAUF+QjcSM6
-	FCFVL75an/xqEyYECiddg7UA63tPhI+vvDi0OYkSezSgyb1BmvWa917f8Vx8XOmJVNw/lA9IXMrrK
-	MfnqHsg8dAUekZIjBlRw==;
+	List-Owner; bh=OSWbLJDNDqLqsN6Z9IPhRh440AU9fBVQr2PsBwoofTg=; b=TYQ0rQurN0P3MQ
+	N4cwanET7bfxAEQ+PLfpKhU/egVceCWyc4HmDENyBTgFjf9TEca2K1KBRFuxDEws/zff8wU2O4gI7
+	VOLcNMKZArTcaSZB7h0iuVMDZk23qyO6Olmr+DgV5iTPvFsjxjQ/9zmROICzANXfiBPhhnFV9flxl
+	n4LyKeZXY6xVId3HdELrEGEmmptmJ/ZdkCzd7svIsacpnXOj0GibS0tHG3c5KZM/3QfJrxNMVsSdK
+	ndrEyWSIMDja9cVsZb2af+lWIhfTMVC1mk+9XTp7biuDSUHhYsGs1GhsGQjPIQN3l/Eey4gV+33Et
+	51BNWfjjX95GMzN3aoCw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ltmsQ-009NxP-RX; Thu, 17 Jun 2021 07:55:50 +0000
+	id 1ltmt1-009O0R-3c; Thu, 17 Jun 2021 07:56:27 +0000
 Received: from verein.lst.de ([213.95.11.211])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ltmsO-009Nwe-0C
- for linux-mtd@lists.infradead.org; Thu, 17 Jun 2021 07:55:49 +0000
+ id 1ltmsy-009Nzu-Iu
+ for linux-mtd@lists.infradead.org; Thu, 17 Jun 2021 07:56:25 +0000
 Received: by verein.lst.de (Postfix, from userid 2407)
- id A41DF68C4E; Thu, 17 Jun 2021 09:55:41 +0200 (CEST)
-Date: Thu, 17 Jun 2021 09:55:41 +0200
+ id 9AC7C68C4E; Thu, 17 Jun 2021 09:56:22 +0200 (CEST)
+Date: Thu, 17 Jun 2021 09:56:22 +0200
 From: Christoph Hellwig <hch@lst.de>
 To: Kees Cook <keescook@chromium.org>
 Cc: linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
@@ -51,17 +51,18 @@ Cc: linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
  Vignesh Raghavendra <vigneshr@ti.com>, linux-doc@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-block@vger.kernel.org,
  linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 1/5] pstore/blk: Improve failure reporting
-Message-ID: <20210617075541.GA899@lst.de>
+Subject: Re: [PATCH v3 2/5] pstore/blk: Move verify_size() macro out of
+ function
+Message-ID: <20210617075622.GB899@lst.de>
 References: <20210616164043.1221861-1-keescook@chromium.org>
- <20210616164043.1221861-2-keescook@chromium.org>
+ <20210616164043.1221861-3-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20210616164043.1221861-2-keescook@chromium.org>
+In-Reply-To: <20210616164043.1221861-3-keescook@chromium.org>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210617_005548_237267_29DFAE43 
-X-CRM114-Status: UNSURE (   9.28  )
+X-CRM114-CacheID: sfid-20210617_005624_810260_3E5AE0BA 
+X-CRM114-Status: UNSURE (   8.76  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -79,9 +80,14 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Looks good,
+> +#define verify_size(name, alignsize, enabled) {			\
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Our normal macro style would be to move the opening brace onto a separate
+line, just like we do for functions.
+
+With that fixed:
+
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 
 ______________________________________________________
 Linux MTD discussion mailing list
