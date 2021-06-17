@@ -2,84 +2,69 @@ Return-Path: <SRS0=jwHe=LL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F100C49361
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Jun 2021 11:09:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46DA4C2B9F4
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Jun 2021 11:52:29 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 19EBA61209
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Jun 2021 11:09:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 19EBA61209
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
+	by mail.kernel.org (Postfix) with ESMTPS id 0FFA6613E7
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Jun 2021 11:52:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0FFA6613E7
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ifhn72eXI+zoKDbdVgT0bO75/P9UeETMc8Ytw+f1/OA=; b=YE35IBNoHKPb36
-	6+4FtYru5oOIBpG5ijfTY8M34lmtUGr98PgKm4Wl7fJRp+4HSD7plZUUiYrXAyt9M+O1uRBJxoHfc
-	elSggucGpd+HvKT8kOhutssLFz4HM6nkPORcTFCmF8ONi3wJma/Wc11/MP+eHa2ytyVHLjf1jMdy6
-	fD2Wn6ehwBa102bqbeGlcDGo1OARR4LsEQEwInSR/45fcPLDOXQyBpKQcj8unt9eqdWouttBL+0vV
-	joSKtLZUCj+ZhXqQIDzpM0OTH1M/adDu9S68p8HMgWP2ERI1MpUbI94QwFuyBucBrv7aI2CwBJEaI
-	4yC6fWxymf/81EHTncjw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=7YwTM3WATuNJaYbbKVm66hUUvLRdFiqVr0cPtd+dwtk=; b=15Dgdga+DIR+pL
+	1hI/jUH4AQfCRl18F9UTNpN/0rchniSQbdWBXweZ14xqzb7H6ZEpnI6ZzyD3PVkQEuLCxNFB/lHqH
+	n5y9mERJjD9pN6MAMaNhGq4kuAfzBpODdZr90F5qZEnxq5Ia7ygmlZuyIQaW47kfd5AwWS5YDLhQ4
+	b2GgR3NUvFfgDVICyVd5CtDQN4N6E310GLwR/Fdy0VscqbPdXcjTD9vBQrDmMuGmYqSCt78ESchbg
+	bI89Od1gUvKdSPW3Bp/lA4Vqt4V+8tKYdqCayijW9bH9/bMJYDuNG9fINIDxwYAdP2qN0I8aUqfsX
+	TnGyYiDi/iR44drL+syg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ltptU-00A0jF-J4; Thu, 17 Jun 2021 11:09:08 +0000
-Received: from mail-pj1-x1030.google.com ([2607:f8b0:4864:20::1030])
+	id 1ltqYp-00A9Wh-Q1; Thu, 17 Jun 2021 11:51:51 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ltptR-00A0ic-HY
- for linux-mtd@lists.infradead.org; Thu, 17 Jun 2021 11:09:06 +0000
-Received: by mail-pj1-x1030.google.com with SMTP id
- k22-20020a17090aef16b0290163512accedso5299621pjz.0
- for <linux-mtd@lists.infradead.org>; Thu, 17 Jun 2021 04:09:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=0x0f.com; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=ubwQxfJ7r76nVrpUfP56UmNpDWURO/0W1EJ6byvdhqE=;
- b=b5XI3pLjW8Bkk/y11RUW1X7ngiOhbQFGpfWTdcOaHe5dmr05zK6CWVzeaz4OzqyEEc
- PquhzWGNflnMM4bLsK/zokD2Dq5JCGWKPp9aw6QWSqbHj5hS8b2s2kmkSbzaQf1u1CLJ
- uhJ1pxjoR62dGO69hVN5zfYOrXoeZunG3st/U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=ubwQxfJ7r76nVrpUfP56UmNpDWURO/0W1EJ6byvdhqE=;
- b=pcbJQGjfID7xXASdwzcQ2Ba2ySJTB4jwfLrfNBrSHtJhA8FeQZCp5xxBAhWWAvEbQc
- Q6AvJBlKDNwFHZteZcLNP1zF5NjV2jEZs9VZG2W/nRb6zsfytu8IlXmbTA6w4BMowVjs
- O1YVIshRI5yP5DS+cvg3tudj2eMHy5UBllBUX96CS2AxS9lgs1m0WXPNgZoDbk0kWJFK
- hfhsrhb+Px7Ri99dQJJTbTViyWmK0bgOQ2ZzeJTaeNsjprqgQoSLjnRvjgcK9ElZ98wz
- fNZio5LfaPSigu+WmtXSqJemkrNf/t9oQmk2k6qXWlbO4oVIxTgL4N+CMtp8x8I708Jw
- VlXw==
-X-Gm-Message-State: AOAM532Z5aDb1WX+1AOGcGzPG8diq2+c7oQinqlJtNMDBX1GFyVJU2Px
- LMaNt6tPJXDTrwP2dUx47rdwQICF2Ov2/A==
-X-Google-Smtp-Source: ABdhPJycLWzQ7dy1nlmhvg7TDELG8aFVZlwmZYpNF4L7lWSgp591SZSMCq+urKC1TyrjVB7unThsUQ==
-X-Received: by 2002:a17:90b:108f:: with SMTP id
- gj15mr5213022pjb.124.1623928143531; 
- Thu, 17 Jun 2021 04:09:03 -0700 (PDT)
-Received: from shiro.work ([2400:4162:2428:2f01:7285:c2ff:fe8e:66d7])
- by smtp.googlemail.com with ESMTPSA id n23sm5094397pff.93.2021.06.17.04.09.01
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 17 Jun 2021 04:09:03 -0700 (PDT)
-From: Daniel Palmer <daniel@0x0f.com>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Daniel Palmer <daniel@0x0f.com>
-Subject: [RFC PATCH] mtd: spinand: core: Properly fill the OOB area.
-Date: Thu, 17 Jun 2021 20:08:42 +0900
-Message-Id: <20210617110842.2358461-1-daniel@0x0f.com>
-X-Mailer: git-send-email 2.32.0.rc0
+ id 1ltqYn-00A9VY-PB
+ for linux-mtd@bombadil.infradead.org; Thu, 17 Jun 2021 11:51:49 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+ References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description;
+ bh=eWfLpTUm88WigYNAtGgk0puveZH4s8vjCO/lhD+KZFA=; b=Ksd9U+/hjhk7n5mA5nDGHYSxdq
+ ZjKymSIxqpChMzh0uIjvW46GqzQIAUbUkc2KgZ9iAtw8Occ48KXpEdrwhf1V/SOTILfcoq15YzLe3
+ pd2CTMHOibHCqPeQRFeJ+4BC4ILcOzzZlwMQ2XJdFSZSJQvxqsSIiiB86v16VD2X6LhGwWc2G4m1t
+ uFkCcygCch96mtPisbW0Rcu8S0F+xiZ7w0iBJigWj0LIkJiT4+ftv1HKs+Gl2mWC+/9jGuRXczqQu
+ giuqpDjJl4ppLa1xG1/FiE+jjtHCtzBVDRSSiR/xwcuf8YQMDOUoC40mvQmMTWu7Ez0sr24mI8Vhz
+ GU+A0e7g==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat
+ Linux)) id 1ltqYN-0095Tm-BZ; Thu, 17 Jun 2021 11:51:30 +0000
+Date: Thu, 17 Jun 2021 12:51:23 +0100
+From: Christoph Hellwig <hch@infradead.org>
+To: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Cc: axboe@kernel.dk, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
+ gregkh@linuxfoundation.org, linux-kernel-mentees@lists.linuxfoundation.org,
+ syzbot+6a8a0d93c91e8fbf2e80@syzkaller.appspotmail.com,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] block: break circular locks in blk_request_module
+Message-ID: <YMs3O/cg4V7ywlVq@infradead.org>
+References: <20210617092016.522985-1-desmondcheongzx@gmail.com>
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210617_040905_726848_E8A5E6C0 
-X-CRM114-Status: GOOD (  11.80  )
+Content-Disposition: inline
+In-Reply-To: <20210617092016.522985-1-desmondcheongzx@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by
+ casper.infradead.org. See http://www.infradead.org/rpr.html
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,39 +81,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The comment in spinand_write_to_cache_op() says that
-spinand_ondie_ecc_prepare_io_req() should 0xff fill the OOB
-area but it doesn't.
+On Thu, Jun 17, 2021 at 05:20:16PM +0800, Desmond Cheong Zhi Xi wrote:
+>  	mutex_lock(&major_names_lock);
+>  	for (n = &major_names[major_to_index(major)]; *n; n = &(*n)->next) {
+>  		if ((*n)->major == major && (*n)->probe) {
+> -			(*n)->probe(devt);
+> +			probe = (*n)->probe;
+>  			mutex_unlock(&major_names_lock);
+> +			probe(devt);
 
-This causes the OOB area to get filled with zeros
-and anytime the first page in a block the bad block marker
-is cleared and it becomes a bad block on the next boot.
+And now you can all probe after it has been freed and/or the module has
+been unloaded. The obviously correct fix is to only hold mtd_table_mutex
+for the actually required critical section:
 
-This was observed on Longsys FORSEE branded parts and
-might be specific to these parts.
-
-Signed-off-by: Daniel Palmer <daniel@0x0f.com>
----
- drivers/mtd/nand/spi/core.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 6f2d39f9bb06..f1c76fa0e220 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -281,6 +281,9 @@ static int spinand_ondie_ecc_prepare_io_req(struct nand_device *nand,
- 	struct spinand_device *spinand = nand_to_spinand(nand);
- 	bool enable = (req->mode != MTD_OPS_RAW);
+diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+index fb8e12d590a1..065d94f9b1fb 100644
+--- a/drivers/mtd/mtd_blkdevs.c
++++ b/drivers/mtd/mtd_blkdevs.c
+@@ -529,13 +529,11 @@ int register_mtd_blktrans(struct mtd_blktrans_ops *tr)
+ 		register_mtd_user(&blktrans_notifier);
  
-+	memset(spinand->databuf + nanddev_page_size(nand),
-+			0xff, nanddev_per_page_oobsize(nand));
-+
- 	/* Only enable or disable the engine */
- 	return spinand_ecc_enable(spinand, enable);
+ 
+-	mutex_lock(&mtd_table_mutex);
+ 
+ 	ret = register_blkdev(tr->major, tr->name);
+ 	if (ret < 0) {
+ 		printk(KERN_WARNING "Unable to register %s block device on major %d: %d\n",
+ 		       tr->name, tr->major, ret);
+-		mutex_unlock(&mtd_table_mutex);
+ 		return ret;
+ 	}
+ 
+@@ -545,12 +543,12 @@ int register_mtd_blktrans(struct mtd_blktrans_ops *tr)
+ 	tr->blkshift = ffs(tr->blksize) - 1;
+ 
+ 	INIT_LIST_HEAD(&tr->devs);
+-	list_add(&tr->list, &blktrans_majors);
+ 
++	mutex_lock(&mtd_table_mutex);
++	list_add(&tr->list, &blktrans_majors);
+ 	mtd_for_each_device(mtd)
+ 		if (mtd->type != MTD_ABSENT)
+ 			tr->add_mtd(tr, mtd);
+-
+ 	mutex_unlock(&mtd_table_mutex);
+ 	return 0;
  }
--- 
-2.32.0.rc0
-
 
 ______________________________________________________
 Linux MTD discussion mailing list
