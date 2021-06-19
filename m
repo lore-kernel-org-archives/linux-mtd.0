@@ -1,84 +1,76 @@
-Return-Path: <SRS0=7qTJ=LM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=ZPU8=LN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-15.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D3EBC48BDF
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Jun 2021 21:20:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68ACBC48BDF
+	for <linux-mtd@archiver.kernel.org>; Sat, 19 Jun 2021 01:07:19 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4B7CE61209
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Jun 2021 21:20:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B7CE61209
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 130C661261
+	for <linux-mtd@archiver.kernel.org>; Sat, 19 Jun 2021 01:07:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 130C661261
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=i-love.sakura.ne.jp
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ilQcybaWNUFRFaIs1K7S9qJEyaNsMaufPaxDa2/UP+M=; b=qLyn+xjZd8PN3J
-	vk1S/Q5NopAUop6m+eTFlLT7ZR61G+M2xL1H6kTySROCpFQU5MZQBt0lIp9kh14b+v4gJUQz7ZTGR
-	vGLw4V4fbwOm+2e9ZudzYuLfMPie5AmAXs/5SkV12CzcqxGVrlCUvi0qwqx7inCgWybCQgMnVjycv
-	RVkSdahnSubwGU2h6w06C4RFWyWmFq1QOdaucHk9+cUtPreDYVCWMXmO0V+6w8bfDmqHGWZHU9g51
-	LN1yn0B4cWffMlFFpSCHy2IO6oECaliMw2W6Ge31p0Y11fTn/hcaMtYOa7BV7SjFwCN4FxHJGdJPU
-	VXFvKWrfPgoPtG+PrzaA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:
+	From:Cc:To:In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+	List-Owner; bh=Iz1BPxwPus+wRd4GgzjjeSKzZoMhrUEax1aqUtjeHMQ=; b=4D8FNYrJdY0fFP
+	velCUdAaGcsM0k7V25recFrQr3vwtdVmr7mIMwbvUEp73P8rYUsDEpG4pLgMB1Q3ObmgTRKOISZmO
+	YHQUi0WuiYCFZ2aRl+UmXjSdfWIm7g0E/1xkcTJsK00dEF63uGBO7K+Ws3UZNbElx/GJX5LJvoIeq
+	3Z8uNWAgiRe6DVt2wdvKbisODdNxs5piwEqPBV++IqwtBwW0HkyZW07FcRZd1NJSPY2affCO5LCFy
+	Lx+vmqRQHnK/d9TdZtocmYUEfjJbwtMMEoOAQ9PQ/DZQfdIelYyxetMXJk+iUHkDPxLjmbAmHFah/
+	gV72308vFQXMfyl7/mIw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1luLtU-00FZc8-Ow; Fri, 18 Jun 2021 21:19:16 +0000
-Received: from mail-ot1-f52.google.com ([209.85.210.52])
+	id 1luPRK-00FxXy-9X; Sat, 19 Jun 2021 01:06:26 +0000
+Received: from www262.sakura.ne.jp ([202.181.97.72])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1luLtP-00FZbR-OR
- for linux-mtd@lists.infradead.org; Fri, 18 Jun 2021 21:19:12 +0000
-Received: by mail-ot1-f52.google.com with SMTP id
- 5-20020a9d01050000b02903c700c45721so11046815otu.6
- for <linux-mtd@lists.infradead.org>; Fri, 18 Jun 2021 14:19:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=l9X3y+oTgc/s2ZKvtLg5eTECZ40y9Q5YZF/VApYDZBQ=;
- b=DuN2pEXZUyUfJp2ged1gnqmQ73v3sayW+QHjU5/cdmo2BP3BpQeBWSLNgPpYOf/qGZ
- poZ7htgy7iJdcx+7OFXwxshKSB7L/hTZBySa5YymyvIcEqXfsNbi7EMvd+Ow5JlDbosY
- BnVjO8PbbzzAZyqYSAS4ZeUmpVhNHC81xloGamoi5IipJp37d3z9wntm9I2PBE9SLHnz
- aLtdGQZLUL5pkir29xrNgz+P2lwz3aYyQSLNF5/3ErgxUGTwT+L3/pLGlQ7V7A/BgdVc
- CTahjsU/k0mdPGajyhzjSien6VHUVmz+WDQ7HlMU/nW6ClLZ64e5T18M/Ozf7L6qJ0o8
- wYtw==
-X-Gm-Message-State: AOAM530NTuXFaOv4Fy4qKsj0EJA6BhDwQMRjapQT/f+mt4DFr4trF2YL
- lE+pUrW3tCb7C5ku9hiubQ==
-X-Google-Smtp-Source: ABdhPJzmhQMJ0CZuK+9aZ2YQsXhrGQtK/6F7eadkW7wgdNpSwDHyCtr4t3BoZWIZ5CFVWk+qHiDeiQ==
-X-Received: by 2002:a05:6830:90c:: with SMTP id
- v12mr10672467ott.7.1624051150835; 
- Fri, 18 Jun 2021 14:19:10 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
- by smtp.gmail.com with ESMTPSA id h7sm2368212ots.44.2021.06.18.14.19.08
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 18 Jun 2021 14:19:09 -0700 (PDT)
-Received: (nullmailer pid 2927088 invoked by uid 1000);
- Fri, 18 Jun 2021 21:19:08 -0000
-Date: Fri, 18 Jun 2021 15:19:08 -0600
-From: Rob Herring <robh@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: linux-mtd@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
- "Ryan J . Barnett" <ryan.barnett@collins.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, devicetree@vger.kernel.org,
- Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH] dt-bindings: mtd: gpmc: Fix the ECC bytes vs. OOB bytes
- equation
-Message-ID: <20210618211908.GA2927042@robh.at.kernel.org>
-References: <20210610143945.3504781-1-miquel.raynal@bootlin.com>
+ id 1luPRH-00FxXT-11
+ for linux-mtd@lists.infradead.org; Sat, 19 Jun 2021 01:06:25 +0000
+Received: from fsav314.sakura.ne.jp (fsav314.sakura.ne.jp [153.120.85.145])
+ by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 15J15nGa006768;
+ Sat, 19 Jun 2021 10:05:50 +0900 (JST)
+ (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav314.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav314.sakura.ne.jp);
+ Sat, 19 Jun 2021 10:05:49 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav314.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+ (authenticated bits=0)
+ by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 15J15ikI006747
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+ Sat, 19 Jun 2021 10:05:49 +0900 (JST)
+ (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+In-Reply-To: 
+To: hch@infradead.org
+Cc: axboe@kernel.dk, desmondcheongzx@gmail.com, gregkh@linuxfoundation.org,
+ linux-block@vger.kernel.org,
+ linux-kernel-mentees@lists.linuxfoundation.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ miquel.raynal@bootlin.com, richard@nod.at,
+ Shuah Khan <skhan@linuxfoundation.org>,
+ syzbot+6a8a0d93c91e8fbf2e80@syzkaller.appspotmail.com, vigneshr@ti.com
+From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Subject: [PATCH v2] block: genhd: don't call probe function with
+ major_names_lock held
+Message-ID: <f790f8fb-5758-ea4e-a527-0ee4af82dd44@i-love.sakura.ne.jp>
+Date: Sat, 19 Jun 2021 10:05:44 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210610143945.3504781-1-miquel.raynal@bootlin.com>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210618_141911_837715_44CC61EA 
-X-CRM114-Status: GOOD (  12.85  )
+X-CRM114-CacheID: sfid-20210618_180623_327200_709E82FC 
+X-CRM114-Status: GOOD (  17.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,24 +87,185 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 10 Jun 2021 16:39:45 +0200, Miquel Raynal wrote:
-> "PAGESIZE / 512" is the number of ECC chunks.
-> "ECC_BYTES" is the number of bytes needed to store a single ECC code.
-> "2" is the space reserved by the bad block marker.
-> 
-> "2 + (PAGESIZE / 512) * ECC_BYTES" should of course be lower or equal
-> than the total number of OOB bytes, otherwise it won't fit.
-> 
-> Fix the equation by substituting s/>=/<=/.
-> 
-> Suggested-by: Ryan J. Barnett <ryan.barnett@collins.com>
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  Documentation/devicetree/bindings/mtd/gpmc-nand.txt | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+syzbot is reporting circular locking problem at blk_request_module() [1],
+for blk_request_module() is calling probe function with major_names_lock
+held while major_names_lock is held during module's __init and __exit
+functions.
 
-Acked-by: Rob Herring <robh@kernel.org>
+                                         loop_exit() {
+                                           mutex_lock(&loop_ctl_mutex);
+  blk_request_module() {
+    mutex_lock(&major_names_lock);
+    loop_probe() {
+      mutex_lock(&loop_ctl_mutex); // Blocked by loop_exit()
+      mutex_unlock(&loop_ctl_mutex);
+    }
+    mutex_unlock(&major_names_lock);
+                                           unregister_blkdev() {
+                                             mutex_lock(&major_names_lock); // Blocked by blk_request_module()
+                                             mutex_unlock(&major_names_lock);
+                                           }
+                                           mutex_unlock(&loop_ctl_mutex);
+  }
+                                         }
+
+Based on an assumption that a probe callback passed to __register_blkdev()
+belongs to a module which calls __register_blkdev(), drop major_names_lock
+before calling probe function by holding a reference to that module which
+contains that probe function. If there is a module where this assumption
+does not hold, such module can call ____register_blkdev() directly.
+
+  blk_request_module() {
+    mutex_lock(&major_names_lock);
+    // Block loop_exit()
+    mutex_unlock(&major_names_lock);
+    loop_probe() {
+      mutex_lock(&loop_ctl_mutex);
+      mutex_unlock(&loop_ctl_mutex);
+    }
+    // Unblock loop_exit()
+  }
+                                         loop_exit() {
+                                           mutex_lock(&loop_ctl_mutex);
+                                           unregister_blkdev() {
+                                             mutex_lock(&major_names_lock);
+                                             mutex_unlock(&major_names_lock);
+                                           }
+                                           mutex_unlock(&loop_ctl_mutex);
+                                         }
+
+Note that regardless of this patch, it is up to probe function to
+serialize module's __init function and probe function in that module
+by using e.g. a mutex. This patch simply makes sure that module's __exit
+function won't be called when probe function is about to be called.
+
+While Desmond Cheong Zhi Xi already proposed a patch for breaking ABCD
+circular dependency [2], I consider that this patch is still needed for
+safely breaking AB-BA dependency upon module unloading. (Note that syzbot
+does not test module unloading code because the syzbot kernels are built
+with almost all modules built-in. We need manual inspection.)
+
+By doing kmalloc(GFP_KERNEL) in ____register_blkdev() before holding
+major_names_lock, we could convert major_names_lock from a mutex to
+a spinlock. But that is beyond the scope of this patch.
+
+Link: https://syzkaller.appspot.com/bug?id=7bd106c28e846d1023d4ca915718b1a0905444cb [1]
+Link: https://lkml.kernel.org/r/20210617160904.570111-1-desmondcheongzx@gmail.com [2]
+Reported-by: syzbot <syzbot+6a8a0d93c91e8fbf2e80@syzkaller.appspotmail.com>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Tested-by: syzbot <syzbot+6a8a0d93c91e8fbf2e80@syzkaller.appspotmail.com>
+---
+ block/genhd.c         | 36 +++++++++++++++++++++++++++---------
+ include/linux/genhd.h |  8 +++++---
+ 2 files changed, 32 insertions(+), 12 deletions(-)
+
+diff --git a/block/genhd.c b/block/genhd.c
+index 9f8cb7beaad1..9577c70a6bd3 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -169,6 +169,7 @@ static struct blk_major_name {
+ 	int major;
+ 	char name[16];
+ 	void (*probe)(dev_t devt);
++	struct module *owner;
+ } *major_names[BLKDEV_MAJOR_HASH_SIZE];
+ static DEFINE_MUTEX(major_names_lock);
+ 
+@@ -197,7 +198,8 @@ void blkdev_show(struct seq_file *seqf, off_t offset)
+  * @major: the requested major device number [1..BLKDEV_MAJOR_MAX-1]. If
+  *         @major = 0, try to allocate any unused major number.
+  * @name: the name of the new block device as a zero terminated string
+- * @probe: allback that is called on access to any minor number of @major
++ * @probe: callback that is called on access to any minor number of @major
++ * @owner: the owner of @probe function (i.e. THIS_MODULE or NULL).
+  *
+  * The @name must be unique within the system.
+  *
+@@ -214,8 +216,8 @@ void blkdev_show(struct seq_file *seqf, off_t offset)
+  *
+  * Use register_blkdev instead for any new code.
+  */
+-int __register_blkdev(unsigned int major, const char *name,
+-		void (*probe)(dev_t devt))
++int ____register_blkdev(unsigned int major, const char *name,
++			void (*probe)(dev_t devt), struct module *owner)
+ {
+ 	struct blk_major_name **n, *p;
+ 	int index, ret = 0;
+@@ -255,6 +257,7 @@ int __register_blkdev(unsigned int major, const char *name,
+ 
+ 	p->major = major;
+ 	p->probe = probe;
++	p->owner = owner;
+ 	strlcpy(p->name, name, sizeof(p->name));
+ 	p->next = NULL;
+ 	index = major_to_index(major);
+@@ -277,7 +280,7 @@ int __register_blkdev(unsigned int major, const char *name,
+ 	mutex_unlock(&major_names_lock);
+ 	return ret;
+ }
+-EXPORT_SYMBOL(__register_blkdev);
++EXPORT_SYMBOL(____register_blkdev);
+ 
+ void unregister_blkdev(unsigned int major, const char *name)
+ {
+@@ -676,14 +679,29 @@ void blk_request_module(dev_t devt)
+ {
+ 	unsigned int major = MAJOR(devt);
+ 	struct blk_major_name **n;
++	void (*probe_fn)(dev_t devt);
+ 
+ 	mutex_lock(&major_names_lock);
+ 	for (n = &major_names[major_to_index(major)]; *n; n = &(*n)->next) {
+-		if ((*n)->major == major && (*n)->probe) {
+-			(*n)->probe(devt);
+-			mutex_unlock(&major_names_lock);
+-			return;
+-		}
++		if ((*n)->major != major || !(*n)->probe)
++			continue;
++		if (!try_module_get((*n)->owner))
++			break;
++		/*
++		 * Calling probe function with major_names_lock held causes
++		 * circular locking dependency problem. Thus, call it after
++		 * releasing major_names_lock.
++		 */
++		probe_fn = (*n)->probe;
++		mutex_unlock(&major_names_lock);
++		/*
++		 * Assuming that unregister_blkdev() is called from module's
++		 * __exit function, a module refcount taken above allows us
++		 * to safely call probe function without major_names_lock held.
++		 */
++		probe_fn(devt);
++		module_put((*n)->owner);
++		return;
+ 	}
+ 	mutex_unlock(&major_names_lock);
+ 
+diff --git a/include/linux/genhd.h b/include/linux/genhd.h
+index 6fc26f7bdf71..070b73c043e6 100644
+--- a/include/linux/genhd.h
++++ b/include/linux/genhd.h
+@@ -277,10 +277,12 @@ extern void put_disk(struct gendisk *disk);
+ 
+ #define alloc_disk(minors) alloc_disk_node(minors, NUMA_NO_NODE)
+ 
+-int __register_blkdev(unsigned int major, const char *name,
+-		void (*probe)(dev_t devt));
++int ____register_blkdev(unsigned int major, const char *name,
++			void (*probe)(dev_t devt), struct module *owner);
++#define __register_blkdev(major, name, probe) \
++	____register_blkdev(major, name, probe, THIS_MODULE)
+ #define register_blkdev(major, name) \
+-	__register_blkdev(major, name, NULL)
++	____register_blkdev(major, name, NULL, NULL)
+ void unregister_blkdev(unsigned int major, const char *name);
+ 
+ bool bdev_check_media_change(struct block_device *bdev);
+-- 
+2.18.4
 
 ______________________________________________________
 Linux MTD discussion mailing list
