@@ -1,62 +1,67 @@
-Return-Path: <SRS0=ZPU8=LN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=D7Eh=LO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CB82C2B9F4
-	for <linux-mtd@archiver.kernel.org>; Sat, 19 Jun 2021 18:41:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE0C7C2B9F4
+	for <linux-mtd@archiver.kernel.org>; Sun, 20 Jun 2021 02:45:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 900DD611B0
-	for <linux-mtd@archiver.kernel.org>; Sat, 19 Jun 2021 18:41:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 900DD611B0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 50562610A3
+	for <linux-mtd@archiver.kernel.org>; Sun, 20 Jun 2021 02:45:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 50562610A3
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vLuQbuaDhW6TJdSf6I/OlHLjUm0falWFJYZ5dVjsANM=; b=tRg8lEciszR1Cb
-	GvsvP+gfx6z7xXbBEfZUroDilDnmVv3YgxCprjaHe/2UyvtzBIA/4mwmQiXVTmDrFZaJHY9EkP1gW
-	6RyM0GNEVCxvR57vkzr5Ewhu7RFyTuSVBBT9sdcWY9yQIXMPq+kqpdgy+G2JKvlxa2AXQ1vx3+4k6
-	k71Q0EMOZmAF/MCjAvsOkM2TSp5nt2aFftwTr4VkgtI+wiH729r/cqyfOYrdeMLoJjT/O7lP7Taf9
-	rf827AMRbhn2rI88wAQM239ffblzCDSPTwYBG1eDQATXxKhw2W1w/cE3eBZYSmWkBApiK70L6xpe0
-	2girEVcEAdwZv6+jzzow==;
+	List-Owner; bh=84IyDjbbDuts9I/q9SuMF6TcYVFxeeTtw2nRn6bDiXU=; b=XtR00EV2EPyzyx
+	MdOr8DmtEX99bGcqDKTUqCDrAnns8WwHORywRfepJYoRAtQA3NW1eXI73jgngu89LhVA7+nKyXjpq
+	78rIm0KutDJ2I+TH61TKbij0I9c4KTMzyB+CbU7AWP0TCTf9BtEzi0ZPtrrN/5930zsshV+FGGgw/
+	LOEKyBbKO3FTOmd45mRJRXhya8o6a0Zii0hTVlPhtKCO7h8j6dZBJtdj6DQ+8pjYidvYxC9YD9wj/
+	AD2+ERU98ZML5fzpG7o2EMDxFifi2NS+xINCPIBXgbJfV+iaOEiqlHpDGshQvgkzYVqiPuxBb86I+
+	UuH+kK4wqVNgV/pdBQnQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lufti-00HQl5-Vi; Sat, 19 Jun 2021 18:40:51 +0000
-Received: from relay12.mail.gandi.net ([217.70.178.232])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lufte-00HQhl-EA
- for linux-mtd@lists.infradead.org; Sat, 19 Jun 2021 18:40:48 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id 28249200006;
- Sat, 19 Jun 2021 18:40:36 +0000 (UTC)
-Date: Sat, 19 Jun 2021 20:40:35 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Re: nand: WARNING: a0000000.nand: the ECC used on your system
- (1b/256B) is too weak compared to the one required by the NAND chip
- (4b/512B)
-Message-ID: <20210618225032.69cdc30c@xps13>
-In-Reply-To: <d37a8a7e-6181-9642-18fb-470d1d8cf006@csgroup.eu>
-References: <817e89d4-790d-41a4-2a8e-9e119597e459@csgroup.eu>
- <20210618084326.0a074fb7@xps13>
- <d37a8a7e-6181-9642-18fb-470d1d8cf006@csgroup.eu>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	id 1lunRn-000Lua-BO; Sun, 20 Jun 2021 02:44:31 +0000
+Received: from r3-21.sinamail.sina.com.cn ([202.108.3.21])
+ by bombadil.infradead.org with smtp (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1lunRf-000Ltm-F4
+ for linux-mtd@lists.infradead.org; Sun, 20 Jun 2021 02:44:26 +0000
+Received: from unknown (HELO localhost.localdomain)([123.115.166.128])
+ by sina.com (172.16.97.32) with ESMTP
+ id 60CEAB7C00032F08; Sun, 20 Jun 2021 10:44:14 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+X-SMAIL-MID: 847391628823
+From: Hillf Danton <hdanton@sina.com>
+To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc: Greg KH <gregkh@linuxfoundation.org>, hch@infradead.org, axboe@kernel.dk,
+ desmondcheongzx@gmail.com, linux-block@vger.kernel.org,
+ linux-kernel-mentees@lists.linuxfoundation.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ miquel.raynal@bootlin.com, richard@nod.at,
+ Shuah Khan <skhan@linuxfoundation.org>,
+ syzbot+6a8a0d93c91e8fbf2e80@syzkaller.appspotmail.com, vigneshr@ti.com
+Subject: Re: [PATCH v2] block: genhd: don't call probe function with
+ major_names_lock held
+Date: Sun, 20 Jun 2021 10:44:03 +0800
+Message-Id: <20210620024403.820-1-hdanton@sina.com>
+In-Reply-To: <c4edf07f-92e1-a350-2743-f0b0234a2b6c@i-love.sakura.ne.jp>
+References: <f790f8fb-5758-ea4e-a527-0ee4af82dd44@i-love.sakura.ne.jp>
+ <YM2STfTN5AupWlSa@kroah.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210619_114046_819757_C4AAE19E 
-X-CRM114-Status: GOOD (  30.16  )
+X-CRM114-CacheID: sfid-20210619_194423_753181_92EA5C98 
+X-CRM114-Status: GOOD (  10.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,73 +73,131 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQ2hyaXN0b3BoZSwKCj4gPj4gTm93IGFuZCB0aGVuIEknbSB1c2luZyBvbmUgb2YgdGhlIGxh
-dGVzdCBrZXJuZWxzIChUb2RheSBpcyA1LjEzLXJjNiksIGFuZCBzb21ldGltZSBpbiBvbmUgb2Yg
-dGhlIDUueCByZWxlYXNlcywgSSBzdGFydGVkIHRvIGdldCBlcnJvcnMgbGlrZToKPiA+Pgo+ID4+
-IFsgICAgNS4wOTgyNjVdIGVjY19zd19oYW1taW5nX2NvcnJlY3Q6IHVuY29ycmVjdGFibGUgRUND
-IGVycm9yCj4gPj4gWyAgICA1LjEwMzg1OV0gdWJpMCB3YXJuaW5nOiB1YmlfaW9fcmVhZDogZXJy
-b3IgLTc0IChFQ0MgZXJyb3IpIHdoaWxlIHJlYWRpbmcgNjAKPiA+PiAgICBieXRlcyBmcm9tIFBF
-QiA5OTo1OTgyNCwgcmVhZCBvbmx5IDYwIGJ5dGVzLCByZXRyeQo+ID4+IFsgICAgNS41MjU4NDNd
-IGVjY19zd19oYW1taW5nX2NvcnJlY3Q6IHVuY29ycmVjdGFibGUgRUNDIGVycm9yCj4gPj4gWyAg
-ICA1LjUzMTU3MV0gZWNjX3N3X2hhbW1pbmdfY29ycmVjdDogdW5jb3JyZWN0YWJsZSBFQ0MgZXJy
-b3IKPiA+PiBbICAgIDUuNTM3NDkwXSB1YmkwIHdhcm5pbmc6IHViaV9pb19yZWFkOiBlcnJvciAt
-NzQgKEVDQyBlcnJvcikgd2hpbGUgcmVhZGluZyAzMAo+ID4+IDczIGJ5dGVzIGZyb20gUEVCIDEw
-NzoxMDg5NzYsIHJlYWQgb25seSAzMDczIGJ5dGVzLCByZXRyeQo+ID4+IFsgICAgNS42OTExMjFd
-IGVjY19zd19oYW1taW5nX2NvcnJlY3Q6IHVuY29ycmVjdGFibGUgRUNDIGVycm9yCj4gPj4gWyAg
-ICA1LjY5NjcwOV0gZWNjX3N3X2hhbW1pbmdfY29ycmVjdDogdW5jb3JyZWN0YWJsZSBFQ0MgZXJy
-b3IKPiA+PiBbICAgIDUuNzAyNDI2XSBlY2Nfc3dfaGFtbWluZ19jb3JyZWN0OiB1bmNvcnJlY3Rh
-YmxlIEVDQyBlcnJvcgo+ID4+IFsgICAgNS43MDgxNDFdIGVjY19zd19oYW1taW5nX2NvcnJlY3Q6
-IHVuY29ycmVjdGFibGUgRUNDIGVycm9yCj4gPj4gWyAgICA1LjcxNDEwM10gdWJpMCB3YXJuaW5n
-OiB1YmlfaW9fcmVhZDogZXJyb3IgLTc0IChFQ0MgZXJyb3IpIHdoaWxlIHJlYWRpbmcgMzAKPiA+
-PiAzNSBieXRlcyBmcm9tIFBFQiAxMDc6MjUxNDQsIHJlYWQgb25seSAzMDM1IGJ5dGVzLCByZXRy
-eQo+ID4+IFsgICAyMC41MjM2ODldIHJhbmRvbTogY3JuZyBpbml0IGRvbmUKPiA+PiBbICAgMjEu
-ODkyMTMwXSBlY2Nfc3dfaGFtbWluZ19jb3JyZWN0OiB1bmNvcnJlY3RhYmxlIEVDQyBlcnJvcgo+
-ID4+IFsgICAyMS44OTc3MzBdIHViaTAgd2FybmluZzogdWJpX2lvX3JlYWQ6IGVycm9yIC03NCAo
-RUNDIGVycm9yKSB3aGlsZSByZWFkaW5nIDEzCj4gPj4gOTQgYnl0ZXMgZnJvbSBQRUIgMTE2Ojc1
-Nzc2LCByZWFkIG9ubHkgMTM5NCBieXRlcywgcmV0cnkKPiA+Pgo+ID4+IE1vc3Qgb2YgdGhlIHRp
-bWUsIHdoZW4gdGhlIHJlYWRpbmcgb2YgdGhlIGZpbGUgZmFpbHMsIEkganVzdCBoYXZlIHRvIHJl
-YWQgaXQgb25jZSBtb3JlIGFuZCBpdCBnZXRzIHJlYWQgd2l0aG91dCB0aGF0IGVycm9yLiAgCj4g
-PiAKPiA+IEl0IHJlYWxseSBsb29rcyBsaWtlIGEgcmVndWxhciBiaXRmbGlwIGhhcHBlbmluZyAi
-c29tZXRpbWVzIi4gSXMgdGhpcyBhCj4gPiBib2FyZCB3aGljaCBhbHJlYWR5IGhhZCBhIGxpZmU/
-IFdoYXQgYXJlIHRoZSB1c2FnZSBjb3VudGVycyAoVUJJIHNob3VsZAo+ID4gdGVsbCB5b3UgdGhp
-cykgY29tcGFyZWQgdG8gdGhlIG9mZmljaWFsIGVuZHVyYW5jZSBvZiB5b3VyIGNoaXAgKHNlZSB0
-aGUKPiA+IGRhdGFzaGVldCk/ICAKPiAKPiBUaGUgYm9hcmQgaGFkIGEgcGVhY2VmdWxsIGxpZmU6
-Cj4gCj4gVUJJIHJlcG9ydHMgInViaTA6IG1heC9tZWFuIGVyYXNlIGNvdW50ZXI6IDQ5LzIwLCBX
-TCB0aHJlc2hvbGQ6IDQwOTYiCgpNbW1oLiBJbmRlZWQuCgo+IAo+IEkgaGF2ZSB0cmllZCB3aXRo
-IGhhbGYgYSBkb3plbiBvZiBib2FyZHMgYW5kIGFsbCBoYXZlIHRoZSBpc3N1ZS4KPiAKPiA+ICAg
-Cj4gPj4gV2hhdCBhbSBJIHN1cHBvc2VkIHRvIGRvIHRvIGF2b2lkIHRoZSBFQ0Mgd2Vha25lc3Mg
-d2FybmluZyBhdCBzdGFydHVwIGFuZCB0byBmaXggdGhhdCBFQ0MgZXJyb3IgaXNzdWUgPyAgCj4g
-PiAKPiA+IEkgaG9uZXN0bHkgZG9uJ3QgdGhpbmsgdGhlIGVycm9ycyBjb21lIGZyb20gdGhlIDUu
-MXgga2VybmVscyBnaXZlbiB0aGUKPiA+IGFib3ZlIGxvZ3MuIElmIHlvdSBmbGFzaCBiYWNrIHlv
-dXIgb2xkIDQuMTQgSSBhbSBwcmV0dHkgc3VyZSB5b3UnbGwKPiA+IGhhdmUgdGhlIHNhbWUgZXJy
-b3JzIGF0IHNvbWUgcG9pbnQuICAKPiAKPiBJIGRvbid0IGhhdmUgYW55IHByb2JsZW0gbGlrZSB0
-aGF0IHdpdGggNC4xNCB3aXRoIGFueSBvZiB0aGUgYm9hcmQuCj4gCj4gV2hlbiBib290aW5nIGEg
-NC4xNCBrZXJuZWwgSSBkb24ndCBnZXQgYW55IHByb2JsZW0gb24gdGhlIHNhbWUgYm9hcmQuCj4g
-CgpJZiB5b3UgY2FuIHJlbGlhYmx5IHNob3cgdGhhdCB3aGVuIHJldHVybmluZyB0byBhIDQuMTQg
-a2VybmVsIHRoZSBFQ0MKd2Vha25lc3MgZGlzYXBwZWFycywgdGhlbiB0aGVyZSBpcyBjZXJ0YWlu
-bHkgc29tZXRoaW5nIG5ldy4gV2hhdCBkcml2ZXIKYXJlIHlvdSB1c2luZz8gTWF5YmUgeW91IGNh
-biBkbyBhIGJpc2VjdGlvbj8KCj4gPiAKPiA+IE5BTkQgcmVhbGx5IGlzIGEgZnJhZ2lsZSBzdG9y
-YWdlIG1lZGl1bSwgbm90IGZvbGxvd2luZyBpbiBhIHByb2R1Y3Rpb24KPiA+IGVudmlyb25tZW50
-IHRoZSBtaW5pbXVtIEVDQyBzY2hlbWUgKHRoZXJlIGlzIGEgcmVhbCBkaWZmZXJlbmNlIGJldHdl
-ZW4KPiA+IDEvMjU2IHZzIDQvNTEyKSByZWFsbHkgbGVhZHMgdG8gY29tcGxpY2F0ZWQgc29sdXRp
-b25zIGxpa2UgdGhpcyBvbmUsCj4gPiB1bmZvcnR1bmF0ZWx5Li4uICAKPiAKPiBJIHNlZSBrZXJu
-ZWwgaGFzICJTb2Z0d2FyZSBCQ0ggRUNDIi4gU2hvdWxkIEkgdXNlIHRoYXQgd2l0aCB0aGF0IGNo
-aXAgPwo+IAo+IElmIHllcywgaG93IGRvIEkgdXNlIGl0ID8gU2VlbXMgbGlrZSBzZWxlY3Rpbmcg
-dGhlIG9wdGlvbiBhdCBLZXJuZWwgYnVpbGQgaXMgbm90IGVub3VnaCwgZG8gSSBoYXZlIHRvIGNv
-bmZpZ3VyZSBzb21ldGhpbmcgc29tZXdoZXJlLCBmb3IgaW5zdGFuY2UgaW4gdGhlIGRldmljZSB0
-cmVlID8gQXQgdGhlIHRpbWUgYmVpbmcgSSBoYXZlIHRoZSBmb2xsb3dpbmcgaW4gdGhlIGRldmlj
-ZSB0cmVlOgoKRW5hYmxpbmcgc29mdHdhcmUgQkNIIGluIHRoZSBjb25maWd1cmF0aW9uIHdpbGwg
-anVzdCBidWlsdC1pbiB0aGUKc3VwcG9ydC4gWW91IHRoZW4gbmVlZCB0byBmb2xsb3cgdGhlIE5B
-TkQgY29udHJvbGxlciBiaW5kaW5ncywgc2VlIHRoZQpleGFtcGxlIGluIFsxXS4KCkhvd2V2ZXIs
-IGdpdmVuIGFsbCB0aGUgZGF0YSB5b3UgcHJvdmlkZWQsIEkga25vdyB0aGluayB0aGF0IHRoZXJl
-IGlzCnNvbWV0aGluZyB3ZWlyZCBoYXBwZW5pbmcgaW4gdGhlIGRyaXZlciB5b3UgdXNlLCBpdCBt
-aWdodCBiZSByZWxldmFudAp0byB0cnkgdG8gdW5kZXJzdGFuZCB3aGF0LiAKClsxXSBEb2N1bWVu
-dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL25hbmQtY29udHJvbGxlci55YW1sCgpUaGFu
-a3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Sat, 19 Jun 2021 17:47:30 +0900 Tetsuo Handa wrote:
+>On 2021/06/19 15:44, Greg KH wrote:
+>>> Note that regardless of this patch, it is up to probe function to
+>>> serialize module's __init function and probe function in that module
+>>> by using e.g. a mutex. This patch simply makes sure that module's __exit
+>>> function won't be called when probe function is about to be called.
+>> 
+>> module init functions ARE serialized.
+>
+>The __init functions between module foo and module bar are serialized.
+>But the __init function for module foo and the probe function for module
+>foo are not serialized.
+>
+>> The module owner should not matter here.
+>
+>The __exit functions between module foo and module bar are serialized.
+>But the __exit function for module bar and the probe function for module
+>bar are not serialized.
+>
+>You can observe a deadlock via the following steps.
+>
+>(1) Build loop.ko with CONFIG_BLK_DEV_LOOP_MIN_COUNT=0 and
+>    a delay injection patch shown below.
+>
+>----------
+>diff --git a/block/genhd.c b/block/genhd.c
+>index 9f8cb7beaad1..fe0360dc8c5d 100644
+>--- a/block/genhd.c
+>+++ b/block/genhd.c
+>@@ -680,6 +680,11 @@ void blk_request_module(dev_t devt)
+> 	mutex_lock(&major_names_lock);
+> 	for (n = &major_names[major_to_index(major)]; *n; n = &(*n)->next) {
+> 		if ((*n)->major == major && (*n)->probe) {
+>+			if (!strcmp(current->comm, "bash")) {
+>+				pr_info("sleep injection start\n");
+>+				schedule_timeout_killable(10 * HZ); // Call "rmmod" here.
+>+				pr_info("sleep injection end\n");
+>+			}
+> 			(*n)->probe(devt);
+> 			mutex_unlock(&major_names_lock);
+> 			return;
+>----------
+>
+>(2) Run the following commands from bash shell.
+>
+># modprobe loop
+># mknod /dev/loop0 b 7 0
+># exec 100<>/dev/loop0 & sleep 1; rmmod loop
+>
+>(3) See dmesg output.
+>
+>----------
+>[   32.260467][ T2873] loop: module loaded
+>[   32.289961][ T2880] sleep injection start
+>[   42.484039][ T2880] sleep injection end
+>[   42.484218][ T2880]
+>[   42.484248][ T2880] ======================================================
+>[   42.484381][ T2880] WARNING: possible circular locking dependency detected
+>[   42.484455][ T2880] 5.13.0-rc6+ #867 Not tainted
+>[   42.484508][ T2880] ------------------------------------------------------
+>[   42.484579][ T2880] bash/2880 is trying to acquire lock:
+>[   42.484638][ T2880] ffffffffc075b468 (loop_ctl_mutex){+.+.}-{3:3}, at: loop_probe+0x44/0x90 [loop]
+>[   42.484760][ T2880]
+>[   42.484760][ T2880] but task is already holding lock:
+>[   42.484836][ T2880] ffffffff873ffe28 (major_names_lock){+.+.}-{3:3}, at: blk_request_module+0x1f/0x100
+>[   42.484950][ T2880]
+>[   42.484950][ T2880] which lock already depends on the new lock.
+>[   42.484950][ T2880]
+>[   42.485053][ T2880]
+>[   42.485053][ T2880] the existing dependency chain (in reverse order) is:
+>[   42.485144][ T2880]
+>[   42.485144][ T2880] -> #1 (major_names_lock){+.+.}-{3:3}:
+>[   42.485230][ T2880]        lock_acquire+0xb3/0x380
+>[   42.485292][ T2880]        __mutex_lock+0x89/0x8f0
+>[   42.485350][ T2880]        mutex_lock_nested+0x16/0x20
+>[   42.485410][ T2880]        unregister_blkdev+0x38/0xb0
+>[   42.485469][ T2880]        loop_exit+0x44/0xd84 [loop]
+
+Good craft in regard to triggering the ABBA deadlock, but curious why not
+move unregister_blkdev out of and before loop_ctl_mutex, given it will also
+serialise with the prober.
+
+>[   42.485534][ T2880]        __x64_sys_delete_module+0x135/0x210
+>[   42.485602][ T2880]        do_syscall_64+0x36/0x70
+>[   42.485660][ T2880]        entry_SYSCALL_64_after_hwframe+0x44/0xae
+>[   42.485733][ T2880]
+>[   42.485733][ T2880] -> #0 (loop_ctl_mutex){+.+.}-{3:3}:
+>[   42.485817][ T2880]        check_prevs_add+0x16a/0x1040
+>[   42.487091][ T2880]        __lock_acquire+0x118b/0x1580
+>[   42.488427][ T2880]        lock_acquire+0xb3/0x380
+>[   42.489701][ T2880]        __mutex_lock+0x89/0x8f0
+>[   42.490960][ T2880]        mutex_lock_nested+0x16/0x20
+>[   42.492374][ T2880]        loop_probe+0x44/0x90 [loop]
+>[   42.493756][ T2880]        blk_request_module+0xa3/0x100
+>[   42.495207][ T2880]        blkdev_get_no_open+0x93/0xc0
+>[   42.496516][ T2880]        blkdev_get_by_dev+0x56/0x200
+>[   42.497735][ T2880]        blkdev_open+0x5d/0xa0
+>[   42.498919][ T2880]        do_dentry_open+0x163/0x3b0
+>[   42.500157][ T2880]        vfs_open+0x28/0x30
+>[   42.501312][ T2880]        path_openat+0x7e6/0xad0
+>[   42.502443][ T2880]        do_filp_open+0x9f/0x110
+>[   42.503592][ T2880]        do_sys_openat2+0x245/0x310
+>[   42.504647][ T2880]        do_sys_open+0x48/0x80
+>[   42.505689][ T2880]        __x64_sys_open+0x1c/0x20
+>[   42.506730][ T2880]        do_syscall_64+0x36/0x70
+>[   42.507795][ T2880]        entry_SYSCALL_64_after_hwframe+0x44/0xae
+>[   42.508890][ T2880]
+>[   42.508890][ T2880] other info that might help us debug this:
+>[   42.508890][ T2880]
+>[   42.511436][ T2880]  Possible unsafe locking scenario:
+>[   42.511436][ T2880]
+>[   42.512303][ T2880]        CPU0                    CPU1
+>[   42.512727][ T2880]        ----                    ----
+>[   42.513143][ T2880]   lock(major_names_lock);
+>[   42.513557][ T2880]                                lock(loop_ctl_mutex);
+>[   42.513987][ T2880]                                lock(major_names_lock);
+>[   42.514417][ T2880]   lock(loop_ctl_mutex);
+>[   42.514841][ T2880]
+>[   42.514841][ T2880]  *** DEADLOCK ***
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
