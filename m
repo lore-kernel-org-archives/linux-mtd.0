@@ -2,66 +2,81 @@ Return-Path: <SRS0=D7Eh=LO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE0C7C2B9F4
-	for <linux-mtd@archiver.kernel.org>; Sun, 20 Jun 2021 02:45:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1378DC48BDF
+	for <linux-mtd@archiver.kernel.org>; Sun, 20 Jun 2021 08:59:01 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 50562610A3
-	for <linux-mtd@archiver.kernel.org>; Sun, 20 Jun 2021 02:45:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 50562610A3
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+	by mail.kernel.org (Postfix) with ESMTPS id BCF4861059
+	for <linux-mtd@archiver.kernel.org>; Sun, 20 Jun 2021 08:59:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BCF4861059
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gorani.run
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=84IyDjbbDuts9I/q9SuMF6TcYVFxeeTtw2nRn6bDiXU=; b=XtR00EV2EPyzyx
-	MdOr8DmtEX99bGcqDKTUqCDrAnns8WwHORywRfepJYoRAtQA3NW1eXI73jgngu89LhVA7+nKyXjpq
-	78rIm0KutDJ2I+TH61TKbij0I9c4KTMzyB+CbU7AWP0TCTf9BtEzi0ZPtrrN/5930zsshV+FGGgw/
-	LOEKyBbKO3FTOmd45mRJRXhya8o6a0Zii0hTVlPhtKCO7h8j6dZBJtdj6DQ+8pjYidvYxC9YD9wj/
-	AD2+ERU98ZML5fzpG7o2EMDxFifi2NS+xINCPIBXgbJfV+iaOEiqlHpDGshQvgkzYVqiPuxBb86I+
-	UuH+kK4wqVNgV/pdBQnQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=paBn+BfQeixYHQDqojIFVdhFD86SsIRQlsy/A4/ma8w=; b=Y3QXfX+WoV8EEK
+	5wJv/4kfhlelC4MW1oWCU4WODUXKeCrHrMfOCgtQ0uh0bf2Gxe06RBhM3y8s4dqcbd0N+1DFdWqVg
+	h9DOrustrn63LCajpLgRWWgEvVoHFegiiX+J+0DtT+otxlLIiDTue+3iNpZeeL0J3znSE/VUz9e5n
+	EzXfQzjPkwIlCmCpusaQdo0MptO6kfE4bg7sT3sGki9KclZBhBUHDt9UMk20QGJysR23CLWzfPdCX
+	crUS49QYF1PxJ57mAiTrfTVSq3kezVkrnmEHU90FHgOpo5xtufXCjpDnechTHKgIaT7/wVdjt7kZR
+	zh8YbnWmODmFhzKczbLw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lunRn-000Lua-BO; Sun, 20 Jun 2021 02:44:31 +0000
-Received: from r3-21.sinamail.sina.com.cn ([202.108.3.21])
- by bombadil.infradead.org with smtp (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lunRf-000Ltm-F4
- for linux-mtd@lists.infradead.org; Sun, 20 Jun 2021 02:44:26 +0000
-Received: from unknown (HELO localhost.localdomain)([123.115.166.128])
- by sina.com (172.16.97.32) with ESMTP
- id 60CEAB7C00032F08; Sun, 20 Jun 2021 10:44:14 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-X-SMAIL-MID: 847391628823
-From: Hillf Danton <hdanton@sina.com>
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: Greg KH <gregkh@linuxfoundation.org>, hch@infradead.org, axboe@kernel.dk,
- desmondcheongzx@gmail.com, linux-block@vger.kernel.org,
- linux-kernel-mentees@lists.linuxfoundation.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- miquel.raynal@bootlin.com, richard@nod.at,
- Shuah Khan <skhan@linuxfoundation.org>,
- syzbot+6a8a0d93c91e8fbf2e80@syzkaller.appspotmail.com, vigneshr@ti.com
-Subject: Re: [PATCH v2] block: genhd: don't call probe function with
- major_names_lock held
-Date: Sun, 20 Jun 2021 10:44:03 +0800
-Message-Id: <20210620024403.820-1-hdanton@sina.com>
-In-Reply-To: <c4edf07f-92e1-a350-2743-f0b0234a2b6c@i-love.sakura.ne.jp>
-References: <f790f8fb-5758-ea4e-a527-0ee4af82dd44@i-love.sakura.ne.jp>
- <YM2STfTN5AupWlSa@kroah.com>
+	id 1lutHQ-000kcC-Ft; Sun, 20 Jun 2021 08:58:12 +0000
+Received: from mout-p-202.mailbox.org ([2001:67c:2050::465:202])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1lutHN-000kao-Af
+ for linux-mtd@lists.infradead.org; Sun, 20 Jun 2021 08:58:11 +0000
+Received: from smtp2.mailbox.org (smtp2.mailbox.org
+ [IPv6:2001:67c:2050:105:465:1:2:0])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest
+ SHA256) (No client certificate requested)
+ by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4G764s1MD2zQjxW;
+ Sun, 20 Jun 2021 10:58:05 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gorani.run; s=MBO0001; 
+ t=1624179479;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=extD/Hqo5FXzNILDp/V15XpNGwwJgk/BQmW5WObrfIc=;
+ b=xvWrsOgpb8gZWA8b5CEO0zxPMTqop7MtalDAPyuFln0Pl6WhTpNfYvDcfOt87f9650pGBm
+ dOB+u9qj9/E1TAmkPog6M7MKTKEqkirCdGTQ97Y6v3Owxzj39v+z+PQkU2TQ3BVuKO3uwR
+ 5UPwUmQDPGJx8tvQst31hgg6VYYYqOObYERdD05lMovgxHuvR6BJLZJB4TOlDOqcXwP19C
+ DAp7bsBArYInpeah8Rrw28gmN4VCpFBzaFmXKUwl2nAYdCRkoBI247qvNoJlX6j6xyCKiY
+ QsZ7CLSfS18rjgtStwnoUO5bfvmAQYr1F2tNJObX6/QFYWqi7UFvDvl7Uy6MrQ==
+Received: from smtp2.mailbox.org ([80.241.60.241])
+ by hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172])
+ (amavisd-new, port 10030)
+ with ESMTP id lRW5OQHomprW; Sun, 20 Jun 2021 10:57:55 +0200 (CEST)
+From: Sungbo Eo <mans0n@gorani.run>
+To: linux-mtd@lists.infradead.org
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Michael Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Sungbo Eo <mans0n@gorani.run>
+Subject: [PATCH] mtd: spi-nor: esmt: Use correct name of f25l32qa
+Date: Sun, 20 Jun 2021 17:56:39 +0900
+Message-Id: <20210620085639.143694-1-mans0n@gorani.run>
 MIME-Version: 1.0
+X-MBO-SPAM-Probability: **
+X-Rspamd-Score: 1.58 / 15.00 / 15.00
+X-Rspamd-Queue-Id: B66631813
+X-Rspamd-UID: d056f8
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210619_194423_753181_92EA5C98 
-X-CRM114-Status: GOOD (  10.30  )
+X-CRM114-CacheID: sfid-20210620_015809_613033_13F15117 
+X-CRM114-Status: GOOD (  11.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,125 +93,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, 19 Jun 2021 17:47:30 +0900 Tetsuo Handa wrote:
->On 2021/06/19 15:44, Greg KH wrote:
->>> Note that regardless of this patch, it is up to probe function to
->>> serialize module's __init function and probe function in that module
->>> by using e.g. a mutex. This patch simply makes sure that module's __exit
->>> function won't be called when probe function is about to be called.
->> 
->> module init functions ARE serialized.
->
->The __init functions between module foo and module bar are serialized.
->But the __init function for module foo and the probe function for module
->foo are not serialized.
->
->> The module owner should not matter here.
->
->The __exit functions between module foo and module bar are serialized.
->But the __exit function for module bar and the probe function for module
->bar are not serialized.
->
->You can observe a deadlock via the following steps.
->
->(1) Build loop.ko with CONFIG_BLK_DEV_LOOP_MIN_COUNT=0 and
->    a delay injection patch shown below.
->
->----------
->diff --git a/block/genhd.c b/block/genhd.c
->index 9f8cb7beaad1..fe0360dc8c5d 100644
->--- a/block/genhd.c
->+++ b/block/genhd.c
->@@ -680,6 +680,11 @@ void blk_request_module(dev_t devt)
-> 	mutex_lock(&major_names_lock);
-> 	for (n = &major_names[major_to_index(major)]; *n; n = &(*n)->next) {
-> 		if ((*n)->major == major && (*n)->probe) {
->+			if (!strcmp(current->comm, "bash")) {
->+				pr_info("sleep injection start\n");
->+				schedule_timeout_killable(10 * HZ); // Call "rmmod" here.
->+				pr_info("sleep injection end\n");
->+			}
-> 			(*n)->probe(devt);
-> 			mutex_unlock(&major_names_lock);
-> 			return;
->----------
->
->(2) Run the following commands from bash shell.
->
-># modprobe loop
-># mknod /dev/loop0 b 7 0
-># exec 100<>/dev/loop0 & sleep 1; rmmod loop
->
->(3) See dmesg output.
->
->----------
->[   32.260467][ T2873] loop: module loaded
->[   32.289961][ T2880] sleep injection start
->[   42.484039][ T2880] sleep injection end
->[   42.484218][ T2880]
->[   42.484248][ T2880] ======================================================
->[   42.484381][ T2880] WARNING: possible circular locking dependency detected
->[   42.484455][ T2880] 5.13.0-rc6+ #867 Not tainted
->[   42.484508][ T2880] ------------------------------------------------------
->[   42.484579][ T2880] bash/2880 is trying to acquire lock:
->[   42.484638][ T2880] ffffffffc075b468 (loop_ctl_mutex){+.+.}-{3:3}, at: loop_probe+0x44/0x90 [loop]
->[   42.484760][ T2880]
->[   42.484760][ T2880] but task is already holding lock:
->[   42.484836][ T2880] ffffffff873ffe28 (major_names_lock){+.+.}-{3:3}, at: blk_request_module+0x1f/0x100
->[   42.484950][ T2880]
->[   42.484950][ T2880] which lock already depends on the new lock.
->[   42.484950][ T2880]
->[   42.485053][ T2880]
->[   42.485053][ T2880] the existing dependency chain (in reverse order) is:
->[   42.485144][ T2880]
->[   42.485144][ T2880] -> #1 (major_names_lock){+.+.}-{3:3}:
->[   42.485230][ T2880]        lock_acquire+0xb3/0x380
->[   42.485292][ T2880]        __mutex_lock+0x89/0x8f0
->[   42.485350][ T2880]        mutex_lock_nested+0x16/0x20
->[   42.485410][ T2880]        unregister_blkdev+0x38/0xb0
->[   42.485469][ T2880]        loop_exit+0x44/0xd84 [loop]
+The flash ID of F25L32QA is 0x8c4016, whereas that of F25L32QA(2S) is
+0x8c4116. F25L32QA(2S) is the newer version of F25L32QA and its BPn bits
+are non-volatile, unlike its older version.
 
-Good craft in regard to triggering the ABBA deadlock, but curious why not
-move unregister_blkdev out of and before loop_ctl_mutex, given it will also
-serialise with the prober.
+References: https://www.esmt.com.tw/upload/pdf/ESMT/datasheets/F25L32QA.pdf
+References: https://www.esmt.com.tw/upload/pdf/ESMT/datasheets/F25L32QA_1(2S).pdf
+Signed-off-by: Sungbo Eo <mans0n@gorani.run>
+---
+At first I was going to send a new support patch of F25L16PA(2S),
+but before that, I wanted to make sure if "(2s)" suffix is okay or unnecessary.
+---
+ drivers/mtd/spi-nor/esmt.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
->[   42.485534][ T2880]        __x64_sys_delete_module+0x135/0x210
->[   42.485602][ T2880]        do_syscall_64+0x36/0x70
->[   42.485660][ T2880]        entry_SYSCALL_64_after_hwframe+0x44/0xae
->[   42.485733][ T2880]
->[   42.485733][ T2880] -> #0 (loop_ctl_mutex){+.+.}-{3:3}:
->[   42.485817][ T2880]        check_prevs_add+0x16a/0x1040
->[   42.487091][ T2880]        __lock_acquire+0x118b/0x1580
->[   42.488427][ T2880]        lock_acquire+0xb3/0x380
->[   42.489701][ T2880]        __mutex_lock+0x89/0x8f0
->[   42.490960][ T2880]        mutex_lock_nested+0x16/0x20
->[   42.492374][ T2880]        loop_probe+0x44/0x90 [loop]
->[   42.493756][ T2880]        blk_request_module+0xa3/0x100
->[   42.495207][ T2880]        blkdev_get_no_open+0x93/0xc0
->[   42.496516][ T2880]        blkdev_get_by_dev+0x56/0x200
->[   42.497735][ T2880]        blkdev_open+0x5d/0xa0
->[   42.498919][ T2880]        do_dentry_open+0x163/0x3b0
->[   42.500157][ T2880]        vfs_open+0x28/0x30
->[   42.501312][ T2880]        path_openat+0x7e6/0xad0
->[   42.502443][ T2880]        do_filp_open+0x9f/0x110
->[   42.503592][ T2880]        do_sys_openat2+0x245/0x310
->[   42.504647][ T2880]        do_sys_open+0x48/0x80
->[   42.505689][ T2880]        __x64_sys_open+0x1c/0x20
->[   42.506730][ T2880]        do_syscall_64+0x36/0x70
->[   42.507795][ T2880]        entry_SYSCALL_64_after_hwframe+0x44/0xae
->[   42.508890][ T2880]
->[   42.508890][ T2880] other info that might help us debug this:
->[   42.508890][ T2880]
->[   42.511436][ T2880]  Possible unsafe locking scenario:
->[   42.511436][ T2880]
->[   42.512303][ T2880]        CPU0                    CPU1
->[   42.512727][ T2880]        ----                    ----
->[   42.513143][ T2880]   lock(major_names_lock);
->[   42.513557][ T2880]                                lock(loop_ctl_mutex);
->[   42.513987][ T2880]                                lock(major_names_lock);
->[   42.514417][ T2880]   lock(loop_ctl_mutex);
->[   42.514841][ T2880]
->[   42.514841][ T2880]  *** DEADLOCK ***
+diff --git a/drivers/mtd/spi-nor/esmt.c b/drivers/mtd/spi-nor/esmt.c
+index cfc9218c1053..51b3ff764ef6 100644
+--- a/drivers/mtd/spi-nor/esmt.c
++++ b/drivers/mtd/spi-nor/esmt.c
+@@ -12,8 +12,8 @@ static const struct flash_info esmt_parts[] = {
+ 	/* ESMT */
+ 	{ "f25l32pa", INFO(0x8c2016, 0, 64 * 1024, 64,
+ 			   SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE) },
+-	{ "f25l32qa", INFO(0x8c4116, 0, 64 * 1024, 64,
+-			   SECT_4K | SPI_NOR_HAS_LOCK) },
++	{ "f25l32qa(2s)", INFO(0x8c4116, 0, 64 * 1024, 64,
++			       SECT_4K | SPI_NOR_HAS_LOCK) },
+ 	{ "f25l64qa", INFO(0x8c4117, 0, 64 * 1024, 128,
+ 			   SECT_4K | SPI_NOR_HAS_LOCK) },
+ };
+-- 
+2.32.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
