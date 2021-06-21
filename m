@@ -2,72 +2,59 @@ Return-Path: <SRS0=qKgU=LP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EEF13C48BE5
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Jun 2021 08:55:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6BFEC48BE5
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Jun 2021 15:23:40 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AC1DD61164
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Jun 2021 08:55:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC1DD61164
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
+	by mail.kernel.org (Postfix) with ESMTPS id 8974C6023C
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Jun 2021 15:23:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8974C6023C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cbIxbamsJVgBMqqMtUTI03oYH9FgScPkbdrL2uk/qB8=; b=RE/9Lxj4YSZj/8
-	3YeAJkuZ0Qb5XU6nJga+G2YMl0mg9UiOMkBOHr1gS1UFpkzSbrj/oF/5jnFlW7f11SgF6u1VsSRUL
-	gOlpb/QcMeSRBD2H5X3ASc00pNXp5nVm8wWVq8U1SWnlrV8DGK378Eu+0MaCM01ROAgy86XYZIO2A
-	Lg+eVbW9wZfpPGuvPcEOYzqbNPP7vDkYO1cuVCbNKm/jYiWrFS78X3A3/crgL0RzwGG+vfp6TrnTB
-	zeqObmWFcWA2/2dAh6IgRhIFFuZ3qMVrvTea4RG7j2U/K3KOOYpZAT1KIWLjVRmJFWcaXg1jc3unu
-	2oooYKDMBRNzJZrLF+mA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=nL7sKGf9DrLcqYteLXcskLrCLxSq+uvbF3VkZSt0I8A=; b=xtNIfJhTQHbpxv
+	bmtMPen3fhiDTftmDhkU6m6NhcJxXIhvnc+fZW0koKTgKwtCpE0E+Db/xQSS/oar8RMRiFKXxEnPR
+	/Bzbvn33t/kEPPL3vZxUrueai82iW0//norQM48zTExewVcSplnxmZ1G5lekxWJEdqXLrIqmFFiuy
+	wVttMEoaw6RrY5Em7vsOqWzbQ3Dz4Jg3JhpgKU80bWiwURSkaIZEz9viLwdb0As4UX2Sjf0Q5dtWL
+	W/B9yRg9/ayHf+1NIZdzSXKDGZYWS09SbytbXWTqBmsA7pMpaWusZvIrWOzmL0ERdhctzm9iTbvxO
+	1HckFR+TzkZoUhk3PMTA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lvFhQ-002m0i-GO; Mon, 21 Jun 2021 08:54:32 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1lvLlK-003tt8-6S; Mon, 21 Jun 2021 15:22:58 +0000
+Received: from youngberry.canonical.com ([91.189.89.112])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lvFhN-002m00-TB
- for linux-mtd@lists.infradead.org; Mon, 21 Jun 2021 08:54:31 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2964060724;
- Mon, 21 Jun 2021 08:54:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1624265668;
- bh=VcbXkDe9DOW5t++lY6Mh89RpWsDOFcnF5LaCm5CLVu8=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=xmzMcAcftuSuGmVHxWPyg82c8VgqbVJWe/R2fZFNNlpRxtGwcDY9wLgnE+F1a0iWQ
- ygf32c0yBJb1/3S4EYAXdGCCAmYhbrV0VZ+x59xsXGZsjoBsiR/He9x4b9V+/nMvbN
- JX2eRKEvBqPPPBp+I/qA1cmpLoQAu7q4l4PxgwKw=
-Date: Mon, 21 Jun 2021 10:54:26 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: Hillf Danton <hdanton@sina.com>, hch@infradead.org, axboe@kernel.dk,
- desmondcheongzx@gmail.com, linux-block@vger.kernel.org,
- linux-kernel-mentees@lists.linuxfoundation.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- miquel.raynal@bootlin.com, richard@nod.at,
- Shuah Khan <skhan@linuxfoundation.org>,
- syzbot+6a8a0d93c91e8fbf2e80@syzkaller.appspotmail.com, vigneshr@ti.com
-Subject: Re: [PATCH v2] block: genhd: don't call probe function with
- major_names_lock held
-Message-ID: <YNBTwhbJ/uiE8iZe@kroah.com>
-References: <f790f8fb-5758-ea4e-a527-0ee4af82dd44@i-love.sakura.ne.jp>
- <YM2STfTN5AupWlSa@kroah.com>
- <20210620024403.820-1-hdanton@sina.com>
- <24b7c3a9-e10a-f983-9fde-1ae66b0bc6b0@i-love.sakura.ne.jp>
+ id 1lvLlH-003tsJ-Ar
+ for linux-mtd@lists.infradead.org; Mon, 21 Jun 2021 15:22:56 +0000
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+ by youngberry.canonical.com with esmtpsa (TLS1.2) tls
+ TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.93)
+ (envelope-from <colin.king@canonical.com>)
+ id 1lvLlB-0001q5-GW; Mon, 21 Jun 2021 15:22:49 +0000
+From: Colin King <colin.king@canonical.com>
+To: Richard Weinberger <richard@nod.at>,
+ Dan Carpenter <dan.carpenter@oracle.com>, linux-mtd@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ubifs: Remove a redundant null check on pointer lp
+Date: Mon, 21 Jun 2021 16:22:49 +0100
+Message-Id: <20210621152249.20901-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <24b7c3a9-e10a-f983-9fde-1ae66b0bc6b0@i-love.sakura.ne.jp>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210621_015430_000665_2D6A9BA8 
-X-CRM114-Status: GOOD (  17.83  )
+X-CRM114-CacheID: sfid-20210621_082255_435330_405BF66E 
+X-CRM114-Status: UNSURE (   8.11  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,59 +71,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, Jun 20, 2021 at 10:54:20PM +0900, Tetsuo Handa wrote:
-> On 2021/06/20 11:44, Hillf Danton wrote:
-> > Good craft in regard to triggering the ABBA deadlock, but curious why not
-> > move unregister_blkdev out of and before loop_ctl_mutex, given it will also
-> > serialise with the prober.
-> > 
-> 
-> Well, something like this untested diff?
-> 
-> Call unregister_blkdev() as soon as __exit function starts, for calling
-> probe function after cleanup started will be unexpected for __exit function.
-> 
-> Keep probe function no-op until __init function ends, for probe function
-> might be called as soon as __register_blkdev() succeeded but calling probe
-> function before setup completes will be unexpected for __init function.
-> 
->  drivers/block/ataflop.c |    6 +++++-
->  drivers/block/brd.c     |    8 ++++++--
->  drivers/block/floppy.c  |    4 ++++
->  drivers/block/loop.c    |    4 ++--
->  drivers/ide/ide-probe.c |    8 +++++++-
->  drivers/md/md.c         |    5 +++++
->  drivers/scsi/sd.c       |   10 +---------
->  7 files changed, 30 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
-> index d601e49f80e0..3681e8c493b1 100644
-> --- a/drivers/block/ataflop.c
-> +++ b/drivers/block/ataflop.c
-> @@ -1995,6 +1995,7 @@ static int ataflop_alloc_disk(unsigned int drive, unsigned int type)
->  }
->  
->  static DEFINE_MUTEX(ataflop_probe_lock);
-> +static bool module_initialize_completed;
+From: Colin Ian King <colin.king@canonical.com>
 
-This is almost always wrong.
+An earlier fix to replace an IS_ERR check on lp with a null check
+on lp didn't remove a following null check on lp. The second null
+check is redundant and can be removed.
 
->  
->  static void ataflop_probe(dev_t dev)
->  {
-> @@ -2006,6 +2007,8 @@ static void ataflop_probe(dev_t dev)
->  
->  	if (drive >= FD_MAX_UNITS || type >= NUM_DISK_MINORS)
->  		return;
-> +	if (!module_initialize_completed)
-> +		return;
+Addresses-Coverity: ("Logically dead code")
+Fixes: c770cd5190ba ("ubifs: fix an IS_ERR() vs NULL check")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ fs/ubifs/gc.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-This is not correct, when you register a callback structure, it can be
-instantly called.  Do not expect it to be delayed until later.
+diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
+index 7cc22d7317ea..465beea52176 100644
+--- a/fs/ubifs/gc.c
++++ b/fs/ubifs/gc.c
+@@ -899,8 +899,6 @@ int ubifs_gc_start_commit(struct ubifs_info *c)
+ 			err = -ENOMEM;
+ 			goto out;
+ 		}
+-		if (!lp)
+-			break;
+ 		idx_gc = kmalloc(sizeof(struct ubifs_gced_idx_leb), GFP_NOFS);
+ 		if (!idx_gc) {
+ 			err = -ENOMEM;
+-- 
+2.31.1
 
-thanks,
-
-greg k-h
 
 ______________________________________________________
 Linux MTD discussion mailing list
