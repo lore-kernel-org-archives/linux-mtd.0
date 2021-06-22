@@ -2,84 +2,86 @@ Return-Path: <SRS0=6QP0=LQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AFAEDC2B9F4
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jun 2021 12:16:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64606C2B9F4
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jun 2021 15:32:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7C2CE6102A
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jun 2021 12:16:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7C2CE6102A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	by mail.kernel.org (Postfix) with ESMTPS id 15F5F60FEB
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jun 2021 15:32:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 15F5F60FEB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bJxvwRzpiPwsoaVc70xEj34YHkk92+HK3LuloYvsJ7c=; b=T/lj7HKGaLt3B6
-	eCZn+7MzWLK+JNNpmvn6ooU4YqDMTsNJ6dePnVqZE8Rwt9/eyk0oJsZw7fbGtwbxlP1BgosaP+amE
-	de1ipyCknBFirQ3J67mrHJZ4bMR5maC5RRDnd07clOY2JI0kV7/mnx1eg45OJ2t9DMNN2ZAsuFfkA
-	8t6IBiLn7Km8QLEvIBWqf+7nBCxzAC3gWs8pbZM2Iex7KGdv8Z07kqXQFu14qtEBATJYvMnASq00D
-	smL70glMhhFZMKZrTJfkv23F/uHtmfjwlByu6aaXiEczBmWtBrODI84YOrPkBQE/JUGLZXfa0G7Lr
-	igWUEypKht2WURwezoHw==;
+	List-Owner; bh=dbYKm2ffozF+QyjsG9TL0x6F/bB8qj/KJaJ5r429kZg=; b=Y15JvKUIFIdA5g
+	Y1gh0rRbyzIoZAysHAyIebdR4A6eAMh2VtRpeaXUNsBr1VBdZKzts0gblQX8aKnPTpUJ2KycMBtvj
+	qXO6ErqMwHVj2dJk3dSYG3N4IuSjyTbFqU1uwBDdJ7uXaHrpBdv0KuHmLsFdvyscNwCXLhS5Sbwk7
+	fhO/luYPJxkvgaZskykvghEcVHqjNUF1JyMpexh/UJgFN+5lwUepD+Tqu2/WLVIS1nZ7ixF7d3otS
+	6PfBpLuIPO4jnLtXwmRJaXCSYgUon7KIy83U97Ka2SU6CtcgcEKyKu3mce2gScNjliw/6ClD0Tyuz
+	HUGpj6K6V4ChBhJyACbw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lvfJN-0075jx-Dn; Tue, 22 Jun 2021 12:15:25 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1lviNK-007iRw-JO; Tue, 22 Jun 2021 15:31:42 +0000
+Received: from mail-lf1-x12e.google.com ([2a00:1450:4864:20::12e])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lvfJJ-0075jD-5t
- for linux-mtd@lists.infradead.org; Tue, 22 Jun 2021 12:15:23 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15MCFFQZ053902;
- Tue, 22 Jun 2021 07:15:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1624364115;
- bh=VXl+turadXEnbo1KvsAjQeLsr8jDoDct/9xwVEpSP24=;
- h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=vfk9zw3qA8STy8oMrHARhDBi+4Pq2AgjZ+aUCsfAaTshQKPMGcAV4+FeD6VVo2Lwc
- 8j1+UBTA78bzjRGfcOYucXfY/GRPFUk7tXWwHEXgHR+EL4yBqzDuMx877X0OSgzTb/
- HxtG2RtZt0pFNEMEhDXm6PEaa4n9gVUtEnqAC8a0=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15MCFEjD048546
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 22 Jun 2021 07:15:15 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 22
- Jun 2021 07:15:14 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 22 Jun 2021 07:15:14 -0500
-Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15MCFBHg049752;
- Tue, 22 Jun 2021 07:15:11 -0500
-From: Vignesh Raghavendra <vigneshr@ti.com>
-To: Michael Walle <michael@walle.cc>, <linux-mtd@lists.infradead.org>, Colin
- King <colin.king@canonical.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, Richard Weinberger <richard@nod.at>
-CC: Vignesh Raghavendra <vigneshr@ti.com>, <linux-kernel@vger.kernel.org>,
- <kernel-janitors@vger.kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: remove redundant continue statement
-Date: Tue, 22 Jun 2021 17:44:47 +0530
-Message-ID: <162436407038.6751.408040408294040312.b4-ty@ti.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210618093331.100006-1-colin.king@canonical.com>
-References: <20210618093331.100006-1-colin.king@canonical.com>
+ id 1lviNH-007iP0-Cf
+ for linux-mtd@lists.infradead.org; Tue, 22 Jun 2021 15:31:40 +0000
+Received: by mail-lf1-x12e.google.com with SMTP id r5so36688088lfr.5
+ for <linux-mtd@lists.infradead.org>; Tue, 22 Jun 2021 08:31:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=ZQlvZ6Ddmcy7bc1M4PIfx6EtMyfuVpDT5bjWUayyRQ8=;
+ b=SkgcrGPcOPWO42gz71Dr5UY5QvKXhzHQYvGQXi471A85RrqboPk+fKuQYkI1srDy1n
+ 4FX/ZwKhIMgnEes15ieq8N7A+sm87n7kDrYM4bhvSkcXcEHwx8fVYvALMeq7H1M5iN+U
+ OPz7NYwj6MgIPL7ohOFynVL/hWbo+6f3XoSEmRGLsj/mfVkju7SdANx1dp60gEIJhxW/
+ /Xk4/Bj81AzEiQyqe0ELutLopeFfZ6uBuTnUTY6KnuKrlPeSZaRpZ7tVpAGAxx/HkZ2a
+ ynIYtUSx+HXoifTdAiUAjaDPZTWm2FKMXIguayIfo0YdeQU6/DYiy6qmHCV2TUr2d9xM
+ ebvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=ZQlvZ6Ddmcy7bc1M4PIfx6EtMyfuVpDT5bjWUayyRQ8=;
+ b=UCUjOgV/yrFdDyaLWMHb6HmvxuiUlUaWuwoDYXeHs2g2AIA2xSkXJd49cmp6NHhVzD
+ X4AR2pjKcNxdlXSl0uk9jYzUP4ihIb9fRaEfh9wp9lzc6HkagMd3wAg0k4HjUjKVyoMj
+ 6mFQo05zum1ngld83KK1a/4m7+VOI8YB0EGjmi2jvDZNWnYEcWugCdlm4SgjSnd8WV0v
+ mgtCkmm5F+Ork0UxIVC6X3Rq5Fv3SJNaXrzLgW1RmY5CwsIu0W3LmYEuHNaaijnR+YRD
+ +PYNx1CjZ/pqGabdiVXHfhcOG/hM0vmitGYyJB3l2O6gRS1AkA4kNk5Mj17XK1bGL/qA
+ fPfQ==
+X-Gm-Message-State: AOAM5333F4r9OBotg6j8TY/GD6ielrEnd/W1AqTgWEFj4omEbo8V535e
+ A+xGGoGr+Er8S6525NALYLb4DA9JUvJ0ChtuQ0A=
+X-Google-Smtp-Source: ABdhPJx3S9WghncUujJP6EdjH4ueyeLBMfci/ggX3NpXvFHzVyz9gpEu1PdIGVLEI8/sJV8hFlJISH4aAZ1WHToVJ2I=
+X-Received: by 2002:ac2:4d25:: with SMTP id h5mr3294348lfk.583.1624375895831; 
+ Tue, 22 Jun 2021 08:31:35 -0700 (PDT)
 MIME-Version: 1.0
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <YMyir961W28TX5dT@mwanda>
+ <67e49b8b-a80c-87a0-c5bb-8d5cf9239328@denx.de>
+In-Reply-To: <67e49b8b-a80c-87a0-c5bb-8d5cf9239328@denx.de>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Tue, 22 Jun 2021 12:31:24 -0300
+Message-ID: <CAOMZO5DLxM5nU4HxLT2DzKvmG1Vv1LNSdUoB3m7iZ1mpgxBFxg@mail.gmail.com>
+Subject: Re: [PATCH] mtd: mchp48l640: silence some uninitialized variable
+ warnings
+To: Heiko Schocher <hs@denx.de>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ linux-mtd <linux-mtd@lists.infradead.org>, kernel-janitors@vger.kernel.org, 
+ Colin King <colin.king@canonical.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210622_051522_280904_8012A35D 
-X-CRM114-Status: UNSURE (   6.86  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210622_083139_474077_EE6DE697 
+X-CRM114-Status: GOOD (  16.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,18 +98,36 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 18 Jun 2021 10:33:31 +0100, Colin King wrote:
-> The continue statement at the end of a for-loop has no effect,
-> invert the if expression and remove the continue.
+On Sat, Jun 19, 2021 at 3:23 AM Heiko Schocher <hs@denx.de> wrote:
+>
+> Hello Dan,
+>
+> On 18.06.21 15:42, Dan Carpenter wrote:
+> > Smatch complains that zero length read/writes will lead to an
+> > uninitalized return value.  I don't know if that's possible, but
+> > it's nicer to return a zero literal anyway so let's do that.
+> >
+> > Fixes: 88d125026753 ("mtd: devices: add support for microchip 48l640 EERAM")
+> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > ---
+> > People, when we add a new driver can we make sure the first commit uses
+> > the new prefered subsystem prefix?  For example,
+> >
+> > "mtd: mchp48l640: add support for microchip 48l640 EERAM"
+> >       ^^^^^^^^^^
+> > Otherwise it's not clear to me what I should use as a patch prefix.
+>
+> Ok, sorry...
+>
+> Hmm... Colin already sent a fix for this, see:
+>
+> https://lists.infradead.org/pipermail/linux-mtd/2021-June/087140.html
 
-Applied to spi-nor/next, thanks!
-[1/1] mtd: spi-nor: remove redundant continue statement
-      https://git.kernel.org/mtd/c/c17e5c85b3
+Yes, both patches work, but I think Dan's solution is a bit clearer, so:
 
---
-Regards
-Vignesh
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
 
+Thanks
 
 ______________________________________________________
 Linux MTD discussion mailing list
