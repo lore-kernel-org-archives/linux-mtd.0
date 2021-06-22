@@ -1,91 +1,72 @@
-Return-Path: <SRS0=qKgU=LP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=6QP0=LQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-15.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FFA0C4743C
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Jun 2021 15:25:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BD6EC4743C
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jun 2021 02:40:11 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 03B0361003
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Jun 2021 15:25:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 03B0361003
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rasmusvillemoes.dk
+	by mail.kernel.org (Postfix) with ESMTPS id 0CA776120D
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jun 2021 02:40:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0CA776120D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TiB8qH7JyNagDQL/UA49QMPd9QUTlnHVum5revlj7MI=; b=kHTmgAWtZJhs8M
-	7MNTTapJHPbn1ditCnCl+RPw9Wmrzl6JtQHUau1jEzSdxCf5EXuYo9DY5cexc2sfYD2a+yqnZURJk
-	K3u70vPsyE3tsGvHoeDNVY+KWSFG2op/NHOZ6ROt+moaw2FhdoGW/8daxJVNVGV3F/fcQzwutk7tg
-	dSU1PgDJREyoR/V8eb82W3YL4dEZOUv5v7DOLS5gfba1y2fmtslerCFQfnLP5lCWGoqsgc+QgqEVt
-	bkqfmgq0LWOOPK61hwB0gN4ivmEcQly/aq/J5TXQVEU+x1obGPHi+U8XZ7CBmq+nKRmpLhHavXXpa
-	R6ZNU066rYAaZzY6VEnA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=ppBm5IQJah1k95xBWvvfsly+8izVePemLF4k89xGttg=; b=wzguWEyx6X3CgrM7V21jsQjSSy
+	6HYkgSZRNJEcjiq00BVo+TEkuZ4pNttM0YPl+yEPE8zAg7PCl2JndupksDL1C6rKSbNr5HQ6Qxs0d
+	IMXjfdXglKO5U9WbPYiN1f4OnoVix/i1lN8QQudN4ZTYBOEoHgLFU+4ascMnsDJAnTNF0D2v0tirm
+	IoYa/V+6/rB0KagMSosCPNxp8w8R0mhhbKFX/EyADCSI8LTSOI2L06Jv60QxXIeOSc9DSFaLpR2xH
+	V1WEe1q3W3x2l2/2ScYuRr3GNsrLmOCdmWuOL8RzkKoEITtkvFQsxsddHpxUFMMTII1E+GHVg9g44
+	7B8pyJ5A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lvLmn-003uCa-Hz; Mon, 21 Jun 2021 15:24:29 +0000
-Received: from mail-ej1-x631.google.com ([2a00:1450:4864:20::631])
+	id 1lvWJi-005QmA-Hn; Tue, 22 Jun 2021 02:39:10 +0000
+Received: from szxga08-in.huawei.com ([45.249.212.255])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lvLlv-003tx3-4i
- for linux-mtd@lists.infradead.org; Mon, 21 Jun 2021 15:23:37 +0000
-Received: by mail-ej1-x631.google.com with SMTP id ho18so29470632ejc.8
- for <linux-mtd@lists.infradead.org>; Mon, 21 Jun 2021 08:23:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=rasmusvillemoes.dk; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=n2mPGF6e+QaRdPzOU0Ls1i7M7sCtOZoDk9UIo0VumFU=;
- b=D0f9REBDHx92cti3d+c5g+u85IrmzNTLUVgqSLCJkCFqs7Qmk+NgwHo+u15pOFbzS3
- k3hYAKamNb3WBqP4AE50RLDLv7PETChu/ANLkyJ7MZe4Sy+mTvADiJjZA7ugKLx9mewJ
- 55oxd5ywg3dUmjblYpGoY0dbSULJe4mLRt4G0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=n2mPGF6e+QaRdPzOU0Ls1i7M7sCtOZoDk9UIo0VumFU=;
- b=LJ+xgudtk8wZoXqM22yGB6K3PAjY6ApFkW8px1Vu0mkYD2suZzjMeNz3hee8PCGByJ
- KQRA5EZv8EsReijTaDLKv0O2/5pNWAnxLbFm9xB0U25Zmpe+VULMSnmVv1UI0i/pQ10+
- pVmYfiZLbvIbdNnmz840K6IoNKEJCdxYxWh1ePwPNMWY631q6rwsd0be+nQRYrx9XP+4
- zydoF6+t4uhl49PFVne1MFL2y8cbiLoCvPBtamQB/D3yz9PS/GtNhmoFOl94wEEYOPG4
- TIDCjDJ2+3EaUJUAZ7REqevp3JW2tR4ga7wHSt+MM5KqBh0Dv4rjlMTIaCQDcPCPFWiB
- QqPA==
-X-Gm-Message-State: AOAM532FDhRYmEykLEm6+jS/fc5qBqa0ypirUHMdyS53B3MbJjw8CNrh
- US1M4SzXC3NHAAOxR0Kk9lOw9qk3RDwJgQ==
-X-Google-Smtp-Source: ABdhPJyvRXdpqoFTcPfgwW1b53DCxt4JK7wQV4BGMDkeH2iHDruv/mWr06LSt3CoLs2lc8WU1E2r1g==
-X-Received: by 2002:a17:906:718b:: with SMTP id
- h11mr8686734ejk.418.1624289013415; 
- Mon, 21 Jun 2021 08:23:33 -0700 (PDT)
-Received: from prevas-ravi.prevas.se ([80.208.64.110])
- by smtp.gmail.com with ESMTPSA id q20sm5021079ejb.71.2021.06.21.08.23.32
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 21 Jun 2021 08:23:33 -0700 (PDT)
-From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-To: linux-mtd@lists.infradead.org
-Cc: Frieder Schrempf <frieder.schrempf@kontron.de>,
- Boris Brezillon <bbrezillon@kernel.org>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Michael Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>,
- linux-kernel@vger.kernel.org, Esben Haabendal <esben@geanix.com>,
- Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: [RFC 2/3] mtd: spi-nor: core: compare JEDEC bytes to already found
- flash_info
-Date: Mon, 21 Jun 2021 17:23:19 +0200
-Message-Id: <20210621152320.3811194-3-linux@rasmusvillemoes.dk>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210621152320.3811194-1-linux@rasmusvillemoes.dk>
-References: <20210621152320.3811194-1-linux@rasmusvillemoes.dk>
+ id 1lvWJe-005Qk6-G6
+ for linux-mtd@lists.infradead.org; Tue, 22 Jun 2021 02:39:08 +0000
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+ by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G89ST0mxYz1BQKK;
+ Tue, 22 Jun 2021 10:33:45 +0800 (CST)
+Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 22 Jun 2021 10:38:53 +0800
+Received: from [10.174.178.46] (10.174.178.46) by
+ dggema761-chm.china.huawei.com (10.1.198.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 22 Jun 2021 10:38:53 +0800
+Subject: Re: [PATCH] ubifs: Remove a redundant null check on pointer lp
+To: Colin King <colin.king@canonical.com>, Richard Weinberger
+ <richard@nod.at>, Dan Carpenter <dan.carpenter@oracle.com>,
+ <linux-mtd@lists.infradead.org>
+CC: <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210621152249.20901-1-colin.king@canonical.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <f2ea606a-4a05-8d14-4380-d96ca0f981a1@huawei.com>
+Date: Tue, 22 Jun 2021 10:38:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <20210621152249.20901-1-colin.king@canonical.com>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema761-chm.china.huawei.com (10.1.198.203)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210621_082335_255031_5129E0CD 
-X-CRM114-Status: GOOD (  21.12  )
+X-CRM114-CacheID: sfid-20210621_193907_298356_779181AF 
+X-CRM114-Status: GOOD (  15.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,99 +78,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Macronix engineers, in their infinite wisdom, have a habit of reusing
-JEDEC ids for different chips. There's already one
-workaround (MX25L25635F v MX25L25635E), but the same problem exists
-for MX25L3205D v MX25L3233F, the latter of which is not currently
-supported by linux.
-
-AFAICT, that case cannot really be handled with any of the ->fixup
-machinery: The correct entry for the MX25L3233F would read
-
-        { "mx25l3233f",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ ) },
-
-while the existing one is
-
-	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K) },
-
-So in spi_nor_init_params(), we won't even try reading the sfdp
-info (i.e. call spi_nor_sfdp_init_params), and hence
-spi_nor_post_sfdp_fixups() has no way of distinguishing the
-chips.
-
-Replacing the existing entry with the mx25l3233f one to coerce the
-core into issuing the SPINOR_OP_RDSFDP is also not really an option,
-because the data sheet for the mx25l3205d explicitly says not to issue
-any commands not listed ("It is not recommended to adopt any other
-code not in the command definition table, which will potentially enter
-the hidden mode.", whatever that means).
-
-In order to support such cases, extend the logic in spi_nor_read_id()
-a little so that if we already have a struct flash_info* from the name
-in device tree, check the JEDEC bytes against that, and if it is a
-match, accept that (device tree compatible + matching JEDEC bytes) is
-stronger than merely matching JEDEC bytes.
-
-This also makes initialization slightly faster in the common case
-where the flash_info was found from the name and the JEDEC bytes do
-match - it avoids a second linear search over all known chips.
-
-Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
----
- drivers/mtd/spi-nor/core.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 6a1adef0fe9f..21ae655d6a6f 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -1869,7 +1869,8 @@ spi_nor_search_part_by_id(const struct flash_info *parts, unsigned int nparts,
- 	return NULL;
- }
- 
--static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
-+static const struct flash_info *
-+spi_nor_read_id(struct spi_nor *nor, const struct flash_info *guess)
- {
- 	const struct flash_info *info;
- 	u8 *id = nor->bouncebuf;
-@@ -1893,6 +1894,9 @@ static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
- 		return ERR_PTR(ret);
- 	}
- 
-+	if (guess && spi_nor_match_part(guess, id))
-+		return guess;
-+
- 	for (i = 0; i < ARRAY_SIZE(manufacturers); i++) {
- 		info = spi_nor_search_part_by_id(manufacturers[i]->parts,
- 						 manufacturers[i]->nparts,
-@@ -3031,7 +3035,7 @@ static const struct flash_info *spi_nor_get_flash_info(struct spi_nor *nor,
- 		info = spi_nor_match_id(nor, name);
- 	/* Try to auto-detect if chip name wasn't specified or not found */
- 	if (!info)
--		info = spi_nor_read_id(nor);
-+		info = spi_nor_read_id(nor, NULL);
- 	if (IS_ERR_OR_NULL(info))
- 		return ERR_PTR(-ENOENT);
- 
-@@ -3042,7 +3046,7 @@ static const struct flash_info *spi_nor_get_flash_info(struct spi_nor *nor,
- 	if (name && info->id_len) {
- 		const struct flash_info *jinfo;
- 
--		jinfo = spi_nor_read_id(nor);
-+		jinfo = spi_nor_read_id(nor, info);
- 		if (IS_ERR(jinfo)) {
- 			return jinfo;
- 		} else if (jinfo != info) {
--- 
-2.31.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyMS82LzIxIDIzOjIyLCBDb2xpbiBLaW5nINC0tcA6Cj4gRnJvbTogQ29saW4gSWFuIEtp
+bmcgPGNvbGluLmtpbmdAY2Fub25pY2FsLmNvbT4KPiAKPiBBbiBlYXJsaWVyIGZpeCB0byByZXBs
+YWNlIGFuIElTX0VSUiBjaGVjayBvbiBscCB3aXRoIGEgbnVsbCBjaGVjawo+IG9uIGxwIGRpZG4n
+dCByZW1vdmUgYSBmb2xsb3dpbmcgbnVsbCBjaGVjayBvbiBscC4gVGhlIHNlY29uZCBudWxsCj4g
+Y2hlY2sgaXMgcmVkdW5kYW50IGFuZCBjYW4gYmUgcmVtb3ZlZC4KPiAKPiBBZGRyZXNzZXMtQ292
+ZXJpdHk6ICgiTG9naWNhbGx5IGRlYWQgY29kZSIpCj4gRml4ZXM6IGM3NzBjZDUxOTBiYSAoInVi
+aWZzOiBmaXggYW4gSVNfRVJSKCkgdnMgTlVMTCBjaGVjayIpCj4gU2lnbmVkLW9mZi1ieTogQ29s
+aW4gSWFuIEtpbmcgPGNvbGluLmtpbmdAY2Fub25pY2FsLmNvbT4KPiAtLS0KPiAgIGZzL3ViaWZz
+L2djLmMgfCAyIC0tCj4gICAxIGZpbGUgY2hhbmdlZCwgMiBkZWxldGlvbnMoLSkKPiAKPiBkaWZm
+IC0tZ2l0IGEvZnMvdWJpZnMvZ2MuYyBiL2ZzL3ViaWZzL2djLmMKPiBpbmRleCA3Y2MyMmQ3MzE3
+ZWEuLjQ2NWJlZWE1MjE3NiAxMDA2NDQKPiAtLS0gYS9mcy91Ymlmcy9nYy5jCj4gKysrIGIvZnMv
+dWJpZnMvZ2MuYwo+IEBAIC04OTksOCArODk5LDYgQEAgaW50IHViaWZzX2djX3N0YXJ0X2NvbW1p
+dChzdHJ1Y3QgdWJpZnNfaW5mbyAqYykKPiAgIAkJCWVyciA9IC1FTk9NRU07Cj4gICAJCQlnb3Rv
+IG91dDsKPiAgIAkJfQpIaSBDb2xpbiwKSSBqdXN0IGZvdW5kIG91dCBhYm91dCBpdCB0b2RheSB0
+aGFua3MgdG8geW91ciBwYXRjaC4gQ29tbWl0IApjNzcwY2Q1MTkwYmEgKCJ1YmlmczogZml4IGFu
+IElTX0VSUigpIHZzIE5VTEwgY2hlY2siKSBkaWQgaW1wb3J0IGEgbmV3IApwcm9ibGVtIHRoYXQg
+dWJpZnNfZ2Nfc3RhcnRfY29tbWl0KCkgbWF5IHJldHVybiAtRU5PTUVNIHdoaWxlIHN5bmNpbmcg
+ZnMuCkkgZ3Vlc3MgdWJpZnNfZmFzdF9maW5kX2ZyZGlfaWR4KCkgcmV0dXJuIE5VTEwgcG9pbnRl
+ciBpcyB0aGUgCnRlcm1pbmF0aW9uIGNvbmRpdGlvbiBpbiB3aGlsZS1sb29wLCB3aGljaCBtZWFu
+cyB3ZSBjYW5ub3QgZ2V0IGEgCmZyZWVhYmxlIGluZGV4IExFQiBpbiB1Ymlmc19nY19zdGFydF9j
+b21taXQoKS4KCj4gLQkJaWYgKCFscCkKPiAtCQkJYnJlYWs7Cj4gICAJCWlkeF9nYyA9IGttYWxs
+b2Moc2l6ZW9mKHN0cnVjdCB1Ymlmc19nY2VkX2lkeF9sZWIpLCBHRlBfTk9GUyk7Cj4gICAJCWlm
+ICghaWR4X2djKSB7Cj4gICAJCQllcnIgPSAtRU5PTUVNOwo+IApCVFcsIHRoZSBmb2xsb3dpbmcg
+bW9kaWZpY2F0aW9ucyBtYXkgYmUgd2hhdCB5b3Ugd2FudD8KZGlmZiAtLWdpdCBhL2ZzL3ViaWZz
+L2djLmMgYi9mcy91Ymlmcy9nYy5jCmluZGV4IDdjYzIyZDczMTdlYS4uYjFmMjc2NTk5YjA0IDEw
+MDY0NAotLS0gYS9mcy91Ymlmcy9nYy5jCisrKyBiL2ZzL3ViaWZzL2djLmMKQEAgLTg5NSwxMCAr
+ODk1LDYgQEAgaW50IHViaWZzX2djX3N0YXJ0X2NvbW1pdChzdHJ1Y3QgdWJpZnNfaW5mbyAqYykK
+ICAgICAgICAgLyogUmVjb3JkIGluZGV4IGZyZWVhYmxlIExFQnMgZm9yIHVubWFwcGluZyBhZnRl
+ciBjb21taXQgKi8KICAgICAgICAgd2hpbGUgKDEpIHsKICAgICAgICAgICAgICAgICBscCA9IHVi
+aWZzX2Zhc3RfZmluZF9mcmRpX2lkeChjKTsKLSAgICAgICAgICAgICAgIGlmICghbHApIHsKLSAg
+ICAgICAgICAgICAgICAgICAgICAgZXJyID0gLUVOT01FTTsKLSAgICAgICAgICAgICAgICAgICAg
+ICAgZ290byBvdXQ7Ci0gICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgaWYgKCFscCkK
+ICAgICAgICAgICAgICAgICAgICAgICAgIGJyZWFrOwogICAgICAgICAgICAgICAgIGlkeF9nYyA9
+IGttYWxsb2Moc2l6ZW9mKHN0cnVjdCB1Ymlmc19nY2VkX2lkeF9sZWIpLCAKR0ZQX05PRlMpOwoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxp
+bnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
