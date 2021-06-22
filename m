@@ -2,76 +2,84 @@ Return-Path: <SRS0=6QP0=LQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8D57C2B9F4
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jun 2021 11:57:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AFAEDC2B9F4
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jun 2021 12:16:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 87931613B2
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jun 2021 11:57:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 87931613B2
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id 7C2CE6102A
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jun 2021 12:16:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7C2CE6102A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=boJf8DxEqEEZLvMAT8/s/BMv9aieW+VUI6j7mjuiddI=; b=mRHf7rICBgh8gVwO/+IyRusIuB
-	yGcyq/5N4rmRaBkqluWWBriR51cYOyVJ14dUdCPNdyhx6/vUnAFcWaHuKO71ZXUzX9yix2n0H1ga4
-	DhpqRh/6Z/qSIF+p0nIsF7OUtH2gk4ezYZDv4i9SCB4D1P1ei2wmI+rapg5B7dTHgLbpMhPOfKuW0
-	JmHR9wKdiRg0RGpCJRn44SNO7/WKo7kAlSwFpzAnrkbHlmsLHAqgwszyLntNRAyGE4QZrM/gobMLB
-	M08dT7sgSoXr3A6DrCmWl9gy3n1qK8Ic2QHLaH69tARjMO+6DDa+wMHmmABm4lrBcgtwnbO9qgs9q
-	gcUxsqog==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=bJxvwRzpiPwsoaVc70xEj34YHkk92+HK3LuloYvsJ7c=; b=T/lj7HKGaLt3B6
+	eCZn+7MzWLK+JNNpmvn6ooU4YqDMTsNJ6dePnVqZE8Rwt9/eyk0oJsZw7fbGtwbxlP1BgosaP+amE
+	de1ipyCknBFirQ3J67mrHJZ4bMR5maC5RRDnd07clOY2JI0kV7/mnx1eg45OJ2t9DMNN2ZAsuFfkA
+	8t6IBiLn7Km8QLEvIBWqf+7nBCxzAC3gWs8pbZM2Iex7KGdv8Z07kqXQFu14qtEBATJYvMnASq00D
+	smL70glMhhFZMKZrTJfkv23F/uHtmfjwlByu6aaXiEczBmWtBrODI84YOrPkBQE/JUGLZXfa0G7Lr
+	igWUEypKht2WURwezoHw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lvf1j-0072hr-Kv; Tue, 22 Jun 2021 11:57:11 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1lvfJN-0075jx-Dn; Tue, 22 Jun 2021 12:15:25 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lvf1g-0072fq-Ap
- for linux-mtd@lists.infradead.org; Tue, 22 Jun 2021 11:57:10 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 4E2422224B;
- Tue, 22 Jun 2021 13:57:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1624363022;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=cW9h5DpBp2GZE/dsC+UBUW7ysGWDsL3QGU2yDtMlmus=;
- b=SLcnPRPI/Opz8E0XbrxIDkbvtIafbj1EBQPzY8au0k8lMxdichOhxwNUB5PRA8h9DQ70/P
- 3iHryxJZioyWa7Fwx3srHBjbFezv0en/11Ee04M8QHJ/624mLet6VnvhygnofN3PRUwZ64
- KpHWCxYf5cKQOndY1yeanQWEzXKyWBE=
+ id 1lvfJJ-0075jD-5t
+ for linux-mtd@lists.infradead.org; Tue, 22 Jun 2021 12:15:23 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15MCFFQZ053902;
+ Tue, 22 Jun 2021 07:15:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1624364115;
+ bh=VXl+turadXEnbo1KvsAjQeLsr8jDoDct/9xwVEpSP24=;
+ h=From:To:CC:Subject:Date:In-Reply-To:References;
+ b=vfk9zw3qA8STy8oMrHARhDBi+4Pq2AgjZ+aUCsfAaTshQKPMGcAV4+FeD6VVo2Lwc
+ 8j1+UBTA78bzjRGfcOYucXfY/GRPFUk7tXWwHEXgHR+EL4yBqzDuMx877X0OSgzTb/
+ HxtG2RtZt0pFNEMEhDXm6PEaa4n9gVUtEnqAC8a0=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15MCFEjD048546
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 22 Jun 2021 07:15:15 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 22
+ Jun 2021 07:15:14 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 22 Jun 2021 07:15:14 -0500
+Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15MCFBHg049752;
+ Tue, 22 Jun 2021 07:15:11 -0500
+From: Vignesh Raghavendra <vigneshr@ti.com>
+To: Michael Walle <michael@walle.cc>, <linux-mtd@lists.infradead.org>, Colin
+ King <colin.king@canonical.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Richard Weinberger <richard@nod.at>
+CC: Vignesh Raghavendra <vigneshr@ti.com>, <linux-kernel@vger.kernel.org>,
+ <kernel-janitors@vger.kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: remove redundant continue statement
+Date: Tue, 22 Jun 2021 17:44:47 +0530
+Message-ID: <162436407038.6751.408040408294040312.b4-ty@ti.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210618093331.100006-1-colin.king@canonical.com>
+References: <20210618093331.100006-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Date: Tue, 22 Jun 2021 13:57:00 +0200
-From: Michael Walle <michael@walle.cc>
-To: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc: linux-mtd@lists.infradead.org, Frieder Schrempf
- <frieder.schrempf@kontron.de>, Boris Brezillon <bbrezillon@kernel.org>,
- Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
- <p.yadav@ti.com>, linux-kernel@vger.kernel.org, Esben Haabendal
- <esben@geanix.com>, Zhengxun Li <zhengxunli@mxic.com.tw>, Jaime Liao
- <jaimeliao@mxic.com.tw>, masonccyang@mxic.com.tw, ycllin@mxic.com.tw
-Subject: Re: [RFC 2/3] mtd: spi-nor: core: compare JEDEC bytes to already
- found flash_info
-In-Reply-To: <20210621152320.3811194-3-linux@rasmusvillemoes.dk>
-References: <20210621152320.3811194-1-linux@rasmusvillemoes.dk>
- <20210621152320.3811194-3-linux@rasmusvillemoes.dk>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <223232ecd0865e819477f17cd464ab08@walle.cc>
-X-Sender: michael@walle.cc
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210622_045708_794784_48EC98DD 
-X-CRM114-Status: GOOD (  21.63  )
+X-CRM114-CacheID: sfid-20210622_051522_280904_8012A35D 
+X-CRM114-Status: UNSURE (   6.86  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,73 +91,23 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-[+ some people from MXIC as they are ones who posted to the ML
-lately. Feel free to forward this mail to the corresponding people.]
+On Fri, 18 Jun 2021 10:33:31 +0100, Colin King wrote:
+> The continue statement at the end of a for-loop has no effect,
+> invert the if expression and remove the continue.
 
-Am 2021-06-21 17:23, schrieb Rasmus Villemoes:
-> Macronix engineers, in their infinite wisdom, have a habit of reusing
-> JEDEC ids for different chips. There's already one
-> workaround (MX25L25635F v MX25L25635E), but the same problem exists
-> for MX25L3205D v MX25L3233F, the latter of which is not currently
-> supported by linux.
-> 
-> AFAICT, that case cannot really be handled with any of the ->fixup
-> machinery: The correct entry for the MX25L3233F would read
-> 
->         { "mx25l3233f",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K |
-> SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ ) },
-> 
-> while the existing one is
-> 
-> 	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K) },
-> 
-> So in spi_nor_init_params(), we won't even try reading the sfdp
-> info (i.e. call spi_nor_sfdp_init_params), and hence
-> spi_nor_post_sfdp_fixups() has no way of distinguishing the
-> chips.
-> 
-> Replacing the existing entry with the mx25l3233f one to coerce the
-> core into issuing the SPINOR_OP_RDSFDP is also not really an option,
-> because the data sheet for the mx25l3205d explicitly says not to issue
-> any commands not listed ("It is not recommended to adopt any other
-> code not in the command definition table, which will potentially enter
-> the hidden mode.", whatever that means).
+Applied to spi-nor/next, thanks!
+[1/1] mtd: spi-nor: remove redundant continue statement
+      https://git.kernel.org/mtd/c/c17e5c85b3
 
-Maybe we should ask Macronix if it is safe to send the RDSFDP command.
-Can anyone from MXIC comment this?
-This is also interesting because we are discussing reading the SFDP
-without reading the ID first.
+--
+Regards
+Vignesh
 
-Of course this will not save us from two different devices sharing
-the same ID and both having no RDSFDP support.
-
-> In order to support such cases, extend the logic in spi_nor_read_id()
-> a little so that if we already have a struct flash_info* from the name
-> in device tree, check the JEDEC bytes against that, and if it is a
-> match, accept that (device tree compatible + matching JEDEC bytes) is
-> stronger than merely matching JEDEC bytes.
-
-This won't help much without a proper dt schema. No in-tree devicetree
-could use is because the DT validation would complain. So if this will
-go in (and the maintainers are rather hesitant to add it, I tried
-it myself [1]), you'd also need to add it to jedec,spi-nor.yaml and
-get an ack from Rob.
-
-> This also makes initialization slightly faster in the common case
-> where the flash_info was found from the name and the JEDEC bytes do
-> match - it avoids a second linear search over all known chips.
-> 
-> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-
--michael
-
-[1] 
-https://lore.kernel.org/linux-mtd/20200103223423.14025-1-michael@walle.cc/
 
 ______________________________________________________
 Linux MTD discussion mailing list
