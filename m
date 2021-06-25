@@ -2,81 +2,77 @@ Return-Path: <SRS0=mYMn=LT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-20.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-12.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08B1AC2B9F4
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Jun 2021 06:48:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C8E9C2B9F4
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Jun 2021 07:18:09 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AC0CB6140E
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Jun 2021 06:48:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC0CB6140E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	by mail.kernel.org (Postfix) with ESMTPS id DBF3A61417
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Jun 2021 07:18:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DBF3A61417
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rock-chips.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:
-	From:CC:To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=sPOI8iW6jZMFf3p423AaQDGjuHhdkga5HiTZuiUMLLs=; b=Mcw5SdPN6Rqu0w
-	bvdfXN+YXxFO83c2vYxuaEHXOvv+qH9FiUC45o7KD8gOBetVTmOddEZwTr3cjONfHNN4sEh9a3ka/
-	fJ34/sFDtawImA6qJgioFZ5mAkn3IZrUmLor5CBzoytq5LHwWhJbNH0GbdMXO3KLFeoD0WVmKDIas
-	ULtbtJHq2+UDaJzMnkXiZeE25QMHU/u2nYbC52X0tJgtNPVoUtNV4A0TikP7HhFVl69rbYMRDZBR7
-	rEE/57kI8IdH9x83HDkpfwfMqY/fk/bbvmh6Nvor2TQBiaaqK5vC1yELEwhx4jKneIY9RjgAXpTuK
-	9kTQFv/g2rQK/35sv2aQ==;
+	List-Owner; bh=s7fyiUWuSVJyj67rHa1hZcru4wdyQYWmexjP6X+9oCU=; b=b5oqKIX67pyEiI
+	8RZHSG9YdLaDW/BxykTNrMF0GzanGYQbsI1IW+2hha5fGKV2a7Yjaojy/yIc6DRqMKgkLY9VfBUFB
+	r9cGwgAIGBSr2rsqezpHXbCFaMc4B6LBZ/vSwl7Pb7x1PgWpsegBOZc1Qy9opLKpgtEh8qekzi6+a
+	SXQg1MOzV+DbHrbawScrz7e+/Qz307pLO7B3El5iOHxNtpPUC0UpSrvW3DxZO7/cGS7re2BNYAnIc
+	zuRjE4RvSLwpMpu1X7lhXSqdOgHnqunl8qDizs0R29KCidKF4DO2D/wl3kaEpN6zMcyTK1GOl5Ae0
+	+jS5L6e5Q3DHnfrlqR+Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lwfcw-00HTpG-SV; Fri, 25 Jun 2021 06:47:46 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1lwg5e-00HVxw-Oh; Fri, 25 Jun 2021 07:17:26 +0000
+Received: from lucky1.263xmail.com ([211.157.147.131])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lwfcu-00HToi-EC
- for linux-mtd@lists.infradead.org; Fri, 25 Jun 2021 06:47:45 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15P6leYo105986;
- Fri, 25 Jun 2021 01:47:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1624603660;
- bh=1y23YIm3wOf7MPu3P0fxTeFgLzN5msh+3LacTOz4vmg=;
- h=To:CC:From:Subject:Date;
- b=F1wU+Zp1QvIge/Ij6XNM8nE0ayK5mjHEhXbM6t3xn1xPKrUATaAI+U0UuokqXcjU4
- iOz2uNuGew8MVvzn3Rf8x+vjETGdsy61eVTQWDPrGSFOARCwXoswb0iJbUmBG0HFgV
- isrvb9mi6JqCzoROhRWaypdoD6wn8tSTQ30UxBcc=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15P6le9H058036
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 25 Jun 2021 01:47:40 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 25
- Jun 2021 01:47:40 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 25 Jun 2021 01:47:40 -0500
-Received: from [10.250.234.148] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15P6lbFl005696;
- Fri, 25 Jun 2021 01:47:38 -0500
-To: Richard Weinberger <richard@nod.at>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Yadav,
- Pratyush" <p.yadav@ti.com>, Michael Walle <michael@walle.cc>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Subject: mtd: spi-nor: Changes for v5.14
-Message-ID: <56e24b3e-57a2-50a0-8dee-c6b7ec62193f@ti.com>
-Date: Fri, 25 Jun 2021 12:17:36 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+ id 1lwg5Q-00HVto-8e; Fri, 25 Jun 2021 07:17:14 +0000
+Received: from localhost (unknown [192.168.167.235])
+ by lucky1.263xmail.com (Postfix) with ESMTP id 405E3C1665;
+ Fri, 25 Jun 2021 15:17:06 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.22.7.114])
+ by smtp.263.net (postfix) whith ESMTP id
+ P5175T139828512515840S1624605424470465_; 
+ Fri, 25 Jun 2021 15:17:06 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <396b9f5360d15589c39af6b069c91999>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: linux-spi@vger.kernel.org
+X-RCPT-COUNT: 19
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From: Jon Lin <jon.lin@rock-chips.com>
+To: linux-spi@vger.kernel.org
+Cc: jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
+ heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
+ yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
+ linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+ p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ mturquette@baylibre.com, sboyd@kernel.org, linux-clk@vger.kernel.org
+Subject: [PATCH v9 00/10] Add Rockchip SFC(serial flash controller) support
+Date: Fri, 25 Jun 2021 15:16:52 +0800
+Message-Id: <20210625071702.10374-1-jon.lin@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210624_234744_616365_96F4C466 
-X-CRM114-Status: GOOD (  13.56  )
+X-CRM114-CacheID: sfid-20210625_001712_683859_97D2544C 
+X-CRM114-Status: GOOD (  27.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,85 +84,138 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Richard,
-
-This is the SPI NOR PR for v5.14.
-
-Regards
-Vignesh
 
 
-The following changes since commit c4681547bcce777daf576925a966ffa824edd09d:
+Changes in v9:
+- Seperate FDT binding docs and includes from rk3036 sfc_hclk patch
+- Seperate DMA IRQ setting and wait_completion from DMA fifo transfer
+  function to make dma_status_poll be possible(Which I will implement
+  in u-boot)
+- Add SFC Kconfig detail comment
 
-  Linux 5.13-rc3 (2021-05-23 11:42:48 -1000)
+Changes in v8:
+- Fix indent 4 to 2 in yaml
 
-are available in the Git repository at:
+Changes in v7:
+- Fix up the sclk_sfc parent error in rk3036
+- Unify to "rockchip,sfc" compatible id because all the feature update
+  will have a new IP version, so the driver is used for the SFC IP in
+  all SoCs
+- Change to use node "sfc" to name the SFC pinctrl group
+- Add subnode reg property check
+- Add rockchip_sfc_adjust_op_size to workaround in CMD + DUMMY case
+- Limit max_iosize to 32KB
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/spi-nor/for-5.14
+Changes in v6:
+- Add support in device trees for rv1126(Declared in series 5 but not
+  submitted)
+- Change to use "clk_sfc" "hclk_sfc" as clock lable, since it does not
+  affect interpretation and has been widely used
+- Support sfc tx_dual, tx_quad(Declared in series 5 but not submitted)
+- Simplify the code, such as remove "rockchip_sfc_register_all"(Declared
+  in series 5 but not submitted)
+- Support SFC ver4 ver5(Declared in series 5 but not submitted)
+- Add author Chris Morgan and Jon Lin to spi-rockchip-sfc.c
+- Change to use devm_spi_alloc_master and spi_unregister_master
 
-for you to fetch changes up to c17e5c85b32f8809135f3211ba2525fb98b5c09f:
+Changes in v5:
+- Add support in device trees for rv1126
+- Support sfc tx_dual, tx_quad
+- Simplify the code, such as remove "rockchip_sfc_register_all"
+- Support SFC ver4 ver5
 
-  mtd: spi-nor: remove redundant continue statement (2021-06-21 11:17:10 +0530)
+Changes in v4:
+- Changing patch back to an "RFC". An engineer from Rockchip
+  reached out to me to let me know they are working on this patch for
+  upstream, I am submitting this v4 for the community to see however
+  I expect Jon Lin (jon.lin@rock-chips.com) will submit new patches
+  soon and these are the ones we should pursue for mainlining. Jon's
+  patch series should include support for more hardware than this
+  series.
+- Clean up documentation more and ensure it is correct per
+  make dt_binding_check.
+- Add support in device trees for rk3036, rk3308, and rv1108.
+- Add ahb clock (hclk_sfc) support for rk3036.
+- Change rockchip_sfc_wait_fifo_ready() to use a switch statement.
+- Change IRQ code to only mark IRQ as handled if it handles the
+  specific IRQ (DMA transfer finish) it is supposed to handle.
 
-----------------------------------------------------------------
-SPI NOR core changes:
-- Ability to dump SFDP tables via sysfs
-- Support for erasing OTP regions on Winbond and similar flashes
-- Few API doc updates and fixes
-- Locking support for MX25L12805D
+Changes in v3:
+- Changed the name of the clocks to sfc/ahb (from clk-sfc/clk-hsfc).
+- Changed the compatible string from rockchip,sfc to
+  rockchip,rk3036-sfc. A quick glance at the datasheets suggests this
+  driver should work for the PX30, RK180x, RK3036, RK312x, RK3308 and
+  RV1108 SoCs, and possibly more. However, I am currently only able
+  to test this on a PX30 (an RK3326). The technical reference manuals
+  appear to list the same registers for each device.
+- Corrected devicetree documentation for formatting and to note these
+  changes.
+- Replaced the maintainer with Heiko Stuebner and myself, as we will
+  take ownership of this going forward.
+- Noted that the device (per the reference manual) supports 4 CS, but
+  I am only able to test a single CS (CS 0).
+- Reordered patches to comply with upstream rules.
 
-SPI NOR controller drivers changes:
-- Use SPI_MODE_X_MASK in nxp-spifi
-- Intel Alder Lake-M SPI serial flash support
+Changes in v2:
+- Reimplemented driver using spi-mem subsystem.
+- Removed power management code as I couldn't get it working properly.
+- Added device tree bindings for Odroid Go Advance.
 
-----------------------------------------------------------------
-Andy Shevchenko (1):
-      mtd: spi-nor: nxp-spifi: Use SPI_MODE_X_MASK
+Changes in v1:
+hanges made in this new series versus the v8 of the old series:
+- Added function to read spi-rx-bus-width from device tree, in the
+  event that the SPI chip supports 4x mode but only has 2 pins
+  wired (such as the Odroid Go Advance).
+- Changed device tree documentation from txt to yaml format.
+- Made "reset" message a dev_dbg from a dev_info.
+- Changed read and write fifo functions to remove redundant checks.
+- Changed the write and read from relaxed to non-relaxed when
+  starting the DMA transfer or reading the DMA IRQ.
+- Changed from dma_coerce_mask_and_coherent to just
+  dma_set_mask_and_coherent.
+- Changed name of get_if_type to rockchip_sfc_get_if_type.
 
-Colin Ian King (1):
-      mtd: spi-nor: remove redundant continue statement
+Chris Morgan (8):
+  dt-bindings: rockchip-sfc: Bindings for Rockchip serial flash
+    controller
+  spi: rockchip-sfc: add rockchip serial flash controller
+  arm64: dts: rockchip: Add SFC to PX30
+  clk: rockchip:  add dt-binding for hclk_sfc on rk3036
+  arm: dts: rockchip: Add SFC to RK3036
+  arm: dts: rockchip: Add SFC to RV1108
+  arm64: dts: rockchip: Add SFC to RK3308
+  arm64: dts: rockchip: Enable SFC for Odroid Go Advance
 
-David Bauer (1):
-      mtd: spi-nor: enable locking support for MX25L12805D
+Jon Lin (2):
+  clk: rockchip: rk3036: fix up the sclk_sfc parent error
+  clk: rockchip: Add support for hclk_sfc on rk3036
 
-Michael Walle (7):
-      mtd: spi-nor: otp: fix kerneldoc typos
-      mtd: spi-nor: otp: fix access to security registers in 4 byte mode
-      mtd: spi-nor: otp: use more consistent wording
-      mtd: spi-nor: otp: return -EROFS if region is read-only
-      mtd: spi-nor: otp: implement erase for Winbond and similar flashes
-      mtd: spi-nor: sfdp: save a copy of the SFDP data
-      mtd: spi-nor: add initial sysfs support
+ .../devicetree/bindings/spi/rockchip-sfc.yaml |  88 +++
+ arch/arm/boot/dts/rk3036.dtsi                 |  42 ++
+ arch/arm/boot/dts/rv1108.dtsi                 |  37 +
+ arch/arm64/boot/dts/rockchip/px30.dtsi        |  38 +
+ arch/arm64/boot/dts/rockchip/rk3308.dtsi      |  37 +
+ .../boot/dts/rockchip/rk3326-odroid-go2.dts   |  16 +
+ drivers/clk/rockchip/clk-rk3036.c             |   5 +-
+ drivers/spi/Kconfig                           |  12 +
+ drivers/spi/Makefile                          |   1 +
+ drivers/spi/spi-rockchip-sfc.c                | 682 ++++++++++++++++++
+ include/dt-bindings/clock/rk3036-cru.h        |   1 +
+ 11 files changed, 957 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+ create mode 100644 drivers/spi/spi-rockchip-sfc.c
 
-Mika Westerberg (1):
-      mtd: spi-nor: intel-spi: Add support for Intel Alder Lake-M SPI serial flash
+-- 
+2.17.1
 
-Pratyush Yadav (1):
-      mtd: spi-nor: Add documentation for spi_nor_soft_reset()
 
-Tudor Ambarus (1):
-      mtd: spi-nor: macronix: Fix name for mx66l51235f
 
- Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor |  31 ++
- drivers/mtd/spi-nor/Makefile                            |   2 +-
- drivers/mtd/spi-nor/controllers/intel-spi-pci.c         |   1 +
- drivers/mtd/spi-nor/controllers/nxp-spifi.c             |   2 +-
- drivers/mtd/spi-nor/core.c                              |  22 +-
- drivers/mtd/spi-nor/core.h                              |  16 +
- drivers/mtd/spi-nor/macronix.c                          |   5 +-
- drivers/mtd/spi-nor/otp.c                               | 160 +++++++++-
- drivers/mtd/spi-nor/sfdp.c                              |  58 ++++
- drivers/mtd/spi-nor/sysfs.c                             |  93 ++++++
- drivers/mtd/spi-nor/winbond.c                           |   1 +
- include/linux/mtd/spi-nor.h                             |   2 +
- 12 files changed, 370 insertions(+), 23 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
- create mode 100644 drivers/mtd/spi-nor/sysfs.c
 
 ______________________________________________________
 Linux MTD discussion mailing list
