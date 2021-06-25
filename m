@@ -2,85 +2,81 @@ Return-Path: <SRS0=mYMn=LT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-20.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EDA9C2B9F4
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Jun 2021 06:32:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08B1AC2B9F4
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Jun 2021 06:48:22 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3713D611C1
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Jun 2021 06:32:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3713D611C1
+	by mail.kernel.org (Postfix) with ESMTPS id AC0CB6140E
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Jun 2021 06:48:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC0CB6140E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:CC:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=Iq/hZsfd1S6BUTqKu4rRSZyxDBAhTFf7LiaKYec/Yro=; b=MJRYeObbl1L0Aw7BLv334E6SwA
-	a6HuvqNLn/x6o6mSvuUUWQxnv7dpCg28UipkWofp+iywFz1siiIl4FM12AQuCNcRS4DcXsJnkNr6g
-	MPL4X+9KT05YVDhwiD63VXK6MAwJce0WC6LWgbxTkx3bYHiGGhAMdAGkgoY4s0FCNMq3YlUR5DTy6
-	L6uur4Qbtsy4sHyU7BuEVrgUrcVdNBBz2WWWATwsd+lElG1Aw0oMuOt9rd70s/YEVT3xuwh50GIzE
-	2bB7tnFUcEe/nS2EtSuLDhb1AtWz1D7onUcCOLtT/1tpfzzo7TF6wb0N0mfGbx4twKZExFTPgpuHB
-	XuSczxxw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:
+	From:CC:To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=sPOI8iW6jZMFf3p423AaQDGjuHhdkga5HiTZuiUMLLs=; b=Mcw5SdPN6Rqu0w
+	bvdfXN+YXxFO83c2vYxuaEHXOvv+qH9FiUC45o7KD8gOBetVTmOddEZwTr3cjONfHNN4sEh9a3ka/
+	fJ34/sFDtawImA6qJgioFZ5mAkn3IZrUmLor5CBzoytq5LHwWhJbNH0GbdMXO3KLFeoD0WVmKDIas
+	ULtbtJHq2+UDaJzMnkXiZeE25QMHU/u2nYbC52X0tJgtNPVoUtNV4A0TikP7HhFVl69rbYMRDZBR7
+	rEE/57kI8IdH9x83HDkpfwfMqY/fk/bbvmh6Nvor2TQBiaaqK5vC1yELEwhx4jKneIY9RjgAXpTuK
+	9kTQFv/g2rQK/35sv2aQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lwfNQ-00HQOH-V3; Fri, 25 Jun 2021 06:31:45 +0000
+	id 1lwfcw-00HTpG-SV; Fri, 25 Jun 2021 06:47:46 +0000
 Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lwfNN-00HQLx-WA
- for linux-mtd@lists.infradead.org; Fri, 25 Jun 2021 06:31:43 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15P6VXs1100539;
- Fri, 25 Jun 2021 01:31:33 -0500
+ id 1lwfcu-00HToi-EC
+ for linux-mtd@lists.infradead.org; Fri, 25 Jun 2021 06:47:45 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15P6leYo105986;
+ Fri, 25 Jun 2021 01:47:40 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1624602693;
- bh=nIb0WAxWfPh4HwNLmik0VjYZO7xYgo3wOzkskF+b6B0=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=XOunwywFsX5jgYA0OuEiqzs/M8v8qA2UVmwQllcpvq97V3Xijf/Pb6Tgzpvs+3Qcv
- InCtHZzZZHb0K3SpmvjXFfhYjnjMlOS9OGUIMh087pSGhSiEKwFlWFMCk8kStttceJ
- YGMzyciNeQxrGKhuQ59gi9GE05gePD7GBZ5urDw8=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15P6VXBx093726
+ s=ti-com-17Q1; t=1624603660;
+ bh=1y23YIm3wOf7MPu3P0fxTeFgLzN5msh+3LacTOz4vmg=;
+ h=To:CC:From:Subject:Date;
+ b=F1wU+Zp1QvIge/Ij6XNM8nE0ayK5mjHEhXbM6t3xn1xPKrUATaAI+U0UuokqXcjU4
+ iOz2uNuGew8MVvzn3Rf8x+vjETGdsy61eVTQWDPrGSFOARCwXoswb0iJbUmBG0HFgV
+ isrvb9mi6JqCzoROhRWaypdoD6wn8tSTQ30UxBcc=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15P6le9H058036
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 25 Jun 2021 01:31:33 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ Fri, 25 Jun 2021 01:47:40 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 25
- Jun 2021 01:31:32 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ Jun 2021 01:47:40 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 25 Jun 2021 01:31:32 -0500
+ Frontend Transport; Fri, 25 Jun 2021 01:47:40 -0500
 Received: from [10.250.234.148] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15P6VT3C089567;
- Fri, 25 Jun 2021 01:31:30 -0500
-Subject: Re: [GIT PULL] mtd: nand: Changes for 5.14
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>
-CC: <linux-mtd@lists.infradead.org>, Tudor Ambarus
- <Tudor.Ambarus@microchip.com>,
- Frieder Schrempf <frieder.schrempf@kontron.de>
-References: <20210623120125.1f02792e@xps13>
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15P6lbFl005696;
+ Fri, 25 Jun 2021 01:47:38 -0500
+To: Richard Weinberger <richard@nod.at>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Yadav,
+ Pratyush" <p.yadav@ti.com>, Michael Walle <michael@walle.cc>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>
 From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <c02e435b-6c6e-ec6d-b912-e7bb997baa03@ti.com>
-Date: Fri, 25 Jun 2021 12:01:28 +0530
+Subject: mtd: spi-nor: Changes for v5.14
+Message-ID: <56e24b3e-57a2-50a0-8dee-c6b7ec62193f@ti.com>
+Date: Fri, 25 Jun 2021 12:17:36 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210623120125.1f02792e@xps13>
 Content-Language: en-US
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210624_233142_200013_8761CC63 
-X-CRM114-Status: GOOD (  16.44  )
+X-CRM114-CacheID: sfid-20210624_234744_616365_96F4C466 
+X-CRM114-Status: GOOD (  13.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,41 +93,80 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
+Hi Richard,
 
-On 6/23/21 3:31 PM, Miquel Raynal wrote:
-> Hi Richard,
-> 
-> This is the NAND PR for 5.14.
-> 
-> This PR includes patches from the memory bus tree after merge of an
-> immutable branch provided by Krzysztof Kozlowski; I hope this is the
-> right way to handle such situation.
-> 
-> There is also a known conflict with the devicetree tree which is trivial
-> to resolve:
-> 
-> 	9b358af7c818 ("dt-bindings: mux: Convert mux controller
-> 	bindings to schema") -> Updates all the files referencing the mux-controller.txt
-> 	binding as the file name changed (s/txt/yaml/).
-
-
-> 
-> 	6947ad674944 ("dt-bindings: mtd: Convert ti, am654-hbmc.txt to
-> 	YAML schema")
-> 	-> Converts one of these files to yaml, the reference to
-> 	mux-controller.{txt,yaml} being dropped during the conversion.
-> 
-> It is then only needed to just take the ti,am654-hbmc yaml conversion
-> as it is.
-
-This commit is in mtd/next and not in nand/next. So this PR should not
-result in conflict on ti,am654-hbmc.txt.
-
-[...]
+This is the SPI NOR PR for v5.14.
 
 Regards
 Vignesh
+
+
+The following changes since commit c4681547bcce777daf576925a966ffa824edd09d:
+
+  Linux 5.13-rc3 (2021-05-23 11:42:48 -1000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/spi-nor/for-5.14
+
+for you to fetch changes up to c17e5c85b32f8809135f3211ba2525fb98b5c09f:
+
+  mtd: spi-nor: remove redundant continue statement (2021-06-21 11:17:10 +0530)
+
+----------------------------------------------------------------
+SPI NOR core changes:
+- Ability to dump SFDP tables via sysfs
+- Support for erasing OTP regions on Winbond and similar flashes
+- Few API doc updates and fixes
+- Locking support for MX25L12805D
+
+SPI NOR controller drivers changes:
+- Use SPI_MODE_X_MASK in nxp-spifi
+- Intel Alder Lake-M SPI serial flash support
+
+----------------------------------------------------------------
+Andy Shevchenko (1):
+      mtd: spi-nor: nxp-spifi: Use SPI_MODE_X_MASK
+
+Colin Ian King (1):
+      mtd: spi-nor: remove redundant continue statement
+
+David Bauer (1):
+      mtd: spi-nor: enable locking support for MX25L12805D
+
+Michael Walle (7):
+      mtd: spi-nor: otp: fix kerneldoc typos
+      mtd: spi-nor: otp: fix access to security registers in 4 byte mode
+      mtd: spi-nor: otp: use more consistent wording
+      mtd: spi-nor: otp: return -EROFS if region is read-only
+      mtd: spi-nor: otp: implement erase for Winbond and similar flashes
+      mtd: spi-nor: sfdp: save a copy of the SFDP data
+      mtd: spi-nor: add initial sysfs support
+
+Mika Westerberg (1):
+      mtd: spi-nor: intel-spi: Add support for Intel Alder Lake-M SPI serial flash
+
+Pratyush Yadav (1):
+      mtd: spi-nor: Add documentation for spi_nor_soft_reset()
+
+Tudor Ambarus (1):
+      mtd: spi-nor: macronix: Fix name for mx66l51235f
+
+ Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor |  31 ++
+ drivers/mtd/spi-nor/Makefile                            |   2 +-
+ drivers/mtd/spi-nor/controllers/intel-spi-pci.c         |   1 +
+ drivers/mtd/spi-nor/controllers/nxp-spifi.c             |   2 +-
+ drivers/mtd/spi-nor/core.c                              |  22 +-
+ drivers/mtd/spi-nor/core.h                              |  16 +
+ drivers/mtd/spi-nor/macronix.c                          |   5 +-
+ drivers/mtd/spi-nor/otp.c                               | 160 +++++++++-
+ drivers/mtd/spi-nor/sfdp.c                              |  58 ++++
+ drivers/mtd/spi-nor/sysfs.c                             |  93 ++++++
+ drivers/mtd/spi-nor/winbond.c                           |   1 +
+ include/linux/mtd/spi-nor.h                             |   2 +
+ 12 files changed, 370 insertions(+), 23 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
+ create mode 100644 drivers/mtd/spi-nor/sysfs.c
 
 ______________________________________________________
 Linux MTD discussion mailing list
