@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7939AC48BC2
-	for <linux-mtd@archiver.kernel.org>; Sun, 27 Jun 2021 13:50:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 667DEC48BC2
+	for <linux-mtd@archiver.kernel.org>; Sun, 27 Jun 2021 18:30:16 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3632C61993
-	for <linux-mtd@archiver.kernel.org>; Sun, 27 Jun 2021 13:50:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3632C61993
+	by mail.kernel.org (Postfix) with ESMTPS id 24E746144E
+	for <linux-mtd@archiver.kernel.org>; Sun, 27 Jun 2021 18:30:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 24E746144E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,65 +23,68 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lxcNTV3WpOcBxTHhGUahT/KTCi/eLrHyfpLg4txwAi0=; b=vWzeNz9iFLXK8Q
-	FlK4ETKsubCVh95DhQNe5Aen0snjVKoU862B4GmGcpQtIpm1rxj9RHkIPW0RsFoHJxPoefyAO4tYu
-	yLW/fCmVyndlpeflLbDUOsYupFIMcVqogA25YjjQCZ42eib7at+ba9i5cgOdzfnGhnyO/ob/7vhKw
-	3fqAPZSC7M4TKEjq0uVUcQBf5IKUeQZ6dKpqUnXwq/U8+BmZ/r7DfIG91TJgUSy1ybj+yMkBYDCsP
-	Dk0DjqAzl6WbAqgcuPxX/Qiy1q9eNFKinTA5kMfWAPc5lhIxjGOvSwy9ZM3TRABSiKPIt4MNfMjLZ
-	lwcUC2neINKtOsUNYaRw==;
+	List-Owner; bh=s9XcIHcOQR93mweeDEIz0S9rfw5l4ERPa5PWPMPJ4/4=; b=izz7Ay8hGIUvQR
+	b2/HufWroewvoKayxEcAHOmfeRJ5B9k3wtE9Q8OJcEb9BJKrFKAxTg2T7JdNpwSN3fHBFGYrynZBo
+	GIuZzg++89LltqtYpNlL6wL3552TeY9/dpdS1o+D48n3UUPGvUNT/Stjly8c61cfK1soKogNuRmip
+	Pu8dm0nskKpVwizNtbtGv8N3SNTOOsDaaKvH99BXqAiL/GTf/aqLeAS7edcP/V7J0bvPuoMHWQ+Rj
+	8B6GUWbL9Bbxuj19yxe8ls2+o8H/ct1y1YJFdM0f/YdL8n3fwuR9SBsjfrm8fCDvO0BQ3r63QR8wv
+	c8ukVxN0D6CzNSdJ3V5w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lxVAG-005dUr-7k; Sun, 27 Jun 2021 13:49:36 +0000
-Received: from mail-il1-x12d.google.com ([2607:f8b0:4864:20::12d])
+	id 1lxZX4-005yVk-LK; Sun, 27 Jun 2021 18:29:26 +0000
+Received: from mail-oo1-xc2e.google.com ([2607:f8b0:4864:20::c2e])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lxVAB-005dUK-Q8
- for linux-mtd@lists.infradead.org; Sun, 27 Jun 2021 13:49:34 +0000
-Received: by mail-il1-x12d.google.com with SMTP id a7so2625380ilk.10
- for <linux-mtd@lists.infradead.org>; Sun, 27 Jun 2021 06:49:30 -0700 (PDT)
+ id 1lxZX2-005yVQ-OO
+ for linux-mtd@lists.infradead.org; Sun, 27 Jun 2021 18:29:26 +0000
+Received: by mail-oo1-xc2e.google.com with SMTP id
+ l26-20020a4ac61a0000b029024c94215d77so256066ooq.11
+ for <linux-mtd@lists.infradead.org>; Sun, 27 Jun 2021 11:29:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=BWGO+itUm6tMgujfJIGgElCIQmjPwoC/qMTdg68ZcXc=;
- b=jSx1jWRNMlAT68tgB7bCsuZqgDYgfiNEwJ1mD2Za+4v4gYkEgHIsfr7NLcl/pPu17E
- sMc7eWOadn89rncqJblRCe2nilMIVe9+Lr0KL+CbAUtDY2ukpo7/iwZ9MCTOworuIwiH
- STBBr6guaR+2aQXcvf7lerOIhVDZWCDmuWp6R4Jv4BwYxFgPZTyv53kg0xQ8/VfTwaJp
- JHRC80ddtc2TbByE27FVpuS/MB4VoLb+XNQQ0kvnqfs1ibZToIoi5tPVhQKdn3uswlkQ
- SW+TyonxdygwCu6jods4Mn3ql5Ei8/OiH53q17/MtCKvNkPl+64lanBnagGZjHi4lnWg
- AD5g==
+ :cc; bh=I+z4qkVkifTb0Z2Fw0OduCD9k1E+MgQUYF/WWXgsuTw=;
+ b=uL7OKanIVKL7ppTZGqcwmPDmBXQ+Nxi+L132xY2K7ThGyNV39mFY8n7rekVwU4uA0B
+ TWWijxnmvB0euSuw32huegRqkIBHBfLPPuy3HdxuUJOZSBerKuhihbM1UN+48zQ7Sodb
+ 5ciWhWmTgNdRa5ZMDVF+w7h/K8l/NCZR/iSwFbfnq/wyc0niJnMAGXiAzAlNUjnW1tDz
+ FKFpuJlPriSvCC04LnSG+OWuDlVshf0tTtAJwZps4NFYUvD8FLqYB+0HZevwy/tuJQa1
+ itzZ3+Td+yQ3f/1QFFhGOCYIh7FAwOvJum7V+izkmz2vvJHR2Wz9LSQEXy4cvl8pNpVu
+ ThMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=BWGO+itUm6tMgujfJIGgElCIQmjPwoC/qMTdg68ZcXc=;
- b=tJZwuDalZsWFAY8xlcg2Gh/dAnsMjTgGQ5JYVmTLt654AbOqEGp+0nydhpwUgFHq+q
- Q7oKmyqdyMcKvFMGz0SZiqIaOr6YJtAO1n8fSmuz0t0TUYAx5RgYUY+A25azZPv0Nwep
- uSVBHkAHGc69cX+6KWzsroJ9HfrwD0v8AMt8xYnalnfYN8NrFaSNkD37nlCyFHvrsuwj
- dhKD4nu7bb7hXD0NOzHH71VOW+bxk52zsF1WQ5YN/KcDjdc4YPnULV6ta3AjKkDRXgGF
- w5I6YxZJnmNqT+B0BaziD5VJeCskyvyPqgaHj0Kj8G0RXkpxieCwGNwlwYS1eh+9TK/W
- GeEQ==
-X-Gm-Message-State: AOAM531cYFd4eddb4DvO9MwmJMceEQijLH+96PqyZQIuFEJfRI4YpYic
- jbCmNm8IdEwD2ziFi/Wj8NIIZmbY2gRmL9I3EDY=
-X-Google-Smtp-Source: ABdhPJz1Ubb4xI0HYKINaSQPBvAxnz0e8JYIbsgs0KMkjdWkzp48dXCScptKhbn01OC2YzZmtwYq7A6g9xKqrnL9EGY=
-X-Received: by 2002:a92:d4c5:: with SMTP id o5mr8968854ilm.306.1624801770256; 
- Sun, 27 Jun 2021 06:49:30 -0700 (PDT)
+ bh=I+z4qkVkifTb0Z2Fw0OduCD9k1E+MgQUYF/WWXgsuTw=;
+ b=ncaIRXiWm4aPKaW6M9HMQX8Q+U0OlHy+mjc66wGQ3oZ0/k+xA7chqY4NzwlwhZ2/km
+ VO/Zmw+iQkiRJtK2zl6JMknEs9i845Sk0LtTuIM02r4M8dqyp9GRquUoa06pL2i8J27+
+ 5/IthFnH9mzDYToylIgVOr29J8ayi5WLc1dvyAiKXC6Gn8ep7wuxenFNhoLRZ1Iv8r8Q
+ RKnbmnZYOZVMNP9jx6sbGQmno/pWvcgJahy/BlvSuPfMNvxkMgpx3lp3q6e52TQmh+rn
+ 96gTJqnw4v9Rn01G8gDT/JTZuM1YELhBVdM1BUEJEy8KT2gY7PkgyHmuXi44hKTkusz3
+ QHsw==
+X-Gm-Message-State: AOAM533UWVF9daR5W1EXBRe2zkYEr29smUTMvZWXjk2KVFymsyDrFbJm
+ 9CSYka7/nTtyZ4lF/tAcRdA/qI8sn5EXUythwys=
+X-Google-Smtp-Source: ABdhPJzazxCs92rqGAer6fdtZqhbLUP05TPMWhrAmtWQstXFQdy0ixcwi5fvjdhLAyNrQ8N7bXapWEqOPO8mVcpvrT0=
+X-Received: by 2002:a4a:ae4b:: with SMTP id a11mr16609024oon.48.1624818563070; 
+ Sun, 27 Jun 2021 11:29:23 -0700 (PDT)
 MIME-Version: 1.0
 References: <CAOuPNLiZL4wXc__+Zx+m7TMjUjNq10tykHow3R9AvCknSNR6bQ@mail.gmail.com>
  <CAOuPNLhoLBwksNt+tJ2=hZr-TGHZgEiu7dgk66BUsraGA16Juw@mail.gmail.com>
  <CAFLxGvw1UoC3whDoQ5w6zfDNe=cLYi278y6vvSadQhOV9MGvTA@mail.gmail.com>
-In-Reply-To: <CAFLxGvw1UoC3whDoQ5w6zfDNe=cLYi278y6vvSadQhOV9MGvTA@mail.gmail.com>
-From: Pintu Agarwal <pintu.ping@gmail.com>
-Date: Sun, 27 Jun 2021 19:19:18 +0530
-Message-ID: <CAOuPNLj4ktYYieOqxd1EGUWt0DZamwQik_jg6cj2ZyqRaL9Amw@mail.gmail.com>
+ <CAOuPNLj4ktYYieOqxd1EGUWt0DZamwQik_jg6cj2ZyqRaL9Amw@mail.gmail.com>
+In-Reply-To: <CAOuPNLj4ktYYieOqxd1EGUWt0DZamwQik_jg6cj2ZyqRaL9Amw@mail.gmail.com>
+From: Steve deRosier <derosier@gmail.com>
+Date: Sun, 27 Jun 2021 11:28:47 -0700
+Message-ID: <CALLGbRKs0hRLpRFz1mUJyKZan7Lf0eGAArJbBpXwFu2TQzcmWQ@mail.gmail.com>
 Subject: Re: Query: UBIFS: How to detect empty volumes
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Cc: open list <linux-kernel@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>, 
- Richard Weinberger <richard@nod.at>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>, 
- Phillip Lougher <phillip@squashfs.org.uk>, Sean Nyekjaer <sean@geanix.com>, 
+To: Pintu Agarwal <pintu.ping@gmail.com>
+Cc: Richard Weinberger <richard.weinberger@gmail.com>,
+ open list <linux-kernel@vger.kernel.org>, 
+ linux-mtd <linux-mtd@lists.infradead.org>, Richard Weinberger <richard@nod.at>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ Phillip Lougher <phillip@squashfs.org.uk>, 
+ Sean Nyekjaer <sean@geanix.com>,
  Kernelnewbies <kernelnewbies@kernelnewbies.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210627_064931_897111_9E589667 
-X-CRM114-Status: GOOD (  37.14  )
+X-CRM114-CacheID: sfid-20210627_112924_850934_1D9FB5A6 
+X-CRM114-Status: GOOD (  10.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,86 +101,23 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, 27 Jun 2021 at 14:12, Richard Weinberger
-<richard.weinberger@gmail.com> wrote:
->
-> On Thu, Jun 24, 2021 at 6:09 PM Pintu Agarwal <pintu.ping@gmail.com> wrote:
-> > I have one basic query related to UBIFS volumes on a system with NAND partition.
->
-> There is no such thing as a UBIFS volume. Do you mean UBI volumes?
->
-Yes I mean the ubi volumes which are created using the ubinize config file.
+On Sun, Jun 27, 2021 at 6:52 AM Pintu Agarwal <pintu.ping@gmail.com> wrote:
+> But, it might be possible that some developer may miss/skip this
+> firmware copying part, thus
 
-> > In short, how to detect a particular empty volume inside a system
-> > partition while flashing the partition image?
->
-> What do you mean by system partition? A MTD partition?
-By this I mean the entire UBI partition that contains the magic header "UBI#"
->
-> > Suppose I have one big system partition that consists of 4-5 ubi
-> > volumes inside it with varying sizes.
-> > Lets say:
-> > -- System Partition (ubi image)
-> >     - rootfs volume (ro, squashfs)
-> >     - data volume (rw, ubifs)
-> >     - firmware volume (ro, ubifs)
-> >     - some-other volume (ro, squashfs)
->
-> So by system partition you mean the MTD partition that hosts UBI itself?
->
-Yes the entire UBI partition that contains UBI volumes
+This is your root problem.
 
-> > Consider that all these could be flashed together as part of
-> > system.ubi image in a single shot from the bootloader.
-> > Now, suppose, one of the volume image (say firmware) is missing or
-> > remains empty (as you know we can have empty volumes).
-> >
-> > So, during system image flashing, we wanted to detect if one of the
-> > volume (firmware) is empty.
-> > Since this is an important volume, so we wanted to detect if this
-> > volume is empty/missing we will abort flashing the system partition.
-> > As there is no point in booting the system without this partition.
-> >
-> > So, I am exploring options, how can this be detected ?
->
-> Read from the volume after flashing. If you get only 0xFF bytes it is empty.
->
-I mean, without flashing the image, is it possible to determine/guess
-from the image content/header
- that a volume in the image is empty.
-If it is empty then do not allow to flash the image.
+If your build system requires any "magic incantations" such that it is
+even possible that a developer can miss a step and result in this
+situation, you *must* solve this problem.  I don't know what you're
+doing, but honestly, this shouldn't be much more than adding a line or
+two into a Makefile or build.sh script.  Fix this first.
 
-> > I mean is there any kind of magic number or header information which
-> > we can read to detect a particular empty volume ?
-> > Can we get any information from just "system.ubi" image to indicate
-> > about the volume information ?
->
-> You'll need to perform a proper UBI scan on all blocks.
-> If for the sad volume no LEBs have been found it is empty.
->
-hmm, this seems reasonable. We have something called
-"ubi_scan_partition" that scans for bad blocks, during "ubi_open".
-And we also have ubi_find_volume that checks for vtbl record in an
-incoming image.
-Let me check about the LEB option here.
+I'm not saying it's a bad thing for your on-target flashing system to
+sanity check the images, but that will never fix a broken process. Fix
+the broken process.
 
-> > Also it could be possible that 2 or more volumes are empty, but we are
-> > only concerned about one particular volume (firmware), so how to
-> > detect particular volume ?
->
-> I don't understand the use case. Is your image creation process so error prone
-> that you can't be sure whether critical parts got included or not?
->
-Actually our UBI creation process contains multiple volumes, in which
-one volume contains
-firmware image, that comes from another subsystem.
-So, it requires copying that firmware image manually before building
-the etire yocto image.
-But, it might be possible that some developer may miss/skip this
-firmware copying part, thus
-the resulting image may end up is having an empty firmware volume.
-However, this firmware volume is an important volume, without which
-the modem may not boot up.
+- Steve
 
 ______________________________________________________
 Linux MTD discussion mailing list
