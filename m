@@ -2,88 +2,80 @@ Return-Path: <SRS0=3VFJ=LW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B2DE7C11F64
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jun 2021 19:15:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CAD9DC11F64
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jun 2021 21:18:30 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6682B6191B
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jun 2021 19:15:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6682B6191B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+	by mail.kernel.org (Postfix) with ESMTPS id 9690E61CB4
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jun 2021 21:18:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9690E61CB4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=l7E2c53R8RtR46lw8XTeVQMAkw3DKlwEPXzKM6fJHA4=; b=XqxOwSdTFxBSS+
-	FTSjfzmLoQgdEisoNXKk6JOFrD5hCmEB8ofb9IHNh1zaqmJylgQYI1+VQt7XNGyWEm7S3iqQoSM1g
-	y0PZN9jijUZj2Z5tpjcvbpv9ie9iNt4D0Vtr3JW25v42m3zokY/3NHe7oBPSfWkHUmUAQ2Y4/AUcA
-	n4dqtPkXTn7OLXUz2NnAbQdZ4jX0033URVIjRjtAO29t3N38Kb2TH/xON8pVCjFpxZGxIRlCbu8rv
-	AG1by1EnkkC3NvveBJEbePTzgzRmtzquFqxaOX5WQf5Lspb6+SCj3eru/4dk7weIOsH4xlZVoEGTZ
-	+X/LGrZGiDcNCQ1AIAcA==;
+	List-Owner; bh=+On0/7QIZfDUEWWArJRDPURsaKM2e0/Vta7EWcEudwc=; b=BM/3X1SEOsrmTk
+	hE+ZxfRA6w5S/jNXSEDtrH4xkOQBZXe87qj3oqLQDp6KSgZzw4MUn3ZFDKpk1cxI8ZS9stWkDcKyl
+	JZK8MpJb+iaMiT+Pt2mKWqk9XkYtbbTWczP/cpeClOIW80qbBBGnx9OJdCtLzKz4VJ+qJZA3uN+2h
+	qehMsJ45NGJSQOsxUl6301ZbLwAtEphRfaarJGqxE8I6uFlA6hikK3VnjD1IMQFUxaymR5pheM3/k
+	UK9bKSbhP2HqbvcoC8qaVNL51ISKR+T/gnkmbMCt0fMhMx29O6byLMHTONO9wrcsg2RIlJ/oXuS7/
+	csiQ+PW/6rryjTOWx44A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lxwii-008zwe-Ck; Mon, 28 Jun 2021 19:15:00 +0000
-Received: from mail-wm1-x32d.google.com ([2a00:1450:4864:20::32d])
+	id 1lxydT-009DBQ-Ty; Mon, 28 Jun 2021 21:17:44 +0000
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lxwiY-008ztY-Du
- for linux-mtd@lists.infradead.org; Mon, 28 Jun 2021 19:14:52 +0000
-Received: by mail-wm1-x32d.google.com with SMTP id
- l18-20020a1ced120000b029014c1adff1edso143960wmh.4
- for <linux-mtd@lists.infradead.org>; Mon, 28 Jun 2021 12:14:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=baylibre-com.20150623.gappssmtp.com; s=20150623;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=+htQTyEDF+CVc+mO+s5d9t8IztHN54DhG/4dMTnUuhs=;
- b=M84CXuxddhwuBiLOn5s5lrAZLL1SfDCezNR9CfNLJ0MCC4ycfVQw0oBLTYJwtJ0cYl
- TpQVpFZvX9c5NmVMSMBNb7p2IDcGKBUfnjWbISvK4cRF8wi0l3Jq0LB16GTBHxxxRr+z
- e+ddYYTYKEtUNC+jy004NKbP+3D4/GA46E4B9CNLPF9fEUhqHgOqEs3JHnX8VU53uvwk
- 2595OdvZAb6Y6ZNNTx1YwvEaDi7AAl+K9dBaCesjWJ3OSrOxvQP0zm+n3V2Ey3hNx9lK
- lsj2rkbvgcNq5oFDqZmGQWrAC+yHhHZdPpf3pJeTfCjlHXxhMeccrO06AP72HycuZCcd
- qFHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=+htQTyEDF+CVc+mO+s5d9t8IztHN54DhG/4dMTnUuhs=;
- b=Jg6oYz8xd4AdSjBczRuQS7ahu40HjR/p2WerxqEcca23Ls9GckJ2AfLCLBTI7fpmEX
- 3sCAoD5GjRZ5eoHFyxfNMarMsr0ggq3RVZPy97+cbkbQy0Qv3I+AEMgBZdINpwnQGnGe
- WE/EYMb5Yay3awJgHMnb76R6LLNmfpyBZehHFsIHVP6Bnq5sjj+DGQ3EUcoZg0OdgrF0
- moHrgC9S4YbGy257Z8DtniZoZNDI6MpLYW/cb1exw/EMhPU/XUG6HCCU0+GoZRcMbivE
- LyXsfiFqefIBpl9Kd0O+sNmZo1VyuKrvWDAeYUnimQ9RCkmEreuwLvtvJQYlO3t8+P+o
- qiLg==
-X-Gm-Message-State: AOAM532MxnJD9FCpBk+fkC0zLKW+C7OxJbVAJRW4fceLRKa1/GuknaRy
- rDz7ghPwXvdmWC807Rwn5mCECw==
-X-Google-Smtp-Source: ABdhPJyezEkTfArDKPV5DlchwZCsHL9GtWwN39ROTKBKy+ZAKVhOrjtAWdLO60RlnmSJF3S/SF58XA==
-X-Received: by 2002:a1c:e907:: with SMTP id q7mr28391463wmc.1.1624907687817;
- Mon, 28 Jun 2021 12:14:47 -0700 (PDT)
-Received: from localhost.localdomain
- (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
- by smtp.googlemail.com with ESMTPSA id n8sm15591229wrt.95.2021.06.28.12.14.46
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 28 Jun 2021 12:14:47 -0700 (PDT)
-From: Corentin Labbe <clabbe@baylibre.com>
-To: miquel.raynal@bootlin.com, richard@nod.at, robh+dt@kernel.org,
- vigneshr@ti.com, linus.walleij@linaro.org
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH v2] dt_bindings: mtd: partitions: redboot: convert to YAML
-Date: Mon, 28 Jun 2021 19:14:40 +0000
-Message-Id: <20210628191440.2823024-1-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.25.1
+ id 1lxydQ-009D8E-Vp
+ for linux-mtd@lists.infradead.org; Mon, 28 Jun 2021 21:17:42 +0000
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+ by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
+ 15SLGCXp001482
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Jun 2021 14:17:38 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+ by mx0a-00082601.pphosted.com with ESMTP id 39fkfgs3ke-3
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Jun 2021 14:17:38 -0700
+Received: from intmgw001.37.frc1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 28 Jun 2021 14:17:37 -0700
+Received: by devvm2494.atn0.facebook.com (Postfix, from userid 172786)
+ id AD000CE7F735; Mon, 28 Jun 2021 14:17:29 -0700 (PDT)
+From: Jonathan Lemon <jonathan.lemon@gmail.com>
+To: <tudor.ambarus@microchip.com>, <miquel.raynal@bootlin.com>,
+ <richard@nod.at>, <vigneshr@ti.com>
+CC: <linux-mtd@lists.infradead.org>, <kernel-team@fb.com>
+Subject: [PATCH] mtd: spi-nor: Enable locking for n25q128a13
+Date: Mon, 28 Jun 2021 14:17:29 -0700
+Message-ID: <20210628211729.3625017-1-jonathan.lemon@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+X-FB-Internal: Safe
+X-Proofpoint-GUID: A36WE_m4P4dOtheiZSjOps1DFA2cfm__
+X-Proofpoint-ORIG-GUID: A36WE_m4P4dOtheiZSjOps1DFA2cfm__
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391, 18.0.790
+ definitions=2021-06-28_14:2021-06-25,
+ 2021-06-28 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0
+ mlxscore=0
+ mlxlogscore=492 bulkscore=0 adultscore=0 impostorscore=0 malwarescore=0
+ priorityscore=1501 clxscore=1034 spamscore=0 lowpriorityscore=0
+ phishscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2106280138
+X-FB-Internal: deliver
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210628_121450_567762_A9902385 
-X-CRM114-Status: GOOD (  16.79  )
+X-CRM114-CacheID: sfid-20210628_141741_059471_8BED69BB 
+X-CRM114-Status: GOOD (  12.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,103 +92,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Converts mtd/partitions/redboot-fis.txt to YAML.
+As 4bit block protection patchset for some micron models are merged,
+n25q128a13 also uses 4 bit Block Protection scheme, so enable locking
+for it. Tested it on n25q128a13, the locking functions work well.
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+Signed-off-by: Jonathan Lemon <jonathan.lemon@gmail.com>
 ---
-Changes since v1:
-- fixed yamllint errors
-- removed @0 from flash
+ drivers/mtd/spi-nor/micron-st.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
- .../bindings/mtd/partitions/redboot-fis.txt   | 27 ------------
- .../bindings/mtd/partitions/redboot-fis.yaml  | 42 +++++++++++++++++++
- 2 files changed, 42 insertions(+), 27 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mtd/partitions/redboot-fis.txt
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/redboot-fis.yaml
-
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/redboot-fis.txt b/Documentation/devicetree/bindings/mtd/partitions/redboot-fis.txt
-deleted file mode 100644
-index fd0ebe4e3415..000000000000
---- a/Documentation/devicetree/bindings/mtd/partitions/redboot-fis.txt
-+++ /dev/null
-@@ -1,27 +0,0 @@
--RedBoot FLASH Image System (FIS) Partitions
--===========================================
--
--The FLASH Image System (FIS) directory is a flash description
--format closely associated with the RedBoot boot loader.
--
--It uses one single flash eraseblock in the flash to store an index of
--all images in the flash.
--
--This block size will vary depending on flash but is typically
--32 KB in size.
--
--Required properties:
--- compatible : (required) must be "redboot-fis"
--- fis-index-block : (required) a index to the eraseblock containing
--  the FIS directory on this device. On a flash memory with 32KB
--  eraseblocks, 0 means the first eraseblock at 0x00000000, 1 means the
--  second eraseblock at 0x00008000 and so on.
--
--Example:
--
--flash@0 {
--	partitions {
--		compatible = "redboot-fis";
--		fis-index-block = <0>;
--	};
--};
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/redboot-fis.yaml b/Documentation/devicetree/bindings/mtd/partitions/redboot-fis.yaml
-new file mode 100644
-index 000000000000..fee8d81b5276
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/partitions/redboot-fis.yaml
-@@ -0,0 +1,42 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/partitions/redboot-fis.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: RedBoot FLASH Image System (FIS) Partitions
-+
-+description: The FLASH Image System (FIS) directory is a flash description
-+    format closely associated with the RedBoot boot loader.
-+    It uses one single flash eraseblock in the flash to store an index of
-+    all images in the flash.
-+    This block size will vary depending on flash but is typically
-+    32 KB in size.
-+
-+maintainers:
-+  - Linus Walleij <linus.walleij@linaro.org>
-+
-+properties:
-+  compatible:
-+    const: redboot-fis
-+
-+  fis-index-block:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: a index to the eraseblock containing the FIS directory on this
-+      device. On a flash memory with 32KB eraseblocks, 0 means the first
-+      eraseblock at 0x00000000, 1 means the second eraseblock at 0x00008000 and so on.
-+
-+required:
-+  - compatible
-+  - fis-index-block
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    flash {
-+      partitions {
-+        compatible = "redboot-fis";
-+        fis-index-block = <0>;
-+      };
-+    };
+diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+index c224e59820a1..f3d19b716b7b 100644
+--- a/drivers/mtd/spi-nor/micron-st.c
++++ b/drivers/mtd/spi-nor/micron-st.c
+@@ -146,7 +146,9 @@ static const struct flash_info st_parts[] = {
+ 			      SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
+ 			      SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6) },
+ 	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256,
+-			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
++			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
++			      SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
++			      SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6) },
+ 	{ "mt25ql256a",  INFO6(0x20ba19, 0x104400, 64 * 1024,  512,
+ 			       SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
+ 			       SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
 -- 
-2.31.1
+2.30.2
 
 
 ______________________________________________________
