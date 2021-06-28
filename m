@@ -2,68 +2,88 @@ Return-Path: <SRS0=3VFJ=LW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FDD6C2B9F4
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jun 2021 16:57:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2DE7C11F64
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jun 2021 19:15:46 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DF56561920
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jun 2021 16:57:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF56561920
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 6682B6191B
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jun 2021 19:15:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6682B6191B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=MD0AfIAmPMqXzLtTeoqpMWFRzuIzIpdv2EqT9nwNvgY=; b=xT8mjyCUWxcvue
-	Hj3wrffM2kjPP4Ksx1niHPzjiCxIOLCfkHmubS+DmI7G5uyIaJ976GW3nOOMAqkDSOUFmCwoAF/LN
-	FB/0FqfUrFtrJe3sk2tIF88LrHxZvTeKCZx9u8k4lRHHESXtnVz/zb1V0hsLlFqed9XbrfiHbavHd
-	a/uFxRsEgaWDBe+p1W5rFv/Y/66yW8zFRUmdLKas67KH406Q04C/xhsh790xvLmaCNH8Nmx0fDo9P
-	53iD25z+EdGFv6khB+KiE2G3ORfXn/gfLvMW6hIjFb77RNwg0uOP7VQd58Df0rg1DMxK06XpZb4SO
-	A18OsvlD01D1Uw1npwdg==;
+	List-Owner; bh=l7E2c53R8RtR46lw8XTeVQMAkw3DKlwEPXzKM6fJHA4=; b=XqxOwSdTFxBSS+
+	FTSjfzmLoQgdEisoNXKk6JOFrD5hCmEB8ofb9IHNh1zaqmJylgQYI1+VQt7XNGyWEm7S3iqQoSM1g
+	y0PZN9jijUZj2Z5tpjcvbpv9ie9iNt4D0Vtr3JW25v42m3zokY/3NHe7oBPSfWkHUmUAQ2Y4/AUcA
+	n4dqtPkXTn7OLXUz2NnAbQdZ4jX0033URVIjRjtAO29t3N38Kb2TH/xON8pVCjFpxZGxIRlCbu8rv
+	AG1by1EnkkC3NvveBJEbePTzgzRmtzquFqxaOX5WQf5Lspb6+SCj3eru/4dk7weIOsH4xlZVoEGTZ
+	+X/LGrZGiDcNCQ1AIAcA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lxuZ4-008k4R-IA; Mon, 28 Jun 2021 16:56:54 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1lxwii-008zwe-Ck; Mon, 28 Jun 2021 19:15:00 +0000
+Received: from mail-wm1-x32d.google.com ([2a00:1450:4864:20::32d])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lxuYw-008k2K-Rd
- for linux-mtd@lists.infradead.org; Mon, 28 Jun 2021 16:56:48 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB87B61988;
- Mon, 28 Jun 2021 16:56:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1624899406;
- bh=JEH9YvkX1tuS2gUabFZ9JaX5r+EudDtnu4dkjX3MpYc=;
- h=Date:From:To:Cc:Subject:From;
- b=vNj8RwCa5/BCXX2jdMugsk8BK+T6K04e/v9FzgdrgzJaJ9GUpOdsfeYfV0SOb63iX
- KL7IPMD4GPZmublCVb4UFA6hyl43mf6EeUErmU0R5DSBZP8BpQQ3r/bi8FSTh4e2gi
- NczpLPJDkY4I7g5pwR5imkna4VDn+nml2cM8AI54Eaw7VJd9H1CzYcZtqiaY8yuuv4
- 9YSKJ1bXlhjcDEYskWqkVZVg3TCMvoZ2G7Yk1FXZEZsYG9/wJi1HK81jf3n6hopI8B
- h1HzZaMto30+F+Mb6UVEy/e+wEUaIXQHnMrDpal9oWPMhdeUAJdxfKafRcZMG20Dq6
- zNbaGKfd6Ai1Q==
-Date: Mon, 28 Jun 2021 09:56:44 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
- Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [GIT PULL] fscrypt updates for 5.14
-Message-ID: <YNn/TL5lW44yAx3o@sol.localdomain>
+ id 1lxwiY-008ztY-Du
+ for linux-mtd@lists.infradead.org; Mon, 28 Jun 2021 19:14:52 +0000
+Received: by mail-wm1-x32d.google.com with SMTP id
+ l18-20020a1ced120000b029014c1adff1edso143960wmh.4
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Jun 2021 12:14:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=+htQTyEDF+CVc+mO+s5d9t8IztHN54DhG/4dMTnUuhs=;
+ b=M84CXuxddhwuBiLOn5s5lrAZLL1SfDCezNR9CfNLJ0MCC4ycfVQw0oBLTYJwtJ0cYl
+ TpQVpFZvX9c5NmVMSMBNb7p2IDcGKBUfnjWbISvK4cRF8wi0l3Jq0LB16GTBHxxxRr+z
+ e+ddYYTYKEtUNC+jy004NKbP+3D4/GA46E4B9CNLPF9fEUhqHgOqEs3JHnX8VU53uvwk
+ 2595OdvZAb6Y6ZNNTx1YwvEaDi7AAl+K9dBaCesjWJ3OSrOxvQP0zm+n3V2Ey3hNx9lK
+ lsj2rkbvgcNq5oFDqZmGQWrAC+yHhHZdPpf3pJeTfCjlHXxhMeccrO06AP72HycuZCcd
+ qFHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=+htQTyEDF+CVc+mO+s5d9t8IztHN54DhG/4dMTnUuhs=;
+ b=Jg6oYz8xd4AdSjBczRuQS7ahu40HjR/p2WerxqEcca23Ls9GckJ2AfLCLBTI7fpmEX
+ 3sCAoD5GjRZ5eoHFyxfNMarMsr0ggq3RVZPy97+cbkbQy0Qv3I+AEMgBZdINpwnQGnGe
+ WE/EYMb5Yay3awJgHMnb76R6LLNmfpyBZehHFsIHVP6Bnq5sjj+DGQ3EUcoZg0OdgrF0
+ moHrgC9S4YbGy257Z8DtniZoZNDI6MpLYW/cb1exw/EMhPU/XUG6HCCU0+GoZRcMbivE
+ LyXsfiFqefIBpl9Kd0O+sNmZo1VyuKrvWDAeYUnimQ9RCkmEreuwLvtvJQYlO3t8+P+o
+ qiLg==
+X-Gm-Message-State: AOAM532MxnJD9FCpBk+fkC0zLKW+C7OxJbVAJRW4fceLRKa1/GuknaRy
+ rDz7ghPwXvdmWC807Rwn5mCECw==
+X-Google-Smtp-Source: ABdhPJyezEkTfArDKPV5DlchwZCsHL9GtWwN39ROTKBKy+ZAKVhOrjtAWdLO60RlnmSJF3S/SF58XA==
+X-Received: by 2002:a1c:e907:: with SMTP id q7mr28391463wmc.1.1624907687817;
+ Mon, 28 Jun 2021 12:14:47 -0700 (PDT)
+Received: from localhost.localdomain
+ (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+ by smtp.googlemail.com with ESMTPSA id n8sm15591229wrt.95.2021.06.28.12.14.46
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 28 Jun 2021 12:14:47 -0700 (PDT)
+From: Corentin Labbe <clabbe@baylibre.com>
+To: miquel.raynal@bootlin.com, richard@nod.at, robh+dt@kernel.org,
+ vigneshr@ti.com, linus.walleij@linaro.org
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH v2] dt_bindings: mtd: partitions: redboot: convert to YAML
+Date: Mon, 28 Jun 2021 19:14:40 +0000
+Message-Id: <20210628191440.2823024-1-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210628_095646_985427_ABF8E52A 
-X-CRM114-Status: UNSURE (   6.49  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210628_121450_567762_A9902385 
+X-CRM114-Status: GOOD (  16.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,35 +100,104 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The following changes since commit c4681547bcce777daf576925a966ffa824edd09d:
+Converts mtd/partitions/redboot-fis.txt to YAML.
 
-  Linux 5.13-rc3 (2021-05-23 11:42:48 -1000)
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+---
+Changes since v1:
+- fixed yamllint errors
+- removed @0 from flash
 
-are available in the Git repository at:
+ .../bindings/mtd/partitions/redboot-fis.txt   | 27 ------------
+ .../bindings/mtd/partitions/redboot-fis.yaml  | 42 +++++++++++++++++++
+ 2 files changed, 42 insertions(+), 27 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mtd/partitions/redboot-fis.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/redboot-fis.yaml
 
-  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/redboot-fis.txt b/Documentation/devicetree/bindings/mtd/partitions/redboot-fis.txt
+deleted file mode 100644
+index fd0ebe4e3415..000000000000
+--- a/Documentation/devicetree/bindings/mtd/partitions/redboot-fis.txt
++++ /dev/null
+@@ -1,27 +0,0 @@
+-RedBoot FLASH Image System (FIS) Partitions
+-===========================================
+-
+-The FLASH Image System (FIS) directory is a flash description
+-format closely associated with the RedBoot boot loader.
+-
+-It uses one single flash eraseblock in the flash to store an index of
+-all images in the flash.
+-
+-This block size will vary depending on flash but is typically
+-32 KB in size.
+-
+-Required properties:
+-- compatible : (required) must be "redboot-fis"
+-- fis-index-block : (required) a index to the eraseblock containing
+-  the FIS directory on this device. On a flash memory with 32KB
+-  eraseblocks, 0 means the first eraseblock at 0x00000000, 1 means the
+-  second eraseblock at 0x00008000 and so on.
+-
+-Example:
+-
+-flash@0 {
+-	partitions {
+-		compatible = "redboot-fis";
+-		fis-index-block = <0>;
+-	};
+-};
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/redboot-fis.yaml b/Documentation/devicetree/bindings/mtd/partitions/redboot-fis.yaml
+new file mode 100644
+index 000000000000..fee8d81b5276
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/partitions/redboot-fis.yaml
+@@ -0,0 +1,42 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/partitions/redboot-fis.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: RedBoot FLASH Image System (FIS) Partitions
++
++description: The FLASH Image System (FIS) directory is a flash description
++    format closely associated with the RedBoot boot loader.
++    It uses one single flash eraseblock in the flash to store an index of
++    all images in the flash.
++    This block size will vary depending on flash but is typically
++    32 KB in size.
++
++maintainers:
++  - Linus Walleij <linus.walleij@linaro.org>
++
++properties:
++  compatible:
++    const: redboot-fis
++
++  fis-index-block:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: a index to the eraseblock containing the FIS directory on this
++      device. On a flash memory with 32KB eraseblocks, 0 means the first
++      eraseblock at 0x00000000, 1 means the second eraseblock at 0x00008000 and so on.
++
++required:
++  - compatible
++  - fis-index-block
++
++additionalProperties: false
++
++examples:
++  - |
++    flash {
++      partitions {
++        compatible = "redboot-fis";
++        fis-index-block = <0>;
++      };
++    };
+-- 
+2.31.1
 
-for you to fetch changes up to 2fc2b430f559fdf32d5d1dd5ceaa40e12fb77bdf:
-
-  fscrypt: fix derivation of SipHash keys on big endian CPUs (2021-06-05 00:52:52 -0700)
-
-----------------------------------------------------------------
-
-A couple bug fixes for fs/crypto/:
-
-- Fix handling of major dirhash values that happen to be 0.
-
-- Fix cases where keys were derived differently on big endian systems
-  than on little endian systems (affecting some newer features only).
-
-----------------------------------------------------------------
-Eric Biggers (2):
-      fscrypt: don't ignore minor_hash when hash is 0
-      fscrypt: fix derivation of SipHash keys on big endian CPUs
-
- fs/crypto/fname.c    | 10 +++-------
- fs/crypto/keysetup.c | 40 ++++++++++++++++++++++++++++++++--------
- 2 files changed, 35 insertions(+), 15 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
