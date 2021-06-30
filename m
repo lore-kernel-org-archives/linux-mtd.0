@@ -2,84 +2,74 @@ Return-Path: <SRS0=ctmN=LY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3121C11F65
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jun 2021 14:15:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06E8BC11F65
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jun 2021 14:32:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 82AF76144B
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jun 2021 14:15:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 82AF76144B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rock-chips.com
+	by mail.kernel.org (Postfix) with ESMTPS id B9E8461477
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jun 2021 14:32:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B9E8461477
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:Cc:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=bMPRMwdcbmFT1Q3zWy1AfIbvcNDYka4XTrsBq1SByoA=; b=gwQSh95ALDDChrVBj+uHzp2ycH
-	S0ZiNibD3kd5T8xLUfgC5Ng0pKkKwInwOcXRKeWFHKJY28Iy7jEiQhQ6IHrbb1mF3MNpUcEkOqf1f
-	VyfZZJMjHI3hUZD8YxLzJQEYfpZXQkYsZCNGZG0TQt0KeuMJP8WpDHLPpfvBTKcxlJ8k/tW3vATjH
-	mXeFs/RzxNtCeXmUApZ8CqPuylQPMcBmzhYNIXDotM2e6JYPA5J+LkK6lwDfaxG6pz+1uVU/ayJYZ
-	RKLUzbFPbGoKZEybkEUx+2wlHA5AEaPYVrgpDBMYNjw36gRqCJxE43Z5L7vL56fPIr+k0sHm8/Sum
-	gL6ql3VA==;
+	bh=sRWEcu18k552EwMBnsdfRLwE/B+IJPulESGGamItsns=; b=J7wpYshN+dPL8SGq5PE7g1vjAq
+	g0xbGuAp4ofCZhRh1yag+OMJGE30WSnqENfIgNsXY5bE3tDRbGdGOB9NBs7GmLgTB1M/OJsaiM1br
+	Uq9+hpxZkcVhKWt8OpKqFBVRXF3D9fL+PnknvMpB0mTcdVlRX/qwDI3sbtNKtORr9Tw3OzZD8TYen
+	qgfbi8FUVHz0ut2Y/7Iay7PbV/iD6YpnItKjch0CUuOtZfiAb68CL+4jLDSEt3Q0qgjgvOtF+LncL
+	Z/3XSdvr+gTwE2ITSaWE1A9X2KqEfE963dpwBxMVkuWazBFKlQOxevZmAKM40JCvbfRYIDWbgFeQ3
+	0tG2TVJQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lyazW-00EJLw-C8; Wed, 30 Jun 2021 14:15:02 +0000
-Received: from regular1.263xmail.com ([211.150.70.201])
+	id 1lybFk-00ENmH-Qa; Wed, 30 Jun 2021 14:31:48 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lyajD-00EEAp-TV; Wed, 30 Jun 2021 13:58:17 +0000
-Received: from localhost (unknown [192.168.167.225])
- by regular1.263xmail.com (Postfix) with ESMTP id E996AE2D;
- Wed, 30 Jun 2021 21:58:06 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from [172.16.12.73] (unknown [58.22.7.114])
- by smtp.263.net (postfix) whith ESMTP id
- P31200T139970222221056S1625061484141554_; 
- Wed, 30 Jun 2021 21:58:05 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <355a8d1c07372b95a3f7e6af800a3092>
-X-RL-SENDER: jon.lin@rock-chips.com
-X-SENDER: jon.lin@rock-chips.com
-X-LOGIN-NAME: jon.lin@rock-chips.com
-X-FST-TO: linux-clk@vger.kernel.org
-X-RCPT-COUNT: 18
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-Subject: Re: [PATCH v10 00/10] Add Rockchip SFC(serial flash controller)
- support
-To: linux-spi@vger.kernel.org
-Cc: broonie@kernel.org, robh+dt@kernel.org, heiko@sntech.de,
- jbx6244@gmail.com, hjc@rock-chips.com, yifeng.zhao@rock-chips.com,
- sugar.zhang@rock-chips.com, linux-rockchip@lists.infradead.org,
- linux-mtd@lists.infradead.org, p.yadav@ti.com, macroalpha82@gmail.com,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, mturquette@baylibre.com, sboyd@kernel.org,
- linux-clk@vger.kernel.org
-References: <20210630134702.7346-1-jon.lin@rock-chips.com>
-From: Jon Lin <jon.lin@rock-chips.com>
-Message-ID: <7aff22d7-f644-1494-9c60-ae8a25d01d50@rock-chips.com>
-Date: Wed, 30 Jun 2021 21:58:05 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ id 1lyb0D-00EJZ4-UI
+ for linux-mtd@lists.infradead.org; Wed, 30 Jun 2021 14:15:51 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 3159622256;
+ Wed, 30 Jun 2021 16:15:43 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1625062543;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=SX/9eBY4x1bVLRTwmiIGVEkZkYCSKmmnZrPEoWHtXIU=;
+ b=N+BllY4qWN167p/5p2A3RHLWXTSjgV7a7Snl2DCKBGFDPqSRz3VhdezBPNHTmQKCX9+GAM
+ iZokpON3cjU14LP9HBylBhq7Qj9UDfvKng/RJzg2YmU+EQzIuCx4sxcl4V7X5YaMrTcF+F
+ +W4ReEyki485TzXPQyp8rsEGExDGy6A=
 MIME-Version: 1.0
-In-Reply-To: <20210630134702.7346-1-jon.lin@rock-chips.com>
-Content-Language: en-US
+Date: Wed, 30 Jun 2021 16:15:43 +0200
+From: Michael Walle <michael@walle.cc>
+To: Tudor.Ambarus@microchip.com
+Cc: code@reto-schneider.ch, linux-mtd@lists.infradead.org, sr@denx.de,
+ reto.schneider@husqvarnagroup.com, miquel.raynal@bootlin.com,
+ p.yadav@ti.com, richard@nod.at, vigneshr@ti.com,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] mtd: spi-nor: Add support for XM25QH64C
+In-Reply-To: <0328347c-572d-b636-5542-99cb36e9efa9@microchip.com>
+References: <20210613121248.1529292-1-code@reto-schneider.ch>
+ <1ba367f93650cb65122acd32fb4a4159@walle.cc>
+ <0328347c-572d-b636-5542-99cb36e9efa9@microchip.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <064317e561f1ad20282efe778f633723@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210630_065812_597510_13B7D034 
-X-CRM114-Status: GOOD (  40.91  )
+X-CRM114-CacheID: sfid-20210630_071546_230368_4290235A 
+X-CRM114-Status: GOOD (  18.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,142 +86,65 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Am 2021-06-28 06:55, schrieb Tudor.Ambarus@microchip.com:
+> On 6/14/21 9:56 AM, Michael Walle wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know 
+>> the content is safe
+>> 
+>> Hi Reto,
+>> 
+>> Am 2021-06-13 14:12, schrieb Reto Schneider:
+>>> From: Reto Schneider <reto.schneider@husqvarnagroup.com>
+>>> 
+>>> The data sheets can be found here:
+>>> http://xmcwh.com/Uploads/2020-12-17/XM25QH64C_Ver1.1.pdf
+>> 
+>> Could you add that as a "Datasheet:" tag before your Sob tag?
+>> 
+>>> This chip has been (briefly) tested on the MediaTek MT7688 based
+>>> GARDENA
+>>> smart gateway.
+>> 
+>> Could you also apply my SFDP patch [1] and send the dump? 
+>> Unfortunately,
+>> I can't think of a good way to do that along with the patch and if 
+>> this
+>> in some way regarded as copyrighted material. So feel free to send it 
+>> to
+>> me privately. I'm starting to build a database.
+>> 
+> 
+> Can the SFDP dump fit in the commit message when introducing a new 
+> flash ID?
 
-At the first, I sincerely apologize for frequent submission.
+As ASCII hex dump? I'd guess we need some instructions how to do
+that. 4k would be 256 lines with 16 byte per line.
 
-The frequent submission is mainly due to:
-1. I'm too anxious to incorporate my personal code into Chris's code
-2. Unfamiliar with upstream and not careful enough
+But yes, I had the same thought.
 
-I will sum up more experience and make more exchanges with my colleagues.
+> The SFDP standard is public. SFDP reveals just what the flash
+> supports, why would that be sensitive information?
 
+copyright material must not be sensitive information, no? I'm no
+laywer, thus I'd played it safe.
 
-On 6/30/21 9:46 PM, Jon Lin wrote:
-> Changes in v10:
-> - Fix dma transfer logic
->
-> Changes in v9:
-> - Separate DMA IRQ setting and wait_completion from DMA fifo transfer
->    function to make dma_status_poll be possible(Which I will implement
->    in u-boot)
-> - Add SFC Kconfig detail comment
-> - Separate FDT binding docs and includes from rk3036 sfc_hclk patch
-> - Separate FDT binding docs and includes from rk3036 sfc_hclk patch
->
-> Changes in v8:
-> - Fix indent 4 to 2 in yaml
->
-> Changes in v7:
-> - Fix up the sclk_sfc parent error in rk3036
-> - Unify to "rockchip,sfc" compatible id because all the feature update
->    will have a new IP version, so the driver is used for the SFC IP in
->    all SoCs
-> - Change to use node "sfc" to name the SFC pinctrl group
-> - Add subnode reg property check
-> - Add rockchip_sfc_adjust_op_size to workaround in CMD + DUMMY case
-> - Limit max_iosize to 32KB
->
-> Changes in v6:
-> - Add support in device trees for rv1126(Declared in series 5 but not
->    submitted)
-> - Change to use "clk_sfc" "hclk_sfc" as clock lable, since it does not
->    affect interpretation and has been widely used
-> - Support sfc tx_dual, tx_quad(Declared in series 5 but not submitted)
-> - Simplify the code, such as remove "rockchip_sfc_register_all"(Declared
->    in series 5 but not submitted)
-> - Support SFC ver4 ver5(Declared in series 5 but not submitted)
-> - Add author Chris Morgan and Jon Lin to spi-rockchip-sfc.c
-> - Change to use devm_spi_alloc_master and spi_unregister_master
->
-> Changes in v5:
-> - Add support in device trees for rv1126
-> - Support sfc tx_dual, tx_quad
-> - Simplify the code, such as remove "rockchip_sfc_register_all"
-> - Support SFC ver4 ver5
->
-> Changes in v4:
-> - Changing patch back to an "RFC". An engineer from Rockchip
->    reached out to me to let me know they are working on this patch for
->    upstream, I am submitting this v4 for the community to see however
->    I expect Jon Lin (jon.lin@rock-chips.com) will submit new patches
->    soon and these are the ones we should pursue for mainlining. Jon's
->    patch series should include support for more hardware than this
->    series.
-> - Clean up documentation more and ensure it is correct per
->    make dt_binding_check.
-> - Add support in device trees for rk3036, rk3308, and rv1108.
-> - Add ahb clock (hclk_sfc) support for rk3036.
-> - Change rockchip_sfc_wait_fifo_ready() to use a switch statement.
-> - Change IRQ code to only mark IRQ as handled if it handles the
->    specific IRQ (DMA transfer finish) it is supposed to handle.
->
-> Changes in v3:
-> - Changed the name of the clocks to sfc/ahb (from clk-sfc/clk-hsfc).
-> - Changed the compatible string from rockchip,sfc to
->    rockchip,rk3036-sfc. A quick glance at the datasheets suggests this
->    driver should work for the PX30, RK180x, RK3036, RK312x, RK3308 and
->    RV1108 SoCs, and possibly more. However, I am currently only able
->    to test this on a PX30 (an RK3326). The technical reference manuals
->    appear to list the same registers for each device.
-> - Corrected devicetree documentation for formatting and to note these
->    changes.
-> - Replaced the maintainer with Heiko Stuebner and myself, as we will
->    take ownership of this going forward.
-> - Noted that the device (per the reference manual) supports 4 CS, but
->    I am only able to test a single CS (CS 0).
-> - Reordered patches to comply with upstream rules.
->
-> Changes in v2:
-> - Reimplemented driver using spi-mem subsystem.
-> - Removed power management code as I couldn't get it working properly.
-> - Added device tree bindings for Odroid Go Advance.
->
-> Changes in v1:
-> hanges made in this new series versus the v8 of the old series:
-> - Added function to read spi-rx-bus-width from device tree, in the
->    event that the SPI chip supports 4x mode but only has 2 pins
->    wired (such as the Odroid Go Advance).
-> - Changed device tree documentation from txt to yaml format.
-> - Made "reset" message a dev_dbg from a dev_info.
-> - Changed read and write fifo functions to remove redundant checks.
-> - Changed the write and read from relaxed to non-relaxed when
->    starting the DMA transfer or reading the DMA IRQ.
-> - Changed from dma_coerce_mask_and_coherent to just
->    dma_set_mask_and_coherent.
-> - Changed name of get_if_type to rockchip_sfc_get_if_type.
->
-> Chris Morgan (8):
->    dt-bindings: rockchip-sfc: Bindings for Rockchip serial flash
->      controller
->    spi: rockchip-sfc: add rockchip serial flash controller
->    arm64: dts: rockchip: Add SFC to PX30
->    clk: rockchip:  add dt-binding for hclk_sfc on rk3036
->    arm: dts: rockchip: Add SFC to RK3036
->    arm: dts: rockchip: Add SFC to RV1108
->    arm64: dts: rockchip: Add SFC to RK3308
->    arm64: dts: rockchip: Enable SFC for Odroid Go Advance
->
-> Jon Lin (2):
->    clk: rockchip: rk3036: fix up the sclk_sfc parent error
->    clk: rockchip: Add support for hclk_sfc on rk3036
->
->   .../devicetree/bindings/spi/rockchip-sfc.yaml |  88 +++
->   arch/arm/boot/dts/rk3036.dtsi                 |  42 ++
->   arch/arm/boot/dts/rv1108.dtsi                 |  37 +
->   arch/arm64/boot/dts/rockchip/px30.dtsi        |  38 +
->   arch/arm64/boot/dts/rockchip/rk3308.dtsi      |  37 +
->   .../boot/dts/rockchip/rk3326-odroid-go2.dts   |  16 +
->   drivers/clk/rockchip/clk-rk3036.c             |   5 +-
->   drivers/spi/Kconfig                           |  12 +
->   drivers/spi/Makefile                          |   1 +
->   drivers/spi/spi-rockchip-sfc.c                | 681 ++++++++++++++++++
->   include/dt-bindings/clock/rk3036-cru.h        |   1 +
->   11 files changed, 956 insertions(+), 2 deletions(-)
->   create mode 100644 Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
->   create mode 100644 drivers/spi/spi-rockchip-sfc.c
->
+> Reto, would you please dump the SFDP tables here?
 
+FWIW, he already provided me a binary dump for the flash (actually
+for the former version, too) and its already in my DB which you
+should have access, too.
 
+If we mandate that (and I am all for it) for new flashes, we will
+have to come up with a common format. Something like
+
+  echo "-----BEGIN SFDP (JEDEC ID ...)------"
+  cat sfdp | xxd -ps -c 20
+  echo "-----END SFDP------"
+
+I really don't know if such meta data belongs into the
+commit logs, though.
+
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
