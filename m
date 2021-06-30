@@ -2,74 +2,94 @@ Return-Path: <SRS0=ctmN=LY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-17.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06E8BC11F65
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jun 2021 14:32:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB4D3C11F65
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jun 2021 14:46:26 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B9E8461477
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jun 2021 14:32:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B9E8461477
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id 5BEF7611CA
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jun 2021 14:46:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5BEF7611CA
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rock-chips.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=sRWEcu18k552EwMBnsdfRLwE/B+IJPulESGGamItsns=; b=J7wpYshN+dPL8SGq5PE7g1vjAq
-	g0xbGuAp4ofCZhRh1yag+OMJGE30WSnqENfIgNsXY5bE3tDRbGdGOB9NBs7GmLgTB1M/OJsaiM1br
-	Uq9+hpxZkcVhKWt8OpKqFBVRXF3D9fL+PnknvMpB0mTcdVlRX/qwDI3sbtNKtORr9Tw3OzZD8TYen
-	qgfbi8FUVHz0ut2Y/7Iay7PbV/iD6YpnItKjch0CUuOtZfiAb68CL+4jLDSEt3Q0qgjgvOtF+LncL
-	Z/3XSdvr+gTwE2ITSaWE1A9X2KqEfE963dpwBxMVkuWazBFKlQOxevZmAKM40JCvbfRYIDWbgFeQ3
-	0tG2TVJQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=rMtJMFPrcCdOh2mvjVKa5SqP22MNvKbD53bqM4nNYog=; b=l1LNcJsaEGiD5z
+	PNkQHbHp+B03o5hiZzbH7YM5pTMylyYqDkV9bphqn9dFthubljL74jzTZer0ZhSC810ae+VjTiNMr
+	tNxl/MkCWGQ9J+AWCJYjDi+z6LbIibz9yoFABrHaWTb3Ouogi+yaY2PoRVyEl9UcMyulkK6m2pe7v
+	lp0uHZGy7hLgKpGHtDml1IoxyO2acutjLQoVFrGbwqvmIneoObrfqdUFAo0Hh48fx+ZK4n5dVC/qt
+	WjYjs3g3XcJZBw39M4N6KvQV1qRN91EcvbmbncToze1ynKqEiohfuyDx8dq7ESVXCL3WC0jV34Qcd
+	L8DHSsX9zdqj1G9dHfKg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lybFk-00ENmH-Qa; Wed, 30 Jun 2021 14:31:48 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1lybTD-00ESWZ-FU; Wed, 30 Jun 2021 14:45:43 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lyb0D-00EJZ4-UI
- for linux-mtd@lists.infradead.org; Wed, 30 Jun 2021 14:15:51 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 3159622256;
- Wed, 30 Jun 2021 16:15:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1625062543;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=SX/9eBY4x1bVLRTwmiIGVEkZkYCSKmmnZrPEoWHtXIU=;
- b=N+BllY4qWN167p/5p2A3RHLWXTSjgV7a7Snl2DCKBGFDPqSRz3VhdezBPNHTmQKCX9+GAM
- iZokpON3cjU14LP9HBylBhq7Qj9UDfvKng/RJzg2YmU+EQzIuCx4sxcl4V7X5YaMrTcF+F
- +W4ReEyki485TzXPQyp8rsEGExDGy6A=
-MIME-Version: 1.0
-Date: Wed, 30 Jun 2021 16:15:43 +0200
-From: Michael Walle <michael@walle.cc>
-To: Tudor.Ambarus@microchip.com
-Cc: code@reto-schneider.ch, linux-mtd@lists.infradead.org, sr@denx.de,
- reto.schneider@husqvarnagroup.com, miquel.raynal@bootlin.com,
- p.yadav@ti.com, richard@nod.at, vigneshr@ti.com,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] mtd: spi-nor: Add support for XM25QH64C
-In-Reply-To: <0328347c-572d-b636-5542-99cb36e9efa9@microchip.com>
-References: <20210613121248.1529292-1-code@reto-schneider.ch>
- <1ba367f93650cb65122acd32fb4a4159@walle.cc>
- <0328347c-572d-b636-5542-99cb36e9efa9@microchip.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <064317e561f1ad20282efe778f633723@walle.cc>
-X-Sender: michael@walle.cc
+ id 1lybSz-00ESUb-CE; Wed, 30 Jun 2021 14:45:29 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=desiato.20200630; h=References:In-Reply-To:Message-Id:Date
+ :Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
+ Content-Transfer-Encoding:Content-ID:Content-Description;
+ bh=YRlbpA2QMbANgVVqpxZRS4u7BiVVAPcEasPGO2FP268=; b=IhiHt2b/bVc+4uktS7RWW0E6Vu
+ Tb1Q11FyKKIS6FlROnwovOg9eqNWAktQtMXjF3ZK8PW7J0E3fzj0wcfie1B16Xvc7+SOdpkgkrB8X
+ tiDPYmbZkylqKhTxbG2HQGWY5IqQ7GYjzVNMkvG2qgru9Lp+Y0i5Et/OL18tEbKOieIH13sUo2aTO
+ lx6nt6wHqFceyZqOePLJ7VruApyQ8pifdF5lJpRSe6/gaTdy4t9VfeVTY6CF3kndv4UjjxRHBtjiY
+ bvbxCqFrS9ijnqPySbOyorT6G/MkodDvetf8eedJBhgb5PaW6OsnvNUWWcP456Pwy0AQgbMNKPHG+
+ 076djcoQ==;
+Received: from lucky1.263xmail.com ([211.157.147.135])
+ by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1lyaZM-00DBNk-IY; Wed, 30 Jun 2021 13:48:03 +0000
+Received: from localhost (unknown [192.168.167.16])
+ by lucky1.263xmail.com (Postfix) with ESMTP id A6A64B1C66;
+ Wed, 30 Jun 2021 21:47:51 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.22.7.114])
+ by smtp.263.net (postfix) whith ESMTP id
+ P12363T139710655624960S1625060866985686_; 
+ Wed, 30 Jun 2021 21:47:53 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <3c8b5476e487fac7bf8ac5e0c245043c>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: linux-spi@vger.kernel.org
+X-RCPT-COUNT: 20
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From: Jon Lin <jon.lin@rock-chips.com>
+To: linux-spi@vger.kernel.org
+Cc: jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
+ heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
+ yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
+ linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+ p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ mturquette@baylibre.com, sboyd@kernel.org, linux-clk@vger.kernel.org,
+ Chris Morgan <macromorgan@hotmail.com>
+Subject: [PATCH v10 08/10] arm: dts: rockchip: Add SFC to RV1108
+Date: Wed, 30 Jun 2021 21:47:43 +0800
+Message-Id: <20210630134745.7561-4-jon.lin@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210630134745.7561-1-jon.lin@rock-chips.com>
+References: <20210630134702.7346-1-jon.lin@rock-chips.com>
+ <20210630134745.7561-1-jon.lin@rock-chips.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210630_071546_230368_4290235A 
-X-CRM114-Status: GOOD (  18.99  )
+X-CRM114-CacheID: sfid-20210630_144801_503402_71B76E55 
+X-CRM114-Status: GOOD (  10.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,70 +101,94 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2021-06-28 06:55, schrieb Tudor.Ambarus@microchip.com:
-> On 6/14/21 9:56 AM, Michael Walle wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know 
->> the content is safe
->> 
->> Hi Reto,
->> 
->> Am 2021-06-13 14:12, schrieb Reto Schneider:
->>> From: Reto Schneider <reto.schneider@husqvarnagroup.com>
->>> 
->>> The data sheets can be found here:
->>> http://xmcwh.com/Uploads/2020-12-17/XM25QH64C_Ver1.1.pdf
->> 
->> Could you add that as a "Datasheet:" tag before your Sob tag?
->> 
->>> This chip has been (briefly) tested on the MediaTek MT7688 based
->>> GARDENA
->>> smart gateway.
->> 
->> Could you also apply my SFDP patch [1] and send the dump? 
->> Unfortunately,
->> I can't think of a good way to do that along with the patch and if 
->> this
->> in some way regarded as copyrighted material. So feel free to send it 
->> to
->> me privately. I'm starting to build a database.
->> 
-> 
-> Can the SFDP dump fit in the commit message when introducing a new 
-> flash ID?
+From: Chris Morgan <macromorgan@hotmail.com>
 
-As ASCII hex dump? I'd guess we need some instructions how to do
-that. 4k would be 256 lines with 16 byte per line.
+Add a devicetree entry for the Rockchip SFC for the RV1108 SOC.
 
-But yes, I had the same thought.
+Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
+---
 
-> The SFDP standard is public. SFDP reveals just what the flash
-> supports, why would that be sensitive information?
+Changes in v10: None
+Changes in v9: None
+Changes in v8: None
+Changes in v7: None
+Changes in v6: None
+Changes in v5: None
+Changes in v4: None
+Changes in v3: None
+Changes in v2: None
+Changes in v1: None
 
-copyright material must not be sensitive information, no? I'm no
-laywer, thus I'd played it safe.
+ arch/arm/boot/dts/rv1108.dtsi | 37 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
-> Reto, would you please dump the SFDP tables here?
+diff --git a/arch/arm/boot/dts/rv1108.dtsi b/arch/arm/boot/dts/rv1108.dtsi
+index 884872ca5207..6d4f289aff53 100644
+--- a/arch/arm/boot/dts/rv1108.dtsi
++++ b/arch/arm/boot/dts/rv1108.dtsi
+@@ -536,6 +536,17 @@
+ 		status = "disabled";
+ 	};
+ 
++	sfc: spi@301c0000 {
++		compatible = "rockchip,sfc";
++		reg = <0x301c0000 0x4000>;
++		interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&cru SCLK_SFC>, <&cru HCLK_SFC>;
++		clock-names = "clk_sfc", "hclk_sfc";
++		pinctrl-0 = <&sfc_clk &sfc_cs0 &sfc_bus4>;
++		pinctrl-names = "default";
++		status = "disabled";
++	};
++
+ 	gmac: eth@30200000 {
+ 		compatible = "rockchip,rv1108-gmac";
+ 		reg = <0x30200000 0x10000>;
+@@ -704,6 +715,32 @@
+ 			};
+ 		};
+ 
++		sfc {
++			sfc_bus4: sfc-bus4 {
++				rockchip,pins =
++					<2 RK_PA0 3 &pcfg_pull_none>,
++					<2 RK_PA1 3 &pcfg_pull_none>,
++					<2 RK_PA2 3 &pcfg_pull_none>,
++					<2 RK_PA3 3 &pcfg_pull_none>;
++			};
++
++			sfc_bus2: sfc-bus2 {
++				rockchip,pins =
++					<2 RK_PA0 3 &pcfg_pull_none>,
++					<2 RK_PA1 3 &pcfg_pull_none>;
++			};
++
++			sfc_cs0: sfc-cs0 {
++				rockchip,pins =
++					<2 RK_PB4 3 &pcfg_pull_none>;
++			};
++
++			sfc_clk: sfc-clk {
++				rockchip,pins =
++					<2 RK_PB7 2 &pcfg_pull_none>;
++			};
++		};
++
+ 		gmac {
+ 			rmii_pins: rmii-pins {
+ 				rockchip,pins =	<1 RK_PC5 2 &pcfg_pull_none>,
+-- 
+2.17.1
 
-FWIW, he already provided me a binary dump for the flash (actually
-for the former version, too) and its already in my DB which you
-should have access, too.
 
-If we mandate that (and I am all for it) for new flashes, we will
-have to come up with a common format. Something like
 
-  echo "-----BEGIN SFDP (JEDEC ID ...)------"
-  cat sfdp | xxd -ps -c 20
-  echo "-----END SFDP------"
-
-I really don't know if such meta data belongs into the
-commit logs, though.
-
--michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
