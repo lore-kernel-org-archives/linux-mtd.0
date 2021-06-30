@@ -6,14 +6,14 @@ X-Spam-Status: No, score=-9.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58219C11F65
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jun 2021 18:25:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C5C9C11F65
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jun 2021 18:26:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1C6D36113A
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jun 2021 18:25:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C6D36113A
+	by mail.kernel.org (Postfix) with ESMTPS id ED32E6113A
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jun 2021 18:26:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ED32E6113A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -22,35 +22,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Message-ID:Date:To:Cc:From:Subject:
 	References:In-Reply-To:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pqLIsELE2HAOnw2D9MGSDbwhH7x+l7fPKl7j9YWpZAg=; b=qRErvQRIg3XIt/
-	etXWmkhT6YfjVhjRpLyqSRXLo1ahlSnXKlv5jdBKEYG/HLp2Z5MYNj4Q1iiPZ9OG/pBXkfMRyBPc9
-	AM1CFTX6TO00FlJbd0aUWKYqN4oNmfPlGfNjGQ2ZcxQJAwS+hUekcS2EZqLKLFM3RyhUvt/Q0QLmO
-	IUCS9TKRFzYSwzcP1mL8gYHLsfPrxka9QQjAIeCRXzfPzgncMdDnAEbJk1nW0bG3Vyb5nqHlO3/j6
-	6QynrjSb6rOc3wpkV6KIHqLCIISO7brDd2B8R1yfXk4iDws886s/uNRS4oaWNZVpbyNrQXcOlyReU
-	zNSHKumsO4jQIahp1GjQ==;
+	List-Owner; bh=sbJzh4BIpdctYrJQhDgpepiTo+6s5Uonx5uTaYASCKE=; b=LpEwxJBqmoLPD5
+	1ONrSUVbKkkk2+NnuE4pWQeuSElnrI9MwiWaH9sPJYRL/ievu2Y3nvuSYwpIqjJ3tVlByANgQ8Ur+
+	NX9DP85C6dKkQRFrG5tAR3oxEXpQzoOqNASJ5DgRY10TrK9YOHPK+/kSyc80UShWIedlMP/vMmBhj
+	zYXSImhB6hGXqW76ih/IXBHeAhNVA0q6jHOZkGLvgOtno2tff/N8wDTZscU2txIv2XT1nJzW8jsIL
+	vQ1JBF6N9PYQI54khKoDXSGJ4Ltg/H/XJQ/QE2JdQ4CHQeaN3pUnLLRGKJEZY/+ITrDml8BbQnA0a
+	jRX1dyU9sy7JGQd3nGgA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lyetC-00EvPQ-1B; Wed, 30 Jun 2021 18:24:46 +0000
+	id 1lyety-00Evkm-K7; Wed, 30 Jun 2021 18:25:34 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lyesW-00EvCN-S3; Wed, 30 Jun 2021 18:24:06 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71FE861468;
- Wed, 30 Jun 2021 18:24:04 +0000 (UTC)
+ id 1lyesc-00EvDk-K2; Wed, 30 Jun 2021 18:24:12 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AF6A61468;
+ Wed, 30 Jun 2021 18:24:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1625077444;
- bh=85GRTiAN+qIhZQpgqk3uxumNiZTTSlxWORSeg0LMGI0=;
+ s=k20201202; t=1625077450;
+ bh=kQWxalafhDaa1dOH4MeAdwMUlRDKpy97WdejoxexQ88=;
  h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
- b=fjesTOkCm8B0e4KRQvhiv/12jAMnsjdPJwCJMKIqRR7tbd2Y3UaG6d+TppeYjldJd
- IkQdFVYuPhRxteCyQOLH6JjO6U8GkfQLsbALB41/nACzk0xSvUjEdPjAIoy3fiQxTs
- ENg7ga49Xy/qYgMR3tLo5s0eCnUYVgDyxY6PQE8YUygDXxQhKGvY8FUpFbqogyWNCC
- YQQ7Cy0rB8VQ+figCq6cQJNvKtpty2HEWxAc0wUW6Ogm2cROK4+w4goeHVeWpgtwcQ
- NnE05URIGUvtmJgC+c9NJ8qo0Dwmm+MO3u678Ok5ObeAJQjR6mUQuMfirFlbult276
- lX04K2Gi1X8/w==
+ b=OykUUttLfg5lTxarPE//W+sguxd6nQ6a4QabIOR36ZWFnWt05y/h4guB7kPkpS3V2
+ BVCJr4g9n/rU3bTPmAZKSAD6tTR8JzWk+pLTfaao8F5qb0MRTtKUpUoqziXqMVfWx7
+ JngPBKB6YtoDGoxp+Yxn9TBOzjZXKWC5wJL3PkkCoE1eO8VBh9Y/9NS/ZP8zaqSpTr
+ a1wAoddS7KsGKKaO1sBqz0AMICmDMXORqntObaeoZmWSrU8WPxTBRVUdbW6gKqRz4q
+ ZPKlJPXaHUxmIs4w2IBTC+K3WyyBgtHnJtncjStHjtgxCAk7L3tQr1yHyuEXCZv1ZQ
+ bqPVREV4bLkOA==
 MIME-Version: 1.0
-In-Reply-To: <20210630134745.7561-1-jon.lin@rock-chips.com>
+In-Reply-To: <20210630134745.7561-2-jon.lin@rock-chips.com>
 References: <20210630134702.7346-1-jon.lin@rock-chips.com>
  <20210630134745.7561-1-jon.lin@rock-chips.com>
-Subject: Re: [PATCH v10 05/10] clk: rockchip: add dt-binding for hclk_sfc on
+ <20210630134745.7561-2-jon.lin@rock-chips.com>
+Subject: Re: [PATCH v10 06/10] clk: rockchip: Add support for hclk_sfc on
  rk3036
 From: Stephen Boyd <sboyd@kernel.org>
 Cc: jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
@@ -62,12 +63,12 @@ Cc: jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
  mturquette@baylibre.com, linux-clk@vger.kernel.org,
  Chris Morgan <macromorgan@hotmail.com>
 To: Jon Lin <jon.lin@rock-chips.com>, linux-spi@vger.kernel.org
-Date: Wed, 30 Jun 2021 11:24:03 -0700
-Message-ID: <162507744324.3331010.10691354484108930102@swboyd.mtv.corp.google.com>
+Date: Wed, 30 Jun 2021 11:24:09 -0700
+Message-ID: <162507744904.3331010.2867883126485374831@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210630_112404_972430_3698F5CF 
-X-CRM114-Status: UNSURE (   4.89  )
+X-CRM114-CacheID: sfid-20210630_112410_732353_F929A2E6 
+X-CRM114-Status: UNSURE (   6.44  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -85,10 +86,10 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Quoting Jon Lin (2021-06-30 06:47:40)
-> From: Chris Morgan <macromorgan@hotmail.com>
-> 
-> Add dt-binding for hclk_sfc on rk3036
+Quoting Jon Lin (2021-06-30 06:47:41)
+> Add support for the bus clock for the serial flash controller on the
+> rk3036. Taken from the Rockchip BSP kernel but not tested on real
+> hardware (as I lack a 3036 based SoC to test).
 > 
 > Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
 > Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
