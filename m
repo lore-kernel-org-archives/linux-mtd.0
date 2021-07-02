@@ -2,91 +2,96 @@ Return-Path: <SRS0=pn6g=L2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D0B1C11F68
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Jul 2021 12:50:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C24CCC11F68
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Jul 2021 13:18:40 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 13CDB613C1
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Jul 2021 12:50:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 13CDB613C1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 5864D61413
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Jul 2021 13:18:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5864D61413
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rasmusvillemoes.dk
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:Cc:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=XDAcaWTC6r1kkwrSP9aeTOEaFrDP0gV1hocRWKR0Ovk=; b=P3bG6mXIitEwsGhe95Gmq0Hhcw
-	waFshtntJ5veNyzAytuWGoobyjAIQRIRWy8YMcoEgDdAw4gWoZjWuVWuRZiYC2ynIMQ4Pz5e4Xeeg
-	6lVLUQD0onSzVdkofkkSo9Fgi/VEEANGsKjJ6/IsDvMmN3AfAE1F/zILnYJUpmlTlczFqO1YNJ/jN
-	Z3v5tcVOEiTg2BygAAgRysX/iTFBEFxdArDkBm56OPWNCT3mDq+dZDbA8D0F5uTuFAM7HTA9XHL2Z
-	oiV8jPy7uwnKpwTwN1BtX+64NByEPFj3h39C/AGGgYnL+B5DFdhAmKaeNZL8nwqMw29DXmyjIaN+a
-	DtTd+RKg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=wb0snZ2MjKWzuRTqXqouVoRK0okPv9zc4+0z4sSC4/0=; b=a15vtuNCLNRZ6gmvewYqcIjbYt
+	lbwS5lBCRk52FfUAihsjeqLjzbAvm6oGoeMdb0pH6PGybpRwhos1WtrO9UGjQH3U2HQ8SFLbZoFJB
+	+MbnV+P5+pXOFJVES21TaLXe4J5wTlgp+eCcWDiVilnjCh4SWifhRt9RlDurvWCtU56zA2e0dxQaU
+	EUmo7mpHIAq+nVakGQg5TVWbztwRJFqy27bzCA+rq1QHfrP1i8I3MCy9UBcCa9mJEZ8TQ96snDt5W
+	cjTJfxCa9mUpf2S48meHFikV8CcTpqNbLqG66TdEEJMknYrrft2YCA5He2IG0vzvlykGGnQ20aFat
+	4EpPOglw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lzIbh-0032oc-CU; Fri, 02 Jul 2021 12:49:21 +0000
-Received: from mail-wm1-x334.google.com ([2a00:1450:4864:20::334])
+	id 1lzJ3M-0035Qd-U3; Fri, 02 Jul 2021 13:17:57 +0000
+Received: from mail-ej1-x62c.google.com ([2a00:1450:4864:20::62c])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lzIbe-0032ns-2e
- for linux-mtd@lists.infradead.org; Fri, 02 Jul 2021 12:49:19 +0000
-Received: by mail-wm1-x334.google.com with SMTP id r3so6615444wmq.1
- for <linux-mtd@lists.infradead.org>; Fri, 02 Jul 2021 05:49:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ id 1lzJ3J-0035PV-Mz
+ for linux-mtd@lists.infradead.org; Fri, 02 Jul 2021 13:17:55 +0000
+Received: by mail-ej1-x62c.google.com with SMTP id gn32so16139600ejc.2
+ for <linux-mtd@lists.infradead.org>; Fri, 02 Jul 2021 06:17:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rasmusvillemoes.dk; s=google;
  h=subject:to:cc:references:from:message-id:date:user-agent
  :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=g3OtgnCzB0J2RLPwluzilFei82zfgN7iw6OLLhXfZGo=;
- b=IFYrCe9Cf1s479WBILlslfV/+uHycK6O9LJJ6VIv/Fk39IuYE1Y6jMdT1dO3kGZYgv
- BKwNhvbtDIgekIJHGZQWSDyquZSWQc+k3XKDyaM+WpvnRybfmQFYUN/pmXxzsNJoQOPd
- Ugf4PAHyQgSYFk1mPB/pMlQ7fu24hyo6xX8GTS4tut2d/FcCQ0YLg/vDEoR1YhpOmfal
- 9A34BGHR+ySKqYtU5aePehTFD5A1Ku0kYXO86nUHaL3Kr8BOmQ4RaCucyS93G6yxPOm8
- lQPu/n+p2nfLD4e5E3+vM3rLmaZqCDg5No4SVR3uPqx+Bn/FPr1JQRbUzxR65JskEc6O
- BVxQ==
+ bh=LnNGuurTFcfXm5aa2EG6X8kagXccnixUpuxFIcjTuz0=;
+ b=edP3fyfaFDARH/bC6v6yR9Ik3v1NUo8K3ML3aozcZE1Tv9cxfAo+XRdQI3hfcZWQHY
+ Iqso1SM4UFryefV1FfQkkEJngAetM3B3/ZX7j/hrVgO3Kmz7TI9wEhHAexx/eioBnljQ
+ d3KwfAS5LsdPUmjTbnuElXdHKK6enm/ZA/eJw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:subject:to:cc:references:from:message-id:date
  :user-agent:mime-version:in-reply-to:content-language
  :content-transfer-encoding;
- bh=g3OtgnCzB0J2RLPwluzilFei82zfgN7iw6OLLhXfZGo=;
- b=CJTRm5zw2iMcgYh3QTZbx+5aiiVJpBNFNUYgz+BJvK0j0gjxA30UPltx2fb+FD+zbg
- HhGzSf4dsIwm2hgGMDGXYQqofGx2e/4IeRPbTwz7IZMcLfZs6gPT+KhwmfQjjN1OYerk
- tB6GH/7rbP8hRYKJWfjBClDu6Ig9Aza+77fHScxg9WQ2Jiqr5fuwD2iSgLHJlygtnFuz
- co+WC94Ap4gBkCJu6OhK7m6FDSwIFrhweazicGL0FOkzM5ijOhBclc7o0CCW/OY/4TY8
- 7nOpGjbBkT5a8H6tFNbMXMTKIm3vvt1eaJzFn926gwWmCLTtIDZgv3+8xM6SxefEY6Za
- ULPg==
-X-Gm-Message-State: AOAM5308GiVoOTjhhb4P6jY0F7GttEcOJw3qhIXW+9KqK+2lpsPTCzpD
- 8VL4SJ2sSlDl/Uzd2iZVHw==
-X-Google-Smtp-Source: ABdhPJwv7ErbMNyOOSK898g5XrlDXtaBMEsxs0oGM9VeSf4oPqzpCmLG1Xvtet8c2r7jUDMNoBR5/w==
-X-Received: by 2002:a7b:c449:: with SMTP id l9mr7620060wmi.98.1625230154557;
- Fri, 02 Jul 2021 05:49:14 -0700 (PDT)
-Received: from [192.168.200.247] (ip5b434b8b.dynamic.kabel-deutschland.de.
- [91.67.75.139])
- by smtp.gmail.com with ESMTPSA id h9sm2927202wmb.35.2021.07.02.05.49.13
+ bh=LnNGuurTFcfXm5aa2EG6X8kagXccnixUpuxFIcjTuz0=;
+ b=nKaVGsKc0QjOWNyylrnVpHDx7WzrDMdNlB/UpYAbf++ZNClv9Tao+NrQ2ewqHutkhQ
+ hZMIP9XA18dU4v0UEjjwgCJmIKNKYRsgPZghhsVqWcHm5RduC+bODk0DlrBRFdS1d6MP
+ MSrgRtL7U/nwLMGBImCk9DD8LcET6PiXv+pHSngXOTHzhkwyPHCU7A3/oyDaAIzEBGOK
+ YzbIVs9epgDfwGzKMAGVPbGInKeSabs9EqMP4utEa/Y9e+flEGFZXzFFMy/eFvserok+
+ 95m6RxuzG54tfgE9EJsbVlNnRam2I8NWgoVtwZhj1nlViN/Ns6tfw6ajjUhW6HDSYaX7
+ 27oA==
+X-Gm-Message-State: AOAM530EnuPu9IGYVmxdTw0PqFeuegZEpAt2Tu98p43oGeyW13PXXP94
+ gyrIk1Nw+l56zL+7KDXac5dMQA==
+X-Google-Smtp-Source: ABdhPJzzd/ACmxPyjfnwAm8N8fL+x7GirV8yudNkjWzN6q3+dLWU7CtEEzo7TTobHL8NWQ33Cw8LNA==
+X-Received: by 2002:a17:906:25d5:: with SMTP id
+ n21mr5368482ejb.156.1625231869483; 
+ Fri, 02 Jul 2021 06:17:49 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.64.110])
+ by smtp.gmail.com with ESMTPSA id md14sm1053651ejb.125.2021.07.02.06.17.48
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 02 Jul 2021 05:49:14 -0700 (PDT)
-Subject: Re: [PATCH] mtd: spi-nor: XTX: Add support for XTX XT25F128B
-To: Chris Morgan <macromorgan@hotmail.com>, linux-mtd@lists.infradead.org
-Cc: vigneshr@ti.com, richard@nod.at, miquel.raynal@bootlin.com,
- tudor.ambarus@microchip.com
-References: <SN6PR06MB5342C82F372F37FB8E21B327A57A9@SN6PR06MB5342.namprd06.prod.outlook.com>
-From: Alex Bee <knaerzche@gmail.com>
-Message-ID: <a31c9949-089c-fae8-b8a4-30055a4833c7@gmail.com>
-Date: Fri, 2 Jul 2021 14:49:12 +0200
+ Fri, 02 Jul 2021 06:17:48 -0700 (PDT)
+Subject: Re: [RFC 2/3] mtd: spi-nor: core: compare JEDEC bytes to already
+ found flash_info
+To: Tudor.Ambarus@microchip.com, michael@walle.cc
+Cc: linux-mtd@lists.infradead.org, frieder.schrempf@kontron.de,
+ bbrezillon@kernel.org, p.yadav@ti.com, linux-kernel@vger.kernel.org,
+ esben@geanix.com, zhengxunli@mxic.com.tw, jaimeliao@mxic.com.tw,
+ masonccyang@mxic.com.tw, ycllin@mxic.com.tw
+References: <20210621152320.3811194-1-linux@rasmusvillemoes.dk>
+ <20210621152320.3811194-3-linux@rasmusvillemoes.dk>
+ <223232ecd0865e819477f17cd464ab08@walle.cc>
+ <d43f021d-8f95-7857-b70b-91e22b0a8e2a@rasmusvillemoes.dk>
+ <d1473b12-daea-e5e8-b8d5-64084bfbe11c@microchip.com>
+From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <63c61200-2387-6f92-32a0-38baf7317cdf@rasmusvillemoes.dk>
+Date: Fri, 2 Jul 2021 15:17:48 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <SN6PR06MB5342C82F372F37FB8E21B327A57A9@SN6PR06MB5342.namprd06.prod.outlook.com>
+In-Reply-To: <d1473b12-daea-e5e8-b8d5-64084bfbe11c@microchip.com>
 Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210702_054918_175733_F5C1024C 
-X-CRM114-Status: GOOD (  30.63  )
+X-CRM114-CacheID: sfid-20210702_061753_977949_E0FFF6DB 
+X-CRM114-Status: GOOD (  32.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,110 +103,109 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Chris, guys
-
-
-Am 02.04.21 um 22:15 schrieb Chris Morgan:
-> Add support for a new vendor (XTX) along with a new chip from the
-> vendor (XT25F128B). This chip is used in the Odroid Go Advance,
-> and has been tested extensively using the spi-gpio driver, as it
-> is connected to a serial flash controller that is not currently
-> supported (but the pins can be repurposed to GPIO). Read, write, and
-> erase all work as expected.
-Once you've figured out how vendor id stuff is read out correctly, would 
-you mind also adding the the XT25F32B variant?
- From what I've checked it has all things in common with XT25F128B - 
-just has a 64 instead of 256 sectors.
-
-Datasheet can be found at:
-https://datasheet.lcsc.com/szlcsc/2005251035_XTX-XT25F32BSOIGU-S_C558851.pdf
-
+On 23/06/2021 08.46, Tudor.Ambarus@microchip.com wrote:
+> Hi,
 > 
-> Datasheet can be found here:
-> https://datasheet.lcsc.com/szlcsc/2005251034_XTX-XT25F128BSSIGT_C558844.pdf
+> On 6/22/21 11:58 PM, Rasmus Villemoes wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>>
+>> On 22/06/2021 13.57, Michael Walle wrote:
+>>> [+ some people from MXIC as they are ones who posted to the ML
+>>> lately. Feel free to forward this mail to the corresponding people.]
+>>>
+>>> Am 2021-06-21 17:23, schrieb Rasmus Villemoes:
+>>>> Macronix engineers, in their infinite wisdom, have a habit of reusing
+>>>> JEDEC ids for different chips. There's already one
+>>>> workaround (MX25L25635F v MX25L25635E), but the same problem exists
+>>>> for MX25L3205D v MX25L3233F, the latter of which is not currently
+>>>> supported by linux.
+>>>>
+>>>> AFAICT, that case cannot really be handled with any of the ->fixup
+>>>> machinery: The correct entry for the MX25L3233F would read
+>>>>
+>>>>         { "mx25l3233f",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K |
+>>>> SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ ) },
+>>>>
+>>>> while the existing one is
+>>>>
+>>>>     { "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K) },
+>>>>
+>>>> So in spi_nor_init_params(), we won't even try reading the sfdp
+>>>> info (i.e. call spi_nor_sfdp_init_params), and hence
+>>>> spi_nor_post_sfdp_fixups() has no way of distinguishing the
+>>>> chips.
+>>>>
+>>>> Replacing the existing entry with the mx25l3233f one to coerce the
+>>>> core into issuing the SPINOR_OP_RDSFDP is also not really an option,
+>>>> because the data sheet for the mx25l3205d explicitly says not to issue
+>>>> any commands not listed ("It is not recommended to adopt any other
+>>>> code not in the command definition table, which will potentially enter
+>>>> the hidden mode.", whatever that means).
+>>>
+>>> Maybe we should ask Macronix if it is safe to send the RDSFDP command.
+>>> Can anyone from MXIC comment this?
+>>
+>> Yeah, that would be useful to know, but I don't have any hopes
+>> whatsoever of Macronix engineers being able to help sort out the mess
+>> they've created by reusing IDs in the first place. They don't seem to
+>> understand how that can possibly be a problem.
+>>
+>> I, and my client, have contacted them on several occasions to ask how
+>> we're supposed to deal with that. At one point, the answer was
+>> "MX25L3233F support Serial Flash Discoverable Parameters (SFDP) mode,
+>> MX25L3205D does not support.", but when I asked the obvious follow-up
+>> ("but the MX25L3205D datasheet warns against doing RDSFDP or any other
+>> not explicitly allowed command"), I got no response.
+>>
+>> Another response was
+>>
+>> "I can only comment on Linux 4.4, as that is the only version that I
+>> have supporting material for. Basically we have a patch for MTD/SPI-NOR
+>> (see attached). This is to allow allow the MTD subsystem to cope with
+>> devices that have the same ID (see below first paragraph of application
+>> note attached). Please note that the MX25L3205D had an EOL notification
+>> on 14th May 2010."
+>>
+>> and that attached patch is a 173KB .patch file that made me taste my
+>> breakfast again.
+>>
+>> And they keep repeating the argument that when a chip is EOL, it's OK to
+>> reuse its ID (because obviously nobody have used that chip in a product
+>> that would receive OS updates, so any OS released later than that EOL
+>> date can just include support for the newer chip and drop the old one...).
+>>
+>>>> In order to support such cases, extend the logic in spi_nor_read_id()
+>>>> a little so that if we already have a struct flash_info* from the name
+>>>> in device tree, check the JEDEC bytes against that, and if it is a
+>>>> match, accept that (device tree compatible + matching JEDEC bytes) is
+>>>> stronger than merely matching JEDEC bytes.
+>>>
+>>> This won't help much without a proper dt schema. No in-tree devicetree
+>>> could use is because the DT validation would complain.
+>>
+>> I can certainly extend the regexp in jedec,spi-nor.yaml to match this
+>> new one. DT is supposed to describe the hardware, so I can't see how
+>> that could possibly be controversial.
 > 
-> Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
-> ---
->   drivers/mtd/spi-nor/Makefile |  1 +
->   drivers/mtd/spi-nor/core.c   |  1 +
->   drivers/mtd/spi-nor/core.h   |  1 +
->   drivers/mtd/spi-nor/xtx.c    | 24 ++++++++++++++++++++++++
->   4 files changed, 27 insertions(+)
->   create mode 100644 drivers/mtd/spi-nor/xtx.c
+> No, please don't go that path yet.
 > 
-> diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-> index 653923896205..3f7a52d7fa0b 100644
-> --- a/drivers/mtd/spi-nor/Makefile
-> +++ b/drivers/mtd/spi-nor/Makefile
-> @@ -17,6 +17,7 @@ spi-nor-objs			+= sst.o
->   spi-nor-objs			+= winbond.o
->   spi-nor-objs			+= xilinx.o
->   spi-nor-objs			+= xmc.o
-> +spi-nor-objs			+= xtx.o
->   obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
->   
->   obj-$(CONFIG_MTD_SPI_NOR)	+= controllers/
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 0522304f52fa..9a89ec473e4b 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -2215,6 +2215,7 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
->   	&spi_nor_winbond,
->   	&spi_nor_xilinx,
->   	&spi_nor_xmc,
-> +	&spi_nor_xtx,
->   };
->   
->   static const struct flash_info *
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index 4a3f7f150b5d..ee0e45eaffcd 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -425,6 +425,7 @@ extern const struct spi_nor_manufacturer spi_nor_sst;
->   extern const struct spi_nor_manufacturer spi_nor_winbond;
->   extern const struct spi_nor_manufacturer spi_nor_xilinx;
->   extern const struct spi_nor_manufacturer spi_nor_xmc;
-> +extern const struct spi_nor_manufacturer spi_nor_xtx;
->   
->   void spi_nor_spimem_setup_op(const struct spi_nor *nor,
->   			     struct spi_mem_op *op,
-> diff --git a/drivers/mtd/spi-nor/xtx.c b/drivers/mtd/spi-nor/xtx.c
-> new file mode 100644
-> index 000000000000..4eec737e94c7
-> --- /dev/null
-> +++ b/drivers/mtd/spi-nor/xtx.c
-> @@ -0,0 +1,24 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2021, Chris Morgan <macromorgan@hotmail.com>
-> + * Based on XMC SPI NOR module
-> + * Copyright (C) 2005, Intec Automation Inc.
-> + * Copyright (C) 2014, Freescale Semiconductor, Inc.
-> + */
-> +
-> +#include <linux/mtd/spi-nor.h>
-> +
-> +#include "core.h"
-> +
-> +static const struct flash_info xtx_parts[] = {
-> +	/* XTX (XTX Technology Limited) */
-> +	{ "XT25F128B", INFO(0x0b4018, 0, 64 * 1024, 256,
-> +			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-> +			     SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
-> +};
-> +
-> +const struct spi_nor_manufacturer spi_nor_xtx = {
-> +	.name = "xtx",
-> +	.parts = xtx_parts,
-> +	.nparts = ARRAY_SIZE(xtx_parts),
-> +};
+>>
+>>  So if this will
+>>> go in (and the maintainers are rather hesitant to add it, I tried
+>>> it myself [1]), you'd also need to add it to jedec,spi-nor.yaml and
+>>> get an ack from Rob.
 > 
+> I'm not hesitant, I'm keeping my NACK until we're sure there isn't any other way
+> to differentiate at run-time. 
 
+It seems that we have established that by now, right?
+
+Rasmus
 
 ______________________________________________________
 Linux MTD discussion mailing list
