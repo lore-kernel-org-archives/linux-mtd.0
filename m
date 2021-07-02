@@ -2,178 +2,92 @@ Return-Path: <SRS0=pn6g=L2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 515C0C11F68
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Jul 2021 13:35:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C993AC11F6A
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Jul 2021 13:50:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0ADBA61427
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Jul 2021 13:35:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0ADBA61427
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
+	by mail.kernel.org (Postfix) with ESMTPS id 97FED61427
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Jul 2021 13:50:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 97FED61427
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jmBX+d0xlaXcsj07SQ9QmcjwFQk4JwSKGy6Tda+JIPI=; b=DVr7iz3rPBNyVz
-	lLdpmYL2XreoW9DQxlN4bEfecZxlcx9g4/bHx/pr0vGixO87sIALnEaGmW1PCZvHftLNtyF3hAxRz
-	Z36OnERYonWKICwhFfADnFgjH8MoGSIgE+zYQepU+UXEA0lEjtonVs3oxhpwNml+GnA4yU+/MikNN
-	WuIhvM+aI/O7IKZBi9qo3+QZjWGUyfhZAJEWJScWPfIVMTT/bVoiaC77AMrxdBjfyBP+EfDCXCUx8
-	KMAbI/dhWFrxPUHpcn4ZEKl+Z3RQwJpUdExGhVqLOrNF47tGvsQ1mKG3T+oDa+JtMEkBIb1bpnRtW
-	KydrqnvYYwrg6zfsIDtQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:Cc:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=CRmTHgo4IBP+5MD3RczM6KjscJD60YcD95oHnX3EhYA=; b=cImIh7/tKdQsHPjAIFEQULyDD2
+	Tm4yiuvfxhyz7nRj6W5tPAE9nEdllQRXMSWj9i5VuwbLJbPWmPS6G0P9PqV9wl/bR1fxMahss206n
+	qSSSnlRnw/0ScETz6HtB5YeeTNQ52sYIzQgXimkeH9R9ILkqVT9VMOvBVOZDN/0Zx4Kq0PcARW3E+
+	e8Jget+Rq+stzVJP0pmLP1pYuhmcTcBpkS8KpnGZ9ypvwNcMN3OgD7Uqa/bJ+MlmMKNPyRiVH9WGI
+	b1Yono+draswRPxYVHj+pbvNpG+6b1ttaB+QbaKbTiQOi5okj3VHfDg1X9pKMqEKanN2iQJy8LGMT
+	h2PcIJMA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lzJJw-00382t-Mw; Fri, 02 Jul 2021 13:35:04 +0000
-Received: from esa.microchip.iphmx.com ([68.232.153.233])
+	id 1lzJYQ-003Bw5-Kp; Fri, 02 Jul 2021 13:50:02 +0000
+Received: from mail-ot1-x333.google.com ([2607:f8b0:4864:20::333])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lzJJt-003823-1P
- for linux-mtd@lists.infradead.org; Fri, 02 Jul 2021 13:35:02 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1625232901; x=1656768901;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=T/0omtitDSPnaK10qmXlktRJ0LJHb+kq5GXT27KmxAc=;
- b=nbELziAsTRbKwndJmqOynSwL0CdKmOMDHgF3LlDDj/xk+MFoSha+yQsy
- FERSMJw9S1mktUjr0yMnE/Nhxf6ln1wvBMAazC28bltTAzAhYACsufEtD
- oVdo5L4qKxR36bXOtETpZ8rFq0QaxGOAcgeL9+q3R2MIXYyXj8ARA5Urs
- WuMdsVAHCvkTeh7lkBpin0ey4d215oOkmnfNgfvJhFfjTRnFRrFFAk1FQ
- 9oHWjhoH2EGCzlNw/p3QeGEiqtKaX4liaTIdwNjOZsyJabyvldcjj6AYp
- kB3/yioo28iNMgpLyjCcA4rNm0YjiJcuZckMy0icFYDjii6PmJvW/GB+M g==;
-IronPort-SDR: 6zIUMXGwlYaeutrirFQzE0FXp+J/w410tWtepZACcYX7hr/dmmkcAv7srNjMNkqE69ihu+8t+X
- 9W5MFN4NlxvOtVvMBxwSUvsrNxAj6Jdu/OReb6MXPLXRHlYJFbBFILQ9lw0aYS09FrHyf2t6FZ
- iiTxOaKQL6+UPMiJ+YXh8TS8cZc1LQRqcXUEzJK2DS3baoGOxK4osn348THbe/U1PalHtCaIBk
- U/nnrGyAMAqNmACLsN447+GndKktj6HaSTla+q2W79RsneyZ3bNDQa6weW/xVnojTtN+j8ZL8I
- ZkE=
-X-IronPort-AV: E=Sophos;i="5.83,317,1616482800"; d="scan'208";a="126902254"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 02 Jul 2021 06:34:59 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 2 Jul 2021 06:34:42 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.71) with Microsoft SMTP Server
- (version=TLS1_2, 
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2 via Frontend
- Transport; Fri, 2 Jul 2021 06:34:42 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gZjBFcS/XveHLrLalAjqY0TpLI3UAuPD1Q3a52ZoZSQhTTjFy6nxIajyA9SXDkdqyjiFCpdsApJDGPWnkaphcJUBp/PzLcmgFRyrDozWKXAwM4e6i2jiC28t8I5Yf/aMjjr/6fuG44Enmt7/Ci+yMuAUbCq0dIm/uonyTX5BjuQVS90GePl+KrL/M+Y1XgcFjlp6VkZl7VJOtU95yYqQOrhszpvbJGLa1H38K8vh3KUfDdcheGV8C1W2EWMo8YcyCUecUy6IrJ8iVbAsBLBVqB6GbMDyD1T558HdGCXCD3ljfZm2om1/TpgTrJvp49HwAnY91UEz6NPuhYOc6cJJRw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AjA04319YYt7rgxXmh76qOTfOll2flBXsELVaK6Zt2Y=;
- b=hZp0D3FiEJctQaIw8fwlQ0Lx2P/78mfwwXijWETh5A5ShJdN8SzIUhzIfxcQSO9RUG/4edzWOvV2SIs7c2AWXF74XraOeRcJPmVyq3CppsIGzl/Pvs6W/p3/JU7wvldBe4N/FwLRktEkoZOvhyFOqsUaXwxXh4WwWN6ConZTgQ38Z6j0pHQwZbip9CxMrUAS1oKBfG/6E2mr73CPRHFosiDSyFPpotrkt3ASQqCH4Q+nS1dQKOOqkkCrR//BQUemeu4ACe3zkbHrrSFqOQmSwm9Rgq/ArOseu13IwUC7erDjGPUGy/JRCTxfIVUdTHCVKXiCuDiImKfYesDn2YWo1g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AjA04319YYt7rgxXmh76qOTfOll2flBXsELVaK6Zt2Y=;
- b=gFDejwP7bcsaWQOhTL/u7gOtzNenX2gUAx4NwYFsmYkZ9JySPc3IjJ9pmAzfh2eoeLmO7jzkVQ3zkB7Ek644HpXeZNX+ASHKlvuxPS03oMqbtJRqAS049GEpWldy0HD/esodlMgZ3NMn7p4aGNmtMrUbg0Qu/fgj7ecB9RCyTHg=
-Received: from PH0PR11MB4869.namprd11.prod.outlook.com (2603:10b6:510:41::8)
- by PH0PR11MB5141.namprd11.prod.outlook.com (2603:10b6:510:3c::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.23; Fri, 2 Jul
- 2021 13:34:41 +0000
-Received: from PH0PR11MB4869.namprd11.prod.outlook.com
- ([fe80::5067:83f9:991d:2ab4]) by PH0PR11MB4869.namprd11.prod.outlook.com
- ([fe80::5067:83f9:991d:2ab4%8]) with mapi id 15.20.4287.024; Fri, 2 Jul 2021
- 13:34:41 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <linux@rasmusvillemoes.dk>, <michael@walle.cc>
-CC: <linux-mtd@lists.infradead.org>, <frieder.schrempf@kontron.de>,
- <bbrezillon@kernel.org>, <p.yadav@ti.com>, <linux-kernel@vger.kernel.org>,
- <esben@geanix.com>, <zhengxunli@mxic.com.tw>, <jaimeliao@mxic.com.tw>,
- <masonccyang@mxic.com.tw>, <ycllin@mxic.com.tw>
-Subject: Re: [RFC 2/3] mtd: spi-nor: core: compare JEDEC bytes to already
- found flash_info
-Thread-Topic: [RFC 2/3] mtd: spi-nor: core: compare JEDEC bytes to already
- found flash_info
-Thread-Index: AQHXZ/txAD1daNN5FEGbvnbgvaM45A==
-Date: Fri, 2 Jul 2021 13:34:41 +0000
-Message-ID: <964153d0-87cd-7735-3c74-f89bc901065e@microchip.com>
-References: <20210621152320.3811194-1-linux@rasmusvillemoes.dk>
- <20210621152320.3811194-3-linux@rasmusvillemoes.dk>
- <223232ecd0865e819477f17cd464ab08@walle.cc>
- <d43f021d-8f95-7857-b70b-91e22b0a8e2a@rasmusvillemoes.dk>
- <d1473b12-daea-e5e8-b8d5-64084bfbe11c@microchip.com>
- <63c61200-2387-6f92-32a0-38baf7317cdf@rasmusvillemoes.dk>
-In-Reply-To: <63c61200-2387-6f92-32a0-38baf7317cdf@rasmusvillemoes.dk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ id 1lzJYM-003Bu0-Pk
+ for linux-mtd@lists.infradead.org; Fri, 02 Jul 2021 13:50:00 +0000
+Received: by mail-ot1-x333.google.com with SMTP id
+ o13-20020a9d404d0000b0290466630039caso10098329oti.6
+ for <linux-mtd@lists.infradead.org>; Fri, 02 Jul 2021 06:49:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=sender:subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=Sf+47FeenC6Af/THMjfU7F81ryPIXzGxGeo21oTLq8c=;
+ b=erPmEqpCgyyri/aP6brggV8Wq05GXYAaO+zdSTY4wHzW5SpDWW0V5j243M+Bauho83
+ f45D4vf9VWC3nX9Vra5z1CIqZgegvN2X2K+MVXh68QXdxODIoRkR+9roDe7L1eEqiyV6
+ HNSU06dzDWoDBT8Uu5QALw/bsiDBinlMaNjeOBwcTN90/rtyfB/UyuC/13y8NU/Py94V
+ 2+2MkMi9i0Q1lCYKUBQbByRvEofdsL4G+WeDN3Lxe+ILon15kLAX+064XerNkRseB8Mh
+ +A06Ia5NXZ7qyGtQdbOOFSsRLefo7ksXWGzppFtRd6NdzHsl0ikAdp3Q5LFGx+TMOJgW
+ rAWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+ :date:user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=Sf+47FeenC6Af/THMjfU7F81ryPIXzGxGeo21oTLq8c=;
+ b=Nak5kCINgldA9hevvT8VWm2t0C3LgwxswjFRZfiz79o03YN9MeLsWA/jh2/Knljdw9
+ 9cPmXAhvxhsx7UlJUnJZO3lpa3Hi4ouDRgqswSlDDH62Rd3CwOWbRU7F83dqF+MP+mZb
+ ACkfdjGBLEO0/lMo7hqlj25kRcU3qXV0DT/VbCoaqsMX6r1TbmEh6c69sNz2JmQ5f5Sn
+ Mf6bT6T4gq0xPFo0Ibmilybz3rRXFWnaZK7yOclvlPguVDuIyPUPj2Zz2praml6gbufw
+ KfGdGkuDqzcHlhVuivNNWw+oCuFX9/oHMm0B3FCDaJndw5FHh5S9Df1OqTuU8uIkqJ6H
+ NZUw==
+X-Gm-Message-State: AOAM532W2xjh+WJqKQOl7gOoB3UiICJN47t30pzqKFbzueb4PsFmJusq
+ j1Gvuk3KJB8uYctvaJGXOBQ=
+X-Google-Smtp-Source: ABdhPJw8k0snlPIWk3Ku+sn2JYZNhLoB+HtR5ZnMeBbs2JYMRAL1C4CjKfNLtWxySznd0TgWtIpzng==
+X-Received: by 2002:a9d:6545:: with SMTP id q5mr4740223otl.268.1625233797617; 
+ Fri, 02 Jul 2021 06:49:57 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+ by smtp.gmail.com with ESMTPSA id
+ h3sm625963oti.34.2021.07.02.06.49.56
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 02 Jul 2021 06:49:57 -0700 (PDT)
+Subject: Re: [PATCH] mtd: core: handle flashes without OTP gracefully
+To: Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+References: <20210702093841.32307-1-michael@walle.cc>
+From: Guenter Roeck <linux@roeck-us.net>
+Message-ID: <499cf369-c98a-ac48-dfe6-6903314e9606@roeck-us.net>
+Date: Fri, 2 Jul 2021 06:49:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
-authentication-results: rasmusvillemoes.dk; dkim=none (message not signed)
- header.d=none;rasmusvillemoes.dk; dmarc=none action=none
- header.from=microchip.com;
-x-originating-ip: [79.115.63.196]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1cbffc79-2403-46b2-10f7-08d93d5e2560
-x-ms-traffictypediagnostic: PH0PR11MB5141:
-x-microsoft-antispam-prvs: <PH0PR11MB5141702BFFAC0AB389D686D1F01F9@PH0PR11MB5141.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: vDY3iXhDEVUlJdMMWI2Zt/p73X6+uxouH3zQ/sQHyxAtSCXlkhPJiGwio362TZQLLYBoUdp7AuT0KRWxBlb9R1C2J+t5TfT3LZGNakfgB482EanjZ9togXUna2Mza2DkZlk/2gw2WzAeW/s+N3+E8t2+TooAbyGSa5WOP3ywlt2BlhQuQajD/P2NvLUa2U3KWGcjAgYWTCiZN/7whHe0JJ3ikSGoGGJsUkIrsz9wNboE42t1FBkej5zlpq+LDRq28D7PFkkzuc8qmhklNonQtTREEK/znE6us25Mbk/785TayvO+8/weS3hKqnt41IwRfrfXAlw65o+gJV5avHU7ENBXqlVwlb9D9uu4kU0Bz9exvIffgiguXz55EzS7VPFDtriEcu+SMYAtco26JX7us4hLKtr+pdh0f6UNEtKkbjmFcZvBhdiDFo2H5sDBUCtUlYO6zOLaMYX/AlIjWbvDpyPHEXrUJ6df6/boeUCLUd6xTpaPGnwVQKM3Lk7tV2VTIynWqj4ptA4rrJNXheJgQUju7h+gRk/MKm78g4FYNkeewtVjH/XuGx0y78bOEB+h/bCx6/mZuHLlu95fOg6s/bouVJp/p2h+UneHFYVstz199Z/Dlu7KCD/RxBA3gW36cC71n++K0PN6uMlk8URCkoj4iMz8gzTwizcTKJ0eBLi5o2CMaznEdq6Bw/4kb2Gn0ZLRLtg5Sm5Dl92v0syfr96x8/tzkfz8fCppHu3t0aGhgJmLMXwEVTx3mMrXZ0uRYhZh8Ji5Z8ThZvJeekj4pT+rUDl38oLmVwtG42mIaj4PqTjoxF/3wKhWh0L2z7mrGpjWsT+zjtheTAy09JJiLZ2LiGFUslrQ5kmc6ARlVuk=
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:PH0PR11MB4869.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(346002)(376002)(39860400002)(136003)(396003)(366004)(66946007)(2616005)(91956017)(83380400001)(66476007)(66556008)(64756008)(66446008)(31686004)(8936002)(6506007)(7416002)(5660300002)(53546011)(26005)(76116006)(8676002)(4326008)(186003)(966005)(86362001)(316002)(2906002)(6486002)(6512007)(478600001)(36756003)(71200400001)(31696002)(110136005)(38100700002)(54906003)(122000001)(45980500001)(43740500002);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?Windows-1252?Q?jx+vRWcTdo8xy2vheBYRB3Xt/8CPT2YTG7d40yizeEBooK2P6smKS6mF?=
- =?Windows-1252?Q?rRFNcZp5O7ZKkmjvOUHUQEvuCKgXl+5RRCKuhqYZm/8GIq65pMFIzwGc?=
- =?Windows-1252?Q?LvHil0CMrpp/ZKcYtQyVeP0GWCny6uXih/8KkmCv3QH1bo/YF6qdfUE/?=
- =?Windows-1252?Q?huEtnTMs4UKXeLc2UDIR1p94MpgBEicjQLh35vjAr85+9QkfCsEpYoMF?=
- =?Windows-1252?Q?d+Scn42KQsYvJ/LrWeGmDZ7bj7bwQCyL5EF0r2T8jaMDOo1Ltd9HnoWW?=
- =?Windows-1252?Q?E7wwIbLN3rkEZO8pWQyPGVcYyGmuDzn8SKF2aiY902M8ZVago6PjuJ4F?=
- =?Windows-1252?Q?Llef3ZAVT+PbZ/RibGA2NQmf0LIQ0svwdflHyou7bqb1C1ykss7sucWI?=
- =?Windows-1252?Q?Iu6Di8xrl+jdVnITGwk0wwbqdb9LrUXkhrFwjX/zREHQstCdgPvx6x09?=
- =?Windows-1252?Q?A3CSZ5NNoz7oqykybOEkk0XUOccDJbBGwdrgXNqEyPPqzOwUwM+/VNGn?=
- =?Windows-1252?Q?yBOCq/1sFx9kFuyZKymYaGfdPsM8FfB9U4Zgvp18tH90FZDn+gf597C6?=
- =?Windows-1252?Q?egQByk5Pet8cXoGd/7hXF3ag7hHnAdV2skoXMGRSMyUca5HueZ08/cZV?=
- =?Windows-1252?Q?2Pb/U1or9+hEEy5OqUaq/usM50ceeyx5X14N+J4pYVSm892UNsdUqC/5?=
- =?Windows-1252?Q?p/2eWKg5blYOfY1ksBXFt6gex5IpD4y9Y6R3lZ5R01SzPYKuB4zQgt6d?=
- =?Windows-1252?Q?2kDzOdutpl7whQJWtEN3Oi7pH36DbjcnddZsYoPEDYT05t+2DtOak8ZW?=
- =?Windows-1252?Q?4JMJ/j6kbJbhrZIQjeeldEeDSH7Mev76IersuCorjbPXZpfQgVtV2gvA?=
- =?Windows-1252?Q?J8O4U1GSATQfxXvGAvsW2toappF9F/0544Ri2OsKYECRRw6KF6ao7eoC?=
- =?Windows-1252?Q?cWKyxEmjfKBWQzBnhCqQgUUUYMxFcikQmXIfm/+wBM1E+CnDNy/xrO4N?=
- =?Windows-1252?Q?XRv0OBHc0Cnu1+4mbxz+Xb+vsz5r5vUnjzDeoSgXOliIlpiQRbiVj4d5?=
- =?Windows-1252?Q?jjyS2SjuZ69Erv7WpTIS54GuVEd2kMC/YVyHE2s31q2jdBifDMhuhMgz?=
- =?Windows-1252?Q?mrwwOR8knWrjYzSMS0ksOQknZZTKx7x1ui1fIHsevACaaWD9oG+BU5Ww?=
- =?Windows-1252?Q?RUPoDuJo7qW/9Ht2yIi0Xah8IK+fVLgeCKDpnbJqLgT1XczGpX5G9wPs?=
- =?Windows-1252?Q?qPtXTtoKDKnuEoX+7W7jmNnQlzcZIxb7wy2P5HEB/PKRuUmqGp9rPhVh?=
- =?Windows-1252?Q?cHRl/Z6Yh9Ns+ja3nZAgM1K7rNcT7VnxNvXN3Ny1XfyhT6pREj7lhKUG?=
- =?Windows-1252?Q?T0iHQjiKX+YjkwWcX7GsT/JsbyWQVzBW8go=3D?=
-x-ms-exchange-transport-forked: True
-Content-ID: <8F3A11E52E5DE24D83099B58AA3B4593@namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4869.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1cbffc79-2403-46b2-10f7-08d93d5e2560
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Jul 2021 13:34:41.2172 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BQgH3VhgFo4esRtmjiFgr4eAr0AaKhi4a3YMtxrUOsPheGZFzQrFuILcq0umd8yMEezUHZT68UDDWAWGugOF2h9h0SSM+FgTFWW9NQ455GA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5141
+In-Reply-To: <20210702093841.32307-1-michael@walle.cc>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210702_063501_137614_E5CFFDD4 
-X-CRM114-Status: GOOD (  28.09  )
+X-CRM114-CacheID: sfid-20210702_064958_886402_10E32351 
+X-CRM114-Status: GOOD (  22.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -185,117 +99,57 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 7/2/21 4:17 PM, Rasmus Villemoes wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+On 7/2/21 2:38 AM, Michael Walle wrote:
+> There are flash drivers which registers the OTP callbacks although the
+> flash doesn't support OTP regions and return -ENODATA for these
+> callbacks if there is no OTP. If this happens, the probe of the whole
+> flash will fail. Fix it by handling the ENODATA return code and skip
+> the OTP region nvmem setup.
 > 
-> On 23/06/2021 08.46, Tudor.Ambarus@microchip.com wrote:
->> Hi,
->>
->> On 6/22/21 11:58 PM, Rasmus Villemoes wrote:
->>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>>
->>> On 22/06/2021 13.57, Michael Walle wrote:
->>>> [+ some people from MXIC as they are ones who posted to the ML
->>>> lately. Feel free to forward this mail to the corresponding people.]
->>>>
->>>> Am 2021-06-21 17:23, schrieb Rasmus Villemoes:
->>>>> Macronix engineers, in their infinite wisdom, have a habit of reusing
->>>>> JEDEC ids for different chips. There's already one
->>>>> workaround (MX25L25635F v MX25L25635E), but the same problem exists
->>>>> for MX25L3205D v MX25L3233F, the latter of which is not currently
->>>>> supported by linux.
->>>>>
->>>>> AFAICT, that case cannot really be handled with any of the ->fixup
->>>>> machinery: The correct entry for the MX25L3233F would read
->>>>>
->>>>>         { "mx25l3233f",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K |
->>>>> SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ ) },
->>>>>
->>>>> while the existing one is
->>>>>
->>>>>     { "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K) },
->>>>>
->>>>> So in spi_nor_init_params(), we won't even try reading the sfdp
->>>>> info (i.e. call spi_nor_sfdp_init_params), and hence
->>>>> spi_nor_post_sfdp_fixups() has no way of distinguishing the
->>>>> chips.
->>>>>
->>>>> Replacing the existing entry with the mx25l3233f one to coerce the
->>>>> core into issuing the SPINOR_OP_RDSFDP is also not really an option,
->>>>> because the data sheet for the mx25l3205d explicitly says not to issue
->>>>> any commands not listed ("It is not recommended to adopt any other
->>>>> code not in the command definition table, which will potentially enter
->>>>> the hidden mode.", whatever that means).
->>>>
->>>> Maybe we should ask Macronix if it is safe to send the RDSFDP command.
->>>> Can anyone from MXIC comment this?
->>>
->>> Yeah, that would be useful to know, but I don't have any hopes
->>> whatsoever of Macronix engineers being able to help sort out the mess
->>> they've created by reusing IDs in the first place. They don't seem to
->>> understand how that can possibly be a problem.
->>>
->>> I, and my client, have contacted them on several occasions to ask how
->>> we're supposed to deal with that. At one point, the answer was
->>> "MX25L3233F support Serial Flash Discoverable Parameters (SFDP) mode,
->>> MX25L3205D does not support.", but when I asked the obvious follow-up
->>> ("but the MX25L3205D datasheet warns against doing RDSFDP or any other
->>> not explicitly allowed command"), I got no response.
->>>
->>> Another response was
->>>
->>> "I can only comment on Linux 4.4, as that is the only version that I
->>> have supporting material for. Basically we have a patch for MTD/SPI-NOR
->>> (see attached). This is to allow allow the MTD subsystem to cope with
->>> devices that have the same ID (see below first paragraph of application
->>> note attached). Please note that the MX25L3205D had an EOL notification
->>> on 14th May 2010."
->>>
->>> and that attached patch is a 173KB .patch file that made me taste my
->>> breakfast again.
->>>
->>> And they keep repeating the argument that when a chip is EOL, it's OK to
->>> reuse its ID (because obviously nobody have used that chip in a product
->>> that would receive OS updates, so any OS released later than that EOL
->>> date can just include support for the newer chip and drop the old one...).
->>>
->>>>> In order to support such cases, extend the logic in spi_nor_read_id()
->>>>> a little so that if we already have a struct flash_info* from the name
->>>>> in device tree, check the JEDEC bytes against that, and if it is a
->>>>> match, accept that (device tree compatible + matching JEDEC bytes) is
->>>>> stronger than merely matching JEDEC bytes.
->>>>
->>>> This won't help much without a proper dt schema. No in-tree devicetree
->>>> could use is because the DT validation would complain.
->>>
->>> I can certainly extend the regexp in jedec,spi-nor.yaml to match this
->>> new one. DT is supposed to describe the hardware, so I can't see how
->>> that could possibly be controversial.
->>
->> No, please don't go that path yet.
->>
->>>
->>>  So if this will
->>>> go in (and the maintainers are rather hesitant to add it, I tried
->>>> it myself [1]), you'd also need to add it to jedec,spi-nor.yaml and
->>>> get an ack from Rob.
->>
->> I'm not hesitant, I'm keeping my NACK until we're sure there isn't any other way
->> to differentiate at run-time.
-> 
-> It seems that we have established that by now, right?
-> 
+> Fixes: 4b361cfa8624 ("mtd: core: add OTP nvmem provider support")
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Michael Walle <michael@walle.cc>
 
-It is unlikely that RDSFDP will cause any problems for the old MX25L3205D,
-I would like to differentiate between the two flashes by parsing SFDP.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-I'm preparing a patch set to address the all the ID collision thingy.
-https://github.com/ambarus/linux-0day/commit/b760260efecb4f3678de3b78250f99338ecbad1b
+> ---
+>   drivers/mtd/mtdcore.c | 10 ++++++++--
+>   1 file changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index b5ccd3037788..6881d1423dd6 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -880,7 +880,10 @@ static int mtd_otp_nvmem_add(struct mtd_info *mtd)
+>   
+>   	if (mtd->_get_user_prot_info && mtd->_read_user_prot_reg) {
+>   		size = mtd_otp_size(mtd, true);
+> -		if (size < 0)
+> +		/* ENODATA means there is no OTP region */
+> +		if (size == -ENODATA)
+> +			size = 0;
+> +		else if (size < 0)
+>   			return size;
+>   
+>   		if (size > 0) {
+> @@ -896,7 +899,10 @@ static int mtd_otp_nvmem_add(struct mtd_info *mtd)
+>   
+>   	if (mtd->_get_fact_prot_info && mtd->_read_fact_prot_reg) {
+>   		size = mtd_otp_size(mtd, false);
+> -		if (size < 0) {
+> +		/* ENODATA means there is no OTP region */
+> +		if (size == -ENODATA) {
+> +			size = 0;
+> +		} else if (size < 0) {
+>   			err = size;
+>   			goto err;
+>   		}
+> 
 
 
 ______________________________________________________
