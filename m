@@ -2,68 +2,77 @@ Return-Path: <SRS0=pn6g=L2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-22.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2BB8C11F68
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Jul 2021 06:57:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15F1AC11F68
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Jul 2021 09:34:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 807DD61156
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Jul 2021 06:57:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 807DD61156
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id CFCFF613EA
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Jul 2021 09:34:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFCFF613EA
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yfl1n1BROYK1CRsNeOZT4RVPJYvcDSqD9KspuJEkj5k=; b=Ypy68KCShVWlN+
-	10r+HPIaFmu9ARFGaKD4HvbJvGaj0T1ccQ3zcT+m9Vt0bOdK5diUiimAK/s/einQwvXulUl5H7Exh
-	Q21FLBLj+2sH9EMRIT/jy7c12Fcj71j2F8Zqqzt+cAdR0ONNBMsuhH8nfZtb5DykC4bj1/4pXRlPS
-	rdaOMB3G32x4EXVJzDQJSU3vSH68xNx0SsawxoIExupbso0m4EQV5ZGnxcf7p8dA4N8fmg+eNWG88
-	D16SFv4Re6Qes9dRg9QAoabu2SZdba2euwl/+eNAY64Z8vyQND88jyY0iVk8O7xeexwH9lFmSqPFQ
-	6QNL7HOh9+c3mtBS4yKA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=PD4J2r6fHEeepaScsz8DlcwJc59L8tCGUhv7/L2mXqk=; b=el3vv1ZTqUUYqmRh3kGMW11dfo
+	dL1ID0Dp15H5dt9mZDzJ7xMQQG3xuWRKHnkHxy8GWB8AtpTtJH0zydh4A1nnCLjODn99WAjMP0jyw
+	XFMwmiADhVbgRiS8DKrpUqY8FpweMC8pmWhN97ErTaPISo2J20HEs3c9UC5kzVGSgHkOl7wnl5hJq
+	lmXEo8JmM5cVDlTpreIqNYZCvcLltpJwH4hdlpJYqfEn0aVG5fECtvkq+DOx1ynGsEjAz951OoXkF
+	tDC9Sr2F/tedPmsy5U+VHXKoUtd2Oppkcjz+exN7Dd8+ppsZ/8hu7ZsdbRKTPSPt/7j7WDbDkPEqu
+	rnLD646w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lzD6Q-002JkM-PC; Fri, 02 Jul 2021 06:56:43 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1lzFYo-002duY-8j; Fri, 02 Jul 2021 09:34:10 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lzD4d-002Irc-VJ
- for linux-mtd@lists.infradead.org; Fri, 02 Jul 2021 06:54:55 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD27961156;
- Fri,  2 Jul 2021 06:54:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1625208891;
- bh=fMHV5WhAD/lei3T/ojyRzaZlj2PgAKerqTjEnXqsYwU=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=P0VY0DICpmM7iV0AqPKgWBNKC6KCgmiX8LVNTB17fyw4ORyc3F4JzfcVFVRZb3FTl
- jk4C++BVWB/qFRK2rJmo9wSTmY5rc9vRk0aN20s/8jG5EDy8QjYVUJS33770wnnMoM
- Avs4A5y1JqkVxvlwvCpSzMlGPIvYUFEJnfrabOLn0YyB/1TLvckevC5/I7Og2IlQav
- O8C5BKa7fGtk1sIVy7ZxCd5RBZGLxGyML4v11LgjANCJFWeQ4dj0GvssG8/gnvLrl6
- VJKZVC9Mfq3S2r5S87DZD3737P2V2SyALZ+SW0+W0dmPBdbMBTpAz699PMjrGkJq56
- pUu4hgl7+OOBA==
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-fscrypt@vger.kernel.org
-Cc: linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- stable@vger.kernel.org
-Subject: [PATCH 1/5] fscrypt: add fscrypt_symlink_getattr() for computing
- st_size
-Date: Thu,  1 Jul 2021 23:53:46 -0700
-Message-Id: <20210702065350.209646-2-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210702065350.209646-1-ebiggers@kernel.org>
-References: <20210702065350.209646-1-ebiggers@kernel.org>
+ id 1lzFYa-002dpi-O8
+ for linux-mtd@lists.infradead.org; Fri, 02 Jul 2021 09:33:58 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 5A18722249;
+ Fri,  2 Jul 2021 11:33:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1625218433;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=dIgpNtb6bk7Xip9BGn8GnsVHJ/WF1JakLymLgy2KJk8=;
+ b=vXXDkhNWvpBcLBM8QHfOVJrNveocFevI0aNqo7+KH7yxb8jtCBDkFe6ywlDnqZnmU33PIB
+ IPkPWUsKu+G054p7+1WZFel7W1hLym/PvYufL8YYAjBKSR2r1tvEoJFCzdQfbB57xy9QCg
+ oMlJNs0xrND8IVHhmZ7zh4zTMprfC6Q=
 MIME-Version: 1.0
+Date: Fri, 02 Jul 2021 11:33:53 +0200
+From: Michael Walle <michael@walle.cc>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh+dt@kernel.org>, Srinivas Kandagatla
+ <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v2 5/5] mtd: core: add OTP nvmem provider support
+In-Reply-To: <e89da7a0-2e46-349c-9b25-f0b555a72b46@roeck-us.net>
+References: <20210424110608.15748-1-michael@walle.cc>
+ <20210424110608.15748-6-michael@walle.cc>
+ <20210701213420.GA1131789@roeck-us.net>
+ <f48661d2d54b37db395fb73af8b52359@walle.cc>
+ <e89da7a0-2e46-349c-9b25-f0b555a72b46@roeck-us.net>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <5ce79af321eb04e33178b78e4e3f45f0@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210701_235452_100296_84A22923 
-X-CRM114-Status: GOOD (  25.72  )
+X-CRM114-CacheID: sfid-20210702_023357_010395_8BD7C828 
+X-CRM114-Status: GOOD (  23.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,155 +84,66 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Eric Biggers <ebiggers@google.com>
-
-Add a helper function fscrypt_symlink_getattr() which will be called
-from the various filesystems' ->getattr() methods to read and decrypt
-the target of encrypted symlinks in order to report the correct st_size.
-
-Detailed explanation:
-
-As required by POSIX and as documented in various man pages, st_size for
-a symlink is supposed to be the length of the symlink target.
-Unfortunately, st_size has always been wrong for encrypted symlinks
-because st_size is populated from i_size from disk, which intentionally
-contains the length of the encrypted symlink target.  That's slightly
-greater than the length of the decrypted symlink target (which is the
-symlink target that userspace usually sees), and usually won't match the
-length of the no-key encoded symlink target either.
-
-This hadn't been fixed yet because reporting the correct st_size would
-require reading the symlink target from disk and decrypting or encoding
-it, which historically has been considered too heavyweight to do in
-->getattr().  Also historically, the wrong st_size had only broken a
-test (LTP lstat03) and there were no known complaints from real users.
-(This is probably because the st_size of symlinks isn't used too often,
-and when it is, typically it's for a hint for what buffer size to pass
-to readlink() -- which a slightly-too-large size still works for.)
-
-However, a couple things have changed now.  First, there have recently
-been complaints about the current behavior from real users:
-
-- Breakage in rpmbuild:
-  https://github.com/rpm-software-management/rpm/issues/1682
-  https://github.com/google/fscrypt/issues/305
-
-- Breakage in toybox cpio:
-  https://www.mail-archive.com/toybox@lists.landley.net/msg07193.html
-
-- Breakage in libgit2: https://issuetracker.google.com/issues/189629152
-  (on Android public issue tracker, requires login)
-
-Second, we now cache decrypted symlink targets in ->i_link.  Therefore,
-taking the performance hit of reading and decrypting the symlink target
-in ->getattr() wouldn't be as big a deal as it used to be, since usually
-it will just save having to do the same thing later.
-
-Also note that eCryptfs ended up having to read and decrypt symlink
-targets in ->getattr() as well, to fix this same issue; see
-commit 3a60a1686f0d ("eCryptfs: Decrypt symlink target for stat size").
-
-So, let's just bite the bullet, and read and decrypt the symlink target
-in ->getattr() in order to report the correct st_size.  Add a function
-fscrypt_symlink_getattr() which the filesystems will call to do this.
-
-(Alternatively, we could store the decrypted size of symlinks on-disk.
-But there isn't a great place to do so, and encryption is meant to hide
-the original size to some extent; that property would be lost.)
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/crypto/hooks.c       | 44 +++++++++++++++++++++++++++++++++++++++++
- include/linux/fscrypt.h |  7 +++++++
- 2 files changed, 51 insertions(+)
-
-diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
-index a73b0376e6f3..af74599ae1cf 100644
---- a/fs/crypto/hooks.c
-+++ b/fs/crypto/hooks.c
-@@ -384,3 +384,47 @@ const char *fscrypt_get_symlink(struct inode *inode, const void *caddr,
- 	return ERR_PTR(err);
- }
- EXPORT_SYMBOL_GPL(fscrypt_get_symlink);
-+
-+/**
-+ * fscrypt_symlink_getattr() - set the correct st_size for encrypted symlinks
-+ * @path: the path for the encrypted symlink being queried
-+ * @stat: the struct being filled with the symlink's attributes
-+ *
-+ * Override st_size of encrypted symlinks to be the length of the decrypted
-+ * symlink target (or the no-key encoded symlink target, if the key is
-+ * unavailable) rather than the length of the encrypted symlink target.  This is
-+ * necessary for st_size to match the symlink target that userspace actually
-+ * sees.  POSIX requires this, and some userspace programs depend on it.
-+ *
-+ * This requires reading the symlink target from disk if needed, setting up the
-+ * inode's encryption key if possible, and then decrypting or encoding the
-+ * symlink target.  This makes lstat() more heavyweight than is normally the
-+ * case.  However, decrypted symlink targets will be cached in ->i_link, so
-+ * usually the symlink won't have to be read and decrypted again later if/when
-+ * it is actually followed, readlink() is called, or lstat() is called again.
-+ *
-+ * Return: 0 on success, -errno on failure
-+ */
-+int fscrypt_symlink_getattr(const struct path *path, struct kstat *stat)
-+{
-+	struct dentry *dentry = path->dentry;
-+	struct inode *inode = d_inode(dentry);
-+	const char *link;
-+	DEFINE_DELAYED_CALL(done);
-+
-+	/*
-+	 * To get the symlink target that userspace will see (whether it's the
-+	 * decrypted target or the no-key encoded target), we can just get it in
-+	 * the same way the VFS does during path resolution and readlink().
-+	 */
-+	link = READ_ONCE(inode->i_link);
-+	if (!link) {
-+		link = inode->i_op->get_link(dentry, inode, &done);
-+		if (IS_ERR(link))
-+			return PTR_ERR(link);
-+	}
-+	stat->size = strlen(link);
-+	do_delayed_call(&done);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(fscrypt_symlink_getattr);
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 2ea1387bb497..b7bfd0cd4f3e 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -253,6 +253,7 @@ int __fscrypt_encrypt_symlink(struct inode *inode, const char *target,
- const char *fscrypt_get_symlink(struct inode *inode, const void *caddr,
- 				unsigned int max_size,
- 				struct delayed_call *done);
-+int fscrypt_symlink_getattr(const struct path *path, struct kstat *stat);
- static inline void fscrypt_set_ops(struct super_block *sb,
- 				   const struct fscrypt_operations *s_cop)
- {
-@@ -583,6 +584,12 @@ static inline const char *fscrypt_get_symlink(struct inode *inode,
- 	return ERR_PTR(-EOPNOTSUPP);
- }
- 
-+static inline int fscrypt_symlink_getattr(const struct path *path,
-+					  struct kstat *stat)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- static inline void fscrypt_set_ops(struct super_block *sb,
- 				   const struct fscrypt_operations *s_cop)
- {
--- 
-2.32.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+QW0gMjAyMS0wNy0wMiAwMzo1NSwgc2NocmllYiBHdWVudGVyIFJvZWNrOgo+IE9uIDcvMS8yMSAz
+OjEwIFBNLCBNaWNoYWVsIFdhbGxlIHdyb3RlOgo+PiBIaSBHdWVudGVyLAo+PiAKPj4gQW0gMjAy
+MS0wNy0wMSAyMzozNCwgc2NocmllYiBHdWVudGVyIFJvZWNrOgo+Pj4gSGksCj4+PiAKPj4+IE9u
+IFNhdCwgQXByIDI0LCAyMDIxIGF0IDAxOjA2OjA4UE0gKzAyMDAsIE1pY2hhZWwgV2FsbGUgd3Jv
+dGU6Cj4+Pj4gRmxhc2ggT1RQIHJlZ2lvbnMgY2FuIGFscmVhZHkgYmUgcmVhZCB2aWEgdXNlciBz
+cGFjZS4gU29tZSBib2FyZHMgCj4+Pj4gaGF2ZQo+Pj4+IHRoZWlyIHNlcmlhbCBudW1iZXIgb3Ig
+TUFDIGFkZHJlc3NlcyBzdG9yZWQgaW4gdGhlIE9UUCByZWdpb25zLiBBZGQKPj4+PiBzdXBwb3J0
+IGZvciB0aGVtIGJlaW5nIGEgKHJlYWQtb25seSkgbnZtZW0gcHJvdmlkZXIuCj4+Pj4gCj4+Pj4g
+VGhlIEFQSSB0byByZWFkIHRoZSBPVFAgZGF0YSBpcyBhbHJlYWR5IGluIHBsYWNlLiBJdCBkaXN0
+aW5ndWlzaGVzCj4+Pj4gYmV0d2VlbiBmYWN0b3J5IGFuZCB1c2VyIE9UUCwgdGh1cyB0aGVyZSBh
+cmUgdXAgdG8gdHdvIGRpZmZlcmVudAo+Pj4+IHByb3ZpZGVycy4KPj4+PiAKPj4+PiBTaWduZWQt
+b2ZmLWJ5OiBNaWNoYWVsIFdhbGxlIDxtaWNoYWVsQHdhbGxlLmNjPgo+Pj4gCj4+PiBUaGlzIHBh
+dGNoIGNhdXNlcyBhIGJvb3QgZmFpbHVyZSB3aXRoIG9uZSBvZiBteSBxZW11IHRlc3RzLgo+Pj4g
+V2l0aCB0aGUgcGF0Y2ggaW4gcGxhY2UsIHRoZSBmbGFzaCBmYWlscyB0byBpbnN0YW50aWF0ZS4K
+Pj4+IAo+Pj4gW8KgwqDCoCAxLjE1NjU3OF0gQ3JlYXRpbmcgMyBNVEQgcGFydGl0aW9ucyBvbiAi
+cGh5c21hcC1mbGFzaCI6Cj4+PiBbwqDCoMKgIDEuMTU3MTkyXSAweDAwMDAwMDAwMDAwMC0weDAw
+MDAwMDA0MDAwMCA6ICJVLUJvb3QgQm9vdGxvYWRlciIKPj4+IFvCoMKgwqAgMS4xODQ2MzJdIDB4
+MDAwMDAwMDQwMDAwLTB4MDAwMDAwMDYwMDAwIDogIlUtQm9vdCBFbnZpcm9ubWVudCIKPj4+IFvC
+oMKgwqAgMS4yMDE3NjddIDB4MDAwMDAwMDYwMDAwLTB4MDAwMDAwODAwMDAwIDogIkZsYXNoIgo+
+Pj4gW8KgwqDCoCAxLjIyMjMyMF0gRGVsZXRpbmcgTVREIHBhcnRpdGlvbnMgb24gInBoeXNtYXAt
+Zmxhc2giOgo+Pj4gW8KgwqDCoCAxLjIyMjc0NF0gRGVsZXRpbmcgVS1Cb290IEJvb3Rsb2FkZXIg
+TVREIHBhcnRpdGlvbgo+Pj4gW8KgwqDCoCAxLjMwMzU5N10gRGVsZXRpbmcgVS1Cb290IEVudmly
+b25tZW50IE1URCBwYXJ0aXRpb24KPj4+IFvCoMKgwqAgMS4zNjg3NTFdIERlbGV0aW5nIEZsYXNo
+IE1URCBwYXJ0aXRpb24KPj4+IFvCoMKgwqAgMS40MzA2MTldIHBoeXNtYXAtZmxhc2g6IHByb2Jl
+IG9mIHBoeXNtYXAtZmxhc2ggZmFpbGVkIHdpdGggCj4+PiBlcnJvciAtNjEKPj4+IAo+Pj4gLTYx
+IGlzIC1FTk9EQVRBLgo+Pj4gCj4+PiBPdGhlciBib290IHRlc3RzIHdpdGggZGlmZmVyZW50IGZs
+YXNoIGNoaXBzIGNhbiBzdGlsbCBib290Lgo+Pj4gUmV2ZXJ0aW5nIHRoaXMgcGF0Y2ggKGFzIHdl
+bGwgYXMgdGhlIGZvbGxvdy11cCBwYXRjaGVzKSBmaXhlcwo+Pj4gdGhlIHByb2JsZW0uCj4+PiAK
+Pj4+IEkgZG8gbm90IGtub3cgaWYgdGhpcyBpcyBhIHByb2JsZW0gd2l0aCBxZW11IG9yIGEgcHJv
+YmxlbSB3aXRoIHRoZQo+Pj4gcGF0Y2gsIGJ1dCwgYXMgSSBtZW50aW9uZWQsIG90aGVyIGZsYXNo
+IGNoaXBzIGRvIHN0aWxsIGluc3RhbnRpYXRlLgo+Pj4gCj4+PiBEbyB5b3UgaGF2ZSBhbiBpZGVh
+IHdoYXQgdG8gbG9vayBmb3Igd2hlbiBJIHRyeSB0byB0cmFjayBkb3duIHRoZSAKPj4+IHByb2Js
+ZW0gPwo+PiAKPj4gSSdkIHN0YXJ0IGJ5IGxvb2tpbmcgYXQgdGhlIHJldHVybiBjb2RlIG9mIG10
+ZF9vdHBfc2l6ZSgpIGJlY2F1c2UgdGhhdAo+PiBzaG91bGQgYmUgdGhlIG9ubHkgZnVuY3Rpb24g
+d2hpY2ggY29tbXVuaWNhdGVzIHdpdGggdGhlIGZsYXNoIGF0IHByb2JlCj4+IHRpbWUuCj4+IAo+
+PiBDYW4geW91IHNoYXJlIGhvdyB0byByZXByb2R1Y2UgdGhhdCBwcm9ibGVtPyBMaWtlIHRoZSBx
+ZW11IGNvbW1hbmRsaW5lCj4+IGFuZCBpbnZvbHZlZCBpbWFnZXM/Cj4+IAo+IAo+IHFlbXUtc3lz
+dGVtLWFybSAtTSB6MiAta2VybmVsIGFyY2gvYXJtL2Jvb3QvekltYWdlIC1uby1yZWJvb3QgXAo+
+ICAgICAtc25hcHNob3QgLWRyaXZlIGZpbGU9L3RtcC9mbGFzaCxmb3JtYXQ9cmF3LGlmPXBmbGFz
+aCBcCj4gICAgIC0tYXBwZW5kICJyb290PS9kZXYvbXRkYmxvY2syIGNvbnNvbGU9dHR5UzAiIFwK
+PiAgICAgLW5vZ3JhcGhpYyAtbW9uaXRvciBudWxsIC1zZXJpYWwgc3RkaW8KPiAKPiBUaGlzIGlz
+IHdpdGggcWVtdSB2Ni4wIGFuZCBweGFfZGVmY29uZmlnLiBUaGUgYWN0dWFsIGZsYXNoIGltYWdl
+IAo+IGRvZXNuJ3QKPiByZWFsbHkgbWF0dGVyIChhbiBlbXB0eSBmaWxlIHdpdGggYSBzaXplIG9m
+IDEwMjQqMTAyNCo4IGJ5dGVzIGlzIAo+IHN1ZmZpY2llbnQpLgoKRm9yIGNvbXBsZXRlbmVzczog
+d2l0aCBweGFfZGVmY29uZmlnLCBJIGd1ZXNzLgoKPiBEZWJ1Z2dpbmcgc2hvd3MgdGhhdCAtRU5P
+REFUQSBpcyByZXBvcnRlZCBieSBjZmlfaW50ZWxleHRfb3RwX3dhbGsoKSwKPiB0aGFua3MgdG86
+CgpUaGFua3MgZm9yIGFscmVhZHkgbG9va2luZyBpbnRvIHRoaXMuCgo+IAo+IFsgICAgMC43Mzcy
+NDRdICMjIyMgRmVhdHVyZVN1cHBvcnQ6IDB4MCBOdW1Qcm90ZWN0aW9uRmllbGRzOiAxCj4gCj4g
+d2hpY2ggc2VlbXMgdG8gc3VnZ2VzdCB0aGF0IHRoZXJlIGFyZSBpbmRlZWQgZmxhc2ggY2hpcHMg
+d2hpY2ggZG9uJ3QgCj4gc3VwcG9ydAo+IE9UUCBkYXRhLiBXaXRoIHRoaXMgaW4gbWluZCwgaXMg
+aXQgaW5kZWVkIGFwcHJvcHJpYXRlIHRvIGRpc2FibGUgCj4gc3VwcG9ydCBmb3IKPiBhbGwgZmxh
+c2ggY2hpcHMgd2hpY2ggZG9uJ3Qgc3VwcG9ydCBPVFAgZGF0YSA/CgpZZXMgb2YgY291cnNlLiBU
+aGUgU1BJIE5PUiBkcml2ZXJzIGRvZXNuJ3QgcmVnaXN0ZXIgdGhlIGNhbGxiYWNrcyBpZgp0aGVy
+ZSBpcyBubyBPVFAgc3VwcG9ydC4gVGhlIG90aGVycyByZXR1cm4gRU5PREFUQSwgd2hpY2ggSSBt
+aXNzZWQuCgpJJ2xsIHNlbmQgYSBwYXRjaCBzaG9ydGx5LgoKLW1pY2hhZWwKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
+Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9saW51eC1tdGQvCg==
