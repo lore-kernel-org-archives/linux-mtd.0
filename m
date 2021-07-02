@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF5C3C11F69
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Jul 2021 06:56:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34663C11F68
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Jul 2021 06:56:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7E57861156
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Jul 2021 06:56:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E57861156
+	by mail.kernel.org (Postfix) with ESMTPS id 05C2861410
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Jul 2021 06:56:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 05C2861410
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,46 +23,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=79kHT+AhRK2vMxXVIoyp1OaRd1xK8CvEGoxQoievdNw=; b=x6JcSmDRQCAsSf
-	XDmAXIxxL+fBB+/TJ/1cCoUgtlBG7iPD8kBPbga+fAnu6uAcM8DEHn6vB4xQGEaLll+4wxt0z0DlD
-	AWSTfNIlCXGeUr6KE+4aOUSJ4Af7yenjUi71u2pLvKiyEPjzEjgNlj1tKG3cpe7hI/XGSHAfdoCtI
-	yEX9FEhcF9L6vufhB/kDTY8qD/+vme23Nx5M7Z8r26OVnLiVtb0EhFVKsbTcWEJJRKoMHmwoUME5P
-	67ntO8FS5D21CrZUhYPHby7qBwL732q94BT/4SzpbCQoHYpewsMWGjrZO3hmhRzEvvFC77b6EOm6/
-	EiQN1NQo1CJFG2YIUUlQ==;
+	List-Owner; bh=tOmHVGeDsDraU/TLjFigsVKDU/QqlgRx3aYBxcjVGW4=; b=aDsRK3b74bHU/O
+	LDoJvRrXBuwMrbFMm2GWTIFdLLFzflnhkSogjDq2r8ATDlaaHKHMd+r5rifOzZAejyFrf+VfKXkvP
+	KnYuT5eLWtQmbUbzWagVSVEcQmW/WJaB1lFfB9Vc70mT048oEWtWCKlG4DxXe38iENPnCigOgIjP5
+	xiTa7NP6uFra87EquKoaL8JNTPltitIT5jPWsWJoLQGW5bHXlWll/DqVuFUC3UiERUXY0eEY7Y0Ea
+	PKs1lbf8xlkzbPJXZ/EUsP0thOpTgEOTQ8r1527AC5Xw2YTlK5+deP9lUm+OPFsX/xuaM20yHj/Ls
+	NT6oPHUDTM9i/1H9QrAQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lzD5V-002JF2-5v; Fri, 02 Jul 2021 06:55:45 +0000
+	id 1lzD5q-002JSe-Mm; Fri, 02 Jul 2021 06:56:06 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lzD4e-002Ire-5b
+ id 1lzD4f-002Itb-H8
  for linux-mtd@lists.infradead.org; Fri, 02 Jul 2021 06:54:54 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 659D461413;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E1F366141D;
  Fri,  2 Jul 2021 06:54:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1625208891;
- bh=oytk1FqAK/cRWx3e72Lrjf5gkgDm1h+IK3FE/F4jrDw=;
+ s=k20201202; t=1625208892;
+ bh=ayeoPIhe+1s08/UaNpC3a37YFzxNe7bjxypfKHgUNos=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=fBRQEhrJJ96bGUI9d8xd7QPa3WJ5ACNQiNFFlLiciyLDX/+kJJiMK4kdY7t2a/Hu8
- L/JOKII31seusjSyqQH0p0zJVYGN3K/WIcgd4EvZ76bvtCnhC2R1Qi/gBZ1nIw4M5l
- /qtnEb4tJYlMpY81DoSUpGC6zCG/nQqQ/+GfV7vfTFAIkkyWTE3QNeeLSLVuC6wUlG
- ZFUirevxfCcRDTK+uQT13qFXoBgPqyIzKhznOb6tw3I87oy1lri67ZPC8T7fSxItPB
- ZiksVnwYTJeunNRiKmM8dyfsMgSZAi9iigVse/a8GYIuCo22x+3oUZcck+67uOfckh
- 4dfuQHiZ4sTjQ==
+ b=M6Yn1TVluxIn/JJFYkOy5+lRoF9vC12KdanEUnM4zrAZOprYGMps7cdmMLWxJavhD
+ mMsIbETp12zPxypnUK3ATnelRJfK/ziY6z+UE8cqwU6O5PwhfIgQwQoU14hm6uLind
+ jSCdBg2kpZbttNLOu6/+b5gWEVfB37pTDtV2r6pwVIqmr9j0vEv/C8lO6rTVTUJE70
+ vWyUq6mQq8ieMYQzHcrz86OZ2WaGZO9Pqf0r5et/J7ZN9XolFqdOt3blxktv9kqDMn
+ X75GJK3n3UB3SvY/yPEU/IFeYTarVVr3ncwxhxGL9/z3fyGvleNhmJpv0MU5ie0DPm
+ ykMU84u2xEGUw==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-fscrypt@vger.kernel.org
 Cc: linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- stable@vger.kernel.org
-Subject: [PATCH 3/5] f2fs: report correct st_size for encrypted symlinks
-Date: Thu,  1 Jul 2021 23:53:48 -0700
-Message-Id: <20210702065350.209646-4-ebiggers@kernel.org>
+ linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Subject: [PATCH 5/5] fscrypt: remove mention of symlink st_size quirk from
+ documentation
+Date: Thu,  1 Jul 2021 23:53:50 -0700
+Message-Id: <20210702065350.209646-6-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210702065350.209646-1-ebiggers@kernel.org>
 References: <20210702065350.209646-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210701_235452_286143_0F4B4CB9 
-X-CRM114-Status: GOOD (  11.48  )
+X-CRM114-CacheID: sfid-20210701_235453_630182_7D65C6F5 
+X-CRM114-Status: GOOD (  10.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,47 +81,30 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-The stat() family of syscalls report the wrong size for encrypted
-symlinks, which has caused breakage in several userspace programs.
+Now that the correct st_size is reported for encrypted symlinks on all
+filesystems, update the documentation accordingly.
 
-Fix this by calling fscrypt_symlink_getattr() after f2fs_getattr() for
-encrypted symlinks.  This function computes the correct size by reading
-and decrypting the symlink target (if it's not already cached).
-
-For more details, see the commit which added fscrypt_symlink_getattr().
-
-Fixes: cbaf042a3cc6 ("f2fs crypto: add symlink encryption")
-Cc: stable@vger.kernel.org
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/f2fs/namei.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ Documentation/filesystems/fscrypt.rst | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
-index a9cd9cf97229..e2d540ae2293 100644
---- a/fs/f2fs/namei.c
-+++ b/fs/f2fs/namei.c
-@@ -1305,9 +1305,19 @@ static const char *f2fs_encrypted_get_link(struct dentry *dentry,
- 	return target;
- }
+diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
+index 44b67ebd6e40..02ec57818920 100644
+--- a/Documentation/filesystems/fscrypt.rst
++++ b/Documentation/filesystems/fscrypt.rst
+@@ -1063,11 +1063,6 @@ astute users may notice some differences in behavior:
  
-+static int f2fs_encrypted_symlink_getattr(struct user_namespace *mnt_userns,
-+					  const struct path *path,
-+					  struct kstat *stat, u32 request_mask,
-+					  unsigned int query_flags)
-+{
-+	f2fs_getattr(mnt_userns, path, stat, request_mask, query_flags);
-+
-+	return fscrypt_symlink_getattr(path, stat);
-+}
-+
- const struct inode_operations f2fs_encrypted_symlink_inode_operations = {
- 	.get_link	= f2fs_encrypted_get_link,
--	.getattr	= f2fs_getattr,
-+	.getattr	= f2fs_encrypted_symlink_getattr,
- 	.setattr	= f2fs_setattr,
- 	.listxattr	= f2fs_listxattr,
- };
+ - DAX (Direct Access) is not supported on encrypted files.
+ 
+-- The st_size of an encrypted symlink will not necessarily give the
+-  length of the symlink target as required by POSIX.  It will actually
+-  give the length of the ciphertext, which will be slightly longer
+-  than the plaintext due to NUL-padding and an extra 2-byte overhead.
+-
+ - The maximum length of an encrypted symlink is 2 bytes shorter than
+   the maximum length of an unencrypted symlink.  For example, on an
+   EXT4 filesystem with a 4K block size, unencrypted symlinks can be up
 -- 
 2.32.0
 
