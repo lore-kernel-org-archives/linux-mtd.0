@@ -2,18 +2,19 @@ Return-Path: <SRS0=26vX=L3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81F49C07E97
-	for <linux-mtd@archiver.kernel.org>; Sat,  3 Jul 2021 16:23:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4642DC07E97
+	for <linux-mtd@archiver.kernel.org>; Sat,  3 Jul 2021 16:26:42 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EE8E961938
-	for <linux-mtd@archiver.kernel.org>; Sat,  3 Jul 2021 16:23:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE8E961938
+	by mail.kernel.org (Postfix) with ESMTPS id 0E78861930
+	for <linux-mtd@archiver.kernel.org>; Sat,  3 Jul 2021 16:26:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E78861930
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,61 +24,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Date:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=cUUUEAE2DCRHTNgM9FEy+EKOo0qai1AvLcnbrcI4bMA=; b=LN06OJYH5Qx3r0tZuOweS//JBI
-	7fxobEjXXclazM/i9V2U97fPRaSnai/7v4j2/c8VdIajfZv3r4E2+3XAYpNGMcDnjt3V9XciPa3iJ
-	AkOfcM3gholOAXxZBe6Xmxj3NCwXlTHsjxk5C8yhJxOUMreRRdEuvSjGmsiPgIIGkE7a3wWZj0n0y
-	OW2+9XU+3//r7eHsVXh6P5OgMlpwj1ou1LRmsDpNbH77beTesibxUchsY2hpHvWh/HxqteQF3uAwS
-	kXyFRe38sXLfCaRzbiDp+qA9aCRd8vvuQIxQH8HN6pXSjdQErd3D/m/0VBo1Xpflyk0yrZu0oh6+7
-	qrRd3JpA==;
+	bh=J8XB39pgC2eSrHdq7UJYvQGEL5AW4ffiU8+1GL73xII=; b=UdslDKHDaRBLytOep+SepyzbqS
+	rx/IdmMm+oyM6cdVEAGRCK8PUDeGRbcGmD9XQ95eWqCSRLd36/pQC6zQzunxfV9+0qv3ztS3oFTHC
+	oTMHebNLfb3+tswde0aKVamjqmY6f9XarKboywHVBRaPsa4/Boftx9uD+N5SiIY/ebkP74Akm4uDW
+	tLIJTASfhz5i579lA2lIvoK9x77k2nn/ELJ7jb0doMB6tyx8Z9gAuCuMp2pK5Y63z8Qo0ttOZTq+L
+	yYXGI8965jZErkw8go4svFmhyhxKB4oi20AxwexNq8B4U6KY33WgAAuQqe/10sOBVm5pP+ZSJB/rX
+	ZfaL2OHw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1lziQ5-00569u-3R; Sat, 03 Jul 2021 16:23:05 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1lziT4-0056O2-G3; Sat, 03 Jul 2021 16:26:10 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lziQ0-00569V-I4
- for linux-mtd@lists.infradead.org; Sat, 03 Jul 2021 16:23:03 +0000
-Received: from [100.99.129.63] (ip-109-40-130-239.web.vodafone.de
- [109.40.130.239])
+ id 1lziT1-0056Ng-4Z
+ for linux-mtd@lists.infradead.org; Sat, 03 Jul 2021 16:26:08 +0000
+Received: from [IPv6:2a02:6d40:3433:fe01:3924:339d:7699:b3c9] (unknown
+ [IPv6:2a02:6d40:3433:fe01:3924:339d:7699:b3c9])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 4E58422236;
- Sat,  3 Jul 2021 18:22:54 +0200 (CEST)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 8821322236;
+ Sat,  3 Jul 2021 18:26:02 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1625329375;
+ s=mail2016061301; t=1625329563;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=JaFy4n66ILmzibnMp+fwO5Eefioc67cNHcBB+21m/Q8=;
- b=q85bSuB9DaG6GNQIp4Ms7rUM9aEfZJD73b1upWrqG1d0/fz/i5FLyCvncB0HyUSV4+s5LQ
- o8ESM3/kr2LA7p8UsY8qVrqmSwvxJsXCk9hXH/jg/g0QtVfyzcHBWDVVV9HZeJN1vlg9ko
- MEbnTJEq/0Hy8HXuvsa9n9e9QFDnNOw=
-Date: Sat, 03 Jul 2021 18:20:31 +0200
+ bh=pyBp0q4SVf2MSK2XfgyJCK59ZJNUPQ1pVvNVAWQSMkI=;
+ b=JrBfohToQLp2rt6aXBVPFjFBZOeZljlR1IKKY6xuPa94OckCoYUVK8A6yOYzVFnoH3uVBh
+ kodapbtmet+MtzmTMXQozWuQFICiqLxaSU0XtPiSOAqYQwEDCjIbV8d1wdol4Mu62b9nRK
+ KfoQS7PLE76cddf6Y8mPwNf9Wje/yrM=
+Date: Sat, 03 Jul 2021 18:08:38 +0200
 User-Agent: K-9 Mail for Android
-In-Reply-To: <86sg0vmlry.fsf@figgyc.uk>
-References: <20210509144716.431650-1-mail@david-bauer.net>
- <752e8869acebdeeaf5dc775a5af35ffc@walle.cc>
- <796a15bd-66d9-b1a5-2258-b692f23364fe@david-bauer.net>
- <ef20e03c43d2eacff7133f74a118ea43@walle.cc>
- <0b8be4c9-4528-8cac-2067-4ad2b180df79@david-bauer.net>
- <ee4c8e3ebbe0b4cf762bbcb3a4b0e6dc@walle.cc>
- <f79a55f2-3f89-55a9-5cee-ae50d1fc0a47@david-bauer.net>
- <bccdfd0008c0f5482ae9f1b78dba3624@walle.cc>
- <b650bf50-0a66-e772-5ebb-5336fa818e02@david-bauer.net>
- <88451011-067b-ffd0-fd21-985a08a5aee0@microchip.com>
- <a0b94408-947a-a3ba-8685-8249e754eafb@microchip.com>
- <86sg0vmlry.fsf@figgyc.uk>
+In-Reply-To: <9bb2acac-aeb8-d2b2-8df0-9acfd972ec5d@microchip.com>
+References: <20210702093841.32307-1-michael@walle.cc>
+ <9bb2acac-aeb8-d2b2-8df0-9acfd972ec5d@microchip.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] mtd: spi-nor: Add support for BoHong bh25q128as
-To: George Brooke <figgyc@figgyc.uk>,Tudor.Ambarus@microchip.com
-CC: mail@david-bauer.net, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: core: handle flashes without OTP gracefully
+To: Tudor.Ambarus@microchip.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+CC: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ linux@roeck-us.net
 From: Michael Walle <michael@walle.cc>
-Message-ID: <0C882B63-6787-469E-9392-38C6DB1B54FA@walle.cc>
+Message-ID: <9F46D75C-D00D-4577-A337-7411049EC7D9@walle.cc>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210703_092301_174962_18C3D87A 
-X-CRM114-Status: GOOD (  38.11  )
+X-CRM114-CacheID: sfid-20210703_092607_381910_6F43AC09 
+X-CRM114-Status: GOOD (  14.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,201 +86,79 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 3. Juli 2021 17:58:57 MESZ schrieb George Brooke <figgyc@figgyc.uk>:
->Hi Tudor,
->
->Tudor.Ambarus@microchip.com writes:
->
->> On 6/28/21 8:48 AM, Tudor.Ambarus@microchip.com wrote:
->>> EXTERNAL EMAIL: Do not click links or open attachments unless you
+Am 3. Juli 2021 11:56:14 MESZ schrieb Tudor.Ambarus@microchip.com:
+>On 7/2/21 12:38 PM, Michael Walle wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you
 >know the content is safe
->>>
->>> On 5/18/21 10:39 PM, David Bauer wrote:
->>>> EXTERNAL EMAIL: Do not click links or open attachments unless you
->know the content is safe
->>>>
->>>> Hi Michael,
->>>>
->>>> Sorry for the late reply, was not feeling well past week.
->>>>
->>>> On 5/10/21 1:22 PM, Michael Walle wrote:
->>>>> Hi David,
->>>>>
->>>>> Am 2021-05-10 13:04, schrieb David Bauer:
->>>>>> On 5/10/21 12:56 PM, Michael Walle wrote:
->>>>>>> Am 2021-05-10 12:27, schrieb David Bauer:
->>>>>>>> On 5/10/21 11:35 AM, Michael Walle wrote:
->>>>>>>>> Am 2021-05-10 11:28, schrieb David Bauer:
->>>>>>>>>> On 5/10/21 10:00 AM, Michael Walle wrote
->>>>>>>>>>
->>>>>>>>>> [...]
->>>>>>>>>>
->>>>>>>>>>>> +static const struct flash_info bohong_parts[] = {
->>>>>>>>>>>> +    /* BoHong Microelectronics */
->>>>>>>>>>>> +    { "bh25q128as", INFO(0x684018, 0, 64 * 1024, 256,
->>>>>>>>>>>
->>>>>>>>>>> I couldn't find "BoHong" in JEP106BC. 0x68 (without
->continuation codes)
->>>>>>>>>>> is "Convex Computer". So this is wrong. OTOH I'm not sure,
->how many
->>>>>>>>>>> SPI flashes "convex computer" have, if any ;) This company
->was brought
->>>>>>>>>>> by HP in the end.
->>>>>>>>>>>
->>>>>>>>>>> In any case, this patch depends on how we handle
->continuation codes or
->>>>>>>>>>> if we can handle them at all. Or if this flash just lie
->about its
->>>>>>>>>>> manufacturer id and don't and CC.
->>>>>>>>>>
->>>>>>>>>> First of all, BoHong and Boya microelectronics seems to be
->the same
->>>>>>>>>> company, as their datasheets seem to copy each other. There's
->not much
->>>>>>>>>> information about either of both, so I'd say that's a fair
->assumption.
->>>>>>>>>>
->>>>>>>>>> Regarding the continuation codes, Boya is listed in bank
->nine, however
->>>>>>>>>> in this case I should currently read an all 0x7f ID shouldn't
->I?
->>>>>>>>>
->>>>>>>>> I'd guess so, yes.
->>>>>>>>>
->>>>>>>>>> The datasheet also only specifies 3 bytes as a return value
->for
->>>>>>>>>> register 0x9fh :(
->>>>>>>>>
->>>>>>>>> Yeah. So, this flash falls into the same category "simply
->hijacks
->>>>>>>>> a manuf id" as all the other flashes.
->>>>>>>>
->>>>>>>> From a quick check, this is also be the case for GigaDevices
->and XMC.
->>>>>>>>
->>>>>>>> My spontaneous idea would be to extend support for JEDEC IDs to
->read
->>>>>>>> the up to 9 banks of the vendor ID and fix up the existing
->offenders.
->>>>>>>
->>>>>>> you mean gigadevices and xmc? I'd presume they are also lacking
+>> 
+>> There are flash drivers which registers the OTP callbacks although
 >the
->>>>>>> continuation bytes.
->>>>>>
->>>>>> Correct, same story with them.
->>>>>>
->>>>>>>
->>>>>>>> To not break existing boards, we could either skip the
->continuation
->>>>>>>> bytes of the kernel ID definitions for all flash chips or flag
->the
->>>>>>>> already existing ones and only perform this on such flagged
->chips.
->>>>>>>>
->>>>>>>> Personally, I'd say that only performing this on existing chips
->would
->>>>>>>> be better, as new vendors with this violation scheme might
->probably
->>>>>>>> appear and cause conflicts.
->>>>>>>>
->>>>>>>> As we still lack auto detection for new chips with that,
->configuring
->>>>>>>> the flash chip used with the chip name via DT would allow to
->set the
->>>>>>>> exact chip used and also validate if the manufacturer / product
->after
->>>>>>>> the continuation bits matches the one read from the chip.
->>>>>>>>
->>>>>>>> What do you think?
->>>>>>>
->>>>>>> If you'd ask me, unless there is a real world conflict, I'd just
->go
->>>>>>> ahead and add them as is. If there is a conflict we'd need to
->find
->>>>>>> a per device resolution for it.
->>>>>>
->>>>>> Okay, I'll resend a v2 with the removed copyright then.
->>>>>
->>>>> Could you also apply my SFDP patch [1] and send the dump (if there
->>>>> is any)? Unfortunately, I can't think of a good way to do that
->along
->>>>> with the patch and if this in some way regarded as copyrighted
->material.
->>>>> So feel free to send it to me privately. I'm starting to build a
->>>>> database.
->>>>
->>>> Bad news, I'm not able to get a SFDP with your patches, as the SFDP
->extraction
->>>> fails at the version check.
->>>>
->>>> Is there anything else I can try?
->>>>
->>>
->>> So no SFDP data?
->>> Have you tried to read more of ID bytes, maybe there's an extended
->ID? Please
->>> dump 15 bytes of ID.
->>
->> what's the difference between by25q128as and bh25q128as? I see they
->share the
->> same flash ID.
->>
+>> flash doesn't support OTP regions and return -ENODATA for these
+>> callbacks if there is no OTP. If this happens, the probe of the whole
 >
->I've got the by25q128as, so I compiled the SFDP and sysfs patch kernel
->to read it out.
+>why do they register the OTP callback if they don't support OTP?
+
+I don't know. But I certainly won't touch that code :p
+
+
+>> flash will fail. Fix it by handling the ENODATA return code and skip
+>> the OTP region nvmem setup.
+>> 
+>> Fixes: 4b361cfa8624 ("mtd: core: add OTP nvmem provider support")
+>> Reported-by: Guenter Roeck <linux@roeck-us.net>
+>> Signed-off-by: Michael Walle <michael@walle.cc>
+>> ---
+>>  drivers/mtd/mtdcore.c | 10 ++++++++--
+>>  1 file changed, 8 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+>> index b5ccd3037788..6881d1423dd6 100644
+>> --- a/drivers/mtd/mtdcore.c
+>> +++ b/drivers/mtd/mtdcore.c
+>> @@ -880,7 +880,10 @@ static int mtd_otp_nvmem_add(struct mtd_info
+>*mtd)
+>> 
+>>         if (mtd->_get_user_prot_info && mtd->_read_user_prot_reg) {
+>>                 size = mtd_otp_size(mtd, true);
+>> -               if (size < 0)
+>> +               /* ENODATA means there is no OTP region */
+>> +               if (size == -ENODATA)
 >
->figgyc@figgyc-pi:~ $ ls /sys/class/spi_master/spi0/spi0.0/spi-nor/
->jedec_id  manufacturer  partname
->$ cat /sys/class/spi_master/spi0/spi0.0/spi-nor/jedec_id
->684018
->$ cat /sys/class/spi_master/spi0/spi0.0/spi-nor/manufacturer
->boya
->$ cat /sys/class/spi_master/spi0/spi0.0/spi-nor/partname
->by25q128as
->(this is using my patch for the chip support)
->
->There was no sfdp file for me either, failed the version check like
->David's chip (I added a dev_dbg to check).
+>If no OTP data, maybe it's more appropriate for the clients to just
+>return a retlen of 0.
 
-Then it seems it doesn't have SFDP. 
-
-
->One thing I noticed reading the datasheet[1] again was this line:
->"Security Register 0 can be used to store the Flash Discoverable
->Parameters, The feature is upon special order, please contact Boya
->Microelectronics for details."
->The same line is also present in the BoHong datasheet but it says
->HuaHong instead of Boya. That makes me wonder if the meaning of
->"Discoverable Parameters (SFDP) register" in the datasheet does not
->actually mean that it has SFDP data programmed in by default, which
->would be quite strange, but if true then that would be quite annoying
->because then I don't think there are any differences between Boya and
->BoHong. Very strange design decision in my opinion but it is what it
->is.
-
-I'd say it is exactly this. There is no SFDP. only on "special request", I guess that means "we were too lazy and if there is a client big enough we'll do it".
-
->The only other explanation I could think of is that erasing the chip
->might erase security register 0? Unfortunately I only have one chip so
->I can't test that. Even if that were the case it would still be
->unhelpful.
-
-There should be a special command to erase security registers, aka OTP. Winbond does the same, just return the first security register content if you send a RDSFDP. Just that it's programmed by default and the data sheet doesn't mention security register 0 (and treat it as reserved). 
+you mean already checking ENODATA in mtd_otp_size() and return 0. That would also make the hunk below unnecessary. I'll change it. 
 
 -michael
 
->I dumped extra ID in a previous email thread, IIRC it just loops, no
->extra 7f bytes like there should be.
 >
->In conclusion it seems to me as though the two chips behave
->identically, there's probably no way to know for certain though without
->asking the manufacturer.
 >
->[1] http://www.bmsemi.com/upload/file/20180425/15246261557309416.pdf
->
+>> +                       size = 0;
+>> +               else if (size < 0)
+>>                         return size;
+>> 
+>>                 if (size > 0) {
+>> @@ -896,7 +899,10 @@ static int mtd_otp_nvmem_add(struct mtd_info
+>*mtd)
+>> 
+>>         if (mtd->_get_fact_prot_info && mtd->_read_fact_prot_reg) {
+>>                 size = mtd_otp_size(mtd, false);
+>> -               if (size < 0) {
+>> +               /* ENODATA means there is no OTP region */
+>> +               if (size == -ENODATA) {
+>> +                       size = 0;
+>> +               } else if (size < 0) {
+>>                         err = size;
+>>                         goto err;
+>>                 }
+>> --
+>> 2.20.1
+>> 
+>> 
 >> ______________________________________________________
 >> Linux MTD discussion mailing list
 >> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>> 
 
 
 ______________________________________________________
