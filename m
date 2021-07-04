@@ -2,21 +2,19 @@ Return-Path: <SRS0=2SY/=L4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03F69C07E95
-	for <linux-mtd@archiver.kernel.org>; Sun,  4 Jul 2021 13:12:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC75CC07E95
+	for <linux-mtd@archiver.kernel.org>; Sun,  4 Jul 2021 16:02:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AA947613D1
-	for <linux-mtd@archiver.kernel.org>; Sun,  4 Jul 2021 13:12:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA947613D1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id AD44F613B1
+	for <linux-mtd@archiver.kernel.org>; Sun,  4 Jul 2021 16:02:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD44F613B1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -24,65 +22,61 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=A8S543pGGuqLK2ynSgbrM4X0CVc8Jn3hl8HcpO8ore8=; b=cYWIY4x9UfSvxL
-	7H6ToWaFFlo8OW7ivke51sm7wv5WC0zATGNt4MAkRYRcuHZtngNJX6u+D1dzWi91h5s8vtq5fvIif
-	PADgUVcVa7zpicvcbe+uXxMDoxOfaxUn2xYQjtK/Yt9mfa0/vghK6iGVekUcjmaR9PGMoprXaA8W6
-	MwkUtfRNQBKnqd89SE+oFwBekc7WpxtD9XIMt2ZEmxho2Wgg1wrLjh9C+JZ84F97d0yG7YQXqIq/t
-	4EdT9f4JRjvotHqNkWxpT4xaHmnb+i5kU/PyvBDVZYk8FHrV4Ti3gqIZ9uR2ZUqFSIW0Dr6ZkLNe9
-	aCfYHNLmu2UY+KDMM9fA==;
+	List-Owner; bh=2QpiE5Bz8W/G0bukdPcKIYZ02xpAH9mkS3UzGAW3hJ8=; b=eXOhATztRX6qGV
+	ticLVUIBKTkI/HkaCJnJe7IUllnwcyfYvoBi+cXPCOECDpzSnMDV9FWuG9EuGk3sjBihn8Coaqtan
+	JBNRFI3imaAAPnVVnOsIy9Ilk5/ZMlv3dfxluNCOADCp7FUEAKJjBi5zYGSBH74/Z1Jf7JVrsEfKp
+	62vS8dN2YsFn7X4FwHuZdH3tfD8qQnyXvWAR2oJx4kR3uNfoCbaxNGt/8dvo8zy1G8dcoiSwDixc8
+	tkFdNexVkvhGNDokYs5bE+LmHFoxkPmuNOy6q0f7S+uvVpbY+0GTNEpa4+R59jChTFWlf3hrDvSzU
+	LeoNuxD8I0L4a4ezOqtw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m01v3-006Jzh-9c; Sun, 04 Jul 2021 13:12:21 +0000
-Received: from mail-io1-xd2f.google.com ([2607:f8b0:4864:20::d2f])
+	id 1m04Z4-006VyI-T2; Sun, 04 Jul 2021 16:01:50 +0000
+Received: from conssluserg-02.nifty.com ([210.131.2.81])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m01ul-006JyW-3j
- for linux-mtd@lists.infradead.org; Sun, 04 Jul 2021 13:12:04 +0000
-Received: by mail-io1-xd2f.google.com with SMTP id u7so15550676ion.3
- for <linux-mtd@lists.infradead.org>; Sun, 04 Jul 2021 06:12:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=6yajXS3rL1yMBlHU8SEgTQ56L2hNY3a1We+yQ/hx3L4=;
- b=aIhhAUKkGJKIYWtysvdcZhc7mEPxL0SWuW61UeJMu3tfVKoFfjKnJgBywnsdeET6ti
- wqBS9fuq1wukXxA/1vAKNtUlBUBtAzJBA9IjJ0G+l+1bZ6LPRk5Izyx5WUATf+bGH7mM
- uPaNrFZTo7bxarJXufuc+eBKB8X6mFKCJYIhy01JBKtR582l3bx1eFaP+3LYnmtSNMNn
- PJlcdHHaZ4GeTP293nsofVy+G2edveT3lcZP0LXYJolv3l9d/Uf4V5jturYYoXC00396
- qV5OvcxGsWjXSwXo7QcoivXLiE+UEQER5ebMwvdmxZv20BwM9jfioakJCeubEzXKSSH/
- ljvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=6yajXS3rL1yMBlHU8SEgTQ56L2hNY3a1We+yQ/hx3L4=;
- b=BYPX1iYiWLj8pc3Xcw1ZjwPAaJKbRs8oOsFTLpQlQ54BEYp493BUYyNTp4mwdWYe6e
- Gxr1mth4MjLdzQcMybc9bgGNdrBhvxq1H4QREysTs2idTdFQ9tNOOdoi4xrCafvZ3n1s
- LGdUC5PHsxA6PKXSKiO+HuDaS1VOAWTJuNCJaBeLnB6UUeUIm/5Wd/0iV77M0KPAIdmC
- C3Q6AoL//YJ3pC/9ACnSX4lWihW5waqjxZVY4McR9M6CLmRfmWe5ZYiR0v8zRs3YqxwO
- SCTFSpdIKdAv4mf7857sM7pASqbNJIU8yAIo6HRk8l4cqaLQNrtA5gy4//4yKK7vW2GI
- 8LCw==
-X-Gm-Message-State: AOAM533B4G6rbc5H8iJBZbIG3UDtdA+KfMNIo/R9o0cYga2vLCCBj2Nf
- jVaHwurBf1SMHDPMO7h3lz06qvKkx3vwpxpfAHg=
-X-Google-Smtp-Source: ABdhPJyAaEcr8GxWeAcZ8q1Yu2rzqcAR2EOQw+lKR8M1r/wZpZ2EiDJ3qjkAYaZcSp9VVAqeEeNTlQngpMrvmQwQySs=
-X-Received: by 2002:a5e:9802:: with SMTP id s2mr1946ioj.73.1625404322303; Sun,
- 04 Jul 2021 06:12:02 -0700 (PDT)
+ id 1m04Z1-006Vwc-IX
+ for linux-mtd@lists.infradead.org; Sun, 04 Jul 2021 16:01:49 +0000
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com
+ [209.85.214.180]) (authenticated)
+ by conssluserg-02.nifty.com with ESMTP id 164G1LdU001577
+ for <linux-mtd@lists.infradead.org>; Mon, 5 Jul 2021 01:01:21 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 164G1LdU001577
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+ s=dec2015msa; t=1625414481;
+ bh=6HNc8VG/tGcCTwbJDZ5Jks5Dx/j6qMD9eu7GWnNREkU=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=wNuqCnDJeszwlWMRwggixesyYC9GSSNb4BVoj9s+4KoPRsmpG40FiMfGS7lZWS0rw
+ Vju7775hwvZ0Ymko7dqLJR5sVeNmtGOK+qL1X5IacienSYlEX1tr9E1efYOLypdLNy
+ 9XM6svOhwz4yrVXQuFw6T5DLQfxO7PQG6pOyYSRv+EpQ/6TZPI6939ltfX2jSpBpdm
+ voMqztZ9YNLnVtHS83PtyZ8cu/H0PCQETT4oXVzld3bvmU8qn8Pw5cVEhNiI2g/pbq
+ SCIyQ8Y8i3LbWY0oRAXpMSZrbw0YXjaRATImPIsBVtZyWD1SqH4BD0ZoM+jJR1tpTN
+ kcIaT3nFg1CcQ==
+X-Nifty-SrcIP: [209.85.214.180]
+Received: by mail-pl1-f180.google.com with SMTP id c15so8700082pls.13
+ for <linux-mtd@lists.infradead.org>; Sun, 04 Jul 2021 09:01:21 -0700 (PDT)
+X-Gm-Message-State: AOAM533mSBsTsUh0VEoHZStdM7yPkesHicV7CWRQGRZ4TpUHR99vacMP
+ fIUHXY1xUHWVOhr9HSY+q+KL8oC7hnbjqb2yKDI=
+X-Google-Smtp-Source: ABdhPJyUd8hDodVvk57P9D5cJOVWm0aBMKZx0VXs4hWaZHPG8ewFlyHJhF+kHHx66S20ClMVU2HYLZO67xrF8yJMaY8=
+X-Received: by 2002:a17:90a:c506:: with SMTP id
+ k6mr10433843pjt.198.1625414480779; 
+ Sun, 04 Jul 2021 09:01:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210702144110.250481-1-tudor.ambarus@microchip.com>
- <20210702144110.250481-5-tudor.ambarus@microchip.com>
-In-Reply-To: <20210702144110.250481-5-tudor.ambarus@microchip.com>
-From: Heiko Thiery <heiko.thiery@gmail.com>
-Date: Sun, 4 Jul 2021 15:11:51 +0200
-Message-ID: <CAEyMn7aJpMgoHhm5JqcQTjA4p5AHXdaC-Yof2ZaNUbrMLU6MDg@mail.gmail.com>
-Subject: Re: [PATCH 4/7] mtd: spi-nor: macronix: Handle ID collision b/w
- MX25L12805D and MX25L12835F
-To: Tudor Ambarus <tudor.ambarus@microchip.com>
-Cc: Michael Walle <michael@walle.cc>, vigneshr@ti.com, p.yadav@ti.com,
- figgyc@figgyc.uk, 
- mail@david-bauer.net, linux@rasmusvillemoes.dk, esben@geanix.com, 
- knaerzche@gmail.com, code@reto-schneider.ch, zhengxunli@mxic.com.tw, 
- jaimeliao@mxic.com.tw, macromorgan@hotmail.com, sr@denx.de, 
- miquel.raynal@bootlin.com, richard@nod.at, linux-mtd@lists.infradead.org
+References: <20200317071821.9916-1-yamada.masahiro@socionext.com>
+ <20210630184741.GA1037365@maple.netwinder.org>
+In-Reply-To: <20210630184741.GA1037365@maple.netwinder.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Mon, 5 Jul 2021 01:00:43 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASvYVyEQ4M_zEUdw9K9AB-RVErKoqFMQZ5OSKJF0AoBww@mail.gmail.com>
+Message-ID: <CAK7LNASvYVyEQ4M_zEUdw9K9AB-RVErKoqFMQZ5OSKJF0AoBww@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: rawnand: denali: add more delays before latching
+ incoming data
+To: Ralph Siemsen <ralph.siemsen@linaro.org>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, Marek Vasut <marex@denx.de>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210704_061203_199377_B2E540F3 
-X-CRM114-Status: GOOD (  19.98  )
+X-CRM114-CacheID: sfid-20210704_090148_002205_476E9D61 
+X-CRM114-Status: GOOD (  19.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,75 +93,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Tudor,
-
-Am Fr., 2. Juli 2021 um 16:41 Uhr schrieb Tudor Ambarus
-<tudor.ambarus@microchip.com>:
+On Thu, Jul 1, 2021 at 3:47 AM Ralph Siemsen <ralph.siemsen@linaro.org> wrote:
 >
-> MX25L12835F define SFDP, while MX25L12805D does not.
-
-I tested this on the kontron pitx-imx8m board with a MX25L12835F equipped.
-
-[    1.213448] spi-nor spi0.0: mx25l12835f (16384 Kbytes)
-
+> On Tue, Mar 17, 2020 at 04:18:21PM +0900, Masahiro Yamada wrote:
+> >
+> >Marek Vasut reported this driver in the latest kernel does not work
+> >on his SOCFPGA board. (The on-board NAND chip is mode 5)
 >
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-
-Testd-by: Heiko Thiery <heiko.thiery@gmail.com>
-
-> ---
->  drivers/mtd/spi-nor/macronix.c | 25 +++++++++++++++++++++++--
->  1 file changed, 23 insertions(+), 2 deletions(-)
+> In a bit of an ironic twist, this change seems to cause a regression for
+> me. I'm also using a Cyclone V SoC system, similar but not the same as
+> the SOCFPGA eval board. The NAND device in my case is S34ML04G2.
 >
-> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-> index 83a097708949..38701347bf04 100644
-> --- a/drivers/mtd/spi-nor/macronix.c
-> +++ b/drivers/mtd/spi-nor/macronix.c
-> @@ -8,6 +8,26 @@
+> It worked fine in 4.9, 4.19 and 5.4 kernels. However after upgrading to
+> 5.10 the NAND driver fails with "timeout while waiting for irq 0x4",
+> just as was reported back in 2018:
+> https://lore.kernel.org/linux-mtd/737ejrj81y.fsf@pengutronix.de/
 >
->  #include "core.h"
+> Reverting commit 5756f2e8dad46eba6e2d3e530243b8eff4dd5a42 restores the
+> behaviour in my case, but that would presumably break the SOCFPGA board.
 >
-> +static const char *mx25l12835f = "mx25l12835f";
-> +
-> +static int mx25l12835f_post_bfpt_fixups(struct spi_nor *nor,
-> +                               const struct sfdp_parameter_header *bfpt_header,
-> +                               const struct sfdp_bfpt *bfpt)
-> +{
-> +       /*
-> +        * Macronix has a bad habit of reusing flash IDs: MX25L12835F collides
-> +        * with MX25L12805D. MX25L12835F defines SFDP tables, while the older
-> +        * variant does not.
-> +        */
-> +       nor->name = mx25l12835f;
-> +
-> +       return 0;
-> +}
-> +
-> +static struct spi_nor_fixups mx25l12835f_fixups = {
-> +       .post_bfpt = mx25l12835f_post_bfpt_fixups,
-> +};
-> +
->  static const char *mx25l3233f = "mx25l3233f";
+> Any thoughts on how we could make it work for everybody?
 >
->  static int mx25l3233f_post_bfpt_fixups(struct spi_nor *nor,
-> @@ -71,8 +91,9 @@ static const struct flash_info macronix_parts[] = {
->         { "mx25u4035",   INFO(0xc22533, 0, 64 * 1024,   8, SECT_4K) },
->         { "mx25u8035",   INFO(0xc22534, 0, 64 * 1024,  16, SECT_4K) },
->         { "mx25u6435f",  INFO(0xc22537, 0, 64 * 1024, 128, SECT_4K) },
-> -       { "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, SECT_4K |
-> -                             SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP) },
-> +       { "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, SPI_NOR_PARSE_SFDP |
-> +                             SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP)
-> +               .fixups = &mx25l12835f_fixups },
->         { "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
->         { "mx25r1635f",  INFO(0xc22815, 0, 64 * 1024,  32,
->                               SECT_4K | SPI_NOR_DUAL_READ |
-
-Thank you
+> Ralph
 
 
---
-Heiko
+I no longer have any hardware to test this driver.
+
+If you increase data_setup_on_host (the current value is 10000),
+will it solve your issue?
+
+
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
 
 ______________________________________________________
 Linux MTD discussion mailing list
