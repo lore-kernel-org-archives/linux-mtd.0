@@ -2,90 +2,90 @@ Return-Path: <SRS0=N0H7=L5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41C6EC07E99
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Jul 2021 14:49:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C495C07E99
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Jul 2021 16:11:13 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 015B26193E
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Jul 2021 14:49:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 015B26193E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id C35D76108B
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Jul 2021 16:11:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C35D76108B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=HPj9T2O2YOM7ERGh9aefcCv2gjy3uFW7oIgBtvnVyMA=; b=vVjs60/+EeEGWyhtymfumf26ta
-	JQ3mFVrcjf/g8KdZMfh6KOL6l57HGJXbhJ9nIA0lXJUzVRE1YDSDhj0G3XT5R60YDJK4XPLAY3vLy
-	ffaEvq7fWvRnfDhX3T3Ml8/kS1p/ohErpzHpRamzH6tZLrN59WBX9ETRDKkZW8TvxADR1jkol58cr
-	t5rYLoxjPzGNDU7OI+xXiYchpdOIJ570sb9tyP1RQiTm4Xjox2ahtqmKkHWAxtBtuI8SZYawMlHwJ
-	5CitFncDCfWD5VrdKGnW+VeDQThp9WfLVpqNY+ZxCQu30BkHX1gyry6K1M4FGMlNnxovmcA4/0wO7
-	cYaOARBA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=XgTQ7v1UOI8MUjkXE0vLvmaPDUr8RfQeRRiSS1diVyk=; b=BSVwdeAD7dKz3Z
+	WQkemFMEibyBynTKlTimR9wi87Jg1JpSPGvum+BtaiPJvn09v+LrE2ToiM5p4C8wJ8qBUpLkIdFtw
+	CJDzS/PM4iwf18/Xl8cUf1J/HgeFa1+Vc+D2egrrD8zPwZYqhwzVrBTDGWALFDTHBboTGtAorACFq
+	itfLUycIRhILzD0vX3OxxpZkoygG/I15lTsS0mfuOkZSWSUioXx6IR0xnzsNc0f8XSJOWEecqm0Hu
+	pbSqkcINp6c0zdEOd9jh3V6TnZ2/j8cazlEaMBzcmzAQO502NGYvAsYd3Fz4s6smj5RXhdevCSpK5
+	4DHZ/RKrJWASJlX7fhIA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m0Pte-0099RG-UE; Mon, 05 Jul 2021 14:48:30 +0000
-Received: from mail-qt1-x836.google.com ([2607:f8b0:4864:20::836])
+	id 1m0RAw-009T5k-0o; Mon, 05 Jul 2021 16:10:26 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m0Ptc-0099Qj-1J
- for linux-mtd@lists.infradead.org; Mon, 05 Jul 2021 14:48:29 +0000
-Received: by mail-qt1-x836.google.com with SMTP id n9so12394822qtk.7
- for <linux-mtd@lists.infradead.org>; Mon, 05 Jul 2021 07:48:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=2zmbjDFIaZtiyBVWKZoOJHJ00DjMnvggIa2QROg9R98=;
- b=KkTD4Dx7MKl6LNSDU0piJ68YMk+h9b9/3OGdqn+ig6m6S5bHtmUoIO/Q9E3zTXnP7r
- eUdW5hzpVFjDr2Ry+VyfXjwjL9oyAsb5Uc6brPZRR3Gw2rZ5Jx4fvnlKnYY/8xuY0lHn
- KhU96ebnlUuh1NqkyzaVLhXg5De4yJQUsRLVWZ4+WpPzeit8OjHSkZLDfLiArFE0Ot1D
- 7lniL1GqD18yMPnQYSd8cXNQIaqMXkJheqTYRQLKv/w6LwsSj1wf6ca2nAWe07eqlwdo
- zfT+RuedS90VxOrZfkAGku8hxehgfeOwpmOCRtJMsJwZzNoM68rzEIoa5TBcJmBrNl+W
- tl/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=2zmbjDFIaZtiyBVWKZoOJHJ00DjMnvggIa2QROg9R98=;
- b=GjGUU9mbE5UZuUVnpy9RKV1DduUR3d34idkmRG2qr1cD6YfwQF3jeWdWKBeqm5fLqC
- ZmRyZB9XvoTZdLCPShSnZGQLdRncMg47bAXd5RSeyVVwKxb8nRFiycn7eHqC5RTiCkYG
- wHS7vKJcPP2ANzyZ3RIS6rhwLPWCgSyR6q5Ad/L1Lt6MzSJ10D8ZWoqpKu59pBJhsGVx
- CL8XQKMw6/ZrlEN/tjUAhn0O3PpYWrS90+7RqX3FXszefVdABPZ2IhKI/n0knGVubvtP
- iqNw7w6ZdTlwlWnCWFQLfuKGF1MnwJ8GZl/DtsAwEJClBu4z7q/xru+L1rOq2ViBvDxj
- xZGg==
-X-Gm-Message-State: AOAM533Yz8WJSUTBt4xTXUfc33r/DwpBwtKNFrbZqg1Im+OBmCA/R/0Z
- I7RTsxw5QU+krg642DCkEbdUYHODVTXy7w==
-X-Google-Smtp-Source: ABdhPJwTf0hicO7g+xx48R4psSASkNcG40bxjp266rE0H0pv0I9zV6b5hNu2WBDj1br05e9bwQb4lw==
-X-Received: by 2002:ac8:451a:: with SMTP id q26mr13163488qtn.68.1625496505267; 
- Mon, 05 Jul 2021 07:48:25 -0700 (PDT)
-Received: from localhost (rfs.netwinder.org. [206.248.184.2])
- by smtp.gmail.com with ESMTPSA id j3sm4579383qth.63.2021.07.05.07.48.24
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 05 Jul 2021 07:48:24 -0700 (PDT)
-Date: Mon, 5 Jul 2021 10:48:23 -0400
-From: Ralph Siemsen <ralph.siemsen@linaro.org>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, Marek Vasut <marex@denx.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] mtd: rawnand: denali: add more delays before latching
- incoming data
-Message-ID: <20210705144823.GA1459782@maple.netwinder.org>
-References: <20200317071821.9916-1-yamada.masahiro@socionext.com>
- <20210630184741.GA1037365@maple.netwinder.org>
- <CAK7LNASvYVyEQ4M_zEUdw9K9AB-RVErKoqFMQZ5OSKJF0AoBww@mail.gmail.com>
+ id 1m0RAt-009T5K-3t
+ for linux-mtd@lists.infradead.org; Mon, 05 Jul 2021 16:10:24 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 165G9s23104498;
+ Mon, 5 Jul 2021 11:09:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1625501394;
+ bh=ICzwEzzsR6LFzLbRFApzrHASxuW4yK716p3k/995zuY=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=pSN0LTMthI6XBCwqc/DrWU814SXVZG3tztQ2E9VHfQLLWRCrGFGOp5Mt1DsyfY7b6
+ tV/JdaYXkfsRk2gY/jgcrGvUzY1xqa7ZJPMcNer9gDxeq/tJfHCEPwt3nIDLxhh4S3
+ eYAqbGOWoTsFyjwFgDmQk/UYrpjM0RJ6KYSgeYnM=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 165G9sIf001516
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 5 Jul 2021 11:09:54 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 5 Jul
+ 2021 11:09:54 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 5 Jul 2021 11:09:54 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 165G9r3d102293;
+ Mon, 5 Jul 2021 11:09:53 -0500
+Date: Mon, 5 Jul 2021 21:39:52 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: <Tudor.Ambarus@microchip.com>
+CC: <michael@walle.cc>, <vigneshr@ti.com>, <figgyc@figgyc.uk>,
+ <mail@david-bauer.net>, <linux@rasmusvillemoes.dk>, <esben@geanix.com>,
+ <knaerzche@gmail.com>, <code@reto-schneider.ch>,
+ <zhengxunli@mxic.com.tw>, <jaimeliao@mxic.com.tw>,
+ <heiko.thiery@gmail.com>, <macromorgan@hotmail.com>, <sr@denx.de>,
+ <miquel.raynal@bootlin.com>, <richard@nod.at>,
+ <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH 2/7] mtd: spi-nor: core: Report correct name in case of
+ ID collisions
+Message-ID: <20210705160950.yaablyujefffhz7o@ti.com>
+References: <20210702144110.250481-1-tudor.ambarus@microchip.com>
+ <20210702144110.250481-3-tudor.ambarus@microchip.com>
+ <20210705131328.ik765ywjryr44pyv@ti.com>
+ <579514fe-3134-c964-48ac-af729c4ccffc@microchip.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAK7LNASvYVyEQ4M_zEUdw9K9AB-RVErKoqFMQZ5OSKJF0AoBww@mail.gmail.com>
+In-Reply-To: <579514fe-3134-c964-48ac-af729c4ccffc@microchip.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210705_074828_128546_9A646CDD 
-X-CRM114-Status: GOOD (  11.34  )
+X-CRM114-CacheID: sfid-20210705_091023_445854_40ACD4FC 
+X-CRM114-Status: GOOD (  29.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,33 +97,67 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jul 05, 2021 at 01:00:43AM +0900, Masahiro Yamada wrote:
->
->I no longer have any hardware to test this driver.
->
->If you increase data_setup_on_host (the current value is 10000),
->will it solve your issue?
+On 05/07/21 01:24PM, Tudor.Ambarus@microchip.com wrote:
+> On 7/5/21 4:13 PM, Pratyush Yadav wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > On 02/07/21 05:41PM, Tudor Ambarus wrote:
+> >> Provide a way to report the correct flash name in case of ID collisions.
+> >> There will be a single flash_info entry when flash IDs collide, and the
+> >> differentiation between the flash types will be made at runtime
+> >> if possible.
+> > 
+> > I am not sure if having one entry for all flashes with a collision is a
+> > good idea. For example, say we have one flash which supports SFDP and
+> > that's all we need for it. Another flash with the same ID does not
+> > support SFDP so it needs the SPI_NOR_DUAL_READ, etc. flags. How would
+> > you handle this case with the same entry? You would have to set all the
+> > flags in the disambiguation function. And nor->info is declared as const
+> > so you can't change the flags in there. Any code checking for
+> > info->flags would not work properly for these type of flashes. Wouldn't
+> > it be better to have multiple entries with the same ID and just pick the
+> > one we need in the disambiguation function?
+> 
+> Your scenario is hit in patches 3/7 and 4/7. In case of ID collisions between
+> a SFDP and a non-SFDP compliant flash, I propose to set SPI_NOR_PARSE_SFDP, as
+> well as all the other required flash info flags that statically init the flash.
+> The SFDP flash will init all its NOR flags at runtime, while the non-SFDP flash
+> will issue a RDSFDP command that will fail, and then it will init all the NOR
+> flags based on the flash info flags.
 
-Yes, it does seem to work with this value increased to 10001.
+spi_nor_info_init_params() is called before spi_nor_sfdp_init_params(). 
+So if flash A sets SPI_NOR_QUAD_READ, flash B will also inherit it even 
+though it might not actually support quad mode reads. You would need to 
+refactor the parameter initialization path to do SFDP first and skip the 
+flags based init.
 
-Looking more closely, I compared timing parameters in struct 
-denali_chip_sel, for the kernel 5.4 (which works), for 5.10 (which 
-fails), and also for 5.10 with data_setup_host=10001 (which works).
+But that doesn't solve all the problems. What about the flags that can't 
+be discovered by SFDP? I see SPI_NOR_NO_ERASE, SPI_NOR_BP3_SR_BIT6, etc. 
+that are not set by the SFDP path. Some of those might be discoverable, 
+and we just don't do it yet, but I am not convinced all of them can be. 
+For example, I don't see any way to discover SPI_NOR_NO_ERASE via SFDP. 
+Erase type 1 field in BFPT is not optional and has to be specified.
 
-                 5.4     5.10    5.10+10001
-acc_clks        2       3       4
-rdwr_en_lo_cnt  3       2       3
-cs_setup_cnt    1       0       0
+How will you differentiate from the SFDP-discoverable and 
+non-SFDP-discoverable flags? How can you which belongs to which flash? I 
+know this is a bit far fetched but let's solve this problem once and for 
+all.
 
-So it seems that on my hardware, rdwr_en_lo_cnt must be >= 3.
+> 
+> > 
+> > Anyway, if you do decide to go with this approach, comments below.
+> 
+> Right, thanks.
 
+-- 
 Regards,
-Ralph
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
