@@ -2,84 +2,72 @@ Return-Path: <SRS0=0Hpo=L7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A28EC07E95
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jul 2021 11:59:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10ECEC07E95
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jul 2021 12:47:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B23546197F
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jul 2021 11:59:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B23546197F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id BDF4861CB9
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jul 2021 12:47:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDF4861CB9
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jmNk0tiIqWT+G4QirdjSrlDWP6RXApemvxbNm17sQ5U=; b=4abXmc12RffCOZ
-	AnIXBZwoKzq+8kfT85vaHKEOi8WXYMor4BoPbpOFL4j5tqC6muatZYZyLMDFBr/8c4VxmsF/8gUI9
-	5SlPaCW1Df9cN0R9dK1HZUjklEd161OsSwYN7vusvNTd/M8tL/pwqGsTB7rqXiEWxv6FddoZQuryJ
-	VZvHeEjyBgK7xwyyReB4ueuk2aC86LusM/MmIwAkqLGkcS6SYWKJRJ12SUgOYHC6ekETscXeYgos7
-	NzNh8EGuHZzVZNXUmoUwF8gEFN47rMSRev/3TO3szFXASO8ds6kigibjGROcfbHj25lXaSS3H/HLl
-	FRBqOx3qXktq8L2bAnMg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=PhZ7UGS7JYL9vVwna0C8d6ftt+z3Imitswy8uHJ96YM=; b=UYqS47arQnixWxKgsDB74Xf0KY
+	occnDnC/bt483j/DqMtr1XN3UdEpkBjipo2LbxQBwWU+ohZscZierX5esSq112FeVQ5jxG5aBOgwg
+	NrEXtA9+uw4d+wNDp/FjqUYbv4JNGmX4jfCcxvtATJtvHhAMfJPWFOPaCcFAxK0WCDrfnxt90RkvL
+	F4LADDhJUtUtIEKiwJLLEevPhI3VEhNAgwmOqmcpN2Q82fghGz0BmN/Rs9O8rCDl8V12KXoLkdkbF
+	CPHUQxi/Qlkwdo+zKGukviiJNVo0MmQcUXNPYvtUayv61p+J55ChwqAlGNLhEympTA54iiowrB+KI
+	4y8TFYWA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m16CK-00EiQv-Tf; Wed, 07 Jul 2021 11:58:36 +0000
-Received: from mail-il1-x136.google.com ([2607:f8b0:4864:20::136])
+	id 1m16xG-00Eo1E-5W; Wed, 07 Jul 2021 12:47:06 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m16CH-00EiQK-It
- for linux-mtd@lists.infradead.org; Wed, 07 Jul 2021 11:58:35 +0000
-Received: by mail-il1-x136.google.com with SMTP id h3so2270216ilc.9
- for <linux-mtd@lists.infradead.org>; Wed, 07 Jul 2021 04:58:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=Gz2SvUlCs2AXE2RQDr8qkXptmWjvi19lXYHyzodzOTc=;
- b=G1HxIi6tdpX67gmIqCI9QUKycAiMTOuhvEOSMdSAdZnfZQEZ4Wh5JWI6SZyzdeTRAO
- DGH/9RshAxFKGTTm882PV+U+Vo70BsEqmlV6RhPDmL0gWyBAOEgXuPMfjZ6ArDPPpSEj
- PwFFqxubu4ldPuIIbsf+HRcwbQKGOIUKQlMw8NgR2dhItxYV6i1LBOyzfvv+sp8vtxxz
- wgdrdVy55hi2uwYyezfir4BVnCTY57gsggzbxGvvoig48uJ68mflZdqw5f+FZXUPnRmm
- dMkkGSKNqGfAyqLmZZdKQm8gm34qkUO12i4l2GuoYh5a0PTK+4WcuZQQDWbx+IYVzwEC
- nCEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=Gz2SvUlCs2AXE2RQDr8qkXptmWjvi19lXYHyzodzOTc=;
- b=f09DMjS360qaB6aqh1+GCacvM4g8szo7ZXLX8CEUpjYDg6kcuG1g09x07dcsqEZ9NA
- 0v3HobeVaY0BsDdNedNiy2+GNe4R5CScH5gVoRoNJAciCWpxAz/XmAlMK/OiYBZQQjUs
- xzGZmABS5WB+sjvkwS67j+vEB5XuFxH8JSkeSWFUvhHJVx4MuERXeIPqOMINNKK2VPp3
- 2LseH9WsM0jxl3zM+QuL2IQw0g+0LvKS/FbEZC5TH8vT+46sQ2TAHdIF+5Vn6uBzraPp
- WP3L7o4F2YLihdWtXTksQyixIFKlI5iIyhENQ5kfHSawXiZJS3Zbo1gLq1PlgS8HuOHl
- Cl7g==
-X-Gm-Message-State: AOAM533T1rczlC6hB8oemirW82J0MfyyPzmImluEMAPpqDpIIsB6/mVU
- kqEOX+K8p049c8fx2ljIu+oxxspIAxvJpgAB95I=
-X-Google-Smtp-Source: ABdhPJy7CJ8rw6SS4Lx4DcNFplYdKa9xI3gp69S2JE4ODF5WW8bsIFThi1PSjURjQX+1nsW6m/nHnH+tfFsaM4qBABI=
-X-Received: by 2002:a92:ce12:: with SMTP id b18mr17622075ilo.96.1625659112717; 
- Wed, 07 Jul 2021 04:58:32 -0700 (PDT)
+ id 1m16xC-00Eo0B-VD
+ for linux-mtd@lists.infradead.org; Wed, 07 Jul 2021 12:47:04 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 88DFE22239;
+ Wed,  7 Jul 2021 14:46:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1625662020;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=qo7IrCTVE14UKRC2CdDWYJ11m1JINF0MvvrqxzPwY3E=;
+ b=lVB/mAdpyGVqTGaBJKxuwnkrbejg7HMYL5m42dvn0PM708h38NRq+Y5cAj8uCtWVAvSNSE
+ ZNCGlm3kVF0pEiZKzOgR8jIPUON85s/Lb+v6vP+DKXUn6IA/Hp1XNYIs33qe3kviv2984L
+ B/ZggPZUe6XscBGFd4PN8ZjsED2Y1RM=
 MIME-Version: 1.0
+Date: Wed, 07 Jul 2021 14:46:59 +0200
+From: Michael Walle <michael@walle.cc>
+To: MODEL WORK LST <lstfazz@gmail.com>
+Cc: tudor.ambarus@microchip.com, p.yadav@ti.com, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd:spi-nor:Update Winbond SPI NOR Flash device ID
+In-Reply-To: <CALEtjnoT1BP5OHmf3xGBGV4o-Xc-vfGR8eLzdM5-Udc_ujxokA@mail.gmail.com>
 References: <20210707101628.GA27472@pn10-Veriton-X4610>
  <35c2e5faa770e228bd16a2186c8caf78@walle.cc>
-In-Reply-To: <35c2e5faa770e228bd16a2186c8caf78@walle.cc>
-From: MODEL WORK LST <lstfazz@gmail.com>
-Date: Wed, 7 Jul 2021 19:58:22 +0800
-Message-ID: <CALEtjnoT1BP5OHmf3xGBGV4o-Xc-vfGR8eLzdM5-Udc_ujxokA@mail.gmail.com>
-Subject: Re: [PATCH] mtd:spi-nor:Update Winbond SPI NOR Flash device ID
-To: Michael Walle <michael@walle.cc>
-Cc: tudor.ambarus@microchip.com, p.yadav@ti.com, miquel.raynal@bootlin.com, 
- richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org, 
- linux-kernel@vger.kernel.org
+ <CALEtjnoT1BP5OHmf3xGBGV4o-Xc-vfGR8eLzdM5-Udc_ujxokA@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <59959af0f756109b02fb7c19f88c35d1@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210707_045833_691470_C2ECCDB3 
-X-CRM114-Status: GOOD (  25.21  )
+X-CRM114-CacheID: sfid-20210707_054703_221780_9F70DBDB 
+X-CRM114-Status: GOOD (  24.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,72 +79,88 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-U2hhbWUgb24gbWUsIEkgZG9uJ3QgdXNlIHRoZSBwbGFpbiB0ZXh0IHRvIHJlcGx5LgpQbGVhc2Ug
-YWxsb3cgbWUgc2VuZCBhZ2Fpbi4KCkRlYXIgTWljaGFlbCBzaXI6CgpNYW55IHRoYW5rcyBmb3Ig
-eW91ciBwcm9tcHQgcmVzcG9uc2UuCkl0IGlzIG15IGZpcnN0IHRpbWUgdXBkYXRlIHBhdGNoIGZv
-ciBMaW51eCwgcGxlYXNlIGFkdmlzZSBtZSBpZiBJIGRvIHdyb25nLgpXZSBhcmUgdGVzdGluZyB0
-aGVzZSBkZXZpY2UgYnkgdGhlIE5YUCBldmFsdWF0aW9uIGJvYXJkLgpCdXQgdGhlIHJ1bm5pbmcg
-TGludXggcmV2aXNpb24gZm9yIHRoYXQgYm9hcmQgaXMgc3RpbGwgNC54LiBUbyB1cGRhdGUKdGhl
-IGxhdGVzdCBJRCwKc2hvdWxkIHdlIHByZXBhcmUgdGhlIHN5c3RlbSB0aGF0IGNhbiB3b3JrIHdp
-dGggbGF0ZXN0IExpbnV4IHJldmlzaW9uPwpGb3IgdGhlIHRlc3QgcHJvY2VzcywgSSB3YXMgd29u
-ZGVyaW5nIHRvIGFzayBtb3VudCB0aGUgZGV2aWNlIHRvIFVCSUZTCmlzIGEgZ29vZCB3YXkgZm9y
-IHRlc3Q/CgpGb3IgdGhlIElELCB0aGlzIHRpbWUgd2UgYWRkIG5ldyBJRCB0aGF0IGlzIG5vdCBp
-bmNsdWRlIGluIHRoZSBmbGFzaF9pbmZvW10uCkFuZCB3ZSB3b3VsZCBrZWVwIG91ciBkZXZpY2Ug
-d2hvIHNoYXJlIHRoZSBzYW1lIElEIGhhdmUgY29tcGF0aWJsZQp3aXRoIGVhY2ggb3RoZXIuCk1h
-a2Ugc3VyZSB0aGUgRlcgb3IgU1cgb25seSBuZWVkIHRvIG1haW50YWluIGFuIHVuaXF1ZSBmb3Ig
-ZWFjaCBkZW5zaXR5LgpJZiB0aGUgc2FtZSBkZW5zaXR5IGRldmljZSBoYXZlIGRpZmZlcmVudCBi
-ZWhhdmlvciwgV2luYm9uZCB3b3VsZCBhcHBseSBuZXcgSUQuCk9yIGhhdmUgYXBwbGljYXRpb24g
-bm90ZSBmb3IgY3VzdG9tZXIgdG8gYXdhcmUgdGhlIGRpZmZlcmVuY2UuCgpGb3IgdGhlIFNGRFAs
-IEkgd291bGQgY2hlY2sgaG93IHRvIHdvcmsgYW5kIGZpbGwgdGhlIGluZm9ybWF0aW9uLgoKVGhh
-bmtzIGFnYWluIGZvciB5b3VyIHJlcGx5IGFuZCBpbmZvcm1hdGlvbiBzaGFyZS4KClNpbmNlcmVs
-eQoKU3RlYW0gTGluCgoKTWljaGFlbCBXYWxsZSA8bWljaGFlbEB3YWxsZS5jYz4g5pa8IDIwMjHl
-ubQ35pyIN+aXpSDpgLHkuIkg5LiL5Y2INzozMeWvq+mBk++8mgo+Cj4gSGksCj4KPiBBbSAyMDIx
-LTA3LTA3IDEyOjE2LCBzY2hyaWViIFN0ZWFtIExpbjoKPiA+IFRoaXMgcGF0Y2ggaXMgdG8gdXBk
-YXRlIFdpbmJvbmQgU1BJIE5PUiBkZXZpY2UKPiA+IElEIGluZm9ybWF0aW9uLgo+ID4gQWRkIG5l
-dyAzLjNWIGFuZCAxLjhWIGRldmljZSBpbiB0aGUgSUQgdGFibGUuCj4gPgo+ID4gU2lnbmVkLW9m
-Zi1ieTogU3RlYW0gTGluIDxTdGxpbjJAd2luYm9uZC5jb20+Cj4gPiAtLS0KPiA+ICBkcml2ZXJz
-L210ZC9zcGktbm9yL3dpbmJvbmQuYyB8IDE0ICsrKysrKysrKysrKysrCj4gPiAgMSBmaWxlIGNo
-YW5nZWQsIDE0IGluc2VydGlvbnMoKykKPiA+Cj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQv
-c3BpLW5vci93aW5ib25kLmMKPiA+IGIvZHJpdmVycy9tdGQvc3BpLW5vci93aW5ib25kLmMKPiA+
-IGluZGV4IDlhODFjNjdhNjBjNi4uMDFhYTQ5OTU0NzkzIDEwMDY0NAo+ID4gLS0tIGEvZHJpdmVy
-cy9tdGQvc3BpLW5vci93aW5ib25kLmMKPiA+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivd2lu
-Ym9uZC5jCj4gPiBAQCAtMTAyLDYgKzEwMiwyMCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGZsYXNo
-X2luZm8gd2luYm9uZF9wYXJ0c1tdID0gewo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICBT
-RUNUXzRLIHwgU1BJX05PUl9RVUFEX1JFQUQgfCBTUElfTk9SX0RVQUxfUkVBRCkgfSwKPiA+ICAg
-ICAgIHsgIncyNXE1MTJqdnEiLCBJTkZPKDB4ZWY0MDIwLCAwLCA2NCAqIDEwMjQsIDEwMjQsCj4g
-PiAgICAgICAgICAgICAgICAgICAgICAgICAgICBTRUNUXzRLIHwgU1BJX05PUl9EVUFMX1JFQUQg
-fCBTUElfTk9SX1FVQURfUkVBRCkgfSwKPiA+ICsgICAgIHsgIncyNWg1MTJqdm0iLCBJTkZPKDB4
-ZWY5MDIwLCAwLCA2NCAqIDEwMjQsIDEwMjQsCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAg
-ICBTRUNUXzRLIHwgU1BJX05PUl9EVUFMX1JFQUQgfCBTUElfTk9SX1FVQURfUkVBRCkgfSwKPiA+
-ICsgICAgIHsgIncyNXEwMWp2cSIsIElORk8oMHhlZjQwMjEsIDAsIDY0ICogMTAyNCwgMjA0OCwK
-PiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgIFNFQ1RfNEsgfCBTUElfTk9SX0RVQUxfUkVB
-RCB8IFNQSV9OT1JfUVVBRF9SRUFEKSB9LAo+ID4gKyAgICAgeyAidzI1cTAyanZxIiwgSU5GTygw
-eGVmNDAyMiwgMCwgNjQgKiAxMDI0LCA0MDk2LAo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgU0VDVF80SyB8IFNQSV9OT1JfRFVBTF9SRUFEIHwgU1BJX05PUl9RVUFEX1JFQUQpIH0sCj4g
-PiArICAgICB7ICJ3MjVoMDFqdm0iLCBJTkZPKDB4ZWY5MDIxLCAwLCA2NCAqIDEwMjQsIDIwNDgs
-Cj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICBTRUNUXzRLIHwgU1BJX05PUl9EVUFMX1JF
-QUQgfCBTUElfTk9SX1FVQURfUkVBRCkgfSwKPiA+ICsgICAgIHsgIncyNWgwMmp2bSIsIElORk8o
-MHhlZjkwMjIsIDAsIDY0ICogMTAyNCwgNDA5NiwKPiA+ICsgICAgICAgICAgICAgICAgICAgICAg
-ICAgIFNFQ1RfNEsgfCBTUElfTk9SX0RVQUxfUkVBRCB8IFNQSV9OT1JfUVVBRF9SRUFEKSB9LAo+
-ID4gKyAgICAgeyAidzI1cTUxMm53cSIsIElORk8oMHhlZjYwMjAsIDAsIDY0ICogMTAyNCwgMTAy
-NCwKPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgIFNFQ1RfNEsgfCBTUElfTk9SX0RVQUxf
-UkVBRCB8IFNQSV9OT1JfUVVBRF9SRUFEKSB9LAo+ID4gKyAgICAgeyAidzI1cTUxMm53bSIsIElO
-Rk8oMHhlZjgwMjAsIDAsIDY0ICogMTAyNCwgMTAyNCwKPiA+ICsgICAgICAgICAgICAgICAgICAg
-ICAgICAgIFNFQ1RfNEsgfCBTUElfTk9SX0RVQUxfUkVBRCB8IFNQSV9OT1JfUVVBRF9SRUFEKSB9
-LAo+ID4gIH07Cj4KPiBOaWNlIHRvIHNlZSBwYXRjaGVzIGZyb20gdGhlIHZlbmRvciEgRGlkIHlv
-dSB0ZXN0IHRoZXNlIGRldmljZXM/IFdlCj4gb25seSBhY2NlcHQgbmV3IElEcyB3aGljaCBhcmUg
-YWN0dWFsbHkgdGVzdGVkLiBBbmQgYXJlIHlvdSBhd2FyZSBvZiBhbnkKPiBJRCBjb2xsaXNpb25z
-IG9mIHRoZXNlIGNoaXBzPyBFZy4gc29tZXRpbWVzIHRoZSBKV00gcmV1c2VkIHRoZSBJRCBvZiB0
-aGUKPiBGVyB2YXJpYW50LiBIb3cgY2FuIHdlIGRpc3Rpbmd1aXNoIHRoZXNlPwo+Cj4gQWxzbywg
-eW91IHdpbGwgaGF2ZSB0byBzdXBwbHkgU0ZEUCBkYXRhIGZvciBhbGwgdGhlc2UgY2hpcHMsIHBs
-ZWFzZSBoYXZlCj4gYSBsb29rIGF0IFsxXSBob3cgdG8gZG8gdGhhdC4KPgo+IFsxXQo+IGh0dHBz
-Oi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LW10ZC83MDM4ZjAzN2RlM2UyMjQwMTZkMjY5MzI0NTE3
-NDAwZEB3YWxsZS5jYy8KPgo+Cj4gLW1pY2hhZWwKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
-IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
-dGQvCg==
+Hi,
+
+Am 2021-07-07 13:58, schrieb MODEL WORK LST:
+> Shame on me, I don't use the plain text to reply.
+> Please allow me send again.
+
+Please also avoid top-posting ;)
+
+> It is my first time update patch for Linux, please advise me if I do 
+> wrong.
+
+No worries!
+
+> We are testing these device by the NXP evaluation board.
+
+Ok, this should then go into the commit message, too. Usually the SoC 
+and
+the SPI controller which was used for testing go in there.
+
+> But the running Linux revision for that board is still 4.x. To update
+> the latest ID,
+> should we prepare the system that can work with latest Linux revision?
+
+Yes that would be preferable, either use spi-nor/next or just linux-next
+[1]. There, my patches for dumping/reading the SFDP are already 
+integrated.
+
+> For the test process, I was wondering to ask mount the device to UBIFS
+> is a good way for test?
+
+It depends what flags or features are you plan to support. Ususually,
+reading/writing the raw mtd device will be enough. If you also add 
+locking
+support, for example, you should also test the locking by using the
+mtd-utils.
+
+I'd say testing whole UBIFS is overkill. Bascially you will just make
+sure reading and writing is possible. And if the results make sense, eg.
+does it actually use Quad I/O or Dual I/O.
+
+Also look at dmesg and see if it is probed correctly.
+
+> For the ID, this time we add new ID that is not include in the 
+> flash_info[].
+> And we would keep our device who share the same ID have compatible
+> with each other.
+> Make sure the FW or SW only need to maintain an unique for each 
+> density.
+> If the same density device have different behavior, Winbond would apply 
+> new ID.
+
+Oh I wasn't clear here. FW is not firmware but your 'FW' model. Eg.
+the W25Q32FW. In my experience it shared the same id with W25Q32JW,
+if I remember correctly.
+
+We do have many problems with vendors sharing the same flash id between
+different flash models which then have different features; we have
+a hard time distinguish them at runtime because they appear to be
+the same by looking at the JEDEC id.
+
+So if you are aware of any other winbond flashes which reuse the
+IDs which you are adding below, that would be good to know.
+
+And to make you/Winbond aware that this is not really good and
+if possible should be avoided for future chips.
+
+> Or have application note for customer to aware the difference.
+
+The problem is not the difference, but the fact that we cannot
+detect it on runtime.
+
+> For the SFDP, I would check how to work and fill the information.
+
+Great. Thanks!
+
+-michael
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
