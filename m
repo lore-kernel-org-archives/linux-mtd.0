@@ -2,73 +2,89 @@ Return-Path: <SRS0=0Hpo=L7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 229BFC07E95
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jul 2021 10:10:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EECEC07E95
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jul 2021 10:39:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A16AF61C92
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jul 2021 10:10:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A16AF61C92
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=thorsis.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4230361C60
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jul 2021 10:39:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4230361C60
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LT3Eh7LnmpzJNK2db6X3n5F/2DdwssbEyqObKtj5U/s=; b=QwNvKMojrBsopQ
-	VQ4bnTnDPsL79DDVSMu/XiUyL81NlYg3ORlSmkrdRAinBX+neoOGZiFe+1j6zqf/wrVUhdhMFWfCE
-	0dOzLTEwx+LTNJqefbMLCIeARAWatWZVWafLVGfeMeVH0toJlXCooR1BdnvzKlYDV14SyeDRbFAVy
-	Od+e2CQzmeEbD8/PCPzypAwDpd4/8hHGIz/ctw0pt0OU609sZtRJrMx15yDAyTu/uxhMgTk+Ixorx
-	NL1QGvt6EOHNldRdGYZCbZxFjO5TvtV4avOlcrvek4higABFbWfQnSWwuY60ypft442AL/we7REeg
-	JovX94u4z3Iv8HRRBoRA==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:Date
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=NArsytYeIqIpSpr/Yt6I064h5EA9FP1Iq9Lcydf1bmg=; b=g4R5vFyPSoXaqZ
+	hcYraQXsCG/Pn1qnEP2wUeZdfnh9gDFnjDKXiqJTo7MRFC80sg6USzkav/6kt6gEOcs3LBPv4cxkv
+	bsHgt3w2TxDxEhigFSqEbdW1R+voDfxnSH6+qvXkbZLFssJPPXvFa8rwRTkoOKLwwZLTbYK1/+CO8
+	XS94LqaAMTQDJzklDkFdf4RowqTj6yxTKMkxh//Mx2iXTNAIzCIpC4F3Gs0r2mbo8hEqeUhI5cYJr
+	6VseVdRvT8TMshXZxn3zpHQnJHoz+Jft/dqIugyrh9jfm1ckuAjbo7CIfBpa6WWXDlbyi8twJZTkx
+	SVtlyDqgurkQflCDezHg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m14VB-00EPrR-Sx; Wed, 07 Jul 2021 10:09:58 +0000
-Received: from mail.thorsis.com ([92.198.35.195])
+	id 1m14wY-00EWF5-2X; Wed, 07 Jul 2021 10:38:14 +0000
+Received: from mail-pg1-x52e.google.com ([2607:f8b0:4864:20::52e])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m13i1-00ED0q-Le
- for linux-mtd@lists.infradead.org; Wed, 07 Jul 2021 09:19:12 +0000
-Received: from localhost (localhost [127.0.0.1])
- by mail.thorsis.com (Postfix) with ESMTP id B45211BF5
- for <linux-mtd@lists.infradead.org>; Wed,  7 Jul 2021 11:19:05 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
-Received: from mail.thorsis.com ([127.0.0.1])
- by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id 5uzRKf6iwEE4 for <linux-mtd@lists.infradead.org>;
- Wed,  7 Jul 2021 11:19:05 +0200 (CEST)
-Received: by mail.thorsis.com (Postfix, from userid 109)
- id 386BA5E8; Wed,  7 Jul 2021 11:19:04 +0200 (CEST)
-From: Alexander Dahl <ada@thorsis.com>
-To: linux-mtd@lists.infradead.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Stefan Riedmueller <s.riedmueller@phytec.de>,
- Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
- Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
- Fabio Estevam <festevam@gmail.com>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Dan Brown <dan_brown@ieee.org>, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: nand_bbt: Skip bad blocks when searching
- for the BBT in NAND
-Date: Wed, 07 Jul 2021 11:18:53 +0200
-Message-ID: <2691583.eailiBHnQg@ada>
-In-Reply-To: <20210706181308.1aa21d00@xps13>
-References: <20210625123821.207458-1-s.riedmueller@phytec.de>
- <20210706181308.1aa21d00@xps13>
+ id 1m14bZ-00ERXw-LC
+ for linux-mtd@lists.infradead.org; Wed, 07 Jul 2021 10:16:35 +0000
+Received: by mail-pg1-x52e.google.com with SMTP id 37so1759280pgq.0
+ for <linux-mtd@lists.infradead.org>; Wed, 07 Jul 2021 03:16:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:date:to:subject:message-id:mime-version:content-disposition
+ :user-agent; bh=bxwXK1JhMvhfFziMuDkIm/6Pgkc4I48pl3/wmyiO1HU=;
+ b=Gt8bBMua7rTtklZ0VRRcAK7pOHejG8Bpg+Oe5uY6SdU/RH0+NjDYJVqyJ44BhtF+EK
+ ZYL8qcelgHipZ6vgcH6Ilhrsq+40vixie3+Tai8xjV+b1nqtXr4gd59SgwQiSqP0JzEG
+ hMHHW6SUzhufYFj5djbDQICOsxl2UOHlYGR0CIFDSyo6pwSpiySDehudOK7elCpHNVoO
+ wHjXLbrwu5EcM2bd83Mtt7h8K7mYOTapcH5yKc73R2qR2uXw/NPdaDqhFV4FRIUER97r
+ 8Kz8wZ6BNxyroNsa4xP7gMM3SYO7kqSib6pkA/isgvFEt2s5CPsSeL3jSlXS/XVpjjL6
+ OshQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:date:to:subject:message-id:mime-version
+ :content-disposition:user-agent;
+ bh=bxwXK1JhMvhfFziMuDkIm/6Pgkc4I48pl3/wmyiO1HU=;
+ b=POMz87dLqBrZ3gxnsGeM721kjebndbWKGDrktUUqb/xc3sdkgjF1ObdszyYxMUxhmW
+ HaVvWfZ5zmHKgLoCtxcpSSrfHNPX8+4qlG6fy4HDsPbR4ZRNiGTSG9XXs7IH/Cu6bumg
+ izvujrfUi89aB+c6jjqNy6D8NBgdlvQGAQaMCl6JIcKo/+lmA8Gkpz/DiuX3p4N2CtA5
+ olFGc8fEyOe9mkE3twhBnpUWTETbUsfhhCfihKxO0ISAxoDr73yI58UdS34oQjd1UTQs
+ ttrvdlF7LMZh7Yi90+LY6CwEFCTz7ES1TfPLqwzUuAG1+iJYHBNVQSwGCqMCGf0C7B3A
+ zfgw==
+X-Gm-Message-State: AOAM532IQXSW84de5ks38l4/9lNa9lDcWtLP3aZe8Qm9ANgAa2WctR0p
+ DKx+MSvgScVObEQ6eK7VGjo=
+X-Google-Smtp-Source: ABdhPJzX956HYYtupTL0hgHz+y3/uEBIxul319wDbl1MOUOejCkkbZnvxcJXzJX6srnd1YGEvKedEA==
+X-Received: by 2002:a05:6a00:1508:b029:30a:2b2:b2ea with SMTP id
+ q8-20020a056a001508b029030a02b2b2eamr25206318pfu.30.1625652991997; 
+ Wed, 07 Jul 2021 03:16:31 -0700 (PDT)
+Received: from pn10-Veriton-X4610 ([49.216.102.134])
+ by smtp.gmail.com with ESMTPSA id 21sm17612139pfh.103.2021.07.07.03.16.30
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 07 Jul 2021 03:16:31 -0700 (PDT)
+From: Steam Lin <lstfazz@gmail.com>
+X-Google-Original-From: Steam Lin <Stlin2@winbond.com>
+Received: by pn10-Veriton-X4610 (Postfix, from userid 0)
+ id D01AED21670; Wed,  7 Jul 2021 18:16:28 +0800 (CST)
+Date: Wed, 7 Jul 2021 18:16:28 +0800
+To: tudor.ambarus@microchip.com, michael@walle.cc, p.yadav@ti.com,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd:spi-nor:Update Winbond SPI NOR Flash device ID
+Message-ID: <20210707101628.GA27472@pn10-Veriton-X4610>
+MIME-Version: 1.0
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210707_021910_149008_79906A8C 
-X-CRM114-Status: GOOD (  48.00  )
+X-CRM114-CacheID: sfid-20210707_031633_766572_7A26D334 
+X-CRM114-Status: GOOD (  10.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,227 +96,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hei hei,
+This patch is to update Winbond SPI NOR device
+ID information.
+Add new 3.3V and 1.8V device in the ID table.
 
-Am Dienstag, 6. Juli 2021, 18:13:08 CEST schrieb Miquel Raynal:
-> Hi Stefan,
-> =
+Signed-off-by: Steam Lin <Stlin2@winbond.com>
+---
+ drivers/mtd/spi-nor/winbond.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-> Stefan Riedmueller <s.riedmueller@phytec.de> wrote on Fri, 25 Jun 2021
-> =
-
-> 14:38:21 +0200:
-> > The blocks containing the bad block table can become bad as well. So
-> > make sure to skip any blocks that are marked bad when searching for the
-> > bad block table.
-> > =
-
-> > Otherwise in very rare cases where two BBT blocks wear out it might
-> > happen that an obsolete BBT is used instead of a newer available
-> > version.
-> > =
-
-> > This only applies to drivers which make use of a bad block marker in
-> > flash.
-> > Other drivers won't be able to identify bad BBT blocks and thus can't s=
-kip
-> > these.
-> > =
-
-> > Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
-> =
-
-> Besides the alignment of the helper parameters (nitpick) the patch
-> looks good to me. If we can get someone to test it before the merge
-> window closes it's perfect. Otherwise I'll apply it and we'll let robots
-> do the job.
-
-Added the patch on top of v5.10.21 and booted a SAMA5D27 based board, from =
-the =
-
-boot log:
-
-nand: device found, Manufacturer ID: 0x01, Chip ID: 0xda
-nand: AMD/Spansion S34ML02G1
-nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-Bad block table found at page 131008, version 0xFF
-Bad block table found at page 130944, version 0xFF
-6 cmdlinepart partitions found on MTD device atmel_nand
-Creating 6 MTD partitions on "atmel_nand":
-0x000000000000-0x000000040000 : "bootstrap"
-0x000000040000-0x000000100000 : "uboot"
-0x000000100000-0x000000140000 : "env1"
-0x000000140000-0x000000180000 : "env2"
-0x000000180000-0x000000200000 : "reserved"
-0x000000200000-0x000010000000 : "UBI"
-NET: Registered protocol family 17
-ubi0: attaching mtd5
-random: fast init done
-ubi0: scanning is finished
-ubi0: attached mtd5 (name "UBI", size 254 MiB)
-ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
-ubi0: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
-ubi0: VID header offset: 2048 (aligned 2048), data offset: 4096
-ubi0: good PEBs: 2028, bad PEBs: 4, corrupted PEBs: 0
-ubi0: user volume: 4, internal volumes: 1, max. volumes count: 128
-ubi0: max/mean erase counter: 4/1, WL threshold: 4096, image sequence numbe=
-r: =
-
-1600812189
-ubi0: available PEBs: 0, total reserved PEBs: 2028, PEBs reserved for bad P=
-EB =
-
-handling: 36
-ubi0: background thread "ubi_bgt0d" started, PID 85
-
-No suspicious other messages. =
-
-
-Not sure if that device would be affected anyways. No bad blocks are known =
-on =
-
-this flash, device behaves as usual.
-
-HTH & Greets
-Alex
-
-> =
-
-> > ---
-> > =
-
-> > Hi,
-> > =
-
-> > this is the second approach of this patch. The first one [1] unfortunat=
-ely
-> > lead to boot failures on i.MX 27 boards [2] since the i.MX 27 driver us=
-es
-> > the bad block marker position for the bad block table marker which lead
-> > to falsely identifying all BBT blocks as bad.
-> > =
-
-> > This new patch now skips the check for bad BBT blocks if the BBT marker
-> > position in OOB overlaps with the bad block marker position or if a dri=
-ver
-> > can't use bad block markers in flash at all (NAND_BBT_NO_OOB_BBM or
-> > NAND_NO_BBM_QUIRK are set). This hopefully makes sure we don't break
-> > drivers which cannot check for bad BBT blocks due to the limitations
-> > mentioned before.
-> > =
-
-> > I was only able to test this patch on a phyCORE-i.MX 6 and a phyCARD-i.=
-MX
-> > 27. Therfore would really appreciate more people testing this to make
-> > sure I have not missed another use case where the bad block marker
-> > position in OOB is used in a different way than for the BBM.
-> > =
-
-> > Regards,
-> > Stefan
-> > =
-
-> > [1]
-> > https://lore.kernel.org/linux-mtd/20210325102337.481172-1-s.riedmueller=
-@p
-> > hytec.de/ [2]
-> > https://lore.kernel.org/linux-mtd/CAOMZO5DufVR=3D+EzCa1-MPUc+ZefZVTXb5K=
-gu3W
-> > xms7cxw9GmGg@mail.gmail.com/> =
-
-> >  drivers/mtd/nand/raw/nand_bbt.c | 34 +++++++++++++++++++++++++++++++++
-> >  1 file changed, 34 insertions(+)
-> > =
-
-> > diff --git a/drivers/mtd/nand/raw/nand_bbt.c
-> > b/drivers/mtd/nand/raw/nand_bbt.c index dced32a126d9..2a30714350ee 1006=
-44
-> > --- a/drivers/mtd/nand/raw/nand_bbt.c
-> > +++ b/drivers/mtd/nand/raw/nand_bbt.c
-> > @@ -447,6 +447,36 @@ static int scan_block_fast(struct nand_chip *this,
-> > struct nand_bbt_descr *bd,> =
-
-> >  	return 0;
-> >  =
-
-> >  }
-> > =
-
-> > +/* Check if a potential BBT block is marked as bad */
-> > +static int bbt_block_checkbad(struct nand_chip *this,
-> > +				      struct nand_bbt_descr *td,
-> > +				      loff_t offs, uint8_t *buf)
-> > +{
-> > +	struct nand_bbt_descr *bd =3D this->badblock_pattern;
-> > +
-> > +	/*
-> > +	 * No need to check for a bad BBT block if the BBM area overlaps with
-> > +	 * the bad block table marker area in OOB since writing a BBM here
-> > +	 * invalidates the bad block table marker anyway.
-> > +	 */
-> > +	if (!(td->options & NAND_BBT_NO_OOB) &&
-> > +	    td->offs >=3D bd->offs && td->offs < bd->offs + bd->len)
-> > +		return 0;
-> > +
-> > +	/*
-> > +	 * There is no point in checking for a bad block marker if writing
-> > +	 * such marker is not supported
-> > +	 */
-> > +	if (this->bbt_options & NAND_BBT_NO_OOB_BBM ||
-> > +	    this->options & NAND_NO_BBM_QUIRK)
-> > +		return 0;
-> > +
-> > +	if (scan_block_fast(this, bd, offs, buf) > 0)
-> > +		return 1;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > =
-
-> >  /**
-> >  =
-
-> >   * create_bbt - [GENERIC] Create a bad block table by scanning the dev=
-ice
-> >   * @this: NAND chip object
-> > =
-
-> > @@ -560,6 +590,10 @@ static int search_bbt(struct nand_chip *this, uint=
-8_t
-> > *buf,> =
-
-> >  			int actblock =3D startblock + dir * block;
-> >  			loff_t offs =3D (loff_t)actblock << this->bbt_erase_shift;
-> > =
-
-> > +			/* Check if block is marked bad */
-> > +			if (bbt_block_checkbad(this, td, offs, buf))
-> > +				continue;
-> > +
-> > =
-
-> >  			/* Read first page */
-> >  			scan_read(this, buf, offs, mtd->writesize, td);
-> >  			if (!check_pattern(buf, scanlen, mtd->writesize, td)) {
-> =
-
-> Thanks,
-> Miqu=E8l
-> =
-
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
-
-
+diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+index 9a81c67a60c6..01aa49954793 100644
+--- a/drivers/mtd/spi-nor/winbond.c
++++ b/drivers/mtd/spi-nor/winbond.c
+@@ -102,6 +102,20 @@ static const struct flash_info winbond_parts[] = {
+ 			    SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_READ) },
+ 	{ "w25q512jvq", INFO(0xef4020, 0, 64 * 1024, 1024,
+ 			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "w25h512jvm", INFO(0xef9020, 0, 64 * 1024, 1024,
++			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "w25q01jvq", INFO(0xef4021, 0, 64 * 1024, 2048,
++			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "w25q02jvq", INFO(0xef4022, 0, 64 * 1024, 4096,
++			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "w25h01jvm", INFO(0xef9021, 0, 64 * 1024, 2048,
++			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "w25h02jvm", INFO(0xef9022, 0, 64 * 1024, 4096,
++			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "w25q512nwq", INFO(0xef6020, 0, 64 * 1024, 1024,
++			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "w25q512nwm", INFO(0xef8020, 0, 64 * 1024, 1024,
++			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ };
+ 
+ /**
+-- 
+2.17.1
 
 
 ______________________________________________________
