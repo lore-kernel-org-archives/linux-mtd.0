@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-18.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E7BDC07E9E
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jul 2021 09:08:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01B27C07E95
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jul 2021 09:10:20 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 421F661CAC
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jul 2021 09:08:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 421F661CAC
+	by mail.kernel.org (Postfix) with ESMTPS id C799361CB6
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jul 2021 09:10:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C799361CB6
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rock-chips.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,20 +23,20 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cwIVhrr7JqyYrUXYYn8VE0Y2DOVmx8yFnPEHeXkqr9o=; b=styr1pA9vB68BE
-	261joFeetF0BTGwKEO6Td4/dTTvssfJGvqDEiPlJ/RPOZsV+WaJ2BIrjwFwQvcmlLbgeL1eK081jI
-	iHQseXCUddnuc4h9Q87OCK6z+SLhfasIN3NQtOnSYx39jkMUnE0eQ8xzfq6KS3zw0z3bK2I6YNGrS
-	zAhbxm7enLQS51EiN1C6OZbfAPt4OsdQbCHcMqiLlCqu/8XBkXoXw5dVR59LM6zGu8tXCnFuVMPwp
-	gje2fbDiTXnfQ+QzXPC7KcLfHTQ9XpX1xA7fGV627bTdSJ3vg9sek8FZ6k3i5iGw9HTmq8Ums+k5e
-	tORUbNoRHMx9ebkSJu4w==;
+	List-Owner; bh=NdPvW1VVhimwbVKfVT+qLuVV7pNh4ho1pu6hm0/Gwoo=; b=3z7jirGzOuYS5S
+	fKALHL0kmrfSSeW3fyNAKSeY4fw7b4SiqXqgEXJZsnkhjicOo82sbZ3/Y+l+XD1HwYPu3goI8+oXa
+	VUOUd8hdMMkMqF55mVAKEcEz5wW3qgAxzKZQ222OqJ4TbDR4+MgkY/wbxygeFhuQSdMLW3j4QaPKb
+	vcrMnpSfHUyZiVOQgWZ6qlPUHwbgfk4mSRDsPYSy6VssPKXhv9mQsirTYwzoYvdipNtmS+68+F1/g
+	z8wZ8Jz1eh8ghandxRu+mkHQa1Zs0ZrnAEVd1fNnyHUIscMWn5D3j31yzPG+tbb4m/1J/yn6NyQ5r
+	KPZ4weFPdD2tguCijP3g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m13XC-00E9nZ-0A; Wed, 07 Jul 2021 09:07:58 +0000
-Received: from lucky1.263xmail.com ([211.157.147.131])
+	id 1m13Yn-00EAPF-9w; Wed, 07 Jul 2021 09:09:37 +0000
+Received: from lucky1.263xmail.com ([211.157.147.134])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m13RY-00E7Ul-2l; Wed, 07 Jul 2021 09:02:09 +0000
+ id 1m13RZ-00E7V2-3L; Wed, 07 Jul 2021 09:02:10 +0000
 Received: from localhost (unknown [192.168.167.172])
- by lucky1.263xmail.com (Postfix) with ESMTP id 63E8DC1392;
+ by lucky1.263xmail.com (Postfix) with ESMTP id D4CD9CE15B;
  Wed,  7 Jul 2021 17:02:06 +0800 (CST)
 X-MAIL-GRAY: 0
 X-MAIL-DELIVERY: 1
@@ -46,9 +46,9 @@ X-ANTISPAM-LEVEL: 2
 Received: from localhost.localdomain (unknown [58.22.7.114])
  by smtp.263.net (postfix) whith ESMTP id
  P31480T139654576531200S1625648523311486_; 
- Wed, 07 Jul 2021 17:02:05 +0800 (CST)
+ Wed, 07 Jul 2021 17:02:06 +0800 (CST)
 X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <5908e680ed37e2a80078986a4e73fbb2>
+X-UNIQUE-TAG: <0db54b15c2befd4efd78e6b278b90bfd>
 X-RL-SENDER: jon.lin@rock-chips.com
 X-SENDER: jon.lin@rock-chips.com
 X-LOGIN-NAME: jon.lin@rock-chips.com
@@ -67,15 +67,16 @@ Cc: jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  mturquette@baylibre.com, sboyd@kernel.org, linux-clk@vger.kernel.org,
  Chris Morgan <macromorgan@hotmail.com>
-Subject: [PATCH v11 05/10] clk: rockchip: add dt-binding for hclk_sfc on rk3036
-Date: Wed,  7 Jul 2021 17:01:53 +0800
-Message-Id: <20210707090158.711-1-jon.lin@rock-chips.com>
+Subject: [PATCH v11 06/10] clk: rockchip: Add support for hclk_sfc on rk3036
+Date: Wed,  7 Jul 2021 17:01:54 +0800
+Message-Id: <20210707090158.711-2-jon.lin@rock-chips.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210707090027.32608-1-jon.lin@rock-chips.com>
+In-Reply-To: <20210707090158.711-1-jon.lin@rock-chips.com>
 References: <20210707090027.32608-1-jon.lin@rock-chips.com>
+ <20210707090158.711-1-jon.lin@rock-chips.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210707_020208_345261_FE71A1B3 
-X-CRM114-Status: GOOD (  10.16  )
+X-CRM114-CacheID: sfid-20210707_020209_391580_484EA6F2 
+X-CRM114-Status: GOOD (  13.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,9 +94,9 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Chris Morgan <macromorgan@hotmail.com>
-
-Add dt-binding for hclk_sfc on rk3036
+Add support for the bus clock for the serial flash controller on the
+rk3036. Taken from the Rockchip BSP kernel but not tested on real
+hardware (as I lack a 3036 based SoC to test).
 
 Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
 Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
@@ -116,21 +117,22 @@ Changes in v3: None
 Changes in v2: None
 Changes in v1: None
 
- include/dt-bindings/clock/rk3036-cru.h | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/clk/rockchip/clk-rk3036.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/dt-bindings/clock/rk3036-cru.h b/include/dt-bindings/clock/rk3036-cru.h
-index 35a5a01f9697..a96a9870ad59 100644
---- a/include/dt-bindings/clock/rk3036-cru.h
-+++ b/include/dt-bindings/clock/rk3036-cru.h
-@@ -81,6 +81,7 @@
- #define HCLK_OTG0		449
- #define HCLK_OTG1		450
- #define HCLK_NANDC		453
-+#define HCLK_SFC		454
- #define HCLK_SDMMC		456
- #define HCLK_SDIO		457
- #define HCLK_EMMC		459
+diff --git a/drivers/clk/rockchip/clk-rk3036.c b/drivers/clk/rockchip/clk-rk3036.c
+index 1986856d94b2..828af715d92e 100644
+--- a/drivers/clk/rockchip/clk-rk3036.c
++++ b/drivers/clk/rockchip/clk-rk3036.c
+@@ -404,7 +404,7 @@ static struct rockchip_clk_branch rk3036_clk_branches[] __initdata = {
+ 	GATE(HCLK_OTG0, "hclk_otg0", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(5), 13, GFLAGS),
+ 	GATE(HCLK_OTG1, "hclk_otg1", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(7), 3, GFLAGS),
+ 	GATE(HCLK_I2S, "hclk_i2s", "hclk_peri", 0, RK2928_CLKGATE_CON(7), 2, GFLAGS),
+-	GATE(0, "hclk_sfc", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(3), 14, GFLAGS),
++	GATE(HCLK_SFC, "hclk_sfc", "hclk_peri", 0, RK2928_CLKGATE_CON(3), 14, GFLAGS),
+ 	GATE(HCLK_MAC, "hclk_mac", "hclk_peri", 0, RK2928_CLKGATE_CON(3), 5, GFLAGS),
+ 
+ 	/* pclk_peri gates */
 -- 
 2.17.1
 
