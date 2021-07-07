@@ -5,16 +5,16 @@ X-Spam-Level:
 X-Spam-Status: No, score=-18.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C5719C07E95
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jul 2021 09:44:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1EEEC07E95
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jul 2021 09:46:52 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6AE326198A
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jul 2021 09:44:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6AE326198A
+	by mail.kernel.org (Postfix) with ESMTPS id 5E9FE6198A
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jul 2021 09:46:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E9FE6198A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rock-chips.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,21 +23,21 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Hi+CzH6mne+uVAoFMTUKG34mzbpGZtOB0HgkTthGiR8=; b=pCJJO2TN8TCZu3
-	ShuAv4h83zW2TP2De2E6zq9hTOOVuprPdou6gurIUpzmBQ37c70gmIJNFcLeuq9HvczwydcEtTNeQ
-	SELWBpPO6OKuCuB04EjdRUWZsHrplanNLmqimWkVuMSwPqmK87oburlFoA5JG+Qdxx1XOeaWQn5Zb
-	Wqc4hsz9BQRnr6tb7SoPp7enE/uuk8X/DkGTM8RnwiWcK5nml7EIK7S4Qf6JwOf2k0V2aeIo8kUxN
-	wzyqVjTpExAJddOc3x9l+WarY3Cd6xJCHG9zEU3JStQGSEqAOi8QnbyhPd0VlszSiOY738ZdVnV42
-	AyqVaHxoOXsN3vlZmlKg==;
+	List-Owner; bh=TgSZIyMOOu0aoWKh6wTc/Ijal7xYoEGpt+3V9BHTwCQ=; b=GtAbNOJoCONhX3
+	1BeVlMVlel/K8Nwsb9kpWH8Juj6h21ealQz4i81LVPCUAVvFmXIWwajoJqkujvbfzt0JWuJDK091l
+	/bdUAcjZt61PcldwqHYdya8UDjavwuLutpRqUJFgegABQkbnxkAO+4C1/wOWwgRKU2uyLUKzYvV6L
+	eB3czWi/OHMZ26DOIKymRAO3SW8N6X0ffuvrbuqw9vml7ZIIg7oNgtDVQOu8C+UUUVT8ZXio1qlYB
+	NpXjcZvBkJBoCGrcBtZh/xMXY0rNWflFwz66he2TDgG339345nxfpSbSMPZS7aHNeuR7IGcMloA/D
+	wTEq4yxO+SuuegvYnV7g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m145v-00EIpW-4x; Wed, 07 Jul 2021 09:43:51 +0000
-Received: from lucky1.263xmail.com ([211.157.147.132])
+	id 1m148E-00EJK2-0G; Wed, 07 Jul 2021 09:46:14 +0000
+Received: from lucky1.263xmail.com ([211.157.147.131])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m13XY-00E9vg-K2; Wed, 07 Jul 2021 09:08:23 +0000
+ id 1m13Xa-00E9ww-Jy; Wed, 07 Jul 2021 09:08:24 +0000
 Received: from localhost (unknown [192.168.167.70])
- by lucky1.263xmail.com (Postfix) with ESMTP id 1B9C9FAEFB;
- Wed,  7 Jul 2021 17:08:18 +0800 (CST)
+ by lucky1.263xmail.com (Postfix) with ESMTP id 718E2C1A97;
+ Wed,  7 Jul 2021 17:08:20 +0800 (CST)
 X-MAIL-GRAY: 0
 X-MAIL-DELIVERY: 1
 X-ADDR-CHECKED4: 1
@@ -46,9 +46,9 @@ X-ANTISPAM-LEVEL: 2
 Received: from localhost.localdomain (unknown [58.22.7.114])
  by smtp.263.net (postfix) whith ESMTP id
  P13447T140124675356416S1625648890906508_; 
- Wed, 07 Jul 2021 17:08:17 +0800 (CST)
+ Wed, 07 Jul 2021 17:08:18 +0800 (CST)
 X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <4f5d8481179a246071f29734d36235e5>
+X-UNIQUE-TAG: <512055b11d66652b3dbf84712563af81>
 X-RL-SENDER: jon.lin@rock-chips.com
 X-SENDER: jon.lin@rock-chips.com
 X-LOGIN-NAME: jon.lin@rock-chips.com
@@ -66,16 +66,17 @@ Cc: jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
  p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  mturquette@baylibre.com, sboyd@kernel.org, linux-clk@vger.kernel.org,
- Chris Morgan <macromorgan@hotmail.com>
-Subject: [RFC PATCH v11 03/10] arm64: dts: rockchip: Add SFC to PX30
-Date: Wed,  7 Jul 2021 17:08:03 +0800
-Message-Id: <20210707090810.5717-4-jon.lin@rock-chips.com>
+ Elaine Zhang <zhangqing@rock-chips.com>
+Subject: [RFC PATCH v11 04/10] clk: rockchip: rk3036: fix up the sclk_sfc
+ parent error
+Date: Wed,  7 Jul 2021 17:08:04 +0800
+Message-Id: <20210707090810.5717-5-jon.lin@rock-chips.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210707090810.5717-1-jon.lin@rock-chips.com>
 References: <20210707090810.5717-1-jon.lin@rock-chips.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210707_020820_921272_2DED442C 
-X-CRM114-Status: GOOD (  11.81  )
+X-CRM114-CacheID: sfid-20210707_020822_906979_2D3B83DF 
+X-CRM114-Status: GOOD (  10.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,12 +94,11 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Chris Morgan <macromorgan@hotmail.com>
+Choose the correct pll
 
-Add a devicetree entry for the Rockchip SFC for the PX30 SOC.
-
-Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
 Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
+Acked-by: Stephen Boyd <sboyd@kernel.org>
 ---
 
 Changes in v11: None
@@ -113,65 +113,30 @@ Changes in v3: None
 Changes in v2: None
 Changes in v1: None
 
- arch/arm64/boot/dts/rockchip/px30.dtsi | 38 ++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+ drivers/clk/rockchip/clk-rk3036.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/px30.dtsi b/arch/arm64/boot/dts/rockchip/px30.dtsi
-index 09baa8a167ce..d854f2577067 100644
---- a/arch/arm64/boot/dts/rockchip/px30.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/px30.dtsi
-@@ -966,6 +966,18 @@
- 		status = "disabled";
- 	};
+diff --git a/drivers/clk/rockchip/clk-rk3036.c b/drivers/clk/rockchip/clk-rk3036.c
+index 91d56ad45817..1986856d94b2 100644
+--- a/drivers/clk/rockchip/clk-rk3036.c
++++ b/drivers/clk/rockchip/clk-rk3036.c
+@@ -121,6 +121,7 @@ PNAME(mux_pll_src_3plls_p)	= { "apll", "dpll", "gpll" };
+ PNAME(mux_timer_p)		= { "xin24m", "pclk_peri_src" };
  
-+	sfc: spi@ff3a0000 {
-+		compatible = "rockchip,sfc";
-+		reg = <0x0 0xff3a0000 0x0 0x4000>;
-+		interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru SCLK_SFC>, <&cru HCLK_SFC>;
-+		clock-names = "clk_sfc", "hclk_sfc";
-+		pinctrl-0 = <&sfc_clk &sfc_cs0 &sfc_bus4>;
-+		pinctrl-names = "default";
-+		power-domains = <&power PX30_PD_MMC_NAND>;
-+		status = "disabled";
-+	};
-+
- 	nfc: nand-controller@ff3b0000 {
- 		compatible = "rockchip,px30-nfc";
- 		reg = <0x0 0xff3b0000 0x0 0x4000>;
-@@ -1967,6 +1979,32 @@
- 			};
- 		};
+ PNAME(mux_pll_src_apll_dpll_gpll_usb480m_p)	= { "apll", "dpll", "gpll", "usb480m" };
++PNAME(mux_pll_src_dmyapll_dpll_gpll_xin24_p)   = { "dummy_apll", "dpll", "gpll", "xin24m" };
  
-+		sfc {
-+			sfc_bus4: sfc-bus4 {
-+				rockchip,pins =
-+					<1 RK_PA0 3 &pcfg_pull_none>,
-+					<1 RK_PA1 3 &pcfg_pull_none>,
-+					<1 RK_PA2 3 &pcfg_pull_none>,
-+					<1 RK_PA3 3 &pcfg_pull_none>;
-+			};
-+
-+			sfc_bus2: sfc-bus2 {
-+				rockchip,pins =
-+					<1 RK_PA0 3 &pcfg_pull_none>,
-+					<1 RK_PA1 3 &pcfg_pull_none>;
-+			};
-+
-+			sfc_cs0: sfc-cs0 {
-+				rockchip,pins =
-+					<1 RK_PA4 3 &pcfg_pull_none>;
-+			};
-+
-+			sfc_clk: sfc-clk {
-+				rockchip,pins =
-+					<1 RK_PB1 3 &pcfg_pull_none>;
-+			};
-+		};
-+
- 		lcdc {
- 			lcdc_rgb_dclk_pin: lcdc-rgb-dclk-pin {
- 				rockchip,pins =
+ PNAME(mux_mmc_src_p)	= { "apll", "dpll", "gpll", "xin24m" };
+ PNAME(mux_i2s_pre_p)	= { "i2s_src", "i2s_frac", "ext_i2s", "xin12m" };
+@@ -340,7 +341,7 @@ static struct rockchip_clk_branch rk3036_clk_branches[] __initdata = {
+ 			RK2928_CLKSEL_CON(16), 8, 2, MFLAGS, 10, 5, DFLAGS,
+ 			RK2928_CLKGATE_CON(10), 4, GFLAGS),
+ 
+-	COMPOSITE(SCLK_SFC, "sclk_sfc", mux_pll_src_apll_dpll_gpll_usb480m_p, 0,
++	COMPOSITE(SCLK_SFC, "sclk_sfc", mux_pll_src_dmyapll_dpll_gpll_xin24_p, 0,
+ 			RK2928_CLKSEL_CON(16), 0, 2, MFLAGS, 2, 5, DFLAGS,
+ 			RK2928_CLKGATE_CON(10), 5, GFLAGS),
+ 
 -- 
 2.17.1
 
