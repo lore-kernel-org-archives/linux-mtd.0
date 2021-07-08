@@ -2,65 +2,71 @@ Return-Path: <SRS0=ilRB=MA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C241EC07E99
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jul 2021 13:15:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25B2EC07E96
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jul 2021 21:11:13 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8EE336147D
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jul 2021 13:15:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8EE336147D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
+	by mail.kernel.org (Postfix) with ESMTPS id BE12261878
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jul 2021 21:11:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE12261878
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:Message-ID:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=xMZAO6Gc3/xSKy7YILSEHgbGgEt8DOSpwLrPG5EFbhU=; b=mVk1deFyoKpp/T
-	lAXiyCJ7oA59NtHU9w5U0kZrdKbazu68FKqKRsW/uIF70UK96yuPCyl7qOLXDOIqddXI7xUtljxst
-	XXKTCjmVqPVqerrqIr6LBRJpKRD1TW561kJR7EX7ifERoQYTVcCxJPTjnNPBLWZFuVsfLD+LIvSRE
-	PN77xbMwRRxdhAgZXPXKels0sNSK8zb5qScm6DuP94wLKf9P+IsFGxgf/L+NpiZ0nTJP2ZSTq+Hc/
-	1L9OAQUQ1z7fje72iean02zkegzgiEAiT3R7iuj6UIwUhZLsOh4YLWC4f4krPLhb2pVzV6znwkxHt
-	fYZ/9vZh6H8oYNskggOw==;
+	List-Owner; bh=WqPLK0+TXxdfRdOmcnpKVnEX5eZ44it0q+s0MNYa+IU=; b=2dQbMrNj6b6B5O
+	DTvQCwx7iCImTHOJILcjIY1ladjfFsb/bh4DF1Mj9sYUG4tAXo02zEfCukb9goQ0r8EJ5CEcD/tuI
+	5JaHUIxbP0l1Em1LNQS5XXc0E0Qu5wVoE9mQOCwQtqhaXWphNFdKUUsypL+yOMrP0P10nBWE6cZVE
+	BSteVjdqRuAXaZk7LfvNdRAwirsIUyuibMusQ/4rSwXUKDvP42nFn813WKWDqjcQU5n0D8ankvcid
+	S/hiL07zPk4HmEWDW/tRZxLVT2on1WESr8qD2Kk6P5QzUnYFF8/WZp60lwiRDa34BMEcNep/QGKxE
+	AF6EAQPoR+MWuD5uFcVA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m1Tr6-00H2yQ-P7; Thu, 08 Jul 2021 13:14:16 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1m1bHn-000In5-M9; Thu, 08 Jul 2021 21:10:19 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m1Tr3-00H2wp-17
- for linux-mtd@lists.infradead.org; Thu, 08 Jul 2021 13:14:15 +0000
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.55])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GLGr86xySzcb9Z;
- Thu,  8 Jul 2021 21:10:48 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by dggeme703-chm.china.huawei.com
- (10.1.199.99) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 8 Jul
- 2021 21:14:01 +0800
-From: Miaohe Lin <linmiaohe@huawei.com>
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
-CC: <David.Woodhouse@intel.com>, <Artem.Bityutskiy@nokia.com>,
- <ext-adrian.hunter@nokia.com>, <linux-kernel@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <linmiaohe@huawei.com>,
- <linfeilong@huawei.com>
-Subject: [PATCH] mtd: fix size in mtd_info_user to support 64-bit
-Date: Thu, 8 Jul 2021 21:13:59 +0800
-Message-ID: <20210708131359.21591-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.23.0
+ id 1m1bHY-000Ikd-EJ
+ for linux-mtd@lists.infradead.org; Thu, 08 Jul 2021 21:10:06 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 53F6561BC7D4;
+ Thu,  8 Jul 2021 23:10:01 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id N0AvF8LrfPmE; Thu,  8 Jul 2021 23:10:01 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 03FC4625DE15;
+ Thu,  8 Jul 2021 23:10:01 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id 4FXJT9thVQqR; Thu,  8 Jul 2021 23:10:00 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+ by lithops.sigma-star.at (Postfix) with ESMTP id E40C261BC7D4;
+ Thu,  8 Jul 2021 23:10:00 +0200 (CEST)
+Date: Thu, 8 Jul 2021 23:10:00 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, 
+ linux-mtd <linux-mtd@lists.infradead.org>
+Message-ID: <245242026.4934.1625778600867.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] UBIFS changes for 5.14
 MIME-Version: 1.0
-X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Index: gccdygIs/rP4tTBt/0WbKQ2TL40HOw==
+Thread-Topic: UBIFS changes for 5.14
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210708_061413_970553_38DA800B 
-X-CRM114-Status: GOOD (  10.43  )
+X-CRM114-CacheID: sfid-20210708_141004_683117_71BD7442 
+X-CRM114-Status: UNSURE (   5.63  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,34 +83,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Feilong Lin <linfeilong@huawei.com>
+Linus,
 
-The size in struct mtd_info_user is 32-bit, which will cause errors
-when obtaining the size of large-capacity MTD devices, such as TLC
-NAND FLASH-2048Gb.
+The following changes since commit 009c9aa5be652675a06d5211e1640e02bbb1c33d:
 
-Fixes: 69423d99fc18 ("[MTD] update internal API to support 64-bit device size")
-Signed-off-by: Feilong Lin <linfeilong@huawei.com>
----
- include/uapi/mtd/mtd-abi.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  Linux 5.13-rc6 (2021-06-13 14:43:10 -0700)
 
-diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
-index b869990c2db2..efe0b53b10c1 100644
---- a/include/uapi/mtd/mtd-abi.h
-+++ b/include/uapi/mtd/mtd-abi.h
-@@ -128,7 +128,7 @@ struct mtd_write_req {
- struct mtd_info_user {
- 	__u8 type;
- 	__u32 flags;
--	__u32 size;	/* Total size of the MTD */
-+	__u64 size;	/* Total size of the MTD */
- 	__u32 erasesize;
- 	__u32 writesize;
- 	__u32 oobsize;	/* Amount of OOB data per block (e.g. 16) */
--- 
-2.23.0
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.14-rc1
+
+for you to fetch changes up to a801fcfeef96702fa3f9b22ad56c5eb1989d9221:
+
+  ubifs: Set/Clear I_LINKABLE under i_lock for whiteout inode (2021-06-22 09:21:39 +0200)
+
+----------------------------------------------------------------
+This pull request contains the following changes for UBIFS:
+
+- Fix for a race xattr list and modification
+- Various minor fixes (spelling, return codes, ...)
+
+----------------------------------------------------------------
+Dan Carpenter (1):
+      ubifs: fix snprintf() checking
+
+Zhen Lei (1):
+      ubifs: journal: Fix error return code in ubifs_jnl_write_inode()
+
+Zheng Yongjun (1):
+      ubifs: Fix spelling mistakes
+
+Zhihao Cheng (3):
+      ubifs: Fix races between xattr_{set|get} and listxattr operations
+      ubifs: Remove ui_mutex in ubifs_xattr_get and change_xattr
+      ubifs: Set/Clear I_LINKABLE under i_lock for whiteout inode
+
+ drivers/mtd/ubi/debug.c |  2 +-
+ fs/ubifs/debug.c        |  2 +-
+ fs/ubifs/dir.c          |  7 +++++++
+ fs/ubifs/journal.c      |  3 ++-
+ fs/ubifs/master.c       |  2 +-
+ fs/ubifs/replay.c       |  2 +-
+ fs/ubifs/super.c        |  3 ++-
+ fs/ubifs/tnc_commit.c   |  2 +-
+ fs/ubifs/ubifs.h        |  4 +++-
+ fs/ubifs/xattr.c        | 48 +++++++++++++++++++++++++++++++++---------------
+ 10 files changed, 52 insertions(+), 23 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
