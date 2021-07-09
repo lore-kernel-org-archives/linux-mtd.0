@@ -2,60 +2,74 @@ Return-Path: <SRS0=zNLG=MB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,
+	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 170B0C07E99
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Jul 2021 14:46:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C6D5C07E99
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Jul 2021 17:42:25 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7FFE8613BA
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Jul 2021 14:46:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7FFE8613BA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=ispras.ru
+	by mail.kernel.org (Postfix) with ESMTPS id 2A0C2613D0
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Jul 2021 17:42:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2A0C2613D0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=b2DOsQ0hE4s3LX62Dz9JONpTmXA3O6aWMoY+8T8+4AM=; b=4TPFcC6tgjW8df
-	zcCtoCRQIu/3m3QjIEC2GZArGWfvrbSiwV/UkTSb9tzQLRaFUBGv4+O9xUe3HuPjtooNg01xlNM7/
-	m4PNJh70sRUM0Ks7Gdo2dACnY4nQ284EVVpGv55TFNBq86h0JuPEfxqSEbeIyxA8c63v6unZ+pjxP
-	Vgw1fRaf/yTubEk86EbJWA+h3bwM3jqEH52DwCXDvX3tvOuAWWyDOKgXXsDEdAKqbTFhx8WRnl6sX
-	A47jncuBLtjuMoKTEjv8qxzncLVMwEW4GdCg9IlmhdgJx4//egPMRoOFHeUlth48bl+ntKGCCUCYv
-	dzcMJSs6eeVMkG/0j9kw==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
+	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ZEGFUhfepJ/bNTq3iclZyuo3QTBvVavOI8aO9K6rH50=; b=DKeA/6UBR/Qsqw
+	Km7Y9IONtLSJGlmonT3kZ4bSSxcU/RWVJcwcts2anO05c+065mM92PIWccewR0rnTlHYUkq4Z0Lgs
+	QxEIbMdnqqYhIER8KAPrIxYASE6zLH4s1FhLPMJCl1kMNRRfjhnJQMtVR+48d5l3LtMqB7Faeps/c
+	arvgp+dhUn49fROsbOj4pb8rY9uytKqGiVj4enUu2UBnpTylvvKRZFPeZ7AhhY1UXeVra0gEMrtjQ
+	fc38PeAOftA/BYmVWtCPq+2J71PFfwgwAubSsXAHlPUGGbbn7AIHYPC/u7D2UL+lljjXyJ64udzeh
+	QeN8OecFldLyZoS1lzUQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m1rl8-001xvN-JF; Fri, 09 Jul 2021 14:45:42 +0000
-Received: from mail.ispras.ru ([83.149.199.84])
+	id 1m1uVO-002E74-Hj; Fri, 09 Jul 2021 17:41:38 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m1rl4-001xtx-Pq
- for linux-mtd@lists.infradead.org; Fri, 09 Jul 2021 14:45:40 +0000
-Received: from hellwig.intra.ispras.ru (unknown [83.149.199.249])
- by mail.ispras.ru (Postfix) with ESMTPS id B5FAB40755C6;
- Fri,  9 Jul 2021 14:45:30 +0000 (UTC)
-From: Evgeny Novikov <novikov@ispras.ru>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>
-Cc: Evgeny Novikov <novikov@ispras.ru>, Michael Walle <michael@walle.cc>,
- Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Lee Jones <lee.jones@linaro.org>, Pan Bian <bianpan2016@163.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- ldv-project@linuxtesting.org
-Subject: [PATCH v2] mtd: spi-nor: hisi-sfc: Remove excessive
- clk_disable_unprepare()
-Date: Fri,  9 Jul 2021 17:45:29 +0300
-Message-Id: <20210709144529.31379-1-novikov@ispras.ru>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
+ id 1m1uVL-002E6L-OQ
+ for linux-mtd@lists.infradead.org; Fri, 09 Jul 2021 17:41:37 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPS id 69111613C3;
+ Fri,  9 Jul 2021 17:41:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1625852494;
+ bh=s7NHSmEvVLDK8ELKiralJ+3di6Ye5BtwUViSqtRFX9E=;
+ h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+ b=GUTyEm8xPp6iORWjK6uruak4u9nf4kfLoAsM4KWDhlw+xGDGwO95Jw11ZqjDwpyva
+ Ypj8QRLqIOXIYe4DfaSdM7ZCkYv4W1RWANvEHZZL/Avim5HWi0ZiNvTVnmzGmrwSjN
+ 4UKPPsnDq7hbJNDASy8dBK9kYGL2RYAOK3frgsrHl4o/JNQ+YDRa9vq0lW5lIaw5FN
+ A3JKpCyhR8D65nYZBaSIX/zO5v/sL5eWzGJbxX6o3FI9MmHqD+uWBhuHCsPc+5y4PR
+ +IgWN1MGNzCNvBLUiVbnAJH24DijZPnjVTdObtSXyDPNZ5g05deuJkexC6n1unsDsy
+ Y+/xILoq/hz6A==
+Subject: Re: [GIT PULL] UBIFS changes for 5.14
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <245242026.4934.1625778600867.JavaMail.zimbra@nod.at>
+References: <245242026.4934.1625778600867.JavaMail.zimbra@nod.at>
+X-PR-Tracked-List-Id: Linux MTD discussion mailing list
+ <linux-mtd.lists.infradead.org>
+X-PR-Tracked-Message-Id: <245242026.4934.1625778600867.JavaMail.zimbra@nod.at>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git
+ tags/for-linus-5.14-rc1
+X-PR-Tracked-Commit-Id: a801fcfeef96702fa3f9b22ad56c5eb1989d9221
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 7a400bf28334fc7734639db3566394e1fc80670c
+Message-Id: <162585249429.25269.16275890531912140965.pr-tracker-bot@kernel.org>
+Date: Fri, 09 Jul 2021 17:41:34 +0000
+To: Richard Weinberger <richard@nod.at>
+Cc: torvalds <torvalds@linux-foundation.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210709_074539_060460_53DC6C93 
-X-CRM114-Status: GOOD (  11.09  )
+X-CRM114-CacheID: sfid-20210709_104135_852226_0346266A 
+X-CRM114-Status: UNSURE (   3.95  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,44 +81,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-hisi_spi_nor_probe() invokes clk_disable_unprepare() on all paths after
-successful call of clk_prepare_enable(). Besides, the clock is enabled by
-hispi_spi_nor_prep() and disabled by hispi_spi_nor_unprep(). So at remove
-time it is not possible to have the clock enabled. The patch removes
-excessive clk_disable_unprepare() from hisi_spi_nor_remove().
+The pull request you sent on Thu, 8 Jul 2021 23:10:00 +0200 (CEST):
 
-Found by Linux Driver Verification project (linuxtesting.org).
+> git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.14-rc1
 
-Fixes: e523f11141bd ("mtd: spi-nor: add hisilicon spi-nor flash controller driver")
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
----
-v2: Fix notes from Pratyush Yadav:
-    - Describe better why clock disabling is not necessary at remove time.
-    - Add tag Fixes.
----
- drivers/mtd/spi-nor/controllers/hisi-sfc.c | 1 -
- 1 file changed, 1 deletion(-)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/7a400bf28334fc7734639db3566394e1fc80670c
 
-diff --git a/drivers/mtd/spi-nor/controllers/hisi-sfc.c b/drivers/mtd/spi-nor/controllers/hisi-sfc.c
-index 47fbf1d1e557..516e50269478 100644
---- a/drivers/mtd/spi-nor/controllers/hisi-sfc.c
-+++ b/drivers/mtd/spi-nor/controllers/hisi-sfc.c
-@@ -477,7 +477,6 @@ static int hisi_spi_nor_remove(struct platform_device *pdev)
- 
- 	hisi_spi_nor_unregister_all(host);
- 	mutex_destroy(&host->lock);
--	clk_disable_unprepare(host->clk);
- 	return 0;
- }
- 
+Thank you!
+
 -- 
-2.26.2
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
 ______________________________________________________
 Linux MTD discussion mailing list
