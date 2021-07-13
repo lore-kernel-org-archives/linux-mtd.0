@@ -2,86 +2,89 @@ Return-Path: <SRS0=HIhO=MF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_RED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85010C07E95
-	for <linux-mtd@archiver.kernel.org>; Tue, 13 Jul 2021 13:18:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C87C6C07E95
+	for <linux-mtd@archiver.kernel.org>; Tue, 13 Jul 2021 19:35:54 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5589460FF1
-	for <linux-mtd@archiver.kernel.org>; Tue, 13 Jul 2021 13:18:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5589460FF1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8FD8260725
+	for <linux-mtd@archiver.kernel.org>; Tue, 13 Jul 2021 19:35:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8FD8260725
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lXJx8CmHmKT4lwpmtVwx+Mp7oW3CyCCtJhJpeaCgehI=; b=Ecm8i0A24PLpfW
-	OjZL8ZlUoUB2YGSGRis+fDY1bfCoH5gaYyQoLZ/UYo0odEBg+JBUDgfX/ENo5uWTuN1lnlPYwmsfN
-	bDpHIYUC2vYlrspLiRw6T3LBN1+Eo1HLUseWtRIva7jPxGQa6poifFDc3ATQH29LvuQNiW/Pnb18S
-	MnboWF0KNKF+flvpfPB6hSzvgZB2dNkxMVBc4L2XTwtWgFI5ZXQmtuYiH9qvr06UhkEzNCjhAAnLi
-	uZT2/f+0GaU45bLvNtvU+29jrVQaEeUSxhscyPVPCKuHj1BM8xUwy38Y3gQj3D11O1/xrb/4jJM57
-	Lx4624f0XDVwY949qdrg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Xz4UZm4d53/iu62CIX7KTJ4B1h7rACXkLSW3Eb6Nm8I=; b=APVrhxiAMljSzK
+	DOuo74kX27dvbuoCBj2Esn98El/lS/jVb7nd+DohVsxxjBfS8x0actZHl7idxtiUiVXLHX43U+2wW
+	xpwRMrkYQ4JdFXxcu+T/BDpE6AcT9zH5riEap90ZpZoA2csBySda64rxlOFnkUppkZS77YZJjTS88
+	xJ+1db34WL5FrlmpuAbMwbnkwOAMcC/uGJrBrrGrHhhG4i4j+k8DWWWLiB1ziLPKjptY8UzF/Jpxm
+	QjFJWQiZB5yKhQyisllC9ZX/16xUnudKd/3x+5hSKyJsArnEcRz77ZDTVa0+xcWjceWutYJvadXzC
+	+e6tQs3YsNuHMgEfy3ew==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m3IIT-00AUwi-0o; Tue, 13 Jul 2021 13:18:01 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1m3OBL-00BF3c-NR; Tue, 13 Jul 2021 19:35:03 +0000
+Received: from mail-io1-f48.google.com ([209.85.166.48])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m3I7h-00ASVp-SJ
- for linux-mtd@lists.infradead.org; Tue, 13 Jul 2021 13:06:57 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 16DD6lAf010988;
- Tue, 13 Jul 2021 08:06:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1626181607;
- bh=IaSq8ZKnYxlW8S1QnsGGWlTcMOzmg6u2gbCgHbxlUF8=;
- h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=Xp5OubjIO83Br2ibQwjCkHDoLHtVPYXGYtlo0JVYr02cBsZKjF+usryXPAGmYPPEp
- GsuKhtjsL84mCs5bsVAXCNmxZl2HTWXJrktq//gjXaAGw2bC4Qz1gLeUOUkbBE6iKU
- 8UAU+71AQ1U+bDeh44ekSoIaxX9nsJM7gqjfU/ic=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 16DD6lpx101619
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 13 Jul 2021 08:06:47 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 13
- Jul 2021 08:06:47 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 13 Jul 2021 08:06:47 -0500
-Received: from LT5CD112GSQZ.dhcp.ti.com (ileax41-snat.itg.ti.com
- [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 16DD5daN109825;
- Tue, 13 Jul 2021 08:06:43 -0500
-From: Apurva Nandan <a-nandan@ti.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Mark Brown
- <broonie@kernel.org>, Patrice Chotard <patrice.chotard@foss.st.com>, Boris
- Brezillon <boris.brezillon@collabora.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <linux-spi@vger.kernel.org>
-CC: Apurva Nandan <a-nandan@ti.com>, Pratyush Yadav <p.yadav@ti.com>
-Subject: [PATCH 13/13] mtd: spinand: Add support for Winbond W35N01JW SPI NAND
- flash
-Date: Tue, 13 Jul 2021 13:05:38 +0000
-Message-ID: <20210713130538.646-14-a-nandan@ti.com>
-X-Mailer: git-send-email 2.31.1.windows.1
-In-Reply-To: <20210713130538.646-1-a-nandan@ti.com>
-References: <20210713130538.646-1-a-nandan@ti.com>
+ id 1m3OBI-00BF2g-Pr
+ for linux-mtd@lists.infradead.org; Tue, 13 Jul 2021 19:35:02 +0000
+Received: by mail-io1-f48.google.com with SMTP id v26so618730iom.11
+ for <linux-mtd@lists.infradead.org>; Tue, 13 Jul 2021 12:34:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=eXNbiOfz2OADKu5/Fro0uEc8qfMv6oN+akM7nAMsoNs=;
+ b=ObxhHia4kcOuJKdn464X8SSFFVwGywQHTyYrWG3wLX5FEW8VA8WED8ZAjqgnOcH1Md
+ RCcLwLacPq9hNy0cBF3JTA9AIZZdl8tsTY/B9yYrNG2/CcJKRswjuUV89yG5ZyRX3Q4N
+ pwL6YITCvE+5zjp4cXwVYqTGBV42wmD4gqsEtgu/3JlHCydU1DcVYzHvCmd9Qtt/a9QF
+ GPmpPzqvtTNsfFgjSsGI0AmijkZMDllk+yp+TNSwFwjzD47GIEVq8OEQBpb7tJj6K60t
+ BjXnTcgZH9AOT/G/K/v6zEXaI+ija3KWjbrryIRUdAAs/kDwkJILNJXKI3AJDAmvtZfV
+ fyrQ==
+X-Gm-Message-State: AOAM531lrLONXcZLUeK3/dLYOcZ+wFnuYiQsRxImnBOBiICXM5BdC93i
+ Gj0xiNJ9p1sANnKrqEPc1A==
+X-Google-Smtp-Source: ABdhPJzw9lbjwb1pdT4tIxapva2T9ilTykdW85tANNfljZrD6J0J6zkjV6l4axi9xOmTnyTsjbnCSg==
+X-Received: by 2002:a5d:928f:: with SMTP id s15mr4391019iom.142.1626204898597; 
+ Tue, 13 Jul 2021 12:34:58 -0700 (PDT)
+Received: from xps15.herring.priv ([64.188.179.248])
+ by smtp.googlemail.com with ESMTPSA id k13sm4640772ilv.18.2021.07.13.12.34.54
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 13 Jul 2021 12:34:57 -0700 (PDT)
+From: Rob Herring <robh@kernel.org>
+To: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
+ Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Alessandro Zummo <a.zummo@towertech.it>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Kamal Dasu <kdasu.kdev@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Sebastian Siewior <bigeasy@linutronix.de>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ linux-clk@vger.kernel.org, iommu@lists.linux-foundation.org,
+ linux-mtd@lists.infradead.org, linux-rtc@vger.kernel.org,
+ linux-usb@vger.kernel.org
+Subject: [PATCH] dt-bindings: More dropping redundant minItems/maxItems
+Date: Tue, 13 Jul 2021 13:34:53 -0600
+Message-Id: <20210713193453.690290-1-robh@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210713_060654_062880_50FB923A 
-X-CRM114-Status: GOOD (  16.61  )
+X-CRM114-CacheID: sfid-20210713_123500_889329_EE0C59A1 
+X-CRM114-Status: GOOD (  18.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,207 +101,172 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Winbond W35N01JW is SPI NAND flash supporting Octal DTR SPI protocol.
-Add op_vairants for W35N01JW, which include the Octal DTR read/write
-page ops as well. Add W35N01JW's oob layout functions for the
-mtd_ooblayout_ops. Add all op adjustments required for Octal DTR SPI
-mode using the adjust_op(). Finally, add an entry for W35N01JW in
-spinand_info table.
+Another round of removing redundant minItems/maxItems from new schema in
+the recent merge window.
 
-Datasheet: https://www.winbond.com/export/sites/winbond/datasheet/W35N01JW_Datasheet_Brief.pdf
+If a property has an 'items' list, then a 'minItems' or 'maxItems' with the
+same size as the list is redundant and can be dropped. Note that is DT
+schema specific behavior and not standard json-schema behavior. The tooling
+will fixup the final schema adding any unspecified minItems/maxItems.
 
-Signed-off-by: Apurva Nandan <a-nandan@ti.com>
+This condition is partially checked with the meta-schema already, but
+only if both 'minItems' and 'maxItems' are equal to the 'items' length.
+An improved meta-schema is pending.
+
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Alessandro Zummo <a.zummo@towertech.it>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: Kamal Dasu <kdasu.kdev@gmail.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Sebastian Siewior <bigeasy@linutronix.de>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: linux-clk@vger.kernel.org
+Cc: iommu@lists.linux-foundation.org
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-rtc@vger.kernel.org
+Cc: linux-usb@vger.kernel.org
+Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/mtd/nand/spi/winbond.c | 116 ++++++++++++++++++++++++++++++---
- 1 file changed, 107 insertions(+), 9 deletions(-)
+ .../devicetree/bindings/clock/brcm,iproc-clocks.yaml      | 1 -
+ .../devicetree/bindings/iommu/rockchip,iommu.yaml         | 2 --
+ .../bindings/memory-controllers/arm,pl353-smc.yaml        | 1 -
+ Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml  | 8 --------
+ .../devicetree/bindings/rtc/faraday,ftrtc010.yaml         | 1 -
+ Documentation/devicetree/bindings/usb/nxp,isp1760.yaml    | 2 --
+ 6 files changed, 15 deletions(-)
 
-diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
-index 58cda07c15a0..5c2b9e61b624 100644
---- a/drivers/mtd/nand/spi/winbond.c
-+++ b/drivers/mtd/nand/spi/winbond.c
-@@ -16,6 +16,13 @@
+diff --git a/Documentation/devicetree/bindings/clock/brcm,iproc-clocks.yaml b/Documentation/devicetree/bindings/clock/brcm,iproc-clocks.yaml
+index 8dc7b404ee12..1174c9aa9934 100644
+--- a/Documentation/devicetree/bindings/clock/brcm,iproc-clocks.yaml
++++ b/Documentation/devicetree/bindings/clock/brcm,iproc-clocks.yaml
+@@ -50,7 +50,6 @@ properties:
  
- #define WINBOND_CFG_BUF_READ		BIT(3)
+   reg:
+     minItems: 1
+-    maxItems: 3
+     items:
+       - description: base register
+       - description: power register
+diff --git a/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml b/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
+index d2e28a9e3545..ba9124f721f1 100644
+--- a/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
++++ b/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
+@@ -28,14 +28,12 @@ properties:
+       - description: configuration registers for MMU instance 0
+       - description: configuration registers for MMU instance 1
+     minItems: 1
+-    maxItems: 2
  
-+#define WINBOND_BLK_ERASE_OPCODE	0xD8
-+#define WINBOND_PAGE_READ_OPCODE	0x13
-+#define WINBOND_PROG_EXEC_OPCODE	0x10
-+#define WINBOND_READ_REG_OPCODE_1	0x05
-+#define WINBOND_READ_REG_OPCODE_2	0x0F
-+#define WINBOND_READ_VCR_OPCODE		0x85
-+
- /* Octal DTR SPI mode (8D-8D-8D) with Data Strobe output*/
- #define WINBOND_IO_MODE_VCR_OCTAL_DTR	0xE7
- #define WINBOND_IO_MODE_VCR_ADDR	0x00
-@@ -24,7 +31,7 @@
- #define WINBOND_DUMMY_CLK_COUNT		12
- #define WINBOND_DUMMY_CLK_VCR_ADDR	0x01
+   interrupts:
+     items:
+       - description: interruption for MMU instance 0
+       - description: interruption for MMU instance 1
+     minItems: 1
+-    maxItems: 2
  
--static SPINAND_OP_VARIANTS(read_cache_variants,
-+static SPINAND_OP_VARIANTS(read_cache_variants_w25xxgv,
- 		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
- 		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
- 		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
-@@ -32,14 +39,27 @@ static SPINAND_OP_VARIANTS(read_cache_variants,
- 		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
- 		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
+   clocks:
+     items:
+diff --git a/Documentation/devicetree/bindings/memory-controllers/arm,pl353-smc.yaml b/Documentation/devicetree/bindings/memory-controllers/arm,pl353-smc.yaml
+index 7a63c85ef8c5..01c9acf9275d 100644
+--- a/Documentation/devicetree/bindings/memory-controllers/arm,pl353-smc.yaml
++++ b/Documentation/devicetree/bindings/memory-controllers/arm,pl353-smc.yaml
+@@ -57,7 +57,6 @@ properties:
  
--static SPINAND_OP_VARIANTS(write_cache_variants,
-+static SPINAND_OP_VARIANTS(write_cache_variants_w25xxgv,
- 		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
- 		SPINAND_PROG_LOAD(true, 0, NULL, 0));
+   ranges:
+     minItems: 1
+-    maxItems: 3
+     description: |
+       Memory bus areas for interacting with the devices. Reflects
+       the memory layout with four integer values following:
+diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
+index e5f1a33332a5..dd5a64969e37 100644
+--- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
++++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
+@@ -84,7 +84,6 @@ properties:
  
--static SPINAND_OP_VARIANTS(update_cache_variants,
-+static SPINAND_OP_VARIANTS(update_cache_variants_w25xxgv,
- 		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
- 		SPINAND_PROG_LOAD(false, 0, NULL, 0));
+   interrupts:
+     minItems: 1
+-    maxItems: 3
+     items:
+       - description: NAND CTLRDY interrupt
+       - description: FLASH_DMA_DONE if flash DMA is available
+@@ -92,7 +91,6 @@ properties:
  
-+static SPINAND_OP_VARIANTS(read_cache_variants_w35n01jw,
-+		SPINAND_PAGE_READ_FROM_CACHE_OCTALIO_DTR_OP(0, 24, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(write_cache_variants_w35n01jw,
-+		SPINAND_PROG_LOAD_OCTALIO_DTR(true, 0, NULL, 0),
-+		SPINAND_PROG_LOAD(true, 0, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(update_cache_variants_w35n01jw,
-+		SPINAND_PROG_LOAD_OCTALIO_DTR(false, 0, NULL, 0),
-+		SPINAND_PROG_LOAD(false, 0, NULL, 0));
-+
- static int w25m02gv_ooblayout_ecc(struct mtd_info *mtd, int section,
- 				  struct mtd_oob_region *region)
- {
-@@ -64,11 +84,40 @@ static int w25m02gv_ooblayout_free(struct mtd_info *mtd, int section,
- 	return 0;
- }
+   interrupt-names:
+     minItems: 1
+-    maxItems: 3
+     items:
+       - const: nand_ctlrdy
+       - const: flash_dma_done
+@@ -148,8 +146,6 @@ allOf:
+     then:
+       properties:
+         reg-names:
+-          minItems: 2
+-          maxItems: 2
+           items:
+             - const: nand
+             - const: nand-int-base
+@@ -161,8 +157,6 @@ allOf:
+     then:
+       properties:
+         reg-names:
+-          minItems: 3
+-          maxItems: 3
+           items:
+             - const: nand
+             - const: nand-int-base
+@@ -175,8 +169,6 @@ allOf:
+     then:
+       properties:
+         reg-names:
+-          minItems: 3
+-          maxItems: 3
+           items:
+             - const: nand
+             - const: iproc-idm
+diff --git a/Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml b/Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml
+index 657c13b62b67..056d42daae06 100644
+--- a/Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml
++++ b/Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml
+@@ -30,7 +30,6 @@ properties:
+     maxItems: 1
  
-+static int w35n01jw_ooblayout_ecc(struct mtd_info *mtd, int section,
-+				  struct mtd_oob_region *region)
-+{
-+	if (section > 7)
-+		return -ERANGE;
-+
-+	region->offset = (16 * section) + 12;
-+	region->length = 4;
-+
-+	return 0;
-+}
-+
-+static int w35n01jw_ooblayout_free(struct mtd_info *mtd, int section,
-+				   struct mtd_oob_region *region)
-+{
-+	if (section > 7)
-+		return -ERANGE;
-+
-+	region->offset = (16 * section) + 2;
-+	region->length = 10;
-+
-+	return 0;
-+}
-+
- static const struct mtd_ooblayout_ops w25m02gv_ooblayout = {
- 	.ecc = w25m02gv_ooblayout_ecc,
- 	.free = w25m02gv_ooblayout_free,
- };
+   clocks:
+-    minItems: 2
+     items:
+       - description: PCLK clocks
+       - description: EXTCLK clocks. Faraday calls it CLK1HZ and says the clock
+diff --git a/Documentation/devicetree/bindings/usb/nxp,isp1760.yaml b/Documentation/devicetree/bindings/usb/nxp,isp1760.yaml
+index a88f99adfe8e..f238848ad094 100644
+--- a/Documentation/devicetree/bindings/usb/nxp,isp1760.yaml
++++ b/Documentation/devicetree/bindings/usb/nxp,isp1760.yaml
+@@ -25,14 +25,12 @@ properties:
  
-+static const struct mtd_ooblayout_ops w35n01jw_ooblayout = {
-+	.ecc = w35n01jw_ooblayout_ecc,
-+	.free = w35n01jw_ooblayout_free,
-+};
-+
- static int w25m02gv_select_target(struct spinand_device *spinand,
- 				  unsigned int target)
- {
-@@ -88,9 +137,9 @@ static const struct spinand_info winbond_spinand_table[] = {
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xab),
- 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 2),
- 		     NAND_ECCREQ(1, 512),
--		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
--					      &write_cache_variants,
--					      &update_cache_variants),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants_w25xxgv,
-+					      &write_cache_variants_w25xxgv,
-+					      &update_cache_variants_w25xxgv),
- 		     0,
- 		     SPINAND_ECCINFO(&w25m02gv_ooblayout, NULL),
- 		     SPINAND_SELECT_TARGET(w25m02gv_select_target)),
-@@ -98,11 +147,22 @@ static const struct spinand_info winbond_spinand_table[] = {
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xaa),
- 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
- 		     NAND_ECCREQ(1, 512),
--		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
--					      &write_cache_variants,
--					      &update_cache_variants),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants_w25xxgv,
-+					      &write_cache_variants_w25xxgv,
-+					      &update_cache_variants_w25xxgv),
- 		     0,
- 		     SPINAND_ECCINFO(&w25m02gv_ooblayout, NULL)),
-+	SPINAND_INFO("W35N01JW",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xdc),
-+		     NAND_MEMORG(1, 4096, 128, 64, 512, 20, 1, 1, 1),
-+		     NAND_ECCREQ(1, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants_w35n01jw,
-+					      &write_cache_variants_w35n01jw,
-+					      &update_cache_variants_w35n01jw),
-+		     SPINAND_HAS_OCTAL_DTR_BIT | SPINAND_HAS_POR_CMD_BIT |
-+		     SPINAND_HAS_CR_FEAT_BIT,
-+		     SPINAND_ECCINFO(&w35n01jw_ooblayout, NULL)),
-+
- };
+   interrupts:
+     minItems: 1
+-    maxItems: 2
+     items:
+       - description: Host controller interrupt
+       - description: Device controller interrupt in isp1761
  
- static int winbond_spinand_init(struct spinand_device *spinand)
-@@ -183,9 +243,47 @@ static int winbond_spinand_octal_dtr_enable(struct spinand_device *spinand)
- 	return 0;
- }
- 
-+static void winbond_spinand_adjust_op(struct spi_mem_op *op,
-+				      const enum spinand_proto reg_proto)
-+{
-+	/*
-+	 * To support both 1 byte opcode and 2 byte opcodes, extract the MSB
-+	 * byte from the opcode as the LSB byte in 2 byte opcode is treated as
-+	 * don't care.
-+	 */
-+	u8 opcode = op->cmd.opcode >> (8 * (op->cmd.nbytes - 1));
-+
-+	if (reg_proto == SPINAND_OCTAL_DTR) {
-+		switch (opcode) {
-+		case WINBOND_READ_REG_OPCODE_1:
-+		case WINBOND_READ_REG_OPCODE_2:
-+			op->dummy.nbytes = 14;
-+			op->dummy.buswidth = 8;
-+			op->dummy.dtr = true;
-+			return;
-+
-+		case WINBOND_READ_VCR_OPCODE:
-+			op->dummy.nbytes = 16;
-+			op->dummy.buswidth = 8;
-+			op->dummy.dtr = true;
-+			return;
-+
-+		case WINBOND_BLK_ERASE_OPCODE:
-+		case WINBOND_PAGE_READ_OPCODE:
-+		case WINBOND_PROG_EXEC_OPCODE:
-+			op->addr.nbytes = 2;
-+			return;
-+
-+		default:
-+			return;
-+		}
-+	}
-+}
-+
- static const struct spinand_manufacturer_ops winbond_spinand_manuf_ops = {
- 	.init = winbond_spinand_init,
- 	.octal_dtr_enable = winbond_spinand_octal_dtr_enable,
-+	.adjust_op = winbond_spinand_adjust_op,
- };
- 
- const struct spinand_manufacturer winbond_spinand_manufacturer = {
+   interrupt-names:
+     minItems: 1
+-    maxItems: 2
+     items:
+       - const: host
+       - const: peripheral
 -- 
-2.17.1
+2.27.0
 
 
 ______________________________________________________
