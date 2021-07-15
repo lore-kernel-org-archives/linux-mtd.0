@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B279C636C9
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jul 2021 22:51:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6A54C636C8
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jul 2021 22:52:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C204861279
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jul 2021 22:51:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C204861279
+	by mail.kernel.org (Postfix) with ESMTPS id 79CDA613AF
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jul 2021 22:52:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 79CDA613AF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,40 +23,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Bq3boGuFYdEvKJ/40OJJfYifc98aw7MIZGGkQSjGICM=; b=uiPEerN+PRnkD4
-	SzpLtsmSukNxE8Mg5s//Cle56zl+m/CarD+dn+i7ehkDX34M/YQXIyva94WYzaXU1090EVPSXkx5/
-	ER5blYRNVIDv2InBCvy8v78VL40FxAJ1IqKwo6jzk5AWQNdLcBsA9G0CCTjcqjGGMUMPxhrbYGASC
-	mkL+8kzzOyScmjfWK0B7JPxTxWcvbPkcd1N0is7caReJASO4wIDoccXLRE3Pyj12C7y4DJpfmXnNn
-	Qdko3Za+zKnFodbs/0CWRu2O4GgSyk39bJdM+8DC4nfmRWEuKtgg6DFBVVhi0AS8U+fxMe3l/KRU5
-	MnIe/Qu7eVVntFUGBaIw==;
+	List-Owner; bh=k0PSCNzqcevnwxPWtcnmvcdcvBDLKc+UL+ZKAeO1WRE=; b=Nyzku33wPRMTqK
+	OhkoXXQlfROlcK5iI4F2GcgGNicJ3y5JhHqumMQeM0XNG52gBrhQq+dcmSR6mlONmnij5dkrlSyE9
+	h7Leb8D9lWDrRq4LSe9t9zntjVo4YMj1+N6E7auinOlQQYYdUiAghG7EdEN9FV+oB71Wz6SMvt22R
+	l+YkAiF2VWfmaY6S8KYaCxUaa3JERZbA+eDaoHxdctMm76Q81TzB/u/li++jlKv1W13S+NLFmPETJ
+	o+bhGq8Hec8u67PkLWTY1Dx9WZZwD90HWxg0aC9w2KvBwAnCQcNC4nGYxJNGWpWnNG4f9+X+6XQ78
+	K3EXBvoYZR6ohI1cyaog==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m4ACE-002YcY-Em; Thu, 15 Jul 2021 22:51:10 +0000
+	id 1m4ACk-002Ynw-Qj; Thu, 15 Jul 2021 22:51:42 +0000
 Received: from relay8-d.mail.gandi.net ([217.70.183.201])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m4ABa-002YMO-S7
- for linux-mtd@lists.infradead.org; Thu, 15 Jul 2021 22:50:32 +0000
+ id 1m4ABe-002YOL-AA
+ for linux-mtd@lists.infradead.org; Thu, 15 Jul 2021 22:50:35 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 5B6C91BF208;
- Thu, 15 Jul 2021 22:50:27 +0000 (UTC)
+ by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 96E311BF204;
+ Thu, 15 Jul 2021 22:50:31 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Andreas Persson <andreasp56@outlook.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2] mtd: cfi_cmdset_0002: fix crash when erasing/writing
- AMD cards
-Date: Fri, 16 Jul 2021 00:50:26 +0200
-Message-Id: <20210715225026.65922-1-miquel.raynal@bootlin.com>
+To: Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor.Ambarus@microchip.com, Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH v2] mtd: core: handle flashes without OTP gracefully
+Date: Fri, 16 Jul 2021 00:50:31 +0200
+Message-Id: <20210715225031.65986-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <DB6P189MB05830B3530B8087476C5CFE4C1159@DB6P189MB0583.EURP189.PROD.OUTLOOK.COM>
+In-Reply-To: <20210707135359.32398-1-michael@walle.cc>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'2394e628738933aa014093d93093030f6232946d'
+X-linux-mtd-patch-commit: b'45bb1faa29effbd4ca4d581b32373f2eda309b95'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210715_155031_084044_0BC0450D 
-X-CRM114-Status: UNSURE (   8.30  )
+X-CRM114-CacheID: sfid-20210715_155034_567626_BD44AD78 
+X-CRM114-Status: UNSURE (   8.11  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -74,14 +74,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2021-07-12 at 07:54:52 UTC, Andreas Persson wrote:
-> Erasing an AMD linear flash card (AM29F016D) crashes after the first
-> sector has been erased. Likewise, writing to it crashes after two bytes
-> have been written. The reason is a missing check for a null pointer -
-> the cmdset_priv field is not set for this type of card.
+On Wed, 2021-07-07 at 13:53:59 UTC, Michael Walle wrote:
+> There are flash drivers which registers the OTP callbacks although the
+> flash doesn't support OTP regions and return -ENODATA for these
+> callbacks if there is no OTP. If this happens, the probe of the whole
+> flash will fail. Fix it by handling the ENODATA return code and skip
+> the OTP region nvmem setup.
 > 
-> Fixes: 4844ef80305d ("mtd: cfi_cmdset_0002: Add support for polling status register")
-> Signed-off-by: Andreas Persson <andreasp56@outlook.com>
+> Fixes: 4b361cfa8624 ("mtd: core: add OTP nvmem provider support")
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Michael Walle <michael@walle.cc>
+> Tested-by: Guenter Roeck <linux@roeck-us.net>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks.
 
