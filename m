@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7097DC636C8
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jul 2021 22:54:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7404C636C9
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jul 2021 22:55:19 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 317D8601FE
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jul 2021 22:54:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 317D8601FE
+	by mail.kernel.org (Postfix) with ESMTPS id AFC21613AF
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jul 2021 22:55:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AFC21613AF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,41 +23,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jcTU5RbPud0CK4WA29kjxVv4BMqlwh+YzO+iiM6bJ/I=; b=FfKHf5ZbOIb77X
-	XjtkZ7NMLg6x/FD1IPlNxDCinvMydSnAMeWq4oNUi4V/h6m1oainbheKO+g4Fplk09JU1IZs5zOB4
-	2FcuG2YdyllHyeJthlmNViDhUgnwdRrwoMYLJtAVAUASSxMzDEVraQozUOKrjVJyThZevNLsFUoLH
-	Cru/7Zj6iX4OLFRMeuTJ5NvRAP4v78L/u6t1sFtHNzkgKzoNsOLkk0t4tn6Tlj/G6pCp1S/D4kvNV
-	cDsK/oh+zFCjmPJd/F4ptZ/SsmtT4jG3DZrgkTrLJ54CWfnQ3SzygvzIdH/7eOpwqoyQrlha0iSf8
-	UWykUEAwE5G27ZMMBIXg==;
+	List-Owner; bh=JwTwdxnwzXlTknmSOQ9VE9sNDShvRHd98qbh2w5spLU=; b=UC8D6/xcXN7peV
+	wJetRiqF1qHXJ7CCJCK7UWu77NwSqxn/RVKLPNTKIjAm4BMHESCxEyyJdPMY/GTzQqAm9BNX1w9Kp
+	NueQf8gJDPtuzrQOMCglLsgyc+rokeaGUhiTNGOd9C73vPkHc0bYYzur/v81x1ckzZx+TGjZsAOr8
+	z+JhLd/rnqWlb2ZDK38byytx3CoewZBxWKKXZXfw6Su4Lc3PS5G233WgZ1Rmr7MaaUgg8+7vEB7Eb
+	+Dg/bpol7CDX+VLSp+INcye3uLC/s31HQ86GZK1sR/mNn2e8amSsY5+sd02oHxWDH5AM7TeFGIIEZ
+	vv4uoGmgBaAw8g6fSHmQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m4AEs-002ZTe-M6; Thu, 15 Jul 2021 22:53:55 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1m4AFj-002Zi6-07; Thu, 15 Jul 2021 22:54:47 +0000
+Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m4ABr-002YUD-Ps
- for linux-mtd@lists.infradead.org; Thu, 15 Jul 2021 22:50:49 +0000
+ id 1m4ABx-002YVt-2o
+ for linux-mtd@lists.infradead.org; Thu, 15 Jul 2021 22:50:54 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 6A5D51BF209;
- Thu, 15 Jul 2021 22:50:45 +0000 (UTC)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id CBB8E1C0002;
+ Thu, 15 Jul 2021 22:50:49 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Dan Carpenter <dan.carpenter@oracle.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Manivannan Sadhasivam <mani@kernel.org>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>, linux-mtd@lists.infradead.org,
- kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: Add a check in of_get_nand_secure_regions()
-Date: Fri, 16 Jul 2021 00:50:45 +0200
-Message-Id: <20210715225045.66185-1-miquel.raynal@bootlin.com>
+To: Zhihao Cheng <chengzhihao1@huawei.com>, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ yukuai3@huawei.com
+Subject: Re: [PATCH v2] mtd: mtd_blkdevs: Initialize
+ rq.limits.discard_granularity
+Date: Fri, 16 Jul 2021 00:50:49 +0200
+Message-Id: <20210715225049.66252-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <YMtQFXE0F1w7mUh+@mwanda>
+In-Reply-To: <20210615093905.3473709-1-chengzhihao1@huawei.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'14f97f0b8e2b9950c028d0cb7311ffe26a3cc1c0'
+X-linux-mtd-patch-commit: b'2b6d2833cd1d8a43a837a45da65860ef086443dc'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210715_155048_010115_DCEEF01B 
+X-CRM114-CacheID: sfid-20210715_155053_358737_B1955756 
 X-CRM114-Status: UNSURE (   6.98  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
@@ -76,13 +74,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2021-06-17 at 13:37:25 UTC, Dan Carpenter wrote:
-> Check for whether of_property_count_elems_of_size() returns a negative
-> error code.
+On Tue, 2021-06-15 at 09:39:05 UTC, Zhihao Cheng wrote:
+> Since commit b35fd7422c2f8("block: check queue's limits.discard_granularity
+> in __blkdev_issue_discard()") checks rq.limits.discard_granularity in
+> __blkdev_issue_discard(), we may get following warnings on formatted ftl:
 > 
-> Fixes: 13b89768275d ("mtd: rawnand: Add support for secure regions in NAND memory")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
+>   WARNING: CPU: 2 PID: 7313 at block/blk-lib.c:51
+>   __blkdev_issue_discard+0x2a7/0x390
+> 
+> Reproducer:
+>   1. ftl_format /dev/mtd0
+>   2. modprobe ftl
+>   3. mkfs.vfat /dev/ftla
+>   4. mount -odiscard /dev/ftla temp
+>   5. dd if=/dev/zero of=temp/tst bs=1M count=10 oflag=direct
+>   6. dd if=/dev/zero of=temp/tst bs=1M count=10 oflag=direct
+> 
+> Fix it by initializing rq.limits.discard_granularity if device supports
+> discard operation.
+> 
+> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks.
 
