@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6A54C636C8
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jul 2021 22:52:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28964C636C8
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jul 2021 22:53:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 79CDA613AF
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jul 2021 22:52:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 79CDA613AF
+	by mail.kernel.org (Postfix) with ESMTPS id E1C45613AF
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jul 2021 22:52:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E1C45613AF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,40 +23,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=k0PSCNzqcevnwxPWtcnmvcdcvBDLKc+UL+ZKAeO1WRE=; b=Nyzku33wPRMTqK
-	OhkoXXQlfROlcK5iI4F2GcgGNicJ3y5JhHqumMQeM0XNG52gBrhQq+dcmSR6mlONmnij5dkrlSyE9
-	h7Leb8D9lWDrRq4LSe9t9zntjVo4YMj1+N6E7auinOlQQYYdUiAghG7EdEN9FV+oB71Wz6SMvt22R
-	l+YkAiF2VWfmaY6S8KYaCxUaa3JERZbA+eDaoHxdctMm76Q81TzB/u/li++jlKv1W13S+NLFmPETJ
-	o+bhGq8Hec8u67PkLWTY1Dx9WZZwD90HWxg0aC9w2KvBwAnCQcNC4nGYxJNGWpWnNG4f9+X+6XQ78
-	K3EXBvoYZR6ohI1cyaog==;
+	List-Owner; bh=fEjzq/TJsoHGLxbvIuztrdJY9IIwg1lhbvHE9mDHRv8=; b=Dex/+ejcEcoZrk
+	FmZsAyPuU896xxQ5u737+oluHUBIeeK2inktgtTfmFTgxXZFjRYYaVLHSfMe2ozveSDces7hznl3+
+	Ks4VpHTDnXilSf6DDYu7K7Wt0qoa9cr0FWhfON2CaZcBOjmDmWV3ZI3ox+0VQqHH7N/78/IcEaHjE
+	IPBa6kkBXtZA78nboAuiq+bT3gBSOiGKurdRz+zcZjD0Gk5jPafE1W7kWPD0QNPxAXTcoK5P2igsK
+	Hyl2dsqH0SgFVye8D0FzK+nIpU9yUYbD0MebjjREEUmbrezVEueRBh1jxmPjVGzXYt5tXA7CxhNwG
+	MkWyOey4MyvnNKnMZ8vg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m4ACk-002Ynw-Qj; Thu, 15 Jul 2021 22:51:42 +0000
+	id 1m4ADS-002Z3I-BX; Thu, 15 Jul 2021 22:52:26 +0000
 Received: from relay8-d.mail.gandi.net ([217.70.183.201])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m4ABe-002YOL-AA
- for linux-mtd@lists.infradead.org; Thu, 15 Jul 2021 22:50:35 +0000
+ id 1m4ABi-002YQK-S4
+ for linux-mtd@lists.infradead.org; Thu, 15 Jul 2021 22:50:40 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 96E311BF204;
- Thu, 15 Jul 2021 22:50:31 +0000 (UTC)
+ by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id D17411BF205;
+ Thu, 15 Jul 2021 22:50:36 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor.Ambarus@microchip.com, Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v2] mtd: core: handle flashes without OTP gracefully
-Date: Fri, 16 Jul 2021 00:50:31 +0200
-Message-Id: <20210715225031.65986-1-miquel.raynal@bootlin.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Heiko Schocher <hs@denx.de>, linux-mtd@lists.infradead.org,
+ kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] mtd: mchp48l640: silence some uninitialized variable
+ warnings
+Date: Fri, 16 Jul 2021 00:50:36 +0200
+Message-Id: <20210715225036.66051-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210707135359.32398-1-michael@walle.cc>
+In-Reply-To: <YMyir961W28TX5dT@mwanda>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'45bb1faa29effbd4ca4d581b32373f2eda309b95'
+X-linux-mtd-patch-commit: b'e83862ee1b9b1668826683f432b041875ec0c819'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210715_155034_567626_BD44AD78 
-X-CRM114-Status: UNSURE (   8.11  )
+X-CRM114-CacheID: sfid-20210715_155039_074198_0E2E63C1 
+X-CRM114-Status: UNSURE (   8.02  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -74,17 +75,15 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2021-07-07 at 13:53:59 UTC, Michael Walle wrote:
-> There are flash drivers which registers the OTP callbacks although the
-> flash doesn't support OTP regions and return -ENODATA for these
-> callbacks if there is no OTP. If this happens, the probe of the whole
-> flash will fail. Fix it by handling the ENODATA return code and skip
-> the OTP region nvmem setup.
+On Fri, 2021-06-18 at 13:42:07 UTC, Dan Carpenter wrote:
+> Smatch complains that zero length read/writes will lead to an
+> uninitalized return value.  I don't know if that's possible, but
+> it's nicer to return a zero literal anyway so let's do that.
 > 
-> Fixes: 4b361cfa8624 ("mtd: core: add OTP nvmem provider support")
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> Tested-by: Guenter Roeck <linux@roeck-us.net>
+> Fixes: 88d125026753 ("mtd: devices: add support for microchip 48l640 EERAM")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Reviewed-by: Fabio Estevam <festevam@gmail.com>
+> Reviewed-by: Heiko Schocher <hs@denx.de>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks.
 
