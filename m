@@ -2,81 +2,99 @@ Return-Path: <SRS0=I5Ka=MI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,HK_RANDOM_FROM,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A336DC12002
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jul 2021 10:10:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 071DDC07E95
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jul 2021 13:18:16 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 71040613F1
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jul 2021 10:10:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 71040613F1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=fudan.edu.cn
+	by mail.kernel.org (Postfix) with ESMTPS id B56AA613F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jul 2021 13:18:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B56AA613F5
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=landley.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=JzoZytB0KgbvrI2ODF7OvFMlMnQhlOPJ6CwbGRzQ5wY=; b=zfAgDmu2sS+A8a
-	1rpM/HlT8RyaU/kTYQ+mJ8Ve6Wvok+QYpiIwPrQdBOwSC3NLQwEiAt5/SiBDDyalx7hcHrE25BkQr
-	TswuSUwpSCYTKtXZlGFJ7ZyUbQvTwWAmceMXcwYIgQUIE2c+n0g/NS15JwYkvmlOhYBAiAwspjWVx
-	StULSZAbSGS2OQjWBY33XXg8Ipeu265vM+h3O/7lZl/xxMa/j62/EM7aQbfGgpu3FnLa8OSE8pnqc
-	yIzIYr6bE2dVxXjt0+xJylDrb3f13QvhCaIRcvPComJwBA89L5AFujriibj1BBVWeYwuIGdnwijmz
-	sGqjVT+9AkweowuSnmFA==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=GjZUC+H8yTHhESdT3uQsHMCvfpqsz045n3zloY/IRdw=; b=BFjHMg8JVLy1TFrVy5F17p3Nwm
+	aRLw4b92FhMueCP+VBGax0ZIDEUS2puIFIglw9ChGDBdmLeBsHXF25VVaHYZWTbmwk366m+GlezOm
+	RPPI5NaWsi1YSvOmG3H3+bc0LZ//O3JnYudA15GQq9br2PwjGTEMRL4gxfFZ0R/I7sQnlroV+sjmj
+	SxTJN8N9DhCUlnSOUZoZV1YdYUqqgQfaxc3BvLtu9Ev6MaQaQtGsRafK9KG5QJ8oizClK+nDHBgau
+	6wbKLjE7E6/kcmZWWbrbS4NH7Nb80NzQa6g94xvwfZsr7pjRoqdF2BwCJLe+MjAz2glD45qHvhJPe
+	SxXHCRkg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m4KmQ-00428u-Ta; Fri, 16 Jul 2021 10:09:14 +0000
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27])
- by bombadil.infradead.org with smtp (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m4KmL-00426K-Ij
- for linux-mtd@lists.infradead.org; Fri, 16 Jul 2021 10:09:13 +0000
+	id 1m4NiN-004RD3-C6; Fri, 16 Jul 2021 13:17:15 +0000
+Received: from mail-oi1-x232.google.com ([2607:f8b0:4864:20::232])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1m4NiJ-004RBd-Sn
+ for linux-mtd@lists.infradead.org; Fri, 16 Jul 2021 13:17:13 +0000
+Received: by mail-oi1-x232.google.com with SMTP id t25so10797154oiw.13
+ for <linux-mtd@lists.infradead.org>; Fri, 16 Jul 2021 06:17:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
- Message-Id; bh=HSEDz8NEiEK2wmxERWyQQQp6heMkOA9rgedFWxtRjsw=; b=O
- nIDfCxLFHHrUnDHbwML2Edd964FAv4jpjlGRHF46IMFE8yHnJIPK+uAX0ArExtWU
- f+IyT6b/H0X9wW/zFDZqb5hDMbPiDYVeICptYExI++6E6WmE7NSdbywo9zZN7lRh
- zAMSKHvQ7Vz0QpXCfQKwJX65kYCf6Bi2PzrDF5cWmc=
-Received: from localhost.localdomain (unknown [10.162.86.133])
- by app2 (Coremail) with SMTP id XQUFCgB3fyelWvFgI_LPBA--.40344S3;
- Fri, 16 Jul 2021 18:08:37 +0800 (CST)
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-To: David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>,
- Xin Tan <tanxin.ctf@gmail.com>, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: yuanxzhang@fudan.edu.cn
-Subject: [PATCH] jffs2: Convert from atomic_t to refcount_t on
- jffs2_xattr_datum->refcnt
-Date: Fri, 16 Jul 2021 18:08:12 +0800
-Message-Id: <1626430101-26718-1-git-send-email-xiyuyang19@fudan.edu.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: XQUFCgB3fyelWvFgI_LPBA--.40344S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxAFWfury5KFW7Jr17KFW3ZFb_yoWrJF17pr
- Z8Ja4rJF4rWr1fCr90yw18Zw1akr40krWvqrW5Jw1fuFyxtw1Svas5KryrAr1UZrs7Jr9I
- vF1jgr1YkF15Ww7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
- 9KBjDU0xBIdaVrnRJUUUvq14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
- rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
- 1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
- JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
- CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
- F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
- 4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
- 648v4I1lc2xSY4AK6svPMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
- 8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
- xVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
- 8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E
- 87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0x
- ZFpf9x0JUQZ23UUUUU=
-X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
+ d=landley-net.20150623.gappssmtp.com; s=20150623;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=gS9kOJpcGK76eRo5Aofr06uYyb4BuGzYuKkE7nL44x8=;
+ b=GrYNadcR5amCn2iDHt4hMO2O2LQIQzTsyizX7WVUE9JxK3q7CCJNaimFjmWm10aBwj
+ WVSUXw/xBLVkWh7fNyh8PHc74VAYtjeMna7Dm0NdlClt8x0vFU7u7ydFA/lzjmQ3UYYt
+ BPotPlxKSql8X2+bKqRqVE9zlfM/wF7hX8O7BX/XyMxsGFrdAC2nNjCigRJBNXCq7agO
+ 0ro8a/61pJCVPZNZ2IbpVNS8BN3KyHWJHjNu1YEGIlxDlv/hmHG/nh+ldkrjcCpmBhb5
+ ySMyCdQegMuFWjFljwohdZVvr5kngrY0h7nINLfiusJjvrg+2bz16C7SF5gHrWRKDpBA
+ UOFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=gS9kOJpcGK76eRo5Aofr06uYyb4BuGzYuKkE7nL44x8=;
+ b=JZW/nE+BPfHWqKvOh0mONlF1edYtzizPl2VC1v0RPa6Mk8TBJg/8dJIGoRH2HA58yo
+ XjkFJDgY/bKndf1+l7qmNoO/DgdDS1HqLYAf9DRM4IoE7otysr9U68B067oYUrUAUmmE
+ A4pU/FsHuUwZzXcNKcZhQzEALacfVLsu/tp950MK/36GDd7Axpkvbtsqn6P4W/e6jWJQ
+ E9QZOdOolsYllkDyLrk1cgHDLMWPeqqpNtvVqacaIZM2YrSZLJS+H4ln3ezXcARGGGiN
+ vxyCBiGsYVctzT6Fp1ARRLhZNFID7vKHNQEcwxkOgN3LsigwLqx11drVChXQ0kwgVdme
+ nX4g==
+X-Gm-Message-State: AOAM533rxLh6MzL0eD+mX4SoBROYBaoy/ePzosdwbnnYqMHVwA22xryh
+ 0qzixhMzcxbKalS0znzWpLnK8A==
+X-Google-Smtp-Source: ABdhPJyCnbfm9K3k3TkPCw3E0oHuQpDTPd9rqx/ncyn2f8DYEnq9d+jlXtztU1J0SjkpBvc9pLN8Ig==
+X-Received: by 2002:a05:6808:68f:: with SMTP id
+ k15mr12079068oig.58.1626441429627; 
+ Fri, 16 Jul 2021 06:17:09 -0700 (PDT)
+Received: from ?IPv6:2607:fb90:e658:f352:6680:99ff:fe6f:cb54?
+ ([2607:fb90:e658:f352:6680:99ff:fe6f:cb54])
+ by smtp.gmail.com with ESMTPSA id a7sm612997oti.47.2021.07.16.06.17.08
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 16 Jul 2021 06:17:08 -0700 (PDT)
+Subject: Re: [PATCH] mtd: fix size in mtd_info_user to support 64-bit
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Miaohe Lin <linmiaohe@huawei.com>
+Cc: richard@nod.at, vigneshr@ti.com, David.Woodhouse@intel.com,
+ Artem.Bityutskiy@nokia.com, ext-adrian.hunter@nokia.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linfeilong@huawei.com
+References: <20210708131359.21591-1-linmiaohe@huawei.com>
+ <20210716010224.44582046@xps13>
+ <95e3d455-ccb1-0e22-ee83-78dc6ad8aab1@huawei.com>
+ <20210716114808.246e92ba@xps13>
+From: Rob Landley <rob@landley.net>
+Message-ID: <f7f55c5e-f6b2-542c-66d2-20f4d88bf669@landley.net>
+Date: Fri, 16 Jul 2021 08:34:45 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210716114808.246e92ba@xps13>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210716_030910_968936_C4B3A1FA 
-X-CRM114-Status: GOOD (  11.66  )
+X-CRM114-CacheID: sfid-20210716_061712_031844_CC7A38B3 
+X-CRM114-Status: GOOD (  13.80  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,113 +106,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-refcount_t type and corresponding API can protect refcounters from
-accidental underflow and overflow and further use-after-free situations
+On 7/16/21 4:48 AM, Miquel Raynal wrote:
+> Hi Miaohe,
+> 
+> Miaohe Lin <linmiaohe@huawei.com> wrote on Fri, 16 Jul 2021 09:42:19
+> +0800:
+> 
+>> On 2021/7/16 7:02, Miquel Raynal wrote:
+>> > Hi Miaohe,
+>> > 
+>> > Miaohe Lin <linmiaohe@huawei.com> wrote on Thu, 8 Jul 2021 21:13:59
+>> > +0800:
+>> >   
+>> >> From: Feilong Lin <linfeilong@huawei.com>
+>> >>
+>> >> The size in struct mtd_info_user is 32-bit, which will cause errors
+>> >> when obtaining the size of large-capacity MTD devices, such as TLC
+>> >> NAND FLASH-2048Gb.  
+>> > 
+>> > Besides the fact that such devices are far from being supported by the
+>> > Linux kernel, this change would basically break userspace, it cannot
+>> > enter as-is...
+>> >   
+>> 
+>> I see. Many thanks for your reply! We're working with these large-capacity
+>> MTD devices now, any suggestion to work around this?
+> 
+> The only way is to create a second UAPI.
 
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
----
- fs/jffs2/xattr.c | 14 +++++++-------
- fs/jffs2/xattr.h |  3 ++-
- 2 files changed, 9 insertions(+), 8 deletions(-)
+Twelve years ago a patch was submitted to add a 64 bit MTD api:
 
-diff --git a/fs/jffs2/xattr.c b/fs/jffs2/xattr.c
-index da3e18503c65..f7e959817ff1 100644
---- a/fs/jffs2/xattr.c
-+++ b/fs/jffs2/xattr.c
-@@ -352,7 +352,7 @@ static struct jffs2_xattr_datum *create_xattr_datum(struct jffs2_sb_info *c,
- 		    && xd->value_len==xsize
- 		    && !strcmp(xd->xname, xname)
- 		    && !memcmp(xd->xvalue, xvalue, xsize)) {
--			atomic_inc(&xd->refcnt);
-+			refcount_inc(&xd->refcnt);
- 			return xd;
- 		}
- 	}
-@@ -372,7 +372,7 @@ static struct jffs2_xattr_datum *create_xattr_datum(struct jffs2_sb_info *c,
- 	strcpy(data, xname);
- 	memcpy(data + name_len + 1, xvalue, xsize);
- 
--	atomic_set(&xd->refcnt, 1);
-+	refcount_set(&xd->refcnt, 1);
- 	xd->xid = ++c->highest_xid;
- 	xd->flags |= JFFS2_XFLAGS_HOT;
- 	xd->xprefix = xprefix;
-@@ -404,7 +404,7 @@ static struct jffs2_xattr_datum *create_xattr_datum(struct jffs2_sb_info *c,
- static void unrefer_xattr_datum(struct jffs2_sb_info *c, struct jffs2_xattr_datum *xd)
- {
- 	/* must be called under down_write(xattr_sem) */
--	if (atomic_dec_and_lock(&xd->refcnt, &c->erase_completion_lock)) {
-+	if (refcount_dec_and_lock(&xd->refcnt, &c->erase_completion_lock)) {
- 		unload_xattr_datum(c, xd);
- 		xd->flags |= JFFS2_XFLAGS_DEAD;
- 		if (xd->node == (void *)xd) {
-@@ -621,7 +621,7 @@ void jffs2_xattr_free_inode(struct jffs2_sb_info *c, struct jffs2_inode_cache *i
- 	for (ref = ic->xref; ref; ref = _ref) {
- 		_ref = ref->next;
- 		xd = ref->xd;
--		if (atomic_dec_and_test(&xd->refcnt)) {
-+		if (refcount_dec_and_test(&xd->refcnt)) {
- 			unload_xattr_datum(c, xd);
- 			jffs2_free_xattr_datum(xd);
- 		}
-@@ -851,7 +851,7 @@ void jffs2_build_xattr_subsystem(struct jffs2_sb_info *c)
- 			}
- 			ref->xd = xd;
- 			ref->ic = ic;
--			atomic_inc(&xd->refcnt);
-+			refcount_inc(&xd->refcnt);
- 			ref->next = ic->xref;
- 			ic->xref = ref;
- 		}
-@@ -862,7 +862,7 @@ void jffs2_build_xattr_subsystem(struct jffs2_sb_info *c)
- 		list_for_each_entry_safe(xd, _xd, &c->xattrindex[i], xindex) {
- 			xdatum_count++;
- 			list_del_init(&xd->xindex);
--			if (!atomic_read(&xd->refcnt)) {
-+			if (!refcount_read(&xd->refcnt)) {
- 				dbg_xattr("xdatum(xid=%u, version=%u) is orphan.\n",
- 					  xd->xid, xd->version);
- 				xd->flags |= JFFS2_XFLAGS_DEAD;
-@@ -1322,7 +1322,7 @@ int jffs2_verify_xattr(struct jffs2_sb_info *c)
- void jffs2_release_xattr_datum(struct jffs2_sb_info *c, struct jffs2_xattr_datum *xd)
- {
- 	/* must be called under spin_lock(&c->erase_completion_lock) */
--	if (atomic_read(&xd->refcnt) || xd->node != (void *)xd)
-+	if (refcount_read(&xd->refcnt) || xd->node != (void *)xd)
- 		return;
- 
- 	list_del(&xd->xindex);
-diff --git a/fs/jffs2/xattr.h b/fs/jffs2/xattr.h
-index 720007b2fd65..75742f948d20 100644
---- a/fs/jffs2/xattr.h
-+++ b/fs/jffs2/xattr.h
-@@ -14,6 +14,7 @@
- 
- #include <linux/xattr.h>
- #include <linux/list.h>
-+#include <linux/refcount.h>
- 
- #define JFFS2_XFLAGS_HOT	(0x01)	/* This datum is HOT */
- #define JFFS2_XFLAGS_BIND	(0x02)	/* This datum is not reclaimed */
-@@ -29,7 +30,7 @@ struct jffs2_xattr_datum
- 	uint16_t xprefix;		/* see JFFS2_XATTR_PREFIX_* */
- 
- 	struct list_head xindex;	/* chained from c->xattrindex[n] */
--	atomic_t refcnt;		/* # of xattr_ref refers this */
-+	refcount_t refcnt;		/* # of xattr_ref refers this */
- 	uint32_t xid;
- 	uint32_t version;
- 
--- 
-2.7.4
+  https://lwn.net/Articles/326418/
 
+But for some reason they only merged 64 bit erase:
+
+  https://github.com/torvalds/linux/commit/0dc54e9f33e2
+
+But NOT the rest of the 64 bit mtd API in the same patch. I've never understood why.
+
+Rob
 
 ______________________________________________________
 Linux MTD discussion mailing list
