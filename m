@@ -2,81 +2,79 @@ Return-Path: <SRS0=I5Ka=MI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65A69C12002
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jul 2021 18:03:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5452CC12002
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jul 2021 19:11:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3542860FE7
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jul 2021 18:03:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3542860FE7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 0A3F9613D4
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jul 2021 19:11:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A3F9613D4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fS0d1wyV6fczIbgkDD4iHWHrU3S4yAAn4sAvZw1YY2E=; b=f1kimLbZZq1WVr
-	BdtcNkkNOmtwCdB+RzyNMtgPk65QvLfL91a9O/jiW/WwfKWd/xQCPwa2ssh2KBfFV1uNxBONCkoWa
-	vXz7tEkSCiBOWRJEACQHgdqLhayZeda63z/0qQmVPzWzgGUPuW87CXC/mzGEhqpdzoYWsGmY8MaPy
-	+QDpk2DECrmJHLTxbaJUySIVVd7sWHPuj2blZJBoI+c3l4dzIyrQf9f97nNuFEPSxsQ9OZTIv2FMA
-	hZXCAVHxHf5NyGXbbkKK4XSCPSfSA7zJrmOCZOeBy4KYw/x9DBzLyN/kmstitlFYMhVmS9251+/K6
-	hjXIlJRoc3XNxPEFHWfw==;
+	List-Owner; bh=Giwh9gXvF/VwJNxJ0wj+KUnKmDkrp5OLCemsPof84W8=; b=DHkXo43Qq/JMv+
+	Lbc39B+w96x1fBaovmqjPQfB9nEwMFvBhpX6UfgeB5iI+9F4BG2ZP8ZcLnJ0K41xU7KsUcFIkRIq5
+	h4lyF93Z2vyMTY/0Q4BLeVBwUoElWvSAebTQcHn3cx1zY4pDhCyzqMe8fmm7IGHa3wTy1+7v1MFw0
+	380C8TFpK3yoCdmyXNoe8B8fmY94zUPqW/vgMjtId/eJRKAdv+0IrCuXg0dpW7YDYmU3R/10STzZ8
+	0R+65m8ZVK9kZkTIIxjREBEbo8JBXvvGNXddsD4T+HMKMJ+RVarTj9tc7ExXxeU7lHzaabqC9qNz+
+	iBZtP9XwkNmLopOQnuwQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m4SAt-00527y-H2; Fri, 16 Jul 2021 18:02:59 +0000
-Received: from mail-io1-f44.google.com ([209.85.166.44])
+	id 1m4TDq-0056Oe-NF; Fri, 16 Jul 2021 19:10:06 +0000
+Received: from mail-vs1-f49.google.com ([209.85.217.49])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m4SAq-005278-RI
- for linux-mtd@lists.infradead.org; Fri, 16 Jul 2021 18:02:58 +0000
-Received: by mail-io1-f44.google.com with SMTP id g22so11622528iom.1
- for <linux-mtd@lists.infradead.org>; Fri, 16 Jul 2021 11:02:56 -0700 (PDT)
+ id 1m4TDo-0056NR-3S
+ for linux-mtd@lists.infradead.org; Fri, 16 Jul 2021 19:10:05 +0000
+Received: by mail-vs1-f49.google.com with SMTP id a22so5699073vso.1
+ for <linux-mtd@lists.infradead.org>; Fri, 16 Jul 2021 12:09:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=o8ZKFwDkRHkveLaudUDVhxvrMvahOTC+Q27T5GsqDWc=;
- b=FntxkdqRmLR23mdP6uhLRaMfgMXxedOk0Vkcy2yeXG1lffRQkHEv6QlvW3+1cRszrp
- +PbNwODE/Hn0T7u2cQoSKTv1MogIjKY6dh5P9LxWETblvE3MJZct42z01AQNi8npYTX/
- XKpadKQ+nfH9Lxg9OaKaItZ84QsFutMeXFI2/nMUe3TQMJY7jhEfDr4mT3eFllqGKAqX
- zlwIzgN7VYlmlaqFGzL0JDDSpTxBQIN/RkW3UDqlaBz2WuWEVTwXIEzlN/g91Bsogz65
- R52x2s+R7jpLDfP850UIr71A/Y+YTJdvtOhCsiyeeJKby3EHLsMWcITJklTdqIJnxvRP
- PgbA==
-X-Gm-Message-State: AOAM531/N5QSDPPV+n9KENzLx5/OTJwc9WMGXH+2NmmZzBeuBssWZmHh
- NW47D4FFI0ypV0CtEwmZ2A==
-X-Google-Smtp-Source: ABdhPJxh7jTPpNQyp+Byi/egf6lVzgVhWXlz6KVf1X2/P0wH39CqS6+wkKXzdyM7NVt0sfMNR6fLKA==
-X-Received: by 2002:a02:c9c2:: with SMTP id c2mr9890706jap.98.1626458576094;
- Fri, 16 Jul 2021 11:02:56 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
- by smtp.gmail.com with ESMTPSA id o12sm5104314ilg.10.2021.07.16.11.02.54
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 16 Jul 2021 11:02:55 -0700 (PDT)
-Received: (nullmailer pid 3687147 invoked by uid 1000);
- Fri, 16 Jul 2021 18:02:53 -0000
-Date: Fri, 16 Jul 2021 12:02:53 -0600
-From: Rob Herring <robh@kernel.org>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- Sergei Shtylyov <sergei.shtylyov@gmail.com>, devicetree@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: memory: renesas,rpc-if: Miscellaneous
- improvements
-Message-ID: <20210716180253.GA3684196@robh.at.kernel.org>
-References: <d430f9c06d6691fe8a98f923cdb7ca13772834b1.1626262043.git.geert+renesas@glider.be>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=ehJwWdmJnEqOFrEyqslwmNH6+ZDemUpg9Q/4BttkqCY=;
+ b=o1pBy/A9FW5Soh28USejOlweyB0ywuioqqdiTi9zyTv04zDMHjufs70lZ+fcnpD0XK
+ fbGZPRvv1L9hTpQSVW7OWTidh2mfBL52mp3OSEc+2obNPfUmaKsEsvjXjthG+HuOh54h
+ 8MmegbrMckFVwykfIOUQCWUavyNkW1ruaum08ml5cyveXcvh0C8OQfyA6bc8QSRXZfnv
+ /J6M2tFD8LvpS9F0J2HXhO4tltNoLmsut9luF2lgVLFNAzO0knjgBJJo3PeBWd3g7AEw
+ 6nYBjRZmb3PU0hKs21uxrYjnyOZnhCkY43ShdW0J2Qo15jjJP21obV92zz+HxoF4t3vb
+ nYuw==
+X-Gm-Message-State: AOAM531NbcBIt15eHILA2CY6t8S8DeWVa9q9Fl6B+vQia4nicO8WSTEq
+ RjKNsDg6/tnELiTL4tk/J9W91lAy5NG3t0hjPKg=
+X-Google-Smtp-Source: ABdhPJxZ3GQdFZsnwGr4ysExj1rkCNjJYj/LMNp5Bwoi5+JuhzOdItSjtD8zznsMplgRv8d3nnp0PfgcVGSLfl6UM94=
+X-Received: by 2002:a67:3c2:: with SMTP id 185mr14494278vsd.42.1626462598688; 
+ Fri, 16 Jul 2021 12:09:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <d430f9c06d6691fe8a98f923cdb7ca13772834b1.1626262043.git.geert+renesas@glider.be>
+References: <d430f9c06d6691fe8a98f923cdb7ca13772834b1.1626262043.git.geert+renesas@glider.be>
+ <20210716180253.GA3684196@robh.at.kernel.org>
+In-Reply-To: <20210716180253.GA3684196@robh.at.kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 16 Jul 2021 21:09:47 +0200
+Message-ID: <CAMuHMdWXCJd0NzH4km+oXBziBct31DCb53fmk3RhAk-+29Zkew@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: memory: renesas,
+ rpc-if: Miscellaneous improvements
+To: Rob Herring <robh@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>, 
+ Sergei Shtylyov <sergei.shtylyov@gmail.com>, 
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, 
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>, 
+ MTD Maling List <linux-mtd@lists.infradead.org>, 
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210716_110256_923911_D3C814CC 
-X-CRM114-Status: GOOD (  14.74  )
+X-CRM114-CacheID: sfid-20210716_121004_190646_DED25604 
+X-CRM114-Status: GOOD (  23.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,66 +91,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jul 14, 2021 at 01:30:13PM +0200, Geert Uytterhoeven wrote:
->   - Add missing "#{address,size}-cells",
->   - Fix rejection of legitimate flash subnodes containing multiple
->     compatible values,
->   - Add missing list of required properties.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->  .../memory-controllers/renesas,rpc-if.yaml    | 23 ++++++++++++++++---
->  1 file changed, 20 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml b/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
-> index 990489fdd2ac33fe..c0d899a2305361b1 100644
-> --- a/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
-> +++ b/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
-> @@ -56,17 +56,34 @@ properties:
->    resets:
->      maxItems: 1
->  
-> +  '#address-cells':
-> +    const: 1
-> +
-> +  '#size-cells':
-> +    const: 0
-> +
+Hi Rob,
 
-spi-controller.yaml already defines this.
+On Fri, Jul 16, 2021 at 8:02 PM Rob Herring <robh@kernel.org> wrote:
+> On Wed, Jul 14, 2021 at 01:30:13PM +0200, Geert Uytterhoeven wrote:
+> >   - Add missing "#{address,size}-cells",
+> >   - Fix rejection of legitimate flash subnodes containing multiple
+> >     compatible values,
+> >   - Add missing list of required properties.
+> >
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > ---
+> >  .../memory-controllers/renesas,rpc-if.yaml    | 23 ++++++++++++++++---
+> >  1 file changed, 20 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml b/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
+> > index 990489fdd2ac33fe..c0d899a2305361b1 100644
+> > --- a/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
+> > +++ b/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
+> > @@ -56,17 +56,34 @@ properties:
+> >    resets:
+> >      maxItems: 1
+> >
+> > +  '#address-cells':
+> > +    const: 1
+> > +
+> > +  '#size-cells':
+> > +    const: 0
+> > +
+>
+> spi-controller.yaml already defines this.
 
->  patternProperties:
->    "flash@[0-9a-f]+$":
->      type: object
->      properties:
->        compatible:
-> -        enum:
-> -          - cfi-flash
-> -          - jedec,spi-nor
-> +        contains:
-> +          enum:
-> +            - cfi-flash
-> +            - jedec,spi-nor
->  
->  unevaluatedProperties: false
->  
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - clocks
-> +  - power-domains
-> +  - resets
-> +  - '#address-cells'
-> +  - '#size-cells'
-> +
->  examples:
->    - |
->      #include <dt-bindings/clock/renesas-cpg-mssr.h>
-> -- 
-> 2.25.1
-> 
-> 
+spi-controller.yaml says '#address-cells' must be 0 or 1.  As RPC-IF does
+SPI master only, it should be 1.
+
+Don't remember why I added the '#size-cells' too. Perhaps for symmetry?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
