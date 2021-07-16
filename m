@@ -2,79 +2,71 @@ Return-Path: <SRS0=I5Ka=MI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5452CC12002
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jul 2021 19:11:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83517C12002
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jul 2021 20:50:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0A3F9613D4
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jul 2021 19:11:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A3F9613D4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	by mail.kernel.org (Postfix) with ESMTPS id 3C637613D8
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jul 2021 20:50:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C637613D8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mentor.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Giwh9gXvF/VwJNxJ0wj+KUnKmDkrp5OLCemsPof84W8=; b=DHkXo43Qq/JMv+
-	Lbc39B+w96x1fBaovmqjPQfB9nEwMFvBhpX6UfgeB5iI+9F4BG2ZP8ZcLnJ0K41xU7KsUcFIkRIq5
-	h4lyF93Z2vyMTY/0Q4BLeVBwUoElWvSAebTQcHn3cx1zY4pDhCyzqMe8fmm7IGHa3wTy1+7v1MFw0
-	380C8TFpK3yoCdmyXNoe8B8fmY94zUPqW/vgMjtId/eJRKAdv+0IrCuXg0dpW7YDYmU3R/10STzZ8
-	0R+65m8ZVK9kZkTIIxjREBEbo8JBXvvGNXddsD4T+HMKMJ+RVarTj9tc7ExXxeU7lHzaabqC9qNz+
-	iBZtP9XwkNmLopOQnuwQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=6uGW3otHqw4QIIyCQ4T1VeQivvvTAnLamL+cN8izFUI=; b=ys6Z4EFbtI8uSU
+	3Z5vJJ91yXnPC+a2STkdylhfuOvc2yZr+vTJ7J1nI5zQ4ASTXqkM8lIGRzerW6drMrocB3qPbjd/O
+	BM0g1sDzYwDrcjcUy40zZrvgXbj9bQRiD83PQ9tnsQ3LUwwARJF3pevBeTuSiv8ocbBmvb13QW6j7
+	5kT+gptHncwXv8XyQuySuK8ZRI+tJHMjzOJLRs+z8M7Pr7s7jfsUkwT/ZEyNT139ITJtS99u2eF/7
+	w4cZECSQZsqSlQ7dY2jfIUmvBDxijF+TCNr0K1FVyYPTbpTcPmKpmiQUNOiKahYAfYqQfap+omIEG
+	CCRWOVBYkUTg50KSTcMw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m4TDq-0056Oe-NF; Fri, 16 Jul 2021 19:10:06 +0000
-Received: from mail-vs1-f49.google.com ([209.85.217.49])
+	id 1m4UmR-005EiQ-Sb; Fri, 16 Jul 2021 20:49:55 +0000
+Received: from esa3.mentor.iphmx.com ([68.232.137.180])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m4TDo-0056NR-3S
- for linux-mtd@lists.infradead.org; Fri, 16 Jul 2021 19:10:05 +0000
-Received: by mail-vs1-f49.google.com with SMTP id a22so5699073vso.1
- for <linux-mtd@lists.infradead.org>; Fri, 16 Jul 2021 12:09:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=ehJwWdmJnEqOFrEyqslwmNH6+ZDemUpg9Q/4BttkqCY=;
- b=o1pBy/A9FW5Soh28USejOlweyB0ywuioqqdiTi9zyTv04zDMHjufs70lZ+fcnpD0XK
- fbGZPRvv1L9hTpQSVW7OWTidh2mfBL52mp3OSEc+2obNPfUmaKsEsvjXjthG+HuOh54h
- 8MmegbrMckFVwykfIOUQCWUavyNkW1ruaum08ml5cyveXcvh0C8OQfyA6bc8QSRXZfnv
- /J6M2tFD8LvpS9F0J2HXhO4tltNoLmsut9luF2lgVLFNAzO0knjgBJJo3PeBWd3g7AEw
- 6nYBjRZmb3PU0hKs21uxrYjnyOZnhCkY43ShdW0J2Qo15jjJP21obV92zz+HxoF4t3vb
- nYuw==
-X-Gm-Message-State: AOAM531NbcBIt15eHILA2CY6t8S8DeWVa9q9Fl6B+vQia4nicO8WSTEq
- RjKNsDg6/tnELiTL4tk/J9W91lAy5NG3t0hjPKg=
-X-Google-Smtp-Source: ABdhPJxZ3GQdFZsnwGr4ysExj1rkCNjJYj/LMNp5Bwoi5+JuhzOdItSjtD8zznsMplgRv8d3nnp0PfgcVGSLfl6UM94=
-X-Received: by 2002:a67:3c2:: with SMTP id 185mr14494278vsd.42.1626462598688; 
- Fri, 16 Jul 2021 12:09:58 -0700 (PDT)
+ id 1m4UmO-005Eho-DO
+ for linux-mtd@lists.infradead.org; Fri, 16 Jul 2021 20:49:54 +0000
+IronPort-SDR: B3hKGZa10j3Y+J/hNFYrERQKl5ZD68r7V+1E3NJQANkID0gYdmlR9ir4BvJKD/l4OgBWOtRYeS
+ 2fKhywdNIQuX0IpUdW2bXJ3xvmiwdcSD2y9tAPE0loNKI/uESVaSNU8hyQ7EgjJdTRVaybL5hp
+ el/Zld5C6YvcoFarVgqpcJnNpA9B0t05JKFUiZRtnfdDGNsn++bFxv8vNeQEh1fyI9PXb2M4rd
+ goLQ06Uxd1p/9Xt2YCI1jRf9UlDpAC7lu8mJDzwtBvWWIIFqG9CQfvyF5mNkt5W3s+pGZY9nGZ
+ 0KrKR6KyE8XfO83Z3HVWlQuM
+X-IronPort-AV: E=Sophos;i="5.84,245,1620720000"; d="scan'208";a="63615887"
+Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
+ by esa3.mentor.iphmx.com with ESMTP; 16 Jul 2021 12:49:49 -0800
+IronPort-SDR: 0LTvEaGOpdPEEWRO6+30U5xaO2Sm4vp//3nOGRfD7A4rotBp9QK2ds7YuSLHQpbBflUPM7gJri
+ YE+KevlY04a9vga5SFFby77GL9INzEzaGcm6APCnrX+SmjthJhRteGpYcIw7/hn/9zejxsLull
+ mI8eD7blGpaZzUGCYxf63FYtPXyZ+yjwQiwo74Q6dDGgCTop31fOan+VoeBeIcUFhxrU/rjxGw
+ PHqUjUA/dEQOgIAM+0BofCGSDHb80UeHuCNhC8iJxzmEVtFg3CatH+ueN5/gyabA2DLq/fYr4F
+ uJk=
+From: "George G. Davis" <george_davis@mentor.com>
+To: Vignesh Raghavendra <vigneshr@ti.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, "George G.
+ Davis" <george_davis@mentor.com>, Eugeniu Rosca <erosca@de.adit-jv.com>,
+ Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, "open list:HYPERBUS
+ SUPPORT" <linux-mtd@lists.infradead.org>, open list
+ <linux-kernel@vger.kernel.org>
+CC: "George G. Davis" <davis.george@siemens.com>
+Subject: [PATCH] mtd: hyperbus: rpc-if: fix bug in rpcif_hb_remove
+Date: Fri, 16 Jul 2021 16:49:35 -0400
+Message-ID: <20210716204935.25859-1-george_davis@mentor.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <d430f9c06d6691fe8a98f923cdb7ca13772834b1.1626262043.git.geert+renesas@glider.be>
- <20210716180253.GA3684196@robh.at.kernel.org>
-In-Reply-To: <20210716180253.GA3684196@robh.at.kernel.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 16 Jul 2021 21:09:47 +0200
-Message-ID: <CAMuHMdWXCJd0NzH4km+oXBziBct31DCb53fmk3RhAk-+29Zkew@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: memory: renesas,
- rpc-if: Miscellaneous improvements
-To: Rob Herring <robh@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>, 
- Sergei Shtylyov <sergei.shtylyov@gmail.com>, 
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, 
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>, 
- MTD Maling List <linux-mtd@lists.infradead.org>, 
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+X-ClientProxiedBy: SVR-ORW-MBX-07.mgc.mentorg.com (147.34.90.207) To
+ svr-orw-mbx-01.mgc.mentorg.com (147.34.90.201)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210716_121004_190646_DED25604 
-X-CRM114-Status: GOOD (  23.01  )
+X-CRM114-CacheID: sfid-20210716_134952_558800_A801BB7D 
+X-CRM114-Status: GOOD (  11.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,52 +83,93 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Rob,
+From: "George G. Davis" <davis.george@siemens.com>
 
-On Fri, Jul 16, 2021 at 8:02 PM Rob Herring <robh@kernel.org> wrote:
-> On Wed, Jul 14, 2021 at 01:30:13PM +0200, Geert Uytterhoeven wrote:
-> >   - Add missing "#{address,size}-cells",
-> >   - Fix rejection of legitimate flash subnodes containing multiple
-> >     compatible values,
-> >   - Add missing list of required properties.
-> >
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > ---
-> >  .../memory-controllers/renesas,rpc-if.yaml    | 23 ++++++++++++++++---
-> >  1 file changed, 20 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml b/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
-> > index 990489fdd2ac33fe..c0d899a2305361b1 100644
-> > --- a/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
-> > +++ b/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
-> > @@ -56,17 +56,34 @@ properties:
-> >    resets:
-> >      maxItems: 1
-> >
-> > +  '#address-cells':
-> > +    const: 1
-> > +
-> > +  '#size-cells':
-> > +    const: 0
-> > +
->
-> spi-controller.yaml already defines this.
+The following KASAN BUG is observed when testing the rpc-if driver on
+rcar-gen3:
 
-spi-controller.yaml says '#address-cells' must be 0 or 1.  As RPC-IF does
-SPI master only, it should be 1.
+root@rcar-gen3:~# modprobe -r rpc-if
+[  101.930146] ==================================================================
+[  101.937408] BUG: KASAN: slab-out-of-bounds in __lock_acquire+0x518/0x25d0
+[  101.944240] Read of size 8 at addr ffff0004c5be2750 by task modprobe/664
+[  101.950959]
+[  101.952466] CPU: 2 PID: 664 Comm: modprobe Not tainted 5.14.0-rc1-00342-g1a1464d7aa31 #1
+[  101.960578] Hardware name: Renesas H3ULCB board based on r8a77951 (DT)
+[  101.967120] Call trace:
+[  101.969580]  dump_backtrace+0x0/0x2c0
+[  101.973275]  show_stack+0x1c/0x30
+[  101.976616]  dump_stack_lvl+0x9c/0xd8
+[  101.980301]  print_address_description.constprop.0+0x74/0x2b8
+[  101.986071]  kasan_report+0x1f4/0x26c
+[  101.989757]  __asan_load8+0x98/0xd4
+[  101.993266]  __lock_acquire+0x518/0x25d0
+[  101.997215]  lock_acquire.part.0+0x18c/0x360
+[  102.001506]  lock_acquire+0x74/0x90
+[  102.005013]  _raw_spin_lock_irq+0x98/0x130
+[  102.009131]  __pm_runtime_disable+0x30/0x210
+[  102.013427]  rpcif_hb_remove+0x5c/0x70 [rpc_if]
+[  102.018001]  platform_remove+0x40/0x80
+[  102.021771]  __device_release_driver+0x234/0x350
+[  102.026412]  driver_detach+0x158/0x20c
+[  102.030179]  bus_remove_driver+0xa0/0x140
+[  102.034212]  driver_unregister+0x48/0x80
+[  102.038153]  platform_driver_unregister+0x18/0x24
+[  102.042879]  rpcif_platform_driver_exit+0x1c/0x34 [rpc_if]
+[  102.048400]  __arm64_sys_delete_module+0x210/0x310
+[  102.053212]  invoke_syscall+0x60/0x190
+[  102.056986]  el0_svc_common+0x12c/0x144
+[  102.060844]  do_el0_svc+0x88/0xac
+[  102.064181]  el0_svc+0x24/0x3c
+[  102.067257]  el0t_64_sync_handler+0x1a8/0x1b0
+[  102.071634]  el0t_64_sync+0x198/0x19c
+[  102.075315]
+[  102.076815] Allocated by task 628:
+[  102.080781]
+[  102.082280] Last potentially related work creation:
+[  102.087524]
+[  102.089022] The buggy address belongs to the object at ffff0004c5be2000
+[  102.089022]  which belongs to the cache kmalloc-2k of size 2048
+[  102.101555] The buggy address is located 1872 bytes inside of
+[  102.101555]  2048-byte region [ffff0004c5be2000, ffff0004c5be2800)
+[  102.113486] The buggy address belongs to the page:
+[  102.118409]
+[  102.119908] Memory state around the buggy address:
+[  102.124711]  ffff0004c5be2600: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[  102.131947]  ffff0004c5be2680: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[  102.139181] >ffff0004c5be2700: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[  102.146412]                                                  ^
+[  102.152257]  ffff0004c5be2780: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[  102.159491]  ffff0004c5be2800: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[  102.166723] ==================================================================
 
-Don't remember why I added the '#size-cells' too. Perhaps for symmetry?
+The above bug is caused by use of the wrong pointer in the
+rpcif_disable_rpm() call. Fix the bug by using the correct pointer.
 
-Gr{oetje,eeting}s,
+Fixes: e806241e03b7 ("mtd: hyperbus: add Renesas RPC-IF driver")
+Signed-off-by: George G. Davis <davis.george@siemens.com>
+---
+ drivers/mtd/hyperbus/rpc-if.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-                        Geert
-
+diff --git a/drivers/mtd/hyperbus/rpc-if.c b/drivers/mtd/hyperbus/rpc-if.c
+index ecb050ba95cd..2806024b50ac 100644
+--- a/drivers/mtd/hyperbus/rpc-if.c
++++ b/drivers/mtd/hyperbus/rpc-if.c
+@@ -150,9 +150,9 @@ static int rpcif_hb_remove(struct platform_device *pdev)
+ {
+ 	struct rpcif_hyperbus *hyperbus = platform_get_drvdata(pdev);
+ 	int error = hyperbus_unregister_device(&hyperbus->hbdev);
+-	struct rpcif *rpc = dev_get_drvdata(pdev->dev.parent);
+ 
+-	rpcif_disable_rpm(rpc);
++	rpcif_disable_rpm(&hyperbus->rpc);
++
+ 	return error;
+ }
+ 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.17.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
