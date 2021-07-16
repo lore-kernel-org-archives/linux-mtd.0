@@ -2,99 +2,80 @@ Return-Path: <SRS0=I5Ka=MI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 071DDC07E95
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jul 2021 13:18:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04A7CC636CA
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jul 2021 14:48:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B56AA613F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jul 2021 13:18:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B56AA613F5
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=landley.net
+	by mail.kernel.org (Postfix) with ESMTPS id B32D2613EE
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jul 2021 14:48:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B32D2613EE
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gorani.run
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=GjZUC+H8yTHhESdT3uQsHMCvfpqsz045n3zloY/IRdw=; b=BFjHMg8JVLy1TFrVy5F17p3Nwm
-	aRLw4b92FhMueCP+VBGax0ZIDEUS2puIFIglw9ChGDBdmLeBsHXF25VVaHYZWTbmwk366m+GlezOm
-	RPPI5NaWsi1YSvOmG3H3+bc0LZ//O3JnYudA15GQq9br2PwjGTEMRL4gxfFZ0R/I7sQnlroV+sjmj
-	SxTJN8N9DhCUlnSOUZoZV1YdYUqqgQfaxc3BvLtu9Ev6MaQaQtGsRafK9KG5QJ8oizClK+nDHBgau
-	6wbKLjE7E6/kcmZWWbrbS4NH7Nb80NzQa6g94xvwfZsr7pjRoqdF2BwCJLe+MjAz2glD45qHvhJPe
-	SxXHCRkg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:Cc:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Uj0E2t7U88K7Tg4m9E7ojmWEE32Axhfv9kNQwnA6FjU=; b=MHQz8mEEtsoLd5xVpy4os6UJgV
+	FNeZNeX3C94O+V4CCSbl3ccc1IELBHCNDhxQOdnmDZJ7cMhncH0uUn0Q6NDyPsGGxRxml0N56vFd5
+	2DOuUvDgphJUcHnMlchWtaTHKfT+3/R0+EHMx+xVmpguN6/lWn2uDc5s0JoOKZrFx6B+eBYmHz3pE
+	hTO63X2LDJpG32Pb3jDJTNFdpXduWpedq8Pop6YsJIThz92EO4qqo0oFlskOqzxj9sZNCX5PrOVsv
+	kDow1Ufx9yLaK3DXJQ6w4Dr4TWugO1gIs0tFj3Nam+OQSLJOM2WjfvIFxDQC+SCN6qs9bGO7l692f
+	O8fheGvQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m4NiN-004RD3-C6; Fri, 16 Jul 2021 13:17:15 +0000
-Received: from mail-oi1-x232.google.com ([2607:f8b0:4864:20::232])
+	id 1m4P8I-004dQq-MH; Fri, 16 Jul 2021 14:48:06 +0000
+Received: from mout-p-103.mailbox.org ([2001:67c:2050::465:103])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m4NiJ-004RBd-Sn
- for linux-mtd@lists.infradead.org; Fri, 16 Jul 2021 13:17:13 +0000
-Received: by mail-oi1-x232.google.com with SMTP id t25so10797154oiw.13
- for <linux-mtd@lists.infradead.org>; Fri, 16 Jul 2021 06:17:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=landley-net.20150623.gappssmtp.com; s=20150623;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=gS9kOJpcGK76eRo5Aofr06uYyb4BuGzYuKkE7nL44x8=;
- b=GrYNadcR5amCn2iDHt4hMO2O2LQIQzTsyizX7WVUE9JxK3q7CCJNaimFjmWm10aBwj
- WVSUXw/xBLVkWh7fNyh8PHc74VAYtjeMna7Dm0NdlClt8x0vFU7u7ydFA/lzjmQ3UYYt
- BPotPlxKSql8X2+bKqRqVE9zlfM/wF7hX8O7BX/XyMxsGFrdAC2nNjCigRJBNXCq7agO
- 0ro8a/61pJCVPZNZ2IbpVNS8BN3KyHWJHjNu1YEGIlxDlv/hmHG/nh+ldkrjcCpmBhb5
- ySMyCdQegMuFWjFljwohdZVvr5kngrY0h7nINLfiusJjvrg+2bz16C7SF5gHrWRKDpBA
- UOFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=gS9kOJpcGK76eRo5Aofr06uYyb4BuGzYuKkE7nL44x8=;
- b=JZW/nE+BPfHWqKvOh0mONlF1edYtzizPl2VC1v0RPa6Mk8TBJg/8dJIGoRH2HA58yo
- XjkFJDgY/bKndf1+l7qmNoO/DgdDS1HqLYAf9DRM4IoE7otysr9U68B067oYUrUAUmmE
- A4pU/FsHuUwZzXcNKcZhQzEALacfVLsu/tp950MK/36GDd7Axpkvbtsqn6P4W/e6jWJQ
- E9QZOdOolsYllkDyLrk1cgHDLMWPeqqpNtvVqacaIZM2YrSZLJS+H4ln3ezXcARGGGiN
- vxyCBiGsYVctzT6Fp1ARRLhZNFID7vKHNQEcwxkOgN3LsigwLqx11drVChXQ0kwgVdme
- nX4g==
-X-Gm-Message-State: AOAM533rxLh6MzL0eD+mX4SoBROYBaoy/ePzosdwbnnYqMHVwA22xryh
- 0qzixhMzcxbKalS0znzWpLnK8A==
-X-Google-Smtp-Source: ABdhPJyCnbfm9K3k3TkPCw3E0oHuQpDTPd9rqx/ncyn2f8DYEnq9d+jlXtztU1J0SjkpBvc9pLN8Ig==
-X-Received: by 2002:a05:6808:68f:: with SMTP id
- k15mr12079068oig.58.1626441429627; 
- Fri, 16 Jul 2021 06:17:09 -0700 (PDT)
-Received: from ?IPv6:2607:fb90:e658:f352:6680:99ff:fe6f:cb54?
- ([2607:fb90:e658:f352:6680:99ff:fe6f:cb54])
- by smtp.gmail.com with ESMTPSA id a7sm612997oti.47.2021.07.16.06.17.08
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 16 Jul 2021 06:17:08 -0700 (PDT)
-Subject: Re: [PATCH] mtd: fix size in mtd_info_user to support 64-bit
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Miaohe Lin <linmiaohe@huawei.com>
-Cc: richard@nod.at, vigneshr@ti.com, David.Woodhouse@intel.com,
- Artem.Bityutskiy@nokia.com, ext-adrian.hunter@nokia.com,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linfeilong@huawei.com
-References: <20210708131359.21591-1-linmiaohe@huawei.com>
- <20210716010224.44582046@xps13>
- <95e3d455-ccb1-0e22-ee83-78dc6ad8aab1@huawei.com>
- <20210716114808.246e92ba@xps13>
-From: Rob Landley <rob@landley.net>
-Message-ID: <f7f55c5e-f6b2-542c-66d2-20f4d88bf669@landley.net>
-Date: Fri, 16 Jul 2021 08:34:45 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ id 1m4P8F-004dOp-2v
+ for linux-mtd@lists.infradead.org; Fri, 16 Jul 2021 14:48:05 +0000
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest
+ SHA256) (No client certificate requested)
+ by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4GRDcb0slLzQk3W;
+ Fri, 16 Jul 2021 16:47:59 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gorani.run; s=MBO0001; 
+ t=1626446877;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=I+nNtDaQAd1eHbVp0NEslFE7HmmdwK9diT4/RSHiyTw=;
+ b=iLTbso4uOmpH7h1+fKe6ufkN/fFZB7MWEaT5OjlBmMvvKOf/syPwWCJug5+L41AaVwpV75
+ 3YoLQ/BHjth91SM7MjPUXFRnLMppDsr/MopagtTl6EHHQ4Sa+1EGaXtslCdKXN+fB9toiS
+ pViLz5/1nqoEaaeGDvOIDWoixuB43SVZaAS7DchQ7c2I2OtRj5NjJfN8qVY/o0fzBHtmMJ
+ 81zcmXOv/ia1EgwTSai5qOsaxiTpLtvSpJUdg5/SXLAo4PZf4C1Eve1hFDUQYCAX+5C4Mx
+ X0BKyb6NL7wcPQ2O5gRpTyEKpShsLRHZL7oND0bxhontRr5UEQrcVZ7pwbb8qg==
+Received: from smtp2.mailbox.org ([80.241.60.241])
+ by spamfilter03.heinlein-hosting.de (spamfilter03.heinlein-hosting.de
+ [80.241.56.117]) (amavisd-new, port 10030)
+ with ESMTP id Ft2T4Dgia_dB; Fri, 16 Jul 2021 16:47:52 +0200 (CEST)
+Subject: Re: [PATCH] mtd: spi-nor: esmt: Add support for F25L16PA
+To: Michael Walle <michael@walle.cc>, Jihoon Han <rapid_renard@renard.ga>
+Cc: linux-mtd@lists.infradead.org, tudor.ambarus@microchip.com,
+ p.yadav@ti.com, miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
+References: <20210630175446.17680-1-rapid_renard@renard.ga>
+ <c5027b34facdb4fdc21ac89cf9eb50fa@walle.cc>
+From: Sungbo Eo <mans0n@gorani.run>
+Message-ID: <6529409a-7ede-97a1-4277-616422afc874@gorani.run>
+Date: Fri, 16 Jul 2021 23:47:45 +0900
 MIME-Version: 1.0
-In-Reply-To: <20210716114808.246e92ba@xps13>
+In-Reply-To: <c5027b34facdb4fdc21ac89cf9eb50fa@walle.cc>
 Content-Language: en-US
+X-Rspamd-Queue-Id: 8653A17F3
+X-Rspamd-UID: 2cf602
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210716_061712_031844_CC7A38B3 
-X-CRM114-Status: GOOD (  13.80  )
+X-CRM114-CacheID: sfid-20210716_074803_369141_20F700E2 
+X-CRM114-Status: GOOD (  18.33  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,51 +87,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 7/16/21 4:48 AM, Miquel Raynal wrote:
-> Hi Miaohe,
-> 
-> Miaohe Lin <linmiaohe@huawei.com> wrote on Fri, 16 Jul 2021 09:42:19
-> +0800:
-> 
->> On 2021/7/16 7:02, Miquel Raynal wrote:
->> > Hi Miaohe,
->> > 
->> > Miaohe Lin <linmiaohe@huawei.com> wrote on Thu, 8 Jul 2021 21:13:59
->> > +0800:
->> >   
->> >> From: Feilong Lin <linfeilong@huawei.com>
->> >>
->> >> The size in struct mtd_info_user is 32-bit, which will cause errors
->> >> when obtaining the size of large-capacity MTD devices, such as TLC
->> >> NAND FLASH-2048Gb.  
->> > 
->> > Besides the fact that such devices are far from being supported by the
->> > Linux kernel, this change would basically break userspace, it cannot
->> > enter as-is...
->> >   
->> 
->> I see. Many thanks for your reply! We're working with these large-capacity
->> MTD devices now, any suggestion to work around this?
-> 
-> The only way is to create a second UAPI.
-
-Twelve years ago a patch was submitted to add a 64 bit MTD api:
-
-  https://lwn.net/Articles/326418/
-
-But for some reason they only merged 64 bit erase:
-
-  https://github.com/torvalds/linux/commit/0dc54e9f33e2
-
-But NOT the rest of the 64 bit mtd API in the same patch. I've never understood why.
-
-Rob
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMjAyMS0wNy0wMyAwMDoxMSwgTWljaGFlbCBXYWxsZSB3cm90ZToKPiBIaSwKPiAKPiBBbSAy
+MDIxLTA2LTMwIDE5OjU0LCBzY2hyaWViIEppaG9vbiBIYW46Cj4+IEFkZCBzdXBwb3J0IGZvciBG
+MjVMMTZQQSB3aGljaCBpcyAyTUIgU1BJLU5PUiBDaGlwIG1hbnVmYWN0dXJlZCBieSBFU01ULgo+
+Pgo+PiBUZXN0ZWQgb24gUXVhbGNvbW0gUUNBOTU1NyBiYXNlZCBEVzAyLTQxMkggcm91dGVyLgo+
+Pgo+PiBEYXRhc2hlZXQ6Cj4+IGh0dHBzOi8vd3d3LmVzbXQuY29tLnR3L3VwbG9hZC9wZGYvRVNN
+VC9kYXRhc2hlZXRzL0YyNUwxNlBBXzEoMlMpLnBkZgo+IAo+IFBsZWFzZSBwdXQgaXQgaW50byBv
+bmUgbGluZSBhbmQganVzdCBiZWZvcmUgeW91ciBTaWduZWQtb2ZmLWJ5IHNvIGl0Cj4gd2lsbCBi
+ZSB0YWcuCj4gCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IEppaG9vbiBIYW4gPHJhcGlkX3JlbmFyZEBy
+ZW5hcmQuZ2E+Cj4+IC0tLQo+PiDCoGRyaXZlcnMvbXRkL3NwaS1ub3IvZXNtdC5jIHwgMiArKwo+
+PiDCoDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKykKPj4KPj4gZGlmZiAtLWdpdCBhL2Ry
+aXZlcnMvbXRkL3NwaS1ub3IvZXNtdC5jIGIvZHJpdmVycy9tdGQvc3BpLW5vci9lc210LmMKPj4g
+aW5kZXggY2ZjOTIxOGMxMDUzLi4yZWJlZWNkNmM5NTcgMTAwNjQ0Cj4+IC0tLSBhL2RyaXZlcnMv
+bXRkL3NwaS1ub3IvZXNtdC5jCj4+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvZXNtdC5jCj4+
+IEBAIC0xMCw2ICsxMCw4IEBACj4+Cj4+IMKgc3RhdGljIGNvbnN0IHN0cnVjdCBmbGFzaF9pbmZv
+IGVzbXRfcGFydHNbXSA9IHsKPj4gwqDCoMKgwqAgLyogRVNNVCAqLwo+PiArwqDCoMKgIHsgImYy
+NWwxNnBhIiwgSU5GTygweDhjMjExNSwgMCwgNjQgKiAxMDI0LCAzMiwKPj4gK8KgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgU0VDVF80SyB8IFNQSV9OT1JfSEFTX0xPQ0spIH0sCj4+IMKgwqDC
+oMKgIHsgImYyNWwzMnBhIiwgSU5GTygweDhjMjAxNiwgMCwgNjQgKiAxMDI0LCA2NCwKPj4gwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFNFQ1RfNEsgfCBTUElfTk9SX0hBU19MT0NLIHwg
+U1BJX05PUl9TV1BfSVNfVk9MQVRJTEUpIH0sCj4+IMKgwqDCoMKgIHsgImYyNWwzMnFhIiwgSU5G
+TygweDhjNDExNiwgMCwgNjQgKiAxMDI0LCA2NCwKPiAKPiBUaGVyZSBpcyBhIEYyNUwxNlBBIHdo
+aWNoIGhhcyBhIGRpZmZlcmVudCBJRCAoMHg4YzIwMTUpLiBTbyB3ZSBoYXZlIHRvIAo+IGFncmVl
+Cj4gb24gYSBkaWZmZXJlbnQgbmFtZS4KPiAKPiBTZWUgYWxzbwo+IGh0dHBzOi8vbG9yZS5rZXJu
+ZWwub3JnL2xpbnV4LW10ZC8yMDIxMDYyMDA4NTYzOS4xNDM2OTQtMS1tYW5zMG5AZ29yYW5pLnJ1
+bi8gCgpIaSwKClNvLi4uY2FuIEkgYXNzdW1lIG15IGYyNWwzMnFhIHBhdGNoIGlzIGFjY2VwdGVk
+IG9yIG5vdD8gSSBoYXZlbid0IGdvdCAKYW55IGV4cGxpY2l0IGZlZWRiYWNrIG9uIGl0LgoKSSB0
+aG91Z2h0IGl0IGNvdWxkIGdvIGludG8gNS4xNC4uLmJ1dCBhcHBhcmVudGx5IG5vdC4KCj4gCj4g
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
