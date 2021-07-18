@@ -1,92 +1,83 @@
-Return-Path: <SRS0=WLwv=MJ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=mnyj=MK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80669C636C9
-	for <linux-mtd@archiver.kernel.org>; Sat, 17 Jul 2021 10:10:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1FDAC636C9
+	for <linux-mtd@archiver.kernel.org>; Sun, 18 Jul 2021 00:42:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4376F611AD
-	for <linux-mtd@archiver.kernel.org>; Sat, 17 Jul 2021 10:10:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4376F611AD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id A11AA61153
+	for <linux-mtd@archiver.kernel.org>; Sun, 18 Jul 2021 00:42:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A11AA61153
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=0hP3k4jJvcABHDLOqBQeGGNr/qPmPa4o+UAatn/Lrm8=; b=wXhEF1Vg3NZHzH
-	kfAjcDVCyBV2dNYdphAgf5sjMLYMrboVE2rkMWuPDl7MoFeOs5fwCTPpGv1c86j1saPI2Egf8MhkR
-	2dJX7PzFqPlOlAnMOu3rZY3A1cg/Q8p0VEy547Rtf1xqIm7brKXJARNxthur3H2heXhsCdarVSRUY
-	IIK5idgcAhIIHa7hcT4dU35f6Y5wTlvAjNhBEj3Li+VcE3DB66jtjFaOUpIF/2bLblpr1pYO8+gnI
-	2pequL3PjAFW3DzAxf5kaCOLSvZMAcljs6b/Xqr1mdttsg5KHKZMZ5Jujxjl6BN0FTGJu2Y/8sBrD
-	v/N9RJjuD8W4cDHX1y8A==;
+	List-Owner; bh=ryFf+uZUFACj6Vpnn7rupT300epuPfs8Lg0SVZdRqyg=; b=nVu2F87pKtnAsG
+	z2uTak0lz0BqL5I3GcQFB2PU92GelkJNT5mzdJJf/ROdAUUjfJrigIlQSwnyzS7SKBch9frh5JHSt
+	a41l44py1+JcCtHL6I7phPdnjSvRQW7jzk/ZocIRtZup2rM06GsoTiX3rJZRd0uppKS+1w6U4SIWp
+	FogyrAmZecyf4kFpM3pbffZ0unF3859PteJJnKxqq0wHcOm4ffPc9oZk/Ushi5jT4cWfM20qzJoOV
+	0ZV88fwxpwV5XL2+of2ulBFA5+hbysz5rsY6v6yzbJHpsa0++7MMk1vperUkkgCeh+NI7XtqWPLs6
+	OPO18i/mC1f0GqNWRE+g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m4hGH-006S4H-33; Sat, 17 Jul 2021 10:09:33 +0000
-Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
+	id 1m4usJ-007EVY-0v; Sun, 18 Jul 2021 00:41:43 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m4hGE-006S3y-Go
- for linux-mtd@lists.infradead.org; Sat, 17 Jul 2021 10:09:31 +0000
-Received: by mail-pl1-x630.google.com with SMTP id h1so6602148plf.6
- for <linux-mtd@lists.infradead.org>; Sat, 17 Jul 2021 03:09:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=83GbSGpZBfJHGXq15Yg2ngQ7/7/5XwVRHY0b6SDhljI=;
- b=uyXB+/16nvqrz8OL63K/aowqr/Mq1BwOMmDr72vNEAEScOUTTnm6SSGvF+7rT2Dgcc
- KAaxegtG0c2E5MqZqFgrQi7mXbG5gTKdIXV1ewE+kqwHm3m/31T6RjUeyzLSEfrgQGe5
- oU2E1Ke4aSeZ7P9uNVPxWhRRkcmgVn5AOjrOhRcbVyzcHmjyuipoRoWPK2E2yeYBVvJ/
- etVdo8RG4HSWZRau145JybWep6I7xLI1pw+NdAK3m+Wtt6J7Rp4CkKv9NC05XatnC9Xx
- h9x+XMC3KoTFBdcQQJmkO8uX/FzxE6AUsCeCST/DmMtSIFch2SlP5QpbALz0/ExX+yo7
- feOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=83GbSGpZBfJHGXq15Yg2ngQ7/7/5XwVRHY0b6SDhljI=;
- b=rDuYYMb2YqlsH/4TDi/pajeuqY9NnaRgB4fsmbzN1ubjtP/6uBbeJyQRYFmZWc/JRE
- CIxqXjFvI8Ik8VB2NyBHedb+qoElKI4WITrZzgn3EC80kVhXoJD7PwvJTbqQdm8uWfk6
- 1gg/RC0xzS5XEZJRxPX/2dhHNDAjW0LmU23DJL9YpR0i3mGBEZUxojORgiBHEREDE3BS
- 0fMiHF3xNMDSQHSnLQZ1dr1Gj6BIK3T74n3PJFw2rmov2IV4cBfMexjV7GnOIqWUIywy
- f5LZOANYnCnXUwOtbymL+ZRz/S/3cWSWAGdA8eZ9RynxvYFA04DWD3aFlNgS+RuzTluE
- xxtg==
-X-Gm-Message-State: AOAM533nqxCd3vrPRhdjD91qN6a/U/jCdgbMwoykjhwr9MHEOHIMij8W
- xJ3m+5nJcnscLL1n3lw/xkc=
-X-Google-Smtp-Source: ABdhPJzLcYMp6ta5QAnBuXu8Uqc4NgXwYejLU9B7Rfgy3g02aqr/l8DR6Z3DASRCSSw/6zqZKTBXUQ==
-X-Received: by 2002:a17:902:9a8c:b029:113:d891:2eaf with SMTP id
- w12-20020a1709029a8cb0290113d8912eafmr11286452plp.61.1626516568517; 
- Sat, 17 Jul 2021 03:09:28 -0700 (PDT)
-Received: from localhost.localdomain ([118.200.190.93])
- by smtp.gmail.com with ESMTPSA id p24sm13487926pfh.17.2021.07.17.03.09.25
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 17 Jul 2021 03:09:27 -0700 (PDT)
-From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com
-Cc: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
- linux-kernel-mentees@lists.linuxfoundation.org,
- Hillf Danton <hdanton@sina.com>
-Subject: [PATCH] mtd: fix lock hierarchy in deregister_mtd_blktrans
-Date: Sat, 17 Jul 2021 18:07:19 +0800
-Message-Id: <20210717100719.728829-1-desmondcheongzx@gmail.com>
-X-Mailer: git-send-email 2.25.1
+ id 1m4usG-007EVC-G4
+ for linux-mtd@lists.infradead.org; Sun, 18 Jul 2021 00:41:42 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 16I0fVOg068128;
+ Sat, 17 Jul 2021 19:41:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1626568891;
+ bh=PiqmPCh8Le/+a2lKDpBMpR+4Ut+G4awxjwCJtRnmK5E=;
+ h=From:To:CC:Subject:Date;
+ b=K1k82Cex/RiKNWYOnJntgl++ZbNBWeZMMbxK7/u3336HMFYgpktTW4Pyltl20yGyi
+ sg4hxH5RMaS1WEiN8yka1nTXNxhfCtrr1hpDQItvfjq09FpE92m9LiGJdbZ16Q0ij2
+ OVwmiXCdOaZ0zxcL9raTUkAcGhlmNqpqpoQMy3b0=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 16I0fVl2004765
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Sat, 17 Jul 2021 19:41:31 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sat, 17
+ Jul 2021 19:41:31 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Sat, 17 Jul 2021 19:41:31 -0500
+Received: from LT5CD112GSQZ.dhcp.ti.com (ileax41-snat.itg.ti.com
+ [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 16I0fQW1038673;
+ Sat, 17 Jul 2021 19:41:27 -0500
+From: Apurva Nandan <a-nandan@ti.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
+ <robh+dt@kernel.org>, <linux-mtd@lists.infradead.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>, Apurva
+ Nandan <a-nandan@ti.com>
+Subject: [PATCH] dt-bindings: mtd: spi-nand: Convert to DT schema format
+Date: Sun, 18 Jul 2021 00:41:25 +0000
+Message-ID: <20210718004125.733-1-a-nandan@ti.com>
+X-Mailer: git-send-email 2.31.1.windows.1
 MIME-Version: 1.0
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210717_030930_598958_B4D9493D 
-X-CRM114-Status: GOOD (  10.42  )
+X-CRM114-CacheID: sfid-20210717_174140_724416_D7E0C421 
+X-CRM114-Status: GOOD (  13.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,44 +94,109 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There is a lock hierarchy of major_names_lock --> mtd_table_mutex. One
-existing chain is as follows:
+Convert spi-nand.txt binding to YAML format with an added example.
 
-1. major_names_lock --> loop_ctl_mutex (when blk_request_module calls
-loop_probe)
-
-2. loop_ctl_mutex --> bdev->bd_mutex (when loop_control_ioctl calls
-loop_remove, which then calls del_gendisk)
-
-3. bdev->bd_mutex --> mtd_table_mutex (when blkdev_get_by_dev calls
-__blkdev_get, which then calls blktrans_open)
-
-Since unregister_blkdev grabs the major_names_lock, we need to call it
-outside the critical section for mtd_table_mutex, otherwise we invert
-the lock hierarchy.
-
-Reported-by: Hillf Danton <hdanton@sina.com>
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Signed-off-by: Apurva Nandan <a-nandan@ti.com>
 ---
- drivers/mtd/mtd_blkdevs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../devicetree/bindings/mtd/spi-nand.txt      |  5 --
+ .../devicetree/bindings/mtd/spi-nand.yaml     | 74 +++++++++++++++++++
+ 2 files changed, 74 insertions(+), 5 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
 
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index 7d26cfe24d05..87e26788ef60 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -563,8 +563,8 @@ int deregister_mtd_blktrans(struct mtd_blktrans_ops *tr)
- 	list_for_each_entry_safe(dev, next, &tr->devs, list)
- 		tr->remove_dev(dev);
- 
--	unregister_blkdev(tr->major, tr->name);
- 	mutex_unlock(&mtd_table_mutex);
-+	unregister_blkdev(tr->major, tr->name);
- 
- 	BUG_ON(!list_empty(&tr->devs));
- 	return 0;
+diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.txt b/Documentation/devicetree/bindings/mtd/spi-nand.txt
+deleted file mode 100644
+index 8b51f3b6d55c..000000000000
+--- a/Documentation/devicetree/bindings/mtd/spi-nand.txt
++++ /dev/null
+@@ -1,5 +0,0 @@
+-SPI NAND flash
+-
+-Required properties:
+-- compatible: should be "spi-nand"
+-- reg: should encode the chip-select line used to access the NAND chip
+diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.yaml b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
+new file mode 100644
+index 000000000000..366b86e1b19c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
+@@ -0,0 +1,74 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/spi-nand.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: SPI NAND flash
++
++maintainers:
++  - Apurva Nandan <a-nandan@ti.com>
++
++allOf:
++  - $ref: "mtd.yaml#"
++
++properties:
++  compatible:
++    oneOf:
++      - const: spi-nand
++
++  reg:
++    items:
++      description:
++        should encode the chip-select line used to access the NAND chip
++
++  spi-max-frequency: true
++  spi-rx-bus-width: true
++  spi-tx-bus-width: true
++
++  partitions:
++    type: object
++
++  '#address-cells': true
++  '#size-cells': true
++
++patternProperties:
++  # Note: use 'partitions' node for new users
++  '^partition@':
++    type: object
++
++  "^otp(-[0-9]+)?$":
++    type: object
++
++additionalProperties: false
++
++examples:
++  - |
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        flash@6 {
++            #address-cells = <1>;
++            #size-cells = <1>;
++            compatible = "spi-nand";
++            reg = <0x6>;
++            spi-max-frequency = <42000000>;
++
++            partitions {
++                compatible = "fixed-partitions";
++                #address-cells = <1>;
++                #size-cells = <1>;
++
++                partition@0 {
++                    label = "boot";
++                    reg = <0 0x200000>;
++                };
++
++                partition@200000 {
++                    label = "rootfs";
++                    reg = <0x200000 0xce0000>;
++                };
++            };
++        };
++    };
 -- 
-2.25.1
+2.17.1
 
 
 ______________________________________________________
