@@ -2,89 +2,92 @@ Return-Path: <SRS0=DZ8H=ML=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D773C636C9
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jul 2021 08:05:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4191C12002
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jul 2021 08:05:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0D0D26108B
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jul 2021 08:05:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D0D26108B
+	by mail.kernel.org (Postfix) with ESMTPS id 9CEB560FE4
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jul 2021 08:05:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9CEB560FE4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=flHudUn7m+WQZJCmHaKJOF8MAfMzim3l+m/rN5y19HQ=; b=LVf/fvBOsovHtC
-	n7tqtbNevsO5bOTOx7uuq7w6E2BxYV1fLnkJqMT+JJ29Gtlv+/oBLZUjk053zm57y6zXjazxuVcP9
-	gFOnvhe50Xhc/3In5T5ou3sjbec1vtKwDkgt93VhsGlEj34/gt0ANY0Tn+mEOsCkuegYuCohK+C3Q
-	QgNvk7oYEKxipSUjRtj0MFAnurRrjnbXjKOCzJxJaVbi8k4S+NxAkKg6DuTSewGusKaZV41fNx8sG
-	/FC+sx+VonG62OIjNn+VUuZojpkvlxXSpn7am/N2nz2+tO3iPe6a2gO65rU2vD5tsfwPi7Cgocb+T
-	7kx+x/3nqN0yQwHm+Uhw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=6H2cnWIaqZVPgaThHUe+8Q3zjh1teZrcRj3dV8TJWGw=; b=lJsRVFfozUrMvq
+	6k6em+Aeu922g2SFyaWI0c1YBwIjPRTUNW0XVocuyqI5wWm9jW+wrg3b2vIK/YZcs3QZZMjRkvk3s
+	3hS22KxS6qcXfhvKKRvx9ys/S5YiHN/yChBrnJqPhZPI4u0YqCh350DOAt0G+E6PuVvPM0xvYAqJf
+	q4dpxdc000xQimOqlb4Ir7P1FH2TnaHc/9Q8EwP9bwK3FTBDrl6P3zvwYFmrE42OptSeh1lb81Yc0
+	aCo5aH1UnuOtRd+376i1Q2mLr1dza507T7fLUUqQbguId4wMUSmfqYLuzwjDb1j8WkUtVy+ibfT3C
+	E6q/QQW+8US2HdZ5H4oA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m5OGJ-008j1D-NO; Mon, 19 Jul 2021 08:04:27 +0000
-Received: from mail-ot1-x32b.google.com ([2607:f8b0:4864:20::32b])
+	id 1m5OGe-008j9z-TH; Mon, 19 Jul 2021 08:04:48 +0000
+Received: from mail-oi1-x22b.google.com ([2607:f8b0:4864:20::22b])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m5OG2-008iuJ-3c
- for linux-mtd@lists.infradead.org; Mon, 19 Jul 2021 08:04:12 +0000
-Received: by mail-ot1-x32b.google.com with SMTP id
- t4-20020a05683014c4b02904cd671b911bso9330950otq.1
- for <linux-mtd@lists.infradead.org>; Mon, 19 Jul 2021 01:04:09 -0700 (PDT)
+ id 1m5OG4-008ivB-J7
+ for linux-mtd@lists.infradead.org; Mon, 19 Jul 2021 08:04:14 +0000
+Received: by mail-oi1-x22b.google.com with SMTP id s23so4115348oiw.12
+ for <linux-mtd@lists.infradead.org>; Mon, 19 Jul 2021 01:04:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=rknTKLRdN7MJ3SOGrlmdqzRPeDrSRF0NuWFYfABN7/4=;
- b=T5THhmNxuuV3D5VvkZdlhRyLHSo7m1Alqhb45GO8TOGD2YeNRcdB5TsEz/M45/pD8e
- DZpu3iYETeXjrMMCY8xSAHZT2dzBF+2iTYVO0R6fcYPF+aPrsKQtZNi3KLsttTz4l4wb
- OHWFpF3E/7fxEnjX9USX1iZr77VGggdGJbVfp//AiT1T58nL+lCB9UaMvK+ArLNas4JY
- PC/BR9G1HCTJ+3zkpiaEEeqEqhGBkQ1+cgKjqnz2MVeq7qAhdqjoblD18Vd+V8sY3tGZ
- k7Un46rucgOhJkRlS6Mks8PpFKYFSx7qQ8IElgk03Nc16yG6+/7Mt5sMNxXtKvRWmIrv
- T2og==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=eE4U09yJSrDNbK89cW/aBKrRHaSK6EJkBMRvL3HB9tg=;
+ b=BY1cf/SWOodmkT5V1CC9+XNmI5GvWBr2h/E9ok9OxNBuOYF7JjG/UYXzknHdjtQB99
+ rZInxkqaAUiUC6KYnPBj2VQViVb7DCOAOcZEgHwIWCv4jecZ2jtjgE6wJlCKHgbSBY4x
+ +q+Lbh6UVNwkS3KhAb++GFVGKKtAykU0Fje4hFyu+IV+vBEUXxm57rRK1bAYBuD3RlXJ
+ CzfID2+Ib3lHypzUReKqgqY+AVWQdE/CCcG9OYA5uQi6DJW4lSuEwgwyW25RPB/uJq6f
+ 8FONIAk01RdS7JE+rHiVlkgI2qB3P9WLoiflsHmxrFhqEvreYlNtBMDexPgcbsyj/UZw
+ fjxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=rknTKLRdN7MJ3SOGrlmdqzRPeDrSRF0NuWFYfABN7/4=;
- b=HbpQ96/VcS/vPYORFm/3u4GxxBJzbT3Q/BdJ6wzOCN7Ts8XsJaC6DkP15n2cPEFb4R
- FqDbq4EXjx7lXdCpIhZL8U5YsKVPTzyW2s4gVD/7oaS8md3OTuHbTjKYxInhDqPMFo6J
- q8djroPdGvSyLd3C1/Apktt4U66Tq3/0hDtTw8+XwUil33R+93TKatqonnEsnWHamunj
- 9CvePXlfaM/bzz0C7Y/upbHhrqevuV40lPgBfirrm7DRi47VUXs06Dn8N5oeU7gx96BD
- 7cw5QouUDm2ZofJiSEC8z6+kovFduE5P9nj2mdQLIIgBrGuWS/iQqkJR8v7vxLtbpvQ4
- vIaQ==
-X-Gm-Message-State: AOAM530DpYGgIfTZDWO404HJb/WgWsPxm6Pd45v7Y3Gtl23WU1SlLMiO
- 9yBYY4+jh+h9gd65RvgO5HS79eTTR3U=
-X-Google-Smtp-Source: ABdhPJx5VAwAyEUl40ddpgWJ3QQftvlvuEBhcDylUWC9MLC6vxfrOJitmzSquoN4lC2u5tK+nOM1UQ==
-X-Received: by 2002:a05:6830:161a:: with SMTP id
- g26mr5478133otr.186.1626681848618; 
- Mon, 19 Jul 2021 01:04:08 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=eE4U09yJSrDNbK89cW/aBKrRHaSK6EJkBMRvL3HB9tg=;
+ b=c6mEScyE77VQsZtI4jWuIQ3l6xwrp5Yi5SyMh/Fe51B0nVdkOiAY5jjgAzfiTotaEu
+ DCQ4iWxtBzFVm2IIp1xU2dPdYckSDvALA0JEN8WmvSiA2Zt8GnHQwzspai9hGCNgxd1x
+ 5QR1tLgjY96xKCLoIObD5uZVBjVmubNJxO+VVmpTYS4kvUMDbhwHjSygNn7TNEBEHpzG
+ Ub2wA3TYbHP7L7f8MpvbRcQUo6tRjzexeEQ2IT7i6DRWj45lqw+YbK3U5AFjfHyaXsrv
+ PWBeNxDd05b6phBv6YhZ7qCIxUIDJgySuWGkMdacuQMIjCTRCxrz1HVXjvlFP8MHkIZl
+ vqzA==
+X-Gm-Message-State: AOAM533tzFWEoPz4wQE7csLSsxFgghBcJHhIRNEiEkRRME+T5lH8Ji5h
+ PPnhUw6/jvbLrJUI6hsskiKnqTWMKAM=
+X-Google-Smtp-Source: ABdhPJwbDb00b/shFoJP5tQCcU5h+8DQ7wWyPOs/SWEdlipqUevec40UYoTcaBmWrslGwy54dvliWg==
+X-Received: by 2002:a05:6808:14a:: with SMTP id
+ h10mr14850004oie.17.1626681850883; 
+ Mon, 19 Jul 2021 01:04:10 -0700 (PDT)
 Received: from ISCNPF1JZGWX.infineon.com
  (zz20174137476F6254EB.userreverse.dion.ne.jp. [111.98.84.235])
- by smtp.gmail.com with ESMTPSA id w24sm3533935otp.28.2021.07.19.01.04.05
+ by smtp.gmail.com with ESMTPSA id w24sm3533935otp.28.2021.07.19.01.04.08
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 19 Jul 2021 01:04:07 -0700 (PDT)
+ Mon, 19 Jul 2021 01:04:10 -0700 (PDT)
 From: tkuw584924@gmail.com
 X-Google-Original-From: Takahiro.Kuwano@infineon.com
 To: linux-mtd@lists.infradead.org
 Cc: tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at,
  vigneshr@ti.com, p.yadav@ti.com, tkuw584924@gmail.com,
  Bacem.Daassi@infineon.com, Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH v7 0/3] mtd: spi-nor: Add support for Cypress s25hl-t/s25hs-t
-Date: Mon, 19 Jul 2021 17:03:44 +0900
-Message-Id: <cover.1626677855.git.Takahiro.Kuwano@infineon.com>
+Subject: [PATCH v7 1/3] mtd: spi-nor: spansion: Add support for Read/Write Any
+ Register
+Date: Mon, 19 Jul 2021 17:03:45 +0900
+Message-Id: <07db2e3c5647d409941261d6fbeed81215dca16f.1626677855.git.Takahiro.Kuwano@infineon.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1626677855.git.Takahiro.Kuwano@infineon.com>
+References: <cover.1626677855.git.Takahiro.Kuwano@infineon.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210719_010410_220204_92168F87 
-X-CRM114-Status: GOOD (  11.92  )
+X-CRM114-CacheID: sfid-20210719_010412_686973_2FBAEF82 
+X-CRM114-Status: GOOD (  17.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,186 +106,192 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
-The S25HL-T/S25HS-T family is the Cypress Semper Flash with Quad SPI.
+Some of Spansion/Cypress chips support Read/Write Any Register commands.
+These commands are mainly used to write volatile registers.
 
-The summary datasheets can be found in the following links.
-https://www.cypress.com/file/424146/download (256Mb/512Mb/1Gb, single die)
+The Read Any Register instruction (65h) is followed by register address
+and dummy cycles, then the selected register byte is returned.
 
-The full version can be found in the following links (registration
-required).
-https://community.cypress.com/t5/Semper-Flash-Access-Program/Datasheet-Semper-Flash-with-Quad-SPI/ta-p/260789?attachment-id=19522
+The Write Any Register instruction (71h) is followed by register address
+and register byte to write.
 
-Tested on Xilinx Zynq-7000 FPGA board.
-
-Device ID and SFDP dumps:
-------------------------------------------------------------
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
-s25hl512t
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-342a1a0f0390
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-spansion
-zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-53464450080103ff00000114000100ff84000102500100ff81000116c801
-00ff8700011c580100ffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffe720faffffffff1f48eb086b00ff
-88bbfeffffffffff00ffffff48eb0c2000ff00ff12d823faff8b82e7ffe3
-ec031c608a857a75f766805c8cd6ddfff938f8a1000000000000bc000000
-0000f7f5ffff7b920ffe21ffffdc0000800000000000c0ffc3ebc8ffe3eb
-00650090060500a10065009600650095716503d0716503d000000000b02e
-000088a489aa716503967165039600000000000000000000000000000000
-000000000000000000000000000000000000000000000000716505d57165
-05d50000a015fc65ff0804008000fc65ff4002008000fd65ff0402008000
-fe0002fff1ff0100f8ff0100f8fffb03fe0302fff8fffb03f8ff0100f1ff
-0100fe0104fff1ff0000f8ff0200f8fff703f8ff0200f1ff0000ff0400ff
-f8ffff03
-zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-8a0aa90112e154ae3a797df2c211ef61  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-------------------------------------------------------------
-
-------------------------------------------------------------
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
-s25hl01gt
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-342a1b0f0390
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-spansion
-zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-53464450080103ff00000114000100ff84000102500100ff81000116c801
-00ff8700011c580100ffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffe720faffffffff3f48eb086b00ff
-88bbfeffffffffff00ffffff48eb0c2000ff00ff12d823faff8b82e7ffe6
-ec031c608a857a75f766805c8cd6ddfff938f8a1000000000000bc000000
-0000f7f5ffff7b920ffe21ffffdc0000800000000000c0ffc3ebc8ffe3eb
-00650090060500a10065009600650095716503d0716503d000000000b02e
-000088a489aa716503967165039600000000000000000000000000000000
-000000000000000000000000000000000000000000000000716505d57165
-05d50000a015fc65ff0804008000fc65ff4002008000fd65ff0402008000
-fe0002fff1ff0100f8ff0100f8fffb07fe0302fff8fffb07f8ff0100f1ff
-0100fe0104fff1ff0000f8ff0200f8fff707f8ff0200f1ff0000ff0400ff
-f8ffff07
-zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-1ad5a0d7d7e0e656986c1e678c416a7e  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-------------------------------------------------------------
-
-------------------------------------------------------------
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
-s25hs512t
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-342b1a0f0390
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-spansion
-zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-53464450080103ff00000114000100ff84000102500100ff81000116c801
-00ff8700011c580100ffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffe720faffffffff1f48eb086b00ff
-88bbfeffffffffff00ffffff48eb0c2000ff00ff12d823faff8b91e8ffe3
-ec031c608a857a75f766805c84d6ddfff938f8a100000000000080000000
-0000f7f5ffff7b920ffe20ffffd80000800000000000c0ffc3ebc8ffe3eb
-00650090060500a10065009600650095716503d0716503d000000000b02e
-000088a489aa716503967165039600000000000000000000000000000000
-000000000000000000000000000000000000000000000000716505d57165
-05d50000ee72fc65ff0804008000fc65ff4002008000fd65ff0402008000
-fe0002fff1ff0100f8ff0100f8fffb03fe0302fff8fffb03f8ff0100f1ff
-0100fe0104fff1ff0100f8ff0200f8fff703f8ff0200f1ff0100ff0400ff
-f8ffff03
-zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-f17d9e784602187a0933edec3688e30f  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-------------------------------------------------------------
-
-------------------------------------------------------------
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
-s25hs01gt
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-342b1b0f0390
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-spansion
-zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-53464450080103ff00000114000100ff84000102500100ff81000116c801
-00ff8700011c580100ffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffe720faffffffff3f48eb086b00ff
-88bbfeffffffffff00ffffff48eb0c2000ff00ff12d823faff8b82e7ffe6
-ec031c608a857a75f766805c8cd6ddfff938f8a1000000000000bc000000
-0000f7f5ffff7b920ffe21ffffdc0000800000000000c0ffc3ebc8ffe3eb
-00650090060500a10065009600650095716503d0716503d000000000b02e
-000088a489aa716503967165039600000000000000000000000000000000
-000000000000000000000000000000000000000000000000716505d57165
-05d50000a015fc65ff0804008000fc65ff4002008000fd65ff0402008000
-fe0002fff1ff0100f8ff0100f8fffb07fe0302fff8fffb07f8ff0100f1ff
-0100fe0104fff1ff0000f8ff0200f8fff707f8ff0200f1ff0000ff0400ff
-f8ffff07
-zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-1ad5a0d7d7e0e656986c1e678c416a7e  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-------------------------------------------------------------
-
-
+Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 ---
 Changes in v7:
-  - Some changes were missing in v6 patch. Fix it
+  - No change
 
 Changes in v6:
-  - Remove 2Gb dual die package parts and related changes to split mulit
-    die package support into another series of patches  
+  - Add helper functions for controller_ops
+  - Add 'reg_addr_width' parameter to spansion_read/write_any_reg()
+  - Remove spi_nor_write_enable() from spansion_write_any_reg() and modified
+    function header comment
 
 Changes in v5:
   - Fix 'if (ret == 1)' to 'if (ret < 0)' in spansion_read_any_reg()
-  - Add NO_CHIP_ERASE flag to S25HL02GT and S25HS02GT
 
 Changes in v4:
-  - Reword 'legacy' to 'default'
-  - Rename spi_nor_read() to spi_nor_default_ready()
   - Fix dummy cycle calculation in spansion_read_any_reg()
   - Modify comment for spansion_write_any_reg()
-  - Merge block comments about SMPT in s25hx_t_post_sfdp_fixups()
-  - Remove USE_CLSR flags from S25HL02GT and S25HS02GT
-
+  
 Changes in v3:
-  - Split into multiple patches
-  - Remove S25HL256T and S25HS256T
-  - Add S25HL02GT and S25HS02GT 
-  - Add support for multi-die package parts support
-  - Cleanup Read/Write Any Register implementation
-  - Remove erase_map fix for top/split sector layout
-  - Set ECC data unit size (16B) to writesize 
+  - Cleanup implementation
 
-Changes in v2:
-  - Remove SPI_NOR_SKIP_SFDP flag and clean up related fixups
-  - Check CFR3V[4] to determine page_size instead of force 512B
-  - Depend on the patchset below to support non-uniform sector layout
-    https://lore.kernel.org/linux-mtd/cover.1601612872.git.Takahiro.Kuwano@infineon.com/
+ drivers/mtd/spi-nor/spansion.c | 142 +++++++++++++++++++++++++++++++++
+ 1 file changed, 142 insertions(+)
 
-Takahiro Kuwano (3):
-  mtd: spi-nor: spansion: Add support for Read/Write Any Register
-  mtd: spi-nor: spansion: Add support for volatile QE bit
-  mtd: spi-nor: spansion: Add s25hl-t/s25hs-t IDs and fixups
-
- drivers/mtd/spi-nor/spansion.c | 291 +++++++++++++++++++++++++++++++++
- 1 file changed, 291 insertions(+)
-
+diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+index ee82dcd75310..5e7e62704e11 100644
+--- a/drivers/mtd/spi-nor/spansion.c
++++ b/drivers/mtd/spi-nor/spansion.c
+@@ -19,6 +19,148 @@
+ #define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS	0
+ #define SPINOR_OP_CYPRESS_RD_FAST		0xee
+ 
++/**
++ * controller_ops_read_any_reg() - Read Any Register using controller_ops.
++ * @nor:		pointer to a 'struct spi_nor'
++ * @reg_addr:		register address
++ * @reg_addr_width:	number of address bytes
++ * @reg_dummy:		number of dummy cycles for register read
++ * @reg_val:		pointer to a buffer where the register value is copied
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++static int controller_ops_read_any_reg(struct spi_nor *nor, u32 reg_addr,
++				       u8 reg_addr_width, u8 reg_dummy,
++				       u8 *reg_val)
++{
++	ssize_t ret;
++	enum spi_nor_protocol proto = nor->read_proto;
++	u8 opcode = nor->read_opcode;
++	u8 dummy = nor->read_dummy;
++	u8 addr_width = nor->addr_width;
++
++	nor->read_opcode = SPINOR_OP_RD_ANY_REG;
++	nor->read_dummy = reg_dummy;
++	nor->read_proto = nor->reg_proto;
++	nor->addr_width = reg_addr_width;
++
++	ret = nor->controller_ops->read(nor, reg_addr, 1, reg_val);
++
++	nor->read_opcode = opcode;
++	nor->read_dummy = dummy;
++	nor->read_proto = proto;
++	nor->addr_width = addr_width;
++
++	if (ret < 0)
++		return ret;
++	if (ret != 1)
++		return -EIO;
++
++	return 0;
++}
++
++/**
++ * controller_ops_write_any_reg() - Write Any Register using controller_ops.
++ * @nor:		pointer to a 'struct spi_nor'
++ * @reg_addr:		register address
++ * @reg_addr_width:	number of address bytes
++ * @reg_val:		register value to be written
++ * *
++ * Return: 0 on success, -errno otherwise.
++ */
++static int controller_ops_write_any_reg(struct spi_nor *nor, u32 reg_addr,
++					u8 reg_addr_width, u8 reg_val)
++{
++	ssize_t ret;
++	enum spi_nor_protocol proto = nor->write_proto;
++	u8 opcode = nor->program_opcode;
++	u8 addr_width = nor->addr_width;
++
++	nor->program_opcode = SPINOR_OP_WR_ANY_REG;
++	nor->write_proto = nor->reg_proto;
++	nor->addr_width = reg_addr_width;
++
++	ret = nor->controller_ops->write(nor, reg_addr, 1, &reg_val);
++
++	nor->program_opcode = opcode;
++	nor->write_proto = proto;
++	nor->addr_width = addr_width;
++
++	if (ret < 0)
++		return ret;
++	if (ret != 1)
++		return -EIO;
++
++	return 0;
++}
++
++/**
++ * spansion_read_any_reg() - Read Any Register.
++ * @nor:		pointer to a 'struct spi_nor'
++ * @reg_addr:		register address
++ * @reg_addr_width:	number of address bytes
++ * @reg_dummy:		number of dummy cycles for register read
++ * @reg_val:		pointer to a buffer where the register value is copied
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++static int spansion_read_any_reg(struct spi_nor *nor, u32 reg_addr,
++				 u8 reg_addr_width, u8 reg_dummy, u8 *reg_val)
++{
++	if (nor->spimem) {
++		struct spi_mem_op op =
++			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RD_ANY_REG, 0),
++				   SPI_MEM_OP_ADDR(reg_addr_width, reg_addr, 0),
++				   SPI_MEM_OP_DUMMY(reg_dummy, 0),
++				   SPI_MEM_OP_DATA_IN(1, reg_val, 0));
++
++		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++
++		/* convert the dummy cycles to the number of bytes */
++		op.dummy.nbytes = (reg_dummy * op.dummy.buswidth) / 8;
++		if (spi_nor_protocol_is_dtr(nor->reg_proto))
++			op.dummy.nbytes *= 2;
++
++		return spi_mem_exec_op(nor->spimem, &op);
++	}
++
++	return controller_ops_read_any_reg(nor, reg_addr, reg_addr_width,
++					   reg_dummy, reg_val);
++}
++
++/**
++ * spansion_write_any_reg() - Write Any Register.
++ * @nor:		pointer to a 'struct spi_nor'
++ * @reg_addr:		register address
++ * @reg_addr_width:	number of address bytes
++ * @reg_val:		register value to be written
++ *
++ * spi_nor_write_enable() and spi_nor_write_disable() need to be called before
++ * and after this function. Caller also need to poll status for non-volatile
++ * register. No need to poll status for volatile registers since volatile
++ * register write will be effective immediately after the operation.
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++static int spansion_write_any_reg(struct spi_nor *nor, u32 reg_addr,
++				  u8 reg_addr_width, u8 reg_val)
++{
++	if (nor->spimem) {
++		struct spi_mem_op op =
++			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 0),
++				   SPI_MEM_OP_ADDR(reg_addr_width, reg_addr, 0),
++				   SPI_MEM_OP_NO_DUMMY,
++				   SPI_MEM_OP_DATA_OUT(1, &reg_val, 0));
++
++		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++
++		return spi_mem_exec_op(nor->spimem, &op);
++	}
++
++	return controller_ops_write_any_reg(nor, reg_addr, reg_addr_width,
++					    reg_val);
++}
++
+ /**
+  * spi_nor_cypress_octal_dtr_enable() - Enable octal DTR on Cypress flashes.
+  * @nor:		pointer to a 'struct spi_nor'
 -- 
 2.25.1
 
