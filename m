@@ -2,80 +2,79 @@ Return-Path: <SRS0=DZ8H=ML=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 678E9C07E95
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jul 2021 15:25:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D931CC07E95
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jul 2021 19:13:40 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 27B486121E
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jul 2021 15:25:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 27B486121E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 8939C60720
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jul 2021 19:13:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8939C60720
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9JGSC+JOznd96No7YxDDpmhCuZBeJfqCPX2V68qesf0=; b=RomIUgQmFI2BYF
-	CN5KsRjrwIaLH4oU1oligPO7rWwegAuUuBsyok45j9vRM0Da3M4hkz4bsGhhoX4+/yqshWkTgonKi
-	STZjzesgWPiiuy6oNd3Y9pnPVDcJPlHBj3syDxP2ZXsAnLKAiszcEBKbuwbwp4jAX3fQrH+EAwjkF
-	JCleLGY2pB46Sc7jVeNZKuGlUX9kS4DIOlKNhi4BdO0hzuuOGT43BMJlyMpb4lxlnZ9SQuOiv30Xj
-	1nBJzNbI3mLXE9RmkcVW5aiyWLggCSR8bZl+rxqHu+SldoN5QZW+gnHg7kEe7gW+Xc6+RN81Lc/gA
-	2FUo6YW2CtyHUH7LyrXQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=frclj5EUHcRDHkfvm0IBTxdxhPi4ye8iN0W1McsODOA=; b=MD5k30uGWAUsbA
+	SGHvb2I8Sr4hAUldtloTAHctYkuVNjTnp9ZJnce93CDhCf+vvfcZcqbD02pUPAI0c53nt6E3tBAbp
+	PdNarjY3P93rIZ9c4ijGO2ILUR2/rAjqXrF/0Ax/DXmTv9bliseaDvdFf+GarWliVsIkx0zPTv4zZ
+	d0EjubxYkgxXq1K5PRMDoblfX8LwGXkmU+lSfQTiG0L2LKaj6op7xhfeilnwvfdSAJEuRCLzad9/1
+	DYdLC64fGUUruBrJXqjCVppn0gkNy5ZaHY20kGGzarTIz8IaZ30uVIqjMS2mbVZAvpFTI6qCQoquY
+	Yn3pHqXtD7djj+ybBFgg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m5V82-00A4u2-9I; Mon, 19 Jul 2021 15:24:22 +0000
-Received: from mail-il1-f177.google.com ([209.85.166.177])
+	id 1m5Yh0-00B391-AJ; Mon, 19 Jul 2021 19:12:42 +0000
+Received: from mail-lf1-x12b.google.com ([2a00:1450:4864:20::12b])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m5V7x-00A4rZ-H7
- for linux-mtd@lists.infradead.org; Mon, 19 Jul 2021 15:24:21 +0000
-Received: by mail-il1-f177.google.com with SMTP id a7so16313809iln.6
- for <linux-mtd@lists.infradead.org>; Mon, 19 Jul 2021 08:24:16 -0700 (PDT)
+ id 1m5Ygx-00B38S-GR
+ for linux-mtd@lists.infradead.org; Mon, 19 Jul 2021 19:12:40 +0000
+Received: by mail-lf1-x12b.google.com with SMTP id g8so26134837lfh.8
+ for <linux-mtd@lists.infradead.org>; Mon, 19 Jul 2021 12:12:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:from:date:message-id:subject:to:cc;
+ bh=ukY3dGNfnOu3pO4DTJvGnp/W755wNgK9mLKEHhB/Fso=;
+ b=TXR1FFJP9oXiQM7ixHrM2xvzVKeYTdbpT8PpSq1JebBgKJ7kmNObfCygNhVfntekKb
+ NZp8jGj0dZWz3BnAn6GBSfq2s5LTiiQacNXs0ngP4dT4IDJ/8HKMNEHE6nuvC0E62vps
+ RvLBgMnlQRuA6bcHyyC7iMZblScANhsb7I4KP5RsGJy/1rx9buok+l0QrsoWhQY3XCKv
+ 9zX5QWc5bJFIZFzh2YGQCnX6SXwvkqckVJYpqYpobkKPrtnrXXU08cV0s4OQDZjm+OLd
+ citfyXNACnrIJw6uMlIrdOe/be8lwRZFsEql2gayUgKntg0UTY8+ZUe0o7tY37RrPr8U
+ f45A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=vzERivZqSSJFIGeAmgTC/Nw6CzI7ObBqzkfLEHhPO/w=;
- b=GcJubEbK5ltG/m7NwIxlYzR72abLXdXyl70YpoICPV7x0yy9cNHIPmIg2CUjeqUQRj
- siRgTstjafPRo/Cr19D0Ix1alZEjleLbzP9+cDNR/yysdUdhu/79iqXLeWS0Dr0kUqyi
- Yt0+lczITECtbTMuusVz5ePCNvnI4SsCJzb5zy3gpdcAmT9H35LRqLO8IoNdDgm73a+q
- 1RZnVIVuCki7Oih6RZ00kDHAYvZKeszGIDiXWRMkiA/ZFBPnRmzb5VK+SOV9JLS0Bdu1
- dtUC3OR4brgxJdRDnO5Ln/SX3XKELyX20nWlRyzg9XTNXFZLcCmUtF0M85G4Xy2WbECE
- RPew==
-X-Gm-Message-State: AOAM5323TI537EwJd4uc0CC+DkQWShPvwRjLjA/4XRryo41XW7apmBGt
- 8HT1h26IUzximRvL2PdUkA==
-X-Google-Smtp-Source: ABdhPJyri+TXCyr4MCEpKVVzSSJx361AXYHcpD9imtD5zPDRk+xQaRGiGAFQK3C6ytmqRK551Sb+Kg==
-X-Received: by 2002:a92:d251:: with SMTP id v17mr16834647ilg.283.1626708256258; 
- Mon, 19 Jul 2021 08:24:16 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
- by smtp.gmail.com with ESMTPSA id u10sm5867563iop.15.2021.07.19.08.24.14
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 19 Jul 2021 08:24:15 -0700 (PDT)
-Received: (nullmailer pid 1961107 invoked by uid 1000);
- Mon, 19 Jul 2021 15:24:13 -0000
-Date: Mon, 19 Jul 2021 09:24:13 -0600
-From: Rob Herring <robh@kernel.org>
-To: Apurva Nandan <a-nandan@ti.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Pratyush Yadav <p.yadav@ti.com>,
- Michael Walle <michael@walle.cc>
-Subject: Re: [PATCH] dt-bindings: mtd: spi-nand: Convert to DT schema format
-Message-ID: <20210719152413.GA1953551@robh.at.kernel.org>
-References: <20210718004125.733-1-a-nandan@ti.com>
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+ bh=ukY3dGNfnOu3pO4DTJvGnp/W755wNgK9mLKEHhB/Fso=;
+ b=NDIOQFPYdUkac67QMDpFqswiCZtPIkXFJdLhvQ5jMkwUuyl8KLX0unIkNZiZLn7j65
+ 3iMbqiVjJKt0tDY3c4NmuKfZEpgwyjx5ts8yscEJNLq9Xk0ArWt51vv5H+sEGim/Js4S
+ w7mijXTYxPYY3EXLrHZISWMc6oKxjOVl+kIZ4yuE48BoQRqMFPIi3o2GWw0AvfV3MhFi
+ sTL5BnDDbnuPHE0B/qE0RGeCijiQXp/ezxfOKJJpoXlpbaBCtUhULbX3jqfj7O2c7g7O
+ nbcWody1oWmsSs7qvwdpMMPSqzicX3RNaWum9jhX3KfEIunDeY216Z1pJc7AoLlZ1OA4
+ 1pRw==
+X-Gm-Message-State: AOAM533za/IBlicN1dGAEyDOvVfXZDR5fjVZ1nESeomfDLK5Kvs4pT1V
+ mK4yqZd8ldum6QL4CbCKm51T4XptWG1lSdv3/K2eadNMdNDxLQ==
+X-Google-Smtp-Source: ABdhPJwe+4xf4jQADZcRWiCYZUk7xH/OG6oUShIs+HRATKz6OukJ540Mb6wfh1sgEAZ9It604ScoCcbt6vvYCulC4Es=
+X-Received: by 2002:ac2:494c:: with SMTP id o12mr13110098lfi.229.1626721957052; 
+ Mon, 19 Jul 2021 12:12:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210718004125.733-1-a-nandan@ti.com>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Mon, 19 Jul 2021 16:12:26 -0300
+Message-ID: <CAOMZO5BX9iYmZwBBGEstbcWpvftRNExtwq+kX_rQff0v_o1P5g@mail.gmail.com>
+Subject: mtd-utils: Proper way to handle erasize=0
+To: david.oberhollenzer@sigma-star.at, Richard Weinberger <richard@nod.at>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, Marek Vasut <marex@denx.de>,
+ Heiko Schocher <hs@denx.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210719_082417_634151_7B04C14C 
-X-CRM114-Status: GOOD (  21.83  )
+X-CRM114-CacheID: sfid-20210719_121239_586905_E282CFF3 
+X-CRM114-Status: UNSURE (   6.09  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,129 +91,24 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, Jul 18, 2021 at 12:41:25AM +0000, Apurva Nandan wrote:
-> Convert spi-nand.txt binding to YAML format with an added example.
-> 
-> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
-> ---
->  .../devicetree/bindings/mtd/spi-nand.txt      |  5 --
->  .../devicetree/bindings/mtd/spi-nand.yaml     | 74 +++++++++++++++++++
->  2 files changed, 74 insertions(+), 5 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
->  create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.txt b/Documentation/devicetree/bindings/mtd/spi-nand.txt
-> deleted file mode 100644
-> index 8b51f3b6d55c..000000000000
-> --- a/Documentation/devicetree/bindings/mtd/spi-nand.txt
-> +++ /dev/null
-> @@ -1,5 +0,0 @@
-> -SPI NAND flash
-> -
-> -Required properties:
-> -- compatible: should be "spi-nand"
-> -- reg: should encode the chip-select line used to access the NAND chip
-> diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.yaml b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
-> new file mode 100644
-> index 000000000000..366b86e1b19c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
-> @@ -0,0 +1,74 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/spi-nand.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: SPI NAND flash
-> +
-> +maintainers:
-> +  - Apurva Nandan <a-nandan@ti.com>
-> +
-> +allOf:
-> +  - $ref: "mtd.yaml#"
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - const: spi-nand
+Hi,
 
-Drop 'oneOf' as there is only one.
+When using a Microchip 48l640 SRAM (drivers/mtd/devices/mchp48l640.c)
+the reported erasesize is 0:
 
-> +
-> +  reg:
-> +    items:
-> +      description:
-> +        should encode the chip-select line used to access the NAND chip
+# cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 00002000 00000000 "spi0.0"
 
-Just:
+This causes a division by zero at libmtd.c, as mtd_get_dev_info1() has:
 
-reg:
-  maxItems: 1
+mtd->eb_cnt = mtd->size / mtd->eb_size;
 
-> +
-> +  spi-max-frequency: true
-> +  spi-rx-bus-width: true
-> +  spi-tx-bus-width: true
-> +
-> +  partitions:
-> +    type: object
-> +
-> +  '#address-cells': true
-> +  '#size-cells': true
-> +
-> +patternProperties:
-> +  # Note: use 'partitions' node for new users
-> +  '^partition@':
-> +    type: object
-> +
-> +  "^otp(-[0-9]+)?$":
-> +    type: object
-> +
-> +additionalProperties: false
+What would be the appropriate way to fix this?
 
-Just do:
+Thanks,
 
-additionalProperties:
-  type: object
-
-and then drop partitions, partition@, and ^otp(-[0-9]+)?$.
-
-> +
-> +examples:
-> +  - |
-> +    spi {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        flash@6 {
-> +            #address-cells = <1>;
-> +            #size-cells = <1>;
-> +            compatible = "spi-nand";
-> +            reg = <0x6>;
-> +            spi-max-frequency = <42000000>;
-> +
-> +            partitions {
-> +                compatible = "fixed-partitions";
-> +                #address-cells = <1>;
-> +                #size-cells = <1>;
-> +
-> +                partition@0 {
-> +                    label = "boot";
-> +                    reg = <0 0x200000>;
-> +                };
-> +
-> +                partition@200000 {
-> +                    label = "rootfs";
-> +                    reg = <0x200000 0xce0000>;
-> +                };
-> +            };
-> +        };
-> +    };
-> -- 
-> 2.17.1
-> 
-> 
+Fabio Estevam
 
 ______________________________________________________
 Linux MTD discussion mailing list
