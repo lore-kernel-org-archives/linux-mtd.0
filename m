@@ -2,75 +2,83 @@ Return-Path: <SRS0=DZ8H=ML=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CF6DC07E95
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jul 2021 19:37:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D690C07E95
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jul 2021 22:21:42 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 40158610D2
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jul 2021 19:37:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 40158610D2
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+	by mail.kernel.org (Postfix) with ESMTPS id 2D7016112D
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jul 2021 22:21:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D7016112D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=X5nNfNW5KaDmsN4HUpjKv10Q60oeNnIrP4USmLG/PR4=; b=s2BDokKurPZAqn0euILw2xlodu
-	tNKPpfSD8nz6ivCCnuM4O0Ba+EAU2G3D1QixgR38Yo6KeWRSqThw9eYP9D2B7sxjbp9kuJYtbskdd
-	3E9yIh5GCmnqIUIFrflpDVTyglXaRlUkCe82ga173DSjoT94hJQRRfI4rDh8IYF8BW87GHwHCFYCY
-	q6weKDsDetGgLmetcaf9vuB2DB1vhkVOupfoJHik1G2WvldPSZtDDNPIzieulGj6hmQiAxP4oFbzH
-	t4bA+321RtSTWbeuvTatm1rMqNu8zYTfV4J9F/tv3BF/m+aHUCSPJ4zzrkWAyHcx2Ua8aSxWfgD03
-	XB93NppQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=iirvMLQ9eVBBGf0wlrBOJWdHHIJUPP6FZq4bsPDgmeI=; b=fQ3hOsooxMRp/v
+	jBNmjdI9sr3nHCMAc9sqJkczgEvvP67J75FUWTPbE/cyIDSXQCuCXntDC/N1DSnXcVGcXybvA7w0D
+	BVQsqGpvUcAEhlSeR1JUEP6UX6UBWw2Dx+lxp2+ECppXZ+k+uChY86R5jy0m9fR5O9ig+RYsvrULw
+	OsFjcHUSh8g+uUUt6gzzEyvgfl0Y/gs/AYGdykBva/uVYIv0GFWTLjBTsSfgmdG6EsRFPDDf2NJ0k
+	sO3TYgNYTtQRhu5ooj37/Il5AstmrSlCl0F9Nkix8AovG3OPPVxZ6BOY9JXU5yEOb9QLHCsYDOJNT
+	3JdNjL0jmmR8E36DYbmw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m5Z4R-00B7Sj-FS; Mon, 19 Jul 2021 19:36:55 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1m5bdE-00BPtM-2D; Mon, 19 Jul 2021 22:21:00 +0000
+Received: from mail-lj1-x229.google.com ([2a00:1450:4864:20::229])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m5Z4M-00B7Qe-Kp
- for linux-mtd@lists.infradead.org; Mon, 19 Jul 2021 19:36:52 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id F39566169BC2;
- Mon, 19 Jul 2021 21:36:47 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id aL-lUs1p6lLF; Mon, 19 Jul 2021 21:36:47 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 3F1EE616F7AF;
- Mon, 19 Jul 2021 21:36:47 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id Oi5E0qhND6sh; Mon, 19 Jul 2021 21:36:47 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
- by lithops.sigma-star.at (Postfix) with ESMTP id 1B0606169BC2;
- Mon, 19 Jul 2021 21:36:47 +0200 (CEST)
-Date: Mon, 19 Jul 2021 21:36:46 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: festevam <festevam@gmail.com>
+ id 1m5bdA-00BPsp-Un
+ for linux-mtd@lists.infradead.org; Mon, 19 Jul 2021 22:20:58 +0000
+Received: by mail-lj1-x229.google.com with SMTP id e20so28480967ljn.8
+ for <linux-mtd@lists.infradead.org>; Mon, 19 Jul 2021 15:20:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=giLVdFNjkMf42ynjdwMyRWp4rAUYN1mhjNp+VTRX3T4=;
+ b=t2kLWKe+frM9Wuhpgj+3uycEP0Bfu0hggEokGkRQi5ztETQaOyaKMYsTwU7QlElitY
+ N8m44uy85zvn9x+AqAuG0Y4aJS7meA5lJF/FO5liAGlVDoxqpVzaqRCf0zySEbPhhbvl
+ jndE7seImVY3I5k1w9bxKOW8DhI2H7d6qrLedGqqPmAtsDhQihHD8nnV4Qfcz9BbqF4i
+ /hT7el3em3s8sOTJdLP0+XDjpk1h+SB3gmjSaCwQftio9XC2Gqt7E8I9q086VZ+3LguG
+ oMyDGbO/RyswdPckFUBqHwqMCSGr0f5DZkq5lcBMhiF/GzZ9ltSO9WwutZV2hY2pt1lS
+ ifmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=giLVdFNjkMf42ynjdwMyRWp4rAUYN1mhjNp+VTRX3T4=;
+ b=tUjAUCVlDMoP0Iu/huYeZMQHizcT9ok5JdUlj2hrawn0OtEK3rjwpy8ZogKjAX/YWA
+ HdyUrO36KXZMmyguf8FIvdjr6zB2mlWuSAZ6yveUwWpEszOiPXKFKXZ5AMaZ6vxtb60O
+ HHtc+FHBM7lyFgkFN6pbCpW8L+HALOG0Cr8oWvHY5/zfxkTf6ypcGsWCZBtusnHxcOjA
+ nxFOdYTIA5tB5FrSD7eCMwbVETZiBaMWWDbUs77vqsz3EfVsAeWb6rDSqenL3+33bGpL
+ ImdWstS9S2g5ZdIZgN5iqorsjvWdKqfr3pP5t5LgVIjoZotPp68pKsRjOCD4gfdVB7S9
+ rLXQ==
+X-Gm-Message-State: AOAM53229aGqV/Sxo1cqQ7qA3VfbeFlmzCQOROg8Sc0OaahcKKlMk/t8
+ QnRaZJSdIerkBFzCjzs8718mHB6BikLwscYZ8JAgYCk1+uc=
+X-Google-Smtp-Source: ABdhPJyJHKHuI5Cx9VdTrUkL1Iq4fBOqlNA3vmy3u2jOZivtLiIgzPYUBoIvocjsi+7QFDGWO85cJ4jHmI2ux0cVkkU=
+X-Received: by 2002:a2e:a785:: with SMTP id c5mr24200042ljf.490.1626733255170; 
+ Mon, 19 Jul 2021 15:20:55 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAOMZO5BX9iYmZwBBGEstbcWpvftRNExtwq+kX_rQff0v_o1P5g@mail.gmail.com>
+ <323618383.46712.1626723406949.JavaMail.zimbra@nod.at>
+In-Reply-To: <323618383.46712.1626723406949.JavaMail.zimbra@nod.at>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Mon, 19 Jul 2021 19:20:44 -0300
+Message-ID: <CAOMZO5CL7VVSUnQtB69xsrLLRiDZWDWkQCdegW6eJyk-zqB_MQ@mail.gmail.com>
+Subject: Re: mtd-utils: Proper way to handle erasize=0
+To: Richard Weinberger <richard@nod.at>
 Cc: david oberhollenzer <david.oberhollenzer@sigma-star.at>, 
- linux-mtd <linux-mtd@lists.infradead.org>, 
+ linux-mtd <linux-mtd@lists.infradead.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>, 
  Marek Vasut <marex@denx.de>, hs <hs@denx.de>
-Message-ID: <323618383.46712.1626723406949.JavaMail.zimbra@nod.at>
-In-Reply-To: <CAOMZO5BX9iYmZwBBGEstbcWpvftRNExtwq+kX_rQff0v_o1P5g@mail.gmail.com>
-References: <CAOMZO5BX9iYmZwBBGEstbcWpvftRNExtwq+kX_rQff0v_o1P5g@mail.gmail.com>
-Subject: Re: mtd-utils: Proper way to handle erasize=0
-MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF90 (Linux)/8.8.12_GA_3809)
-Thread-Topic: mtd-utils: Proper way to handle erasize=0
-Thread-Index: sA8zP7JJ0ycQ4VWP2lLds75DAOezMQ==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210719_123650_882540_68C457D9 
-X-CRM114-Status: UNSURE (   8.34  )
+X-CRM114-CacheID: sfid-20210719_152057_051393_91296740 
+X-CRM114-Status: UNSURE (   7.83  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -83,37 +91,25 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogImZlc3RldmFtIiA8ZmVzdGV2
-YW1AZ21haWwuY29tPgo+IEFuOiAiZGF2aWQgb2JlcmhvbGxlbnplciIgPGRhdmlkLm9iZXJob2xs
-ZW56ZXJAc2lnbWEtc3Rhci5hdD4sICJyaWNoYXJkIiA8cmljaGFyZEBub2QuYXQ+Cj4gQ0M6ICJs
-aW51eC1tdGQiIDxsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZz4sICJNaXF1ZWwgUmF5bmFs
-IiA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4sICJNYXJlayBWYXN1dCIKPiA8bWFyZXhAZGVu
-eC5kZT4sICJocyIgPGhzQGRlbnguZGU+Cj4gR2VzZW5kZXQ6IE1vbnRhZywgMTkuIEp1bGkgMjAy
-MSAyMToxMjoyNgo+IEJldHJlZmY6IG10ZC11dGlsczogUHJvcGVyIHdheSB0byBoYW5kbGUgZXJh
-c2l6ZT0wCgo+IEhpLAo+IAo+IFdoZW4gdXNpbmcgYSBNaWNyb2NoaXAgNDhsNjQwIFNSQU0gKGRy
-aXZlcnMvbXRkL2RldmljZXMvbWNocDQ4bDY0MC5jKQo+IHRoZSByZXBvcnRlZCBlcmFzZXNpemUg
-aXMgMDoKPiAKPiAjIGNhdCAvcHJvYy9tdGQKPiBkZXY6ICAgIHNpemUgICBlcmFzZXNpemUgIG5h
-bWUKPiBtdGQwOiAwMDAwMjAwMCAwMDAwMDAwMCAic3BpMC4wIgo+IAo+IFRoaXMgY2F1c2VzIGEg
-ZGl2aXNpb24gYnkgemVybyBhdCBsaWJtdGQuYywgYXMgbXRkX2dldF9kZXZfaW5mbzEoKSBoYXM6
-Cj4gCj4gbXRkLT5lYl9jbnQgPSBtdGQtPnNpemUgLyBtdGQtPmViX3NpemU7Cj4gCj4gV2hhdCB3
-b3VsZCBiZSB0aGUgYXBwcm9wcmlhdGUgd2F5IHRvIGZpeCB0aGlzPwoKRGlkbid0IHRoaXMgY29t
-bWl0IGFkZHJlc3MgdGhhdCBwcm9ibGVtPwoKY29tbWl0IDU0ZDY4Nzk5YjczZTc1NTkyM2RlZjEz
-MDZiNGRhNjA3YWQ0NWJkNjAKQXV0aG9yOiBDaHJpcyBQYWNraGFtIDxjaHJpcy5wYWNraGFtQGFs
-bGllZHRlbGVzaXMuY28ubno+CkRhdGU6ICAgRnJpIE5vdiAyNyAxMzowNzowOCAyMDIwICsxMzAw
-CgogICAgbGlibXRkOiBhdm9pZCBkaXZpZGUgYnkgemVybwogICAgCiAgICBUaGUgY29uY2VwdCBv
-ZiBlcmFzZSBibG9ja3MgZG9lc24ndCBhcHBseSB0byBtdGQtcmFtIGRldmljZXMuIFN1Y2gKICAg
-IGRldmljZXMgc2V0IE1URF9OT19FUkFTRSB0byBpbmRpY2F0ZSB0aGlzIGFuZCBzb21lIHJlcG9y
-dCAwIGZvciB0aGUKICAgIGVyYXNlIGJsb2NrIHNpemUuIEF2b2lkIGEgZGl2aWRlIGJ5IHplcm8g
-d2hlbiBjYWxjdWxhdGluZyB0aGUgZXJhc2UKICAgIGJsb2NrIGNvdW50IGZvciBzdWNoIGRldmlj
-ZXMuCiAgICAKICAgIFNpZ25lZC1vZmYtYnk6IENocmlzIFBhY2toYW0gPGNocmlzLnBhY2toYW1A
-YWxsaWVkdGVsZXNpcy5jby5uej4KICAgIEFja2VkLWJ5OiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJp
-Y2hhcmRAbm9kLmF0PgogICAgU2lnbmVkLW9mZi1ieTogRGF2aWQgT2JlcmhvbGxlbnplciA8ZGF2
-aWQub2JlcmhvbGxlbnplckBzaWdtYS1zdGFyLmF0PgoKVGhhbmtzLAovL3JpY2hhcmQKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBN
-VEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Hi Richard,
+
+On Mon, Jul 19, 2021 at 4:36 PM Richard Weinberger <richard@nod.at> wrote:
+
+> Didn't this commit address that problem?
+
+Ah, thanks for pointing that out. This should fix it.
+
+OpenEmbedded is pulling mtd-utils 2.1.2, where this commit is not present.
+
+Maybe it is time to release 2.1.3? :-)
+
+Thanks
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
