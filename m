@@ -2,70 +2,87 @@ Return-Path: <SRS0=aH78=MN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4525C12002
-	for <linux-mtd@archiver.kernel.org>; Wed, 21 Jul 2021 10:19:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1EDEC12002
+	for <linux-mtd@archiver.kernel.org>; Wed, 21 Jul 2021 15:24:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8299460C40
-	for <linux-mtd@archiver.kernel.org>; Wed, 21 Jul 2021 10:19:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8299460C40
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 6CAB161019
+	for <linux-mtd@archiver.kernel.org>; Wed, 21 Jul 2021 15:24:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6CAB161019
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8iWc72B/YOPqrrXFVJpfO7jIuevrRzWI/ev2HYNh7Ng=; b=PA1ndbGcIhlPtA
-	U61fPyCh5az6w9xJrNvrfAAyQT7dztHV8FNFjmXNkkCtPM7FwtC4VKXvNDCuh5gzFoacw0ToR8R7L
-	p2+ZKNaLpG4V/F8veoKnexoWrFWgF4VhwMew9cO0wYCqoXFdfO0oZkLJKis7UBe52p5u1u3UCeQdm
-	WeY3n0Buj2lhvwxah7Ka2Ye82Y3Z5MT2dHkBroxoFCgcVDEfWH5i7MdpLEbn5BkY2Nu7BMmgzomcc
-	Gudv454Ma/qMnOtnk/EkbK8NXgmCXDZQoYSTpYx6VOymfcLqvXCfiK5D3Js7RmJshYg/zXgf4VR2E
-	qmclc73iYfxWUSHs7q5A==;
+	List-Owner; bh=rvzcWvtNzZZ3quph2VVg3oSwl69qWlMVeXzmH2W3Z3s=; b=KuZ+zXWQ4rHxhC
+	krX3XqW1rOszvIu1yutirLANOBueOEeD/G9UAH5KyJUo5gH7RVJ/m0pbQPY54WBwyS9lZmJOUA8uR
+	kDJmZuxlwj9mnYwG5KZasdHM39gvUa4ACjTK7alKnhujo9nROnPI47e23FNcHZUm41jhjOzvcFhgk
+	L8+tu3S1p7x5zedh0kT5TYqdUdnmEENYObbJlFmlh8swHqyIj+dkbKftyVGSTpRyo5rQTzKmHT1O8
+	0pFfDe6l8Im30JsUybHWy9eSYxotYTVbljitOKfeRnQQGySWn/YtqIuovauYjz/ROtZUEpFh79hK3
+	B21kEvh9Yl6X3tx5A8SA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m69JB-00FE3e-GA; Wed, 21 Jul 2021 10:18:33 +0000
-Received: from mga09.intel.com ([134.134.136.24])
+	id 1m6E4s-00GHeI-ML; Wed, 21 Jul 2021 15:24:06 +0000
+Received: from mail-ed1-x531.google.com ([2a00:1450:4864:20::531])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m69J7-00FE2W-GY
- for linux-mtd@lists.infradead.org; Wed, 21 Jul 2021 10:18:31 +0000
-X-IronPort-AV: E=McAfee;i="6200,9189,10051"; a="211409796"
-X-IronPort-AV: E=Sophos;i="5.84,257,1620716400"; d="scan'208";a="211409796"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Jul 2021 03:18:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,257,1620716400"; d="scan'208";a="432558915"
-Received: from lkp-server01.sh.intel.com (HELO b8b92b2878b0) ([10.239.97.150])
- by fmsmga007.fm.intel.com with ESMTP; 21 Jul 2021 03:18:25 -0700
-Received: from kbuild by b8b92b2878b0 with local (Exim 4.92)
- (envelope-from <lkp@intel.com>)
- id 1m69J2-0000J4-8E; Wed, 21 Jul 2021 10:18:24 +0000
-Date: Wed, 21 Jul 2021 18:17:25 +0800
-From: kernel test robot <lkp@intel.com>
-To: Apurva Nandan <a-nandan@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: kbuild-all@lists.01.org, Pratyush Yadav <p.yadav@ti.com>,
- Michael Walle <michael@walle.cc>, Apurva Nandan <a-nandan@ti.com>
-Subject: Re: [PATCH] dt-bindings: mtd: spi-nand: Convert to DT schema format
-Message-ID: <202107211818.sbizhVdd-lkp@intel.com>
-References: <20210718004125.733-1-a-nandan@ti.com>
+ id 1m6DiP-00G9JS-Gl
+ for linux-mtd@lists.infradead.org; Wed, 21 Jul 2021 15:00:55 +0000
+Received: by mail-ed1-x531.google.com with SMTP id k27so2766168edk.9
+ for <linux-mtd@lists.infradead.org>; Wed, 21 Jul 2021 08:00:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=3QH0L1galc4dXmyAjj6SONbiSv0qVq6f5DQ4NUtGEno=;
+ b=ksK3cQEkcbM2A1jLvr4UuKTvyNMRVEzp0tvWg8di9oPfOkQHQy6xwZLfWylwgHXeky
+ zT5+pr/Vo1E5ZvqpCBJ76fS1+G1yypiU54zm2N54vDXPS4tmEzVUY1Xhl8/gOc3dOq/Z
+ DOmdcOMb6d85MqtiR8FoXDdcafAr+rlf+lWJ5C0q+TGyAfHgwVZa6hDATsFxBTdOX4qj
+ xZC16RQwxKt+eCQdTc47xPXWJD+ObiE8Z0zUEoI7M2Q3WT5Rt/dZTDxr75xcq1E1ey8i
+ kcqOU0q8BmVtpv3lBZR396OEXoDJtCUMwPIpQX4BxHiNydCqSlzCcjiSURY1NtDsvfxI
+ ZZmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=3QH0L1galc4dXmyAjj6SONbiSv0qVq6f5DQ4NUtGEno=;
+ b=Z/XX2qDslpxgrCd0AlxWk0oBVaGd1meSymGoZ45paVYimZxXG9mfMXLucgzx8QlQgz
+ WPAkeVrgEuTffT2h6dFrxZ7FJOZg3366A2tnOUhCyIUzf1CdLC+6NR0ZpAqc0yA+X96F
+ VUEBPw62jZhbu58nsfzieLwfG+90PLJ36xRM5k1OoZdCMRruxZvqC6Y9oYEfNdYoyVEX
+ QL9GBB9JmyCQk8YEY2GY595FavE0MKU50a7xHA3GyAHEHlKNzpb5liVTazVnsLG042ij
+ IzotqazgjCub8fdrAwEyxC3AuLdADdy3VG3bhlynhasEme8G1zuL0ZIk3VoZ86iwsvgQ
+ 0rTA==
+X-Gm-Message-State: AOAM533DvqvaZYuPxqF7oB1F8BUFg3Sv50Vg4pDvKr5bmmo1F31RFXJJ
+ xiwnjIvN4KVVgKrk4Xt3aJxnn6iWUQInlV0aWVs=
+X-Google-Smtp-Source: ABdhPJwsdM7NhMOEPZ+TG7bCz9J7fuNtMI27TGWdC6n7lbhoBMHBK0YuVNjfgWVfOXR7v0uUr3SK5Qg0rxNOhwip2XI=
+X-Received: by 2002:a05:6402:19a:: with SMTP id
+ r26mr47901608edv.230.1626879650292; 
+ Wed, 21 Jul 2021 08:00:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210718004125.733-1-a-nandan@ti.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CAOuPNLhqSpaTm3u4kFsnuZ0PLDKuX8wsxuF=vUJ1TEG0EP+L1g@mail.gmail.com>
+ <alpine.LRH.2.02.2107200737510.19984@file01.intranet.prod.int.rdu2.redhat.com>
+In-Reply-To: <alpine.LRH.2.02.2107200737510.19984@file01.intranet.prod.int.rdu2.redhat.com>
+From: Pintu Agarwal <pintu.ping@gmail.com>
+Date: Wed, 21 Jul 2021 20:30:38 +0530
+Message-ID: <CAOuPNLhh_LkLQ8mSA4eoUDLCLzHo5zHXsiQZXUB_-T_F1_v6-g@mail.gmail.com>
+Subject: Re: Kernel 4.14: Using dm-verity with squashfs rootfs - mounting issue
+To: Mikulas Patocka <mpatocka@redhat.com>
+Cc: open list <linux-kernel@vger.kernel.org>,
+ Phillip Lougher <phillip@squashfs.org.uk>, 
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>, 
+ dm-devel@redhat.com, Kernelnewbies <kernelnewbies@kernelnewbies.org>,
+ agk@redhat.com, 
+ snitzer@redhat.com, shli@kernel.org, Sami Tolvanen <samitolvanen@google.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210721_031829_651047_CD0BAD5F 
-X-CRM114-Status: GOOD (  11.52  )
+X-CRM114-CacheID: sfid-20210721_080053_664653_55E050E1 
+X-CRM114-Status: GOOD (  12.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,95 +99,36 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Apurva,
+On Tue, 20 Jul 2021 at 17:12, Mikulas Patocka <mpatocka@redhat.com> wrote:
+>
+> Hi
+>
+> Try to set up dm-verity with block size 512 bytes.
+>
+> I don't know what block size does squashfs use, but if the filesystem
+> block size is smaller than dm-verity block size, it doesn't work.
+>
+Okay thank you so much for this clue,
+It seems we are using 65536 as the squashfs block size:
+==> mksquashfs [...] - comp xz -Xdict-size 32K -noI -Xbcj arm -b 65536
+-processors 1
 
-Thank you for the patch! Perhaps something to improve:
+But for dm-verity we are giving block size of 4096
+==> [    0.000000] Kernel command line:[..] verity="96160 12020
+d7b8a7d0c01b9aec888930841313a81603a50a2a7be44631c4c813197a50d681 0 "
+rootfstype=squashfs root=/dev/mtdblock34 ubi.mtd=30,0,30 [...]
+root=/dev/dm-0 dm="system none ro,0 96160 verity 1 /dev/mtdblock34
+/dev/mtdblock39 4096 4096 12020 8 sha256
+d7b8a7d0c01b9aec888930841313a81603a50a2a7be44631c4c813197a50d681
+aee087a5be3b982978c923f566a94613496b417f2af592639bc80d141e34dfe7"
 
-[auto build test WARNING on mtd/mtd/next]
-[also build test WARNING on mtd/mtd/fixes robh/for-next v5.14-rc2 next-20210720]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+Now, we are checking by giving squashfs block size also as 4096
 
-url:    https://github.com/0day-ci/linux/commits/Apurva-Nandan/dt-bindings-mtd-spi-nand-Convert-to-DT-schema-format/20210718-103130
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next
-compiler: arm-linux-gnueabi-gcc (GCC) 10.3.0
-reproduce: make ARCH=arm dtbs_check
+In case, if this does not work, what else could be the other option ?
+Can we try with initramfs approach ?
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-
-dtcheck warnings: (new ones prefixed by >>)
-   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/simple-bus.yaml
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml: clock-controller@1800000: '#power-domain-cells' is a required property
-   	From schema: Documentation/devicetree/bindings/clock/qcom,gcc.yaml
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml:0:0: /soc/rng@22000: failed to match any schema with compatible: ['qcom,prng']
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml:0:0: /soc/pinctrl@1000000: failed to match any schema with compatible: ['qcom,ipq4019-pinctrl']
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml: usb-power: $nodename:0: 'usb-power' does not match '^(hog-[0-9]+|.+-hog(-[0-9]+)?)$'
-   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/gpio/gpio-hog.yaml
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml:0:0: /soc/sdhci@7824900: failed to match any schema with compatible: ['qcom,sdhci-msm-v4']
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml:0:0: /soc/dma@7884000: failed to match any schema with compatible: ['qcom,bam-v1.7.0']
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml:0:0: /soc/spi@78b5000: failed to match any schema with compatible: ['qcom,spi-qup-v2.2.1']
->> arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml: nand@1: $nodename:0: 'nand@1' does not match '^flash(@.*)?$'
-   	From schema: Documentation/devicetree/bindings/mtd/spi-nand.yaml
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml:0:0: /soc/spi@78b6000: failed to match any schema with compatible: ['qcom,spi-qup-v2.2.1']
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml:0:0: /soc/i2c@78b7000: failed to match any schema with compatible: ['qcom,i2c-qup-v2.2.1']
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml:0:0: /soc/i2c@78b8000: failed to match any schema with compatible: ['qcom,i2c-qup-v2.2.1']
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml:0:0: /soc/dma@8e04000: failed to match any schema with compatible: ['qcom,bam-v1.7.0']
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml:0:0: /soc/crypto@8e3a000: failed to match any schema with compatible: ['qcom,crypto-v5.1']
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml:0:0: /soc/clock-controller@b088000: failed to match any schema with compatible: ['qcom,kpss-acc-v2']
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml:0:0: /soc/clock-controller@b098000: failed to match any schema with compatible: ['qcom,kpss-acc-v2']
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml:0:0: /soc/clock-controller@b0a8000: failed to match any schema with compatible: ['qcom,kpss-acc-v2']
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml:0:0: /soc/clock-controller@b0b8000: failed to match any schema with compatible: ['qcom,kpss-acc-v2']
---
-   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/simple-bus.yaml
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml: clock-controller@1800000: '#power-domain-cells' is a required property
-   	From schema: Documentation/devicetree/bindings/clock/qcom,gcc.yaml
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml:0:0: /soc/rng@22000: failed to match any schema with compatible: ['qcom,prng']
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml:0:0: /soc/pinctrl@1000000: failed to match any schema with compatible: ['qcom,ipq4019-pinctrl']
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml: usb-power: $nodename:0: 'usb-power' does not match '^(hog-[0-9]+|.+-hog(-[0-9]+)?)$'
-   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/gpio/gpio-hog.yaml
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml:0:0: /soc/sdhci@7824900: failed to match any schema with compatible: ['qcom,sdhci-msm-v4']
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml:0:0: /soc/dma@7884000: failed to match any schema with compatible: ['qcom,bam-v1.7.0']
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml:0:0: /soc/spi@78b5000: failed to match any schema with compatible: ['qcom,spi-qup-v2.2.1']
->> arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml: nand@1: $nodename:0: 'nand@1' does not match '^flash(@.*)?$'
-   	From schema: Documentation/devicetree/bindings/mtd/spi-nand.yaml
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml:0:0: /soc/spi@78b6000: failed to match any schema with compatible: ['qcom,spi-qup-v2.2.1']
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml:0:0: /soc/i2c@78b7000: failed to match any schema with compatible: ['qcom,i2c-qup-v2.2.1']
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml:0:0: /soc/i2c@78b8000: failed to match any schema with compatible: ['qcom,i2c-qup-v2.2.1']
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml:0:0: /soc/dma@8e04000: failed to match any schema with compatible: ['qcom,bam-v1.7.0']
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml:0:0: /soc/crypto@8e3a000: failed to match any schema with compatible: ['qcom,crypto-v5.1']
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml:0:0: /soc/clock-controller@b088000: failed to match any schema with compatible: ['qcom,kpss-acc-v2']
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml:0:0: /soc/clock-controller@b098000: failed to match any schema with compatible: ['qcom,kpss-acc-v2']
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml:0:0: /soc/clock-controller@b0a8000: failed to match any schema with compatible: ['qcom,kpss-acc-v2']
-   arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml:0:0: /soc/clock-controller@b0b8000: failed to match any schema with compatible: ['qcom,kpss-acc-v2']
---
-   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/reg.yaml
-   arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml: soc: pci@40000000:reg:0: [1073741824, 3869, 1073745696, 168, 524288, 8192, 1074790400, 4096] is too long
-   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/simple-bus.yaml
-   arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml: clock-controller@1800000: '#power-domain-cells' is a required property
-   	From schema: Documentation/devicetree/bindings/clock/qcom,gcc.yaml
-   arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml:0:0: /soc/rng@22000: failed to match any schema with compatible: ['qcom,prng']
-   arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml:0:0: /soc/pinctrl@1000000: failed to match any schema with compatible: ['qcom,ipq4019-pinctrl']
-   arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml:0:0: /soc/sdhci@7824900: failed to match any schema with compatible: ['qcom,sdhci-msm-v4']
-   arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml:0:0: /soc/dma@7884000: failed to match any schema with compatible: ['qcom,bam-v1.7.0']
-   arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml:0:0: /soc/spi@78b5000: failed to match any schema with compatible: ['qcom,spi-qup-v2.2.1']
->> arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml: spi-nand@1: $nodename:0: 'spi-nand@1' does not match '^flash(@.*)?$'
-   	From schema: Documentation/devicetree/bindings/mtd/spi-nand.yaml
-   arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml:0:0: /soc/spi@78b6000: failed to match any schema with compatible: ['qcom,spi-qup-v2.2.1']
-   arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml:0:0: /soc/i2c@78b7000: failed to match any schema with compatible: ['qcom,i2c-qup-v2.2.1']
-   arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml:0:0: /soc/i2c@78b8000: failed to match any schema with compatible: ['qcom,i2c-qup-v2.2.1']
-   arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml:0:0: /soc/dma@8e04000: failed to match any schema with compatible: ['qcom,bam-v1.7.0']
-   arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml:0:0: /soc/crypto@8e3a000: failed to match any schema with compatible: ['qcom,crypto-v5.1']
-   arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml:0:0: /soc/clock-controller@b088000: failed to match any schema with compatible: ['qcom,kpss-acc-v2']
-   arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml:0:0: /soc/clock-controller@b098000: failed to match any schema with compatible: ['qcom,kpss-acc-v2']
-   arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml:0:0: /soc/clock-controller@b0a8000: failed to match any schema with compatible: ['qcom,kpss-acc-v2']
-   arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml:0:0: /soc/clock-controller@b0b8000: failed to match any schema with compatible: ['qcom,kpss-acc-v2']
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks,
+Pintu
 
 ______________________________________________________
 Linux MTD discussion mailing list
