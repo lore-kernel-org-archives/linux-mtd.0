@@ -1,164 +1,109 @@
-Return-Path: <SRS0=Hn5r=MO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=yo9c=MP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09F2BC6377D
-	for <linux-mtd@archiver.kernel.org>; Thu, 22 Jul 2021 13:04:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F180BC4338F
+	for <linux-mtd@archiver.kernel.org>; Fri, 23 Jul 2021 06:28:44 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D2CCC60FE9
-	for <linux-mtd@archiver.kernel.org>; Thu, 22 Jul 2021 13:04:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D2CCC60FE9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=windriver.com
-Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
+	by mail.kernel.org (Postfix) with ESMTPS id C0C6660ED7
+	for <linux-mtd@archiver.kernel.org>; Fri, 23 Jul 2021 06:28:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C0C6660ED7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=v6RHXIvaykwrUH7rmBomAOojARibWbV9G0PWhSXWIaI=; b=QRZTDikKyzv3Lc
-	td55DmZb+6QEzF9iivMPmdBlOK4PkrzsLiOfgYW6TqeNO8TojxHbKn9CdxSBdVs6Hy02rHtNY90KE
-	0z3itH1pxJAk03xg3yuwlzGPlvi8OI4+EjDEbGy/d+ZmIWHS1wEhM12YhU9bhrfJR13Fmi5HACdrn
-	rFCJa6UqJ/3eJ59RbvT9iBqfmSLkfYtrzSf6K92rbM4xprbfOKpmrDic2cWL7TwZJkDOgahccoZVd
-	Q0UBL9u0ntEegpLygKZLXo2V6gN+3madfB88cDd9+4UmIcZDi+H7oR/3AfOIL89IVi1G/5ybp/s49
-	8GS2czuEGSrb8a/y1loQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=PMYRnIDhrF34QvsgqCT9ZdpVMHRo5biRwImqCKO7rmI=; b=0GHhQ2KTwKyfNv
+	6i3q57962uLAJEY462x1jdCNxU3dBtsMg8Xskt54V9YzzB8fxCCVGfd+keCV6HFq1lz3IgND8swEq
+	NrKcBJfM4W6ntRUtPawz99vT6JV8TDdr7c1U3zJ3hlGXewanfwDuA/OLkUq3p+fGvjMUuilJPTBwu
+	XP/8Vhcg1C6BpgNngrkB63gP5+vVDJ9SS8r2WCYLCVNsS8yYZvrzrOTyurrb4Z9vKtetONiGq+7ZA
+	noTTWjQkzYq8sV5CUbDWZhtPWlfazXqxuRLXfYeHUuDrdUx5AXxozB4se5pd8QQ5fNys4E4O/6OZE
+	4XqaxWaZ8Yrrfi5qMEaA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m6YMT-001aGo-Ca; Thu, 22 Jul 2021 13:03:38 +0000
-Received: from mx0a-0064b401.pphosted.com ([205.220.166.238])
+	id 1m6of5-003YXI-Tx; Fri, 23 Jul 2021 06:27:55 +0000
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m6XcT-001Sox-LP
- for linux-mtd@lists.infradead.org; Thu, 22 Jul 2021 12:16:10 +0000
-Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
- by mx0a-0064b401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16MBxbXZ018417; 
- Thu, 22 Jul 2021 05:15:56 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
- h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=PPS06212021;
- bh=PWxHI2Ndb0Bj4j1Ym7PtjhswsiefocKLzYiE4KYIp2I=;
- b=hLvAOckHKlNlgW50FleQArBAoS+rQ+XZ9t/eiWaO4kzeHcKmlzPl9/RE0zYgS/mrvIEv
- HyL5R6cgnWYWCLO3FJyizpMKYEt2r9nEDC6omVkYM975kzHizBc+2cPqGuob4IYnZj0X
- FeB/PwAMuzQB9L7lno7vFjIV0TDqcNwxdzoCm1zD/0UudLmRvqzSVRn+DqJgvZy8dp+z
- EHufOsAe0om8+Vb+/shvPnqmTN9+udCMKZK48f2fonmxeJpeafGRZHSUHWRrcdDRtIHn
- a5NBJaq2KukWmq6f9zoptYs3kOaS2bwkOflFGg3UMSaFjDSo7CJ3XPe99uMVaLRwX7Lo CA== 
-Received: from nam02-bn1-obe.outbound.protection.outlook.com
- (mail-bn1nam07lp2047.outbound.protection.outlook.com [104.47.51.47])
- by mx0a-0064b401.pphosted.com with ESMTP id 39y66p82vx-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 22 Jul 2021 05:15:56 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LY21CcZE2YBxj7f8c4QHaivXL/f/FmHGZYjeTml1ngZ8ji6Y56fkbDFuRFEnFMZ0YQhp5OzDmbK0z1Svy0X+/dCWP9xQ7Fth992J6LnFWTuGAzR2jV9o0U6Yw1HCg0V3mcZ/nR9BXb39gujWdU/jHlwWrEzoKvGV0WEWuXbmcuo3gdlxGNDDXFyeTxHjRDBxK9PYP7g2yKcMQxH3gEkI4udCpsG6mLx4+Nb/HLLuXPBoVxhx9t1+mggFAVL/lPZMWo6RFZtJODKjBQ/wV61cJPZbj1So+MCx2r4V5vDGzeFfLOtB5auxdBRm0FWYN/GfBQwyZPmzPfM3/nOE95OmrA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PWxHI2Ndb0Bj4j1Ym7PtjhswsiefocKLzYiE4KYIp2I=;
- b=FR5lGbAfXL1SC+plFjQLVfWSMv8T1Z0m0F7bHGncMNjwsr79SrjsFKtv++4AI8tXTJe77Rby5t8akReMkb2PaRbiGc4QRzqGjTW6VdXZePxs154ZErHe8+MXwxAJepsWg6lpO8gKfe+cnaSpy5/eZDySPh6c8CgiQ1p68KFw4GrqTMkqCvNmINgWKdOFwJkoTbeJtjzbz/vKOg4niyVVoYtmQm9c+fFNbjPLQF66qR0tDqzsmf1Sndi65YHjM/NlNrQovob2GjAeUSpR8ETxycXZ3i6WN444hIm5dkplI6PCkUUZbFFLtEfAVQmkUU26oBl7G1WEsAY4zIHN62Dprg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-Authentication-Results: microchip.com; dkim=none (message not signed)
- header.d=none;microchip.com; dmarc=none action=none
- header.from=windriver.com;
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com (2603:10b6:910:7a::30)
- by CY4PR11MB1416.namprd11.prod.outlook.com (2603:10b6:903:2e::14)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.25; Thu, 22 Jul
- 2021 12:15:54 +0000
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::def:cd0:ce93:8a7]) by CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::def:cd0:ce93:8a7%7]) with mapi id 15.20.4331.034; Thu, 22 Jul 2021
- 12:15:54 +0000
-From: quanyang.wang@windriver.com
-To: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Jungseung Lee <js07.lee@samsung.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Quanyang Wang <quanyang.wang@windriver.com>
-Subject: [PATCH] mtd: spi-nor: swp: fix unlock lower area failure
-Date: Thu, 22 Jul 2021 20:14:00 +0800
-Message-Id: <20210722121400.171083-1-quanyang.wang@windriver.com>
-X-Mailer: git-send-email 2.25.1
-X-ClientProxiedBy: SJ0PR03CA0173.namprd03.prod.outlook.com
- (2603:10b6:a03:338::28) To CY4PR11MB0071.namprd11.prod.outlook.com
- (2603:10b6:910:7a::30)
+ id 1m6of1-003YUn-VA
+ for linux-mtd@lists.infradead.org; Fri, 23 Jul 2021 06:27:53 +0000
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id EFD463F23A
+ for <linux-mtd@lists.infradead.org>; Fri, 23 Jul 2021 06:27:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20210705; t=1627021662;
+ bh=ScM5eUXjBnVPe8LbBTYSW47mZlMEZMzsEaWNVZaNkWQ=;
+ h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+ MIME-Version:Content-Type;
+ b=nsvN0ErA8WaW8/lOXcgd0q8rEbSTVwUA4Tq1e8CLkVWHSi9ztgt7RNj7e+oMzg2RK
+ YF4eDjV+resTr3gBQVu8X1O9IW++zISGD6qp9QqB9dN8T0/t846pi2RrcMcPn33J1e
+ Zt0eHxC0jWORsANSPjDWp5eOLSBgI88UYuLLjWwhv8eOl+q+xeCAo3sk2OAsDBwyZw
+ MK0LgswaY3q/013vmIPCv55k7rTV/2Q8fhuLYMNdDIxD+PpQN9zI/xwnknqzXP6mjq
+ lBeooBXCiz/q43F6bMcvXciSj1jTgsZyYtP/Omvzqdj2JQDbh0ACwYKXw2usycYU73
+ zx34lpljRomPw==
+Received: by mail-ed1-f70.google.com with SMTP id
+ d12-20020a50fe8c0000b02903a4b519b413so209891edt.9
+ for <linux-mtd@lists.infradead.org>; Thu, 22 Jul 2021 23:27:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=ScM5eUXjBnVPe8LbBTYSW47mZlMEZMzsEaWNVZaNkWQ=;
+ b=cbVTtN9+m2LQeFDxzf7D8qsNU2nSZziggGYOGFsz0wJjjKmF2mx+ACFBvTyEybHoaT
+ VyZvbUHDl3NU9eY9HUw/sffm7mZ13My83vH2CPekXW5IfIn1wCMy/xizkiZECt4E6siV
+ 5C0DJK+1mNJCsFdpSTBm9GH/ZYfn0uOLV7+qlfPjnzbA1KUw6xXrDGJXqpnf5fSve5aW
+ Qc+QGLlpmBx8tpXAPKpcRiI1QZVXXZ2vYXT2EDeu02gtXgryJpEYW0jzE2FTc6yP2DkX
+ FDxdaaR599SgbInfb9ABnc+9Y9h1D1O+c0isXJVHN3J+ToCoJcvFwiRc7d7pwS8813Hh
+ 0ytw==
+X-Gm-Message-State: AOAM531sMRFBLgmU8UhAPWU+4zbvfyu3qFLYUvzr5EwJ0YolajKXFmJt
+ HUkIn1CiT5DdgDsu3STWYnbBX7+ykljkm4mpL0Mx+JeaSNKj+RMhRfVt78T1TLd5lWXhOEYjYPX
+ sb6+yFybPHzkI3Ab6OuBGzMRQenZrq/ONwTK0Bn65S8Q=
+X-Received: by 2002:a17:906:e0e:: with SMTP id
+ l14mr3313199eji.501.1627021662762; 
+ Thu, 22 Jul 2021 23:27:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxZ+nyDEENcrVRLwr6YxB1sHYJA1zCxcGsDlpGPB37Ly4NJOfWs4Dn45abWgrRNkKKGjwgnGw==
+X-Received: by 2002:a17:906:e0e:: with SMTP id
+ l14mr3313181eji.501.1627021662625; 
+ Thu, 22 Jul 2021 23:27:42 -0700 (PDT)
+Received: from localhost.localdomain ([86.32.47.9])
+ by smtp.gmail.com with ESMTPSA id u5sm13449844edv.64.2021.07.22.23.27.41
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 22 Jul 2021 23:27:42 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+ Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+ linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+ Guenter Roeck <linux@roeck-us.net>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, netdev@vger.kernel.org,
+ Jakub Kicinski <kuba@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Jean Delvare <jdelvare@suse.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+Subject: Re: (subset) [PATCH 00/15] Fix some DT binding references at
+ next-20210722
+Date: Fri, 23 Jul 2021 08:27:18 +0200
+Message-Id: <162702163038.6229.12663832282139727924.b4-ty@canonical.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <cover.1626947923.git.mchehab+huawei@kernel.org>
+References: <cover.1626947923.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pek-qwang2-d1.wrs.com (60.247.85.82) by
- SJ0PR03CA0173.namprd03.prod.outlook.com (2603:10b6:a03:338::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.24 via Frontend
- Transport; Thu, 22 Jul 2021 12:15:51 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d360a741-8034-4d47-03c6-08d94d0a73b3
-X-MS-TrafficTypeDiagnostic: CY4PR11MB1416:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CY4PR11MB141624AD478BD562409540D4F0E49@CY4PR11MB1416.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /AsbHfdEYX9vtGsRyQiG+wcWW7Q3u0HkAdFQObFRidjNwsudIpzOo+xvU+xiyoUOUwbLRPaoqpxKgaQ4dG/cVbnrNklkTsCEu1wWi4ZGrpG8qXMv0cpyLzzcguVmcNxSgujgQdH+AbacddvcR3qplCzqrcBYvpJjHoJQzhKQvoMxZF4Pe/ygh028MMjh02gRzzvhSmopkXPT+0mB9fXU2BQuonr2zVXcBPAvncl0DjZCyvnSi/L8NLnCdEPAoRUJyxxXFkj6rjBk/M7iPxlMYNg7yNJvv3J2y2EzJ8Q1JhXM1XssLV9VnFsEOfui/5fekM6zoxukHV01DVoa8EmC7zxWLZyex6MsVhU4KSrqEdd9aok29ssJy//wwtpQ/xsxHKpBYmlJ/+7o4s9q/VTZznnx+PC+nfUr/Ymi0eGWc69fMP7od/MABoryoJ9QsUyKgU3ebulVJxjHpdgyOhfX6uakhQkpRODJwgqMaWXHw46WHX0TPoPilM7bx7ZsbYfN/p6vwPGeK71JQfu/iNEzNpG7Ol9WpjP92mDdmGxMMov6YZJhIfJnpQlFPiS6Cbd65EoqGFZwM/cD4zByfOym44O/cZI8iez7WlGBYiVl/N999uAeptZjmvCHh5ArcQNhpb7YEe0EMCgFDC3qsvLLWqiC3LTAhjayT8+zQXWHlajJ5cqfu4GNgaGECuVN5MfrWSTyZR7xLo3bPBHEzUKr7w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:CY4PR11MB0071.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(39850400004)(396003)(136003)(346002)(376002)(86362001)(6506007)(6512007)(9686003)(66946007)(2906002)(110136005)(36756003)(2616005)(6486002)(54906003)(4326008)(52116002)(478600001)(38100700002)(8676002)(186003)(66556008)(956004)(66476007)(316002)(107886003)(1076003)(5660300002)(83380400001)(38350700002)(26005)(6666004)(8936002);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?lw5XU/b7ai6aLtkjfvP5tzTFSb3B6/vcrIwEBxI1PRSd46Z5rcfaS4snA5Me?=
- =?us-ascii?Q?Gn6bFy4Eg8FVkoe52DPZdNYTU2plwU8Q7HS9PQefrWUZFn9/NFRl0uJQjgYO?=
- =?us-ascii?Q?p4F1oNES1675xajs46E0rrtMEpCv1FVkYEgGBVVPTJfetSyeSqbN6HA0z6Sz?=
- =?us-ascii?Q?gQQiuWa1yPU/bdk9ec/34lbQtSZbWDxeIAXSUeQGzTfWj/YUIXROq6YuF0Vb?=
- =?us-ascii?Q?7oku20M04Uu4kmlD/8hxNAIHLCi2vEoB0YnA7yC0nUf1LRtOY/O7L2bVoR3X?=
- =?us-ascii?Q?SbjUkwc0r/Y7ILR/wglnI4rKfICz3Y4oNfcf0OaX5nVgWkPkHaGiYl1SyUd5?=
- =?us-ascii?Q?Nzie9W7vOVM9QYbl2Rw7k5P5+jX2vZyjInZqX2C5fgX6e+W3QOV/NS2ssC1p?=
- =?us-ascii?Q?Z1VYR3pf6y0nUXjtMEc8srMR3suqpeOu2w/zMGvZxBB1LD6ZWokgIZ1JoXQI?=
- =?us-ascii?Q?hF+kZolALM71f2LOCGM+tLidWZIQ/NQlGC+GBwf06m8zl7szEX5E5o2DJLaU?=
- =?us-ascii?Q?tIYS4OzvC7G4DcmVVSCR/U+OEW9Zd3SUyQxtp96KOe9IKrDLcm8YJ7bjfSuD?=
- =?us-ascii?Q?L6WrfTiDVK2IQCsr3aszLlFOW//08sD0k7DIusNnOhJw/cD2z8PsKmjRmR/b?=
- =?us-ascii?Q?IrcvmmWzhxdS2dLyVPEknPzPVE9AcwZ88yPN5U2LjNWMYj59RAgBEnc4qkdu?=
- =?us-ascii?Q?/wVvpHU4y5pOw59sVvR3wm2hWo5/lc+l73h7WLfwkEo8dunvUo1OIBEg9ouL?=
- =?us-ascii?Q?8SKu+TL3yMUArd0CsovhGZl4x1weKJVI/9gEoFD9VTck73U8/2hZJEIMkq86?=
- =?us-ascii?Q?yxPLoWvhL5U2D7bde3P61EU3I5sq3kpu+R1CaavEg6WYcqtw3rCFEokJYnYK?=
- =?us-ascii?Q?G73d70Q9Qe0adD2UpxQUSo4g/B32n2KcRxRm6QLXq5Bu6M9EQNZMsfe/xRvd?=
- =?us-ascii?Q?joLAsa+4pjzPen3wtA7SF/vIs+9l3y7ansMuEDqHFVZARjwh2eZCqdr2EuHj?=
- =?us-ascii?Q?W1ti2Qtgx5uBWHmKuWyx6besxeYkbwT2epl4s7a4FSSgHGRZEXfCjq8awlOi?=
- =?us-ascii?Q?ds7ETuB+R2zvmbt1cS7VQFLmHRoiWnjtXsIlwFZXFhIj2Lm2ym82vRO54ngh?=
- =?us-ascii?Q?x1lqNwleuSugcO6LpFsOIiVx+aUEBjfRXxxH+4EZNwO3V9XDZObl1+16UFx9?=
- =?us-ascii?Q?cIOT2cC7tZxD0Djust7A5ROlD+fZuCpbFIDwK5s+NRVU6s2x8z/CiRKJIeVd?=
- =?us-ascii?Q?eKmUmnNLiqmqR6Jsr6xnA4/AlxBYI5m7++oTIhtN9/3dWNXl0w3o2IdwiQk1?=
- =?us-ascii?Q?I8UmPHVfMw0H8AMEz3bi+VGs?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d360a741-8034-4d47-03c6-08d94d0a73b3
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB0071.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jul 2021 12:15:53.9247 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UBa0pMcfcU5TUUxcDXBn8WK3X74qaAUihGi7huL7jnbxVVqJEG9w8g8W/OCqsYBl4Wwgk66Ld5eiC33V8ro+XFZ/aLXKBHZkPaewwuyeyNU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB1416
-X-Proofpoint-GUID: Is6T1y080BOkmipCHa2ecNZaFa5eZjls
-X-Proofpoint-ORIG-GUID: Is6T1y080BOkmipCHa2ecNZaFa5eZjls
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-07-22_04,2021-07-22_03,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1011 suspectscore=0
- bulkscore=0 malwarescore=0 priorityscore=1501 impostorscore=0 mlxscore=0
- phishscore=0 mlxlogscore=999 spamscore=0 lowpriorityscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107220082
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210722_051606_596334_C32A0A2F 
-X-CRM114-Status: GOOD (  20.32  )
+X-CRM114-CacheID: sfid-20210722_232752_168636_1039B866 
+X-CRM114-Status: GOOD (  10.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -175,77 +120,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Quanyang Wang <quanyang.wang@windriver.com>
+On Thu, 22 Jul 2021 11:59:57 +0200, Mauro Carvalho Chehab wrote:
+> Due to DT schema conversion to yaml, several references to dt-bindings got
+> broken.
+> 
+> Update them.
+> 
+> Mauro Carvalho Chehab (15):
+>   dt-bindings: mtd: update mtd-physmap.yaml reference
+>   dt-bindings: firmware: update arm,scpi.yaml reference
+>   dt-bindings: net: dsa: sja1105: update nxp,sja1105.yaml reference
+>   MAINTAINERS: update mtd-physmap.yaml reference
+>   MAINTAINERS: update arm,vic.yaml reference
+>   MAINTAINERS: update aspeed,i2c.yaml reference
+>   MAINTAINERS: update faraday,ftrtc010.yaml reference
+>   MAINTAINERS: update fsl,fec.yaml reference
+>   MAINTAINERS: update mtd-physmap.yaml reference
+>   MAINTAINERS: update ti,am654-hbmc.yaml reference
+>   MAINTAINERS: update ti,sci.yaml reference
+>   MAINTAINERS: update gpio-zynq.yaml reference
+>   MAINTAINERS: update arm,pl353-smc.yaml reference
+>   MAINTAINERS: update intel,ixp46x-rng.yaml reference
+>   MAINTAINERS: update nxp,imx8-jpeg.yaml reference
+> 
+> [...]
 
-In the function spi_nor_sr_unlock, the variables "can_be_top" and
-"can_be_bottom" determine how to calculate the value of "lock_len".
+Applied, thanks!
 
-When we try to unlock a locked region in the lower area of flash,
-the variables "can_be_top" and "can_be_bottom" may be all true and
-this is not right because for this case "lock_len" is only "ofs"
-but not "mtd->size - (ofs + len)".
+[13/15] MAINTAINERS: update arm,pl353-smc.yaml reference
+        commit: e460a86aab669e00c5952a7643665f3096fbfe27
 
-So introduce spi_nor_is_lower_area() to check if the area to be
-unlocked is in the lower and use it to exclude "can_be_top".
-
-It's similar to spi_nor_is_upper_area() which is used to exclude
-"can_be_bottom".
-
-Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
----
- drivers/mtd/spi-nor/swp.c | 25 +++++++++++++++++++++++--
- 1 file changed, 23 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
-index 63512ff3b184..3214b644f093 100644
---- a/drivers/mtd/spi-nor/swp.c
-+++ b/drivers/mtd/spi-nor/swp.c
-@@ -118,6 +118,26 @@ static bool spi_nor_is_unlocked_sr(struct spi_nor *nor, loff_t ofs,
- 	return spi_nor_check_lock_status_sr(nor, ofs, len, sr, false);
- }
- 
-+static bool spi_nor_is_lower_area(struct spi_nor *nor, loff_t ofs, uint64_t len)
-+{
-+	struct mtd_info *mtd = &nor->mtd;
-+
-+	if (nor->flags & SNOR_F_HAS_SR_TB)
-+		return ((ofs + len) <= (mtd->size >> 1));
-+	else
-+		return false;
-+}
-+
-+static bool spi_nor_is_upper_area(struct spi_nor *nor, loff_t ofs, uint64_t len)
-+{
-+	struct mtd_info *mtd = &nor->mtd;
-+
-+	if ((nor->flags & SNOR_F_HAS_SR_TB))
-+		return (ofs >= (mtd->size >> 1));
-+	else
-+		return true;
-+}
-+
- /*
-  * Lock a region of the flash. Compatible with ST Micro and similar flash.
-  * Supports the block protection bits BP{0,1,2}/BP{0,1,2,3} in the status
-@@ -259,12 +279,13 @@ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
- 		return 0;
- 
- 	/* If anything below us is locked, we can't use 'top' protection */
--	if (!spi_nor_is_unlocked_sr(nor, 0, ofs, status_old))
-+	if ((!spi_nor_is_unlocked_sr(nor, 0, ofs, status_old)) ||
-+				    spi_nor_is_lower_area(nor, ofs, len))
- 		can_be_top = false;
- 
- 	/* If anything above us is locked, we can't use 'bottom' protection */
- 	if (!spi_nor_is_unlocked_sr(nor, ofs + len, mtd->size - (ofs + len),
--				    status_old))
-+				    status_old) || spi_nor_is_upper_area(nor, ofs, len))
- 		can_be_bottom = false;
- 
- 	if (!can_be_bottom && !can_be_top)
+Best regards,
 -- 
-2.25.1
-
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
 ______________________________________________________
 Linux MTD discussion mailing list
