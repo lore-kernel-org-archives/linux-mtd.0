@@ -2,96 +2,85 @@ Return-Path: <SRS0=yo9c=MP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9BB6C4320A
-	for <linux-mtd@archiver.kernel.org>; Fri, 23 Jul 2021 11:29:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67DCAC4320A
+	for <linux-mtd@archiver.kernel.org>; Fri, 23 Jul 2021 14:12:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 92F28608FE
-	for <linux-mtd@archiver.kernel.org>; Fri, 23 Jul 2021 11:29:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 92F28608FE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=ew.tq-group.com
+	by mail.kernel.org (Postfix) with ESMTPS id 254F160EB4
+	for <linux-mtd@archiver.kernel.org>; Fri, 23 Jul 2021 14:12:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 254F160EB4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gorani.run
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NEEJYB5S5XgbP38m613fuRm1TEpcMTgRa7BzK/Dvtt4=; b=gyHtFrwfJ14gjX
-	A4INdtwuivIJ1/apR82u28g01h7Iy/+yMNZBA7GQCwO7WpFRS8Sg2UUIE8L03OfHR69UmWzpMfpM/
-	VkTcLckp40332TmV7nZ9JL2zbdTgRwF96RTCTTdgqkpuKJrztkQNZB+Tml9eo7SG3ZkaUrStAiEOV
-	r8cyKGfeJKma8ARNMAeHAZSx5NjzEl287KRx628EGKhxi2DM+d4nD22GdDbtIyqOPHzFquD00u1F2
-	YsbfxBgKwKLz0YB2rviv5WWOdiER6pn8RmtVl2oePgiO98ctSHcwWdT/oOfUEcXsbE0pZsHSsrkNR
-	etUrDnNa5dachaUvc1/A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:Cc:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Cr+0gvJAFBKcljPkIi2XpfzRfeALl55x/mgsh6fuby0=; b=suX22tyi5tQPKh2/UJxrhjCz0c
+	M9XzEA9y5Qg6iCNUuQxxyvjg3cPUfbMe0QEWYdky63l+AtJIkZWoJHktFRE6lK/8opZH5Rs+SITzs
+	pAx38qWYFvaTQd+n6mtNy8XwGFtPg29FsYgFZtJK+oR2swXTlZsQEFm6YlkKwxGSznd8obANA60ts
+	g2d+bHMHB65Eb6JfzlrTr+cDl/Hg9r3AkF2Z3FbLB35rcZWvuCn1g3xwEb0ETGnkKnpz1X4B5nRZv
+	80GghvMMdX1bsDM5BX/pH99gSSSYN9hsrFKQk2SzmVgHdrjkCqohT2/mTd3flI4U+w+kaXhjswJD2
+	7B4W5d8g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m6tLy-004VSb-4B; Fri, 23 Jul 2021 11:28:30 +0000
-Received: from mx1.tq-group.com ([93.104.207.81])
+	id 1m6vtZ-004yNl-4a; Fri, 23 Jul 2021 14:11:21 +0000
+Received: from mout-p-101.mailbox.org ([2001:67c:2050::465:101])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m6tLh-004VQG-Nk
- for linux-mtd@lists.infradead.org; Fri, 23 Jul 2021 11:28:15 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
- t=1627039693; x=1658575693;
- h=from:to:cc:subject:date:message-id;
- bh=dD4m+5jvnpLz3g9QjfJTZRKHJTBtcnmMU1A7kvKDBLY=;
- b=d3gcybgUDwc80g/ZjNG/ZOayQlWe03Mqt229CAMMxFPU5PqJRg6nW7fE
- pnQTy0FOb+ZXd4LYY2UchmntW96/WJxQDRtOJPJCE63DtmYt0z4sXXC1L
- jey4PStibIezNwz/sv9QLx6aaPwNzo2nwG6hXOdIAjGh2g3mn+1MRy4re
- nXyHV9Gc/7TR2tcQ3d3vmWrTYHwsosGifwj0rjpmydZoW3wSWgw1XpAoE
- xoQiC5fwmBgpzIdrLrHLGujQSFJmnIJS1JAsMd5uMtrvf5B2w9tCMgIhz
- +Nh5Rz3B/ObQ8g7Ec6ua/9p6NhSWeZ6aO6K+Xig39T/Ku3L2Er72GJzg4 Q==;
-X-IronPort-AV: E=Sophos;i="5.84,263,1620684000"; d="scan'208";a="18612751"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
- by mx1-pgp.tq-group.com with ESMTP; 23 Jul 2021 13:28:09 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
- by tq-pgp-pr1.tq-net.de (PGP Universal service);
- Fri, 23 Jul 2021 13:28:09 +0200
-X-PGP-Universal: processed;
- by tq-pgp-pr1.tq-net.de on Fri, 23 Jul 2021 13:28:09 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
- t=1627039689; x=1658575689;
- h=from:to:cc:subject:date:message-id;
- bh=dD4m+5jvnpLz3g9QjfJTZRKHJTBtcnmMU1A7kvKDBLY=;
- b=S05bLAhTE9aoIg4LVyrkgqzmo+gN345ba6bBlWbUDT6o6saGV8LCryL5
- 1IE0ixdtbca5yUD82OR31H5uCWC9ewZf52WSIb+AucZTuJ2PzXTD0hn5m
- LfUcUZ/sHC2YzDDT0DZLEA4eE5JA/0O4PDxg1uumOQ/6Lz/zEZccusAmK
- D28yRsbcn6WQVhQEk8+N5Vr/b8BM+6PtHNKMB2d3bL+eotBax18WWxnkp
- zudYD1AZ1lpEq6/LlZH1xaLSkuxqUF36+NI1BbeWYYTikjdA55m8X+WoZ
- yRcrbR3iphe/C0a0mjv88UUIKSfii7apet9rXa3vNps0bIf7zzHVrjzAj g==;
-X-IronPort-AV: E=Sophos;i="5.84,263,1620684000"; d="scan'208";a="18612750"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
- by mx1.tq-group.com with ESMTP; 23 Jul 2021 13:28:09 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de
- [10.121.48.12])
- by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 3FA2C280075;
- Fri, 23 Jul 2021 13:28:09 +0200 (CEST)
-From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Michael Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>,
+ id 1m6vtV-004yMQ-Oi
+ for linux-mtd@lists.infradead.org; Fri, 23 Jul 2021 14:11:19 +0000
+Received: from smtp1.mailbox.org (smtp1.mailbox.org
+ [IPv6:2001:67c:2050:105:465:1:1:0])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest
+ SHA256) (No client certificate requested)
+ by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4GWWSw3q5MzQjpD;
+ Fri, 23 Jul 2021 16:11:12 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gorani.run; s=MBO0001; 
+ t=1627049468;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=JfwkbO0sCG7uFipRtw8GVMEHGEpnmOQNlVrTicEtUWw=;
+ b=Fnd0mdcgpt9S7J6mwlSPUMjxJtoFsTzkk34CHhdzwOTKWKgYt8puQfkyyTGY4kP4p871EC
+ 0WpNvc51J8kc4AKXE4q8QDiM+UY37zBZjETZmh6ZuJYXO2CXjMmSPL7onPfKmcXk1ODMFa
+ k6aty2m1j4uGErf/COran9SF+dSjTlCLBGZK/yvKts+efG09TaJPZ6BF06LVD3rvMT/4YL
+ EnskdahUFf+TRgPsyhTBqplWtTmBxqXACeW7w9i5xdKbqEXVmAs7LOVVYLluL95m8LlN0K
+ SLCUPj7xpbwdUzGRHX3jKlLZ35LvWMY6bxyOzORuFNhTs+xQ7cQmZqbUvM5cug==
+Received: from smtp1.mailbox.org ([80.241.60.240])
+ by spamfilter03.heinlein-hosting.de (spamfilter03.heinlein-hosting.de
+ [80.241.56.117]) (amavisd-new, port 10030)
+ with ESMTP id jNOAYMkZsqwc; Fri, 23 Jul 2021 16:11:03 +0200 (CEST)
+Subject: Re: [PATCH] mtd: spi-nor: esmt: Use correct name of f25l32qa
+To: Michael Walle <michael@walle.cc>
+Cc: linux-mtd@lists.infradead.org, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH 2/2] mtd: spi-nor: micron-st: add support for mt25ql01g and
- mt25qu01g
-Date: Fri, 23 Jul 2021 13:27:48 +0200
-Message-Id: <a979f3a66e9e4391844d1fae144a32646933c86f.1627039534.git.matthias.schiffer@ew.tq-group.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <c7b6c666aef9a8a2195acabe9954a417f04b6582.1627039534.git.matthias.schiffer@ew.tq-group.com>
-References: <c7b6c666aef9a8a2195acabe9954a417f04b6582.1627039534.git.matthias.schiffer@ew.tq-group.com>
-In-Reply-To: <c7b6c666aef9a8a2195acabe9954a417f04b6582.1627039534.git.matthias.schiffer@ew.tq-group.com>
-References: <c7b6c666aef9a8a2195acabe9954a417f04b6582.1627039534.git.matthias.schiffer@ew.tq-group.com>
+References: <20210620085639.143694-1-mans0n@gorani.run>
+ <dad2160dba9070f1516519bdd00207ac@walle.cc>
+ <e7fca59e-f7f5-f5f8-9e3b-001c5c938659@gorani.run>
+ <f7eeb7645bc2632bb2cf1232d98d7fb4@walle.cc>
+From: Sungbo Eo <mans0n@gorani.run>
+Message-ID: <7a242258-4481-882a-0912-2ac03b72005a@gorani.run>
+Date: Fri, 23 Jul 2021 23:10:55 +0900
+MIME-Version: 1.0
+In-Reply-To: <f7eeb7645bc2632bb2cf1232d98d7fb4@walle.cc>
+Content-Language: en-US
+X-Rspamd-Queue-Id: BB96B18B2
+X-Rspamd-UID: 13f0fb
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210723_042814_119446_73792D17 
-X-CRM114-Status: GOOD (  10.36  )
+X-CRM114-CacheID: sfid-20210723_071118_035761_502678FD 
+X-CRM114-Status: GOOD (  18.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,46 +92,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Split these mt25q models from the older n25q models by matching their
-extended IDs to allow adding support for 4byte opcodes.
-
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
----
- drivers/mtd/spi-nor/micron-st.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-index d5baa8762c8d..2fca5de2504f 100644
---- a/drivers/mtd/spi-nor/micron-st.c
-+++ b/drivers/mtd/spi-nor/micron-st.c
-@@ -172,11 +172,17 @@ static const struct flash_info st_parts[] = {
- 			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
- 			      SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
- 			      SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6) },
-+	{ "mt25ql01g",   INFO6(0x20ba21, 0x104400, 64 * 1024, 2048,
-+			       SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
-+			       SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
- 	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048,
- 			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
- 			      SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
- 			      SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6 |
- 			      NO_CHIP_ERASE) },
-+	{ "mt25qu01g",   INFO6(0x20bb21, 0x104400, 64 * 1024, 2048,
-+			       SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
-+			       SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
- 	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048,
- 			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
- 			      NO_CHIP_ERASE) },
--- 
-2.17.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMjAyMS0wNy0yMSAxNjozMiwgTWljaGFlbCBXYWxsZSB3cm90ZToKPiBIaSwKPiAKPiBBbSAy
+MDIxLTA3LTE5IDE3OjE5LCBzY2hyaWViIFN1bmdibyBFbzoKPj4gT24gMjAyMS0wNy0xNyAwMTox
+MSwgTWljaGFlbCBXYWxsZSB3cm90ZToKPj4+IEFtIDIwMjEtMDYtMjAgMTA6NTYsIHNjaHJpZWIg
+U3VuZ2JvIEVvOgo+Pj4+IFRoZSBmbGFzaCBJRCBvZiBGMjVMMzJRQSBpcyAweDhjNDAxNiwgd2hl
+cmVhcyB0aGF0IG9mIEYyNUwzMlFBKDJTKSBpcwo+Pj4+IDB4OGM0MTE2LiBGMjVMMzJRQSgyUykg
+aXMgdGhlIG5ld2VyIHZlcnNpb24gb2YgRjI1TDMyUUEgYW5kIGl0cyBCUG4gCj4+Pj4gYml0cwo+
+Pj4+IGFyZSBub24tdm9sYXRpbGUsIHVubGlrZSBpdHMgb2xkZXIgdmVyc2lvbi4KPj4+Pgo+Pj4+
+IFJlZmVyZW5jZXM6IAo+Pj4+IGh0dHBzOi8vd3d3LmVzbXQuY29tLnR3L3VwbG9hZC9wZGYvRVNN
+VC9kYXRhc2hlZXRzL0YyNUwzMlFBLnBkZgo+Pj4+IFJlZmVyZW5jZXM6Cj4+Pj4gaHR0cHM6Ly93
+d3cuZXNtdC5jb20udHcvdXBsb2FkL3BkZi9FU01UL2RhdGFzaGVldHMvRjI1TDMyUUFfMSgyUyku
+cGRmCj4+Pgo+Pj4gIkRhdGFzaGVldDoiIHBsZWFzZQo+Pj4KPj4+PiBTaWduZWQtb2ZmLWJ5OiBT
+dW5nYm8gRW8gPG1hbnMwbkBnb3JhbmkucnVuPgo+Pj4+IC0tLQo+Pj4+IEF0IGZpcnN0IEkgd2Fz
+IGdvaW5nIHRvIHNlbmQgYSBuZXcgc3VwcG9ydCBwYXRjaCBvZiBGMjVMMTZQQSgyUyksCj4+Pj4g
+YnV0IGJlZm9yZSB0aGF0LCBJIHdhbnRlZCB0byBtYWtlIHN1cmUgaWYgIigycykiIHN1ZmZpeCBp
+cyBva2F5IG9yIAo+Pj4+IHVubmVjZXNzYXJ5Lgo+Pj4+IC0tLQo+Pj4+IMKgZHJpdmVycy9tdGQv
+c3BpLW5vci9lc210LmMgfCA0ICsrLS0KPj4+PiDCoDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlv
+bnMoKyksIDIgZGVsZXRpb25zKC0pCj4+Pj4KPj4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQv
+c3BpLW5vci9lc210LmMgYi9kcml2ZXJzL210ZC9zcGktbm9yL2VzbXQuYwo+Pj4+IGluZGV4IGNm
+YzkyMThjMTA1My4uNTFiM2ZmNzY0ZWY2IDEwMDY0NAo+Pj4+IC0tLSBhL2RyaXZlcnMvbXRkL3Nw
+aS1ub3IvZXNtdC5jCj4+Pj4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9lc210LmMKPj4+PiBA
+QCAtMTIsOCArMTIsOCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGZsYXNoX2luZm8gZXNtdF9wYXJ0
+c1tdID0gewo+Pj4+IMKgwqDCoMKgIC8qIEVTTVQgKi8KPj4+PiDCoMKgwqDCoCB7ICJmMjVsMzJw
+YSIsIElORk8oMHg4YzIwMTYsIDAsIDY0ICogMTAyNCwgNjQsCj4+Pj4gwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIFNFQ1RfNEsgfCBTUElfTk9SX0hBU19MT0NLIHwgCj4+Pj4gU1BJX05P
+Ul9TV1BfSVNfVk9MQVRJTEUpIH0sCj4+Pj4gLcKgwqDCoCB7ICJmMjVsMzJxYSIsIElORk8oMHg4
+YzQxMTYsIDAsIDY0ICogMTAyNCwgNjQsCj4+Pj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgU0VDVF80SyB8IFNQSV9OT1JfSEFTX0xPQ0spIH0sCj4+Pj4gK8KgwqDCoCB7ICJmMjVsMzJx
+YSgycykiLCBJTkZPKDB4OGM0MTE2LCAwLCA2NCAqIDEwMjQsIDY0LAo+Pj4+ICvCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgU0VDVF80SyB8IFNQSV9OT1JfSEFTX0xPQ0spIH0s
+Cj4+Pj4gwqDCoMKgwqAgeyAiZjI1bDY0cWEiLCBJTkZPKDB4OGM0MTE3LCAwLCA2NCAqIDEwMjQs
+IDEyOCwKPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgU0VDVF80SyB8IFNQSV9O
+T1JfSEFTX0xPQ0spIH0sCj4+Pj4gwqB9Owo+Pj4KPj4+IFR1ZG9yIGhhcyBkZWNpZGUgb24gdGhh
+dCBuYW1lIC0gb3IgdGhlIHVzZSBvZiBwYXJlbnRoZXNlcy4gSSBkb24ndCAKPj4+IGhhdmUgYQo+
+Pj4gc3Ryb25nIG9waW5pb24gb24gaXQuCj4+Cj4+IEknbSBjb25jZXJuZWQgdGhhdCBhbnkgb3Ro
+ZXIgZGV2aWNlcyBkbyBub3QgY29udGFpbiBwYXJlbnRoZXNlcyBpbgo+PiB0aGVpciBtb2RlbCBu
+YW1lcy4uLiBJJ20gZmluZSB3aXRoICJmMjVsMzJxYS0ycyIgaWYgcHJlZmVycmVkLgo+IAo+IEhh
+dmluZyBhbm90aGVyIGxvb2sgYXQgdGhlIGRhdGFzaGVldCB0aGVyZSBhcmUgZGlmZmVyZW50IHBy
+b2R1Y3QKPiBJRHM6IEYyNUwzMlFBLTUwUEcyUywgRjI1TDMyUUEtODZQRzJTLCAuLiB3aGVyZSB5
+b3UgY2FuIGFsc28gZmluZAo+IHRoZSAiLTJzIi4KPiAKPiBUaHVzIEknZCBhY3R1YWxseSBwcmVm
+ZXIgImYyNWwzMnFhLTJzIi4KCk9oLCB5b3UncmUgcmlnaHQuIFNvIHRoZSAiMlMiIHN1ZmZpeCB3
+YXMgYSBpbmRpY2F0b3IgZm9yIGEgY2xhc3Mgb2YgCmRldmljZXMsIG5vdCBmb3IgYSBzaW5nbGUg
+ZGV2aWNlLi4uIEkgZGlkbid0IGV2ZW4gbm90aWNlIHRoZXJlIHdhcyBhIApwcm9kdWN0IElEIHRh
+YmxlLiB4RAoKSSdsbCBmb2xsb3cgeW91ciBzdWdnZXN0aW9uLiBUaGFua3MhCgo+IAo+IC1taWNo
+YWVsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRl
+YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
