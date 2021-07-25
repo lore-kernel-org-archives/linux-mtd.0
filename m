@@ -1,73 +1,64 @@
-Return-Path: <SRS0=s+BH=MQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=WCs9=MR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7AB5C4338F
-	for <linux-mtd@archiver.kernel.org>; Sat, 24 Jul 2021 16:04:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD482C4338F
+	for <linux-mtd@archiver.kernel.org>; Sun, 25 Jul 2021 19:15:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9B75C60EB1
-	for <linux-mtd@archiver.kernel.org>; Sat, 24 Jul 2021 16:04:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9B75C60EB1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 23A4460249
+	for <linux-mtd@archiver.kernel.org>; Sun, 25 Jul 2021 19:15:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 23A4460249
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sigma-star.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=H2cRogXqdBaSRpP5JiWsS3ZgH7odEwlYVqO1zrNr0ZQ=; b=VTfBfc+HmoT0ql
-	pEQTH8tNW3SfcDzR3MoGzxpCu8grZwVke0l0UmMGALtKH/nAbLy/+37kdHc1hqH65kwQHU+u/MojM
-	IxJ0zkl/pLatiyarsv9S2LP+diOs74NIkBBCVvbEH0/Godc6kjZk2R6iwmvUabuFABRdAMcvA9cAI
-	RHPQxs3ZC2M3TuLrDugfnL2rj8vyY0n/blahOI8G9R9Gb7tWK5xSmU06PwXIuk/8eIoDgHso75KxL
-	L9SZAIdXGgQXDgyKJ+K2K0ABgCsXh+OPWPJOnxMVEelbxd0o3pC9ImmEY3M2F7yLP60j/937MGpmH
-	4uozE3NrEu+63MtIoXew==;
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:
+	Subject:From:To:Date:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=lij+Sek2W3UdSfx+TGu7ddUTSWel+rvwr6oyRJHcO0U=; b=0xW
+	gW2slwmwc6H30B6tupb7nPvCtta/+gLSMgkNv3VPmGnIwNPAbgiLgLp00VBBvmhNdtj+yzH7CK/X0
+	FGukCt0UKb/YAPTno5buV+HHFWbQGYmk6ccm0iljDoLqOMmQm1n/wxrH/5PTx88fratOFdAtCunuv
+	2q6PWOacbEsj3LcDaqYTcDHQRj/+4hFLgGtAYOpmFpGRntK+n4RtBOZJNB7cBleNmTOrOr046hNHZ
+	Id1pBDSfa0IMJa2yZ6Aj5F7bUAf4qhvaKxD+awyneBZLbZ8P+aIWzx1AvKVDemwSiCa52ozoqgaiy
+	+6cBTZFgSdxiSP89tJmfmwcavkyU+QQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m7K7X-007Oke-Ke; Sat, 24 Jul 2021 16:03:23 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1m7jZU-0093Yt-LG; Sun, 25 Jul 2021 19:13:56 +0000
+Received: from mail-4323.protonmail.ch ([185.70.43.23])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m7K7U-007Ojz-Mz
- for linux-mtd@lists.infradead.org; Sat, 24 Jul 2021 16:03:22 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A74AD60E91;
- Sat, 24 Jul 2021 16:03:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1627142598;
- bh=uTpAM46Sxed+s6G1/L2bx3An7H0WSNp2eYFNoZ2hZEM=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=qTZsJhG8vIPCjJoN/ToyYi9DLuoOcHA+uMlu/zBt3V0Db9xPIzFGVc7ZESya0DGZG
- YxHtn7TOPoP40UWoRd58aNYpH0g3zf/mJiB379mlGsNTINbkawlHG9n8R3TMkbCKpl
- IuHpcrsL0euzza0axUhPElEdTRqbondaC7TtdJ0f5MywXkkvTmAHihl8+OTwNSE8Px
- 0ADEE6VU3IQ0NmKrR85nANtcl1MPgiPUVkmSMNo9V/Yc6wMoaGMY7yAXgYoqecg2LI
- vbD0/5z687vtHTb9RM9UjTo4ejTlv14LqVtsjpPTTPhLUYoleV48mFtM94bvqRTau6
- qyxLbpbCj11Ow==
-Date: Sat, 24 Jul 2021 21:33:08 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Martin Kaiser <martin@kaiser.cx>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Dan Carpenter <dan.carpenter@oracle.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: Add a check in of_get_nand_secure_regions()
-Message-ID: <20210724160308.GA62321@thinkpad>
-References: <YMtQFXE0F1w7mUh+@mwanda>
- <20210715225045.66185-1-miquel.raynal@bootlin.com>
- <20210724142712.GA24036@martin-debian-1.paytec.ch>
+ id 1m7jZP-0093YX-1d
+ for linux-mtd@lists.infradead.org; Sun, 25 Jul 2021 19:13:53 +0000
+Date: Sun, 25 Jul 2021 19:13:37 +0000
+Authentication-Results: mail-4317.protonmail.ch; dkim=none
+To: MTD Mailing List <linux-mtd@lists.infradead.org>,
+ Buildroot Mailing List <buildroot@busybox.net>,
+ "Josh Boyer (Fedora)" <jwboyer@gmail.com>,
+ "Riku Voipio (Debian)" <riku.voipio@linaro.org>,
+ "Pascal Bleser (SUSE)" <pascal.bleser@opensuse.org>,
+ "Levente Polyak (Arch)" <anthraxx@archlinux.org>,
+ "Robbat (Gentoo)" <robbat2@gentoo.org>, embedded@gentoo.org,
+ "Oliver Schinagl (Alpine)" <oliver@schinagl.nl>,
+ "Pascal Bellard (SliTaz)" <pascal.bellard@slitaz.org>,
+ =?utf-8?Q?Llu=C3=ADs_Batlle_i_Rossell?= <shaba@altlinux.org>,
+ "Sergey Bolshakov (ALT Linux)" <sbolshakov@altlinux.org>,
+ "Orphaned (Void Linux)" <orphan@voidlinux.org>,
+ Richard Weinberger <richard@nod.at>
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Subject: [ANNOUNCE] mtd-utils-2.1.3 is released
+Message-ID: <c5996a18-9dd9-142d-4440-7be94c4929e1@sigma-star.at>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210724142712.GA24036@martin-debian-1.paytec.ch>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210724_090320_814759_73EDC1CE 
-X-CRM114-Status: GOOD (  22.42  )
+X-CRM114-CacheID: sfid-20210725_121351_280984_D2938122 
+X-CRM114-Status: UNSURE (   5.38  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,80 +70,59 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Jul 24, 2021 at 04:27:30PM +0200, Martin Kaiser wrote:
-> Hi all,
-> 
-> Thus wrote Miquel Raynal (miquel.raynal@bootlin.com):
-> 
-> > On Thu, 2021-06-17 at 13:37:25 UTC, Dan Carpenter wrote:
-> > > Check for whether of_property_count_elems_of_size() returns a negative
-> > > error code.
-> 
-> > > Fixes: 13b89768275d ("mtd: rawnand: Add support for secure regions in NAND memory")
-> > > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > > Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
-> 
-> > Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks.
-> 
-> I'm running linux-next on an imx25 system with the following flash chip
-> 
-> [    1.997539] nand: device found, Manufacturer ID: 0x98, Chip ID: 0xaa
-> [    2.004134] nand: Toshiba NAND 256MiB 1,8V 8-bit
-> [    2.008917] nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 128
-> 
-> The system is using the drivers/mtd/nand/raw/mxc_nand.c driver.
-> 
-> Since this commit appeared in linux-next, mxc_nand's probe function fails
-> with -EINVAL, taking this path
-> 
-> mxcnd_probe
->    nand_scan
->       nand_scan_with_ids
->          nand_scan_tail
->             of_get_nand_secure_regions
-> 
-> nr_elem = of_property_count_elems_of_size(dn, "secure-regions", sizeof(u64));
-> returns -EINVAL as there's no secure-regions property in my device tree.
-> 
-
-Doh! Sorry for missing this.
-
-> We should certainly handle negative error codes before we calculate
-> chip->nr_secure_regions = nr_elem / 2
-> but a missing secure-regions property is a valid case and should not make
-> the probe fail.
-> 
-
-Absolutely!
-
-> If the property exists, but the device-tree entry is incorrect
-> and of_property_count_elems_of_size returns -ENODATA, we might print a
-> warning and ignore the entry.
-> 
-
-Hmm, I think it is best to error out in this case as the user has got DT wrong.
-
-> What do you think?
-> 
-
-Since of_property_count_elems_of_size() returns -EINVAL if the length is not
-a multiple of sizeof(u64), we can't just ignore -EINVAL.
-
-So I think we can just check for the existence of the property before invoking
-of_get_nand_secure_regions(). Miquel, what do you think?
-
-Thanks,
-Mani
-
-> Thanks,
-> 
->    Martin
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGksCgptdGQtdXRpbHMtMi4xLjMgaXMgcmVsZWFzZWQuCgpUYXJiYWxsOiAgICAgICAgICAgICAg
+IGZ0cDovL2Z0cC5pbmZyYWRlYWQub3JnL3B1Yi9tdGQtdXRpbHMvbXRkLXV0aWxzLTIuMS4zLnRh
+ci5iejIKVGFyYmFsbCBncGcgc2lnbmF0dXJlOiBmdHA6Ly9mdHAuaW5mcmFkZWFkLm9yZy9wdWIv
+bXRkLXV0aWxzL210ZC11dGlscy0yLjEuMy50YXIuYnoyLmFzYwpTaWduZWQgZ2l0IHRhZzogICAg
+ICAgIGdpdDovL2dpdC5pbmZyYWRlYWQub3JnL210ZC11dGlscy5naXQgdjIuMS4zCgoKQWx0ZXJu
+YXRpdmVseSBhbHNvIG1pcnJvcmVkIGhlcmU6CgpUYXJiYWxsOiAgICAgICAgICAgICAgIGh0dHBz
+Oi8vaW5mcmFyb290LmF0L3B1Yi9tdGQvbXRkLXV0aWxzLTIuMS4zLnRhci5iejIKVGFyYmFsbCBn
+cGcgc2lnbmF0dXJlOiBodHRwczovL2luZnJhcm9vdC5hdC9wdWIvbXRkL210ZC11dGlscy0yLjEu
+My50YXIuYnoyLmFzYwpTaWduZWQgZ2l0IHRhZzogICAgICAgIGh0dHBzOi8vZ2l0LmluZnJhcm9v
+dC5hdC9tdGQtdXRpbHMuZ2l0IHYyLjEuMwoKClRoZSBsaXN0IG9mIGNoYW5nZXMgKHByaW1hcmls
+eSBmaXhlcykgaXMgbm90IGFzIGxvbmcgYXMgZm9yIHRoZSBsYXN0IHJlbGVhc2UsCmJ1dCB0aGV5
+IGhhdmUgYmVlbiBiYWNrbG9nZ2VkIGZvciBhIHllYXIgbm93LCBmaW5hbGx5IHByb21wdGluZyBh
+IG5ldyBwYXRjaApsZXZlbCByZWxlYXNlLgoKCkNoYW5nZXMgZnJvbSAyLjEuMiB0byAyLjEuMzoK
+CkZlYXR1cmVzOgogICAgICAgZmxhc2hjcDogQWRkIG5ldyBmdW5jdGlvbiB0aGF0IGNvcHkgb25s
+eSBkaWZmZXJlbnQgYmxvY2tzCiAgICAgICBmbGFzaF9lcmFzZTogQWRkIGZsYXNoIGVyYXNlIGNo
+aXAKICAgICAgIEFkZCBmbGFzaF9vdHBfZXJhc2UKICAgICAgIEFkZCBhbiB1YmlmcyBtb3VudCBo
+ZWxwZXIKICAgICAgIEFkZCBuYW5kZmxpcGJpdHMgdG9vbAoKRml4ZXM6CiAgICAgICBta2ZzLnVi
+aWZzOiBGaXggcnVudGltZSBhc3NlcnRpb25zIHdoZW4gcnVubmluZyB3aXRob3V0IGNyeXB0bwog
+ICAgICAgbXRkLXV0aWxzOiBVc2UgQUNfU1lTX0xBUkdFRklMRQogICAgICAgRml4IHRlc3QgYmlu
+YXJ5IGluc3RhbGxhdGlvbgogICAgICAgbGlibXRkOiBhdm9pZCBkaXZpZGUgYnkgemVybwogICAg
+ICAgdWJpaGVhbHRoZDogZml4IFVCSUZTIGJ1aWxkIGRlcGVuZGVuY3kKICAgICAgIG1rZnMudWJp
+ZnM6IHJlbW92ZSBPUEVOU1NMX25vX2NvbmZpZygpCiAgICAgICBtaXNjLXV0aWxzOiBBZGQgZmVj
+dGVzdCB0byBidWlsZCBzeXN0ZW0KICAgICAgIG1rZnMudWJpZnM6IEZpeCBidWlsZCB3aXRoIFNF
+TGludXgKICAgICAgIEZpeCB0eXBvcyBmb3VuZCBieSBEZWJpYW4ncyBsaW50aWFuIHRvb2wKICAg
+ICAgIEZpeCBqZmZzMiBidWlsZCBpZiB6bGliIG9yIGx6byBoZWFkZXJzIGFyZSBub3QgaW4gZGVm
+YXVsdCBwYXRocwoKClJhdyBzaG9ydCBsb2cgc2luY2UgdGhlIDIuMS4yIHJlbGVhc2U6CgpCYXN0
+aWFuIEdlcm1hbm4gKDMpOgogICAgICAgRml4IHR5cG9zIGZvdW5kIGJ5IERlYmlhbidzIGxpbnRp
+YW4gdG9vbAogICAgICAgbWtmcy51YmlmczogRml4IGJ1aWxkIHdpdGggU0VMaW51eAogICAgICAg
+bWlzYy11dGlsczogQWRkIGZlY3Rlc3QgdG8gYnVpbGQgc3lzdGVtCgpCb3JpcyBCcmV6aWxsb24g
+KDEpOgogICAgICAgbXRkLXV0aWxzOiBBZGQgbmFuZGZsaXBiaXRzIHRvb2wKCkNocmlzIFBhY2to
+YW0gKDEpOgogICAgICAgbGlibXRkOiBhdm9pZCBkaXZpZGUgYnkgemVybwoKRGF2aWQgT2Jlcmhv
+bGxlbnplciAoNSk6CiAgICAgICBSZW1vdmUgaGVhZGVycyBmcm9tIEVYVFJBX0RJU1QKICAgICAg
+IENsZWFudXA6IEF1dG9tYWtlOiByZW1vdmUgc2luZ2xlIHVzZSB2YXJpYWJsZXMKICAgICAgIEZp
+eCB0ZXN0IGJpbmFyeSBpbnN0YWxsYXRpb24KICAgICAgIEFkZCBtaXNzaW5nIGZpbGxqZmZzMi5z
+aCB0byBFWFRSQV9ESVNUCiAgICAgICBSZWxlYXNlIG10ZC11dGlscy0yLjEuMwoKSGFydmV5IFd1
+ICgxKToKICAgICAgIG1pc2MtdXRpbHM6IGZsYXNoY3A6IEFkZCBuZXcgZnVuY3Rpb24gdGhhdCBj
+b3B5IG9ubHkgZGlmZmVyZW50IGJsb2NrcwoKSGVucmkgUm9vc2VuICgxKToKICAgICAgIG1rZnMu
+dWJpZnM6IEZpeCBydW50aW1lIGFzc2VydGlvbnMgd2hlbiBydW5uaW5nIHdpdGhvdXQgY3J5cHRv
+CgpKdWVyZ2VuIEJvcmxlaXMgKDEpOgogICAgICAgbXRkLXV0aWxzOiB1YmloZWFsdGhkOiB0aGlz
+IHRvb2wgZG9lcyBub3QgZGVwZW5kIG9uIFVCSUZTCgpMYXJpc2EgSWxlYW5hIEdyaWdvcmUgKDEp
+OgogICAgICAgbXRkLXV0aWxzOiBmbGFzaF9lcmFzZTogQWRkIGZsYXNoIGVyYXNlIGNoaXAKCk1p
+Y2hhZWwgV2FsbGUgKDEpOgogICAgICAgbXRkLXV0aWxzOiBBZGQgZmxhc2hfb3RwX2VyYXNlCgpS
+b2xmIEVpa2UgQmVlciAoMSk6CiAgICAgICBmaXggYnVpbGQgb2YgamZmczJyZWFkZXIgYW5kIGpm
+ZnMyZHVtcCBpZiB6bGliIG9yIGx6byBoZWFkZXJzIGFyZSBub3QgaW4gZGVmYXVsdCBwYXRocwoK
+U2FzY2hhIEhhdWVyICgxKToKICAgICAgIG10ZC11dGlsczogVXNlIEFDX1NZU19MQVJHRUZJTEUK
+ClRvcmJlbiBIb2huICgxKToKICAgICAgIG1rZnMudWJpZnM6IHJlbW92ZSBPUEVOU1NMX25vX2Nv
+bmZpZygpCgpVd2UgS2xlaW5lLUvDtm5pZyAoMSk6CiAgICAgICBBZGQgYW4gdWJpZnMgbW91bnQg
+aGVscGVyCgoKUmVnYXJkcywKCkRhdmlkCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
+dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
