@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-14.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2479C4338F
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 07:47:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38BD0C4338F
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 07:50:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 91DBF611CE
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 07:47:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 91DBF611CE
+	by mail.kernel.org (Postfix) with ESMTPS id F2FCA611CE
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 07:50:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F2FCA611CE
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,52 +23,53 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
 	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=/h9otl7/ai/qxYGU7U8IVd1QDzVdVvHkjYrIRCF5ag8=; b=ApVecvLje5hT92yxGwH/lxUM7+
-	ST6gbXeWgJBn1nbqgFIiMvbRHnNCFtAifX9aA7AmIncPR8j9Cj9SkaFw1ogEqbLlcvjIzOjFS3Jtl
-	+KTydjd7zuZKc8yfnJArpSnj/qf4xY9meGVeTGshewSoy29fmXkEd5JP8yDK0sgEmA+DC4Gv3rgnf
-	LkMKmkg+5I6SA7R5dXYICbKYtzr1FK1/t2eTAVQ6gXu5xTI2nmBilKJWXJ64V6Wb0LkUjvPh+ybZ0
-	FMvwnAef7skaG9YmrExETd1axbLzD09XIIfy1b1actMtz9xiM09LBsOfUhG7hPVa1ex5NNFXEkOxC
-	bJmnnMtQ==;
+	bh=vz7MwN3LCsj8BnRyRn5pHRTtqh2yQtDGmQ7fl1WwAi0=; b=fx0EXNMhWefKGES3Qfh5tTqOZi
+	bzieNkOcmdjuN39UhBrOK/yuRqilkN6lN3poUKlINpB8hUrKG94w0oaz8FWo9MruY4dZ0L7Z/X+al
+	COC46C5KLlQ/nfYDM/DCMAUjRgMJJeXPueu+gjVGYm73IbFK8vK/O6VEfKQLlFoRorEv/yDR/0Owu
+	m/eADUi81EHOU5qvJr3ZXmEXo/QLMMRajwEyLkS/Ol3X/MMM9BgUb4Bt+k1gRIyqPiFJUyrRuOf/v
+	HN51Nhm1YXTQoMV+l03WSDuOb9ppnybhFh2G19AVUN+JGjRR5LKwE5BWYyI0IgK9JDINXZGr43JPP
+	fK+y2dYg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m8HnV-00DuIG-1F; Tue, 27 Jul 2021 07:46:41 +0000
+	id 1m8Hqw-00Dv7J-9C; Tue, 27 Jul 2021 07:50:14 +0000
 Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m8HDx-00DkwL-Q0
- for linux-mtd@lists.infradead.org; Tue, 27 Jul 2021 07:09:59 +0000
+ id 1m8HLF-00Dmgm-65
+ for linux-mtd@lists.infradead.org; Tue, 27 Jul 2021 07:17:30 +0000
 Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 204F922234;
- Tue, 27 Jul 2021 09:09:54 +0200 (CEST)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 39A0C22234;
+ Tue, 27 Jul 2021 09:17:27 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1627369794;
+ s=mail2016061301; t=1627370247;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=EOJFW/hcqRz7AGRgmL25IuiXB0pKdensyRUsdiGJkUc=;
- b=FRBttgS1hRR69hjIKmi0XFB4cO3NI6oDhr6RpxoZAuCt0K7N0h3I9jS9ueGlrgYQ70SFNu
- btGz4vze57Q466VTcBdC8Qwa82G8pu13diNNG7qBhRojLDvUdaA44WJcXGVvycpAA576I1
- 919MAB1DGYKZ9Tqvx1NmFVn7172rwyw=
+ bh=lnHLdYRwFXqB9sGtryvI3Km836ruQ7zDsaH1AHnvSZ8=;
+ b=lyIgvKu6k6yDVCG1D7gJDVVMSgZWMjAOwk/FrJ2dlhdWhqqkl0iDnq2mNKz/B5N2vU/Ts9
+ a7xdoFoQftMUqGx69pJChkVxcOP9fJ6/ERcj2DDHOicgsO5tc7WFM/xla5FcbNx+VzrbBq
+ RZWW/o0v6WKZaAwe9UtDJPThYlS1J0Q=
 MIME-Version: 1.0
-Date: Tue, 27 Jul 2021 09:09:53 +0200
+Date: Tue, 27 Jul 2021 09:17:26 +0200
 From: Michael Walle <michael@walle.cc>
 To: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
  <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
  Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mtd: spi-nor: micron-st: sync flags of mt25ql02g and
- mt25qu02g with other mt25q
-In-Reply-To: <c7b6c666aef9a8a2195acabe9954a417f04b6582.1627039534.git.matthias.schiffer@ew.tq-group.com>
+Subject: Re: [PATCH 2/2] mtd: spi-nor: micron-st: add support for mt25ql01g
+ and mt25qu01g
+In-Reply-To: <a979f3a66e9e4391844d1fae144a32646933c86f.1627039534.git.matthias.schiffer@ew.tq-group.com>
 References: <c7b6c666aef9a8a2195acabe9954a417f04b6582.1627039534.git.matthias.schiffer@ew.tq-group.com>
+ <a979f3a66e9e4391844d1fae144a32646933c86f.1627039534.git.matthias.schiffer@ew.tq-group.com>
 User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <f3dbab898e9f1946129e5733095bdf3c@walle.cc>
+Message-ID: <1b4e1495ab019778f671661cc7bdb539@walle.cc>
 X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210727_000958_059872_C024F8E3 
-X-CRM114-Status: GOOD (  18.21  )
+X-CRM114-CacheID: sfid-20210727_001729_435980_4C3B2003 
+X-CRM114-Status: GOOD (  15.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,48 +87,54 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Am 2021-07-23 13:27, schrieb Matthias Schiffer:
-> All mt25q variants have the same features.
-> 
-> Unlike the smaller variants, no n25q with 2G exists, so we don't need 
-> to
-> match on the extended ID to distinguish n25q and mt25q series for these
-> models.
+> Split these mt25q models from the older n25q models by matching their
+> extended IDs to allow adding support for 4byte opcodes.
 
-But why shouldn't we? What if there will be another flash with
-the same first three id bytes?
+You will have to supply SFDP data for all these chips, please have
+a look at [1] how to do that.
+
+Also, we'll switch to SFDP parsing, have a look at [2].
 
 > Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 > ---
->  drivers/mtd/spi-nor/micron-st.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>  drivers/mtd/spi-nor/micron-st.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
 > diff --git a/drivers/mtd/spi-nor/micron-st.c 
 > b/drivers/mtd/spi-nor/micron-st.c
-> index c224e59820a1..d5baa8762c8d 100644
+> index d5baa8762c8d..2fca5de2504f 100644
 > --- a/drivers/mtd/spi-nor/micron-st.c
 > +++ b/drivers/mtd/spi-nor/micron-st.c
-> @@ -181,11 +181,11 @@ static const struct flash_info st_parts[] = {
+> @@ -172,11 +172,17 @@ static const struct flash_info st_parts[] = {
+>  			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
+>  			      SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
+>  			      SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6) },
+> +	{ "mt25ql01g",   INFO6(0x20ba21, 0x104400, 64 * 1024, 2048,
+> +			       SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
+> +			       SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+
+As mentioned in my other mail, I don't see this chip supporting 0xc7
+(BULK ERASE). Is erasing the whole chip working?
+
+Thanks,
+-michael
+
+>  	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048,
+>  			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
+>  			      SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
+>  			      SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6 |
+>  			      NO_CHIP_ERASE) },
+> +	{ "mt25qu01g",   INFO6(0x20bb21, 0x104400, 64 * 1024, 2048,
+> +			       SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
+> +			       SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+>  	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048,
 >  			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
 >  			      NO_CHIP_ERASE) },
->  	{ "mt25ql02g",   INFO(0x20ba22, 0, 64 * 1024, 4096,
-> -			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
-> -			      NO_CHIP_ERASE) },
 
-This bothers me. I'm not sure how this will work. I see that
-chip erase is command 0xc7, but both the new and the old flash
-just supports 0xc3 (DIE ERASE). Did you test these changes?
-
-> +			      SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
-> +			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
->  	{ "mt25qu02g",   INFO(0x20bb22, 0, 64 * 1024, 4096,
->  			      SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
-> -			      SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
-> +			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-> 
->  	{ "m25p05",  INFO(0x202010,  0,  32 * 1024,   2, 0) },
->  	{ "m25p10",  INFO(0x202011,  0,  32 * 1024,   4, 0) },
-
--michael
+[1] 
+https://lore.kernel.org/linux-mtd/7038f037de3e224016d269324517400d@walle.cc/
+[2] 
+https://lore.kernel.org/linux-mtd/20210727045222.905056-36-tudor.ambarus@microchip.com/
 
 ______________________________________________________
 Linux MTD discussion mailing list
