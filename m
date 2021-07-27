@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFEA8C4338F
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 07:04:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CE44C4338F
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 07:09:32 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 86F0B6023F
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 07:04:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 86F0B6023F
+	by mail.kernel.org (Postfix) with ESMTPS id C5B9361163
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 07:09:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C5B9361163
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,47 +23,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XImLFRIykSOojVLDpULeoN6ZTxctQlqA26/8E1rEpZQ=; b=W7cdTYKcaBwYGA
-	6M8/8fn2P4uVuuXSrqfZYgSNRAOwqScdMjG73FJbkOeRarfEM5YAKBIZS04/9vkGzSrDQhsjlh+MK
-	gccwIjJzw63xq0K1e1O2mws81UbqO3iXmJCPDRhJhoQq5AVVQCyO/EX65l/GGY0BcSRa2R8yrsDxt
-	r5LvrQzxYKSLOcjLcQMT8YwtB9hf6jbwW5ogpTXfZMcalIrKmJKUVmVVSTVOBXttSxLHu3184l7wT
-	HWFNA15XvUCL81pOT0wmI4uldGJT73um62P/gY2DvS1sqOlABuyNCAOHsxkUcgGEaRF929RAIIPsY
-	8BwU/A/mgK3fgvwaEPXg==;
+	List-Owner; bh=r5cEA7Q8kqEJGHyvX+GLH8JsBaOFNGtB7HIk6f4k4cs=; b=y/8oO2Jm5iDUhu
+	lVZ6K7PExtnCf5nVPj/Sre+Rrsq5ffARTXgqVll3JivePUtMpOpOGn0uUvOTnjWUxbIT1LkJqxtxD
+	efKZr+415ov9Ov02UGsa1SsZ+koU8IUvgTPKi3n+P3wslrYBR9x0KulDRBQs0RorOOmW/8656sgj6
+	XwW+qbydCrSM48h8w5m5Pwin4kmWiIcCKANZ7LYfNauKekXfukbix7vwTFwH2KatLnx9Dl7agtvB9
+	O8jYia5odhpgcqgedmAMe5PdXnfxetnQHUpSS0sPOqrIx7k/mIs4h80S8V8eoS8rHnkArM6hvSskE
+	slmh0vZXOU5cYph27YSg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m8H8A-00DjN2-Ai; Tue, 27 Jul 2021 07:03:58 +0000
-Received: from esa.microchip.iphmx.com ([68.232.153.233])
+	id 1m8HCq-00Dkef-FY; Tue, 27 Jul 2021 07:08:48 +0000
+Received: from esa.microchip.iphmx.com ([68.232.154.123])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m8F7j-00DI8M-8m; Tue, 27 Jul 2021 04:55:24 +0000
+ id 1m8F7p-00DIA3-4T; Tue, 27 Jul 2021 04:55:30 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1627361723; x=1658897723;
+ t=1627361728; x=1658897728;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=IO52f8kF9wUaT16TlrBacs61p5rHu3R/YcDLO6eRPbE=;
- b=kcpR898Lh85bpfOWNk69KNKm6kkLLYhOd+LT35fq9PbXooxeHeeT0XxE
- CVWg3E5EHJUrJIYCdJK4ivkGnD3MwkTS0oHXftToK/9Jwj/Q6qEeyaxoZ
- 9yf5BfogzUCUww8Dpm4JeMwaQ40koxaF1bFs+gsYKbOFP66MYtGuz1Tfb
- OIN5x18tdqeDt6UDZtStO9BVdnSiStoS6cYVBPQgxcheAH3yLT74gI0Js
- vGRGQYSRKOpWfU+v8CNH9/A8YQsX0yaCijxuJ/qH3O55llCxi4lKzpygu
- F07sHRX0ZAlgqIJdSpjA/3c4cl9crCfy+oCreoo+PJ+XM4TxQQ7EIz//g w==;
-IronPort-SDR: QwPDHxRxJ0+iBUU+KPk44DezCULg+WgEA0au4LrKAh3UfNWnEVz71qf9G8/6Wh91fFmqwmN6GM
- lCTXdFohmNtHOCDoODKSWsWUgMGtiLzJ8ip9YQZOlHG0rxCb6cSPtWJkSTKkfRZChp5tL+vtpd
- IjcyeOC8Fx4EGgU3nXHKVLNFzSb9oSdf4iZAIvKT/YTlaYycbIqXnW5r5g1WJVXHKFmmWHvAn7
- uG1zmJ8a1OjtVBIn0e8Ss3DDrwTDg3e+y+4ei9DTM50s3h2S8viqiRXCXMx2Iwd1ll/B4EGmbZ
- 4Gg3fgu+bpS5gNEwwVA3R+CA
-X-IronPort-AV: E=Sophos;i="5.84,272,1620716400"; d="scan'208";a="137654091"
+ bh=SzwolEeGEyf9oVitKoVWHbwOtUaC9B7RoDUDxRyncSM=;
+ b=rlKWhOZFnwdk2liwM/fwltwflE3Tos+Lfo9dDFjtS6y2z+Y352FatF53
+ im6Y2UTKiRH0HK/0a32RljRFeOh8EVSs5WIkgQBIfkqqgLMfg/3iDQVva
+ iudxhwimM0uoc30ppx/o6NvmwIIEPtVl2jX66be+hJ1x5KoIVKYf2lKSd
+ pEpNhtxITaZqT9gaP8Mde749JHzPEhCau+pz6uVekF8tyzyXuBpOPMq3v
+ Puy37oD1PtHng+wCa+796bXSUjDs6P/Sw4tOjgoBYrduaNtLvAqQGKD3b
+ VRQzI4kDirDulGzopb6r0Q+59loFXb32IVRxlLj3nYsQmfxz/RrBv4+Tf g==;
+IronPort-SDR: 9XNm7nmNa6fpHsh9VcPRvZQ4yZM2IpARhmTgovzXaLol2YVXizopAqpcep/oIfGSOkYq1QpWXB
+ OWFtvjkqDY+95OtH6lAz1HrOuOvXYt8004GcmzhIn6jTgSUnI4WJ/gdh6cJS9PbD/VCIMnuZZe
+ OcHXZ74pnFCxMpOdKPFRWWVK4WFA02xtu/Ppgch3eOyi5/gXGwBcfrhBeTIeAdlVbIg+VyS+Gr
+ OjFAq/rn6sJAVhtMe/bNkyUJe4mexn86Aewqr4bazgaujHFtxuClx/Mz2ZocuKoDQaP+m+EmUk
+ 7VDAdOzx+xdpwVroAN5FNTlB
+X-IronPort-AV: E=Sophos;i="5.84,272,1620716400"; d="scan'208";a="123560057"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 26 Jul 2021 21:55:22 -0700
+ by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 26 Jul 2021 21:55:27 -0700
 Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
  chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 26 Jul 2021 21:55:21 -0700
+ 15.1.2176.2; Mon, 26 Jul 2021 21:55:27 -0700
 Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Mon, 26 Jul 2021 21:55:17 -0700
+ 15.1.2176.2 via Frontend Transport; Mon, 26 Jul 2021 21:55:22 -0700
 From: Tudor Ambarus <tudor.ambarus@microchip.com>
 To: <michael@walle.cc>, <vigneshr@ti.com>, <p.yadav@ti.com>
 CC: <figgyc@figgyc.uk>, <mail@david-bauer.net>, <linux@rasmusvillemoes.dk>,
@@ -73,17 +73,17 @@ CC: <figgyc@figgyc.uk>, <mail@david-bauer.net>, <linux@rasmusvillemoes.dk>,
  <richard@nod.at>, <linux-mtd@lists.infradead.org>,
  <linux-arm-kernel@lists.infradead.org>, <nicolas.ferre@microchip.com>, "Tudor
  Ambarus" <tudor.ambarus@microchip.com>
-Subject: [PATCH v2 34/35] mtd: spi-nor: macronix: mx25l25635e: Use
- SPI_NOR_PARSE_SFDP
-Date: Tue, 27 Jul 2021 07:52:21 +0300
-Message-ID: <20210727045222.905056-35-tudor.ambarus@microchip.com>
+Subject: [PATCH v2 35/35] docs: mtd: spi-nor: Add details about how to propose
+ a new flash addition
+Date: Tue, 27 Jul 2021 07:52:22 +0300
+Message-ID: <20210727045222.905056-36-tudor.ambarus@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210727045222.905056-1-tudor.ambarus@microchip.com>
 References: <20210727045222.905056-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210726_215523_393684_F2CD6611 
-X-CRM114-Status: GOOD (  12.10  )
+X-CRM114-CacheID: sfid-20210726_215529_322250_EE34DE22 
+X-CRM114-Status: GOOD (  27.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,67 +100,86 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Get rid of the static initialization of the flash parameters and
-init them when parsing SFDP.
-Generated a 256 Kbyte random data and did an erase, write, read back
-and compare test. The flash uses for reads SPINOR_OP_READ_1_4_4_4B 0xec,
-for erases SPINOR_OP_BE_4K_4B 0x21, and for writes SPINOR_OP_PP_1_4_4_4B
-0x3e.
+Add some guideliness on how to propose a new flash addition.
 
 Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
-root@sama5d2-xplained:~# find / -iname spi-nor
-find: '/proc/381': No such file or directory
-/sys/devices/platform/ahb/ahb:apb/f0020000.spi/spi_master/spi1/spi1.0/spi-nor
-/sys/devices/platform/ahb/ahb:apb/f8000000.spi/spi_master/spi0/spi0.0/spi-nor
-/sys/bus/spi/drivers/spi-nor
-root@sama5d2-xplained:~# ls -al /sys/devices/platform/ahb/ahb:apb/f0020000.spi/spi_master/spi1/spi1.0/spi-nor
-total 0
-drwxr-xr-x 2 root root    0 Mar  9 16:27 .
-drwxr-xr-x 6 root root    0 Mar  9 16:26 ..
--r--r--r-- 1 root root 4096 Mar  9 16:27 jedec_id
--r--r--r-- 1 root root 4096 Mar  9 16:27 manufacturer
--r--r--r-- 1 root root 4096 Mar  9 16:27 partname
--r--r--r-- 1 root root    0 Mar  9 16:27 sfdp
-root@sama5d2-xplained:~# cat /sys/devices/platform/ahb/ahb:apb/f0020000.spi/spi_master/spi1/spi1.0/spi-nor/jedec_id
-c22019
-root@sama5d2-xplained:~# cat /sys/devices/platform/ahb/ahb:apb/f0020000.spi/spi_master/spi1/spi1.0/spi-nor/manufacturer
-macronix
-root@sama5d2-xplained:~# cat /sys/devices/platform/ahb/ahb:apb/f0020000.spi/spi_master/spi1/spi1.0/spi-nor/partname    
-mx25l25635e
-root@sama5d2-xplained:~# cat /sys/devices/platform/ahb/ahb:apb/f0020000.spi/spi_master/spi1/spi1.0/spi-nor/sfdp > mx25l25635e-sfdp
-root@sama5d2-xplained:~# hexdump mx25l25635e-sfdp
-0000000 4653 5044 0106 ff02 0600 1001 0030 ff00
-0000010 00c2 0401 0110 ff00 0084 0201 00c0 ff00
-0000020 ffff ffff ffff ffff ffff ffff ffff ffff
-0000030 20e5 fffb ffff 0fff eb44 6b08 3b08 bb04
-0000040 fffe ffff ffff ff00 ffff eb44 200c 520f
-0000050 d810 ff00 59d6 00dd 9f82 db03 0344 3867
-0000060 b030 b030 bdf7 5cd5 9e4a ff29 50f0 85f9
-0000070 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-00000c0 8f7f ffff 5c21 ffdc ffff ffff ffff ffff
-00000d0 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-0000110 3600 2700 f99d 64c0 cb85 ffff ffff ffff
-0000120
+ Documentation/driver-api/mtd/spi-nor.rst | 65 ++++++++++++++++++++++++
+ 1 file changed, 65 insertions(+)
 
- drivers/mtd/spi-nor/macronix.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index 9709eb68b613..b4eaf22ee388 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -103,7 +103,7 @@ static const struct flash_info macronix_parts[] = {
- 			      SECT_4K | SPI_NOR_DUAL_READ |
- 			      SPI_NOR_QUAD_READ) },
- 	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512,
--			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-+			      SPI_NOR_PARSE_SFDP)
- 		.fixups = &mx25l25635_fixups },
- 	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K)
- 		.late_init = snor_f_4b_opcodes, },
+diff --git a/Documentation/driver-api/mtd/spi-nor.rst b/Documentation/driver-api/mtd/spi-nor.rst
+index 4a3adca417fd..ffb8d97a2766 100644
+--- a/Documentation/driver-api/mtd/spi-nor.rst
++++ b/Documentation/driver-api/mtd/spi-nor.rst
+@@ -66,3 +66,68 @@ when you want to write a new driver for a SPI NOR controller.
+ Another API is spi_nor_restore(), this is used to restore the status of SPI
+ flash chip such as addressing mode. Call it whenever detach the driver from
+ device or reboot the system.
++
++Part IV - How to propose a new flash addition?
++----------------------------------------------
++
++First we have to clarify where the new flash_info entry will reside. Typically
++each manufacturer have their own driver and the new flash will be placed in that
++specific manufacturer driver. There are cases however, where special care has to
++be taken. In case of flash ID collisions between different manufacturers, the
++place to add the new flash is in the manuf-id-collisions.c driver. ID collisions
++between flashes of the same manufacturer should be handled in their own
++manufacturer driver, macronix being an example. There will be a single
++flash_info entry for all the ID collisions of the same ID.
++
++manuf-id-collisions.c is the place to add new flash additions where the
++manufacturer is ignorant enough to not implement the ID continuation scheme
++that is described in the JEP106 JEDEC Standard. One has to dump its flash ID and
++compare it with the flash's manufacturer identification code that is defined in
++the JEP106 JEDEC Standard. If the manufacturer ID is defined in bank two or
++higher and the manufacturer does not implement the ID continuation scheme, then
++it is likely that the flash ID will collide with a manufacturer from bank one or
++with other manufacturer from other bank that does not implement the ID
++continuation scheme as well.
++
++flash_info entries will be added in a first come, first served manner. If there
++are ID collisions, differentiation between flashes will be done at runtime if
++possible. Where runtime differentiation is not possible, new compatibles will be
++introduced, but this will be done as a last resort.
++
++New flash additions that support the SFDP standard should be declared using
++SPI_NOR_PARSE_SFDP. Support that can be discovered when parsing SFDP should not
++be duplicated by explicit flags at flash declaration. All the SFDP flash
++parameters and settings will be discovered when parsing SFDP. There are
++flash_info flags that indicate support that is not SFDP discoverable. These
++flags initialize non SFDP support in the spi_nor_nonsfdp_flags_init() method.
++SPI_NOR_PARSE_SFDP is usually followed by other flash_info flags from the
++aforementioned function. Sometimes manufacturers wrongly define some fields in
++the SFDP tables. If that's the case, SFDP data can be amended with the fixups()
++hooks. It is not common, but if the SFDP tables are entirely wrong, and it does
++not worth the hassle to tweak the SFDP parameters by using the fixups hooks, or
++if the flash does not define the SFDP tables at all, then one can statically
++init the flash with the SPI_NOR_SKIP_SFDP flag and specify the rest of the flash
++capabilities with the flash info flags.
++
++With time we want to convert all flashes to either use SPI_NOR_PARSE_SFDP or
++SPI_NOR_SKIP_SFDP and stop triggering the SFDP parsing with the
++SPI_NOR_{DUAL, QUAD, OCTAL*}_READ flags. There are flashes that support QUAD
++mode but do not support the RDSFDP command, we should avoid issuing unsupported
++commands to flashes where possible. It is unlikely that RDSFDP will cause any
++problems, but still, it's better to avoid it. There are cases however of flash
++ID collisions between flashes that define the SFDP tables and flashes that don't
++(again, macronix). We usually differentiate between the two by issuing the
++RDSFDP command. In such a case one has to declare the SPI_NOR_PARSE_SFDP
++together with all the relevant flags from spi_nor_nonsfdp_flags_init() for the
++SFDP compatible flash, but should also declare the relevant flags that are used
++in the spi_nor_info_init_params() method in order to init support that can't be
++discovered via SFDP for the non-SFDP compatible flash.
++
++Every new flash addition that define the SFDP tables, should hexdump its SFDP
++tables in the patch's comment section below the --- line, so that we can
++reference it in case of ID collisions.
++
++Every flash_info flag declared should be tested. Typically one uses the
++mtd-utils and does an erase, verify erase, write, read back and compare test.
++Locking and other flags that are declared in the flash_info entry and used in
++the spi_nor_nonsfdp_flags_init() should be tested as well.
 -- 
 2.25.1
 
