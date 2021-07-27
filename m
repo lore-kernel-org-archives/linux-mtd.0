@@ -2,95 +2,73 @@ Return-Path: <SRS0=5ASP=MT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-14.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9343C4338F
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 07:45:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2479C4338F
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 07:47:26 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3EE11611C7
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 07:45:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3EE11611C7
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rasmusvillemoes.dk
+	by mail.kernel.org (Postfix) with ESMTPS id 91DBF611CE
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 07:47:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 91DBF611CE
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=QaLplAAu/Jyh6RXqDXAPK1NNoYFAVyhNjG9LaoHCLJM=; b=vu1CTrOu9uZlKEQSoGU6p/JwUF
-	J5s+62JlFNrgqcJ+1Hogef3REnJtvPAQZDNPZjowo/Gf+KXMHxgJXpX9k4We9Y+UXZNaEE2C2B0oH
-	2Gjp8swLO5xIl9OJjb/5QNXkH6RW4RKVhLaj1v2UOIkx8Oro5tLolgUvlxo57NUHuMUCwFinRf9Gv
-	FPasX029eFAcKg2s6obqsMU2h8QRyTCzE2w9nBiLTVURIk6lxMVG8XNENNOfdJqDpB3qhjUrAfUS1
-	FO5BYQDC9PdI2s6G4t5NTPNTla4XXhalo3y96blHwd5uh1lC6Y1NkOxsxfIDJebRyyVxLmuqLRtRm
-	RcOv0QHw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=/h9otl7/ai/qxYGU7U8IVd1QDzVdVvHkjYrIRCF5ag8=; b=ApVecvLje5hT92yxGwH/lxUM7+
+	ST6gbXeWgJBn1nbqgFIiMvbRHnNCFtAifX9aA7AmIncPR8j9Cj9SkaFw1ogEqbLlcvjIzOjFS3Jtl
+	+KTydjd7zuZKc8yfnJArpSnj/qf4xY9meGVeTGshewSoy29fmXkEd5JP8yDK0sgEmA+DC4Gv3rgnf
+	LkMKmkg+5I6SA7R5dXYICbKYtzr1FK1/t2eTAVQ6gXu5xTI2nmBilKJWXJ64V6Wb0LkUjvPh+ybZ0
+	FMvwnAef7skaG9YmrExETd1axbLzD09XIIfy1b1actMtz9xiM09LBsOfUhG7hPVa1ex5NNFXEkOxC
+	bJmnnMtQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m8Hlk-00DtsA-CN; Tue, 27 Jul 2021 07:44:52 +0000
-Received: from mail-ed1-x52f.google.com ([2a00:1450:4864:20::52f])
+	id 1m8HnV-00DuIG-1F; Tue, 27 Jul 2021 07:46:41 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m8HCv-00DkfB-46
- for linux-mtd@lists.infradead.org; Tue, 27 Jul 2021 07:08:54 +0000
-Received: by mail-ed1-x52f.google.com with SMTP id f13so11279249edq.13
- for <linux-mtd@lists.infradead.org>; Tue, 27 Jul 2021 00:08:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=rasmusvillemoes.dk; s=google;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=P6g9MWpojdufxc3Gy+T2RIbe7fBcgyn2Q6i9unbJ+pA=;
- b=DilC3qSvyV9dNzbpUBHD4EcpnYD0jKpItd6ArkmpKAen3ePzrTQ964YQZdiZSWvhRX
- x2BHl1RWY+Dmy7OS3RD7MgAj9frUyniUXx4S2woiRw/iPNoxoSsGPrysP0cko8pc+1RC
- w8D0iS3Nv/0S1enTbXTFfz/N7gOFxQcqz1W94=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=P6g9MWpojdufxc3Gy+T2RIbe7fBcgyn2Q6i9unbJ+pA=;
- b=jvhlQdwvt8EWe8cWFPBM3ERl9ZaP6Lw+GUmePJlDNKn2+KuUhq0IwH28nVG1mGQw6u
- 0xnGkwUISmJOpR+MCpaQoc4CNDChcbvl8ezFkoVCKSd2qOeUZAaeZxW9QuxtD1AeLXQt
- eih5F58WuZ3q9kLzIA2kwH6MLgEpL6TcdMxvc8ImFhTePI60QRhtWZlgt5SN5iArAprY
- cZxIC1twzeRfVewuxPvElKBM3xbnkl3h4y/ZC+NwD30zIVJmxW978AuvD2mA/GZi5JsW
- DsGxzT7lgrbYco4o/yeVNvlBF5CpRNaCAQrJEMTD3eM8KM4CP4P0HJLgHhuRXfM9iAgp
- nx4w==
-X-Gm-Message-State: AOAM531AtLaZ4pTc+NKrwHu2iH4AyDBdFZ9vlZEaZzn7Nn3oKEtD8dik
- s2YGC/zCTrxC8qCRkmwKC63s0g==
-X-Google-Smtp-Source: ABdhPJxdgVBfg5zCNJOsH4thEjRW/W8Jc7IrXKKUyB8JRwfx3AAIvIk1ohL8Lgwvkxn9AtbtcVWDVQ==
-X-Received: by 2002:a50:ae02:: with SMTP id c2mr20891200edd.307.1627369729926; 
- Tue, 27 Jul 2021 00:08:49 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.69.72])
- by smtp.gmail.com with ESMTPSA id n13sm863011eda.36.2021.07.27.00.08.48
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 27 Jul 2021 00:08:49 -0700 (PDT)
-Subject: Re: [PATCH v2 20/35] mtd: spi-nor: core: Use container_of to get the
- pointer to struct spi_nor
-To: Tudor Ambarus <tudor.ambarus@microchip.com>, michael@walle.cc,
- vigneshr@ti.com, p.yadav@ti.com
-Cc: figgyc@figgyc.uk, mail@david-bauer.net, esben@geanix.com,
- knaerzche@gmail.com, code@reto-schneider.ch, zhengxunli@mxic.com.tw,
- jaimeliao@mxic.com.tw, heiko.thiery@gmail.com, macromorgan@hotmail.com,
- sr@denx.de, miquel.raynal@bootlin.com, richard@nod.at,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- nicolas.ferre@microchip.com
-References: <20210727045222.905056-1-tudor.ambarus@microchip.com>
- <20210727045222.905056-21-tudor.ambarus@microchip.com>
-From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <21e6d006-228e-7834-7a4e-afbfc65fec72@rasmusvillemoes.dk>
-Date: Tue, 27 Jul 2021 09:08:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ id 1m8HDx-00DkwL-Q0
+ for linux-mtd@lists.infradead.org; Tue, 27 Jul 2021 07:09:59 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 204F922234;
+ Tue, 27 Jul 2021 09:09:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1627369794;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=EOJFW/hcqRz7AGRgmL25IuiXB0pKdensyRUsdiGJkUc=;
+ b=FRBttgS1hRR69hjIKmi0XFB4cO3NI6oDhr6RpxoZAuCt0K7N0h3I9jS9ueGlrgYQ70SFNu
+ btGz4vze57Q466VTcBdC8Qwa82G8pu13diNNG7qBhRojLDvUdaA44WJcXGVvycpAA576I1
+ 919MAB1DGYKZ9Tqvx1NmFVn7172rwyw=
 MIME-Version: 1.0
-In-Reply-To: <20210727045222.905056-21-tudor.ambarus@microchip.com>
-Content-Language: en-US
+Date: Tue, 27 Jul 2021 09:09:53 +0200
+From: Michael Walle <michael@walle.cc>
+To: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
+ <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
+ Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mtd: spi-nor: micron-st: sync flags of mt25ql02g and
+ mt25qu02g with other mt25q
+In-Reply-To: <c7b6c666aef9a8a2195acabe9954a417f04b6582.1627039534.git.matthias.schiffer@ew.tq-group.com>
+References: <c7b6c666aef9a8a2195acabe9954a417f04b6582.1627039534.git.matthias.schiffer@ew.tq-group.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <f3dbab898e9f1946129e5733095bdf3c@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210727_000853_402829_BCA09F5E 
-X-CRM114-Status: GOOD (  16.52  )
+X-CRM114-CacheID: sfid-20210727_000958_059872_C024F8E3 
+X-CRM114-Status: GOOD (  18.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,45 +80,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 27/07/2021 06.52, Tudor Ambarus wrote:
-> Get the pointer to the containing struct spi_nor by using container_of.
+Am 2021-07-23 13:27, schrieb Matthias Schiffer:
+> All mt25q variants have the same features.
 > 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> Unlike the smaller variants, no n25q with 2G exists, so we don't need 
+> to
+> match on the extended ID to distinguish n25q and mt25q series for these
+> models.
+
+But why shouldn't we? What if there will be another flash with
+the same first three id bytes?
+
+> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 > ---
->  drivers/mtd/spi-nor/core.c | 1 -
->  drivers/mtd/spi-nor/core.h | 2 +-
->  2 files changed, 1 insertion(+), 2 deletions(-)
+>  drivers/mtd/spi-nor/micron-st.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 9885d434ea83..5c8cffb5e6f2 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -3175,7 +3175,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
->  
->  	if (!mtd->name)
->  		mtd->name = dev_name(dev);
-> -	mtd->priv = nor;
->  	mtd->type = MTD_NORFLASH;
->  	mtd->writesize = nor->params->writesize;
->  	mtd->flags = MTD_CAP_NORFLASH;
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index 987797a789c8..8fddc685d2d3 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -557,7 +557,7 @@ void spi_nor_otp_init(struct spi_nor *nor);
->  
->  static struct spi_nor __maybe_unused *mtd_to_spi_nor(struct mtd_info *mtd)
->  {
+> diff --git a/drivers/mtd/spi-nor/micron-st.c 
+> b/drivers/mtd/spi-nor/micron-st.c
+> index c224e59820a1..d5baa8762c8d 100644
+> --- a/drivers/mtd/spi-nor/micron-st.c
+> +++ b/drivers/mtd/spi-nor/micron-st.c
+> @@ -181,11 +181,11 @@ static const struct flash_info st_parts[] = {
+>  			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
+>  			      NO_CHIP_ERASE) },
+>  	{ "mt25ql02g",   INFO(0x20ba22, 0, 64 * 1024, 4096,
+> -			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
+> -			      NO_CHIP_ERASE) },
 
-Somewhat unrelated, but while you're here, why not get rid of that
-__maybe_unused and make this an ordinary "static inline"?
+This bothers me. I'm not sure how this will work. I see that
+chip erase is command 0xc7, but both the new and the old flash
+just supports 0xc3 (DIE ERASE). Did you test these changes?
 
-Rasmus
+> +			      SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
+> +			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+>  	{ "mt25qu02g",   INFO(0x20bb22, 0, 64 * 1024, 4096,
+>  			      SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
+> -			      SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
+> +			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+> 
+>  	{ "m25p05",  INFO(0x202010,  0,  32 * 1024,   2, 0) },
+>  	{ "m25p10",  INFO(0x202011,  0,  32 * 1024,   4, 0) },
+
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
