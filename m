@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B024EC4320E
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 05:56:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02E5CC4338F
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 06:01:32 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8117160FE3
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 05:56:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8117160FE3
+	by mail.kernel.org (Postfix) with ESMTPS id C1282610E9
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 06:01:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C1282610E9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,47 +23,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sVErBaoI8J4do/6ODGdtCWkb8uXJ9ug0B8yEbsRmKgo=; b=pPVbVLyhiLNjtQ
-	1X24u5DpNcolQ6xEugyBo8guI62Gq8lJaM2Wv/1bOY6VKrwAY9FsdpY8zSL0FkicNtBXgi/6NsRR3
-	ui2nMwk5gLiTuvyWNysM3QxMCqxjgnVlnjIdt9RHXBqyfg20+Ku9ZVzlhXm4dMHHHQmTyRx+1b7p1
-	MineF7RrQ65TckcHT9N9cU8rKh8uYnN3TIrdPqX7DiKFjvEwVOqTfZxtqDjsyO4Cv9JV4Hmrp6ofH
-	2IVPG7JO4bIBwsbLyRrE2cNe8KsXIfUN+2KWHi5K7l4iaKt+gTCchQFigzjbvP0Jt6eN/3Yy7nv7O
-	/KQvtC7hmdsNjiwt9U0A==;
+	List-Owner; bh=6AgytYuBT4Yg4HShlWDVx5kM41pp5bLWQYFilRPGVZk=; b=kIBF3tAdY4YC8F
+	LecZ+3l6YTvHtjb9HXuVPx9jnzVCLti4Ps09K9BHfkN3iahiBlE2bDYI03pYNfTKLyqU5QNlfMjlx
+	4OxIJpqDHxp3ZClh9JxF667mqIiegiQd3acsyOMaG9OuH9exJbBzmrrjt4NjcvJdZ+LthqQQ2zrlC
+	lGBe+pDgQefOB6EiIOie6loBSYVazEaGC/XC8dgNxN3Eq+BRNeuUOZtrAtxp1hyncIB72ws2oZzvl
+	tXAsQvDB1lIFmqLULiDYj1OiTWHg8IkoSk5a11UtjvTmN5nXk7xBKxigcY8SE5im53pTgVaNtD1gS
+	Imub1foC3tZrY93fdu8w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m8G3m-00DUmh-8o; Tue, 27 Jul 2021 05:55:22 +0000
+	id 1m8G8z-00DWMC-EF; Tue, 27 Jul 2021 06:00:46 +0000
 Received: from esa.microchip.iphmx.com ([68.232.154.123])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m8F6V-00DHkY-EX; Tue, 27 Jul 2021 04:54:09 +0000
+ id 1m8F6a-00DHkY-Q4; Tue, 27 Jul 2021 04:54:14 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1627361647; x=1658897647;
+ t=1627361652; x=1658897652;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=jS6nbw3I4zv0fIPeQBXIY5jxxOe47HQkmbUGrc480eQ=;
- b=KPMKjhyBiBvrmERKULRvRyW1eoek++VCu4Hj/VetNv5EtOReGCnEaA0T
- fR67t4A6jDCQtfU8HVIe+ervXR8zBGt4ijEIE7YID3sY2J9EBzeHzX3oB
- q1VKuVcQHtnKPt6HG4hc02Y+y3JscGG1FI5RRRkXRg+m6JJ/D8Gy6+YFn
- eBHHk6Fwj64a2YJLixuUWbKdBilhu+jo3aGnQPiDITpNkdhVZO9E2GcGZ
- gklS8X/m5yuvKYqcOqGvwgiX97S0FRQC1UrPe+v0ip7UfP9nd40s9NYbL
- pLzKZ2soXf17NM3XxK01v6dnwpZtiATTldAcHdhFEdG5Xj9xrxeauJQsl w==;
-IronPort-SDR: EbLnsmlB66hSQJ1YjCE/c1GNhGfiipcd1EfNwGPHWZ29bgrj8OhYM5oju0bjJOOJ0B6nvBHv3J
- Fcv1QFZntOYX5gSoRN8ZO4pY9MR259PGm23Rihe+Ev5D54sgMYnnrZXDB5PmxhXSBTQq3oDeUC
- cnD4Wka3j+JY4AWuZhaeh7ZCxvcvdtxxT1ceuuWrjO6alEx3DKk0GGC6JObvR3WN+bOmprz2Uh
- lxxyt6M1FelqQ3IZLexaEMAv2XkdMi4OSuLJzl0Y3oWlYan7oGzLa2Mx2xy2nQkyer0mGEzWip
- i/5+8oZIy2a/5hZ3I2aThKyK
-X-IronPort-AV: E=Sophos;i="5.84,272,1620716400"; d="scan'208";a="123560027"
+ bh=z1KEnQMB1TWuUPku8a8nzjp3TzBTGce4VMYNdWlm5es=;
+ b=W3pzG8zi46TnKPaNBgXet+8Fr5ybs/MBEraYtW8LHKwQhpZYIMuZJd6x
+ CWMTBc14gDbH0b5XXgO2lGHjz5D1KvammiqwiTzF8TgWMvR5RFd5LFrDB
+ CkFmlEaKf3hzCqkoRYChXA7Czj7nqZCuFrTszvmuJ8LQws1oPoWie5wf9
+ Lbos0DV58hAZ9ZETDbyUu4TDt68Xqjr34UlyF6NFxvjCB1rRBuBWPIj4D
+ Lr753LUtWTaGf0AuTYbrb6Ou8Nbn8aswmqnLb0NepHbJoDVjrjmm31Tf1
+ h82zckIRM0sNsNzD8n50lJv/cJjN/6qyvcA/xjhXbnOn++CiMMNQOqacU Q==;
+IronPort-SDR: 6gGHgYUmm0stu3M/VthlRHnK2qnoedZA1MNhdL3cUMkyUS18TBkpmVP+WOKU68SstMKZMEg2RK
+ w3hSm/KAvp8dVMCzEvf3Wz++/5T7CtL57nrh5rufM+2RN8mShq7j62Id0HJrysrkePxsXfPRFI
+ eFwlnjVCieXP0/R9T0iEaCxGz9c7Yh78/scqOcE2CaJI/cDrvUK4OcyFTSxWT2DV1uN7X8OvKz
+ 1Mf1fdgwQLoJt6shtzXlLFUHA7xOqIbddszoDTYJtaNKRc3+QjnbCHRI4+VRBs4o/WoEfAxfl6
+ x39iuF3vivFQMdXe9DDmt781
+X-IronPort-AV: E=Sophos;i="5.84,272,1620716400"; d="scan'208";a="123560030"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 26 Jul 2021 21:54:06 -0700
+ 26 Jul 2021 21:54:11 -0700
 Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
  chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 26 Jul 2021 21:54:06 -0700
+ 15.1.2176.2; Mon, 26 Jul 2021 21:54:11 -0700
 Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Mon, 26 Jul 2021 21:54:01 -0700
+ 15.1.2176.2 via Frontend Transport; Mon, 26 Jul 2021 21:54:06 -0700
 From: Tudor Ambarus <tudor.ambarus@microchip.com>
 To: <michael@walle.cc>, <vigneshr@ti.com>, <p.yadav@ti.com>
 CC: <figgyc@figgyc.uk>, <mail@david-bauer.net>, <linux@rasmusvillemoes.dk>,
@@ -73,17 +73,17 @@ CC: <figgyc@figgyc.uk>, <mail@david-bauer.net>, <linux@rasmusvillemoes.dk>,
  <richard@nod.at>, <linux-mtd@lists.infradead.org>,
  <linux-arm-kernel@lists.infradead.org>, <nicolas.ferre@microchip.com>, "Tudor
  Ambarus" <tudor.ambarus@microchip.com>
-Subject: [PATCH v2 19/35] mtd: spi-nor: Get rid of SPI_NOR_IO_MODE_EN_VOLATILE
- flag
-Date: Tue, 27 Jul 2021 07:52:06 +0300
-Message-ID: <20210727045222.905056-20-tudor.ambarus@microchip.com>
+Subject: [PATCH v2 20/35] mtd: spi-nor: core: Use container_of to get the
+ pointer to struct spi_nor
+Date: Tue, 27 Jul 2021 07:52:07 +0300
+Message-ID: <20210727045222.905056-21-tudor.ambarus@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210727045222.905056-1-tudor.ambarus@microchip.com>
 References: <20210727045222.905056-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210726_215407_630116_36807BC4 
-X-CRM114-Status: GOOD (  13.58  )
+X-CRM114-CacheID: sfid-20210726_215412_951199_591546AD 
+X-CRM114-Status: GOOD (  10.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,87 +100,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Get rid of flash_info flags that indicate settings which can be
-discovered when parsing SFDP. It will be clearer who sets what,
-and we'll restrict the flash settings that a developer can choose to
-only settings that are not SFDP discoverable.
-
-SNOR_F_IO_MODE_EN_VOLATILE is discoverable when parsing the optional
-SCCR Map SFDP table. Flashes that do not define this table should set
-the flag in the late_init() call. Flashes that define the SFDP optional
-table but get the value wrong, should fix it in a post_sfdp fixup hook.
+Get the pointer to the containing struct spi_nor by using container_of.
 
 Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
- drivers/mtd/spi-nor/core.c      |  3 ---
- drivers/mtd/spi-nor/core.h      |  9 ++-------
- drivers/mtd/spi-nor/micron-st.c | 11 ++++++++---
- 3 files changed, 10 insertions(+), 13 deletions(-)
+ drivers/mtd/spi-nor/core.c | 1 -
+ drivers/mtd/spi-nor/core.h | 2 +-
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 240d5c31af88..9885d434ea83 100644
+index 9885d434ea83..5c8cffb5e6f2 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -3204,9 +3204,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 	if (ret)
- 		return ret;
+@@ -3175,7 +3175,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
  
--	if (info->flags & SPI_NOR_IO_MODE_EN_VOLATILE)
--		nor->flags |= SNOR_F_IO_MODE_EN_VOLATILE;
--
- 	ret = spi_nor_set_addr_width(nor);
- 	if (ret)
- 		return ret;
+ 	if (!mtd->name)
+ 		mtd->name = dev_name(dev);
+-	mtd->priv = nor;
+ 	mtd->type = MTD_NORFLASH;
+ 	mtd->writesize = nor->params->writesize;
+ 	mtd->flags = MTD_CAP_NORFLASH;
 diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index dfdc51a26cad..987797a789c8 100644
+index 987797a789c8..8fddc685d2d3 100644
 --- a/drivers/mtd/spi-nor/core.h
 +++ b/drivers/mtd/spi-nor/core.h
-@@ -367,17 +367,12 @@ struct flash_info {
- 					 */
- #define SPI_NOR_OCTAL_DTR_READ	BIT(18) /* Flash supports octal DTR Read. */
- #define SPI_NOR_OCTAL_DTR_PP	BIT(19) /* Flash supports Octal DTR Page Program */
--#define SPI_NOR_IO_MODE_EN_VOLATILE	BIT(20) /*
--						 * Flash enables the best
--						 * available I/O mode via a
--						 * volatile bit.
--						 */
--#define SPI_NOR_SWP_IS_VOLATILE	BIT(21)	/*
-+#define SPI_NOR_SWP_IS_VOLATILE	BIT(20)	/*
- 					 * Flash has volatile software write
- 					 * protection bits. Usually these will
- 					 * power-up in a write-protected state.
- 					 */
--#define SPI_NOR_PARSE_SFDP	BIT(22) /*
-+#define SPI_NOR_PARSE_SFDP	BIT(21) /*
- 					 * Flash initialized based on the SFDP
- 					 * tables.
- 					 */
-diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-index 72cc4673bf88..31ebd4c9b431 100644
---- a/drivers/mtd/spi-nor/micron-st.c
-+++ b/drivers/mtd/spi-nor/micron-st.c
-@@ -118,13 +118,18 @@ static struct spi_nor_fixups mt35xu512aba_fixups = {
- 	.post_sfdp = mt35xu512aba_post_sfdp_fixup,
- };
+@@ -557,7 +557,7 @@ void spi_nor_otp_init(struct spi_nor *nor);
  
-+static void mt35xu512aba_late_init(struct spi_nor *nor)
-+{
-+	nor->flags |= SNOR_F_4B_OPCODES;
-+	nor->flags |= SNOR_F_IO_MODE_EN_VOLATILE;
-+}
-+
- static const struct flash_info micron_parts[] = {
- 	{ "mt35xu512aba", INFO(0x2c5b1a, 0, 128 * 1024, 512,
- 			       SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
--			       SPI_NOR_OCTAL_DTR_READ | SPI_NOR_OCTAL_DTR_PP |
--			       SPI_NOR_IO_MODE_EN_VOLATILE)
-+			       SPI_NOR_OCTAL_DTR_READ | SPI_NOR_OCTAL_DTR_PP)
- 	  .fixups = &mt35xu512aba_fixups,
--	  .late_init = snor_f_4b_opcodes, },
-+	  .late_init = mt35xu512aba_late_init, },
- 	{ "mt35xu02g", INFO(0x2c5b1c, 0, 128 * 1024, 2048,
- 			    SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ)
- 	  .late_init = snor_f_4b_opcodes, },
+ static struct spi_nor __maybe_unused *mtd_to_spi_nor(struct mtd_info *mtd)
+ {
+-	return mtd->priv;
++	return container_of(mtd, struct spi_nor, mtd);
+ }
+ 
+ static inline void snor_f_4b_opcodes(struct spi_nor *nor)
 -- 
 2.25.1
 
