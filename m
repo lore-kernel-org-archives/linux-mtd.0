@@ -2,68 +2,61 @@ Return-Path: <SRS0=5ASP=MT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C42FC4338F
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 16:02:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8767C4338F
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 16:14:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1CD1261B6F
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 16:02:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1CD1261B6F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
+	by mail.kernel.org (Postfix) with ESMTPS id 5E96D61B7D
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 16:14:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5E96D61B7D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kaiser.cx
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=An8d2Kyw5J/7FupK6+RohmYBnwSuBarRFwcnTiuCxBU=; b=vpB2lrRbRCahtr
-	opGKMWknfb2ehdVkRDvy0aajvgU8NsR3j31iBRvyzD+/S7N58fw1h94wWSDq7xwWbu+Dlv8ul6lHR
-	XYgKUUJ69POQZq6ASN8pcpxMZH2/lVgq3tYdJwO9EKxCchlV1LHu5B+pI1PPLhIlgcMzgwF8xBoyi
-	mgT7ibcef2w1gihw5NcPbc/KftBjYOR1hMijzL9hjfp3jkSlC3hBw05xBV36S3xxr4JzEWFlMm6+K
-	IhN7fr3rdEdwUyrvNx5zvbwii9aV1xUhiyCCM7YwcyArsqwbUyN+Lb/JcZKzekWuqqf2x0Yg8GnC9
-	8V/uOGiwDNIsyOXBou7w==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=6baV741Mhm/YQfr/bZranQAAtLINljtfu8MjnugPrQg=; b=mzIXkaLNBElVJf
+	bV2gvnA9ij8u0w9sxpj+AzYUsEzlG9YXtao4o60S6V2ga1Q0Jgdpk9uzV4BF/yiaoJibl0Oo2oQ1o
+	aN7A7t0DtqugJZ7FW4qTcnhZo9yF+P8VEkbZXpLlyTyE03cO3SyhchWHbOeSHiQ4kG7XO/IKuSnJw
+	YUfFLfPDvWAIpD2XCTVcjhYeWdo2hx8+nw2b7AO/ivEMp/5D/4PvSZyVvVb3+J9EEGosTKN9RDdsi
+	9ucMFWIo5P4B7ijJcWFMTi/33WoHBP/zPUteAY821Do8eAOy20+UpNpvc3tS5MTr5ZMv0g65p5a9q
+	s2qIr+QlhBqcQv4RNZ5A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m8PWD-00FGuH-NT; Tue, 27 Jul 2021 16:01:21 +0000
-Received: from michel.telenet-ops.be ([2a02:1800:110:4::f00:18])
+	id 1m8PiB-00FKEg-6G; Tue, 27 Jul 2021 16:13:43 +0000
+Received: from viti.kaiser.cx ([2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m8PW8-00FGqh-VM
- for linux-mtd@lists.infradead.org; Tue, 27 Jul 2021 16:01:19 +0000
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:b0a9:7e88:5ca4:551a])
- by michel.telenet-ops.be with bizsmtp
- id aG172500F1fSPfK06G177b; Tue, 27 Jul 2021 18:01:09 +0200
-Received: from rox.of.borg ([192.168.97.57])
- by ramsan.of.borg with esmtps (TLS1.3) tls
- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93)
- (envelope-from <geert@linux-m68k.org>)
- id 1m8PVz-001RuT-4K; Tue, 27 Jul 2021 18:01:07 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
- (envelope-from <geert@linux-m68k.org>)
- id 1m8PVy-00Fqnr-Ml; Tue, 27 Jul 2021 18:01:06 +0200
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- Rob Herring <robh+dt@kernel.org>,
- Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Cc: devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2] dt-bindings: memory: renesas,
- rpc-if: Miscellaneous improvements
-Date: Tue, 27 Jul 2021 18:01:05 +0200
-Message-Id: <d81b59a513c2a5204c8378b4a89cd07f97c46797.1627401508.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+ id 1m8Pi7-00FK7u-DF
+ for linux-mtd@lists.infradead.org; Tue, 27 Jul 2021 16:13:40 +0000
+Received: from martin by viti.kaiser.cx with local (Exim 4.89)
+ (envelope-from <martin@viti.kaiser.cx>)
+ id 1m8Phv-0007rV-0H; Tue, 27 Jul 2021 18:13:27 +0200
+Date: Tue, 27 Jul 2021 18:13:26 +0200
+From: Martin Kaiser <martin@kaiser.cx>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ boris.brezillon@collabora.com, tudor.ambarus@microchip.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ dan.carpenter@oracle.com
+Subject: Re: [PATCH] mtd: rawnand: Fix probe failure due to
+ of_get_nand_secure_regions()
+Message-ID: <20210727161326.wozj23a3sblibwpk@viti.kaiser.cx>
+References: <20210727062813.32619-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20210727062813.32619-1-manivannan.sadhasivam@linaro.org>
+User-Agent: NeoMutt/20170113 (1.7.2)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210727_090117_192236_99D32CA5 
-X-CRM114-Status: UNSURE (   7.94  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210727_091339_640119_015AA8BC 
+X-CRM114-Status: GOOD (  22.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,52 +73,63 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-  - Fix rejection of legitimate flash subnodes containing multiple
-    compatible values,
-  - Add missing list of required properties.
+Hi Mani and all,
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-v2:
-  - Drop #{address,size}-cells.
----
- .../memory-controllers/renesas,rpc-if.yaml      | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+Thus wrote Manivannan Sadhasivam (manivannan.sadhasivam@linaro.org):
 
-diff --git a/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml b/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
-index 990489fdd2ac33fe..d25072c414e45326 100644
---- a/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
-+++ b/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
-@@ -61,12 +61,23 @@ patternProperties:
-     type: object
-     properties:
-       compatible:
--        enum:
--          - cfi-flash
--          - jedec,spi-nor
-+        contains:
-+          enum:
-+            - cfi-flash
-+            - jedec,spi-nor
- 
- unevaluatedProperties: false
- 
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - clocks
-+  - power-domains
-+  - resets
-+  - '#address-cells'
-+  - '#size-cells'
-+
- examples:
-   - |
-     #include <dt-bindings/clock/renesas-cpg-mssr.h>
--- 
-2.25.1
+> Due to 14f97f0b8e2b, the rawnand platforms without "secure-regions"
+> property defined in DT fails to probe. The issue is,
+> of_get_nand_secure_regions() errors out if
+> of_property_count_elems_of_size() returns a negative error code.
 
+> If the "secure-regions" property is not present in DT, then also we'll
+> get -EINVAL from of_property_count_elems_of_size() but it should not
+> be treated as an error for platforms not declaring "secure-regions"
+> in DT.
+
+> So fix this behaviour by checking for the existence of that property in
+> DT and return 0 if it is not present.
+
+> Fixes: 14f97f0b8e2b ("mtd: rawnand: Add a check in of_get_nand_secure_regions()")
+> Reported-by: Martin Kaiser <martin@kaiser.cx>
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  drivers/mtd/nand/raw/nand_base.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index cbba46432e39..3d6c6e880520 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -5228,8 +5228,14 @@ static bool of_get_nand_on_flash_bbt(struct device_node *np)
+>  static int of_get_nand_secure_regions(struct nand_chip *chip)
+>  {
+>  	struct device_node *dn = nand_get_flash_node(chip);
+> +	struct property *prop;
+>  	int nr_elem, i, j;
+
+> +	/* Only proceed if the "secure-regions" property is present in DT */
+> +	prop = of_find_property(dn, "secure-regions", NULL);
+> +	if (!prop)
+> +		return 0;
+> +
+>  	nr_elem = of_property_count_elems_of_size(dn, "secure-regions", sizeof(u64));
+>  	if (nr_elem <= 0)
+>  		return nr_elem;
+> -- 
+> 2.25.1
+
+not surprisingly, this fixes the issue for me.
+
+Reviewed-by: Martin Kaiser <martin@kaiser.cx>
+Tested-by: Martin Kaiser <martin@kaiser.cx>
+
+Still, I was wondering if the behaviour of of_property_count_elems_of_size
+makes sense. Without a prior check, there's no chance for the caller to
+distinguish between "property is absent" and "property is malformed". 
+
+Thanks,
+Martin
 
 ______________________________________________________
 Linux MTD discussion mailing list
