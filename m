@@ -2,77 +2,97 @@ Return-Path: <SRS0=5ASP=MT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_2 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE0C9C4338F
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 08:50:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5CCEC4338F
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 10:46:44 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 34C946124B
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 08:50:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 34C946124B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id 66FBA61108
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 10:46:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 66FBA61108
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=ew.tq-group.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Uoxh5QqJ20Tnq1REJnUH28fWx9MdcKDawdjP3H7EuNg=; b=r4sO/aoW0GslolmrCHi+QOPGP5
-	VA9HcApgWejtH5X8geVUyWqcg1LLgzdCc6w3rBAFicvgXchWQgT0vIx5YQTrZSsy+uCtyJUNSOHHC
-	CFaO2UP1EyrQfNgmoexwMZZJ2hYydpYeW65UU9TbwawLa48JmuwA3iJCE4ADmw7PxC/+XHyrslN5h
-	2qz6M0Hf5XcQ52pW4SzJgo41IGjBSj06gOlzC1mRpJveubT2wy/xsJKTqH4HFlzKb/0r9go3prJ1D
-	KhuQjl4oQgmJdRRHb3k2AeYAE66pGVHdbopkpni6f5uLX7pqBETF+w9I6HBALyJ5oR1Jn6/RiNs1J
-	pGXP8KZw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Mime-Version:References:In-Reply-To:
+	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=+/FTAjdFNvqg9A6Olhnfdprbgf/r11+W4vEcCYGxjq4=; b=4jJrN8Y7pviFzD
+	wya2UWMqM5XuSGFvXtVEoC+GCOaM/+BWIUDREm75RgKWNsQZ1V4baOLM0gZ4XbORkcoetF9wQ88Fs
+	9NOVOXEwx7GvVlHTZBc9/dabMWdno9V0H27pKDfEAELqTFUNE/v90Sx2torQjmIp/kqcEanc0rXkD
+	KOGp+YcHoZu4TCQvoo6Gi/uheUiIq4jlz97e+h8Rkz9t77eMPnDBh/gtWG2uD8WYDfdHtfTwpKxIF
+	0YNlzrlCMUBCqfs6pj0qWiAOOmcIp+zmsZcvaRcwiaA5J4YfhJ1XJwaedh+fqitVM+tVfXndmeeFp
+	1jHMho1D5PgT73n+FwGg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m8Ime-00E77O-C5; Tue, 27 Jul 2021 08:49:52 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1m8Kao-00EUHN-Kk; Tue, 27 Jul 2021 10:45:46 +0000
+Received: from mx1.tq-group.com ([93.104.207.81])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m8ImJ-00E74f-Qv; Tue, 27 Jul 2021 08:49:33 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 5C8B32224A;
- Tue, 27 Jul 2021 10:49:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1627375769;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=B8TtB/u/jLy0EZEf3eBEE7XJjWvF+Smm8dhZHLm9sB4=;
- b=TdBFo92aEFu1394aLOowvWhVtNsQ3no18HpaBIccnoOtSyF2OJKRptHwL1+u8ODzpOdUFr
- 9AlJfv5bPMMapTG+XkwLYtosltsfjCHlSCAt6c1naZZAbPX0GilrOhR6n8bHNGII4AaUvR
- Bsad0DSOc75Xd9PD70j/V6XGCQTMm4c=
-MIME-Version: 1.0
-Date: Tue, 27 Jul 2021 10:49:26 +0200
-From: Michael Walle <michael@walle.cc>
-To: Tudor.Ambarus@microchip.com
-Cc: vigneshr@ti.com, p.yadav@ti.com, figgyc@figgyc.uk, mail@david-bauer.net,
- linux@rasmusvillemoes.dk, esben@geanix.com, knaerzche@gmail.com,
- code@reto-schneider.ch, zhengxunli@mxic.com.tw, jaimeliao@mxic.com.tw,
- heiko.thiery@gmail.com, macromorgan@hotmail.com, sr@denx.de,
- miquel.raynal@bootlin.com, richard@nod.at, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, Nicolas.Ferre@microchip.com
-Subject: Re: [PATCH v2 35/35] docs: mtd: spi-nor: Add details about how to
- propose a new flash addition
-In-Reply-To: <a7a6da4b-7d36-7308-e244-95f476b202f8@microchip.com>
-References: <20210727045222.905056-1-tudor.ambarus@microchip.com>
- <20210727045222.905056-36-tudor.ambarus@microchip.com>
- <4304e19f3399a0a6e856119d01ccabe0@walle.cc>
- <a7a6da4b-7d36-7308-e244-95f476b202f8@microchip.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <6eb1b7a05c9a0c0eb8c8c73f11c39218@walle.cc>
-X-Sender: michael@walle.cc
+ id 1m8Kak-00EUGF-LI
+ for linux-mtd@lists.infradead.org; Tue, 27 Jul 2021 10:45:44 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+ t=1627382742; x=1658918742;
+ h=message-id:subject:from:to:cc:date:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=IBaHE26ecbFT2WR+ipD7OHCSKKDIkgeOggpQrOqRaGE=;
+ b=pUWaMPvUtQ0Jq2xP8BUVTzLfTM+cFtAYDT0HM1M//kJsy8f3qNWcgLUu
+ VU997seVSateKUYdFwzs0KZ7faW7rOaWIaRFLUuwrjrZB51e/FwdIkEOX
+ U1qH3lE33azRlh2NDj91MoXy9iFIaKBsw5fTaRlEDWhPytOs9fG1/9n+k
+ 2xBQt4o1MDgZSIXCAbshDXQlwZpnXUYk4Mv2yb/jq4Olw663RajKajDf8
+ kQtnKMGrsUuub5I68vwhG9YrIKHqeQupPmRdnQYrUrKqaS3CvO4PVClTU
+ y3nRZcgHDu6exYi3HafALkWrqd6gvyJHbXZp1mLBiQPJLXBOnoDAhXDt+ Q==;
+X-IronPort-AV: E=Sophos;i="5.84,273,1620684000"; d="scan'208";a="18662240"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+ by mx1-pgp.tq-group.com with ESMTP; 27 Jul 2021 12:45:37 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+ by tq-pgp-pr1.tq-net.de (PGP Universal service);
+ Tue, 27 Jul 2021 12:45:37 +0200
+X-PGP-Universal: processed;
+ by tq-pgp-pr1.tq-net.de on Tue, 27 Jul 2021 12:45:37 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+ t=1627382737; x=1658918737;
+ h=message-id:subject:from:to:cc:date:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=IBaHE26ecbFT2WR+ipD7OHCSKKDIkgeOggpQrOqRaGE=;
+ b=Ksng7V4lnewvS/L51Pywe8mO2/qneJgNf60gcDmpqUHokSyLIXHJVNpV
+ RosnSnzwYPl2F2T4e27qgpa/wAf9aH51fstFvv2wk7IF0I5YvI8xQShhK
+ yFggNOm0vDXwrxvcY8vYgDIDkaDRDPEtfTlxG3eKUM9Rrx+q2ztCOmTGG
+ wMk/Zp10RlHyWQfELUxxzQxYxX1miHUug7dQI5OgHKBb+WLcAa4VrjOQc
+ 391diUQP0Z3rS95neFxh9MyIyjxDgEkvfE3YP8rtlUdl5/XlFp0DmJiMi
+ wSPyS8Jb7vYN9GFbwxDIu/jsyOSZ0Qsg5orao7qjc4QEDxWzjunTN1N1C g==;
+X-IronPort-AV: E=Sophos;i="5.84,273,1620684000"; d="scan'208";a="18662239"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+ by mx1.tq-group.com with ESMTP; 27 Jul 2021 12:45:37 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de
+ [10.121.48.12])
+ by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 16580280070;
+ Tue, 27 Jul 2021 12:45:37 +0200 (CEST)
+Message-ID: <42380415413178b18e940ae80298c22c51275b95.camel@ew.tq-group.com>
+Subject: Re: [PATCH 1/2] mtd: spi-nor: micron-st: sync flags of mt25ql02g
+ and mt25qu02g with other mt25q
+From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To: Michael Walle <michael@walle.cc>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
+ <p.yadav@ti.com>,  Miquel Raynal <miquel.raynal@bootlin.com>, Richard
+ Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Date: Tue, 27 Jul 2021 12:45:34 +0200
+In-Reply-To: <f3dbab898e9f1946129e5733095bdf3c@walle.cc>
+References: <c7b6c666aef9a8a2195acabe9954a417f04b6582.1627039534.git.matthias.schiffer@ew.tq-group.com>
+ <f3dbab898e9f1946129e5733095bdf3c@walle.cc>
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210727_014932_075603_890BD0E1 
-X-CRM114-Status: GOOD (  15.68  )
+X-CRM114-CacheID: sfid-20210727_034543_096500_A489320A 
+X-CRM114-Status: GOOD (  26.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,43 +104,76 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-QW0gMjAyMS0wNy0yNyAxMDowOSwgc2NocmllYiBUdWRvci5BbWJhcnVzQG1pY3JvY2hpcC5jb206
-Cj4gT24gNy8yNy8yMSAxMDoyMiBBTSwgTWljaGFlbCBXYWxsZSB3cm90ZToKPj4gRVhURVJOQUwg
-RU1BSUw6IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3Ug
-a25vdyAKPj4gdGhlIGNvbnRlbnQgaXMgc2FmZQo+PiAKPj4gQW0gMjAyMS0wNy0yNyAwNjo1Miwg
-c2NocmllYiBUdWRvciBBbWJhcnVzOgo+Pj4gQWRkIHNvbWUgZ3VpZGVsaW5lc3Mgb24gaG93IHRv
-IHByb3Bvc2UgYSBuZXcgZmxhc2ggYWRkaXRpb24uCj4+PiAKPj4+IFNpZ25lZC1vZmYtYnk6IFR1
-ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbWljcm9jaGlwLmNvbT4KPj4+IC0tLQo+Pj4gwqBE
-b2N1bWVudGF0aW9uL2RyaXZlci1hcGkvbXRkL3NwaS1ub3IucnN0IHwgNjUgCj4+PiArKysrKysr
-KysrKysrKysrKysrKysrKysKPj4+IMKgMSBmaWxlIGNoYW5nZWQsIDY1IGluc2VydGlvbnMoKykK
-Pj4+IAo+Pj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZHJpdmVyLWFwaS9tdGQvc3BpLW5v
-ci5yc3QKPj4+IGIvRG9jdW1lbnRhdGlvbi9kcml2ZXItYXBpL210ZC9zcGktbm9yLnJzdAo+Pj4g
-aW5kZXggNGEzYWRjYTQxN2ZkLi5mZmI4ZDk3YTI3NjYgMTAwNjQ0Cj4+PiAtLS0gYS9Eb2N1bWVu
-dGF0aW9uL2RyaXZlci1hcGkvbXRkL3NwaS1ub3IucnN0Cj4+PiArKysgYi9Eb2N1bWVudGF0aW9u
-L2RyaXZlci1hcGkvbXRkL3NwaS1ub3IucnN0Cj4+IFsuLl0KPj4+ICtFdmVyeSBuZXcgZmxhc2gg
-YWRkaXRpb24gdGhhdCBkZWZpbmUgdGhlIFNGRFAgdGFibGVzLCBzaG91bGQgaGV4ZHVtcAo+Pj4g
-aXRzIFNGRFAKPj4+ICt0YWJsZXMgaW4gdGhlIHBhdGNoJ3MgY29tbWVudCBzZWN0aW9uIGJlbG93
-IHRoZSAtLS0gbGluZSwgc28gdGhhdCB3ZQo+Pj4gY2FuCj4+PiArcmVmZXJlbmNlIGl0IGluIGNh
-c2Ugb2YgSUQgY29sbGlzaW9ucy4KPj4gCj4+IE5pY2UsIGJ1dCBjb3VsZCB5b3UgYWRkIHNvbWUg
-Z3VpZGVsaW5lcyBob3cgdG8gZG8gaXQ/IFRoYXQgaXMgdGhlIAo+PiBleGFjdAo+PiBjb21tYW5k
-cywgbWF5YmUgd2l0aCBhIG5vdGljZSBvbmUgc2hvdWxkIHVzZSB0aGVzZSB3aGVuZXZlciBwb3Nz
-aWJsZS4gCj4+IEkKPj4gd2FudCB0byBwcmV2ZW50IGhhdmluZyBhbGwgc29ydHMgb2YgdmFyaWF0
-aW9ucyBvZiB0aGUgb3V0cHV0IGFuZCBJIAo+PiB3YW50Cj4+IHRvIGJlIGFibGUgdG8gcmV2ZXJz
-ZSB0aGUgb3BlcmF0aW9uIGFuZCB2ZXJpZnkgaXQuCj4gCj4gb2ssIHdpbGwgZG8KPiAKPj4gCj4+
-ICMgeHhkIC1wIC9wYXRoL3RvL3NmZHAKPj4gIyBtZDVzdW0gL3BhdGgvdG8vc2ZkcAo+IAo+IG1h
-eWJlIHNoYTFzdW0gaGVyZT8KCnN1cmUsIHRoYXQgb25lIGRvZXNuJ3QgcmVhbGx5IG1hdHRlci4g
-YW55ICpzdW0gd2lsbCB3b3JrLgoKPj4gIyBjYXQgL3BhdGgvdG8vamVkZWNfaWQKPj4gIyBjYXQg
-L3BhdGgvdG8vcGFydG5hbWUKPj4gIyBjYXQgL3BhdGgvdG8vbWFudWZhY3R1cmVyCj4+IAo+IAo+
-IFdpbGwgYWRkIHNvbWUgc2hvcnQgZXhhbXBsZXMgb2YgbXRkX2RlYnVnIGFuZCB0aGUgZXJhc2Us
-IHZlcmlmeSwKPiB3cml0ZSwgcmVhZCBiYWNrCj4gYW5kIGNvbXBhcmUgdG9vLgo+IAo+IERvIHlv
-dSBoYXZlIHNvbWUgbG9ja2luZyB0ZXN0IGV4YW1wbGVzPyBJJ2xsIGhhdmUgdG8gY2hlY2sgdGhv
-c2UgdG9vLgoKTm90IHJlYWxseSwgSSB1c3VhbGx5IGNoZWNrIHRoZSBsb2NraW5nIGJ5IGxvb2tp
-bmcgYXQgdGhlIEJQIGJpdHMsCmJ1dCB0aGVyZSBpcyBubyBlYXN5IG1ldGhvZCB0byBsb29rIGF0
-IHRoZW0gaW4gbGludXguCgotbWljaGFlbAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
-dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Tue, 2021-07-27 at 09:09 +0200, Michael Walle wrote:
+> Am 2021-07-23 13:27, schrieb Matthias Schiffer:
+> > All mt25q variants have the same features.
+> > 
+> > Unlike the smaller variants, no n25q with 2G exists, so we don't need 
+> > to
+> > match on the extended ID to distinguish n25q and mt25q series for these
+> > models.
+> 
+> But why shouldn't we? What if there will be another flash with
+> the same first three id bytes?
+
+That makes sense, I'll update my patch accordingly.
+
+It looked to me like the current ID list only checks the extended ID
+when necessary to distinguish two known flash models.
+
+
+> 
+> > Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> > ---
+> >  drivers/mtd/spi-nor/micron-st.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/micron-st.c 
+> > b/drivers/mtd/spi-nor/micron-st.c
+> > index c224e59820a1..d5baa8762c8d 100644
+> > --- a/drivers/mtd/spi-nor/micron-st.c
+> > +++ b/drivers/mtd/spi-nor/micron-st.c
+> > @@ -181,11 +181,11 @@ static const struct flash_info st_parts[] = {
+> >  			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
+> >  			      NO_CHIP_ERASE) },
+> >  	{ "mt25ql02g",   INFO(0x20ba22, 0, 64 * 1024, 4096,
+> > -			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
+> > -			      NO_CHIP_ERASE) },
+> 
+> This bothers me. I'm not sure how this will work. I see that
+> chip erase is command 0xc7, but both the new and the old flash
+> just supports 0xc3 (DIE ERASE). Did you test these changes?
+
+Thanks for catching this. I overlooked that the 1G and 2G variants
+don't support the same erase commands as the smaller versions after
+all... It is possible that I only tested this with partitioned MTD, so
+I didn't hit the whole-chip erase case.
+
+Which command should I use to test the chip erase? Will a `flash_erase
+/dev/mtdX 0 0` trigger the correct operation?
+
+
+
+
+> 
+> > +			      SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
+> > +			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+> >  	{ "mt25qu02g",   INFO(0x20bb22, 0, 64 * 1024, 4096,
+> >  			      SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
+> > -			      SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
+> > +			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+> > 
+> >  	{ "m25p05",  INFO(0x202010,  0,  32 * 1024,   2, 0) },
+> >  	{ "m25p10",  INFO(0x202011,  0,  32 * 1024,   4, 0) },
+> 
+> -michael
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
