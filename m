@@ -7,83 +7,83 @@ X-Spam-Status: No, score=-17.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CE44C4338F
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 07:09:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 60F4CC4338F
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 07:33:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C5B9361163
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 07:09:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C5B9361163
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
+	by mail.kernel.org (Postfix) with ESMTPS id 1CE5D611C5
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 07:33:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1CE5D611C5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=r5cEA7Q8kqEJGHyvX+GLH8JsBaOFNGtB7HIk6f4k4cs=; b=y/8oO2Jm5iDUhu
-	lVZ6K7PExtnCf5nVPj/Sre+Rrsq5ffARTXgqVll3JivePUtMpOpOGn0uUvOTnjWUxbIT1LkJqxtxD
-	efKZr+415ov9Ov02UGsa1SsZ+koU8IUvgTPKi3n+P3wslrYBR9x0KulDRBQs0RorOOmW/8656sgj6
-	XwW+qbydCrSM48h8w5m5Pwin4kmWiIcCKANZ7LYfNauKekXfukbix7vwTFwH2KatLnx9Dl7agtvB9
-	O8jYia5odhpgcqgedmAMe5PdXnfxetnQHUpSS0sPOqrIx7k/mIs4h80S8V8eoS8rHnkArM6hvSskE
-	slmh0vZXOU5cYph27YSg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=UBvHR+WE9HJW3bOpbE4GnVTRv+Sm9tD8xyvOfRFpLcQ=; b=yF31xO404k9FlU
+	YoSwAN7TTch3oixBOHgIsrjHHV4L9kS3xRykh4lFSvY+c1GMxvEz14x4HUzo2EHgkJaSOPnepD5VI
+	eEy9Qk1oQdhI7dmxtuLFPspEsAfUzV3wAgfMOB2ud8st7vUoF9FkS19nG8Qv499L8MQVGpNMpEnNW
+	0F1oDqpgaF+QqAu8mGjUzKywHWzGl0iEGPzgKQIelbJlKkV84yoeWYQf5mnk9EpW4O5FYBXOqwddj
+	YeXAdOHWPl2H/hQmzeSTN3+zA6BuECZDRP7YTf369h63bWrQEkTKgwb59J0uebFs0T7zHWXYGABl8
+	SR6ipnQuEWq/9p5DmYWg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m8HCq-00Dkef-FY; Tue, 27 Jul 2021 07:08:48 +0000
-Received: from esa.microchip.iphmx.com ([68.232.154.123])
+	id 1m8Ha9-00Dr2I-Ny; Tue, 27 Jul 2021 07:32:54 +0000
+Received: from mail-pj1-x1035.google.com ([2607:f8b0:4864:20::1035])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m8F7p-00DIA3-4T; Tue, 27 Jul 2021 04:55:30 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1627361728; x=1658897728;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=SzwolEeGEyf9oVitKoVWHbwOtUaC9B7RoDUDxRyncSM=;
- b=rlKWhOZFnwdk2liwM/fwltwflE3Tos+Lfo9dDFjtS6y2z+Y352FatF53
- im6Y2UTKiRH0HK/0a32RljRFeOh8EVSs5WIkgQBIfkqqgLMfg/3iDQVva
- iudxhwimM0uoc30ppx/o6NvmwIIEPtVl2jX66be+hJ1x5KoIVKYf2lKSd
- pEpNhtxITaZqT9gaP8Mde749JHzPEhCau+pz6uVekF8tyzyXuBpOPMq3v
- Puy37oD1PtHng+wCa+796bXSUjDs6P/Sw4tOjgoBYrduaNtLvAqQGKD3b
- VRQzI4kDirDulGzopb6r0Q+59loFXb32IVRxlLj3nYsQmfxz/RrBv4+Tf g==;
-IronPort-SDR: 9XNm7nmNa6fpHsh9VcPRvZQ4yZM2IpARhmTgovzXaLol2YVXizopAqpcep/oIfGSOkYq1QpWXB
- OWFtvjkqDY+95OtH6lAz1HrOuOvXYt8004GcmzhIn6jTgSUnI4WJ/gdh6cJS9PbD/VCIMnuZZe
- OcHXZ74pnFCxMpOdKPFRWWVK4WFA02xtu/Ppgch3eOyi5/gXGwBcfrhBeTIeAdlVbIg+VyS+Gr
- OjFAq/rn6sJAVhtMe/bNkyUJe4mexn86Aewqr4bazgaujHFtxuClx/Mz2ZocuKoDQaP+m+EmUk
- 7VDAdOzx+xdpwVroAN5FNTlB
-X-IronPort-AV: E=Sophos;i="5.84,272,1620716400"; d="scan'208";a="123560057"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 26 Jul 2021 21:55:27 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 26 Jul 2021 21:55:27 -0700
-Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Mon, 26 Jul 2021 21:55:22 -0700
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
-To: <michael@walle.cc>, <vigneshr@ti.com>, <p.yadav@ti.com>
-CC: <figgyc@figgyc.uk>, <mail@david-bauer.net>, <linux@rasmusvillemoes.dk>,
- <esben@geanix.com>, <knaerzche@gmail.com>, <code@reto-schneider.ch>,
- <zhengxunli@mxic.com.tw>, <jaimeliao@mxic.com.tw>, <heiko.thiery@gmail.com>,
- <macromorgan@hotmail.com>, <sr@denx.de>, <miquel.raynal@bootlin.com>,
- <richard@nod.at>, <linux-mtd@lists.infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, <nicolas.ferre@microchip.com>, "Tudor
- Ambarus" <tudor.ambarus@microchip.com>
-Subject: [PATCH v2 35/35] docs: mtd: spi-nor: Add details about how to propose
- a new flash addition
-Date: Tue, 27 Jul 2021 07:52:22 +0300
-Message-ID: <20210727045222.905056-36-tudor.ambarus@microchip.com>
+ id 1m8GaN-00Dcpe-Fv
+ for linux-mtd@lists.infradead.org; Tue, 27 Jul 2021 06:29:04 +0000
+Received: by mail-pj1-x1035.google.com with SMTP id mt6so16384888pjb.1
+ for <linux-mtd@lists.infradead.org>; Mon, 26 Jul 2021 23:29:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=a7gbIhgZL1GB7+CVzKz4WvNGA6a2yfgt3NnYEFDZ3OA=;
+ b=ddSxW+BF6bMPFIS3LGwe/J3xhVpC83qkgDnt5dwEygoPvNeYihLmgqgwrPBB/WtjCR
+ Jz/15O6yuD10YFbiponmOZW9UrhrubeE6/Ba9XH6mR3heqlyqaPeHIlEQk7+D2LkiwUf
+ g4NzpLdDxYQY3Xg3d2RrlNPGNtoKK9OXCySPcnumxPhWSLDAb190lsFhQvS4SPUvayz0
+ atcKkrG57Lxlm0CCjjEz94GYYmDUtZg4hjEItpxD3jUUjuDl78KYkNtVRtpalvmTwmXL
+ 0ffCP8+P0qxnK00iybgFPgenhnuaeITfQnJKW64/aIpYNKeYr8exZTo35Y95HHnJuUwZ
+ 5C6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=a7gbIhgZL1GB7+CVzKz4WvNGA6a2yfgt3NnYEFDZ3OA=;
+ b=DRG7FtLrQJ4eQP+sYuqsWyCkwaHnE4qsaXNins52NbQ3Fc/9JPnzW5rENGyxsIKA1i
+ abXtyXJuGQyvB1I/QmKKVIH1itzD+cK8LQAvoFuSB3861hySumXZFqENLzE3RuDdUrGy
+ Fur2y5DaMMHGO/qMjIoEtLKHYrPeJcbQtgtw/fNf0hSUNq9o73g3Zei3+v13/CQDIbq2
+ KrxVX2ueB727aqf/rVGCGdtnyeKFryScZ/MUlYkDHWNF7d8dDPAzK60iboMfn2T5HNq5
+ dZkyvWqWT3xFYTELGyo9aXMOfp2WtalTThwP8Da3xK1rrPJWMH8/vqb80AZMAPlMZiEj
+ fCzw==
+X-Gm-Message-State: AOAM533Hw/ttwP7uN3AhIS4IG7plQFVm5Aw+4yX3YBEAJbDDyFXMPLCc
+ vmrPVraj0hv2MbJOG8N9vnXi
+X-Google-Smtp-Source: ABdhPJwOxewXlQs+hfNI+t3UdmSQFBWp/cZFvddejI5BsF8JNQNf2AicgvXY6VziMptXGG8v7NhzLw==
+X-Received: by 2002:a17:90a:c24b:: with SMTP id
+ d11mr2731017pjx.91.1627367341536; 
+ Mon, 26 Jul 2021 23:29:01 -0700 (PDT)
+Received: from localhost.localdomain ([2409:4072:404:9e26:4427:70e5:216c:501f])
+ by smtp.gmail.com with ESMTPSA id g3sm2107960pfi.197.2021.07.26.23.28.40
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 26 Jul 2021 23:29:01 -0700 (PDT)
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: miquel.raynal@bootlin.com
+Cc: richard@nod.at, vigneshr@ti.com, boris.brezillon@collabora.com,
+ tudor.ambarus@microchip.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, dan.carpenter@oracle.com, martin@kaiser.cx,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH] mtd: rawnand: Fix probe failure due to
+ of_get_nand_secure_regions()
+Date: Tue, 27 Jul 2021 11:58:13 +0530
+Message-Id: <20210727062813.32619-1-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210727045222.905056-1-tudor.ambarus@microchip.com>
-References: <20210727045222.905056-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210726_215529_322250_EE34DE22 
-X-CRM114-Status: GOOD (  27.02  )
+X-CRM114-CacheID: sfid-20210726_232903_595959_18EDCEC7 
+X-CRM114-Status: GOOD (  14.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,86 +100,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add some guideliness on how to propose a new flash addition.
+Due to 14f97f0b8e2b, the rawnand platforms without "secure-regions"
+property defined in DT fails to probe. The issue is,
+of_get_nand_secure_regions() errors out if
+of_property_count_elems_of_size() returns a negative error code.
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+If the "secure-regions" property is not present in DT, then also we'll
+get -EINVAL from of_property_count_elems_of_size() but it should not
+be treated as an error for platforms not declaring "secure-regions"
+in DT.
+
+So fix this behaviour by checking for the existence of that property in
+DT and return 0 if it is not present.
+
+Fixes: 14f97f0b8e2b ("mtd: rawnand: Add a check in of_get_nand_secure_regions()")
+Reported-by: Martin Kaiser <martin@kaiser.cx>
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- Documentation/driver-api/mtd/spi-nor.rst | 65 ++++++++++++++++++++++++
- 1 file changed, 65 insertions(+)
+ drivers/mtd/nand/raw/nand_base.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/Documentation/driver-api/mtd/spi-nor.rst b/Documentation/driver-api/mtd/spi-nor.rst
-index 4a3adca417fd..ffb8d97a2766 100644
---- a/Documentation/driver-api/mtd/spi-nor.rst
-+++ b/Documentation/driver-api/mtd/spi-nor.rst
-@@ -66,3 +66,68 @@ when you want to write a new driver for a SPI NOR controller.
- Another API is spi_nor_restore(), this is used to restore the status of SPI
- flash chip such as addressing mode. Call it whenever detach the driver from
- device or reboot the system.
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index cbba46432e39..3d6c6e880520 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -5228,8 +5228,14 @@ static bool of_get_nand_on_flash_bbt(struct device_node *np)
+ static int of_get_nand_secure_regions(struct nand_chip *chip)
+ {
+ 	struct device_node *dn = nand_get_flash_node(chip);
++	struct property *prop;
+ 	int nr_elem, i, j;
+ 
++	/* Only proceed if the "secure-regions" property is present in DT */
++	prop = of_find_property(dn, "secure-regions", NULL);
++	if (!prop)
++		return 0;
 +
-+Part IV - How to propose a new flash addition?
-+----------------------------------------------
-+
-+First we have to clarify where the new flash_info entry will reside. Typically
-+each manufacturer have their own driver and the new flash will be placed in that
-+specific manufacturer driver. There are cases however, where special care has to
-+be taken. In case of flash ID collisions between different manufacturers, the
-+place to add the new flash is in the manuf-id-collisions.c driver. ID collisions
-+between flashes of the same manufacturer should be handled in their own
-+manufacturer driver, macronix being an example. There will be a single
-+flash_info entry for all the ID collisions of the same ID.
-+
-+manuf-id-collisions.c is the place to add new flash additions where the
-+manufacturer is ignorant enough to not implement the ID continuation scheme
-+that is described in the JEP106 JEDEC Standard. One has to dump its flash ID and
-+compare it with the flash's manufacturer identification code that is defined in
-+the JEP106 JEDEC Standard. If the manufacturer ID is defined in bank two or
-+higher and the manufacturer does not implement the ID continuation scheme, then
-+it is likely that the flash ID will collide with a manufacturer from bank one or
-+with other manufacturer from other bank that does not implement the ID
-+continuation scheme as well.
-+
-+flash_info entries will be added in a first come, first served manner. If there
-+are ID collisions, differentiation between flashes will be done at runtime if
-+possible. Where runtime differentiation is not possible, new compatibles will be
-+introduced, but this will be done as a last resort.
-+
-+New flash additions that support the SFDP standard should be declared using
-+SPI_NOR_PARSE_SFDP. Support that can be discovered when parsing SFDP should not
-+be duplicated by explicit flags at flash declaration. All the SFDP flash
-+parameters and settings will be discovered when parsing SFDP. There are
-+flash_info flags that indicate support that is not SFDP discoverable. These
-+flags initialize non SFDP support in the spi_nor_nonsfdp_flags_init() method.
-+SPI_NOR_PARSE_SFDP is usually followed by other flash_info flags from the
-+aforementioned function. Sometimes manufacturers wrongly define some fields in
-+the SFDP tables. If that's the case, SFDP data can be amended with the fixups()
-+hooks. It is not common, but if the SFDP tables are entirely wrong, and it does
-+not worth the hassle to tweak the SFDP parameters by using the fixups hooks, or
-+if the flash does not define the SFDP tables at all, then one can statically
-+init the flash with the SPI_NOR_SKIP_SFDP flag and specify the rest of the flash
-+capabilities with the flash info flags.
-+
-+With time we want to convert all flashes to either use SPI_NOR_PARSE_SFDP or
-+SPI_NOR_SKIP_SFDP and stop triggering the SFDP parsing with the
-+SPI_NOR_{DUAL, QUAD, OCTAL*}_READ flags. There are flashes that support QUAD
-+mode but do not support the RDSFDP command, we should avoid issuing unsupported
-+commands to flashes where possible. It is unlikely that RDSFDP will cause any
-+problems, but still, it's better to avoid it. There are cases however of flash
-+ID collisions between flashes that define the SFDP tables and flashes that don't
-+(again, macronix). We usually differentiate between the two by issuing the
-+RDSFDP command. In such a case one has to declare the SPI_NOR_PARSE_SFDP
-+together with all the relevant flags from spi_nor_nonsfdp_flags_init() for the
-+SFDP compatible flash, but should also declare the relevant flags that are used
-+in the spi_nor_info_init_params() method in order to init support that can't be
-+discovered via SFDP for the non-SFDP compatible flash.
-+
-+Every new flash addition that define the SFDP tables, should hexdump its SFDP
-+tables in the patch's comment section below the --- line, so that we can
-+reference it in case of ID collisions.
-+
-+Every flash_info flag declared should be tested. Typically one uses the
-+mtd-utils and does an erase, verify erase, write, read back and compare test.
-+Locking and other flags that are declared in the flash_info entry and used in
-+the spi_nor_nonsfdp_flags_init() should be tested as well.
+ 	nr_elem = of_property_count_elems_of_size(dn, "secure-regions", sizeof(u64));
+ 	if (nr_elem <= 0)
+ 		return nr_elem;
 -- 
 2.25.1
 
