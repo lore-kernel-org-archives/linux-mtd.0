@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17256C4338F
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 06:24:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0B30C4338F
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 06:27:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D41FD610D2
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 06:24:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D41FD610D2
+	by mail.kernel.org (Postfix) with ESMTPS id 6332A61103
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jul 2021 06:27:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6332A61103
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,47 +23,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gE2sU0TpLHslmH0b7xLiHeUdG67wgU1ChY+Gg3iMf04=; b=t1CLtkKFXpjlLq
-	OWyIBl4zjx9igWYfZCuHwYbLtwPbuY6wZxJ2lz2pkuZoxlK4NRVOnloEhVax4UYrN8nGayp7nwjhI
-	ligUR+ZVTfv6dgIrC/psSKhD2CCSPYi9Hz1pU0dPUI9gvpB+1HYaCZ1glcie6vThd5HdiG9kdLpn8
-	aApYK95iBogKwmWgCtMG2bMcbuInQa0Zh0Ze6DurTKXuoM62sndA5/HaRxGKEvTQi4rfd4i0ELN+N
-	ARmywK4qAovBGlezi+3BA+xxSpmCzQe8+iVP68pCrlGJts4eayedrgvUPlFDrZjvCWFfPPxrCkdw+
-	iun+jPTFCKSFmErtiUhg==;
+	List-Owner; bh=BfEXnfMWnHDHTnE1Ydty+n2fCidTbqEmx43CCX36ca4=; b=Fm/EBkVSkJWUVt
+	n8XRGk/gsCG4raQo+HdX46ct9rMZ1x45NRA/+GMLV66T5M3mnoQNHhMm720x/vii42MRLn2IHQthB
+	KFF4tj/p5J2b1/AmkcuaS40jgjw8M+NCjph5XK5HtVZvpMgluV6tpP4EPZYMn1By6xijRm3ppVc9b
+	w9qAl7ulTz3vKbljOSjzqrNN19vuKYtadR2jUMRVCF5oPHJKpabIGsInAQcUjm81JyBQWIyZqy1PS
+	PCy4uCtlJQEHEJpTqZUmR/vBIx3CxRQZvjgqIQ66Qg6lH2nowTHF7e6mJ/jAJk96qNXb9RZnXEUxd
+	kX8jY0hQW1l6MxlTHB3w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1m8GUs-00DblM-Ij; Tue, 27 Jul 2021 06:23:22 +0000
-Received: from esa.microchip.iphmx.com ([68.232.153.233])
+	id 1m8GYc-00DcXF-4R; Tue, 27 Jul 2021 06:27:14 +0000
+Received: from esa.microchip.iphmx.com ([68.232.154.123])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m8F70-00DHth-Nw; Tue, 27 Jul 2021 04:54:40 +0000
+ id 1m8F75-00DHwD-6r; Tue, 27 Jul 2021 04:54:44 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1627361679; x=1658897679;
+ t=1627361683; x=1658897683;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=NCA36JpXoX0x5HsFEPVjKjK/pmqngl0RcmS5nzg0+2Y=;
- b=GuRqImU01z0umyo2lXLmrCKwLegQshOAZVbrt57LCeMzUCpi7W4M1BXm
- 3QRFNuzok6xRA3/UEwMBzertX+67ItZ5wH/kxMdxdU01TP8zvRlHslARR
- H0p1r1KYw4q5b5G9nWo4xI8Gjq/y9nLafOOSrwYOwIx0BNpRHLnUtoILY
- rJ3mAoLIq63WhIe/UxBJJPkJ4Llmw/jiyzitLyXa9+Ib4v7mM5crChGgd
- x6WsnNSo8xj791ppUTWBBU8C/np8Jeos3vXqV37+9AKuIF8i29fYOBM4n
- 88p76MOmEUqB4bp7pKLb1KhAbo2rSgxxAcga5liLUUfGluouiRef9qLQM w==;
-IronPort-SDR: wIzkb/toWchSIboommgzShVObYoeeXhHluVjCX3rs7bAJXUfSi6AVo1MamfFbkJpyPcCJnMdv1
- zztBC66ZMvOuPSW78j0t+fL14VjO78gAaQe+f4l8zMU9WXMKtdYvfxCgQf6e2lIh56pRndIxM8
- 3Gny3ZlCidf7MNn0le0cghV1ybBzwUFeY/CTyHK/b97Og3VRyvfPklgbNeY4xw+WYkNv1iquCL
- SCtPEp5pt2G6twLZZDt+vIWVdpxAQgavPM+d6szScK8OlPfd9W/T18DyFCb8ezGV7IVD6H0LaZ
- tLZB9KPB7es13JiIeaEzxLkp
-X-IronPort-AV: E=Sophos;i="5.84,272,1620716400"; d="scan'208";a="129935525"
+ bh=OxxpDnFl3yWu3prwePBKq7v9bIv3vcU9pe64UwmCXqY=;
+ b=vkmUFd6bh3mSabvJsU9nBfEB5DP89LDGTFmHDkDoBzdJEKxoKh+jzK/Q
+ eM1ar5ygGjOqOSVY+flVTE1toMZ67CifDCatat/9Drf2zVbldPYoGmSiR
+ MEm2PojS8MEAYnzDMsFDosLt05uVUTkxd5u70pW4efR8AmIOT7pDUis9I
+ BA+K/mrhjlooT/BXJdLGGAuACyYkqbKs/EdDex8abl9VD0HfDKLCgUXrF
+ P2/wzUZGBU/3elP9Bs0SSUA6eWy4ft5nH060FJARZFqN0ep2uekSZ5pOb
+ cdpWeqfwoBJBZKQSW5m0to0dPf7/eZr5RtQp/lxsex09TsXFwfOsx8Mxb Q==;
+IronPort-SDR: 8EjOtTq65UKyJ36ANh7Mac3HYr0vIIC3VzKNDKUxL8ZIfAQgGJVq/bCcJQwFA8C9SUgLoM9dUk
+ aP06lmjD3A/ssEZnJPsPpweqAY9iJJmaxuYgMAIo0Ju807bN524h6M/zB5M3nm6T6IlKJZG66q
+ 82e3cxGiC5Lae6QkzA315J4UHwCgi0xxVC5dTNF6VkoQRCpQFGqa4QwZoOv1tOPOZOAtN4MPdG
+ MjZb5ytXkr9Ce+sit6SVV55VL0iVYNF5hFs6MbaLOyCKT8o8pXWOPdOJEdktPW9Zw/aruX2dM/
+ LNY0y3JZoEvgL3PNOi8cXRtl
+X-IronPort-AV: E=Sophos;i="5.84,272,1620716400"; d="scan'208";a="126055092"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 26 Jul 2021 21:54:38 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 26 Jul 2021 21:54:42 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 26 Jul 2021 21:54:36 -0700
+ 15.1.2176.2; Mon, 26 Jul 2021 21:54:41 -0700
 Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Mon, 26 Jul 2021 21:54:31 -0700
+ 15.1.2176.2 via Frontend Transport; Mon, 26 Jul 2021 21:54:36 -0700
 From: Tudor Ambarus <tudor.ambarus@microchip.com>
 To: <michael@walle.cc>, <vigneshr@ti.com>, <p.yadav@ti.com>
 CC: <figgyc@figgyc.uk>, <mail@david-bauer.net>, <linux@rasmusvillemoes.dk>,
@@ -73,17 +73,17 @@ CC: <figgyc@figgyc.uk>, <mail@david-bauer.net>, <linux@rasmusvillemoes.dk>,
  <richard@nod.at>, <linux-mtd@lists.infradead.org>,
  <linux-arm-kernel@lists.infradead.org>, <nicolas.ferre@microchip.com>, "Tudor
  Ambarus" <tudor.ambarus@microchip.com>
-Subject: [PATCH v2 25/35] mtd: spi-nor: core: Move spi_nor_set_addr_width() in
- spi_nor_setup()
-Date: Tue, 27 Jul 2021 07:52:12 +0300
-Message-ID: <20210727045222.905056-26-tudor.ambarus@microchip.com>
+Subject: [PATCH v2 26/35] mtd: spi-nor: core: Introduce
+ spi_nor_init_default_params()
+Date: Tue, 27 Jul 2021 07:52:13 +0300
+Message-ID: <20210727045222.905056-27-tudor.ambarus@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210727045222.905056-1-tudor.ambarus@microchip.com>
 References: <20210727045222.905056-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210726_215438_838218_A783899A 
-X-CRM114-Status: GOOD (  18.50  )
+X-CRM114-CacheID: sfid-20210726_215443_397778_74C7C345 
+X-CRM114-Status: GOOD (  13.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,151 +100,139 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-spi_nor_setup() configures the SPI NOR memory. Setting the addr width
-is too a configuration, hence we can move the spi_nor_set_addr_width()
-in spi_nor_setup().
+Called for all flashes, regardless if they define SFDP tables or not.
 
 Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
- drivers/mtd/spi-nor/core.c | 101 +++++++++++++++++++------------------
- 1 file changed, 52 insertions(+), 49 deletions(-)
+ drivers/mtd/spi-nor/core.c | 92 +++++++++++++++++++++-----------------
+ 1 file changed, 52 insertions(+), 40 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 83f27405a000..b3a01d7d6f0b 100644
+index b3a01d7d6f0b..9193317f897d 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -2485,13 +2485,62 @@ static int spi_nor_default_setup(struct spi_nor *nor,
- 	return 0;
+@@ -2543,6 +2543,56 @@ static int spi_nor_setup(struct spi_nor *nor,
+ 	return spi_nor_set_addr_width(nor);
  }
  
-+static int spi_nor_set_addr_width(struct spi_nor *nor)
++/**
++ * spi_nor_init_default_params() - Default initialization of flash parameters
++ * and settings. Done for all flashes, regardless is they define SFDP tables
++ * or not.
++ * @nor:	pointer to a 'struct spi_nor'.
++ */
++static void spi_nor_init_default_params(struct spi_nor *nor)
 +{
-+	if (nor->addr_width) {
-+		/* already configured from SFDP */
-+	} else if (nor->read_proto == SNOR_PROTO_8_8_8_DTR) {
-+		/*
-+		 * In 8D-8D-8D mode, one byte takes half a cycle to transfer. So
-+		 * in this protocol an odd address width cannot be used because
-+		 * then the address phase would only span a cycle and a half.
-+		 * Half a cycle would be left over. We would then have to start
-+		 * the dummy phase in the middle of a cycle and so too the data
-+		 * phase, and we will end the transaction with half a cycle left
-+		 * over.
-+		 *
-+		 * Force all 8D-8D-8D flashes to use an address width of 4 to
-+		 * avoid this situation.
-+		 */
-+		nor->addr_width = 4;
-+	} else if (nor->info->addr_width) {
-+		nor->addr_width = nor->info->addr_width;
-+	} else {
-+		nor->addr_width = 3;
++	struct spi_nor_flash_parameter *params = nor->params;
++	const struct flash_info *info = nor->info;
++	struct device_node *np = spi_nor_get_flash_node(nor);
++
++	params->quad_enable = spi_nor_sr2_bit1_quad_enable;
++	params->set_4byte_addr_mode = spansion_set_4byte_addr_mode;
++	params->setup = spi_nor_default_setup;
++	params->otp.org = &info->otp_org;
++
++	/* Default to 16-bit Write Status (01h) Command */
++	nor->flags |= SNOR_F_HAS_16BIT_SR;
++
++	/* Set SPI NOR sizes. */
++	params->writesize = 1;
++	params->size = (u64)info->sector_size * info->n_sectors;
++	params->page_size = info->page_size;
++
++	if (!(info->flags & SPI_NOR_NO_FR)) {
++		/* Default to Fast Read for DT and non-DT platform devices. */
++		params->hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
++
++		/* Mask out Fast Read if not requested at DT instantiation. */
++		if (np && !of_property_read_bool(np, "m25p,fast-read"))
++			params->hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
 +	}
 +
-+	if (nor->addr_width == 3 && nor->mtd.size > 0x1000000) {
-+		/* enable 4-byte addressing if the device exceeds 16MiB */
-+		nor->addr_width = 4;
-+	}
++	/* (Fast) Read settings. */
++	params->hwcaps.mask |= SNOR_HWCAPS_READ;
++	spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ],
++				  0, 0, SPINOR_OP_READ,
++				  SNOR_PROTO_1_1_1);
 +
-+	if (nor->addr_width > SPI_NOR_MAX_ADDR_WIDTH) {
-+		dev_dbg(nor->dev, "address width is too large: %u\n",
-+			nor->addr_width);
-+		return -EINVAL;
-+	}
-+
-+	/* Set 4byte opcodes when possible. */
-+	if (nor->addr_width == 4 && nor->flags & SNOR_F_4B_OPCODES &&
-+	    !(nor->flags & SNOR_F_HAS_4BAIT))
-+		spi_nor_set_4byte_opcodes(nor);
-+
-+	return 0;
++	if (params->hwcaps.mask & SNOR_HWCAPS_READ_FAST)
++		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_FAST],
++					  0, 8, SPINOR_OP_READ_FAST,
++					  SNOR_PROTO_1_1_1);
++	/* Page Program settings. */
++	params->hwcaps.mask |= SNOR_HWCAPS_PP;
++	spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP],
++				SPINOR_OP_PP, SNOR_PROTO_1_1_1);
 +}
 +
- static int spi_nor_setup(struct spi_nor *nor,
- 			 const struct spi_nor_hwcaps *hwcaps)
- {
-+	int ret;
-+
- 	if (!nor->params->setup)
--		return 0;
-+		return spi_nor_set_addr_width(nor);
- 
--	return nor->params->setup(nor, hwcaps);
-+	ret = nor->params->setup(nor, hwcaps);
-+	if (ret)
-+		return ret;
-+
-+	return spi_nor_set_addr_width(nor);
- }
- 
  /**
-@@ -3031,49 +3080,6 @@ static const struct flash_info *spi_nor_match_id(struct spi_nor *nor,
- 	return NULL;
- }
+  * spi_nor_manufacturer_init_params() - Initialize the flash's parameters and
+  * settings based on MFR register and ->default_init() hook.
+@@ -2609,43 +2659,8 @@ static void spi_nor_info_init_params(struct spi_nor *nor)
+ 	struct spi_nor_flash_parameter *params = nor->params;
+ 	struct spi_nor_erase_map *map = &params->erase_map;
+ 	const struct flash_info *info = nor->info;
+-	struct device_node *np = spi_nor_get_flash_node(nor);
+ 	u8 i, erase_mask;
  
--static int spi_nor_set_addr_width(struct spi_nor *nor)
--{
--	if (nor->addr_width) {
--		/* already configured from SFDP */
--	} else if (nor->read_proto == SNOR_PROTO_8_8_8_DTR) {
--		/*
--		 * In 8D-8D-8D mode, one byte takes half a cycle to transfer. So
--		 * in this protocol an odd address width cannot be used because
--		 * then the address phase would only span a cycle and a half.
--		 * Half a cycle would be left over. We would then have to start
--		 * the dummy phase in the middle of a cycle and so too the data
--		 * phase, and we will end the transaction with half a cycle left
--		 * over.
--		 *
--		 * Force all 8D-8D-8D flashes to use an address width of 4 to
--		 * avoid this situation.
--		 */
--		nor->addr_width = 4;
--	} else if (nor->info->addr_width) {
--		nor->addr_width = nor->info->addr_width;
--	} else {
--		nor->addr_width = 3;
+-	/* Initialize default flash parameters and settings. */
+-	params->quad_enable = spi_nor_sr2_bit1_quad_enable;
+-	params->set_4byte_addr_mode = spansion_set_4byte_addr_mode;
+-	params->setup = spi_nor_default_setup;
+-	params->otp.org = &info->otp_org;
+-
+-	/* Default to 16-bit Write Status (01h) Command */
+-	nor->flags |= SNOR_F_HAS_16BIT_SR;
+-
+-	/* Set SPI NOR sizes. */
+-	params->writesize = 1;
+-	params->size = (u64)info->sector_size * info->n_sectors;
+-	params->page_size = info->page_size;
+-
+-	if (!(info->flags & SPI_NOR_NO_FR)) {
+-		/* Default to Fast Read for DT and non-DT platform devices. */
+-		params->hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
+-
+-		/* Mask out Fast Read if not requested at DT instantiation. */
+-		if (np && !of_property_read_bool(np, "m25p,fast-read"))
+-			params->hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
 -	}
 -
--	if (nor->addr_width == 3 && nor->mtd.size > 0x1000000) {
--		/* enable 4-byte addressing if the device exceeds 16MiB */
--		nor->addr_width = 4;
--	}
+-	/* (Fast) Read settings. */
+-	params->hwcaps.mask |= SNOR_HWCAPS_READ;
+-	spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ],
+-				  0, 0, SPINOR_OP_READ,
+-				  SNOR_PROTO_1_1_1);
 -
--	if (nor->addr_width > SPI_NOR_MAX_ADDR_WIDTH) {
--		dev_dbg(nor->dev, "address width is too large: %u\n",
--			nor->addr_width);
--		return -EINVAL;
--	}
+-	if (params->hwcaps.mask & SNOR_HWCAPS_READ_FAST)
+-		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_FAST],
+-					  0, 8, SPINOR_OP_READ_FAST,
+-					  SNOR_PROTO_1_1_1);
 -
--	/* Set 4byte opcodes when possible. */
--	if (nor->addr_width == 4 && nor->flags & SNOR_F_4B_OPCODES &&
--	    !(nor->flags & SNOR_F_HAS_4BAIT))
--		spi_nor_set_4byte_opcodes(nor);
--
--	return 0;
--}
--
- static void spi_nor_debugfs_init(struct spi_nor *nor,
- 				 const struct flash_info *info)
- {
-@@ -3204,15 +3210,12 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 	 * - select op codes for (Fast) Read, Page Program and Sector Erase.
- 	 * - set the number of dummy cycles (mode cycles + wait states).
- 	 * - set the SPI protocols for register and memory accesses.
-+	 * - set the address width.
- 	 */
- 	ret = spi_nor_setup(nor, hwcaps);
- 	if (ret)
- 		return ret;
+ 	if (info->flags & SPI_NOR_DUAL_READ) {
+ 		params->hwcaps.mask |= SNOR_HWCAPS_READ_1_1_2;
+ 		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_1_1_2],
+@@ -2674,11 +2689,6 @@ static void spi_nor_info_init_params(struct spi_nor *nor)
+ 					  SNOR_PROTO_8_8_8_DTR);
+ 	}
  
--	ret = spi_nor_set_addr_width(nor);
--	if (ret)
--		return ret;
+-	/* Page Program settings. */
+-	params->hwcaps.mask |= SNOR_HWCAPS_PP;
+-	spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP],
+-				SPINOR_OP_PP, SNOR_PROTO_1_1_1);
 -
- 	/* Send all the required SPI flash commands to initialize device */
- 	ret = spi_nor_init(nor);
- 	if (ret)
+ 	if (info->flags & SPI_NOR_OCTAL_DTR_PP) {
+ 		params->hwcaps.mask |= SNOR_HWCAPS_PP_8_8_8_DTR;
+ 		/*
+@@ -2823,6 +2833,8 @@ static int spi_nor_init_params(struct spi_nor *nor)
+ 	if (!nor->params)
+ 		return -ENOMEM;
+ 
++	spi_nor_init_default_params(nor);
++
+ 	spi_nor_info_init_params(nor);
+ 
+ 	spi_nor_manufacturer_init_params(nor);
 -- 
 2.25.1
 
