@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1ECB2C4338F
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Aug 2021 20:05:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AB16C4338F
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Aug 2021 20:05:58 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BC8A360F25
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Aug 2021 20:05:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BC8A360F25
+	by mail.kernel.org (Postfix) with ESMTPS id DB97760720
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Aug 2021 20:05:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DB97760720
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,38 +23,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pvnHOedNHuEFzvCEq25JkJeJ+eJ1upa0gxUZ6+jAWEA=; b=uXg7BfjjAohNYw
-	dF/hEsekII5opyLF9RMFdRiXJBKxFSUvaLegkkbv/U3b+namSv4K5+DI5pGml9c33mUqlxwMqdqn3
-	UQAGyKLKDBGF8IB1NBdNiH/WJBkilvmABTfRTuKVxWCuEGEPMrPe0dN+mHb2xsNf0HOKan5cfcRLV
-	1X1f7tzgjYdFGnZ0GTyLV9p6EMAwP4Ksc83C4CoOi5w7zhSZfKuIw/3u6fgwJ86zHERg7tAyIw0Ft
-	A8CXXlgWclIBzdMcs5thCiS0tXzyrFsiAoaOGlgH+IxWzYeoK4ndAU4sTvVHKTjmxIazGSRyMjGRQ
-	Nl0Mo1W2n8dCBQas0IiA==;
+	List-Owner; bh=I0/6wUTGDh+1u5opLxYi1ZN4KY4uPjhvupiL1LazaEo=; b=og4n2xIT67cYGa
+	K/9Do3HBCu5dtDEEHkV8Li+eTVN6HeT6QE2PiF87DoHQ0iGkKbzDzMX8GDToa+dreepHhxLuBuuBZ
+	Fl2zBAOdE9gUV/vSZpIOGVOMvtNJytcCRTykej2EY7Q1224FJqUGkvLs+lTns6C0DcD6Nb61IOwB0
+	fAw7uu3gRz4N89mT1jxGHNbS+eBhMAad/rmlNOUOiUjIW48xD12QtY66EUfqdpsADUWZt7ioo+r01
+	SVgvpAvE3Yv613TM1GVNN4+yelABAmmvZucVQtJZ9OpnmjL1hnqlEtAV56pY5P/Z3Ji7ayIo2lBBV
+	d46X+mREvpMnEw5i0xOA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mC64w-00DQFC-94; Fri, 06 Aug 2021 20:04:26 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1mC65b-00DQU1-Kj; Fri, 06 Aug 2021 20:05:07 +0000
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mC63j-00DPgr-LZ
- for linux-mtd@lists.infradead.org; Fri, 06 Aug 2021 20:03:13 +0000
+ id 1mC63p-00DPjD-OM
+ for linux-mtd@lists.infradead.org; Fri, 06 Aug 2021 20:03:19 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 93F4E1BF204;
- Fri,  6 Aug 2021 20:03:09 +0000 (UTC)
+ by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 548D940006;
+ Fri,  6 Aug 2021 20:03:14 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Daniel Palmer <daniel@0x0f.com>, miquel.raynal@bootlin.com, richard@nod.at
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] mtd: spinand: core: Properly fill the OOB area.
-Date: Fri,  6 Aug 2021 22:03:08 +0200
-Message-Id: <20210806200309.393655-1-miquel.raynal@bootlin.com>
+To: Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
+ linux-mtd@lists.infradead.org,
+ Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+ kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: repair Miquel Raynal's email address
+Date: Fri,  6 Aug 2021 22:03:13 +0200
+Message-Id: <20210806200313.393719-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210617110842.2358461-1-daniel@0x0f.com>
+In-Reply-To: <20210726144949.10439-1-lukas.bulwahn@gmail.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'df12a75a2be915e7c419707bc71fba0fa7548d81'
+X-linux-mtd-patch-commit: b'5c2f387b48f063dd8a0c119d3659df8f3e2d88bb'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210806_130311_895714_A05A83B0 
-X-CRM114-Status: GOOD (  11.61  )
+X-CRM114-CacheID: sfid-20210806_130317_963241_4B461D07 
+X-CRM114-Status: UNSURE (   5.22  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,19 +76,15 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2021-06-17 at 11:08:42 UTC, Daniel Palmer wrote:
-> The comment in spinand_write_to_cache_op() says that
-> spinand_ondie_ecc_prepare_io_req() should 0xff fill the OOB
-> area but it doesn't.
+On Mon, 2021-07-26 at 14:49:49 UTC, Lukas Bulwahn wrote:
+> Commit d70c6b026069 ("MAINTAINERS: Add PL353 NAND controller entry") and
+> commit 813d52799ad2 ("MAINTAINERS: Add PL353 SMC entry") adds Miquel
+> Raynal as maintainer with an obvious invalid email address, which can be
+> easily fixed.
 > 
-> This causes the OOB area to get filled with zeros
-> and anytime the first page in a block the bad block marker
-> is cleared and it becomes a bad block on the next boot.
+> Repair this copy-and-paste error in Miquel Raynal's email address.
 > 
-> This was observed on Longsys FORSEE branded parts and
-> might be specific to these parts.
-> 
-> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
