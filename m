@@ -2,73 +2,60 @@ Return-Path: <SRS0=GkoH=M5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63ED5C4338F
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Aug 2021 10:54:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7FA0C4320A
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Aug 2021 16:58:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 20C4D60F35
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Aug 2021 10:54:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 20C4D60F35
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	by mail.kernel.org (Postfix) with ESMTPS id 6D5D6603E7
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Aug 2021 16:58:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6D5D6603E7
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:References:Cc:To:From:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=UAQ89FkUH9XQVJj2RVdv1uBlExwLIsVjQD4tyJ3SSnY=; b=jB4uxodkqDBuW3IKNJysADf2VH
-	+NlIBszYMmjZoDZVFPi5pMFYtFOb0fSvMes7rDodInpoV3iayIYWWjbbu2PnyrnugkEyHCnaEjmUn
-	5zZBDBxSmmVax505o+rtcU9mhmRoKkLvj6avdf/bCwxN0uT4AzsMX3niMugHekdbwU6U83YtnVHp6
-	s2EE1RptgollavQgiWKMpRXbAq2vFGfIDnFr9ptKSWJJZ990qArwgSNSw9ggsFd1SwZXnMM/7G7Pk
-	krY1ROausuGtqCMDntTg+B/ATZy50psYddUR3bvrx98X9vGOnMUiKmZcrvQgTRNIc8pxR3U+mCeFH
-	mCt1RNdw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=/QwFGdQNObgcB345WJTLCKUh8l6V3pkMMQGs39iE+04=; b=gCPlmXXUfJbmpf
+	gwtKE1CSAT/BWqCBKu7R2nicZ0JL+pHLRitbidK+k2eGbTO3L7Y6eBQtEeyeX0cBF3Jy1Dw+rGmEo
+	J6m75WTqwu0iu6ocyK00zfJcpjpcsoTMfBODCRWJE0CBFYEywtsVoHWSIy/LYMqFx/y/rBxs9Ue1S
+	1QuBcQQnBB+nwGI4kcWrGngUSkdiw3QqaTrxvrzVaumXQd0hcIspFiluKFLM1FPNRMTQhTnZbmekw
+	+F4yk22bNk6JVz/qigjEZkcCDtEJO9sDUYvsrmHWBVQf7OuqkGQqVxF593XKrRXE6sz1wg9HkkUR+
+	+gGfVWhDlsxmAmP0gxEQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mBxUC-00CAYX-QH; Fri, 06 Aug 2021 10:53:56 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1mC39g-00CzDZ-AO; Fri, 06 Aug 2021 16:57:08 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mBxU7-00CAYA-G7
- for linux-mtd@lists.infradead.org; Fri, 06 Aug 2021 10:53:53 +0000
-Received: from gallifrey.ext.pengutronix.de
- ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
- by metis.ext.pengutronix.de with esmtp (Exim 4.92)
- (envelope-from <a.fatoum@pengutronix.de>)
- id 1mBxU5-0002nV-4I; Fri, 06 Aug 2021 12:53:49 +0200
-Subject: Re: [RFC PATCH v1 0/4] keys: introduce key_extract_material helper
-From: Ahmad Fatoum <a.fatoum@pengutronix.de>
-To: David Howells <dhowells@redhat.com>, Jarkko Sakkinen <jarkko@kernel.org>, 
- James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>,
- Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@redhat.com>,
- dm-devel@redhat.com, Song Liu <song@kernel.org>,
- Richard Weinberger <richard@nod.at>
-Cc: linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
- linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
- linux-mtd@lists.infradead.org, kernel@pengutronix.de,
- linux-integrity@vger.kernel.org
-References: <cover.b2fdd70b830d12853b12a12e32ceb0c8162c1346.1626945419.git-series.a.fatoum@pengutronix.de>
-Message-ID: <7bc58825-c6d8-5e6d-4e1c-c4375e19c10e@pengutronix.de>
-Date: Fri, 6 Aug 2021 12:53:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ id 1mC39d-00CzD2-Fd
+ for linux-mtd@lists.infradead.org; Fri, 06 Aug 2021 16:57:07 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id C23B4C0003;
+ Fri,  6 Aug 2021 16:56:59 +0000 (UTC)
+Date: Fri, 6 Aug 2021 18:56:58 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Daniel Kestrel <kestrelseventyfour@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Boris Brezillon <boris.brezillon@collabora.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: rawnand: xway: No hardcoded ECC engine for Micron
+ Chips
+Message-ID: <20210806185658.5b4772a7@xps13>
+In-Reply-To: <20210803143256.GA5209@ubuntu>
+References: <20210803143256.GA5209@ubuntu>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <cover.b2fdd70b830d12853b12a12e32ceb0c8162c1346.1626945419.git-series.a.fatoum@pengutronix.de>
-Content-Language: en-US
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210806_035351_599428_E4AFF14B 
-X-CRM114-Status: GOOD (  23.20  )
+X-CRM114-CacheID: sfid-20210806_095705_702437_9D12D75A 
+X-CRM114-Status: GOOD (  27.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,82 +67,51 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello everyone,
-
-On 22.07.21 11:17, Ahmad Fatoum wrote:
-> While keys of differing type have a common struct key definition, there is
-> no common scheme to the payload and key material extraction differs.
-> 
-> For kernel functionality that supports different key types,
-> this means duplicated code for key material extraction and because key type
-> is discriminated by a pointer to a global, users need to replicate
-> reachability checks as well, so builtin code doesn't depend on a key
-> type symbol offered by a module.
-> 
-> Make this easier by adding a common helper with initial support for
-> user, logon, encrypted and trusted keys.
-> 
-> This series contains two example of its use: dm-crypt uses it to reduce
-> boilerplate and ubifs authentication uses it to gain support for trusted
-> and encrypted keys alongside the already supported logon keys.
-> 
-> Looking forward to your feedback,
-
-@Mike, Aliasdair: Do you think of key_extract_material as an improvement?
-
-Does someone share the opinion that the helper is useful or should I drop
-it and just send out the ubifs auth patch seperately?
-
-Cheers,
-Ahmad
-
-> Ahmad
-> 
-> ---
-> To: David Howells <dhowells@redhat.com>
-> To: Jarkko Sakkinen <jarkko@kernel.org>
-> To: James Morris <jmorris@namei.org>
-> To: "Serge E. Hallyn" <serge@hallyn.com>
-> To: Alasdair Kergon <agk@redhat.com>
-> To: Mike Snitzer <snitzer@redhat.com>
-> To: dm-devel@redhat.com
-> To: Song Liu <song@kernel.org>
-> To: Richard Weinberger <richard@nod.at>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-raid@vger.kernel.org
-> Cc: linux-integrity@vger.kernel.org
-> Cc: keyrings@vger.kernel.org
-> Cc: linux-mtd@lists.infradead.org
-> Cc: linux-security-module@vger.kernel.org
-> 
-> Ahmad Fatoum (4):
->   keys: introduce key_extract_material helper
->   dm: crypt: use new key_extract_material helper
->   ubifs: auth: remove never hit key type error check
->   ubifs: auth: consult encrypted and trusted keys if no logon key was found
-> 
->  Documentation/filesystems/ubifs.rst |  2 +-
->  drivers/md/dm-crypt.c               | 65 ++++--------------------------
->  fs/ubifs/auth.c                     | 25 +++++-------
->  include/linux/key.h                 | 45 +++++++++++++++++++++-
->  security/keys/key.c                 | 40 ++++++++++++++++++-
->  5 files changed, 107 insertions(+), 70 deletions(-)
-> 
-> base-commit: 2734d6c1b1a089fb593ef6a23d4b70903526fe0c
-> 
-
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgRGFuaWVsLAoKRGFuaWVsIEtlc3RyZWwgPGtlc3RyZWxzZXZlbnR5Zm91ckBnbWFpbC5jb20+
+IHdyb3RlIG9uIFR1ZSwgMyBBdWcgMjAyMQoxNjozMjo1NiArMDIwMDoKCj4gU29tZSBsYW50aXEg
+eHdheSBkZXZpY2VzIHVzZSBNaWNyb24gTkFORCBjaGlwcywgd2hpY2ggdXNlIG9uLWRpZSBFQ0Mu
+Cj4gVGhlIGhhcmRjb2RlZCBzZXR0aW5nIG9mIE5BTkRfRUNDX0VOR0lORV9UWVBFX1NPRlQgbWFr
+ZXMgdGhlbSB1bnVzYWJsZSwKPiBiZWNhdXNlIHRoZSBzb2Z0d2FyZSBFQ0Mgb24gdG9wIG9mIHRo
+ZSBoYXJkd2FyZSBFQ0MgcHJvZHVjZXMgZXJyb3JzIGZvcgo+IGV2ZXJ5IHJlYWQgYW5kIHdyaXRl
+IGFjY2Vzcywgbm90IHRvIG1lbnRpb24gdGhhdCBib290aW5nIGRvZXMgbm90IHdvcmssCj4gYmVj
+YXVzZSB0aGUgYm9vdCBsb2FkZXIgdXNlcyB0aGUgY29ycmVjdCBFQ0Mgd2hlbiB0cnlpbmcgdG8g
+bG9hZCB0aGUKPiBrZXJuZWwgYW5kIHN0b3BzIGxvYWRpbmcgb24gc2V2ZXJlIEVDQyBlcnJvcnMu
+Cj4gUmVtb3ZpbmcgdGhlIGhhcmRjb2RlZCBzZXR0aW5ncyB3b3VsZCBicmVhayBhIG51bWJlciBv
+ZiBkZXZpY2VzIHRoYXQKPiB3b3JrIHdpdGggdGhvc2Ugc2V0dGluZ3MuCj4gQWRkaW5nIGEgRFRC
+IHByb3BlcnR5IHdhcyBjb25zaWRlcmVkLCBidXQgZGlkIG5vdCB3b3JrLCBiZWNhdXNlIGRldmlj
+ZXMKPiBvZiB0aGUgc2FtZSB0eXBlIGJ1dCBmcm9tIGRpZmZlcmVudCBtYW51ZmFjdHVyZSBkYXRl
+cyBoYXZlIGRpZmZlcmVudAo+IE5BTkQgY2hpcHMgYW5kIGFzIHN1Y2ggaXQgaXMgbm90IHBvc3Np
+YmxlIHRvIGRldGVybWluZSB0aGUgTkFORCBjaGlwCj4gaW4gYWR2YW5jZSBvciBkZXZpY2Ugc3Bl
+Y2lmaWMuCgpJIHVuZGVyc3RhbmQgdGhlIHByb2JsZW0gYW5kIGl0IGlzIGEgdmVyeSBjcmFwcHkg
+c2l0dWF0aW9uLgoKPiAKPiBTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgS2VzdHJlbCA8a2VzdHJlbHNl
+dmVudHlmb3VyQGdtYWlsLmNvbT4KPiAtLS0KPiAgZHJpdmVycy9tdGQvbmFuZC9yYXcveHdheV9u
+YW5kLmMgfCA0ICsrKy0KPiAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMSBkZWxl
+dGlvbigtKQo+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy94d2F5X25hbmQu
+YyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L3h3YXlfbmFuZC5jCj4gaW5kZXggMjY3NTE5NzZlNTAy
+Li4yMGNiNWNlMmYzYjAgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcveHdheV9u
+YW5kLmMKPiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy94d2F5X25hbmQuYwo+IEBAIC0xMCw2
+ICsxMCw3IEBACj4gICNpbmNsdWRlIDxsaW51eC9vZl9wbGF0Zm9ybS5oPgo+ICAKPiAgI2luY2x1
+ZGUgPGxhbnRpcV9zb2MuaD4KPiArI2luY2x1ZGUgImludGVybmFscy5oIgo+ICAKPiAgLyogbmFu
+ZCByZWdpc3RlcnMgKi8KPiAgI2RlZmluZSBFQlVfQUREU0VMMQkJMHgyNAo+IEBAIC0xNDgsNyAr
+MTQ5LDggQEAgc3RhdGljIHZvaWQgeHdheV93cml0ZV9idWYoc3RydWN0IG5hbmRfY2hpcCAqY2hp
+cCwgY29uc3QgdV9jaGFyICpidWYsIGludCBsZW4pCj4gIAo+ICBzdGF0aWMgaW50IHh3YXlfYXR0
+YWNoX2NoaXAoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCkKPiAgewo+IC0JY2hpcC0+ZWNjLmVuZ2lu
+ZV90eXBlID0gTkFORF9FQ0NfRU5HSU5FX1RZUEVfU09GVDsKPiArCWlmIChjaGlwLT5tYW51ZmFj
+dHVyZXIuZGVzYy0+aWQgIT0gTkFORF9NRlJfTUlDUk9OKQo+ICsJCWNoaXAtPmVjYy5lbmdpbmVf
+dHlwZSA9IE5BTkRfRUNDX0VOR0lORV9UWVBFX1NPRlQ7CgpDb3VsZCB3ZSBtYWtlIHRoaXMgYSBs
+aXR0bGUgYml0IGNsZXZlciB3aXRoIHNvbWV0aGluZyBsaWtlIHRoaXM6Cmh0dHBzOi8vZWxpeGly
+LmJvb3RsaW4uY29tL2xpbnV4L3Y1LjEzLXJjNy9zb3VyY2UvZHJpdmVycy9tdGQvbmFuZC9yYXcv
+bmFuZF9taWNyb24uYyNMNDM0CgpUaGlzIGlzIGZhciBmcm9tIGlkZWFsLCB0aGVyZSBzaG91bGQg
+ZGVmaW5pdGVseSBiZSBhIGNoYW5nZSBpbiB0aGUgRFQuCkJ1dCBnaXZlbiB5b3VyIGluaXRpYWwg
+Y29tbWVudHMgSSBndWVzcyBpdCBpcyBub3QgcG9zc2libGUuCgpBbnl3YXkgSSBkb24ndCBmaW5k
+IGEgYmV0dGVyIHdheSBhcywgZHVyaW5nIHRoZSBhdHRhY2goKSBjYWxsLCB3ZSBkb24ndAp5ZXQg
+cmFuIHRoZSBtYW51ZmFjdHVyZXIgY29kZSwgaGVuY2Ugd2UgZG9uJ3Qga25vdyBpZiBvbi1kaWUg
+RUNDIGlzCmFjdHVhbGx5IGF2YWlsYWJsZSBvciBub3QuCgpUaGFua3MsCk1pcXXDqGwKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBN
+VEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
