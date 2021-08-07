@@ -2,68 +2,68 @@ Return-Path: <SRS0=iVWO=M6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-15.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89E0BC4338F
-	for <linux-mtd@archiver.kernel.org>; Sat,  7 Aug 2021 07:33:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F47AC4338F
+	for <linux-mtd@archiver.kernel.org>; Sat,  7 Aug 2021 07:54:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 33BFD610E7
-	for <linux-mtd@archiver.kernel.org>; Sat,  7 Aug 2021 07:33:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 33BFD610E7
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=biot.com
+	by mail.kernel.org (Postfix) with ESMTPS id CA4FF610E7
+	for <linux-mtd@archiver.kernel.org>; Sat,  7 Aug 2021 07:54:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CA4FF610E7
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mess.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=7ualrxygQv/0hASE02nwAvPJDGYfoBmkFaFArTZh0eE=; b=aSVtW1pyGVqBVnDIijkUZbtPWg
-	KiOuv8925DSelmndoqQSu8ij1aIsiLuRoP7DOBqOJyelw0cRUfOy3nwMjQdMoUeTwOa9MqhP9jkB7
-	2eSHSIAcpd/Xoc8eRuA5c/M1V2p3hE5F35s8ibc24aWALbnR/LPIzYtZXPg2EJhSOaw0HOS55Hzk8
-	3TR4B2zyxlfsnf3M3tl5FFmZ+Okl1Eob8nWtdcvjaEl8MU49CEejSrruChvaD3n6GRJDzyg2+d4wI
-	I9rYtC5S4R/KGD8R1V0Emap183rVzF6CX39goG32DgK5JbGRWA9sIFAPVZMi7tL4MCPVGN4rY3jpg
-	DqO6JQMw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=aNz1hBhT4XDZPmBc5FOXJ2ntkT/5CZI1T0wLWX7ZWig=; b=3Wl5e702S40MmT
+	AWE+O+K4MowcOqG47Oims0DtYX66+JvhsHXownP+4Uf2vqgH0jYWxt550O1uCSV3KLmOVpuuE9ZSc
+	W5jktHI+fJUQhLN/6PQC1khhXytn6Yb5vvL5j42ybGTgW9/JqCn63gu+u3dBA5u8PPi0st0Z6yb4Q
+	Q5xWAdfN3VbJ2iTdz4QuBrZkazq+sPWQIYxuUqB5XsRrEKBuHPdFhPG1JqiEo/0Ko0M34TGGDhKdZ
+	9Rvpz+pEpv4oN2Ff0g/Fsi5JEKdRGiRbPY+K2Qvo+5ZIN0qRUxJ2rZRNqMsKHwkix4p3kS45PwIlS
+	s9uiQdwZIn6surYVDOkQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mCGoq-00EJX3-KC; Sat, 07 Aug 2021 07:32:32 +0000
-Received: from yawp.biot.com ([2a01:4f8:10a:8e::fce2])
+	id 1mCH9Z-00EKR7-0Y; Sat, 07 Aug 2021 07:53:57 +0000
+Received: from gofer.mess.org ([88.97.38.141])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mCGon-00EJWU-5n
- for linux-mtd@lists.infradead.org; Sat, 07 Aug 2021 07:32:30 +0000
-Received: from debian-spamd by yawp.biot.com with sa-checked (Exim 4.93)
- (envelope-from <bert@biot.com>) id 1mCGoj-007a19-01
- for linux-mtd@lists.infradead.org; Sat, 07 Aug 2021 09:32:25 +0200
-Received: from [2a02:578:460c:1:3d42:42b0:d03:8f97]
- by yawp.biot.com with esmtpsa (TLS1.3) tls
- TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.93)
- (envelope-from <bert@biot.com>)
- id 1mCGoG-007Zyn-6F; Sat, 07 Aug 2021 09:31:56 +0200
-Subject: Re: [V2] mtd: spinand: Add support for Etron EM73D044VCx
+ id 1mCH9V-00EKQi-4F
+ for linux-mtd@lists.infradead.org; Sat, 07 Aug 2021 07:53:55 +0000
+Received: by gofer.mess.org (Postfix, from userid 1000)
+ id 4BAA5C63FB; Sat,  7 Aug 2021 08:53:46 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+ t=1628322826; bh=Bkut+OZMcp1xMzC0oXZ/GnVmh86FD4MH9H3mfrJxuAA=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=JaTOCy/Pa0byqHJU8m/0ZaXLjSYKE1abPcT/Rl0ypKFh3N2+0PjPAWef0YI3mZn3L
+ BdN/5QFmh/h0ZBi1fhgjI2R5qoJU607mI6Mn7iR+0QkpSOtHp6jVEa18pH+KxEp8IA
+ KQua/HOishr2u4lu1TfSSPVzge2IW5hITD/oKDfm9JyrVhgARpZnnr8qN7IfaMnF9C
+ eCoh+i0izYyI7go6z885Ws38msmgpMmDREEown0JLTkYKijaF8AYPFidltUPr3CdGV
+ VhdllV41+nyT99C3OYA5sq2THuFXkM2f2jz+14dHtONOUk1n3sKlS9JICxky7F41iA
+ qQirca7aujQZA==
+Date: Sat, 7 Aug 2021 08:53:46 +0100
+From: Sean Young <sean@mess.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Patrice Chotard <patrice.chotard@foss.st.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Christophe Kerello <christophe.kerello@foss.st.com>,
- Mark Brown <broonie@kernel.org>, Alexander Lobakin <alobakin@pm.me>
-References: <20210729151829.703892-1-bert@biot.com>
- <20210806213410.7b1f74bd@xps13>
-From: Bert Vermeulen <bert@biot.com>
-Message-ID: <ba6637f8-6ed0-262e-0229-1b449334cdd2@biot.com>
-Date: Sat, 7 Aug 2021 09:31:55 +0200
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 1/4] mtd: rfd_ftl: allow use of MTD_RAM for testing
+ purposes
+Message-ID: <20210807075346.GA2522@gofer.mess.org>
+References: <cover.1626169090.git.sean@mess.org>
+ <5f9ca4ce43ab49e900339e2cef26782825e3ab6f.1626169090.git.sean@mess.org>
+ <20210806201629.0aaf6cc6@xps13>
 MIME-Version: 1.0
-In-Reply-To: <20210806213410.7b1f74bd@xps13>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <20210806201629.0aaf6cc6@xps13>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210807_003229_268445_782B5418 
-X-CRM114-Status: GOOD (  12.44  )
+X-CRM114-CacheID: sfid-20210807_005353_503726_00834074 
+X-CRM114-Status: GOOD (  22.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,60 +75,69 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 8/6/21 9:34 PM, Miquel Raynal wrote:
+On Fri, Aug 06, 2021 at 08:16:29PM +0200, Miquel Raynal wrote:
+> Hi Sean,
+> =
 
-Hi Miquel,
+> Sean Young <sean@mess.org> wrote on Tue, 13 Jul 2021 10:44:00 +0100:
+> =
 
-Thanks for reviewing. I'll send in a v2 with fixes. However...
+> You miss a commit message here.
+> =
 
-> Bert Vermeulen <bert@biot.com> wrote on Thu, 29 Jul 2021 17:18:23 +0200:
->> +static int etron_ooblayout_ecc(struct mtd_info *mtd, int section,
->> +					struct mtd_oob_region *oobregion)
->> +{
->> +	if (section)
->> +		return -ERANGE;
->> +
->> +	oobregion->offset = 72;
->> +	oobregion->length = 56;
-> 
-> This looks highly dependent on a single chip, could you make these
-> values (at least the offset) dependent on the MTD device?
-> 
->> +
->> +	return 0;
->> +}
->> +
->> +static int etron_ooblayout_free(struct mtd_info *mtd, int section,
->> +			   struct mtd_oob_region *oobregion)
->> +{
->> +	if (section)
->> +		return -ERANGE;
->> +
->> +	oobregion->offset = 1;
->> +	oobregion->length = 71;
-> 
-> Same here.
+> Is this a real patch or just something for debugging purpose that we
+> should keep out of tree? I don't really see the reason for this patch
+> even though I am not strongly opposed to it.
 
-I was rather hoping for some guidance on the _ecc and _free
-offset/length numbers. There's not much info around on what's best
-practice here, and I haven't played with NAND chips enough to actually
-test the in-kernel ECC stuff.
+This allows the mtdram module to be used as a test bed. This means
+different mtd sizes can be tested and it can be tested on platforms
+without an mtd device.
 
-The _free offset of 1 is for the bad block byte, which I saw in another
-NAND chip driver, but I don't remember where I got the other numbers
-from, and really need somebody to double-check that.
+I'll add a better commit message for v2.
 
-thanks,
+Thanks for the review
 
+Sean
 
--- 
-Bert Vermeulen
-bert@biot.com
+> =
+
+> > Signed-off-by: Sean Young <sean@mess.org>
+> > ---
+> >  drivers/mtd/rfd_ftl.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > =
+
+> > diff --git a/drivers/mtd/rfd_ftl.c b/drivers/mtd/rfd_ftl.c
+> > index 6e0d5ce9b010..7b243f2b2fa3 100644
+> > --- a/drivers/mtd/rfd_ftl.c
+> > +++ b/drivers/mtd/rfd_ftl.c
+> > @@ -720,7 +720,8 @@ static void rfd_ftl_add_mtd(struct mtd_blktrans_ops=
+ *tr, struct mtd_info *mtd)
+> >  {
+> >  	struct partition *part;
+> >  =
+
+> > -	if (mtd->type !=3D MTD_NORFLASH || mtd->size > UINT_MAX)
+> > +	if ((mtd->type !=3D MTD_NORFLASH && mtd->type !=3D MTD_RAM) ||
+> > +	    mtd->size > UINT_MAX)
+> >  		return;
+> >  =
+
+> >  	part =3D kzalloc(sizeof(struct partition), GFP_KERNEL);
+> =
+
+> Thanks,
+> Miqu=E8l
+> =
+
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
 ______________________________________________________
 Linux MTD discussion mailing list
