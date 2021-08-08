@@ -1,66 +1,85 @@
-Return-Path: <SRS0=iVWO=M6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=c9LV=M7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DFD7C4338F
-	for <linux-mtd@archiver.kernel.org>; Sat,  7 Aug 2021 21:47:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F319C4338F
+	for <linux-mtd@archiver.kernel.org>; Sun,  8 Aug 2021 06:47:02 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 83DC561050
-	for <linux-mtd@archiver.kernel.org>; Sat,  7 Aug 2021 21:47:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 83DC561050
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mess.org
+	by mail.kernel.org (Postfix) with ESMTPS id C6AC760F4B
+	for <linux-mtd@archiver.kernel.org>; Sun,  8 Aug 2021 06:47:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C6AC760F4B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kGsLmIxc62nymsZjNrcc+Lc8HpXbj2LiR6cTis05Y/M=; b=IK/3fCALIUPhx1
-	GSee+BCBCY0wSN04OjU/GmLpDDpzY6t3Poie4iZ39JAMeB2YsG7zzk3hGWhIwwWEiF/bS53HIGTHz
-	vwUTrWB+RJPOzlGyfPHOCJ30eahFmxsLYwUMk6XJNvQdbhLKW1IcHtLC6YSbvXikUC0iM1D1zkxPT
-	vLyANPulK/C7SrE2U+cZC7mgFN/RywU2QPV9qZqt6jbWhM4ebmlZVCD6h5MyOVM4f+fri2rsNB2ei
-	GznGxGFTDPF69qDxigDb4+1G58SGdM6KAtrOg6/ihYWqgJ+t/rsTAO53skJ7e9E7BhBqHmremYKsA
-	WNv+w2dacrNrGUCr2RVQ==;
+	List-Owner; bh=tQH5Wvql/plsK+vdDobrm8FfiJwiYhiVcud+FsJ+dgM=; b=4DrwLPuu2N/KKx
+	ofAJQTzUxRPXkwQK7O5YltjPxUlQaSJiRy+JKonDnuNbtsswiPUyV2zQq/aWmtUyiEqZEuGAftHGF
+	zOgnjMu8dTq3HW1qZBnZ5zM/07CzRdkaiWjZToWnsKPyzOdDAcB8psM6EX4F5BIQCVex1Nw2me/V/
+	RDzKOXImyzeO0jIoDLf4Ck93ZfDeFv2fQUOCQuEKDfY8yqUtzcJ8wXU6OfDOSvI0U7d4OtaLedRwv
+	wjQ+2X5tl3FGeI+HH8oKYoIg9SrngtN86hS3qQgTbq737ZQa8FhwR5NMbY/cQWwEP1MJyHJF4Xevd
+	0oK92/xm5Jk9jTsUct0Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mCU9t-00FBjS-UC; Sat, 07 Aug 2021 21:47:09 +0000
-Received: from gofer.mess.org ([2a02:8011:d000:212::1])
+	id 1mCcZG-00FaZO-0s; Sun, 08 Aug 2021 06:45:54 +0000
+Received: from mail-qv1-xf29.google.com ([2607:f8b0:4864:20::f29])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mCU8U-00FBL9-M2
- for linux-mtd@lists.infradead.org; Sat, 07 Aug 2021 21:45:45 +0000
-Received: by gofer.mess.org (Postfix, from userid 1000)
- id 3CBA6C65C5; Sat,  7 Aug 2021 22:45:39 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
- t=1628372739; bh=rc7BV6tLqXbCZ3fv9Fqcr8k5UAfEn7fWiH7I8n4lLos=;
- h=From:To:Subject:Date:In-Reply-To:References:From;
- b=P4v4/fa2P1wNi6gokeKTV+DC4VTc6NvnPQ8VIlP1+lySDU7V/hq26aKXvvGnKI8n2
- Gwe5Lj/xHkU3eDXuvWHPbmwOhd9zKCs/3s4xK8UV2NJEAv4LGj8wd/vZul7bnlDpgr
- 9sM/f+c3yQmnL/A0R0hHaYpHm6HSmq1BksA+gmEjPNzGSTZXVlaNLPRjVjYz4wEL/w
- 88oaGH3ULFNvdYXmmbVJuzpGlrpnalBUUQT6lEa9k+X1bUdbYCzStC45OKve6jjcKm
- 06tdEYaIDkisq05ribhxdizwzP/H0AlV7gAyfTQtmwgVcAG2EKKqVGchHOIUB9zo5C
- l0APpYSRi162Q==
-From: Sean Young <sean@mess.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org
-Subject: [PATCH v2 2/5] mtd: rfd_ftl: add discard support
-Date: Sat,  7 Aug 2021 22:45:35 +0100
-Message-Id: <20210807214538.14484-3-sean@mess.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210807214538.14484-1-sean@mess.org>
-References: <20210807214538.14484-1-sean@mess.org>
+ id 1mCcZD-00FaZ3-1V
+ for linux-mtd@lists.infradead.org; Sun, 08 Aug 2021 06:45:52 +0000
+Received: by mail-qv1-xf29.google.com with SMTP id x12so7364252qvo.12
+ for <linux-mtd@lists.infradead.org>; Sat, 07 Aug 2021 23:45:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=tTr7bym8tUrpPCFwduAaM979B5G/RgeBTkS/tlZUYrQ=;
+ b=UyNkXQUQbMTasRGQCxSCdaQh7zIytVMM5l4RO4u+6fP9K3A+Y3s1FY0aOPhr/Xk0HL
+ 6jmkiOnSO8LreNFeRfuh17Xc8sgotFMS+Nn18K6iQHZacWNrTv+87nhNxujTgW78rTbI
+ QWMa4qr6AN3StATPs1BW/ocjbMiddPFnAUAnHJISuFWlRbAt+ANft8fRHkRtM8619XE5
+ copfnMRlG86eFUTryLnLP/xf4aRVqz+feJ7Tfe5AdiKGD5z96TXgSl/AAgZybcXrKSTM
+ O9t+6a0G3QgoK2n3TtlwQYEanWHOIolZMPgcKTm1FH06kq1aAnGJiXalZfC7829P2GLK
+ Kx7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=tTr7bym8tUrpPCFwduAaM979B5G/RgeBTkS/tlZUYrQ=;
+ b=IlXIuZtyNOxHO6uEqxCbKSNEQiKbGG0aZsrF0OHuoJTqpxmppCX/a67Pt4opogs3w8
+ lzaCHGpJZwiz941EkmDGwH5kwKIEapT/wMI4BfDQ5I+TNgOpX/YRWKGjqDGWYCERr9qF
+ jfqweYgxH09pzsn1+NEjJKRamza2AljHUU2/9Px9T0JTUzSLn8qsEjYXVyvJL1SMw/fj
+ AhKRgOcrMRwLd2aafOFi/hZ0fs8b5ojiEn6zz7SnuzbIM9crrp808b7WhfnKca6jHoeX
+ v7wKcmmPDSkW5WH58Ef/hsa8xbgToI79s8FmHJ9CDtp27e/0RCqvmvGVJq/4hkqevaZz
+ sJAA==
+X-Gm-Message-State: AOAM5302EWl+s+C0/neTrPad0jDEXhcdr9iX2kiBmYnj/2JZw3ey+EdW
+ FbnVyRGvrfkPbedQNvor8KZXb108LBv9/PFFgnE=
+X-Google-Smtp-Source: ABdhPJzgC9AzpSlrwHQDqaq4seYKiFp5V+Jcw4MbumfjR9I99XshG67RT3pWb1yXTNysO9sh9MQbwc9ZgqBQvGDBouw=
+X-Received: by 2002:ad4:44aa:: with SMTP id n10mr18513329qvt.18.1628405149339; 
+ Sat, 07 Aug 2021 23:45:49 -0700 (PDT)
 MIME-Version: 1.0
+References: <20210803143256.GA5209@ubuntu> <20210806185658.5b4772a7@xps13>
+In-Reply-To: <20210806185658.5b4772a7@xps13>
+From: Kestrel seventyfour <kestrelseventyfour@gmail.com>
+Date: Sun, 8 Aug 2021 08:45:38 +0200
+Message-ID: <CAE9cyGQwQKp83y0cBoH1akRyHo9ipgBHaeWMjtCLVP77vRir=g@mail.gmail.com>
+Subject: Re: [PATCH] mtd: rawnand: xway: No hardcoded ECC engine for Micron
+ Chips
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Daniel Kestrel <kestrelseventyfour@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210807_144542_949467_16D1787E 
-X-CRM114-Status: GOOD (  12.39  )
+X-CRM114-CacheID: sfid-20210807_234551_151854_406DBE7F 
+X-CRM114-Status: GOOD (  34.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,80 +91,62 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-I proposed this change 16 years ago before discard was a feature in
-the block layer: https://lwn.net/Articles/162776/
-
-Now that the block layer has discard, we can finally merge this change.
-
-Discard is also known as trim. By implementing discard, both fstrim and
-the discard filesystem option can be used.
-
-Implementing discard in the ftl means that when files are removed, there
-is less data in the ftl mapping. This means less stuff to move around for
-erasing and also less erasing to do; this means improved wear levelling
-and improved performance.
-
-Signed-off-by: Sean Young <sean@mess.org>
----
- drivers/mtd/rfd_ftl.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
-
-diff --git a/drivers/mtd/rfd_ftl.c b/drivers/mtd/rfd_ftl.c
-index 7b243f2b2fa3..7f5f6d247cae 100644
---- a/drivers/mtd/rfd_ftl.c
-+++ b/drivers/mtd/rfd_ftl.c
-@@ -705,6 +705,34 @@ static int rfd_ftl_writesect(struct mtd_blktrans_dev *dev, u_long sector, char *
- 	return rc;
- }
- 
-+static int rfd_ftl_discardsect(struct mtd_blktrans_dev *dev,
-+			       unsigned long sector, unsigned int nr_sects)
-+{
-+	struct partition *part = (struct partition *)dev;
-+	u_long addr;
-+	int rc;
-+
-+	while (nr_sects) {
-+		if (sector >= part->sector_count)
-+			return -EIO;
-+
-+		addr = part->sector_map[sector];
-+
-+		if (addr != -1) {
-+			rc = mark_sector_deleted(part, addr);
-+			if (rc)
-+				return rc;
-+
-+			part->sector_map[sector] = -1;
-+		}
-+
-+		sector++;
-+		nr_sects--;
-+	}
-+
-+	return 0;
-+}
-+
- static int rfd_ftl_getgeo(struct mtd_blktrans_dev *dev, struct hd_geometry *geo)
- {
- 	struct partition *part = (struct partition*)dev;
-@@ -786,6 +814,7 @@ static struct mtd_blktrans_ops rfd_ftl_tr = {
- 
- 	.readsect	= rfd_ftl_readsect,
- 	.writesect	= rfd_ftl_writesect,
-+	.discard	= rfd_ftl_discardsect,
- 	.getgeo		= rfd_ftl_getgeo,
- 	.add_mtd	= rfd_ftl_add_mtd,
- 	.remove_dev	= rfd_ftl_remove_dev,
--- 
-2.31.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+QW0gRnIuLCA2LiBBdWcuIDIwMjEgdW0gMTg6NTcgVWhyIHNjaHJpZWIgTWlxdWVsIFJheW5hbAo8
+bWlxdWVsLnJheW5hbEBib290bGluLmNvbT46Cj4KPiBIaSBEYW5pZWwsCj4KPiBEYW5pZWwgS2Vz
+dHJlbCA8a2VzdHJlbHNldmVudHlmb3VyQGdtYWlsLmNvbT4gd3JvdGUgb24gVHVlLCAzIEF1ZyAy
+MDIxCj4gMTY6MzI6NTYgKzAyMDA6Cj4KPiA+IFNvbWUgbGFudGlxIHh3YXkgZGV2aWNlcyB1c2Ug
+TWljcm9uIE5BTkQgY2hpcHMsIHdoaWNoIHVzZSBvbi1kaWUgRUNDLgo+ID4gVGhlIGhhcmRjb2Rl
+ZCBzZXR0aW5nIG9mIE5BTkRfRUNDX0VOR0lORV9UWVBFX1NPRlQgbWFrZXMgdGhlbSB1bnVzYWJs
+ZSwKPiA+IGJlY2F1c2UgdGhlIHNvZnR3YXJlIEVDQyBvbiB0b3Agb2YgdGhlIGhhcmR3YXJlIEVD
+QyBwcm9kdWNlcyBlcnJvcnMgZm9yCj4gPiBldmVyeSByZWFkIGFuZCB3cml0ZSBhY2Nlc3MsIG5v
+dCB0byBtZW50aW9uIHRoYXQgYm9vdGluZyBkb2VzIG5vdCB3b3JrLAo+ID4gYmVjYXVzZSB0aGUg
+Ym9vdCBsb2FkZXIgdXNlcyB0aGUgY29ycmVjdCBFQ0Mgd2hlbiB0cnlpbmcgdG8gbG9hZCB0aGUK
+PiA+IGtlcm5lbCBhbmQgc3RvcHMgbG9hZGluZyBvbiBzZXZlcmUgRUNDIGVycm9ycy4KPiA+IFJl
+bW92aW5nIHRoZSBoYXJkY29kZWQgc2V0dGluZ3Mgd291bGQgYnJlYWsgYSBudW1iZXIgb2YgZGV2
+aWNlcyB0aGF0Cj4gPiB3b3JrIHdpdGggdGhvc2Ugc2V0dGluZ3MuCj4gPiBBZGRpbmcgYSBEVEIg
+cHJvcGVydHkgd2FzIGNvbnNpZGVyZWQsIGJ1dCBkaWQgbm90IHdvcmssIGJlY2F1c2UgZGV2aWNl
+cwo+ID4gb2YgdGhlIHNhbWUgdHlwZSBidXQgZnJvbSBkaWZmZXJlbnQgbWFudWZhY3R1cmUgZGF0
+ZXMgaGF2ZSBkaWZmZXJlbnQKPiA+IE5BTkQgY2hpcHMgYW5kIGFzIHN1Y2ggaXQgaXMgbm90IHBv
+c3NpYmxlIHRvIGRldGVybWluZSB0aGUgTkFORCBjaGlwCj4gPiBpbiBhZHZhbmNlIG9yIGRldmlj
+ZSBzcGVjaWZpYy4KPgo+IEkgdW5kZXJzdGFuZCB0aGUgcHJvYmxlbSBhbmQgaXQgaXMgYSB2ZXJ5
+IGNyYXBweSBzaXR1YXRpb24uCj4KPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgS2VzdHJl
+bCA8a2VzdHJlbHNldmVudHlmb3VyQGdtYWlsLmNvbT4KPiA+IC0tLQo+ID4gIGRyaXZlcnMvbXRk
+L25hbmQvcmF3L3h3YXlfbmFuZC5jIHwgNCArKystCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDMgaW5z
+ZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQo+ID4KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210
+ZC9uYW5kL3Jhdy94d2F5X25hbmQuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L3h3YXlfbmFuZC5j
+Cj4gPiBpbmRleCAyNjc1MTk3NmU1MDIuLjIwY2I1Y2UyZjNiMCAxMDA2NDQKPiA+IC0tLSBhL2Ry
+aXZlcnMvbXRkL25hbmQvcmF3L3h3YXlfbmFuZC5jCj4gPiArKysgYi9kcml2ZXJzL210ZC9uYW5k
+L3Jhdy94d2F5X25hbmQuYwo+ID4gQEAgLTEwLDYgKzEwLDcgQEAKPiA+ICAjaW5jbHVkZSA8bGlu
+dXgvb2ZfcGxhdGZvcm0uaD4KPiA+Cj4gPiAgI2luY2x1ZGUgPGxhbnRpcV9zb2MuaD4KPiA+ICsj
+aW5jbHVkZSAiaW50ZXJuYWxzLmgiCj4gPgo+ID4gIC8qIG5hbmQgcmVnaXN0ZXJzICovCj4gPiAg
+I2RlZmluZSBFQlVfQUREU0VMMSAgICAgICAgICAweDI0Cj4gPiBAQCAtMTQ4LDcgKzE0OSw4IEBA
+IHN0YXRpYyB2b2lkIHh3YXlfd3JpdGVfYnVmKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsIGNvbnN0
+IHVfY2hhciAqYnVmLCBpbnQgbGVuKQo+ID4KPiA+ICBzdGF0aWMgaW50IHh3YXlfYXR0YWNoX2No
+aXAoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCkKPiA+ICB7Cj4gPiAtICAgICBjaGlwLT5lY2MuZW5n
+aW5lX3R5cGUgPSBOQU5EX0VDQ19FTkdJTkVfVFlQRV9TT0ZUOwo+ID4gKyAgICAgaWYgKGNoaXAt
+Pm1hbnVmYWN0dXJlci5kZXNjLT5pZCAhPSBOQU5EX01GUl9NSUNST04pCj4gPiArICAgICAgICAg
+ICAgIGNoaXAtPmVjYy5lbmdpbmVfdHlwZSA9IE5BTkRfRUNDX0VOR0lORV9UWVBFX1NPRlQ7Cj4K
+PiBDb3VsZCB3ZSBtYWtlIHRoaXMgYSBsaXR0bGUgYml0IGNsZXZlciB3aXRoIHNvbWV0aGluZyBs
+aWtlIHRoaXM6Cj4gaHR0cHM6Ly9lbGl4aXIuYm9vdGxpbi5jb20vbGludXgvdjUuMTMtcmM3L3Nv
+dXJjZS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX21pY3Jvbi5jI0w0MzQKPgo+IFRoaXMgaXMg
+ZmFyIGZyb20gaWRlYWwsIHRoZXJlIHNob3VsZCBkZWZpbml0ZWx5IGJlIGEgY2hhbmdlIGluIHRo
+ZSBEVC4KPiBCdXQgZ2l2ZW4geW91ciBpbml0aWFsIGNvbW1lbnRzIEkgZ3Vlc3MgaXQgaXMgbm90
+IHBvc3NpYmxlLgo+Cj4gQW55d2F5IEkgZG9uJ3QgZmluZCBhIGJldHRlciB3YXkgYXMsIGR1cmlu
+ZyB0aGUgYXR0YWNoKCkgY2FsbCwgd2UgZG9uJ3QKPiB5ZXQgcmFuIHRoZSBtYW51ZmFjdHVyZXIg
+Y29kZSwgaGVuY2Ugd2UgZG9uJ3Qga25vdyBpZiBvbi1kaWUgRUNDIGlzCj4gYWN0dWFsbHkgYXZh
+aWxhYmxlIG9yIG5vdC4KPgo+IFRoYW5rcywKPiBNaXF1w6hsCgpIaSBNaXF1w6hsLAoKSSBoYXZl
+IHdvcmtlZCB3aXRoIGFuIG90aGVyIG93bmVyIG9mIGxhbnRpcSBoYXJkd2FyZSBhbmQgaGUgaGFz
+IHN1Y2Nlc3NmdWxseQp0ZXN0ZWQgYWRkaW5nIG5hbmQtZWNjLW1vZGUgPSAic29mdCIgaW4gdGhl
+IGRldmljZSB0cmVlIGFuZCByZW1vdmluZyB0aGUgb25lCmxpbmUgb2YgY29kZSB0aGF0IHNldHMg
+dGhlIGVuZ2luZSB0eXBlIHRvIHNvZnQuCkkgd2lsbCBzZW5kIGFub3RoZXIgcGF0Y2ggdmVyc2lv
+biB0aGF0IGp1c3QgcmVtb3ZlcyB0aGlzIGxpbmUgb2YgY29kZS4KVGhpcyBjaGFuZ2UKaXMgcmVx
+dWlyZWQgZm9yIGtlcm5lbCA1LjQgYXMgd2VsbCwgYnV0IHRoZSBzZXR0aW5nIGlzIGluIHRoZSB4
+d2F5X25hbmRfcHJvYmUKbWV0aG9kIGF0IGxpbmUgMjM3LgoKVGhhbmtzLCBEYW5pZWwuCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
+TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
