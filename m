@@ -1,77 +1,80 @@
-Return-Path: <SRS0=nbbI=NB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=3stn=NC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8013AC4338F
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Aug 2021 11:36:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BFB99C4338F
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Aug 2021 07:39:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC22660EC0
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Aug 2021 11:36:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EC22660EC0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
+	by mail.kernel.org (Postfix) with ESMTPS id 5C1D26056B
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Aug 2021 07:39:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5C1D26056B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=XCa2ZyLLn0RhfHsRmtptHm4tSlU4HX+w54+fr/ZRHsM=; b=pQzHZrCywaEfEOp5/lVc2mMHDF
-	uni6aO82B9POSW1dxHenC9QB5kkqBKd6qQbRI1JmHL1CyR/MnoEAaMWjra0t83z++eE1GGXIQzqqQ
-	Q0a8Sfq3IJ3oyA+fO0w5COD9nRDua7wwlm8z0uObodiUhQ6SdcusTFxWMEHFIgsTQxR8m0rwbbmS/
-	sfxG7Rxi5WAPVf4j+IknzaporhbKx+5wjoqC2dsILtFQrIBdlqg98A5WOk8v0odcuXFK/nKT8qrGv
-	IiJGqzbOhQtdMrL2SJjMq6Wmvj0nImUJBdZhfp6vZFonr9hQmNR1irJFwsK34PzrOwx6oNHD00YFO
-	NDXqpbpA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=u2KQvn+FGCNtwWCqCLxa5pgIE8BsdFIxgJ8ChNve0do=; b=OViwWxEQFqwENP
+	zAq8yhBhIt0mYUXl/0dT23b2eV/7I4KoKqCC+B9oZKOLaLtaFg+suTkeGvSHsoj8ZGlIoP7ezJKYC
+	Q8PUEjBa6yXDHhJ7kw3q/okeWvZEAM+ykoxd6oQlmE7fGMS2rln9ZlHQLeXApT6LNyKC6NiGTQHVH
+	D9wcDktD1ippLC8KOrw2dUVrJos9CE0ihzcwHgQIDI5Ps4Q84PBN8R/9lE2Y9sEqy+28iSNCzvEK2
+	ganYRLh/zQpVZw+bWAQunGxuA2hNc8FDo587CXYnUqYog+yTKOIVGb3L08M4OkuX5Nspuhz01IEbV
+	P/JsG5PefGXO4QMhLIDA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mDQ2O-003e6F-EH; Tue, 10 Aug 2021 11:35:16 +0000
-Received: from szxga08-in.huawei.com ([45.249.212.255])
+	id 1mDioZ-005um9-IM; Wed, 11 Aug 2021 07:38:15 +0000
+Received: from mail-qt1-x82a.google.com ([2607:f8b0:4864:20::82a])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mDQ2I-003e59-H1
- for linux-mtd@lists.infradead.org; Tue, 10 Aug 2021 11:35:12 +0000
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
- by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GkW8B3h1Yz1CVMy;
- Tue, 10 Aug 2021 19:34:50 +0800 (CST)
-Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 10 Aug 2021 19:35:03 +0800
-Received: from [10.174.178.46] (10.174.178.46) by
- dggema761-chm.china.huawei.com (10.1.198.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 10 Aug 2021 19:35:03 +0800
-Subject: Re: [PATCH 1/2] mtd: mtdconcat: Judge callback function existence
- getting from master for each partition
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: <richard@nod.at>, <vigneshr@ti.com>, <bbrezillon@kernel.org>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <yukuai3@huawei.com>
-References: <20210731023243.3977104-1-chengzhihao1@huawei.com>
- <20210731023243.3977104-2-chengzhihao1@huawei.com>
- <20210806212857.240e0c1f@xps13>
- <27c67e42-f275-fc50-64e5-d80233130f7e@huawei.com>
- <20210807123243.7661e4e3@xps13>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <9955e32c-615a-f02c-abc3-a7b613bf34ee@huawei.com>
-Date: Tue, 10 Aug 2021 19:35:02 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ id 1mDioT-005ukw-69
+ for linux-mtd@lists.infradead.org; Wed, 11 Aug 2021 07:38:13 +0000
+Received: by mail-qt1-x82a.google.com with SMTP id l3so1330397qtk.10
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Aug 2021 00:38:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=0x0f.com; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=KY+zRy9hKXyNf5Kmtc6yl/ru0cuaPUULXfigVpYJwxQ=;
+ b=sGY/P6NtAnbm69Lm7vXOE9Jk/dGMYwJgcyYfv0WSY5iC0Q9bkFcLqQcYBDwR9v+C3Z
+ ee+eEFLvK0ppuCf3J9hBRv1S3lsmUuxTVGCxmvb1EFA7yrX0Gby+gFFT7V0xHKfRlDSg
+ JaiHjzgFMaY2k40bT5RLsOq6wdALAOyM5HICs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=KY+zRy9hKXyNf5Kmtc6yl/ru0cuaPUULXfigVpYJwxQ=;
+ b=oL2eptBPUwBTFak0LK6LXPnVDHQIKv0CCPlKNfEDixcC2rSJQ+5na4FMJ6/KRlfwYy
+ JsP4DLF6cfI4hpr0ldkSqPDWODmeZLl8w3zsGMf30VkxfpKDehGA/UMPkfNeX7SB7u9c
+ XrCGveNkIYkV0cgiM46PzhOQDc8ikj0Tt/IjpZxNwPg6S2KgIDigBLhP+ORUl4BAfl+W
+ 5qjKcPnUOCaPwlF11FrJLLgpeaPaTuMZVuS74vLy0R0hTDKp9/7KMgwImqlm+gNhYEDL
+ THq+WAp4kPYyXDrc19vMflOrr0F82zJ05dQHSrJxG3SYr8BBlut0dETM0yVLrOILunX1
+ Fj+A==
+X-Gm-Message-State: AOAM5316rqoHbzXDL1NOLTWWqL/sFKRNOUmnf62jpQCstvrLxB8SSqO1
+ g2s5jag9MIrcWPnKLBqVzfr98WVPQT8eAx3E8T3Nrg==
+X-Google-Smtp-Source: ABdhPJwCp4Yz8cVkAjE0jO5SUaGG6LJ3u5iOqFeWzK7H8MEZL9sBdH3FnPiiqXuHFhES8IHwtDyVYn52RaJp6BZfV64=
+X-Received: by 2002:a05:622a:387:: with SMTP id
+ j7mr29561897qtx.132.1628667485754; 
+ Wed, 11 Aug 2021 00:38:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210807123243.7661e4e3@xps13>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggema761-chm.china.huawei.com (10.1.198.203)
-X-CFilter-Loop: Reflected
+References: <20210617110842.2358461-1-daniel@0x0f.com>
+ <20210806220242.4b83237d@xps13>
+In-Reply-To: <20210806220242.4b83237d@xps13>
+From: Daniel Palmer <daniel@0x0f.com>
+Date: Wed, 11 Aug 2021 16:37:55 +0900
+Message-ID: <CAFr9PXm4FTw5U9pFNoqptZ28M21czDHrbipCOVRcn7uABkEKSQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] mtd: spinand: core: Properly fill the OOB area.
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: richard@nod.at, linux-mtd@lists.infradead.org, 
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210810_043510_984640_C66669E3 
-X-CRM114-Status: GOOD (  22.44  )
+X-CRM114-CacheID: sfid-20210811_003809_395790_18E6E6D6 
+X-CRM114-Status: GOOD (  14.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,112 +86,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-5ZyoIDIwMjEvOC83IDE4OjMyLCBNaXF1ZWwgUmF5bmFsIOWGmemBkzoKSGkgTWlxdWVsLAo+IEhp
-IFpoaWhhbywKPgo+IFpoaWhhbyBDaGVuZyA8Y2hlbmd6aGloYW8xQGh1YXdlaS5jb20+IHdyb3Rl
-IG9uIFNhdCwgNyBBdWcgMjAyMQo+IDEwOjE1OjQ2ICswODAwOgo+Cj4+IOWcqCAyMDIxLzgvNyAz
-OjI4LCBNaXF1ZWwgUmF5bmFsIOWGmemBkzoKPj4gSGkgTWlxdWVsLAo+Pj4gSGkgWmhpaGFvLAo+
-Pj4KPj4+IFpoaWhhbyBDaGVuZyA8Y2hlbmd6aGloYW8xQGh1YXdlaS5jb20+IHdyb3RlIG9uIFNh
-dCwgMzEgSnVsIDIwMjEKPj4+IDEwOjMyOjQyICswODAwOgo+Pj4gQEAgLTcyMSwxNCArNzI0LDE1
-IEBAIHN0cnVjdCBtdGRfaW5mbyAqbXRkX2NvbmNhdF9jcmVhdGUoc3RydWN0IG10ZF9pbmZvICpz
-dWJkZXZbXSwJLyogc3ViZGV2aWNlcyB0byBjCj4+PiAgICAJCQkJICAgIHN1YmRldltpXS0+Zmxh
-Z3MgJiBNVERfV1JJVEVBQkxFOwo+Pj4gICAgCQl9Cj4+PiAgICA+ICsJCXN1YmRldl9tYXN0ZXIg
-PSBtdGRfZ2V0X21hc3RlcihzdWJkZXZbaV0pOwo+Pj4gICAgCQljb25jYXQtPm10ZC5zaXplICs9
-IHN1YmRldltpXS0+c2l6ZTsKPj4+ICAgIAkJY29uY2F0LT5tdGQuZWNjX3N0YXRzLmJhZGJsb2Nr
-cyArPQo+Pj4gICAgCQkJc3ViZGV2W2ldLT5lY2Nfc3RhdHMuYmFkYmxvY2tzOwo+Pj4gICAgCQlp
-ZiAoY29uY2F0LT5tdGQud3JpdGVzaXplICAgIT0gIHN1YmRldltpXS0+d3JpdGVzaXplIHx8Cj4+
-PiAgICAJCSAgICBjb25jYXQtPm10ZC5zdWJwYWdlX3NmdCAhPSBzdWJkZXZbaV0tPnN1YnBhZ2Vf
-c2Z0IHx8Cj4+PiAgICAJCSAgICBjb25jYXQtPm10ZC5vb2JzaXplICAgICE9ICBzdWJkZXZbaV0t
-Pm9vYnNpemUgfHwKPj4+IC0JCSAgICAhY29uY2F0LT5tdGQuX3JlYWRfb29iICAhPSAhc3ViZGV2
-W2ldLT5fcmVhZF9vb2IgfHwKPj4+IC0JCSAgICAhY29uY2F0LT5tdGQuX3dyaXRlX29vYiAhPSAh
-c3ViZGV2W2ldLT5fd3JpdGVfb29iKSB7Cj4+PiArCQkgICAgIWNvbmNhdC0+bXRkLl9yZWFkX29v
-YiAgIT0gIXN1YmRldl9tYXN0ZXItPl9yZWFkX29vYiB8fAo+Pj4gKwkJICAgICFjb25jYXQtPm10
-ZC5fd3JpdGVfb29iICE9ICFzdWJkZXZfbWFzdGVyLT5fd3JpdGVfb29iKSB7Cj4+PiBEbyB5b3Ug
-cmVhbGx5IG5lZWQgdGhpcyBjaGFuZ2U/Cj4+IEkgdGhpbmsgYm90aCAiIWNvbmNhdC0+bXRkLl9y
-ZWFkX29vYiAhPSAhc3ViZGV2W2ldLT5fcmVhZF9vb2IiIGFuZCAiIWNvbmNhdC0+bXRkLl93cml0
-ZV9vb2IgIT0gIXN1YmRldltpXS0+X3dyaXRlX29vYiIgbmVlZCB0byBiZSBtb2RpZmllZCBvdGhl
-cndpc2UgY29uY2F0ZW5hdGluZyBnb2VzIGZhaWx1cmUuCj4+Cj4+IEkgdGhvdWdodCB0aGVyZSBl
-eGlzdHMgdHdvIHByb2JsZW1zOgo+Pgo+PiAgIMKgIDEuIFdyb25nIGNhbGxiYWNrIGZldGNoaW5n
-IGluIG10ZCBwYXJ0aXRpb24gZGV2aWNlCj4+Cj4+ICAgwqAgMi4gV2FybmluZyBmb3IgZXhpc3Rl
-bmNlIG9mIF9yZWFkIGFuZCBfcmVhZF9vb2IgYXQgdGhlIHNhbWUgdGltZQo+Pgo+PiBzbyBJIHNv
-bHZlZCB0aGVtIGluIHR3byBzdGVwcyB0byBtYWtlIGhpc3RvcnkgY29tbWl0IGxvZ3MgYSBiaXQg
-Y2xlYXIuCj4+Cj4+IFRob3VnaCB0aGVzZSB0d28gcGF0Y2hlcyBjYW4gYmUgY29tYmluZWQgdG8g
-b25lLgo+IE5vIHBsZWFzZSBrZWVwIHRoZSBzcGxpdC4KPgo+IFdoYXQgSSBtZWFuIGhlcmUgaXMg
-dGhhdCBJIGRvbid0IHRoaW5rIHlvdXIgZml4IGlzIHZhbGlkLiBNYXliZSB3ZQo+IHNob3VsZCBw
-cm9wYWdhdGUgdGhlc2UgY2FsbGJhY2tzIGFzIHdlbGwgaW5zdGVhZCBvZiB0cnlpbmcgdG8gaGFj
-ayBpbnRvCj4gdGhpcyBjb25kaXRpb24uIEkgZG9uJ3Qgc2VlIHdoeSB5b3Ugc2hvdWxkIGNoZWNr
-IGFnYWluc3Qgc3ViZGV2W2ldIGZvcgo+IGhhbGYgb2YgdGhlIGNhbGxiYWNrcyBhbmQgY2hlY2sg
-Zm9yIHN1YmRldl9tYXN0ZXIgZm9yIHRoZSBsYXN0IHR3by4KCkkgaGF2ZSB0aGUgZm9sbG93aW5n
-IHVuZGVyc3RhbmRpbmcgb2YgbXRkOgoKMS4gVGhlIGV4aXN0ZW5jZSBvZiBtdGQgcGFydGl0aW9u
-IGRldmljZSdzIGNhbGxiYWNrcyh3aGF0IGNhbiBtdGQgZG8sIApfcmVhZCwgX3dyaXRlLCBfcmVh
-ZF9vb2IsIGV0Yy4pIGlzIGRlY2lkZWQgYnkgbXRkIG1hc3RlciBkZXZpY2UuIEFsbCBtdGQgCmNv
-bW1vbiBmdW5jdGlvbnMgKG10ZF9yZWFkLCBtdGRfcmVhZF9vb2IpIHBhc3MgbWFzdGVyIG10ZCBk
-ZXZpY2UgcmF0aGVyIAp0aGFuIHBhcnRpdGlvbiBtdGQgZGV2aWNlIGFzIHBhcmFtZXRlciwgYmVj
-YXVzZSBuYW5kX2NoaXAoaW5pdGlhbGl6ZWQgYXMgCm1hc3RlciBtdGQgZGV2aWNlKSBwcm9jZXNz
-IHJlcXVlc3RzLsKgIFNvIHRoZXJlIGFyZSB0d28gc3RlcHMgaW4gbXRkIApjb21tb24gZnVuY3Rp
-b246IGZldGNoIG1hc3RlciBtdGQgZGV2aWNlOyBpbnZva2UgbWFzdGVyIG10ZCBkZXZpY2VzJ3Mg
-CmNhbGxiYWNrIGFuZCBwYXNzIGluIG1hc3RlciBtdGQgZGV2aWNlLgoKIMKgIFByb3BvZ2F0aW5n
-IGNhbGxiYWNrcyB0byBwYXJ0aXRpb24gbXRkIGRldmljZSBtYXkgYnJpbmcgc29tZSAKaW1wZXJm
-ZWN0aW9uczoKCiDCoCBBLiBObyBhZGFwdGlvbnMgdG8gbXRkIGNvbW1vbiBmdW5jdGlvbnM6IHBh
-cnRpdGlvbiBtdGQgZGV2aWNlJ3MgCmNhbGxiYWNrcyB3aWxsIG5ldmVyIGJlIGludm9rZWQsIHRo
-ZXkgYXJlIG9ubHkgdXNlZCB0byBqdWRnZSB3aGV0aGVyIAphc3NpZ2luIGNvbmNhdGVuYXRlZCBk
-ZXZpY2UncyBjYWxsYmFjayB3aGlsZSBjb25jYXRlbmF0aW5nLiBMb29rcyB3ZWlyZC4KCiDCoCBA
-QCAtODYsNiArODYsNjEgQEAgc3RhdGljIHN0cnVjdCBtdGRfaW5mbyAqYWxsb2NhdGVfcGFydGl0
-aW9uKHN0cnVjdCAKbXRkX2luZm8gKnBhcmVudCwKIMKgwqDCoMKgwqDCoMKgIGNoaWxkLT5wYXJ0
-Lm9mZnNldCA9IHBhcnQtPm9mZnNldDsKIMKgwqDCoMKgwqDCoMKgIElOSVRfTElTVF9IRUFEKCZj
-aGlsZC0+cGFydGl0aW9ucyk7CgorwqDCoMKgwqDCoMKgIGlmIChwYXJlbnQtPl9yZWFkKQorwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjaGlsZC0+X3JlYWQgPSBwYXJlbnQtPl9yZWFkOwor
-wqDCoMKgwqDCoMKgIGlmIChwYXJlbnQtPl93cml0ZSkKK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgY2hpbGQtPl93cml0ZSA9IHBhcmVudC0+X3dyaXRlOwpbLi4uXQorwqDCoMKgwqDCoMKg
-IGlmIChwYXJlbnQtPl9yZWFkX29vYikKK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY2hp
-bGQtPl9yZWFkX29vYiA9IHBhcmVudC0+X3JlYWRfb29iOworwqDCoMKgwqDCoMKgIGlmIChwYXJl
-bnQtPl93cml0ZV9vb2IpCgoKIMKgIEIuIFJlLWltcG9ydCByZW1vdmVkIHBhcnRpdGlvbiBtdGQg
-ZGV2aWNlJ3MgY2FsbGJhY2tzIGFuZCBhZGFwdCBtdGQgCmNvbW1vbiBmdW5jdGlvbnM6IEN1cnJl
-bnQgaW1wbGVtZW50aW9uIGlzIHNpbXBsaWVyIHRoYW4gdGhlIHZlcnNpb24gCmJlZm9yZSA0NmI1
-ODg5Y2MyYzU0KCJtdGQ6IGltcGxlbWVudCBwcm9wZXIgcGFydGl0aW9uIGhhbmRsaW5nIikuIApB
-ZGFwdGluZyBtdGQgY29tbW9uIGZ1bmN0aW9ucyBpcyBhIHJpc2t5IHRoaW5nLCB3aGljaCBjb3Vs
-ZCBlZmZlY3Qgb3RoZXIgCm1vZHVsZXMsIHNob3VsZCB3ZSBkbyB0aGF0PwoKK3N0YXRpYyBpbnQg
-cGFydF9yZWFkKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBsb2ZmX3QgZnJvbSwgc2l6ZV90IGxlbiwK
-K8KgIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzaXplX3QgKnJldGxlbiwgdV9jaGFyICpidWYp
-Cit7CivCoMKgwqDCoMKgwqAgc3RydWN0IG10ZF9wYXJ0ICpwYXJ0ID0gbXRkX3RvX3BhcnQobXRk
-KTsKK8KgwqDCoMKgwqDCoCBzdHJ1Y3QgbXRkX2VjY19zdGF0cyBzdGF0czsKK8KgwqDCoMKgwqDC
-oCBpbnQgcmVzOworCisgwqDCoMKgwqAgc3RhdHMgPSBwYXJ0LT5wYXJlbnQtPmVjY19zdGF0czsK
-K8KgwqDCoMKgwqDCoCByZXMgPSBwYXJ0LT5wYXJlbnQtPl9yZWFkKHBhcnQtPnBhcmVudCwgZnJv
-bSArIHBhcnQtPm9mZnNldCwgbGVuLAorwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXRsZW4sIGJ1Zik7CivCoMKgwqDCoMKg
-wqAgaWYgKHVubGlrZWx5KG10ZF9pc19lY2NlcnIocmVzKSkpCivCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIG10ZC0+ZWNjX3N0YXRzLmZhaWxlZCArPQorwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcGFydC0+cGFyZW50LT5lY2Nfc3RhdHMuZmFpbGVkIC0g
-c3RhdHMuZmFpbGVkOworwqDCoMKgwqDCoMKgIGVsc2UKK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgbXRkLT5lY2Nfc3RhdHMuY29ycmVjdGVkICs9CivCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBwYXJ0LT5wYXJlbnQtPmVjY19zdGF0cy5jb3JyZWN0ZWQg
-LSBzdGF0cy5jb3JyZWN0ZWQ7CivCoMKgwqDCoMKgwqAgcmV0dXJuIHJlczsKK30KCiDCoHN0YXRp
-YyBpbnQgbXRkX3JlYWRfb29iX3N0ZChzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgbG9mZl90IGZyb20s
-CiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-c3RydWN0IG10ZF9vb2Jfb3BzICpvcHMpCiDCoHsKLcKgwqDCoMKgwqDCoCBzdHJ1Y3QgbXRkX2lu
-Zm8gKm1hc3RlciA9IG10ZF9nZXRfbWFzdGVyKG10ZCk7CiDCoMKgwqDCoMKgwqDCoCBpbnQgcmV0
-OwoKLcKgwqDCoMKgwqDCoCBmcm9tID0gbXRkX2dldF9tYXN0ZXJfb2ZzKG10ZCwgZnJvbSk7Ci3C
-oMKgwqDCoMKgwqAgaWYgKG1hc3Rlci0+X3JlYWRfb29iKQotwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCByZXQgPSBtYXN0ZXItPl9yZWFkX29vYihtYXN0ZXIsIGZyb20sIG9wcyk7CivCoMKg
-wqDCoMKgwqAgaWYgKG10ZC0+X3JlYWRfb29iKQorwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCByZXQgPSBtdGQtPl9yZWFkX29vYihtdGQsIGZyb20sIG9wcyk7CiDCoMKgwqDCoMKgwqDCoCBl
-bHNlCi3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldCA9IG1hc3Rlci0+X3JlYWQobWFz
-dGVyLCBmcm9tLCBvcHMtPmxlbiwgJm9wcy0+cmV0bGVuLAorwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCByZXQgPSBtdGQtPl9yZWFkKG10ZCwgZnJvbSwgb3BzLT5sZW4sICZvcHMtPnJldGxl
-biwKIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgb3BzLT5kYXRidWYpOwoKCjIuIENoZWNraW5nIGFnYWluc3Qgc3Vi
-ZGV2W2ldIGZvciBkYXRhIG1lbWJlcnMgYW5kIGNoZWNrIGFnYWluc3QgCnN1YmRldl9tYXN0ZXIg
-Zm9yIHRoZSBjYWxsYmFja3MgbG9va3Mgd2VpcmQuIEkgbW9kaWZpZWQgaXQgYmFzZWQgb24gdGhl
-IAphc3N1bXB0aW9uIHRoYXQgcGFydGl0aW9uIG10ZCBkZXZpY2UnIGNhbGxiYWNrcyBpbmhlcml0
-IGZyb20gbWFzdGVyIG10ZCAKZGV2aWNlIGJ1dCBkYXRhIG1lbWJlcnMobmFtZSwgc2l6ZSkgbWF5
-IG5vdC4gTWF5YmUgSSBzaG91bGQgYWRkIHNvbWUgCmNvbW1lbnQgdG8gZXhwbGFpbiB3aHkgY2hl
-Y2tpbmcgYWdhaW5zdCBzdWJkZXZbaV0gZm9yIGRhdGEgbWVtYmVycyBhbmQgCmNoZWNraW5nIGFn
-YWluc3Qgc3ViZGV2X21hc3RlciBmb3IgdGhlIGNhbGxiYWNrcy4KCgpTbywgd2hpY2ggbWV0aG9k
-IGlzIGJldHRlcj8gQW55IG90aGVyIG1ldGhvZD8KCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
-ZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
-bXRkLwo=
+Hi Miquel,
+
+On Sat, 7 Aug 2021 at 05:02, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> This change looks fine, I'll use spinand->oobbuf instead of databuf +
+> offset (will update when applying).
+
+Thanks for looking at this for me. One thing I was worried about is
+why the SPI NAND subsystem worked before this change with winbond etc
+parts.
+
+You probably don't remember now but I sent a patch to include support
+for the longsys foresee parts that have the weird quirk of having no
+ECC
+data in the OOB so it's all usable by the user except for the bad
+block marker and the ECC status bits being next to useless.
+I found this issue while trying to validate ubi + my ECC status
+decoding worked. [0]
+
+The SPI NAND subsystem in u-boot worked fine as it could create the
+ubi formatting on the flash and that would survive reboots but any
+blocks written by Linux would be bad on reboot.
+When Linux created the ubi format it would work until a reboot as the
+correct data was cached in memory then u-boot would complain because
+all of the blocks were marked bad.
+
+But winbond parts mounted on the same board, same code etc worked just fine.
+I guess the OOB is getting fixed somewhere else for other parts. Maybe
+it only happens on the longsys parts because there is no ECC in OOB?
+
+Anyhow I was worried my fix hid some other issue/broke other parts.
+
+Cheers,
+
+Daniel
+
+0 - https://lore.kernel.org/lkml/20210408174922.55c1149f@xps13/
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
