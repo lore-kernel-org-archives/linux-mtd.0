@@ -8,14 +8,14 @@ X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32865C4338F
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Aug 2021 07:12:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BAB54C4338F
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Aug 2021 07:14:32 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E5CF36103E
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Aug 2021 07:12:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E5CF36103E
+	by mail.kernel.org (Postfix) with ESMTPS id 66B1160EE2
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Aug 2021 07:14:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 66B1160EE2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,65 +24,65 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=f7K3dEY2YjN7UapRIQhB+pAeq9qT840FjilPfdz2Mng=; b=vDSJUVOHil8iVf
-	coEnNRe8VQV5Eti9PuGcXeqXnHwJWHZj+wQCaHqihMcsR5g6cvDYtwdPTDBiPSdc5tH9Hk15TwbR0
-	aoKI3RQxZjyodSRdi6ebucIaoOsdUb1DfLoZh+Df+SBRAYMnSDGlouCAacdnMdnCKpXowMODYsqmX
-	c7K4rFxwPMPVcNQR5xIm6FrQCfNVYm2SOcKC8zKvpiUMRpx0KRxUVpAPPfK/N/ph471NxWqE6dWeH
-	Wg/HFdMERgIksODHFXTnUYKtEEVVSzoWbquLbUwTNcnQadDkFEN095dSw42pQbC7kJ4wpjbUrx/DI
-	mF34WMSl3qp4L3kUzwzw==;
+	List-Owner; bh=sTclB7Ciq9tCFt/lZaDwkIKyj1t7qF5kA4r1AJsjo74=; b=Nx+UT6N+KVqugs
+	Lc2dpQq3h1v7HU1KHDsszFOmToxThdo/wkmRnlijbLuwUM3JcNRkF4C/ZHoq1S2rMB7/Vesu5w9Ps
+	tf4bbbb+BUCv93mAveg0TODUm0G/fSanga5GHeNal97e5kAyZPO42urlGmDTaeB5hIdQqIDp8jTif
+	l/EtxqQ70gitf4CKOROVfiaDBEzQ9prH/mUjl0hwmIjSDAc0hgq+l71peBRrvuArLEOR8J0cE7GzX
+	u/JwXvlqwoF1LGN9RyH/fJXKcefcjnN+3KvZgPEw7FEm730flHF+rv0XW2oGmsuy7DlcjeDcQR09w
+	t48NY9mFrFBhDr2YZwoQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mE4sh-008rYr-93; Thu, 12 Aug 2021 07:11:59 +0000
-Received: from mail-pj1-x1032.google.com ([2607:f8b0:4864:20::1032])
+	id 1mE4uP-008rqQ-2q; Thu, 12 Aug 2021 07:13:45 +0000
+Received: from mail-pl1-x62e.google.com ([2607:f8b0:4864:20::62e])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mE4kM-008pZl-7z
- for linux-mtd@lists.infradead.org; Thu, 12 Aug 2021 07:03:23 +0000
-Received: by mail-pj1-x1032.google.com with SMTP id bo18so7944146pjb.0
- for <linux-mtd@lists.infradead.org>; Thu, 12 Aug 2021 00:03:22 -0700 (PDT)
+ id 1mE4kP-008paP-HR
+ for linux-mtd@lists.infradead.org; Thu, 12 Aug 2021 07:03:26 +0000
+Received: by mail-pl1-x62e.google.com with SMTP id f3so6086208plg.3
+ for <linux-mtd@lists.infradead.org>; Thu, 12 Aug 2021 00:03:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=13WBqHAbNDt3UxJel9YPbYq1H8xChgHqzQg96gS+gNY=;
- b=vVhfQrhKKElpMjzrwXwEm/KnTACIdsZ6DQyzVNXSG17N4bXvTGXt/tbxRdXJvI/Wsn
- TtcWY6AVZUFF9oHFDmfGXArCGkwnbrlbc2JQWnF3ETW8lIksU0gIeiThbyvYDZfl4tXn
- HVzILzr6YuovFbN2YmM09TM/Yk0MbTw4URcr+8b10F88gNpQ1GPb9WD3s+cYSM2mzdVP
- TLB1EqCDVvICbGUPMoAwZsKAQvBjJbqGrgRa+5kv4jsiuN+A3j/KSZaRhyT3CrAdgx8o
- 3+MiIF7R+Dp44XBoYThXu+g49sZG0gB+OwF6UrKPrLOlzIRjxZaLfUJH1w5k5AgupyP9
- CZ+A==
+ bh=nEqw+OcScjkPpxoWg/ircea+lwc/q5ieEEiAYEokqPs=;
+ b=iW81e+9epYh0oROeZmoR83CZ+SKkcU0Ci3Z+2btcvzQ0ZaGCVFFQWWCT9zteq8XNoB
+ fHdUcQLOE+NjS0U0HkoURgYJMvaoWcf7vjbdVLHf7+uQzroEcU7hupR8Oi/3aEbuAsSv
+ 2NcS0xKFUOGXrvXfqWscBRuPXdtdZVmBxUZU+Z1oUoZDI/l0jQghz79ye2HbVmaymEgP
+ 0rC/FN93pE5Fl6/Y7Wq3tzVPBLJY01jRBTuh0urTl9/BbrzOkpvo3z1kJ8zOFEQVtxQx
+ V090uSx/9sdo3pfCsdLFOaY/vdt20oIjIiDJpXj66k85j5evduxvHMEdsBON/tgflYAo
+ LYPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references;
- bh=13WBqHAbNDt3UxJel9YPbYq1H8xChgHqzQg96gS+gNY=;
- b=ScirvB7wXXsGlq3UFR+gHELs+CO451gLlaTo3eZyCxAaiECnlXiALZ7kZlckvqJjp5
- nbevW5TwgGIxHY5cMvCOu5FxERQMUt8E4eVcGNPUx5teyHlPQTH1qlC13O8u+yOy+uhg
- mVNAS5qRRPkHbccERLbtpUOu5D0m1oeJ52Iar/coP7p1CxPGli9y4vDW5KZF228rvgQK
- fgjkM8UTCOgmQrNXUabOcrgWuj6wyZwi0NRik7/3LW1N6i800tKyAjIB2ViZB05bA86J
- nCYPxI+TJVFihPGv8iLlnityZAtEEGDyzIibHAtOCxnTULGEQZhyTnIoPDA7Le0menxu
- QhnA==
-X-Gm-Message-State: AOAM532DiFyW6TZXk6Kd2/sf7J/lxGPzUXMTyQ2dE3PPUh1oLIj3ZqJi
- gOe3ybuSQ4raxt+MelSGjgs=
-X-Google-Smtp-Source: ABdhPJwJhuBoyKRl5zwvlTMNiB0++JenFyHKmBeFDXm6V1cSq4fRlOCnR734X1wLtEluYdgvQmnIFQ==
-X-Received: by 2002:a17:90b:164b:: with SMTP id
- il11mr14988572pjb.47.1628751801694; 
- Thu, 12 Aug 2021 00:03:21 -0700 (PDT)
+ bh=nEqw+OcScjkPpxoWg/ircea+lwc/q5ieEEiAYEokqPs=;
+ b=LtiKIOet5C3ii0SizvqINX/S9NGB3H30Hrkg9pQVPprCrOb5hTEq4oKEwg11JbSwec
+ /J2UwebyHiWJ2c8op3/bV14vRGJQQEyI9BLd2HkcNVJS7n4G629TNtt99LmZ9NauYpSQ
+ HK06rih4WTPA5VL1/XSCcJ6ipV5m9nNtiUAcd5HiqyuFqjRHNuuDACzZcSYoeD0FBBya
+ GGso+lx77ArJdZ5qNo43+AUeoY3jC78Q8EJhRv00xf+pRuXlcfLY0kHLSBnzxMzIIdrt
+ XTOGGo9kCG4t2iJRVBxD6tOAUtFqrDYy6zOwooCLyuazjVkfpoVbKSLdKgpTBQ7HbAeo
+ 4KJg==
+X-Gm-Message-State: AOAM5309Xcua2asidQnm87izFebYSvA1iuM/wZAxVXdGlpyZczCTw1iP
+ gsgDW3RtGTjlDgl0fsl53rQ=
+X-Google-Smtp-Source: ABdhPJx0jcFs4SEGui0cm++iHkCPdUp5sl7wFdNECZemBmjOiL7KjhJ6J9RBBVvWpwTEh7WftuC5YQ==
+X-Received: by 2002:a17:90a:d251:: with SMTP id
+ o17mr2881289pjw.200.1628751804553; 
+ Thu, 12 Aug 2021 00:03:24 -0700 (PDT)
 Received: from localhost.localdomain ([123.51.145.88])
- by smtp.gmail.com with ESMTPSA id o127sm1946962pfb.48.2021.08.12.00.03.19
+ by smtp.gmail.com with ESMTPSA id o127sm1946962pfb.48.2021.08.12.00.03.22
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 12 Aug 2021 00:03:21 -0700 (PDT)
+ Thu, 12 Aug 2021 00:03:24 -0700 (PDT)
 From: Zhengxun <zhengxunli.mxic@gmail.com>
 To: tudor.ambarus@microchip.com, p.yadav@ti.com, michael@walle.cc,
  vigneshr@ti.com, miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org
 Cc: zhengxunli@mxic.com.tw,
 	Zhengxun <zhengxunli.mxic@gmail.com>
-Subject: [PATCH v6 11/15] mtd: spi-nor: macronix: Add support for mx25uw25645g
-Date: Thu, 12 Aug 2021 15:01:31 +0000
-Message-Id: <20210812150135.4005-12-zhengxunli.mxic@gmail.com>
+Subject: [PATCH v6 12/15] mtd: spi-nor: macronix: Add support for mx25um25345g
+Date: Thu, 12 Aug 2021 15:01:32 +0000
+Message-Id: <20210812150135.4005-13-zhengxunli.mxic@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210812150135.4005-1-zhengxunli.mxic@gmail.com>
 References: <20210812150135.4005-1-zhengxunli.mxic@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210812_000322_341473_46000A8A 
-X-CRM114-Status: GOOD (  11.43  )
+X-CRM114-CacheID: sfid-20210812_000325_633743_32984B08 
+X-CRM114-Status: GOOD (  11.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,27 +100,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for mx25uw25645g spi-nor chips.
+Add support for mx25um25345g spi-nor chips.
 
 Signed-off-by: Zhengxun <zhengxunli.mxic@gmail.com>
 ---
 zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-c28139
+c28339
 zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer 
 macronix
 zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname 
-mx25uw25645g
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/sfdp > mx25uw25645g
-zynq> hexdump mx25uw25645g 
+mx25um25345g
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/sfdp > mx25um25345g
+zynq> hexdump mx25um25345g 
 0000000 4653 5044 0108 fd04 0700 1401 0040 ff00
 0000010 0187 1c01 0090 ff00 000a 0801 0100 ff00
 0000020 0005 0501 0120 ff00 0084 0201 0134 ff00
 0000030 0000 0000 0000 0000 ffff ffff ffff ffff
 0000040 20e5 ff8a ffff 0fff ff00 ff00 ff00 ff00
 0000050 ffee ffff ffff ff00 ffff ff00 200c d810
-0000060 ff00 ff00 7989 0001 128d d200 04cc 4667
+0000060 ff00 ff00 6987 0001 1282 d200 02cc 3867
 0000070 b030 b030 bdf4 5cd5 0000 ff00 1010 2000
-0000080 0000 0000 0000 a37c 0048 0000 0000 8888
+0000080 0000 0000 0000 237c 0048 0000 0000 8888
 0000090 0000 0000 0000 4000 d10f f3ff d10f f3ff
 00000a0 0500 9000 0500 b100 2b00 9500 2b00 9600
 00000b0 7172 b803 7172 b803 0000 0000 a390 8218
@@ -130,21 +130,21 @@ zynq> hexdump mx25uw25645g
 00000f0 0000 0000 1501 d001 7172 d806 0000 5086
 0000100 0000 0106 0000 0000 0002 0301 0200 0000
 0000110 0000 0106 0000 0000 0000 0672 0200 0000
-0000120 ee00 69c0 7272 7171 d800 f6f7 0a00 0000
+0000120 ee00 69c0 7272 7171 d800 f6f7 0904 0000
 0000130 4514 8098 0643 000f dc21 ffff
 
  drivers/mtd/spi-nor/macronix.c | 5 +++++
  1 file changed, 5 insertions(+)
 
 diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index 758b736ec580..cb8dafcc8d7d 100644
+index cb8dafcc8d7d..aef797b4d3e1 100644
 --- a/drivers/mtd/spi-nor/macronix.c
 +++ b/drivers/mtd/spi-nor/macronix.c
-@@ -217,6 +217,11 @@ static const struct flash_info macronix_parts[] = {
+@@ -222,6 +222,11 @@ static const struct flash_info macronix_parts[] = {
  			       SPI_NOR_OCTAL_DTR_READ | SPI_NOR_OCTAL_DTR_PP |
  			       SPI_NOR_4B_OPCODES)
  		.fixups = &octaflash_fixups },
-+	{ "mx25uw25645g", INFO(0xc28139, 0, 8 * 1024, 4096,
++	{ "mx25um25345g", INFO(0xc28339, 0, 8 * 1024, 4096,
 +			       SECT_4K | SPI_NOR_PARSE_SFDP |
 +			       SPI_NOR_OCTAL_DTR_READ | SPI_NOR_OCTAL_DTR_PP |
 +			       SPI_NOR_4B_OPCODES)
