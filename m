@@ -5,16 +5,16 @@ X-Spam-Level:
 X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4298BC4338F
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Aug 2021 11:02:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B1AAC4338F
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Aug 2021 11:38:52 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1875961038
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Aug 2021 11:02:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1875961038
+	by mail.kernel.org (Postfix) with ESMTPS id E824F60F91
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Aug 2021 11:38:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E824F60F91
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=ispras.ru
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,40 +23,37 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Ec8d2SsS0wD51pts1ns4kbkDngc5nZPRGp8P1j6pqLw=; b=aA8QIQGlq5vtqP
-	z3fQKp4bFPdGNtQXzm8Mpfg73BO6zf0eQalJZJN2t3FqrSGHx0Tmr/k+2q8ATIiNABX24LO+PhtDg
-	m+WLFcQs5aptKDl7h4/9jzYYvN1gTrBYoUqAWPJ3PCj8cF/a0Ui3KoI5wdQZBKzeOAOfLBjILyLXa
-	d8nhGMlElJW4quO+Xpk+YKU1ZlwJBzG1mTjdsljgU8+nY4Ghh1DygeIjQh2zDi+X2JSIIiZVPyjHQ
-	OmIbwE0kePXo6Et3L2src39cl/Z4CZEAgwC4YvBJKuTpxZq/2zNI2dEt8uwBgmjEVGZyXKtvrr3/X
-	gdgEEyPWRhbxpt84XCzw==;
+	List-Owner; bh=Wuxrw/bU7Czv/Th7GUoIyCJi9BGykmVIuqgnShVRhlI=; b=KOGFC+D6AxYX3p
+	W9K7deYCGnJ2HMENfTcHpW2SNq0q7fMIHFZds2+kZD4HtvoNZauaR7CukPFe9BUURp/hFO9y8lTU8
+	E8lonKdojnDFNaXZ6jJracB1RAvl85wZQuxEsvSUHDl+AYPAuT5VvqCikl6VWh1dUDDCYuZPq/n4f
+	Z4uM6xO8EC+R260hbM2A4i2ZFHHqy2j90EQVdg03dKY4zY0Ek4Jokw8udYhowvYNpMrrXi2F3/M1R
+	krNdPAQBndcXAHCFQ42CHKYwo14NCuDbQRTrAkGL5WbFAHQnCh7rr9chOMjBchObYrW3mREjf1YaV
+	ryn6K1dquBA5OTdoaLrQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mE8Si-009j2L-6u; Thu, 12 Aug 2021 11:01:24 +0000
+	id 1mE92I-009qum-Fn; Thu, 12 Aug 2021 11:38:10 +0000
 Received: from mail.ispras.ru ([83.149.199.84])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mE8Sf-009j1U-6s
- for linux-mtd@lists.infradead.org; Thu, 12 Aug 2021 11:01:22 +0000
+ id 1mE92F-009qtr-Mn
+ for linux-mtd@lists.infradead.org; Thu, 12 Aug 2021 11:38:09 +0000
 Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
- by mail.ispras.ru (Postfix) with ESMTPS id 3B0CA40A2BCD;
- Thu, 12 Aug 2021 11:01:09 +0000 (UTC)
+ by mail.ispras.ru (Postfix) with ESMTPS id 1227C40A2BB0;
+ Thu, 12 Aug 2021 11:38:06 +0000 (UTC)
 From: Evgeny Novikov <novikov@ispras.ru>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Evgeny Novikov <novikov@ispras.ru>, Richard Weinberger <richard@nod.at>,
  Vignesh Raghavendra <vigneshr@ti.com>,
- Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
  Kirill Shilimanov <kirill.shilimanov@huawei.com>,
- Anton Vasilyev <vasilyev@ispras.ru>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
-Subject: [PATCH] mtd: rawnand: intel: Fix error handling in probe
-Date: Thu, 12 Aug 2021 14:01:00 +0300
-Message-Id: <20210812110100.1279-1-novikov@ispras.ru>
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ ldv-project@linuxtesting.org
+Subject: [PATCH] mtd: rawnand: mxic: Enable and prepare clocks in probe
+Date: Thu, 12 Aug 2021 14:38:00 +0300
+Message-Id: <20210812113800.12466-1-novikov@ispras.ru>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210812_040121_473198_12C7F41D 
-X-CRM114-Status: GOOD (  10.81  )
+X-CRM114-CacheID: sfid-20210812_043807_958756_BC1011C8 
+X-CRM114-Status: GOOD (  10.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,78 +70,54 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-ebu_nand_probe() did not invoke ebu_dma_cleanup() and
-clk_disable_unprepare() on some error handling paths. The patch fixes
-that.
+It seems that mxic_nfc_probe() missed invocation of
+mxic_nfc_clk_enable(). The patch fixed that. In addition, error handling
+was refined appropriately.
 
 Found by Linux Driver Verification project (linuxtesting.org).
 
 Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
 Co-developed-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
 Signed-off-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
-Co-developed-by: Anton Vasilyev <vasilyev@ispras.ru>
-Signed-off-by: Anton Vasilyev <vasilyev@ispras.ru>
 ---
- drivers/mtd/nand/raw/intel-nand-controller.c | 27 +++++++++++++-------
- 1 file changed, 18 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/raw/mxic_nand.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/intel-nand-controller.c b/drivers/mtd/nand/raw/intel-nand-controller.c
-index 8b49fd56cf96..29e8a546dcd6 100644
---- a/drivers/mtd/nand/raw/intel-nand-controller.c
-+++ b/drivers/mtd/nand/raw/intel-nand-controller.c
-@@ -631,19 +631,26 @@ static int ebu_nand_probe(struct platform_device *pdev)
- 	ebu_host->clk_rate = clk_get_rate(ebu_host->clk);
+diff --git a/drivers/mtd/nand/raw/mxic_nand.c b/drivers/mtd/nand/raw/mxic_nand.c
+index da1070993994..37e75bf60ee5 100644
+--- a/drivers/mtd/nand/raw/mxic_nand.c
++++ b/drivers/mtd/nand/raw/mxic_nand.c
+@@ -509,9 +509,15 @@ static int mxic_nfc_probe(struct platform_device *pdev)
+ 	if (IS_ERR(nfc->send_dly_clk))
+ 		return PTR_ERR(nfc->send_dly_clk);
  
- 	ebu_host->dma_tx = dma_request_chan(dev, "tx");
--	if (IS_ERR(ebu_host->dma_tx))
--		return dev_err_probe(dev, PTR_ERR(ebu_host->dma_tx),
--				     "failed to request DMA tx chan!.\n");
-+	if (IS_ERR(ebu_host->dma_tx)) {
-+		ret = dev_err_probe(dev, PTR_ERR(ebu_host->dma_tx),
-+				    "failed to request DMA tx chan!.\n");
-+		goto err_disable_unprepare_clk;
++	err = mxic_nfc_clk_enable(nfc);
++	if (err)
++		return err;
++
+ 	nfc->regs = devm_platform_ioremap_resource(pdev, 0);
+-	if (IS_ERR(nfc->regs))
+-		return PTR_ERR(nfc->regs);
++	if (IS_ERR(nfc->regs)) {
++		err = PTR_ERR(nfc->regs);
++		goto fail;
 +	}
  
- 	ebu_host->dma_rx = dma_request_chan(dev, "rx");
--	if (IS_ERR(ebu_host->dma_rx))
--		return dev_err_probe(dev, PTR_ERR(ebu_host->dma_rx),
--				     "failed to request DMA rx chan!.\n");
-+	if (IS_ERR(ebu_host->dma_rx)) {
-+		ret = dev_err_probe(dev, PTR_ERR(ebu_host->dma_rx),
-+				    "failed to request DMA rx chan!.\n");
-+		ebu_host->dma_rx = NULL;
-+		goto err_cleanup_dma;
+ 	nand_chip = &nfc->chip;
+ 	mtd = nand_to_mtd(nand_chip);
+@@ -527,8 +533,10 @@ static int mxic_nfc_probe(struct platform_device *pdev)
+ 	nand_chip->controller = &nfc->controller;
+ 
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq < 0)
+-		return irq;
++	if (irq < 0) {
++		err = irq;
++		goto fail;
 +	}
  
- 	resname = devm_kasprintf(dev, GFP_KERNEL, "addr_sel%d", cs);
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, resname);
--	if (!res)
--		return -EINVAL;
-+	if (!res) {
-+		ret = -EINVAL;
-+		goto err_cleanup_dma;
-+	}
- 	ebu_host->cs[cs].addr_sel = res->start;
- 	writel(ebu_host->cs[cs].addr_sel | EBU_ADDR_MASK(5) | EBU_ADDR_SEL_REGEN,
- 	       ebu_host->ebu + EBU_ADDR_SEL(cs));
-@@ -653,7 +660,8 @@ static int ebu_nand_probe(struct platform_device *pdev)
- 	mtd = nand_to_mtd(&ebu_host->chip);
- 	if (!mtd->name) {
- 		dev_err(ebu_host->dev, "NAND label property is mandatory\n");
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_cleanup_dma;
- 	}
+ 	mxic_nfc_hw_init(nfc);
  
- 	mtd->dev.parent = dev;
-@@ -681,6 +689,7 @@ static int ebu_nand_probe(struct platform_device *pdev)
- 	nand_cleanup(&ebu_host->chip);
- err_cleanup_dma:
- 	ebu_dma_cleanup(ebu_host);
-+err_disable_unprepare_clk:
- 	clk_disable_unprepare(ebu_host->clk);
- 
- 	return ret;
 -- 
 2.26.2
 
