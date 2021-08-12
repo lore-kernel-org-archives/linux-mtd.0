@@ -2,81 +2,112 @@ Return-Path: <SRS0=P+6h=ND=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,FORGED_HOTMAIL_RCVD2,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A835C4338F
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Aug 2021 13:55:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 749B9C4320E
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Aug 2021 18:41:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ED6AE60FD7
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Aug 2021 13:55:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org ED6AE60FD7
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rock-chips.com
+	by mail.kernel.org (Postfix) with ESMTPS id 12B7C60240
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Aug 2021 18:41:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 12B7C60240
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=hotmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jI1f6lowxEzsuIW/56bvBe8LlGsy9B2JwuVA0AWKD3Q=; b=vbkgClxCVZs2Aw
-	/pqFBUdx9Iq8kUsxR2MnObJJTVcqC8WSGOu+hQddijkoDoUBi/Yy7QOzLMqwnMASKZBgJNbtWeIUY
-	Cl3W5f4Tp/Q33Ub8SgriJGAuhTCbSpRxlhADw0+mzNlc/YsYohKSt+85zE5NWaO5Yp1jhgaHNn6ip
-	5fV7bvblAmFUHYXTCwlEbHbKb+Rkh05Mdvym+e/rLBilWd01pQJ3cjKLaqTmUO0Ps94/OOLoO9D8t
-	AOVaLwUBdjNu24hnWFDNSgPVH4Kvpt1GOJzfCbfR6jgxlPwAV9t4BvkzgY2fjK/g7LgLkRi516i7v
-	Pmjs6mhLdITqeMColrPw==;
+	List-Owner; bh=KaVKjBBEDw3ijbFM1fTe+THywC880iLq+rLYxMuozLk=; b=P0cA+w+RJZm+Vg
+	Wz0EMZemZIZMu6JIwkaYiWZ5mJGNpir3u76EXd4CBrfkn7OQC6a0SylQlIekf/iSggDYiSty4lhuu
+	yJqe45X16wE2XCtGUzeWc+fOG27KMhtLCANUL464Zb2ZM7Py3BmkjusWjyGx3TSM1fEn5CwnLXiG+
+	nO28VMYbC0kHfy9TyjvYrNa6WiDzARkt/f+PWywz4naqD2DPl2k1xbSG5zCfZQ3SoTWxUnoJDnRfa
+	YtSKjEhnlAM7lzyI8ppiCWFHz4mrRkZNgXFxXd0KXZg1/d3gjWuCBHhvBPTqr3iY51/I1wiT7oJiv
+	t1zj8orEHp8pNCUI899g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mEBAW-00ALBo-0E; Thu, 12 Aug 2021 13:54:48 +0000
-Received: from lucky1.263xmail.com ([211.157.147.133])
+	id 1mEFcR-00Au2f-3J; Thu, 12 Aug 2021 18:39:55 +0000
+Received: from mail-mw2nam12olkn2043.outbound.protection.outlook.com
+ ([40.92.23.43] helo=NAM12-MW2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mEB2t-00AI9j-QR; Thu, 12 Aug 2021 13:46:57 +0000
-Received: from localhost (unknown [192.168.167.70])
- by lucky1.263xmail.com (Postfix) with ESMTP id 4849AD652A;
- Thu, 12 Aug 2021 21:46:52 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [58.22.7.114])
- by smtp.263.net (postfix) whith ESMTP id
- P4989T139771043112704S1628776006486981_; 
- Thu, 12 Aug 2021 21:46:50 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <8dcded2026158dda55856874c75d1131>
-X-RL-SENDER: jon.lin@rock-chips.com
-X-SENDER: jon.lin@rock-chips.com
-X-LOGIN-NAME: jon.lin@rock-chips.com
-X-FST-TO: linux-spi@vger.kernel.org
-X-RCPT-COUNT: 20
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From: Jon Lin <jon.lin@rock-chips.com>
-To: linux-spi@vger.kernel.org
-Cc: jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
+ id 1mEFc9-00AtwN-5a; Thu, 12 Aug 2021 18:39:40 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DuBRIU36t2jOJNfB88LrDVbEnImGAwoT1vTo9UTP0GmFPtmgGMkOts8/2oWbQRbXubiVBlYlOSoYFakQPjKQ/Tij7iuhldkXKTcCyOfpO+b+exjLDMgb3vdJLZaOVhzIWdGApsFvGJ4NiZl9i72e9KMAoU253MPW5y4LIE1rgcRzi6so4c+W3ql+iMoU2Q0P0SKTGq6bMNogMLAfeA09m8rBFbYi9H6vksrs5ED1ADR1c0cD0QLMgq2sQx2tJmCS0pa1PMzfp2zSCPIGtNTFO2Pl9KB/f7p3wxO7VpRoeyK7amwKXPyvu5kd1q0zF7zybCZP6oRKrffz36mJQgfl2g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aujK+YKG8l/fdNCXmapVXLtIEFEhCoo7x6I2xsj66g8=;
+ b=d0qHa1K2JN1/jzQet7vnb/umiy8uPrSlitz5FmphD+7Z8OjHkqvkDS5iexZDrEf5CNCqAerIGMh2xgIi9r9FQsLMyrNm8G1WpoRS3Z6iMhuEq1mHZmAYa6bCtTem2bsjEK5WArDdqWNPRQ3dbj2hfIO5RyCs166jYAiv//lFfrexWRRsJvIPNyPGtB2PISYwHAgYGVsd9EbYfI+rb8j1P5uEhM2WWsKUn5f1TT+9S4LGqF1f7dF4xoBm+To27lHKbFLDoY+ccD/SE38yGMu+4JZYybGHVBqdtU/KdBw8/+m3DtO/nHvt7H9hDsPcYPU4fxipfiX6Qb1iC7mH7/UMQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aujK+YKG8l/fdNCXmapVXLtIEFEhCoo7x6I2xsj66g8=;
+ b=BsuLIriwG3t778vBk5Ka1IXF36qPol3ZWwS3/6BFvcO+MXnIWSDdEjLWymy6K+p8RKLZICwn+0zSI28sh6odTICSosWeN+wInSnW8mH++vDcjsN2VKeHZ60C1seRZl8q24VO6/GOVdN0XusNeEkYvTtyalFjke+vq9GOxxcqZWNFHfs+AUxU9dX7SkBo9TPGK1jf3EvFlDfEjKDIJVVSHyU4J47ZK2dEd5NssJBz4LR49SNf9oWUgAfcP3qjX7DDLgvohdm8H2pgVekpHsxiWgfkqxO3zNMn40ZdHeIgVm6Mf3lT8O41O2m84bB9+IhUga3c8gSHADhcL7SCP4sAeA==
+Received: from SN6PR06MB5342.namprd06.prod.outlook.com (2603:10b6:805:f9::31)
+ by SA0PR06MB6858.namprd06.prod.outlook.com (2603:10b6:806:c1::13)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.16; Thu, 12 Aug
+ 2021 18:39:33 +0000
+Received: from SN6PR06MB5342.namprd06.prod.outlook.com
+ ([fe80::e1f4:5eb1:d552:af43]) by SN6PR06MB5342.namprd06.prod.outlook.com
+ ([fe80::e1f4:5eb1:d552:af43%7]) with mapi id 15.20.4394.026; Thu, 12 Aug 2021
+ 18:39:33 +0000
+Date: Thu, 12 Aug 2021 13:39:31 -0500
+From: Chris Morgan <macromorgan@hotmail.com>
+To: Jon Lin <jon.lin@rock-chips.com>
+Cc: linux-spi@vger.kernel.org, broonie@kernel.org, robh+dt@kernel.org,
  heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
  yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
  linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
  p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- mturquette@baylibre.com, sboyd@kernel.org, linux-clk@vger.kernel.org,
- Chris Morgan <macromorgan@hotmail.com>
-Subject: [PATCH v13 6/6] arm64: dts: rockchip: Enable SFC for Odroid Go Advance
-Date: Thu, 12 Aug 2021 21:46:39 +0800
-Message-Id: <20210812134639.31586-2-jon.lin@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210812134639.31586-1-jon.lin@rock-chips.com>
+ mturquette@baylibre.com, sboyd@kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [PATCH v13 2/6] spi: rockchip-sfc: add rockchip serial flash
+ controller
+Message-ID: <SN6PR06MB534290CBF30901280C221FBDA5F99@SN6PR06MB5342.namprd06.prod.outlook.com>
 References: <20210812134546.31340-1-jon.lin@rock-chips.com>
- <20210812134639.31586-1-jon.lin@rock-chips.com>
+ <20210812134546.31340-3-jon.lin@rock-chips.com>
+Content-Disposition: inline
+In-Reply-To: <20210812134546.31340-3-jon.lin@rock-chips.com>
+X-TMN: [kZFiNGkIZfVCmsedCx5HPVRgN/M88F9Z]
+X-ClientProxiedBy: SN7PR04CA0166.namprd04.prod.outlook.com
+ (2603:10b6:806:125::21) To SN6PR06MB5342.namprd06.prod.outlook.com
+ (2603:10b6:805:f9::31)
+X-Microsoft-Original-Message-ID: <20210812183931.GA25390@wintermute.localdomain>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from wintermute.localdomain (76.183.134.35) by
+ SN7PR04CA0166.namprd04.prod.outlook.com (2603:10b6:806:125::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.13 via Frontend
+ Transport; Thu, 12 Aug 2021 18:39:32 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 717e6924-317b-4f3e-fd61-08d95dc086e8
+X-MS-TrafficTypeDiagnostic: SA0PR06MB6858:
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cIWmm4jR0nn94flPu8KaLEAR/7S8OHyfNtM2rl7GG57qXRftnaZHoXPGdRA9dUvUUiUhdJej4dYFuLoRgPKFFtBdgkNTuFOTYN7Y9pSbCX4msoCKV1uAUIxr4wb9juFxZUEYqZXSaB008OXlz9I9BvVq2+6o98oNQ7hdIf46SMhJWoMn3MSpY8JNTh/tuNKoUC2mOYnDpGzOnY3VdndPnCp4Dp6Q2PWOvuAZ221f/wwX9WUcaAeuFNoL5n/gvXqWgvQBTKe12++JGM1vl3Td12y2Aoqg4ZArWbE7mG3/1gSTcwxPXu/tFfz6ZOh6hSTZl9+teLcXAvM/Y/baGhk+rdTF2H4tlkybGnRt9TJyw16vcKqb5G+wUaegGC69RHZhF2GpQfiWLyvF+kDxUx+A1keCq6SNa+NEo/UxgAXwmMAsmtPvOQ+GFWW6XYHR+QyN
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: wm3uFY/4FL4nn/Ivy7FhnxygCTqjToFx5t0h7QIDjNLyUIdW/9+j3etcSQFssDPRovyDpo8kWsBRDtm9CXxuJA9RZliYqqs2mli0bPJJweUK6pDLHk1QA64S3yiyUt7uENcBrhOEkEE76g0iaC6liQ==
+X-OriginatorOrg: sct-15-20-3174-20-msonline-outlook-94543.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 717e6924-317b-4f3e-fd61-08d95dc086e8
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR06MB5342.namprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Aug 2021 18:39:33.5541 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR06MB6858
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210812_064656_175143_0F9EDF3E 
-X-CRM114-Status: GOOD (  11.87  )
+X-CRM114-CacheID: sfid-20210812_113937_483242_6706DE57 
+X-CRM114-Status: GOOD (  34.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,75 +119,800 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Chris Morgan <macromorgan@hotmail.com>
+On Thu, Aug 12, 2021 at 09:45:42PM +0800, Jon Lin wrote:
+> From: Chris Morgan <macromorgan@hotmail.com>
+> 
+> Add the rockchip serial flash controller (SFC) driver.
+> 
+> Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+> Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
 
-This enables the Rockchip Serial Flash Controller for the Odroid Go
-Advance. Note that while the attached SPI NOR flash and the controller
-both support quad read mode, only 2 of the required 4 pins are present.
-The rx bus width is set to 2 for this reason, and tx bus width is set
-to 1 for compatibility reasons.
+Tested-by: Chris Morgan <macromorgan@hotmail.com>
+Successfully tested these changes.
 
-Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
-Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
----
-
-Changes in v13: None
-Changes in v12: None
-Changes in v11:
-- The tx is set to 1 for Odroid Go Advance device
-
-Changes in v10: None
-Changes in v9: None
-Changes in v8: None
-Changes in v7: None
-Changes in v6: None
-Changes in v5: None
-Changes in v4: None
-Changes in v3: None
-Changes in v2: None
-Changes in v1: None
-
- .../boot/dts/rockchip/rk3326-odroid-go2.dts      | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-index 7fc674a99a6c..35218c2771a2 100644
---- a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-@@ -517,6 +517,22 @@
- 	status = "okay";
- };
- 
-+&sfc {
-+	pinctrl-0 = <&sfc_clk &sfc_cs0 &sfc_bus2>;
-+	pinctrl-names = "default";
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	status = "okay";
-+
-+	flash@0 {
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <108000000>;
-+		spi-rx-bus-width = <2>;
-+		spi-tx-bus-width = <1>;
-+	};
-+};
-+
- &tsadc {
- 	status = "okay";
- };
--- 
-2.17.1
-
-
-
+> ---
+> 
+> Changes in v13:
+> - Provide independent interfaces to obtain RX TX FIFO status respectively
+> - Add more debug information
+> - Depress DMA limitation
+> 
+> Changes in v12:
+> - Remove the limitation of SFC_MIN_SPEED_HZ
+> - Add IRQ_NONE method for irq handler
+> - Add SPI_MASTER_HALF_DUPLEX flags
+> - Add sfc interrupt mask bits and status register initial progress
+> 
+> Changes in v11: None
+> Changes in v10:
+> - Fix dma transfer logic
+> 
+> Changes in v9:
+> - Separate DMA IRQ setting and wait_completion from DMA fifo transfer
+>   function to make dma_status_poll be possible(Which I will implement
+>   in u-boot)
+> - Add SFC Kconfig detail comment
+> 
+> Changes in v8: None
+> Changes in v7: None
+> Changes in v6: None
+> Changes in v5: None
+> Changes in v4: None
+> Changes in v3: None
+> Changes in v2: None
+> Changes in v1: None
+> 
+>  drivers/spi/Kconfig            |  12 +
+>  drivers/spi/Makefile           |   1 +
+>  drivers/spi/spi-rockchip-sfc.c | 694 +++++++++++++++++++++++++++++++++
+>  3 files changed, 707 insertions(+)
+>  create mode 100644 drivers/spi/spi-rockchip-sfc.c
+> 
+> diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
+> index e71a4c514f7b..83e352b0c8f9 100644
+> --- a/drivers/spi/Kconfig
+> +++ b/drivers/spi/Kconfig
+> @@ -658,6 +658,18 @@ config SPI_ROCKCHIP
+>  	  The main usecase of this controller is to use spi flash as boot
+>  	  device.
+>  
+> +config SPI_ROCKCHIP_SFC
+> +	tristate "Rockchip Serial Flash Controller (SFC)"
+> +	depends on ARCH_ROCKCHIP || COMPILE_TEST
+> +	depends on HAS_IOMEM && HAS_DMA
+> +	help
+> +	  This enables support for Rockchip serial flash controller. This
+> +	  is a specialized controller used to access SPI flash on some
+> +	  Rockchip SOCs.
+> +
+> +	  ROCKCHIP SFC supports DMA and PIO modes. When DMA is not available,
+> +	  the driver automatically falls back to PIO mode.
+> +
+>  config SPI_RB4XX
+>  	tristate "Mikrotik RB4XX SPI master"
+>  	depends on SPI_MASTER && ATH79
+> diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
+> index 13e54c45e9df..699db95c8441 100644
+> --- a/drivers/spi/Makefile
+> +++ b/drivers/spi/Makefile
+> @@ -95,6 +95,7 @@ obj-$(CONFIG_SPI_QCOM_GENI)		+= spi-geni-qcom.o
+>  obj-$(CONFIG_SPI_QCOM_QSPI)		+= spi-qcom-qspi.o
+>  obj-$(CONFIG_SPI_QUP)			+= spi-qup.o
+>  obj-$(CONFIG_SPI_ROCKCHIP)		+= spi-rockchip.o
+> +obj-$(CONFIG_SPI_ROCKCHIP_SFC)		+= spi-rockchip-sfc.o
+>  obj-$(CONFIG_SPI_RB4XX)			+= spi-rb4xx.o
+>  obj-$(CONFIG_MACH_REALTEK_RTL)		+= spi-realtek-rtl.o
+>  obj-$(CONFIG_SPI_RPCIF)			+= spi-rpc-if.o
+> diff --git a/drivers/spi/spi-rockchip-sfc.c b/drivers/spi/spi-rockchip-sfc.c
+> new file mode 100644
+> index 000000000000..7c4d47fe80c2
+> --- /dev/null
+> +++ b/drivers/spi/spi-rockchip-sfc.c
+> @@ -0,0 +1,694 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Rockchip Serial Flash Controller Driver
+> + *
+> + * Copyright (c) 2017-2021, Rockchip Inc.
+> + * Author: Shawn Lin <shawn.lin@rock-chips.com>
+> + *	   Chris Morgan <macroalpha82@gmail.com>
+> + *	   Jon Lin <Jon.lin@rock-chips.com>
+> + */
+> +
+> +#include <linux/bitops.h>
+> +#include <linux/clk.h>
+> +#include <linux/completion.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/iopoll.h>
+> +#include <linux/mm.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/slab.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/spi/spi-mem.h>
+> +
+> +/* System control */
+> +#define SFC_CTRL			0x0
+> +#define  SFC_CTRL_PHASE_SEL_NEGETIVE	BIT(1)
+> +#define  SFC_CTRL_CMD_BITS_SHIFT	8
+> +#define  SFC_CTRL_ADDR_BITS_SHIFT	10
+> +#define  SFC_CTRL_DATA_BITS_SHIFT	12
+> +
+> +/* Interrupt mask */
+> +#define SFC_IMR				0x4
+> +#define  SFC_IMR_RX_FULL		BIT(0)
+> +#define  SFC_IMR_RX_UFLOW		BIT(1)
+> +#define  SFC_IMR_TX_OFLOW		BIT(2)
+> +#define  SFC_IMR_TX_EMPTY		BIT(3)
+> +#define  SFC_IMR_TRAN_FINISH		BIT(4)
+> +#define  SFC_IMR_BUS_ERR		BIT(5)
+> +#define  SFC_IMR_NSPI_ERR		BIT(6)
+> +#define  SFC_IMR_DMA			BIT(7)
+> +
+> +/* Interrupt clear */
+> +#define SFC_ICLR			0x8
+> +#define  SFC_ICLR_RX_FULL		BIT(0)
+> +#define  SFC_ICLR_RX_UFLOW		BIT(1)
+> +#define  SFC_ICLR_TX_OFLOW		BIT(2)
+> +#define  SFC_ICLR_TX_EMPTY		BIT(3)
+> +#define  SFC_ICLR_TRAN_FINISH		BIT(4)
+> +#define  SFC_ICLR_BUS_ERR		BIT(5)
+> +#define  SFC_ICLR_NSPI_ERR		BIT(6)
+> +#define  SFC_ICLR_DMA			BIT(7)
+> +
+> +/* FIFO threshold level */
+> +#define SFC_FTLR			0xc
+> +#define  SFC_FTLR_TX_SHIFT		0
+> +#define  SFC_FTLR_TX_MASK		0x1f
+> +#define  SFC_FTLR_RX_SHIFT		8
+> +#define  SFC_FTLR_RX_MASK		0x1f
+> +
+> +/* Reset FSM and FIFO */
+> +#define SFC_RCVR			0x10
+> +#define  SFC_RCVR_RESET			BIT(0)
+> +
+> +/* Enhanced mode */
+> +#define SFC_AX				0x14
+> +
+> +/* Address Bit number */
+> +#define SFC_ABIT			0x18
+> +
+> +/* Interrupt status */
+> +#define SFC_ISR				0x1c
+> +#define  SFC_ISR_RX_FULL_SHIFT		BIT(0)
+> +#define  SFC_ISR_RX_UFLOW_SHIFT		BIT(1)
+> +#define  SFC_ISR_TX_OFLOW_SHIFT		BIT(2)
+> +#define  SFC_ISR_TX_EMPTY_SHIFT		BIT(3)
+> +#define  SFC_ISR_TX_FINISH_SHIFT	BIT(4)
+> +#define  SFC_ISR_BUS_ERR_SHIFT		BIT(5)
+> +#define  SFC_ISR_NSPI_ERR_SHIFT		BIT(6)
+> +#define  SFC_ISR_DMA_SHIFT		BIT(7)
+> +
+> +/* FIFO status */
+> +#define SFC_FSR				0x20
+> +#define  SFC_FSR_TX_IS_FULL		BIT(0)
+> +#define  SFC_FSR_TX_IS_EMPTY		BIT(1)
+> +#define  SFC_FSR_RX_IS_EMPTY		BIT(2)
+> +#define  SFC_FSR_RX_IS_FULL		BIT(3)
+> +#define  SFC_FSR_TXLV_MASK		GENMASK(12, 8)
+> +#define  SFC_FSR_TXLV_SHIFT		8
+> +#define  SFC_FSR_RXLV_MASK		GENMASK(20, 16)
+> +#define  SFC_FSR_RXLV_SHIFT		16
+> +
+> +/* FSM status */
+> +#define SFC_SR				0x24
+> +#define  SFC_SR_IS_IDLE			0x0
+> +#define  SFC_SR_IS_BUSY			0x1
+> +
+> +/* Raw interrupt status */
+> +#define SFC_RISR			0x28
+> +#define  SFC_RISR_RX_FULL		BIT(0)
+> +#define  SFC_RISR_RX_UNDERFLOW		BIT(1)
+> +#define  SFC_RISR_TX_OVERFLOW		BIT(2)
+> +#define  SFC_RISR_TX_EMPTY		BIT(3)
+> +#define  SFC_RISR_TRAN_FINISH		BIT(4)
+> +#define  SFC_RISR_BUS_ERR		BIT(5)
+> +#define  SFC_RISR_NSPI_ERR		BIT(6)
+> +#define  SFC_RISR_DMA			BIT(7)
+> +
+> +/* Version */
+> +#define SFC_VER				0x2C
+> +#define  SFC_VER_3			0x3
+> +#define  SFC_VER_4			0x4
+> +#define  SFC_VER_5			0x5
+> +
+> +/* Delay line controller resiter */
+> +#define SFC_DLL_CTRL0			0x3C
+> +#define SFC_DLL_CTRL0_SCLK_SMP_DLL	BIT(15)
+> +#define SFC_DLL_CTRL0_DLL_MAX_VER4	0xFFU
+> +#define SFC_DLL_CTRL0_DLL_MAX_VER5	0x1FFU
+> +
+> +/* Master trigger */
+> +#define SFC_DMA_TRIGGER			0x80
+> +#define SFC_DMA_TRIGGER_START		1
+> +
+> +/* Src or Dst addr for master */
+> +#define SFC_DMA_ADDR			0x84
+> +
+> +/* Length control register extension 32GB */
+> +#define SFC_LEN_CTRL			0x88
+> +#define SFC_LEN_CTRL_TRB_SEL		1
+> +#define SFC_LEN_EXT			0x8C
+> +
+> +/* Command */
+> +#define SFC_CMD				0x100
+> +#define  SFC_CMD_IDX_SHIFT		0
+> +#define  SFC_CMD_DUMMY_SHIFT		8
+> +#define  SFC_CMD_DIR_SHIFT		12
+> +#define  SFC_CMD_DIR_RD			0
+> +#define  SFC_CMD_DIR_WR			1
+> +#define  SFC_CMD_ADDR_SHIFT		14
+> +#define  SFC_CMD_ADDR_0BITS		0
+> +#define  SFC_CMD_ADDR_24BITS		1
+> +#define  SFC_CMD_ADDR_32BITS		2
+> +#define  SFC_CMD_ADDR_XBITS		3
+> +#define  SFC_CMD_TRAN_BYTES_SHIFT	16
+> +#define  SFC_CMD_CS_SHIFT		30
+> +
+> +/* Address */
+> +#define SFC_ADDR			0x104
+> +
+> +/* Data */
+> +#define SFC_DATA			0x108
+> +
+> +/* The controller and documentation reports that it supports up to 4 CS
+> + * devices (0-3), however I have only been able to test a single CS (CS 0)
+> + * due to the configuration of my device.
+> + */
+> +#define SFC_MAX_CHIPSELECT_NUM		4
+> +
+> +/* The SFC can transfer max 16KB - 1 at one time
+> + * we set it to 15.5KB here for alignment.
+> + */
+> +#define SFC_MAX_IOSIZE_VER3		(512 * 31)
+> +
+> +/* DMA is only enabled for large data transmission */
+> +#define SFC_DMA_TRANS_THRETHOLD		(0x40)
+> +
+> +/* Maximum clock values from datasheet suggest keeping clock value under
+> + * 150MHz. No minimum or average value is suggested.
+> + */
+> +#define SFC_MAX_SPEED		(150 * 1000 * 1000)
+> +
+> +struct rockchip_sfc {
+> +	struct device *dev;
+> +	void __iomem *regbase;
+> +	struct clk *hclk;
+> +	struct clk *clk;
+> +	u32 frequency;
+> +	/* virtual mapped addr for dma_buffer */
+> +	void *buffer;
+> +	dma_addr_t dma_buffer;
+> +	struct completion cp;
+> +	bool use_dma;
+> +	u32 max_iosize;
+> +	u16 version;
+> +};
+> +
+> +static int rockchip_sfc_reset(struct rockchip_sfc *sfc)
+> +{
+> +	int err;
+> +	u32 status;
+> +
+> +	writel_relaxed(SFC_RCVR_RESET, sfc->regbase + SFC_RCVR);
+> +
+> +	err = readl_poll_timeout(sfc->regbase + SFC_RCVR, status,
+> +				 !(status & SFC_RCVR_RESET), 20,
+> +				 jiffies_to_usecs(HZ));
+> +	if (err)
+> +		dev_err(sfc->dev, "SFC reset never finished\n");
+> +
+> +	/* Still need to clear the masked interrupt from RISR */
+> +	writel_relaxed(0xFFFFFFFF, sfc->regbase + SFC_ICLR);
+> +
+> +	dev_dbg(sfc->dev, "reset\n");
+> +
+> +	return err;
+> +}
+> +
+> +static u16 rockchip_sfc_get_version(struct rockchip_sfc *sfc)
+> +{
+> +	return  (u16)(readl(sfc->regbase + SFC_VER) & 0xffff);
+> +}
+> +
+> +static u32 rockchip_sfc_get_max_iosize(struct rockchip_sfc *sfc)
+> +{
+> +	return SFC_MAX_IOSIZE_VER3;
+> +}
+> +
+> +static void rockchip_sfc_irq_unmask(struct rockchip_sfc *sfc, u32 mask)
+> +{
+> +	u32 reg;
+> +
+> +	/* Enable transfer complete interrupt */
+> +	reg = readl(sfc->regbase + SFC_IMR);
+> +	reg &= ~mask;
+> +	writel(reg, sfc->regbase + SFC_IMR);
+> +}
+> +
+> +static void rockchip_sfc_irq_mask(struct rockchip_sfc *sfc, u32 mask)
+> +{
+> +	u32 reg;
+> +
+> +	/* Disable transfer finish interrupt */
+> +	reg = readl(sfc->regbase + SFC_IMR);
+> +	reg |= mask;
+> +	writel(reg, sfc->regbase + SFC_IMR);
+> +}
+> +
+> +static int rockchip_sfc_init(struct rockchip_sfc *sfc)
+> +{
+> +	writel(0, sfc->regbase + SFC_CTRL);
+> +	writel(0xFFFFFFFF, sfc->regbase + SFC_ICLR);
+> +	rockchip_sfc_irq_mask(sfc, 0xFFFFFFFF);
+> +	if (rockchip_sfc_get_version(sfc) >= SFC_VER_4)
+> +		writel(SFC_LEN_CTRL_TRB_SEL, sfc->regbase + SFC_LEN_CTRL);
+> +
+> +	return 0;
+> +}
+> +
+> +static int rockchip_sfc_wait_txfifo_ready(struct rockchip_sfc *sfc, u32 timeout_us)
+> +{
+> +	int ret = 0;
+> +	u32 status;
+> +
+> +	ret = readl_poll_timeout(sfc->regbase + SFC_FSR, status,
+> +				 status & SFC_FSR_TXLV_MASK, 0,
+> +				 timeout_us);
+> +	if (ret) {
+> +		dev_dbg(sfc->dev, "sfc wait tx fifo timeout\n");
+> +
+> +		ret = -ETIMEDOUT;
+> +	}
+> +
+> +	return (status & SFC_FSR_TXLV_MASK) >> SFC_FSR_TXLV_SHIFT;
+> +}
+> +
+> +static int rockchip_sfc_wait_rxfifo_ready(struct rockchip_sfc *sfc, u32 timeout_us)
+> +{
+> +	int ret = 0;
+> +	u32 status;
+> +
+> +	ret = readl_poll_timeout(sfc->regbase + SFC_FSR, status,
+> +				 status & SFC_FSR_RXLV_MASK, 0,
+> +				 timeout_us);
+> +	if (ret) {
+> +		dev_dbg(sfc->dev, "sfc wait rx fifo timeout\n");
+> +
+> +		ret = -ETIMEDOUT;
+> +	}
+> +
+> +	return (status & SFC_FSR_RXLV_MASK) >> SFC_FSR_RXLV_SHIFT;
+> +}
+> +
+> +static void rockchip_sfc_adjust_op_work(struct spi_mem_op *op)
+> +{
+> +	if (unlikely(op->dummy.nbytes && !op->addr.nbytes)) {
+> +		/*
+> +		 * SFC not support output DUMMY cycles right after CMD cycles, so
+> +		 * treat it as ADDR cycles.
+> +		 */
+> +		op->addr.nbytes = op->dummy.nbytes;
+> +		op->addr.buswidth = op->dummy.buswidth;
+> +		op->addr.val = 0xFFFFFFFFF;
+> +
+> +		op->dummy.nbytes = 0;
+> +	}
+> +}
+> +
+> +static int rockchip_sfc_xfer_setup(struct rockchip_sfc *sfc,
+> +				   struct spi_mem *mem,
+> +				   const struct spi_mem_op *op,
+> +				   u32 len)
+> +{
+> +	u32 ctrl = 0, cmd = 0;
+> +
+> +	/* set CMD */
+> +	cmd = op->cmd.opcode;
+> +	ctrl |= ((op->cmd.buswidth >> 1) << SFC_CTRL_CMD_BITS_SHIFT);
+> +
+> +	/* set ADDR */
+> +	if (op->addr.nbytes) {
+> +		if (op->addr.nbytes == 4) {
+> +			cmd |= SFC_CMD_ADDR_32BITS << SFC_CMD_ADDR_SHIFT;
+> +		} else if (op->addr.nbytes == 3) {
+> +			cmd |= SFC_CMD_ADDR_24BITS << SFC_CMD_ADDR_SHIFT;
+> +		} else {
+> +			cmd |= SFC_CMD_ADDR_XBITS << SFC_CMD_ADDR_SHIFT;
+> +			writel(op->addr.nbytes * 8 - 1, sfc->regbase + SFC_ABIT);
+> +		}
+> +
+> +		ctrl |= ((op->addr.buswidth >> 1) << SFC_CTRL_ADDR_BITS_SHIFT);
+> +	}
+> +
+> +	/* set DUMMY */
+> +	if (op->dummy.nbytes) {
+> +		if (op->dummy.buswidth == 4)
+> +			cmd |= op->dummy.nbytes * 2 << SFC_CMD_DUMMY_SHIFT;
+> +		else if (op->dummy.buswidth == 2)
+> +			cmd |= op->dummy.nbytes * 4 << SFC_CMD_DUMMY_SHIFT;
+> +		else
+> +			cmd |= op->dummy.nbytes * 8 << SFC_CMD_DUMMY_SHIFT;
+> +	}
+> +
+> +	/* set DATA */
+> +	if (sfc->version >= SFC_VER_4) /* Clear it if no data to transfer */
+> +		writel(len, sfc->regbase + SFC_LEN_EXT);
+> +	else
+> +		cmd |= len << SFC_CMD_TRAN_BYTES_SHIFT;
+> +	if (len) {
+> +		if (op->data.dir == SPI_MEM_DATA_OUT)
+> +			cmd |= SFC_CMD_DIR_WR << SFC_CMD_DIR_SHIFT;
+> +
+> +		ctrl |= ((op->data.buswidth >> 1) << SFC_CTRL_DATA_BITS_SHIFT);
+> +	}
+> +	if (!len && op->addr.nbytes)
+> +		cmd |= SFC_CMD_DIR_WR << SFC_CMD_DIR_SHIFT;
+> +
+> +	/* set the Controller */
+> +	ctrl |= SFC_CTRL_PHASE_SEL_NEGETIVE;
+> +	cmd |= mem->spi->chip_select << SFC_CMD_CS_SHIFT;
+> +
+> +	dev_dbg(sfc->dev, "sfc addr.nbytes=%x(x%d) dummy.nbytes=%x(x%d)\n",
+> +		op->addr.nbytes, op->addr.buswidth,
+> +		op->dummy.nbytes, op->dummy.buswidth);
+> +	dev_dbg(sfc->dev, "sfc ctrl=%x cmd=%x addr=%llx len=%x\n",
+> +		ctrl, cmd, op->addr.val, len);
+> +
+> +	writel(ctrl, sfc->regbase + SFC_CTRL);
+> +	writel(cmd, sfc->regbase + SFC_CMD);
+> +	if (op->addr.nbytes)
+> +		writel(op->addr.val, sfc->regbase + SFC_ADDR);
+> +
+> +	return 0;
+> +}
+> +
+> +static int rockchip_sfc_write_fifo(struct rockchip_sfc *sfc, const u8 *buf, int len)
+> +{
+> +	u8 bytes = len & 0x3;
+> +	u32 dwords;
+> +	int tx_level;
+> +	u32 write_words;
+> +	u32 tmp = 0;
+> +
+> +	dwords = len >> 2;
+> +	while (dwords) {
+> +		tx_level = rockchip_sfc_wait_txfifo_ready(sfc, 1000);
+> +		if (tx_level < 0)
+> +			return tx_level;
+> +		write_words = min_t(u32, tx_level, dwords);
+> +		iowrite32_rep(sfc->regbase + SFC_DATA, buf, write_words);
+> +		buf += write_words << 2;
+> +		dwords -= write_words;
+> +	}
+> +
+> +	/* write the rest non word aligned bytes */
+> +	if (bytes) {
+> +		tx_level = rockchip_sfc_wait_txfifo_ready(sfc, 1000);
+> +		if (tx_level < 0)
+> +			return tx_level;
+> +		memcpy(&tmp, buf, bytes);
+> +		writel(tmp, sfc->regbase + SFC_DATA);
+> +	}
+> +
+> +	return len;
+> +}
+> +
+> +static int rockchip_sfc_read_fifo(struct rockchip_sfc *sfc, u8 *buf, int len)
+> +{
+> +	u8 bytes = len & 0x3;
+> +	u32 dwords;
+> +	u8 read_words;
+> +	int rx_level;
+> +	int tmp;
+> +
+> +	/* word aligned access only */
+> +	dwords = len >> 2;
+> +	while (dwords) {
+> +		rx_level = rockchip_sfc_wait_rxfifo_ready(sfc, 1000);
+> +		if (rx_level < 0)
+> +			return rx_level;
+> +		read_words = min_t(u32, rx_level, dwords);
+> +		ioread32_rep(sfc->regbase + SFC_DATA, buf, read_words);
+> +		buf += read_words << 2;
+> +		dwords -= read_words;
+> +	}
+> +
+> +	/* read the rest non word aligned bytes */
+> +	if (bytes) {
+> +		rx_level = rockchip_sfc_wait_rxfifo_ready(sfc, 1000);
+> +		if (rx_level < 0)
+> +			return rx_level;
+> +		tmp = readl(sfc->regbase + SFC_DATA);
+> +		memcpy(buf, &tmp, bytes);
+> +	}
+> +
+> +	return len;
+> +}
+> +
+> +static int rockchip_sfc_fifo_transfer_dma(struct rockchip_sfc *sfc, dma_addr_t dma_buf, size_t len)
+> +{
+> +	writel(0xFFFFFFFF, sfc->regbase + SFC_ICLR);
+> +	writel((u32)dma_buf, sfc->regbase + SFC_DMA_ADDR);
+> +	writel(SFC_DMA_TRIGGER_START, sfc->regbase + SFC_DMA_TRIGGER);
+> +
+> +	return len;
+> +}
+> +
+> +static int rockchip_sfc_xfer_data_poll(struct rockchip_sfc *sfc,
+> +				       const struct spi_mem_op *op, u32 len)
+> +{
+> +	dev_dbg(sfc->dev, "sfc xfer_poll len=%x\n", len);
+> +
+> +	if (op->data.dir == SPI_MEM_DATA_OUT)
+> +		return rockchip_sfc_write_fifo(sfc, op->data.buf.out, len);
+> +	else
+> +		return rockchip_sfc_read_fifo(sfc, op->data.buf.in, len);
+> +}
+> +
+> +static int rockchip_sfc_xfer_data_dma(struct rockchip_sfc *sfc,
+> +				      const struct spi_mem_op *op, u32 len)
+> +{
+> +	int ret;
+> +
+> +	dev_dbg(sfc->dev, "sfc xfer_dma len=%x\n", len);
+> +
+> +	if (op->data.dir == SPI_MEM_DATA_OUT)
+> +		memcpy_toio(sfc->buffer, op->data.buf.out, len);
+> +
+> +	ret = rockchip_sfc_fifo_transfer_dma(sfc, sfc->dma_buffer, len);
+> +	if (!wait_for_completion_timeout(&sfc->cp, msecs_to_jiffies(2000))) {
+> +		dev_err(sfc->dev, "DMA wait for transfer finish timeout\n");
+> +		ret = -ETIMEDOUT;
+> +	}
+> +	rockchip_sfc_irq_mask(sfc, SFC_IMR_DMA);
+> +	if (op->data.dir == SPI_MEM_DATA_IN)
+> +		memcpy_fromio(op->data.buf.in, sfc->buffer, len);
+> +
+> +	return ret;
+> +}
+> +
+> +static int rockchip_sfc_xfer_done(struct rockchip_sfc *sfc, u32 timeout_us)
+> +{
+> +	int ret = 0;
+> +	u32 status;
+> +
+> +	ret = readl_poll_timeout(sfc->regbase + SFC_SR, status,
+> +				 !(status & SFC_SR_IS_BUSY),
+> +				 20, timeout_us);
+> +	if (ret) {
+> +		dev_err(sfc->dev, "wait sfc idle timeout\n");
+> +		rockchip_sfc_reset(sfc);
+> +
+> +		ret = -EIO;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int rockchip_sfc_exec_mem_op(struct spi_mem *mem, const struct spi_mem_op *op)
+> +{
+> +	struct rockchip_sfc *sfc = spi_master_get_devdata(mem->spi->master);
+> +	u32 len = op->data.nbytes;
+> +	int ret;
+> +
+> +	if (unlikely(mem->spi->max_speed_hz != sfc->frequency)) {
+> +		ret = clk_set_rate(sfc->clk, mem->spi->max_speed_hz);
+> +		if (ret)
+> +			return ret;
+> +		sfc->frequency = mem->spi->max_speed_hz;
+> +		dev_dbg(sfc->dev, "set_freq=%dHz real_freq=%ldHz\n",
+> +			sfc->frequency, clk_get_rate(sfc->clk));
+> +	}
+> +
+> +	rockchip_sfc_adjust_op_work((struct spi_mem_op *)op);
+> +	rockchip_sfc_xfer_setup(sfc, mem, op, len);
+> +	if (len) {
+> +		if (likely(sfc->use_dma) && len >= SFC_DMA_TRANS_THRETHOLD) {
+> +			init_completion(&sfc->cp);
+> +			rockchip_sfc_irq_unmask(sfc, SFC_IMR_DMA);
+> +			ret = rockchip_sfc_xfer_data_dma(sfc, op, len);
+> +		} else {
+> +			ret = rockchip_sfc_xfer_data_poll(sfc, op, len);
+> +		}
+> +
+> +		if (ret != len) {
+> +			dev_err(sfc->dev, "xfer data failed ret %d dir %d\n", ret, op->data.dir);
+> +
+> +			return -EIO;
+> +		}
+> +	}
+> +
+> +	return rockchip_sfc_xfer_done(sfc, 100000);
+> +}
+> +
+> +static int rockchip_sfc_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
+> +{
+> +	struct rockchip_sfc *sfc = spi_master_get_devdata(mem->spi->master);
+> +
+> +	op->data.nbytes = min(op->data.nbytes, sfc->max_iosize);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct spi_controller_mem_ops rockchip_sfc_mem_ops = {
+> +	.exec_op = rockchip_sfc_exec_mem_op,
+> +	.adjust_op_size = rockchip_sfc_adjust_op_size,
+> +};
+> +
+> +static irqreturn_t rockchip_sfc_irq_handler(int irq, void *dev_id)
+> +{
+> +	struct rockchip_sfc *sfc = dev_id;
+> +	u32 reg;
+> +
+> +	reg = readl(sfc->regbase + SFC_RISR);
+> +
+> +	/* Clear interrupt */
+> +	writel_relaxed(reg, sfc->regbase + SFC_ICLR);
+> +
+> +	if (reg & SFC_RISR_DMA) {
+> +		complete(&sfc->cp);
+> +
+> +		return IRQ_HANDLED;
+> +	}
+> +
+> +	return IRQ_NONE;
+> +}
+> +
+> +static int rockchip_sfc_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct spi_master *master;
+> +	struct resource *res;
+> +	struct rockchip_sfc *sfc;
+> +	int ret;
+> +
+> +	master = devm_spi_alloc_master(&pdev->dev, sizeof(*sfc));
+> +	if (!master)
+> +		return -ENOMEM;
+> +
+> +	master->flags = SPI_MASTER_HALF_DUPLEX;
+> +	master->mem_ops = &rockchip_sfc_mem_ops;
+> +	master->dev.of_node = pdev->dev.of_node;
+> +	master->mode_bits = SPI_TX_QUAD | SPI_TX_DUAL | SPI_RX_QUAD | SPI_RX_DUAL;
+> +	master->max_speed_hz = SFC_MAX_SPEED;
+> +	master->num_chipselect = SFC_MAX_CHIPSELECT_NUM;
+> +
+> +	sfc = spi_master_get_devdata(master);
+> +	sfc->dev = dev;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	sfc->regbase = devm_ioremap_resource(dev, res);
+> +	if (IS_ERR(sfc->regbase))
+> +		return PTR_ERR(sfc->regbase);
+> +
+> +	sfc->clk = devm_clk_get(&pdev->dev, "clk_sfc");
+> +	if (IS_ERR(sfc->clk)) {
+> +		dev_err(&pdev->dev, "Failed to get sfc interface clk\n");
+> +		return PTR_ERR(sfc->clk);
+> +	}
+> +
+> +	sfc->hclk = devm_clk_get(&pdev->dev, "hclk_sfc");
+> +	if (IS_ERR(sfc->hclk)) {
+> +		dev_err(&pdev->dev, "Failed to get sfc ahb clk\n");
+> +		return PTR_ERR(sfc->hclk);
+> +	}
+> +
+> +	sfc->use_dma = !of_property_read_bool(sfc->dev->of_node,
+> +					      "rockchip,sfc-no-dma");
+> +
+> +	if (sfc->use_dma) {
+> +		ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
+> +		if (ret) {
+> +			dev_warn(dev, "Unable to set dma mask\n");
+> +			return ret;
+> +		}
+> +
+> +		sfc->buffer = dmam_alloc_coherent(dev, SFC_MAX_IOSIZE_VER3,
+> +						  &sfc->dma_buffer,
+> +						  GFP_KERNEL);
+> +		if (!sfc->buffer)
+> +			return -ENOMEM;
+> +	}
+> +
+> +	ret = clk_prepare_enable(sfc->hclk);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Failed to enable ahb clk\n");
+> +		goto err_hclk;
+> +	}
+> +
+> +	ret = clk_prepare_enable(sfc->clk);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Failed to enable interface clk\n");
+> +		goto err_clk;
+> +	}
+> +
+> +	/* Find the irq */
+> +	ret = platform_get_irq(pdev, 0);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to get the irq\n");
+> +		goto err_irq;
+> +	}
+> +
+> +	ret = devm_request_irq(dev, ret, rockchip_sfc_irq_handler,
+> +			       0, pdev->name, sfc);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to request irq\n");
+> +
+> +		return ret;
+> +	}
+> +
+> +	ret = rockchip_sfc_init(sfc);
+> +	if (ret)
+> +		goto err_irq;
+> +
+> +	sfc->max_iosize = rockchip_sfc_get_max_iosize(sfc);
+> +	sfc->version = rockchip_sfc_get_version(sfc);
+> +
+> +	ret = spi_register_master(master);
+> +	if (ret)
+> +		goto err_irq;
+> +
+> +	return 0;
+> +
+> +err_irq:
+> +	clk_disable_unprepare(sfc->clk);
+> +err_clk:
+> +	clk_disable_unprepare(sfc->hclk);
+> +err_hclk:
+> +	return ret;
+> +}
+> +
+> +static int rockchip_sfc_remove(struct platform_device *pdev)
+> +{
+> +	struct spi_master *master = platform_get_drvdata(pdev);
+> +	struct rockchip_sfc *sfc = platform_get_drvdata(pdev);
+> +
+> +	spi_unregister_master(master);
+> +
+> +	clk_disable_unprepare(sfc->clk);
+> +	clk_disable_unprepare(sfc->hclk);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id rockchip_sfc_dt_ids[] = {
+> +	{ .compatible = "rockchip,sfc"},
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, rockchip_sfc_dt_ids);
+> +
+> +static struct platform_driver rockchip_sfc_driver = {
+> +	.driver = {
+> +		.name	= "rockchip-sfc",
+> +		.of_match_table = rockchip_sfc_dt_ids,
+> +	},
+> +	.probe	= rockchip_sfc_probe,
+> +	.remove	= rockchip_sfc_remove,
+> +};
+> +module_platform_driver(rockchip_sfc_driver);
+> +
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_DESCRIPTION("Rockchip Serial Flash Controller Driver");
+> +MODULE_AUTHOR("Shawn Lin <shawn.lin@rock-chips.com>");
+> +MODULE_AUTHOR("Chris Morgan <macromorgan@hotmail.com>");
+> +MODULE_AUTHOR("Jon Lin <Jon.lin@rock-chips.com>");
+> -- 
+> 2.17.1
+> 
+> 
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
