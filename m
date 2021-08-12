@@ -1,84 +1,89 @@
-Return-Path: <SRS0=3stn=NC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=P+6h=ND=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
+	DATE_IN_FUTURE_06_12,DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D63DC4338F
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Aug 2021 09:10:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E63F4C4338F
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Aug 2021 07:03:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1BD6160F11
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Aug 2021 09:10:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1BD6160F11
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8255360EB2
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Aug 2021 07:03:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8255360EB2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Cqxlck860SSonRRqdZqxDMpm5qWChxF530AMVsJfhs8=; b=VGYqe/5o9c5uB4
-	p5jI9xO9fIdq+jvHWb/yXPGGvJJyyioKbqZf09Q/AOL+VhNZqnhkDDT55xwEsFLn9TMfnCG0Albv0
-	RAVJB7SlvuKTkFG8zYUhYDEEmaRIpjlwgfeHztgFAsRugUH8FWrwIqnIdvYZTS1oJMy8rlX0iU1VO
-	U5zjxO9dkTRfoIFpdJzadudkA4Px0aexAx0sybVh2tj59PrW11ejRnFkGyZHw0ddypavXlxS+nqwH
-	N+E4Bt9HnfoOmmJ/9/NahZNMxO6ZrSQM5Iw5T6Zs1KnZxD+Hp8vxJjJJIprZqF5Uz+9c9U4XJln+5
-	4lkWmetwZr2/GMixbS7g==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=4aPKGD3o2ATumAeBJzYJtorvT+Qhj7LGhKBRrUr/vRA=; b=209dwga7A5UR1I
+	jwylbdV1PK3k+iytnVpTtXYe5Z7Asqy1Eh7ZGdaHJaIjxz15y3QpZKIODcteYxPzIAcf0WMpAJ+f0
+	1WHkooxguy0xBQa5LeZ/OwQxmjS1CC5ofhAU7fLgArCiRbTaGDFORRnKU7WEP636A6jfsYiQ6kzAd
+	fWizRglGAK4nJ+vR6YokeMKME3bqICgnI5+HugEmDNhZrdsLrkF0KytgFD+54YsG3hHu8PtUa6qy7
+	cxU2dcdWPaw5mPaB6qbRQ1qPKp7N0qOlq3VfovitesIIexlJ0v6KWba2VT621WYr1CW4Ab+P/b1Nl
+	f8FpLjLaz1h0lSiovuUA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mDkEi-006Cdk-6U; Wed, 11 Aug 2021 09:09:20 +0000
-Received: from mail-pj1-x102c.google.com ([2607:f8b0:4864:20::102c])
+	id 1mE4k6-008pW3-Dg; Thu, 12 Aug 2021 07:03:06 +0000
+Received: from mail-pj1-x1031.google.com ([2607:f8b0:4864:20::1031])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mDjxV-0067WD-F7
- for linux-mtd@lists.infradead.org; Wed, 11 Aug 2021 08:51:37 +0000
-Received: by mail-pj1-x102c.google.com with SMTP id nt11so2319902pjb.2
- for <linux-mtd@lists.infradead.org>; Wed, 11 Aug 2021 01:51:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=0x0f.com; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=7vn1eldgbv11PV6+xbV5jWseW1R8cuS20m4woT+uMpA=;
- b=bImmEc8rUsnx7O3YDjx4SMdyB5LjrzuWSVS+d19JS4Bvuh0I0MDJddl9RWl//ljE9p
- /AjgyOczhJH57r6h5AwBOE3gCVpUCzyNlsnRniuMBvc1PDSJBJbgceE6FSgRkhc2yqYR
- R+ukyzrGl1vPmXgYzoM8z8qXeuH2ZdoPeh7OA=
+ id 1mE4jr-008pSY-Gn
+ for linux-mtd@lists.infradead.org; Thu, 12 Aug 2021 07:02:55 +0000
+Received: by mail-pj1-x1031.google.com with SMTP id j1so7834738pjv.3
+ for <linux-mtd@lists.infradead.org>; Thu, 12 Aug 2021 00:02:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references;
+ bh=ujOLj4IcDhfJIQfBXBs+VeU8KbTcT55vk1xqQFJRf5o=;
+ b=rHYjQJOzsPC9vdexlRz8oTLe/5t/6GJLeQZf9k7Kki6W81qzINLu+p2Yl5jHdM3k+A
+ VqnDsgVzHJJfCJ7bCj53pc0y45WozGg1R1LnY3hRWKzzXY5gJ7j4D4pPItOfWpddUT6T
+ 66xYfcGq8Czt4O66twmSjFIrj+1r6kgJrXofVirANlG5YO+/cb6xEG7ujq2dhFLqUrqt
+ vPenLW5Jse7GlrIziuB/At7Cq8d9otc7RTLmZSOf8VS2248mCaatvpJDk7bqCqz0jcio
+ uiA0SB2wBXgV5IXjNp/+vkE3GBy9aqr/QiiKJnH5f1CwhZJFJp6NWkHxprZVsOH98rCy
+ UegQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=7vn1eldgbv11PV6+xbV5jWseW1R8cuS20m4woT+uMpA=;
- b=QMOxtrIuyvkgdPcnye4SVg8a3CoYbPljWrOVKArLaRGGBOKcZQgWmvBI2qIxHbeNPC
- vT3o7ia2AiXY+FNnl/ogYB0YbwOtOQULwBs/UQeltDULwCq6h0zainGc9rCJIr2AoujF
- RnThCUcJz2aeVir4ElNlbF3XrWIfyVb9eld6m4N7xPoCp+XVvRrreqzKUh7MjnhPQ8oq
- xE0wwsGrRvCvIMawktNA4wX8jFhTCpTUpnk1I0OGiY31s6/7iHlpl1ovjUZj86o6f1Kl
- JRkeOcf/RlN2A0keQrjTcbb+YI+b6KmVoCFB3Tlzi+tfVojey2rCL3mPrqzZbIjqqe7a
- DYmA==
-X-Gm-Message-State: AOAM531LO/1dNBvRZVzzIXyFZlIFRz6IkdxujDzj70YZlo8a0ElNj3eE
- ybf99QhKnybPdi/2WnwXDkRxfSv2D4pN+A==
-X-Google-Smtp-Source: ABdhPJzyyofg68LqLd3IEv7hF5/lLSnYCz8QJZvRcSjm+UlCxruIjcZ/S6MIAYlbUozesqOU9TG4qA==
-X-Received: by 2002:a17:90b:3007:: with SMTP id
- hg7mr9524316pjb.66.1628671892015; 
- Wed, 11 Aug 2021 01:51:32 -0700 (PDT)
-Received: from shiro.work (p866038-ipngn200510sizuokaden.shizuoka.ocn.ne.jp.
- [180.9.60.38])
- by smtp.googlemail.com with ESMTPSA id ga8sm5704348pjb.4.2021.08.11.01.51.30
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references;
+ bh=ujOLj4IcDhfJIQfBXBs+VeU8KbTcT55vk1xqQFJRf5o=;
+ b=HSpKClL2kF5ofg0gnZ130EXJ4H16NZd3a9ZQLy5IQUcZcxUIcQFE4jKVX4u1OygRze
+ zcl4vN9qvLz/CP/zv0UYS3bBqU3hR3WUTmnTLgR33QMWhSywz1rwmG/ZLRAtKqB8WOVu
+ kZQEXlNHXDRwq0Yl/kSl0RXEiVTlsi9s/+CD6wAg66OmwTyQ31QIqk0dLiCSsMjstWKM
+ HMHTV/9kOKb6A+m6hxiv0JVL9Rs6VeA9LGMsiNHTI2jLqEbO5YxCLzvHsdrHj7xtEZkL
+ AnGuTf/ju/EeOSA4dmvLOA7uE2W95yjzAIvjjqoi96dfTmshBHSe3Ta0VnBDpR2ca3C2
+ sP5g==
+X-Gm-Message-State: AOAM533rz+a+pZ9kIWoEauUYrgFqJhkbBQ9NR2yt9PH5HqmtYor3PAAO
+ 8pc1gHpmuCTDExUc/vmrbg0=
+X-Google-Smtp-Source: ABdhPJx/NgQkzEOAfIQS5S3KuBmdPXJSQzt+lajQ8FVJuMnQFz48LEgRdaY2rtPyQbmWNSS+4kjX6Q==
+X-Received: by 2002:aa7:9115:0:b029:359:69db:bc89 with SMTP id
+ 21-20020aa791150000b029035969dbbc89mr2755726pfh.32.1628751770511; 
+ Thu, 12 Aug 2021 00:02:50 -0700 (PDT)
+Received: from localhost.localdomain ([123.51.145.88])
+ by smtp.gmail.com with ESMTPSA id o127sm1946962pfb.48.2021.08.12.00.02.48
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 11 Aug 2021 01:51:31 -0700 (PDT)
-From: Daniel Palmer <daniel@0x0f.com>
-To: linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com, richard@nod.at
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Daniel Palmer <daniel@0x0f.com>
-Subject: [PATCH v3] mtd: spinand: add support for Foresee FS35ND0*G parts
-Date: Wed, 11 Aug 2021 17:49:24 +0900
-Message-Id: <20210811084924.52293-1-daniel@0x0f.com>
-X-Mailer: git-send-email 2.32.0
-MIME-Version: 1.0
+ Thu, 12 Aug 2021 00:02:50 -0700 (PDT)
+From: Zhengxun <zhengxunli.mxic@gmail.com>
+To: tudor.ambarus@microchip.com, p.yadav@ti.com, michael@walle.cc,
+ vigneshr@ti.com, miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org
+Cc: zhengxunli@mxic.com.tw,
+	Zhengxun <zhengxunli.mxic@gmail.com>
+Subject: [PATCH v6 01/15] mtd: spi-nor: macronix: add support for Macronix
+ octaflash
+Date: Thu, 12 Aug 2021 15:01:21 +0000
+Message-Id: <20210812150135.4005-2-zhengxunli.mxic@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210812150135.4005-1-zhengxunli.mxic@gmail.com>
+References: <20210812150135.4005-1-zhengxunli.mxic@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210811_015133_717976_B8C6C7BF 
-X-CRM114-Status: GOOD (  27.86  )
+X-CRM114-CacheID: sfid-20210812_000251_989749_572490C9 
+X-CRM114-Status: GOOD (  21.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,211 +95,161 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for the various Foresee FS35ND0*G parts manufactured by Longsys.
+The octaflash is an xSPI compliant octal DTR flash. Add support
+for using it in octal DTR mode.
 
-Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+Try to verify the flash ID to check whether the flash memory in octal
+DTR mode and SPI mode are correct. When reading ID in OCTAL DTR mode,
+ID will appear in a repeated manner. ex: ID[0] = 0xc2, ID[1] = 0xc2,
+ID[2] = 0x94, ID[3] = 0x94... Rearrange the order so that the ID can pass.
 
-Link: https://datasheet.lcsc.com/szlcsc/2008121142_FORESEE-FS35ND01G-S1Y2QWFI000_C719495.pdf
+The octaflash series can be divided into the following types:
+
+MX25 series : Serial NOR Flash.
+MX66 series : Serial NOR Flash with stacked die.(Size larger than 1Gb)
+LM/UM series : Up to 250MHz clock frequency with both DTR/STR operation.
+LW/UW series : Support simultaneous Read-while-Write operation in multiple
+	       bank architecture. Read-while-write feature which means read
+	       data one bank while another bank is programing or erasing.
+
+MX25LM : 3.0V Octal I/O
+ -https://www.mxic.com.tw/Lists/Datasheet/Attachments/7841/MX25LM51245G,%203V,%20512Mb,%20v1.1.pdf
+
+MX25UM : 1.8V Octal I/O
+ -https://www.mxic.com.tw/Lists/Datasheet/Attachments/7525/MX25UM51245G%20Extreme%20Speed,%201.8V,%20512Mb,%20v1.0.pdf
+
+MX66LM : 3.0V Octal I/O with stacked die
+ -https://www.mxic.com.tw/Lists/Datasheet/Attachments/7929/MX66LM1G45G,%203V,%201Gb,%20v1.1.pdf
+
+MX66UM : 1.8V Octal I/O with stacked die
+ -https://www.mxic.com.tw/Lists/Datasheet/Attachments/7721/MX66UM1G45G,%201.8V,%201Gb,%20v1.1.pdf
+
+MX25LW : 3.0V Octal I/O with Read-while-Write
+MX25UW : 1.8V Octal I/O with Read-while-Write
+MX66LW : 3.0V Octal I/O with Read-while-Write and stack die
+MX66UW : 1.8V Octal I/O with Read-while-Write and stack die
+
+About LW/UW series, please contact us freely if you have any
+questions. For adding Octal NOR Flash IDs, we have validated
+each Flash on plateform zynq-picozed.
+
+Signed-off-by: Zhengxun <zhengxunli.mxic@gmail.com>
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- Changes since v2:
- - Originally I only had the 1Gbit version of this chip, now I have the 2Gbit and 4Gbit
-   variations so I've added support for those too. There is no datasheet for the bigger
-   chips but they are documented in a flashing tool from an SoC vendor so I took the parameters
-   from there.
- - Previous versions of this patch only had single io read cache variants. My SPI flash driver
-   now supports dual and quad io for reading so I added and tested those modes too.
-   My driver/hardware only supports single io for writing so those are still left out.
- - Implemented proper logic for checking the ECC status.
- - Combined with the previous patch for 1-filling the OOB in the page buffer before writing
-   I have been using this for a few months now without anything getting broken.
- 
- drivers/mtd/nand/spi/Makefile  |   2 +-
- drivers/mtd/nand/spi/core.c    |   1 +
- drivers/mtd/nand/spi/longsys.c | 134 +++++++++++++++++++++++++++++++++
- include/linux/mtd/spinand.h    |   1 +
- 4 files changed, 137 insertions(+), 1 deletion(-)
- create mode 100644 drivers/mtd/nand/spi/longsys.c
+ drivers/mtd/spi-nor/macronix.c | 85 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 85 insertions(+)
 
-diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
-index 9662b9c1d5a9..1d6819022e43 100644
---- a/drivers/mtd/nand/spi/Makefile
-+++ b/drivers/mtd/nand/spi/Makefile
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0
--spinand-objs := core.o gigadevice.o macronix.o micron.o paragon.o toshiba.o winbond.o
-+spinand-objs := core.o gigadevice.o longsys.o macronix.o micron.o paragon.o toshiba.o winbond.o
- obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 446ba8d43fbc..48f635d5c1ff 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -895,6 +895,7 @@ static const struct nand_ops spinand_ops = {
+diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+index 27498ed0cc0d..0fe5c9c8de8d 100644
+--- a/drivers/mtd/spi-nor/macronix.c
++++ b/drivers/mtd/spi-nor/macronix.c
+@@ -8,6 +8,12 @@
  
- static const struct spinand_manufacturer *spinand_manufacturers[] = {
- 	&gigadevice_spinand_manufacturer,
-+	&longsys_spinand_manufacturer,
- 	&macronix_spinand_manufacturer,
- 	&micron_spinand_manufacturer,
- 	&paragon_spinand_manufacturer,
-diff --git a/drivers/mtd/nand/spi/longsys.c b/drivers/mtd/nand/spi/longsys.c
-new file mode 100644
-index 000000000000..ee38f8728262
---- /dev/null
-+++ b/drivers/mtd/nand/spi/longsys.c
-@@ -0,0 +1,134 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2020 Daniel Palmer <daniel@thingy.jp>
+ #include "core.h"
+ 
++#define SPINOR_OP_RD_CR2		0x71		/* Read configuration register 2 */
++#define SPINOR_OP_WR_CR2		0x72		/* Write configuration register 2 */
++#define SPINOR_REG_MXIC_CR2_MODE	0x00000000	/* For setting octal DTR mode */
++#define SPINOR_REG_MXIC_OPI_DTR_EN	0x2		/* Enable Octal DTR */
++#define SPINOR_REG_MXIC_SPI_EN		0x0		/* Enable SPI */
++
+ static int
+ mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
+ 			    const struct sfdp_parameter_header *bfpt_header,
+@@ -32,6 +38,85 @@ static struct spi_nor_fixups mx25l25635_fixups = {
+ 	.post_bfpt = mx25l25635_post_bfpt_fixups,
+ };
+ 
++/**
++ * spi_nor_macronix_octal_dtr_enable() - Enable octal DTR on Macronix flashes.
++ * @nor:		pointer to a 'struct spi_nor'
++ * @enable:		whether to enable Octal DTR or switch back to SPI
 + *
++ * Return: 0 on success, -errno otherwise.
 + */
-+
-+#include <linux/device.h>
-+#include <linux/kernel.h>
-+#include <linux/mtd/spinand.h>
-+
-+#define SPINAND_MFR_LONGSYS			0xCD
-+#define FS35ND01G_S1Y2_STATUS_ECC_0_3_BITFLIPS	(0 << 4)
-+#define FS35ND01G_S1Y2_STATUS_ECC_4_BITFLIPS	(1 << 4)
-+#define FS35ND01G_S1Y2_STATUS_ECC_UNCORRECTABLE	(2 << 4)
-+
-+static SPINAND_OP_VARIANTS(read_cache_variants,
-+		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(write_cache_variants,
-+		SPINAND_PROG_LOAD(true, 0, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(update_cache_variants,
-+		SPINAND_PROG_LOAD(false, 0, NULL, 0));
-+
-+static int fs35nd01g_s1y2_ooblayout_ecc(struct mtd_info *mtd, int section,
-+					struct mtd_oob_region *region)
++static int spi_nor_macronix_octal_dtr_enable(struct spi_nor *nor, bool enable)
 +{
-+	if (section > 3)
-+		return -ERANGE;
++	struct spi_mem_op op;
++	u8 *buf = nor->bouncebuf, i;
++	int ret;
 +
-+	/* ECC is not user accessible */
-+	region->offset = 0;
-+	region->length = 0;
++	/* Set/unset the octal and DTR enable bits. */
++	ret = spi_nor_write_enable(nor);
++	if (ret)
++		return ret;
 +
-+	return 0;
-+}
-+
-+static int fs35nd01g_s1y2_ooblayout_free(struct mtd_info *mtd, int section,
-+				    struct mtd_oob_region *region)
-+{
-+	if (section > 3)
-+		return -ERANGE;
-+
-+	/*
-+	 * No ECC data is stored in the accessible OOB so the full 16 bytes
-+	 * of each spare region is available to the user. Apparently also
-+	 * covered by the internal ECC.
-+	 */
-+	if (section) {
-+		region->offset = 16 * section;
-+		region->length = 16;
++	if (enable) {
++		buf[0] = SPINOR_REG_MXIC_OPI_DTR_EN;
 +	} else {
-+		/* First byte in spare0 area is used for bad block marker */
-+		region->offset = 1;
-+		region->length = 15;
++		/*
++		 * The register is 1-byte wide, but 1-byte transactions are not
++		 * allowed in 8D-8D-8D mode. Since there is no register at the
++		 * next location, just initialize the value to 0 and let the
++		 * transaction go on.
++		 */
++		buf[0] = SPINOR_REG_MXIC_SPI_EN;
++		buf[1] = 0x0;
++	}
++
++	op = (struct spi_mem_op)
++		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_CR2, 1),
++			   SPI_MEM_OP_ADDR(4, SPINOR_REG_MXIC_CR2_MODE, 1),
++			   SPI_MEM_OP_NO_DUMMY,
++			   SPI_MEM_OP_DATA_OUT(enable ? 1 : 2, buf, 1));
++
++	if (!enable)
++		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
++
++	ret = spi_mem_exec_op(nor->spimem, &op);
++	if (ret)
++		return ret;
++
++	/* Read flash ID to make sure the switch was successful. */
++	op = (struct spi_mem_op)
++		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDID, 1),
++			   SPI_MEM_OP_ADDR(enable ? 4 : 0, 0, 1),
++			   SPI_MEM_OP_DUMMY(enable ? 4 : 0, 1),
++			   SPI_MEM_OP_DATA_IN(SPI_NOR_MAX_ID_LEN, buf, 1));
++
++	if (enable)
++		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
++
++	ret = spi_mem_exec_op(nor->spimem, &op);
++	if (ret)
++		return ret;
++
++	if (enable) {
++		for (i = 0; i < nor->info->id_len; i++)
++			if (buf[i * 2] != nor->info->id[i])
++				return -EINVAL;
++	} else {
++		if (memcmp(buf, nor->info->id, nor->info->id_len))
++			return -EINVAL;
 +	}
 +
 +	return 0;
 +}
 +
-+static const struct mtd_ooblayout_ops fs35nd01g_s1y2_ooblayout = {
-+	.ecc = fs35nd01g_s1y2_ooblayout_ecc,
-+	.free = fs35nd01g_s1y2_ooblayout_free,
-+};
-+
-+static int fs35nd01g_s1y2_ecc_get_status(struct spinand_device *spinand,
-+					u8 status)
++static void octaflash_default_init(struct spi_nor *nor)
 +{
-+	switch (status & STATUS_ECC_MASK) {
-+	case FS35ND01G_S1Y2_STATUS_ECC_0_3_BITFLIPS:
-+		return 3;
-+	/*
-+	 * The datasheet says *successful* with 4 bits flipped.
-+	 * nandbiterrs always complains that the read reported
-+	 * successful but the data is incorrect.
-+	 */
-+	case FS35ND01G_S1Y2_STATUS_ECC_4_BITFLIPS:
-+		return 4;
-+	case FS35ND01G_S1Y2_STATUS_ECC_UNCORRECTABLE:
-+		return -EBADMSG;
-+	default:
-+		break;
-+	}
-+
-+	return -EINVAL;
++	nor->params->octal_dtr_enable = spi_nor_macronix_octal_dtr_enable;
 +}
 +
-+static const struct spinand_info longsys_spinand_table[] = {
-+	SPINAND_INFO("FS35ND01G-S1Y2",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xEA, 0x11),
-+		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
-+		     NAND_ECCREQ(4, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_HAS_QE_BIT,
-+		     SPINAND_ECCINFO(&fs35nd01g_s1y2_ooblayout,
-+				     fs35nd01g_s1y2_ecc_get_status)),
-+	SPINAND_INFO("FS35ND02G-S3Y2",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xEB, 0x11),
-+		     NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 1, 1, 1),
-+		     NAND_ECCREQ(4, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_HAS_QE_BIT,
-+		     SPINAND_ECCINFO(&fs35nd01g_s1y2_ooblayout,
-+				     fs35nd01g_s1y2_ecc_get_status)),
-+	SPINAND_INFO("FS35ND04G-S2Y2",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xEC, 0x11),
-+		     NAND_MEMORG(1, 2048, 64, 64, 4096, 40, 1, 1, 1),
-+		     NAND_ECCREQ(4, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_HAS_QE_BIT,
-+		     SPINAND_ECCINFO(&fs35nd01g_s1y2_ooblayout,
-+				     fs35nd01g_s1y2_ecc_get_status)),
++static struct spi_nor_fixups octaflash_fixups = {
++	.default_init = octaflash_default_init,
 +};
 +
-+static const struct spinand_manufacturer_ops longsys_spinand_manuf_ops = {
-+};
-+
-+const struct spinand_manufacturer longsys_spinand_manufacturer = {
-+	.id = SPINAND_MFR_LONGSYS,
-+	.name = "Longsys",
-+	.chips = longsys_spinand_table,
-+	.nchips = ARRAY_SIZE(longsys_spinand_table),
-+	.ops = &longsys_spinand_manuf_ops,
-+};
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 6988956b8492..f6c38528bb03 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -261,6 +261,7 @@ struct spinand_manufacturer {
- 
- /* SPI NAND manufacturers */
- extern const struct spinand_manufacturer gigadevice_spinand_manufacturer;
-+extern const struct spinand_manufacturer longsys_spinand_manufacturer;
- extern const struct spinand_manufacturer macronix_spinand_manufacturer;
- extern const struct spinand_manufacturer micron_spinand_manufacturer;
- extern const struct spinand_manufacturer paragon_spinand_manufacturer;
+ static const struct flash_info macronix_parts[] = {
+ 	/* Macronix */
+ 	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
 -- 
-2.32.0
+2.17.1
 
 
 ______________________________________________________
