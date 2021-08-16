@@ -2,84 +2,65 @@ Return-Path: <SRS0=PqFb=NH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17FFCC432BE
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Aug 2021 13:22:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96096C4338F
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Aug 2021 13:44:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D2E37600D4
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Aug 2021 13:22:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D2E37600D4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 2938363282
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Aug 2021 13:44:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2938363282
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=xP4rJ61O7iVsVyjp0i+N37y3cP2U5NI3AVX3gpyl5x8=; b=UGPQCdNm2tjb8L
-	gmkVBwaFndkt/67QQ6YfpoBLXxH5PtxXxN+VCI2rteQnq+/kfrXLaCVd740cc8UL+0w8fM4VLealI
-	O1lvetWnZ0Ok92p4TTuMTPppVGszgDZx3+POBj6MJHCAjEbFKmgH9Ay4cYpnVvpjJu3X+fKogXcPq
-	k8T09a6mL+LzVd/j4bZCxysnZxnQDagYX5dMZ6hXQ9W+4gN3NZXsjFYCE2gHMqe50wF5OoxPTgsGD
-	gc5mIy0YFVRNwcnfpbkLjsbiKageL9Bo/zDNEEg3BaZ7U0jWLx2wV4gaubirj6dMY+E2hrLvtCxsh
-	3GshultfJeOJbtHuQi4A==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Lop3KLT/GWFnJi2KOCRr039GatcNA07svAr8p3by19k=; b=2AIpBsDrHS5Mw0
+	ThwMuO2x/ZRNPb1pDvXe2O5ZczC/MkHjojOhF6Lb9BFBAZfaGoT8z+9I7wyDBErUCa8C6tl1Zjnd5
+	uXaecLCDy/ajdPXU2HvmvIQ63gpk3UYvetmpkNQoFus3a31pNX7oVb4RwXqT/n1tmrnIixmFpkApj
+	PUJgIZ0gCm54Q7Gh3ukX5L7N2rroP7mvi5ffED1OcN6WDG7+s3Sv/wDOoG5sbivPqpv4nUUac9VSq
+	AnXwsl/tO03dIRB8Dz7YKQ1qPnux0TTpzhaX6INW8oxZJW333wJc/3xhTIEoYP1wDfOEOpeHyiJUr
+	XNsezydHZti6yA8Jy15g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mFcYa-00H4yR-95; Mon, 16 Aug 2021 13:21:36 +0000
-Received: from mail-pj1-x102c.google.com ([2607:f8b0:4864:20::102c])
+	id 1mFcuH-00HA4m-94; Mon, 16 Aug 2021 13:44:01 +0000
+Received: from relay10.mail.gandi.net ([217.70.178.230])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mFcYL-00H4vG-U6
- for linux-mtd@lists.infradead.org; Mon, 16 Aug 2021 13:21:26 +0000
-Received: by mail-pj1-x102c.google.com with SMTP id
- qe12-20020a17090b4f8c00b00179321cbae7so17021906pjb.2
- for <linux-mtd@lists.infradead.org>; Mon, 16 Aug 2021 06:21:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id;
- bh=nqswQeTKBdoB8+HWsKks7xsdGz/hptfCErNSORUc7uo=;
- b=VHzrgvDGOVrlrN37FikkFHvWtdbr6Bue5xlwDNlcoW8Puzo/yxEbbGkFRB0ZNl6N/h
- Wj+D2spNRlGrZVkxHDyoDyiGc1Dj+op49koAgnuLrpMkiWhQ4FIhTyHH+xtmd/hNlB5s
- 9flDOU4f6824o3ASGpzn1zKN10Waeqv18jMd9uK4hSomJjl1o6gpBEtmzR4SmPgssG+y
- mglaZ0Jy45pG4WEvaDdxpwTIOgkGWyIX3kNKOTzDvUde/beCapfK7iT1397b9X8cbn1K
- F+LzVhUogrjmjiCukSjMxFxHuc+m/gDuYXUuGYW0rpckQmfKGLtf3mBFl6J2ix1dQw47
- QSIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=nqswQeTKBdoB8+HWsKks7xsdGz/hptfCErNSORUc7uo=;
- b=VuG8M5IlKYwN0KMZ5XufNyZpyKkT7YvzM4m4F2Mt5+9gweHdB5WBr6TKjObaMOqBB2
- yPQWKLYXnRWjnqYa2YluzF6QmQ5PbXTsm5NkOMGC/FeteRKNJgZdr+wfUuxOQXpZDg+l
- 9yG9J/lIr7MS6+hwMOiVNjP+3IsfXzPxRe5Aao8Hp4i0fB6eX+KVyWpX8HOj7jKf5Ud+
- PWRclhrZZbrvSRu2zAcNM7YoZocNbsepIllX2wp1xbPvnJSIBSlHSMPk3OPZcmV8yktM
- 7sWVgUDTt+WeMlM/t7csIhPTMJabTmfIvdbn5nGLWQRZ8C55qzyiHDUjHzdNPIWKntVt
- jX2Q==
-X-Gm-Message-State: AOAM532f8k/+iccZud0sCKgrsYqgQFOwIsFxlUVsIA2nMPjnPApX40uT
- dSpHCpl9vzZj875aWnDWiF+4Qwwd/qztaQ==
-X-Google-Smtp-Source: ABdhPJzvPrV+/W3q8pmf9RsHRKBcuN5/TUbBqeJhRDQURx0sqpRNDO/bjUaAafeiCcwPJkKA6CCYOg==
-X-Received: by 2002:a17:902:848c:b029:12c:daf3:94f1 with SMTP id
- c12-20020a170902848cb029012cdaf394f1mr13232789plo.50.1629120079334; 
- Mon, 16 Aug 2021 06:21:19 -0700 (PDT)
-Received: from diego-VirtualBox.fibertel.com.ar
- (host199.190-139-51.telecom.net.ar. [190.139.51.199])
- by smtp.googlemail.com with ESMTPSA id y64sm13697736pgy.32.2021.08.16.06.21.18
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 16 Aug 2021 06:21:18 -0700 (PDT)
-From: Diego Ismirlian <dismirlian@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Diego Ismirlian <dismirlian@gmail.com>
-Subject: [PATCH] Add ubiscan utility
-Date: Mon, 16 Aug 2021 10:21:14 -0300
-Message-Id: <20210816132114.13028-1-dismirlian@gmail.com>
-X-Mailer: git-send-email 2.17.1
+ id 1mFcuD-00HA3b-NS
+ for linux-mtd@lists.infradead.org; Mon, 16 Aug 2021 13:44:00 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay10.mail.gandi.net (Postfix) with ESMTPSA id D145B240004;
+ Mon, 16 Aug 2021 13:43:53 +0000 (UTC)
+Date: Mon, 16 Aug 2021 15:43:52 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Zhihao Cheng <chengzhihao1@huawei.com>
+Cc: <richard@nod.at>, <vigneshr@ti.com>, <bbrezillon@kernel.org>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <yukuai3@huawei.com>
+Subject: Re: [PATCH 1/2] mtd: mtdconcat: Judge callback function existence
+ getting from master for each partition
+Message-ID: <20210816154352.54237a67@xps13>
+In-Reply-To: <9955e32c-615a-f02c-abc3-a7b613bf34ee@huawei.com>
+References: <20210731023243.3977104-1-chengzhihao1@huawei.com>
+ <20210731023243.3977104-2-chengzhihao1@huawei.com>
+ <20210806212857.240e0c1f@xps13>
+ <27c67e42-f275-fc50-64e5-d80233130f7e@huawei.com>
+ <20210807123243.7661e4e3@xps13>
+ <9955e32c-615a-f02c-abc3-a7b613bf34ee@huawei.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210816_062122_040455_A7719898 
-X-CRM114-Status: GOOD (  25.56  )
+X-CRM114-CacheID: sfid-20210816_064358_064703_EE3BE6EA 
+X-CRM114-Status: GOOD (  28.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,438 +72,124 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-ubiscan will scan the PEBs in a specific MTD device and print a summary of
-the PEB erase counters and (optionally) details about each PEB's status.
-
-Example output:
-
-# ./ubiscan /dev/mtd6
-Summary
-=========================================================
-mtd    : 6
-type   : nand
-size   : 110362624 bytes (105.2 MiB)
-PEBs   : 842
-min I/O: 2048 bytes
-
-PEB erase counters
-=========================================================
-valid    : 834
-empty    : 0
-corrupted: 0
-alien    : 0
-bad      : 8
-
-Histogram
-=========================================================
-from              to     count      min      avg      max
----------------------------------------------------------
-0        ..        9:       55        1        4        9
-10       ..       99:      174       10       48       99
-100      ..      999:      514      103      287      987
-1000     ..     9999:       91     1004     1880     2251
-10000    ..    99999:        0        0        0        0
-100000   ..      inf:        0        0        0        0
----------------------------------------------------------
-Total               :      834        1      392     2251
-
-
-If the --verbose switch is given, ubiscan will print PEB details:
-
-# ./ubiscan --verbose /dev/mtd6
-
-[... same output as before ...]
-
-Details
-=========================================================
-PEB        0: 253
-PEB        1: 1489
-PEB        2: 1
-PEB        3: 1
-PEB        4: 1
-PEB        5: 1
-PEB        6: 1
-PEB        7: 1
-PEB        8: 1
-PEB        9: 1
-PEB       10: 1
-...
-PEB      832: 1225
-PEB      833: 252
-PEB      834: 111
-PEB      835: 298
-PEB      836: 1264
-PEB      837: 11
-PEB      838: EB_BAD
-PEB      839: EB_BAD
-PEB      840: EB_BAD
-PEB      841: EB_BAD
-
-
-Signed-off-by: Diego Ismirlian <dismirlian@gmail.com>
----
- ubi-utils/Makemodule.am |   5 +-
- ubi-utils/ubiscan.c     | 318 ++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 322 insertions(+), 1 deletion(-)
- create mode 100644 ubi-utils/ubiscan.c
-
-diff --git a/ubi-utils/Makemodule.am b/ubi-utils/Makemodule.am
-index 7491a8a..7183ec3 100644
---- a/ubi-utils/Makemodule.am
-+++ b/ubi-utils/Makemodule.am
-@@ -25,6 +25,9 @@ ubinize_LDADD = libubi.a libubigen.a libmtd.a libiniparser.a
- ubiformat_SOURCES = ubi-utils/ubiformat.c include/mtd_swab.h
- ubiformat_LDADD = libubi.a libubigen.a libmtd.a libscan.a
- 
-+ubiscan_SOURCES = ubi-utils/ubiscan.c include/mtd_swab.h
-+ubiscan_LDADD = libubi.a libubigen.a libscan.a libmtd.a
-+
- ubirename_SOURCES = ubi-utils/ubirename.c
- ubirename_LDADD = libmtd.a libubi.a
- 
-@@ -44,7 +47,7 @@ endif
- 
- sbin_PROGRAMS += \
- 	ubiupdatevol ubimkvol ubirmvol ubicrc32 ubinfo ubiattach \
--	ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol ubiblock
-+	ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol ubiblock ubiscan
- 
- if WITH_GETRANDOM
- sbin_PROGRAMS += ubihealthd
-diff --git a/ubi-utils/ubiscan.c b/ubi-utils/ubiscan.c
-new file mode 100644
-index 0000000..e040bab
---- /dev/null
-+++ b/ubi-utils/ubiscan.c
-@@ -0,0 +1,318 @@
-+/*
-+ * Copyright (C) 2021 Diego Ismirlian
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-+ * the GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-+ */
-+
-+/*
-+ * An utility to scan MTD devices.
-+ *
-+ * Author: Diego Ismirlian dismirlian (at) google's mail
-+ */
-+
-+#define PROGRAM_NAME    "ubiscan"
-+
-+#include <sys/stat.h>
-+#include <unistd.h>
-+#include <stdint.h>
-+#include <stdlib.h>
-+#include <getopt.h>
-+#include <fcntl.h>
-+#include <limits.h>
-+
-+#include <mtd/ubi-media.h>
-+#include <libubi.h>
-+#include <libmtd.h>
-+#include <libscan.h>
-+#include "common.h"
-+
-+#define MAX_BINS 50
-+
-+/* The variables below are set by command line arguments */
-+struct args {
-+    int verbose;
-+    const char *node;
-+    int node_fd;
-+    int bin_thresholds[MAX_BINS - 1];
-+    int nbins;
-+};
-+
-+static struct args args = {
-+    .verbose = 0,
-+    .nbins = 6,
-+    .bin_thresholds = {
-+        10,
-+        100,
-+        1000,
-+        10000,
-+        100000,
-+    },
-+};
-+
-+static const char doc[] = PROGRAM_NAME " version " VERSION
-+        " - a tool to scan MTD devices";
-+
-+static const char optionsstr[] =
-+"-h, -?, --help               print help message\n"
-+"-H, --histrogram=<list>      comma-separated list of bin thresholds\n"
-+"-v, --verbose                be verbose\n"
-+"-V, --version                print program version\n";
-+
-+static const char usage[] =
-+"Usage: " PROGRAM_NAME " <MTD device node file name> "
-+"\t\t\t[--help] [--version] [--verbose] [--histogram=<list>]";
-+
-+static const struct option long_options[] = {
-+    { .name = "help",            .has_arg = 0, .flag = NULL, .val = 'h' },
-+    { .name = "histogram",       .has_arg = 1, .flag = NULL, .val = 'H' },
-+    { .name = "verbose",         .has_arg = 0, .flag = NULL, .val = 'v' },
-+    { .name = "version",         .has_arg = 0, .flag = NULL, .val = 'V' },
-+    { NULL, 0, NULL, 0},
-+};
-+
-+static int parse_opt(int argc, char * const argv[])
-+{
-+    int last_bin = 0;
-+    while (1) {
-+        int key;
-+
-+        key = getopt_long(argc, argv, "h?VvH:", long_options, NULL);
-+        if (key == -1)
-+            break;
-+
-+        switch (key) {
-+        case 'v':
-+            args.verbose = 1;
-+            break;
-+        case 'H': {
-+            args.nbins = 1;
-+            char *token = strtok(optarg, ",");
-+            while (token) {
-+                if (args.nbins == MAX_BINS)
-+                    return errmsg("too many bins");
-+                int th = atoi(token);
-+                if (th <= last_bin)
-+                    return errmsg("bad bin threshold list");
-+                args.bin_thresholds[args.nbins - 1] = th;
-+                last_bin = th;
-+                args.nbins++;
-+                token = strtok(NULL, ",");
-+            }
-+        }   break;
-+        case 'V':
-+            common_print_version();
-+            exit(EXIT_SUCCESS);
-+        case 'h':
-+            printf("%s\n\n", doc);
-+            printf("%s\n\n", usage);
-+            printf("%s\n", optionsstr);
-+            exit(EXIT_SUCCESS);
-+        case '?':
-+            printf("%s\n\n", doc);
-+            printf("%s\n\n", usage);
-+            printf("%s\n", optionsstr);
-+            return -1;
-+
-+        case ':':
-+            return errmsg("parameter is missing");
-+
-+        default:
-+            fprintf(stderr, "Use -h for help\n");
-+            return -1;
-+        }
-+    }
-+
-+    if (optind == argc)
-+        return errmsg("MTD device name was not specified (use -h for help)");
-+    else if (optind != argc - 1)
-+        return errmsg("more then one MTD device specified (use -h for help)");
-+
-+    args.node = argv[optind];
-+    return 0;
-+}
-+
-+int main(int argc, char * const argv[])
-+{
-+    int err;
-+    libmtd_t libmtd;
-+    struct mtd_info mtd_info;
-+    struct mtd_dev_info mtd;
-+    struct ubi_scan_info *si;
-+    int max, min;
-+
-+    struct {
-+        int min;
-+        int max;
-+        int cnt;
-+        uint64_t mean;
-+    } bins[MAX_BINS];
-+
-+    err = parse_opt(argc, argv);
-+    if (err)
-+        return -1;
-+
-+    libmtd = libmtd_open();
-+    if (!libmtd)
-+        return errmsg("MTD subsystem is not present");
-+
-+    err = mtd_get_info(libmtd, &mtd_info);
-+    if (err) {
-+        sys_errmsg("cannot get MTD information");
-+        goto out_close_mtd;
-+    }
-+
-+    err = mtd_get_dev_info(libmtd, args.node, &mtd);
-+    if (err) {
-+        sys_errmsg("cannot get information about \"%s\"", args.node);
-+        goto out_close_mtd;
-+    }
-+
-+    args.node_fd = open(args.node, O_RDONLY);
-+    if (args.node_fd == -1) {
-+        sys_errmsg("cannot open \"%s\"", args.node);
-+        goto out_close_mtd;
-+    }
-+
-+    printf("Summary\n");
-+    printf("=========================================================\n");
-+    printf("mtd    : %d\n", mtd.mtd_num);
-+    printf("type   : %s\n", mtd.type_str);
-+    printf("size   : ");
-+    util_print_bytes(mtd.size, 1);
-+    printf("\n");
-+    printf("PEBs   : %d\n", mtd.eb_cnt);
-+    printf("min I/O: %d bytes\n", mtd.min_io_size);
-+
-+    printf("\n");
-+    printf("PEB erase counters\n");
-+    printf("=========================================================\n");
-+    err = ubi_scan(&mtd, args.node_fd, &si, 0);
-+    if (err) {
-+        errmsg("failed to scan mtd%d (%s)", mtd.mtd_num, args.node);
-+        goto out_close;
-+    }
-+
-+    memset(bins, 0, sizeof(bins));
-+
-+    for (int j = 0; j < args.nbins; j++)
-+        bins[j].min = INT_MAX;
-+
-+    min = INT_MAX;
-+    max = 0;
-+
-+    for (int eb = 0; eb < mtd.eb_cnt; eb++) {
-+        uint32_t ec = si->ec[eb];
-+        switch (ec) {
-+        case EB_EMPTY:
-+        case EB_CORRUPTED:
-+        case EB_ALIEN:
-+        case EB_BAD:
-+        case EC_MAX:
-+            break;
-+        default: {
-+            int bin = 0;
-+
-+            if (ec > max)
-+                max = ec;
-+            if (ec < min)
-+                min = ec;
-+
-+            for (int j = 0; j < args.nbins - 1 && ec >= args.bin_thresholds[j]; j++, bin++);
-+
-+            bins[bin].cnt++;
-+            bins[bin].mean += ec;
-+            if (ec < bins[bin].min)
-+                bins[bin].min = ec;
-+            if (ec > bins[bin].max)
-+                bins[bin].max = ec;
-+
-+            } break;
-+        }
-+    }
-+
-+    printf("valid    : %d\n", si->ok_cnt);
-+    printf("empty    : %d\n", si->empty_cnt);
-+    printf("corrupted: %d\n", si->corrupted_cnt);
-+    printf("alien    : %d\n", si->alien_cnt);
-+    printf("bad      : %d\n", si->bad_cnt);
-+
-+    if (si->ok_cnt == 0)
-+        min = 0;
-+
-+    printf("\n");
-+    printf("Histogram\n");
-+    printf("=========================================================\n");
-+    printf("from              to     count      min      avg      max\n");
-+    printf("---------------------------------------------------------\n");
-+    for (int j = 0; j < args.nbins; j++) {
-+        if (bins[j].cnt)
-+            bins[j].mean /= bins[j].cnt;
-+        else
-+            bins[j].min = 0;
-+
-+        int from = (j == 0) ? 0 : args.bin_thresholds[j - 1];
-+        if (j == args.nbins - 1)
-+            printf("%-8d ..      inf: %8d %8d %8llu %8d\n",
-+                from, bins[j].cnt, bins[j].min, bins[j].mean, bins[j].max);
-+        else
-+            printf("%-8d .. %8d: %8d %8d %8llu %8d\n",
-+                from, args.bin_thresholds[j] - 1,
-+                bins[j].cnt, bins[j].min, bins[j].mean, bins[j].max);
-+    }
-+    printf("---------------------------------------------------------\n");
-+    printf("Total               : %8d %8d %8llu %8d\n", si->ok_cnt, min, si->mean_ec, max);
-+
-+    if (args.verbose) {
-+        printf("\n");
-+        printf("Details\n");
-+        printf("=========================================================\n");
-+        for (int eb = 0; eb < mtd.eb_cnt; eb++) {
-+            printf("PEB %8d: ", eb);
-+            uint32_t ec = si->ec[eb];
-+            switch (ec) {
-+            case EB_EMPTY:
-+                printf("EB_EMPTY\n");
-+                break;
-+            case EB_CORRUPTED:
-+                printf("EB_CORRUPTED\n");
-+                break;
-+            case EB_ALIEN:
-+                printf("EB_ALIEN\n");
-+                break;
-+            case EB_BAD:
-+                printf("EB_BAD\n");
-+                break;
-+            case EC_MAX:
-+                printf("EC_MAX\n");
-+                break;
-+            default:
-+                printf("%u\n", ec);
-+                break;
-+            }
-+        }
-+    }
-+
-+    ubi_scan_free(si);
-+    close(args.node_fd);
-+    libmtd_close(libmtd);
-+    return 0;
-+
-+out_close:
-+    close(args.node_fd);
-+out_close_mtd:
-+    libmtd_close(libmtd);
-+    return -1;
-+}
-+
--- 
-2.17.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgWmhpaGFvLAoKWmhpaGFvIENoZW5nIDxjaGVuZ3poaWhhbzFAaHVhd2VpLmNvbT4gd3JvdGUg
+b24gVHVlLCAxMCBBdWcgMjAyMQoxOTozNTowMiArMDgwMDoKCj4g5ZyoIDIwMjEvOC83IDE4OjMy
+LCBNaXF1ZWwgUmF5bmFsIOWGmemBkzoKPiBIaSBNaXF1ZWwsCj4gPiBIaSBaaGloYW8sCj4gPgo+
+ID4gWmhpaGFvIENoZW5nIDxjaGVuZ3poaWhhbzFAaHVhd2VpLmNvbT4gd3JvdGUgb24gU2F0LCA3
+IEF1ZyAyMDIxCj4gPiAxMDoxNTo0NiArMDgwMDoKPiA+ICAKPiA+PiDlnKggMjAyMS84LzcgMzoy
+OCwgTWlxdWVsIFJheW5hbCDlhpnpgZM6Cj4gPj4gSGkgTWlxdWVsLCAgCj4gPj4+IEhpIFpoaWhh
+bywKPiA+Pj4KPiA+Pj4gWmhpaGFvIENoZW5nIDxjaGVuZ3poaWhhbzFAaHVhd2VpLmNvbT4gd3Jv
+dGUgb24gU2F0LCAzMSBKdWwgMjAyMQo+ID4+PiAxMDozMjo0MiArMDgwMDoKPiA+Pj4gQEAgLTcy
+MSwxNCArNzI0LDE1IEBAIHN0cnVjdCBtdGRfaW5mbyAqbXRkX2NvbmNhdF9jcmVhdGUoc3RydWN0
+IG10ZF9pbmZvICpzdWJkZXZbXSwJLyogc3ViZGV2aWNlcyB0byBjCj4gPj4+ICAgIAkJCQkgICAg
+c3ViZGV2W2ldLT5mbGFncyAmIE1URF9XUklURUFCTEU7Cj4gPj4+ICAgIAkJfSAgCj4gPj4+ICAg
+ID4gKwkJc3ViZGV2X21hc3RlciA9IG10ZF9nZXRfbWFzdGVyKHN1YmRldltpXSk7ICAKPiA+Pj4g
+ICAgCQljb25jYXQtPm10ZC5zaXplICs9IHN1YmRldltpXS0+c2l6ZTsKPiA+Pj4gICAgCQljb25j
+YXQtPm10ZC5lY2Nfc3RhdHMuYmFkYmxvY2tzICs9Cj4gPj4+ICAgIAkJCXN1YmRldltpXS0+ZWNj
+X3N0YXRzLmJhZGJsb2NrczsKPiA+Pj4gICAgCQlpZiAoY29uY2F0LT5tdGQud3JpdGVzaXplICAg
+IT0gIHN1YmRldltpXS0+d3JpdGVzaXplIHx8Cj4gPj4+ICAgIAkJICAgIGNvbmNhdC0+bXRkLnN1
+YnBhZ2Vfc2Z0ICE9IHN1YmRldltpXS0+c3VicGFnZV9zZnQgfHwKPiA+Pj4gICAgCQkgICAgY29u
+Y2F0LT5tdGQub29ic2l6ZSAgICAhPSAgc3ViZGV2W2ldLT5vb2JzaXplIHx8Cj4gPj4+IC0JCSAg
+ICAhY29uY2F0LT5tdGQuX3JlYWRfb29iICAhPSAhc3ViZGV2W2ldLT5fcmVhZF9vb2IgfHwKPiA+
+Pj4gLQkJICAgICFjb25jYXQtPm10ZC5fd3JpdGVfb29iICE9ICFzdWJkZXZbaV0tPl93cml0ZV9v
+b2IpIHsKPiA+Pj4gKwkJICAgICFjb25jYXQtPm10ZC5fcmVhZF9vb2IgICE9ICFzdWJkZXZfbWFz
+dGVyLT5fcmVhZF9vb2IgfHwKPiA+Pj4gKwkJICAgICFjb25jYXQtPm10ZC5fd3JpdGVfb29iICE9
+ICFzdWJkZXZfbWFzdGVyLT5fd3JpdGVfb29iKSB7Cj4gPj4+IERvIHlvdSByZWFsbHkgbmVlZCB0
+aGlzIGNoYW5nZT8gIAo+ID4+IEkgdGhpbmsgYm90aCAiIWNvbmNhdC0+bXRkLl9yZWFkX29vYiAh
+PSAhc3ViZGV2W2ldLT5fcmVhZF9vb2IiIGFuZCAiIWNvbmNhdC0+bXRkLl93cml0ZV9vb2IgIT0g
+IXN1YmRldltpXS0+X3dyaXRlX29vYiIgbmVlZCB0byBiZSBtb2RpZmllZCBvdGhlcndpc2UgY29u
+Y2F0ZW5hdGluZyBnb2VzIGZhaWx1cmUuCj4gPj4KPiA+PiBJIHRob3VnaHQgdGhlcmUgZXhpc3Rz
+IHR3byBwcm9ibGVtczoKPiA+Pgo+ID4+ICAgwqAgMS4gV3JvbmcgY2FsbGJhY2sgZmV0Y2hpbmcg
+aW4gbXRkIHBhcnRpdGlvbiBkZXZpY2UKPiA+Pgo+ID4+ICAgwqAgMi4gV2FybmluZyBmb3IgZXhp
+c3RlbmNlIG9mIF9yZWFkIGFuZCBfcmVhZF9vb2IgYXQgdGhlIHNhbWUgdGltZQo+ID4+Cj4gPj4g
+c28gSSBzb2x2ZWQgdGhlbSBpbiB0d28gc3RlcHMgdG8gbWFrZSBoaXN0b3J5IGNvbW1pdCBsb2dz
+IGEgYml0IGNsZWFyLgo+ID4+Cj4gPj4gVGhvdWdoIHRoZXNlIHR3byBwYXRjaGVzIGNhbiBiZSBj
+b21iaW5lZCB0byBvbmUuICAKPiA+IE5vIHBsZWFzZSBrZWVwIHRoZSBzcGxpdC4KPiA+Cj4gPiBX
+aGF0IEkgbWVhbiBoZXJlIGlzIHRoYXQgSSBkb24ndCB0aGluayB5b3VyIGZpeCBpcyB2YWxpZC4g
+TWF5YmUgd2UKPiA+IHNob3VsZCBwcm9wYWdhdGUgdGhlc2UgY2FsbGJhY2tzIGFzIHdlbGwgaW5z
+dGVhZCBvZiB0cnlpbmcgdG8gaGFjayBpbnRvCj4gPiB0aGlzIGNvbmRpdGlvbi4gSSBkb24ndCBz
+ZWUgd2h5IHlvdSBzaG91bGQgY2hlY2sgYWdhaW5zdCBzdWJkZXZbaV0gZm9yCj4gPiBoYWxmIG9m
+IHRoZSBjYWxsYmFja3MgYW5kIGNoZWNrIGZvciBzdWJkZXZfbWFzdGVyIGZvciB0aGUgbGFzdCB0
+d28uICAKPiAKPiBJIGhhdmUgdGhlIGZvbGxvd2luZyB1bmRlcnN0YW5kaW5nIG9mIG10ZDoKPiAK
+PiAxLiBUaGUgZXhpc3RlbmNlIG9mIG10ZCBwYXJ0aXRpb24gZGV2aWNlJ3MgY2FsbGJhY2tzKHdo
+YXQgY2FuIG10ZCBkbywgX3JlYWQsIF93cml0ZSwgX3JlYWRfb29iLCBldGMuKSBpcyBkZWNpZGVk
+IGJ5IG10ZCBtYXN0ZXIgZGV2aWNlLiBBbGwgbXRkIGNvbW1vbiBmdW5jdGlvbnMgKG10ZF9yZWFk
+LCBtdGRfcmVhZF9vb2IpIHBhc3MgbWFzdGVyIG10ZCBkZXZpY2UgcmF0aGVyIHRoYW4gcGFydGl0
+aW9uIG10ZCBkZXZpY2UgYXMgcGFyYW1ldGVyLCBiZWNhdXNlIG5hbmRfY2hpcChpbml0aWFsaXpl
+ZCBhcyBtYXN0ZXIgbXRkIGRldmljZSkgcHJvY2VzcyByZXF1ZXN0cy7CoCBTbyB0aGVyZSBhcmUg
+dHdvIHN0ZXBzIGluIG10ZCBjb21tb24gZnVuY3Rpb246IGZldGNoIG1hc3RlciBtdGQgZGV2aWNl
+OyBpbnZva2UgbWFzdGVyIG10ZCBkZXZpY2VzJ3MgY2FsbGJhY2sgYW5kIHBhc3MgaW4gbWFzdGVy
+IG10ZCBkZXZpY2UuCj4gCj4gIMKgIFByb3BvZ2F0aW5nIGNhbGxiYWNrcyB0byBwYXJ0aXRpb24g
+bXRkIGRldmljZSBtYXkgYnJpbmcgc29tZSBpbXBlcmZlY3Rpb25zOgo+IAo+ICDCoCBBLiBObyBh
+ZGFwdGlvbnMgdG8gbXRkIGNvbW1vbiBmdW5jdGlvbnM6IHBhcnRpdGlvbiBtdGQgZGV2aWNlJ3Mg
+Y2FsbGJhY2tzIHdpbGwgbmV2ZXIgYmUgaW52b2tlZCwgdGhleSBhcmUgb25seSB1c2VkIHRvIGp1
+ZGdlIHdoZXRoZXIgYXNzaWdpbiBjb25jYXRlbmF0ZWQgZGV2aWNlJ3MgY2FsbGJhY2sgd2hpbGUg
+Y29uY2F0ZW5hdGluZy4gTG9va3Mgd2VpcmQuCj4gCj4gIMKgIEBAIC04Niw2ICs4Niw2MSBAQCBz
+dGF0aWMgc3RydWN0IG10ZF9pbmZvICphbGxvY2F0ZV9wYXJ0aXRpb24oc3RydWN0IG10ZF9pbmZv
+ICpwYXJlbnQsCj4gIMKgwqDCoMKgwqDCoMKgIGNoaWxkLT5wYXJ0Lm9mZnNldCA9IHBhcnQtPm9m
+ZnNldDsKPiAgwqDCoMKgwqDCoMKgwqAgSU5JVF9MSVNUX0hFQUQoJmNoaWxkLT5wYXJ0aXRpb25z
+KTsKPiAKPiArwqDCoMKgwqDCoMKgIGlmIChwYXJlbnQtPl9yZWFkKQo+ICvCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIGNoaWxkLT5fcmVhZCA9IHBhcmVudC0+X3JlYWQ7Cj4gK8KgwqDCoMKg
+wqDCoCBpZiAocGFyZW50LT5fd3JpdGUpCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+Y2hpbGQtPl93cml0ZSA9IHBhcmVudC0+X3dyaXRlOwo+IFsuLi5dCj4gK8KgwqDCoMKgwqDCoCBp
+ZiAocGFyZW50LT5fcmVhZF9vb2IpCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY2hp
+bGQtPl9yZWFkX29vYiA9IHBhcmVudC0+X3JlYWRfb29iOwo+ICvCoMKgwqDCoMKgwqAgaWYgKHBh
+cmVudC0+X3dyaXRlX29vYikKPiAKPiAKPiAgwqAgQi4gUmUtaW1wb3J0IHJlbW92ZWQgcGFydGl0
+aW9uIG10ZCBkZXZpY2UncyBjYWxsYmFja3MgYW5kIGFkYXB0IG10ZCBjb21tb24gZnVuY3Rpb25z
+OiBDdXJyZW50IGltcGxlbWVudGlvbiBpcyBzaW1wbGllciB0aGFuIHRoZSB2ZXJzaW9uIGJlZm9y
+ZSA0NmI1ODg5Y2MyYzU0KCJtdGQ6IGltcGxlbWVudCBwcm9wZXIgcGFydGl0aW9uIGhhbmRsaW5n
+IikuIEFkYXB0aW5nIG10ZCBjb21tb24gZnVuY3Rpb25zIGlzIGEgcmlza3kgdGhpbmcsIHdoaWNo
+IGNvdWxkIGVmZmVjdCBvdGhlciBtb2R1bGVzLCBzaG91bGQgd2UgZG8gdGhhdD8KPiAKPiArc3Rh
+dGljIGludCBwYXJ0X3JlYWQoc3RydWN0IG10ZF9pbmZvICptdGQsIGxvZmZfdCBmcm9tLCBzaXpl
+X3QgbGVuLAo+ICvCoCDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc2l6ZV90ICpyZXRsZW4sIHVf
+Y2hhciAqYnVmKQo+ICt7Cj4gK8KgwqDCoMKgwqDCoCBzdHJ1Y3QgbXRkX3BhcnQgKnBhcnQgPSBt
+dGRfdG9fcGFydChtdGQpOwo+ICvCoMKgwqDCoMKgwqAgc3RydWN0IG10ZF9lY2Nfc3RhdHMgc3Rh
+dHM7Cj4gK8KgwqDCoMKgwqDCoCBpbnQgcmVzOwo+ICsKPiArIMKgwqDCoMKgIHN0YXRzID0gcGFy
+dC0+cGFyZW50LT5lY2Nfc3RhdHM7Cj4gK8KgwqDCoMKgwqDCoCByZXMgPSBwYXJ0LT5wYXJlbnQt
+Pl9yZWFkKHBhcnQtPnBhcmVudCwgZnJvbSArIHBhcnQtPm9mZnNldCwgbGVuLAo+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IHJldGxlbiwgYnVmKTsKPiArwqDCoMKgwqDCoMKgIGlmICh1bmxpa2VseShtdGRfaXNfZWNjZXJy
+KHJlcykpKQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG10ZC0+ZWNjX3N0YXRzLmZh
+aWxlZCArPQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBw
+YXJ0LT5wYXJlbnQtPmVjY19zdGF0cy5mYWlsZWQgLSBzdGF0cy5mYWlsZWQ7Cj4gK8KgwqDCoMKg
+wqDCoCBlbHNlCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgbXRkLT5lY2Nfc3RhdHMu
+Y29ycmVjdGVkICs9Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgIHBhcnQtPnBhcmVudC0+ZWNjX3N0YXRzLmNvcnJlY3RlZCAtIHN0YXRzLmNvcnJlY3RlZDsK
+PiArwqDCoMKgwqDCoMKgIHJldHVybiByZXM7Cj4gK30KPiAKPiAgwqBzdGF0aWMgaW50IG10ZF9y
+ZWFkX29vYl9zdGQoc3RydWN0IG10ZF9pbmZvICptdGQsIGxvZmZfdCBmcm9tLAo+ICDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3RydWN0IG10
+ZF9vb2Jfb3BzICpvcHMpCj4gIMKgewo+IC3CoMKgwqDCoMKgwqAgc3RydWN0IG10ZF9pbmZvICpt
+YXN0ZXIgPSBtdGRfZ2V0X21hc3RlcihtdGQpOwo+ICDCoMKgwqDCoMKgwqDCoCBpbnQgcmV0Owo+
+IAo+IC3CoMKgwqDCoMKgwqAgZnJvbSA9IG10ZF9nZXRfbWFzdGVyX29mcyhtdGQsIGZyb20pOwo+
+IC3CoMKgwqDCoMKgwqAgaWYgKG1hc3Rlci0+X3JlYWRfb29iKQo+IC3CoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgIHJldCA9IG1hc3Rlci0+X3JlYWRfb29iKG1hc3RlciwgZnJvbSwgb3BzKTsK
+PiArwqDCoMKgwqDCoMKgIGlmIChtdGQtPl9yZWFkX29vYikKPiArwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCByZXQgPSBtdGQtPl9yZWFkX29vYihtdGQsIGZyb20sIG9wcyk7Cj4gIMKgwqDC
+oMKgwqDCoMKgIGVsc2UKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXQgPSBtYXN0
+ZXItPl9yZWFkKG1hc3RlciwgZnJvbSwgb3BzLT5sZW4sICZvcHMtPnJldGxlbiwKPiArwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXQgPSBtdGQtPl9yZWFkKG10ZCwgZnJvbSwgb3BzLT5s
+ZW4sICZvcHMtPnJldGxlbiwKPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBvcHMtPmRhdGJ1Zik7Cj4gCj4gCj4g
+Mi4gQ2hlY2tpbmcgYWdhaW5zdCBzdWJkZXZbaV0gZm9yIGRhdGEgbWVtYmVycyBhbmQgY2hlY2sg
+YWdhaW5zdCBzdWJkZXZfbWFzdGVyIGZvciB0aGUgY2FsbGJhY2tzIGxvb2tzIHdlaXJkLiBJIG1v
+ZGlmaWVkIGl0IGJhc2VkIG9uIHRoZSBhc3N1bXB0aW9uIHRoYXQgcGFydGl0aW9uIG10ZCBkZXZp
+Y2UnIGNhbGxiYWNrcyBpbmhlcml0IGZyb20gbWFzdGVyIG10ZCBkZXZpY2UgYnV0IGRhdGEgbWVt
+YmVycyhuYW1lLCBzaXplKSBtYXkgbm90LiBNYXliZSBJIHNob3VsZCBhZGQgc29tZSBjb21tZW50
+IHRvIGV4cGxhaW4gd2h5IGNoZWNraW5nIGFnYWluc3Qgc3ViZGV2W2ldIGZvciBkYXRhIG1lbWJl
+cnMgYW5kIGNoZWNraW5nIGFnYWluc3Qgc3ViZGV2X21hc3RlciBmb3IgdGhlIGNhbGxiYWNrcy4K
+PiAKPiAKPiBTbywgd2hpY2ggbWV0aG9kIGlzIGJldHRlcj8gQW55IG90aGVyIG1ldGhvZD8KPiAK
+Ckkgc2VlIHlvdXIgcG9pbnQsIGFjdHVhbGx5IG15IGNvbmNlcm4gd2FzIGFib3V0IGNoZWNraW5n
+IGhhbGYgb2YgdGhlCipjYWxsYmFja3MqIGZyb20gYSBwYXJ0aWN1bGFyIGRldmljZSwgYW5kIHRo
+ZSBvdGhlciBoYWxmIGZyb20gYW5vdGhlcgpkZXZpY2UgKGVnLiB0aGUgbWFzdGVyKSBidXQgYXMg
+eW91IHN0YXRlZCBpdCBoZXJlLCB3ZSBjaGVjayB0aGUKY2FsbGJhY2tzIG9mIHRoZSBtYXN0ZXIg
+YnV0IHRoZSAiZGF0YSBtZW1iZXJzIiBhcyB5b3UgY2FsbCB0aGVtIGZyb20KdGhlIHN1YmRldmlj
+ZSwgd2hpY2ggSSB0aGluayBpcyBmaW5lLiBTbyBJIGd1ZXNzIEknbGwgdGFrZSB0aGVzZQpjaGFu
+Z2VzIGFzIHRoZXkgY3VycmVudGx5IGFyZS4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
+dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2xpbnV4LW10ZC8K
