@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-15.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE291C4338F
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Aug 2021 19:21:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E60EC4338F
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Aug 2021 19:23:28 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 73EE560EFE
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Aug 2021 19:21:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 73EE560EFE
+	by mail.kernel.org (Postfix) with ESMTPS id 3D92060EFE
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Aug 2021 19:23:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3D92060EFE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,59 +23,59 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=784CFqRT5F/U216Pdfn3EOyML9IulKQs9AGmrM74WO0=; b=EIrrKbrFLuyp2i
-	eQDwPv4qMsiFwj0ddQNQxfmTgJ1HdSbO7vHjW2tZIxEDWwlOcvYYbGbRVGkfQ0psZwFMY96w6idO2
-	O46Bd4k34E5IW0qCF63kawnIeM7I8LidVR4StYq0YKnYh8pCz72WeFROhiNur2jrnNuVuVl8l5I/e
-	LMnyWql0GiLtlnorEngdlYzSoJdwRWyXuzESUWMXfu4zUQN0cnWUM8JDjaxYu3rzjtCiDcoVES24X
-	Kl/WfTpwCxSr1oymHwLTBWtEwwrNzLlWJeMmA9CFnXe8i2wYEuygU6RFUV9YATyFfZQIKUNUcyBgq
-	9bEbM6fKcLO4yG0W0Ymg==;
+	List-Owner; bh=X9vkLoADbI0NuRaELmPuml6Zyp3aFp0vrGmvhdhU2+Q=; b=gqJ5OuaAhQcl2q
+	uJeGNuLfJ7WQgce/T/3b93GZsuN13/IclGI6QQcI1stTUIEL9dBe6Xa4R5CsXe8tts7v77+uZntMc
+	mt7iyHRSzONPNiSoRAp9k3bgAQTbnKgRoXvQydNou7AoYJAFq1rJvusGcxUBb29YftPUiEWvmYQFX
+	eqYrP4zTlA6mf/Z9IkJUlvrAgIRz/gG+9jsD0md7HHWjMUnSth+PMYeE9fqZ/vVAdd6EBWNDFwPLK
+	/6VsroCeMqGIHP+Vi2Gb2Kf0pR9C3n+o+omv84++Lk9f+j+sY+2dK5xESd6bzlM55FtAVAESetWfE
+	psct2jTuvUx7cLqmITww==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mFiAI-0006k2-7A; Mon, 16 Aug 2021 19:20:54 +0000
+	id 1mFiC9-0007QC-Ph; Mon, 16 Aug 2021 19:22:50 +0000
 Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mFiAD-0006iA-Gl; Mon, 16 Aug 2021 19:20:53 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17GJKRpk048479;
- Mon, 16 Aug 2021 14:20:27 -0500
+ id 1mFiC3-0007Ne-Dq; Mon, 16 Aug 2021 19:22:47 +0000
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17GJMMjG049049;
+ Mon, 16 Aug 2021 14:22:22 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1629141627;
- bh=vE+MwgrcXPE8YzEHC1c3Azwcraf/7UeSQDLi5vlK5rg=;
+ s=ti-com-17Q1; t=1629141742;
+ bh=dhRzYaiDJgR5lYmcJc+OPKDeFBw2bVpgNAuP9E4wIF8=;
  h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=M8RzX6FfBZXpb4h0fUjEem9PhgK+i68voIa06VL3nvlmEN+7MFXmCeSBiwVGRl64i
- FnjkivDnJeLbtDKQuFQUGWfeOyXoaZkTQlJT2Z8jAVFiJK+f4AhQF8vWYCKIrpmfTW
- 7cnuokv7XR2LRTLhrFI6hyzQYir1X+HXd/GUW/vQ=
+ b=DQtjJSAhuMBYv/P0NSDGkOB6C4VEzXL+aE8bHtbZL4exIzv6it94rnwfG0yPwLY4V
+ TcFStGY+j8p7V7ACQXdF0O8wnmTFcV16uSjiGdoWTxdWNa6Qn0bJR7VQibgI4CU+rw
+ Ibvkww2U/ObXZy0hBkEOG2UcEgHtzuGFbEsnNoTw=
 Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17GJKRPP085357
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17GJMMrM072491
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 16 Aug 2021 14:20:27 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE115.ent.ti.com
+ Mon, 16 Aug 2021 14:22:22 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE115.ent.ti.com
  (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 16
- Aug 2021 14:20:27 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ Aug 2021 14:22:21 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 16 Aug 2021 14:20:27 -0500
+ Frontend Transport; Mon, 16 Aug 2021 14:22:21 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17GJKQ0F084016;
- Mon, 16 Aug 2021 14:20:27 -0500
-Date: Tue, 17 Aug 2021 00:50:26 +0530
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17GJMLO8010089;
+ Mon, 16 Aug 2021 14:22:21 -0500
+Date: Tue, 17 Aug 2021 00:52:20 +0530
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: Re: [PATCH v2 13/35] mtd: spi-nor: sst: Use manufacturer late_init()
- to set _write()
-Message-ID: <20210816192024.by7vo4ox6ewn4qnf@ti.com>
+Subject: Re: [PATCH v2 14/35] mtd: spi-nor: spansion: Use manufacturer
+ late_init()
+Message-ID: <20210816192218.lv367at2tjeu2rpj@ti.com>
 References: <20210727045222.905056-1-tudor.ambarus@microchip.com>
- <20210727045222.905056-14-tudor.ambarus@microchip.com>
+ <20210727045222.905056-15-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20210727045222.905056-14-tudor.ambarus@microchip.com>
+In-Reply-To: <20210727045222.905056-15-tudor.ambarus@microchip.com>
 User-Agent: NeoMutt/20171215
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210816_122049_702312_4095B434 
-X-CRM114-Status: GOOD (  18.15  )
+X-CRM114-CacheID: sfid-20210816_122243_626376_E167A5D0 
+X-CRM114-Status: GOOD (  19.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,43 +99,53 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 27/07/21 07:52AM, Tudor Ambarus wrote:
-> Setting the correct nor->mtd._write in a fixup hook was misleading,
-> since this is not a fixup, just a specific setting for SST, that differs
-> from the SPI NOR core default init.
+> spansion_post_sfdp_fixups() was called regardless if the flash defined
+> SFDP tables or not. A better place for this kind of parameters init is
+> in manufacturer's late_init() hook. post_sfdp() should be called only
+> when SFDP is defined. No functional change in this patch.
+> 
+> Instead of doing the 4b opcodes settings at manufacturer level, thus
+> also for every flash that will be introduced, this should be done
+> just where it is needed, per flash. I'll let this for other patch.
+
+Yes, agreed.
+
 > 
 > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
 Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 
 > ---
->  drivers/mtd/spi-nor/sst.c | 8 ++------
+>  drivers/mtd/spi-nor/spansion.c | 8 ++------
 >  1 file changed, 2 insertions(+), 6 deletions(-)
 > 
-> diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
-> index 29d100febdbf..eeb10766b70e 100644
-> --- a/drivers/mtd/spi-nor/sst.c
-> +++ b/drivers/mtd/spi-nor/sst.c
-> @@ -173,19 +173,15 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
->  	return ret;
->  }
+> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+> index ee82dcd75310..aad7170768b4 100644
+> --- a/drivers/mtd/spi-nor/spansion.c
+> +++ b/drivers/mtd/spi-nor/spansion.c
+> @@ -276,7 +276,7 @@ static const struct flash_info spansion_parts[] = {
+>  	},
+>  };
 >  
-> -static void sst_post_sfdp_fixups(struct spi_nor *nor)
-> +static void sst_late_init(struct spi_nor *nor)
+> -static void spansion_post_sfdp_fixups(struct spi_nor *nor)
+> +static void spansion_late_init(struct spi_nor *nor)
 >  {
->  	if (nor->info->flags & SST_WRITE)
->  		nor->mtd._write = sst_write;
+>  	if (nor->params->size <= SZ_16M)
+>  		return;
+> @@ -287,13 +287,9 @@ static void spansion_post_sfdp_fixups(struct spi_nor *nor)
+>  	nor->mtd.erasesize = nor->info->sector_size;
 >  }
 >  
-> -static const struct spi_nor_fixups sst_fixups = {
-> -	.post_sfdp = sst_post_sfdp_fixups,
+> -static const struct spi_nor_fixups spansion_fixups = {
+> -	.post_sfdp = spansion_post_sfdp_fixups,
 > -};
 > -
->  const struct spi_nor_manufacturer spi_nor_sst = {
->  	.name = "sst",
->  	.parts = sst_parts,
->  	.nparts = ARRAY_SIZE(sst_parts),
-> -	.fixups = &sst_fixups,
-> +	.late_init = sst_late_init,
+>  const struct spi_nor_manufacturer spi_nor_spansion = {
+>  	.name = "spansion",
+>  	.parts = spansion_parts,
+>  	.nparts = ARRAY_SIZE(spansion_parts),
+> -	.fixups = &spansion_fixups,
+> +	.late_init = spansion_late_init,
 >  };
 > -- 
 > 2.25.1
