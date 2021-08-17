@@ -6,16 +6,16 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
 	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6A5AC4338F
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 01:43:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45962C4338F
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 01:46:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6C51860EAF
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 01:43:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6C51860EAF
+	by mail.kernel.org (Postfix) with ESMTPS id 117FA6023E
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 01:46:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 117FA6023E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,52 +24,53 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LbjHjhzDZesgpwVKNYOA6nX5AWzcid+zMg82qgKgihM=; b=u1PIle5kYdNXP9
-	Mx9+SafsOT+h6QZ/ls5oIPK8mi8za3V+A+mwO3U/2TWKN62lMjgU/s56Pl41zCgu3D+rnNnbQo/b7
-	6tL4jHjkPl+6JDOhdGQmNlvyoqjS3flf+1CHPISdLfVvd3SCKUw3JpcdPC+hBhfanhen6A5gk/8ln
-	Laysqm3DOfNuj0+XYHaWtwd2IfbwJSRlXzbXcM/XG4s/PlOduB75YFNSKx4pNNYwXl0D8H20utaEd
-	0LsyROseeigEMiKCxY++V53S3Dv35CShzgic7s8L7PTUJbU7fVX6lIRgoZK6JYX8es52FthjtEPMC
-	rua/za1dZO/rXVg/b/CA==;
+	List-Owner; bh=plAzdL9x7zPtwDZhAbEovZOXXDokocqyehQpHSjSkIo=; b=fBUaA0zgleM5iN
+	FajE3bQfk0dZ/w7rfN08c4Uvrp6FtTmNsvo6EWfStyprtuge4H2oMoOUzX8X9xaSXmoxNCAlN12Lt
+	6itN55KfxmyRAUCtOP8elrz4F1xrPD8gyYu6+X1U2UYRGYNH7xhxOJEjAPCp40wo4n1/aNGy5VkIJ
+	ehllGDGsVcedkb6dKC/7OPKtjmVHuNPkBOVm6DL9ApWc14Bylfi4bAzi0AHpRLbQ632PSpPTzZsPc
+	gqiau6x2IBAmNbk1rSo8Nchz26tuGscygY59YlPH8WlXKCgCtJgFq7qn4JfsIPUCGB+dlUuXY4T5K
+	J3ZiTq80AdCcWDKYXb/A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mFo8M-000jtp-M2; Tue, 17 Aug 2021 01:43:19 +0000
-Received: from mail-lj1-x236.google.com ([2a00:1450:4864:20::236])
+	id 1mFoAb-000kBN-5q; Tue, 17 Aug 2021 01:45:37 +0000
+Received: from mail-lf1-x134.google.com ([2a00:1450:4864:20::134])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mFnvm-000gn3-CJ
+ id 1mFnvo-000goX-DM
  for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 01:30:26 +0000
-Received: by mail-lj1-x236.google.com with SMTP id y6so13444133lje.2
- for <linux-mtd@lists.infradead.org>; Mon, 16 Aug 2021 18:30:18 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id p38so38352299lfa.0
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Aug 2021 18:30:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=OiZ4j31PBjUgj6NMuu1gRDwGRqT/foQN2QYxiwSoqj4=;
- b=kn4kT2Hz//hHPdVcdZ/vDzNa1AeB3fmoQ2KajKAe8K7HeAMLN9J+RLJn4O28AknXce
- O2Uwz+3Yl0HQPwUdJJ7gnzB+AAvuNYEvsVKU5gzzehu4Ot/microMtTIcN2BWF9rXCaz
- B8yn4zAA/jxH8Gy0lwR0fopTYPFhuNd2yvKwuGedIegQZfEuPz+7R7Lfy/3hj0LXXZRu
- /2zacj4fZCA9HTFFaFNhgAdlvb+Sffe0y/0KJLEluMiCSdWTI1ZcpPIFPI8Lfvx35l+v
- IjrIHeypjpz8Nd6Z+KW5WqXJWbCNUfPhk2W6I1nnjI74cdD5bp9O6HY8in4VjsotEekV
- Tl/w==
+ bh=CcRnY1DLuJt9ZsvyfOIF9CYRHtNI8d662hV37U11KJE=;
+ b=lYt6iTLaR/zCDeZ5g+bnwcLhDFpU5KCH8N3AKNUjtPNXXYJiMrixsTZW01uHG5tPYs
+ B3PxldDzPNWH8zFhsNVfNCKDMrF//T0jOGgNgrqZe8QJ2pxy14jzRX2dxnWl2FAf6kc6
+ kPB4zaMdHZH12hWcLPmVeMRdnKgGOtL5XN7ACt+VFUrhC0aL+4ANm2ygDuc71z7E+HzF
+ k+mII8X0LLSR+hUJmWxrkPgZwzNKhsTUe8t+xjbwuToZ6LiMox8Yc3doK27MBAIXET7G
+ 913WH9Lp6KmbjAQD7djRc3CHJ2GkRZY1V61FGFjAwh/3QgvPrt4BcYnWEbQv9dFMhWzB
+ Utnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=OiZ4j31PBjUgj6NMuu1gRDwGRqT/foQN2QYxiwSoqj4=;
- b=hu2AVqZ8ocyU7ocBdAHmi+qGsjI797uUc3dDK3mJ682nGI68n0Uckg+lFsQ94iarCz
- gbZkiCTmvMWezPM3pGWPFgqmu7XhNbek4juYWovZIN0ulibQtpUJ6FII/JOIHvOu/uic
- W/gBniFUuqZ3legIhGv17ugJTtj8zSrzN3K4XrsRBHrVqEQRJXVss/Kx188FLhpFzbxO
- qnPHGMcRYmlW6f5Cc6pkXMHS4tHlZEZk7xUjF+HV9Xc/rFyKFbUtuU2M7uDFUsmltggv
- nRqQGOuIVgRwINMwxjBwYsxKg+UJNsHOdWd8KSNglumiKwBI8Bo6NXXnpAyw7IeBYR0k
- PtdA==
-X-Gm-Message-State: AOAM532w02y11jQoTeY5SrgiL6/FaIcVh9zSXywn7ioU+OYLzrtrJmC6
- 7M3hDCCbod6aGZf/5yOqLOc=
-X-Google-Smtp-Source: ABdhPJzs3U6yU/CHeEWumMqhudKOiOVdPxHW87EZcifX16I4zyesaHC8qzahhba2hNw8USFhBY7eAw==
-X-Received: by 2002:a2e:9593:: with SMTP id w19mr836879ljh.323.1629163817004; 
- Mon, 16 Aug 2021 18:30:17 -0700 (PDT)
+ bh=CcRnY1DLuJt9ZsvyfOIF9CYRHtNI8d662hV37U11KJE=;
+ b=KfGk/1cuGjHpGjRewllYXeS7z4A90fBPY6ykWSDK9wuNJspb/SyfISp3TObDPhh9Ga
+ TlmnmH6nDWfiPqtPn9KvoJw+r88FFx5RVGU1geEp7T0+YgVf7ZeuEInKk0qKqA+f6Bwq
+ C5mWIhH0I4cXKprJU/wXZfva58fWShQvp2w8B9FXB205DT8gxNCFwhsIM8y75ek8KHZF
+ mEysxNrkROpFqtLkAyZnqXpI2Ul9nz8GVoqXqS3LWxMStvpyQGWgtbJE6kFX8+U3JVYg
+ /ZcpziJTH50oIORLVqEeG5c6+Oux6XO1cEq0J/0Dy/jeu9dob2ElGHRKOosW9gqWo2CI
+ 7dmg==
+X-Gm-Message-State: AOAM5309kH+RSqAsm8KitxrQgfCT0eToURHXeneaSpt/2JGrt2LGuuDQ
+ HToWAT/q42QA7s61n327HGw=
+X-Google-Smtp-Source: ABdhPJx15JK8DDBVJpumHydukez0bOqPcfh/T/Jfb3vP7gvUGDjWwqzFqBrRhCgaaKE3QufDb3sFeg==
+X-Received: by 2002:a05:6512:21d1:: with SMTP id
+ d17mr521486lft.588.1629163818297; 
+ Mon, 16 Aug 2021 18:30:18 -0700 (PDT)
 Received: from localhost.localdomain (46-138-85-91.dynamic.spd-mgts.ru.
  [46.138.85.91])
- by smtp.gmail.com with ESMTPSA id g30sm46607lfj.298.2021.08.16.18.30.15
+ by smtp.gmail.com with ESMTPSA id g30sm46607lfj.298.2021.08.16.18.30.17
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 16 Aug 2021 18:30:16 -0700 (PDT)
+ Mon, 16 Aug 2021 18:30:17 -0700 (PDT)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>,
@@ -94,16 +95,16 @@ Cc: linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
  linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
  dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
  linux-clk@vger.kernel.org
-Subject: [PATCH v8 13/34] drm/tegra: hdmi: Add OPP support
-Date: Tue, 17 Aug 2021 04:27:33 +0300
-Message-Id: <20210817012754.8710-14-digetx@gmail.com>
+Subject: [PATCH v8 14/34] drm/tegra: gr2d: Support power management
+Date: Tue, 17 Aug 2021 04:27:34 +0300
+Message-Id: <20210817012754.8710-15-digetx@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210817012754.8710-1-digetx@gmail.com>
 References: <20210817012754.8710-1-digetx@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210816_183018_506714_20DE2E2B 
-X-CRM114-Status: GOOD (  17.88  )
+X-CRM114-CacheID: sfid-20210816_183020_541420_95AA6768 
+X-CRM114-Status: GOOD (  24.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,68 +121,249 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The HDMI on Tegra belongs to the core power domain and we're going to
-enable GENPD support for the core domain. Now HDMI driver must use
-OPP API for driving the controller's clock rate because OPP API takes
-care of reconfiguring the domain's performance state based on HDMI clock
-rate. Add OPP support to the HDMI driver.
+Add power management to the GR2D driver.
 
+Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
+Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
+Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- drivers/gpu/drm/tegra/hdmi.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/tegra/gr2d.c | 154 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 146 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/tegra/hdmi.c b/drivers/gpu/drm/tegra/hdmi.c
-index e5d2a4026028..aa13028480f7 100644
---- a/drivers/gpu/drm/tegra/hdmi.c
-+++ b/drivers/gpu/drm/tegra/hdmi.c
-@@ -11,10 +11,13 @@
- #include <linux/math64.h>
+diff --git a/drivers/gpu/drm/tegra/gr2d.c b/drivers/gpu/drm/tegra/gr2d.c
+index de288cba3905..4ad8709933a9 100644
+--- a/drivers/gpu/drm/tegra/gr2d.c
++++ b/drivers/gpu/drm/tegra/gr2d.c
+@@ -7,11 +7,22 @@
+ #include <linux/iommu.h>
  #include <linux/module.h>
  #include <linux/of_device.h>
 +#include <linux/pm_opp.h>
- #include <linux/pm_runtime.h>
- #include <linux/regulator/consumer.h>
- #include <linux/reset.h>
- 
-+#include <soc/tegra/common.h>
++#include <linux/pm_runtime.h>
++#include <linux/reset.h>
 +
- #include <drm/drm_atomic_helper.h>
- #include <drm/drm_crtc.h>
- #include <drm/drm_debugfs.h>
-@@ -1195,7 +1198,7 @@ static void tegra_hdmi_encoder_enable(struct drm_encoder *encoder)
- 	h_back_porch = mode->htotal - mode->hsync_end;
- 	h_front_porch = mode->hsync_start - mode->hdisplay;
++#include <soc/tegra/common.h>
  
--	err = clk_set_rate(hdmi->clk, hdmi->pixel_clock);
-+	err = dev_pm_opp_set_rate(hdmi->dev, hdmi->pixel_clock);
- 	if (err < 0) {
- 		dev_err(hdmi->dev, "failed to set HDMI clock frequency: %d\n",
- 			err);
-@@ -1516,6 +1519,12 @@ static int tegra_hdmi_runtime_resume(struct host1x_client *client)
- 		return err;
- 	}
+ #include "drm.h"
+ #include "gem.h"
+ #include "gr2d.h"
  
-+	err = dev_pm_opp_sync(dev);
++enum {
++	RST_GR2D_MC,
++	RST_GR2D,
++	RST_GR2D_MAX,
++};
++
+ struct gr2d_soc {
+ 	unsigned int version;
+ };
+@@ -21,6 +32,9 @@ struct gr2d {
+ 	struct host1x_channel *channel;
+ 	struct clk *clk;
+ 
++	struct reset_control_bulk_data resets[RST_GR2D_MAX];
++	unsigned int nresets;
++
+ 	const struct gr2d_soc *soc;
+ 
+ 	DECLARE_BITMAP(addr_regs, GR2D_NUM_REGS);
+@@ -190,6 +204,27 @@ static const u32 gr2d_addr_regs[] = {
+ 	GR2D_VA_BASE_ADDR_SB,
+ };
+ 
++static int gr2d_get_resets(struct device *dev, struct gr2d *gr2d)
++{
++	int err;
++
++	gr2d->resets[RST_GR2D_MC].id = "mc";
++	gr2d->resets[RST_GR2D].id = "2d";
++	gr2d->nresets = RST_GR2D_MAX;
++
++	err = devm_reset_control_bulk_get_optional_exclusive_released(
++				dev, gr2d->nresets, gr2d->resets);
 +	if (err) {
-+		dev_err(dev, "failed to sync OPP: %d\n", err);
-+		goto put_rpm;
++		dev_err(dev, "failed to get reset: %d\n", err);
++		return err;
 +	}
 +
- 	err = clk_prepare_enable(hdmi->clk);
- 	if (err < 0) {
- 		dev_err(dev, "failed to enable clock: %d\n", err);
-@@ -1708,6 +1717,10 @@ static int tegra_hdmi_probe(struct platform_device *pdev)
++	if (WARN_ON(!gr2d->resets[RST_GR2D].rstc))
++		return -ENOENT;
++
++	return 0;
++}
++
+ static int gr2d_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+@@ -202,6 +237,8 @@ static int gr2d_probe(struct platform_device *pdev)
+ 	if (!gr2d)
+ 		return -ENOMEM;
  
- 	hdmi->output.dev = &pdev->dev;
++	platform_set_drvdata(pdev, gr2d);
++
+ 	gr2d->soc = of_device_get_match_data(dev);
  
-+	err = devm_tegra_core_dev_init_opp_table_simple(&pdev->dev);
+ 	syncpts = devm_kzalloc(dev, sizeof(*syncpts), GFP_KERNEL);
+@@ -214,11 +251,13 @@ static int gr2d_probe(struct platform_device *pdev)
+ 		return PTR_ERR(gr2d->clk);
+ 	}
+ 
+-	err = clk_prepare_enable(gr2d->clk);
+-	if (err) {
+-		dev_err(dev, "cannot turn on clock\n");
++	err = devm_tegra_core_dev_init_opp_table_simple(dev);
 +	if (err)
 +		return err;
 +
- 	err = tegra_output_probe(&hdmi->output);
- 	if (err < 0)
++	err = gr2d_get_resets(dev, gr2d);
++	if (err)
  		return err;
+-	}
+ 
+ 	INIT_LIST_HEAD(&gr2d->client.base.list);
+ 	gr2d->client.base.ops = &gr2d_client_ops;
+@@ -231,20 +270,27 @@ static int gr2d_probe(struct platform_device *pdev)
+ 	gr2d->client.version = gr2d->soc->version;
+ 	gr2d->client.ops = &gr2d_ops;
+ 
++	pm_runtime_enable(dev);
++	pm_runtime_use_autosuspend(dev);
++	pm_runtime_set_autosuspend_delay(dev, 200);
++
+ 	err = host1x_client_register(&gr2d->client.base);
+ 	if (err < 0) {
+ 		dev_err(dev, "failed to register host1x client: %d\n", err);
+-		clk_disable_unprepare(gr2d->clk);
+-		return err;
++		goto disable_rpm;
+ 	}
+ 
+ 	/* initialize address register map */
+ 	for (i = 0; i < ARRAY_SIZE(gr2d_addr_regs); i++)
+ 		set_bit(gr2d_addr_regs[i], gr2d->addr_regs);
+ 
+-	platform_set_drvdata(pdev, gr2d);
+-
+ 	return 0;
++
++disable_rpm:
++	pm_runtime_dont_use_autosuspend(dev);
++	pm_runtime_disable(dev);
++
++	return err;
+ }
+ 
+ static int gr2d_remove(struct platform_device *pdev)
+@@ -259,15 +305,107 @@ static int gr2d_remove(struct platform_device *pdev)
+ 		return err;
+ 	}
+ 
++	pm_runtime_dont_use_autosuspend(&pdev->dev);
++	pm_runtime_disable(&pdev->dev);
++
++	return 0;
++}
++
++static int __maybe_unused gr2d_runtime_suspend(struct device *dev)
++{
++	struct gr2d *gr2d = dev_get_drvdata(dev);
++	int err;
++
++	host1x_channel_stop(gr2d->channel);
++	reset_control_bulk_release(gr2d->nresets, gr2d->resets);
++
++	/*
++	 * GR2D module shouldn't be reset while hardware is idling, otherwise
++	 * host1x's cmdproc will stuck on trying to access any G2 register
++	 * after reset. GR2D module could be either hot-reset or reset after
++	 * power-gating of the HEG partition. Hence we will put in reset only
++	 * the memory client part of the module, the HEG GENPD will take care
++	 * of resetting GR2D module across power-gating.
++	 *
++	 * On Tegra20 there is no HEG partition, but it's okay to have
++	 * undetermined h/w state since userspace is expected to reprogram
++	 * the state on each job submission anyways.
++	 */
++	err = reset_control_acquire(gr2d->resets[RST_GR2D_MC].rstc);
++	if (err) {
++		dev_err(dev, "failed to acquire MC reset: %d\n", err);
++		goto acquire_reset;
++	}
++
++	err = reset_control_assert(gr2d->resets[RST_GR2D_MC].rstc);
++	reset_control_release(gr2d->resets[RST_GR2D_MC].rstc);
++	if (err) {
++		dev_err(dev, "failed to assert MC reset: %d\n", err);
++		goto acquire_reset;
++	}
++
+ 	clk_disable_unprepare(gr2d->clk);
+ 
+ 	return 0;
++
++acquire_reset:
++	reset_control_bulk_acquire(gr2d->nresets, gr2d->resets);
++	reset_control_bulk_deassert(gr2d->nresets, gr2d->resets);
++
++	return err;
+ }
+ 
++static int __maybe_unused gr2d_runtime_resume(struct device *dev)
++{
++	struct gr2d *gr2d = dev_get_drvdata(dev);
++	int err;
++
++	err = reset_control_bulk_acquire(gr2d->nresets, gr2d->resets);
++	if (err) {
++		dev_err(dev, "failed to acquire reset: %d\n", err);
++		return err;
++	}
++
++	err = dev_pm_opp_sync(dev);
++	if (err) {
++		dev_err(dev, "failed to sync OPP: %d\n", err);
++		goto release_reset;
++	}
++
++	err = clk_prepare_enable(gr2d->clk);
++	if (err) {
++		dev_err(dev, "failed to enable clock: %d\n", err);
++		goto release_reset;
++	}
++
++	/* this is a reset array which deasserts both 2D MC and 2D itself */
++	err = reset_control_bulk_deassert(gr2d->nresets, gr2d->resets);
++	if (err) {
++		dev_err(dev, "failed to deassert reset: %d\n", err);
++		goto disable_clk;
++	}
++
++	return 0;
++
++disable_clk:
++	clk_disable_unprepare(gr2d->clk);
++release_reset:
++	reset_control_bulk_release(gr2d->nresets, gr2d->resets);
++
++	return err;
++}
++
++static const struct dev_pm_ops tegra_gr2d_pm = {
++	SET_RUNTIME_PM_OPS(gr2d_runtime_suspend, gr2d_runtime_resume, NULL)
++	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
++				pm_runtime_force_resume)
++};
++
+ struct platform_driver tegra_gr2d_driver = {
+ 	.driver = {
+ 		.name = "tegra-gr2d",
+ 		.of_match_table = gr2d_match,
++		.pm = &tegra_gr2d_pm,
+ 	},
+ 	.probe = gr2d_probe,
+ 	.remove = gr2d_remove,
 -- 
 2.32.0
 
