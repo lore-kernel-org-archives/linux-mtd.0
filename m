@@ -2,80 +2,112 @@ Return-Path: <SRS0=LBUh=NI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BEF61C4338F
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 12:24:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E082BC4338F
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 14:04:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F9F361029
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 12:24:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8F9F361029
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	by mail.kernel.org (Postfix) with ESMTPS id 99F0B60232
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 14:04:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 99F0B60232
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zMebKTJIWRe1NARYmgoJxfM/vDgttyD0JQxKxZikY5A=; b=wLmup4XT5p4bMB
-	Ip8kwUN8VZESXjb5d6X4n5XrSwgHY+0OiqZpPeazElg2tGb4TQriGzNegnMKQP/uQOo+kuNtL5JAp
-	T+NB9cy9VSznQ/jVY3o0PAczMXsV7NeEWkXuZKBvKSI5vmvKAm8GHd1+BAZKgcOxIp/BOfxVZnEJY
-	IzVoiAcmqWWRFiaRlzt3mxXpG01jzThw1au+yvmRXqRVrl+LEcZZ9Z2QJF9jI7Qj+wjIUVl9oNdBg
-	LR1dIe+hK5FI60YQwy8AljEl+O7PN+VLRBIZXHALlHIp6P/FIlxCdO2sz+yCdgRg2DWZNYUGmvhzk
-	pVFJQlcMvzpOBvKb2Guw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=YDMW4s2qnlQ3zbNGeZ080A/A0vy+eaN0QCPoBKDELTQ=; b=zwWTa3ic2XhRHoUOque10PtorS
+	KtQCm7OVW9+li+LLIhovPRMkk9evsa5fdTfBPl1hgiQC9TSEilxFHzU7Aki7RjcLdK/PCZXfPwdHr
+	i0S7EUOE1YvYlw1dDQDBPYwlxpPYJNBEHN2zKcOq/d6HrlhiVEqXtnl3jm20fX1k+rmXGGpD6hH31
+	YdePOEE+k8i3GAnHBOfTVGgtum6BeFpFBvn7WupJ+IkOmjjdERBfMB750l2wKc9pXKoQM/hXZJX5/
+	1Rbzv3HLLrj4zWwWtSwrrWtN9FKoxGqRwwu440gJLsyOrJLyCuEPz7r0XL/mNAUz7JOiJjUidhHGK
+	B0sxO4tA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mFy8X-002RTD-R1; Tue, 17 Aug 2021 12:24:10 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1mFzgL-002dv3-Eq; Tue, 17 Aug 2021 14:03:09 +0000
+Received: from mail-wr1-x42f.google.com ([2a00:1450:4864:20::42f])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mFy8Q-002RQr-VL; Tue, 17 Aug 2021 12:24:06 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17HCNdmZ045966;
- Tue, 17 Aug 2021 07:23:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1629203019;
- bh=GPT2jfXdRO+ck3NAbPAqN4ncf+/nYbhK4HzC5BzxzPE=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=A25YTZyo2WvBmmlyQRAofJ97mhPYL9F6f2apLTaT3AcA14VLMf3D9gnq/8k2FCX/z
- X1M1Yb4hR2OqYyrAfYmff9Vjng0WR/AWlBJLSaNJE/ZF3tSvEBdbFfLXVBz8WDBQ5t
- iUxVtSTdbiETiYG2vF82ko2K3SEaBSH26+6Uw9/Y=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17HCNdNl080673
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 17 Aug 2021 07:23:39 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 17
- Aug 2021 07:23:39 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 17 Aug 2021 07:23:39 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17HCNcNp038863;
- Tue, 17 Aug 2021 07:23:39 -0500
-Date: Tue, 17 Aug 2021 17:53:37 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: Re: [PATCH v2 20/35] mtd: spi-nor: core: Use container_of to get the
- pointer to struct spi_nor
-Message-ID: <20210817122335.ci6ntkhmx4b6my46@ti.com>
-References: <20210727045222.905056-1-tudor.ambarus@microchip.com>
- <20210727045222.905056-21-tudor.ambarus@microchip.com>
+ id 1mFzgH-002dtY-Po
+ for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 14:03:07 +0000
+Received: by mail-wr1-x42f.google.com with SMTP id z9so28722227wrh.10
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Aug 2021 07:03:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=VVEiHKfbgxJy3Si7x9qMwuCkodu1ovrZav3yAuRw/WQ=;
+ b=NGu0DCEpleG+Ep+gjrtMwj36Cigf1Xn/FwALxpXcDjG/HheiEOcqif1j7C30iNyDoR
+ UfnkWvY654GbLJJiiHR7imSwFIKyv9XLT96K8+GsD6oCLfWY1318PUVuH4QQVpXL+5MB
+ sWXWF+45ADknPxGX3t+Xe/QTitR63+pwekLYS4LtFAdHYnksZWahfT+1GTFaodEeWnqA
+ eOx7tn6jgCs37eoODu+VwLdsRQzuUuonwBBcsUzg/5aaFUc8Y73zeAXoNTr9PLjG3bO9
+ GV9fg3sIOtBFLYnWBNiTabJSWHMGHfUzG0ouqf+ehjLzM7Ukg8pSAWhUps4ZDVmX+JZ9
+ 8Aqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=VVEiHKfbgxJy3Si7x9qMwuCkodu1ovrZav3yAuRw/WQ=;
+ b=g6Ne8Q51Y1GhcmJeBPXyWCjvf6tzZKIiUrw9nlhlQd/AcTWFD6hGi533t+7qBq5u7P
+ Ist1GdBDhYStEqtMX9wyqAZCZEAQEEIMIRQDlcpNQW40Tba7x/sjahBAnqZ6JYOGJHh0
+ kxIuTw3g4kBCpN908EvM1mVgOBovClxP4k2ktx4aX/55aLS/OLOTJlGkCsMyBQ+s55v4
+ o8bLJDvmSrh789HJCJdB3UiwIxNsq6mjzIkdS5nGRNy8Onptxlq9VsVMGrKG+LNUhist
+ DLqvX3+YVPC2vC9d9XKmwNVZp6B69it+FRK6ymQ0982+WEpNowMPANA2dA45GInn/wcH
+ VaUw==
+X-Gm-Message-State: AOAM530V/KwwSlsqq1FOKg6ifhXPQo8LklbXycTqjJ8W8Z48Yx1Vi39m
+ qSucJPs59NQ7ORdO1O0pSy0=
+X-Google-Smtp-Source: ABdhPJygrj9qfA9fJB+/HxTzsq0FYpI1BCHKBArAxcgyM8xNpQ/5kTdymiAaBBuoBgqjg4SIBuMyfQ==
+X-Received: by 2002:adf:f282:: with SMTP id k2mr4338657wro.255.1629208982405; 
+ Tue, 17 Aug 2021 07:03:02 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+ by smtp.gmail.com with ESMTPSA id d8sm2628053wrx.12.2021.08.17.07.03.00
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 17 Aug 2021 07:03:01 -0700 (PDT)
+Date: Tue, 17 Aug 2021 16:02:59 +0200
+From: Thierry Reding <thierry.reding@gmail.com>
+To: Ulf Hansson <ulf.hansson@linaro.org>
+Cc: Dmitry Osipenko <digetx@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>,
+ Viresh Kumar <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+ Peter De Schrijver <pdeschrijver@nvidia.com>,
+ Mikko Perttunen <mperttunen@nvidia.com>,
+ Peter Chen <peter.chen@kernel.org>, Mark Brown <broonie@kernel.org>,
+ Lee Jones <lee.jones@linaro.org>,
+ Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-tegra <linux-tegra@vger.kernel.org>,
+ Linux PM <linux-pm@vger.kernel.org>,
+ Linux USB List <linux-usb@vger.kernel.org>,
+ linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+ linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-mmc <linux-mmc@vger.kernel.org>,
+ Linux Media Mailing List <linux-media@vger.kernel.org>,
+ dri-devel <dri-devel@lists.freedesktop.org>,
+ DTML <devicetree@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>
+Subject: Re: [PATCH v8 11/34] gpu: host1x: Add runtime PM and OPP support
+Message-ID: <YRvBkyfFCqthBIBV@orome.fritz.box>
+References: <20210817012754.8710-1-digetx@gmail.com>
+ <20210817012754.8710-12-digetx@gmail.com>
+ <CAPDyKFrax-EYtO03W5QWM2tcWLWeMM8hHZCRYFcsenuiP2zObQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210727045222.905056-21-tudor.ambarus@microchip.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <CAPDyKFrax-EYtO03W5QWM2tcWLWeMM8hHZCRYFcsenuiP2zObQ@mail.gmail.com>
+User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210817_052403_162342_BB341589 
-X-CRM114-Status: GOOD (  17.41  )
+X-CRM114-CacheID: sfid-20210817_070305_876874_25157282 
+X-CRM114-Status: GOOD (  37.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,65 +119,187 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: macromorgan@hotmail.com, vigneshr@ti.com, jaimeliao@mxic.com.tw,
- richard@nod.at, esben@geanix.com, linux@rasmusvillemoes.dk,
- knaerzche@gmail.com, nicolas.ferre@microchip.com, michael@walle.cc,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- code@reto-schneider.ch, miquel.raynal@bootlin.com, heiko.thiery@gmail.com,
- sr@denx.de, mail@david-bauer.net, zhengxunli@mxic.com.tw
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6455218198435805597=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 27/07/21 07:52AM, Tudor Ambarus wrote:
-> Get the pointer to the containing struct spi_nor by using container_of.
 
-Please add an explanation on _why_ you are doing this. I suspect it 
-would be something boring like "because mtd is embedded in nor, no need 
-to use mtd->priv", but good to have it here regardless.
+--===============6455218198435805597==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="fGItigaj8JHSG5hJ"
+Content-Disposition: inline
 
-> 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> ---
->  drivers/mtd/spi-nor/core.c | 1 -
->  drivers/mtd/spi-nor/core.h | 2 +-
->  2 files changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 9885d434ea83..5c8cffb5e6f2 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -3175,7 +3175,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
->  
->  	if (!mtd->name)
->  		mtd->name = dev_name(dev);
-> -	mtd->priv = nor;
->  	mtd->type = MTD_NORFLASH;
->  	mtd->writesize = nor->params->writesize;
->  	mtd->flags = MTD_CAP_NORFLASH;
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index 987797a789c8..8fddc685d2d3 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -557,7 +557,7 @@ void spi_nor_otp_init(struct spi_nor *nor);
->  
->  static struct spi_nor __maybe_unused *mtd_to_spi_nor(struct mtd_info *mtd)
->  {
-> -	return mtd->priv;
-> +	return container_of(mtd, struct spi_nor, mtd);
->  }
->  
->  static inline void snor_f_4b_opcodes(struct spi_nor *nor)
-> -- 
-> 2.25.1
-> 
 
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+--fGItigaj8JHSG5hJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Aug 17, 2021 at 02:04:38PM +0200, Ulf Hansson wrote:
+> On Tue, 17 Aug 2021 at 03:30, Dmitry Osipenko <digetx@gmail.com> wrote:
+> >
+> > Add runtime PM and OPP support to the Host1x driver. It's required for
+> > enabling system-wide DVFS and supporting dynamic power management using
+> > a generic power domain. For the starter we will keep host1x always-on
+> > because dynamic power management require a major refactoring of the dri=
+ver
+> > code since lot's of code paths will need the RPM handling and we're goi=
+ng
+> > to remove some of these paths in the future. Host1x doesn't consume much
+> > power so it is good enough, we at least need to resume Host1x in order
+> > to initialize the power state.
+> >
+> > Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+> > Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
+> > Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
+> > Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
+> > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> > ---
+>=20
+> [...]
+>=20
+> > +
+> >  static int host1x_probe(struct platform_device *pdev)
+> >  {
+> >         struct host1x *host;
+> > @@ -394,6 +423,10 @@ static int host1x_probe(struct platform_device *pd=
+ev)
+> >         /* set common host1x device data */
+> >         platform_set_drvdata(pdev, host);
+> >
+> > +       err =3D devm_tegra_core_dev_init_opp_table_simple(&pdev->dev);
+> > +       if (err)
+> > +               return err;
+> > +
+> >         host->regs =3D devm_ioremap_resource(&pdev->dev, regs);
+> >         if (IS_ERR(host->regs))
+> >                 return PTR_ERR(host->regs);
+> > @@ -423,12 +456,9 @@ static int host1x_probe(struct platform_device *pd=
+ev)
+> >                 return err;
+> >         }
+> >
+> > -       host->rst =3D devm_reset_control_get(&pdev->dev, "host1x");
+> > -       if (IS_ERR(host->rst)) {
+> > -               err =3D PTR_ERR(host->rst);
+> > -               dev_err(&pdev->dev, "failed to get reset: %d\n", err);
+> > +       err =3D host1x_get_resets(host);
+> > +       if (err)
+> >                 return err;
+> > -       }
+> >
+> >         err =3D host1x_iommu_init(host);
+> >         if (err < 0) {
+> > @@ -443,22 +473,10 @@ static int host1x_probe(struct platform_device *p=
+dev)
+> >                 goto iommu_exit;
+> >         }
+> >
+> > -       err =3D clk_prepare_enable(host->clk);
+> > -       if (err < 0) {
+> > -               dev_err(&pdev->dev, "failed to enable clock\n");
+> > -               goto free_channels;
+> > -       }
+> > -
+> > -       err =3D reset_control_deassert(host->rst);
+> > -       if (err < 0) {
+> > -               dev_err(&pdev->dev, "failed to deassert reset: %d\n", e=
+rr);
+> > -               goto unprepare_disable;
+> > -       }
+> > -
+>=20
+> Removing the clk_prepare_enable() and reset_control_deassert() from
+> host1x_probe(), might not be a good idea. See more about why, below.
+>=20
+> >         err =3D host1x_syncpt_init(host);
+> >         if (err) {
+> >                 dev_err(&pdev->dev, "failed to initialize syncpts\n");
+> > -               goto reset_assert;
+> > +               goto free_channels;
+> >         }
+> >
+> >         err =3D host1x_intr_init(host, syncpt_irq);
+> > @@ -467,10 +485,14 @@ static int host1x_probe(struct platform_device *p=
+dev)
+> >                 goto deinit_syncpt;
+> >         }
+> >
+> > -       host1x_debug_init(host);
+> > +       pm_runtime_enable(&pdev->dev);
+> >
+> > -       if (host->info->has_hypervisor)
+> > -               host1x_setup_sid_table(host);
+> > +       /* the driver's code isn't ready yet for the dynamic RPM */
+> > +       err =3D pm_runtime_resume_and_get(&pdev->dev);
+>=20
+> If the driver is being built with the CONFIG_PM Kconfig option being
+> unset, pm_runtime_resume_and_get() will return 0 to indicate success -
+> and without calling the ->runtime_resume() callback.
+> In other words, the clock will remain gated and the reset will not be
+> deasserted, likely causing the driver to be malfunctioning.
+>=20
+> If the driver isn't ever being built with CONFIG_PM unset, feel free
+> to ignore my above comments.
+>=20
+> Otherwise, if it needs to work both with and without CONFIG_PM being
+> set, you may use the following pattern in host1x_probe() to deploy
+> runtime PM support:
+>=20
+> "Enable the needed resources to probe the device"
+> pm_runtime_get_noresume()
+> pm_runtime_set_active()
+> pm_runtime_enable()
+>=20
+> "Before successfully completing probe"
+> pm_runtime_put()
+
+We made a conscious decision a few years ago to have ARCH_TEGRA select
+PM on both 32-bit and 64-bit ARM, specifically to avoid the need to do
+this dance (though there are still a few drivers left that do this, I
+think).
+
+So I think this should be unnecessary. Unless perhaps if the sysfs PM
+controls have any influence on this. As far as I know, as long as the
+PM kconfig option is enabled, the sysfs control only influence the
+runtime behaviour (i.e. setting the sysfs PM control to "on" is going
+to force runtime PM to be resumed) but there's no way to disable
+runtime PM altogether via sysfs that would make the above necessary.
+
+Thierry
+
+--fGItigaj8JHSG5hJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEbwZMACgkQ3SOs138+
+s6EqjxAAs5FWbje3iCJOP7sod6VEu/M7e7ZG4mEPa2/e+EajCY0rD+kJaknBVNdK
+htJY+3B3pez2I2TjXZtaFOzcXEVl0e94EIQb8bY1wZEFLg91V6DTPfnvbEPb9BN8
+kzesliKQKiVhD/gG5D/9K7TnEFThE2JTj02MDE7Q6opTEaxlKgAN8jrbkNCuAOUg
+wCrzFqRzmbVuuZrGkA/xApbfCh7lTLObvJ1enX9IB0s/WZZfej3PrylP5U379Nab
+OA1JisBmk5NHgi8djWyeN/X+urNAYDixcJIfwPqs3yqb3+piiG+X+oNX8Xz6byUt
+bZJ86CC/A4XGufnL7A0+ZKrd/UYNH3WE17R16LxFytD1chZQ82aWyVIJPGLW+42q
+k6lWheWwNsn2Gua2ZOlUfkC9fRD6Sj/fSnqRS0zgslnq/n80VGIz/35q2zCZ1tiG
+D4hRPhQukShFXdCy/HaNXbtdXfTGZH8owlNDiDArmoIclSj+828GRbMqDTJDVxUs
+RldB6jISMtRo/iBpCoj9VM1h01kedIHXimkm8zsOyVWYapi6ScKSbMqWaPS02SSe
+Fc5t4wnn/jSruWZ5HVHU+iOOmlU6Buli+4cQZQIsUOb4FD4V+BrEO3ArlYzxkzH5
+mAM+3LofUzwqGi67FOn92GGM/LJZcDAX6v5c8WjnpM1uh5VdR5g=
+=8GYQ
+-----END PGP SIGNATURE-----
+
+--fGItigaj8JHSG5hJ--
+
+
+--===============6455218198435805597==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============6455218198435805597==--
+
