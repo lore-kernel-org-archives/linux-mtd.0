@@ -2,89 +2,80 @@ Return-Path: <SRS0=LBUh=NI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-15.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1351FC4338F
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 12:23:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BEF61C4338F
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 12:24:49 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CB05B61029
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 12:23:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CB05B61029
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 8F9F361029
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 12:24:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8F9F361029
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Y4bdWhTAvOJHU9lYlC1S7rOClc1N6X2ga53viMq9yu8=; b=K1q6g7+XHxvwJInA0SgSDBR33x
-	2Vrevq64o/80Nb59p97BU8zCGmiMSXf7YM1NgVX5lneEEm/1Ma7Os2uM9Rnmac3pzBXLkQQbCa6Ci
-	jlT4dL3Y3sVZeoOGpyGFBGTveKXEd1ATkaUPq0tPhOme9h5Orym1zKNFLfqeuf6gQIebeAw8nVg9Q
-	g3e//zUJtBy64TF/nUYk9imyMXgx0vUP1s5yXyqXJNe96RCRfzMq7uOvl1TZNvtJimms9UKEI6l4y
-	3tt4NNWt6d/CCXey2ZOdd3KgDyliDfqpCt1Peo3QAt5ENVwjAfVdvFby57fyanZf8rXqUBLJ4ykLp
-	gtHaSPOw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=zMebKTJIWRe1NARYmgoJxfM/vDgttyD0JQxKxZikY5A=; b=wLmup4XT5p4bMB
+	Ip8kwUN8VZESXjb5d6X4n5XrSwgHY+0OiqZpPeazElg2tGb4TQriGzNegnMKQP/uQOo+kuNtL5JAp
+	T+NB9cy9VSznQ/jVY3o0PAczMXsV7NeEWkXuZKBvKSI5vmvKAm8GHd1+BAZKgcOxIp/BOfxVZnEJY
+	IzVoiAcmqWWRFiaRlzt3mxXpG01jzThw1au+yvmRXqRVrl+LEcZZ9Z2QJF9jI7Qj+wjIUVl9oNdBg
+	LR1dIe+hK5FI60YQwy8AljEl+O7PN+VLRBIZXHALlHIp6P/FIlxCdO2sz+yCdgRg2DWZNYUGmvhzk
+	pVFJQlcMvzpOBvKb2Guw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mFy7c-002RCw-5M; Tue, 17 Aug 2021 12:23:12 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1mFy8X-002RTD-R1; Tue, 17 Aug 2021 12:24:10 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mFy7Y-002RB8-I2
- for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 12:23:09 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B1CB760FA0;
- Tue, 17 Aug 2021 12:23:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1629202987;
- bh=c/PlC/W6yjxlV+Z7ZbF/hxgaIiNXDZlZo9QTekHzzto=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=nmskkW06SeXdvESPFwWJP4iQi/AfZfa0vEFy+cuAqLmy+f4I2uJuGlWiIG3+qOPHv
- xnda4sK3SpsR15EDLFwOPVpUWOowLkNLIk9ImApHVFPfJnKz/lhdsh+HFZYj/NbRHm
- eXuH3smkHCoqx0QNay+eOr+RUqsGi1/LD/ASV8gvs921fqWRRcXPMo3BLK5Ue/LMAY
- E7aHmfxbASTmbJ0PGpnfzkpkFQY6yMi66OmBVe1qXWlxHCeHepAgYCfKYqlUOjbUyt
- lxKqpcb5n/55Qq2tzaqx1B4Vg1bUnEx45zv+Fl9rzaJm69xqekfjJ82brq5dSoJIe+
- WqipDMJt6MCZg==
-Date: Tue, 17 Aug 2021 13:22:44 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Dmitry Osipenko <digetx@gmail.com>
-Cc: Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>,
- Ulf Hansson <ulf.hansson@linaro.org>,
- Viresh Kumar <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
- Peter De Schrijver <pdeschrijver@nvidia.com>,
- Mikko Perttunen <mperttunen@nvidia.com>,
- Peter Chen <peter.chen@kernel.org>, Lee Jones <lee.jones@linaro.org>,
- Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
- Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>,
- linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
- linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
- linux-clk@vger.kernel.org
-Subject: Re: [PATCH v8 22/34] spi: tegra20-slink: Add OPP support
-Message-ID: <20210817122244.GA4290@sirena.org.uk>
-References: <20210817012754.8710-1-digetx@gmail.com>
- <20210817012754.8710-23-digetx@gmail.com>
+ id 1mFy8Q-002RQr-VL; Tue, 17 Aug 2021 12:24:06 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17HCNdmZ045966;
+ Tue, 17 Aug 2021 07:23:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1629203019;
+ bh=GPT2jfXdRO+ck3NAbPAqN4ncf+/nYbhK4HzC5BzxzPE=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=A25YTZyo2WvBmmlyQRAofJ97mhPYL9F6f2apLTaT3AcA14VLMf3D9gnq/8k2FCX/z
+ X1M1Yb4hR2OqYyrAfYmff9Vjng0WR/AWlBJLSaNJE/ZF3tSvEBdbFfLXVBz8WDBQ5t
+ iUxVtSTdbiETiYG2vF82ko2K3SEaBSH26+6Uw9/Y=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17HCNdNl080673
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 17 Aug 2021 07:23:39 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 17
+ Aug 2021 07:23:39 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 17 Aug 2021 07:23:39 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17HCNcNp038863;
+ Tue, 17 Aug 2021 07:23:39 -0500
+Date: Tue, 17 Aug 2021 17:53:37 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: Re: [PATCH v2 20/35] mtd: spi-nor: core: Use container_of to get the
+ pointer to struct spi_nor
+Message-ID: <20210817122335.ci6ntkhmx4b6my46@ti.com>
+References: <20210727045222.905056-1-tudor.ambarus@microchip.com>
+ <20210727045222.905056-21-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <20210817012754.8710-23-digetx@gmail.com>
-X-Cookie: Custer committed Siouxicide.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Disposition: inline
+In-Reply-To: <20210727045222.905056-21-tudor.ambarus@microchip.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210817_052308_692594_3F4D2AFD 
-X-CRM114-Status: GOOD (  13.44  )
+X-CRM114-CacheID: sfid-20210817_052403_162342_BB341589 
+X-CRM114-Status: GOOD (  17.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,59 +87,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3357496320076675067=="
+Cc: macromorgan@hotmail.com, vigneshr@ti.com, jaimeliao@mxic.com.tw,
+ richard@nod.at, esben@geanix.com, linux@rasmusvillemoes.dk,
+ knaerzche@gmail.com, nicolas.ferre@microchip.com, michael@walle.cc,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ code@reto-schneider.ch, miquel.raynal@bootlin.com, heiko.thiery@gmail.com,
+ sr@denx.de, mail@david-bauer.net, zhengxunli@mxic.com.tw
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On 27/07/21 07:52AM, Tudor Ambarus wrote:
+> Get the pointer to the containing struct spi_nor by using container_of.
 
---===============3357496320076675067==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="mP3DRpeJDSE+ciuQ"
-Content-Disposition: inline
+Please add an explanation on _why_ you are doing this. I suspect it 
+would be something boring like "because mtd is embedded in nor, no need 
+to use mtd->priv", but good to have it here regardless.
 
+> 
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> ---
+>  drivers/mtd/spi-nor/core.c | 1 -
+>  drivers/mtd/spi-nor/core.h | 2 +-
+>  2 files changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index 9885d434ea83..5c8cffb5e6f2 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -3175,7 +3175,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+>  
+>  	if (!mtd->name)
+>  		mtd->name = dev_name(dev);
+> -	mtd->priv = nor;
+>  	mtd->type = MTD_NORFLASH;
+>  	mtd->writesize = nor->params->writesize;
+>  	mtd->flags = MTD_CAP_NORFLASH;
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index 987797a789c8..8fddc685d2d3 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -557,7 +557,7 @@ void spi_nor_otp_init(struct spi_nor *nor);
+>  
+>  static struct spi_nor __maybe_unused *mtd_to_spi_nor(struct mtd_info *mtd)
+>  {
+> -	return mtd->priv;
+> +	return container_of(mtd, struct spi_nor, mtd);
+>  }
+>  
+>  static inline void snor_f_4b_opcodes(struct spi_nor *nor)
+> -- 
+> 2.25.1
+> 
 
---mP3DRpeJDSE+ciuQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Aug 17, 2021 at 04:27:42AM +0300, Dmitry Osipenko wrote:
-> The SPI on Tegra belongs to the core power domain and we're going to
-> enable GENPD support for the core domain. Now SPI driver must use OPP
-> API for driving the controller's clock rate because OPP API takes care
-> of reconfiguring the domain's performance state in accordance to the
-> rate. Add OPP support to the driver.
-
-Acked-by: Mark Brown <broonie@kernel.org>
-
-Is there a concrete dependency here or can I merge this separately?
-
---mP3DRpeJDSE+ciuQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEbqhMACgkQJNaLcl1U
-h9Buggf/d4C5+YzSeq0C2NHs0zamK8fHfoeCb5Qf7DbvwC4xNpUEoKAl6kFe6XlO
-ngiyDsMKDiDDirVRL6usRQkhxcB9hYlR9qZPZwTumcSB8omPU2d8ibg0bZlq6+EW
-bQf4R3TRA5YOFtGXxUejMSdK0+MO4I0QbuU6o4zLT3dzFtq+nK1Oct7FNyhjNrK/
-ELy4bDfbSewMfEPDjMsi05Qg7I6ftQiO3ZAqdTAj+0bLpHvsChKGv474uEXEw6vv
-FICFNW+bUCUC/oS3NykjRlVmWPr6eACJDT33krIuaX8/G0mN5kVjAfVPnOK1OzG+
-Y+z6bEN/Dr6UAjhZRQbizQRM04sR+w==
-=JJo7
------END PGP SIGNATURE-----
-
---mP3DRpeJDSE+ciuQ--
-
-
---===============3357496320076675067==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============3357496320076675067==--
-
