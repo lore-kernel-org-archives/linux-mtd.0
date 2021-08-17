@@ -2,20 +2,20 @@ Return-Path: <SRS0=LBUh=NI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DBA28C4338F
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 11:48:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3804AC4338F
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 12:06:29 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A47C060FC3
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 11:48:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A47C060FC3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id E435660F58
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 12:06:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E435660F58
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -23,69 +23,81 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5JjX+Z4AB3QtTZxIczVYK+KzK5pkokwGMifgafmIs50=; b=FYd5Op4mZgHFzy
-	oYU3WYkgcZORC6rHoRD+IOvx5ckp9oWZk+iCRSF16yZ/UW3Aykw3Qiz2YP1Jj8bA6ey/CtuD1aeoq
-	fpdqaOBF6/qps4VNLLC3jUayraSsecCcV1dX52oXYep6LjNcqe+wVXfE0/7mk3fOJL+FfSa/qEHOn
-	oSQcLObdqIpTHimmGlfpv2S0FDNrfpEht3duXzfV/1+lECQqJJ9EkVXrfo8gvVXCWu7x0fn9Xcd63
-	LG2tCznseLvywhUR+pQF4Yt64dPJJ0VZxXO1la47DTUcnEb4yNk1JV7tIe9iwgFjN64kJ5FvhSNx0
-	yzkp9HdDlV95lb0FW44Q==;
+	List-Owner; bh=q2sSVnbYzRzKBze1DQzOEy2VBq0u8IxsUWfXtbdIkWM=; b=dGARVqHOTr6wMY
+	6FocXyw8xVNldRHrIQSBN5RVO4waYwi7Tup3cmineDMxsIIsMyEG4elSG9Wur/sHstTA683xb/oz7
+	lhZT+DxWfh8cFrPAXIrdEJwybIlOVbs2vqcM0Vxm+juvq2NQtxo02eocle6XDTxA81o4Q6zdzuM9m
+	uj/vSVLSy+tN868kguQFk+SwoN5lNYkcGxWvk2CnIsGkHpEXmlAmcrx7CpNMjvZhrVj6aUlR2NXgH
+	F1d5tsf9tfncNTDaKLWpIWylmnQO5b0FXuNyo27mXn6iZgUujVpN+2/eyBO6hMnRJJ8Cg4zMDdXCB
+	HfI76SnwM8p0TFraw/OQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mFxZP-002J4O-Ha; Tue, 17 Aug 2021 11:47:51 +0000
-Received: from mail-pj1-x102b.google.com ([2607:f8b0:4864:20::102b])
+	id 1mFxqY-002MeI-Lz; Tue, 17 Aug 2021 12:05:34 +0000
+Received: from mail-vs1-xe35.google.com ([2607:f8b0:4864:20::e35])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mFxZI-002J2L-Bk
- for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 11:47:48 +0000
-Received: by mail-pj1-x102b.google.com with SMTP id
- mq2-20020a17090b3802b0290178911d298bso5915497pjb.1
- for <linux-mtd@lists.infradead.org>; Tue, 17 Aug 2021 04:47:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ id 1mFxqH-002MYJ-Su
+ for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 12:05:21 +0000
+Received: by mail-vs1-xe35.google.com with SMTP id s19so5448834vsl.11
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Aug 2021 05:05:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=IuRfHC8W7DGjH42w11/hQoI8c1gahqTINnCkt5cniCY=;
- b=HlX3N5iVsexM4cZik2nwQjmnXYhcP5lffXV+CS9+d5DYFWkyEGE1NSL1dqKIquD9SA
- bZpxWqH4X8nzkSwWiXznHXF0eyZMURkGp4Jgfqb98qShAPkRXIW3ebJH2MQnaN/Ykzn4
- xKm7+m/7kGHEy1msCpQauNxvK2W7XqZgJPcxEp6RJI2jxoP96P84BSaVewdAnjvgZmSp
- IYVqqKGw67jUyNsi9UnZTQlh53fze0ZZDb/Xq0jS25uNVq0uCjtZDFvX4C49gyiudtpK
- DokT6tyc4QR9N9uAzZjTxJv4ixQanILpV3C051bWz1wzHrkbyz8cYjHcXka9CT/shr1X
- x8Yw==
+ :cc; bh=zp99VySxCP/C+XoDYPyxq/KzXedadDuj5suqohF5Fvg=;
+ b=nFsjYjBXuhreAiAOicko40FJ2Ek7yGZ95EL78+psS1PBgU/zV/hVvGucyeNGB/VHuA
+ CZvLcibDFKv0his4Xlc/kKpRR4KmuVlfNPdCOjLa9yqFMDSVDsx+N86gbova/TWvfOvh
+ UN5fcZIAF+gxZrptxSzZ1Ic8Wvj0+yF7hFtRm/gqHM41KJ03TLeAZhinYWrAoSrnataU
+ dyVF+WhuUoCZmS68K3nFSjCbBWA101ONrhbvx8clVKf/1q6HwW6DBCFaGKFGnYrUqvgr
+ aL45tUdh4eNundsr+ZCDy2CWtZ6BTR2SQU6gRUHinuEuOmjdznvPCL+5j+0D/G8oV6sT
+ gR9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=IuRfHC8W7DGjH42w11/hQoI8c1gahqTINnCkt5cniCY=;
- b=s0ZGJ4aGvT2kxdsg5xeMYY6rQtj62+hzKeKiSgzW/H7+8BDoclH2VsXIdDrJrYuxdN
- p0ZAs95a4CRcWaf2W5ndpvWNMjop4aio04tM2Tjq1IO3Voq7jBSdDoNKgy227rjrf/ES
- cm1Cg61zQflnQPnRwM2Vsh23+Nl5okpdRczpNFSp6DBg9GiZqcVrO+7qpfOkclfiT7MX
- DYeUZIInm8UkEHkhdaqT5ATRkQlFou0i2Dm+/rmAzFHfwiSMY4Sxo7o4ZhHTIQVrwvlT
- Ds6OAnYBAUdSUK/oHqGcdFm3F4jKXUKiPosQQ52vbIKrCoJjqj5KIKNj/VnD5FNvWdWt
- J5wg==
-X-Gm-Message-State: AOAM532o/r30HA6mhfxLkbWOvntZNA83bJWH5yzlz10uwztLww/xsoHf
- qQhhC+8kPSM59x6rq1W8q1ITZjTOBXt8DscH3Tw=
-X-Google-Smtp-Source: ABdhPJz4TQlbJ1rgw0XhVk/2VKs8/gw+my29rfd4+32GLZ8aY4HxNCxMVtsnqxdX2cnCpVcW8A1UnNvBzfdEKzZ25KU=
-X-Received: by 2002:aa7:800b:0:b029:330:455f:57a8 with SMTP id
- j11-20020aa7800b0000b0290330455f57a8mr3262024pfi.7.1629200862497; Tue, 17 Aug
- 2021 04:47:42 -0700 (PDT)
+ :message-id:subject:to:cc;
+ bh=zp99VySxCP/C+XoDYPyxq/KzXedadDuj5suqohF5Fvg=;
+ b=RNxQ2gA1l/odOzqMYB8pKc93fe9L5TPVujOJIWSDqTWL+3z8tZcntl7vOUn30COG71
+ ODGE5ros+w+A75v5vmRqO0l0bh3gEUiy4soTX6P9hwUOz0Kn7CK3K1WUfiE/4wl/Mi1x
+ yJWGe8UfYNTys0JYHKKM+t8nQ0VNs/EwxJGRWdRXvbgj2yfIEnBaXSRF9M9rXqgt3c4B
+ HrIj/XPIhJWHrmMG/dqUYz3ZDU/C5Ukt1VN/TehzmlXazp+lKza4lp6S0LFtzs+Xh6ye
+ qX8ICeoVkgigbWlqDHx12kWCFX+HsI2alM4fP5KTHkFmOTW9bUJbqeJdX+vIwozn+zm2
+ IlKA==
+X-Gm-Message-State: AOAM533F6yBLAcNVylcIOjxyxOqoBF8zjv+Xxx3ZslwxYQSUoQQvuyKs
+ CS3VNn1wpqsLGz96/xe0vC5rdkWgsVtdJ9tYulzEEA==
+X-Google-Smtp-Source: ABdhPJyAoDZB8D567sM7+DgXNNDfJZjhAOy3SVS/bltXL11iGgVxqJXFnX1rcCitBmOIa8V8M0KZWwa23CQNDRPlT28=
+X-Received: by 2002:a67:f6d8:: with SMTP id v24mr2357440vso.48.1629201915619; 
+ Tue, 17 Aug 2021 05:05:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210812113800.12466-1-novikov@ispras.ru>
- <CAHp75VcgqZEHBTXpNApGfRkhgjpCvbgj+yxUZbbO+=0DOvZLQg@mail.gmail.com>
- <4e582d89-0ef2-a94a-250a-30aa0f2eceb2@ispras.ru>
-In-Reply-To: <4e582d89-0ef2-a94a-250a-30aa0f2eceb2@ispras.ru>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Tue, 17 Aug 2021 14:47:02 +0300
-Message-ID: <CAHp75VcVX21mpWmA_g+tOdJDGgkN45nz85YXyh3p-m91GS_HeQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: rawnand: mxic: Enable and prepare clocks in probe
-To: Evgeny Novikov <novikov@ispras.ru>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+References: <20210817012754.8710-1-digetx@gmail.com>
+ <20210817012754.8710-12-digetx@gmail.com>
+In-Reply-To: <20210817012754.8710-12-digetx@gmail.com>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Tue, 17 Aug 2021 14:04:38 +0200
+Message-ID: <CAPDyKFrax-EYtO03W5QWM2tcWLWeMM8hHZCRYFcsenuiP2zObQ@mail.gmail.com>
+Subject: Re: [PATCH v8 11/34] gpu: host1x: Add runtime PM and OPP support
+To: Dmitry Osipenko <digetx@gmail.com>
+Cc: Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>, 
+ Viresh Kumar <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>, 
+ Peter De Schrijver <pdeschrijver@nvidia.com>,
+ Mikko Perttunen <mperttunen@nvidia.com>, 
+ Peter Chen <peter.chen@kernel.org>, Mark Brown <broonie@kernel.org>, 
+ Lee Jones <lee.jones@linaro.org>,
+ =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+ Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
  Richard Weinberger <richard@nod.at>, 
- Vignesh Raghavendra <vigneshr@ti.com>,
- Kirill Shilimanov <kirill.shilimanov@huawei.com>, 
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, 
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
- "ldv-project@linuxtesting.org" <ldv-project@linuxtesting.org>
+ Miquel Raynal <miquel.raynal@bootlin.com>, Lucas Stach <dev@lynxeye.de>, 
+ Stefan Agner <stefan@agner.ch>, Adrian Hunter <adrian.hunter@intel.com>, 
+ Mauro Carvalho Chehab <mchehab@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-tegra <linux-tegra@vger.kernel.org>, 
+ Linux PM <linux-pm@vger.kernel.org>, Linux USB List <linux-usb@vger.kernel.org>,
+ linux-staging@lists.linux.dev, linux-spi@vger.kernel.org, 
+ linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ linux-mmc <linux-mmc@vger.kernel.org>, 
+ Linux Media Mailing List <linux-media@vger.kernel.org>,
+ dri-devel <dri-devel@lists.freedesktop.org>, 
+ DTML <devicetree@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210817_044744_473138_47DBD36A 
-X-CRM114-Status: GOOD (  45.89  )
+X-CRM114-CacheID: sfid-20210817_050517_978193_50D1564C 
+X-CRM114-Status: GOOD (  27.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,115 +109,153 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVHVlLCBBdWcgMTcsIDIwMjEgYXQgMTI6MDggUE0gRXZnZW55IE5vdmlrb3YgPG5vdmlrb3ZA
-aXNwcmFzLnJ1PiB3cm90ZToKPiBPbiAxMi4wOC4yMDIxIDE1OjEzLCBBbmR5IFNoZXZjaGVua28g
-d3JvdGU6Cj4gPiBPbiBUaHVyc2RheSwgQXVndXN0IDEyLCAyMDIxLCBFdmdlbnkgTm92aWtvdiA8
-bm92aWtvdkBpc3ByYXMucnUKPiA+IDxtYWlsdG86bm92aWtvdkBpc3ByYXMucnU+PiB3cm90ZToK
-PiA+Cj4gPiAgICAgSXQgc2VlbXMgdGhhdCBteGljX25mY19wcm9iZSgpIG1pc3NlZCBpbnZvY2F0
-aW9uIG9mCj4gPiAgICAgbXhpY19uZmNfY2xrX2VuYWJsZSgpLiBUaGUgcGF0Y2ggZml4ZWQgdGhh
-dC4gSW4gYWRkaXRpb24sIGVycm9yCj4gPiAgICAgaGFuZGxpbmcKPiA+ICAgICB3YXMgcmVmaW5l
-ZCBhcHByb3ByaWF0ZWx5Lgo+ID4KPiA+IE5BSy4gVW50aWwgeW91IHByb3ZpZGUgYSBkZWVwZXIg
-YW5hbHlzaXMsIGxpa2UgaG93IHRoaXMgd29ya3MgYmVmb3JlCj4gPiB5b3VyIGNoYW5nZS4KPiA+
-Cj4gPiBQbGVhc2UsIGRvbuKAmXQgYmxpbmRseSBnZW5lcmF0ZSBwYXRjaGVzLCB0aGlzIGNhbiBl
-dmVuIHlvdXIgYm90IGRvLAo+ID4ganVzdCB0aGluayBhYm91dCBlYWNoIGNoYW5nZSBhbmQgcHJl
-ZmVyYWJsZSB0ZXN0IG9uIHRoZSByZWFsIGhhcmR3YXJlLgo+ID4KPiA+IFRoZSBhYm92ZSBpcyB0
-byBhbGwgeW91ciBsb3ZlbHkgY29udHJpYnV0aW9ucy4KPgo+IEkgY29tcGxldGVseSBhZ3JlZSB3
-aXRoIHlvdSB0aGF0IHRlc3RpbmcgYW5kIGRlYnVnZ2luZyBvbiB0aGUgcmVhbAo+IGhhcmR3YXJl
-IGlzIGluZGlzcGVuc2FibGUgc2luY2UgdGhpcyBjYW4gaGVscCB0byByZWFzb24gYWJvdXQgYm90
-aCBmb3VuZAo+IGJ1Z3MgYW5kIHBhdGNoZXMgc3VnZ2VzdGVkLiBOZXZlcnRoZWxlc3MsIHRoZXJl
-IGFyZSBzZXZlcmFsIGNhc2VzIHdoZW4KPiB0aGlzIGRvZXMgbm90IHdvcmsuIFRoZSBtb3N0IG9i
-dmlvdXMgb25lIGlzIGxhY2sgb2YgYXBwcm9wcmlhdGUgZGV2aWNlcwo+IG9uIHRoZSBzcG90IHRo
-YXQgaXMgbm90IGFuIG9ic3RhY2xlIGZvciBzdGF0aWMgYW5hbHlzaXMuCj4KPiBNeSBwYXRjaGVz
-IGFyZSBiYXNlZCBvbiByZXN1bHRzIG9mIHN0YXRpYyB2ZXJpZmljYXRpb24gKHNvZnR3YXJlIG1v
-ZGVsCj4gY2hlY2tpbmcpLiBJbiBhIG51dHNoZWxsLCB0aGlzIGFwcHJvYWNoIGFsbG93cyBhbmFs
-eXppbmcgdGFyZ2V0IHByb2dyYW1zCj4gbW9yZSBhY2N1cmF0ZWx5IGluIGNvbXBhcmlzb24gd2l0
-aCB3aWRlbHkgdXNlZCBzdGF0aWMgYW5hbHlzaXMgdG9vbHMuCj4gQnV0IHRoaXMgaXMgbm90IGZv
-ciBmcmVlLiBVc3VhbGx5IGl0IG5lZWRzIG11Y2ggbW9yZSBjb21wdXRhdGlvbmFsCj4gcmVzb3Vy
-Y2VzIHRvIGdldCBzb21ldGhpbmcgbWVhbmluZ2Z1bCAoaW4gYSBnZW5lcmFsIGNhc2UgdGhlIHRh
-c2sgaXMKPiB1bmRlY2lkYWJsZSkuIE1vZGVybiBjb21wdXRlciBzeXN0ZW1zIHNvbHZlIHRoaXMg
-aXNzdWUgcGFydGlhbGx5LiBXb3JzZQo+IGlzIHRoYXQgdGhvcm91Z2ggc3RhdGljIGFuYWx5c2lz
-IG5lZWRzIG1vcmUgb3IgbGVzcyBjb21wbGV0ZSBhbmQgY29ycmVjdAo+IG1vZGVscyBvZiBlbnZp
-cm9ubWVudHMgZm9yIHRhcmdldCBwcm9ncmFtcy4gRm9yIGluc3RhbmNlLCBmb3IgbG9hZGFibGUK
-PiBrZXJuZWwgbW9kdWxlcyBpdCBpcyBuZWNlc3NhcnkgdG8gc3BlY2lmeSBjb3JyZWN0IHNlcXVl
-bmNlcyBvZiBjYWxsYmFjawo+IGludm9jYXRpb25zLCBpbml0aWFsaXplIHRoZWlyIGFyZ3VtZW50
-cyBhdCBsZWFzdCB0byBzb21lIGV4dGVudCBhbmQKPiBkZXZlbG9wIG1vZGVscyBvZiBzb21lIHZp
-dGFsIGZ1bmN0aW9ucyBsaWtlIGt6YWxsb2MoKS4gTW9yZW92ZXIsIGl0IGlzCj4gbmVjZXNzYXJ5
-IHRvIHNwZWNpZnkgcmVxdWlyZW1lbnRzIGlmIG9uZSB3YW50cyB0byBzZWFyY2ggZm9yIHNvbWV0
-aGluZwo+IHNwZWNpYWwgcmF0aGVyIHRoYW4gTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlcy4gV2Ug
-d2VyZSBhYmxlIHRvIGRldm90ZSBhCj4gcmVsYXRpdmVseSBzbWFsbCBwYXJ0IG9mIG91ciBwcm9q
-ZWN0IHRvIGRldmVsb3BtZW50IG9mIGVudmlyb25tZW50Cj4gbW9kZWxzIGFuZCByZXF1aXJlbWVu
-dCBzcGVjaWZpY2F0aW9ucyBmb3IgdmVyaWZpY2F0aW9uIG9mIHRoZSBMaW51eAo+IGtlcm5lbC4g
-QWxzbywgd2Ugc3BlbnQgbm90IHNvIG11Y2ggdGltZSBmb3IgYXBwbGljYXRpb24gb2Ygb3VyIGZy
-YW1ld29yawo+IGZvciBvcGVuIHNvdXJjZSBkZXZpY2UgZHJpdmVycy4gTmV2ZXJ0aGVsZXNzLCB0
-aGlzIGhlbHBlZCB0byBmaW5kIG91dAo+IHF1aXRlIGEgbG90IG9mIGJ1Z3MgbWFueSBvZiB3aGlj
-aCBhcmUgdHJpY2t5IGVub3VnaC4gSWYgeW91IGFyZQo+IGludGVyZXN0ZWQgaW4gbW9yZSBkZXRh
-aWxzIEkgY2FuIHNlbmQgeW91IG91ciBsYXN0IHBhcGVyIGFuZCBwcmVzZW50YXRpb24uCgpJdCBp
-cyBnb29kIGFuZCB0aGFua3MgZm9yIHlvdXIgY29udHJpYnV0aW9uIQoKPiBNb3N0IG91ciBidWcg
-cmVwb3J0cyB3ZXJlIGFjY2VwdGVkIGJ5IGRldmVsb3BlcnMuIFJhcmVseSB0aGV5IHByZWZlcnJl
-ZAo+IHRvIGZpeCBidWdzIGFjY29yZGluZyB0byB0aGVpciBuZWVkcyBhbmQgdmlzaW9uLCB0aGF0
-IGlzIGVzcGVjaWFsbHkgdGhlCj4gY2FzZSBmb3IgY29uc2lkZXJhYmxlIGNoYW5nZXMgdGhhdCBk
-byBuZWVkIGFwcHJvcHJpYXRlIGhhcmR3YXJlIGFuZAo+IHRlc3RpbmcuIEp1c3QgYSBmZXcgb3Vy
-IGJ1ZyByZXBvcnRzIHdlcmUgaWdub3JlZCBvciByZWplY3RlZC4KClRoaXMgcmF0aW8gaXMgbm90
-IGEgcG9pbnQuIEkgaG9wZSB5b3UgbGVhcm50IGZyb20gdGhlIFVNTiBjYXNlLgoKPiBJbiB0aGUK
-PiBsYXR0ZXIgY2FzZSBkZXZlbG9wZXJzIG9mdGVuIHBvaW50ZWQgb3V0IHVzIHdoYXQgaXMgd3Jv
-bmcgd2l0aCBvdXIKPiBjdXJyZW50IHVuZGVyc3RhbmRpbmcgYW5kIG1vZGVscyBvZiB0aGUgZGV2
-aWNlIGRyaXZlciBlbnZpcm9ubWVudCBvcgo+IHJlcXVpcmVtZW50IHNwZWNpZmljYXRpb25zLiBX
-ZSBhbHdheXMgd2VsY29tZSB0aGlzIGZlZWRiYWNrIGFzIGl0IGFsbG93cwo+IHVzIHRvIHJlZmlu
-ZSB0aGUgc3R1ZmYgYW5kLCB0aHVzLCB0byBhdm9pZCBmYWxzZSBhbGFybXMgYW5kIGludmFsaWQK
-PiBwYXRjaGVzLiBTb21lIGRldmVsb3BlcnMgcmVxdWVzdGVkIHNjcmlwdHMgdXNlZCBmb3IgZmlu
-ZGluZyByZXBvcnRlZAo+IGlzc3VlcywgYnV0IGl0IGlzIG5vdCBlYXN5IHRvIGFkZCBvciByZWZl
-ciB0aGVtIGluIHBhdGNoZXMgbGlrZSwgc2F5LAo+IGZvciBDb2NjaW5lbGxlIHNpbmNlIHRoZXJl
-IGlzIGEgYnVuY2ggb2YgZXh0ZXJuYWwgZmlsZXMgZGV2ZWxvcGVkIGluCj4gZGlmZmVyZW50IGRv
-bWFpbi1zcGVjaWZpYyBsYW5ndWFnZXMgYXMgd2VsbCBhcyBhIGh1Z2UgdmVyaWZpY2F0aW9uCj4g
-ZnJhbWV3b3JrLCB0aGF0IG5vYm9keSB3aWxsIGluY2x1ZGUgaW50byB0aGUgc291cmNlIHRyZWUg
-b2YgdGhlIExpbnV4Cj4ga2VybmVsLgo+Cj4gUmVnYXJkaW5nIHlvdXIgY2xhaW0uIFdlIGRvIG5v
-dCBoYXZlIGFuIGFwcHJvcHJpYXRlIGhhcmR3YXJlLiBBcyB1c3VhbAo+IHRoaXMgYnVnIHJlcG9y
-dCB3YXMgcHJlcGFyZWQgb24gdGhlIGJhc2Ugb2Ygc3RhdGljIHZlcmlmaWNhdGlvbiByZXN1bHRz
-Cj4gcHVyZWx5LiBJZiB5b3Ugd2FudCB0byBzZWUgb24gYSBwYXJ0aWN1bGFyIGFydGlmYWN0IEkg
-YmFzZWQgbXkgZGVjaXNpb24KPiBvbiwgSSBjYW4gc2hhcmUgYSBsaW5rIHRvIGEgdmlzdWFsaXpl
-ZCB2aW9sYXRpb24gd2l0bmVzcyBwcm92aWRlZCBieSBhCj4gdmVyaWZpY2F0aW9uIHRvb2wuIFdl
-IGhhdmUgbm90IGFueSBib3RzIHNpbmNlIHVzZWQgdmVyaWZpY2F0aW9uIHRvb2xzIGRvCj4gbm90
-IGdpdmUgYW55IHN1Z2dlc3Rpb25zIG9uIHRoZSBpc3N1ZSByb290cy4gTWF5YmUgaW4gc29tZSBj
-YXNlcyBpdCBpcwo+IHBvc3NpYmxlIHRvIGdlbmVyYXRlIHBhdGNoZXMgYXV0b21hdGljYWxseSBv
-biB0aGUgYmFzZSBvZiB0aGVzZQo+IHZlcmlmaWNhdGlvbiByZXN1bHRzIGxpa2UsIHNheSwgQ29j
-Y2luZWxsZSBkb2VzLCBidXQgaXQgaXMgYW5vdGhlciBiaWcKPiB3b3JrLiBPZiBjb3Vyc2UsIGl0
-IGlzIG5lY2Vzc2FyeSB0byB0ZXN0IHRoZSBkcml2ZXIgYW5kIGNvbmZpcm0gdGhhdAo+IHRoZXJl
-IGlzIGFuIGlzc3VlIG9yIHJlamVjdCB0aGUgcGF0Y2guIEFzIGFsd2F5cyB0aGUgZmVlZGJhY2sg
-aXMgd2VsY29tZS4KCk15IHBvaW50IGlzIHRoYXQgdGhlIHR5cGUgb2YgcGF0Y2hlcyB5b3UgYXJl
-IHNlbmRpbmcgZXZlbiBhIGJvdCBtYXkKZ2VuZXJhdGUgKGZvciBleGFtcGxlLCBzaW1wbGUgcGF0
-Y2hlcyB0aGUgTEtQIHByb2plY3QgZ2VuZXJhdGVzIGFsb25nCndpdGggcmVwb3J0cykuIFRoZSBw
-cm9ibGVtIHdpdGggYWxsIHRlYW1zIHRoYXQgYXJlIHdvcmtpbmcgd2l0aCBzdGF0aWMKYW5hbHlz
-ZXJzIGFnYWluc3QgTGludXgga2VybmVsIGlzIHRoYXQgdGhleSBzbyBwcm91ZCBvZiB0aGVpciB0
-b29scwphbmQgdHJ5aW5nIHRvIGZsb29kIHRoZSBtYWlsaW5nIGxpc3RzIHdpdGggcXVpY2sgYW5k
-IG5pY2UgZml4ZXMsIGZyb20Kd2hpY2ggc29tZSBhcmUgY2h1cm4sIHNvbWUgYXJlIHNpbXBsZSBi
-YWQsIHNvbWUgYXJlIF9icmluZ2luZ18KcmVncmVzc2lvbnMsIGFuZCBvbmx5IHNvbWUgYXJlIGdv
-b2QgZW5vdWdoLiBUaGUgcmF0aW8gc2VlbXMgdG8gbWUgbGlrZQoxIHRvIDQgYXQgbW9zdC4gU28s
-IDc1JSBwYXRjaGVzIGFyZSBub3QgbmVlZGVkIGFuZCBvbmx5IGFyZSBhIGJ1cmRlbgpvbiBtYWlu
-dGFpbmVycycgc2hvdWxkZXJzLgoKR29vZCBwYXRjaCBzaG91bGQgaGF2ZSBhIGdvb2QgY29tbWl0
-IG1lc3NhZ2UgWzFdLiBUaGUgbWVzc2FnZSBzaG91bGQKaW5jbHVkZSBhbiBhbmFseXNpcyB0byBl
-eHBsYWluIHdoeSB0aGUgY29uc2lkZXJlZCBjaGFuZ2UgaXMgbmVlZGVkIGFuZAp3aGF0IHRoZSBw
-cm9ibGVtIGl0IHRyaWVzIHRvIHNvbHZlLiBOZWl0aGVyIG9mIHRoaXMgSSBoYXZlIHNlZW4gaW4K
-eW91ciBwYXRjaC4gQWxzbywgeW91IG5lZWQgdG8gdGFrZSBpbnRvIGFjY291bnQgdGhlIGNyZWRp
-dHMgYW5kIHRhZ3MKdGhhdCBMaW51eCBrZXJuZWwgaXMgdXNpbmcgKEZpeGVzLCBTdWdnZXN0ZWQt
-YnksIFJlcG9ydGVkLWJ5LCBldGMpIGl0CndpbGwgYWRkIGEgYml0IG9mIHVuaWZpY2F0aW9uLiBB
-bHNvLCB3aGlsZSBmaXhpbmcgcHJvYmxlbXMgdGhlc2UKcGF0Y2hlcyBvZnRlbiBtaXNzIHRoZSBi
-aWcgcGljdHVyZSwgYW5kIGNvbnRyaWJ1dG9ycyBzaG91bGQgdGhpbmsKb3V0c2lkZSB0aGUgYm94
-ICh0aGlzIGlzIGEgcHJvYmxlbSBvZiA5NSUgb2Ygc3VjaCBjb250cmlidXRpb25zLCBvbmUKZXhh
-bXBsZSBpcyB5b3VyIHBhdGNoIHdoZXJlIEkgcmVjb21tZW5kZWQgY29tcGxldGVseSByZXdyaXRp
-bmcgdGhlCi0+cHJvYmUoKSBhcHByb2FjaCkuIFRoYXQgc2FpZCwgSSBkb24ndCB3YW50IHRvIHNl
-ZSB0aGUgZmxvb2Qgb2YKcGF0Y2hlcyB3aXRoIDc1JSBtaXNzIHJhdGlvLCBJIHdhbnQgdG8gc2Vl
-IG1heWJlIDV4LCAxMHggbGVzcyBwYXRjaGVzLApidXQgZWFjaCBvZiB0aGVtIGlzIGNhcmVmdWxs
-eSB0aG91Z2h0IHRocm91Z2ggYW5kIF9pZGVhbGx5XyBiZSB0ZXN0ZWQKYmVzaWRlcyBjb21waWxh
-dGlvbi4KCkFuZCB0aGFuayB5b3UgZm9yIHlvdXIgd29yayEKCj4gSWYgeW91IGFyZSBub3QgZ3Jh
-dGlmaWVkIHdpdGggbXkgZXhwbGFuYXRpb24gaXQgd291bGQgYmUgZ3JlYXQgaWYgeW91Cj4gYW5k
-IG90aGVyIGRldmVsb3BlcnMgd2lsbCBzdWdnZXN0IGFueSBpZGVhcyBob3cgdG8gZW5oYW5jZSB0
-aGUgcHJvY2Vzcwo+IGlmIHlvdSBmaW5kIHRoaXMgcmVsZXZhbnQuCgpbMV06IGh0dHBzOi8vY2hy
-aXMuYmVhbXMuaW8vcG9zdHMvZ2l0LWNvbW1pdC8KCi0tIApXaXRoIEJlc3QgUmVnYXJkcywKQW5k
-eSBTaGV2Y2hlbmtvCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0
-cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Tue, 17 Aug 2021 at 03:30, Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> Add runtime PM and OPP support to the Host1x driver. It's required for
+> enabling system-wide DVFS and supporting dynamic power management using
+> a generic power domain. For the starter we will keep host1x always-on
+> because dynamic power management require a major refactoring of the driver
+> code since lot's of code paths will need the RPM handling and we're going
+> to remove some of these paths in the future. Host1x doesn't consume much
+> power so it is good enough, we at least need to resume Host1x in order
+> to initialize the power state.
+>
+> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+> Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
+> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+
+[...]
+
+> +
+>  static int host1x_probe(struct platform_device *pdev)
+>  {
+>         struct host1x *host;
+> @@ -394,6 +423,10 @@ static int host1x_probe(struct platform_device *pdev)
+>         /* set common host1x device data */
+>         platform_set_drvdata(pdev, host);
+>
+> +       err = devm_tegra_core_dev_init_opp_table_simple(&pdev->dev);
+> +       if (err)
+> +               return err;
+> +
+>         host->regs = devm_ioremap_resource(&pdev->dev, regs);
+>         if (IS_ERR(host->regs))
+>                 return PTR_ERR(host->regs);
+> @@ -423,12 +456,9 @@ static int host1x_probe(struct platform_device *pdev)
+>                 return err;
+>         }
+>
+> -       host->rst = devm_reset_control_get(&pdev->dev, "host1x");
+> -       if (IS_ERR(host->rst)) {
+> -               err = PTR_ERR(host->rst);
+> -               dev_err(&pdev->dev, "failed to get reset: %d\n", err);
+> +       err = host1x_get_resets(host);
+> +       if (err)
+>                 return err;
+> -       }
+>
+>         err = host1x_iommu_init(host);
+>         if (err < 0) {
+> @@ -443,22 +473,10 @@ static int host1x_probe(struct platform_device *pdev)
+>                 goto iommu_exit;
+>         }
+>
+> -       err = clk_prepare_enable(host->clk);
+> -       if (err < 0) {
+> -               dev_err(&pdev->dev, "failed to enable clock\n");
+> -               goto free_channels;
+> -       }
+> -
+> -       err = reset_control_deassert(host->rst);
+> -       if (err < 0) {
+> -               dev_err(&pdev->dev, "failed to deassert reset: %d\n", err);
+> -               goto unprepare_disable;
+> -       }
+> -
+
+Removing the clk_prepare_enable() and reset_control_deassert() from
+host1x_probe(), might not be a good idea. See more about why, below.
+
+>         err = host1x_syncpt_init(host);
+>         if (err) {
+>                 dev_err(&pdev->dev, "failed to initialize syncpts\n");
+> -               goto reset_assert;
+> +               goto free_channels;
+>         }
+>
+>         err = host1x_intr_init(host, syncpt_irq);
+> @@ -467,10 +485,14 @@ static int host1x_probe(struct platform_device *pdev)
+>                 goto deinit_syncpt;
+>         }
+>
+> -       host1x_debug_init(host);
+> +       pm_runtime_enable(&pdev->dev);
+>
+> -       if (host->info->has_hypervisor)
+> -               host1x_setup_sid_table(host);
+> +       /* the driver's code isn't ready yet for the dynamic RPM */
+> +       err = pm_runtime_resume_and_get(&pdev->dev);
+
+If the driver is being built with the CONFIG_PM Kconfig option being
+unset, pm_runtime_resume_and_get() will return 0 to indicate success -
+and without calling the ->runtime_resume() callback.
+In other words, the clock will remain gated and the reset will not be
+deasserted, likely causing the driver to be malfunctioning.
+
+If the driver isn't ever being built with CONFIG_PM unset, feel free
+to ignore my above comments.
+
+Otherwise, if it needs to work both with and without CONFIG_PM being
+set, you may use the following pattern in host1x_probe() to deploy
+runtime PM support:
+
+"Enable the needed resources to probe the device"
+pm_runtime_get_noresume()
+pm_runtime_set_active()
+pm_runtime_enable()
+
+"Before successfully completing probe"
+pm_runtime_put()
+
+> +       if (err)
+> +               goto deinit_intr;
+> +
+> +       host1x_debug_init(host);
+>
+>         err = host1x_register(host);
+>         if (err < 0)
+> @@ -486,13 +508,13 @@ static int host1x_probe(struct platform_device *pdev)
+>         host1x_unregister(host);
+>  deinit_debugfs:
+>         host1x_debug_deinit(host);
+> +
+> +       pm_runtime_put(&pdev->dev);
+> +       pm_runtime_disable(&pdev->dev);
+> +deinit_intr:
+>         host1x_intr_deinit(host);
+>  deinit_syncpt:
+>         host1x_syncpt_deinit(host);
+> -reset_assert:
+> -       reset_control_assert(host->rst);
+> -unprepare_disable:
+> -       clk_disable_unprepare(host->clk);
+>  free_channels:
+>         host1x_channel_list_free(&host->channel_list);
+>  iommu_exit:
+
+[...]
+
+Kind regards
+Uffe
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
