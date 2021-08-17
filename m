@@ -8,14 +8,14 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E925C4338F
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 01:31:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 963CAC43216
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 01:32:19 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F266A60E09
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 01:31:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F266A60E09
+	by mail.kernel.org (Postfix) with ESMTPS id 5F6E560241
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 01:32:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5F6E560241
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,52 +24,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7I/dHO6D8dYanpsZ3E/8NpQdWPFSS5BssNrWClWdmuA=; b=Q6EYglXB5jf/WG
-	602hkI1r8lqUXK8dU2OSXQflVB0nPhEsDiKThg3/MjTTfwX80//M2EuvFIFOFY6phyhGOssaM3lur
-	wOPm3I0IxU7vJYlNoa20+S/BmWUpLTg950fe9VY0HB2LxMRYHH12W2Rk/UAHzfft2SSDnlHpyl1Q8
-	48wUpM90ilL6xgAcqYgRIDPOr3v+0NpQApsaHvc/zdQAX5j5mtSo0n1DPkpJdNoKPiT++t9v09Z0p
-	9UJVVZegasKfMyK4L7R6wI7aTLX2HXYxagWb5bz7w3IS7mNMMKA3ZS6DpEh5gENZi6R2+wVSU2SX3
-	HQYLasrEKQFTejif6Usg==;
+	List-Owner; bh=ESabPimUjpx5eqvB5jSgSuKUHAZF1uZiSVpXebSjSv0=; b=3rkPrKZL7g9f5P
+	FTqolkZLh/+8X/UHw9gzfRIosAVHgOoZDwM7QIAHA/OdScoo8m1br95wo5y3drNEcgNGT9CYjVjRV
+	wyyGuW2hG29a2PpGInEia7Wa+OUyg7GoMirNb5vHW66G1f/punM4meiAVEu8nhGE8cnYk0Ptc9f7e
+	Ikk5S11gxlReQCs1Iwcy6mWY+J9lzIEq+pHZ2TaFBkbENzeJDx11MGkkcERVHRZIFImDnWypm5hP8
+	u8o1Woophxhp2hlYz17F+rcEWy6XuDbXEiPy4TmH2RVjo7EXiMDLrBIqP9Yzeu9e4n0ghn7bMKmbf
+	olzauge/nGqASn0xpzmQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mFnwg-000hKz-P1; Tue, 17 Aug 2021 01:31:14 +0000
-Received: from mail-lj1-x22a.google.com ([2a00:1450:4864:20::22a])
+	id 1mFnx8-000hWA-5L; Tue, 17 Aug 2021 01:31:42 +0000
+Received: from mail-lj1-x230.google.com ([2a00:1450:4864:20::230])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mFnvb-000gd7-Jm
- for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 01:30:08 +0000
-Received: by mail-lj1-x22a.google.com with SMTP id h17so30145632ljh.13
- for <linux-mtd@lists.infradead.org>; Mon, 16 Aug 2021 18:30:07 -0700 (PDT)
+ id 1mFnvc-000gdv-Kf
+ for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 01:30:10 +0000
+Received: by mail-lj1-x230.google.com with SMTP id f2so8516577ljn.1
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Aug 2021 18:30:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=wojn7XneOlcjLQTZlMLpcmbGjIOEPaqexo+f2WGyphI=;
- b=Xq17kIc6GM80MD2xhnYjU7c3bLn4H5tuMTvcdBwNy9/g5psmoz3S1gVRRgj0w10xku
- S/OHY+MF1OPdTYbYPPJFPFeY4WU63WLX4lpEqf+XHRBxzSyKtJkRoLEZsNrLQUD3aJsJ
- hyYwTr0Z48Wws5sZA3cunYGug92vOCdPP0286zyvF+xLx0QRLRMNonrX8WWxK9M03w18
- x2KNq+2YuwXI/DgRg4TCi8S5zBrr/YRsvFRqgRHtf1EkBhMZn+P2C2QCgMgcjYbkv0RV
- MYPdW+7zuuviGgSMO06r+pSAqvsVA5K8VmFJ2RBZodvpwXKzfElGK+ZIvdNgJ/4RFBSg
- 0SYw==
+ bh=whXbmpiV9uZrIWQEZSp5RRTDQ3TFfbRun1N2tfG7MWk=;
+ b=qVuy6Otl0UWSQ+/nZMjDzykD2sSUZDst3NL/JVapiLI3z3yUfsGAUcncelhMR38Lym
+ 1xjVPKDNQoeHSdojhaD4CNMJ2Dgxsx7ya2LEvfAdSM6jyMIhg0fAggQvAzFKMqqVOL9O
+ IPbH29DcWGT56C4Udgprd2zRCBzNWyrc1+xqzNB9hh3j27fQeaGpUX2Jl9g2CjR6dsJE
+ H3f4BOVlgw85yDYhZPvxDoAPPZKXld5HwD4iSdkylVBs+x8a7x/zUr2T15/KjxPp7TBo
+ OcMaTgNBzyb8Gi7/p8ZpOcNZ09XNRqw/14qoRIg6z6RvIG29dGNOEq13dllv4PGdI+NN
+ gRvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=wojn7XneOlcjLQTZlMLpcmbGjIOEPaqexo+f2WGyphI=;
- b=AweSwIvFpUlQFKTRAkh2z7jLGOGB+db4i5ebOb3ZPwXh8E3DwhBgyBWgdKYz6DNK6c
- X6GI0bSl8x5RAC9UCXIXmw+cxslPh8yb6raPQPseIkrRYW99Flz6tXXk/PBqREkpLju7
- u4ixMyIGMmj+VbXJzg540W3LKoI1/BvfbN+B+Bcvj2+56UUsGgLPCVRBkb0+5d2PSEXr
- y08MpGinHEgpL9ZkZC7TkHIE21Yewbr1VcTZt2UiQ6ZAVHliqx2cghs0fserf7w1kFLS
- mgqKymzEvN92qaAhi/rBl6uweRASOFHbW58gHluINMuK5OUTHpVDQZJLYWVGI18TS6CJ
- 1p3Q==
-X-Gm-Message-State: AOAM5333nxi1EoZcPEeJntN3CX4cMq6gbQ6iF9Qf20hHauchV20Ynlu3
- Xs4rkTvhWxPabUiw8HOoF1c=
-X-Google-Smtp-Source: ABdhPJzrAiKknpayvUXn0AhIlpxoa1tdB8UGRkYEeNvPAIQMKmclxsnV8VxQdGuN29ZUiGnqlWbG1A==
-X-Received: by 2002:a2e:b0e2:: with SMTP id h2mr848215ljl.23.1629163806184;
- Mon, 16 Aug 2021 18:30:06 -0700 (PDT)
+ bh=whXbmpiV9uZrIWQEZSp5RRTDQ3TFfbRun1N2tfG7MWk=;
+ b=fR0n4+HPKUhH7rWL+Wa99qgoXFa0iBaYfNXmSAs3Srx1DrLqKOKq1gGEQK4FlSfDgd
+ gHfpXgiX1guNiV43uQl+/RcXsWwnxuueO4FaYeG/bsa0iG2WA2fPD0wR4WG5tv0Q57Rp
+ ETIMhNzhslCqYlClDIxADhC1POVV1Rl9sxOZlV57tA072NMeIR9GjkYURszZ0qnhgQGn
+ gMwFapMRziisF1zfw3qWtOKoRoL9XmxuhNiLZk76NnfbGkB4PdeiBg0XAYFYzUuUyfDf
+ jy7Y2il06hK5r61pALt8I3cPJQoFbuk3SPFE/hVJ3oTTno6biRWW42/374K5EYNRVGV0
+ cYUg==
+X-Gm-Message-State: AOAM532i5luFjtbkkv8/bHn/BhxjwamyOtU6pfC5CH0zxdHG65M0TiDD
+ JtbMUoRDhPY2l8IkygDHLU8=
+X-Google-Smtp-Source: ABdhPJx0BGOHbSZlE+uingQVCD7QPlpfvESjI/6O9+jCEZkAPokxg6m3XSjkH1CoIjJ45grVv1YxFQ==
+X-Received: by 2002:a2e:5758:: with SMTP id r24mr870243ljd.432.1629163807370; 
+ Mon, 16 Aug 2021 18:30:07 -0700 (PDT)
 Received: from localhost.localdomain (46-138-85-91.dynamic.spd-mgts.ru.
  [46.138.85.91])
- by smtp.gmail.com with ESMTPSA id g30sm46607lfj.298.2021.08.16.18.30.05
+ by smtp.gmail.com with ESMTPSA id g30sm46607lfj.298.2021.08.16.18.30.06
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 16 Aug 2021 18:30:05 -0700 (PDT)
+ Mon, 16 Aug 2021 18:30:07 -0700 (PDT)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>,
@@ -94,17 +94,16 @@ Cc: linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
  linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
  dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
  linux-clk@vger.kernel.org
-Subject: [PATCH v8 04/34] soc/tegra: Add
- devm_tegra_core_dev_init_opp_table_simple()
-Date: Tue, 17 Aug 2021 04:27:24 +0300
-Message-Id: <20210817012754.8710-5-digetx@gmail.com>
+Subject: [PATCH v8 05/34] soc/tegra: Use dev_pm_opp_sync()
+Date: Tue, 17 Aug 2021 04:27:25 +0300
+Message-Id: <20210817012754.8710-6-digetx@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210817012754.8710-1-digetx@gmail.com>
 References: <20210817012754.8710-1-digetx@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210816_183007_670769_64CA6CC0 
-X-CRM114-Status: GOOD (  14.84  )
+X-CRM114-CacheID: sfid-20210816_183008_741224_614AD3DF 
+X-CRM114-Status: GOOD (  13.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -121,37 +120,62 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Only couple drivers need to get the -ENODEV error code and explicitly
-initialize the performance state. Add new helper that allows to avoid
-the extra boilerplate code in majority of drivers.
+Use new generic dev_pm_opp_sync() helper which initializes voltage vote
+based on clock rate.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- include/soc/tegra/common.h | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/soc/tegra/common.c | 30 +-----------------------------
+ 1 file changed, 1 insertion(+), 29 deletions(-)
 
-diff --git a/include/soc/tegra/common.h b/include/soc/tegra/common.h
-index af41ad80ec21..265ad90e45a2 100644
---- a/include/soc/tegra/common.h
-+++ b/include/soc/tegra/common.h
-@@ -39,4 +39,17 @@ devm_tegra_core_dev_init_opp_table(struct device *dev,
+diff --git a/drivers/soc/tegra/common.c b/drivers/soc/tegra/common.c
+index a42d4f98c078..dab1bacb41ab 100644
+--- a/drivers/soc/tegra/common.c
++++ b/drivers/soc/tegra/common.c
+@@ -39,34 +39,6 @@ bool soc_is_tegra(void)
+ 	return match != NULL;
  }
- #endif
  
-+static inline int
-+devm_tegra_core_dev_init_opp_table_simple(struct device *dev)
-+{
-+	struct tegra_core_opp_params params = {};
-+	int err;
-+
-+	err = devm_tegra_core_dev_init_opp_table(dev, &params);
-+	if (err != -ENODEV)
-+		return err;
-+
-+	return 0;
-+}
-+
- #endif /* __SOC_TEGRA_COMMON_H__ */
+-static int tegra_core_dev_init_opp_state(struct device *dev)
+-{
+-	unsigned long rate;
+-	struct clk *clk;
+-	int err;
+-
+-	clk = devm_clk_get(dev, NULL);
+-	if (IS_ERR(clk)) {
+-		dev_err(dev, "failed to get clk: %pe\n", clk);
+-		return PTR_ERR(clk);
+-	}
+-
+-	rate = clk_get_rate(clk);
+-	if (!rate) {
+-		dev_err(dev, "failed to get clk rate\n");
+-		return -EINVAL;
+-	}
+-
+-	/* first dummy rate-setting initializes voltage vote */
+-	err = dev_pm_opp_set_rate(dev, rate);
+-	if (err) {
+-		dev_err(dev, "failed to initialize OPP clock: %d\n", err);
+-		return err;
+-	}
+-
+-	return 0;
+-}
+-
+ /**
+  * devm_tegra_core_dev_init_opp_table() - initialize OPP table
+  * @dev: device for which OPP table is initialized
+@@ -118,7 +90,7 @@ int devm_tegra_core_dev_init_opp_table(struct device *dev,
+ 	}
+ 
+ 	if (params->init_state) {
+-		err = tegra_core_dev_init_opp_state(dev);
++		err = dev_pm_opp_sync(dev);
+ 		if (err)
+ 			return err;
+ 	}
 -- 
 2.32.0
 
