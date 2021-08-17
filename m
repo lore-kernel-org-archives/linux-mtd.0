@@ -8,14 +8,14 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 961BEC4338F
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 01:36:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA976C4338F
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 01:38:08 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 57BB660E90
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 01:36:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 57BB660E90
+	by mail.kernel.org (Postfix) with ESMTPS id 952CB60E09
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 01:38:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 952CB60E09
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,52 +24,53 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=00cXlQxEeO1Umvj+xK84FLsdE+uh7eUNiL9Q7qkRdkg=; b=sluieF7fM/i2ch
-	qtKkYDmAZ6fKZ3S1jWrw3K4d6hl7nyly4ktBRftuUPwVGRvRSO4gSMacugGa1WpHOu4MCFyN/P0G2
-	cU8+rQkiZft1elqNyPqrrY1xkUsDfZDu3WLiL+ZY0tKQWulZ62qRe961B7I2KaMgyLwaHX31CmVG9
-	sCfLQ4vzVQp7xiB4o/ysTHVeFXzCLgPeMrQwnFgkdxgvF1CjDWvrWqJHCs7hvaQoKkUkQzvTtG+Ii
-	M5gxbXgOS/qKwwSB2ayLrmSLzSJfryIsJYbwOAKYWQBLUD57lRmloTwegohTNrZY04sKHHHjmdExe
-	2UcTVUe7I1qmlhh/7+2Q==;
+	List-Owner; bh=h6VI5Dz75SNh2JFmbLZBt5Yn4fe8/73Iu2RGUp5DlMM=; b=kvOg+VVihCeZAb
+	boFuYGAyZbEfGCa+MtGck77WdmNNfyk1vxzT6mGIMk1IoSw42GdMCvS/8ahV5roXlD8C8rhkm6SCE
+	ZnCk41KKPOeeeGJiDek50CiFKWwzYkzPq5de78x+GEEMiqubldaQKZAEqy5G4FsIX0TgURjrdqLxX
+	I6QBjtBctdxWKygPBE4ZK59o3TcL2LISEN+iMbyQ0D8MBlKJV0gBDRXKuWZLjp/vBM2ePtXvuwNpW
+	+Dpu2p3HRm3/hShi5XulOLK9zWd2+BxgRl+lUwnPF0FaVHVCRZxjj72YYg3eAezUj5Ny38XsjwUlJ
+	majoFBfkfThv1EnsXszw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mFo1M-000ikd-Qx; Tue, 17 Aug 2021 01:36:05 +0000
-Received: from mail-lj1-x234.google.com ([2a00:1450:4864:20::234])
+	id 1mFo2m-000j1T-Kz; Tue, 17 Aug 2021 01:37:32 +0000
+Received: from mail-lf1-x130.google.com ([2a00:1450:4864:20::130])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mFnvh-000gig-L5
- for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 01:30:18 +0000
-Received: by mail-lj1-x234.google.com with SMTP id h9so30219152ljq.8
- for <linux-mtd@lists.infradead.org>; Mon, 16 Aug 2021 18:30:13 -0700 (PDT)
+ id 1mFnvj-000gkL-5P
+ for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 01:30:19 +0000
+Received: by mail-lf1-x130.google.com with SMTP id x27so38184512lfu.5
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Aug 2021 18:30:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=l81mhnshT1jOAdUmVwFRhCr1kUhvtG3KJjdpKuzou0A=;
- b=O20xXbpstS1K4NNNeIVcVXjBhGfcu2e5nNEJ5pDBYki1kIj4o5ZYIjru23tbYEGsyz
- r52Hf/+40WfMUNMEhvN72pmXl0XoPmEVNOOv8yUg6XmPcR6PW6ztKlm3dNhyGBEbaa7Y
- r09HKxsCu7pdY4G8ZxhjFl3L8Ms3XExvbjVxLlZReoy9dlFs4piRUc4FJoCVKmVfN6W+
- DvcxU+uSjJq+dyj9XuEHRIqCDane++wPVshyPW0s4dKK/D0v5UTDlCWSDUB7FBD6VcAn
- DSh/YDly+w0E3m8BW/O1X+usNpnRL02EHD/izGWDARukpTDuSfyZm9EWXzEP8jfQItxy
- Nwjw==
+ bh=yDP03amDwCEY6IiivIbDG+60+C+xV/Pv6sR1LEywSYo=;
+ b=gphWv3FSo4qRIr1+4cndtzGHAzH8uRp+6O2Jh/43ADFQ2pMlS0Zsrs64oMYobqkS1+
+ b+r1h2TK1Crc9j6X+uN6vCFja8kkAditXl7nED2zfthme0nAVoLLOVblgLJT5JpVCj+R
+ LfR3EOcOZfOce670ecAaUWKoQT2BaRWlSGfqtNf9gkptV64SWk8Yy2LhjWaPNS4B/2yg
+ ZH9n6SVsQ7h3ArNvDfuvdoWMQFNpXwFKw9JH3cLFSFGg1bwXydGhSafUNRFrJguIIS+g
+ hCdIcrxq+8nkeUjCdcCINJHyWfD/w5VpOJW5k8PzB+MFD+1UOWPCYR9812fnRTSW/ori
+ Susw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=l81mhnshT1jOAdUmVwFRhCr1kUhvtG3KJjdpKuzou0A=;
- b=NDbwxcAjzCPrtuRAIUCsBdu+Px6Qigve+cxvLPgvsWlpenQ6W/nS5rT3oNUPf62oDb
- K0C4erRUwsBl0ZXNwr2lUNnIfJ5GuJXK4BF9jDiWfR6ZmGMxMvVwekXcqJU/2z0HxIpy
- egJpNnuegIDfO/wSl6fcUcLUhxcHf/VxmLHhl+B8Rl+X6ZlpmMfsJwtVuqAaBlBT9Ncg
- w//CE7osaw6WKofrFoprUT15qzfaCo3oX0ervC6InS+AAJqDzNTe/4bpa3DdxHGIDH56
- 5lwPq4PV58Bu9t0Uyhq3e44j0bHqq3thr3jVXo5X2odXtKpRcM+f2z/s8l/DajLDnwr0
- o8Sw==
-X-Gm-Message-State: AOAM53022RTRd5Q0htpp9FicwbaczVgrmZGk9HJXj3hQaady4Mh3WsGo
- asiUMkam5BuuavQj1CRP+O4=
-X-Google-Smtp-Source: ABdhPJxhuZkUDfR36UaYb9aumi6B1iVfEXbSXNsdxNHhblZQHD87dEi21/QGQqgVOj5+f/BnA4ZsHw==
-X-Received: by 2002:a2e:8147:: with SMTP id t7mr859862ljg.126.1629163812262;
- Mon, 16 Aug 2021 18:30:12 -0700 (PDT)
+ bh=yDP03amDwCEY6IiivIbDG+60+C+xV/Pv6sR1LEywSYo=;
+ b=La0Ab6dOK89Q+PdXbz8U6x49hU0uvJ3003MuLPzknH4Uo2Qhw75TC2oDBq5dLLpqJU
+ KtVALiUXhj/bk3SMR3O/2kOiKliYDVHpys/EqF+agUfKhquuiKbxbdR8tlRUoE+5eE2L
+ SYpPVD4p2FGKPcXDBioeQR7VOcKXb82lSXnxcpKMlYV3uQwxQOk/trH34bz8BdQk/UeI
+ Ax7XmBy622fcxOE3wi+fzYDc1/T4w30Y3SgJlk7fb5oi1tRBsR+kyc3RbFFdALYBQz13
+ YNVYv0QiM0PVhqtMb3m9JCcWrxAPRwnMMO45XOZrQ2z8fMzKabdJ+iEYGa9c8RFmDYmi
+ P4bw==
+X-Gm-Message-State: AOAM533E6HeEQxfD07CBT6bT+dp4jPRtmkq/wPC6UmEURCTlsFGJmCCd
+ 1rFlkDlDaEXaWfGILqJTsBw=
+X-Google-Smtp-Source: ABdhPJzjQdDYehMh8DidNPOdRzuxuexyxo18C/Mv3HZHO/OdC52KIqt+4g3AhPBU7HeUyOcC1z48Rw==
+X-Received: by 2002:a05:6512:39d1:: with SMTP id
+ k17mr506834lfu.464.1629163813455; 
+ Mon, 16 Aug 2021 18:30:13 -0700 (PDT)
 Received: from localhost.localdomain (46-138-85-91.dynamic.spd-mgts.ru.
  [46.138.85.91])
- by smtp.gmail.com with ESMTPSA id g30sm46607lfj.298.2021.08.16.18.30.11
+ by smtp.gmail.com with ESMTPSA id g30sm46607lfj.298.2021.08.16.18.30.12
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 16 Aug 2021 18:30:11 -0700 (PDT)
+ Mon, 16 Aug 2021 18:30:13 -0700 (PDT)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>,
@@ -94,17 +95,16 @@ Cc: linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
  linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
  dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
  linux-clk@vger.kernel.org
-Subject: [PATCH v8 09/34] dt-bindings: host1x: Document Memory Client resets
- of Host1x, GR2D and GR3D
-Date: Tue, 17 Aug 2021 04:27:29 +0300
-Message-Id: <20210817012754.8710-10-digetx@gmail.com>
+Subject: [PATCH v8 10/34] gpu: host1x: Add host1x_channel_stop()
+Date: Tue, 17 Aug 2021 04:27:30 +0300
+Message-Id: <20210817012754.8710-11-digetx@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210817012754.8710-1-digetx@gmail.com>
 References: <20210817012754.8710-1-digetx@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210816_183013_802128_FC1E4D42 
-X-CRM114-Status: GOOD (  12.81  )
+X-CRM114-CacheID: sfid-20210816_183015_293234_05198D9A 
+X-CRM114-Status: GOOD (  12.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -121,44 +121,51 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Memory Client should be blocked before hardware reset is asserted in order
-to prevent memory corruption and hanging of memory controller.
+Add host1x_channel_stop() which waits till channel becomes idle and then
+stops the channel hardware. This is needed for supporting suspend/resume
+by host1x drivers since the hardware state is lost after power-gating,
+thus the channel needs to be stopped before client enters into suspend.
 
-Document Memory Client resets of Host1x, GR2D and GR3D hardware units.
-
+Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
+Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
+Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- .../bindings/display/tegra/nvidia,tegra20-host1x.txt          | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/gpu/host1x/channel.c | 8 ++++++++
+ include/linux/host1x.h       | 1 +
+ 2 files changed, 9 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt b/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt
-index 62861a8fb5c6..07a08653798b 100644
---- a/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt
-+++ b/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt
-@@ -18,6 +18,7 @@ Required properties:
- - resets: Must contain an entry for each entry in reset-names.
-   See ../reset/reset.txt for details.
- - reset-names: Must include the following entries:
-+  - mc
-   - host1x
+diff --git a/drivers/gpu/host1x/channel.c b/drivers/gpu/host1x/channel.c
+index 4cd212bb570d..2a9a3a8d5931 100644
+--- a/drivers/gpu/host1x/channel.c
++++ b/drivers/gpu/host1x/channel.c
+@@ -75,6 +75,14 @@ struct host1x_channel *host1x_channel_get_index(struct host1x *host,
+ 	return ch;
+ }
  
- Optional properties:
-@@ -197,6 +198,7 @@ of the following host1x client modules:
-   - resets: Must contain an entry for each entry in reset-names.
-     See ../reset/reset.txt for details.
-   - reset-names: Must include the following entries:
-+    - mc
-     - 2d
++void host1x_channel_stop(struct host1x_channel *channel)
++{
++	struct host1x *host = dev_get_drvdata(channel->dev->parent);
++
++	host1x_hw_cdma_stop(host, &channel->cdma);
++}
++EXPORT_SYMBOL(host1x_channel_stop);
++
+ static void release_channel(struct kref *kref)
+ {
+ 	struct host1x_channel *channel =
+diff --git a/include/linux/host1x.h b/include/linux/host1x.h
+index 7bccf589aba7..66473b5be0af 100644
+--- a/include/linux/host1x.h
++++ b/include/linux/host1x.h
+@@ -181,6 +181,7 @@ struct host1x_job;
  
-   Optional properties:
-@@ -222,6 +224,8 @@ of the following host1x client modules:
-   - resets: Must contain an entry for each entry in reset-names.
-     See ../reset/reset.txt for details.
-   - reset-names: Must include the following entries:
-+    - mc
-+    - mc2 (Only required on SoCs with two 3D clocks)
-     - 3d
-     - 3d2 (Only required on SoCs with two 3D clocks)
+ struct host1x_channel *host1x_channel_request(struct host1x_client *client);
+ struct host1x_channel *host1x_channel_get(struct host1x_channel *channel);
++void host1x_channel_stop(struct host1x_channel *channel);
+ void host1x_channel_put(struct host1x_channel *channel);
+ int host1x_job_submit(struct host1x_job *job);
  
 -- 
 2.32.0
