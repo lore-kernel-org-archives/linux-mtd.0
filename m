@@ -2,84 +2,91 @@ Return-Path: <SRS0=LBUh=NI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
 	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
 	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F6D2C4320A
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 00:39:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8725C4338F
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 00:53:11 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C903D60F5C
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 00:39:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C903D60F5C
+	by mail.kernel.org (Postfix) with ESMTPS id 73A8D60184
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 00:53:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 73A8D60184
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=xP4rJ61O7iVsVyjp0i+N37y3cP2U5NI3AVX3gpyl5x8=; b=t2CQaJJjK6Ca4R
-	JVrNCM0YPGOHtzzR79BpfUWoYcnvM+kA6VgahWbh9ga0W6mI8wZ8ORP3lt2YtJKw7um08WJuo/BmW
-	F6Cyihgyyh+hvr8eQAB5779xI6l7wLUP4mGDvTbdmJ7URu1JroOEFpIZ0VupzUJDsPuU5NVD8FCtq
-	kepnozmDfOupYF/Rt2t8mLzKQEI600eiKIzC4yCHqRCkF2Slk5m9HTVnDa8C14Y+VCwfiM8UA7EVL
-	Qe3GlkSnj44uR5UyRitW6uv6jEH2c97tzsxQHjtGTneMpgLRSZX8YY73dSnDJznlP9qypifo62AXH
-	ThmrQKAywExBhROtNQrg==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=4lVD5K62nXo+QGyPc71+iBSv1Rv5Uq8gFMMvdnH2GL0=; b=hSyrKg9ohh83dK
+	egCjeMvx9tJlhxI14DajdMU7DVb12i58yRPAK6nXzLQtkQkGTK+8xhQzqVu1fHDozYpH55IJuH+qt
+	yko529JC9gqR5Z8TkG1iXTiOHLr/QnUoWdpTS1PGRi9QAP/QGAuS+acE0eQ35ELe+u5HsDRmja/U1
+	0uaDmSZNxF1hLfP6LOfLLqoQtwcOBhbcCt7fnC8k4xY/3X+620/7xd3uyjPbUmsjme/oS0LvqYCg6
+	BfXVEXICkrPRDO6wWg3ZYrBeHwvuMzrnBkb3fJCovEwjNNHfl1OFJo7yF+hHdFmtYSJDl0KJfTItn
+	qg1Va7WFYPDQjvmZL4oA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mFn7O-000aor-H5; Tue, 17 Aug 2021 00:38:14 +0000
-Received: from mail-pj1-x102c.google.com ([2607:f8b0:4864:20::102c])
+	id 1mFnL8-000bhr-2L; Tue, 17 Aug 2021 00:52:26 +0000
+Received: from mail-yb1-xb31.google.com ([2607:f8b0:4864:20::b31])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mFn7I-000anm-Jc
- for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 00:38:12 +0000
-Received: by mail-pj1-x102c.google.com with SMTP id
- u13-20020a17090abb0db0290177e1d9b3f7so1952628pjr.1
- for <linux-mtd@lists.infradead.org>; Mon, 16 Aug 2021 17:38:08 -0700 (PDT)
+ id 1mFnL2-000bgv-AG; Tue, 17 Aug 2021 00:52:24 +0000
+Received: by mail-yb1-xb31.google.com with SMTP id z18so36309197ybg.8;
+ Mon, 16 Aug 2021 17:52:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id;
- bh=nqswQeTKBdoB8+HWsKks7xsdGz/hptfCErNSORUc7uo=;
- b=u4aqF7iHWy02WPh70DsRMnTkq+PzabEp/58QfyVAvFSIL9b2m/dw8CeOIxCCYYIxRJ
- xUKew4mcT/1CTIkJ983LBF88Weni+JKLUGmzXYhYvwRCLO/FEtykOXjI5M6c+8C4QSFh
- AZeevwq2Fhrsh24CaBA/dQuRW8i9ZJiaKegs/rl6x14bc1MrcGTJNF6klYMz0i65T75W
- Z7gl9fQ5fKNQOw+VedxDe2MXa7qphFppMIm1Lcp4uHN/ExWmkrHEUNa/kDgH2b1zqmQy
- 5E74xvDi9GNT+Y66PMk3QriRniiMAiqCJf2cAhISwGSAX/8b7O/eEWd/v+BgrQQhdl/j
- Ao8g==
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=HinwW8PEQ5TbL83px5ZX1LnwF3iy1N97HumVOQEeuS0=;
+ b=Qv7l1OnPPmEjqSE03PxZdhP+8SGNkjQKJQdjg0iHsO/stBYHgcAtVCjxeNcJndtCIa
+ 4O/Qrm9MusETqQznj/842Y5fi+yJR94JfvJE4Om2M7TCiewcPXg+8VbqYSFAgLp5pXh7
+ j3JcyUvpdvuR+NgJ5XcRUfE0UE6aDWHRd003YcVCI5jaFI17gEKoHN0OCyQSiNO1fNz2
+ 6Ijh9U/Kjeb/gkoCs2lyZA6wy6S+OqJJUUx/4OledGbI2q8oxnMFIw78qwTWbjbDqQ6B
+ EFVYapxQkAGzPKhlCH/kTKf4pMTOS4PYTsbdpkSTsFwx6BV53IDcZ5qmsakSeF1pBSJN
+ OnzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=nqswQeTKBdoB8+HWsKks7xsdGz/hptfCErNSORUc7uo=;
- b=K9ntDAAdwD7hriipV9F4OAnBxlu2ZwmMNNyz4HF8vZvevJM+TCyOo23whdcK9dC5yu
- 0xxQX+toxg1yn3bECrfoei9AUVJfmNV44VL6sLDH9AUbMlvojYjw534TJAczLrMGsEt9
- Vrhve8OTgF0wzLY93TUFcyG8wwz5nwUN5SCiXvkXhhFeNUH3KkjepYOsi/HLoiNZMClh
- c8v1dsmRiIR9CWxGmSRv/0ZwWsv8iJMnu2lhQ7PxvNaJ0UHX1XmBfeCf+kOsCSYHOXVY
- o1YJkuTY2seF6OWLf2tMyl9kOnzbaqKUltmKlEsIDf2C4Mmf+U7nj8mipJkc7UBVHJdl
- /W7w==
-X-Gm-Message-State: AOAM532/vxA/lM/fohdw2GtNtl7a1VGTG7gKy41o5/aEf9rtU624Khdt
- tv0if/OazJ39grwIfLOAaViIqL8lUcfo/Q==
-X-Google-Smtp-Source: ABdhPJzElCDyUPKA67ZX1wk+CBh54brkEGBtYU3LSCFEF2phdADt9Eg5QtgujN1iY4c3OHh2TlSFiQ==
-X-Received: by 2002:a17:90b:1e05:: with SMTP id
- pg5mr704026pjb.12.1629160687714; 
- Mon, 16 Aug 2021 17:38:07 -0700 (PDT)
-Received: from diego-VirtualBox.fibertel.com.ar
- (host199.190-139-51.telecom.net.ar. [190.139.51.199])
- by smtp.googlemail.com with ESMTPSA id q26sm316633pff.174.2021.08.16.17.38.06
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 16 Aug 2021 17:38:07 -0700 (PDT)
-From: Diego Ismirlian <dismirlian@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Diego Ismirlian <dismirlian@gmail.com>
-Subject: [PATCH] Add ubiscan utility
-Date: Mon, 16 Aug 2021 21:38:02 -0300
-Message-Id: <20210817003802.3076-1-dismirlian@gmail.com>
-X-Mailer: git-send-email 2.17.1
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=HinwW8PEQ5TbL83px5ZX1LnwF3iy1N97HumVOQEeuS0=;
+ b=mxt77/RVmiRpjh+iICFwf/GRnSXa0bJS2tj5okRpo0e/dMfZgTDWxb8D1ZDvY5GYJD
+ fhn3pC/gy2eEiaYOmPZO5eVbHooEm6AG5HIxEUqozxXHDqetpWXuwWHHhHt+cPpid6TK
+ x8RlO/8dAy3SRsh+nbXwMqZtx5CawFgiySUCKAMWvhN5sfiKSIhwtHz7D/c2TJcknoAe
+ 9GCYsMoV1V978FCCxw+ex62lu04FZUOAzvhH8Is7aZGPW7si18po6vJZ+9w4bLbkQcQ6
+ L9uN2s2M47J61AqK67EpPjnTCIodcx0N3f9Zy7KJr21fShEG0VjG05fAGh14kLXo9Q0O
+ 5znQ==
+X-Gm-Message-State: AOAM530jT5GsAsLI8MovC2XNgHO4JQgsEH6YlPTmzUlJP6iaTXnH+MLZ
+ KTLGtw3mPnVdif/Ea5yK521GmOhQk5MKaTxKOcI=
+X-Google-Smtp-Source: ABdhPJyvd+RlYj7zSTrYmgpFZ+h0LzvbUGhnoGD4IXYxW7eMQY/mIwx4HSolYlYkfx4EfX94jdzZBwmZLYdlWLjwYCg=
+X-Received: by 2002:a25:3c5:: with SMTP id 188mr954399ybd.437.1629161538607;
+ Mon, 16 Aug 2021 17:52:18 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210812134546.31340-1-jon.lin@rock-chips.com>
+In-Reply-To: <20210812134546.31340-1-jon.lin@rock-chips.com>
+From: Peter Geis <pgwipeout@gmail.com>
+Date: Mon, 16 Aug 2021 20:52:07 -0400
+Message-ID: <CAMdYzYobqhLAHhDU9E-iu-HMKSaGCDBMU-2OacGEZOQnF2ZyMw@mail.gmail.com>
+Subject: Re: [PATCH v13 0/6] Add Rockchip SFC(serial flash controller) support
+To: Jon Lin <jon.lin@rock-chips.com>
+Cc: linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>, 
+ Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+ Johan Jonker <jbx6244@gmail.com>, 
+ Sandy Huang <hjc@rock-chips.com>, yifeng.zhao@rock-chips.com, 
+ Sugar Zhang <sugar.zhang@rock-chips.com>, 
+ "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+ linux-mtd@lists.infradead.org, 
+ p.yadav@ti.com, Chris Morgan <macroalpha82@gmail.com>, 
+ devicetree <devicetree@vger.kernel.org>, 
+ arm-mail-list <linux-arm-kernel@lists.infradead.org>, 
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210816_173808_678795_73E53436 
-X-CRM114-Status: GOOD (  26.24  )
+X-CRM114-CacheID: sfid-20210816_175220_419873_00C087EC 
+X-CRM114-Status: GOOD (  43.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,437 +98,162 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-ubiscan will scan the PEBs in a specific MTD device and print a summary of
-the PEB erase counters and (optionally) details about each PEB's status.
+On Thu, Aug 12, 2021 at 9:49 AM Jon Lin <jon.lin@rock-chips.com> wrote:
+>
 
-Example output:
+Good Evening,
 
-# ./ubiscan /dev/mtd6
-Summary
-=========================================================
-mtd    : 6
-type   : nand
-size   : 110362624 bytes (105.2 MiB)
-PEBs   : 842
-min I/O: 2048 bytes
+Tested successfully on the rk3566 based Quartz64 Model A.
+Tested-by: Peter Geis <pgwipeout@gmail.com>
 
-PEB erase counters
-=========================================================
-valid    : 834
-empty    : 0
-corrupted: 0
-alien    : 0
-bad      : 8
+Very Respectfully,
+Peter Geis
 
-Histogram
-=========================================================
-from              to     count      min      avg      max
----------------------------------------------------------
-0        ..        9:       55        1        4        9
-10       ..       99:      174       10       48       99
-100      ..      999:      514      103      287      987
-1000     ..     9999:       91     1004     1880     2251
-10000    ..    99999:        0        0        0        0
-100000   ..      inf:        0        0        0        0
----------------------------------------------------------
-Total               :      834        1      392     2251
-
-
-If the --verbose switch is given, ubiscan will print PEB details:
-
-# ./ubiscan --verbose /dev/mtd6
-
-[... same output as before ...]
-
-Details
-=========================================================
-PEB        0: 253
-PEB        1: 1489
-PEB        2: 1
-PEB        3: 1
-PEB        4: 1
-PEB        5: 1
-PEB        6: 1
-PEB        7: 1
-PEB        8: 1
-PEB        9: 1
-PEB       10: 1
-...
-PEB      832: 1225
-PEB      833: 252
-PEB      834: 111
-PEB      835: 298
-PEB      836: 1264
-PEB      837: 11
-PEB      838: EB_BAD
-PEB      839: EB_BAD
-PEB      840: EB_BAD
-PEB      841: EB_BAD
-
-
-Signed-off-by: Diego Ismirlian <dismirlian@gmail.com>
----
- ubi-utils/Makemodule.am |   5 +-
- ubi-utils/ubiscan.c     | 318 ++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 322 insertions(+), 1 deletion(-)
- create mode 100644 ubi-utils/ubiscan.c
-
-diff --git a/ubi-utils/Makemodule.am b/ubi-utils/Makemodule.am
-index 7491a8a..7183ec3 100644
---- a/ubi-utils/Makemodule.am
-+++ b/ubi-utils/Makemodule.am
-@@ -25,6 +25,9 @@ ubinize_LDADD = libubi.a libubigen.a libmtd.a libiniparser.a
- ubiformat_SOURCES = ubi-utils/ubiformat.c include/mtd_swab.h
- ubiformat_LDADD = libubi.a libubigen.a libmtd.a libscan.a
- 
-+ubiscan_SOURCES = ubi-utils/ubiscan.c include/mtd_swab.h
-+ubiscan_LDADD = libubi.a libubigen.a libscan.a libmtd.a
-+
- ubirename_SOURCES = ubi-utils/ubirename.c
- ubirename_LDADD = libmtd.a libubi.a
- 
-@@ -44,7 +47,7 @@ endif
- 
- sbin_PROGRAMS += \
- 	ubiupdatevol ubimkvol ubirmvol ubicrc32 ubinfo ubiattach \
--	ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol ubiblock
-+	ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol ubiblock ubiscan
- 
- if WITH_GETRANDOM
- sbin_PROGRAMS += ubihealthd
-diff --git a/ubi-utils/ubiscan.c b/ubi-utils/ubiscan.c
-new file mode 100644
-index 0000000..e040bab
---- /dev/null
-+++ b/ubi-utils/ubiscan.c
-@@ -0,0 +1,318 @@
-+/*
-+ * Copyright (C) 2021 Diego Ismirlian
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-+ * the GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-+ */
-+
-+/*
-+ * An utility to scan MTD devices.
-+ *
-+ * Author: Diego Ismirlian dismirlian (at) google's mail
-+ */
-+
-+#define PROGRAM_NAME    "ubiscan"
-+
-+#include <sys/stat.h>
-+#include <unistd.h>
-+#include <stdint.h>
-+#include <stdlib.h>
-+#include <getopt.h>
-+#include <fcntl.h>
-+#include <limits.h>
-+
-+#include <mtd/ubi-media.h>
-+#include <libubi.h>
-+#include <libmtd.h>
-+#include <libscan.h>
-+#include "common.h"
-+
-+#define MAX_BINS 50
-+
-+/* The variables below are set by command line arguments */
-+struct args {
-+    int verbose;
-+    const char *node;
-+    int node_fd;
-+    int bin_thresholds[MAX_BINS - 1];
-+    int nbins;
-+};
-+
-+static struct args args = {
-+    .verbose = 0,
-+    .nbins = 6,
-+    .bin_thresholds = {
-+        10,
-+        100,
-+        1000,
-+        10000,
-+        100000,
-+    },
-+};
-+
-+static const char doc[] = PROGRAM_NAME " version " VERSION
-+        " - a tool to scan MTD devices";
-+
-+static const char optionsstr[] =
-+"-h, -?, --help               print help message\n"
-+"-H, --histrogram=<list>      comma-separated list of bin thresholds\n"
-+"-v, --verbose                be verbose\n"
-+"-V, --version                print program version\n";
-+
-+static const char usage[] =
-+"Usage: " PROGRAM_NAME " <MTD device node file name> "
-+"\t\t\t[--help] [--version] [--verbose] [--histogram=<list>]";
-+
-+static const struct option long_options[] = {
-+    { .name = "help",            .has_arg = 0, .flag = NULL, .val = 'h' },
-+    { .name = "histogram",       .has_arg = 1, .flag = NULL, .val = 'H' },
-+    { .name = "verbose",         .has_arg = 0, .flag = NULL, .val = 'v' },
-+    { .name = "version",         .has_arg = 0, .flag = NULL, .val = 'V' },
-+    { NULL, 0, NULL, 0},
-+};
-+
-+static int parse_opt(int argc, char * const argv[])
-+{
-+    int last_bin = 0;
-+    while (1) {
-+        int key;
-+
-+        key = getopt_long(argc, argv, "h?VvH:", long_options, NULL);
-+        if (key == -1)
-+            break;
-+
-+        switch (key) {
-+        case 'v':
-+            args.verbose = 1;
-+            break;
-+        case 'H': {
-+            args.nbins = 1;
-+            char *token = strtok(optarg, ",");
-+            while (token) {
-+                if (args.nbins == MAX_BINS)
-+                    return errmsg("too many bins");
-+                int th = atoi(token);
-+                if (th <= last_bin)
-+                    return errmsg("bad bin threshold list");
-+                args.bin_thresholds[args.nbins - 1] = th;
-+                last_bin = th;
-+                args.nbins++;
-+                token = strtok(NULL, ",");
-+            }
-+        }   break;
-+        case 'V':
-+            common_print_version();
-+            exit(EXIT_SUCCESS);
-+        case 'h':
-+            printf("%s\n\n", doc);
-+            printf("%s\n\n", usage);
-+            printf("%s\n", optionsstr);
-+            exit(EXIT_SUCCESS);
-+        case '?':
-+            printf("%s\n\n", doc);
-+            printf("%s\n\n", usage);
-+            printf("%s\n", optionsstr);
-+            return -1;
-+
-+        case ':':
-+            return errmsg("parameter is missing");
-+
-+        default:
-+            fprintf(stderr, "Use -h for help\n");
-+            return -1;
-+        }
-+    }
-+
-+    if (optind == argc)
-+        return errmsg("MTD device name was not specified (use -h for help)");
-+    else if (optind != argc - 1)
-+        return errmsg("more then one MTD device specified (use -h for help)");
-+
-+    args.node = argv[optind];
-+    return 0;
-+}
-+
-+int main(int argc, char * const argv[])
-+{
-+    int err;
-+    libmtd_t libmtd;
-+    struct mtd_info mtd_info;
-+    struct mtd_dev_info mtd;
-+    struct ubi_scan_info *si;
-+    int max, min;
-+
-+    struct {
-+        int min;
-+        int max;
-+        int cnt;
-+        uint64_t mean;
-+    } bins[MAX_BINS];
-+
-+    err = parse_opt(argc, argv);
-+    if (err)
-+        return -1;
-+
-+    libmtd = libmtd_open();
-+    if (!libmtd)
-+        return errmsg("MTD subsystem is not present");
-+
-+    err = mtd_get_info(libmtd, &mtd_info);
-+    if (err) {
-+        sys_errmsg("cannot get MTD information");
-+        goto out_close_mtd;
-+    }
-+
-+    err = mtd_get_dev_info(libmtd, args.node, &mtd);
-+    if (err) {
-+        sys_errmsg("cannot get information about \"%s\"", args.node);
-+        goto out_close_mtd;
-+    }
-+
-+    args.node_fd = open(args.node, O_RDONLY);
-+    if (args.node_fd == -1) {
-+        sys_errmsg("cannot open \"%s\"", args.node);
-+        goto out_close_mtd;
-+    }
-+
-+    printf("Summary\n");
-+    printf("=========================================================\n");
-+    printf("mtd    : %d\n", mtd.mtd_num);
-+    printf("type   : %s\n", mtd.type_str);
-+    printf("size   : ");
-+    util_print_bytes(mtd.size, 1);
-+    printf("\n");
-+    printf("PEBs   : %d\n", mtd.eb_cnt);
-+    printf("min I/O: %d bytes\n", mtd.min_io_size);
-+
-+    printf("\n");
-+    printf("PEB erase counters\n");
-+    printf("=========================================================\n");
-+    err = ubi_scan(&mtd, args.node_fd, &si, 0);
-+    if (err) {
-+        errmsg("failed to scan mtd%d (%s)", mtd.mtd_num, args.node);
-+        goto out_close;
-+    }
-+
-+    memset(bins, 0, sizeof(bins));
-+
-+    for (int j = 0; j < args.nbins; j++)
-+        bins[j].min = INT_MAX;
-+
-+    min = INT_MAX;
-+    max = 0;
-+
-+    for (int eb = 0; eb < mtd.eb_cnt; eb++) {
-+        uint32_t ec = si->ec[eb];
-+        switch (ec) {
-+        case EB_EMPTY:
-+        case EB_CORRUPTED:
-+        case EB_ALIEN:
-+        case EB_BAD:
-+        case EC_MAX:
-+            break;
-+        default: {
-+            int bin = 0;
-+
-+            if (ec > max)
-+                max = ec;
-+            if (ec < min)
-+                min = ec;
-+
-+            for (int j = 0; j < args.nbins - 1 && ec >= args.bin_thresholds[j]; j++, bin++);
-+
-+            bins[bin].cnt++;
-+            bins[bin].mean += ec;
-+            if (ec < bins[bin].min)
-+                bins[bin].min = ec;
-+            if (ec > bins[bin].max)
-+                bins[bin].max = ec;
-+
-+            } break;
-+        }
-+    }
-+
-+    printf("valid    : %d\n", si->ok_cnt);
-+    printf("empty    : %d\n", si->empty_cnt);
-+    printf("corrupted: %d\n", si->corrupted_cnt);
-+    printf("alien    : %d\n", si->alien_cnt);
-+    printf("bad      : %d\n", si->bad_cnt);
-+
-+    if (si->ok_cnt == 0)
-+        min = 0;
-+
-+    printf("\n");
-+    printf("Histogram\n");
-+    printf("=========================================================\n");
-+    printf("from              to     count      min      avg      max\n");
-+    printf("---------------------------------------------------------\n");
-+    for (int j = 0; j < args.nbins; j++) {
-+        if (bins[j].cnt)
-+            bins[j].mean /= bins[j].cnt;
-+        else
-+            bins[j].min = 0;
-+
-+        int from = (j == 0) ? 0 : args.bin_thresholds[j - 1];
-+        if (j == args.nbins - 1)
-+            printf("%-8d ..      inf: %8d %8d %8llu %8d\n",
-+                from, bins[j].cnt, bins[j].min, bins[j].mean, bins[j].max);
-+        else
-+            printf("%-8d .. %8d: %8d %8d %8llu %8d\n",
-+                from, args.bin_thresholds[j] - 1,
-+                bins[j].cnt, bins[j].min, bins[j].mean, bins[j].max);
-+    }
-+    printf("---------------------------------------------------------\n");
-+    printf("Total               : %8d %8d %8llu %8d\n", si->ok_cnt, min, si->mean_ec, max);
-+
-+    if (args.verbose) {
-+        printf("\n");
-+        printf("Details\n");
-+        printf("=========================================================\n");
-+        for (int eb = 0; eb < mtd.eb_cnt; eb++) {
-+            printf("PEB %8d: ", eb);
-+            uint32_t ec = si->ec[eb];
-+            switch (ec) {
-+            case EB_EMPTY:
-+                printf("EB_EMPTY\n");
-+                break;
-+            case EB_CORRUPTED:
-+                printf("EB_CORRUPTED\n");
-+                break;
-+            case EB_ALIEN:
-+                printf("EB_ALIEN\n");
-+                break;
-+            case EB_BAD:
-+                printf("EB_BAD\n");
-+                break;
-+            case EC_MAX:
-+                printf("EC_MAX\n");
-+                break;
-+            default:
-+                printf("%u\n", ec);
-+                break;
-+            }
-+        }
-+    }
-+
-+    ubi_scan_free(si);
-+    close(args.node_fd);
-+    libmtd_close(libmtd);
-+    return 0;
-+
-+out_close:
-+    close(args.node_fd);
-+out_close_mtd:
-+    libmtd_close(libmtd);
-+    return -1;
-+}
-+
--- 
-2.17.1
-
+>
+>
+> Changes in v13:
+> - Provide independent interfaces to obtain RX TX FIFO status respectively
+> - Add more debug information
+> - Depress DMA limitation
+>
+> Changes in v12:
+> - Remove useless oneOf lable
+> - Add sfc controller discription
+> - Remove the limitation of SFC_MIN_SPEED_HZ
+> - Add IRQ_NONE method for irq handler
+> - Add SPI_MASTER_HALF_DUPLEX flags
+> - Add sfc interrupt mask bits and status register initial progress
+>
+> Changes in v11:
+> - The tx is set to 1 for Odroid Go Advance device
+>
+> Changes in v10:
+> - Fix dma transfer logic
+>
+> Changes in v9:
+> - Separate DMA IRQ setting and wait_completion from DMA fifo transfer
+>   function to make dma_status_poll be possible(Which I will implement
+>   in u-boot)
+> - Add SFC Kconfig detail comment
+>
+> Changes in v8:
+> - Fix indent 4 to 2 in yaml
+>
+> Changes in v7:
+> - Fix up the sclk_sfc parent error in rk3036
+> - Unify to "rockchip,sfc" compatible id because all the feature update
+>   will have a new IP version, so the driver is used for the SFC IP in
+>   all SoCs
+> - Change to use node "sfc" to name the SFC pinctrl group
+> - Add subnode reg property check
+> - Add rockchip_sfc_adjust_op_size to workaround in CMD + DUMMY case
+> - Limit max_iosize to 32KB
+>
+> Changes in v6:
+> - Add support in device trees for rv1126(Declared in series 5 but not
+>   submitted)
+> - Change to use "clk_sfc" "hclk_sfc" as clock lable, since it does not
+>   affect interpretation and has been widely used
+> - Support sfc tx_dual, tx_quad(Declared in series 5 but not submitted)
+> - Simplify the code, such as remove "rockchip_sfc_register_all"(Declared
+>   in series 5 but not submitted)
+> - Support SFC ver4 ver5(Declared in series 5 but not submitted)
+> - Add author Chris Morgan and Jon Lin to spi-rockchip-sfc.c
+> - Change to use devm_spi_alloc_master and spi_unregister_master
+>
+> Changes in v5:
+> - Add support in device trees for rv1126
+> - Support sfc tx_dual, tx_quad
+> - Simplify the code, such as remove "rockchip_sfc_register_all"
+> - Support SFC ver4 ver5
+>
+> Changes in v4:
+> - Changing patch back to an "RFC". An engineer from Rockchip
+>   reached out to me to let me know they are working on this patch for
+>   upstream, I am submitting this v4 for the community to see however
+>   I expect Jon Lin (jon.lin@rock-chips.com) will submit new patches
+>   soon and these are the ones we should pursue for mainlining. Jon's
+>   patch series should include support for more hardware than this
+>   series.
+> - Clean up documentation more and ensure it is correct per
+>   make dt_binding_check.
+> - Add support in device trees for rk3036, rk3308, and rv1108.
+> - Add ahb clock (hclk_sfc) support for rk3036.
+> - Change rockchip_sfc_wait_fifo_ready() to use a switch statement.
+> - Change IRQ code to only mark IRQ as handled if it handles the
+>   specific IRQ (DMA transfer finish) it is supposed to handle.
+>
+> Changes in v3:
+> - Changed the name of the clocks to sfc/ahb (from clk-sfc/clk-hsfc).
+> - Changed the compatible string from rockchip,sfc to
+>   rockchip,rk3036-sfc. A quick glance at the datasheets suggests this
+>   driver should work for the PX30, RK180x, RK3036, RK312x, RK3308 and
+>   RV1108 SoCs, and possibly more. However, I am currently only able
+>   to test this on a PX30 (an RK3326). The technical reference manuals
+>   appear to list the same registers for each device.
+> - Corrected devicetree documentation for formatting and to note these
+>   changes.
+> - Replaced the maintainer with Heiko Stuebner and myself, as we will
+>   take ownership of this going forward.
+> - Noted that the device (per the reference manual) supports 4 CS, but
+>   I am only able to test a single CS (CS 0).
+> - Reordered patches to comply with upstream rules.
+>
+> Changes in v2:
+> - Reimplemented driver using spi-mem subsystem.
+> - Removed power management code as I couldn't get it working properly.
+> - Added device tree bindings for Odroid Go Advance.
+>
+> Changes in v1:
+> hanges made in this new series versus the v8 of the old series:
+> - Added function to read spi-rx-bus-width from device tree, in the
+>   event that the SPI chip supports 4x mode but only has 2 pins
+>   wired (such as the Odroid Go Advance).
+> - Changed device tree documentation from txt to yaml format.
+> - Made "reset" message a dev_dbg from a dev_info.
+> - Changed read and write fifo functions to remove redundant checks.
+> - Changed the write and read from relaxed to non-relaxed when
+>   starting the DMA transfer or reading the DMA IRQ.
+> - Changed from dma_coerce_mask_and_coherent to just
+>   dma_set_mask_and_coherent.
+> - Changed name of get_if_type to rockchip_sfc_get_if_type.
+>
+> Chris Morgan (6):
+>   dt-bindings: rockchip-sfc: Bindings for Rockchip serial flash
+>     controller
+>   spi: rockchip-sfc: add rockchip serial flash controller
+>   arm64: dts: rockchip: Add SFC to PX30
+>   arm: dts: rockchip: Add SFC to RV1108
+>   arm64: dts: rockchip: Add SFC to RK3308
+>   arm64: dts: rockchip: Enable SFC for Odroid Go Advance
+>
+>  .../devicetree/bindings/spi/rockchip-sfc.yaml |  91 +++
+>  arch/arm/boot/dts/rv1108.dtsi                 |  37 +
+>  arch/arm64/boot/dts/rockchip/px30.dtsi        |  38 +
+>  arch/arm64/boot/dts/rockchip/rk3308.dtsi      |  37 +
+>  .../boot/dts/rockchip/rk3326-odroid-go2.dts   |  16 +
+>  drivers/spi/Kconfig                           |  12 +
+>  drivers/spi/Makefile                          |   1 +
+>  drivers/spi/spi-rockchip-sfc.c                | 694 ++++++++++++++++++
+>  8 files changed, 926 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+>  create mode 100644 drivers/spi/spi-rockchip-sfc.c
+>
+> --
+> 2.17.1
+>
+>
+>
+>
+> _______________________________________________
+> Linux-rockchip mailing list
+> Linux-rockchip@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-rockchip
 
 ______________________________________________________
 Linux MTD discussion mailing list
