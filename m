@@ -2,91 +2,65 @@ Return-Path: <SRS0=LBUh=NI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+X-Spam-Status: No, score=-15.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E28D1C4338F
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 10:46:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFCF5C4338F
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 10:56:11 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A63B860187
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 10:46:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A63B860187
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 52F0B60F41
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 10:56:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 52F0B60F41
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=D6shfv/2TdPc7YvVrYS2ZMBo5hECX4tO0I1pzoCwSZI=; b=1Il7+tJzNEky/N
-	LgeJDgVRfmS7mFm4nvyr6TGZA3orUa3SzOdZejW8a8G6bETapE8sqV1WgfgEy5y9cAkt4zfsn+qcj
-	8g5Z9AhmaDm66hrr9zNHUwWOv+akdn7NLDqmLTeVYVCVGrnEKCaL6I1wFWT7wdYw3aOGbrSAFlyte
-	5sdg/Y4h2jDF07YxzcvFlUyzM284clg2qEXI2he5sG5u9Autkcq9VT+q515sTAAYXqI9tzLPHpmQf
-	yM6/QvG7bf8emGAIiVmUjLKS3V0tGPITo17t781iOQJoCGnVSU8gWctoJblFmAdbwG5KW45tNVIxA
-	jE5GLPUbv4YfbeGu5Ulw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=nNiZLbWcl5Ji8JgfjYD9uZX/YzQbTXPw7JP8ATXeLIQ=; b=sQPxeCEnRcizCc
+	mLZplPt/+sC0nN2JIELzWQoogDQQZD7dmE2ql8pJVHPCgVZTCu8wkQxKMStlYoVIxmjjjk1UEYrcg
+	tHI8OZvVnDplwycg1KE7DD6XzDYFLrdllVpsHC/nVWx105qi/p/oyOw0Oi8cljb/F+OecnhQOxE6X
+	LrPQz3MBbAPBjZLTavdolP9EikqN1Du2Ek6IdqZS8Ba1LljwmdFq/29FtP3dn5bAO5GR1hpcREJ+3
+	TXLBke90IkPnsWFdQALwUG5KvegRFVZjCG9JAZq7OiA+z1LH3XoUjirfcgkAHEv56NgDu1hho660S
+	j07Eki24biBRxasJu/og==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mFwbG-002A4W-2n; Tue, 17 Aug 2021 10:45:42 +0000
-Received: from mail-wm1-x332.google.com ([2a00:1450:4864:20::332])
+	id 1mFwkl-002Ang-Cq; Tue, 17 Aug 2021 10:55:31 +0000
+Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mFwbC-002A3k-OD
- for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 10:45:40 +0000
-Received: by mail-wm1-x332.google.com with SMTP id
- 79-20020a1c0452000000b002e6cf79e572so1559503wme.1
- for <linux-mtd@lists.infradead.org>; Tue, 17 Aug 2021 03:45:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=LliqR4BffIKLKIAnT8gxu6UOIwAnFEp/t5CVTZm8b1Q=;
- b=KptzQh6LpXfJdLHBa4wnrs1TmwbhHIeUM42RRFq/LbMAM/UR4XNddtLNryvdGHXlIX
- TyJ0rULRpDUjJJHUctXt0bmY1zbEw2o9QNhdeKNoIrXGMXo8hTG18XvHeTfd7vNnRGsP
- xG9H+yQYIbzJZxLlUBIzG9Ky8Dxq8hfLf0m6Yzh0r8B6/nWu0UOplI09QQD05KAWN/6Z
- vUX1n6PQy/Covtld+vAmOYrF2RMzGrRvZm1KvrnlS/RKE7tiAbGwhmsDHas7x9aoIpLr
- nvK+Qgqm7EL+53A3ARnf2LXg8WJ1XDHZNgUIsZi4OuK+7+7CAgeAWawAPX/G+kKP+uIp
- 3GZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=LliqR4BffIKLKIAnT8gxu6UOIwAnFEp/t5CVTZm8b1Q=;
- b=nlg02AImdiBMO1PvMt2IlEpMZH4g5beLRwI3/0n1zSBlfn0vTqG3DRhk1N8tZZllib
- ShaHgwSADLnwvW83YXZXBxZW9CQKggG7fxIRBEJDa0xqZt6Z6LjCYwK4PsFoivbfKcPk
- fadt1OXXR0iuCtWQvhTgT3ROAoELHOYOiCJTM50hvQpTxDYUf9E7gc4y53YYNWBpzUlP
- cMB9rkpXqyhLhZuuKavz52QTlGe3pq7814qYh3P/8dOjF9CjCQzfTZir/1Oc19F3Pq3Y
- dgWfPSGvcL2dZ127eW/JeMIGqUG3iwiDjc7sxjXHnUashHbpTnatTjuK2X7Yx4KrosOT
- rZyg==
-X-Gm-Message-State: AOAM5309/Ykp7E5JOWPZZfe6xc0008GqWVwGlYo8puzPJYS2a/IpM4iS
- sYoTmiOggcjvOBE0A6e6AzM=
-X-Google-Smtp-Source: ABdhPJzm4lFmv43l4LmGogfnFalBlFY0tCLQVBS/sNGZvZ2jg//PjG5rVhoh22nNn8HDbPYFW2bJhg==
-X-Received: by 2002:a1c:7706:: with SMTP id t6mr2663237wmi.30.1629197137064;
- Tue, 17 Aug 2021 03:45:37 -0700 (PDT)
-Received: from localhost.localdomain (arl-84-90-178-246.netvisao.pt.
- [84.90.178.246])
- by smtp.gmail.com with ESMTPSA id 18sm1930912wmv.27.2021.08.17.03.45.35
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 17 Aug 2021 03:45:36 -0700 (PDT)
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- linux-mips@vger.kernel.org, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org, Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] mtd: maps: remove dead MTD map driver for PMC-Sierra MSP
- boards
-Date: Tue, 17 Aug 2021 12:45:31 +0200
-Message-Id: <20210817104531.12675-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.26.2
+ id 1mFwkh-002An5-Tn
+ for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 10:55:29 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id CFB06240007;
+ Tue, 17 Aug 2021 10:55:22 +0000 (UTC)
+Date: Tue, 17 Aug 2021 12:55:21 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Evgeny Novikov <novikov@ispras.ru>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Kirill Shilimanov
+ <kirill.shilimanov@huawei.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "ldv-project@linuxtesting.org"
+ <ldv-project@linuxtesting.org>, masonccyang@mxic.com.tw
+Subject: Re: [PATCH] mtd: rawnand: mxic: Enable and prepare clocks in probe
+Message-ID: <20210817125521.487979b9@xps13>
+In-Reply-To: <246f2094-e294-73f8-8a5f-3467e987f788@ispras.ru>
+References: <20210812113800.12466-1-novikov@ispras.ru>
+ <CAHp75VcgqZEHBTXpNApGfRkhgjpCvbgj+yxUZbbO+=0DOvZLQg@mail.gmail.com>
+ <20210816100114.384f01b9@xps13>
+ <246f2094-e294-73f8-8a5f-3467e987f788@ispras.ru>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210817_034538_866909_305BAEC8 
-X-CRM114-Status: GOOD (  31.02  )
+X-CRM114-CacheID: sfid-20210817_035528_281541_E9B7D580 
+X-CRM114-Status: GOOD (  30.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,308 +72,90 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Commit 1b00767fd8e1 ("MIPS: Remove PMC MSP71xx platform") removes the
-config PMC_MSP in ./arch/mips/Kconfig.
-
-Hence, since then, the corresponding MTD map driver for PMC-Sierra MSP
-boards is dead code. Remove this dead driver.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- drivers/mtd/maps/Kconfig        |  23 ----
- drivers/mtd/maps/Makefile       |   1 -
- drivers/mtd/maps/pmcmsp-flash.c | 227 --------------------------------
- 3 files changed, 251 deletions(-)
- delete mode 100644 drivers/mtd/maps/pmcmsp-flash.c
-
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index 6650acbc961e..aaa164b977fe 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -127,29 +127,6 @@ config MTD_PHYSMAP_GPIO_ADDR
- 	  Extend the physmap driver to allow flashes to be partially
- 	  physically addressed and assisted by GPIOs.
- 
--config MTD_PMC_MSP_EVM
--	tristate "CFI Flash device mapped on PMC-Sierra MSP"
--	depends on PMC_MSP && MTD_CFI
--	help
--	  This provides a 'mapping' driver which supports the way
--	  in which user-programmable flash chips are connected on the
--	  PMC-Sierra MSP eval/demo boards.
--
--choice
--	prompt "Maximum mappable memory available for flash IO"
--	depends on MTD_PMC_MSP_EVM
--	default MSP_FLASH_MAP_LIMIT_32M
--
--config MSP_FLASH_MAP_LIMIT_32M
--	bool "32M"
--
--endchoice
--
--config MSP_FLASH_MAP_LIMIT
--	hex
--	default "0x02000000"
--	depends on MSP_FLASH_MAP_LIMIT_32M
--
- config MTD_SUN_UFLASH
- 	tristate "Sun Microsystems userflash support"
- 	depends on SPARC && MTD_CFI && PCI
-diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index 79f018cf412f..11fea9c8d561 100644
---- a/drivers/mtd/maps/Makefile
-+++ b/drivers/mtd/maps/Makefile
-@@ -25,7 +25,6 @@ physmap-objs-$(CONFIG_MTD_PHYSMAP_IXP4XX) += physmap-ixp4xx.o
- physmap-objs			:= $(physmap-objs-y)
- obj-$(CONFIG_MTD_PHYSMAP)	+= physmap.o
- obj-$(CONFIG_MTD_PISMO)		+= pismo.o
--obj-$(CONFIG_MTD_PMC_MSP_EVM)   += pmcmsp-flash.o
- obj-$(CONFIG_MTD_PCMCIA)	+= pcmciamtd.o
- obj-$(CONFIG_MTD_SA1100)	+= sa1100-flash.o
- obj-$(CONFIG_MTD_SBC_GXX)	+= sbc_gxx.o
-diff --git a/drivers/mtd/maps/pmcmsp-flash.c b/drivers/mtd/maps/pmcmsp-flash.c
-deleted file mode 100644
-index 2051f28ddac6..000000000000
---- a/drivers/mtd/maps/pmcmsp-flash.c
-+++ /dev/null
-@@ -1,227 +0,0 @@
--/*
-- * Mapping of a custom board with both AMD CFI and JEDEC flash in partitions.
-- * Config with both CFI and JEDEC device support.
-- *
-- * Basically physmap.c with the addition of partitions and
-- * an array of mapping info to accommodate more than one flash type per board.
-- *
-- * Copyright 2005-2007 PMC-Sierra, Inc.
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- *
-- *  THIS  SOFTWARE  IS PROVIDED   ``AS  IS'' AND   ANY  EXPRESS OR IMPLIED
-- *  WARRANTIES,   INCLUDING, BUT NOT  LIMITED  TO, THE IMPLIED WARRANTIES OF
-- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN
-- *  NO  EVENT  SHALL   THE AUTHOR  BE    LIABLE FOR ANY   DIRECT, INDIRECT,
-- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-- *  NOT LIMITED   TO, PROCUREMENT OF  SUBSTITUTE GOODS  OR SERVICES; LOSS OF
-- *  USE, DATA,  OR PROFITS; OR  BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-- *  ANY THEORY OF LIABILITY, WHETHER IN  CONTRACT, STRICT LIABILITY, OR TORT
-- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- *
-- *  You should have received a copy of the  GNU General Public License along
-- *  with this program; if not, write  to the Free Software Foundation, Inc.,
-- *  675 Mass Ave, Cambridge, MA 02139, USA.
-- */
--
--#include <linux/slab.h>
--#include <linux/module.h>
--#include <linux/types.h>
--#include <linux/kernel.h>
--#include <linux/mtd/mtd.h>
--#include <linux/mtd/map.h>
--#include <linux/mtd/partitions.h>
--
--#include <asm/io.h>
--
--#include <msp_prom.h>
--#include <msp_regs.h>
--
--
--static struct mtd_info **msp_flash;
--static struct mtd_partition **msp_parts;
--static struct map_info *msp_maps;
--static int fcnt;
--
--#define DEBUG_MARKER printk(KERN_NOTICE "%s[%d]\n", __func__, __LINE__)
--
--static int __init init_msp_flash(void)
--{
--	int i, j, ret = -ENOMEM;
--	int offset, coff;
--	char *env;
--	int pcnt;
--	char flash_name[] = "flash0";
--	char part_name[] = "flash0_0";
--	unsigned addr, size;
--
--	/* If ELB is disabled by "ful-mux" mode, we can't get at flash */
--	if ((*DEV_ID_REG & DEV_ID_SINGLE_PC) &&
--	    (*ELB_1PC_EN_REG & SINGLE_PCCARD)) {
--		printk(KERN_NOTICE "Single PC Card mode: no flash access\n");
--		return -ENXIO;
--	}
--
--	/* examine the prom environment for flash devices */
--	for (fcnt = 0; (env = prom_getenv(flash_name)); fcnt++)
--		flash_name[5] = '0' + fcnt + 1;
--
--	if (fcnt < 1)
--		return -ENXIO;
--
--	printk(KERN_NOTICE "Found %d PMC flash devices\n", fcnt);
--
--	msp_flash = kcalloc(fcnt, sizeof(*msp_flash), GFP_KERNEL);
--	if (!msp_flash)
--		return -ENOMEM;
--
--	msp_parts = kcalloc(fcnt, sizeof(*msp_parts), GFP_KERNEL);
--	if (!msp_parts)
--		goto free_msp_flash;
--
--	msp_maps = kcalloc(fcnt, sizeof(*msp_maps), GFP_KERNEL);
--	if (!msp_maps)
--		goto free_msp_parts;
--
--	/* loop over the flash devices, initializing each */
--	for (i = 0; i < fcnt; i++) {
--		/* examine the prom environment for flash partititions */
--		part_name[5] = '0' + i;
--		part_name[7] = '0';
--		for (pcnt = 0; (env = prom_getenv(part_name)); pcnt++)
--			part_name[7] = '0' + pcnt + 1;
--
--		if (pcnt == 0) {
--			printk(KERN_NOTICE "Skipping flash device %d "
--				"(no partitions defined)\n", i);
--			continue;
--		}
--
--		msp_parts[i] = kcalloc(pcnt, sizeof(struct mtd_partition),
--				       GFP_KERNEL);
--		if (!msp_parts[i])
--			goto cleanup_loop;
--
--		/* now initialize the devices proper */
--		flash_name[5] = '0' + i;
--		env = prom_getenv(flash_name);
--
--		if (sscanf(env, "%x:%x", &addr, &size) < 2) {
--			ret = -ENXIO;
--			kfree(msp_parts[i]);
--			goto cleanup_loop;
--		}
--		addr = CPHYSADDR(addr);
--
--		printk(KERN_NOTICE
--			"MSP flash device \"%s\": 0x%08x at 0x%08x\n",
--			flash_name, size, addr);
--		/* This must matchs the actual size of the flash chip */
--		msp_maps[i].size = size;
--		msp_maps[i].phys = addr;
--
--		/*
--		 * Platforms have a specific limit of the size of memory
--		 * which may be mapped for flash:
--		 */
--		if (size > CONFIG_MSP_FLASH_MAP_LIMIT)
--			size = CONFIG_MSP_FLASH_MAP_LIMIT;
--
--		msp_maps[i].virt = ioremap(addr, size);
--		if (msp_maps[i].virt == NULL) {
--			ret = -ENXIO;
--			kfree(msp_parts[i]);
--			goto cleanup_loop;
--		}
--
--		msp_maps[i].bankwidth = 1;
--		msp_maps[i].name = kstrndup(flash_name, 7, GFP_KERNEL);
--		if (!msp_maps[i].name) {
--			iounmap(msp_maps[i].virt);
--			kfree(msp_parts[i]);
--			goto cleanup_loop;
--		}
--
--		for (j = 0; j < pcnt; j++) {
--			part_name[5] = '0' + i;
--			part_name[7] = '0' + j;
--
--			env = prom_getenv(part_name);
--
--			if (sscanf(env, "%x:%x:%n", &offset, &size,
--						&coff) < 2) {
--				ret = -ENXIO;
--				kfree(msp_maps[i].name);
--				iounmap(msp_maps[i].virt);
--				kfree(msp_parts[i]);
--				goto cleanup_loop;
--			}
--
--			msp_parts[i][j].size = size;
--			msp_parts[i][j].offset = offset;
--			msp_parts[i][j].name = env + coff;
--		}
--
--		/* now probe and add the device */
--		simple_map_init(&msp_maps[i]);
--		msp_flash[i] = do_map_probe("cfi_probe", &msp_maps[i]);
--		if (msp_flash[i]) {
--			msp_flash[i]->owner = THIS_MODULE;
--			mtd_device_register(msp_flash[i], msp_parts[i], pcnt);
--		} else {
--			printk(KERN_ERR "map probe failed for flash\n");
--			ret = -ENXIO;
--			kfree(msp_maps[i].name);
--			iounmap(msp_maps[i].virt);
--			kfree(msp_parts[i]);
--			goto cleanup_loop;
--		}
--	}
--
--	return 0;
--
--cleanup_loop:
--	while (i--) {
--		mtd_device_unregister(msp_flash[i]);
--		map_destroy(msp_flash[i]);
--		kfree(msp_maps[i].name);
--		iounmap(msp_maps[i].virt);
--		kfree(msp_parts[i]);
--	}
--	kfree(msp_maps);
--free_msp_parts:
--	kfree(msp_parts);
--free_msp_flash:
--	kfree(msp_flash);
--	return ret;
--}
--
--static void __exit cleanup_msp_flash(void)
--{
--	int i;
--
--	for (i = 0; i < fcnt; i++) {
--		mtd_device_unregister(msp_flash[i]);
--		map_destroy(msp_flash[i]);
--		iounmap((void *)msp_maps[i].virt);
--
--		/* free the memory */
--		kfree(msp_maps[i].name);
--		kfree(msp_parts[i]);
--	}
--
--	kfree(msp_flash);
--	kfree(msp_parts);
--	kfree(msp_maps);
--}
--
--MODULE_AUTHOR("PMC-Sierra, Inc");
--MODULE_DESCRIPTION("MTD map driver for PMC-Sierra MSP boards");
--MODULE_LICENSE("GPL");
--
--module_init(init_msp_flash);
--module_exit(cleanup_msp_flash);
--- 
-2.26.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgRXZnZW55LAoKK01hc29uIGZyb20gTWFjcm9uaXgKCkV2Z2VueSBOb3Zpa292IDxub3Zpa292
+QGlzcHJhcy5ydT4gd3JvdGUgb24gVHVlLCAxNyBBdWcgMjAyMSAxMzozNjowMworMDMwMDoKCj4g
+SGkgTWlxdWVsLAo+IAo+IE9uIDE2LjA4LjIwMjEgMTE6MDEsIE1pcXVlbCBSYXluYWwgd3JvdGU6
+Cj4gPiBIaSBBbmR5LAo+ID4KPiA+IEFuZHkgU2hldmNoZW5rbyA8YW5keS5zaGV2Y2hlbmtvQGdt
+YWlsLmNvbT4gd3JvdGUgb24gVGh1LCAxMiBBdWcgMjAyMQo+ID4gMTU6MTM6MTAgKzAzMDA6Cj4g
+PiAgCj4gPj4gT24gVGh1cnNkYXksIEF1Z3VzdCAxMiwgMjAyMSwgRXZnZW55IE5vdmlrb3YgPG5v
+dmlrb3ZAaXNwcmFzLnJ1PiB3cm90ZToKPiA+PiAgCj4gPj4+IEl0IHNlZW1zIHRoYXQgbXhpY19u
+ZmNfcHJvYmUoKSBtaXNzZWQgaW52b2NhdGlvbiBvZgo+ID4+PiBteGljX25mY19jbGtfZW5hYmxl
+KCkuIFRoZSBwYXRjaCBmaXhlZCB0aGF0LiBJbiBhZGRpdGlvbiwgZXJyb3IgaGFuZGxpbmcKPiA+
+Pj4gd2FzIHJlZmluZWQgYXBwcm9wcmlhdGVseS4gIAo+ID4+Cj4gPj4gTkFLLiBVbnRpbCB5b3Ug
+cHJvdmlkZSBhIGRlZXBlciBhbmFseXNpcywgbGlrZSBob3cgdGhpcyB3b3JrcyBiZWZvcmUgeW91
+cgo+ID4+IGNoYW5nZS4KPiA+Pgo+ID4+Cj4gPj4gUGxlYXNlLCBkb27igJl0IGJsaW5kbHkgZ2Vu
+ZXJhdGUgcGF0Y2hlcywgdGhpcyBjYW4gZXZlbiB5b3VyIGJvdCBkbywganVzdAo+ID4+IHRoaW5r
+IGFib3V0IGVhY2ggY2hhbmdlIGFuZCBwcmVmZXJhYmxlIHRlc3Qgb24gdGhlIHJlYWwgaGFyZHdh
+cmUuCj4gPj4KPiA+PiBUaGUgYWJvdmUgaXMgdG8gYWxsIHlvdXIgbG92ZWx5IGNvbnRyaWJ1dGlv
+bnMuCj4gPj4KPiA+PiAgCj4gPj4+IEZvdW5kIGJ5IExpbnV4IERyaXZlciBWZXJpZmljYXRpb24g
+cHJvamVjdCAobGludXh0ZXN0aW5nLm9yZykuCj4gPj4+Cj4gPj4+IFNpZ25lZC1vZmYtYnk6IEV2
+Z2VueSBOb3Zpa292IDxub3Zpa292QGlzcHJhcy5ydT4KPiA+Pj4gQ28tZGV2ZWxvcGVkLWJ5OiBL
+aXJpbGwgU2hpbGltYW5vdiA8a2lyaWxsLnNoaWxpbWFub3ZAaHVhd2VpLmNvbT4KPiA+Pj4gU2ln
+bmVkLW9mZi1ieTogS2lyaWxsIFNoaWxpbWFub3YgPGtpcmlsbC5zaGlsaW1hbm92QGh1YXdlaS5j
+b20+Cj4gPj4+IC0tLQo+ID4+PiAgIGRyaXZlcnMvbXRkL25hbmQvcmF3L214aWNfbmFuZC5jIHwg
+MTYgKysrKysrKysrKysrLS0tLQo+ID4+PiAgIDEgZmlsZSBjaGFuZ2VkLCAxMiBpbnNlcnRpb25z
+KCspLCA0IGRlbGV0aW9ucygtKQo+ID4+Pgo+ID4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQv
+bmFuZC9yYXcvbXhpY19uYW5kLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9teGljXwo+ID4+PiBu
+YW5kLmMKPiA+Pj4gaW5kZXggZGExMDcwOTkzOTk0Li4zN2U3NWJmNjBlZTUgMTAwNjQ0Cj4gPj4+
+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L214aWNfbmFuZC5jCj4gPj4+ICsrKyBiL2RyaXZl
+cnMvbXRkL25hbmQvcmF3L214aWNfbmFuZC5jCj4gPj4+IEBAIC01MDksOSArNTA5LDE1IEBAIHN0
+YXRpYyBpbnQgbXhpY19uZmNfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZQo+ID4+PiAqcGRl
+dikKPiA+Pj4gICAgICAgICAgaWYgKElTX0VSUihuZmMtPnNlbmRfZGx5X2NsaykpCj4gPj4+ICAg
+ICAgICAgICAgICAgICAgcmV0dXJuIFBUUl9FUlIobmZjLT5zZW5kX2RseV9jbGspOwo+ID4+Pgo+
+ID4+PiArICAgICAgIGVyciA9IG14aWNfbmZjX2Nsa19lbmFibGUobmZjKTsKPiA+Pj4gKyAgICAg
+ICBpZiAoZXJyKQo+ID4+PiArICAgICAgICAgICAgICAgcmV0dXJuIGVycjsgIAo+ID4gQXMgQW5k
+eSBzYWlkLCB0aGlzIGlzIG5vdCBuZWVkZWQuCj4gPiAgCj4gPj4+ICsKPiA+Pj4gICAgICAgICAg
+bmZjLT5yZWdzID0gZGV2bV9wbGF0Zm9ybV9pb3JlbWFwX3Jlc291cmNlKHBkZXYsIDApOwo+ID4+
+PiAtICAgICAgIGlmIChJU19FUlIobmZjLT5yZWdzKSkKPiA+Pj4gLSAgICAgICAgICAgICAgIHJl
+dHVybiBQVFJfRVJSKG5mYy0+cmVncyk7Cj4gPj4+ICsgICAgICAgaWYgKElTX0VSUihuZmMtPnJl
+Z3MpKSB7Cj4gPj4+ICsgICAgICAgICAgICAgICBlcnIgPSBQVFJfRVJSKG5mYy0+cmVncyk7Cj4g
+Pj4+ICsgICAgICAgICAgICAgICBnb3RvIGZhaWw7Cj4gPj4+ICsgICAgICAgfQo+ID4+Pgo+ID4+
+PiAgICAgICAgICBuYW5kX2NoaXAgPSAmbmZjLT5jaGlwOwo+ID4+PiAgICAgICAgICBtdGQgPSBu
+YW5kX3RvX210ZChuYW5kX2NoaXApOwo+ID4+PiBAQCAtNTI3LDggKzUzMywxMCBAQCBzdGF0aWMg
+aW50IG14aWNfbmZjX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UKPiA+Pj4gKnBkZXYpCj4g
+Pj4+ICAgICAgICAgIG5hbmRfY2hpcC0+Y29udHJvbGxlciA9ICZuZmMtPmNvbnRyb2xsZXI7Cj4g
+Pj4+Cj4gPj4+ICAgICAgICAgIGlycSA9IHBsYXRmb3JtX2dldF9pcnEocGRldiwgMCk7Cj4gPj4+
+IC0gICAgICAgaWYgKGlycSA8IDApCj4gPj4+IC0gICAgICAgICAgICAgICByZXR1cm4gaXJxOwo+
+ID4+PiArICAgICAgIGlmIChpcnEgPCAwKSB7Cj4gPj4+ICsgICAgICAgICAgICAgICBlcnIgPSBp
+cnE7Cj4gPj4+ICsgICAgICAgICAgICAgICBnb3RvIGZhaWw7ICAKPiA+IEhvd2V2ZXIgc29tZSBy
+ZXdvcmtpbmcgaXMgbmVlZGVkIGluIHRoZSBlcnJvciBwYXRoLgo+ID4KPiA+IFRoYXQgZ290byBz
+dGF0ZW1lbnQgc2hvdWxkIGJlIHJlbmFtZWQgYW5kIGRldm1fcmVxdWVzdF9pcnEoKSBzaG91bGQg
+bm90Cj4gPiBqdW1wIHRvIGl0Lgo+ID4gIAo+IAo+IFdlIHN0aWxsIG5lZWQgc29tZSBoZWxwIGFu
+ZCBjbGFyaWZpY2F0aW9uIGZyb20gdGhvc2Ugd2hvIGFyZSB2ZXJ5IGZhbWlsaWFyIHdpdGggdGhp
+cyBzb3J0IG9mIGRyaXZlcnMgb3IvYW5kIGNhbiB0ZXN0IHRoaXMgcGFydGljdWxhciBkcml2ZXIu
+IG14aWNfbmZjX2Nsa19lbmFibGUoKSBpcyB0aGUgY29tcGxlbWVudGFyeSBmdW5jdGlvbiBmb3Ig
+bXhpY19uZmNfY2xrX2Rpc2FibGUoKS4gTm8gb3RoZXIgZnVuY3Rpb25zIGludm9rZSBjbGtfcHJl
+cGFyZV9lbmFibGUoKS9jbGtfZGlzYWJsZV91bnByZXBhcmUoKSBpbiB0aGUgZHJpdmVyLiBVbmxp
+a2VseSBzb21lYm9keSBpbiBpdHMgZW52aXJvbm1lbnQgZG9lcyB0aGF0IHNpbmNlIGRyaXZlciBz
+cGVjaWZpYyBjbG9ja3MgYXJlIGRlYWx0IHdpdGguIEF0IHRoZSBtb21lbnQgdGhlIGRyaXZlciBp
+bnZva2VzIG14aWNfbmZjX2Nsa19kaXNhYmxlKCkgb24gZXJyb3IgaGFuZGxpbmcgcGF0aHMgaW4g
+cHJvYmUsIGluIHJlbW92ZSBhbmQgaW4gbXhpY19uZmNfc2V0X2ZyZXEoKS4gbXhpY19uZmNfY2xr
+X2VuYWJsZSgpIGlzIGNhbGxlZCBqdXN0IGJ5IG14aWNfbmZjX3NldF9mcmVxKCkgdGhhdCBtb3Jl
+b3ZlciBkb2VzIHRoaXMgYWZ0ZXIgY2FsbGluZyBteGljX25mY19jbGtfZGlzYWJsZSgpIGZpcnN0
+LiBTbywgd2UgZGlkIG5vdCBmaW5kIGFueSBwbGFjZSBpbiB0aGUgZHJpdmVyIHRoYXQgaW52b2tl
+cyBteGljX25mY19jbGtfZW5hYmxlKCkgcHJpb3IgdG8gbXhpY19uZmNfY2xrX2Rpc2FibGUoKS4g
+QmFzaW5nIG9uIHRoaXMgd2UgYWRkZWQgbXhpY19uZmNfY2xrX2VuYWJsZSgpIGp1c3QgYWZ0ZXIg
+Z2V0dGluZyBjbG9ja3MuIEFzIEkgZXhwbGFpbmVkIGluIHRoZSBwcmV2aW91cyBsYXJnZSBlLW1h
+aWwsIHdlIG1heSBiZSB3cm9uZyBpbiBvdXIgdW5kZXJzdGFuZGluZyBvZiB0aGUgZHJpdmVyIGVu
+dmlyb25tZW50IG9yL2FuZCBhdCBzcGVjaWZpY2F0aW9uIG9mIHJlcXVpcmVtZW50cyBiZWluZyBj
+aGVja2VkLiBJdCB3b3VsZCBiZSBncmVhdCBpZiB5b3Ugd2lsbCBwb2ludCBvdXQgb24gb3VyIG1p
+c3Rha2VzLgoKRW5hYmxpbmcgdGhlIGNsb2NrcyBzZWVtcyB0byBvbmx5IGJlIG5lZWRlZCB0byBh
+Y2Nlc3MgdGhlIE5BTkQgZGV2aWNlCmFuZCBub3QgdGhlIHJlZ2lzdGVycyBvZiB0aGUgY29udHJv
+bGxlci4gTWFzb24sIGlzIHRoaXMgc3RhdGVtZW50CnJpZ2h0PyBJZiB0aGlzIHN0YXRlbWVudCBp
+cyB3cm9uZywgdGhlbiB5b3VyIHByb3Bvc2FsIGlzIG5vdCBlbnRpcmVseQp3cm9uZyBpbiB0aGUg
+c2Vuc2UgdGhhdCB3ZSBtdXN0IGVuYWJsZSB0aGUgbWlzc2luZyBjbG9jayAqYmVmb3JlKgphY2Nl
+c3NpbmcgYW55IHJlZ2lzdGVyLgoKT3RoZXJ3aXNlIGZvciB0aGUgdHdvIG90aGVyIGNsb2Nrcywg
+d2UgZG9uJ3QgcmVhbGx5IGNhcmUgdG8gZW5hYmxlIHRoZW0KYmVmb3JlIHNldHRpbmcgdGhlIGFj
+dHVhbCBmcmVxdWVuY3kgaW4gLT5zZXR1cF9pbnRlcmZhY2UoKSAoY2FsbGVkIGJ5Cm5hbmRfc2Nh
+bigpKSBiZWNhdXNlIGF0IHRoaXMgcG9pbnQgd2UgZG9uJ3QgeWV0IGtub3cgd2hhdCB0aW1pbmcg
+bW9kZQppcyBiZXN0LiBEaXNhYmxpbmcgdGhlIGNsb2NrIGlzIG5vdCBhbiBpc3N1ZSBldmVuIHRo
+b3VnaCBpdCB3YXMgbm90CmVuYWJsZWQgaW4gdGhlIGZpc3QgcGxhY2UgYW55d2F5LgoKSW4gYWxs
+IGNhc2VzLCB0aGUgZXJyb3IgcGF0aCBpcyB3cm9uZy4KClRoYW5rcywKTWlxdcOobAoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1U
+RCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
