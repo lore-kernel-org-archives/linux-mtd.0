@@ -2,20 +2,21 @@ Return-Path: <SRS0=LBUh=NI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,
 	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
 	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC0A2C4338F
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 02:25:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27491C4338F
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 02:30:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4670460551
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 02:25:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4670460551
+	by mail.kernel.org (Postfix) with ESMTPS id DC15460184
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 02:30:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DC15460184
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,52 +25,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kH4vaar2FnNT/4XhQVLakRPzVghRVWc69+ZDjRmK8wo=; b=2/9mo0Yc2yX6J3
-	CdhGAoHs94Z4mM/JkY1b0VVy/njQeM8zDWAmGk1E44J8muCJu8NmVoYL67pyGQuUpvU+bpbQ3JTtA
-	pD10bKpWODgzz8DwC/vEZIT10xFe2PRJLfCPX7IizHRfQIT4/gNpDocbuCgr9OyAtoHn3y3uS5vYK
-	xnbDM8kc1Z0qP0dbkis7aFMz6BO7YkIPPyMl6kVPxrlJ9Grqo//6vXF1FVttQY183C7tcr/JmBApM
-	825qQOwVW45GSe/fLDWTOgLR359LH7HOU5xiNp7rH0/5v+TeTOjUuhXYsaNEem59DWpTIgMj5WVwx
-	tCK3sDufQRMrW3cVTXCA==;
+	List-Owner; bh=IsQG2n1F0oUaeFoOOGYc40dLuF6pOS5suMm7vOFy1HY=; b=leojicsxP70y3y
+	W8oHfiuZXde2DOHKnxLTnjWk0BRvkCiicQ2vNnklkrxIzb/PHYKLJPz1crLND08/yFBj4hteh3lOt
+	euyHcGBcQSiagb5zQKhJPBGsg0NR+ahxiLeqMfsArn4taxkms+y55bH4cwVOoAqPgIWcdmDdDtxzZ
+	SI17KArEkOEBQ3VzjHMVLwNpVCEJ+gMpGW2lmp8V7oHaCkDIqhO66usnqvv1WkUQyfZ7fqXG6dFje
+	RLEm/lHegvHXjRr2TknXK3v2lmYnMufmL+EFhHcXELN4YRYlIBoaFcQOElgWP3d85oyhlily+GOSk
+	xGrtFmvCiMfB7Q0gqKKw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mFomt-000p0L-Qi; Tue, 17 Aug 2021 02:25:12 +0000
-Received: from mail-lj1-x22e.google.com ([2a00:1450:4864:20::22e])
+	id 1mFor0-000pPm-Ms; Tue, 17 Aug 2021 02:29:27 +0000
+Received: from mail-lf1-x12b.google.com ([2a00:1450:4864:20::12b])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mFnw5-000h1y-CF
- for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 01:30:41 +0000
-Received: by mail-lj1-x22e.google.com with SMTP id n7so30328453ljq.0
- for <linux-mtd@lists.infradead.org>; Mon, 16 Aug 2021 18:30:37 -0700 (PDT)
+ id 1mFnw5-000h1L-Ds
+ for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 01:30:42 +0000
+Received: by mail-lf1-x12b.google.com with SMTP id d4so38105193lfk.9
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Aug 2021 18:30:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=Rnq9bkX2ixJQNv9BmFWVHuIOaPxB2jJGC7dZumDQ6+g=;
- b=OhTLO+vj1vm5lGE+851g2CFGzlzjt3nZpufwJ0JLRj5BVaJqOv5XpnZ4t6FIFykDTe
- R7eSI4+JQmpLfDJXNvkuLw20a6hVxyEOfc6fYX2JHLYC66lj/UMaHPoHD28QCWb7xsPE
- ck0QHLrINepJb4SHmmiAjfr61/w6aaL8rUWnwdaj04Gxb+CYF49kFSlCFhp+PAHjBiFv
- opz07XHUvGSevI2cEHAS1+ua6hVTgr3hXi+elnaFdC1tmCA2ewZFv2BBPNmmsu3P0OH+
- Lex80AN9h9VtBkYhMDTb94z7cxiyS9kXLrm7WgkKDh0hQquViNyco07WO4wrwg6WoGxn
- VOLg==
+ bh=Ao2JLfYPSHHhEgaGHBXF51D99ohQhpgr3//KrDL4XpQ=;
+ b=uZ5fJP5Fm54nU+vvAkJbEQxeHZQIUFPbGLg/dS7NUGAkOu1ZqEf9VpiHOFtfecrXZI
+ tTrtZ4dAa1UWo1lHFKhNl/EMUzN0mP7e6yJNy3bCUUYB7WnbrjOqGLEBtBMx4oISIyfk
+ TkMpSOVGMlCO4hB9V1CdIIcRqOpEjJ3fqEDOCyjvUcFCmxzn5JLikTI7H+G1sUstYmcd
+ j0JmV6zn6m13AS3+1+VlQ4CRZfq2D1xyWoBuKcRxt6eet1fVzuR8jV/quGAn9nLkz5AS
+ YhSS8PvqeM7JDPrZqeFpb9OGNXxDosW8tZ0Un5wAHYm25FvW7AKwa/0Qu7K7r/kEZo/V
+ N8MA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=Rnq9bkX2ixJQNv9BmFWVHuIOaPxB2jJGC7dZumDQ6+g=;
- b=H05fhl2H7RmTQVTx1i14w+caBlnQwRutYDDp6SM/Xm16v9pvactRRd5kteIJ8gzB80
- kjqJQqZ1g5w50iadjYcFeCwGtEmDD0maGr8UXOE3LiXBnyLdm3AK+jwUKhRzLQfNTZUz
- rmmJS9DquSk8iM5R1DaLNWO3qKre+fCh25wiIMgWSgKY+lrMQmX6iVRLGCaJQ6F+53//
- W2k5oCguv3uwOOjh2QxoaduXKVqG2Of/e7KqJiHXxJDO3u21g0kpUsLEFLK8LQ/69Tfq
- 8Mz74SOWrsMBtqiUDS8Q3i7jH8uqGjUf3VQPL7iGR8WOMen8cIdnZH7v1OiieaIvNpV7
- VEOw==
-X-Gm-Message-State: AOAM533bLpu5FAjVaLljZuiTNeAXeBWGwbz+IoF9i7Ed38Pcz2wvi6fC
- ZJ9XTM6o+eToWpJAgQbhMs8=
-X-Google-Smtp-Source: ABdhPJz00oZVpSy/+QIJGg2IFpP4EXHyPsIbmUOMC41xOAd6hpvBx6xCs96mwtqe7gvcDuDFogRMBg==
-X-Received: by 2002:a2e:8191:: with SMTP id e17mr865236ljg.226.1629163835893; 
- Mon, 16 Aug 2021 18:30:35 -0700 (PDT)
+ bh=Ao2JLfYPSHHhEgaGHBXF51D99ohQhpgr3//KrDL4XpQ=;
+ b=fxtUXV61u48W1OpYRrDx9JXdVRkJJQ5Irebh5OjYLLswJ8gSqdSb+8iXtN6Peq3x2A
+ /CEVSW8LI4BReNsWgAP5gyWDFeGB82uG1MjSk1gZzPv1Bat/JubYyGB0KmDBm/60I4WD
+ ucMASsDn1gyzwxNBRY6CBbBHYvlH4fI4+8pZ71CQDUkqvAtNbQ0OkeCIqV/12kB9trUg
+ 8Qfb8DAqYLrpJki2m2ak0YXPG4wA0KQpv5ZIt0QxDdChtC2p11CCvV4//x48cBwFnVwJ
+ mC+4TSRGT+cTPbC3WHHh1wPocm/u9y6lddp853F4ftc8Lv03/4rvQ5bejc/vRu1+T1EW
+ YVrQ==
+X-Gm-Message-State: AOAM5327q6h6WKFD/lDMm5a32crU3cKbKcsTfWOVIRDJMJHXTTXwurgB
+ Hr+Yai1r2SQX9/iIxuBc2Ic=
+X-Google-Smtp-Source: ABdhPJxEPMv3pBMrZvDnxLqyqEGWzhHmjNIWiVXkcPQuvhYSVN0NUXWVnAaHZUNdp8KzOuF0xPfC2Q==
+X-Received: by 2002:ac2:5542:: with SMTP id l2mr496723lfk.551.1629163834738;
+ Mon, 16 Aug 2021 18:30:34 -0700 (PDT)
 Received: from localhost.localdomain (46-138-85-91.dynamic.spd-mgts.ru.
  [46.138.85.91])
- by smtp.gmail.com with ESMTPSA id g30sm46607lfj.298.2021.08.16.18.30.34
+ by smtp.gmail.com with ESMTPSA id g30sm46607lfj.298.2021.08.16.18.30.33
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 16 Aug 2021 18:30:35 -0700 (PDT)
+ Mon, 16 Aug 2021 18:30:34 -0700 (PDT)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>,
@@ -94,17 +95,16 @@ Cc: linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
  linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
  dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
  linux-clk@vger.kernel.org
-Subject: [PATCH v8 29/34] soc/tegra: pmc: Enable core domain support for
- Tegra20 and Tegra30
-Date: Tue, 17 Aug 2021 04:27:49 +0300
-Message-Id: <20210817012754.8710-30-digetx@gmail.com>
+Subject: [PATCH v8 28/34] soc/tegra: regulators: Prepare for suspend
+Date: Tue, 17 Aug 2021 04:27:48 +0300
+Message-Id: <20210817012754.8710-29-digetx@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210817012754.8710-1-digetx@gmail.com>
 References: <20210817012754.8710-1-digetx@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210816_183037_513427_12D928A9 
-X-CRM114-Status: GOOD (  15.14  )
+X-CRM114-CacheID: sfid-20210816_183037_564360_D19F07EF 
+X-CRM114-Status: GOOD (  20.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -121,36 +121,375 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-All device drivers got runtime PM and OPP support. Flip the core domain
-support status for Tegra20 and Tegra30 SoCs.
+Depending on hardware version, Tegra SoC may require a higher voltages
+during resume from system suspend, otherwise hardware will crash. Set
+SoC voltages to a nominal levels during suspend.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- drivers/soc/tegra/pmc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/soc/tegra/regulators-tegra20.c |  99 ++++++++++++++++++++
+ drivers/soc/tegra/regulators-tegra30.c | 122 +++++++++++++++++++++++++
+ 2 files changed, 221 insertions(+)
 
-diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
-index fb8faf7b226a..caf9e72af246 100644
---- a/drivers/soc/tegra/pmc.c
-+++ b/drivers/soc/tegra/pmc.c
-@@ -3042,7 +3042,7 @@ static void tegra20_pmc_setup_irq_polarity(struct tegra_pmc *pmc,
- }
+diff --git a/drivers/soc/tegra/regulators-tegra20.c b/drivers/soc/tegra/regulators-tegra20.c
+index b8ce9fd0650d..6a2f90ab9d3e 100644
+--- a/drivers/soc/tegra/regulators-tegra20.c
++++ b/drivers/soc/tegra/regulators-tegra20.c
+@@ -16,7 +16,9 @@
+ #include <linux/regulator/coupler.h>
+ #include <linux/regulator/driver.h>
+ #include <linux/regulator/machine.h>
++#include <linux/suspend.h>
  
- static const struct tegra_pmc_soc tegra20_pmc_soc = {
--	.supports_core_domain = false,
-+	.supports_core_domain = true,
- 	.num_powergates = ARRAY_SIZE(tegra20_powergates),
- 	.powergates = tegra20_powergates,
- 	.num_cpu_powergates = 0,
-@@ -3103,7 +3103,7 @@ static const char * const tegra30_reset_sources[] = {
++#include <soc/tegra/fuse.h>
+ #include <soc/tegra/pmc.h>
+ 
+ struct tegra_regulator_coupler {
+@@ -25,9 +27,12 @@ struct tegra_regulator_coupler {
+ 	struct regulator_dev *cpu_rdev;
+ 	struct regulator_dev *rtc_rdev;
+ 	struct notifier_block reboot_notifier;
++	struct notifier_block suspend_notifier;
+ 	int core_min_uV, cpu_min_uV;
+ 	bool sys_reboot_mode_req;
+ 	bool sys_reboot_mode;
++	bool sys_suspend_mode_req;
++	bool sys_suspend_mode;
  };
  
- static const struct tegra_pmc_soc tegra30_pmc_soc = {
--	.supports_core_domain = false,
-+	.supports_core_domain = true,
- 	.num_powergates = ARRAY_SIZE(tegra30_powergates),
- 	.powergates = tegra30_powergates,
- 	.num_cpu_powergates = ARRAY_SIZE(tegra30_cpu_powergates),
+ static inline struct tegra_regulator_coupler *
+@@ -105,6 +110,28 @@ static int tegra20_core_rtc_max_spread(struct regulator_dev *core_rdev,
+ 	return 150000;
+ }
+ 
++static int tegra20_cpu_nominal_uV(void)
++{
++	switch (tegra_sku_info.soc_speedo_id) {
++	case 0:
++		return 1100000;
++	case 1:
++		return 1025000;
++	default:
++		return 1125000;
++	}
++}
++
++static int tegra20_core_nominal_uV(void)
++{
++	switch (tegra_sku_info.soc_speedo_id) {
++	default:
++		return 1225000;
++	case 2:
++		return 1300000;
++	}
++}
++
+ static int tegra20_core_rtc_update(struct tegra_regulator_coupler *tegra,
+ 				   struct regulator_dev *core_rdev,
+ 				   struct regulator_dev *rtc_rdev,
+@@ -144,6 +171,11 @@ static int tegra20_core_rtc_update(struct tegra_regulator_coupler *tegra,
+ 	if (err)
+ 		return err;
+ 
++	/* prepare voltage level for suspend */
++	if (tegra->sys_suspend_mode)
++		core_min_uV = clamp(tegra20_core_nominal_uV(),
++				    core_min_uV, core_max_uV);
++
+ 	core_uV = regulator_get_voltage_rdev(core_rdev);
+ 	if (core_uV < 0)
+ 		return core_uV;
+@@ -279,6 +311,11 @@ static int tegra20_cpu_voltage_update(struct tegra_regulator_coupler *tegra,
+ 	if (tegra->sys_reboot_mode)
+ 		cpu_min_uV = max(cpu_min_uV, tegra->cpu_min_uV);
+ 
++	/* prepare voltage level for suspend */
++	if (tegra->sys_suspend_mode)
++		cpu_min_uV = clamp(tegra20_cpu_nominal_uV(),
++				   cpu_min_uV, cpu_max_uV);
++
+ 	if (cpu_min_uV > cpu_uV) {
+ 		err = tegra20_core_rtc_update(tegra, core_rdev, rtc_rdev,
+ 					      cpu_uV, cpu_min_uV);
+@@ -320,6 +357,7 @@ static int tegra20_regulator_balance_voltage(struct regulator_coupler *coupler,
+ 	}
+ 
+ 	tegra->sys_reboot_mode = READ_ONCE(tegra->sys_reboot_mode_req);
++	tegra->sys_suspend_mode = READ_ONCE(tegra->sys_suspend_mode_req);
+ 
+ 	if (rdev == cpu_rdev)
+ 		return tegra20_cpu_voltage_update(tegra, cpu_rdev,
+@@ -334,6 +372,63 @@ static int tegra20_regulator_balance_voltage(struct regulator_coupler *coupler,
+ 	return -EPERM;
+ }
+ 
++static int tegra20_regulator_prepare_suspend(struct tegra_regulator_coupler *tegra,
++					     bool sys_suspend_mode)
++{
++	int err;
++
++	if (!tegra->core_rdev || !tegra->rtc_rdev || !tegra->cpu_rdev)
++		return 0;
++
++	/*
++	 * All power domains are enabled early during resume from suspend
++	 * by GENPD core.  Domains like VENC may require a higher voltage
++	 * when enabled during resume from suspend.  This also prepares
++	 * hardware for resuming from LP0.
++	 */
++
++	WRITE_ONCE(tegra->sys_suspend_mode_req, sys_suspend_mode);
++
++	err = regulator_sync_voltage_rdev(tegra->cpu_rdev);
++	if (err)
++		return err;
++
++	err = regulator_sync_voltage_rdev(tegra->core_rdev);
++	if (err)
++		return err;
++
++	return 0;
++}
++
++static int tegra20_regulator_suspend(struct notifier_block *notifier,
++				     unsigned long mode, void *arg)
++{
++	struct tegra_regulator_coupler *tegra;
++	int ret = 0;
++
++	tegra = container_of(notifier, struct tegra_regulator_coupler,
++			     suspend_notifier);
++
++	switch (mode) {
++	case PM_HIBERNATION_PREPARE:
++	case PM_RESTORE_PREPARE:
++	case PM_SUSPEND_PREPARE:
++		ret = tegra20_regulator_prepare_suspend(tegra, true);
++		break;
++
++	case PM_POST_HIBERNATION:
++	case PM_POST_RESTORE:
++	case PM_POST_SUSPEND:
++		ret = tegra20_regulator_prepare_suspend(tegra, false);
++		break;
++	}
++
++	if (ret)
++		pr_err("failed to prepare regulators: %d\n", ret);
++
++	return notifier_from_errno(ret);
++}
++
+ static int tegra20_regulator_prepare_reboot(struct tegra_regulator_coupler *tegra,
+ 					    bool sys_reboot_mode)
+ {
+@@ -444,6 +539,7 @@ static struct tegra_regulator_coupler tegra20_coupler = {
+ 		.balance_voltage = tegra20_regulator_balance_voltage,
+ 	},
+ 	.reboot_notifier.notifier_call = tegra20_regulator_reboot,
++	.suspend_notifier.notifier_call = tegra20_regulator_suspend,
+ };
+ 
+ static int __init tegra_regulator_coupler_init(void)
+@@ -456,6 +552,9 @@ static int __init tegra_regulator_coupler_init(void)
+ 	err = register_reboot_notifier(&tegra20_coupler.reboot_notifier);
+ 	WARN_ON(err);
+ 
++	err = register_pm_notifier(&tegra20_coupler.suspend_notifier);
++	WARN_ON(err);
++
+ 	return regulator_coupler_register(&tegra20_coupler.coupler);
+ }
+ arch_initcall(tegra_regulator_coupler_init);
+diff --git a/drivers/soc/tegra/regulators-tegra30.c b/drivers/soc/tegra/regulators-tegra30.c
+index e74bbc9c7859..8fd43c689134 100644
+--- a/drivers/soc/tegra/regulators-tegra30.c
++++ b/drivers/soc/tegra/regulators-tegra30.c
+@@ -16,6 +16,7 @@
+ #include <linux/regulator/coupler.h>
+ #include <linux/regulator/driver.h>
+ #include <linux/regulator/machine.h>
++#include <linux/suspend.h>
+ 
+ #include <soc/tegra/fuse.h>
+ #include <soc/tegra/pmc.h>
+@@ -25,9 +26,12 @@ struct tegra_regulator_coupler {
+ 	struct regulator_dev *core_rdev;
+ 	struct regulator_dev *cpu_rdev;
+ 	struct notifier_block reboot_notifier;
++	struct notifier_block suspend_notifier;
+ 	int core_min_uV, cpu_min_uV;
+ 	bool sys_reboot_mode_req;
+ 	bool sys_reboot_mode;
++	bool sys_suspend_mode_req;
++	bool sys_suspend_mode;
+ };
+ 
+ static inline struct tegra_regulator_coupler *
+@@ -113,6 +117,52 @@ static int tegra30_core_cpu_limit(int cpu_uV)
+ 	return -EINVAL;
+ }
+ 
++static int tegra30_cpu_nominal_uV(void)
++{
++	switch (tegra_sku_info.cpu_speedo_id) {
++	case 10 ... 11:
++		return  850000;
++
++	case 9:
++		return  912000;
++
++	case 1 ...  3:
++	case 7 ...  8:
++		return 1050000;
++
++	default:
++		return 1125000;
++
++	case  4 ...  6:
++	case 12 ... 13:
++		return 1237000;
++	}
++}
++
++static int tegra30_core_nominal_uV(void)
++{
++	switch (tegra_sku_info.soc_speedo_id) {
++	case 0:
++		return 1200000;
++
++	case 1:
++		if (tegra_sku_info.cpu_speedo_id != 7 &&
++		    tegra_sku_info.cpu_speedo_id != 8)
++			return 1200000;
++
++		fallthrough;
++
++	case 2:
++		if (tegra_sku_info.cpu_speedo_id != 13)
++			return 1300000;
++
++		return 1350000;
++
++	default:
++		return 1250000;
++	}
++}
++
+ static int tegra30_voltage_update(struct tegra_regulator_coupler *tegra,
+ 				  struct regulator_dev *cpu_rdev,
+ 				  struct regulator_dev *core_rdev)
+@@ -168,6 +218,11 @@ static int tegra30_voltage_update(struct tegra_regulator_coupler *tegra,
+ 	if (err)
+ 		return err;
+ 
++	/* prepare voltage level for suspend */
++	if (tegra->sys_suspend_mode)
++		core_min_uV = clamp(tegra30_core_nominal_uV(),
++				    core_min_uV, core_max_uV);
++
+ 	core_uV = regulator_get_voltage_rdev(core_rdev);
+ 	if (core_uV < 0)
+ 		return core_uV;
+@@ -223,6 +278,11 @@ static int tegra30_voltage_update(struct tegra_regulator_coupler *tegra,
+ 	if (tegra->sys_reboot_mode)
+ 		cpu_min_uV = max(cpu_min_uV, tegra->cpu_min_uV);
+ 
++	/* prepare voltage level for suspend */
++	if (tegra->sys_suspend_mode)
++		cpu_min_uV = clamp(tegra30_cpu_nominal_uV(),
++				   cpu_min_uV, cpu_max_uV);
++
+ 	if (core_min_limited_uV > core_uV) {
+ 		pr_err("core voltage constraint violated: %d %d %d\n",
+ 		       core_uV, core_min_limited_uV, cpu_uV);
+@@ -292,10 +352,68 @@ static int tegra30_regulator_balance_voltage(struct regulator_coupler *coupler,
+ 	}
+ 
+ 	tegra->sys_reboot_mode = READ_ONCE(tegra->sys_reboot_mode_req);
++	tegra->sys_suspend_mode = READ_ONCE(tegra->sys_suspend_mode_req);
+ 
+ 	return tegra30_voltage_update(tegra, cpu_rdev, core_rdev);
+ }
+ 
++static int tegra30_regulator_prepare_suspend(struct tegra_regulator_coupler *tegra,
++					     bool sys_suspend_mode)
++{
++	int err;
++
++	if (!tegra->core_rdev || !tegra->cpu_rdev)
++		return 0;
++
++	/*
++	 * All power domains are enabled early during resume from suspend
++	 * by GENPD core.  Domains like VENC may require a higher voltage
++	 * when enabled during resume from suspend.  This also prepares
++	 * hardware for resuming from LP0.
++	 */
++
++	WRITE_ONCE(tegra->sys_suspend_mode_req, sys_suspend_mode);
++
++	err = regulator_sync_voltage_rdev(tegra->cpu_rdev);
++	if (err)
++		return err;
++
++	err = regulator_sync_voltage_rdev(tegra->core_rdev);
++	if (err)
++		return err;
++
++	return 0;
++}
++
++static int tegra30_regulator_suspend(struct notifier_block *notifier,
++				     unsigned long mode, void *arg)
++{
++	struct tegra_regulator_coupler *tegra;
++	int ret = 0;
++
++	tegra = container_of(notifier, struct tegra_regulator_coupler,
++			     suspend_notifier);
++
++	switch (mode) {
++	case PM_HIBERNATION_PREPARE:
++	case PM_RESTORE_PREPARE:
++	case PM_SUSPEND_PREPARE:
++		ret = tegra30_regulator_prepare_suspend(tegra, true);
++		break;
++
++	case PM_POST_HIBERNATION:
++	case PM_POST_RESTORE:
++	case PM_POST_SUSPEND:
++		ret = tegra30_regulator_prepare_suspend(tegra, false);
++		break;
++	}
++
++	if (ret)
++		pr_err("failed to prepare regulators: %d\n", ret);
++
++	return notifier_from_errno(ret);
++}
++
+ static int tegra30_regulator_prepare_reboot(struct tegra_regulator_coupler *tegra,
+ 					    bool sys_reboot_mode)
+ {
+@@ -395,6 +513,7 @@ static struct tegra_regulator_coupler tegra30_coupler = {
+ 		.balance_voltage = tegra30_regulator_balance_voltage,
+ 	},
+ 	.reboot_notifier.notifier_call = tegra30_regulator_reboot,
++	.suspend_notifier.notifier_call = tegra30_regulator_suspend,
+ };
+ 
+ static int __init tegra_regulator_coupler_init(void)
+@@ -407,6 +526,9 @@ static int __init tegra_regulator_coupler_init(void)
+ 	err = register_reboot_notifier(&tegra30_coupler.reboot_notifier);
+ 	WARN_ON(err);
+ 
++	err = register_pm_notifier(&tegra30_coupler.suspend_notifier);
++	WARN_ON(err);
++
+ 	return regulator_coupler_register(&tegra30_coupler.coupler);
+ }
+ arch_initcall(tegra_regulator_coupler_init);
 -- 
 2.32.0
 
