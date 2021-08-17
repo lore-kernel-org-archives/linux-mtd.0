@@ -8,14 +8,14 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 84F45C43214
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 01:31:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E925C4338F
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 01:31:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4E46C60241
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 01:31:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4E46C60241
+	by mail.kernel.org (Postfix) with ESMTPS id F266A60E09
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 01:31:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F266A60E09
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,52 +24,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/5rpJYR/+BPXvZYZzZ5Zk9qc6o+shghr4eLdPfUb5Ao=; b=WhqOP6gwElvAzM
-	rwh/2TNbMLiv6QQOst3pyD1GlfkOs2Sw7ldbJcHyjhITGAzJ8dZzad8/jn0abpiCV8j/IDvNcmlEc
-	K1/fkYMPKhKEIgekAfak0cEFkcWSChCnSrvHgmWGt4/wqDDhUQpOlCGmNGrgXnTDIEYgkVapUdAr0
-	ljNrnTJqW6nwRyaBIf4ywITU/I282dvayt5QmkPI/6DWUJCif8ZF1YcaqnarZVD8OBvDB3AZyd9gw
-	XYuYCQTArUm+KuY4Ij7zOvQJvegiqg7mWUW+alVGqzjqHEoFAMX4AGOyJmK4IU5jOojwN22Obl3C4
-	ZC067j2f56QFyL4perUg==;
+	List-Owner; bh=7I/dHO6D8dYanpsZ3E/8NpQdWPFSS5BssNrWClWdmuA=; b=Q6EYglXB5jf/WG
+	602hkI1r8lqUXK8dU2OSXQflVB0nPhEsDiKThg3/MjTTfwX80//M2EuvFIFOFY6phyhGOssaM3lur
+	wOPm3I0IxU7vJYlNoa20+S/BmWUpLTg950fe9VY0HB2LxMRYHH12W2Rk/UAHzfft2SSDnlHpyl1Q8
+	48wUpM90ilL6xgAcqYgRIDPOr3v+0NpQApsaHvc/zdQAX5j5mtSo0n1DPkpJdNoKPiT++t9v09Z0p
+	9UJVVZegasKfMyK4L7R6wI7aTLX2HXYxagWb5bz7w3IS7mNMMKA3ZS6DpEh5gENZi6R2+wVSU2SX3
+	HQYLasrEKQFTejif6Usg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mFnwI-000hAF-LY; Tue, 17 Aug 2021 01:30:50 +0000
-Received: from mail-lj1-x234.google.com ([2a00:1450:4864:20::234])
+	id 1mFnwg-000hKz-P1; Tue, 17 Aug 2021 01:31:14 +0000
+Received: from mail-lj1-x22a.google.com ([2a00:1450:4864:20::22a])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mFnva-000gcI-C2
- for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 01:30:07 +0000
-Received: by mail-lj1-x234.google.com with SMTP id i28so8906107ljm.7
- for <linux-mtd@lists.infradead.org>; Mon, 16 Aug 2021 18:30:06 -0700 (PDT)
+ id 1mFnvb-000gd7-Jm
+ for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 01:30:08 +0000
+Received: by mail-lj1-x22a.google.com with SMTP id h17so30145632ljh.13
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Aug 2021 18:30:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=azJO16PBS0aaEX5vOfJpmf9jn1x1mJqiJpQpMZ0azY4=;
- b=hNWZ3lDQBB9G0NfTmCUH5K27tkGRQQ+XAmdCjgXsoLk44TVXnSV0rZZArfsM7BjMNQ
- NzXAqYUV8bprqa1tDC9g84EyQd3o8jniWwkMjyQMMuqUkUkg6juIVGYjyUCbChTFmc7C
- Y9kAvvDPB9tH2tyarHnY6QH7UIi/z4zffPnrrS03ZW5T6FXyCYoeQLuQKPtpL84Si2yR
- MkQ+LN020YkVrk5A8hxNQQXfqHQiqTAV1n8zak/R17pXJIG49Dyerbvv/lIRePo4u9Cy
- r4NoX8Q2wawaT0cFfMSzhTg/VWuRq5m8tSgtaZnX2c9Uv2OXGulLsD2BxcAnqIFKNTgY
- /46w==
+ bh=wojn7XneOlcjLQTZlMLpcmbGjIOEPaqexo+f2WGyphI=;
+ b=Xq17kIc6GM80MD2xhnYjU7c3bLn4H5tuMTvcdBwNy9/g5psmoz3S1gVRRgj0w10xku
+ S/OHY+MF1OPdTYbYPPJFPFeY4WU63WLX4lpEqf+XHRBxzSyKtJkRoLEZsNrLQUD3aJsJ
+ hyYwTr0Z48Wws5sZA3cunYGug92vOCdPP0286zyvF+xLx0QRLRMNonrX8WWxK9M03w18
+ x2KNq+2YuwXI/DgRg4TCi8S5zBrr/YRsvFRqgRHtf1EkBhMZn+P2C2QCgMgcjYbkv0RV
+ MYPdW+7zuuviGgSMO06r+pSAqvsVA5K8VmFJ2RBZodvpwXKzfElGK+ZIvdNgJ/4RFBSg
+ 0SYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=azJO16PBS0aaEX5vOfJpmf9jn1x1mJqiJpQpMZ0azY4=;
- b=b4RB8AUljKnTeFcMwgtNpeYd1trMQMFt7NQHuI16fz/noROsOFQ8K7mO73GE3kbiOU
- mSnYj5So0nUZqBfiY6J3KfyRqhYiBkGcSSz8o43eZS8AYI0607GxszTX41JwTc5d6oco
- BKluvMhz2ihUl2pm33rNPqirlv5vZC/WI67MLypgTJ8J+4O4e/C09csYXvzeOVL/HnAT
- a8fQAxbcgYU3+GXFcnbepdj2cax66Q4ouVogup3SHYbevbzBOtB5NNWD6PtxpLGe/5ji
- rjHcsikxeamEoSjMK5Q1Mo0FUeJv6XE0TBev4zxhdkorRPow/1B+WqEgVJJxJ3BFRH4c
- JnJw==
-X-Gm-Message-State: AOAM533snR2gd701HZ9NRX98iZ3bs3slSqkEHMJYrZEBnQ7jpWrG0LGG
- KlGNFF9D7KWCUc15SPgofl8=
-X-Google-Smtp-Source: ABdhPJw/eckx03zVOJf2hmuiHkhQYzKLMML9PEB8kcVT0ZNZolUJSB9HB3aBM4EeNCzEcW2W6988dw==
-X-Received: by 2002:a2e:9e04:: with SMTP id e4mr832311ljk.431.1629163805018;
- Mon, 16 Aug 2021 18:30:05 -0700 (PDT)
+ bh=wojn7XneOlcjLQTZlMLpcmbGjIOEPaqexo+f2WGyphI=;
+ b=AweSwIvFpUlQFKTRAkh2z7jLGOGB+db4i5ebOb3ZPwXh8E3DwhBgyBWgdKYz6DNK6c
+ X6GI0bSl8x5RAC9UCXIXmw+cxslPh8yb6raPQPseIkrRYW99Flz6tXXk/PBqREkpLju7
+ u4ixMyIGMmj+VbXJzg540W3LKoI1/BvfbN+B+Bcvj2+56UUsGgLPCVRBkb0+5d2PSEXr
+ y08MpGinHEgpL9ZkZC7TkHIE21Yewbr1VcTZt2UiQ6ZAVHliqx2cghs0fserf7w1kFLS
+ mgqKymzEvN92qaAhi/rBl6uweRASOFHbW58gHluINMuK5OUTHpVDQZJLYWVGI18TS6CJ
+ 1p3Q==
+X-Gm-Message-State: AOAM5333nxi1EoZcPEeJntN3CX4cMq6gbQ6iF9Qf20hHauchV20Ynlu3
+ Xs4rkTvhWxPabUiw8HOoF1c=
+X-Google-Smtp-Source: ABdhPJzrAiKknpayvUXn0AhIlpxoa1tdB8UGRkYEeNvPAIQMKmclxsnV8VxQdGuN29ZUiGnqlWbG1A==
+X-Received: by 2002:a2e:b0e2:: with SMTP id h2mr848215ljl.23.1629163806184;
+ Mon, 16 Aug 2021 18:30:06 -0700 (PDT)
 Received: from localhost.localdomain (46-138-85-91.dynamic.spd-mgts.ru.
  [46.138.85.91])
- by smtp.gmail.com with ESMTPSA id g30sm46607lfj.298.2021.08.16.18.30.03
+ by smtp.gmail.com with ESMTPSA id g30sm46607lfj.298.2021.08.16.18.30.05
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 16 Aug 2021 18:30:04 -0700 (PDT)
+ Mon, 16 Aug 2021 18:30:05 -0700 (PDT)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>,
@@ -94,17 +94,17 @@ Cc: linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
  linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
  dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
  linux-clk@vger.kernel.org
-Subject: [PATCH v8 03/34] soc/tegra: Don't print error message when OPPs not
- available
-Date: Tue, 17 Aug 2021 04:27:23 +0300
-Message-Id: <20210817012754.8710-4-digetx@gmail.com>
+Subject: [PATCH v8 04/34] soc/tegra: Add
+ devm_tegra_core_dev_init_opp_table_simple()
+Date: Tue, 17 Aug 2021 04:27:24 +0300
+Message-Id: <20210817012754.8710-5-digetx@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210817012754.8710-1-digetx@gmail.com>
 References: <20210817012754.8710-1-digetx@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210816_183006_459998_BDE1B074 
-X-CRM114-Status: GOOD (  15.89  )
+X-CRM114-CacheID: sfid-20210816_183007_670769_64CA6CC0 
+X-CRM114-Status: GOOD (  14.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -121,33 +121,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Previously we assumed that devm_tegra_core_dev_init_opp_table() will
-be used only by drivers that will always have device with OPP table,
-but this is not true anymore. For example now Tegra30 will have OPP table
-for PWM, but Tegra20 not and both use the same driver. Hence let's not
-print the error message about missing OPP table in the common helper,
-we can print it elsewhere.
+Only couple drivers need to get the -ENODEV error code and explicitly
+initialize the performance state. Add new helper that allows to avoid
+the extra boilerplate code in majority of drivers.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- drivers/soc/tegra/common.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ include/soc/tegra/common.h | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/drivers/soc/tegra/common.c b/drivers/soc/tegra/common.c
-index cd33e99249c3..a42d4f98c078 100644
---- a/drivers/soc/tegra/common.c
-+++ b/drivers/soc/tegra/common.c
-@@ -111,9 +111,7 @@ int devm_tegra_core_dev_init_opp_table(struct device *dev,
- 	 */
- 	err = devm_pm_opp_of_add_table(dev);
- 	if (err) {
--		if (err == -ENODEV)
--			dev_err_once(dev, "OPP table not found, please update device-tree\n");
--		else
-+		if (err != -ENODEV)
- 			dev_err(dev, "failed to add OPP table: %d\n", err);
+diff --git a/include/soc/tegra/common.h b/include/soc/tegra/common.h
+index af41ad80ec21..265ad90e45a2 100644
+--- a/include/soc/tegra/common.h
++++ b/include/soc/tegra/common.h
+@@ -39,4 +39,17 @@ devm_tegra_core_dev_init_opp_table(struct device *dev,
+ }
+ #endif
  
- 		return err;
++static inline int
++devm_tegra_core_dev_init_opp_table_simple(struct device *dev)
++{
++	struct tegra_core_opp_params params = {};
++	int err;
++
++	err = devm_tegra_core_dev_init_opp_table(dev, &params);
++	if (err != -ENODEV)
++		return err;
++
++	return 0;
++}
++
+ #endif /* __SOC_TEGRA_COMMON_H__ */
 -- 
 2.32.0
 
