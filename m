@@ -6,16 +6,16 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
 	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95E2EC4338F
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 02:46:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5A47C4338F
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 02:51:14 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 534D560C3F
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 02:46:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 534D560C3F
+	by mail.kernel.org (Postfix) with ESMTPS id A44FF60C3F
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 02:51:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A44FF60C3F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,53 +24,53 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bnq0ZEL2pgDJvRh6doi4w7bPBEGzlKmDyux2OrTQ/yI=; b=cvfVcEvLzFHvDY
-	d+6KTfnF37/XcN289zkX1pEmYGC7WNzFmIx7wemtx9EHV/jAs6xL9G0JTxXIJOSieL1toM4IVn6WH
-	7bIYXUsX556+2qSzO/qeDYtVlf4xuwVHi3TYNNPiaX922V3+sIvUZbGHdHZ+3Y6HrekmgkL7P+PsK
-	If5YRt6j19mLrFesXNK17aIG18gjjX+AVQQP+1KEWn0gWyzrMCeQK9phVPPqT2x+zMwb3tW8DjFx8
-	690eT2YZlt2kwjODCmLNbdxpEunLY+4myQq/CL+csvuGkA4oP+RgRbv7J1enrRqJnXH/rRH3IVZ3X
-	AEmTqt+R3DXTKSi1PvBg==;
+	List-Owner; bh=Mm22nHGmfArLRO4byozhJQS3cUNMsB1AtrZevZ2JmcE=; b=RilT+a8qHlBpTm
+	nctIBesACaC0T44GZhhMIW6usGb8wnWzmTwAtnZ3FDMS/WKI5/TsK5lovkjV+Jj1Pqk/acrKtCWAv
+	bmtdoHzZItJnh4ucHeCXnGOo4LZWwaP/sjmS7RCRbF8gPjLPj0u3G/TUH5yxUXmZweeBYwdSKJ0pz
+	/voiEg13agCP8oyQyP2oOXtP5TmcAXpdi4Jb88PrqfwWLGpP3QhrvRSHikiyvUYp+qGv4CLsvA19J
+	XivEXZKnyqU97WdPFoWzciNssmhNl/67+zvg6WNsFh9Ah35VOIAmX9OqmZC8xVpsPHB4xEPQa8Vvv
+	sxhdqCNr+vpnlf9BRVxQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mFp6t-000rE9-Js; Tue, 17 Aug 2021 02:45:52 +0000
-Received: from mail-lj1-x22e.google.com ([2a00:1450:4864:20::22e])
+	id 1mFpBM-000rm1-H4; Tue, 17 Aug 2021 02:50:29 +0000
+Received: from mail-lj1-x235.google.com ([2a00:1450:4864:20::235])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mFnwA-000h5l-5B
- for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 01:30:52 +0000
-Received: by mail-lj1-x22e.google.com with SMTP id x7so30213562ljn.10
- for <linux-mtd@lists.infradead.org>; Mon, 16 Aug 2021 18:30:41 -0700 (PDT)
+ id 1mFnwB-000h6y-Vm
+ for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 01:30:54 +0000
+Received: by mail-lj1-x235.google.com with SMTP id y6so13446457lje.2
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Aug 2021 18:30:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=60J1zKMGqQClpjAlwfYK3w3hOCvKtUPwW+X62rifSl4=;
- b=nZrs0079PTPS3BljR7ivklSfIKMYjzJRwaLKLnOuwvosKUmsst450ETTKnKhG3Cbdf
- ra7TeqHqIiw3U3vQ9t6qZsok2irD3NpgBOk1kU5WPn31ddlj/R4HImbc0+Lx2DQB2e2a
- c7oXkBau4gvZYaogfRuy0ONWH+vNFr8Ao4O3xvasenwyHjAkGDL8H5FTCvahAXYMcmUo
- 8btctGRo+i3ZlQXEJQBfD7UDZOQqXUPR3Tg4XciA4KhhyOv28kv7soFvX+fEoFyZNFoB
- dyFEQXO25dh527x4rMe4SwiLvdM5EEKAYSIGA4SC241Oh25xPixJnfAF9dgYPOpWDoEF
- pyKQ==
+ bh=iOx0CWJJWTap5wEALtflt5TD5too2w66bm1HP4jwmAM=;
+ b=dreUCBMrVhYah6QEsUyRd1PPgDd5hIy+DesXjyoqwsziCnPgxwHOO3/ccoapjG7aZi
+ gdOB9YWHykn9CBHVoMbolMqh3iE0EhyvsLH+qGOvgVt03Deot8AtFfdcyWSVoXnQ1eVU
+ UwnBkCAe+2Tdsf1MZCRe5vcw/RW+uiM52YnRIY+ENijj5tE+Yemi7r9GgE89BUMAmAUM
+ jsAI1v0kF23+iatkXiKJaiEtA3oBFi0ltiMZfhH9/3bz05xizmamYpTc+zUn/W5V1sbL
+ UBn+LlIxSaB1dLLVkfigh8u7UEPw4trFV1Yo47xqq5JHzpNLRZYYxHJ4WQuJ3EDJfhHi
+ RPhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=60J1zKMGqQClpjAlwfYK3w3hOCvKtUPwW+X62rifSl4=;
- b=Nete6csWcjUPKdVvXXTxBhXMLFKDZa5x0ba6rGDGwHm8+ptgevIrisMjQTlTK3tjip
- ccUdu5Gsz6wYpTXkWg12hItm16ZeahbIIg4VhyW8sa3Bt7ZizXjmtJcylfs0U6cacYnq
- TUArTOE54DaMn1OIDQHUnSbUQzf/M/KgwTkmHu3d/dZb9/jA0bYskdPVZqu8L+tfpJW8
- +cldonyZA+YcuuOGwAFYmf0HGMEIeGwRijGlTOinAdP9a8/UPzkmZZoOJy68ecSArfoc
- VD3/S4iDtv8rIYz84YxhEPZvkOL+FpxtCjVG3m9erBNiAvQZchRLsqwYL5zCvNEF6U42
- LUMw==
-X-Gm-Message-State: AOAM5328vTSnDCs205f23BrMTLIvF+Frjthe6oquCF7QXFdfp6iaJKDI
- l8q1BaPQgFdDmmISIO4gdzg=
-X-Google-Smtp-Source: ABdhPJwuvwD1gib4BDhWflO433FhV9Cf3uhsE1hmVRkKHj0DPugMv1U9RdezbdxuyL2MZzrg/itOlw==
-X-Received: by 2002:a05:651c:1549:: with SMTP id
- y9mr841295ljp.335.1629163840772; 
- Mon, 16 Aug 2021 18:30:40 -0700 (PDT)
+ bh=iOx0CWJJWTap5wEALtflt5TD5too2w66bm1HP4jwmAM=;
+ b=ct/fYrBsG0IgKXsy4ADdfTCFAbOL/PZFFVk7GWjyLC2K/DDbg4nsnHEQ+i2KXwdJuq
+ Oy4LdBFmNgCUiTSDxEG40/XZRJEOjLc86nolJU3jBXua7zI87q33V71QZo4O+GQM75IM
+ y3X700SWsKmfbM9YbA/Z5zGeBht1q6d2ETNEck0wDzIEGkwFTyiAo9tJl8CspFSKvM7W
+ KM7C4cxhhnbVAnQ+qv+l3TPFjuLN7Y9emGav8poebbb/nBHJyI53nr+FJ0Kixgtp5J1+
+ T3QamQJHkLeflgXwH87zUtNqPKCc60jbqaasnyrHqdY8D28RK8+wYDivKk2qJ5taGQrS
+ GIvA==
+X-Gm-Message-State: AOAM531mcJUMTZghneqT9E01aVKZNBFFzI4x9Ln6FtuJj+faL2IVVtfm
+ nYH4vixYshyRR0Tb74RlESM=
+X-Google-Smtp-Source: ABdhPJyJWT1KmD0sqd2sSotoMjtfPR5X64L14svV6ntEW3IdWZmW/kCpAtqR9QrK1vxFDyAhpmSYDQ==
+X-Received: by 2002:a05:651c:39c:: with SMTP id
+ e28mr864074ljp.498.1629163841949; 
+ Mon, 16 Aug 2021 18:30:41 -0700 (PDT)
 Received: from localhost.localdomain (46-138-85-91.dynamic.spd-mgts.ru.
  [46.138.85.91])
- by smtp.gmail.com with ESMTPSA id g30sm46607lfj.298.2021.08.16.18.30.39
+ by smtp.gmail.com with ESMTPSA id g30sm46607lfj.298.2021.08.16.18.30.40
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 16 Aug 2021 18:30:40 -0700 (PDT)
+ Mon, 16 Aug 2021 18:30:41 -0700 (PDT)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>,
@@ -95,17 +95,16 @@ Cc: linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
  linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
  dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
  linux-clk@vger.kernel.org
-Subject: [PATCH v8 33/34] ARM: tegra: Add Memory Client resets to Tegra30 GR2D,
- GR3D and Host1x
-Date: Tue, 17 Aug 2021 04:27:53 +0300
-Message-Id: <20210817012754.8710-34-digetx@gmail.com>
+Subject: [PATCH v8 34/34] ARM: tegra20/30: Disable unused host1x hardware
+Date: Tue, 17 Aug 2021 04:27:54 +0300
+Message-Id: <20210817012754.8710-35-digetx@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210817012754.8710-1-digetx@gmail.com>
 References: <20210817012754.8710-1-digetx@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210816_183042_287309_925C1C31 
-X-CRM114-Status: GOOD (  12.42  )
+X-CRM114-CacheID: sfid-20210816_183044_147337_A1D2C0E6 
+X-CRM114-Status: GOOD (  13.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -122,56 +121,93 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Memory access must be blocked before hardware reset is asserted and before
-power is gated, otherwise a serious hardware fault is inevitable. Add
-reset for memory clients to the GR2D, GR3D and Host1x nodes.
+MPE, VI, EPP and ISP were never used and we don't have drivers for them.
+Since these modules are enabled by default in a device-tree, a device is
+created for them, blocking voltage scaling because there is no driver to
+bind, and thus, state of PMC driver is never synced. Disable them.
 
-Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
-Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/arm/boot/dts/tegra30.dtsi | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ arch/arm/boot/dts/tegra20.dtsi | 4 ++++
+ arch/arm/boot/dts/tegra30.dtsi | 8 ++++++++
+ 2 files changed, 12 insertions(+)
 
+diff --git a/arch/arm/boot/dts/tegra20.dtsi b/arch/arm/boot/dts/tegra20.dtsi
+index 2cb31bdd9eea..32abe559645f 100644
+--- a/arch/arm/boot/dts/tegra20.dtsi
++++ b/arch/arm/boot/dts/tegra20.dtsi
+@@ -59,6 +59,7 @@ mpe@54040000 {
+ 			reset-names = "mpe";
+ 			operating-points-v2 = <&mpe_dvfs_opp_table>;
+ 			power-domains = <&pd_mpe>;
++			status = "disabled";
+ 		};
+ 
+ 		vi@54080000 {
+@@ -70,6 +71,7 @@ vi@54080000 {
+ 			reset-names = "vi";
+ 			operating-points-v2 = <&vi_dvfs_opp_table>;
+ 			power-domains = <&pd_venc>;
++			status = "disabled";
+ 		};
+ 
+ 		epp@540c0000 {
+@@ -81,6 +83,7 @@ epp@540c0000 {
+ 			reset-names = "epp";
+ 			operating-points-v2 = <&epp_dvfs_opp_table>;
+ 			power-domains = <&pd_core>;
++			status = "disabled";
+ 		};
+ 
+ 		isp@54100000 {
+@@ -91,6 +94,7 @@ isp@54100000 {
+ 			resets = <&tegra_car 23>;
+ 			reset-names = "isp";
+ 			power-domains = <&pd_venc>;
++			status = "disabled";
+ 		};
+ 
+ 		gr2d@54140000 {
 diff --git a/arch/arm/boot/dts/tegra30.dtsi b/arch/arm/boot/dts/tegra30.dtsi
-index 46e7bfa1e894..be6fd700838c 100644
+index be6fd700838c..55718e44ca98 100644
 --- a/arch/arm/boot/dts/tegra30.dtsi
 +++ b/arch/arm/boot/dts/tegra30.dtsi
-@@ -123,8 +123,8 @@ host1x@50000000 {
- 		interrupt-names = "syncpt", "host1x";
- 		clocks = <&tegra_car TEGRA30_CLK_HOST1X>;
- 		clock-names = "host1x";
--		resets = <&tegra_car 28>;
--		reset-names = "host1x";
-+		resets = <&tegra_car 28>, <&mc TEGRA30_MC_RESET_HC>;
-+		reset-names = "host1x", "mc";
- 		iommus = <&mc TEGRA_SWGROUP_HC>;
- 		operating-points-v2 = <&host1x_dvfs_opp_table>;
- 		power-domains = <&pd_heg>;
-@@ -190,8 +190,8 @@ gr2d@54140000 {
- 			reg = <0x54140000 0x00040000>;
- 			interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&tegra_car TEGRA30_CLK_GR2D>;
--			resets = <&tegra_car 21>;
--			reset-names = "2d";
-+			resets = <&tegra_car 21>, <&mc TEGRA30_MC_RESET_2D>;
-+			reset-names = "2d", "mc";
- 			operating-points-v2 = <&gr2d_dvfs_opp_table>;
+@@ -145,6 +145,8 @@ mpe@54040000 {
+ 			power-domains = <&pd_mpe>;
+ 
+ 			iommus = <&mc TEGRA_SWGROUP_MPE>;
++
++			status = "disabled";
+ 		};
+ 
+ 		vi@54080000 {
+@@ -158,6 +160,8 @@ vi@54080000 {
+ 			power-domains = <&pd_venc>;
+ 
+ 			iommus = <&mc TEGRA_SWGROUP_VI>;
++
++			status = "disabled";
+ 		};
+ 
+ 		epp@540c0000 {
+@@ -171,6 +175,8 @@ epp@540c0000 {
  			power-domains = <&pd_heg>;
  
-@@ -205,8 +205,10 @@ gr3d@54180000 {
- 				 <&tegra_car TEGRA30_CLK_GR3D2>;
- 			clock-names = "3d", "3d2";
- 			resets = <&tegra_car 24>,
--				 <&tegra_car 98>;
--			reset-names = "3d", "3d2";
-+				 <&tegra_car 98>,
-+				 <&mc TEGRA30_MC_RESET_3D>,
-+				 <&mc TEGRA30_MC_RESET_3D2>;
-+			reset-names = "3d", "3d2", "mc", "mc2";
- 			operating-points-v2 = <&gr3d_dvfs_opp_table>;
- 			power-domains = <&pd_3d0>, <&pd_3d1>;
- 			power-domain-names = "3d0", "3d1";
+ 			iommus = <&mc TEGRA_SWGROUP_EPP>;
++
++			status = "disabled";
+ 		};
+ 
+ 		isp@54100000 {
+@@ -183,6 +189,8 @@ isp@54100000 {
+ 			power-domains = <&pd_venc>;
+ 
+ 			iommus = <&mc TEGRA_SWGROUP_ISP>;
++
++			status = "disabled";
+ 		};
+ 
+ 		gr2d@54140000 {
 -- 
 2.32.0
 
