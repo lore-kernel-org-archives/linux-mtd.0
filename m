@@ -2,65 +2,91 @@ Return-Path: <SRS0=LBUh=NI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1A40C4338F
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 10:36:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E28D1C4338F
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 10:46:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 45664604AC
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 10:36:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 45664604AC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=ispras.ru
+	by mail.kernel.org (Postfix) with ESMTPS id A63B860187
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 10:46:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A63B860187
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:Cc:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=JVnTWeGRsNQ5dNJKAfru4s1fZWDXIX0WH7HbWBectDI=; b=GKvvfXaFO4GNJpjbxKCSTXQ0NE
-	VIN1Foa7GzlGMlylg4l0pX6XqSxD16y+Y6y5qKPW+SF1+jwXuFD8D+iWZ2R8SOUAFcsP0nJOl2qb1
-	jGk95aZluhhVRoilB2RvBBoTzjjS8GciF+gYwZQzEgPdF1/bj8dH5GilzV3VzKKkXBBm7Q/EHPGoE
-	IkZEHgiljh8zYeAevj1PVlMQIAA0IwDtgIZejx6VF+53EnFSaQ+smSR8utITdqvW2HbrgofEfRvEs
-	18qcMiwzOOsdtMTklwBOk30PPCwWXoPeccPGZfRjwZ5f/rBeR0+x7/EwTAUTF7BTpjTcHz1NYNF5E
-	ZIkBFWOA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=D6shfv/2TdPc7YvVrYS2ZMBo5hECX4tO0I1pzoCwSZI=; b=1Il7+tJzNEky/N
+	LgeJDgVRfmS7mFm4nvyr6TGZA3orUa3SzOdZejW8a8G6bETapE8sqV1WgfgEy5y9cAkt4zfsn+qcj
+	8g5Z9AhmaDm66hrr9zNHUwWOv+akdn7NLDqmLTeVYVCVGrnEKCaL6I1wFWT7wdYw3aOGbrSAFlyte
+	5sdg/Y4h2jDF07YxzcvFlUyzM284clg2qEXI2he5sG5u9Autkcq9VT+q515sTAAYXqI9tzLPHpmQf
+	yM6/QvG7bf8emGAIiVmUjLKS3V0tGPITo17t781iOQJoCGnVSU8gWctoJblFmAdbwG5KW45tNVIxA
+	jE5GLPUbv4YfbeGu5Ulw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mFwS3-0029BK-JO; Tue, 17 Aug 2021 10:36:11 +0000
-Received: from mail.ispras.ru ([83.149.199.84])
+	id 1mFwbG-002A4W-2n; Tue, 17 Aug 2021 10:45:42 +0000
+Received: from mail-wm1-x332.google.com ([2a00:1450:4864:20::332])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mFwS0-0029Ad-8I
- for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 10:36:09 +0000
-Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
- by mail.ispras.ru (Postfix) with ESMTPSA id 7AB0E40A2BD5;
- Tue, 17 Aug 2021 10:36:03 +0000 (UTC)
-Subject: Re: [PATCH] mtd: rawnand: mxic: Enable and prepare clocks in probe
+ id 1mFwbC-002A3k-OD
+ for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 10:45:40 +0000
+Received: by mail-wm1-x332.google.com with SMTP id
+ 79-20020a1c0452000000b002e6cf79e572so1559503wme.1
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Aug 2021 03:45:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=LliqR4BffIKLKIAnT8gxu6UOIwAnFEp/t5CVTZm8b1Q=;
+ b=KptzQh6LpXfJdLHBa4wnrs1TmwbhHIeUM42RRFq/LbMAM/UR4XNddtLNryvdGHXlIX
+ TyJ0rULRpDUjJJHUctXt0bmY1zbEw2o9QNhdeKNoIrXGMXo8hTG18XvHeTfd7vNnRGsP
+ xG9H+yQYIbzJZxLlUBIzG9Ky8Dxq8hfLf0m6Yzh0r8B6/nWu0UOplI09QQD05KAWN/6Z
+ vUX1n6PQy/Covtld+vAmOYrF2RMzGrRvZm1KvrnlS/RKE7tiAbGwhmsDHas7x9aoIpLr
+ nvK+Qgqm7EL+53A3ARnf2LXg8WJ1XDHZNgUIsZi4OuK+7+7CAgeAWawAPX/G+kKP+uIp
+ 3GZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=LliqR4BffIKLKIAnT8gxu6UOIwAnFEp/t5CVTZm8b1Q=;
+ b=nlg02AImdiBMO1PvMt2IlEpMZH4g5beLRwI3/0n1zSBlfn0vTqG3DRhk1N8tZZllib
+ ShaHgwSADLnwvW83YXZXBxZW9CQKggG7fxIRBEJDa0xqZt6Z6LjCYwK4PsFoivbfKcPk
+ fadt1OXXR0iuCtWQvhTgT3ROAoELHOYOiCJTM50hvQpTxDYUf9E7gc4y53YYNWBpzUlP
+ cMB9rkpXqyhLhZuuKavz52QTlGe3pq7814qYh3P/8dOjF9CjCQzfTZir/1Oc19F3Pq3Y
+ dgWfPSGvcL2dZ127eW/JeMIGqUG3iwiDjc7sxjXHnUashHbpTnatTjuK2X7Yx4KrosOT
+ rZyg==
+X-Gm-Message-State: AOAM5309/Ykp7E5JOWPZZfe6xc0008GqWVwGlYo8puzPJYS2a/IpM4iS
+ sYoTmiOggcjvOBE0A6e6AzM=
+X-Google-Smtp-Source: ABdhPJzm4lFmv43l4LmGogfnFalBlFY0tCLQVBS/sNGZvZ2jg//PjG5rVhoh22nNn8HDbPYFW2bJhg==
+X-Received: by 2002:a1c:7706:: with SMTP id t6mr2663237wmi.30.1629197137064;
+ Tue, 17 Aug 2021 03:45:37 -0700 (PDT)
+Received: from localhost.localdomain (arl-84-90-178-246.netvisao.pt.
+ [84.90.178.246])
+ by smtp.gmail.com with ESMTPSA id 18sm1930912wmv.27.2021.08.17.03.45.35
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 17 Aug 2021 03:45:36 -0700 (PDT)
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Kirill Shilimanov <kirill.shilimanov@huawei.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "ldv-project@linuxtesting.org" <ldv-project@linuxtesting.org>
-References: <20210812113800.12466-1-novikov@ispras.ru>
- <CAHp75VcgqZEHBTXpNApGfRkhgjpCvbgj+yxUZbbO+=0DOvZLQg@mail.gmail.com>
- <20210816100114.384f01b9@xps13>
-From: Evgeny Novikov <novikov@ispras.ru>
-Message-ID: <246f2094-e294-73f8-8a5f-3467e987f788@ispras.ru>
-Date: Tue, 17 Aug 2021 13:36:03 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ linux-mips@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] mtd: maps: remove dead MTD map driver for PMC-Sierra MSP
+ boards
+Date: Tue, 17 Aug 2021 12:45:31 +0200
+Message-Id: <20210817104531.12675-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20210816100114.384f01b9@xps13>
-Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210817_033608_513648_2584DDF8 
-X-CRM114-Status: GOOD (  24.34  )
+X-CRM114-CacheID: sfid-20210817_034538_866909_305BAEC8 
+X-CRM114-Status: GOOD (  31.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,76 +98,308 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWlxdWVsLAoKT24gMTYuMDguMjAyMSAxMTowMSwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiBI
-aSBBbmR5LAo+Cj4gQW5keSBTaGV2Y2hlbmtvIDxhbmR5LnNoZXZjaGVua29AZ21haWwuY29tPiB3
-cm90ZSBvbiBUaHUsIDEyIEF1ZyAyMDIxCj4gMTU6MTM6MTAgKzAzMDA6Cj4KPj4gT24gVGh1cnNk
-YXksIEF1Z3VzdCAxMiwgMjAyMSwgRXZnZW55IE5vdmlrb3YgPG5vdmlrb3ZAaXNwcmFzLnJ1PiB3
-cm90ZToKPj4KPj4+IEl0IHNlZW1zIHRoYXQgbXhpY19uZmNfcHJvYmUoKSBtaXNzZWQgaW52b2Nh
-dGlvbiBvZgo+Pj4gbXhpY19uZmNfY2xrX2VuYWJsZSgpLiBUaGUgcGF0Y2ggZml4ZWQgdGhhdC4g
-SW4gYWRkaXRpb24sIGVycm9yIGhhbmRsaW5nCj4+PiB3YXMgcmVmaW5lZCBhcHByb3ByaWF0ZWx5
-Lgo+Pgo+PiBOQUsuIFVudGlsIHlvdSBwcm92aWRlIGEgZGVlcGVyIGFuYWx5c2lzLCBsaWtlIGhv
-dyB0aGlzIHdvcmtzIGJlZm9yZSB5b3VyCj4+IGNoYW5nZS4KPj4KPj4KPj4gUGxlYXNlLCBkb27i
-gJl0IGJsaW5kbHkgZ2VuZXJhdGUgcGF0Y2hlcywgdGhpcyBjYW4gZXZlbiB5b3VyIGJvdCBkbywg
-anVzdAo+PiB0aGluayBhYm91dCBlYWNoIGNoYW5nZSBhbmQgcHJlZmVyYWJsZSB0ZXN0IG9uIHRo
-ZSByZWFsIGhhcmR3YXJlLgo+Pgo+PiBUaGUgYWJvdmUgaXMgdG8gYWxsIHlvdXIgbG92ZWx5IGNv
-bnRyaWJ1dGlvbnMuCj4+Cj4+Cj4+PiBGb3VuZCBieSBMaW51eCBEcml2ZXIgVmVyaWZpY2F0aW9u
-IHByb2plY3QgKGxpbnV4dGVzdGluZy5vcmcpLgo+Pj4KPj4+IFNpZ25lZC1vZmYtYnk6IEV2Z2Vu
-eSBOb3Zpa292IDxub3Zpa292QGlzcHJhcy5ydT4KPj4+IENvLWRldmVsb3BlZC1ieTogS2lyaWxs
-IFNoaWxpbWFub3YgPGtpcmlsbC5zaGlsaW1hbm92QGh1YXdlaS5jb20+Cj4+PiBTaWduZWQtb2Zm
-LWJ5OiBLaXJpbGwgU2hpbGltYW5vdiA8a2lyaWxsLnNoaWxpbWFub3ZAaHVhd2VpLmNvbT4KPj4+
-IC0tLQo+Pj4gICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9teGljX25hbmQuYyB8IDE2ICsrKysrKysr
-KysrKy0tLS0KPj4+ICAgMSBmaWxlIGNoYW5nZWQsIDEyIGluc2VydGlvbnMoKyksIDQgZGVsZXRp
-b25zKC0pCj4+Pgo+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L214aWNfbmFu
-ZC5jIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvbXhpY18KPj4+IG5hbmQuYwo+Pj4gaW5kZXggZGEx
-MDcwOTkzOTk0Li4zN2U3NWJmNjBlZTUgMTAwNjQ0Cj4+PiAtLS0gYS9kcml2ZXJzL210ZC9uYW5k
-L3Jhdy9teGljX25hbmQuYwo+Pj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvbXhpY19uYW5k
-LmMKPj4+IEBAIC01MDksOSArNTA5LDE1IEBAIHN0YXRpYyBpbnQgbXhpY19uZmNfcHJvYmUoc3Ry
-dWN0IHBsYXRmb3JtX2RldmljZQo+Pj4gKnBkZXYpCj4+PiAgICAgICAgICBpZiAoSVNfRVJSKG5m
-Yy0+c2VuZF9kbHlfY2xrKSkKPj4+ICAgICAgICAgICAgICAgICAgcmV0dXJuIFBUUl9FUlIobmZj
-LT5zZW5kX2RseV9jbGspOwo+Pj4KPj4+ICsgICAgICAgZXJyID0gbXhpY19uZmNfY2xrX2VuYWJs
-ZShuZmMpOwo+Pj4gKyAgICAgICBpZiAoZXJyKQo+Pj4gKyAgICAgICAgICAgICAgIHJldHVybiBl
-cnI7Cj4gQXMgQW5keSBzYWlkLCB0aGlzIGlzIG5vdCBuZWVkZWQuCj4KPj4+ICsKPj4+ICAgICAg
-ICAgIG5mYy0+cmVncyA9IGRldm1fcGxhdGZvcm1faW9yZW1hcF9yZXNvdXJjZShwZGV2LCAwKTsK
-Pj4+IC0gICAgICAgaWYgKElTX0VSUihuZmMtPnJlZ3MpKQo+Pj4gLSAgICAgICAgICAgICAgIHJl
-dHVybiBQVFJfRVJSKG5mYy0+cmVncyk7Cj4+PiArICAgICAgIGlmIChJU19FUlIobmZjLT5yZWdz
-KSkgewo+Pj4gKyAgICAgICAgICAgICAgIGVyciA9IFBUUl9FUlIobmZjLT5yZWdzKTsKPj4+ICsg
-ICAgICAgICAgICAgICBnb3RvIGZhaWw7Cj4+PiArICAgICAgIH0KPj4+Cj4+PiAgICAgICAgICBu
-YW5kX2NoaXAgPSAmbmZjLT5jaGlwOwo+Pj4gICAgICAgICAgbXRkID0gbmFuZF90b19tdGQobmFu
-ZF9jaGlwKTsKPj4+IEBAIC01MjcsOCArNTMzLDEwIEBAIHN0YXRpYyBpbnQgbXhpY19uZmNfcHJv
-YmUoc3RydWN0IHBsYXRmb3JtX2RldmljZQo+Pj4gKnBkZXYpCj4+PiAgICAgICAgICBuYW5kX2No
-aXAtPmNvbnRyb2xsZXIgPSAmbmZjLT5jb250cm9sbGVyOwo+Pj4KPj4+ICAgICAgICAgIGlycSA9
-IHBsYXRmb3JtX2dldF9pcnEocGRldiwgMCk7Cj4+PiAtICAgICAgIGlmIChpcnEgPCAwKQo+Pj4g
-LSAgICAgICAgICAgICAgIHJldHVybiBpcnE7Cj4+PiArICAgICAgIGlmIChpcnEgPCAwKSB7Cj4+
-PiArICAgICAgICAgICAgICAgZXJyID0gaXJxOwo+Pj4gKyAgICAgICAgICAgICAgIGdvdG8gZmFp
-bDsKPiBIb3dldmVyIHNvbWUgcmV3b3JraW5nIGlzIG5lZWRlZCBpbiB0aGUgZXJyb3IgcGF0aC4K
-Pgo+IFRoYXQgZ290byBzdGF0ZW1lbnQgc2hvdWxkIGJlIHJlbmFtZWQgYW5kIGRldm1fcmVxdWVz
-dF9pcnEoKSBzaG91bGQgbm90Cj4ganVtcCB0byBpdC4KPgoKV2Ugc3RpbGwgbmVlZCBzb21lIGhl
-bHAgYW5kIGNsYXJpZmljYXRpb24gZnJvbSB0aG9zZSB3aG8gYXJlIHZlcnkgCmZhbWlsaWFyIHdp
-dGggdGhpcyBzb3J0IG9mIGRyaXZlcnMgb3IvYW5kIGNhbiB0ZXN0IHRoaXMgcGFydGljdWxhciAK
-ZHJpdmVyLiBteGljX25mY19jbGtfZW5hYmxlKCkgaXMgdGhlIGNvbXBsZW1lbnRhcnkgZnVuY3Rp
-b24gZm9yIApteGljX25mY19jbGtfZGlzYWJsZSgpLiBObyBvdGhlciBmdW5jdGlvbnMgaW52b2tl
-IApjbGtfcHJlcGFyZV9lbmFibGUoKS9jbGtfZGlzYWJsZV91bnByZXBhcmUoKSBpbiB0aGUgZHJp
-dmVyLiBVbmxpa2VseSAKc29tZWJvZHkgaW4gaXRzIGVudmlyb25tZW50IGRvZXMgdGhhdCBzaW5j
-ZSBkcml2ZXIgc3BlY2lmaWMgY2xvY2tzIGFyZSAKZGVhbHQgd2l0aC4gQXQgdGhlIG1vbWVudCB0
-aGUgZHJpdmVyIGludm9rZXMgbXhpY19uZmNfY2xrX2Rpc2FibGUoKSBvbiAKZXJyb3IgaGFuZGxp
-bmcgcGF0aHMgaW4gcHJvYmUsIGluIHJlbW92ZSBhbmQgaW4gbXhpY19uZmNfc2V0X2ZyZXEoKS4g
-Cm14aWNfbmZjX2Nsa19lbmFibGUoKSBpcyBjYWxsZWQganVzdCBieSBteGljX25mY19zZXRfZnJl
-cSgpIHRoYXQgCm1vcmVvdmVyIGRvZXMgdGhpcyBhZnRlciBjYWxsaW5nIG14aWNfbmZjX2Nsa19k
-aXNhYmxlKCkgZmlyc3QuIFNvLCB3ZSAKZGlkIG5vdCBmaW5kIGFueSBwbGFjZSBpbiB0aGUgZHJp
-dmVyIHRoYXQgaW52b2tlcyBteGljX25mY19jbGtfZW5hYmxlKCkgCnByaW9yIHRvIG14aWNfbmZj
-X2Nsa19kaXNhYmxlKCkuIEJhc2luZyBvbiB0aGlzIHdlIGFkZGVkIApteGljX25mY19jbGtfZW5h
-YmxlKCkganVzdCBhZnRlciBnZXR0aW5nIGNsb2Nrcy4gQXMgSSBleHBsYWluZWQgaW4gdGhlIApw
-cmV2aW91cyBsYXJnZSBlLW1haWwsIHdlIG1heSBiZSB3cm9uZyBpbiBvdXIgdW5kZXJzdGFuZGlu
-ZyBvZiB0aGUgCmRyaXZlciBlbnZpcm9ubWVudCBvci9hbmQgYXQgc3BlY2lmaWNhdGlvbiBvZiBy
-ZXF1aXJlbWVudHMgYmVpbmcgCmNoZWNrZWQuIEl0IHdvdWxkIGJlIGdyZWF0IGlmIHlvdSB3aWxs
-IHBvaW50IG91dCBvbiBvdXIgbWlzdGFrZXMuCgpCZXN0IHJlZ2FyZHMsCkV2Z2VueSBOb3Zpa292
-Cj4+PiArICAgICAgIH0KPj4+Cj4+PiAgICAgICAgICBteGljX25mY19od19pbml0KG5mYyk7Cj4+
-Pgo+Pj4gLS0KPj4+IDIuMjYuMgo+Pj4KPj4+ICAgCj4gVGhhbmtzLAo+IE1pcXXDqGwKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBN
-VEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Commit 1b00767fd8e1 ("MIPS: Remove PMC MSP71xx platform") removes the
+config PMC_MSP in ./arch/mips/Kconfig.
+
+Hence, since then, the corresponding MTD map driver for PMC-Sierra MSP
+boards is dead code. Remove this dead driver.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+ drivers/mtd/maps/Kconfig        |  23 ----
+ drivers/mtd/maps/Makefile       |   1 -
+ drivers/mtd/maps/pmcmsp-flash.c | 227 --------------------------------
+ 3 files changed, 251 deletions(-)
+ delete mode 100644 drivers/mtd/maps/pmcmsp-flash.c
+
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index 6650acbc961e..aaa164b977fe 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -127,29 +127,6 @@ config MTD_PHYSMAP_GPIO_ADDR
+ 	  Extend the physmap driver to allow flashes to be partially
+ 	  physically addressed and assisted by GPIOs.
+ 
+-config MTD_PMC_MSP_EVM
+-	tristate "CFI Flash device mapped on PMC-Sierra MSP"
+-	depends on PMC_MSP && MTD_CFI
+-	help
+-	  This provides a 'mapping' driver which supports the way
+-	  in which user-programmable flash chips are connected on the
+-	  PMC-Sierra MSP eval/demo boards.
+-
+-choice
+-	prompt "Maximum mappable memory available for flash IO"
+-	depends on MTD_PMC_MSP_EVM
+-	default MSP_FLASH_MAP_LIMIT_32M
+-
+-config MSP_FLASH_MAP_LIMIT_32M
+-	bool "32M"
+-
+-endchoice
+-
+-config MSP_FLASH_MAP_LIMIT
+-	hex
+-	default "0x02000000"
+-	depends on MSP_FLASH_MAP_LIMIT_32M
+-
+ config MTD_SUN_UFLASH
+ 	tristate "Sun Microsystems userflash support"
+ 	depends on SPARC && MTD_CFI && PCI
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index 79f018cf412f..11fea9c8d561 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -25,7 +25,6 @@ physmap-objs-$(CONFIG_MTD_PHYSMAP_IXP4XX) += physmap-ixp4xx.o
+ physmap-objs			:= $(physmap-objs-y)
+ obj-$(CONFIG_MTD_PHYSMAP)	+= physmap.o
+ obj-$(CONFIG_MTD_PISMO)		+= pismo.o
+-obj-$(CONFIG_MTD_PMC_MSP_EVM)   += pmcmsp-flash.o
+ obj-$(CONFIG_MTD_PCMCIA)	+= pcmciamtd.o
+ obj-$(CONFIG_MTD_SA1100)	+= sa1100-flash.o
+ obj-$(CONFIG_MTD_SBC_GXX)	+= sbc_gxx.o
+diff --git a/drivers/mtd/maps/pmcmsp-flash.c b/drivers/mtd/maps/pmcmsp-flash.c
+deleted file mode 100644
+index 2051f28ddac6..000000000000
+--- a/drivers/mtd/maps/pmcmsp-flash.c
++++ /dev/null
+@@ -1,227 +0,0 @@
+-/*
+- * Mapping of a custom board with both AMD CFI and JEDEC flash in partitions.
+- * Config with both CFI and JEDEC device support.
+- *
+- * Basically physmap.c with the addition of partitions and
+- * an array of mapping info to accommodate more than one flash type per board.
+- *
+- * Copyright 2005-2007 PMC-Sierra, Inc.
+- *
+- *  This program is free software; you can redistribute  it and/or modify it
+- *  under  the terms of  the GNU General  Public License as published by the
+- *  Free Software Foundation;  either version 2 of the  License, or (at your
+- *  option) any later version.
+- *
+- *  THIS  SOFTWARE  IS PROVIDED   ``AS  IS'' AND   ANY  EXPRESS OR IMPLIED
+- *  WARRANTIES,   INCLUDING, BUT NOT  LIMITED  TO, THE IMPLIED WARRANTIES OF
+- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN
+- *  NO  EVENT  SHALL   THE AUTHOR  BE    LIABLE FOR ANY   DIRECT, INDIRECT,
+- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+- *  NOT LIMITED   TO, PROCUREMENT OF  SUBSTITUTE GOODS  OR SERVICES; LOSS OF
+- *  USE, DATA,  OR PROFITS; OR  BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+- *  ANY THEORY OF LIABILITY, WHETHER IN  CONTRACT, STRICT LIABILITY, OR TORT
+- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- *
+- *  You should have received a copy of the  GNU General Public License along
+- *  with this program; if not, write  to the Free Software Foundation, Inc.,
+- *  675 Mass Ave, Cambridge, MA 02139, USA.
+- */
+-
+-#include <linux/slab.h>
+-#include <linux/module.h>
+-#include <linux/types.h>
+-#include <linux/kernel.h>
+-#include <linux/mtd/mtd.h>
+-#include <linux/mtd/map.h>
+-#include <linux/mtd/partitions.h>
+-
+-#include <asm/io.h>
+-
+-#include <msp_prom.h>
+-#include <msp_regs.h>
+-
+-
+-static struct mtd_info **msp_flash;
+-static struct mtd_partition **msp_parts;
+-static struct map_info *msp_maps;
+-static int fcnt;
+-
+-#define DEBUG_MARKER printk(KERN_NOTICE "%s[%d]\n", __func__, __LINE__)
+-
+-static int __init init_msp_flash(void)
+-{
+-	int i, j, ret = -ENOMEM;
+-	int offset, coff;
+-	char *env;
+-	int pcnt;
+-	char flash_name[] = "flash0";
+-	char part_name[] = "flash0_0";
+-	unsigned addr, size;
+-
+-	/* If ELB is disabled by "ful-mux" mode, we can't get at flash */
+-	if ((*DEV_ID_REG & DEV_ID_SINGLE_PC) &&
+-	    (*ELB_1PC_EN_REG & SINGLE_PCCARD)) {
+-		printk(KERN_NOTICE "Single PC Card mode: no flash access\n");
+-		return -ENXIO;
+-	}
+-
+-	/* examine the prom environment for flash devices */
+-	for (fcnt = 0; (env = prom_getenv(flash_name)); fcnt++)
+-		flash_name[5] = '0' + fcnt + 1;
+-
+-	if (fcnt < 1)
+-		return -ENXIO;
+-
+-	printk(KERN_NOTICE "Found %d PMC flash devices\n", fcnt);
+-
+-	msp_flash = kcalloc(fcnt, sizeof(*msp_flash), GFP_KERNEL);
+-	if (!msp_flash)
+-		return -ENOMEM;
+-
+-	msp_parts = kcalloc(fcnt, sizeof(*msp_parts), GFP_KERNEL);
+-	if (!msp_parts)
+-		goto free_msp_flash;
+-
+-	msp_maps = kcalloc(fcnt, sizeof(*msp_maps), GFP_KERNEL);
+-	if (!msp_maps)
+-		goto free_msp_parts;
+-
+-	/* loop over the flash devices, initializing each */
+-	for (i = 0; i < fcnt; i++) {
+-		/* examine the prom environment for flash partititions */
+-		part_name[5] = '0' + i;
+-		part_name[7] = '0';
+-		for (pcnt = 0; (env = prom_getenv(part_name)); pcnt++)
+-			part_name[7] = '0' + pcnt + 1;
+-
+-		if (pcnt == 0) {
+-			printk(KERN_NOTICE "Skipping flash device %d "
+-				"(no partitions defined)\n", i);
+-			continue;
+-		}
+-
+-		msp_parts[i] = kcalloc(pcnt, sizeof(struct mtd_partition),
+-				       GFP_KERNEL);
+-		if (!msp_parts[i])
+-			goto cleanup_loop;
+-
+-		/* now initialize the devices proper */
+-		flash_name[5] = '0' + i;
+-		env = prom_getenv(flash_name);
+-
+-		if (sscanf(env, "%x:%x", &addr, &size) < 2) {
+-			ret = -ENXIO;
+-			kfree(msp_parts[i]);
+-			goto cleanup_loop;
+-		}
+-		addr = CPHYSADDR(addr);
+-
+-		printk(KERN_NOTICE
+-			"MSP flash device \"%s\": 0x%08x at 0x%08x\n",
+-			flash_name, size, addr);
+-		/* This must matchs the actual size of the flash chip */
+-		msp_maps[i].size = size;
+-		msp_maps[i].phys = addr;
+-
+-		/*
+-		 * Platforms have a specific limit of the size of memory
+-		 * which may be mapped for flash:
+-		 */
+-		if (size > CONFIG_MSP_FLASH_MAP_LIMIT)
+-			size = CONFIG_MSP_FLASH_MAP_LIMIT;
+-
+-		msp_maps[i].virt = ioremap(addr, size);
+-		if (msp_maps[i].virt == NULL) {
+-			ret = -ENXIO;
+-			kfree(msp_parts[i]);
+-			goto cleanup_loop;
+-		}
+-
+-		msp_maps[i].bankwidth = 1;
+-		msp_maps[i].name = kstrndup(flash_name, 7, GFP_KERNEL);
+-		if (!msp_maps[i].name) {
+-			iounmap(msp_maps[i].virt);
+-			kfree(msp_parts[i]);
+-			goto cleanup_loop;
+-		}
+-
+-		for (j = 0; j < pcnt; j++) {
+-			part_name[5] = '0' + i;
+-			part_name[7] = '0' + j;
+-
+-			env = prom_getenv(part_name);
+-
+-			if (sscanf(env, "%x:%x:%n", &offset, &size,
+-						&coff) < 2) {
+-				ret = -ENXIO;
+-				kfree(msp_maps[i].name);
+-				iounmap(msp_maps[i].virt);
+-				kfree(msp_parts[i]);
+-				goto cleanup_loop;
+-			}
+-
+-			msp_parts[i][j].size = size;
+-			msp_parts[i][j].offset = offset;
+-			msp_parts[i][j].name = env + coff;
+-		}
+-
+-		/* now probe and add the device */
+-		simple_map_init(&msp_maps[i]);
+-		msp_flash[i] = do_map_probe("cfi_probe", &msp_maps[i]);
+-		if (msp_flash[i]) {
+-			msp_flash[i]->owner = THIS_MODULE;
+-			mtd_device_register(msp_flash[i], msp_parts[i], pcnt);
+-		} else {
+-			printk(KERN_ERR "map probe failed for flash\n");
+-			ret = -ENXIO;
+-			kfree(msp_maps[i].name);
+-			iounmap(msp_maps[i].virt);
+-			kfree(msp_parts[i]);
+-			goto cleanup_loop;
+-		}
+-	}
+-
+-	return 0;
+-
+-cleanup_loop:
+-	while (i--) {
+-		mtd_device_unregister(msp_flash[i]);
+-		map_destroy(msp_flash[i]);
+-		kfree(msp_maps[i].name);
+-		iounmap(msp_maps[i].virt);
+-		kfree(msp_parts[i]);
+-	}
+-	kfree(msp_maps);
+-free_msp_parts:
+-	kfree(msp_parts);
+-free_msp_flash:
+-	kfree(msp_flash);
+-	return ret;
+-}
+-
+-static void __exit cleanup_msp_flash(void)
+-{
+-	int i;
+-
+-	for (i = 0; i < fcnt; i++) {
+-		mtd_device_unregister(msp_flash[i]);
+-		map_destroy(msp_flash[i]);
+-		iounmap((void *)msp_maps[i].virt);
+-
+-		/* free the memory */
+-		kfree(msp_maps[i].name);
+-		kfree(msp_parts[i]);
+-	}
+-
+-	kfree(msp_flash);
+-	kfree(msp_parts);
+-	kfree(msp_maps);
+-}
+-
+-MODULE_AUTHOR("PMC-Sierra, Inc");
+-MODULE_DESCRIPTION("MTD map driver for PMC-Sierra MSP boards");
+-MODULE_LICENSE("GPL");
+-
+-module_init(init_msp_flash);
+-module_exit(cleanup_msp_flash);
+-- 
+2.26.2
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
