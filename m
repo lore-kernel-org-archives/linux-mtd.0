@@ -2,62 +2,61 @@ Return-Path: <SRS0=LBUh=NI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79AF8C4338F
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 16:50:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 688F5C4338F
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 16:50:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4B2BB60F5E
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 16:50:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4B2BB60F5E
+	by mail.kernel.org (Postfix) with ESMTPS id 2EE7A60F5E
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 16:50:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2EE7A60F5E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DvKqW8jmqZVkx59r9M7XG1Doj5Y8B14hs6PA8ZBiSCA=; b=YG3ouHCvWEY/pc
-	hyEWqFGp5CRtiZhkWB7C+9DhotqIyCQcQY5oLOvyplOUb79vevgVSCkFTIgqXq51TmxfF1pmlmDTD
-	vP8nUcl9PTRxQdCD39JKY5pDTFM8hbD9GHnd1u4vddTD2Yr7ie18Nhr7m/YhIeTyGb1518wtW3Emf
-	ZPpgDZd0FS+px/kogOw8fTzJXJBEy/61qZUF0RbtfzR1mRpx3xCZT5/EzVHgtmD/PX5QBbm4XMfaK
-	Cj9Xb/uyGvZxV0YZTX0x+3uk3Vq92vvxL93meWiwqZuNjdB9SuNxlKs8leYzG8uF6J1DfVK0uR0hZ
-	oruhRZxGJEqZVZd8Ychg==;
+	List-Owner; bh=daFl6OXqEuBB7q7Vgr1UDA4eMX314ej02E0UvAaK2b8=; b=0PlCB2S9JTa500
+	EsU+aFqUPtav9K5x2hIQhPWMkFpeGL9hyvZAl8QxprKsyTFy45cYNAI4wAsD4Q87emAs5BFi23blF
+	M6PlzoOE8+L7ilqNmJNspvMXMLh+Lokt/+j/SrHzatfxXijZEhoP0jgsI83YlIMryXdSNV2rXvuPm
+	yyj80hRwfSMRkZ7hu/6kqbTK9siyl+msyk1sOZOWnHPmNav1+I9cwzBVFmOul3D1+NhLrXeCWyEoa
+	IvYUX5Gq/REbl3QkkxGMJ/qR+ZraFXBY0uaDAWOV/UC3/Z2SzjlowzUnZu5BF+LcRIada4G9XgO7B
+	o2a9aK05NVMqzWmlnXHA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mG2HQ-0031Wj-0M; Tue, 17 Aug 2021 16:49:36 +0000
+	id 1mG2Hf-0031bA-3V; Tue, 17 Aug 2021 16:49:51 +0000
 Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mG2H9-0031Qz-Fv
- for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 16:49:21 +0000
+ id 1mG2HC-0031SS-0q
+ for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 16:49:23 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 5921B240008;
- Tue, 17 Aug 2021 16:49:14 +0000 (UTC)
-Date: Tue, 17 Aug 2021 18:49:13 +0200
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 9E9B824000B;
+ Tue, 17 Aug 2021 16:49:19 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc: Ezequiel Garcia <ezequiel@collabora.com>, linux-mtd
- <linux-mtd@lists.infradead.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH 3/3] mtdblock: Warn if the added for a NAND device
-Message-ID: <20210817184913.5162b242@xps13>
-In-Reply-To: <CAAEAJfDqEu0XtZ_FvVUM31p5PumPmK0x-r8sFWXzENDqf5zj_g@mail.gmail.com>
-References: <20210801234509.18774-8-ezequiel@collabora.com>
- <20210806200537.394260-1-miquel.raynal@bootlin.com>
- <CAAEAJfDqEu0XtZ_FvVUM31p5PumPmK0x-r8sFWXzENDqf5zj_g@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+To: Zhihao Cheng <chengzhihao1@huawei.com>, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com, bbrezillon@kernel.org
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ yukuai3@huawei.com
+Subject: Re: [PATCH v2 1/2] mtd: mtdconcat: Judge callback existence based on
+ the master
+Date: Tue, 17 Aug 2021 18:49:18 +0200
+Message-Id: <20210817164918.108904-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210817114857.2784825-2-chengzhihao1@huawei.com>
+References: 
 MIME-Version: 1.0
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'f9e109a209a8e01e16f37e1252304f1eb3908be4'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210817_094919_708766_6A09B650 
-X-CRM114-Status: GOOD (  19.90  )
+X-CRM114-CacheID: sfid-20210817_094922_258427_56B2E1A2 
+X-CRM114-Status: GOOD (  10.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,35 +68,76 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgRXplcXVpZWwsCgpFemVxdWllbCBHYXJjaWEgPGV6ZXF1aWVsQHZhbmd1YXJkaWFzdXIuY29t
-LmFyPiB3cm90ZSBvbiBUdWUsIDE3IEF1ZwoyMDIxIDEzOjI3OjU0IC0wMzAwOgoKPiBCb25qb3Vy
-IE1pcXVlbCwKPiAKPiBPbiBGcmksIDYgQXVnIDIwMjEgYXQgMTc6MDUsIE1pcXVlbCBSYXluYWwg
-PG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+IHdyb3RlOgo+ID4KPiA+IE9uIFN1biwgMjAyMS0w
-OC0wMSBhdCAyMzo0NTowOSBVVEMsIEV6ZXF1aWVsIEdhcmNpYSB3cm90ZToKPiA+ID4gVGhlcmUg
-aXMgYSBzdXJwcmlzaW5nbHkgbGFyZ2UgbnVtYmVyIG9mIHR1dG9yaWFscwo+ID4gPiB0aGF0IHN1
-Z2dlc3QgdXNpbmcgbXRkYmxvY2sgdG8gbW91bnQgU3F1YXNoRlMgZmlsZXN5c3RlbXMKPiA+ID4g
-b24gZmxhc2ggZGV2aWNlcywgaW5jbHVkaW5nIE5BTkQgZGV2aWNlcy4KPiA+ID4KPiA+ID4gVGhp
-cyBhcHByb2FjaCBpcyBzdWJvcHRpbWFsIHRoYW4gdXNpbmcgVUJJLiBJZiB0aGUgZmxhc2ggZGV2
-aWNlCj4gPiA+IGlzIE5BTkQsIHRoaXMgaXMgc3BlY2lhbGx5IHRydWUsIGR1ZSB0byB3ZWFyIGxl
-dmVsaW5nLCBiaXQtZmxpcHMgYW5kCj4gPiA+IGJhZGJsb2Nrcy4gSW4gdGhpcyBjYXNlIFVCSSBp
-cyBzdHJvbmdseSBwcmVmZXJyZWQsIHNvIGJlIG5pY2UgdG8gdXNlcnMKPiA+ID4gYW5kIHByaW50
-IGEgd2FybmluZyBzdWdnZXN0aW5nIHRvIGNvbnNpZGVyIFVCSSBibG9jaywgaWYgbXRkYmxvY2sK
-PiA+ID4gaXMgYWRkZWQgZm9yIGEgTkFORCBkZXZpY2UuCj4gPiA+Cj4gPiA+IFNpZ25lZC1vZmYt
-Ynk6IEV6ZXF1aWVsIEdhcmNpYSA8ZXplcXVpZWxAY29sbGFib3JhLmNvbT4KPiA+Cj4gPiBBcHBs
-aWVkIHRvIGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L210
-ZC9saW51eC5naXQgbXRkL25leHQsIHRoYW5rcy4KPiA+Cj4gCj4gQW55IGNoYW5jZSB5b3UgcmVz
-cGluIHRoaXMgb25lPwo+IAo+IEl0IGFwcGVhcnMgc29tZWhvdyB0aGlzIG1hZGUgaXRzIHdheSB0
-byB0aGUgcGF0Y2g6Cj4gIlVudHJhY2tlZCBmaWxlcyBub3QgbGlzdGVkIiBzb3JyeSBhYm91dCB0
-aGF0IC0tIGNvdWxkIHlvdSByZW1vdmUgaXQ/CgpZZWFoIG5vIHByb2JsZW0gYWJvdXQgdGhhdCwg
-aXQgaGFwcGVucyA7KQoKPiBXaGlsZSB0aGVyZSwgeW91IGNhbiBmaXggdGhlIHR5cG8gaW4gdGhl
-IGNvbW1pdCB0aXRsZToKPiAibXRkYmxvY2s6IFdhcm4gaWYgdGhlIGFkZGVkIGZvciBhIE5BTkQg
-ZGV2aWNlIiAtPiAibXRkYmxvY2s6IFdhcm4gaWYKPiBhZGRlZCBmb3IgYSBOQU5EIGRldmljZSIK
-CkRvbmUgYXMgd2VsbC4KCkNoZWVycyEKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxp
-bmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
-LW10ZC8K
+On Tue, 2021-08-17 at 11:48:56 UTC, Zhihao Cheng wrote:
+> Since commit 46b5889cc2c5("mtd: implement proper partition handling")
+> applied, mtd partition device won't hold some callback functions, such
+> as _block_isbad, _block_markbad, etc. Besides, function mtd_block_isbad()
+> will get mtd device's master mtd device, then invokes master mtd device's
+> callback function. So, following process may result mtd_block_isbad()
+> always return 0, even though mtd device has bad blocks:
+> 
+> 1. Split a mtd device into 3 partitions: PA, PB, PC
+> [ Each mtd partition device won't has callback function _block_isbad(). ]
+> 2. Concatenate PA and PB as a new mtd device PN
+> [ mtd_concat_create() finds out each subdev has no callback function
+> _block_isbad(), so PN won't be assigned callback function
+> concat_block_isbad(). ]
+> Then, mtd_block_isbad() checks "!master->_block_isbad" is true, will
+> always return 0.
+> 
+> Reproducer:
+> // reproduce.c
+> static int __init init_diy_module(void)
+> {
+> 	struct mtd_info *mtd[2];
+> 	struct mtd_info *mtd_combine = NULL;
+> 
+> 	mtd[0] = get_mtd_device_nm("NAND simulator partition 0");
+> 	if (!mtd[0]) {
+> 		pr_err("cannot find mtd1\n");
+> 		return -EINVAL;
+> 	}
+> 	mtd[1] = get_mtd_device_nm("NAND simulator partition 1");
+> 	if (!mtd[1]) {
+> 		pr_err("cannot find mtd2\n");
+> 		return -EINVAL;
+> 	}
+> 
+> 	put_mtd_device(mtd[0]);
+> 	put_mtd_device(mtd[1]);
+> 
+> 	mtd_combine = mtd_concat_create(mtd, 2, "Combine mtd");
+> 	if (mtd_combine == NULL) {
+> 		pr_err("combine failed\n");
+> 		return -EINVAL;
+> 	}
+> 
+> 	mtd_device_register(mtd_combine, NULL, 0);
+> 	pr_info("Combine success\n");
+> 
+> 	return 0;
+> }
+> 
+> 1. ID="0x20,0xac,0x00,0x15"
+> 2. modprobe nandsim id_bytes=$ID parts=50,100 badblocks=100
+> 3. insmod reproduce.ko
+> 4. flash_erase /dev/mtd3 0 0
+>   libmtd: error!: MEMERASE64 ioctl failed for eraseblock 100 (mtd3)
+>   error 5 (Input/output error)
+>   // Should be "flash_erase: Skipping bad block at 00c80000"
+> 
+> Fixes: 46b5889cc2c54bac ("mtd: implement proper partition handling")
+> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
+
+Miquel
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
