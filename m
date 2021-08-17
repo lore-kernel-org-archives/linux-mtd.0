@@ -6,16 +6,16 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
 	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 963CAC43216
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 01:32:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9A8AC4320A
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 01:32:52 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5F6E560241
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 01:32:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5F6E560241
+	by mail.kernel.org (Postfix) with ESMTPS id 793F560241
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 01:32:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 793F560241
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,52 +24,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ESabPimUjpx5eqvB5jSgSuKUHAZF1uZiSVpXebSjSv0=; b=3rkPrKZL7g9f5P
-	FTqolkZLh/+8X/UHw9gzfRIosAVHgOoZDwM7QIAHA/OdScoo8m1br95wo5y3drNEcgNGT9CYjVjRV
-	wyyGuW2hG29a2PpGInEia7Wa+OUyg7GoMirNb5vHW66G1f/punM4meiAVEu8nhGE8cnYk0Ptc9f7e
-	Ikk5S11gxlReQCs1Iwcy6mWY+J9lzIEq+pHZ2TaFBkbENzeJDx11MGkkcERVHRZIFImDnWypm5hP8
-	u8o1Woophxhp2hlYz17F+rcEWy6XuDbXEiPy4TmH2RVjo7EXiMDLrBIqP9Yzeu9e4n0ghn7bMKmbf
-	olzauge/nGqASn0xpzmQ==;
+	List-Owner; bh=zyABSZJ1DVNxoGOidXySTRWqkta5jHFEzQMcGByIuzY=; b=Zlghc1nepBNVR2
+	zLQ7X3/qdqzCSj489nY5o471tYhkJnC8X38VmnY4QZcuGgvfV5hZm6GnsnMpEw5JIwSEO7KzrYaC2
+	qGkfzvNQcGR0k6yC09QEeg1ZH5qgES92J3YM/zIeZtFCOD+EVMK2ATIqFKtzJmBDtgt41yxXPwhuf
+	6Y1L8gnAZN8K6JEbPFXTA/qsGARdbJhmHk5+pf1FDX1H9jO11A6mTGjNT/X+ptAwCAL6IYW1iyKoS
+	P0cEJbwK4ioKiUQ//NBIz2rInXc9LO+z3QC1+X4PnCe8S+NKaT+jqLYt4n9+wIm7dtSrFAurm7VuU
+	VAHBq2EUA/gu4G7We4xQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mFnx8-000hWA-5L; Tue, 17 Aug 2021 01:31:42 +0000
-Received: from mail-lj1-x230.google.com ([2a00:1450:4864:20::230])
+	id 1mFnxf-000hkE-2h; Tue, 17 Aug 2021 01:32:15 +0000
+Received: from mail-lf1-x133.google.com ([2a00:1450:4864:20::133])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mFnvc-000gdv-Kf
- for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 01:30:10 +0000
-Received: by mail-lj1-x230.google.com with SMTP id f2so8516577ljn.1
- for <linux-mtd@lists.infradead.org>; Mon, 16 Aug 2021 18:30:08 -0700 (PDT)
+ id 1mFnvd-000gex-U6
+ for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 01:30:11 +0000
+Received: by mail-lf1-x133.google.com with SMTP id x27so38184199lfu.5
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Aug 2021 18:30:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=whXbmpiV9uZrIWQEZSp5RRTDQ3TFfbRun1N2tfG7MWk=;
- b=qVuy6Otl0UWSQ+/nZMjDzykD2sSUZDst3NL/JVapiLI3z3yUfsGAUcncelhMR38Lym
- 1xjVPKDNQoeHSdojhaD4CNMJ2Dgxsx7ya2LEvfAdSM6jyMIhg0fAggQvAzFKMqqVOL9O
- IPbH29DcWGT56C4Udgprd2zRCBzNWyrc1+xqzNB9hh3j27fQeaGpUX2Jl9g2CjR6dsJE
- H3f4BOVlgw85yDYhZPvxDoAPPZKXld5HwD4iSdkylVBs+x8a7x/zUr2T15/KjxPp7TBo
- OcMaTgNBzyb8Gi7/p8ZpOcNZ09XNRqw/14qoRIg6z6RvIG29dGNOEq13dllv4PGdI+NN
- gRvg==
+ bh=1rOuTQcx9Elf9jGsA5Ck42tuk06UuZfodHaWyKuopa4=;
+ b=nLg7hn8A5q/Vx/CDPzbsu0UZcMhezzX4poGP9+aJl2GMGcJhQYqkUnj5Qjl2cn36JS
+ TRG8tU87zTvHq5zgQXHaUfSGmd+O/0lOIjEqYc1BrK9zX8G0pOagT0C0wooOsAF5RN7B
+ yK/7WuO8b06VawvO6kBp681V6kBFyVQi0S6F6onYaebnZX8T/ICfdcFvXSYrhsgVKUYL
+ K9LhVT6ka2mjmSQGZXodX88ijX4Dp4wQUWAkjBdKY6Y5GWYluTSb3kBlJweMyYfHhACG
+ IxdIRBbwpMCTUUHhK75ttkWtdcgq0pw9a09WmdFz57TCTIW/Tn8SPuEy+khxI9rWUJ9M
+ eM2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=whXbmpiV9uZrIWQEZSp5RRTDQ3TFfbRun1N2tfG7MWk=;
- b=fR0n4+HPKUhH7rWL+Wa99qgoXFa0iBaYfNXmSAs3Srx1DrLqKOKq1gGEQK4FlSfDgd
- gHfpXgiX1guNiV43uQl+/RcXsWwnxuueO4FaYeG/bsa0iG2WA2fPD0wR4WG5tv0Q57Rp
- ETIMhNzhslCqYlClDIxADhC1POVV1Rl9sxOZlV57tA072NMeIR9GjkYURszZ0qnhgQGn
- gMwFapMRziisF1zfw3qWtOKoRoL9XmxuhNiLZk76NnfbGkB4PdeiBg0XAYFYzUuUyfDf
- jy7Y2il06hK5r61pALt8I3cPJQoFbuk3SPFE/hVJ3oTTno6biRWW42/374K5EYNRVGV0
- cYUg==
-X-Gm-Message-State: AOAM532i5luFjtbkkv8/bHn/BhxjwamyOtU6pfC5CH0zxdHG65M0TiDD
- JtbMUoRDhPY2l8IkygDHLU8=
-X-Google-Smtp-Source: ABdhPJx0BGOHbSZlE+uingQVCD7QPlpfvESjI/6O9+jCEZkAPokxg6m3XSjkH1CoIjJ45grVv1YxFQ==
-X-Received: by 2002:a2e:5758:: with SMTP id r24mr870243ljd.432.1629163807370; 
- Mon, 16 Aug 2021 18:30:07 -0700 (PDT)
+ bh=1rOuTQcx9Elf9jGsA5Ck42tuk06UuZfodHaWyKuopa4=;
+ b=AQsiKYHROPtNVHv14duyt6nsFg9wLcKVlCh6+k8Bxr+RxMt8UTNhcSJiO9I9yLFsOW
+ p6dVd4YtBEaXr+cpOOwCFUG45uhGjweSOekJOEU7a2YRLsm7c3knsXHF7e3w0E+XRFhV
+ UsKiL5v+bV0wdgRNh4XI46yD0Rs/e1fwbaotz46nLpxSCN+kKG8zo4hKno6wvqMf0RNh
+ UMj2mlbrBgKOgwwNr5DufuJ2x4VPeOvrUhvEZWHOD/w25f2fAg26IW8WRrAdr7BgVLrk
+ 3A/fjFqd6UNT+u968lOdd3b1xex3fpjEMTGfNW0wu8K4/4WVV6JQmD7xrxsAQ0FG2zCc
+ jbKw==
+X-Gm-Message-State: AOAM530sxOTLGCPJdiMQFfwrMcRhGeWe+6w81e2vqsztAsf/TcZ9Te3/
+ qM9Rw55vdaWCXwud+PXBTnE=
+X-Google-Smtp-Source: ABdhPJwYUUWzqvmh2TbyZ8slt93fpku6uQ4CmSmfQ4fl39kgqkYGTl90+c9np45vo/m/xAMOfWGCEg==
+X-Received: by 2002:ac2:43c4:: with SMTP id u4mr476965lfl.357.1629163808543;
+ Mon, 16 Aug 2021 18:30:08 -0700 (PDT)
 Received: from localhost.localdomain (46-138-85-91.dynamic.spd-mgts.ru.
  [46.138.85.91])
- by smtp.gmail.com with ESMTPSA id g30sm46607lfj.298.2021.08.16.18.30.06
+ by smtp.gmail.com with ESMTPSA id g30sm46607lfj.298.2021.08.16.18.30.07
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 16 Aug 2021 18:30:07 -0700 (PDT)
+ Mon, 16 Aug 2021 18:30:08 -0700 (PDT)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>,
@@ -94,16 +94,17 @@ Cc: linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
  linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
  dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
  linux-clk@vger.kernel.org
-Subject: [PATCH v8 05/34] soc/tegra: Use dev_pm_opp_sync()
-Date: Tue, 17 Aug 2021 04:27:25 +0300
-Message-Id: <20210817012754.8710-6-digetx@gmail.com>
+Subject: [PATCH v8 06/34] dt-bindings: clock: tegra-car: Document new
+ tegra-clocks sub-node
+Date: Tue, 17 Aug 2021 04:27:26 +0300
+Message-Id: <20210817012754.8710-7-digetx@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210817012754.8710-1-digetx@gmail.com>
 References: <20210817012754.8710-1-digetx@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210816_183008_741224_614AD3DF 
-X-CRM114-Status: GOOD (  13.67  )
+X-CRM114-CacheID: sfid-20210816_183010_018436_7EC1504D 
+X-CRM114-Status: GOOD (  14.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,62 +121,88 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use new generic dev_pm_opp_sync() helper which initializes voltage vote
-based on clock rate.
+Document tegra-clocks sub-node which describes Tegra SoC clocks that
+require a higher voltage of the core power domain in order to operate
+properly on a higher clock rates.  Each node contains a phandle to OPP
+table and power domain.
+
+The root PLLs and system clocks don't have any specific device dedicated
+to them, clock controller is in charge of managing power for them.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- drivers/soc/tegra/common.c | 30 +-----------------------------
- 1 file changed, 1 insertion(+), 29 deletions(-)
+ .../bindings/clock/nvidia,tegra20-car.yaml    | 51 +++++++++++++++++++
+ 1 file changed, 51 insertions(+)
 
-diff --git a/drivers/soc/tegra/common.c b/drivers/soc/tegra/common.c
-index a42d4f98c078..dab1bacb41ab 100644
---- a/drivers/soc/tegra/common.c
-+++ b/drivers/soc/tegra/common.c
-@@ -39,34 +39,6 @@ bool soc_is_tegra(void)
- 	return match != NULL;
- }
+diff --git a/Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml b/Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml
+index 459d2a525393..7f5cd27e4ce0 100644
+--- a/Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml
++++ b/Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml
+@@ -42,6 +42,48 @@ properties:
+   "#reset-cells":
+     const: 1
  
--static int tegra_core_dev_init_opp_state(struct device *dev)
--{
--	unsigned long rate;
--	struct clk *clk;
--	int err;
--
--	clk = devm_clk_get(dev, NULL);
--	if (IS_ERR(clk)) {
--		dev_err(dev, "failed to get clk: %pe\n", clk);
--		return PTR_ERR(clk);
--	}
--
--	rate = clk_get_rate(clk);
--	if (!rate) {
--		dev_err(dev, "failed to get clk rate\n");
--		return -EINVAL;
--	}
--
--	/* first dummy rate-setting initializes voltage vote */
--	err = dev_pm_opp_set_rate(dev, rate);
--	if (err) {
--		dev_err(dev, "failed to initialize OPP clock: %d\n", err);
--		return err;
--	}
--
--	return 0;
--}
--
- /**
-  * devm_tegra_core_dev_init_opp_table() - initialize OPP table
-  * @dev: device for which OPP table is initialized
-@@ -118,7 +90,7 @@ int devm_tegra_core_dev_init_opp_table(struct device *dev,
- 	}
++  tegra-clocks:
++    description: child nodes are the output clocks from the CAR
++    type: object
++
++    patternProperties:
++      "^[a-z]+[0-9]+$":
++        type: object
++        properties:
++          compatible:
++            allOf:
++              - items:
++                  - enum:
++                      - nvidia,tegra20-sclk
++                      - nvidia,tegra30-sclk
++                      - nvidia,tegra30-pllc
++                      - nvidia,tegra30-plle
++                      - nvidia,tegra30-pllm
++              - const: nvidia,tegra-clock
++
++          operating-points-v2:
++            $ref: /schemas/types.yaml#/definitions/phandle
++            description:
++              Phandle to OPP table that contains frequencies, voltages and
++              opp-supported-hw property, which is a bitfield indicating
++              SoC process or speedo ID mask.
++
++          clocks:
++            items:
++              - description: node's clock
++
++          power-domains:
++            maxItems: 1
++            description: phandle to the core SoC power domain
++
++        required:
++          - compatible
++          - operating-points-v2
++          - clocks
++          - power-domains
++
++        additionalProperties: false
++
+ required:
+   - compatible
+   - reg
+@@ -59,6 +101,15 @@ examples:
+         reg = <0x60006000 0x1000>;
+         #clock-cells = <1>;
+         #reset-cells = <1>;
++
++        tegra-clocks {
++            sclk {
++                compatible = "nvidia,tegra20-sclk", "nvidia,tegra-clock";
++                operating-points-v2 = <&opp_table>;
++                clocks = <&tegra_car TEGRA20_CLK_SCLK>;
++                power-domains = <&domain>;
++            };
++        };
+     };
  
- 	if (params->init_state) {
--		err = tegra_core_dev_init_opp_state(dev);
-+		err = dev_pm_opp_sync(dev);
- 		if (err)
- 			return err;
- 	}
+     usb-controller@c5004000 {
 -- 
 2.32.0
 
