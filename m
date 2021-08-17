@@ -8,14 +8,14 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1358C432BE
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 01:54:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A6C2C4338F
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 01:57:48 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7FB1A60F39
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 01:54:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7FB1A60F39
+	by mail.kernel.org (Postfix) with ESMTPS id 08E6060F46
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Aug 2021 01:57:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 08E6060F46
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,53 +24,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ALEaePBKusairXQf/mxqtRs48Jhuh1AUz9+qahNkcvs=; b=FR1Y58AUNO3IqB
-	PBZepMxN3ZC3eviIlrTX5FF7mdo/c4YZv0/h7gOaRsC0FBJ2ynTXIv0bpRge+fKEaTi7Zg3Aw7kIy
-	59Zjy2g9W3j2P1CNX9Z2HY7/GwGL+J+z2DPbEfafn5FMVjI0rq5rCmiXS1C4X6UaGHc9jmocxbn6u
-	thLA26/SoPyFbKqNylyWim3mam13ytzjPOF1vDu6QDc4th7U1ZmUOiUPOA7BJ+1nuU5Q7CIjjf7A8
-	oQmFlSwrmDpab9pOsq46Jztjg/OCiQjmw1PvuuhhIyccrRw0FPCd3CfTaaZCBPrVWTxWfUFGNXifR
-	1fFNuIO4YIbeswZTN0jQ==;
+	List-Owner; bh=Ds6S8hBvK89rPvxrBHq2txF1U0y8ok2cG0+HWCqyPJA=; b=ASSkLiJ5Bcrr+d
+	jXCFtQDzBvS2wc4LwP4I0HBIWQAZ+HuDyGcUTgNVO/yGQNZCN2xLt60xfAnX03acqE9yOrj59/o+v
+	X/2JZe7VPNKPeqLWrNl1SpMwFizTn7mN/W6Ke1PR95LGqex4lEzP6b8cQeBv5etzYN2gvxYBCoArE
+	uCah7wcYWMQqu5AAn0fmIdcJTaEheORpUdDfRkKt4zlc14CIcpatKjgGMg7MPWab9N5WBgW1Wgfz+
+	G32IqFjy37gdVJ6uZbEwMq6ecHOy4W7jMTrIklpbY56pUtQK6CetOSBLY8W7cSi3Z5lFxanH+5hT2
+	XXZEWTf3zGrhRcqsu0Mg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mFoIW-000l9p-9c; Tue, 17 Aug 2021 01:53:49 +0000
-Received: from mail-lf1-f49.google.com ([209.85.167.49])
+	id 1mFoLk-000ldi-O3; Tue, 17 Aug 2021 01:57:09 +0000
+Received: from mail-lf1-x130.google.com ([2a00:1450:4864:20::130])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mFnvt-000gtN-FY
- for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 01:30:31 +0000
-Received: by mail-lf1-f49.google.com with SMTP id t9so38199456lfc.6
- for <linux-mtd@lists.infradead.org>; Mon, 16 Aug 2021 18:30:24 -0700 (PDT)
+ id 1mFnvr-000grh-6I
+ for linux-mtd@lists.infradead.org; Tue, 17 Aug 2021 01:30:32 +0000
+Received: by mail-lf1-x130.google.com with SMTP id t9so38199395lfc.6
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Aug 2021 18:30:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=kVewrQPLqMIzX/eUr1ccRXf6dVPwW04CHGi9g8P6H2I=;
- b=Ngw0q21CDl+yxQ7xI6sFiWFDLy1/jXJWCzDmmHgTyR7UHFdWvRHsZx+fwwbTxV2Cyv
- gN6KKIyDdmn9trt+zxJhnrKxJcVQ+dnkic/3q9GtmrOvXqnunqZ+3rLOZ5UuPH5SKRXQ
- wHnnssBODCzWhAf3IXJsR51tcgLbdYamJQnd58q7DpKGQ4YxYliB2agkeVrrv0VQH3WD
- yX57PPPDbCytK20teu7FFGxH65vic3f2b3gEAv0Mzw0Wl85PutrUYT2zIxxGhQmXSuej
- il2Sc7DptAVhnwSP4QkipTWxTtJR6TstiShQkQRUQrPcr1noWm9NKLF1HbC63QkYiuH+
- PRwA==
+ bh=RyUAbE2QFBPkAmLeYWIUbN1190eoatB//1STMKYD8E8=;
+ b=FHHkdVALDIC8dyirLf0Z63rRk2CutfNmZs9OsR4qhsaRwNMT/JUhplqAuSsrFSjuJt
+ 7zSJwbx7dRC2Y9TwD2ZgLA5WNk42Z5kK0YZGsGNs3gwML8PTM0G7q3O9wFbjuiSMyB0k
+ KGqYd6awr7eVl6/cGTwCB183jYlUcnE+k7hkycg/xusGFpw8VM2zyG04lr4PyeyWYT2s
+ 5azXGdQxYI0PqjxHmfPrlOWLRcxdK/wmwF/vC6iJgIsJkfElj58/Nx7y+ML/ZOXDk4uG
+ X7bjcWfPs3d71DI5ydF/R/VhKo+ZQTQ07nPlS36IPVJW1y82YTEYBSTdFfCOPQdw86Td
+ ypTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=kVewrQPLqMIzX/eUr1ccRXf6dVPwW04CHGi9g8P6H2I=;
- b=sLw3kEtm1394WnXXNrkx1zpNDZoCO5quSQjl8cf2rOLGWtPa/NRYvnUWJL75CLDfQ9
- zwzrCJPwjZQ37bwI0tKQii8MCaUYc3t10DQuNEipqrrjpYONmvzQi4ozVNgTCkuTWkTk
- s4ERv8QIz4DL3TtpydQ4olEVcdKqQ5eGCbhi8s1b6JZm/HePsMJIQSnLcj8SDg0aEAYD
- tbaoLR4GvsTJJYGHRTtsMpOf7O0vzhjUPmUBY+NAwCwgvD31iYM0Vj5N1BJyoXhn8qbB
- 8ohIQ77qajPYPS8vNp7tSD4EWEL0WVT2BxKpgD5mgh0Ah8rbps8nztcZl39cF9S29EHr
- vVLQ==
-X-Gm-Message-State: AOAM532ku2TpScx2byUffrKc+8mcZ1BTTpP3S9lAqTRtDILeIFg8c/bP
- GwqHJO2WGSD9zWuz/RRsYAE=
-X-Google-Smtp-Source: ABdhPJwQhGPy+Iac60Z/w+/X1SqDXqcJNZewEFmLnX1JN/Qye3BOu6cFpYRzvaojzNHG7UQlI4Pj5A==
-X-Received: by 2002:a05:6512:304a:: with SMTP id
- b10mr522160lfb.442.1629163823026; 
- Mon, 16 Aug 2021 18:30:23 -0700 (PDT)
+ bh=RyUAbE2QFBPkAmLeYWIUbN1190eoatB//1STMKYD8E8=;
+ b=JEVOSljriTEckGeUTMMSV47k9K2gk8HTyFh1/lBQJgWRyxPVm0NDIU75amktkDVcHf
+ UAXnzEqdYhbCLRpq0UD0RcW2rkAJzKRBXCkSjfpr8V/JSrW+8Ufyb2X+WPlA9GrKV4Pm
+ jSnbXiQM5iNZeIrDUkEMX3UjUZXOm9kdKelprO+OYtgoZR+jIfsxIygqOS4rk6zJV5yd
+ cW3PgzsJSW1Z9fWieeQ7zwHUwp78x0Vd4Og4JR9pqqjYxzWQ9Ka9yj3LDLwRkuqj19qQ
+ 4ZmLX3vSBjEE0XUHoh+kSDrazMEuJP+CJT+02AOllr8ii+ggTuCzUEqE53hIRxQ3IpML
+ Cynw==
+X-Gm-Message-State: AOAM5303mglU9qxAtNIKH15OpSsRzqb4tACavXqYU1mIyaO6jRpwCgh0
+ /k5WW5ajsL04R7suBN4Jgy0=
+X-Google-Smtp-Source: ABdhPJyRsAKpO2RcAL+dS1g6qGdkcebzosRG7tO7qBO0N4O3xLiuYgInL89eIUxXQ6XIMR0zalmnVA==
+X-Received: by 2002:a19:6b02:: with SMTP id d2mr510341lfa.522.1629163821862;
+ Mon, 16 Aug 2021 18:30:21 -0700 (PDT)
 Received: from localhost.localdomain (46-138-85-91.dynamic.spd-mgts.ru.
  [46.138.85.91])
- by smtp.gmail.com with ESMTPSA id g30sm46607lfj.298.2021.08.16.18.30.21
+ by smtp.gmail.com with ESMTPSA id g30sm46607lfj.298.2021.08.16.18.30.20
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 16 Aug 2021 18:30:22 -0700 (PDT)
+ Mon, 16 Aug 2021 18:30:21 -0700 (PDT)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>,
@@ -95,16 +94,16 @@ Cc: linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
  linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
  dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
  linux-clk@vger.kernel.org
-Subject: [PATCH v8 18/34] bus: tegra-gmi: Add runtime PM and OPP support
-Date: Tue, 17 Aug 2021 04:27:38 +0300
-Message-Id: <20210817012754.8710-19-digetx@gmail.com>
+Subject: [PATCH v8 17/34] usb: chipidea: tegra: Add runtime PM and OPP support
+Date: Tue, 17 Aug 2021 04:27:37 +0300
+Message-Id: <20210817012754.8710-18-digetx@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210817012754.8710-1-digetx@gmail.com>
 References: <20210817012754.8710-1-digetx@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210816_183025_610842_3423BC41 
-X-CRM114-Status: GOOD (  21.39  )
+X-CRM114-CacheID: sfid-20210816_183023_273902_036B48F6 
+X-CRM114-Status: GOOD (  21.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -121,21 +120,23 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The GMI bus on Tegra belongs to the core power domain and we're going to
-enable GENPD support for the core domain. Now GMI must be resumed using
-runtime PM API in order to initialize the GMI power state. Add runtime PM
-and OPP support to the GMI driver.
+The Tegra USB controller belongs to the core power domain and we're going
+to enable GENPD support for the core domain. Now USB controller must be
+resumed using runtime PM API in order to initialize the USB power state.
+We already support runtime PM for the CI device, but CI's PM is separated
+from the RPM managed by tegra-usb driver. Add runtime PM and OPP support
+to tegra-usb driver.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- drivers/bus/tegra-gmi.c | 92 ++++++++++++++++++++++++++++++-----------
- 1 file changed, 68 insertions(+), 24 deletions(-)
+ drivers/usb/chipidea/ci_hdrc_tegra.c | 61 ++++++++++++++++++++++++----
+ 1 file changed, 54 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/bus/tegra-gmi.c b/drivers/bus/tegra-gmi.c
-index a6570789f7af..51cac6822f20 100644
---- a/drivers/bus/tegra-gmi.c
-+++ b/drivers/bus/tegra-gmi.c
-@@ -13,8 +13,12 @@
+diff --git a/drivers/usb/chipidea/ci_hdrc_tegra.c b/drivers/usb/chipidea/ci_hdrc_tegra.c
+index 60361141ac04..09a5e5fc251f 100644
+--- a/drivers/usb/chipidea/ci_hdrc_tegra.c
++++ b/drivers/usb/chipidea/ci_hdrc_tegra.c
+@@ -7,6 +7,8 @@
  #include <linux/io.h>
  #include <linux/module.h>
  #include <linux/of_device.h>
@@ -143,149 +144,118 @@ index a6570789f7af..51cac6822f20 100644
 +#include <linux/pm_runtime.h>
  #include <linux/reset.h>
  
+ #include <linux/usb.h>
+@@ -15,6 +17,8 @@
+ #include <linux/usb/of.h>
+ #include <linux/usb/phy.h>
+ 
 +#include <soc/tegra/common.h>
 +
- #define TEGRA_GMI_CONFIG		0x00
- #define TEGRA_GMI_CONFIG_GO		BIT(31)
- #define TEGRA_GMI_BUS_WIDTH_32BIT	BIT(30)
-@@ -54,36 +58,20 @@ static int tegra_gmi_enable(struct tegra_gmi *gmi)
- {
- 	int err;
+ #include "../host/ehci.h"
  
--	err = clk_prepare_enable(gmi->clk);
--	if (err < 0) {
--		dev_err(gmi->dev, "failed to enable clock: %d\n", err);
-+	pm_runtime_enable(gmi->dev);
-+	err = pm_runtime_resume_and_get(gmi->dev);
-+	if (err) {
-+		pm_runtime_disable(gmi->dev);
- 		return err;
- 	}
- 
--	reset_control_assert(gmi->rst);
--	usleep_range(2000, 4000);
--	reset_control_deassert(gmi->rst);
--
--	writel(gmi->snor_timing0, gmi->base + TEGRA_GMI_TIMING0);
--	writel(gmi->snor_timing1, gmi->base + TEGRA_GMI_TIMING1);
--
--	gmi->snor_config |= TEGRA_GMI_CONFIG_GO;
--	writel(gmi->snor_config, gmi->base + TEGRA_GMI_CONFIG);
--
- 	return 0;
- }
- 
- static void tegra_gmi_disable(struct tegra_gmi *gmi)
- {
--	u32 config;
--
--	/* stop GMI operation */
--	config = readl(gmi->base + TEGRA_GMI_CONFIG);
--	config &= ~TEGRA_GMI_CONFIG_GO;
--	writel(config, gmi->base + TEGRA_GMI_CONFIG);
--
--	reset_control_assert(gmi->rst);
--	clk_disable_unprepare(gmi->clk);
-+	pm_runtime_put(gmi->dev);
-+	pm_runtime_disable(gmi->dev);
- }
- 
- static int tegra_gmi_parse_dt(struct tegra_gmi *gmi)
-@@ -213,6 +201,7 @@ static int tegra_gmi_probe(struct platform_device *pdev)
- 	if (!gmi)
+ #include "ci.h"
+@@ -278,6 +282,8 @@ static int tegra_usb_probe(struct platform_device *pdev)
+ 	if (!usb)
  		return -ENOMEM;
  
-+	platform_set_drvdata(pdev, gmi);
- 	gmi->dev = dev;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-@@ -232,6 +221,10 @@ static int tegra_gmi_probe(struct platform_device *pdev)
- 		return PTR_ERR(gmi->rst);
++	platform_set_drvdata(pdev, usb);
++
+ 	soc = of_device_get_match_data(&pdev->dev);
+ 	if (!soc) {
+ 		dev_err(&pdev->dev, "failed to match OF data\n");
+@@ -296,11 +302,14 @@ static int tegra_usb_probe(struct platform_device *pdev)
+ 		return err;
  	}
  
+-	err = clk_prepare_enable(usb->clk);
+-	if (err < 0) {
+-		dev_err(&pdev->dev, "failed to enable clock: %d\n", err);
 +	err = devm_tegra_core_dev_init_opp_table_simple(&pdev->dev);
 +	if (err)
-+		return err;
+ 		return err;
+-	}
 +
- 	err = tegra_gmi_parse_dt(gmi);
++	pm_runtime_enable(&pdev->dev);
++	err = pm_runtime_resume_and_get(&pdev->dev);
++	if (err)
++		goto disable_pm;
+ 
+ 	if (device_property_present(&pdev->dev, "nvidia,needs-double-reset"))
+ 		usb->needs_double_reset = true;
+@@ -320,8 +329,6 @@ static int tegra_usb_probe(struct platform_device *pdev)
  	if (err)
- 		return err;
-@@ -247,8 +240,6 @@ static int tegra_gmi_probe(struct platform_device *pdev)
- 		return err;
- 	}
+ 		goto fail_power_off;
  
--	platform_set_drvdata(pdev, gmi);
+-	platform_set_drvdata(pdev, usb);
 -
- 	return 0;
+ 	/* setup and register ChipIdea HDRC device */
+ 	usb->soc = soc;
+ 	usb->data.name = "tegra-usb";
+@@ -350,7 +357,10 @@ static int tegra_usb_probe(struct platform_device *pdev)
+ phy_shutdown:
+ 	usb_phy_shutdown(usb->phy);
+ fail_power_off:
+-	clk_disable_unprepare(usb->clk);
++	pm_runtime_put(&pdev->dev);
++disable_pm:
++	pm_runtime_disable(&pdev->dev);
++
+ 	return err;
  }
  
-@@ -262,6 +253,58 @@ static int tegra_gmi_remove(struct platform_device *pdev)
- 	return 0;
- }
+@@ -360,15 +370,52 @@ static int tegra_usb_remove(struct platform_device *pdev)
  
-+static int __maybe_unused tegra_gmi_runtime_resume(struct device *dev)
+ 	ci_hdrc_remove_device(usb->dev);
+ 	usb_phy_shutdown(usb->phy);
++
++	pm_runtime_put(&pdev->dev);
++	pm_runtime_disable(&pdev->dev);
++
++	return 0;
++}
++
++static int __maybe_unused tegra_usb_runtime_resume(struct device *dev)
 +{
-+	struct tegra_gmi *gmi = dev_get_drvdata(dev);
++	struct tegra_usb *usb = dev_get_drvdata(dev);
 +	int err;
 +
-+	err = dev_pm_opp_sync(gmi->dev);
++	err = dev_pm_opp_sync(dev);
 +	if (err) {
-+		dev_err(gmi->dev, "failed to sync OPP: %d\n", err);
++		dev_err(dev, "failed to sync OPP: %d\n", err);
 +		return err;
 +	}
 +
-+	err = clk_prepare_enable(gmi->clk);
++	err = clk_prepare_enable(usb->clk);
 +	if (err < 0) {
-+		dev_err(gmi->dev, "failed to enable clock: %d\n", err);
++		dev_err(dev, "failed to enable clock: %d\n", err);
 +		return err;
 +	}
 +
-+	reset_control_assert(gmi->rst);
-+	usleep_range(2000, 4000);
-+	reset_control_deassert(gmi->rst);
-+
-+	writel(gmi->snor_timing0, gmi->base + TEGRA_GMI_TIMING0);
-+	writel(gmi->snor_timing1, gmi->base + TEGRA_GMI_TIMING1);
-+
-+	gmi->snor_config |= TEGRA_GMI_CONFIG_GO;
-+	writel(gmi->snor_config, gmi->base + TEGRA_GMI_CONFIG);
-+
 +	return 0;
 +}
 +
-+static int __maybe_unused tegra_gmi_runtime_suspend(struct device *dev)
++static int __maybe_unused tegra_usb_runtime_suspend(struct device *dev)
 +{
-+	struct tegra_gmi *gmi = dev_get_drvdata(dev);
-+	u32 config;
++	struct tegra_usb *usb = dev_get_drvdata(dev);
 +
-+	/* stop GMI operation */
-+	config = readl(gmi->base + TEGRA_GMI_CONFIG);
-+	config &= ~TEGRA_GMI_CONFIG_GO;
-+	writel(config, gmi->base + TEGRA_GMI_CONFIG);
-+
-+	reset_control_assert(gmi->rst);
-+
-+	clk_disable_unprepare(gmi->clk);
-+
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops tegra_gmi_pm = {
-+	SET_RUNTIME_PM_OPS(tegra_gmi_runtime_suspend, tegra_gmi_runtime_resume,
+ 	clk_disable_unprepare(usb->clk);
+ 
+ 	return 0;
+ }
+ 
++static const struct dev_pm_ops tegra_usb_pm = {
++	SET_RUNTIME_PM_OPS(tegra_usb_runtime_suspend, tegra_usb_runtime_resume,
 +			   NULL)
 +};
 +
- static const struct of_device_id tegra_gmi_id_table[] = {
- 	{ .compatible = "nvidia,tegra20-gmi", },
- 	{ .compatible = "nvidia,tegra30-gmi", },
-@@ -275,6 +318,7 @@ static struct platform_driver tegra_gmi_driver = {
+ static struct platform_driver tegra_usb_driver = {
  	.driver = {
- 		.name		= "tegra-gmi",
- 		.of_match_table	= tegra_gmi_id_table,
-+		.pm = &tegra_gmi_pm,
+ 		.name = "tegra-usb",
+ 		.of_match_table = tegra_usb_of_match,
++		.pm = &tegra_usb_pm,
  	},
- };
- module_platform_driver(tegra_gmi_driver);
+ 	.probe = tegra_usb_probe,
+ 	.remove = tegra_usb_remove,
 -- 
 2.32.0
 
