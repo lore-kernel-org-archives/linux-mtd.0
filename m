@@ -2,20 +2,19 @@ Return-Path: <SRS0=f8pO=NJ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0359CC4338F
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Aug 2021 14:00:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EDD4C4320E
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Aug 2021 14:07:51 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C2F4661051
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Aug 2021 14:00:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C2F4661051
+	by mail.kernel.org (Postfix) with ESMTPS id DE611610C9
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Aug 2021 14:07:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DE611610C9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,52 +23,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=zRXTBzg7h+ga037z33NxOyHnKJU/+NWl+0zMA05kTAA=; b=F6nfPPApUaY5TnGhby6RkRklbF
-	jWYRt/pDzBrg+SaCP50NqaT+7oGwskoVg9tt1GUgj/+uaexjpDNmXvkBf7R9x3GtKZFamwCRrjMmd
-	assNyCGgf4Wg82oijN8pqC1/s9OcNOo6ZuPMDLUsBKCgcy2vg3tinL1mQMqBsB4dk2oqBcQyRTTnL
-	RrUmnvNowj2DFmHMGgTeqTtDCg+kj5yP5WZ75XJeMKXojjjHyyGJ3H3dCDBc4spYqbeEIRg/IIhkM
-	XeR1evUS8gRK3/8pnOgVR11LR+B7i3Egmoa11QJ7C5fgqdSlzOkUfCl1l3LguzztQesIXwC3B0L+X
-	PJPBm97g==;
+	bh=xDC1TveuKcb7APN+g6EJh8iHmxh1ov1ah/Bt0Ddexes=; b=fnKHVrSY6eDNy37N9KT6q9U92/
+	rb4vV6F9GaSkE/5lOq2jw2Qm4HxhZfY3SYsrXobnKFv3LYPWvaeJpw2NMsF8h04MYo9lKaBMYv3ZQ
+	JzN7b7gijYhatf0UBLIVjZ3/X5A5haStYN3Na6XijM8yzXPyhY9DOsn1XxGYNxKYF/fwUZ/GMmLxS
+	27y5xuQuTLTy6/ejqfvbRMXEecmAQAJRIcbGYs/okF4gQ+CBdU03JHxWtEUmR8eUG3oKnPYOPA4RD
+	LRgOiykMnNyMkdhyNIm8XdOTkJjkkeUfrBVUtuMgRKsduMYr0IyMTmHh0FMld52VhvcO4QBxhArJ0
+	WYzNIVAw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mGM6c-005nEg-2y; Wed, 18 Aug 2021 13:59:46 +0000
-Received: from mail-wr1-x430.google.com ([2a00:1450:4864:20::430])
+	id 1mGMDm-005oZ7-Rc; Wed, 18 Aug 2021 14:07:10 +0000
+Received: from mail-wr1-x42b.google.com ([2a00:1450:4864:20::42b])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mGM6Z-005nDP-Gm
- for linux-mtd@lists.infradead.org; Wed, 18 Aug 2021 13:59:45 +0000
-Received: by mail-wr1-x430.google.com with SMTP id x10so3677961wrt.8
- for <linux-mtd@lists.infradead.org>; Wed, 18 Aug 2021 06:59:42 -0700 (PDT)
+ id 1mGMDj-005oWq-BD
+ for linux-mtd@lists.infradead.org; Wed, 18 Aug 2021 14:07:09 +0000
+Received: by mail-wr1-x42b.google.com with SMTP id x10so3720783wrt.8
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Aug 2021 07:07:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=date:from:to:cc:subject:message-id:references:mime-version
  :content-disposition:in-reply-to:user-agent;
- bh=KNffZkosHqyXx54/Hpv5ZrGxbGQeRq47x+KeHOQn2D4=;
- b=ibuocWT93lqgP2jFTcmPxR3VZo0d3F1Xf1TvV8Ax8j9ydj7+q7Af1STuLQmp/w0lkJ
- CpUJcHGatD8/lifTM+iTTF8M3X6uRJyXK4+iwJDUgoSBuwu+iUzJ5etA3MOE7KZUuTiJ
- VzQNmTrzFh8jm/DNdhZmMnsQuBs7Y0JOvpqSKBnEaJQcwcgmozjoOtCe5IuoSXd3SJi5
- r+wu0oOp4C+CRCmSDJJzlhXYjyFGEyb15wd3WSAlduhqb0QrSHb4nByKv7J6xAJhYYj1
- Qxq9RpobYHQRwyH77A92zvewXitzMA7u8fnZPH3Ku++ZZxHLayWxduyBzjm6sr9p1an2
- A+JA==
+ bh=i6nHV4Vzm5Umu6SJhmhoU8e3Ow8sOCfq6m4vf5vpOCg=;
+ b=ZJdtuwUuQvNaAbdr9Fz2fAvktw5J/+5+vjt8im/pkRZqyKjHlmqluk+dpJgPv/GFEk
+ rs7jlCk5NOlSnehipLU0nyzn/A/7FZS7QQCaIl7MSF6vAha+BX6LZBrQQREaflmjEitO
+ dlEahiAy8zC6MjFccmUrLBYvfs88a8jl/uHALh0tSc5Nn+N5OqlxOYEPLAvMwQAyowns
+ Ndkxrox4afb9mQcpEWWL0GiCRmTwzTOHCYxL6M4H8oWTYs7RmlUoqU0WistPX7vqT8pO
+ 6Su4Nkctsrk6dlh0F8i2tqudBygnvEpqj+ChJ3xGjixCFrJ6bgmI3P/HGSPs7QQyovGr
+ 4V5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to:user-agent;
- bh=KNffZkosHqyXx54/Hpv5ZrGxbGQeRq47x+KeHOQn2D4=;
- b=Lx8+R5VismOlcDbOXmTZG8A5y3zbUv6N87XY6SXuVCww3am80jZlqc8VJA1ICBSRsM
- HOQlkSmrB3JXZT/P2D7VOHibn0Cs4M/arT4PPK7v7TA19D91PjwIwodewyqf/c/HSIOT
- MwAXvq/j306WfABP7vpOtzCnoIOnIZ5ZBpMVmECEu3u54VcfDK5IW3zm3vHMk9XVJvFI
- Rl/yKH96uyMgHsV+hdOs75tezBXatbzG0tslxJb1enWToVm/ZexlThUC5nfJ0IsGs9YS
- HeKH0lXEze+lO6Zl4aTABHPvqGXmxJNjirpNG8QmBjZt/btKgqMq/Y2B98YiO9dWndQF
- tTRA==
-X-Gm-Message-State: AOAM530JWHXWfcBkuWJwhbh+MVlx/tywGnCtFuKO4VMepe7FbH05/lDh
- RZb1FZWHOjn+GHwAqS62Byg=
-X-Google-Smtp-Source: ABdhPJxvF7WMaqSu8zeTy7i/rg84Q96ABr3QOSv6VnFi/zQqxYTwAuSffE52Els7OFHVChKGgH4lUQ==
-X-Received: by 2002:adf:e10c:: with SMTP id t12mr10789333wrz.36.1629295181628; 
- Wed, 18 Aug 2021 06:59:41 -0700 (PDT)
+ bh=i6nHV4Vzm5Umu6SJhmhoU8e3Ow8sOCfq6m4vf5vpOCg=;
+ b=Jc/f2S+TRJVY/nxOZuijHeVt4fPHduli6WXU6JBcDWeZd4ttM7TplPnMSxB0jLqRqk
+ ElKkbZuFzMZ5jes+h87XtB1vIcLVgcQJzYSG0y8yfY9Lj0LmAxEQeBhtvbCvExG2kVn3
+ 3sPVJO8ORClDm8lZqQL6u62fFZscovms+iZjEwGcv7sbaj6/ZyuYJrRDQq+QJL3vKo0l
+ D1peURT5P71fgpsbYw9c5inoV/Ptk9KZNTvy0tCoMng+AnKeOHh+qhLQBGzsLpyLUv/V
+ ZvY9tYiw+qr0qD/OFMothkTzqzpdoIxua9PRG9b2yK8GqOMVKNfNiCk7GhmH+0Ph7ObD
+ 3H5w==
+X-Gm-Message-State: AOAM5300gucdabvkeHecIeugI3ARfXZ/I+LQnfwM5RUzE984NVqQZoGg
+ 93Gfq7+GQB42igIhz5LKbPo=
+X-Google-Smtp-Source: ABdhPJyXq9/0R+WfXjdNLNbDmiuZklvSlQEBjFaDDAdAwgPSc6Y2VNRCrYkje8+AywzsdZxW8DAWow==
+X-Received: by 2002:a5d:500a:: with SMTP id e10mr11157882wrt.332.1629295624742; 
+ Wed, 18 Aug 2021 07:07:04 -0700 (PDT)
 Received: from localhost ([217.111.27.204])
- by smtp.gmail.com with ESMTPSA id e4sm6166417wrw.74.2021.08.18.06.59.40
+ by smtp.gmail.com with ESMTPSA id e2sm6158851wrq.56.2021.08.18.07.07.03
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 18 Aug 2021 06:59:40 -0700 (PDT)
-Date: Wed, 18 Aug 2021 15:59:39 +0200
+ Wed, 18 Aug 2021 07:07:03 -0700 (PDT)
+Date: Wed, 18 Aug 2021 16:07:02 +0200
 From: Thierry Reding <thierry.reding@gmail.com>
 To: Dmitry Osipenko <digetx@gmail.com>
 Cc: Jonathan Hunter <jonathanh@nvidia.com>,
@@ -95,17 +94,16 @@ Cc: Jonathan Hunter <jonathanh@nvidia.com>,
  linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
  dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
  linux-clk@vger.kernel.org
-Subject: Re: [PATCH v8 06/34] dt-bindings: clock: tegra-car: Document new
- tegra-clocks sub-node
-Message-ID: <YR0SSz7KMh7TwaFW@orome.fritz.box>
+Subject: Re: [PATCH v8 07/34] clk: tegra: Support runtime PM and power domain
+Message-ID: <YR0UBi/ejy+oF4Hm@orome.fritz.box>
 References: <20210817012754.8710-1-digetx@gmail.com>
- <20210817012754.8710-7-digetx@gmail.com>
+ <20210817012754.8710-8-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210817012754.8710-7-digetx@gmail.com>
+In-Reply-To: <20210817012754.8710-8-digetx@gmail.com>
 User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210818_065943_683498_A8117623 
-X-CRM114-Status: GOOD (  28.03  )
+X-CRM114-CacheID: sfid-20210818_070707_420959_912DAECB 
+X-CRM114-Status: GOOD (  16.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -117,168 +115,84 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3049871415578050606=="
+Content-Type: multipart/mixed; boundary="===============7084372607266262510=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
---===============3049871415578050606==
+--===============7084372607266262510==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="rawOBESmF2Gu2Spy"
+	protocol="application/pgp-signature"; boundary="GjgnhAguwPYREA1d"
 Content-Disposition: inline
 
 
---rawOBESmF2Gu2Spy
+--GjgnhAguwPYREA1d
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 17, 2021 at 04:27:26AM +0300, Dmitry Osipenko wrote:
-> Document tegra-clocks sub-node which describes Tegra SoC clocks that
-> require a higher voltage of the core power domain in order to operate
-> properly on a higher clock rates.  Each node contains a phandle to OPP
-> table and power domain.
->=20
-> The root PLLs and system clocks don't have any specific device dedicated
-> to them, clock controller is in charge of managing power for them.
->=20
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  .../bindings/clock/nvidia,tegra20-car.yaml    | 51 +++++++++++++++++++
->  1 file changed, 51 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/clock/nvidia,tegra20-car.y=
-aml b/Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml
-> index 459d2a525393..7f5cd27e4ce0 100644
-> --- a/Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml
-> +++ b/Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml
-> @@ -42,6 +42,48 @@ properties:
->    "#reset-cells":
->      const: 1
-> =20
-> +  tegra-clocks:
-> +    description: child nodes are the output clocks from the CAR
-> +    type: object
+On Tue, Aug 17, 2021 at 04:27:27AM +0300, Dmitry Osipenko wrote:
+[...]
+> +struct clk *tegra_clk_register(struct clk_hw *hw)
+> +{
+> +	struct platform_device *pdev;
+> +	struct device *dev = NULL;
+> +	struct device_node *np;
+> +	const char *dev_name;
 > +
-> +    patternProperties:
-> +      "^[a-z]+[0-9]+$":
-> +        type: object
-> +        properties:
-> +          compatible:
-> +            allOf:
-> +              - items:
-> +                  - enum:
-> +                      - nvidia,tegra20-sclk
-> +                      - nvidia,tegra30-sclk
-> +                      - nvidia,tegra30-pllc
-> +                      - nvidia,tegra30-plle
-> +                      - nvidia,tegra30-pllm
-> +              - const: nvidia,tegra-clock
+> +	np = tegra_clk_get_of_node(hw);
 > +
-> +          operating-points-v2:
-> +            $ref: /schemas/types.yaml#/definitions/phandle
-> +            description:
-> +              Phandle to OPP table that contains frequencies, voltages a=
-nd
-> +              opp-supported-hw property, which is a bitfield indicating
-> +              SoC process or speedo ID mask.
+> +	if (!of_device_is_available(np))
+> +		goto put_node;
 > +
-> +          clocks:
-> +            items:
-> +              - description: node's clock
+> +	dev_name = kasprintf(GFP_KERNEL, "tegra_clk_%s", hw->init->name);
+> +	if (!dev_name)
+> +		goto put_node;
 > +
-> +          power-domains:
-> +            maxItems: 1
-> +            description: phandle to the core SoC power domain
+> +	pdev = of_platform_device_create(np, dev_name, NULL);
+> +	if (!pdev) {
+> +		pr_err("%s: failed to create device for %pOF\n", __func__, np);
+> +		kfree(dev_name);
+> +		goto put_node;
+> +	}
 > +
-> +        required:
-> +          - compatible
-> +          - operating-points-v2
-> +          - clocks
-> +          - power-domains
+> +	dev = &pdev->dev;
+> +	pm_runtime_enable(dev);
+> +put_node:
+> +	of_node_put(np);
 > +
-> +        additionalProperties: false
-> +
->  required:
->    - compatible
->    - reg
-> @@ -59,6 +101,15 @@ examples:
->          reg =3D <0x60006000 0x1000>;
->          #clock-cells =3D <1>;
->          #reset-cells =3D <1>;
-> +
-> +        tegra-clocks {
-> +            sclk {
-> +                compatible =3D "nvidia,tegra20-sclk", "nvidia,tegra-cloc=
-k";
-> +                operating-points-v2 =3D <&opp_table>;
-> +                clocks =3D <&tegra_car TEGRA20_CLK_SCLK>;
-> +                power-domains =3D <&domain>;
-> +            };
-> +        };
+> +	return clk_register(dev, hw);
+> +}
 
-I wonder if it'd be better to match on the name of the node rather than
-add an artificial compatible string. We usually use the compatible
-string to match a device, but here you're really trying to add
-information about a resource provided by the CAR controller.
-
-We do similar things for example in PMIC bindings where the individual
-regulators are represented in the device tree via nodes named after the
-regulator.
-
-You could then also leave out the clocks property, which is weird as it
-is because it's basically a self-reference. But you don't really need
-the reference here in the first place because the CAR is already the
-parent of SCLK.
-
-Also, I don't think the tegra- prefix is necessary here. The parent node
-is already identified as Tegra via the compatible string.
-
-In the case of CAR, I'd imagine something like:
-
-	clocks {
-		sclk {
-			operating-points-v2 =3D <&opp_table>;
-			power-domains =3D <&domain>;
-		};
-	};
-
-Now you've only got the bare minimum in here that you actually add. All
-the other data that you used to have is simply derived from the parent.
+This looks wrong. Why do we need struct platform_device objects for each
+of these clocks? That's going to be a massive amount of platform devices
+and they will completely mess up sysfs.
 
 Thierry
 
->      };
-> =20
->      usb-controller@c5004000 {
-> --=20
-> 2.32.0
->=20
-
---rawOBESmF2Gu2Spy
+--GjgnhAguwPYREA1d
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEdEksACgkQ3SOs138+
-s6HP0Q/+La/49DtiMYKwipA8LeYUP5rVqDJT7F0fxC9HA4NLuzMTMUyDN3r1as5D
-5YPP2qMQ+ASzE9RWtl5MLh+yBAJ8z3xsw8lz9CE+VMPTDbbrYboz5emtaE6omzrq
-hnx7QwqMgbUGL9RPFyN9TVPE+Ku5e398ASVBNadBEIGQufI6xVe7sjs85rAjlVfY
-fpZOtuFoca7anBdWd2M7xUdIJFNQ1RBoCFcMN9xWN4I/ETvHnzcLThIWU9eyBu4/
-5ySzXXBtK3w5MVCXLR/48lTaNY2CqpXWprl3Sf7mcb69IuNLc8WHUQknh7ETAoVR
-F5GmeuXhQgJGxg4weOHxD0bUsy6rYfZIYSqF+oHnjNlmfaSfu/yv0H4jmDJL+WhC
-uYWkWHdT+OEgZPBm5LePnOAOvI1SEppNEy/gzib6QxafL+KioWQoUMQXQO14mbOs
-vIknf5KOVA5bhDsqBvd+PU9sI+f0EQodHIH0Ki2YGzIM/YSdRZi7oKsxB4AvHYPp
-MO0JpyJlh3BbeV/d54EXNR61RI+vxGUT2ae5W995GddFkKKwR6OyEIIJUAuZDtiM
-7naeRRPQgroHFFvzd1Z+sF+8pH3PN6qDwCfwksUKnBmMftuhXMSV2eyixURGvQaa
-oG3qz1liUA8vmPu8h4+JUeLh+VK23CdzQn9kXuKSDMe0L1ngDnc=
-=29ra
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEdFAYACgkQ3SOs138+
+s6HeRQ/+On1vzXNiDk0hs4KISsGV+2p4XxyJVq/mvJWq4nwbzB0fnbltpnQGekNK
+rv9LKvLwpMpikV4RHOysHn4hnusz+I3P/SOJVq8nB5ctz7QEcklxJNgaKIyY3Nri
+JD8EiV936HB8R2Ecg5fEynk0MHmJ4+Pe1pFjfK/3i6l1Xx5Xy+jt/AwHXkTAJG6B
+LilpaYxjeYK0xLVY0uy/3TWmSNj7zmA9NLYadLedHWKAIrmfdhL4qEn0keHZPjeN
+wTRUkexp/mHpfwaNRpUvHM2sF6WuetFM6FrIIAEyVB4SSq3usTLtWtFWl3qca2Vi
+f/LKNT+GlKsS7vs6/bokHE5CtOc1bbILItuJCunjCSnOgElWzJ+WV2oAdBodcDr9
+AaDHCtN1kTr/1f0KYw3zKQHErq1Z9sRrTeETjAkYSE6agOOHm+eBIkPF38mdl7ZN
+eI5syiX8NwgIHv4jp1YR6lbvplx9XhD9Se4EcrgNSytiYYWfZMDEyH3dFTzCjzyT
+E5pNO8BuA8JHJWCUYtqjl+OccK0XhnR99XyHvsb1HM+jT0EqRjLc59PJlOwQeX2f
+KwOX9DhOQf+ZyRegAHSh4uNpR2fySasbnBT7RwyG17MKbeoTEqTOTJ5QZmMXSqDa
+kNchGN8JwMPpyDcw6adERGyrLYh0tFLdrM+1JjImnnDrLx9SuRo=
+=yj83
 -----END PGP SIGNATURE-----
 
---rawOBESmF2Gu2Spy--
+--GjgnhAguwPYREA1d--
 
 
---===============3049871415578050606==
+--===============7084372607266262510==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -288,5 +202,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============3049871415578050606==--
+--===============7084372607266262510==--
 
