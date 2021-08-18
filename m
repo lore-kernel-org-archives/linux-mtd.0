@@ -2,92 +2,94 @@ Return-Path: <SRS0=f8pO=NJ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.2 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F1B7C4320A
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Aug 2021 05:22:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46527C4338F
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Aug 2021 05:59:49 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 65B3661051
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Aug 2021 05:22:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 65B3661051
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 1407061076
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Aug 2021 05:59:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1407061076
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=cbyCMh1uhlKXFe2kS0OxZD7gXBY7xQrNFMHnHgPSCbk=; b=m+lrGfxsGbH6NVXN5FehJObs70
-	jFRD8wTdbSRDeQrze5FJyJFUwtjwdv6WmWI3wbCspXDxKZvfwiNhI/b30qik0nkUSoKDIuKtnITuv
-	QPzuciZ4vvVerFsMtYGkBEsjN8Z6WA1VCYTkMiJI2ZrJ9DVdipKsB1oXWVAXjE+nKx/RAxBIthIHx
-	TehkqOm8Hqo0sO9iPuOmtd3QITtU+mQ9o1UScE2sdmbLscPdAOUIbuBCMSlMjti7Xxpne2R9cA43U
-	Vk79ozP/Irv/tcy91mPEDu1H+20JsEUfvphQ+MOcCmZ5Wdgu3ReKlF8nK6b5z+GUDWXubG3ByyY4g
-	dnwnpEjA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=akKkdlB7GxrWBlW92f7jLWTj1VxrY/OJi45DEw+lnuw=; b=kBICpKps+E7Y/0
+	6NivJKmCAekR/Z5Qze71oqfUp3Mntu31c6CIHn4Ekp0jLKYC2G+RJFgugupp7IryD4O14JHuXc4Dg
+	fZL/1T4ArttXDQJcFIKBOHowLOGWjlD9VtGX2mny8V/Sw7L0LUKoqPZ/JEkiTMj0hjoloe8e5VS6K
+	nrGoJPEu00QlV8de/BTzOdixW3Z8H7bQGWTF0I65BBxkUkWf4UpkVdJo52tKvHtr3LPPcmkAem6N4
+	fGDMpSr/zefvcCvkyl5D6t43cZHFqRd7nR3cbVn01/hYdjqmLUc7zCeIeRmvSPrssZ4mSQ81UNB9B
+	+jFSw16NRE+VBfPUW3cQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mGE1B-004EnI-Uw; Wed, 18 Aug 2021 05:21:38 +0000
-Received: from mail-lj1-x22f.google.com ([2a00:1450:4864:20::22f])
+	id 1mGEbK-004HdC-16; Wed, 18 Aug 2021 05:58:58 +0000
+Received: from mail-pj1-x1036.google.com ([2607:f8b0:4864:20::1036])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mGE18-004Ely-Dj
- for linux-mtd@lists.infradead.org; Wed, 18 Aug 2021 05:21:35 +0000
-Received: by mail-lj1-x22f.google.com with SMTP id y7so2842370ljp.3
- for <linux-mtd@lists.infradead.org>; Tue, 17 Aug 2021 22:21:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=yOpS1WKSzyXtmkcc56y1iDICg2EoTDsJHsY4fPaSb5w=;
- b=czCBETSSjNQa96HeR8S2cXF9WItzalDZ+Bims31/WwUHmduqBSoEIrz2EHd1Rplnvm
- FFwAvQOnG91Y+0pNG7gcjM8fuOK7PmDvtjcps1eXeHj5mFDM7T8Il2gc/dhcMiEnsq3U
- dYqtv8hjrv5XQwoHcnwTEBGrRK1459O7Zm+K8cjotiTE0HUOwS7EWfdq/k1AdFePe/7T
- qIjtoVkBbmE3Zl1qSkUzqZv9CvHixrI856MdhPDyYrJSZk10aF2YpSr+G4t557R0fLe2
- gENb/8qw1Cif5pMMEHqGyMJt9OlS6t5IEPg7dmTF9mJyzzfy4L6tBS3Gp6x5EtTq9Otk
- Id/w==
+ id 1mGEbE-004HbH-P1
+ for linux-mtd@lists.infradead.org; Wed, 18 Aug 2021 05:58:56 +0000
+Received: by mail-pj1-x1036.google.com with SMTP id
+ qe12-20020a17090b4f8c00b00179321cbae7so1626494pjb.2
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Aug 2021 22:58:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=/oqvyX1+fZTz+wtMw2AZVqGvrykbTQj8oIvIXJk4fnQ=;
+ b=BiNyX/6IYojCpnpyPGFzrgnh8ilV1S48JvAdE+mM4BuP7CRu2FKtWLmHb+6pMAnjSh
+ /wfP9QCG/Q2Ukj1ZByvNzYSCb76F2+QCOquffMB7/VgJzMfI6biDam1D93oJFOcKLxY5
+ r0ui6XTLNwvZZ2QgeJ+nHG0xrCIvTYYP76CrkUOXqGHCkZrCx8j9IwfpGrJOMhMeq8y0
+ k2mkEWBfMzJhbTlNZAz6IL2S8V/0dB0U3qYFm8ylkevVbHpEgfdJ2weIyvMA0dAHIkMr
+ BJ+3m2Wz3q/+kbkLCXBH7Ci4zKCVmfsRmjz+f2zh3gygpbMTckDnXDsC8v0GIrUYRu/5
+ PVGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=yOpS1WKSzyXtmkcc56y1iDICg2EoTDsJHsY4fPaSb5w=;
- b=jDmtB2dziess6L+C4gZK1GudCXaLUdBv24XEm2KUe+33vh18gZAxVICVTn89JCWWey
- 1Tu49Y0wBklXNHVLU7pYzrrR6M4Jtjxn3PIPcafsVASaferLW5bHr3R12MDGOLF8nKmM
- 9qbuLy6EqvT4TFfI4DO471+KxbjmtpKk7tlDIU0zhEHvF0xvK6rw03g1QsOrwr6MvgRG
- KzXhPewucncvMKB9zv44l/g9WEEYo0Zj6lZizN0hwVXsfbvz+1PT5D3DDEOm2OluBiYN
- OBwpOO1xhwNzz7gaVZXZWAQi1ykjSQBp3OroJlRyRa3kDQfeIoVpRi2w0lnojzZ0MEIl
- SRQA==
-X-Gm-Message-State: AOAM533erp5aYNdMtSPdGojw22y/bsagI1n8TFXKZNByGi7zIldnHtny
- wvdeEd9So8woKucq+tVSjhg=
-X-Google-Smtp-Source: ABdhPJz2ztpis7OKP5puANjPipNjZh3C0caocgaMorHlmoNO+0jB7HIjn/fYUFG6yGBcOjPS91/Jnw==
-X-Received: by 2002:a2e:8553:: with SMTP id u19mr1498129ljj.158.1629264092744; 
- Tue, 17 Aug 2021 22:21:32 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-85-91.dynamic.spd-mgts.ru.
- [46.138.85.91])
- by smtp.googlemail.com with ESMTPSA id d9sm487076ljq.54.2021.08.17.22.21.31
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 17 Aug 2021 22:21:32 -0700 (PDT)
-Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
-To: Viresh Kumar <viresh.kumar@linaro.org>
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=/oqvyX1+fZTz+wtMw2AZVqGvrykbTQj8oIvIXJk4fnQ=;
+ b=cxZrosWShw4toWYTXhDVjj/UWsCBj1boCRrj5ra9cWSpME/CgJ3HHW0+gucgiqm2WB
+ eNdU+6CVwFN3YUvMzxgFqkRt3FpPRqceNkG731n4PMSsNTg15LCjg+4wfZ2odXpUvO4+
+ 0+DKvGnWE9wbbv0nMhJBL8b1VtWjGOEx9YF5qU8LiBwPP6f24XYLTiFXsa+ug24sSGCU
+ fGZF4W3QhjoHOYCjwpBx3lTKkOlQ0/A2pta4EZkMy3Owbc8nDldhCWhWjyhwfF8sXEq+
+ njLWm+BLi1osEnhWAehvN5jTyUrU5hRqAeq8MLXJm/SyZcTLst+6lK8FizLzc9hg0r7C
+ oBlA==
+X-Gm-Message-State: AOAM533L9SSP3O3J+M2Y6FOd6VolRnaf44J0F5TEaT2piuovmruk7Ou0
+ nY9LRi5hFkcTn7599T49AA5ZkA==
+X-Google-Smtp-Source: ABdhPJxmfawJmjScyveR+qRjue44WOBbTuswMGRMZAcW5NbsgTVLKIK8N3zHMPdQxwr8K+gezRoAzQ==
+X-Received: by 2002:a17:90a:db89:: with SMTP id
+ h9mr7820049pjv.214.1629266331439; 
+ Tue, 17 Aug 2021 22:58:51 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+ by smtp.gmail.com with ESMTPSA id g14sm4668532pfr.31.2021.08.17.22.58.50
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 17 Aug 2021 22:58:51 -0700 (PDT)
+Date: Wed, 18 Aug 2021 11:28:49 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Dmitry Osipenko <digetx@gmail.com>
 Cc: Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, Ulf Hansson
- <ulf.hansson@linaro.org>, Viresh Kumar <vireshk@kernel.org>,
- Stephen Boyd <sboyd@kernel.org>, Peter De Schrijver
- <pdeschrijver@nvidia.com>, Mikko Perttunen <mperttunen@nvidia.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ Viresh Kumar <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+ Peter De Schrijver <pdeschrijver@nvidia.com>,
+ Mikko Perttunen <mperttunen@nvidia.com>,
  Peter Chen <peter.chen@kernel.org>, Mark Brown <broonie@kernel.org>,
  Lee Jones <lee.jones@linaro.org>,
- =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+ Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
  Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
  Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Lucas Stach <dev@lynxeye.de>,
- Stefan Agner <stefan@agner.ch>, Adrian Hunter <adrian.hunter@intel.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Rob Herring
- <robh+dt@kernel.org>, Michael Turquette <mturquette@baylibre.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>,
  linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
  linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
  linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
@@ -95,6 +97,8 @@ Cc: Thierry Reding <thierry.reding@gmail.com>,
  linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
  dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
  linux-clk@vger.kernel.org
+Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
+Message-ID: <20210818055849.ybfajzu75ecpdrbn@vireshk-i7>
 References: <20210817012754.8710-1-digetx@gmail.com>
  <20210817012754.8710-2-digetx@gmail.com>
  <20210817075515.vyyv7z37e6jcrhsl@vireshk-i7>
@@ -104,17 +108,14 @@ References: <20210817012754.8710-1-digetx@gmail.com>
  <20210818043131.7klajx6drvvkftoc@vireshk-i7>
  <a2a3c41f-c5e4-ee7e-7d48-03af8bac8863@gmail.com>
  <20210818045307.4brb6cafkh3adjth@vireshk-i7>
-From: Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
-Date: Wed, 18 Aug 2021 08:21:30 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210818045307.4brb6cafkh3adjth@vireshk-i7>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210817_222134_532489_A9C12581 
-X-CRM114-Status: GOOD (  21.26  )
+X-CRM114-CacheID: sfid-20210817_225852_847598_7BE2CC94 
+X-CRM114-Status: GOOD (  25.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -126,41 +127,62 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-MTguMDguMjAyMSAwNzo1MywgVmlyZXNoIEt1bWFyINC/0LjRiNC10YI6Cj4gT24gMTgtMDgtMjEs
-IDA3OjM3LCBEbWl0cnkgT3NpcGVua28gd3JvdGU6Cj4+IFRoaXMgd2lsbCBzZXQgdm9sdGFnZSBs
-ZXZlbCB3aXRob3V0IGhhdmluZyBhbiBhY3RpdmVseSB1c2VkIGhhcmR3YXJlLgo+PiBUYWtlIGEg
-M2QgZHJpdmVyIGZvciBleGFtcGxlLCBpZiB5b3Ugc2V0IHRoZSByYXRlIG9uIHByb2JlIGFuZAo+
-PiBycG0tcmVzdW1lIHdpbGwgbmV2ZXIgYmUgY2FsbGVkLCB0aGVuIHRoZSB2b2x0YWdlIHdpbGwg
-YmUgc2V0IGhpZ2gsCj4+IHdoaWxlIGhhcmR3YXJlIGlzIGtlcHQgc3VzcGVuZGVkIGlmIHVzZXJz
-cGFjZSB3aWxsIG5ldmVyIHdha2UgaXQgdXAgYnkKPj4gZXhlY3V0aW5nIGEgM2Qgam9iLgo+IAo+
-IFdoYXQgZXhhY3RseSBhcmUgd2UgbG9va2luZyB0byBhY2hpZXZlIHdpdGggdGhpcyBzdHVmZiA/
-IENhY2hlIHRoZQo+IGN1cnJlbnQgcGVyZm9ybWFuY2Ugc3RhdGUgd2l0aCBnZW5wZCAoYmFzZWQg
-b24gdGhlIHN0YXRlIGJvb3Rsb2FkZXIncwo+IGhhcyBzZXQpID8KClllcywgR0VOUEQgd2lsbCBj
-YWNoZSB0aGUgcGVyZiBzdGF0ZSBhY3Jvc3Mgc3VzcGVuZC9yZXN1bWUgYW5kIGluaXRpYWxseQpj
-YWNoZWQgdmFsdWUgaXMgb3V0IG9mIHN5bmMgd2l0aCBoL3cuCgo+IE9yIGFueXRoaW5nIGVsc2Ug
-YXMgd2VsbCA/CgpOb3RoaW5nIGVsc2UuIEJ1dCBsZXQgbWUgY2xhcmlmeSBpdCBhbGwgYWdhaW4u
-CgpJbml0aWFsbHkgdGhlIHBlcmZvcm1hbmNlIHN0YXRlIG9mIGFsbCBHRU5QRHMgaXMgMCBmb3Ig
-YWxsIGRldmljZXMuCgpUaGUgY2xvY2sgcmF0ZSBpcyBwcmVpbml0aWFsaXplZCBmb3IgYWxsIGRl
-dmljZXMgdG8gYSBzb21lIGRlZmF1bHQgcmF0ZQpieSBjbGsgZHJpdmVyLCBvciBieSBib290bG9h
-ZGVyIG9yIGJ5IGFzc2lnbmVkLWNsb2NrcyBpbiBEVC4KCldoZW4gZGV2aWNlIGlzIHJwbS1yZXN1
-bWVkLCB0aGUgcmVzdW1lIGNhbGxiYWNrIG9mIGEgZGV2aWNlIGRyaXZlcgplbmFibGVzIHRoZSBj
-bG9jay4KCkJlZm9yZSBjbG9jayBpcyBlbmFibGVkLCB0aGUgdm9sdGFnZSBuZWVkcyB0byBiZSBj
-b25maWd1cmVkIGluCmFjY29yZGFuY2UgdG8gdGhlIGNsayByYXRlLgoKU28gbm93IHdlIGhhdmUg
-YSBHRU5QRCB3aXRoIHBzdGF0ZT0wIG9uIGEgZmlyc3QgcnBtLXJlc3VtZSwgd2hpY2gKZG9lc24n
-dCBtYXRjaCB0aGUgaC93IGNvbmZpZ3VyYXRpb24uIENhbGxpbmcgZGV2X3BtX29wcF9zeW5jKCkg
-c2V0cyB0aGUKcHN0YXRlIGluIGFjY29yZGFuY2UgdG8gdGhlIGgvdyBjb25maWcuCgpJbiBhIHBy
-ZXZpb3VzIHY3IEkgcHJvcG9zZWQgdG8gcHJlc2V0IHRoZSBycG1fcHN0YXRlIG9mIEdFTlBEIChw
-ZXJmCmxldmVsIHRoYXQgaXMgcmVzdG9yZWQgYmVmb3JlIGRldmljZSBpcyBycG0tcmVzdW1lZCkg
-ZnJvbSBQRCdzCmF0dGFjaF9kZXYgY2FsbGJhY2ssIGJ1dCBVbGYgZGlkbid0IGxpa2UgdGhhdCBi
-ZWNhdXNlIGl0IHJlcXVpcmVzIHRvIHVzZQphbmQgbW9kaWZ5IEdFTlBEICdwcml2YXRlJyB2YXJp
-YWJsZXMgZnJvbSBhIFBEIGRyaXZlci4gV2UgZGVjaWRlZCB0aGF0CndpbGwgYmUgYmV0dGVyIHRv
-IG1ha2UgZGV2aWNlIGRyaXZlcnMgdG8gZXhwbGljaXRseSBzeW5jIHRoZSBwZXJmIHN0YXRlLAp3
-aGljaCBJIGltcGxlbWVudGVkIGluIHRoaXMgdjguCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
-ZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
-bXRkLwo=
+On 18-08-21, 08:21, Dmitry Osipenko wrote:
+> Yes, GENPD will cache the perf state across suspend/resume and initially
+> cached value is out of sync with h/w.
+> 
+> Nothing else. But let me clarify it all again.
+
+Thanks for your explanation.
+
+> Initially the performance state of all GENPDs is 0 for all devices.
+> 
+> The clock rate is preinitialized for all devices to a some default rate
+> by clk driver, or by bootloader or by assigned-clocks in DT.
+> 
+> When device is rpm-resumed, the resume callback of a device driver
+> enables the clock.
+> 
+> Before clock is enabled, the voltage needs to be configured in
+> accordance to the clk rate.
+> 
+> So now we have a GENPD with pstate=0 on a first rpm-resume, which
+> doesn't match the h/w configuration. Calling dev_pm_opp_sync() sets the
+> pstate in accordance to the h/w config.
+
+What about calling dev_pm_opp_set_rate(dev, clk_get_rate(dev)) here
+instead ? That will work, right ? The advantage is it works without
+any special routine to do so.
+
+I also wonder looking at your gr3d.c changes, you set a set-opp
+helper, but the driver doesn't call set_opp_rate at all. Who calls it
+?
+
+And if it is all about just syncing the genpd core, then can the genpd
+core do something like what clk framework does? i.e. allow a new
+optional genpd callback, get_performance_state() (just like
+set_performance_state()), which can be called initially by the core to
+get the performance to something other than zero. opp-set-rate is
+there to set the performance state and enable the stuff as well.
+That's why it looks incorrect in your case, where the function was
+only required to be called once, and you are ending up calling it on
+each resume. Limiting that with another local variable is bad as well.
+
+> In a previous v7 I proposed to preset the rpm_pstate of GENPD (perf
+> level that is restored before device is rpm-resumed) from PD's
+> attach_dev callback, but Ulf didn't like that because it requires to use
+> and modify GENPD 'private' variables from a PD driver. We decided that
+> will be better to make device drivers to explicitly sync the perf state,
+> which I implemented in this v8.
+
+-- 
+viresh
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
