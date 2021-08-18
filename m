@@ -2,19 +2,19 @@ Return-Path: <SRS0=f8pO=NJ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 871ACC4338F
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Aug 2021 08:31:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A415BC4338F
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Aug 2021 08:36:38 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4770B61042
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Aug 2021 08:31:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4770B61042
+	by mail.kernel.org (Postfix) with ESMTPS id 6A46260C3E
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Aug 2021 08:36:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6A46260C3E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,67 +23,58 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jN4+5QPfMIHP1ovdtb9t8/fESKRWfcaJNSfExv8jz5w=; b=43c/FPQljsYPqt
-	10lKPNnN2FMsUS5uBpu1QQ1iQeqditUChTKFHZfa4oK+GJCFoX3+pbVyYGDCbpqgHI3kTuPLCrD+X
-	wUiSOV+yYUKblMxIE+l/IlbR0KB0YgZiWBFHR7TrXOEIB4l4DqGC3r5Z+p0zVsTPzUQj6DHxS8qQW
-	RN/NudYcjrt/clm/20W5rtXPAG+UyLRkiCayG9ZXf1bLCgnHRHK409oIK3X7JcWVe5pYVTX8WLaVO
-	MYH8MJV54p5ak4Ne88Ah52itbyGv7AAoHF2gRNftGDDCxQuWHvyIKfcNegci2gnBt4k6f48JE1ytr
-	+LeXi+q/99azaVNUzWyw==;
+	List-Owner; bh=9u0aIE7OGTzIR4hqEF7SCleFNCPtjOenQGiOywokQsc=; b=gEn/YNarAb1TDb
+	G4sXJEvtYpMLNOrekKJQ/Ubc47NLuV5CWWddgnded39eqr7lwEw7qULeMSNjqY7oLMR53X6Xnjlbi
+	bY3nd7RXOggerlJKgwhlw7XF3PmEqd458xXm1DtKJjVMe5G1sV1Mvopd8k7DxHcByutW8X5DNPiMS
+	oX3oaHEZRiGKuY6atG6mKvEq2KVWZChfUKbkvHv50veShIsFN0p49lkyCSpu8EEl3nhjGFW4dhRRl
+	hOgwxSHq5aK0sb63zBwP+JQ/bqdATCHCMGMmWEOJH7T/jzfvzA3P66eiG9YTlPLV5I2AdSuBC89Z1
+	3QEKRanjW6y6Ajus1Amg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mGGxv-004esi-Oq; Wed, 18 Aug 2021 08:30:27 +0000
-Received: from mail-vs1-xe35.google.com ([2607:f8b0:4864:20::e35])
+	id 1mGH3D-004fQR-Je; Wed, 18 Aug 2021 08:35:55 +0000
+Received: from mail-vs1-xe31.google.com ([2607:f8b0:4864:20::e31])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mGGxm-004eri-Kv
- for linux-mtd@lists.infradead.org; Wed, 18 Aug 2021 08:30:22 +0000
-Received: by mail-vs1-xe35.google.com with SMTP id d16so1254887vsf.12
- for <linux-mtd@lists.infradead.org>; Wed, 18 Aug 2021 01:30:17 -0700 (PDT)
+ id 1mGH36-004fOU-Gl
+ for linux-mtd@lists.infradead.org; Wed, 18 Aug 2021 08:35:54 +0000
+Received: by mail-vs1-xe31.google.com with SMTP id i1so1273045vsk.8
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Aug 2021 01:35:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=IKqcflYMaSUyzwd/eHbHpOkvH7hAYsOOplnEzRxLbhU=;
- b=R/YglmSTFalwgblF0J7z+xo4QD/viWueOMjtEA3qajPeKluQA8KyZlPIazxZCmQcOV
- ypXroUN/dz8G8KIy2PndGeFR9trr2TXk1MLEpZYZHSdEPDIvmCIDK5BOf+7ryOnDMlAz
- KKZOIcOvNnsfQADPruS78lcAX/NT/qxMC6OewVDoFYGt5hY5K9huXDQ6tsxV07Sxs/Du
- uf/zCLpMusk1iMjpoom1MA3j5kIRz40ZYONDbw9Bk+/YXVmdr5o2bmiJpfJC1CERXXmo
- E0BgAf1avWcJ6cYGmW6zCxZHRihbaxeLgDmifTSo359uCk7uScIh0CC8oShYygGDo0u/
- CxTQ==
+ :cc; bh=xSrv+O3TCSW7cnAdJHoCzYxKAHMXFEbzmyCWpuUlKoA=;
+ b=RvY/jkXxbAxhbejbhMhOx5m5pFICa1DjcAOGeLJ7Wj4+NnrlQTP43TzpsRFep1JuC0
+ jjsEdR5Sfv4a46pjC5HeyNwlkFXs5ZoGbAdEHP8nbsLbwgDfxMA0VLsZ4sAxMJRV4mLW
+ dSespNFG/uvXR/ZW39JUOK9BLxf8mk1WID8zgZpuFGqAaQDzTQz38k7uJeJxmgAVAmpm
+ Z+x9YgOHPVn/vTMzWLFUUkw+FlGiQOiB5nzyvSzqnlo/nOvWO5fH93uQPcSphn3gJxjO
+ Ww6B2AEhe5tNZTMbYBxAuxTYbw1ul/ILTwXNwMEmv6K/9UW9Wx7QIc3Fi/3JmvUSGIAc
+ FWog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=IKqcflYMaSUyzwd/eHbHpOkvH7hAYsOOplnEzRxLbhU=;
- b=m6JS+PIOjKDekdoShqvPyx2amgAqXxUd3K3Ukgk8+HP7pEqMP1VcSTFJ4xIFnblABE
- eILVoXNC9nNrqlr18wR6CNA27RLj3LflicNM7CzWUoI/t0e1Q9dAkRACK0efCxVB7I98
- ZDCW1vZc35nx4MtalM+AUtr49vfDPpvTXltiQ2tL9aQn3mVX7wFCYnt5z6uy3Tg3NPxA
- YtK3nxuIYwDYD86osaXdbkdzQANxgumUQq4ljxyibiCXqvSLo3c4D4FMOrT7pFPS/PDN
- Q9Tl9lk0jNhbycS/b5DtyIgjjsB/61XWG4nKMDVbw5qBs5FW8mo/kxJhQeum8N23JeOz
- K/iQ==
-X-Gm-Message-State: AOAM533TC91ipWJ2e/Ei8oJ0SqFjAByTfh+XF/jMTZcE4oGzxpA4lZkn
- P1cd2WSsaDBO5Ab//vHJ8kjoINcRF9FC4TzwBXamRQ==
-X-Google-Smtp-Source: ABdhPJwKrtdwLrtqnGeoY6XyZUUGVixFdE7Mg0poY1hljrcpole6+hd3NjZWSpGJ4mjLJUHBolVYDumnC7t4U+ynnmc=
-X-Received: by 2002:a67:3212:: with SMTP id y18mr6323760vsy.19.1629275417181; 
- Wed, 18 Aug 2021 01:30:17 -0700 (PDT)
+ :message-id:subject:to:cc;
+ bh=xSrv+O3TCSW7cnAdJHoCzYxKAHMXFEbzmyCWpuUlKoA=;
+ b=RbdtpLtA5LXCbVEqjXDXWPxvAtmmE0OEGNUw/rSP5Nv2PcXoIp9OdKvYBWDVBNwvZ4
+ IIAipjzBPSa/3u9hiv1OsvgI+txfPdnsv6362zavX6GiOZDuuj7/i9GPN+1/EfoaQpz1
+ QmF1cT0KXP1Vuv2tRV4hlwzLbrZDgWBpWEsJFFO0YRu6Xq1UwSGNDxHpvwO2omxgXVv9
+ 8e0SLUHZ1SKG+lOOwTdqZktagtyWheuXvfF29L0fEPkkb9WQtZVnnS65C7aMaqizlqIo
+ yDwJqqFHN3UTxE/GWu97W3OkcWM7omma5EPnBsKhWTrcmBYbV/7VBWSM10O6a/5BEHjh
+ PVVA==
+X-Gm-Message-State: AOAM531gEx0XcZE/ctDZpx6RxHFxWhbnlgAJ89aIeLmB8zviqCcB7jdc
+ w48tTKOwpJazyrygY6bSGqYv9XRFyKuyf4axgBBv3w==
+X-Google-Smtp-Source: ABdhPJxfVbNmo+y9lVXwMUpwV89/qvFiwVR66AUipk2ir89qZuIeawGetBYzPol3o/SxK7XiQzvipAWUl+UAJR794SQ=
+X-Received: by 2002:a67:f6d8:: with SMTP id v24mr6490718vso.48.1629275747436; 
+ Wed, 18 Aug 2021 01:35:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210817075515.vyyv7z37e6jcrhsl@vireshk-i7>
- <710261d9-7ae3-5155-c0a2-f8aed2408d0b@gmail.com>
- <20210818035533.ieqkexltfvvf2p4n@vireshk-i7>
- <5b2a80c1-9743-e633-6257-ede94c8a274c@gmail.com>
- <20210818043131.7klajx6drvvkftoc@vireshk-i7>
- <a2a3c41f-c5e4-ee7e-7d48-03af8bac8863@gmail.com>
- <20210818045307.4brb6cafkh3adjth@vireshk-i7>
- <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
- <20210818055849.ybfajzu75ecpdrbn@vireshk-i7>
- <f1c76f23-086d-ef36-54ea-0511b0ebe0e1@gmail.com>
- <20210818062723.dqamssfkf7lf7cf7@vireshk-i7>
-In-Reply-To: <20210818062723.dqamssfkf7lf7cf7@vireshk-i7>
+References: <20210817012754.8710-1-digetx@gmail.com>
+ <20210817012754.8710-12-digetx@gmail.com>
+ <CAPDyKFrax-EYtO03W5QWM2tcWLWeMM8hHZCRYFcsenuiP2zObQ@mail.gmail.com>
+ <YRvBkyfFCqthBIBV@orome.fritz.box>
+In-Reply-To: <YRvBkyfFCqthBIBV@orome.fritz.box>
 From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Wed, 18 Aug 2021 10:29:40 +0200
-Message-ID: <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
-Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
-To: Viresh Kumar <viresh.kumar@linaro.org>, Dmitry Osipenko <digetx@gmail.com>
-Cc: Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, 
+Date: Wed, 18 Aug 2021 10:35:11 +0200
+Message-ID: <CAPDyKFp+9Bv3EVSnV683ixNXzukJtmG_QrS5C1ZQqLxv9QJ-bQ@mail.gmail.com>
+Subject: Re: [PATCH v8 11/34] gpu: host1x: Add runtime PM and OPP support
+To: Thierry Reding <thierry.reding@gmail.com>
+Cc: Dmitry Osipenko <digetx@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>,
  Viresh Kumar <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>, 
  Peter De Schrijver <pdeschrijver@nvidia.com>,
  Mikko Perttunen <mperttunen@nvidia.com>, 
@@ -106,8 +97,8 @@ Cc: Thierry Reding <thierry.reding@gmail.com>,
  dri-devel <dri-devel@lists.freedesktop.org>, 
  DTML <devicetree@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210818_013018_740779_10F5CDA6 
-X-CRM114-Status: GOOD (  30.49  )
+X-CRM114-CacheID: sfid-20210818_013548_640716_86623727 
+X-CRM114-Status: GOOD (  42.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -119,53 +110,149 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkLCAxOCBBdWcgMjAyMSBhdCAwODoyNywgVmlyZXNoIEt1bWFyIDx2aXJlc2gua3VtYXJA
-bGluYXJvLm9yZz4gd3JvdGU6Cj4KPiBPbiAxOC0wOC0yMSwgMDk6MjIsIERtaXRyeSBPc2lwZW5r
-byB3cm90ZToKPiA+IDE4LjA4LjIwMjEgMDg6NTgsIFZpcmVzaCBLdW1hciDQv9C40YjQtdGCOgo+
-ID4gPiBXaGF0IGFib3V0IGNhbGxpbmcgZGV2X3BtX29wcF9zZXRfcmF0ZShkZXYsIGNsa19nZXRf
-cmF0ZShkZXYpKSBoZXJlCj4gPiA+IGluc3RlYWQgPyBUaGF0IHdpbGwgd29yaywgcmlnaHQgPyBU
-aGUgYWR2YW50YWdlIGlzIGl0IHdvcmtzIHdpdGhvdXQKPiA+ID4gYW55IHNwZWNpYWwgcm91dGlu
-ZSB0byBkbyBzby4KPiA+Cj4gPiBJdCB3aWxsIHdvcmssIGJ1dCBhIGRlZGljYXRlZCBoZWxwZXIg
-aXMgbmljZXIuCj4gPgo+ID4gPiBJIGFsc28gd29uZGVyIGxvb2tpbmcgYXQgeW91ciBncjNkLmMg
-Y2hhbmdlcywgeW91IHNldCBhIHNldC1vcHAKPiA+ID4gaGVscGVyLCBidXQgdGhlIGRyaXZlciBk
-b2Vzbid0IGNhbGwgc2V0X29wcF9yYXRlIGF0IGFsbC4gV2hvIGNhbGxzIGl0Cj4gPiA+ID8KPiA+
-Cj4gPiBkZXZfcG1fb3BwX3N5bmMoKSBjYWxscyBpdCBmcm9tIF9zZXRfb3BwKCkuCj4KPiBPa2F5
-LCBwbGVhc2UgdXNlIGRldl9wbV9vcHBfc2V0X3JhdGUoKSBpbnN0ZWFkIHRoZW4uIE5ldyBoZWxw
-ZXIganVzdAo+IGFkZHMgdG8gdGhlIGNvbmZ1c2lvbiBhbmQgaXNuJ3QgZG9pbmcgYW55dGhpbmcg
-c3BlY2lhbCBhcGFydCBmcm9tCj4gZG9pbmcgY2xrX2dldF9yYXRlKCkgZm9yIHlvdS4KPgo+ID4g
-PiBBbmQgaWYgaXQgaXMgYWxsIGFib3V0IGp1c3Qgc3luY2luZyB0aGUgZ2VucGQgY29yZSwgdGhl
-biBjYW4gdGhlIGdlbnBkCj4gPiA+IGNvcmUgZG8gc29tZXRoaW5nIGxpa2Ugd2hhdCBjbGsgZnJh
-bWV3b3JrIGRvZXM/IGkuZS4gYWxsb3cgYSBuZXcKPiA+ID4gb3B0aW9uYWwgZ2VucGQgY2FsbGJh
-Y2ssIGdldF9wZXJmb3JtYW5jZV9zdGF0ZSgpIChqdXN0IGxpa2UKPiA+ID4gc2V0X3BlcmZvcm1h
-bmNlX3N0YXRlKCkpLCB3aGljaCBjYW4gYmUgY2FsbGVkIGluaXRpYWxseSBieSB0aGUgY29yZSB0
-bwo+ID4gPiBnZXQgdGhlIHBlcmZvcm1hbmNlIHRvIHNvbWV0aGluZyBvdGhlciB0aGFuIHplcm8u
-IG9wcC1zZXQtcmF0ZSBpcwo+ID4gPiB0aGVyZSB0byBzZXQgdGhlIHBlcmZvcm1hbmNlIHN0YXRl
-IGFuZCBlbmFibGUgdGhlIHN0dWZmIGFzIHdlbGwuCj4gPiA+IFRoYXQncyB3aHkgaXQgbG9va3Mg
-aW5jb3JyZWN0IGluIHlvdXIgY2FzZSwgd2hlcmUgdGhlIGZ1bmN0aW9uIHdhcwo+ID4gPiBvbmx5
-IHJlcXVpcmVkIHRvIGJlIGNhbGxlZCBvbmNlLCBhbmQgeW91IGFyZSBlbmRpbmcgdXAgY2FsbGlu
-ZyBpdCBvbgo+ID4gPiBlYWNoIHJlc3VtZS4gTGltaXRpbmcgdGhhdCB3aXRoIGFub3RoZXIgbG9j
-YWwgdmFyaWFibGUgaXMgYmFkIGFzIHdlbGwuCj4gPgo+ID4gV2UgZGlzY3Vzc2VkIHZhcmlhbnQg
-d2l0aCBnZXRfcGVyZm9ybWFuY2Vfc3RhdGUoKSBwcmV2aW91c2x5IGFuZCBVbGYKPiA+IGRpZG4n
-dCBsaWtlIGl0IGVpdGhlciBzaW5jZSBpdCBzdGlsbCByZXF1aXJlcyB0byB0b3VjaCAnaW50ZXJu
-YWxzJyBvZiBHRU5QRC4KPgo+IEhtbSwgSSB3b25kZXIgaWYgdGhhdCB3b3VsZCBiZSBhIHByb2Js
-ZW0gc2luY2Ugb25seSBnZW5wZCBjb3JlIGlzCj4gZ29pbmcgdG8gY2FsbCB0aGF0IHJvdXRpbmUg
-YW55d2F5LgoKTWUgYW5kIERtaXRyeSBkaXNjdXNzZWQgYWRkaW5nIGEgbmV3IGdlbnBkIGNhbGxi
-YWNrIGZvciB0aGlzLiBJIGFncmVlZAp0aGF0IGl0IHNlZW1zIGxpa2UgYSByZWFzb25hYmxlIHRo
-aW5nIHRvIGFkZCwgaWYgaGUgaW5zaXN0cy4KClRoZSBpbnRlbnQgd2FzIHRvIGludm9rZSB0aGUg
-bmV3IGNhbGxiYWNrIGZyb20gX19nZW5wZF9kZXZfcG1fYXR0YWNoKCkKd2hlbiB0aGUgZGV2aWNl
-IGhhcyBiZWVuIGF0dGFjaGVkIHRvIGl0cyBnZW5wZC4gVGhpcyBhbGxvd3MgdGhlCmNhbGxiYWNr
-LCB0byBpbnZva2UgY2xrX2dldF9yYXRlKCkgYW5kIHRoZW4gZGV2X3BtX29wcF9zZXRfcmF0ZSgp
-LCB0bwp1cGRhdGUgdGhlIHZvdGUgYWNjb3JkaW5nIHRvIHRoZSBjdXJyZW50IHN0YXRlIG9mIHRo
-ZSBIVy4KCkkgYW0gbm90IHN1cmUgaWYvd2h5IHRoYXQgYXBwcm9hY2ggc2VlbWVkIGluc3VmZmlj
-aWVudD8KCkFub3RoZXIgb3B0aW9uIHRvIHNvbHZlIHRoZSBwcm9ibGVtLCBJIHRoaW5rLCBpcyBz
-aW1wbHkgdG8gcGF0Y2gKZHJpdmVycyB0byBsZXQgdGhlbSBjYWxsIGRldl9wbV9vcHBfc2V0X3Jh
-dGUoKSBkdXJpbmcgLT5wcm9iZSgpLCB0aGlzCnNob3VsZCBzeW5jaHJvbml6ZSB0aGUgSFcgc3Rh
-dGUgdG9vLgoKRG1pdHJ5LCBjYW4geW91IHBsZWFzZSBlbGFib3JhdGUgb24gdGhpcz8KCktpbmQg
-cmVnYXJkcwpVZmZlCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0
-cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Tue, 17 Aug 2021 at 16:03, Thierry Reding <thierry.reding@gmail.com> wrote:
+>
+> On Tue, Aug 17, 2021 at 02:04:38PM +0200, Ulf Hansson wrote:
+> > On Tue, 17 Aug 2021 at 03:30, Dmitry Osipenko <digetx@gmail.com> wrote:
+> > >
+> > > Add runtime PM and OPP support to the Host1x driver. It's required for
+> > > enabling system-wide DVFS and supporting dynamic power management using
+> > > a generic power domain. For the starter we will keep host1x always-on
+> > > because dynamic power management require a major refactoring of the driver
+> > > code since lot's of code paths will need the RPM handling and we're going
+> > > to remove some of these paths in the future. Host1x doesn't consume much
+> > > power so it is good enough, we at least need to resume Host1x in order
+> > > to initialize the power state.
+> > >
+> > > Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+> > > Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
+> > > Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
+> > > Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
+> > > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> > > ---
+> >
+> > [...]
+> >
+> > > +
+> > >  static int host1x_probe(struct platform_device *pdev)
+> > >  {
+> > >         struct host1x *host;
+> > > @@ -394,6 +423,10 @@ static int host1x_probe(struct platform_device *pdev)
+> > >         /* set common host1x device data */
+> > >         platform_set_drvdata(pdev, host);
+> > >
+> > > +       err = devm_tegra_core_dev_init_opp_table_simple(&pdev->dev);
+> > > +       if (err)
+> > > +               return err;
+> > > +
+> > >         host->regs = devm_ioremap_resource(&pdev->dev, regs);
+> > >         if (IS_ERR(host->regs))
+> > >                 return PTR_ERR(host->regs);
+> > > @@ -423,12 +456,9 @@ static int host1x_probe(struct platform_device *pdev)
+> > >                 return err;
+> > >         }
+> > >
+> > > -       host->rst = devm_reset_control_get(&pdev->dev, "host1x");
+> > > -       if (IS_ERR(host->rst)) {
+> > > -               err = PTR_ERR(host->rst);
+> > > -               dev_err(&pdev->dev, "failed to get reset: %d\n", err);
+> > > +       err = host1x_get_resets(host);
+> > > +       if (err)
+> > >                 return err;
+> > > -       }
+> > >
+> > >         err = host1x_iommu_init(host);
+> > >         if (err < 0) {
+> > > @@ -443,22 +473,10 @@ static int host1x_probe(struct platform_device *pdev)
+> > >                 goto iommu_exit;
+> > >         }
+> > >
+> > > -       err = clk_prepare_enable(host->clk);
+> > > -       if (err < 0) {
+> > > -               dev_err(&pdev->dev, "failed to enable clock\n");
+> > > -               goto free_channels;
+> > > -       }
+> > > -
+> > > -       err = reset_control_deassert(host->rst);
+> > > -       if (err < 0) {
+> > > -               dev_err(&pdev->dev, "failed to deassert reset: %d\n", err);
+> > > -               goto unprepare_disable;
+> > > -       }
+> > > -
+> >
+> > Removing the clk_prepare_enable() and reset_control_deassert() from
+> > host1x_probe(), might not be a good idea. See more about why, below.
+> >
+> > >         err = host1x_syncpt_init(host);
+> > >         if (err) {
+> > >                 dev_err(&pdev->dev, "failed to initialize syncpts\n");
+> > > -               goto reset_assert;
+> > > +               goto free_channels;
+> > >         }
+> > >
+> > >         err = host1x_intr_init(host, syncpt_irq);
+> > > @@ -467,10 +485,14 @@ static int host1x_probe(struct platform_device *pdev)
+> > >                 goto deinit_syncpt;
+> > >         }
+> > >
+> > > -       host1x_debug_init(host);
+> > > +       pm_runtime_enable(&pdev->dev);
+> > >
+> > > -       if (host->info->has_hypervisor)
+> > > -               host1x_setup_sid_table(host);
+> > > +       /* the driver's code isn't ready yet for the dynamic RPM */
+> > > +       err = pm_runtime_resume_and_get(&pdev->dev);
+> >
+> > If the driver is being built with the CONFIG_PM Kconfig option being
+> > unset, pm_runtime_resume_and_get() will return 0 to indicate success -
+> > and without calling the ->runtime_resume() callback.
+> > In other words, the clock will remain gated and the reset will not be
+> > deasserted, likely causing the driver to be malfunctioning.
+> >
+> > If the driver isn't ever being built with CONFIG_PM unset, feel free
+> > to ignore my above comments.
+> >
+> > Otherwise, if it needs to work both with and without CONFIG_PM being
+> > set, you may use the following pattern in host1x_probe() to deploy
+> > runtime PM support:
+> >
+> > "Enable the needed resources to probe the device"
+> > pm_runtime_get_noresume()
+> > pm_runtime_set_active()
+> > pm_runtime_enable()
+> >
+> > "Before successfully completing probe"
+> > pm_runtime_put()
+>
+> We made a conscious decision a few years ago to have ARCH_TEGRA select
+> PM on both 32-bit and 64-bit ARM, specifically to avoid the need to do
+> this dance (though there are still a few drivers left that do this, I
+> think).
+>
+> So I think this should be unnecessary. Unless perhaps if the sysfs PM
+> controls have any influence on this. As far as I know, as long as the
+> PM kconfig option is enabled, the sysfs control only influence the
+> runtime behaviour (i.e. setting the sysfs PM control to "on" is going
+> to force runtime PM to be resumed) but there's no way to disable
+> runtime PM altogether via sysfs that would make the above necessary.
+
+Thanks for clarifying! As I said, feel free to ignore my comments then.
+
+For this and the other patches in the series, I assume you only need
+to care about whether the driver is a cross SoC driver and used on
+other platforms than Tegra then.
+
+>
+> Thierry
+
+Kind regards
+Uffe
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
