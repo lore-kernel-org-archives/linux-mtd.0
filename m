@@ -2,108 +2,114 @@ Return-Path: <SRS0=f8pO=NJ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-4.2 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EDD4C4320E
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Aug 2021 14:07:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54BF1C4338F
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Aug 2021 15:05:14 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DE611610C9
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Aug 2021 14:07:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DE611610C9
+	by mail.kernel.org (Postfix) with ESMTPS id 10D82604D7
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Aug 2021 15:05:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 10D82604D7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=xDC1TveuKcb7APN+g6EJh8iHmxh1ov1ah/Bt0Ddexes=; b=fnKHVrSY6eDNy37N9KT6q9U92/
-	rb4vV6F9GaSkE/5lOq2jw2Qm4HxhZfY3SYsrXobnKFv3LYPWvaeJpw2NMsF8h04MYo9lKaBMYv3ZQ
-	JzN7b7gijYhatf0UBLIVjZ3/X5A5haStYN3Na6XijM8yzXPyhY9DOsn1XxGYNxKYF/fwUZ/GMmLxS
-	27y5xuQuTLTy6/ejqfvbRMXEecmAQAJRIcbGYs/okF4gQ+CBdU03JHxWtEUmR8eUG3oKnPYOPA4RD
-	LRgOiykMnNyMkdhyNIm8XdOTkJjkkeUfrBVUtuMgRKsduMYr0IyMTmHh0FMld52VhvcO4QBxhArJ0
-	WYzNIVAw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=w+O2bU9t5vVOPh2obMdSVr+AM9OwIzJsw5ORPOeVOIw=; b=BoUQH9NLEJc1OiLXhe9g5/sRoP
+	OpBsWXXzDLkRzVP7cTztizn2Zb52cVDZIhLyFDrPbRwqpHZMcGsv27ENMHtIl+Pm6zLGkA86uD6YD
+	xWXBbBEFxv6A0pjPbdhFKOf4TYWPKOnnaN2RZCsES8cKcZ4Ta+pKU1sYUuTyHkbcNelkFoqPcQcTh
+	x2fkHpdNKLyv92PFv4rDvbyqa6+eszaRuJ3KYbY1ACdJUrWnqstvFqzEpL3wfD5og0k/rK+DuqaRp
+	dMRTxpWp62BWTSKtpKoiiF+2PQUNpRqJZx6iW1VvJruE6EfzL5YPsxd/qcPFI1UT1fvOT51usghRp
+	ekaYVpVg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mGMDm-005oZ7-Rc; Wed, 18 Aug 2021 14:07:10 +0000
-Received: from mail-wr1-x42b.google.com ([2a00:1450:4864:20::42b])
+	id 1mGN7D-005yiN-Mj; Wed, 18 Aug 2021 15:04:27 +0000
+Received: from mail-lj1-x234.google.com ([2a00:1450:4864:20::234])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mGMDj-005oWq-BD
- for linux-mtd@lists.infradead.org; Wed, 18 Aug 2021 14:07:09 +0000
-Received: by mail-wr1-x42b.google.com with SMTP id x10so3720783wrt.8
- for <linux-mtd@lists.infradead.org>; Wed, 18 Aug 2021 07:07:05 -0700 (PDT)
+ id 1mGN79-005ygH-WC
+ for linux-mtd@lists.infradead.org; Wed, 18 Aug 2021 15:04:26 +0000
+Received: by mail-lj1-x234.google.com with SMTP id c12so5685440ljr.5
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Aug 2021 08:04:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=i6nHV4Vzm5Umu6SJhmhoU8e3Ow8sOCfq6m4vf5vpOCg=;
- b=ZJdtuwUuQvNaAbdr9Fz2fAvktw5J/+5+vjt8im/pkRZqyKjHlmqluk+dpJgPv/GFEk
- rs7jlCk5NOlSnehipLU0nyzn/A/7FZS7QQCaIl7MSF6vAha+BX6LZBrQQREaflmjEitO
- dlEahiAy8zC6MjFccmUrLBYvfs88a8jl/uHALh0tSc5Nn+N5OqlxOYEPLAvMwQAyowns
- Ndkxrox4afb9mQcpEWWL0GiCRmTwzTOHCYxL6M4H8oWTYs7RmlUoqU0WistPX7vqT8pO
- 6Su4Nkctsrk6dlh0F8i2tqudBygnvEpqj+ChJ3xGjixCFrJ6bgmI3P/HGSPs7QQyovGr
- 4V5w==
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=Xr9jfom6cWdr34E1fd8HPE7h7ktRyhvZRNFf4lj4jAQ=;
+ b=d7vWQtfYNwjvKTlX+D7cGmxzglW4/UcbCP3k883yPwOnxzLjUO0MPLUtr+mkpWt1Oi
+ P6esNY3xCKInvn9sKG4XBfONscW0AIoeu5bJLV5ZTKWBGLAhdZ64HG8UcVIz6r2nfQQl
+ Yrxf+zPusVZGvFkC4QytKocyFHnvXnTinlNufGur7yB83siMoPE+NlIFcdErvMFOvaRm
+ djF5sqCwTodRZH48kqlk0WysuoONIiF9oO3KYSPg+WVHw6iqzbFtFUS7q02t5k20ekd+
+ 45EsBKWTuCNLNfcORCVLawHr8Q3kMXd1Bq4Pg8JARvc5KVV1TVghp79Rl7Nr3fufWiW5
+ iqfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=i6nHV4Vzm5Umu6SJhmhoU8e3Ow8sOCfq6m4vf5vpOCg=;
- b=Jc/f2S+TRJVY/nxOZuijHeVt4fPHduli6WXU6JBcDWeZd4ttM7TplPnMSxB0jLqRqk
- ElKkbZuFzMZ5jes+h87XtB1vIcLVgcQJzYSG0y8yfY9Lj0LmAxEQeBhtvbCvExG2kVn3
- 3sPVJO8ORClDm8lZqQL6u62fFZscovms+iZjEwGcv7sbaj6/ZyuYJrRDQq+QJL3vKo0l
- D1peURT5P71fgpsbYw9c5inoV/Ptk9KZNTvy0tCoMng+AnKeOHh+qhLQBGzsLpyLUv/V
- ZvY9tYiw+qr0qD/OFMothkTzqzpdoIxua9PRG9b2yK8GqOMVKNfNiCk7GhmH+0Ph7ObD
- 3H5w==
-X-Gm-Message-State: AOAM5300gucdabvkeHecIeugI3ARfXZ/I+LQnfwM5RUzE984NVqQZoGg
- 93Gfq7+GQB42igIhz5LKbPo=
-X-Google-Smtp-Source: ABdhPJyXq9/0R+WfXjdNLNbDmiuZklvSlQEBjFaDDAdAwgPSc6Y2VNRCrYkje8+AywzsdZxW8DAWow==
-X-Received: by 2002:a5d:500a:: with SMTP id e10mr11157882wrt.332.1629295624742; 
- Wed, 18 Aug 2021 07:07:04 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
- by smtp.gmail.com with ESMTPSA id e2sm6158851wrq.56.2021.08.18.07.07.03
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 18 Aug 2021 07:07:03 -0700 (PDT)
-Date: Wed, 18 Aug 2021 16:07:02 +0200
-From: Thierry Reding <thierry.reding@gmail.com>
-To: Dmitry Osipenko <digetx@gmail.com>
-Cc: Jonathan Hunter <jonathanh@nvidia.com>,
- Ulf Hansson <ulf.hansson@linaro.org>,
- Viresh Kumar <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
- Peter De Schrijver <pdeschrijver@nvidia.com>,
- Mikko Perttunen <mperttunen@nvidia.com>,
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=Xr9jfom6cWdr34E1fd8HPE7h7ktRyhvZRNFf4lj4jAQ=;
+ b=glWlQ1PyBxKDdXhQV5LoN3BPN4FQvxwpNBw5R9Q3yMBh4Jt4UpYK24XCEx9McnAuZI
+ 1rEvo4ux4frq3D1/oD8YZwj7lmZe8wQi9bF33LNZWPZ2nqXa+NuBO3/6euAB2nwuBTrJ
+ dmht8I5XuzxYZ2Au93LeRGLY10ck4K9nuOog6t5y4Kh/2EU5OMC+dv8KYaaGfN4yKRhG
+ gtPIDlcwh8xupUvGVXcmqPaStDBr6hmsCnYbKdsX9wqlx2QnnyocLaWskQfyxysg4QGz
+ 9YmS06+4DlObbF1D6wA6jwJYe8r6hscxKBybwRPYCCgB/RD+kcj4U7/7KziYLz2L/+R+
+ hOEA==
+X-Gm-Message-State: AOAM532z7/G43J9lvObOkFkDvP2rbJIoGzO13yMYr1mvN88ZMpv+fu9F
+ x1Qd0tsxeIhe4qu9Sr4N/NY=
+X-Google-Smtp-Source: ABdhPJyyQVKytu447MFJPeps/ZgloBzDSSZ92Nm3+pCI6+S9Y81A/uwqWMGjetCbs6/mNtqN/r95BQ==
+X-Received: by 2002:a2e:99da:: with SMTP id l26mr8197284ljj.339.1629299059349; 
+ Wed, 18 Aug 2021 08:04:19 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-85-91.dynamic.spd-mgts.ru.
+ [46.138.85.91])
+ by smtp.googlemail.com with ESMTPSA id q5sm517822lfb.78.2021.08.18.08.04.17
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 18 Aug 2021 08:04:18 -0700 (PDT)
+Subject: Re: [PATCH v8 06/34] dt-bindings: clock: tegra-car: Document new
+ tegra-clocks sub-node
+To: Thierry Reding <thierry.reding@gmail.com>
+Cc: Rob Herring <robh@kernel.org>, Jonathan Hunter <jonathanh@nvidia.com>,
+ Ulf Hansson <ulf.hansson@linaro.org>, Viresh Kumar <vireshk@kernel.org>,
+ Stephen Boyd <sboyd@kernel.org>, Peter De Schrijver
+ <pdeschrijver@nvidia.com>, Mikko Perttunen <mperttunen@nvidia.com>,
  Peter Chen <peter.chen@kernel.org>, Mark Brown <broonie@kernel.org>,
  Lee Jones <lee.jones@linaro.org>,
- Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
  Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
  Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
- Adrian Hunter <adrian.hunter@intel.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Lucas Stach <dev@lynxeye.de>,
+ Stefan Agner <stefan@agner.ch>, Adrian Hunter <adrian.hunter@intel.com>,
  Mauro Carvalho Chehab <mchehab@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>,
- linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
- linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
- linux-clk@vger.kernel.org
-Subject: Re: [PATCH v8 07/34] clk: tegra: Support runtime PM and power domain
-Message-ID: <YR0UBi/ejy+oF4Hm@orome.fritz.box>
+ Michael Turquette <mturquette@baylibre.com>, linux-kernel@vger.kernel.org,
+ linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-usb@vger.kernel.org, linux-staging@lists.linux.dev,
+ linux-spi@vger.kernel.org, linux-pwm@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-mmc@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ devicetree@vger.kernel.org, linux-clk@vger.kernel.org
 References: <20210817012754.8710-1-digetx@gmail.com>
- <20210817012754.8710-8-digetx@gmail.com>
+ <20210817012754.8710-7-digetx@gmail.com>
+ <YRxfGtWPXeSQXuHo@robh.at.kernel.org>
+ <06128217-92e1-9b66-64ea-91855d041121@gmail.com>
+ <YR0QrFGZs6iQv1N3@orome.fritz.box>
+From: Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <659df86d-4fa1-b541-3d0d-8a1622fe7068@gmail.com>
+Date: Wed, 18 Aug 2021 18:04:17 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210817012754.8710-8-digetx@gmail.com>
-User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
+In-Reply-To: <YR0QrFGZs6iQv1N3@orome.fritz.box>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210818_070707_420959_912DAECB 
-X-CRM114-Status: GOOD (  16.27  )
+X-CRM114-CacheID: sfid-20210818_080424_065026_B50A2BA2 
+X-CRM114-Status: GOOD (  20.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -115,92 +121,49 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7084372607266262510=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
---===============7084372607266262510==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="GjgnhAguwPYREA1d"
-Content-Disposition: inline
-
-
---GjgnhAguwPYREA1d
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Aug 17, 2021 at 04:27:27AM +0300, Dmitry Osipenko wrote:
-[...]
-> +struct clk *tegra_clk_register(struct clk_hw *hw)
-> +{
-> +	struct platform_device *pdev;
-> +	struct device *dev = NULL;
-> +	struct device_node *np;
-> +	const char *dev_name;
-> +
-> +	np = tegra_clk_get_of_node(hw);
-> +
-> +	if (!of_device_is_available(np))
-> +		goto put_node;
-> +
-> +	dev_name = kasprintf(GFP_KERNEL, "tegra_clk_%s", hw->init->name);
-> +	if (!dev_name)
-> +		goto put_node;
-> +
-> +	pdev = of_platform_device_create(np, dev_name, NULL);
-> +	if (!pdev) {
-> +		pr_err("%s: failed to create device for %pOF\n", __func__, np);
-> +		kfree(dev_name);
-> +		goto put_node;
-> +	}
-> +
-> +	dev = &pdev->dev;
-> +	pm_runtime_enable(dev);
-> +put_node:
-> +	of_node_put(np);
-> +
-> +	return clk_register(dev, hw);
-> +}
-
-This looks wrong. Why do we need struct platform_device objects for each
-of these clocks? That's going to be a massive amount of platform devices
-and they will completely mess up sysfs.
-
-Thierry
-
---GjgnhAguwPYREA1d
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEdFAYACgkQ3SOs138+
-s6HeRQ/+On1vzXNiDk0hs4KISsGV+2p4XxyJVq/mvJWq4nwbzB0fnbltpnQGekNK
-rv9LKvLwpMpikV4RHOysHn4hnusz+I3P/SOJVq8nB5ctz7QEcklxJNgaKIyY3Nri
-JD8EiV936HB8R2Ecg5fEynk0MHmJ4+Pe1pFjfK/3i6l1Xx5Xy+jt/AwHXkTAJG6B
-LilpaYxjeYK0xLVY0uy/3TWmSNj7zmA9NLYadLedHWKAIrmfdhL4qEn0keHZPjeN
-wTRUkexp/mHpfwaNRpUvHM2sF6WuetFM6FrIIAEyVB4SSq3usTLtWtFWl3qca2Vi
-f/LKNT+GlKsS7vs6/bokHE5CtOc1bbILItuJCunjCSnOgElWzJ+WV2oAdBodcDr9
-AaDHCtN1kTr/1f0KYw3zKQHErq1Z9sRrTeETjAkYSE6agOOHm+eBIkPF38mdl7ZN
-eI5syiX8NwgIHv4jp1YR6lbvplx9XhD9Se4EcrgNSytiYYWfZMDEyH3dFTzCjzyT
-E5pNO8BuA8JHJWCUYtqjl+OccK0XhnR99XyHvsb1HM+jT0EqRjLc59PJlOwQeX2f
-KwOX9DhOQf+ZyRegAHSh4uNpR2fySasbnBT7RwyG17MKbeoTEqTOTJ5QZmMXSqDa
-kNchGN8JwMPpyDcw6adERGyrLYh0tFLdrM+1JjImnnDrLx9SuRo=
-=yj83
------END PGP SIGNATURE-----
-
---GjgnhAguwPYREA1d--
-
-
---===============7084372607266262510==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============7084372607266262510==--
-
+MTguMDguMjAyMSAxNjo1MiwgVGhpZXJyeSBSZWRpbmcg0L/QuNGI0LXRgjoKPiBPbiBXZWQsIEF1
+ZyAxOCwgMjAyMSBhdCAwNDo0NDozMEFNICswMzAwLCBEbWl0cnkgT3NpcGVua28gd3JvdGU6Cj4+
+IDE4LjA4LjIwMjEgMDQ6MTUsIFJvYiBIZXJyaW5nINC/0LjRiNC10YI6Cj4+Pj4gKyAgdGVncmEt
+Y2xvY2tzOgo+Pj4+ICsgICAgZGVzY3JpcHRpb246IGNoaWxkIG5vZGVzIGFyZSB0aGUgb3V0cHV0
+IGNsb2NrcyBmcm9tIHRoZSBDQVIKPj4+PiArICAgIHR5cGU6IG9iamVjdAo+Pj4+ICsKPj4+PiAr
+ICAgIHBhdHRlcm5Qcm9wZXJ0aWVzOgo+Pj4+ICsgICAgICAiXlthLXpdK1swLTldKyQiOgo+Pj4+
+ICsgICAgICAgIHR5cGU6IG9iamVjdAo+Pj4+ICsgICAgICAgIHByb3BlcnRpZXM6Cj4+Pj4gKyAg
+ICAgICAgICBjb21wYXRpYmxlOgo+Pj4+ICsgICAgICAgICAgICBhbGxPZjoKPj4+PiArICAgICAg
+ICAgICAgICAtIGl0ZW1zOgo+Pj4+ICsgICAgICAgICAgICAgICAgICAtIGVudW06Cj4+Pj4gKyAg
+ICAgICAgICAgICAgICAgICAgICAtIG52aWRpYSx0ZWdyYTIwLXNjbGsKPj4+PiArICAgICAgICAg
+ICAgICAgICAgICAgIC0gbnZpZGlhLHRlZ3JhMzAtc2Nsawo+Pj4+ICsgICAgICAgICAgICAgICAg
+ICAgICAgLSBudmlkaWEsdGVncmEzMC1wbGxjCj4+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAt
+IG52aWRpYSx0ZWdyYTMwLXBsbGUKPj4+PiArICAgICAgICAgICAgICAgICAgICAgIC0gbnZpZGlh
+LHRlZ3JhMzAtcGxsbQo+Pj4+ICsgICAgICAgICAgICAgIC0gY29uc3Q6IG52aWRpYSx0ZWdyYS1j
+bG9jawo+Pj4gWW91IGFyZSBzYXlpbmcgdGhlIGZpcnN0IHN0cmluZyBtdXN0IGJlIGJvdGggb25l
+IG9mIHRoZSBlbnVtcyBhbmQgCj4+PiAnbnZpZGlhLHRlZ3JhLWNsb2NrJy4gWW91IGRvbid0IGdl
+dCBhbiBlcnJvciBiZWNhdXNlIHlvdXIgcGF0dGVybiAKPj4+IGRvZXNuJ3QgbWF0Y2ggJ3NjbGsn
+Lgo+Pj4KPj4KPj4gQ291bGQgeW91IHBsZWFzZSByZXBocmFzZSBvciBjbGFyaWZ5PyBJZiBwYXR0
+ZXJuIGRvZXNuJ3QgbWF0Y2ggJ3NjbGsnLAo+PiB0aGVuIGl0IG11c3QgbWF0Y2ggYW55IG90aGVy
+IGVudW0uIEknbSBub3Qgc3VyZSB3aGF0IHlvdSdyZSBtZWFuaW5nLgo+IAo+ICJzY2xrIiBkb2Vz
+bid0IG1hdGNoICJeW2Etel0rWzAtOV0rJCIgYmVjYXVzZSBpdCdzIG1pc3NpbmcgYXQgbGVhc3Qg
+b25lCj4gZGlnaXQgYXQgdGhlIGVuZC4gUGVyaGFwcyB0aGF0IGxhc3QgKyB3YXMgc3VwcG9zZWQg
+dG8gYmUgKj8KCkFoLCB0aGUgcmVnZXggcGF0dGVybi4gWWVzLCBJIGZvcmdvdCB0byB1cGRhdGUg
+aXQuCgo+PiBUaGUgJ252aWRpYSx0ZWdyYS1jbG9jaycgYWN0dWFsbHkgY291bGQgYmUgcmVtb3Zl
+ZCBzaW5jZSBpdCdzCj4+IHN1cGVyZmx1b3VzIG5vdy4gSSdsbCBjb25zaWRlciB0aGUgcmVtb3Zh
+bCBpbiB2OS4KPiAKPiBJdCBhbHNvIGxvb2tzIGxpa2UgeW91ciBzY2hlbWEgd2FzIG1lYW50IHRv
+IGJlIHNvbWV0aGluZyBsaWtlOgo+IAo+IAljb21wYXRpYmxlOgo+IAkgIC0gaXRlbXM6Cj4gCSAg
+ICAgIC0gZW51bToKPiAJICAgICAgICAgIC0gbnZpZGlhLHRlZ3JhMjAtc2Nsawo+IAkgICAgICAg
+ICAgLSBudmlkaWEsdGVncmEzMC1zY2xrCj4gCSAgICAgICAgICAtIG52aWRpYSx0ZWdyYTMwLXBs
+bGMKPiAJICAgICAgICAgIC0gbnZpZGlhLHRlZ3JhMzAtcGxsZQo+IAkgICAgICAgICAgLSBudmlk
+aWEsdGVncmEzMC1wbGxtCj4gCSAgICAgIC0gY29uc3Q6IG52aWRpYSx0ZWdyYS1jbG9jawo+IAo+
+IE5vdGUgaG93IHRoZSBjb25zdDogZWxlbWVudCBpcyBpbmRlbnRlZCBvbmUgbW9yZSBsZXZlbC4g
+Tm93IHRoaXMgbWVhbnM6Cj4gb25lIG9mIHRoZSBlbnVtZXJhdGlvbiB2YWx1ZXMsIGZvbGxvd2Vk
+IGJ5IHRoZSBjb25zdGFudCB2YWx1ZS4gVGhhdAo+IG1hdGNoZXMgd2hhdCB0aGUgZXhhbXBsZSBo
+YXMuCj4gCj4gVGhhdCBzYWlkLCBJIGFncmVlIHRoYXQgbnZpZGlhLHRlZ3JhLWNsb2NrIHNlZW1z
+IGEgYml0IHVzZWxlc3MuIFRoZXJlJ3MKPiByZWFsbHkgbm8gc3VjaCB0aGluZyBhcyBhIGdlbmVy
+aWMgY2xvY2ssIHRoZXkncmUgYWxsIGRpZmZlcmVudCBpbiBzb21lCj4gd2F5LgoKSXQncyBhIGxl
+ZnRvdmVyIGZyb20gb2xkZXIgdmVyc2lvbnMgb2YgdGhpcyBwYXRjaHNldCwgSSdsbCByZW1vdmUg
+aXQuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRl
+YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
