@@ -2,124 +2,112 @@ Return-Path: <SRS0=f8pO=NJ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.2 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33ACAC4338F
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Aug 2021 15:56:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C172C4338F
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Aug 2021 16:41:01 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F2F186101A
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Aug 2021 15:56:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F2F186101A
+	by mail.kernel.org (Postfix) with ESMTPS id 6191861075
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Aug 2021 16:41:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6191861075
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=FiE31kqWKo/pTCcxiPuh7oHeImU8k4ZlvgsM5xZ0Qg4=; b=TRD4OVMZMsqxJf5sc9oWg1XMOG
-	6XlSP5u2unvx4BXjinPpE2WK5C7cWtQJ6H4X6EL0wNbkNXAnucyDhDg6rl3bSQG6ruHWQW2XNGO3s
-	k9xUkPmwNdEqyB7i5kP1hKi7F5GDhW1DQlIBfjgEpGUoEmiJFu+X1L/qxt9k6lD/Er6dnbZ21NwgL
-	ez2anpGWiRmgPBAArhBN/e7JlEb0ZIegdlyKg4/qA2LKP1qElWrcw4n0lmqTKOn4Nq2SHc8zL/Rww
-	Yugk/5iUo7P47LaeZelTvTdTIqBRtBV6RFO08YrnYmm5+bjoFTYAaxWorXuiwYNbJGqJQ5ZNXiDqJ
-	4eiTQzKg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=LoxDjktGrTsJMMtmg+yZFcL9TRtmuNTgVz51vWda3wQ=; b=Xq7zTUkXhll+iBfT0lgP2AqQct
+	bFu27hMkT5gEGwMwUvzS4IeE9VSzrrkYOUr/8yQtSa/fjV+LsikWjPjMPsVbeSxmQc9CpmEDqbZLj
+	zZ2avhU7jxst7+cIW4NQw1/aOsR9b0u0K9yMOHcITrHVn0QLGeVr1yrYsGJobp+Qupmj/sLBai0Jv
+	9yMg+ui3JRrPNYCXXhDtVME89P5giTGoduxTOgOn/ZXaD1QuRJBHS3oHrxB7kVlGMCdcKcpVv4rJ6
+	i6fIGQW9x2uNAuovWUpoeVlfIGEOK/9wcSWV3M2EfxGBA1+Su1Y8IxpwLssJKysBOqWmcouGyTwTa
+	bcVL4L6A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mGNud-0067Qw-9i; Wed, 18 Aug 2021 15:55:31 +0000
-Received: from mail-lj1-x232.google.com ([2a00:1450:4864:20::232])
+	id 1mGObm-006CQj-GE; Wed, 18 Aug 2021 16:40:06 +0000
+Received: from mail-wr1-x42b.google.com ([2a00:1450:4864:20::42b])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mGNuX-0067P7-Iu
- for linux-mtd@lists.infradead.org; Wed, 18 Aug 2021 15:55:29 +0000
-Received: by mail-lj1-x232.google.com with SMTP id y6so5993549lje.2
- for <linux-mtd@lists.infradead.org>; Wed, 18 Aug 2021 08:55:25 -0700 (PDT)
+ id 1mGObk-006CQ5-16
+ for linux-mtd@lists.infradead.org; Wed, 18 Aug 2021 16:40:05 +0000
+Received: by mail-wr1-x42b.google.com with SMTP id k8so4507954wrn.3
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Aug 2021 09:40:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=FDEHOwK/tV+p4BwibJ2eZxjOpc4MiqVcjf+8RCPnl/I=;
- b=H0RQfIKG86hjucXIS4WiNewr/HEa0soca6FW/SoC/rnEEopBHfFKy8EBd0pGQounk/
- Oq9/0nUk373C3fZI609KQfoxLIlCX33VL4jD/UoSCTP1jNz94LT73hGlRg0OGe2pZPMl
- Oibirrv4BUfG5Z6A9XvafJxus+f47S5hMtsDMR0PfSid8tbadkJELX8svkntbABSkpcD
- RimCcpLAmvdux+9g7Wlco/fYko0MP+hTZL/CMoVJHvmpnxNhBGRdHEtQ4ME9XbOrtsOg
- Ou9Bf0Prbo4kHm9SvJmQDHot8vFIRpjN5c2/oXbQGbbtlY4/TvTgQHm5WSs8SXzEzrL/
- q0pw==
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=ha7pIRXhU7lIgKM6iZl7/5MXUfps49I8x1mGTn2G/w8=;
+ b=KvVZzPhz+mK5fc19evqC4zyHudK/Odr/0pbefoznRNp9+QKXFauQFrMCz9+7+IMGv+
+ kBT6xIsXhtq4ROP1l6VWMA1dx1IYRqoR75xcdzZFFPyfOiUMhKKD1oCXTTLp3UteLJI0
+ L1p/xE+6HgyXVTV1kzxgRHAfm/J+keZB2K5OqIUrX6OpC1HCNNxLJQnh8tkT/+0q/ii5
+ wuWWneKMJAslsJCiQgTPjQEbhCM9ftXItQUKZ1kJ3H3EefS1r51+P5QEa/YMyrKiVhxc
+ YfLhIihi1NKlPy13BlEamnLWcm0cvz9w708YrmMGl3JFy2/Yf6hzosfO1z0+Y2J9yfi4
+ f6oQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=FDEHOwK/tV+p4BwibJ2eZxjOpc4MiqVcjf+8RCPnl/I=;
- b=bIEDOgn04ZhA9p+1UQ//e4S3lggbsAr05Ws9VDCrv3ctX4qMoiifIw5+2/i8CIhLQU
- DMX2osB98iu57O4DP2ycaE8rB23wRTMQJksqz8SKv37azitOu+nCjDkdz4lIo7AcplUY
- 4PHNXBmOB+5iQB3uy7wSvAT4NILTIvXy0004/42pV9F3LMwXCpQUXzeC4xiZ41mLlDA5
- Gd3CADdboAHDqZEUnW5S9oFQ1jZ/AYloNkXtXj/umnCaCZkWyTtXwO/2kfc1n9w8TRex
- bxHjzETyy5RN43/7HkY3GPBGW+V7JVuQrK/SXDFAXHVhg+0PhvDbgEhU6KDcnVR/zFJR
- Qmdg==
-X-Gm-Message-State: AOAM533hECX5E3cVljOkk/eGMvWLXM07hJ9fSHcTtE2tUgkfCJpBHK4z
- Q0Ifdlf16nfFQ6UdCCwnQc0=
-X-Google-Smtp-Source: ABdhPJwH2B3VgRzJIvI+pIkKDsVXz6Nb3IHX68qBDgW7hPMqkLurd3vlILu0yEDQld58r5qYiUr6VQ==
-X-Received: by 2002:a2e:300a:: with SMTP id w10mr8608460ljw.510.1629302124200; 
- Wed, 18 Aug 2021 08:55:24 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-85-91.dynamic.spd-mgts.ru.
- [46.138.85.91])
- by smtp.googlemail.com with ESMTPSA id y8sm7917lfh.249.2021.08.18.08.55.22
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 18 Aug 2021 08:55:23 -0700 (PDT)
-Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
-To: Ulf Hansson <ulf.hansson@linaro.org>,
- Viresh Kumar <viresh.kumar@linaro.org>
-Cc: Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, Viresh Kumar <vireshk@kernel.org>,
- Stephen Boyd <sboyd@kernel.org>, Peter De Schrijver
- <pdeschrijver@nvidia.com>, Mikko Perttunen <mperttunen@nvidia.com>,
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=ha7pIRXhU7lIgKM6iZl7/5MXUfps49I8x1mGTn2G/w8=;
+ b=mHExFL+vXlsPZoG8TFs+gywHpYKG3HWyapaGt5+QPAUQUE3JY6+rFs98oV4hmYeyGF
+ yOrxr84Y7Cg9dLZhmO+8FjoGpc5QifcWK4DfhJdXP9prdxTHUBrhcqo5Cp17/+HuZVvP
+ 8mzOaPP2267bN5BJJtq1GFEVF967uqmGxXw6REPZWZfXGVSV7GnFKAsaCP60XC5eNG/6
+ KOVHdIk6Hca7AOV2g/cIZBkYFUA8QI4EMbXjpR1qf01GTF9lABi+JGHaK/7f8p6z5cWg
+ eIB/U5213zIxmU2RhNZ69xVJyNgYAisI70BYWTe994AOoEcnV4J9j93dmsNbY3RI+BoI
+ m6pg==
+X-Gm-Message-State: AOAM533WYxOegwTFP0IzAMzmWKTjQBejjPKqO+ylqS9hdPwlBPt73Eu/
+ 6USvKmjOmEFS9si3kT9JOuU=
+X-Google-Smtp-Source: ABdhPJzWuDpzbJgtrsE3+I2RnhODHoXt0n5NIf7WHBWuFXM7MOXZc9rKkOXOo8zH1v4Xrx93tidQmg==
+X-Received: by 2002:adf:f704:: with SMTP id r4mr12119842wrp.389.1629304801463; 
+ Wed, 18 Aug 2021 09:40:01 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+ by smtp.gmail.com with ESMTPSA id g35sm6122212wmp.9.2021.08.18.09.40.00
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 18 Aug 2021 09:40:00 -0700 (PDT)
+Date: Wed, 18 Aug 2021 18:39:59 +0200
+From: Thierry Reding <thierry.reding@gmail.com>
+To: Dmitry Osipenko <digetx@gmail.com>
+Cc: Jonathan Hunter <jonathanh@nvidia.com>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ Viresh Kumar <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+ Peter De Schrijver <pdeschrijver@nvidia.com>,
+ Mikko Perttunen <mperttunen@nvidia.com>,
  Peter Chen <peter.chen@kernel.org>, Mark Brown <broonie@kernel.org>,
  Lee Jones <lee.jones@linaro.org>,
- =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+ Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
  Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
  Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Lucas Stach <dev@lynxeye.de>,
- Stefan Agner <stefan@agner.ch>, Adrian Hunter <adrian.hunter@intel.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Rob Herring
- <robh+dt@kernel.org>, Michael Turquette <mturquette@baylibre.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-tegra <linux-tegra@vger.kernel.org>,
- Linux PM <linux-pm@vger.kernel.org>,
- Linux USB List <linux-usb@vger.kernel.org>, linux-staging@lists.linux.dev,
- linux-spi@vger.kernel.org, linux-pwm@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-mmc <linux-mmc@vger.kernel.org>,
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- dri-devel <dri-devel@lists.freedesktop.org>,
- DTML <devicetree@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>
-References: <20210818035533.ieqkexltfvvf2p4n@vireshk-i7>
- <5b2a80c1-9743-e633-6257-ede94c8a274c@gmail.com>
- <20210818043131.7klajx6drvvkftoc@vireshk-i7>
- <a2a3c41f-c5e4-ee7e-7d48-03af8bac8863@gmail.com>
- <20210818045307.4brb6cafkh3adjth@vireshk-i7>
- <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
- <20210818055849.ybfajzu75ecpdrbn@vireshk-i7>
- <f1c76f23-086d-ef36-54ea-0511b0ebe0e1@gmail.com>
- <20210818062723.dqamssfkf7lf7cf7@vireshk-i7>
- <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
- <20210818091417.dvlnsxlgybdsn76x@vireshk-i7>
- <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
-From: Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <f1314a47-9e8b-58e1-7c3f-0afb1ec8e70a@gmail.com>
-Date: Wed, 18 Aug 2021 18:55:22 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>,
+ linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+ linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+ linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+ linux-clk@vger.kernel.org
+Subject: Re: [PATCH v8 06/34] dt-bindings: clock: tegra-car: Document new
+ tegra-clocks sub-node
+Message-ID: <YR033zuYWWLCeYpM@orome.fritz.box>
+References: <20210817012754.8710-1-digetx@gmail.com>
+ <20210817012754.8710-7-digetx@gmail.com>
+ <YR0SSz7KMh7TwaFW@orome.fritz.box>
+ <eff5ef47-e6e0-3e03-cf1a-d931b0f2dc2a@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
-Content-Language: en-US
+In-Reply-To: <eff5ef47-e6e0-3e03-cf1a-d931b0f2dc2a@gmail.com>
+User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210818_085525_684465_4B62C310 
-X-CRM114-Status: GOOD (  20.41  )
+X-CRM114-CacheID: sfid-20210818_094004_118699_919588A2 
+X-CRM114-Status: GOOD (  43.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -131,39 +119,197 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============8159034100311612382=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-MTguMDguMjAyMSAxMjo0MSwgVWxmIEhhbnNzb24g0L/QuNGI0LXRgjoKPiBPbiBXZWQsIDE4IEF1
-ZyAyMDIxIGF0IDExOjE0LCBWaXJlc2ggS3VtYXIgPHZpcmVzaC5rdW1hckBsaW5hcm8ub3JnPiB3
-cm90ZToKPj4KPj4gT24gMTgtMDgtMjEsIDEwOjI5LCBVbGYgSGFuc3NvbiB3cm90ZToKPj4+IE1l
-IGFuZCBEbWl0cnkgZGlzY3Vzc2VkIGFkZGluZyBhIG5ldyBnZW5wZCBjYWxsYmFjayBmb3IgdGhp
-cy4gSSBhZ3JlZWQKPj4+IHRoYXQgaXQgc2VlbXMgbGlrZSBhIHJlYXNvbmFibGUgdGhpbmcgdG8g
-YWRkLCBpZiBoZSBpbnNpc3RzLgoKRWl0aGVyIHdheSBnaXZlcyB0aGUgZXF1YWwgcmVzdWx0LiBU
-aGUgbmV3IGNhbGxiYWNrIGFsbG93cyB0byByZW1vdmUgdGhlCmJvaWxlcnBsYXRlIGRldl9wbV9v
-cHBfc2V0X3JhdGUoY2xrX2dldF9yYXRlKCkgY29kZSBmcm9tIHRoZSBycG0tcmVzdW1lCm9mIGNv
-bnN1bWVyIGRldmljZXMsIHRoYXQncyBpdC4KCj4+PiBUaGUgaW50ZW50IHdhcyB0byBpbnZva2Ug
-dGhlIG5ldyBjYWxsYmFjayBmcm9tIF9fZ2VucGRfZGV2X3BtX2F0dGFjaCgpCj4+PiB3aGVuIHRo
-ZSBkZXZpY2UgaGFzIGJlZW4gYXR0YWNoZWQgdG8gaXRzIGdlbnBkLiBUaGlzIGFsbG93cyB0aGUK
-Pj4+IGNhbGxiYWNrLCB0byBpbnZva2UgY2xrX2dldF9yYXRlKCkgYW5kIHRoZW4gZGV2X3BtX29w
-cF9zZXRfcmF0ZSgpLCB0bwo+Pj4gdXBkYXRlIHRoZSB2b3RlIGFjY29yZGluZyB0byB0aGUgY3Vy
-cmVudCBzdGF0ZSBvZiB0aGUgSFcuCj4+Cj4+IEkgd291bGRuJ3QgY2FsbCBkZXZfcG1fb3BwX3Nl
-dF9yYXRlKCkgZnJvbSB0aGVyZSwgc2luY2UgaXQgbWVhbnMKPj4gY29uZmlndXJlIGFuZCBlbmFi
-bGUgKGJvdGgpIGZvciBkaWZmZXJlbnQgcmVzb3VyY2VzLCBjbGssIHJlZ3VsYXRvciwKPj4gZ2Vu
-cGQsIGV0Yy4uCj4gCj4gUmlnaHQsIGdvb2QgcG9pbnQhCj4gCj4gZGV2X3BtX29wcF9zZXRfcmF0
-ZSgpIGlzIGJlc3QgY2FsbGVkIGZyb20gY29uc3VtZXIgZHJpdmVycywgYXMgdGhleQo+IG5lZWQg
-dG8gYmUgaW4gY29udHJvbC4KPj4gV2hhdCB3ZSBuZWVkIGhlcmUgaXMganVzdCBjb25maWd1cmUu
-IFNvIHNvbWV0aGluZyBsaWtlIHRoaXMgdGhlbjoKVGhlIGludGVudCB3YXNuJ3QgdG8gdXNlIGRl
-dl9wbV9vcHBfc2V0X3JhdGUoKSBmcm9tCl9fZ2VucGRfZGV2X3BtX2F0dGFjaCgpLCBidXQgdG8g
-c2V0IGdlbnBkLT5ycG1fcHN0YXRlIGluIGFjY29yZGFuY2UgdG8KdGhlIGgvdyBjb25maWd1cmF0
-aW9uLgoKT24gVGVncmEgd2UgaGF2ZSBhIGNoYWluIG9mIFBEcyBhbmQgaXQncyBub3QgdHJpdmlh
-bCB0byBjb252ZXJ0IHRoZQpkZXZpY2UncyBPUFAgaW50byBwc3RhdGUgYmVjYXVzZSBvbmx5IHRo
-ZSBwYXJlbnQgZG9tYWluIGNhbiB0cmFuc2xhdGUKdGhlIHJlcXVpcmVkIE9QUC4KClZpcmVzaCwg
-cGxlYXNlIHRha2UgYSBsb29rIGF0IHdoYXQgSSBkaWQgaW4gWzFdLiBNYXliZSBpdCBjb3VsZCBi
-ZSBkb25lCmluIGFub3RoZXIgd2F5LgoKWzFdCmh0dHBzOi8vcGF0Y2h3b3JrLm96bGFicy5vcmcv
-cHJvamVjdC9saW51eC10ZWdyYS9wYXRjaC8yMDIxMDcwMTIzMjcyOC4yMzU5MS0zLWRpZ2V0eEBn
-bWFpbC5jb20vCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+
+--===============8159034100311612382==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="eFtPHN6cNJIzUPRB"
+Content-Disposition: inline
+
+
+--eFtPHN6cNJIzUPRB
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Aug 18, 2021 at 06:05:11PM +0300, Dmitry Osipenko wrote:
+> 18.08.2021 16:59, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On Tue, Aug 17, 2021 at 04:27:26AM +0300, Dmitry Osipenko wrote:
+> >> Document tegra-clocks sub-node which describes Tegra SoC clocks that
+> >> require a higher voltage of the core power domain in order to operate
+> >> properly on a higher clock rates.  Each node contains a phandle to OPP
+> >> table and power domain.
+> >>
+> >> The root PLLs and system clocks don't have any specific device dedicat=
+ed
+> >> to them, clock controller is in charge of managing power for them.
+> >>
+> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> >> ---
+> >>  .../bindings/clock/nvidia,tegra20-car.yaml    | 51 +++++++++++++++++++
+> >>  1 file changed, 51 insertions(+)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/clock/nvidia,tegra20-ca=
+r.yaml b/Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml
+> >> index 459d2a525393..7f5cd27e4ce0 100644
+> >> --- a/Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml
+> >> +++ b/Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml
+> >> @@ -42,6 +42,48 @@ properties:
+> >>    "#reset-cells":
+> >>      const: 1
+> >> =20
+> >> +  tegra-clocks:
+> >> +    description: child nodes are the output clocks from the CAR
+> >> +    type: object
+> >> +
+> >> +    patternProperties:
+> >> +      "^[a-z]+[0-9]+$":
+> >> +        type: object
+> >> +        properties:
+> >> +          compatible:
+> >> +            allOf:
+> >> +              - items:
+> >> +                  - enum:
+> >> +                      - nvidia,tegra20-sclk
+> >> +                      - nvidia,tegra30-sclk
+> >> +                      - nvidia,tegra30-pllc
+> >> +                      - nvidia,tegra30-plle
+> >> +                      - nvidia,tegra30-pllm
+> >> +              - const: nvidia,tegra-clock
+> >> +
+> >> +          operating-points-v2:
+> >> +            $ref: /schemas/types.yaml#/definitions/phandle
+> >> +            description:
+> >> +              Phandle to OPP table that contains frequencies, voltage=
+s and
+> >> +              opp-supported-hw property, which is a bitfield indicati=
+ng
+> >> +              SoC process or speedo ID mask.
+> >> +
+> >> +          clocks:
+> >> +            items:
+> >> +              - description: node's clock
+> >> +
+> >> +          power-domains:
+> >> +            maxItems: 1
+> >> +            description: phandle to the core SoC power domain
+> >> +
+> >> +        required:
+> >> +          - compatible
+> >> +          - operating-points-v2
+> >> +          - clocks
+> >> +          - power-domains
+> >> +
+> >> +        additionalProperties: false
+> >> +
+> >>  required:
+> >>    - compatible
+> >>    - reg
+> >> @@ -59,6 +101,15 @@ examples:
+> >>          reg =3D <0x60006000 0x1000>;
+> >>          #clock-cells =3D <1>;
+> >>          #reset-cells =3D <1>;
+> >> +
+> >> +        tegra-clocks {
+> >> +            sclk {
+> >> +                compatible =3D "nvidia,tegra20-sclk", "nvidia,tegra-c=
+lock";
+> >> +                operating-points-v2 =3D <&opp_table>;
+> >> +                clocks =3D <&tegra_car TEGRA20_CLK_SCLK>;
+> >> +                power-domains =3D <&domain>;
+> >> +            };
+> >> +        };
+> >=20
+> > I wonder if it'd be better to match on the name of the node rather than
+> > add an artificial compatible string. We usually use the compatible
+> > string to match a device, but here you're really trying to add
+> > information about a resource provided by the CAR controller.
+> >=20
+> > We do similar things for example in PMIC bindings where the individual
+> > regulators are represented in the device tree via nodes named after the
+> > regulator.
+> >=20
+> > You could then also leave out the clocks property, which is weird as it
+> > is because it's basically a self-reference. But you don't really need
+> > the reference here in the first place because the CAR is already the
+> > parent of SCLK.
+>=20
+> We don't have a platform device for CaR. I don't see how it's going to
+> work. We need to create a platform device for each RPM-capable clock
+> because that's how RPM works. The compatible string is required for
+> instantiating OF-devices from a node, otherwise we will have to
+> re-invent the OF core.
+
+I think we do have a platform device for CAR. It's just not bound
+against by the driver because these clock drivers are "special". But
+=66rom other parts of the series you're already trying to fix that, at
+least partially.
+
+But it doesn't seem right to create a platform device for each RPM-
+capable clock. Why do they need to be devices? They aren't, so why
+pretend? Is it that some API that we want to use here requires the
+struct device?
+
+> > Also, I don't think the tegra- prefix is necessary here. The parent node
+> > is already identified as Tegra via the compatible string.
+> >=20
+> > In the case of CAR, I'd imagine something like:
+> >=20
+> > 	clocks {
+> > 		sclk {
+> > 			operating-points-v2 =3D <&opp_table>;
+> > 			power-domains =3D <&domain>;
+> > 		};
+> > 	};
+> >=20
+> > Now you've only got the bare minimum in here that you actually add. All
+> > the other data that you used to have is simply derived from the parent.
+>=20
+> 'clocks' is already a generic keyword in DT. It's probably not okay to
+> redefine it.
+
+"clocks" is not a generic keyword. It's the name of a property and given
+that we're talking about the clock provider here, it doesn't need a
+clocks property of its own, so it should be fine to use that for the
+node.
+
+Thierry
+
+--eFtPHN6cNJIzUPRB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEdN9wACgkQ3SOs138+
+s6FSERAAi00u9umOi2kRPzgNx22NK4zXmCFm25TyZE0+c/u4y+m5z3W7btG7C5qF
+JedyqJ/SAA8aKttuEimSsNOiMDcQiGRpWQDR3uiv5wwk2u/0T3bdam6E3I9gBCFI
+1i50Q2BISzTsiYKEu/2HTdwk8RKHZ8WRuddyc/+BjGtgto1RS975yZr/Ou1B7prp
+QSZCsIy9Y2ZEdVLkdnXNYauYiUqeNbigF9O/cD1bkfYfHEjS71jRMmqR05Di7Les
+11yc/jftF4N2o1+nh3ziQUV5EPmEt0Q+KtphSA1FuncuwMYrcL1tpI26P2ma25zP
+o+MqXTst7xl3iM5HQtJqGiteFX4Z7ZF9W66DsKOoKc/C9yx+gBOJBk/7WAq9CYHK
+EmR0lun02aVE9/jdpWhDIiTioP6NKudMKSF8prZJVc1gnLnjfhzKWNDzqJknwB1Z
+Pq0sUtE25GZjmidSWpOuzi8vQtUmJB+kQsHqeKtD1kM/nV4eF5428ar+LqFp1QKi
++6AS6oH/23bgFGMBvlQMSmuoNz09nZlLW2AUdPxXA3PL/Ga7c+EJlTtS8L5/L0Ik
+zZ5NiDwI/wgedxo8GiUTA9TaSpzFtFL3abt3+5cOXihde+0lhyLeAMYMZi4R/UDv
+yTBta0D48QPXz7t8EHc4D7qMDA+Igs/jGuNrNlX6k76CY+V8lXU=
+=wpRa
+-----END PGP SIGNATURE-----
+
+--eFtPHN6cNJIzUPRB--
+
+
+--===============8159034100311612382==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============8159034100311612382==--
+
