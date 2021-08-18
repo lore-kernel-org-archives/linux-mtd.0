@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-6.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46527C4338F
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Aug 2021 05:59:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7289C4338F
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Aug 2021 06:01:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1407061076
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Aug 2021 05:59:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1407061076
+	by mail.kernel.org (Postfix) with ESMTPS id 992B661076
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Aug 2021 06:01:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 992B661076
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,54 +23,54 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=akKkdlB7GxrWBlW92f7jLWTj1VxrY/OJi45DEw+lnuw=; b=kBICpKps+E7Y/0
-	6NivJKmCAekR/Z5Qze71oqfUp3Mntu31c6CIHn4Ekp0jLKYC2G+RJFgugupp7IryD4O14JHuXc4Dg
-	fZL/1T4ArttXDQJcFIKBOHowLOGWjlD9VtGX2mny8V/Sw7L0LUKoqPZ/JEkiTMj0hjoloe8e5VS6K
-	nrGoJPEu00QlV8de/BTzOdixW3Z8H7bQGWTF0I65BBxkUkWf4UpkVdJo52tKvHtr3LPPcmkAem6N4
-	fGDMpSr/zefvcCvkyl5D6t43cZHFqRd7nR3cbVn01/hYdjqmLUc7zCeIeRmvSPrssZ4mSQ81UNB9B
-	+jFSw16NRE+VBfPUW3cQ==;
+	List-Owner; bh=xlkHel8tIF2KuKM5EWh/uOElWQQZjRPO9vf6dWg1Fx0=; b=hBNMuFnXno/L85
+	8/H/CylWEpzKMlSYTeglsrMo97q2FwaJl9pBLN1/pjaWG2QNujlu03suzDrEjZ/9zJF14yVw6Mvgt
+	ho9kO7iWaz/A/bT7rs3JBxhS9woE9C5jMkk8iB6CLMyNrRh2Q6iyO7GH1wg/WnkXI91ePyTfVqwS1
+	EQf8wB0KXXaOThCspEMLYLjdQr/vWaX1eSt70VzzcMsFjsYSSM0qi80RjjGDhr57jfKFZHgMmS/Rw
+	Evzm5mXD2bLyakKm4pEhdxpQvQ04qQlpvO2DfgBnoaYw0cFWwsx3uPOGHG+jDuoshO9WiH6psxgdU
+	iuGIISTf/6wiDDK3+4fg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mGEbK-004HdC-16; Wed, 18 Aug 2021 05:58:58 +0000
-Received: from mail-pj1-x1036.google.com ([2607:f8b0:4864:20::1036])
+	id 1mGEd1-004Hzs-E4; Wed, 18 Aug 2021 06:00:43 +0000
+Received: from mail-pj1-x102e.google.com ([2607:f8b0:4864:20::102e])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mGEbE-004HbH-P1
- for linux-mtd@lists.infradead.org; Wed, 18 Aug 2021 05:58:56 +0000
-Received: by mail-pj1-x1036.google.com with SMTP id
- qe12-20020a17090b4f8c00b00179321cbae7so1626494pjb.2
- for <linux-mtd@lists.infradead.org>; Tue, 17 Aug 2021 22:58:51 -0700 (PDT)
+ id 1mGEcv-004HxU-TJ
+ for linux-mtd@lists.infradead.org; Wed, 18 Aug 2021 06:00:41 +0000
+Received: by mail-pj1-x102e.google.com with SMTP id
+ u21-20020a17090a8915b02901782c36f543so8165720pjn.4
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Aug 2021 23:00:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=date:from:to:cc:subject:message-id:references:mime-version
  :content-disposition:in-reply-to:user-agent;
- bh=/oqvyX1+fZTz+wtMw2AZVqGvrykbTQj8oIvIXJk4fnQ=;
- b=BiNyX/6IYojCpnpyPGFzrgnh8ilV1S48JvAdE+mM4BuP7CRu2FKtWLmHb+6pMAnjSh
- /wfP9QCG/Q2Ukj1ZByvNzYSCb76F2+QCOquffMB7/VgJzMfI6biDam1D93oJFOcKLxY5
- r0ui6XTLNwvZZ2QgeJ+nHG0xrCIvTYYP76CrkUOXqGHCkZrCx8j9IwfpGrJOMhMeq8y0
- k2mkEWBfMzJhbTlNZAz6IL2S8V/0dB0U3qYFm8ylkevVbHpEgfdJ2weIyvMA0dAHIkMr
- BJ+3m2Wz3q/+kbkLCXBH7Ci4zKCVmfsRmjz+f2zh3gygpbMTckDnXDsC8v0GIrUYRu/5
- PVGA==
+ bh=jSLfXbs59mtRstzo4Hk2BNosvMcxHU6QjHDYVbvhF94=;
+ b=IZiDZuRS1dgbax2OIM0qBL1zjf9wYlmKLTEfzJy5RuUwQu4eQ6Cqmnd2ZfQ9EnnS5E
+ Jr1fAcgL/JdFgkFZ89xjBuBPSORKqFiw+3e1WhRfjnkRI6XhhARyc2h+l5KPSXucToC1
+ 5NtBgghBSCisOGicrsb9AX3gqpRGgB9wryJPh6wD220SUglcmvJcuJFjUggtI/Et9Qhq
+ yJL8iRXbbCgl4lZdUfxZejEJadW6CurxesAMbeYQ33LbfTu1KA1dNxOq6HMfw0FLGwDr
+ OcBg18AVZFD7ZTL3PphKIXIDGtjeF3qBwk12Pxl3ByoW3VLzL+hvaHjyLcAcizZ3cE8S
+ xzgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to:user-agent;
- bh=/oqvyX1+fZTz+wtMw2AZVqGvrykbTQj8oIvIXJk4fnQ=;
- b=cxZrosWShw4toWYTXhDVjj/UWsCBj1boCRrj5ra9cWSpME/CgJ3HHW0+gucgiqm2WB
- eNdU+6CVwFN3YUvMzxgFqkRt3FpPRqceNkG731n4PMSsNTg15LCjg+4wfZ2odXpUvO4+
- 0+DKvGnWE9wbbv0nMhJBL8b1VtWjGOEx9YF5qU8LiBwPP6f24XYLTiFXsa+ug24sSGCU
- fGZF4W3QhjoHOYCjwpBx3lTKkOlQ0/A2pta4EZkMy3Owbc8nDldhCWhWjyhwfF8sXEq+
- njLWm+BLi1osEnhWAehvN5jTyUrU5hRqAeq8MLXJm/SyZcTLst+6lK8FizLzc9hg0r7C
- oBlA==
-X-Gm-Message-State: AOAM533L9SSP3O3J+M2Y6FOd6VolRnaf44J0F5TEaT2piuovmruk7Ou0
- nY9LRi5hFkcTn7599T49AA5ZkA==
-X-Google-Smtp-Source: ABdhPJxmfawJmjScyveR+qRjue44WOBbTuswMGRMZAcW5NbsgTVLKIK8N3zHMPdQxwr8K+gezRoAzQ==
-X-Received: by 2002:a17:90a:db89:: with SMTP id
- h9mr7820049pjv.214.1629266331439; 
- Tue, 17 Aug 2021 22:58:51 -0700 (PDT)
+ bh=jSLfXbs59mtRstzo4Hk2BNosvMcxHU6QjHDYVbvhF94=;
+ b=qLLY6v4moSRfTEh9sPGuYLZOyyyFwu1sb6qgZKPDuLICQypupzGFz2JJJ0nhrzoGES
+ PgozwXrNkf2EL3ltcbJjZjRUeoZDMH1XP0bL1U8a2wwO2kgqtjM4laClEkKOlT7UTEew
+ WQ7pTf4nj2+oZ68tNtaWHsdqAQQKryoEcM1HlxZdNyv3SXcyKGYyZfnOX1fkBKBf1nCF
+ gjs9uDfwiE9xqYoGRBqmxTCPnPppb52WlmeoOtMZdr1kVGByF2FVSomlU9gEA2VTgO1r
+ RbJG1ykW7LDvTJFAR3zGVwIr0WxWS4QuAZtrX8WkukM8k0SCe2U2Kh+qFL2NH/w4Ee6i
+ VutA==
+X-Gm-Message-State: AOAM530QFXU0TOhWk+bladLr06W1lzRwLhKUmYJsboUFKVb9BJCmxwvi
+ I+Jl8UPWxwVJCIn393arNU6Kvg==
+X-Google-Smtp-Source: ABdhPJz6nHvt8tLhRUxNLQv5z93Dx/TL1iQrf7p3Xot0rNlhIhtJA6nFhb5bwd/3tPACvE5mJ3aZJA==
+X-Received: by 2002:a17:902:edc8:b029:12d:4a06:1c25 with SMTP id
+ q8-20020a170902edc8b029012d4a061c25mr5874222plk.61.1629266436958; 
+ Tue, 17 Aug 2021 23:00:36 -0700 (PDT)
 Received: from localhost ([122.172.201.85])
- by smtp.gmail.com with ESMTPSA id g14sm4668532pfr.31.2021.08.17.22.58.50
+ by smtp.gmail.com with ESMTPSA id 136sm6020660pge.77.2021.08.17.23.00.36
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 17 Aug 2021 22:58:51 -0700 (PDT)
-Date: Wed, 18 Aug 2021 11:28:49 +0530
+ Tue, 17 Aug 2021 23:00:36 -0700 (PDT)
+Date: Wed, 18 Aug 2021 11:30:34 +0530
 From: Viresh Kumar <viresh.kumar@linaro.org>
 To: Dmitry Osipenko <digetx@gmail.com>
 Cc: Thierry Reding <thierry.reding@gmail.com>,
@@ -98,9 +98,8 @@ Cc: Thierry Reding <thierry.reding@gmail.com>,
  dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
  linux-clk@vger.kernel.org
 Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
-Message-ID: <20210818055849.ybfajzu75ecpdrbn@vireshk-i7>
-References: <20210817012754.8710-1-digetx@gmail.com>
- <20210817012754.8710-2-digetx@gmail.com>
+Message-ID: <20210818060034.tdu3ocbqlnao336u@vireshk-i7>
+References: <20210817012754.8710-2-digetx@gmail.com>
  <20210817075515.vyyv7z37e6jcrhsl@vireshk-i7>
  <710261d9-7ae3-5155-c0a2-f8aed2408d0b@gmail.com>
  <20210818035533.ieqkexltfvvf2p4n@vireshk-i7>
@@ -109,13 +108,14 @@ References: <20210817012754.8710-1-digetx@gmail.com>
  <a2a3c41f-c5e4-ee7e-7d48-03af8bac8863@gmail.com>
  <20210818045307.4brb6cafkh3adjth@vireshk-i7>
  <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
+ <20210818055849.ybfajzu75ecpdrbn@vireshk-i7>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
+In-Reply-To: <20210818055849.ybfajzu75ecpdrbn@vireshk-i7>
 User-Agent: NeoMutt/20180716-391-311a52
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210817_225852_847598_7BE2CC94 
-X-CRM114-Status: GOOD (  25.45  )
+X-CRM114-CacheID: sfid-20210817_230038_012587_81543612 
+X-CRM114-Status: GOOD (  29.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -132,53 +132,49 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 18-08-21, 08:21, Dmitry Osipenko wrote:
-> Yes, GENPD will cache the perf state across suspend/resume and initially
-> cached value is out of sync with h/w.
+On 18-08-21, 11:28, Viresh Kumar wrote:
+> On 18-08-21, 08:21, Dmitry Osipenko wrote:
+> > Yes, GENPD will cache the perf state across suspend/resume and initially
+> > cached value is out of sync with h/w.
+> > 
+> > Nothing else. But let me clarify it all again.
 > 
-> Nothing else. But let me clarify it all again.
-
-Thanks for your explanation.
-
-> Initially the performance state of all GENPDs is 0 for all devices.
+> Thanks for your explanation.
 > 
-> The clock rate is preinitialized for all devices to a some default rate
-> by clk driver, or by bootloader or by assigned-clocks in DT.
+> > Initially the performance state of all GENPDs is 0 for all devices.
+> > 
+> > The clock rate is preinitialized for all devices to a some default rate
+> > by clk driver, or by bootloader or by assigned-clocks in DT.
+> > 
+> > When device is rpm-resumed, the resume callback of a device driver
+> > enables the clock.
+> > 
+> > Before clock is enabled, the voltage needs to be configured in
+> > accordance to the clk rate.
+> > 
+> > So now we have a GENPD with pstate=0 on a first rpm-resume, which
+> > doesn't match the h/w configuration. Calling dev_pm_opp_sync() sets the
+> > pstate in accordance to the h/w config.
 > 
-> When device is rpm-resumed, the resume callback of a device driver
-> enables the clock.
+> What about calling dev_pm_opp_set_rate(dev, clk_get_rate(dev)) here
+> instead ? That will work, right ? The advantage is it works without
+> any special routine to do so.
 > 
-> Before clock is enabled, the voltage needs to be configured in
-> accordance to the clk rate.
+> I also wonder looking at your gr3d.c changes, you set a set-opp
+> helper, but the driver doesn't call set_opp_rate at all. Who calls it
+> ?
 > 
-> So now we have a GENPD with pstate=0 on a first rpm-resume, which
-> doesn't match the h/w configuration. Calling dev_pm_opp_sync() sets the
-> pstate in accordance to the h/w config.
+> And if it is all about just syncing the genpd core, then can the genpd
+> core do something like what clk framework does? i.e. allow a new
+> optional genpd callback, get_performance_state() (just like
+> set_performance_state()), which can be called initially by the core to
+> get the performance to something other than zero. opp-set-rate is
+> there to set the performance state and enable the stuff as well.
+> That's why it looks incorrect in your case, where the function was
+> only required to be called once, and you are ending up calling it on
+> each resume. Limiting that with another local variable is bad as well.
 
-What about calling dev_pm_opp_set_rate(dev, clk_get_rate(dev)) here
-instead ? That will work, right ? The advantage is it works without
-any special routine to do so.
-
-I also wonder looking at your gr3d.c changes, you set a set-opp
-helper, but the driver doesn't call set_opp_rate at all. Who calls it
-?
-
-And if it is all about just syncing the genpd core, then can the genpd
-core do something like what clk framework does? i.e. allow a new
-optional genpd callback, get_performance_state() (just like
-set_performance_state()), which can be called initially by the core to
-get the performance to something other than zero. opp-set-rate is
-there to set the performance state and enable the stuff as well.
-That's why it looks incorrect in your case, where the function was
-only required to be called once, and you are ending up calling it on
-each resume. Limiting that with another local variable is bad as well.
-
-> In a previous v7 I proposed to preset the rpm_pstate of GENPD (perf
-> level that is restored before device is rpm-resumed) from PD's
-> attach_dev callback, but Ulf didn't like that because it requires to use
-> and modify GENPD 'private' variables from a PD driver. We decided that
-> will be better to make device drivers to explicitly sync the perf state,
-> which I implemented in this v8.
+Ulf, this last part is for you :)
 
 -- 
 viresh
