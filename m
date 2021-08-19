@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-2.2 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC1FDC4338F
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Aug 2021 16:32:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1E58C4338F
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Aug 2021 16:55:13 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AC60060F5E
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Aug 2021 16:32:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AC60060F5E
+	by mail.kernel.org (Postfix) with ESMTPS id 888C46101A
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Aug 2021 16:55:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 888C46101A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,55 +23,55 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=VxOE+CCU+Gz9RW/joZNp6u3PRRgo/ZJccXWc5nm9dFw=; b=UUNd/MV33rCuSZZdEfkYBPCdA3
-	dvXQb5N/fEv1LIPi3Ao8W2NIPN96M0UDHtk5U3Qx8EJL5DYK6x6StkSY4wcfENTEoTDBIQ0y/LwA5
-	VRLsheJsnWMRpRwGTzJbmb0W2n8ufHyj6lXesZ8jEd1/YtVHPUfAQlRtmF+k2+ww/3lvPnNdhXXRz
-	ypTe1n7gNOQE7dtn7oGV+mz3/gk0clMzy66A+DhFEU0NI7Io5lVQWukNTD0ZTl0SYSMuit8HR929R
-	/iZW28KTxRSjXEG7gZDlTqryilRQRxGdQRO6KT/o090ecL3m2zj1JEy0bhyWI2iiULoJWGx/bIW1k
-	bD6pZmyg==;
+	bh=Q0ijO37uZzv8a/bKIy5AN+FjcCZ5BreWJNG4fn1OfrA=; b=JICieLpDzu5cnKjcHrnm5ox/nN
+	wqJLorWtMPC/Gv/e7eKtlLAkQ/gTqodFObjwlxRSsSsvUNKoWsL9RFOhGi688F6Pf9G0T12/EjgdD
+	PSL3Mo0REJlBJE08qcn0qlGMkOPQQdbGAiC+rTp2ttdIVOpEi5xwZl/ZEre6DU5Dkg4b/OI9ubXMz
+	qXz5ATdlkofzlixdI85GVRRFG011JgzeerdsGZ+tVcAYBBds+gPVDW4HAZMHNMe/+Xj108tbxmJc1
+	dMxJMOqBjxTEnCFm8q3pw/YBCu+/uxEZiiMzjI8SLPXRw//s138D3rJR5y+ccybpeeqB1OmknrRSD
+	Di5yfKWw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mGkx0-008y8Y-Ro; Thu, 19 Aug 2021 16:31:31 +0000
-Received: from mail-wr1-x433.google.com ([2a00:1450:4864:20::433])
+	id 1mGlJF-009047-KR; Thu, 19 Aug 2021 16:54:29 +0000
+Received: from mail-wm1-x336.google.com ([2a00:1450:4864:20::336])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mGkwu-008y65-Uo
- for linux-mtd@lists.infradead.org; Thu, 19 Aug 2021 16:31:28 +0000
-Received: by mail-wr1-x433.google.com with SMTP id z9so9948271wrh.10
- for <linux-mtd@lists.infradead.org>; Thu, 19 Aug 2021 09:31:24 -0700 (PDT)
+ id 1mGlJC-00902s-J2
+ for linux-mtd@lists.infradead.org; Thu, 19 Aug 2021 16:54:28 +0000
+Received: by mail-wm1-x336.google.com with SMTP id u15so4238551wmj.1
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Aug 2021 09:54:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=date:from:to:cc:subject:message-id:references:mime-version
  :content-disposition:in-reply-to:user-agent;
- bh=xdfmGh23k0aNDX33xwOdlnspLCgiV2qSptJyQT4CArg=;
- b=TqvsyYuIzPTFNISEaUDmY0h791HLIf4qH1WXS1GxVOvTPNRDVQWqqcXQlxGoSmEhYq
- hmHtTmIeKTi83VzFGyYEcVObXx+9sz/n5eRC4i5PoGxDQ5FuJyqmzwZC3DZsTYvcC7lj
- Pr/Hk6ZGcay72lFauB5YyEIy1wE9tdSBx7LT+U3/P67mkfLEUFIanjAo3tpK1Of8NDws
- BwdnJJRNFFFrUFU5DylX11cauyAcPLYzFuHfmvb7prU10HBcx3ThlIFERG8TGHBfHyo4
- yySdwCCzMSuAkV9jh3xYDU+0sLNNdvXISoBFguTvMb8H+aD1MJ35euCxfdXOs3xfCmJt
- nByA==
+ bh=aclyfjuOk/wnLMaKEbd24lKs07wjNB8D8fDVONKvAwc=;
+ b=c/lGCsN6DJxg4dVOdYAwVArnnLXSoiqLPRg86sjtaNd0rST/SL2r1zNT12Xza98M67
+ p2WAFotge+9e0orCQo5xhADJ8m/1ZrJ0HeuG/9nGkbZkRpyn9HaJRQVSE8gkPQbk+N3T
+ OEaFriJPzFDSPWLGrR5VRrwqHEHyrGBK9GkfSMmx3z+D9ZOaoKKVOV06OsAvv7gRkm/P
+ WUL8kbCGm+MEEbF+hPvUaIT3TkwAW/nc7+YlaL/q4ggf1Tc9zedWbhIiPQok6QN3kiqx
+ qpIL3yKJbcA6oas7ZQsTa9V4fEuv+yMkFHCqh4H2uy+07RVCGu5Lk1eTIyRGjmTNRShE
+ 2aZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to:user-agent;
- bh=xdfmGh23k0aNDX33xwOdlnspLCgiV2qSptJyQT4CArg=;
- b=bSK0poR6uBv9kl6NQ378BBHWRut2A7toCIRO+yYcqG8e9Am4l8Co0W8kPYgrsgcO4N
- Qrkwy3H1D/TZ+6om+BmJyIhdSeAJFKwomf7YgooILrAleqEvsrDt0pYBeoQCEhViJ3Go
- E6NLSl3ywzb6YDTBDYdrMjSiali9dHyJc6pYvVKWmYs1V60w3sfOPs3OgsVjdbrd0WT/
- CNgCPCAmoEl7dJVDS7PhAtVKJ/LgmSNgGZMDf4ZVbWkxiIm4G79KE8J85zBcsdOPcu4O
- 2G/ZcrF3fnud3xI97uE+ZJtgoJeb1gLkCp/8o2HnAo42ogy9b5Dhyyp5UcovNV0zGp+d
- I1Tw==
-X-Gm-Message-State: AOAM530Tj33OsbAAI5WC14JwCSTcCOLdUuxHgi16DwrG9nAq81qUQvbz
- /3a7YzbKfo1W04LUdjqm/E4=
-X-Google-Smtp-Source: ABdhPJw+layCx1zXDlaPhdMiFy7BJcVfdPSGx4BZzhnHtq808ns6k0cMS2cwB3t84/EUctnSBTQSPg==
-X-Received: by 2002:adf:f541:: with SMTP id j1mr4794858wrp.180.1629390683554; 
- Thu, 19 Aug 2021 09:31:23 -0700 (PDT)
+ bh=aclyfjuOk/wnLMaKEbd24lKs07wjNB8D8fDVONKvAwc=;
+ b=PiBoFYl5PtdFlXBHd1dy4Mos5u7ko/R2WsUfYY3ES1Lsae4Nw81mr3HOp9dPlEv5xK
+ raHNELxELxvOzDIXjRZbgNku2JYx322l2vBu46BgYNESdHKWSgKEWqMHDhhgE8VDez8t
+ I0XYO1AGwKQFeEMIkkHhlQi2awxU9Yy8Gkt2zYQStDoCp/4qibBc5nkfVyfn3BRTwvUU
+ 63tHMs/VwycaoiR9RaSAXTLHBWB5qaPaLUwosD+BgQOQW37T3E3glZtkuvhrtRmDpI6x
+ fAV0yyXIZH0DAHpgVir4EvDkNEqPI9e88HGSRzAjCjm9gckV0yVMs/MMrD0HNBTXFW9H
+ mYOw==
+X-Gm-Message-State: AOAM532mKatVdkUF8rVIY9Vwsn70pVi3d2rvXpzecefb65i4I47k3yaM
+ Iv2pYiynqDQUaLlfPmSaiDM=
+X-Google-Smtp-Source: ABdhPJyPJZuwXxLb6NwJ92Oy1eMbywPQn7wLJyIL+A4Q9LtkgBIuov/1upvaj/jx6Oywu1gSJikUIg==
+X-Received: by 2002:a1c:4c06:: with SMTP id z6mr14316666wmf.53.1629392065061; 
+ Thu, 19 Aug 2021 09:54:25 -0700 (PDT)
 Received: from localhost ([217.111.27.204])
- by smtp.gmail.com with ESMTPSA id p8sm7766709wme.22.2021.08.19.09.31.21
+ by smtp.gmail.com with ESMTPSA id a11sm3459358wrw.67.2021.08.19.09.54.23
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 19 Aug 2021 09:31:21 -0700 (PDT)
-Date: Thu, 19 Aug 2021 18:31:20 +0200
+ Thu, 19 Aug 2021 09:54:23 -0700 (PDT)
+Date: Thu, 19 Aug 2021 18:54:22 +0200
 From: Thierry Reding <thierry.reding@gmail.com>
 To: Dmitry Osipenko <digetx@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Jonathan Hunter <jonathanh@nvidia.com>,
+Cc: Jonathan Hunter <jonathanh@nvidia.com>,
  Ulf Hansson <ulf.hansson@linaro.org>,
  Viresh Kumar <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
  Peter De Schrijver <pdeschrijver@nvidia.com>,
@@ -85,6 +85,7 @@ Cc: Rob Herring <robh+dt@kernel.org>, Jonathan Hunter <jonathanh@nvidia.com>,
  Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
  Adrian Hunter <adrian.hunter@intel.com>,
  Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
  Michael Turquette <mturquette@baylibre.com>,
  linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
  linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
@@ -93,21 +94,20 @@ Cc: Rob Herring <robh+dt@kernel.org>, Jonathan Hunter <jonathanh@nvidia.com>,
  linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
  dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
  linux-clk@vger.kernel.org
-Subject: Re: [PATCH v8 06/34] dt-bindings: clock: tegra-car: Document new
- tegra-clocks sub-node
-Message-ID: <YR6HWMuYcF6NIepi@orome.fritz.box>
+Subject: Re: [PATCH v8 07/34] clk: tegra: Support runtime PM and power domain
+Message-ID: <YR6Mvips3HAntDy0@orome.fritz.box>
 References: <20210817012754.8710-1-digetx@gmail.com>
- <20210817012754.8710-7-digetx@gmail.com>
- <YR0SSz7KMh7TwaFW@orome.fritz.box>
- <eff5ef47-e6e0-3e03-cf1a-d931b0f2dc2a@gmail.com>
- <YR033zuYWWLCeYpM@orome.fritz.box>
- <a5b942cb-1611-9ae1-6e89-4b68fdaf03e3@gmail.com>
+ <20210817012754.8710-8-digetx@gmail.com>
+ <YR0UBi/ejy+oF4Hm@orome.fritz.box>
+ <da7356cb-05ee-ba84-8a7c-6e69d853a805@gmail.com>
+ <YR04YHGEluqLIZeo@orome.fritz.box>
+ <ad99db08-4696-1636-5829-5260f93dc681@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <a5b942cb-1611-9ae1-6e89-4b68fdaf03e3@gmail.com>
+In-Reply-To: <ad99db08-4696-1636-5829-5260f93dc681@gmail.com>
 User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210819_093125_054281_4C050C86 
-X-CRM114-Status: GOOD (  42.39  )
+X-CRM114-CacheID: sfid-20210819_095426_685217_CF1E2254 
+X-CRM114-Status: GOOD (  41.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -119,130 +119,149 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8245417870294564050=="
+Content-Type: multipart/mixed; boundary="===============6204818719225702301=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
---===============8245417870294564050==
+--===============6204818719225702301==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="rcVyDzt3QNLnQ9/o"
+	protocol="application/pgp-signature"; boundary="fB7tjCoYfoEt7dJy"
 Content-Disposition: inline
 
 
---rcVyDzt3QNLnQ9/o
+--fB7tjCoYfoEt7dJy
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 18, 2021 at 07:57:04PM +0300, Dmitry Osipenko wrote:
-> 18.08.2021 19:39, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >> We don't have a platform device for CaR. I don't see how it's going to
-> >> work. We need to create a platform device for each RPM-capable clock
-> >> because that's how RPM works. The compatible string is required for
-> >> instantiating OF-devices from a node, otherwise we will have to
-> >> re-invent the OF core.
-> > I think we do have a platform device for CAR. It's just not bound
-> > against by the driver because these clock drivers are "special". But
-> > from other parts of the series you're already trying to fix that, at
-> > least partially.
+On Wed, Aug 18, 2021 at 08:11:03PM +0300, Dmitry Osipenko wrote:
+> 18.08.2021 19:42, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On Wed, Aug 18, 2021 at 06:05:21PM +0300, Dmitry Osipenko wrote:
+> >> 18.08.2021 17:07, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >>> On Tue, Aug 17, 2021 at 04:27:27AM +0300, Dmitry Osipenko wrote:
+> >>> [...]
+> >>>> +struct clk *tegra_clk_register(struct clk_hw *hw)
+> >>>> +{
+> >>>> +	struct platform_device *pdev;
+> >>>> +	struct device *dev =3D NULL;
+> >>>> +	struct device_node *np;
+> >>>> +	const char *dev_name;
+> >>>> +
+> >>>> +	np =3D tegra_clk_get_of_node(hw);
+> >>>> +
+> >>>> +	if (!of_device_is_available(np))
+> >>>> +		goto put_node;
+> >>>> +
+> >>>> +	dev_name =3D kasprintf(GFP_KERNEL, "tegra_clk_%s", hw->init->name);
+> >>>> +	if (!dev_name)
+> >>>> +		goto put_node;
+> >>>> +
+> >>>> +	pdev =3D of_platform_device_create(np, dev_name, NULL);
+> >>>> +	if (!pdev) {
+> >>>> +		pr_err("%s: failed to create device for %pOF\n", __func__, np);
+> >>>> +		kfree(dev_name);
+> >>>> +		goto put_node;
+> >>>> +	}
+> >>>> +
+> >>>> +	dev =3D &pdev->dev;
+> >>>> +	pm_runtime_enable(dev);
+> >>>> +put_node:
+> >>>> +	of_node_put(np);
+> >>>> +
+> >>>> +	return clk_register(dev, hw);
+> >>>> +}
+> >>>
+> >>> This looks wrong. Why do we need struct platform_device objects for e=
+ach
+> >>> of these clocks? That's going to be a massive amount of platform devi=
+ces
+> >>> and they will completely mess up sysfs.
+> >>
+> >> RPM works with a device. It's not a massive amount of devices, it's one
+> >> device for T20 and four devices for T30.
 > >=20
-> > But it doesn't seem right to create a platform device for each RPM-
-> > capable clock. Why do they need to be devices? They aren't, so why
-> > pretend? Is it that some API that we want to use here requires the
-> > struct device?
+> > I'm still not sure I understand why we need to call RPM functions on a
+> > clock. And even if they are few, it seems wrong to make these platform
+> > devices.
 >=20
-> The "device" representation is internal to the kernel. It's okay to me
-> to have PLLs represented by a device, it's a distinct h/w by itself.
+> Before clock is enabled, we need to raise core voltage. After clock is
+> disabled, the voltage should be dropped. CCF+RPM takes care of handling
+> this for us.
+
+That's the part that I do understand. What I don't understand is why a
+clock needs to be runtime suspend/resumed. Typically we suspend/resume
+devices, and doing so typically involves disabling/enabling clocks. So
+I don't understand why the clocks themselves now need to be runtime
+suspended/resumed.
+
+> > Perhaps they can be simple struct device:s instead? Ideally they would
+> > also be parented to the CAR so that they appear in the right place in
+> > the sysfs hierarchy.
 >=20
-> CCF supports managing of clock's RPM and it requires to have clock to be
-> backed by a device. That's what we are using here.
->=20
-> Please see
-> https://elixir.bootlin.com/linux/v5.14-rc6/source/drivers/clk/clk.c#L109
+> Could you please clarify what do you mean by 'simple struct device:s'?
+> These clock devices should be OF devices with a of_node and etc,
+> otherwise we can't use OPP framework.
 
-Looking at the implementation of __clk_register() and where that device
-pointer typically comes from, I don't think the way this is used here is
-what was intended. The way I interpret the code is that a clock is
-registered with a parent device (i.e. its provider) and
-clk_pm_runtime_get() is then used internally as a way to make sure that
-when a clock is prepared, it's parent device is runtime resumed. This is
-presumably to ensure that any registers that the driver might need to
-access in order to prepare and enable the clock are accessible (i.e. the
-CAR is not powered off or in reset).
+Perhaps I misunderstand the goal of the OPP framework. My understanding
+was that this was to attach a table of operating points with a device so
+that appropriate operating points could be selected and switched to when
+the workload changes.
 
-So the struct device that is passed to __clk_register() (or its callers)
-should be that of the CAR rather than virtual struct devices created by
-the CAR.
+Typically these operating points would be roughly a clock rate and a
+corresponding voltage for a regulator, so that when a certain clock rate
+is requested, the regulator can be set to the matching voltage.
 
-And it's a bit debatable whether or not PLLs represent distinct
-hardware. Ultimately every transistor on a chip could be considered
-distinct hardware. But a platform device is a device on a platform bus,
-which is really just another way of saying it's a hardware block that's
-accessible from the CPU via a memory-mapped address. A PLL (just like
-other clocks) is merely a resource exposed by means of access to these
-registers. So I don't think they should be platform devices. Even making
-them struct device:s seems a bit of a stretch.
+Hm... so is it that each of these clocks that you want to create a
+platform device for has its own regulator? Because the patch series only
+mentions the CORE domain, so I assumed that we would accumulate all the
+clock rates for the clocks that are part of that CORE domain and then
+derive a voltage to be supplied to that CORE domain.
 
-Is there any reason why struct clk can't be used for this? I mean, the
-whole purpose of that structure is to represent clocks. Why do we need
-to make them special?
+But perhaps I just don't understand correctly how this is tied together.
 
-> >>> Also, I don't think the tegra- prefix is necessary here. The parent n=
-ode
-> >>> is already identified as Tegra via the compatible string.
-> >>>
-> >>> In the case of CAR, I'd imagine something like:
-> >>>
-> >>> 	clocks {
-> >>> 		sclk {
-> >>> 			operating-points-v2 =3D <&opp_table>;
-> >>> 			power-domains =3D <&domain>;
-> >>> 		};
-> >>> 	};
-> >>>
-> >>> Now you've only got the bare minimum in here that you actually add. A=
-ll
-> >>> the other data that you used to have is simply derived from the paren=
-t.
-> >> 'clocks' is already a generic keyword in DT. It's probably not okay to
-> >> redefine it.
-> > "clocks" is not a generic keyword. It's the name of a property and given
-> > that we're talking about the clock provider here, it doesn't need a
-> > clocks property of its own, so it should be fine to use that for the
-> > node.
->=20
-> I'm curious what Rob thinks about it. Rob, does this sound okay to you?
+> We don't have driver for CAR to bind. I guess we could try to add a
+> 'dummy' CAR driver that will create sub-devices for the rpm-clocks, is
+> this what you're wanting?
 
-Another alternative would be to omit that level altogether and just make
-sclk and siblings direct children of the CAR node.
+I got confused by the "tegra-clock" driver that this series was adding.
+This is actually a driver that will bind to the virtual clocks rather
+than the CAR device itself.
+
+For some reason I had assumed that you wanted to create a CAR driver in
+order to get at the struct device embedded in the CAR's platform device
+and use that as the parent for all these clocks.
+
+So even if we absolutely need some struct device for these clocks, maybe
+adding that CAR driver and making the clock struct device:s children of
+the CAR device will help keep a bit of a proper hierarchy in sysfs.
 
 Thierry
 
---rcVyDzt3QNLnQ9/o
+--fB7tjCoYfoEt7dJy
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEeh1YACgkQ3SOs138+
-s6H2hw/9FHQE4gIC68lVuteJusivX3to+lSemB8K8zjRkcxT7nURgxWEiaqizxEC
-HdNxAuNdVDpD1v34JC2ZGJgnnYdMSrk9k4BhykGgn1+QhdgEQGSTAEXUhcxfK2Yg
-5Slk4jnHH9HF0GPYfbJ5SP6k3NgkeL8h0fCa2JviaoCOhzyRBJK71IG1cIOlj7Ud
-3nxcd1/NzHcPZnsGivm5Qd8saf1nyLrZghmyUsuaZp5tsH8Ct/x5HWiShOTVB6UT
-+uRefYWMbuaJp/mCa+6N0gK2827S84iSRzO5sxI3nYZbRJsgLgD766fzdC/EDZ9G
-Zg5AZgzH67GoEicbdCQMgx6zVV6Y1LQF1+5mrHjpomm2OWRVZELLEfGa1pqVNIGu
-VJjQuIX618IKU5jBYUw18+vr2HiJNDEFCXX0PrBYXp/cc64fiq4I3M30clqQQoxr
-puehYCuiVtD9v6lr8tnEA79qUnn0XsWIpzzHbeLtwclpaqN5lTZUo6eXXFIGid+3
-ZauSDJzqa4qTX1fvwH23kMnkA91nI2A00rPQWtER0uhJGq8TjXFPeJ4JHsvTyXxg
-Xr77eogUzKs15p0Eh3BBBYCu5CLnaePC+kK5pcVnJLDmbmRW/gaS/RvCuw/YfIhE
-Q5nj2KNqZny4RL9VKn0X77bP0ngrfjlFjFsEDt+9MYgNMX3kjj8=
-=ibYp
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEejLwACgkQ3SOs138+
+s6G0uxAAi5HF3oKaz4joxnoDx59LBEnAU5X2o38DOhm+0Z+W0SvoY4JXaYc4shzR
+0HHeqltwuk4WFjAIHLPs+oZdeRBnN7FonvifFOkVCnm+RmlLCXGjfmeaWnkC1+6t
+bAA7Mo+uxVCv07j+l63GFmVs7xbG8pGDdPM4ba6bsokC27Zx2ppqkU6oFhXyR1yu
+kFnZvcZo6HcXczUzizEVMpbaI0HpPY+lWjwZsdm+iCHXea/btjo7xepzOKYlzpj8
+X0C/T2wod6brm9HBkTooHyU4cvX8jJ97hDQ0yi1XrVeIAgPwQ0OvU8fVqM5TtVPl
+T6cNXpUm+2rxC+Q/L9gXCXNevTm6q1czeBqGG0VxHzA5dNpyug9quy61UlDXNkok
+o0I1hGuWXuK81vHCAqYSGCKOMZSqAxco3c83XeLLNxOZarf9/L1TCCSnnvFdmfEq
+/glJcesV2wEMofuIje+RAg5jRQO8pqMzHN+Lw1KmfnBJrQ9K+MKBfyH0aTbKHAnN
+kFM66N+AgjUgwB/sCOv0Vi3xkTstm5aGIVjF46FP9AgZpgronYTi0JNscEGOi1KG
++VbRfi/SuJHYWlkDjJjsd7I26exe4/v7WH/ZyjUgQ/8/j8TRi+oNik3O0X9gSSYj
+W9DvFcJHSbCCNPKCjsPgtQivHwW/8gnMS6zgzIvKklHiq7YnNlE=
+=fm7o
 -----END PGP SIGNATURE-----
 
---rcVyDzt3QNLnQ9/o--
+--fB7tjCoYfoEt7dJy--
 
 
---===============8245417870294564050==
+--===============6204818719225702301==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -252,5 +271,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============8245417870294564050==--
+--===============6204818719225702301==--
 
