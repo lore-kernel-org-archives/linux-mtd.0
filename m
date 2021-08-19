@@ -2,20 +2,19 @@ Return-Path: <SRS0=z9um=NK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB7A5C4338F
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Aug 2021 16:18:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC1FDC4338F
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Aug 2021 16:32:17 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 763AA60698
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Aug 2021 16:18:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 763AA60698
+	by mail.kernel.org (Postfix) with ESMTPS id AC60060F5E
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Aug 2021 16:32:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AC60060F5E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,56 +23,56 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=bG2TNwsXINNemiyhAa6DPY7X6J8a4sLrrzfBYBSZH68=; b=y38cI2xHD8bLabSIwRjEn0SWY+
-	kk/Y9TsCEbMlYNvN40Asgx2kzqIlGaepcC9wrJuiFA+iHzWEK2LvM31d64cxwUzAYXUPLM4WPS1zB
-	7MvFyi3EEm7CxbX+rpHgujufwIIAuRi9yBufg4E4JgoIwfk6jafj+3BDLyQ1PmrrzBgIwhK6x2pbY
-	wPUH7gE9AsbZx29oiIdmz5KlLY0G41R3IerljxMdP2rB5NSPZ/ejER0Sl+HVm30qU5G0/9tWTtkmP
-	5C2rs+9ewouw6slJGB49OaTlun9eRzOT+rG/MjwDEwzLHgUlGPmZjTPAlukVI7wMKY65F5CKffShe
-	IvRQcq9g==;
+	bh=VxOE+CCU+Gz9RW/joZNp6u3PRRgo/ZJccXWc5nm9dFw=; b=UUNd/MV33rCuSZZdEfkYBPCdA3
+	dvXQb5N/fEv1LIPi3Ao8W2NIPN96M0UDHtk5U3Qx8EJL5DYK6x6StkSY4wcfENTEoTDBIQ0y/LwA5
+	VRLsheJsnWMRpRwGTzJbmb0W2n8ufHyj6lXesZ8jEd1/YtVHPUfAQlRtmF+k2+ww/3lvPnNdhXXRz
+	ypTe1n7gNOQE7dtn7oGV+mz3/gk0clMzy66A+DhFEU0NI7Io5lVQWukNTD0ZTl0SYSMuit8HR929R
+	/iZW28KTxRSjXEG7gZDlTqryilRQRxGdQRO6KT/o090ecL3m2zj1JEy0bhyWI2iiULoJWGx/bIW1k
+	bD6pZmyg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mGkj7-008v57-Eq; Thu, 19 Aug 2021 16:17:09 +0000
-Received: from mail-wm1-x333.google.com ([2a00:1450:4864:20::333])
+	id 1mGkx0-008y8Y-Ro; Thu, 19 Aug 2021 16:31:31 +0000
+Received: from mail-wr1-x433.google.com ([2a00:1450:4864:20::433])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mGkj3-008v3R-Vr
- for linux-mtd@lists.infradead.org; Thu, 19 Aug 2021 16:17:07 +0000
-Received: by mail-wm1-x333.google.com with SMTP id
- f9-20020a05600c1549b029025b0f5d8c6cso7176460wmg.4
- for <linux-mtd@lists.infradead.org>; Thu, 19 Aug 2021 09:17:04 -0700 (PDT)
+ id 1mGkwu-008y65-Uo
+ for linux-mtd@lists.infradead.org; Thu, 19 Aug 2021 16:31:28 +0000
+Received: by mail-wr1-x433.google.com with SMTP id z9so9948271wrh.10
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Aug 2021 09:31:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=date:from:to:cc:subject:message-id:references:mime-version
  :content-disposition:in-reply-to:user-agent;
- bh=60qINEW/AajNCq1e+l/+W08Fyl6DoGCIURNuZ7bsdck=;
- b=uTqJWSeNGF+lF+nvNnEIkEavsCZHzmRSicfBPYqjqhCUMol7qkO7p4zdXBxXzeS4vT
- LUXoyy4jqxt9JRa9GA2emnqvcgjM5m2JH6xpgqUnHRqrvhXJ0ra+UdQrGTHBIigAbPLh
- VtxYJrYzvVlZAFn9BLoC03dGbU6/D7G3RL7V20nMcs7xOj6F0WluZa6ULpmAHfq5dHWJ
- HXoLsG3Ntc0X9376FP560pBl7c5j6ef3ByAkw7chpgshwtvTwJMn4sKZPsmEYVKGvuIs
- umScIh5+iEwTdQ0CShvhEEtGLV53HAS6lzbT7CRVhL1cxI0eKkOyVSJRLsE+nSFs10iz
- Va5w==
+ bh=xdfmGh23k0aNDX33xwOdlnspLCgiV2qSptJyQT4CArg=;
+ b=TqvsyYuIzPTFNISEaUDmY0h791HLIf4qH1WXS1GxVOvTPNRDVQWqqcXQlxGoSmEhYq
+ hmHtTmIeKTi83VzFGyYEcVObXx+9sz/n5eRC4i5PoGxDQ5FuJyqmzwZC3DZsTYvcC7lj
+ Pr/Hk6ZGcay72lFauB5YyEIy1wE9tdSBx7LT+U3/P67mkfLEUFIanjAo3tpK1Of8NDws
+ BwdnJJRNFFFrUFU5DylX11cauyAcPLYzFuHfmvb7prU10HBcx3ThlIFERG8TGHBfHyo4
+ yySdwCCzMSuAkV9jh3xYDU+0sLNNdvXISoBFguTvMb8H+aD1MJ35euCxfdXOs3xfCmJt
+ nByA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to:user-agent;
- bh=60qINEW/AajNCq1e+l/+W08Fyl6DoGCIURNuZ7bsdck=;
- b=da16TABaPT05pq7/gqTWRIhhlw1oDv8EYADvxgan2pyW7t/VltEt32D7KAgqH0ufwe
- BaNBv2DT8SVNmKLdsubOJAJ2QEDkzYNb6PKlw1jWz4oB42UbKCG0ivr8joHsGa7cxeM3
- OO3anVabU0FoXCQDqnix2O9PzBPtMvIMSpbzbCV21+PmiM2U4wM6vRxwu16Dl/TJ0ysi
- fLbGx8s80Zvda/VNV5qgddGsokSizY1r57KXlD24tUv+IjbxsNcXcswFqi9ZtDIR3BPX
- De25okHTshN/f1lM4N9hCSh5F4mI1veWa0DkjyW9+hc1iFgIEJHTzKutXz5aESzATCxg
- wSaw==
-X-Gm-Message-State: AOAM532r/0Ih966k9G4asyTiolrJ14C6UCzoQoqjMM4HXlgJsHDl5RUb
- 4ZDjMK5qvyGe0oxUznul8SQ=
-X-Google-Smtp-Source: ABdhPJx2olGrXmJhDc92ifXD/T9C9Dyg3QQIU/AaBjuCkLci0TRvThG/zCRGsYcF6TD012k/6ZhEWA==
-X-Received: by 2002:a1c:26c5:: with SMTP id m188mr14633566wmm.19.1629389823304; 
- Thu, 19 Aug 2021 09:17:03 -0700 (PDT)
+ bh=xdfmGh23k0aNDX33xwOdlnspLCgiV2qSptJyQT4CArg=;
+ b=bSK0poR6uBv9kl6NQ378BBHWRut2A7toCIRO+yYcqG8e9Am4l8Co0W8kPYgrsgcO4N
+ Qrkwy3H1D/TZ+6om+BmJyIhdSeAJFKwomf7YgooILrAleqEvsrDt0pYBeoQCEhViJ3Go
+ E6NLSl3ywzb6YDTBDYdrMjSiali9dHyJc6pYvVKWmYs1V60w3sfOPs3OgsVjdbrd0WT/
+ CNgCPCAmoEl7dJVDS7PhAtVKJ/LgmSNgGZMDf4ZVbWkxiIm4G79KE8J85zBcsdOPcu4O
+ 2G/ZcrF3fnud3xI97uE+ZJtgoJeb1gLkCp/8o2HnAo42ogy9b5Dhyyp5UcovNV0zGp+d
+ I1Tw==
+X-Gm-Message-State: AOAM530Tj33OsbAAI5WC14JwCSTcCOLdUuxHgi16DwrG9nAq81qUQvbz
+ /3a7YzbKfo1W04LUdjqm/E4=
+X-Google-Smtp-Source: ABdhPJw+layCx1zXDlaPhdMiFy7BJcVfdPSGx4BZzhnHtq808ns6k0cMS2cwB3t84/EUctnSBTQSPg==
+X-Received: by 2002:adf:f541:: with SMTP id j1mr4794858wrp.180.1629390683554; 
+ Thu, 19 Aug 2021 09:31:23 -0700 (PDT)
 Received: from localhost ([217.111.27.204])
- by smtp.gmail.com with ESMTPSA id e25sm3956144wra.90.2021.08.19.09.17.01
+ by smtp.gmail.com with ESMTPSA id p8sm7766709wme.22.2021.08.19.09.31.21
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 19 Aug 2021 09:17:02 -0700 (PDT)
-Date: Thu, 19 Aug 2021 18:17:01 +0200
+ Thu, 19 Aug 2021 09:31:21 -0700 (PDT)
+Date: Thu, 19 Aug 2021 18:31:20 +0200
 From: Thierry Reding <thierry.reding@gmail.com>
-To: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: Dmitry Osipenko <digetx@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>,
+To: Dmitry Osipenko <digetx@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Jonathan Hunter <jonathanh@nvidia.com>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
  Viresh Kumar <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
  Peter De Schrijver <pdeschrijver@nvidia.com>,
  Mikko Perttunen <mperttunen@nvidia.com>,
@@ -86,30 +85,29 @@ Cc: Dmitry Osipenko <digetx@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>,
  Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
  Adrian Hunter <adrian.hunter@intel.com>,
  Mauro Carvalho Chehab <mchehab@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
  Michael Turquette <mturquette@baylibre.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-tegra <linux-tegra@vger.kernel.org>,
- Linux PM <linux-pm@vger.kernel.org>,
- Linux USB List <linux-usb@vger.kernel.org>,
+ linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+ linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
  linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
  linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-mmc <linux-mmc@vger.kernel.org>,
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- dri-devel <dri-devel@lists.freedesktop.org>,
- DTML <devicetree@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>
-Subject: Re: [PATCH v8 19/34] pwm: tegra: Add runtime PM and OPP support
-Message-ID: <YR6D/QMDakjlD5Ve@orome.fritz.box>
+ linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+ linux-clk@vger.kernel.org
+Subject: Re: [PATCH v8 06/34] dt-bindings: clock: tegra-car: Document new
+ tegra-clocks sub-node
+Message-ID: <YR6HWMuYcF6NIepi@orome.fritz.box>
 References: <20210817012754.8710-1-digetx@gmail.com>
- <20210817012754.8710-20-digetx@gmail.com>
- <YR5ay6+r0hJsUbhy@orome.fritz.box>
- <CAPDyKFqr6NYO89io+6EfwrtELhTMps-tpGcAVbmuQ1_NnOD7Ew@mail.gmail.com>
+ <20210817012754.8710-7-digetx@gmail.com>
+ <YR0SSz7KMh7TwaFW@orome.fritz.box>
+ <eff5ef47-e6e0-3e03-cf1a-d931b0f2dc2a@gmail.com>
+ <YR033zuYWWLCeYpM@orome.fritz.box>
+ <a5b942cb-1611-9ae1-6e89-4b68fdaf03e3@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFqr6NYO89io+6EfwrtELhTMps-tpGcAVbmuQ1_NnOD7Ew@mail.gmail.com>
+In-Reply-To: <a5b942cb-1611-9ae1-6e89-4b68fdaf03e3@gmail.com>
 User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210819_091706_058705_AD635905 
-X-CRM114-Status: GOOD (  26.36  )
+X-CRM114-CacheID: sfid-20210819_093125_054281_4C050C86 
+X-CRM114-Status: GOOD (  42.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -121,81 +119,130 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4330551971839087559=="
+Content-Type: multipart/mixed; boundary="===============8245417870294564050=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
---===============4330551971839087559==
+--===============8245417870294564050==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="v92KmlAbafaPcAq1"
+	protocol="application/pgp-signature"; boundary="rcVyDzt3QNLnQ9/o"
 Content-Disposition: inline
 
 
---v92KmlAbafaPcAq1
-Content-Type: text/plain; charset=us-ascii
+--rcVyDzt3QNLnQ9/o
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 19, 2021 at 04:04:50PM +0200, Ulf Hansson wrote:
-> On Thu, 19 Aug 2021 at 15:21, Thierry Reding <thierry.reding@gmail.com> w=
-rote:
-> >
-> > On Tue, Aug 17, 2021 at 04:27:39AM +0300, Dmitry Osipenko wrote:
-> > > The PWM on Tegra belongs to the core power domain and we're going to
-> > > enable GENPD support for the core domain. Now PWM must be resumed usi=
-ng
-> > > runtime PM API in order to initialize the PWM power state. The PWM cl=
-ock
-> > > rate must be changed using OPP API that will reconfigure the power do=
-main
-> > > performance state in accordance to the rate. Add runtime PM and OPP
-> > > support to the PWM driver.
-> > >
-> > > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> > > ---
-> > >  drivers/pwm/pwm-tegra.c | 104 ++++++++++++++++++++++++++++++++------=
---
-> > >  1 file changed, 85 insertions(+), 19 deletions(-)
-> >
-> > Can this be safely applied independently of the rest of the series, or
-> > are there any dependencies on earlier patches?
+On Wed, Aug 18, 2021 at 07:57:04PM +0300, Dmitry Osipenko wrote:
+> 18.08.2021 19:39, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >> We don't have a platform device for CaR. I don't see how it's going to
+> >> work. We need to create a platform device for each RPM-capable clock
+> >> because that's how RPM works. The compatible string is required for
+> >> instantiating OF-devices from a node, otherwise we will have to
+> >> re-invent the OF core.
+> > I think we do have a platform device for CAR. It's just not bound
+> > against by the driver because these clock drivers are "special". But
+> > from other parts of the series you're already trying to fix that, at
+> > least partially.
+> >=20
+> > But it doesn't seem right to create a platform device for each RPM-
+> > capable clock. Why do they need to be devices? They aren't, so why
+> > pretend? Is it that some API that we want to use here requires the
+> > struct device?
 >=20
-> Just to make sure we don't rush something in, I would rather withhold
-> all runtime PM related patches in the series, until we have agreed on
-> how to fix the in genpd/opp core parts. Simply, because those may very
-> well affect the deployments in the drivers.
+> The "device" representation is internal to the kernel. It's okay to me
+> to have PLLs represented by a device, it's a distinct h/w by itself.
+>=20
+> CCF supports managing of clock's RPM and it requires to have clock to be
+> backed by a device. That's what we are using here.
+>=20
+> Please see
+> https://elixir.bootlin.com/linux/v5.14-rc6/source/drivers/clk/clk.c#L109
 
-Okay, understood. I didn't realize this may have an impact on how
-drivers need to cooperate. I'll hold off on applying any of these
-patches until the discussion has settled, then.
+Looking at the implementation of __clk_register() and where that device
+pointer typically comes from, I don't think the way this is used here is
+what was intended. The way I interpret the code is that a clock is
+registered with a parent device (i.e. its provider) and
+clk_pm_runtime_get() is then used internally as a way to make sure that
+when a clock is prepared, it's parent device is runtime resumed. This is
+presumably to ensure that any registers that the driver might need to
+access in order to prepare and enable the clock are accessible (i.e. the
+CAR is not powered off or in reset).
+
+So the struct device that is passed to __clk_register() (or its callers)
+should be that of the CAR rather than virtual struct devices created by
+the CAR.
+
+And it's a bit debatable whether or not PLLs represent distinct
+hardware. Ultimately every transistor on a chip could be considered
+distinct hardware. But a platform device is a device on a platform bus,
+which is really just another way of saying it's a hardware block that's
+accessible from the CPU via a memory-mapped address. A PLL (just like
+other clocks) is merely a resource exposed by means of access to these
+registers. So I don't think they should be platform devices. Even making
+them struct device:s seems a bit of a stretch.
+
+Is there any reason why struct clk can't be used for this? I mean, the
+whole purpose of that structure is to represent clocks. Why do we need
+to make them special?
+
+> >>> Also, I don't think the tegra- prefix is necessary here. The parent n=
+ode
+> >>> is already identified as Tegra via the compatible string.
+> >>>
+> >>> In the case of CAR, I'd imagine something like:
+> >>>
+> >>> 	clocks {
+> >>> 		sclk {
+> >>> 			operating-points-v2 =3D <&opp_table>;
+> >>> 			power-domains =3D <&domain>;
+> >>> 		};
+> >>> 	};
+> >>>
+> >>> Now you've only got the bare minimum in here that you actually add. A=
+ll
+> >>> the other data that you used to have is simply derived from the paren=
+t.
+> >> 'clocks' is already a generic keyword in DT. It's probably not okay to
+> >> redefine it.
+> > "clocks" is not a generic keyword. It's the name of a property and given
+> > that we're talking about the clock provider here, it doesn't need a
+> > clocks property of its own, so it should be fine to use that for the
+> > node.
+>=20
+> I'm curious what Rob thinks about it. Rob, does this sound okay to you?
+
+Another alternative would be to omit that level altogether and just make
+sclk and siblings direct children of the CAR node.
 
 Thierry
 
---v92KmlAbafaPcAq1
+--rcVyDzt3QNLnQ9/o
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEeg/oACgkQ3SOs138+
-s6HxGg//Ql/ilCJ6m24EOkbDMDHwSFLN7MYgmfi1Muvarf/bqQFb1LIOonS0qeTr
-fHvvi587/6LtOdHE0PNwTl0SEz5UpxSojnZdTDjV2/JdSgy7LeJ2RBbeZ7kxVCMP
-3ud/I9kVkE1BaAtRzX0sqNJOIDA2MG00wBq08+PNS9ihOvipqypiweD5JSaB5MSi
-Gof9qhzVOZV/ONjRZ7Ib0kjig/qx0+lpJ2W/15QdU4/OHp9QP/ONoinEIk9WPaXU
-QveXwGDwo27fi1MQQKsQCwoytQZaaFjqyy3gnZNiAjY6fUikfa0TSvjZBXGJduvf
-YXJJIt1dy09Zk589NliTddgaZE4anOdgW7c02KwLSLw4RxsAgFG8xfj1Z8i9DhWs
-GQGNkYNXlia3rj7uiU6dJGLlhtyNblI96fNGXqnlhnIkuDJvYuKm9BRs9e9gGDva
-qvsD03sjGzToLh26dSvTZa6KPqK7pgqkPyOxP4PuqUNECw5IOfVNXd5S4JKQMHat
-QDO1QwVz9eg29cSSX7oziTvc7b1iS0IqVdtfiDa/SzWC7sdCVn+hCVD+SR5vEDHY
-6KcokLAcDqd8YXs71HDqDz4G3L+P17bEoHjcYIz/zJl+c5r+JDmxuhCHL0Ak7KlO
-BxfqqqYVBPahJsnmVcGVnAMavszy2PwqEQXM9PGZYEevCsi83lo=
-=yoaX
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEeh1YACgkQ3SOs138+
+s6H2hw/9FHQE4gIC68lVuteJusivX3to+lSemB8K8zjRkcxT7nURgxWEiaqizxEC
+HdNxAuNdVDpD1v34JC2ZGJgnnYdMSrk9k4BhykGgn1+QhdgEQGSTAEXUhcxfK2Yg
+5Slk4jnHH9HF0GPYfbJ5SP6k3NgkeL8h0fCa2JviaoCOhzyRBJK71IG1cIOlj7Ud
+3nxcd1/NzHcPZnsGivm5Qd8saf1nyLrZghmyUsuaZp5tsH8Ct/x5HWiShOTVB6UT
++uRefYWMbuaJp/mCa+6N0gK2827S84iSRzO5sxI3nYZbRJsgLgD766fzdC/EDZ9G
+Zg5AZgzH67GoEicbdCQMgx6zVV6Y1LQF1+5mrHjpomm2OWRVZELLEfGa1pqVNIGu
+VJjQuIX618IKU5jBYUw18+vr2HiJNDEFCXX0PrBYXp/cc64fiq4I3M30clqQQoxr
+puehYCuiVtD9v6lr8tnEA79qUnn0XsWIpzzHbeLtwclpaqN5lTZUo6eXXFIGid+3
+ZauSDJzqa4qTX1fvwH23kMnkA91nI2A00rPQWtER0uhJGq8TjXFPeJ4JHsvTyXxg
+Xr77eogUzKs15p0Eh3BBBYCu5CLnaePC+kK5pcVnJLDmbmRW/gaS/RvCuw/YfIhE
+Q5nj2KNqZny4RL9VKn0X77bP0ngrfjlFjFsEDt+9MYgNMX3kjj8=
+=ibYp
 -----END PGP SIGNATURE-----
 
---v92KmlAbafaPcAq1--
+--rcVyDzt3QNLnQ9/o--
 
 
---===============4330551971839087559==
+--===============8245417870294564050==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -205,5 +252,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============4330551971839087559==--
+--===============8245417870294564050==--
 
