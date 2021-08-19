@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59D9EC4338F
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Aug 2021 17:00:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77936C4338F
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Aug 2021 17:00:54 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 28E4660FE6
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Aug 2021 17:00:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 28E4660FE6
+	by mail.kernel.org (Postfix) with ESMTPS id 45F74601FD
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Aug 2021 17:00:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 45F74601FD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,65 +23,65 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZjKL2ihHXAH7uhso29LRH+yPu4gU4dYpcszMHCG6HJ8=; b=Eitodt/bKr0rvq
-	DP1QSH32Keti4LnqCeTE8WD6J+mgjvlLS90NrHBtNx6kUmOO3KzDADmUKkMNReQF5GnPy/Un6Bodo
-	cWY00+wn8WDA8Jty3gdIO9HUOJ5WsHrns8/nHelzeZYbUpkhVBnCkMIV3FJaG2FrxCVFayp0YZeUK
-	dT9HOGQisuomXE1RjCO1wgXQbHqv5/tD/MlfumHy6DmDhMjEo0nVZ1p59aWLwa61iLELGMu+RE00U
-	rIiamApCmWT7gs2Y7pR+4E14NlaUR+BSJhSKt6K5Jv9CSH5UzahnGXXe1Ymehdu/ytdGIF5ndm3Ww
-	OW0Eh5c1lqi5fAtM9qLg==;
+	List-Owner; bh=JLlqK65/O0OGIYYyhLUfxizJOBnkBcUfalEME2gSSz4=; b=IkAoK0jbYYJ+M+
+	KUkEl1s9KFR+WP2T2LWGGn0pPba+e/qQBTwFX0W+Orl+PmeM2AF13vcshqonsm1RkPTdH5lYOWiap
+	ZlqMF6hDgal9CrYNYA45UVkeO21nPP5Rp4nfL6rOTmHNBRZUWRr0pHt/g1ry6Szzwd2MnADbkEl2Z
+	jLVYebUY9XRV8m7mXJJaFiTCU/p8m4cNDSGsnR3/PI7V5h18uIy10/dU9tGWOcTUKQg/VzO2g7yuD
+	pVkBqrcQAtDf3XEZtAvIh4KfRUJDTu+4j5ZkdyLQr0du3z/mwTQoG7NhZc7xQchGtwA7VYxHTNQX5
+	NrmS5NaUT+1flfezFC2Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mGlOQ-0091M2-SY; Thu, 19 Aug 2021 16:59:50 +0000
+	id 1mGlOr-0091Ug-Cn; Thu, 19 Aug 2021 17:00:17 +0000
 Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mGlO0-0091Aq-Ct
+ id 1mGlO0-0091Ai-Cq
  for linux-mtd@lists.infradead.org; Thu, 19 Aug 2021 16:59:32 +0000
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72])
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id DA2F03F365
- for <linux-mtd@lists.infradead.org>; Thu, 19 Aug 2021 16:59:22 +0000 (UTC)
+ by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id DC54C411FC
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Aug 2021 16:59:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1629392362;
- bh=NMKQ8HC+F1mFEutTPt5SprtiqsXf0Joxpmn/FGyaQRA=;
+ s=20210705; t=1629392359;
+ bh=eulTWffz2zcY1QHzF3VctUTdQdyWBbuhcOokJb1Arrg=;
  h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
  MIME-Version;
- b=dzAcGMQcH+kUPJRhrjoPLzjYwdJ4llREaR2qmtNDeMuzWwo91s6oTUVLS0v6w9XZW
- gNmDTAzkDkd7/c71sVFmYe6abQ1FtM1EOru3t3YKkp1+qSFkxewtCGetX9u6oPTJL+
- OO4wmXunnVJenVdsHBWcM10guFvNDIbC2fZU5xemWsIHndrEF3C8lRa0Cd+KfplrJ5
- OniHva99lxkCVo4ckVxEF6d2KtY4MevImm4tCyt2ziTvQ6m09raThMLm5BEXkE8b2t
- XXdoMqd0/zWhVjNlPZ7K/zjziTH1K0QiRDpdoiDFbxn0KHg4uPih0emSk/Y0Vwf9LZ
- lJANTLQ3B7Zdg==
-Received: by mail-ej1-f72.google.com with SMTP id
- k12-20020a170906680cb02905aeccdbd1efso2495821ejr.9
- for <linux-mtd@lists.infradead.org>; Thu, 19 Aug 2021 09:59:22 -0700 (PDT)
+ b=rhtOTdmthNu2ThG+hY3/LzKIqTR9Droed/Mx6QU+buHVClI6aO8E1z/DNARz7IaN2
+ jVfYLBpBMy3r69LYb2H2O/n06OrkCLcnR9O3eVho/70XSv94RNGDA8ahrQrLCzOsPX
+ 5/W3xF8adtdheZeSDKMdlMrYGdmSKjxuOpsdfi6XFTjI0kRpjd9O75ZEIwNj2ceaTC
+ WJdzp6wfpCoeGsp/hXs1PsKcsTixkSQMSdhy/TorPrd9wO8QaJAgD2aBHJD3U3tSdF
+ gzTis6ckblOOf8X/Ux1GyYrbTgE6X8u2hZ6XOH3gxP5lUFWvOK/V0kZR9OWHeCAtob
+ gE2zoJYQL+bYg==
+Received: by mail-ej1-f71.google.com with SMTP id
+ v19-20020a170906b013b02905b2f1bbf8f3so2489364ejy.6
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Aug 2021 09:59:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=NMKQ8HC+F1mFEutTPt5SprtiqsXf0Joxpmn/FGyaQRA=;
- b=NcwdFEeFAODfdtNIx4puyqwnsGZrsyFtRefZQHKrEDd5Oc5C2Ipr3JufWuzU7AVWH+
- lr7RV7ZHKVEnimDY61W7JuHKQHkKe2lgKNbD0sqwORr0L9zK20r5u86r2LehxMZ9e6G+
- 38L2qKxzJvUmQLU8LSIic0it1AD25UQKTBs1KwVlQjtLcgm9Bloabnt7HctFtMOjjJ/5
- mtNOzexCTQewCcUwBq4CjY1iW1fTe1LD+ba3l5OtjDBbrWXyHCysPJ1d5X4+CaaQC91q
- jbYNpHuqRxDlS6PzVjg2eIgZ1CADJaqStdZu+pWsVPLQjkBomG5YHYtBQOIt4jiVc79I
- 8laA==
-X-Gm-Message-State: AOAM533o97uGpx9vOTJnKbtc+ULixuWnvC7+Z4+K1b6Hoo1n+w7ie8cB
- GlWRwaJT+LG1AY7I1ckSXzEtPYt/EASOloE9nMFKjS6SDpR3h11QzSNrTAecIzvF+W1Wcy2zMu6
- gnvfk5nHbn/U4UHLu/UnlwiCyLnrflDOw5X2qOHk5guc=
-X-Received: by 2002:a17:906:6ad4:: with SMTP id
- q20mr17321652ejs.433.1629392362663; 
- Thu, 19 Aug 2021 09:59:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwTiHUoNITAHW6eENhh9K7MzzNuKTjMUdplkoqS0IOpq6oP+UAyQaSufFwMawL/9lYJf9kFuA==
-X-Received: by 2002:a17:906:6ad4:: with SMTP id
- q20mr17321630ejs.433.1629392362524; 
- Thu, 19 Aug 2021 09:59:22 -0700 (PDT)
+ bh=eulTWffz2zcY1QHzF3VctUTdQdyWBbuhcOokJb1Arrg=;
+ b=ctCKkzBxP9F+JnbZWUs/LyuI2grDwrpMUal8NQeqvo0GtccqMBZJdCngOUj3IjVJOI
+ 715PNau+FycOYVG0NIhOfEK0GGlmTi8yxEYwbQjDzteH4uztQHojmghdm+1wtv9ZhrZe
+ HCHxmWN3hHf0pcTTaHRfz5h95zwvQLuLqrIBLUeeFu7W52zMYycJx2zRXr6L1wfemZNT
+ 2yefXjCGnQiIzMf1SLS088EBYWv+EqC6Tv9/aPPZdi5q9xObXWX/sB5lYEylNU+RqVey
+ XMD57mWo1Lqq65xllyda3esjPRLrDdtO+DMS3r3RI5THE0X/RbBqV7QXIFz9ZRDaqsf6
+ E8EQ==
+X-Gm-Message-State: AOAM5301MV4aash/CW6aIv8d4rYZOrFCKWBzLNNTfvHmv4Ibl9CeYfKe
+ Y/WmvpeZhetG3eqRdk5/8+y7i50szMEpK8Fr04tLscFOe57FhbazispF7VnxsdPPWZuCJmEl4np
+ JT+gCIjoOBWsaMG+wnwbn3D2Lx+Vv1zk38/yhTX+yJS0=
+X-Received: by 2002:a05:6402:781:: with SMTP id
+ d1mr17839063edy.32.1629392358805; 
+ Thu, 19 Aug 2021 09:59:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJww4UtUY6h9OU4l9uS3kIuoYiIOm0VucV6SoXDn0iXyU7Cxho1WRMomPQZIfagqOlV+lXh0nw==
+X-Received: by 2002:a05:6402:781:: with SMTP id
+ d1mr17839040edy.32.1629392358686; 
+ Thu, 19 Aug 2021 09:59:18 -0700 (PDT)
 Received: from localhost.localdomain ([86.32.42.198])
- by smtp.gmail.com with ESMTPSA id h8sm2023418edv.30.2021.08.19.09.59.20
+ by smtp.gmail.com with ESMTPSA id h8sm2023418edv.30.2021.08.19.09.59.17
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 19 Aug 2021 09:59:21 -0700 (PDT)
+ Thu, 19 Aug 2021 09:59:18 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -92,17 +92,16 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
  linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH 4/5] riscv: dts: microchip: add missing compatibles for clint
- and plic
-Date: Thu, 19 Aug 2021 18:59:07 +0200
-Message-Id: <20210819165908.135591-4-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 2/5] riscv: dts: sifive: fix Unleashed board compatible
+Date: Thu, 19 Aug 2021 18:59:05 +0200
+Message-Id: <20210819165908.135591-2-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210819165908.135591-1-krzysztof.kozlowski@canonical.com>
 References: <20210819165908.135591-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210819_095924_670527_4A654900 
-X-CRM114-Status: GOOD (  14.44  )
+X-CRM114-CacheID: sfid-20210819_095924_656121_0DD3EEA9 
+X-CRM114-Status: GOOD (  12.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -119,41 +118,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The Microchip Icicle kit uses SiFive E51 and U54 cores, so it looks that
-also Core Local Interruptor and Platform-Level Interrupt Controller are
-coming from SiFive.  Add proper compatibles to silence dtbs_check
-warnings:
+Add missing sifive,fu540 compatible to fix dtbs_check warnings:
 
-  clint@2000000: compatible:0: 'sifive,clint0' is not one of ['sifive,fu540-c000-clint', 'canaan,k210-clint']
-  interrupt-controller@c000000: compatible:0: 'sifive,plic-1.0.0' is not one of ['sifive,fu540-c000-plic', 'canaan,k210-plic']
+  arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dt.yaml: /: compatible: 'oneOf' conditional failed, one must be fixed:
+  ['sifive,hifive-unleashed-a00', 'sifive,fu540-c000'] is too short
+  'sifive,hifive-unleashed-a00' is not one of ['sifive,hifive-unmatched-a00']
+  'sifive,fu740-c000' was expected
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
-index d9f7ee747d0d..6f843afacfad 100644
---- a/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
-+++ b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
-@@ -161,7 +161,7 @@ cache-controller@2010000 {
- 		};
+diff --git a/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
+index 60846e88ae4b..c960e19cfa70 100644
+--- a/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
++++ b/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
+@@ -11,7 +11,8 @@ / {
+ 	#address-cells = <2>;
+ 	#size-cells = <2>;
+ 	model = "SiFive HiFive Unleashed A00";
+-	compatible = "sifive,hifive-unleashed-a00", "sifive,fu540-c000";
++	compatible = "sifive,hifive-unleashed-a00", "sifive,fu540-c000",
++		     "sifive,fu540";
  
- 		clint@2000000 {
--			compatible = "sifive,clint0";
-+			compatible = "sifive,fu540-c000-clint", "sifive,clint0";
- 			reg = <0x0 0x2000000 0x0 0xC000>;
- 			interrupts-extended = <&cpu0_intc 3 &cpu0_intc 7
- 						&cpu1_intc 3 &cpu1_intc 7
-@@ -172,7 +172,7 @@ &cpu3_intc 3 &cpu3_intc 7
- 
- 		plic: interrupt-controller@c000000 {
- 			#interrupt-cells = <1>;
--			compatible = "sifive,plic-1.0.0";
-+			compatible = "sifive,fu540-c000-plic", "sifive,plic-1.0.0";
- 			reg = <0x0 0xc000000 0x0 0x4000000>;
- 			riscv,ndev = <186>;
- 			interrupt-controller;
+ 	chosen {
+ 		stdout-path = "serial0";
 -- 
 2.30.2
 
