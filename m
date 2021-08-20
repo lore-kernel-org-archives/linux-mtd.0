@@ -2,108 +2,89 @@ Return-Path: <SRS0=qXjq=NL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-7.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1BA5C4338F
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Aug 2021 13:09:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E040DC4338F
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Aug 2021 13:15:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9E115610A3
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Aug 2021 13:09:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9E115610A3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id A180F61130
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Aug 2021 13:15:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A180F61130
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3eI4DPWbyUCDAucekFEkl2dOX70D9b5quah8Yk8SVnY=; b=pq90MpNCPKYaM4
-	h+LSt13mOngsQb3nK0K+8ou97XUFd+gz9ok0wPd2MteXdKd1XfJsYUwvgVbfvzW0JHPf/JdcU5BTb
-	oHc8K+TIZP+V93bEcwkSTRGJLjPqDxBve1jQsjgzjkCQu3rRupqx8RNiANA8AW8cDjm2ewRZIfDoD
-	c9G+lkPKbEo55bMTlzy+lbC7LFz/xTEzsPkUfYCzOm8lpMR35VGlosz/dQpRWoPullk0kQcxAv1rE
-	4kdkqCECd3cg86M8+63iiTLfc5NYNSAveTVI2Qt/evr6D72bh1n6CiZgftDUf4Sv3zXboKfqiiu+n
-	HKG+TwbAyiA3f606ZG2Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=CVEfjeha95Kzm13+Ps3GdL1rE3fANhcxpVogxhdw89s=; b=W/kuArPbPisjfEYhkhWj4XjaMZ
+	wrg7xTaT3fy6FR6rBkNNAnBKcF6EXJSo+4abUfpO9pLYvzJ1mf4Lhom4typq7+Hm+mVeF0xeH0ypD
+	cFU4/DkJlDqFBDohh7394J1nxVk2Tp2wCVG3uPWGOUek6KtA4JsrIOuASlDoOgrX4MAW8GpntlXIq
+	YP6n0/IZpXEtSk/nFeZrJVDZ9ZIzQRdi4wZDKY0ZKt9ktNvUVK5IVF3+gsCTvN9aG3RE2n0PyHNyP
+	UHgNB9LdR9/BCTeVtHUm/Z3i2bIfwpr8fI2L+1iPo1iu3Kl1oB1Xto5DxSk2Fh84vghcEz2n/mRsA
+	mA+wbkug==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mH4GZ-00BEfB-MZ; Fri, 20 Aug 2021 13:08:59 +0000
-Received: from mail-ua1-x933.google.com ([2607:f8b0:4864:20::933])
+	id 1mH4MG-00BFbk-FD; Fri, 20 Aug 2021 13:14:52 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mH4GQ-00BEcy-JD
- for linux-mtd@lists.infradead.org; Fri, 20 Aug 2021 13:08:55 +0000
-Received: by mail-ua1-x933.google.com with SMTP id u39so4077827uad.10
- for <linux-mtd@lists.infradead.org>; Fri, 20 Aug 2021 06:08:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=1jeLsd0F5nu8VxBSxWPjs9ij/vCzMSfR5Tmv5iuwd6s=;
- b=WC/dbJiZXZbYao7JhIntQY4TZ71VEiAo3x28NE7fEM5kyH3E5QMkrYaKxo+tOHuBq2
- 4fOoN/8kF20QYOvTlDeczofK7BcIqjasNY7CBq53XfqL9k8ztpMQHfVcSzVO71rO64Zq
- McT44tin8yfog5Tj3F9uEcMm8s9RXuEY0am/zJIYxZIPBOSKQ0gPSUGTqV2fLnNdUMyA
- Udra5icYrRXmu3Bub8tb1oL++vAVtV4op8H5c4RaKOsboeh/aX+gQt/xKF7m6+TffsNV
- KpFsGCqib0Qpb9uD4iaINA3IeiJAs50v1pCyq6JF3tpma3/8Ou1apbdGh5FgySUdxEte
- 6zRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=1jeLsd0F5nu8VxBSxWPjs9ij/vCzMSfR5Tmv5iuwd6s=;
- b=ZjXzi6PXP8JjSenzZzEcDu4N0jce+btFfG5ElkJRViXXtPVwaDs42YpwbMphEXbO4v
- 57zwIY41CjuWMKYm9quYV9vH6yJav1H4CWAbRNfaYA8VYDE7/4EFUm8bwV28DLOleOD2
- Yos0mKpVQTiBStlLQMmWM84C5F4aNYaG1NK4riuv4GJkqSv9JfyUN84U+qFWNZW7wwjS
- Ter5YUSbH2+waUYhEx5X5NOivL/9t/BPP5TgaSfVDzAYABtmMEApM7+Xwvqkz1cL1RN6
- O93bQIIynje2zDJPoxIdlDEtRXHTLGCRoeYVyeWvk2EUPHgD61aAVewq/eGveER1TAWw
- ecnw==
-X-Gm-Message-State: AOAM5318KaeHTAdVTCREWzSKoB6g2RZ3hir5G15UC4NnOLMalkEPqlXS
- 8XWiEda5Q2H/k+CeE7dTK4XNUrzez+kSHNNIs4L36w==
-X-Google-Smtp-Source: ABdhPJyudXWst0uOFOvLTh4dvpAObwIHCZFQbOR7Ax2SinJKzLNlpYWdAnSEO7YQ/BLnbTZWMq48nnebeaOpVOjUigE=
-X-Received: by 2002:ab0:60a9:: with SMTP id f9mr15039087uam.19.1629464926939; 
- Fri, 20 Aug 2021 06:08:46 -0700 (PDT)
+ id 1mH4MA-00BFaL-B5
+ for linux-mtd@lists.infradead.org; Fri, 20 Aug 2021 13:14:50 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17KDEabO079205;
+ Fri, 20 Aug 2021 08:14:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1629465276;
+ bh=zjV2VV/W/R/LlnVIjGzbmQRZCHArbsyZBGSViRrmZLY=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=nvbK7Sln3P6qZvNkZSrpRqy0ZeCZEa+Mw7g3tXLqpHoen6tzx1nishrOL3dlg99yr
+ 3CVhsqLYPg9xsJ3NM6AAmDOrdrrNJZlMH+wv3kQKf+HyaL9m2sInEK796AvMCmkIXJ
+ qxU9JjBM4E2qk8zeGIvHLunusHBRtgiyNgGMVG/Y=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17KDEaQr109892
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Fri, 20 Aug 2021 08:14:36 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 20
+ Aug 2021 08:14:36 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 20 Aug 2021 08:14:35 -0500
+Received: from [10.250.232.95] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17KDEV4o056759;
+ Fri, 20 Aug 2021 08:14:32 -0500
+Subject: Re: [PATCH 13/13] mtd: spinand: Add support for Winbond W35N01JW SPI
+ NAND flash
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Mark Brown <broonie@kernel.org>, Patrice Chotard
+ <patrice.chotard@foss.st.com>, Boris Brezillon
+ <boris.brezillon@collabora.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <linux-spi@vger.kernel.org>, Pratyush Yadav <p.yadav@ti.com>
+References: <20210713130538.646-1-a-nandan@ti.com>
+ <20210713130538.646-14-a-nandan@ti.com> <20210806211423.5c9d3e96@xps13>
+ <64f130dc-1d87-5657-ae93-09bfdb7e93a1@ti.com> <20210820140210.47d348dc@xps13>
+From: Apurva Nandan <a-nandan@ti.com>
+Message-ID: <949d3af1-1513-e606-bc9e-7265cbf97e58@ti.com>
+Date: Fri, 20 Aug 2021 18:44:30 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210817012754.8710-1-digetx@gmail.com>
- <20210817012754.8710-8-digetx@gmail.com>
- <YR0UBi/ejy+oF4Hm@orome.fritz.box>
- <da7356cb-05ee-ba84-8a7c-6e69d853a805@gmail.com>
- <YR04YHGEluqLIZeo@orome.fritz.box>
- <ad99db08-4696-1636-5829-5260f93dc681@gmail.com>
- <YR6Mvips3HAntDy0@orome.fritz.box>
- <e17bbe8d-7c0f-fc3d-03c7-d75c54c24a43@gmail.com>
- <YR+VDZzTihmpENp6@orome.fritz.box>
-In-Reply-To: <YR+VDZzTihmpENp6@orome.fritz.box>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Fri, 20 Aug 2021 15:08:10 +0200
-Message-ID: <CAPDyKFpJ+TK0w1GZEA7G=rtAjq5ipmVR4P0wy7uHiEGVWRk5yA@mail.gmail.com>
-Subject: Re: [PATCH v8 07/34] clk: tegra: Support runtime PM and power domain
-To: Thierry Reding <thierry.reding@gmail.com>
-Cc: Dmitry Osipenko <digetx@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>,
- Viresh Kumar <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>, 
- Peter De Schrijver <pdeschrijver@nvidia.com>,
- Mikko Perttunen <mperttunen@nvidia.com>, 
- Peter Chen <peter.chen@kernel.org>, Mark Brown <broonie@kernel.org>, 
- Lee Jones <lee.jones@linaro.org>,
- =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
- Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Richard Weinberger <richard@nod.at>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, Lucas Stach <dev@lynxeye.de>, 
- Stefan Agner <stefan@agner.ch>, Adrian Hunter <adrian.hunter@intel.com>, 
- Mauro Carvalho Chehab <mchehab@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-tegra <linux-tegra@vger.kernel.org>, 
- Linux PM <linux-pm@vger.kernel.org>, Linux USB List <linux-usb@vger.kernel.org>,
- linux-staging@lists.linux.dev, linux-spi@vger.kernel.org, 
- linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org, 
- linux-mmc <linux-mmc@vger.kernel.org>, 
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- dri-devel <dri-devel@lists.freedesktop.org>, 
- DTML <devicetree@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>
+In-Reply-To: <20210820140210.47d348dc@xps13>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210820_060850_663479_B4EA3A33 
-X-CRM114-Status: GOOD (  25.46  )
+X-CRM114-CacheID: sfid-20210820_061446_552745_1EC65E47 
+X-CRM114-Status: GOOD (  15.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -115,77 +96,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-[...]
-
-> >
-> > I'm creating platform device for the clocks that require DVFS. These
-> > clocks don't use regulator, they are attached to the CORE domain.
-> > GENPD framework manages the performance state, aggregating perf votes
-> > from each device, i.e. from each clock individually.
-> >
-> > You want to reinvent another layer of aggregation on top of GENPD.
-> > This doesn't worth the effort, we won't get anything from it, it
-> > should be a lot of extra complexity for nothing. We will also lose
-> > from it because pm_genpd_summary won't show you a per-device info.
-> >
-> > domain                          status          children                           performance
-> >     /device                                             runtime status
-> > ----------------------------------------------------------------------------------------------
-> > heg                             on                                                 1000000
-> >     /devices/soc0/50000000.host1x                       active                     1000000
-> >     /devices/soc0/50000000.host1x/54140000.gr2d         suspended                  0
-> > mpe                             off-0                                              0
-> > vdec                            off-0                                              0
-> >     /devices/soc0/6001a000.vde                          suspended                  0
-> > venc                            off-0                                              0
-> > 3d1                             off-0                                              0
-> >     /devices/genpd:1:54180000.gr3d                      suspended                  0
-> > 3d0                             off-0                                              0
-> >     /devices/genpd:0:54180000.gr3d                      suspended                  0
-> > core-domain                     on                                                 1000000
-> >                                                 3d0, 3d1, venc, vdec, mpe, heg
-> >     /devices/soc0/7d000000.usb                          active                     1000000
-> >     /devices/soc0/78000400.mmc                          active                     950000
-> >     /devices/soc0/7000f400.memory-controller            unsupported                1000000
-> >     /devices/soc0/7000a000.pwm                          active                     1000000
-> >     /devices/soc0/60006000.clock/tegra_clk_pll_c        active                     1000000
-> >     /devices/soc0/60006000.clock/tegra_clk_pll_e        suspended                  0
-> >     /devices/soc0/60006000.clock/tegra_clk_pll_m        active                     1000000
-> >     /devices/soc0/60006000.clock/tegra_clk_sclk         active                     1000000
-> >
->
-> I suppose if there's really no good way of doing this other than
-> providing a struct device, then so be it. I think the cleaned up sysfs
-> shown in the summary above looks much better than what the original
-> would've looked like.
->
-> Perhaps an additional tweak to that would be to not create platform
-> devices. Instead, just create struct device. Those really have
-> everything you need (.of_node, and can be used with RPM and GENPD). As I
-> mentioned earlier, platform device implies a CPU-memory-mapped bus,
-> which this clearly isn't. It's kind of a separate "bus" if you want, so
-> just using struct device directly seems more appropriate.
-
-Just a heads up. If you don't use a platform device or have a driver
-associated with it for probing, you need to manage the attachment to
-genpd yourself. That means calling one of the dev_pm_domain_attach*()
-APIs, but that's perfectly fine, ofcourse.
-
->
-> We did something similar for XUSB pads, see drivers/phy/tegra/xusb.[ch]
-> for an example of how that was done. I think you can do something
-> similar here.
->
-> Thierry
-
-Kind regards
-Uffe
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+CgpPbiAyMC8wOC8yMSA1OjMyIHBtLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+IEhpIEFwdXJ2YSwK
+PiAKPiBBcHVydmEgTmFuZGFuIDxhLW5hbmRhbkB0aS5jb20+IHdyb3RlIG9uIEZyaSwgMjAgQXVn
+IDIwMjEgMTc6MjE6MzMKPiArMDUzMDoKPiAKPj4gSGkgTWlxdcOobCwKPj4KPj4gT24gMDcvMDgv
+MjEgMTI6NDQgYW0sIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4+PiBIaSBBcHVydmEsCj4+Pgo+Pj4g
+QXB1cnZhIE5hbmRhbiA8YS1uYW5kYW5AdGkuY29tPiB3cm90ZSBvbiBUdWUsIDEzIEp1bCAyMDIx
+IDEzOjA1OjM4Cj4+PiArMDAwMDoKPj4+ICAgIAo+Pj4+IFdpbmJvbmQgVzM1TjAxSlcgaXMgU1BJ
+IE5BTkQgZmxhc2ggc3VwcG9ydGluZyBPY3RhbCBEVFIgU1BJIHByb3RvY29sLgo+Pj4KPj4+ICAg
+ICAgICAgICAgICAgICAgICAgICAgYQo+Pj4gICAgCj4+Pj4gQWRkIG9wX3ZhaXJhbnRzIGZvciBX
+MzVOMDFKVywgd2hpY2ggaW5jbHVkZSB0aGUgT2N0YWwgRFRSIHJlYWQvd3JpdGUKPj4+Cj4+PiB2
+YXJpYW50cwo+Pj4gICAgCj4+Pj4gcGFnZSBvcHMgYXMgd2VsbC4gQWRkIFczNU4wMUpXJ3Mgb29i
+IGxheW91dCBmdW5jdGlvbnMgZm9yIHRoZQo+Pj4KPj4+ICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBPT0IKPj4+ICAgIAo+Pgo+PiBPa2F5LCB3aWxsIGNvcnJlY3QgdGhlc2Uu
+Cj4+Cj4+Pj4gbXRkX29vYmxheW91dF9vcHMuIEFkZCBhbGwgb3AgYWRqdXN0bWVudHMgcmVxdWly
+ZWQgZm9yIE9jdGFsIERUUiBTUEkKPj4+PiBtb2RlIHVzaW5nIHRoZSBhZGp1c3Rfb3AoKS4gRmlu
+YWxseSwgYWRkIGFuIGVudHJ5IGZvciBXMzVOMDFKVyBpbgo+Pj4+IHNwaW5hbmRfaW5mbyB0YWJs
+ZS4KPj4+Pgo+Pj4+IERhdGFzaGVldDogaHR0cHM6Ly93d3cud2luYm9uZC5jb20vZXhwb3J0L3Np
+dGVzL3dpbmJvbmQvZGF0YXNoZWV0L1czNU4wMUpXX0RhdGFzaGVldF9CcmllZi5wZGYKPj4+PiAg
+IAo+Pj4KPj4+IE1heWJlIHdlIGNhbiBzcGxpdCB0aGlzIGludG8gdHdvIHBhcnRzOgo+Pj4gMS8g
+c3VwcG9ydCB0aGUgY2hpcAo+Pj4gMi8gYWRkIDgtRCBzdXBwb3J0Cj4+PiAgICAKPj4KPj4gSSBj
+YW4gc3BsaXQgdGhlIHBhdGNoIGludG86Cj4+IDEvIEFkZCBpbXBsZW1lbnRhdGlvbiBvZiBtYW51
+ZmFjdHVyZXJfb3BzOiBhZGp1c3Rfb3AoKSB0byBoYW5kbGUgdmFyaWF0aW9ucyBvZiBvcHMgaW4g
+OEQtOEQtOEQgbW9kZQo+PiAyLyBBZGQgc3VwcG9ydC9lbnRyeSBmb3IgV2luYm9uZCBXMzVOMDFK
+VyBTUEkgTkFORCBmbGFzaCBjaGlwCj4+Cj4+IEFzIDgtRCBzdXBwb3J0IGhhcyBhbHJlYWR5IGJl
+ZW4gYWRkZWQgaW4gYSBwcmV2aW91cyBwYXRjaC4KPiAKPiBJIGFsc28gZG9uJ3Qgd2FudCB0aGUg
+cmVuYW1pbmcgdG8gaGFwcGVuIGluIHRoZSBwYXRjaCBhZGRpbmcgbW9yZQo+IGxvZ2ljLgo+IAoK
+T2theSwgZ290IGl0LiBXaWxsIGFtZW5kIHRoaXMuCgo+IFRoYW5rcywKPiBNaXF1w6hsCj4gCgpU
+aGFua3MsCkFwdXJ2YSBOYW5kYW4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0
+cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
