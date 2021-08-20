@@ -2,72 +2,96 @@ Return-Path: <SRS0=qXjq=NL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 036D8C4338F
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Aug 2021 16:49:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74FC4C4338F
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Aug 2021 18:25:58 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 865006108F
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Aug 2021 16:49:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 865006108F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 3D1C561221
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Aug 2021 18:25:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3D1C561221
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:Date:
-	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=ykFd9Dqno1bMqkghxFL8hwN1Lxq7vCEjifY79nXZums=; b=mE5
-	Ux7k0mv5IlAjexwOhXvR3M1wolunktu2joci1FGaXWVmXnF/3GqRwbw6VtZld9hCO1vPwIpPC7Mgh
-	bF70ZTxl7YBmcXjhVZ0M4bxim5qoomw1T44WG2mfx1B8o2u2GsjyNWjtb65GGdrZhYh48JWCFL3SJ
-	oOk2syCmYyIOtjxOPUkObEgDelbdgSUEUX4KjSLFu6NAIMjscepHf1E7b04YgXv61f9eaCfSUgKir
-	x1892Uf1GjFBQPdAD3t3gZcthtG9YiFeghQm5NOps6nFFGDhxGeBh/NGgB5csXt0JbsrRsUzRRBej
-	4OVPA9052Bo0TznjzvYGHA1DQKPF/1w==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=v1968uOhgpBDACtZqifKkIWTtyvZZKaXWwxex1C07Nc=; b=MZpn4KSiqmEyRo
+	HJxTD0FIpRvrlUWErDz92LMJ5ZP/7pHPHp52+xn1NL/2VQZ09O0aUCRLgGcUOulzKHg8NFUmv0cOn
+	FpBQdSJjYy4Fbz8sxXRXzJydNPtyiCw+dzFFm6iLQdv2lbtszoTQBiWwb1eG7dS+0MoZpaMI6+sc7
+	ROtl85EPyCyc6jlSXfuUpOvq7Kuzwh/oAOqZePgPInOGiG6aHZ4GjtXYWCRhG4l697qA+FeXZhLi2
+	IWlrKhsfohhzpIaTwinwlmkAloRbXm0OMcxCU9QSAB/XUuI31g6rCGwwe4l9DJpfU1oTHIbRDZA3V
+	wqScijvUO+gUOk0xUAwQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mH7gw-00Bfft-HN; Fri, 20 Aug 2021 16:48:26 +0000
-Received: from mail-io1-f71.google.com ([209.85.166.71])
+	id 1mH9CX-00Bq6o-SX; Fri, 20 Aug 2021 18:25:09 +0000
+Received: from mail-ej1-x636.google.com ([2a00:1450:4864:20::636])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mH7gp-00Bfe2-HZ
- for linux-mtd@lists.infradead.org; Fri, 20 Aug 2021 16:48:23 +0000
-Received: by mail-io1-f71.google.com with SMTP id
- g5-20020a05660203c5b02905867ea91fc6so5766971iov.5
- for <linux-mtd@lists.infradead.org>; Fri, 20 Aug 2021 09:48:18 -0700 (PDT)
+ id 1mH9CS-00Bq62-76
+ for linux-mtd@lists.infradead.org; Fri, 20 Aug 2021 18:25:08 +0000
+Received: by mail-ej1-x636.google.com with SMTP id gt38so21825805ejc.13
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Aug 2021 11:25:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=tF/rYLQ+DtMioyJLcb3Pd0DjkRnK2a1fMohMiDkI93E=;
+ b=BiEuWlvzwz1TCjxw7PuZdooB500Q4kzhIVUdIw3j2f/DYzySsEKyZHNG2apBbVlKd+
+ S26tsKYb7CsPo4zgHSDtIzzYo00dcDHQDbnFmVFdGK44zilVcYPK8XbkEB0+pAMq50gC
+ d4YZBHWkvFVZ1yHzBrmK/INfta5lh00UQTLjmPTz3Re3NlPs/oYT0HjmIRtpJk9TkiFY
+ Ff3JYakC6Th0dSUjZssoBQ2UgXVUbcjpBstZ0r2py3h3LhDGnPij8AaFsW7zcw+tcLVo
+ zI2dNXaeDh/LXQFbqvCN37iujdclM04i7cO/IY7dB1QRo+tCfc6BeP1HEMzkhkiqk5GF
+ mnDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
- bh=AoS2KwbRcXQ9NIRs5h6PWGGfZ4zUglRtWNysjlETQXI=;
- b=PMpufp/8W3xmUPzY1Pjnxn9yJS+FoqhHmb5YDpJnWX3TbdK6HA+X5fQzjuTie7Rsqp
- 18CSlEeyv/CSshYAqw8DBncp08hIwASe5S3cK1Q/fjCYRiVMOKbHZwMw3CNvKunA3mGz
- 1C/ENj7irAKAfMCwDPqsA/v9D7L/C/DpX+WmKO9gODM0Bh18pHwBjyukpE3IW9etOz98
- yHnpKK8uC336Qs7X1Tp+oHne0hMM51hBEUH7cZcp18LrfUbuHPdVvuNF+95xxDQNijMS
- E+uiJCYQy5ds1mNXrrqNrrrujhqQ+mfejXM+Y1j4FCGew7Hd+gwRBoyJ52e4oTHM/xH/
- iHYg==
-X-Gm-Message-State: AOAM533bnKLnPaDetzlYt2bRj5x0yCeua9jSrU0GvOuiQpEX/0SK3ZRi
- kpnJh/NNKVUBXxCtjy/VJ7v/xHSHnmZSOrgk/tzim1rOsIr9
-X-Google-Smtp-Source: ABdhPJzEtNk55tbXRjWwSm6Lfcvd34tDCs4MDOsN0KScq45BVMEL9dvKawSfY6vOnEESgF1co11tA3E2x2sdwHYqiIridIfq38zo
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=tF/rYLQ+DtMioyJLcb3Pd0DjkRnK2a1fMohMiDkI93E=;
+ b=ReZVJv56BLVSkTwp0FtxuAZ1iYusO3aCs8bCiZTJ9yXEJWXe1wMtbAeTvXzRnYtSPe
+ tBFFaQoAWEkPJ98LENdATgTEO5tc9jWRgepTelCtuVufpDWXKzsDqA0fVNAMW7tQX5uD
+ aIDgt8aqYwsq85vC3xuopazUpyz+mKWPb9rERkr66YxU4tEnGtFSFdSi8l8VGaOKPMUL
+ gr3PPfU8GRTJw42TjRaBd5eGx+jyT9qE91yw7hDcPyZOMgy/hv6lvnFQ9mnJh022GdUx
+ Uhre7AyknssaHxdXsKwhoCKEmsukkACVE/JTxxVIhyzO49eoqVOe7gYKBfM7+Wwh1O5C
+ 4Sag==
+X-Gm-Message-State: AOAM533F9adfUvV/aUJ2WWd0Vx7L++saHT08BT0GEOXlpSuGUfgwe/uw
+ jcMVCmRYqGPPaunDdFKrGYMzmZjbZFdjA5EtNPg=
+X-Google-Smtp-Source: ABdhPJz7fGXk3BnM0WOR5XhOuGf6TCNsxu1Wo/01tMBExMGZe8icmT2pSL/tQVP6uELLgOsvWPMUd8g3QIqx0O0Ktmk=
+X-Received: by 2002:a17:907:1043:: with SMTP id
+ oy3mr3902073ejb.116.1629483901606; 
+ Fri, 20 Aug 2021 11:25:01 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a02:a409:: with SMTP id c9mr18214386jal.138.1629478097608; 
- Fri, 20 Aug 2021 09:48:17 -0700 (PDT)
-Date: Fri, 20 Aug 2021 09:48:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002d66c805ca006f38@google.com>
-Subject: [syzbot] linux-next boot error: possible deadlock in blktrans_open
-From: syzbot <syzbot+a44be5792ded9c017a13@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
- linux-next@vger.kernel.org, miquel.raynal@bootlin.com, richard@nod.at, 
- sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com, vigneshr@ti.com
+References: <CAOuPNLjzyG_2wGDYmwgeoQuuQ7cykJ11THf8jMrOFXZ7vXheJQ@mail.gmail.com>
+ <CAOuPNLh_KY4NaVWSEV2JPp8fx0iy8E1MU8GHT-w7-hMXrvSaeA@mail.gmail.com>
+ <1556211076.48404.1626763215205.JavaMail.zimbra@nod.at>
+ <CAOuPNLhti3tocN-_D7Q0QaAx5acHpb3AQyWaUKgQPNW3XWu58g@mail.gmail.com>
+ <2132615832.4458.1626900868118.JavaMail.zimbra@nod.at>
+ <CAOuPNLhCMT7QTF+QadJyGDFNshH9VjEAzWStRpe8itw7HXve=A@mail.gmail.com>
+ <CAFLxGvywv29u6DJZrJxnJJmUDSQ4xpbT0u5LNKY1uGKyQom+WA@mail.gmail.com>
+ <CAAEAJfCY+X-G=7Oe9NqrJ4yQZ29DBA78jOFAX44GD0g6=s7qhg@mail.gmail.com>
+ <1668790824.35266.1627559144878.JavaMail.zimbra@nod.at>
+ <CAAEAJfDDtGcUquyP7Jn0Urttt4kSfAQbJ_qPQ90ROtWLavW9EA@mail.gmail.com>
+ <CAOuPNLj+DSigRY_AgHQnGKCK-Vm4ykQBR8UfnTi2UObORTcBFg@mail.gmail.com>
+In-Reply-To: <CAOuPNLj+DSigRY_AgHQnGKCK-Vm4ykQBR8UfnTi2UObORTcBFg@mail.gmail.com>
+From: Pintu Agarwal <pintu.ping@gmail.com>
+Date: Fri, 20 Aug 2021 23:54:50 +0530
+Message-ID: <CAOuPNLgfJGzp-RJBjydFDL1ZAvOd7=-MgXhnsb2eb_xFSLC66w@mail.gmail.com>
+Subject: Re: MTD: How to get actual image size from MTD partition
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: Richard Weinberger <richard@nod.at>,
+ Kernelnewbies <kernelnewbies@kernelnewbies.org>, 
+ Greg KH <greg@kroah.com>, linux-kernel <linux-kernel@vger.kernel.org>, 
+ linux-mtd <linux-mtd@lists.infradead.org>, Sean Nyekjaer <sean@geanix.com>, 
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ Phillip Lougher <phillip@squashfs.org.uk>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210820_094819_631496_926A38A1 
-X-CRM114-Status: UNSURE (   6.79  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210820_112504_342794_5C1426B7 
+X-CRM114-Status: GOOD (  25.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,156 +103,52 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    86ed57fd8c93 Add linux-next specific files for 20210820
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1776d189300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f64eccb415bd479d
-dashboard link: https://syzkaller.appspot.com/bug?extid=a44be5792ded9c017a13
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a44be5792ded9c017a13@syzkaller.appspotmail.com
-
-
-======================================================
-WARNING: possible circular locking dependency detected
-5.14.0-rc6-next-20210820-syzkaller #0 Not tainted
-------------------------------------------------------
-systemd-udevd/4540 is trying to acquire lock:
-ffffffff8c5df508 (mtd_table_mutex){+.+.}-{3:3}, at: blktrans_open+0x69/0x600 drivers/mtd/mtd_blkdevs.c:210
-
-but task is already holding lock:
-ffff88801d051918 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev.part.0+0x9b/0xb60 fs/block_dev.c:1227
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (&disk->open_mutex){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:596 [inline]
-       __mutex_lock+0x135/0x12f0 kernel/locking/mutex.c:729
-       bd_register_pending_holders+0x2c/0x470 block/holder.c:153
-       register_disk block/genhd.c:456 [inline]
-       device_add_disk+0x376/0xcf0 block/genhd.c:551
-       add_mtd_blktrans_dev+0xdd1/0x1610 drivers/mtd/mtd_blkdevs.c:430
-       mtdblock_add_mtd+0x20f/0x2c0 drivers/mtd/mtdblock.c:329
-       blktrans_notify_add drivers/mtd/mtd_blkdevs.c:510 [inline]
-       blktrans_notify_add+0x7a/0xc0 drivers/mtd/mtd_blkdevs.c:502
-       add_mtd_device+0xa8e/0x1170 drivers/mtd/mtdcore.c:690
-       mtd_device_parse_register+0x510/0x870 drivers/mtd/mtdcore.c:979
-       mtdram_init_device+0x295/0x350 drivers/mtd/devices/mtdram.c:146
-       init_mtdram+0xe5/0x177 drivers/mtd/devices/mtdram.c:171
-       do_one_initcall+0x103/0x650 init/main.c:1292
-       do_initcall_level init/main.c:1367 [inline]
-       do_initcalls init/main.c:1383 [inline]
-       do_basic_setup init/main.c:1402 [inline]
-       kernel_init_freeable+0x6b4/0x73d init/main.c:1604
-       kernel_init+0x1a/0x1d0 init/main.c:1496
-       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
--> #0 (mtd_table_mutex){+.+.}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3051 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3174 [inline]
-       validate_chain kernel/locking/lockdep.c:3789 [inline]
-       __lock_acquire+0x2a25/0x54e0 kernel/locking/lockdep.c:5015
-       lock_acquire kernel/locking/lockdep.c:5625 [inline]
-       lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
-       __mutex_lock_common kernel/locking/mutex.c:596 [inline]
-       __mutex_lock+0x135/0x12f0 kernel/locking/mutex.c:729
-       blktrans_open+0x69/0x600 drivers/mtd/mtd_blkdevs.c:210
-       blkdev_get_whole+0x9d/0x2b0 fs/block_dev.c:1079
-       blkdev_get_by_dev.part.0+0x354/0xb60 fs/block_dev.c:1234
-       blkdev_get_by_dev fs/block_dev.c:1323 [inline]
-       blkdev_open+0x295/0x300 fs/block_dev.c:1329
-       do_dentry_open+0x4c8/0x11d0 fs/open.c:826
-       do_open fs/namei.c:3428 [inline]
-       path_openat+0x1cbe/0x28b0 fs/namei.c:3561
-       do_filp_open+0x1aa/0x400 fs/namei.c:3588
-       do_sys_openat2+0x16d/0x4e0 fs/open.c:1204
-       do_sys_open fs/open.c:1220 [inline]
-       __do_sys_open fs/open.c:1228 [inline]
-       __se_sys_open fs/open.c:1224 [inline]
-       __x64_sys_open+0x119/0x1c0 fs/open.c:1224
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&disk->open_mutex);
-                               lock(mtd_table_mutex);
-                               lock(&disk->open_mutex);
-  lock(mtd_table_mutex);
-
- *** DEADLOCK ***
-
-1 lock held by systemd-udevd/4540:
- #0: ffff88801d051918 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev.part.0+0x9b/0xb60 fs/block_dev.c:1227
-
-stack backtrace:
-CPU: 0 PID: 4540 Comm: systemd-udevd Not tainted 5.14.0-rc6-next-20210820-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- check_noncircular+0x262/0x2f0 kernel/locking/lockdep.c:2131
- check_prev_add kernel/locking/lockdep.c:3051 [inline]
- check_prevs_add kernel/locking/lockdep.c:3174 [inline]
- validate_chain kernel/locking/lockdep.c:3789 [inline]
- __lock_acquire+0x2a25/0x54e0 kernel/locking/lockdep.c:5015
- lock_acquire kernel/locking/lockdep.c:5625 [inline]
- lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
- __mutex_lock_common kernel/locking/mutex.c:596 [inline]
- __mutex_lock+0x135/0x12f0 kernel/locking/mutex.c:729
- blktrans_open+0x69/0x600 drivers/mtd/mtd_blkdevs.c:210
- blkdev_get_whole+0x9d/0x2b0 fs/block_dev.c:1079
- blkdev_get_by_dev.part.0+0x354/0xb60 fs/block_dev.c:1234
- blkdev_get_by_dev fs/block_dev.c:1323 [inline]
- blkdev_open+0x295/0x300 fs/block_dev.c:1329
- do_dentry_open+0x4c8/0x11d0 fs/open.c:826
- do_open fs/namei.c:3428 [inline]
- path_openat+0x1cbe/0x28b0 fs/namei.c:3561
- do_filp_open+0x1aa/0x400 fs/namei.c:3588
- do_sys_openat2+0x16d/0x4e0 fs/open.c:1204
- do_sys_open fs/open.c:1220 [inline]
- __do_sys_open fs/open.c:1228 [inline]
- __se_sys_open fs/open.c:1224 [inline]
- __x64_sys_open+0x119/0x1c0 fs/open.c:1224
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7faf61bb2840
-Code: 73 01 c3 48 8b 0d 68 77 20 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 83 3d 89 bb 20 00 00 75 10 b8 02 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 1e f6 ff ff 48 89 04 24
-RSP: 002b:00007ffffbf04508 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-RAX: ffffffffffffffda RBX: 000055c752d73830 RCX: 00007faf61bb2840
-RDX: 000055c751371fe3 RSI: 00000000000a0800 RDI: 000055c752d64f90
-RBP: 00007ffffbf04680 R08: 000055c751371670 R09: 0000000000000020
-R10: 000055c751371d0c R11: 0000000000000246 R12: 00007ffffbf045d0
-R13: 000055c752d65880 R14: 0000000000000003 R15: 000000000000000e
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gVGh1LCAyOSBKdWwgMjAyMSBhdCAyMjo0MSwgUGludHUgQWdhcndhbCA8cGludHUucGluZ0Bn
+bWFpbC5jb20+IHdyb3RlOgo+Cj4gT24gVGh1LCAyOSBKdWwgMjAyMSBhdCAxNzozMywgRXplcXVp
+ZWwgR2FyY2lhCj4gPGV6ZXF1aWVsQHZhbmd1YXJkaWFzdXIuY29tLmFyPiB3cm90ZToKPiA+Cj4g
+PiBPbiBUaHUsIDI5IEp1bCAyMDIxIGF0IDA4OjQ1LCBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hh
+cmRAbm9kLmF0PiB3cm90ZToKPiA+ID4KPiA+ID4gRXplcXVpZWwsCj4gPiA+Cj4gPiA+IC0tLS0t
+IFVyc3Byw7xuZ2xpY2hlIE1haWwgLS0tLS0KPiA+ID4gPiBbc25pcF0KPiA+ID4gPgo+ID4gPiA+
+IE91Y2gsIHNvIHN1cnByaXNlZCB0aGF0IGFmdGVyIGFsbCB0aGVzZSB5ZWFycyBzb21lb25lIGlz
+IGRvaW5nIHNxdWFzaGZzL210ZGJsb2NrCj4gPiA+ID4gaW5zdGVhZCBvZiB1c2luZyB1YmlibG9j
+ayA6LSkKPiA+ID4gPgo+ID4gPiA+IENhbiB3ZSBwYXRjaCBlaXRoZXIgS2NvbmZpZyBvciBhZGQg
+c29tZSB3YXJuX29uY2Ugb24gbXRkYmxvY2sKPiA+ID4gPiB1c2FnZSwgc3VnZ2VzdGluZyB0byB1
+c2UgdWJpYmxvY2sgaW5zdGVhZD8KPiA+ID4KPiA+ID4gYSBoaW50IGluIEtjb25maWcgbWFrZXMg
+SU1ITyBzZW5zZS4gRG8geW91IHdhbnQgdG8gc2VuZCBhIHBhdGNoPwo+ID4gPiBBIHdhcm5pbmcg
+aXMgdG9vIG11Y2ggc2luY2Ugb24gc29tZSB0aW55IGVtYmVkZGVkIHN5c3RlbSB3aXRoIE5PUiBm
+bGFzaCBtdGRibG9jayBpcyBzdGlsbAo+ID4gPiBhIGdvb2QgY2hvaWNlLgo+ID4gPiB1YmlibG9j
+ayBpcyBtb3N0bHkgdXNlZnVsIGZvciBOQU5EIGZsYXNoLgo+ID4gPgo+ID4gPiA+IEkgcmVtZW1i
+ZXIgdGhlcmUgd2FzIHN0aWxsIHNvbWUgdXNlIGNhc2UocykgZm9yIG10ZGJsb2NrIGJ1dCBJIGNh
+bid0IHJlbWVtYmVyCj4gPiA+ID4gbm93IHdoYXQgd2FzIGl0LCBwZXJoYXBzIHdlIHNob3VsZCBk
+b2N1bWVudCB0aGUgZXhwZWN0YXRpb25zPwo+ID4gPiA+IChJcyB0aGF0IGZvciBKRkZTMiB0byBt
+b3VudD8pCj4gPiA+Cj4gPiA+IGEgbG9uZyB0aW1lIGFnbyBtb3VudCBkaWRuJ3QgYWNjZXB0IGNo
+YXJhY3RlciBkZXZpY2VzLCBzbyB5b3UgaGFkIHRvIHBhc3MgbXRkYmxvY2tYIHRvIG1vdW50Cj4g
+PiA+IEpGRlMyLgo+ID4gPiBUaGlzIGxpbWl0YXRpb24gaXMgZ29uZS4KPiA+ID4KCkhpLAoKSnVz
+dCBhIGZ1cnRoZXIgZm9sbG93LXVwIG9uIHRoaXMgZGlzY3Vzc2lvbi4KV2hldGhlciB0byB1c2Ug
+L2Rldi9tdGRibG9jayBvciAvZGV2L3ViaWJsb2NrIGZvciByb290ZnMgKHNxdWFzaGZzKQptb3Vu
+dGluZyBkdXJpbmcgYm9vdC4KCkFzIHN1Z2dlc3RlZCBoZXJlOgpJbnN0ZWFkIG9mIHVzaW5nIHRo
+aXMgaW4ga2VybmVsIGNvbW1hbmQgbGluZToKWyAgICAwLjAwMDAwMF0gS2VybmVsIGNvbW1hbmQg
+bGluZTogLi4uIHJvb3Rmc3R5cGU9c3F1YXNoZnMKcm9vdD0vZGV2L210ZGJsb2NrNDQgdWJpLm10
+ZD00MCwwLDMwIC4uLgoKSSB1c2VkIHRoaXM6ClsgICAgMC4wMDAwMDBdIEtlcm5lbCBjb21tYW5k
+IGxpbmU6IC4uLiByb290ZnN0eXBlPXNxdWFzaGZzCnViaS5tdGQ9NDAsMCwzMCB1YmkuYmxvY2s9
+MCwwIHJvb3Q9L2Rldi91YmlibG9jazBfMCAuLi4KClRoZSBkZXZpY2UgaXMgYm9vdGluZyBmaW5l
+IHdpdGggdWJpYmxvY2sgYXMgd2VsbC4KQnV0LCBwZXIgc2F5LCBJIGNvdWxkIG5vdCBmaW5kIGFu
+eSB2aXNpYmxlIGRpZmZlcmVuY2UuCkkganVzdCBvYnNlcnZlZCBhIHNsaWdodCBpbXByb3ZlbWVu
+dCBpbiBib290IHRpbWUsIGJ1dCBJIG5lZWQgdG8KZG91YmxlLWNoZWNrIG9uIHRoaXMsIHdpdGgg
+ZmV3IG1vcmUgcmVib290IGN5Y2xlcy4KCkFwYXJ0IGZyb20gdGhpcyB3aGF0IGFyZSB0aGUgb3Ro
+ZXIgdmlzaWJsZSBiZW5lZml0cyBvZiB1c2luZyB1YmlibG9jawp3aGljaCBjYW4gYmUgZXhwbGFp
+bmVkIHRvIGJlIG1hbmFnZW1lbnQgb3IgaW50ZXJuYWwgdGVhbSA/CkkgY291bGQgbm90IGZpbmQg
+YW55IGRvY3VtZW50YXRpb24gZXhwbGFpbmluZyB0aGUgZGlmZmVyZW5jZSwgZXhjZXB0IHRoaXMg
+b25lOgpodHRwOi8vd3d3LmxpbnV4LW10ZC5pbmZyYWRlYWQub3JnL2RvYy91YmkuaHRtbCNMX3Vi
+aWJsb2NrCgpDYW4gc29tZW9uZSBhbHNvIHBvaW50IG1lIHRvIHRoZSByZXNwZWN0aXZlIGRyaXZl
+ciBjb2RlIGluIGNhc2Ugb2YKdXNpbmcgL2Rldi9tdGRibG9jayBhbmQgL2Rldi91YmlibG9jayA/
+CkFwYXJ0IGZyb20gdGhlb3J5IEkgYWxzbyB3YW50IHRvIGNoZWNrIHRoZSBpbXBhY3QgYXQgdGhl
+IGNvZGUgbGV2ZWwuLgoKVGhhbmtzLApQaW50dQoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcg
+bGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10
+ZC8K
