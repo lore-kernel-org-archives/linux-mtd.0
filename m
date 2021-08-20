@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-4.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79F46C4338F
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Aug 2021 12:58:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1BA5C4338F
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Aug 2021 13:09:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 42DD86101A
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Aug 2021 12:58:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 42DD86101A
+	by mail.kernel.org (Postfix) with ESMTPS id 9E115610A3
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Aug 2021 13:09:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9E115610A3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,66 +23,63 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/sWXQoa+vaCshAAbKuRt14mf5QxNi2kTi+H93QXGiaM=; b=gQHML06exVpW6M
-	MGtG1wPPsapZZZnorqwRMjg7fy1L5hpwhbg1XletVpcstvM1R3vAfLj+JVwiHX8KKCIuXkUyy5R9f
-	FY8ubhlTdK0przgfLdcfFhJf6MCE7lNviI9y9tlEJL66SzDf7tJSz/C17tl2vk0SJdKZk9t/Wv0tm
-	58pn9QF2cLKxzzsVjWKmf4luvnmjt9Cu1/QMJa0uGUH8OsNFiOI+xXBWHa5KeS7cxQI9zGpJy9NAZ
-	Cii2XzNilCsQXPAN4rSFXax9oqWQ8hMFvMLShrUBfeCF4X1jY87MlOBp86aoGWZk7Pi6FAPZO7EaW
-	Zhq04suSCUg/ZrGZcXeA==;
+	List-Owner; bh=3eI4DPWbyUCDAucekFEkl2dOX70D9b5quah8Yk8SVnY=; b=pq90MpNCPKYaM4
+	h+LSt13mOngsQb3nK0K+8ou97XUFd+gz9ok0wPd2MteXdKd1XfJsYUwvgVbfvzW0JHPf/JdcU5BTb
+	oHc8K+TIZP+V93bEcwkSTRGJLjPqDxBve1jQsjgzjkCQu3rRupqx8RNiANA8AW8cDjm2ewRZIfDoD
+	c9G+lkPKbEo55bMTlzy+lbC7LFz/xTEzsPkUfYCzOm8lpMR35VGlosz/dQpRWoPullk0kQcxAv1rE
+	4kdkqCECd3cg86M8+63iiTLfc5NYNSAveTVI2Qt/evr6D72bh1n6CiZgftDUf4Sv3zXboKfqiiu+n
+	HKG+TwbAyiA3f606ZG2Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mH46A-00BD5Z-F4; Fri, 20 Aug 2021 12:58:14 +0000
-Received: from mail-vs1-xe35.google.com ([2607:f8b0:4864:20::e35])
+	id 1mH4GZ-00BEfB-MZ; Fri, 20 Aug 2021 13:08:59 +0000
+Received: from mail-ua1-x933.google.com ([2607:f8b0:4864:20::933])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mH464-00BD3l-TZ
- for linux-mtd@lists.infradead.org; Fri, 20 Aug 2021 12:58:12 +0000
-Received: by mail-vs1-xe35.google.com with SMTP id d16so6091167vsf.12
- for <linux-mtd@lists.infradead.org>; Fri, 20 Aug 2021 05:58:08 -0700 (PDT)
+ id 1mH4GQ-00BEcy-JD
+ for linux-mtd@lists.infradead.org; Fri, 20 Aug 2021 13:08:55 +0000
+Received: by mail-ua1-x933.google.com with SMTP id u39so4077827uad.10
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Aug 2021 06:08:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=VSaFeBdX4kWGJjrK0LDIdAG7HMHyEVXfRCzRhlCm2Vc=;
- b=DnhQLGM/mJBYM14dOuxq+G21zQDLVubpP7oZsUxJRpqY3uVOSAs9B5niS+x3uyTre7
- OY65Ox4XCQkPwIIGObNgixcuUbaA0/pd1FB1Qo2ODsYfIBziSCun36IE9isJ3506pXpF
- 1ecf2r9wVgXbr/9QFjwW0VOiK0pGJUOmyNQXonlOuHCAOSpdd8cj85h6sjjS6N0HUfRU
- JG2biriboTkHUtYnQwws5fcglapOqHqn2aq4ItDnRLAMkRsQbfB5v6w1xfxzn4Mat3vo
- rreigmWF3PCK6SScj/XbW99E8SMa2IrssaqGiq9CflV2XUtvkisBvF3/Z2VuEfCmGOrP
- jh6Q==
+ :cc; bh=1jeLsd0F5nu8VxBSxWPjs9ij/vCzMSfR5Tmv5iuwd6s=;
+ b=WC/dbJiZXZbYao7JhIntQY4TZ71VEiAo3x28NE7fEM5kyH3E5QMkrYaKxo+tOHuBq2
+ 4fOoN/8kF20QYOvTlDeczofK7BcIqjasNY7CBq53XfqL9k8ztpMQHfVcSzVO71rO64Zq
+ McT44tin8yfog5Tj3F9uEcMm8s9RXuEY0am/zJIYxZIPBOSKQ0gPSUGTqV2fLnNdUMyA
+ Udra5icYrRXmu3Bub8tb1oL++vAVtV4op8H5c4RaKOsboeh/aX+gQt/xKF7m6+TffsNV
+ KpFsGCqib0Qpb9uD4iaINA3IeiJAs50v1pCyq6JF3tpma3/8Ou1apbdGh5FgySUdxEte
+ 6zRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=VSaFeBdX4kWGJjrK0LDIdAG7HMHyEVXfRCzRhlCm2Vc=;
- b=TC7oj0NrGAVcqBPmLdGYRqlfPBuHyci/eE4VaLp8Wny5A9lq4PuqSiP10p8JjGxDw4
- LZ8iDClwboWoVxCOpHSApKUk5RPi3BJsHIKFu2EsWsnS1RkDHEDsxQRyIbmy2M6mtmBi
- zO5eR/UIXcAT+oRjv6LIas8x6i7YdxwhToiOf3YDZqFaZTUbKPiwqMbQUaZKpytW9ys6
- /5KE6KCcbEGiBh7C3Kn2ioP2CsOzP+wkcgtAkEpz9nUvwzUIpGNZXIfuq3fbIoODqE2M
- nMgWDU6s3hQOufL/qiou9fNbFylrmyq+yk1tIYG/RAXlqMGqhVt+RoQKLJ3qcPmUNbWO
- MaEg==
-X-Gm-Message-State: AOAM532BL2dJxgaTiCa5U60zRdnoI3e1IzUauNkNDAnlIJD0MLYg0YBQ
- t6mVytRS2Mn+jTntQKMbiYRdgzC+fQ2iceyd61FRAA==
-X-Google-Smtp-Source: ABdhPJyCu5OoKXB/ZnU0BhDnI9FQ/nriFA8C9gxuFpc66zGzEUSQ7NZWEdQGpN5i65y/ydiL4YG1C5HABdRFQK6zhTY=
-X-Received: by 2002:a67:3212:: with SMTP id y18mr16683598vsy.19.1629464287428; 
- Fri, 20 Aug 2021 05:58:07 -0700 (PDT)
+ bh=1jeLsd0F5nu8VxBSxWPjs9ij/vCzMSfR5Tmv5iuwd6s=;
+ b=ZjXzi6PXP8JjSenzZzEcDu4N0jce+btFfG5ElkJRViXXtPVwaDs42YpwbMphEXbO4v
+ 57zwIY41CjuWMKYm9quYV9vH6yJav1H4CWAbRNfaYA8VYDE7/4EFUm8bwV28DLOleOD2
+ Yos0mKpVQTiBStlLQMmWM84C5F4aNYaG1NK4riuv4GJkqSv9JfyUN84U+qFWNZW7wwjS
+ Ter5YUSbH2+waUYhEx5X5NOivL/9t/BPP5TgaSfVDzAYABtmMEApM7+Xwvqkz1cL1RN6
+ O93bQIIynje2zDJPoxIdlDEtRXHTLGCRoeYVyeWvk2EUPHgD61aAVewq/eGveER1TAWw
+ ecnw==
+X-Gm-Message-State: AOAM5318KaeHTAdVTCREWzSKoB6g2RZ3hir5G15UC4NnOLMalkEPqlXS
+ 8XWiEda5Q2H/k+CeE7dTK4XNUrzez+kSHNNIs4L36w==
+X-Google-Smtp-Source: ABdhPJyudXWst0uOFOvLTh4dvpAObwIHCZFQbOR7Ax2SinJKzLNlpYWdAnSEO7YQ/BLnbTZWMq48nnebeaOpVOjUigE=
+X-Received: by 2002:ab0:60a9:: with SMTP id f9mr15039087uam.19.1629464926939; 
+ Fri, 20 Aug 2021 06:08:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
- <20210818055849.ybfajzu75ecpdrbn@vireshk-i7>
- <f1c76f23-086d-ef36-54ea-0511b0ebe0e1@gmail.com>
- <20210818062723.dqamssfkf7lf7cf7@vireshk-i7>
- <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
- <20210818091417.dvlnsxlgybdsn76x@vireshk-i7>
- <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
- <f1314a47-9e8b-58e1-7c3f-0afb1ec8e70a@gmail.com>
- <20210819061617.r4kuqxafjstrv3kt@vireshk-i7>
- <CAPDyKFpg8ixT4AEjzVLTwQR7Nn9CctjnLCDS5GwkOrAERquyxw@mail.gmail.com>
- <20210820051843.5mueqpnjbqt3zdzc@vireshk-i7>
-In-Reply-To: <20210820051843.5mueqpnjbqt3zdzc@vireshk-i7>
+References: <20210817012754.8710-1-digetx@gmail.com>
+ <20210817012754.8710-8-digetx@gmail.com>
+ <YR0UBi/ejy+oF4Hm@orome.fritz.box>
+ <da7356cb-05ee-ba84-8a7c-6e69d853a805@gmail.com>
+ <YR04YHGEluqLIZeo@orome.fritz.box>
+ <ad99db08-4696-1636-5829-5260f93dc681@gmail.com>
+ <YR6Mvips3HAntDy0@orome.fritz.box>
+ <e17bbe8d-7c0f-fc3d-03c7-d75c54c24a43@gmail.com>
+ <YR+VDZzTihmpENp6@orome.fritz.box>
+In-Reply-To: <YR+VDZzTihmpENp6@orome.fritz.box>
 From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Fri, 20 Aug 2021 14:57:31 +0200
-Message-ID: <CAPDyKFo0rzHT4AhueWjyz9k2ZqUy8N6Od5pbr8sL_m0Jf2AwUg@mail.gmail.com>
-Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
-To: Viresh Kumar <viresh.kumar@linaro.org>, Dmitry Osipenko <digetx@gmail.com>
-Cc: Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, 
+Date: Fri, 20 Aug 2021 15:08:10 +0200
+Message-ID: <CAPDyKFpJ+TK0w1GZEA7G=rtAjq5ipmVR4P0wy7uHiEGVWRk5yA@mail.gmail.com>
+Subject: Re: [PATCH v8 07/34] clk: tegra: Support runtime PM and power domain
+To: Thierry Reding <thierry.reding@gmail.com>
+Cc: Dmitry Osipenko <digetx@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>,
  Viresh Kumar <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>, 
  Peter De Schrijver <pdeschrijver@nvidia.com>,
  Mikko Perttunen <mperttunen@nvidia.com>, 
@@ -105,8 +102,8 @@ Cc: Thierry Reding <thierry.reding@gmail.com>,
  dri-devel <dri-devel@lists.freedesktop.org>, 
  DTML <devicetree@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210820_055808_983722_0554396E 
-X-CRM114-Status: GOOD (  39.89  )
+X-CRM114-CacheID: sfid-20210820_060850_663479_B4EA3A33 
+X-CRM114-Status: GOOD (  25.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -123,75 +120,68 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 20 Aug 2021 at 07:18, Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 19-08-21, 16:55, Ulf Hansson wrote:
-> > Right, that sounds reasonable.
-> >
-> > We already have pm_genpd_opp_to_performance_state() which translates
-> > an OPP to a performance state. This function invokes the
-> > ->opp_to_performance_state() for a genpd. Maybe we need to allow a
-> > genpd to not have ->opp_to_performance_state() callback assigned
-> > though, but continue up in the hierarchy to see if the parent has the
-> > callback assigned, to make this work for Tegra?
-> >
-> > Perhaps we should add an API dev_pm_genpd_opp_to_performance_state(),
-> > allowing us to pass the device instead of the genpd. But that's a
-> > minor thing.
->
-> I am not concerned a lot about how it gets implemented, and am not
-> sure as well, as I haven't looked into these details since sometime.
-> Any reasonable thing will be accepted, as simple as that.
->
-> > Finally, the precondition to use the above, is to first get a handle
-> > to an OPP table. This is where I am struggling to find a generic
-> > solution, because I guess that would be platform or even consumer
-> > driver specific for how to do this. And at what point should we do
-> > this?
->
-> Hmm, I am not very clear with the whole picture at this point of time.
->
-> Dmitry, can you try to frame a sequence of events/calls/etc that will
-> define what kind of devices we are looking at here, and how this can
-> be made to work ?
->
-> > > > Viresh, please take a look at what I did in [1]. Maybe it could be done
-> > > > in another way.
-> > >
-> > > I looked into this and looked like too much trouble. The
-> > > implementation needs to be simple. I am not sure I understand all the
-> > > problems you faced while doing that, would be better to start with a
-> > > simpler implementation of get_performance_state() kind of API for
-> > > genpd, after the domain is attached and its OPP table is initialized.
-> > >
-> > > Note, that the OPP table isn't required to be fully initialized for
-> > > the device at this point, we can parse the DT as well if needed be.
-> >
-> > Sure, but as I indicated above, you need some kind of input data to
-> > figure out what OPP table to pick, before you can translate that into
-> > a performance state. Is that always the clock rate, for example?
->
-> Eventually it can be clock, bandwidth, or pstate of anther genpd, not
-> sure what all we are looking for now. It should be just clock right
-> now as far as I can imagine :)
->
-> > Perhaps, we should start with adding a dev_pm_opp_get_from_rate() or
-> > what do you think? Do you have other suggestions?
->
-> We already have similar APIs, so that won't be a problem. We also have
-> a mechanism inside the OPP core, frequency based, which is used to
-> guess the current OPP. Maybe we can enhance and use that directly
-> here.
+[...]
 
-After reading the last reply from Dmitry, I am starting to think that
-the problem he is facing can be described and solved in a much easier
-way.
+> >
+> > I'm creating platform device for the clocks that require DVFS. These
+> > clocks don't use regulator, they are attached to the CORE domain.
+> > GENPD framework manages the performance state, aggregating perf votes
+> > from each device, i.e. from each clock individually.
+> >
+> > You want to reinvent another layer of aggregation on top of GENPD.
+> > This doesn't worth the effort, we won't get anything from it, it
+> > should be a lot of extra complexity for nothing. We will also lose
+> > from it because pm_genpd_summary won't show you a per-device info.
+> >
+> > domain                          status          children                           performance
+> >     /device                                             runtime status
+> > ----------------------------------------------------------------------------------------------
+> > heg                             on                                                 1000000
+> >     /devices/soc0/50000000.host1x                       active                     1000000
+> >     /devices/soc0/50000000.host1x/54140000.gr2d         suspended                  0
+> > mpe                             off-0                                              0
+> > vdec                            off-0                                              0
+> >     /devices/soc0/6001a000.vde                          suspended                  0
+> > venc                            off-0                                              0
+> > 3d1                             off-0                                              0
+> >     /devices/genpd:1:54180000.gr3d                      suspended                  0
+> > 3d0                             off-0                                              0
+> >     /devices/genpd:0:54180000.gr3d                      suspended                  0
+> > core-domain                     on                                                 1000000
+> >                                                 3d0, 3d1, venc, vdec, mpe, heg
+> >     /devices/soc0/7d000000.usb                          active                     1000000
+> >     /devices/soc0/78000400.mmc                          active                     950000
+> >     /devices/soc0/7000f400.memory-controller            unsupported                1000000
+> >     /devices/soc0/7000a000.pwm                          active                     1000000
+> >     /devices/soc0/60006000.clock/tegra_clk_pll_c        active                     1000000
+> >     /devices/soc0/60006000.clock/tegra_clk_pll_e        suspended                  0
+> >     /devices/soc0/60006000.clock/tegra_clk_pll_m        active                     1000000
+> >     /devices/soc0/60006000.clock/tegra_clk_sclk         active                     1000000
+> >
+>
+> I suppose if there's really no good way of doing this other than
+> providing a struct device, then so be it. I think the cleaned up sysfs
+> shown in the summary above looks much better than what the original
+> would've looked like.
+>
+> Perhaps an additional tweak to that would be to not create platform
+> devices. Instead, just create struct device. Those really have
+> everything you need (.of_node, and can be used with RPM and GENPD). As I
+> mentioned earlier, platform device implies a CPU-memory-mapped bus,
+> which this clearly isn't. It's kind of a separate "bus" if you want, so
+> just using struct device directly seems more appropriate.
 
-If I am correct, it looks like we don't need to add APIs to get OPPs
-for a clock rate or set initial performance state values according to
-the HW in genpd.
+Just a heads up. If you don't use a platform device or have a driver
+associated with it for probing, you need to manage the attachment to
+genpd yourself. That means calling one of the dev_pm_domain_attach*()
+APIs, but that's perfectly fine, ofcourse.
 
-See my other response to Dmitry, let's see where that leads us.
+>
+> We did something similar for XUSB pads, see drivers/phy/tegra/xusb.[ch]
+> for an example of how that was done. I think you can do something
+> similar here.
+>
+> Thierry
 
 Kind regards
 Uffe
