@@ -2,119 +2,84 @@ Return-Path: <SRS0=Ynzp=NM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5103BC4338F
-	for <linux-mtd@archiver.kernel.org>; Sat, 21 Aug 2021 17:46:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47A2CC4338F
+	for <linux-mtd@archiver.kernel.org>; Sat, 21 Aug 2021 21:18:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1050A60F42
-	for <linux-mtd@archiver.kernel.org>; Sat, 21 Aug 2021 17:46:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1050A60F42
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id A783F6125F
+	for <linux-mtd@archiver.kernel.org>; Sat, 21 Aug 2021 21:18:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A783F6125F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renard.ga
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=voftYE5f+o7aU+huVQy6Ayb18Q2C2EvRqyMFdU9WYWI=; b=An+9Jb44uwiXNB46L9w/ubKZWQ
-	LuuFxbnefgk2C/9vhVFHQPIhRv705fOr+f7brTF/ZcU6hpxF4r6RGUtGqNFioOP4z7vkHP7EN7y8X
-	d8CzZ6oUCkM/rGnBEjlPfunCMojx6IaWT9eHlaJT0801BPFPti0+LJ85G8bvwaPnPZ1uMEuv4jIr/
-	Qrfo/422bgivBgAM8m6/LOW6ycUFlUfJI0nsIu9yq2BQ51QWapW3SwY5zCyBxcWKX9DUX8iXarEZi
-	YsBCeSQyf4eGguDqL79EBXzrE44qAHReleodduIHIFmUm/qgKVsYdgT4GHeHyMKrzOkFM35VmcokV
-	08D9w6Kg==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=cNnQKEj0SAB8bcBDYKf4NG/OOqQNG2MXk9cxmY8nRPk=; b=nEjkMAr04pmHs1
+	7W/nJychl4nF9lnv3kUVJ+k2e/HekPCzgNXYlaqAsVDHfH/d7O2j0Uf2Y9m3E895nlWoRFHhqybpD
+	AQ1RkiK7gtkVSUW8ou3QF5O5eXxhmyFjSatMBlCSqJOmQuUIGT8maL/wPOmAj34FbiWyFEXwK9tBJ
+	dGm3kzOix2OjIU2E8gQMN+ipDeT6SR5+X2wkktAaQDuNITVSTfgO1KsRFsgU/A5ekwQYH1bbbY5LO
+	ee2+BO/kJsjA9HjqTJlcDzDfykzFpoMPshgHcs/aRgsNYEQUTxU601yzOZ0hlLbto/uSc8JwDh4TL
+	s7dGUSg+wXEkZ9w20VMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mHV4D-00D2xv-Iw; Sat, 21 Aug 2021 17:46:01 +0000
-Received: from mail-lf1-x12e.google.com ([2a00:1450:4864:20::12e])
+	id 1mHYNP-00DCOh-2s; Sat, 21 Aug 2021 21:18:03 +0000
+Received: from mail-oo1-xc32.google.com ([2607:f8b0:4864:20::c32])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mHV4B-00D2xG-3z
- for linux-mtd@lists.infradead.org; Sat, 21 Aug 2021 17:46:00 +0000
-Received: by mail-lf1-x12e.google.com with SMTP id u22so27650971lfq.13
- for <linux-mtd@lists.infradead.org>; Sat, 21 Aug 2021 10:45:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=IUNZGcwEvLiT98uruvqOHnHGgaNyFWtPLETI2dPthCw=;
- b=p08OD/GPPXR4tm7RkNA9toKvQsVUl8L8J4oVZmC67OE0wZNQVqTaUco2HrwrnDiQ5w
- YuB7XIX+XHBkQHFFdAzLyF2BxZCm+jSnFq4FsCUAM2T1sDn/9oxf4t2nPY94dg8ZOy02
- 4ifXdf59PODf4caGN1F1ErdH+dIo7YXjnB5cY+HfdftEYqOCt2+nTokc6UD388Ko2qxo
- MvhYOSvGDT1/FsQM/l16oRX1i1OGSNP7dXhT5bdzGaUHSnydnyQWWVAxmDtcpnGU6hl9
- akWPj9WfjbxtYLM0nKZbQdHyelXHGLCzov3c1u9xeUbYJI6bez6nJO7fiBHU51tlE3bJ
- Ui+g==
+ id 1mHYNJ-00DCO0-3W
+ for linux-mtd@lists.infradead.org; Sat, 21 Aug 2021 21:18:01 +0000
+Received: by mail-oo1-xc32.google.com with SMTP id
+ l12-20020a4a94cc0000b02902618ad2ea55so4062192ooi.4
+ for <linux-mtd@lists.infradead.org>; Sat, 21 Aug 2021 14:17:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=renard-ga.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=8+xNI7Xpt03WJ5wm4IF5YQdJ93Vcgr3CjWcGnJjFvRs=;
+ b=fsUx/PwZv+EPcIXoKpyNCsADq6WJXPrPbJ7xhT2XUWIuSqmKILfU9L1dE5f516uKDW
+ ipzlssocI1LqF4VpxOx2fUVQHnC/1WF5yci3oV3a8KUsqZoJGAWg00VuD6to+T+fNk7u
+ rRl1/5wewAMh4NIFOLczSC6ZFkgfDTyvc3C+zT8M7yWU15GJfEUM5gC3ZNwycQgmwS05
+ VMzXjJvwEaDaBEnIBUNp4E0VV2pEjeln6y9W/loAbtT+EXowsju4UqXzhqiusfFhn53k
+ N0eafTAcgcZR2i5W9FVyMCpN0u9PhpMccfvWKtXzADhPDuBLit4c5DHloaSXnRFPp6dM
+ y9yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=IUNZGcwEvLiT98uruvqOHnHGgaNyFWtPLETI2dPthCw=;
- b=DRDu1F6W8cYJGulyCYgCpPG7njM/YNGD3J8GTiI1Al7LW9Ld9++AyapJVrzj5Lnag2
- iEIic91C3kBno8nRSrtHLKyPfW469CThSN/d8aIfHyKH16LhJyu+NxqbeNpf0oZCwrR0
- nN7rP6IVhAqkN0FwHTDeIXArjyEolIe8ypd9DhLYYrIaydd975VVjwJlLyqTQRgsCqq2
- 7Rg9xfyLMxES1T/RQJhvp/YLSRPZJ6Z6UyhIGy/bKQY53kGpKb7vaoadcirSFW3BLJgh
- NOpVSa7dxIXvBiLQIFFGUjWhojs/mwmJTZXz9VTgUWCsqSLFXiqfHynTUaJSFnLypcls
- onfQ==
-X-Gm-Message-State: AOAM5313CJVfoWMK5+Sei9suxdhSBHWWfzSpC4YYvp72JjSAZKPVwbFN
- jTxeBPLfG+0RhzkKlc1oXdg=
-X-Google-Smtp-Source: ABdhPJwQTUwfeBc8x+Qc/XgoFvNgZwRj7DA1ImLYu2aN3NoNJ/vJapVfLwS/Dwin1R3kajnXi5wLGA==
-X-Received: by 2002:ac2:4839:: with SMTP id 25mr19053893lft.455.1629567957530; 
- Sat, 21 Aug 2021 10:45:57 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-120-72.dynamic.spd-mgts.ru.
- [46.138.120.72])
- by smtp.googlemail.com with ESMTPSA id e19sm868158ljj.28.2021.08.21.10.45.55
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sat, 21 Aug 2021 10:45:56 -0700 (PDT)
-Subject: Re: [PATCH v8 07/34] clk: tegra: Support runtime PM and power domain
-To: Ulf Hansson <ulf.hansson@linaro.org>,
- Thierry Reding <thierry.reding@gmail.com>
-Cc: Jonathan Hunter <jonathanh@nvidia.com>, Viresh Kumar
- <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
- Peter De Schrijver <pdeschrijver@nvidia.com>,
- Mikko Perttunen <mperttunen@nvidia.com>, Peter Chen <peter.chen@kernel.org>,
- Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>,
- =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
- Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Lucas Stach <dev@lynxeye.de>,
- Stefan Agner <stefan@agner.ch>, Adrian Hunter <adrian.hunter@intel.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Rob Herring
- <robh+dt@kernel.org>, Michael Turquette <mturquette@baylibre.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-tegra <linux-tegra@vger.kernel.org>,
- Linux PM <linux-pm@vger.kernel.org>,
- Linux USB List <linux-usb@vger.kernel.org>, linux-staging@lists.linux.dev,
- linux-spi@vger.kernel.org, linux-pwm@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-mmc <linux-mmc@vger.kernel.org>,
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- dri-devel <dri-devel@lists.freedesktop.org>,
- DTML <devicetree@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>
-References: <20210817012754.8710-1-digetx@gmail.com>
- <20210817012754.8710-8-digetx@gmail.com> <YR0UBi/ejy+oF4Hm@orome.fritz.box>
- <da7356cb-05ee-ba84-8a7c-6e69d853a805@gmail.com>
- <YR04YHGEluqLIZeo@orome.fritz.box>
- <ad99db08-4696-1636-5829-5260f93dc681@gmail.com>
- <YR6Mvips3HAntDy0@orome.fritz.box>
- <e17bbe8d-7c0f-fc3d-03c7-d75c54c24a43@gmail.com>
- <YR+VDZzTihmpENp6@orome.fritz.box>
- <CAPDyKFpJ+TK0w1GZEA7G=rtAjq5ipmVR4P0wy7uHiEGVWRk5yA@mail.gmail.com>
-From: Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <89ea1694-be9e-7654-abeb-22de0ca5255a@gmail.com>
-Date: Sat, 21 Aug 2021 20:45:54 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=8+xNI7Xpt03WJ5wm4IF5YQdJ93Vcgr3CjWcGnJjFvRs=;
+ b=uOVJPM7oQylJrDapTiSr2CcB8jQTwShSJHny8LG9gungg3ym+4ODNMw4lu/YPv4Gaw
+ 7ENhO0XP66VWw2tmHXjaIcFjFTHyZxawhjkXmMuCdr5PRecrf/4s90BFJXBpZFQEDgo6
+ ZmY32VwHtNyZMCNFWPvmxVBD2OH08JR2tD9V/x7c/Zoey+ilcggMT77oquM5KtleBI3c
+ Sx8HvvL02OOWnAqhxpb9IWWUR9a7WLlx/xGjj8Kus9dJNmvODjxgD1x9P3PkfD9nQDDq
+ mXqz+bhMqXDqbKbW+4Md7XU+9JjMBZYYubJWlJpRTs2iovRkND6UpptZVKyCs8kvZHXL
+ LYrw==
+X-Gm-Message-State: AOAM5338OXZw9zRDztdrzXs1AWfKlN/19VY2PjgsZS7b7Ce6OTK4B1tZ
+ 1sr6P8i9MhhZ68lFELAsIdt5VoRDiRNBEp6WrPacLQ==
+X-Google-Smtp-Source: ABdhPJy+lDABIJjPinV7SutPTwSSsZ5IJ0963pmXaA5HCjCOhQBXPV2XJf+WfZ0UjAU2WB+NgmefHB5SADXvLM+TrpE=
+X-Received: by 2002:a4a:c541:: with SMTP id j1mr20946603ooq.15.1629580671197; 
+ Sat, 21 Aug 2021 14:17:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFpJ+TK0w1GZEA7G=rtAjq5ipmVR4P0wy7uHiEGVWRk5yA@mail.gmail.com>
-Content-Language: en-US
+References: <20210630175446.17680-1-rapid_renard@renard.ga>
+ <c5027b34facdb4fdc21ac89cf9eb50fa@walle.cc>
+In-Reply-To: <c5027b34facdb4fdc21ac89cf9eb50fa@walle.cc>
+From: ", R_R" <rapid_renard@renard.ga>
+Date: Sun, 22 Aug 2021 06:17:39 +0900
+Message-ID: <CACHYknGyR9kmpJQ=DzVPJBFQck7hZQ52d4=M5ypJET+xO=bZOw@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: esmt: Add support for F25L16PA
+To: Michael Walle <michael@walle.cc>
+Cc: linux-mtd@lists.infradead.org, tudor.ambarus@microchip.com, p.yadav@ti.com,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, 
+ Sungbo Eo <mans0n@gorani.run>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210821_104559_393371_791EE2FC 
-X-CRM114-Status: GOOD (  21.40  )
+X-CRM114-CacheID: sfid-20210821_141757_325303_3C7F4AC9 
+X-CRM114-Status: GOOD (  22.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -126,35 +91,70 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-MjAuMDguMjAyMSAxNjowOCwgVWxmIEhhbnNzb24g0L/QuNGI0LXRgjoKLi4uCj4+IEkgc3VwcG9z
-ZSBpZiB0aGVyZSdzIHJlYWxseSBubyBnb29kIHdheSBvZiBkb2luZyB0aGlzIG90aGVyIHRoYW4K
-Pj4gcHJvdmlkaW5nIGEgc3RydWN0IGRldmljZSwgdGhlbiBzbyBiZSBpdC4gSSB0aGluayB0aGUg
-Y2xlYW5lZCB1cCBzeXNmcwo+PiBzaG93biBpbiB0aGUgc3VtbWFyeSBhYm92ZSBsb29rcyBtdWNo
-IGJldHRlciB0aGFuIHdoYXQgdGhlIG9yaWdpbmFsCj4+IHdvdWxkJ3ZlIGxvb2tlZCBsaWtlLgo+
-Pgo+PiBQZXJoYXBzIGFuIGFkZGl0aW9uYWwgdHdlYWsgdG8gdGhhdCB3b3VsZCBiZSB0byBub3Qg
-Y3JlYXRlIHBsYXRmb3JtCj4+IGRldmljZXMuIEluc3RlYWQsIGp1c3QgY3JlYXRlIHN0cnVjdCBk
-ZXZpY2UuIFRob3NlIHJlYWxseSBoYXZlCj4+IGV2ZXJ5dGhpbmcgeW91IG5lZWQgKC5vZl9ub2Rl
-LCBhbmQgY2FuIGJlIHVzZWQgd2l0aCBSUE0gYW5kIEdFTlBEKS4gQXMgSQo+PiBtZW50aW9uZWQg
-ZWFybGllciwgcGxhdGZvcm0gZGV2aWNlIGltcGxpZXMgYSBDUFUtbWVtb3J5LW1hcHBlZCBidXMs
-Cj4+IHdoaWNoIHRoaXMgY2xlYXJseSBpc24ndC4gSXQncyBraW5kIG9mIGEgc2VwYXJhdGUgImJ1
-cyIgaWYgeW91IHdhbnQsIHNvCj4+IGp1c3QgdXNpbmcgc3RydWN0IGRldmljZSBkaXJlY3RseSBz
-ZWVtcyBtb3JlIGFwcHJvcHJpYXRlLgo+IAo+IEp1c3QgYSBoZWFkcyB1cC4gSWYgeW91IGRvbid0
-IHVzZSBhIHBsYXRmb3JtIGRldmljZSBvciBoYXZlIGEgZHJpdmVyCj4gYXNzb2NpYXRlZCB3aXRo
-IGl0IGZvciBwcm9iaW5nLCB5b3UgbmVlZCB0byBtYW5hZ2UgdGhlIGF0dGFjaG1lbnQgdG8KPiBn
-ZW5wZCB5b3Vyc2VsZi4gVGhhdCBtZWFucyBjYWxsaW5nIG9uZSBvZiB0aGUgZGV2X3BtX2RvbWFp
-bl9hdHRhY2gqKCkKPiBBUElzLCBidXQgdGhhdCdzIHBlcmZlY3RseSBmaW5lLCBvZmNvdXJzZS4K
-PiAKPj4KPj4gV2UgZGlkIHNvbWV0aGluZyBzaW1pbGFyIGZvciBYVVNCIHBhZHMsIHNlZSBkcml2
-ZXJzL3BoeS90ZWdyYS94dXNiLltjaF0KPj4gZm9yIGFuIGV4YW1wbGUgb2YgaG93IHRoYXQgd2Fz
-IGRvbmUuIEkgdGhpbmsgeW91IGNhbiBkbyBzb21ldGhpbmcKPj4gc2ltaWxhciBoZXJlLgoKV2Ug
-bmVlZCBhIHBsYXRmb3JtIGRldmljZSBiZWNhdXNlIHdlIGhhdmUgYSBwbGF0Zm9ybSBkZXZpY2Ug
-ZHJpdmVyIHRoYXQKbXVzdCBiZSBib3VuZCB0byB0aGUgZGV2aWNlLCBvdGhlcndpc2UgUE1DIGRy
-aXZlciBzdGF0ZSB3b24ndCBiZSBzeW5jZWQKc2luY2UgaXQgaXQncyBzeW5jZWQgYWZ0ZXIgYWxs
-IGRyaXZlcnMgb2YgZGV2aWNlcyB0aGF0IHJlZmVyZW5jZSBQTUMKbm9kZSBpbiBEVCBhcmUgcHJv
-YmVkLgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hi, Michael.
+Thanks for your feedback!
+
+On Sat, Jul 3, 2021 at 12:11 AM Michael Walle <michael@walle.cc> wrote:
+>
+> Hi,
+>
+> Am 2021-06-30 19:54, schrieb Jihoon Han:
+> > Add support for F25L16PA which is 2MB SPI-NOR Chip manufactured by
+> > ESMT.
+> >
+> > Tested on Qualcomm QCA9557 based DW02-412H router.
+> >
+> > Datasheet:
+> > https://www.esmt.com.tw/upload/pdf/ESMT/datasheets/F25L16PA_1(2S).pdf
+>
+> Please put it into one line and just before your Signed-off-by so it
+> will be tag.
+>
+
+I will fix it for v2.
+
+> >
+> > Signed-off-by: Jihoon Han <rapid_renard@renard.ga>
+> > ---
+> >  drivers/mtd/spi-nor/esmt.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/mtd/spi-nor/esmt.c b/drivers/mtd/spi-nor/esmt.c
+> > index cfc9218c1053..2ebeecd6c957 100644
+> > --- a/drivers/mtd/spi-nor/esmt.c
+> > +++ b/drivers/mtd/spi-nor/esmt.c
+> > @@ -10,6 +10,8 @@
+> >
+> >  static const struct flash_info esmt_parts[] = {
+> >       /* ESMT */
+> > +     { "f25l16pa", INFO(0x8c2115, 0, 64 * 1024, 32,
+> > +                        SECT_4K | SPI_NOR_HAS_LOCK) },
+> >       { "f25l32pa", INFO(0x8c2016, 0, 64 * 1024, 64,
+> >                          SECT_4K | SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE) },
+> >       { "f25l32qa", INFO(0x8c4116, 0, 64 * 1024, 64,
+>
+> There is a F25L16PA which has a different ID (0x8c2015). So we have to
+> agree
+> on a different name.
+>
+> See also
+> https://lore.kernel.org/linux-mtd/20210620085639.143694-1-mans0n@gorani.run/
+>
+> --
+> -michael
+
+According to the datasheet, the previously produced F25L16PA has an ID
+of 0x8c2015, and the subsequently produced F25L16PA(2S) has an ID of
+0x8c2115.
+Since I have only tested F25L16PA(2S), I would like to revise the
+model name to "f25l16pa-2s" as the conclusion discussed in that patch
+and submit the revised patch.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
