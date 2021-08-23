@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D3ADC4338F
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 08:36:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 806DEC4338F
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 08:37:22 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E76C161262
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 08:36:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E76C161262
+	by mail.kernel.org (Postfix) with ESMTPS id 4AB1061248
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 08:37:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4AB1061248
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,39 +23,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=APojUATu8m7hyquUBYW/eWf0K6qe8uFsTAOUL1iuMu4=; b=kz+Qc1pedFPU85
-	HvGWqkDRWg6S8ZmlM614lIVG1uBd3WoLWjVCf+tZgTTbGsZPhMmu7e9k8xdvrzfvOq1OUoGqlJMJY
-	QuUctD7RP5rMcpSn/q+zYG/MbFepYYR9t9JhmNcC24Qd1J6CBzal2vCLMWvbw4TwQHGAGmArI+ptS
-	Z+hWx9e11J2cNWfJkffLWxLBo9yUmz4JVfeay9zNqJ0e4sEwjJXi8nYMjg2uZXTMI7ricRPLlHA2W
-	wyEMU2vNVofk3IJNoQqQNZu5vHloTV0s+7DyjXvo8OslHL6XaZgIRKf003caMXMvQ7HQzTCuq1DLu
-	PKdIGRDcH7nDzRg6Dtgw==;
+	List-Owner; bh=tPHeX4PQpNjRdtH7yw7pfQRxomvDxjgVFQ9PdhkeIXc=; b=pFHWwIjv1z3O+L
+	MBzPhSc9W5/ZfgtJhZlUXgASlK6V8kDLr7Eq9Sad4cHIIz6Gwzg4Ua8E780K04k4jBU3vUQh3tzZP
+	RBdnsLN4xVK0HhX5jgk7XuXITM04B26R7+HkvpVLXe5CPDy4rDtxegBpPweHCTzv152koiBERFIYU
+	CSsPtc6zMvugQnmVUUOe9qCH33C0sEIYK6aoe7OZLCPrAmBWSsb4iQav4W2qEVJyL+2wQUY1ukAFW
+	A69Sxv+D83Gr33uoJFMEfmbTeSyL9Sh4xp3BKgoWMBax8+bZioDB2OAhYUkyfv6U2y1hq7zYUIB3Q
+	m0RQ4p3NG9BSVuQfyy/A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mI5Qz-00FwxL-ES; Mon, 23 Aug 2021 08:35:57 +0000
-Received: from relay10.mail.gandi.net ([217.70.178.230])
+	id 1mI5Rm-00FxF8-MD; Mon, 23 Aug 2021 08:36:46 +0000
+Received: from relay11.mail.gandi.net ([217.70.178.231])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mI5Op-00Fw3m-SF
- for linux-mtd@lists.infradead.org; Mon, 23 Aug 2021 08:33:45 +0000
+ id 1mI5Ou-00Fw4y-Ms
+ for linux-mtd@lists.infradead.org; Mon, 23 Aug 2021 08:33:50 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay10.mail.gandi.net (Postfix) with ESMTPSA id 4D11E240013;
- Mon, 23 Aug 2021 08:33:41 +0000 (UTC)
+ by relay11.mail.gandi.net (Postfix) with ESMTPSA id 9513C10000A;
+ Mon, 23 Aug 2021 08:33:46 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Christoph Hellwig <hch@lst.de>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
 Cc: Guenter Roeck <linux@roeck-us.net>,
 	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 2/8] mtd_blkdevs: use lockdep_assert_held
-Date: Mon, 23 Aug 2021 10:33:41 +0200
-Message-Id: <20210823083341.9447-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 1/8] mtd_blkdevs: don't hold del_mtd_blktrans_dev in
+ blktrans_{open, release}
+Date: Mon, 23 Aug 2021 10:33:46 +0200
+Message-Id: <20210823083346.9511-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210823073359.705281-3-hch@lst.de>
+In-Reply-To: <20210823073359.705281-2-hch@lst.de>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'f214eebf8de4d2e412a35ff140687d88f056143a'
+X-linux-mtd-patch-commit: b'799ae31c58ae766a4ce9b198658b286ecaf2c575'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210823_013344_094163_AF973808 
-X-CRM114-Status: UNSURE (   6.78  )
+X-CRM114-CacheID: sfid-20210823_013348_925689_4560D5F8 
+X-CRM114-Status: UNSURE (   7.32  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -73,11 +74,13 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2021-08-23 at 07:33:53 UTC, Christoph Hellwig wrote:
-> Use lockdep_assert_held to ensure mtd_table_mutex is held instead of
-> mutex_trylock games.
+On Mon, 2021-08-23 at 07:33:52 UTC, Christoph Hellwig wrote:
+> There is nothing that this protects against except for slightly reducing
+> the window when new opens can appear just before calling del_gendisk.
 > 
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Tested-by: Guenter Roeck <linux@roeck-us.net>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
