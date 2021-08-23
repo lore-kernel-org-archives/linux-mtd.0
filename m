@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BD78C4338F
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 08:34:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F079C4338F
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 08:34:49 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3365261248
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 08:34:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3365261248
+	by mail.kernel.org (Postfix) with ESMTPS id 153D361248
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 08:34:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 153D361248
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,39 +23,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vzsrHuydeUhJSakzzSR0TCbqihx3HXiCAXCBY4v0uvQ=; b=FqyGDjD8dN4nOm
-	BVtoY1wZikuUzlwJre2VZrV6eu0Mjr8JOB+LG954X7aFt0OgoP+eqPMqyFNUYlmYuovbo7wK6p76n
-	44lxArxqEkBvjDamiFd5bzAdXQHsrxqXR0FAFC1I6/QlBRekeaAyAnJedNQUyLuFrDkKTzZcU+8CI
-	lADCfzvPKkU3PG29R3UGSrvHORRVVnmU3DgxscElT6YrytQWL61KGVihsC+HxJxjzW4hR7UN8Q32e
-	b+L/HxFW1GFp7oDcsxCwTlILtEkzxdpXBQXyXDzuONihEpVN4aPPHQUbPLDsh+ZCGLDtMgnGACFbM
-	54C2aoT6U/niyj0p3XxA==;
+	List-Owner; bh=qFCh1AyB3AwR5KZVp42aO40nV6mRB0a9fQQxanw2LBM=; b=SBdmq5mshEzYFr
+	JhB76H9x8CyCa1fdKHBHm3YXOSwNhfH2WJPpVIReYMutIWxkjbPEuCojWjeS7zvUzDl+PIL1cXHrt
+	fvFjSIRrYs0d9RBsUTE1Oy0hBwiJUWQ6dRiFeUXrYZj9moJPRD8nxpLNuq0dqJ3w03PofxE5b50m9
+	VyaAxF6dQ7LLMhMlW3c0xaxc4cRfaDvY8FPR2cJsU43qhfpDtg6uQ4ceO6rfjkpXxulZLdauYrJaU
+	1nBIzsgR/D7eqPxsYNIQbu6uIGPieWsjK9aitW0rxT3Hm9XGfBifuWYUHNgEoshjEKB0tegLMbrFu
+	YjoV4Ox5wlOHlsHM7Q6g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mI5Oz-00Fw7a-Nt; Mon, 23 Aug 2021 08:33:53 +0000
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	id 1mI5PL-00FwGZ-NQ; Mon, 23 Aug 2021 08:34:15 +0000
+Received: from relay10.mail.gandi.net ([217.70.178.230])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mI5OY-00Fvyt-CI
- for linux-mtd@lists.infradead.org; Mon, 23 Aug 2021 08:33:29 +0000
+ id 1mI5Of-00Fw0I-8O
+ for linux-mtd@lists.infradead.org; Mon, 23 Aug 2021 08:33:34 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 58E074000F;
- Mon, 23 Aug 2021 08:33:23 +0000 (UTC)
+ by relay10.mail.gandi.net (Postfix) with ESMTPSA id F176E24000E;
+ Mon, 23 Aug 2021 08:33:28 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Christoph Hellwig <hch@lst.de>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
 Cc: Guenter Roeck <linux@roeck-us.net>,
 	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 6/8] mtd_blkdevs: remove blktrans_ref_mutex
-Date: Mon, 23 Aug 2021 10:33:22 +0200
-Message-Id: <20210823083322.9191-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 5/8] mtd_blkdevs: simplify blktrans_dev_get
+Date: Mon, 23 Aug 2021 10:33:28 +0200
+Message-Id: <20210823083328.9255-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210823073359.705281-7-hch@lst.de>
+In-Reply-To: <20210823073359.705281-6-hch@lst.de>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'560a3915e3df09125d7b20088a177b2872d2d680'
+X-linux-mtd-patch-commit: b'89843828399ec825f8ec3e614634a428a951a2b3'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210823_013326_595373_6CF416AE 
-X-CRM114-Status: UNSURE (   8.27  )
+X-CRM114-CacheID: sfid-20210823_013333_474773_D52DACBD 
+X-CRM114-Status: UNSURE (   6.87  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -73,12 +73,9 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2021-08-23 at 07:33:57 UTC, Christoph Hellwig wrote:
-> blktrans_ref_mutex is not actually needed.  The kref is serialized
-> internally, and devnum assignment in add_mtd_blktrans_dev happens before
-> the disk is added and thus any of the block_device_operations methods
-> otherwise using it are called.  It  is also already serialized by the
-> global mtd_table_mutex.
+On Mon, 2021-08-23 at 07:33:56 UTC, Christoph Hellwig wrote:
+> ->private_data is set before the disk is added and never cleared, so don't
+> bother trying to handle a NULL pointer there.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 
