@@ -2,20 +2,21 @@ Return-Path: <SRS0=IJcR=NO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 379C1C4338F
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 10:48:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 068B0C4338F
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 11:21:18 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F209A6136F
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 10:48:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F209A6136F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id C02F261206
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 11:21:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C02F261206
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -23,95 +24,64 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sXhpmk4Et796ciTlVgj57UoHnISfuHNDylM/T8sL+ik=; b=P3MxBZ3Vmkzpdo
-	8fSeRX1naanKTAUMzZPtJ7J1sMcUSGSh+Hu7QfIE5OmrnCnw/AVhbl89dcn5pEpP7bkyDiQDB6YtH
-	NTNY5wWh9cRSnCvoks1ZwJjUYyPPDK0su5h1noik0kIh7ZyrOjpzWwA1Pey/zkXzs5XAJGp0hlH+9
-	uFxTgxLKE2TCdSrSODGL+MVgz8fUZ/9LpSXELM8dW7IoHetduwzb8zUvcXxdr7invMKX6v3xnOAIj
-	Wo3M3uQiMUPwyIhlHw6EySFaHM8cdl39hil5C8vcQkgGpEgqqRHVB8IER2OqVs+qfsx99aANyZCvA
-	Aa6iCfxC0qtG1wjydxSQ==;
+	List-Owner; bh=E/CjSqGT/8+6QBgo3wtBp/3FcdhjZCr1shKutiTX6qs=; b=QpiTGug8SjE9FT
+	F5UoAsNshTEw9y9N5fDN/OX57UDAJ1fueNIh4HeFLpAh/7pBaVXMw5O2Q+AteFJJWqt1g1TTYKod+
+	qUqN4EDDIT+jSsU/yENL+4OjIQJNKmNi3IKh/Kj+PCfrJSOUn/9Az9PjpwAOgslB9JHm4COStZlza
+	5Oc7tinZOYiXqE5GOqvGMm4F7YZB1EHsMrj0ZOXvK0CFuakVVMyesNRePSh19xVXg1yP8x8IlIMtu
+	s8B3efY8ZM9CQOVD0oWnAmpPgdLb/S1Isg39+YiUhQRLLCI4ITslQAwdjRuv90NKeuGmPMsIt8Uw7
+	7M3uvOY9og/OGoI8UKww==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mI7Tr-00GOqt-L5; Mon, 23 Aug 2021 10:47:03 +0000
-Received: from mail-lj1-x22b.google.com ([2a00:1450:4864:20::22b])
+	id 1mI803-00GXdB-5G; Mon, 23 Aug 2021 11:20:19 +0000
+Received: from mail-qt1-x834.google.com ([2607:f8b0:4864:20::834])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mI7Tm-00GOnl-4U
- for linux-mtd@lists.infradead.org; Mon, 23 Aug 2021 10:47:02 +0000
-Received: by mail-lj1-x22b.google.com with SMTP id h1so2446678ljl.9
- for <linux-mtd@lists.infradead.org>; Mon, 23 Aug 2021 03:46:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ id 1mI7zp-00GXWC-TP
+ for linux-mtd@lists.infradead.org; Mon, 23 Aug 2021 11:20:09 +0000
+Received: by mail-qt1-x834.google.com with SMTP id d9so13397410qty.12
+ for <linux-mtd@lists.infradead.org>; Mon, 23 Aug 2021 04:19:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=UmkfXGaYCdqSsvCrogHGEUgWw+TJ4SlfmjU5MN/PEBE=;
- b=cjqU7CIQQYnl3N9VSH9OdTpbfhx84HH/grPgOc+tCGAo2Yn2hAV0cMn3z8HTaVOuhA
- 8Brg4z73NnaY2Z/CE8IaG11T82l0gL1ZP2mAHcCMwXtNviOz1cwQ7atSvkRP33js82FC
- tL3OJS+qxvVYzF3TYhi7jJG99T8jOBJM8RSwrLmSS6vtDNlXueNOFv50Q4BmfSf/V2kW
- jpK8t4qSsEu0v76ajcR4UzKY9YBd/hRYx4cCU6l6AsBCSBWNe3JTai52Wv7UVRmBdbxJ
- Pg+Ik2kyI7qbtIeypuO3uLwLKp7JZuw0yQNYCSOl6O3FaQojbcATlzG1xxwJABfP9fIQ
- rH8g==
+ :cc:content-transfer-encoding;
+ bh=4PbfMieHLNy2oJjY0XJuBOyImh9wvo44rr+tmqHI2Ug=;
+ b=L6DISO0PrFOv7mJZL1glU0wLACXUv/vMMn+QWZA+uKq24fu7BeUXsn/WMb3Ub95vv9
+ kJfmVgvOZAhEeyk6Em0z6muRmB24rwGlC5em0HylG9ywNi7sLzF50mqx33UFs1nBjAQO
+ 6m2W9Oo7opSL4CKetgsK6eeh9eskTCsbmjX0VbJFjkubczdhhDijclGJU6WEwhnmuwga
+ hGrMjAqcl5Xk14xeV0U2KyD1EB4W/tS4EgYjkFqCSKk7cLqw80W0WlaMdetSTOyTWfpn
+ q+3ZpagUrW/E4oxsodqkYHPA/7YJMyWjsfKyTWaTF57VR5unswA9yVzFueT/uf36rSpX
+ jwtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=UmkfXGaYCdqSsvCrogHGEUgWw+TJ4SlfmjU5MN/PEBE=;
- b=mWXsrBsw6+/quctqb4Bn53fCWTCoH5h9PFFynHEi8+tVjbItNb5rjqz/IDR/H0hnwm
- Oo4cAwXz6rcpxWtgMMDtHuEsWzF4JUu9gbZFmR/bGEErngU3b5zeqL6Gsde/greA7PVN
- +Dq4GWfKyMN9T61gsQVk4WvPTVkufqE5IvSOmUles/5HIwHgiH+F86/nd7ksS6AR/EiS
- KpMCddFswX2YxMruFuZwUTH4/rY+Uns0iqDiZQLvXjszGUV4uZfc999kltGtc7KpR5vk
- opb4dub0JPBJ7L1hJuOqqiFjR8Y5eSRnMzU+Krqxlalc4wYOa2DAWNHn30LkxYSawTTB
- FJTQ==
-X-Gm-Message-State: AOAM532WFLQCXeaQm4TP2XiCR9PbFXeSAWelEhlhqj+3By+IwKqqUK1v
- j7CjUgJa978BjYy7fjmrVr4h2ICE8yX8t1KGivUukg==
-X-Google-Smtp-Source: ABdhPJwROTbhLIghdJiFv3Mpx4km5TKucbukHEV5v0NDix1jHpH6ITt9xOVwuMgiEW0EE35GC/hK1ms310RYHiQipIA=
-X-Received: by 2002:a2e:a410:: with SMTP id p16mr25247179ljn.364.1629715615237; 
- Mon, 23 Aug 2021 03:46:55 -0700 (PDT)
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=4PbfMieHLNy2oJjY0XJuBOyImh9wvo44rr+tmqHI2Ug=;
+ b=BlQJ4+IIqupRL/0kBucuSL1KzxfYe7pyDkcu+fLYPuELg5II9YAOIbEyqinT4yvUdj
+ M5Sy2fMiWZNdIj/q/IxBcjfF7dz9zQg+sFxSByJ2Pb6jbAq9sGMhNWU++mT6plHOKpiE
+ BMncn3cCfCpz2X/8oJHgdw8TceM2fJ5qE14kXnau4pPMoR9+Ic9ZktEEh4LbLbftDmIE
+ 9/JLLE+g88HzvIV+e6ULuBzybGYuD7pJV3S51eNa8lHUVCuXmqTNvHWxiCX8o3qig+3T
+ csSQXL7G4kQpk5PXVHg2EzGGeVInykIN4LI9a7DixnwWQaCR3E6YbiMijlM3T1EzOuQC
+ HTMA==
+X-Gm-Message-State: AOAM533LAWBOERHSQfeE3u9v7P11KwGcC8cSPMndckip8ihy0YsI2hmK
+ Ab2q5y2u6nlyAIEmvTYHAhqliKnfyhIU/9md9eU=
+X-Google-Smtp-Source: ABdhPJxNOdiHFNFi2SBTgDO9cbaeKvTB2Al5uJpnNNsuc5Da1tSvh4BtxRuOrUMOaZSEkY2XjzI+nlaFm9emkn2qbRQ=
+X-Received: by 2002:a05:622a:1387:: with SMTP id
+ o7mr29468276qtk.19.1629717593780; 
+ Mon, 23 Aug 2021 04:19:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210818043131.7klajx6drvvkftoc@vireshk-i7>
- <a2a3c41f-c5e4-ee7e-7d48-03af8bac8863@gmail.com>
- <20210818045307.4brb6cafkh3adjth@vireshk-i7>
- <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
- <20210818055849.ybfajzu75ecpdrbn@vireshk-i7>
- <f1c76f23-086d-ef36-54ea-0511b0ebe0e1@gmail.com>
- <20210818062723.dqamssfkf7lf7cf7@vireshk-i7>
- <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
- <20210818091417.dvlnsxlgybdsn76x@vireshk-i7>
- <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
- <20210818095044.e2ntsm45h5cddk7s@vireshk-i7>
- <CAPDyKFrFF00xGDWPCQnPwF0_QkG4TB2UqggpuBpp8LY_CMKP-A@mail.gmail.com>
- <0354acbe-d856-4040-f453-8e8164102045@gmail.com>
- <CAPDyKFoQdn1rm91iFNJwZwpSYcKJBjDLqtJB4KZAkhgY1Grm-Q@mail.gmail.com>
- <87073fc2-d7b3-98f4-0067-29430ea2adef@gmail.com>
- <CAPDyKFqSsAk8a5CTNpRT2z4Wvf8BehJKDbVhUKfHc2Jzj7aTNA@mail.gmail.com>
- <9129a9f0-8c9b-d8e0-ddf5-c8820871fb7f@gmail.com>
-In-Reply-To: <9129a9f0-8c9b-d8e0-ddf5-c8820871fb7f@gmail.com>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Mon, 23 Aug 2021 12:46:19 +0200
-Message-ID: <CAPDyKFrWeQVNgxzmiLBXJ2gQW=iFf4aG16xvZ+ag1MkhXs9-BQ@mail.gmail.com>
-Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
-To: Dmitry Osipenko <digetx@gmail.com>
-Cc: Viresh Kumar <viresh.kumar@linaro.org>,
- Thierry Reding <thierry.reding@gmail.com>, 
- Jonathan Hunter <jonathanh@nvidia.com>, Viresh Kumar <vireshk@kernel.org>, 
- Stephen Boyd <sboyd@kernel.org>, Peter De Schrijver <pdeschrijver@nvidia.com>, 
- Mikko Perttunen <mperttunen@nvidia.com>, Peter Chen <peter.chen@kernel.org>, 
- Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>, 
- =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
- Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Richard Weinberger <richard@nod.at>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, Lucas Stach <dev@lynxeye.de>, 
- Stefan Agner <stefan@agner.ch>, Adrian Hunter <adrian.hunter@intel.com>, 
- Mauro Carvalho Chehab <mchehab@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-tegra <linux-tegra@vger.kernel.org>, 
- Linux PM <linux-pm@vger.kernel.org>, Linux USB List <linux-usb@vger.kernel.org>,
- linux-staging@lists.linux.dev, linux-spi@vger.kernel.org, 
- linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org, 
- linux-mmc <linux-mmc@vger.kernel.org>, 
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- dri-devel <dri-devel@lists.freedesktop.org>, 
- DTML <devicetree@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>
+References: <20210808072643.GA5084@ubuntu> <20210816093126.442f74a1@xps13>
+ <CAE9cyGQ+Bb3rQxiF4My9zXwg_+QYifaCckE=C6spAtN9_4dBFQ@mail.gmail.com>
+ <20210819100334.6af2d86e@xps13>
+In-Reply-To: <20210819100334.6af2d86e@xps13>
+From: Kestrel seventyfour <kestrelseventyfour@gmail.com>
+Date: Mon, 23 Aug 2021 13:19:43 +0200
+Message-ID: <CAE9cyGSF2vTCptSZd3uMFaZPD=as=PwZY14S+zDhzjWCmsfmpQ@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: rawnand: xway: No hardcoded ECC engine, use
+ device tree setting
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210823_034658_209397_B073AD14 
-X-CRM114-Status: GOOD (  68.15  )
+X-CRM114-CacheID: sfid-20210823_042005_999571_EB12D427 
+X-CRM114-Status: GOOD (  42.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -123,227 +93,86 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-[...]
-
-> >>>> We have three components comprising PM on Tegra:
-> >>>>
-> >>>> 1. Power gate
-> >>>> 2. Clock state
-> >>>> 3. Voltage state
-> >>>>
-> >>>> GENPD on/off represents the 'power gate'.
-> >>>>
-> >>>> Clock and reset are controlled by device drivers using clk and rst APIs.
-> >>>>
-> >>>> Voltage state is represented by GENPD's performance level.
-> >>>>
-> >>>> GENPD core assumes that at a first rpm-resume of a consumer device, its
-> >>>> genpd_performance=0. Not true for Tegra because h/w of the device is
-> >>>> preconfigured to a non-zero perf level initially, h/w may not support
-> >>>> zero level at all.
-> >>>
-> >>> I think you may be misunderstanding genpd's behaviour around this, but
-> >>> let me elaborate.
-> >>>
-> >>> In genpd_runtime_resume(), we try to restore the performance state for
-> >>> the device that genpd_runtime_suspend() *may* have dropped earlier.
-> >>> That means, if genpd_runtime_resume() is called prior
-> >>> genpd_runtime_suspend() for the first time, it means that
-> >>> genpd_runtime_resume() will *not* restore a performance state, but
-> >>> instead just leave the performance state as is for the device (see
-> >>> genpd_restore_performance_state()).
-> >>>
-> >>> In other words, a consumer driver may use the following sequence to
-> >>> set an initial performance state for the device during ->probe():
-> >>>
-> >>> ...
-> >>> rate = clk_get_rate()
-> >>> dev_pm_opp_set_rate(rate)
-> >>>
-> >>> pm_runtime_enable()
-> >>> pm_runtime_resume_and_get()
-> >>> ...
-> >>>
-> >>> Note that, it's the consumer driver's responsibility to manage device
-> >>> specific resources, in its ->runtime_suspend|resume() callbacks.
-> >>> Typically that means dealing with clock gating/ungating, for example.
-> >>>
-> >>> In the other scenario where a consumer driver prefers to *not* call
-> >>> pm_runtime_resume_and_get() in its ->probe(), because it doesn't need
-> >>> to power on the device to complete probing, then we don't want to vote
-> >>> for an OPP at all - and we also want the performance state for the
-> >>> device in genpd to be set to zero. Correct?
-> >>
-> >> Yes
-> >>
-> >>> Is this the main problem you are trying to solve, because I think this
-> >>> doesn't work out of the box as of today?
-> >>
-> >> The main problem is that the restored performance state is zero for the
-> >> first genpd_runtime_resume(), while it's not zero from the h/w perspective.
-> >
-> > This should not be a problem, but can be handled by the consumer driver.
-> >
-> > genpd_runtime_resume() calls genpd_restore_performance_state() to
-> > restore a performance state for the device. However, in the scenario
-> > you describe, "gpd_data->rpm_pstate" is zero, which makes
-> > genpd_restore_performance_state() to just leave the device's
-> > performance state as is - it will *not* restore the performance state
-> > to zero.
-> >
-> > To make the consumer driver deal with this, it would need to call
-> > dev_pm_opp_set_rate() from within its ->runtime_resume() callback.
-> >
-> >>
-> >>> There is another concern though, but perhaps it's not a problem after
-> >>> all. Viresh told us that dev_pm_opp_set_rate() may turn on resources
-> >>> like clock/regulators. That could certainly be problematic, in
-> >>> particular if the device and its genpd have OPP tables associated with
-> >>> it and the consumer driver wants to follow the above sequence in
-> >>> probe.
-> >>
-> >> dev_pm_opp_set_rate() won't enable clocks and regulators, but it may
-> >> change the clock rate and voltage. This is also platform/driver specific
-> >> because it's up to OPP user how to configure OPP table. On Tegra we only
-> >> assign clock to OPP table, regulators are unused.
-> >>
-> >>> Viresh, can you please chime in here and elaborate on some of the
-> >>> magic happening behind dev_pm_opp_set_rate() API - is there a problem
-> >>> here or not?
-> >>>
-> >>>>
-> >>>> GENPD core assumes that consumer devices can work at any performance
-> >>>> level. Not true for Tegra because voltage needs to be set in accordance
-> >>>> to the clock rate before clock is enabled, otherwise h/w won't work
-> >>>> properly, perhaps clock may be unstable or h/w won't be latching.
-> >>>
-> >>> Correct. Genpd relies on the callers to use the OPP framework if there
-> >>> are constraints like you describe above.
-> >>>
-> >>> That said, it's not forbidden for a consumer driver to call
-> >>> dev_pm_genpd_set_performance_state() directly, but then it better
-> >>> knows exactly what it's doing.
-> >>>
-> >>>>
-> >>>> Performance level should be set to 0 while device is suspended.
-> >>>
-> >>> Do you mean system suspend or runtime suspend? Or both?
-> >>
-> >> Runtime suspend.
-> >
-> > Alright. So that's already taken care of for us in genpd_runtime_suspend().
-> >
-> > Or perhaps you have discovered some problem with this?
-> >
-> >>
-> >>>> Performance level needs to be bumped on rpm-resume of a device in
-> >>>> accordance to h/w state before hardware is enabled.
-> >>>
-> >>> Assuming there was a performance state set for the device when
-> >>> genpd_runtime_suspend() was called, genpd_runtime_resume() will
-> >>> restore that state according to the sequence you described.
-> >>
-> >> What do you think about adding API that will allow drivers to explicitly
-> >> set the restored performance state of a power domain?
-> >>
-> >> Another option could be to change the GENPD core, making it to set the
-> >> rpm_pstate when dev_pm_genpd_set_performance_state(dev) is invoked and
-> >> device is rpm-suspended, instead of calling the
-> >> genpd->set_performance_state callback.
-> >>
-> >> Then drivers will be able to sync the perf state at a probe time.
-> >>
-> >> What do you think?
-> >
-> > I don't think it's needed, see my reply earlier above. However your
-> > change touches another problem though, see below.
-> >
-> >>
-> >> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> >> index a934c679e6ce..cc15ab9eacc9 100644
-> >> --- a/drivers/base/power/domain.c
-> >> +++ b/drivers/base/power/domain.c
-> >> @@ -435,7 +435,7 @@ static void genpd_restore_performance_state(struct
-> >> device *dev,
-> >>  int dev_pm_genpd_set_performance_state(struct device *dev, unsigned int
-> >> state)
-> >>  {
-> >>         struct generic_pm_domain *genpd;
-> >> -       int ret;
-> >> +       int ret = 0;
-> >>
-> >>         genpd = dev_to_genpd_safe(dev);
-> >>         if (!genpd)
-> >> @@ -446,7 +446,10 @@ int dev_pm_genpd_set_performance_state(struct
-> >> device *dev, unsigned int state)
-> >>                 return -EINVAL;
-> >>
-> >>         genpd_lock(genpd);
-> >> -       ret = genpd_set_performance_state(dev, state);
-> >> +       if (pm_runtime_suspended(dev))
-> >> +               dev_gpd_data(dev)->rpm_pstate = state;
-> >> +       else
-> >> +               ret = genpd_set_performance_state(dev, state);
-> >>         genpd_unlock(genpd);
-> >
-> > This doesn't work for all cases. For example, when a consumer driver
-> > deploys runtime PM support in its ->probe() according to the below
-> > sequence:
-> >
-> > ...
-> > dev_pm_opp_set_rate(rate)
-> > pm_runtime_get_noresume()
-> > pm_runtime_set_active()
-> > pm_runtime_enable()
-> > ...
-> > pm_runtime_put()
-> > ...
-> >
-> > We need to call genpd_set_performance_state() independently of whether
-> > the device is runtime suspended or not.
->
-> I don't see where is the problem in yours example.
->
-> pm_runtime_suspended() = false while RPM is disabled. When device is
-> resumed, the rpm_pstate=0, so it won't change the pstate on resume.
-
-Yes, you are certainly correct, my bad! I mixed it up with
-pm_runtime_status_suspended(), which only cares about the status.
-
-So, after a second thought, your suggestion sounds very much
-reasonable to me! I have also tried to consider all different
-scenarios, including the system suspend/resume path, but I think it
-should be fine.
-
-I also think that a patch like the above should be considered as a
-fix, because it actually fixes a problem, according to what I said in
-my earlier reply, below.
-
-Fixes : 5937c3ce2122 ("PM: domains: Drop/restore performance state
-votes for devices at runtime PM").
-
->
-> > Although, it actually seems like good idea to update
-> > dev_gpd_data(dev)->rpm_pstate = state here, as to make sure
-> > genpd_runtime_resume() doesn't restore an old/invalid value that was
-> > saved while dropping the performance state vote for the device in
-> > genpd_runtime_suspend() earlier.
-> >
-> > Let me send a patch for this shortly, to close this window of a possible error.
->
-> It will also remove the need to resume device just to change the clock
-> rate, like I needed to do it in the PWM patch of this series.
-
-Do you want to send the patch formally? Or do you prefer it if I do it?
-
-Kind regards
-Uffe
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWlxdcOobCwKCkFtIERvLiwgMTkuIEF1Zy4gMjAyMSB1bSAxMDowMyBVaHIgc2NocmllYiBN
+aXF1ZWwgUmF5bmFsCjxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPjoKPgo+IEhlbGxvLAo+Cj4g
+S2VzdHJlbCBzZXZlbnR5Zm91ciA8a2VzdHJlbHNldmVudHlmb3VyQGdtYWlsLmNvbT4gd3JvdGUg
+b24gVGh1LCAxOSBBdWcKPiAyMDIxIDA5OjIxOjQyICswMjAwOgo+Cj4gPiBIaSBNaXF1w6hsCj4g
+Pgo+ID4gQW0gTW8uLCAxNi4gQXVnLiAyMDIxIHVtIDA5OjMxIFVociBzY2hyaWViIE1pcXVlbCBS
+YXluYWwKPiA+IDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPjoKPiA+ID4KPiA+ID4gSGkgRGFu
+aWVsLAo+ID4gPgo+ID4gPiBEYW5pZWwgS2VzdHJlbCA8a2VzdHJlbHNldmVudHlmb3VyQGdtYWls
+LmNvbT4gd3JvdGUgb24gU3VuLCA4IEF1ZyAyMDIxCj4gPiA+IDA5OjI2OjQzICswMjAwOgo+ID4g
+Pgo+ID4gPiA+IFNvbWUgZGV2aWNlcyB1c2UgTWljcm9uIE5BTkQgY2hpcHMsIHdoaWNoIHVzZSBv
+bi1kaWUgRUNDLiBUaGUgaGFyZGNvZGVkCj4gPiA+ID4gc2V0dGluZyBvZiBOQU5EX0VDQ19FTkdJ
+TkVfVFlQRV9TT0ZUIG1ha2VzIHRoZW0gdW51c2FibGUsIGJlY2F1c2UgdGhlCj4gPiA+ID4gc29m
+dHdhcmUgRUNDIG9uIHRvcCBvZiB0aGUgaGFyZHdhcmUgRUNDIHByb2R1Y2VzIGVycm9ycyBmb3Ig
+ZXZlcnkgcmVhZAo+ID4gPiA+IGFuZCB3cml0ZSBhY2Nlc3MsIG5vdCB0byBtZW50aW9uIHRoYXQg
+Ym9vdGluZyBkb2VzIG5vdCB3b3JrLCBiZWNhdXNlCj4gPiA+ID4gdGhlIGJvb3QgbG9hZGVyIHVz
+ZXMgdGhlIGNvcnJlY3QgRUNDIHdoZW4gdHJ5aW5nIHRvIGxvYWQgdGhlIGtlcm5lbAo+ID4gPiA+
+IGFuZCBzdG9wcyBsb2FkaW5nIG9uIHNldmVyZSBFQ0MgZXJyb3JzLgo+ID4gPiA+IFRoaXMgcGF0
+Y2ggcmVxdWlyZXMgdGhlIGRldmljZXMgdGhhdCBjdXJyZW50bHkgd29yayB3aXRoIHRoZSBoYXJk
+IGNvZGVkCj4gPiA+ID4gc2V0dGluZyB0byBzZXQgdGhlIG5hbmQtZWNjLW1vZGUgcHJvcGVydHkg
+dG8gc29mdCBpbiB0aGVpciBkZXZpY2UKPiA+ID4gPiB0cmVlLgo+ID4gPiA+Cj4gPiA+Cj4gPiA+
+IFBsZWFzZSBhZGQgYSBGaXhlczogYW5kIENjOiBzdGFibGUgdGFncywgeW91IHdpbGwgYWxzbyBu
+ZWVkIHRvIHNlbmQgdG8KPiA+ID4gc3RhYmxlQHZnZXIua2VybmVsLm9yZyBhIGRpZmZlcmVudCB2
+ZXJzaW9uIG9mIHRoZSBwYXRjaCBmb3IgdGhlIGtlcm5lbAo+ID4gPiA1LjQgSUlVQy4KPiA+ID4K
+PiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgS2VzdHJlbCA8a2VzdHJlbHNldmVudHlmb3Vy
+QGdtYWlsLmNvbT4KPiA+ID4gPiBUZXN0ZWQtYnk6IEFsZWtzYW5kZXIgSmFuIEJhamtvd3NraSA8
+b2xlazJAd3AucGw+ICMgdGVzdGVkIG9uIEJUIEhvbWUgSHViIDVBCj4gPiA+ID4gLS0tCj4gPiA+
+ID4gIGRyaXZlcnMvbXRkL25hbmQvcmF3L3h3YXlfbmFuZC5jIHwgMiAtLQo+ID4gPiA+ICAxIGZp
+bGUgY2hhbmdlZCwgMiBkZWxldGlvbnMoLSkKPiA+ID4gPgo+ID4gPiA+IGRpZmYgLS1naXQgYS9k
+cml2ZXJzL210ZC9uYW5kL3Jhdy94d2F5X25hbmQuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L3h3
+YXlfbmFuZC5jCj4gPiA+ID4gaW5kZXggMjY3NTE5NzZlNTAyLi4wYTRiMGFhN2RkNGMgMTAwNjQ0
+Cj4gPiA+ID4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcveHdheV9uYW5kLmMKPiA+ID4gPiAr
+KysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy94d2F5X25hbmQuYwo+ID4gPiA+IEBAIC0xNDgsOCAr
+MTQ4LDYgQEAgc3RhdGljIHZvaWQgeHdheV93cml0ZV9idWYoc3RydWN0IG5hbmRfY2hpcCAqY2hp
+cCwgY29uc3QgdV9jaGFyICpidWYsIGludCBsZW4pCj4gPiA+ID4KPiA+ID4gPiAgc3RhdGljIGlu
+dCB4d2F5X2F0dGFjaF9jaGlwKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXApCj4gPiA+ID4gIHsKPiA+
+ID4gPiAtICAgICBjaGlwLT5lY2MuZW5naW5lX3R5cGUgPSBOQU5EX0VDQ19FTkdJTkVfVFlQRV9T
+T0ZUOwo+ID4gPiA+IC0KPiA+ID4gPiAgICAgICBpZiAoY2hpcC0+ZWNjLmFsZ28gPT0gTkFORF9F
+Q0NfQUxHT19VTktOT1dOKQo+ID4gPiA+ICAgICAgICAgICAgICAgY2hpcC0+ZWNjLmFsZ28gPSBO
+QU5EX0VDQ19BTEdPX0hBTU1JTkc7Cj4gPiA+Cj4gPiA+IFlvdSBhbHNvIG5lZWQgdG8gb25seSBz
+ZXQgdGhlIEhhbW1pbmcgYWxnb3JpdGhtIHdoZW4gZW5naW5lX3R5cGUgaXMKPiA+ID4gVFlQRV9T
+T0ZULgo+ID4gPgo+ID4gPiBUaGFua3MsCj4gPiA+IE1pcXXDqGwKPiA+Cj4gPiBJIGFtIHJlYWxs
+eSBzdHJ1Z2dsaW5nIHdpdGggd2hhdCB0byBkby4gRm9yIG9uZSBvZiB0aGUgYWZmZWN0ZWQKPiA+
+IGRldmljZXMsIHRoZXkgY3JlYXRlZCB0d28gZGV2aWNlCj4gPiB0cmVlcywgb25lIGZvciBNaWNy
+b24gYW5kIG9uZSBmb3IgYWxsIG90aGVycy4gV2hpY2ggb2J2aW91c2x5IGhhZCBubwo+ID4gZWZm
+ZWN0IGR1ZSB0byB0aGUKPiA+IGhhcmRjb2RlZCBzZXR0aW5ncywgd2hpY2ggbGVkIG1lIHRvIFBh
+dGNoIDIgYW5kIEkgdGhvdWdodCwgc28gYmUgaXQuCj4gPiBCdXQgdGhlIHByb2Nlc3MgdG8gZmln
+dXJlCj4gPiBvdXQgaWYgb25lcyBkZXZpY2UgaGFzIE1pY3JvbiBDaGlwcyBpcyBlc3NlbnRpYWxs
+eSBmbGFzaGluZyBhbiBpbWFnZQo+ID4gYW5kIGlmIGl0IGRvZXMgbm90IHdvcmssCj4gPiB1c2Ug
+dGhlIHN0b2NrIE9FTSByZWNvdmVyeSBhbmQgdHJ5IHRoZSBvdGhlciBpbWFnZS4KPiA+IEhvd2V2
+ZXIsIHNpbmNlIE1pY3JvbiBpcyB0aGUgb25seSBjaGlwIHRoYXQgaXMgdHJlYXRlZCBkaWZmZXJl
+bnRseSwgSSB3b25kZXIKPiA+IGlmIHlvdXIgZmlyc3QgcHJvcG9zYWwsIGV2ZW4gdGhvdWdoIGl0
+IGlzIGhhY2t5LCBpcyB0aGUgYmV0dGVyCj4gPiBhcHByb2FjaCB0byBzb2x2ZSB0aGUgaXNzdWUK
+PiA+IGZvciB0aGUgTWljcm9uIGRldmljZXMgbm90IGJvb3RpbmcgYW5kIHRocm93aW5nIEVDQyBl
+cnJvcnMuIFdoYXQgZG8geW91IHRoaW5rPwo+ID4gRm9sbG93IHVwIGZpcnN0IHBhdGNoIG9yIHRo
+aXMgb25lPwo+Cj4gSSBhbSBub3Qgc3VyZSB3ZSB1bmRlcnN0b29kIGVhY2ggb3RoZXIsIHlvdXIg
+cGF0Y2ggaXMgZmluZSwgYnV0IHlvdQo+IG5lZWQgdG8gZG8gc29tZXRoaW5nIGxpa2U6Cj4KPiBz
+dGF0aWMgaW50IHh3YXlfYXR0YWNoX2NoaXAoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCkKPiB7Cj4g
+ICAgIGlmIChjaGlwLT5lY2MuZW5naW5lX3R5cGUgPSBOQU5EX0VDQ19FTkdJTkVfVFlQRV9TT0ZU
+ICYmCj4gICAgICAgICBjaGlwLT5lY2MuYWxnbyA9PSBOQU5EX0VDQ19BTEdPX1VOS05PV04pCj4g
+ICAgICAgICAgY2hpcC0+ZWNjLmFsZ28gPSBOQU5EX0VDQ19BTEdPX0hBTU1JTkc7Cj4KPiBJbiB0
+aGUgRFQgeW91IHNob3VsZCBub3QgZm9yY2UgYW55IEVDQyBlbmdpbmUgKGRyb3AgdGhlIG5hbmQt
+ZWNjLXh4eAo+IHByb3BlcnRpZXMpIGFuZCBsZXQgdGhlIGNvcmUgaGFuZGxlIGl0LiBJdCB3aWxs
+IHByb2JhYmx5IGNob29zZSB0aGUKPiBtb3N0IHN1aXRhYmxlIGVuZ2luZXMgZm9yIHlvdS4KPgo+
+IFRoYW5rcywKPiBNaXF1w6hsCgp0aGFuayB5b3UgZm9yIHlvdXIgcmVzcG9uc2UuCklmIEkgcmVt
+b3ZlIHRoZSBuYW5kLWVjYy14eHggcHJvcGVydGllcyBpbiB0aGUgZGV2aWNlIHRyZWUsIHRoZSBk
+ZXZpY2Ugd2l0aAp0aGUgVG9zaGliYSBOQU5EIGNoaXAgaXMgd29ya2luZy4gSG93ZXZlciwgdGhl
+IGRldmljZSB3aXRoIHRoZSBNaWNyb24KTkFORCBmYWlscyB3aXRoIE5PIEVDQyBmdW5jdGlvbnMg
+c3VwcGxpZWQ7IGhhcmR3YXJlIEVDQyBub3QgcG9zc2libGUsCnNlZW1zIHRvIGJlIGF0IGxpbmUg
+NTM2NyBvciBlcXVpdmFsZW50LgpodHRwczovL2VsaXhpci5ib290bGluLmNvbS9saW51eC9sYXRl
+c3Qvc291cmNlL2RyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfYmFzZS5jI0w1MzY3CgpJdCBsb29r
+cyBsaWtlIHRoZSBtaWNyb24gbmFuZCBkcml2ZXIgc3VwcG9ydHMgb24gZGllIG9ubHkgaWYgaXRz
+CnNwZWNpZmllZCBpbnQgdGhlCkRldmljZSB0cmVlOgpodHRwczovL2VsaXhpci5ib290bGluLmNv
+bS9saW51eC9sYXRlc3Qvc291cmNlL2RyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfbWljcm9uLmMj
+TDUxMQpUaGUgTWljcm9uIE5BTkQgZHJpdmVyIHByb2JhYmx5IG5lZWRzIHRvIHNldCB0aGUgRUND
+IHR5cGUgdG8gT04gRElFIGlmIHRoZQp2YXJpYWJsZSBvbmRpZSBjb250YWlucyB0aGUgc3VwcG9y
+dGVkIGF0dHJpYnV0ZT8hCgpBbnkgaWRlYXM/IFNlY29uZCBwYXRjaD8KClRoYW5rcywgRGFuaWVs
+LgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
