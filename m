@@ -2,67 +2,65 @@ Return-Path: <SRS0=IJcR=NO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD432C4338F
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 07:24:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D1E4C432BE
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 07:35:25 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9544161184
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 07:24:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9544161184
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7809661262
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 07:35:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7809661262
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8LmIL5QS7UCsMpS6h6XqMqOxrsL/M1cI+DlkLDYQyFA=; b=3xTEDUROiy0AJJ
-	f99HLlIBY7yBkzbHo34imf2K4hOKSXnyCkoU1QxOvfo+GistsLz+qCWCtyJ3QtoV1f8/RVQ3+JbfS
-	0sinoxSI73ymdx0pKsWWCi2eyRQU82IafFC95udJTd+C+c3V4xlqKs38n6aw6qhK2ClM1P1cWU6VO
-	V7dwdK648O1EcEr6RwqwSsZdCEGJhancPnB29FUkZGTry33uZUGQlirBLzBFizKtVeQW/sNuhsTit
-	KQJT+MhlhkO+Wg1E86RyHAvsCy5/pa+d1RrGJgTz2DdN7q6IVoN9rEfcVNNT/AlSHEKJ9u65JeqO7
-	pViPk77wLmccDeOiazDQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=xCD3AXGx49iIjNh6XehIpbly86Fgb42mz3G1QuzvF9E=; b=B24u4k8bAmlY8E
+	pKffdApGBqVuuL0Oyny2xn2k/gyzBxC3CqSUwV72Keo2xQSBZHYYcvzwrAXEiO5z7WxZjGE6wTeDr
+	d25DHpTCB1MLcXutY2qK9Q1+FZXzJ8CZ7ie+/KlWliL93a8FdC2hAKap1x57rTtU0wE02IL8rdcNU
+	LD45yUHkF1o2P1kMDClAvkYogybPmPUJjKiYa9sz9umGtcQfelvxB6flBH0BBWzMTX/AFyPmPlRCL
+	AzMIcbltFcVKZZ+nL8aolL3s+zE20j4BAVD4UMuSuBT6cGmYWliuRtV5zKF/ptwjMKeiXIgbrvTh9
+	Kcpk8oGA9r77/k8v1Akw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mI4Jd-00FipB-24; Mon, 23 Aug 2021 07:24:17 +0000
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	id 1mI4Te-00FkOa-VW; Mon, 23 Aug 2021 07:34:39 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mI4JZ-00Find-Lt
- for linux-mtd@lists.infradead.org; Mon, 23 Aug 2021 07:24:15 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 0B84440002;
- Mon, 23 Aug 2021 07:24:05 +0000 (UTC)
-Date: Mon, 23 Aug 2021 09:24:04 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Cc: Apurva Nandan <a-nandan@ti.com>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, Mark Brown <broonie@kernel.org>,
- Patrice Chotard <patrice.chotard@foss.st.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <linux-spi@vger.kernel.org>, Pratyush Yadav <p.yadav@ti.com>
-Subject: Re: [PATCH 03/13] mtd: spinand: Setup spi_mem_op for the SPI IO
- protocol using reg_proto
-Message-ID: <20210823092404.0a9b68e4@xps13>
-In-Reply-To: <20210823091145.0fd471ef@collabora.com>
-References: <20210713130538.646-1-a-nandan@ti.com>
- <20210713130538.646-4-a-nandan@ti.com>
- <20210806203013.30a41fd5@xps13>
- <3de32033-2a6e-bc46-a65a-4027ce78c6d6@ti.com>
- <20210820140840.4bbcac7e@xps13>
- <20210823091145.0fd471ef@collabora.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1mI4Td-00FkOL-L5
+ for linux-mtd@bombadil.infradead.org; Mon, 23 Aug 2021 07:34:37 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+ Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+ Content-Description:In-Reply-To:References;
+ bh=/MixnaBiHW7rJVPf+nLbtDkY18TbIxAzAippTcEbAf8=; b=IQKVCMbSWZvs2Y/43u5VtZBsTp
+ fbrkYrR1c6fC2sLoOG4uQtUhJqYaC0q34LZSp2VhBO2dFv/GkAEyDN1WoX5XhJdswPP22Pwqmugo+
+ ytqBNUYG3z47iSieh6f3pJakiesTg4OnEiWqmBQ5c1W2SLURruk+TS2KgCwFfSdhM+b98VoAwKOaY
+ lloNegVCUBPQ6fdvPYMr5bwXuhM9a19/fIK4bSNpoXG9U1zeaI4FDU3HCHIKr/MosWlZovl7E1gVv
+ 2dOaMSkyenRYahI1d0Eb3Xva4uuyg3iGnPOWCs66tXNxwol4Ap9dtwZ050oQZTw6YOZ+XJqGmicSC
+ 7HSfBzEQ==;
+Received: from [2001:4bb8:193:fd10:c6e8:3c08:6f8b:cbf0] (helo=localhost)
+ by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mI4T2-009Qfk-HS; Mon, 23 Aug 2021 07:34:14 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Guenter Roeck <linux@roeck-us.net>,
+	linux-mtd@lists.infradead.org
+Subject: mtd locking fix and cleanups
+Date: Mon, 23 Aug 2021 09:33:51 +0200
+Message-Id: <20210823073359.705281-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210823_002413_899638_A006CA65 
-X-CRM114-Status: GOOD (  12.04  )
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by
+ casper.infradead.org. See http://www.infradead.org/rpr.html
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,23 +72,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQm9yaXMsCgpCb3JpcyBCcmV6aWxsb24gPGJvcmlzLmJyZXppbGxvbkBjb2xsYWJvcmEuY29t
-PiB3cm90ZSBvbiBNb24sIDIzIEF1ZwoyMDIxIDA5OjExOjQ1ICswMjAwOgoKPiBPbiBGcmksIDIw
-IEF1ZyAyMDIxIDE0OjA4OjQwICswMjAwCj4gTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBi
-b290bGluLmNvbT4gd3JvdGU6Cj4gCj4gPiBIaSBBcHVydmEsCj4gPiAKPiA+IEJvcmlzLCB5b3Ug
-bWlnaHQgaGF2ZSBhIGdvb2QgaWRlYSBmb3IgdGhlIG5hbWluZyBkaXNjdXNzZWQgYmVsb3c/ICAK
-PiAKPiB7cGF0Y2gsYWRqdXN0LHR3ZWFrfV9vcCgpIGFsbCBzb3VuZCBnb29kIHRvIG1lLiBUaGlz
-IGJlaW5nIHNhaWQsIEknbQo+IGEgYml0IGNvbmNlcm5lZCBhYm91dCBkb2luZyB0aGlzIG9wIHR3
-ZWFraW5nIGluIHRoZSBob3QtcGF0aC4KPiBMb29rcyBsaWtlIHNvbWV0aGluZyB0aGF0IHNob3Vs
-ZCBiZSBkb25lIGF0IHByb2JlIG9yIHdoZW4gc3dpdGNoaW5nIHRvCj4gOEQgbW9kZSwgYW5kIGtl
-cHQgYXJvdW5kLiBUaGUgYWx0ZXJuYXRpdmUgd291bGQgYmUgdG8gaGF2ZSBwZXItbW9kZSBvcAo+
-IHRhYmxlcywgd2hpY2ggSSB0aGluayB3b3VsZCBiZSBjbGVhcmVyLgoKVHJ1ZSEgVGhhbmtzIGZv
-ciB0aGUgaWRlYSEKCkNoZWVycywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcg
-bGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10
-ZC8K
+Hi mtd maintainers,
+
+the first series in this patch fixes a lock order reversal reported by
+Guenter based on a recent commit, although from code inspection it should
+have been around for much longer.
+
+The rest is drive-by cleanups in the area that I noticed while trying to
+understand the locking changes.  These are untested and need to be handled
+with care!
+
+Diffstat:
+ ftl.c         |    2 -
+ mtd_blkdevs.c |   60 ++++++----------------------------------------------------
+ rfd_ftl.c     |    2 -
+ 3 files changed, 9 insertions(+), 55 deletions(-)
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
