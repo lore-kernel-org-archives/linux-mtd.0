@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B279EC432BE
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 07:38:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58EFFC4338F
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 07:38:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 842416121E
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 07:38:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 842416121E
+	by mail.kernel.org (Postfix) with ESMTPS id 25ADF61242
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 07:38:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 25ADF61242
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,41 +23,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=baudEJMK0BXEbHDtRqCNAZqNIAiEE+XIPSLgFDr43Qk=; b=i7/VxEfSSSkm4R
-	VtUYTMwJzRePCDpcmq+IWVyKKAWUzYGSnPmDsSKrti4CscT5QvMcNdAzV5QG8czt7J/JN0hKDOFwl
-	MDCwf/Nkn8VR5V3MRJi2FNoZ90M8ZPP76VMWEnrPd3ENoKRmpb/yEn/4Lls7cO0V9PpRa+1Vv/v3o
-	qsQClypDFQevgIUPbP1lr4bWXHc4GKeV3wWua34xWIxMlgPxSTTgkylMSJ8wRP7BcyGDInHtPNuyH
-	+ts074iX+S05OfvISTEbqMoNhz9BQ87bmgZSziML4J0CuDLtnpxYCv0LWaZ9Genkw/kCKBMQGt7Hm
-	mgtlat9QZk5KgBooqc4Q==;
+	List-Owner; bh=4MhQwrZIM+i1ULKKOi8dPmrowyBs0n9xJOi52602XBs=; b=xED+mx5LCqeZnq
+	L8q3NPrC/Z0Ve8OreFp1EBW08vTtLe6Bx7zE+MKruihzgdyUCxh3kT+Xs28W79LGvJQH36Cie81tx
+	rqEGXjsnFibSBwz8p6kruKVHcR41QATK1U48VHTbqYbA6OHZwug59NdDI3SUAWM22txZS2DJzQJXW
+	WK7wjTsUAkLaxQBhTvBCn4UQcTmveDlIHnC5j3WvWWf/VfwBrbckiLoLt3iLo5sfPgjYT6H6NONQL
+	UXv4jaOOkp4F43zSZfumnHgyXBPXmm/f7M0DDHkK4J1hk/bVZzbGHDZ6tEN8jrntTKF+zd1mrX5oA
+	NjQZIAkhcNNmp0YLvMSQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mI4WU-00Fl53-Hb; Mon, 23 Aug 2021 07:37:34 +0000
+	id 1mI4X2-00FlGL-90; Mon, 23 Aug 2021 07:38:08 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mI4WT-00Fl4N-Ct
- for linux-mtd@bombadil.infradead.org; Mon, 23 Aug 2021 07:37:33 +0000
+ id 1mI4X0-00FlF7-Ag
+ for linux-mtd@bombadil.infradead.org; Mon, 23 Aug 2021 07:38:06 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=d8ougPyR10neolLj0oF8pa2cwhasqlbLsL7gbTrUUE0=; b=f26IJTI1nQaR8jlZLlUqDTyvms
- UfuJR83srDKJX7MR1n3sd2pXx2lQRb/Fbn1lNuPYPv3Z4vQnWJV3Asc/seDka1OABMFPxksDeNSFt
- HRXXlPexqr+T6srnLAAMRsuD/y2zQKuM6pzW9cu5jKFOgOVZbJa8ZMltBxA/s1AFUkJ0fNEigNVdP
- rfDKqhbYh1BPvkSoRZoMxdqiLfioo8fuHEva3WT23WmKIFxcGIFWfpzqv/s5l/lCLdsXhl97QU2vS
- GP4N/wpOAN2ygGzNLRIgwbAewaAh2T0tT1uFbtkCaWi2Idc9Z0t+DLSutNWF51VEu65N2RalCXOAL
- gVOy/zzw==;
+ bh=yd1fP43x95zGCQR2SB7HQ/+6WrBHniI28nlCdjF+Hh0=; b=p+9hu4m/irFAS2rPiD+rwi1Vlt
+ sKT2qkmJ+DEhTCdMWt82BrIypbbfNlFKm+uIM2zAx8KvQc8mQ9U5L9n6cu8FSADZISCgXFtKDCpki
+ ei+G1dfrC3iLUsuqy/B1pKrSXMtO0nQ7UpjqM/MaSTH4XiMIRvWpm1ThJalRnF8ir+382964+tRDu
+ BtrLdsmV8B+lcW3nOHHpTpAW/o7CqC2knA2IM8ADHs6H6NHTq5F/58hn5+8pLE2g9vok/8OEy04rg
+ bgvA1NU1TEHwcJAYtKriPeXf+2Xvw7KaZ0AR/eOVKAgpDYlUwoZm6acP+I+AIZxsysvN4+6SRvr7M
+ Ny/J9HdA==;
 Received: from [2001:4bb8:193:fd10:c6e8:3c08:6f8b:cbf0] (helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mI4Vx-009Qpl-NA; Mon, 23 Aug 2021 07:37:11 +0000
+ id 1mI4WT-009Qr2-5D; Mon, 23 Aug 2021 07:37:42 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
 Cc: Guenter Roeck <linux@roeck-us.net>,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH 4/8] mtd/rfd_ftl: don't cast away the type when calling
- add_mtd_blktrans_dev
-Date: Mon, 23 Aug 2021 09:33:55 +0200
-Message-Id: <20210823073359.705281-5-hch@lst.de>
+Subject: [PATCH 5/8] mtd_blkdevs: simplify blktrans_dev_get
+Date: Mon, 23 Aug 2021 09:33:56 +0200
+Message-Id: <20210823073359.705281-6-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210823073359.705281-1-hch@lst.de>
 References: <20210823073359.705281-1-hch@lst.de>
@@ -80,27 +79,67 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Pass the actual mtd_blktrans_dev instead of casting the containing
-structure to void *.
+->private_data is set before the disk is added and never cleared, so don't
+bother trying to handle a NULL pointer there.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/mtd/rfd_ftl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/mtd_blkdevs.c | 17 ++---------------
+ 1 file changed, 2 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/mtd/rfd_ftl.c b/drivers/mtd/rfd_ftl.c
-index 6e0d5ce9b010..6cf9356d3567 100644
---- a/drivers/mtd/rfd_ftl.c
-+++ b/drivers/mtd/rfd_ftl.c
-@@ -754,7 +754,7 @@ static void rfd_ftl_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- 		printk(KERN_INFO PREFIX "name: '%s' type: %d flags %x\n",
- 				mtd->name, mtd->type, mtd->flags);
+diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+index 81f0ce2a0b5a..f5e13b919614 100644
+--- a/drivers/mtd/mtd_blkdevs.c
++++ b/drivers/mtd/mtd_blkdevs.c
+@@ -39,16 +39,12 @@ static void blktrans_dev_release(struct kref *kref)
  
--		if (!add_mtd_blktrans_dev((void*)part))
-+		if (!add_mtd_blktrans_dev(&part->mbd))
- 			return;
- 	}
- out:
+ static struct mtd_blktrans_dev *blktrans_dev_get(struct gendisk *disk)
+ {
+-	struct mtd_blktrans_dev *dev;
++	struct mtd_blktrans_dev *dev = disk->private_data;
+ 
+ 	mutex_lock(&blktrans_ref_mutex);
+-	dev = disk->private_data;
+-
+-	if (!dev)
+-		goto unlock;
+ 	kref_get(&dev->ref);
+-unlock:
+ 	mutex_unlock(&blktrans_ref_mutex);
++
+ 	return dev;
+ }
+ 
+@@ -204,9 +200,6 @@ static int blktrans_open(struct block_device *bdev, fmode_t mode)
+ 	struct mtd_blktrans_dev *dev = blktrans_dev_get(bdev->bd_disk);
+ 	int ret = 0;
+ 
+-	if (!dev)
+-		return -ERESTARTSYS; /* FIXME: busy loop! -arnd*/
+-
+ 	mutex_lock(&dev->lock);
+ 
+ 	if (dev->open)
+@@ -250,9 +243,6 @@ static void blktrans_release(struct gendisk *disk, fmode_t mode)
+ {
+ 	struct mtd_blktrans_dev *dev = blktrans_dev_get(disk);
+ 
+-	if (!dev)
+-		return;
+-
+ 	mutex_lock(&dev->lock);
+ 
+ 	if (--dev->open)
+@@ -276,9 +266,6 @@ static int blktrans_getgeo(struct block_device *bdev, struct hd_geometry *geo)
+ 	struct mtd_blktrans_dev *dev = blktrans_dev_get(bdev->bd_disk);
+ 	int ret = -ENXIO;
+ 
+-	if (!dev)
+-		return ret;
+-
+ 	mutex_lock(&dev->lock);
+ 
+ 	if (!dev->mtd)
 -- 
 2.30.2
 
