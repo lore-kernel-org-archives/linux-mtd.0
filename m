@@ -2,20 +2,20 @@ Return-Path: <SRS0=IJcR=NO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AEAB1C4320E
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 07:58:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1759C4338F
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 08:18:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7818A6135A
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 07:58:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7818A6135A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4F6ED61214
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 08:18:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4F6ED61214
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -23,45 +23,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AQ8Q1Jzt0jL1v9VsD8yfeJ0HGW89yQGtxL3IXqbC6es=; b=ldYULouczz4Div
-	eZK5Fr9qUvbSkbqgvJpbN4GoAN8rdp+iNfB5NMbyK0Y3YS90JqVOSwBVQ5eRnMq/d7DHQEuzGuBC9
-	Jcsr2DXOhI5VqfAddY4+bacvGzn/MPkFxQ6vwS9ZPRfety5iJWBa164tc3lg+FX7sc3B0JDQ0S67n
-	nQEtNiHb/zqaoIJYBFFqQBqORajOm9Zy3OsGB9pwzGFa/CzMjQaUChkyuoW6Ses3vF6aGZh7Owcyl
-	FJI0uUIDAHucWgLACwwc6EIksonVnmSBd7uwipXOSX8RxphGUudcoQYsjjlNaMFkcz6Ejlco8/NMM
-	0/c4ydteY0mtaCitG6Uw==;
+	List-Owner; bh=QBXxuTmqQvKIjSRasdTKCMgmHLYVtktsTw/f1HsvRgw=; b=PKnFY/T+29QBL5
+	7Gds1ck3BCCgpc9HVfwzUgZ2ekuHocEgqANErbMgnVUnUTZRt83/LZYxbSmLXC7z53r0M8N9ghyGa
+	a+fgIt2rxTXJHrOMxUixv4NYIaB3uNC6CrNJjnq6hZygJNMFwKGDpEWhBfCocdpPQS1fIceUYjyTt
+	5GSg4iNJ9BHZCf/7EF4hSbd1/yhlTRuUxgbZ4Zva06cXrYYkU2hr+oAeyFoWJxa4jqZWsioFeOpei
+	dmbTGzx2GCl3W9IGDIHZdK7o9GptfejdQtlA2ezYyKTmdnD8dHAPUgT6gIVeTV0cofdMnS0fZB7A5
+	QrPZTRHqOgqavkNZImbA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mI4q2-00FpZv-8n; Mon, 23 Aug 2021 07:57:46 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1mI59r-00FtJn-DA; Mon, 23 Aug 2021 08:18:15 +0000
+Received: from relay8-d.mail.gandi.net ([217.70.183.201])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mI4pz-00FpZO-Ei
- for linux-mtd@lists.infradead.org; Mon, 23 Aug 2021 07:57:44 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id CAB921F424B6;
- Mon, 23 Aug 2021 08:57:41 +0100 (BST)
-Date: Mon, 23 Aug 2021 09:57:38 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Apurva Nandan <a-nandan@ti.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Mark Brown
- <broonie@kernel.org>, Patrice Chotard <patrice.chotard@foss.st.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <linux-spi@vger.kernel.org>, Pratyush Yadav <p.yadav@ti.com>
-Subject: Re: [PATCH 01/13] spi: spi-mem: Add DTR templates for cmd, address,
- dummy and data phase
-Message-ID: <20210823095738.297d33e9@collabora.com>
-In-Reply-To: <20210713130538.646-2-a-nandan@ti.com>
-References: <20210713130538.646-1-a-nandan@ti.com>
- <20210713130538.646-2-a-nandan@ti.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+ id 1mI59l-00FtIW-Lz
+ for linux-mtd@lists.infradead.org; Mon, 23 Aug 2021 08:18:14 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 24E091BF206;
+ Mon, 23 Aug 2021 08:18:04 +0000 (UTC)
+Date: Mon, 23 Aug 2021 10:18:02 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Sean Nyekjaer <sean@geanix.com>
+Cc: s.hauer@pengutronix.de, richard@nod.at, linux-pm@vger.kernel.org,
+ han.xu@nxp.com, linux-mtd@lists.infradead.org
+Subject: Re: [BUG RESEND] unsuspend failure under load
+Message-ID: <20210823101802.27823313@xps13>
+In-Reply-To: <20210706093541.f4kjxqrkft7fqbcx@skn-laptop>
+References: <20210705065833.2ezlhaspkkju4bh7@skn-laptop>
+ <20210706093541.f4kjxqrkft7fqbcx@skn-laptop>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210823_005743_683141_382B9190 
-X-CRM114-Status: GOOD (  19.86  )
+X-CRM114-CacheID: sfid-20210823_011810_042106_D34BF248 
+X-CRM114-Status: GOOD (  38.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,85 +66,114 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 13 Jul 2021 13:05:26 +0000
-Apurva Nandan <a-nandan@ti.com> wrote:
-
-> Setting dtr field of spi_mem_op is useful when creating templates
-> for DTR ops in spinand.h. Also, 2 bytes cmd phases are required when
-> operating in Octal DTR SPI mode.
-> 
-> Create new templates for dtr mode cmd, address, dummy and data phase
-> in spi_mem_op, which set the dtr field to 1 and also allow passing
-> the nbytes for the cmd phase.
-> 
-> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
-> ---
->  include/linux/spi/spi-mem.h | 87 ++++++++++++++++++++++++++-----------
->  1 file changed, 61 insertions(+), 26 deletions(-)
-> 
-> diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
-> index 85e2ff7b840d..73e52a3ecf66 100644
-> --- a/include/linux/spi/spi-mem.h
-> +++ b/include/linux/spi/spi-mem.h
-> @@ -13,46 +13,81 @@
->  
->  #include <linux/spi/spi.h>
->  
-> -#define SPI_MEM_OP_CMD(__opcode, __buswidth)			\
-> -	{							\
-> -		.buswidth = __buswidth,				\
-> -		.opcode = __opcode,				\
-> -		.nbytes = 1,					\
-> +#define SPI_MEM_OP_CMD_ALL_ARGS(__nbytes, __opcode, __buswidth, __dtr)	\
-> +	{								\
-> +		.buswidth = __buswidth,					\
-> +		.opcode = __opcode,					\
-> +		.nbytes = __nbytes,					\
-> +		.dtr = __dtr,						\
->  	}
->  
-> -#define SPI_MEM_OP_ADDR(__nbytes, __val, __buswidth)		\
-> -	{							\
-> -		.nbytes = __nbytes,				\
-> -		.val = __val,					\
-> -		.buswidth = __buswidth,				\
-> +#define SPI_MEM_OP_CMD(__opcode, __buswidth)				\
-> +	SPI_MEM_OP_CMD_ALL_ARGS(1, __opcode, __buswidth, 0)
-> +
-> +#define SPI_MEM_OP_CMD_DTR(__nbytes, __opcode, __buswidth)		\
-> +	SPI_MEM_OP_CMD_ALL_ARGS(__nbytes, __opcode, __buswidth, 1)
-
-I don't see the benefit of those ALL_ARGS() macros compared to the
-definition of the _DTR() variants using raw struct initializers, but if
-you think we will add more optional args and really care about saving a
-few lines of code, maybe it'd be better to have something like:
-
-#define SPI_MEM_OP_DTR .dtr = true
-#define SPI_MEM_OP_CMD_BYTES(val) .nbytes = val
-
-#define SPI_MEM_OP_EXT_CMD(__opcode, __buswidth, ...) \
-	{ \
-		.buswidth = __buswidth, \
-		.opcode = __opcode, \
-		__VA_ARGS__, \
-	}
-
-#define SPI_MEM_OP_CMD(__opcode, __buswidth) \
-	SPI_MEM_OP_EXT_CMD(__opcode, __buswidth, \
-			   SPI_MEM_OP_CMD_BYTES(1))
-
-#define SPI_MEM_OP_CMD_DTR(__nbytes, __opcode, __buswidth) \
-	SPI_MEM_OP_EXT_CMD(__opcode, __buswidth, \
-			   SPI_MEM_OP_CMD_BYTES(__nbytes), \
-			   SPI_MEM_OP_DTR)
-
-so you don't have to patch all users every time you add an argument.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgpJIHRoaW5rIHdlIHNob3VsZCBpbnZvbHZlIFJpY2hhcmQgYXMgd2VsbCBpbiB0aGUg
+ZGlzY3Vzc2lvbi4KClNlYW4gTnlla2phZXIgPHNlYW5AZ2Vhbml4LmNvbT4gd3JvdGUgb24gVHVl
+LCA2IEp1bCAyMDIxIDExOjM1OjQxICswMjAwOgoKPiBPbiBNb24sIEp1bCAwNSwgMjAyMSBhdCAw
+ODo1ODozOEFNICswMjAwLCBTZWFuIE55ZWtqYWVyIHdyb3RlOgo+ID4gSGkgTWlxdWVsIGFuZCBT
+YXNjaGEsICAKPiArIFJpY2hhcmQgKyBsaW51eC1wbQo+ID4gCj4gPiBXZSBhcmUgaGF2aW5nIHNv
+bWUgdHJvdWJsZSB3aGVuIG91ciBpLk1YNiB1bnN1c3BlbmRzIHdoaWxlIHdyaXRlcyB0bwo+ID4g
+dWJpZnMgaXMgaW4gcHJvZ2Vzcy4gSW4gdGhlIGxvZyBpdCBsb29rcyBsaWtlIGl0IHN5bmNpbmcg
+dGhlIGZpbGVzeXN0ZW0KPiA+IGJlZm9yZSBzdXNwZW5kLgo+ID4gCj4gPiBUaGUgU29DIGEgaS5N
+WDZ1bC91bGwsIHRoZSBpc3N1ZSBpcyAobHVja3kgZm9yIHVzKSBxdWl0ZSBlYXN5IHRvIHJlcHJv
+ZHVjZS4KPiA+IFRoZSByZXByb2R1Y2Ugc2NyaXB0OiBbMF0KPiA+IEtlcm5lbCBsb2cgd2hlbiBp
+dCBoYXBwZW5zOiBbMV0KPiA+IAo+ID4gSSBoYXZlIGJpc2VjdGVkIHRoZSBidWcgdG86IGVmMzQ3
+YzBjZmQ2MSAoIm10ZDogcmF3bmFuZDogZ3BtaTogSW1wbGVtZW50IGV4ZWNfb3AiKQo+ID4gCj4g
+PiBBbnkgaWRlYSB0byB3aGVyZSBJIHNob3VsZCBzdGFydCBsb29raW5nPyBvciB0byB3aGF0IGhh
+cHBlbnM/Cj4gPiAKPiA+IEVzYmVuIGhhdmUgcG9zdGVkIHRvIHBhdGNoZXMgdGhhdCByZWxhdGVz
+IHRvIHN1c3BlbmQvdW5zdXNwZW5kIGJ1dCBpdAo+ID4gZG9lc24ndCBzZWVtIHRvIHJlbGVhdGVk
+IHRvIHRoaXMgaXNzdWUuCj4gPiA1YmM2YmI2MDNiNGQgKCJtdGQ6IHJhd25hbmQ6IGdwbWk6IEZp
+eCBzdXNwZW5kL3Jlc3VtZSBwcm9ibGVtIikKPiA+IGQ3MDQ4NjY2OGNkZiAoIm10ZDogcmF3bmFu
+ZDogZ3BtaTogUmVzdG9yZSBuZmMgdGltaW5nIHNldHVwIGFmdGVyIHN1c3BlbmQvcmVzdW1lIikK
+PiA+IAo+ID4gL1NlYW4gIAo+IAo+IG5hbmRfcmVzdW1lKCkgaXMgY2FsbGVkIHNvbWUgdGltZSBh
+ZnRlciB1YmlfaW9fd3JpdGUgdHJpZXMgdG8gd3JpdGUuIFRoYXRzIHdoeQo+IG10ZF93cml0ZSgp
+IGlzIHJldHVybmluZyAtRUJVU1kuCgpKdXN0IHRvIGJlIHN1cmU6Ci0gcGxhdGZvcm0gcmVzdW1l
+cwotIHlvdXIgYXBwIHN0YXJ0ZWQgYSB3cml0ZSBiZWZvcmUgYmVpbmcgc3VzcGVuZGVkCi0gdGhl
+IHdyaXRlIGdldHMgcmVmdXNlZCBiZWNhdXNlIHRoZSBzdXNwZW5kZWQgc3RhdGUgaGFzIG5vdCBi
+ZWVuCiAgY2xlYXJlZCB5ZXQKQW0gSSB1bmRlcnN0YW5kaW5nIHRoaXMgaXNzdWUgY29ycmVjdGx5
+PwoKQnV0IEkgd291bGQgZXhwZWN0ICJGaWxlc3lzdGVtcyBzeW5jIiB0byBhY3R1YWxseSBsZXQg
+dGhlIGxvd2VyIGxheWVycwp0aGUgdGltZSB0byBmbHVzaCB0aGUgZGF0YSB0byB0aGUgc3RvcmFn
+ZSBkZXZpY2VzLCBzdXNwZW5kaW5nIHdpdGhvdXQKd2FpdGluZyBmb3IgdGhpcyB0byBoYXBwZW4g
+bG9va3Mgc3RyYW5nZSB0byBtZS4KClNhc2NoYSwgUmljaGFyZCwgd2hhdCdzIHlvdXIgaW5wdXQ/
+Cgo+IEkgaGF2ZSB0cmllZCBwYXRjaCBbM10sIGFuZCBpdCBzZWVtcyB0byBmaXggaXQuCj4gSSB0
+aGluayBpdCB3b3VsZCBiZSBva2F5IHRvIGFkZCB0aGUgcmV0cnkgb3B0aW9uLCBidXQgdGhlIG1k
+ZWxheSBpcyBub3QKPiBvYnZpb3VzbHkgYSBub2dvLgo+IAo+IEFueSBpZGVhIHRvIGhvdyB3ZSBj
+b3VsZCB3YWl0IGhlcmUgZm9yIHRoZSBuYW5kX3Jlc3VtZSgpIHRvIGJlIGNhbGxlZD8KPiAKPiBA
+bGludXgtcG06Cj4gSSBoYXZlIG5vdGljZWQgIkZpbHN5c3RlbXMgc3luYyIgaGFwcGVucyBiZWZv
+cmUgIkZyZWV6aW5nIHVzZXIgc3BhY2UKPiBwcm9jZXNzZXMiLgo+IElmIEkgYXBwbHkgcGF0Y2gg
+WzRdICh3aXRob3V0IFszXSksIGl0IHdvdWxkIGFsc28gZml4IG91ciBpc3N1ZS4gQnV0IEkKPiBk
+b24ndCBoYXZlIGVuIGluc2lnaHQgaW4gdG8gd2hhdCBpbXBhY3QgdGhlIGNoYW5nZSBtaWdodCBo
+YXZlLgo+IAo+IC9TZWFuCj4gCj4gPiAKPiA+IFswXQo+ID4gIyEvYmluL3NoCj4gPiBkZCBpZj0v
+ZGV2L3VyYW5kb20gb2Y9L3RtcC90ZXN0NTBNIGJzPTFNIGNvdW50PTUwCj4gPiBjcCAvdG1wL3Rl
+c3Q1ME0gL2RhdGEvICYKPiA+IGVjaG8gbWVtID4gL3N5cy9wb3dlci9zdGF0ZQo+ID4gCj4gPiBb
+MV0KPiA+IHJvb3RAaXdnMjYtdjI6L2RhdGEvcm9vdCMgLi91YmljcmFzaC5zaAo+ID4gNTArMCBy
+ZWNvcmRzIGluCj4gPiA1MCswIHJlY29yZHMgb3V0Cj4gPiBQTTogc3VzcGVuZCBlbnRyeSAoZGVl
+cCkKPiA+IEZpbGVzeXN0ZW1zIHN5bmM6IDMzLjY0MiBzZWNvbmRzCj4gPiBGcmVlemluZyB1c2Vy
+IHNwYWNlIHByb2Nlc3NlcyAuLi4gKGVsYXBzZWQgMC4wMDQgc2Vjb25kcykgZG9uZS4KPiA+IE9P
+TSBraWxsZXIgZGlzYWJsZWQuCj4gPiBGcmVlemluZyByZW1haW5pbmcgZnJlZXphYmxlIHRhc2tz
+IC4uLiAoZWxhcHNlZCAwLjAwMyBzZWNvbmRzKSBkb25lLgo+ID4gcHJpbnRrOiBTdXNwZW5kaW5n
+IGNvbnNvbGUocykgKHVzZSBub19jb25zb2xlX3N1c3BlbmQgdG8gZGVidWcpCj4gPiA8U1VTUEVO
+RC9XQUtFPgo+ID4gUE06IHN1c3BlbmQgZGV2aWNlcyB0b29rIDAuMDQwIHNlY29uZHMKPiA+IERp
+c2FibGluZyBub24tYm9vdCBDUFVzIC4uLgo+ID4gdWJpMCBlcnJvcjogdWJpX2lvX3dyaXRlOiBl
+cnJvciAtMTYgd2hpbGUgd3JpdGluZyA0MDk2IGJ5dGVzIHRvIFBFQiA1NDQ6NTMyNDgsIHdyaXR0
+ZW4gMCBieXRlcwo+ID4gQ1BVOiAwIFBJRDogNjkgQ29tbToga3dvcmtlci91MjoyIE5vdCB0YWlu
+dGVkIDUuMTMuMCAjMwo+ID4gSGFyZHdhcmUgbmFtZTogRnJlZXNjYWxlIGkuTVg2IFVsdHJhbGl0
+ZSAoRGV2aWNlIFRyZWUpCj4gPiBXb3JrcXVldWU6IHdyaXRlYmFjayB3Yl93b3JrZm4gKGZsdXNo
+LXViaWZzXzBfOCkKPiA+IFs8YzAxMGQ5YjA+XSAodW53aW5kX2JhY2t0cmFjZSkgZnJvbSBbPGMw
+MTBhMjhjPl0gKHNob3dfc3RhY2srMHgxMC8weDE0KQo+ID4gWzxjMDEwYTI4Yz5dIChzaG93X3N0
+YWNrKSBmcm9tIFs8YzA5NzA3OTg+XSAoZHVtcF9zdGFjaysweGMwLzB4ZGMpCj4gPiBbPGMwOTcw
+Nzk4Pl0gKGR1bXBfc3RhY2spIGZyb20gWzxjMDVkZmUxMD5dICh1YmlfaW9fd3JpdGUrMHg1MTAv
+MHg2YjApCj4gPiBbPGMwNWRmZTEwPl0gKHViaV9pb193cml0ZSkgZnJvbSBbPGMwNWRjZDkwPl0g
+KHViaV9lYmFfd3JpdGVfbGViKzB4Mzg4LzB4OTEwKQo+ID4gWzxjMDVkY2Q5MD5dICh1YmlfZWJh
+X3dyaXRlX2xlYikgZnJvbSBbPGMwNWRhZjM0Pl0gKHViaV9sZWJfd3JpdGUrMHhkMC8weGU4KQo+
+ID4gWzxjMDVkYWYzND5dICh1YmlfbGViX3dyaXRlKSBmcm9tIFs8YzAzY2ZlYjQ+XSAodWJpZnNf
+bGViX3dyaXRlKzB4NjgvMHgxMDQpICAKPiAKPiBbIC4uLiBdCj4gCj4gPiBVQklGUyBlcnJvciAo
+dWJpMDo4IHBpZCAxNTcpOiBtYWtlX3Jlc2VydmF0aW9uOiBjYW5ub3QgcmVzZXJ2ZSA0MTQ0IGJ5
+dGVzIGluIGpoZWFkIDIsIGVycm9yIC0zMAo+ID4gVUJJRlMgZXJyb3IgKHViaTA6OCBwaWQgMTU3
+KTogZG9fd3JpdGVwYWdlOiBjYW5ub3Qgd3JpdGUgcGFnZSAxMDk2MiBvZiBpbm9kZSA4MjEsIGVy
+cm9yIC0zMAo+ID4gVUJJRlMgZXJyb3IgKHViaTA6OCBwaWQgMTU3KTogbWFrZV9yZXNlcnZhdGlv
+bjogY2Fubm90IHJlc2VydmUgNDE0NCBieXRlcyBpbiBqaGVhZCAyLCBlcnJvciAtMzAKPiA+IFVC
+SUZTIGVycm9yICh1YmkwOjggcGlkIDE1Nyk6IGRvX3dyaXRlcGFnZTogY2Fubm90IHdyaXRlIHBh
+Z2UgMTA5NjMgb2YgaW5vZGUgODIxLCBlcnJvciAtMzAKPiA+IFVCSUZTIGVycm9yICh1YmkwOjgg
+cGlkIDE1Nyk6IG1ha2VfcmVzZXJ2YXRpb246IGNhbm5vdCByZXNlcnZlIDY5NiBieXRlcyBpbiBq
+aGVhZCAyLCBlcnJvciAtMzAKPiA+IFVCSUZTIGVycm9yICh1YmkwOjggcGlkIDE1Nyk6IGRvX3dy
+aXRlcGFnZTogY2Fubm90IHdyaXRlIHBhZ2UgMCBvZiBpbm9kZSA4MTksIGVycm9yIC0zMAo+ID4g
+VUJJRlMgZXJyb3IgKHViaTA6OCBwaWQgMTU3KTogbWFrZV9yZXNlcnZhdGlvbjogY2Fubm90IHJl
+c2VydmUgNDE0NCBieXRlcyBpbiBqaGVhZCAyLCBlcnJvciAtMzAgIAo+IAo+IFszXToKPiBkaWZm
+IC0tZ2l0IGEvZHJpdmVycy9tdGQvdWJpL2lvLmMgYi9kcml2ZXJzL210ZC91YmkvaW8uYwo+IGlu
+ZGV4IDE0ZDg5MGIwMGQyYy4uYjI0YzU3MWZhMDIyIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRk
+L3ViaS9pby5jCj4gKysrIGIvZHJpdmVycy9tdGQvdWJpL2lvLmMKPiBAQCAtMjY4LDggKzI2OSwx
+OCBAQCBpbnQgdWJpX2lvX3dyaXRlKHN0cnVjdCB1YmlfZGV2aWNlICp1YmksIGNvbnN0IHZvaWQg
+KmJ1ZiwgaW50IHBudW0sIGludCBvZmZzZXQsCj4gIAl9Cj4gCj4gIAlhZGRyID0gKGxvZmZfdClw
+bnVtICogdWJpLT5wZWJfc2l6ZSArIG9mZnNldDsKPiArcmV0cnk6Cj4gIAllcnIgPSBtdGRfd3Jp
+dGUodWJpLT5tdGQsIGFkZHIsIGxlbiwgJndyaXR0ZW4sIGJ1Zik7Cj4gIAlpZiAoZXJyKSB7Cj4g
+KwkJaWYgKHJldHJpZXMrKyA8IFVCSV9JT19SRVRSSUVTKSB7Cj4gKwkJCXViaV93YXJuKHViaSwg
+ImVycm9yICVkIHdoaWxlIHdyaXRpbmcgJWQgYnl0ZXMgdG8gUEVCICVkOiVkLCB3cml0dGVuICV6
+ZCBieXRlcyIsCj4gKwkJCQkgZXJyLCBsZW4sIHBudW0sIG9mZnNldCwgd3JpdHRlbik7Cj4gKwkJ
+CW1kZWxheSgyNSk7IHlpZWxkKCk7Cj4gKwkJCWdvdG8gcmV0cnk7Cj4gKwkJfQo+ICsKPiAgCQl1
+YmlfZXJyKHViaSwgImVycm9yICVkIHdoaWxlIHdyaXRpbmcgJWQgYnl0ZXMgdG8gUEVCICVkOiVk
+LCB3cml0dGVuICV6ZCBieXRlcyIsCj4gIAkJCWVyciwgbGVuLCBwbnVtLCBvZmZzZXQsIHdyaXR0
+ZW4pOwo+ICAJCWR1bXBfc3RhY2soKTsKPiAKPiBbNF06Cj4gZGlmZiAtLWdpdCBhL2tlcm5lbC9w
+b3dlci9zdXNwZW5kLmMgYi9rZXJuZWwvcG93ZXIvc3VzcGVuZC5jCj4gaW5kZXggMzIzOTFhY2M4
+MDZiLi42MWEyMTNhZDVhMTMgMTAwNjQ0Cj4gLS0tIGEva2VybmVsL3Bvd2VyL3N1c3BlbmQuYwo+
+ICsrKyBiL2tlcm5lbC9wb3dlci9zdXNwZW5kLmMKPiBAQCAtNTYzLDE4ICs1NjMsMTggQEAgc3Rh
+dGljIGludCBlbnRlcl9zdGF0ZShzdXNwZW5kX3N0YXRlX3Qgc3RhdGUpCj4gIAlpZiAoc3RhdGUg
+PT0gUE1fU1VTUEVORF9UT19JRExFKQo+ICAJCXMyaWRsZV9iZWdpbigpOwo+ICAKPiAtCWlmIChz
+eW5jX29uX3N1c3BlbmRfZW5hYmxlZCkgewo+IC0JCXRyYWNlX3N1c3BlbmRfcmVzdW1lKFRQUygi
+c3luY19maWxlc3lzdGVtcyIpLCAwLCB0cnVlKTsKPiAtCQlrc3lzX3N5bmNfaGVscGVyKCk7Cj4g
+LQkJdHJhY2Vfc3VzcGVuZF9yZXN1bWUoVFBTKCJzeW5jX2ZpbGVzeXN0ZW1zIiksIDAsIGZhbHNl
+KTsKPiAtCX0KPiAtCj4gIAlwbV9wcl9kYmcoIlByZXBhcmluZyBzeXN0ZW0gZm9yIHNsZWVwICgl
+cylcbiIsIG1lbV9zbGVlcF9sYWJlbHNbc3RhdGVdKTsKPiAgCXBtX3N1c3BlbmRfY2xlYXJfZmxh
+Z3MoKTsKPiAgCWVycm9yID0gc3VzcGVuZF9wcmVwYXJlKHN0YXRlKTsKPiAgCWlmIChlcnJvcikK
+PiAgCQlnb3RvIFVubG9jazsKPiAgCj4gKwlpZiAoc3luY19vbl9zdXNwZW5kX2VuYWJsZWQpIHsK
+PiArCQl0cmFjZV9zdXNwZW5kX3Jlc3VtZShUUFMoInN5bmNfZmlsZXN5c3RlbXMiKSwgMCwgdHJ1
+ZSk7Cj4gKwkJa3N5c19zeW5jX2hlbHBlcigpOwo+ICsJCXRyYWNlX3N1c3BlbmRfcmVzdW1lKFRQ
+Uygic3luY19maWxlc3lzdGVtcyIpLCAwLCBmYWxzZSk7Cj4gKwl9Cj4gKwo+ICAJaWYgKHN1c3Bl
+bmRfdGVzdChURVNUX0ZSRUVaRVIpKQo+ICAJCWdvdG8gRmluaXNoOwo+ICAKClRoYW5rcywKTWlx
+dcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
