@@ -2,68 +2,69 @@ Return-Path: <SRS0=de6p=NP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A0BA3C4338F
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Aug 2021 07:54:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E276C4338F
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Aug 2021 10:25:33 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5D2B86135F
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Aug 2021 07:54:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5D2B86135F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=geanix.com
+	by mail.kernel.org (Postfix) with ESMTPS id 050BC6127B
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Aug 2021 10:25:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 050BC6127B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=x3jjt8iJBezDLpeps2SMrLxLp77FbGShGfln11Ch3l0=; b=a6Z/rvqCDRqheC
-	/S1krrc0PdBhXvvaQQpWS6w50ZhNphsQSgoI8EivCQRZhGjEIAVm0vPzRtCCDaHLSRAuiYHBeCYDx
-	rD6C9VyG+o0V6FRKlcYdr02SSJAfCiA3DJJ+oB62v3Bd2NkpsGbYY/suabfCsj/vmugU8AUXmVFml
-	NNm1B9pPUuSMkQtPGKNdHfCHWqtM/LV1Pnw4+4soyTKv5p9eF3uA+oE3Beh4cAMDJgnzvnQQSFGwM
-	UKwuePXSuIaNmn5U31Zd3EXVcRawOiUuW2MXhhzkqX0QnthLWlEnLtTCtNxkUX7yVlB0/223FI2qa
-	GWh9MpjnmdZiL9AtH7Wg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=jXrAbSkBfNvuAX57Al8M9LnR+Mphb/b3hX8RDQSC8bc=; b=JOY9bMQ4/Qqkhw
+	XpZsJVzD8mcmAW0WLoXfl9ifwG9fp8HUWMr40QeRjGF884jMrrQzguFPbDqlo8p5wlSNBFeEsYTsz
+	eNB1U7BrJcOJ1VZrrVq7kAEd6bQgM6JmTjyTooi6RVvPC4f2aOV7a9Pn9OzE5YZAFWlvIJyNF6s7t
+	Zdirz3xXYv7TDe8FMvEW1DlS0DfRpo65wafrhc3NRBoIOzcW8WfLZx9gZrtQwEZmcz8ITTbErFpRU
+	gsB0NYwYfocggGsntDOBE0tJDzEusOb2h2tDd6aF8uEDVb4P3w/xOMPinad2QsWKf2tT+TQSFTwQE
+	34sBJjgRAQpmJKV30SuA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mIRFU-0025wb-IC; Tue, 24 Aug 2021 07:53:32 +0000
-Received: from first.geanix.com ([116.203.34.67])
+	id 1mITbi-002W1J-77; Tue, 24 Aug 2021 10:24:38 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mIRFM-0025ro-Bx
- for linux-mtd@lists.infradead.org; Tue, 24 Aug 2021 07:53:30 +0000
-Received: from skn-laptop (unknown [185.17.218.86])
- by first.geanix.com (Postfix) with ESMTPSA id 6676A440F31;
- Tue, 24 Aug 2021 07:53:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
- t=1629791599; bh=yMBZvoeJCz0F8ZjG5JgqB189YlRWglWROalbxR1jG2A=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To;
- b=GcuqGLwWsCAbShAFt/b/hwbkotQ9cbCARV61YGgbxsVhfpTugrmYzc42EXMlUZtz3
- SgQFLxAWRn9JHSUgiHPKRPxdOMJ8nVpHns+w64sxyZ/DjidiOod4T+P3/sEB3u5u7f
- TWft9/9lkdWSPznwHst9YuUCJlqlpz2nLdocyxV1WtSAtAE+z+Q0zN3mZQgJU5rfbl
- DkIkKj+P/4QY5iAzxTOLEzdoNvxiZSgRr5O8JKnAmTonRwsGAXPM3Kza7XEOWpHrwH
- OlxIHLbkUqCTPmHh6CTPIC/KB3Rh0gubKBbSOmigbF7++VqD6Uo+Lgeiu0Hu4ISHVv
- 5Coco1MdOtKZA==
-Date: Tue, 24 Aug 2021 09:53:18 +0200
-From: Sean Nyekjaer <sean@geanix.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: s.hauer@pengutronix.de, richard@nod.at, linux-pm@vger.kernel.org,
- han.xu@nxp.com, linux-mtd@lists.infradead.org
-Subject: Re: [BUG RESEND] unsuspend failure under load
-Message-ID: <20210824075318.nv3s5vsq6ixuerv3@skn-laptop>
-References: <20210705065833.2ezlhaspkkju4bh7@skn-laptop>
- <20210706093541.f4kjxqrkft7fqbcx@skn-laptop>
- <20210823101802.27823313@xps13>
+ id 1mITbe-002Vzv-OZ
+ for linux-mtd@lists.infradead.org; Tue, 24 Aug 2021 10:24:36 +0000
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gv4r85DFZzbhXS;
+ Tue, 24 Aug 2021 18:20:40 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 24 Aug 2021 18:24:29 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 24 Aug
+ 2021 18:24:29 +0800
+From: Yang Yingliang <yangyingliang@huawei.com>
+To: <linux-kernel@vger.kernel.org>
+CC: <linux-mtd@lists.infradead.org>, <miquel.raynal@bootlin.com>,
+ <richard@nod.at>, <vigneshr@ti.com>
+Subject: [PATCH -next] mtd: fix possible deadlock when loading and opening mtd
+ device
+Date: Tue, 24 Aug 2021 18:30:05 +0800
+Message-ID: <20210824103005.1895457-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210823101802.27823313@xps13>
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210824_005325_301530_02FCFED3 
-X-CRM114-Status: GOOD (  41.94  )
+X-CRM114-CacheID: sfid-20210824_032435_191496_D344A46E 
+X-CRM114-Status: UNSURE (   8.32  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,123 +76,128 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gTW9uLCBBdWcgMjMsIDIwMjEgYXQgMTA6MTg6MDJBTSArMDIwMCwgTWlxdWVsIFJheW5hbCB3
-cm90ZToKPiBIZWxsbywKPiAKPiBJIHRoaW5rIHdlIHNob3VsZCBpbnZvbHZlIFJpY2hhcmQgYXMg
-d2VsbCBpbiB0aGUgZGlzY3Vzc2lvbi4KPiAKPiBTZWFuIE55ZWtqYWVyIDxzZWFuQGdlYW5peC5j
-b20+IHdyb3RlIG9uIFR1ZSwgNiBKdWwgMjAyMSAxMTozNTo0MSArMDIwMDoKPiAKPiA+IE9uIE1v
-biwgSnVsIDA1LCAyMDIxIGF0IDA4OjU4OjM4QU0gKzAyMDAsIFNlYW4gTnlla2phZXIgd3JvdGU6
-Cj4gPiA+IEhpIE1pcXVlbCBhbmQgU2FzY2hhLCAgCj4gPiArIFJpY2hhcmQgKyBsaW51eC1wbQo+
-ID4gPiAKPiA+ID4gV2UgYXJlIGhhdmluZyBzb21lIHRyb3VibGUgd2hlbiBvdXIgaS5NWDYgdW5z
-dXNwZW5kcyB3aGlsZSB3cml0ZXMgdG8KPiA+ID4gdWJpZnMgaXMgaW4gcHJvZ2Vzcy4gSW4gdGhl
-IGxvZyBpdCBsb29rcyBsaWtlIGl0IHN5bmNpbmcgdGhlIGZpbGVzeXN0ZW0KPiA+ID4gYmVmb3Jl
-IHN1c3BlbmQuCj4gPiA+IAo+ID4gPiBUaGUgU29DIGEgaS5NWDZ1bC91bGwsIHRoZSBpc3N1ZSBp
-cyAobHVja3kgZm9yIHVzKSBxdWl0ZSBlYXN5IHRvIHJlcHJvZHVjZS4KPiA+ID4gVGhlIHJlcHJv
-ZHVjZSBzY3JpcHQ6IFswXQo+ID4gPiBLZXJuZWwgbG9nIHdoZW4gaXQgaGFwcGVuczogWzFdCj4g
-PiA+IAo+ID4gPiBJIGhhdmUgYmlzZWN0ZWQgdGhlIGJ1ZyB0bzogZWYzNDdjMGNmZDYxICgibXRk
-OiByYXduYW5kOiBncG1pOiBJbXBsZW1lbnQgZXhlY19vcCIpCj4gPiA+IAo+ID4gPiBBbnkgaWRl
-YSB0byB3aGVyZSBJIHNob3VsZCBzdGFydCBsb29raW5nPyBvciB0byB3aGF0IGhhcHBlbnM/Cj4g
-PiA+IAo+ID4gPiBFc2JlbiBoYXZlIHBvc3RlZCB0byBwYXRjaGVzIHRoYXQgcmVsYXRlcyB0byBz
-dXNwZW5kL3Vuc3VzcGVuZCBidXQgaXQKPiA+ID4gZG9lc24ndCBzZWVtIHRvIHJlbGVhdGVkIHRv
-IHRoaXMgaXNzdWUuCj4gPiA+IDViYzZiYjYwM2I0ZCAoIm10ZDogcmF3bmFuZDogZ3BtaTogRml4
-IHN1c3BlbmQvcmVzdW1lIHByb2JsZW0iKQo+ID4gPiBkNzA0ODY2NjhjZGYgKCJtdGQ6IHJhd25h
-bmQ6IGdwbWk6IFJlc3RvcmUgbmZjIHRpbWluZyBzZXR1cCBhZnRlciBzdXNwZW5kL3Jlc3VtZSIp
-Cj4gPiA+IAo+ID4gPiAvU2VhbiAgCj4gPiAKPiA+IG5hbmRfcmVzdW1lKCkgaXMgY2FsbGVkIHNv
-bWUgdGltZSBhZnRlciB1YmlfaW9fd3JpdGUgdHJpZXMgdG8gd3JpdGUuIFRoYXRzIHdoeQo+ID4g
-bXRkX3dyaXRlKCkgaXMgcmV0dXJuaW5nIC1FQlVTWS4KPiAKPiBKdXN0IHRvIGJlIHN1cmU6Cj4g
-LSBwbGF0Zm9ybSByZXN1bWVzCj4gLSB5b3VyIGFwcCBzdGFydGVkIGEgd3JpdGUgYmVmb3JlIGJl
-aW5nIHN1c3BlbmRlZAo+IC0gdGhlIHdyaXRlIGdldHMgcmVmdXNlZCBiZWNhdXNlIHRoZSBzdXNw
-ZW5kZWQgc3RhdGUgaGFzIG5vdCBiZWVuCj4gICBjbGVhcmVkIHlldAo+IEFtIEkgdW5kZXJzdGFu
-ZGluZyB0aGlzIGlzc3VlIGNvcnJlY3RseT8KClllcyA6KQoKPiAKPiBCdXQgSSB3b3VsZCBleHBl
-Y3QgIkZpbGVzeXN0ZW1zIHN5bmMiIHRvIGFjdHVhbGx5IGxldCB0aGUgbG93ZXIgbGF5ZXJzCj4g
-dGhlIHRpbWUgdG8gZmx1c2ggdGhlIGRhdGEgdG8gdGhlIHN0b3JhZ2UgZGV2aWNlcywgc3VzcGVu
-ZGluZyB3aXRob3V0Cj4gd2FpdGluZyBmb3IgdGhpcyB0byBoYXBwZW4gbG9va3Mgc3RyYW5nZSB0
-byBtZS4KClllcywgdGhhdHMgd2h5IFs0XSBpcyBhbHNvIGZpeGluZyB0aGUgaXNzdWUuIFVzZXJz
-cGFjZSBpcyBmcmVlemVkIGFuZAp0aGVuIGRpc2tzIGFyZSBzeW5jZWQgYmVmb3JlIHN1c3BlbmQu
-Cgo+IAo+IFNhc2NoYSwgUmljaGFyZCwgd2hhdCdzIHlvdXIgaW5wdXQ/Cj4gCj4gPiBJIGhhdmUg
-dHJpZWQgcGF0Y2ggWzNdLCBhbmQgaXQgc2VlbXMgdG8gZml4IGl0Lgo+ID4gSSB0aGluayBpdCB3
-b3VsZCBiZSBva2F5IHRvIGFkZCB0aGUgcmV0cnkgb3B0aW9uLCBidXQgdGhlIG1kZWxheSBpcyBu
-b3QKPiA+IG9idmlvdXNseSBhIG5vZ28uCj4gPiAKPiA+IEFueSBpZGVhIHRvIGhvdyB3ZSBjb3Vs
-ZCB3YWl0IGhlcmUgZm9yIHRoZSBuYW5kX3Jlc3VtZSgpIHRvIGJlIGNhbGxlZD8KPiA+IAo+ID4g
-QGxpbnV4LXBtOgo+ID4gSSBoYXZlIG5vdGljZWQgIkZpbHN5c3RlbXMgc3luYyIgaGFwcGVucyBi
-ZWZvcmUgIkZyZWV6aW5nIHVzZXIgc3BhY2UKPiA+IHByb2Nlc3NlcyIuCj4gPiBJZiBJIGFwcGx5
-IHBhdGNoIFs0XSAod2l0aG91dCBbM10pLCBpdCB3b3VsZCBhbHNvIGZpeCBvdXIgaXNzdWUuIEJ1
-dCBJCj4gPiBkb24ndCBoYXZlIGVuIGluc2lnaHQgaW4gdG8gd2hhdCBpbXBhY3QgdGhlIGNoYW5n
-ZSBtaWdodCBoYXZlLgo+ID4gCj4gPiAvU2Vhbgo+ID4gCj4gPiA+IAo+ID4gPiBbMF0KPiA+ID4g
-IyEvYmluL3NoCj4gPiA+IGRkIGlmPS9kZXYvdXJhbmRvbSBvZj0vdG1wL3Rlc3Q1ME0gYnM9MU0g
-Y291bnQ9NTAKPiA+ID4gY3AgL3RtcC90ZXN0NTBNIC9kYXRhLyAmCj4gPiA+IGVjaG8gbWVtID4g
-L3N5cy9wb3dlci9zdGF0ZQo+ID4gPiAKPiA+ID4gWzFdCj4gPiA+IHJvb3RAaXdnMjYtdjI6L2Rh
-dGEvcm9vdCMgLi91YmljcmFzaC5zaAo+ID4gPiA1MCswIHJlY29yZHMgaW4KPiA+ID4gNTArMCBy
-ZWNvcmRzIG91dAo+ID4gPiBQTTogc3VzcGVuZCBlbnRyeSAoZGVlcCkKPiA+ID4gRmlsZXN5c3Rl
-bXMgc3luYzogMzMuNjQyIHNlY29uZHMKPiA+ID4gRnJlZXppbmcgdXNlciBzcGFjZSBwcm9jZXNz
-ZXMgLi4uIChlbGFwc2VkIDAuMDA0IHNlY29uZHMpIGRvbmUuCj4gPiA+IE9PTSBraWxsZXIgZGlz
-YWJsZWQuCj4gPiA+IEZyZWV6aW5nIHJlbWFpbmluZyBmcmVlemFibGUgdGFza3MgLi4uIChlbGFw
-c2VkIDAuMDAzIHNlY29uZHMpIGRvbmUuCj4gPiA+IHByaW50azogU3VzcGVuZGluZyBjb25zb2xl
-KHMpICh1c2Ugbm9fY29uc29sZV9zdXNwZW5kIHRvIGRlYnVnKQo+ID4gPiA8U1VTUEVORC9XQUtF
-Pgo+ID4gPiBQTTogc3VzcGVuZCBkZXZpY2VzIHRvb2sgMC4wNDAgc2Vjb25kcwo+ID4gPiBEaXNh
-Ymxpbmcgbm9uLWJvb3QgQ1BVcyAuLi4KPiA+ID4gdWJpMCBlcnJvcjogdWJpX2lvX3dyaXRlOiBl
-cnJvciAtMTYgd2hpbGUgd3JpdGluZyA0MDk2IGJ5dGVzIHRvIFBFQiA1NDQ6NTMyNDgsIHdyaXR0
-ZW4gMCBieXRlcwo+ID4gPiBDUFU6IDAgUElEOiA2OSBDb21tOiBrd29ya2VyL3UyOjIgTm90IHRh
-aW50ZWQgNS4xMy4wICMzCj4gPiA+IEhhcmR3YXJlIG5hbWU6IEZyZWVzY2FsZSBpLk1YNiBVbHRy
-YWxpdGUgKERldmljZSBUcmVlKQo+ID4gPiBXb3JrcXVldWU6IHdyaXRlYmFjayB3Yl93b3JrZm4g
-KGZsdXNoLXViaWZzXzBfOCkKPiA+ID4gWzxjMDEwZDliMD5dICh1bndpbmRfYmFja3RyYWNlKSBm
-cm9tIFs8YzAxMGEyOGM+XSAoc2hvd19zdGFjaysweDEwLzB4MTQpCj4gPiA+IFs8YzAxMGEyOGM+
-XSAoc2hvd19zdGFjaykgZnJvbSBbPGMwOTcwNzk4Pl0gKGR1bXBfc3RhY2srMHhjMC8weGRjKQo+
-ID4gPiBbPGMwOTcwNzk4Pl0gKGR1bXBfc3RhY2spIGZyb20gWzxjMDVkZmUxMD5dICh1YmlfaW9f
-d3JpdGUrMHg1MTAvMHg2YjApCj4gPiA+IFs8YzA1ZGZlMTA+XSAodWJpX2lvX3dyaXRlKSBmcm9t
-IFs8YzA1ZGNkOTA+XSAodWJpX2ViYV93cml0ZV9sZWIrMHgzODgvMHg5MTApCj4gPiA+IFs8YzA1
-ZGNkOTA+XSAodWJpX2ViYV93cml0ZV9sZWIpIGZyb20gWzxjMDVkYWYzND5dICh1YmlfbGViX3dy
-aXRlKzB4ZDAvMHhlOCkKPiA+ID4gWzxjMDVkYWYzND5dICh1YmlfbGViX3dyaXRlKSBmcm9tIFs8
-YzAzY2ZlYjQ+XSAodWJpZnNfbGViX3dyaXRlKzB4NjgvMHgxMDQpICAKPiA+IAo+ID4gWyAuLi4g
-XQo+ID4gCj4gPiA+IFVCSUZTIGVycm9yICh1YmkwOjggcGlkIDE1Nyk6IG1ha2VfcmVzZXJ2YXRp
-b246IGNhbm5vdCByZXNlcnZlIDQxNDQgYnl0ZXMgaW4gamhlYWQgMiwgZXJyb3IgLTMwCj4gPiA+
-IFVCSUZTIGVycm9yICh1YmkwOjggcGlkIDE1Nyk6IGRvX3dyaXRlcGFnZTogY2Fubm90IHdyaXRl
-IHBhZ2UgMTA5NjIgb2YgaW5vZGUgODIxLCBlcnJvciAtMzAKPiA+ID4gVUJJRlMgZXJyb3IgKHVi
-aTA6OCBwaWQgMTU3KTogbWFrZV9yZXNlcnZhdGlvbjogY2Fubm90IHJlc2VydmUgNDE0NCBieXRl
-cyBpbiBqaGVhZCAyLCBlcnJvciAtMzAKPiA+ID4gVUJJRlMgZXJyb3IgKHViaTA6OCBwaWQgMTU3
-KTogZG9fd3JpdGVwYWdlOiBjYW5ub3Qgd3JpdGUgcGFnZSAxMDk2MyBvZiBpbm9kZSA4MjEsIGVy
-cm9yIC0zMAo+ID4gPiBVQklGUyBlcnJvciAodWJpMDo4IHBpZCAxNTcpOiBtYWtlX3Jlc2VydmF0
-aW9uOiBjYW5ub3QgcmVzZXJ2ZSA2OTYgYnl0ZXMgaW4gamhlYWQgMiwgZXJyb3IgLTMwCj4gPiA+
-IFVCSUZTIGVycm9yICh1YmkwOjggcGlkIDE1Nyk6IGRvX3dyaXRlcGFnZTogY2Fubm90IHdyaXRl
-IHBhZ2UgMCBvZiBpbm9kZSA4MTksIGVycm9yIC0zMAo+ID4gPiBVQklGUyBlcnJvciAodWJpMDo4
-IHBpZCAxNTcpOiBtYWtlX3Jlc2VydmF0aW9uOiBjYW5ub3QgcmVzZXJ2ZSA0MTQ0IGJ5dGVzIGlu
-IGpoZWFkIDIsIGVycm9yIC0zMCAgCj4gPiAKPiA+IFszXToKPiA+IGRpZmYgLS1naXQgYS9kcml2
-ZXJzL210ZC91YmkvaW8uYyBiL2RyaXZlcnMvbXRkL3ViaS9pby5jCj4gPiBpbmRleCAxNGQ4OTBi
-MDBkMmMuLmIyNGM1NzFmYTAyMiAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvbXRkL3ViaS9pby5j
-Cj4gPiArKysgYi9kcml2ZXJzL210ZC91YmkvaW8uYwo+ID4gQEAgLTI2OCw4ICsyNjksMTggQEAg
-aW50IHViaV9pb193cml0ZShzdHJ1Y3QgdWJpX2RldmljZSAqdWJpLCBjb25zdCB2b2lkICpidWYs
-IGludCBwbnVtLCBpbnQgb2Zmc2V0LAo+ID4gIAl9Cj4gPiAKPiA+ICAJYWRkciA9IChsb2ZmX3Qp
-cG51bSAqIHViaS0+cGViX3NpemUgKyBvZmZzZXQ7Cj4gPiArcmV0cnk6Cj4gPiAgCWVyciA9IG10
-ZF93cml0ZSh1YmktPm10ZCwgYWRkciwgbGVuLCAmd3JpdHRlbiwgYnVmKTsKPiA+ICAJaWYgKGVy
-cikgewo+ID4gKwkJaWYgKHJldHJpZXMrKyA8IFVCSV9JT19SRVRSSUVTKSB7Cj4gPiArCQkJdWJp
-X3dhcm4odWJpLCAiZXJyb3IgJWQgd2hpbGUgd3JpdGluZyAlZCBieXRlcyB0byBQRUIgJWQ6JWQs
-IHdyaXR0ZW4gJXpkIGJ5dGVzIiwKPiA+ICsJCQkJIGVyciwgbGVuLCBwbnVtLCBvZmZzZXQsIHdy
-aXR0ZW4pOwo+ID4gKwkJCW1kZWxheSgyNSk7IHlpZWxkKCk7Cj4gPiArCQkJZ290byByZXRyeTsK
-PiA+ICsJCX0KPiA+ICsKPiA+ICAJCXViaV9lcnIodWJpLCAiZXJyb3IgJWQgd2hpbGUgd3JpdGlu
-ZyAlZCBieXRlcyB0byBQRUIgJWQ6JWQsIHdyaXR0ZW4gJXpkIGJ5dGVzIiwKPiA+ICAJCQllcnIs
-IGxlbiwgcG51bSwgb2Zmc2V0LCB3cml0dGVuKTsKPiA+ICAJCWR1bXBfc3RhY2soKTsKPiA+IAo+
-ID4gWzRdOgo+ID4gZGlmZiAtLWdpdCBhL2tlcm5lbC9wb3dlci9zdXNwZW5kLmMgYi9rZXJuZWwv
-cG93ZXIvc3VzcGVuZC5jCj4gPiBpbmRleCAzMjM5MWFjYzgwNmIuLjYxYTIxM2FkNWExMyAxMDA2
-NDQKPiA+IC0tLSBhL2tlcm5lbC9wb3dlci9zdXNwZW5kLmMKPiA+ICsrKyBiL2tlcm5lbC9wb3dl
-ci9zdXNwZW5kLmMKPiA+IEBAIC01NjMsMTggKzU2MywxOCBAQCBzdGF0aWMgaW50IGVudGVyX3N0
-YXRlKHN1c3BlbmRfc3RhdGVfdCBzdGF0ZSkKPiA+ICAJaWYgKHN0YXRlID09IFBNX1NVU1BFTkRf
-VE9fSURMRSkKPiA+ICAJCXMyaWRsZV9iZWdpbigpOwo+ID4gIAo+ID4gLQlpZiAoc3luY19vbl9z
-dXNwZW5kX2VuYWJsZWQpIHsKPiA+IC0JCXRyYWNlX3N1c3BlbmRfcmVzdW1lKFRQUygic3luY19m
-aWxlc3lzdGVtcyIpLCAwLCB0cnVlKTsKPiA+IC0JCWtzeXNfc3luY19oZWxwZXIoKTsKPiA+IC0J
-CXRyYWNlX3N1c3BlbmRfcmVzdW1lKFRQUygic3luY19maWxlc3lzdGVtcyIpLCAwLCBmYWxzZSk7
-Cj4gPiAtCX0KPiA+IC0KPiA+ICAJcG1fcHJfZGJnKCJQcmVwYXJpbmcgc3lzdGVtIGZvciBzbGVl
-cCAoJXMpXG4iLCBtZW1fc2xlZXBfbGFiZWxzW3N0YXRlXSk7Cj4gPiAgCXBtX3N1c3BlbmRfY2xl
-YXJfZmxhZ3MoKTsKPiA+ICAJZXJyb3IgPSBzdXNwZW5kX3ByZXBhcmUoc3RhdGUpOwo+ID4gIAlp
-ZiAoZXJyb3IpCj4gPiAgCQlnb3RvIFVubG9jazsKPiA+ICAKPiA+ICsJaWYgKHN5bmNfb25fc3Vz
-cGVuZF9lbmFibGVkKSB7Cj4gPiArCQl0cmFjZV9zdXNwZW5kX3Jlc3VtZShUUFMoInN5bmNfZmls
-ZXN5c3RlbXMiKSwgMCwgdHJ1ZSk7Cj4gPiArCQlrc3lzX3N5bmNfaGVscGVyKCk7Cj4gPiArCQl0
-cmFjZV9zdXNwZW5kX3Jlc3VtZShUUFMoInN5bmNfZmlsZXN5c3RlbXMiKSwgMCwgZmFsc2UpOwo+
-ID4gKwl9Cj4gPiArCj4gPiAgCWlmIChzdXNwZW5kX3Rlc3QoVEVTVF9GUkVFWkVSKSkKPiA+ICAJ
-CWdvdG8gRmluaXNoOwo+ID4gIAo+IAo+IFRoYW5rcywKPiBNaXF1w6hsCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
-c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vbGludXgtbXRkLwo=
+I got the possible circular locking dependency detected report:
+
+[   52.472106][  T483] ======================================================
+[   52.473212][  T483] WARNING: possible circular locking dependency detected
+[   52.474322][  T483] 5.14.0-rc6-next-20210820+ #438 Not tainted
+[   52.475272][  T483] ------------------------------------------------------
+[   52.476385][  T483] systemd-udevd/483 is trying to acquire lock:
+[   52.477356][  T483] ffffffff8c5d45a8 (mtd_table_mutex){+.+.}-{3:3}, at: blktrans_open.cold.18+0x44/0x4b1
+[   52.480510][  T483]
+[   52.480510][  T483] but task is already holding lock:
+[   52.481664][  T483] ffff88810eff8918 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x428/0x910
+[   52.483164][  T483]
+[   52.483164][  T483] which lock already depends on the new lock.
+[   52.483164][  T483]
+[   52.484578][  T483]
+[   52.484578][  T483] the existing dependency chain (in reverse order) is:
+[   52.485803][  T483]
+[   52.485803][  T483] -> #1 (&disk->open_mutex){+.+.}-{3:3}:
+[   52.486888][  T483]        __mutex_lock+0x140/0x15d0
+[   52.487599][  T483]        bd_register_pending_holders+0xb9/0x302
+[   52.488463][  T483]        device_add_disk+0x375/0xcf0
+[   52.489198][  T483]        add_mtd_blktrans_dev+0x11a4/0x16f0
+[   52.490019][  T483]        mtdblock_add_mtd+0x21a/0x2b0
+[   52.490771][  T483]        blktrans_notify_add+0xae/0xdb
+[   52.491531][  T483]        add_mtd_device.cold.26+0xa98/0xc98
+[   52.492348][  T483]        mtd_device_parse_register+0x516/0x870
+[   52.493201][  T483]        mtdram_init_device+0x294/0x350
+[   52.493966][  T483]        init_mtdram+0xde/0x16e
+[   52.494644][  T483]        do_one_initcall+0x105/0x650
+[   52.495381][  T483]        kernel_init_freeable+0x6aa/0x732
+[   52.496171][  T483]        kernel_init+0x1c/0x1c0
+[   52.496847][  T483]        ret_from_fork+0x1f/0x30
+[   52.497530][  T483]
+[   52.497530][  T483] -> #0 (mtd_table_mutex){+.+.}-{3:3}:
+[   52.498591][  T483]        __lock_acquire+0x2cfa/0x5990
+[   52.499343][  T483]        lock_acquire+0x1a0/0x500
+[   52.500041][  T483]        __mutex_lock+0x140/0x15d0
+[   52.500749][  T483]        blktrans_open.cold.18+0x44/0x4b1
+[   52.501545][  T483]        blkdev_get_whole+0x9f/0x280
+[   52.502282][  T483]        blkdev_get_by_dev+0x593/0x910
+[   52.503041][  T483]        blkdev_open+0x154/0x2a0
+[   52.503726][  T483]        do_dentry_open+0x6a9/0x1260
+[   52.504461][  T483]        path_openat+0xe06/0x2850
+[   52.505160][  T483]        do_filp_open+0x1b0/0x280
+[   52.505857][  T483]        do_sys_openat2+0x60e/0x9a0
+[   52.506576][  T483]        do_sys_open+0xca/0x140
+[   52.507251][  T483]        do_syscall_64+0x38/0xb0
+[   52.507936][  T483]        entry_SYSCALL_64_after_hwframe+0x44/0xae
+[   52.508822][  T483]
+[   52.508822][  T483] other info that might help us debug this:
+[   52.508822][  T483]
+[   52.510218][  T483]  Possible unsafe locking scenario:
+[   52.510218][  T483]
+[   52.511240][  T483]        CPU0                    CPU1
+[   52.511975][  T483]        ----                    ----
+[   52.512708][  T483]   lock(&disk->open_mutex);
+[   52.513342][  T483]                                lock(mtd_table_mutex);
+[   52.514295][  T483]                                lock(&disk->open_mutex);
+[   52.515276][  T483]   lock(mtd_table_mutex);
+[   52.515884][  T483]
+[   52.515884][  T483]  *** DEADLOCK ***
+
+load module path:              open device path:
+init_mtdram()
+add_mtd_device()
+mutex_lock(&mtd_table_mutex)
+blktrans_notifier()
+add_mtd()
+                                blkdev_get_by_dev()
+                                mutex_lock(&disk->open_mutex)
+                                blktrans_open()
+                                mutex_lock(&mtd_table_mutex);
+bd_register_pending_holders()
+mutex_lock(&disk->open_mutex)
+
+add_mtd() is called under mtd_table_mutex, before it acquires open_mutex,
+open_mutex may be acquired by another cpu when opening the device, and it
+will wait for mtd_table_mutex which is already acquired, then the 'ABBA'
+deadlock scenario is happend, reduce the mtd_table_mutex to avoid this.
+
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ drivers/mtd/mtd_blkdevs.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+index 44bea3f65060..476933ab561d 100644
+--- a/drivers/mtd/mtd_blkdevs.c
++++ b/drivers/mtd/mtd_blkdevs.c
+@@ -358,6 +358,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 	list_add_tail(&new->list, &tr->devs);
+  added:
+ 	mutex_unlock(&blktrans_ref_mutex);
++	mutex_unlock(&mtd_table_mutex);
+ 
+ 	mutex_init(&new->lock);
+ 	kref_init(&new->ref);
+@@ -434,6 +435,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 					new->disk_attributes);
+ 		WARN_ON(ret);
+ 	}
++	mutex_lock(&mtd_table_mutex);
+ 	return 0;
+ 
+ out_free_tag_set:
+@@ -441,6 +443,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ out_kfree_tag_set:
+ 	kfree(new->tag_set);
+ out_list_del:
++	mutex_lock(&mtd_table_mutex);
+ 	list_del(&new->list);
+ 	return ret;
+ }
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
