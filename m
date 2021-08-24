@@ -2,65 +2,80 @@ Return-Path: <SRS0=de6p=NP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26CD0C4320A
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Aug 2021 17:23:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76648C4338F
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Aug 2021 17:31:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E215361504
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Aug 2021 17:23:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E215361504
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 423C460231
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Aug 2021 17:31:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 423C460231
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lKrHiX0EAS+tGv86aWGXqSdRR8Fd80uNA/YNh9lEHTU=; b=Tyo/2K+9RYMghg
-	3LIFXVWnc5QlX3oIQLweKjsWwYIAd5pfs5liWL9XEkF1kDv5YWIigUrBUZdfrernDlSUgjK9/4W4v
-	mG1MqFt4qLiqhBhbwo0kcTtmlQp1Tu7wzhYZ7gDOAV2tjaNlglrIsXcq/Q7cTeQI4i9UHhqyQNVdm
-	JTvYp/GOxFDycI6NGClnWzL7hA7M30zimBta4BodBkhsYV1Yx3g/yM5NJAqOeUG7gqyko8dbs251R
-	KPwMBYd9rcVlgCIAGV1fL5MvW4bojsNnYoiBJZ0hzV4EWUEUqg2y50nqDz6qTvMXJeb9TLNLKgpH7
-	wzBW3PnHttlzvocRWc5g==;
+	List-Owner; bh=L/OmF3c8kS2WxgvUrGMsiZZjWfwQxn4nkFKALIDOuJc=; b=FCcR9Cr8Fyxqa3
+	/bEjyIhDdS9O0hysPy0XgHDq3Q+4gnCj0YLe4q3D9NM+W5G6Xx1rCkAthT9LCaCgliBkUHPuCb5VP
+	jIYQHaNlwN/49Ky+6hUGLeXULXXfVFKNFp8N1blldK0JS5qvugT2rD1hqfh4xaFaaHi5LrH7YlCgB
+	zTDZjYtHLyM3DlHtz/7imJlOVyskiPi2462g0JA48BQo++XNARqcr4+tmLEect3Ma02S5vw27dB73
+	FagM4ExmYI3BT78q3UibHkemBuu59wbfyb8Hz+N4f9MbRtvuG598LE42V1aML6YPkUoWUPH0Nb85A
+	BGxrvbWk0MBZv1RmsXIw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mIa7q-0048cQ-8e; Tue, 24 Aug 2021 17:22:14 +0000
-Received: from relay12.mail.gandi.net ([217.70.178.232])
+	id 1mIaGL-004Akp-68; Tue, 24 Aug 2021 17:31:01 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mIa7k-0048ZP-GB
- for linux-mtd@lists.infradead.org; Tue, 24 Aug 2021 17:22:12 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id 0A9BF200003;
- Tue, 24 Aug 2021 17:22:04 +0000 (UTC)
-Date: Tue, 24 Aug 2021 19:22:03 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Kestrel seventyfour <kestrelseventyfour@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: rawnand: xway: No hardcoded ECC engine, use
- device tree setting
-Message-ID: <20210824192203.076df55e@xps13>
-In-Reply-To: <CAE9cyGTKFcMuxePo2SgxkBe_cWvP5nZ_SDcnuUtwaE5o9oVq3g@mail.gmail.com>
-References: <20210808072643.GA5084@ubuntu> <20210816093126.442f74a1@xps13>
- <CAE9cyGQ+Bb3rQxiF4My9zXwg_+QYifaCckE=C6spAtN9_4dBFQ@mail.gmail.com>
- <20210819100334.6af2d86e@xps13>
- <CAE9cyGSF2vTCptSZd3uMFaZPD=as=PwZY14S+zDhzjWCmsfmpQ@mail.gmail.com>
- <20210823172413.0bc4ab3a@xps13>
- <CAE9cyGTKFcMuxePo2SgxkBe_cWvP5nZ_SDcnuUtwaE5o9oVq3g@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1mIaGF-004Ahl-AQ; Tue, 24 Aug 2021 17:30:59 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17OHUMhb007628;
+ Tue, 24 Aug 2021 12:30:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1629826222;
+ bh=joAeRLJIlrcOY4DqDd3gKdnPmZnHyibKrmmljwvM+u0=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=jkxBkm3BIZ7PUcqrXJ0nm2T8yUjuiQIaKSC2t0HdR+yamF9rDN2Gql1OnDaXGG3VN
+ NalbQmGwzjsBc8gVWe0wGEsTGWsZMtSQ7Mup5Kf9y7UPwihNZG5Ejtq3Zx/8j8qZ1R
+ nGoMovgOM9188Fyb0XhErMt7/ZAhXUMsXYBQ2UMU=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17OHUMPe075265
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 24 Aug 2021 12:30:22 -0500
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 24
+ Aug 2021 12:30:21 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 24 Aug 2021 12:30:21 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17OHULcG043752;
+ Tue, 24 Aug 2021 12:30:21 -0500
+Date: Tue, 24 Aug 2021 23:00:20 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: Re: [PATCH v2 26/35] mtd: spi-nor: core: Introduce
+ spi_nor_init_default_params()
+Message-ID: <20210824173018.n6fw6t6mg4bwah37@ti.com>
+References: <20210727045222.905056-1-tudor.ambarus@microchip.com>
+ <20210727045222.905056-27-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20210727045222.905056-27-tudor.ambarus@microchip.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210824_102208_699984_952EBD2E 
-X-CRM114-Status: GOOD (  26.74  )
+X-CRM114-CacheID: sfid-20210824_103055_543635_D10FB8FE 
+X-CRM114-Status: GOOD (  24.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,55 +87,165 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: macromorgan@hotmail.com, vigneshr@ti.com, jaimeliao@mxic.com.tw,
+ richard@nod.at, esben@geanix.com, linux@rasmusvillemoes.dk,
+ knaerzche@gmail.com, nicolas.ferre@microchip.com, michael@walle.cc,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ code@reto-schneider.ch, miquel.raynal@bootlin.com, heiko.thiery@gmail.com,
+ sr@denx.de, mail@david-bauer.net, zhengxunli@mxic.com.tw
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpLZXN0cmVsIHNldmVudHlmb3VyIDxrZXN0cmVsc2V2ZW50eWZvdXJAZ21haWwuY29t
-PiB3cm90ZSBvbiBUdWUsIDI0IEF1ZwoyMDIxIDA5OjE1OjQ5ICswMjAwOgoKPiBIaSBNaXF1w6hs
-LAo+IAo+IEFtIE1vLiwgMjMuIEF1Zy4gMjAyMSB1bSAxNzoyNCBVaHIgc2NocmllYiBNaXF1ZWwg
-UmF5bmFsCj4gPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+Ogo+ID4KPiA+IEhpIEtlc3RyZWws
-Cj4gPgo+ID4gS2VzdHJlbCBzZXZlbnR5Zm91ciA8a2VzdHJlbHNldmVudHlmb3VyQGdtYWlsLmNv
-bT4gd3JvdGUgb24gTW9uLCAyMyBBdWcKPiA+IDIwMjEgMTM6MTk6NDMgKzAyMDA6Cj4gPiAgCj4g
-PiA+IEhpIE1pcXXDqGwsCj4gPiA+Cj4gPiA+IEFtIERvLiwgMTkuIEF1Zy4gMjAyMSB1bSAxMDow
-MyBVaHIgc2NocmllYiBNaXF1ZWwgUmF5bmFsCj4gPiA+IDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4u
-Y29tPjogIAo+IC4uLgo+ID4gPgo+ID4gPiB0aGFuayB5b3UgZm9yIHlvdXIgcmVzcG9uc2UuCj4g
-PiA+IElmIEkgcmVtb3ZlIHRoZSBuYW5kLWVjYy14eHggcHJvcGVydGllcyBpbiB0aGUgZGV2aWNl
-IHRyZWUsIHRoZSBkZXZpY2Ugd2l0aAo+ID4gPiB0aGUgVG9zaGliYSBOQU5EIGNoaXAgaXMgd29y
-a2luZy4gSG93ZXZlciwgdGhlIGRldmljZSB3aXRoIHRoZSBNaWNyb24KPiA+ID4gTkFORCBmYWls
-cyB3aXRoIE5PIEVDQyBmdW5jdGlvbnMgc3VwcGxpZWQ7IGhhcmR3YXJlIEVDQyBub3QgcG9zc2li
-bGUsCj4gPiA+IHNlZW1zIHRvIGJlIGF0IGxpbmUgNTM2NyBvciBlcXVpdmFsZW50Lgo+ID4gPiBo
-dHRwczovL2VsaXhpci5ib290bGluLmNvbS9saW51eC9sYXRlc3Qvc291cmNlL2RyaXZlcnMvbXRk
-L25hbmQvcmF3L25hbmRfYmFzZS5jI0w1MzY3Cj4gPiA+Cj4gPiA+IEl0IGxvb2tzIGxpa2UgdGhl
-IG1pY3JvbiBuYW5kIGRyaXZlciBzdXBwb3J0cyBvbiBkaWUgb25seSBpZiBpdHMKPiA+ID4gc3Bl
-Y2lmaWVkIGludCB0aGUKPiA+ID4gRGV2aWNlIHRyZWU6Cj4gPiA+IGh0dHBzOi8vZWxpeGlyLmJv
-b3RsaW4uY29tL2xpbnV4L2xhdGVzdC9zb3VyY2UvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9t
-aWNyb24uYyNMNTExCj4gPiA+IFRoZSBNaWNyb24gTkFORCBkcml2ZXIgcHJvYmFibHkgbmVlZHMg
-dG8gc2V0IHRoZSBFQ0MgdHlwZSB0byBPTiBESUUgaWYgdGhlCj4gPiA+IHZhcmlhYmxlIG9uZGll
-IGNvbnRhaW5zIHRoZSBzdXBwb3J0ZWQgYXR0cmlidXRlPyEgIAo+ID4KPiA+IFlvdSdyZSByaWdo
-dCBidXQgSSBkb24ndCBzZWUgYW55IGVhc3kgdXBzdHJlYW0tYWJsZSBzb2x1dGlvbiBoZXJlLgo+
-ID4gQ2hhbmdpbmcgdGhlIGJlaGF2aW9yIGluIHRoZSBYd2F5IGRyaXZlciB3b3VsZCBjZXJ0YWlu
-bHkgYnJlYWsgdXNlcnMsCj4gPiBjaGFuZ2luZyB0aGUgYmVoYXZpb3IgaW4gdGhlIE1pY3JvbiBk
-cml2ZXIgd291bGQgY2VydGFpbmx5IGJyZWFrIGV2ZW4KPiA+IG1vcmUgdXNlcnMuIFRoZSByb290
-IGNhdXNlIGJlaW5nIGFuIGFic2VuY2Ugb2YgcHJvcGVyIGRlc2NyaXB0aW9uICh0aGUKPiA+IGlu
-dGVncmF0aW9uIGNoYW5nZWQpLiBIb25lc3RseSBJIGZlZWwgc3R1Y2ssIG1heWJlIHlvdSBjYW4g
-dHJ5IHRvCj4gPiByZWdpc3RlciB5b3VyIGRldmljZSwgaWYgaXQgZmFpbHMsIGNoYW5nZSB0aGUg
-aW50ZWdyYXRpb24gaW4gdGhlIGRyaXZlcgo+ID4gKHRvIGFuIG9uZGllIGVjYyBlbmdpbmUpIHRo
-ZW4gcmV0cnk/Cj4gPgo+ID4gVGhhbmtzLAo+ID4gTWlxdcOobCAgCj4gCj4gRG8geW91IHRoaW5r
-IGFkZGluZyBzb21ldGhpbmcgbGlrZSBiZWxvdyBhdCB0aGUgZm9sbG93aW5nIGxvY2F0aW9uCj4g
-aHR0cHM6Ly9lbGl4aXIuYm9vdGxpbi5jb20vbGludXgvbGF0ZXN0L3NvdXJjZS9kcml2ZXJzL210
-ZC9uYW5kL3Jhdy94d2F5X25hbmQuYyNMMjIzCj4gd291bGQgYmUgdXBzdHJlYW1hYmxlICh3aXRo
-IG9yIHdpdGhvdXQgZGV2aWNlIHRyZWUgcHJvcGVydHk/KT8KPiAKPiAgICAgICAgIGVyciA9IG5h
-bmRfc2NhbigmZGF0YS0+Y2hpcCwgMSk7Cj4gICAgICAgICBpZiAoZXJyIC8qICYmIG9mX3Byb3Bl
-cnR5X3JlYWRfYm9vbChucCwgImxhbnRpcSxyZXRyeS1vbi1kaWUiKSAqLykgewo+ICAgICAgICAg
-ICAgICAgICBkYXRhLT5jaGlwLmVjYy5lbmdpbmVfdHlwZSA9IE5BTkRfRUNDX0VOR0lORV9UWVBF
-X09OX0RJRTsKPiAgICAgICAgICAgICAgICAgZXJyID0gbmFuZF9zY2FuKCZkYXRhLT5jaGlwLCAx
-KTsKPiAgICAgICAgICAgICAgICAgaWYgKGVycikgcmV0dXJuIGVycjsKPiAgICAgICAgIH0KPiAK
-PiBJdCBzdGlsbCB0aHJvd3MgdGhlIGtlcm5lbCB3YXJuaW5nIG9uIGZpcnN0IHRyeSwgYnV0IHRo
-ZSBzZWNvbmQgdHJ5IHRoZW4gd29ya3MuCgpDYW4geW91IHBsZWFzZSByZW1pbmQgbWUgd2hhdCBp
-cyB4d2F5L2xhbnRpcS95b3VyIHNldHVwL2hvdyBwdWJsaWMgaXQKaXMvd2hvJ3MgdXNpbmcgdGhp
-cyBkcml2ZXI/CgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
-c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
-Cg==
+On 27/07/21 07:52AM, Tudor Ambarus wrote:
+> Called for all flashes, regardless if they define SFDP tables or not.
+> 
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> ---
+>  drivers/mtd/spi-nor/core.c | 92 +++++++++++++++++++++-----------------
+>  1 file changed, 52 insertions(+), 40 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index b3a01d7d6f0b..9193317f897d 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -2543,6 +2543,56 @@ static int spi_nor_setup(struct spi_nor *nor,
+>  	return spi_nor_set_addr_width(nor);
+>  }
+>  
+> +/**
+> + * spi_nor_init_default_params() - Default initialization of flash parameters
+> + * and settings. Done for all flashes, regardless is they define SFDP tables
+> + * or not.
+> + * @nor:	pointer to a 'struct spi_nor'.
+> + */
+> +static void spi_nor_init_default_params(struct spi_nor *nor)
+> +{
+> +	struct spi_nor_flash_parameter *params = nor->params;
+> +	const struct flash_info *info = nor->info;
+> +	struct device_node *np = spi_nor_get_flash_node(nor);
+> +
+> +	params->quad_enable = spi_nor_sr2_bit1_quad_enable;
+> +	params->set_4byte_addr_mode = spansion_set_4byte_addr_mode;
+> +	params->setup = spi_nor_default_setup;
+> +	params->otp.org = &info->otp_org;
+> +
+> +	/* Default to 16-bit Write Status (01h) Command */
+> +	nor->flags |= SNOR_F_HAS_16BIT_SR;
+> +
+> +	/* Set SPI NOR sizes. */
+> +	params->writesize = 1;
+> +	params->size = (u64)info->sector_size * info->n_sectors;
+> +	params->page_size = info->page_size;
+
+I think these two lines should go in spi_nor_info_init_params() since 
+you are using the nor info to initialize these parameters. Otherwise, 
+what even is the difference between these two functions?
+
+> +
+> +	if (!(info->flags & SPI_NOR_NO_FR)) {
+> +		/* Default to Fast Read for DT and non-DT platform devices. */
+> +		params->hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
+> +
+> +		/* Mask out Fast Read if not requested at DT instantiation. */
+> +		if (np && !of_property_read_bool(np, "m25p,fast-read"))
+> +			params->hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
+> +	}
+> +
+> +	/* (Fast) Read settings. */
+> +	params->hwcaps.mask |= SNOR_HWCAPS_READ;
+> +	spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ],
+> +				  0, 0, SPINOR_OP_READ,
+> +				  SNOR_PROTO_1_1_1);
+> +
+> +	if (params->hwcaps.mask & SNOR_HWCAPS_READ_FAST)
+> +		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_FAST],
+> +					  0, 8, SPINOR_OP_READ_FAST,
+> +					  SNOR_PROTO_1_1_1);
+> +	/* Page Program settings. */
+> +	params->hwcaps.mask |= SNOR_HWCAPS_PP;
+> +	spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP],
+> +				SPINOR_OP_PP, SNOR_PROTO_1_1_1);
+> +}
+> +
+>  /**
+>   * spi_nor_manufacturer_init_params() - Initialize the flash's parameters and
+>   * settings based on MFR register and ->default_init() hook.
+> @@ -2609,43 +2659,8 @@ static void spi_nor_info_init_params(struct spi_nor *nor)
+>  	struct spi_nor_flash_parameter *params = nor->params;
+>  	struct spi_nor_erase_map *map = &params->erase_map;
+>  	const struct flash_info *info = nor->info;
+> -	struct device_node *np = spi_nor_get_flash_node(nor);
+>  	u8 i, erase_mask;
+>  
+> -	/* Initialize default flash parameters and settings. */
+> -	params->quad_enable = spi_nor_sr2_bit1_quad_enable;
+> -	params->set_4byte_addr_mode = spansion_set_4byte_addr_mode;
+> -	params->setup = spi_nor_default_setup;
+> -	params->otp.org = &info->otp_org;
+> -
+> -	/* Default to 16-bit Write Status (01h) Command */
+> -	nor->flags |= SNOR_F_HAS_16BIT_SR;
+> -
+> -	/* Set SPI NOR sizes. */
+> -	params->writesize = 1;
+> -	params->size = (u64)info->sector_size * info->n_sectors;
+> -	params->page_size = info->page_size;
+> -
+> -	if (!(info->flags & SPI_NOR_NO_FR)) {
+> -		/* Default to Fast Read for DT and non-DT platform devices. */
+> -		params->hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
+> -
+> -		/* Mask out Fast Read if not requested at DT instantiation. */
+> -		if (np && !of_property_read_bool(np, "m25p,fast-read"))
+> -			params->hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
+> -	}
+> -
+> -	/* (Fast) Read settings. */
+> -	params->hwcaps.mask |= SNOR_HWCAPS_READ;
+> -	spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ],
+> -				  0, 0, SPINOR_OP_READ,
+> -				  SNOR_PROTO_1_1_1);
+> -
+> -	if (params->hwcaps.mask & SNOR_HWCAPS_READ_FAST)
+> -		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_FAST],
+> -					  0, 8, SPINOR_OP_READ_FAST,
+> -					  SNOR_PROTO_1_1_1);
+> -
+>  	if (info->flags & SPI_NOR_DUAL_READ) {
+>  		params->hwcaps.mask |= SNOR_HWCAPS_READ_1_1_2;
+>  		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_1_1_2],
+> @@ -2674,11 +2689,6 @@ static void spi_nor_info_init_params(struct spi_nor *nor)
+>  					  SNOR_PROTO_8_8_8_DTR);
+>  	}
+>  
+> -	/* Page Program settings. */
+> -	params->hwcaps.mask |= SNOR_HWCAPS_PP;
+> -	spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP],
+> -				SPINOR_OP_PP, SNOR_PROTO_1_1_1);
+> -
+>  	if (info->flags & SPI_NOR_OCTAL_DTR_PP) {
+>  		params->hwcaps.mask |= SNOR_HWCAPS_PP_8_8_8_DTR;
+>  		/*
+> @@ -2823,6 +2833,8 @@ static int spi_nor_init_params(struct spi_nor *nor)
+>  	if (!nor->params)
+>  		return -ENOMEM;
+>  
+> +	spi_nor_init_default_params(nor);
+> +
+>  	spi_nor_info_init_params(nor);
+>  
+>  	spi_nor_manufacturer_init_params(nor);
+
+I am neutral towards this patch. I don't think it improves much, but at 
+the same time it doesn't make anything worse either.
+
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
