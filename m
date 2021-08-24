@@ -1,70 +1,123 @@
-Return-Path: <SRS0=IJcR=NO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=de6p=NP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-6.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 973C2C4338F
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 22:48:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA4DEC4338F
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Aug 2021 03:05:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 54B2A613AD
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Aug 2021 22:48:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 54B2A613AD
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id 86F72610A4
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Aug 2021 03:05:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 86F72610A4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
-	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=cunCXRUBdWlo0alOpmpQBy1zRf4sGxKY9SDRmkmqLUg=; b=z4wDzz18c3AKGIken2TMBaFsLi
-	MmdlrhzYXRLWvqkBD+Fvd19fnRZP1kgbFoSc46shkNuqadh1tL4f0XiiTcqzoOUKvnwUEDQRG1Lxn
-	lOyQ5/INHeI5ge2ImLDXwPDoR2Z1fmqkb34fb3p/Heaba0a7Mo3BNBSNeyYGh4MnlUxorjZAAsJGT
-	3NNWrUL9PS+V65KcZtUmcuITcLBpOSV9E7z4+Xcrvt9K4GTTnEYTQUO78RTG/aptHr/wLmD1aBuML
-	xmeopctmxZ94zwBlxRd9WVLZLyxlgbDytGaUINbwq4A3hs4/Ur0h1J5HpW4/bfm1QNINJYn2/7cCY
-	dOdV3mMw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=cBY80EpZYSCSVxXIe88GGf3b5p0TrL64zcSkajqHFn0=; b=yc427wk94ztUJP
+	AqNkShrv4FbWsO3CF6gUKyr/uhtAJaLUzczun6+J6PigEAOmoVIZdr/c6D5w1OQV7MFNxNJDH2bR/
+	AtVXlaR+axTfMMrNnqG6rH5pAZjagLMlNHW2La61Gy1KX70C0v+zCK683QEBcVEHKiVRfG9Ma4Ufu
+	pz4EKCMc4W1hpcqWBx1HDXzcItO3QPOr9Kq0q2OZbuRSq4pJbbmXEbi32c5vr7TQsYIY8/dvj28Vu
+	Jd08ocxIJNDTsWhVahZrK9tX778Uz09tfd/1uTIU2rvc5AG+0OUk9LiQnAvcrcZPWqK1KqH0IMGT4
+	wp8FhBjEQRGJa7GbZFcA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mIIjS-000ueK-KW; Mon, 23 Aug 2021 22:47:54 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1mIMjr-001KiG-6n; Tue, 24 Aug 2021 03:04:35 +0000
+Received: from mail-pl1-x629.google.com ([2607:f8b0:4864:20::629])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mIIj9-000uaC-Jv; Mon, 23 Aug 2021 22:47:39 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 588F422205;
- Tue, 24 Aug 2021 00:47:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1629758853;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=+xk23VbY+XdZ7FqMSTM0PnS6pphcBIiMJCdL1XyWroo=;
- b=krveEmOMCUZ+6zBDkjXWbScsra28NsfVGld4/YnY1EI/k7rtCiH1RUN1jiZJuT1nPDzmVs
- k7WJh23Y+dvhiCvNed4WI4EP+ODmCmQqL/x6qKoQnXMHF7erBIIAjiHKr9kYhst6P9Xow+
- 9BNYm6y8Lv8o0I4mqO2ZtUwKUeM43kg=
+ id 1mIMjm-001Ken-7a
+ for linux-mtd@lists.infradead.org; Tue, 24 Aug 2021 03:04:34 +0000
+Received: by mail-pl1-x629.google.com with SMTP id a5so11385195plh.5
+ for <linux-mtd@lists.infradead.org>; Mon, 23 Aug 2021 20:04:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=ftVLBcz2CA6HVw5Sak06NSKiX7H+vKeynT4dia9GcmU=;
+ b=k+9ugNQMNP1T757zCmBjD0HZ4Cm6T3BE+v/X7Wxf65qXhZ4Y1Om/ZwreVVsFldU5ED
+ 26Au5VziBd3fTRw9qajnc5Q1bzTZtCXlNbNzYEhhdrLy0j6q3RP41Bfsx2Vet4JiZwHE
+ HpssKarI+iW9nKfS+aZW4kug15wwleM1PIEsfGzs+E/ENGb7NoFhvlaUVQuCR3IWspbE
+ 1jdc92yTGvHUY8w5qgAHpd6F4jZjsLSyz7OphX6zYHG1h8uepViMakkTUt9Apji0AqlD
+ h496UE7ulnKIyaYIIz+9WlMWKL7f+UCly0DgUoeMlhVK/OeculmtFoztQ69V1z3oNjW5
+ BaQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=ftVLBcz2CA6HVw5Sak06NSKiX7H+vKeynT4dia9GcmU=;
+ b=DKRXwVAzBUMdm1dn2st3klJvuLokMIKy1QLxiBOTCX/VFELRAeInPV7/0f2ISKUBKP
+ Pvn1UCWIWT1jN2JDlD7rKXjCcynbasZy2sRk5XW8QxxllcTDxpoWEWNzRDd26jnYv4ho
+ rIyEdo6wzr7lScCirMiwz1EP+zf7fW1eGgj/nCaihiDSr6SFTv0RrOKajH/MCyn1xgnK
+ 6bJ0KfTSAKnW5CA7wM85DdPfUP702XoIZuoBHcqb98O7+04/sbp3yriBJeMmHwG/s6Lr
+ 8ML3arvWrEf4fggUqnT6dbIEXfkQpjoR/N3dg9j4KZRQFdWtIVXRdyPk7sJAi1tB/FjC
+ AC7Q==
+X-Gm-Message-State: AOAM5321twTDO1u6tCpD+tBai31KVehvZ7+dqc2i9dFNjAPhS/dkq8MZ
+ VFUHVWJ29fiyopwiCL+/92Q25A==
+X-Google-Smtp-Source: ABdhPJxgNZPrPk9tzmxpkCehrPdfFes88M8DqFhHlA/X7V8qZTGRmqZiqGy9NJMzzCPLtwobPdjSGw==
+X-Received: by 2002:a17:902:e547:b029:12c:563c:4a03 with SMTP id
+ n7-20020a170902e547b029012c563c4a03mr30922945plf.46.1629774264209; 
+ Mon, 23 Aug 2021 20:04:24 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+ by smtp.gmail.com with ESMTPSA id c12sm16184839pfl.56.2021.08.23.20.04.23
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 23 Aug 2021 20:04:23 -0700 (PDT)
+Date: Tue, 24 Aug 2021 08:34:21 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Dmitry Osipenko <digetx@gmail.com>
+Cc: Ulf Hansson <ulf.hansson@linaro.org>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Viresh Kumar <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+ Peter De Schrijver <pdeschrijver@nvidia.com>,
+ Mikko Perttunen <mperttunen@nvidia.com>,
+ Peter Chen <peter.chen@kernel.org>, Mark Brown <broonie@kernel.org>,
+ Lee Jones <lee.jones@linaro.org>,
+ Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-tegra <linux-tegra@vger.kernel.org>,
+ Linux PM <linux-pm@vger.kernel.org>,
+ Linux USB List <linux-usb@vger.kernel.org>,
+ linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+ linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-mmc <linux-mmc@vger.kernel.org>,
+ Linux Media Mailing List <linux-media@vger.kernel.org>,
+ dri-devel <dri-devel@lists.freedesktop.org>,
+ DTML <devicetree@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>
+Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
+Message-ID: <20210824030421.3tjfjkx3c2silbnz@vireshk-i7>
+References: <20210818062723.dqamssfkf7lf7cf7@vireshk-i7>
+ <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
+ <20210818091417.dvlnsxlgybdsn76x@vireshk-i7>
+ <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
+ <f1314a47-9e8b-58e1-7c3f-0afb1ec8e70a@gmail.com>
+ <20210819061617.r4kuqxafjstrv3kt@vireshk-i7>
+ <CAPDyKFpg8ixT4AEjzVLTwQR7Nn9CctjnLCDS5GwkOrAERquyxw@mail.gmail.com>
+ <20210820051843.5mueqpnjbqt3zdzc@vireshk-i7>
+ <CAPDyKFo0rzHT4AhueWjyz9k2ZqUy8N6Od5pbr8sL_m0Jf2AwUg@mail.gmail.com>
+ <085d1a2e-57b0-222e-c569-12f3c6bc8161@gmail.com>
 MIME-Version: 1.0
-Date: Tue, 24 Aug 2021 00:47:33 +0200
-From: Michael Walle <michael@walle.cc>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: Re: [PATCH v2 05/35] mtd: spi-nor: Introduce Manufacturer ID
- collisions driver
-In-Reply-To: <20210727045222.905056-6-tudor.ambarus@microchip.com>
-References: <20210727045222.905056-1-tudor.ambarus@microchip.com>
- <20210727045222.905056-6-tudor.ambarus@microchip.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <fb581e64c1af72f30fdd10157e7275d4@walle.cc>
-X-Sender: michael@walle.cc
+Content-Disposition: inline
+In-Reply-To: <085d1a2e-57b0-222e-c569-12f3c6bc8161@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210823_154736_028088_04F190C3 
-X-CRM114-Status: GOOD (  26.53  )
+X-CRM114-CacheID: sfid-20210823_200430_307595_8AB86109 
+X-CRM114-Status: GOOD (  18.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,132 +129,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: macromorgan@hotmail.com, vigneshr@ti.com, jaimeliao@mxic.com.tw,
- richard@nod.at, esben@geanix.com, linux@rasmusvillemoes.dk,
- knaerzche@gmail.com, nicolas.ferre@microchip.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- code@reto-schneider.ch, miquel.raynal@bootlin.com, heiko.thiery@gmail.com,
- sr@denx.de, p.yadav@ti.com, mail@david-bauer.net, zhengxunli@mxic.com.tw
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2021-07-27 06:51, schrieb Tudor Ambarus:
-> Some manufacturers completely ignore the manufacturer's identification 
-> code
-> standard (JEP106) and do not define the manufacturer ID continuation
-> scheme. This will result in manufacturer ID collisions.
+On 23-08-21, 23:24, Dmitry Osipenko wrote:
+> It's not clear to me whether it will be okay to add a generic OPP syncing by clock rate or should it be a Tegra-specific helper. Viresh, what do you think about this generic OPP helper:
 > 
-> An an example, JEP106BA requires Boya that it's manufacturer ID to be
-> preceded by 8 continuation codes. Boya's identification code must be:
-> 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x68. But Boya ignores 
-> the
-> continuation scheme and its ID collides with the manufacturer defined 
-> in
-> bank one: Convex Computer.
+> /**
+>  * dev_pm_opp_sync_with_clk_rate() - Sync OPP state with clock rate
+>  * @dev:	device for which we do this operation
+>  *
+>  * Sync OPP table state with the current clock rate of device.
+>  *
+>  * Return: 0 on success or a negative error value.
+>  */
+> int dev_pm_opp_sync_with_clk_rate(struct device *dev)
+> {
+> 	struct opp_table *opp_table;
+> 	int ret = 0;
 > 
-> Introduce the manuf-id-collisions driver in order to address ID 
-> collisions
-> between manufacturers. flash_info entries will be added in a first 
-> come,
-> first served manner. Differentiation between flashes will be done at
-> runtime if possible. Where runtime differentiation is not possible, new
-> compatibles will be introduced, but this will be done as a last resort.
-> Every new flash addition that define the SFDP tables, should dump its 
-> SFDP
-> tables in the patch's comment section below the --- line, so that we 
-> can
-> reference it in case of collisions.
+> 	/* Device may not have OPP table */
+> 	opp_table = _find_opp_table(dev);
+> 	if (IS_ERR(opp_table))
+> 		return 0;
 > 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> ---
->  drivers/mtd/spi-nor/Makefile              |  1 +
->  drivers/mtd/spi-nor/core.c                |  1 +
->  drivers/mtd/spi-nor/core.h                |  1 +
->  drivers/mtd/spi-nor/manuf-id-collisions.c | 22 ++++++++++++++++++++++
->  4 files changed, 25 insertions(+)
->  create mode 100644 drivers/mtd/spi-nor/manuf-id-collisions.c
+> 	/* Device may not use clock */
+> 	if (IS_ERR(opp_table->clk))
+> 		goto put_table;
 > 
-> diff --git a/drivers/mtd/spi-nor/Makefile 
-> b/drivers/mtd/spi-nor/Makefile
-> index 6b904e439372..48763d10daad 100644
-> --- a/drivers/mtd/spi-nor/Makefile
-> +++ b/drivers/mtd/spi-nor/Makefile
-> @@ -1,6 +1,7 @@
->  # SPDX-License-Identifier: GPL-2.0
+> 	/* Device may have empty OPP table */
+> 	if (!_get_opp_count(opp_table))
+> 		goto put_table;
 > 
->  spi-nor-objs			:= core.o sfdp.o swp.o otp.o sysfs.o
-> +spi-nor-objs			+= manuf-id-collisions.o
->  spi-nor-objs			+= atmel.o
->  spi-nor-objs			+= catalyst.o
->  spi-nor-objs			+= eon.o
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 1a278d33b02d..d30c8f350dc1 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -1829,6 +1829,7 @@ int spi_nor_sr2_bit7_quad_enable(struct spi_nor 
-> *nor)
->  }
+> 	ret = dev_pm_opp_set_rate(dev, clk_get_rate(opp_table->clk));
+> put_table:
+> 	/* Drop reference taken by _find_opp_table() */
+> 	dev_pm_opp_put_opp_table(opp_table);
 > 
->  static const struct spi_nor_manufacturer *manufacturers[] = {
-> +	&spi_nor_manuf_id_collisions,
+> 	return ret;
+> }
+> EXPORT_SYMBOL_GPL(dev_pm_opp_sync_with_clk_rate);
 
-Intentionally at the beginning of all the flashes? So these
-might take precedence over "normal" ones? Shouldn't it be
-the other way around?
+I am not sure why you still need this, hope we were going another way
+? Anyway I will have a look at what you have posted now.
 
->  	&spi_nor_atmel,
->  	&spi_nor_catalyst,
->  	&spi_nor_eon,
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index 55fceb0ec894..e9896cd60695 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -476,6 +476,7 @@ struct sfdp {
->  };
-> 
->  /* Manufacturer drivers. */
-> +extern const struct spi_nor_manufacturer spi_nor_manuf_id_collisions;
->  extern const struct spi_nor_manufacturer spi_nor_atmel;
->  extern const struct spi_nor_manufacturer spi_nor_catalyst;
->  extern const struct spi_nor_manufacturer spi_nor_eon;
-> diff --git a/drivers/mtd/spi-nor/manuf-id-collisions.c
-> b/drivers/mtd/spi-nor/manuf-id-collisions.c
-> new file mode 100644
-> index 000000000000..bf7dba34f018
-> --- /dev/null
-> +++ b/drivers/mtd/spi-nor/manuf-id-collisions.c
-> @@ -0,0 +1,22 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Used to handle collisions between manufacturers, where 
-> manufacturers are
-> + * ignorant enough to not implement the ID continuation scheme 
-> described in the
-> + * JEP106 JEDEC standard.
-> + */
-> +
-> +#include <linux/mtd/spi-nor.h>
-> +#include "core.h"
-> +
-> +static const struct flash_info id_collision_parts[] = {
-> +	/* Boya */
-> +	{ "by25q128as", INFO(0x684018, 0, 64 * 1024, 256, SPI_NOR_SKIP_SFDP |
-> +			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-> +			     SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
-> +};
-> +
-> +const struct spi_nor_manufacturer spi_nor_manuf_id_collisions = {
-> +	.name = "manufacturer ID collisions",
-
-mhh, so we loose the manufacturer name. Doh. Can we do better?
-
--michael
-
-> +	.parts = id_collision_parts,
-> +	.nparts = ARRAY_SIZE(id_collision_parts),
-> +};
+-- 
+viresh
 
 ______________________________________________________
 Linux MTD discussion mailing list
