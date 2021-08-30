@@ -2,63 +2,71 @@ Return-Path: <SRS0=01Ca=NV=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10D44C432BE
-	for <linux-mtd@archiver.kernel.org>; Mon, 30 Aug 2021 08:42:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1309C432BE
+	for <linux-mtd@archiver.kernel.org>; Mon, 30 Aug 2021 08:45:41 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 96DF960FF2
-	for <linux-mtd@archiver.kernel.org>; Mon, 30 Aug 2021 08:42:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 96DF960FF2
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 9B67060FF2
+	for <linux-mtd@archiver.kernel.org>; Mon, 30 Aug 2021 08:45:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9B67060FF2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=O1xqzeDHvXgtBeNd8DrJyeFh8Glgv4AQQAkA5B9YH84=; b=WseU1Ue1F1Z9qa
-	ox/lwaYO2l5aBlMMHj4LqqySNcoABGDpA66ZqC79OeCIJimkAwQS9vaARnUc5mIejNMhuWkpc7I94
-	9+a1k3lnFIPG9gNDKNNBmPGyeBqi0rC9yHoun5B5ebwqTBPPitcCfC6lOQnwvEcU5U6X3MYYTVorG
-	q0QTuf5Ap0EawP+7qgVcHgeBhF7QVaNfEf1Wss35YhkAzKjxBnH6chQC4alVvLOKs+ihkJTOMUSP/
-	DYEV9q49zZVYMqGj71+kqNbl7V2q+Ka3vYnlCWwfhJPCtH3Pw7FIhMaw6bIE0fBzViicib1tUjpmz
-	XCIdY+aPiIlYGR+K+YuA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=u2/HILb49xjgWS5YNBWV1xra7HwnSB6IKqoCjwdciiY=; b=T8RRIlm6KvjVDY
+	uE2wkNmhX7FbuA8bAogcMzCBDWTO/C58tMGUHnzIZ6AzPww65Yz2jLM8XBT1/1LMHOuGjUbdoCOQM
+	rWzarPKjGy2r3UxKGzDr8CwKIhPQV9sb3F6MwjuQCWjonGYFoesWG7EbXDyG/dt9I41Vs3QuIJ+xE
+	Ef1NcWYpv0kJXoX+Zx0CuYTHnHb9kTucYAx8FusTC1Y3ZAmo6bYhPrNjSkgHsyYx9jcGai/V0LPXM
+	09aNRCNT092V7Tyae+KGqcZpHVmOdlRN/ZvB2ayy+u6QmSvqrR5rBINYLi9oST8PQttfFGp3UTxpq
+	wgo6ibOARvmsUR1CKM2A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mKcrG-00GmGb-Cb; Mon, 30 Aug 2021 08:41:34 +0000
-Received: from relay10.mail.gandi.net ([217.70.178.230])
+	id 1mKcuf-00GmyE-AM; Mon, 30 Aug 2021 08:45:05 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mKcrD-00GmEm-1R
- for linux-mtd@lists.infradead.org; Mon, 30 Aug 2021 08:41:32 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay10.mail.gandi.net (Postfix) with ESMTPSA id A8274240012;
- Mon, 30 Aug 2021 08:41:23 +0000 (UTC)
-Date: Mon, 30 Aug 2021 10:41:22 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Frieder Schrempf <frieder@fris.de>
-Cc: Frieder Schrempf <frieder.schrempf@kontron.de>, stable@vger.kernel.org,
- voice INTER connect GmbH <developer@voiceinterconnect.de>, Alexander
- Lobakin <alobakin@pm.me>, Felix Fietkau <nbd@nbd.name>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- YouChing Lin <ycllin@mxic.com.tw>
-Subject: Re: [RESEND PATCH 5.10.x] mtd: spinand: Fix incorrect parameters
- for on-die ECC
-Message-ID: <20210830104122.58f9cdaf@xps13>
-In-Reply-To: <20210830072108.13770-1-frieder@fris.de>
-References: <20210830072108.13770-1-frieder@fris.de>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1mKcuc-00Gmwh-BO
+ for linux-mtd@lists.infradead.org; Mon, 30 Aug 2021 08:45:04 +0000
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GykLP5rC9zbkb9;
+ Mon, 30 Aug 2021 16:41:01 +0800 (CST)
+Received: from dggpemm500016.china.huawei.com (7.185.36.25) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 30 Aug 2021 16:44:55 +0800
+Received: from huawei.com (10.67.174.117) by dggpemm500016.china.huawei.com
+ (7.185.36.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 30 Aug
+ 2021 16:44:55 +0800
+From: "GONG, Ruiqi" <gongruiqi1@huawei.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, Yi Yang
+ <yiyang13@huawei.com>, Wang Weiyang <wangweiyang2@huawei.com>, Xiu Jianfeng
+ <xiujianfeng@huawei.com>
+Subject: [PATCH] mtd: Remove obsolete macros only used by the old
+ nand_ecclayout struct
+Date: Mon, 30 Aug 2021 16:33:56 +0800
+Message-ID: <20210830083356.31702-1-gongruiqi1@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+X-Originating-IP: [10.67.174.117]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500016.china.huawei.com (7.185.36.25)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210830_014131_395524_871645D1 
-X-CRM114-Status: GOOD (  23.77  )
+X-CRM114-CacheID: sfid-20210830_014502_610680_2F6F67CD 
+X-CRM114-Status: UNSURE (   7.62  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,93 +78,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgRnJpZWRlciwKCkZyaWVkZXIgU2NocmVtcGYgPGZyaWVkZXJAZnJpcy5kZT4gd3JvdGUgb24g
-TW9uLCAzMCBBdWcgMjAyMSAwOToyMTowNworMDIwMDoKCj4gRnJvbTogRnJpZWRlciBTY2hyZW1w
-ZiA8ZnJpZWRlci5zY2hyZW1wZkBrb250cm9uLmRlPgo+IAo+IFRoZSBuZXcgZ2VuZXJpYyBOQU5E
-IEVDQyBmcmFtZXdvcmsgc3RvcmVzIHRoZSBjb25maWd1cmF0aW9uIGFuZCByZXF1aXJlbWVudHMK
-PiBpbiBzZXBhcmF0ZSBwbGFjZXMgc2luY2UgY29tbWl0IDkzZWY5MmY2ZjQyMiAoIiBtdGQ6IG5h
-bmQ6IFVzZSB0aGUgbmV3IGdlbmVyaWMgRUNDIG9iamVjdCAiKS4KPiBJbiA1LjEwLnggVGhlIFNQ
-SSBOQU5EIGxheWVyIHN0aWxsIHVzZXMgb25seSB0aGUgcmVxdWlyZW1lbnRzIHRvIHRyYWNrIHRo
-ZSBFQ0MKPiBwcm9wZXJ0aWVzLiBUaGlzIG1pc21hdGNoIGxlYWRzIHRvIHZhbHVlcyBvZiB6ZXJv
-IGJlaW5nIHVzZWQgZm9yIEVDQyBzdHJlbmd0aAo+IGFuZCBzdGVwX3NpemUgaW4gdGhlIFNQSSBO
-QU5EIGxheWVyIHdoZXJldmVyIG5hbmRkZXZfZ2V0X2VjY19jb25mKCkgaXMgdXNlZCBhbmQKPiB0
-aGVyZWZvcmUgYnJlYWtzIHRoZSBTUEkgTkFORCBvbi1kaWUgRUNDIHN1cHBvcnQgaW4gNS4xMC54
-Lgo+IAo+IEJ5IHVzaW5nIG5hbmRkZXZfZ2V0X2VjY19yZXF1aXJlbWVudHMoKSBpbnN0ZWFkIG9m
-IG5hbmRkZXZfZ2V0X2VjY19jb25mKCkgZm9yCj4gU1BJIE5BTkQsIHdlIG1ha2Ugc3VyZSB0aGF0
-IHRoZSBjb3JyZWN0IHBhcmFtZXRlcnMgZm9yIHRoZSBkZXRlY3RlZCBjaGlwIGFyZQo+IHVzZWQu
-IEluIGxhdGVyIHZlcnNpb25zICg1LjExLngpIHRoaXMgaXMgZml4ZWQgYW55d2F5IHdpdGggdGhl
-IGltcGxlbWVudGF0aW9uCj4gb2YgdGhlIFNQSSBOQU5EIG9uLWRpZSBFQ0MgZW5naW5lLgo+IAo+
-IENjOiBzdGFibGVAdmdlci5rZXJuZWwub3JnICMgNS4xMC54Cj4gUmVwb3J0ZWQtYnk6IHZvaWNl
-IElOVEVSIGNvbm5lY3QgR21iSCA8ZGV2ZWxvcGVyQHZvaWNlaW50ZXJjb25uZWN0LmRlPgo+IFNp
-Z25lZC1vZmYtYnk6IEZyaWVkZXIgU2NocmVtcGYgPGZyaWVkZXIuc2NocmVtcGZAa29udHJvbi5k
-ZT4KCldoeSBub3QganVzdCByZXZlcnRpbmcgOWEzMzNhNzJjMWQwICgibXRkOiBzcGluYW5kOiBV
-c2UKbmFuZGRldl9nZXRfZWNjX2NvbmYoKSB3aGVuIHJlbGV2YW50Iik/IEkgdGhpbmsgdXNpbmcg
-dGhpcyAibmV3IgpuYW5kZGV2X2dldF9lY2NfcmVxdWlyZW1lbnRzKCkgaGVscGVyIGJlY2F1c2Ug
-aXQgZml0cyB0aGUgcHVycG9zZSBldmVuCmlmIGl0IGlzIHdyb25nIFsxXSBkb2Vzbid0IGJyaW5n
-IHRoZSByaWdodCBpbmZvcm1hdGlvbi4gSSBrbm93IGl0IGlzCnN0cmljdGx5IGVxdWl2YWxlbnQg
-YnV0IEkgd291bGQgcGVyc29uYWxseSBwcmVmZXIga2VlcGluZyB0aGUgb2xkCndyaXRpbmcgIm5h
-bmQtPmVjY3JlcS54eHh4Ii4KClsxXSBXZSBkb24ndCB3YW50IHRoZSByZXF1aXJlbWVudHMgYnV0
-IHRoZSBhY3R1YWwgY3VycmVudCBjb25maWd1cmF0aW9uCmhlcmUsIHdoaWNoIHdhcyB0aGUgcHJp
-bWFyeSBwdXJwb3NlIG9mIHRoZSBpbml0aWFsIHBhdGNoIHdoaWNoIGVuZGVkCmJlaW5nIGEgbWlz
-dGFrZSBhdCB0aGF0IHBvaW50IGluIHRpbWUgYmVjYXVzZSB0aGUgU1BJLU5BTkQgY29yZSB3YXMg
-bm90CnJlYWR5IHlldC4KClRoYW5rcywKTWlxdcOobAoKPiAtLS0KPiBSZXNlbmRpbmcgdGhpcyB3
-aXRoIGFuIGltcHJvdmVkIHN1YmplY3QgcHJlZml4IGFuZCBiZWNhdXNlIHRoZQo+IHByZXZpb3Vz
-IG1haWwgd2Fzbid0IGRlbGl2ZXJlZCB0byBzb21lIG9mIHRoZSBsaXN0cy4KPiAtLS0KPiAgZHJp
-dmVycy9tdGQvbmFuZC9zcGkvY29yZS5jICAgICB8IDYgKysrLS0tCj4gIGRyaXZlcnMvbXRkL25h
-bmQvc3BpL21hY3Jvbml4LmMgfCA2ICsrKy0tLQo+ICBkcml2ZXJzL210ZC9uYW5kL3NwaS90b3No
-aWJhLmMgIHwgNiArKystLS0KPiAgMyBmaWxlcyBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDkg
-ZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUu
-YyBiL2RyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYwo+IGluZGV4IDU1OGQ4YTE0ODEwYi4uODc5
-NGExZjZlYWNkIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYwo+ICsr
-KyBiL2RyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYwo+IEBAIC00MTksNyArNDE5LDcgQEAgc3Rh
-dGljIGludCBzcGluYW5kX2NoZWNrX2VjY19zdGF0dXMoc3RydWN0Cj4gc3BpbmFuZF9kZXZpY2Ug
-KnNwaW5hbmQsIHU4IHN0YXR1cykKPiAgCQkgKiBmaXhlZCwgc28gbGV0J3MgcmV0dXJuIHRoZSBt
-YXhpbXVtIHBvc3NpYmxlIHZhbHVlCj4gc28gdGhhdAo+ICAJCSAqIHdlYXItbGV2ZWxpbmcgbGF5
-ZXJzIG1vdmUgdGhlIGRhdGEgaW1tZWRpYXRlbHkuCj4gIAkJICovCj4gLQkJcmV0dXJuIG5hbmRk
-ZXZfZ2V0X2VjY19jb25mKG5hbmQpLT5zdHJlbmd0aDsKPiArCQlyZXR1cm4gbmFuZGRldl9nZXRf
-ZWNjX3JlcXVpcmVtZW50cyhuYW5kKS0+c3RyZW5ndGg7Cj4gIAo+ICAJY2FzZSBTVEFUVVNfRUND
-X1VOQ09SX0VSUk9SOgo+ICAJCXJldHVybiAtRUJBRE1TRzsKPiBAQCAtMTA5MCw4ICsxMDkwLDgg
-QEAgc3RhdGljIGludCBzcGluYW5kX2luaXQoc3RydWN0IHNwaW5hbmRfZGV2aWNlCj4gKnNwaW5h
-bmQpIG10ZC0+b29iYXZhaWwgPSByZXQ7Cj4gIAo+ICAJLyogUHJvcGFnYXRlIEVDQyBpbmZvcm1h
-dGlvbiB0byBtdGRfaW5mbyAqLwo+IC0JbXRkLT5lY2Nfc3RyZW5ndGggPSBuYW5kZGV2X2dldF9l
-Y2NfY29uZihuYW5kKS0+c3RyZW5ndGg7Cj4gLQltdGQtPmVjY19zdGVwX3NpemUgPSBuYW5kZGV2
-X2dldF9lY2NfY29uZihuYW5kKS0+c3RlcF9zaXplOwo+ICsJbXRkLT5lY2Nfc3RyZW5ndGggPQo+
-IG5hbmRkZXZfZ2V0X2VjY19yZXF1aXJlbWVudHMobmFuZCktPnN0cmVuZ3RoOwo+ICsJbXRkLT5l
-Y2Nfc3RlcF9zaXplID0KPiBuYW5kZGV2X2dldF9lY2NfcmVxdWlyZW1lbnRzKG5hbmQpLT5zdGVw
-X3NpemU7IAo+ICAJcmV0dXJuIDA7Cj4gIAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5k
-L3NwaS9tYWNyb25peC5jCj4gYi9kcml2ZXJzL210ZC9uYW5kL3NwaS9tYWNyb25peC5jIGluZGV4
-IDhlODAxZTRjM2EwMC4uY2Q3YTljYWNjM2ZiCj4gMTAwNjQ0IC0tLSBhL2RyaXZlcnMvbXRkL25h
-bmQvc3BpL21hY3Jvbml4LmMKPiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3NwaS9tYWNyb25peC5j
-Cj4gQEAgLTg0LDExICs4NCwxMSBAQCBzdGF0aWMgaW50IG14MzVsZjFnZTRhYl9lY2NfZ2V0X3N0
-YXR1cyhzdHJ1Y3QKPiBzcGluYW5kX2RldmljZSAqc3BpbmFuZCwKPiAgCQkgKiBkYXRhIGFyb3Vu
-ZCBpZiBpdCdzIG5vdCBuZWNlc3NhcnkuCj4gIAkJICovCj4gIAkJaWYgKG14MzVsZjFnZTRhYl9n
-ZXRfZWNjc3Ioc3BpbmFuZCwgJmVjY3NyKSkKPiAtCQkJcmV0dXJuIG5hbmRkZXZfZ2V0X2VjY19j
-b25mKG5hbmQpLT5zdHJlbmd0aDsKPiArCQkJcmV0dXJuCj4gbmFuZGRldl9nZXRfZWNjX3JlcXVp
-cmVtZW50cyhuYW5kKS0+c3RyZW5ndGg7IAo+IC0JCWlmIChXQVJOX09OKGVjY3NyID4KPiBuYW5k
-ZGV2X2dldF9lY2NfY29uZihuYW5kKS0+c3RyZW5ndGggfHwKPiArCQlpZiAoV0FSTl9PTihlY2Nz
-ciA+Cj4gbmFuZGRldl9nZXRfZWNjX3JlcXVpcmVtZW50cyhuYW5kKS0+c3RyZW5ndGggfHwgIWVj
-Y3NyKSkKPiAtCQkJcmV0dXJuIG5hbmRkZXZfZ2V0X2VjY19jb25mKG5hbmQpLT5zdHJlbmd0aDsK
-PiArCQkJcmV0dXJuCj4gbmFuZGRldl9nZXRfZWNjX3JlcXVpcmVtZW50cyhuYW5kKS0+c3RyZW5n
-dGg7IAo+ICAJCXJldHVybiBlY2NzcjsKPiAgCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25h
-bmQvc3BpL3Rvc2hpYmEuYwo+IGIvZHJpdmVycy9tdGQvbmFuZC9zcGkvdG9zaGliYS5jIGluZGV4
-IDIxZmRlMjg3NTY3NC4uNmZlN2JkMmE5NGQyCj4gMTAwNjQ0IC0tLSBhL2RyaXZlcnMvbXRkL25h
-bmQvc3BpL3Rvc2hpYmEuYwo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvc3BpL3Rvc2hpYmEuYwo+
-IEBAIC05MCwxMiArOTAsMTIgQEAgc3RhdGljIGludCB0eDU4Y3hneHN4cmFpeF9lY2NfZ2V0X3N0
-YXR1cyhzdHJ1Y3QKPiBzcGluYW5kX2RldmljZSAqc3BpbmFuZCwKPiAgCQkgKiBkYXRhIGFyb3Vu
-ZCBpZiBpdCdzIG5vdCBuZWNlc3NhcnkuCj4gIAkJICovCj4gIAkJaWYgKHNwaV9tZW1fZXhlY19v
-cChzcGluYW5kLT5zcGltZW0sICZvcCkpCj4gLQkJCXJldHVybiBuYW5kZGV2X2dldF9lY2NfY29u
-ZihuYW5kKS0+c3RyZW5ndGg7Cj4gKwkJCXJldHVybgo+IG5hbmRkZXZfZ2V0X2VjY19yZXF1aXJl
-bWVudHMobmFuZCktPnN0cmVuZ3RoOyAKPiAgCQltYmYgPj49IDQ7Cj4gIAo+IC0JCWlmIChXQVJO
-X09OKG1iZiA+Cj4gbmFuZGRldl9nZXRfZWNjX2NvbmYobmFuZCktPnN0cmVuZ3RoIHx8ICFtYmYp
-KQo+IC0JCQlyZXR1cm4gbmFuZGRldl9nZXRfZWNjX2NvbmYobmFuZCktPnN0cmVuZ3RoOwo+ICsJ
-CWlmIChXQVJOX09OKG1iZiA+Cj4gbmFuZGRldl9nZXRfZWNjX3JlcXVpcmVtZW50cyhuYW5kKS0+
-c3RyZW5ndGggfHwgIW1iZikpCj4gKwkJCXJldHVybgo+IG5hbmRkZXZfZ2V0X2VjY19yZXF1aXJl
-bWVudHMobmFuZCktPnN0cmVuZ3RoOyAKPiAgCQlyZXR1cm4gbWJmOwo+ICAKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
-Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9saW51eC1tdGQvCg==
+All uses of MTD_MAX_{OOBFREE,ECCPOS}_ENTRIES_LARGE have been removed as
+commit ef5eeea6e911 ("mtd: nand: brcm: switch to mtd_ooblayout_ops") and
+commit aab616e31d1c ("mtd: kill the nand_ecclayout struct") replaced
+struct nand_ecclayout by the new mtd_ooblayout_ops interface. Remove
+these two macros therefore.
+
+Reported-by: Yi Yang <yiyang13@huawei.com>
+Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei.com>
+---
+ include/linux/mtd/mtd.h | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 88227044fc86..f5e7dfc2e4e9 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -72,8 +72,6 @@ struct mtd_oob_ops {
+ 	uint8_t		*oobbuf;
+ };
+ 
+-#define MTD_MAX_OOBFREE_ENTRIES_LARGE	32
+-#define MTD_MAX_ECCPOS_ENTRIES_LARGE	640
+ /**
+  * struct mtd_oob_region - oob region definition
+  * @offset: region offset
+-- 
+2.17.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
