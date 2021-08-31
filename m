@@ -2,94 +2,75 @@ Return-Path: <SRS0=P3/5=NW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 539D3C432BE
-	for <linux-mtd@archiver.kernel.org>; Tue, 31 Aug 2021 13:20:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6121DC43214
+	for <linux-mtd@archiver.kernel.org>; Tue, 31 Aug 2021 15:06:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0863E60F46
-	for <linux-mtd@archiver.kernel.org>; Tue, 31 Aug 2021 13:20:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0863E60F46
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 138A46103A
+	for <linux-mtd@archiver.kernel.org>; Tue, 31 Aug 2021 15:06:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 138A46103A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qk96LUPkj9cbOEZjbuNt9F2O/ErR5hHWCLSThMany9Q=; b=vp8blG0dlqkCcN
-	qSVzUrOnCqnWewWHpWB2p/UKIUg5+xJjgb4hxcRR6xsxISwpYcsv2idnURqhVn1Df+pdz8HY4ldZQ
-	WOn0FIuqSXovZ8ehzMfxx4wLhkhabco4QYTlap0xke749ulPdHLRmJuZT3/qOQAzQZmmQr/66Uqj8
-	HFIWpNOEQ43bpkaOkvC/8o55OR3oIvA9V9RBUh1ubEnozSD9gzrjKoy/mhKoPuG/5+T+3ponlAB/1
-	ujpjUcyAJoMSJi+y/nv661NFwd3HvwmvsVkjwHd22Zdsd/LUqSsiHqXjpzz4EuWtl9OsqK29kGZsY
-	5QSv8CYY/MyWEfnGNiVQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=pDl6OfwAW/LbKhVn0bxziot7t+pfGP+56JcSEymMZRc=; b=wuuTJFCzfAUpUl6LaZTGELua5U
+	BysOfpgaLwO44SgWYm54KqJZ0FFvgGOxDuzsV/y+2yqcSPmRfQcMu2KeDclZsq9976ZvlewBcXlPf
+	W9LKV80fKiA1wTFx8ho9zyFyzj8davAzhjhw4/hglpkJj0o6X9/tdkpvB5Yo/Brc+PP4kplUALroh
+	xSAf+6J0elClkRaTzfzAQAUoG2Yka7wVIL+8rncVQceRv0umJVncq10pekJY66rriLViu1e71z5CX
+	qMrsjGCuqmBZghxTs5ldJaHA9eWaNM/BTi1/dyy0kF9S+EyAx8K7swXNM20e7gE5jRwvql4FprEwV
+	S9EqIr3g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mL3g3-002J9E-S9; Tue, 31 Aug 2021 13:19:47 +0000
-Received: from mail-ed1-x534.google.com ([2a00:1450:4864:20::534])
+	id 1mL5KX-002b4V-C1; Tue, 31 Aug 2021 15:05:41 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mL3fy-002J7V-Kx
- for linux-mtd@lists.infradead.org; Tue, 31 Aug 2021 13:19:46 +0000
-Received: by mail-ed1-x534.google.com with SMTP id dm15so26754445edb.10
- for <linux-mtd@lists.infradead.org>; Tue, 31 Aug 2021 06:19:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=sHPtKZe+G6zxzj4XJ8SxB02koJw5U2FZ5BVM7LmQV+E=;
- b=mPKAMH17uL9S9ww1ldPDQOsQ4tTR+P+D3eOikgUSj0/+DitNDCohbo4ATcp1I06SjT
- DtASqynYghW0q1tPUeMWGawXlf0BFDZDe9W9LfZoTUBzaDmO+SsnKPGwswyHM9cysBWv
- 4dXshjYaPHsm5wiPS8yv5btgABt9VfHyhyTQ0pp27r3RtOEUJG4mOx9Aof4boWcpriPC
- WmAO0yAdJJ5bXh6Qcze45IPs8ymDvoyTzQWwgJe8uW2f+g+Bs5RC8aaPz2P0RFuUseWe
- b0waCZ9QlHqyvpigVnykIqxtucM9IwJpoIX/QBCE/8MkozyCsuo0YzXplg2GcSTjZIms
- JKJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=sHPtKZe+G6zxzj4XJ8SxB02koJw5U2FZ5BVM7LmQV+E=;
- b=bG0JjoMh1XJTOB2s4SIvVzeCBvrUJge19C7GuQyQ8AtKBKF/muOJFbCzKzuDJOgVbv
- xhiiFVA+wem7j+Hfs0PLsc/pzmkr5y1nCdRZWCsjRie4u1wn9ip8uKCePQVVMszeB1kU
- gwO4j1QbjcUqTAea46I+cPHGlpnNPR1HKmXPFZE5in9DBJzao3burnmaMoMoCL6Ddf8l
- ek8635s8iTdcxi2+K8FTanreKq6L2f5Yi07MUDW2MsiSwJu86xKySrBJh34TT0Ky1chz
- gX8AeVJXrpQP4vSOVwO10NCkz+pQawMOucwY3KBfmnZPRYtn78R3u5/OLp/TAaNUDnmt
- VMCg==
-X-Gm-Message-State: AOAM531T/cpVZGNYmuX5JxxOnHYSRk1SfCDMuyadMDWBY55oiGXhwiQd
- jPCRRLSiuHe3rKcg/j6yZlJzQCeMG5+uIWWMgjw=
-X-Google-Smtp-Source: ABdhPJwT+pZxjrRI5pwhP4OcAeoy4nNGBgvF439fo+caHd7TPPXqp99zWOeMMGPaHPRArVb7drlTb+9fGGonvNasmbw=
-X-Received: by 2002:a05:6402:5107:: with SMTP id
- m7mr29849642edd.63.1630415980838; 
- Tue, 31 Aug 2021 06:19:40 -0700 (PDT)
+ id 1mL5KR-002b2k-H3
+ for linux-mtd@lists.infradead.org; Tue, 31 Aug 2021 15:05:40 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id DE12922234;
+ Tue, 31 Aug 2021 17:05:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1630422326;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=IbEiTj8/FDUjs9gGlZ6P7LHVQpqyo+Y/3URkhMMwSeA=;
+ b=fQQs3j3m+Ozg95af6j9KIKt5sJPG9GmQzu+Sb/0RIjrI71Jqqh9TE959tICYtcPKTi/SFG
+ PrX47q3ORuNUNFkMolYXPlbmOoI5jSuCuXfPNyEBWDpRbDDB/sbHjN3XWLU1jIGOZodaVD
+ dBIKGMdYGk/gf5P7Y1wKLFgxiBiYKMQ=
 MIME-Version: 1.0
-References: <CAOuPNLhqSpaTm3u4kFsnuZ0PLDKuX8wsxuF=vUJ1TEG0EP+L1g@mail.gmail.com>
- <alpine.LRH.2.02.2107200737510.19984@file01.intranet.prod.int.rdu2.redhat.com>
- <CAOuPNLhh_LkLQ8mSA4eoUDLCLzHo5zHXsiQZXUB_-T_F1_v6-g@mail.gmail.com>
- <alpine.LRH.2.02.2107211300520.10897@file01.intranet.prod.int.rdu2.redhat.com>
- <CAOuPNLi-xz_4P+v45CHLx00ztbSwU3_maf4tuuyso5RHyeOytg@mail.gmail.com>
- <CAOuPNLg0m-Q7Vhp4srbQrjXHsxVhOr-K2dvnNqzdR6Dr4kioqA@mail.gmail.com>
- <20210830185541.715f6a39@windsurf>
- <CAOuPNLhTidgLNWUbtUgdESYcKcE1C4SOdzKeQVhFGQvEoc0QEg@mail.gmail.com>
- <20210830211224.76391708@windsurf>
-In-Reply-To: <20210830211224.76391708@windsurf>
-From: Pintu Agarwal <pintu.ping@gmail.com>
-Date: Tue, 31 Aug 2021 18:49:28 +0530
-Message-ID: <CAOuPNLgMd0AThhmSknbmKqp3_P8PFhBGr-jW0Mqjb6K6NchEMg@mail.gmail.com>
-Subject: Re: Kernel 4.14: Using dm-verity with squashfs rootfs - mounting issue
-To: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Cc: Mikulas Patocka <mpatocka@redhat.com>,
- open list <linux-kernel@vger.kernel.org>, 
- Phillip Lougher <phillip@squashfs.org.uk>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>, 
- linux-mtd <linux-mtd@lists.infradead.org>, dm-devel@redhat.com, 
- Kernelnewbies <kernelnewbies@kernelnewbies.org>, agk@redhat.com,
- snitzer@redhat.com, Sami Tolvanen <samitolvanen@google.com>
+Date: Tue, 31 Aug 2021 17:05:25 +0200
+From: Michael Walle <michael@walle.cc>
+To: Andrea Zanotti <andreazanottifo@gmail.com>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
+ <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
+ Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: micron-st: added support for np8p128ax60
+In-Reply-To: <CAGiusB0B5dN_K+bW1xudmT6UNmVOL=voBOuSVJeiYo3v6ywO8w@mail.gmail.com>
+References: <20210831081329.27420-1-andrea.zanotti@tyvak.eu>
+ <3462300528bbe71207ef2164411e34d2@walle.cc>
+ <CAGiusB1JvHkX7GSvD2JsqKWwC5xBePX_ruWk9nU9gugoroLnKA@mail.gmail.com>
+ <CAGiusB0B5dN_K+bW1xudmT6UNmVOL=voBOuSVJeiYo3v6ywO8w@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <4bf9396505975e3fee2cc6396a6eeff7@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210831_061942_751082_80AD4389 
-X-CRM114-Status: GOOD (  26.56  )
+X-CRM114-CacheID: sfid-20210831_080535_975009_61C25C52 
+X-CRM114-Status: GOOD (  34.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,91 +82,151 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Hi Andrea,
 
-On Tue, 31 Aug 2021 at 00:42, Thomas Petazzoni
-<thomas.petazzoni@bootlin.com> wrote:
->
-> Hello,
->
-> On Mon, 30 Aug 2021 23:48:40 +0530
-> Pintu Agarwal <pintu.ping@gmail.com> wrote:
->
-> > ohh that means we already have a working reference.
-> > If possible can you share the details, even 4.19 or higher will be
-> > also a good reference.
-> >
-> > > > Or, another option is to use the new concept from 5.1 kernel that is:
-> > > > dm-mod.create = ?
-> > > How are you doing it today without dm-mod.create ?
-> > I think in 4.14 we don't have dm-mod.create right ?
->
-> No, but you can backport it easily. Back at
-> http://lists.infradead.org/pipermail/openwrt-devel/2019-November/025967.html
-> I provided backports of this feature to OpenWrt, for the 4.14 and 4.19
-> kernels.
->
-Yes, I can backport it to our 4.14 Kernel.
-Can you share the list of patches to be backported to make it work on 4.14 ?
-If it's backported also I need to report to our internal kernel, but
-it might be slightly easier.
-Please share the details.
+Am 2021-08-31 12:11, schrieb Andrea Zanotti:
+> Il giorno mar 31 ago 2021 alle ore 11:09 Andrea Zanotti
+> <andreazanottifo@gmail.com> ha scritto:
+>> 
+>> Hi Michael,
+>> 
+>> Il giorno mar 31 ago 2021 alle ore 10:39 Michael Walle 
+>> <michael@walle.cc> ha scritto:
+>>> 
+>>> Hi Andrea,
+>>> 
+>>> Am 2021-08-31 10:13, schrieb Andrea Zanotti:
+>>> > From: Andrea Zanotti <andreazanottifo@gmail.com>
+>>> >
+>>> > Added support for P8P Parallel Phase Change Memory.
+>>> 
+>>> Please use present tense, eg "add support..."
+>>> 
+>>> Is there a public datasheet? If so, please include it above
+>>> your SoB like so:
+>>> Datasheet: https://...
+>>> 
+>> 
+>> I will format the header as per your suggestions. I used the same 
+>> datasheet
+>> linked by you at the end of the email
+>> 
+>>> 
+>>> > Added memory information (page size and sector size) as per data-
+>>> > sheet information, after typos corrections.
+>>> 
+>>> After typos corrections?
+>>> 
+>> 
+>> The one specified in the following paragraph. I'll better write this. 
+>> (What I meant
+>> is that there are some typos in the datasheet itself)
+>> 
+>>> 
+>>> > At page 37, paragraph 'SPI Memory Organization', it is written
+>>> > down that the memory is organized as:
+>>> >  * 16.772.216 bytes (typo here, there 16.777.216 bytes)
+>>> >  * 128 sectors of 128 Kbytes each (correct)
+>>> >  * 131.072 pages of 64 bytes each (typo here, as the total would be
+>>> >    64Mbit, but the total memory is actually 128Mbit, correct value
+>>> >    is 262.144 pages)
+>>> >
+>>> > Patch tested against the aforementioned PCM memory.
+>>> 
+>>> What SPI host controller was used?
+>>> 
+>> 
+>> I used an AT91SAM9G20 processor, SPI controller "atmel,at91rm9200-spi" 
+>> (spi-atmel.c)
+>> 
+>>> 
+>>> > No known regressions inserted, as the patch only adds the possibility
+>>> > to recognize said PCM memory inside the common spi-nor driver.
+>>> 
+>>> Please drop this. If there were any regressions, the patch wouldn't
+>>> be picked up anyway.
+>>> 
+>> 
+>> It will be dropped.
+>> 
+>>> >
+>>> > Signed-off-by: Andrea Zanotti <andreazanottifo@gmail.com>
+>>> > ---
+>>> >  drivers/mtd/spi-nor/micron-st.c | 1 +
+>>> >  1 file changed, 1 insertion(+)
+>>> >
+>>> > diff --git a/drivers/mtd/spi-nor/micron-st.c
+>>> > b/drivers/mtd/spi-nor/micron-st.c
+>>> > index c224e59820a1..c78331451082 100644
+>>> > --- a/drivers/mtd/spi-nor/micron-st.c
+>>> > +++ b/drivers/mtd/spi-nor/micron-st.c
+>>> > @@ -128,6 +128,7 @@ static const struct flash_info micron_parts[] = {
+>>> >       { "mt35xu02g", INFO(0x2c5b1c, 0, 128 * 1024, 2048,
+>>> >                           SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
+>>> >                           SPI_NOR_4B_OPCODES) },
+>>> > +     { "np8p128ax60", {0x89, 0xda, 0x18}, 3, 128 * 1024, 128, 64, 0, 0 },
+>>> 
+>>> Eh? Please use INFO(). And why isn't this 0x20 for micron.
+>>> 
+>> 
+>> With INFO() macro I am locked in with .page_size = 256 (I would need 
+>> 64), or am I missing something?
 
-> > Here is our kernel command line:
-> >
-> > [    0.000000] Kernel command line: ro rootwait
-> > console=ttyMSM0,115200,n8 ....  verity="95384 11923
-> > 16da5e4bbc706e5d90511d2a3dae373b5d878f9aebd522cd614a4faaace6baa3 12026
-> > " rootfstype=squashfs ubi.mtd=40,0,30 ubi.block=0,0 root=/dev/dm-0
-> > .... init=/sbin/init root=/dev/dm-0 dm="rootfs none ro,0 95384 verity
-> > 1 /dev/ubiblock0_0 /dev/mtdblock53 4096 4096 11923 8 sha256
-> > 16da5e4bbc706e5d90511d2a3dae373b5d878f9aebd522cd614a4faaace6baa3
-> > aee087a5be3b982978c923f566a94613496b417f2af592639bc80d141e34dfe7 10
-> > restart_on_corruption ignore_zero_blocks use_fec_from_device
-> > /dev/mtdblock53 fec_roots 2 fec_blocks 12026 fec_start 12026" ...
->
-> I don't see how this can work without the dm-mod.create feature. Are
-> you sure the verity= and dm= kernel arguments exist?
+Ok I see. Mh, then maybe there should be a new macro where you can
+set the page_size?
 
-Sorry, I am not a security guy and this was done by someone from the
-security team.
-But, I know that this is already working with ext4.
-The moment we change to squashfs, it does not work.
+>>> 
+>>> I found this datasheet:
+>>> https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/NP8P128Ax60E_Rev_K.pdf
+>>> 
+>>> According to that datasheet, the manuf id is 0x20. And the device id
+>>> should be either 0x88e1 or 0x8821.
+>>> 
+>> 
+>> You are right, checking it right now.
+>> 
+> 
+> - As per datasheet, table 10 on page 18, Manufacturer code is 0x89
+> (column "data" for parameter "Manufacturer Code").
 
-The only difference with squashfs are:
-=> verity metadata are kept on separate volume
-=> The rootfstype and related stuff are different
-=> verity command line related stuff are almost the same.
+That is for the command 90h (which is for the parallel interface?). We
+issue 9Fh and according to the "READ IDENTIFICATION (RDID)" chapter:
 
-Also, you mentioned:
->>> Here, it definitely worked to append the hash tree to the squashfs
->>> image and store them in the same partition.
-Can you share some details about it ?
-How it can be done since squashfs is readonly.
-Do, we need to change some parameters during squashfs image generation ?
-{
-  $(STAGING_DIR_HOST)/bin/mksquashfs4 $(call mkfs_target_dir,$(1)) $@ \
-- -nopad -noappend -root-owned \
-+ -noappend -root-owned \
-}
+   The manufacturer identification is assigned by JEDEC and has the
+   value 20h for Micron.
 
-Also, for the above cmdline, is there any problem with the block size ?
-As @Mikulas said before that the block size could be the issue
+And in fact it is assigned by JEDEC, see below.
 
-Also, for squashfs we are passing like this for root=. Is it fine ?
-rootfstype=squashfs ubi.mtd=40,0,30 ubi.block=0,0 root=/dev/dm-0
+> - On the datasheet, I agree with you that the device code is
+> advertised as either 0x88e1 or 0x8821. I changed the byte array
+> to something wrong in order to have the debug warning on the JEDEC id
+> bytes, and this is the log:
+> 
+> spi-nor spi0.0: unrecognized JEDEC id bytes: 89 da 18 00 00 00
+> 
+> Second and third byte are "0xda" and "0x18". I am not an expert in the
+> spi-nor driver, but from my understanding
+> (if it's wrong, please correct me) the spi-nor driver tries to match
+> the the read bytes from the memory with the ones
+> in the tables. I don't know if the datasheet is wrong also in that
+> cell of the table, or if I am interpreting the data wrongly.
 
-I see that dm-0 is already passed elsewhere so do we really need it ?
-I suspect it is not required as a block device.
+Looks like the datasheet is wrong or something is broken here. Yes
+you are correct in assuming that these are in fact the ID bytes.
 
+We'd need to check what vendor 0x89 is to avoid collisions with other
+vendors/flashes.
 
-Thanks,
-Pintu
+Btw this "flash" has no need for an erase, just like the MRAM or an
+SPI EEPROM. Could you have a look at drivers/misc/eeprom/at25.c if
+that will work for you?
+
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
