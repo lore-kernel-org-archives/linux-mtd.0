@@ -1,92 +1,88 @@
-Return-Path: <SRS0=01Ca=NV=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=P3/5=NW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FF5FC432BE
-	for <linux-mtd@archiver.kernel.org>; Mon, 30 Aug 2021 19:21:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26A0FC432BE
+	for <linux-mtd@archiver.kernel.org>; Tue, 31 Aug 2021 08:15:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5741960ED6
-	for <linux-mtd@archiver.kernel.org>; Mon, 30 Aug 2021 19:21:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5741960ED6
+	by mail.kernel.org (Postfix) with ESMTPS id DB24360F56
+	for <linux-mtd@archiver.kernel.org>; Tue, 31 Aug 2021 08:15:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DB24360F56
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	Date:Message-ID:Subject:From:To:Reply-To:Cc:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=9yenZp/+wZJvvFdkyLKr5rX/uklB9GddRWEfwix6Esc=; b=KHUszeQH1w27oW6VFGOktxa+es
-	PZnwJBaosOPMMPqRw0aBQpr0eFRtXGjFpjxYN8o52uhyKAY1ydChGhy8ezQd9HZOEcLpyGKreccai
-	38IHcUqkreedvbd7hcOEnlev5LYokwIFFU0gB0mWI8MQY9NJVqj6akflFXg+qGx4GXD/ORupqnVC4
-	SV0Xg1F45QWylKqOyOHRoPD8mG1HbPsmYU0xqs4ZF7Xy3Z83yU1nz5wvcRF4vQvFteklffp+1pXXG
-	1ss/PEL7PgQ+N+C3Dk8T/PBZsTbksADf7Ryu93g3XBeBZiBwZznYIbjqHxO6LakTNTSpC7UnJe5kY
-	MMveJl3g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=8wtpkoyE5QTEWcI1GAuxWVhKEOTKHbBLqjRQ1wAUYbw=; b=vz7lPjbP6PcJQu
+	TQmdNMfV6fk50b0Hj/SMwyBy8divFQY4etd1G5YPfWnxq6pERpRdOPA0JibbzJB/q4KPeK7ojt9K/
+	oucB4u+a880cQj8XUTCmwUaflDa+aKK2uPrQXV/Ux+AgbyoOPWK9+dod6Oyb51nwReHCdeAJxaBtp
+	1UUKhjyMqjDp7+zrLCPqbIUDnOWa05NhE8XCF6Omr8qvDtEmQPOwAy4/svsr2+FfKninsvKs8PQfo
+	lm9fKNfvu99IY5YS7u/Ggqq/s59rZyC02zzuQamGFuhisWK1sedtW12oAWKOibbj9K3Dv8iS1l5UO
+	/YDdVhpuCccQ1N5NILBA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mKmpq-000QZg-3U; Mon, 30 Aug 2021 19:20:46 +0000
-Received: from mail-ej1-x633.google.com ([2a00:1450:4864:20::633])
+	id 1mKyut-001nD5-HB; Tue, 31 Aug 2021 08:14:47 +0000
+Received: from mail-ed1-x52a.google.com ([2a00:1450:4864:20::52a])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mKmpn-000QYz-Oz
- for linux-mtd@lists.infradead.org; Mon, 30 Aug 2021 19:20:45 +0000
-Received: by mail-ej1-x633.google.com with SMTP id i21so33492745ejd.2
- for <linux-mtd@lists.infradead.org>; Mon, 30 Aug 2021 12:20:40 -0700 (PDT)
+ id 1mKyun-001nCb-Ma
+ for linux-mtd@lists.infradead.org; Tue, 31 Aug 2021 08:14:43 +0000
+Received: by mail-ed1-x52a.google.com with SMTP id s25so25626688edw.0
+ for <linux-mtd@lists.infradead.org>; Tue, 31 Aug 2021 01:14:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=to:from:subject:message-id:date:user-agent:mime-version
- :content-language;
- bh=FYT+kiuMQxiO0heiAQDziwkuPBPqF6pIKA6xjuHRGds=;
- b=Rmk0aIh84uB6BhFZvp0rjDmSeiwBD3zRSaS8n/7rmq8nDz2EGuD/BdKQ1k5pW87o8z
- dS89lZP3+nYwbvCTcb1pWVuePP/2cCvWSrAedWRI5+qN5ceQYzeKnV0EdrQ+RlfLyWWl
- NqcDbF2lhlRjkFt4vM7ftmaESnPKN1/iG5ykIVBELkUO80aZ6iSp7ilO2bNRUYwiDOb7
- FTAtn9BrJX7CwvrdwVzIjAjjMQTE2R2CqfSVH6Hdh9lsOoLXWuxHz5i0DcGtQbRqY1jO
- NR48cAzalAdYioQz4WRwyT+LwbDJLGJcXU+7J7rH64YsyCKE4U0PUf9J9KIA9isqT3l8
- ZIwQ==
+ h=from:to:cc:subject:date:message-id;
+ bh=oMmNUzmo9Q7r3VmJw4TZNb8caycXHANgC/p8Tuu2198=;
+ b=Y10DIN4nlK8rhbm2FENArhhhF6goAfYaMG1c5fY7+75SuH1zbT7TPm7ogk4byfjsFz
+ /cvckv/UalCILdzcSeuzHwdnRGI96ObmboeyyVQi3s2ZXGBiPJRUKjKdCw+N5KOjWJ/8
+ wVFqDg9IRfxr7SFVIDOWcsW3svrnSz8HO8OtYLdoNBhTHCuidPebzD8Ay6MCOHD2feAh
+ Es0+SbUFRvKUeqzgqTDMoOI75ohnRgBc9zP//3AUZBCPaeOHc3UnAuDrEbVovOtZo9C0
+ jGNHqcWn/YJ++C29l2lruUVZeUZGNYzyXmTNxzAKn24YbVkrF4pf8qjXswbVQSmG3qtp
+ GZ5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:to:from:subject:message-id:date:user-agent
- :mime-version:content-language;
- bh=FYT+kiuMQxiO0heiAQDziwkuPBPqF6pIKA6xjuHRGds=;
- b=gS1lEStfHUarEl4qKk58wFz8DWbGxBVsZOpUpfppszqVYKWlkA1FkpDvUqeCpE9Fu5
- pW7Z6vUeTsi0Hy+VfeWjnONzu9l2bM2f5Ay4RIFYYf5p4HzWmyxzXnPrtWvPVgWuVzRq
- VJ2wN895rbngXmS5j+gyNTrbS9/W57YxIxl/J1fqWYSqEZmYhak+YYMW2u/XQSWmzRGy
- 7DJ56bueBOeycA5KB6u1OfGnz1k6D8QZjWk24lze+J22OMYv1HqU/m8tKCQM/oKlXCjN
- UVO4rFvAzgdUbTk8d30F/pVBfM0i1RdlnhKI/tHraZArowt5JDQC2D5OG8IIvr/LElWS
- vk2w==
-X-Gm-Message-State: AOAM531ix0oPZmU2t5qp66lIjTATfcC4WVFwq2w6DslYK3nP4nsW7BEr
- K/QCYNo5wlYailSvn8Xzk+eU7uVwWkA=
-X-Google-Smtp-Source: ABdhPJy5kBk6JlnC7PnEkWMnhFGqcyueG7t8wzBcNxlNGsad1cUTNjFIUr/08IlIM+rQ25Bhqjea3Q==
-X-Received: by 2002:a17:906:4413:: with SMTP id
- x19mr27033541ejo.234.1630351238558; 
- Mon, 30 Aug 2021 12:20:38 -0700 (PDT)
-Received: from [192.168.1.155] (ip-78-45-88-244.net.upcbroadband.cz.
- [78.45.88.244])
- by smtp.gmail.com with ESMTPSA id b13sm8101136edu.27.2021.08.30.12.20.37
- for <linux-mtd@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 30 Aug 2021 12:20:38 -0700 (PDT)
-To: linux-mtd@lists.infradead.org
-From: Petr Cvachoucek <cvachoucek@gmail.com>
-Subject: ubifs: error path in ubifs_remount_rw() seems to wrongly free write
- buffers
-Message-ID: <f4796737-9bb4-e40f-d7ee-0e30f98399e3@gmail.com>
-Date: Mon, 30 Aug 2021 21:20:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------B15CAFF0F05855000265E181"
-Content-Language: en-US
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=oMmNUzmo9Q7r3VmJw4TZNb8caycXHANgC/p8Tuu2198=;
+ b=jtdjh1hqJY0j2BjBNNyvHgnY45y0eXxkDrrRVzdRt+kMpqgjVKyOEI/PwMA87yMS3S
+ klE1iZeSeKbiDTWZyaHRMViTiZm6xcVZDap+4LauoEG6FmEy4tHcxeQCrGXOTYpfvWOf
+ hHbrT/78Os51bKaD6pYUXciE0ZVY+EOWHip5NFZIRjt1DCQ8qCF5IN8wtsFexuCwOb+E
+ QREPvt3pcK96aI2oM9y2VhINycXWstIJVJR980P3bgtcfQvkLeWKtRRCOOQvl0OE4uaB
+ unRmeaXkuS+SrMe07DROMcwjvIvDbPNDlFBrFFGmvY8BBZwEgGA55edYfRI35wGXZBm9
+ hOjA==
+X-Gm-Message-State: AOAM530ITceshEJy1gyEKbCj9GwA9WfTZ6eI0XgzziSBvq+PFj1hcwE2
+ hgw4XBNa7HQbIP+VOhdfZEOLAl6hnE9A9XiL
+X-Google-Smtp-Source: ABdhPJzqcQV4CTygqUK/CdLP8DnQGmmYq9dVmRDzSUvLi/sh/KOc347ggv55QK/zN0+X/7+tWOnytg==
+X-Received: by 2002:aa7:c88e:: with SMTP id p14mr29058184eds.174.1630397679627; 
+ Tue, 31 Aug 2021 01:14:39 -0700 (PDT)
+Received: from localhost.localdomain ([213.215.174.110])
+ by smtp.gmail.com with ESMTPSA id z15sm8922870edr.80.2021.08.31.01.14.38
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 31 Aug 2021 01:14:39 -0700 (PDT)
+From: Andrea Zanotti <andreazanottifo@gmail.com>
+X-Google-Original-From: Andrea Zanotti <andrea.zanotti@tyvak.eu>
+To: 
+Cc: Andrea Zanotti <andreazanottifo@gmail.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Michael Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: spi-nor: micron-st: added support for np8p128ax60
+Date: Tue, 31 Aug 2021 10:13:29 +0200
+Message-Id: <20210831081329.27420-1-andrea.zanotti@tyvak.eu>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210830_122043_887915_7688A837 
-X-CRM114-Status: UNSURE (   9.57  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210831_011441_803535_EC4C5421 
+X-CRM114-Status: GOOD (  12.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,125 +94,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is a multi-part message in MIME format.
---------------B15CAFF0F05855000265E181
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Andrea Zanotti <andreazanottifo@gmail.com>
 
-Hi all,
-it seems freeing the write buffers in the error path of the 
-ubifs_remount_rw() is wrong. It leads later to a kernel oops like this:
+Added support for P8P Parallel Phase Change Memory.
 
+Added memory information (page size and sector size) as per data-
+sheet information, after typos corrections.
 
-[10016.431274] UBIFS (ubi0:0): start fixing up free space
-[10090.810042] UBIFS (ubi0:0): free space fixup complete
-[10090.814623] UBIFS error (ubi0:0 pid 512): ubifs_remount_fs: cannot 
-spawn "ubifs_bgt0_0", error -4
-[10101.915108] UBIFS (ubi0:0): background thread "ubifs_bgt0_0" started, 
-PID 517
-[10105.275498] Unable to handle kernel NULL pointer dereference at 
-virtual address 0000000000000030
-[10105.284352] Mem abort info:
-[10105.287160]   ESR = 0x96000006
-[10105.290252]   EC = 0x25: DABT (current EL), IL = 32 bits
-[10105.295592]   SET = 0, FnV = 0
-[10105.298652]   EA = 0, S1PTW = 0
-[10105.301848] Data abort info:
-[10105.304723]   ISV = 0, ISS = 0x00000006
-[10105.308573]   CM = 0, WnR = 0
-[10105.311564] user pgtable: 4k pages, 48-bit VAs, pgdp=00000000f03d1000
-[10105.318034] [0000000000000030] pgd=00000000f6cee003, 
-pud=00000000f4884003, pmd=0000000000000000
-[10105.326783] Internal error: Oops: 96000006 [#1] PREEMPT SMP
-[10105.332355] Modules linked in: ath10k_pci ath10k_core ath mac80211 
-libarc4 cfg80211 nvme nvme_core cryptodev(O)
-[10105.342468] CPU: 3 PID: 518 Comm: touch Tainted: G           O 
-5.4.3 #1
-[10105.349517] Hardware name: HYPEX CPU (DT)
-[10105.353525] pstate: 40000005 (nZcv daif -PAN -UAO)
-[10105.358324] pc : atomic64_try_cmpxchg_acquire.constprop.22+0x8/0x34
-[10105.364596] lr : mutex_lock+0x1c/0x34
-[10105.368253] sp : ffff000075633aa0
-[10105.371563] x29: ffff000075633aa0 x28: 0000000000000001
-[10105.376874] x27: ffff000076fa80c8 x26: 0000000000000004
-[10105.382185] x25: 0000000000000030 x24: 0000000000000000
-[10105.387495] x23: 0000000000000000 x22: 0000000000000038
-[10105.392807] x21: 000000000000000c x20: ffff000076fa80c8
-[10105.398119] x19: ffff000076fa8000 x18: 0000000000000000
-[10105.403429] x17: 0000000000000000 x16: 0000000000000000
-[10105.408741] x15: 0000000000000000 x14: fefefefefefefeff
-[10105.414052] x13: 0000000000000000 x12: 0000000000000fe0
-[10105.419364] x11: 0000000000000fe0 x10: ffff000076709020
-[10105.424675] x9 : 0000000000000000 x8 : 00000000000000a0
-[10105.429986] x7 : ffff000076fa80f4 x6 : 0000000000000030
-[10105.435297] x5 : 0000000000000000 x4 : 0000000000000000
-[10105.440609] x3 : 0000000000000000 x2 : ffff00006f276040
-[10105.445920] x1 : ffff000075633ab8 x0 : 0000000000000030
-[10105.451232] Call trace:
-[10105.453676]  atomic64_try_cmpxchg_acquire.constprop.22+0x8/0x34
-[10105.459600]  ubifs_garbage_collect+0xb4/0x334
-[10105.463956]  ubifs_budget_space+0x398/0x458
-[10105.468139]  ubifs_create+0x50/0x180
-[10105.471712]  path_openat+0x6a0/0x9b0
-[10105.475284]  do_filp_open+0x34/0x7c
-[10105.478771]  do_sys_open+0x78/0xe4
-[10105.482170]  __arm64_sys_openat+0x1c/0x24
-[10105.486180]  el0_svc_handler+0x84/0xc8
-[10105.489928]  el0_svc+0x8/0xc
-[10105.492808] Code: 52800013 17fffffb d2800003 f9800011 (c85ffc05)
-[10105.498903] ---[ end trace 46b721d93267a586 ]---
+At page 37, paragraph 'SPI Memory Organization', it is written
+down that the memory is organized as:
+ * 16.772.216 bytes (typo here, there 16.777.216 bytes)
+ * 128 sectors of 128 Kbytes each (correct)
+ * 131.072 pages of 64 bytes each (typo here, as the total would be
+   64Mbit, but the total memory is actually 128Mbit, correct value
+   is 262.144 pages)
 
+Patch tested against the aforementioned PCM memory.
 
-To reproduce the problem:
+No known regressions inserted, as the patch only adds the possibility
+to recognize said PCM memory inside the common spi-nor driver.
 
-1. Filesystem initially mounted read-only, free space fixup flag set.
+Signed-off-by: Andrea Zanotti <andreazanottifo@gmail.com>
+---
+ drivers/mtd/spi-nor/micron-st.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-2. mount -o remount,rw <mountpoint>
+diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+index c224e59820a1..c78331451082 100644
+--- a/drivers/mtd/spi-nor/micron-st.c
++++ b/drivers/mtd/spi-nor/micron-st.c
+@@ -128,6 +128,7 @@ static const struct flash_info micron_parts[] = {
+ 	{ "mt35xu02g", INFO(0x2c5b1c, 0, 128 * 1024, 2048,
+ 			    SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
+ 			    SPI_NOR_4B_OPCODES) },
++	{ "np8p128ax60", {0x89, 0xda, 0x18}, 3, 128 * 1024, 128, 64, 0, 0 },
+ };
+ 
+ static const struct flash_info st_parts[] = {
+-- 
+2.17.1
 
-3. it takes some time (free space fixup running)
-    ... try to terminate running mount by CTRL-C
-    ... does not respond, only after free space fixup is complete
-    ... then "ubifs_remount_fs: cannot spawn "ubifs_bgt0_0", error -4"
-
-4. mount -o remount,rw <mountpoint>
-    ... now finished instantly (fixup already done).
-
-5. Create file or just unmount the filesystem and we get the oops.
-
-Regards
-Petr Cvachoucek
-
---------------B15CAFF0F05855000265E181
-Content-Type: text/x-patch; charset=UTF-8;
- name="ubifs-remount-rw.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="ubifs-remount-rw.patch"
-
-diff -Naur linux-LSDK-20.04-V5.4-orig/fs/ubifs/super.c linux-LSDK-20.04-V5.4/fs/ubifs/super.c
---- linux-LSDK-20.04-V5.4-orig/fs/ubifs/super.c	2020-02-26 10:13:26.000000000 +0100
-+++ linux-LSDK-20.04-V5.4/fs/ubifs/super.c	2021-08-27 15:32:14.573982594 +0200
-@@ -1811,7 +1811,6 @@
- 		kthread_stop(c->bgt);
- 		c->bgt = NULL;
- 	}
--	free_wbufs(c);
- 	kfree(c->write_reserve_buf);
- 	c->write_reserve_buf = NULL;
- 	vfree(c->ileb_buf);
-
---------------B15CAFF0F05855000265E181
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---------------B15CAFF0F05855000265E181--
-
