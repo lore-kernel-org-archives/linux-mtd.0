@@ -2,75 +2,75 @@ Return-Path: <SRS0=P3/5=NW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,
+	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6121DC43214
-	for <linux-mtd@archiver.kernel.org>; Tue, 31 Aug 2021 15:06:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3056DC432BE
+	for <linux-mtd@archiver.kernel.org>; Tue, 31 Aug 2021 18:20:48 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 138A46103A
-	for <linux-mtd@archiver.kernel.org>; Tue, 31 Aug 2021 15:06:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 138A46103A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id E36CA61051
+	for <linux-mtd@archiver.kernel.org>; Tue, 31 Aug 2021 18:20:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E36CA61051
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=pDl6OfwAW/LbKhVn0bxziot7t+pfGP+56JcSEymMZRc=; b=wuuTJFCzfAUpUl6LaZTGELua5U
-	BysOfpgaLwO44SgWYm54KqJZ0FFvgGOxDuzsV/y+2yqcSPmRfQcMu2KeDclZsq9976ZvlewBcXlPf
-	W9LKV80fKiA1wTFx8ho9zyFyzj8davAzhjhw4/hglpkJj0o6X9/tdkpvB5Yo/Brc+PP4kplUALroh
-	xSAf+6J0elClkRaTzfzAQAUoG2Yka7wVIL+8rncVQceRv0umJVncq10pekJY66rriLViu1e71z5CX
-	qMrsjGCuqmBZghxTs5ldJaHA9eWaNM/BTi1/dyy0kF9S+EyAx8K7swXNM20e7gE5jRwvql4FprEwV
-	S9EqIr3g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
+	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=cJpwi5muzgpKSmyuOnBeWTfjCYn9vYzDwFZSnX61Dg4=; b=44mC20hM0wEFDs
+	ux7gdjRV3PY21VlB64G/dyNpePgdhbuYRC7pr3Ye+80TE5hKC8BtweZP6oqfqNZtUeIRNzK7H3VCY
+	/HDafOL0Owi1FfH0aoEkCJmjtECYmN1p7LSZtvGDUX+LlAabPcOiSUiAoUUkVln7dhwcmNXJNcUn2
+	PJodnv0zek65JkNmFxK9Me4hBxOlqkb0/Nwy4gFPqHqb7tA/JQxUrRK0wYBkrS8DVIeEp1O1jwAgV
+	yb2gMZpo+a1yvnVibb3aAiXEhzm1O0E1rie+sVFg6VCfyMYOlbxqiyawa0F1i6U+/JKtGlv/lLUne
+	qd7CwcoJVClLxV9NKlQQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mL5KX-002b4V-C1; Tue, 31 Aug 2021 15:05:41 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1mL8MA-002u5E-VH; Tue, 31 Aug 2021 18:19:35 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mL5KR-002b2k-H3
- for linux-mtd@lists.infradead.org; Tue, 31 Aug 2021 15:05:40 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id DE12922234;
- Tue, 31 Aug 2021 17:05:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1630422326;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=IbEiTj8/FDUjs9gGlZ6P7LHVQpqyo+Y/3URkhMMwSeA=;
- b=fQQs3j3m+Ozg95af6j9KIKt5sJPG9GmQzu+Sb/0RIjrI71Jqqh9TE959tICYtcPKTi/SFG
- PrX47q3ORuNUNFkMolYXPlbmOoI5jSuCuXfPNyEBWDpRbDDB/sbHjN3XWLU1jIGOZodaVD
- dBIKGMdYGk/gf5P7Y1wKLFgxiBiYKMQ=
-MIME-Version: 1.0
-Date: Tue, 31 Aug 2021 17:05:25 +0200
-From: Michael Walle <michael@walle.cc>
-To: Andrea Zanotti <andreazanottifo@gmail.com>
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
- <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: spi-nor: micron-st: added support for np8p128ax60
-In-Reply-To: <CAGiusB0B5dN_K+bW1xudmT6UNmVOL=voBOuSVJeiYo3v6ywO8w@mail.gmail.com>
-References: <20210831081329.27420-1-andrea.zanotti@tyvak.eu>
- <3462300528bbe71207ef2164411e34d2@walle.cc>
- <CAGiusB1JvHkX7GSvD2JsqKWwC5xBePX_ruWk9nU9gugoroLnKA@mail.gmail.com>
- <CAGiusB0B5dN_K+bW1xudmT6UNmVOL=voBOuSVJeiYo3v6ywO8w@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <4bf9396505975e3fee2cc6396a6eeff7@walle.cc>
-X-Sender: michael@walle.cc
+ id 1mL8M8-002u4o-3o
+ for linux-mtd@lists.infradead.org; Tue, 31 Aug 2021 18:19:33 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPS id ADE2061051;
+ Tue, 31 Aug 2021 18:19:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1630433971;
+ bh=PgM+rDs46+2K+qL4znNPoYRobm/RKsxxaeXjArovSN8=;
+ h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+ b=SWOFg1QAapkZgOnNA55lnZXl0M1sBb7SznJoScFIfq/GCb5UzGord2w7FpFz+0Iqo
+ ErI9bpFhNW8BgCu1y21b9GDjnMI/oG0+gR4ICZ2vsW45Tn8V37mqWYeQsQi9HOo9GH
+ +w8voK2ZTzcJco29BILtsx70Sofl/0SQgDm35+vmlA+0o2PYmkYg828wmGqMXIY7TA
+ TJ0KWEjWx+TOdnyLRCfQb0yDSfu7N8BWPSlTo/eazDxoxocI6iST60/uxhwuShS1xt
+ O4qt69qcDdH/pLAtNrx0qRd30oFL4aZ0zPWL6FNWLmvimhauUEZDQsAi5sRT9iA0ea
+ aT1ruYletuzSQ==
+Subject: Re: [GIT PULL] fscrypt updates for 5.15
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <YS0LlXIhvZc4r5Vt@sol.localdomain>
+References: <YS0LlXIhvZc4r5Vt@sol.localdomain>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YS0LlXIhvZc4r5Vt@sol.localdomain>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git
+ tags/fscrypt-for-linus
+X-PR-Tracked-Commit-Id: 38ef66b05cfa3560323344a0b3e09e583f1eb974
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: cd358208d703fca446b52f3cf8f23c18f9e7705e
+Message-Id: <163043397158.24672.5271221655251796062.pr-tracker-bot@kernel.org>
+Date: Tue, 31 Aug 2021 18:19:31 +0000
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+ linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210831_080535_975009_61C25C52 
-X-CRM114-Status: GOOD (  34.91  )
+X-CRM114-CacheID: sfid-20210831_111932_212940_E4649574 
+X-CRM114-Status: UNSURE (   3.69  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,151 +82,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Andrea,
+The pull request you sent on Mon, 30 Aug 2021 09:47:17 -0700:
 
-Am 2021-08-31 12:11, schrieb Andrea Zanotti:
-> Il giorno mar 31 ago 2021 alle ore 11:09 Andrea Zanotti
-> <andreazanottifo@gmail.com> ha scritto:
->> 
->> Hi Michael,
->> 
->> Il giorno mar 31 ago 2021 alle ore 10:39 Michael Walle 
->> <michael@walle.cc> ha scritto:
->>> 
->>> Hi Andrea,
->>> 
->>> Am 2021-08-31 10:13, schrieb Andrea Zanotti:
->>> > From: Andrea Zanotti <andreazanottifo@gmail.com>
->>> >
->>> > Added support for P8P Parallel Phase Change Memory.
->>> 
->>> Please use present tense, eg "add support..."
->>> 
->>> Is there a public datasheet? If so, please include it above
->>> your SoB like so:
->>> Datasheet: https://...
->>> 
->> 
->> I will format the header as per your suggestions. I used the same 
->> datasheet
->> linked by you at the end of the email
->> 
->>> 
->>> > Added memory information (page size and sector size) as per data-
->>> > sheet information, after typos corrections.
->>> 
->>> After typos corrections?
->>> 
->> 
->> The one specified in the following paragraph. I'll better write this. 
->> (What I meant
->> is that there are some typos in the datasheet itself)
->> 
->>> 
->>> > At page 37, paragraph 'SPI Memory Organization', it is written
->>> > down that the memory is organized as:
->>> >  * 16.772.216 bytes (typo here, there 16.777.216 bytes)
->>> >  * 128 sectors of 128 Kbytes each (correct)
->>> >  * 131.072 pages of 64 bytes each (typo here, as the total would be
->>> >    64Mbit, but the total memory is actually 128Mbit, correct value
->>> >    is 262.144 pages)
->>> >
->>> > Patch tested against the aforementioned PCM memory.
->>> 
->>> What SPI host controller was used?
->>> 
->> 
->> I used an AT91SAM9G20 processor, SPI controller "atmel,at91rm9200-spi" 
->> (spi-atmel.c)
->> 
->>> 
->>> > No known regressions inserted, as the patch only adds the possibility
->>> > to recognize said PCM memory inside the common spi-nor driver.
->>> 
->>> Please drop this. If there were any regressions, the patch wouldn't
->>> be picked up anyway.
->>> 
->> 
->> It will be dropped.
->> 
->>> >
->>> > Signed-off-by: Andrea Zanotti <andreazanottifo@gmail.com>
->>> > ---
->>> >  drivers/mtd/spi-nor/micron-st.c | 1 +
->>> >  1 file changed, 1 insertion(+)
->>> >
->>> > diff --git a/drivers/mtd/spi-nor/micron-st.c
->>> > b/drivers/mtd/spi-nor/micron-st.c
->>> > index c224e59820a1..c78331451082 100644
->>> > --- a/drivers/mtd/spi-nor/micron-st.c
->>> > +++ b/drivers/mtd/spi-nor/micron-st.c
->>> > @@ -128,6 +128,7 @@ static const struct flash_info micron_parts[] = {
->>> >       { "mt35xu02g", INFO(0x2c5b1c, 0, 128 * 1024, 2048,
->>> >                           SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
->>> >                           SPI_NOR_4B_OPCODES) },
->>> > +     { "np8p128ax60", {0x89, 0xda, 0x18}, 3, 128 * 1024, 128, 64, 0, 0 },
->>> 
->>> Eh? Please use INFO(). And why isn't this 0x20 for micron.
->>> 
->> 
->> With INFO() macro I am locked in with .page_size = 256 (I would need 
->> 64), or am I missing something?
+> https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
 
-Ok I see. Mh, then maybe there should be a new macro where you can
-set the page_size?
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/cd358208d703fca446b52f3cf8f23c18f9e7705e
 
->>> 
->>> I found this datasheet:
->>> https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/NP8P128Ax60E_Rev_K.pdf
->>> 
->>> According to that datasheet, the manuf id is 0x20. And the device id
->>> should be either 0x88e1 or 0x8821.
->>> 
->> 
->> You are right, checking it right now.
->> 
-> 
-> - As per datasheet, table 10 on page 18, Manufacturer code is 0x89
-> (column "data" for parameter "Manufacturer Code").
+Thank you!
 
-That is for the command 90h (which is for the parallel interface?). We
-issue 9Fh and according to the "READ IDENTIFICATION (RDID)" chapter:
-
-   The manufacturer identification is assigned by JEDEC and has the
-   value 20h for Micron.
-
-And in fact it is assigned by JEDEC, see below.
-
-> - On the datasheet, I agree with you that the device code is
-> advertised as either 0x88e1 or 0x8821. I changed the byte array
-> to something wrong in order to have the debug warning on the JEDEC id
-> bytes, and this is the log:
-> 
-> spi-nor spi0.0: unrecognized JEDEC id bytes: 89 da 18 00 00 00
-> 
-> Second and third byte are "0xda" and "0x18". I am not an expert in the
-> spi-nor driver, but from my understanding
-> (if it's wrong, please correct me) the spi-nor driver tries to match
-> the the read bytes from the memory with the ones
-> in the tables. I don't know if the datasheet is wrong also in that
-> cell of the table, or if I am interpreting the data wrongly.
-
-Looks like the datasheet is wrong or something is broken here. Yes
-you are correct in assuming that these are in fact the ID bytes.
-
-We'd need to check what vendor 0x89 is to avoid collisions with other
-vendors/flashes.
-
-Btw this "flash" has no need for an erase, just like the MRAM or an
-SPI EEPROM. Could you have a look at drivers/misc/eeprom/at25.c if
-that will work for you?
-
--michael
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
 ______________________________________________________
 Linux MTD discussion mailing list
