@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6A95C432BE
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 21:04:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DA5EC432BE
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 21:05:46 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7810A6056C
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 21:04:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7810A6056C
+	by mail.kernel.org (Postfix) with ESMTPS id 35B816056C
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 21:05:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 35B816056C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,17 +23,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IkdrsdVS5lLadxFf1ebRmXF22u67ncwggUyE+Farpno=; b=axjQNwWc3BCeHE
-	lixhlmjCTZpz19Lradc7f1oIJu05eT4znRccSRRL11unH4pZj44PFh/uUwEW4I1Gi4QVeHwYP0k+W
-	4Z1joJQINFmed2Bm0td2QaF9cYZHuVGubU3ARdN1b1LxXkSo27Ud7btTnXlLV/Cif/LwQ0QcNiFz4
-	3U/HzXWxGath8y3aSaJWyv2XbyHuS3z+NylETzrG8Ljah+QXeQhDZ0mVdv18sansawMnWQfybOcwW
-	exkalMmZ4HEEUvFSc/uQVPBWIuJ3AjSzrz8KeuMAJGQtVcG6eVph+fordADIZVWwN385m9xKp+xfi
-	3kgzSsMCqOQXSjbQXl9Q==;
+	List-Owner; bh=aqLV8ZCAQgrXr/o0hCNTXhGFUgIadnvBkfESKxNfuag=; b=uLeye7BCjgatTo
+	fZlk1Hh4GixK2HoNHlJ8kdXL+d7zJeZR+heuHvqBA5/jB6i/m9pAU5HZnsSYGLVi0O4829gQfSwF1
+	Q7POectimaEwlrDjS0O4mhJ2c5Lwv9z8OJlPGwfAOntys9F8BqbR0BGu3RMB69xaeVXtZbWw1hEBn
+	FlW+cY0yYRdflXIElPmmCZ/AmpWp/lcMmeF2R3dUc5YhpHP4YGiLwonKfO4JRdg6uBjgCbYxfggAY
+	f7aIpv0LjWRCmhB9tCl/7aQiwiUPybJKmsoaTFi9HWQ6jn2F6xuTBLbZMQbx2tjvP2emAa380nRI1
+	YdsCOujRurb1tpYSQHJA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mLXP2-007N0W-DP; Wed, 01 Sep 2021 21:04:12 +0000
+	id 1mLXQ0-007NM8-Ah; Wed, 01 Sep 2021 21:05:12 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1mLXLR-007LW5-9b; Wed, 01 Sep 2021 21:00:29 +0000
+ (Red Hat Linux)) id 1mLXLR-007LWN-Nr; Wed, 01 Sep 2021 21:00:29 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, bhelgaas@google.com, liushixin2@huawei.com,
  thunder.leizhen@huawei.com, lee.jones@linaro.org, geoff@infradead.org,
@@ -44,9 +44,9 @@ To: axboe@kernel.dk, bhelgaas@google.com, liushixin2@huawei.com,
 Cc: linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
  linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
  Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 02/10] pktcdvd: add error handling support for add_disk()
-Date: Wed,  1 Sep 2021 14:00:20 -0700
-Message-Id: <20210901210028.1750956-3-mcgrof@kernel.org>
+Subject: [PATCH 10/10] mtd/ubi/block: add error handling support for add_disk()
+Date: Wed,  1 Sep 2021 14:00:28 -0700
+Message-Id: <20210901210028.1750956-11-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210901210028.1750956-1-mcgrof@kernel.org>
 References: <20210901210028.1750956-1-mcgrof@kernel.org>
@@ -71,29 +71,35 @@ We never checked for errors on add_disk() as this function
 returned void. Now that this is fixed, use the shiny new
 error handling.
 
-The out_mem2 error label already does what we need so
-re-use that.
-
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/block/pktcdvd.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mtd/ubi/block.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/block/pktcdvd.c b/drivers/block/pktcdvd.c
-index 0f26b2510a75..415248962e67 100644
---- a/drivers/block/pktcdvd.c
-+++ b/drivers/block/pktcdvd.c
-@@ -2729,7 +2729,9 @@ static int pkt_setup_dev(dev_t dev, dev_t* pkt_dev)
- 	/* inherit events of the host device */
- 	disk->events = pd->bdev->bd_disk->events;
+diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+index e003b4b44ffa..062e6c2c45f5 100644
+--- a/drivers/mtd/ubi/block.c
++++ b/drivers/mtd/ubi/block.c
+@@ -447,12 +447,18 @@ int ubiblock_create(struct ubi_volume_info *vi)
+ 	list_add_tail(&dev->list, &ubiblock_devices);
  
--	add_disk(disk);
-+	ret = add_disk(disk);
+ 	/* Must be the last step: anyone can call file ops from now on */
+-	add_disk(dev->gd);
++	ret = add_disk(dev->gd);
 +	if (ret)
-+		goto out_mem2;
++		goto out_destroy_wq;
++
+ 	dev_info(disk_to_dev(dev->gd), "created from ubi%d:%d(%s)",
+ 		 dev->ubi_num, dev->vol_id, vi->name);
+ 	mutex_unlock(&devices_mutex);
+ 	return 0;
  
- 	pkt_sysfs_dev_new(pd);
- 	pkt_debugfs_dev_new(pd);
++out_destroy_wq:
++	list_del(&dev->list);
++	destroy_workqueue(dev->wq);
+ out_remove_minor:
+ 	idr_remove(&ubiblock_minor_idr, gd->first_minor);
+ out_cleanup_disk:
 -- 
 2.30.2
 
