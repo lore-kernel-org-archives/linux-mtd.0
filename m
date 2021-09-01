@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDF2EC4320E
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C63A0C432BE
 	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 21:01:30 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A702A60724
+	by mail.kernel.org (Postfix) with ESMTPS id 8432D6069E
 	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 21:01:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A702A60724
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8432D6069E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,17 +23,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xUE5iWWfyUybekgNWRPxnm1FgvdvNW0e1CJRVisn3V0=; b=tT2x+TGJjWE6MH
-	FPLSK2O2PtoyraXBWqxnOC2LOUestrA4x7U97XIFBgJl2CzF/A+Fm5Rj/6Vz0LGk9d5bpwUrQojvG
-	x6IgGBpj3Spy76OzpAtwcyrv/RQfF5Kluw2ohAeJUhPoxbTqa8B2wGA1uOKYkXNbDvUZbDqzudz6i
-	qCPTZfECy/HkMtsmfJTNUQtRMwRN0IwVzR+34mRPvcmDdZzVqjQK3ocLFPqlW2rSG/LtEkAGzqBdz
-	bzufyTCy5z+HlhoDWauiD3EBhLdjH0Uc5DkV+6v68G359VEEYhcMmC5y3LCGWXn+PmEPKDz8TL5N5
-	WJHTezu5sAepVYSHUjsQ==;
+	List-Owner; bh=TI6Qd0b/FM655ruDXk54+gJuOfeoplfHnu0y6pu97fA=; b=siVXrquVdli66p
+	I/lPcomwXQaJOMe0LVTjwebsmRa90qtLafR+iDiM/dzIx5wpRVn+ErZtGs4Zvm2y/R/Y94tT8JQuL
+	jfRI9cdhvB/zFvcxzIaK0o8eFKY07wnbt1S/+/hLQGiceeVlJYU2UYHtp5OW2LkYsiV+5SvuPTyB3
+	kE56btVmwGZNOTYv3tfhEOjp+BXgWuKtffCYxdjjYkgVqV43PxUXMLu5cl8gzaM0jx+GgGiGDw/9N
+	oA8sN4cSUL8xWNM9ILW4aien6PVdvbG2+mp3QZcrHGFZKBEipNTy6QvpTkWV12ocJcFve5vObJbVs
+	C0PAVisUvPkqjfSMGALw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mLXLj-007LbY-0M; Wed, 01 Sep 2021 21:00:47 +0000
+	id 1mLXLV-007LXq-S4; Wed, 01 Sep 2021 21:00:33 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1mLXLR-007LWH-K0; Wed, 01 Sep 2021 21:00:29 +0000
+ (Red Hat Linux)) id 1mLXLR-007LW3-7L; Wed, 01 Sep 2021 21:00:29 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, bhelgaas@google.com, liushixin2@huawei.com,
  thunder.leizhen@huawei.com, lee.jones@linaro.org, geoff@infradead.org,
@@ -44,9 +44,9 @@ To: axboe@kernel.dk, bhelgaas@google.com, liushixin2@huawei.com,
 Cc: linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
  linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
  Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 07/10] block/sunvdc: add error handling support for add_disk()
-Date: Wed,  1 Sep 2021 14:00:25 -0700
-Message-Id: <20210901210028.1750956-8-mcgrof@kernel.org>
+Subject: [PATCH 01/10] mtip32xx: add error handling support for add_disk()
+Date: Wed,  1 Sep 2021 14:00:19 -0700
+Message-Id: <20210901210028.1750956-2-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210901210028.1750956-1-mcgrof@kernel.org>
 References: <20210901210028.1750956-1-mcgrof@kernel.org>
@@ -71,48 +71,29 @@ We never checked for errors on add_disk() as this function
 returned void. Now that this is fixed, use the shiny new
 error handling.
 
-We re-use the same free tag call, so we also add a label for
-that as well.
+The read_capacity_error error label already does what we need,
+so just re-use that.
 
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/block/sunvdc.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ drivers/block/mtip32xx/mtip32xx.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/block/sunvdc.c b/drivers/block/sunvdc.c
-index 4d4bb810c2ae..6f45a53f7cbf 100644
---- a/drivers/block/sunvdc.c
-+++ b/drivers/block/sunvdc.c
-@@ -826,8 +826,8 @@ static int probe_disk(struct vdc_port *port)
- 	if (IS_ERR(g)) {
- 		printk(KERN_ERR PFX "%s: Could not allocate gendisk.\n",
- 		       port->vio.name);
--		blk_mq_free_tag_set(&port->tag_set);
--		return PTR_ERR(g);
-+		err = PTR_ERR(g);
-+		goto out_free_tag;
- 	}
+diff --git a/drivers/block/mtip32xx/mtip32xx.c b/drivers/block/mtip32xx/mtip32xx.c
+index 901855717cb5..d0b40309f47e 100644
+--- a/drivers/block/mtip32xx/mtip32xx.c
++++ b/drivers/block/mtip32xx/mtip32xx.c
+@@ -3633,7 +3633,9 @@ static int mtip_block_initialize(struct driver_data *dd)
+ 	set_capacity(dd->disk, capacity);
  
- 	port->disk = g;
-@@ -879,9 +879,17 @@ static int probe_disk(struct vdc_port *port)
- 	       port->vdisk_size, (port->vdisk_size >> (20 - 9)),
- 	       port->vio.ver.major, port->vio.ver.minor);
+ 	/* Enable the block device and add it to /dev */
+-	device_add_disk(&dd->pdev->dev, dd->disk, mtip_disk_attr_groups);
++	rv = device_add_disk(&dd->pdev->dev, dd->disk, mtip_disk_attr_groups);
++	if (rv)
++		goto read_capacity_error;
  
--	device_add_disk(&port->vio.vdev->dev, g, NULL);
-+	err = device_add_disk(&port->vio.vdev->dev, g, NULL);
-+	if (err)
-+		goto out_cleanup_disk;
- 
- 	return 0;
-+
-+out_cleanup_disk:
-+	blk_cleanup_disk(g);
-+out_free_tag:
-+	blk_mq_free_tag_set(&port->tag_set);
-+	return err;
- }
- 
- static struct ldc_channel_config vdc_ldc_cfg = {
+ 	if (dd->mtip_svc_handler) {
+ 		set_bit(MTIP_DDF_INIT_DONE_BIT, &dd->dd_flag);
 -- 
 2.30.2
 
