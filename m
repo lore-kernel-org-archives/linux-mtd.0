@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86E37C432BE
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 21:04:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6A95C432BE
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 21:04:44 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4E9456056C
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 21:04:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4E9456056C
+	by mail.kernel.org (Postfix) with ESMTPS id 7810A6056C
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 21:04:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7810A6056C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,17 +23,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6Hf4BAMXvluonVJO8HqWfoSBncEl4i0EpsUM6IGPXGg=; b=IKF/tGyj4v/scP
-	2HEZzkgJ2hgH8N3u0CwIpUFseI1VCwUSFEQg9TvbsffAxVClQxdoKmTcz8LwfYGgfVGVVTFALH3TY
-	qHnbjynof0uSZpj6+jMULlbh6TJY7NhviuhfYoCDouk54ODKGCauuFcA/SM10hHS98K1usRjNoGsU
-	NchMXkPF4VzP3UMkLswCbu7L0CMj2aW9eXCOagGXSFLHCFmlWz54cvCGDB6RuMW7IAXkaHQvZOA5n
-	1Hpfpd2TqieHKn+yhYMY/1MsR8iCgm4XZjdifEWXDfrkUhfkO1zhc3Uc0KxnR+FxMKURjODU97NWP
-	OT94z08fmg+sCypuSUoA==;
+	List-Owner; bh=IkdrsdVS5lLadxFf1ebRmXF22u67ncwggUyE+Farpno=; b=axjQNwWc3BCeHE
+	lixhlmjCTZpz19Lradc7f1oIJu05eT4znRccSRRL11unH4pZj44PFh/uUwEW4I1Gi4QVeHwYP0k+W
+	4Z1joJQINFmed2Bm0td2QaF9cYZHuVGubU3ARdN1b1LxXkSo27Ud7btTnXlLV/Cif/LwQ0QcNiFz4
+	3U/HzXWxGath8y3aSaJWyv2XbyHuS3z+NylETzrG8Ljah+QXeQhDZ0mVdv18sansawMnWQfybOcwW
+	exkalMmZ4HEEUvFSc/uQVPBWIuJ3AjSzrz8KeuMAJGQtVcG6eVph+fordADIZVWwN385m9xKp+xfi
+	3kgzSsMCqOQXSjbQXl9Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mLXOM-007Mk3-Be; Wed, 01 Sep 2021 21:03:30 +0000
+	id 1mLXP2-007N0W-DP; Wed, 01 Sep 2021 21:04:12 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1mLXLR-007LWB-GJ; Wed, 01 Sep 2021 21:00:29 +0000
+ (Red Hat Linux)) id 1mLXLR-007LW5-9b; Wed, 01 Sep 2021 21:00:29 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, bhelgaas@google.com, liushixin2@huawei.com,
  thunder.leizhen@huawei.com, lee.jones@linaro.org, geoff@infradead.org,
@@ -44,9 +44,9 @@ To: axboe@kernel.dk, bhelgaas@google.com, liushixin2@huawei.com,
 Cc: linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
  linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
  Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 05/10] rnbd: add error handling support for add_disk()
-Date: Wed,  1 Sep 2021 14:00:23 -0700
-Message-Id: <20210901210028.1750956-6-mcgrof@kernel.org>
+Subject: [PATCH 02/10] pktcdvd: add error handling support for add_disk()
+Date: Wed,  1 Sep 2021 14:00:20 -0700
+Message-Id: <20210901210028.1750956-3-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210901210028.1750956-1-mcgrof@kernel.org>
 References: <20210901210028.1750956-1-mcgrof@kernel.org>
@@ -71,50 +71,29 @@ We never checked for errors on add_disk() as this function
 returned void. Now that this is fixed, use the shiny new
 error handling.
 
+The out_mem2 error label already does what we need so
+re-use that.
+
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/block/rnbd/rnbd-clt.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ drivers/block/pktcdvd.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/block/rnbd/rnbd-clt.c b/drivers/block/rnbd/rnbd-clt.c
-index bd4a41afbbfc..1ba1c868535a 100644
---- a/drivers/block/rnbd/rnbd-clt.c
-+++ b/drivers/block/rnbd/rnbd-clt.c
-@@ -1384,8 +1384,10 @@ static void setup_request_queue(struct rnbd_clt_dev *dev)
- 	blk_queue_write_cache(dev->queue, dev->wc, dev->fua);
- }
+diff --git a/drivers/block/pktcdvd.c b/drivers/block/pktcdvd.c
+index 0f26b2510a75..415248962e67 100644
+--- a/drivers/block/pktcdvd.c
++++ b/drivers/block/pktcdvd.c
+@@ -2729,7 +2729,9 @@ static int pkt_setup_dev(dev_t dev, dev_t* pkt_dev)
+ 	/* inherit events of the host device */
+ 	disk->events = pd->bdev->bd_disk->events;
  
--static void rnbd_clt_setup_gen_disk(struct rnbd_clt_dev *dev, int idx)
-+static int rnbd_clt_setup_gen_disk(struct rnbd_clt_dev *dev, int idx)
- {
-+	int err;
-+
- 	dev->gd->major		= rnbd_client_major;
- 	dev->gd->first_minor	= idx << RNBD_PART_BITS;
- 	dev->gd->minors		= 1 << RNBD_PART_BITS;
-@@ -1410,7 +1412,11 @@ static void rnbd_clt_setup_gen_disk(struct rnbd_clt_dev *dev, int idx)
+-	add_disk(disk);
++	ret = add_disk(disk);
++	if (ret)
++		goto out_mem2;
  
- 	if (!dev->rotational)
- 		blk_queue_flag_set(QUEUE_FLAG_NONROT, dev->queue);
--	add_disk(dev->gd);
-+	err = add_disk(dev->gd);
-+	if (err)
-+		blk_cleanup_disk(dev->gd);
-+
-+	return err;
- }
- 
- static int rnbd_client_setup_device(struct rnbd_clt_dev *dev)
-@@ -1426,8 +1432,7 @@ static int rnbd_client_setup_device(struct rnbd_clt_dev *dev)
- 	rnbd_init_mq_hw_queues(dev);
- 
- 	setup_request_queue(dev);
--	rnbd_clt_setup_gen_disk(dev, idx);
--	return 0;
-+	return rnbd_clt_setup_gen_disk(dev, idx);
- }
- 
- static struct rnbd_clt_dev *init_dev(struct rnbd_clt_session *sess,
+ 	pkt_sysfs_dev_new(pd);
+ 	pkt_debugfs_dev_new(pd);
 -- 
 2.30.2
 
