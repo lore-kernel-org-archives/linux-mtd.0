@@ -2,90 +2,64 @@ Return-Path: <SRS0=cUeG=NX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64049C432BE
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 11:13:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB304C432BE
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 11:22:25 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2001060F4B
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 11:13:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2001060F4B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
+	by mail.kernel.org (Postfix) with ESMTPS id AA25C61057
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 11:22:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AA25C61057
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=JHpiJ4fTeCbUZmwEVtkikFYnA0WAtd+idtXphGl2UM4=; b=pLkoig8pXIC7lW/o7AxZLRYljg
-	xdtYLeRlQKpRhNY7vBFG9GfU/8Jd+qtJHKW6ff+2qc1bqpF4EQW1KTkzDt0Ey7X/+c+SWpmENFIvz
-	1LM+oatfig7Ulds83Ogik3YZPJFRqeG133GBEpYapLXnCWomdZuqNIp/LAeo3Opy71TSsyxBSIzR2
-	UW7ezYCNnWUoKSG8iYTVz3GMdcMBjgQqW2weLX+JNDcK7ZwEvceT7SyWacRF+rmqrhJUzWrgVNkAU
-	PQpn8ZEKek/HT02wFFUSEhsLnnJbYhgPQwcFZ3KTUrOJtTgy0945N5+ce6UVdM6XFllTZAIe/K3sk
-	3oPe43Ww==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=FoAXDvQjuc8les5DA0nuG3SA2Dp75SiEH+EJ7YvtLBk=; b=ZH6CEdKiDD6CDo
+	TiJ+OmeoStJ5RRUU2n2LnFcHMT7o5eRC7xdqbHFUQsyJzwSgBJoXj9oXLA92atajbChU8RS9IVDFE
+	70CuZGBlES+FlVDnZUx+fLBnBpzS5dYyfLyF6b3KINk9IZARnUVJAQvyRnvt0JfIxT10BtjzSwAJb
+	5qUgHlM5pUzQSUvK483vk8EBNqbwufbxqj6mHlObzc9KHiZ25hmCZvN/WYqjXd+1Rd55BL3g7NAU7
+	Ugmv/ZbYhmu6VFIKye7kABOoU7z/g6ejzbA4L6qXpEWbRxkyB9Tdtwe1l83vCO2IViR7TA78PEdqo
+	7aVaxSAGJ3RDu+WkJDrg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mLO9s-005UhF-NJ; Wed, 01 Sep 2021 11:11:57 +0000
-Received: from esa.microchip.iphmx.com ([68.232.153.233])
+	id 1mLOJP-005YLj-Jw; Wed, 01 Sep 2021 11:21:47 +0000
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mLMuU-0051HF-N0; Wed, 01 Sep 2021 09:52:02 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1630489918; x=1662025918;
- h=subject:to:cc:references:from:message-id:date:
- mime-version:in-reply-to:content-transfer-encoding;
- bh=CT+UDxn6as6xh9A8sRKHCVHW8lQ6e8ercxAnl+msfa4=;
- b=eA2DkHGWAdUrgdtGIlHGq8Hc5LUol0cO+qk89BDG0IrGmmT0NOwebu16
- MDvlKB2BqNPaN9uiH/kXABjGSrxmNZpl+Tf/88jMIlNaDJW60MVjHWLPW
- oD9RQuIJfliq1KeFqMclKXjCLfnR5piyUPCqNlsmeE0rwT+3dsuScCFHR
- 2YxM+Xtjx2EcwwZCfpTWlzNyPzM5c5NpseaWR7rKBShJz9I+DDUYS3/cC
- U+IRjs1lLDnMWXxp0S7ZxAbc9Qnb7tNyqncd2kBUtlMxchZk8HrNs1o3e
- YORebQNGpdDm0uFf2L9G6t1JKwkOat8yn20AMBKcBL86VfMFYCSjnxLaE Q==;
-IronPort-SDR: vn4D+YekV0Fiv6VB5tu6Q4vZrImudio67aI8no935WoRuMOzTfSaBQCobDKRVb40CRWiq8uwZw
- Dgv+nmF3XqcTz823/pnc8R7mHlljvXjGma6SWiQsqAoad8AVAkmmrPC7tAQ0q42jJsN0I4Ma0G
- SLdL1mg//CwwT1/NSa6yyLezkjTvnlnw5tHAPjLZggKUfp4PCD1d+gszQIWXHNJrLAXIQh7+ee
- shHlDYpva3KPgIKSQo1Cf/bysA88C6zH/sUKwMr5P05aCEmBrGpjSoqAUeThP1QmAX+/i28A/T
- JiftHf6uz+cmuwWiP0O1UiOI
-X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; d="scan'208";a="142389275"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 01 Sep 2021 02:51:57 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Wed, 1 Sep 2021 02:51:49 -0700
-Received: from [10.12.72.234] (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Wed, 1 Sep 2021 02:51:47 -0700
-Subject: Re: [PATCH] mtd: rawnand: atmel: Make use of the helper function
- devm_platform_ioremap_resource()
-To: Cai Huoqing <caihuoqing@baidu.com>
-CC: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, "Vignesh
- Raghavendra" <vigneshr@ti.com>, Alexandre Belloni
- <alexandre.belloni@bootlin.com>, Ludovic Desroches
- <ludovic.desroches@microchip.com>, <linux-mtd@lists.infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20210901074031.8883-1-caihuoqing@baidu.com>
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <3ac919ad-be84-f050-a7d1-c15c8c06217e@microchip.com>
-Date: Wed, 1 Sep 2021 11:51:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210901074031.8883-1-caihuoqing@baidu.com>
-Content-Language: en-US
+ id 1mLNsO-005MQd-0J
+ for linux-mtd@lists.infradead.org; Wed, 01 Sep 2021 10:53:53 +0000
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+ by alexa-out.qualcomm.com with ESMTP; 01 Sep 2021 03:53:49 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+ by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA;
+ 01 Sep 2021 03:53:48 -0700
+X-QCInternal: smtphost
+Received: from mdalam-linux.qualcomm.com ([10.201.2.71])
+ by ironmsg02-blr.qualcomm.com with ESMTP; 01 Sep 2021 16:23:37 +0530
+Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
+ id B830E22368; Wed,  1 Sep 2021 16:23:35 +0530 (IST)
+From: Md Sadre Alam <mdalam@codeaurora.org>
+To: miquel.raynal@bootlin.com, mani@kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Cc: mdalam@codeaurora.org,
+	sricharan@codeaurora.org,
+	stable@kernel.org
+Subject: [PATCH V3] mtd: rawnand: qcom: Update code word value for raw read
+Date: Wed,  1 Sep 2021 16:23:33 +0530
+Message-Id: <1630493613-8158-1-git-send-email-mdalam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210901_025158_836670_B8C0E62C 
-X-CRM114-Status: GOOD (  17.95  )
+X-CRM114-CacheID: sfid-20210901_035352_162400_B8CD6DA4 
+X-CRM114-Status: GOOD (  11.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,59 +71,70 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 01/09/2021 at 09:40, Cai Huoqing wrote:
-> Use the devm_platform_ioremap_resource() helper instead of
-> calling platform_get_resource() and devm_ioremap_resource()
-> separately
-> 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+Fixes: 503ee5aa ("mtd: rawnand: qcom: update last code word register")
+Cc: stable@kernel.org
+Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+---
+[V3]
+ * Added Fixes tag
+ * Removed change log from commit message.
 
-Reviewed-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+    From QPIC V2 onwards there is a separate register to read
+    last code word "QPIC_NAND_READ_LOCATION_LAST_CW_n".
 
-> ---
->   drivers/mtd/nand/raw/atmel/pmecc.c | 7 ++-----
->   1 file changed, 2 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/atmel/pmecc.c b/drivers/mtd/nand/raw/atmel/pmecc.c
-> index cbb023bf00f7..498e41ccabbd 100644
-> --- a/drivers/mtd/nand/raw/atmel/pmecc.c
-> +++ b/drivers/mtd/nand/raw/atmel/pmecc.c
-> @@ -834,7 +834,6 @@ static struct atmel_pmecc *atmel_pmecc_create(struct platform_device *pdev,
->   {
->          struct device *dev = &pdev->dev;
->          struct atmel_pmecc *pmecc;
-> -       struct resource *res;
-> 
->          pmecc = devm_kzalloc(dev, sizeof(*pmecc), GFP_KERNEL);
->          if (!pmecc)
-> @@ -844,13 +843,11 @@ static struct atmel_pmecc *atmel_pmecc_create(struct platform_device *pdev,
->          pmecc->dev = dev;
->          mutex_init(&pmecc->lock);
-> 
-> -       res = platform_get_resource(pdev, IORESOURCE_MEM, pmecc_res_idx);
-> -       pmecc->regs.base = devm_ioremap_resource(dev, res);
-> +       pmecc->regs.base = devm_platform_ioremap_resource(pdev, pmecc_res_idx);
->          if (IS_ERR(pmecc->regs.base))
->                  return ERR_CAST(pmecc->regs.base);
-> 
-> -       res = platform_get_resource(pdev, IORESOURCE_MEM, errloc_res_idx);
-> -       pmecc->regs.errloc = devm_ioremap_resource(dev, res);
-> +       pmecc->regs.errloc = devm_platform_ioremap_resource(pdev, errloc_res_idx);
->          if (IS_ERR(pmecc->regs.errloc))
->                  return ERR_CAST(pmecc->regs.errloc);
-> 
-> --
-> 2.25.1
-> 
+    qcom_nandc_read_cw_raw() is used to read only one code word
+    at a time. If we will configure number of code words to 1 in
+    in QPIC_NAND_DEV0_CFG0 register then QPIC controller thinks
+    its reading the last code word, since from QPIC V2 onwards
+    we are having separate register to read the last code word,
+    we have to configure "QPIC_NAND_READ_LOCATION_LAST_CW_n"
+    register to fetch data from controller buffer to system
+    memory.
+ 
+ drivers/mtd/nand/raw/qcom_nandc.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index ef0bade..04e6f7b 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -1676,13 +1676,17 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 	struct nand_ecc_ctrl *ecc = &chip->ecc;
+ 	int data_size1, data_size2, oob_size1, oob_size2;
+ 	int ret, reg_off = FLASH_BUF_ACC, read_loc = 0;
++	int raw_cw = cw;
+ 
+ 	nand_read_page_op(chip, page, 0, NULL, 0);
+ 	host->use_ecc = false;
+ 
++	if (nandc->props->qpic_v2)
++		raw_cw = ecc->steps - 1;
++
+ 	clear_bam_transaction(nandc);
+ 	set_address(host, host->cw_size * cw, page);
+-	update_rw_regs(host, 1, true, cw);
++	update_rw_regs(host, 1, true, raw_cw);
+ 	config_nand_page_read(chip);
+ 
+ 	data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
+@@ -1711,7 +1715,7 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 		nandc_set_read_loc(chip, cw, 3, read_loc, oob_size2, 1);
+ 	}
+ 
+-	config_nand_cw_read(chip, false, cw);
++	config_nand_cw_read(chip, false, raw_cw);
+ 
+ 	read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
+ 	reg_off += data_size1;
 -- 
-Nicolas Ferre
+2.7.4
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
