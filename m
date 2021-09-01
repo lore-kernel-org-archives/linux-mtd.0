@@ -3,37 +3,37 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8281C432BE
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 21:02:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4393CC4320E
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 21:03:31 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9E28E6056C
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 21:02:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9E28E6056C
+	by mail.kernel.org (Postfix) with ESMTPS id 104606069E
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 21:03:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 104606069E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=o+0BGjmojWFcg4EGQvpQIHLZ0FTeFACmHrktOQVeN7g=; b=EGRAzHhifst1c1
-	Nn3y/YiaksXJU3HARIJbwacgnTXwHneokuC+UD83jayLljPsUk8elrijfZw+xDZc3PxUj9Cdt20Yt
-	Sv+41oEj89ZSD/05JE4w9MluPg/RJJgcq9yM/0uh5dl73ZiqwnAjRnsoFsIpYGTRRmQnncunk2gox
-	uonDRW7WEWG6RNpFpWHbugFwVRc9x1hHQI/TGqDDNfhAGS0r1kdM6DFqF5cjC4hrTef0NjWUpIOz9
-	0lfEFPmNQnZA/KF4mUA5YIpsiOIsK1nArPrqp66UjsEudKkIAdPLPHXAA8qWBdHgkNIMDyMGAClCo
-	b42RqFWn3DEna95mASDw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=8dHO3yvz1ydLMfca0k8gitDtR8zlH9j03VnIt1jU02Y=; b=pbdhfDPjXIxm5w
+	EFTVUfy0GIxZb8cPkymYHz6to0i0zY0EdXfxMA/NJxH+6xaLxz7E9Up1sw1NtmFFoQIj6HvOiMPDM
+	CyKZgAdEvVEqitSWpGVgZr9w66/pw9MOAjNdX4Tj77d+mZfTs3+YLMked0FaBTHny/XKLMQ3H3ymD
+	lCly1RhncHnjooM3F7NWUfXAMItmpRMIBiXZcmQuPmJ7hDy/wzYDJb4oKQz8GGXAWmGqTfa12DjD/
+	6cZCgMLPISSEENDqRtUUU/OSvHkuyYsG3qMV/J/AXrOfifJuumnU+a3mvbeiCkrP4Ypqop15I8aIF
+	CNprY4Yb+5RLBljkBObg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mLXN6-007MAe-Md; Wed, 01 Sep 2021 21:02:12 +0000
+	id 1mLXNi-007MSO-EE; Wed, 01 Sep 2021 21:02:50 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1mLXLR-007LWL-Md; Wed, 01 Sep 2021 21:00:29 +0000
+ (Red Hat Linux)) id 1mLXLR-007LW1-53; Wed, 01 Sep 2021 21:00:29 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, bhelgaas@google.com, liushixin2@huawei.com,
  thunder.leizhen@huawei.com, lee.jones@linaro.org, geoff@infradead.org,
@@ -44,12 +44,11 @@ To: axboe@kernel.dk, bhelgaas@google.com, liushixin2@huawei.com,
 Cc: linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
  linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
  Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 09/10] pf: add error handling support for add_disk()
-Date: Wed,  1 Sep 2021 14:00:27 -0700
-Message-Id: <20210901210028.1750956-10-mcgrof@kernel.org>
+Subject: [PATCH 00/10] block: fourth batch of add_disk() error handling
+ conversions 
+Date: Wed,  1 Sep 2021 14:00:18 -0700
+Message-Id: <20210901210028.1750956-1-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210901210028.1750956-1-mcgrof@kernel.org>
-References: <20210901210028.1750956-1-mcgrof@kernel.org>
 MIME-Version: 1.0
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -67,30 +66,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-We never checked for errors on add_disk() as this function
-returned void. Now that this is fixed, use the shiny new
-error handling.
+The full set of changes can be found on my branch titled
+20210901-for-axboe-add-disk-error-handling [0] which is
+now based on axboe/master.
 
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- drivers/block/paride/pf.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/log/?h=20210901-for-axboe-add-disk-error-handling
 
-diff --git a/drivers/block/paride/pf.c b/drivers/block/paride/pf.c
-index f471d48a87bc..380d80e507c7 100644
---- a/drivers/block/paride/pf.c
-+++ b/drivers/block/paride/pf.c
-@@ -962,7 +962,9 @@ static int __init pf_init_unit(struct pf_unit *pf, bool autoprobe, int port,
- 	if (pf_probe(pf))
- 		goto out_pi_release;
- 
--	add_disk(disk);
-+	ret = add_disk(disk);
-+	if (ret)
-+		goto out_pi_release;
- 	pf->present = 1;
- 	return 0;
- 
+Luis Chamberlain (10):
+  mtip32xx: add error handling support for add_disk()
+  pktcdvd: add error handling support for add_disk()
+  ps3disk: add error handling support for add_disk()
+  ps3vram: add error handling support for add_disk()
+  rnbd: add error handling support for add_disk()
+  block/rsxx: add error handling support for add_disk()
+  block/sunvdc: add error handling support for add_disk()
+  block/sx8: add error handling support for add_disk()
+  pf: add error handling support for add_disk()
+  mtd/ubi/block: add error handling support for add_disk()
+
+ drivers/block/mtip32xx/mtip32xx.c |  4 +++-
+ drivers/block/paride/pf.c         |  4 +++-
+ drivers/block/pktcdvd.c           |  4 +++-
+ drivers/block/ps3disk.c           |  8 ++++++--
+ drivers/block/ps3vram.c           |  7 ++++++-
+ drivers/block/rnbd/rnbd-clt.c     | 13 +++++++++----
+ drivers/block/rsxx/core.c         |  4 +++-
+ drivers/block/rsxx/dev.c          | 12 +++++++++---
+ drivers/block/sunvdc.c            | 14 +++++++++++---
+ drivers/block/sx8.c               | 13 +++++++++----
+ drivers/mtd/ubi/block.c           |  8 +++++++-
+ 11 files changed, 69 insertions(+), 22 deletions(-)
+
 -- 
 2.30.2
 
