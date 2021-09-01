@@ -2,65 +2,65 @@ Return-Path: <SRS0=cUeG=NX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 55D28C432BE
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 09:05:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A28FC4320E
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 09:09:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 273456103D
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 09:05:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 273456103D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
+	by mail.kernel.org (Postfix) with ESMTPS id 9E1C761054
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 09:09:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9E1C761054
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=geanix.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
-	Date:From:Cc:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
-	List-Owner; bh=CJiN2TPd+rxJxorjiLL+flrkQF+tAzGxZF1ttV3I83g=; b=A4p6Siq85lNecU
-	snHwDwICdI/9I/RMLmKz5QZYgrrfC/9Jp98kveif1h+z0eEU1tyLeHFX3Dx8NHjk45onywDYuC12F
-	ITk+xFtIRwYMaoHqFCS0JIapL/yS3McgnJCclJHIal/TkiMR6QlwQ7oCXmHVKNUEgyMnrk+bEpRd8
-	H9RvTLS/yhnvxGPThlVCqu24JMR43GxszM4BTs8Ll+xuoWQqVBa7BY9qdP6B8Pumr19nJVJ6j0ebZ
-	C1zim1dZQau5bpDvZ1gVB+6oXGfH6UkwBsBhcPWllCjClxbZ2je30TIYErXg2dhMpYlyCJ/a3eam6
-	fAbflyPMBoOTwO/TKd1A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=cVGt08JbSP1e396vOm+9i9KAI2JoEQh77GQ/FFL9hWo=; b=2sLRqS1nOTGpjc
+	ck4r6w5IhlHEosdTkT/E8s+q7Yi3W4oTSdsPRzAE496GxCBMNtLoQQZYIs+//4PR0zTKoOLE7gWc3
+	FAVONeM8PaF/922OnA7V+EJz0ApRloYb5c7suQ8r/Qk3Tw89LVIkXrzI9A52PbkRCiLwFw6/siTLI
+	TDASb3S88+Gw7uWtgamOhqcfh74GCx7OLbJnZQ2Znv5VgxK5hflPbnJW7198bswmz7Pb4vrESNbwB
+	QPOwHhIkw52OKbBp9DZm+WX8B5ssXJ/zFjl9z1q/8mbB9J+EFX4QKqlvh3nEF63FaxRSBWddnZ7wV
+	jVPTOZ98r67hSuykutJQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mLMAO-004kGa-3c; Wed, 01 Sep 2021 09:04:20 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1mLMEG-004m8P-TL; Wed, 01 Sep 2021 09:08:21 +0000
+Received: from first.geanix.com ([116.203.34.67])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mLLYR-004Ykd-Gu
- for linux-mtd@lists.infradead.org; Wed, 01 Sep 2021 08:25:11 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DA3261053;
- Wed,  1 Sep 2021 08:25:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1630484707;
- bh=xvf3KCaSJTg25Ge8Y+WICw/OKBywEM/5ITFND3XJeqk=;
- h=Subject:To:Cc:From:Date:In-Reply-To:From;
- b=FMk9F46QwOEZh/a73jkoeE3878wERKacjDh+IHrw3GVEyoNK7eUGNbMu3R1wEwCcT
- IC0I67eAffUcyUS/12lJacbCMXM86MaKJJ2V01ycB48MeeYokS2/7clIppLltwQSmA
- MTsrMz6N+tbIt7qBGoe9pmaRRJ3ZoZsPdASPr00M=
-Subject: Patch "mtd: spinand: Fix incorrect parameters for on-die ECC" has
- been added to the 5.10-stable tree
-To: alobakin@pm.me, developer@voiceinterconnect.de, frieder.schrempf@kontron.de,
- frieder@fris.de, gregkh@linuxfoundation.org, linux-mtd@lists.infradead.org,
- miquel.raynal@bootlin.com, nbd@nbd.name, richard@nod.at, ycllin@mxic.com.tw
-Cc: <stable-commits@vger.kernel.org>
-From: <gregkh@linuxfoundation.org>
-Date: Wed, 01 Sep 2021 10:24:56 +0200
-In-Reply-To: <20210830130211.445728-1-frieder@fris.de>
-Message-ID: <16304846968142@kroah.com>
+ id 1mLLiA-004b5Z-Fy
+ for linux-mtd@lists.infradead.org; Wed, 01 Sep 2021 08:35:14 +0000
+Received: from zen.. (unknown [185.17.218.86])
+ by first.geanix.com (Postfix) with ESMTPSA id 4BC3C440F5F;
+ Wed,  1 Sep 2021 08:35:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+ t=1630485302; bh=IrFgfhIfMtYxjCmgturAExJe7UDGUvUwMIkPGhYH5o0=;
+ h=From:To:Cc:Subject:Date;
+ b=Yy8YTNeC7q1OmsyX4zkFnJRAuSZY1GDWU7P4DSRfXT7ihT2vQstfDsXZilY7EFglA
+ K54Kd2v3AfT5ODifASS5NKQD1PhEGkov5yoVvMYMeZreVhOg80ZfdsbqjsIRgbbjTt
+ N4ERFczGw4uGULKeCaXk5xaE1g/aeKs8rcslCJlYEFcS11b5+dDDaaJFxKv/CNKT19
+ 78MT6sx/+yN/izxHjZ3CnThtsw8aLGhKIroH8G7n5mIKCuaJCuENpNjOzUT85afOi8
+ bWwKowOaiGE2lswTSyvVoKwZ/vDA4ezUFLrMKGpI5tsMcQHHokMyF2OcFjPg1hvRqt
+ +ja43jaiJKPQA==
+From: Sean Nyekjaer <sean@geanix.com>
+To: miquel.raynal@bootlin.com, s.hauer@pengutronix.de, richard@nod.at,
+ linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, len.brown@intel.com
+Cc: Sean Nyekjaer <sean@geanix.com>,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH] PM / suspend: move userspace freeze before disk sync
+Date: Wed,  1 Sep 2021 10:34:42 +0200
+Message-Id: <20210901083442.210230-1-sean@geanix.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-X-stable: commit
-X-Patchwork-Hint: ignore 
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210901_012507_725649_CE948D71 
-X-CRM114-Status: GOOD (  17.15  )
+X-CRM114-CacheID: sfid-20210901_013510_751177_6A745F61 
+X-CRM114-Status: GOOD (  11.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,120 +77,75 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+This fixes an issue where data remains unwritten before suspend.
+UBI tried to write data, before the mtd device had been unsuspended.
 
-This is a note to let you know that I've just added the patch titled
+Seen on an iMX6ULL board fitted with rawnand flash.
 
-    mtd: spinand: Fix incorrect parameters for on-die ECC
+Before:
+PM: suspend entry (deep)
+Filesystems sync: 0.088 seconds
+Freezing user space processes ... (elapsed 0.000 seconds) done.
+OOM killer disabled.
+Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+printk: Suspending console(s) (use no_console_suspend to debug)
+PM: suspend devices took 0.030 seconds
+Disabling non-boot CPUs ...
+ubi0 error: ubi_io_write: error -16 while writing 4096 bytes to PEB 1762:94208, written 0 bytes
 
-to the 5.10-stable tree which can be found at:
-    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+After:
+PM: suspend entry (deep)
+Freezing user space processes ... (elapsed 0.001 seconds) done.
+OOM killer disabled.
+Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+Filesystems sync: 0.060 seconds
+printk: Suspending console(s) (use no_console_suspend to debug)
+PM: suspend devices took 0.040 seconds
+Disabling non-boot CPUs ...
+PM: resume devices took 0.100 seconds
 
-The filename of the patch is:
-     mtd-spinand-fix-incorrect-parameters-for-on-die-ecc.patch
-and it can be found in the queue-5.10 subdirectory.
-
-If you, or anyone else, feels it should not be added to the stable tree,
-please let <stable@vger.kernel.org> know about it.
-
-
-From frieder@fris.de  Wed Sep  1 10:16:58 2021
-From: Frieder Schrempf <frieder@fris.de>
-Date: Mon, 30 Aug 2021 15:02:10 +0200
-Subject: mtd: spinand: Fix incorrect parameters for on-die ECC
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Frieder Schrempf <frieder.schrempf@kontron.de>, stable@vger.kernel.org, voice INTER connect GmbH <developer@voiceinterconnect.de>, Alexander Lobakin <alobakin@pm.me>, Felix Fietkau <nbd@nbd.name>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>, YouChing Lin <ycllin@mxic.com.tw>
-Message-ID: <20210830130211.445728-1-frieder@fris.de>
-
-
-From: Frieder Schrempf <frieder.schrempf@kontron.de>
-
-The new generic NAND ECC framework stores the configuration and
-requirements in separate places since commit 93ef92f6f422 ("mtd: nand: Use
-the new generic ECC object"). In 5.10.x The SPI NAND layer still uses only
-the requirements to track the ECC properties. This mismatch leads to
-values of zero being used for ECC strength and step_size in the SPI NAND
-layer wherever nanddev_get_ecc_conf() is used and therefore breaks the SPI
-NAND on-die ECC support in 5.10.x.
-
-By using nanddev_get_ecc_requirements() instead of nanddev_get_ecc_conf()
-for SPI NAND, we make sure that the correct parameters for the detected
-chip are used. In later versions (5.11.x) this is fixed anyway with the
-implementation of the SPI NAND on-die ECC engine.
-
-Cc: stable@vger.kernel.org # 5.10.x
-Reported-by: voice INTER connect GmbH <developer@voiceinterconnect.de>
-Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
 ---
- drivers/mtd/nand/spi/core.c     |    6 +++---
- drivers/mtd/nand/spi/macronix.c |    6 +++---
- drivers/mtd/nand/spi/toshiba.c  |    6 +++---
- 3 files changed, 9 insertions(+), 9 deletions(-)
 
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -419,7 +419,7 @@ static int spinand_check_ecc_status(stru
- 		 * fixed, so let's return the maximum possible value so that
- 		 * wear-leveling layers move the data immediately.
- 		 */
--		return nanddev_get_ecc_conf(nand)->strength;
-+		return nanddev_get_ecc_requirements(nand)->strength;
- 
- 	case STATUS_ECC_UNCOR_ERROR:
- 		return -EBADMSG;
-@@ -1090,8 +1090,8 @@ static int spinand_init(struct spinand_d
- 	mtd->oobavail = ret;
- 
- 	/* Propagate ECC information to mtd_info */
--	mtd->ecc_strength = nanddev_get_ecc_conf(nand)->strength;
--	mtd->ecc_step_size = nanddev_get_ecc_conf(nand)->step_size;
-+	mtd->ecc_strength = nanddev_get_ecc_requirements(nand)->strength;
-+	mtd->ecc_step_size = nanddev_get_ecc_requirements(nand)->step_size;
- 
- 	return 0;
- 
---- a/drivers/mtd/nand/spi/macronix.c
-+++ b/drivers/mtd/nand/spi/macronix.c
-@@ -84,11 +84,11 @@ static int mx35lf1ge4ab_ecc_get_status(s
- 		 * data around if it's not necessary.
- 		 */
- 		if (mx35lf1ge4ab_get_eccsr(spinand, &eccsr))
--			return nanddev_get_ecc_conf(nand)->strength;
-+			return nanddev_get_ecc_requirements(nand)->strength;
- 
--		if (WARN_ON(eccsr > nanddev_get_ecc_conf(nand)->strength ||
-+		if (WARN_ON(eccsr > nanddev_get_ecc_requirements(nand)->strength ||
- 			    !eccsr))
--			return nanddev_get_ecc_conf(nand)->strength;
-+			return nanddev_get_ecc_requirements(nand)->strength;
- 
- 		return eccsr;
- 
---- a/drivers/mtd/nand/spi/toshiba.c
-+++ b/drivers/mtd/nand/spi/toshiba.c
-@@ -90,12 +90,12 @@ static int tx58cxgxsxraix_ecc_get_status
- 		 * data around if it's not necessary.
- 		 */
- 		if (spi_mem_exec_op(spinand->spimem, &op))
--			return nanddev_get_ecc_conf(nand)->strength;
-+			return nanddev_get_ecc_requirements(nand)->strength;
- 
- 		mbf >>= 4;
- 
--		if (WARN_ON(mbf > nanddev_get_ecc_conf(nand)->strength || !mbf))
--			return nanddev_get_ecc_conf(nand)->strength;
-+		if (WARN_ON(mbf > nanddev_get_ecc_requirements(nand)->strength || !mbf))
-+			return nanddev_get_ecc_requirements(nand)->strength;
- 
- 		return mbf;
- 
+Some explanation/discussion here:
+http://lists.infradead.org/pipermail/linux-mtd/2021-July/087390.html
 
+ kernel/power/suspend.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Patches currently in stable-queue which might be from frieder@fris.de are
+diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
+index 87331565e505..4ee3fcbb0e7a 100644
+--- a/kernel/power/suspend.c
++++ b/kernel/power/suspend.c
+@@ -562,6 +562,12 @@ static int enter_state(suspend_state_t state)
+ 	if (state == PM_SUSPEND_TO_IDLE)
+ 		s2idle_begin();
+ 
++	pm_pr_dbg("Preparing system for sleep (%s)\n", mem_sleep_labels[state]);
++	pm_suspend_clear_flags();
++	error = suspend_prepare(state);
++	if (error)
++		goto Unlock;
++
+ #ifndef CONFIG_SUSPEND_SKIP_SYNC
+ 	trace_suspend_resume(TPS("sync_filesystems"), 0, true);
+ 	pr_info("Syncing filesystems ... ");
+@@ -570,12 +576,6 @@ static int enter_state(suspend_state_t state)
+ 	trace_suspend_resume(TPS("sync_filesystems"), 0, false);
+ #endif
+ 
+-	pm_pr_dbg("Preparing system for sleep (%s)\n", mem_sleep_labels[state]);
+-	pm_suspend_clear_flags();
+-	error = suspend_prepare(state);
+-	if (error)
+-		goto Unlock;
+-
+ 	if (suspend_test(TEST_FREEZER))
+ 		goto Finish;
+ 
+-- 
+2.33.0
 
-queue-5.10/mtd-spinand-fix-incorrect-parameters-for-on-die-ecc.patch
 
 ______________________________________________________
 Linux MTD discussion mailing list
