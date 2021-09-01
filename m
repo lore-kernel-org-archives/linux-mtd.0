@@ -2,67 +2,130 @@ Return-Path: <SRS0=cUeG=NX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-22.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A5EEC432BE
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 16:42:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 147FBC4320A
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 16:52:24 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D6C29601FF
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 16:42:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D6C29601FF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id D808261059
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 16:52:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D808261059
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=abaco.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=uwYDyoDRIPvUyrQJTsudsO98Dt9ZBa5wzQcRrMYFZWY=; b=hbtIskl6u1O5c0
-	qvrbSO3AizS0K7hyjGtwi/5kSWXgEY87XhNc2Pb+Che7bfWRMfdeTf1dMeurWXFiHmVYxFhqBsGCS
-	xeT00ePNtuwyleX7BiBOG++R7XOHy0Ln1KfkLJskbTEblT0lM/1HOXuN5F970xAC8vGZiZvq4m/7W
-	JJCUpEQtuDvX1ihegw7l5piFGFE6z4BboUQht6X7tOGVeSMJ/o3nt8vMplx0UEcvfkTKFJ+WkYqKS
-	/1f2Zc/7LIKcBnMWiHJSVVH4NZq+jIv0DgmmZVlA1Nb7uOBarlryQs+fFQj4pO5yDi5qhkVexG4d6
-	fcWDRwKLQAYdxIKBYfSw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=+5W2lVlicyA9rUupvUOZgtorBKv3iBlbMuA6EEqRudM=; b=MgIx/JxLFwa9mM
+	7I9jl6dgm5b5vu1CZctZr4wpvVzV3QnWlF8YjvpI/pkAXJI0cUMn8aP7dWdWo0VLV7Xt5PW7z2ztx
+	7sByfnnELeTtgIECptHcgv2SgAWKzZt+da+yCcec4Obb02UW383NoIV7dMjX6vJFr5jADw2c9ZRFC
+	FnbYFRCyf6IwJnND2ym2ryOAwxaYa83ugRCDf101CAktfZ4+V4riHU8kANKZGmxnpfU5FaL/AsaQF
+	bf9w8OfpCG8baPrWFK3ak+SAk/Jo5udFJNZKGLuDnfMNf1JAkAoj0A72kqEXF2/DX0+vkQ/2jKhmh
+	yLYZuz3cmgPNcT7YBbLw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mLTJ6-006Yms-Dl; Wed, 01 Sep 2021 16:41:48 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1mLTSZ-006caC-AN; Wed, 01 Sep 2021 16:51:35 +0000
+Received: from mail-mw2nam10on2135.outbound.protection.outlook.com
+ ([40.107.94.135] helo=NAM10-MW2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mLTI5-006YW5-JP
- for linux-mtd@lists.infradead.org; Wed, 01 Sep 2021 16:40:49 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D38556109E;
- Wed,  1 Sep 2021 16:40:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1630514444;
- bh=jVzElqQiJbNMXheESVUoQvKT6Ur1bumRSov7hl3IF2Y=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ZHQ8ATBWiS/RCvGSjbGP57VyehFj3Fqojbmx4JWT/tZLMJvI1GlG9hyi/t3comUUF
- T/TzSZD9PgVFtMSGzr+jD/hF9B5ol/LySW/llVWrIYQcftkI73hnNQSAlvI7FDtVPA
- leA65V2mTQlE753MazHW7fyF+BSrXFTp8IZ4m+bpg7hNDRINgycfHpr+qfEaIVSSnY
- +zLXXYT9XLucN23D/tfmoBNsmGSqKFs3GPvNUHLfaXGcuLp+Y+r/IYxK/adOxs7OIJ
- d5vhXJH4oz1TsN3UNt5tzhc+dXI1ckkXAnoF3U9vx0t4xViGWswEjln2s4M1kFcE0r
- IBhdMK8cBISGg==
-From: Eric Biggers <ebiggers@kernel.org>
-To: stable@vger.kernel.org
-Cc: linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org
-Subject: [PATCH 5.4 1/4] fscrypt: add fscrypt_symlink_getattr() for computing
- st_size
-Date: Wed,  1 Sep 2021 09:40:38 -0700
-Message-Id: <20210901164041.176238-2-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901164041.176238-1-ebiggers@kernel.org>
-References: <20210901164041.176238-1-ebiggers@kernel.org>
+ id 1mLTSS-006cWS-JC
+ for linux-mtd@lists.infradead.org; Wed, 01 Sep 2021 16:51:33 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Dm+jmIncumX7xL2yOpHtmxeboByCTeuySqfuFqmNo3mc87rDq4pFAcQVFiaAOeav/PEEYFEmPhQfgAHR4yV+1LEzod88x9GlZEJRlED6CdSWKmtRI9hUBZuSLeXIXeTsEPR3Jm6o+cCxKGm4Za4uZW62Onm4EYluvMX/vFNqXwxpNH1dFDirRnzC1eU00FkXx9JR9KBWpu/LPnGRdhPzijmgxWlVKfaC5UtNJ4Py0jCCCo1OH34qLX4zKquWidcnjvpt6lUPYU43Mn4nP2yyR30EJRAdUeIyrGJpuyrqPPZtBWdj4QdkeOrn9pekvX6onJoHA92qccBmr0CXZSAhWg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version; 
+ bh=nU8rAR3UmlELuzPGEGuOJdR+vSVyhTbmO/zq7X0Qmj4=;
+ b=QyBKttBy9HVpgp3da4K1XcYlaLWdJTsBbLsKKpnTYWysz0IGND4uITxSA4K7FsLZlyJ01nIp2VehvqTC7pk82Ah7AozpwuU+8jTL3TKdjcRlOn4uGKx6ihy6rSJw1ZbrwW9O3v+KHunnpjuKwiPrLMo2ECURaelGajaZjtmcHOX5gXL5TMY1R+FFqJPfqwbOk8uILX/p7QMBz+bzQYukw8by0WQKqz0TxCl+8w+0EzX8YpODhSl6APp6Co1RqqgHujX5U/7bFVQW7eIRi5W3iu+FXwHfZImtsAO42XVg3R4+LhBMn6bUoOIF6d1F6h82l0eC46ie5lMSYk4/qdxTVw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=abaco.com; dmarc=pass action=none header.from=abaco.com;
+ dkim=pass header.d=abaco.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=abaco.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nU8rAR3UmlELuzPGEGuOJdR+vSVyhTbmO/zq7X0Qmj4=;
+ b=n+tQ3uHYRYEexbwGO83bBjU/+mvy4uiQ/FNzqQdRGgnn0LZXYZzNjcHAigrlbJgLotQKc5r56VQJTwZU1EfLBCaSLp4nrtgRZoL+b29zNZrwaHG7tMrW7RxF192dZFYb5/aAQI08tHYRkotAAQSc7hkpEXyIPGnkJNoPOz4wKJm9aELpMrjPMxj+E9SFwpDDZT+C/FqckyJZpBbfF7S0ahkc4iEjEoemu5cUGFjWy9pZCfMVEcwgarEG+sHGJTI1nxL6JSCFnvezg+qyDqZRbtCxQ0Q1mqcycST7XleVD0NPKqAsVyj+qF0oyemyrGFMF5wjxzNLX4fQoqKQL8w+Wg==
+Received: from MN2PR16MB3135.namprd16.prod.outlook.com (2603:10b6:208:153::31)
+ by MN2PR16MB3310.namprd16.prod.outlook.com (2603:10b6:208:13e::14)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.17; Wed, 1 Sep
+ 2021 16:51:23 +0000
+Received: from MN2PR16MB3135.namprd16.prod.outlook.com
+ ([fe80::75bb:ea2d:9ab8:b38b]) by MN2PR16MB3135.namprd16.prod.outlook.com
+ ([fe80::75bb:ea2d:9ab8:b38b%7]) with mapi id 15.20.4478.017; Wed, 1 Sep 2021
+ 16:51:23 +0000
+From: "Barbier, Renaud" <renaud.barbier@abaco.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: S25FL512 vs S25FS512
+Thread-Topic: S25FL512 vs S25FS512
+Thread-Index: AdefTssbJZFggj2ZRgCkCCRr1Q2RSA==
+Date: Wed, 1 Sep 2021 16:51:23 +0000
+Message-ID: <MN2PR16MB313511219F7BFB2692C4C8B191CD9@MN2PR16MB3135.namprd16.prod.outlook.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=none action=none
+ header.from=abaco.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a4565c5a-9ec2-4225-fe04-08d96d68bb3c
+x-ms-traffictypediagnostic: MN2PR16MB3310:
+x-microsoft-antispam-prvs: <MN2PR16MB3310E048C69D4BE74D64997391CD9@MN2PR16MB3310.namprd16.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: UZYqq6pi5wrkwYUU35sGkgRZeW+KQgUjsEDDBTRQaIlrVlGhotc+xKp0nn0s0v2t0G8RMSWkYqaFJy/7Ho+9q9lNRz+Bs7oPMME7rJvhoAkyRdwxhMnIYqEK2nedly95A0CGqZizPg7b8AIOLvd4D3Sctga00uEW2go4aioY6p6jfYGxOb8/volSceCayful0FspOuSEpHw51JRYZMtVfPJBDSbGlb/2rnLXGt1eprl+ycoG/MmcEhKaz1mAOOFqfmROzjRVTKszfi23zcxXWnvfcpYv+8OJu3V3gMTCcURsE92onpOA4bQxU+kVUHYqwVT0QEjWyGUSGpRLXJAqNG1ZktTdGcYh3RNZyh12ZtbFtRXQfGq8xswDAQRaKmBFnf/wlpseFRfZv5bIlTyCDAEIbKlDh44mMNpaITc/vSynweww+Ypx3X0sDkrPJ+J3XYGFG2rY4+aNw67UGmwHLQS7q2aMN5t1nI3NlxJMv4xm5uB7uuNsMxOm0yoy0IMAOQe5gg7ZY+Ku8SrZ9IsXD+jgOoLRo15kt73f5Np7yec54oOgJFiSgCl5p9wZkHpg5lvLq7lPM67sACyT8HYrRfYMs6QC+tzhbqXC/gfo9koPXlSMxwZuCsfuVsduua1IJfeaR723JTE1NDCO2ah3XM9DT2CPp++QGQ0MUYV8pn0FC5w6lLICwCYE5io1bam0tw5qST4Y/YJoZF+rC261kqmj2LL96LAJVJNCz3nc0eE/RLsbCFZDcFcWVW34hNpcFjgz9f+1ie1t9aNCuiyxkA5WK4yfbGSS2yfyQOEE1JI=
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:MN2PR16MB3135.namprd16.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(366004)(8676002)(5660300002)(83380400001)(7696005)(316002)(55016002)(7116003)(8936002)(86362001)(186003)(2906002)(71200400001)(33656002)(9686003)(6916009)(64756008)(66446008)(38070700005)(66946007)(6506007)(966005)(76116006)(122000001)(508600001)(38100700002)(52536014)(26005)(66476007)(66556008);
+ DIR:OUT; SFP:1102; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?dUck75IS6diS+YT1rXmgj65cfRKleIuqlUFjfQova9mjRNwt6GGM4DI3zzvF?=
+ =?us-ascii?Q?vXQrcDeiywGcuMm/H7eFFuTcJfeICiz1tbWxLzbImUbxMVIaZEIbntQCLSY9?=
+ =?us-ascii?Q?spyE8Z+diTAG6wIzgb50zFlqElD+hsWUxehQzaluWnJ7tSZAu6EbJ8HgyUq6?=
+ =?us-ascii?Q?GsPYBanlTuNn2Jx1X6R+pYy6fFXqnfNRaoiLObfC/i5KS3C0wO/PGwbSITeB?=
+ =?us-ascii?Q?8ydI+k/Mn71vkrBG5Qn4alabXktQTrmsXpdLVSmzki3SwgPPCQ/D2wZtDpiF?=
+ =?us-ascii?Q?5idGO7Y9PRu2+BNADtVccVkuvYqNDQdZc5eLUyBjurgYYp0zru0NGgaSpcS1?=
+ =?us-ascii?Q?qJva20reEii3z0QRa6C6xkg7M3sLjElyYMUe9g/s7S0tEBjFtkoNRdgQFEyK?=
+ =?us-ascii?Q?N9ljlZFs0h97jC3KCWo7xAC4KsuWNfTBeanlSG72BXbEH0nXKTtYSnYDrxE4?=
+ =?us-ascii?Q?AogjWnHcfDkf3bhgtn89UmcqDEJZdk+7Ao/iBKl/f0vhR5ciPJTzxk1R6x7F?=
+ =?us-ascii?Q?DET92U4Gw1Mwc97SokyK7Psy+/SnHHGmMevGhBivzWHiIGt0Pki8Z52EniPI?=
+ =?us-ascii?Q?PMpBpVTLNWebd1tJ3E031NhPtfWL9agG78+vxukM56b5dhJ3KetQM5i0J8PM?=
+ =?us-ascii?Q?t5kaIDJdA/twyS7xUjWd6SDaWuVkUH/pjydO0Fr1OWo8oPx0QchOt0nrWATf?=
+ =?us-ascii?Q?xxkuLoWtXZY3xv1BOi8Su1P4yGk+IQ9I5wTV8/dIz2yesGa/efCTq9yM1xSE?=
+ =?us-ascii?Q?j7lAfE+geFvZl7vUF8sB2mLC06hhKWUuUdnL1TBqtH6od53kOeFTaXmnYTq9?=
+ =?us-ascii?Q?DMzW4i6NwtolxLXlZtSCmTDSjS0ow3pL97l043P35+RaxK6/QvRG39QGAZHI?=
+ =?us-ascii?Q?oaiLyOXX5lBtUg+/T/9T4X/KbHNQcSJp3m0Y85CZhVL92oad0qWiwWK8ByeO?=
+ =?us-ascii?Q?WZrkSp2Uum5XTbXfj3LqZ6dnq1/1pUgloszedYzdPACVVLEYVgTR9ttMrxEy?=
+ =?us-ascii?Q?fshmGBoMBClAWgf7TKGvoEkD5xJsZVER8E/5sXBBGefdGmXa57/g9inLa8Ya?=
+ =?us-ascii?Q?3mmy9lUaghVvTH2sv8C7kYntnnVc6RU9aTmAXgh3aJI6f0vWxY50Ak99TIUR?=
+ =?us-ascii?Q?A5RORLYGxDCnDTBhDahcuv8knDdoMRG6NeDMWHQk6aGd80mCHpMchUlSgfwp?=
+ =?us-ascii?Q?GwIf6DB9vnwuUJEA1plwRUnEorxA5JIO47cbKlYsPwMVB8MZGKvhtaHQEQxd?=
+ =?us-ascii?Q?p3CABmBj/CZHRoz9pfXcXr4Qhf7FvysFATrQ1VeV20H6BBU2oH9zOvCjZ1oJ?=
+ =?us-ascii?Q?a3Y=3D?=
+x-ms-exchange-transport-forked: True
 MIME-Version: 1.0
+X-OriginatorOrg: abaco.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR16MB3135.namprd16.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a4565c5a-9ec2-4225-fe04-08d96d68bb3c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Sep 2021 16:51:23.3579 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: e6f27451-899d-4d0d-b8fa-88baafa551a7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: zufr+Luq/pd1VvBuGiZHBJqB9YcqF2SnSGEouaJCDvXa2bNhKhuOE/Bn+NNFdIeLkc3WKfkWse9fEIA0/vQ8dVET9FIdhJm4wDWGr8rrGvc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR16MB3310
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210901_094045_720644_31D178FC 
-X-CRM114-Status: GOOD (  25.79  )
+X-CRM114-CacheID: sfid-20210901_095128_815566_7A8D7943 
+X-CRM114-Status: GOOD (  10.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,151 +142,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Eric Biggers <ebiggers@google.com>
+Hello,
+I bought a NXP ls1046ard evaluation board and saw some issues erasing the SPI NOR from my boot loader or ICE.
+The boot loader reported the flash as being a S25FL512 which is a uniform (256KiB) sector SPI NOR as per manufacturing ID 1 and device id 2
 
-commit d18760560593e5af921f51a8c9b64b6109d634c2 upstream.
+The eval board has in fact a S25FS512 SPI NOR which is by default a bottom boot flash. This can be disabled through a configuration register in the SPI NOR.
 
-Add a helper function fscrypt_symlink_getattr() which will be called
-from the various filesystems' ->getattr() methods to read and decrypt
-the target of encrypted symlinks in order to report the correct st_size.
+I also see that Linux describes both the S25FL512 and S25FS512 as uniform sector flash:
+{ "s25fl512s",  INFO6(0x010220, 0x4d0080, 256 * 1024, 256,
+			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+			      SPI_NOR_HAS_LOCK | USE_CLSR) },
 
-Detailed explanation:
+{ "s25fs512s",  INFO6(0x010220, 0x4d0081, 256 * 1024, 256,
+			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR)
 
-As required by POSIX and as documented in various man pages, st_size for
-a symlink is supposed to be the length of the symlink target.
-Unfortunately, st_size has always been wrong for encrypted symlinks
-because st_size is populated from i_size from disk, which intentionally
-contains the length of the encrypted symlink target.  That's slightly
-greater than the length of the decrypted symlink target (which is the
-symlink target that userspace usually sees), and usually won't match the
-length of the no-key encoded symlink target either.
 
-This hadn't been fixed yet because reporting the correct st_size would
-require reading the symlink target from disk and decrypting or encoding
-it, which historically has been considered too heavyweight to do in
-->getattr().  Also historically, the wrong st_size had only broken a
-test (LTP lstat03) and there were no known complaints from real users.
-(This is probably because the st_size of symlinks isn't used too often,
-and when it is, typically it's for a hint for what buffer size to pass
-to readlink() -- which a slightly-too-large size still works for.)
 
-However, a couple things have changed now.  First, there have recently
-been complaints about the current behavior from real users:
+According to Cypress PDF https://www.cypress.com/file/177971/download, this SPI NOR S25FL512 is indeed a uniform sector flash but with a device ID of 0x19.
+While the Spansion documentation I found (https://datasheetspdf.com/pdf-file/831993/SPANSION/S25FL512S/1 ) described it with a Device ID of 0x2.
 
-- Breakage in rpmbuild:
-  https://github.com/rpm-software-management/rpm/issues/1682
-  https://github.com/google/fscrypt/issues/305
+The S25FS512S has Device ID 0x2 according to Cypress documentation https://www.cypress.com/file/216376/download  and is a bottom boot flash.
 
-- Breakage in toybox cpio:
-  https://www.mail-archive.com/toybox@lists.landley.net/msg07193.html
+Is the SPI support for S25FS512 in Linux 5.14 disabling the bottom boot feature? I have not found it in the code. Only something related to page size.
 
-- Breakage in libgit2: https://issuetracker.google.com/issues/189629152
-  (on Android public issue tracker, requires login)
+Cheers,
+Renaud
 
-Second, we now cache decrypted symlink targets in ->i_link.  Therefore,
-taking the performance hit of reading and decrypting the symlink target
-in ->getattr() wouldn't be as big a deal as it used to be, since usually
-it will just save having to do the same thing later.
-
-Also note that eCryptfs ended up having to read and decrypt symlink
-targets in ->getattr() as well, to fix this same issue; see
-commit 3a60a1686f0d ("eCryptfs: Decrypt symlink target for stat size").
-
-So, let's just bite the bullet, and read and decrypt the symlink target
-in ->getattr() in order to report the correct st_size.  Add a function
-fscrypt_symlink_getattr() which the filesystems will call to do this.
-
-(Alternatively, we could store the decrypted size of symlinks on-disk.
-But there isn't a great place to do so, and encryption is meant to hide
-the original size to some extent; that property would be lost.)
-
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210702065350.209646-2-ebiggers@kernel.org
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/crypto/hooks.c       | 44 +++++++++++++++++++++++++++++++++++++++++
- include/linux/fscrypt.h |  7 +++++++
- 2 files changed, 51 insertions(+)
-
-diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
-index a5a40a76b8ed7..82575cfbb04db 100644
---- a/fs/crypto/hooks.c
-+++ b/fs/crypto/hooks.c
-@@ -305,3 +305,47 @@ const char *fscrypt_get_symlink(struct inode *inode, const void *caddr,
- 	return ERR_PTR(err);
- }
- EXPORT_SYMBOL_GPL(fscrypt_get_symlink);
-+
-+/**
-+ * fscrypt_symlink_getattr() - set the correct st_size for encrypted symlinks
-+ * @path: the path for the encrypted symlink being queried
-+ * @stat: the struct being filled with the symlink's attributes
-+ *
-+ * Override st_size of encrypted symlinks to be the length of the decrypted
-+ * symlink target (or the no-key encoded symlink target, if the key is
-+ * unavailable) rather than the length of the encrypted symlink target.  This is
-+ * necessary for st_size to match the symlink target that userspace actually
-+ * sees.  POSIX requires this, and some userspace programs depend on it.
-+ *
-+ * This requires reading the symlink target from disk if needed, setting up the
-+ * inode's encryption key if possible, and then decrypting or encoding the
-+ * symlink target.  This makes lstat() more heavyweight than is normally the
-+ * case.  However, decrypted symlink targets will be cached in ->i_link, so
-+ * usually the symlink won't have to be read and decrypted again later if/when
-+ * it is actually followed, readlink() is called, or lstat() is called again.
-+ *
-+ * Return: 0 on success, -errno on failure
-+ */
-+int fscrypt_symlink_getattr(const struct path *path, struct kstat *stat)
-+{
-+	struct dentry *dentry = path->dentry;
-+	struct inode *inode = d_inode(dentry);
-+	const char *link;
-+	DEFINE_DELAYED_CALL(done);
-+
-+	/*
-+	 * To get the symlink target that userspace will see (whether it's the
-+	 * decrypted target or the no-key encoded target), we can just get it in
-+	 * the same way the VFS does during path resolution and readlink().
-+	 */
-+	link = READ_ONCE(inode->i_link);
-+	if (!link) {
-+		link = inode->i_op->get_link(dentry, inode, &done);
-+		if (IS_ERR(link))
-+			return PTR_ERR(link);
-+	}
-+	stat->size = strlen(link);
-+	do_delayed_call(&done);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(fscrypt_symlink_getattr);
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 032e5bcf97012..0d1a53d6c52dc 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -298,6 +298,7 @@ extern int __fscrypt_encrypt_symlink(struct inode *inode, const char *target,
- extern const char *fscrypt_get_symlink(struct inode *inode, const void *caddr,
- 				       unsigned int max_size,
- 				       struct delayed_call *done);
-+int fscrypt_symlink_getattr(const struct path *path, struct kstat *stat);
- static inline void fscrypt_set_ops(struct super_block *sb,
- 				   const struct fscrypt_operations *s_cop)
- {
-@@ -585,6 +586,12 @@ static inline const char *fscrypt_get_symlink(struct inode *inode,
- 	return ERR_PTR(-EOPNOTSUPP);
- }
- 
-+static inline int fscrypt_symlink_getattr(const struct path *path,
-+					  struct kstat *stat)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- static inline void fscrypt_set_ops(struct super_block *sb,
- 				   const struct fscrypt_operations *s_cop)
- {
--- 
-2.33.0
 
 
 ______________________________________________________
