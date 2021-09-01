@@ -2,80 +2,88 @@ Return-Path: <SRS0=cUeG=NX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F9B9C432BE
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 11:24:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90808C4320A
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 11:29:44 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1807A61053
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 11:24:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1807A61053
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	by mail.kernel.org (Postfix) with ESMTPS id 5CBFF60F6C
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 11:29:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5CBFF60F6C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=C+UJbDnKfMB8W7EvDPahuXzsOD6NfiV+bwTaKFUi2Y4=; b=bJIpEWxulstMZxXO2wUSM/mHMn
-	Ik/Y1T8eSLO9MtScCCKx5ZveO/L2umZGQ2/NyTa4H7eE3Fry6ysSxTAEC1EolbIKlnE4HVwU8OHOT
-	ybMDJ5h9Y9i3EUvZfCsH+FUqiBc7/flnZ1J3sND6eXAtLZbRkAVRpSuPJVvbkiOg3ZbF7w8m+gYNE
-	LCOG3gLnp3pQOTaGk97u5RdieZH37W27T3jGJzo1hkqMteOGqhplHn3f4zVHHidhgkv0+2/tigues
-	ev3pbhGS8OuAzHmCneTyRpuM5PliaCRsN1yOF0bE4ibuVPg5Robcb9iA8kSuRGkTakV+Vy4JkXGPr
-	RJaQDPeA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=6lOenXAcYjpBJroTioQs4lN9zYG2f2yDEHi7egVBhuI=; b=3E2hVIFI1Wu3dk
+	29yu4yUsWospnrk8BHlf36wqyBP3E81h+deqAVrHpvd5YNTY8+2i78xsI6RqnHMZZ5g6Wwfcl3GEG
+	bm6aI8CGRk2ZCsjX7wlpsYAgL+lxCZSCu2CaA3hl8SoBHuZi/aZaRwqTeVcn+r/XehlFazyM2xb44
+	dN7WcbczlPb38i/yh0NTksazf+j2w4tSDuL1RUpwG/F0z9KSSod9rb1ICVcFfafQAk6EjBOsT7OMp
+	hnJyGFf9a19kaKZJbDgl3XUou9g68Is4qFBAVxR9+C3v5x5XPATJtKq5VwwZp5/uHRU1aSygLO+4n
+	xlnJFwfN7egZklL0Pi8Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mLOLO-005Yx7-Mu; Wed, 01 Sep 2021 11:23:50 +0000
-Received: from so254-9.mailgun.net ([198.61.254.9])
+	id 1mLOQQ-005aTO-8a; Wed, 01 Sep 2021 11:29:02 +0000
+Received: from mail-ua1-x92f.google.com ([2607:f8b0:4864:20::92f])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mLNtp-005MxJ-Ey
- for linux-mtd@lists.infradead.org; Wed, 01 Sep 2021 10:55:25 +0000
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1630493719; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=i/rV9eRMsBXO4MHz9MLGdRubgAKJZJUODTtpd0gk+CQ=;
- b=RNgg7LyHCb/5tU1sPwOh2cMH5IVhLptFr1hsFBQQlYOWoB8r1HyQS+tM9b1Hu9sd8nyKpzd3
- n33Dly0w56tJkUpEyHEL3CdA+DOD7j0Pu1QusMa3Rv5o8juZHKJhO759mSQuT/t1kVFAsYJC
- QEDxTYxJwawMk0a8WiVtS7JTkgg=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyJkZDQ0ZiIsICJsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZyIsICJiZTllNGEiXQ==
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 612f5c15825e13c54abde00c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 01 Sep 2021 10:55:17
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 84A24C43619; Wed,  1 Sep 2021 10:55:16 +0000 (UTC)
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
- (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
- (No client certificate requested) (Authenticated sender: mdalam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id B8945C43460;
- Wed,  1 Sep 2021 10:55:15 +0000 (UTC)
+ id 1mLOII-005XyS-8v
+ for linux-mtd@lists.infradead.org; Wed, 01 Sep 2021 11:20:42 +0000
+Received: by mail-ua1-x92f.google.com with SMTP id r20so1139846uat.2
+ for <linux-mtd@lists.infradead.org>; Wed, 01 Sep 2021 04:20:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=wDU05qyMlurEptD3ge36yt8avgElKgTA+xLedQ2wfFk=;
+ b=d3iPtE+8EirxpSiyPZfwSsP4vl5ksOU/K9JVtv7lP1YwvGYcu7u+l11xedPfNP1NqM
+ 43MhyetoOho0fRureNOZUS4EySrAjYF0/nctPVmGqNuGHwK78YTwvqnBJj0IGDqiHRuD
+ jrx0zSYw385aRaPHhaXrAeJ4bkm4kfJhglz2LpQYEf++Cdd7EitJgZnQ/YBqVGBlmh72
+ klQ1T7GkB1XiZzk8yQZF+uzGPaTyGWY7CcS+z3pDKHPuGPl6LYvmlGE49yCvkgNP6kpt
+ tSkEk8/UcNSQe8SE/55l0Go4FjETBqmvAeDBzO5UD8tO/YUmA/TnF67XrW5PukTg/pKW
+ GoVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=wDU05qyMlurEptD3ge36yt8avgElKgTA+xLedQ2wfFk=;
+ b=ZVIgVJ73zDziyJKUl9hHFCJL/rNNoWPfUJrHqNJPy63ZB46h+BtF+/LgfxeteBz2ku
+ WuOZqmng2WTzAynliim6KZ1we+EzM8guutLk3eVngUfdC0PCA3haMK9iqnQuMeTR/jqq
+ +yZxNG8Iiqs3XVp0W1u74gH/jx0gxjn1psfvw0S7lSeZfPWvzLl8WmQ/SvsRxAPxVEvG
+ weKN4z9YxeXEzVpJk1nY8so4G1toApW+qnCmtGFTWl0lMqFclqAIQZJt1uFQI7pkna5f
+ debeHUNXNFJLhc6qvMtsRTFUpn8arjZHCY8S7SFnAnze/yLbqFDZht+/95wc2LfFNoQe
+ tO4g==
+X-Gm-Message-State: AOAM532KStorbZ8Tk/WVsLm5kC0kaGLQXOyu85ARuX8QjA9nAxEU5MgG
+ F02oZvQHSp283KvO64zI7ewtVx2Dje5ynaXfVFA=
+X-Google-Smtp-Source: ABdhPJwI/lp1cg8u7qJQv+eT2d/mMXhc/Gr9lRMgcyX+szMmEkn2tGlyVAZnMwOJbsQaC4co6auRq0p2cAp1/YQRmhM=
+X-Received: by 2002:ab0:3c5:: with SMTP id 63mr22621397uau.106.1630495235937; 
+ Wed, 01 Sep 2021 04:20:35 -0700 (PDT)
 MIME-Version: 1.0
-Date: Wed, 01 Sep 2021 16:25:15 +0530
-From: mdalam@codeaurora.org
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: mani@kernel.org, boris.brezillon@collabora.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- sricharan@codeaurora.org, stable@kernel.org
-Subject: Re: [PATCH V2] mtd: rawnand: qcom: Update code word value for raw read
-In-Reply-To: <20210831134231.14413a4f@xps13>
-References: <1630400200-2522-1-git-send-email-mdalam@codeaurora.org>
- <20210831134231.14413a4f@xps13>
-Message-ID: <114bc85cdd51cb6c885b00d4d2819df9@codeaurora.org>
-X-Sender: mdalam@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210831081329.27420-1-andrea.zanotti@tyvak.eu>
+ <3462300528bbe71207ef2164411e34d2@walle.cc>
+ <CAGiusB1JvHkX7GSvD2JsqKWwC5xBePX_ruWk9nU9gugoroLnKA@mail.gmail.com>
+ <CAGiusB0B5dN_K+bW1xudmT6UNmVOL=voBOuSVJeiYo3v6ywO8w@mail.gmail.com>
+ <4bf9396505975e3fee2cc6396a6eeff7@walle.cc>
+In-Reply-To: <4bf9396505975e3fee2cc6396a6eeff7@walle.cc>
+From: Andrea Zanotti <andreazanottifo@gmail.com>
+Date: Wed, 1 Sep 2021 13:20:25 +0200
+Message-ID: <CAGiusB29O+sNn9j2U9-VG0QV=9npUuWV=d5_sLyqD54SRgq9qA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: micron-st: added support for np8p128ax60
+To: Michael Walle <michael@walle.cc>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org, 
+ linux-kernel@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210901_035521_632873_B9B582D3 
-X-CRM114-Status: GOOD (  21.52  )
+X-CRM114-CacheID: sfid-20210901_042038_406292_633FD662 
+X-CRM114-Status: GOOD (  52.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,54 +95,195 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMjAyMS0wOC0zMSAxNzoxMiwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiBIaSBNZCwKPiAKPiBN
-ZCBTYWRyZSBBbGFtIDxtZGFsYW1AY29kZWF1cm9yYS5vcmc+IHdyb3RlIG9uIFR1ZSwgMzEgQXVn
-IDIwMjEKPiAxNDoyNjo0MCArMDUzMDoKPiAKPj4gRnJvbSBRUElDIFYyIG9ud2FyZHMgdGhlcmUg
-aXMgYSBzZXBhcmF0ZSByZWdpc3RlciB0byByZWFkCj4+IGxhc3QgY29kZSB3b3JkICJRUElDX05B
-TkRfUkVBRF9MT0NBVElPTl9MQVNUX0NXX24iLgo+PiAKPj4gcWNvbV9uYW5kY19yZWFkX2N3X3Jh
-dygpIGlzIHVzZWQgdG8gcmVhZCBvbmx5IG9uZSBjb2RlIHdvcmQKPj4gYXQgYSB0aW1lLiBJZiB3
-ZSB3aWxsIGNvbmZpZ3VyZSBudW1iZXIgb2YgY29kZSB3b3JkcyB0byAxIGluCj4+IGluIFFQSUNf
-TkFORF9ERVYwX0NGRzAgcmVnaXN0ZXIgdGhlbiBRUElDIGNvbnRyb2xsZXIgdGhpbmtzCj4+IGl0
-cyByZWFkaW5nIHRoZSBsYXN0IGNvZGUgd29yZCwgc2luY2UgZnJvbSBRUElDIFYyIG9ud2FyZHMK
-Pj4gd2UgYXJlIGhhdmluZyBzZXBhcmF0ZSByZWdpc3RlciB0byByZWFkIHRoZSBsYXN0IGNvZGUg
-d29yZCwKPj4gd2UgaGF2ZSB0byBjb25maWd1cmUgIlFQSUNfTkFORF9SRUFEX0xPQ0FUSU9OX0xB
-U1RfQ1dfbiIKPj4gcmVnaXN0ZXIgdG8gZmV0Y2ggZGF0YSBmcm9tIGNvbnRyb2xsZXIgYnVmZmVy
-IHRvIHN5c3RlbQo+PiBtZW1vcnkuCj4+IAo+PiBDYzogc3RhYmxlQGtlcm5lbC5vcmcKPiAKPiBZ
-b3UgbWlzcyB0aGUgRml4ZXMgdGFnIHdoaWNoIGlzIGNlcnRhaW5seSB0aGUgbW9zdCBpbXBvcnRh
-bnQuCgogICBVcGRhdGVkIGluIFYzIHBhdGNoLgo+IAo+PiBTaWduZWQtb2ZmLWJ5OiBNZCBTYWRy
-ZSBBbGFtIDxtZGFsYW1AY29kZWF1cm9yYS5vcmc+Cj4+IAo+PiBbVjJdCj4+ICAqIEFkZGVkIHN0
-YWJsZSB0YWdzCj4gCj4gVGhlIGNoYW5nZWxvZyBzaG91bGQgbm90IGJlIHBhcnQgb2YgdGhlIGNv
-bW1pdCBtZXNzYWdlLgo+IFlvdSBzaG91bGQgcHV0IGl0Li4uCj4gCiAgIFVwZGF0ZWQgaW4gVjMg
-cGF0Y2guCgo+PiAtLS0KPiAKPiAuLi5oZXJlLgo+IAo+PiAgZHJpdmVycy9tdGQvbmFuZC9yYXcv
-cWNvbV9uYW5kYy5jIHwgOCArKysrKystLQo+PiAgMSBmaWxlIGNoYW5nZWQsIDYgaW5zZXJ0aW9u
-cygrKSwgMiBkZWxldGlvbnMoLSkKPj4gCj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5k
-L3Jhdy9xY29tX25hbmRjLmMgCj4+IGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvcWNvbV9uYW5kYy5j
-Cj4+IGluZGV4IGVmMGJhZGUuLjA0ZTZmN2IgMTAwNjQ0Cj4+IC0tLSBhL2RyaXZlcnMvbXRkL25h
-bmQvcmF3L3Fjb21fbmFuZGMuYwo+PiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9xY29tX25h
-bmRjLmMKPj4gQEAgLTE2NzYsMTMgKzE2NzYsMTcgQEAgcWNvbV9uYW5kY19yZWFkX2N3X3Jhdyhz
-dHJ1Y3QgbXRkX2luZm8gKm10ZCwgCj4+IHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsCj4+ICAJc3Ry
-dWN0IG5hbmRfZWNjX2N0cmwgKmVjYyA9ICZjaGlwLT5lY2M7Cj4+ICAJaW50IGRhdGFfc2l6ZTEs
-IGRhdGFfc2l6ZTIsIG9vYl9zaXplMSwgb29iX3NpemUyOwo+PiAgCWludCByZXQsIHJlZ19vZmYg
-PSBGTEFTSF9CVUZfQUNDLCByZWFkX2xvYyA9IDA7Cj4+ICsJaW50IHJhd19jdyA9IGN3Owo+PiAK
-Pj4gIAluYW5kX3JlYWRfcGFnZV9vcChjaGlwLCBwYWdlLCAwLCBOVUxMLCAwKTsKPj4gIAlob3N0
-LT51c2VfZWNjID0gZmFsc2U7Cj4+IAo+PiArCWlmIChuYW5kYy0+cHJvcHMtPnFwaWNfdjIpCj4+
-ICsJCXJhd19jdyA9IGVjYy0+c3RlcHMgLSAxOwo+PiArCj4+ICAJY2xlYXJfYmFtX3RyYW5zYWN0
-aW9uKG5hbmRjKTsKPj4gIAlzZXRfYWRkcmVzcyhob3N0LCBob3N0LT5jd19zaXplICogY3csIHBh
-Z2UpOwo+PiAtCXVwZGF0ZV9yd19yZWdzKGhvc3QsIDEsIHRydWUsIGN3KTsKPj4gKwl1cGRhdGVf
-cndfcmVncyhob3N0LCAxLCB0cnVlLCByYXdfY3cpOwo+PiAgCWNvbmZpZ19uYW5kX3BhZ2VfcmVh
-ZChjaGlwKTsKPj4gCj4+ICAJZGF0YV9zaXplMSA9IG10ZC0+d3JpdGVzaXplIC0gaG9zdC0+Y3df
-c2l6ZSAqIChlY2MtPnN0ZXBzIC0gMSk7Cj4+IEBAIC0xNzExLDcgKzE3MTUsNyBAQCBxY29tX25h
-bmRjX3JlYWRfY3dfcmF3KHN0cnVjdCBtdGRfaW5mbyAqbXRkLCAKPj4gc3RydWN0IG5hbmRfY2hp
-cCAqY2hpcCwKPj4gIAkJbmFuZGNfc2V0X3JlYWRfbG9jKGNoaXAsIGN3LCAzLCByZWFkX2xvYywg
-b29iX3NpemUyLCAxKTsKPj4gIAl9Cj4+IAo+PiAtCWNvbmZpZ19uYW5kX2N3X3JlYWQoY2hpcCwg
-ZmFsc2UsIGN3KTsKPj4gKwljb25maWdfbmFuZF9jd19yZWFkKGNoaXAsIGZhbHNlLCByYXdfY3cp
-Owo+PiAKPj4gIAlyZWFkX2RhdGFfZG1hKG5hbmRjLCByZWdfb2ZmLCBkYXRhX2J1ZiwgZGF0YV9z
-aXplMSwgMCk7Cj4+ICAJcmVnX29mZiArPSBkYXRhX3NpemUxOwo+IAo+IFRoYW5rcywKPiBNaXF1
-w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Hi Michael,
+
+I performed the test with drivers/misc/eeprom/at25.c.
+
+I configured the DTS as such:
+spi_pcm@0 {
+compatible = "atmel,at25";
+reg = <0>;
+spi-max-frequency = <50000000>;
+size = <16777216>;
+pagesize = <64>;
+address-width = <24>;
+label = "micron_pcm";
+};
+and activated the driver itself in the kernel configuration.
+
+I think the system is recognizing it:
+# ls -l /sys/bus/spi/devices/spi0.0/eeprom
+-rw-------    1 root     root      16777216 Jan  1 00:01
+/sys/bus/spi/devices/spi0.0/eeprom
+
+However, if I am not wrong (again, please correct me if I am wrong)
+this driver does not
+work with the MTD layer (I am booting with the following cmdline bootargs:
+mtdparts=micron_pcm:128k(bootstrap),128k(fdt),10M(kernel/rootfs),-(spare)
+and I expected to have the same partitions as before, but of course
+they are missing.)
+
+I am checking the Company ID on the document "JEP106BC", revisioned on
+June 2020,
+downloaded from here https://www.jedec.org/system/files/docs/JEP106BC.pdf.
+
+STMicroelectronics should be 20
+Micron should be 2C
+Intel is advertised as 89, in Table 1 "Manufacturer's Identification Code".
+
+How do you suggest to proceed?
+
+Andrea
+
+Il giorno mar 31 ago 2021 alle ore 17:05 Michael Walle
+<michael@walle.cc> ha scritto:
+>
+> Hi Andrea,
+>
+> Am 2021-08-31 12:11, schrieb Andrea Zanotti:
+> > Il giorno mar 31 ago 2021 alle ore 11:09 Andrea Zanotti
+> > <andreazanottifo@gmail.com> ha scritto:
+> >>
+> >> Hi Michael,
+> >>
+> >> Il giorno mar 31 ago 2021 alle ore 10:39 Michael Walle
+> >> <michael@walle.cc> ha scritto:
+> >>>
+> >>> Hi Andrea,
+> >>>
+> >>> Am 2021-08-31 10:13, schrieb Andrea Zanotti:
+> >>> > From: Andrea Zanotti <andreazanottifo@gmail.com>
+> >>> >
+> >>> > Added support for P8P Parallel Phase Change Memory.
+> >>>
+> >>> Please use present tense, eg "add support..."
+> >>>
+> >>> Is there a public datasheet? If so, please include it above
+> >>> your SoB like so:
+> >>> Datasheet: https://...
+> >>>
+> >>
+> >> I will format the header as per your suggestions. I used the same
+> >> datasheet
+> >> linked by you at the end of the email
+> >>
+> >>>
+> >>> > Added memory information (page size and sector size) as per data-
+> >>> > sheet information, after typos corrections.
+> >>>
+> >>> After typos corrections?
+> >>>
+> >>
+> >> The one specified in the following paragraph. I'll better write this.
+> >> (What I meant
+> >> is that there are some typos in the datasheet itself)
+> >>
+> >>>
+> >>> > At page 37, paragraph 'SPI Memory Organization', it is written
+> >>> > down that the memory is organized as:
+> >>> >  * 16.772.216 bytes (typo here, there 16.777.216 bytes)
+> >>> >  * 128 sectors of 128 Kbytes each (correct)
+> >>> >  * 131.072 pages of 64 bytes each (typo here, as the total would be
+> >>> >    64Mbit, but the total memory is actually 128Mbit, correct value
+> >>> >    is 262.144 pages)
+> >>> >
+> >>> > Patch tested against the aforementioned PCM memory.
+> >>>
+> >>> What SPI host controller was used?
+> >>>
+> >>
+> >> I used an AT91SAM9G20 processor, SPI controller "atmel,at91rm9200-spi"
+> >> (spi-atmel.c)
+> >>
+> >>>
+> >>> > No known regressions inserted, as the patch only adds the possibility
+> >>> > to recognize said PCM memory inside the common spi-nor driver.
+> >>>
+> >>> Please drop this. If there were any regressions, the patch wouldn't
+> >>> be picked up anyway.
+> >>>
+> >>
+> >> It will be dropped.
+> >>
+> >>> >
+> >>> > Signed-off-by: Andrea Zanotti <andreazanottifo@gmail.com>
+> >>> > ---
+> >>> >  drivers/mtd/spi-nor/micron-st.c | 1 +
+> >>> >  1 file changed, 1 insertion(+)
+> >>> >
+> >>> > diff --git a/drivers/mtd/spi-nor/micron-st.c
+> >>> > b/drivers/mtd/spi-nor/micron-st.c
+> >>> > index c224e59820a1..c78331451082 100644
+> >>> > --- a/drivers/mtd/spi-nor/micron-st.c
+> >>> > +++ b/drivers/mtd/spi-nor/micron-st.c
+> >>> > @@ -128,6 +128,7 @@ static const struct flash_info micron_parts[] = {
+> >>> >       { "mt35xu02g", INFO(0x2c5b1c, 0, 128 * 1024, 2048,
+> >>> >                           SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
+> >>> >                           SPI_NOR_4B_OPCODES) },
+> >>> > +     { "np8p128ax60", {0x89, 0xda, 0x18}, 3, 128 * 1024, 128, 64, 0, 0 },
+> >>>
+> >>> Eh? Please use INFO(). And why isn't this 0x20 for micron.
+> >>>
+> >>
+> >> With INFO() macro I am locked in with .page_size = 256 (I would need
+> >> 64), or am I missing something?
+>
+> Ok I see. Mh, then maybe there should be a new macro where you can
+> set the page_size?
+>
+> >>>
+> >>> I found this datasheet:
+> >>> https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/NP8P128Ax60E_Rev_K.pdf
+> >>>
+> >>> According to that datasheet, the manuf id is 0x20. And the device id
+> >>> should be either 0x88e1 or 0x8821.
+> >>>
+> >>
+> >> You are right, checking it right now.
+> >>
+> >
+> > - As per datasheet, table 10 on page 18, Manufacturer code is 0x89
+> > (column "data" for parameter "Manufacturer Code").
+>
+> That is for the command 90h (which is for the parallel interface?). We
+> issue 9Fh and according to the "READ IDENTIFICATION (RDID)" chapter:
+>
+>    The manufacturer identification is assigned by JEDEC and has the
+>    value 20h for Micron.
+>
+> And in fact it is assigned by JEDEC, see below.
+>
+> > - On the datasheet, I agree with you that the device code is
+> > advertised as either 0x88e1 or 0x8821. I changed the byte array
+> > to something wrong in order to have the debug warning on the JEDEC id
+> > bytes, and this is the log:
+> >
+> > spi-nor spi0.0: unrecognized JEDEC id bytes: 89 da 18 00 00 00
+> >
+> > Second and third byte are "0xda" and "0x18". I am not an expert in the
+> > spi-nor driver, but from my understanding
+> > (if it's wrong, please correct me) the spi-nor driver tries to match
+> > the the read bytes from the memory with the ones
+> > in the tables. I don't know if the datasheet is wrong also in that
+> > cell of the table, or if I am interpreting the data wrongly.
+>
+> Looks like the datasheet is wrong or something is broken here. Yes
+> you are correct in assuming that these are in fact the ID bytes.
+>
+> We'd need to check what vendor 0x89 is to avoid collisions with other
+> vendors/flashes.
+>
+> Btw this "flash" has no need for an erase, just like the MRAM or an
+> SPI EEPROM. Could you have a look at drivers/misc/eeprom/at25.c if
+> that will work for you?
+>
+> -michael
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
