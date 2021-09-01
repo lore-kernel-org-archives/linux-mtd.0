@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7797C432BE
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 21:01:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 025C7C4320A
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 21:02:06 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8280D6069E
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 21:01:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8280D6069E
+	by mail.kernel.org (Postfix) with ESMTPS id C6A006056C
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Sep 2021 21:02:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C6A006056C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,17 +23,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ATlLFv6aWmfNKv7tGW5FC2V9Xy/VtCzt6wCxGe+nqu4=; b=QSOwcCP7rLSjcq
-	G9t7z30q1F/EzIU7ByeD8A2DezZ9Qti/z9i1v4Or2kZUCjq7wYWiIl882kGcYbbfFuh7fmvleU8qG
-	bFDKIejnoHIfB0xMWrZN4iXEsP8AJ3gOtMzOyuT62LVRsukWGEhU/itqBA57u95iRFRyL7EOUfO3T
-	8XjeV0L8M038ZlHSSar8cLVFDZQxaMBRE39tSgGiF8o3cFlwf7NwoYpvlBLXrPxyhHboUqxoiyOoV
-	wdw40yT74MGEG1KQMjr/sfMGssEF9DUiu+Ox6hSjqNG96rSrGpkkt5b05exQH1Zq3PvPQcKLyLEET
-	2V59Y0yVpNO8RVOIzOBg==;
+	List-Owner; bh=YAlbfkEoawZaU0+WsGQGMu2/rgtFH/r3vykmlt8bmUM=; b=PbCZJRDLBDP3Ca
+	4DBxTlNVMIhFTg5IK3qyPgYJEl772gjyLmnPccCs3QJipY4SUbpqMqGll5/ZNYZ8paUkyxMZ19KB4
+	KMfbqq3f+kNbqz+WZ/SNKvDMyK0MUiLde8rghMcVeh6VeB16T+ceeTkv7BoAXRgjBiheeTJlwGcco
+	ffFq+FWuucbQOVpk3NxnJaptBe5Bn9wtfswUZgEUxAxlwxXBLywjoXml4vqSES4ciasAZcMyMc0rz
+	71aKw9TVRNIiX7MYp4kegjRsLVV/SHpjeTmt4BzYj0OMn18XEhGFhlnxmRBZc8l1IMj/CEswBfyLI
+	3xmVm+u9IVv0syxV3IGg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mLXM9-007LfJ-9X; Wed, 01 Sep 2021 21:01:13 +0000
+	id 1mLXMO-007Lli-TB; Wed, 01 Sep 2021 21:01:28 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1mLXLR-007LW9-E5; Wed, 01 Sep 2021 21:00:29 +0000
+ (Red Hat Linux)) id 1mLXLR-007LWF-Ik; Wed, 01 Sep 2021 21:00:29 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, bhelgaas@google.com, liushixin2@huawei.com,
  thunder.leizhen@huawei.com, lee.jones@linaro.org, geoff@infradead.org,
@@ -44,9 +44,9 @@ To: axboe@kernel.dk, bhelgaas@google.com, liushixin2@huawei.com,
 Cc: linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
  linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
  Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 04/10] ps3vram: add error handling support for add_disk()
-Date: Wed,  1 Sep 2021 14:00:22 -0700
-Message-Id: <20210901210028.1750956-5-mcgrof@kernel.org>
+Subject: [PATCH 06/10] block/rsxx: add error handling support for add_disk()
+Date: Wed,  1 Sep 2021 14:00:24 -0700
+Message-Id: <20210901210028.1750956-7-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210901210028.1750956-1-mcgrof@kernel.org>
 References: <20210901210028.1750956-1-mcgrof@kernel.org>
@@ -73,29 +73,59 @@ error handling.
 
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/block/ps3vram.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/block/rsxx/core.c |  4 +++-
+ drivers/block/rsxx/dev.c  | 12 +++++++++---
+ 2 files changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/block/ps3vram.c b/drivers/block/ps3vram.c
-index c7b19e128b03..af2a0d09c598 100644
---- a/drivers/block/ps3vram.c
-+++ b/drivers/block/ps3vram.c
-@@ -755,9 +755,14 @@ static int ps3vram_probe(struct ps3_system_bus_device *dev)
- 	dev_info(&dev->core, "%s: Using %llu MiB of GPU memory\n",
- 		 gendisk->disk_name, get_capacity(gendisk) >> 11);
+diff --git a/drivers/block/rsxx/core.c b/drivers/block/rsxx/core.c
+index 83636714b8d7..8d9d69f5dfbc 100644
+--- a/drivers/block/rsxx/core.c
++++ b/drivers/block/rsxx/core.c
+@@ -935,7 +935,9 @@ static int rsxx_pci_probe(struct pci_dev *dev,
+ 			card->size8 = 0;
+ 	}
  
--	device_add_disk(&dev->core, gendisk, NULL);
-+	error = device_add_disk(&dev->core, gendisk, NULL);
-+	if (error)
-+		goto out_cleanup_disk;
+-	rsxx_attach_dev(card);
++	st = rsxx_attach_dev(card);
++	if (st)
++		goto failed_create_dev;
+ 
+ 	/************* Setup Debugfs *************/
+ 	rsxx_debugfs_dev_new(card);
+diff --git a/drivers/block/rsxx/dev.c b/drivers/block/rsxx/dev.c
+index 1cc40b0ea761..b2d3ac3efce2 100644
+--- a/drivers/block/rsxx/dev.c
++++ b/drivers/block/rsxx/dev.c
+@@ -192,6 +192,8 @@ static bool rsxx_discard_supported(struct rsxx_cardinfo *card)
+ 
+ int rsxx_attach_dev(struct rsxx_cardinfo *card)
+ {
++	int err = 0;
 +
- 	return 0;
+ 	mutex_lock(&card->dev_lock);
  
-+out_cleanup_disk:
-+	blk_cleanup_disk(gendisk);
- out_cache_cleanup:
- 	remove_proc_entry(DEVICE_NAME, NULL);
- 	ps3vram_cache_cleanup(dev);
+ 	/* The block device requires the stripe size from the config. */
+@@ -200,13 +202,17 @@ int rsxx_attach_dev(struct rsxx_cardinfo *card)
+ 			set_capacity(card->gendisk, card->size8 >> 9);
+ 		else
+ 			set_capacity(card->gendisk, 0);
+-		device_add_disk(CARD_TO_DEV(card), card->gendisk, NULL);
+-		card->bdev_attached = 1;
++		err = device_add_disk(CARD_TO_DEV(card), card->gendisk, NULL);
++		if (err == 0)
++			card->bdev_attached = 1;
+ 	}
+ 
+ 	mutex_unlock(&card->dev_lock);
+ 
+-	return 0;
++	if (err)
++		blk_cleanup_disk(card->gendisk);
++
++	return err;
+ }
+ 
+ void rsxx_detach_dev(struct rsxx_cardinfo *card)
 -- 
 2.30.2
 
