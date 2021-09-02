@@ -2,67 +2,67 @@ Return-Path: <SRS0=etPf=NY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80EE4C432BE
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Sep 2021 09:18:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FD7BC432BE
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Sep 2021 09:56:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3192D60FE6
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Sep 2021 09:18:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3192D60FE6
+	by mail.kernel.org (Postfix) with ESMTPS id 41D2760724
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Sep 2021 09:56:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 41D2760724
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=91qN6NZpFhqXTzwOBb0YnGsGi0TYJ1UCVFlB1lMXkz4=; b=ZSI0MN1IaV9LNk
-	l+e0fatGu1d0GYerOsdDNQZ59E2NRfFXaZs8dXVghkCSEWwO9/2vztC9tCtHs4F1glYfd0I0bgNjb
-	Pn2I/i0BU+qHW0rqxf8Q8n9+3zzx0Dj+4TR/FGJ8jnj1hbSExVZ+puGSZJ+RI0w7aCs8nRhVRYPE/
-	YAwHbj/jgbeaZYC2yMh1iM8IT9v1I4cY6qJIE3DOPeO9W9Z3y/OXAlf8bfVouduwR2cgZmJSXr/p5
-	20BSV5rkbhQJoe3pdbeaVFqyY9sqX0d1QXsiq1teObu6ujo464Pqynf2f5HamwHt8cJM0gEMpPOy3
-	WS6G78pb9ZUjj6kgb0Wg==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=u04ViAAlyvcBoYJ5eUe2It+cMvKjn2tN+iZf7TLw0DU=; b=nBIdlgJupBT3vN
+	gUL+va1bj/51Ez7dEmIZv+dKOQtwNVubYg17TlB7MI8Bx9WmIssvBQ8NbhAp3nz7tXZzEcDikIpNE
+	f1Bul7EtYNoPExdtBbLOBBo/smtBTfma/2HFOFB05oAeM2mKstkxNRacagzizr0CDVon6dGXwxeYD
+	ptNLH/zVA2SZSV2O0irhJ7QdfXVmZX0sxAYTX9QEXIIyz3eJxrcd3frk42npoN03aIwiCekToZa2W
+	BzfoL8g1qCvXJWn5WqppcB9D9KH2/LTfgQr89Igzy+FNAxQhm/xOkXYyhSMpGJjfrPgavUk+xspNL
+	ND5xGm6qXfYqJdfQBfGw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mLiqs-0093jc-7X; Thu, 02 Sep 2021 09:17:42 +0000
+	id 1mLjSE-009B1U-Oz; Thu, 02 Sep 2021 09:56:18 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mLiqn-0093iw-Kb
- for linux-mtd@lists.infradead.org; Thu, 02 Sep 2021 09:17:39 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AEA9C60FE6;
- Thu,  2 Sep 2021 09:17:34 +0000 (UTC)
+ id 1mLjSC-009B0q-65
+ for linux-mtd@lists.infradead.org; Thu, 02 Sep 2021 09:56:17 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5860560525;
+ Thu,  2 Sep 2021 09:56:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1630574256;
- bh=k+p+COLdCn00GYtaVT9P/WwwAYDhVRDB8CAIAw6yoms=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=n1Xe3/ZvbnEU4ZfeoQNpf1mgJS3OXI+wINpG8dGxyqXJL+E1bILWp5dCVcwSyIUEB
- m8JW+eD5fPi2snq0qhOP46mqCSCutArczb6KC3gUkVyxnuABIX1ExmOjVnDfBlgZ1E
- GYZg4uOW8cnC0jk6k2AljGulapEtRvGhOdct47wAm5GzHhJqn/GFS47SksK3umm954
- JTtG4DzFSvuHiPQe5A2HTkIvHpLMCzv0TXhMx2lWZF5HUx1qR/2gu4A0q4bJkWpbVN
- Q5EKjq39n3Btf/zwqUvrWC9odv9H/9Wq5V9Bc8buWgHo6/5pM5ouYaKJYJ8PqUtydI
- VdTp30wXdpkbw==
-Date: Thu, 2 Sep 2021 14:47:30 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Md Sadre Alam <mdalam@codeaurora.org>
-Cc: miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, sricharan@codeaurora.org, stable@kernel.org
-Subject: Re: [PATCH V4] mtd: rawnand: qcom: Update code word value for raw read
-Message-ID: <20210902091730.GA10844@workstation>
-References: <1630561763-18486-1-git-send-email-mdalam@codeaurora.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1630561763-18486-1-git-send-email-mdalam@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+ s=k20201202; t=1630576575;
+ bh=Z8WT93iMfPtGcY/7MRMgThZsMD/TOvlbUhTRN5F/47Y=;
+ h=From:To:Cc:Subject:Date:From;
+ b=D6nx9d14dorAF1Ocl3z8akTPeHaEQj9JyJyHjd9S/r+qHN9FTXH1BN/vtD36JZeI0
+ RZW205UVgX/RcfOP61931s611dmJvy7ZnMW2myA1huTvzn8OpBgccKzmYSJmFTz8Bz
+ m9nsuiO37oxEwPtJQDgkjT/a2vH0kn10YESL0mpb8ZU71hYh2nMSfquedxVoeRfABN
+ KzJZhU97h/NVsQETN9PCnXXeYmVC0m5GdXar40mD48jHUTcSncHj76TnohKmcYHQMy
+ v/EKrAeYqgDczAIHcHJ6OOE5XcSVgSGk21Ovsd/v5v+icPrHW9zyeh3lxQ9R831SUs
+ XTM355k1NuIYQ==
+From: Roger Quadros <rogerq@kernel.org>
+To: tony@atomide.com
+Cc: robh+dt@kernel.org, krzysztof.kozlowski@canonical.com,
+ miquel.raynal@bootlin.com, nm@ti.com, lokeshvutla@ti.com,
+ devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Roger Quadros <rogerq@kernel.org>
+Subject: [PATCH v2 0/6] dt-bindings: memory-controllers: ti,
+ gpmc: Convert to yaml
+Date: Thu,  2 Sep 2021 12:56:03 +0300
+Message-Id: <20210902095609.16583-1-rogerq@kernel.org>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210902_021737_774361_D05AF2B1 
-X-CRM114-Status: GOOD (  24.43  )
+X-CRM114-CacheID: sfid-20210902_025616_298055_975BFEB3 
+X-CRM114-Status: UNSURE (   9.94  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,107 +74,76 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Sep 02, 2021 at 11:19:23AM +0530, Md Sadre Alam wrote:
-> From QPIC V2 onwards there is a separate register to read
-> last code word "QPIC_NAND_READ_LOCATION_LAST_CW_n".
-> 
-> qcom_nandc_read_cw_raw() is used to read only one code word
-> at a time. If we will configure number of code words to 1 in
-> in QPIC_NAND_DEV0_CFG0 register then QPIC controller thinks
-> its reading the last code word, since from QPIC V2 onwards
-> we are having separate register to read the last code word,
-> we have to configure "QPIC_NAND_READ_LOCATION_LAST_CW_n"
-> register to fetch data from controller buffer to system
-> memory.
-> 
-> Fixes: 503ee5aa ("mtd: rawnand: qcom: update last code word register")
+Hi,
 
-Commit hash should be of 12 digits.
+This series converts ti,gpmc memory controller and ti,gpmc-nand and
+ti,gpmc-onenand MTD controller bindings to yaml.
 
-> Cc: stable@kernel.org
-> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
-> ---
-> [V4]
->  * Added commit message
->  * Added changelog
-> 
->  In commit 503ee5aa added QPIC V2 support. Since QPIC V2 onwards there
->  is separate register to get last CW data. If total number of CW configred is 1 
->  then , QPIC controller treat this as last CW and software shhould copy data to memory
->  via QPIC_NAND_READ_LOCATION_LAST_CW_n register instead of QPIC_NAND_READ_LOCATION_n.
->  Since in raw read we are configuring total number of CW 1, this change fixes
->  this if total number of CW 1 then make this as last CW.  raw_cw = ecc->steps - 1;
->  since ecc->steps holds total number of CWs.
-> 
+cheers,
+-roger
 
-This is not a changelog. Changelog should mention what has been changed
-between versions from v1 to v4. For example:
+Changelog:
+v2:
+- Fix all errors in dtbs_check and dt_bindings_check
+- remove references to gpmc-omap.txt
+- Convert ti,gpmc-nand and ti,gpmc-onenand bindings to yaml as well
 
-Changes in v4:
+Roger Quadros (6):
+  ARM: dts: omap: Fixup GPMC child nodes
+  dt-bindings: memory-controllers: ti,gpmc: Convert to yaml
+  dt-bindings: mtd: ti,gpmc-nand: Convert to yaml
+  dt-bindings: mtd: ti,gpmc-onenand: Convert to yaml
+  dt-bindings: mtd: Remove gpmc-nor.txt
+  dt-bindings: net: Remove gpmc-eth.txt
 
-* Incorporated AAA comments from X
-* Changed a local variable
+ .../bindings/memory-controllers/omap-gpmc.txt | 157 --------
+ .../bindings/memory-controllers/ti,gpmc.yaml  | 364 ++++++++++++++++++
+ .../devicetree/bindings/mtd/gpmc-nand.txt     | 147 -------
+ .../devicetree/bindings/mtd/gpmc-nor.txt      |  98 -----
+ .../devicetree/bindings/mtd/gpmc-onenand.txt  |  48 ---
+ .../devicetree/bindings/mtd/ti,gpmc-nand.yaml | 109 ++++++
+ .../bindings/mtd/ti,gpmc-onenand.yaml         |  71 ++++
+ .../devicetree/bindings/net/gpmc-eth.txt      |  97 -----
+ .../boot/dts/logicpd-som-lv-baseboard.dtsi    |   2 +-
+ .../boot/dts/logicpd-torpedo-37xx-devkit.dts  |   2 +-
+ .../boot/dts/logicpd-torpedo-baseboard.dtsi   |   2 +-
+ arch/arm/boot/dts/omap-gpmc-smsc911x.dtsi     |  62 ++-
+ arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi     |  59 ++-
+ arch/arm/boot/dts/omap-zoom-common.dtsi       |  16 +-
+ arch/arm/boot/dts/omap2430-sdp.dts            |   6 +-
+ arch/arm/boot/dts/omap3-cm-t3x30.dtsi         |   6 +-
+ .../arm/boot/dts/omap3-devkit8000-common.dtsi |   4 +-
+ arch/arm/boot/dts/omap3-evm-37xx.dts          |   1 +
+ arch/arm/boot/dts/omap3-evm-common.dtsi       |   9 -
+ .../boot/dts/omap3-evm-processor-common.dtsi  |   5 +-
+ arch/arm/boot/dts/omap3-evm.dts               |   1 +
+ arch/arm/boot/dts/omap3-igep0020-common.dtsi  |   5 +-
+ arch/arm/boot/dts/omap3-ldp.dts               |   5 +-
+ arch/arm/boot/dts/omap3-n900.dts              |   2 +-
+ .../dts/omap3-overo-chestnut43-common.dtsi    |   6 +-
+ .../arm/boot/dts/omap3-overo-tobi-common.dtsi |   6 +-
+ .../boot/dts/omap3-overo-tobiduo-common.dtsi  |   8 +-
+ arch/arm/boot/dts/omap3-sb-t35.dtsi           |   4 +-
+ arch/arm/boot/dts/omap4-duovero-parlor.dts    |   6 +-
+ 29 files changed, 649 insertions(+), 659 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+ create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+ delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-nor.txt
+ delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
+ create mode 100644 Documentation/devicetree/bindings/mtd/ti,gpmc-onenand.yaml
+ delete mode 100644 Documentation/devicetree/bindings/net/gpmc-eth.txt
 
-Changes in v3:
+-- 
+2.17.1
 
-* Incorporated BBB comments from X
-
-Changes in v2:
-
-* Incorporated CCC comments from X
-
->  drivers/mtd/nand/raw/qcom_nandc.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-> index ef0bade..04e6f7b 100644
-> --- a/drivers/mtd/nand/raw/qcom_nandc.c
-> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-> @@ -1676,13 +1676,17 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
->  	struct nand_ecc_ctrl *ecc = &chip->ecc;
->  	int data_size1, data_size2, oob_size1, oob_size2;
->  	int ret, reg_off = FLASH_BUF_ACC, read_loc = 0;
-> +	int raw_cw = cw;
->  
->  	nand_read_page_op(chip, page, 0, NULL, 0);
->  	host->use_ecc = false;
->  
-> +	if (nandc->props->qpic_v2)
-> +		raw_cw = ecc->steps - 1;
-> +
-
-Sorry, I don't understand how it can work. For reading a codeword like
-0, you are reading the last codeword here if the controller is v2. And
-you'll continue to read the last codeword only for any codeword
-requested :/
-
-Thanks,
-Mani
-
->  	clear_bam_transaction(nandc);
->  	set_address(host, host->cw_size * cw, page);
-> -	update_rw_regs(host, 1, true, cw);
-> +	update_rw_regs(host, 1, true, raw_cw);
->  	config_nand_page_read(chip);
->  
->  	data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
-> @@ -1711,7 +1715,7 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
->  		nandc_set_read_loc(chip, cw, 3, read_loc, oob_size2, 1);
->  	}
->  
-> -	config_nand_cw_read(chip, false, cw);
-> +	config_nand_cw_read(chip, false, raw_cw);
->  
->  	read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
->  	reg_off += data_size1;
-> -- 
-> 2.7.4
-> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
