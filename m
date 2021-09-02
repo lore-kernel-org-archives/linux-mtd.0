@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80797C83028
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Sep 2021 17:44:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E881C83028
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Sep 2021 17:45:38 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 48FDD600AA
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Sep 2021 17:44:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 48FDD600AA
+	by mail.kernel.org (Postfix) with ESMTPS id 1B3E761101
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Sep 2021 17:45:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1B3E761101
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,17 +23,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Fcr5M+F1ebVsgL5K5ewWXMV5RGIaqCrGLBmvNUK8qh0=; b=neEM9ppfnG30c0
-	ldx2cXVuczMXSPl12wGMlz7E8SGyZ8sqlfvZmZ/WX2HYoi/PtTi/++6gbG6vKnoVJcOcY1egPQ4ud
-	Q1mg3byPvqB7yjQupRBQFqxaVTRi1MJiDsOPmpkfuLUAHAGHEeLDP48aXH+1k8gW7T+DjgLxfNxoe
-	x64nBqSwaILlNUr3LIkMyuAfYcVf8XbcJ8w93jhDN+ceUh/j9pYTl+lXN7q7bdbppsYvhQ4t0YLs6
-	8SWMiERDkk16ok7Jv6kqJo3IwIn+0roCAGuCVS+8wqPgJUGywOF461ATuCUpf/DXQPn8RS7Zq2edu
-	ROzGZZEAGYRqFk/blYEw==;
+	List-Owner; bh=yhP5DNyaVo62wDUQ6xk2HQTXSUtRte7A6kG4PRxDKNE=; b=gC07JrrFtFhq/d
+	fxf160yuAlcD1QA98cSoYA1m4beRL9elLe2HL44Xt/Wg0B6PW4SMjXzu4KNixCGBc5/+Os46qGiGD
+	v9ue8EO0cUIht1zdI6bBZoUERKvGUFu3sEJh/oKAzLRhWGfrdkTjvaC3Cqh4GbfXvxEIHECW+c3x+
+	qXvb/YIxuWtD0XNk/piqsX1yKO0JvgUwoLLfLwtYxRBrZBKjMCRU7Qu4O490fJFLLYmbqd05SHmnL
+	jmOmeOyGDzjGBR1j7rOvBb4gXdSYWbXub0+zbX91atMyiDh+C7vX4v5YwhYrlF++JAtx93A8Gt/AF
+	xUJ/6Z5GHMolSWKR2FIw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mLqlB-00AAVi-KI; Thu, 02 Sep 2021 17:44:21 +0000
+	id 1mLqlu-00AAlU-6m; Thu, 02 Sep 2021 17:45:06 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1mLqi2-00A9FS-An; Thu, 02 Sep 2021 17:41:06 +0000
+ (Red Hat Linux)) id 1mLqi2-00A9FQ-9Y; Thu, 02 Sep 2021 17:41:06 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, gregkh@linuxfoundation.org, chaitanya.kulkarni@wdc.com,
  atulgopinathan@gmail.com, hare@suse.de, maximlevitsky@gmail.com,
@@ -47,10 +47,10 @@ To: axboe@kernel.dk, gregkh@linuxfoundation.org, chaitanya.kulkarni@wdc.com,
 Cc: linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
  linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 9/9] s390/block/xpram: add error handling support for
+Subject: [PATCH 8/9] s390/block/scm_blk: add error handling support for
  add_disk()
-Date: Thu,  2 Sep 2021 10:41:05 -0700
-Message-Id: <20210902174105.2418771-10-mcgrof@kernel.org>
+Date: Thu,  2 Sep 2021 10:41:04 -0700
+Message-Id: <20210902174105.2418771-9-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210902174105.2418771-1-mcgrof@kernel.org>
 References: <20210902174105.2418771-1-mcgrof@kernel.org>
@@ -77,24 +77,29 @@ error handling.
 
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/s390/block/xpram.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/s390/block/scm_blk.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/s390/block/xpram.c b/drivers/s390/block/xpram.c
-index ce98fab4d43c..ed3904b6a9c8 100644
---- a/drivers/s390/block/xpram.c
-+++ b/drivers/s390/block/xpram.c
-@@ -371,7 +371,9 @@ static int __init xpram_setup_blkdev(void)
- 		disk->private_data = &xpram_devices[i];
- 		sprintf(disk->disk_name, "slram%d", i);
- 		set_capacity(disk, xpram_sizes[i] << 1);
--		add_disk(disk);
-+		rc = add_disk(disk);
-+		if (rc)
-+			goto out;
- 	}
+diff --git a/drivers/s390/block/scm_blk.c b/drivers/s390/block/scm_blk.c
+index 88cba6212ee2..61ecdcb2cc6a 100644
+--- a/drivers/s390/block/scm_blk.c
++++ b/drivers/s390/block/scm_blk.c
+@@ -495,9 +495,14 @@ int scm_blk_dev_setup(struct scm_blk_dev *bdev, struct scm_device *scmdev)
  
+ 	/* 512 byte sectors */
+ 	set_capacity(bdev->gendisk, scmdev->size >> 9);
+-	device_add_disk(&scmdev->dev, bdev->gendisk, NULL);
++	ret = device_add_disk(&scmdev->dev, bdev->gendisk, NULL);
++	if (ret)
++		goto out_cleanup_disk;
++
  	return 0;
+ 
++out_cleanup_disk:
++	blk_cleanup_disk(bdev->gendisk);
+ out_tag:
+ 	blk_mq_free_tag_set(&bdev->tag_set);
+ out:
 -- 
 2.30.2
 
