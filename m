@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44A7DC83028
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Sep 2021 17:43:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80797C83028
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Sep 2021 17:44:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0557F61101
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Sep 2021 17:43:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0557F61101
+	by mail.kernel.org (Postfix) with ESMTPS id 48FDD600AA
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Sep 2021 17:44:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 48FDD600AA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,17 +23,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wk5pVXSGvjNeuYTNpcosw7NnpP8kqkH/u7OQSXfEhOc=; b=Pp0NFGoBF3lG97
-	HpYfhGHhPeSwE4aloOLueBAXm0/U23M7lThi3mi4Umx4TgSD7x83OWu8d73xXvC48bsx0tIWDXVIw
-	g+1Im9QmDCo6Yj8Ro9Zh/ukX9XjyNd2rOZaAbSJarygjX01UGq/6ayzRNCmRzEo6mKqjvW9woPdoi
-	zqp2VxX+hqi4X+VHqdEr6RGqmRFvPefeFdBaOxg8mrlX2BNE0zBTFh3SrIqtjEhbbaPUHe9mRv7ri
-	PcYfoO1ZXhs4gw/yTlqL/UAB/SE9dYFEh+WQFJGGWEsBJ0EwAKjDQgjsSdotEjqc/T03EbDTG+Vbg
-	E3qiANtg8mBwKM4712HA==;
+	List-Owner; bh=Fcr5M+F1ebVsgL5K5ewWXMV5RGIaqCrGLBmvNUK8qh0=; b=neEM9ppfnG30c0
+	ldx2cXVuczMXSPl12wGMlz7E8SGyZ8sqlfvZmZ/WX2HYoi/PtTi/++6gbG6vKnoVJcOcY1egPQ4ud
+	Q1mg3byPvqB7yjQupRBQFqxaVTRi1MJiDsOPmpkfuLUAHAGHEeLDP48aXH+1k8gW7T+DjgLxfNxoe
+	x64nBqSwaILlNUr3LIkMyuAfYcVf8XbcJ8w93jhDN+ceUh/j9pYTl+lXN7q7bdbppsYvhQ4t0YLs6
+	8SWMiERDkk16ok7Jv6kqJo3IwIn+0roCAGuCVS+8wqPgJUGywOF461ATuCUpf/DXQPn8RS7Zq2edu
+	ROzGZZEAGYRqFk/blYEw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mLqkH-00AAA8-3f; Thu, 02 Sep 2021 17:43:25 +0000
+	id 1mLqlB-00AAVi-KI; Thu, 02 Sep 2021 17:44:21 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1mLqi1-00A9FE-Rh; Thu, 02 Sep 2021 17:41:05 +0000
+ (Red Hat Linux)) id 1mLqi2-00A9FS-An; Thu, 02 Sep 2021 17:41:06 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, gregkh@linuxfoundation.org, chaitanya.kulkarni@wdc.com,
  atulgopinathan@gmail.com, hare@suse.de, maximlevitsky@gmail.com,
@@ -47,9 +47,10 @@ To: axboe@kernel.dk, gregkh@linuxfoundation.org, chaitanya.kulkarni@wdc.com,
 Cc: linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
  linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 2/9] ms_block: add error handling support for add_disk()
-Date: Thu,  2 Sep 2021 10:40:58 -0700
-Message-Id: <20210902174105.2418771-3-mcgrof@kernel.org>
+Subject: [PATCH 9/9] s390/block/xpram: add error handling support for
+ add_disk()
+Date: Thu,  2 Sep 2021 10:41:05 -0700
+Message-Id: <20210902174105.2418771-10-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210902174105.2418771-1-mcgrof@kernel.org>
 References: <20210902174105.2418771-1-mcgrof@kernel.org>
@@ -74,36 +75,26 @@ We never checked for errors on add_disk() as this function
 returned void. Now that this is fixed, use the shiny new
 error handling.
 
-Contrary to the typical removal which delays the put_disk()
-until later, since we are failing on a probe we immediately
-put the disk on failure from add_disk by using
-blk_cleanup_disk().
-
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/memstick/core/ms_block.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/s390/block/xpram.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/memstick/core/ms_block.c b/drivers/memstick/core/ms_block.c
-index 4a4573fa7b0f..86c626933c1a 100644
---- a/drivers/memstick/core/ms_block.c
-+++ b/drivers/memstick/core/ms_block.c
-@@ -2156,10 +2156,14 @@ static int msb_init_disk(struct memstick_dev *card)
- 		set_disk_ro(msb->disk, 1);
+diff --git a/drivers/s390/block/xpram.c b/drivers/s390/block/xpram.c
+index ce98fab4d43c..ed3904b6a9c8 100644
+--- a/drivers/s390/block/xpram.c
++++ b/drivers/s390/block/xpram.c
+@@ -371,7 +371,9 @@ static int __init xpram_setup_blkdev(void)
+ 		disk->private_data = &xpram_devices[i];
+ 		sprintf(disk->disk_name, "slram%d", i);
+ 		set_capacity(disk, xpram_sizes[i] << 1);
+-		add_disk(disk);
++		rc = add_disk(disk);
++		if (rc)
++			goto out;
+ 	}
  
- 	msb_start(card);
--	device_add_disk(&card->dev, msb->disk, NULL);
-+	rc = device_add_disk(&card->dev, msb->disk, NULL);
-+	if (rc)
-+		goto out_cleanup_disk;
- 	dbg("Disk added");
  	return 0;
- 
-+out_cleanup_disk:
-+	blk_cleanup_disk(msb->disk);
- out_free_tag_set:
- 	blk_mq_free_tag_set(&msb->tag_set);
- out_release_id:
 -- 
 2.30.2
 
