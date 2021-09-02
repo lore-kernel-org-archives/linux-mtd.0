@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5360CC83029
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Sep 2021 17:42:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FE6BC83028
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Sep 2021 17:42:54 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 223AF610FF
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Sep 2021 17:42:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 223AF610FF
+	by mail.kernel.org (Postfix) with ESMTPS id C1016610FF
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Sep 2021 17:42:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C1016610FF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,17 +23,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gTZtAwKENparKSnbFAFFXGFmgEs5QAYvj7NNSHnAeac=; b=PAYc9+2v8cXBUQ
-	Lhyqw7m9exJ5OlUF5Z+nwUrwzIfNnkr+Ra9p3yCPcRIfp143HIwpzPp5zBvQV7cDdqUtakdtNHRL9
-	bTwnDbmAdbjp0lqS86tnk9HC6NYqniInaKsEJAqWngTbq9p+goQePKP17vN7vp0txV+cLThZl+CzZ
-	lS4TCvU3MYK607Z8VC14sQ0UzpPxb3uIVoUoiXqVtkNsmxL0FIzuGS97CyH/OyVxjWYRg6NLsdmvH
-	BqeV79omyVGcIaofOEfZ0X3MbnPVN1gG3glUBGLOF1qwSdaNtcZubtxH+d3twxxdJ224Ki9SS5tNj
-	HViMK2Y3RvNhs9Y2uiCA==;
+	List-Owner; bh=FnMB9uQaZIAlppb5Ko6sV82V4V/wsFsoeAckzCAN75o=; b=aw/h2khe8Cjo5i
+	c28giNJ1yipbpLznK2LDLNTKyRqOAyLqcCKDr5pzj+qsvNm0gci8wsOzVDun+qBDWPcLdh9h7d5eJ
+	tSAIWmpTWyW64B78p2R4kkEU5aTC/CniKANF5i297SP1kdUKoj8hbvYBKhGrVZKaZaJcuZ59lmugf
+	f0UrxN1IDF75Gl/Msh0E+86bO/+sFofzAY11ckPoI9dwMvZ41rk5QndaFxU8RCJPZvFmI4JMev3W9
+	2RPtSlFJrPPBm6b32UgC1umKIXrKPppCLUL6YmTRKXyGHylMx6uxh5nkA1ncBLDCUBZUgqgG3d8L9
+	OcSRnCGKRz7+Srpb2TiQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mLqio-00A9Z0-B8; Thu, 02 Sep 2021 17:41:54 +0000
+	id 1mLqj5-00A9fZ-Mr; Thu, 02 Sep 2021 17:42:11 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1mLqi2-00A9FK-36; Thu, 02 Sep 2021 17:41:06 +0000
+ (Red Hat Linux)) id 1mLqi1-00A9FC-PM; Thu, 02 Sep 2021 17:41:05 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, gregkh@linuxfoundation.org, chaitanya.kulkarni@wdc.com,
  atulgopinathan@gmail.com, hare@suse.de, maximlevitsky@gmail.com,
@@ -47,9 +47,9 @@ To: axboe@kernel.dk, gregkh@linuxfoundation.org, chaitanya.kulkarni@wdc.com,
 Cc: linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
  linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 5/9] mtd: add add_disk() error handling
-Date: Thu,  2 Sep 2021 10:41:01 -0700
-Message-Id: <20210902174105.2418771-6-mcgrof@kernel.org>
+Subject: [PATCH 1/9] cdrom/gdrom: add error handling support for add_disk()
+Date: Thu,  2 Sep 2021 10:40:57 -0700
+Message-Id: <20210902174105.2418771-2-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210902174105.2418771-1-mcgrof@kernel.org>
 References: <20210902174105.2418771-1-mcgrof@kernel.org>
@@ -76,33 +76,29 @@ error handling.
 
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/mtd/mtd_blkdevs.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/cdrom/gdrom.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index 44bea3f65060..343ff96589cc 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -427,7 +427,9 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
- 	if (new->readonly)
- 		set_disk_ro(gd, 1);
- 
--	device_add_disk(&new->mtd->dev, gd, NULL);
-+	ret = device_add_disk(&new->mtd->dev, gd, NULL);
-+	if (ret)
-+		goto out_cleanup_disk;
- 
- 	if (new->disk_attributes) {
- 		ret = sysfs_create_group(&disk_to_dev(gd)->kobj,
-@@ -436,6 +438,8 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+diff --git a/drivers/cdrom/gdrom.c b/drivers/cdrom/gdrom.c
+index 8e1fe75af93f..d50cc1fd34d5 100644
+--- a/drivers/cdrom/gdrom.c
++++ b/drivers/cdrom/gdrom.c
+@@ -805,9 +805,14 @@ static int probe_gdrom(struct platform_device *devptr)
+ 		err = -ENOMEM;
+ 		goto probe_fail_free_irqs;
  	}
+-	add_disk(gd.disk);
++	err = add_disk(gd.disk);
++	if (err)
++		goto probe_fail_add_disk;
++
  	return 0;
  
-+out_cleanup_disk:
-+	blk_cleanup_disk(new->disk);
- out_free_tag_set:
- 	blk_mq_free_tag_set(new->tag_set);
- out_kfree_tag_set:
++probe_fail_add_disk:
++	kfree(gd.toc);
+ probe_fail_free_irqs:
+ 	free_irq(HW_EVENT_GDROM_DMA, &gd);
+ 	free_irq(HW_EVENT_GDROM_CMD, &gd);
 -- 
 2.30.2
 
