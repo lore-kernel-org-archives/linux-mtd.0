@@ -2,63 +2,74 @@ Return-Path: <SRS0=evNl=NZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EA42C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Sep 2021 09:20:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F964C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Sep 2021 09:36:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D5ADA61051
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Sep 2021 09:20:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D5ADA61051
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 5E58260698
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Sep 2021 09:36:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5E58260698
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Te17L1J718Juo3RS6v9sOXT/j97Aa32WiphVk3ZQM3I=; b=acn6eOVcIOjYps
-	NQh2iQQ9Z/l5JuR47yBwPeX+5ME/Ojzp1CpFoROAgxS/8CmG8NlBHSwcEWP3cZah8hJdpEOyzb6dc
-	S12b9gppiKJ86f9ItN1EZFQcoYspiVn/w38/4yihVh4U90PesN9+WReNgKpaJotQ+uwI5+QJVRBVN
-	qMzFol5+yrborDVUWO+pYZlw/1CuohErG4T+PPi18kz+v4YuaiY6h+56eXYyc8EdsAEAvquMC7mow
-	mqTj2T77qZfwdSNef2slFZEwVCZXrBHpUa+wJaS3/a3Id/0Jl7IxKkBXLtZbrDaz2xA8b3NBlJcEw
-	w17Rmyrjc8P7ZBpV+6AQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=mWak77o/z1g2Pbl2ijcVQnB4j06abK8GvghCQSejkWg=; b=M6trVBpe8qG8ps0ybFXHbSaWs+
+	kg7vxjrODBU8NUZ+tBPncbropBmR+iuEl/pfv7nM3nbxxE0had6ZLSfrFDIqFw+vR51mTTGlEHVWD
+	l9TFBnydg5I9/47PVfJId91s3z3WjAhwlrkPO6qJNZwP98DiGWCxWpou0fJc2xJjNCS42pACWsoWG
+	9qltRxsTuOC+hLzy2R04oJnQRCETml81BhCU6bGTdHQEb5xOnI09jsqzE3/YmQ9wVyVrh0FmIDjhC
+	B9cJnmsv7AE0fFJiOGi/gmawig2Is5jq5HRnsw0DsYzfinfays1bTLkhE97mXwGEJl6D/jiv6fGWy
+	2Ouz/ACw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mM5Kp-00BQoS-4Z; Fri, 03 Sep 2021 09:18:07 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1mM5bz-00BWdg-9M; Fri, 03 Sep 2021 09:35:51 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mM5Kj-00BQlN-5B
- for linux-mtd@lists.infradead.org; Fri, 03 Sep 2021 09:18:02 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id BC5AC20005;
- Fri,  3 Sep 2021 09:17:56 +0000 (UTC)
-Date: Fri, 3 Sep 2021 11:17:55 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Sean Nyekjaer <sean@geanix.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Sascha Hauer
- <s.hauer@pengutronix.de>, Richard Weinberger <richard@nod.at>, Linux PM
- <linux-pm@vger.kernel.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Len Brown <len.brown@intel.com>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] PM / suspend: move userspace freeze before disk sync
-Message-ID: <20210903111755.0972850d@xps13>
-In-Reply-To: <20210903081751.3qq36nrksucqthss@skn-laptop>
-References: <20210901083442.210230-1-sean@geanix.com>
- <CAJZ5v0j5dMDSDjhuXaZd=_J5JOP4Z09WUXfjWX_iCcT4RDisCg@mail.gmail.com>
- <20210903081751.3qq36nrksucqthss@skn-laptop>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1mM5bv-00BWcQ-D3
+ for linux-mtd@lists.infradead.org; Fri, 03 Sep 2021 09:35:49 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 454FC60F91;
+ Fri,  3 Sep 2021 09:35:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1630661747;
+ bh=XlIxehrCdusGQkVYHgdMT653kTSKd9t89Vos6UvqlIo=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=LzVsxAfAmyKryyY+R9j5hUHR5WPJfZW47mxgP3oobDsXY2bzx5lVUJp/d9plZ59Gx
+ DG1pnwCS0Ni1PT5uP62AUzc/je3ZUnd/nyl9xdmtx8Rg//Gk0p1W6iDYP+HJGzfaww
+ whrDxzeiSQUnwxGUBtYO1bZjumIVXUDLb+DpmZV+XxsGMgjr+txnqXLmQcaxjPmzJ7
+ F0fKEjP3N2C/efdg1x1h1FuruSkXvRjk0K2Xr0aF2b5V9OrsNHvcVGumLFciNi+ig6
+ FYiZcm9/8MEogt1i4STwH50k/Be5Tlui+1EzTGiafZ3llPAzRmN5IEqowJWN///9eB
+ ne6lhD87COCBA==
+Subject: Re: [PATCH v2 2/6] dt-bindings: memory-controllers: ti, gpmc: Convert
+ to yaml
+To: Rob Herring <robh@kernel.org>
+Cc: tony@atomide.com, krzysztof.kozlowski@canonical.com,
+ miquel.raynal@bootlin.com, nm@ti.com, lokeshvutla@ti.com,
+ devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210902095609.16583-1-rogerq@kernel.org>
+ <20210902095609.16583-3-rogerq@kernel.org>
+ <YTEsiJiLMRYon5s3@robh.at.kernel.org>
+From: Roger Quadros <rogerq@kernel.org>
+Message-ID: <715fe0ee-a38c-c2ca-5e29-79fa0887bea0@kernel.org>
+Date: Fri, 3 Sep 2021 12:35:42 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <YTEsiJiLMRYon5s3@robh.at.kernel.org>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210903_021801_355468_2F64B8E1 
-X-CRM114-Status: GOOD (  23.96  )
+X-CRM114-CacheID: sfid-20210903_023547_546773_DA999E76 
+X-CRM114-Status: GOOD (  34.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,31 +81,266 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgU2VhbiwKCnNlYW5AZ2Vhbml4LmNvbSB3cm90ZSBvbiBGcmksIDMgU2VwIDIwMjEgMTA6MTc6
-NTEgKzAyMDA6Cgo+IE9uIFRodSwgU2VwIDAyLCAyMDIxIGF0IDA2OjI4OjE0UE0gKzAyMDAsIFJh
-ZmFlbCBKLiBXeXNvY2tpIHdyb3RlOgo+ID4gT24gV2VkLCBTZXAgMSwgMjAyMSBhdCAxMDozNSBB
-TSBTZWFuIE55ZWtqYWVyIDxzZWFuQGdlYW5peC5jb20+IHdyb3RlOiAgCj4gPiA+Cj4gPiA+IFRo
-aXMgZml4ZXMgYW4gaXNzdWUgd2hlcmUgZGF0YSByZW1haW5zIHVud3JpdHRlbiBiZWZvcmUgc3Vz
-cGVuZC4gIAo+ID4gCj4gPiBXZWxsLCBpdCBkb2Vzbid0IG1ha2UgdGhlIGlzc3VlIGdvIGF3YXks
-IGl0IGp1c3QgaGlkZXMgaXQgZm9yIHlvdSBhbmQKPiA+IGl0IG1heSB2ZXJ5IHdlbGwgZXhwb3Nl
-IGl0IGZvciBzb21lb25lIGVsc2UuICAKPiAKPiBPSwo+IAo+ID4gCj4gPiBJbiBwYXJ0aWN1bGFy
-LCBub3RlIHRoYXQgeW91IGNhbiBjb21waWxlIHRoZSBrZXJuZWwgd2l0aAo+ID4gQ09ORklHX1NV
-U1BFTkRfU0tJUF9TWU5DIHNldCB3aGljaCBtYWtlcyBpdCBub3Qgc3luYyBhdCBhbGwgZHVyaW5n
-Cj4gPiBzeXN0ZW0td2lkZSBzdXNwZW5kIGFuZCB0aGlzIGlzIGEgdmFsaWQgY2FzZSBleHBlY3Rl
-ZCB0byB3b3JrLiAgSXQKPiA+IGxvb2tzIGxpa2UgdGhpcyBjYXNlIGRvZXNuJ3Qgd29yayBmb3Ig
-eW91Lgo+ID4gICAKPiA+ID4gVUJJIHRyaWVkIHRvIHdyaXRlIGRhdGEsIGJlZm9yZSB0aGUgbXRk
-IGRldmljZSBoYWQgYmVlbiB1bnN1c3BlbmRlZC4gIAo+ID4gCj4gPiBXZWxsLCB0aGF0J3MgdGhl
-IHJlYWwgcHJvYmxlbSBhbmQgaXQgY2FuIGhhcHBlbiByZWdhcmRsZXNzIG9mIHdoZXRoZXIKPiA+
-IG9yIG5vdCB0aGlzIHBhdGNoIGlzIHRoZXJlLiAgCj4gCj4gSG93IHRvIGZpeCBpdCB0aGVuPwo+
-IFdlIGNhbid0IGxpdmUgd2l0aCBkZXZpY2VzIHRoYXQgYnJpY2tzIG9uIHVuc3VzcGVuZCA6LwoK
-V2UgdGhlbiBuZWVkIHRvIGZvY3VzIG9uIFVCSS9VQklGUyBpbXBsZW1lbnRhdGlvbiAoUmljaGFy
-ZCBpcyBjdXJyZW50bHkKb2ZmKSwgbWF5YmUgdGhlcmUgaXMgbW9yZSBsb2dpYyB0aGFuIGp1c3Qg
-YSBiYXNpYyByZXRyeSB0byBpbXBsZW1lbnQuCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
-Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9saW51eC1tdGQvCg==
+Hi Rob,
+
+On 02/09/2021 22:56, Rob Herring wrote:
+> On Thu, Sep 02, 2021 at 12:56:05PM +0300, Roger Quadros wrote:
+>> Convert omap-gpmc.txt to ti,gpmc.yaml.
+>>
+>> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+>> ---
+>>  .../bindings/memory-controllers/omap-gpmc.txt | 157 --------
+>>  .../bindings/memory-controllers/ti,gpmc.yaml  | 364 ++++++++++++++++++
+>>  .../devicetree/bindings/mtd/gpmc-nand.txt     |   2 +-
+>>  .../devicetree/bindings/mtd/gpmc-nor.txt      |   4 +-
+>>  .../devicetree/bindings/mtd/gpmc-onenand.txt  |   2 +-
+>>  .../devicetree/bindings/net/gpmc-eth.txt      |   4 +-
+>>  6 files changed, 370 insertions(+), 163 deletions(-)
+>>  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+>>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
+> 
+>> diff --git a/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml b/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
+>> new file mode 100644
+>> index 000000000000..b7d43370a95d
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
+>> @@ -0,0 +1,364 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/memory-controllers/ti,gpmc.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Texas Instruments GPMC Memory Controller device-tree bindings
+>> +
+>> +maintainers:
+>> +  - Tony Lindgren <tony@atomide.com>
+>> +  - Roger Quadros <rogerq@kernel.org>
+>> +
+>> +description:
+>> +  The GPMC is a unified memory controller dedicated for interfacing
+>> +  with external memory devices like
+>> +  - Asynchronous SRAM-like memories and ASICs
+>> +  - Asynchronous, synchronous, and page mode burst NOR flash
+>> +  - NAND flash
+>> +  - Pseudo-SRAM devices
+>> +
+>> +properties:
+>> +  compatible:
+>> +    items:
+>> +      - enum:
+>> +          - ti,omap2420-gpmc
+>> +          - ti,omap2430-gpmc
+>> +          - ti,omap3430-gpmc
+>> +          - ti,omap4430-gpmc
+>> +          - ti,am3352-gpmc
+>> +
+>> +  reg:
+>> +    items:
+>> +      - description:
+>> +          Configuration registers for the controller.
+> 
+> Just 'maxItems: 1' is sufficient.
+> 
+>> +
+>> +  interrupts: true
+> 
+> Need to define how many.
+> 
+>> +
+>> +  clocks:
+>> +    maxItems: 1
+>> +    description: |
+>> +      Functional clock. Used for bus timing calculations and
+>> +      GPMC configuration.
+>> +
+>> +  clock-names:
+>> +    items:
+>> +      - const: fck
+>> +
+>> +  dmas:
+>> +    items:
+>> +      - description: DMA channel for GPMC NAND prefetch
+>> +
+>> +  dma-names:
+>> +    items:
+>> +      - const: rxtx
+>> +
+>> +  "#address-cells":
+>> +    const: 2
+>> +
+>> +  "#size-cells":
+>> +    const: 1
+>> +
+>> +  gpmc,num-cs:
+>> +    description: maximum number of supported chip-select lines.
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +
+>> +  gpmc,num-waitpins:
+>> +    description: maximum number of supported wait pins.
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +
+>> +  ranges:
+>> +    minItems: 1
+>> +    description: |
+>> +      Must be set up to reflect the memory layout with four
+>> +      integer values for each chip-select line in use,
+>> +      <cs-number> 0 <physical address of mapping> <size>
+>> +
+>> +    items:
+>> +      - description: NAND bank 0
+>> +      - description: NOR/SRAM bank 0
+>> +      - description: NOR/SRAM bank 1
+>> +
+>> +  '#interrupt-cells':
+>> +    const: 2
+>> +
+>> +  interrupt-controller:
+>> +    description: |
+>> +      The GPMC driver implements and interrupt controller for
+>> +      the NAND events "fifoevent" and "termcount" plus the
+>> +      rising/falling edges on the GPMC_WAIT pins.
+>> +      The interrupt number mapping is as follows
+>> +      0 - NAND_fifoevent
+>> +      1 - NAND_termcount
+>> +      2 - GPMC_WAIT0 pin edge
+>> +      3 - GPMC_WAIT1 pin edge, and so on.
+>> +
+>> +  '#gpio-cells':
+>> +     const: 2
+>> +
+>> +  gpio-controller:
+>> +    description: |
+>> +      The GPMC driver implements a GPIO controller for the
+>> +      GPMC WAIT pins that can be used as general purpose inputs.
+>> +      0 maps to GPMC_WAIT0 pin.
+>> +
+>> +  ti,hwmods:
+>> +    description:
+>> +      Name of the HWMOD associated with GPMC. This is for legacy
+>> +      omap2/3 platforms only.
+>> +    $ref: /schemas/types.yaml#/definitions/string
+>> +    deprecated: true
+>> +
+>> +  ti,no-idle-on-init:
+>> +    description:
+>> +      Prevent idling the module at init. This is for legacy omap2/3
+>> +      platforms only.
+>> +    type: boolean
+>> +    deprecated: true
+>> +
+>> +patternProperties:
+>> +#  "@[0-3],[a-f0-9]+$":>> +  "^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-fA-F]+(,[0-9a-fA-F]+)*$":
+
+> 
+> Why the commented regex. There's no need for a full regex as we already 
+> do that elsewhere. You only need to define the unit-address format.
+
+This should be
+  "@[0-7],[a-f0-9]+$":
+
+I added the full regex during debug but forgot to take it off.
+
+> 
+>> +    type: object
+>> +    description: |
+>> +      The child device node represents the device connected to the GPMC
+>> +      bus. The device can be a NAND controller, SRAM device, NOR device
+>> +      or an ASIC.
+>> +
+>> +    properties:
+>> +      compatible:
+>> +        description:
+>> +          Compatible of attached device.
+> 
+> Duh. Drop.
+> 
+>> +
+>> +      reg:
+>> +        items:
+>> +        - description: Register access space for the device
+> 
+> A device with 2 register ranges isn't allowed?
+
+GPMC is actually a memory controller and we are describing the children here.
+Each child has to have a register range.
+
+> 
+>> +
+>> +# GPMC Timing properties for child nodes. All are optional and default to 0.
+>> +
+>> +      gpmc,sync-clk-ps:
+>> +        description: Minimum clock period for synchronous mode, in picoseconds
+>> +        $ref: /schemas/types.yaml#/definitions/uint32
+>  
+>            default: 0
+> 
+> And elsewhere...
+> 
+>> +
+>> +# Chip-select signal timings (in nanoseconds) corresponding to GPMC_CONFIG2:
+>> +      gpmc,cs-on-ns:
+>> +        description: Assertion time
+>> +        $ref: /schemas/types.yaml#/definitions/uint32
+> 
+> Blank line between DT properties.
+> 
+> Don't need a type ref with a standard unit suffix.
+> 
+> Is there a maximum value for all these?
+> 
+
+There is a maximum value but it is not an absolute value in time unit (ns)
+as it depends on the GPMC functional clock rate which is platform specific.
+
+e.g. for gpmc,cs-on-ns
+	maximum: GPMC clock period * 15
+
+>> +      gpmc,cs-rd-off-ns:
+>> +        description: Read deassertion time
+>> +        $ref: /schemas/types.yaml#/definitions/uint32
+>> +      gpmc,cs-wr-off-ns:
+>> +        description: Write deassertion time
+>> +        $ref: /schemas/types.yaml#/definitions/uint32
+>> +
+
+<snip>
+
+>>  
+>> diff --git a/Documentation/devicetree/bindings/net/gpmc-eth.txt b/Documentation/devicetree/bindings/net/gpmc-eth.txt
+>> index 32821066a85b..5e2f610455fa 100644
+>> --- a/Documentation/devicetree/bindings/net/gpmc-eth.txt
+>> +++ b/Documentation/devicetree/bindings/net/gpmc-eth.txt
+>> @@ -9,7 +9,7 @@ the GPMC controller with an "ethernet" name.
+>>  
+>>  All timing relevant properties as well as generic GPMC child properties are
+>>  explained in a separate documents. Please refer to
+>> -Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+>> +Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
+>>  
+>>  For the properties relevant to the ethernet controller connected to the GPMC
+>>  refer to the binding documentation of the device. For example, the documentation
+>> @@ -43,7 +43,7 @@ Required properties:
+>>  
+>>  Optional properties:
+>>  - gpmc,XXX		Additional GPMC timings and settings parameters. See
+>> -			Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+>> +			Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
+> 
+> Perhaps delete this file first in the series so you don't have to 
+> update it.
+> 
+
+Yes. Thanks for review :)
+
+cheers,
+-roger
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
