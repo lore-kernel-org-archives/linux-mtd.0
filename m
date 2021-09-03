@@ -2,77 +2,98 @@ Return-Path: <SRS0=evNl=NZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26818C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Sep 2021 11:48:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4572C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Sep 2021 13:58:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 30A1660FDC
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Sep 2021 11:48:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 30A1660FDC
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id 62DF360F12
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Sep 2021 13:58:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 62DF360F12
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kroah.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=vSSvXcTlr+yY3MSzUNL/H9Le3/kMUZrTtf2J6OPTj4I=; b=2MO0dBr9hxtwtou4QYC74z1A7S
-	mhROPW73AikzyagGXsDj1arP7y/rS9eL0Ef4hgA3/slWzOYuQxlxme1t1QaEqvCPJDC+esrw9LAHH
-	rgtq9MTTDEcfLSsS4eKcacLQSfLEpVZ/lINZ9fW/xaCPwq4oRJnoHKCh/AI6/65h9Vqu/l4nkoDO5
-	HtIjsdyUe4dBgZ5iyA+djw1LahBXpY7i1LFfb+lgqY0eae7T7DzyJSXuy1PrQResyzfkiVaM7Hfth
-	wPtVncgcF5LooafLaqMOwzYNSorrgHKKneiCDFSGxajeqRhUPyHqcqr3eYFcCGlxuh7JbudpDf5Y1
-	DSLTdYSA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=XkadqLconsm47JactTmJZhk/nB3VIwvJgvS9PDzvclw=; b=dDVUOcOj31RwtI
+	CoCOa0e4z7rdwNVYxiwlWkhT/M3D6hCDiV0PVwnL04Uuef8svS49PLgIxO9VlhLfosTWGLNI7YbDU
+	bmJO9cFxyb6U1aJKvxX2vRyhNiUNgGJOxF/t9XNIe5Ljs22o1KjmrZ4+YoPzfqFx1dW9N1gKQZdrC
+	3bWO/WYHwmoLxr0BrhChim1/AC1rdu5iBRq1daNM1TB0kllMCvm3TPRQKxmx05HhnjLhMf/rcFHl5
+	R5DQCMOBdBdAHj+fM0mhJrAXAr/BNXpDg95PULVk1PhyfpSvMgitc5ZIGRgQ6XJrASlenz3x1J/i6
+	SlxW5HxrkWvHca0qWR0w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mM7fd-00BpF3-2q; Fri, 03 Sep 2021 11:47:45 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1mM9h5-00C4vF-Dy; Fri, 03 Sep 2021 13:57:23 +0000
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mM7fT-00BpCl-1V
- for linux-mtd@lists.infradead.org; Fri, 03 Sep 2021 11:47:36 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id A045022205;
- Fri,  3 Sep 2021 13:47:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1630669650;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=TIPw+8GjiPG4C5PCTRG+FeBYw9sL+9OSm0iYayZZSNw=;
- b=WGXdV57HuKudCZWXWNPsTWvTIlZ2D+1pSI12Tv7me1slnKFxJmnrGoiTU2LixULUSIASpG
- kMuhQbrtdgiH1d2fvX5w1aKduhguRAoDjMzQSRr5UeZ0t6Mzj1axe+PrpFUNA0Q9NDatL9
- 9Aq4THFiUR0Bw+qg2udRqrWnDIcNGMg=
+ id 1mM9h2-00C4uY-IE
+ for linux-mtd@lists.infradead.org; Fri, 03 Sep 2021 13:57:21 +0000
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+ by mailnew.west.internal (Postfix) with ESMTP id B69662B01266;
+ Fri,  3 Sep 2021 09:57:13 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute4.internal (MEProxy); Fri, 03 Sep 2021 09:57:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+ date:from:to:cc:subject:message-id:references:mime-version
+ :content-type:in-reply-to; s=fm1; bh=ou2miFBf0Z/Mek7c6HsqgdNghxW
+ 0xkCyTnhz5o626Y8=; b=ujmvwFns1pMZ57Jl79UjlA3tREURGfhBIfb9nj7Xna8
+ LCCZ4jAIls9dKj64uPgX3j6A2Eqhimi6wKQd7yXicr4bCgyWDkekkceVCjekx1dC
+ jp4tQ35JTalEpBdn5S45k9r2kj9vQC/AMThtr6El6uKjz16BImd8xbkJxvh6G0KF
+ tP5xUPYQwkOLrM5E8P/0cdcJFRhjWy8atNaLCsv9QR+l7ncMX2moOETnG1KEvRUF
+ JLwPxYuGJl3aht2U4Y1hXwpUQreodEgTww7BsW+aO6Yn2lZB8vTDySnB38ZzdPBg
+ 7o+P2417ibAdq7D/ZU9xjjFfK5WhN8NccSoRwNh7qYg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=ou2miF
+ Bf0Z/Mek7c6HsqgdNghxW0xkCyTnhz5o626Y8=; b=RfSgwpmViTbjmEQiDkUbqM
+ DEU0pQCf+sDaSdLie8qCH3a8qkxA6uxumJlPny74Hcky7774It0TMrK2dWn1TFrw
+ RN9Ny50Scw0acuFxJuKA2/cUokR27N3FdtP+Aa0nH093PSgzs500eYQDyYxXLTT1
+ D618M0GTgjc3LgwgPsk6Gkdkp2NT09Fd2dp1uZ2lPYltQfaVM8jyqihPSmxM5lbu
+ iDpbI0Ww7P2RdLt8fQTAQjLK960k+Amvp1i+xLzI3Jhigl770Pew4po6sZ7jAdU+
+ jj7YzYU1I6EQlSpcIuKSOCcbq820bD6IHGF1fia4LzR5lZPGv2HyUf5ymCJYCkOg
+ ==
+X-ME-Sender: <xms:uCkyYf2a-zGiwsDzkrR3pjixUG_0I4bNcs-yKnPgre8rucTh6CI9ZA>
+ <xme:uCkyYeFnkuRkQ1h0YchVeS7JfWgXtEwjUOid2OhnPiPcD-RuH7UrDJZ1y7TqJl-rB
+ sZd60JpLJiBLg>
+X-ME-Received: <xmr:uCkyYf64drTwrzWB2BXX4CBR3jP-q084OGpy4fMYNxakIQXbrBYuDQ2wTZnN72ejEoqIS0BuZwf8NjgG_8uM8izUzW6IzvcW>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvjedgieelucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+ mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+ fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
+ vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
+ drtghomh
+X-ME-Proxy: <xmx:uCkyYU1kzJNRa0MFr0hspEjs0xuHuRuWYFVgrO2V9_Suo-8TN3gMQQ>
+ <xmx:uCkyYSGnYwl5Q2AUUcgPJpO1bLT4Y_12Xx1PdiNVjtrlovwLoKz3fw>
+ <xmx:uCkyYV9r6Lh_cUyVg9LJ62hfOuhpPJKeW69cXZlEIfnBdepf5V_-yQ>
+ <xmx:uSkyYa9D9tQwAWiYU1pcksmD8tEVt3tsODE05e5cKq4_ViO9j_q-6qpGz6A>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 3 Sep 2021 09:57:11 -0400 (EDT)
+Date: Fri, 3 Sep 2021 15:57:09 +0200
+From: Greg KH <greg@kroah.com>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: stable@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 5.4 0/4] backport fscrypt symlink fixes to 5.4
+Message-ID: <YTIptf2dFHf9sSIY@kroah.com>
+References: <20210901164041.176238-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Date: Fri, 03 Sep 2021 13:47:29 +0200
-From: Michael Walle <michael@walle.cc>
-To: Andrea Zanotti <andreazanottifo@gmail.com>
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
- <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: spi-nor: micron-st: added support for np8p128ax60
-In-Reply-To: <CAGiusB29O+sNn9j2U9-VG0QV=9npUuWV=d5_sLyqD54SRgq9qA@mail.gmail.com>
-References: <20210831081329.27420-1-andrea.zanotti@tyvak.eu>
- <3462300528bbe71207ef2164411e34d2@walle.cc>
- <CAGiusB1JvHkX7GSvD2JsqKWwC5xBePX_ruWk9nU9gugoroLnKA@mail.gmail.com>
- <CAGiusB0B5dN_K+bW1xudmT6UNmVOL=voBOuSVJeiYo3v6ywO8w@mail.gmail.com>
- <4bf9396505975e3fee2cc6396a6eeff7@walle.cc>
- <CAGiusB29O+sNn9j2U9-VG0QV=9npUuWV=d5_sLyqD54SRgq9qA@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <0719218e274bdffdf76b8689072530d3@walle.cc>
-X-Sender: michael@walle.cc
+Content-Disposition: inline
+In-Reply-To: <20210901164041.176238-1-ebiggers@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210903_044735_302939_2CC5E2DD 
-X-CRM114-Status: GOOD (  21.36  )
+X-CRM114-CacheID: sfid-20210903_065720_664546_619012F4 
+X-CRM114-Status: GOOD (  11.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,75 +105,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Andrea,
-
-Am 2021-09-01 13:20, schrieb Andrea Zanotti:
-> I performed the test with drivers/misc/eeprom/at25.c.
+On Wed, Sep 01, 2021 at 09:40:37AM -0700, Eric Biggers wrote:
+> This series backports some patches that failed to apply to 5.4-stable
+> due to the prototype of inode_operations::getattr having changed in
+> v5.12, as well several other conflicts.  Please apply to 5.4-stable.
 > 
-> I configured the DTS as such:
-> spi_pcm@0 {
-> compatible = "atmel,at25";
-> reg = <0>;
-> spi-max-frequency = <50000000>;
-> size = <16777216>;
-> pagesize = <64>;
-> address-width = <24>;
-> label = "micron_pcm";
-> };
-> and activated the driver itself in the kernel configuration.
+> Eric Biggers (4):
+>   fscrypt: add fscrypt_symlink_getattr() for computing st_size
+>   ext4: report correct st_size for encrypted symlinks
+>   f2fs: report correct st_size for encrypted symlinks
+>   ubifs: report correct st_size for encrypted symlinks
 > 
-> I think the system is recognizing it:
-> # ls -l /sys/bus/spi/devices/spi0.0/eeprom
-> -rw-------    1 root     root      16777216 Jan  1 00:01
-> /sys/bus/spi/devices/spi0.0/eeprom
+>  fs/crypto/hooks.c       | 44 +++++++++++++++++++++++++++++++++++++++++
+>  fs/ext4/symlink.c       | 11 ++++++++++-
+>  fs/f2fs/namei.c         | 11 ++++++++++-
+>  fs/ubifs/file.c         | 12 ++++++++++-
+>  include/linux/fscrypt.h |  7 +++++++
+>  5 files changed, 82 insertions(+), 3 deletions(-)
 > 
-> However, if I am not wrong (again, please correct me if I am wrong)
-> this driver does not
-> work with the MTD layer (I am booting with the following cmdline 
-> bootargs:
-> mtdparts=micron_pcm:128k(bootstrap),128k(fdt),10M(kernel/rootfs),-(spare)
-> and I expected to have the same partitions as before, but of course
-> they are missing.)
-
-You are correct, there is no mtd layer for an eeprom device. If you
-need the partitioning, the at25 won't work.
-
-> I am checking the Company ID on the document "JEP106BC", revisioned on
-> June 2020,
-> downloaded from here 
-> https://www.jedec.org/system/files/docs/JEP106BC.pdf.
-
-Btw theres one from Feb 2021, but it doesn't really matter.
-
-> STMicroelectronics should be 20
-> Micron should be 2C
-
-which matches the micron_parts[] and st_parts[].
-
-> Intel is advertised as 89, in Table 1 "Manufacturer's Identification 
-> Code".
+> -- 
+> 2.33.0
 > 
-> How do you suggest to proceed?
 
-I'm not sure, it this flash was originally made by intel or if its a
-mistake. If its made by intel it probably should go into intel.c
+All now queued up, thanks.
 
-Tudor is working on a larger patchset which addresses flash id
-collisions [1]. If it is a mistake, then it should probably go into
-the new collisions table which is introduced in this patchset.
-
-Btw. AFAIK new flash additions are delayed until that patchset
-is merged.
-
-[1] 
-https://lore.kernel.org/linux-mtd/20210727045222.905056-1-tudor.ambarus@microchip.com/
-
--michael
+greg k-h
 
 ______________________________________________________
 Linux MTD discussion mailing list
