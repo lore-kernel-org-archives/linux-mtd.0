@@ -2,74 +2,59 @@ Return-Path: <SRS0=evNl=NZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-20.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F964C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Sep 2021 09:36:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A09C4C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Sep 2021 09:51:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E58260698
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Sep 2021 09:36:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5E58260698
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 27D3560F9C
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Sep 2021 09:51:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 27D3560F9C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=mWak77o/z1g2Pbl2ijcVQnB4j06abK8GvghCQSejkWg=; b=M6trVBpe8qG8ps0ybFXHbSaWs+
-	kg7vxjrODBU8NUZ+tBPncbropBmR+iuEl/pfv7nM3nbxxE0had6ZLSfrFDIqFw+vR51mTTGlEHVWD
-	l9TFBnydg5I9/47PVfJId91s3z3WjAhwlrkPO6qJNZwP98DiGWCxWpou0fJc2xJjNCS42pACWsoWG
-	9qltRxsTuOC+hLzy2R04oJnQRCETml81BhCU6bGTdHQEb5xOnI09jsqzE3/YmQ9wVyVrh0FmIDjhC
-	B9cJnmsv7AE0fFJiOGi/gmawig2Is5jq5HRnsw0DsYzfinfays1bTLkhE97mXwGEJl6D/jiv6fGWy
-	2Ouz/ACw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Jl/ddlbssn29aKXcuGTorg7QvbEMxlPW/8HM4Ak/W8U=; b=YCOmLYAOCpgE9C
+	+4+MhqdGaepVshNaW+tIW6gfTe55Q9iFZmpCL06kOgKRtcuWDrJKgDyOIe98Ratd2jYRq5xKH96Yg
+	dv4r12PtC8nsM9gSDEJkBlOYXgE3wzd+HM3IvT51LvbI+6h1ex2MZKTMoJul1+X4pvJ9ioM/Gpjy1
+	BJ9Jy1NuY57dla0E7PEa+Lsypr1sgDrKsZbcgd6YR9oM8DQGD7RShr+5u8V+ZnyJCeJJN3tGK7XeP
+	muwdPh6JUytRCWJnVxbOR7wPKO3vxa5jwp4DoxZ1ifMsD2yhNovAbRDiAlKVYTuXBLZuLH7I3MyNV
+	DkEf4HxmeD05OJ2qAyPQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mM5bz-00BWdg-9M; Fri, 03 Sep 2021 09:35:51 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1mM5pb-00BYeX-Ew; Fri, 03 Sep 2021 09:49:55 +0000
+Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mM5bv-00BWcQ-D3
- for linux-mtd@lists.infradead.org; Fri, 03 Sep 2021 09:35:49 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 454FC60F91;
- Fri,  3 Sep 2021 09:35:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1630661747;
- bh=XlIxehrCdusGQkVYHgdMT653kTSKd9t89Vos6UvqlIo=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=LzVsxAfAmyKryyY+R9j5hUHR5WPJfZW47mxgP3oobDsXY2bzx5lVUJp/d9plZ59Gx
- DG1pnwCS0Ni1PT5uP62AUzc/je3ZUnd/nyl9xdmtx8Rg//Gk0p1W6iDYP+HJGzfaww
- whrDxzeiSQUnwxGUBtYO1bZjumIVXUDLb+DpmZV+XxsGMgjr+txnqXLmQcaxjPmzJ7
- F0fKEjP3N2C/efdg1x1h1FuruSkXvRjk0K2Xr0aF2b5V9OrsNHvcVGumLFciNi+ig6
- FYiZcm9/8MEogt1i4STwH50k/Be5Tlui+1EzTGiafZ3llPAzRmN5IEqowJWN///9eB
- ne6lhD87COCBA==
-Subject: Re: [PATCH v2 2/6] dt-bindings: memory-controllers: ti, gpmc: Convert
- to yaml
-To: Rob Herring <robh@kernel.org>
-Cc: tony@atomide.com, krzysztof.kozlowski@canonical.com,
- miquel.raynal@bootlin.com, nm@ti.com, lokeshvutla@ti.com,
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210902095609.16583-1-rogerq@kernel.org>
- <20210902095609.16583-3-rogerq@kernel.org>
- <YTEsiJiLMRYon5s3@robh.at.kernel.org>
-From: Roger Quadros <rogerq@kernel.org>
-Message-ID: <715fe0ee-a38c-c2ca-5e29-79fa0887bea0@kernel.org>
-Date: Fri, 3 Sep 2021 12:35:42 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ id 1mM5pY-00BYco-6e
+ for linux-mtd@lists.infradead.org; Fri, 03 Sep 2021 09:49:54 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id EB8181C000C;
+ Fri,  3 Sep 2021 09:49:46 +0000 (UTC)
+Date: Fri, 3 Sep 2021 11:49:46 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Frieder Schrempf <frieder.schrempf@kontron.de>,
+ linux-kernel@vger.kernel.org
+Subject: [GIT PULL] mtd: Changes for 5.15
+Message-ID: <20210903114946.3f874e6e@xps13>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <YTEsiJiLMRYon5s3@robh.at.kernel.org>
-Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210903_023547_546773_DA999E76 
-X-CRM114-Status: GOOD (  34.54  )
+X-CRM114-CacheID: sfid-20210903_024952_548004_7E31A3C4 
+X-CRM114-Status: GOOD (  16.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,266 +66,113 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Rob,
-
-On 02/09/2021 22:56, Rob Herring wrote:
-> On Thu, Sep 02, 2021 at 12:56:05PM +0300, Roger Quadros wrote:
->> Convert omap-gpmc.txt to ti,gpmc.yaml.
->>
->> Signed-off-by: Roger Quadros <rogerq@kernel.org>
->> ---
->>  .../bindings/memory-controllers/omap-gpmc.txt | 157 --------
->>  .../bindings/memory-controllers/ti,gpmc.yaml  | 364 ++++++++++++++++++
->>  .../devicetree/bindings/mtd/gpmc-nand.txt     |   2 +-
->>  .../devicetree/bindings/mtd/gpmc-nor.txt      |   4 +-
->>  .../devicetree/bindings/mtd/gpmc-onenand.txt  |   2 +-
->>  .../devicetree/bindings/net/gpmc-eth.txt      |   4 +-
->>  6 files changed, 370 insertions(+), 163 deletions(-)
->>  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
->>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
-> 
->> diff --git a/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml b/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
->> new file mode 100644
->> index 000000000000..b7d43370a95d
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
->> @@ -0,0 +1,364 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/memory-controllers/ti,gpmc.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Texas Instruments GPMC Memory Controller device-tree bindings
->> +
->> +maintainers:
->> +  - Tony Lindgren <tony@atomide.com>
->> +  - Roger Quadros <rogerq@kernel.org>
->> +
->> +description:
->> +  The GPMC is a unified memory controller dedicated for interfacing
->> +  with external memory devices like
->> +  - Asynchronous SRAM-like memories and ASICs
->> +  - Asynchronous, synchronous, and page mode burst NOR flash
->> +  - NAND flash
->> +  - Pseudo-SRAM devices
->> +
->> +properties:
->> +  compatible:
->> +    items:
->> +      - enum:
->> +          - ti,omap2420-gpmc
->> +          - ti,omap2430-gpmc
->> +          - ti,omap3430-gpmc
->> +          - ti,omap4430-gpmc
->> +          - ti,am3352-gpmc
->> +
->> +  reg:
->> +    items:
->> +      - description:
->> +          Configuration registers for the controller.
-> 
-> Just 'maxItems: 1' is sufficient.
-> 
->> +
->> +  interrupts: true
-> 
-> Need to define how many.
-> 
->> +
->> +  clocks:
->> +    maxItems: 1
->> +    description: |
->> +      Functional clock. Used for bus timing calculations and
->> +      GPMC configuration.
->> +
->> +  clock-names:
->> +    items:
->> +      - const: fck
->> +
->> +  dmas:
->> +    items:
->> +      - description: DMA channel for GPMC NAND prefetch
->> +
->> +  dma-names:
->> +    items:
->> +      - const: rxtx
->> +
->> +  "#address-cells":
->> +    const: 2
->> +
->> +  "#size-cells":
->> +    const: 1
->> +
->> +  gpmc,num-cs:
->> +    description: maximum number of supported chip-select lines.
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +
->> +  gpmc,num-waitpins:
->> +    description: maximum number of supported wait pins.
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +
->> +  ranges:
->> +    minItems: 1
->> +    description: |
->> +      Must be set up to reflect the memory layout with four
->> +      integer values for each chip-select line in use,
->> +      <cs-number> 0 <physical address of mapping> <size>
->> +
->> +    items:
->> +      - description: NAND bank 0
->> +      - description: NOR/SRAM bank 0
->> +      - description: NOR/SRAM bank 1
->> +
->> +  '#interrupt-cells':
->> +    const: 2
->> +
->> +  interrupt-controller:
->> +    description: |
->> +      The GPMC driver implements and interrupt controller for
->> +      the NAND events "fifoevent" and "termcount" plus the
->> +      rising/falling edges on the GPMC_WAIT pins.
->> +      The interrupt number mapping is as follows
->> +      0 - NAND_fifoevent
->> +      1 - NAND_termcount
->> +      2 - GPMC_WAIT0 pin edge
->> +      3 - GPMC_WAIT1 pin edge, and so on.
->> +
->> +  '#gpio-cells':
->> +     const: 2
->> +
->> +  gpio-controller:
->> +    description: |
->> +      The GPMC driver implements a GPIO controller for the
->> +      GPMC WAIT pins that can be used as general purpose inputs.
->> +      0 maps to GPMC_WAIT0 pin.
->> +
->> +  ti,hwmods:
->> +    description:
->> +      Name of the HWMOD associated with GPMC. This is for legacy
->> +      omap2/3 platforms only.
->> +    $ref: /schemas/types.yaml#/definitions/string
->> +    deprecated: true
->> +
->> +  ti,no-idle-on-init:
->> +    description:
->> +      Prevent idling the module at init. This is for legacy omap2/3
->> +      platforms only.
->> +    type: boolean
->> +    deprecated: true
->> +
->> +patternProperties:
->> +#  "@[0-3],[a-f0-9]+$":>> +  "^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-fA-F]+(,[0-9a-fA-F]+)*$":
-
-> 
-> Why the commented regex. There's no need for a full regex as we already 
-> do that elsewhere. You only need to define the unit-address format.
-
-This should be
-  "@[0-7],[a-f0-9]+$":
-
-I added the full regex during debug but forgot to take it off.
-
-> 
->> +    type: object
->> +    description: |
->> +      The child device node represents the device connected to the GPMC
->> +      bus. The device can be a NAND controller, SRAM device, NOR device
->> +      or an ASIC.
->> +
->> +    properties:
->> +      compatible:
->> +        description:
->> +          Compatible of attached device.
-> 
-> Duh. Drop.
-> 
->> +
->> +      reg:
->> +        items:
->> +        - description: Register access space for the device
-> 
-> A device with 2 register ranges isn't allowed?
-
-GPMC is actually a memory controller and we are describing the children here.
-Each child has to have a register range.
-
-> 
->> +
->> +# GPMC Timing properties for child nodes. All are optional and default to 0.
->> +
->> +      gpmc,sync-clk-ps:
->> +        description: Minimum clock period for synchronous mode, in picoseconds
->> +        $ref: /schemas/types.yaml#/definitions/uint32
->  
->            default: 0
-> 
-> And elsewhere...
-> 
->> +
->> +# Chip-select signal timings (in nanoseconds) corresponding to GPMC_CONFIG2:
->> +      gpmc,cs-on-ns:
->> +        description: Assertion time
->> +        $ref: /schemas/types.yaml#/definitions/uint32
-> 
-> Blank line between DT properties.
-> 
-> Don't need a type ref with a standard unit suffix.
-> 
-> Is there a maximum value for all these?
-> 
-
-There is a maximum value but it is not an absolute value in time unit (ns)
-as it depends on the GPMC functional clock rate which is platform specific.
-
-e.g. for gpmc,cs-on-ns
-	maximum: GPMC clock period * 15
-
->> +      gpmc,cs-rd-off-ns:
->> +        description: Read deassertion time
->> +        $ref: /schemas/types.yaml#/definitions/uint32
->> +      gpmc,cs-wr-off-ns:
->> +        description: Write deassertion time
->> +        $ref: /schemas/types.yaml#/definitions/uint32
->> +
-
-<snip>
-
->>  
->> diff --git a/Documentation/devicetree/bindings/net/gpmc-eth.txt b/Documentation/devicetree/bindings/net/gpmc-eth.txt
->> index 32821066a85b..5e2f610455fa 100644
->> --- a/Documentation/devicetree/bindings/net/gpmc-eth.txt
->> +++ b/Documentation/devicetree/bindings/net/gpmc-eth.txt
->> @@ -9,7 +9,7 @@ the GPMC controller with an "ethernet" name.
->>  
->>  All timing relevant properties as well as generic GPMC child properties are
->>  explained in a separate documents. Please refer to
->> -Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
->> +Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
->>  
->>  For the properties relevant to the ethernet controller connected to the GPMC
->>  refer to the binding documentation of the device. For example, the documentation
->> @@ -43,7 +43,7 @@ Required properties:
->>  
->>  Optional properties:
->>  - gpmc,XXX		Additional GPMC timings and settings parameters. See
->> -			Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
->> +			Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
-> 
-> Perhaps delete this file first in the series so you don't have to 
-> update it.
-> 
-
-Yes. Thanks for review :)
-
-cheers,
--roger
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8gTGludXMsCgpUaGlzIGlzIHRoZSBNVEQgUFIgZm9yIDUuMTUuCgpUaGFua3MsCk1pcXXD
+qGwKClRoZSBmb2xsb3dpbmcgY2hhbmdlcyBzaW5jZSBjb21taXQKZTczZjBmMGVlNzU0MTE3MWQ4
+OWYyZTI0OTExMzBjNzc3MWJhNThkMzoKCiAgTGludXggNS4xNC1yYzEgKDIwMjEtMDctMTEgMTU6
+MDc6NDAgLTA3MDApCgphcmUgYXZhaWxhYmxlIGluIHRoZSBHaXQgcmVwb3NpdG9yeSBhdDoKCiAg
+Z2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L210ZC9saW51eC5n
+aXQKICB0YWdzL210ZC9mb3ItNS4xNQoKZm9yIHlvdSB0byBmZXRjaCBjaGFuZ2VzIHVwIHRvIGMx
+ZmU3N2U0MjQ0MGQyY2FkNzYwNTVkZjZmYjU4Y2FhYmY2MjJkNTE6CgogIE1lcmdlIHRhZyAnbmFu
+ZC9mb3ItNS4xNScgaW50byBtdGQvbmV4dCAoMjAyMS0wOS0wMyAwMDowNDoxNiArMDIwMCkKCi0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0KTVREIGNoYW5nZXM6CiogYmxrZGV2czoKICAtIFNpbXBsaWZ5IHRoZSByZWZjb3VudGlu
+ZyBpbiBibGt0cmFuc197b3BlbiwgcmVsZWFzZX0KICAtIFNpbXBsaWZ5IGJsa3RyYW5zX2dldGdl
+bwogIC0gUmVtb3ZlIGJsa3RyYW5zX3JlZl9tdXRleAogIC0gU2ltcGxpZnkgYmxrdHJhbnNfZGV2
+X2dldAogIC0gVXNlIGxvY2tkZXBfYXNzZXJ0X2hlbGQKICAtIERvbid0IGhvbGQgZGVsX210ZF9i
+bGt0cmFuc19kZXYgaW4gYmxrdHJhbnNfe29wZW4sIHJlbGVhc2V9CiogZnRsOgogIC0gRG9uJ3Qg
+Y2FzdCBhd2F5IHRoZSB0eXBlIHdoZW4gY2FsbGluZyBhZGRfbXRkX2Jsa3RyYW5zX2RldgogIC0g
+RG9uJ3QgY2FzdCBhd2F5IHRoZSB0eXBlIHdoZW4gY2FsbGluZyBhZGRfbXRkX2Jsa3RyYW5zX2Rl
+dgogIC0gVXNlIGNvbnRhaW5lcl9vZigpIHJhdGhlciB0aGFuIGNhc3QKICAtIEZpeCB1c2UtYWZ0
+ZXItZnJlZQogIC0gQWRkIGRpc2NhcmQgc3VwcG9ydAogIC0gQWxsb3cgdXNlIG9mIE1URF9SQU0g
+Zm9yIHRlc3RpbmcgcHVycG9zZXMKKiBjb25jYXQ6CiAgLSBDaGVjayBfcmVhZCwgX3dyaXRlIGNh
+bGxiYWNrcyBleGlzdGVuY2UgYmVmb3JlIGFzc2lnbm1lbnQKICAtIEp1ZGdlIGNhbGxiYWNrIGV4
+aXN0ZW5jZSBiYXNlZCBvbiB0aGUgbWFzdGVyCiogbWFwczoKICAtIE1hcHM6IHJlbW92ZSBkZWFk
+IE1URCBtYXAgZHJpdmVyIGZvciBQTUMtU2llcnJhIE1TUCBib2FyZHMKKiBtdGRibG9jazoKICAt
+IFdhcm4gaWYgYWRkZWQgZm9yIGEgTkFORCBkZXZpY2UKICAtIEFkZCBjb21tZW50IGFib3V0IFVC
+SSBibG9jayBkZXZpY2VzCiAgLSBVcGRhdGUgb2xkIEpGRlMyIG1lbnRpb24gaW4gS2NvbmZpZwoq
+IHBhcnRpdGlvbnM6CiAgLSBSZWRib290OiBjb252ZXJ0IHRvIFlBTUwKCk5BTkQgY29yZSBjaGFu
+Z2VzOgoqIFJlcGFpciBNaXF1ZWwgUmF5bmFsJ3MgZW1haWwgYWRkcmVzcyBpbiBNQUlOVEFJTkVS
+UwoqIEZpeCBhIGNvdXBsZSBvZiBzcGVsbGluZyBtaXN0YWtlcyBpbiBLY29uZmlnCiogYmJ0OiBT
+a2lwIGJhZCBibG9ja3Mgd2hlbiBzZWFyY2hpbmcgZm9yIHRoZSBCQlQgaW4gTkFORAoqIFJlbW92
+ZSBuZXZlciBjaGFuZ2VkIHJldCB2YXJpYWJsZQoKUmF3IE5BTkQgY2hhbmdlczoKKiBjYWZlOiBG
+aXggYSByZXNvdXJjZSBsZWFrIGluIHRoZSBlcnJvciBoYW5kbGluZyBwYXRoIG9mCidjYWZlX25h
+bmRfcHJvYmUoKScKKiBpbnRlbDogRml4IGVycm9yIGhhbmRsaW5nIGluIHByb2JlCiogb21hcDog
+Rml4IGtlcm5lbCBkb2Mgd2FybmluZyBvbiAnY2FsY3VhdGUnIHR5cG8KKiBncG1jOiBGaXggdGhl
+IEVDQyBieXRlcyB2cy4gT09CIGJ5dGVzIGVxdWF0aW9uCgpTUEktTkFORCBjb3JlIGNoYW5nZXM6
+CiogUHJvcGVybHkgZmlsbCB0aGUgT09CIGFyZWEuCiogRml4IGNvbW1lbnQKClNQSS1OQU5EIGRy
+aXZlcnMgY2hhbmdlczoKKiBtYWNyb25peDogQWRkIFF1YWQgc3VwcG9ydCBmb3Igc2VyaWFsIE5B
+TkQgZmxhc2gKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0KQ2hyaXN0b3BoIEhlbGx3aWcgKDgpOgogICAgICBtdGRfYmxrZGV2
+czogZG9uJ3QgaG9sZCBkZWxfbXRkX2Jsa3RyYW5zX2RldiBpbiBibGt0cmFuc197b3BlbiwKcmVs
+ZWFzZX0gbXRkX2Jsa2RldnM6IHVzZSBsb2NrZGVwX2Fzc2VydF9oZWxkCiAgICAgIG10ZC9mdGw6
+IGRvbid0IGNhc3QgYXdheSB0aGUgdHlwZSB3aGVuIGNhbGxpbmcKYWRkX210ZF9ibGt0cmFuc19k
+ZXYgbXRkL3JmZF9mdGw6IGRvbid0IGNhc3QgYXdheSB0aGUgdHlwZSB3aGVuIGNhbGxpbmcKYWRk
+X210ZF9ibGt0cmFuc19kZXYgbXRkX2Jsa2RldnM6IHNpbXBsaWZ5IGJsa3RyYW5zX2Rldl9nZXQK
+ICAgICAgbXRkX2Jsa2RldnM6IHJlbW92ZSBibGt0cmFuc19yZWZfbXV0ZXgKICAgICAgbXRkX2Js
+a2RldnM6IHNpbXBsaWZ5IGJsa3RyYW5zX2dldGdlbwogICAgICBtdGRfYmxrZGV2czogc2ltcGxp
+ZnkgdGhlIHJlZmNvdW50aW5nIGluIGJsa3RyYW5zX3tvcGVuLCByZWxlYXNlfQoKQ2hyaXN0b3Bo
+ZSBKQUlMTEVUICgxKToKICAgICAgbXRkOiByYXduYW5kOiBjYWZlOiBGaXggYSByZXNvdXJjZSBs
+ZWFrIGluIHRoZSBlcnJvciBoYW5kbGluZwpwYXRoIG9mICdjYWZlX25hbmRfcHJvYmUoKScKCkNv
+bGluIElhbiBLaW5nICgxKToKICAgICAgbXRkOiByYXduYW5kOiBGaXggYSBjb3VwbGUgb2Ygc3Bl
+bGxpbmcgbWlzdGFrZXMgaW4gS2NvbmZpZwoKQ29yZW50aW4gTGFiYmUgKDEpOgogICAgICBkdF9i
+aW5kaW5nczogbXRkOiBwYXJ0aXRpb25zOiByZWRib290OiBjb252ZXJ0IHRvIFlBTUwKCkRhbmll
+bCBQYWxtZXIgKDEpOgogICAgICBtdGQ6IHNwaW5hbmQ6IGNvcmU6IFByb3Blcmx5IGZpbGwgdGhl
+IE9PQiBhcmVhLgoKRXZnZW55IE5vdmlrb3YgKDEpOgogICAgICBtdGQ6IHJhd25hbmQ6IGludGVs
+OiBGaXggZXJyb3IgaGFuZGxpbmcgaW4gcHJvYmUKCkV6ZXF1aWVsIEdhcmNpYSAoMyk6CiAgICAg
+IG10ZGJsb2NrOiBVcGRhdGUgb2xkIEpGRlMyIG1lbnRpb24gaW4gS2NvbmZpZwogICAgICBtdGRi
+bG9jazogQWRkIGNvbW1lbnQgYWJvdXQgVUJJIGJsb2NrIGRldmljZXMKICAgICAgbXRkYmxvY2s6
+IFdhcm4gaWYgYWRkZWQgZm9yIGEgTkFORCBkZXZpY2UKCkphaW1lIExpYW8gKDEpOgogICAgICBt
+dGQ6IHNwaW5hbmQ6IG1hY3Jvbml4OiBBZGQgUXVhZCBzdXBwb3J0IGZvciBzZXJpYWwgTkFORCBm
+bGFzaAoKSmFzb24gV2FuZyAoMSk6CiAgICAgIG10ZDogcmF3bmFuZDogcmVtb3ZlIG5ldmVyIGNo
+YW5nZWQgcmV0IHZhcmlhYmxlCgpMdWthcyBCdWx3YWhuICgyKToKICAgICAgTUFJTlRBSU5FUlM6
+IHJlcGFpciBNaXF1ZWwgUmF5bmFsJ3MgZW1haWwgYWRkcmVzcwogICAgICBtdGQ6IG1hcHM6IHJl
+bW92ZSBkZWFkIE1URCBtYXAgZHJpdmVyIGZvciBQTUMtU2llcnJhIE1TUCBib2FyZHMKCk1pcXVl
+bCBSYXluYWwgKDMpOgogICAgICBkdC1iaW5kaW5nczogbXRkOiBncG1jOiBGaXggdGhlIEVDQyBi
+eXRlcyB2cy4gT09CIGJ5dGVzIGVxdWF0aW9uCiAgICAgIG10ZDogc3BpbmFuZDogRml4IGNvbW1l
+bnQKICAgICAgTWVyZ2UgdGFnICduYW5kL2Zvci01LjE1JyBpbnRvIG10ZC9uZXh0CgpTZWFuIFlv
+dW5nICg0KToKICAgICAgbXRkOiByZmRfZnRsOiBhbGxvdyB1c2Ugb2YgTVREX1JBTSBmb3IgdGVz
+dGluZyBwdXJwb3NlcwogICAgICBtdGQ6IHJmZF9mdGw6IGFkZCBkaXNjYXJkIHN1cHBvcnQKICAg
+ICAgbXRkOiByZmRfZnRsOiBmaXggdXNlLWFmdGVyLWZyZWUKICAgICAgbXRkOiByZmRfZnRsOiB1
+c2UgY29udGFpbmVyX29mKCkgcmF0aGVyIHRoYW4gY2FzdAoKU3RlZmFuIFJpZWRtdWVsbGVyICgx
+KToKICAgICAgbXRkOiByYXduYW5kOiBuYW5kX2JidDogU2tpcCBiYWQgYmxvY2tzIHdoZW4gc2Vh
+cmNoaW5nIGZvciB0aGUKQkJUIGluIE5BTkQKClZsYWRpbWlyIE1vbG9rb3YgKDEpOgogICAgICBt
+dGQ6IHJhd25hbmQ6IG9tYXA6IEZpeCBrZXJuZWwgZG9jIHdhcm5pbmcgb24gJ2NhbGN1YXRlJyB0
+eXBvCgpaaGloYW8gQ2hlbmcgKDIpOgogICAgICBtdGQ6IG10ZGNvbmNhdDogSnVkZ2UgY2FsbGJh
+Y2sgZXhpc3RlbmNlIGJhc2VkIG9uIHRoZSBtYXN0ZXIKICAgICAgbXRkOiBtdGRjb25jYXQ6IENo
+ZWNrIF9yZWFkLCBfd3JpdGUgY2FsbGJhY2tzIGV4aXN0ZW5jZSBiZWZvcmUKYXNzaWdubWVudAoK
+IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvZ3BtYy1uYW5kLnR4dCAgICAg
+ICAgICAgICAgIHwKIDIgKy0gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9w
+YXJ0aXRpb25zL3JlZGJvb3QtZmlzLnR4dAogfCAgMjcgLS0tLQogRG9jdW1lbnRhdGlvbi9kZXZp
+Y2V0cmVlL2JpbmRpbmdzL210ZC9wYXJ0aXRpb25zL3JlZGJvb3QtZmlzLnlhbWwgfAogNDIgKysr
+KysrIE1BSU5UQUlORVJTCiAgICAgIHwgICA0ICstIGRyaXZlcnMvbXRkL0tjb25maWcKICAgICAg
+ICAgIHwgIDEwICstIGRyaXZlcnMvbXRkL2Z0bC5jCiAgICAgICAgICAgICAgfCAgIDIgKy0gZHJp
+dmVycy9tdGQvbWFwcy9LY29uZmlnCiAgICAgICAgICAgICAgICAgIHwgIDIzIC0tLS0gZHJpdmVy
+cy9tdGQvbWFwcy9NYWtlZmlsZQogICAgICAgICAgICAgICAgICAgICAgICB8ICAgMSAtIGRyaXZl
+cnMvbXRkL21hcHMvcG1jbXNwLWZsYXNoLmMKICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAy
+MjcgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogZHJpdmVycy9tdGQvbXRkX2Jsa2Rl
+dnMuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfAogNjAgKy0tLS0t
+LS0gZHJpdmVycy9tdGQvbXRkYmxvY2suYwogICAgICAgIHwgICA0ICsgZHJpdmVycy9tdGQvbXRk
+YmxvY2tfcm8uYwogICAgICAgICAgIHwgICA0ICsgZHJpdmVycy9tdGQvbXRkY29uY2F0LmMKICAg
+ICAgICAgICAgICB8ICAzMyArKystLSBkcml2ZXJzL210ZC9uYW5kL3Jhdy9LY29uZmlnCiAgICAg
+ICAgICAgICAgICAgICAgIHwgICA0ICstIGRyaXZlcnMvbXRkL25hbmQvcmF3L2NhZmVfbmFuZC5j
+CiAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgNCArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcv
+aW50ZWwtbmFuZC1jb250cm9sbGVyLmMgICAgICAgICAgICAgICAgICAgICAgfAogMjcgKystLSBk
+cml2ZXJzL210ZC9uYW5kL3Jhdy9tZXNvbl9uYW5kLmMKICAgIHwgICA0ICstIGRyaXZlcnMvbXRk
+L25hbmQvcmF3L25hbmRfYmJ0LmMKICAgICAgICB8ICAzMyArKysrKyBkcml2ZXJzL210ZC9uYW5k
+L3Jhdy9vbWFwMi5jCiAgICAgICAgICAgICAgIHwgICAyICstIGRyaXZlcnMvbXRkL25hbmQvc3Bp
+L2NvcmUuYwogICAgICAgICAgICAgICAgICAgfCAgIDQgKy0gZHJpdmVycy9tdGQvbmFuZC9zcGkv
+bWFjcm9uaXguYwogICAgICAgICAgICAgICAgICAgICAgIHwgIDE2ICstLSBkcml2ZXJzL210ZC9y
+ZmRfZnRsLmMKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDQ2ICsrKysrLS0gMjIgZmls
+ZXMgY2hhbmdlZCwgMTk4CiBpbnNlcnRpb25zKCspLCAzODEgZGVsZXRpb25zKC0pIGRlbGV0ZSBt
+b2RlIDEwMDY0NAogRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9wYXJ0aXRp
+b25zL3JlZGJvb3QtZmlzLnR4dAogY3JlYXRlIG1vZGUgMTAwNjQ0CiBEb2N1bWVudGF0aW9uL2Rl
+dmljZXRyZWUvYmluZGluZ3MvbXRkL3BhcnRpdGlvbnMvcmVkYm9vdC1maXMueWFtbAogZGVsZXRl
+IG1vZGUgMTAwNjQ0IGRyaXZlcnMvbXRkL21hcHMvcG1jbXNwLWZsYXNoLmMKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
+Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9saW51eC1tdGQvCg==
