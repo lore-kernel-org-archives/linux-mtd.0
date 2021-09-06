@@ -2,64 +2,95 @@ Return-Path: <SRS0=TNsO=N4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71D25C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Sep 2021 16:14:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0798EC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Sep 2021 16:29:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D5D5B60F6B
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Sep 2021 16:14:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D5D5B60F6B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id BEFD461039
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Sep 2021 16:29:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BEFD461039
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IKGswE1hgWX2I3RD0ab/rBgwUB4TuZHsqL1WBwz0RII=; b=OThL++G8j6vp2C
-	iS1jq56x1FyZmb7TCeNgqWrBrSMkYoIceA5pOT8sMCZ480Mw/73b4ZYveblyPhnTvb9VjUfZO9Wyj
-	q4jd1sG+ZMGxCNLYEjDXQ7zUNifvhrcPstEg76DpK4ghg7KFaL/HSImYG5UW7BkJhoSvDi8/A1XNx
-	9fYy4t1F3oztiIcx7zmA6GGOCYrFLYRI4xP7amQZYWitCo9ajGsN2xDMA3Dps9kuR9B28VpHdfAIU
-	C/FUz1iDFCXuPzTbbSDIMB8IaNTXVHN7c16mpeluHf/3RL7uO5VWoZcMi7u8EDrfcr7QOvrsWXAbX
-	4SxlVIoGog+A93HDtmmg==;
+	List-Owner; bh=25gOXnM6MzqwC4adAkDutZwXnTyWv0QzZjvMR9Oi3ik=; b=xvj2LgkQSAjJ+H
+	4b5s8ThZVJVyEF/F1g4ymwtkX/N31yHKhrq7vFozKX2fjUbMuRPq/tZS6x3gis+2XUQdEnkCbPKgV
+	pqrnKz+LTggZER33D0bOmPBsYwqOJ9x9u/S3wtcH4F62KzDCh1rXkcNcYEmZQ5h/6BZbQx7KfAK1A
+	rRrhTKrQuV3HyjeUljKA5kVPijdadgeyOEkKVnVDkim1bmr769qgnV2uxytQSSol4tqBTUVUo4ote
+	X03tVwYHLH9Dp62WlUDSSmKEMPAoGHoQDpIn4WBIJbFv2+mJWjqOo6Efx2lgrFylNguWVt5oerZDe
+	tG51AOfhkYVZ8N+tLbYA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mNHFs-001HpO-RM; Mon, 06 Sep 2021 16:13:56 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1mNHTt-001J01-8A; Mon, 06 Sep 2021 16:28:25 +0000
+Received: from mail-ej1-x62b.google.com ([2a00:1450:4864:20::62b])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mNHFo-001Hoy-Nu
- for linux-mtd@lists.infradead.org; Mon, 06 Sep 2021 16:13:54 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 4D60C1BF206;
- Mon,  6 Sep 2021 16:13:42 +0000 (UTC)
-Date: Mon, 6 Sep 2021 18:13:41 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Cc: Naga Sureshkumar Relli <nagasure@xilinx.com>, Michal Simek
- <monstr@monstr.eu>, Amit Kumar Mahapatra <akumarma@xilinx.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Tudor
- Ambarus <Tudor.Ambarus@microchip.com>, <linux-mtd@lists.infradead.org>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 2/3] mtd: rawnand: Check the CHANGE_READ_COLUMN from
- nand_read_subpage() is supported
-Message-ID: <20210906181341.08619108@xps13>
-In-Reply-To: <20210906170827.02ab8b96@collabora.com>
-References: <20210906132942.36972-1-miquel.raynal@bootlin.com>
- <20210906132942.36972-2-miquel.raynal@bootlin.com>
- <20210906170827.02ab8b96@collabora.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1mNHTp-001Iyo-VY
+ for linux-mtd@lists.infradead.org; Mon, 06 Sep 2021 16:28:23 +0000
+Received: by mail-ej1-x62b.google.com with SMTP id n27so14469336eja.5
+ for <linux-mtd@lists.infradead.org>; Mon, 06 Sep 2021 09:28:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=6oKyG7zEb/nW+FeiP30bM48MUXtoqIWfTDkbvnG8BkY=;
+ b=bszZ/g+TVWRlcuLYrm4cp/AJpQzap4khelKGOFDxT37GwmFEI0nnoKH1mXocTABgEr
+ kVhKcce52l+Bda2ODC/ZGHW8uZSxriuGwxC0LX48Hp8snUsmUVEXttz7mv959xm+oqyF
+ bAg5uikiKTYSVezC6S3St86oKeK8d99jnXGqhATYzzcK2iRXCj37sVbgIQH+FlBFzMu7
+ qfs6jGjKM5o0LL9zRHBR73Sg1ZX0fRKN9P+K9qpA/WpYOc26ou7hAj7+mogNeb7JbXOf
+ qOBWnKxn3Tz5Xu3MlM0GqX3FLeEaCgGOT/oL2MxPcb3m9e093RzGm+AL2OOUcvurFelA
+ a4ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=6oKyG7zEb/nW+FeiP30bM48MUXtoqIWfTDkbvnG8BkY=;
+ b=p+PzVxr3/7h+9T1VaqtenkIHOe+bvttFTVrEgJlew7vQpggJE1zXOPelleo1/SVKEd
+ hCHb8TRqq5d/0rWGoCMAwOhWpHm3iyVTo2Sg5FY1+NXVhOc+57Nw/D+MeDMGxpfzWXid
+ Br94VTY8qcrZUMZAR66y0mKmVKodqaos/nWFjd+FDKwIhMI/xU2mglAfzQrT4cOV3+s0
+ hXXVMu/9v5u3W5ogpJZazq6eqAwANOdzhEhv0yPO+YYLH/D3mMRkSfKCVqXNd7DfXtg8
+ uUdCNrstvP/qHxNPc+Uak0M51fVfwBWtusDfbp+l69l/CuW26IuWveY70G15A3RcSeiE
+ At7Q==
+X-Gm-Message-State: AOAM530k0DpFqpgSsjy3Uw9miUqfFBeySMRTsrOpdyKInh6VUI74z2dK
+ U6GaOp5g8PWEJgtFuuO4/AYFjTykMDVbG2/BlGY=
+X-Google-Smtp-Source: ABdhPJwyZI2iQmBxtUR38Zx7Nafy9EsJjNnIzDOyi9cAU4A8FwKXYxAZphlwRFe+JlmOEU0Qn2HcyvKeOV2DlHvWXs0=
+X-Received: by 2002:a17:906:fb19:: with SMTP id
+ lz25mr14543783ejb.162.1630945699450; 
+ Mon, 06 Sep 2021 09:28:19 -0700 (PDT)
 MIME-Version: 1.0
+References: <CAOuPNLhqSpaTm3u4kFsnuZ0PLDKuX8wsxuF=vUJ1TEG0EP+L1g@mail.gmail.com>
+ <alpine.LRH.2.02.2107200737510.19984@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAOuPNLhh_LkLQ8mSA4eoUDLCLzHo5zHXsiQZXUB_-T_F1_v6-g@mail.gmail.com>
+ <alpine.LRH.2.02.2107211300520.10897@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAOuPNLi-xz_4P+v45CHLx00ztbSwU3_maf4tuuyso5RHyeOytg@mail.gmail.com>
+ <CAOuPNLg0m-Q7Vhp4srbQrjXHsxVhOr-K2dvnNqzdR6Dr4kioqA@mail.gmail.com>
+ <20210830185541.715f6a39@windsurf>
+ <CAOuPNLhTidgLNWUbtUgdESYcKcE1C4SOdzKeQVhFGQvEoc0QEg@mail.gmail.com>
+ <20210830211224.76391708@windsurf>
+ <CAOuPNLgMd0AThhmSknbmKqp3_P8PFhBGr-jW0Mqjb6K6NchEMg@mail.gmail.com>
+In-Reply-To: <CAOuPNLgMd0AThhmSknbmKqp3_P8PFhBGr-jW0Mqjb6K6NchEMg@mail.gmail.com>
+From: Pintu Agarwal <pintu.ping@gmail.com>
+Date: Mon, 6 Sep 2021 21:58:08 +0530
+Message-ID: <CAOuPNLiW10-E6F_Ndte7U9NPBKa9Y_UuLhgdwAYTc0eYMk5Mqg@mail.gmail.com>
+Subject: Re: Kernel 4.14: Using dm-verity with squashfs rootfs - mounting issue
+To: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Cc: Mikulas Patocka <mpatocka@redhat.com>,
+ open list <linux-kernel@vger.kernel.org>, 
+ Phillip Lougher <phillip@squashfs.org.uk>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>, 
+ linux-mtd <linux-mtd@lists.infradead.org>, dm-devel@redhat.com, 
+ Kernelnewbies <kernelnewbies@kernelnewbies.org>, agk@redhat.com,
+ snitzer@redhat.com, Sami Tolvanen <samitolvanen@google.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210906_091353_141976_2B26D74C 
-X-CRM114-Status: GOOD (  25.37  )
+X-CRM114-CacheID: sfid-20210906_092822_076354_2EC2CFFE 
+X-CRM114-Status: GOOD (  27.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,62 +102,115 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQm9yaXMsCgpib3Jpcy5icmV6aWxsb25AY29sbGFib3JhLmNvbSB3cm90ZSBvbiBNb24sIDYg
-U2VwIDIwMjEgMTc6MDg6MjcgKzAyMDA6Cgo+IE9uIE1vbiwgIDYgU2VwIDIwMjEgMTU6Mjk6NDEg
-KzAyMDAKPiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPiB3cm90ZToK
-PiAKPiA+IFRoZXJlIGFyZSBjb25zdHJhaW50IGNvbnRyb2xsZXJzIHdoaWNoIGRvIG5vdCBzdXBw
-b3J0Cj4gPiBDSEFOR0VfUkVBRF9DT0xVTU5zIGF0IGFueSBvZmZzZXQuIEluIHBhcnRpY3VsYXIs
-IHRoZSBvZmZzZXQgYWxpZ25tZW50Cj4gPiBtaWdodCBiZSBhbiBpc3N1ZS4gRW5zdXJlIHRoYXQg
-dGhlIG9wZXJhdGlvbiBpcyBzdXBwb3J0ZWQgYmVmb3JlIHRyeWluZwo+ID4gaXQuCj4gPiAKPiA+
-IFNpZ25lZC1vZmYtYnk6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+
-Cj4gPiAtLS0KPiA+ICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jhc2UuYyB8IDE3ICsrKysr
-KysrKysrKystLS0tCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDEzIGluc2VydGlvbnMoKyksIDQgZGVs
-ZXRpb25zKC0pCj4gPiAKPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5k
-X2Jhc2UuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfYmFzZS5jCj4gPiBpbmRleCA3ZjI5
-ZjI3YmI2ZmQuLjgxNzU2MzViOTgwMiAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQv
-cmF3L25hbmRfYmFzZS5jCj4gPiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jhc2Uu
-Ywo+ID4gQEAgLTMwNjUsMTAgKzMwNjUsMTkgQEAgc3RhdGljIGludCBuYW5kX3JlYWRfc3VicGFn
-ZShzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLCB1aW50MzJfdCBkYXRhX29mZnMsCj4gPiAgCQkgICAg
-KGJ1c3cgLSAxKSkKPiA+ICAJCQlhbGlnbmVkX2xlbisrOwo+ID4gIAo+ID4gLQkJcmV0ID0gbmFu
-ZF9jaGFuZ2VfcmVhZF9jb2x1bW5fb3AoY2hpcCwKPiA+IC0JCQkJCQkgbXRkLT53cml0ZXNpemUg
-KyBhbGlnbmVkX3BvcywKPiA+IC0JCQkJCQkgJmNoaXAtPm9vYl9wb2lbYWxpZ25lZF9wb3NdLAo+
-ID4gLQkJCQkJCSBhbGlnbmVkX2xlbiwgZmFsc2UpOwo+ID4gKwkJcmV0ID0gbmFuZF9jaGVja19j
-aGFuZ2VfcmVhZF9jb2x1bW5fb3AoY2hpcCwKPiA+ICsJCQkJCQkgICAgICAgbXRkLT53cml0ZXNp
-emUgKyBhbGlnbmVkX3BvcywKPiA+ICsJCQkJCQkgICAgICAgJmNoaXAtPm9vYl9wb2lbYWxpZ25l
-ZF9wb3NdLAo+ID4gKwkJCQkJCSAgICAgICBhbGlnbmVkX2xlbiwgZmFsc2UsIHRydWUpOwo+ID4g
-KwkJaWYgKCFyZXQpCj4gPiArCQkJcmV0ID0gbmFuZF9jaGFuZ2VfcmVhZF9jb2x1bW5fb3AoY2hp
-cCwKPiA+ICsJCQkJCQkJIG10ZC0+d3JpdGVzaXplICsgYWxpZ25lZF9wb3MsCj4gPiArCQkJCQkJ
-CSAmY2hpcC0+b29iX3BvaVthbGlnbmVkX3Bvc10sCj4gPiArCQkJCQkJCSBhbGlnbmVkX2xlbiwg
-ZmFsc2UpOwo+ID4gKwkJZWxzZQo+ID4gKwkJCXJldCA9IG5hbmRfY2hhbmdlX3JlYWRfY29sdW1u
-X29wKGNoaXAsIG10ZC0+d3JpdGVzaXplLAo+ID4gKwkJCQkJCQkgY2hpcC0+b29iX3BvaSwKPiA+
-ICsJCQkJCQkJIG10ZC0+b29ic2l6ZSwgZmFsc2UpOwo+ID4gIAkJaWYgKHJldCkKPiA+ICAJCQly
-ZXR1cm4gcmV0OyAgCj4gCgoKVGhlIHByZXZpb3VzIGJlaGF2aW9yIHdhczoKCi8qCiAqIGdhcHMg
-PT0gdHJ1ZSBtZWFucyB3ZSBuZWVkIHRvIHJlcXVlc3QgdGhlIGVudGlyZSBPT0IgYXJlYSBhbmQg
-d2UKICogd2lsbCBjYWxsIGFuIE9PQiBsYXlvdXQgaGVscGVyIHRvIGV4dHJhY3QgdGhlIEVDQyBi
-eXRlcy4KICogZ2FwcyA9PSBmYWxzZSBtZWFucyB0aGVyZSBpcyBubyBkYXRhIGludGVybGVhdmVk
-LCB3ZSBjYW4ganVzdCByZWFkCiAqIHRoZSBudW1iZXIgb2YgRUNDIGJ5dGVzIGJ5IHN0YXJ0aW5n
-IGF0IHRoZSByaWdodCBvZmZzZXQgYW5kIG5vCiAqIGV4dHJhY3Rpbmcgb3BlcmF0aW9uIHdpbGwg
-YmUgbmVlZGVkLgogKi8KZ2FwcyA9IC4uLjsKaWYgKCFnYXBzKQoJbmFuZF9jaGFuZ2VfcmVhZF9j
-b2x1bW4oYXQgYSBzcGVjaWZpYyBvZmZzZXQgYW5kIGEgc3BlY2lmaWMKCQkJCWxlbmd0aCBqdXN0
-IHRvIG1hdGNoIHRoZSBFQ0MgYnl0ZXMpOwplbHNlCgluYW5kX2NoYW5nZV9yZWFkX2NvbHVtbih0
-aGUgZW50aXJlIE9PQik7CgpXaGlsZSB0aGUgbmV3IGJlaGF2aW9yIGlzOgoKaWYgKCFnYXBzKSB7
-CglvcF9zdXBwb3J0ZWQgPSBuYW5kX2NoZWNrX2NoYW5nZV9yZWFkX2NvbHVtbigpOwoJaWYgKCFv
-cF9zdXBwb3J0ZWQpCgkJLy8gc2FtZSBvcGVyYXRpb24gYXMgaWYgZ2FwcyA9PSB0cnVlCgkJbmFu
-ZF9jaGFuZ2VfcmVhZF9jb2x1bW4odGhlIGVudGlyZSBPT0IpOwoJZWxzZQoJCW5hbmRfY2hhbmdl
-X3JlYWRfY29sdW1uKGF0IGEgc3BlY2lmaWMgb2Zmc2V0KTsKfSBlbHNlIHsKCW5hbmRfY2hhbmdl
-X3JlYWRfY29sdW1uKHRoZSBlbnRpcmUgT09CKQp9Cgo+IFNvIHlvdSBqdXN0IGZhaWwgaWYgdGhl
-IENIQU5HRSBjb2x1bW4gb3AgaXMgbm90IHN1cHBvcnRlZD8gTG9va3MgbGlrZQo+IHRoaXMgY2hl
-Y2sgc2hvdWxkIGJlIGRvbmUgYmVmb3JlIHdlIGFzc2lnbiBlY2MtPnJlYWRfc3VicGFnZSB0bwo+
-IG5hbmRfcmVhZF9zdWJwYWdlIGluCj4gbmFuZF9zZXRfZWNjX29uX2hvc3Rfb3BzKCkvbmFuZF9z
-ZXRfZWNjX3NvZnRfb3BzKCkuLi4KClNvIEkgYWN0dWFsbHkgZG9uJ3QgdW5kZXJzdGFuZCB0aGUg
-YWJvdmUgY29tbWVudCBhcyB0aGUgY29kZSBpcyBub3QKc2ltcGx5IGZhaWxpbmcsIGl0J3MgYWN0
-dWFsbHkgZmFsbGluZyBiYWNrIHRvIHNlY29uZCBtZXRob2Qgd2hpY2ggaXMKbWF5YmUgc2xpZ2h0
-bHkgc2xvd2VyIGJ1dCBzdGlsbCB2YWxpZC4gRG8geW91IHRoaW5rIGl0J3Mgd3Jvbmc/CgpUaGFu
-a3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Dear Thomas, Mikulas,
+Need your help in root causing my dm-verity issue with squashfs.
+Please see my comments inline.
+
+On Tue, 31 Aug 2021 at 18:49, Pintu Agarwal <pintu.ping@gmail.com> wrote:
+
+> > No, but you can backport it easily. Back at
+> > http://lists.infradead.org/pipermail/openwrt-devel/2019-November/025967.html
+> > I provided backports of this feature to OpenWrt, for the 4.14 and 4.19
+> > kernels.
+> >
+> Yes, I can backport it to our 4.14 Kernel.
+> Can you share the list of patches to be backported to make it work on 4.14 ?
+> If it's backported also I need to report to our internal kernel, but
+> it might be slightly easier.
+> Please share the details.
+>
+
+I am interested to backport dm-mod.create related patches to our 4.14 kernel.
+Please let me know where can I find all the patches ?
+Is it already part of mainline 4.14 ?
+Please share the list of commits (from mainline) that we need to pull
+and backport.
+
+> > > Here is our kernel command line:
+> > >
+> > > [    0.000000] Kernel command line: ro rootwait
+> > > console=ttyMSM0,115200,n8 ....  verity="95384 11923
+> > > 16da5e4bbc706e5d90511d2a3dae373b5d878f9aebd522cd614a4faaace6baa3 12026
+> > > " rootfstype=squashfs ubi.mtd=40,0,30 ubi.block=0,0 root=/dev/dm-0
+> > > .... init=/sbin/init root=/dev/dm-0 dm="rootfs none ro,0 95384 verity
+> > > 1 /dev/ubiblock0_0 /dev/mtdblock53 4096 4096 11923 8 sha256
+> > > 16da5e4bbc706e5d90511d2a3dae373b5d878f9aebd522cd614a4faaace6baa3
+> > > aee087a5be3b982978c923f566a94613496b417f2af592639bc80d141e34dfe7 10
+> > > restart_on_corruption ignore_zero_blocks use_fec_from_device
+> > > /dev/mtdblock53 fec_roots 2 fec_blocks 12026 fec_start 12026" ...
+> >
+> > I don't see how this can work without the dm-mod.create feature. Are
+> > you sure the verity= and dm= kernel arguments exist?
+>
+I checked a little further and yes there is "dm=" command line in
+kernel available.
+This is already working with ext4 glue, but was never tried with squashfs.
+I think it is mainline derived from Android.
+https://patchwork.kernel.org/project/dm-devel/patch/2c01b2a43a46fab760208d7af3a7af37eec8c41a.1537936397.git.helen.koike@collabora.com/
+https://github.com/projectceladon/device-androidia-kernel/blob/master/init/do_mounts_dm.c
+
+Mostly, this is the main repo where our source might be derived:
+https://github.com/android-linux-stable/msm-4.14
+
+Can we backport the patches here ?
+If I get the list I can try it.
+
+>
+> Also, you mentioned:
+> >>> Here, it definitely worked to append the hash tree to the squashfs
+> >>> image and store them in the same partition.
+> Can you share some details about it ?
+> How it can be done since squashfs is readonly.
+Can you share your reference, how are you appending the hash tree ?
+Let me try the same.
+
+But it seems like the underlying concept is the same for both
+"dm-mod.create" and "dm=".
+However, I am not sure if there are any changes required for squashfs
+as block device..
+
+Errors:
+Currently, we are getting this in boot logs:
+
+[    4.962188] device-mapper: init: attempting early device configuration.
+[    4.969699] device-mapper: init: created device '253:0'
+[    4.975503] device-mapper: init: adding target '0 95384 verity 1
+/dev/ubiblock0_0 /dev/mtdblock53 4096 4096 11923 8 sha256
+8fc2e4bb751f4b3145a486a0f4f1b58149ba3eedc2a67312f31fbee131380dab
+aee087a5be3b982978c923f566a94613496b417f2af592639bc80d141e34dfe7 10
+restart_on_corruption ignore_zero_blocks use_fec_from_device
+/dev/mtdblock53 fec_roots 2 fec_blocks 12026 fec_start 12026'
+[    4.992323] device-mapper: verity: sha256 using implementation
+"sha256-generic"
+[    5.015568] device-mapper: init: dm-0 is ready
+[   10.080065] prepare_namespace: dm_run_setup - done
+[   10.080093] prepare_namespace: saved_root_name: /dev/dm-0
+[   10.083903] prepare_namespace: Inside: name_to_dev_t
+[   10.089605] prepare_namespace: Calling - mount_root() ...
+[   10.094519] [PINTU]: mount_block_root: called with input name:
+/dev/root, fs_names: squashfs
+[   10.263510] [PINTU]: do_mount_root: sys_mount failed: err: -22
+[   10.263544] [PINTU]: mount_block_root: do_mount_root: err: -22, p:
+squashfs, flags: 32769, root_mount_data: (null)
+[..]
+[   10.745672] No filesystem could mount root, tried:
+[   10.745676]  squashfs
+[   10.748015]
+[   10.755232] Kernel panic - not syncing: VFS: Unable to mount root
+fs on unknown-block(253,0)
+
+It seems the rootfs could not mount due to invalid arguments.
+Not sure which arguments are invalid here...
+
+
+Thanks,
+Pintu
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
