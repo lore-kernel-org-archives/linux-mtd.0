@@ -2,65 +2,125 @@ Return-Path: <SRS0=TNsO=N4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD85CC433F5
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Sep 2021 13:30:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D67B2C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Sep 2021 14:36:37 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7680C60E76
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Sep 2021 13:30:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7680C60E76
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id A03E160EE6
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Sep 2021 14:36:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A03E160EE6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=crbaaGEbvAb1gIyXj5DKfhmCYBGkdArHKpIypTAnEZo=; b=EZVoc4tyH34Gy7
-	9ORl9ffuh53DbBA9QV4Kcj7NKmhHB8JZA+bQfJBJ8ronpKHsvf3cvA7Y2P2G4UIuIrCxDSjL86C+F
-	CjEIVW9P964FamvqEZ/INTRUkh4H6FHGasg6ccKXIoPXGikTgMXLK7JDos5q3jI1FGQg09vBCAVkR
-	7q5olyUCWfQ1LLLqsh4cfCKYZ7w9LP9YAu1vNblmrzYOydujnYPvb7j7ZjFzLggLuzTOEDWK3u5Rj
-	lxDTfKdk7ugAEdzI+3zMDi/YQrJtHC8/YNgEB4ICahshfEqPL50RvhOvtGObH6Q/AAgzHJIeMVRZQ
-	5PKoasU/TS72eTmuEfBQ==;
+	List-Owner; bh=oiaeq5ZtG/LslQVpDmmBDcPFvOkzM8Pux7TOBZ5LOCc=; b=cPCMIoivHaOQVy
+	dPNWG1+lDDIutQlykc/5lqaNlojSLKdzcjT6kzEcDh3mA+QmiUnydCu90Qtt2m1ZXwdoVM/QVTJRw
+	hAYWqh2v02spSQpDSFNunlyOynQg10P2swb2VFKbx8BO1pRpz7LXVC1tjJk9mUXVZKQN7Mh5ded6e
+	QKJ8oNu8ggGsJ0Ti4F3kZS7lmoU2Xy7tkZkI3Audlj6xRd9/UoQs8oIgXPyWQD3mo6k4L89W1ZIsw
+	CC/nU3A6STF5KPCfuNpfmJe8mGJwrFUTPqfYnv4BfvGGpM9Em9kIRennsC2KFDBFdAuVefpZW3W09
+	uW3VQpnU3GhEXoCXDjYw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mNEhX-000unL-Kv; Mon, 06 Sep 2021 13:30:19 +0000
-Received: from relay10.mail.gandi.net ([217.70.178.230])
+	id 1mNFiq-00179J-Pc; Mon, 06 Sep 2021 14:35:44 +0000
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mNEh5-000ukY-KQ
- for linux-mtd@lists.infradead.org; Mon, 06 Sep 2021 13:29:54 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay10.mail.gandi.net (Postfix) with ESMTPSA id 72B43240012;
- Mon,  6 Sep 2021 13:29:45 +0000 (UTC)
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Naga Sureshkumar Relli <nagasure@xilinx.com>,
- Michal Simek <monstr@monstr.eu>,
- Amit Kumar Mahapatra <akumarma@xilinx.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- <linux-mtd@lists.infradead.org>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 2/3] mtd: rawnand: Check the CHANGE_READ_COLUMN from
- nand_read_subpage() is supported
-Date: Mon,  6 Sep 2021 15:29:41 +0200
-Message-Id: <20210906132942.36972-2-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210906132942.36972-1-miquel.raynal@bootlin.com>
-References: <20210906132942.36972-1-miquel.raynal@bootlin.com>
+ id 1mNFio-00178z-7q
+ for linux-mtd@lists.infradead.org; Mon, 06 Sep 2021 14:35:43 +0000
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
+ 186EYWcw092852; Mon, 6 Sep 2021 10:35:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=t5OR0eUDklpD1WGcingITtl2OO+Tv7Am9adn1Pg8ob8=;
+ b=Fg5yauhmATD6QI5Na7k8vSPW5iTgGoMSjYH5iBmL2WQAHem/LLdTfeyfvHKh/Ta5fuOu
+ u2cQFR2ixl8pEwImQgKY5qk2q1bNRqY9w/LCTSNtkKdE+6Di68i3mKZeeMTw7cDsBCjN
+ lP3qqMU/HCRWZfFaKElSULlrf9L12xixT63jXCC1HqoV/R7ujHNzZA+iZYezwPDaxgWO
+ 6hVLfY/TJwmcDZAL8wwEBkKOA/UDBAImf38T7LQNH6fqBbdQqRvYpVb6U4uRZoKY9rZG
+ 4qk9cTJEO6YzOC8M7BxWdldZdzFnFH5EuchBQLQrG4J0UMabuxBnaQcAS2KvX+VSviXW Tg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com with ESMTP id 3awh9cwbev-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 06 Sep 2021 10:35:18 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+ by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 186EZImE100053;
+ Mon, 6 Sep 2021 10:35:18 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com
+ [159.122.73.72])
+ by mx0a-001b2d01.pphosted.com with ESMTP id 3awh9cwbdx-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 06 Sep 2021 10:35:17 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+ by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 186EXUwh023137;
+ Mon, 6 Sep 2021 14:35:15 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com
+ (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+ by ppma06fra.de.ibm.com with ESMTP id 3av02j4kq3-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 06 Sep 2021 14:35:15 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com
+ [9.149.105.62])
+ by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 186EZBZp46072230
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Mon, 6 Sep 2021 14:35:11 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 722F8AE065;
+ Mon,  6 Sep 2021 14:35:11 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 6C4D9AE055;
+ Mon,  6 Sep 2021 14:35:10 +0000 (GMT)
+Received: from osiris (unknown [9.145.3.161])
+ by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+ Mon,  6 Sep 2021 14:35:10 +0000 (GMT)
+Date: Mon, 6 Sep 2021 16:35:09 +0200
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk,
+ gregkh@linuxfoundation.org, chaitanya.kulkarni@wdc.com,
+ atulgopinathan@gmail.com, hare@suse.de, maximlevitsky@gmail.com,
+ oakad@yahoo.com, ulf.hansson@linaro.org, colin.king@canonical.com,
+ shubhankarvk@gmail.com, baijiaju1990@gmail.com, trix@redhat.com,
+ dongsheng.yang@easystack.cn, ceph-devel@vger.kernel.org,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ sth@linux.ibm.com, hoeppner@linux.ibm.com, gor@linux.ibm.com,
+ borntraeger@de.ibm.com, oberpar@linux.ibm.com, tj@kernel.org,
+ linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 9/9] s390/block/xpram: add error handling support for
+ add_disk()
+Message-ID: <YTYnHUYSfB6YElnh@osiris>
+References: <20210902174105.2418771-1-mcgrof@kernel.org>
+ <20210902174105.2418771-10-mcgrof@kernel.org>
+ <YTIr1w/qPvgioUfL@osiris> <YTXcPBph323n2WJ8@infradead.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <YTXcPBph323n2WJ8@infradead.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: hBKOiASlRVgdP6m0ZVyfrL0h5Yz4Ft1A
+X-Proofpoint-ORIG-GUID: sRBTe9g0KJq9hO82J9XVDCM7Uj8j1L5y
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391, 18.0.790
+ definitions=2021-09-06_06:2021-09-03,
+ 2021-09-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ malwarescore=0 bulkscore=0
+ priorityscore=1501 lowpriorityscore=0 clxscore=1015 spamscore=0
+ phishscore=0 impostorscore=0 mlxscore=0 adultscore=0 mlxlogscore=999
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2108310000 definitions=main-2109060092
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210906_062951_851149_AF58CAFF 
-X-CRM114-Status: UNSURE (   9.65  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210906_073542_317924_5EC00340 
+X-CRM114-Status: GOOD (  20.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,47 +137,16 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There are constraint controllers which do not support
-CHANGE_READ_COLUMNs at any offset. In particular, the offset alignment
-might be an issue. Ensure that the operation is supported before trying
-it.
+On Mon, Sep 06, 2021 at 10:15:40AM +0100, Christoph Hellwig wrote:
+> On Fri, Sep 03, 2021 at 04:06:15PM +0200, Heiko Carstens wrote:
+> > Hmm, this is a more or less dead device driver, and I'm wondering if
+> > we shouldn't remove it instead. But anyway, your patch is not correct:
+> 
+> I'm all for removing it.  I think we need to do a little more spring
+> cleaning on unmaintained and likely to be unused block drivers.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/nand/raw/nand_base.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 7f29f27bb6fd..8175635b9802 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -3065,10 +3065,19 @@ static int nand_read_subpage(struct nand_chip *chip, uint32_t data_offs,
- 		    (busw - 1))
- 			aligned_len++;
- 
--		ret = nand_change_read_column_op(chip,
--						 mtd->writesize + aligned_pos,
--						 &chip->oob_poi[aligned_pos],
--						 aligned_len, false);
-+		ret = nand_check_change_read_column_op(chip,
-+						       mtd->writesize + aligned_pos,
-+						       &chip->oob_poi[aligned_pos],
-+						       aligned_len, false, true);
-+		if (!ret)
-+			ret = nand_change_read_column_op(chip,
-+							 mtd->writesize + aligned_pos,
-+							 &chip->oob_poi[aligned_pos],
-+							 aligned_len, false);
-+		else
-+			ret = nand_change_read_column_op(chip, mtd->writesize,
-+							 chip->oob_poi,
-+							 mtd->oobsize, false);
- 		if (ret)
- 			return ret;
- 	}
--- 
-2.27.0
-
+Yes, we'll remove it. I'll schedule it even for this merge
+window. Should be away with -rc1.
 
 ______________________________________________________
 Linux MTD discussion mailing list
