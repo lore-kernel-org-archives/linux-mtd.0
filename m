@@ -1,75 +1,52 @@
-Return-Path: <SRS0=E9oc=N3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=TNsO=N4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8222C433EF
-	for <linux-mtd@archiver.kernel.org>; Sun,  5 Sep 2021 19:08:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE77FC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Sep 2021 06:27:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 919A461157
-	for <linux-mtd@archiver.kernel.org>; Sun,  5 Sep 2021 19:08:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 919A461157
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 2713360ED8
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Sep 2021 06:27:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2713360ED8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sigma-star.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
-	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5zdfi3FTEA8wfy9UPj0SIhcQuCXLoeB2Q2k2Wn6e3gQ=; b=qkN0u7hGRguhR7
-	rp/9xRXpx7KdhdJkW/brK7Q2Pwo+FQ/Lz34PngwBywoIZ+3o33bZlPkYQxFtQMXLdXvP/zNmHsD8n
-	sClJwMT3rPGh7aB2WefVOUnmJYNiAmfeiqofnLQzlcKBd1FN7roF+KEbsDTccSGQzxlq+benIUJFz
-	AIF14FR5RtB8ThtzNKm6XLb4vJpLugP7T6S4eshOgYMDk91Fif3ecWW/H3DcLw+Vwi7CV9ydl/SNl
-	9sFxNUekVh26cOolHQpvvuv+rmlbwB83KbYDPOb7XUksfMPynQNxyF8NWTMBK6OiwqTQUdsgen4rd
-	QobhljwValIxH06uw0Eg==;
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:
+	In-Reply-To:Message-ID:Subject:From:To:Date:Cc:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=fqy924Ky0auqPKY1a9yPFf2uYeXbEFwx798UI/Sy4LY=; b=NFHNQyzOfpzf2Y
+	hCpCY33DLN4gAaHL0UplMnV5h82Mr/n0QcUzcxPQxlgDsCDStpIPaBnzwS8aodj105hRWaEmoRt/y
+	qTipmx1GLGh8xZHWQy0wCriZgNRMcGXSmUkUdsh0/jZsua3xDrAvL5sILgskOQPb2UlRboyge7sFq
+	D+yamB9TLlSoOtUj6XEdVYlG+PYO5P2CWyfh3VcAWjGIY2svoqdB3y86X4B4L8Pk1TPGUWrOVjQFC
+	ORcdt6VY9++sxPeCzDU4xvy8bxi3FYrMrfh6VrbWeKzMsqWvm8w5OS2EwKkcUIRQ1hezuYjIWN6NO
+	IDqciO78dN+GVLmda/2g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mMxTu-00GIJ9-Rk; Sun, 05 Sep 2021 19:07:06 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1mN85i-00HQcK-Jn; Mon, 06 Sep 2021 06:26:50 +0000
+Received: from mail-4316.protonmail.ch ([185.70.43.16])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mMxTr-00GIIc-UQ
- for linux-mtd@lists.infradead.org; Sun, 05 Sep 2021 19:07:05 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPS id EF3E260F5B;
- Sun,  5 Sep 2021 19:07:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1630868823;
- bh=DTO549HVdfyZqGh47aCecpLiom7JCFP6BlT5P11RTTE=;
- h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
- b=hWD2Kmcv1a67pBN8zp8hRURn6rm4nejRNB7/Fbqx70VRvKQJoI1VUFYScPo3SiSNO
- 05+YPewxYi1xV/8S9LGYizQXWaZmQrcAjn7jVcpiFHkCciHjcElRr2sbQv6EIlgWr2
- 1kxcjXm7K9pvhY4MVCB0Ob2Me9nNqQ7JZgnuGsl/Q3V87dvqjL44rgdi0S2zB6kKjB
- 7qsaz/vUEA4gjQAJLibY9YJk9vNc4HX5cM5ymQXF7yit0C4xL01W1hPMoMr8pnwxWv
- VZh1t4bupRP0FvHpbUlJ0JOr1lOU8b3IdsnKFPX7nGJ4sWi10UhbmNqIh+PPE31jrh
- Nl3r++1e8XF9A==
-Subject: Re: [GIT PULL] mtd: Changes for 5.15
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20210903114946.3f874e6e@xps13>
-References: <20210903114946.3f874e6e@xps13>
-X-PR-Tracked-List-Id: Linux MTD discussion mailing list
- <linux-mtd.lists.infradead.org>
-X-PR-Tracked-Message-Id: <20210903114946.3f874e6e@xps13>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-5.15
-X-PR-Tracked-Commit-Id: c1fe77e42440d2cad76055df6fb58caabf622d51
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6b6dc4f40c5264556223ba94693f20d83796ab1f
-Message-Id: <163086882283.6256.17944151994530666959.pr-tracker-bot@kernel.org>
-Date: Sun, 05 Sep 2021 19:07:02 +0000
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Frieder Schrempf <frieder.schrempf@kontron.de>, linux-kernel@vger.kernel.org
+ id 1mN85g-00HQah-2N
+ for linux-mtd@lists.infradead.org; Mon, 06 Sep 2021 06:26:49 +0000
+Date: Mon, 06 Sep 2021 06:26:39 +0000
+Authentication-Results: mail-4316.protonmail.ch; dkim=none
+To: Diego Ismirlian <dismirlian@gmail.com>, linux-mtd@lists.infradead.org
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Subject: Re: [PATCH] Add ubiscan utility
+Message-ID: <f0f90cb8-de9e-24e4-64ed-46f2f6ac732c@sigma-star.at>
+In-Reply-To: <20210817003802.3076-1-dismirlian@gmail.com>
+References: <20210817003802.3076-1-dismirlian@gmail.com>
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210905_120704_040432_D51E7667 
-X-CRM114-Status: UNSURE (   4.06  )
+X-CRM114-CacheID: sfid-20210905_232648_365162_A85E8B44 
+X-CRM114-Status: UNSURE (   2.66  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -82,24 +59,23 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
+Reply-To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The pull request you sent on Fri, 3 Sep 2021 11:49:46 +0200:
+Hi,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-5.15
+this does sound like a useful utility to me. Sorry to leave you hanging there,
+I was also hoping to maybe get some other feedback as well before applying it.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6b6dc4f40c5264556223ba94693f20d83796ab1f
+Applied to mtd-utils.git master.
 
-Thank you!
+Thanks,
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+David
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
