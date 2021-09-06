@@ -2,79 +2,77 @@ Return-Path: <SRS0=TNsO=N4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C79CC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Sep 2021 07:11:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18B03C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Sep 2021 09:17:13 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4D8CB60E76
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Sep 2021 07:11:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4D8CB60E76
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id D41F760C3E
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Sep 2021 09:17:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D41F760C3E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=yAsp6naRgqByQW7ZZtCx8ZbkaB2Sgr7a66ySwsCS2Lg=; b=a6twfJQpECuJ9ZeaNY4QwFoW2Y
-	osg3S28mVI/EHCh86tOAK1WxVHloCvSlEHifSd1cl1x1YLp0cs4PHz/aNoWx1qzYzUn9kRMHwDuLl
-	OKNZ0uVis5gQdQS3CU5m7xJ1Jfn1wAJNX9hdw5rky5RuGtP8/x1MGzgPcrRJHUkbRKgQ6Z/9yXMKR
-	0QYuu3oOUULSYPDnEf4GfobxPe/REyQ0SjGmNkMgAejcwLY3406bJnVrcEAdIc02xSnadqrqxuPyL
-	r1kM0yaZI0s1PosNUDuoV7MpZePU0hP0509QrJa3mulIQYUjGef1b3rb/I7ISZthitvx2m/vgd+bS
-	8JVaGDZw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=p5vVwUuQ4SSMORPCNvFk5IPZEotFcN0SzPx+bKWvoOs=; b=nhW8bPsMtSTHZf
+	o6VsPePiv9OIqcaYU2q4v8d8rubTMdm2xC/bHKSnpei4Fze2YqXWPhXp4s5O3CuE5seGxOlXexmn4
+	pheQpKkpRpd6G1XDBMN++V1LJb1s4VgOiQLte9+cwV+9uy6KahiWf9zPvbuxEe4WKU2IoRwui4itl
+	sAAB8zbBmJtJo5zzG8fr5H3nTnzMlG3wR46kCp3zMii+EOVboTWLgXnX4LzRnyd5bFfwsw8Z2psaY
+	fuJo0xfpJTZin8bkyc29nBZoHPSRp0yntwnjca2qtOgpbFb+pkD2KjXggx5Sg8N/fsQ6eaRyblKgl
+	tiTZWNsUB7iQjtL4pyKQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mN8lk-00HWEm-LM; Mon, 06 Sep 2021 07:10:16 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1mNAjn-000M4J-VR; Mon, 06 Sep 2021 09:16:24 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mN8lh-00HWE2-64
- for linux-mtd@lists.infradead.org; Mon, 06 Sep 2021 07:10:15 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD3D660F9E;
- Mon,  6 Sep 2021 07:10:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1630912212;
- bh=UoU3h+BkQS+eafChrQacBmLPrnNAn4faXxeGhASm8aQ=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=tdmxyWHm7SeJkF9ciu9QCxYmaK5SxvvZ72f8Pq68rg6ozP13G9K0Q1RjgSsRT59rV
- 9L3xleiAnecMGlANgfjv1X2f5mOc6TRgsfc6TrqqpiLtIszRIuUGNHfJvb0Bo8qYpk
- uDuDwlfDfeaMO79d6zX+7t65Di5uEZr7IuydKb7pKtru+6byNnkJaMYUDgzWuNJc5F
- AbVSC+W0IZiC+BsHM0g7FPDrVKYdoNG67J7vUun1kT+NemfSK7oH7kfB/x0K/MqUeQ
- WcfQAz/7/NL+bRnk3VivFMxdK3okjyj8rgwUfc4ZT58RLyg8hXsV2bqi6Xq/xzhgvu
- Dixm4xihuBN0g==
-Subject: Re: [PATCH v2 2/6] dt-bindings: memory-controllers: ti, gpmc: Convert
- to yaml
-To: Rob Herring <robh@kernel.org>
-Cc: Tony Lindgren <tony@atomide.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- =?UTF-8?Q?Miqu=c3=a8l_Raynal?= <miquel.raynal@bootlin.com>,
- Nishanth Menon <nm@ti.com>, Lokesh Vutla <lokeshvutla@ti.com>,
- devicetree@vger.kernel.org, MTD Maling List <linux-mtd@lists.infradead.org>,
- linux-omap <linux-omap@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210902095609.16583-1-rogerq@kernel.org>
- <20210902095609.16583-3-rogerq@kernel.org>
- <YTEsiJiLMRYon5s3@robh.at.kernel.org>
- <715fe0ee-a38c-c2ca-5e29-79fa0887bea0@kernel.org>
- <CAL_Jsq+HTJhVGrjJ9EdbE0_rpMtpa=nbm7CyObHHEpocy-A3+A@mail.gmail.com>
-From: Roger Quadros <rogerq@kernel.org>
-Message-ID: <9def1538-fc7e-cc1b-fba4-cba6f230c037@kernel.org>
-Date: Mon, 6 Sep 2021 10:10:08 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ id 1mNAjm-000M47-HX
+ for linux-mtd@bombadil.infradead.org; Mon, 06 Sep 2021 09:16:22 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+ References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description;
+ bh=rpadY60xuZTsVqlD3pQoJaPqU3ClhmKBmxShxdIOPTQ=; b=PnvC6D5zqQVeRqwnkETdG9hYJx
+ ljEOQvj4My7mUimGhEI1YNMlvjzbX7PGi2zUTMQmJQhK8Hns7uGt6hka0lnZFNJAsdlAaOCNA5Avs
+ NFC6y8Agrp38qMbZLj6Tj0rySktHbY+AwC3htRPHpABgcJqs8/5c+0iuqiIe27xLRytx/rNIEpsqO
+ ZWyWai5d2hrS9T6DmndX82cTyQCL5YmLldG/mmJW3nN7w1ac5T6SGMgp6R2RTc+Co9HFSjtZPr4IR
+ 8uf10wSIJ9a97lAjpGFuZeLuQ8W7X29RmhQVxfn5mxKuCE4/SfrEts5ru+wBawqcL8BDuPky7nXVI
+ GZT9W8mA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat
+ Linux)) id 1mNAj6-006oEv-Fr; Mon, 06 Sep 2021 09:15:52 +0000
+Date: Mon, 6 Sep 2021 10:15:40 +0100
+From: Christoph Hellwig <hch@infradead.org>
+To: Heiko Carstens <hca@linux.ibm.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk,
+ gregkh@linuxfoundation.org, chaitanya.kulkarni@wdc.com,
+ atulgopinathan@gmail.com, hare@suse.de, maximlevitsky@gmail.com,
+ oakad@yahoo.com, ulf.hansson@linaro.org, colin.king@canonical.com,
+ shubhankarvk@gmail.com, baijiaju1990@gmail.com, trix@redhat.com,
+ dongsheng.yang@easystack.cn, ceph-devel@vger.kernel.org,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ sth@linux.ibm.com, hoeppner@linux.ibm.com, gor@linux.ibm.com,
+ borntraeger@de.ibm.com, oberpar@linux.ibm.com, tj@kernel.org,
+ linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 9/9] s390/block/xpram: add error handling support for
+ add_disk()
+Message-ID: <YTXcPBph323n2WJ8@infradead.org>
+References: <20210902174105.2418771-1-mcgrof@kernel.org>
+ <20210902174105.2418771-10-mcgrof@kernel.org>
+ <YTIr1w/qPvgioUfL@osiris>
 MIME-Version: 1.0
-In-Reply-To: <CAL_Jsq+HTJhVGrjJ9EdbE0_rpMtpa=nbm7CyObHHEpocy-A3+A@mail.gmail.com>
-Content-Language: en-US
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210906_001013_323867_3E91EE97 
-X-CRM114-Status: GOOD (  27.84  )
+Content-Disposition: inline
+In-Reply-To: <YTIr1w/qPvgioUfL@osiris>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by
+ casper.infradead.org. See http://www.infradead.org/rpr.html
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,207 +89,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Fri, Sep 03, 2021 at 04:06:15PM +0200, Heiko Carstens wrote:
+> Hmm, this is a more or less dead device driver, and I'm wondering if
+> we shouldn't remove it instead. But anyway, your patch is not correct:
 
-
-On 03/09/2021 23:41, Rob Herring wrote:
-> On Fri, Sep 3, 2021 at 4:35 AM Roger Quadros <rogerq@kernel.org> wrote:
->>
->> Hi Rob,
->>
->> On 02/09/2021 22:56, Rob Herring wrote:
->>> On Thu, Sep 02, 2021 at 12:56:05PM +0300, Roger Quadros wrote:
->>>> Convert omap-gpmc.txt to ti,gpmc.yaml.
->>>>
->>>> Signed-off-by: Roger Quadros <rogerq@kernel.org>
->>>> ---
->>>>  .../bindings/memory-controllers/omap-gpmc.txt | 157 --------
->>>>  .../bindings/memory-controllers/ti,gpmc.yaml  | 364 ++++++++++++++++++
->>>>  .../devicetree/bindings/mtd/gpmc-nand.txt     |   2 +-
->>>>  .../devicetree/bindings/mtd/gpmc-nor.txt      |   4 +-
->>>>  .../devicetree/bindings/mtd/gpmc-onenand.txt  |   2 +-
->>>>  .../devicetree/bindings/net/gpmc-eth.txt      |   4 +-
->>>>  6 files changed, 370 insertions(+), 163 deletions(-)
->>>>  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
->>>>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
->>>
->>>> diff --git a/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml b/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
->>>> new file mode 100644
->>>> index 000000000000..b7d43370a95d
->>>> --- /dev/null
->>>> +++ b/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
->>>> @@ -0,0 +1,364 @@
->>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>>> +%YAML 1.2
->>>> +---
->>>> +$id: http://devicetree.org/schemas/memory-controllers/ti,gpmc.yaml#
->>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>> +
->>>> +title: Texas Instruments GPMC Memory Controller device-tree bindings
->>>> +
->>>> +maintainers:
->>>> +  - Tony Lindgren <tony@atomide.com>
->>>> +  - Roger Quadros <rogerq@kernel.org>
->>>> +
->>>> +description:
->>>> +  The GPMC is a unified memory controller dedicated for interfacing
->>>> +  with external memory devices like
->>>> +  - Asynchronous SRAM-like memories and ASICs
->>>> +  - Asynchronous, synchronous, and page mode burst NOR flash
->>>> +  - NAND flash
->>>> +  - Pseudo-SRAM devices
->>>> +
->>>> +properties:
->>>> +  compatible:
->>>> +    items:
->>>> +      - enum:
->>>> +          - ti,omap2420-gpmc
->>>> +          - ti,omap2430-gpmc
->>>> +          - ti,omap3430-gpmc
->>>> +          - ti,omap4430-gpmc
->>>> +          - ti,am3352-gpmc
->>>> +
->>>> +  reg:
->>>> +    items:
->>>> +      - description:
->>>> +          Configuration registers for the controller.
->>>
->>> Just 'maxItems: 1' is sufficient.
->>>
->>>> +
->>>> +  interrupts: true
->>>
->>> Need to define how many.
->>>
->>>> +
->>>> +  clocks:
->>>> +    maxItems: 1
->>>> +    description: |
->>>> +      Functional clock. Used for bus timing calculations and
->>>> +      GPMC configuration.
->>>> +
->>>> +  clock-names:
->>>> +    items:
->>>> +      - const: fck
->>>> +
->>>> +  dmas:
->>>> +    items:
->>>> +      - description: DMA channel for GPMC NAND prefetch
->>>> +
->>>> +  dma-names:
->>>> +    items:
->>>> +      - const: rxtx
->>>> +
->>>> +  "#address-cells":
->>>> +    const: 2
->>>> +
->>>> +  "#size-cells":
->>>> +    const: 1
->>>> +
->>>> +  gpmc,num-cs:
->>>> +    description: maximum number of supported chip-select lines.
->>>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>>> +
->>>> +  gpmc,num-waitpins:
->>>> +    description: maximum number of supported wait pins.
->>>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>>> +
->>>> +  ranges:
->>>> +    minItems: 1
->>>> +    description: |
->>>> +      Must be set up to reflect the memory layout with four
->>>> +      integer values for each chip-select line in use,
->>>> +      <cs-number> 0 <physical address of mapping> <size>
->>>> +
->>>> +    items:
->>>> +      - description: NAND bank 0
->>>> +      - description: NOR/SRAM bank 0
->>>> +      - description: NOR/SRAM bank 1
->>>> +
->>>> +  '#interrupt-cells':
->>>> +    const: 2
->>>> +
->>>> +  interrupt-controller:
->>>> +    description: |
->>>> +      The GPMC driver implements and interrupt controller for
->>>> +      the NAND events "fifoevent" and "termcount" plus the
->>>> +      rising/falling edges on the GPMC_WAIT pins.
->>>> +      The interrupt number mapping is as follows
->>>> +      0 - NAND_fifoevent
->>>> +      1 - NAND_termcount
->>>> +      2 - GPMC_WAIT0 pin edge
->>>> +      3 - GPMC_WAIT1 pin edge, and so on.
->>>> +
->>>> +  '#gpio-cells':
->>>> +     const: 2
->>>> +
->>>> +  gpio-controller:
->>>> +    description: |
->>>> +      The GPMC driver implements a GPIO controller for the
->>>> +      GPMC WAIT pins that can be used as general purpose inputs.
->>>> +      0 maps to GPMC_WAIT0 pin.
->>>> +
->>>> +  ti,hwmods:
->>>> +    description:
->>>> +      Name of the HWMOD associated with GPMC. This is for legacy
->>>> +      omap2/3 platforms only.
->>>> +    $ref: /schemas/types.yaml#/definitions/string
->>>> +    deprecated: true
->>>> +
->>>> +  ti,no-idle-on-init:
->>>> +    description:
->>>> +      Prevent idling the module at init. This is for legacy omap2/3
->>>> +      platforms only.
->>>> +    type: boolean
->>>> +    deprecated: true
->>>> +
->>>> +patternProperties:
->>>> +#  "@[0-3],[a-f0-9]+$":>> +  "^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-fA-F]+(,[0-9a-fA-F]+)*$":
->>
->>>
->>> Why the commented regex. There's no need for a full regex as we already
->>> do that elsewhere. You only need to define the unit-address format.
->>
->> This should be
->>   "@[0-7],[a-f0-9]+$":
->>
->> I added the full regex during debug but forgot to take it off.
->>
->>>
->>>> +    type: object
->>>> +    description: |
->>>> +      The child device node represents the device connected to the GPMC
->>>> +      bus. The device can be a NAND controller, SRAM device, NOR device
->>>> +      or an ASIC.
->>>> +
->>>> +    properties:
->>>> +      compatible:
->>>> +        description:
->>>> +          Compatible of attached device.
->>>
->>> Duh. Drop.
->>>
->>>> +
->>>> +      reg:
->>>> +        items:
->>>> +        - description: Register access space for the device
->>>
->>> A device with 2 register ranges isn't allowed?
->>
->> GPMC is actually a memory controller and we are describing the children here.
-> 
-> Yes, I understand what it is.
-> 
->> Each child has to have a register range.
-> 
-> What you are saying here with the schema is there is only 1 register
-> range allowed for the child node. You don't know how many a child
-> device may have. That's a property of the child device. You just need
-> 'reg: true' here.
-
-Now I got it. You are right. Thanks for the explanation :)
-
-cheers,
--roger
+I'm all for removing it.  I think we need to do a little more spring
+cleaning on unmaintained and likely to be unused block drivers.
 
 ______________________________________________________
 Linux MTD discussion mailing list
