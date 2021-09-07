@@ -2,62 +2,88 @@ Return-Path: <SRS0=sITD=N5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-18.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EEB9C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Sep 2021 14:04:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91C55C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Sep 2021 15:28:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E506260F43
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Sep 2021 14:04:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E506260F43
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 6696A610C9
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Sep 2021 15:28:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6696A610C9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=N7XrnL4V9Qe/IV9nEfKHoEa41kCygyy7rm+kLhX76MM=; b=MDu+2GbDK1euXn
-	BlN4glm0Pi32aIA/w9sucVWdKAxQZVDg9eFRREjcogFVhLn4MJrrJg3GgNNp1RItmeImcGW1wVQak
-	39QnsJWMsKbQlG1Wb7ENy1Iu8KgyCshJfSp7DZv/wI7VFModH9J82Ny/KkJpA2SeD3OxSADQ2o1ne
-	pspCFmSrEzrlQ6JF/fwK/jT5qfDh6AVd8aGAeDVzFQiD83ODu8uwCzupv3nvagqEbrpAs9kazf5lB
-	md/EBl32Opb/sI5HH5Q69LAaQSK4XpR/hSyG6BvTTfdkHlNse4T83AuvmefTC122nYgT7F1+7hUuT
-	9I5fDZ3AG2AueQwzjkLw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=jA5JjqYqDWKD91FqLyCnEc0SjCTq3SyZorhbh4rGc4I=; b=po1TqFUgceE5WqceaSjwZBNDtf
+	62d78XQQPwvm5j1r0g1+90BFikoaBQWGUd3KE9yDkn/osQMdcKw/0Zs6fAOqY+JwvvUjpAkUoMRYc
+	21tCWleIb/uHZ0m2a+DgXmWadrxR8zqKcY1hrg1GQ98EvAbYMN+U/b9+clQDdn4PRpCgdA4RdTQBU
+	YOsE25+VYVTVHlyC0+6+tT1dA0DioctU6sqzrIikAsbZXFs0L/D4rxlMQoVPRbIlCGFMIGqOCByVs
+	qhJbjG7nQra6obdjMmdwDWWd6vid+M7xsR06mlobqVU3AwqGEuZt43Py2OdZwcy5ihyaOleIiPTuF
+	H0Am8hVQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mNbhD-003omm-23; Tue, 07 Sep 2021 14:03:31 +0000
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	id 1mNd0q-0043ef-Jd; Tue, 07 Sep 2021 15:27:52 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mNbh7-003ofu-5P
- for linux-mtd@lists.infradead.org; Tue, 07 Sep 2021 14:03:29 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id CD03F40004;
- Tue,  7 Sep 2021 14:03:18 +0000 (UTC)
-Date: Tue, 7 Sep 2021 16:03:17 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Roger Quadros <rogerq@kernel.org>
-Cc: tony@atomide.com, robh+dt@kernel.org, grygorii.strashko@ti.com,
- nm@ti.com, lokeshvutla@ti.com, nsekhar@ti.com,
- krzysztof.kozlowski@canonical.com, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-kernel@vger.kernel.org
+ id 1mNd0j-0043cg-N4
+ for linux-mtd@lists.infradead.org; Tue, 07 Sep 2021 15:27:48 +0000
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 187FRbZJ065289;
+ Tue, 7 Sep 2021 10:27:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1631028457;
+ bh=OBjtREiXqmYOggfj/eR4+RHv/XFzfYkqRzrVGoU7Fho=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=eK8U12SkLF84E5Dfq9jKcsRuYSnZAmiDEsupKjjqIq31cFlOuNl/rX7izEfN5UZge
+ F73HFfQ9IbmXKH/APtU9FZFh1e2Vax6ncx4JYcVpJURJdULpfTTJLKTUV5QhoSzAv9
+ xPV3/IPg5p4IBs1PrExY4A6RR6TkjnGITyzGQ1tI=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 187FRbNX125799
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 7 Sep 2021 10:27:37 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 7
+ Sep 2021 10:27:37 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 7 Sep 2021 10:27:37 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 187FRXkp014956;
+ Tue, 7 Sep 2021 10:27:34 -0500
 Subject: Re: [PATCH v3 5/8] dt-bindings: mtd: ti,gpmc-nand: Convert to yaml
-Message-ID: <20210907160317.2ec5304a@xps13>
-In-Reply-To: <20210907113226.31876-6-rogerq@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Roger Quadros
+ <rogerq@kernel.org>
+CC: <tony@atomide.com>, <robh+dt@kernel.org>, <nm@ti.com>,
+ <lokeshvutla@ti.com>, <nsekhar@ti.com>,
+ <krzysztof.kozlowski@canonical.com>, <devicetree@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
 References: <20210907113226.31876-1-rogerq@kernel.org>
- <20210907113226.31876-6-rogerq@kernel.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ <20210907113226.31876-6-rogerq@kernel.org> <20210907160317.2ec5304a@xps13>
+From: Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <dc3d465f-50d5-31e5-07e6-f83223b90800@ti.com>
+Date: Tue, 7 Sep 2021 18:27:32 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210907160317.2ec5304a@xps13>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210907_070325_530117_53E0BED9 
-X-CRM114-Status: GOOD (  35.76  )
+X-CRM114-CacheID: sfid-20210907_082745_927223_E17F977D 
+X-CRM114-Status: GOOD (  33.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,193 +95,266 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgUm9nZXIsCgpyb2dlcnFAa2VybmVsLm9yZyB3cm90ZSBvbiBUdWUsICA3IFNlcCAyMDIxIDE0
-OjMyOjIzICswMzAwOgoKPiBDb252ZXJ0IGdwbWMtbmFuZC50eHQgdG8gdGksZ3BtYy1uYW5kLnlh
-bWwuCj4gCj4gU2lnbmVkLW9mZi1ieTogUm9nZXIgUXVhZHJvcyA8cm9nZXJxQGtlcm5lbC5vcmc+
-Cj4gLS0tCj4gIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9ncG1jLW5hbmQudHh0ICAgICB8
-IDE0NyAtLS0tLS0tLS0tLS0tLS0tLS0KPiAgLi4uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3Rp
-LGdwbWMtbmFuZC55YW1sIHwgMTEwICsrKysrKysrKysrKysKPiAgMiBmaWxlcyBjaGFuZ2VkLCAx
-MTAgaW5zZXJ0aW9ucygrKSwgMTQ3IGRlbGV0aW9ucygtKQo+ICBkZWxldGUgbW9kZSAxMDA2NDQg
-RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9ncG1jLW5hbmQudHh0Cj4gIGNy
-ZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3Rp
-LGdwbWMtbmFuZC55YW1sCj4gCj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJl
-ZS9iaW5kaW5ncy9tdGQvZ3BtYy1uYW5kLnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
-aW5kaW5ncy9tdGQvZ3BtYy1uYW5kLnR4dAo+IGRlbGV0ZWQgZmlsZSBtb2RlIDEwMDY0NAo+IGlu
-ZGV4IDQ0OTE5ZDQ4ZDI0MS4uMDAwMDAwMDAwMDAwCj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZp
-Y2V0cmVlL2JpbmRpbmdzL210ZC9ncG1jLW5hbmQudHh0Cj4gKysrIC9kZXYvbnVsbAo+IEBAIC0x
-LDE0NyArMCwwIEBACj4gLURldmljZSB0cmVlIGJpbmRpbmdzIGZvciBHUE1DIGNvbm5lY3RlZCBO
-QU5Ecwo+IC0KPiAtR1BNQyBjb25uZWN0ZWQgTkFORCAoZm91bmQgb24gT01BUCBib2FyZHMpIGFy
-ZSByZXByZXNlbnRlZCBhcyBjaGlsZCBub2RlcyBvZgo+IC10aGUgR1BNQyBjb250cm9sbGVyIHdp
-dGggYSBuYW1lIG9mICJuYW5kIi4KPiAtCj4gLUFsbCB0aW1pbmcgcmVsZXZhbnQgcHJvcGVydGll
-cyBhcyB3ZWxsIGFzIGdlbmVyaWMgZ3BtYyBjaGlsZCBwcm9wZXJ0aWVzIGFyZQo+IC1leHBsYWlu
-ZWQgaW4gYSBzZXBhcmF0ZSBkb2N1bWVudHMgLSBwbGVhc2UgcmVmZXIgdG8KPiAtRG9jdW1lbnRh
-dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21lbW9yeS1jb250cm9sbGVycy9vbWFwLWdwbWMudHh0
-Cj4gLQo+IC1Gb3IgTkFORCBzcGVjaWZpYyBwcm9wZXJ0aWVzIHN1Y2ggYXMgRUNDIG1vZGVzIG9y
-IGJ1cyB3aWR0aCwgcGxlYXNlIHJlZmVyIHRvCj4gLURvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
-aW5kaW5ncy9tdGQvbmFuZC1jb250cm9sbGVyLnlhbWwKPiAtCj4gLQo+IC1SZXF1aXJlZCBwcm9w
-ZXJ0aWVzOgo+IC0KPiAtIC0gY29tcGF0aWJsZToJInRpLG9tYXAyLW5hbmQiCj4gLSAtIHJlZzoJ
-CXJhbmdlIGlkIChDUyBudW1iZXIpLCBiYXNlIG9mZnNldCBhbmQgbGVuZ3RoIG9mIHRoZQo+IC0J
-CU5BTkQgSS9PIHNwYWNlCj4gLSAtIGludGVycnVwdHM6CVR3byBpbnRlcnJ1cHQgc3BlY2lmaWVy
-cywgb25lIGZvciBmaWZvZXZlbnQsIG9uZSBmb3IgdGVybWNvdW50Lgo+IC0KPiAtT3B0aW9uYWwg
-cHJvcGVydGllczoKPiAtCj4gLSAtIG5hbmQtYnVzLXdpZHRoOiAJCVNldCB0aGlzIG51bWVyaWMg
-dmFsdWUgdG8gMTYgaWYgdGhlIGhhcmR3YXJlCj4gLQkJCQlpcyB3aXJlZCB0aGF0IHdheS4gSWYg
-bm90IHNwZWNpZmllZCwgYSBidXMKPiAtCQkJCXdpZHRoIG9mIDggaXMgYXNzdW1lZC4KPiAtCj4g
-LSAtIHRpLG5hbmQtZWNjLW9wdDoJCUEgc3RyaW5nIHNldHRpbmcgdGhlIEVDQyBsYXlvdXQgdG8g
-dXNlLiBPbmUgb2Y6Cj4gLQkJInN3IgkJMS1iaXQgSGFtbWluZyBlY2MgY29kZSB2aWEgc29mdHdh
-cmUKPiAtCQkiaHciCQk8ZGVwcmVjYXRlZD4gdXNlICJoYW0xIiBpbnN0ZWFkCj4gLQkJImh3LXJv
-bWNvZGUiCTxkZXByZWNhdGVkPiB1c2UgImhhbTEiIGluc3RlYWQKPiAtCQkiaGFtMSIJCTEtYml0
-IEhhbW1pbmcgZWNjIGNvZGUKPiAtCQkiYmNoNCIJCTQtYml0IEJDSCBlY2MgY29kZQo+IC0JCSJi
-Y2g4IgkJOC1iaXQgQkNIIGVjYyBjb2RlCj4gLQkJImJjaDE2IgkJMTYtYml0IEJDSCBFQ0MgY29k
-ZQo+IC0JCVJlZmVyIGJlbG93ICJIb3cgdG8gc2VsZWN0IGNvcnJlY3QgRUNDIHNjaGVtZSBmb3Ig
-eW91ciBkZXZpY2UgPyIKPiAtCj4gLSAtIHRpLG5hbmQteGZlci10eXBlOgkJQSBzdHJpbmcgc2V0
-dGluZyB0aGUgZGF0YSB0cmFuc2ZlciB0eXBlLiBPbmUgb2Y6Cj4gLQo+IC0JCSJwcmVmZXRjaC1w
-b2xsZWQiCVByZWZldGNoIHBvbGxlZCBtb2RlIChkZWZhdWx0KQo+IC0JCSJwb2xsZWQiCQlQb2xs
-ZWQgbW9kZSwgd2l0aG91dCBwcmVmZXRjaAo+IC0JCSJwcmVmZXRjaC1kbWEiCQlQcmVmZXRjaCBl
-bmFibGVkIERNQSBtb2RlCj4gLQkJInByZWZldGNoLWlycSIJCVByZWZldGNoIGVuYWJsZWQgaXJx
-IG1vZGUKPiAtCj4gLSAtIGVsbV9pZDoJPGRlcHJlY2F0ZWQ+IHVzZSAidGksZWxtLWlkIiBpbnN0
-ZWFkCj4gLSAtIHRpLGVsbS1pZDoJU3BlY2lmaWVzIHBoYW5kbGUgb2YgdGhlIEVMTSBkZXZpY2V0
-cmVlIG5vZGUuCj4gLQkJRUxNIGlzIGFuIG9uLWNoaXAgaGFyZHdhcmUgZW5naW5lIG9uIFRJIFNv
-QyB3aGljaCBpcyB1c2VkIGZvcgo+IC0JCWxvY2F0aW5nIEVDQyBlcnJvcnMgZm9yIEJDSHggYWxn
-b3JpdGhtcy4gU29DIGRldmljZXMgd2hpY2ggaGF2ZQo+IC0JCUVMTSBoYXJkd2FyZSBlbmdpbmVz
-IHNob3VsZCBzcGVjaWZ5IHRoaXMgZGV2aWNlIG5vZGUgaW4gLmR0c2kKPiAtCQlVc2luZyBFTE0g
-Zm9yIEVDQyBlcnJvciBjb3JyZWN0aW9uIGZyZWVzIHNvbWUgQ1BVIGN5Y2xlcy4KPiAtIC0gcmIt
-Z3Bpb3M6CUdQSU8gc3BlY2lmaWVyIGZvciB0aGUgcmVhZHkvYnVzeSMgcGluLgo+IC0KPiAtRm9y
-IGlubGluZSBwYXJ0aXRpb24gdGFibGUgcGFyc2luZyAob3B0aW9uYWwpOgo+IC0KPiAtIC0gI2Fk
-ZHJlc3MtY2VsbHM6IHNob3VsZCBiZSBzZXQgdG8gMQo+IC0gLSAjc2l6ZS1jZWxsczogc2hvdWxk
-IGJlIHNldCB0byAxCj4gLQo+IC1FeGFtcGxlIGZvciBhbiBBTTMzeHggYm9hcmQ6Cj4gLQo+IC0J
-Z3BtYzogZ3BtY0A1MDAwMDAwMCB7Cj4gLQkJY29tcGF0aWJsZSA9ICJ0aSxhbTMzNTItZ3BtYyI7
-Cj4gLQkJdGksaHdtb2RzID0gImdwbWMiOwo+IC0JCXJlZyA9IDwweDUwMDAwMDAwIDB4MzZjPjsK
-PiAtCQlpbnRlcnJ1cHRzID0gPDEwMD47Cj4gLQkJZ3BtYyxudW0tY3MgPSA8OD47Cj4gLQkJZ3Bt
-YyxudW0td2FpdHBpbnMgPSA8Mj47Cj4gLQkJI2FkZHJlc3MtY2VsbHMgPSA8Mj47Cj4gLQkJI3Np
-emUtY2VsbHMgPSA8MT47Cj4gLQkJcmFuZ2VzID0gPDAgMCAweDA4MDAwMDAwIDB4MTAwMDAwMD47
-CS8qIENTMCBzcGFjZSwgMTZNQiAqLwo+IC0JCWVsbV9pZCA9IDwmZWxtPjsKPiAtCQlpbnRlcnJ1
-cHQtY29udHJvbGxlcjsKPiAtCQkjaW50ZXJydXB0LWNlbGxzID0gPDI+Owo+IC0KPiAtCQluYW5k
-QDAsMCB7Cj4gLQkJCWNvbXBhdGlibGUgPSAidGksb21hcDItbmFuZCI7Cj4gLQkJCXJlZyA9IDww
-IDAgND47CQkvKiBDUzAsIG9mZnNldCAwLCBOQU5EIEkvTyB3aW5kb3cgNCAqLwo+IC0JCQlpbnRl
-cnJ1cHQtcGFyZW50ID0gPCZncG1jPjsKPiAtCQkJaW50ZXJydXB0cyA9IDwwIElSUV9UWVBFX05P
-TkU+LCA8MSBJUlFfVFlQRSBOT05FPjsKPiAtCQkJbmFuZC1idXMtd2lkdGggPSA8MTY+Owo+IC0J
-CQl0aSxuYW5kLWVjYy1vcHQgPSAiYmNoOCI7Cj4gLQkJCXRpLG5hbmQteGZlci10eXBlID0gInBv
-bGxlZCI7Cj4gLQkJCXJiLWdwaW9zID0gPCZncG1jIDAgR1BJT19BQ1RJVkVfSElHSD47IC8qIGdw
-bWNfd2FpdDAgKi8KPiAtCj4gLQkJCWdwbWMsc3luYy1jbGstcHMgPSA8MD47Cj4gLQkJCWdwbWMs
-Y3Mtb24tbnMgPSA8MD47Cj4gLQkJCWdwbWMsY3MtcmQtb2ZmLW5zID0gPDQ0PjsKPiAtCQkJZ3Bt
-Yyxjcy13ci1vZmYtbnMgPSA8NDQ+Owo+IC0JCQlncG1jLGFkdi1vbi1ucyA9IDw2PjsKPiAtCQkJ
-Z3BtYyxhZHYtcmQtb2ZmLW5zID0gPDM0PjsKPiAtCQkJZ3BtYyxhZHYtd3Itb2ZmLW5zID0gPDQ0
-PjsKPiAtCQkJZ3BtYyx3ZS1vZmYtbnMgPSA8NDA+Owo+IC0JCQlncG1jLG9lLW9mZi1ucyA9IDw1
-ND47Cj4gLQkJCWdwbWMsYWNjZXNzLW5zID0gPDY0PjsKPiAtCQkJZ3BtYyxyZC1jeWNsZS1ucyA9
-IDw4Mj47Cj4gLQkJCWdwbWMsd3ItY3ljbGUtbnMgPSA8ODI+Owo+IC0JCQlncG1jLHdyLWFjY2Vz
-cy1ucyA9IDw0MD47Cj4gLQkJCWdwbWMsd3ItZGF0YS1tdXgtYnVzLW5zID0gPDA+Owo+IC0KPiAt
-CQkJI2FkZHJlc3MtY2VsbHMgPSA8MT47Cj4gLQkJCSNzaXplLWNlbGxzID0gPDE+Owo+IC0KPiAt
-CQkJLyogcGFydGl0aW9ucyBnbyBoZXJlICovCj4gLQkJfTsKPiAtCX07Cj4gLQo+IC1Ib3cgdG8g
-c2VsZWN0IGNvcnJlY3QgRUNDIHNjaGVtZSBmb3IgeW91ciBkZXZpY2UgPwo+IC0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+IC1IaWdoZXIgRUNDIHNj
-aGVtZSB1c3VhbGx5IG1lYW5zIGJldHRlciBwcm90ZWN0aW9uIGFnYWluc3QgYml0LWZsaXBzIGFu
-ZAo+IC1pbmNyZWFzZWQgc3lzdGVtIGxpZmV0aW1lLiBIb3dldmVyLCBzZWxlY3Rpb24gb2YgRUND
-IHNjaGVtZSBpcyBkZXBlbmRlbnQKPiAtb24gdmFyaW91cyBvdGhlciBmYWN0b3JzIGFsc28gbGlr
-ZTsKPiAtCj4gLSgxKSBzdXBwb3J0IG9mIGJ1aWx0IGluIGhhcmR3YXJlIGVuZ2luZXMuCj4gLQlT
-b21lIGxlZ2FjeSBPTUFQIFNvQyBkbyBub3QgaGF2ZSBFTE0gaGFyd2FyZSBlbmdpbmUsIHNvIHRo
-b3NlIFNvQyBjYW5ub3QKPiAtCXN1cHBvcnQgZWNjLXNjaGVtZXMgd2l0aCBoYXJkd2FyZSBlcnJv
-ci1jb3JyZWN0aW9uIChCQ0h4X0hXKS4gSG93ZXZlcgo+IC0Jc3VjaCBTb0MgY2FuIHVzZSBlY2Mt
-c2NoZW1lcyB3aXRoIHNvZnR3YXJlIGxpYnJhcnkgZm9yIGVycm9yLWNvcnJlY3Rpb24KPiAtCShC
-Q0h4X0hXX0RFVEVDVElPTl9TVykuIFRoZSBlcnJvciBjb3JyZWN0aW9uIGNhcGFiaWxpdHkgd2l0
-aCBzb2Z0d2FyZQo+IC0JbGlicmFyeSByZW1haW5zIGVxdWl2YWxlbnQgdG8gdGhlaXIgaGFyZHdh
-cmUgY291bnRlci1wYXJ0LCBidXQgdGhlcmUgaXMKPiAtCXNsaWdodCBDUFUgcGVuYWx0eSB3aGVu
-IHRvbyBtYW55IGJpdC1mbGlwcyBhcmUgZGV0ZWN0ZWQgZHVyaW5nIHJlYWRzLgo+IC0KPiAtKDIp
-IERldmljZSBwYXJhbWV0ZXJzIGxpa2UgT09CU0laRS4KPiAtCU90aGVyIGZhY3RvciB3aGljaCBn
-b3Zlcm5zIHRoZSBzZWxlY3Rpb24gb2YgZWNjLXNjaGVtZSBpcyBvb2Itc2l6ZS4KPiAtCUhpZ2hl
-ciBFQ0Mgc2NoZW1lcyByZXF1aXJlIG1vcmUgT09CL1NwYXJlIGFyZWEgdG8gc3RvcmUgRUNDIHN5
-bmRyb21lLAo+IC0Jc28gdGhlIGRldmljZSBzaG91bGQgaGF2ZSBlbm91Z2ggZnJlZSBieXRlcyBh
-dmFpbGFibGUgaXRzIE9PQi9TcGFyZQo+IC0JYXJlYSB0byBhY2NvbW1vZGF0ZSBFQ0MgZm9yIGVu
-dGlyZSBwYWdlLiBJbiBnZW5lcmFsIGZvbGxvd2luZyBleHByZXNzaW9uCj4gLQloZWxwcyBpbiBk
-ZXRlcm1pbmluZyBpZiBnaXZlbiBkZXZpY2UgY2FuIGFjY29tbW9kYXRlIEVDQyBzeW5kcm9tZToK
-PiAtCSIyICsgKFBBR0VTSVpFIC8gNTEyKSAqIEVDQ19CWVRFUyIgPj0gT09CU0laRSIKPiAtCXdo
-ZXJlCj4gLQkJT09CU0laRQkJbnVtYmVyIG9mIGJ5dGVzIGluIE9PQi9zcGFyZSBhcmVhCj4gLQkJ
-UEFHRVNJWkUJbnVtYmVyIG9mIGJ5dGVzIGluIG1haW4tYXJlYSBvZiBkZXZpY2UgcGFnZQo+IC0J
-CUVDQ19CWVRFUwludW1iZXIgb2YgRUNDIGJ5dGVzIGdlbmVyYXRlZCB0byBwcm90ZWN0Cj4gLQkJ
-ICAgICAgICAgICAgICAgIDUxMiBieXRlcyBvZiBkYXRhLCB3aGljaCBpczoKPiAtCQkJCSczJyBm
-b3IgSEFNMV94eCBlY2Mgc2NoZW1lcwo+IC0JCQkJJzcnIGZvciBCQ0g0X3h4IGVjYyBzY2hlbWVz
-Cj4gLQkJCQknMTQnIGZvciBCQ0g4X3h4IGVjYyBzY2hlbWVzCj4gLQkJCQknMjYnIGZvciBCQ0gx
-Nl94eCBlY2Mgc2NoZW1lcwo+IC0KPiAtCUV4YW1wbGUoYSk6IEZvciBhIGRldmljZSB3aXRoIFBB
-R0VTSVpFID0gMjA0OCBhbmQgT09CU0laRSA9IDY0IGFuZAo+IC0JCXRyeWluZyB0byB1c2UgQkNI
-MTYgKEVDQ19CWVRFUz0yNikgZWNjLXNjaGVtZS4KPiAtCQlOdW1iZXIgb2YgRUNDIGJ5dGVzIHBl
-ciBwYWdlID0gKDIgKyAoMjA0OCAvIDUxMikgKiAyNikgPSAxMDYgQgo+IC0JCXdoaWNoIGlzIGdy
-ZWF0ZXIgdGhhbiBjYXBhY2l0eSBvZiBOQU5EIGRldmljZSAoT09CU0laRT02NCkKPiAtCQlIZW5j
-ZSwgQkNIMTYgY2Fubm90IGJlIHN1cHBvcnRlZCBvbiBnaXZlbiBkZXZpY2UuIEJ1dCBpdCBjYW4K
-PiAtCQlwcm9iYWJseSB1c2UgbG93ZXIgZWNjLXNjaGVtZXMgbGlrZSBCQ0g4Lgo+IC0KPiAtCUV4
-YW1wbGUoYik6IEZvciBhIGRldmljZSB3aXRoIFBBR0VTSVpFID0gMjA0OCBhbmQgT09CU0laRSA9
-IDEyOCBhbmQKPiAtCQl0cnlpbmcgdG8gdXNlIEJDSDE2IChFQ0NfQllURVM9MjYpIGVjYy1zY2hl
-bWUuCj4gLQkJTnVtYmVyIG9mIEVDQyBieXRlcyBwZXIgcGFnZSA9ICgyICsgKDIwNDggLyA1MTIp
-ICogMjYpID0gMTA2IEIKPiAtCQl3aGljaCBjYW4gYmUgYWNjb21tb2RhdGVkIGluIHRoZSBPT0Iv
-U3BhcmUgYXJlYSBvZiB0aGlzIGRldmljZQo+IC0JCShPT0JTSVpFPTEyOCkuIFNvIHRoaXMgZGV2
-aWNlIGNhbiB1c2UgQkNIMTYgZWNjLXNjaGVtZS4KPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC90aSxncG1jLW5hbmQueWFtbCBiL0RvY3VtZW50YXRp
-b24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvdGksZ3BtYy1uYW5kLnlhbWwKPiBuZXcgZmlsZSBt
-b2RlIDEwMDY0NAo+IGluZGV4IDAwMDAwMDAwMDAwMC4uZGIzNmYyZTk0NGVmCj4gLS0tIC9kZXYv
-bnVsbAo+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvdGksZ3Bt
-Yy1uYW5kLnlhbWwKPiBAQCAtMCwwICsxLDExMCBAQAo+ICsjIFNQRFgtTGljZW5zZS1JZGVudGlm
-aWVyOiAoR1BMLTIuMC1vbmx5IE9SIEJTRC0yLUNsYXVzZSkKPiArJVlBTUwgMS4yCj4gKy0tLQo+
-ICskaWQ6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9zY2hlbWFzL210ZC90aSxncG1jLW5hbmQueWFt
-bCMKPiArJHNjaGVtYTogaHR0cDovL2RldmljZXRyZWUub3JnL21ldGEtc2NoZW1hcy9jb3JlLnlh
-bWwjCj4gKwo+ICt0aXRsZTogVGV4YXMgSW5zdHJ1bWVudHMgR1BNQyBOQU5EIEZsYXNoIGNvbnRy
-b2xsZXIuCj4gKwo+ICttYWludGFpbmVyczoKPiArICAtIFRvbnkgTGluZGdyZW4gPHRvbnlAYXRv
-bWlkZS5jb20+Cj4gKyAgLSBSb2dlciBRdWFkcm9zIDxyb2dlcnFAa2VybmVsLm9yZz4KPiArCj4g
-K2Rlc2NyaXB0aW9uOgo+ICsgIEdQTUMgTkFORCBjb250cm9sbGVyL0ZsYXNoIGlzIHJlcHJlc2Vu
-dGVkIGFzIGEgY2hpbGQgb2YgdGhlCj4gKyAgR1BNQyBjb250cm9sbGVyIG5vZGUuCj4gKwo+ICtw
-cm9wZXJ0aWVzOgo+ICsgIGNvbXBhdGlibGU6Cj4gKyAgICBjb25zdDogdGksb21hcDItbmFuZAo+
-ICsKPiArICByZWc6Cj4gKyAgICBtYXhJdGVtczogMQo+ICsKPiArICBpbnRlcnJ1cHRzOgo+ICsg
-ICAgaXRlbXM6Cj4gKyAgICAgIC0gZGVzY3JpcHRpb246IEludGVycnVwdCBmb3IgZmlmb2V2ZW50
-Cj4gKyAgICAgIC0gZGVzY3JpcHRpb246IEludGVycnVwdCBmb3IgdGVybWNvdW50Cj4gKwo+ICsg
-ICIjYWRkcmVzcy1jZWxscyI6Cj4gKyAgICBjb25zdDogMQo+ICsKPiArICAiI3NpemUtY2VsbHMi
-Ogo+ICsgICAgY29uc3Q6IDEKPiArCj4gKyAgdGksbmFuZC1lY2Mtb3B0Ogo+ICsgICAgZGVzY3Jp
-cHRpb246IERlc2lyZWQgRUNDIGFsZ29yaXRobQo+ICsgICAgJHJlZjogL3NjaGVtYXMvdHlwZXMu
-eWFtbCMvZGVmaW5pdGlvbnMvc3RyaW5nCj4gKyAgICBlbnVtOiBbc3csIGhhbTEsIGJjaDQsIGJj
-aDgsIGJjaDE2XQo+ICsKPiArICB0aSxuYW5kLXhmZXItdHlwZToKPiArICAgIGRlc2NyaXB0aW9u
-OiBEYXRhIHRyYW5zZmVyIG1ldGhvZCBiZXR3ZWVuIGNvbnRyb2xsZXIgYW5kIGNoaXAuCj4gKyAg
-ICAkcmVmOiAvc2NoZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy9zdHJpbmcKPiArICAgIGVu
-dW06IFtwcmVmZXRjaC1wb2xsZWQsIHBvbGxlZCwgcHJlZmV0Y2gtZG1hLCBwcmVmZXRjaC1pcnFd
-Cj4gKyAgICBkZWZhdWx0OiBwcmVmZXRjaC1wb2xsZWQKPiArCj4gKyAgdGksZWxtLWlkOgo+ICsg
-ICAgZGVzY3JpcHRpb246Cj4gKyAgICAgIHBoYW5kbGUgdG8gdGhlIEVMTSAoRXJyb3IgTG9jYXRp
-b24gTW9kdWxlKS4KPiArICAgICRyZWY6IC9zY2hlbWFzL3R5cGVzLnlhbWwjL2RlZmluaXRpb25z
-L3BoYW5kbGUKClNob3VsZCBwZXJoYXBzIGtlZXAgdGhlIGVsbS1pZCBwcm9wZXJ0eSBkb2N1bWVu
-dGVkIGJ1dCBzZXQgdG8KJ2RlcHJlY2F0ZWQnLgoKPiArCj4gKyAgbmFuZC1idXMtd2lkdGg6Cj4g
-KyAgICBkZXNjcmlwdGlvbjoKPiArICAgICAgQnVzIHdpZHRoIHRvIHRoZSBOQU5EIGNoaXAKPiAr
-ICAgICRyZWY6IC9zY2hlbWFzL3R5cGVzLnlhbWwjL2RlZmluaXRpb25zL3VpbnQzMgo+ICsgICAg
-ZW51bTogWzgsIDE2XQo+ICsgICAgZGVmYXVsdDogOAoKVGhpcyBpcyBwYXJ0IG9mIG5hbmQtY29u
-dHJvbGxlci55YW1sIGJpbmRpbmcgYW5kIHNob3VsZCBub3QgYmUgdGhlcmUuCgo+ICsKPiArYWxs
-T2Y6Cj4gKyAgLSAkcmVmOiAiLi4vbWVtb3J5LWNvbnRyb2xsZXJzL3RpLGdwbWMtY2hpbGQueWFt
-bCIKCk1heWJlIHlvdSBuZWVkIHRvIHJlZmVyZW5jZSB0aGUgbmFuZCBjb250cm9sbGVyIGJpbmRp
-bmdzIGFzIHdlbGwKCj4gKwo+ICtyZXF1aXJlZDoKPiArICAtIGNvbXBhdGlibGUKPiArICAtIHJl
-Zwo+ICsgIC0gdGksbmFuZC1lY2Mtb3B0Cj4gKwo+ICt1bmV2YWx1YXRlZFByb3BlcnRpZXM6IGZh
-bHNlCj4gKwo+ICtleGFtcGxlczoKPiArICAtIHwKPiArICAgICNpbmNsdWRlIDxkdC1iaW5kaW5n
-cy9pbnRlcnJ1cHQtY29udHJvbGxlci9hcm0tZ2ljLmg+Cj4gKyAgICAjaW5jbHVkZSA8ZHQtYmlu
-ZGluZ3MvZ3Bpby9ncGlvLmg+Cj4gKwo+ICsgICAgZ3BtYzogbWVtb3J5LWNvbnRyb2xsZXJANTAw
-MDAwMDAgewo+ICsgICAgICBjb21wYXRpYmxlID0gInRpLGFtMzM1Mi1ncG1jIjsKPiArICAgICAg
-ZG1hcyA9IDwmZWRtYSA1MiAwPjsKPiArICAgICAgZG1hLW5hbWVzID0gInJ4dHgiOwo+ICsgICAg
-ICBjbG9ja3MgPSA8Jmwzc19nY2xrPjsKPiArICAgICAgY2xvY2stbmFtZXMgPSAiZmNrIjsKPiAr
-ICAgICAgcmVnID0gPDB4NTAwMDAwMDAgMHgyMDAwPjsKPiArICAgICAgaW50ZXJydXB0cyA9IDxH
-SUNfU1BJIDEwMCBJUlFfVFlQRV9MRVZFTF9ISUdIPjsKPiArICAgICAgZ3BtYyxudW0tY3MgPSA8
-Nz47Cj4gKyAgICAgIGdwbWMsbnVtLXdhaXRwaW5zID0gPDI+Owo+ICsgICAgICAjYWRkcmVzcy1j
-ZWxscyA9IDwyPjsKPiArICAgICAgI3NpemUtY2VsbHMgPSA8MT47Cj4gKyAgICAgIGludGVycnVw
-dC1jb250cm9sbGVyOwo+ICsgICAgICAjaW50ZXJydXB0LWNlbGxzID0gPDI+Owo+ICsgICAgICBn
-cGlvLWNvbnRyb2xsZXI7Cj4gKyAgICAgICNncGlvLWNlbGxzID0gPDI+Owo+ICsKPiArICAgICAg
-cmFuZ2VzID0gPDAgMCAweDA4MDAwMDAwIDB4MDEwMDAwMDA+OyAgIC8qIENTMCBzcGFjZS4gTWlu
-IHBhcnRpdGlvbiA9IDE2TUIgKi8KPiArICAgICAgbmFuZEAwLDAgewo+ICsgICAgICAgIGNvbXBh
-dGlibGUgPSAidGksb21hcDItbmFuZCI7Cj4gKyAgICAgICAgcmVnID0gPDAgMCA0PjsgICAgICAg
-ICAgLyogZGV2aWNlIElPIHJlZ2lzdGVycyAqLwo+ICsgICAgICAgIGludGVycnVwdC1wYXJlbnQg
-PSA8JmdwbWM+Owo+ICsgICAgICAgIGludGVycnVwdHMgPSA8MCBJUlFfVFlQRV9OT05FPiwgLyog
-Zmlmb2V2ZW50ICovCj4gKyAgICAgICAgICAgICAgICAgICAgIDwxIElSUV9UWVBFX05PTkU+OyAv
-KiB0ZXJtY291bnQgKi8KPiArICAgICAgICB0aSxuYW5kLXhmZXItdHlwZSA9ICJwcmVmZXRjaC1k
-bWEiOwo+ICsgICAgICAgIHRpLG5hbmQtZWNjLW9wdCA9ICJiY2gxNiI7Cj4gKyAgICAgICAgdGks
-ZWxtLWlkID0gPCZlbG0+Owo+ICsgICAgICAgICNhZGRyZXNzLWNlbGxzID0gPDE+Owo+ICsgICAg
-ICAgICNzaXplLWNlbGxzID0gPDE+Owo+ICsKPiArICAgICAgICAvKiBOQU5EIGdlbmVyaWMgcHJv
-cGVydGllcyAqLwo+ICsgICAgICAgIG5hbmQtYnVzLXdpZHRoID0gPDg+Owo+ICsgICAgICAgIHJi
-LWdwaW9zID0gPCZncG1jIDAgR1BJT19BQ1RJVkVfSElHSD47ICAvKiBncG1jX3dhaXQwICovCj4g
-Kwo+ICsgICAgICAgIC8qIEdQTUMgcHJvcGVydGllcyovCj4gKyAgICAgICAgZ3BtYyxkZXZpY2Ut
-d2lkdGggPSA8MT47Cj4gKyAgICAgIH07Cj4gKyAgICB9OwoKClRoYW5rcywKTWlxdcOobAoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4
-IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+
+
+On 07/09/2021 17:03, Miquel Raynal wrote:
+> Hi Roger,
+> 
+> rogerq@kernel.org wrote on Tue,  7 Sep 2021 14:32:23 +0300:
+> 
+>> Convert gpmc-nand.txt to ti,gpmc-nand.yaml.
+>>
+>> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+>> ---
+>>   .../devicetree/bindings/mtd/gpmc-nand.txt     | 147 ------------------
+>>   .../devicetree/bindings/mtd/ti,gpmc-nand.yaml | 110 +++++++++++++
+>>   2 files changed, 110 insertions(+), 147 deletions(-)
+>>   delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+>>   create mode 100644 Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+>> deleted file mode 100644
+>> index 44919d48d241..000000000000
+>> --- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+>> +++ /dev/null
+>> @@ -1,147 +0,0 @@
+>> -Device tree bindings for GPMC connected NANDs
+>> -
+>> -GPMC connected NAND (found on OMAP boards) are represented as child nodes of
+>> -the GPMC controller with a name of "nand".
+>> -
+>> -All timing relevant properties as well as generic gpmc child properties are
+>> -explained in a separate documents - please refer to
+>> -Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+>> -
+>> -For NAND specific properties such as ECC modes or bus width, please refer to
+>> -Documentation/devicetree/bindings/mtd/nand-controller.yaml
+>> -
+>> -
+>> -Required properties:
+>> -
+>> - - compatible:	"ti,omap2-nand"
+>> - - reg:		range id (CS number), base offset and length of the
+>> -		NAND I/O space
+>> - - interrupts:	Two interrupt specifiers, one for fifoevent, one for termcount.
+>> -
+>> -Optional properties:
+>> -
+>> - - nand-bus-width: 		Set this numeric value to 16 if the hardware
+>> -				is wired that way. If not specified, a bus
+>> -				width of 8 is assumed.
+>> -
+>> - - ti,nand-ecc-opt:		A string setting the ECC layout to use. One of:
+>> -		"sw"		1-bit Hamming ecc code via software
+>> -		"hw"		<deprecated> use "ham1" instead
+>> -		"hw-romcode"	<deprecated> use "ham1" instead
+>> -		"ham1"		1-bit Hamming ecc code
+>> -		"bch4"		4-bit BCH ecc code
+>> -		"bch8"		8-bit BCH ecc code
+>> -		"bch16"		16-bit BCH ECC code
+>> -		Refer below "How to select correct ECC scheme for your device ?"
+>> -
+>> - - ti,nand-xfer-type:		A string setting the data transfer type. One of:
+>> -
+>> -		"prefetch-polled"	Prefetch polled mode (default)
+>> -		"polled"		Polled mode, without prefetch
+>> -		"prefetch-dma"		Prefetch enabled DMA mode
+>> -		"prefetch-irq"		Prefetch enabled irq mode
+>> -
+>> - - elm_id:	<deprecated> use "ti,elm-id" instead
+>> - - ti,elm-id:	Specifies phandle of the ELM devicetree node.
+>> -		ELM is an on-chip hardware engine on TI SoC which is used for
+>> -		locating ECC errors for BCHx algorithms. SoC devices which have
+>> -		ELM hardware engines should specify this device node in .dtsi
+>> -		Using ELM for ECC error correction frees some CPU cycles.
+>> - - rb-gpios:	GPIO specifier for the ready/busy# pin.
+>> -
+>> -For inline partition table parsing (optional):
+>> -
+>> - - #address-cells: should be set to 1
+>> - - #size-cells: should be set to 1
+>> -
+>> -Example for an AM33xx board:
+>> -
+>> -	gpmc: gpmc@50000000 {
+>> -		compatible = "ti,am3352-gpmc";
+>> -		ti,hwmods = "gpmc";
+>> -		reg = <0x50000000 0x36c>;
+>> -		interrupts = <100>;
+>> -		gpmc,num-cs = <8>;
+>> -		gpmc,num-waitpins = <2>;
+>> -		#address-cells = <2>;
+>> -		#size-cells = <1>;
+>> -		ranges = <0 0 0x08000000 0x1000000>;	/* CS0 space, 16MB */
+>> -		elm_id = <&elm>;
+>> -		interrupt-controller;
+>> -		#interrupt-cells = <2>;
+>> -
+>> -		nand@0,0 {
+>> -			compatible = "ti,omap2-nand";
+>> -			reg = <0 0 4>;		/* CS0, offset 0, NAND I/O window 4 */
+>> -			interrupt-parent = <&gpmc>;
+>> -			interrupts = <0 IRQ_TYPE_NONE>, <1 IRQ_TYPE NONE>;
+>> -			nand-bus-width = <16>;
+>> -			ti,nand-ecc-opt = "bch8";
+>> -			ti,nand-xfer-type = "polled";
+>> -			rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 */
+>> -
+>> -			gpmc,sync-clk-ps = <0>;
+>> -			gpmc,cs-on-ns = <0>;
+>> -			gpmc,cs-rd-off-ns = <44>;
+>> -			gpmc,cs-wr-off-ns = <44>;
+>> -			gpmc,adv-on-ns = <6>;
+>> -			gpmc,adv-rd-off-ns = <34>;
+>> -			gpmc,adv-wr-off-ns = <44>;
+>> -			gpmc,we-off-ns = <40>;
+>> -			gpmc,oe-off-ns = <54>;
+>> -			gpmc,access-ns = <64>;
+>> -			gpmc,rd-cycle-ns = <82>;
+>> -			gpmc,wr-cycle-ns = <82>;
+>> -			gpmc,wr-access-ns = <40>;
+>> -			gpmc,wr-data-mux-bus-ns = <0>;
+>> -
+>> -			#address-cells = <1>;
+>> -			#size-cells = <1>;
+>> -
+>> -			/* partitions go here */
+>> -		};
+>> -	};
+>> -
+>> -How to select correct ECC scheme for your device ?
+>> ---------------------------------------------------
+>> -Higher ECC scheme usually means better protection against bit-flips and
+>> -increased system lifetime. However, selection of ECC scheme is dependent
+>> -on various other factors also like;
+>> -
+>> -(1) support of built in hardware engines.
+>> -	Some legacy OMAP SoC do not have ELM harware engine, so those SoC cannot
+>> -	support ecc-schemes with hardware error-correction (BCHx_HW). However
+>> -	such SoC can use ecc-schemes with software library for error-correction
+>> -	(BCHx_HW_DETECTION_SW). The error correction capability with software
+>> -	library remains equivalent to their hardware counter-part, but there is
+>> -	slight CPU penalty when too many bit-flips are detected during reads.
+>> -
+>> -(2) Device parameters like OOBSIZE.
+>> -	Other factor which governs the selection of ecc-scheme is oob-size.
+>> -	Higher ECC schemes require more OOB/Spare area to store ECC syndrome,
+>> -	so the device should have enough free bytes available its OOB/Spare
+>> -	area to accommodate ECC for entire page. In general following expression
+>> -	helps in determining if given device can accommodate ECC syndrome:
+>> -	"2 + (PAGESIZE / 512) * ECC_BYTES" >= OOBSIZE"
+>> -	where
+>> -		OOBSIZE		number of bytes in OOB/spare area
+>> -		PAGESIZE	number of bytes in main-area of device page
+>> -		ECC_BYTES	number of ECC bytes generated to protect
+>> -		                512 bytes of data, which is:
+>> -				'3' for HAM1_xx ecc schemes
+>> -				'7' for BCH4_xx ecc schemes
+>> -				'14' for BCH8_xx ecc schemes
+>> -				'26' for BCH16_xx ecc schemes
+>> -
+>> -	Example(a): For a device with PAGESIZE = 2048 and OOBSIZE = 64 and
+>> -		trying to use BCH16 (ECC_BYTES=26) ecc-scheme.
+>> -		Number of ECC bytes per page = (2 + (2048 / 512) * 26) = 106 B
+>> -		which is greater than capacity of NAND device (OOBSIZE=64)
+>> -		Hence, BCH16 cannot be supported on given device. But it can
+>> -		probably use lower ecc-schemes like BCH8.
+>> -
+>> -	Example(b): For a device with PAGESIZE = 2048 and OOBSIZE = 128 and
+>> -		trying to use BCH16 (ECC_BYTES=26) ecc-scheme.
+>> -		Number of ECC bytes per page = (2 + (2048 / 512) * 26) = 106 B
+>> -		which can be accommodated in the OOB/Spare area of this device
+>> -		(OOBSIZE=128). So this device can use BCH16 ecc-scheme.
+>> diff --git a/Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml b/Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
+>> new file mode 100644
+>> index 000000000000..db36f2e944ef
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
+>> @@ -0,0 +1,110 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/mtd/ti,gpmc-nand.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Texas Instruments GPMC NAND Flash controller.
+>> +
+>> +maintainers:
+>> +  - Tony Lindgren <tony@atomide.com>
+>> +  - Roger Quadros <rogerq@kernel.org>
+>> +
+>> +description:
+>> +  GPMC NAND controller/Flash is represented as a child of the
+>> +  GPMC controller node.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: ti,omap2-nand
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  interrupts:
+>> +    items:
+>> +      - description: Interrupt for fifoevent
+>> +      - description: Interrupt for termcount
+>> +
+>> +  "#address-cells":
+>> +    const: 1
+>> +
+>> +  "#size-cells":
+>> +    const: 1
+>> +
+>> +  ti,nand-ecc-opt:
+>> +    description: Desired ECC algorithm
+>> +    $ref: /schemas/types.yaml#/definitions/string
+>> +    enum: [sw, ham1, bch4, bch8, bch16]
+>> +
+>> +  ti,nand-xfer-type:
+>> +    description: Data transfer method between controller and chip.
+>> +    $ref: /schemas/types.yaml#/definitions/string
+>> +    enum: [prefetch-polled, polled, prefetch-dma, prefetch-irq]
+>> +    default: prefetch-polled
+>> +
+>> +  ti,elm-id:
+>> +    description:
+>> +      phandle to the ELM (Error Location Module).
+>> +    $ref: /schemas/types.yaml#/definitions/phandle
+> 
+> Should perhaps keep the elm-id property documented but set to
+> 'deprecated'.
+> 
+>> +
+>> +  nand-bus-width:
+>> +    description:
+>> +      Bus width to the NAND chip
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +    enum: [8, 16]
+>> +    default: 8
+> 
+> This is part of nand-controller.yaml binding and should not be there.
+> 
+>> +
+>> +allOf:
+>> +  - $ref: "../memory-controllers/ti,gpmc-child.yaml"
+> 
+> Maybe you need to reference the nand controller bindings as well
+> 
+
+This will not work out of the box :( as nand-controller.yaml defines both
+  nand controller and nand memory. It potentially might work if it will be possible to split
+nand memory definition (or nand memory properties) out of and-controller.yaml, similarly to
+ti,gpmc-child.yaml from this series.
+
+-- 
+Best regards,
+grygorii
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
