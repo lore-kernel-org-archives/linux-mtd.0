@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5997C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Sep 2021 11:35:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F00EBC433F5
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Sep 2021 11:35:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9D12C60E8B
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Sep 2021 11:35:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9D12C60E8B
+	by mail.kernel.org (Postfix) with ESMTPS id B4AA860E8B
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Sep 2021 11:35:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B4AA860E8B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,31 +23,31 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WSPRmDpBaygLgV5p6lhPL63r/+FiRgiwKqDvvi9ujc8=; b=mUh2SuGah/NDSA
-	vEfg4l5DnsRXuCrqKw9SGAy8EaVIo5VaMyqFTjGTnM1bW+1g36fxijzyBQYsWRC7Ltus2LMg1yVAH
-	vxjVfgJSGsvj6e2KuvA8xmIGKL392+I0caSuTsw/33sNmyYn8paUMzSrNRjF+nPsWP4hnilsqe876
-	5YS3xj5SVo9r6l7CJ4qO+tViBEsqBuzQKWUX4JOeK5HyG1G3b4xiRwdZEMGvXmpp+vBxguDULDogd
-	W+XznK2WQ6naPhK8Gh9jJ+xkNurFepoGe1gUC1pNS9XyuyiiTGJH3aUjzJeGwhYZSfZhqCM/X9W17
-	yG0DRtU5VN97IV4t083w==;
+	List-Owner; bh=ZERwVQ/QjSarJaq6QxLAuqvVF/vUwUkmwSb8lW518FM=; b=wvi+H9gNk0ZFss
+	6lLlWH5P7Ourq34XVdlqwdV48qih/iDGQsujJl7YZePGMZDL8rUj8panHosdGg8kffmkLCB4NNd+f
+	HwFpDG6uOky4oOkn7Xrtp6OXDa7O27jqfhaYtgThC31s3tH6/F0Onvc+gsPCfUxesjfa9D244o1Dy
+	3Z1U7X2mtImL2F9N4YdTPsL/KFIHFZW4HQV3nD2hDivDPyJoNkyBYX2fgCqhvnaI1iuEgPSqFpuIM
+	ZPK7f7zbYjyHR2YLKCQh7X65UB9VJG+LbyElA6zVfzSTYhwpJcO7n/FWel6B3YC949fWa1FlAs/RQ
+	HKkDzTFsC/pGtKB3Og/Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mNZN6-003W7F-5b; Tue, 07 Sep 2021 11:34:36 +0000
+	id 1mNZNq-003WOF-MI; Tue, 07 Sep 2021 11:35:22 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mNZLO-003Vbk-0L
- for linux-mtd@lists.infradead.org; Tue, 07 Sep 2021 11:32:51 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F1FD6109F;
- Tue,  7 Sep 2021 11:32:47 +0000 (UTC)
+ id 1mNZLQ-003VcR-UQ
+ for linux-mtd@lists.infradead.org; Tue, 07 Sep 2021 11:32:55 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28A9F61101;
+ Tue,  7 Sep 2021 11:32:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631014369;
- bh=2lEPp0KZZPRj5K9S1P9guDm3BZOrWqsKBGGkYeEbT2Q=;
+ s=k20201202; t=1631014372;
+ bh=kBmPr8mH2o9b7UdVAxnBiy6O0dlfJGGKjXaeXjpcWjo=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=BO+8/ObVTgwbj4DBeH4CTt4AIrZIGNQhBF+O7xTfNreOdq4t4jnHe5JFEKrk4zZ5O
- AmnA9799XA38o3lgV0TNqkZ6v52+pRok7jSgbHh4AP1om4cv5KhAGbQ/Wx/Cyhi0fB
- HIp9IuKBRPkqrKBb/DFXRYWDhWfohh4o0GyiCwRuqiqEafVZ6mzUKij+JQ2zYAeo6Z
- Xwp0UnkXUGOCPbPoeMJoI2Dk9MtTMI1pLnktuxr2pgnisbW+MT7ZjkrL7Y6Va5cq9N
- m1EuxO4qOFRZE3yrAMHodgC1kkwYeXjDPLV+yLD7BEnItTg0uImGgJ2trSwmB50+HZ
- ifQE7zf15JzJQ==
+ b=CEelMVDmpjPq1P8uH0zwecM2EqIcRlsUpm1xxUgc1cvf4f+FbIliZpru1kqyvh/CJ
+ cunc1ZkIw6Nsbot6RrTRR5DNznvkTSzB3u1NJXPUeOKG6ewO5+vqjE9kq3b3PTN1C2
+ O426TtD8fHSXxaHJ3QqZ8SQ7XE8hA6WvtObsjV9q6fEgswOfHRLO7y41kOXShtvjP8
+ rXrBwqQi+J9GuDslYROvHOpRTtZt4iFDrbOIXFKFwRwGYbXiODGN7yXidFFIW4XOhh
+ Nezc9ivSh/ovZ8NcFOL6KVhl3YW5JRAVzzZo0pIecwVIMP+YSJdvEI+jjDSKPCpfj9
+ TU/nQRDCVJJSw==
 From: Roger Quadros <rogerq@kernel.org>
 To: tony@atomide.com
 Cc: robh+dt@kernel.org, grygorii.strashko@ti.com, nm@ti.com,
@@ -55,15 +55,16 @@ Cc: robh+dt@kernel.org, grygorii.strashko@ti.com, nm@ti.com,
  miquel.raynal@bootlin.com, devicetree@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
  linux-kernel@vger.kernel.org, Roger Quadros <rogerq@kernel.org>
-Subject: [PATCH v3 6/8] dt-bindings: mtd: ti,gpmc-onenand: Convert to yaml
-Date: Tue,  7 Sep 2021 14:32:24 +0300
-Message-Id: <20210907113226.31876-7-rogerq@kernel.org>
+Subject: [PATCH v3 7/8] dt-bindings: memory-controllers: ti,
+ gpmc: Convert to yaml
+Date: Tue,  7 Sep 2021 14:32:25 +0300
+Message-Id: <20210907113226.31876-8-rogerq@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210907113226.31876-1-rogerq@kernel.org>
 References: <20210907113226.31876-1-rogerq@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210907_043250_125957_A446A18B 
-X-CRM114-Status: GOOD (  15.78  )
+X-CRM114-CacheID: sfid-20210907_043253_070307_0F3BEDF8 
+X-CRM114-Status: GOOD (  29.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,143 +82,357 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Convert gpmc-onenand.txt to ti,gpmc-onenand.yaml.
+Convert omap-gpmc.txt to ti,gpmc.yaml.
 
 Signed-off-by: Roger Quadros <rogerq@kernel.org>
 ---
- .../devicetree/bindings/mtd/gpmc-onenand.txt  | 48 -------------
- .../bindings/mtd/ti,gpmc-onenand.yaml         | 69 +++++++++++++++++++
- 2 files changed, 69 insertions(+), 48 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
- create mode 100644 Documentation/devicetree/bindings/mtd/ti,gpmc-onenand.yaml
+ .../bindings/memory-controllers/omap-gpmc.txt | 157 ----------------
+ .../bindings/memory-controllers/ti,gpmc.yaml  | 174 ++++++++++++++++++
+ 2 files changed, 174 insertions(+), 157 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+ create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
 
-diff --git a/Documentation/devicetree/bindings/mtd/gpmc-onenand.txt b/Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
+diff --git a/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt b/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
 deleted file mode 100644
-index e9f01a963a0a..000000000000
---- a/Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
+index c1359f4d48d7..000000000000
+--- a/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
 +++ /dev/null
-@@ -1,48 +0,0 @@
--Device tree bindings for GPMC connected OneNANDs
+@@ -1,157 +0,0 @@
+-Device tree bindings for OMAP general purpose memory controllers (GPMC)
 -
--GPMC connected OneNAND (found on OMAP boards) are represented as child nodes of
--the GPMC controller with a name of "onenand".
--
--All timing relevant properties as well as generic gpmc child properties are
--explained in a separate documents - please refer to
--Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+-The actual devices are instantiated from the child nodes of a GPMC node.
 -
 -Required properties:
 -
-- - compatible:		"ti,omap2-onenand"
-- - reg:			The CS line the peripheral is connected to
-- - gpmc,device-width:	Width of the ONENAND device connected to the GPMC
--			in bytes. Must be 1 or 2.
+- - compatible:		Should be set to one of the following:
 -
--Optional properties:
+-			ti,omap2420-gpmc (omap2420)
+-			ti,omap2430-gpmc (omap2430)
+-			ti,omap3430-gpmc (omap3430 & omap3630)
+-			ti,omap4430-gpmc (omap4430 & omap4460 & omap543x)
+-			ti,am3352-gpmc   (am335x devices)
 -
-- - int-gpios:		GPIO specifier for the INT pin.
+- - reg:			A resource specifier for the register space
+-			(see the example below)
+- - ti,hwmods:		Should be set to "ti,gpmc" until the DT transition is
+-			completed.
+- - #address-cells:	Must be set to 2 to allow memory address translation
+- - #size-cells:		Must be set to 1 to allow CS address passing
+- - gpmc,num-cs:		The maximum number of chip-select lines that controller
+-			can support.
+- - gpmc,num-waitpins:	The maximum number of wait pins that controller can
+-			support.
+- - ranges:		Must be set up to reflect the memory layout with four
+-			integer values for each chip-select line in use:
 -
--For inline partition table parsing (optional):
+-			   <cs-number> 0 <physical address of mapping> <size>
 -
-- - #address-cells: should be set to 1
-- - #size-cells: should be set to 1
+-			Currently, calculated values derived from the contents
+-			of the per-CS register GPMC_CONFIG7 (as set up by the
+-			bootloader) are used for the physical address decoding.
+-			As this will change in the future, filling correct
+-			values here is a requirement.
+- - interrupt-controller: The GPMC driver implements and interrupt controller for
+-			the NAND events "fifoevent" and "termcount" plus the
+-			rising/falling edges on the GPMC_WAIT pins.
+-			The interrupt number mapping is as follows
+-			0 - NAND_fifoevent
+-			1 - NAND_termcount
+-			2 - GPMC_WAIT0 pin edge
+-			3 - GPMC_WAIT1 pin edge, and so on.
+- - interrupt-cells:	Must be set to 2
+- - gpio-controller:	The GPMC driver implements a GPIO controller for the
+-			GPMC WAIT pins that can be used as general purpose inputs.
+-			0 maps to GPMC_WAIT0 pin.
+- - gpio-cells:		Must be set to 2
 -
--Example for an OMAP3430 board:
+-Required properties when using NAND prefetch dma:
+- - dmas			GPMC NAND prefetch dma channel
+- - dma-names		Must be set to "rxtx"
 -
--	gpmc: gpmc@6e000000 {
--		compatible = "ti,omap3430-gpmc";
+-Timing properties for child nodes. All are optional and default to 0.
+-
+- - gpmc,sync-clk-ps:	Minimum clock period for synchronous mode, in picoseconds
+-
+- Chip-select signal timings (in nanoseconds) corresponding to GPMC_CONFIG2:
+- - gpmc,cs-on-ns:	Assertion time
+- - gpmc,cs-rd-off-ns:	Read deassertion time
+- - gpmc,cs-wr-off-ns:	Write deassertion time
+-
+- ADV signal timings (in nanoseconds) corresponding to GPMC_CONFIG3:
+- - gpmc,adv-on-ns:	Assertion time
+- - gpmc,adv-rd-off-ns:	Read deassertion time
+- - gpmc,adv-wr-off-ns:	Write deassertion time
+- - gpmc,adv-aad-mux-on-ns:	Assertion time for AAD
+- - gpmc,adv-aad-mux-rd-off-ns:	Read deassertion time for AAD
+- - gpmc,adv-aad-mux-wr-off-ns:	Write deassertion time for AAD
+-
+- WE signals timings (in nanoseconds) corresponding to GPMC_CONFIG4:
+- - gpmc,we-on-ns	Assertion time
+- - gpmc,we-off-ns:	Deassertion time
+-
+- OE signals timings (in nanoseconds) corresponding to GPMC_CONFIG4:
+- - gpmc,oe-on-ns:	Assertion time
+- - gpmc,oe-off-ns:	Deassertion time
+- - gpmc,oe-aad-mux-on-ns:	Assertion time for AAD
+- - gpmc,oe-aad-mux-off-ns:	Deassertion time for AAD
+-
+- Access time and cycle time timings (in nanoseconds) corresponding to
+- GPMC_CONFIG5:
+- - gpmc,page-burst-access-ns: 	Multiple access word delay
+- - gpmc,access-ns:		Start-cycle to first data valid delay
+- - gpmc,rd-cycle-ns:		Total read cycle time
+- - gpmc,wr-cycle-ns:		Total write cycle time
+- - gpmc,bus-turnaround-ns:	Turn-around time between successive accesses
+- - gpmc,cycle2cycle-delay-ns:	Delay between chip-select pulses
+- - gpmc,clk-activation-ns: 	GPMC clock activation time
+- - gpmc,wait-monitoring-ns:	Start of wait monitoring with regard to valid
+-				data
+-
+-Boolean timing parameters. If property is present parameter enabled and
+-disabled if omitted:
+- - gpmc,adv-extra-delay:	ADV signal is delayed by half GPMC clock
+- - gpmc,cs-extra-delay:		CS signal is delayed by half GPMC clock
+- - gpmc,cycle2cycle-diffcsen:	Add "cycle2cycle-delay" between successive
+-				accesses to a different CS
+- - gpmc,cycle2cycle-samecsen:	Add "cycle2cycle-delay" between successive
+-				accesses to the same CS
+- - gpmc,oe-extra-delay:		OE signal is delayed by half GPMC clock
+- - gpmc,we-extra-delay:		WE signal is delayed by half GPMC clock
+- - gpmc,time-para-granularity:	Multiply all access times by 2
+-
+-The following are only applicable to OMAP3+ and AM335x:
+- - gpmc,wr-access-ns:		In synchronous write mode, for single or
+-				burst accesses, defines the number of
+-				GPMC_FCLK cycles from start access time
+-				to the GPMC_CLK rising edge used by the
+-				memory device for the first data capture.
+- - gpmc,wr-data-mux-bus-ns:	In address-data multiplex mode, specifies
+-				the time when the first data is driven on
+-				the address-data bus.
+-
+-GPMC chip-select settings properties for child nodes. All are optional.
+-
+-- gpmc,burst-length	Page/burst length. Must be 4, 8 or 16.
+-- gpmc,burst-wrap	Enables wrap bursting
+-- gpmc,burst-read	Enables read page/burst mode
+-- gpmc,burst-write	Enables write page/burst mode
+-- gpmc,device-width	Total width of device(s) connected to a GPMC
+-			chip-select in bytes. The GPMC supports 8-bit
+-			and 16-bit devices and so this property must be
+-			1 or 2.
+-- gpmc,mux-add-data	Address and data multiplexing configuration.
+-			Valid values are 1 for address-address-data
+-			multiplexing mode and 2 for address-data
+-			multiplexing mode.
+-- gpmc,sync-read	Enables synchronous read. Defaults to asynchronous
+-			is this is not set.
+-- gpmc,sync-write	Enables synchronous writes. Defaults to asynchronous
+-			is this is not set.
+-- gpmc,wait-pin		Wait-pin used by client. Must be less than
+-			"gpmc,num-waitpins".
+-- gpmc,wait-on-read	Enables wait monitoring on reads.
+-- gpmc,wait-on-write	Enables wait monitoring on writes.
+-
+-Example for an AM33xx board:
+-
+-	gpmc: gpmc@50000000 {
+-		compatible = "ti,am3352-gpmc";
 -		ti,hwmods = "gpmc";
--		reg = <0x6e000000 0x1000000>;
--		interrupts = <20>;
+-		reg = <0x50000000 0x2000>;
+-		interrupts = <100>;
+-		dmas = <&edma 52 0>;
+-		dma-names = "rxtx";
 -		gpmc,num-cs = <8>;
--		gpmc,num-waitpins = <4>;
+-		gpmc,num-waitpins = <2>;
 -		#address-cells = <2>;
 -		#size-cells = <1>;
+-		ranges = <0 0 0x08000000 0x10000000>; /* CS0 @addr 0x8000000, size 0x10000000 */
+-		interrupt-controller;
+-		#interrupt-cells = <2>;
+-		gpio-controller;
+-		#gpio-cells = <2>;
 -
--		onenand@0 {
--			compatible = "ti,omap2-onenand";
--			reg = <0 0 0>; /* CS0, offset 0 */
--			gpmc,device-width = <2>;
--
--			#address-cells = <1>;
--			#size-cells = <1>;
--
--			/* partitions go here */
--		};
+-		/* child nodes go here */
 -	};
-diff --git a/Documentation/devicetree/bindings/mtd/ti,gpmc-onenand.yaml b/Documentation/devicetree/bindings/mtd/ti,gpmc-onenand.yaml
+diff --git a/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml b/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
 new file mode 100644
-index 000000000000..44001364092e
+index 000000000000..3062e8cfdf89
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/ti,gpmc-onenand.yaml
-@@ -0,0 +1,69 @@
++++ b/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
+@@ -0,0 +1,174 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/mtd/ti,gpmc-onenand.yaml#
++$id: http://devicetree.org/schemas/memory-controllers/ti,gpmc.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: OneNAND over Texas Instruments GPMC bus.
++title: Texas Instruments GPMC Memory Controller device-tree bindings
 +
 +maintainers:
 +  - Tony Lindgren <tony@atomide.com>
 +  - Roger Quadros <rogerq@kernel.org>
 +
 +description:
-+  GPMC connected OneNAND (found on OMAP boards) are represented
-+  as child nodes of the GPMC controller.
++  The GPMC is a unified memory controller dedicated for interfacing
++  with external memory devices like
++  - Asynchronous SRAM-like memories and ASICs
++  - Asynchronous, synchronous, and page mode burst NOR flash
++  - NAND flash
++  - Pseudo-SRAM devices
 +
 +properties:
 +  compatible:
-+    const: ti,omap2-onenand
++    items:
++      - enum:
++          - ti,omap2420-gpmc
++          - ti,omap2430-gpmc
++          - ti,omap3430-gpmc
++          - ti,omap4430-gpmc
++          - ti,am3352-gpmc
 +
 +  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++    description: |
++      Functional clock. Used for bus timing calculations and
++      GPMC configuration.
++
++  clock-names:
 +    items:
-+      - description: |
-+          Chip Select number, register offset and size of
-+          OneNAND register window.
++      - const: fck
++
++  dmas:
++    items:
++      - description: DMA channel for GPMC NAND prefetch
++
++  dma-names:
++    items:
++      - const: rxtx
 +
 +  "#address-cells":
-+    const: 1
++    const: 2
 +
 +  "#size-cells":
 +    const: 1
 +
-+  int-gpios:
-+    description: GPIO specifier for the INT pin.
++  gpmc,num-cs:
++    description: maximum number of supported chip-select lines.
++    $ref: /schemas/types.yaml#/definitions/uint32
 +
-+allOf:
-+  - $ref: "../memory-controllers/ti,gpmc-child.yaml"
++  gpmc,num-waitpins:
++    description: maximum number of supported wait pins.
++    $ref: /schemas/types.yaml#/definitions/uint32
++
++  ranges:
++    minItems: 1
++    description: |
++      Must be set up to reflect the memory layout with four
++      integer values for each chip-select line in use,
++      <cs-number> 0 <physical address of mapping> <size>
++    items:
++      - description: NAND bank 0
++      - description: NOR/SRAM bank 0
++      - description: NOR/SRAM bank 1
++
++  '#interrupt-cells':
++    const: 2
++
++  interrupt-controller:
++    description: |
++      The GPMC driver implements and interrupt controller for
++      the NAND events "fifoevent" and "termcount" plus the
++      rising/falling edges on the GPMC_WAIT pins.
++      The interrupt number mapping is as follows
++      0 - NAND_fifoevent
++      1 - NAND_termcount
++      2 - GPMC_WAIT0 pin edge
++      3 - GPMC_WAIT1 pin edge, and so on.
++
++  '#gpio-cells':
++    const: 2
++
++  gpio-controller:
++    description: |
++      The GPMC driver implements a GPIO controller for the
++      GPMC WAIT pins that can be used as general purpose inputs.
++      0 maps to GPMC_WAIT0 pin.
++
++  ti,hwmods:
++    description:
++      Name of the HWMOD associated with GPMC. This is for legacy
++      omap2/3 platforms only.
++    $ref: /schemas/types.yaml#/definitions/string
++    deprecated: true
++
++  ti,no-idle-on-init:
++    description:
++      Prevent idling the module at init. This is for legacy omap2/3
++      platforms only.
++    type: boolean
++    deprecated: true
++
++patternProperties:
++  "@[0-7],[a-f0-9]+$":
++    type: object
++    description: |
++      The child device node represents the device connected to the GPMC
++      bus. The device can be a NAND chip, SRAM device, NOR device
++      or an ASIC.
++
++    allOf:
++      - $ref: "ti,gpmc-child.yaml"
++
++    unevaluatedProperties: false
 +
 +required:
 +  - compatible
 +  - reg
++  - gpmc,num-cs
++  - gpmc,num-waitpins
 +  - "#address-cells"
 +  - "#size-cells"
 +
-+unevaluatedProperties: false
++additionalProperties: false
 +
 +examples:
 +  - |
-+    gpmc: memory-controller@6e000000 {
-+      compatible = "ti,omap3430-gpmc";
-+      reg = <0x6e000000 0x02d0>;
-+      interrupts = <20>;
-+      gpmc,num-cs = <8>;
-+      gpmc,num-waitpins = <4>;
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/gpio/gpio.h>
++
++    gpmc: memory-controller@50000000 {
++      compatible = "ti,am3352-gpmc";
++      reg = <0x50000000 0x2000>;
++      interrupts = <100>;
 +      clocks = <&l3s_clkctrl>;
 +      clock-names = "fck";
++      dmas = <&edma 52 0>;
++      dma-names = "rxtx";
++      gpmc,num-cs = <8>;
++      gpmc,num-waitpins = <2>;
 +      #address-cells = <2>;
 +      #size-cells = <1>;
++      ranges = <0 0 0x08000000 0x10000000>; /* CS0 @addr 0x8000000, size 0x10000000 */
++      interrupt-controller;
++      #interrupt-cells = <2>;
++      gpio-controller;
++      #gpio-cells = <2>;
 +
-+      ranges = <0 0 0x01000000 0x01000000>,   /* 16 MB for OneNAND */
-+               <1 0 0x02000000 0x01000000>;   /* 16 MB for smc91c96 */
-+
-+      onenand@0,0 {
-+        compatible = "ti,omap2-onenand";
-+        reg = <0 0 0x20000>;    /* CS0, offset 0, IO size 128K */
-+        #address-cells = <1>;
-+        #size-cells = <1>;
++      nand@0,0 {
++        compatible = "ti,omap2-nand";
++        reg = <0 0 4>;
++        interrupt-parent = <&gpmc>;
++        interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
++                     <1 IRQ_TYPE_NONE>; /* termcount */
++        ti,nand-xfer-type = "prefetch-dma";
++        ti,nand-ecc-opt = "bch16";
++        ti,elm-id = <&elm>;
++        rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 pin */
 +      };
 +    };
 -- 
