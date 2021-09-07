@@ -2,82 +2,86 @@ Return-Path: <SRS0=sITD=N5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB27DC433F5
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Sep 2021 17:02:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53C61C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Sep 2021 21:41:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 740BE6056B
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Sep 2021 17:02:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 740BE6056B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 0737761100
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Sep 2021 21:41:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0737761100
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmx.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mtwBjp9NQHbZWl45WWAZMgopX6YI2XggL19hbxKIMp4=; b=RDjBC+6QDP3xxX
-	o3R7OzbL2VpPmf9QWMv5aR5rkomzOOUX9Djl79CNituV00TIQDPn6qacCTtGioHNNj8k1rcdQsijh
-	nnfoWMfvqnbfpkX1MP9qKWOPKnQxMRp5PdTmCJJDZV3sxzdt0lQ7He/K1gB1D5WTSZWKB6NJLSD/E
-	M9XoThfEyhPdRMe0zd9n4k+TwDEd98whA12DrW6IOz5RI+OdtJecNKSJeEvp45cGCzHZ2A49NviV8
-	IRuZxjbL2VPDCeBvjGWmI81lMAkmDhBapRw4vf1jWkmspetGExdc4XmKJT2pIfmCoz1fEizfAZrKG
-	vRCUfaff8IwkUCwAQoyA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ufPQ2wbDe7zLFG587uJ0OL4upsBwLTiWeepNUlsBXZs=; b=pFZjmekCEPv+14
+	863nSBpO83rvTVScHkWFey9GkTSNAaQiP4XMDPsOpdXXRFhb/YJNRq6xV0W5vblumIEjHt7tQwsNa
+	w9penUh74AzGy3cMJJ+ihZgLO0IYixAC1lZwKvy0ItZeeV4GCuVz+oITWT6Faij36ZIc7XPsJq+xU
+	y+mpNUrzJmaNK4XF995jDDZHb8YjACdycIkLR5T73T5yztv3uc3chzZNuUIJL5nLIf+2GVlz/aIfs
+	jhQUffTF8eXSbTv7Yiwz0/kN55ay6/lqYbrauYFfJo8CXvzMsxRnv7lWozvtpRrCM55kVDqsHfizh
+	zKOFb9UhZ2jjMhOCKyKw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mNeTz-004JPC-Re; Tue, 07 Sep 2021 17:02:03 +0000
-Received: from mail-oi1-f179.google.com ([209.85.167.179])
+	id 1mNiq6-004oBc-Df; Tue, 07 Sep 2021 21:41:10 +0000
+Received: from mout.gmx.net ([212.227.17.22])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mNeTt-004JMh-Je
- for linux-mtd@lists.infradead.org; Tue, 07 Sep 2021 17:01:59 +0000
-Received: by mail-oi1-f179.google.com with SMTP id w19so13602175oik.10
- for <linux-mtd@lists.infradead.org>; Tue, 07 Sep 2021 10:01:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=g+WAHhBOafUKSiImG1tR6ShoFmPRhoTu5v+RjrTxv5w=;
- b=niTgpHLCiN7dX4IOZgH1q1QZE3qWgoTS+zJviS6WbbZWRzAa5qoIdK+NqJl5my7UcZ
- H1CpUZISHjl8VI9np6pZ5AMfcKezXEhS2iIHV9p657fmzXPFcw1NdHS4B+s2kJQGYzdC
- xktDZSZxTVGdRqYT8VEd6aIcNDYbpf4laItiexoWURrSCR5zSx7tl0NRE7+XHa1MIEVH
- SAu49no+a7jHfQMlnKJ6ADRIu5+wUWG4Wxfbne8x12hGI/kXqDsXd2SeHXIbNP0eRX1M
- 8EzXrqfFDGLZGCEfec8ncz25GBSGU48b252Kq+eiPyCcnrWflbooEymxlFE1QF4ti3dQ
- +P2g==
-X-Gm-Message-State: AOAM532u5ue8639YlR2QiJFjXzjiwdcDdLJ1UYlL30jP2YlW25XtZXlF
- FnROdC8ej0RM70GG5JV7Qw==
-X-Google-Smtp-Source: ABdhPJyj3yvr54ZXXnmMr4IfYGZ+QVh7GLNQbnpXs8A2ZFgI+ik3ENBMDemDlbpx1fiuN84orYnO5A==
-X-Received: by 2002:aca:c642:: with SMTP id w63mr3565210oif.177.1631034111282; 
- Tue, 07 Sep 2021 10:01:51 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
- [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id s24sm2463924otp.37.2021.09.07.10.01.48
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 07 Sep 2021 10:01:50 -0700 (PDT)
-Received: (nullmailer pid 4158952 invoked by uid 1000);
- Tue, 07 Sep 2021 17:01:48 -0000
-Date: Tue, 7 Sep 2021 12:01:48 -0500
-From: Rob Herring <robh@kernel.org>
-To: Roger Quadros <rogerq@kernel.org>
-Cc: tony@atomide.com, grygorii.strashko@ti.com, nm@ti.com, lokeshvutla@ti.com,
- nsekhar@ti.com, krzysztof.kozlowski@canonical.com, miquel.raynal@bootlin.com,
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 5/8] dt-bindings: mtd: ti,gpmc-nand: Convert to yaml
-Message-ID: <YTea/Ium7TptHlnV@robh.at.kernel.org>
-References: <20210907113226.31876-1-rogerq@kernel.org>
- <20210907113226.31876-6-rogerq@kernel.org>
+ id 1mNiq0-004o9s-SX
+ for linux-mtd@lists.infradead.org; Tue, 07 Sep 2021 21:41:08 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+ s=badeba3b8450; t=1631050853;
+ bh=O4Xjaa3CVehRBqgEALO8jVADPCCOyw7S8wTQUWfE5Mo=;
+ h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+ b=CB1k1CSPKcABaRX4aJePVf79KJSZ0Z3ZqgXv+jIoqMAnfHdNT5vZWyinwdt02LoIr
+ 6P8m0KvwlDZ//xkTeL4Gt9hP9SanOEezciDabWOGYEdgza0Dn5I2wEJui3jsJbZhSc
+ NnSSnT5MRqyww1Ea4VIo7rA1RlPCnY3iKhVKmHto=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from corona.crabdance.com ([173.228.106.131]) by mail.gmx.net
+ (mrgmx105 [212.227.17.168]) with ESMTPSA (Nemesis) id
+ 1MdNcG-1mwmbU25pY-00ZS0s; Tue, 07 Sep 2021 23:40:53 +0200
+Received: by corona.crabdance.com (Postfix, from userid 1000)
+ id 4E122899915; Tue,  7 Sep 2021 14:40:37 -0700 (PDT)
+From: Stefan Schaeckeler <schaecsn@gmx.net>
+To: richard@nod.at, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: Stefan Schaeckeler <schaecsn@gmx.net>
+Subject: [PATCH 0/1] ubifs: ubifs to export filesystem error counters
+Date: Tue,  7 Sep 2021 14:40:33 -0700
+Message-Id: <20210907214034.11676-1-schaecsn@gmx.net>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210907113226.31876-6-rogerq@kernel.org>
+X-Provags-ID: V03:K1:lnmes0eC3agU7xRNb2bPqHt1WNyrwciGY3duVu4Eo43/B8mRyzr
+ QY+QKzlPOuu4n/e6ipRfGgRlui9kgyAwKFoViCD+OGpiP1y+aWZYHd2iwR1Ijy6trAAPSGj
+ 0mr6E02DarpwYbvzc672Hfl49mXRPIY5v+ng4BUh5GZYDth69v7dfTu8fOLoJx+Jj9lVkvW
+ 2MBGAu/QM/5YpEQCHdVDA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Oq0yCJm1D9g=:ALKhSM+fRSDy+YumBfZXTc
+ D5lLxpRlgDhkhChpA0u+M1ZHiSqCWr7Bio74OilQaMH5lrmeVyiJXRL+ASpI81k0/xEDXS2Hw
+ DgGCX3t4ZHD0urRRY7ntMw42fQ1mLgQPD5tN60n3ZmB8UMj0/1lLGqP8kzMoQurf4ut/UR7fT
+ xm8GTV3a7/rKjteGAgCagbY+8XPE7urVuF/8tFLQOj3pRTXhoxtfoYMJLYog1YQEbJ+hVNXfh
+ wVg+/KW6Y/+vgVf/r5/v3xIb1NI5ISgtnvXA/Pmql8fr+9cB9yaWPQezGvczbb0meN4EwaNc+
+ F4RqwPCWCLHiMAwhcc8AYnkSWuMchWVLLPLZoHruMCAc7lAn9dXjhnD0/yptCnvyM9YT7Cn4m
+ jBCQbDW+xYga8yRlzns4jlkIf/77klF7gaJDtjh9YkxusRcaqaEmo09Wi09544HPd9vZbN398
+ bITHQKttWGczyGemGyug1gCuz7NjxrwrAS4yfKz0C+G0tXlyZE6va+3DRPza2jMA/Y1g4Y4pI
+ ALVJkBeRDPSw9KTKsW5B6I1kTWWYK0WeIP820fOQx2txWhcwKgrGJuMdnLuF20GhtqpQxDsCq
+ 2+pkqQeBJgWj/sxuYT6Wn7zyw9j6g543UCb1WFbLUUAB0ZYQaJb8Gx9srZOIebFhhTRX19TpJ
+ dicUitr3z5PeMChJGMHMwI3g+BLPoK86KE3WvLgbubo1u3fpiNnat06VM67IT976dq8WBvD+q
+ GtYdWWDutg93ybAdGmFMUuKsVsbcWP1rIat1xBw7nmnj74xiMOU9QouRDfN+maBx3CVmNO5Qp
+ gVSf7mYHtMhEYhCRwjzBSaUQv3YvuZk6cCecmRbOxiq/jcdPHvFZ8IsbIACDfd3BdPSxQBKlB
+ FJMkUkZnKgtukJcZlEek3KO+TQr0plkacgfOpPjcCyuMcW0eT/LWjcMQWy6JF29lCuB+oZssv
+ sJmkpx/ystceKYiY5Bfn0UpJA/Lc9/lkhf14FtKN7y6RhlLPZk8RAgqa0HKlKhEgtriKnHkzM
+ QNXROneOdD82ulu88XvN3LQ8kmsLbaJLbCcnigigG0xHuTYzZCJUtvNyRJL2QA+dZi2XDV1RG
+ Erk3Eq0WqYQACQZpxnRwJR2CCAHxTOC2xrTpfd1OIuUeu0GXWAydTI1DA==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210907_100157_738399_873B3690 
-X-CRM114-Status: GOOD (  37.65  )
+X-CRM114-CacheID: sfid-20210907_144105_267587_3057061C 
+X-CRM114-Status: GOOD (  13.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,302 +98,115 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Sep 07, 2021 at 02:32:23PM +0300, Roger Quadros wrote:
-> Convert gpmc-nand.txt to ti,gpmc-nand.yaml.
-> 
-> Signed-off-by: Roger Quadros <rogerq@kernel.org>
-> ---
->  .../devicetree/bindings/mtd/gpmc-nand.txt     | 147 ------------------
->  .../devicetree/bindings/mtd/ti,gpmc-nand.yaml | 110 +++++++++++++
->  2 files changed, 110 insertions(+), 147 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-nand.txt
->  create mode 100644 Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-> deleted file mode 100644
-> index 44919d48d241..000000000000
-> --- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-> +++ /dev/null
-> @@ -1,147 +0,0 @@
-> -Device tree bindings for GPMC connected NANDs
-> -
-> -GPMC connected NAND (found on OMAP boards) are represented as child nodes of
-> -the GPMC controller with a name of "nand".
-> -
-> -All timing relevant properties as well as generic gpmc child properties are
-> -explained in a separate documents - please refer to
-> -Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
-> -
-> -For NAND specific properties such as ECC modes or bus width, please refer to
-> -Documentation/devicetree/bindings/mtd/nand-controller.yaml
-> -
-> -
-> -Required properties:
-> -
-> - - compatible:	"ti,omap2-nand"
-> - - reg:		range id (CS number), base offset and length of the
-> -		NAND I/O space
-> - - interrupts:	Two interrupt specifiers, one for fifoevent, one for termcount.
-> -
-> -Optional properties:
-> -
-> - - nand-bus-width: 		Set this numeric value to 16 if the hardware
-> -				is wired that way. If not specified, a bus
-> -				width of 8 is assumed.
-> -
-> - - ti,nand-ecc-opt:		A string setting the ECC layout to use. One of:
-> -		"sw"		1-bit Hamming ecc code via software
-> -		"hw"		<deprecated> use "ham1" instead
-> -		"hw-romcode"	<deprecated> use "ham1" instead
-> -		"ham1"		1-bit Hamming ecc code
-> -		"bch4"		4-bit BCH ecc code
-> -		"bch8"		8-bit BCH ecc code
-> -		"bch16"		16-bit BCH ECC code
-> -		Refer below "How to select correct ECC scheme for your device ?"
-> -
-> - - ti,nand-xfer-type:		A string setting the data transfer type. One of:
-> -
-> -		"prefetch-polled"	Prefetch polled mode (default)
-> -		"polled"		Polled mode, without prefetch
-> -		"prefetch-dma"		Prefetch enabled DMA mode
-> -		"prefetch-irq"		Prefetch enabled irq mode
-> -
-> - - elm_id:	<deprecated> use "ti,elm-id" instead
-> - - ti,elm-id:	Specifies phandle of the ELM devicetree node.
-> -		ELM is an on-chip hardware engine on TI SoC which is used for
-> -		locating ECC errors for BCHx algorithms. SoC devices which have
-> -		ELM hardware engines should specify this device node in .dtsi
-> -		Using ELM for ECC error correction frees some CPU cycles.
-> - - rb-gpios:	GPIO specifier for the ready/busy# pin.
-> -
-> -For inline partition table parsing (optional):
-> -
-> - - #address-cells: should be set to 1
-> - - #size-cells: should be set to 1
-> -
-> -Example for an AM33xx board:
-> -
-> -	gpmc: gpmc@50000000 {
-> -		compatible = "ti,am3352-gpmc";
-> -		ti,hwmods = "gpmc";
-> -		reg = <0x50000000 0x36c>;
-> -		interrupts = <100>;
-> -		gpmc,num-cs = <8>;
-> -		gpmc,num-waitpins = <2>;
-> -		#address-cells = <2>;
-> -		#size-cells = <1>;
-> -		ranges = <0 0 0x08000000 0x1000000>;	/* CS0 space, 16MB */
-> -		elm_id = <&elm>;
-> -		interrupt-controller;
-> -		#interrupt-cells = <2>;
-> -
-> -		nand@0,0 {
-> -			compatible = "ti,omap2-nand";
-> -			reg = <0 0 4>;		/* CS0, offset 0, NAND I/O window 4 */
-> -			interrupt-parent = <&gpmc>;
-> -			interrupts = <0 IRQ_TYPE_NONE>, <1 IRQ_TYPE NONE>;
-> -			nand-bus-width = <16>;
-> -			ti,nand-ecc-opt = "bch8";
-> -			ti,nand-xfer-type = "polled";
-> -			rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 */
-> -
-> -			gpmc,sync-clk-ps = <0>;
-> -			gpmc,cs-on-ns = <0>;
-> -			gpmc,cs-rd-off-ns = <44>;
-> -			gpmc,cs-wr-off-ns = <44>;
-> -			gpmc,adv-on-ns = <6>;
-> -			gpmc,adv-rd-off-ns = <34>;
-> -			gpmc,adv-wr-off-ns = <44>;
-> -			gpmc,we-off-ns = <40>;
-> -			gpmc,oe-off-ns = <54>;
-> -			gpmc,access-ns = <64>;
-> -			gpmc,rd-cycle-ns = <82>;
-> -			gpmc,wr-cycle-ns = <82>;
-> -			gpmc,wr-access-ns = <40>;
-> -			gpmc,wr-data-mux-bus-ns = <0>;
-> -
-> -			#address-cells = <1>;
-> -			#size-cells = <1>;
-> -
-> -			/* partitions go here */
-> -		};
-> -	};
-> -
-> -How to select correct ECC scheme for your device ?
-> ---------------------------------------------------
-> -Higher ECC scheme usually means better protection against bit-flips and
-> -increased system lifetime. However, selection of ECC scheme is dependent
-> -on various other factors also like;
-> -
-> -(1) support of built in hardware engines.
-> -	Some legacy OMAP SoC do not have ELM harware engine, so those SoC cannot
-> -	support ecc-schemes with hardware error-correction (BCHx_HW). However
-> -	such SoC can use ecc-schemes with software library for error-correction
-> -	(BCHx_HW_DETECTION_SW). The error correction capability with software
-> -	library remains equivalent to their hardware counter-part, but there is
-> -	slight CPU penalty when too many bit-flips are detected during reads.
-> -
-> -(2) Device parameters like OOBSIZE.
-> -	Other factor which governs the selection of ecc-scheme is oob-size.
-> -	Higher ECC schemes require more OOB/Spare area to store ECC syndrome,
-> -	so the device should have enough free bytes available its OOB/Spare
-> -	area to accommodate ECC for entire page. In general following expression
-> -	helps in determining if given device can accommodate ECC syndrome:
-> -	"2 + (PAGESIZE / 512) * ECC_BYTES" >= OOBSIZE"
-> -	where
-> -		OOBSIZE		number of bytes in OOB/spare area
-> -		PAGESIZE	number of bytes in main-area of device page
-> -		ECC_BYTES	number of ECC bytes generated to protect
-> -		                512 bytes of data, which is:
-> -				'3' for HAM1_xx ecc schemes
-> -				'7' for BCH4_xx ecc schemes
-> -				'14' for BCH8_xx ecc schemes
-> -				'26' for BCH16_xx ecc schemes
-> -
-> -	Example(a): For a device with PAGESIZE = 2048 and OOBSIZE = 64 and
-> -		trying to use BCH16 (ECC_BYTES=26) ecc-scheme.
-> -		Number of ECC bytes per page = (2 + (2048 / 512) * 26) = 106 B
-> -		which is greater than capacity of NAND device (OOBSIZE=64)
-> -		Hence, BCH16 cannot be supported on given device. But it can
-> -		probably use lower ecc-schemes like BCH8.
-> -
-> -	Example(b): For a device with PAGESIZE = 2048 and OOBSIZE = 128 and
-> -		trying to use BCH16 (ECC_BYTES=26) ecc-scheme.
-> -		Number of ECC bytes per page = (2 + (2048 / 512) * 26) = 106 B
-> -		which can be accommodated in the OOB/Spare area of this device
-> -		(OOBSIZE=128). So this device can use BCH16 ecc-scheme.
-> diff --git a/Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml b/Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
-> new file mode 100644
-> index 000000000000..db36f2e944ef
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
-> @@ -0,0 +1,110 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/ti,gpmc-nand.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Texas Instruments GPMC NAND Flash controller.
-> +
-> +maintainers:
-> +  - Tony Lindgren <tony@atomide.com>
-> +  - Roger Quadros <rogerq@kernel.org>
-> +
-> +description:
-> +  GPMC NAND controller/Flash is represented as a child of the
-> +  GPMC controller node.
-> +
-> +properties:
-> +  compatible:
-> +    const: ti,omap2-nand
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    items:
-> +      - description: Interrupt for fifoevent
-> +      - description: Interrupt for termcount
-> +
-> +  "#address-cells":
-> +    const: 1
-> +
-> +  "#size-cells":
-> +    const: 1
-> +
-> +  ti,nand-ecc-opt:
-> +    description: Desired ECC algorithm
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    enum: [sw, ham1, bch4, bch8, bch16]
-> +
-> +  ti,nand-xfer-type:
-> +    description: Data transfer method between controller and chip.
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    enum: [prefetch-polled, polled, prefetch-dma, prefetch-irq]
-> +    default: prefetch-polled
-> +
-> +  ti,elm-id:
-> +    description:
-> +      phandle to the ELM (Error Location Module).
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +
-> +  nand-bus-width:
-> +    description:
-> +      Bus width to the NAND chip
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [8, 16]
-> +    default: 8
-> +
-> +allOf:
-> +  - $ref: "../memory-controllers/ti,gpmc-child.yaml"
+Not all ubifs filesystem errors are propagated to userspace, here is one
+that is not propagaged to ls:
 
-Use /schemas/... rather than '..'
+[node0_RP0_CPU0:~]$ls -la /mnt/mtd0
+[562009.111309] UBIFS error (ubi0:0 pid 21670): ubifs_check_node [ubifs]: bad CRC: calculated 0x1b205ba3, read 0xb6eff0d9
+[562009.123231] UBIFS error (ubi0:0 pid 21670): ubifs_check_node [ubifs]: bad node at LEB 112:29768
+[562009.133042] magic          0x6101831
+[562009.137312] crc            0xb6eff0d9
+[562009.141678] node_type      2 (direntry node)
+[562009.146706] group_type     1 (in node group)
+[562009.151734] sqnum          334966
+[562009.155709] len            82
+[562009.159304] key            (1, direntry, 0xe933a79)
+[562009.164999] inum           546
+[562009.168687] type           0
+[562009.172186] nlen           25
+[562009.175779] name           inventor\xffffffff\xffffffff\xffffffff\xffffffffcal_log_4.txt
+[562009.185308] CPU: 1 PID: 21670 Comm: ls Tainted: G           O    4.8.28-WR9.0.0.20_cgl #1
+[562009.185309] Hardware name: Insyde Harrisonville/Type2 - Board Product Name1, BIOS 00.01.017 10/26/2018
+[562009.185312]  0000000000000286 00000000f877ad2e ffffbb5b8e357c50 ffffffff9b3cfaab
+[562009.185316]  00000000ffffff8b 0000000000007448 ffffbb5b8e357c90 ffffffffc022c0dd
+[562009.185320]  00000000687aa008 0000000000007448 0000000000000070 0000000000000052
+[562009.185324] Call Trace:
+[562009.185332]  [<ffffffff9b3cfaab>] dump_stack+0x63/0x88
+[562009.185345]  [<ffffffffc022c0dd>] ubifs_check_node+0xbd/0x270 [ubifs]
+[562009.185357]  [<ffffffffc022db25>] ubifs_read_node+0x285/0x300 [ubifs]
+[562009.185370]  [<ffffffffc024dfc7>] ubifs_tnc_read_node+0x127/0x1c0 [ubifs]
+[562009.185382]  [<ffffffffc0230115>] ? matches_name+0x45/0xf0 [ubifs]
+[562009.185394]  [<ffffffffc022ed9a>] tnc_read_node_nm+0xfa/0x220 [ubifs]
+[562009.185407]  [<ffffffffc02330a4>] ubifs_tnc_next_ent+0x1f4/0x2a0 [ubifs]
+[562009.185411]  [<ffffffff9b1f405e>] ? filldir+0xce/0x150
+[562009.185422]  [<ffffffffc02244f8>] ubifs_readdir+0x188/0x4d0 [ubifs]
+[562009.185425]  [<ffffffff9b1f3e62>] iterate_dir+0x172/0x190
+[562009.185429]  [<ffffffff9b124e4a>] ? __audit_syscall_entry+0xba/0x100
+[562009.185432]  [<ffffffff9b1f4399>] SyS_getdents+0x99/0x120
+[562009.185434]  [<ffffffff9b1f3f90>] ? fillonedir+0x110/0x110
+[562009.185437]  [<ffffffff9b002b76>] do_syscall_64+0x66/0x180
+[562009.185441]  [<ffffffff9b8b9fce>] entry_SYSCALL_64_after_swapgs+0x58/0xc6
+[562009.185454] UBIFS error (ubi0:0 pid 21670): ubifs_read_node [ubifs]: expected node type 2
+[562009.194705] UBIFS error (ubi0:0 pid 21670): ubifs_readdir [ubifs]: cannot find next direntry, error -117
+total 1080
+drwxr-xr-x. 2 root root   3728 Jul  3 10:36 .
+drwxrwxrwt. 5 root root    120 Jul  3 10:36 ..
+-rw-rw-rw-. 1 root root   5413 May 24 10:59 alarm_0_PM1_remote_log_1.txt
+-rw-rw-rw-. 1 root root      1 Sep 19  2020 alarm_banner.txt
+-rw-rw-rw-. 1 root root  65465 Nov  5  2020 alarm_local_log_29.txt
+-rw-rw-rw-. 1 root root  55441 Dec 18  2020 alarm_local_log_30.txt
+-rw-rw-rw-. 1 root root  64826 Sep 20  2020 alarm_local_log_31.txt
+-rw-rw-rw-. 1 root root  65019 Oct 25  2020 alarm_local_log_32.txt
+-rw-rw-rw-. 1 root root  65880 Oct 26  2020 alarm_local_log_33.txt
+-rw-rw-rw-. 1 root root  66296 Apr 17 10:35 alarm_local_log_34.txt
+-rw-rw-rw-. 1 root test  64734 May  5 20:35 alarm_local_log_35.txt
+-rw-rw-rw-. 1 root root  64924 Jun  4 07:39 alarm_local_log_36.txt
+-rw-rw-rw-. 1 root root  50830 Jul  8 13:21 alarm_local_log_37.txt
+-rw-rw-rw-. 1 root root      1 Sep 21  2020 fpd_banner.txt
+-rw-rw-rw-. 1 root root  28518 Jul  2 23:19 fpd_local_log_2.txt
+-rw-rw-rw-. 1 root root     96 Jul  9 22:37 int_uptime_dashboard.dat
+-rw-rw-rw-. 1 root iosxr   540 Jun  8 00:06 inventory_local_log_1.txt
+-rw-rw-rw-. 1 root iosxr   540 Jul  2 23:26 inventory_local_log_2.txt
+-rw-rw-rw-. 1 root root  79293 Jul  3 10:37 inventory_local_log_3.txt
+-rw-rw-rw-. 1 root test      4 Apr 17 10:33 obfl_data_version.dat
+-rw-rw-rw-. 1 root root    364 Sep 19  2020 temperature_banner.txt
+-rw-rw-rw-. 1 root root  19567 Dec 18  2020 temperature_local_log_3.txt
+-rw-rw-rw-. 1 root root  65607 Sep 20  2020 temperature_local_log_4.txt
+-rw-rw-rw-. 1 root root  66410 Apr 17 10:34 temperature_local_log_5.txt
+-rw-rw-rw-. 1 root test  65607 Jun  1 21:26 temperature_local_log_6.txt
+-rw-rw-rw-. 1 root root  54097 Jul  3 10:37 temperature_local_log_7.txt
+-rw-rw-rw-. 1 root root  65160 Jun 25 23:56 voltage_local_log_10.txt
+-rw-rw-rw-. 1 root root  28236 Jul  3 10:37 voltage_local_log_11.txt
+[node0_RP0_CPU0:~]$echo $?
+0
 
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - ti,nand-ecc-opt
-> +
-> +unevaluatedProperties: false
+A direntry node got corrupted. The filename inventory_local_log_4.txt got
+corrupted to inventor\xffffffff\xffffffff\xffffffff\xffffffffcal_log_4.txt
+and is not passed down to ls. ls exits with a clean exit code of 0.
 
-This will throw errors if you have partition nodes. You need to 
-reference the partitions schema.
+We can't really detect this corruption from user space. This is required to
+take action such as for a fresh start with re-creating the filesystem.
 
-Or minimally restrict to nodes with: 
+Every access to the mounted filesystem results in a kernel backtrace. This
+trashes the dmesg buffer and the systemd journal over time.
 
-unevaluatedProperties:
-  type: object
 
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    gpmc: memory-controller@50000000 {
-> +      compatible = "ti,am3352-gpmc";
-> +      dmas = <&edma 52 0>;
-> +      dma-names = "rxtx";
-> +      clocks = <&l3s_gclk>;
-> +      clock-names = "fck";
-> +      reg = <0x50000000 0x2000>;
-> +      interrupts = <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>;
-> +      gpmc,num-cs = <7>;
-> +      gpmc,num-waitpins = <2>;
-> +      #address-cells = <2>;
-> +      #size-cells = <1>;
-> +      interrupt-controller;
-> +      #interrupt-cells = <2>;
-> +      gpio-controller;
-> +      #gpio-cells = <2>;
-> +
-> +      ranges = <0 0 0x08000000 0x01000000>;   /* CS0 space. Min partition = 16MB */
-> +      nand@0,0 {
-> +        compatible = "ti,omap2-nand";
-> +        reg = <0 0 4>;          /* device IO registers */
-> +        interrupt-parent = <&gpmc>;
-> +        interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
-> +                     <1 IRQ_TYPE_NONE>; /* termcount */
-> +        ti,nand-xfer-type = "prefetch-dma";
-> +        ti,nand-ecc-opt = "bch16";
-> +        ti,elm-id = <&elm>;
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +
-> +        /* NAND generic properties */
-> +        nand-bus-width = <8>;
-> +        rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>;  /* gpmc_wait0 */
-> +
-> +        /* GPMC properties*/
-> +        gpmc,device-width = <1>;
-> +      };
-> +    };
-> -- 
-> 2.17.1
-> 
-> 
+This patch introduces a sysfs filesystem for ubifs. The first three sysfs
+nodes are error counters:
+
+ /sys/fs/ubifs/ubiX_Y/errors_magic
+ /sys/fs/ubifs/ubiX_Y/errors_node
+ /sys/fs/ubifs/ubiX_Y/errors_crc
+
+This allows userspace to notice filesystem corruption. Over time, more
+sysfs nodes can be added.
+
+Stefan Schaeckeler (1):
+  ubifs: ubifs to export filesystem error counters
+
+ fs/ubifs/Makefile |   2 +-
+ fs/ubifs/io.c     |   6 ++
+ fs/ubifs/super.c  |  17 ++++-
+ fs/ubifs/sysfs.c  | 187 ++++++++++++++++++++++++++++++++++++++++++++++
+ fs/ubifs/sysfs.h  |  39 ++++++++++
+ fs/ubifs/ubifs.h  |  11 +++
+ 6 files changed, 260 insertions(+), 2 deletions(-)
+ create mode 100644 fs/ubifs/sysfs.c
+ create mode 100644 fs/ubifs/sysfs.h
+
+--
+2.32.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
