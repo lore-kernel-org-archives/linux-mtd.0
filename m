@@ -2,88 +2,64 @@ Return-Path: <SRS0=sITD=N5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91C55C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Sep 2021 15:28:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0BECC433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Sep 2021 16:36:37 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6696A610C9
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Sep 2021 15:28:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6696A610C9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7E4D16056C
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Sep 2021 16:36:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7E4D16056C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=jA5JjqYqDWKD91FqLyCnEc0SjCTq3SyZorhbh4rGc4I=; b=po1TqFUgceE5WqceaSjwZBNDtf
-	62d78XQQPwvm5j1r0g1+90BFikoaBQWGUd3KE9yDkn/osQMdcKw/0Zs6fAOqY+JwvvUjpAkUoMRYc
-	21tCWleIb/uHZ0m2a+DgXmWadrxR8zqKcY1hrg1GQ98EvAbYMN+U/b9+clQDdn4PRpCgdA4RdTQBU
-	YOsE25+VYVTVHlyC0+6+tT1dA0DioctU6sqzrIikAsbZXFs0L/D4rxlMQoVPRbIlCGFMIGqOCByVs
-	qhJbjG7nQra6obdjMmdwDWWd6vid+M7xsR06mlobqVU3AwqGEuZt43Py2OdZwcy5ihyaOleIiPTuF
-	H0Am8hVQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=NasFL4vS8L9LqgYfO90QBSQJ8V2X7bmKEzvfs3s+xoQ=; b=rPiFbvm1Nte5Iw
+	QOjPExi4uLYJPO9xmKlz/5nwtpLBS1KJkR/wOYVTkEfFyk4LnBGEuB/s5FrNVy4s1ROHwHLfHuIfV
+	l3UTDzkFEtmokut+ooa7urIf4+08tddrINSkhcCnGLrI+qfFMhEoAwrpDazZqB9fTDBT0C7lOKXPT
+	9zZouBq7GjtZCE8IvaGF4dXjN/msBPxJv87NIrpOWMXKg6clYt3ayCRNM/2GNKgBcgW/+HrXCKtm5
+	QDJM9ASRRhUx6PtOAuaLZGgJrzmVHfb5Yz+l5sN8cukVJO23HdZfv47GF1Cz9HCwO0An1UYtj6yGL
+	lW/1f+sr/rZpfjZvFelQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mNd0q-0043ef-Jd; Tue, 07 Sep 2021 15:27:52 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1mNe4f-004Cs7-Vn; Tue, 07 Sep 2021 16:35:54 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mNd0j-0043cg-N4
- for linux-mtd@lists.infradead.org; Tue, 07 Sep 2021 15:27:48 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 187FRbZJ065289;
- Tue, 7 Sep 2021 10:27:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1631028457;
- bh=OBjtREiXqmYOggfj/eR4+RHv/XFzfYkqRzrVGoU7Fho=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=eK8U12SkLF84E5Dfq9jKcsRuYSnZAmiDEsupKjjqIq31cFlOuNl/rX7izEfN5UZge
- F73HFfQ9IbmXKH/APtU9FZFh1e2Vax6ncx4JYcVpJURJdULpfTTJLKTUV5QhoSzAv9
- xPV3/IPg5p4IBs1PrExY4A6RR6TkjnGITyzGQ1tI=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 187FRbNX125799
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 7 Sep 2021 10:27:37 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 7
- Sep 2021 10:27:37 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 7 Sep 2021 10:27:37 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 187FRXkp014956;
- Tue, 7 Sep 2021 10:27:34 -0500
-Subject: Re: [PATCH v3 5/8] dt-bindings: mtd: ti,gpmc-nand: Convert to yaml
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Roger Quadros
- <rogerq@kernel.org>
-CC: <tony@atomide.com>, <robh+dt@kernel.org>, <nm@ti.com>,
- <lokeshvutla@ti.com>, <nsekhar@ti.com>,
+ id 1mNe4c-004Cr8-OD
+ for linux-mtd@lists.infradead.org; Tue, 07 Sep 2021 16:35:52 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 93BC560009;
+ Tue,  7 Sep 2021 16:35:46 +0000 (UTC)
+Date: Tue, 7 Sep 2021 18:35:45 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Grygorii Strashko <grygorii.strashko@ti.com>
+Cc: Roger Quadros <rogerq@kernel.org>, <tony@atomide.com>,
+ <robh+dt@kernel.org>, <nm@ti.com>, <lokeshvutla@ti.com>, <nsekhar@ti.com>,
  <krzysztof.kozlowski@canonical.com>, <devicetree@vger.kernel.org>,
  <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
  <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 5/8] dt-bindings: mtd: ti,gpmc-nand: Convert to yaml
+Message-ID: <20210907183545.3e281b7d@xps13>
+In-Reply-To: <dc3d465f-50d5-31e5-07e6-f83223b90800@ti.com>
 References: <20210907113226.31876-1-rogerq@kernel.org>
- <20210907113226.31876-6-rogerq@kernel.org> <20210907160317.2ec5304a@xps13>
-From: Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <dc3d465f-50d5-31e5-07e6-f83223b90800@ti.com>
-Date: Tue, 7 Sep 2021 18:27:32 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ <20210907113226.31876-6-rogerq@kernel.org>
+ <20210907160317.2ec5304a@xps13>
+ <dc3d465f-50d5-31e5-07e6-f83223b90800@ti.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210907160317.2ec5304a@xps13>
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210907_082745_927223_E17F977D 
-X-CRM114-Status: GOOD (  33.68  )
+X-CRM114-CacheID: sfid-20210907_093550_979898_359D577F 
+X-CRM114-Status: GOOD (  17.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,266 +71,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 07/09/2021 17:03, Miquel Raynal wrote:
-> Hi Roger,
-> 
-> rogerq@kernel.org wrote on Tue,  7 Sep 2021 14:32:23 +0300:
-> 
->> Convert gpmc-nand.txt to ti,gpmc-nand.yaml.
->>
->> Signed-off-by: Roger Quadros <rogerq@kernel.org>
->> ---
->>   .../devicetree/bindings/mtd/gpmc-nand.txt     | 147 ------------------
->>   .../devicetree/bindings/mtd/ti,gpmc-nand.yaml | 110 +++++++++++++
->>   2 files changed, 110 insertions(+), 147 deletions(-)
->>   delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-nand.txt
->>   create mode 100644 Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
->> deleted file mode 100644
->> index 44919d48d241..000000000000
->> --- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
->> +++ /dev/null
->> @@ -1,147 +0,0 @@
->> -Device tree bindings for GPMC connected NANDs
->> -
->> -GPMC connected NAND (found on OMAP boards) are represented as child nodes of
->> -the GPMC controller with a name of "nand".
->> -
->> -All timing relevant properties as well as generic gpmc child properties are
->> -explained in a separate documents - please refer to
->> -Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
->> -
->> -For NAND specific properties such as ECC modes or bus width, please refer to
->> -Documentation/devicetree/bindings/mtd/nand-controller.yaml
->> -
->> -
->> -Required properties:
->> -
->> - - compatible:	"ti,omap2-nand"
->> - - reg:		range id (CS number), base offset and length of the
->> -		NAND I/O space
->> - - interrupts:	Two interrupt specifiers, one for fifoevent, one for termcount.
->> -
->> -Optional properties:
->> -
->> - - nand-bus-width: 		Set this numeric value to 16 if the hardware
->> -				is wired that way. If not specified, a bus
->> -				width of 8 is assumed.
->> -
->> - - ti,nand-ecc-opt:		A string setting the ECC layout to use. One of:
->> -		"sw"		1-bit Hamming ecc code via software
->> -		"hw"		<deprecated> use "ham1" instead
->> -		"hw-romcode"	<deprecated> use "ham1" instead
->> -		"ham1"		1-bit Hamming ecc code
->> -		"bch4"		4-bit BCH ecc code
->> -		"bch8"		8-bit BCH ecc code
->> -		"bch16"		16-bit BCH ECC code
->> -		Refer below "How to select correct ECC scheme for your device ?"
->> -
->> - - ti,nand-xfer-type:		A string setting the data transfer type. One of:
->> -
->> -		"prefetch-polled"	Prefetch polled mode (default)
->> -		"polled"		Polled mode, without prefetch
->> -		"prefetch-dma"		Prefetch enabled DMA mode
->> -		"prefetch-irq"		Prefetch enabled irq mode
->> -
->> - - elm_id:	<deprecated> use "ti,elm-id" instead
->> - - ti,elm-id:	Specifies phandle of the ELM devicetree node.
->> -		ELM is an on-chip hardware engine on TI SoC which is used for
->> -		locating ECC errors for BCHx algorithms. SoC devices which have
->> -		ELM hardware engines should specify this device node in .dtsi
->> -		Using ELM for ECC error correction frees some CPU cycles.
->> - - rb-gpios:	GPIO specifier for the ready/busy# pin.
->> -
->> -For inline partition table parsing (optional):
->> -
->> - - #address-cells: should be set to 1
->> - - #size-cells: should be set to 1
->> -
->> -Example for an AM33xx board:
->> -
->> -	gpmc: gpmc@50000000 {
->> -		compatible = "ti,am3352-gpmc";
->> -		ti,hwmods = "gpmc";
->> -		reg = <0x50000000 0x36c>;
->> -		interrupts = <100>;
->> -		gpmc,num-cs = <8>;
->> -		gpmc,num-waitpins = <2>;
->> -		#address-cells = <2>;
->> -		#size-cells = <1>;
->> -		ranges = <0 0 0x08000000 0x1000000>;	/* CS0 space, 16MB */
->> -		elm_id = <&elm>;
->> -		interrupt-controller;
->> -		#interrupt-cells = <2>;
->> -
->> -		nand@0,0 {
->> -			compatible = "ti,omap2-nand";
->> -			reg = <0 0 4>;		/* CS0, offset 0, NAND I/O window 4 */
->> -			interrupt-parent = <&gpmc>;
->> -			interrupts = <0 IRQ_TYPE_NONE>, <1 IRQ_TYPE NONE>;
->> -			nand-bus-width = <16>;
->> -			ti,nand-ecc-opt = "bch8";
->> -			ti,nand-xfer-type = "polled";
->> -			rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 */
->> -
->> -			gpmc,sync-clk-ps = <0>;
->> -			gpmc,cs-on-ns = <0>;
->> -			gpmc,cs-rd-off-ns = <44>;
->> -			gpmc,cs-wr-off-ns = <44>;
->> -			gpmc,adv-on-ns = <6>;
->> -			gpmc,adv-rd-off-ns = <34>;
->> -			gpmc,adv-wr-off-ns = <44>;
->> -			gpmc,we-off-ns = <40>;
->> -			gpmc,oe-off-ns = <54>;
->> -			gpmc,access-ns = <64>;
->> -			gpmc,rd-cycle-ns = <82>;
->> -			gpmc,wr-cycle-ns = <82>;
->> -			gpmc,wr-access-ns = <40>;
->> -			gpmc,wr-data-mux-bus-ns = <0>;
->> -
->> -			#address-cells = <1>;
->> -			#size-cells = <1>;
->> -
->> -			/* partitions go here */
->> -		};
->> -	};
->> -
->> -How to select correct ECC scheme for your device ?
->> ---------------------------------------------------
->> -Higher ECC scheme usually means better protection against bit-flips and
->> -increased system lifetime. However, selection of ECC scheme is dependent
->> -on various other factors also like;
->> -
->> -(1) support of built in hardware engines.
->> -	Some legacy OMAP SoC do not have ELM harware engine, so those SoC cannot
->> -	support ecc-schemes with hardware error-correction (BCHx_HW). However
->> -	such SoC can use ecc-schemes with software library for error-correction
->> -	(BCHx_HW_DETECTION_SW). The error correction capability with software
->> -	library remains equivalent to their hardware counter-part, but there is
->> -	slight CPU penalty when too many bit-flips are detected during reads.
->> -
->> -(2) Device parameters like OOBSIZE.
->> -	Other factor which governs the selection of ecc-scheme is oob-size.
->> -	Higher ECC schemes require more OOB/Spare area to store ECC syndrome,
->> -	so the device should have enough free bytes available its OOB/Spare
->> -	area to accommodate ECC for entire page. In general following expression
->> -	helps in determining if given device can accommodate ECC syndrome:
->> -	"2 + (PAGESIZE / 512) * ECC_BYTES" >= OOBSIZE"
->> -	where
->> -		OOBSIZE		number of bytes in OOB/spare area
->> -		PAGESIZE	number of bytes in main-area of device page
->> -		ECC_BYTES	number of ECC bytes generated to protect
->> -		                512 bytes of data, which is:
->> -				'3' for HAM1_xx ecc schemes
->> -				'7' for BCH4_xx ecc schemes
->> -				'14' for BCH8_xx ecc schemes
->> -				'26' for BCH16_xx ecc schemes
->> -
->> -	Example(a): For a device with PAGESIZE = 2048 and OOBSIZE = 64 and
->> -		trying to use BCH16 (ECC_BYTES=26) ecc-scheme.
->> -		Number of ECC bytes per page = (2 + (2048 / 512) * 26) = 106 B
->> -		which is greater than capacity of NAND device (OOBSIZE=64)
->> -		Hence, BCH16 cannot be supported on given device. But it can
->> -		probably use lower ecc-schemes like BCH8.
->> -
->> -	Example(b): For a device with PAGESIZE = 2048 and OOBSIZE = 128 and
->> -		trying to use BCH16 (ECC_BYTES=26) ecc-scheme.
->> -		Number of ECC bytes per page = (2 + (2048 / 512) * 26) = 106 B
->> -		which can be accommodated in the OOB/Spare area of this device
->> -		(OOBSIZE=128). So this device can use BCH16 ecc-scheme.
->> diff --git a/Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml b/Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
->> new file mode 100644
->> index 000000000000..db36f2e944ef
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
->> @@ -0,0 +1,110 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/mtd/ti,gpmc-nand.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Texas Instruments GPMC NAND Flash controller.
->> +
->> +maintainers:
->> +  - Tony Lindgren <tony@atomide.com>
->> +  - Roger Quadros <rogerq@kernel.org>
->> +
->> +description:
->> +  GPMC NAND controller/Flash is represented as a child of the
->> +  GPMC controller node.
->> +
->> +properties:
->> +  compatible:
->> +    const: ti,omap2-nand
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  interrupts:
->> +    items:
->> +      - description: Interrupt for fifoevent
->> +      - description: Interrupt for termcount
->> +
->> +  "#address-cells":
->> +    const: 1
->> +
->> +  "#size-cells":
->> +    const: 1
->> +
->> +  ti,nand-ecc-opt:
->> +    description: Desired ECC algorithm
->> +    $ref: /schemas/types.yaml#/definitions/string
->> +    enum: [sw, ham1, bch4, bch8, bch16]
->> +
->> +  ti,nand-xfer-type:
->> +    description: Data transfer method between controller and chip.
->> +    $ref: /schemas/types.yaml#/definitions/string
->> +    enum: [prefetch-polled, polled, prefetch-dma, prefetch-irq]
->> +    default: prefetch-polled
->> +
->> +  ti,elm-id:
->> +    description:
->> +      phandle to the ELM (Error Location Module).
->> +    $ref: /schemas/types.yaml#/definitions/phandle
-> 
-> Should perhaps keep the elm-id property documented but set to
-> 'deprecated'.
-> 
->> +
->> +  nand-bus-width:
->> +    description:
->> +      Bus width to the NAND chip
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    enum: [8, 16]
->> +    default: 8
-> 
-> This is part of nand-controller.yaml binding and should not be there.
-> 
->> +
->> +allOf:
->> +  - $ref: "../memory-controllers/ti,gpmc-child.yaml"
-> 
-> Maybe you need to reference the nand controller bindings as well
-> 
-
-This will not work out of the box :( as nand-controller.yaml defines both
-  nand controller and nand memory. It potentially might work if it will be possible to split
-nand memory definition (or nand memory properties) out of and-controller.yaml, similarly to
-ti,gpmc-child.yaml from this series.
-
--- 
-Best regards,
-grygorii
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgR3J5Z29yaWksCgo+ID4gICAKPiA+PiArCj4gPj4gKyAgbmFuZC1idXMtd2lkdGg6Cj4gPj4g
+KyAgICBkZXNjcmlwdGlvbjoKPiA+PiArICAgICAgQnVzIHdpZHRoIHRvIHRoZSBOQU5EIGNoaXAK
+PiA+PiArICAgICRyZWY6IC9zY2hlbWFzL3R5cGVzLnlhbWwjL2RlZmluaXRpb25zL3VpbnQzMgo+
+ID4+ICsgICAgZW51bTogWzgsIDE2XQo+ID4+ICsgICAgZGVmYXVsdDogOCAgCj4gPiAKPiA+IFRo
+aXMgaXMgcGFydCBvZiBuYW5kLWNvbnRyb2xsZXIueWFtbCBiaW5kaW5nIGFuZCBzaG91bGQgbm90
+IGJlIHRoZXJlLgo+ID4gICAKPiA+PiArCj4gPj4gK2FsbE9mOgo+ID4+ICsgIC0gJHJlZjogIi4u
+L21lbW9yeS1jb250cm9sbGVycy90aSxncG1jLWNoaWxkLnlhbWwiICAKPiA+IAo+ID4gTWF5YmUg
+eW91IG5lZWQgdG8gcmVmZXJlbmNlIHRoZSBuYW5kIGNvbnRyb2xsZXIgYmluZGluZ3MgYXMgd2Vs
+bAo+ID4gICAKPiAKPiBUaGlzIHdpbGwgbm90IHdvcmsgb3V0IG9mIHRoZSBib3ggOiggYXMgbmFu
+ZC1jb250cm9sbGVyLnlhbWwgZGVmaW5lcyBib3RoCj4gICBuYW5kIGNvbnRyb2xsZXIgYW5kIG5h
+bmQgbWVtb3J5LiBJdCBwb3RlbnRpYWxseSBtaWdodCB3b3JrIGlmIGl0IHdpbGwgYmUgcG9zc2li
+bGUgdG8gc3BsaXQKPiBuYW5kIG1lbW9yeSBkZWZpbml0aW9uIChvciBuYW5kIG1lbW9yeSBwcm9w
+ZXJ0aWVzKSBvdXQgb2YgYW5kLWNvbnRyb2xsZXIueWFtbCwgc2ltaWxhcmx5IHRvCj4gdGksZ3Bt
+Yy1jaGlsZC55YW1sIGZyb20gdGhpcyBzZXJpZXMuCgpXaGF0IHlvdSB0aGluayB3b3VsZCBiZSB0
+aGUgaXNzdWU/CgpJIGFtIG5vdCBvcHBvc2VkIHRvIHNwbGl0IG5hbmQtY29udHJvbGxlci55YW1s
+IGludG8KbmFuZC1jb250cm9sbGVyLnlhbWwgYW5kIG5hbmQtY2hpcC55YW1sIGlmIGl0IHNpbXBs
+aWZpZXMgdGhlCmRlc2NyaXB0aW9uIG9mIGNvbnRyb2xsZXJzIGJ1dCBJIGRvbid0IGdldCB3aHkg
+aXQgd291bGQgYmUgbmVlZGVkLiBJbgpwYXJ0aWN1bGFyIHNpbmNlIHdlIGV4cGVjdCBhbGwgZHJp
+dmVycyB0byBzdXBwb3J0IHRoZQoKbmFuZC1jb250cm9sbGVyIHsKCWNvbnRyb2xsZXItcHJvcHM7
+CgluYW5kLWNoaXAgewoJCWNoaXAtcHJvcHM7Cgl9Cn0KCm9yZ2FuaXphdGlvbiB3aGljaCBoYXMg
+YmVlbiBlbmZvcmNlZCBzaW5jZSBhdCBsZWFzdCAyMDE4LiBIYXZpbmcgYQpjb250cm9sbGVyIHZz
+LiBjaGlwIHJlcHJlc2VudGF0aW9uIGlzIGZ1bmRhbWVudGFsbHkgcmlnaHQuIEJ1dCBoZXJlIEkK
+c2VlIGhvdyAibGVnYWN5IiBhcmUgdGhlc2UgYmluZGluZ3Mgd2l0aCBzbyBtdWNoIHVubmVlZGVk
+IHNwZWNpZmljICJ0aSwiCnByb3BlcnRpZXMuLi4gT24gb25lIHNpZGUgaXQgd291bGQgYmUgZ29v
+ZCB0byB2ZXJpZnkgdGhhdCB0aGUgZHJpdmVyCnN1cHBvcnRzIHRoaXMgcmVwcmVzZW50YXRpb24g
+KHdoaWNoIEkgYmVsaWV2ZSBpcyB0cnVlKSBhbmQgb24gdGhlIG90aGVyCnNpZGUgbWF5YmUgaXQn
+cyB0aW1lIHRvIGFkdmVydGlzZSAiYmV0dGVyIiBiaW5kaW5ncyBhcyB3ZWxsLgoKClRoYW5rcywK
+TWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
