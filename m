@@ -1,71 +1,80 @@
-Return-Path: <SRS0=TNsO=N4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=sITD=N5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D67BC433F5
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Sep 2021 18:00:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1AECC433F5
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Sep 2021 06:36:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DFE486101C
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Sep 2021 18:00:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DFE486101C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	by mail.kernel.org (Postfix) with ESMTPS id 3966E610F8
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Sep 2021 06:36:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3966E610F8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=D/xfB2tq/uz1xwy9NIovxtJ/RiIt0va1dtbPrRnR7QU=; b=EKfaFVdU19ubK1
-	eMD68V0CEUWsarIICKnoX39+JV4NLTTrx4jUinLDWDrI2+rjIlbS/1OPvmmHAQ6+cX09FLP2OEaoj
-	rTSn875SuxivBJcBzmukpl9cK7GBTASCQrWGRYCwui22mies4nbcu+JZhwxFnc3AM2fHeuYAyNb0M
-	D8t4mu5yUjTNctnAEFmPP9ECFYwywemwAKr+KSXo+bTlQsWplGWNkE7F5avdm2GY+l7bbPE0jbUlg
-	rNiGnLXZ4Y7KLrjqng96+OolwLF5TQWayptPuk6eOy74aKG+4g2r3SFB4rpjxtak56hHNWn665o3h
-	UgghS4ghlHlaaZXIR0ww==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=uz5El4R8ZBYcftqSIeb7LPgzzJYdWWwhTvOQwgtyptc=; b=Qu+B4VBba0vhA8X+knzEF8AG+M
+	kwOGLqCc0PN+gagOnATaLrNUIrUY+p0E5XXmSbDxB3KgSE71W0x0gLJHbBaBCJzDlI9AVTpcawnTp
+	Msj2UkN1f1KGhYZQSdmXmYS1cA2tVmAN1u7HTx0yp+tnD0j7n5djo58cjaH/wN8bu2xLThfI2l2CH
+	QfrpTmntYETVGH9cr7t8dK11sHNgIM2IA5jqSmFCJ4dDrizs1bXfOInwMQddFitqbZ4gnHjKsBWvV
+	tWjLK1AfDvSsYJobyFVJ0pp2MN1/xu1X6rffRtsWZRmKaMUaJmlsPsE2GV2qauSbzsGf58c7Xbtdd
+	kIZYTIOw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mNIu2-001ULL-3X; Mon, 06 Sep 2021 17:59:30 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1mNUhx-002ZVl-UH; Tue, 07 Sep 2021 06:35:49 +0000
+Received: from so254-9.mailgun.net ([198.61.254.9])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mNIty-001UJ8-Vr
- for linux-mtd@lists.infradead.org; Mon, 06 Sep 2021 17:59:28 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 5C5421F41FB8;
- Mon,  6 Sep 2021 18:59:24 +0100 (BST)
-Date: Mon, 6 Sep 2021 19:59:20 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Naga Sureshkumar Relli <nagasure@xilinx.com>, Michal Simek
- <monstr@monstr.eu>, Amit Kumar Mahapatra <akumarma@xilinx.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Tudor
- Ambarus <Tudor.Ambarus@microchip.com>, <linux-mtd@lists.infradead.org>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 2/3] mtd: rawnand: Check the CHANGE_READ_COLUMN from
- nand_read_subpage() is supported
-Message-ID: <20210906195920.41bbc6f8@collabora.com>
-In-Reply-To: <20210906193255.05b7aa7c@xps13>
-References: <20210906132942.36972-1-miquel.raynal@bootlin.com>
- <20210906132942.36972-2-miquel.raynal@bootlin.com>
- <20210906170827.02ab8b96@collabora.com>
- <20210906181341.08619108@xps13>
- <20210906183344.7fda2cf2@collabora.com>
- <20210906193255.05b7aa7c@xps13>
-Organization: Collabora
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+ id 1mNUhu-002ZUt-LP
+ for linux-mtd@lists.infradead.org; Tue, 07 Sep 2021 06:35:48 +0000
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1630996545; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Xc048QqgaI2ANyWI4pqRHNZXsACOQ6mJX1gQ/QPaTW4=;
+ b=EjK4+xGbE2ZyRe8QPSMR0Bls5oubaMc5bV70RaGBfdIukdTV33ba3cyZ4x1BU2KYcyfOHBlF
+ OcSp0qRz/LiborIGa4J4ciRftFnmwgerXON3pHss6/tlVN7hq2iKN7hL7lE6rtXxxR2uHgVQ
+ 2VIywmgTwqXZ56/6OG+Tr/rYnKs=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyJkZDQ0ZiIsICJsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZyIsICJiZTllNGEiXQ==
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 6137084097222b4b5b67a24b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 07 Sep 2021 06:35:44
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id 676AEC43460; Tue,  7 Sep 2021 06:35:44 +0000 (UTC)
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+ (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested) (Authenticated sender: mdalam)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 42F04C4338F;
+ Tue,  7 Sep 2021 06:35:42 +0000 (UTC)
 MIME-Version: 1.0
+Date: Tue, 07 Sep 2021 12:05:42 +0530
+From: mdalam@codeaurora.org
+To: Manivannan Sadhasivam <mani@kernel.org>
+Cc: miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, sricharan@codeaurora.org, stable@kernel.org
+Subject: Re: [PATCH V4] mtd: rawnand: qcom: Update code word value for raw read
+In-Reply-To: <20210902091730.GA10844@workstation>
+References: <1630561763-18486-1-git-send-email-mdalam@codeaurora.org>
+ <20210902091730.GA10844@workstation>
+Message-ID: <3ea25e979fc8c965820596ec86c61172@codeaurora.org>
+X-Sender: mdalam@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210906_105927_347727_673C0DC3 
-X-CRM114-Status: GOOD (  46.69  )
+X-CRM114-CacheID: sfid-20210906_233546_806091_8A9C33BA 
+X-CRM114-Status: GOOD (  28.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,140 +86,136 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 6 Sep 2021 19:32:55 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-
-> > > > > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> > > > > index 7f29f27bb6fd..8175635b9802 100644
-> > > > > --- a/drivers/mtd/nand/raw/nand_base.c
-> > > > > +++ b/drivers/mtd/nand/raw/nand_base.c
-> > > > > @@ -3065,10 +3065,19 @@ static int nand_read_subpage(struct nand_chip *chip, uint32_t data_offs,
-> > > > >  		    (busw - 1))
-> > > > >  			aligned_len++;
-> > > > >  
-> > > > > -		ret = nand_change_read_column_op(chip,
-> > > > > -						 mtd->writesize + aligned_pos,
-> > > > > -						 &chip->oob_poi[aligned_pos],
-> > > > > -						 aligned_len, false);
-> > > > > +		ret = nand_check_change_read_column_op(chip,
-> > > > > +						       mtd->writesize + aligned_pos,
-> > > > > +						       &chip->oob_poi[aligned_pos],
-> > > > > +						       aligned_len, false, true);
-> > > > > +		if (!ret)
-> > > > > +			ret = nand_change_read_column_op(chip,
-> > > > > +							 mtd->writesize + aligned_pos,
-> > > > > +							 &chip->oob_poi[aligned_pos],
-> > > > > +							 aligned_len, false);
-> > > > > +		else
-> > > > > +			ret = nand_change_read_column_op(chip, mtd->writesize,
-> > > > > +							 chip->oob_poi,
-> > > > > +							 mtd->oobsize, false);
-> > > > >  		if (ret)
-> > > > >  			return ret;        
-> > > >       
-> > > 
-> > > 
-> > > The previous behavior was:
-> > > 
-> > > /*
-> > >  * gaps == true means we need to request the entire OOB area and we
-> > >  * will call an OOB layout helper to extract the ECC bytes.
-> > >  * gaps == false means there is no data interleaved, we can just read
-> > >  * the number of ECC bytes by starting at the right offset and no
-> > >  * extracting operation will be needed.
-> > >  */
-> > > gaps = ...;
-> > > if (!gaps)
-> > > 	nand_change_read_column(at a specific offset and a specific
-> > > 				length just to match the ECC bytes);
-> > > else
-> > > 	nand_change_read_column(the entire OOB);
-> > > 
-> > > While the new behavior is:
-> > > 
-> > > if (!gaps) {
-> > > 	op_supported = nand_check_change_read_column();
-> > > 	if (!op_supported)
-> > > 		// same operation as if gaps == true
-> > > 		nand_change_read_column(the entire OOB);    
-> > 
-> > What if this one is not supported either?  
+On 2021-09-02 14:47, Manivannan Sadhasivam wrote:
+> On Thu, Sep 02, 2021 at 11:19:23AM +0530, Md Sadre Alam wrote:
+>> From QPIC V2 onwards there is a separate register to read
+>> last code word "QPIC_NAND_READ_LOCATION_LAST_CW_n".
+>> 
+>> qcom_nandc_read_cw_raw() is used to read only one code word
+>> at a time. If we will configure number of code words to 1 in
+>> in QPIC_NAND_DEV0_CFG0 register then QPIC controller thinks
+>> its reading the last code word, since from QPIC V2 onwards
+>> we are having separate register to read the last code word,
+>> we have to configure "QPIC_NAND_READ_LOCATION_LAST_CW_n"
+>> register to fetch data from controller buffer to system
+>> memory.
+>> 
+>> Fixes: 503ee5aa ("mtd: rawnand: qcom: update last code word register")
 > 
-> If this one is not supported either I guess the entire software ECC
-> support cannot be used. But what I am trying to achieve here is more
-> complicated: the controller does not support one thing: reading the ECC
-> bytes until the OOB end minus 2. Only a call to
-> nand_change_read_column with these particular parameters would fail
-> because it depends on the actual offset and length that are requested.
+> Commit hash should be of 12 digits.
 
-I suspect those parameters can be extracted from the NAND page size/ECC
-config, which are known before the ECC initialization IIRC.
-
+   Updated in patch V5
 > 
-> > > 	else
-> > > 		nand_change_read_column(at a specific offset);
-> > > } else {
-> > > 	nand_change_read_column(the entire OOB)
-> > > }
-> > >     
-> > > > So you just fail if the CHANGE column op is not supported? Looks like
-> > > > this check should be done before we assign ecc->read_subpage to
-> > > > nand_read_subpage in
-> > > > nand_set_ecc_on_host_ops()/nand_set_ecc_soft_ops()...      
-> > > 
-> > > So I actually don't understand the above comment as the code is not
-> > > simply failing, it's actually falling back to second method which is
-> > > maybe slightly slower but still valid. Do you think it's wrong?    
-> > 
-> > Well, it's falling back to a different method that might be unsupported
-> > too, so it might still fail on other controllers.  
+>> Cc: stable@kernel.org
+>> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+>> ---
+>> [V4]
+>>  * Added commit message
+>>  * Added changelog
+>> 
+>>  In commit 503ee5aa added QPIC V2 support. Since QPIC V2 onwards there
+>>  is separate register to get last CW data. If total number of CW 
+>> configred is 1
+>>  then , QPIC controller treat this as last CW and software shhould 
+>> copy data to memory
+>>  via QPIC_NAND_READ_LOCATION_LAST_CW_n register instead of 
+>> QPIC_NAND_READ_LOCATION_n.
+>>  Since in raw read we are configuring total number of CW 1, this 
+>> change fixes
+>>  this if total number of CW 1 then make this as last CW.  raw_cw = 
+>> ecc->steps - 1;
+>>  since ecc->steps holds total number of CWs.
+>> 
 > 
-> Well, yes it may fail on other controllers but as I said, if
-> controllers do not support any type of nand_change_read_column() then
-> they cannot use software ECC at all (and are close to be almost
-> useless).
-
-Which would be good to detect at probe time, with a probe failure when
-this happens.
-
+> This is not a changelog. Changelog should mention what has been changed
+> between versions from v1 to v4. For example:
 > 
-> > Moreover, I really
-> > think this sort of things should be checked at probe time so you don't
-> > spend time checking it every time you do a read.  
+> Changes in v4:
 > 
-> Agreed. I can certainly make something like this in theory, but what
-> would be the condition? I am describing it in patch 3/3 : there is
-> really a tiny set of conditions where this will fail so in the end I
-> would end-up writing a condition that precisely matches the Arasan
-> limitation.
+> * Incorporated AAA comments from X
+> * Changed a local variable
+> 
+> Changes in v3:
+> 
+> * Incorporated BBB comments from X
+> 
+> Changes in v2:
+> 
+> * Incorporated CCC comments from X
 
-I see. Maybe it's simpler to add NAND_NO_SUBPAGE_READ flag until you
-find a better way to describe such limitations.
+  Updated in patch V5
+> 
+>>  drivers/mtd/nand/raw/qcom_nandc.c | 8 ++++++--
+>>  1 file changed, 6 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c 
+>> b/drivers/mtd/nand/raw/qcom_nandc.c
+>> index ef0bade..04e6f7b 100644
+>> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+>> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+>> @@ -1676,13 +1676,17 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, 
+>> struct nand_chip *chip,
+>>  	struct nand_ecc_ctrl *ecc = &chip->ecc;
+>>  	int data_size1, data_size2, oob_size1, oob_size2;
+>>  	int ret, reg_off = FLASH_BUF_ACC, read_loc = 0;
+>> +	int raw_cw = cw;
+>> 
+>>  	nand_read_page_op(chip, page, 0, NULL, 0);
+>>  	host->use_ecc = false;
+>> 
+>> +	if (nandc->props->qpic_v2)
+>> +		raw_cw = ecc->steps - 1;
+>> +
+> 
+> Sorry, I don't understand how it can work. For reading a codeword like
+> 0, you are reading the last codeword here if the controller is v2. And
+> you'll continue to read the last codeword only for any codeword
+> requested :/
+
+   This case is only applicable when we will configure number of code 
+words to 1.
+   These registers "QPIC_NAND_READ_LOCATION_LAST_CW_n" & 
+"QPIC_NAND_READ_LOCATION_n"
+   are only used to copy data into memory i.e our local buffer. So this 
+last CW interpretation from
+   QPIC controller to memory not for Flash to QPIC controller.
+   If number of CW configured to 1 means QPIC will treat this a last CW , 
+so copy the data from QPIC to local memory
+   buffer , we have to use QPIC_NAND_READ_LOCATION_LAST_CW_n register 
+instead of QPIC_NAND_READ_LOCATION_n regsiter,
+   Since there is separate register from QPIC V2 onwards to read get last 
+CW "QPIC_NAND_READ_LOCATION_LAST_CW_n".
+
 
 > 
-> Not mentioning that it only fails with NV-DDR enabled (also something
-> that I missed to capture in patch 3/3). The data interface being
-> initialized after the read_subpage() hook it means I couldn't use this
-> information.
-
-Duh, this is nasty, indeed.
-
+> Thanks,
+> Mani
 > 
-> > Something like:
-> > 
-> > 	if (nand_check_change_read_column(gaps=false))
-> > 		ecc->read_subpage = nand_read_subpage_nogaps;
-> > 	else if (nand_check_change_read_column(gaps=true))
-> > 		ecc->read_subpage = nand_read_subpage_gaps;
-> > 	else
-> > 		return -EOPNOTSUP;  
-> 
-
+>>  	clear_bam_transaction(nandc);
+>>  	set_address(host, host->cw_size * cw, page);
+>> -	update_rw_regs(host, 1, true, cw);
+>> +	update_rw_regs(host, 1, true, raw_cw);
+>>  	config_nand_page_read(chip);
+>> 
+>>  	data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
+>> @@ -1711,7 +1715,7 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, 
+>> struct nand_chip *chip,
+>>  		nandc_set_read_loc(chip, cw, 3, read_loc, oob_size2, 1);
+>>  	}
+>> 
+>> -	config_nand_cw_read(chip, false, cw);
+>> +	config_nand_cw_read(chip, false, raw_cw);
+>> 
+>>  	read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
+>>  	reg_off += data_size1;
+>> --
+>> 2.7.4
+>> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
