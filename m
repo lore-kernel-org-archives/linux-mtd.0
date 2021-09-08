@@ -2,77 +2,79 @@ Return-Path: <SRS0=xoN1=N6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58960C433FE
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Sep 2021 12:08:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED781C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Sep 2021 12:47:59 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 26F8F6113E
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Sep 2021 12:08:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 26F8F6113E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
+	by mail.kernel.org (Postfix) with ESMTPS id AA72B61153
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Sep 2021 12:47:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AA72B61153
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4X0i6YjU9LWThL/zhoC4ooI1shei3UrgxnBReMNmpCI=; b=g8EOzSly3BFodq
-	RK5W1xHFdVIonr3ZQvjBljSFt/91tyQamaWcQgtx60cyUS1DCTv51/uKI2MArPSoxqU20h8k27bTc
-	ruAED2CrZc3/q+36esU4KNzvPFNP+/bBTavkabHmAYEVWDqDjIxwTn8Pgi2ZNswv+Q3T0MbP4TSfG
-	KR6E75EORJ8USn0iVrcMGh9g+Yq3G1qX3K7+MLxwyQiljMO6R7dqHbx1+gUqJs3k1OXwogjb3jLsS
-	H6oF+4daYM47vbCzvdymXB4f8eZJP9A6Nao+1pcSjEqRAz6eZYduoBKaGtogvnyg9j8plTD5Wj8EQ
-	iuFxy4NrahFuiHBtsL9g==;
+	List-Owner; bh=edGI49Uud6UYt0ve4dUw9skJ8A7YORDqX+vVpUs+C7s=; b=HuJUtpfvc1FCAm
+	lYlLsh4TYYd+e6SHDA6IXKn40HeSc370MnnV6p9KPARJMgF9Td4mRSXKVTMU2en+vsf8jP6Sq4l6b
+	d62w/+RfG5PL9rr8CrJnJsg2PL36eK3Sk2inWLlhvkmjeLB6OMTKOmPu609bK7o8t4Nd5ULi/kGBj
+	nT6VHXDzdt1r1P7EV/4oKrHU2zDUsIT+zv27qcwZ6tGD6LPPs+1t8oVQqja73XNr/qJweqbE52fFL
+	oU6YUeEpI9c6ipEuVFx0zaZ8dTk5/PjRXwenqhDzAwFeAkKEk365ZevCXO+QNiszv1346g/TBCM2n
+	3pbiiJiCg8x8fRW4irBQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mNwNF-006dyx-VE; Wed, 08 Sep 2021 12:08:18 +0000
+	id 1mNwys-006jg0-RE; Wed, 08 Sep 2021 12:47:10 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mNwNC-006dx8-8a
- for linux-mtd@lists.infradead.org; Wed, 08 Sep 2021 12:08:15 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B86D96109F;
- Wed,  8 Sep 2021 12:08:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1631102893;
- bh=+2qr6IIO/UXLiJjbyRAgzuQXiygiL06LUjfWuxvrq7U=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=jcs7nucfDWnXMYxo5ee/D0ZZAPqmOq3Gvtv+E0miyvRG+OwrIE8sOqA4FK3hT4+wi
- atyLzSEjCkXrJl+bnpyYiVY1FZkXaUHxOKCkF/CqzLfbFz3j2oqiUMCBU5lTdOrIFa
- OxQTgGQ4h74+Oz78PjpHrzODtGnMgkj+tyADOD5M=
-Date: Wed, 8 Sep 2021 14:08:10 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Pintu Agarwal <pintu.ping@gmail.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Sami Tolvanen <samitolvanen@google.com>, snitzer@redhat.com,
- Kernelnewbies <kernelnewbies@kernelnewbies.org>,
- open list <linux-kernel@vger.kernel.org>, dm-devel@redhat.com,
- Mikulas Patocka <mpatocka@redhat.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- Phillip Lougher <phillip@squashfs.org.uk>, agk@redhat.com
-Subject: Re: Kernel 4.14: Using dm-verity with squashfs rootfs - mounting issue
-Message-ID: <YTinqiH9h+Q9bYsr@kroah.com>
-References: <CAOuPNLhh_LkLQ8mSA4eoUDLCLzHo5zHXsiQZXUB_-T_F1_v6-g@mail.gmail.com>
- <alpine.LRH.2.02.2107211300520.10897@file01.intranet.prod.int.rdu2.redhat.com>
- <CAOuPNLi-xz_4P+v45CHLx00ztbSwU3_maf4tuuyso5RHyeOytg@mail.gmail.com>
- <CAOuPNLg0m-Q7Vhp4srbQrjXHsxVhOr-K2dvnNqzdR6Dr4kioqA@mail.gmail.com>
- <20210830185541.715f6a39@windsurf>
- <CAOuPNLhTidgLNWUbtUgdESYcKcE1C4SOdzKeQVhFGQvEoc0QEg@mail.gmail.com>
- <20210830211224.76391708@windsurf>
- <CAOuPNLgMd0AThhmSknbmKqp3_P8PFhBGr-jW0Mqjb6K6NchEMg@mail.gmail.com>
- <CAOuPNLiW10-E6F_Ndte7U9NPBKa9Y_UuLhgdwAYTc0eYMk5Mqg@mail.gmail.com>
- <CAOuPNLj2Xmx52Gtzx5oEKif4Qz-Tz=vaxhRvHQG-5emO7ewRhg@mail.gmail.com>
+ id 1mNwyk-006jeu-4t
+ for linux-mtd@lists.infradead.org; Wed, 08 Sep 2021 12:47:04 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A2B761163
+ for <linux-mtd@lists.infradead.org>; Wed,  8 Sep 2021 12:47:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1631105221;
+ bh=MggI+PXCaoVLIOunOzzyO0UwbItl6gINDul630lMGWs=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=CfzOEm8zqyHKsql4Y9vHIS3fjbJIbdfe+oAYcpSb5t2sKrylE8qpTWfmR8JswXKtr
+ 53wyPnGXG8JMjBnrfld/VL6c3HzPIViQXizaKixqOXk3b5ymtm9W4319h0OgoY6tX3
+ j4qU9Xcx22y21kPCOjgLUNlsJ1LQ2MwLoGdSf8Qy1KxKameIleZzufz+0yEmPrtpPB
+ OcQv/KYZryagkXpxV//w/tjPik48keceqW7oX//69SKMcscF7hLPJ9bVlobIsYEoMB
+ 8NIDVo6TRVywUNkTeeKMQLGPHQj6M0psj3RFPG//lNXuzd3j7UjOigsMXs6JJZSryO
+ Z7z8ENexTZabg==
+Received: by mail-ej1-f53.google.com with SMTP id jg16so3973648ejc.1
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Sep 2021 05:47:01 -0700 (PDT)
+X-Gm-Message-State: AOAM530CumKHnU2zl9PwL+E02KLRtD6TcQVIBj7dq/38evjFeNo6N3ga
+ nUyDSrBn1nUtf6ttDJdgP8rrRTk9YXmLMsX7hw==
+X-Google-Smtp-Source: ABdhPJzCxpoGUB9cLszBffw8iHHKlxR7xTIzGJWWHrypt1ymWtKIC1i+OZmoq2p16yzwWwAqvSjjZkgRNRlqvxcVd/8=
+X-Received: by 2002:a17:907:50a1:: with SMTP id
+ fv33mr3865933ejc.128.1631105219659; 
+ Wed, 08 Sep 2021 05:46:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAOuPNLj2Xmx52Gtzx5oEKif4Qz-Tz=vaxhRvHQG-5emO7ewRhg@mail.gmail.com>
+References: <20210907113226.31876-1-rogerq@kernel.org>
+ <20210907113226.31876-6-rogerq@kernel.org>
+ <YTea/Ium7TptHlnV@robh.at.kernel.org>
+ <5b7787ce-d51f-e79c-fa7a-0113acda5648@kernel.org>
+In-Reply-To: <5b7787ce-d51f-e79c-fa7a-0113acda5648@kernel.org>
+From: Rob Herring <robh@kernel.org>
+Date: Wed, 8 Sep 2021 07:46:47 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+Nz3V4yri8QqaGoNOjL6dObPPV4dM1B2uzDMp6Fvw=SA@mail.gmail.com>
+Message-ID: <CAL_Jsq+Nz3V4yri8QqaGoNOjL6dObPPV4dM1B2uzDMp6Fvw=SA@mail.gmail.com>
+Subject: Re: [PATCH v3 5/8] dt-bindings: mtd: ti,gpmc-nand: Convert to yaml
+To: Roger Quadros <rogerq@kernel.org>
+Cc: tony@atomide.com, grygorii.strashko@ti.com, nm@ti.com, lokeshvutla@ti.com, 
+ nsekhar@ti.com, krzysztof.kozlowski@canonical.com,
+ miquel.raynal@bootlin.com, 
+ devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210908_050814_371990_11FCA675 
-X-CRM114-Status: GOOD (  14.54  )
+X-CRM114-CacheID: sfid-20210908_054702_272887_B39E0784 
+X-CRM114-Status: GOOD (  38.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,37 +91,265 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Sep 08, 2021 at 04:57:45PM +0530, Pintu Agarwal wrote:
-> Hi,
-> 
-> On Mon, 6 Sept 2021 at 21:58, Pintu Agarwal <pintu.ping@gmail.com> wrote:
-> 
-> > On Tue, 31 Aug 2021 at 18:49, Pintu Agarwal <pintu.ping@gmail.com> wrote:
+On Wed, Sep 8, 2021 at 6:14 AM Roger Quadros <rogerq@kernel.org> wrote:
+>
+>
+>
+> On 07/09/2021 20:01, Rob Herring wrote:
+> > On Tue, Sep 07, 2021 at 02:32:23PM +0300, Roger Quadros wrote:
+> >> Convert gpmc-nand.txt to ti,gpmc-nand.yaml.
+> >>
+> >> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> >> ---
+> >>  .../devicetree/bindings/mtd/gpmc-nand.txt     | 147 ------------------
+> >>  .../devicetree/bindings/mtd/ti,gpmc-nand.yaml | 110 +++++++++++++
+> >>  2 files changed, 110 insertions(+), 147 deletions(-)
+> >>  delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+> >>  create mode 100644 Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+> >> deleted file mode 100644
+> >> index 44919d48d241..000000000000
+> >> --- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+> >> +++ /dev/null
+> >> @@ -1,147 +0,0 @@
+> >> -Device tree bindings for GPMC connected NANDs
+> >> -
+> >> -GPMC connected NAND (found on OMAP boards) are represented as child nodes of
+> >> -the GPMC controller with a name of "nand".
+> >> -
+> >> -All timing relevant properties as well as generic gpmc child properties are
+> >> -explained in a separate documents - please refer to
+> >> -Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+> >> -
+> >> -For NAND specific properties such as ECC modes or bus width, please refer to
+> >> -Documentation/devicetree/bindings/mtd/nand-controller.yaml
+> >> -
+> >> -
+> >> -Required properties:
+> >> -
+> >> - - compatible:      "ti,omap2-nand"
+> >> - - reg:             range id (CS number), base offset and length of the
+> >> -            NAND I/O space
+> >> - - interrupts:      Two interrupt specifiers, one for fifoevent, one for termcount.
+> >> -
+> >> -Optional properties:
+> >> -
+> >> - - nand-bus-width:          Set this numeric value to 16 if the hardware
+> >> -                            is wired that way. If not specified, a bus
+> >> -                            width of 8 is assumed.
+> >> -
+> >> - - ti,nand-ecc-opt:         A string setting the ECC layout to use. One of:
+> >> -            "sw"            1-bit Hamming ecc code via software
+> >> -            "hw"            <deprecated> use "ham1" instead
+> >> -            "hw-romcode"    <deprecated> use "ham1" instead
+> >> -            "ham1"          1-bit Hamming ecc code
+> >> -            "bch4"          4-bit BCH ecc code
+> >> -            "bch8"          8-bit BCH ecc code
+> >> -            "bch16"         16-bit BCH ECC code
+> >> -            Refer below "How to select correct ECC scheme for your device ?"
+> >> -
+> >> - - ti,nand-xfer-type:               A string setting the data transfer type. One of:
+> >> -
+> >> -            "prefetch-polled"       Prefetch polled mode (default)
+> >> -            "polled"                Polled mode, without prefetch
+> >> -            "prefetch-dma"          Prefetch enabled DMA mode
+> >> -            "prefetch-irq"          Prefetch enabled irq mode
+> >> -
+> >> - - elm_id:  <deprecated> use "ti,elm-id" instead
+> >> - - ti,elm-id:       Specifies phandle of the ELM devicetree node.
+> >> -            ELM is an on-chip hardware engine on TI SoC which is used for
+> >> -            locating ECC errors for BCHx algorithms. SoC devices which have
+> >> -            ELM hardware engines should specify this device node in .dtsi
+> >> -            Using ELM for ECC error correction frees some CPU cycles.
+> >> - - rb-gpios:        GPIO specifier for the ready/busy# pin.
+> >> -
+> >> -For inline partition table parsing (optional):
+> >> -
+> >> - - #address-cells: should be set to 1
+> >> - - #size-cells: should be set to 1
+> >> -
+> >> -Example for an AM33xx board:
+> >> -
+> >> -    gpmc: gpmc@50000000 {
+> >> -            compatible = "ti,am3352-gpmc";
+> >> -            ti,hwmods = "gpmc";
+> >> -            reg = <0x50000000 0x36c>;
+> >> -            interrupts = <100>;
+> >> -            gpmc,num-cs = <8>;
+> >> -            gpmc,num-waitpins = <2>;
+> >> -            #address-cells = <2>;
+> >> -            #size-cells = <1>;
+> >> -            ranges = <0 0 0x08000000 0x1000000>;    /* CS0 space, 16MB */
+> >> -            elm_id = <&elm>;
+> >> -            interrupt-controller;
+> >> -            #interrupt-cells = <2>;
+> >> -
+> >> -            nand@0,0 {
+> >> -                    compatible = "ti,omap2-nand";
+> >> -                    reg = <0 0 4>;          /* CS0, offset 0, NAND I/O window 4 */
+> >> -                    interrupt-parent = <&gpmc>;
+> >> -                    interrupts = <0 IRQ_TYPE_NONE>, <1 IRQ_TYPE NONE>;
+> >> -                    nand-bus-width = <16>;
+> >> -                    ti,nand-ecc-opt = "bch8";
+> >> -                    ti,nand-xfer-type = "polled";
+> >> -                    rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 */
+> >> -
+> >> -                    gpmc,sync-clk-ps = <0>;
+> >> -                    gpmc,cs-on-ns = <0>;
+> >> -                    gpmc,cs-rd-off-ns = <44>;
+> >> -                    gpmc,cs-wr-off-ns = <44>;
+> >> -                    gpmc,adv-on-ns = <6>;
+> >> -                    gpmc,adv-rd-off-ns = <34>;
+> >> -                    gpmc,adv-wr-off-ns = <44>;
+> >> -                    gpmc,we-off-ns = <40>;
+> >> -                    gpmc,oe-off-ns = <54>;
+> >> -                    gpmc,access-ns = <64>;
+> >> -                    gpmc,rd-cycle-ns = <82>;
+> >> -                    gpmc,wr-cycle-ns = <82>;
+> >> -                    gpmc,wr-access-ns = <40>;
+> >> -                    gpmc,wr-data-mux-bus-ns = <0>;
+> >> -
+> >> -                    #address-cells = <1>;
+> >> -                    #size-cells = <1>;
+> >> -
+> >> -                    /* partitions go here */
+> >> -            };
+> >> -    };
+> >> -
+> >> -How to select correct ECC scheme for your device ?
+> >> ---------------------------------------------------
+> >> -Higher ECC scheme usually means better protection against bit-flips and
+> >> -increased system lifetime. However, selection of ECC scheme is dependent
+> >> -on various other factors also like;
+> >> -
+> >> -(1) support of built in hardware engines.
+> >> -    Some legacy OMAP SoC do not have ELM harware engine, so those SoC cannot
+> >> -    support ecc-schemes with hardware error-correction (BCHx_HW). However
+> >> -    such SoC can use ecc-schemes with software library for error-correction
+> >> -    (BCHx_HW_DETECTION_SW). The error correction capability with software
+> >> -    library remains equivalent to their hardware counter-part, but there is
+> >> -    slight CPU penalty when too many bit-flips are detected during reads.
+> >> -
+> >> -(2) Device parameters like OOBSIZE.
+> >> -    Other factor which governs the selection of ecc-scheme is oob-size.
+> >> -    Higher ECC schemes require more OOB/Spare area to store ECC syndrome,
+> >> -    so the device should have enough free bytes available its OOB/Spare
+> >> -    area to accommodate ECC for entire page. In general following expression
+> >> -    helps in determining if given device can accommodate ECC syndrome:
+> >> -    "2 + (PAGESIZE / 512) * ECC_BYTES" >= OOBSIZE"
+> >> -    where
+> >> -            OOBSIZE         number of bytes in OOB/spare area
+> >> -            PAGESIZE        number of bytes in main-area of device page
+> >> -            ECC_BYTES       number of ECC bytes generated to protect
+> >> -                            512 bytes of data, which is:
+> >> -                            '3' for HAM1_xx ecc schemes
+> >> -                            '7' for BCH4_xx ecc schemes
+> >> -                            '14' for BCH8_xx ecc schemes
+> >> -                            '26' for BCH16_xx ecc schemes
+> >> -
+> >> -    Example(a): For a device with PAGESIZE = 2048 and OOBSIZE = 64 and
+> >> -            trying to use BCH16 (ECC_BYTES=26) ecc-scheme.
+> >> -            Number of ECC bytes per page = (2 + (2048 / 512) * 26) = 106 B
+> >> -            which is greater than capacity of NAND device (OOBSIZE=64)
+> >> -            Hence, BCH16 cannot be supported on given device. But it can
+> >> -            probably use lower ecc-schemes like BCH8.
+> >> -
+> >> -    Example(b): For a device with PAGESIZE = 2048 and OOBSIZE = 128 and
+> >> -            trying to use BCH16 (ECC_BYTES=26) ecc-scheme.
+> >> -            Number of ECC bytes per page = (2 + (2048 / 512) * 26) = 106 B
+> >> -            which can be accommodated in the OOB/Spare area of this device
+> >> -            (OOBSIZE=128). So this device can use BCH16 ecc-scheme.
+> >> diff --git a/Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml b/Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
+> >> new file mode 100644
+> >> index 000000000000..db36f2e944ef
+> >> --- /dev/null
+> >> +++ b/Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
+> >> @@ -0,0 +1,110 @@
+> >> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> >> +%YAML 1.2
+> >> +---
+> >> +$id: http://devicetree.org/schemas/mtd/ti,gpmc-nand.yaml#
+> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> >> +
+> >> +title: Texas Instruments GPMC NAND Flash controller.
+> >> +
+> >> +maintainers:
+> >> +  - Tony Lindgren <tony@atomide.com>
+> >> +  - Roger Quadros <rogerq@kernel.org>
+> >> +
+> >> +description:
+> >> +  GPMC NAND controller/Flash is represented as a child of the
+> >> +  GPMC controller node.
+> >> +
+> >> +properties:
+> >> +  compatible:
+> >> +    const: ti,omap2-nand
+> >> +
+> >> +  reg:
+> >> +    maxItems: 1
+> >> +
+> >> +  interrupts:
+> >> +    items:
+> >> +      - description: Interrupt for fifoevent
+> >> +      - description: Interrupt for termcount
+> >> +
+> >> +  "#address-cells":
+> >> +    const: 1
+> >> +
+> >> +  "#size-cells":
+> >> +    const: 1
+> >> +
+> >> +  ti,nand-ecc-opt:
+> >> +    description: Desired ECC algorithm
+> >> +    $ref: /schemas/types.yaml#/definitions/string
+> >> +    enum: [sw, ham1, bch4, bch8, bch16]
+> >> +
+> >> +  ti,nand-xfer-type:
+> >> +    description: Data transfer method between controller and chip.
+> >> +    $ref: /schemas/types.yaml#/definitions/string
+> >> +    enum: [prefetch-polled, polled, prefetch-dma, prefetch-irq]
+> >> +    default: prefetch-polled
+> >> +
+> >> +  ti,elm-id:
+> >> +    description:
+> >> +      phandle to the ELM (Error Location Module).
+> >> +    $ref: /schemas/types.yaml#/definitions/phandle
+> >> +
+> >> +  nand-bus-width:
+> >> +    description:
+> >> +      Bus width to the NAND chip
+> >> +    $ref: /schemas/types.yaml#/definitions/uint32
+> >> +    enum: [8, 16]
+> >> +    default: 8
+> >> +
+> >> +allOf:
+> >> +  - $ref: "../memory-controllers/ti,gpmc-child.yaml"
 > >
-> > > > No, but you can backport it easily. Back at
-> > > > http://lists.infradead.org/pipermail/openwrt-devel/2019-November/025967.html
-> > > > I provided backports of this feature to OpenWrt, for the 4.14 and 4.19
-> > > > kernels.
-> 
-> Can you please let me know where to get the below patches for
-> backporting to our kernel:
->  create mode 100644
-> target/linux/generic/backport-4.14/390-dm-add-support-to-directly-boot-to-a-mapped-device.patch
->  create mode 100644
-> target/linux/generic/backport-4.14/391-dm-init-fix-max-devices-targets-checks.patch
->  create mode 100644
-> target/linux/generic/backport-4.14/392-dm-ioctl-fix-hang-in-early-create-error-condition.patch
->  create mode 100644
-> target/linux/generic/backport-4.14/393-Documentation-dm-init-fix-multi-device-example.patch
+> > Use /schemas/... rather than '..'
+>
+> ok.
+>
+> >
+> >> +
+> >> +required:
+> >> +  - compatible
+> >> +  - reg
+> >> +  - ti,nand-ecc-opt
+> >> +
+> >> +unevaluatedProperties: false
+> >
+> > This will throw errors if you have partition nodes. You need to
+> > reference the partitions schema.
+>
+> I didn't get any errors with dtbs_check so far. But I will
+> try referencing the partition schema here.
 
-If you are stuck on an older kernel version, then you need to get
-support from the vendor that is forcing you to be on that kernel
-version, as you are already paying them for support.  Please take
-advantage of that, as no one knows what is really in "your kernel".
+Not yet because 'unevaluatedProperties' isn't actually supported in
+the jsonschema package yet. It will be in the next release which I
+expect soonish.
 
-thanks,
-
-greg k-h
+Rob
 
 ______________________________________________________
 Linux MTD discussion mailing list
