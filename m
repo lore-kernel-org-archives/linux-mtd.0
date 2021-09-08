@@ -2,79 +2,68 @@ Return-Path: <SRS0=xoN1=N6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED781C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Sep 2021 12:47:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53297C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Sep 2021 20:18:09 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AA72B61153
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Sep 2021 12:47:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AA72B61153
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 06F7861139
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Sep 2021 20:18:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 06F7861139
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=biot.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=edGI49Uud6UYt0ve4dUw9skJ8A7YORDqX+vVpUs+C7s=; b=HuJUtpfvc1FCAm
-	lYlLsh4TYYd+e6SHDA6IXKn40HeSc370MnnV6p9KPARJMgF9Td4mRSXKVTMU2en+vsf8jP6Sq4l6b
-	d62w/+RfG5PL9rr8CrJnJsg2PL36eK3Sk2inWLlhvkmjeLB6OMTKOmPu609bK7o8t4Nd5ULi/kGBj
-	nT6VHXDzdt1r1P7EV/4oKrHU2zDUsIT+zv27qcwZ6tGD6LPPs+1t8oVQqja73XNr/qJweqbE52fFL
-	oU6YUeEpI9c6ipEuVFx0zaZ8dTk5/PjRXwenqhDzAwFeAkKEk365ZevCXO+QNiszv1346g/TBCM2n
-	3pbiiJiCg8x8fRW4irBQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=IozJEKSE1PMnvQscJ69ueM77bB5/aYo3SzQ60ejH/Ms=; b=jTGv8eKmHdseVM
+	FuNgXJ02l5hW4ErrHFjiXZtvX5f505w9dpBGpnLzmcTOn7pP6I35yAGcoYcjPNtNv5+sxGTehkQiT
+	B39FE47NrgnJURxVzRKWnxetPgBcfF7DHpN5nV5Y98ejBkPivpjOePsY9E7psKV9SesqhOz9CD7Bz
+	rs4/d96DuQho8XWKwiiwN0XcVcqbmyJqr+fN2Vd/+oMMGI7zOgIlWrLfnvlivcv61iYAogyS0NmRB
+	SIwu0hqvuWF8I4+3nm/yGvj14xk5JI7M72XBi5qwJAP2o+UgPJpI5SAVNYu4vfDTTNbDw++w2i3y2
+	g7EpT+G116uvDlFTfTMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mNwys-006jg0-RE; Wed, 08 Sep 2021 12:47:10 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1mO40Q-007Y5l-P7; Wed, 08 Sep 2021 20:17:14 +0000
+Received: from yawp.biot.com ([2a01:4f8:10a:8e::fce2])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mNwyk-006jeu-4t
- for linux-mtd@lists.infradead.org; Wed, 08 Sep 2021 12:47:04 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A2B761163
- for <linux-mtd@lists.infradead.org>; Wed,  8 Sep 2021 12:47:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631105221;
- bh=MggI+PXCaoVLIOunOzzyO0UwbItl6gINDul630lMGWs=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=CfzOEm8zqyHKsql4Y9vHIS3fjbJIbdfe+oAYcpSb5t2sKrylE8qpTWfmR8JswXKtr
- 53wyPnGXG8JMjBnrfld/VL6c3HzPIViQXizaKixqOXk3b5ymtm9W4319h0OgoY6tX3
- j4qU9Xcx22y21kPCOjgLUNlsJ1LQ2MwLoGdSf8Qy1KxKameIleZzufz+0yEmPrtpPB
- OcQv/KYZryagkXpxV//w/tjPik48keceqW7oX//69SKMcscF7hLPJ9bVlobIsYEoMB
- 8NIDVo6TRVywUNkTeeKMQLGPHQj6M0psj3RFPG//lNXuzd3j7UjOigsMXs6JJZSryO
- Z7z8ENexTZabg==
-Received: by mail-ej1-f53.google.com with SMTP id jg16so3973648ejc.1
- for <linux-mtd@lists.infradead.org>; Wed, 08 Sep 2021 05:47:01 -0700 (PDT)
-X-Gm-Message-State: AOAM530CumKHnU2zl9PwL+E02KLRtD6TcQVIBj7dq/38evjFeNo6N3ga
- nUyDSrBn1nUtf6ttDJdgP8rrRTk9YXmLMsX7hw==
-X-Google-Smtp-Source: ABdhPJzCxpoGUB9cLszBffw8iHHKlxR7xTIzGJWWHrypt1ymWtKIC1i+OZmoq2p16yzwWwAqvSjjZkgRNRlqvxcVd/8=
-X-Received: by 2002:a17:907:50a1:: with SMTP id
- fv33mr3865933ejc.128.1631105219659; 
- Wed, 08 Sep 2021 05:46:59 -0700 (PDT)
+ id 1mO40N-007Y5A-Gj
+ for linux-mtd@lists.infradead.org; Wed, 08 Sep 2021 20:17:13 +0000
+Received: from debian-spamd by yawp.biot.com with sa-checked (Exim 4.93)
+ (envelope-from <bert@biot.com>) id 1mO40E-00CUsT-WB
+ for linux-mtd@lists.infradead.org; Wed, 08 Sep 2021 22:17:03 +0200
+Received: from [2a02:578:460c:1:ae1f:6bff:fed1:9ca8] (helo=sumner.biot.com)
+ by yawp.biot.com with esmtps (TLS1.3) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93)
+ (envelope-from <bert@biot.com>)
+ id 1mO3zg-00CUpr-91; Wed, 08 Sep 2021 22:16:28 +0200
+Received: from bert by sumner.biot.com with local (Exim 4.93)
+ (envelope-from <bert@biot.com>)
+ id 1mO3zf-000zpp-EB; Wed, 08 Sep 2021 22:16:27 +0200
+From: Bert Vermeulen <bert@biot.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Bert Vermeulen <bert@biot.com>,
+ Patrice Chotard <patrice.chotard@foss.st.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Christophe Kerello <christophe.kerello@foss.st.com>,
+ Mark Brown <broonie@kernel.org>, Alexander Lobakin <alobakin@pm.me>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: [PATCH v2] mtd: spinand: Add support for Etron EM73D044VCx
+Date: Wed,  8 Sep 2021 22:16:19 +0200
+Message-Id: <20210908201624.237634-1-bert@biot.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210907113226.31876-1-rogerq@kernel.org>
- <20210907113226.31876-6-rogerq@kernel.org>
- <YTea/Ium7TptHlnV@robh.at.kernel.org>
- <5b7787ce-d51f-e79c-fa7a-0113acda5648@kernel.org>
-In-Reply-To: <5b7787ce-d51f-e79c-fa7a-0113acda5648@kernel.org>
-From: Rob Herring <robh@kernel.org>
-Date: Wed, 8 Sep 2021 07:46:47 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+Nz3V4yri8QqaGoNOjL6dObPPV4dM1B2uzDMp6Fvw=SA@mail.gmail.com>
-Message-ID: <CAL_Jsq+Nz3V4yri8QqaGoNOjL6dObPPV4dM1B2uzDMp6Fvw=SA@mail.gmail.com>
-Subject: Re: [PATCH v3 5/8] dt-bindings: mtd: ti,gpmc-nand: Convert to yaml
-To: Roger Quadros <rogerq@kernel.org>
-Cc: tony@atomide.com, grygorii.strashko@ti.com, nm@ti.com, lokeshvutla@ti.com, 
- nsekhar@ti.com, krzysztof.kozlowski@canonical.com,
- miquel.raynal@bootlin.com, 
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, 
- linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210908_054702_272887_B39E0784 
-X-CRM114-Status: GOOD (  38.89  )
+X-CRM114-CacheID: sfid-20210908_131711_603341_EE622C5D 
+X-CRM114-Status: GOOD (  18.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,265 +80,173 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Sep 8, 2021 at 6:14 AM Roger Quadros <rogerq@kernel.org> wrote:
->
->
->
-> On 07/09/2021 20:01, Rob Herring wrote:
-> > On Tue, Sep 07, 2021 at 02:32:23PM +0300, Roger Quadros wrote:
-> >> Convert gpmc-nand.txt to ti,gpmc-nand.yaml.
-> >>
-> >> Signed-off-by: Roger Quadros <rogerq@kernel.org>
-> >> ---
-> >>  .../devicetree/bindings/mtd/gpmc-nand.txt     | 147 ------------------
-> >>  .../devicetree/bindings/mtd/ti,gpmc-nand.yaml | 110 +++++++++++++
-> >>  2 files changed, 110 insertions(+), 147 deletions(-)
-> >>  delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-> >>  create mode 100644 Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-> >> deleted file mode 100644
-> >> index 44919d48d241..000000000000
-> >> --- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-> >> +++ /dev/null
-> >> @@ -1,147 +0,0 @@
-> >> -Device tree bindings for GPMC connected NANDs
-> >> -
-> >> -GPMC connected NAND (found on OMAP boards) are represented as child nodes of
-> >> -the GPMC controller with a name of "nand".
-> >> -
-> >> -All timing relevant properties as well as generic gpmc child properties are
-> >> -explained in a separate documents - please refer to
-> >> -Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
-> >> -
-> >> -For NAND specific properties such as ECC modes or bus width, please refer to
-> >> -Documentation/devicetree/bindings/mtd/nand-controller.yaml
-> >> -
-> >> -
-> >> -Required properties:
-> >> -
-> >> - - compatible:      "ti,omap2-nand"
-> >> - - reg:             range id (CS number), base offset and length of the
-> >> -            NAND I/O space
-> >> - - interrupts:      Two interrupt specifiers, one for fifoevent, one for termcount.
-> >> -
-> >> -Optional properties:
-> >> -
-> >> - - nand-bus-width:          Set this numeric value to 16 if the hardware
-> >> -                            is wired that way. If not specified, a bus
-> >> -                            width of 8 is assumed.
-> >> -
-> >> - - ti,nand-ecc-opt:         A string setting the ECC layout to use. One of:
-> >> -            "sw"            1-bit Hamming ecc code via software
-> >> -            "hw"            <deprecated> use "ham1" instead
-> >> -            "hw-romcode"    <deprecated> use "ham1" instead
-> >> -            "ham1"          1-bit Hamming ecc code
-> >> -            "bch4"          4-bit BCH ecc code
-> >> -            "bch8"          8-bit BCH ecc code
-> >> -            "bch16"         16-bit BCH ECC code
-> >> -            Refer below "How to select correct ECC scheme for your device ?"
-> >> -
-> >> - - ti,nand-xfer-type:               A string setting the data transfer type. One of:
-> >> -
-> >> -            "prefetch-polled"       Prefetch polled mode (default)
-> >> -            "polled"                Polled mode, without prefetch
-> >> -            "prefetch-dma"          Prefetch enabled DMA mode
-> >> -            "prefetch-irq"          Prefetch enabled irq mode
-> >> -
-> >> - - elm_id:  <deprecated> use "ti,elm-id" instead
-> >> - - ti,elm-id:       Specifies phandle of the ELM devicetree node.
-> >> -            ELM is an on-chip hardware engine on TI SoC which is used for
-> >> -            locating ECC errors for BCHx algorithms. SoC devices which have
-> >> -            ELM hardware engines should specify this device node in .dtsi
-> >> -            Using ELM for ECC error correction frees some CPU cycles.
-> >> - - rb-gpios:        GPIO specifier for the ready/busy# pin.
-> >> -
-> >> -For inline partition table parsing (optional):
-> >> -
-> >> - - #address-cells: should be set to 1
-> >> - - #size-cells: should be set to 1
-> >> -
-> >> -Example for an AM33xx board:
-> >> -
-> >> -    gpmc: gpmc@50000000 {
-> >> -            compatible = "ti,am3352-gpmc";
-> >> -            ti,hwmods = "gpmc";
-> >> -            reg = <0x50000000 0x36c>;
-> >> -            interrupts = <100>;
-> >> -            gpmc,num-cs = <8>;
-> >> -            gpmc,num-waitpins = <2>;
-> >> -            #address-cells = <2>;
-> >> -            #size-cells = <1>;
-> >> -            ranges = <0 0 0x08000000 0x1000000>;    /* CS0 space, 16MB */
-> >> -            elm_id = <&elm>;
-> >> -            interrupt-controller;
-> >> -            #interrupt-cells = <2>;
-> >> -
-> >> -            nand@0,0 {
-> >> -                    compatible = "ti,omap2-nand";
-> >> -                    reg = <0 0 4>;          /* CS0, offset 0, NAND I/O window 4 */
-> >> -                    interrupt-parent = <&gpmc>;
-> >> -                    interrupts = <0 IRQ_TYPE_NONE>, <1 IRQ_TYPE NONE>;
-> >> -                    nand-bus-width = <16>;
-> >> -                    ti,nand-ecc-opt = "bch8";
-> >> -                    ti,nand-xfer-type = "polled";
-> >> -                    rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 */
-> >> -
-> >> -                    gpmc,sync-clk-ps = <0>;
-> >> -                    gpmc,cs-on-ns = <0>;
-> >> -                    gpmc,cs-rd-off-ns = <44>;
-> >> -                    gpmc,cs-wr-off-ns = <44>;
-> >> -                    gpmc,adv-on-ns = <6>;
-> >> -                    gpmc,adv-rd-off-ns = <34>;
-> >> -                    gpmc,adv-wr-off-ns = <44>;
-> >> -                    gpmc,we-off-ns = <40>;
-> >> -                    gpmc,oe-off-ns = <54>;
-> >> -                    gpmc,access-ns = <64>;
-> >> -                    gpmc,rd-cycle-ns = <82>;
-> >> -                    gpmc,wr-cycle-ns = <82>;
-> >> -                    gpmc,wr-access-ns = <40>;
-> >> -                    gpmc,wr-data-mux-bus-ns = <0>;
-> >> -
-> >> -                    #address-cells = <1>;
-> >> -                    #size-cells = <1>;
-> >> -
-> >> -                    /* partitions go here */
-> >> -            };
-> >> -    };
-> >> -
-> >> -How to select correct ECC scheme for your device ?
-> >> ---------------------------------------------------
-> >> -Higher ECC scheme usually means better protection against bit-flips and
-> >> -increased system lifetime. However, selection of ECC scheme is dependent
-> >> -on various other factors also like;
-> >> -
-> >> -(1) support of built in hardware engines.
-> >> -    Some legacy OMAP SoC do not have ELM harware engine, so those SoC cannot
-> >> -    support ecc-schemes with hardware error-correction (BCHx_HW). However
-> >> -    such SoC can use ecc-schemes with software library for error-correction
-> >> -    (BCHx_HW_DETECTION_SW). The error correction capability with software
-> >> -    library remains equivalent to their hardware counter-part, but there is
-> >> -    slight CPU penalty when too many bit-flips are detected during reads.
-> >> -
-> >> -(2) Device parameters like OOBSIZE.
-> >> -    Other factor which governs the selection of ecc-scheme is oob-size.
-> >> -    Higher ECC schemes require more OOB/Spare area to store ECC syndrome,
-> >> -    so the device should have enough free bytes available its OOB/Spare
-> >> -    area to accommodate ECC for entire page. In general following expression
-> >> -    helps in determining if given device can accommodate ECC syndrome:
-> >> -    "2 + (PAGESIZE / 512) * ECC_BYTES" >= OOBSIZE"
-> >> -    where
-> >> -            OOBSIZE         number of bytes in OOB/spare area
-> >> -            PAGESIZE        number of bytes in main-area of device page
-> >> -            ECC_BYTES       number of ECC bytes generated to protect
-> >> -                            512 bytes of data, which is:
-> >> -                            '3' for HAM1_xx ecc schemes
-> >> -                            '7' for BCH4_xx ecc schemes
-> >> -                            '14' for BCH8_xx ecc schemes
-> >> -                            '26' for BCH16_xx ecc schemes
-> >> -
-> >> -    Example(a): For a device with PAGESIZE = 2048 and OOBSIZE = 64 and
-> >> -            trying to use BCH16 (ECC_BYTES=26) ecc-scheme.
-> >> -            Number of ECC bytes per page = (2 + (2048 / 512) * 26) = 106 B
-> >> -            which is greater than capacity of NAND device (OOBSIZE=64)
-> >> -            Hence, BCH16 cannot be supported on given device. But it can
-> >> -            probably use lower ecc-schemes like BCH8.
-> >> -
-> >> -    Example(b): For a device with PAGESIZE = 2048 and OOBSIZE = 128 and
-> >> -            trying to use BCH16 (ECC_BYTES=26) ecc-scheme.
-> >> -            Number of ECC bytes per page = (2 + (2048 / 512) * 26) = 106 B
-> >> -            which can be accommodated in the OOB/Spare area of this device
-> >> -            (OOBSIZE=128). So this device can use BCH16 ecc-scheme.
-> >> diff --git a/Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml b/Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
-> >> new file mode 100644
-> >> index 000000000000..db36f2e944ef
-> >> --- /dev/null
-> >> +++ b/Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
-> >> @@ -0,0 +1,110 @@
-> >> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> >> +%YAML 1.2
-> >> +---
-> >> +$id: http://devicetree.org/schemas/mtd/ti,gpmc-nand.yaml#
-> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> >> +
-> >> +title: Texas Instruments GPMC NAND Flash controller.
-> >> +
-> >> +maintainers:
-> >> +  - Tony Lindgren <tony@atomide.com>
-> >> +  - Roger Quadros <rogerq@kernel.org>
-> >> +
-> >> +description:
-> >> +  GPMC NAND controller/Flash is represented as a child of the
-> >> +  GPMC controller node.
-> >> +
-> >> +properties:
-> >> +  compatible:
-> >> +    const: ti,omap2-nand
-> >> +
-> >> +  reg:
-> >> +    maxItems: 1
-> >> +
-> >> +  interrupts:
-> >> +    items:
-> >> +      - description: Interrupt for fifoevent
-> >> +      - description: Interrupt for termcount
-> >> +
-> >> +  "#address-cells":
-> >> +    const: 1
-> >> +
-> >> +  "#size-cells":
-> >> +    const: 1
-> >> +
-> >> +  ti,nand-ecc-opt:
-> >> +    description: Desired ECC algorithm
-> >> +    $ref: /schemas/types.yaml#/definitions/string
-> >> +    enum: [sw, ham1, bch4, bch8, bch16]
-> >> +
-> >> +  ti,nand-xfer-type:
-> >> +    description: Data transfer method between controller and chip.
-> >> +    $ref: /schemas/types.yaml#/definitions/string
-> >> +    enum: [prefetch-polled, polled, prefetch-dma, prefetch-irq]
-> >> +    default: prefetch-polled
-> >> +
-> >> +  ti,elm-id:
-> >> +    description:
-> >> +      phandle to the ELM (Error Location Module).
-> >> +    $ref: /schemas/types.yaml#/definitions/phandle
-> >> +
-> >> +  nand-bus-width:
-> >> +    description:
-> >> +      Bus width to the NAND chip
-> >> +    $ref: /schemas/types.yaml#/definitions/uint32
-> >> +    enum: [8, 16]
-> >> +    default: 8
-> >> +
-> >> +allOf:
-> >> +  - $ref: "../memory-controllers/ti,gpmc-child.yaml"
-> >
-> > Use /schemas/... rather than '..'
->
-> ok.
->
-> >
-> >> +
-> >> +required:
-> >> +  - compatible
-> >> +  - reg
-> >> +  - ti,nand-ecc-opt
-> >> +
-> >> +unevaluatedProperties: false
-> >
-> > This will throw errors if you have partition nodes. You need to
-> > reference the partitions schema.
->
-> I didn't get any errors with dtbs_check so far. But I will
-> try referencing the partition schema here.
+This adds a new vendor Etron, and support for a 2Gb chip.
 
-Not yet because 'unevaluatedProperties' isn't actually supported in
-the jsonschema package yet. It will be in the next release which I
-expect soonish.
+The datasheet is available at
+https://www.etron.com/cn/products/EM73%5B8%5DC%5BD_E_F%5DVC%20SPI%20NAND%20Flash_Promotion_Rev%201_00A.pdf
 
-Rob
+Signed-off-by: Bert Vermeulen <bert@biot.com>
+---
+v2:
+- Made ooblayout_free/_ecc depend on chip-specific parameters, instead of
+  hardcoded to this 2Gb chip only
+- Fixed manufacturer ordering
+- Fixed minor formatting issues as reported
+- Removed debug comment
+
+ drivers/mtd/nand/spi/Makefile |   2 +-
+ drivers/mtd/nand/spi/core.c   |   1 +
+ drivers/mtd/nand/spi/etron.c  | 104 ++++++++++++++++++++++++++++++++++
+ include/linux/mtd/spinand.h   |   1 +
+ 4 files changed, 107 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/mtd/nand/spi/etron.c
+
+diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
+index 9662b9c1d5a9..cc3c4e046ea9 100644
+--- a/drivers/mtd/nand/spi/Makefile
++++ b/drivers/mtd/nand/spi/Makefile
+@@ -1,3 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0
+-spinand-objs := core.o gigadevice.o macronix.o micron.o paragon.o toshiba.o winbond.o
++spinand-objs := core.o etron.o gigadevice.o macronix.o micron.o paragon.o toshiba.o winbond.o
+ obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 446ba8d43fbc..2cbf25b8caa2 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -894,6 +894,7 @@ static const struct nand_ops spinand_ops = {
+ };
+ 
+ static const struct spinand_manufacturer *spinand_manufacturers[] = {
++	&etron_spinand_manufacturer,
+ 	&gigadevice_spinand_manufacturer,
+ 	&macronix_spinand_manufacturer,
+ 	&micron_spinand_manufacturer,
+diff --git a/drivers/mtd/nand/spi/etron.c b/drivers/mtd/nand/spi/etron.c
+new file mode 100644
+index 000000000000..1a92b9cf3043
+--- /dev/null
++++ b/drivers/mtd/nand/spi/etron.c
+@@ -0,0 +1,104 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/device.h>
++#include <linux/kernel.h>
++#include <linux/mtd/spinand.h>
++
++#define SPINAND_MFR_ETRON			0xd5
++
++static SPINAND_OP_VARIANTS(read_cache_variants,
++		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
++
++static SPINAND_OP_VARIANTS(write_cache_variants,
++		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
++		SPINAND_PROG_LOAD(true, 0, NULL, 0));
++
++static SPINAND_OP_VARIANTS(update_cache_variants,
++		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
++		SPINAND_PROG_LOAD(false, 0, NULL, 0));
++
++static int etron_oob_spare(struct mtd_info *mtd)
++{
++	if (mtd->size < 0x10000000)
++		return mtd->oobsize / 2;
++	else
++		return mtd->oobsize / 2 + mtd->oobsize / 16;
++}
++
++static int etron_ooblayout_ecc(struct mtd_info *mtd, int section,
++					struct mtd_oob_region *oobregion)
++{
++	if (section)
++		return -ERANGE;
++
++	oobregion->offset = etron_oob_spare(mtd);
++	oobregion->length = mtd->oobsize - oobregion->offset;
++
++	return 0;
++}
++
++static int etron_ooblayout_free(struct mtd_info *mtd, int section,
++			   struct mtd_oob_region *oobregion)
++{
++	if (section)
++		return -ERANGE;
++
++	oobregion->offset = 2;
++	oobregion->length = etron_oob_spare(mtd) - 2;
++
++	return 0;
++}
++
++static const struct mtd_ooblayout_ops etron_ooblayout = {
++	.ecc = etron_ooblayout_ecc,
++	.free = etron_ooblayout_free,
++};
++
++static int etron_ecc_get_status(struct spinand_device *spinand, u8 status)
++{
++	switch (status & STATUS_ECC_MASK) {
++	case STATUS_ECC_NO_BITFLIPS:
++		return 0;
++
++	case STATUS_ECC_HAS_BITFLIPS:
++		/* Between 1-7 bitflips were corrected */
++		return 7;
++
++	case STATUS_ECC_MASK:
++		/* Maximum bitflips were corrected */
++		return 8;
++
++	case STATUS_ECC_UNCOR_ERROR:
++		return -EBADMSG;
++	}
++
++	return -EINVAL;
++}
++
++static const struct spinand_info etron_spinand_table[] = {
++	SPINAND_INFO("EM73D044VCx",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x1f),
++		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&etron_ooblayout, etron_ecc_get_status)),
++};
++
++static const struct spinand_manufacturer_ops etron_spinand_manuf_ops = {
++};
++
++const struct spinand_manufacturer etron_spinand_manufacturer = {
++	.id = SPINAND_MFR_ETRON,
++	.name = "Etron",
++	.chips = etron_spinand_table,
++	.nchips = ARRAY_SIZE(etron_spinand_table),
++	.ops = &etron_spinand_manuf_ops,
++};
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 6988956b8492..d7c0a0439652 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -260,6 +260,7 @@ struct spinand_manufacturer {
+ };
+ 
+ /* SPI NAND manufacturers */
++extern const struct spinand_manufacturer etron_spinand_manufacturer;
+ extern const struct spinand_manufacturer gigadevice_spinand_manufacturer;
+ extern const struct spinand_manufacturer macronix_spinand_manufacturer;
+ extern const struct spinand_manufacturer micron_spinand_manufacturer;
+-- 
+2.25.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
