@@ -1,69 +1,135 @@
-Return-Path: <SRS0=xoN1=N6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=lC14=N7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52AE3C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Sep 2021 23:33:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DEF68C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Sep 2021 08:38:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1745A6044F
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Sep 2021 23:33:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1745A6044F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id 8ADAC6109E
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Sep 2021 08:38:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8ADAC6109E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=abaco.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=BXNWVxnaqOSaiwLgA+KZd+OG4Z+l1FAoHBBqy7wAS5s=; b=dkC6A9W6qQ9juBRY3zaHWEh2b8
-	A1/+4Z6tgeKO7YLTRH1xYdd3GWZnOxM0lky3kKAgPY29GV5g7gvsDftMMl+FGRwPpPkq2pR7xDf92
-	lWimTFYsFyaE2/uhaTt8pUp0PzGD/0rjxIGJF7aaYbn9eT9kPKoFJk/SXBNMTo3ajl5QynB/Ueicj
-	ODNbGz3UQ69iVi0wi1yvXy7I3yMEd6Ij/HU17b/VhLhtCpmExrygelxcnp48k53FXlo8OaWNRMsiO
-	AuKbN6jX1Zsz0Ocv+56//dGBJ27T/pC68iMS3QtmJYTzGpn/dVI09VaXBChK0CDnacz7Kxu0nxT7r
-	G+JF3peA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=odgAPxxKrMgQitfkTxslsrpH/Rv5OHPecZVMQSGimZg=; b=xw1AFfqMm8N0ge
+	p928veLgf+7513E+94L+N8PW+j81oLPh6p4AsZBYkkM4oGo/s44t8W417Ll7XnkmZaMaPbo26f8Z2
+	aBhUSSJAKxJSpnO6XJ0Q39Df/oRmmcKJnI9O9frLHK+xacOYkN4K3eRu6zwedsJVqd/a09RdH5vL3
+	2HRFwVB7ylDHcSfeI+LnYyncqwm0GGaV90PVxhrdX77KUm0tjZdX4T3iFlyQxzknmnC+/ZfV8huIV
+	izX6ogYyFjdBJZzqWnJlwkkpuPAI7S1Z81/EnhbhIeIXgYeWv6g10isw96SrYnXQNEmuy6kcTAL/C
+	YEC7VVeBXO+7JizREL6w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mO73O-007nAL-Ij; Wed, 08 Sep 2021 23:32:30 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1mOFZL-008aKg-Sx; Thu, 09 Sep 2021 08:38:04 +0000
+Received: from mail-dm6nam11on2100.outbound.protection.outlook.com
+ ([40.107.223.100] helo=NAM11-DM6-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mO73L-007n8b-Cf
- for linux-mtd@lists.infradead.org; Wed, 08 Sep 2021 23:32:29 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 3ABA122249;
- Thu,  9 Sep 2021 01:32:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1631143939;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=ffG/Ol6e/ywr/5eaown3nyY/R52G/3XAcwLdUHesYlk=;
- b=QC70x+C5LxNufMS4bQ92Pjg7dvXPu45Tx0Uqne/XhnHmfB3c6H84+FrqwG9xhrvKdjjAE4
- Z55KhqwFwKmtIpM/2ntiQv7okm6mFObMOWSbYPTCrDZcYlxZ5PAYOJEOjlFFitKfQ/XuSV
- mwYDq7bzakzZac3XwVlFVedUl8JTHqk=
-MIME-Version: 1.0
-Date: Thu, 09 Sep 2021 01:32:18 +0200
-From: Michael Walle <michael@walle.cc>
-To: "Barbier, Renaud" <renaud.barbier@abaco.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: S25FL512 vs S25FS512
-In-Reply-To: <MN2PR16MB313511219F7BFB2692C4C8B191CD9@MN2PR16MB3135.namprd16.prod.outlook.com>
+ id 1mOFZJ-008aJf-36
+ for linux-mtd@lists.infradead.org; Thu, 09 Sep 2021 08:38:02 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UoKSeMR6pF2/SqD7lgcRnLLf8RPF4QQWdlpFAT+XlVMQVxnET/7o4XGxmorLuTUtntNjsbLT1IVZ30LeEoHX7ALoerOXQDCT8UpANsQac8OBAdG+tpUKTLK2vIPg0t5YG2eqiPx1CL67TZkLP/4JslJWcyysRwR+dS67GLdKKQK1c/x7KDsagX52gIwKTh5DR/OiZyvqIBYiTl94c6Lx8+TsbFt4NBC3jR+mBTlNlFV//BvdeiMzMZDHP6MlRTLr5P3BLYvUSKKjPauoDfTdGnsEnMQODI7LKygk4DKPmLqtQ/WWLyWjNKYJSaOKTuLAbYxy5MBnytQNlYvDAlIVPw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version; 
+ bh=KN8H7l0k3IXWKDcXmMsOhjCf65JbV/4wafCrSNSSDHc=;
+ b=GmT7pcr3sp+bn8LTk42JwGgxWGBsUhslMo+pc1Wh1TQCF5iunB42foAB9srOKPih0ycvz0NsNL9UHQ5UVof1/M7jW1Ml/Pj7i+44DTaJy32YOqzYHEP/rzxFrCw1HQY98qHc7Q2LXtnfiPyAYrtf1Cu6f/4CVzHNLgrKipnULD1HslVmgazkBfBgSb852Un4h8lyC9Vzzcex41M01GnLdwcsSoS5sqeEONXk0zMy+682gi5sI1hWprW3kxmsfHGoxgxYxsvwmwANbROqZIrIGEoSz5czTDAIQxPPW0ldaLpyAwmiugXk54pjnr42tKbqICYVxyngz3gbCGWc1kfjGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=abaco.com; dmarc=pass action=none header.from=abaco.com;
+ dkim=pass header.d=abaco.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=abaco.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KN8H7l0k3IXWKDcXmMsOhjCf65JbV/4wafCrSNSSDHc=;
+ b=VD3OSTiXGWNvJoAe7Coe/caZed5nsKFm+SSaQMRQMUIu2RrYxcCL55Dbl91bUgt/TQRLrOcFXi4vEi1ZuB1vrbGlJlcakPdOna5eqvAXUAXapPCkVt3loT2G9j5KoS4dwk7Cx046kcH3lPLnAdBU8D5TH26QNpmXMG9N2/EKUspTMXisDF0Zs9vuoa0vLrWWk6a16iEc7CgV0Rp25z1WsBY8az88gtgCWQ2cCVC1zsReJQqIQBHDi0cIFmLudUJKksrXTOX4KAiP5h5gOdQCKtgBmohxZpd128Zu2cHy1q3h1g/D1QvNi3TMdv5T5CSiIKYcU6VPAJY8VoozsLLSYg==
+Received: from MN2PR16MB3135.namprd16.prod.outlook.com (2603:10b6:208:153::31)
+ by MN2PR16MB3086.namprd16.prod.outlook.com (2603:10b6:208:13e::17)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Thu, 9 Sep
+ 2021 08:37:57 +0000
+Received: from MN2PR16MB3135.namprd16.prod.outlook.com
+ ([fe80::75bb:ea2d:9ab8:b38b]) by MN2PR16MB3135.namprd16.prod.outlook.com
+ ([fe80::75bb:ea2d:9ab8:b38b%7]) with mapi id 15.20.4478.026; Thu, 9 Sep 2021
+ 08:37:57 +0000
+From: "Barbier, Renaud" <renaud.barbier@abaco.com>
+To: Michael Walle <michael@walle.cc>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: RE: S25FL512 vs S25FS512
+Thread-Topic: S25FL512 vs S25FS512
+Thread-Index: AdefTssbJZFggj2ZRgCkCCRr1Q2RSAFuvgoAABKUkxA=
+Date: Thu, 9 Sep 2021 08:37:57 +0000
+Message-ID: <MN2PR16MB31351FBE06F4D9383F02480D91D59@MN2PR16MB3135.namprd16.prod.outlook.com>
 References: <MN2PR16MB313511219F7BFB2692C4C8B191CD9@MN2PR16MB3135.namprd16.prod.outlook.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <a0388e5c6676b9cf4a5decc00a8da6f5@walle.cc>
-X-Sender: michael@walle.cc
+ <a0388e5c6676b9cf4a5decc00a8da6f5@walle.cc>
+In-Reply-To: <a0388e5c6676b9cf4a5decc00a8da6f5@walle.cc>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: walle.cc; dkim=none (message not signed)
+ header.d=none;walle.cc; dmarc=none action=none header.from=abaco.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6588d99d-7c0c-4e80-fc44-08d9736d1fd9
+x-ms-traffictypediagnostic: MN2PR16MB3086:
+x-microsoft-antispam-prvs: <MN2PR16MB30867C8F28F6E9E9AEC200B191D59@MN2PR16MB3086.namprd16.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1MVjSgaZ8/O06jf3ArhS/XVFvRvXA0z3Dawipi152tSnJsRLiDJaZVVhQ5nBwb3/8wRpEaOr3oTT6I9zqXFsfu4fZRzUNV1LDz65ocE3oeueJjBaYsXP5ZEw6vHqZHuszbJg5EZ52Wwx5BipLuak1KNs6mn1eqa1/cUWmdN15CnvjD8Cuz9tqYjoY44/H47hIas8XydeQBX2muh0XrFg6FGuLJND3CFEGN16z2+siR5O7LxLL4n97Mq++dqzZ3ViZk5wfDf+jBM1mkRWf6CMEg2yA80Fcf6MM+cOFitFmgBe/9XFrJZXKdgUuFzlYDdoXDS2+ryzVjJeppUV/WaeOk45pjL2AcUPKRR8exaqwcRns2O0sQCZ1SLfUcs+2Hqgec1mcIlrO5p4f06WThoVtCztQWgDMaUybD8Gq64um+iUVh5EI5pPAJAQYzOu3PxUvOZsMpF9LyIQxF7sLARanPyyvEKtybZkZG41TR6Qb9YlPSCJsteHSePIPojREW7uwVEIICSLIs99li3fkaoPvvw34FIgDMeNuxi0/8yYLbLzn+7QZ4bXyVB9/SpQitm4McRXzn+IRNo2+dIdPy/6bC0KRJ7maRuZRntgjvDTfT9rERfenfUtkRITOqHrKWMBSWblg7hWXfwmmK7UOHsHazkOFx9/txgp49c+Nl2TRXsxha9aKfpTVH20x2xFgJPoyN1TQK0C2I6d97cU8CnTmg==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:MN2PR16MB3135.namprd16.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(376002)(396003)(346002)(136003)(39850400004)(366004)(6506007)(8936002)(6916009)(83380400001)(38100700002)(316002)(7116003)(7696005)(33656002)(5660300002)(2906002)(52536014)(55016002)(64756008)(66556008)(9686003)(66946007)(76116006)(186003)(4326008)(26005)(8676002)(4744005)(38070700005)(478600001)(122000001)(86362001)(71200400001)(66476007)(66446008);
+ DIR:OUT; SFP:1102; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?qDJoF5GcWKfFQIqb1vboVEa3fPO7ClJEQyo6P92wiipWIXgNF/FwlwJeMhDW?=
+ =?us-ascii?Q?t4UtP1OKfHo7Ud5TVeJLaNwhLAY8F8lDzFSFdxIzPxOFLAvK6g32/rc5iKqv?=
+ =?us-ascii?Q?CkZS+dL+nOFq9+5Yk4dCoEHuHeoW3NgAY/Prsl7MUjjX4FdpzF4H+iJoSWbO?=
+ =?us-ascii?Q?rEpb5TpglBElSaAVteqikwhy7evs3XA/MXhgioohX6ANCyYlOUW6PNKMiEtS?=
+ =?us-ascii?Q?iTEngH5aUKNnRazgNc9Eg+5jf9oK3E0HrXQnsfxfGW4d0u5ughonDdNzKrFR?=
+ =?us-ascii?Q?NBii+KOHJtQoApt1dQWuwEuU03sYZhmlDA2E19qU2KRQ50AxxGO0TNatl32u?=
+ =?us-ascii?Q?9UXSstA+5i4nknOCjz4aXxahp1uAHlGadb5i+8QXCQKJgji9Ix17SiB1rUTT?=
+ =?us-ascii?Q?/6jjJBq6NpeqVWu7M0INx9XagIGdwS+A5uaaIL/BQF2/LT0bRzb8EqCeTFN6?=
+ =?us-ascii?Q?UOYz6KVOr6+81FuG09OsnMp40kJdCnnOqPoTZT8sNZhYrVDxtNuxMASBWE7z?=
+ =?us-ascii?Q?IwCj4mVkcPpYMBzjFxOI7im6eGEDS3TcdoWBhl0Yreq31j6RqevBoz7NKd91?=
+ =?us-ascii?Q?8b3+KxXDDozp5gGxjebInK7ZfGzg3Zf8Tbh9eg3KPgoe1C/x6lDRk+jH5gje?=
+ =?us-ascii?Q?dFAlx2RqIhqdpFI4YtUti2pxTQSpUIG73H61/RcO87AIf6h0blBqJ8TajqLS?=
+ =?us-ascii?Q?kKkqe3cmZ0LrEowCM+CZNPpKywWYB+XxPoZK7hSnZfi3BJ7PO65C15wKn5ac?=
+ =?us-ascii?Q?1AxiOeUjMZFLB97iWvuSxxyR1j5dcVo6lY42WjYuQ0louVVtJ5rIGHxgQhZV?=
+ =?us-ascii?Q?Nfy1SvG5jE8K58ERs/R3iWxQ04mJSTfKfEqqVrwopfb5DP/gwrZZ9mZq1E0B?=
+ =?us-ascii?Q?kRR2TcLrNgPsYTDgXm5BcQRRWRPxAUtI2P6sce/bC6c9Ti111D8z65zVUMi/?=
+ =?us-ascii?Q?UpeJopJ1sSZF5ys9FxEpVEr1JT8GrXHLiMITbPpozQ26StKY/tp8vOlxvZe6?=
+ =?us-ascii?Q?8F1MV4q7vzkQioXYLhw32Vh8O2G9b8e7yWD7gOv4O946d9/Ccpo0dkvVaEXJ?=
+ =?us-ascii?Q?DUJ+PcD+FJwFltEoRycTOknEOcoz5vIdc+JV2h2OBPph6YSHmODBA3WU8Ik8?=
+ =?us-ascii?Q?f2uNfFZHpz/GHRjQb4FZMKrn5vu20Fi1QGcjOvFIFsMwKcTOmP8f6dB4sdPS?=
+ =?us-ascii?Q?i8zMEFb6fi5P+mQLu4zs1M2TzNiE5c5qPP7CGbhhQLYvWw7UA9AEPN3pzfLS?=
+ =?us-ascii?Q?kCHPgws/acezH03BDeqmvJ+Uq/R4Il/+s6nLpmYRHYelCePUUoG3uC4s3+Zf?=
+ =?us-ascii?Q?6bOfJsjqdelpX6YnYeTllU8T?=
+x-ms-exchange-transport-forked: True
+MIME-Version: 1.0
+X-OriginatorOrg: abaco.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR16MB3135.namprd16.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6588d99d-7c0c-4e80-fc44-08d9736d1fd9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Sep 2021 08:37:57.1045 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: e6f27451-899d-4d0d-b8fa-88baafa551a7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ztDBcD5wMuL7x0g026OBACVyTZli4KErNNiurPCUI79B6iKvE/isb/PfjyUB9t/hCxw2fPLWnnlMLXa6R15Ch4Oukw6HSTX57U5iZU2QW3w=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR16MB3086
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210908_163227_849391_AF3089A1 
-X-CRM114-Status: GOOD (  16.60  )
+X-CRM114-CacheID: sfid-20210909_013801_320439_76F8419A 
+X-CRM114-Status: UNSURE (   8.49  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,62 +141,30 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Renaud,
+>You lost me here. According to Table 52. The device id is 02h.
+I was looking at Table 40 page 68. Hence, the confusion.
 
-Am 2021-09-01 18:51, schrieb Barbier, Renaud:
-> Hello,
-> I bought a NXP ls1046ard evaluation board and saw some issues erasing
-> the SPI NOR from my boot loader or ICE.
-> The boot loader reported the flash as being a S25FL512 which is a
-> uniform (256KiB) sector SPI NOR as per manufacturing ID 1 and device
-> id 2
-> 
-> The eval board has in fact a S25FS512 SPI NOR which is by default a
-> bottom boot flash. This can be disabled through a configuration
-> register in the SPI NOR.
 
-So you're saying the bootloader is wrong by reporting a S25FL512?
+>> Is the SPI support for S25FS512 in Linux 5.14 disabling the bottom 
+>> boot feature? I have not found it in the code. Only something related 
+>> to page size.
 
-> I also see that Linux describes both the S25FL512 and S25FS512 as
-> uniform sector flash:
-> { "s25fl512s",  INFO6(0x010220, 0x4d0080, 256 * 1024, 256,
-> 			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-> 			      SPI_NOR_HAS_LOCK | USE_CLSR) },
-> 
-> { "s25fs512s",  INFO6(0x010220, 0x4d0081, 256 * 1024, 256,
-> 			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR)
-> 
-> 
-> 
-> According to Cypress PDF https://www.cypress.com/file/177971/download,
-> this SPI NOR S25FL512 is indeed a uniform sector flash but with a
-> device ID of 0x19.
+>What is a bottom boot feature? Are you talking about locking?
+This flash S25FS512 is configured by default  to have the first 256KiB sector divided into 8*4KiB + 224KiB.
+This could be the top sector or disable with the configuration register.
+Erasing 8 4KiB sectors requires a different command than erasing the 256KiB sectors.
 
-You lost me here. According to Table 52. The device id is 02h.
+I have now found the code in U-boot supporting those 8 sectors. 
 
-> While the Spansion documentation I found
-> (https://datasheetspdf.com/pdf-file/831993/SPANSION/S25FL512S/1 )
-> described it with a Device ID of 0x2.
+Thanks for your answer.
 
-Likewise.
 
-> The S25FS512S has Device ID 0x2 according to Cypress documentation
-> https://www.cypress.com/file/216376/download  and is a bottom boot
-> flash.
 
-And also for this flash, the device id is 02h. But the family code
-at offset 05h is 81h here (instead of 80h for the s25fl512s).
-
-> Is the SPI support for S25FS512 in Linux 5.14 disabling the bottom
-> boot feature? I have not found it in the code. Only something related
-> to page size.
-
-What is a bottom boot feature? Are you talking about locking?
 
 -michael
 
