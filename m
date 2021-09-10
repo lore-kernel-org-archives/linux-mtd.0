@@ -5,17 +5,17 @@ X-Spam-Level:
 X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 947E1C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 Sep 2021 12:01:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34AA5C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Sep 2021 16:55:24 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 51ECF60555
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 Sep 2021 12:01:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 51ECF60555
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id EB86960295
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Sep 2021 16:55:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EB86960295
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=fudan.edu.cn
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -23,49 +23,61 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=9LmbSZY/p4Wi2MZkDtdR7Ux1mFLZqvuv2MDT+W6lyZs=; b=l+oaMOYR8DZupM
-	yvcW8xDj13Wcm55vJUxXahMsXRBLvxuMsbBifrJnSW+fQ3mpIrIXCF89IA+vyfigtFTLUhY+KO+Cx
-	Ld4LmN36WPx6UmK7Pr2A/acdeE/Nx3anm/bWCDSWhqgU7srz9FMEIvlLbo59Dw0kdeYQ3D3fuDvhN
-	HlKKKx6JoBXzotQHh+wPKJbEhUrMrUU27/Y6nYT1uQG5NgTZ3YhiDgFkO5k0WWfle4Kd0ryIpTkpV
-	Rqzkpy/3bRSjAsem72yyczOg9UWzduCpjrpyKhYO+h+3nA1+DKYT3FgSYU9BVCOBr6BAz7Hp+TP6u
-	E0bnnuebTitzFb0GBLqA==;
+	List-Owner; bh=BSg+2aB4xvcdkmJWSjBkuXCKHTXQPUGdGust14h1nCw=; b=L6TkFo+i6HQZ9D
+	zw0QJqeYD4QaQlqp+6vuuBPJGlv9ZFy8616N2UzSCyqR0Gw/632LF9Dt5h3T3xGz9z38PSg3xxsMb
+	KlRSiVcQHTm6Zhjh/9NuXa6BwEwNZaWknXmpR+07NOoV9QjnjE1aGLaOTj6Mr9hgCVbnvghsgun0w
+	W9ztfTH1lW2RokPU9zliHX4WHZJX9VoRcM2Ww5uM3QD/NWaVaOI6McEeVXCsTYt0UO8FYAU6m90Ol
+	qWIOTEPDDLX1FvJOw5y7Qb1bLIx6vK2jH4BHmfMPDboBAJuwuCzaXBvaAauxfb9vHyc6PTUIvzRTv
+	z36ruea/mFtbIEVq1MCg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mOfCv-00CfNq-Ul; Fri, 10 Sep 2021 12:00:37 +0000
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mOfCs-00CfN1-Ik
- for linux-mtd@lists.infradead.org; Fri, 10 Sep 2021 12:00:36 +0000
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest
- SHA256) (No client certificate requested)
- by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id EDC3340198; 
- Fri, 10 Sep 2021 12:00:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1631275224;
- bh=uBCGG54tKUGFtWWVoZuFFm7JRT/gA4rrE2H2EHpPDZM=;
- h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
- b=J5EuyL/+CWw5L3xaTcyKxzjcidpwr2fZ//FyZmkpXGM4QRjUzfd5Cd+v6ijB2oY/8
- 5V7fHOT8IlhuCwVd/B6OCu1bhpeXsRx1u06zukuQNBYWWxUk+DjKtOKTtUMLR1Mvst
- vVbf/EEzI4P2nUV4KZa0ct3221BvcyHLjKdWnagzcZbZNKR8NvAdany7pEgvCM0YMA
- vm7dBvCPlHzlara0D/O4ksvtARSgARcjqMh/QK/uuQMgrPE3cBVW4vZMcPmRPn8NxC
- PFuFsFzUYr+gJhKWQTm42JLCZ6Klyo/Qywdvq1NzJm7KO84EEXdvZ8MzU4TTFzs4pa
- cRWXy3SG6MgeA==
-From: Colin King <colin.king@canonical.com>
+	id 1mOjmx-00DCP3-U1; Fri, 10 Sep 2021 16:54:07 +0000
+Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27])
+ by bombadil.infradead.org with smtp (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mOjmr-00DCOQ-OT
+ for linux-mtd@lists.infradead.org; Fri, 10 Sep 2021 16:54:04 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+ Message-Id:MIME-Version:Content-Transfer-Encoding; bh=MSQF0TCIoW
+ CnsmwyIDXDivOhQ6nSWPF+tN5KyDLNnIo=; b=XQMjrGOdcfLXFuJHmuQYyjjnA4
+ 86cjdkBCwzYszHhmTu/jiJ5UL6+80CZ0n4mvcMmZz27kT8tdJc7b7z5doAkYRW2j
+ 9c/LzDKLxjqTNdBt3Issth7r7MX4LwZdDvWMWowXIhBD1bx0B+SJI+6X1bNC58oK
+ vSO43Dc4+67FoWL70=
+Received: from localhost.localdomain (unknown [223.104.213.26])
+ by app2 (Coremail) with SMTP id XQUFCgCnV6yFjTthaLhUAA--.17616S4;
+ Sat, 11 Sep 2021 00:53:35 +0800 (CST)
+From: Xin Xiong <xiongx18@fudan.edu.cn>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: mtdswap: Remove redundant assignment of pointer eb
-Date: Fri, 10 Sep 2021 13:00:23 +0100
-Message-Id: <20210910120023.46308-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: yuanxzhang@fudan.edu.cn, Xin Xiong <xiongx18@fudan.edu.cn>,
+ Xiyu Yang <xiyuyang19@fudan.edu.cn>, Xin Tan <tanxin.ctf@gmail.com>
+Subject: [PATCH] drivers/mtd/nand: fix reference count leaks in ebu_nand_probe
+Date: Sat, 11 Sep 2021 00:53:16 +0800
+Message-Id: <20210910165316.2500-1-xiongx18@fudan.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+X-CM-TRANSID: XQUFCgCnV6yFjTthaLhUAA--.17616S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxXFW5Kr1fKF1DGFy7tF1DZFb_yoW5Xr1xpF
+ WrJFW2k3y0gFsrGrW2va1kWF1fArs7ZayrG39ru340y3s0qF4ag348trWFvFyDArWIqr1F
+ gF1jqF18AFWDXaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+ 9KBjDU0xBIdaVrnRJUUUvK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+ rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+ 1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+ 6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
+ 4UJVWxJr1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+ 64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r
+ 1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAq
+ YI8I648v4I1lc2xSY4AK67AK6r1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
+ 0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
+ 17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
+ C0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI
+ 42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxh
+ VjvjDU0xZFpf9x0JUeBT5UUUUU=
+X-CM-SenderInfo: arytiiqsuqiimz6i3vldqovvfxof0/1tbiAg8AEFKp2aoYLwAAsi
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210910_050034_797584_A5EE9C26 
-X-CRM114-Status: GOOD (  11.34  )
+X-CRM114-CacheID: sfid-20210910_095402_327366_91B8353A 
+X-CRM114-Status: GOOD (  12.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,31 +94,74 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Colin Ian King <colin.king@canonical.com>
+The reference counting issue happens in several error handling paths
+on two refcounted object related to the "ebu_host" object (dma_tx,
+dma_rx). In these paths, the function forgets to balance one or both
+objects' reference count. For example, when request dma tx chan fails,
+the function forgets to decrease the refcount of "ebu_host->dma_rx"
+increased by dma_request_chan(), causing refcount leaks. What's more,
+the "ebu_host->clk" object also need to be handled correctly.
 
-The pointer eb is being assigned a value that is never read, it is
-being updated later on. The assignment is redundant and can be removed.
+Fix this issue by keeping the return value and jumping to
+"err_cleanup_dma" label.
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 ---
- drivers/mtd/mtdswap.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/mtd/nand/raw/intel-nand-controller.c | 23 ++++++++++++++------
+ 1 file changed, 16 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
-index 7e309270ddd4..e86b04bc1d6b 100644
---- a/drivers/mtd/mtdswap.c
-+++ b/drivers/mtd/mtdswap.c
-@@ -716,7 +716,6 @@ static int mtdswap_move_block(struct mtdswap_dev *d, unsigned int oldblock,
- 		return ret;
+diff --git a/drivers/mtd/nand/raw/intel-nand-controller.c b/drivers/mtd/nand/raw/intel-nand-controller.c
+index 8b49fd56c..d5148f220 100644
+--- a/drivers/mtd/nand/raw/intel-nand-controller.c
++++ b/drivers/mtd/nand/raw/intel-nand-controller.c
+@@ -631,19 +631,27 @@ static int ebu_nand_probe(struct platform_device *pdev)
+ 	ebu_host->clk_rate = clk_get_rate(ebu_host->clk);
+ 
+ 	ebu_host->dma_tx = dma_request_chan(dev, "tx");
+-	if (IS_ERR(ebu_host->dma_tx))
+-		return dev_err_probe(dev, PTR_ERR(ebu_host->dma_tx),
++	if (IS_ERR(ebu_host->dma_tx)) {
++		ret = dev_err_probe(dev, PTR_ERR(ebu_host->dma_tx),
+ 				     "failed to request DMA tx chan!.\n");
++		ebu_host->dma_tx = NULL;
++		goto err_cleanup_dma;
++	}
+ 
+ 	ebu_host->dma_rx = dma_request_chan(dev, "rx");
+-	if (IS_ERR(ebu_host->dma_rx))
+-		return dev_err_probe(dev, PTR_ERR(ebu_host->dma_rx),
++	if (IS_ERR(ebu_host->dma_rx)) {
++		ret = dev_err_probe(dev, PTR_ERR(ebu_host->dma_rx),
+ 				     "failed to request DMA rx chan!.\n");
++		ebu_host->dma_rx = NULL;
++		goto err_cleanup_dma;
++	}
+ 
+ 	resname = devm_kasprintf(dev, GFP_KERNEL, "addr_sel%d", cs);
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, resname);
+-	if (!res)
+-		return -EINVAL;
++	if (!res) {
++		ret = -EINVAL;
++		goto err_cleanup_dma;
++	}
+ 	ebu_host->cs[cs].addr_sel = res->start;
+ 	writel(ebu_host->cs[cs].addr_sel | EBU_ADDR_MASK(5) | EBU_ADDR_SEL_REGEN,
+ 	       ebu_host->ebu + EBU_ADDR_SEL(cs));
+@@ -653,7 +661,8 @@ static int ebu_nand_probe(struct platform_device *pdev)
+ 	mtd = nand_to_mtd(&ebu_host->chip);
+ 	if (!mtd->name) {
+ 		dev_err(ebu_host->dev, "NAND label property is mandatory\n");
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto err_cleanup_dma;
  	}
  
--	eb = d->eb_data + *newblock / d->pages_per_eblk;
- 	d->page_data[page] = *newblock;
- 	d->revmap[oldblock] = PAGE_UNDEF;
- 	eb = d->eb_data + oldblock / d->pages_per_eblk;
+ 	mtd->dev.parent = dev;
 -- 
-2.32.0
+2.25.1
 
 
 ______________________________________________________
