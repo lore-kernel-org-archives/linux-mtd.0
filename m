@@ -1,71 +1,71 @@
-Return-Path: <SRS0=lC14=N7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=TiF7=OA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E504C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 Sep 2021 22:03:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 947E1C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Sep 2021 12:01:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5673361186
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 Sep 2021 22:03:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5673361186
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id 51ECF60555
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Sep 2021 12:01:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 51ECF60555
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
-	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=3xFHyBMhnX6pNXY5lUHvgGjzfSmXB+c74kUrpeFBPaY=; b=YU+Z+97itBOs4EImRwG8I/Kfvx
-	43WQqN5KRqP/IeNFFzzegHIadOxLQocHvOT0s4ZsgBPmbbU22fVF9M+9yEXIrB4aYKXFY0+LQxuYn
-	tZaj0eJ8p2W9RGiTX1UOznC4z38xi56yDwvVx3ZOdnbFFHEAvu4gHX1ScY7FpgM/soFZR/fUnGcWQ
-	DWGRenQGE5J70XeSQg0V1dqwYtYtEm6N0vZShd6UC7iT4sBuPJlP7AsXtHiEzsvnWRz7i6reYRCYZ
-	VIJQN7ZPdrspTSaJfyU/V4fIW0Vrd/xgwyqS5tEhT9lnw+bql8JPk7nTg02tB07P4Wt4IY+Gyh9yG
-	wySElgMg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=9LmbSZY/p4Wi2MZkDtdR7Ux1mFLZqvuv2MDT+W6lyZs=; b=l+oaMOYR8DZupM
+	yvcW8xDj13Wcm55vJUxXahMsXRBLvxuMsbBifrJnSW+fQ3mpIrIXCF89IA+vyfigtFTLUhY+KO+Cx
+	Ld4LmN36WPx6UmK7Pr2A/acdeE/Nx3anm/bWCDSWhqgU7srz9FMEIvlLbo59Dw0kdeYQ3D3fuDvhN
+	HlKKKx6JoBXzotQHh+wPKJbEhUrMrUU27/Y6nYT1uQG5NgTZ3YhiDgFkO5k0WWfle4Kd0ryIpTkpV
+	Rqzkpy/3bRSjAsem72yyczOg9UWzduCpjrpyKhYO+h+3nA1+DKYT3FgSYU9BVCOBr6BAz7Hp+TP6u
+	E0bnnuebTitzFb0GBLqA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mOS87-00B2Qm-28; Thu, 09 Sep 2021 22:02:47 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1mOfCv-00CfNq-Ul; Fri, 10 Sep 2021 12:00:37 +0000
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mOS7t-00B2OJ-Fn; Thu, 09 Sep 2021 22:02:34 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id EB71E22236;
- Fri, 10 Sep 2021 00:02:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1631224952;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=XZSP7IqHVq4TYvdDVBfi2Ecx2S8H47zIbCpFSrZ4f2c=;
- b=UCiqDk0cVuF4MbF976r07VWsPmOiSiIYjgx+3JeEteahJ+TWbM9wrVcfTeAj66HSMUpPQP
- O78Ac89GVHpu7VGapCUC19iVP4bXYUK32djClzNOPYRaiaqywgNnBQml7CKha/s5GmVqUW
- CZvFC+5CMLNNV0s/lATOIm8sxxHSmFc=
+ id 1mOfCs-00CfN1-Ik
+ for linux-mtd@lists.infradead.org; Fri, 10 Sep 2021 12:00:36 +0000
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest
+ SHA256) (No client certificate requested)
+ by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id EDC3340198; 
+ Fri, 10 Sep 2021 12:00:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20210705; t=1631275224;
+ bh=uBCGG54tKUGFtWWVoZuFFm7JRT/gA4rrE2H2EHpPDZM=;
+ h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+ b=J5EuyL/+CWw5L3xaTcyKxzjcidpwr2fZ//FyZmkpXGM4QRjUzfd5Cd+v6ijB2oY/8
+ 5V7fHOT8IlhuCwVd/B6OCu1bhpeXsRx1u06zukuQNBYWWxUk+DjKtOKTtUMLR1Mvst
+ vVbf/EEzI4P2nUV4KZa0ct3221BvcyHLjKdWnagzcZbZNKR8NvAdany7pEgvCM0YMA
+ vm7dBvCPlHzlara0D/O4ksvtARSgARcjqMh/QK/uuQMgrPE3cBVW4vZMcPmRPn8NxC
+ PFuFsFzUYr+gJhKWQTm42JLCZ6Klyo/Qywdvq1NzJm7KO84EEXdvZ8MzU4TTFzs4pa
+ cRWXy3SG6MgeA==
+From: Colin King <colin.king@canonical.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: mtdswap: Remove redundant assignment of pointer eb
+Date: Fri, 10 Sep 2021 13:00:23 +0100
+Message-Id: <20210910120023.46308-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Date: Fri, 10 Sep 2021 00:02:30 +0200
-From: Michael Walle <michael@walle.cc>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: Re: [PATCH v2 14/35] mtd: spi-nor: spansion: Use manufacturer
- late_init()
-In-Reply-To: <20210727045222.905056-15-tudor.ambarus@microchip.com>
-References: <20210727045222.905056-1-tudor.ambarus@microchip.com>
- <20210727045222.905056-15-tudor.ambarus@microchip.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <ebfc420928ef28bb508148b41f55b0e6@walle.cc>
-X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210909_150233_735664_2491564D 
-X-CRM114-Status: UNSURE (   8.30  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210910_050034_797584_A5EE9C26 
+X-CRM114-Status: GOOD (  11.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,33 +77,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: macromorgan@hotmail.com, vigneshr@ti.com, jaimeliao@mxic.com.tw,
- richard@nod.at, esben@geanix.com, linux@rasmusvillemoes.dk,
- knaerzche@gmail.com, nicolas.ferre@microchip.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- code@reto-schneider.ch, miquel.raynal@bootlin.com, heiko.thiery@gmail.com,
- sr@denx.de, p.yadav@ti.com, mail@david-bauer.net, zhengxunli@mxic.com.tw
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2021-07-27 06:52, schrieb Tudor Ambarus:
-> spansion_post_sfdp_fixups() was called regardless if the flash defined
-> SFDP tables or not. A better place for this kind of parameters init is
-> in manufacturer's late_init() hook. post_sfdp() should be called only
-> when SFDP is defined. No functional change in this patch.
-> 
-> Instead of doing the 4b opcodes settings at manufacturer level, thus
-> also for every flash that will be introduced, this should be done
-> just where it is needed, per flash. I'll let this for other patch.
+From: Colin Ian King <colin.king@canonical.com>
 
-Mh, then why does some flashes define SPI_NOR_4B_OPCODES. It's
-unclear to me when you would use SPI_NOR_4B_OPCODES and when
-this individual fixup. Also right now, these SPI_NOR_4B_OPCODES
-flags for the spansion flashes are superfluous, no?
+The pointer eb is being assigned a value that is never read, it is
+being updated later on. The assignment is redundant and can be removed.
 
--michael
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/mtd/mtdswap.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
+index 7e309270ddd4..e86b04bc1d6b 100644
+--- a/drivers/mtd/mtdswap.c
++++ b/drivers/mtd/mtdswap.c
+@@ -716,7 +716,6 @@ static int mtdswap_move_block(struct mtdswap_dev *d, unsigned int oldblock,
+ 		return ret;
+ 	}
+ 
+-	eb = d->eb_data + *newblock / d->pages_per_eblk;
+ 	d->page_data[page] = *newblock;
+ 	d->revmap[oldblock] = PAGE_UNDEF;
+ 	eb = d->eb_data + oldblock / d->pages_per_eblk;
+-- 
+2.32.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
