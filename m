@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24C12C433F5
-	for <linux-mtd@archiver.kernel.org>; Sat, 11 Sep 2021 13:21:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 773BBC433EF
+	for <linux-mtd@archiver.kernel.org>; Sat, 11 Sep 2021 13:28:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC2FF611F2
-	for <linux-mtd@archiver.kernel.org>; Sat, 11 Sep 2021 13:21:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EC2FF611F2
+	by mail.kernel.org (Postfix) with ESMTPS id 3D3EE60F24
+	for <linux-mtd@archiver.kernel.org>; Sat, 11 Sep 2021 13:28:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3D3EE60F24
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,31 +23,31 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=GKIohJuAhaCI9WRkB5oU7jtD+7br2/VGtAqgSOCf4Z8=; b=HfmVa8gP3pqnoT
-	xGUi7bsSMYbuuPJ4g9kA1J/FRfoX6tjAMb2+U/dSBexfOgnvEL9G4U/8Nf2RwoZ/NqKS4KlKKw+9S
-	nwZ9UA9Ta2x21YJs1nFt2EPdjqHeyMcqRmMbacOvgIHzggNl17tMfSBPor5fJBPoXCO3jZVl11Cny
-	5GeW8DJmSCVcl4Kfrt8lbVO+9dA7d1auRm4FRDwUvEidXBJOGpW3gx1xyrkplu1mI+UXpKtFG7ru7
-	y5fOsedwLwh0QvEvYHJSNoggFNBxoXDk2Y30VjzHrFq9oXr361knPnfetinXAR/Nbv2QAS85SFyh+
-	9FzHWtX1HdYuEjH+/n3w==;
+	List-Owner; bh=GKIohJuAhaCI9WRkB5oU7jtD+7br2/VGtAqgSOCf4Z8=; b=q83lhFKa66jIHz
+	onUJSrlLS3qc3hVDyVb2MuLxjFIhskcTLWiTt3kkT3B+EEX+BdBM1DCjuyZIwEoai/0TE/y8aO8aj
+	l5arb1UoeZrroTPUYu+Rk6VbJMt/heZvtuVUoaMY8pi61PQR+iZ1Tiq1t35a0mYpIoBP1hwR9Bkij
+	usKTORu/G4sZ4+Fahv5I7cAO1+Cev/Ty0v/qJXiBVXI5cmgZb/js943SlwuWdkvEG8Brje3Mwl0Tb
+	DyL4mLf8TLdowrXc3FHHr0FtqAcN41zuhW04qyEbcyjUBx9JB9kIYOTvaOHWki5sIeDI5UjXsDFR8
+	zpC7DB8houOCQ4nHHstw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mP2vj-00Ev9w-T6; Sat, 11 Sep 2021 13:20:28 +0000
+	id 1mP32z-00EyHW-4C; Sat, 11 Sep 2021 13:27:57 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mP2ok-00ErF3-PS
- for linux-mtd@lists.infradead.org; Sat, 11 Sep 2021 13:13:16 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A48B61205;
- Sat, 11 Sep 2021 13:13:13 +0000 (UTC)
+ id 1mP2pI-00ErZh-7y
+ for linux-mtd@lists.infradead.org; Sat, 11 Sep 2021 13:13:50 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 071E961284;
+ Sat, 11 Sep 2021 13:13:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631365994;
+ s=k20201202; t=1631366027;
  bh=hjns1O5VBB1oEQxpCGhtIp+uuv+3hKCDt4L6L2WPSCw=;
  h=From:To:Cc:Subject:Date:From;
- b=ttHdCX7+NlbQwQjtM1XsNeuFmyIS74XhoPumj7ruW1ZF6XznY4fivMJd8RcA1VdCX
- jLzhYyihEtH3hJcFPMm9fKifjloVYYCQZapjB7Va6Tp4PbVEmKhKj6ASkBDpIkxlgI
- UXj5WkFmtXAZpeoeIR8Lizp+x51qTgsa0wTy3ihtMF6x5rEuL1WbHFRIap3KAxfyDp
- PA78LBH9eKOfTKLTHHpmdvMIxuYNaguBJlpFfwxEiSha5xjcm0wRobxlh9ru6SPfhu
- gdZiOepPZ3PBNeEKyJmzg0l4VyOvYBft12fbVwUUCY/6j9djQdrnVgYPwnKlpFNVf8
- GUIJvJmC2FX0A==
+ b=YULuNs+9jDBLdH0DA1AyUeawfix3FKp/YJgAKamgmZhsLAl1QHw0EOQ2eZkhqPj2k
+ mqscyXmYUbyyLcifzs8NpY6wE47NJkWI2MaERlMFJbfe/hb3PiKKJXW3dtHUm806aG
+ Dc3jAP6E4nrm9hS2tXy1Vup//aXEe9Ecx5MfyUpjVDCJIb676IE4sINdh3HRvvB1ub
+ 2DufjLNtrQo24iRexouWp5Rp7RLAOLetIoFikEjDyxmN6LcCJkNvvM0qVx231jWfl6
+ nIZA8o1YcVq8BEEiguE13tW7O5BggEiYux6ugjzolmrvwSAFEpOkTFxs2dg1djoY5j
+ j0VY6CWgzdW2g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -55,16 +55,16 @@ Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
  "Ryan J . Barnett" <ryan.barnett@collins.com>,
  Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>,
  linux-mtd@lists.infradead.org, devicetree@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 01/25] dt-bindings: mtd: gpmc: Fix the ECC bytes
+Subject: [PATCH AUTOSEL 5.4 01/14] dt-bindings: mtd: gpmc: Fix the ECC bytes
  vs. OOB bytes equation
-Date: Sat, 11 Sep 2021 09:12:48 -0400
-Message-Id: <20210911131312.285225-1-sashal@kernel.org>
+Date: Sat, 11 Sep 2021 09:13:32 -0400
+Message-Id: <20210911131345.285564-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210911_061314_886144_D0853DCB 
+X-CRM114-CacheID: sfid-20210911_061348_320093_79DCB4D7 
 X-CRM114-Status: UNSURE (   9.89  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
