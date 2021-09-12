@@ -8,14 +8,14 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D53AC433EF
-	for <linux-mtd@archiver.kernel.org>; Sun, 12 Sep 2021 21:16:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31DAAC433F5
+	for <linux-mtd@archiver.kernel.org>; Sun, 12 Sep 2021 21:21:11 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4DC6F60ED8
-	for <linux-mtd@archiver.kernel.org>; Sun, 12 Sep 2021 21:16:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4DC6F60ED8
+	by mail.kernel.org (Postfix) with ESMTPS id DC52060ED8
+	for <linux-mtd@archiver.kernel.org>; Sun, 12 Sep 2021 21:21:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DC52060ED8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,52 +24,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=g2Wbk1Nunxieh4om3bTBt8X6/Ws8YQX6x6kR3m5x8Bk=; b=CF1wZZgMuK7f8S
-	wSOWSeUjsp+IZYdQnL5ujz3Gsx7p5vGTbPzxKE2+OcvdTF1b9SYHz1G0078ilJSq+KuNUpJl820Fq
-	odZYXKbwzBfTlA12wAz7wTw8YlPS1CMArhDm8BkVVfiugWz64l0VQF4zU92E2xzOV+KKdSey1+Q39
-	WVGu4QNWPE8VW/ttS73F7NiDNtINfKevgQ8Sk2MCx8CO+QGTa4lDppkG1r8bhYUC2Pj2EWDe3g6yT
-	kgBoEI7FqttPE+gwl6PbLxZOdKV86xePlQSma5PNSEjVScWsI9hPUijGzGuOTtoVnznej9iv/NCsC
-	9pwx5cpKRkP+ci8pNAPQ==;
+	List-Owner; bh=Bx8w/Cjik3baIjeTyoD18fDTgAqD9oECZxnSRLu+6x0=; b=y2uOIOrEztKLce
+	4qq5cdXe+qG9QNc/XVYwGcguZlkxJu76K+bucofpaOtAQhtKCeQPjAmRk8y7seg8Wxr2XYS17rmMB
+	F/ofmjOGPIMchdRl1xnMnTFNjAP1kD4DtaDREjLi15GHGD5I5VrMF326F5gyTArh1SlXrt7zKanXD
+	L2bYiEqk5UYfQiq91wljF0P3xHp5G2XgM1uv2UOxwuXGyIagsMDJk8QF2bx/ZXs11GmzJ7DFjjarT
+	TJypMNMRVcN43kd3/9j3sVUEEwcy5imZV9Yw8C1Mt2fXiZwECp6J8SokUGeOukDgIMkCxArn2dmS9
+	0MhARPvto4Fh8YqO4BTA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mPWpk-00HHKN-7y; Sun, 12 Sep 2021 21:16:16 +0000
-Received: from mail-wr1-x42d.google.com ([2a00:1450:4864:20::42d])
+	id 1mPWtp-00HHoa-EG; Sun, 12 Sep 2021 21:20:29 +0000
+Received: from mail-wr1-x432.google.com ([2a00:1450:4864:20::432])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mPVoJ-00H75L-Bs
- for linux-mtd@lists.infradead.org; Sun, 12 Sep 2021 20:10:44 +0000
-Received: by mail-wr1-x42d.google.com with SMTP id g16so11356099wrb.3
- for <linux-mtd@lists.infradead.org>; Sun, 12 Sep 2021 13:10:43 -0700 (PDT)
+ id 1mPVoM-00H77s-5B
+ for linux-mtd@lists.infradead.org; Sun, 12 Sep 2021 20:10:47 +0000
+Received: by mail-wr1-x432.google.com with SMTP id m9so11323558wrb.1
+ for <linux-mtd@lists.infradead.org>; Sun, 12 Sep 2021 13:10:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=H6ifLJNQpWHL/aW6APbCXiXF4Xey3uNJjXkEDYLDpf0=;
- b=ZfKwSrRJYOUFhAoytmkutWh0G4OM3EDXtdlI9nE+QFtPei+2E4JdDl9Wka9E5pH3YS
- 04uPK1Tw8S/mpSJek9+01/hZUOudukqiP1FHYcqijmNUw3d/ou4/LVcqog6TND7k1ctk
- nhrCXGQ6H7XuuSz39ea5BGGnr4/poWAHAjMjQDsmYxL4FiyE8A3sMYfTHP3veVbXO+uo
- d9x7efPI4RBayLlBeljU0f1eSkDX3OfNSksY6kDtJWGRBn8yGTD1egqNKbd5IoFywF9B
- P5raiK7sTUwh7OkLsuO0sINvzimEE1qvWRuqPCO+jbWgCSh5d3Bgwic9fGMsNaWhx7YO
- E6qg==
+ bh=J/fuQ9/4B7O6NkGtlvGWmoFCTTuIvWwpexDnS+rspmU=;
+ b=KqnSWSQwDdW+LsvhctV39BvkSonyOFoR8QZGL7wOrdePQCSFcXxBl/w5qvUrkyWCTf
+ j/cfCy5Iw/mulmidbJzcfnMT1d9vxz0lmUcn3+e2cllkjmFEu9TkMN2YK4jbXamBj8f1
+ qckhs3v3e7W2vjUni0tk4wmjOxt6uJG4GbpATnfH3pGBcCQjmcQqfSYN+V09NCV9rcZN
+ TacNyjSdgre93p6KLKixeUnN7Kw8F/V5phgXRtEHZ5TaelM/s5p//+bw4Ck3Outu2D/S
+ fg3vzFHm1zZLJCFr4E+jI62feQVIpBbKoChYrjaPqZFNM2EHoXfjGJ67uJLjRyYmzPAR
+ GhOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=H6ifLJNQpWHL/aW6APbCXiXF4Xey3uNJjXkEDYLDpf0=;
- b=vfWfji7TOQLUK7qvGULmWO9ciBXeFIiXj5cvEQNEv6ueHcs0b6mVfocqmNvJPu08MM
- IqQAT2Zq+9cM9v1wYYSisF9bEdhIHkJRsNfhZuRIzMpdHUpMSAF25CHGpSe7iycbHfEg
- X/91VDTvpVV4iZNi22GnGQYfgErTlcjBZR15N+n3fYaAr6TnEeKE5B7Pg36nDWdm38ib
- K5NWTO5ydSSVfhyr0GqPFu/xbshzFfSq1pkKEyGu2wEiufoYbd95f1oMviXWhGLHQCQJ
- i/wPjiqzW8eFHVntNiY4y237AP0CGC6xxAbxP82W0Q3G0jvnyz/s0eY9Vq3TH6uBlayp
- mRYA==
-X-Gm-Message-State: AOAM532uEfT4WGVHYpq9CdafYj1qLELK9t84z38AHERYWODMSexZD7XR
- uveQK8fhHCPBmFCgCdWzrF8=
-X-Google-Smtp-Source: ABdhPJy5R0R2cYZ9ytbAqF/pKeienf/EwQwWGSDMVrYLML+XPPmZs/giSU/21wa5JsLrvKFXP2DpUQ==
-X-Received: by 2002:adf:8170:: with SMTP id 103mr9108790wrm.167.1631477442191; 
- Sun, 12 Sep 2021 13:10:42 -0700 (PDT)
+ bh=J/fuQ9/4B7O6NkGtlvGWmoFCTTuIvWwpexDnS+rspmU=;
+ b=GZbyxSgqEUF78qzKBNOZPo+PtmMuZfia7yzrcu0mIR67wRAzy9J1ul2b+3Zzm6IyPw
+ 7Py9n1mZQiO71QGfJtWWrWKo0JzpqrzFgdxmh0brrbqBFa6XL2FL/5s76jyhP+4+/bvX
+ 04ZhDJ4fy1eAunJ2B070mVPt3xe8WrbZX8p/jCZqJGRQZHLym5ue0XQAaw29/nEcmyET
+ iMnKMPrcBZKizUPltJ8AROgFMXZ772eRfLP/PNROvNsAt8ow+mEwVPkQZ8Hnk4glG4LV
+ FvLNx55NIK0Hv03vpgZO2GioRuEiDjvDC8zjy+T8EeUH/8vRMVgTfQP+Tzb3OXIfB6Q6
+ ZjUA==
+X-Gm-Message-State: AOAM5338xKAJnsKyIwGQPwtbqLRNFgJBdRQZu6cmMKqXa4Eo3A3s+KDx
+ lc++QN12akEalBDJNTmWoIg=
+X-Google-Smtp-Source: ABdhPJx2T8jeUvLIRwUiWYF42kYGMTgqyMxMsfziWllGOoP3lQwH9NfZN9gWz+QVvhs3feNVef169w==
+X-Received: by 2002:adf:f911:: with SMTP id b17mr8988366wrr.412.1631477444652; 
+ Sun, 12 Sep 2021 13:10:44 -0700 (PDT)
 Received: from localhost.localdomain (46-138-83-36.dynamic.spd-mgts.ru.
  [46.138.83.36])
- by smtp.gmail.com with ESMTPSA id v10sm5463476wrg.15.2021.09.12.13.10.39
+ by smtp.gmail.com with ESMTPSA id v10sm5463476wrg.15.2021.09.12.13.10.42
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 12 Sep 2021 13:10:41 -0700 (PDT)
+ Sun, 12 Sep 2021 13:10:44 -0700 (PDT)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>,
@@ -94,16 +94,17 @@ Cc: linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
  linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
  dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
  linux-clk@vger.kernel.org
-Subject: [PATCH v11 28/34] soc/tegra: pmc: Change name of core power domain
-Date: Sun, 12 Sep 2021 23:08:26 +0300
-Message-Id: <20210912200832.12312-29-digetx@gmail.com>
+Subject: [PATCH v11 29/34] soc/tegra: pmc: Enable core domain support for
+ Tegra20 and Tegra30
+Date: Sun, 12 Sep 2021 23:08:27 +0300
+Message-Id: <20210912200832.12312-30-digetx@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210912200832.12312-1-digetx@gmail.com>
 References: <20210912200832.12312-1-digetx@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210912_131043_472986_368DEDF1 
-X-CRM114-Status: GOOD (  13.60  )
+X-CRM114-CacheID: sfid-20210912_131046_247335_655CC4E4 
+X-CRM114-Status: GOOD (  14.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,27 +121,36 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CORE power domain uses name of device-tree node, which is inconsistent with
-the names of PMC domains. Set the name to "core" to make it consistent.
+All device drivers got runtime PM and OPP support. Flip the core domain
+support status for Tegra20 and Tegra30 SoCs.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- drivers/soc/tegra/pmc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/soc/tegra/pmc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
-index fb8faf7b226a..5e1fc873bf8f 100644
+index 5e1fc873bf8f..74de84a014e9 100644
 --- a/drivers/soc/tegra/pmc.c
 +++ b/drivers/soc/tegra/pmc.c
-@@ -1353,7 +1353,7 @@ static int tegra_pmc_core_pd_add(struct tegra_pmc *pmc, struct device_node *np)
- 	if (!genpd)
- 		return -ENOMEM;
+@@ -3042,7 +3042,7 @@ static void tegra20_pmc_setup_irq_polarity(struct tegra_pmc *pmc,
+ }
  
--	genpd->name = np->name;
-+	genpd->name = "core";
- 	genpd->set_performance_state = tegra_pmc_core_pd_set_performance_state;
- 	genpd->opp_to_performance_state = tegra_pmc_core_pd_opp_to_performance_state;
+ static const struct tegra_pmc_soc tegra20_pmc_soc = {
+-	.supports_core_domain = false,
++	.supports_core_domain = true,
+ 	.num_powergates = ARRAY_SIZE(tegra20_powergates),
+ 	.powergates = tegra20_powergates,
+ 	.num_cpu_powergates = 0,
+@@ -3103,7 +3103,7 @@ static const char * const tegra30_reset_sources[] = {
+ };
  
+ static const struct tegra_pmc_soc tegra30_pmc_soc = {
+-	.supports_core_domain = false,
++	.supports_core_domain = true,
+ 	.num_powergates = ARRAY_SIZE(tegra30_powergates),
+ 	.powergates = tegra30_powergates,
+ 	.num_cpu_powergates = ARRAY_SIZE(tegra30_cpu_powergates),
 -- 
 2.32.0
 
