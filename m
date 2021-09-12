@@ -8,14 +8,14 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46C56C433F5
-	for <linux-mtd@archiver.kernel.org>; Sun, 12 Sep 2021 20:37:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 891A6C433F5
+	for <linux-mtd@archiver.kernel.org>; Sun, 12 Sep 2021 20:40:42 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 00C9260EE7
-	for <linux-mtd@archiver.kernel.org>; Sun, 12 Sep 2021 20:37:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 00C9260EE7
+	by mail.kernel.org (Postfix) with ESMTPS id 5000660F43
+	for <linux-mtd@archiver.kernel.org>; Sun, 12 Sep 2021 20:40:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5000660F43
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,52 +24,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CQll7JHv1pqM42hkfXU+9JyY/1dprkx2PKKGj07fe6s=; b=XihjbQUas2uNVd
-	xGYiABXYP1T2fGhx76nv6qxiHYyhRwM2csLR+zgnn1I+3pRlDxUoHltyM83SKhynopu5LM4yfLYFl
-	L4bdELvi7X0EU6qa5aIBielGL5MtmsX7VNEc7EET0AbI4v/ANB63u7VtiBdSj6Sjlxh1ZYXBNm20s
-	6Y4xam+W2EUl/J874LFTXQVYFzTGyE6jdD0HEKSlCpQmXhoI1Gs5vqnpcolYgQLbvOfHoo8oN16qK
-	YVqym/zmBl/5ktm482RajkqiO2QsDLBfVXQdhG+hjw5PIhInqxO2p5aTfIxIRP+a5iOBQHSXYJZvJ
-	OUjJyy/NszeHt8j5rVcQ==;
+	List-Owner; bh=6BRGBF7ziIVNk7/mjCJ8wHTIupb/jMc3uLm5EtnmOqw=; b=WSkWDHubumXqXA
+	yDZkWR8WqBRBBXflocx7HwXXu5PqtVShBkUrZAyBg/2g6x5dxWyeUWneYKFI0GUu9nsTN0yO7YgbC
+	XSmYb8dF4ub0LPk9D/PALOYnJEfXpSBZTF+xF3I3VehXkzTNMRPJG8WuoI4x3tkXLlRgFFM3pEWTp
+	UNyoXiHaUHiHnAzt8pFgajRw8Sbc6x4eej6nGfw4WWZpkHigaWvKXX2YSXXVIlO6AUD1WADbC/32R
+	o/8x836l+jZlPPr/COrEVag54+nEg/DvS4btdZLYcA2Ts3SNGDe9sA3Tjmu40lEt9OVyMs5x0p6pT
+	oK14Pgd07ybV0XUJElrw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mPWDL-00HCIe-0S; Sun, 12 Sep 2021 20:36:35 +0000
-Received: from mail-wr1-x431.google.com ([2a00:1450:4864:20::431])
+	id 1mPWGb-00HCht-7i; Sun, 12 Sep 2021 20:39:57 +0000
+Received: from mail-wr1-x436.google.com ([2a00:1450:4864:20::436])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mPVnu-00H6ks-VV
- for linux-mtd@lists.infradead.org; Sun, 12 Sep 2021 20:10:20 +0000
-Received: by mail-wr1-x431.google.com with SMTP id i23so11323466wrb.2
- for <linux-mtd@lists.infradead.org>; Sun, 12 Sep 2021 13:10:18 -0700 (PDT)
+ id 1mPVnw-00H6mY-U8
+ for linux-mtd@lists.infradead.org; Sun, 12 Sep 2021 20:10:23 +0000
+Received: by mail-wr1-x436.google.com with SMTP id d6so11297246wrc.11
+ for <linux-mtd@lists.infradead.org>; Sun, 12 Sep 2021 13:10:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=TplqdteIbqpMA+cRsM4zt2txSdRrivaAa9SZu7q2V5k=;
- b=G0spcEnCzOQCkuNQgfrt9aJ1s9cBMwbonJ21TiGcPfDH6BwdcSAKB34wnjhKexl1aX
- l4QKGmRZilMs7SIMnsyw/rzMW6Tq89W0VtF00UUpWh39GqdRIeJlpORK0Sm6pzwg12UU
- A9ns1EUAcijc8JvCglvlpmlJp8eB5LZeDDHQQe4+0e/fcg+b75UHm/se/iYa5CJAyyvO
- g/Bv0tRIsHs06qgWJ49GwtSqQp0iStg29EIqZA8Iv1iGZ+DC2i7FLd9aX8PKc82j9r5K
- N4R9eOcakSQ2dMJpvhQ6vKuDg6bAPiCCyUoMFFFgJoc3QG11NvM5MKSucOKzgHCGn6Ed
- gZcw==
+ bh=d07O0PTI8yOarAA3b3qtuOC+53W1id0Cs3+xSBQH71U=;
+ b=C5P5AY+l/qL0vSUwbgvRQ3MZaH83QA0e4tCXl6ZD+1poqC1+F+AcTEXcXBLDMGtbiz
+ siBU2x9tIZ8JuptDaAst6rE0ewmSmVMllRfYliY7IeU20D5eyUQ2eTB2GEKGiI+8xtp+
+ LqVhtysafFeQYppe217qoTwu+2DT5h3PrjTAHiVnLYqdNJBsTggIrKOVZ9rO6lLrV+LF
+ 1dvK4dzvMw2iYeSSRbhRj4VE8LyDo8ehaPTK/5TnSebHqnWp4E5RwbLeM4SPJAlRiwnO
+ RQ4fxfN425+E2MMzF70w7ztew1B6yh2Q2PqxhuooIS1slaaA87xamYGgQ8V8o3CZbehb
+ hM9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=TplqdteIbqpMA+cRsM4zt2txSdRrivaAa9SZu7q2V5k=;
- b=E9i0854oi9aJMZXw7xROkeFHOJSX0prOVZSR3w/AnNFfjpKbPwt8EZnc0+IRjBRE7o
- dvhZzPF2NwuMFP+7FjQPmUDXwfEgwof20m2SXk3HEZ9PiIPvGcNcoXgJiX3RQpStRXdu
- DuhUj38OtecEpsCpRwD6+FEkj+uAQDaOce1nMIh1ZdGID/wMq5xTzIyo9sYtD7NF3w73
- RLHSCR2klvDmhxj/47NzcLHp3UcsOiH48mFAST66L0xwDK2CdaBJwQ2hxvB/eMM8/kQp
- 8d85vJli/YpxoSDqTAn9G7NG+3bS4HPU2sR+JV1gKN0QgLrOyGcvekv44orD1/eGv4zF
- z0Gw==
-X-Gm-Message-State: AOAM530lJrWHdyJyrtUSS+8BxJg3KUEcZ0zXxgEDLnOmsj9OaQkUmFaP
- LVu0bM9eF0j4w5Nk8uL8vVA=
-X-Google-Smtp-Source: ABdhPJygGmsQdbqJ3F8jYp9/me38locbgNBHzvCseDlDLbb0hvBjdzuJidprL1L6Sn7B6LE3nPX+FA==
-X-Received: by 2002:adf:c18d:: with SMTP id x13mr8991443wre.380.1631477417535; 
- Sun, 12 Sep 2021 13:10:17 -0700 (PDT)
+ bh=d07O0PTI8yOarAA3b3qtuOC+53W1id0Cs3+xSBQH71U=;
+ b=frbqyko152yqhjMtsNOAhomZSUS2AHKPjTX0meTvPqLvMFyHYl+G5Nfi9l/2c8Dlmy
+ ulS+dlBjRbe8KHzOPmPcfHmhXzuIpzqOz/s/aY5xVGs6eT7VG6fZyPohIonDZboUeAHX
+ K+IlW15hPZVl8BgYBcrfp8M26juHJmKHrCUBIvJ+xOqDtBSBVjlGFgmIvWhQWCJuPYD6
+ LQa0qff7/ITaZZ3mRA4TZ4PaIlaNSuJS7viFxFoS3uYXClZCPP6ru6KN3oz6SrJG7/ED
+ 8nuvHdR5t1ffOkuWLIYMC8h/kzh0507Lr5uSmupkh6GAE5KihsRCuaPnE7w836q72Tg9
+ JSDw==
+X-Gm-Message-State: AOAM533gVpwCZnJYBxvt/2SQu6vVKc6v0u6IBhj4/hvxismxU5GSmUZC
+ LloZxw/qYPmERV9t+WXyk/c=
+X-Google-Smtp-Source: ABdhPJx3VU9fLQ5+P9HT0NrKffU+T0iQrcEhNyxdnVMkw5nmEuJsuZOGrVL0LCvktuvjSrqmGCSR2g==
+X-Received: by 2002:adf:9e08:: with SMTP id u8mr8651388wre.383.1631477419709; 
+ Sun, 12 Sep 2021 13:10:19 -0700 (PDT)
 Received: from localhost.localdomain (46-138-83-36.dynamic.spd-mgts.ru.
  [46.138.83.36])
- by smtp.gmail.com with ESMTPSA id v10sm5463476wrg.15.2021.09.12.13.10.15
+ by smtp.gmail.com with ESMTPSA id v10sm5463476wrg.15.2021.09.12.13.10.17
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 12 Sep 2021 13:10:17 -0700 (PDT)
+ Sun, 12 Sep 2021 13:10:19 -0700 (PDT)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>,
@@ -94,16 +94,16 @@ Cc: linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
  linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
  dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
  linux-clk@vger.kernel.org
-Subject: [PATCH v11 18/34] pwm: tegra: Add runtime PM and OPP support
-Date: Sun, 12 Sep 2021 23:08:16 +0300
-Message-Id: <20210912200832.12312-19-digetx@gmail.com>
+Subject: [PATCH v11 19/34] mmc: sdhci-tegra: Add runtime PM and OPP support
+Date: Sun, 12 Sep 2021 23:08:17 +0300
+Message-Id: <20210912200832.12312-20-digetx@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210912200832.12312-1-digetx@gmail.com>
 References: <20210912200832.12312-1-digetx@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210912_131019_084821_91B9E5B4 
-X-CRM114-Status: GOOD (  23.02  )
+X-CRM114-CacheID: sfid-20210912_131021_072384_0F976405 
+X-CRM114-Status: GOOD (  21.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,210 +120,203 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The PWM on Tegra belongs to the core power domain and we're going to
-enable GENPD support for the core domain. Now PWM must be resumed using
-runtime PM API in order to initialize the PWM power state. The PWM clock
-rate must be changed using OPP API that will reconfigure the power domain
-performance state in accordance to the rate. Add runtime PM and OPP
-support to the PWM driver.
+The SDHCI on Tegra belongs to the core power domain and we're going to
+enable GENPD support for the core domain. Now SDHCI must be resumed using
+runtime PM API in order to initialize the SDHCI power state. The SDHCI
+clock rate must be changed using OPP API that will reconfigure the power
+domain performance state in accordance to the rate. Add runtime PM and OPP
+support to the SDHCI driver.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- drivers/pwm/pwm-tegra.c | 88 ++++++++++++++++++++++++++++++++---------
- 1 file changed, 70 insertions(+), 18 deletions(-)
+ drivers/mmc/host/sdhci-tegra.c | 82 +++++++++++++++++++++++++++-------
+ 1 file changed, 66 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/pwm/pwm-tegra.c b/drivers/pwm/pwm-tegra.c
-index 11a10b575ace..afb5ecde007e 100644
---- a/drivers/pwm/pwm-tegra.c
-+++ b/drivers/pwm/pwm-tegra.c
-@@ -42,12 +42,16 @@
- #include <linux/module.h>
+diff --git a/drivers/mmc/host/sdhci-tegra.c b/drivers/mmc/host/sdhci-tegra.c
+index a5001875876b..6cf3712bf0a6 100644
+--- a/drivers/mmc/host/sdhci-tegra.c
++++ b/drivers/mmc/host/sdhci-tegra.c
+@@ -15,6 +15,8 @@
  #include <linux/of.h>
  #include <linux/of_device.h>
-+#include <linux/pm_opp.h>
- #include <linux/pwm.h>
- #include <linux/platform_device.h>
  #include <linux/pinctrl/consumer.h>
++#include <linux/pm_opp.h>
 +#include <linux/pm_runtime.h>
- #include <linux/slab.h>
+ #include <linux/regulator/consumer.h>
  #include <linux/reset.h>
+ #include <linux/mmc/card.h>
+@@ -24,6 +26,8 @@
+ #include <linux/gpio/consumer.h>
+ #include <linux/ktime.h>
  
 +#include <soc/tegra/common.h>
 +
- #define PWM_ENABLE	(1 << 31)
- #define PWM_DUTY_WIDTH	8
- #define PWM_DUTY_SHIFT	16
-@@ -145,7 +149,7 @@ static int tegra_pwm_config(struct pwm_chip *chip, struct pwm_device *pwm,
- 		required_clk_rate =
- 			(NSEC_PER_SEC / period_ns) << PWM_DUTY_WIDTH;
+ #include "sdhci-pltfm.h"
+ #include "cqhci.h"
  
--		err = clk_set_rate(pc->clk, required_clk_rate);
-+		err = dev_pm_opp_set_rate(pc->dev, required_clk_rate);
- 		if (err < 0)
- 			return -EINVAL;
- 
-@@ -181,8 +185,8 @@ static int tegra_pwm_config(struct pwm_chip *chip, struct pwm_device *pwm,
- 	 * before writing the register. Otherwise, keep it enabled.
- 	 */
- 	if (!pwm_is_enabled(pwm)) {
--		err = clk_prepare_enable(pc->clk);
--		if (err < 0)
-+		err = pm_runtime_resume_and_get(pc->dev);
-+		if (err)
- 			return err;
- 	} else
- 		val |= PWM_ENABLE;
-@@ -193,7 +197,7 @@ static int tegra_pwm_config(struct pwm_chip *chip, struct pwm_device *pwm,
- 	 * If the PWM is not enabled, turn the clock off again to save power.
- 	 */
- 	if (!pwm_is_enabled(pwm))
--		clk_disable_unprepare(pc->clk);
-+		pm_runtime_put(pc->dev);
- 
- 	return 0;
- }
-@@ -204,8 +208,8 @@ static int tegra_pwm_enable(struct pwm_chip *chip, struct pwm_device *pwm)
- 	int rc = 0;
- 	u32 val;
- 
--	rc = clk_prepare_enable(pc->clk);
--	if (rc < 0)
-+	rc = pm_runtime_resume_and_get(pc->dev);
-+	if (rc)
- 		return rc;
- 
- 	val = pwm_readl(pc, pwm->hwpwm);
-@@ -224,7 +228,7 @@ static void tegra_pwm_disable(struct pwm_chip *chip, struct pwm_device *pwm)
- 	val &= ~PWM_ENABLE;
- 	pwm_writel(pc, pwm->hwpwm, val);
- 
--	clk_disable_unprepare(pc->clk);
-+	pm_runtime_put_sync(pc->dev);
- }
- 
- static const struct pwm_ops tegra_pwm_ops = {
-@@ -256,11 +260,23 @@ static int tegra_pwm_probe(struct platform_device *pdev)
- 	if (IS_ERR(pwm->clk))
- 		return PTR_ERR(pwm->clk);
- 
-+	ret = devm_pm_runtime_enable(&pdev->dev);
-+	if (ret)
-+		return ret;
-+
-+	ret = devm_tegra_core_dev_init_opp_table_common(&pdev->dev);
-+	if (ret)
-+		return ret;
-+
-+	ret = pm_runtime_resume_and_get(&pdev->dev);
-+	if (ret)
-+		return ret;
-+
- 	/* Set maximum frequency of the IP */
--	ret = clk_set_rate(pwm->clk, pwm->soc->max_frequency);
-+	ret = dev_pm_opp_set_rate(pwm->dev, pwm->soc->max_frequency);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "Failed to set max frequency: %d\n", ret);
--		return ret;
-+		goto put_pm;
- 	}
- 
- 	/*
-@@ -278,7 +294,7 @@ static int tegra_pwm_probe(struct platform_device *pdev)
- 	if (IS_ERR(pwm->rst)) {
- 		ret = PTR_ERR(pwm->rst);
- 		dev_err(&pdev->dev, "Reset control is not found: %d\n", ret);
--		return ret;
-+		goto put_pm;
- 	}
- 
- 	reset_control_deassert(pwm->rst);
-@@ -291,34 +307,67 @@ static int tegra_pwm_probe(struct platform_device *pdev)
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "pwmchip_add() failed: %d\n", ret);
- 		reset_control_assert(pwm->rst);
--		return ret;
-+		goto put_pm;
- 	}
- 
-+	pm_runtime_put(&pdev->dev);
-+
- 	return 0;
-+put_pm:
-+	pm_runtime_put(&pdev->dev);
-+	return ret;
- }
- 
- static int tegra_pwm_remove(struct platform_device *pdev)
+@@ -760,7 +764,9 @@ static void tegra_sdhci_set_clock(struct sdhci_host *host, unsigned int clock)
  {
- 	struct tegra_pwm_chip *pc = platform_get_drvdata(pdev);
+ 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+ 	struct sdhci_tegra *tegra_host = sdhci_pltfm_priv(pltfm_host);
++	struct device *dev = mmc_dev(host->mmc);
+ 	unsigned long host_clk;
 +	int err;
  
- 	pwmchip_remove(&pc->chip);
- 
-+	err = pm_runtime_resume_and_get(pc->dev);
-+	if (err)
-+		return err;
+ 	if (!clock)
+ 		return sdhci_set_clock(host, clock);
+@@ -778,7 +784,12 @@ static void tegra_sdhci_set_clock(struct sdhci_host *host, unsigned int clock)
+ 	 * from clk_get_rate() is used.
+ 	 */
+ 	host_clk = tegra_host->ddr_signaling ? clock * 2 : clock;
+-	clk_set_rate(pltfm_host->clk, host_clk);
 +
- 	reset_control_assert(pc->rst);
-+	pm_runtime_put(pc->dev);
++	err = dev_pm_opp_set_rate(dev, host_clk);
++	if (err)
++		dev_err(dev, "failed to set clk rate to %luHz: %d\n",
++			host_clk, err);
++
+ 	tegra_host->curr_clk_rate = host_clk;
+ 	if (tegra_host->ddr_signaling)
+ 		host->max_clk = host_clk;
+@@ -1705,7 +1716,6 @@ static int sdhci_tegra_probe(struct platform_device *pdev)
+ 				   "failed to get clock\n");
+ 		goto err_clk_get;
+ 	}
+-	clk_prepare_enable(clk);
+ 	pltfm_host->clk = clk;
+ 
+ 	tegra_host->rst = devm_reset_control_get_exclusive(&pdev->dev,
+@@ -1716,15 +1726,25 @@ static int sdhci_tegra_probe(struct platform_device *pdev)
+ 		goto err_rst_get;
+ 	}
+ 
++	pm_runtime_enable(&pdev->dev);
++
++	rc = devm_tegra_core_dev_init_opp_table_common(&pdev->dev);
++	if (rc)
++		goto err_pm_get;
++
++	rc = pm_runtime_resume_and_get(&pdev->dev);
++	if (rc)
++		goto err_pm_get;
++
+ 	rc = reset_control_assert(tegra_host->rst);
+ 	if (rc)
+-		goto err_rst_get;
++		goto err_rst_assert;
+ 
+ 	usleep_range(2000, 4000);
+ 
+ 	rc = reset_control_deassert(tegra_host->rst);
+ 	if (rc)
+-		goto err_rst_get;
++		goto err_rst_assert;
+ 
+ 	usleep_range(2000, 4000);
+ 
+@@ -1736,8 +1756,11 @@ static int sdhci_tegra_probe(struct platform_device *pdev)
+ 
+ err_add_host:
+ 	reset_control_assert(tegra_host->rst);
++err_rst_assert:
++	pm_runtime_put(&pdev->dev);
++err_pm_get:
++	pm_runtime_disable(&pdev->dev);
+ err_rst_get:
+-	clk_disable_unprepare(pltfm_host->clk);
+ err_clk_get:
+ 	clk_disable_unprepare(tegra_host->tmclk);
+ err_power_req:
+@@ -1756,19 +1779,38 @@ static int sdhci_tegra_remove(struct platform_device *pdev)
+ 
+ 	reset_control_assert(tegra_host->rst);
+ 	usleep_range(2000, 4000);
+-	clk_disable_unprepare(pltfm_host->clk);
+-	clk_disable_unprepare(tegra_host->tmclk);
+ 
++	pm_runtime_put(&pdev->dev);
++	pm_runtime_disable(&pdev->dev);
++
++	clk_disable_unprepare(tegra_host->tmclk);
+ 	sdhci_pltfm_free(pdev);
  
  	return 0;
  }
  
 -#ifdef CONFIG_PM_SLEEP
--static int tegra_pwm_suspend(struct device *dev)
-+static int __maybe_unused tegra_pwm_runtime_suspend(struct device *dev)
+-static int __maybe_unused sdhci_tegra_suspend(struct device *dev)
++static int __maybe_unused sdhci_tegra_runtime_suspend(struct device *dev)
  {
--	return pinctrl_pm_select_sleep_state(dev);
-+	struct tegra_pwm_chip *pc = dev_get_drvdata(dev);
-+	int err;
+ 	struct sdhci_host *host = dev_get_drvdata(dev);
+ 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
 +
-+	clk_disable_unprepare(pc->clk);
-+
-+	err = pinctrl_pm_select_sleep_state(dev);
-+	if (err) {
-+		clk_prepare_enable(pc->clk);
-+		return err;
-+	}
++	clk_disable_unprepare(pltfm_host->clk);
 +
 +	return 0;
- }
++}
++
++static int __maybe_unused sdhci_tegra_runtime_resume(struct device *dev)
++{
++	struct sdhci_host *host = dev_get_drvdata(dev);
++	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
++
++	return clk_prepare_enable(pltfm_host->clk);
++}
++
++#ifdef CONFIG_PM_SLEEP
++static int sdhci_tegra_suspend(struct device *dev)
++{
++	struct sdhci_host *host = dev_get_drvdata(dev);
+ 	int ret;
  
--static int tegra_pwm_resume(struct device *dev)
-+static int __maybe_unused tegra_pwm_runtime_resume(struct device *dev)
- {
--	return pinctrl_pm_select_default_state(dev);
-+	struct tegra_pwm_chip *pc = dev_get_drvdata(dev);
-+	int err;
-+
-+	err = pinctrl_pm_select_default_state(dev);
-+	if (err)
-+		return err;
-+
-+	err = clk_prepare_enable(pc->clk);
-+	if (err) {
-+		pinctrl_pm_select_sleep_state(dev);
-+		return err;
+ 	if (host->mmc->caps2 & MMC_CAP2_CQE) {
+@@ -1783,17 +1825,22 @@ static int __maybe_unused sdhci_tegra_suspend(struct device *dev)
+ 		return ret;
+ 	}
+ 
+-	clk_disable_unprepare(pltfm_host->clk);
++	ret = pm_runtime_force_suspend(dev);
++	if (ret) {
++		sdhci_resume_host(host);
++		cqhci_resume(host->mmc);
++		return ret;
 +	}
 +
-+	return 0;
+ 	return 0;
  }
--#endif
  
- static const struct tegra_pwm_soc tegra20_pwm_soc = {
- 	.num_channels = 4,
-@@ -344,7 +393,10 @@ static const struct of_device_id tegra_pwm_of_match[] = {
- MODULE_DEVICE_TABLE(of, tegra_pwm_of_match);
+-static int __maybe_unused sdhci_tegra_resume(struct device *dev)
++static int sdhci_tegra_resume(struct device *dev)
+ {
+ 	struct sdhci_host *host = dev_get_drvdata(dev);
+-	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+ 	int ret;
  
- static const struct dev_pm_ops tegra_pwm_pm_ops = {
--	SET_SYSTEM_SLEEP_PM_OPS(tegra_pwm_suspend, tegra_pwm_resume)
-+	SET_RUNTIME_PM_OPS(tegra_pwm_runtime_suspend, tegra_pwm_runtime_resume,
+-	ret = clk_prepare_enable(pltfm_host->clk);
++	ret = pm_runtime_force_resume(dev);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -1812,13 +1859,16 @@ static int __maybe_unused sdhci_tegra_resume(struct device *dev)
+ suspend_host:
+ 	sdhci_suspend_host(host);
+ disable_clk:
+-	clk_disable_unprepare(pltfm_host->clk);
++	pm_runtime_force_suspend(dev);
+ 	return ret;
+ }
+ #endif
+ 
+-static SIMPLE_DEV_PM_OPS(sdhci_tegra_dev_pm_ops, sdhci_tegra_suspend,
+-			 sdhci_tegra_resume);
++static const struct dev_pm_ops sdhci_tegra_dev_pm_ops = {
++	SET_RUNTIME_PM_OPS(sdhci_tegra_runtime_suspend, sdhci_tegra_runtime_resume,
 +			   NULL)
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+				pm_runtime_force_resume)
- };
++	SET_SYSTEM_SLEEP_PM_OPS(sdhci_tegra_suspend, sdhci_tegra_resume)
++};
  
- static struct platform_driver tegra_pwm_driver = {
+ static struct platform_driver sdhci_tegra_driver = {
+ 	.driver		= {
 -- 
 2.32.0
 
