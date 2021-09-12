@@ -6,16 +6,16 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
 	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3BEFC433F5
-	for <linux-mtd@archiver.kernel.org>; Sun, 12 Sep 2021 21:04:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61136C433F5
+	for <linux-mtd@archiver.kernel.org>; Sun, 12 Sep 2021 21:09:08 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 911DB60F9F
-	for <linux-mtd@archiver.kernel.org>; Sun, 12 Sep 2021 21:04:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 911DB60F9F
+	by mail.kernel.org (Postfix) with ESMTPS id 2523F61026
+	for <linux-mtd@archiver.kernel.org>; Sun, 12 Sep 2021 21:09:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2523F61026
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,52 +24,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RW+L5umo/1+69+lP+QO6xIjzLrPLVJGs45fd0kvAcjk=; b=sYw9tr1Eh0KPse
-	+cTAlPyVMfhh0Zvk6yM4gaA+iy+6hUMEQULDObB7VTA2+hJQ96M5KSbrFqkhlDy3ayvGhFrY+GtAL
-	i4T5u7X/i2wjDj3TZsiOHLh/HfnkMGhK0aTF3GbScLRK4G+hi17atHQ8iYbVgpvZOGIkiRT42qxly
-	bvvazJrMY1X9siTazhuAOVFrQ2Ulb7jdIbBGW9ZM5ZAPT0Q/jkQJlM1GgI1hp0cyX7YJWGt/DMmyA
-	9ZG7EbLbNGT2l38g8W5iJk300h6hiSCoTkkOzqjDeWZi7SeIoUanNQBKoy7Ae+QqP2wXalPPwnT73
-	iyhsqO28KKyR703zUqZQ==;
+	List-Owner; bh=4pHNamQI3SpFDBn4rcjq1CcXq3L8NcIOZS+kPgHTyQ0=; b=m0KkoMkO3pGnNK
+	UrznMZgok3q7zWHNFgHO8CiyYSTqFTG4LgvyVybAnfetMxftRMakP5fJVc0zNh0z/QGExkiUTrV9X
+	0N3XF0F/vLWryGvgaUviFSF4PZJ6GVK+djZB02w+RMpFred2pArasypxnt+rQZ1JupfV2s0kc54Ex
+	VrZfRvHuI+7zMbfyrkqerTbE0rn55w87Pj01zPtMGKENnFT8uzNyXvhk2rXIHhSAAyuJ3Suf+m9cU
+	uGXyasPIZE/13iu5LsC93t0O2uhyQALyuzzckxl+gar2DYEhoC06QUG1JE43VtcfVnG+0PaGXVHnJ
+	6FIql5xgQT/RBYn8bSvA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mPWde-00HFiI-2c; Sun, 12 Sep 2021 21:03:46 +0000
-Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
+	id 1mPWhm-00HGEs-Fk; Sun, 12 Sep 2021 21:08:03 +0000
+Received: from mail-wr1-x429.google.com ([2a00:1450:4864:20::429])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mPVoC-00H6z8-1L
- for linux-mtd@lists.infradead.org; Sun, 12 Sep 2021 20:10:37 +0000
-Received: by mail-wr1-x42c.google.com with SMTP id u16so11320161wrn.5
- for <linux-mtd@lists.infradead.org>; Sun, 12 Sep 2021 13:10:35 -0700 (PDT)
+ id 1mPVoE-00H71J-Jz
+ for linux-mtd@lists.infradead.org; Sun, 12 Sep 2021 20:10:40 +0000
+Received: by mail-wr1-x429.google.com with SMTP id d21so3617006wra.12
+ for <linux-mtd@lists.infradead.org>; Sun, 12 Sep 2021 13:10:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=jkm6XIjMcFvBv/Q8SMVuuUrOs216TrQ7UEhmgPQFIpc=;
- b=LbZ1KhiE0nod5S9udR0aox4Qlr6d6P21lS3IpT0LRwrpJGxbUh/YzxrI8re+FB0xcY
- 2e9EjnLN3IvqMaviA8R7TP7UwTRjARJavBiw5Ybt/sOHrRrMXULXIKPD/9aGl/e3bOkZ
- zOZ5je+2AdYQb8j44N+2uWwlOf0nJHA1GuhGB36SgRq57SbFh9ts8hVs1DXc2xX5T0Aw
- Z73TrZR7FWz5zWqtpr6wL6NekstYxb+4bscCwltg9nNJiCxKAFxiZNpJaHhd+OFwb/tB
- M6KdH4VFi5oVk0VzPIDnkyivfL8CccQwCNM4w4esJoCWzOysk/ZZ24D9OXuVjJN6CR/v
- xQww==
+ bh=nuKrXeUQQi+X+gXF6rgX7l9I20zb6cKrHqHuf0Fo3Dc=;
+ b=noNoRek7sydPqVyFu97kcd7tcR6gedhxl7ElZ3/cOXu74SBCo8+gF9q6KLCEeyaLs3
+ RUUzn6x33ddJno/ijLIStLQ7Rpfwld4wqiopqxTQpo2iGGw19cEN2QQh3A/YbU4YkBFH
+ asCS3KbjwpJgJTdo9OGXdBRCncPQ072kKX0ZHH5/1Xhkx4zSpNVtXtlKT8+BVx76nXaq
+ WLwnxMJAM3/YRrIpwBjYxk/jnhuIc0pq7IyH++uf5Xf3uakdDVOlKyW/n0ddTDG5bUZF
+ wVmkDt68zlKySjGW9W+u9S+cneuv3jLBv79DFp0hjazLX96vJnMZLcVTrEAtlxeMy0Lv
+ Id7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=jkm6XIjMcFvBv/Q8SMVuuUrOs216TrQ7UEhmgPQFIpc=;
- b=cNHF+TeaGZASj+9yVDjlfkHZnHiK4dw3CTQpTWiI1QT0n4blO0CGwPxRiiTec7m2e1
- GGlV3JLn2FWv6gjrc0k9Uwnifo+FwMoKNOvEwMkJjSc4gEZGKvPe287BhJmGmcX0OYFZ
- CE8VwqmlRVpAsCiuizi+83Gx0KO54oLs9mBx2fC5efk8ZOvcN4VzEiGQt0larDfa2i8Q
- z6zvxHNgGLPZYvNJQkKXlNw7Rd0TeZ1PM0ZH2zAh2ihYY0yYxH+WcOd3dI88T0a7Wgp8
- w53kp2tsxaVqud+MoQEtMwcm9kDtxQ2IhQb+FAIQi78XPujRe/AH/s8VRahozNn7V9WE
- mxng==
-X-Gm-Message-State: AOAM530YV4u9KLCsIayrtE7lIOLOb4OIPi9jg+8BAYqgU+fC/nwrScFs
- NWAGal0ibuOhbnp5fTC1jMU=
-X-Google-Smtp-Source: ABdhPJwRQqVWZfKNGnKNa/BHmWIr1OaAkwTGsK99SHVbKCllO4stLrUAeQ9C4CToCmSh6Wr+giI8oA==
-X-Received: by 2002:adf:c18d:: with SMTP id x13mr8992215wre.380.1631477434609; 
- Sun, 12 Sep 2021 13:10:34 -0700 (PDT)
+ bh=nuKrXeUQQi+X+gXF6rgX7l9I20zb6cKrHqHuf0Fo3Dc=;
+ b=f21srOBdRSuWiEYb/jL5abnw1VEiNm603VnPndV9WJBaiHp0aUtBJwDNRJq2rD5ZCs
+ lyfngzTlQeBXyqDIgbPtFM3iplCB1HHFsRqBkh1F0gSr0/NwbqZtuMqI1MS55NoQqqgZ
+ GzojWQYzftlg6CCqOhAxuw6AwD4Xj3Sw1r3Ollfdo4N0eMC9omC7ZbMkcPCs8zvZy1kZ
+ Lpv+UMa1uMAxV0+TClUvvTd0xnwQAZ/DyZ2XDdo4sKpkVHdt9Qr1NwbRH/+gViwZ34C/
+ UzzfxtP+XcWhuC9Nh4FOKv+IhxxysOSkHA4vehAG/cNyoQ3vN2gCNznnE9civZ25qLWA
+ dEXg==
+X-Gm-Message-State: AOAM533IrbjMEAr2pqO5VWff/y8LB0T3JjuDV0iSfn2inI5/RHJIT1zc
+ uqNIMAY4+LgGjKavpsBR5Nc=
+X-Google-Smtp-Source: ABdhPJzeS/lUM3uBVOa8b1iwTIrg598HLcCalOjs4P1NNZBmVuxQHQB/GxTvouFS9fmwBcmPnbfL0g==
+X-Received: by 2002:adf:9f4d:: with SMTP id f13mr8835877wrg.169.1631477437129; 
+ Sun, 12 Sep 2021 13:10:37 -0700 (PDT)
 Received: from localhost.localdomain (46-138-83-36.dynamic.spd-mgts.ru.
  [46.138.83.36])
- by smtp.gmail.com with ESMTPSA id v10sm5463476wrg.15.2021.09.12.13.10.32
+ by smtp.gmail.com with ESMTPSA id v10sm5463476wrg.15.2021.09.12.13.10.34
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 12 Sep 2021 13:10:34 -0700 (PDT)
+ Sun, 12 Sep 2021 13:10:36 -0700 (PDT)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>,
@@ -94,16 +94,16 @@ Cc: linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
  linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
  dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
  linux-clk@vger.kernel.org
-Subject: [PATCH v11 25/34] soc/tegra: fuse: Reset hardware
-Date: Sun, 12 Sep 2021 23:08:23 +0300
-Message-Id: <20210912200832.12312-26-digetx@gmail.com>
+Subject: [PATCH v11 26/34] soc/tegra: fuse: Use resource-managed helpers
+Date: Sun, 12 Sep 2021 23:08:24 +0300
+Message-Id: <20210912200832.12312-27-digetx@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210912200832.12312-1-digetx@gmail.com>
 References: <20210912200832.12312-1-digetx@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210912_131036_145708_C93D286C 
-X-CRM114-Status: GOOD (  18.29  )
+X-CRM114-CacheID: sfid-20210912_131038_717432_C3E16891 
+X-CRM114-Status: GOOD (  18.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,70 +120,179 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The FUSE controller is enabled at a boot time. Reset it in order to put
-hardware and clock into clean and disabled state.
+Use resource-managed helpers to make code cleaner and more correct,
+properly releasing all resources in case of driver probe error.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- drivers/soc/tegra/fuse/fuse-tegra.c | 25 +++++++++++++++++++++++++
- drivers/soc/tegra/fuse/fuse.h       |  1 +
- 2 files changed, 26 insertions(+)
+ drivers/soc/tegra/fuse/fuse-tegra.c   | 32 ++++++++++++++------------
+ drivers/soc/tegra/fuse/fuse-tegra20.c | 33 ++++++++++++++++++++++++---
+ 2 files changed, 48 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/soc/tegra/fuse/fuse-tegra.c b/drivers/soc/tegra/fuse/fuse-tegra.c
-index f2151815db58..cc032729a143 100644
+index cc032729a143..fe4f935ce73a 100644
 --- a/drivers/soc/tegra/fuse/fuse-tegra.c
 +++ b/drivers/soc/tegra/fuse/fuse-tegra.c
-@@ -14,6 +14,7 @@
- #include <linux/of_address.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-+#include <linux/reset.h>
- #include <linux/slab.h>
- #include <linux/sys_soc.h>
+@@ -182,6 +182,12 @@ static const struct nvmem_cell_info tegra_fuse_cells[] = {
+ 	},
+ };
  
-@@ -243,6 +244,30 @@ static int tegra_fuse_probe(struct platform_device *pdev)
- 		goto restore;
++static void tegra_fuse_restore(void *base)
++{
++	fuse->clk = NULL;
++	fuse->base = base;
++}
++
+ static int tegra_fuse_probe(struct platform_device *pdev)
+ {
+ 	void __iomem *base = fuse->base;
+@@ -189,13 +195,16 @@ static int tegra_fuse_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 	int err;
+ 
++	err = devm_add_action(&pdev->dev, tegra_fuse_restore, base);
++	if (err)
++		return err;
++
+ 	/* take over the memory region from the early initialization */
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	fuse->phys = res->start;
+ 	fuse->base = devm_ioremap_resource(&pdev->dev, res);
+ 	if (IS_ERR(fuse->base)) {
+ 		err = PTR_ERR(fuse->base);
+-		fuse->base = base;
+ 		return err;
  	}
  
-+	fuse->rst = devm_reset_control_get_optional(&pdev->dev, "fuse");
-+	if (IS_ERR(fuse->rst)) {
-+		err = PTR_ERR(fuse->rst);
-+		dev_err(&pdev->dev, "failed to get FUSE reset: %pe\n",
-+			fuse->rst);
-+		goto restore;
-+	}
-+
-+	/*
-+	 * FUSE clock is enabled at a boot time, hence this resume/suspend
-+	 * disables the clock besides the h/w resetting.
-+	 */
-+	err = pm_runtime_resume_and_get(&pdev->dev);
+@@ -205,19 +214,20 @@ static int tegra_fuse_probe(struct platform_device *pdev)
+ 			dev_err(&pdev->dev, "failed to get FUSE clock: %ld",
+ 				PTR_ERR(fuse->clk));
+ 
+-		fuse->base = base;
+ 		return PTR_ERR(fuse->clk);
+ 	}
+ 
+ 	platform_set_drvdata(pdev, fuse);
+ 	fuse->dev = &pdev->dev;
+ 
+-	pm_runtime_enable(&pdev->dev);
++	err = devm_pm_runtime_enable(&pdev->dev);
 +	if (err)
-+		goto restore;
-+
-+	err = reset_control_reset(fuse->rst);
-+	pm_runtime_put(&pdev->dev);
-+
-+	if (err < 0) {
-+		dev_err(&pdev->dev, "failed to reset FUSE: %d\n", err);
-+		goto restore;
-+	}
-+
++		return err;
+ 
+ 	if (fuse->soc->probe) {
+ 		err = fuse->soc->probe(fuse);
+ 		if (err < 0)
+-			goto restore;
++			return err;
+ 	}
+ 
+ 	memset(&nvmem, 0, sizeof(nvmem));
+@@ -241,7 +251,7 @@ static int tegra_fuse_probe(struct platform_device *pdev)
+ 		err = PTR_ERR(fuse->nvmem);
+ 		dev_err(&pdev->dev, "failed to register NVMEM device: %d\n",
+ 			err);
+-		goto restore;
++		return err;
+ 	}
+ 
+ 	fuse->rst = devm_reset_control_get_optional(&pdev->dev, "fuse");
+@@ -249,7 +259,7 @@ static int tegra_fuse_probe(struct platform_device *pdev)
+ 		err = PTR_ERR(fuse->rst);
+ 		dev_err(&pdev->dev, "failed to get FUSE reset: %pe\n",
+ 			fuse->rst);
+-		goto restore;
++		return err;
+ 	}
+ 
+ 	/*
+@@ -258,26 +268,20 @@ static int tegra_fuse_probe(struct platform_device *pdev)
+ 	 */
+ 	err = pm_runtime_resume_and_get(&pdev->dev);
+ 	if (err)
+-		goto restore;
++		return err;
+ 
+ 	err = reset_control_reset(fuse->rst);
+ 	pm_runtime_put(&pdev->dev);
+ 
+ 	if (err < 0) {
+ 		dev_err(&pdev->dev, "failed to reset FUSE: %d\n", err);
+-		goto restore;
++		return err;
+ 	}
+ 
  	/* release the early I/O memory mapping */
  	iounmap(base);
  
-diff --git a/drivers/soc/tegra/fuse/fuse.h b/drivers/soc/tegra/fuse/fuse.h
-index de58feba0435..1b719d85bd04 100644
---- a/drivers/soc/tegra/fuse/fuse.h
-+++ b/drivers/soc/tegra/fuse/fuse.h
-@@ -43,6 +43,7 @@ struct tegra_fuse {
- 	void __iomem *base;
- 	phys_addr_t phys;
- 	struct clk *clk;
-+	struct reset_control *rst;
+ 	return 0;
+-
+-restore:
+-	fuse->clk = NULL;
+-	fuse->base = base;
+-	pm_runtime_disable(&pdev->dev);
+-	return err;
+ }
  
- 	u32 (*read_early)(struct tegra_fuse *fuse, unsigned int offset);
- 	u32 (*read)(struct tegra_fuse *fuse, unsigned int offset);
+ static int __maybe_unused tegra_fuse_runtime_resume(struct device *dev)
+diff --git a/drivers/soc/tegra/fuse/fuse-tegra20.c b/drivers/soc/tegra/fuse/fuse-tegra20.c
+index 8ec9fc5e5e4b..12503f563e36 100644
+--- a/drivers/soc/tegra/fuse/fuse-tegra20.c
++++ b/drivers/soc/tegra/fuse/fuse-tegra20.c
+@@ -94,9 +94,28 @@ static bool dma_filter(struct dma_chan *chan, void *filter_param)
+ 	return of_device_is_compatible(np, "nvidia,tegra20-apbdma");
+ }
+ 
++static void tegra20_fuse_release_channel(void *data)
++{
++	struct tegra_fuse *fuse = data;
++
++	dma_release_channel(fuse->apbdma.chan);
++	fuse->apbdma.chan = NULL;
++}
++
++static void tegra20_fuse_free_coherent(void *data)
++{
++	struct tegra_fuse *fuse = data;
++
++	dma_free_coherent(fuse->dev, sizeof(u32), fuse->apbdma.virt,
++			  fuse->apbdma.phys);
++	fuse->apbdma.virt = NULL;
++	fuse->apbdma.phys = 0x0;
++}
++
+ static int tegra20_fuse_probe(struct tegra_fuse *fuse)
+ {
+ 	dma_cap_mask_t mask;
++	int err;
+ 
+ 	dma_cap_zero(mask);
+ 	dma_cap_set(DMA_SLAVE, mask);
+@@ -105,13 +124,21 @@ static int tegra20_fuse_probe(struct tegra_fuse *fuse)
+ 	if (!fuse->apbdma.chan)
+ 		return -EPROBE_DEFER;
+ 
++	err = devm_add_action_or_reset(fuse->dev, tegra20_fuse_release_channel,
++				       fuse);
++	if (err)
++		return err;
++
+ 	fuse->apbdma.virt = dma_alloc_coherent(fuse->dev, sizeof(u32),
+ 					       &fuse->apbdma.phys,
+ 					       GFP_KERNEL);
+-	if (!fuse->apbdma.virt) {
+-		dma_release_channel(fuse->apbdma.chan);
++	if (!fuse->apbdma.virt)
+ 		return -ENOMEM;
+-	}
++
++	err = devm_add_action_or_reset(fuse->dev, tegra20_fuse_free_coherent,
++				       fuse);
++	if (err)
++		return err;
+ 
+ 	fuse->apbdma.config.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+ 	fuse->apbdma.config.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
 -- 
 2.32.0
 
