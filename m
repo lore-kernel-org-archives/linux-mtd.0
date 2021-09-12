@@ -6,16 +6,16 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
 	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 906D3C433EF
-	for <linux-mtd@archiver.kernel.org>; Sun, 12 Sep 2021 20:47:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C73DC433F5
+	for <linux-mtd@archiver.kernel.org>; Sun, 12 Sep 2021 20:52:02 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 507CC60F43
-	for <linux-mtd@archiver.kernel.org>; Sun, 12 Sep 2021 20:47:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 507CC60F43
+	by mail.kernel.org (Postfix) with ESMTPS id BC6A960EE5
+	for <linux-mtd@archiver.kernel.org>; Sun, 12 Sep 2021 20:52:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BC6A960EE5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,67 +24,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UH5lYkF66NJ7qNktsv3D28dGHkmxeSAcU3SMhwiZy0E=; b=zPTK83sLDLRolQ
-	+rpTvLC3TrMK4h9lVd2E5D47O1rJ5DdftWl663Ca/x34djqlcdkMueCOD0VSOFqz3VVM3kXJHyMhR
-	+l8zV69EUGUw3tjqhv7f+SFBWJqoYLCadOrjCXWMOrCvPTjoOgtp3bqBp6OOc1aRkQHLr8bCrH7y0
-	KdSROdXKrfIX/ukLcI2XQynn6oOKOgVoj0YdvHuME40GZBjJOgRLoSeutDnexc3O4dVOm0XQEDBgv
-	AM7TVxwN6TGKiobsp9pBeM8Zxb3AK6RlrsPk0XthsiR2bvmdAgQCymrmf6wT0SvtRY9vXfBCssf2z
-	w7TTjNEM8dWljhXCTd3w==;
+	List-Owner; bh=PePM1wFfDrLReTXBB4p8q4YW8TLzp73I6Ni2dGiX/t0=; b=wnxznr7NVZhWQB
+	550reYHLpwFv2D2m+LnaxmkPrM4ONeLFAaOnP0rKS4OsFaNHQBPb+8/QUJ8X0IEi+oevK8qlktG4k
+	+dU04kHHrIviovfok+LLXCsqDSYA0C/qlqKARpm3XUk3MNywdadro2Flb6jMN5dn8ldixlbSxL7zl
+	tfN3nMNb4mD5cwyo26YDTZY3Sd6RC5VUSReqBh0qkhZgNOOeLcap/Q8tuz7zwoJTzOzE711FVbnOR
+	seZTlcVV9JTuq5NE8gu5C8juMpv8Gq+JXX2LTOgQI/bE3UynKtNuiuzJnI+EqVjCjrX2nWasz+k/1
+	JsDtqjn/5INmdsgemkGw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mPWNc-00HDh0-DU; Sun, 12 Sep 2021 20:47:13 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1mPWRY-00HEAJ-V8; Sun, 12 Sep 2021 20:51:17 +0000
+Received: from mail-wr1-x42d.google.com ([2a00:1450:4864:20::42d])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mPVo5-00H6u9-AE
- for linux-mtd@bombadil.infradead.org; Sun, 12 Sep 2021 20:10:29 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
- :References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
- Content-Type:Content-ID:Content-Description;
- bh=i9QYtupMPLyzQnqOhwfXP4oUoMqt4gxj3ewFZ5B73Ts=; b=bs7NJTeR/7law77NOTscws9Dnv
- kmLQwYnMPKW63OHmQiXIRbPglyj9pi0ggllWO6W4KEJMhB0SkqALslvWlZxbMf6KgAUi/FXqW8hIM
- nV9/c1u4GjKwgSWuNXiRGOclmGcsGZsKsSVWTfv1fXmMufVMy+GVLF2bpU7sGEOQ6DsdFIC53Ace6
- ILpGjajm97uBChoGiGKiHqEGL7Pwk0FD1RJ8Y0+cTj94e7bEZIkopMlxalNJxCMbwTfaI7XFHfCBJ
- J5FkGyYLoc8GZ+aVyUrYgNjv5WTn91zmQREYgo55emC/BGIsPj5RaGYZJlpkITZY8Y8sAldoqahrx
- JcjhEXCw==;
-Received: from mail-wr1-x433.google.com ([2a00:1450:4864:20::433])
- by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mPVo1-002fgN-NN
- for linux-mtd@lists.infradead.org; Sun, 12 Sep 2021 20:10:27 +0000
-Received: by mail-wr1-x433.google.com with SMTP id w29so10556163wra.8
- for <linux-mtd@lists.infradead.org>; Sun, 12 Sep 2021 13:10:25 -0700 (PDT)
+ id 1mPVo4-00H6tW-C1
+ for linux-mtd@lists.infradead.org; Sun, 12 Sep 2021 20:10:31 +0000
+Received: by mail-wr1-x42d.google.com with SMTP id i23so11323840wrb.2
+ for <linux-mtd@lists.infradead.org>; Sun, 12 Sep 2021 13:10:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=i9QYtupMPLyzQnqOhwfXP4oUoMqt4gxj3ewFZ5B73Ts=;
- b=likXWSDZ1v4Sks8GU89iHowLqcUIMbRx2wPVX1eQxhP6OFsM0KOWZ9FJZhC5u81DH3
- Xwm7v1MdGjoALtI6tmFDtN9SbW8Kim3JApNeY1SY7TKt6OC3vh3EBVSiwtbK2CClM+Ch
- FhxtDJVGkWKHaFxatJVQimK5oi2xZwnonEV9O9Hrp+ECsZvXzfCdLC8zgVxxOYSRih5G
- 12j0KRIHdXQWild9q2nxvAMdxgj+OwpAwzhwLSe1w/X5a7wf6YfGu84X+25CvvWmqTUf
- QalIstKqSUiPtJtPgkLrvVVp7FeQ0qN5uKfG0LxgAwDZYuXuoEfCI6CAeaviK7SONxJF
- jWzA==
+ bh=/QFkra7q0loY/HoScoDRrT1KJ3tmn7t3p2QBJeB1xyI=;
+ b=HcsXMQO074WvYm+LWPFWD4SwPRoN+2aMfedGvexuNBF6CUZuq15raAl0cMKvyU0vzU
+ k0WRxwh3nKOKoFwmDrTif24Y9EBCnXF3SCQeluHh49bj8BLdMRZS3Mpjy0UAxJrSd1K0
+ dfXzWXVEeHBVa676CIP9hAs9j9iqdnZ+NnXitG3FRygcdgbWFlVomQqyKMRnb/GVJ2NO
+ 0Tgnoxs0Gf3HV6T3MSnh8D+BZZBu+iuqsjPaOEspc4vdxz7AjxdeJmFswN9ewBD60/4l
+ Uuhsepb6cM41BFEDqwV6DEQzL4RWt1i04focT2HFHw/N3//1Pzpwrc53jL2z+naAO9MI
+ cdPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=i9QYtupMPLyzQnqOhwfXP4oUoMqt4gxj3ewFZ5B73Ts=;
- b=I3aCTOPflNhrcn7ou5TzI5lgBUAlDU6Xxhuzs7WNPTOgkIGRrfAu/0zramPXTf6M3k
- 1x+G/KxHJKq1cI0zKpdX1uoqWGjirCXx+DQn5FunHQsFHMEYmeBHp68mzfJ3Ac6+UWb5
- lrC3AQM8zU7j9GDAKEGW9+Alw90FwqSvrIt/C/sVF86NL7blfTShHG4O1/yu2WI50tLr
- Fg8hhQorEQ8m8fkIeUHeEVEIKAwtFGX3gQzXkaAoMl45T0K3inr2h3RkN+PIWD1YcU+f
- cEzrZog+S/0DXyEKlRuDLTijh/bXcQ1oTS+ZE1h97Ljo/7uIetdWQJn99GrP3LPi6xqZ
- ZCYA==
-X-Gm-Message-State: AOAM530gQVmqT9yD168VdElxK5DJtFlcitWGlHpspUjEoNNotKMmeqjh
- 3B617EGrT4yFA71/TEvlbBw=
-X-Google-Smtp-Source: ABdhPJwCmjRwTNEp+XF6+uJ6s3Fjckg+MJaBPqelfkfezkcz9fDISHUtIGjPc0rD/uibc9ZFzImTJA==
-X-Received: by 2002:a05:6000:124b:: with SMTP id
- j11mr9073974wrx.147.1631477424444; 
- Sun, 12 Sep 2021 13:10:24 -0700 (PDT)
+ bh=/QFkra7q0loY/HoScoDRrT1KJ3tmn7t3p2QBJeB1xyI=;
+ b=uQr86E5SIT28NS6kEURvM6NrKNg7mWpMVMjxfV042HlplPjeYoZ28Gpz0IsJrZujpW
+ 98E6CcUkDysiA3PJ8PJmy7yH0sPL0Uc5P/EUbecp5oPXALVft5/8Mjw/uV2MORZqW9ZW
+ iRgURwdvnA6c8ON7f1P7YyXZmSLOopNudCu7J4w/KdoC+v71jtRfoxc8XlgbvP/Ih6xd
+ coTqecN137kFn2bLYijfliwhs5h5yF03Nurw3qEyNFOvV+QkNSmzD2oRn8Qx/3UtQqi6
+ VYTxkl+RmUcxGwgdPvrznQ1pvZI0dWVStLLZi4zX/ua5d+MQzeNpb6pBiswIdiWpoKfg
+ cjwA==
+X-Gm-Message-State: AOAM530B2hKafT0Z2YY8lcpjYSm4G204mAKB6rs5OwivoVlyOvAPUhiB
+ ivbNvgAY4dle3uq0ikBn/50=
+X-Google-Smtp-Source: ABdhPJxQIxYiRjwtWvqz2cZ95+hyhVeABZrfa5jhpa0n12PFhgVoxCI/fjm/B3L8nbPOzTdnXopasg==
+X-Received: by 2002:a5d:4f02:: with SMTP id c2mr9155803wru.10.1631477427201;
+ Sun, 12 Sep 2021 13:10:27 -0700 (PDT)
 Received: from localhost.localdomain (46-138-83-36.dynamic.spd-mgts.ru.
  [46.138.83.36])
- by smtp.gmail.com with ESMTPSA id v10sm5463476wrg.15.2021.09.12.13.10.22
+ by smtp.gmail.com with ESMTPSA id v10sm5463476wrg.15.2021.09.12.13.10.24
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 12 Sep 2021 13:10:24 -0700 (PDT)
+ Sun, 12 Sep 2021 13:10:27 -0700 (PDT)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>,
@@ -109,16 +94,16 @@ Cc: linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
  linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
  dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
  linux-clk@vger.kernel.org
-Subject: [PATCH v11 21/34] spi: tegra20-slink: Add OPP support
-Date: Sun, 12 Sep 2021 23:08:19 +0300
-Message-Id: <20210912200832.12312-22-digetx@gmail.com>
+Subject: [PATCH v11 22/34] media: dt: bindings: tegra-vde: Convert to schema
+Date: Sun, 12 Sep 2021 23:08:20 +0300
+Message-Id: <20210912200832.12312-23-digetx@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210912200832.12312-1-digetx@gmail.com>
 References: <20210912200832.12312-1-digetx@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210912_211025_855121_A19DF133 
-X-CRM114-Status: GOOD (  16.83  )
+X-CRM114-CacheID: sfid-20210912_131028_481001_40A38BC5 
+X-CRM114-Status: GOOD (  17.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -135,59 +120,200 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The SPI on Tegra belongs to the core power domain and we're going to
-enable GENPD support for the core domain. Now SPI driver must use OPP
-API for driving the controller's clock rate because OPP API takes care
-of reconfiguring the domain's performance state in accordance to the
-rate. Add OPP support to the driver.
+Convert NVIDIA Tegra video decoder binding to schema.
 
-Acked-by: Mark Brown <broonie@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- drivers/spi/spi-tegra20-slink.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ .../bindings/media/nvidia,tegra-vde.txt       |  64 -----------
+ .../bindings/media/nvidia,tegra-vde.yaml      | 107 ++++++++++++++++++
+ 2 files changed, 107 insertions(+), 64 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/media/nvidia,tegra-vde.txt
+ create mode 100644 Documentation/devicetree/bindings/media/nvidia,tegra-vde.yaml
 
-diff --git a/drivers/spi/spi-tegra20-slink.c b/drivers/spi/spi-tegra20-slink.c
-index 8ce840c7ecc8..1a92978d2120 100644
---- a/drivers/spi/spi-tegra20-slink.c
-+++ b/drivers/spi/spi-tegra20-slink.c
-@@ -18,12 +18,15 @@
- #include <linux/kthread.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
-+#include <linux/pm_opp.h>
- #include <linux/pm_runtime.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/reset.h>
- #include <linux/spi/spi.h>
- 
-+#include <soc/tegra/common.h>
+diff --git a/Documentation/devicetree/bindings/media/nvidia,tegra-vde.txt b/Documentation/devicetree/bindings/media/nvidia,tegra-vde.txt
+deleted file mode 100644
+index 602169b8aa19..000000000000
+--- a/Documentation/devicetree/bindings/media/nvidia,tegra-vde.txt
++++ /dev/null
+@@ -1,64 +0,0 @@
+-NVIDIA Tegra Video Decoder Engine
+-
+-Required properties:
+-- compatible : Must contain one of the following values:
+-   - "nvidia,tegra20-vde"
+-   - "nvidia,tegra30-vde"
+-   - "nvidia,tegra114-vde"
+-   - "nvidia,tegra124-vde"
+-   - "nvidia,tegra132-vde"
+-- reg : Must contain an entry for each entry in reg-names.
+-- reg-names : Must include the following entries:
+-  - sxe
+-  - bsev
+-  - mbe
+-  - ppe
+-  - mce
+-  - tfe
+-  - ppb
+-  - vdma
+-  - frameid
+-- iram : Must contain phandle to the mmio-sram device node that represents
+-         IRAM region used by VDE.
+-- interrupts : Must contain an entry for each entry in interrupt-names.
+-- interrupt-names : Must include the following entries:
+-  - sync-token
+-  - bsev
+-  - sxe
+-- clocks : Must include the following entries:
+-  - vde
+-- resets : Must contain an entry for each entry in reset-names.
+-- reset-names : Should include the following entries:
+-  - vde
+-
+-Optional properties:
+-- resets : Must contain an entry for each entry in reset-names.
+-- reset-names : Must include the following entries:
+-  - mc
+-- iommus: Must contain phandle to the IOMMU device node.
+-
+-Example:
+-
+-video-codec@6001a000 {
+-	compatible = "nvidia,tegra20-vde";
+-	reg = <0x6001a000 0x1000 /* Syntax Engine */
+-	       0x6001b000 0x1000 /* Video Bitstream Engine */
+-	       0x6001c000  0x100 /* Macroblock Engine */
+-	       0x6001c200  0x100 /* Post-processing Engine */
+-	       0x6001c400  0x100 /* Motion Compensation Engine */
+-	       0x6001c600  0x100 /* Transform Engine */
+-	       0x6001c800  0x100 /* Pixel prediction block */
+-	       0x6001ca00  0x100 /* Video DMA */
+-	       0x6001d800  0x300 /* Video frame controls */>;
+-	reg-names = "sxe", "bsev", "mbe", "ppe", "mce",
+-		    "tfe", "ppb", "vdma", "frameid";
+-	iram = <&vde_pool>; /* IRAM region */
+-	interrupts = <GIC_SPI  9 IRQ_TYPE_LEVEL_HIGH>, /* Sync token interrupt */
+-		     <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>, /* BSE-V interrupt */
+-		     <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>; /* SXE interrupt */
+-	interrupt-names = "sync-token", "bsev", "sxe";
+-	clocks = <&tegra_car TEGRA20_CLK_VDE>;
+-	reset-names = "vde", "mc";
+-	resets = <&tegra_car 61>, <&mc TEGRA20_MC_RESET_VDE>;
+-	iommus = <&mc TEGRA_SWGROUP_VDE>;
+-};
+diff --git a/Documentation/devicetree/bindings/media/nvidia,tegra-vde.yaml b/Documentation/devicetree/bindings/media/nvidia,tegra-vde.yaml
+new file mode 100644
+index 000000000000..3b6c1f031e04
+--- /dev/null
++++ b/Documentation/devicetree/bindings/media/nvidia,tegra-vde.yaml
+@@ -0,0 +1,107 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/media/nvidia,tegra-vde.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- #define SLINK_COMMAND			0x000
- #define SLINK_BIT_LENGTH(x)		(((x) & 0x1f) << 0)
- #define SLINK_WORD_SIZE(x)		(((x) & 0x1f) << 5)
-@@ -680,7 +683,7 @@ static int tegra_slink_start_transfer_one(struct spi_device *spi,
- 	bits_per_word = t->bits_per_word;
- 	speed = t->speed_hz;
- 	if (speed != tspi->cur_speed) {
--		clk_set_rate(tspi->clk, speed * 4);
-+		dev_pm_opp_set_rate(tspi->dev, speed * 4);
- 		tspi->cur_speed = speed;
- 	}
- 
-@@ -1082,6 +1085,11 @@ static int tegra_slink_probe(struct platform_device *pdev)
- 	init_completion(&tspi->xfer_completion);
- 
- 	pm_runtime_enable(&pdev->dev);
++title: NVIDIA Tegra Video Decoder Engine
 +
-+	ret = devm_tegra_core_dev_init_opp_table_common(&pdev->dev);
-+	if (ret)
-+		goto exit_pm_disable;
++maintainers:
++  - Dmitry Osipenko <digetx@gmail.com>
++  - Jon Hunter <jonathanh@nvidia.com>
++  - Thierry Reding <thierry.reding@gmail.com>
 +
- 	ret = pm_runtime_resume_and_get(&pdev->dev);
- 	if (ret) {
- 		dev_err(&pdev->dev, "pm runtime get failed, e = %d\n", ret);
++properties:
++  compatible:
++    oneOf:
++      - items:
++          - enum:
++              - nvidia,tegra132-vde
++              - nvidia,tegra124-vde
++              - nvidia,tegra114-vde
++              - nvidia,tegra30-vde
++          - enum:
++              - nvidia,tegra20-vde
++      - items:
++          - const: nvidia,tegra20-vde
++
++  reg:
++    maxItems: 9
++
++  reg-names:
++    items:
++      - const: sxe
++      - const: bsev
++      - const: mbe
++      - const: ppe
++      - const: mce
++      - const: tfe
++      - const: ppb
++      - const: vdma
++      - const: frameid
++
++  clocks:
++    maxItems: 1
++
++  resets:
++    maxItems: 2
++
++  reset-names:
++    items:
++      - const: vde
++      - const: mc
++
++  interrupts:
++    maxItems: 3
++
++  interrupt-names:
++    items:
++      - const: sync-token
++      - const: bsev
++      - const: sxe
++
++  iommus:
++    maxItems: 1
++
++  iram:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description:
++      Phandle of the SRAM MMIO node.
++
++required:
++  - compatible
++  - reg
++  - reg-names
++  - clocks
++  - resets
++  - reset-names
++  - interrupts
++  - interrupt-names
++
++additionalProperties: false
++
++examples:
++  - |
++    video-codec@6001a000 {
++      compatible = "nvidia,tegra20-vde";
++      reg = <0x6001a000 0x1000>, /* Syntax Engine */
++            <0x6001b000 0x1000>, /* Video Bitstream Engine */
++            <0x6001c000  0x100>, /* Macroblock Engine */
++            <0x6001c200  0x100>, /* Post-processing Engine */
++            <0x6001c400  0x100>, /* Motion Compensation Engine */
++            <0x6001c600  0x100>, /* Transform Engine */
++            <0x6001c800  0x100>, /* Pixel prediction block */
++            <0x6001ca00  0x100>, /* Video DMA */
++            <0x6001d800  0x300>; /* Video frame controls */
++      reg-names = "sxe", "bsev", "mbe", "ppe", "mce",
++                  "tfe", "ppb", "vdma", "frameid";
++      iram = <&iram>; /* IRAM MMIO region */
++      interrupts = <0  9 4>, /* Sync token */
++                   <0 10 4>, /* BSE-V */
++                   <0 12 4>; /* SXE */
++      interrupt-names = "sync-token", "bsev", "sxe";
++      clocks = <&clk 61>;
++      reset-names = "vde", "mc";
++      resets = <&rst 61>, <&mem 13>;
++      iommus = <&mem 15>;
++    };
 -- 
 2.32.0
 
