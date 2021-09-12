@@ -6,16 +6,16 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
 	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62C6CC433F5
-	for <linux-mtd@archiver.kernel.org>; Sun, 12 Sep 2021 20:56:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CF08C433F5
+	for <linux-mtd@archiver.kernel.org>; Sun, 12 Sep 2021 21:00:44 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 232E161051
-	for <linux-mtd@archiver.kernel.org>; Sun, 12 Sep 2021 20:56:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 232E161051
+	by mail.kernel.org (Postfix) with ESMTPS id EFEB661052
+	for <linux-mtd@archiver.kernel.org>; Sun, 12 Sep 2021 21:00:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EFEB661052
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,53 +24,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MrIa1uz379D7xGtPyTVk/5JZgjHvd/xajzwA4i2NWLo=; b=tm+iKY4j3lLyn4
-	gLuobKfj6AchJqGMDrK/PZOKiaVddnxVouGDSTF2MHTsr0oT4MVcwL7qEW7hRof2Laby2GibMoPJy
-	Uees29P34ykwjtjEnp9dU/+kPUM/Vtc4NcOxAReg0atTSZuZD636o8QArtK/i/E56CISfyFlfXgmk
-	dh0fsdXGO5VngaoMAiPM3vdEwc77NJNYwNohbMffY8rFZW0IkJY4hDYrRcUKrBsM8SUymT7H44UPt
-	fojmJBTeRE9OUI23dI0YH3LyT5tsIc1pToI0Ux856Me+VuLbWuJT+AAOHajqgC15ilhrfMCx9xdEX
-	DdVCl3+8bEtdnmfufgug==;
+	List-Owner; bh=WgLl5TQJOmG4jQjTzCd9+t8Y0vR+GByXTojEVyH9F2Q=; b=DaWlR68zzgCMHV
+	I27pSt4I7GcYG0Ns4PVJYXRj5z2Zk1HV7/AgGq3lJNEULOCZqAwofpsqSk4dp8gdO+yXn8JPXdj9r
+	lNMWXChkDHUfBqLT7TVtroQNrZJ8/05rooN2rmSzIxX8djfA5PKikKrOPrI4r5kZleAj0e50MSYrt
+	38TFbPtQ6nAJm/NqLwbU+4w0DOvEzvuYPkBp5USrGy1APAdtTXGwT21lbNdkTzckJu9xS0VvK7b7f
+	vNpwKWHIzYkmde0qRot6/Nx1UDLbP0S0d4RfnYvvc58JLqDPjc0bOpQ1E79lImzd1AU/RQvNKmKDT
+	hRQtZbB3Mmn1GiISNY5w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mPWVf-00HEYx-7U; Sun, 12 Sep 2021 20:55:32 +0000
-Received: from mail-wm1-x335.google.com ([2a00:1450:4864:20::335])
+	id 1mPWZi-00HF49-Sb; Sun, 12 Sep 2021 20:59:43 +0000
+Received: from mail-wr1-x434.google.com ([2a00:1450:4864:20::434])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mPVo7-00H6vb-0f
- for linux-mtd@lists.infradead.org; Sun, 12 Sep 2021 20:10:32 +0000
-Received: by mail-wm1-x335.google.com with SMTP id g128so691459wma.5
- for <linux-mtd@lists.infradead.org>; Sun, 12 Sep 2021 13:10:30 -0700 (PDT)
+ id 1mPVo9-00H6xN-JP
+ for linux-mtd@lists.infradead.org; Sun, 12 Sep 2021 20:10:35 +0000
+Received: by mail-wr1-x434.google.com with SMTP id u16so11320073wrn.5
+ for <linux-mtd@lists.infradead.org>; Sun, 12 Sep 2021 13:10:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=b4VIKmbdMAsFKCV4yDWvgLSko+6dlgzXMHJz6Zc9RO8=;
- b=WYlYCIHhy2AwhmX7L/AlwoRTFLRNk1Tw8KZ1cNf4Z2BgAk5gJUFFsDyiI8pBahl6s5
- CWTx8U8kQqpUC9d1Kf8UW3oIe3rg5dwKzaXaPmyg7lVuMXIceWpolx5f3LJKPUU87Bod
- 3O7Lw+5Tjw2jpvqVMGOGBC9qMPlfztC63JbLV1QRppX1gNBIwTkmSK7wVXdpf2xO/RIR
- mKmyCaWGc1Dt2qQD3YL0XF5a3RJ5eAHEezXtRX5g508Tq82JkTJOiVmuZd4spjcZH8JY
- vwFG+NAvPyDBBTFXNnfKkQuETEecgQZy7+Tuc19oJuaNa11vCKL8YU+lmpseq99X/jCn
- Udiw==
+ bh=Ww/L4fjenebIn9zOWRmgVU7EP8twv8HHX18pgFT7aL8=;
+ b=F9aT6kqD3//zRNApSu9q/bIQ9dDrXTb49ZIzVt4TnuTbVaNXFn6hYdXNT3Zl+r5AzV
+ LvdT1ajpZwKJCxCQYoACwLuzh03ASixemc1T/UQH7PGLb/QCw06mrGBEs8SWNQH5eyZE
+ RE3rtLINrrZzCtgbqEmBKGdptHQKUCSVpCwsQFXjuN9EIdyumP46uHX7i4Ae1/u479Gt
+ Cniy9D6YyXybsyA+Y4NPHGR3Ey8p0tgPOmHtg8flbzZ91fBWcFn2svxGcaWxYt2/o7W+
+ qIS4KVGuqHt5eFI7Fm/FeMNVkKQwN3jd+Ff68oLA8Bm+m6q0zGWHQ1Axbp0BeZqT88Ja
+ 2jrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=b4VIKmbdMAsFKCV4yDWvgLSko+6dlgzXMHJz6Zc9RO8=;
- b=7n+Cm6SS45B3KoqIpNGiNi3csX4XVamejM6rflO3naaBhnnUufw8pCryAYDZKd0Zis
- 6wSm84ZeJqoQXEYumuoHHwPqA2OpCzPgzixWzPbaMAhWQM8e7c2NruXVHMVBXga3EEwR
- 7nP2ElCZ1NoQovAJ6ZTf92Nyg7vEdFs5FcSqPNOz1nPDXRNMdONHYseFXKg3pFx5aT3T
- FR1NJ8Ozs1agF6U3kEe4xkDyXVTvJjYNi4Gppig/iSjhfGZh8OmvjDDyCDUk7vVBlGvH
- rooZux6kLky2sdmMvkg3BymLxassWto2sEEPfwgX78XvUTIiRB/1GAQf4518yp8njVrE
- L/cg==
-X-Gm-Message-State: AOAM533jqeVFaqqwGMNSdfe3KTocmfGWvpY8Lt5xSTRILLns7805BsxI
- eT3gZbGeU8aQmr4+7vkC9qA=
-X-Google-Smtp-Source: ABdhPJwilD7uMmHHQ3Z72aCq5cGCPEr6BZMewoEYkEkrhgvxyF+teVEQagLVBgnOWAIx7IIGBJO7+w==
-X-Received: by 2002:a05:600c:4e8b:: with SMTP id
- f11mr7626369wmq.165.1631477429807; 
- Sun, 12 Sep 2021 13:10:29 -0700 (PDT)
+ bh=Ww/L4fjenebIn9zOWRmgVU7EP8twv8HHX18pgFT7aL8=;
+ b=GcNlyKPvuZjosC1kVw8czmnJEWoNAiqPZMuVmU+Iug86QiuO6MIHm33MDyGXPawmjp
+ g1DucGjjmbDKWtq6iE6Jcxkkd/6JYEz9EVCq9iBZa9U9JWyiS2zWyCJusjORQnnnUnL6
+ DW4EaZf0I6VSx7PJl4D2iB2HRxd3UKc5UG96CZEQJ7iHsJLrl/JLGXlwOLeRZatBc1yO
+ YPdAgWomfEab9q/zuXOk9w27hbt1pVn80H2Jmu6oIEe7EfyqfUYXPmk2jgr8f/YN4B5l
+ PAp32S6RaJP2Nh9wYvNRzybJsUypC8m+a7vmEQ8L4Cof95GcBTacsaLfs0ssXDuVi5a8
+ elJQ==
+X-Gm-Message-State: AOAM5327csaFfF37hNOmZzJwc3fhOwvjs+5IejYa/d9ogDfXRBRzyOO3
+ Nc1aH9CtGqYVmseCs6ScAlo=
+X-Google-Smtp-Source: ABdhPJzAOewaOicL6BQHongI3PvmPCPNCTnY4M9a/1QGoTnhq6LpUAY3jtJ4DV5UsDNVYLq/6z8tVQ==
+X-Received: by 2002:adf:902b:: with SMTP id h40mr8676512wrh.342.1631477432154; 
+ Sun, 12 Sep 2021 13:10:32 -0700 (PDT)
 Received: from localhost.localdomain (46-138-83-36.dynamic.spd-mgts.ru.
  [46.138.83.36])
- by smtp.gmail.com with ESMTPSA id v10sm5463476wrg.15.2021.09.12.13.10.27
+ by smtp.gmail.com with ESMTPSA id v10sm5463476wrg.15.2021.09.12.13.10.29
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 12 Sep 2021 13:10:29 -0700 (PDT)
+ Sun, 12 Sep 2021 13:10:31 -0700 (PDT)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>,
@@ -95,17 +94,17 @@ Cc: linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
  linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
  dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
  linux-clk@vger.kernel.org
-Subject: [PATCH v11 23/34] media: dt: bindings: tegra-vde: Document OPP and
- power domain
-Date: Sun, 12 Sep 2021 23:08:21 +0300
-Message-Id: <20210912200832.12312-24-digetx@gmail.com>
+Subject: [PATCH v11 24/34] media: staging: tegra-vde: Support generic power
+ domain
+Date: Sun, 12 Sep 2021 23:08:22 +0300
+Message-Id: <20210912200832.12312-25-digetx@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210912200832.12312-1-digetx@gmail.com>
 References: <20210912200832.12312-1-digetx@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210912_131031_193233_189F75E2 
-X-CRM114-Status: GOOD (  11.54  )
+X-CRM114-CacheID: sfid-20210912_131033_691659_F7DD401E 
+X-CRM114-Status: GOOD (  18.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -122,43 +121,136 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Document new OPP table and power domain properties of the video decoder
-hardware.
+Currently driver supports legacy power domain API, this patch adds generic
+power domain support. This allows us to utilize a modern GENPD API for
+newer device-trees.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
+Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
+Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- .../devicetree/bindings/media/nvidia,tegra-vde.yaml  | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/staging/media/tegra-vde/vde.c | 57 +++++++++++++++++++++------
+ 1 file changed, 46 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/media/nvidia,tegra-vde.yaml b/Documentation/devicetree/bindings/media/nvidia,tegra-vde.yaml
-index 3b6c1f031e04..0b7d4d815707 100644
---- a/Documentation/devicetree/bindings/media/nvidia,tegra-vde.yaml
-+++ b/Documentation/devicetree/bindings/media/nvidia,tegra-vde.yaml
-@@ -68,6 +68,16 @@ properties:
-     description:
-       Phandle of the SRAM MMIO node.
+diff --git a/drivers/staging/media/tegra-vde/vde.c b/drivers/staging/media/tegra-vde/vde.c
+index ed4c1250b303..bb3079a2c0b5 100644
+--- a/drivers/staging/media/tegra-vde/vde.c
++++ b/drivers/staging/media/tegra-vde/vde.c
+@@ -20,6 +20,7 @@
+ #include <linux/slab.h>
+ #include <linux/uaccess.h>
  
-+  operating-points-v2:
-+    description:
-+      Should contain freqs and voltages and opp-supported-hw property,
-+      which is a bitfield indicating SoC speedo or process ID mask.
++#include <soc/tegra/common.h>
+ #include <soc/tegra/pmc.h>
+ 
+ #include "uapi.h"
+@@ -920,13 +921,17 @@ static __maybe_unused int tegra_vde_runtime_suspend(struct device *dev)
+ 	struct tegra_vde *vde = dev_get_drvdata(dev);
+ 	int err;
+ 
+-	err = tegra_powergate_power_off(TEGRA_POWERGATE_VDEC);
+-	if (err) {
+-		dev_err(dev, "Failed to power down HW: %d\n", err);
+-		return err;
++	if (!dev->pm_domain) {
++		err = tegra_powergate_power_off(TEGRA_POWERGATE_VDEC);
++		if (err) {
++			dev_err(dev, "Failed to power down HW: %d\n", err);
++			return err;
++		}
+ 	}
+ 
+ 	clk_disable_unprepare(vde->clk);
++	reset_control_release(vde->rst);
++	reset_control_release(vde->rst_mc);
+ 
+ 	return 0;
+ }
+@@ -936,14 +941,41 @@ static __maybe_unused int tegra_vde_runtime_resume(struct device *dev)
+ 	struct tegra_vde *vde = dev_get_drvdata(dev);
+ 	int err;
+ 
+-	err = tegra_powergate_sequence_power_up(TEGRA_POWERGATE_VDEC,
+-						vde->clk, vde->rst);
++	err = reset_control_acquire(vde->rst_mc);
+ 	if (err) {
+-		dev_err(dev, "Failed to power up HW : %d\n", err);
++		dev_err(dev, "Failed to acquire mc reset: %d\n", err);
+ 		return err;
+ 	}
+ 
++	err = reset_control_acquire(vde->rst);
++	if (err) {
++		dev_err(dev, "Failed to acquire reset: %d\n", err);
++		goto release_mc_reset;
++	}
 +
-+  power-domains:
-+    maxItems: 1
-+    description:
-+      Phandle to the SoC core power domain.
++	if (!dev->pm_domain) {
++		err = tegra_powergate_sequence_power_up(TEGRA_POWERGATE_VDEC,
++							vde->clk, vde->rst);
++		if (err) {
++			dev_err(dev, "Failed to power up HW : %d\n", err);
++			goto release_reset;
++		}
++	}
 +
- required:
-   - compatible
-   - reg
-@@ -104,4 +114,6 @@ examples:
-       reset-names = "vde", "mc";
-       resets = <&rst 61>, <&mem 13>;
-       iommus = <&mem 15>;
-+      operating-points-v2 = <&dvfs_opp_table>;
-+      power-domains = <&domain>;
-     };
++	err = clk_prepare_enable(vde->clk);
++	if (err) {
++		dev_err(dev, "Failed to enable clock: %d\n", err);
++		goto release_reset;
++	}
++
+ 	return 0;
++
++release_reset:
++	reset_control_release(vde->rst);
++release_mc_reset:
++	reset_control_release(vde->rst_mc);
++
++	return err;
+ }
+ 
+ static int tegra_vde_probe(struct platform_device *pdev)
+@@ -1001,14 +1033,14 @@ static int tegra_vde_probe(struct platform_device *pdev)
+ 		return err;
+ 	}
+ 
+-	vde->rst = devm_reset_control_get(dev, NULL);
++	vde->rst = devm_reset_control_get_exclusive_released(dev, NULL);
+ 	if (IS_ERR(vde->rst)) {
+ 		err = PTR_ERR(vde->rst);
+ 		dev_err(dev, "Could not get VDE reset %d\n", err);
+ 		return err;
+ 	}
+ 
+-	vde->rst_mc = devm_reset_control_get_optional(dev, "mc");
++	vde->rst_mc = devm_reset_control_get_optional_exclusive_released(dev, "mc");
+ 	if (IS_ERR(vde->rst_mc)) {
+ 		err = PTR_ERR(vde->rst_mc);
+ 		dev_err(dev, "Could not get MC reset %d\n", err);
+@@ -1066,6 +1098,10 @@ static int tegra_vde_probe(struct platform_device *pdev)
+ 	pm_runtime_use_autosuspend(dev);
+ 	pm_runtime_set_autosuspend_delay(dev, 300);
+ 
++	err = devm_tegra_core_dev_init_opp_table_common(dev);
++	if (err)
++		goto err_pm_runtime;
++
+ 	/*
+ 	 * VDE partition may be left ON after bootloader, hence let's
+ 	 * power-cycle it in order to put hardware into a predictable lower
+@@ -1133,8 +1169,7 @@ static void tegra_vde_shutdown(struct platform_device *pdev)
+ 	 * On some devices bootloader isn't ready to a power-gated VDE on
+ 	 * a warm-reboot, machine will hang in that case.
+ 	 */
+-	if (pm_runtime_status_suspended(&pdev->dev))
+-		tegra_vde_runtime_resume(&pdev->dev);
++	pm_runtime_get_sync(&pdev->dev);
+ }
+ 
+ static __maybe_unused int tegra_vde_pm_suspend(struct device *dev)
 -- 
 2.32.0
 
