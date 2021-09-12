@@ -1,72 +1,111 @@
-Return-Path: <SRS0=faTe=OB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=3X/b=OC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE702C433EF
-	for <linux-mtd@archiver.kernel.org>; Sat, 11 Sep 2021 13:38:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1A05C433EF
+	for <linux-mtd@archiver.kernel.org>; Sun, 12 Sep 2021 20:10:42 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9845061205
-	for <linux-mtd@archiver.kernel.org>; Sat, 11 Sep 2021 13:38:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9845061205
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 6213661039
+	for <linux-mtd@archiver.kernel.org>; Sun, 12 Sep 2021 20:10:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6213661039
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=9EtF/aIODWhPvUQSdRBAA1FxMXDJxsBDvD4TVSXjh1M=; b=27vhx1VVOwY6Nk
-	HGwf03QSDoowKCrVegQ+pbKBbAB8+GYTk1E2hBqrRhnQgeZLmrFWb1hYrcO5ldQnP1/n0g8XQ0Ypo
-	LMQoWcHIzJiyFA5QbZMKWB6QcRHSVKvepSr/+vfA07n1BTRLbtjUXo8cIE+dLwxrwH6x///rftEWa
-	EqJP2VJwwh+17XhIvxfbhK3/Cd/5oYLWq2AAf7DWfFksQAxLdSm9BRF76qKaLAuaW0fgDs3ylx1dT
-	K73NlSqjBCMv2z6oSaFzV6IJ/E6wMOEPioYaY+AMF5tIo4ojfpDFq0K95qF7xUfuY41SNCYNBVNzw
-	I1PYgZvBwBWd627HQAGA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=U0MGshebNfeS/fSn4ijqEIfDpoH8XBNMZsttvjMM9cA=; b=mgXznwFXLr++VS
+	dW9XoxI9etNurGVh3IxbpsGQFxiOFNZ20Zqm08EEOjaH4o53lPiCfKf5LSTZ0VMEJ4SIC4sshf+eL
+	gAZwdOwyavOyHEFCyyn6dQtU6UPXGwURsr3XA+oeLXwQEil37XnrPn8DBSLin1eAZobu1cQuytzWR
+	AEmOdbpRwtUAlyiSwJSwWZ8gSiJHcBHZa5AHjF2khcBpK5Vqe6h3zQ1FpwwnQeAxlojRbvBt1LIsv
+	3jFdXVJ9drXgcXRcDEl+vYsU/tS6twnguaRz4y1NdOqj5/5hDrCSMcd4OKlKorJmCKEA3jrxxX0zl
+	pxx/DBGUintYB6T8XLAA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mP3Ck-00F1V6-1q; Sat, 11 Sep 2021 13:38:02 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1mPVnf-00H6bI-WE; Sun, 12 Sep 2021 20:10:04 +0000
+Received: from mail-wm1-x329.google.com ([2a00:1450:4864:20::329])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mP2q0-00Es34-1u
- for linux-mtd@lists.infradead.org; Sat, 11 Sep 2021 13:14:35 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC8D56135A;
- Sat, 11 Sep 2021 13:14:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631366071;
- bh=ltZZyCsnjnNoe+sQ9hulck8kwCSo5dN6HI0l2iLLg8g=;
- h=From:To:Cc:Subject:Date:From;
- b=bhNCFMyywJP/qeYXNfLMZqr07wAwAZ9dANCL4pj9E/WjpfaA3nHQJV+eTMNXuIFjC
- 3pX3lHqNvG+PSAlFY65MoWfA8jfCzbG4sGRVK1UUM/DJKaSHowgH95R2wj1z+xQ84p
- 6/9S75qrfBbhbgQmXqMtbCawkGLP7a0TbuRnvW9vmJkDf8LBGK+xoxUnhj8j9s8/hl
- w5sxK3I/vdcwFGFRuBoN/JBhEo6apn2F9B9I4FkBzzjo5CiVRIZ3iHFR5Q+9FJvu59
- vcDLQmme5EHm3hYJixEU3HVrNMb1z0kfRtrxc35flx+6GPd0QpF2ZJeWj1qUZpvqkq
- xNM2UYWFtEPXQ==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- "Ryan J . Barnett" <ryan.barnett@collins.com>,
- Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 1/2] dt-bindings: mtd: gpmc: Fix the ECC bytes vs.
- OOB bytes equation
-Date: Sat, 11 Sep 2021 09:14:28 -0400
-Message-Id: <20210911131429.286330-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
+ id 1mPVnI-00H6Hq-Al
+ for linux-mtd@lists.infradead.org; Sun, 12 Sep 2021 20:09:42 +0000
+Received: by mail-wm1-x329.google.com with SMTP id
+ u15-20020a05600c19cf00b002f6445b8f55so5151885wmq.0
+ for <linux-mtd@lists.infradead.org>; Sun, 12 Sep 2021 13:09:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=wufLMjvcV2REchuzKnLPe9Ps3w6SDfXDXOXmKrrN/u8=;
+ b=Te4kM4Nr6aIqXg49I8m87guNmqFxy0h+d9DGdgHSIbewOq+nr/va99QpZbK8pzZmV3
+ b398ia5KZX+0nwzSaNg/TrSJ2tNyR6apHyyN0eZcPyRoD9YmejPMsOXr9gQx7FiCCgAV
+ fo8jTSfTCg57c95TqVPbZ8zN7Q945Q1ytMwbTchunpFZRz2skircdVjo6SmdIYaUk7rQ
+ kViB7N5e3mAUYX/EQou5Oe0g6kKmCLCFi3FUap4vH6dHgyQk0gklPK7SRRPV+loPB7ol
+ 9Qkl0Ow0yyEqZMfcVTL6nf/I0yxE4PDzemIWipuzHIf8H3ViQUoVuM/aLYtUN/Rn8Rmk
+ d4Kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=wufLMjvcV2REchuzKnLPe9Ps3w6SDfXDXOXmKrrN/u8=;
+ b=L8+8Ck6n7nLrRjht6Do7+JWw8lYMrSQOzluTtrb2niQyeFR21NyF55hYrZTmBsCDEu
+ pi8xlL54CGZ4/SGXfWZohVmbPjzkChwi3ZSszUe/VFve/bezBVayA/tDu4pN54ofyP0E
+ OS2iXArTLBEa+qweKLoxLzIRYfiVDAJrRWFTUWve0a7VhdSbVOQZ5Yu/Xsf43asbNHWJ
+ QJiG1XG+sK7HB0eh9Z+6/6bdbIuYIE7kcW29Ac4MXfS2eIdOXhPslUApPJ0jv8zKodV2
+ SZzirNjs4pB7ETNHkoLMQDd29b3/LE8MuvsTDR52Yas6zWfo58t5ACIglACBkGAsMBoi
+ HSDw==
+X-Gm-Message-State: AOAM53293o1Ah0VROPWlo6qxF2LoE65JVGpGeFYgyOPbK6twoSZpTMEi
+ kHuRAXS0Vo+3fc3m71u9PJ0=
+X-Google-Smtp-Source: ABdhPJwcu2cRr2OyH//+tdB0mQdhpS15h8hGhu7BuEAmhQPvEMINbwbdJ8Gf9xEVUPipv7LZGocS9A==
+X-Received: by 2002:a7b:cb89:: with SMTP id m9mr8022074wmi.123.1631477375600; 
+ Sun, 12 Sep 2021 13:09:35 -0700 (PDT)
+Received: from localhost.localdomain (46-138-83-36.dynamic.spd-mgts.ru.
+ [46.138.83.36])
+ by smtp.gmail.com with ESMTPSA id v10sm5463476wrg.15.2021.09.12.13.09.32
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 12 Sep 2021 13:09:35 -0700 (PDT)
+From: Dmitry Osipenko <digetx@gmail.com>
+To: Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Ulf Hansson <ulf.hansson@linaro.org>, Viresh Kumar <vireshk@kernel.org>,
+ Stephen Boyd <sboyd@kernel.org>,
+ Peter De Schrijver <pdeschrijver@nvidia.com>,
+ Mikko Perttunen <mperttunen@nvidia.com>,
+ Peter Chen <peter.chen@kernel.org>, Mark Brown <broonie@kernel.org>,
+ Lee Jones <lee.jones@linaro.org>,
+ =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Lucas Stach <dev@lynxeye.de>,
+ Stefan Agner <stefan@agner.ch>, Adrian Hunter <adrian.hunter@intel.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>
+Cc: linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+ linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+ linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+ linux-clk@vger.kernel.org
+Subject: [PATCH v11 01/34] opp: Change type of dev_pm_opp_attach_genpd(names)
+ argument
+Date: Sun, 12 Sep 2021 23:07:59 +0300
+Message-Id: <20210912200832.12312-2-digetx@gmail.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210912200832.12312-1-digetx@gmail.com>
+References: <20210912200832.12312-1-digetx@gmail.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210911_061432_182874_6AEB4E4D 
-X-CRM114-Status: UNSURE (   9.98  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210912_130940_414030_A0CD983C 
+X-CRM114-Status: GOOD (  14.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,43 +122,79 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+Elements of the 'names' array are not changed by the code, constify them
+for consistency.
 
-[ Upstream commit 778cb8e39f6ec252be50fc3850d66f3dcbd5dd5a ]
-
-"PAGESIZE / 512" is the number of ECC chunks.
-"ECC_BYTES" is the number of bytes needed to store a single ECC code.
-"2" is the space reserved by the bad block marker.
-
-"2 + (PAGESIZE / 512) * ECC_BYTES" should of course be lower or equal
-than the total number of OOB bytes, otherwise it won't fit.
-
-Fix the equation by substituting s/>=/<=/.
-
-Suggested-by: Ryan J. Barnett <ryan.barnett@collins.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Acked-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/linux-mtd/20210610143945.3504781-1-miquel.raynal@bootlin.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- Documentation/devicetree/bindings/mtd/gpmc-nand.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/opp/core.c     | 6 +++---
+ include/linux/pm_opp.h | 8 ++++----
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-index fb733c4e1c11..3a58fdf0c566 100644
---- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-@@ -112,7 +112,7 @@ on various other factors also like;
- 	so the device should have enough free bytes available its OOB/Spare
- 	area to accommodate ECC for entire page. In general following expression
- 	helps in determining if given device can accommodate ECC syndrome:
--	"2 + (PAGESIZE / 512) * ECC_BYTES" >= OOBSIZE"
-+	"2 + (PAGESIZE / 512) * ECC_BYTES" <= OOBSIZE"
- 	where
- 		OOBSIZE		number of bytes in OOB/spare area
- 		PAGESIZE	number of bytes in main-area of device page
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index 04b4691a8aac..3057beabd370 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -2348,12 +2348,12 @@ static void _opp_detach_genpd(struct opp_table *opp_table)
+  * "required-opps" are added in DT.
+  */
+ struct opp_table *dev_pm_opp_attach_genpd(struct device *dev,
+-		const char **names, struct device ***virt_devs)
++		const char * const *names, struct device ***virt_devs)
+ {
+ 	struct opp_table *opp_table;
+ 	struct device *virt_dev;
+ 	int index = 0, ret = -EINVAL;
+-	const char **name = names;
++	const char * const *name = names;
+ 
+ 	opp_table = _add_opp_table(dev, false);
+ 	if (IS_ERR(opp_table))
+@@ -2457,7 +2457,7 @@ static void devm_pm_opp_detach_genpd(void *data)
+  *
+  * Return: 0 on success and errorno otherwise.
+  */
+-int devm_pm_opp_attach_genpd(struct device *dev, const char **names,
++int devm_pm_opp_attach_genpd(struct device *dev, const char * const *names,
+ 			     struct device ***virt_devs)
+ {
+ 	struct opp_table *opp_table;
+diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
+index a95d6fdd20b6..879c138c7b8e 100644
+--- a/include/linux/pm_opp.h
++++ b/include/linux/pm_opp.h
+@@ -156,9 +156,9 @@ int devm_pm_opp_set_clkname(struct device *dev, const char *name);
+ struct opp_table *dev_pm_opp_register_set_opp_helper(struct device *dev, int (*set_opp)(struct dev_pm_set_opp_data *data));
+ void dev_pm_opp_unregister_set_opp_helper(struct opp_table *opp_table);
+ int devm_pm_opp_register_set_opp_helper(struct device *dev, int (*set_opp)(struct dev_pm_set_opp_data *data));
+-struct opp_table *dev_pm_opp_attach_genpd(struct device *dev, const char **names, struct device ***virt_devs);
++struct opp_table *dev_pm_opp_attach_genpd(struct device *dev, const char * const *names, struct device ***virt_devs);
+ void dev_pm_opp_detach_genpd(struct opp_table *opp_table);
+-int devm_pm_opp_attach_genpd(struct device *dev, const char **names, struct device ***virt_devs);
++int devm_pm_opp_attach_genpd(struct device *dev, const char * const *names, struct device ***virt_devs);
+ struct dev_pm_opp *dev_pm_opp_xlate_required_opp(struct opp_table *src_table, struct opp_table *dst_table, struct dev_pm_opp *src_opp);
+ int dev_pm_opp_xlate_performance_state(struct opp_table *src_table, struct opp_table *dst_table, unsigned int pstate);
+ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq);
+@@ -376,7 +376,7 @@ static inline int devm_pm_opp_set_clkname(struct device *dev, const char *name)
+ 	return -EOPNOTSUPP;
+ }
+ 
+-static inline struct opp_table *dev_pm_opp_attach_genpd(struct device *dev, const char **names, struct device ***virt_devs)
++static inline struct opp_table *dev_pm_opp_attach_genpd(struct device *dev, const char * const *names, struct device ***virt_devs)
+ {
+ 	return ERR_PTR(-EOPNOTSUPP);
+ }
+@@ -384,7 +384,7 @@ static inline struct opp_table *dev_pm_opp_attach_genpd(struct device *dev, cons
+ static inline void dev_pm_opp_detach_genpd(struct opp_table *opp_table) {}
+ 
+ static inline int devm_pm_opp_attach_genpd(struct device *dev,
+-					   const char **names,
++					   const char * const *names,
+ 					   struct device ***virt_devs)
+ {
+ 	return -EOPNOTSUPP;
 -- 
-2.30.2
+2.32.0
 
 
 ______________________________________________________
