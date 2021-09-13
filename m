@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BD5DC433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Sep 2021 17:14:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04D09C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Sep 2021 17:19:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 19F7D61056
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Sep 2021 17:14:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 19F7D61056
+	by mail.kernel.org (Postfix) with ESMTPS id C73B9610A2
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Sep 2021 17:19:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C73B9610A2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,41 +23,42 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CFF9Jws63bM5AVITHF6gASGo/rCWk2GcyxU97cDKXJc=; b=SAE3sjAt6XgBAg
-	u5o82Bb6ZKr89UndD73KitQCHbHO9tI4Iw4CUCKaupeSS4mj6VBxVDCm12DAtk92AlqXMTbvdrW5t
-	GZMcsfYsH/A7KNnRFLD/A50m7JSPWJTpD/qkNtJOK+rkqR5VLbxuG17t9UzOt5vXV5lrPN8wYckmH
-	7X7W61jaNUeL69fvLaJ/CJf0eH0cfTvjPk3Mr4unZPg0Eq+vnHxcxuELtp7g4jBIRbVoPE511YsHq
-	o/64O6tuFNeLPcxHeEbojH2afvvihXz5BQu4oc481bxCOvpLIhmhihbq/KX7lUdH5alypoxrdQL0b
-	JuUOc+Myt6gqWA0b/V1w==;
+	List-Owner; bh=dUqk6aVZ2My65pvyLj7NuP5ZOQJMFe0Da1HN0eJlB1E=; b=32ziNnpa2M0pPF
+	M+ZNomsI6TR0naOq84tBTTZsZ8cfB3VefON/t9dIo0DMrne8+GkyvXmNnhU6o2OGpXRRqSDXHDMlP
+	EclQ8MeI6djr0P8EcJN27VLdKZ+ffnIQq9zk77Z7ywSRnzTkWDVf6OQQTDn+Pz2Bs/yzNcBlC/MAA
+	M0vpLzZeH2efjmmmQlO+KkY6urS2S5SsahExOPlYm3NYI5FI8kAjMnGVKPtpltcNdSsdFBci5AxCD
+	6C4gx7y0U0WOCKWEiVMKcn/jnLV3gV5FfgrjSpIHfexJ/CWN8HII5UOvxV4ixJi4oUiGl1X5CJwf0
+	hy3FLWORrrZaUV/XLYuw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mPpWD-002cRo-G3; Mon, 13 Sep 2021 17:13:21 +0000
+	id 1mPpbP-002dxR-Nk; Mon, 13 Sep 2021 17:18:43 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1mPpBC-002WDJ-53; Mon, 13 Sep 2021 16:51:38 +0000
-Date: Mon, 13 Sep 2021 09:51:38 -0700
+ (Red Hat Linux)) id 1mPpCk-002WmJ-2M; Mon, 13 Sep 2021 16:53:14 +0000
+Date: Mon, 13 Sep 2021 09:53:14 -0700
 From: Luis Chamberlain <mcgrof@kernel.org>
-To: Jan =?iso-8859-1?Q?H=F6ppner?= <hoeppner@linux.ibm.com>
-Cc: axboe@kernel.dk, gregkh@linuxfoundation.org, chaitanya.kulkarni@wdc.com,
+To: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Cc: Heiko Carstens <hca@linux.ibm.com>, axboe@kernel.dk,
+ gregkh@linuxfoundation.org, chaitanya.kulkarni@wdc.com,
  atulgopinathan@gmail.com, hare@suse.de, maximlevitsky@gmail.com,
  oakad@yahoo.com, ulf.hansson@linaro.org, colin.king@canonical.com,
  shubhankarvk@gmail.com, baijiaju1990@gmail.com, trix@redhat.com,
  dongsheng.yang@easystack.cn, ceph-devel@vger.kernel.org,
  miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- sth@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+ sth@linux.ibm.com, hoeppner@linux.ibm.com, gor@linux.ibm.com,
  borntraeger@de.ibm.com, oberpar@linux.ibm.com, tj@kernel.org,
  linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/9] s390/block/dasd_genhd: add error handling support
- for add_disk()
-Message-ID: <YT+Bmvv3yXbuBddi@bombadil.infradead.org>
+Subject: Re: [PATCH 7/9] s390/block/dcssblk: add error handling support for
+ add_disk()
+Message-ID: <YT+B+vCUcpZEq8hM@bombadil.infradead.org>
 References: <20210902174105.2418771-1-mcgrof@kernel.org>
- <20210902174105.2418771-7-mcgrof@kernel.org>
- <d6140e40-a472-e732-9893-99e1839b717e@linux.ibm.com>
- <f24da7d5-0b67-fa24-862f-0b27a2ab502c@linux.ibm.com>
+ <20210902174105.2418771-8-mcgrof@kernel.org>
+ <YTIscKy+jg5L/TMh@osiris> <YTLP8mYBX37R++9E@bombadil.infradead.org>
+ <20210906134346.19c14246@thinkpad>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <f24da7d5-0b67-fa24-862f-0b27a2ab502c@linux.ibm.com>
+In-Reply-To: <20210906134346.19c14246@thinkpad>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,93 +70,51 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Sep 13, 2021 at 02:19:38PM +0200, Jan H=F6ppner wrote:
-> On 13/09/2021 10:17, Jan H=F6ppner wrote:
-> > On 02/09/2021 19:41, Luis Chamberlain wrote:
-> >> We never checked for errors on add_disk() as this function
-> >> returned void. Now that this is fixed, use the shiny new
-> >> error handling.
-> >>
-> >> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> >> ---
-> >>  drivers/s390/block/dasd_genhd.c | 8 ++++++--
-> >>  1 file changed, 6 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/drivers/s390/block/dasd_genhd.c b/drivers/s390/block/dasd=
-_genhd.c
-> >> index fa966e0db6ca..ba07022283bc 100644
-> >> --- a/drivers/s390/block/dasd_genhd.c
-> >> +++ b/drivers/s390/block/dasd_genhd.c
-> >> @@ -33,7 +33,7 @@ int dasd_gendisk_alloc(struct dasd_block *block)
-> >>  {
-> >>  	struct gendisk *gdp;
-> >>  	struct dasd_device *base;
-> >> -	int len;
-> >> +	int len, rc;
-> >>  =
+On Mon, Sep 06, 2021 at 01:43:46PM +0200, Gerald Schaefer wrote:
+> On Fri, 3 Sep 2021 18:46:26 -0700
+> Luis Chamberlain <mcgrof@kernel.org> wrote:
+> 
+> > On Fri, Sep 03, 2021 at 04:08:48PM +0200, Heiko Carstens wrote:
+> > > On Thu, Sep 02, 2021 at 10:41:03AM -0700, Luis Chamberlain wrote:
+> > > > We never checked for errors on add_disk() as this function
+> > > > returned void. Now that this is fixed, use the shiny new
+> > > > error handling.
+> > > > 
+> > > > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> > > > ---
+> > > >  drivers/s390/block/dcssblk.c | 4 +++-
+> > > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/drivers/s390/block/dcssblk.c b/drivers/s390/block/dcssblk.c
+> > > > index 5be3d1c39a78..b0fd5009a12e 100644
+> > > > --- a/drivers/s390/block/dcssblk.c
+> > > > +++ b/drivers/s390/block/dcssblk.c
+> > > > @@ -696,7 +696,9 @@ dcssblk_add_store(struct device *dev, struct device_attribute *attr, const char
+> > > >  	}
+> > > >  
+> > > >  	get_device(&dev_info->dev);
+> > > > -	device_add_disk(&dev_info->dev, dev_info->gd, NULL);
+> > > > +	rc = device_add_disk(&dev_info->dev, dev_info->gd, NULL);
+> > > > +	if (rc)
+> > > > +		goto put_dev;
+> > > 
+> > > This looks not correct to me. We seem to have now in case of an error:
+> > > 
+> > > - reference count imbalance (= memory leak)
+> > > - dax cleanup is missing
+> > 
+> > Care to provide an alternative?
+> 
+> See patch below:
 
-> >>  	/* Make sure the minor for this device exists. */
-> >>  	base =3D block->base;
-> >> @@ -79,7 +79,11 @@ int dasd_gendisk_alloc(struct dasd_block *block)
-> >>  	dasd_add_link_to_gendisk(gdp, base);
-> >>  	block->gdp =3D gdp;
-> >>  	set_capacity(block->gdp, 0);
-> >> -	device_add_disk(&base->cdev->dev, block->gdp, NULL);
-> >> +
-> >> +	rc =3D device_add_disk(&base->cdev->dev, block->gdp, NULL);
-> >> +	if (rc)
-> >> +		return rc;
-> >> +
-> > =
-
-> > I think, just like with some of the other changes, there is some
-> > cleanup required before returning. I'll prepare a patch and
-> > come back to you.
-> > =
-
-> =
-
-> It's actually just one call that is required. The patch should
-> look like this:
-> =
-
-> diff --git a/drivers/s390/block/dasd_genhd.c b/drivers/s390/block/dasd_ge=
-nhd.c
-> index fa966e0db6ca..80673dbfb1f9 100644
-> --- a/drivers/s390/block/dasd_genhd.c
-> +++ b/drivers/s390/block/dasd_genhd.c
-> @@ -33,7 +33,7 @@ int dasd_gendisk_alloc(struct dasd_block *block)
->  {
->         struct gendisk *gdp;
->         struct dasd_device *base;
-> -       int len;
-> +       int len, rc;
->  =
-
->         /* Make sure the minor for this device exists. */
->         base =3D block->base;
-> @@ -79,7 +79,13 @@ int dasd_gendisk_alloc(struct dasd_block *block)
->         dasd_add_link_to_gendisk(gdp, base);
->         block->gdp =3D gdp;
->         set_capacity(block->gdp, 0);
-> -       device_add_disk(&base->cdev->dev, block->gdp, NULL);
-> +
-> +       rc =3D device_add_disk(&base->cdev->dev, block->gdp, NULL);
-> +       if (rc) {
-> +               dasd_gendisk_free(block);
-> +               return rc;
-> +       }
-> +
-
-Thanks!
-
-Would you like to to fold this fix into my patch and resend eventually?
-Or will you send a replacement?
+Thanks! Will you queue this up on your end or do would you
+prefer for me to roll this into my tree and eventually resend
+with the rest?
 
   Luis
 
