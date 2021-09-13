@@ -2,19 +2,19 @@ Return-Path: <SRS0=bI2a=OD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-14.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63DAFC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Sep 2021 09:38:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0E37C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Sep 2021 09:40:28 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 31F3F60E94
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Sep 2021 09:38:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 31F3F60E94
+	by mail.kernel.org (Postfix) with ESMTPS id 776DE60E94
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Sep 2021 09:40:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 776DE60E94
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,44 +23,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
 	Date:From:Cc:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
-	List-Owner; bh=L795YC6oyHnTYk+Z5YQX66vKeIEmYt1zDTsQQwahhKs=; b=yUPnUsXCAytJiz
-	T3hoj37NLvPNnZR4k0XLHJPeTqu/p6m4GUGlq+2h/g8JljB6BFHPhsguQKvxA85UEymJJAvpiOE3F
-	nZt9Wk7su0IzEcY1us+xW9wNYCbRnmfiXcQ2qEKcmGIKpQ1YY0T/j7WGQn6Q0obuxDSCBYG9y7FHw
-	sq57MmB12yUmtiS3EA1a9tMQbz3cgKbvjqMDJ8nUg5i6xdUgZ7CjdHCQLursx4st3912hTqn9/Hdf
-	xtIufjK9CTI02HADd4/UDEkiK+E+BWyHksR86EOgkHD2MRr++b+XMYOSV5PiCa1aK3dfdaBV7j+qY
-	sQRFOCZCpq/zihxJQqow==;
+	List-Owner; bh=gm67I9xyRDLNhHXDdlghnFezsPZ5Fom9ocU38kTTet0=; b=ZTo06n9dfqbbsT
+	ml84X1w9IzY2vSR2YcLzbF/HJ2wuBXStQE6GKCXdXydPOc3FK1iHQ7JhNsSTMhwxkQjQo3LJ4OHFb
+	1vGXud1ddwg1EEgzxtgw6Ustbm8giiw5cSgZMUvpKPT3blo+Zf8/YRxfVxJvrureB+zwsKlKMH8ej
+	utCu5zk5o7jdVE5V4G61Zh2zE5K3nChM5mZ3d2IUCt1uXjh3OEOvyWPjVU3rGqEZaTWQPWgNr3CXr
+	oFFgKi1W4wE5vPjIDEwH4U8NpZLaXxg7fXXS0XNbQxoLwt5R/m3GB0C3PvtML8BuJzcdpZ1FvAldz
+	tUK34Z0w8lwIzr3yfYoQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mPiPO-0015rQ-R4; Mon, 13 Sep 2021 09:37:51 +0000
+	id 1mPiRG-0016H8-Ey; Mon, 13 Sep 2021 09:39:46 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mPiLV-001579-55
- for linux-mtd@lists.infradead.org; Mon, 13 Sep 2021 09:33:51 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 586AC6101A;
- Mon, 13 Sep 2021 09:33:48 +0000 (UTC)
+ id 1mPiLX-001580-EW
+ for linux-mtd@lists.infradead.org; Mon, 13 Sep 2021 09:33:53 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FCB260D42;
+ Mon, 13 Sep 2021 09:33:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1631525628;
- bh=lacgSFIIKbM8OGbaUAFj5YEpc5w8v5x+7LqYSkCvMyU=;
+ s=korg; t=1631525631;
+ bh=D/mRxoML196RQdZ7J7tzB8otw/6Q3rZETGrRA5A1yQA=;
  h=Subject:To:Cc:From:Date:In-Reply-To:From;
- b=o+t4FUWQfMA4Ewj0zxYs4Tauv0JJbDhJ3Tmy4F1gAPp4looRo+xfhkDcx7p3TEWbs
- tkXR3Wv9fvyrwIoNAC/DUaDuoxSZ5b1cp6Ft/SCyfH72y+he2Z++xA9OyPB2lqtMNU
- VtMfYE8Wt3/0+UG8VFaKPn/65JalakOqkk1W8OSE=
-Subject: Patch "fscrypt: add fscrypt_symlink_getattr() for computing st_size"
- has been added to the 4.19-stable tree
+ b=DiEBjkPo8B1ZAeXJz1xTC5G2pk/EpNAlZUUY5PtgxhaWDoTCeRgmFa3+BaKNYrG+2
+ PwjNGvOehaKHExn+MVEUchxa7572b4aXc39k8PhUSR0EqES3DYy9grUtAcv3Wh8+37
+ E5Nj4bvDg39Ko5PGn+9zY+oYSQnWLVLLUYFKOjxA=
+Subject: Patch "ubifs: report correct st_size for encrypted symlinks" has been
+ added to the 4.19-stable tree
 To: ebiggers@google.com, ebiggers@kernel.org, gregkh@linuxfoundation.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
- toybox@lists.landley.net
+ linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org
 Cc: <stable-commits@vger.kernel.org>
 From: <gregkh@linuxfoundation.org>
 Date: Mon, 13 Sep 2021 11:33:36 +0200
-In-Reply-To: <20210908215033.1122580-2-ebiggers@kernel.org>
-Message-ID: <163152561670165@kroah.com>
+In-Reply-To: <20210908215033.1122580-5-ebiggers@kernel.org>
+Message-ID: <1631525616523@kroah.com>
 MIME-Version: 1.0
 X-stable: commit
 X-Patchwork-Hint: ignore 
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210913_023349_323472_BE16AB38 
-X-CRM114-Status: GOOD (  28.75  )
+X-CRM114-CacheID: sfid-20210913_023351_703573_97C1FD63 
+X-CRM114-Status: GOOD (  14.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,13 +79,13 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 This is a note to let you know that I've just added the patch titled
 
-    fscrypt: add fscrypt_symlink_getattr() for computing st_size
+    ubifs: report correct st_size for encrypted symlinks
 
 to the 4.19-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     fscrypt-add-fscrypt_symlink_getattr-for-computing-st_size.patch
+     ubifs-report-correct-st_size-for-encrypted-symlinks.patch
 and it can be found in the queue-4.19 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
@@ -95,152 +94,62 @@ please let <stable@vger.kernel.org> know about it.
 
 From foo@baz Mon Sep 13 11:31:12 AM CEST 2021
 From: Eric Biggers <ebiggers@kernel.org>
-Date: Wed,  8 Sep 2021 14:50:30 -0700
-Subject: fscrypt: add fscrypt_symlink_getattr() for computing st_size
+Date: Wed,  8 Sep 2021 14:50:33 -0700
+Subject: ubifs: report correct st_size for encrypted symlinks
 To: stable@vger.kernel.org
 Cc: linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org
-Message-ID: <20210908215033.1122580-2-ebiggers@kernel.org>
+Message-ID: <20210908215033.1122580-5-ebiggers@kernel.org>
 
 From: Eric Biggers <ebiggers@google.com>
 
-commit d18760560593e5af921f51a8c9b64b6109d634c2 upstream.
+commit 064c734986011390b4d111f1a99372b7f26c3850 upstream.
 
-Add a helper function fscrypt_symlink_getattr() which will be called
-from the various filesystems' ->getattr() methods to read and decrypt
-the target of encrypted symlinks in order to report the correct st_size.
+The stat() family of syscalls report the wrong size for encrypted
+symlinks, which has caused breakage in several userspace programs.
 
-Detailed explanation:
+Fix this by calling fscrypt_symlink_getattr() after ubifs_getattr() for
+encrypted symlinks.  This function computes the correct size by reading
+and decrypting the symlink target (if it's not already cached).
 
-As required by POSIX and as documented in various man pages, st_size for
-a symlink is supposed to be the length of the symlink target.
-Unfortunately, st_size has always been wrong for encrypted symlinks
-because st_size is populated from i_size from disk, which intentionally
-contains the length of the encrypted symlink target.  That's slightly
-greater than the length of the decrypted symlink target (which is the
-symlink target that userspace usually sees), and usually won't match the
-length of the no-key encoded symlink target either.
+For more details, see the commit which added fscrypt_symlink_getattr().
 
-This hadn't been fixed yet because reporting the correct st_size would
-require reading the symlink target from disk and decrypting or encoding
-it, which historically has been considered too heavyweight to do in
-->getattr().  Also historically, the wrong st_size had only broken a
-test (LTP lstat03) and there were no known complaints from real users.
-(This is probably because the st_size of symlinks isn't used too often,
-and when it is, typically it's for a hint for what buffer size to pass
-to readlink() -- which a slightly-too-large size still works for.)
-
-However, a couple things have changed now.  First, there have recently
-been complaints about the current behavior from real users:
-
-- Breakage in rpmbuild:
-  https://github.com/rpm-software-management/rpm/issues/1682
-  https://github.com/google/fscrypt/issues/305
-
-- Breakage in toybox cpio:
-  https://www.mail-archive.com/toybox@lists.landley.net/msg07193.html
-
-- Breakage in libgit2: https://issuetracker.google.com/issues/189629152
-  (on Android public issue tracker, requires login)
-
-Second, we now cache decrypted symlink targets in ->i_link.  Therefore,
-taking the performance hit of reading and decrypting the symlink target
-in ->getattr() wouldn't be as big a deal as it used to be, since usually
-it will just save having to do the same thing later.
-
-Also note that eCryptfs ended up having to read and decrypt symlink
-targets in ->getattr() as well, to fix this same issue; see
-commit 3a60a1686f0d ("eCryptfs: Decrypt symlink target for stat size").
-
-So, let's just bite the bullet, and read and decrypt the symlink target
-in ->getattr() in order to report the correct st_size.  Add a function
-fscrypt_symlink_getattr() which the filesystems will call to do this.
-
-(Alternatively, we could store the decrypted size of symlinks on-disk.
-But there isn't a great place to do so, and encryption is meant to hide
-the original size to some extent; that property would be lost.)
-
+Fixes: ca7f85be8d6c ("ubifs: Add support for encrypted symlinks")
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210702065350.209646-2-ebiggers@kernel.org
+Link: https://lore.kernel.org/r/20210702065350.209646-5-ebiggers@kernel.org
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/crypto/hooks.c               |   44 ++++++++++++++++++++++++++++++++++++++++
- include/linux/fscrypt_notsupp.h |    6 +++++
- include/linux/fscrypt_supp.h    |    1 
- 3 files changed, 51 insertions(+)
+ fs/ubifs/file.c |   12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
---- a/fs/crypto/hooks.c
-+++ b/fs/crypto/hooks.c
-@@ -279,3 +279,47 @@ err_kfree:
- 	return ERR_PTR(err);
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1642,6 +1642,16 @@ static const char *ubifs_get_link(struct
+ 	return fscrypt_get_symlink(inode, ui->data, ui->data_len, done);
  }
- EXPORT_SYMBOL_GPL(fscrypt_get_symlink);
-+
-+/**
-+ * fscrypt_symlink_getattr() - set the correct st_size for encrypted symlinks
-+ * @path: the path for the encrypted symlink being queried
-+ * @stat: the struct being filled with the symlink's attributes
-+ *
-+ * Override st_size of encrypted symlinks to be the length of the decrypted
-+ * symlink target (or the no-key encoded symlink target, if the key is
-+ * unavailable) rather than the length of the encrypted symlink target.  This is
-+ * necessary for st_size to match the symlink target that userspace actually
-+ * sees.  POSIX requires this, and some userspace programs depend on it.
-+ *
-+ * This requires reading the symlink target from disk if needed, setting up the
-+ * inode's encryption key if possible, and then decrypting or encoding the
-+ * symlink target.  This makes lstat() more heavyweight than is normally the
-+ * case.  However, decrypted symlink targets will be cached in ->i_link, so
-+ * usually the symlink won't have to be read and decrypted again later if/when
-+ * it is actually followed, readlink() is called, or lstat() is called again.
-+ *
-+ * Return: 0 on success, -errno on failure
-+ */
-+int fscrypt_symlink_getattr(const struct path *path, struct kstat *stat)
+ 
++static int ubifs_symlink_getattr(const struct path *path, struct kstat *stat,
++				 u32 request_mask, unsigned int query_flags)
 +{
-+	struct dentry *dentry = path->dentry;
-+	struct inode *inode = d_inode(dentry);
-+	const char *link;
-+	DEFINE_DELAYED_CALL(done);
++	ubifs_getattr(path, stat, request_mask, query_flags);
 +
-+	/*
-+	 * To get the symlink target that userspace will see (whether it's the
-+	 * decrypted target or the no-key encoded target), we can just get it in
-+	 * the same way the VFS does during path resolution and readlink().
-+	 */
-+	link = READ_ONCE(inode->i_link);
-+	if (!link) {
-+		link = inode->i_op->get_link(dentry, inode, &done);
-+		if (IS_ERR(link))
-+			return PTR_ERR(link);
-+	}
-+	stat->size = strlen(link);
-+	do_delayed_call(&done);
++	if (IS_ENCRYPTED(d_inode(path->dentry)))
++		return fscrypt_symlink_getattr(path, stat);
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(fscrypt_symlink_getattr);
---- a/include/linux/fscrypt_notsupp.h
-+++ b/include/linux/fscrypt_notsupp.h
-@@ -234,4 +234,10 @@ static inline const char *fscrypt_get_sy
- 	return ERR_PTR(-EOPNOTSUPP);
- }
- 
-+static inline int fscrypt_symlink_getattr(const struct path *path,
-+					  struct kstat *stat)
-+{
-+	return -EOPNOTSUPP;
-+}
 +
- #endif	/* _LINUX_FSCRYPT_NOTSUPP_H */
---- a/include/linux/fscrypt_supp.h
-+++ b/include/linux/fscrypt_supp.h
-@@ -231,5 +231,6 @@ extern int __fscrypt_encrypt_symlink(str
- extern const char *fscrypt_get_symlink(struct inode *inode, const void *caddr,
- 				       unsigned int max_size,
- 				       struct delayed_call *done);
-+int fscrypt_symlink_getattr(const struct path *path, struct kstat *stat);
- 
- #endif	/* _LINUX_FSCRYPT_SUPP_H */
+ const struct address_space_operations ubifs_file_address_operations = {
+ 	.readpage       = ubifs_readpage,
+ 	.writepage      = ubifs_writepage,
+@@ -1669,7 +1679,7 @@ const struct inode_operations ubifs_file
+ const struct inode_operations ubifs_symlink_inode_operations = {
+ 	.get_link    = ubifs_get_link,
+ 	.setattr     = ubifs_setattr,
+-	.getattr     = ubifs_getattr,
++	.getattr     = ubifs_symlink_getattr,
+ #ifdef CONFIG_UBIFS_FS_XATTR
+ 	.listxattr   = ubifs_listxattr,
+ #endif
 
 
 Patches currently in stable-queue which might be from ebiggers@kernel.org are
